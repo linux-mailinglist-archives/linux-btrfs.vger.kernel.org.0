@@ -2,148 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F78552D2A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jun 2022 10:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D25552EA6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jun 2022 11:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346647AbiFUIh7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jun 2022 04:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54232 "EHLO
+        id S1349217AbiFUJjr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jun 2022 05:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbiFUIh6 (ORCPT
+        with ESMTP id S1349192AbiFUJjq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jun 2022 04:37:58 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BB163BF
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jun 2022 01:37:57 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0EFFB21E13;
-        Tue, 21 Jun 2022 08:37:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1655800676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+/+POUtb0hLQcKoQOYJpJvzBIK1gTBbkZtrX4pujvu4=;
-        b=nUcd9ZLdWtH9pDF1l0thIz1sFe00omPfD6qVnuSl/aO0v6cWeNpHG55pZ4VUJkXVMdZIiS
-        jYfxByd7ojDNJVNP221akjN8FCduHxy3A5YXpVasSl92G1aqdWuHyp3cjjttiUTIiBSKGr
-        ZdXSFMYelIT+1ZCnxSQfgDd2yo+2UyU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B822413A88;
-        Tue, 21 Jun 2022 08:37:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id NPBLKmODsWLWCwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 21 Jun 2022 08:37:55 +0000
-Message-ID: <f1d81d56-b948-73c7-3bf4-3129af53852b@suse.com>
-Date:   Tue, 21 Jun 2022 11:37:55 +0300
+        Tue, 21 Jun 2022 05:39:46 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB69275F1
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jun 2022 02:39:45 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-3178ea840easo86742847b3.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jun 2022 02:39:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
+        b=NKhg6kSkfnglJlsPDVUWhCY3Iibudx7OhZC5CePFgeNekYJKNrcmU8wB8gkktmjPqY
+         f0o4DET3nwW7oGb1WQAmWVCm6yLISrVrQXMY/9qoCppMNLX7K/jA/JZ+JMs1mNT38j+N
+         qSlM2vTiSOIkQo5cZ6oY4dkMVda7fWn0vzKRT295Q67AStI8u0BTanvw38uSxo4IMvFm
+         mtbeFJOQugEk6bmbrSLJZHxNWvSEoU0AT9TQz59V3jAGDZbWiI6U0Fx8UlroTYMr9wGQ
+         +xC78kHT5AZK7k/f6wmWhdDj3ThC5Cy20ctCKCcYvb/idPExEpgvQXB/UX/ziCu3vO07
+         Q2/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
+        b=yZSLSXR0DgpL/2kbdK+CU+y5jmyyAsTjIEPypjwylcuVXTfYjXrhUvAPZfZC1ldcDd
+         wAf+UGEKAFCRKNth45Q/YmzXNMSe8Axomt6GMQI7OcmQlyRmPj91GUAi/YhwKNuUwObJ
+         YgMpUQPZb674MgZGHptXo+F8U3Jb/99BUq/7IB3osIiM2QHCzU9lBJMTRJgYv4aYY0rd
+         4gLoa4hfJYj58PeD59J9nCqtWoqleG5G+ram1B33bcOGqtcnD1smw/HDTYb6ErTwTebW
+         /P4xNGEUwwU6o4NhsAphYT0m28vRxOffFqwafrN/9Fe5FyYS2N3rPdc4PnNkOPlW0cjJ
+         oM4Q==
+X-Gm-Message-State: AJIora82lz+rCNhfaL2Ci7KDSsg+yv7YUH7jqnDcJXeVK7dc4Qs7oOeB
+        ho0Fb4uc5Qw5JJqNPc+ARenAu2xY1IV/XMtDBpI=
+X-Google-Smtp-Source: AGRyM1sTF/SvvxCyraPE52znD36ZX02jNmxmam87lP8bWzXT3yTfChS1a9JgJI9LjBXh9tpS4qLO5E/t+5efudcEruY=
+X-Received: by 2002:a0d:d7c7:0:b0:317:bfe8:4f2 with SMTP id
+ z190-20020a0dd7c7000000b00317bfe804f2mr12417910ywd.276.1655804384555; Tue, 21
+ Jun 2022 02:39:44 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v2] btrfs: don't limit direct reads to a single sector
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org
-References: <20220621062627.2637632-1-hch@lst.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <20220621062627.2637632-1-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a05:7010:e10a:b0:2d9:e631:94d0 with HTTP; Tue, 21 Jun 2022
+ 02:39:44 -0700 (PDT)
+Reply-To: dimitryedik@gmail.com
+From:   Dimitry Edik <lsbthdwrds@gmail.com>
+Date:   Tue, 21 Jun 2022 02:39:44 -0700
+Message-ID: <CAGrL05aBO8rbFuij24J-APa+Luis69gEjhj35iv_GZfkHCVYDQ@mail.gmail.com>
+Subject: Dear Partner,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=7.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,
+        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:112a listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [lsbthdwrds[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
+        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello Dear,
 
+My Name is Dimitry Edik from Russia A special assistance to my Russia
+boss who deals in oil import and export He was killed by the Ukraine
+soldiers at the border side. He supplied
+oil to the Philippines company and he was paid over 90 per cent of the
+transaction and the remaining $18.6 Million dollars have been paid into a
+Taiwan bank in the Philippines..i want a partner that will assist me
+with the claims. Is a (DEAL ) 40% for you and 60% for me
+I have all information for the claims.
+Kindly read and reply to me back is 100 per cent risk-free
 
-On 21.06.22 г. 9:26 ч., Christoph Hellwig wrote:
-> Btrfs currently limits direct I/O reads to a single sector, which goes
-> back to commit c329861da406 ("Btrfs: don't allocate a separate csums
-> array for direct reads") from Josef.  That commit changes the direct I/O
-> code to ".. use the private part of the io_tree for our csums.", but ten
-> years later that isn't how checksums for direct reads work, instead they
-> use a csums allocation on a per-btrfs_dio_private basis (which have their
-> own performance problem for small I/O, but that will be addressed later).
-> 
-> There is no fundamental limit in btrfs itself to limit the I/O size
-> except for the size of the checksum array that scales linearly with
-> the number of sectors in an I/O.  Pick a somewhat arbitrary limit of
-> 256 limits, which matches what the buffered reads typically see as
-> the upper limit as the limit for direct I/O as well.
-> 
-> This significantly improves direct read performance.  For example a fio
-> run doing 1 MiB aio reads with a queue depth of 1 roughly triples the
-> throughput:
-> 
-> Baseline:
-> 
-> READ: bw=65.3MiB/s (68.5MB/s), 65.3MiB/s-65.3MiB/s (68.5MB/s-68.5MB/s), io=19.1GiB (20.6GB), run=300013-300013msec
-> 
-> With this patch:
-> 
-> READ: bw=196MiB/s (206MB/s), 196MiB/s-196MiB/s (206MB/s-206MB/s), io=57.5GiB (61.7GB), run=300006-300006msc
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
-
-LGTM. However I think a more appropriate subject would be "increase 
-direct read size limit to 256 sectors"
-
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-> 
-> Changes since v1:
->    - keep a (large) upper limit on the I/O size.
-> 
->   fs/btrfs/inode.c   | 6 +++++-
->   fs/btrfs/volumes.h | 7 +++++++
->   2 files changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 33ba4d22e1430..f6dc6e8c54e3a 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -7592,8 +7592,12 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
->   	const u64 data_alloc_len = length;
->   	bool unlock_extents = false;
->   
-> +	/*
-> +	 * Cap the size of reads to that usually seen in buffered I/O as we need
-> +	 * to allocate a contiguous array for the checksums.
-> +	 */
->   	if (!write)
-> -		len = min_t(u64, len, fs_info->sectorsize);
-> +		len = min_t(u64, len, fs_info->sectorsize * BTRFS_MAX_SECTORS);
->   
->   	lockstart = start;
->   	lockend = start + len - 1;
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index b61508723d5d2..5f2cea9a44860 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -354,6 +354,13 @@ struct btrfs_fs_devices {
->   				- 2 * sizeof(struct btrfs_chunk))	\
->   				/ sizeof(struct btrfs_stripe) + 1)
->   
-> +/*
-> + * Maximum number of sectors for a single bio to limit the size of the
-> + * checksum array.  This matches the number of bio_vecs per bio and thus the
-> + * I/O size for buffered I/O.
-> + */
-> +#define BTRFS_MAX_SECTORS	256
-> +
->   /*
->    * Additional info to pass along bio.
->    *
+Yours Sincerely
+Dimitry Edik
