@@ -2,179 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EE1553502
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jun 2022 16:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2C455352C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jun 2022 17:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351897AbiFUOyB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jun 2022 10:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60910 "EHLO
+        id S1352170AbiFUPE2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jun 2022 11:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350167AbiFUOyA (ORCPT
+        with ESMTP id S1352163AbiFUPEV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jun 2022 10:54:00 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FF2237F6
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jun 2022 07:54:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Tue, 21 Jun 2022 11:04:21 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1BE193CC
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jun 2022 08:04:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BB15821A91;
-        Tue, 21 Jun 2022 14:53:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655823238;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qmkecIeWc2i5eH7vg/XYRl5h3UBUrN3X0hS+3ZYQ49k=;
-        b=yMRJ8ZQBU9tXOZxUHEqgl07l/m/Bv4wv43eLzzUy+qkiO2h4L7isCQl64SfYbue+dunIub
-        pGJWBIAixYUfLFMeIcpds8vAaUCIb1037qrt4omNzU+BrvaU+wFeiOpi7z7xOMLZwshphJ
-        xDsUttgzkQLCj/qo0wHXmgm78/8gz8I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655823238;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qmkecIeWc2i5eH7vg/XYRl5h3UBUrN3X0hS+3ZYQ49k=;
-        b=moT70xueb+47TRKVb54uf0wKHSkT/MR+D7pprK5gCM0niDXstidQhqdM3WuTkXGbqwYD0X
-        L1GcI/V+ir4mkvAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9B1D913638;
-        Tue, 21 Jun 2022 14:53:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id oLjmJIbbsWLBWwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 21 Jun 2022 14:53:58 +0000
-Date:   Tue, 21 Jun 2022 16:49:21 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Ioannis Angelakopoulos <iangelak@fb.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 2/2] btrfs: Expose the BTRFS commit stats through sysfs
-Message-ID: <20220621144921.GC20633@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Ioannis Angelakopoulos <iangelak@fb.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20220614222231.2582876-1-iangelak@fb.com>
- <20220614222231.2582876-3-iangelak@fb.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id E17BDB81986
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jun 2022 15:04:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47F07C3411C;
+        Tue, 21 Jun 2022 15:04:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655823857;
+        bh=eD/gpY7fkDOqPe7xkIoA1F+yo85IPL6oiITMy9nwUpc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZYWL4RR0xCXB9vPU4n/1TayDlw1aMjK4FhmxXuMWK8Qaw8hRxAM8dhJvR3Z/4zAUu
+         nwzItM/iysudGWf1sp+p4ITlTc9WNICfxsqgVMY3fawv1oEIXruY84BGmxO3p7tX0g
+         UDz1E0FRGuYfCzVxP1xz2QYr7N31RQGOQRSi7a60G5ioXqELZkmbZmSlOjr32ps84J
+         N+gTNsoJyOufuPL6BiBNaFVikwQbqjQBhqYBUZevkKU3RcRj5EEvAJ8xSqKseghThI
+         MYaAhV9LzaDU20/sX5D4Ewla5oqoQFIUJNEcHi7Y2Xci3EmCgODbhSApsldhmgzP5+
+         K5RnwJwWaSY5A==
+Date:   Tue, 21 Jun 2022 16:04:14 +0100
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] btrfs: fix error handling of fallbacked
+ uncompress write
+Message-ID: <20220621150414.GA23327@falcondesktop>
+References: <cover.1655791781.git.naohiro.aota@wdc.com>
+ <7347f1de449c3a3f36690b816c2ded133508c5c2.1655791781.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220614222231.2582876-3-iangelak@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <7347f1de449c3a3f36690b816c2ded133508c5c2.1655791781.git.naohiro.aota@wdc.com>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 14, 2022 at 03:22:34PM -0700, Ioannis Angelakopoulos wrote:
-> Create a new sysfs entry named "commit_stats" under /sys/fs/btrfs/<UUID>/
-> for each mounted BTRFS filesystem. The entry exposes: 1) The number of
-> commits so far, 2) The duration of the last commit in ms, 3) The maximum
-> commit duration seen so far in ms and 4) The total duration for all commits
-> so far in ms.
+On Tue, Jun 21, 2022 at 03:41:01PM +0900, Naohiro Aota wrote:
+> When cow_file_range() fails in the middle of the allocation loop, it
+> unlocks the pages but leaves the ordered extents intact. Thus, we need to
+> call btrfs_cleanup_ordered_extents() to finish the created ordered extents.
 > 
-> The function "btrfs_commit_stats_show" in fs/btrfs/sysfs.c is responsible
-> for exposing the stats to user space.
+> Also, we need to call end_extent_writepage() if locked_page is available
+> because btrfs_cleanup_ordered_extents() never process the region on the
+> locked_page.
 > 
-> The function "btrfs_commit_stats_store" in fs/btrfs/sysfs.c is responsible
-> for resetting the above values to zero.
+> Furthermore, we need to set the mapping as error if locked_page is
+> unavailable before unlocking the pages, so that the errno is properly
+> propagated to the userland.
 > 
-> Signed-off-by: Ioannis Angelakopoulos <iangelak@fb.com>
+> CC: stable@vger.kernel.org # 5.18+
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 > ---
->  fs/btrfs/sysfs.c | 51 +++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 50 insertions(+), 1 deletion(-)
+> I choose 5.18+ as the target as they are after refactoring and we can apply
+> the series cleanly. Technically, older versions potentially have the same
+> issue, but it might not happen actually. So, let's choose easy targets to
+> apply.
+> ---
+>  fs/btrfs/inode.c | 17 +++++++++++++++--
+>  1 file changed, 15 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index db3736de14a5..54b26aef290b 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -991,6 +991,55 @@ static ssize_t btrfs_sectorsize_show(struct kobject *kobj,
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 326150552e57..38d8e6d78e77 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -933,8 +933,18 @@ static int submit_uncompressed_range(struct btrfs_inode *inode,
+>  		goto out;
+>  	}
+>  	if (ret < 0) {
+> -		if (locked_page)
+> +		btrfs_cleanup_ordered_extents(inode, locked_page, start, end - start + 1);
+> +		if (locked_page) {
+> +			u64 page_start = page_offset(locked_page);
+> +			u64 page_end = page_start + PAGE_SIZE - 1;
+> +
+> +			btrfs_page_set_error(inode->root->fs_info, locked_page,
+> +					     page_start, PAGE_SIZE);
+> +			set_page_writeback(locked_page);
+> +			end_page_writeback(locked_page);
+> +			end_extent_writepage(locked_page, ret, page_start, page_end);
+>  			unlock_page(locked_page);
+> +		}
+>  		goto out;
+>  	}
 >  
->  BTRFS_ATTR(, sectorsize, btrfs_sectorsize_show);
+> @@ -1383,9 +1393,12 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+>  	 * However, in case of unlock == 0, we still need to unlock the pages
+>  	 * (except @locked_page) to ensure all the pages are unlocked.
+>  	 */
+> -	if (!unlock && orig_start < start)
+> +	if (!unlock && orig_start < start) {
+> +		if (!locked_page)
+> +			mapping_set_error(inode->vfs_inode.i_mapping, ret);
+
+Instead of this we can pass PAGE_SET_ERROR in page_ops, which will result in
+setting the error in the inode's mapping.
+
+In fact we currently only mark the locked page with error (at writepage_delalloc()).
+However all pages before and after it are still locked and we don't set the error on
+them, I think we should - I don't see why not.
+
+Did I miss something (again)?
+
+Sorry I only noticed this now.
+
+Thanks.
+
+>  		extent_clear_unlock_delalloc(inode, orig_start, start - 1,
+>  					     locked_page, 0, page_ops);
+> +	}
 >  
-> +static ssize_t btrfs_commit_stats_show(struct kobject *kobj,
-> +				struct kobj_attribute *a, char *buf)
-> +{
-> +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> +
-> +	return sysfs_emit(buf,
-> +		"commits %llu\n"
-> +		"last_commit_dur %llu ms\n"
-
-		last_commit_dur_ms %llu
-
-so the name and units is in one string and "name value" on each line. In
-case we'd want to add _ns variants for better precision. Sysfs is often
-used as "grep value_name /sys/.../file" so it's future proof.
-
-> +		"max_commit_dur %llu ms\n"
-> +		"total_commit_dur %llu ms\n",
-> +		fs_info->commit_stats.commit_counter,
-> +		fs_info->commit_stats.last_commit_dur / NSEC_PER_MSEC,
-> +		fs_info->commit_stats.max_commit_dur / NSEC_PER_MSEC,
-> +		fs_info->commit_stats.total_commit_dur / NSEC_PER_MSEC);
-> +}
-> +
-> +static ssize_t btrfs_commit_stats_store(struct kobject *kobj,
-> +						struct kobj_attribute *a,
-> +						const char *buf, size_t len)
-> +{
-> +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> +	unsigned long val;
-> +	int ret;
-> +
-> +	if (!fs_info)
-> +		return -EPERM;
-> +
-> +	if (!capable(CAP_SYS_RESOURCE))
-> +		return -EPERM;
-> +
-> +	ret = kstrtoul(buf, 10, &val);
-> +	if (ret)
-> +		return ret;
-> +	if (val)
-> +		return -EINVAL;
-> +
-> +	spin_lock(&fs_info->super_lock);
-> +	fs_info->commit_stats.commit_counter = 0;
-> +	fs_info->commit_stats.last_commit_dur = 0;
-> +	fs_info->commit_stats.max_commit_dur = 0;
-> +	fs_info->commit_stats.total_commit_dur = 0;
-> +	spin_unlock(&fs_info->super_lock);
-> +
-> +	return len;
-> +}
-
-No newline
-
-> +
-> +BTRFS_ATTR_RW(, commit_stats, btrfs_commit_stats_show,
-> +			  btrfs_commit_stats_store);
-> +
->  static ssize_t btrfs_clone_alignment_show(struct kobject *kobj,
->  				struct kobj_attribute *a, char *buf)
->  {
-> @@ -1230,6 +1279,7 @@ static const struct attribute *btrfs_attrs[] = {
->  	BTRFS_ATTR_PTR(, generation),
->  	BTRFS_ATTR_PTR(, read_policy),
->  	BTRFS_ATTR_PTR(, bg_reclaim_threshold),
-> +	BTRFS_ATTR_PTR(, commit_stats),
->  	NULL,
->  };
->  
-> @@ -2236,4 +2286,3 @@ void __cold btrfs_exit_sysfs(void)
->  #endif
->  	kset_unregister(btrfs_kset);
->  }
-> -
+>  	/*
+>  	 * For the range (2). If we reserved an extent for our delalloc range
 > -- 
-> 2.30.2
+> 2.35.1
 > 
