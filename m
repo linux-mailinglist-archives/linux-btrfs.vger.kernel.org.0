@@ -2,51 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2C455352C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jun 2022 17:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4E25535C5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jun 2022 17:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352170AbiFUPE2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jun 2022 11:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40096 "EHLO
+        id S1352539AbiFUPT0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jun 2022 11:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352163AbiFUPEV (ORCPT
+        with ESMTP id S1352464AbiFUPTY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jun 2022 11:04:21 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1BE193CC
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jun 2022 08:04:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 21 Jun 2022 11:19:24 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF2B2BFC
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jun 2022 08:19:22 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E17BDB81986
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jun 2022 15:04:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47F07C3411C;
-        Tue, 21 Jun 2022 15:04:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655823857;
-        bh=eD/gpY7fkDOqPe7xkIoA1F+yo85IPL6oiITMy9nwUpc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZYWL4RR0xCXB9vPU4n/1TayDlw1aMjK4FhmxXuMWK8Qaw8hRxAM8dhJvR3Z/4zAUu
-         nwzItM/iysudGWf1sp+p4ITlTc9WNICfxsqgVMY3fawv1oEIXruY84BGmxO3p7tX0g
-         UDz1E0FRGuYfCzVxP1xz2QYr7N31RQGOQRSi7a60G5ioXqELZkmbZmSlOjr32ps84J
-         N+gTNsoJyOufuPL6BiBNaFVikwQbqjQBhqYBUZevkKU3RcRj5EEvAJ8xSqKseghThI
-         MYaAhV9LzaDU20/sX5D4Ewla5oqoQFIUJNEcHi7Y2Xci3EmCgODbhSApsldhmgzP5+
-         K5RnwJwWaSY5A==
-Date:   Tue, 21 Jun 2022 16:04:14 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] btrfs: fix error handling of fallbacked
- uncompress write
-Message-ID: <20220621150414.GA23327@falcondesktop>
-References: <cover.1655791781.git.naohiro.aota@wdc.com>
- <7347f1de449c3a3f36690b816c2ded133508c5c2.1655791781.git.naohiro.aota@wdc.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BEFF221C8E;
+        Tue, 21 Jun 2022 15:19:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1655824760; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hX3i7FrhFvH0M9Nhb6gSygekiqqgJafKQsv+ugTEvIE=;
+        b=O15g1D/o+DuMEU1TewnrftNMS4ifLm88BwJXKspOx1NQjCheTA0phk0wgV6WlZEpSgbYxq
+        GUvx37b7z32ecTdwSf9G35350F6qWUEyufPXvJB1+x030nHzWMROjRHiezXTOMdv82vyQ2
+        8a8icv+SuI/cQ8NRzDb4lGdTsTw7Muk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 78E1813A88;
+        Tue, 21 Jun 2022 15:19:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ieH/GnjhsWK6agAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 21 Jun 2022 15:19:20 +0000
+Message-ID: <b633dedf-b322-2d8c-adfb-8ab88af5652e@suse.com>
+Date:   Tue, 21 Jun 2022 18:19:19 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7347f1de449c3a3f36690b816c2ded133508c5c2.1655791781.git.naohiro.aota@wdc.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH] btrfs: repair all bad mirrors
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org
+References: <20220619082821.2151052-1-hch@lst.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <20220619082821.2151052-1-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,82 +65,110 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 03:41:01PM +0900, Naohiro Aota wrote:
-> When cow_file_range() fails in the middle of the allocation loop, it
-> unlocks the pages but leaves the ordered extents intact. Thus, we need to
-> call btrfs_cleanup_ordered_extents() to finish the created ordered extents.
+
+
+On 19.06.22 г. 11:28 ч., Christoph Hellwig wrote:
+> When there is more than a single level of redundancy there can also be
+> mutiple bad mirrors, and the current read repair code only repairs the
+> last bad one.
 > 
-> Also, we need to call end_extent_writepage() if locked_page is available
-> because btrfs_cleanup_ordered_extents() never process the region on the
-> locked_page.
+> Restructure btrfs_repair_one_sector so that it records the original bad
+> bad mirror, and the number of copies, and then repair all bad copies
+> until we reach the original bad copy in clean_io_failure.  Note that
+> this also means the read repair reads will always start from the next
+> bad mirror and not mirror 0.
 > 
-> Furthermore, we need to set the mapping as error if locked_page is
-> unavailable before unlocking the pages, so that the errno is properly
-> propagated to the userland.
+> This fixes btrfs/265 in xfstests.
 > 
-> CC: stable@vger.kernel.org # 5.18+
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
-> I choose 5.18+ as the target as they are after refactoring and we can apply
-> the series cleanly. Technically, older versions potentially have the same
-> issue, but it might not happen actually. So, let's choose easy targets to
-> apply.
-> ---
->  fs/btrfs/inode.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
+>   fs/btrfs/extent_io.c | 127 +++++++++++++++++++++----------------------
+>   fs/btrfs/extent_io.h |   3 +-
+>   2 files changed, 63 insertions(+), 67 deletions(-)
 > 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 326150552e57..38d8e6d78e77 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -933,8 +933,18 @@ static int submit_uncompressed_range(struct btrfs_inode *inode,
->  		goto out;
->  	}
->  	if (ret < 0) {
-> -		if (locked_page)
-> +		btrfs_cleanup_ordered_extents(inode, locked_page, start, end - start + 1);
-> +		if (locked_page) {
-> +			u64 page_start = page_offset(locked_page);
-> +			u64 page_end = page_start + PAGE_SIZE - 1;
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 854999c2e139b..9775ac5d28a9e 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2432,6 +2432,20 @@ int btrfs_repair_eb_io_failure(const struct extent_buffer *eb, int mirror_num)
+>   	return ret;
+>   }
+>   
+> +static int next_mirror(struct io_failure_record *failrec, int cur_mirror)
+> +{
+> +	if (cur_mirror == failrec->num_copies)
+> +		return cur_mirror + 1 - failrec->num_copies;
+> +	return cur_mirror + 1;
+> +}
 > +
-> +			btrfs_page_set_error(inode->root->fs_info, locked_page,
-> +					     page_start, PAGE_SIZE);
-> +			set_page_writeback(locked_page);
-> +			end_page_writeback(locked_page);
-> +			end_extent_writepage(locked_page, ret, page_start, page_end);
->  			unlock_page(locked_page);
-> +		}
->  		goto out;
->  	}
->  
-> @@ -1383,9 +1393,12 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
->  	 * However, in case of unlock == 0, we still need to unlock the pages
->  	 * (except @locked_page) to ensure all the pages are unlocked.
->  	 */
-> -	if (!unlock && orig_start < start)
-> +	if (!unlock && orig_start < start) {
-> +		if (!locked_page)
-> +			mapping_set_error(inode->vfs_inode.i_mapping, ret);
+> +static int prev_mirror(struct io_failure_record *failrec, int cur_mirror)
+> +{
+> +	if (cur_mirror == 1)
+> +		return failrec->num_copies;
+> +	return cur_mirror - 1;
+> +}
+> +
+>   /*
+>    * each time an IO finishes, we do a fast check in the IO failure tree
+>    * to see if we need to process or clean up an io_failure_record
+> @@ -2444,7 +2458,7 @@ int clean_io_failure(struct btrfs_fs_info *fs_info,
+>   	u64 private;
+>   	struct io_failure_record *failrec;
+>   	struct extent_state *state;
+> -	int num_copies;
+> +	int mirror;
+>   	int ret;
+>   
+>   	private = 0;
+> @@ -2468,20 +2482,19 @@ int clean_io_failure(struct btrfs_fs_info *fs_info,
+>   					    EXTENT_LOCKED);
+>   	spin_unlock(&io_tree->lock);
+>   
+> -	if (state && state->start <= failrec->start &&
+> -	    state->end >= failrec->start + failrec->len - 1) {
+> -		num_copies = btrfs_num_copies(fs_info, failrec->logical,
+> -					      failrec->len);
+> -		if (num_copies > 1)  {
+> -			repair_io_failure(fs_info, ino, start, failrec->len,
+> -					  failrec->logical, page, pg_offset,
+> -					  failrec->failed_mirror);
+> -		}
+> -	}
+> +	if (!state || state->start > failrec->start ||
+> +	    state->end < failrec->start + failrec->len - 1)
+> +		goto out;
+> +
+> +	mirror = failrec->this_mirror;
+> +	do {
+> +		mirror = prev_mirror(failrec, mirror);
+> +		repair_io_failure(fs_info, ino, start, failrec->len,
+> +				  failrec->logical, page, pg_offset, mirror);
+> +	} while (mirror != failrec->orig_mirror);
 
-Instead of this we can pass PAGE_SET_ERROR in page_ops, which will result in
-setting the error in the inode's mapping.
+But does this work as intended? Say we have a raid1c4 and we read from 
+mirror 3 which is bad, in this case failrec->orig_mirror = 3 and 
+->this_mirror = 4. The read from mirror 4 returns good data and 
+clean_io_failure is called with mirror= 3 in which case only mirror 3 is 
+repaired (assume 1/2 were also bad we don't know it yet, because the 
+original bio request didn't submit to them based on the PID policy).
 
-In fact we currently only mark the locked page with error (at writepage_delalloc()).
-However all pages before and after it are still locked and we don't set the error on
-them, I think we should - I don't see why not.
+<snip>
 
-Did I miss something (again)?
-
-Sorry I only noticed this now.
-
-Thanks.
-
->  		extent_clear_unlock_delalloc(inode, orig_start, start - 1,
->  					     locked_page, 0, page_ops);
-> +	}
->  
->  	/*
->  	 * For the range (2). If we reserved an extent for our delalloc range
-> -- 
-> 2.35.1
-> 
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index c0f1fb63eeae7..5bd23bb239dae 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -262,8 +262,9 @@ struct io_failure_record {
+>   	u64 len;
+>   	u64 logical;
+>   	enum btrfs_compression_type compress_type;
+> +	int orig_mirror;
+nit: how about we name this failed_mirror
+>   	int this_mirror;
+nit: this name is also somewhat uninformative and one has to go and see 
+how it's used in order to figure out the usage.
+> -	int failed_mirror;
+> +	int num_copies;
+>   };
+>   
+>   int btrfs_repair_one_sector(struct inode *inode,
