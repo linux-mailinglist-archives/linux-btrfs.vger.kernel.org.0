@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F64E5541ED
+	by mail.lfdr.de (Postfix) with ESMTP id 9C29B5541EE
 	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jun 2022 06:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357006AbiFVE7K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jun 2022 00:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
+        id S1357024AbiFVE7M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jun 2022 00:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357008AbiFVE7D (ORCPT
+        with ESMTP id S1357010AbiFVE7D (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 22 Jun 2022 00:59:03 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE98535861;
-        Tue, 21 Jun 2022 21:58:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FAD2981B;
+        Tue, 21 Jun 2022 21:59:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=xf881ymmHgZZ9GBnXHqAh+UxVhriB0OZ+2fjdoLSoUM=; b=jZB/o0wDEgM8f1bop9zywIAngr
-        JPqPOLcO4bXVzX/BbsDnGP397bOFB7kmeN7dblkkgA5KGtjPQcDE96/hn9N6f8rXzT3lnrsj71lmi
-        S710JHWYmE1J+RirKZGSTjWD/lfM5fi6JXO/lIceLij5VC359+HAJryzrJ58xIles/E4MO8nXSnkb
-        D5hyUCY6dT+lGvpDzJL4VDZ8Mh+KcB17hAb+wOqpq4iV83KPKvq5CXK096N+qyIkiaKcLL16YI0y8
-        K9QfF2QvrXHmKUL/PZBzHb0HhdslM9j212Qg8Cq/bOxkLdZdzMhQ9dhRm2q3kqeE3vNqGWBuoavbl
-        npPDkaJA==;
+        bh=GyCCPoZj3PX6jdclZjF9+An2q71g86u7wcDPTJBoSnY=; b=Oht0ZuvNKZ+sS6OqK+hxBvoeCw
+        iuLsoUrXw8UKOIV8q/f1Zr/xR5aPoHHJpeP6jfGa9TFZ5znu3C9FcsdL4NQIc1ZMX2aAoBr7hi0eX
+        9JJpXPI9QD7IZpbHf0Jw+izyWwlM3CtpUQ9xAVU9MWOqmhlS2n8qpK4qTFLT2CxvKcRpV7gQd3sOM
+        f9w2qmS+yRDLB3kyiW2kOhLGbcoIfsJmpFcGHZ0SQviEXOy7TLfw2PYWiBvMpqAy9vs0fh849uL0n
+        XRhbOTxjN9eK3rop2vZ5y2HD8/CpmpsWAMQzGEPAkT+rprud6kYjcpxzRBVw6sXpjNUQykwFu0P9H
+        H2kF4AFQ==;
 Received: from 213-225-1-25.nat.highway.a1.net ([213.225.1.25] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o3sS8-008Wl0-Rh; Wed, 22 Jun 2022 04:58:57 +0000
+        id 1o3sSB-008WmL-Nz; Wed, 22 Jun 2022 04:59:00 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/4] btrfs: test checker pattern corruption on raid10
-Date:   Wed, 22 Jun 2022 06:58:43 +0200
-Message-Id: <20220622045844.3219390-4-hch@lst.de>
+Subject: [PATCH 4/4] btrfs: test read repair on a corrupted compressed extent
+Date:   Wed, 22 Jun 2022 06:58:44 +0200
+Message-Id: <20220622045844.3219390-5-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220622045844.3219390-1-hch@lst.de>
 References: <20220622045844.3219390-1-hch@lst.de>
@@ -50,103 +50,108 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Check read repair for the case where the corruption is spread over
-the different legs of a raid10 set.
+Exercise read repair on a corrupted compressed sector.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- tests/btrfs/269     | 73 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/269.out | 41 +++++++++++++++++++++++++
- 2 files changed, 114 insertions(+)
- create mode 100755 tests/btrfs/269
- create mode 100644 tests/btrfs/269.out
+ tests/btrfs/270     | 79 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/270.out | 41 +++++++++++++++++++++++
+ 2 files changed, 120 insertions(+)
+ create mode 100755 tests/btrfs/270
+ create mode 100644 tests/btrfs/270.out
 
-diff --git a/tests/btrfs/269 b/tests/btrfs/269
+diff --git a/tests/btrfs/270 b/tests/btrfs/270
 new file mode 100755
-index 00000000..3c11da3f
+index 00000000..4229a02c
 --- /dev/null
-+++ b/tests/btrfs/269
-@@ -0,0 +1,73 @@
++++ b/tests/btrfs/270
+@@ -0,0 +1,79 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 Christoph Hellwig.
++# Copyright (c) 2017 Liu Bo.  All Rights Reserved.
 +#
-+# FS QA Test 269
++# FS QA Test 270
 +#
-+# Test btrfs read repair over tricky stripe boundaries on the raid10 profile:
++# Regression test for btrfs buffered read repair of compressed data.
 +#
-+#             | stripe 0 | stripe 2
-+#   --------------------------------
-+#    mirror 1 | I/O FAIL | GOOD    
-+#    mirror 2 | GOOD     | CSUM FAIL
-+#
-+
 +. ./common/preamble
 +_begin_fstest auto quick read_repair
 +
 +. ./common/filter
 +
 +_supported_fs btrfs
-+_require_odirect
++_require_btrfs_command inspect-internal dump-tree
 +_require_non_zoned_device "${SCRATCH_DEV}" # no overwrites on zoned devices
-+_require_scratch_dev_pool 4
-+_scratch_dev_pool_get 4
++_require_scratch_dev_pool 2
++_scratch_dev_pool_get 2
++
++get_physical()
++{
++	local logical=$1
++	local stripe=$2
++	$BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | \
++		grep $logical -A 6 | \
++		$AWK_PROG "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/) { print \$6 }"
++}
++
++get_devid()
++{
++	local logical=$1
++	local stripe=$2
++	$BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | \
++		grep $logical -A 6 | \
++		$AWK_PROG "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/) { print \$4 }"
++}
++
++get_device_path()
++{
++	local devid=$1
++	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
++}
++
 +
 +echo "step 1......mkfs.btrfs"
++_check_minimal_fs_size $(( 1024 * 1024 * 1024 ))
++_scratch_pool_mkfs "-d raid1 -b 1G" >>$seqres.full 2>&1
++_scratch_mount -ocompress
 +
-+_scratch_pool_mkfs "-d raid10 -b 1G" >>$seqres.full 2>&1
-+_scratch_mount
++# Create a file with all data being compressed
++$XFS_IO_PROG -f -c "pwrite -S 0xaa -W -b 128K 0 128K" \
++	"$SCRATCH_MNT/foobar" | _filter_xfs_io_offset
 +
-+$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" \
-+	"$SCRATCH_MNT/foobar" | \
-+	_filter_xfs_io_offset
-+
-+# ensure btrfs-map-logical sees the tree updates
-+sync
-+
-+logical=$(_btrfs_get_first_logical $SCRATCH_MNT/foobar)
-+
-+physical1=$(_btrfs_get_physical ${logical} 1)
-+devpath1=$(_btrfs_get_device_path ${logical} 1)
-+
-+physical4=$(_btrfs_get_physical ${logical} 3)
-+devpath4=$(_btrfs_get_device_path ${logical} 3)
++logical_in_btrfs=$(_btrfs_get_first_logical $SCRATCH_MNT/foobar)
++physical=$(get_physical ${logical_in_btrfs} 1)
++devid=$(get_devid ${logical_in_btrfs} 1)
++devpath=$(get_device_path ${devid})
 +
 +_scratch_unmount
-+
 +echo "step 2......corrupt file extent"
-+
-+$XFS_IO_PROG -d -c "pwrite -S 0xbd -b 64K $physical1 64K" \
-+	$devpath1 > /dev/null
-+$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $((physical4 + 65536)) 64K" \
-+	$devpath4 > /dev/null
++echo " corrupt stripe #1, devid $devid devpath $devpath physical $physical" \
++	>> $seqres.full
++$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $physical 64K" $devpath > /dev/null
 +
 +_scratch_mount
 +
 +echo "step 3......repair the bad copy"
-+
-+_btrfs_direct_read_on_mirror 0 2 "$SCRATCH_MNT/foobar" 0 128K
-+_btrfs_direct_read_on_mirror 1 2 "$SCRATCH_MNT/foobar" 0 128K
++_btrfs_buffered_read_on_mirror 1 2 "$SCRATCH_MNT/foobar" 0 128K
 +
 +_scratch_unmount
 +
 +echo "step 4......check if the repair worked"
-+$XFS_IO_PROG -d -c "pread -v -b 512 $physical1 512" $devpath1 |\
-+	_filter_xfs_io_offset
-+$XFS_IO_PROG -d -c "pread -v -b 512 $((physical4 + 65536)) 512" $devpath4 |\
++$XFS_IO_PROG -c "pread -v -b 512 $physical 512" $devpath |\
 +	_filter_xfs_io_offset
 +
 +_scratch_dev_pool_put
 +# success, all done
 +status=0
 +exit
-diff --git a/tests/btrfs/269.out b/tests/btrfs/269.out
+diff --git a/tests/btrfs/270.out b/tests/btrfs/270.out
 new file mode 100644
-index 00000000..d3ad7f07
+index 00000000..53a80692
 --- /dev/null
-+++ b/tests/btrfs/269.out
++++ b/tests/btrfs/270.out
 @@ -0,0 +1,41 @@
-+QA output created by 269
++QA output created by 270
 +step 1......mkfs.btrfs
 +wrote 131072/131072 bytes
 +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
