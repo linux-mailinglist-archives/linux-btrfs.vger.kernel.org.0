@@ -2,66 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE622555151
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jun 2022 18:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4066555155
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jun 2022 18:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358897AbiFVQ2O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jun 2022 12:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
+        id S1359355AbiFVQ3y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jun 2022 12:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350478AbiFVQ2M (ORCPT
+        with ESMTP id S1359133AbiFVQ3x (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jun 2022 12:28:12 -0400
+        Wed, 22 Jun 2022 12:29:53 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD970E86
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jun 2022 09:28:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687BF2FFC3
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jun 2022 09:29:52 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7DA6F21B63;
-        Wed, 22 Jun 2022 16:28:09 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 286C3219B3;
+        Wed, 22 Jun 2022 16:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655915289;
+        t=1655915391;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fbntdjJOb2Hm9QLweaAQKdYN/pXH9lmW2cJeOxQzoX4=;
-        b=F6QJXAcb5CO7RutX/ldgeDYBqmG7j1OdyFi2osfMUrhmb/YdSe6ucxalmFuqKy0dhs46g2
-        hy/O59Ra/7mkNTihgQUCTZQJxxY/b6e8KV4v0IvtO6SLaGLh5jEWqmZAJGlyuT3+i4VoiM
-        iqfUvmqxhPGNATvcfBHSNM/920eFDpE=
+        bh=Mqxtilw8OTPOiF3Z07j3LuPWxQEQF/crdpE6q1/m0Nc=;
+        b=2heXhctTVG2gluK2rsFhF+ej74K59cGuca05LlaiUKq+tH4UpweO5rNMsQ0hTVmGusASkL
+        0NxGXIUwPtX7OZCuD4lfMQbYP9Dk16wqovsKTgyJFHqRwePJu3m8xB38dPj2XCmdMFRAfG
+        crncxxkYGlFBqkKA9ITiLLA+CT7VAdA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655915289;
+        s=susede2_ed25519; t=1655915391;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fbntdjJOb2Hm9QLweaAQKdYN/pXH9lmW2cJeOxQzoX4=;
-        b=mzfg7RPbXwRuPYEJ/HLw67ELA3427msyLV2YiHPA5ynHYcOFDZsRFB9x25i15DemVHXekh
-        twsFyYr6X04LttAA==
+        bh=Mqxtilw8OTPOiF3Z07j3LuPWxQEQF/crdpE6q1/m0Nc=;
+        b=S2ipX5/TeTdkzut+94/uGOfm73EoO5KQxYu+e0Xk6B20cTaIo1GKQYxd51YqucyZgjIFY9
+        A0/ZFWS6B15FxcCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 48BC713A5D;
-        Wed, 22 Jun 2022 16:28:09 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EF75913A5D;
+        Wed, 22 Jun 2022 16:29:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id iXe2EBlDs2I9EwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 22 Jun 2022 16:28:09 +0000
-Date:   Wed, 22 Jun 2022 18:23:31 +0200
+        id 3OuCOX5Ds2ITFAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 22 Jun 2022 16:29:50 +0000
+Date:   Wed, 22 Jun 2022 18:25:13 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: output mirror number for bad metadata
-Message-ID: <20220622162331.GL20633@twin.jikos.cz>
+To:     Ioannis Angelakopoulos <iangelak@fb.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v4 0/2] btrfs: Expose commit stats through sysfs
+Message-ID: <20220622162513.GM20633@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <ae3c7264a3aefe55c64e3c6a0426289800023742.1655646447.git.wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Ioannis Angelakopoulos <iangelak@fb.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20220621225918.4114998-1-iangelak@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ae3c7264a3aefe55c64e3c6a0426289800023742.1655646447.git.wqu@suse.com>
+In-Reply-To: <20220621225918.4114998-1-iangelak@fb.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -73,108 +73,49 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jun 19, 2022 at 09:47:56PM +0800, Qu Wenruo wrote:
-> When handling a real world transid mismatch image, it's hard to know
-> which copy is corrupted, as the error messages just look like this:
+On Tue, Jun 21, 2022 at 03:59:17PM -0700, Ioannis Angelakopoulos wrote:
+> With this patch series we add the capability to btrfs to expose some
+> commit stats through sysfs that might be useful for performance monitoring
+> and debugging purposes.
 > 
-> BTRFS warning (device dm-3): checksum verify failed on 30408704 wanted 0xcdcdcdcd found 0x3c0adc8e level 0
-> BTRFS warning (device dm-3): checksum verify failed on 30408704 wanted 0xcdcdcdcd found 0x3c0adc8e level 0
-> BTRFS warning (device dm-3): checksum verify failed on 30408704 wanted 0xcdcdcdcd found 0x3c0adc8e level 0
-> BTRFS warning (device dm-3): checksum verify failed on 30408704 wanted 0xcdcdcdcd found 0x3c0adc8e level 0
+> Specifically, through sysfs we expose the following data:
+>   1) A counter for the commits that occurred so far.
+>   2) The duration in ms of the last commit.
+>   3) The maximum commit duration in ms seen so far.
+>   4) The total duration in ms of the commits seen so far.
 > 
-> We don't even know if the retry is caused by btrfs or the VFS retry.
+> The user also has the capability to reset the maximum commit duration
+> back to zero, again through sysfs.
 > 
-> To make things a little easier to read, this patch will add mirror
-> number for all related tree block read errors.
+> Changes from v3:
 > 
-> So the above messages would look like this:
+> 1) Fixed a mistake when using div_u64 that would break the kernel build
 > 
->  BTRFS warning (device dm-3): checksum verify failed on 30408704 mirror 1 wanted 0xcdcdcdcd found 0x3c0adc8e level 0
->  BTRFS warning (device dm-3): checksum verify failed on 30408704 mirror 2 wanted 0xcdcdcdcd found 0x3c0adc8e level 0
->  BTRFS warning (device dm-3): checksum verify failed on 30408704 mirror 1 wanted 0xcdcdcdcd found 0x3c0adc8e level 0
->  BTRFS warning (device dm-3): checksum verify failed on 30408704 mirror 2 wanted 0xcdcdcdcd found 0x3c0adc8e level 0
+> Changes from v2:
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Added to misc-next, thanks.
-
-> ---
->  fs/btrfs/disk-io.c | 25 +++++++++++++------------
->  1 file changed, 13 insertions(+), 12 deletions(-)
+> 1) Only the maximum duration can now be zeroed out through sysfs to
+> prevent loss of data if multiple threads try to reset the commit stats
+> simultaneously
+> 2) Removed the lock that protected the concurrent resetting and updating
+> of the commit stats, since only the maximum commit duration can be
+> cleared out now (any races can be ignored for this stat).
+> 3) Added div_u64 when converting from ns to ms, to also support 32-bit
+> 4) Made the output from sysfs easier to use with "grep"
 > 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 800ad3a9c68e..506d48b5fd7e 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -220,8 +220,8 @@ static int verify_parent_transid(struct extent_io_tree *io_tree,
->  		goto out;
->  	}
->  	btrfs_err_rl(eb->fs_info,
-> -		"parent transid verify failed on %llu wanted %llu found %llu",
-> -			eb->start,
-> +	"parent transid verify failed on %llu mirror %u wanted %llu found %llu",
+> Changes from v1:
+> 
+> 1) Edited out unnecessary comments
+> 2) Made the memory allocation of "btrfs_commit_stats" under "fs_info" in
+> fs/btrfs/ctree.h static instead of dynamic
+> 3) Transferred the conversion from ns to ms at the point where commit
+> stats get printed in sysfs, for better precision
+> 4) Changed the lock that protects the update of the commit stats from
+> "trans_lock" to "super_lock"
+> 5) Changed the printing of the commits stats in sysfs to conform with
+> the sysfs output
+> 
+> Ioannis Angelakopoulos (2):
+>   btrfs: Add the capability of getting commit stats
+>   btrfs: Expose the commit stats through sysfs
 
-I've added "logical" in front of all %llu that refer to logical block address.
-
-
-> +			eb->start, eb->read_mirror,
->  			parent_transid, btrfs_header_generation(eb));
->  	ret = 1;
->  	clear_extent_buffer_uptodate(eb);
-> @@ -551,21 +551,22 @@ static int validate_extent_buffer(struct extent_buffer *eb)
->  
->  	found_start = btrfs_header_bytenr(eb);
->  	if (found_start != eb->start) {
-> -		btrfs_err_rl(fs_info, "bad tree block start, want %llu have %llu",
-> -			     eb->start, found_start);
-> +		btrfs_err_rl(fs_info,
-> +			"bad tree block start, mirror %u want %llu have %llu",
-> +			     eb->read_mirror, eb->start, found_start);
->  		ret = -EIO;
->  		goto out;
->  	}
->  	if (check_tree_block_fsid(eb)) {
-> -		btrfs_err_rl(fs_info, "bad fsid on block %llu",
-> -			     eb->start);
-> +		btrfs_err_rl(fs_info, "bad fsid on block %llu mirror %u",
-
-Though this says 'block' it's not in fact block address (ie. a multiple
-of a block size) but the logical address.
-
-> +			     eb->start, eb->read_mirror);
->  		ret = -EIO;
->  		goto out;
->  	}
->  	found_level = btrfs_header_level(eb);
->  	if (found_level >= BTRFS_MAX_LEVEL) {
-> -		btrfs_err(fs_info, "bad tree block level %d on %llu",
-> -			  (int)btrfs_header_level(eb), eb->start);
-> +		btrfs_err(fs_info, "bad tree block mirror %u level %d on %llu",
-> +			  eb->read_mirror, btrfs_header_level(eb), eb->start);
->  		ret = -EIO;
->  		goto out;
->  	}
-> @@ -576,8 +577,8 @@ static int validate_extent_buffer(struct extent_buffer *eb)
->  
->  	if (memcmp(result, header_csum, csum_size) != 0) {
->  		btrfs_warn_rl(fs_info,
-> -	"checksum verify failed on %llu wanted " CSUM_FMT " found " CSUM_FMT " level %d",
-> -			      eb->start,
-> +	"checksum verify failed on %llu mirror %u wanted " CSUM_FMT " found " CSUM_FMT " level %d",
-> +			      eb->start, eb->read_mirror,
->  			      CSUM_FMT_VALUE(csum_size, header_csum),
->  			      CSUM_FMT_VALUE(csum_size, result),
->  			      btrfs_header_level(eb));
-> @@ -602,8 +603,8 @@ static int validate_extent_buffer(struct extent_buffer *eb)
->  		set_extent_buffer_uptodate(eb);
->  	else
->  		btrfs_err(fs_info,
-> -			  "block=%llu read time tree block corruption detected",
-> -			  eb->start);
-> +		"block=%llu mirror %u read time tree block corruption detected",
-> +			  eb->start, eb->read_mirror);
->  out:
->  	return ret;
->  }
-> -- 
-> 2.36.1
+Added to misc-next, with some minor fixups, thanks.
