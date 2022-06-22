@@ -2,80 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D27554C4C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jun 2022 16:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98397554E4A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jun 2022 17:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357636AbiFVOML (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jun 2022 10:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
+        id S1358889AbiFVPDq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jun 2022 11:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357211AbiFVOMK (ORCPT
+        with ESMTP id S1358890AbiFVPDn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jun 2022 10:12:10 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF9838D84
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jun 2022 07:12:09 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 89D261FD06;
-        Wed, 22 Jun 2022 14:12:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1655907128;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iohvcaDwZtgkqJB5cR75lM0/fVrgNZ0qy74Rx3cpx1c=;
-        b=rQLmedMHLKCTb0Y5K3Vu8R6eMtfYoJQTHB/ExwhsvpmV9pYJmq+Op2u4AmnX5KdmgX9jYC
-        MslnqltxMMr7u/gW3p+hBtLcq+KmLSboS75kQCnzKcB8edlYygGs0Eys+u71WsgInwqiBQ
-        Nt4D68OUGLjzadsTw2QRfezMAiCgJ2o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1655907128;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iohvcaDwZtgkqJB5cR75lM0/fVrgNZ0qy74Rx3cpx1c=;
-        b=RG/BcZKRmt/IVylxt6jpY5DXntaL13fGt1AHAltlS+DgCE38N6GxhAInWaZHLY9Z+uMxrP
-        aZ/oiwNL5TU3yXAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40A3113A5D;
-        Wed, 22 Jun 2022 14:12:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5CfKDjgjs2K+TAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 22 Jun 2022 14:12:08 +0000
-Date:   Wed, 22 Jun 2022 16:07:30 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH 01/10] btrfs: remove a bunch of pointles stripe_len
- arguments
-Message-ID: <20220622140730.GI20633@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
-        David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <20220617100414.1159680-1-hch@lst.de>
- <20220617100414.1159680-2-hch@lst.de>
- <20220620171608.GU20633@twin.jikos.cz>
- <20220620173834.GA23580@lst.de>
- <20220622041915.GA21099@lst.de>
+        Wed, 22 Jun 2022 11:03:43 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718763A187
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jun 2022 08:03:41 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id q18so4202247pld.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jun 2022 08:03:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=vhZEVnaGNBjosB86GDUW8b2wHjB/+QU31bPXl36TqFE=;
+        b=lmXhPRDXrnlbYClAFJkfHZYdowqXsf1nTuDLZnU/Y1W/T6TJ8ApbIv950i47frAtN/
+         OtndHJQoWJG+weygm2GuosJduERMEzUHLtTF4oGKopzqXa+c5O1ob2p5JuwuGNaCZz0D
+         0k2iO6ZG6gpeVsjTt5A+NLMvCH8qDkpG8Ex3xIMBpunG6BNJWrlCGLJYo7boJK6pvBIx
+         W4x550ST0gVpK9sdxwL58OfMVVl7H7xG/39bSvJCxipLUGbdwSBY6WRzvY6hd28wfB/N
+         vDKUfqITg8PxsgA4g6gEDGmS0K0dBg3KSntFmGDvcmLKkvSy/F4e+TYysqkO/txSQBCJ
+         afFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=vhZEVnaGNBjosB86GDUW8b2wHjB/+QU31bPXl36TqFE=;
+        b=szVKQqYM8uMrQmjEC/He60YTKnYYtv2zZCUMN846FulbBQBC0U3dhbM/tGQknSqL60
+         Tpv4W+mHsIPcgVEuFTIaf+fVAvx2ukR0wAB6sruvPYbHBRuWOGqI8vaLCD/OsDJ9rop8
+         nCKRDE7a4RN1P70weeSpcWLNOeFEMw4Dv0rmdC3EZdJyFeMzMvFpq+8iLdfl56TUj0YN
+         0xVO+mttY5VTALplg76Aft7Shy2feS+ThzpfaTPMoY3a27Xx3NJjZplu2woe/c/TA+dO
+         aBCFkhNOPioV1+ymZUPXyKXiA9CYxKGCfmn5CEvigLnVnJFdSaFxX5GTk05eife4P5+l
+         Dl3w==
+X-Gm-Message-State: AJIora+wd+/gwSvbK8spYFkr/KGkAtsIPqER9ExifE36aHpvuBUiYPRY
+        2ROpP/ovaui6UYLJgjdT9StuBsDEI0Xq/rIuZ3A=
+X-Google-Smtp-Source: AGRyM1ulxotWsDV/SS5wzW6q4zt5LXu3F658bS4StYWI/FgPuIBqBz38zqk7aydOTm9FXxU+wDfnf428k+eRTEG/aD8=
+X-Received: by 2002:a17:90b:1988:b0:1ec:f52d:90d4 with SMTP id
+ mv8-20020a17090b198800b001ecf52d90d4mr1796737pjb.70.1655910220864; Wed, 22
+ Jun 2022 08:03:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220622041915.GA21099@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Received: by 2002:a17:903:2308:b0:16a:1b3f:f74b with HTTP; Wed, 22 Jun 2022
+ 08:03:40 -0700 (PDT)
+Reply-To: sales0212@asonmedsystemsinc.com
+From:   Prasad Ronni <lerwickfinance7@gmail.com>
+Date:   Wed, 22 Jun 2022 16:03:40 +0100
+Message-ID: <CAFkto5vTxj70kORZJZdwOGowXjsZ399eo6DJj=8T==7paSuHTw@mail.gmail.com>
+Subject: Service Needed.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,33 +65,11 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 22, 2022 at 06:19:15AM +0200, Christoph Hellwig wrote:
-> On Mon, Jun 20, 2022 at 07:38:34PM +0200, Christoph Hellwig wrote:
-> > > I'd rather keep it there so it gets used eventually, we have ongoing
-> > > work to fix the corner cases of raid56 so removing and adding it back
-> > > causes churn, but I'll give it another thought.
-> > 
-> > Well, right now it is very much dead code and complicates a lot
-> > of the argument passing as well as bloating the code size.
-> > 
-> > IFF the superblock member were to be actually used in the future,
-> > it would make sense to expose it in the btrfs_fs_info and use that
-> > instead of the constant, but still skip all the argument passing.
-> > 
-> > hch@brick:~/work/linux$ size btrfs.o.*
-> >    text	   data	    bss	    dec	    hex	filename
-> > 1502453	 125590	  28776	1656819	 1947f3	btrfs.o.new
-> > 1502599	 125590	  28776	1656965	 194885	btrfs.o.old
-> 
-> So I guess this wasn't convincing enough. My plan B would be the fs_info
-> member.  The related member seems to be the sectorsize field in the super
-> block, which is checked if it is a power of two but otherwise completely
-> ignored.  The fs_info has a stripe_size member that is initialized to the
-> sectorsize after reading the super_block but then also mostly ignored.
-> 
-> So this is a ll a bit of a mess unfortunately :(
+-- 
+Hi,
 
-Hold on, it would be better to remove the code, as Qu also noted it's
-not used consistently everywhere. My initial objection is more of a
-general direction of such changes, but cleaning up the raid56 code to
-the level of current functionality should work.
+Are you currently open to work as our executive company representative
+on contractual basis working remotely? If yes, we will be happy to
+share more details. Looking forward to your response.
+
+Regards,
