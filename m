@@ -2,64 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79577557729
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jun 2022 11:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C47557740
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jun 2022 11:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbiFWJya (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jun 2022 05:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
+        id S230064AbiFWJ5i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jun 2022 05:57:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbiFWJy3 (ORCPT
+        with ESMTP id S229952AbiFWJ5h (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jun 2022 05:54:29 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02AC72AC4F
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Jun 2022 02:54:27 -0700 (PDT)
+        Thu, 23 Jun 2022 05:57:37 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508D52E9E7
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Jun 2022 02:57:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1655978065;
-        bh=CNyeq5q1WYMbTL5+iB7vhl/fd+PRg3fcgQCn1R+K5zk=;
+        s=badeba3b8450; t=1655978251;
+        bh=vLcbxtJKJWbEB/ku1DomHwBJN9pmmCSH8KfKNRNPdfI=;
         h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=I60Im3P/fVWjnSHDnyTxjh7JpE0ReM3zPgGLVSJRlWg//zdC7z00RaMnLLQFEyyJW
-         3rswpUBZ839XMGigDDuwdYasR7rK+uVJ+VkxzVE1wURcMq2/KPQbEP08fLbCfrnpso
-         JyXnhuzqBkcsKxnEa08J0FLyyLije6++BLrnWQZk=
+        b=F/4tMXlt+7zxPNwPYkwLZwrzP6FPBQKdgkLcQhhgULTLKJBVEPRwmPCFVo0i1d8U6
+         XnIu1n+L658zh0OBkNE+JZaPOL0CCHaSMYkHEf+TBgoSTP8Rs7awvWST+AVDFjHzhE
+         HKQue1XCbJOcSm2jGAzZzCK5D301GbInAYv/Fm+g=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MpUZ4-1nJ6EO38Vo-00pvJ6; Thu, 23
- Jun 2022 11:54:25 +0200
-Message-ID: <419ccdc0-fb58-0db2-0ad1-b4fec52bb2ff@gmx.com>
-Date:   Thu, 23 Jun 2022 17:54:22 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MtOGU-1noZSH0Vkk-00uqLJ; Thu, 23
+ Jun 2022 11:57:31 +0200
+Message-ID: <4466c55e-7270-7d63-a591-e119fb5e3f8a@gmx.com>
+Date:   Thu, 23 Jun 2022 17:57:28 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.10.0
-Subject: Re: [PATCH] btrfs: remove overly verbose messages
+Subject: Re: [PATCH] btrfs: Properly flag filesystem with
+ BTRFS_FEATURE_INCOMPAT_BIG_METADATA
 Content-Language: en-US
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20220623075752.1430598-1-nborisov@suse.com>
+References: <20220623075547.1430106-1-nborisov@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220623075752.1430598-1-nborisov@suse.com>
+In-Reply-To: <20220623075547.1430106-1-nborisov@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9uKAI6YhTkihPTwVYOQmOzP1qFCVVvJSilV4CS8hWdVnH2y0Eoo
- ocBjb4O4ocmFdCIHpNe4D2PmVxxCcNTVWo6//uDNz2ttSZF3LuU/XtEwwRDRYF3EkRnl+GB
- MdV3ZdsB85u6DBkhZ/+vCpXRNc/kpBYIXAaRx9Fbv9gb3IrGuRdLGuZRN887VC3ppgUD+1D
- GMu+NkC05Eedzv/qR4hAg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YY5SeH/xkvQ=:ArGjJDT6vKX2HPNqqUMatP
- 4IngQVEf6GvFKf9w+aapVZlE3ZtvZzdFOB89e0Ep9lwp9l9Itum/U4Gm0dVnMAhBoSxnroWAe
- wuw76LgEV08KwdIUuEjMZN4OU4e+rPnrCDJE/7re5enin8OX0j4uiJvLDq9E96+pUMag58nZv
- umvZE8t0hcrvrN7iTSQ6UI3qfXS1fLoopWOgb7Y5Spiqq3DsMAySN+QG4wSBPw+aKLNP/vKSk
- Hxe/pDbiVxzEGo3MK/XIabT1cNqvlQ90TBrPxUTuomqt23cMinU5pA61hg7iinTf3EyKHkSgM
- iY/7gWejyfveht2uhT2d5ZQL41V+6iLAgGWfuz9FoCC0ppa+BSqyQrv7Qez2hq4mjHh5QHi8B
- tzIWXwwvSuS/mG01aXV2AhS7t+p1iB6xtW21xGjN/fJgPlqPrd9ks+B85080qPQfcJFo1m/nV
- rdbhHX7E8LPnaQUs3nKEpB0QgKX2k4n0DV/rvC515N/cDpCZgT4JNxIKZcBEv7rKupXjaK4Ic
- kLB+o+LQheMl41EDdPv0M+VERpDQ3/pRNGcPQsk3ZJ6RJRXw4PbOqTXsqfrMGbEia5arf2hNz
- vci/0AoPi7SV5pMoPrdKu3fJhl3p7sWqEZ1qqw1lNM4UIg7egpEkrL7wJXlHlowU9b9czvLWu
- nqdVXwSwISSUoVBH4Y4xEfAnGdprB+k5KxjXTL3JF7xzY3ZP+M0nzqc3ja5wph2z/PcuM9D4p
- ccyM9l2qODbzzrJeCms62JuTGR8tckqsGtvz+P97upB0lLtAaHmfSg11UlrrHqQqjXJkqL4hV
- i2tAtBFbzAZtm0iiZK2KmOWpGS7lX+/T1wVgjUMH0C/drLNt5iv3UX7bl7hc6n9QI8/z2wcMU
- iSvhKaXgvgByQ+XB3mxTRkia7OrLDGPe1RPGj49VzCyVI8TtUuHPBAOWWznsHc3KNYXFWO2JM
- 5hoZW1j2AfvxOftju1S0qOGH7Ys6KAK5nyJT2uhepBoq7h64jpjkFQh2udWF/BW5wKcUJ82T5
- knGVBhLB1rgMQX3pPnHjoy84JW651moUhI7VwFzBoOQrsG40vWX78k64dCjXZZgbR63hEzPkj
- 58p4IM3iRaF1PiJ6NOVBnvxQxjqu+pwmcNn3hys4KLX4Y0s1I3Me5b4jQ==
+X-Provags-ID: V03:K1:0uVpMG6xQdeXAOgXps1FRdOZQceVEfNJG2jV6+GdvbJHwb4CMhw
+ deTgTFRmjsPHkrFuUu7qblYmrEJ6myhfuR+GNyiWXzo/FG2TksuQ92+l0rTWNbZ0/tBVf7P
+ x6HSmvcrnemD9z8PyyIOJkDpK8ZY2EfaKuaV0J8sg+MztU79ohVH3o5vyCJEcxmtqAuJX/g
+ bl4wrFDlElwctMoT9xJ+A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XFjcE6lUmoM=:WYN/Tvw/mUB6DszKQxRgrO
+ YOFFeg9Kjyg1z75csVuXC2VDR4VjqarGYKuh4P+ZtKGGbJd9orxv69GWYVWyu631rqO9X1xzp
+ 9TpvKXUeEo6ZbxXyZDDDV6scHP8OpHtX44dz20oj/a8aRdsjCaj7f1JrcPWy9WKatu3w/rBOP
+ 97LbkrM6cKcYR8wajMQLQHIh8JKd4yRW9tq5V87g4Uuy/7AUj38aQypQG7bRrFPiD9ZoT7CsF
+ k1ecbj5te/8aKMd5KbfCzwvOwgG+NJLPg3Kv/GheroBv7W8XcBKii6EwzVdO/CKuuhYUPOATb
+ DC7GR5AybxDYlJuz6qursCnMM17Ta+1vGu4rZBI3Zy1zTt96xt1HJgXr9SLKpBpQfbEGcM8cj
+ yTRlKogRdDh12hSBaOK/I523PQejxV48vt7ityVS9pGR4RowBJ+i452gMcjdFTTLxaV3gaVL1
+ F1UiszvNH4YQ3uECp471RS6ALs+DAaT3EjN5hzcfS0eWUVQIPityJhCOSO2IDNsZFbdvOE+LW
+ BybE1T1N4ckbNn5F5oAXz52BU95neKXA3jffB0UNnc6ZVIK2Zdm2YuuN6mRfMkN8Olw2FNnkM
+ LEgq/KLmpDOKFf+QUz06aCrceXXhwIXbSvr4HDfp9k5m6PPtRAZiTbCR9T7i4KjZ/cwO2k5YH
+ rRrZd2qbo7S93dTXhgl+2h9omtDULvbgbSB+fZVrsJCXRfMQKjDbk7EsLR5T+BBaQtorI56AY
+ 32D2MqR2GEMvapfp3bfouO0WrtKcz07rP6JEz56JDAWWSW0pO2m51gJ5UgMNib8tTwvOkb4V9
+ Rgtuo3E0gm5LrvigqE7X6WohqB9GxYhkErimZOetCw/rpBzfO1h4Hmf1yZEt44cg6C80z0cHv
+ Xv5G0k/3cQxvsKmw1zCgX7Y5JntJZqxaDNhxH4IiPWRtWrDKEcPtBsTYv6uTTtNBIzApc45Ee
+ OfxT6qIWKMIxVfjV4nqc3PKR47P/wKiyETA9q8TomngzubFMC/8seX/tRGH2eKBv7oMiJh2s8
+ Le1j7x76/xH12S6hubR64TPdsYsaRrXYpBC1QqxE8St19pX61hf2AplGNW3ewO14puMy1lKLI
+ D/A15Kr2FCnhTMY470GuTq1bUTVhUCTYmD8rVQjBGSB32T38aLPQqClSQ==
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,37 +73,74 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/6/23 15:57, Nikolay Borisov wrote:
-> The message "flagging fs with big metadata" doesn't really convey any
-> useful information to users. Simply remove it.
->
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+On 2022/6/23 15:55, Nikolay Borisov wrote:
+> Commit 6f93e834fa7c seeimingly inadvertently moved the code responsible
+> for flagging the filesystem as having BIG_METADATA to a place where
+> setting the flag was essentially lost.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Sorry, I didn't see the problem here.
 
-THanks,
+The existing check seems fine to me, mind to share why the existing call
+timing is bad?
+
+Thanks,
 Qu
+
+> This means that
+> filesystems created with kernels containing this bug (starting with 5.15=
+)
+> can potentially be mounted by older (pre-3.10) kernels. In reality
+> chances for this happening are low because there are other incompat
+> flags introduced in the mean time. Still the correct behavior is to set
+> INCOMPAT_BIG_METADAT flag and persist this in the superblock.
+>
+> Fixes: 6f93e834fa7c ("btrfs: fix upper limit for max_inline for page siz=
+e 64K")
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 > ---
->   fs/btrfs/disk-io.c | 6 +-----
->   1 file changed, 1 insertion(+), 5 deletions(-)
+>   fs/btrfs/disk-io.c | 21 +++++++++++----------
+>   1 file changed, 11 insertions(+), 10 deletions(-)
 >
 > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index c3d92aadc820..8c34d08e3c64 100644
+> index 800ad3a9c68e..c3d92aadc820 100644
 > --- a/fs/btrfs/disk-io.c
 > +++ b/fs/btrfs/disk-io.c
-> @@ -3508,12 +3508,8 @@ int __cold open_ctree(struct super_block *sb, str=
+> @@ -3464,16 +3464,6 @@ int __cold open_ctree(struct super_block *sb, str=
 uct btrfs_fs_devices *fs_device
->   	 * Flag our filesystem as having big metadata blocks if they are bigg=
-er
->   	 * than the page size.
 >   	 */
+>   	fs_info->compress_type =3D BTRFS_COMPRESS_ZLIB;
+>
+> -	/*
+> -	 * Flag our filesystem as having big metadata blocks if they are bigge=
+r
+> -	 * than the page size.
+> -	 */
 > -	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE) {
 > -		if (!(features & BTRFS_FEATURE_INCOMPAT_BIG_METADATA))
 > -			btrfs_info(fs_info,
 > -				"flagging fs with big metadata feature");
-> +	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE)
->   		features |=3D BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
+> -		features |=3D BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
 > -	}
 >
+>   	/* Set up fs_info before parsing mount options */
+>   	nodesize =3D btrfs_super_nodesize(disk_super);
+> @@ -3514,6 +3504,17 @@ int __cold open_ctree(struct super_block *sb, str=
+uct btrfs_fs_devices *fs_device
+>   	if (features & BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA)
+>   		btrfs_info(fs_info, "has skinny extents");
+>
+> +	/*
+> +	 * Flag our filesystem as having big metadata blocks if they are bigge=
+r
+> +	 * than the page size.
+> +	 */
+> +	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE) {
+> +		if (!(features & BTRFS_FEATURE_INCOMPAT_BIG_METADATA))
+> +			btrfs_info(fs_info,
+> +				"flagging fs with big metadata feature");
+> +		features |=3D BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
+> +	}
+> +
 >   	/*
 >   	 * mixed block groups end up with duplicate but slightly offset
+>   	 * extent buffers for the same range.  It leads to corruptions
