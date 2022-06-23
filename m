@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1312B5572B9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jun 2022 07:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E04F5572B7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jun 2022 07:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbiFWFxz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S229629AbiFWFxz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Thu, 23 Jun 2022 01:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbiFWFxw (ORCPT
+        with ESMTP id S229613AbiFWFxy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jun 2022 01:53:52 -0400
+        Thu, 23 Jun 2022 01:53:54 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E6143ED3
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jun 2022 22:53:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB0F41311
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jun 2022 22:53:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=qkvI2y09+WPT4ibf/Bw31I+yRHI4Fi2z67qHlJykPG4=; b=edEddi0Zbm2Gef3w6NdTeTpwfu
-        Zcnn/TXhEf1TyraDrNA9usWKsu2FlLmzhK+l100E8ON5GdqmFrO3+KG7wrckIUzuKSTn2PnNIHrTA
-        4ca7z/henlbISqunoaA7Wk2iazI2XF4TwChYiPZYIQbseF+h4XuaYftebyANouWwkXLFgz53CpgpL
-        cjZIITVu+NuPMaNgOJuQ9Hsdu+curnTEN70Q0ULQ+Y0YY/mFVgCQaWxyKXtdYp4E5/imo/rynOkv2
-        oyE3+EKjs04waXOV9yHcMoimEivTYq+zAXqyuR/TfG04/YdeSZwpp9YcYA3AyEURLBw937wKUC098
-        xr2eF3kQ==;
+        bh=pmQNLlPvaDoOfmOGblzksQld7w56dSqFspOa6+UNMzY=; b=QGv/fJGUkqWH5xry+3bJ5g3P8y
+        7APdYFLaABgLA5yNWrmvyhinwupPq7/+ufrhc4VBm2MG1J1TI44eSakdBoYN2UwD4mIR9HbSkuHnD
+        uXMKnr30NeukjQpFkkE3+KbKuM54VgroAVvBRa09CemVldZXfVM2tJVlGLyeCHAX6BNtVcAEGt0VO
+        GowMxSIaHAHLv9KpRdpwHb4cAh07oKnVROLnojFKZrF57WHXfDzYIqEDHcBBBlqJB7oGRXBz+K6nL
+        kytxJx+RV+sD0vcyl2yuEJWcEQ7iByC2XbhX/XXuOoB789Zi4a/GvY/gh26hvtimaYI5EwNYbqmna
+        1rlVgvzg==;
 Received: from [2001:4bb8:189:7251:96bf:4177:9572:1a29] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o4Fml-00DY8I-Vi; Thu, 23 Jun 2022 05:53:48 +0000
+        id 1o4Fmo-00DY9E-IX; Thu, 23 Jun 2022 05:53:51 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/4] btrfs: remove the start argument to check_data_csum
-Date:   Thu, 23 Jun 2022 07:53:37 +0200
-Message-Id: <20220623055338.3833616-4-hch@lst.de>
+Subject: [PATCH 4/4] btrfs: fix repair of compressed extents
+Date:   Thu, 23 Jun 2022 07:53:38 +0200
+Message-Id: <20220623055338.3833616-5-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220623055338.3833616-1-hch@lst.de>
 References: <20220623055338.3833616-1-hch@lst.de>
@@ -51,107 +51,455 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just derive it from the btrfs_bio now that ->file_offset is always valid.
-Also make the function available outside of inode.c as we'll need that
-soon.
+Currently the checksum of compressed extents is verified based on the
+compressed data and the lower btrfs_bio, but the actual repair process
+is driven by end_bio_extent_readpage on the upper btrfs_bio for the
+decompressed data.
+
+This has a bunch of issues, including not being able to properly
+communicate the failed mirror up in case that the I/O submission got
+preempted, a general loss of if an error was an I/O error or a checksum
+verification failure, but most importantly that this design causes
+btrfs_clean_io_failure to eventually write back the uncompressed good
+data onto the disk sectors that are supposed to contain compressed data.
+
+Fix this by moving the repair to the lower btrfs_bio.  To do so, a fair
+amount of code has to be reshuffled:
+
+ a) the lower btrfs_bio now needs a valid csum pointer.  The easiest way
+    to archive that is to pass NULL btrfs_lookup_bio_sums and just use
+    the btrfs_bio management of csums.  For a compressed_bio that is
+    split into multiple btrfs_bios this mean additional memory
+    allocations, but the code becomes a lot more regular.
+ b) checksum verifiaction now runs diretly on the lower btrfs_bio instead
+    of the compressed_bio.  This actually nicely simplifies the end I/O
+    processing.
+ c) btrfs_repair_one_sector can't just look up the logical address for
+    the file offset any more, as there is no coresponding relative
+    offsets that apply to the file offset and the logic address for
+    compressed extents.  Instead require that the saved bvec_iter in the
+    btrfs_bio is filled out for all read bios and use that, which again
+    removes a fair amount of code.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/ctree.h |  2 ++
- fs/btrfs/inode.c | 22 +++++++++-------------
- 2 files changed, 11 insertions(+), 13 deletions(-)
+ fs/btrfs/compression.c | 171 ++++++++++++++---------------------------
+ fs/btrfs/compression.h |   7 --
+ fs/btrfs/ctree.h       |   2 +
+ fs/btrfs/extent_io.c   |  46 +++--------
+ fs/btrfs/extent_io.h   |   1 -
+ fs/btrfs/inode.c       |   7 ++
+ 6 files changed, 77 insertions(+), 157 deletions(-)
 
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index e756da640fd7b..c8b14a5bd89be 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -136,66 +136,14 @@ static int compression_decompress(int type, struct list_head *ws,
+ 
+ static int btrfs_decompress_bio(struct compressed_bio *cb);
+ 
+-static inline int compressed_bio_size(struct btrfs_fs_info *fs_info,
+-				      unsigned long disk_size)
+-{
+-	return sizeof(struct compressed_bio) +
+-		(DIV_ROUND_UP(disk_size, fs_info->sectorsize)) * fs_info->csum_size;
+-}
+-
+-static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
+-				 u64 disk_start)
+-{
+-	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	const u32 csum_size = fs_info->csum_size;
+-	const u32 sectorsize = fs_info->sectorsize;
+-	struct page *page;
+-	unsigned int i;
+-	u8 csum[BTRFS_CSUM_SIZE];
+-	struct compressed_bio *cb = bio->bi_private;
+-	u8 *cb_sum = cb->sums;
+-
+-	if ((inode->flags & BTRFS_INODE_NODATASUM) ||
+-	    test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state))
+-		return 0;
+-
+-	for (i = 0; i < cb->nr_pages; i++) {
+-		u32 pg_offset;
+-		u32 bytes_left = PAGE_SIZE;
+-		page = cb->compressed_pages[i];
+-
+-		/* Determine the remaining bytes inside the page first */
+-		if (i == cb->nr_pages - 1)
+-			bytes_left = cb->compressed_len - i * PAGE_SIZE;
+-
+-		/* Hash through the page sector by sector */
+-		for (pg_offset = 0; pg_offset < bytes_left;
+-		     pg_offset += sectorsize) {
+-			int ret;
+-
+-			ret = btrfs_check_sector_csum(fs_info, page, pg_offset,
+-						      csum, cb_sum);
+-			if (ret) {
+-				btrfs_print_data_csum_error(inode, disk_start,
+-						csum, cb_sum, cb->mirror_num);
+-				if (btrfs_bio(bio)->device)
+-					btrfs_dev_stat_inc_and_print(
+-						btrfs_bio(bio)->device,
+-						BTRFS_DEV_STAT_CORRUPTION_ERRS);
+-				return -EIO;
+-			}
+-			cb_sum += csum_size;
+-			disk_start += sectorsize;
+-		}
+-	}
+-	return 0;
+-}
+-
+ static void finish_compressed_bio_read(struct compressed_bio *cb)
+ {
+ 	unsigned int index;
+ 	struct page *page;
+ 
++	if (cb->status == BLK_STS_OK)
++		cb->status = errno_to_blk_status(btrfs_decompress_bio(cb));
++
+ 	/* Release the compressed pages */
+ 	for (index = 0; index < cb->nr_pages; index++) {
+ 		page = cb->compressed_pages[index];
+@@ -233,59 +181,54 @@ static void finish_compressed_bio_read(struct compressed_bio *cb)
+ 	kfree(cb);
+ }
+ 
+-/* when we finish reading compressed pages from the disk, we
+- * decompress them and then run the bio end_io routines on the
+- * decompressed pages (in the inode address space).
+- *
+- * This allows the checksumming and other IO error handling routines
+- * to work normally
+- *
+- * The compressed pages are freed here, and it must be run
+- * in process context
++/*
++ * Verify the checksums and kick off repair if needed on the uncompressed data
++ * before decompressing it into the original bio and freeing the uncompressed
++ * pages.
+  */
+ static void end_compressed_bio_read(struct bio *bio)
+ {
+ 	struct compressed_bio *cb = bio->bi_private;
+-	struct inode *inode;
+-	unsigned int mirror = btrfs_bio(bio)->mirror_num;
+-	int ret = 0;
+-
+-	if (bio->bi_status)
+-		cb->status = bio->bi_status;
+-
+-	if (!refcount_dec_and_test(&cb->pending_ios))
+-		goto out;
+-
+-	/*
+-	 * Record the correct mirror_num in cb->orig_bio so that
+-	 * read-repair can work properly.
+-	 */
+-	btrfs_bio(cb->orig_bio)->mirror_num = mirror;
+-	cb->mirror_num = mirror;
+-
+-	/*
+-	 * Some IO in this cb have failed, just skip checksum as there
+-	 * is no way it could be correct.
+-	 */
+-	if (cb->status != BLK_STS_OK)
+-		goto csum_failed;
++	struct inode *inode = cb->inode;
++	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	struct btrfs_inode *bi = BTRFS_I(inode);
++	bool csum = !(bi->flags & BTRFS_INODE_NODATASUM) &&
++		    !test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state);
++	blk_status_t status = bio->bi_status;
++	struct btrfs_bio *bbio = btrfs_bio(bio);
++	struct bvec_iter iter;
++	struct bio_vec bv;
++	u32 offset;
++
++	btrfs_bio_for_each_sector(fs_info, bv, bbio, iter, offset) {
++		u64 start = bbio->file_offset + offset;
++
++		if (!status &&
++		    (!csum || !check_data_csum(inode, bbio, offset, bv.bv_page,
++					       bv.bv_offset))) {
++			clean_io_failure(fs_info, &bi->io_failure_tree,
++					 &bi->io_tree, start, bv.bv_page,
++					 btrfs_ino(bi), bv.bv_offset);
++		} else {
++			int ret;
+ 
+-	inode = cb->inode;
+-	ret = check_compressed_csum(BTRFS_I(inode), bio,
+-				    bio->bi_iter.bi_sector << 9);
+-	if (ret)
+-		goto csum_failed;
++			refcount_inc(&cb->pending_ios);
++			ret = btrfs_repair_one_sector(inode, bbio, offset,
++					bv.bv_page, bv.bv_offset,
++					btrfs_submit_data_read_bio);
++			if (ret) {
++				refcount_dec(&cb->pending_ios);
++				status = errno_to_blk_status(ret);
++			}
++		}
++	}
+ 
+-	/* ok, we're the last bio for this extent, lets start
+-	 * the decompression.
+-	 */
+-	ret = btrfs_decompress_bio(cb);
++	if (status)
++		cb->status = status;
+ 
+-csum_failed:
+-	if (ret)
+-		cb->status = errno_to_blk_status(ret);
+-	finish_compressed_bio_read(cb);
+-out:
++	if (refcount_dec_and_test(&cb->pending_ios))
++		finish_compressed_bio_read(cb);
++	btrfs_bio_free_csum(bbio);
+ 	bio_put(bio);
+ }
+ 
+@@ -478,7 +421,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 
+ 	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+ 	       IS_ALIGNED(len, fs_info->sectorsize));
+-	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
++	cb = kmalloc(sizeof(struct compressed_bio), GFP_NOFS);
+ 	if (!cb)
+ 		return BLK_STS_RESOURCE;
+ 	refcount_set(&cb->pending_ios, 1);
+@@ -486,7 +429,6 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 	cb->inode = &inode->vfs_inode;
+ 	cb->start = start;
+ 	cb->len = len;
+-	cb->mirror_num = 0;
+ 	cb->compressed_pages = compressed_pages;
+ 	cb->compressed_len = compressed_len;
+ 	cb->writeback = writeback;
+@@ -755,7 +697,6 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	blk_status_t ret;
+ 	int ret2;
+ 	int i;
+-	u8 *sums;
+ 
+ 	em_tree = &BTRFS_I(inode)->extent_tree;
+ 
+@@ -773,7 +714,7 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 
+ 	ASSERT(em->compress_type != BTRFS_COMPRESS_NONE);
+ 	compressed_len = em->block_len;
+-	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
++	cb = kmalloc(sizeof(struct compressed_bio), GFP_NOFS);
+ 	if (!cb) {
+ 		ret = BLK_STS_RESOURCE;
+ 		goto out;
+@@ -782,8 +723,6 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	refcount_set(&cb->pending_ios, 1);
+ 	cb->status = BLK_STS_OK;
+ 	cb->inode = inode;
+-	cb->mirror_num = mirror_num;
+-	sums = cb->sums;
+ 
+ 	cb->start = em->orig_start;
+ 	em_len = em->len;
+@@ -867,19 +806,25 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 			submit = true;
+ 
+ 		if (submit) {
+-			unsigned int nr_sectors;
++			/* Save the original iter for read repair */
++			if (bio_op(comp_bio) == REQ_OP_READ)
++				btrfs_bio(comp_bio)->iter = comp_bio->bi_iter;
++
++			/*
++			 * Just stash the initial offset of this chunk, as there
++			 * is no direct correlation between compressed pages and
++			 * the original file offset.  The field is only used for
++			 * priting error messages anyway.
++			 */
++			btrfs_bio(comp_bio)->file_offset = file_offset;
+ 
+-			ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
++			ret = btrfs_lookup_bio_sums(inode, comp_bio, NULL);
+ 			if (ret) {
+ 				comp_bio->bi_status = ret;
+ 				bio_endio(comp_bio);
+ 				break;
+ 			}
+ 
+-			nr_sectors = DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
+-						  fs_info->sectorsize);
+-			sums += fs_info->csum_size * nr_sectors;
+-
+ 			ASSERT(comp_bio->bi_iter.bi_size);
+ 			btrfs_submit_bio(fs_info, comp_bio, mirror_num);
+ 			comp_bio = NULL;
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index 0e4cbf04fd866..e9ef24034cad0 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -59,19 +59,12 @@ struct compressed_bio {
+ 
+ 	/* IO errors */
+ 	blk_status_t status;
+-	int mirror_num;
+ 
+ 	union {
+ 		/* For reads, this is the bio we are copying the data into */
+ 		struct bio *orig_bio;
+ 		struct work_struct write_end_work;
+ 	};
+-
+-	/*
+-	 * the start of a variable length array of checksums only
+-	 * used by reads
+-	 */
+-	u8 sums[];
+ };
+ 
+ static inline unsigned int btrfs_compress_type(unsigned int type_level)
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4e2569f84aabc..164f54e6aa447 100644
+index 164f54e6aa447..12f59e35755fa 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -3293,6 +3293,8 @@ int btrfs_check_sector_csum(struct btrfs_fs_info *fs_info, struct page *page,
+@@ -3290,6 +3290,8 @@ void btrfs_submit_data_read_bio(struct inode *inode, struct bio *bio,
+ 			int mirror_num, enum btrfs_compression_type compress_type);
+ int btrfs_check_sector_csum(struct btrfs_fs_info *fs_info, struct page *page,
+ 			    u32 pgoff, u8 *csum, const u8 * const csum_expected);
++int check_data_csum(struct inode *inode, struct btrfs_bio *bbio, u32 bio_offset,
++		    struct page *page, u32 pgoff);
  unsigned int btrfs_verify_data_csum(struct btrfs_bio *bbio,
  				    u32 bio_offset, struct page *page,
  				    u64 start, u64 end);
-+int check_data_csum(struct inode *inode, struct btrfs_bio *bbio, u32 bio_offset,
-+		    struct page *page, u32 pgoff);
- struct extent_map *btrfs_get_extent_fiemap(struct btrfs_inode *inode,
- 					   u64 start, u64 len);
- noinline int can_nocow_extent(struct inode *inode, u64 offset, u64 *len,
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index ec7bdb3fa0921..587d2ba20b53b 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2543,13 +2543,10 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	u64 start = bbio->file_offset + bio_offset;
+ 	struct io_failure_record *failrec;
+-	struct extent_map *em;
+ 	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
+ 	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+-	struct extent_map_tree *em_tree = &BTRFS_I(inode)->extent_tree;
+ 	const u32 sectorsize = fs_info->sectorsize;
+ 	int ret;
+-	u64 logical;
+ 
+ 	failrec = get_state_failrec(failure_tree, start);
+ 	if (!IS_ERR(failrec)) {
+@@ -2573,41 +2570,14 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
+ 	failrec->start = start;
+ 	failrec->len = sectorsize;
+ 	failrec->failed_mirror = failrec->this_mirror = bbio->mirror_num;
+-	failrec->compress_type = BTRFS_COMPRESS_NONE;
+-
+-	read_lock(&em_tree->lock);
+-	em = lookup_extent_mapping(em_tree, start, failrec->len);
+-	if (!em) {
+-		read_unlock(&em_tree->lock);
+-		kfree(failrec);
+-		return ERR_PTR(-EIO);
+-	}
+-
+-	if (em->start > start || em->start + em->len <= start) {
+-		free_extent_map(em);
+-		em = NULL;
+-	}
+-	read_unlock(&em_tree->lock);
+-	if (!em) {
+-		kfree(failrec);
+-		return ERR_PTR(-EIO);
+-	}
+-
+-	logical = start - em->start;
+-	logical = em->block_start + logical;
+-	if (test_bit(EXTENT_FLAG_COMPRESSED, &em->flags)) {
+-		logical = em->block_start;
+-		failrec->compress_type = em->compress_type;
+-	}
++	failrec->logical = (bbio->iter.bi_sector << SECTOR_SHIFT) + bio_offset;
+ 
+ 	btrfs_debug(fs_info,
+-		    "Get IO Failure Record: (new) logical=%llu, start=%llu, len=%llu",
+-		    logical, start, failrec->len);
+-
+-	failrec->logical = logical;
+-	free_extent_map(em);
++		    "Get IO Failure Record: (new) logical=%llu, start=%llu",
++		    failrec->logical, start);
+ 
+-	failrec->num_copies = btrfs_num_copies(fs_info, logical, sectorsize);
++	failrec->num_copies = btrfs_num_copies(fs_info, failrec->logical,
++					       sectorsize);
+ 	if (failrec->num_copies == 1) {
+ 		/*
+ 		 * we only have a single copy of the data, so don't bother with
+@@ -2709,7 +2679,7 @@ int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *failed_bbio,
+ 	 * will be handled by the endio on the repair_bio, so we can't return an
+ 	 * error here.
+ 	 */
+-	submit_bio_hook(inode, repair_bio, failrec->this_mirror, failrec->compress_type);
++	submit_bio_hook(inode, repair_bio, failrec->this_mirror, 0);
+ 	return BLK_STS_OK;
+ }
+ 
+@@ -3115,6 +3085,10 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 			 * Only try to repair bios that actually made it to a
+ 			 * device.  If the bio failed to be submitted mirror
+ 			 * is 0 and we need to fail it without retrying.
++			 *
++			 * This also includes the high level bios for compressed
++			 * extents - these never make it to a device and repair
++			 * is already handled on the lower compressed bio.
+ 			 */
+ 			if (mirror > 0)
+ 				repair = true;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index a78051c7627c4..9dec34c009e91 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -261,7 +261,6 @@ struct io_failure_record {
+ 	u64 start;
+ 	u64 len;
+ 	u64 logical;
+-	enum btrfs_compression_type compress_type;
+ 	int this_mirror;
+ 	int failed_mirror;
+ 	int num_copies;
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index a627b2af9e243..429428fde4a88 100644
+index 429428fde4a88..eea351216db33 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -3396,20 +3396,18 @@ int btrfs_check_sector_csum(struct btrfs_fs_info *fs_info, struct page *page,
- /*
-  * check_data_csum - verify checksum of one sector of uncompressed data
-  * @inode:	inode
-- * @io_bio:	btrfs_io_bio which contains the csum
-+ * @bbio:	btrfs_io_bio which contains the csum
-  * @bio_offset:	offset to the beginning of the bio (in bytes)
-  * @page:	page where is the data to be verified
-  * @pgoff:	offset inside the page
-- * @start:	logical offset in the file
-  *
-  * The length of such check is always one sector size.
-  *
-  * When csum mismatch is detected, we will also report the error and fill the
-  * corrupted range with zero. (Thus it needs the extra parameters)
-  */
--static int check_data_csum(struct inode *inode, struct btrfs_bio *bbio,
--			   u32 bio_offset, struct page *page, u32 pgoff,
--			   u64 start)
-+int check_data_csum(struct inode *inode, struct btrfs_bio *bbio, u32 bio_offset,
-+		    struct page *page, u32 pgoff)
- {
+@@ -2707,6 +2707,9 @@ void btrfs_submit_data_read_bio(struct inode *inode, struct bio *bio,
+ 		return;
+ 	}
+ 
++	/* Save the original iter for read repair */
++	btrfs_bio(bio)->iter = bio->bi_iter;
++
+ 	/*
+ 	 * Lookup bio sums does extra checks around whether we need to csum or
+ 	 * not, which is why we ignore skip_sum here.
+@@ -8000,6 +8003,10 @@ static void btrfs_submit_dio_bio(struct bio *bio, struct inode *inode,
  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	u32 len = fs_info->sectorsize;
-@@ -3425,8 +3423,9 @@ static int check_data_csum(struct inode *inode, struct btrfs_bio *bbio,
- 	return 0;
+ 	struct btrfs_dio_private *dip = bio->bi_private;
+ 	blk_status_t ret;
++		
++	/* Save the original iter for read repair */
++	if (btrfs_op(bio) == BTRFS_MAP_READ)
++		btrfs_bio(bio)->iter = bio->bi_iter;
  
- zeroit:
--	btrfs_print_data_csum_error(BTRFS_I(inode), start, csum, csum_expected,
--				    bbio->mirror_num);
-+	btrfs_print_data_csum_error(BTRFS_I(inode),
-+				    bbio->file_offset + bio_offset,
-+				    csum, csum_expected, bbio->mirror_num);
- 	if (bbio->device)
- 		btrfs_dev_stat_inc_and_print(bbio->device,
- 					     BTRFS_DEV_STAT_CORRUPTION_ERRS);
-@@ -3495,8 +3494,7 @@ unsigned int btrfs_verify_data_csum(struct btrfs_bio *bbio,
- 					  EXTENT_NODATASUM);
- 			continue;
- 		}
--		ret = check_data_csum(inode, bbio, bio_offset, page, pg_off,
--				      page_offset(page) + pg_off);
-+		ret = check_data_csum(inode, bbio, bio_offset, page, pg_off);
- 		if (ret < 0) {
- 			const int nr_bit = (pg_off - offset_in_page(start)) >>
- 				     root->fs_info->sectorsize_bits;
-@@ -7946,7 +7944,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct btrfs_dio_private *dip,
- 
- 		if (uptodate &&
- 		    (!csum || !check_data_csum(inode, bbio, offset, bv.bv_page,
--					       bv.bv_offset, start))) {
-+					       bv.bv_offset))) {
- 			clean_io_failure(fs_info, failure_tree, io_tree, start,
- 					 bv.bv_page, btrfs_ino(BTRFS_I(inode)),
- 					 bv.bv_offset);
-@@ -10324,7 +10322,6 @@ static blk_status_t btrfs_encoded_read_verify_csum(struct btrfs_bio *bbio)
- 	u32 sectorsize = fs_info->sectorsize;
- 	struct bio_vec *bvec;
- 	struct bvec_iter_all iter_all;
--	u64 start = priv->file_offset;
- 	u32 bio_offset = 0;
- 
- 	if (priv->skip_csum || !uptodate)
-@@ -10338,9 +10335,8 @@ static blk_status_t btrfs_encoded_read_verify_csum(struct btrfs_bio *bbio)
- 		for (i = 0; i < nr_sectors; i++) {
- 			ASSERT(pgoff < PAGE_SIZE);
- 			if (check_data_csum(&inode->vfs_inode, bbio, bio_offset,
--					    bvec->bv_page, pgoff, start))
-+					    bvec->bv_page, pgoff))
- 				return BLK_STS_IOERR;
--			start += sectorsize;
- 			bio_offset += sectorsize;
- 			pgoff += sectorsize;
- 		}
+ 	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+ 		goto map;
 -- 
 2.30.2
 
