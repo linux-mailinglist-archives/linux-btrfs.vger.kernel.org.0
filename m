@@ -2,76 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3B9559A5C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 15:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66C3559A82
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 15:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbiFXNbv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jun 2022 09:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
+        id S231451AbiFXNkp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jun 2022 09:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbiFXNbu (ORCPT
+        with ESMTP id S229830AbiFXNkn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jun 2022 09:31:50 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B0838BFA;
-        Fri, 24 Jun 2022 06:31:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 843F71F8EF;
-        Fri, 24 Jun 2022 13:31:40 +0000 (UTC)
+        Fri, 24 Jun 2022 09:40:43 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF28B1838B;
+        Fri, 24 Jun 2022 06:40:42 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A950421AE2;
+        Fri, 24 Jun 2022 13:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1656077500;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        t=1656078041; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RgjcjsWwgFCT51qzN2+gjNYaVNpGbaTRZxVXLNJmXbg=;
-        b=VvgWBKdl1CvOhvyADG1uOBOtFL4EJM2iTP2RJqENtsxjEYxFI99ueud6cmoj+xODh0wwcW
-        kMqP/2+9iWPT6AEnQqfytCLGO+D2y6T+8o8FSO3uf4PV21cMv2Cyo8bgWLj0jJBKaV558o
-        OODUa0Kvif5Pec8YeSKL8+/Flq4R9Tc=
+        bh=bH4Qp84qU40BW546ncic9x46b9aTx4CSnbbyGrNukyk=;
+        b=eDm4lKs7SxQRvefZthzTrIxWtkdHScH8MRDHpqAuMIRXDFlK9fy6DPXcBOyhgKnNfwzS7U
+        w/SKvCzGXEQ0gC/kWkvbAM5vtri43iJ6jkUYzvYf5o+8514AeTNiKFt7YffIS0Cb0LWdrg
+        n4MIZPeRYe0Mh2WoKQ1QQG2LkHo6HoU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1656077500;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1656078041;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RgjcjsWwgFCT51qzN2+gjNYaVNpGbaTRZxVXLNJmXbg=;
-        b=rbv9OWQH8nhn7uiUClbt61DsOVh1zVoZ2ZxvEt5asVQO0+SUARI8H8X4igIt64k89EDwJw
-        uzXtiGYjZlESk3DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=bH4Qp84qU40BW546ncic9x46b9aTx4CSnbbyGrNukyk=;
+        b=h5AvA16tTbXhZFNX+xU5L6UB3iSoNhDjTYBfvkSZrISgGuFR1Rj/uxMW5WP+CzHovRckon
+        /gsZzeRrHIE/Y1DQ==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F69B13480;
-        Fri, 24 Jun 2022 13:31:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WYCFDry8tWJVBQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 24 Jun 2022 13:31:40 +0000
-Date:   Fri, 24 Jun 2022 15:27:01 +0200
-From:   David Sterba <dsterba@suse.cz>
+        by relay2.suse.de (Postfix) with ESMTPS id 968362C220;
+        Fri, 24 Jun 2022 13:40:41 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 4FB7AA062D; Fri, 24 Jun 2022 15:40:41 +0200 (CEST)
+Date:   Fri, 24 Jun 2022 15:40:41 +0200
+From:   Jan Kara <jack@suse.cz>
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Christoph Hellwig <hch@lst.de>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
-Message-ID: <20220624132701.GT20633@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Christoph Hellwig <hch@lst.de>, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
+Message-ID: <20220624134041.ktqj3af7lysaszrc@quack3.lan>
 References: <20220624122334.80603-1-hch@lst.de>
- <20220624124913.GS20633@twin.jikos.cz>
- <b058e226-8a77-42bc-8c92-5bd23244e7da@gmx.com>
+ <7c30b6a4-e628-baea-be83-6557750f995a@gmx.com>
+ <20220624125118.GA789@lst.de>
+ <20220624130750.cu26nnm6hjrru4zd@quack3.lan>
+ <1b37cfc6-7369-69c1-bd90-5851cc79960d@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b058e226-8a77-42bc-8c92-5bd23244e7da@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <1b37cfc6-7369-69c1-bd90-5851cc79960d@gmx.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -82,82 +68,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 24, 2022 at 09:12:44PM +0800, Qu Wenruo wrote:
-> On 2022/6/24 20:49, David Sterba wrote:
-> > On Fri, Jun 24, 2022 at 02:23:34PM +0200, Christoph Hellwig wrote:
-> >> Since the page_mkwrite address space operation was added, starting with
-> >> commit 9637a5efd4fb ("[PATCH] add page_mkwrite() vm_operations method")
-> >> in 2006, the kernel does not just dirty random pages without telling
-> >> the file system.
-> >
-> > It does and there's a history behind the fixup worker. tl;dr it can't be
-> > removed, though every now and then somebody comes and tries to.
-> >
-> > On s390 the page status is tracked in two places, hw and in memory and
-> > this needs to be synchronized manually.
-> >
-> > On x86_64 it's not a simple reason but it happens as well in some edge
-> > case where the mappings get removed and dirty page is set deep in the
-> > arch mm code.  We've been chasing it long time ago, I don't recall exact
-> > details and it's been a painful experience.
-> >
-> > If there's been any change on the s390 side or in arch/x86/mm code I
-> > don't know but to be on the safe side, I strongly assume the fixup code
-> > is needed unless proven otherwise.
-> 
-> I'd say, if this can be a problem to btrfs, then all fs supporting COW
-> should also be affected, and should have similar workaround.
-
-Probably yes.
-
-> Furthermore, this means we can get a page dirtied without us knowing.
-
-This should not happen because we do have the detection of the page and
-extent state mismatch and the fixup worker makes things right again.
-
-> This is a super big surprise to any fs, and should be properly
-> documented, not just leaving some seemly dead and special code in some
-> random fs.
-
-You seem to be a non-believer that the bug is real and calling the code
-dead. Each filesystem should validate the implementation agains the
-platform where it is and btrfs once found the hard way that there are
-some corner cases where structures get out of sync.
-
-> Furthermore, I'm not sure even if handling this in a fs level is correct.
-> This looks like more a MM problem to me then.
+On Fri 24-06-22 21:19:04, Qu Wenruo wrote:
 > 
 > 
-> I totally understand it's a pain to debug such lowlevel bug, but
-> shouldn't we have a proper regression for it then?
+> On 2022/6/24 21:07, Jan Kara wrote:
+> > On Fri 24-06-22 14:51:18, Christoph Hellwig wrote:
+> > > On Fri, Jun 24, 2022 at 08:30:00PM +0800, Qu Wenruo wrote:
+> > > > But from my previous feedback on subpage code, it looks like it's some
+> > > > hardware archs (S390?) that can not do page flags update atomically.
+> > > > 
+> > > > I have tested similar thing, with extra ASSERT() to make sure the cow
+> > > > fixup code never get triggered.
+> > > > 
+> > > > At least for x86_64 and aarch64 it's OK here.
+> > > > 
+> > > > So I hope this time we can get a concrete reason on why we need the
+> > > > extra page Private2 bit in the first place.
+> > > 
+> > > I don't think atomic page flags are a thing here.  I remember Jan
+> > > had chased a bug where we'd get into trouble into this area in
+> > > ext4 due to the way pages are locked down for direct I/O, but I
+> > > don't even remember seeing that on XFS.  Either way the PageOrdered
+> > > check prevents a crash in that case and we really can't expect
+> > > data to properly be written back in that case.
+> > 
+> > I'm not sure I get the context 100% right but pages getting randomly dirty
+> > behind filesystem's back can still happen - most commonly with RDMA and
+> > similar stuff which calls set_page_dirty() on pages it has got from
+> > pin_user_pages() once the transfer is done.
+> 
+> Just curious, things like RMDA can mark those pages dirty even without
+> letting kernel know, but how could those pages be from page cache? By
+> mmap()?
 
-The regression test is generic/208 and it was not reliable at all, it
-fired randomly once a week or month, there used to be a BUG() in the
-fixup worker callback.
+Yes, you pass virtual address to RDMA ioctl and it uses memory at that
+address as a target buffer for RDMA. If the target address happens to be
+mmapped file, filesystem has problems...
 
-> Instead of just keeping what we know works, I really want to handle this
-> old case/bug in a more modern way.
+> > page_maybe_dma_pinned() should
+> > be usable within filesystems to detect such cases and protect the
+> > filesystem but so far neither me nor John Hubbart has got to implement this
+> > in the generic writeback infrastructure + some filesystem as a sample case
+> > others could copy...
+> 
+> So the generic idea is just to detect if the page is marked dirty by
+> traditional means, and if not, skip the writeback for them, and wait for
+> proper notification to fs?
 
-As long as the guarantees stay the same, then fine. We need to be able
-to detect the unexpected dirty bit and have a way to react to it.
+Kind of. The idea is to treat page_maybe_dma_pinned() pages as permanently
+dirty (because we have no control over when the hardware decides to modify
+the page contents by DMA). So skip the writeback if we can (e.g. memory
+cleaning type of writeback) and use bounce pages to do data integrity
+writeback (which cannot be skipped).
 
-f4b1363cae43 ("btrfs: do not do delalloc reservation under page lock")
-25f3c5021985 ("Btrfs: keep pages dirty when using btrfs_writepage_fixup_worker")
-1d53c9e67230 ("Btrfs: only associate the locked page with one async_chunk struct")
-
-And the commit that fixed it:
-
-87826df0ec36 ("btrfs: delalloc for page dirtied out-of-band in fixup worker")
-
-You can find several reports in the mailing list archives (search term
-btrfs_writepage_fixup_worker):
-
-https://lore.kernel.org/linux-btrfs/1295053074.15265.6.camel@mercury.localdomain
-
-https://lore.kernel.org/linux-btrfs/20110701174436.GA8352@yahoo.fr
-
-https://lore.kernel.org/linux-btrfs/j0k65i$29a$1@dough.gmane.org
-
-https://lore.kernel.org/linux-btrfs/CAO47_--H0+6bu4qQ2QA9gZcHvGVWO4QUGCAb3+9a5Kg3+23UiQ@mail.gmail.com
-
-https://lore.kernel.org/linux-btrfs/vqfmv8-9ch.ln1@hurikhan.ath.cx
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
