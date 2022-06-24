@@ -2,84 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FEE559E8A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 18:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E77559F60
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 19:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbiFXQ0E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jun 2022 12:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
+        id S231938AbiFXRMU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jun 2022 13:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbiFXQZv (ORCPT
+        with ESMTP id S231891AbiFXRMT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jun 2022 12:25:51 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DB66802F
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jun 2022 09:25:42 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E576721A92;
-        Fri, 24 Jun 2022 16:25:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1656087940;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ifdyk4t9iCHmnKJsO+bIDHsij/xKxr/8k6EfPQ7usvg=;
-        b=kNoVdaxWHZGKLC2orEloLDgIVywdW2h/iwZIpQhDVOtkkY4FhlqWQeq85PFgSVWcABtzvn
-        hucF+A/I0oOGdp4bTQjacQ2uDXXNiYQTkZ7vT0iBcYX5CdDULttWMgRQ1QdQBZsLZXqVV3
-        TCqlgkH/8W00gwrl/3A0/fMr1m/0lkM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1656087940;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ifdyk4t9iCHmnKJsO+bIDHsij/xKxr/8k6EfPQ7usvg=;
-        b=035b5jZFvWNKhembcXQyqlLVwLBexlSncX8B1MqQh89niDV7WogEX3HATdNYkDb2z8P67x
-        VFPMpxYSxJNQsmAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CB56D13ACA;
-        Fri, 24 Jun 2022 16:25:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mkC7MITltWKcVAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 24 Jun 2022 16:25:40 +0000
-Date:   Fri, 24 Jun 2022 18:21:01 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove skinny extent verbose message
-Message-ID: <20220624162101.GY20633@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20220623080858.1433010-1-nborisov@suse.com>
+        Fri, 24 Jun 2022 13:12:19 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B8B51E7E
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jun 2022 10:12:18 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id v65-20020a1cac44000000b003a03c76fa38so1024137wme.5
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jun 2022 10:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=skarcha-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=zpCbNbdY9h+8VvMVzmGlOS+i5VBrGo2B11fQDsN4xA8=;
+        b=0h61YcNK8lS+u4a3a+zn2b0aX0E5FOtdxddvGAD6+0ZBpeVWoP/GCpMABtoxG7IRPV
+         8q3fvMeDfkVcZuySH8O9Z8uHC8CqEVLMr/9TWZKQvzBsa4fmaisAyRcGuyaPTO6Lj4w5
+         7W5iKDI6qVlORICs41nQ2HKG5+E9KXVyofVP/DyAc9sOSJ2pq9cPXHkAiGsWLUPlvqtM
+         xGNhA3I9nCuCdfkTPF/yJlUKTDZpARpdvgr9NMCc9q5NIcZQ9JrokUbrLuLB5WG3vvWO
+         ClpR8VzDW7DH6Q8Cq85PPqy/vRbZQLCMK8k2CnHFdGxmlefYoLnF0512p0AeNg/o9H5t
+         oi0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=zpCbNbdY9h+8VvMVzmGlOS+i5VBrGo2B11fQDsN4xA8=;
+        b=MHnVGXPbklmcGOfNL+PCw4DY9lPtsHclsTQeMC9CKkUj8NYSQ19XYRLEYCckpId1Co
+         291dg6Uu9goaXBTzoNg5xA5MFQmOyhyjKPC70c46IMBYpbVMv8YOGsbrmkzdm1Zqe5tR
+         zkGtrumz1YcHxOSUKwKIO45JAWApR+TnSGpWGWWIlIXkrlLfmOjoLxH7NSIDGE2KT/iD
+         G77GuBoWTO5mLqBBbasWBw31tlEOpHSC8czO1QAz58vLmb9a3z+tTeBiLjJygUELQ7ef
+         n/NyuaPf4YQDcwhUzNvPjR6J5+bqm6pvurHdy1ZxUQjAsZX2BcP0XFw3JdpcWZBXCugt
+         UnSQ==
+X-Gm-Message-State: AJIora/EQLeJdvVNI2nNDaDWmOcIdTH+tGM0EGN4mzFNGMjIwASO+X5B
+        vu4EAf5sihMcTyBGYTo6A2SzsgIqRVoB6p7fgNM=
+X-Google-Smtp-Source: AGRyM1tthPkynscfjeqlf+9KniUXXLzFAyH5K4hee/cKOiNFVHH975PmvMVyUkbR4iI99piuRxHB/w==
+X-Received: by 2002:a1c:3b07:0:b0:3a0:333d:ae22 with SMTP id i7-20020a1c3b07000000b003a0333dae22mr109721wma.1.1656090736653;
+        Fri, 24 Jun 2022 10:12:16 -0700 (PDT)
+Received: from [192.168.20.2] ([185.212.125.212])
+        by smtp.gmail.com with ESMTPSA id i6-20020adfe486000000b0021b892f4b35sm2899351wrm.98.2022.06.24.10.12.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jun 2022 10:12:15 -0700 (PDT)
+Message-ID: <80428a51-4e0c-f109-d469-c6dc3da2ac7f@skarcha.com>
+Date:   Fri, 24 Jun 2022 19:12:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220623080858.1433010-1-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH 1/3] btrfs: switch btrfs_block_rsv::full to bool
+Content-Language: en-US
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1656079178.git.dsterba@suse.com>
+ <845f7ad07062c689f23d2c6346dfc5f74fe9d92d.1656079178.git.dsterba@suse.com>
+From:   =?UTF-8?Q?Antonio_P=c3=a9rez?= <aperez@skarcha.com>
+In-Reply-To: <845f7ad07062c689f23d2c6346dfc5f74fe9d92d.1656079178.git.dsterba@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 11:08:58AM +0300, Nikolay Borisov wrote:
-> Skinny extents have been a default mkfs feature since version 3.18 i
-> (introduced in btrfs-progs commit 6715de04d9a7 ("btrfs-progs: mkfs:
-> make skinny-metadata default") ). It really doesn't bring any value to
-> users to simply remove it.
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
+Hi!
 
-Added to misc-next, thanks.
+El 24/6/22 a las 16:01, David Sterba escribió:
+
+> @@ -175,7 +175,7 @@ void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
+>   	if (num_bytes)
+>   		delayed_refs_rsv->reserved += num_bytes;
+>   	if (delayed_refs_rsv->reserved >= delayed_refs_rsv->size)
+> -		delayed_refs_rsv->full = 1;
+> +		delayed_refs_rsv->full = false;
+
+Should it be 'true'?
+
+Thanks,
+Antonio
