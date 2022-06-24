@@ -2,110 +2,342 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 783195598D9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 13:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F65559995
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 14:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbiFXLqV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jun 2022 07:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37828 "EHLO
+        id S230257AbiFXMXn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jun 2022 08:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231703AbiFXLqV (ORCPT
+        with ESMTP id S229522AbiFXMXn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jun 2022 07:46:21 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09637B37B
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jun 2022 04:46:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1656071176;
-        bh=X6oGSF4A/m1T16cmXql+hHDSqWAU/15pQ6cJ9PvRb4A=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=eQSys55Z7vJaO20VkREfXKltmhWZOEL5Yj8HLVW9mjHE5tcQjYruklY31g/cpJ8jM
-         vEYklM3R0xFFc60M0AZ8TBjz2BKTkwIrJp9nZ7C2fUhO8adyVZm6Cby66YNyAXL7qi
-         rTTzpFtHYvwqIcPl1vcZPN7u1+GLExR6kwEJn8QM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N33ET-1nf2DK2kY9-013Qoj; Fri, 24
- Jun 2022 13:46:16 +0200
-Message-ID: <27f72ec4-a365-20ba-03f1-8d603a66e011@gmx.com>
-Date:   Fri, 24 Jun 2022 19:46:12 +0800
+        Fri, 24 Jun 2022 08:23:43 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4FF12628
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jun 2022 05:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=my2P8b+li0WcvJ+ABNPssv6vs8oQYQNh8qwT3sDCzlQ=; b=hBiGUHAVIzG5eTtdxstN7DJIEj
+        F2RvJrNQk8puy7zFn7+UC9Ax+x9OrxXk5HMQS0rL70Jf4M9DLt2wBn+SJ3FAH4d7s1GCi4r6xWv1E
+        VWRGq+XZHI8vmPR3jlnaf87WGViWAGsOo6/1lkTlqNDLF/IKdxCQbTnPogiJhhHcGCVK7YGLhuC5s
+        SLeT/UnZpsBqtHP8bI6YdVS8hRqc8vkkvt9kAUGRY6WJyPnZhMrATBzdu0Rxik6uoF6XArBKe5S0b
+        RHNz5NbF9v4ORdinZf+7I5rVuKoVtvcBVFOBER7RqkHsLL0x9cM58PQJ3TcEoENcvKkpgLowxLOW+
+        CQPYPYyQ==;
+Received: from [2001:4bb8:189:7251:508b:56d3:aa35:3dd8] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1o4iLZ-002B3R-EW; Fri, 24 Jun 2022 12:23:37 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
+Date:   Fri, 24 Jun 2022 14:23:34 +0200
+Message-Id: <20220624122334.80603-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH 1/2] btrfs: remove MIXED_BACKREF sysfs file
-Content-Language: en-US
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20220624080123.1521917-1-nborisov@suse.com>
- <20220624080123.1521917-2-nborisov@suse.com>
- <21f7eb10-09d7-826c-48c3-ded892984d50@gmx.com>
- <3e01475c-8296-4cf1-14cd-5774d780b6e2@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <3e01475c-8296-4cf1-14cd-5774d780b6e2@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Eh6Y7I03ksrTGzf4hausQ0Q3ZoMJBwg3MTbrCY45m1q36fz/ruG
- MGUPC7YQBonXPs8ElFNUuYs8WQh1nhIgXXoU1ThWHbwiQYLrDZ0TICxO7pVCT4F9/M/SJOt
- PaeFZqCJfgxr1N4QTGOok1b2nk1S6Yg+LtipqD8jU73U4yZz4gDKbwA3pJPzHVZJFNaPG0G
- ptIkOl4f6nUOwejSqprvw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:PIbyph7lrm0=:VmIuSXrifDZmyiHP0LCcv+
- nNlpt9v+SborzZmhIURHAdEoMHENo0tIIcSlijZDTvnAQPoVv158mgGkQXoM36EfcG9r6elNG
- GV5uaAaFdaBFRm/3u02n8RrIcYTooKy0wUfGz83O7diAqJYwR+xBAiTgqtTraNoKoZttsMlua
- oQfNzIbUyJnhxXZK7UlffN2ENo1nhfVlW+gbKBQj/rO/p1WmycbsPXEVg0XAiBSUL1n0eSq/8
- bI65B5gUBJc7dppOozmNfeOFTG4GQS7OIqU4Uikxxzp8YYxDced2NzjeI7mTTOBFjt0D3HKI7
- fbsrpnVT2Kb+e7mBzxTCqg+Ynjq8bh85SRbrVLhnn1oT8JHxGgCDdpJ5xWF8LgwwORuFjezR/
- gEzM0/YdcS7UzD0MzqKkbQGbWGaRNmR3L6EKuPRfbAQbm/dn/yDOH2CKvPCoYXGfaggO4bOTI
- If0ja2tcDhE4Nmw3FPulaTdpXbXb6OiLyULyhlt5VU65/V5rDd2LxZswAiafjXL7xlvZUg3Xh
- A6+PBblrOSXIRYirmHBoFYjNBKMS3yc+xHAIXrEWvmimj9ONr/W7ykA4lDaD77hC/DDx2iJ33
- y67SWk7EbCG015MG9/Nr5Lv74CUKVk2ViVguLfGmo19KVTQK1pr2TR2AqXbD7prMcuB3JVd2/
- /BJmaoreigOMJTRFZyZbkOHW9q50hKrpnUysxEh3QpowDdf4DtdZKzrwhndlbUJoV+yIRWX2G
- rN6GAYCz82fncSxrQ0iqHl3hJTWlJaDWK63PUgRlHMmegEs0729GeqgBsDUHjT4yhNrKO0kUi
- pLZcXYnsjE+Ttk9Rq0m0NpiIGKoBLC9kM5AgyM4M7Fe9ZSGo99bAEU1AieIQs3jqsApDGtsds
- jArrDanfvTs9NqX6tihME2mPgWbXtC+XIMy8sHnqlZT3P4I4feF2QrlV5aILRr1hffuILcE5V
- THDpA/apMuAot40Ncr8LQZTHcBAgIdjcW1M/ThEX7auWaARmVTsAiEJFS2SUQQfNi2+RIX7cR
- aOwUfhiBhIW8cP15v6mQZEBwczygYi4lMOpCx86W7aKzoBabTHS6AbervNncBH8LZx4NjO0qB
- Ez27qmrOXuC3/oELynFDoMopjMO1RR08msj6bZ+JwdlGKeLbkIPFbODdg==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Since the page_mkwrite address space operation was added, starting with
+commit 9637a5efd4fb ("[PATCH] add page_mkwrite() vm_operations method")
+in 2006, the kernel does not just dirty random pages without telling
+the file system.  Remove the code to handles this now impossible case
+and replace it with a WARN_ON_ONCE.
 
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/btrfs/ctree.h     |   8 --
+ fs/btrfs/disk-io.c   |   6 +-
+ fs/btrfs/extent_io.c |   9 +--
+ fs/btrfs/inode.c     | 188 -------------------------------------------
+ 4 files changed, 3 insertions(+), 208 deletions(-)
 
-On 2022/6/24 19:32, Nikolay Borisov wrote:
->
->
-> On 24.06.22 =D0=B3. 11:13 =D1=87., Qu Wenruo wrote:
->>
->> I don't think that's the correct way to go.
->>
->> In fact, I think sysfs should have everything, no matter how long
->> supported it is.
->
->
-> I disagree, for things which are considered stand alone features - yes.
-> Like free space tree 2, but for something like backrefs, heck I think
-> we've even removed code which predates mixed backrefs so I'm not
-> entirely use the filesystem can function with that feature turned off,
-> actually it's not possible to create a non-mixedbackref file system
-> since this behavior is hard-coded in btrfs-progs. Also the commit for
-> the backrefs states:
->
->
-> This commit introduces a new kind of back reference for btrfs metadata.
-> Once a filesystem has been mounted with this commit, IT WILL NO LONGER
-> BE MOUNTABLE BY OLDER KERNELS.
->
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 12f59e35755fa..39a1235eda48b 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -882,13 +882,6 @@ struct btrfs_fs_info {
+ 	struct btrfs_workqueue *endio_write_workers;
+ 	struct btrfs_workqueue *endio_freespace_worker;
+ 	struct btrfs_workqueue *caching_workers;
+-
+-	/*
+-	 * fixup workers take dirty pages that didn't properly go through
+-	 * the cow mechanism and make them safe to write.  It happens
+-	 * for the sys_munmap function call path
+-	 */
+-	struct btrfs_workqueue *fixup_workers;
+ 	struct btrfs_workqueue *delayed_workers;
+ 
+ 	struct task_struct *transaction_kthread;
+@@ -3390,7 +3383,6 @@ int btrfs_prealloc_file_range_trans(struct inode *inode,
+ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page,
+ 		u64 start, u64 end, int *page_started, unsigned long *nr_written,
+ 		struct writeback_control *wbc);
+-int btrfs_writepage_cow_fixup(struct page *page);
+ void btrfs_writepage_endio_finish_ordered(struct btrfs_inode *inode,
+ 					  struct page *page, u64 start,
+ 					  u64 end, bool uptodate);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 71d92f5dfcb2e..bf908e178ee59 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2163,7 +2163,6 @@ static int read_backup_root(struct btrfs_fs_info *fs_info, u8 priority)
+ /* helper to cleanup workers */
+ static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
+ {
+-	btrfs_destroy_workqueue(fs_info->fixup_workers);
+ 	btrfs_destroy_workqueue(fs_info->delalloc_workers);
+ 	btrfs_destroy_workqueue(fs_info->hipri_workers);
+ 	btrfs_destroy_workqueue(fs_info->workers);
+@@ -2358,9 +2357,6 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
+ 	fs_info->caching_workers =
+ 		btrfs_alloc_workqueue(fs_info, "cache", flags, max_active, 0);
+ 
+-	fs_info->fixup_workers =
+-		btrfs_alloc_workqueue(fs_info, "fixup", flags, 1, 0);
+-
+ 	fs_info->endio_workers =
+ 		alloc_workqueue("btrfs-endio", flags, max_active);
+ 	fs_info->endio_meta_workers =
+@@ -2390,7 +2386,7 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
+ 	      fs_info->compressed_write_workers &&
+ 	      fs_info->endio_write_workers && fs_info->endio_raid56_workers &&
+ 	      fs_info->endio_freespace_worker && fs_info->rmw_workers &&
+-	      fs_info->caching_workers && fs_info->fixup_workers &&
++	      fs_info->caching_workers &&
+ 	      fs_info->delayed_workers && fs_info->qgroup_rescan_workers &&
+ 	      fs_info->discard_ctl.discard_workers)) {
+ 		return -ENOMEM;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 587d2ba20b53b..232a858b99a0a 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3944,13 +3944,8 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 	bool has_error = false;
+ 	bool compressed;
+ 
+-	ret = btrfs_writepage_cow_fixup(page);
+-	if (ret) {
+-		/* Fixup worker will requeue */
+-		redirty_page_for_writepage(wbc, page);
+-		unlock_page(page);
+-		return 1;
+-	}
++	if (WARN_ON_ONCE(!PageOrdered(page)))
++		return -EIO;
+ 
+ 	/*
+ 	 * we don't want to touch the inode after unlocking the page,
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index eea351216db33..5cf314a1b5d17 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2815,194 +2815,6 @@ int btrfs_set_extent_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
+ 				   cached_state);
+ }
+ 
+-/* see btrfs_writepage_start_hook for details on why this is required */
+-struct btrfs_writepage_fixup {
+-	struct page *page;
+-	struct inode *inode;
+-	struct btrfs_work work;
+-};
+-
+-static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+-{
+-	struct btrfs_writepage_fixup *fixup;
+-	struct btrfs_ordered_extent *ordered;
+-	struct extent_state *cached_state = NULL;
+-	struct extent_changeset *data_reserved = NULL;
+-	struct page *page;
+-	struct btrfs_inode *inode;
+-	u64 page_start;
+-	u64 page_end;
+-	int ret = 0;
+-	bool free_delalloc_space = true;
+-
+-	fixup = container_of(work, struct btrfs_writepage_fixup, work);
+-	page = fixup->page;
+-	inode = BTRFS_I(fixup->inode);
+-	page_start = page_offset(page);
+-	page_end = page_offset(page) + PAGE_SIZE - 1;
+-
+-	/*
+-	 * This is similar to page_mkwrite, we need to reserve the space before
+-	 * we take the page lock.
+-	 */
+-	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, page_start,
+-					   PAGE_SIZE);
+-again:
+-	lock_page(page);
+-
+-	/*
+-	 * Before we queued this fixup, we took a reference on the page.
+-	 * page->mapping may go NULL, but it shouldn't be moved to a different
+-	 * address space.
+-	 */
+-	if (!page->mapping || !PageDirty(page) || !PageChecked(page)) {
+-		/*
+-		 * Unfortunately this is a little tricky, either
+-		 *
+-		 * 1) We got here and our page had already been dealt with and
+-		 *    we reserved our space, thus ret == 0, so we need to just
+-		 *    drop our space reservation and bail.  This can happen the
+-		 *    first time we come into the fixup worker, or could happen
+-		 *    while waiting for the ordered extent.
+-		 * 2) Our page was already dealt with, but we happened to get an
+-		 *    ENOSPC above from the btrfs_delalloc_reserve_space.  In
+-		 *    this case we obviously don't have anything to release, but
+-		 *    because the page was already dealt with we don't want to
+-		 *    mark the page with an error, so make sure we're resetting
+-		 *    ret to 0.  This is why we have this check _before_ the ret
+-		 *    check, because we do not want to have a surprise ENOSPC
+-		 *    when the page was already properly dealt with.
+-		 */
+-		if (!ret) {
+-			btrfs_delalloc_release_extents(inode, PAGE_SIZE);
+-			btrfs_delalloc_release_space(inode, data_reserved,
+-						     page_start, PAGE_SIZE,
+-						     true);
+-		}
+-		ret = 0;
+-		goto out_page;
+-	}
+-
+-	/*
+-	 * We can't mess with the page state unless it is locked, so now that
+-	 * it is locked bail if we failed to make our space reservation.
+-	 */
+-	if (ret)
+-		goto out_page;
+-
+-	lock_extent_bits(&inode->io_tree, page_start, page_end, &cached_state);
+-
+-	/* already ordered? We're done */
+-	if (PageOrdered(page))
+-		goto out_reserved;
+-
+-	ordered = btrfs_lookup_ordered_range(inode, page_start, PAGE_SIZE);
+-	if (ordered) {
+-		unlock_extent_cached(&inode->io_tree, page_start, page_end,
+-				     &cached_state);
+-		unlock_page(page);
+-		btrfs_start_ordered_extent(ordered, 1);
+-		btrfs_put_ordered_extent(ordered);
+-		goto again;
+-	}
+-
+-	ret = btrfs_set_extent_delalloc(inode, page_start, page_end, 0,
+-					&cached_state);
+-	if (ret)
+-		goto out_reserved;
+-
+-	/*
+-	 * Everything went as planned, we're now the owner of a dirty page with
+-	 * delayed allocation bits set and space reserved for our COW
+-	 * destination.
+-	 *
+-	 * The page was dirty when we started, nothing should have cleaned it.
+-	 */
+-	BUG_ON(!PageDirty(page));
+-	free_delalloc_space = false;
+-out_reserved:
+-	btrfs_delalloc_release_extents(inode, PAGE_SIZE);
+-	if (free_delalloc_space)
+-		btrfs_delalloc_release_space(inode, data_reserved, page_start,
+-					     PAGE_SIZE, true);
+-	unlock_extent_cached(&inode->io_tree, page_start, page_end,
+-			     &cached_state);
+-out_page:
+-	if (ret) {
+-		/*
+-		 * We hit ENOSPC or other errors.  Update the mapping and page
+-		 * to reflect the errors and clean the page.
+-		 */
+-		mapping_set_error(page->mapping, ret);
+-		end_extent_writepage(page, ret, page_start, page_end);
+-		clear_page_dirty_for_io(page);
+-		SetPageError(page);
+-	}
+-	btrfs_page_clear_checked(inode->root->fs_info, page, page_start, PAGE_SIZE);
+-	unlock_page(page);
+-	put_page(page);
+-	kfree(fixup);
+-	extent_changeset_free(data_reserved);
+-	/*
+-	 * As a precaution, do a delayed iput in case it would be the last iput
+-	 * that could need flushing space. Recursing back to fixup worker would
+-	 * deadlock.
+-	 */
+-	btrfs_add_delayed_iput(&inode->vfs_inode);
+-}
+-
+-/*
+- * There are a few paths in the higher layers of the kernel that directly
+- * set the page dirty bit without asking the filesystem if it is a
+- * good idea.  This causes problems because we want to make sure COW
+- * properly happens and the data=ordered rules are followed.
+- *
+- * In our case any range that doesn't have the ORDERED bit set
+- * hasn't been properly setup for IO.  We kick off an async process
+- * to fix it up.  The async helper will wait for ordered extents, set
+- * the delalloc bit and make it safe to write the page.
+- */
+-int btrfs_writepage_cow_fixup(struct page *page)
+-{
+-	struct inode *inode = page->mapping->host;
+-	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-	struct btrfs_writepage_fixup *fixup;
+-
+-	/* This page has ordered extent covering it already */
+-	if (PageOrdered(page))
+-		return 0;
+-
+-	/*
+-	 * PageChecked is set below when we create a fixup worker for this page,
+-	 * don't try to create another one if we're already PageChecked()
+-	 *
+-	 * The extent_io writepage code will redirty the page if we send back
+-	 * EAGAIN.
+-	 */
+-	if (PageChecked(page))
+-		return -EAGAIN;
+-
+-	fixup = kzalloc(sizeof(*fixup), GFP_NOFS);
+-	if (!fixup)
+-		return -EAGAIN;
+-
+-	/*
+-	 * We are already holding a reference to this inode from
+-	 * write_cache_pages.  We need to hold it because the space reservation
+-	 * takes place outside of the page lock, and we can't trust
+-	 * page->mapping outside of the page lock.
+-	 */
+-	ihold(inode);
+-	btrfs_page_set_checked(fs_info, page, page_offset(page), PAGE_SIZE);
+-	get_page(page);
+-	btrfs_init_work(&fixup->work, btrfs_writepage_fixup_worker, NULL, NULL);
+-	fixup->page = page;
+-	fixup->inode = inode;
+-	btrfs_queue_work(fs_info->fixup_workers, &fixup->work);
+-
+-	return -EAGAIN;
+-}
+-
+ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 				       struct btrfs_inode *inode, u64 file_pos,
+ 				       struct btrfs_file_extent_item *stack_fi,
+-- 
+2.30.2
 
-That means we're hiding incompat features from the user.
-
-Even if it's not tunable and should always be enabled, we still need to
-add that.
-
-History can not be forgotten.
-
-Thanks,
-Qu
