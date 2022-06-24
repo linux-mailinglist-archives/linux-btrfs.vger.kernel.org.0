@@ -2,174 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3858D559D37
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 17:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 835AD559DA1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 17:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbiFXPXg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jun 2022 11:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
+        id S231494AbiFXPtS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jun 2022 11:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231530AbiFXPXg (ORCPT
+        with ESMTP id S229801AbiFXPtR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jun 2022 11:23:36 -0400
-Received: from pio-pvt-msa2.bahnhof.se (pio-pvt-msa2.bahnhof.se [79.136.2.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA744ECDE
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jun 2022 08:23:32 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 3AAAF3F3B5
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jun 2022 17:23:30 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.91
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Received: from pio-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ysGJGODkioAC for <linux-btrfs@vger.kernel.org>;
-        Fri, 24 Jun 2022 17:23:29 +0200 (CEST)
-Received: by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 20D393F26B
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jun 2022 17:23:29 +0200 (CEST)
-Received: from [192.168.0.134] (port=53430)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1o4l9c-000D97-2v
-        for linux-btrfs@vger.kernel.org; Fri, 24 Jun 2022 17:23:28 +0200
-Message-ID: <98c43f5e-2091-b222-edad-632caef9f9e3@tnonline.net>
-Date:   Fri, 24 Jun 2022 17:23:27 +0200
+        Fri, 24 Jun 2022 11:49:17 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1474AE18
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jun 2022 08:49:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5474B21A5B;
+        Fri, 24 Jun 2022 15:49:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1656085755;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9emSbOo2BbJrk5i6dfyOK7q9UTAJdcelXAG8LisgtY4=;
+        b=ZPz7cdpREUJm21cv/NwLjaYdQPsY7qncOcTrKGLsSEuJ/y2BOyO9fglLrI/nAuC56OeZL5
+        zt4HL09mo0Jsxdx/gi+1WIx3vREVjDw3jKxRaiAQeAypTA+wRLmbBxYRR86knXNabDRlph
+        Xhz6Vvw43+eMbUwyZSOSMyawhz9/P6c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1656085755;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9emSbOo2BbJrk5i6dfyOK7q9UTAJdcelXAG8LisgtY4=;
+        b=1BoyoO4DAdHG2EdTBkv/cATfAOOnrZgsHDn074wvewfJZMd7g60rfkAzqh3LVLTp7aJrMK
+        4LSRElCpaYfpWVCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 24B2113480;
+        Fri, 24 Jun 2022 15:49:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZRj0B/vctWIeRgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 24 Jun 2022 15:49:15 +0000
+Date:   Fri, 24 Jun 2022 17:44:36 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] btrfs: remove MIXED_BACKREF sysfs file
+Message-ID: <20220624154436.GW20633@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20220624080123.1521917-1-nborisov@suse.com>
+ <20220624080123.1521917-2-nborisov@suse.com>
+ <21f7eb10-09d7-826c-48c3-ded892984d50@gmx.com>
+ <3e01475c-8296-4cf1-14cd-5774d780b6e2@suse.com>
+ <27f72ec4-a365-20ba-03f1-8d603a66e011@gmx.com>
+ <20220624134706.GV20633@twin.jikos.cz>
+ <75cb4383-72e3-58d6-ca23-fbfa9be65617@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-To:     linux-btrfs@vger.kernel.org
-Content-Language: en-GB
-From:   Forza <forza@tnonline.net>
-Subject: FSTRIM timeout/errors on WD RED SA500 NAS SSD
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <75cb4383-72e3-58d6-ca23-fbfa9be65617@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, Jun 24, 2022 at 10:02:43PM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2022/6/24 21:47, David Sterba wrote:
+> > On Fri, Jun 24, 2022 at 07:46:12PM +0800, Qu Wenruo wrote:
+> >> On 2022/6/24 19:32, Nikolay Borisov wrote:
+> >>> On 24.06.22 г. 11:13 ч., Qu Wenruo wrote:
+> >>>>
+> >>>> I don't think that's the correct way to go.
+> >>>>
+> >>>> In fact, I think sysfs should have everything, no matter how long
+> >>>> supported it is.
+> >>>
+> >>> I disagree, for things which are considered stand alone features - yes.
+> >>> Like free space tree 2, but for something like backrefs, heck I think
+> >>> we've even removed code which predates mixed backrefs so I'm not
+> >>> entirely use the filesystem can function with that feature turned off,
+> >>> actually it's not possible to create a non-mixedbackref file system
+> >>> since this behavior is hard-coded in btrfs-progs. Also the commit for
+> >>> the backrefs states:
+> >>>
+> >>>
+> >>> This commit introduces a new kind of back reference for btrfs metadata.
+> >>> Once a filesystem has been mounted with this commit, IT WILL NO LONGER
+> >>> BE MOUNTABLE BY OLDER KERNELS.
+> >>
+> >> That means we're hiding incompat features from the user.
+> >>
+> >> Even if it's not tunable and should always be enabled, we still need to
+> >> add that.
+> > 
+> > I think the mixed_backref is an exception because it's been part of the
+> > default format for so long that we don't even remember there was
+> > something else. For users it does not mean anything today, moreover it
+> > could be confused with mixed block groups.
+> 
+> Then after some time, there will be some "smart" users find that we have 
+> one incompat bit without any explanation.
 
-I have discovered an odd issue where "fstrim" on an Btrfs filesystem 
-consistently fails, while "mkfs.btrfs" always succeeds with full device 
-discard.
-
-Hardware:
-* SuperMicro server
-* LSI/Broadcom HBA 9500-8i SAS/SATA controller
-* WD RED SA500 NAS SATA SSD 2TB (WDS200T1R0A-68A4W0)
-   Drive FW: 411000WR
-* Alpine Linux kernel 5.15.48
-
-* /sys/block/sdf/queue/
-   discard_granularity:512
-   discard_max_bytes:134217216
-   discard_max_hw_bytes:134217216
-
-# btrfs fi us -T /mnt/nas_ssd/
-Overall:
-     Device size:                   7.13TiB
-     Device allocated:             90.06GiB
-     Device unallocated:            7.04TiB
-     Device missing:                  0.00B
-     Used:                         86.73GiB
-     Free (estimated):              3.52TiB      (min: 3.52TiB)
-     Free (statfs, df):             3.52TiB
-     Data ratio:                       2.00
-     Metadata ratio:                   2.00
-     Global reserve:               94.58MiB      (used: 0.00B)
-     Multiple profiles:                  no
-
-              Data     Metadata  System
-Id Path      RAID1    RAID1     RAID1    Unallocated
--- --------- -------- --------- -------- -----------
-  9 /dev/sdc1 44.00GiB   1.00GiB 32.00MiB     1.77TiB
-10 /dev/sdf1 44.00GiB   1.00GiB 32.00MiB     1.77TiB
-11 /dev/sdd1        -         -        -   894.25GiB
-12 /dev/sde1        -         -        -   894.25GiB
-13 /dev/sdg1        -         -        -     1.82TiB
-14 /dev/sdh1        -         -        -     1.82TiB
--- --------- -------- --------- -------- -----------
-    Total     44.00GiB   1.00GiB 32.00MiB     8.94TiB
-    Used      43.23GiB 133.44MiB 16.00KiB
-
-
-
-
-The root cause I believe is that the WD drives take 1.5-2.5 minutes to 
-do a full device discard. The Kingston DC500 drives only take 6-7 
-seconds for the same. I have 4 identical WD drives and 2 Kingston 
-drives. All WD drives have the same issue.
-
-When issuing 'fstrim -v /mnt/btrfs' I get the following message in dmesg 
-after about 30 seconds:
-
-# time fstrim -v /mnt/nas_ssd/
-/mnt/nas_ssd/: 6.2 TiB (6834839748608 bytes) trimmed
-
-real    4m21.356s
-user    0m0.001s
-sys     0m0.241s
-
-[  +0.000003] scsi target6:0:4: handle(0x0029), 
-sas_address(0x5003048020db4543), phy(3)
-[  +0.000003] scsi target6:0:4: enclosure logical 
-id(0x5003048020db457f), slot(3)
-[  +0.000003] scsi target6:0:4: enclosure level(0x0000), connector name( 
-C0.1)
-[  +0.000003] sd 6:0:4:0: No reference found at driver, assuming 
-scmd(0x00000000eb0d9438) might have completed
-[  +0.000003] sd 6:0:4:0: task abort: SUCCESS scmd(0x00000000eb0d9438)
-[  +0.000012] sd 6:0:4:0: attempting task 
-abort!scmd(0x0000000075f63919), outstanding for 30397 ms & timeout 30000 ms
-[  +0.000003] sd 6:0:4:0: [sdg] tag#2762 CDB: opcode=0x42 42 00 00 00 00 
-00 00 00 18 00
-[  +0.000002] scsi target6:0:4: handle(0x0029), 
-sas_address(0x5003048020db4543), phy(3)
-[  +0.000004] scsi target6:0:4: enclosure logical 
-id(0x5003048020db457f), slot(3)
-[  +0.000002] scsi target6:0:4: enclosure level(0x0000), connector name( 
-C0.1)
-[  +0.000003] sd 6:0:4:0: No reference found at driver, assuming 
-scmd(0x0000000075f63919) might have completed
-[  +0.000003] sd 6:0:4:0: task abort: SUCCESS scmd(0x0000000075f63919)
-[  +0.255021] sd 6:0:4:0: Power-on or device reset occurred
-
-
-
-
-An interesting observation is that "fstrim" works on the same device if 
-it is mounted as ext4. There are no errors in dmesg.
-
-To sum up:
-
-Works:
-* "mkfs.btrfs"
-* "btrfs replace"
-* "btrfs device add"
-* "fstrim" on ext4 mounted device.
-
-Does not work:
-* "fstrim" on Btrfs mounted device
-* "blkdiscard" on /dev/sdX
-
-The btrfs-progs code seems to do 'BLKDISCARD' on 1GiB chunks. This may 
-explain why "mkfs.btrfs" and "btrfs relace" and "btrfs device add" 
-works, while "fstrim" and "blkdiscard" tools do not.
-https://github.com/kdave/btrfs-progs/blob/c0ad9bde429196db7e8710ea1abfab7a2bca2e43/common/device-utils.c#L79
-
-Not exactly sure how ext4 handles the "fstrim" case, but it seems to 
-group trim requests in smaller batches, which may explain why the SSD 
-returns status before the 30s timeout of the HBA.
-https://github.com/torvalds/linux/blob/92f20ff72066d8d7e2ffb655c2236259ac9d1c5d/fs/ext4/mballoc.c#L6467
-
-Can we work around the Btrfs fstrim issue, for example by splitting up 
-fstrim requests in "discard_max_bytes" sized chunks?
-
-Thanks,
-Forza
+Removed functionality is documented, the sysfs feature files are in
+manual pages and we can add a notice in which version it was removed.
