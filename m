@@ -2,173 +2,208 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC8D559598
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 10:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA3E55962F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 11:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbiFXImg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jun 2022 04:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        id S231551AbiFXJLt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jun 2022 05:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbiFXIme (ORCPT
+        with ESMTP id S231448AbiFXJLZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jun 2022 04:42:34 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED40B766AD;
-        Fri, 24 Jun 2022 01:42:31 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id fd6so2445063edb.5;
-        Fri, 24 Jun 2022 01:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W/bNzydjLfS6FoWzLmCL3RjLpUy/CcRj6s94kxyuCxs=;
-        b=dTPHHSO6M3UC5M8AVVvieHM4AB6cdsU8zcydSDgycYuedEfXZZaRt++dvOrsBvTItV
-         ilvb1kuhxEMzvxmvSRhiXgiLncWv4pj2a6GWeu1ikelJY4w+RKvhhykPs/0qH1ee/WuK
-         azModRmICrq7ckO6FmLLIgOjwxTHO00AQ0w1puoMLfhV7ChNcQwFLghIHK7JMgTms8KE
-         EhyZWnfbCrGfa+ZupoW+FxABcTFDX/eFafA/DIlg4eltS6AN1vN/Fqf9rpsUCiCPOFqv
-         KXqdYBHWB4CfwGsx57WolI8w+d4uEPD04TYWw0BwbHX8UIufYJY44SKSMBVWfjOZpAMN
-         hqKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W/bNzydjLfS6FoWzLmCL3RjLpUy/CcRj6s94kxyuCxs=;
-        b=Mo9Ktv66fbaEyoqKMXlw+OP+je6Oa0yKzhzijI4i+rUL+V4o5Pw4qnNcM79I6LsWa0
-         U7dwsgyNTmG9x9FvlzJgy7VmvvGH5dbs4pYkVPrDiRr9cGc2VhE4n/TZsiooOoHYAbr1
-         Be42P51oMoGDicUi2aDOxUIEJuEVNwPFku05MOYJj9XB2fNic+YyMvaHM4UnBmYQJrqb
-         FzMcZj7aolxv1jUfrN7krz8nzzk5wqxdOtCFunKMO58bu036Nx3XiHBfzkdsGoyj1yCf
-         XMsvOupA8qcCrIP+XBECSkaqqkVgdxie4oYiQc7ZRHuCFsqiXWK+mxoq6gQDYAH9bzhR
-         LYWQ==
-X-Gm-Message-State: AJIora+Ho+SCmTot+MP8JouvkcSA9EVBsLJOrwelfThI/JBWHJGCesgJ
-        KVv7/8g2KWWGomBlqyp6LG4=
-X-Google-Smtp-Source: AGRyM1sNHCF89oZ3BAIwX//5qMMQTDe1k2bkioJtl3MyjPZ5NBbsj0VzPVD7jgiVzp5sXMWsONjExw==
-X-Received: by 2002:a05:6402:3298:b0:435:8145:e6db with SMTP id f24-20020a056402329800b004358145e6dbmr16072573eda.294.1656060150387;
-        Fri, 24 Jun 2022 01:42:30 -0700 (PDT)
-Received: from localhost.localdomain (host-87-6-98-182.retail.telecomitalia.it. [87.6.98.182])
-        by smtp.gmail.com with ESMTPSA id o12-20020a056402038c00b0043561e0c9adsm1434824edv.52.2022.06.24.01.42.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jun 2022 01:42:28 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Gabriel Niebler <gniebler@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        David Sterba <dsterba@suse.cz>
-Subject: [RFC PATCH] btrfs: Replace kmap_atomic() with kmap_local_page()
-Date:   Fri, 24 Jun 2022 10:42:15 +0200
-Message-Id: <20220624084215.7287-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.36.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Fri, 24 Jun 2022 05:11:25 -0400
+Received: from ste-pvt-msa1.bahnhof.se (ste-pvt-msa1.bahnhof.se [213.80.101.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECCB4F9F9
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jun 2022 02:10:57 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id E20FB3F37D;
+        Fri, 24 Jun 2022 11:10:54 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Score: -3.703
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
+Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id owpCs5yK9i8X; Fri, 24 Jun 2022 11:10:53 +0200 (CEST)
+Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 9A7E63F2A6;
+        Fri, 24 Jun 2022 11:10:53 +0200 (CEST)
+Received: from [192.168.0.134] (port=53426)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1o4fL1-0009X0-Be; Fri, 24 Jun 2022 11:10:52 +0200
+Message-ID: <fab89110-00e1-c344-d321-675bec3e2bc4@tnonline.net>
+Date:   Fri, 24 Jun 2022 11:10:51 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: Criteria for mount messages. (was "Re: [PATCH] btrfs: remove
+ skinny extent verbose message")
+Content-Language: en-US
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+        Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20220623080858.1433010-1-nborisov@suse.com>
+ <56e24cb5-c085-3b17-203e-56007008a8ae@gmx.com>
+ <20220623141954.GP20633@twin.jikos.cz>
+ <7a42092f-9534-e54c-174e-8aaf17509d4b@gmx.com>
+From:   Forza <forza@tnonline.net>
+In-Reply-To: <7a42092f-9534-e54c-174e-8aaf17509d4b@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-kmap_atomic() is being deprecated in favor of kmap_local_page() where it
-is feasible. With kmap_local_page() mappings are per thread, CPU local,
-and not globally visible.
 
-As far as I can see, the kmap_atomic() calls in compression.c and in
-inode.c can be safely converted.
 
-Above all else, David Sterba has confirmed that "The context in
-check_compressed_csum is atomic [...]" and that "kmap_atomic() in inode.c
-[...] also can be replaced by kmap_local_page().".[1]
+On 6/24/22 00:46, Qu Wenruo wrote:
+> 
+> 
+> On 2022/6/23 22:19, David Sterba wrote:
+>> On Thu, Jun 23, 2022 at 04:22:27PM +0800, Qu Wenruo wrote:
+>>>
+>>>
+>>> On 2022/6/23 16:08, Nikolay Borisov wrote:
+>>>> Skinny extents have been a default mkfs feature since version 3.18 i
+>>>> (introduced in btrfs-progs commit 6715de04d9a7 ("btrfs-progs: mkfs:
+>>>> make skinny-metadata default") ). It really doesn't bring any value to
+>>>> users to simply remove it.
+>>>>
+>>>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>>>
+>>> Looks fine to me.
+>>>
+>>> But this means we need to define the level of (in)compat flags we want
+>>> to show in the dmesg.
+>>
+>> Yes and we haven't done that so far so we should have some guidelines.
+>>>
+>>> By default, we have the following lines:
+>>>
+>>>    BTRFS info (device loop0): flagging fs with big metadata feature
+>>>    BTRFS info (device loop0): using free space tree
+>>>    BTRFS info (device loop0): has skinny extents
+>>>    BTRFS info (device loop0): enabling ssd optimizations
+>>>    BTRFS info (device loop0): checking UUID tree
+>>>
+>>> For "big metadata" it's even less meaningful, and it doesn't even have
+>>> sysfs entry for it.
+>>
+>> There's an entry in the global features but 'big_metadata' does not
+>> appear in the per-filesystem directory.
+>>
+>>> For "free space tree" it may be helpful, but if one is really concerning
+>>> about the cache version we're using, it's better to go sysfs other than
+>>> checking the kernel dmesg.
+>>
+>> The logged messages are a bit different as they could be stored and then
+>> used for analysis. For new features it makes more sense to log them, I
+>> think eg. the free space tree messages have been useful when debugging
+>> the online conversion that took a few patches to get right.
+>>
+>>> For "SSD", it's a good thing to output.
+>>
+>> Agreed.
+>>
+>>> For "UUID" tree, it's definitely not useful, even for developers.
+>>
+>> Agreed.
+>>
+>>> For skinny metadata it's the one you're cleaning.
+>>
+>> Though I've sent patch to make it only debug I agree that this has
+>> little value and don't object to removing it completely.
+>>
+>>> So I guess you can clean up more unnecessary mount messages then?
+>>
+>> The criteria I'd use for adding/removing the messages are vaguely like
+>> that:
+>>
+>> - does the user want to know a particular feature is in use? this is
+>>    namely when we're introducing something and want to verify what's
+>>    happening
 
-Therefore, convert all kmap_atomic() calls currently still left in fs/btrfs
-to kmap_local_page().
+I think this is a good thought.
 
-This is an RFC only because, testing with "./check -g quick" (xfstests) on
-a QEMU + KVM 32-bits VM with 4GB RAM and booting a kernel with HIGHMEM64GB
-enabled, outputs several errors. These errors seem to be exactly the same
-which are being output without this patch. It apparently seems that these
-changes don't introduce further errors, however I'd like to ask for
-comments before sending a "real" patch.
+> 
+> I'd say this is not that important.
+> 
+> In fact, there is a pretty bad example from the past, BIG_METADATA.
+> 
+> It's just we're supporting larger nodesize, it doesn't even bother users
+> that much, nor really need a incompat flag at all.
+> 
+> Another example is from recent subpage feature, it doesn't need any
+> incompat/compat RO flags at all, the only reason we're outputting
+> message for subpage is, it's not tested as much as native page size.
+> 
+> If we can ensure enough test coverage (already getting better and better
+> coverage) that experimental message would definitely go away.
+> 
+> 
+> Thus my idea criteria would be:
+> 
+> - Would this feature bring bad impact to end users?
+>    If the feature is only bringing good impact, it should not be output.
+> 
+>    Thus in this way, v2 cache nowadays should also be skipped, as it's
+>    already well tested, and no real disadvantage at all.
+> 
+Even if v2 is default, lots of users are on older kernel/progs and would 
+still benefit from seeing these messages.
 
-With this patch, there are no more call sites for kmap() and kmap_atomic()
-in fs/btrfs.
+>>
+>> - can the option have an impact on the filesystem behaviour?  eg. like
+>>    ssd, but we tend to log almost all mount options already
+>>
+>> - if there's a value for developer, the level should be debug, otherwise
+>>    info
+> 
+> I'd say, considering how hard to enable debug messages, it doesn't
+> really make much sense for developers.
+> 
+> Thus unfortunately such debugging info would still better to be at info
+> level, just in case it's something like dying message and/or the user
+> can not easily reproduce it.
+> 
+> But we may want a much shorter (even it means less human readable), less
+> noisy output.
+> 
+> Thus I'd say, we may want to output hex incompat/compat RO/compat flags
+> just in one line during mount, instead of current one feature per-line
+> behavior.
+> 
+> By this, it provides more debug info, but still way shorter, and way
+> more expandable.
+> 
 
-[1] https://lore.kernel.org/linux-btrfs/20220601132545.GM20633@twin.jikos.cz/
+The idea of having a short feature flag code is good. As an end-user I 
+do want to have the human readable form too. Especially during 
+transition periods where lots of distros still use older kernels that 
+may not have the new features enabled. For example a lot of users still 
+use Ubuntu with a 5.4 kernel.
 
-Suggested-by: Ira Weiny <ira.weiny@intel.com>
-Suggested-by: David Sterba <dsterba@suse.cz>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- fs/btrfs/compression.c |  4 ++--
- fs/btrfs/inode.c       | 12 ++++++------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+Of course, we should teach users to use /sys/ information or use btrfs 
+inspect-internal tools, but I think this will take a long time.
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index f4564f32f6d9..b49719ae45b4 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -175,10 +175,10 @@ static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
- 		/* Hash through the page sector by sector */
- 		for (pg_offset = 0; pg_offset < bytes_left;
- 		     pg_offset += sectorsize) {
--			kaddr = kmap_atomic(page);
-+			kaddr = kmap_local_page(page);
- 			crypto_shash_digest(shash, kaddr + pg_offset,
- 					    sectorsize, csum);
--			kunmap_atomic(kaddr);
-+			kunmap_local(kaddr);
- 
- 			if (memcmp(&csum, cb_sum, csum_size) != 0) {
- 				btrfs_print_data_csum_error(inode, disk_start,
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7d84d57a0653..5fb4f6e929e5 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -332,9 +332,9 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
- 			cur_size = min_t(unsigned long, compressed_size,
- 				       PAGE_SIZE);
- 
--			kaddr = kmap_atomic(cpage);
-+			kaddr = kmap_local_page(cpage);
- 			write_extent_buffer(leaf, kaddr, ptr, cur_size);
--			kunmap_atomic(kaddr);
-+			kunmap_local(kaddr);
- 
- 			i++;
- 			ptr += cur_size;
-@@ -345,9 +345,9 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
- 	} else {
- 		page = find_get_page(inode->vfs_inode.i_mapping, 0);
- 		btrfs_set_file_extent_compression(leaf, ei, 0);
--		kaddr = kmap_atomic(page);
-+		kaddr = kmap_local_page(page);
- 		write_extent_buffer(leaf, kaddr, ptr, size);
--		kunmap_atomic(kaddr);
-+		kunmap_local(kaddr);
- 		put_page(page);
- 	}
- 	btrfs_mark_buffer_dirty(leaf);
-@@ -3355,11 +3355,11 @@ static int check_data_csum(struct inode *inode, struct btrfs_bio *bbio,
- 	offset_sectors = bio_offset >> fs_info->sectorsize_bits;
- 	csum_expected = ((u8 *)bbio->csum) + offset_sectors * csum_size;
- 
--	kaddr = kmap_atomic(page);
-+	kaddr = kmap_local_page(page);
- 	shash->tfm = fs_info->csum_shash;
- 
- 	crypto_shash_digest(shash, kaddr + pgoff, len, csum);
--	kunmap_atomic(kaddr);
-+	kunmap_local(kaddr);
- 
- 	if (memcmp(csum, csum_expected, csum_size))
- 		goto zeroit;
--- 
-2.36.1
 
+> Thanks,
+> Qu
+>>
+>> - remove messages if a feature is on by default for a long time and does
+>>    not bring any other value, eg. the mixed_backref, big_metadata or
+>>    skinny extents;
+>>    the respective sysfs files may need to stay as they could be used for
+>>    runtime detection even after a long time, eg. in some testsuite
+>>    collecting testcases over time but likely not updating them, removal
+>>    should be done on case-by-case basis
+
+The sysfs files could stay always? Is that a problem?
+
+Thanks,
+Forza
