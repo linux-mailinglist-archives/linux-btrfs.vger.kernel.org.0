@@ -2,68 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D54E559A2F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 15:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A4C559A45
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jun 2022 15:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbiFXNNH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jun 2022 09:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
+        id S230264AbiFXNTU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jun 2022 09:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbiFXNNG (ORCPT
+        with ESMTP id S229764AbiFXNTT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jun 2022 09:13:06 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DB3DEB5;
-        Fri, 24 Jun 2022 06:13:00 -0700 (PDT)
+        Fri, 24 Jun 2022 09:19:19 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA7E54FB6;
+        Fri, 24 Jun 2022 06:19:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1656076371;
-        bh=mpgGbs0Th9qSc5wRx9aDtFvrJXSc6il6Q39uU61O9/Q=;
-        h=X-UI-Sender-Class:Date:To:References:Cc:From:Subject:In-Reply-To;
-        b=W13GLORQo4mFRzfAOT0zfMID4vv7W/3G/dTn33glJaBUfaqUwrhmDUOQbi6+RIuNl
-         tlko9DswKfBwn1DhdR911ql/t/KT9H2X+QeeWuHscPB/QcqIdicMf2knnUte82MKLi
-         heAAWaJ9GCp9KUD7v0mzJtV21hlaoFT1Mh0V1ULg=
+        s=badeba3b8450; t=1656076751;
+        bh=8pdvQyb+k2BmGabpwCSUldRWU0e7oGT4S+wPW5mQQMk=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=Lks4ltAevV0Yy8685sdGgkU9Nl/edW/mZ//+LfDPkSuB/fi49LYjclI48kQV5IlyC
+         5Q77+W96W7RF58qZxbhJcOgv6Rk8ND2VembvNqZ+KOAbt7jgv+tYzdK0gQ4voVXGET
+         +hrwsgRqbRB+OEAzSILW45OqOeh7OpIhafnoN5js=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MlNtF-1nNNct0vS1-00lo3h; Fri, 24
- Jun 2022 15:12:51 +0200
-Message-ID: <b058e226-8a77-42bc-8c92-5bd23244e7da@gmx.com>
-Date:   Fri, 24 Jun 2022 21:12:44 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mel81-1nU1Lk1yVR-00aplU; Fri, 24
+ Jun 2022 15:19:10 +0200
+Message-ID: <1b37cfc6-7369-69c1-bd90-5851cc79960d@gmx.com>
+Date:   Fri, 24 Jun 2022 21:19:04 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.10.0
-Content-Language: en-US
-To:     dsterba@suse.cz, Christoph Hellwig <hch@lst.de>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org
-References: <20220624122334.80603-1-hch@lst.de>
- <20220624124913.GS20633@twin.jikos.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Subject: Re: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
-In-Reply-To: <20220624124913.GS20633@twin.jikos.cz>
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20220624122334.80603-1-hch@lst.de>
+ <7c30b6a4-e628-baea-be83-6557750f995a@gmx.com> <20220624125118.GA789@lst.de>
+ <20220624130750.cu26nnm6hjrru4zd@quack3.lan>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220624130750.cu26nnm6hjrru4zd@quack3.lan>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jN5WovdcgKwQ7MC+rQehoNVujc6Vceol5Mpw4MjMm+kzk7LuLt8
- iQY5JSukD8cwWns0ier8wfJRmvaiKWzljF6hJ+fcPjE71Uwd7M5xhnKVh+NvqFqfcOV3vaJ
- xQeaMGhv3YUGfh2Y5xMQogOZu4yU5Zp8ZPihEfiJVuf/6ZJEmgNkKoAnxtdjU4Y5Py4LlF9
- 50BqUOXMbij7jSSowBE1w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ah5fHvL9uP8=:Mjl0wCGX/fo7MhMwzB+gHN
- pZe5V3uoDLqVzlj1v/z7VJ0slrMnXnXk/Pcc8MHxYcuni0m9vwNbGZVcD+SmWZyHAN9i+LBNw
- aTa0BlAHnE0ZZQQe5jmZDRslI8kifPlBESnXeOUtNb6gHxt3T6ZFlzzpFqFo4d4T5zSqNnrdB
- BlwgipCNE+LgwBGPyjB6xlRM4ClAfezTPlEt2sbIy3rsKs8lj0G/gvEwImETzD3Xu3lbHn1xf
- E5HvybpJil8aIB0VFwnCsQA9TEwAFeLRD6NciOc7mb8SdNLVUhq4zoQQ6hegY+yZ8mIV2C7NX
- f2SLujPLeIzciVCbr+ed/p6HjpKfKrNKm75eOpb7A5ovVf6+IMaV9SneHW4Vlfu7FPjd3z1/H
- DYXUxwQnoimhXQlAQD5CSv7tLN9JwJ3OBr3cyl80MGM0/n5d+qq03GQ6G1ZcXOlMyPkU+IArr
- +vWmFfMBIrURduly1LlOVkExg3A895QNFjtaD0sTdjd5oJKIP1v9tC1tfvAbOHRCZc+p69ZFH
- P7SMj7l9/8f0re1FKrjqQwYrB1prvzXz9tDof5Rn4l0tPoUCgR69gJaV77OG+trVusgO6MwWC
- hNnx3kWC/lHQym4CUPYk7D9OgvunEr9C6XgsgoD+BiWDA8ZIv7bpzjzI6X6gA3WCt02ensosx
- m3zUKVZw1XmPluXDFpT69x6b2dToXA9NJVzmOFBfdu4bixYV7ie5PKl2+G8E5USBgWLy4S/kC
- HVsLlQmFaZDM8PJTv1zwipENMBJWrS71jV8zCzOWzvtlpN+KTSw4Ph9D529RgPeQSRsgLnLNV
- eB8VrR+uLWprz5z0BRuRl1rRjZJizHbVuJ02In/ZJdil9+vZvdojP390uBLoahEtJ28njKn1Z
- BGtXqZaML0Gw2TcfP4u2EcswB+SKmtLEN9nj+NskGrkBylNCj/lFu9rmjX1c1dYwGX2di4JaL
- bxjy4ewYe7I3oqovQxYKIsVatHdI2xzVUQMc7Lp4hsk/drydTaytAmxwDr+4Beq5Q+sUX4W9a
- BCqtHd7w+PliTx0DVMKxoTi+OueJ6uL/tBE8ecsIgm8EItzmjzEKZN3kGJAGxdXWcHsVxK1dp
- 6mUjE3mOn8W6TYT3H8b+34eU4BbfJasVersxlxwpUqSDpfYkSj5ITjxRA==
+X-Provags-ID: V03:K1:+9DE6A/ouG53CBiuxxd3/caC7uSBK/LnxHOT6sQMxbiOavuNdlR
+ WGKzh5sS4R3qVRT/cVAfSKlq3L/FtgMrMdU/gBl9zdVe9nA0wkzMIl/VGrEzclq5VAxdYgs
+ fhncX8rwU12bC2xbJsa6rdbkKAgfFQyMDYjInuBBLTSMJyA+H62cP2KfE9+hE/ga2gqpHGI
+ KQg6VJR4H0T7j0rbexR6Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:t5I6BgcEdEk=:LBbVQ5BpFGuao/RH3Z7dqw
+ u0dyFPNnLZD6wq+GgZ0KepGs4t43enDEBxWAA9PQNbtvYb+rMnF0lCjSRkdY3I5ZmBrWkLO5O
+ PGpnC9/FxBK/Tq/1msEEArAkK53mZwKZR6gsnoSrAwC9PD9H9RCk8HfkAv3liQAufVwVNMYDI
+ 21on6nARuHZdaFhnMvpb8P7IJuEV32neICP6NNxaIHazdZ0liYKws+iJ0vmQdlHmrscqCD2Oq
+ /YpBqxjB1vP5XKIT7TpcUCY/CJEHgaqp5hsNQUeMtBgjs0LYfbp/fyK3VymHTdZpMNrgaZUoc
+ pH2NGaN/uv8AsbEKL0kngAhX0anV5wMnFpvnQFnNiJd79Ve7HXHk2igx3KcSGsWmbjgQN7fJB
+ LR47Oyvqt0HXB0CvYz1zYBQjGKNCndtu4rScEKxLCbu/ZGqMTlM0Rz9j/vwokN/vij1pYGvUz
+ UBPONNC+72QDfvqpHhdh9DZNhZtJNw2XC3fo1nENZg9WtXAdLKOmHhPQsRMuBJIZ3ceWb6eKf
+ dTnfcIfml7fXJwA2IHkKbjYHrFjJTl8OJkReYu73NMJwMk0MvmL0bBxYyAuxEIvFYRYbXTZbL
+ 7yT0lnPC6EFWO7UGC7bw8//fXbO8/JFOm8UBJBCwQ6QPJz6028igAaKUPQk7N5SKcYUXpyw6l
+ 0n3R+NIXpuNOJXlhhOOJnEn4/JuSY59zgga7POMeZPapRAGlxGeGEVqaTZbNcujhHUZRUPRJu
+ QbpBXzW4eWo2tCo0uzXjt9J6PMTl9sukVGQ4qqoNqYs5Kw18LVdD5/IzesWO6yP79cfG4JdqD
+ KLzGbAzb6wWpcwpS46QzN/WhvqsuGeldJV+A9T5yNwnMReO2gvD9FIvp4aJQCPZQbaJ9JWA3F
+ AKNuyt0NGBNzu/rqapycdpTvYwP2zpxxtYegbtAQgXEJw8LnepRI5joUbMBXz0BVQh39ubViP
+ 3AmiLmpCvtl0RpT+Pekh2k9r7qphqvfZiUHHDcKESANBBFvbv5vlmC4BczFbEuLuTtnIYOg9K
+ VPG192TTvsd4rFItfACcl1jtpHeVhm0nGB/tztiE+wvXiYV6NC+Y/3L/DxgPOH5AIwbCGyPsS
+ 1PBcUeKpVfnG+c3trDHJJNig8ieB1+3RQNalI0YYalc2vwVYC/MFjZVLw==
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -76,47 +76,51 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/6/24 20:49, David Sterba wrote:
-> On Fri, Jun 24, 2022 at 02:23:34PM +0200, Christoph Hellwig wrote:
->> Since the page_mkwrite address space operation was added, starting with
->> commit 9637a5efd4fb ("[PATCH] add page_mkwrite() vm_operations method")
->> in 2006, the kernel does not just dirty random pages without telling
->> the file system.
+On 2022/6/24 21:07, Jan Kara wrote:
+> On Fri 24-06-22 14:51:18, Christoph Hellwig wrote:
+>> On Fri, Jun 24, 2022 at 08:30:00PM +0800, Qu Wenruo wrote:
+>>> But from my previous feedback on subpage code, it looks like it's some
+>>> hardware archs (S390?) that can not do page flags update atomically.
+>>>
+>>> I have tested similar thing, with extra ASSERT() to make sure the cow
+>>> fixup code never get triggered.
+>>>
+>>> At least for x86_64 and aarch64 it's OK here.
+>>>
+>>> So I hope this time we can get a concrete reason on why we need the
+>>> extra page Private2 bit in the first place.
+>>
+>> I don't think atomic page flags are a thing here.  I remember Jan
+>> had chased a bug where we'd get into trouble into this area in
+>> ext4 due to the way pages are locked down for direct I/O, but I
+>> don't even remember seeing that on XFS.  Either way the PageOrdered
+>> check prevents a crash in that case and we really can't expect
+>> data to properly be written back in that case.
 >
-> It does and there's a history behind the fixup worker. tl;dr it can't be
-> removed, though every now and then somebody comes and tries to.
->
-> On s390 the page status is tracked in two places, hw and in memory and
-> this needs to be synchronized manually.
->
-> On x86_64 it's not a simple reason but it happens as well in some edge
-> case where the mappings get removed and dirty page is set deep in the
-> arch mm code.  We've been chasing it long time ago, I don't recall exact
-> details and it's been a painful experience.
->
-> If there's been any change on the s390 side or in arch/x86/mm code I
-> don't know but to be on the safe side, I strongly assume the fixup code
-> is needed unless proven otherwise.
+> I'm not sure I get the context 100% right but pages getting randomly dir=
+ty
+> behind filesystem's back can still happen - most commonly with RDMA and
+> similar stuff which calls set_page_dirty() on pages it has got from
+> pin_user_pages() once the transfer is done.
 
-I'd say, if this can be a problem to btrfs, then all fs supporting COW
-should also be affected, and should have similar workaround.
+Just curious, things like RMDA can mark those pages dirty even without
+letting kernel know, but how could those pages be from page cache? By
+mmap()?
 
+> page_maybe_dma_pinned() should
+> be usable within filesystems to detect such cases and protect the
+> filesystem but so far neither me nor John Hubbart has got to implement t=
+his
+> in the generic writeback infrastructure + some filesystem as a sample ca=
+se
+> others could copy...
 
-Furthermore, this means we can get a page dirtied without us knowing.
-
-This is a super big surprise to any fs, and should be properly
-documented, not just leaving some seemly dead and special code in some
-random fs.
-
-Furthermore, I'm not sure even if handling this in a fs level is correct.
-This looks like more a MM problem to me then.
-
-
-I totally understand it's a pain to debug such lowlevel bug, but
-shouldn't we have a proper regression for it then?
-
-Instead of just keeping what we know works, I really want to handle this
-old case/bug in a more modern way.
+So the generic idea is just to detect if the page is marked dirty by
+traditional means, and if not, skip the writeback for them, and wait for
+proper notification to fs?
 
 Thanks,
 Qu
+
+>
+> 								Honza
