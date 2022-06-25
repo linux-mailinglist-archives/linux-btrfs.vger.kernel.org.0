@@ -2,225 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B1D55A8D6
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jun 2022 12:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C9155AB0C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jun 2022 16:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbiFYKfA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Jun 2022 06:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
+        id S232881AbiFYOlM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Jun 2022 10:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbiFYKe7 (ORCPT
+        with ESMTP id S232509AbiFYOlL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Jun 2022 06:34:59 -0400
-Received: from pio-pvt-msa2.bahnhof.se (pio-pvt-msa2.bahnhof.se [79.136.2.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E139D13F61
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Jun 2022 03:34:56 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTP id E03B13F26B;
-        Sat, 25 Jun 2022 12:34:54 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.911
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-Received: from pio-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LSmMqlKipM_W; Sat, 25 Jun 2022 12:34:53 +0200 (CEST)
-Received: by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 98E7C3F225;
-        Sat, 25 Jun 2022 12:34:53 +0200 (CEST)
-Received: from [192.168.0.134] (port=35242)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1o537r-0004Op-K5; Sat, 25 Jun 2022 12:34:52 +0200
-Message-ID: <fff49ead-365a-111d-98a4-21fea92164fb@tnonline.net>
-Date:   Sat, 25 Jun 2022 12:34:51 +0200
+        Sat, 25 Jun 2022 10:41:11 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C553A1A3;
+        Sat, 25 Jun 2022 07:41:09 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id cw10so10304645ejb.3;
+        Sat, 25 Jun 2022 07:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1HzW1IrxtxLnfOkRiTY/Z3Afa6/8aaGWZ9dIAJbG2Nk=;
+        b=R3+UDhDCGX4rc58cacrJwlaS7YBXY12lSKcE40nLJhiTgo2O2pWvKnmBBVnAeHaHB+
+         mrO8Tu9kGNcKiO05FclIWt1NPKIdqgZ+m+CU/fWj+3WGIogre1ZFn/fsrGyc//2f2bKs
+         U7YbsxS+p+punYMSmrZkq4Cq02FxbKah6YuARjfTx0fn95Sd3hd+/+PWssrstaZmYE+M
+         hylGJV5UufUDg7h2w4/QKQtgbX7AIcjUV62GkPyb3MJxfh0uPnLdVMeMaGyYnp0RdTyU
+         MsbJBhVLNNsrUokQ/K6Tp2rQufqBIDZJcHczB2wqxE88L7St/zc2ZjzV4F1H63UU5NkT
+         YzwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1HzW1IrxtxLnfOkRiTY/Z3Afa6/8aaGWZ9dIAJbG2Nk=;
+        b=NBvACxsDp62GH/uuo6BrhgtZMKi2QHRF+QPg8gQria7Ikc6Dl+qaNg8qWGmbi0SOd5
+         QKwhnyo8lPS7XshAB3ZAI4HwjXQJHRBBNYcih8AdvGRQ3YtkrmmDIAWdXGcOSCiCq3Jy
+         BVvcOP0qOo1dzUvUV4PzS1KVRWn2DvH007IV8wzOz9UoRYZnS1YTXU8jMWoSpW1GaxuN
+         EHS0d7JiJ0/ANf2TXHvtb/XyvIDv9zTOZJxk8z2GFSTbHOQqDMRJE4998lgQTuvnicLa
+         QOMSRXk/R3mxqLuGavR5U9xWtZUVjTUYzDtStHhV38BIvXhqqZA9th09N9w20fhzknFU
+         Ae5w==
+X-Gm-Message-State: AJIora8oMmTSsdtp75xVkpNgU5/9IQ3lmJ/O4X++uqe4PEZigWKt+tlD
+        KBvWZeBc/3Bs0c1ZaDPw9Yc=
+X-Google-Smtp-Source: AGRyM1vCGcLpPTTUrdXyFGNwK+QTNn9TSbEcT1j8rWJnoLHXAOTR9tld7lqxnxZ7Bm/8j9D7VzWafA==
+X-Received: by 2002:a17:906:2bda:b0:726:3b59:3ea9 with SMTP id n26-20020a1709062bda00b007263b593ea9mr4094197ejg.43.1656168068221;
+        Sat, 25 Jun 2022 07:41:08 -0700 (PDT)
+Received: from opensuse.localnet (host-87-6-98-182.retail.telecomitalia.it. [87.6.98.182])
+        by smtp.gmail.com with ESMTPSA id g4-20020a17090669c400b006fe9f9d0938sm2731821ejs.175.2022.06.25.07.41.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Jun 2022 07:41:06 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Gabriel Niebler <gniebler@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH] btrfs: Convert zlib_compress_pages() to use kmap_local_page()
+Date:   Sat, 25 Jun 2022 16:41:04 +0200
+Message-ID: <3110135.5fSG56mABF@opensuse>
+In-Reply-To: <20220618092752.25153-1-fmdefrancesco@gmail.com>
+References: <20220618092752.25153-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: FSTRIM timeout/errors on WD RED SA500 NAS SSD
-Content-Language: en-US
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <98c43f5e-2091-b222-edad-632caef9f9e3@tnonline.net>
- <4f9fcd17-8b2c-afaf-b512-c8786320f148@gmx.com>
-From:   Forza <forza@tnonline.net>
-In-Reply-To: <4f9fcd17-8b2c-afaf-b512-c8786320f148@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 6/25/22 08:44, Qu Wenruo wrote:
+On sabato 18 giugno 2022 11:27:52 CEST Fabio M. De Francesco wrote:
+> The use of kmap() is being deprecated in favor of kmap_local_page(). With
+> kmap_local_page(), the mapping is per thread, CPU local and not globally
+> visible.
 > 
+> Therefore, use kmap_local_page() / kunmap_local() in 
+zlib_compress_pages()
+> because in this function the mappings are per thread and are not visible
+> in other contexts.
 > 
-> On 2022/6/24 23:23, Forza wrote:
->> Hi,
->>
->> I have discovered an odd issue where "fstrim" on an Btrfs filesystem
->> consistently fails, while "mkfs.btrfs" always succeeds with full device
->> discard.
->>
->> Hardware:
->> * SuperMicro server
->> * LSI/Broadcom HBA 9500-8i SAS/SATA controller
->> * WD RED SA500 NAS SATA SSD 2TB (WDS200T1R0A-68A4W0)
->>    Drive FW: 411000WR
->> * Alpine Linux kernel 5.15.48
->>
->> * /sys/block/sdf/queue/
->>    discard_granularity:512
->>    discard_max_bytes:134217216
->>    discard_max_hw_bytes:134217216
+> Tested with xfstests on QEMU + KVM 32-bit VM with 4GB of RAM and
+> HIGHMEM64G enabled. This patch passes 26/26 tests of group "compress".
 > 
-> Weird, it's 128M - 512, not sure if this is related.
+> Cc: Qu Wenruo <wqu@suse.com>
+> Suggested-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+> 
+> This patch builds only on top of
+> "[PATCH] btrfs: zlib: refactor how we prepare the input buffer" by Qu 
+Wenruo".
+> https://lore.kernel.org/linux-btrfs/
+d0bfc791b5509df7b9ad44e41ada197d1b3149b3.1655519730.git.wqu@suse.com/
+> 
 
-The Kimgston SEDC500R960G SSD has the same values and there is no issue 
-with that one.
+I've seen that Qu sent a v2 of the above patch. However David thinks that 
+it is better not to map pages allocated in zlib.c for output (out_page) 
+since they cannot come from highmem because of "alloc_page(GFP_NOFS);".
 
-> 
->>
->> # btrfs fi us -T /mnt/nas_ssd/
->> Overall:
->>      Device size:                   7.13TiB
->>      Device allocated:             90.06GiB
->>      Device unallocated:            7.04TiB
-> 
-> Btrfs will definitely try to submit a large bio to do discard on all
-> those unallocated space.
-> 
-> Considering EXT4 has its block group headers taking up space, I guess it
-> will not submit large enough discard bio to trigger the problem.
-> 
->>      Device missing:                  0.00B
->>      Used:                         86.73GiB
->>      Free (estimated):              3.52TiB      (min: 3.52TiB)
->>      Free (statfs, df):             3.52TiB
->>      Data ratio:                       2.00
->>      Metadata ratio:                   2.00
->>      Global reserve:               94.58MiB      (used: 0.00B)
->>      Multiple profiles:                  no
->>
->>               Data     Metadata  System
->> Id Path      RAID1    RAID1     RAID1    Unallocated
->> -- --------- -------- --------- -------- -----------
->>   9 /dev/sdc1 44.00GiB   1.00GiB 32.00MiB     1.77TiB
->> 10 /dev/sdf1 44.00GiB   1.00GiB 32.00MiB     1.77TiB
->> 11 /dev/sdd1        -         -        -   894.25GiB
->> 12 /dev/sde1        -         -        -   894.25GiB
->> 13 /dev/sdg1        -         -        -     1.82TiB
->> 14 /dev/sdh1        -         -        -     1.82TiB
->> -- --------- -------- --------- -------- -----------
->>     Total     44.00GiB   1.00GiB 32.00MiB     8.94TiB
->>     Used      43.23GiB 133.44MiB 16.00KiB
->>
->>
->>
->>
->> The root cause I believe is that the WD drives take 1.5-2.5 minutes to
->> do a full device discard. The Kingston DC500 drives only take 6-7
->> seconds for the same. I have 4 identical WD drives and 2 Kingston
->> drives. All WD drives have the same issue.
->>
->> When issuing 'fstrim -v /mnt/btrfs' I get the following message in dmesg
->> after about 30 seconds:
->>
->> # time fstrim -v /mnt/nas_ssd/
->> /mnt/nas_ssd/: 6.2 TiB (6834839748608 bytes) trimmed
->>
->> real    4m21.356s
->> user    0m0.001s
->> sys     0m0.241s
->>
->> [  +0.000003] scsi target6:0:4: handle(0x0029),
->> sas_address(0x5003048020db4543), phy(3)
->> [  +0.000003] scsi target6:0:4: enclosure logical
->> id(0x5003048020db457f), slot(3)
->> [  +0.000003] scsi target6:0:4: enclosure level(0x0000), connector name(
->> C0.1)
->> [  +0.000003] sd 6:0:4:0: No reference found at driver, assuming
->> scmd(0x00000000eb0d9438) might have completed
->> [  +0.000003] sd 6:0:4:0: task abort: SUCCESS scmd(0x00000000eb0d9438)
->> [  +0.000012] sd 6:0:4:0: attempting task
->> abort!scmd(0x0000000075f63919), outstanding for 30397 ms & timeout 
->> 30000 ms
->> [  +0.000003] sd 6:0:4:0: [sdg] tag#2762 CDB: opcode=0x42 42 00 00 00 00
->> 00 00 00 18 00
->> [  +0.000002] scsi target6:0:4: handle(0x0029),
->> sas_address(0x5003048020db4543), phy(3)
->> [  +0.000004] scsi target6:0:4: enclosure logical
->> id(0x5003048020db457f), slot(3)
->> [  +0.000002] scsi target6:0:4: enclosure level(0x0000), connector name(
->> C0.1)
->> [  +0.000003] sd 6:0:4:0: No reference found at driver, assuming
->> scmd(0x0000000075f63919) might have completed
->> [  +0.000003] sd 6:0:4:0: task abort: SUCCESS scmd(0x0000000075f63919)
->> [  +0.255021] sd 6:0:4:0: Power-on or device reset occurred
-> 
-> Just want to make sure it's not btrfs screwing up things, mind to use
-> blktrace to trace the bio submitted so we can make sure btrfs is doing
-> its work correct?
+@David:
 
-Sure. Not an expert in making dev builds on Alpine but I think I got it 
-correct. Output is too large to be attached. See links to download the 
-trace files.
+I suppose that, since it builds _only_ on top of the refactor submitted by 
+Qu, I'll have to wait and see what you decide. 
 
-1) running blkdiscard /dev/sdf1
-https://paste.tnonline.net/files/MYymVOfP4ROQ_blktrace.tar.xz
-
-2) running mkfs.btrfs /dev/sdf1
-https://paste.tnonline.net/files/5UUvxYlQD46Q_blktrace_mkfs.tar.xz
-
-3) running fstrim on mounted btrfs
-https://paste.tnonline.net/files/gultxaa7OP8P_blktrace_fstrim.tar.xz
-https://paste.tnonline.net/files/8Vy7D0uR2Mk5_dmesg_fstrim.txt
+If you don't want kmap_local_page() and prefer using page_address() on 
+"out_page", please drop this patch and let me know, so that I can send a 
+new patch which will be in accordance to your preference.
 
 Thanks,
-Forza
 
-> 
-> Thanks,
-> Qu
->>
->>
->>
->>
->> An interesting observation is that "fstrim" works on the same device if
->> it is mounted as ext4. There are no errors in dmesg.
->>
->> To sum up:
->>
->> Works:
->> * "mkfs.btrfs"
->> * "btrfs replace"
->> * "btrfs device add"
->> * "fstrim" on ext4 mounted device.
->>
->> Does not work:
->> * "fstrim" on Btrfs mounted device
->> * "blkdiscard" on /dev/sdX
->>
->> The btrfs-progs code seems to do 'BLKDISCARD' on 1GiB chunks. This may
->> explain why "mkfs.btrfs" and "btrfs relace" and "btrfs device add"
->> works, while "fstrim" and "blkdiscard" tools do not.
->> https://github.com/kdave/btrfs-progs/blob/c0ad9bde429196db7e8710ea1abfab7a2bca2e43/common/device-utils.c#L79 
->>
->>
->>
->> Not exactly sure how ext4 handles the "fstrim" case, but it seems to
->> group trim requests in smaller batches, which may explain why the SSD
->> returns status before the 30s timeout of the HBA.
->> https://github.com/torvalds/linux/blob/92f20ff72066d8d7e2ffb655c2236259ac9d1c5d/fs/ext4/mballoc.c#L6467 
->>
->>
->>
->> Can we work around the Btrfs fstrim issue, for example by splitting up
->> fstrim requests in "discard_max_bytes" sized chunks?
->>
->> Thanks,
->> Forza
+Fabio
+
+
