@@ -2,255 +2,264 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC8F55E096
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570E155D90D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235600AbiF0Ozp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jun 2022 10:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
+        id S237818AbiF0POQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jun 2022 11:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbiF0Ozp (ORCPT
+        with ESMTP id S236405AbiF0POH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jun 2022 10:55:45 -0400
-X-Greylist: delayed 486 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Jun 2022 07:55:43 PDT
-Received: from mail.mailmag.net (mail.mailmag.net [5.135.159.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5310165A7
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jun 2022 07:55:43 -0700 (PDT)
-Received: from authenticated-user (mail.mailmag.net [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.mailmag.net (Postfix) with ESMTPSA id C3483EC7755;
-        Mon, 27 Jun 2022 07:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net; s=mail;
-        t=1656341255;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nRCfXRoZeDfdkVZ/s/uXDqwLkd4nfhE2Y+NUxlzeKqM=;
-        b=GE9laeUA8Hk43v841duto1xOVLzbU3BvHVqGAWuOFTV931Rm9W8UUR7lBSfN9gHqmwaGoM
-        hhCjexx611VmvVBxMMAqs0XQ4a3P7COuusVIrBtNtS7vxbmH1RzmuGWbkmCW7YlUvy28t9
-        YCBysL6lux+yIkDaPu7yfhj9BXT57Xw=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joshua Villwock <joshua@mailmag.net>
-Mime-Version: 1.0
+        Mon, 27 Jun 2022 11:14:07 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2115.outbound.protection.outlook.com [40.107.21.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3638C18379
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jun 2022 08:14:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cjvezZo56i1bnbNodriz8VobCHXFinR+XBz2IpQCoHTszD2PLWFCg6nK1nvyoFNJAKokLxogjQvE6AvkFhEPBOc9XU8Eofimz38urQBaoUQeeY5yn3516LU6ODKctrCyHPf5ncFQSrXOP1F+FUO6esmrehsmaW+iNUfZfwdc1PyVHuUfiKpoWgitz0BDbZlflWrEne6vfnOpbINKqZlpaPfhW2hkD9Bs8gKa7WQTrKH+/GAAaAvphJi8Mq3mmS6QsomdpwwxCm3OgSygTLCskeUUnyV95arUUji28xltNP1tRaNMHrxBN8mkexbsvGrY9p7yP6/IO7kRswGjyP2zlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bMx86mB9FQqc4whyP6sXAKwLRHo6hgJ2d9yJLyKG4c4=;
+ b=NtJ+HHXNQipPvIZfpAhrwiACX51INhj8mYqPec9ld7Unb5uMhJu2QE7NhXCQY+DkilqpnUb6p2M2u2gsGR1npa2uyyPTkqg6gaS+kq0CLOIgXA+PnJnmPqMFUwbzg9JuDTU0imCmd75QOxonw4AUSyf70Z5f2zlQrMVq75yStIpDw2Zv+dYTeUmZPjHI1h8nucTfERWkvXBUVk7fN1kZdPMpp99hxg1LmOYnIrBAUrc8C6OZ/RIhLLvSEHYyqjtNT4m+giqwjCqlkaT9aedA4BSe9wqKsHDQ852Ss6LH7C5055zF7Wq8dl3wcM1qTYmmWybIXE9gB/6l3XVpwTeNXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bcom.cz; dmarc=pass action=none header.from=bcom.cz; dkim=pass
+ header.d=bcom.cz; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bcom.cz; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bMx86mB9FQqc4whyP6sXAKwLRHo6hgJ2d9yJLyKG4c4=;
+ b=XhTKQRPHpbUyJMMqRC5UzZiCUP7Grc0MQWZmakhrEsV7Ern/c1JB3GhRioH6A0fw/cwFn6oURZnb0oM5Pdkjc/Aw7T0uHRfjajWvDAqJfpKMjgKWKyXK49/qK1ESfMjth3kdhito2Svh2Hd/6b2zsAo482SUTeuFKypa9RV7J4I=
+Received: from PAXPR03MB7856.eurprd03.prod.outlook.com (2603:10a6:102:213::23)
+ by VE1PR03MB6032.eurprd03.prod.outlook.com (2603:10a6:803:10c::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.18; Mon, 27 Jun
+ 2022 15:13:59 +0000
+Received: from PAXPR03MB7856.eurprd03.prod.outlook.com
+ ([fe80::9922:97d9:a13f:6924]) by PAXPR03MB7856.eurprd03.prod.outlook.com
+ ([fe80::9922:97d9:a13f:6924%7]) with mapi id 15.20.5373.018; Mon, 27 Jun 2022
+ 15:13:59 +0000
+From:   =?utf-8?B?TGlib3IgS2xlcMOhxI0=?= <libor.klepac@bcom.cz>
+To:     "joshua@mailmag.net" <joshua@mailmag.net>,
+        "quwenruo.btrfs@gmx.com" <quwenruo.btrfs@gmx.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Subject: Re: Question about metadata size
-Date:   Mon, 27 Jun 2022 07:47:21 -0700
-Message-Id: <E77A8A5F-4C3F-479C-9428-DE56C82A8618@mailmag.net>
+Thread-Topic: Question about metadata size
+Thread-Index: AQHYigSW65wbq0NzSkyBZZP+sZI85K1jCCEAgAADogCAAAi/AIAAF0gAgAAGFQCAACO0gIAAB3AA
+Date:   Mon, 27 Jun 2022 15:13:59 +0000
+Message-ID: <43642954cf949220b4278fd792251294a39045c2.camel@bcom.cz>
 References: <6a345774-e87c-ad3f-1172-e1d59f1382a7@gmx.com>
-Cc:     =?utf-8?Q?Libor_Klep=C3=A1=C4=8D?= <libor.klepac@bcom.cz>,
-        linux-btrfs@vger.kernel.org
-In-Reply-To: <6a345774-e87c-ad3f-1172-e1d59f1382a7@gmx.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net;
-        s=mail; t=1656341255;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nRCfXRoZeDfdkVZ/s/uXDqwLkd4nfhE2Y+NUxlzeKqM=;
-        b=oRRZ62AGzvYsZHgTudoKs0kJjFS7jVzsG9KL58eKhhv9AbMPHfdnzG4GxRyGcA7Ke3QTrI
-        /Z5A2ZPkPODSYOkTZB4l6WhOO7yHBaxKCTGxtAtTypDQ9a0KQxICZT2+yGWR0cVVbqrlK3
-        pDS/eEOFdbqrM7bjleIcrKtnL/ZE51o=
-ARC-Seal: i=1; s=mail; d=mailmag.net; t=1656341255; a=rsa-sha256; cv=none;
-        b=4WSQtmA9wQo3UExEKuomeqvUGawC/ZEl6ohZpC2VdZosFQ+SUboUuMtcfM0NpTCQ94RaLq
-        pg2o9AnSkBabY30zXFJTlM6bz3eM5SpzoIOyEhcdMz692wI2DGTYM5UvXeoY8Cm02KsVQI
-        cFB8yvYXCA+XCmy7DuTkz57d/rSoD+I=
-ARC-Authentication-Results: i=1;
-        mail.mailmag.net;
-        auth=pass smtp.mailfrom=joshua@mailmag.net
+         <E77A8A5F-4C3F-479C-9428-DE56C82A8618@mailmag.net>
+In-Reply-To: <E77A8A5F-4C3F-479C-9428-DE56C82A8618@mailmag.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.44.2-1 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bcom.cz;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 99a07107-1300-4bf0-be8b-08da584fa95e
+x-ms-traffictypediagnostic: VE1PR03MB6032:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZG80eAUhUppi5H4ydEtbGqrkTLD7mdENdrbAJdXpT5t9RiisQxWgreAHivnkuR8el8Ws+4e7941d/6ofcti/zMVWyqQfAtEWRNLoyk4GSDuJJRsUurbIfxdyVZvhoLcFBcVW0/MDBjbr1cv79gQ5RPkM0YOBpKni53P7HUky+8sqDMkn+ZGTYoyYBvgSBlIEJFZz1c30rbgnAq70TxEXIN1y9SYwFn4Sl0TXvNX6/GCESofBAP4xq8twViMVLeVa9vk8rsp8eTPfuUs0fU05BoQpH+gE3Gsz0Gg7Q9dXpsnChE21DLtZHKYuYEWhzzuqqtEJLnr4nBDj37gElF+AMbN5X9/vwhM8h57ye58G3w2MRitRozPKhld13M8tRcgCXMH+7DMTKQ//H1//enCwhhm3PbkaRE+MMkR/Y/YVilOpt0nCzeoIA8IVCWmujfZQVZYqYVKIrO2t4fNhUh2zxJ0bkZh/1tR0Ahah532DUvwJtjlkdP/DpIOgYtiGTYmUs+oWV8mRtI6lKj/vGys7a3WImZ3H3RqwWCEQRsQmj1ITU1bN2EC1sBVNfueKMfIhxY9xTQw6UJqwq9g+G5i1YwOFWqBCeo5Zw5aHKlMino40MMEd2RvFKCGKKGR2ho8tXNMGNGtInXFtXEd1BFHvjTs89d+EXt5bf+XUx4/gIyABGxAJiYOHPtmO98oDPGmgsmyFGBBh/IUPAJY4gApBZaQBJxfEV8aGdSESaLSO0a6XHfRGo09Nl4zBiwi3KD9vIEK8/3cgQ+tEccOUO8vf55UcJkHyg48Kq6MXdAwEQhc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR03MB7856.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(136003)(346002)(366004)(39850400004)(376002)(396003)(186003)(110136005)(3480700007)(83380400001)(38100700002)(2616005)(6486002)(85182001)(36756003)(5660300002)(8936002)(8676002)(66446008)(66476007)(4326008)(38070700005)(66556008)(91956017)(76116006)(64756008)(66946007)(316002)(6512007)(6506007)(53546011)(122000001)(71200400001)(478600001)(86362001)(2906002)(41300700001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dzViQ3NhV0V3WU5IaVI1Z2NYZzIrNjRTWi91OElEcmwwckxONFZSU3krY1A1?=
+ =?utf-8?B?MmpNRzVKdjVPR3daam1DSUIxbnlvV1NNYWxSYmdMdThPb0tMMldZOTF6Z0Rq?=
+ =?utf-8?B?b3pqQUFmeHZUNHdzNDhueHNvM01ybkQxK3AzbGVHVURDRVYxc1VUb0FYWGpo?=
+ =?utf-8?B?YWdmUzdVTm5hemxwNjkzMTZrZTIyTmtWR01JdzE3aTdTbjcwbGFjMXNXMml5?=
+ =?utf-8?B?N3VmakRONEpVQ2hXRCs1S0UzWmJnc00wUjVORkRzbEU4TXdWZXVHNGg2ZVJM?=
+ =?utf-8?B?TFpSK1Z1WEJtajU2TWdReTFZbXBNVnVVZ0kyMGw4YWlrdjJpZ0dSZ1ZMR2Zu?=
+ =?utf-8?B?Z1hCdWZYaGtpU1FlSEo4NjFnUG84c0xNSzhyd1hhaXlCbWVxVEFDY0s1amo3?=
+ =?utf-8?B?bVFGbVBTcVEvdDJGU0tESUV0cVhBcFdBNzZta3ZPUDlNUjJWdCtNalBLT2dq?=
+ =?utf-8?B?QzlydkIvSzJjSm0wVklpSEhNa01iaXZSL2lIdzhyS1lOQkFUT0VUc0hvN1VR?=
+ =?utf-8?B?d3FIT3lPNk8ybVBSSkJnUERudlI0ZVhVbVE2YjBKaU1MQ2hjOHdIZ2NOREVI?=
+ =?utf-8?B?dFJLbnZxMzVYMm9JNGNYVi9nQTZoalJZazZiYUt4TWkrY0xyT0xrMGxQaEdw?=
+ =?utf-8?B?TjJ3b2lLS21pcWxJZklqS0JYUzdzcmpCN3U5TkFLOVJ0YXQ5dDlYOWtnQkNL?=
+ =?utf-8?B?dllhZ0JWdzYwRkVqRkRGOUM1c2dKTlFkWDZIRm9CeldIckR6aFh3SEN0Rmky?=
+ =?utf-8?B?UGhVRWZWNjVielVDS2Z3WGlkWFRxK3A4ZDBlNmY0ekJRWnZ1S3IzUC9QRjhH?=
+ =?utf-8?B?Ri82NzRySnBpVkxieEZ0anRoUkVnNThwOTEySXoyUHNFNFNFMUNmODIyNzE1?=
+ =?utf-8?B?VEtXSGVjQXZobFNPdmhuUnNxS3JZS21iV3Q2ODBKcGRnc1cxc1FURmlLeFdI?=
+ =?utf-8?B?QStsMFlOY0c3OHNwQ0paVER4MEZEcXFwZ3VWRE9mbjRIMXNQcHFGSi9zRm4y?=
+ =?utf-8?B?Mk1qdVc1VUFieWtUKzZISU9IQnlJOTJwSHVyRTVqRjA3RUs0ZStPTURQSmU0?=
+ =?utf-8?B?SnFEQUxEWHJtaTd6VFdHZjlSbkdiU0Fidkx5S0crWmRIdDI4eDhUWm1QdFNw?=
+ =?utf-8?B?ejZ3UnNkQTdxdHhqQ2wvVHcxNStpRmxMZUdFVzdRbCt0a1o5R2lCd0U5VXVy?=
+ =?utf-8?B?UHRxdENSZjM0dDRjdHV5U1B0VC9qWDdOam5wemV0YS9qaTQ4R0VRYWV4S2g4?=
+ =?utf-8?B?WGFJdWxaczAyQ2JTeUQ3OUlSODdHQitFQ3doUnFGeTBIdWY4MHdTM2J6U1cz?=
+ =?utf-8?B?Z1FsVmpZdUIxckp3ZjZkMEZwUmhjaTdnUFpndmpqN3hHU3haQndjUTV0VFBs?=
+ =?utf-8?B?T25aZ3N6eWdSQ1pmSTg4SEhMVFdHakg1RksvK2htRWdhTXN5azA5T1AwRlRF?=
+ =?utf-8?B?ZEtCZUdOdFJ5OXhyOEQrcWFiWUs1TXNwQ2tjMHc4YzlFdEpGZGREUTJwS1cz?=
+ =?utf-8?B?STN0UWpQTXRnOGlqQ1l3QW1RZ2dUTzdrTGcrektxcncyM3o4cjdSK0IvTHBk?=
+ =?utf-8?B?MWxtTDJYejZYNmR1QXpMMklkVTVab3lsai9Xanl2eDJCTG1EZnJhdTNVSFRO?=
+ =?utf-8?B?S05MSy82SUVDTkpOeUJuRU8vcEVIaDAyYUFVYXMrWi9ZdG5kQWtuQ1lDemNY?=
+ =?utf-8?B?MWpKbjljQ2x1TytxR2JpSEhveXJndnNVRVkvODJISVJZcmhnUDU2VlJqL3lF?=
+ =?utf-8?B?UTdjVmpqbkdRNDZ5a3hJQWRyYVVDUkNtaDdYdHV3ZllCL2hVZDYrdlV4TnhG?=
+ =?utf-8?B?NXBPUzNOMTVDblRFSHB2WWNEd3RsYU5PcEdHVXJSYjhhTkQzU0szZDNHNzlz?=
+ =?utf-8?B?bGorT2poL2pmLzVUVUJjcm1hdlRZb2pzSkdNa3JzTkF3TE1zV3BHY04xYW85?=
+ =?utf-8?B?Wll5WGt5c2VXR2FmVklYMW5NbWZiS2swTkFtL3RPbGZqK1hIWnlDOVdLSTUr?=
+ =?utf-8?B?Zm5aOTE1SVZYeDdndzM1eUpXWW5mZ2tRODNYRGd2TU1Bb2h6M3JrV2JzRmUy?=
+ =?utf-8?B?R0xwUTN4SzN1SmE2ZUNGTFVJdTJidHFienhxckxNZVVqeHdGM09hZVJVa3F3?=
+ =?utf-8?B?ZlY1Y0krTFYyanJIWEpiWnJscDdoSXJFMDA3S0JjY1Yzb0NyOEtqRWVWNGpC?=
+ =?utf-8?B?cnlHcThGNHVIRXhnM3dySXhoRGw4Q0Jjb3gvYjgxQjVHYW5uenFXMGtHYUhx?=
+ =?utf-8?B?L1BGaWNHRDRtQVU0cDRJblN2QWRBPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <CBFCFA085A380F42ABDC8C88FA113213@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: bcom.cz
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR03MB7856.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99a07107-1300-4bf0-be8b-08da584fa95e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jun 2022 15:13:59.3097
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86024d20-efe6-4f7c-a3f3-90e802ed8ce7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ktQGEAS68h5KGYAXzCvxtKI4IioWKlhpw/cn7V6UT6Ubx/sI5w/U4tBmACfB7TgTPhR/TgV8Ywf/Ngra7BosGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR03MB6032
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-=E2=80=94Joshua Villwock
-
-> On Jun 27, 2022, at 5:47 AM, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->=20
-> =EF=BB=BF
->=20
->> On 2022/6/27 20:17, Libor Klep=C3=A1=C4=8D wrote:
->>> On Po, 2022-06-27 at 18:54 +0800, Qu Wenruo wrote:
->>>=20
->>>=20
->>> On 2022/6/27 18:23, Libor Klep=C3=A1=C4=8D wrote:
->>>> On Po, 2022-06-27 at 18:10 +0800, Qu Wenruo wrote:
->>>>>=20
->>>>>=20
->>>>> On 2022/6/27 17:02, Libor Klep=C3=A1=C4=8D wrote:
->>>>>> Hi,
->>>>>> we have filesystem like this
->>>>>>=20
->>>>>> Overall:
->>>>>>       Device size:                  30.00TiB
->>>>>>       Device allocated:             24.93TiB
->>>>>>       Device unallocated:            5.07TiB
->>>>>>       Device missing:                  0.00B
->>>>>>       Used:                         24.92TiB
->>>>>>       Free (estimated):              5.07TiB      (min:
->>>>>> 2.54TiB)
->>>>>>       Data ratio:                       1.00
->>>>>>       Metadata ratio:                   1.00
->>>>>>       Global reserve:              512.00MiB      (used: 0.00B)
->>>>>>=20
->>>>>> Data,single: Size:24.85TiB, Used:24.84TiB (99.98%)
->>>>>>      /dev/sdc       24.85TiB
->>>>>>=20
->>>>>> Metadata,single: Size:88.00GiB, Used:81.54GiB (92.65%)
->>>>>>      /dev/sdc       88.00GiB
->>>>>>=20
->>>>>> System,DUP: Size:32.00MiB, Used:3.25MiB (10.16%)
->>>>>>      /dev/sdc       64.00MiB
->>>>>>=20
->>>>>> Unallocated:
->>>>>>      /dev/sdc        5.07TiB
->>>>>>=20
->>>>>>=20
->>>>>> Is it normal to have so much metadata? We have only 119 files
->>>>>> with
->>>>>> size
->>>>>> of 2048 bytes or less.
->>>>>=20
->>>>> That would only take around 50KiB so no problem.
->>>>>=20
->>>>>> There is 885 files in total and 17 directories, we don't use
->>>>>> snapshots.
->>>>>=20
->>>>> The other files really depends.
->>>>>=20
->>>>> Do you use compression, if so metadata usage will be greately
->>>>> increased.
->>>>=20
->>>>=20
->>>> Yes, we use zstd compression - filesystem is mounted with compress-
->>>> force=3Dzstd:9
->>>>=20
->>>>>=20
->>>>> For non-compressed files, the max file extent size is 128M, while
->>>>> for
->>>>> compressed files, the max file extent size is only 128K.
->>>>>=20
->>>>> This means, for a 3TiB file, if you have compress enabled, it
->>>>> will
->>>>> take
->>>>> 24M file extents, and since each file extent takes at least 53
->>>>> bytes
->>>>> for
->>>>=20
->>>> That is lot of extents ;)
->>>>=20
->>>>> metadata, one such 3TiB file can already take over 1 GiB for
->>>>> metadata.
->>>>=20
->>>> I guess there is no way to increase extent size?
->>>=20
->>> Currently it's hard coded. So no way to change that yet.
->>>=20
->>> But please keep in mind that, btrfs compression needs to do trade-off
->>> between writes, and the decompressed size.
->>>=20
->>> E.g. if we can have an 1MiB compressed extent, but if 1020KiB are
->>> overwritten, just one 4KiB is really referred, then to read that 4KiB
->>> we
->>> need to decompress all that 1MiB just to read that 4KiB.
->>=20
->> Yes, i get reason for this.
->> I just never realised the difference in extent size and it's impact on
->> metadata size/number of extents.
->>=20
->>> So personally speaking, if the main purpose of those large files are
->>> just to archive, not to do frequent write on, then user space
->>> compression would make more sense.
->>=20
->> Ok, these files are writen once and deleted after 14 days (every 14
->> days, new full backup is created and oldest fullbackup is deleted. Full
->> backup is dump of whole disk image from vmware), unless needed for some
->> recovery. Then it's mounted as disk image.
->>=20
->>>=20
->>> The default btrfs tends to lean to write support.
->>>=20
->>>> We can use internal compression of nakivo, but not without deleting
->>>> all
->>>> stored data and creating empty repository.
->>>> Also we wanted to do compression in btrfs, we hoped it will give
->>>> more
->>>> power to beesd to do it's thing (for comparing data)
->>>=20
->>> Then I guess there is not much thing we can help right now, and that
->>> many extents are also slowing down file deletion just as you
->>> mentioned.
->>=20
->> So i will have to experiment, if user land compression allows us to do
->> some reasonble deduplication with beesd.
->=20
-> As long as the compression algorithm/tool can reproduce the same
-> compressed data for the same input, then it would be fine.
-
-Does Nakivo support compression that plays nice with dedupe?
-
-I know Veeam for example has =E2=80=9Cdedupe-friendly=E2=80=9D as a compress=
-ion option which makes it output less-compressed data, but ensures your stor=
-age appliance can dedupe it.
-
-Not sure if they have something like that, but if so, it would probably be t=
-he best solution.
-
->> It may maybe speed up beesd, it cannot keep up with data influx, maybe
->> it's (also) because the number of file extents.
->> Unfortunately it will mean some serious data juggling in production
->> environment.
->=20
-> I'm wondering can we just remount the fs to remove the compress=3Dzstd
-> mount option?
->=20
-> Since compress=3Dzstd will only affect new writes and to user-space
-> compression should be transparent, disabling btrfs compression at any
-> time point should not cause problems.
->=20
-> Thanks,
-> Qu
->=20
->>=20
->> Thanks,
->> Libor
->>=20
->>=20
->>>=20
->>> Thanks,
->>> Qu
->>>=20
->>>>=20
->>>>>=20
->>>>> Thanks,
->>>>> Qu
->>>>=20
->>>> With regards, Libor
->>>>=20
->>>>>>=20
->>>>>> Most of the files are multi gigabyte, some of them have around
->>>>>> 3TB
->>>>>> -
->>>>>> all are snapshots from vmware stored using nakivo.
->>>>>>=20
->>>>>> Working with filesystem - mostly deleting files seems to be
->>>>>> very
->>>>>> slow -
->>>>>> it took several hours to delete snapshot of one machine, which
->>>>>> consisted of four or five of those 3TB files.
->>>>>>=20
->>>>>> We run beesd on those data, but i think, there was this much
->>>>>> metadata
->>>>>> even before we started to do so.
->>>>>>=20
->>>>>> With regards,
->>>>>> Libor
+DQpPbiBQbywgMjAyMi0wNi0yNyBhdCAwNzo0NyAtMDcwMCwgSm9zaHVhIFZpbGx3b2NrIHdyb3Rl
+Og0KPiANCj4gDQo+IOKAlEpvc2h1YSBWaWxsd29jaw0KPiANCj4gPiBPbiBKdW4gMjcsIDIwMjIs
+IGF0IDU6NDcgQU0sIFF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT4NCj4gPiB3cm90
+ZToNCj4gPiANCj4gPiDvu78NCj4gPiANCj4gPiA+IE9uIDIwMjIvNi8yNyAyMDoxNywgTGlib3Ig
+S2xlcMOhxI0gd3JvdGU6DQo+ID4gPiA+IE9uIFBvLCAyMDIyLTA2LTI3IGF0IDE4OjU0ICswODAw
+LCBRdSBXZW5ydW8gd3JvdGU6DQo+ID4gPiA+IA0KPiA+ID4gPiANCj4gPiA+ID4gT24gMjAyMi82
+LzI3IDE4OjIzLCBMaWJvciBLbGVww6HEjSB3cm90ZToNCj4gPiA+ID4gPiBPbiBQbywgMjAyMi0w
+Ni0yNyBhdCAxODoxMCArMDgwMCwgUXUgV2VucnVvIHdyb3RlOg0KPiA+ID4gPiA+ID4gDQo+ID4g
+PiA+ID4gPiANCj4gPiA+ID4gPiA+IE9uIDIwMjIvNi8yNyAxNzowMiwgTGlib3IgS2xlcMOhxI0g
+d3JvdGU6DQo+ID4gPiA+ID4gPiA+IEhpLA0KPiA+ID4gPiA+ID4gPiB3ZSBoYXZlIGZpbGVzeXN0
+ZW0gbGlrZSB0aGlzDQo+ID4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gPiBPdmVyYWxsOg0KPiA+
+ID4gPiA+ID4gPiDCoMKgwqDCoMKgIERldmljZSBzaXplOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgMzAuMDBUaUINCj4gPiA+ID4gPiA+ID4gwqDCoMKgwqDCoCBEZXZpY2UgYWxs
+b2NhdGVkOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAyNC45M1RpQg0KPiA+ID4gPiA+ID4gPiDC
+oMKgwqDCoMKgIERldmljZSB1bmFsbG9jYXRlZDrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDUuMDdU
+aUINCj4gPiA+ID4gPiA+ID4gwqDCoMKgwqDCoCBEZXZpY2UgbWlzc2luZzrCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIDAuMDBCDQo+ID4gPiA+ID4gPiA+IMKgwqDCoMKgwqAgVXNl
+ZDrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMjQuOTJU
+aUINCj4gPiA+ID4gPiA+ID4gwqDCoMKgwqDCoCBGcmVlIChlc3RpbWF0ZWQpOsKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIDUuMDdUaULCoMKgwqDCoMKgIChtaW46DQo+ID4gPiA+ID4gPiA+IDIu
+NTRUaUIpDQo+ID4gPiA+ID4gPiA+IMKgwqDCoMKgwqAgRGF0YSByYXRpbzrCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxLjAwDQo+ID4gPiA+ID4gPiA+IMKgwqDC
+oMKgwqAgTWV0YWRhdGEgcmF0aW86wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IDEuMDANCj4gPiA+ID4gPiA+ID4gwqDCoMKgwqDCoCBHbG9iYWwgcmVzZXJ2ZTrCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCA1MTIuMDBNaULCoMKgwqDCoMKgICh1c2VkOg0KPiA+ID4gPiA+ID4g
+PiAwLjAwQikNCj4gPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+IERhdGEsc2luZ2xlOiBTaXpl
+OjI0Ljg1VGlCLCBVc2VkOjI0Ljg0VGlCICg5OS45OCUpDQo+ID4gPiA+ID4gPiA+IMKgwqDCoMKg
+IC9kZXYvc2RjwqDCoMKgwqDCoMKgIDI0Ljg1VGlCDQo+ID4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+
+ID4gPiBNZXRhZGF0YSxzaW5nbGU6IFNpemU6ODguMDBHaUIsIFVzZWQ6ODEuNTRHaUIgKDkyLjY1
+JSkNCj4gPiA+ID4gPiA+ID4gwqDCoMKgwqAgL2Rldi9zZGPCoMKgwqDCoMKgwqAgODguMDBHaUIN
+Cj4gPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+IFN5c3RlbSxEVVA6IFNpemU6MzIuMDBNaUIs
+IFVzZWQ6My4yNU1pQiAoMTAuMTYlKQ0KPiA+ID4gPiA+ID4gPiDCoMKgwqDCoCAvZGV2L3NkY8Kg
+wqDCoMKgwqDCoCA2NC4wME1pQg0KPiA+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+ID4gVW5hbGxv
+Y2F0ZWQ6DQo+ID4gPiA+ID4gPiA+IMKgwqDCoMKgIC9kZXYvc2RjwqDCoMKgwqDCoMKgwqAgNS4w
+N1RpQg0KPiA+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+IElzIGl0
+IG5vcm1hbCB0byBoYXZlIHNvIG11Y2ggbWV0YWRhdGE/IFdlIGhhdmUgb25seSAxMTkNCj4gPiA+
+ID4gPiA+ID4gZmlsZXMNCj4gPiA+ID4gPiA+ID4gd2l0aA0KPiA+ID4gPiA+ID4gPiBzaXplDQo+
+ID4gPiA+ID4gPiA+IG9mIDIwNDggYnl0ZXMgb3IgbGVzcy4NCj4gPiA+ID4gPiA+IA0KPiA+ID4g
+PiA+ID4gVGhhdCB3b3VsZCBvbmx5IHRha2UgYXJvdW5kIDUwS2lCIHNvIG5vIHByb2JsZW0uDQo+
+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+ID4gVGhlcmUgaXMgODg1IGZpbGVzIGluIHRvdGFsIGFu
+ZCAxNyBkaXJlY3Rvcmllcywgd2UgZG9uJ3QNCj4gPiA+ID4gPiA+ID4gdXNlDQo+ID4gPiA+ID4g
+PiA+IHNuYXBzaG90cy4NCj4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gVGhlIG90aGVyIGZpbGVz
+IHJlYWxseSBkZXBlbmRzLg0KPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiBEbyB5b3UgdXNlIGNv
+bXByZXNzaW9uLCBpZiBzbyBtZXRhZGF0YSB1c2FnZSB3aWxsIGJlDQo+ID4gPiA+ID4gPiBncmVh
+dGVseQ0KPiA+ID4gPiA+ID4gaW5jcmVhc2VkLg0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+IA0KPiA+
+ID4gPiA+IFllcywgd2UgdXNlIHpzdGQgY29tcHJlc3Npb24gLSBmaWxlc3lzdGVtIGlzIG1vdW50
+ZWQgd2l0aA0KPiA+ID4gPiA+IGNvbXByZXNzLQ0KPiA+ID4gPiA+IGZvcmNlPXpzdGQ6OQ0KPiA+
+ID4gPiA+IA0KPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiBGb3Igbm9uLWNvbXByZXNzZWQgZmls
+ZXMsIHRoZSBtYXggZmlsZSBleHRlbnQgc2l6ZSBpcyAxMjhNLA0KPiA+ID4gPiA+ID4gd2hpbGUN
+Cj4gPiA+ID4gPiA+IGZvcg0KPiA+ID4gPiA+ID4gY29tcHJlc3NlZCBmaWxlcywgdGhlIG1heCBm
+aWxlIGV4dGVudCBzaXplIGlzIG9ubHkgMTI4Sy4NCj4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4g
+VGhpcyBtZWFucywgZm9yIGEgM1RpQiBmaWxlLCBpZiB5b3UgaGF2ZSBjb21wcmVzcyBlbmFibGVk
+LA0KPiA+ID4gPiA+ID4gaXQNCj4gPiA+ID4gPiA+IHdpbGwNCj4gPiA+ID4gPiA+IHRha2UNCj4g
+PiA+ID4gPiA+IDI0TSBmaWxlIGV4dGVudHMsIGFuZCBzaW5jZSBlYWNoIGZpbGUgZXh0ZW50IHRh
+a2VzIGF0IGxlYXN0DQo+ID4gPiA+ID4gPiA1Mw0KPiA+ID4gPiA+ID4gYnl0ZXMNCj4gPiA+ID4g
+PiA+IGZvcg0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+IFRoYXQgaXMgbG90IG9mIGV4dGVudHMgOykN
+Cj4gPiA+ID4gPiANCj4gPiA+ID4gPiA+IG1ldGFkYXRhLCBvbmUgc3VjaCAzVGlCIGZpbGUgY2Fu
+IGFscmVhZHkgdGFrZSBvdmVyIDEgR2lCDQo+ID4gPiA+ID4gPiBmb3INCj4gPiA+ID4gPiA+IG1l
+dGFkYXRhLg0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+IEkgZ3Vlc3MgdGhlcmUgaXMgbm8gd2F5IHRv
+IGluY3JlYXNlIGV4dGVudCBzaXplPw0KPiA+ID4gPiANCj4gPiA+ID4gQ3VycmVudGx5IGl0J3Mg
+aGFyZCBjb2RlZC4gU28gbm8gd2F5IHRvIGNoYW5nZSB0aGF0IHlldC4NCj4gPiA+ID4gDQo+ID4g
+PiA+IEJ1dCBwbGVhc2Uga2VlcCBpbiBtaW5kIHRoYXQsIGJ0cmZzIGNvbXByZXNzaW9uIG5lZWRz
+IHRvIGRvDQo+ID4gPiA+IHRyYWRlLW9mZg0KPiA+ID4gPiBiZXR3ZWVuIHdyaXRlcywgYW5kIHRo
+ZSBkZWNvbXByZXNzZWQgc2l6ZS4NCj4gPiA+ID4gDQo+ID4gPiA+IEUuZy4gaWYgd2UgY2FuIGhh
+dmUgYW4gMU1pQiBjb21wcmVzc2VkIGV4dGVudCwgYnV0IGlmIDEwMjBLaUINCj4gPiA+ID4gYXJl
+DQo+ID4gPiA+IG92ZXJ3cml0dGVuLCBqdXN0IG9uZSA0S2lCIGlzIHJlYWxseSByZWZlcnJlZCwg
+dGhlbiB0byByZWFkDQo+ID4gPiA+IHRoYXQgNEtpQg0KPiA+ID4gPiB3ZQ0KPiA+ID4gPiBuZWVk
+IHRvIGRlY29tcHJlc3MgYWxsIHRoYXQgMU1pQiBqdXN0IHRvIHJlYWQgdGhhdCA0S2lCLg0KPiA+
+ID4gDQo+ID4gPiBZZXMsIGkgZ2V0IHJlYXNvbiBmb3IgdGhpcy4NCj4gPiA+IEkganVzdCBuZXZl
+ciByZWFsaXNlZCB0aGUgZGlmZmVyZW5jZSBpbiBleHRlbnQgc2l6ZSBhbmQgaXQncw0KPiA+ID4g
+aW1wYWN0IG9uDQo+ID4gPiBtZXRhZGF0YSBzaXplL251bWJlciBvZiBleHRlbnRzLg0KPiA+ID4g
+DQo+ID4gPiA+IFNvIHBlcnNvbmFsbHkgc3BlYWtpbmcsIGlmIHRoZSBtYWluIHB1cnBvc2Ugb2Yg
+dGhvc2UgbGFyZ2UNCj4gPiA+ID4gZmlsZXMgYXJlDQo+ID4gPiA+IGp1c3QgdG8gYXJjaGl2ZSwg
+bm90IHRvIGRvIGZyZXF1ZW50IHdyaXRlIG9uLCB0aGVuIHVzZXIgc3BhY2UNCj4gPiA+ID4gY29t
+cHJlc3Npb24gd291bGQgbWFrZSBtb3JlIHNlbnNlLg0KPiA+ID4gDQo+ID4gPiBPaywgdGhlc2Ug
+ZmlsZXMgYXJlIHdyaXRlbiBvbmNlIGFuZCBkZWxldGVkIGFmdGVyIDE0IGRheXMgKGV2ZXJ5DQo+
+ID4gPiAxNA0KPiA+ID4gZGF5cywgbmV3IGZ1bGwgYmFja3VwIGlzIGNyZWF0ZWQgYW5kIG9sZGVz
+dCBmdWxsYmFja3VwIGlzDQo+ID4gPiBkZWxldGVkLiBGdWxsDQo+ID4gPiBiYWNrdXAgaXMgZHVt
+cCBvZiB3aG9sZSBkaXNrIGltYWdlIGZyb20gdm13YXJlKSwgdW5sZXNzIG5lZWRlZA0KPiA+ID4g
+Zm9yIHNvbWUNCj4gPiA+IHJlY292ZXJ5LiBUaGVuIGl0J3MgbW91bnRlZCBhcyBkaXNrIGltYWdl
+Lg0KPiA+ID4gDQo+ID4gPiA+IA0KPiA+ID4gPiBUaGUgZGVmYXVsdCBidHJmcyB0ZW5kcyB0byBs
+ZWFuIHRvIHdyaXRlIHN1cHBvcnQuDQo+ID4gPiA+IA0KPiA+ID4gPiA+IFdlIGNhbiB1c2UgaW50
+ZXJuYWwgY29tcHJlc3Npb24gb2YgbmFraXZvLCBidXQgbm90IHdpdGhvdXQNCj4gPiA+ID4gPiBk
+ZWxldGluZw0KPiA+ID4gPiA+IGFsbA0KPiA+ID4gPiA+IHN0b3JlZCBkYXRhIGFuZCBjcmVhdGlu
+ZyBlbXB0eSByZXBvc2l0b3J5Lg0KPiA+ID4gPiA+IEFsc28gd2Ugd2FudGVkIHRvIGRvIGNvbXBy
+ZXNzaW9uIGluIGJ0cmZzLCB3ZSBob3BlZCBpdCB3aWxsDQo+ID4gPiA+ID4gZ2l2ZQ0KPiA+ID4g
+PiA+IG1vcmUNCj4gPiA+ID4gPiBwb3dlciB0byBiZWVzZCB0byBkbyBpdCdzIHRoaW5nIChmb3Ig
+Y29tcGFyaW5nIGRhdGEpDQo+ID4gPiA+IA0KPiA+ID4gPiBUaGVuIEkgZ3Vlc3MgdGhlcmUgaXMg
+bm90IG11Y2ggdGhpbmcgd2UgY2FuIGhlbHAgcmlnaHQgbm93LCBhbmQNCj4gPiA+ID4gdGhhdA0K
+PiA+ID4gPiBtYW55IGV4dGVudHMgYXJlIGFsc28gc2xvd2luZyBkb3duIGZpbGUgZGVsZXRpb24g
+anVzdCBhcyB5b3UNCj4gPiA+ID4gbWVudGlvbmVkLg0KPiA+ID4gDQo+ID4gPiBTbyBpIHdpbGwg
+aGF2ZSB0byBleHBlcmltZW50LCBpZiB1c2VyIGxhbmQgY29tcHJlc3Npb24gYWxsb3dzIHVzDQo+
+ID4gPiB0byBkbw0KPiA+ID4gc29tZSByZWFzb25ibGUgZGVkdXBsaWNhdGlvbiB3aXRoIGJlZXNk
+Lg0KPiA+IA0KPiA+IEFzIGxvbmcgYXMgdGhlIGNvbXByZXNzaW9uIGFsZ29yaXRobS90b29sIGNh
+biByZXByb2R1Y2UgdGhlIHNhbWUNCj4gPiBjb21wcmVzc2VkIGRhdGEgZm9yIHRoZSBzYW1lIGlu
+cHV0LCB0aGVuIGl0IHdvdWxkIGJlIGZpbmUuDQo+IA0KPiBEb2VzIE5ha2l2byBzdXBwb3J0IGNv
+bXByZXNzaW9uIHRoYXQgcGxheXMgbmljZSB3aXRoIGRlZHVwZT8NCj4gDQo+IEkga25vdyBWZWVh
+bSBmb3IgZXhhbXBsZSBoYXMg4oCcZGVkdXBlLWZyaWVuZGx54oCdIGFzIGEgY29tcHJlc3Npb24N
+Cj4gb3B0aW9uIHdoaWNoIG1ha2VzIGl0IG91dHB1dCBsZXNzLWNvbXByZXNzZWQgZGF0YSwgYnV0
+IGVuc3VyZXMgeW91cg0KPiBzdG9yYWdlIGFwcGxpYW5jZSBjYW4gZGVkdXBlIGl0Lg0KPiANCj4g
+Tm90IHN1cmUgaWYgdGhleSBoYXZlIHNvbWV0aGluZyBsaWtlIHRoYXQsIGJ1dCBpZiBzbywgaXQg
+d291bGQNCj4gcHJvYmFibHkgYmUgdGhlIGJlc3Qgc29sdXRpb24uDQo+IA0KDQpOb3Qgc3VyZSwg
+aXQgaGFzIG9wdGlvbiB0byBvdXRwdXQgdG8gIkRlbGwgRU1DIERhdGEgRG9tYWluIEJvb3N0LCBI
+UEUNClN0b3JlT25jZSBDYXRhbHlzdCBhbmQgTkVDIEhZRFJBc3RvciIgZGVkdXBsaWNhdGlvbiBh
+cHBsaWFuY2VzLCB3aGVuDQp5b3Ugd2FudCB0byB1c2UgbG9jYWwgZGlzaywgeW91IGNhbiBvbmx5
+IHNldCBjb21wcmVzc2lvbiBsZXZlbC4NCkkgd2lsbCB0cnkgdG8gYXNrIHRoZWlyIHN1cHBvcnQg
+YWJvdXQgaXQNCg0KTGlib3INCsKgDQoNCj4gPiA+IEl0IG1heSBtYXliZSBzcGVlZCB1cCBiZWVz
+ZCwgaXQgY2Fubm90IGtlZXAgdXAgd2l0aCBkYXRhIGluZmx1eCwNCj4gPiA+IG1heWJlDQo+ID4g
+PiBpdCdzIChhbHNvKSBiZWNhdXNlIHRoZSBudW1iZXIgb2YgZmlsZSBleHRlbnRzLg0KPiA+ID4g
+VW5mb3J0dW5hdGVseSBpdCB3aWxsIG1lYW4gc29tZSBzZXJpb3VzIGRhdGEganVnZ2xpbmcgaW4N
+Cj4gPiA+IHByb2R1Y3Rpb24NCj4gPiA+IGVudmlyb25tZW50Lg0KPiA+IA0KPiA+IEknbSB3b25k
+ZXJpbmcgY2FuIHdlIGp1c3QgcmVtb3VudCB0aGUgZnMgdG8gcmVtb3ZlIHRoZQ0KPiA+IGNvbXBy
+ZXNzPXpzdGQNCj4gPiBtb3VudCBvcHRpb24/DQo+ID4gDQo+ID4gU2luY2UgY29tcHJlc3M9enN0
+ZCB3aWxsIG9ubHkgYWZmZWN0IG5ldyB3cml0ZXMgYW5kIHRvIHVzZXItc3BhY2UNCj4gPiBjb21w
+cmVzc2lvbiBzaG91bGQgYmUgdHJhbnNwYXJlbnQsIGRpc2FibGluZyBidHJmcyBjb21wcmVzc2lv
+biBhdA0KPiA+IGFueQ0KPiA+IHRpbWUgcG9pbnQgc2hvdWxkIG5vdCBjYXVzZSBwcm9ibGVtcy4N
+Cj4gPiANCj4gPiBUaGFua3MsDQo+ID4gUXUNCj4gPiANCj4gPiA+IA0KPiA+ID4gVGhhbmtzLA0K
+PiA+ID4gTGlib3INCj4gPiA+IA0KPiA+ID4gDQo+ID4gPiA+IA0KPiA+ID4gPiBUaGFua3MsDQo+
+ID4gPiA+IFF1DQo+ID4gPiA+IA0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4g
+PiBUaGFua3MsDQo+ID4gPiA+ID4gPiBRdQ0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+IFdpdGggcmVn
+YXJkcywgTGlib3INCj4gPiA+ID4gPiANCj4gPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+IE1v
+c3Qgb2YgdGhlIGZpbGVzIGFyZSBtdWx0aSBnaWdhYnl0ZSwgc29tZSBvZiB0aGVtIGhhdmUNCj4g
+PiA+ID4gPiA+ID4gYXJvdW5kDQo+ID4gPiA+ID4gPiA+IDNUQg0KPiA+ID4gPiA+ID4gPiAtDQo+
+ID4gPiA+ID4gPiA+IGFsbCBhcmUgc25hcHNob3RzIGZyb20gdm13YXJlIHN0b3JlZCB1c2luZyBu
+YWtpdm8uDQo+ID4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gPiBXb3JraW5nIHdpdGggZmlsZXN5
+c3RlbSAtIG1vc3RseSBkZWxldGluZyBmaWxlcyBzZWVtcyB0bw0KPiA+ID4gPiA+ID4gPiBiZQ0K
+PiA+ID4gPiA+ID4gPiB2ZXJ5DQo+ID4gPiA+ID4gPiA+IHNsb3cgLQ0KPiA+ID4gPiA+ID4gPiBp
+dCB0b29rIHNldmVyYWwgaG91cnMgdG8gZGVsZXRlIHNuYXBzaG90IG9mIG9uZSBtYWNoaW5lLA0K
+PiA+ID4gPiA+ID4gPiB3aGljaA0KPiA+ID4gPiA+ID4gPiBjb25zaXN0ZWQgb2YgZm91ciBvciBm
+aXZlIG9mIHRob3NlIDNUQiBmaWxlcy4NCj4gPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+IFdl
+IHJ1biBiZWVzZCBvbiB0aG9zZSBkYXRhLCBidXQgaSB0aGluaywgdGhlcmUgd2FzIHRoaXMNCj4g
+PiA+ID4gPiA+ID4gbXVjaA0KPiA+ID4gPiA+ID4gPiBtZXRhZGF0YQ0KPiA+ID4gPiA+ID4gPiBl
+dmVuIGJlZm9yZSB3ZSBzdGFydGVkIHRvIGRvIHNvLg0KPiA+ID4gPiA+ID4gPiANCj4gPiA+ID4g
+PiA+ID4gV2l0aCByZWdhcmRzLA0KPiA+ID4gPiA+ID4gPiBMaWJvcg0K
