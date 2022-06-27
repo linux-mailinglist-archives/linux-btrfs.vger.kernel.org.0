@@ -2,146 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7C755E188
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC10C55D94D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240986AbiF0TyH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jun 2022 15:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
+        id S238358AbiF0WRi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jun 2022 18:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241240AbiF0Txt (ORCPT
+        with ESMTP id S242545AbiF0WRY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jun 2022 15:53:49 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4661ADBC
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jun 2022 12:53:47 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 68so10039864pgb.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jun 2022 12:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=k/l4LcE4w+6LYrCo6/Ek+44r04gbnpHm9yyPA0qKR6A=;
-        b=ryYp2naL1201DMNfPmSbpexCs+zqiLsBQDBXHc9esFHxBJ8Ep2LLrsgHtxJtosu2+J
-         1iBYfvQQXv6NYwKQ2qXQCc4mHXYQGPYeeUC3hu2OgPUPjZXH+3Hi6Zqo5SyTeGerBVQA
-         p1Bh5daOuP6Q9UMRPxlj6vxZpUjBpxOPEYhjttl3pP6gtksJnO1wA5G3ERXmm3iOhFrs
-         MlyYmEaZt8I/cdZ0xlE1RQA9V/oE3k4e+iV7r8nrUlXmSvlRImOQktUmXD254MFh7ceV
-         2zbWTxt+/QD0MTYLBrv8xqePAliI2A59OkEqXOPrksIatTeOcW53aiRz+65e7KopsoX+
-         3osw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=k/l4LcE4w+6LYrCo6/Ek+44r04gbnpHm9yyPA0qKR6A=;
-        b=xWYtfFdiS3VRuy96A7dej9Lo9CHqCZZCe9nU8NIqV9KEdjFMMmcDkJe7SfxvhR+UIs
-         wa+bxUo9P08TD8/f2znUWBLGT9zPWWWEtTtXtDrM4sZKuZl6f2SAgR240WEsjdQnWgSB
-         k+baaknFHFXyskj1JoCTxtO5CtB7QMcUXYt2SQ+j2rPTEnNi+GNXt/VShM7sus9WjY09
-         TWs16CXYcwfGBKnM3/vYXsQZJgjU3mermff6SRKtAaV6d8KnJz0+j0kY8tzLve/rw20x
-         yRBSlDbVMpemgsnnpDpv1shZOX0mQUvKocNgSqlTAZUY4wI3akUW4JaEdrEKM/tAYoqd
-         c5hw==
-X-Gm-Message-State: AJIora9sWESS5BFPv81Sma/vzom9i/WygVwJNWxHh8pnAz51fjVfUR/l
-        nBnIH1lr89WGoQCrsG4WNEIoRQ==
-X-Google-Smtp-Source: AGRyM1ssDeW6Ux1oaY9ixgaaapzXMFszbxcRVeOWaHAYiiaVMZ4HUYtPzqxXzR6I8+fqeJNf8u9hpg==
-X-Received: by 2002:a63:7a5d:0:b0:40c:fcbe:4799 with SMTP id j29-20020a637a5d000000b0040cfcbe4799mr14428539pgn.297.1656359626928;
-        Mon, 27 Jun 2022 12:53:46 -0700 (PDT)
-Received: from hermes.local (204-195-112-199.wavecable.com. [204.195.112.199])
-        by smtp.gmail.com with ESMTPSA id c16-20020a056a00009000b0051c1b445094sm7821510pfj.7.2022.06.27.12.53.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jun 2022 12:53:46 -0700 (PDT)
-Date:   Mon, 27 Jun 2022 12:53:43 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, dm-devel@redhat.com,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
-        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
-        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
- flexible-array members
-Message-ID: <20220627125343.44e24c41@hermes.local>
-In-Reply-To: <20220627180432.GA136081@embeddedor>
-References: <20220627180432.GA136081@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Mon, 27 Jun 2022 18:17:24 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6BC64DA
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jun 2022 15:17:23 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 81F165C014B;
+        Mon, 27 Jun 2022 18:17:21 -0400 (EDT)
+Received: from imap45 ([10.202.2.95])
+  by compute5.internal (MEProxy); Mon, 27 Jun 2022 18:17:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=cc:cc:content-transfer-encoding:content-type:date:date:from
+        :from:in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1656368241; x=
+        1656454641; bh=Mn6U1DF9y3oYRLkB1yy02BqmW+CBNaB1hOiQrT8ULMo=; b=d
+        0Tqvmtap6dgQlVWRpyamz//xtVfWHI+IAbJDqepcC1ZopAqlBW5YTvRLyJ/G1PS3
+        U1V1vIpwToOOBqcInz6o60mavqNCf/thrbQ05ins7ql+JUud4cIjdWQ+2GbOSNbg
+        Lg97b6YW0xxKC26LRHAft1NE27Y0MFehSI+RqZTzdeJLFL96GEkT0nlrbJqPdE4m
+        alPLWqLJXvnxi41JLHAEE4+wX9AgRTQB6a9YKX+vTZkh326O7Fks706mi4Y0blKD
+        yN5XGAVAxIt352KMv40EtzWqoTbd+AIwDMezzwHZbQaj9QracR6YXJ7NbIgmkkMx
+        Mj1fO00IYb6nly1PeMNRA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1656368241; x=
+        1656454641; bh=Mn6U1DF9y3oYRLkB1yy02BqmW+CBNaB1hOiQrT8ULMo=; b=e
+        9Smv/I4mHfXFElfhQjMVx3UmZ5dECoevb1mRBlKhkdGu4zSBchZqslckxyI7rZ9S
+        KWW3G28QrCFX/nV10MDlO0LldD0qur5TQz2S46ktl0jQcSMphyO0MkNZi/2Fn4qu
+        JUd6qFQupe8BG9VIAbFuR6Ch+T/w6IXonGLGj2uAr83ZFXzwCxbmuZq+6TY3b74n
+        MWLOQ/RGouzIoGxitqYVRrzpC6IyBky9Etn1Rd1YzkZ/LMqzok/JyiIDGDColGYs
+        jmhq9zJJHw99JD/vYPd6Uf1lrfubz3/ZTwXIm2VXRcktpsvITHC1+TFc8K603imN
+        8ynhcVuA2PLvoSJDYsN/w==
+X-ME-Sender: <xms:cSy6YkvkOIjAj2wZsg2hGedkDJyo0v4FkgfoicAGUjdPRjcwvFRMGA>
+    <xme:cSy6YheybuSthodkBrthzWUZA189--D762PhSSWcfe2xB1qV2KV2_qlbEgMosotOU
+    Spd20u2OxhWtN0xUg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudegiedguddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvvefutgfgse
+    htqhertderreejnecuhfhrohhmpehrvghmihesghgvohhrghhirghnihhtrdgtohhmnecu
+    ggftrfgrthhtvghrnhepfeffhfevkedvheevvdefudegffeluefhvdetjefhtdejudduff
+    ekfedvtdffudeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomh
+X-ME-Proxy: <xmx:cSy6YvzVts0_1fgeztptTaoq_LB7LkoX_-Vbtrt70pC0ZFdTiOxIvw>
+    <xmx:cSy6YnPwTOwvDpmZclrNUuz2KZZHLbVg7I_zfdyOQEgtWRbJD6PYIg>
+    <xmx:cSy6Yk93EV0oKwxIMBWHpChCK6ovgk5kbJ_hSo5tIlRKJekuXb0TMQ>
+    <xmx:cSy6YtJw-KjZYyJY52RSVQegfVYqH1IOHdhWM7aGDJf8uN3ugQmqQw>
+Feedback-ID: i10c840cd:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 518E42720078; Mon, 27 Jun 2022 18:17:21 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-713-g1f035dc716-fm-20220617.001-g1f035dc7
+Mime-Version: 1.0
+Message-Id: <610c0202-f904-4caf-b5d6-4070bc827832@www.fastmail.com>
+In-Reply-To: <CAJCQCtQ3qrLTbbXx7KiiU=ZH7NFTFsJVZA0fbKf+EHyCDkJ3Tg@mail.gmail.com>
+References: <8415b7126cba5045d4b9d6510da302241fcfaaf0.camel@bcom.cz>
+ <42e942e3-a6d9-1fcd-cd9b-5c22ee3f2e1f@gmx.com>
+ <f9b7e2fea36afefaec844c385d34b280f766b10b.camel@bcom.cz>
+ <CAJCQCtQ3qrLTbbXx7KiiU=ZH7NFTFsJVZA0fbKf+EHyCDkJ3Tg@mail.gmail.com>
+Date:   Mon, 27 Jun 2022 18:16:28 -0400
+From:   remi@georgianit.com
+To:     "Chris Murphy" <lists@colorremedies.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Question about metadata size
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, 27 Jun 2022 20:04:32 +0200
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+As I understand it, (which can be mistaken), the files in question are V=
+M Images, which will have a mix of compressible and uncompressible data.=
+  BTRFS however, will mark the file as uncompressible when it tries to w=
+rite such, and no compression will then work on the compressible parts. =
+ (IE.. to actually have any useful compression in this case, compress-fo=
+rce is needed.)
 
-> There is a regular need in the kernel to provide a way to declare
-> having a dynamically sized set of trailing elements in a structure.
-> Kernel code should always use =E2=80=9Cflexible array members=E2=80=9D[1]=
- for these
-> cases. The older style of one-element or zero-length arrays should
-> no longer be used[2].
->=20
-> This code was transformed with the help of Coccinelle:
-> (linux-5.19-rc2$ spatch --jobs $(getconf _NPROCESSORS_ONLN) --sp-file scr=
-ipt.cocci --include-headers --dir . > output.patch)
->=20
-> @@
-> identifier S, member, array;
-> type T1, T2;
-> @@
->=20
-> struct S {
->   ...
->   T1 member;
->   T2 array[
-> - 0
->   ];
-> };
->=20
-> -fstrict-flex-arrays=3D3 is coming and we need to land these changes
-> to prevent issues like these in the short future:
->=20
-> ../fs/minix/dir.c:337:3: warning: 'strcpy' will always overflow; destinat=
-ion buffer has size 0,
-> but the source string has length 2 (including NUL byte) [-Wfortify-source]
-> 		strcpy(de3->name, ".");
-> 		^
->=20
-> Since these are all [0] to [] changes, the risk to UAPI is nearly zero. If
-> this breaks anything, we can use a union with a new member name.
->=20
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.16/process/deprecated.html#zero-le=
-ngth-and-one-element-arrays
->=20
-> Link: https://github.com/KSPP/linux/issues/78
-> Build-tested-by: https://lore.kernel.org/lkml/62b675ec.wKX6AOZ6cbE71vtF%2=
-5lkp@intel.com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks this fixes warning with gcc-12 in iproute2.
-In function =E2=80=98xfrm_algo_parse=E2=80=99,
-    inlined from =E2=80=98xfrm_state_modify.constprop=E2=80=99 at xfrm_stat=
-e.c:573:5:
-xfrm_state.c:162:32: warning: writing 1 byte into a region of size 0 [-Wstr=
-ingop-overflow=3D]
-  162 |                         buf[j] =3D val;
-      |                         ~~~~~~~^~~~~
+On Mon, Jun 27, 2022, at 2:12 PM, Chris Murphy wrote:
+> On Mon, Jun 27, 2022 at 4:23 AM Libor Klep=C3=A1=C4=8D <libor.klepac@b=
+com.cz> wrote:
+>
+>> Yes, we use zstd compression - filesystem is mounted with compress-
+>> force=3Dzstd:9
+>
+> compress-force means even uncompressed extents are 512KiB max, so this
+> could be the source of the problem
+>
+> If you use just compress, then uncompressed extents can be 128MiB max.
+>
+> So it's a set of tradeoffs depending on how compressible the files are.
+>
+>
+>
+> --=20
+> Chris Murphy
