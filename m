@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C7955D1C8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E0755CD74
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244509AbiF1C1C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jun 2022 22:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
+        id S244822AbiF1C3y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jun 2022 22:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244347AbiF1CZA (ORCPT
+        with ESMTP id S244582AbiF1C13 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jun 2022 22:25:00 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94375252A6;
-        Mon, 27 Jun 2022 19:23:40 -0700 (PDT)
+        Mon, 27 Jun 2022 22:27:29 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302D924F1A;
+        Mon, 27 Jun 2022 19:24:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4D867B81C0A;
-        Tue, 28 Jun 2022 02:23:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E77C8C341CB;
-        Tue, 28 Jun 2022 02:23:36 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DE291B81C13;
+        Tue, 28 Jun 2022 02:24:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC462C36AF2;
+        Tue, 28 Jun 2022 02:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656383018;
-        bh=zDGWP84UOtOm/F16kz2QOdVz4sqM/WTG/Zdro3Zs9qQ=;
+        s=k20201202; t=1656383090;
+        bh=0ydoFsSSnPq2SDesOa8Ok98z1wzYk4h/L7swhoWtm6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bMf3V70ZsJbSrkxk5uZx2irjayLNr8V2I9dqc7hERt6yZqVZeVKediIqtdqfKubss
-         WgrFvwnu7BD3EwR9Mq6e/WAmzmxtAj+2BCAZVaGc5BxxdnyljlhGgDbZ6ABe7EuVRa
-         hiCpA1jaSWZCZrETJcK2hw+vzx2fEg00E143Yqh8fzaBOeeG2eGlcB1Hcg0Z1NBQBV
-         p9TLS35+4gk1i1etyqLaB1Q1miwE5xHfXmoDv2XUXiRqndbvppR+9eEiKe1H/LU1TI
-         Y1cpTNsBJ95CH1Bmu2BcGk+tnhtf0HkH9NCwBww6CtWz4keu8mAil29UKyoVwxRh07
-         DH5Tu/Wuam3fw==
+        b=kJS+B5YE0BxoPDsuKuFOI9N+Zj+LnfZyyW/58OhkdEGX6+G5Zd7BWh2EvSyULcbYG
+         uTSCWO6YVIgKF2iSzRYwni2oAwgWKzOqeis7o6UY1qZ31k2vjTgE620qs1d1Er5+1I
+         mplwy4U0q/wBfna5mHmOkYtMbJfFSUia2dT46MxsYizwI+9abK3uoFSgcFfDNF6a9h
+         +8ypRk4RGCbWrygYZ+MOY6sEgxRTFewPmjzVBbao1gYyQhKRTu5hGEW1vxOpZq1wcb
+         zZgvZrd8wxrRJ/j1+Gs5qL/1uh88xAp2Ydnb8ubiog7Z/L9BjiGs4OaJ2CHoLC6j3M
+         xJjb8kO38Us4A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, Boris Burkov <boris@bur.io>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 20/34] btrfs: do not BUG_ON() on failure to migrate space when replacing extents
-Date:   Mon, 27 Jun 2022 22:22:27 -0400
-Message-Id: <20220628022241.595835-20-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 15/27] btrfs: do not BUG_ON() on failure to migrate space when replacing extents
+Date:   Mon, 27 Jun 2022 22:24:01 -0400
+Message-Id: <20220628022413.596341-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220628022241.595835-1-sashal@kernel.org>
-References: <20220628022241.595835-1-sashal@kernel.org>
+In-Reply-To: <20220628022413.596341-1-sashal@kernel.org>
+References: <20220628022413.596341-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -81,10 +81,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 416a1b753ff6..b574143653e8 100644
+index 1279359ed172..db29bd901eef 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -2651,7 +2651,8 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
+@@ -2583,7 +2583,8 @@ int btrfs_punch_hole_range(struct inode *inode, struct btrfs_path *path,
  
  	ret = btrfs_block_rsv_migrate(&fs_info->trans_block_rsv, rsv,
  				      min_size, false);
@@ -94,7 +94,7 @@ index 416a1b753ff6..b574143653e8 100644
  	trans->block_rsv = rsv;
  
  	cur_offset = start;
-@@ -2743,7 +2744,8 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
+@@ -2654,7 +2655,8 @@ int btrfs_punch_hole_range(struct inode *inode, struct btrfs_path *path,
  
  		ret = btrfs_block_rsv_migrate(&fs_info->trans_block_rsv,
  					      rsv, min_size, false);
@@ -103,7 +103,7 @@ index 416a1b753ff6..b574143653e8 100644
 +			break;
  		trans->block_rsv = rsv;
  
- 		if (!extent_info) {
+ 		if (!clone_info) {
 -- 
 2.35.1
 
