@@ -2,230 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1780455C35B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 14:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 890F855C41D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 14:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242653AbiF0Wb5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jun 2022 18:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
+        id S242593AbiF1AYc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jun 2022 20:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242644AbiF0Wby (ORCPT
+        with ESMTP id S242526AbiF1AY0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jun 2022 18:31:54 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B592B1FCCA;
-        Mon, 27 Jun 2022 15:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1656369110; x=1687905110;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=cFfs79so5bDyszYGeV34Sx13DSMu8p5hKhG+YTrPg6I=;
-  b=DbS6Fgbxmvyv+I85OGq4Ii9xtDeApCr6hH2Jc+ivTd8eRRaCyUqNTFTp
-   vSqvPxM7gUvWSmkLjPpzuFCwhNrNRZkU17E/qmLm9VG46T5r5z4hcuSMR
-   88QgdHJWOsBJ1AxjPunwZgo0UR1BeIWksgICRd98chF6W0tnLts+beWra
-   YQCe2HAtg9hW6Ocn65oxLhnVPfMCxQ3VnUonU4AOrkQMr+F7jDR9Ac3zO
-   I/zwRj8IxYTlNtUJzWFH8Go/M4CQc4rwxbY5c8uyfoMtjEfdsij9PLUAj
-   RYv/Hk9tSZSwdm5x+8wGQm3+02NJs+7uZrljA6QRXKuNMaDISOHrg5qUg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10391"; a="307054827"
-X-IronPort-AV: E=Sophos;i="5.92,227,1650956400"; 
-   d="scan'208";a="307054827"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2022 15:31:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,227,1650956400"; 
-   d="scan'208";a="594502569"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga007.fm.intel.com with ESMTP; 27 Jun 2022 15:31:49 -0700
-Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Mon, 27 Jun 2022 15:31:48 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Mon, 27 Jun 2022 15:31:48 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Mon, 27 Jun 2022 15:31:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bgbRU5ZSJ+1Njs1Ls5+mrC2TiMXDi6j+q1nXEW35T0vgGO9W6aK0KqFw8sLIpVNW5OEYewvET37n7OLnzZJzrdoAPvuBbKl2gKhhbMESYILsmLYunOjlbKIBJepwvrBGTXlteBN4XqKcJA3F5ktTDOcARc7D/BEWm1ouxrRANeHu7u58sV/HAAoNgfi/egYKuQLeez6w+8vyf6/t3bVzALpXu4HHE9Zu0zqEJk2ju0blX3YtecrfUxzHj/CVnr40PS3z1w1ZMy8GJZzHL7fpiQznoZJDug/Y+NOh43a03VPTMQQvWz4AoCcRi+x91siT0uSwWDqDOh7397up6lUgLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Fk+tjoSHkPKT19HAXvoo/zCR1SLEsyiUuNU6CruvzGM=;
- b=QI0iafA/bjqr3Gx/f278cS7Oe2x/WkoQMqIGtb6F5Dxfd8KGUdN0WY+LZsBdW5DuG/IkEiGDaJLunvc+wYSbILqxZb12Aer3pTYr7w8s46PErQpET6TL3qYW29h2Ov9/EnK7F8GH22u1w5GbZgtfq5oQQYIpUatlbQe4GzlKUmVSPR6hRnIesSOW9Vyo4AYmxRthVk7LvEDo8N/e0qC5Yke05/8T1b32FiLPtXodGmdngB9bhvjeeKmMTiW3Gs6/1vEACeKhtxeUnT3KCN0/cetAqByvXQUerrK00rSjds9UgCkj018UeCPxBTH+mSq7QbJmqLlZKctqU5S1D0VuOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MWHPR1101MB2126.namprd11.prod.outlook.com
- (2603:10b6:301:50::20) by MN2PR11MB3615.namprd11.prod.outlook.com
- (2603:10b6:208:ec::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.16; Mon, 27 Jun
- 2022 22:31:46 +0000
-Received: from MWHPR1101MB2126.namprd11.prod.outlook.com
- ([fe80::f50c:6e72:c8aa:8dbf]) by MWHPR1101MB2126.namprd11.prod.outlook.com
- ([fe80::f50c:6e72:c8aa:8dbf%7]) with mapi id 15.20.5373.018; Mon, 27 Jun 2022
- 22:31:46 +0000
-Date:   Mon, 27 Jun 2022 15:31:42 -0700
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <x86@kernel.org>, <dm-devel@redhat.com>,
-        <linux-m68k@lists.linux-m68k.org>, <linux-mips@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <intel-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
-        <linux-can@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux1394-devel@lists.sourceforge.net>,
-        <io-uring@vger.kernel.org>, <lvs-devel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <kasan-dev@googlegroups.com>,
-        <linux-mmc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-        <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-        <linux-perf-users@vger.kernel.org>, <linux-raid@vger.kernel.org>,
-        <linux-sctp@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-scsi@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <v9fs-developer@lists.sourceforge.net>,
-        <linux-rdma@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        <linux-hardening@vger.kernel.org>
-Subject: RE: [PATCH][next] treewide: uapi: Replace zero-length arrays with
- flexible-array members
-Message-ID: <62ba2fced98ed_103a0e29448@dwillia2-xfh.notmuch>
-References: <20220627180432.GA136081@embeddedor>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220627180432.GA136081@embeddedor>
-X-ClientProxiedBy: MW4PR03CA0348.namprd03.prod.outlook.com
- (2603:10b6:303:dc::23) To MWHPR1101MB2126.namprd11.prod.outlook.com
- (2603:10b6:301:50::20)
+        Mon, 27 Jun 2022 20:24:26 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273E41C113;
+        Mon, 27 Jun 2022 17:24:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1656375853;
+        bh=eg0Ld1dIzdoptyJh2iXj5oMIQgq7oAxqfrx2L8T1HJQ=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=gX4rzrbSog0rNGFR+T9YRkAS5tw0fhxLMCB0Z2NAUAGXZBPErJslacP9LPvfisb4A
+         PQ9BJO71cgTLl/krDi2W9do9WE6c9kxc9nD9w1+DpvHOum0+UPTy/eF5naHpzhh2LQ
+         4C3p/gciOYsP00tdDdCPhhq/xVXpgKXyUilOEohE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6Udt-1nzfV726Cf-006yib; Tue, 28
+ Jun 2022 02:24:13 +0200
+Message-ID: <e73be42e-fce5-733a-310d-db9dc5011796@gmx.com>
+Date:   Tue, 28 Jun 2022 08:24:07 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 09857533-95a6-4ce5-821a-08da588cd147
-X-MS-TrafficTypeDiagnostic: MN2PR11MB3615:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I8QxY2dRCssS1nOBaKo6XXukRWcQnmTJH2CTvS1oBWI5m88TdZyePC8+8Y0lOy5CTi+gHMca0W8aiZ/N99wYfzWDT4IwVc4nlPrt+m+R4p2eDFjRwAp5zJ0VpYLntAd+8A00LZQoJik2rjbu5yVMxLfzdAE/sViq6QR/ukrAYU6UH00hT/qjTfq5KJ6RNmBJjkE9wR8YlchdCVQfclNLDMwBRKAceVhlApanN3Kun5MvZcVR3nAEDzee42+78vAUhiTD75bcuXHURf9mM6NWettdBNB+fgoFRuSIfNbpFulswaXgt+/W3zFI5GI6s+IO6P7PaIkaHL5ETfxVXF7R5o8CyVUDydZpe+Wo6FiGJLus4dot7TeZ2i7BumDmuP2aPbFZpX0GbQZu4hursUXqRwE2dMGw5Mf+B4E0s5mE8SNKEUgUaTQbQGCJ+39EGCF8oMg/hVKoYY9RhxhEhjLKAozVDeQ4YIGG0uJOByhFexDi/CUzss4zWm3FPSVVNx4WelTO8Eiasy/iNjTp8PznOSLGYIo42iw/Hjo++nvz4kH45aIuzAYBtK24nNuwNzMbw4sZoThoJKGKwgdXb5MUKX0VZNuO4cSKb3qG94N5aRCJ56Wdc/+RlFCaggvApnHVcVb8WZ2tBa7ELxVh5io/heAz/fk/UX+HQSPPeKz2L/y2wd5VLtSoLAK+t2RnWXIknFIHsQEtJpjJCc3Z5XS3bsdpx9Mhe7/ar6cHw6C6qj10wOiolEM6AzvfHFUUlo6+4Fm/bKWXrtwiCf23irh7lEh8H2PSKKbYuEuqvEmBbfU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1101MB2126.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(136003)(376002)(396003)(346002)(39860400002)(366004)(6666004)(7416002)(6506007)(41300700001)(38100700002)(8936002)(83380400001)(66946007)(66476007)(7406005)(66556008)(82960400001)(9686003)(26005)(6512007)(5660300002)(6486002)(110136005)(478600001)(8676002)(966005)(2906002)(316002)(4326008)(186003)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TG81TEp2bjd5Ui8vcXRBOE1oT2o4aFh0aE1Ma1hEaHNzOWFKMEpVOEdjc0I3?=
- =?utf-8?B?SWNnYkVSZ2gxcDgwU2twTjF4ZW5PbFcwZHpEZlc3WnBtOXhsVUNMcVhTb2hw?=
- =?utf-8?B?Z1UvTFZkSXdjc3lZU1JpbGhXSDExS2RTcUhFanJHbitxYk5nSzB2TitnUTB1?=
- =?utf-8?B?d3Npa2lreGhFanpCS2Z6WGhuaWtsYldmWXB4eVAyaE9lSG5JNHV0SG9FTG40?=
- =?utf-8?B?elVLZEpIUWZ0K0ZFamlxcHU1Qmw3T1J1VU9CK29Ib0VzanNEK0xad2VyeFM5?=
- =?utf-8?B?c1dUZzh5RE9UR0Y3Wk1mOHpMdS9FUjRTU0VKT0ErU0tGd1pvdng5Wk92WmVP?=
- =?utf-8?B?aGhLVHE5QitoeUVFSmRYd3I1UEJVckw5SXNobnQ3VkNFYzFGM0VWMjR6NHZE?=
- =?utf-8?B?MW5hbUVZR3Q1TGRXQnRIbEYyU3BuRHRzbjFoN25iQ3ZsRkRwTUNiZWpLRGwy?=
- =?utf-8?B?dUlDcnNJZlRWNjZqYzNJY1RPQnhEWTJMN056dkJtK3FMS3NNL1paZ1dtQXQ2?=
- =?utf-8?B?c2toU3JpelZQMm1yVkNiTnZReUROU2thMlN0K3ptc3lqSFpGQTc5dFZ5ZkZH?=
- =?utf-8?B?M1dRNjhzT1NSOHFBRm9lV01xSExNeWJmM0d3L3hoVXNZSVc0N0dTZ1RKSnBZ?=
- =?utf-8?B?T3l5WDhrTlVZTWNYZHI3U2V3TFFTc1hKUGxZTXFNVm1Ga2hFYTNnZmZCcWZV?=
- =?utf-8?B?d29rZjJmN2NUbGh0Y29KR2hBUkdIRHpJc2FCRHkzZjZiMkJMRExhRGtPOWZK?=
- =?utf-8?B?N3VjaFU3aEpNZHFnUC9qY0RJZGwwcUgzT2crTlVnWHI3NEdGanZPVTlna1NY?=
- =?utf-8?B?ZWdsU200UjJWTVBSWW1ENTRUWTFVMmFSbDliV0FTVlJQRCs3UFI2L0JRK2pH?=
- =?utf-8?B?Z1NWQjZGdFh2aGg0ay9FV1paWmtram9tK1M4ZzgwN3h5TThkNis1bHVXTDVP?=
- =?utf-8?B?czlJK1NnR0tNcDQvOXJrdnN6YnEyRHkyNzdiMzA5SWhGV0J0a1h2Q2poc2F3?=
- =?utf-8?B?Ri9DYkJjVm9nQWVjME1ndnFtT3Q3RjFyVEVDM0U1VFd0elBCRnlXUHJWR3Zx?=
- =?utf-8?B?S3kzV3dOM0NqSjRnOUVWdGhTN0hnbTRBOUpnT3cwc3hhTkZEMzBNbkpzbEtJ?=
- =?utf-8?B?Vm5lVE0wbUN4UEdlTHBVWG9QdzRobWdCWStjb2QvcGlPd1JhUnY1UUtHcUUx?=
- =?utf-8?B?blp4NGRWbE5SYTRrRjN1Uy80ZWJoZXBvdnRDWFpMNTZBU2NCci9McTlMelJC?=
- =?utf-8?B?VTlHaGR3cGF5UlEzR3BrSVdRalM3TnJtMXhaQnBnSXNISE9aL1lHS29qQ3RV?=
- =?utf-8?B?dFd6TytkMkVUNmNMa0Z5eHBOSGJ2UXVoZFR1dHdXemhDK29MWXBBQkowaUta?=
- =?utf-8?B?NGVZZnZmOVBaK000TUQzWXk0eG1SazBONFVrYjBuVWcrdmJtK0lQSU80RGpD?=
- =?utf-8?B?YlIwdFZvcTZIMmdyK3diQ25wRWgvV1kzZkZ4U2VyYS84eDBhZHlCYkVPbngx?=
- =?utf-8?B?VUt1WHc0NjNqR0dWM0dEbnZ4cXVscHVlOEF2V2w5Vkw0UnVrNzVjL0h0a1oz?=
- =?utf-8?B?TFlFWWhIWEI3eXFVczlqa2Juc3JZVUZ0ZUtIbHhXWGV6bkloMmw4TXVXK2hm?=
- =?utf-8?B?UDBYQjI4TVB4QlVlcDRQclZ3OFBoeDVPTTNGQnVIZ2VmZE9zcXA0M3M0cHVv?=
- =?utf-8?B?dHRETGgzWFRSQTd1ZHVkRnJiOER6WWFMb2RJbWF1T2RzYXQ1YVd4Zmh3RkFZ?=
- =?utf-8?B?M0NTTVlTdEZmT1FDUm1KRzMwZFh1SWJGMlF2SXpJUmFCTmpEN21jWU90TTNO?=
- =?utf-8?B?OEVTa29FempFTmpYeFdFMTkxa2hrL3hSWUtrUldHZUhxVTRIZVQ4WlhwUUtn?=
- =?utf-8?B?YS92UWZzL21Fc09vRE81TXZaUngzTm93L2tqOENTdHUybUtLYzlPSFozR0NG?=
- =?utf-8?B?VkJZeTlQMHQ2MnVqUEJneFVaNDFEQ3VCdXIvb0dhYnVNcmx4Z2I3dWR2ZWFr?=
- =?utf-8?B?U3FFVHNwb3VmbWxUMUY4TFFCTURWcE1hQmxVUlZzNkJaT241OEJ3Zk5vS2tw?=
- =?utf-8?B?ZlZEU1FmY3BiaG9iUDZIS0lPK1FVTnZOSVU4L2h5bE1qaXZ3ZWYrdXBtMFVw?=
- =?utf-8?B?N2RnT3VrY0Rkc1VYM3BIamw2bDJ1TnRabHlKcXdORXhocDlnWWhBdlBuc0FJ?=
- =?utf-8?B?VFE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 09857533-95a6-4ce5-821a-08da588cd147
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2126.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jun 2022 22:31:45.8792
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tff1Ajm5j5IjP8nC+pmHruh1VBM1HYz+iFkTnXnCZrfcWvUa1L/3YXcaJpJFmczORKhoOnLDiSvurI/2Snl4amoFHffRXHppNmqfZrAlNU4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3615
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20220624122334.80603-1-hch@lst.de>
+ <7c30b6a4-e628-baea-be83-6557750f995a@gmx.com> <20220624125118.GA789@lst.de>
+ <20220624130750.cu26nnm6hjrru4zd@quack3.lan> <20220625091143.GA23118@lst.de>
+ <20220627101914.gpoz7f6riezkolad@quack3.lan>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220627101914.gpoz7f6riezkolad@quack3.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:TUDXYOguBdFc8szg6s33DZegG88/C2dSpWWfTYkLuX+c99FdYCK
+ Vy6e4moT6QGELL2/V/Rh3pbIlPHrkDi6kLA7hF+FaQ0hdYLQr1gA1zAVrJvpXgloxXsojmD
+ Gd0zRuoa6JX7rKcEqfERap8OuNS9yLsdji02zGTl1hUBGXCiuQA+DW1+H+aIZFojs8ozOdp
+ 8sZzJckpycFxb/gbYSBDA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XN8zdhvGw94=:1+LQDVtrC4prmgl7Bx6lP8
+ kIYj7ADpVy9l8Nbz9aoCdM/gBPAyB0dZwYJU3oxVgmRQH75Q6ligndn1Xq+cHkgf2Iqhqepfw
+ wb0fVnRx5FBQ44oMyRZlkU/lkP815YpLATlPSqF+hi3o+GbMYot1yxtlsFsHmHuilSyzTyWqQ
+ HQaZrh29DmAqWtJfS4okjy1omELzQC7hgCNVOXodtDnrXUOWR4/Fs2q3YqXSa7pO+4Utsa1yX
+ Gx26ymmDqGGlRDzAqm2JACe8TpRMivou62hbdd34Pe8CyZ8XuvnAQRtlpamPcZMOg4/XS04VO
+ WeDA0QCe3Y+lfAwHeWCOWC1c/73fjjZcz+7zvh18Z01UsMqSUcAz18nBt11CGo4YrX5GEKkX2
+ 2eKHSAS/IrBqUOMCxypkRbpS7Eua37HhkCqBA/e2MuLgPhXFCMkVv+4n1PHadQPJnIkifm5XA
+ +XQt7oPzbSzhXOrOT/FJdVjJt40nZ3Q9Gzt0iZlm2MQgiJ6/f39ktroCIBd8OXR5mjhjil/mp
+ Mf1Klifea/PPF2z4bzfWuSZUJ0gOCwrXWMljHx4W376xwgmVeAw8nth3bkqHF9H5PFfiVDTa2
+ HvgnTSZylVz+yzCSRCvh1NU70JEb3MPrn9zlSmdpyI5H0UVceC4J7hX8UfGppNFsROXF8eVI2
+ bTpXmiEs16wQWBex+5Rs269kB4cA74DY4K/Ya/zkLPcWMQJxa6eAex48zWC/w0jN2XkxBWApN
+ 1zCM0BDVee2OPemKN/FK6gQlMIwSnob6aNhf3lok7lqOJZ6+Ig+XHdo7M8lXm2mUGP2xN4QqZ
+ fh6WfCxVcYeW4kIrgczDuMDTtrN+Vdg4SOLGbqIx2nOkgiD2sRUuagQz2SRwdEJhFfVN6hRZb
+ Fab480NxssJwh/uyRiac3ehz2ltJ/z8OBp5C5tXouum+Mrk72zGCKAuULUuZmniUElIP0D/hI
+ ER/LnHqO5knB4rLXYMy3ZeJN7YWHuEOdF0fP4dB8VoGXXl/2vCJD/SjG7bRuSrtuCSjWhxj4i
+ mPAWkzJ89mo9d/Km37GbQTk9qwtvUdc0S/ZtRUp9vwg1lV2rULPcaFl4ZICLQPIte/iafP35r
+ 4McGk+d1wcyjYdV1FBqnRs3Y36U9qp8uSIv6+ZhR2eoOHNdZ5Ww8/5FjA==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Gustavo A. R. Silva wrote:
-> There is a regular need in the kernel to provide a way to declare
-> having a dynamically sized set of trailing elements in a structure.
-> Kernel code should always use “flexible array members”[1] for these
-> cases. The older style of one-element or zero-length arrays should
-> no longer be used[2].
-> 
-> This code was transformed with the help of Coccinelle:
-> (linux-5.19-rc2$ spatch --jobs $(getconf _NPROCESSORS_ONLN) --sp-file script.cocci --include-headers --dir . > output.patch)
-> 
-> @@
-> identifier S, member, array;
-> type T1, T2;
-> @@
-> 
-> struct S {
->   ...
->   T1 member;
->   T2 array[
-> - 0
->   ];
-> };
-> 
-> -fstrict-flex-arrays=3 is coming and we need to land these changes
-> to prevent issues like these in the short future:
-> 
-> ../fs/minix/dir.c:337:3: warning: 'strcpy' will always overflow; destination buffer has size 0,
-> but the source string has length 2 (including NUL byte) [-Wfortify-source]
-> 		strcpy(de3->name, ".");
-> 		^
-> 
-> Since these are all [0] to [] changes, the risk to UAPI is nearly zero. If
-> this breaks anything, we can use a union with a new member name.
-> 
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.16/process/deprecated.html#zero-length-and-one-element-arrays
-> 
-> Link: https://github.com/KSPP/linux/issues/78
-> Build-tested-by: https://lore.kernel.org/lkml/62b675ec.wKX6AOZ6cbE71vtF%25lkp@intel.com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
-> Hi all!
-> 
-> JFYI: I'm adding this to my -next tree. :)
-> 
-[..]
->  include/uapi/linux/ndctl.h                    | 10 +--
 
-For ndctl.h
 
-Acked-by: Dan Williams <dan.j.williams@intel.com>
+On 2022/6/27 18:19, Jan Kara wrote:
+> On Sat 25-06-22 11:11:43, Christoph Hellwig wrote:
+>> On Fri, Jun 24, 2022 at 03:07:50PM +0200, Jan Kara wrote:
+>>> I'm not sure I get the context 100% right but pages getting randomly d=
+irty
+>>> behind filesystem's back can still happen - most commonly with RDMA an=
+d
+>>> similar stuff which calls set_page_dirty() on pages it has got from
+>>> pin_user_pages() once the transfer is done. page_maybe_dma_pinned() sh=
+ould
+>>> be usable within filesystems to detect such cases and protect the
+>>> filesystem but so far neither me nor John Hubbart has got to implement=
+ this
+>>> in the generic writeback infrastructure + some filesystem as a sample =
+case
+>>> others could copy...
+>>
+>> Well, so far the strategy elsewhere seems to be to just ignore pages
+>> only dirtied through get_user_pages.  E.g. iomap skips over pages
+>> reported as holes, and ext4_writepage complains about pages without
+>> buffers and then clears the dirty bit and continues.
+>>
+>> I'm kinda surprised that btrfs wants to treat this so special
+>> especially as more of the btrfs page and sub-page status will be out
+>> of date as well.
+>
+> I agree btrfs probably needs a different solution than what it is curren=
+tly
+> doing if they want to get things right. I just wanted to make it clear t=
+hat
+> the code you are ripping out may be a wrong solution but to a real probl=
+em.
+
+IHMO I believe btrfs should also ignore such dirty but not managed by fs
+pages.
+
+But I still have a small concern here.
+
+Is it ensured that, after RDMA dirtying the pages, would we finally got
+a proper notification to fs that those pages are marked written?
+
+If not, I would guess those pages would never got a chance to be written
+back.
+
+If yes, then I'm totally fine to go the ignoring path.
+
+Thanks,
+Qu
+>
+> 								Honza
