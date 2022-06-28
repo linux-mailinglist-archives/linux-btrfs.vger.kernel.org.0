@@ -2,127 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A8755D9DE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C170855DC84
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344202AbiF1L6o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jun 2022 07:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57310 "EHLO
+        id S1344703AbiF1MdM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jun 2022 08:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344832AbiF1L6l (ORCPT
+        with ESMTP id S1344687AbiF1MdL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jun 2022 07:58:41 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0E56337;
-        Tue, 28 Jun 2022 04:58:39 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E741B21E69;
-        Tue, 28 Jun 2022 11:58:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1656417517;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0uGu7K4Rqu3ezVw8tmoJpMFQURgPc1ipNiiYFEj1I2A=;
-        b=yxFOQEWFLpu/oNZdG0wx7s21jDqiwHhxlL25m7DHpY8fTiAlCVmGs/AovRoPrW+e5lAv4b
-        ULaGR7D/E3II/YFDbIXrg1VQZ15wYFSt/o9LqL54P+UIimZUKMQVrpQPC5sRtoInScVibP
-        OVtJdVVEA2CoDAK8uxX7gYwcIOI6jTM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1656417517;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0uGu7K4Rqu3ezVw8tmoJpMFQURgPc1ipNiiYFEj1I2A=;
-        b=Q1AnzTXaVXg/QjyyepPg5mfbFyEBOp+DIpo/N9gLOFTOSL1X9AqbyFiTaOJnQR3bOdsoGU
-        a+uGd0tNIU2PQVCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B34A4139E9;
-        Tue, 28 Jun 2022 11:58:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fT/XKu3sumIvEgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 28 Jun 2022 11:58:37 +0000
-Date:   Tue, 28 Jun 2022 13:53:56 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
-Message-ID: <20220628115356.GB20633@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20220624122334.80603-1-hch@lst.de>
- <7c30b6a4-e628-baea-be83-6557750f995a@gmx.com>
- <20220624125118.GA789@lst.de>
- <20220624130750.cu26nnm6hjrru4zd@quack3.lan>
- <20220625091143.GA23118@lst.de>
- <20220627101914.gpoz7f6riezkolad@quack3.lan>
- <e73be42e-fce5-733a-310d-db9dc5011796@gmx.com>
+        Tue, 28 Jun 2022 08:33:11 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085F825D7
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 05:33:10 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id e40so17376241eda.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 05:33:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=OoSOKaetkfo5h155JtfRaN6t4WIhEs3Lb4EdSU7z4pc=;
+        b=HpWmoOejnTLXoVWDxOm5NrGK85rFWDruuOdz/2ckXlToEXn5LmQoQDp0fLakvZ71AB
+         Zlnk52vvkro6RE8fdN2hsD+y7PWnDYPY1I5jLLI4IqiN2ID/+5eCXUxIS0Zg3yT1wYe9
+         zXajAHoELXEJ9YzRA9kR4femwV3paamlZV/AlzLEjXOSQk8xVgt2ancKW9ahVM5VmVgX
+         ZbVgxSY0ZhXDum2islgcj8WRCiP008bBMZNqXDI1qgnFHgyCZiX0Bxqta0+B5jAFFffK
+         OJl3xS2AdUNu27y4WNbxKz311oC5jOYIoo233McL1XTSifp9sS+d5OJenAaz+vf/e0Ay
+         hZyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=OoSOKaetkfo5h155JtfRaN6t4WIhEs3Lb4EdSU7z4pc=;
+        b=sqBcfanwv/kGWctwB8AfpmniihnFolJsYTGT51Jy09noyT7rjaBI3P2hq0izrCg0s4
+         qXr2Xfaqv4WBr759BV+grMw4CAtxoqHc9jdmLPca1vZNbvOa5RIM1q1CUkqWW4vWkK83
+         UCH4MalRCpYqXHIGAziO2ovgFB6v3+h+SKCsbNDisWuOroxaRtqqDa740YfYtvEsZKdn
+         N1dZKxZ2UYRGEXub1RD/x+mqISxSUVzeh8p+7s2DTk0T5JmsZ/4BrVoheBRIbad2f1pM
+         djyFzmDvu3brTJZIuCPVro2FEn5K1pnNBE1G4B7A5YKga1damyekgRREUuh6Azf//quR
+         Eg8g==
+X-Gm-Message-State: AJIora+51W0AvzhEoMA50ZSLwYnt1Bj/oij3b0vNVY+s7lrQg/bcED/Z
+        HIybgvuhmW91Ytf6eYd8ye30ffQen6LD3SvYehA=
+X-Google-Smtp-Source: AGRyM1uYzsDaNb4gf87qrmdWBXO1vuqVJAWelWE4jBdeeEtjFLKPiSODHtYOLyuRV2amj7XaNlAZpzK4j5s9LcpHlY4=
+X-Received: by 2002:a05:6402:34d2:b0:435:9d8f:3328 with SMTP id
+ w18-20020a05640234d200b004359d8f3328mr22532440edc.88.1656419588627; Tue, 28
+ Jun 2022 05:33:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e73be42e-fce5-733a-310d-db9dc5011796@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Received: by 2002:a05:6408:16cd:b0:198:8336:cbb0 with HTTP; Tue, 28 Jun 2022
+ 05:33:08 -0700 (PDT)
+Reply-To: howardnewell406@gmail.com
+From:   "Howard F. Nwell" <intercooltg@gmail.com>
+Date:   Tue, 28 Jun 2022 14:33:08 +0200
+Message-ID: <CAE2sA_Wud4qFCoLNF-E7YFz7TZHcr+42YsO0SUvCapa+FWKttg@mail.gmail.com>
+Subject: RE
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 08:24:07AM +0800, Qu Wenruo wrote:
-> On 2022/6/27 18:19, Jan Kara wrote:
-> > On Sat 25-06-22 11:11:43, Christoph Hellwig wrote:
-> >> On Fri, Jun 24, 2022 at 03:07:50PM +0200, Jan Kara wrote:
-> >>> I'm not sure I get the context 100% right but pages getting randomly dirty
-> >>> behind filesystem's back can still happen - most commonly with RDMA and
-> >>> similar stuff which calls set_page_dirty() on pages it has got from
-> >>> pin_user_pages() once the transfer is done. page_maybe_dma_pinned() should
-> >>> be usable within filesystems to detect such cases and protect the
-> >>> filesystem but so far neither me nor John Hubbart has got to implement this
-> >>> in the generic writeback infrastructure + some filesystem as a sample case
-> >>> others could copy...
-> >>
-> >> Well, so far the strategy elsewhere seems to be to just ignore pages
-> >> only dirtied through get_user_pages.  E.g. iomap skips over pages
-> >> reported as holes, and ext4_writepage complains about pages without
-> >> buffers and then clears the dirty bit and continues.
-> >>
-> >> I'm kinda surprised that btrfs wants to treat this so special
-> >> especially as more of the btrfs page and sub-page status will be out
-> >> of date as well.
-> >
-> > I agree btrfs probably needs a different solution than what it is currently
-> > doing if they want to get things right. I just wanted to make it clear that
-> > the code you are ripping out may be a wrong solution but to a real problem.
-> 
-> IHMO I believe btrfs should also ignore such dirty but not managed by fs
-> pages.
-> 
-> But I still have a small concern here.
-> 
-> Is it ensured that, after RDMA dirtying the pages, would we finally got
-> a proper notification to fs that those pages are marked written?
-> 
-> If not, I would guess those pages would never got a chance to be written
-> back.
-> 
-> If yes, then I'm totally fine to go the ignoring path.
-
-This would work only for the higher level API where eg. RDMA notifies
-the filesystem, but there's still the s390 case that is part of the
-hardware architecture. The fixup worker is there as a safety for all
-other cases, I'm not fine removing or ignoring it.
+Hoi,
+Ik heb u eerder een e-mail gestuurd, maar heb nog geen antwoord van u ontvangen.
+Bedankt,
+Howard Newell
