@@ -2,123 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8826B55C693
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 14:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32B055C2A2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 14:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243094AbiF1H1w convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 28 Jun 2022 03:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        id S242032AbiF1H2h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jun 2022 03:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242985AbiF1H1h (ORCPT
+        with ESMTP id S242062AbiF1H2c (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jun 2022 03:27:37 -0400
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C165B2CE26;
-        Tue, 28 Jun 2022 00:27:35 -0700 (PDT)
-Received: by mail-qv1-f41.google.com with SMTP id i17so18728446qvo.13;
-        Tue, 28 Jun 2022 00:27:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hwgLtruPC06mcRCnQAsf+kJqHCP1mf00hTNnpiQ34M0=;
-        b=3tQxdeTXaeHedyn+zuV/55ACvAhAXmWcP4mEBFJ7jzsyYq6RsSgMON/8hhCXyPFuse
-         MLSN3K1iygLYNzbYfsEUEZlABb1G1eppIZbae+40fb4YMxpctrE+lrJz3qET/ldo5zGd
-         37edeyXGnan1cSc5wL4OCPTZESLkJDeXBVsf5Jitdq4F2SUoLicy4d+r65QQwFBoAQaF
-         rVmUy/gVspn4buiPbwq5cSH0lOm6yf061HBv7eJrhJeCu9Xa08CHGXWzt6wFcbBU42zO
-         cc0C2wJwrVFqggLP3rTWVXzc4tL0SV7qsxw7pHWn+6UvTIPwY9qNnceTZYR/8yu6Ppqr
-         0hkQ==
-X-Gm-Message-State: AJIora91XfpVhN+yRTRlxkAy8ZQagB28kxgOh0hSO/dgpIY4a+cEmxEM
-        RRrXPZ914wNJxYzvqW7oNwha7fO41WOfPA==
-X-Google-Smtp-Source: AGRyM1vuyurBth3w/1QAUlj3nOiF8B4hIrD4wqWY4IUnkxCMfrPNbOyI3fDTEu0sS0pUw3shJaj5og==
-X-Received: by 2002:a05:622a:647:b0:306:6b30:bd0a with SMTP id a7-20020a05622a064700b003066b30bd0amr12004710qtb.327.1656401254977;
-        Tue, 28 Jun 2022 00:27:34 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id f14-20020a05620a408e00b006a5d2eb58b2sm11643530qko.33.2022.06.28.00.27.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jun 2022 00:27:34 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-3176b6ed923so107319457b3.11;
-        Tue, 28 Jun 2022 00:27:33 -0700 (PDT)
-X-Received: by 2002:a81:a092:0:b0:318:5c89:a935 with SMTP id
- x140-20020a81a092000000b003185c89a935mr20762801ywg.383.1656401253054; Tue, 28
- Jun 2022 00:27:33 -0700 (PDT)
+        Tue, 28 Jun 2022 03:28:32 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FAC1EEF8
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 00:28:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5DE481FB3C;
+        Tue, 28 Jun 2022 07:28:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1656401309; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=TCuBU9+Ebtl78YYJEE8nANTF1gTekBtlwBuL1hrnFno=;
+        b=hnsPtvLr91hqMQ1zdevFt2N0w8TzyJSlnCLlI2oY2a7KZOGUYmP48JDjHJRLm3crAsI+RI
+        /oEXTOZ6O22XZdP3aRdJRa4kxDRR57m46g5YB2l9zfQhj9/9CDfDr/861GgblVY6h3EyUB
+        39nGNDYBLI4K/XSzt0f3y2rgDrHnIMw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 03EFD139E9;
+        Tue, 28 Jun 2022 07:28:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ahE+L5mtumJzFQAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 28 Jun 2022 07:28:25 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     u-boot@lists.denx.de
+Cc:     marek.behun@nic.cz, linux-btrfs@vger.kernel.org,
+        jnhuang95@gmail.com, linux-erofs@lists.ozlabs.org,
+        trini@konsulko.com, joaomarcos.costa@bootlin.com,
+        thomas.petazzoni@bootlin.com, miquel.raynal@bootlin.com
+Subject: [PATCH 0/8] u-boot: fs: add generic unaligned read handling
+Date:   Tue, 28 Jun 2022 15:28:00 +0800
+Message-Id: <cover.1656401086.git.wqu@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-References: <20220627180432.GA136081@embeddedor>
-In-Reply-To: <20220627180432.GA136081@embeddedor>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 28 Jun 2022 09:27:21 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU27TG_rpd=WTRPRcY22A4j4aN-6d_8OmK2aNpX06G3ig@mail.gmail.com>
-Message-ID: <CAMuHMdU27TG_rpd=WTRPRcY22A4j4aN-6d_8OmK2aNpX06G3ig@mail.gmail.com>
-Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
- flexible-array members
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>, dm-devel@redhat.com,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-can@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
-        lvs-devel@vger.kernel.org,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        nvdimm@lists.linux.dev,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        scsi <linux-scsi@vger.kernel.org>,
-        target-devel <target-devel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        V9FS Developers <v9fs-developer@lists.sourceforge.net>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Gustavo,
+[BACKGROUND]
+Unlike FUSE/Kernel which always pass aligned read range, U-boot fs code
+just pass the request range to underlying fses.
 
-Thanks for your patch!
+Under most case, this works fine, as U-boot only really needs to read
+the whole file (aka, 0 for both offset and len, len will be later
+determined using file size).
 
-On Mon, Jun 27, 2022 at 8:04 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
-> There is a regular need in the kernel to provide a way to declare
-> having a dynamically sized set of trailing elements in a structure.
-> Kernel code should always use “flexible array members”[1] for these
-> cases. The older style of one-element or zero-length arrays should
-> no longer be used[2].
+But if some advanced user/script wants to extract kernel/initramfs from
+combined image, we may need to do unaligned read in that case.
 
-These rules apply to the kernel, but uapi is not considered part of the
-kernel, so different rules apply.  Uapi header files should work with
-whatever compiler that can be used for compiling userspace.
+[ADVANTAGE]
+This patchset will handle unaligned read range in _fs_read():
 
-Gr{oetje,eeting}s,
+- Get blocksize of the underlying fs
 
-                        Geert
+- Read the leading block contianing the unaligned range
+  The full block will be stored in a local buffer, then only copy
+  the bytes in the unaligned range into the destination buffer.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+  If the first block covers the whole range, we just call it aday.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+- Read the aligned range if there is any
+
+- Read the tailing block containing the unaligned range
+  And copy the covered range into the destination.
+
+[DISADVANTAGE]
+There are mainly two problems:
+
+- Extra memory allocation for every _fs_read() call
+  For the leading and tailing block.
+
+- Extra path resolving
+  All those supported fs will have to do extra path resolving up to 2
+  times (one for the leading block, one for the tailing block).
+  This may slow down the read.
+
+[SUPPORTED FSES]
+
+- Btrfs (manually tested*)
+- Ext4 (manually tested)
+- FAT (manually tested)
+- Erofs
+- sandboxfs
+- ubifs
+
+*: Failed to get the test cases run, thus have to go sandbox mode, and
+attach an image with target fs, load the target file (with unaligned
+range) and compare the result using md5sum.
+
+For EXT4/FAT, they may need extra cleanup, as their existing unaligned
+range handling is no longer needed anymore, cleaning them up should free 
+more code lines than the added one.
+
+Just not confident enough to modify them all by myself.
+
+[UNSUPPORTED FSES]
+- Squashfs
+  They don't support non-zero offset, thus it can not handle the tailing
+  block reading.
+  Need extra help to add block aligned offset support.
+
+- Semihostfs
+  It's using hardcoded trap to do system calls, not sure how it would
+  work for stat() call.
+
+Extra testing/feedback is always appreciated.
+
+
+Qu Wenruo (8):
+  fs: fat: unexport file_fat_read_at()
+  fs: always get the file size in _fs_read()
+  fs: btrfs: move the unaligned read code to _fs_read() for btrfs
+  fs: ext4: rely on _fs_read() to pass block aligned range into
+    ext4fs_read_file()
+  fs: fat: rely on higher layer to get block aligned read range
+  fs: sandboxfs: add sandbox_fs_get_blocksize()
+  fs: ubifs: rely on higher layer to do unaligned read
+  fs: erofs: add unaligned read range handling
+
+ arch/sandbox/cpu/os.c  |  11 +++
+ fs/btrfs/btrfs.c       |  24 +++---
+ fs/btrfs/inode.c       |  84 ++------------------
+ fs/erofs/internal.h    |   1 +
+ fs/erofs/super.c       |   6 ++
+ fs/ext4/ext4fs.c       |  11 +++
+ fs/fat/fat.c           |  17 ++++-
+ fs/fs.c                | 169 +++++++++++++++++++++++++++++++++++++++--
+ fs/sandbox/sandboxfs.c |  14 ++++
+ fs/ubifs/ubifs.c       |  13 ++--
+ include/btrfs.h        |   1 +
+ include/erofs.h        |   1 +
+ include/ext4fs.h       |   1 +
+ include/fat.h          |   3 +-
+ include/os.h           |   8 ++
+ include/sandboxfs.h    |   1 +
+ include/ubifs_uboot.h  |   1 +
+ 17 files changed, 258 insertions(+), 108 deletions(-)
+
+-- 
+2.36.1
+
