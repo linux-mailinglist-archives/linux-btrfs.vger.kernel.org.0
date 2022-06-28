@@ -2,128 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 890F855C41D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 14:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825AE55D53A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242593AbiF1AYc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jun 2022 20:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53894 "EHLO
+        id S241210AbiF1AlC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jun 2022 20:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242526AbiF1AY0 (ORCPT
+        with ESMTP id S240364AbiF1Ak7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jun 2022 20:24:26 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273E41C113;
-        Mon, 27 Jun 2022 17:24:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1656375853;
-        bh=eg0Ld1dIzdoptyJh2iXj5oMIQgq7oAxqfrx2L8T1HJQ=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=gX4rzrbSog0rNGFR+T9YRkAS5tw0fhxLMCB0Z2NAUAGXZBPErJslacP9LPvfisb4A
-         PQ9BJO71cgTLl/krDi2W9do9WE6c9kxc9nD9w1+DpvHOum0+UPTy/eF5naHpzhh2LQ
-         4C3p/gciOYsP00tdDdCPhhq/xVXpgKXyUilOEohE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6Udt-1nzfV726Cf-006yib; Tue, 28
- Jun 2022 02:24:13 +0200
-Message-ID: <e73be42e-fce5-733a-310d-db9dc5011796@gmx.com>
-Date:   Tue, 28 Jun 2022 08:24:07 +0800
+        Mon, 27 Jun 2022 20:40:59 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F7CF5BC
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jun 2022 17:40:56 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id v6so8609685qkh.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jun 2022 17:40:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nrCjPCGAs4MTUiLBt7Ijf/MJPuIyH6lM8yqPhdyhJD8=;
+        b=QGfGz2XeyaJLxS6IycR7jteyzbs2f9vu4fQQcftWhoNW5sUtbyuMKwRS5XXshn3Hg2
+         yZubOZXW72TGsXoMKBc9lhqncUYMSH0Z6bymz383cNPRRHeF7rKM5RXMNm4Eaw5tsGTg
+         BQX0bHWNlf6m2F5J4oWG32dxQT2CTBmnGX6tl+1lipYgts8fc/1uUmHwN5t3zZzoA6Qn
+         DTeDwoNVOxWo0hy32OR9hFE/UO0/97qh5eo+5ewqu/iIRVMFQ1AIctopaFBuZOm9BPLs
+         HAx/pGMXLvvVO6Cb9sesF2T5smUMb44u7gsx78px69APS8fFzY4PmSgo/WM3D328ZbRr
+         X/FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nrCjPCGAs4MTUiLBt7Ijf/MJPuIyH6lM8yqPhdyhJD8=;
+        b=5vh4SVXrlq6e64LS9+E3I+YtzBK+V7akknxcafYxiH/XQYxPp5hOA7gpu8NqNR8UcW
+         fs5pXnJs3M+qTcVpVI3DyLXr2mYMpxLCTH5yjQKPBvT00FMr/9IJW2kr8pcdbv+TIXcg
+         PQ+S6iOH5H8xlu0tkSNq5fd10EzvElFgzufl8K93qtG7AnxVVArZQfH4J+76Q09qPp9O
+         RGS2SVMRduE7B9RXHfFLi4QjrU3k1krc/VhgLCBjLP4Puq/46sRnYjcTAjU4+4wJTm2F
+         Xi14DG2ekWhg45oobkjMyRXDb6+VqEYxPdgomafOOhauGEv2M28fHf/xSMv1vTt2jKbC
+         MqAg==
+X-Gm-Message-State: AJIora91XLWACqztuM3nW3dsGkT5rzv9E+EYN4EO0BLzw9BnKbzMMjoo
+        B7p817xuhAipM3yOXXrMrZ2miw==
+X-Google-Smtp-Source: AGRyM1vTCFcIzhygOqc0dfz0XQz9dolsiNFu6n34Zw7Kl9e9LRh00tD6U1uaxZUOgaZBY5Ks0qTgkA==
+X-Received: by 2002:a05:620a:1450:b0:6af:1999:5f4c with SMTP id i16-20020a05620a145000b006af19995f4cmr7538467qkl.301.1656376854703;
+        Mon, 27 Jun 2022 17:40:54 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id x11-20020a05620a448b00b006a768c699adsm10335849qkp.125.2022.06.27.17.40.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jun 2022 17:40:53 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1o5zHg-002iu4-9Z; Mon, 27 Jun 2022 21:40:52 -0300
+Date:   Mon, 27 Jun 2022 21:40:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
+        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
+        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <20220628004052.GM23621@ziepe.ca>
+References: <20220627180432.GA136081@embeddedor>
+ <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20220624122334.80603-1-hch@lst.de>
- <7c30b6a4-e628-baea-be83-6557750f995a@gmx.com> <20220624125118.GA789@lst.de>
- <20220624130750.cu26nnm6hjrru4zd@quack3.lan> <20220625091143.GA23118@lst.de>
- <20220627101914.gpoz7f6riezkolad@quack3.lan>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220627101914.gpoz7f6riezkolad@quack3.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TUDXYOguBdFc8szg6s33DZegG88/C2dSpWWfTYkLuX+c99FdYCK
- Vy6e4moT6QGELL2/V/Rh3pbIlPHrkDi6kLA7hF+FaQ0hdYLQr1gA1zAVrJvpXgloxXsojmD
- Gd0zRuoa6JX7rKcEqfERap8OuNS9yLsdji02zGTl1hUBGXCiuQA+DW1+H+aIZFojs8ozOdp
- 8sZzJckpycFxb/gbYSBDA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XN8zdhvGw94=:1+LQDVtrC4prmgl7Bx6lP8
- kIYj7ADpVy9l8Nbz9aoCdM/gBPAyB0dZwYJU3oxVgmRQH75Q6ligndn1Xq+cHkgf2Iqhqepfw
- wb0fVnRx5FBQ44oMyRZlkU/lkP815YpLATlPSqF+hi3o+GbMYot1yxtlsFsHmHuilSyzTyWqQ
- HQaZrh29DmAqWtJfS4okjy1omELzQC7hgCNVOXodtDnrXUOWR4/Fs2q3YqXSa7pO+4Utsa1yX
- Gx26ymmDqGGlRDzAqm2JACe8TpRMivou62hbdd34Pe8CyZ8XuvnAQRtlpamPcZMOg4/XS04VO
- WeDA0QCe3Y+lfAwHeWCOWC1c/73fjjZcz+7zvh18Z01UsMqSUcAz18nBt11CGo4YrX5GEKkX2
- 2eKHSAS/IrBqUOMCxypkRbpS7Eua37HhkCqBA/e2MuLgPhXFCMkVv+4n1PHadQPJnIkifm5XA
- +XQt7oPzbSzhXOrOT/FJdVjJt40nZ3Q9Gzt0iZlm2MQgiJ6/f39ktroCIBd8OXR5mjhjil/mp
- Mf1Klifea/PPF2z4bzfWuSZUJ0gOCwrXWMljHx4W376xwgmVeAw8nth3bkqHF9H5PFfiVDTa2
- HvgnTSZylVz+yzCSRCvh1NU70JEb3MPrn9zlSmdpyI5H0UVceC4J7hX8UfGppNFsROXF8eVI2
- bTpXmiEs16wQWBex+5Rs269kB4cA74DY4K/Ya/zkLPcWMQJxa6eAex48zWC/w0jN2XkxBWApN
- 1zCM0BDVee2OPemKN/FK6gQlMIwSnob6aNhf3lok7lqOJZ6+Ig+XHdo7M8lXm2mUGP2xN4QqZ
- fh6WfCxVcYeW4kIrgczDuMDTtrN+Vdg4SOLGbqIx2nOkgiD2sRUuagQz2SRwdEJhFfVN6hRZb
- Fab480NxssJwh/uyRiac3ehz2ltJ/z8OBp5C5tXouum+Mrk72zGCKAuULUuZmniUElIP0D/hI
- ER/LnHqO5knB4rLXYMy3ZeJN7YWHuEOdF0fP4dB8VoGXXl/2vCJD/SjG7bRuSrtuCSjWhxj4i
- mPAWkzJ89mo9d/Km37GbQTk9qwtvUdc0S/ZtRUp9vwg1lV2rULPcaFl4ZICLQPIte/iafP35r
- 4McGk+d1wcyjYdV1FBqnRs3Y36U9qp8uSIv6+ZhR2eoOHNdZ5Ww8/5FjA==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Jun 27, 2022 at 08:27:37PM +0200, Daniel Borkmann wrote:
+> On 6/27/22 8:04 PM, Gustavo A. R. Silva wrote:
+> > There is a regular need in the kernel to provide a way to declare
+> > having a dynamically sized set of trailing elements in a structure.
+> > Kernel code should always use “flexible array members”[1] for these
+> > cases. The older style of one-element or zero-length arrays should
+> > no longer be used[2].
+> > 
+> > This code was transformed with the help of Coccinelle:
+> > (linux-5.19-rc2$ spatch --jobs $(getconf _NPROCESSORS_ONLN) --sp-file script.cocci --include-headers --dir . > output.patch)
+> > 
+> > @@
+> > identifier S, member, array;
+> > type T1, T2;
+> > @@
+> > 
+> > struct S {
+> >    ...
+> >    T1 member;
+> >    T2 array[
+> > - 0
+> >    ];
+> > };
+> > 
+> > -fstrict-flex-arrays=3 is coming and we need to land these changes
+> > to prevent issues like these in the short future:
+> > 
+> > ../fs/minix/dir.c:337:3: warning: 'strcpy' will always overflow; destination buffer has size 0,
+> > but the source string has length 2 (including NUL byte) [-Wfortify-source]
+> > 		strcpy(de3->name, ".");
+> > 		^
+> > 
+> > Since these are all [0] to [] changes, the risk to UAPI is nearly zero. If
+> > this breaks anything, we can use a union with a new member name.
+> > 
+> > [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> > [2] https://www.kernel.org/doc/html/v5.16/process/deprecated.html#zero-length-and-one-element-arrays
+> > 
+> > Link: https://github.com/KSPP/linux/issues/78
+> > Build-tested-by: https://lore.kernel.org/lkml/62b675ec.wKX6AOZ6cbE71vtF%25lkp@intel.com/
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > ---
+> > Hi all!
+> > 
+> > JFYI: I'm adding this to my -next tree. :)
+> 
+> Fyi, this breaks BPF CI:
+> 
+> https://github.com/kernel-patches/bpf/runs/7078719372?check_suite_focus=true
+> 
+>   [...]
+>   progs/map_ptr_kern.c:314:26: error: field 'trie_key' with variable sized type 'struct bpf_lpm_trie_key' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+>           struct bpf_lpm_trie_key trie_key;
+>                                   ^
 
+This will break the rdma-core userspace as well, with a similar
+error:
 
-On 2022/6/27 18:19, Jan Kara wrote:
-> On Sat 25-06-22 11:11:43, Christoph Hellwig wrote:
->> On Fri, Jun 24, 2022 at 03:07:50PM +0200, Jan Kara wrote:
->>> I'm not sure I get the context 100% right but pages getting randomly d=
-irty
->>> behind filesystem's back can still happen - most commonly with RDMA an=
-d
->>> similar stuff which calls set_page_dirty() on pages it has got from
->>> pin_user_pages() once the transfer is done. page_maybe_dma_pinned() sh=
-ould
->>> be usable within filesystems to detect such cases and protect the
->>> filesystem but so far neither me nor John Hubbart has got to implement=
- this
->>> in the generic writeback infrastructure + some filesystem as a sample =
-case
->>> others could copy...
->>
->> Well, so far the strategy elsewhere seems to be to just ignore pages
->> only dirtied through get_user_pages.  E.g. iomap skips over pages
->> reported as holes, and ext4_writepage complains about pages without
->> buffers and then clears the dirty bit and continues.
->>
->> I'm kinda surprised that btrfs wants to treat this so special
->> especially as more of the btrfs page and sub-page status will be out
->> of date as well.
->
-> I agree btrfs probably needs a different solution than what it is curren=
-tly
-> doing if they want to get things right. I just wanted to make it clear t=
-hat
-> the code you are ripping out may be a wrong solution but to a real probl=
-em.
+/usr/bin/clang-13 -DVERBS_DEBUG -Dibverbs_EXPORTS -Iinclude -I/usr/include/libnl3 -I/usr/include/drm -g -O2 -fdebug-prefix-map=/__w/1/s=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -Wmissing-prototypes -Wmissing-declarations -Wwrite-strings -Wformat=2 -Wcast-function-type -Wformat-nonliteral -Wdate-time -Wnested-externs -Wshadow -Wstrict-prototypes -Wold-style-definition -Werror -Wredundant-decls -g -fPIC   -std=gnu11 -MD -MT libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o -MF libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o.d -o libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o   -c ../libibverbs/cmd_flow.c
+In file included from ../libibverbs/cmd_flow.c:33:
+In file included from include/infiniband/cmd_write.h:36:
+In file included from include/infiniband/cmd_ioctl.h:41:
+In file included from include/infiniband/verbs.h:48:
+In file included from include/infiniband/verbs_api.h:66:
+In file included from include/infiniband/ib_user_ioctl_verbs.h:38:
+include/rdma/ib_user_verbs.h:436:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_cq_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+        struct ib_uverbs_create_cq_resp base;
+                                        ^
+include/rdma/ib_user_verbs.h:644:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_qp_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+        struct ib_uverbs_create_qp_resp base;
 
-IHMO I believe btrfs should also ignore such dirty but not managed by fs
-pages.
+Which is why I gave up trying to change these..
 
-But I still have a small concern here.
+Though maybe we could just switch off -Wgnu-variable-sized-type-not-at-end  during configuration ?
 
-Is it ensured that, after RDMA dirtying the pages, would we finally got
-a proper notification to fs that those pages are marked written?
-
-If not, I would guess those pages would never got a chance to be written
-back.
-
-If yes, then I'm totally fine to go the ignoring path.
-
-Thanks,
-Qu
->
-> 								Honza
+Jason
