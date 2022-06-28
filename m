@@ -2,189 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A85055D7E1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616DF55E4F4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345032AbiF1MoB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jun 2022 08:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41608 "EHLO
+        id S1346208AbiF1NhU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jun 2022 09:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231959AbiF1MoA (ORCPT
+        with ESMTP id S1346572AbiF1Ng7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jun 2022 08:44:00 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770D119C25
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 05:43:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1656420230;
-        bh=oIyz5w0Qq/ZN49jah++J8wNTgX7aSIc99FECoLTXB6M=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=B5B+YjQ9hUOveQC7rk6QNpsXyJ7mfg6D3J2fYQH8odtFgr/ItnGhKd/OVrC4IsjDq
-         JS2U6jib0g51kdwRdqD7K9yy4wgpFQB3lqImL9UZvUATo4rYkAiMkHsoI0imq0ut70
-         28KTaemZnd+52nriGytUJJKvM+dby/xxDBYySXh0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLQxX-1oNQCk229T-00IWZ8; Tue, 28
- Jun 2022 14:43:50 +0200
-Message-ID: <c267985f-a1c5-5e86-f7b8-9c2f323d5547@gmx.com>
-Date:   Tue, 28 Jun 2022 20:43:42 +0800
+        Tue, 28 Jun 2022 09:36:59 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1DF2AC61
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 06:36:54 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id cu16so19946822qvb.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 06:36:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gN4ZNyT9GRZ46Vwx3CUzNgwGxKE3ptwelsb3O/2waMc=;
+        b=SRPS2zIET11DP06FAnMANUW30rX+F+KLnmvgpItTZuHDiHMYbx191l+udZ0BIKVo+p
+         DUqKNFcRnPxEdciA9v/rjMoUuUABeinU5a59o91m7mO0ei+LjGwfeqP1sFK6bST4r2Sc
+         +kwNrequilw+r3whlSvEqjUrw7uEou8aBEv26lUqmckZs7QEO1gxqNAIdKmR6ixdoBBW
+         VwXL+VitONeiHER4+6czyOuvux/gSa01CsajOGl6xQeKgTZdOU9/PF5ai6yeP3/8Na6A
+         VkyCaiWAoLiX3IML+rZ/qAH9obhof6Stg3VEpk4n7D6sOfmWV6A4zI2itZ9nI+NyrBEn
+         GAtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gN4ZNyT9GRZ46Vwx3CUzNgwGxKE3ptwelsb3O/2waMc=;
+        b=3dXbJSnhj9ngQY+H1xu7a2U4hkOPYPs/aCwXrPjzvf/NLke9d4Rx7dmYNT9bJUUMnM
+         VqdFVJw3ZdWRbSN6sy55VWqeXsCzQ5n0EO8Y3wgqRZLXxuj4Dtljf9rpnblkJny9UoT1
+         CksUQNecfb0ClmW1+3IP7NXBMZ64KCVww9oUV46Umyn3O+zr6tncceMR1PP5bs59Mh+D
+         aUX3lwb+0qclkFqVzlrqKripEvc9IvRy4i3vxTrzKSCRL9s6uVqiFLevOXzTmLrD4lwA
+         f++t/qhO/hMBhL6cisJgS9213KjSP2jlaMyejSqyq7LNPy8lTM8uOxQidfaU6GBKO5Pg
+         JTuQ==
+X-Gm-Message-State: AJIora/X0g1jQ7pZDJRdpU+yjhLCGjy6z3gHKbAy2N4rsgRaI8dcblYL
+        k2gkK94Ki67QXtibDeSZFeqlhQ==
+X-Google-Smtp-Source: AGRyM1uooXTVlKXYemR9EvbrrQp4i2XA4BpQT09bjvN7I6xIwm3cKCnpXCNHNGqwd+HxVz52pv3Omw==
+X-Received: by 2002:ac8:5b0d:0:b0:31b:f519:4107 with SMTP id m13-20020ac85b0d000000b0031bf5194107mr1237416qtw.331.1656423413317;
+        Tue, 28 Jun 2022 06:36:53 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id s10-20020a05620a29ca00b006a79479657fsm708363qkp.108.2022.06.28.06.36.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jun 2022 06:36:52 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1o6BOd-002vAA-VA; Tue, 28 Jun 2022 10:36:51 -0300
+Date:   Tue, 28 Jun 2022 10:36:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
+        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
+        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <20220628133651.GO23621@ziepe.ca>
+References: <20220627180432.GA136081@embeddedor>
+ <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
+ <20220628004052.GM23621@ziepe.ca>
+ <20220628005825.GA161566@embeddedor>
+ <20220628022129.GA8452@embeddedor>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH RFC 2/8] fs: always get the file size in _fs_read()
-Content-Language: en-US
-To:     Huang Jianan <jnhuang95@gmail.com>, Qu Wenruo <wqu@suse.com>,
-        u-boot@lists.denx.de
-Cc:     marek.behun@nic.cz, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, trini@konsulko.com,
-        joaomarcos.costa@bootlin.com, thomas.petazzoni@bootlin.com,
-        miquel.raynal@bootlin.com
-References: <cover.1656401086.git.wqu@suse.com>
- <cd417bc9dc4b44c4ac8d98f146e47c98cf4aac5a.1656401086.git.wqu@suse.com>
- <6f958407-0c3c-1cd6-ced2-08bc9c267d17@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <6f958407-0c3c-1cd6-ced2-08bc9c267d17@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zzrt6DchgYRalbPOVLdJYBaixymE0uGIISaZxdxJ3Mtekz3bPmw
- fN3HDLFiGK0L4rbfvBF8e8aFTPf5kn0VvAwx0EECTFFViYeN6Vkn5efSLTHI/wUF0Tnp+th
- +P7Oz5DwsgbIagtxU9a6xIBbPrh/UXG9WjpX36WcE3Vm9uqxkRBVaZzoS5ynGB8Go11rmbF
- DCujOHZQux5PfTamc7UnA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:izDxp/J27oE=:b00axej2j5ai9PSWG9kfFP
- 3Bl42E7/TVS1v1JHR1EWV1pP71n5QSJ6jUNgsTe5YdgQLUe1+HnluyufjvvJPXni7vfqLO0ou
- /Jdih91WOMysu3dI+nKEFlCD2wlXdbdZoM+IjH+fkuFggEEAQpX/BLFFeZajXbZV8FFd8gpAB
- oV3DAjq19qO1MAgCLzB+RPuVEtot1W3wSp3DSvb80gUiWA3AzEuHr37y4z8Ne29TwMj38/yUQ
- 9LkNKlb5XQomlSfLubLm6s06ehmcrwwWAf0ko9R9YkVmT8wTsNaqHi06wlPFAlQBlw4edNvHB
- ir4HQLd/P4ccxgp83bt/L45Vwyo27i2zaPwwNBdllAhMBInya3xYgyS/jbveHXtjVZmQM9Yzw
- 1rlSBy8NoJz5P17CGHfgaD+87pa0MxCh67cbdkMXB2xeuYMa01pUamNWeyXoLB65L/hfb/J60
- LJaFJu9BTmPivWIAtj8o6ub5PhoDVkML2gvhV5FFedg5wHAv1BUCsmbV18hnK/ZYGJcP2YHFk
- dUavo23Wk23dqPrEVH0lka/EPvBaVKdsg7poyx6vcIJTgaYdH+lZzVkEnAh08MY93llarzjPD
- 0Wthbkiqq+noiKDUNKLzfpNGLUz7nDZ91tXcTrYy8OVLBaN6lSumygjtj2XWTgt/zlk+rVO80
- r0nGsYDy1MVotNMYQxXYVc4xA7aegd6U1Y9AVihL9ZpALiTfepl9Y3A/M9Ur9ysBRmXP91oXO
- sRL+AF4iDulsYSCPm+shWRfg20as1lhn+remrTxS/A73M6HJI3AHJazp8WBzpWSC7O40pcnWG
- hFon09d8aeiFBEbggqHx2TIgobMjijUYImp+VSN9aIhmEpfm4Re+bYSvsCmHJMN8q8GAdTeNd
- xD4OlykhdTU9MkTxrnQ0HXnHT/8Bnixg3NSk4GSlf9Hvk3rK8q56xpU3fBU+YepOZ9XBqJVST
- qyvI8J/Z+IxDyjTEtYbITEdzhkqTUu64csYnELkNoX0UySexFgc7IIF832ZUMIAwq4BvDIDMb
- 8ZcxXSgSve5XvyCPvMzcPI3oBYmPLR4C6iyG9wJH5AIheIjtKgSSuNx1BTRbg+hWNRZagslnh
- BbQ1zIpGBxpsEoVC3amjCyCSEYpfWDNnue2l8kab4HAy0ld8PQ6380YOQ==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220628022129.GA8452@embeddedor>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Jun 28, 2022 at 04:21:29AM +0200, Gustavo A. R. Silva wrote:
 
+> > > Though maybe we could just switch off -Wgnu-variable-sized-type-not-at-end  during configuration ?
 
-On 2022/6/28 20:36, Huang Jianan wrote:
-> Hi, wenruo,
->
-> =E5=9C=A8 2022/6/28 15:28, Qu Wenruo =E5=86=99=E9=81=93:
->> For _fs_read(), @len =3D=3D 0 means we read the whole file.
->> And we just pass @len =3D=3D 0 to make each filesystem to handle it.
->>
->> In fact we have info->size() call to properly get the filesize.
->>
->> So we can not only call info->size() to grab the file_size for len =3D=
-=3D 0
->> case, but also detect invalid @len (e.g. @len > file_size) in advance o=
-r
->> truncate @len.
->>
->> This behavior also allows us to handle unaligned better in the incoming
->> patches.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> =C2=A0 fs/fs.c | 25 +++++++++++++++++++++----
->> =C2=A0 1 file changed, 21 insertions(+), 4 deletions(-)
->>
->> diff --git a/fs/fs.c b/fs/fs.c
->> index 6de1a3eb6d5d..d992cdd6d650 100644
->> --- a/fs/fs.c
->> +++ b/fs/fs.c
->> @@ -579,6 +579,7 @@ static int _fs_read(const char *filename, ulong
->> addr, loff_t offset, loff_t len,
->> =C2=A0 {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct fstype_info *info =3D fs_get_info=
-(fs_type);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 void *buf;
->> +=C2=A0=C2=A0=C2=A0 loff_t file_size;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->> =C2=A0 #ifdef CONFIG_LMB
->> @@ -589,10 +590,26 @@ static int _fs_read(const char *filename, ulong
->> addr, loff_t offset, loff_t len,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0 #endif
->> -=C2=A0=C2=A0=C2=A0 /*
->> -=C2=A0=C2=A0=C2=A0=C2=A0 * We don't actually know how many bytes are b=
-eing read, since
->> len=3D=3D0
->> -=C2=A0=C2=A0=C2=A0=C2=A0 * means read the whole file.
->> -=C2=A0=C2=A0=C2=A0=C2=A0 */
->> +=C2=A0=C2=A0=C2=A0 ret =3D info->size(filename, &file_size);
->
-> I get an error when running the erofs test cases. The return value isn't
-> as expected
-> when reading symlink file.
-> For symlink file, erofs_size will return the size of the symlink itself
-> here.
+> We need to think in a different strategy.
 
-Indeed, this is a problem, in fact I also checked other fses, it looks
-like we all just return the inode size for the softlink, thus size()
-call can not be relied on for those cases.
+I think we will need to switch off the warning in userspace - this is
+doable for rdma-core.
 
-While for the read() calls, every fs will do extra resolving for soft
-links, thus it doesn't cause problems.
+On the other hand, if the goal is to enable the array size check
+compiler warning I would suggest focusing only on those structs that
+actually hit that warning in the kernel. IIRC infiniband doesn't
+trigger it because it just pointer casts the flex array to some other
+struct.
 
+It isn't actually an array it is a placeholder for a trailing
+structure, so it is never indexed.
 
-This can still be solved by not calling size() calls at all, and only do
-the unaligned read handling for the leading block.
+This is also why we hit the warning because the convient way for
+userspace to compose the message is to squash the header and trailer
+structs together in a super struct on the stack, then invoke the
+ioctl.
 
-Thank you very much for pointing this bug out, would update the patchset
-for that.
-
-Thanks,
-Qu
->> +=C2=A0=C2=A0=C2=A0 if (ret < 0) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 log_err("** Unable to get f=
-ile size for %s, %d **\n",
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 filename, ret);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> +=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 if (offset >=3D file_size) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 log_err(
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "** Invalid offset, offset =
-(%llu) >=3D file size (%llu)\n",
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 off=
-set, file_size);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
->> +
->> +=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 if (len =3D=3D 0 || offset + len > file_size) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (len > file_size)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 log=
-_info(
->> +=C2=A0=C2=A0=C2=A0 "** Truncate read length from %llu to %llu, as file=
- size is %llu
->> **\n",
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 len, file_size, file_size);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 len =3D file_size - offset;
-> Then, we will get a wrong len in the case of len=3D=3D0. So I think we n=
-eed
-> to do something
-> extra with the symlink file?
->
-> Thanks,
-> Jianan
->> +=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 buf =3D map_sysmem(addr, len);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D info->read(filename, buf, offset=
-, len, actread);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unmap_sysmem(buf);
->
+Jason 
