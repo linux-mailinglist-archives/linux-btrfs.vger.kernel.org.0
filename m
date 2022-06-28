@@ -2,75 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0642455E920
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 18:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2447055E893
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 18:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346912AbiF1N4i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jun 2022 09:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
+        id S1345802AbiF1ORP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jun 2022 10:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346917AbiF1N4a (ORCPT
+        with ESMTP id S1344829AbiF1ORN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jun 2022 09:56:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FA633378;
-        Tue, 28 Jun 2022 06:56:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 556076198B;
-        Tue, 28 Jun 2022 13:56:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C80ADC341CA;
-        Tue, 28 Jun 2022 13:56:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656424588;
-        bh=b5FsKFMrP1+S6zwgUlKhr8WAIjk2qEr4j/i4jiXKeUI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ipH9xLLON/wfF1+doX0YwzWNurZbGyHCLx43ahE7WR8jLi1R48cI2m2yJAsZCWDQT
-         Un4VNsnpjcqqdwdfvJBWhdCzCR6kAmILST6sGe+QmxtUWHpxGj2/l2NK930cX7S1Vb
-         ck1tdm9dVL3hHqJ5pPK6X9u94v/kg7IeqTTrypuenoyOXdLstD1jm9a1r2/Mn+hjvK
-         A5gIe8GNT4XoGXRtGng12sB0ehpNIhwjOmzNMxwSBDvTu3O5JPGVxOwJ5SG66up68M
-         dTuMxAaqVKV5rVpkj9AWHYexDQNYp0rXQRl//EEgGVYdOgnC2OLlmpTSGeWpC665ae
-         t2Abf09RRIvCQ==
-Date:   Tue, 28 Jun 2022 15:56:23 +0200
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
-        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
-        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
- flexible-array members
-Message-ID: <20220628135623.GA25163@embeddedor>
-References: <20220627180432.GA136081@embeddedor>
- <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
- <20220628004052.GM23621@ziepe.ca>
- <20220628005825.GA161566@embeddedor>
- <20220628022129.GA8452@embeddedor>
- <20220628133651.GO23621@ziepe.ca>
+        Tue, 28 Jun 2022 10:17:13 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DAE2EA07
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 07:17:12 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id t16so20200956qvh.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 07:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fHm0CiyWSHETp6z498ld+K0sQYjE7jLFHNiGgd3eMCY=;
+        b=akyGWAPhtroBWr7EzHV5dgf4YFI+WGYskWDgZqRJrt7XUe38A/YlzQZPnoIHiwRbB0
+         dYg0bdHkBrzVKo7If4vopSsxFf5nLkMkao+Q2RqL9f90DJRF6nB/QHXpamx1zq4HOGVm
+         s8WWELsQhP7cHJ+dPeFoTGQ9qot48tr1y+njk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fHm0CiyWSHETp6z498ld+K0sQYjE7jLFHNiGgd3eMCY=;
+        b=BGLcipUoEJvhhmVktcu53IFPLd0Y0Xx+KDDfO/GDqam4r47YfCzrD+4EZFq3pu2uP8
+         IFblT7Fp7kpD3Lo5PKWceCwskirX6V7Gh/LUsb5uEqmkWNR09iboBbeOZ3a0f0C3uPpB
+         hXAm5m0RRgpa/NG6sPBNIGC0duBGpJelWdjHUtcwZBh//AKOaDWJl0+mVYLdAXHNP/0X
+         ThXggzrVET+kJQpmcB6ALzyLuD99n9/Fcjq8Ht6aW5VDLAq7wQJVrdR1HENwlpXSAnLB
+         A4Cfwwbuz2MvTJv2goAc25PC4IkdQ1l15m6j7Btix66cru8UmHav+AHT2F+CblbPj8Qi
+         jIBg==
+X-Gm-Message-State: AJIora+zqrNpFps7HRYsdGJXeGKBWbPQuFuc0/prCt+S5m6zMJBMeL1z
+        XJkNaycZs8lbaVrFh+9LTNqULg==
+X-Google-Smtp-Source: AGRyM1uc/3vUDj6VXEJ5EwykkdJtRsV9TdsqmJs/EdgWZSm7yWChU2GMIn5VtKjI2Ja7iwVjJ7Y2NA==
+X-Received: by 2002:ad4:5005:0:b0:470:347e:ccdd with SMTP id s5-20020ad45005000000b00470347eccddmr3744706qvo.123.1656425831906;
+        Tue, 28 Jun 2022 07:17:11 -0700 (PDT)
+Received: from bill-the-cat (cpe-65-184-195-139.ec.res.rr.com. [65.184.195.139])
+        by smtp.gmail.com with ESMTPSA id f15-20020ac87f0f000000b00304e8938800sm9367395qtk.96.2022.06.28.07.17.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jun 2022 07:17:10 -0700 (PDT)
+Date:   Tue, 28 Jun 2022 10:17:08 -0400
+From:   Tom Rini <trini@konsulko.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     u-boot@lists.denx.de, marek.behun@nic.cz,
+        linux-btrfs@vger.kernel.org, jnhuang95@gmail.com,
+        linux-erofs@lists.ozlabs.org, joaomarcos.costa@bootlin.com,
+        thomas.petazzoni@bootlin.com, miquel.raynal@bootlin.com
+Subject: Re: [PATCH 0/8] u-boot: fs: add generic unaligned read handling
+Message-ID: <20220628141708.GJ1146598@bill-the-cat>
+References: <cover.1656401086.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zOcTNEe3AzgCmdo9"
 Content-Disposition: inline
-In-Reply-To: <20220628133651.GO23621@ziepe.ca>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+In-Reply-To: <cover.1656401086.git.wqu@suse.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,45 +71,74 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 10:36:51AM -0300, Jason Gunthorpe wrote:
-> On Tue, Jun 28, 2022 at 04:21:29AM +0200, Gustavo A. R. Silva wrote:
-> 
-> > > > Though maybe we could just switch off -Wgnu-variable-sized-type-not-at-end  during configuration ?
-> 
-> > We need to think in a different strategy.
-> 
-> I think we will need to switch off the warning in userspace - this is
-> doable for rdma-core.
-> 
-> On the other hand, if the goal is to enable the array size check
-> compiler warning I would suggest focusing only on those structs that
-> actually hit that warning in the kernel. IIRC infiniband doesn't
-> trigger it because it just pointer casts the flex array to some other
-> struct.
 
-Yep; this is actually why I reverted those changes in rdma (before
-sending out the patch) when 0-day reported the same problems you pointed
-out[1].
+--zOcTNEe3AzgCmdo9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also, that's the strategy I'm following right now with the one-element
-array into flex-array member transformations. I'm addressing those cases
-in which the trailing array is actually being iterated over, first.
+On Tue, Jun 28, 2022 at 03:28:00PM +0800, Qu Wenruo wrote:
+> [BACKGROUND]
+> Unlike FUSE/Kernel which always pass aligned read range, U-boot fs code
+> just pass the request range to underlying fses.
+>=20
+> Under most case, this works fine, as U-boot only really needs to read
+> the whole file (aka, 0 for both offset and len, len will be later
+> determined using file size).
+>=20
+> But if some advanced user/script wants to extract kernel/initramfs from
+> combined image, we may need to do unaligned read in that case.
+>=20
+> [ADVANTAGE]
+> This patchset will handle unaligned read range in _fs_read():
+>=20
+> - Get blocksize of the underlying fs
+>=20
+> - Read the leading block contianing the unaligned range
+>   The full block will be stored in a local buffer, then only copy
+>   the bytes in the unaligned range into the destination buffer.
+>=20
+>   If the first block covers the whole range, we just call it aday.
+>=20
+> - Read the aligned range if there is any
+>=20
+> - Read the tailing block containing the unaligned range
+>   And copy the covered range into the destination.
+>=20
+> [DISADVANTAGE]
+> There are mainly two problems:
+>=20
+> - Extra memory allocation for every _fs_read() call
+>   For the leading and tailing block.
+>=20
+> - Extra path resolving
+>   All those supported fs will have to do extra path resolving up to 2
+>   times (one for the leading block, one for the tailing block).
+>   This may slow down the read.
 
-I just added the patch to my -next tree, so it can be build-tested by
-other people, and let's see what else is reported this week. :)
+This conceptually seems like a good thing.  Can you please post some
+before/after times of reading large images from the supported
+filesystems?
 
---
-Gustavo
+--=20
+Tom
 
-[1] https://lore.kernel.org/lkml/620ca2a5.NkAEIDEfiYoxE9%2Fu%25lkp@intel.com/
+--zOcTNEe3AzgCmdo9
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> It isn't actually an array it is a placeholder for a trailing
-> structure, so it is never indexed.
-> 
-> This is also why we hit the warning because the convient way for
-> userspace to compose the message is to squash the header and trailer
-> structs together in a super struct on the stack, then invoke the
-> ioctl.
-> 
-> Jason 
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmK7DV0ACgkQFHw5/5Y0
+tyw4wgwAgFBSQUmc0vXnm32m15bLKbLt97pqXjfpsq+cDbddcLNsue4tH8KXKvOd
+t7L9GnC82BCdcUiAX6hoyEzN75EkZEMmjNU6lDYW7V35LFjab4Qy139pRFdx+DLO
+QwP0uvyOb27F9NkbEAH48YF34QB5m6uk2klwdEcj9zUgD6Gff4cNeOLQEjI0WnVr
+nxGdyLMMd0L4MiMDHmP8kAGw69viHgxqtRzOJsospvcss5Q0L9yOvEualFasXnfx
+RjrFF5pBJGQQXvjG+Uv82cMy4IJkUQ0zPr5RRTE6/ig9QRIAdNwgvPCyRrqt1stQ
+DNiUT19fQ8N6V0pfxDOT+3qcFc0CCYvFGyKI2j7VBvZRcLH7CpvZpE//trknCzF8
+yk1M32UbRgFrpWS/U5vqbweLE4Oj6eOHndbvZE4DRUWKxHscGkJE2Kc1OYDkAfmi
+dAKVJLDMZ1qPs11zGW5Li11vdY1nyQvZoIk4XzgbTmXElItHOkhF5FK6yRvgLmmo
+G+IC+hYb
+=FjO5
+-----END PGP SIGNATURE-----
+
+--zOcTNEe3AzgCmdo9--
