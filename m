@@ -2,68 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5FA55DC9B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B12555DEC4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 15:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345314AbiF1LHN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jun 2022 07:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35130 "EHLO
+        id S1344097AbiF1JPz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jun 2022 05:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345302AbiF1LHM (ORCPT
+        with ESMTP id S238052AbiF1JPy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jun 2022 07:07:12 -0400
-X-Greylist: delayed 3635 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Jun 2022 04:06:59 PDT
-Received: from www2055.sakura.ne.jp (www2055.sakura.ne.jp [59.106.171.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265E831933;
-        Tue, 28 Jun 2022 04:06:58 -0700 (PDT)
-Received: from fsav315.sakura.ne.jp (fsav315.sakura.ne.jp [153.120.85.146])
-        by www2055.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 25S97Gs4026639;
-        Tue, 28 Jun 2022 18:07:16 +0900 (JST)
-        (envelope-from 1955@kkden.co.jp)
-Received: from www2055.sakura.ne.jp (59.106.171.65)
- by fsav315.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav315.sakura.ne.jp);
- Tue, 28 Jun 2022 18:07:16 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav315.sakura.ne.jp)
-Received: from www2055.sakura.ne.jp (localhost [127.0.0.1])
-        by www2055.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 25S97Dso026581;
-        Tue, 28 Jun 2022 18:07:16 +0900 (JST)
-        (envelope-from 1955@kkden.co.jp)
-Received: (from kkden@localhost)
-        by www2055.sakura.ne.jp (8.15.2/8.15.2/Submit) id 25S97DN6026577;
-        Tue, 28 Jun 2022 18:07:13 +0900 (JST)
-        (envelope-from 1955@kkden.co.jp)
-Message-Id: <202206280907.25S97DN6026577@www2055.sakura.ne.jp>
-X-Authentication-Warning: www2055.sakura.ne.jp: kkden set sender to 1955@kkden.co.jp using -f
-Subject: THIS IS VERY CONFIDENTIAL
-From:   Steve Dibenedetto <1955@kkden.co.jp>
-To:     stevedibenedetto17@gmail.com
+        Tue, 28 Jun 2022 05:15:54 -0400
+X-Greylist: delayed 418 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Jun 2022 02:15:52 PDT
+Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B598D175BF
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 02:15:52 -0700 (PDT)
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+        by gw2.atmark-techno.com (Postfix) with ESMTPS id E296C20D68
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 18:08:53 +0900 (JST)
+Received: by mail-pj1-f69.google.com with SMTP id a19-20020a17090abe1300b001ecae1011fcso7870169pjs.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 02:08:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=HRNqjL9MGKGhevjoe5tS0k0pndrVYtplL5el/0LWUSk=;
+        b=L6bdNi2/laBMsLGmAekrBOLXCzTueZu9Nctroom8f0a23RDot32I0qEIfP3El+94Pf
+         RV8Vn6udQngVYNZTMXo5T/zVxBrSIRg/lrTKN5lZUz2WubDEkuL0ALcY8/iJZmHV/LdX
+         P0dgXooM2CWjouFzOsedftTxL6IImdTw2w0dHvzR4d+1xLSK7q4/bFesj6Z4sk9x8pYf
+         8Z8zcyUgHyMgbo7koJMxw7rLmCE7HQ0ZudnMt9CBsDyj+p80Sw+5zeLJq8fad6yvWFsY
+         Wp/OyF8rDXHTGsNdPMzmhIM31jj2y04GSAkiRReBXRhRbd7/DJ+vifJlN5zzYHm9vLWQ
+         OBuA==
+X-Gm-Message-State: AJIora9F9AYgM9onzpcUG7tZ/W6tV5sp/I8V9cOUa69iIHkda98gy84c
+        ueD42CgxNvEV43nPSLKyohVHmDob9yQXS8yQW5PBGtONvsbUMEHLI2nWXh+omS6byRMKOb0mqSK
+        SyNh4FirLNQyBm7zuFBVHLsBq
+X-Received: by 2002:a17:902:ce83:b0:16a:4a3e:4f8b with SMTP id f3-20020a170902ce8300b0016a4a3e4f8bmr4102475plg.41.1656407332819;
+        Tue, 28 Jun 2022 02:08:52 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1vDmu5INZDJB59bJ1xBY3MTkTTfv8xrU3N0LTHWXAbRp9uWN+m6a0IIuWdydt41JfU4uiUaBg==
+X-Received: by 2002:a17:902:ce83:b0:16a:4a3e:4f8b with SMTP id f3-20020a170902ce8300b0016a4a3e4f8bmr4102447plg.41.1656407332507;
+        Tue, 28 Jun 2022 02:08:52 -0700 (PDT)
+Received: from pc-zest.atmarktech (117.209.187.35.bc.googleusercontent.com. [35.187.209.117])
+        by smtp.gmail.com with ESMTPSA id s1-20020a170902988100b0016a4a57a25asm8665491plp.152.2022.06.28.02.08.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Jun 2022 02:08:52 -0700 (PDT)
+Received: from martinet by pc-zest.atmarktech with local (Exim 4.95)
+        (envelope-from <martinet@pc-zest>)
+        id 1o67DG-006CYg-Tu;
+        Tue, 28 Jun 2022 18:08:50 +0900
+Date:   Tue, 28 Jun 2022 18:08:40 +0900
+From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
+To:     io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: read corruption with qemu master io_uring engine / linux master /
+ btrfs(?)
+Message-ID: <YrrFGO4A1jS0GI0G@atmark-techno.com>
 MIME-Version: 1.0
-Date:   Tue, 28 Jun 2022 18:07:13 +0900
-Content-Type: text/plain; charset="ISO-2022-JP"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.3 required=5.0 tests=BAYES_50,SPF_HELO_NONE,
-        SPF_NONE,SUBJ_ALL_CAPS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+I don't have any good reproducer so it's a bit difficult to specify,
+let's start with what I have...
 
-Hello,
+I've got this one VM which has various segfaults all over the place when
+starting it with aio=io_uring for its disk as follow:
 
-My name is Steve Dibenedetto.
-I apologize to have contacted you this way without a direct relationship. There is an opportunity to collaborate with me in the sourcing of some materials needed by our company for production of the different medicines we are researching.
+  qemu-system-x86_64 -drive file=qemu/atde-test,if=none,id=hd0,format=raw,cache=none,aio=io_uring \
+      -device virtio-blk-pci,drive=hd0 -m 8G -smp 4 -serial mon:stdio -enable-kvm
 
-I'm aware that this might be totally outside your professional specialization, but it will be a great source for generating extra revenue. I  discovered a manufacturer who can supply us at a lower rate than our company's previous purchases.
-I will give you more specific details when/if I receive feedback from you showing interest.
+It also happens with virtio-scsi-blk:
+  -device virtio-scsi-pci,id=scsihw0 \
+  -drive file=qemu/atde-test,if=none,id=drive-scsi0,format=raw,cache=none,aio=io_uring \
+  -device scsi-hd,bus=scsihw0.0,channel=0,scsi-id=0,lun=0,drive=drive-scsi0,id=scsi0,bootindex=100
 
-Warm Regards  
-Steve Dibenedetto
-Production & Control Manager,
-Green Field Laboratories
-Gothic House, Barker Gate,
-Nottingham, NG1 1JU,
-United Kingdom.
+It also happened when the disk I was using was a qcow file backing up a
+vmdk image (this VM's original disk is for vmware), so while I assume
+qemu reading code and qemu-img convert code are similar I'll pretend
+image format doesn't matter at this point...
+It's happened with two such images, but I haven't been able to reproduce
+with any other VMs yet.
+
+I can also reproduce this on a second host machine with a completely
+different ssd (WD sata in one vs. samsung nvme), so probably not a
+firmware bug.
+
+scrub sees no problem with my filesystems on the host.
+
+I've confirmed it happens with at least debian testing's 5.16.0-4-amd64
+and 5.17.0-1-amd64 kernels, as well as 5.19.0-rc4.
+It also happens with both debian's 7.0.0 and the master branch
+(v7.0.0-2031-g40d522490714)
+
+
+These factors aside, anything else I tried changing made this bug no
+longer reproduce:
+ - I'm not sure what the rule is but it sometimes doesn't happen when
+running the VM twice in a row, sometimes it happens again. Making a
+fresh copy with `cp --reflink=always` of my source image seems to be
+reliable.
+ - it stops happening without io_uring
+ - it stops happening if I copy the disk image with --reflink=never
+ - it stops happening if I copy the disk image to another btrfs
+partition, created in the same lv, so something about my partition
+history matters?...
+(I have ssd > GPT partitions > luks > lvm > btrfs with a single disk as
+metadata DUP data single)
+ - I was unable to reproduce on xfs (with a reflink copy) either but I
+also was only able to try on a new fs...
+ - I've never been able to reproduce on other VMs
+
+
+If you'd like to give it a try, my reproducer source image is
+---
+curl -O https://download.atmark-techno.com/atde/atde9-amd64-20220624.tar.xz
+tar xf atde9-amd64-20220624.tar.xz
+qemu-img convert -O raw atde9-amd64-20220624/atde9-amd64.vmdk atde-test
+cp --reflink=always atde-test atde-test2
+---
+and using 'atde-test'.
+For further attempts I've removed atde-test and copied back from
+atde-test2 with cp --reflink=always.
+This VM graphical output is borked, but ssh listens so something like
+`-netdev user,id=net0,hostfwd=tcp::2227-:22 -device virtio-net-pci,netdev=net0`
+and 'ssh -p 2227 -l atmark localhost' should allow login with password
+'atmark' or you can change vt on the console (root password 'root')
+
+I also had similar problems with atde9-amd64-20211201.tar.xz .
+
+
+When reproducing I've had either segfaults in the initrd and complete
+boot failures, or boot working and login failures but ssh working
+without login shell (ssh ... -tt localhost sh)
+that allowed me to dump content of a couple of corrupted files.
+When I looked:
+- /usr/lib/x86_64-linux-gnu/libc-2.31.so had zeroes instead of data from
+offset 0xb6000 to 0xb7fff; rest of file was identical.
+- /usr/bin/dmesg had garbadge from 0x05000 until 0x149d8 (end of file).
+I was lucky and could match the garbage quickly: it is identical to the
+content from 0x1000-0x109d8 within the disk itself.
+
+I've rebooted a few times and it looks like the corruption is identical
+everytime for this machine as long as I keep using the same source file;
+running from qemu-img convert again seems to change things a bit?
+but whatever it is that is specific to these files is stable, even
+through host reboots.
+
+
+
+I'm sorry I haven't been able to make a better reproducer, I'll keep
+trying a bit more tomorrow but maybe someone has an idea with what I've
+had so far :/
+
+Perhaps at this point it might be simpler to just try to take qemu out
+of the equation and issue many parallel reads to different offsets
+(overlapping?) of a large file in a similar way qemu io_uring engine
+does and check their contents?
+
+
+Thanks, and I'll probably follow up a bit tomorrow even if no-one has
+any idea, but even ideas of where to look would be appreciated.
+-- 
+Dominique
