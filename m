@@ -2,178 +2,227 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD7955E83B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 18:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BEA55E820
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 18:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346542AbiF1O3T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jun 2022 10:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
+        id S1347203AbiF1OrN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jun 2022 10:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbiF1O3S (ORCPT
+        with ESMTP id S1347198AbiF1OrK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jun 2022 10:29:18 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35903122E;
-        Tue, 28 Jun 2022 07:29:16 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25SABxFm014974;
-        Tue, 28 Jun 2022 07:29:04 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=cjgKh6laBtXIdHJyCRsyBhI7XNiDml2QdVK9Ti4nKXI=;
- b=kyXRQAtmJ2yBT91u1/mBhxYkYcXg0+4PRmVXI5kQdUrezR+byp7ewioPsu2J9IJ/3z7i
- 7UGg9L/i9pn8rkvAFiHwV6Ix0tRpJ0KFD8EKyu8Cn2vk6qXOHi4FvbWfwF+BFRHhDdJQ
- vEZEU2C2uix8iIfSU70GL+FpybxYxzrEmnU= 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gyp23436x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Jun 2022 07:29:04 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QVDyOk16eIShIcZ8uPgaqT9spTsb3wHjjv7hXvy2HJI65vsiGIb35QrcxdVzc4JlNAelw6aSSPf9ZxqIXwbPgPNR3VKcqhE+gjR2g8MyGu6kNyXuDg0d2+SHZFKqAZmWR+4DkqByBCwXgfjOmg4QJhX5IOMgmIArQ8ZtIJKBKWJWsZd+eEnFifA+9vQcnNoPy5a+vJMnmHgqqmBpS7RiUDC7xD0qb3XTn7hdU5zlOjU1NumGn9wHha0uLte5upX+5OkluEiV/h8K+29LRyADI5T4cnbPRs4y3IhryKgtj+2IJLb/BmcImKBzgv2pN24s7bLhh9chGij1LrE2EfSXHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cjgKh6laBtXIdHJyCRsyBhI7XNiDml2QdVK9Ti4nKXI=;
- b=nQC6KLSSrZL+PhgNtxfQJyq99OIyBeOWs6n/rBCMIPY+szPkZb1vJ9dOrlr30fNATPCRGQXIZqpDosgrOXeQEXRb1QbfMLXF1ddrPsRzHOZRPXl5qNdKVjJBx8bWJjXdn3F83f03DDMoYHoK1Z047/t9qF7nv3z1FZhZuDCeNRm9pQVm+OfL+AAIwtFRp0pcIAFQG7jVV3YVFjcr/0kWbGX7pcSEz6cfdXz6V4o+2C1rT69grTpGTSYrKv7kYj2HCNfs+iFD1rW3VnUjmor2zeEt9wVqx3vcXGJpRNjzuoGj6J1DRRkFApalx9al3MGzFEHH5iaKfjjsNbe5OB0tEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MN2PR15MB4287.namprd15.prod.outlook.com (2603:10b6:208:1b6::13)
- by PH0PR15MB4702.namprd15.prod.outlook.com (2603:10b6:510:8c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.14; Tue, 28 Jun
- 2022 14:29:02 +0000
-Received: from MN2PR15MB4287.namprd15.prod.outlook.com
- ([fe80::f0d7:b035:60c5:d07b]) by MN2PR15MB4287.namprd15.prod.outlook.com
- ([fe80::f0d7:b035:60c5:d07b%2]) with mapi id 15.20.5373.018; Tue, 28 Jun 2022
- 14:29:02 +0000
-Message-ID: <c4af4c49-c537-bd6d-c27e-fe9ed71b9a8e@fb.com>
-Date:   Tue, 28 Jun 2022 10:29:00 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.10.0
-Subject: Re: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20220624122334.80603-1-hch@lst.de>
- <7c30b6a4-e628-baea-be83-6557750f995a@gmx.com> <20220624125118.GA789@lst.de>
- <20220624130750.cu26nnm6hjrru4zd@quack3.lan> <20220625091143.GA23118@lst.de>
-From:   Chris Mason <clm@fb.com>
-In-Reply-To: <20220625091143.GA23118@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0394.namprd13.prod.outlook.com
- (2603:10b6:208:2c2::9) To MN2PR15MB4287.namprd15.prod.outlook.com
- (2603:10b6:208:1b6::13)
+        Tue, 28 Jun 2022 10:47:10 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919D42FFDA;
+        Tue, 28 Jun 2022 07:47:09 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id e40so17956375eda.2;
+        Tue, 28 Jun 2022 07:47:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=dIIRV/7xVavrFkkRlTpxT9AeMVsp3yCltb4nZgV8P1s=;
+        b=qGNxf1bADOzY0oaDCwYwIYCbj/BRm3RniW/mZ+asrY9SGcUIcMECDpkK4UtWVHbbDI
+         fCTlTo9PM5Z/rnNmijNug+wKrLQyZLBzoX6ybPKlvv43gbiny9BsSkAJIG3upIUx3x3W
+         rarZFrRNv45vuEAlWH1gssTuA8V4/O+63QgL2FF6YHq3cOYHXojGzN62fWS6zjnePhMf
+         GWzoVxdZxCyCaCLXwLF/m4vtuanQ+uS+EBRDgXpzvHKuyvDDeJ0ORlKtatCryLvUHrwf
+         LCEsHG8WNgcZbd/SRgDj7+g/IAxFd7IZ1970+2Y7o6NR+QKuIQZrG65jEUzaNKD3jqwA
+         G8cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dIIRV/7xVavrFkkRlTpxT9AeMVsp3yCltb4nZgV8P1s=;
+        b=o7uFoEQaPE9b5GCcBhjzT5Nya6GRALbn3ibxoSiSnGdh5nzwaHhAA0Ja8GE8920KBB
+         UGQWk1g3qqoGn7SfwYlLqmW/UDYDhM+IgKnkZPFaL/p4F18whPHRxIDxciCT7gPI7Yr8
+         pMPadUyk8syzKfmwpBIYxsPD7ouFEmiTT81lWMvlyWV8v8KQdflsKWE8QccOA5lcHBaV
+         KDNg+GMXVifXPbGEJJwqU1WGFFp5s/vHUuE57rS1imsaYvmMe9/Q8nBFh0Or0HYosxzN
+         4qMzkBykxF0zfqxB6nI7s6AsUndyftm8gSp603e4R9h9SU3BjKrJehJkZoI0xzxK3Sn6
+         UYSA==
+X-Gm-Message-State: AJIora/aWOc4xAX2RAab0L08+R1mKasKRwXmKyhTFjCxEUj3qbdyBvjW
+        aVlyoNw+fkwhwVwAaZDED9o=
+X-Google-Smtp-Source: AGRyM1s8agwP30emipXMea2Yd5kcSZn4HD82LY6PSp7nDUobBq+OMJE80ZA0m5S5w638nDjHfKOKQw==
+X-Received: by 2002:a05:6402:320f:b0:435:7236:e312 with SMTP id g15-20020a056402320f00b004357236e312mr23890254eda.115.1656427627929;
+        Tue, 28 Jun 2022 07:47:07 -0700 (PDT)
+Received: from localhost.localdomain (host-87-6-98-182.retail.telecomitalia.it. [87.6.98.182])
+        by smtp.gmail.com with ESMTPSA id v10-20020a1709063bca00b006ffa19b7782sm6450420ejf.74.2022.06.28.07.47.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jun 2022 07:47:06 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Nick Terrell <terrelln@fb.com>, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "James E. J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        John David Anglin <dave.anglin@bell.net>,
+        linux-parisc@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        David Sterba <dsterba@suse.cz>
+Subject: [RESEND PATCH v4 1/2] highmem: Make __kunmap_{local,atomic}() take "const void *"
+Date:   Tue, 28 Jun 2022 16:46:49 +0200
+Message-Id: <20220628144649.28046-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220627111927.3ef94745aab4491901d43028@linux-foundation.org>
+References: <20220627111927.3ef94745aab4491901d43028@linux-foundation.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 51a245fb-fa17-4616-a046-08da59128c42
-X-MS-TrafficTypeDiagnostic: PH0PR15MB4702:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XZqQQnOAmjj9PsowfvBkyIN9cdS7A/SMyIVFbumBYGtSsGAzC7eM0O23O/KhKJSRr1mb62PB5BI1VMacqpZ4OYMB4P9Qnl8piUWn/K/2w8tPdu9N7TjzeEl+E4/jSkJQek/1Lfo1gzkimbPue7k0DKeBPkBqt4D12Ux9FlAOr7YkwRJpCAwd6kG9Q9pNCiw0/lKQMtSnzxMMx3Vrm/XJlt/RAplFUrsPwqVx2EP+w54ZAIIQ6bNbo6c6oHM3Km4/YiTMwaigaybHMHJJfClPlUarj49DWARwWHXo2hVHilU4+fZf8pScAuaeYJbl8Wkw94+xq9Y1XVTWITPtzBfiredub47CadefWUFQw6x7pPZof8aYWErD3s3DWdn1XmkLbcWONGkGGehuWS8P0Ay5JqmaH2l7mcpsC6PRSyadTOz2qZcD6uYGsBTo0LwdMHyBsroUn/tMPYDJv+/HELX1tACwf10dx7WxNWU810HMKxC9uvzL6aRNHA4SIsbjqs6eACjLbqbjxNut6RhGWBwpvt5aUvzgpx6MeJS20qlipZf/c8Ef3CIpvKvVa+fSSdx0gut+y3M+ySJvHnmgqi37Sm5a1Tgx+VBBSUKBNU8JFJDWrngTjps5rnXy6it5GbB92hlXUjMCppeAIPn8iBTbGX0vpc+nGHWN0mz/S5icunabgM/mXQ7bgkGGXLzEPIBeRU+ZAZOeWhdrJqIvcBPWJ2Iyp63Jlpap45CneNx5sCQsAvpk+63lwveb5CratWHR4KK4V66uoyttJfCB5KY1bHbn8Io2xYOY85myJEKxyI2Ory1HXPiqaJ/AeU2ET6GTk1kQWr2VVGkIeOW0f0v0Rw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR15MB4287.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(396003)(39860400002)(366004)(136003)(346002)(38100700002)(110136005)(6512007)(316002)(36756003)(31696002)(31686004)(41300700001)(6506007)(86362001)(53546011)(2616005)(6486002)(2906002)(478600001)(66946007)(66556008)(66476007)(8936002)(83380400001)(8676002)(4326008)(186003)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a2VJdVphZ1k2cTJsR0dLbHIzYjRBaHBsRVlHcGhNZmtKOUVRZmpYTGlHVHdV?=
- =?utf-8?B?Qk5McGRDVFZaWHQxdlVySmVIdFpDTS9pU2U3Nmhrck9sQ25XK0ZDaXJGNDBh?=
- =?utf-8?B?K3pMRmUvb1Y5b0h5b2NqbjM0dlgrMWd2VHBWRDJ5REZrRVhlL0tCWUZhR0p2?=
- =?utf-8?B?SWkzNDZKbFQyNWtWOWlqRHRCR2kyUHdFYVErR1Z5Slo3bkdGamowNTFmaVBr?=
- =?utf-8?B?S3J3b3d0SUVhdC9ySXlhRm9FaytWTG1qVmY0QWJnVWtMOEFoMEs1YmFxSzd0?=
- =?utf-8?B?YTNnejJGWG5tWjUrS3FPbUhaVjRyMlJuUzdWeS9IUkM1NHpQTGZ1SEh6bE5q?=
- =?utf-8?B?MUJUQWsyTEVHODUwOGFUZ0I2WDZpbElPY2t2Y2svQkhVOGxCQ0VTKzduL3dh?=
- =?utf-8?B?MVBCd21EMmdJejFOSktIVGxQUnlQS1A1QmZ5VnEyZ2dsOGdQbHNqRExzV1N2?=
- =?utf-8?B?Qk1PNG5DNFJvRTBkMGJGb1kxSmphMW9uRU5XZEVLeFJBVmdnd2tGRXVtS094?=
- =?utf-8?B?QW9TbmFtb2trOXg3VTB5T0J6OFduTkJkK1c5UGxYWGVydHZISy9BVkUrRStx?=
- =?utf-8?B?aTZMVnZ6QVdodTYrRDBQbTJZcGZHejhVdWtYbXFXbzNxQ3QxYTFJZzcrMzU5?=
- =?utf-8?B?RjJGdTFnWGdPMC9NeFJmS3paa0RXWVJjeXowVHhBaksrbnBFcFgya3p1elcz?=
- =?utf-8?B?dDF0SVBOeGtrc1dJaGNCeVlFd0E5RGdlcnI4aFRrR3FnQjF1M2lYWW9UNFl0?=
- =?utf-8?B?RjBmdUlCSlE2WmVMamU3aFdYdmpDOFJsWkl0QW9uN0NrSFlLTDcyK0xpb25a?=
- =?utf-8?B?SDU5cEdKSlNxQmxDK25EeGl1RW1SdmZmR3liVndWNS9GVmhnZWx3ZkRNSEts?=
- =?utf-8?B?WTFKUmo4UVhKTXZ4ODd2QktBdlI2eEJIaXYvVldtMlNMQlVZUmE3RC9QbWJR?=
- =?utf-8?B?SU9hUXFlMklSejZYTWpneVFJU1pRancwaHNyaW9GTk1GcGw0SzRtZW5GZUl1?=
- =?utf-8?B?NzdMSzFBc1BvNzQ2Z21RZzQvUE9wVkl6WE5yaHVWK0VSSjl3eHVYVzd1UWpL?=
- =?utf-8?B?QUZPRHJkL3A2WkQ4bDZCYXBQdmVUNXgxZ2Y1UENjVXVWNmtFL25BbFVBMHRT?=
- =?utf-8?B?Q1lGeXM3bkIwOGxmY0dhUlhnWHUzTzRzV0tvcDRmb3F0WjNBYzkvQTBRMGVz?=
- =?utf-8?B?TmJvK2RncDdyeU1jUDNvNTVjaktCNXFRVFNtMVk0SUY1U3c2U0xucmtaKzZW?=
- =?utf-8?B?eUlTa1ZlTkxocDlnY3d2bWJkbnp5cDE3V05Wd3VzcG9yS0ZBbjZwYitqeUwz?=
- =?utf-8?B?T1QrQ0crZU1pZHo0dmY5bG9NckZGMnRlM1ZiOENxWTA3cFFPNlBxREExSGdT?=
- =?utf-8?B?dTRhTXcxNHBoVFJsYWUyOTNxRmgwajFsT1gwL1ZFS2hCc2M2UDZtMUVWUTIz?=
- =?utf-8?B?MEErL3V6enliL1RYWHVRdzVDRFc2dS96MU5tWE5QLzhCU2NENUorZUhYeGpY?=
- =?utf-8?B?NXRCNGJhRjJEdTREdndnYzhjVjlDcXBvZ3l0M0l2TVJ1c0pvMVNSYUtXSGdK?=
- =?utf-8?B?c3FDZE8rUE5aMTQ4Vnl5OFI5UmRlS1pKUnU2ZHk2TmQvM3daNkxjeUVEcVpn?=
- =?utf-8?B?VXNYSGpyQ0g0S3FLajBiRzhGOXFRSXNIUnVjeVBKdEpZemRHNEdvWnJiVHVq?=
- =?utf-8?B?ZlU5YzFQM3lJR1hYL3dnRU5udmwvcUdTUDdVN1lxM3ZITjZJOGx1cDNFMmM2?=
- =?utf-8?B?R0I0c2RTYmpHd0RnTUxWVUc4cFFxeG56dDVuYzNOUnNUem4zdGVBRU5YTGRh?=
- =?utf-8?B?eDRSQk95VVpXbGJsRjFSZklhNHBQVWhyVDI1VzNxcjRWRHVlK3doVjEzZkEw?=
- =?utf-8?B?SFNBN0Nzd2RXOFQxR2RvTXE0Y0lYczdaQVJiZVplaG16YXBXcXJqNE9NYmlw?=
- =?utf-8?B?Wmc3TytiOXc3bVduMDNQckc5eU43QzFaZ0pvbWNkdGZlSnVnY2Ric3lEMWZ1?=
- =?utf-8?B?ZTdNdjFPaVU0YzdTU3Y0OGl1V050Nmd2UlptL2V3M0RKQjdML1VscXEvc0pj?=
- =?utf-8?B?bHVzR3lLQ3JDeGtyWTNlWk5pZk1qalk2dXhXOWgwWGVwRjhhZEFEcERIQ1Uw?=
- =?utf-8?B?UkZManhWUDZaejg1UjhaNzl5N3phWm5FaGxDSzNjeTVMRTlBL1ZxRHQ1VU45?=
- =?utf-8?B?NHc9PQ==?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 51a245fb-fa17-4616-a046-08da59128c42
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR15MB4287.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2022 14:29:02.5681
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xWCVmc119HeZV3FfbvDG16s58wKoQZUx1eqH92u9oDSIq/xvjc87YiVv40eUruHe
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4702
-X-Proofpoint-ORIG-GUID: iNlGDxqLZKEPvPi6LQoSq-3bFaEZRmq8
-X-Proofpoint-GUID: iNlGDxqLZKEPvPi6LQoSq-3bFaEZRmq8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-06-28_07,2022-06-28_01,2022-06-22_01
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 6/25/22 5:11 AM, Christoph Hellwig wrote:
-> On Fri, Jun 24, 2022 at 03:07:50PM +0200, Jan Kara wrote:
->> I'm not sure I get the context 100% right but pages getting randomly dirty
->> behind filesystem's back can still happen - most commonly with RDMA and
->> similar stuff which calls set_page_dirty() on pages it has got from
->> pin_user_pages() once the transfer is done. page_maybe_dma_pinned() should
->> be usable within filesystems to detect such cases and protect the
->> filesystem but so far neither me nor John Hubbart has got to implement this
->> in the generic writeback infrastructure + some filesystem as a sample case
->> others could copy...
-> 
-> Well, so far the strategy elsewhere seems to be to just ignore pages
-> only dirtied through get_user_pages.  E.g. iomap skips over pages
-> reported as holes, and ext4_writepage complains about pages without
-> buffers and then clears the dirty bit and continues.
-> 
-> I'm kinda surprised that btrfs wants to treat this so special
-> especially as more of the btrfs page and sub-page status will be out
-> of date as well.
+__kunmap_ {local,atomic}() currently take pointers to void. However, this
+is semantically incorrect, since these functions do not change the memory
+their arguments point to.
 
-As Sterba points out later in the thread, btrfs cares more because of 
-stable page requirements to protect data during COW and to make sure the 
-crcs we write to disk are correct.
+Therefore, make this semantics explicit by modifying the
+__kunmap_{local,atomic}() prototypes to take pointers to const void.
 
-The fixup worker path is pretty easy to trigger if you O_DIRECT reads 
-into mmap'd pages.  You need some memory pressure to power through 
-get_user_pages trying to do the right thing, but it does happen.
+As a side effect, compilers will likely produce more efficient code.
 
-I'd love a proper fix for this on the *_user_pages() side where 
-page_mkwrite() style notifications are used all the time.  It's just a 
-huge change, and my answer so far has always been that using btrfs 
-mmap'd memory for this kind of thing isn't a great choice either way.
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Suggested-by: David Sterba <dsterba@suse.cz>
+Suggested-by: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
 
--chris
+This is a resend of the same patch CC'ed to linux-mm.
+
+v3->v4: Cc Maintainers and mailing lists I had overlooked when I sent v3.
+
+v2->v3: Fix compilation errors for ARCH=parisc.
+        Reported-by: kernel test robot <lkp@intel.com>
+
+v1->v2: Change the commit message to clearly explain why these functions
+        should require pointers to const void. The fundamental argument
+        behind the commit message changes is semantic correctness.
+        Obviously, there are no changes to the code.
+        Many thanks to David Sterba and Ira Weiny for suggestions and
+        reviews.
+
+ arch/parisc/include/asm/cacheflush.h |  6 +++---
+ arch/parisc/kernel/cache.c           |  2 +-
+ include/linux/highmem-internal.h     | 10 +++++-----
+ mm/highmem.c                         |  2 +-
+ 4 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
+index 8d03b3b26229..0bdee6724132 100644
+--- a/arch/parisc/include/asm/cacheflush.h
++++ b/arch/parisc/include/asm/cacheflush.h
+@@ -22,7 +22,7 @@ void flush_kernel_icache_range_asm(unsigned long, unsigned long);
+ void flush_user_dcache_range_asm(unsigned long, unsigned long);
+ void flush_kernel_dcache_range_asm(unsigned long, unsigned long);
+ void purge_kernel_dcache_range_asm(unsigned long, unsigned long);
+-void flush_kernel_dcache_page_asm(void *);
++void flush_kernel_dcache_page_asm(const void *addr);
+ void flush_kernel_icache_page(void *);
+ 
+ /* Cache flush operations */
+@@ -31,7 +31,7 @@ void flush_cache_all_local(void);
+ void flush_cache_all(void);
+ void flush_cache_mm(struct mm_struct *mm);
+ 
+-void flush_kernel_dcache_page_addr(void *addr);
++void flush_kernel_dcache_page_addr(const void *addr);
+ 
+ #define flush_kernel_dcache_range(start,size) \
+ 	flush_kernel_dcache_range_asm((start), (start)+(size));
+@@ -75,7 +75,7 @@ void flush_dcache_page_asm(unsigned long phys_addr, unsigned long vaddr);
+ void flush_anon_page(struct vm_area_struct *vma, struct page *page, unsigned long vmaddr);
+ 
+ #define ARCH_HAS_FLUSH_ON_KUNMAP
+-static inline void kunmap_flush_on_unmap(void *addr)
++static inline void kunmap_flush_on_unmap(const void *addr)
+ {
+ 	flush_kernel_dcache_page_addr(addr);
+ }
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index a9bc578e4c52..993999a65e54 100644
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -549,7 +549,7 @@ extern void purge_kernel_dcache_page_asm(unsigned long);
+ extern void clear_user_page_asm(void *, unsigned long);
+ extern void copy_user_page_asm(void *, void *, unsigned long);
+ 
+-void flush_kernel_dcache_page_addr(void *addr)
++void flush_kernel_dcache_page_addr(const void *addr)
+ {
+ 	unsigned long flags;
+ 
+diff --git a/include/linux/highmem-internal.h b/include/linux/highmem-internal.h
+index cddb42ff0473..034b1106d022 100644
+--- a/include/linux/highmem-internal.h
++++ b/include/linux/highmem-internal.h
+@@ -8,7 +8,7 @@
+ #ifdef CONFIG_KMAP_LOCAL
+ void *__kmap_local_pfn_prot(unsigned long pfn, pgprot_t prot);
+ void *__kmap_local_page_prot(struct page *page, pgprot_t prot);
+-void kunmap_local_indexed(void *vaddr);
++void kunmap_local_indexed(const void *vaddr);
+ void kmap_local_fork(struct task_struct *tsk);
+ void __kmap_local_sched_out(void);
+ void __kmap_local_sched_in(void);
+@@ -89,7 +89,7 @@ static inline void *kmap_local_pfn(unsigned long pfn)
+ 	return __kmap_local_pfn_prot(pfn, kmap_prot);
+ }
+ 
+-static inline void __kunmap_local(void *vaddr)
++static inline void __kunmap_local(const void *vaddr)
+ {
+ 	kunmap_local_indexed(vaddr);
+ }
+@@ -121,7 +121,7 @@ static inline void *kmap_atomic_pfn(unsigned long pfn)
+ 	return __kmap_local_pfn_prot(pfn, kmap_prot);
+ }
+ 
+-static inline void __kunmap_atomic(void *addr)
++static inline void __kunmap_atomic(const void *addr)
+ {
+ 	kunmap_local_indexed(addr);
+ 	pagefault_enable();
+@@ -197,7 +197,7 @@ static inline void *kmap_local_pfn(unsigned long pfn)
+ 	return kmap_local_page(pfn_to_page(pfn));
+ }
+ 
+-static inline void __kunmap_local(void *addr)
++static inline void __kunmap_local(const void *addr)
+ {
+ #ifdef ARCH_HAS_FLUSH_ON_KUNMAP
+ 	kunmap_flush_on_unmap(addr);
+@@ -224,7 +224,7 @@ static inline void *kmap_atomic_pfn(unsigned long pfn)
+ 	return kmap_atomic(pfn_to_page(pfn));
+ }
+ 
+-static inline void __kunmap_atomic(void *addr)
++static inline void __kunmap_atomic(const void *addr)
+ {
+ #ifdef ARCH_HAS_FLUSH_ON_KUNMAP
+ 	kunmap_flush_on_unmap(addr);
+diff --git a/mm/highmem.c b/mm/highmem.c
+index 1a692997fac4..e32083e4ce0d 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -561,7 +561,7 @@ void *__kmap_local_page_prot(struct page *page, pgprot_t prot)
+ }
+ EXPORT_SYMBOL(__kmap_local_page_prot);
+ 
+-void kunmap_local_indexed(void *vaddr)
++void kunmap_local_indexed(const void *vaddr)
+ {
+ 	unsigned long addr = (unsigned long) vaddr & PAGE_MASK;
+ 	pte_t *kmap_pte;
+-- 
+2.36.1
+
