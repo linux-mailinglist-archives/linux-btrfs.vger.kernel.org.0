@@ -2,66 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4C955FCD3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jun 2022 12:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F2655FEEC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jun 2022 13:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233244AbiF2KDI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Jun 2022 06:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
+        id S233140AbiF2Li4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Jun 2022 07:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbiF2KDG (ORCPT
+        with ESMTP id S231422AbiF2Liy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Jun 2022 06:03:06 -0400
+        Wed, 29 Jun 2022 07:38:54 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06D91E3;
-        Wed, 29 Jun 2022 03:03:04 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id BC10622045;
-        Wed, 29 Jun 2022 10:03:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1656496982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BO/Fxl9X0wsYE0HIz9g9iiRY5jd6PMadH/nQK4vmenw=;
-        b=p7GWYaWtdbxAvxdRmred4Ci/2dO2gtYEQcXvXhoGp+rLXqE7YK4Qch6AIgDzVpBoaFqI7V
-        tvqo+ZbwQzaWhx8yJ1+fX2MC78BpIn4m2ZqvWK7FBLqvzerzMy25nvvoTyHrbWZk5knhyx
-        HDVdNJe8C1IDKqNLUv7r3iPnBbyVH9c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1656496982;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BO/Fxl9X0wsYE0HIz9g9iiRY5jd6PMadH/nQK4vmenw=;
-        b=XzYNuErxc6hNE+9/hza5QfmkWDA0oQhWoU7nUFQlcsh0QDi6R676xtHM3F/BQVgIdJE94e
-        noT8lmkPiwgo6ZCg==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F833DA61
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jun 2022 04:38:50 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 97F2E2C141;
-        Wed, 29 Jun 2022 10:03:02 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 3DDB3A062F; Wed, 29 Jun 2022 12:03:02 +0200 (CEST)
-Date:   Wed, 29 Jun 2022 12:03:02 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
-Message-ID: <20220629100302.s7zy6mrez6cawgim@quack3>
-References: <20220624122334.80603-1-hch@lst.de>
- <7c30b6a4-e628-baea-be83-6557750f995a@gmx.com>
- <20220624125118.GA789@lst.de>
- <20220624130750.cu26nnm6hjrru4zd@quack3.lan>
- <20220625091143.GA23118@lst.de>
- <20220627101914.gpoz7f6riezkolad@quack3.lan>
- <e73be42e-fce5-733a-310d-db9dc5011796@gmx.com>
- <20220628080035.qlbdib7zh3zd2zfq@quack3>
- <77cb547c-a4d8-cca9-3889-872ebfed2859@gmx.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4CB51220C1;
+        Wed, 29 Jun 2022 11:38:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1656502729; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=z3GbE9mx5CCrqo9xfI+63v/1zfie4tXfQ6g0f+eqfy0=;
+        b=QMzjdKlM5xPew3q2NntzV+C5C2+ZZ7VV2sEAyBmuHSFAZVsZ8jPbzPePe26tEJoP8MtzaG
+        FX+cHUzhZEVtIXvrEUi6ScxOgCikWhOxEwgFaVKJtE/odyD9ZVdYqkIJmJW2iD2/reF4ox
+        6uDvLrJPWr70O5/JLtIpGHAefQnqUTc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D488133D1;
+        Wed, 29 Jun 2022 11:38:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id sDjRMsY5vGLFPwAAMHmgww
+        (envelope-from <wqu@suse.com>); Wed, 29 Jun 2022 11:38:46 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     u-boot@lists.denx.de
+Cc:     marek.behun@nic.cz, linux-btrfs@vger.kernel.org,
+        jnhuang95@gmail.com, linux-erofs@lists.ozlabs.org,
+        trini@konsulko.com, joaomarcos.costa@bootlin.com,
+        thomas.petazzoni@bootlin.com, miquel.raynal@bootlin.com
+Subject: [PATCH 0/8] U-boot: fs: add generic unaligned read offset handling
+Date:   Wed, 29 Jun 2022 19:38:21 +0800
+Message-Id: <cover.1656502685.git.wqu@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <77cb547c-a4d8-cca9-3889-872ebfed2859@gmx.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -72,112 +60,138 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed 29-06-22 09:33:23, Qu Wenruo wrote:
-> 
-> 
-> On 2022/6/28 16:00, Jan Kara wrote:
-> > On Tue 28-06-22 08:24:07, Qu Wenruo wrote:
-> > > On 2022/6/27 18:19, Jan Kara wrote:
-> > > > On Sat 25-06-22 11:11:43, Christoph Hellwig wrote:
-> > > > > On Fri, Jun 24, 2022 at 03:07:50PM +0200, Jan Kara wrote:
-> > > > > > I'm not sure I get the context 100% right but pages getting randomly dirty
-> > > > > > behind filesystem's back can still happen - most commonly with RDMA and
-> > > > > > similar stuff which calls set_page_dirty() on pages it has got from
-> > > > > > pin_user_pages() once the transfer is done. page_maybe_dma_pinned() should
-> > > > > > be usable within filesystems to detect such cases and protect the
-> > > > > > filesystem but so far neither me nor John Hubbart has got to implement this
-> > > > > > in the generic writeback infrastructure + some filesystem as a sample case
-> > > > > > others could copy...
-> > > > > 
-> > > > > Well, so far the strategy elsewhere seems to be to just ignore pages
-> > > > > only dirtied through get_user_pages.  E.g. iomap skips over pages
-> > > > > reported as holes, and ext4_writepage complains about pages without
-> > > > > buffers and then clears the dirty bit and continues.
-> > > > > 
-> > > > > I'm kinda surprised that btrfs wants to treat this so special
-> > > > > especially as more of the btrfs page and sub-page status will be out
-> > > > > of date as well.
-> > > > 
-> > > > I agree btrfs probably needs a different solution than what it is currently
-> > > > doing if they want to get things right. I just wanted to make it clear that
-> > > > the code you are ripping out may be a wrong solution but to a real problem.
-> > > 
-> > > IHMO I believe btrfs should also ignore such dirty but not managed by fs
-> > > pages.
-> > > 
-> > > But I still have a small concern here.
-> > > 
-> > > Is it ensured that, after RDMA dirtying the pages, would we finally got
-> > > a proper notification to fs that those pages are marked written?
-> > 
-> > So there is ->page_mkwrite() notification happening when RDMA code calls
-> > pin_user_pages() when preparing buffers.
-> 
-> I'm wondering why page_mkwrite() is only called when preparing the buffer?
+[CHANGELOG]
+RFC->v1:
+- More (manual) testing
+  Unfortunately, in the latest master (75967970850a), the fs-tests.sh
+  always seems to hang at preparing the fs image.
 
-Because that's the moment when the page fault happens. After this moment we
-simply give the page physical address to the HW card and the card is free
-to modify that memory as it wishes without telling the kernel about it.
-That is simply how the HW is designed.
+  Thus still has to do manual testing, tested btrfs, ext4 and fat, with
+  aligned and unaligned read, also added soft link read, all looks fine here.
 
-> Wouldn't it make more sense to call page_mkwrite() when the buffered is
-> released from RDMA?
+  Extra testing is still appreciated.
 
-Well, but this is long after the page contents have been modified and in
-fact the page need not be mapped to process' virtual address space anymore
-by that time (it is perfectly fine to do: addr = mmap(file), pass addr to
-HW, munmap(addr)). So we don't have enough context for page_mkwrite()
-callback anymore. Essentially all we can provide is already provided in the
-->set_page_dirty() callback the filesystem gets.
+- Two more btrfs specific bug fixes
+  All exposed during manual tests
 
-> Sorry for all these dumb questions, as the core-api/pin_user_pages.rst
-> still doesn't explain thing to my dumb brain...
+- Remove the tailing unaligned block handling
+  In fact, all fses can easily handle such case, just a min() call is
+  enough.
 
-Yeah, these things are subtle and somewhat hard to grasp...
+- Remove the support for sandboxfs
+  Since it's using read() calls, really no need to do block alignment
+  check.
 
-> Another thing is, RDMA doesn't really need to respect things like page
-> locked/writeback, right?
+- Enhanced blocksize check
+  Ensure the returned blocksize is not only non-error, but also
+  non-zero.
 
-Correct.
+This patchset can be fetched from github:
+https://github.com/adam900710/u-boot/tree/fs_unaligned_read
 
-> As to RDMA calls, all pages should be pinned and seemingly exclusive to
-> them.
-> 
-> And in that case, I think btrfs should ignore writing back those pages,
-> other than doing fixing ups.
-> 
-> As the btrfs csum requires everyone modifying the page to wait for
-> writeback, or the written data will be out-of-sync with the calculated
-> csum and cause future -EIO when reading it from disk.
+[BACKGROUND]
+Unlike FUSE/Kernel which always pass aligned read range, U-boot fs code
+just pass the request range to underlying fses.
 
-Yes, I know. Ignoring writeback of page_maybe_dma_pinned() pages is a
-reasonable choice the fs can do. The only exception tends to be data
-integrity writeback - stuff like fsync(2) or sync(2). There the filesystem
-might need to writeback the page to make sure everything is consistent on
-disk (and stale data is not exposed) in case of a crash. So in these
-special cases it may be necessary to use bounce pages for submitting the IO
-(and computing checksums etc.) so that inconsistencies you mention above
-are not possible.
+Under most case, this works fine, as U-boot only really needs to read
+the whole file (aka, 0 for both offset and len, len will be later
+determined using file size).
 
-> > The trouble is that although later
-> > page_mkclean() makes page not writeable from page tables, it may be still
-> > written by RDMA code (even hours after ->page_mkwrite() notification, RDMA
-> > buffers are really long-lived) and that's what eventually confuses the
-> > filesystem.  Otherwise set_page_dirty() is the notification that page
-> > contents was changed and needs writing out...
-> 
-> Another thing I still didn't get is, is there any explicit
-> mkwrite()/set_page_dirty() calls when those page are unpinned.
-> 
-> If no such explicit calls, these dirty pages caused by RDMA would always
-> be ignored by fses (except btrfs), and would never got proper written back.
+But if some advanced user/script wants to extract kernel/initramfs from
+combined image, we may need to do unaligned read in that case.
 
-When the pages are unpinned the holder must call set_page_dirty() to let
-the rest of the kernel know that the hardware may be modified the page
-contents. The filesystem can hook there with ->set_page_dirty() hook if it
-needs to do some action.
+[ADVANTAGE]
+This patchset will handle unaligned read range in _fs_read():
 
-								Honza
+- Get blocksize of the underlying fs
+
+- Read the leading block contianing the unaligned range
+  The full block will be stored in a local buffer, then only copy
+  the bytes in the unaligned range into the destination buffer.
+
+  If the first block covers the whole range, we just call it aday.
+
+- Read the remaining range which starts at block aligned offset
+  For most common case, which is 0 offset and 0 len, the code will not
+  be changed at all.
+
+Just one extra get_blocksize() call, and for FAT/Btrfs/EROFS they all have
+cached blocksize, thus it takes almost no extra cost.
+
+Although for EXT4, it doesn't seem to cache the blocksize globally,
+thus has to do a path resolve and grab the blocksize.
+
+[DISADVANTAGE]
+The involved problem is:
+
+- Extra path resolving
+  All those supported fs may have to do one extra path resolve if the
+  read offset is not aligned.
+
+  For EXT4, it will do one extra path resolve just to grab the
+  blocksize.
+
+For data read which starts at offset 0 (the most common case), it
+should cause *NO* difference in performance.
+As the extra handling is only for unaligned offset.
+
+The common path is not really modified.
+
+[SUPPORTED FSES]
+
+- Btrfs (manually tested*)
+- Ext4 (manually tested)
+- FAT (manually tested)
+- Erofs
+- ubifs (unable to test, due to compile failure)
+
+*: Failed to get the test cases run, thus have to go sandbox mode, and
+attach an image with target fs, load the target file (with unaligned
+range) and compare the result using md5sum.
+
+For EXT4/FAT, they may need extra cleanup, as their existing unaligned
+range handling is no longer needed anymore, cleaning them up should free 
+more code lines than the added one.
+
+Just not confident enough to modify them all by myself.
+
+[UNSUPPORTED FSES]
+- Squashfs
+  They don't support non-zero offset, thus it can not handle the block
+  aligned range.
+  Need extra help to add block aligned offset support.
+
+- Semihostfs
+- Sandboxfs
+  They all use read() directly, no need to do alignment check at all.
+
+Extra testing/feedback is always appreciated.
+
+Qu Wenruo (8):
+  fs: fat: unexport file_fat_read_at()
+  fs: btrfs: fix a bug which no data get read if the length is not 0
+  fs: btrfs: fix a crash if specified range is beyond file size
+  fs: btrfs: move the unaligned read code to _fs_read() for btrfs
+  fs: ext4: rely on _fs_read() to handle leading unaligned block read
+  fs: fat: rely on higher layer to get block aligned read range
+  fs: ubifs: rely on higher layer to do unaligned read
+  fs: erofs: add unaligned read range handling
+
+ fs/btrfs/btrfs.c      |  33 ++++++++---
+ fs/btrfs/inode.c      |  89 +++--------------------------
+ fs/erofs/internal.h   |   1 +
+ fs/erofs/super.c      |   6 ++
+ fs/ext4/ext4fs.c      |  22 +++++++
+ fs/fat/fat.c          |  17 +++++-
+ fs/fs.c               | 130 +++++++++++++++++++++++++++++++++++++++---
+ fs/ubifs/ubifs.c      |  13 +++--
+ include/btrfs.h       |   1 +
+ include/erofs.h       |   1 +
+ include/ext4fs.h      |   1 +
+ include/fat.h         |   3 +-
+ include/ubifs_uboot.h |   1 +
+ 13 files changed, 212 insertions(+), 106 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.36.1
+
