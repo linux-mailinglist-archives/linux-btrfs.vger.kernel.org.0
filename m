@@ -2,67 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9BF55F276
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jun 2022 02:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629E255F2BA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jun 2022 03:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbiF2AgA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jun 2022 20:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
+        id S230050AbiF2BVR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jun 2022 21:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbiF2Af7 (ORCPT
+        with ESMTP id S229577AbiF2BVP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jun 2022 20:35:59 -0400
-Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7E25130547
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 17:35:58 -0700 (PDT)
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by gw2.atmark-techno.com (Postfix) with ESMTPS id C609C20D57
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jun 2022 09:35:57 +0900 (JST)
-Received: by mail-pg1-f198.google.com with SMTP id a185-20020a6390c2000000b0040cb1cddf13so7376980pge.19
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 17:35:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to;
-        bh=sg/FIMb0Y22XOeDUVyJPVEEncgDb3cHZBiniEEmzce0=;
-        b=riZGX8J2HeJgeyDdUccQVwmvm75w9NqKShU2NmOQm14y8y9KQdwTyvVGzPZtDFps5f
-         AQJhcsgkZe2neagdZYnEHh1HS9HNHznOMUBgBzsZQ8VEGyImjCblpCsCrbrgbnck/aPl
-         +bB5Bl1ET0ihWti4wHil25jgA/GUgfhn79Mn70l+ygMJUPwRleIIGat5Eo1PBrDETixd
-         ygnpUkwX+50MDfe9v233WceqnHY7Q/wyRt42yJ+SEEUimhj4ZR8307PYSuQqNF6dlr0b
-         TMPcoZtQVqQp15+4E4REIvhqqA3VL/cm/IcCRADIySzBI5PlDwXBiHuAaKWy1Pb/1CX1
-         1UEg==
-X-Gm-Message-State: AJIora+PkLEe++hQeeqJ256yE+T9TYiXPdJVfWtsH4Q1YqyDflcQlbwH
-        Ez5qoozWjlRV6+IV1lgFv5dl39QqXzYaJi6VWcQAci5j20T0vuZyYwBsXCK4kQg4ohUAhXHxqfA
-        YvgElJpJlHLx+OyeS+qLpEb9D
-X-Received: by 2002:a17:903:41cd:b0:16b:880a:8757 with SMTP id u13-20020a17090341cd00b0016b880a8757mr6398834ple.93.1656462956879;
-        Tue, 28 Jun 2022 17:35:56 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vCGtD4SY7W6GWH0/Kvp3LVt2NcY4okLANBHyVAh9pXB99m07Os1CgwttUHJ0gmPk+RIDarEA==
-X-Received: by 2002:a17:903:41cd:b0:16b:880a:8757 with SMTP id u13-20020a17090341cd00b0016b880a8757mr6398820ple.93.1656462956611;
-        Tue, 28 Jun 2022 17:35:56 -0700 (PDT)
-Received: from pc-zest.atmarktech (76.125.194.35.bc.googleusercontent.com. [35.194.125.76])
-        by smtp.gmail.com with ESMTPSA id a4-20020a62bd04000000b00525714c3e07sm10006096pff.48.2022.06.28.17.35.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Jun 2022 17:35:56 -0700 (PDT)
-Received: from martinet by pc-zest.atmarktech with local (Exim 4.95)
-        (envelope-from <martinet@pc-zest>)
-        id 1o6LgQ-007pyp-TN;
-        Wed, 29 Jun 2022 09:35:54 +0900
-Date:   Wed, 29 Jun 2022 09:35:44 +0900
-From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
-To:     Nikolay Borisov <nborisov@suse.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: read corruption with qemu master io_uring engine / linux master
- / btrfs(?)
-Message-ID: <YrueYDXqppHZzOsy@atmark-techno.com>
+        Tue, 28 Jun 2022 21:21:15 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F21429C8C;
+        Tue, 28 Jun 2022 18:21:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1656465666;
+        bh=HlwfelIiPKIBiEcWQxU9BqTY8RRlQ2xySX28D3PtxwA=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=G7K2o+hQ2NpF2BsXOpVfAsdGX5PAfENS3TTzH3lmZtsOgL9YD3QpVfTOttbsqQxqz
+         V41iQJ8haPPejjE0LPKzbzFq2+r/DZoXotMpvley6VXk5RHxvZ5dhc390xX/s51RFF
+         G6ya4y6NV4w4izR4P/e5Xh0kWGfQa0wVy1hNWyTo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M42nY-1o6MO92Ka8-0001bA; Wed, 29
+ Jun 2022 03:21:06 +0200
+Message-ID: <b29ee79c-e0d9-7ebe-a563-ca7f33130fc9@gmx.com>
+Date:   Wed, 29 Jun 2022 09:20:59 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <33cd0f9a-cdb1-1018-ebb0-89222cb1c759@kernel.dk>
- <bd342da1-8c98-eb78-59f1-e3cf537181e3@suse.com>
- <dd55e282-1147-08ae-6b9f-cf3ef672fce8@suse.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Content-Language: en-US
+To:     Chris Mason <clm@fb.com>, Christoph Hellwig <hch@lst.de>,
+        Jan Kara <jack@suse.cz>
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20220624122334.80603-1-hch@lst.de>
+ <7c30b6a4-e628-baea-be83-6557750f995a@gmx.com> <20220624125118.GA789@lst.de>
+ <20220624130750.cu26nnm6hjrru4zd@quack3.lan> <20220625091143.GA23118@lst.de>
+ <c4af4c49-c537-bd6d-c27e-fe9ed71b9a8e@fb.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
+In-Reply-To: <c4af4c49-c537-bd6d-c27e-fe9ed71b9a8e@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:v7U5ikYaLCMfqFx6UzqJJcwW0pIuHKeGjFIDxIIlhiVcsCz3MKP
+ wZqNlqCEcjATdGrUemWyZIb5kGG5XkkvpL2k3LWOCkJ/X8AHzbJBEY1JLgp9KzTKpBoOAHx
+ fPqKsMSDuS3u15Hnmk1n4QIuF36h4FF2bdq/RSQbkbS8jRYRVyJWCOnUHhuTQoI0Hf11Hb5
+ 2sumzilR8AwqkpggHnpmg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WBSOXf+nqUM=:xN8Y+rrwaHQld8lB4B2BjY
+ zgyr8D8sJaEQAXjUS+rx2J1WPSV5AabP+ufS/l+tDohzNUj/OTccLrPuAyKyQJWGeHTUi5sFI
+ KKB5TapSkMMbRqohKEDARil4HP55CHa1LMuUhKhinq+EuT3qVEVy3CkjUgNc4fTEqAK82d62c
+ fArhEsYE1yXyW+HfAV1g2zdsv1zylxFvmY+2ngw8jlZEHWR0kAZfX+antIgn+ayhglP5D3OIQ
+ jbM876O6n/okMKV5vy/Lszi2QBOrY/Va0SIWwuaKdks+8ftWBoXlM8VQKqgq3qPG2DgT208dJ
+ wyA9fUjjzsmXsPL5r2SUcInS8Q534ETNE06aLx4QfmZtHqKXX+zVTsNb8+yKi1uN/8cADIQYM
+ OVVMv8e+HbVYiGocP+n3I+y9rcKEpQCbFUWXMeMUHNzcpTAien9IDw8hyK0jpko3jTLL4c7jj
+ 9ojzeM7jZ9cC+MZlLpzBfgSza5SNTKxyD6gIR0otVH4DStFbT/bEEb3bxooYFIQCnXigUHUEl
+ 5kmd/1UlFuL2pn5efUfrC/cYKU1lnkIxMnxrEu+L8nFEBLM5L+a9pAkZVawd3EP/0PioFPaMF
+ tngrOl2YCqfOB5O0elVaO2SeqWC095CJ1uWEDlhYvsiVsWm5sc551zMPyPfP+CVWx+Jufite8
+ jAjPkR1CuB77DMdlbHvm5RSziOQel2ETceTMD9iqDOO41SlJJOhNSxPBz/hMLljqYrMlln0ui
+ yWivkKVJGgNjJR7SNszabkHnmERgd67kxvck02EhQPrVJGaM96fAeoltLAFCvo6XK6KAlO8A9
+ KJV9077gAUs8wFZT/JXIaJuWN0J1x+ftuDt+KJJVC/1nJbsEDHj785/6Vu0RClDSJvm1VEe97
+ /srQQ+xA7l2+3d9MIar6BPyTGt2ZON5kL+HDXsTjFbfyaDHM2xcPHOXMJYtmIOegENgIsjxow
+ M6qfHdH6aKG3tiG2dcC98k173Ouc7RSoKJqvBU1ZZ4wjc3rvk7D5SyhsObV3KBZGixFIu+kWg
+ toDLexMbyffGrQjW8ngP1skPT6YGLaWu078zk8ek0s0hbjUHeJfI1zUGqxzPuqKu9UHoaS6uE
+ J+n66Rr3coOOoSqma9wh95jNHN4ppaCq7UyHDt5smWSvx6g/kbgqADUOQ==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -70,66 +77,68 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-Thanks for the replies.
 
-Nikolay Borisov wrote on Tue, Jun 28, 2022 at 10:03:20PM +0300:
-> >    qemu-system-x86_64 -drive file=qemu/atde-test,if=none,id=hd0,format=raw,cache=none,aio=io_uring \
-> >        -device virtio-blk-pci,drive=hd0 -m 8G -smp 4 -serial mon:stdio -enable-kvm
-> 
-> So cache=none means O_DIRECT and using io_uring. This really sounds similar
-> to:
-> 
-> ca93e44bfb5fd7996b76f0f544999171f647f93b
+On 2022/6/28 22:29, Chris Mason wrote:
+> On 6/25/22 5:11 AM, Christoph Hellwig wrote:
+>> On Fri, Jun 24, 2022 at 03:07:50PM +0200, Jan Kara wrote:
+>>> I'm not sure I get the context 100% right but pages getting randomly
+>>> dirty
+>>> behind filesystem's back can still happen - most commonly with RDMA an=
+d
+>>> similar stuff which calls set_page_dirty() on pages it has got from
+>>> pin_user_pages() once the transfer is done. page_maybe_dma_pinned()
+>>> should
+>>> be usable within filesystems to detect such cases and protect the
+>>> filesystem but so far neither me nor John Hubbart has got to
+>>> implement this
+>>> in the generic writeback infrastructure + some filesystem as a sample
+>>> case
+>>> others could copy...
+>>
+>> Well, so far the strategy elsewhere seems to be to just ignore pages
+>> only dirtied through get_user_pages.=C2=A0 E.g. iomap skips over pages
+>> reported as holes, and ext4_writepage complains about pages without
+>> buffers and then clears the dirty bit and continues.
+>>
+>> I'm kinda surprised that btrfs wants to treat this so special
+>> especially as more of the btrfs page and sub-page status will be out
+>> of date as well.
+>
+> As Sterba points out later in the thread, btrfs cares more because of
+> stable page requirements to protect data during COW and to make sure the
+> crcs we write to disk are correct.
 
-That looks close, yes...
+In fact, COW is not that special, even before btrfs or all the other
+fses supporting COW, all those old fses has to do something like COW,
+when they are writing into holes.
 
-> This commit got merged into v5.17 so you shouldn't be seeing it on 5.17 and
-> onwards.
-> 
-> <snip>
-> 
-> > 
-> > Perhaps at this point it might be simpler to just try to take qemu out
-> > of the equation and issue many parallel reads to different offsets
-> > (overlapping?) of a large file in a similar way qemu io_uring engine
-> > does and check their contents?
-> 
-> Care to run the sample program in the aforementioned commit and verify it's
-> not failing
+What makes btrfs special is its csum, and in fact csum requires more
+stable page status.
 
-But unfortunately it seems like it is properly fixed on my machines:
----
-io_uring read result for file foo:
+If someone can modify a page without waiting for its writeback to
+finish, btrfs csum can easily be stale and cause -EIO for future read.
 
-  cqe->res == 8192 (expected 8192)
-  memcmp(read_buf, write_buf) == 0 (expected 0)
----
+Thus unless we can ensure the procedure marking page dirty to respect
+page writeback, going fixup path would be more dangerous than ignoring it.
 
-Nikolay Borisov wrote on Tue, Jun 28, 2022 at 10:05:39PM +0300:
-> Alternatively change cache=none (O_DIRECT) to cache=writeback (ordinary
-> buffered writeback path) that way we'll know if it's related to the
-> iomap-based O_DIRECT code in btrfs.
+>
+> The fixup worker path is pretty easy to trigger if you O_DIRECT reads
+> into mmap'd pages.=C2=A0 You need some memory pressure to power through
+> get_user_pages trying to do the right thing, but it does happen.
+>
+> I'd love a proper fix for this on the *_user_pages() side where
+> page_mkwrite() style notifications are used all the time.=C2=A0 It's jus=
+t a
+> huge change, and my answer so far has always been that using btrfs
+> mmap'd memory for this kind of thing isn't a great choice either way.
 
-Good idea; I can confirm this doesn't reproduce without cache=none, so
-O_DIRECT probably is another requirement here (probably because I
-haven't been able to reproduce on a freshly created fs either, so not
-being able to reproducing in a few tries is no guarantee...)
+The same here.
 
+But for now I'm still wondering if the fixup is really the correct
+workaround other than ignoring.
 
-Jens Axboe wrote on Tue, Jun 28, 2022 at 01:12:54PM -0600:
-> Not sure what's going on here, but I use qemu with io_uring many times
-> each day and haven't seen anything odd. This is on ext4 and xfs however,
-> I haven't used btrfs as the backing file system. I wonder if we can boil
-> this down into a test case and try and figure out what is doing on here.
+Thanks,
+Qu
 
-Yes I'd say it's fs specific, I've not been able to reproduce on ext4 or
-xfs -- but then again I couldn't reproduce with btrfs on a new
-filesystem so there probably are some other conditions :/
-
-I also agree writing a simple program like the io_uring test in the
-above commit that'd sort of do it like qemu and compare contents would
-be ideal.
-I'll have a stab at this today.
-
--- 
-Dominique
+>
+> -chris
