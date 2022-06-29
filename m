@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36413560DB0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jun 2022 01:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A817D560DB2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jun 2022 01:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbiF2XmV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Jun 2022 19:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
+        id S230449AbiF2XpE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Jun 2022 19:45:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbiF2XmU (ORCPT
+        with ESMTP id S230073AbiF2XpE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Jun 2022 19:42:20 -0400
+        Wed, 29 Jun 2022 19:45:04 -0400
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2FB659E
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jun 2022 16:42:18 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 496CD3200912;
-        Wed, 29 Jun 2022 19:42:17 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 29 Jun 2022 19:42:17 -0400
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F691AF03
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jun 2022 16:45:03 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 162CD3200912;
+        Wed, 29 Jun 2022 19:45:02 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 29 Jun 2022 19:45:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
         :content-type:date:date:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1656546136; x=1656632536; bh=HBO094BLjf
-        h1ylPs/83lt4pURyAVDkepZcfvHg3jE/I=; b=mJz20VaeN+4aNCz3+vsdyChlHC
-        9vhlNMyeBwjPsFZH0FXh+/xWeEiI/o//HM8HOZM711BbJ+BsW6cX2+KNqYxWotkC
-        wKF/rrURzb27PuKaRgfF/jMvvDIRiOiArARwQmz3+tas2djIjF28tO3I1dvpVTLp
-        UbvM/C2iVdG0r/fVycBgAmWwGADTUXS3OCOLFV/3QUB1D/DfoMm5l6dmGyjIF+11
-        xZ2hotVzPycOzf85GyiF2KpVtcylRvImw/Fg38EiSakmb/4DDTVxB8CZG8SO/hpw
-        hyy0SqzK0nWIvhnZMd6doFcgw53bzmHzwwtLcCTBpwy1tSIWufgu1fZS9TXA==
+        :subject:to:to; s=fm2; t=1656546301; x=1656632701; bh=/CvomtSod6
+        V5RFq1chlCiqRz/FDWw2v2H78HJKV2pOc=; b=Enf9OQF1F38oKFqB/Ow05RdXHQ
+        opFhCDjaFbk1P8QBd42x3ruiGmG6D7Lch/ge7yoBAr9GbenJNqqysC41287zfK/4
+        +8t06Ris+fm7GyPaL4uo2PBJ/qX6Ul33ibXDUbyabmPjftTtKewuXRpvuegGzuo5
+        yyVVm3G/9WRazWhHTYD8+WIblJX0lYbTnZtrbux81dvilgwOKbZsi2VW4NWcbd1k
+        MFXo4MfNLpK+IsDt4yD6iVkva8DZ6LA8dukh0ohajjw0Lrr8DmHXGM7tBm8REY4T
+        0vdRPz3qTnN8lNzf/58DJrI1QmxtisAjcNrddWjcIt+NuIVRMQB75xenti2A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
         :feedback-id:from:from:in-reply-to:in-reply-to:message-id
         :mime-version:references:reply-to:sender:subject:subject:to:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1656546136; x=1656632536; bh=HBO094BLjfh1ylPs/83lt4pURyAV
-        DkepZcfvHg3jE/I=; b=g29mY1LA4AFgAQtJjf+vh5KmkIGotcGOM4LVa1qVfbwk
-        Ffd00XMTtekgjXtb/t2mQ+9DQYtDwP5Wy+iDqDIegZjcCCvE65GPjPEZpoAyiaO2
-        1Y8nizVF0LHBUC0mOFdqHoCO13kAuCiuepNGh/XWG7SWRAWHDu/APzTK2VHcm5lT
-        nBirzURJBcXw6HqNV2CPL2oRCycO/dBOHQ+2E3NKRktUeSrtQZhsziBMmA8yjYmj
-        3YqayGyZIJRMLdeP/ZJT673pkyNI1ix4qtJ2k3FWRYkdbfz2cyr3kCGrVXCHLl2b
-        SEH1nPxeNid4JFyY4bOrZQOECnKSAuvnhMCabLtNew==
-X-ME-Sender: <xms:WOO8YolWzxFUWi10SfxVKhkZ7G0w3QvQaheS5ndvhv79mcXkggQbog>
-    <xme:WOO8Yn0KSbk_LdCTf9O4_Zg7TYIqojVOtHibgbe6iMJWrKZbGqLivVD8Oafw3jZEe
-    sy0Tfc0iuyOjquaW3c>
-X-ME-Received: <xmr:WOO8YmodIoxlGsLAd7N1cgcNGruG5d6_ni0OqoHV7pEkneINUdLMRkPvgpj_bOiKmDLopdchgJSSwkrU9qyMSEpxiSXvhw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehtddgvdegucetufdoteggodetrfdotf
+        fm2; t=1656546301; x=1656632701; bh=/CvomtSod6V5RFq1chlCiqRz/FDW
+        w2v2H78HJKV2pOc=; b=nHMvOq1SPtEDayVqmCqAfFxuQdU4Hsw7Wnn54MiMqK7C
+        T7MXEHPbFqPQkJ8L7oNyaL6ueA7SXZIzdqJguasAPHzN4C+pjKVBjJzA9hGMv4e/
+        Sk/85QIlfO9FRerIskDGhNE8s+eeKC8b/B3YAbq4IKgXnF6n+bSnTnyXjsFYbJhJ
+        DAzH1K1lRnxkLQGlpv7YvDV0lSxAnFvN3xbmEhfkixTEcRpuq5Pm/RnEDn7LHM5R
+        C5LhNx2QDPEIXLK+65DdbysPZc1UBpGHbpOOGDqJLzS2Bbv3nOlAMEiVph1eew64
+        HMe9Afoqautszkn2PBJ9AVBii6/lwhT2Qq22Dr9Ykg==
+X-ME-Sender: <xms:_eO8Yno816MU82jfL9pRnx8R7FrLnuNbWMQ6_WD15iSbzaPybpNinw>
+    <xme:_eO8Yhp4aPdZ-n2om-mPCIsur9wePbRrssLz-MLhE_J6iyy_q_XMU-35cP1cJbyLF
+    Ev_9nU0c3x1WNjnyVc>
+X-ME-Received: <xmr:_eO8YkPXum53WBTXpICFdUkVIBBJK0AVqXhDsYu-3y-QwMi1t51gQV75q4TI30AjnZl2xm_hvheSOR8H1k1-VGa7YI81lA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehtddgvdehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
@@ -54,27 +54,26 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehtddgvdegucetufdoteggod
     ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
     lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
     gsuhhrrdhioh
-X-ME-Proxy: <xmx:WOO8Ykkuj5-AYp3b-i_-_ruW7hZNy7g743eKWPykwCVKIm16iHfsdQ>
-    <xmx:WOO8Ym0PHMkAxzcUcB9qPYCv6B1WjMrZTmANmkDxGns9pbl3sil1Fw>
-    <xmx:WOO8YrsbMRZwxiAUGEhFZp-glOnM-KaKGgENSSyBgQhAtj5HtJJYOg>
-    <xmx:WOO8YrwdPWnT7QLYbsKBAFEuv06jaFlGKJHpigoYRYHVBrPyekS7ZQ>
+X-ME-Proxy: <xmx:_eO8Yq5Fm9MEDH3D0mvLl_DQ5gIj6fZ3njuINpB85YnclfANtnDLxw>
+    <xmx:_eO8Ym7DYvbCQ61A3nU9qViWQPHtdzZfaj8t0Sd7Qg-u4c8t_D8Hng>
+    <xmx:_eO8Yiim8LFJa6tNbQVPjZRKQwAPl8TIXsAViCamjg4bSzB2fUQT1g>
+    <xmx:_eO8YsmoqCh7M1pBa45zJC_FIa9jlL4hVpegeVWAEq_7dLQO_F5osw>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 29 Jun 2022 19:42:16 -0400 (EDT)
-Date:   Wed, 29 Jun 2022 16:42:14 -0700
+ 29 Jun 2022 19:45:01 -0400 (EDT)
+Date:   Wed, 29 Jun 2022 16:44:59 -0700
 From:   Boris Burkov <boris@bur.io>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/4] btrfs: simplify the pending I/O counting in struct
- compressed_bio
-Message-ID: <YrzjVv3WTKVqmrD+@zen>
+Subject: Re: [PATCH 2/4] btrfs: pass a btrfs_bio to btrfs_repair_one_sector
+Message-ID: <Yrzj+8lk6aHaLjsD@zen>
 References: <20220623055338.3833616-1-hch@lst.de>
- <20220623055338.3833616-2-hch@lst.de>
+ <20220623055338.3833616-3-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220623055338.3833616-2-hch@lst.de>
+In-Reply-To: <20220623055338.3833616-3-hch@lst.de>
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -85,276 +84,213 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 07:53:35AM +0200, Christoph Hellwig wrote:
-> Instead of counting the bytes just count the bios, with an extra
-> reference held during submission.  This significantly simplifies the
-> submission side error handling.
-
-Interestingly, this more or less exactly un-does the patch:
-
-btrfs: introduce compressed_bio::pending_sectors to trace compressed bio
-
-which introduced the sector counting, asserting that counting bios was
-awkward. FWIW, in my opinion, counting from 1 feels worth it to not have
-to add up the size, and simplifying the error handling.
-
+On Thu, Jun 23, 2022 at 07:53:36AM +0200, Christoph Hellwig wrote:
+> Pass the btrfs_bio instead of the plain bio to btrfs_repair_one_sector,
+> an remove the start and failed_mirror arguments in favor of deriving
+> them from the btrfs_bio.  For this to work ensure that the file_offset
+> field is also initialized for buffered I/O.
+nit: the field in volumes.h has a comment "for direct I/O" which we
+should get rid of now.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Boris Burkov <boris@bur.io>
 > ---
->  fs/btrfs/compression.c | 126 ++++++++++-------------------------------
->  fs/btrfs/compression.h |   4 +-
->  2 files changed, 33 insertions(+), 97 deletions(-)
+>  fs/btrfs/extent_io.c | 47 ++++++++++++++++++++++++--------------------
+>  fs/btrfs/extent_io.h |  8 ++++----
+>  fs/btrfs/inode.c     |  5 ++---
+>  3 files changed, 32 insertions(+), 28 deletions(-)
 > 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 907fc8a4c092c..e756da640fd7b 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -191,44 +191,6 @@ static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
->  	return 0;
->  }
->  
-> -/*
-> - * Reduce bio and io accounting for a compressed_bio with its corresponding bio.
-> - *
-> - * Return true if there is no pending bio nor io.
-> - * Return false otherwise.
-> - */
-> -static bool dec_and_test_compressed_bio(struct compressed_bio *cb, struct bio *bio)
-> -{
-> -	struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
-> -	unsigned int bi_size = 0;
-> -	bool last_io = false;
-> -	struct bio_vec *bvec;
-> -	struct bvec_iter_all iter_all;
-> -
-> -	/*
-> -	 * At endio time, bi_iter.bi_size doesn't represent the real bio size.
-> -	 * Thus here we have to iterate through all segments to grab correct
-> -	 * bio size.
-> -	 */
-> -	bio_for_each_segment_all(bvec, bio, iter_all)
-> -		bi_size += bvec->bv_len;
-> -
-> -	if (bio->bi_status)
-> -		cb->status = bio->bi_status;
-> -
-> -	ASSERT(bi_size && bi_size <= cb->compressed_len);
-> -	last_io = refcount_sub_and_test(bi_size >> fs_info->sectorsize_bits,
-> -					&cb->pending_sectors);
-> -	/*
-> -	 * Here we must wake up the possible error handler after all other
-> -	 * operations on @cb finished, or we can race with
-> -	 * finish_compressed_bio_*() which may free @cb.
-> -	 */
-> -	wake_up_var(cb);
-> -
-> -	return last_io;
-> -}
-> -
->  static void finish_compressed_bio_read(struct compressed_bio *cb)
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 3778d58092dea..ec7bdb3fa0921 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -182,6 +182,7 @@ static int add_extent_changeset(struct extent_state *state, u32 bits,
+>  static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
 >  {
->  	unsigned int index;
-> @@ -288,7 +250,10 @@ static void end_compressed_bio_read(struct bio *bio)
->  	unsigned int mirror = btrfs_bio(bio)->mirror_num;
->  	int ret = 0;
+>  	struct bio *bio;
+> +	struct bio_vec *bv;
+>  	struct inode *inode;
+>  	int mirror_num;
 >  
-> -	if (!dec_and_test_compressed_bio(cb, bio))
-> +	if (bio->bi_status)
-> +		cb->status = bio->bi_status;
+> @@ -189,12 +190,15 @@ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
+>  		return;
+>  
+>  	bio = bio_ctrl->bio;
+> -	inode = bio_first_page_all(bio)->mapping->host;
+> +	bv = bio_first_bvec_all(bio);
+> +	inode = bv->bv_page->mapping->host;
+>  	mirror_num = bio_ctrl->mirror_num;
+>  
+>  	/* Caller should ensure the bio has at least some range added */
+>  	ASSERT(bio->bi_iter.bi_size);
+>  
+> +	btrfs_bio(bio)->file_offset = page_offset(bv->bv_page) + bv->bv_offset;
 > +
-> +	if (!refcount_dec_and_test(&cb->pending_ios))
->  		goto out;
+>  	if (!is_data_inode(inode))
+>  		btrfs_submit_metadata_bio(inode, bio, mirror_num);
+>  	else if (btrfs_op(bio) == BTRFS_MAP_WRITE)
+> @@ -2533,10 +2537,11 @@ void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start, u64 end)
+>  }
 >  
->  	/*
-> @@ -417,7 +382,10 @@ static void end_compressed_bio_write(struct bio *bio)
+>  static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode,
+> -							     u64 start,
+> -							     int failed_mirror)
+> +							     struct btrfs_bio *bbio,
+> +							     unsigned int bio_offset)
 >  {
->  	struct compressed_bio *cb = bio->bi_private;
->  
-> -	if (dec_and_test_compressed_bio(cb, bio)) {
-> +	if (bio->bi_status)
-> +		cb->status = bio->bi_status;
-> +
-> +	if (refcount_dec_and_test(&cb->pending_ios)) {
->  		struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
->  
->  		btrfs_record_physical_zoned(cb->inode, cb->start, bio);
-> @@ -476,7 +444,7 @@ static struct bio *alloc_compressed_bio(struct compressed_bio *cb, u64 disk_byte
->  		return ERR_PTR(ret);
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> +	u64 start = bbio->file_offset + bio_offset;
+>  	struct io_failure_record *failrec;
+>  	struct extent_map *em;
+>  	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
+> @@ -2556,7 +2561,7 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
+>  		 * (e.g. with a list for failed_mirror) to make
+>  		 * clean_io_failure() clean all those errors at once.
+>  		 */
+> -		ASSERT(failrec->this_mirror == failed_mirror);
+> +		ASSERT(failrec->this_mirror == bbio->mirror_num);
+>  		ASSERT(failrec->len == fs_info->sectorsize);
+>  		return failrec;
 >  	}
->  	*next_stripe_start = disk_bytenr + geom.len;
-> -
-> +	refcount_inc(&cb->pending_ios);
->  	return bio;
+> @@ -2567,7 +2572,7 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
+>  
+>  	failrec->start = start;
+>  	failrec->len = sectorsize;
+> -	failrec->failed_mirror = failrec->this_mirror = failed_mirror;
+> +	failrec->failed_mirror = failrec->this_mirror = bbio->mirror_num;
+>  	failrec->compress_type = BTRFS_COMPRESS_NONE;
+>  
+>  	read_lock(&em_tree->lock);
+> @@ -2632,17 +2637,17 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
+>  	return failrec;
 >  }
 >  
-> @@ -503,17 +471,17 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  	struct compressed_bio *cb;
->  	u64 cur_disk_bytenr = disk_start;
->  	u64 next_stripe_start;
-> -	blk_status_t ret;
->  	int skip_sum = inode->flags & BTRFS_INODE_NODATASUM;
->  	const bool use_append = btrfs_use_zone_append(inode, disk_start);
->  	const unsigned int bio_op = use_append ? REQ_OP_ZONE_APPEND : REQ_OP_WRITE;
-> +	blk_status_t ret = BLK_STS_OK;
+> -int btrfs_repair_one_sector(struct inode *inode,
+> -			    struct bio *failed_bio, u32 bio_offset,
+> -			    struct page *page, unsigned int pgoff,
+> -			    u64 start, int failed_mirror,
+> +int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *failed_bbio,
+> +			    u32 bio_offset, struct page *page,
+> +			    unsigned int pgoff,
+>  			    submit_bio_hook_t *submit_bio_hook)
+>  {
+> +	u64 start = failed_bbio->file_offset + bio_offset;
+>  	struct io_failure_record *failrec;
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+>  	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+>  	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
+> -	struct btrfs_bio *failed_bbio = btrfs_bio(failed_bio);
+> +	struct bio *failed_bio = &failed_bbio->bio;
+>  	const int icsum = bio_offset >> fs_info->sectorsize_bits;
+>  	struct bio *repair_bio;
+>  	struct btrfs_bio *repair_bbio;
+> @@ -2652,7 +2657,7 @@ int btrfs_repair_one_sector(struct inode *inode,
 >  
->  	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
->  	       IS_ALIGNED(len, fs_info->sectorsize));
->  	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
->  	if (!cb)
->  		return BLK_STS_RESOURCE;
-> -	refcount_set(&cb->pending_sectors, compressed_len >> fs_info->sectorsize_bits);
-> +	refcount_set(&cb->pending_ios, 1);
->  	cb->status = BLK_STS_OK;
->  	cb->inode = &inode->vfs_inode;
->  	cb->start = start;
-> @@ -543,8 +511,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  				&next_stripe_start);
->  			if (IS_ERR(bio)) {
->  				ret = errno_to_blk_status(PTR_ERR(bio));
-> -				bio = NULL;
-> -				goto finish_cb;
-> +				break;
->  			}
->  			if (blkcg_css)
->  				bio->bi_opf |= REQ_CGROUP_PUNT;
-> @@ -588,8 +555,11 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  		if (submit) {
->  			if (!skip_sum) {
->  				ret = btrfs_csum_one_bio(inode, bio, start, true);
-> -				if (ret)
-> -					goto finish_cb;
-> +				if (ret) {
-> +					bio->bi_status = ret;
-> +					bio_endio(bio);
-> +					break;
-> +				}
->  			}
+>  	BUG_ON(bio_op(failed_bio) == REQ_OP_WRITE);
 >  
->  			ASSERT(bio->bi_iter.bi_size);
-> @@ -598,33 +568,12 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  		}
->  		cond_resched();
->  	}
-> -	if (blkcg_css)
-> -		kthread_associate_blkcg(NULL);
+> -	failrec = btrfs_get_io_failure_record(inode, start, failed_mirror);
+> +	failrec = btrfs_get_io_failure_record(inode, failed_bbio, bio_offset);
+>  	if (IS_ERR(failrec))
+>  		return PTR_ERR(failrec);
 >  
-> -	return 0;
-> -
-> -finish_cb:
->  	if (blkcg_css)
->  		kthread_associate_blkcg(NULL);
->  
-> -	if (bio) {
-> -		bio->bi_status = ret;
-> -		bio_endio(bio);
-> -	}
-> -	/* Last byte of @cb is submitted, endio will free @cb */
-> -	if (cur_disk_bytenr == disk_start + compressed_len)
-> -		return ret;
-> -
-> -	wait_var_event(cb, refcount_read(&cb->pending_sectors) ==
-> -			   (disk_start + compressed_len - cur_disk_bytenr) >>
-> -			   fs_info->sectorsize_bits);
-> -	/*
-> -	 * Even with previous bio ended, we should still have io not yet
-> -	 * submitted, thus need to finish manually.
-> -	 */
-> -	ASSERT(refcount_read(&cb->pending_sectors));
-> -	/* Now we are the only one referring @cb, can finish it safely. */
-> -	finish_compressed_bio_write(cb);
-> +	if (refcount_dec_and_test(&cb->pending_ios))
-> +		finish_compressed_bio_write(cb);
->  	return ret;
+> @@ -2750,9 +2755,10 @@ static void end_sector_io(struct page *page, u64 offset, bool uptodate)
+>  				    offset + sectorsize - 1, &cached);
 >  }
 >  
-> @@ -830,7 +779,7 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  		goto out;
->  	}
+> -static void submit_data_read_repair(struct inode *inode, struct bio *failed_bio,
+> +static void submit_data_read_repair(struct inode *inode,
+> +				    struct btrfs_bio *failed_bbio,
+>  				    u32 bio_offset, const struct bio_vec *bvec,
+> -				    int failed_mirror, unsigned int error_bitmap)
+> +				    unsigned int error_bitmap)
+>  {
+>  	const unsigned int pgoff = bvec->bv_offset;
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> @@ -2763,7 +2769,7 @@ static void submit_data_read_repair(struct inode *inode, struct bio *failed_bio,
+>  	const int nr_bits = (end + 1 - start) >> fs_info->sectorsize_bits;
+>  	int i;
 >  
-> -	refcount_set(&cb->pending_sectors, compressed_len >> fs_info->sectorsize_bits);
-> +	refcount_set(&cb->pending_ios, 1);
->  	cb->status = BLK_STS_OK;
->  	cb->inode = inode;
->  	cb->mirror_num = mirror_num;
-> @@ -880,9 +829,9 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  					REQ_OP_READ, end_compressed_bio_read,
->  					&next_stripe_start);
->  			if (IS_ERR(comp_bio)) {
-> -				ret = errno_to_blk_status(PTR_ERR(comp_bio));
-> -				comp_bio = NULL;
-> -				goto finish_cb;
-> +				cb->status =
-> +					errno_to_blk_status(PTR_ERR(comp_bio));
-> +				break;
->  			}
+> -	BUG_ON(bio_op(failed_bio) == REQ_OP_WRITE);
+> +	BUG_ON(bio_op(&failed_bbio->bio) == REQ_OP_WRITE);
+>  
+>  	/* This repair is only for data */
+>  	ASSERT(is_data_inode(inode));
+> @@ -2775,7 +2781,7 @@ static void submit_data_read_repair(struct inode *inode, struct bio *failed_bio,
+>  	 * We only get called on buffered IO, thus page must be mapped and bio
+>  	 * must not be cloned.
+>  	 */
+> -	ASSERT(page->mapping && !bio_flagged(failed_bio, BIO_CLONED));
+> +	ASSERT(page->mapping && !bio_flagged(&failed_bbio->bio, BIO_CLONED));
+>  
+>  	/* Iterate through all the sectors in the range */
+>  	for (i = 0; i < nr_bits; i++) {
+> @@ -2792,10 +2798,9 @@ static void submit_data_read_repair(struct inode *inode, struct bio *failed_bio,
+>  			goto next;
 >  		}
->  		/*
-> @@ -921,8 +870,11 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  			unsigned int nr_sectors;
 >  
->  			ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
-> -			if (ret)
-> -				goto finish_cb;
-> +			if (ret) {
-> +				comp_bio->bi_status = ret;
-> +				bio_endio(comp_bio);
-> +				break;
-> +			}
+> -		ret = btrfs_repair_one_sector(inode, failed_bio,
+> -				bio_offset + offset,
+> -				page, pgoff + offset, start + offset,
+> -				failed_mirror, btrfs_submit_data_read_bio);
+> +		ret = btrfs_repair_one_sector(inode, failed_bbio,
+> +				bio_offset + offset, page, pgoff + offset,
+> +				btrfs_submit_data_read_bio);
+>  		if (!ret) {
+>  			/*
+>  			 * We have submitted the read repair, the page release
+> @@ -3127,8 +3132,8 @@ static void end_bio_extent_readpage(struct bio *bio)
+>  			 * submit_data_read_repair() will handle all the good
+>  			 * and bad sectors, we just continue to the next bvec.
+>  			 */
+> -			submit_data_read_repair(inode, bio, bio_offset, bvec,
+> -						mirror, error_bitmap);
+> +			submit_data_read_repair(inode, bbio, bio_offset, bvec,
+> +						error_bitmap);
+>  		} else {
+>  			/* Update page status and unlock */
+>  			end_page_read(page, uptodate, start, len);
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index 280af70c04953..a78051c7627c4 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -57,6 +57,7 @@ enum {
+>  #define BITMAP_LAST_BYTE_MASK(nbits) \
+>  	(BYTE_MASK >> (-(nbits) & (BITS_PER_BYTE - 1)))
 >  
->  			nr_sectors = DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
->  						  fs_info->sectorsize);
-> @@ -933,6 +885,9 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  			comp_bio = NULL;
->  		}
->  	}
-> +
-> +	if (refcount_dec_and_test(&cb->pending_ios))
-> +		finish_compressed_bio_read(cb);
->  	return;
+> +struct btrfs_bio;
+>  struct btrfs_root;
+>  struct btrfs_inode;
+>  struct btrfs_io_bio;
+> @@ -266,10 +267,9 @@ struct io_failure_record {
+>  	int num_copies;
+>  };
 >  
->  fail:
-> @@ -950,25 +905,6 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  	bio->bi_status = ret;
->  	bio_endio(bio);
->  	return;
-> -finish_cb:
-> -	if (comp_bio) {
-> -		comp_bio->bi_status = ret;
-> -		bio_endio(comp_bio);
-> -	}
-> -	/* All bytes of @cb is submitted, endio will free @cb */
-> -	if (cur_disk_byte == disk_bytenr + compressed_len)
-> -		return;
-> -
-> -	wait_var_event(cb, refcount_read(&cb->pending_sectors) ==
-> -			   (disk_bytenr + compressed_len - cur_disk_byte) >>
-> -			   fs_info->sectorsize_bits);
-> -	/*
-> -	 * Even with previous bio ended, we should still have io not yet
-> -	 * submitted, thus need to finish @cb manually.
-> -	 */
-> -	ASSERT(refcount_read(&cb->pending_sectors));
-> -	/* Now we are the only one referring @cb, can finish it safely. */
-> -	finish_compressed_bio_read(cb);
->  }
+> -int btrfs_repair_one_sector(struct inode *inode,
+> -			    struct bio *failed_bio, u32 bio_offset,
+> -			    struct page *page, unsigned int pgoff,
+> -			    u64 start, int failed_mirror,
+> +int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *failed_bbio,
+> +			    u32 bio_offset, struct page *page,
+> +			    unsigned int pgoff,
+>  			    submit_bio_hook_t *submit_bio_hook);
 >  
->  /*
-> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-> index 5fca7603e928a..0e4cbf04fd866 100644
-> --- a/fs/btrfs/compression.h
-> +++ b/fs/btrfs/compression.h
-> @@ -30,8 +30,8 @@ static_assert((BTRFS_MAX_COMPRESSED % PAGE_SIZE) == 0);
->  #define	BTRFS_ZLIB_DEFAULT_LEVEL		3
+>  #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 784c1ad4a9634..a627b2af9e243 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -7953,9 +7953,8 @@ static blk_status_t btrfs_check_read_dio_bio(struct btrfs_dio_private *dip,
+>  		} else {
+>  			int ret;
 >  
->  struct compressed_bio {
-> -	/* Number of sectors with unfinished IO (unsubmitted or unfinished) */
-> -	refcount_t pending_sectors;
-> +	/* Number of outstanding bios */
-> +	refcount_t pending_ios;
->  
->  	/* Number of compressed pages in the array */
->  	unsigned int nr_pages;
+> -			ret = btrfs_repair_one_sector(inode, &bbio->bio, offset,
+> -					bv.bv_page, bv.bv_offset, start,
+> -					bbio->mirror_num,
+> +			ret = btrfs_repair_one_sector(inode, bbio, offset,
+> +					bv.bv_page, bv.bv_offset,
+>  					submit_dio_repair_bio);
+>  			if (ret)
+>  				err = errno_to_blk_status(ret);
 > -- 
 > 2.30.2
 > 
