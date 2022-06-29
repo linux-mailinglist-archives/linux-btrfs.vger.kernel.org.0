@@ -2,72 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BC355F2CF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jun 2022 03:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF71555F2E3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jun 2022 03:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbiF2Bdk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jun 2022 21:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34426 "EHLO
+        id S230217AbiF2BlR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jun 2022 21:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbiF2Bdi (ORCPT
+        with ESMTP id S230183AbiF2BlP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jun 2022 21:33:38 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A352201AB;
-        Tue, 28 Jun 2022 18:33:37 -0700 (PDT)
+        Tue, 28 Jun 2022 21:41:15 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C16252AF
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 18:41:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1656466408;
-        bh=pqxwvO1CJPahX0Vb7Uruphb3bKG+1p11HHH06KyuhDg=;
+        s=badeba3b8450; t=1656466865;
+        bh=Mgh6GpcVYx/rYDWIwnSClfH6GngeEz8fNAlGj9uUiJc=;
         h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=eoiwbJpt9hnO0/8cLaxhg1Gjs1b5lcZNs/jfbAsd67yz9OsDfGFZvTCA5cNLR+jcw
-         Bysl20MA42mHsKDS+NO01/GW5r+VzqH0hfijzd/tjYJU3Xp76Loq8pfs2+27M7BqBj
-         YDk1EpAhHftaGzrKRAlMZeqPd/lm+LNgbmKqEidU=
+        b=PRV9DlDc6GNwutWLlUpE1UW3NIHVU6H7kmk6JlNKFL7NO1HTZxLnvctOij083wuWA
+         ip2D8kjcuGdlyUc37bUJ2wnbxS208BLFo8NpQailq4ju4gOsEid3ddhNhX8jt7qwaU
+         /qeNyJtRqVGojEQQZIk/0Wn57gCsYoihYR74mLsk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3siG-1nfrR20BFI-00zrch; Wed, 29
- Jun 2022 03:33:28 +0200
-Message-ID: <77cb547c-a4d8-cca9-3889-872ebfed2859@gmx.com>
-Date:   Wed, 29 Jun 2022 09:33:23 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mof9P-1nHKQ539B3-00p2Jq; Wed, 29
+ Jun 2022 03:41:05 +0200
+Message-ID: <8728cb97-6bb6-fae9-025b-42bd1a439386@gmx.com>
+Date:   Wed, 29 Jun 2022 09:40:58 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.10.0
 Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-Cc:     Christoph Hellwig <hch@lst.de>, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20220624122334.80603-1-hch@lst.de>
- <7c30b6a4-e628-baea-be83-6557750f995a@gmx.com> <20220624125118.GA789@lst.de>
- <20220624130750.cu26nnm6hjrru4zd@quack3.lan> <20220625091143.GA23118@lst.de>
- <20220627101914.gpoz7f6riezkolad@quack3.lan>
- <e73be42e-fce5-733a-310d-db9dc5011796@gmx.com>
- <20220628080035.qlbdib7zh3zd2zfq@quack3>
+To:     Tom Rini <trini@konsulko.com>, Qu Wenruo <wqu@suse.com>
+Cc:     u-boot@lists.denx.de, marek.behun@nic.cz,
+        linux-btrfs@vger.kernel.org, jnhuang95@gmail.com,
+        linux-erofs@lists.ozlabs.org, joaomarcos.costa@bootlin.com,
+        thomas.petazzoni@bootlin.com, miquel.raynal@bootlin.com
+References: <cover.1656401086.git.wqu@suse.com>
+ <20220628141708.GJ1146598@bill-the-cat>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
-In-Reply-To: <20220628080035.qlbdib7zh3zd2zfq@quack3>
+Subject: Re: [PATCH 0/8] u-boot: fs: add generic unaligned read handling
+In-Reply-To: <20220628141708.GJ1146598@bill-the-cat>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JxU8fmzPSOWo3S5klMCQWSzucckjFzmRRBgFQIBdlJy82yvmg+4
- Uk5NODhtl5p9QwM3ja0xSnfu0I9i7UP7MrmCeIhScsRbFwf1IvGVL5cFum/rLwvZ+GUGk42
- 9ghHw55RPYGXu/HYjIKU9MH5bXnHcpGpaRNtq2eUy/cTE3o84nR+/0N+VVH6mEQ8NgM71LS
- JYR/xMnNYguQMXeC28ajA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ygxSUem6qzI=:G34aUae/gTEEUg0+3uQWaH
- cBcsvgnnkpb9SDbpxLO2Ilkh2QdjWxm8XtQWleCQxZHfPxR5TegwWDPEqn3v+wcXhryz8H4/y
- 29EH/hpPH0eiApUIxM27VXbSnkZsOEFzc8KYK26+HVrpih9puDsCXeJW6eDbzo3eFTTqKo2yC
- bes5wTqJSV9DjDfV5NIJ0xslhlty83tgMkk3KJluz7xQH7IZwdd6o8JA6Zim7aWTn4et50pKm
- F2j16Jy50WtRVzakko1DGckpuSNNm0QPze4YDvo+9mc2l+WlNmSoWEE8Y4h/WFJquPXBLEU/a
- NYR190wYIHCrzrYf5SjKnJMkdvIqGOHzg1Q1MWFFXTfrWZbaS486IV2EkA2EDRIF2YfVAmb2h
- 0nH4jbZQFCIX4Q0UT6VbTQ4EPla+eNnsmr2o7t4IywU1LF9MhQBM8IIqXtiR7ComhLuPdTqdP
- TNtmMoX4hClhkQvk2urM8foNbSJWYmy6+cJKjix271UFymCueTBJ9WLQcsppOLhbY0Xmxf6kf
- Qs3CFjjJFSpf8Qxs1DVArXEJ1OnpZcSFZW/vF6Ww5K1XiAEWQ/7Zi6M18R3V5Q1IddRiZs4AZ
- J9xyWLfevCCk4BCFCa59Zd29KzbRBBVWAyvRPjqY1AkLlD4+idQaeZtPGxS6+l1M76wJ0HHFJ
- zcimfLGkzxgD3/vABKD1fKuhjF/pm10HXQk+iHtSxybIKdoB8HFoA81nf5+s5NdcUuEnsec/a
- A6vzcgM1osJgApehrlBD40SSUhnqnIttvb5x6PwLdTsUj91AM67Iwz2DlvvtjpVRCwjvU+o6D
- pj6dShQNa1GSfppT1XoBF6ogS/a+MluFdUp+1s2kb+b+w4CbfDb3s2+dNxQ9a/pGuoph1WSYd
- SBHVPzFY5hQK3gKftuPJt8obM42P6WbIVZJPYptXPivT1+hygsXCOAnmQd+zigSORARIWVAL1
- /PApt0tXaXcfYm7jHWbuC4m7MtMpdD4oBZMyr/oeUyQBUBevR0XNEQXQ1xIvw8EQLox4DD3gy
- dFJs6RVtCIkDTQvRh+MeWspqZLpn6hYMVQtFFNSapW82P8I1ojYRETunCEnybQhSBNFex7Qkw
- g6frbE9WDDkxCAbjABcGr2UdjLmEMbEoxyEcfD4VyU0qaVkWRCgNJDzBA==
+X-Provags-ID: V03:K1:4cebTUJIiPO7+NBMRZERKrkPZtn4e1sMamamdtPGgz7/PydPbOH
+ yR2nsTNBPGmyNF5SXa9y5NqMlQe3jkUVDru2HRmT0vhEHXgNNdfYwyYwFmDFbavIu/Q5Hat
+ PTg3TJ4QBESn6cP94Vq6rrCkYHq++o00bkiFKv8XTM3SpB9nIE9fsP18BrAEVGWGpG674ad
+ rfleXQkNxMRr2MMYn/DVw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XjT6VYOD70g=:yPtk1nuWJSCuNOrf8Quy+z
+ En32Lti6iJzDe8niNmqnxUu7oVFUCdRRTlcHKGm3gqN7ZG28iVIk4txFWVABxmTw35kbAvk/L
+ ID8GegLv3dH47kUqtMcu1ufJgZrCWB+sjWB1+QMwxuN5O1Ytl7C3MiigYb8ExzEuBfHYoCPsg
+ Rjoby+Zqms2y4j16CZc5LlRNeT9nwJ5eYZL+YU3MhUup+IhLBmZkkkQn1ew/C3duas2aQwxJt
+ 0NVFbAbPG425zyAgbF2mveXE1bCs/KtkFbFpY/MmckxDZSXVG/PeTYMblG/cEgnzjUNRThhvF
+ dtHf0RAQ+eoztoB/M5DGB6FoEgDSU0hXsqpT2P0qFBGbLEiftALfZCuGHzhWqr4mOILrcT/5Y
+ m4Mmedrv86Pi6LGtO6a+QiJBeqUxFgaeUkqBT3kAyx0/2C0n8w8f+ICkps2xgpHH13UpCwLUm
+ 2ZgnnK4/9MW7mZG3Hu9fUN/PUEcmgRjOvgcKWTl4ImRCmi1Lm7YdA4XaH1bu20+uzgCr7t+2i
+ zsf/MGjMvTl0Ue2+BPUQHl3OEW6UzEoy3z3iFwaiaAFgPyab1+y/iaEzUTO508iuXNZX44gIV
+ 7xrX2qIepwOFdYIWqzPHjliMUveIbJWTo+ILLeVsYc3fdWvNsXzHboJ6taPXt8GO1DvMapTtR
+ 7+s7KdvlFnONE8Nuhq0g9fB+Z7JS41vb7Q+qXBmGVwkz0cerBOiuHH7Em5Xzo6REpZQ2eJxim
+ m/anM3BWLJU8fi8u57LgTz9WPRwTgDay3+CjLQ6pyJba6poWU+84EobiHIGCS/KM8KZ6WE2st
+ AIrienpZcz//8Ehn4Guc4w6kfyOe8rWlsxG+g8BYUq8XtryEkcw3R8WrwRpLPq6HS75gtYUil
+ Edxn1IiJqragm2m0KJ696QX+N6YSzUa53a6ahQWQA8FAWIBlLwHTLQN/eCBQk3wmEvbV11S1O
+ 9ypD0Sx3W4dzeyeOwtkePP28CTWu5FtPEYUl7tYxs8gN563VSFGveK4HArWqg4d/nmfhD7EQs
+ f5tKOIUxMOPpzw+uaPW+USXZmRp9cmmoqo9u8W9tbJ4DvtEVIvfxdGW5z1DG57iMH4rqEQzBC
+ sAotFYtChSIT0i1Ej3pQuXMwFf9yaJ3LhN0Q1oJmXXLl9rcaO9sc/S6yA==
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -80,94 +77,81 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/6/28 16:00, Jan Kara wrote:
-> On Tue 28-06-22 08:24:07, Qu Wenruo wrote:
->> On 2022/6/27 18:19, Jan Kara wrote:
->>> On Sat 25-06-22 11:11:43, Christoph Hellwig wrote:
->>>> On Fri, Jun 24, 2022 at 03:07:50PM +0200, Jan Kara wrote:
->>>>> I'm not sure I get the context 100% right but pages getting randomly=
- dirty
->>>>> behind filesystem's back can still happen - most commonly with RDMA =
-and
->>>>> similar stuff which calls set_page_dirty() on pages it has got from
->>>>> pin_user_pages() once the transfer is done. page_maybe_dma_pinned() =
-should
->>>>> be usable within filesystems to detect such cases and protect the
->>>>> filesystem but so far neither me nor John Hubbart has got to impleme=
-nt this
->>>>> in the generic writeback infrastructure + some filesystem as a sampl=
-e case
->>>>> others could copy...
->>>>
->>>> Well, so far the strategy elsewhere seems to be to just ignore pages
->>>> only dirtied through get_user_pages.  E.g. iomap skips over pages
->>>> reported as holes, and ext4_writepage complains about pages without
->>>> buffers and then clears the dirty bit and continues.
->>>>
->>>> I'm kinda surprised that btrfs wants to treat this so special
->>>> especially as more of the btrfs page and sub-page status will be out
->>>> of date as well.
->>>
->>> I agree btrfs probably needs a different solution than what it is curr=
-ently
->>> doing if they want to get things right. I just wanted to make it clear=
- that
->>> the code you are ripping out may be a wrong solution but to a real pro=
-blem.
+On 2022/6/28 22:17, Tom Rini wrote:
+> On Tue, Jun 28, 2022 at 03:28:00PM +0800, Qu Wenruo wrote:
+>> [BACKGROUND]
+>> Unlike FUSE/Kernel which always pass aligned read range, U-boot fs code
+>> just pass the request range to underlying fses.
 >>
->> IHMO I believe btrfs should also ignore such dirty but not managed by f=
-s
->> pages.
+>> Under most case, this works fine, as U-boot only really needs to read
+>> the whole file (aka, 0 for both offset and len, len will be later
+>> determined using file size).
 >>
->> But I still have a small concern here.
+>> But if some advanced user/script wants to extract kernel/initramfs from
+>> combined image, we may need to do unaligned read in that case.
 >>
->> Is it ensured that, after RDMA dirtying the pages, would we finally got
->> a proper notification to fs that those pages are marked written?
+>> [ADVANTAGE]
+>> This patchset will handle unaligned read range in _fs_read():
+>>
+>> - Get blocksize of the underlying fs
+>>
+>> - Read the leading block contianing the unaligned range
+>>    The full block will be stored in a local buffer, then only copy
+>>    the bytes in the unaligned range into the destination buffer.
+>>
+>>    If the first block covers the whole range, we just call it aday.
+>>
+>> - Read the aligned range if there is any
+>>
+>> - Read the tailing block containing the unaligned range
+>>    And copy the covered range into the destination.
+>>
+>> [DISADVANTAGE]
+>> There are mainly two problems:
+>>
+>> - Extra memory allocation for every _fs_read() call
+>>    For the leading and tailing block.
+>>
+>> - Extra path resolving
+>>    All those supported fs will have to do extra path resolving up to 2
+>>    times (one for the leading block, one for the tailing block).
+>>    This may slow down the read.
 >
-> So there is ->page_mkwrite() notification happening when RDMA code calls
-> pin_user_pages() when preparing buffers.
+> This conceptually seems like a good thing.  Can you please post some
+> before/after times of reading large images from the supported
+> filesystems?
+>
 
-I'm wondering why page_mkwrite() is only called when preparing the buffer?
-
-Wouldn't it make more sense to call page_mkwrite() when the buffered is
-released from RDMA?
-
-Sorry for all these dumb questions, as the core-api/pin_user_pages.rst
-still doesn't explain thing to my dumb brain...
-
-
-
-Another thing is, RDMA doesn't really need to respect things like page
-locked/writeback, right?
-As to RDMA calls, all pages should be pinned and seemingly exclusive to
-them.
-
-And in that case, I think btrfs should ignore writing back those pages,
-other than doing fixing ups.
-
-As the btrfs csum requires everyone modifying the page to wait for
-writeback, or the written data will be out-of-sync with the calculated
-csum and cause future -EIO when reading it from disk.
-
-
-> The trouble is that although later
-> page_mkclean() makes page not writeable from page tables, it may be stil=
-l
-> written by RDMA code (even hours after ->page_mkwrite() notification, RD=
-MA
-> buffers are really long-lived) and that's what eventually confuses the
-> filesystem.  Otherwise set_page_dirty() is the notification that page
-> contents was changed and needs writing out...
-
-Another thing I still didn't get is, is there any explicit
-mkwrite()/set_page_dirty() calls when those page are unpinned.
-
-If no such explicit calls, these dirty pages caused by RDMA would always
-be ignored by fses (except btrfs), and would never got proper written back=
+One thing to mention is, this change doesn't really bother large file read=
 .
+
+As the patchset is splitting a large read into 3 parts:
+
+1) Leading block
+2) Aligned blocks, aka the main part of a large file
+3) Tailing block
+
+Most time should still be spent on part 2), not much different than the
+old code. Part 1) and Part 3) are at most 2 blocks (aka, 2 * 4KiB for
+most modern large enough fses).
+
+So I doubt it would make any difference for large file read.
+
+
+Furthermore, as pointed out by Huang Jianan, currently the patchset can
+not handle read on soft link correctly, thus I'd update the series to do
+the split into even less parts:
+
+1) Leading block
+    For the unaligned initial block
+
+2) Aligned blocks until the end
+    The tailing block should still starts at a block aligned position,
+    thus most filesystems is already handling them correctly.
+    (Just a min(end, blockend) is enough for most cases already).
+
+Anyway, I'll try to craft some benchmarking for file reads using sandbox.
+But please don't expect much (or any) difference in that case.
 
 Thanks,
 Qu
-
->
-> 								Honza
