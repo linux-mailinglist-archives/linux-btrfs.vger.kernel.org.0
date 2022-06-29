@@ -2,35 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1192F55FACE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jun 2022 10:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A762855FAD9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jun 2022 10:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbiF2IkQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Jun 2022 04:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
+        id S231601AbiF2ImH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Jun 2022 04:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbiF2IkM (ORCPT
+        with ESMTP id S229846AbiF2ImF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Jun 2022 04:40:12 -0400
+        Wed, 29 Jun 2022 04:42:05 -0400
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023053BBC8;
-        Wed, 29 Jun 2022 01:40:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44E23CA78
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jun 2022 01:42:04 -0700 (PDT)
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 1360F67373; Wed, 29 Jun 2022 10:40:09 +0200 (CEST)
-Date:   Wed, 29 Jun 2022 10:40:08 +0200
+        id C606967373; Wed, 29 Jun 2022 10:42:01 +0200 (CEST)
+Date:   Wed, 29 Jun 2022 10:42:01 +0200
 From:   Christoph Hellwig <hch@lst.de>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Chris Mason <clm@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Jan Kara <jack@suse.cz>, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
-Message-ID: <20220629084008.GA25536@lst.de>
-References: <20220624122334.80603-1-hch@lst.de> <7c30b6a4-e628-baea-be83-6557750f995a@gmx.com> <20220624125118.GA789@lst.de> <20220624130750.cu26nnm6hjrru4zd@quack3.lan> <20220625091143.GA23118@lst.de> <c4af4c49-c537-bd6d-c27e-fe9ed71b9a8e@fb.com> <b29ee79c-e0d9-7ebe-a563-ca7f33130fc9@gmx.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: fix read repair on compressed extents
+Message-ID: <20220629084201.GA25725@lst.de>
+References: <20220623055338.3833616-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b29ee79c-e0d9-7ebe-a563-ca7f33130fc9@gmx.com>
+In-Reply-To: <20220623055338.3833616-1-hch@lst.de>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -41,17 +39,31 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 09:20:59AM +0800, Qu Wenruo wrote:
-> In fact, COW is not that special, even before btrfs or all the other
-> fses supporting COW, all those old fses has to do something like COW,
-> when they are writing into holes.
->
-> What makes btrfs special is its csum, and in fact csum requires more
-> stable page status.
->
-> If someone can modify a page without waiting for its writeback to
-> finish, btrfs csum can easily be stale and cause -EIO for future read.
+Any chance to get a review on this one?
 
-And the writepage time fixup does not help with this at all, as it
-just allocates the ordered extent at writepage time, long after the
-data has been modified.
+On Thu, Jun 23, 2022 at 07:53:34AM +0200, Christoph Hellwig wrote:
+> Hi all,
+> 
+> while looking into the repair code I found that read repair of compressed
+> extents is current fundamentally broken, in that repair tries to write
+> the uncompressed data into a corrupted extent during a repair.  This is
+> demonstrated by the "btrfs: test read repair on a corrupted compressed
+> extent" test submitted to xfstests.
+> 
+> This series fixes that, but is a bit invaside as it requires both
+> refactoring of the compression code and changes to the repair code to
+> not look up the logic address on every repair attempt.  On the plus
+> side it removes a whole lot of code.
+> 
+> It is based on the for-next branch plus my "btrfs: repair all known bad
+> mirrors" patch.
+> 
+> Diffstat:
+>  compression.c |  287 ++++++++++++++++------------------------------------------
+>  compression.h |   11 --
+>  ctree.h       |    4 
+>  extent_io.c   |   93 +++++++-----------
+>  extent_io.h   |    9 -
+>  inode.c       |   34 +++---
+>  6 files changed, 148 insertions(+), 290 deletions(-)
+---end quoted text---
