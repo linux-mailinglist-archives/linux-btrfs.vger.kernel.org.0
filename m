@@ -2,184 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FF955EDAF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jun 2022 21:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9BF55F276
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jun 2022 02:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233943AbiF1TP0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jun 2022 15:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45372 "EHLO
+        id S229709AbiF2AgA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jun 2022 20:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237524AbiF1TOa (ORCPT
+        with ESMTP id S229547AbiF2Af7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jun 2022 15:14:30 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79452193EA
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 12:12:57 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id m14so11938264plg.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 12:12:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=o4MCWpaqWRxscyqKeJFt2mu0KswfALaLpwZYYndkEck=;
-        b=HBprBT8WBVZX3oCWz9LwnyQ5G49nl4y8/tYz5Oqn6mY8uVQS85a73T5X8K1w7LhsBs
-         j1qCVoCHQWgdi8oxnOSOwTJJpgwZECYSKbljFfkMRPUBPBMz9v22wTP16gCdlAGSYhNv
-         CuqyObhaVdkk3O8SaC8oC8f8+FiOQ9jxsvIw1OG0+noVjcsu4eUC8nFEW8WtyGU2BMZq
-         DVV9ZFjax8NcyvbxaciR7nkV3zZLxrqIsmZ6UkmL6YJzcEAIqn/N+pYAG9/jYKSTqECr
-         8i5RYAmRVefoJTSp1Bl5knqBcmju10QC0A4WATrCg7Brq/fmGM67ocpy7dFSbozHghu8
-         aykA==
+        Tue, 28 Jun 2022 20:35:59 -0400
+Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7E25130547
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 17:35:58 -0700 (PDT)
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
+        by gw2.atmark-techno.com (Postfix) with ESMTPS id C609C20D57
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jun 2022 09:35:57 +0900 (JST)
+Received: by mail-pg1-f198.google.com with SMTP id a185-20020a6390c2000000b0040cb1cddf13so7376980pge.19
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jun 2022 17:35:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=o4MCWpaqWRxscyqKeJFt2mu0KswfALaLpwZYYndkEck=;
-        b=i+GzPD5xaLI4GsextJzDIKA/WB6ZBf5rz3Sk2lZBRyyrbkVaYbXK5+KJG/2eivgjOs
-         RxZrNFUb8p6PVSpKPDCd7lNyEwV4HxcacifNWRWukkWi6pRTFJv6xiGaAKkt2/pPV7Wm
-         gJuD27Ej5u2szXI6gNfSzK0DJ8snA4ItsY+elwxVuyM6v//S1Cc+u50O+MvuLBu8ZGN7
-         6tPkyZi/dgEPbYrax2Puabasy/NyEV8UKHVTJb4QuxNCWrOWG4+iB+ctC/wXwTCq7PZA
-         icaxpK4ikEBO2dezMq0B3SN1/im7m78/GYmXNq2YgJO72xraDuegLra9Yu9fvz0zaRmw
-         Qp1A==
-X-Gm-Message-State: AJIora+lGUn2GgESvrm8g0ZXTCts5Lan7DKAnAL9aiOu2cWLkEaunQfW
-        dHM5ADTvOzycbx/wYnlIjzOKtQ==
-X-Google-Smtp-Source: AGRyM1tuJXJ1siPVSyALSaTosFwx57Ljtv2JISkSI1IzvlC/1cQHmxztGSH11CmWUc4GFhaV3ALPWw==
-X-Received: by 2002:a17:902:b118:b0:16b:7b17:41df with SMTP id q24-20020a170902b11800b0016b7b1741dfmr6236278plr.171.1656443576532;
-        Tue, 28 Jun 2022 12:12:56 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c085:21e1::165b? ([2620:10d:c090:400::5:f46f])
-        by smtp.gmail.com with ESMTPSA id 9-20020a17090a0a8900b001eee5416138sm182657pjw.52.2022.06.28.12.12.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jun 2022 12:12:56 -0700 (PDT)
-Message-ID: <33cd0f9a-cdb1-1018-ebb0-89222cb1c759@kernel.dk>
-Date:   Tue, 28 Jun 2022 13:12:54 -0600
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to;
+        bh=sg/FIMb0Y22XOeDUVyJPVEEncgDb3cHZBiniEEmzce0=;
+        b=riZGX8J2HeJgeyDdUccQVwmvm75w9NqKShU2NmOQm14y8y9KQdwTyvVGzPZtDFps5f
+         AQJhcsgkZe2neagdZYnEHh1HS9HNHznOMUBgBzsZQ8VEGyImjCblpCsCrbrgbnck/aPl
+         +bB5Bl1ET0ihWti4wHil25jgA/GUgfhn79Mn70l+ygMJUPwRleIIGat5Eo1PBrDETixd
+         ygnpUkwX+50MDfe9v233WceqnHY7Q/wyRt42yJ+SEEUimhj4ZR8307PYSuQqNF6dlr0b
+         TMPcoZtQVqQp15+4E4REIvhqqA3VL/cm/IcCRADIySzBI5PlDwXBiHuAaKWy1Pb/1CX1
+         1UEg==
+X-Gm-Message-State: AJIora+PkLEe++hQeeqJ256yE+T9TYiXPdJVfWtsH4Q1YqyDflcQlbwH
+        Ez5qoozWjlRV6+IV1lgFv5dl39QqXzYaJi6VWcQAci5j20T0vuZyYwBsXCK4kQg4ohUAhXHxqfA
+        YvgElJpJlHLx+OyeS+qLpEb9D
+X-Received: by 2002:a17:903:41cd:b0:16b:880a:8757 with SMTP id u13-20020a17090341cd00b0016b880a8757mr6398834ple.93.1656462956879;
+        Tue, 28 Jun 2022 17:35:56 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1vCGtD4SY7W6GWH0/Kvp3LVt2NcY4okLANBHyVAh9pXB99m07Os1CgwttUHJ0gmPk+RIDarEA==
+X-Received: by 2002:a17:903:41cd:b0:16b:880a:8757 with SMTP id u13-20020a17090341cd00b0016b880a8757mr6398820ple.93.1656462956611;
+        Tue, 28 Jun 2022 17:35:56 -0700 (PDT)
+Received: from pc-zest.atmarktech (76.125.194.35.bc.googleusercontent.com. [35.194.125.76])
+        by smtp.gmail.com with ESMTPSA id a4-20020a62bd04000000b00525714c3e07sm10006096pff.48.2022.06.28.17.35.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Jun 2022 17:35:56 -0700 (PDT)
+Received: from martinet by pc-zest.atmarktech with local (Exim 4.95)
+        (envelope-from <martinet@pc-zest>)
+        id 1o6LgQ-007pyp-TN;
+        Wed, 29 Jun 2022 09:35:54 +0900
+Date:   Wed, 29 Jun 2022 09:35:44 +0900
+From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
+To:     Nikolay Borisov <nborisov@suse.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: read corruption with qemu master io_uring engine / linux master
+ / btrfs(?)
+Message-ID: <YrueYDXqppHZzOsy@atmark-techno.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: read corruption with qemu master io_uring engine / linux master /
- btrfs(?)
-Content-Language: en-US
-To:     Dominique MARTINET <dominique.martinet@atmark-techno.com>,
-        io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <YrrFGO4A1jS0GI0G@atmark-techno.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <YrrFGO4A1jS0GI0G@atmark-techno.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <33cd0f9a-cdb1-1018-ebb0-89222cb1c759@kernel.dk>
+ <bd342da1-8c98-eb78-59f1-e3cf537181e3@suse.com>
+ <dd55e282-1147-08ae-6b9f-cf3ef672fce8@suse.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 6/28/22 3:08 AM, Dominique MARTINET wrote:
-> I don't have any good reproducer so it's a bit difficult to specify,
-> let's start with what I have...
-> 
-> I've got this one VM which has various segfaults all over the place when
-> starting it with aio=io_uring for its disk as follow:
-> 
->   qemu-system-x86_64 -drive file=qemu/atde-test,if=none,id=hd0,format=raw,cache=none,aio=io_uring \
->       -device virtio-blk-pci,drive=hd0 -m 8G -smp 4 -serial mon:stdio -enable-kvm
-> 
-> It also happens with virtio-scsi-blk:
->   -device virtio-scsi-pci,id=scsihw0 \
->   -drive file=qemu/atde-test,if=none,id=drive-scsi0,format=raw,cache=none,aio=io_uring \
->   -device scsi-hd,bus=scsihw0.0,channel=0,scsi-id=0,lun=0,drive=drive-scsi0,id=scsi0,bootindex=100
-> 
-> It also happened when the disk I was using was a qcow file backing up a
-> vmdk image (this VM's original disk is for vmware), so while I assume
-> qemu reading code and qemu-img convert code are similar I'll pretend
-> image format doesn't matter at this point...
-> It's happened with two such images, but I haven't been able to reproduce
-> with any other VMs yet.
-> 
-> I can also reproduce this on a second host machine with a completely
-> different ssd (WD sata in one vs. samsung nvme), so probably not a
-> firmware bug.
-> 
-> scrub sees no problem with my filesystems on the host.
-> 
-> I've confirmed it happens with at least debian testing's 5.16.0-4-amd64
-> and 5.17.0-1-amd64 kernels, as well as 5.19.0-rc4.
-> It also happens with both debian's 7.0.0 and the master branch
-> (v7.0.0-2031-g40d522490714)
-> 
-> 
-> These factors aside, anything else I tried changing made this bug no
-> longer reproduce:
->  - I'm not sure what the rule is but it sometimes doesn't happen when
-> running the VM twice in a row, sometimes it happens again. Making a
-> fresh copy with `cp --reflink=always` of my source image seems to be
-> reliable.
->  - it stops happening without io_uring
->  - it stops happening if I copy the disk image with --reflink=never
->  - it stops happening if I copy the disk image to another btrfs
-> partition, created in the same lv, so something about my partition
-> history matters?...
-> (I have ssd > GPT partitions > luks > lvm > btrfs with a single disk as
-> metadata DUP data single)
->  - I was unable to reproduce on xfs (with a reflink copy) either but I
-> also was only able to try on a new fs...
->  - I've never been able to reproduce on other VMs
-> 
-> 
-> If you'd like to give it a try, my reproducer source image is
-> ---
-> curl -O https://download.atmark-techno.com/atde/atde9-amd64-20220624.tar.xz
-> tar xf atde9-amd64-20220624.tar.xz
-> qemu-img convert -O raw atde9-amd64-20220624/atde9-amd64.vmdk atde-test
-> cp --reflink=always atde-test atde-test2
-> ---
-> and using 'atde-test'.
-> For further attempts I've removed atde-test and copied back from
-> atde-test2 with cp --reflink=always.
-> This VM graphical output is borked, but ssh listens so something like
-> `-netdev user,id=net0,hostfwd=tcp::2227-:22 -device virtio-net-pci,netdev=net0`
-> and 'ssh -p 2227 -l atmark localhost' should allow login with password
-> 'atmark' or you can change vt on the console (root password 'root')
-> 
-> I also had similar problems with atde9-amd64-20211201.tar.xz .
-> 
-> 
-> When reproducing I've had either segfaults in the initrd and complete
-> boot failures, or boot working and login failures but ssh working
-> without login shell (ssh ... -tt localhost sh)
-> that allowed me to dump content of a couple of corrupted files.
-> When I looked:
-> - /usr/lib/x86_64-linux-gnu/libc-2.31.so had zeroes instead of data from
-> offset 0xb6000 to 0xb7fff; rest of file was identical.
-> - /usr/bin/dmesg had garbadge from 0x05000 until 0x149d8 (end of file).
-> I was lucky and could match the garbage quickly: it is identical to the
-> content from 0x1000-0x109d8 within the disk itself.
-> 
-> I've rebooted a few times and it looks like the corruption is identical
-> everytime for this machine as long as I keep using the same source file;
-> running from qemu-img convert again seems to change things a bit?
-> but whatever it is that is specific to these files is stable, even
-> through host reboots.
-> 
-> 
-> 
-> I'm sorry I haven't been able to make a better reproducer, I'll keep
-> trying a bit more tomorrow but maybe someone has an idea with what I've
-> had so far :/
-> 
-> Perhaps at this point it might be simpler to just try to take qemu out
-> of the equation and issue many parallel reads to different offsets
-> (overlapping?) of a large file in a similar way qemu io_uring engine
-> does and check their contents?
-> 
-> 
-> Thanks, and I'll probably follow up a bit tomorrow even if no-one has
-> any idea, but even ideas of where to look would be appreciated.
 
-Not sure what's going on here, but I use qemu with io_uring many times
-each day and haven't seen anything odd. This is on ext4 and xfs however,
-I haven't used btrfs as the backing file system. I wonder if we can boil
-this down into a test case and try and figure out what is doing on here.
+Thanks for the replies.
+
+Nikolay Borisov wrote on Tue, Jun 28, 2022 at 10:03:20PM +0300:
+> >    qemu-system-x86_64 -drive file=qemu/atde-test,if=none,id=hd0,format=raw,cache=none,aio=io_uring \
+> >        -device virtio-blk-pci,drive=hd0 -m 8G -smp 4 -serial mon:stdio -enable-kvm
+> 
+> So cache=none means O_DIRECT and using io_uring. This really sounds similar
+> to:
+> 
+> ca93e44bfb5fd7996b76f0f544999171f647f93b
+
+That looks close, yes...
+
+> This commit got merged into v5.17 so you shouldn't be seeing it on 5.17 and
+> onwards.
+> 
+> <snip>
+> 
+> > 
+> > Perhaps at this point it might be simpler to just try to take qemu out
+> > of the equation and issue many parallel reads to different offsets
+> > (overlapping?) of a large file in a similar way qemu io_uring engine
+> > does and check their contents?
+> 
+> Care to run the sample program in the aforementioned commit and verify it's
+> not failing
+
+But unfortunately it seems like it is properly fixed on my machines:
+---
+io_uring read result for file foo:
+
+  cqe->res == 8192 (expected 8192)
+  memcmp(read_buf, write_buf) == 0 (expected 0)
+---
+
+Nikolay Borisov wrote on Tue, Jun 28, 2022 at 10:05:39PM +0300:
+> Alternatively change cache=none (O_DIRECT) to cache=writeback (ordinary
+> buffered writeback path) that way we'll know if it's related to the
+> iomap-based O_DIRECT code in btrfs.
+
+Good idea; I can confirm this doesn't reproduce without cache=none, so
+O_DIRECT probably is another requirement here (probably because I
+haven't been able to reproduce on a freshly created fs either, so not
+being able to reproducing in a few tries is no guarantee...)
+
+
+Jens Axboe wrote on Tue, Jun 28, 2022 at 01:12:54PM -0600:
+> Not sure what's going on here, but I use qemu with io_uring many times
+> each day and haven't seen anything odd. This is on ext4 and xfs however,
+> I haven't used btrfs as the backing file system. I wonder if we can boil
+> this down into a test case and try and figure out what is doing on here.
+
+Yes I'd say it's fs specific, I've not been able to reproduce on ext4 or
+xfs -- but then again I couldn't reproduce with btrfs on a new
+filesystem so there probably are some other conditions :/
+
+I also agree writing a simple program like the io_uring test in the
+above commit that'd sort of do it like qemu and compare contents would
+be ideal.
+I'll have a stab at this today.
 
 -- 
-Jens Axboe
-
+Dominique
