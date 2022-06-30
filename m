@@ -2,125 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF115613CC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jun 2022 09:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7688561742
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jun 2022 12:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbiF3H4x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jun 2022 03:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
+        id S234015AbiF3KHW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jun 2022 06:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233297AbiF3H4w (ORCPT
+        with ESMTP id S233823AbiF3KHB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jun 2022 03:56:52 -0400
-Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 981F0403CC
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 00:56:51 -0700 (PDT)
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
-        by gw2.atmark-techno.com (Postfix) with ESMTPS id E359C20D6D
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 16:56:50 +0900 (JST)
-Received: by mail-pf1-f200.google.com with SMTP id w2-20020a626202000000b00527c208de00so3151857pfb.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 00:56:50 -0700 (PDT)
+        Thu, 30 Jun 2022 06:07:01 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A54545074
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 03:06:43 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id l81so25346426oif.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 03:06:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MkXUcE+SH8JfFpz08xbJfhHc/D7QFv5vAzdLbXGElck=;
+        b=JyRaAuOR5P7b3c+dMsQoZD/LLR48yTgS+jlPzsF5hhz+M9j9HYqZULiGdWrA0ZXHuX
+         xUb9RYTotjWMMfM4XOZvw9Na6HP0PgeZZm6w311PEmqeKx/u72Ah53UqYUFh9VpM0nM1
+         ihozAbAfBpwQ/hcZZPjZ6RV+v8hVEhnyD7spQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F9tsQZpz4WXfPjbCLjHObeiUz+3sf+6cNHEEIAsk+90=;
-        b=MzfTtjRgRGdgSHYt7PrqSPQIWa1FQSAUDNsVjKh/IPpVDiJSCs2mK7YwlFz+LYsakr
-         FBPtAFfB39F4pLKWYOSOmCwdRu0vEptwhbmpaO155JTTDgtou3YqTjeTswoch5STnHHL
-         H2SxQarmj2sOD1iaKKiu0yUlQnMM1IydHp8ofcZnk0/58gxTIayb8UnfvrvdyJbfzYrp
-         w+nmts+2SX8jxG9wkvBDuYH8xXxD0rkOUK3fyTwmJqy39AGNhXm00j28hsu4zOFZ/B2e
-         UjjKL7m4qgLr68SkcGhz7SZUE5Rq3r2yAyF2yaEOv4HG7OMk0uEWGwj/y4VF2NDYx0+2
-         NZ5Q==
-X-Gm-Message-State: AJIora80uULaVou4Ro3/GjwTjm70lIpYeuKjH1nmxmC5XUApTWUvWaOZ
-        nRU1q9ybBPgG3Uz3HrSvkwPlsNcCU8rBzgQ1MqbnaOXWLdxBee6q2RC6rwX0dUzb1z/1jW6CdG4
-        ury+WjZNkKJNkhCOEGGJesDh4
-X-Received: by 2002:a05:6a00:b43:b0:525:2a02:8bdc with SMTP id p3-20020a056a000b4300b005252a028bdcmr13048101pfo.28.1656575809964;
-        Thu, 30 Jun 2022 00:56:49 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1u9TO3Nut4uWam12T1dirwyrKo9EzD2QIjRE5kZjH/GMiseR2RSj/EpQ6fNmXLD298a94jMzw==
-X-Received: by 2002:a05:6a00:b43:b0:525:2a02:8bdc with SMTP id p3-20020a056a000b4300b005252a028bdcmr13048062pfo.28.1656575809393;
-        Thu, 30 Jun 2022 00:56:49 -0700 (PDT)
-Received: from pc-zest.atmarktech (103.131.189.35.bc.googleusercontent.com. [35.189.131.103])
-        by smtp.gmail.com with ESMTPSA id t16-20020aa79390000000b0052521fd273fsm12835562pfe.218.2022.06.30.00.56.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Jun 2022 00:56:48 -0700 (PDT)
-Received: from martinet by pc-zest.atmarktech with local (Exim 4.95)
-        (envelope-from <martinet@pc-zest>)
-        id 1o6p2d-00BfJF-Ds;
-        Thu, 30 Jun 2022 16:56:47 +0900
-Date:   Thu, 30 Jun 2022 16:56:37 +0900
-From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Nikolay Borisov <nborisov@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: read corruption with qemu master io_uring engine / linux master
- / btrfs(?)
-Message-ID: <Yr1XNe9V3UY/MkDz@atmark-techno.com>
-References: <33cd0f9a-cdb1-1018-ebb0-89222cb1c759@kernel.dk>
- <bd342da1-8c98-eb78-59f1-e3cf537181e3@suse.com>
- <dd55e282-1147-08ae-6b9f-cf3ef672fce8@suse.com>
- <YrueYDXqppHZzOsy@atmark-techno.com>
- <Yrvfqh0eqN0J5T6V@atmark-techno.com>
- <20220629153710.GA379981@falcondesktop>
- <YrzxHbWCR6zhIAcx@atmark-techno.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MkXUcE+SH8JfFpz08xbJfhHc/D7QFv5vAzdLbXGElck=;
+        b=0wuVoHc7KvT54ZsfcKzllynAlD3RZcAKsdd2m2KMs3f9CVqYyNPZnp6Kt9Ahnejhmf
+         4ACTQCQwnzJsrIP8gOI4KF0lWXPk67cpb/cAubZmYtdZewj3JL9eb8ZGNHmbrJYMONgb
+         mBbixotU+VTg8HID4rpik2djoMru7iLVNZAqhpv6ejeMHu1LE9AVlFzvLBNifqDbjNdQ
+         5MJw049rmsYAqK2SWlrJX42ikhFJFlB/IV0LApimX3Dy3x/cC2bxKvb+PHw0X4PW9sk6
+         WtNXgkIiY/myXPED+ElX5F+ldhGrB+Jwobps6ypU9uQi+pXbxwfeki7kh2lIkmzD/NYO
+         l5Qw==
+X-Gm-Message-State: AJIora+hiHGXo+5mhoetvN6g8b+6c7YjEIZkF5FMVJLM3c9LvOO/bXL5
+        Tc/aJv1pW7NCKkcnqcPcFoW1svDUzdSdKcd/3CeYwa/r9IM=
+X-Google-Smtp-Source: AGRyM1sCsKyVX/+cKZDzLLoaSV3uTCPPX7odjgNYeJL/yuQbFiIeFA+dETd2CJPNRf+eBgaoZI/kSsZz2zdjdB8XZMA=
+X-Received: by 2002:a05:6808:f8b:b0:335:cc46:6575 with SMTP id
+ o11-20020a0568080f8b00b00335cc466575mr603723oiw.64.1656583601329; Thu, 30 Jun
+ 2022 03:06:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YrzxHbWCR6zhIAcx@atmark-techno.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <cover.1656401086.git.wqu@suse.com> <9f4b43b84a688b0367a87da2d4e0eb303a36bf32.1656401086.git.wqu@suse.com>
+In-Reply-To: <9f4b43b84a688b0367a87da2d4e0eb303a36bf32.1656401086.git.wqu@suse.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Thu, 30 Jun 2022 04:06:23 -0600
+Message-ID: <CAPnjgZ1yNXwQ44HBwe147hrC1mYsU4Lnyz-WVDHR_anwqYLBSg@mail.gmail.com>
+Subject: Re: [PATCH RFC 6/8] fs: sandboxfs: add sandbox_fs_get_blocksize()
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     U-Boot Mailing List <u-boot@lists.denx.de>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        linux-btrfs@vger.kernel.org, jnhuang95@gmail.com,
+        linux-erofs@lists.ozlabs.org, Tom Rini <trini@konsulko.com>,
+        Joao Marcos Costa <joaomarcos.costa@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dominique MARTINET wrote on Thu, Jun 30, 2022 at 09:41:01AM +0900:
-> > I just tried your program, against the qemu/vmdk image you mentioned in the
-> > first message, and after over an hour running I couldn't trigger any short
-> > reads - this was on the integration misc-next branch.
-> >
-> > It's possible that to trigger the issue, one needs a particular file extent
-> > layout, which will not be the same as yours after downloading and converting
-> > the file.
-> 
-> Ugh. I've also been unable to reproduce on a test fs, despite filling it
-> with small files and removing some to artificially fragment the image,
-> so I guess I really do have something on these "normal" filesystems...
-> 
-> Is there a way to artificially try to recreate weird layouts?
-> I've also tried btrfs send|receive, but while it did preserve reflinked
-> extents it didn't seem to do the trick.
+On Tue, 28 Jun 2022 at 01:28, Qu Wenruo <wqu@suse.com> wrote:
+>
+> This is to make sandboxfs to report blocksize it supports for
+> _fs_read() to handle unaligned read.
+>
+> Unlike all other fses, sandboxfs can handle unaligned read/write without
+> any problem since it's calling read()/write(), which doesn't bother the
+> blocksize at all.
+>
+> This change is mostly to make testing of _fs_read() much easier.
+>
+> Cc: Simon Glass <sjg@chromium.org>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  arch/sandbox/cpu/os.c  | 11 +++++++++++
+>  fs/fs.c                |  2 +-
+>  fs/sandbox/sandboxfs.c | 14 ++++++++++++++
+>  include/os.h           |  8 ++++++++
+>  include/sandboxfs.h    |  1 +
+>  5 files changed, 35 insertions(+), 1 deletion(-)
 
-I take that one back, I was able to reproduce with my filesystem riddled
-with holes.
-I was just looking at another distantly related problem that happened
-with cp, but trying with busybox cat didn't reproduce it and got
-confused:
-https://lore.kernel.org/linux-btrfs/Yr1QwVW+sHWlAqKj@atmark-techno.com/T/#u
+Reviewed-by: Simon Glass <sjg@chromium.org>
 
+with a comment as requested below
 
-Anyway, here's a pretty ugly reproducer to create a file that made short
-reads on a brand new FS:
+>
+> diff --git a/arch/sandbox/cpu/os.c b/arch/sandbox/cpu/os.c
+> index 5ea54179176c..6c29f29bdd9b 100644
+> --- a/arch/sandbox/cpu/os.c
+> +++ b/arch/sandbox/cpu/os.c
+> @@ -46,6 +46,17 @@ ssize_t os_read(int fd, void *buf, size_t count)
+>         return read(fd, buf, count);
+>  }
+>
+> +ssize_t os_get_blocksize(int fd)
+> +{
+> +       struct stat stat = {0};
+> +       int ret;
+> +
+> +       ret = fstat(fd, &stat);
+> +       if (ret < 0)
+> +               return -errno;
+> +       return stat.st_blksize;
+> +}
+> +
+>  ssize_t os_write(int fd, const void *buf, size_t count)
+>  {
+>         return write(fd, buf, count);
+> diff --git a/fs/fs.c b/fs/fs.c
+> index 7e4ead9b790b..337d5711c28c 100644
+> --- a/fs/fs.c
+> +++ b/fs/fs.c
+> @@ -261,7 +261,7 @@ static struct fstype_info fstypes[] = {
+>                 .exists = sandbox_fs_exists,
+>                 .size = sandbox_fs_size,
+>                 .read = fs_read_sandbox,
+> -               .get_blocksize = fs_get_blocksize_unsupported,
+> +               .get_blocksize = sandbox_fs_get_blocksize,
+>                 .write = fs_write_sandbox,
+>                 .uuid = fs_uuid_unsupported,
+>                 .opendir = fs_opendir_unsupported,
+> diff --git a/fs/sandbox/sandboxfs.c b/fs/sandbox/sandboxfs.c
+> index 4ae41d5b4db1..130fee088621 100644
+> --- a/fs/sandbox/sandboxfs.c
+> +++ b/fs/sandbox/sandboxfs.c
+> @@ -55,6 +55,20 @@ int sandbox_fs_read_at(const char *filename, loff_t pos, void *buffer,
+>         return ret;
+>  }
+>
+> +int sandbox_fs_get_blocksize(const char *filename)
+> +{
+> +       int fd;
+> +       int ret;
+> +
+> +       fd = os_open(filename, OS_O_RDONLY);
+> +       if (fd < 0)
+> +               return fd;
+> +
+> +       ret = os_get_blocksize(fd);
+> +       os_close(fd);
+> +       return ret;
+> +}
+> +
+>  int sandbox_fs_write_at(const char *filename, loff_t pos, void *buffer,
+>                         loff_t towrite, loff_t *actwrite)
+>  {
+> diff --git a/include/os.h b/include/os.h
+> index 10e198cf503e..a864d9ca39b2 100644
+> --- a/include/os.h
+> +++ b/include/os.h
+> @@ -26,6 +26,14 @@ struct sandbox_state;
+>   */
+>  ssize_t os_read(int fd, void *buf, size_t count);
+>
+> +/**
+> + * Get the optimial blocksize through stat() call.
+> + *
+> + * @fd:                File descriptor as returned by os_open()
+> + * Return:     >=0 for the blocksize. <0 for error.
+> + */
+> +ssize_t os_get_blocksize(int fd);
+> +
+>  /**
+>   * Access to the OS write() system call
+>   *
+> diff --git a/include/sandboxfs.h b/include/sandboxfs.h
+> index 783dd5c88a73..6937068f7b82 100644
+> --- a/include/sandboxfs.h
+> +++ b/include/sandboxfs.h
+> @@ -32,6 +32,7 @@ void sandbox_fs_close(void);
+>  int sandbox_fs_ls(const char *dirname);
+>  int sandbox_fs_exists(const char *filename);
+>  int sandbox_fs_size(const char *filename, loff_t *size);
+> +int sandbox_fs_get_blocksize(const char *filename);
 
-# 50GB FS -> fill with 50GB of small files and remove 1/10
-$ mkdir /mnt/d.{00..50}
-$ for i in {00000..49999}; do
-	dd if=/dev/urandom of=/mnt/d.${i:0:2}/test.$i bs=1M count=1 status=none;
-  done
-$ rm -f /mnt/d.*/*2
-$ btrfs subvolume create ~/sendme
-$ cp --reflink=always bigfile ~/sendme/bigfile
-$ btrfs property set ~/sendme ro true
-$ btrfs send ~/sendme | btrfs receive /mnt/receive
+Please add a full comment.
 
-and /mnt/receive/bigfile did the trick for me.
-This probably didn't need the send/receive at all, I just didn't try
-plain copy again.
+>  int fs_read_sandbox(const char *filename, void *buf, loff_t offset, loff_t len,
+>                     loff_t *actread);
+>  int fs_write_sandbox(const char *filename, void *buf, loff_t offset,
+> --
+> 2.36.1
+>
 
-Anyway, happy to test any patch as said earlier, it's probably not worth
-spending too much time on trying to reproduce on your end at this
-point...
-
--- 
-Dominique
+Regards,
+Simon
