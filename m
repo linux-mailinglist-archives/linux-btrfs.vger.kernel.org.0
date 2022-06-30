@@ -2,44 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAF55618BD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jun 2022 13:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2950056193D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jun 2022 13:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234402AbiF3LJI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jun 2022 07:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
+        id S234957AbiF3LaS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jun 2022 07:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234411AbiF3LJF (ORCPT
+        with ESMTP id S234945AbiF3LaR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jun 2022 07:09:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D764D433BC;
-        Thu, 30 Jun 2022 04:09:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 614C762285;
-        Thu, 30 Jun 2022 11:09:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D604C34115;
-        Thu, 30 Jun 2022 11:09:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656587342;
-        bh=RPRN+JN7GXMRgtjuNhD7qT6toxuYv9she5ZM/dG4Dik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nCJAbPeVSr0JCrPJu68GHOaqq9Bh9Z/0G3bwtgEoIACLPjzIrvvaUUGntnuaOMGSU
-         UJ3OvP2Fzf0zAsPeQHiD9ZcLVSy9ZI7Sy1IqvWl1FPEmLbn5Jl6fWrxka5L7dhb49i
-         5rWrpA/EwD3VuX+lC4ehqM+9b+qRsojj1b4qbIoN+nj4AtiIWXqa2AERtAItPf5FjS
-         kZHJJYwjJYnK7vUlzrb6pj/7KIugLLxEIiCqXOQW4zMNr21OGcYqc8BO6GpiPkQO7V
-         XCMLmoV5lLRQZIU9HY4pT1f83tnvXfobLjAkcly3AzmCaKMFV6nVfkn1eOrLhPQF9R
-         ousnmbrXwHNJQ==
-Date:   Thu, 30 Jun 2022 12:09:00 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Dominique MARTINET <dominique.martinet@atmark-techno.com>
+        Thu, 30 Jun 2022 07:30:17 -0400
+Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 327D351B27
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 04:30:15 -0700 (PDT)
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+        by gw2.atmark-techno.com (Postfix) with ESMTPS id ABA3320D6E
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 20:30:14 +0900 (JST)
+Received: by mail-pj1-f70.google.com with SMTP id gb12-20020a17090b060c00b001ec795458edso7353535pjb.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 04:30:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Cx3Dj7HU8xXuNateb26QlINwAzFiK2pj8V6L/fw6oxg=;
+        b=LP9s79sPI7qB4qUx6FBgmKAEjjswZ01G0euNOerw1Wz/hPzDf1c4bytY5wZlzI1xX+
+         HLrujCWd/60NjIyX/VJQHmPMFJCuD44net6PeMV27LNaLGSz7H3OyXfa0RNODaLtxc9F
+         KEqySo1n8MoQoDv7JPn3bpIROjg/NHjTEEWwwsL6XXSs+E18Gh7w9DBkEARDe6o/WvrD
+         dwHTl9mc3i6c4Dar25GePJQclHSFPwsCjLMBOL4/Nz5h/Szxx5zgtAcQll7t6sQhgBCC
+         o/qAJVOLhOp19TE7bcn/xwBCmm3CB8Zm+bP41jL/OrwCwcp/AXN6kOlY/SHxaWLyy0Gr
+         hVzw==
+X-Gm-Message-State: AJIora8DfCeBN98tkREROHw0ZGiCqqte0breaux7pv3TbNYZpsq5CcOV
+        dzy4VBhLtkKpJPFSpsQHodBMQEhRCoebp0C4QxulywBw5XSmLVIm5jh7z23qB20xsuYV9mkBk8g
+        KKkZoiEf5PupzZon5VbGaXIO9
+X-Received: by 2002:a17:902:cf41:b0:16b:7c56:13f4 with SMTP id e1-20020a170902cf4100b0016b7c5613f4mr15133594plg.58.1656588613687;
+        Thu, 30 Jun 2022 04:30:13 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1sM64sO9rQdWesB3tS+dHfVmPlx2w2hFzAzvJw7VUxmaJuEoAHOn2C6qgVcTvAmFsC1VkOSeQ==
+X-Received: by 2002:a17:902:cf41:b0:16b:7c56:13f4 with SMTP id e1-20020a170902cf4100b0016b7c5613f4mr15133568plg.58.1656588613366;
+        Thu, 30 Jun 2022 04:30:13 -0700 (PDT)
+Received: from pc-zest.atmarktech (145.82.198.104.bc.googleusercontent.com. [104.198.82.145])
+        by smtp.gmail.com with ESMTPSA id 36-20020a630c64000000b003fc4001fd5fsm12657655pgm.10.2022.06.30.04.30.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Jun 2022 04:30:13 -0700 (PDT)
+Received: from martinet by pc-zest.atmarktech with local (Exim 4.95)
+        (envelope-from <martinet@pc-zest>)
+        id 1o6sL2-0005wA-KA;
+        Thu, 30 Jun 2022 20:28:00 +0900
+Date:   Thu, 30 Jun 2022 20:27:50 +0900
+From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
+To:     Filipe Manana <fdmanana@kernel.org>
 Cc:     Nikolay Borisov <nborisov@suse.com>, Jens Axboe <axboe@kernel.dk>,
         io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
 Subject: Re: read corruption with qemu master io_uring engine / linux master
  / btrfs(?)
-Message-ID: <20220630110900.GA438014@falcondesktop>
+Message-ID: <Yr2ItqlxeII0sReD@atmark-techno.com>
 References: <33cd0f9a-cdb1-1018-ebb0-89222cb1c759@kernel.dk>
  <bd342da1-8c98-eb78-59f1-e3cf537181e3@suse.com>
  <dd55e282-1147-08ae-6b9f-cf3ef672fce8@suse.com>
@@ -50,82 +65,128 @@ References: <33cd0f9a-cdb1-1018-ebb0-89222cb1c759@kernel.dk>
  <Yr1XNe9V3UY/MkDz@atmark-techno.com>
  <20220630104536.GA434846@falcondesktop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <20220630104536.GA434846@falcondesktop>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 11:45:36AM +0100, Filipe Manana wrote:
-> On Thu, Jun 30, 2022 at 04:56:37PM +0900, Dominique MARTINET wrote:
-> > Dominique MARTINET wrote on Thu, Jun 30, 2022 at 09:41:01AM +0900:
-> > > > I just tried your program, against the qemu/vmdk image you mentioned in the
-> > > > first message, and after over an hour running I couldn't trigger any short
-> > > > reads - this was on the integration misc-next branch.
-> > > >
-> > > > It's possible that to trigger the issue, one needs a particular file extent
-> > > > layout, which will not be the same as yours after downloading and converting
-> > > > the file.
-> > > 
-> > > Ugh. I've also been unable to reproduce on a test fs, despite filling it
-> > > with small files and removing some to artificially fragment the image,
-> > > so I guess I really do have something on these "normal" filesystems...
-> > > 
-> > > Is there a way to artificially try to recreate weird layouts?
-> > > I've also tried btrfs send|receive, but while it did preserve reflinked
-> > > extents it didn't seem to do the trick.
-> > 
-> > I take that one back, I was able to reproduce with my filesystem riddled
-> > with holes.
-> > I was just looking at another distantly related problem that happened
-> > with cp, but trying with busybox cat didn't reproduce it and got
-> > confused:
-> > https://lore.kernel.org/linux-btrfs/Yr1QwVW+sHWlAqKj@atmark-techno.com/T/#u
-> > 
-> > 
-> > Anyway, here's a pretty ugly reproducer to create a file that made short
-> > reads on a brand new FS:
-> > 
-> > # 50GB FS -> fill with 50GB of small files and remove 1/10
-> > $ mkdir /mnt/d.{00..50}
-> > $ for i in {00000..49999}; do
-> > 	dd if=/dev/urandom of=/mnt/d.${i:0:2}/test.$i bs=1M count=1 status=none;
-> >   done
-> > $ rm -f /mnt/d.*/*2
-> > $ btrfs subvolume create ~/sendme
-> > $ cp --reflink=always bigfile ~/sendme/bigfile
-> > $ btrfs property set ~/sendme ro true
-> > $ btrfs send ~/sendme | btrfs receive /mnt/receive
-> > 
-> > and /mnt/receive/bigfile did the trick for me.
-> > This probably didn't need the send/receive at all, I just didn't try
-> > plain copy again.
-> > 
-> > Anyway, happy to test any patch as said earlier, it's probably not worth
-> > spending too much time on trying to reproduce on your end at this
-> > point...
-> 
-> That's perfect.
-> 
+Filipe Manana wrote on Thu, Jun 30, 2022 at 11:45:36AM +0100:
 > So here's a patch for you to try:
 > 
 > https://gist.githubusercontent.com/fdmanana/4b24d6b30983e956bb1784a44873c5dd/raw/572490b127071bf827c3bc05dd58dcb7bcff373a/dio.patch
 
-Actually it's this URL:
-
-https://gist.githubusercontent.com/fdmanana/4b24d6b30983e956bb1784a44873c5dd/raw/0dad2dd3fd14df735f166c2c416dc9265d660493/dio.patch
-
 Thanks.
+Unfortunately I still hit short reads with this; I can't really tell if
+there are more or less than before (unfortunately the parallelism of my
+reproducer means that even dropping caches and restarting with the same
+seed I get a different offset for short read), but it looks fairly
+similar -- usually happens within the first 1000 operations with
+sometimes a bit slower with or without the patch.
 
-> 
-> Thanks!
-> > 
-> > -- 
-> > Dominique
+I went ahead and added a printk in dio_fault_in_size to see if it was
+used and it looks like it is, but that doesn't really tell if it is the
+reason for short reads (hm, thinking back I could just have printed the
+offsets...):
+----
+/ # /mnt/repro /mnt/t/t/atde-test 
+random seed 4061910570
+Starting io_uring reads...
+[   17.872992] dio_fault_in_size: left 3710976 prev_left 0 size 131072
+[   17.873958] dio_fault_in_size: left 3579904 prev_left 3710976 size 131072
+[   17.874246] dio_fault_in_size: left 1933312 prev_left 0 size 131072
+[   17.875111] dio_fault_in_size: left 3448832 prev_left 3579904 size 131072
+[   17.876446] dio_fault_in_size: left 3317760 prev_left 3448832 size 131072
+[   17.877493] dio_fault_in_size: left 3186688 prev_left 3317760 size 131072
+[   17.878667] dio_fault_in_size: left 3055616 prev_left 3186688 size 131072
+[   17.880001] dio_fault_in_size: left 2924544 prev_left 3055616 size 131072
+[   17.881524] dio_fault_in_size: left 2793472 prev_left 2924544 size 131072
+[   17.882462] dio_fault_in_size: left 2662400 prev_left 2793472 size 131072
+[   17.883433] dio_fault_in_size: left 2531328 prev_left 2662400 size 131072
+[   17.884573] dio_fault_in_size: left 2400256 prev_left 2531328 size 131072
+[   17.886008] dio_fault_in_size: left 2269184 prev_left 2400256 size 131072
+[   17.887058] dio_fault_in_size: left 2138112 prev_left 2269184 size 131072
+[   17.888313] dio_fault_in_size: left 2007040 prev_left 2138112 size 131072
+[   17.889873] dio_fault_in_size: left 1875968 prev_left 2007040 size 131072
+[   17.891041] dio_fault_in_size: left 1744896 prev_left 1875968 size 131072
+[   17.893174] dio_fault_in_size: left 802816 prev_left 1744896 size 131072
+[   17.930249] dio_fault_in_size: left 3325952 prev_left 0 size 131072
+[   17.931472] dio_fault_in_size: left 1699840 prev_left 0 size 131072
+[   17.956509] dio_fault_in_size: left 1699840 prev_left 0 size 131072
+[   17.957522] dio_fault_in_size: left 1888256 prev_left 0 size 131072
+bad read result for io 3, offset 4022030336: 176128 should be 1531904
+----
+
+(ugh, saw the second patch after writing all this.. but it's the same:
+----
+/ # /mnt/repro /mnt/t/t/atde-test 
+random seed 634214270
+Starting io_uring reads...
+[   17.858718] dio_fault_in_size: left 1949696 prev_left 0 size 131072
+[   18.193604] dio_fault_in_size: left 1142784 prev_left 0 size 131072
+[   18.218500] dio_fault_in_size: left 528384 prev_left 0 size 131072
+[   18.248184] dio_fault_in_size: left 643072 prev_left 0 size 131072
+[   18.291639] dio_fault_in_size: left 131072 prev_left 0 size 131072
+bad read result for io 4, offset 5079498752: 241664 should be 2142208
+----
+rest of the mail is on first patch as I used offset of first message,
+but shouldn't matter)
+
+Given my file has many many extents, my guess would be that short reads
+happen when we're crossing an extent boundary.
+
+
+Using the fiemap[1] command I can confirm that it is the case:
+[1] https://github.com/ColinIanKing/fiemap
+
+$ printf "%x\n" $((4022030336 + 176128))
+efbe0000
+$ fiemap /mnt/t/t/atde-test
+File atde-test has 199533 extents:
+#       Logical          Physical         Length           Flags
+...
+23205:  00000000efba0000 0000001324f00000 0000000000020000 0008
+23206:  00000000efbc0000 00000013222af000 0000000000020000 0008
+23207:  00000000efbe0000 00000013222bb000 0000000000020000 0008
+
+but given how many extents there are that doesn't explain why it stopped
+at this offset within the file and not another before it: transition
+from compressed to non-compressed or something? I didn't find any tool
+able to show extent attributes; here's what `btrfs insp dump-tree` has
+to say about this physical offset:
+
+$ printf "%d\n" 0x00000013222af000
+82177617920
+$ printf "%d\n" 0x00000013222bb000
+82177667072
+$ btrfs insp dump-tree /dev/vg/test
+...
+leaf 171360256 items 195 free space 29 generation 527 owner EXTENT_TREE
+leaf 171360256 flags 0x1(WRITTEN) backref revision 1
+checksum stored d9b6566b00000000000000000000000000000000000000000000000000000000
+checksum calced d9b6566b00000000000000000000000000000000000000000000000000000000
+fs uuid 3f85a731-21b4-4f3d-85b5-f9c45e8493f5
+chunk uuid 77575a06-4d6f-4748-a62c-59e6d9221be8
+        item 0 key (82177576960 EXTENT_ITEM 40960) itemoff 16230 itemsize 53
+                refs 1 gen 527 flags DATA
+                extent data backref root 256 objectid 257 offset 4021682176 count 1
+        item 1 key (82177617920 EXTENT_ITEM 49152) itemoff 16177 itemsize 53
+                refs 1 gen 527 flags DATA
+                extent data backref root 256 objectid 257 offset 4022075392 count 1
+        item 2 key (82177667072 EXTENT_ITEM 36864) itemoff 16124 itemsize 53
+                refs 1 gen 527 flags DATA
+                extent data backref root 256 objectid 257 offset 4022206464 count 1
+
+... but that doesn't really help me understand here.
+
+Oh, well, passing you the ball again! :)
+Please ask if there's any infos I could get you.
+
+-- 
+Dominique
