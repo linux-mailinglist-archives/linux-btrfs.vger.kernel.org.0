@@ -2,80 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4A6560DE5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jun 2022 02:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF15560E21
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jun 2022 02:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbiF3ASM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Jun 2022 20:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
+        id S230125AbiF3AlR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Jun 2022 20:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbiF3ASL (ORCPT
+        with ESMTP id S229559AbiF3AlQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Jun 2022 20:18:11 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0311865BE
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jun 2022 17:18:10 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 648225C0494;
-        Wed, 29 Jun 2022 20:18:09 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 29 Jun 2022 20:18:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1656548289; x=1656634689; bh=20h6WO/Tbm
-        VHUybPslWgh/84mDLmzfdmBIdDfiHK7Ig=; b=ZuakImNv8EmzW0sYJ+q5jo/DSv
-        VYwA33uUOPYBCMZSP7RC8m0eJOmFva4g9dOCaKP4gHFBhi/Ot97ue8Ct77Aq/NOz
-        ldVj057AwJJXBPDCC3SPbNZbsawnZQPQoT4gdorDw9uaGucWXAZ0zxCIlY7jINPr
-        sQxHEQ+dfnHi+emG9vrtSkqn9jY73iEx3bqCb5F5iEgbeC8NJ1Jo+eoYzxg9qY22
-        ElnT5gVCVayBBxJGoLkLqTJAsJ6On+9g5+GYMS4frNYfkdFj7OfgYoe8LNAdOjmq
-        T0pomQC4rvwR0DX4V81AlClbgpjREE0Mf9PKVR9N6bnoVzKBIZkKdSAPvSJQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1656548289; x=1656634689; bh=20h6WO/TbmVHUybPslWgh/84mDLm
-        zfdmBIdDfiHK7Ig=; b=RhR831rYR32oQIMyS1DlsuPYmBHDuP71kKS99loHBco7
-        fBfNazkWt2bBSVPUqQsLyUX462QKsLJp3VD8bU6InmoKYJPosD/gqduq0sJRC2jJ
-        mZk9w44/MUmrIYU1IffFoCCt0xrsEO5oa1I4y1DmhPUYhwQ54JYrDGTTrZDJgFEh
-        m0sP9Kq5bKuSLR/2SJ6wp+37pk4e7bJxmrGVCN/YVMnCVH5x32v2BnGA+3pnIzBK
-        miv35XelN0Qxy3pXRSoGaUTiAihCBjxnZKpjeTzy1i6KdnaUZiFKl51jNMvA2dI3
-        yVpqRIiCSRulPVizCD3D65afGIvKDWlsORt+gJx+Xg==
-X-ME-Sender: <xms:weu8YoAGX3jcNH3lCZ1CPd_oXXqa0aCdr80IpIe8-IhSWnR5Syn1gA>
-    <xme:weu8YqjgQubo8VDfEzLQGBClyvPws68FvyqFHsi5cAyvsdJtc6RVadIdQowJZ9Wbm
-    404DFp2lJZE5kYSt5M>
-X-ME-Received: <xmr:weu8YrnvkOKl15SaNVHP2pz7eh31xLhxSBp2quTp8u0lCT_cuQbjRxkJ9Yx-o4H0-u0FETfuELRkpGfgXB09NqUyvDB6vQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehtddgfeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:weu8YuyzhWAVOG405C-ZF9wtnW5cWyfwW9DLSgkQfmILIfdI97kUvw>
-    <xmx:weu8YtRnZ_royMoR6hY21kpcy-5hUbyYRxF1ymCZ686irHYUIEzxRg>
-    <xmx:weu8YpZJppXuTFUz9y4aaQ-nRMTF-8B5hb2VOly6QMbixCegxqWZRw>
-    <xmx:weu8YvcLekTLJ_4C7qJKX7W6wuMsvzCk2Ikuu2M_3wmCV0hIwaDk7w>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 29 Jun 2022 20:18:08 -0400 (EDT)
-Date:   Wed, 29 Jun 2022 17:18:07 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/4] btrfs: fix repair of compressed extents
-Message-ID: <YrzrvwOx8/Jgf2Co@zen>
-References: <20220623055338.3833616-1-hch@lst.de>
- <20220623055338.3833616-5-hch@lst.de>
+        Wed, 29 Jun 2022 20:41:16 -0400
+Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1940F3FD88
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jun 2022 17:41:15 -0700 (PDT)
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by gw2.atmark-techno.com (Postfix) with ESMTPS id 944E820D70
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 09:41:14 +0900 (JST)
+Received: by mail-pl1-f200.google.com with SMTP id c16-20020a170902b69000b0016a71a49c0cso8458407pls.23
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jun 2022 17:41:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uYYO3xLi/34pbj25fsC0XnESVSnvhv3I7XLqkZiAGSc=;
+        b=pQ45knqTnCc0gc+Uh2lTtTykeBtfJusRIbDdqBES+VFP59fHJEKh2oHkwDnPU37rjo
+         GiGVASek/jiRWQ04WyNM1XTV7+zG3div7WeGk/6hzk8B26nqQZ6CBCLHUNa4algLpLRQ
+         xMT5PDMKRlH53yUkIU02eiMSoinM8XmAqXLlra1rW4cPvMzQE3WqcAVtNxl+hC1voS31
+         3cEaNbxoigatvusgGhPwM02SxtuU2ZjREKdgfMLnZnQW+PMBf8DdthJgRymJDREJn3rX
+         mcsMVPwkgAIKRL7ekMtPe/oq3ShK8h75lHAhPOdbYI+tl9VZ6Ks+ZdBT9zLiBHrSP3EV
+         ATBw==
+X-Gm-Message-State: AJIora+PKgSMeZkyCZY+Ru+BmlN8QJ0MM5WgQ8VuyVUMzbk/gN9GVAlY
+        f1Jdj6WKHQks9xDyhIZMor3+kCeb/OHFcMcDTaInjoFnziJbPDM1rjfDINVk25gKUScKfvkyQT5
+        05fP+9tuyZYLya92Io8XFopfU
+X-Received: by 2002:a65:5688:0:b0:3c2:1015:988e with SMTP id v8-20020a655688000000b003c21015988emr5141248pgs.280.1656549673577;
+        Wed, 29 Jun 2022 17:41:13 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1sRocIqlnLYZrVb9ZvwvwRE4CxFf7IEoRSQdugvU1QTuFoMnct0JPCWY6WTapdd0DXdvoq2uQ==
+X-Received: by 2002:a65:5688:0:b0:3c2:1015:988e with SMTP id v8-20020a655688000000b003c21015988emr5141227pgs.280.1656549673184;
+        Wed, 29 Jun 2022 17:41:13 -0700 (PDT)
+Received: from pc-zest.atmarktech (35.112.198.104.bc.googleusercontent.com. [104.198.112.35])
+        by smtp.gmail.com with ESMTPSA id p26-20020a634f5a000000b0040dfb0857a0sm6754719pgl.78.2022.06.29.17.41.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 29 Jun 2022 17:41:12 -0700 (PDT)
+Received: from martinet by pc-zest.atmarktech with local (Exim 4.95)
+        (envelope-from <martinet@pc-zest>)
+        id 1o6iF5-00AWBY-6P;
+        Thu, 30 Jun 2022 09:41:11 +0900
+Date:   Thu, 30 Jun 2022 09:41:01 +0900
+From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     Nikolay Borisov <nborisov@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: read corruption with qemu master io_uring engine / linux master
+ / btrfs(?)
+Message-ID: <YrzxHbWCR6zhIAcx@atmark-techno.com>
+References: <33cd0f9a-cdb1-1018-ebb0-89222cb1c759@kernel.dk>
+ <bd342da1-8c98-eb78-59f1-e3cf537181e3@suse.com>
+ <dd55e282-1147-08ae-6b9f-cf3ef672fce8@suse.com>
+ <YrueYDXqppHZzOsy@atmark-techno.com>
+ <Yrvfqh0eqN0J5T6V@atmark-techno.com>
+ <20220629153710.GA379981@falcondesktop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220623055338.3833616-5-hch@lst.de>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+In-Reply-To: <20220629153710.GA379981@falcondesktop>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,459 +74,108 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 07:53:38AM +0200, Christoph Hellwig wrote:
-> Currently the checksum of compressed extents is verified based on the
-> compressed data and the lower btrfs_bio, but the actual repair process
-> is driven by end_bio_extent_readpage on the upper btrfs_bio for the
-> decompressed data.
+Filipe Manana wrote on Wed, Jun 29, 2022 at 04:37:10PM +0100:
+> On Wed, Jun 29, 2022 at 02:14:18PM +0900, Dominique MARTINET wrote:
+> >  - qemu short read handling was... rather disappointing.
+> > Patch should appear here[1] eventually, but as it seems moderated?
+> > [1] https://lore.kernel.org/qemu-devel/20220629044957.1998430-1-dominique.martinet@atmark-techno.com
 > 
-> This has a bunch of issues, including not being able to properly
-> communicate the failed mirror up in case that the I/O submission got
-> preempted, a general loss of if an error was an I/O error or a checksum
-> verification failure, but most importantly that this design causes
-> btrfs_clean_io_failure to eventually write back the uncompressed good
-> data onto the disk sectors that are supposed to contain compressed data.
+> Btw, the link doesn't work (at least at the moment):
 > 
-> Fix this by moving the repair to the lower btrfs_bio.  To do so, a fair
-> amount of code has to be reshuffled:
-> 
->  a) the lower btrfs_bio now needs a valid csum pointer.  The easiest way
->     to archive that is to pass NULL btrfs_lookup_bio_sums and just use
->     the btrfs_bio management of csums.  For a compressed_bio that is
->     split into multiple btrfs_bios this mean additional memory
->     allocations, but the code becomes a lot more regular.
->  b) checksum verifiaction now runs diretly on the lower btrfs_bio instead
->     of the compressed_bio.  This actually nicely simplifies the end I/O
->     processing.
->  c) btrfs_repair_one_sector can't just look up the logical address for
->     the file offset any more, as there is no coresponding relative
->     offsets that apply to the file offset and the logic address for
->     compressed extents.  Instead require that the saved bvec_iter in the
->     btrfs_bio is filled out for all read bios and use that, which again
->     removes a fair amount of code.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/btrfs/compression.c | 171 ++++++++++++++---------------------------
->  fs/btrfs/compression.h |   7 --
->  fs/btrfs/ctree.h       |   2 +
->  fs/btrfs/extent_io.c   |  46 +++--------
->  fs/btrfs/extent_io.h   |   1 -
->  fs/btrfs/inode.c       |   7 ++
->  6 files changed, 77 insertions(+), 157 deletions(-)
-> 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index e756da640fd7b..c8b14a5bd89be 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -136,66 +136,14 @@ static int compression_decompress(int type, struct list_head *ws,
->  
->  static int btrfs_decompress_bio(struct compressed_bio *cb);
->  
-> -static inline int compressed_bio_size(struct btrfs_fs_info *fs_info,
-> -				      unsigned long disk_size)
-> -{
-> -	return sizeof(struct compressed_bio) +
-> -		(DIV_ROUND_UP(disk_size, fs_info->sectorsize)) * fs_info->csum_size;
-> -}
-> -
-> -static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
-> -				 u64 disk_start)
-> -{
-> -	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> -	const u32 csum_size = fs_info->csum_size;
-> -	const u32 sectorsize = fs_info->sectorsize;
-> -	struct page *page;
-> -	unsigned int i;
-> -	u8 csum[BTRFS_CSUM_SIZE];
-> -	struct compressed_bio *cb = bio->bi_private;
-> -	u8 *cb_sum = cb->sums;
-> -
-> -	if ((inode->flags & BTRFS_INODE_NODATASUM) ||
-> -	    test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state))
-> -		return 0;
-> -
-> -	for (i = 0; i < cb->nr_pages; i++) {
-> -		u32 pg_offset;
-> -		u32 bytes_left = PAGE_SIZE;
-> -		page = cb->compressed_pages[i];
-> -
-> -		/* Determine the remaining bytes inside the page first */
-> -		if (i == cb->nr_pages - 1)
-> -			bytes_left = cb->compressed_len - i * PAGE_SIZE;
-> -
-> -		/* Hash through the page sector by sector */
-> -		for (pg_offset = 0; pg_offset < bytes_left;
-> -		     pg_offset += sectorsize) {
-> -			int ret;
-> -
-> -			ret = btrfs_check_sector_csum(fs_info, page, pg_offset,
-> -						      csum, cb_sum);
-> -			if (ret) {
-> -				btrfs_print_data_csum_error(inode, disk_start,
-> -						csum, cb_sum, cb->mirror_num);
-> -				if (btrfs_bio(bio)->device)
-> -					btrfs_dev_stat_inc_and_print(
-> -						btrfs_bio(bio)->device,
-> -						BTRFS_DEV_STAT_CORRUPTION_ERRS);
-> -				return -EIO;
-> -			}
-> -			cb_sum += csum_size;
-> -			disk_start += sectorsize;
-> -		}
-> -	}
-> -	return 0;
-> -}
-> -
->  static void finish_compressed_bio_read(struct compressed_bio *cb)
->  {
->  	unsigned int index;
->  	struct page *page;
->  
-> +	if (cb->status == BLK_STS_OK)
-> +		cb->status = errno_to_blk_status(btrfs_decompress_bio(cb));
-> +
->  	/* Release the compressed pages */
->  	for (index = 0; index < cb->nr_pages; index++) {
->  		page = cb->compressed_pages[index];
-> @@ -233,59 +181,54 @@ static void finish_compressed_bio_read(struct compressed_bio *cb)
->  	kfree(cb);
->  }
->  
-> -/* when we finish reading compressed pages from the disk, we
-> - * decompress them and then run the bio end_io routines on the
-> - * decompressed pages (in the inode address space).
-> - *
-> - * This allows the checksumming and other IO error handling routines
-> - * to work normally
-> - *
-> - * The compressed pages are freed here, and it must be run
-> - * in process context
-> +/*
-> + * Verify the checksums and kick off repair if needed on the uncompressed data
-> + * before decompressing it into the original bio and freeing the uncompressed
-> + * pages.
->   */
->  static void end_compressed_bio_read(struct bio *bio)
->  {
->  	struct compressed_bio *cb = bio->bi_private;
-> -	struct inode *inode;
-> -	unsigned int mirror = btrfs_bio(bio)->mirror_num;
-> -	int ret = 0;
-> -
-> -	if (bio->bi_status)
-> -		cb->status = bio->bi_status;
-> -
-> -	if (!refcount_dec_and_test(&cb->pending_ios))
-> -		goto out;
-> -
-> -	/*
-> -	 * Record the correct mirror_num in cb->orig_bio so that
-> -	 * read-repair can work properly.
-> -	 */
-> -	btrfs_bio(cb->orig_bio)->mirror_num = mirror;
-> -	cb->mirror_num = mirror;
-> -
-> -	/*
-> -	 * Some IO in this cb have failed, just skip checksum as there
-> -	 * is no way it could be correct.
-> -	 */
-> -	if (cb->status != BLK_STS_OK)
-> -		goto csum_failed;
-> +	struct inode *inode = cb->inode;
-> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-> +	struct btrfs_inode *bi = BTRFS_I(inode);
-> +	bool csum = !(bi->flags & BTRFS_INODE_NODATASUM) &&
-> +		    !test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state);
-> +	blk_status_t status = bio->bi_status;
-> +	struct btrfs_bio *bbio = btrfs_bio(bio);
-> +	struct bvec_iter iter;
-> +	struct bio_vec bv;
-> +	u32 offset;
-> +
-> +	btrfs_bio_for_each_sector(fs_info, bv, bbio, iter, offset) {
-> +		u64 start = bbio->file_offset + offset;
-> +
-> +		if (!status &&
-> +		    (!csum || !check_data_csum(inode, bbio, offset, bv.bv_page,
-> +					       bv.bv_offset))) {
-> +			clean_io_failure(fs_info, &bi->io_failure_tree,
-> +					 &bi->io_tree, start, bv.bv_page,
-> +					 btrfs_ino(bi), bv.bv_offset);
-> +		} else {
-> +			int ret;
->  
-> -	inode = cb->inode;
-> -	ret = check_compressed_csum(BTRFS_I(inode), bio,
-> -				    bio->bi_iter.bi_sector << 9);
-> -	if (ret)
-> -		goto csum_failed;
-> +			refcount_inc(&cb->pending_ios);
-> +			ret = btrfs_repair_one_sector(inode, bbio, offset,
-> +					bv.bv_page, bv.bv_offset,
-> +					btrfs_submit_data_read_bio);
-> +			if (ret) {
-> +				refcount_dec(&cb->pending_ios);
-> +				status = errno_to_blk_status(ret);
-> +			}
-> +		}
-> +	}
->  
-> -	/* ok, we're the last bio for this extent, lets start
-> -	 * the decompression.
-> -	 */
-> -	ret = btrfs_decompress_bio(cb);
-> +	if (status)
-> +		cb->status = status;
->  
-> -csum_failed:
-> -	if (ret)
-> -		cb->status = errno_to_blk_status(ret);
-> -	finish_compressed_bio_read(cb);
-> -out:
-> +	if (refcount_dec_and_test(&cb->pending_ios))
-> +		finish_compressed_bio_read(cb);
-> +	btrfs_bio_free_csum(bbio);
->  	bio_put(bio);
->  }
->  
-> @@ -478,7 +421,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  
->  	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
->  	       IS_ALIGNED(len, fs_info->sectorsize));
-> -	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
-> +	cb = kmalloc(sizeof(struct compressed_bio), GFP_NOFS);
->  	if (!cb)
->  		return BLK_STS_RESOURCE;
->  	refcount_set(&cb->pending_ios, 1);
-> @@ -486,7 +429,6 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  	cb->inode = &inode->vfs_inode;
->  	cb->start = start;
->  	cb->len = len;
-> -	cb->mirror_num = 0;
->  	cb->compressed_pages = compressed_pages;
->  	cb->compressed_len = compressed_len;
->  	cb->writeback = writeback;
-> @@ -755,7 +697,6 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  	blk_status_t ret;
->  	int ret2;
->  	int i;
-> -	u8 *sums;
->  
->  	em_tree = &BTRFS_I(inode)->extent_tree;
->  
-> @@ -773,7 +714,7 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  
->  	ASSERT(em->compress_type != BTRFS_COMPRESS_NONE);
->  	compressed_len = em->block_len;
-> -	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
-> +	cb = kmalloc(sizeof(struct compressed_bio), GFP_NOFS);
->  	if (!cb) {
->  		ret = BLK_STS_RESOURCE;
->  		goto out;
-> @@ -782,8 +723,6 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  	refcount_set(&cb->pending_ios, 1);
->  	cb->status = BLK_STS_OK;
->  	cb->inode = inode;
-> -	cb->mirror_num = mirror_num;
-> -	sums = cb->sums;
->  
->  	cb->start = em->orig_start;
->  	em_len = em->len;
-> @@ -867,19 +806,25 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  			submit = true;
->  
->  		if (submit) {
-> -			unsigned int nr_sectors;
-> +			/* Save the original iter for read repair */
-> +			if (bio_op(comp_bio) == REQ_OP_READ)
-> +				btrfs_bio(comp_bio)->iter = comp_bio->bi_iter;
-> +
-> +			/*
-> +			 * Just stash the initial offset of this chunk, as there
-> +			 * is no direct correlation between compressed pages and
-> +			 * the original file offset.  The field is only used for
-> +			 * priting error messages anyway.
-> +			 */
-> +			btrfs_bio(comp_bio)->file_offset = file_offset;
->  
-> -			ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
-> +			ret = btrfs_lookup_bio_sums(inode, comp_bio, NULL);
->  			if (ret) {
->  				comp_bio->bi_status = ret;
->  				bio_endio(comp_bio);
->  				break;
->  			}
->  
-> -			nr_sectors = DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
-> -						  fs_info->sectorsize);
-> -			sums += fs_info->csum_size * nr_sectors;
-> -
->  			ASSERT(comp_bio->bi_iter.bi_size);
->  			btrfs_submit_bio(fs_info, comp_bio, mirror_num);
->  			comp_bio = NULL;
-> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-> index 0e4cbf04fd866..e9ef24034cad0 100644
-> --- a/fs/btrfs/compression.h
-> +++ b/fs/btrfs/compression.h
-> @@ -59,19 +59,12 @@ struct compressed_bio {
->  
->  	/* IO errors */
->  	blk_status_t status;
-> -	int mirror_num;
->  
->  	union {
->  		/* For reads, this is the bio we are copying the data into */
->  		struct bio *orig_bio;
->  		struct work_struct write_end_work;
->  	};
-> -
-> -	/*
-> -	 * the start of a variable length array of checksums only
-> -	 * used by reads
-> -	 */
-> -	u8 sums[];
->  };
->  
->  static inline unsigned int btrfs_compress_type(unsigned int type_level)
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 164f54e6aa447..12f59e35755fa 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -3290,6 +3290,8 @@ void btrfs_submit_data_read_bio(struct inode *inode, struct bio *bio,
->  			int mirror_num, enum btrfs_compression_type compress_type);
->  int btrfs_check_sector_csum(struct btrfs_fs_info *fs_info, struct page *page,
->  			    u32 pgoff, u8 *csum, const u8 * const csum_expected);
+> "Message-ID <20220629044957.1998430-1-dominique.martinet@atmark-techno.com> not found"
 
-As far as I can tell, this is redundant with the last patch.
+Yes, the submitting a patch documentation[1] mentions the lists are
+moderated, so it took a bit of time.
+It looks like it went through now, and my understanding is further
+mails won't be delayed -- but I'll Cc you on v2 after testing it.
 
-> +int check_data_csum(struct inode *inode, struct btrfs_bio *bbio, u32 bio_offset,
-> +		    struct page *page, u32 pgoff);
->  unsigned int btrfs_verify_data_csum(struct btrfs_bio *bbio,
->  				    u32 bio_offset, struct page *page,
->  				    u64 start, u64 end);
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index ec7bdb3fa0921..587d2ba20b53b 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2543,13 +2543,10 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
->  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->  	u64 start = bbio->file_offset + bio_offset;
->  	struct io_failure_record *failrec;
-> -	struct extent_map *em;
->  	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
->  	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
-> -	struct extent_map_tree *em_tree = &BTRFS_I(inode)->extent_tree;
->  	const u32 sectorsize = fs_info->sectorsize;
->  	int ret;
-> -	u64 logical;
->  
->  	failrec = get_state_failrec(failure_tree, start);
->  	if (!IS_ERR(failrec)) {
-> @@ -2573,41 +2570,14 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
->  	failrec->start = start;
->  	failrec->len = sectorsize;
->  	failrec->failed_mirror = failrec->this_mirror = bbio->mirror_num;
-> -	failrec->compress_type = BTRFS_COMPRESS_NONE;
-> -
-> -	read_lock(&em_tree->lock);
-> -	em = lookup_extent_mapping(em_tree, start, failrec->len);
-> -	if (!em) {
-> -		read_unlock(&em_tree->lock);
-> -		kfree(failrec);
-> -		return ERR_PTR(-EIO);
-> -	}
-> -
-> -	if (em->start > start || em->start + em->len <= start) {
-> -		free_extent_map(em);
-> -		em = NULL;
-> -	}
-> -	read_unlock(&em_tree->lock);
-> -	if (!em) {
-> -		kfree(failrec);
-> -		return ERR_PTR(-EIO);
-> -	}
-> -
-> -	logical = start - em->start;
-> -	logical = em->block_start + logical;
-> -	if (test_bit(EXTENT_FLAG_COMPRESSED, &em->flags)) {
-> -		logical = em->block_start;
-> -		failrec->compress_type = em->compress_type;
-> -	}
-> +	failrec->logical = (bbio->iter.bi_sector << SECTOR_SHIFT) + bio_offset;
->  
->  	btrfs_debug(fs_info,
-> -		    "Get IO Failure Record: (new) logical=%llu, start=%llu, len=%llu",
-> -		    logical, start, failrec->len);
-> -
-> -	failrec->logical = logical;
-> -	free_extent_map(em);
-> +		    "Get IO Failure Record: (new) logical=%llu, start=%llu",
-> +		    failrec->logical, start);
->  
-> -	failrec->num_copies = btrfs_num_copies(fs_info, logical, sectorsize);
-> +	failrec->num_copies = btrfs_num_copies(fs_info, failrec->logical,
-> +					       sectorsize);
->  	if (failrec->num_copies == 1) {
->  		/*
->  		 * we only have a single copy of the data, so don't bother with
-> @@ -2709,7 +2679,7 @@ int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *failed_bbio,
->  	 * will be handled by the endio on the repair_bio, so we can't return an
->  	 * error here.
->  	 */
-> -	submit_bio_hook(inode, repair_bio, failrec->this_mirror, failrec->compress_type);
-> +	submit_bio_hook(inode, repair_bio, failrec->this_mirror, 0);
->  	return BLK_STS_OK;
->  }
->  
-> @@ -3115,6 +3085,10 @@ static void end_bio_extent_readpage(struct bio *bio)
->  			 * Only try to repair bios that actually made it to a
->  			 * device.  If the bio failed to be submitted mirror
->  			 * is 0 and we need to fail it without retrying.
-> +			 *
-> +			 * This also includes the high level bios for compressed
-> +			 * extents - these never make it to a device and repair
-> +			 * is already handled on the lower compressed bio.
->  			 */
->  			if (mirror > 0)
->  				repair = true;
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index a78051c7627c4..9dec34c009e91 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -261,7 +261,6 @@ struct io_failure_record {
->  	u64 start;
->  	u64 len;
->  	u64 logical;
-> -	enum btrfs_compression_type compress_type;
->  	int this_mirror;
->  	int failed_mirror;
->  	int num_copies;
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 429428fde4a88..eea351216db33 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -2707,6 +2707,9 @@ void btrfs_submit_data_read_bio(struct inode *inode, struct bio *bio,
->  		return;
->  	}
->  
-> +	/* Save the original iter for read repair */
-> +	btrfs_bio(bio)->iter = bio->bi_iter;
-> +
->  	/*
->  	 * Lookup bio sums does extra checks around whether we need to csum or
->  	 * not, which is why we ignore skip_sum here.
-> @@ -8000,6 +8003,10 @@ static void btrfs_submit_dio_bio(struct bio *bio, struct inode *inode,
->  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->  	struct btrfs_dio_private *dip = bio->bi_private;
->  	blk_status_t ret;
-> +		
-> +	/* Save the original iter for read repair */
-> +	if (btrfs_op(bio) == BTRFS_MAP_READ)
-> +		btrfs_bio(bio)->iter = bio->bi_iter;
->  
->  	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
->  		goto map;
-> -- 
-> 2.30.2
+[1] https://www.qemu.org/docs/master/devel/submitting-a-patch.html
+
+> >  - comments there also say short reads should never happen on newer
+> > kernels (assuming local filesystems?) -- how true is that? If we're
+> > doing our best kernel side to avoid short reads I guess we probably
+> > ought to have a look at this.
 > 
+> Short reads can happen, and an application should deal with it.
+
+I definitely agree with this, qemu must be fixed. I don't think anyone
+will argue with that.
+
+> If we look at the man page for read(2):
+> 
+> "
+>        On success, the number of bytes read is returned (zero indicates
+>        end of file), and the file position is advanced by this number.
+>        It is not an error if this number is smaller than the number of
+>        bytes requested; this may happen for example because fewer bytes
+>        are actually available right now (maybe because we were close to
+>        end-of-file, or because we are reading from a pipe, or from a
+>        terminal), or because read() was interrupted by a signal.  See
+>        also NOTES.
+> "
+> 
+> pread(2) refers to read(2)'s documention about short reads as well.
+> I don't think reading with io_uring is an exception, I'm not aware of
+> any rules that forbided short reads from happening (even if the offset
+> and length don't cross the EOF boundary).
+
+It might be documented, but I was laughed when I said we (9p) were
+allowed to return short reads on a whim:
+
+https://lkml.kernel.org/r/20200406164641.GF21484@bombadil.infradead.org
+
+(now that might not be the proudest thing I've allowed for 9p, but it
+shows there is some expectation we don't do short reads if we can avoid
+it... But yes, that doesn't mean we shouldn't fix broken applications
+when we find one)
+
+> As mentioned in the commit pointed before, we recently had a similar
+> report with MariaDB, which wasn't dealing with short reads properly
+> and got fixed shortly after:
+> 
+> https://jira.mariadb.org/browse/MDEV-27900?focusedCommentId=216582&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-216582
+> 
+> In fact not dealing with short reads at all, is not that uncommon
+> in applications. In that particular case we could avoid doing the
+> short read in btrfs, by returning -EAGAIN and making io_uring use
+> a blocking context to do a blocking direct IO read.
+
+Sounds good to me.
+
+> > It can easily be reproduced with a simple io_uring program -- see
+> > example attached that eventually fails with the following error on
+> > btrfs:
+> > bad read result for io 8, offset 792227840: 266240 should be 1466368
+> > 
+> > but doesn't fail on tmpfs or without O_DIRECT.
+> > feel free to butcher it, it's already a quickly hacked downversion of my
+> > original test that had hash computation etc so the flow might feel a bit
+> > weird.
+> > Just compile with `gcc -o shortreads uring_shortreads.c -luring` and run
+> > with file to read in argument.
+> 
+> I just tried your program, against the qemu/vmdk image you mentioned in the
+> first message, and after over an hour running I couldn't trigger any short
+> reads - this was on the integration misc-next branch.
+>
+> It's possible that to trigger the issue, one needs a particular file extent
+> layout, which will not be the same as yours after downloading and converting
+> the file.
+
+Ugh. I've also been unable to reproduce on a test fs, despite filling it
+with small files and removing some to artificially fragment the image,
+so I guess I really do have something on these "normal" filesystems...
+
+Is there a way to artificially try to recreate weird layouts?
+I've also tried btrfs send|receive, but while it did preserve reflinked
+extents it didn't seem to do the trick.
+
+
+> Are you able to apply kernel patches and test? If so I may provide you with
+> a patch to try and see if it fixes the problem for you.
+
+Yes, no problem with that; I'm not deleting that file until we've seen
+the end of it and will be happy to test anything :)
+
+-- 
+Dominique
