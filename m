@@ -2,103 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E1256281E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Jul 2022 03:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEB75628A6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Jul 2022 03:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbiGAB0N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jun 2022 21:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40780 "EHLO
+        id S232692AbiGABzh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jun 2022 21:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbiGAB0M (ORCPT
+        with ESMTP id S229480AbiGABzf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jun 2022 21:26:12 -0400
-Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 49C4F5A44F
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 18:26:11 -0700 (PDT)
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by gw2.atmark-techno.com (Postfix) with ESMTPS id C4DC52045D
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 Jul 2022 10:26:10 +0900 (JST)
-Received: by mail-pl1-f200.google.com with SMTP id jg5-20020a17090326c500b0016a020648bcso522730plb.19
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 18:26:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2Oxb9aGmH2iV0cVSLgHDgspflZNiJSJIZXSB9f563UQ=;
-        b=2+BdgixOU5LqPlTLL+KWvsYY4NkZ0C6yZB66ZO5UTFRjWI+eYocZXwJMFu+Hga2WKu
-         v6A8WbdgoeeOV5W/kH0sa9ePaCocZ0l1Nh7u7mi3lr9R9MPHJk8ML5G8GERMwG4fkZvg
-         Gdii3kaWk1tuDdtFVO5ykkEJkECzrsrchHbmO7Tlg6fk6jCwMNeVy+MG+kg7d/vqJmzZ
-         fDbiDD8Vv83ZSRc8QhgFVjMmZVnSmfN87hUFhP8TPyNuACb/ylqu9WK07NI0aXufQcfn
-         UdjkF4TsfJBm9O4pQVPpUsoJQq8808lpy119E56nZkZNrjfDZgu+MkkaE1nwConuCzJv
-         oGZw==
-X-Gm-Message-State: AJIora89FqcRXYfuUvhrQkrauQDpnwyoNUZk7xu+2ORCKAwrYyIpkA5M
-        pot6p215+FmvE4E90H/nke+/jmbfHwT8IZYqMWMZXV8HZs9E1k5CkalDX8xbPZ3g8LwI8Tp7t6B
-        6lettzoa0+W9fOB6yuHpg6G4i
-X-Received: by 2002:a17:90b:4b81:b0:1ec:adbe:3b0b with SMTP id lr1-20020a17090b4b8100b001ecadbe3b0bmr13705624pjb.147.1656638769928;
-        Thu, 30 Jun 2022 18:26:09 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1ts0xSkra/pF6l/Qh5n5RPpmkJj4eOvZStQqR/cvlLlU2gD/1nwWMrUczmQi4I1j+snNGVOvQ==
-X-Received: by 2002:a17:90b:4b81:b0:1ec:adbe:3b0b with SMTP id lr1-20020a17090b4b8100b001ecadbe3b0bmr13705604pjb.147.1656638769707;
-        Thu, 30 Jun 2022 18:26:09 -0700 (PDT)
-Received: from pc-zest.atmarktech (145.82.198.104.bc.googleusercontent.com. [104.198.82.145])
-        by smtp.gmail.com with ESMTPSA id jh2-20020a170903328200b00161478027f5sm14158667plb.150.2022.06.30.18.26.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Jun 2022 18:26:09 -0700 (PDT)
-Received: from martinet by pc-zest.atmarktech with local (Exim 4.95)
-        (envelope-from <martinet@pc-zest>)
-        id 1o75Q8-0000zm-5R;
-        Fri, 01 Jul 2022 10:26:08 +0900
-Date:   Fri, 1 Jul 2022 10:25:58 +0900
-From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Nikolay Borisov <nborisov@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: read corruption with qemu master io_uring engine / linux master
- / btrfs(?)
-Message-ID: <Yr5NJnyKoWqAHsad@atmark-techno.com>
-References: <YrueYDXqppHZzOsy@atmark-techno.com>
- <Yrvfqh0eqN0J5T6V@atmark-techno.com>
- <20220629153710.GA379981@falcondesktop>
- <YrzxHbWCR6zhIAcx@atmark-techno.com>
- <Yr1XNe9V3UY/MkDz@atmark-techno.com>
- <20220630104536.GA434846@falcondesktop>
- <Yr2ItqlxeII0sReD@atmark-techno.com>
- <20220630125124.GA446657@falcondesktop>
- <Yr2gQh5GaVmTEDW2@atmark-techno.com>
- <20220630151038.GA459423@falcondesktop>
+        Thu, 30 Jun 2022 21:55:35 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C040A3191C;
+        Thu, 30 Jun 2022 18:55:34 -0700 (PDT)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LYysb1zs4zkWdf;
+        Fri,  1 Jul 2022 09:53:39 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 1 Jul 2022 09:55:33 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 1 Jul 2022 09:55:32 +0800
+Subject: Re: Major btrfs fiemap slowdown on file with many extents once in
+ cache (RCU stalls?) (Was: [PATCH 1/3] filemap: Correct the conditions for
+ marking a folio as accessed)
+To:     Dominique MARTINET <dominique.martinet@atmark-techno.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        <linux-btrfs@vger.kernel.org>
+CC:     <linux-mm@kvack.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+References: <20220619151143.1054746-1-willy@infradead.org>
+ <20220619151143.1054746-2-willy@infradead.org>
+ <Yr1QwVW+sHWlAqKj@atmark-techno.com>
+From:   Yu Kuai <yukuai3@huawei.com>
+Message-ID: <8cffd985-ba62-c4be-f9af-bb8314df8a67@huawei.com>
+Date:   Fri, 1 Jul 2022 09:55:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220630151038.GA459423@falcondesktop>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <Yr1QwVW+sHWlAqKj@atmark-techno.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Filipe Manana wrote on Thu, Jun 30, 2022 at 04:10:38PM +0100:
-> This may prevent the short reads (not tested yet):
+在 2022/06/30 15:29, Dominique MARTINET 写道:
+> Hi Willy, linux-btrfs@vger,
 > 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 7a54f964ff37..42fb56ed0021 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -7684,7 +7684,7 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
->         if (test_bit(EXTENT_FLAG_COMPRESSED, &em->flags) ||
->             em->block_start == EXTENT_MAP_INLINE) {
->                 free_extent_map(em);
-> -               ret = -ENOTBLK;
-> +               ret = (flags & IOMAP_NOWAIT) ? -EAGAIN : -ENOTBLK;
->                 goto unlock_err;
->         }
->  
-> Can you give it a try?
+> Matthew Wilcox (Oracle) wrote on Sun, Jun 19, 2022 at 04:11:41PM +0100:
+>> We had an off-by-one error which meant that we never marked the first page
+>> in a read as accessed.  This was visible as a slowdown when re-reading
+>> a file as pages were being evicted from cache too soon.  In reviewing
+>> this code, we noticed a second bug where a multi-page folio would be
+>> marked as accessed multiple times when doing reads that were less than
+>> the size of the folio.
+> 
+> when debugging an unrelated issue (short reads on btrfs with io_uring
+> and O_DIRECT[1]), I noticed that my horrible big file copy speeds fell
+> down from ~2GB/s (there's compression and lots of zeroes) to ~100MB/s
+> the second time I was copying it with cp.
+> 
 
-This appears to do the trick!
-I've also removed the first patch and still cannot see any short reads,
-so this would be enough on its own for my case.
+Hi,
 
--- 
-Dominique
+With this patch ctive_page() will be called the second time that page is
+mark accessed, which has some extra overhead, however, 2GB/s -> 100MB/s
+is insane, I'm not sure how this is possible, but it seems like it has
+something to do with this change.(Noted that it's problematic that page
+will not mark accessed before this patch).
+
+BTW, during my test, the speed of buffer read in ext4 only fell down a
+little.
+
+Thanks,
+Kuai
+> I've taken a moment to bisect this and came down to this patch.
+> 
+> [1] https://lore.kernel.org/all/YrrFGO4A1jS0GI0G@atmark-techno.com/T/#u
+> 
+> 
+> 
+> Dropping caches (echo 3 > /proc/sys/vm/drop_caches) restore the speed,
+> so there appears to be some bad effect to having the file in cache for
+> fiemap?
+> To be fair that file is pretty horrible:
+> ---
+> # compsize bigfile
+> Processed 1 file, 194955 regular extents (199583 refs), 0 inline.
+> Type       Perc     Disk Usage   Uncompressed Referenced
+> TOTAL       15%      3.7G          23G          23G
+> none       100%      477M         477M         514M
+> zstd        14%      3.2G          23G          23G
+> ---
+> 
+> Here's what perf has to say about it on top of this patch when running
+> `cp bigfile /dev/null` the first time:
+> 
+> 98.97%     0.00%  cp       [kernel.kallsyms]    [k]
+> entry_SYSCALL_64_after_hwframe
+>   entry_SYSCALL_64_after_hwframe
+>   do_syscall_64
+>    - 93.40% ksys_read
+>       - 93.36% vfs_read
+>          - 93.25% new_sync_read
+>             - 93.20% filemap_read
+>                - 83.38% filemap_get_pages
+>                   - 82.76% page_cache_ra_unbounded
+>                      + 59.72% folio_alloc
+>                      + 13.43% read_pages
+>                      + 8.75% filemap_add_folio
+>                        0.64% xa_load
+>                     0.52% filemap_get_read_batch
+>                + 8.75% copy_page_to_iter
+>    - 4.73% __x64_sys_ioctl
+>       - 4.72% do_vfs_ioctl
+>          - btrfs_fiemap
+>             - 4.70% extent_fiemap
+>                + 3.95% btrfs_check_shared
+>                + 0.70% get_extent_skip_holes
+> 
+> and second time:
+> 99.90%     0.00%  cp       [kernel.kallsyms]    [k]
+> entry_SYSCALL_64_after_hwfram
+>   entry_SYSCALL_64_after_hwframe
+>   do_syscall_64
+>    - 94.62% __x64_sys_ioctl
+>         do_vfs_ioctl
+>         btrfs_fiemap
+>       - extent_fiemap
+>          - 50.01% get_extent_skip_holes
+>             - 50.00% btrfs_get_extent_fiemap
+>                - 49.97% count_range_bits
+>                     rb_next
+>          + 28.72% lock_extent_bits
+>          + 15.55% __clear_extent_bit
+>    - 5.21% ksys_read
+>       + 5.21% vfs_read
+> 
+> (if this isn't readable, 95% of the time is spent on fiemap the second
+> time around)
+> 
+> 
+> 
+> 
+> I've also been observing RCU stalls on my laptop with the same workload
+> (cp to /dev/null), but unfortunately I could not reproduce in qemu so I
+> could not take traces to confirm they are caused by the same commit but
+> given the workload I'd say that is it?
+> I can rebuild a kernel for my laptop and confirm if you think it should
+> be something else.
+> 
+> 
+> I didn't look at the patch itself (yet) so have no suggestion at this
+> point - it's plausible the patch fixed something and just exposed slow
+> code that had been there all along so it might be better to look at the
+> btrfs side first, I don't know.
+> If you don't manage to reproduce I'll be happy to test anything thrown
+> at me at the very least.
+> 
+> 
+> Thanks,
+> 
