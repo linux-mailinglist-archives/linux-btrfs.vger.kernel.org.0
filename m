@@ -2,178 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEB75628A6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Jul 2022 03:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2B9562B21
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Jul 2022 07:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232692AbiGABzh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jun 2022 21:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
+        id S233251AbiGAF7c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Jul 2022 01:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbiGABzf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jun 2022 21:55:35 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C040A3191C;
-        Thu, 30 Jun 2022 18:55:34 -0700 (PDT)
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LYysb1zs4zkWdf;
-        Fri,  1 Jul 2022 09:53:39 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 1 Jul 2022 09:55:33 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 1 Jul 2022 09:55:32 +0800
-Subject: Re: Major btrfs fiemap slowdown on file with many extents once in
- cache (RCU stalls?) (Was: [PATCH 1/3] filemap: Correct the conditions for
- marking a folio as accessed)
-To:     Dominique MARTINET <dominique.martinet@atmark-techno.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        <linux-btrfs@vger.kernel.org>
-CC:     <linux-mm@kvack.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-References: <20220619151143.1054746-1-willy@infradead.org>
- <20220619151143.1054746-2-willy@infradead.org>
- <Yr1QwVW+sHWlAqKj@atmark-techno.com>
-From:   Yu Kuai <yukuai3@huawei.com>
-Message-ID: <8cffd985-ba62-c4be-f9af-bb8314df8a67@huawei.com>
-Date:   Fri, 1 Jul 2022 09:55:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S230500AbiGAF73 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Jul 2022 01:59:29 -0400
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29E36B27D
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jun 2022 22:59:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1656655168; x=1688191168;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=GbVnEhwtelwG0wjAKBhCZ/sQr+mie6MkHsuf1TP80JEQAFalNxKUSqlh
+   xG0sdxff+IM67WX1rRrL6+DmqdOlJ9weEQ93KDhwhBmhStVV9oApC3fh/
+   bKIQgXvQS/8iZruwSiWlfwApGrivHcpFqnazgWs6de5gEyiiN6n17weJ0
+   3mdyC3pHMrg4e5g6uOiZdpiLgQez7veGqvK2XDfCIkJFbUlsktA4ISlVV
+   3O63PpIaoK7xV1HQo/NcAWW7VP/yx3Q92pQ3koNHF7SE1cjV30inlyJN7
+   Me0dPaNYmfEboT2f81uK1C34XKPI3thHqSEiwNLA25cYcvXUdj7jLvzj2
+   g==;
+X-IronPort-AV: E=Sophos;i="5.92,236,1650902400"; 
+   d="scan'208";a="209439710"
+Received: from mail-bn8nam11lp2169.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.169])
+  by ob1.hgst.iphmx.com with ESMTP; 01 Jul 2022 13:59:27 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T4SURr6PlhTl1kKthsl8wlGrXYJB0OlEEm3JMqghG7Y+6c1MQrw2qbDlvdCULq/RgDQdHHvxO15HonT2pIuiEccWhpNzUQhLRw0DKdbw/7aT+y1R7txLQzwSnOsdmvpOMaON85vOVTDlzvG3awu221b/WAW0kbIzHygqcj/Z1B5Q2xHgO2kmvYe+9oBHR/STTr6OGc3Ftlr8fjDXU7pSfkGnwBxqUO65cDwY/a/ffAjkneIARnL3D5JskMnqdZ+wLumr7pDS/FFXWwPIseG6vAzUaIwQBlruNS0IKTKAJRVknKyHfkMO7K5UBBJMaUkhXiwCr6RvbVIVW/E0Q7Mxjw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=Hf5HNFY+S9iOsfreuQs63cgOId1vQCsn6e8Ij5lEsl63I2jnBpKjkMJHMnBJEZwHE4axfuICJvErXUwIPK6tfVxwcwd49PzIbgQyOI/eZW/XXzOBhNFEK764dMNqNCvgFHu6yDp34WgrY36T6JNWXApsNJtrezqoRGzF/cjtNitLf2lmwggQunTM+3oD6hNmTBeQcQTppWXc5fx1R9dhpX4olCpEJ+WFcUZfxnMbR62661TpZULcbfy3EtzyQCG/AdgGceQ9gTgYWBymYi8k0XemZzcJ0wXr1KVX4GIHz/QW/a6H4Mo/bl6xXZz4H9cayjq4MymrDMoifVB0asOkjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=edj8+mHA/1uqWmn7LWxKlkwp9tt6KtxGoMcO9O351A3knl7EU9z2lMuPeEUvHBHYYhZWAWTLA2K9w8gD2jafRrTlhShQuRxW2dR6JTuhyhbJh695b9HdeLMy9YWlpzBpd2GGb10+S/fJ3oqfjdnczSlKwmU+pHlWbU73WKNIjuI=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by DM6PR04MB5659.namprd04.prod.outlook.com (2603:10b6:5:170::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.18; Fri, 1 Jul
+ 2022 05:59:25 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::f4c0:544:ac07:fe6d]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::f4c0:544:ac07:fe6d%9]) with mapi id 15.20.5373.018; Fri, 1 Jul 2022
+ 05:59:25 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, "clm@fb.com" <clm@fb.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "dsterba@suse.com" <dsterba@suse.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>
+Subject: Re: [PATCH] btrfs: fix a memory leak in read_zone_info
+Thread-Topic: [PATCH] btrfs: fix a memory leak in read_zone_info
+Thread-Index: AQHYjJr7H+V3Cc5Hz06uDYmsIjNa0A==
+Date:   Fri, 1 Jul 2022 05:59:25 +0000
+Message-ID: <PH0PR04MB74166597F90452AB03D0059E9BBD9@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <20220630160319.2550384-1-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 02074e41-5c18-4054-840e-08da5b26da4a
+x-ms-traffictypediagnostic: DM6PR04MB5659:EE_
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vWip+Wdi6NVVQVoH/B2uik2sv6V8ggCg47gikLqfAZGrpb1jX5Z1j/WhqzoiIVoGWW/THwHPrUmSuT9lzpIQPVRrYWiNxZEj16rX28N/NzO2OSiUYeAEBUuhtZ1w/0gwVMae0DMSRIm6EBsV7h3Og0Gal7oR1zhpm+40x7E5qpQJsiqTMwNXC4x6Wc0CNIC5093IWKCQDEcKi6GS0LRzuaCU2u+igIfL6IfXvQjr+dXnvTKUt5wD6WBTo3gqBuL9WRXc6LZn4vqNiqegSH4CPW5ut0NR1CcTsMu5Ay6fPjAwsIg2UBJo8C2ZBHJPuJifWJbfqynAu0FFVCKhRw6Wu/DbylV2VaPw1veT4c+lEUejIB19dhypUgpTgy3bJ/6cZWGnf65X0hbWMe9pK01JPj1ggS1hw/7D3W0I+9EWDgoVTWjhprSxQJMOL99hSwofX1OUp0HLSgonpQ1woZe3Yg7KkjO2Hy7siYrofXjnDb7q3LMq0GkOcfxWX3baIe42RtDM5dm5jD07ZMRuaWLzoARYvA6GY11rbN/WeduHU+5io4KtE1pmJ43IORXm+B9WhESbAQxWqLHJ1WT108NE5YdYVEwSvsD2TYgu4plYz2/Fn4LlhnJZP98CIU31kdAzt7doRmqnCFPaX4sfEhGH+iRWYDZ/up6zjhkgl/gGOx83+stpAMAxkiXQX4kkBwnoqIOwxLuMJP8KQLy07CUsyUputcB9eWUvufTMnWxcUePCye73w9IQ3rPzvNAhi80xyscnmmnc19vMPeSiFLGl0HBMMLB0dycp/tp2mFLAXHOzokNBrmho5Qutyia9kzBy
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(396003)(136003)(39860400002)(346002)(376002)(33656002)(38100700002)(86362001)(478600001)(8936002)(2906002)(122000001)(186003)(55016003)(66476007)(5660300002)(110136005)(54906003)(4270600006)(316002)(9686003)(66446008)(82960400001)(66556008)(66946007)(8676002)(52536014)(4326008)(71200400001)(558084003)(91956017)(6506007)(19618925003)(41300700001)(26005)(7696005)(76116006)(38070700005)(64756008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?UvG9ylwmlLERWpblNtTxrbWs9jzf0gbnzs14doPeRKSw+Bs8JK1UuAsozhuK?=
+ =?us-ascii?Q?+Lbhrolfu/dQDlG5I6sHurO9H8v3m9mxYZIezRWdrtZwzTrMTkEd8rzvrCZZ?=
+ =?us-ascii?Q?C5R8OUiejGYiTlQ+5zxvtv6oE9/++ebN1j7RzfJDid+wYJJQ1qCB/maNEhTX?=
+ =?us-ascii?Q?RSKiJYLPdMerukO0qrg1DJy2+1zet4h/Sjt0wFUoUml7cGbbn/MtuSiWNkp9?=
+ =?us-ascii?Q?NE+x03LyBnSrtTr9mz9YO0nwgXejOis8hBlx8A+SMaVE0+NNZJQGkjEKxQh+?=
+ =?us-ascii?Q?bwlZO8Z6trOyzLr5788G8u3nXHFuhMIVkQO3ZgCKqc8GhO6v/Qh2vgf8GScR?=
+ =?us-ascii?Q?zLbZSPjT6j9kk7Ewdns9G4SlAzskEEidvGEuOUEHZyucotouUMpXMD7lIUCK?=
+ =?us-ascii?Q?rmk82CG5WfHeEFeF4VbBWYj1GMgy8fpSMatu8/XdvPT07Is6X39yCwCl2Iqv?=
+ =?us-ascii?Q?6gwZaC41w6hARlfb/koBPcHa14t3LnMr8fjLufyv3Fs2BMiSAPEa3LLEWc1O?=
+ =?us-ascii?Q?0QymDU8eX5hkVyOJt4afb/bjhFNkr5LNKtB/QJP8LrLiVjmEN5EKCgIeaqyW?=
+ =?us-ascii?Q?MNj2JpbtcGRAVnB2EQW/wBphtYknHVxyKFhwKjPrfYuBeeyxRL1pZuzbl624?=
+ =?us-ascii?Q?ihXKrij0szrllTubSdtc7QNjgUKMKonYIzv+Mtjp/hC7SJsskPYs+4Vl6CmI?=
+ =?us-ascii?Q?HO81BOTG5gPP8UW3MktiudDfmpK7PCs9+/67Etootxowp3rLTRgK9P3sVOHW?=
+ =?us-ascii?Q?pVNnCn99BZeKdYjDkhlfThjH128+VEstbor+ckduUItKzWbnnaN77aOyRU1S?=
+ =?us-ascii?Q?DY5dsVJBsvck744oUyTilZ+TrI3h9xCdZghXGFd36qM0UPAMGoKRwGsQw4i5?=
+ =?us-ascii?Q?D9xluTxMQueXQm6FAEvS50uMgvWtH6uLQmMQ3c1As+JobpvVvZRjoPEQqRQ8?=
+ =?us-ascii?Q?vG4MYlAQQWkGRJZ1O5Iw1hHz75ulDBa7ISgWwV0CSxa8vJbL7wQO5iGABnQE?=
+ =?us-ascii?Q?00IcP/x+Ci9PS/e12x7/7KhoH3zw5w61k9/8gAjA69kO0zHZ/jGD0XzDNCrs?=
+ =?us-ascii?Q?ubg+FcZIh31Y5wr2Zs1KiGWFmpWl7iox+17zg9goVi1G5IkiaxKPARLX/oZH?=
+ =?us-ascii?Q?VCalT69+Tf4kRiTmORFu9f22LVfsmhEgc1b13lVeMY+TcQPVSoBFukq0fTDZ?=
+ =?us-ascii?Q?ed714SKMx4hWh9v8XlVddcSQkRvkKIwWmePWSuj51wJO1cDjHk5yu/S2WvGU?=
+ =?us-ascii?Q?WH70z7ofEXfl4UWkmjjPymTObljWDnlL5xq+1swjVlyYRjMEQy1sgxizYhqA?=
+ =?us-ascii?Q?tu+C0eR/nylSiuXsb/2PD7dTclOxiBfqvcWfcbUHZOConKiNZlb4zP5ENodI?=
+ =?us-ascii?Q?madpJAdXdvgWhAkgcGJRfcEtOgBazEP0nkZ9AiIlvmNh7omC1rOK6c0d88qJ?=
+ =?us-ascii?Q?AzLHlxwVurHuC/hUoD5/Xi+LDJqyC43tq/WW6gZ23v8XfY2DxYzUsD6cQ2D7?=
+ =?us-ascii?Q?56S5W4LrA+lFER/ISRtimoprqMbDpmHJgbJy81ho3YViGLYhMr5R2khcIt60?=
+ =?us-ascii?Q?vtVoWPboHUcP1zYNg45DWcU+cg5dU3KCBRryq05JUYOWwAnbRgHs/EMecx70?=
+ =?us-ascii?Q?ng=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <Yr1QwVW+sHWlAqKj@atmark-techno.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02074e41-5c18-4054-840e-08da5b26da4a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jul 2022 05:59:25.5079
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: V1/lwdU4hWGDgtLVkJw8cY2Zy4tJgNeSolwU5hF23VdSMaa+p6mTU3lqM2MPvRC466r21GInDaNlVxXNxgqPwQUHX25oe1MLTV3WwqNmV20=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5659
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-在 2022/06/30 15:29, Dominique MARTINET 写道:
-> Hi Willy, linux-btrfs@vger,
-> 
-> Matthew Wilcox (Oracle) wrote on Sun, Jun 19, 2022 at 04:11:41PM +0100:
->> We had an off-by-one error which meant that we never marked the first page
->> in a read as accessed.  This was visible as a slowdown when re-reading
->> a file as pages were being evicted from cache too soon.  In reviewing
->> this code, we noticed a second bug where a multi-page folio would be
->> marked as accessed multiple times when doing reads that were less than
->> the size of the folio.
-> 
-> when debugging an unrelated issue (short reads on btrfs with io_uring
-> and O_DIRECT[1]), I noticed that my horrible big file copy speeds fell
-> down from ~2GB/s (there's compression and lots of zeroes) to ~100MB/s
-> the second time I was copying it with cp.
-> 
-
-Hi,
-
-With this patch ctive_page() will be called the second time that page is
-mark accessed, which has some extra overhead, however, 2GB/s -> 100MB/s
-is insane, I'm not sure how this is possible, but it seems like it has
-something to do with this change.(Noted that it's problematic that page
-will not mark accessed before this patch).
-
-BTW, during my test, the speed of buffer read in ext4 only fell down a
-little.
-
-Thanks,
-Kuai
-> I've taken a moment to bisect this and came down to this patch.
-> 
-> [1] https://lore.kernel.org/all/YrrFGO4A1jS0GI0G@atmark-techno.com/T/#u
-> 
-> 
-> 
-> Dropping caches (echo 3 > /proc/sys/vm/drop_caches) restore the speed,
-> so there appears to be some bad effect to having the file in cache for
-> fiemap?
-> To be fair that file is pretty horrible:
-> ---
-> # compsize bigfile
-> Processed 1 file, 194955 regular extents (199583 refs), 0 inline.
-> Type       Perc     Disk Usage   Uncompressed Referenced
-> TOTAL       15%      3.7G          23G          23G
-> none       100%      477M         477M         514M
-> zstd        14%      3.2G          23G          23G
-> ---
-> 
-> Here's what perf has to say about it on top of this patch when running
-> `cp bigfile /dev/null` the first time:
-> 
-> 98.97%     0.00%  cp       [kernel.kallsyms]    [k]
-> entry_SYSCALL_64_after_hwframe
->   entry_SYSCALL_64_after_hwframe
->   do_syscall_64
->    - 93.40% ksys_read
->       - 93.36% vfs_read
->          - 93.25% new_sync_read
->             - 93.20% filemap_read
->                - 83.38% filemap_get_pages
->                   - 82.76% page_cache_ra_unbounded
->                      + 59.72% folio_alloc
->                      + 13.43% read_pages
->                      + 8.75% filemap_add_folio
->                        0.64% xa_load
->                     0.52% filemap_get_read_batch
->                + 8.75% copy_page_to_iter
->    - 4.73% __x64_sys_ioctl
->       - 4.72% do_vfs_ioctl
->          - btrfs_fiemap
->             - 4.70% extent_fiemap
->                + 3.95% btrfs_check_shared
->                + 0.70% get_extent_skip_holes
-> 
-> and second time:
-> 99.90%     0.00%  cp       [kernel.kallsyms]    [k]
-> entry_SYSCALL_64_after_hwfram
->   entry_SYSCALL_64_after_hwframe
->   do_syscall_64
->    - 94.62% __x64_sys_ioctl
->         do_vfs_ioctl
->         btrfs_fiemap
->       - extent_fiemap
->          - 50.01% get_extent_skip_holes
->             - 50.00% btrfs_get_extent_fiemap
->                - 49.97% count_range_bits
->                     rb_next
->          + 28.72% lock_extent_bits
->          + 15.55% __clear_extent_bit
->    - 5.21% ksys_read
->       + 5.21% vfs_read
-> 
-> (if this isn't readable, 95% of the time is spent on fiemap the second
-> time around)
-> 
-> 
-> 
-> 
-> I've also been observing RCU stalls on my laptop with the same workload
-> (cp to /dev/null), but unfortunately I could not reproduce in qemu so I
-> could not take traces to confirm they are caused by the same commit but
-> given the workload I'd say that is it?
-> I can rebuild a kernel for my laptop and confirm if you think it should
-> be something else.
-> 
-> 
-> I didn't look at the patch itself (yet) so have no suggestion at this
-> point - it's plausible the patch fixed something and just exposed slow
-> code that had been there all along so it might be better to look at the
-> btrfs side first, I don't know.
-> If you don't manage to reproduce I'll be happy to test anything thrown
-> at me at the very least.
-> 
-> 
-> Thanks,
-> 
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
