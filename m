@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1DE564FF1
+	by mail.lfdr.de (Postfix) with ESMTP id B8FA1564FF2
 	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Jul 2022 10:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbiGDIoR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Jul 2022 04:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
+        id S231996AbiGDIoU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Jul 2022 04:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbiGDIoQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Jul 2022 04:44:16 -0400
+        with ESMTP id S230233AbiGDIoT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Jul 2022 04:44:19 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C906398
-        for <linux-btrfs@vger.kernel.org>; Mon,  4 Jul 2022 01:44:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DCD958B
+        for <linux-btrfs@vger.kernel.org>; Mon,  4 Jul 2022 01:44:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=q+tvxTkXgcVgzHzeUUNHc/0vrBQYSinWcOg2qtjWJ90=; b=GAwVg4Td3mllhc0QmG68T2iFN1
-        ucS5xo9rrzz4JUcV2kbhdO4h087zJWqNJ/O+qL8i1eTSfWNHM2eVPXTYkmy7qxJpQ0IFWMHwNtlj/
-        Wu2F1IQf+lh4afw+1BWzkvkNZZL/Wql94rCaJFl7Go0jQYWMfuY85/5sYYkFK0lGEF6a9R8/cVhat
-        0AtsuSXftWO9IGN1qEH4S/+aSlgY6EloAL/ltcDE7DbGhaK/hhG1HHYkAGGiL60/xu0znTCNik1WM
-        W9kYFm85UmPM/6DNHfl7yw0qpycPLefTGr0uDQeJ/+fjOrBpIYJgx/7cgyh6JLJvF3i4n9Y35Tk8l
-        NBYobpSw==;
+        bh=4jEwmpPhUc4V5fb9PTmXCXvggOA0v8yUQV3LvqTkOtY=; b=eqnxBvrh05LUpb09wzfhGXItqY
+        eT6n34IXu2yvXngxqRw1PZu4f/DR/P7mqYojR+/1yEMLL2aoHzSMvVO8Xvx15HBK8eEhdPD7Iyz/b
+        VOy7zAbQvUBmmANZhvx2jPx6w4x+Zbq2ePThd9Phmc0Y8/FYvIuiZKIwcCjavYsnRz1msweyM5sq/
+        HaO+3Y13hqyhFMspqnjyCBQPydEqtf4/RDe0eH5YZKO698MLRpOGay97lJJV7zBAhB2KDu1AQwDEA
+        GbEHT3lD2B07za3Ji3uwWLMNEozoqosYOk9zlai5hKEMXPt4cuWD4akEw5qGrMRu5BoFTi2KfAzCj
+        DaMZ2ZYA==;
 Received: from [2001:4bb8:189:3c4a:9cc7:69df:e5dc:ef11] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o8Hgj-0068J3-L2; Mon, 04 Jul 2022 08:44:14 +0000
+        id 1o8Hgm-0068Ji-90; Mon, 04 Jul 2022 08:44:16 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/7] btrfs: move btrfs_bio allocation to volumes.c
-Date:   Mon,  4 Jul 2022 10:44:01 +0200
-Message-Id: <20220704084406.106929-3-hch@lst.de>
+Subject: [PATCH 3/7] btrfs: pass the operation to btrfs_bio_alloc
+Date:   Mon,  4 Jul 2022 10:44:02 +0200
+Message-Id: <20220704084406.106929-4-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220704084406.106929-1-hch@lst.de>
 References: <20220704084406.106929-1-hch@lst.de>
@@ -50,302 +50,116 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-volumes.c is the place that implements the storage layer using the
-btrfs_bio structure, so move the bio_set and allocation helpers there
-as well.
-
-To make up for the new initialization boilerplate, merge the two
-init/exit helpers in extent_io.c into a single one.
+Pass the operation to btrfs_bio_alloc, matching what bio_alloc_bioset
+set does.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/extent-io-tree.h |  4 +--
- fs/btrfs/extent_io.c      | 74 ++++-----------------------------------
- fs/btrfs/extent_io.h      |  3 --
- fs/btrfs/super.c          |  6 ++--
- fs/btrfs/volumes.c        | 57 ++++++++++++++++++++++++++++++
- fs/btrfs/volumes.h        |  3 ++
- 6 files changed, 71 insertions(+), 76 deletions(-)
+ fs/btrfs/compression.c | 3 +--
+ fs/btrfs/extent_io.c   | 6 ++----
+ fs/btrfs/inode.c       | 3 +--
+ fs/btrfs/volumes.c     | 4 ++--
+ fs/btrfs/volumes.h     | 2 +-
+ 5 files changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index c3eb52dbe61cc..819763ace0aca 100644
---- a/fs/btrfs/extent-io-tree.h
-+++ b/fs/btrfs/extent-io-tree.h
-@@ -96,8 +96,8 @@ struct extent_state {
- #endif
- };
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index c8b14a5bd89be..d4045cc7071ad 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -364,10 +364,9 @@ static struct bio *alloc_compressed_bio(struct compressed_bio *cb, u64 disk_byte
+ 	struct bio *bio;
+ 	int ret;
  
--int __init extent_state_cache_init(void);
--void __cold extent_state_cache_exit(void);
-+int __init volumes_init(void);
-+void __cold volumes_exit(void);
+-	bio = btrfs_bio_alloc(BIO_MAX_VECS);
++	bio = btrfs_bio_alloc(BIO_MAX_VECS, opf);
  
- void extent_io_tree_init(struct btrfs_fs_info *fs_info,
- 			 struct extent_io_tree *tree, unsigned int owner,
+ 	bio->bi_iter.bi_sector = disk_bytenr >> SECTOR_SHIFT;
+-	bio->bi_opf = opf;
+ 	bio->bi_private = cb;
+ 	bio->bi_end_io = endio_func;
+ 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 5fe3e0d306297..7235f28f53bbc 100644
+index 7235f28f53bbc..974880e5a8f1c 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -33,7 +33,6 @@
- 
- static struct kmem_cache *extent_state_cache;
- static struct kmem_cache *extent_buffer_cache;
--static struct bio_set btrfs_bioset;
- 
- static inline bool extent_state_in_tree(const struct extent_state *state)
- {
-@@ -232,41 +231,23 @@ static void submit_write_bio(struct extent_page_data *epd, int ret)
+@@ -2627,10 +2627,9 @@ int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *failed_bbio,
+ 		return -EIO;
  	}
- }
  
--int __init extent_state_cache_init(void)
-+int __init extent_io_init(void)
- {
- 	extent_state_cache = kmem_cache_create("btrfs_extent_state",
- 			sizeof(struct extent_state), 0,
- 			SLAB_MEM_SPREAD, NULL);
- 	if (!extent_state_cache)
- 		return -ENOMEM;
--	return 0;
--}
+-	repair_bio = btrfs_bio_alloc(1);
++	repair_bio = btrfs_bio_alloc(1, REQ_OP_READ);
+ 	repair_bbio = btrfs_bio(repair_bio);
+ 	repair_bbio->file_offset = start;
+-	repair_bio->bi_opf = REQ_OP_READ;
+ 	repair_bio->bi_end_io = failed_bio->bi_end_io;
+ 	repair_bio->bi_iter.bi_sector = failrec->logical >> 9;
+ 	repair_bio->bi_private = failed_bio->bi_private;
+@@ -3265,7 +3264,7 @@ static int alloc_new_bio(struct btrfs_inode *inode,
+ 	struct bio *bio;
+ 	int ret;
  
--int __init extent_io_init(void)
--{
- 	extent_buffer_cache = kmem_cache_create("btrfs_extent_buffer",
- 			sizeof(struct extent_buffer), 0,
- 			SLAB_MEM_SPREAD, NULL);
--	if (!extent_buffer_cache)
-+	if (!extent_buffer_cache) {
-+		kmem_cache_destroy(extent_state_cache);
- 		return -ENOMEM;
--
--	if (bioset_init(&btrfs_bioset, BIO_POOL_SIZE,
--			offsetof(struct btrfs_bio, bio),
--			BIOSET_NEED_BVECS))
--		goto free_buffer_cache;
-+	}
+-	bio = btrfs_bio_alloc(BIO_MAX_VECS);
++	bio = btrfs_bio_alloc(BIO_MAX_VECS, opf);
+ 	/*
+ 	 * For compressed page range, its disk_bytenr is always @disk_bytenr
+ 	 * passed in, no matter if we have added any range into previous bio.
+@@ -3277,7 +3276,6 @@ static int alloc_new_bio(struct btrfs_inode *inode,
+ 	bio_ctrl->bio = bio;
+ 	bio_ctrl->compress_type = compress_type;
+ 	bio->bi_end_io = end_io_func;
+-	bio->bi_opf = opf;
+ 	ret = calc_bio_boundaries(bio_ctrl, inode, file_offset);
+ 	if (ret < 0)
+ 		goto error;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index eea351216db33..28649e0853d91 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -10419,12 +10419,11 @@ int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
+ 			size_t bytes = min_t(u64, remaining, PAGE_SIZE);
  
- 	return 0;
--
--free_buffer_cache:
--	kmem_cache_destroy(extent_buffer_cache);
--	extent_buffer_cache = NULL;
--	return -ENOMEM;
--}
--
--void __cold extent_state_cache_exit(void)
--{
--	btrfs_extent_state_leak_debug_check();
--	kmem_cache_destroy(extent_state_cache);
- }
+ 			if (!bio) {
+-				bio = btrfs_bio_alloc(BIO_MAX_VECS);
++				bio = btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_READ);
+ 				bio->bi_iter.bi_sector =
+ 					(disk_bytenr + cur) >> SECTOR_SHIFT;
+ 				bio->bi_end_io = btrfs_encoded_read_endio;
+ 				bio->bi_private = &priv;
+-				bio->bi_opf = REQ_OP_READ;
+ 			}
  
- void __cold extent_io_exit(void)
-@@ -277,7 +258,8 @@ void __cold extent_io_exit(void)
- 	 */
- 	rcu_barrier();
- 	kmem_cache_destroy(extent_buffer_cache);
--	bioset_exit(&btrfs_bioset);
-+	btrfs_extent_state_leak_debug_check();
-+	kmem_cache_destroy(extent_state_cache);
- }
- 
- /*
-@@ -3155,50 +3137,6 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array)
- 	return 0;
- }
- 
--/*
-- * Initialize the members up to but not including 'bio'. Use after allocating a
-- * new bio by bio_alloc_bioset as it does not initialize the bytes outside of
-- * 'bio' because use of __GFP_ZERO is not supported.
-- */
--static inline void btrfs_bio_init(struct btrfs_bio *bbio)
--{
--	memset(bbio, 0, offsetof(struct btrfs_bio, bio));
--}
--
--/*
-- * Allocate a btrfs_io_bio, with @nr_iovecs as maximum number of iovecs.
-- *
-- * The bio allocation is backed by bioset and does not fail.
-- */
--struct bio *btrfs_bio_alloc(unsigned int nr_iovecs)
--{
--	struct bio *bio;
--
--	ASSERT(0 < nr_iovecs && nr_iovecs <= BIO_MAX_VECS);
--	bio = bio_alloc_bioset(NULL, nr_iovecs, 0, GFP_NOFS, &btrfs_bioset);
--	btrfs_bio_init(btrfs_bio(bio));
--	return bio;
--}
--
--struct bio *btrfs_bio_clone_partial(struct bio *orig, u64 offset, u64 size)
--{
--	struct bio *bio;
--	struct btrfs_bio *bbio;
--
--	ASSERT(offset <= UINT_MAX && size <= UINT_MAX);
--
--	/* this will never fail when it's backed by a bioset */
--	bio = bio_alloc_clone(orig->bi_bdev, orig, GFP_NOFS, &btrfs_bioset);
--	ASSERT(bio);
--
--	bbio = btrfs_bio(bio);
--	btrfs_bio_init(bbio);
--
--	bio_trim(bio, offset >> 9, size >> 9);
--	bbio->iter = bio->bi_iter;
--	return bio;
--}
--
- /**
-  * Attempt to add a page to bio
-  *
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 9dec34c009e91..75194aee6a42e 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -60,7 +60,6 @@ enum {
- struct btrfs_bio;
- struct btrfs_root;
- struct btrfs_inode;
--struct btrfs_io_bio;
- struct btrfs_fs_info;
- struct io_failure_record;
- struct extent_io_tree;
-@@ -242,8 +241,6 @@ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
- 				  u32 bits_to_clear, unsigned long page_ops);
- 
- int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array);
--struct bio *btrfs_bio_alloc(unsigned int nr_iovecs);
--struct bio *btrfs_bio_clone_partial(struct bio *orig, u64 offset, u64 size);
- 
- void end_extent_writepage(struct page *page, int err, u64 start, u64 end);
- int btrfs_repair_eb_io_failure(const struct extent_buffer *eb, int mirror_num);
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 41652dcd16f43..5583a4c12d80a 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2668,7 +2668,7 @@ static int __init init_btrfs_fs(void)
- 	if (err)
- 		goto free_cachep;
- 
--	err = extent_state_cache_init();
-+	err = volumes_init();
- 	if (err)
- 		goto free_extent_io;
- 
-@@ -2727,7 +2727,7 @@ static int __init init_btrfs_fs(void)
- free_extent_map:
- 	extent_map_exit();
- free_extent_state_cache:
--	extent_state_cache_exit();
-+	volumes_exit();
- free_extent_io:
- 	extent_io_exit();
- free_cachep:
-@@ -2748,7 +2748,7 @@ static void __exit exit_btrfs_fs(void)
- 	btrfs_prelim_ref_exit();
- 	ordered_data_exit();
- 	extent_map_exit();
--	extent_state_cache_exit();
-+	volumes_exit();
- 	extent_io_exit();
- 	btrfs_interface_exit();
- 	unregister_filesystem(&btrfs_fs_type);
+ 			if (!bytes ||
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 207e136d1a721..35ccd49940b94 100644
+index 35ccd49940b94..7689c7cdb1859 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -34,6 +34,8 @@
- #include "discard.h"
- #include "zoned.h"
- 
-+static struct bio_set btrfs_bioset;
-+
- #define BTRFS_BLOCK_GROUP_STRIPE_MASK	(BTRFS_BLOCK_GROUP_RAID0 | \
- 					 BTRFS_BLOCK_GROUP_RAID10 | \
- 					 BTRFS_BLOCK_GROUP_RAID56_MASK)
-@@ -6608,6 +6610,47 @@ int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	return __btrfs_map_block(fs_info, op, logical, length, bioc_ret, 0, 1);
- }
- 
-+/*
-+ * Initialize a btrfs_bio structure.  This skips the embedded bio itself as it
-+ * is already initialized by the block layer.
-+ */
-+static inline void btrfs_bio_init(struct btrfs_bio *bbio)
-+{
-+	memset(bbio, 0, offsetof(struct btrfs_bio, bio));
-+}
-+
-+/*
-+ * Allocate a btrfs_bio structure.  The btrfs_bio is the main I/O container for
-+ * btrfs, and is used for all I/O submitted through btrfs_submit_bio.
-+ *
-+ * Just like the underlying bio_alloc_bioset it will no fail as it is backed by
-+ * a mempool.
-+ */
-+struct bio *btrfs_bio_alloc(unsigned int nr_vecs)
-+{
-+	struct bio *bio;
-+
-+	bio = bio_alloc_bioset(NULL, nr_vecs, 0, GFP_NOFS, &btrfs_bioset);
-+	btrfs_bio_init(btrfs_bio(bio));
-+	return bio;
-+}
-+
-+struct bio *btrfs_bio_clone_partial(struct bio *orig, u64 offset, u64 size)
-+{
-+	struct bio *bio;
-+	struct btrfs_bio *bbio;
-+
-+	ASSERT(offset <= UINT_MAX && size <= UINT_MAX);
-+
-+	bio = bio_alloc_clone(orig->bi_bdev, orig, GFP_NOFS, &btrfs_bioset);
-+	bbio = btrfs_bio(bio);
-+	btrfs_bio_init(bbio);
-+
-+	bio_trim(bio, offset >> 9, size >> 9);
-+	bbio->iter = bio->bi_iter;
-+	return bio;
-+}
-+
- static struct workqueue_struct *btrfs_end_io_wq(struct btrfs_io_context *bioc)
+@@ -6626,11 +6626,11 @@ static inline void btrfs_bio_init(struct btrfs_bio *bbio)
+  * Just like the underlying bio_alloc_bioset it will no fail as it is backed by
+  * a mempool.
+  */
+-struct bio *btrfs_bio_alloc(unsigned int nr_vecs)
++struct bio *btrfs_bio_alloc(unsigned int nr_vecs, unsigned int opf)
  {
- 	if (bioc->orig_bio->bi_opf & REQ_META)
-@@ -8285,3 +8328,17 @@ bool btrfs_repair_one_zone(struct btrfs_fs_info *fs_info, u64 logical)
+ 	struct bio *bio;
  
- 	return true;
+-	bio = bio_alloc_bioset(NULL, nr_vecs, 0, GFP_NOFS, &btrfs_bioset);
++	bio = bio_alloc_bioset(NULL, nr_vecs, opf, GFP_NOFS, &btrfs_bioset);
+ 	btrfs_bio_init(btrfs_bio(bio));
+ 	return bio;
  }
-+
-+int __init volumes_init(void)
-+{
-+	if (bioset_init(&btrfs_bioset, BIO_POOL_SIZE,
-+			offsetof(struct btrfs_bio, bio),
-+			BIOSET_NEED_BVECS))
-+		return -ENOMEM;
-+	return 0;
-+}
-+
-+void __cold volumes_exit(void)
-+{
-+	bioset_exit(&btrfs_bioset);
-+}
 diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 9cce711cc938c..0acdc8863c970 100644
+index 0acdc8863c970..48bed92b96159 100644
 --- a/fs/btrfs/volumes.h
 +++ b/fs/btrfs/volumes.h
-@@ -391,6 +391,9 @@ static inline struct btrfs_bio *btrfs_bio(struct bio *bio)
+@@ -391,7 +391,7 @@ static inline struct btrfs_bio *btrfs_bio(struct bio *bio)
  	return container_of(bio, struct btrfs_bio, bio);
  }
  
-+struct bio *btrfs_bio_alloc(unsigned int nr_vecs);
-+struct bio *btrfs_bio_clone_partial(struct bio *orig, u64 offset, u64 size);
-+
+-struct bio *btrfs_bio_alloc(unsigned int nr_vecs);
++struct bio *btrfs_bio_alloc(unsigned int nr_vecs, unsigned int opf);
+ struct bio *btrfs_bio_clone_partial(struct bio *orig, u64 offset, u64 size);
+ 
  static inline void btrfs_bio_free_csum(struct btrfs_bio *bbio)
- {
- 	if (bbio->csum != bbio->csum_inline) {
 -- 
 2.30.2
 
