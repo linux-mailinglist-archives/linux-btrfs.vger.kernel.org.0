@@ -2,175 +2,240 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11800565739
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Jul 2022 15:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2878456592B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Jul 2022 17:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbiGDNcC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Jul 2022 09:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
+        id S234416AbiGDPBR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Jul 2022 11:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234668AbiGDNbe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Jul 2022 09:31:34 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E902BF7
-        for <linux-btrfs@vger.kernel.org>; Mon,  4 Jul 2022 06:27:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1656941226; x=1688477226;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=eLH7FWeYkj6oMwTW6NbcEzpo/IMlW8umApfAGHmDLjQ=;
-  b=ATAkoynUtkmuvOk9bZgLX3+WC90VCIuF6r5V5xO1JJDCv85pU/vz7CUq
-   eCgVeTWB/u2FTgMWz5PWhZP1u1afuGk9co2PfCsdYqO8ffHOZa3lY5V4Q
-   8gVKcZJ6njaXYE22PK9H52CfH8+t5bWFvL9eIRkxDy1GEH9mPqleXnunN
-   2Upus03WMu4vO5h1wV++fZ+dlWaQt1zvQe/+juP3b2RavjEGX+P2KIBZi
-   Em7DHlXmP3bBVzOpTXMvZjl6JAYEMml6eSdmjwbnNyFncmd9iGN1OpFQE
-   sJ0HhKPmhIxMt60joLgnD8d6S/Wg4d+nNF812cx5GFw1ij2Myyt6vOfMi
-   A==;
-X-IronPort-AV: E=Sophos;i="5.92,243,1650902400"; 
-   d="scan'208";a="309091347"
-Received: from mail-co1nam11lp2170.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.170])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Jul 2022 21:27:05 +0800
+        with ESMTP id S233007AbiGDPBQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Jul 2022 11:01:16 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B3C56330;
+        Mon,  4 Jul 2022 08:01:15 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 264D24fE001934;
+        Mon, 4 Jul 2022 15:01:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=qxwn3801cRla/bMxngxfGKLO+96VfHLuaNEmgeDL6Co=;
+ b=DfLzFABIlmKhfP4diR/KHz9TW+R/RpDR3Q/LkIrwFUvYC0aVRZR2rClVenD32f3OXwhk
+ 9q5O4bC2S0txWTjL+1Dh0VdmYTzhI8ZyUsUL4WPrzEM6U0UI0s0ietlRXvP8cSQfLRtZ
+ T9woaU8WD1x9TpkcuknpbTsicsucQkk7cIdVJhdCQcRfv4VtX0lBzhTKtKjgpZAdCfia
+ qr/SSzT3QRpmlSxOvwbKKObGgEZm1a3wvGrvYx+x8Redn/3Hv5dR38cT3f57tmEcoQQG
+ xhUQb5VTlV8kF1JNO5tikkmGJkhSNDMy+TC9S0QpUGQdTNW5e09zo4E7CFEj9YSRmgMF hg== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3h2eju3n14-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Jul 2022 15:01:12 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 264F1A99002429;
+        Mon, 4 Jul 2022 15:01:11 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com with ESMTP id 3h2cf1e1y8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Jul 2022 15:01:11 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SkT+REISYvzi4IhaR7oV6TFF5wSSrMZ5czXY1NoxaesXDnRJ7J4QUsWt8lU88okTqCm6M3BFyTWpaeZbdWO0rp/IjLweDZLIktxz8xNMuX8P7s4SrZ3AoZ2gdVnbWN0loR4t9S9WnqqXKu0Rb0eEP2RVy88GJ8QjTVl8VnC1tCtmTLAWQSoLJTMLqmIGFgZzlHwWbRxVytgqlsDlwiFoHygRzV81g/rM/ucIZ8GS5zuNBH/uONt5/E9iyiwJLnRFpvMbW66maKM6uD/qBKf9+V2d0GgbVMD+fdRPmXF35UC5XqqVItqlXXmr7WJOSZhjNlRkcnFkzhTNeNx5IOu5DQ==
+ b=gofe91SHeOLiEQWhk2UPGMDFEO0xqtGRCj8soCSevKdl9QN+CLtRY6N+VJH0dtgv2xYSHowoW7/eBjoGwhG0Xu7kO8vz/Pm9iHXa/luzUUBXXakl6cl5uM0BGaosICleY8Q8y2cLQ08NZY8HHBy0omqVk46UZVIXADIwHYDmsMM3WAlvLePbS35mMsLpzqvoi1B+lkcRZ0f9WI0Xnq+wYgPf8KsrptqaKaVRsYvsSSWgSspJDcFqLtqZBZ5oFBeUolsQPH3a4jVJEC2i/PnENkccqFbQen4PtljyJ0ffzEAQLVU4NqDlgpVdBZw2gxJSl3JYli43Rs28G14Q7ABbGg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2qs8qtbTksciIFk20BX73+Ex9R8O/CfFaaubkJbuHAU=;
- b=lviUJmL0ZBxzC4uu4fpJSYJ88RYzt2tr/yIb3+CzU3dshBNdSZhgkjNUrvywv+lptq/2+Qai2ayWbc76WsjXL7BpqEoJbht7Vu9VMbxr79cfn6ZDFN6ulb0CmoSUSwd2HlBQuTsVAZuBQof4d4ojQHyghdQ36zxkoIOH4SPU/427hdqraqV6xozccUwGOagZak/uJkaU2AItjLpNiyBzXXnlhX2WUnVvwhbf2Ll5DWBbQpRIosaavY/tVQO507gL6roBpOgscFWna1W3hfjHIS3nn59winbJsYJk+dBhhgwycbNy/PHhcp9YA+tIkITMX77qUOmsE6/BZWU5kgtYLQ==
+ bh=qxwn3801cRla/bMxngxfGKLO+96VfHLuaNEmgeDL6Co=;
+ b=U8OuOC41vBoJ01hjKhBR0F09zUdc3ZhLwd398vJqn9+9pH8o1KIYIBhE3h94ylnrP6ClkqhXD16xN2JvcZGgKKwCefd1ZNNPlTacrn5L+4oN8kdUnkfYJ87IpLTf0El2AJQO8GHwIZV3xya+i8Fut/0a85lVmtl0T9pPaUujADLo0zIOONPgsYZ0Zf9HwgwkpU3kfk/7KVZpvKRQphf0hyOOMPvgk7e0+7pNHJ8Aw+xTQHU+TUfAxiQcU//I0sC2FyFbXktbgVhtSPiSph4PkDA1NSVK6UY4WsHYTxVqhRR7EdoT7lsp9IEOZr9XwaRhh2xutikyW1d/eXJkOSD6OQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2qs8qtbTksciIFk20BX73+Ex9R8O/CfFaaubkJbuHAU=;
- b=m8Bqv/mQj6o7smnfqV/sKjP+eJ4nNQ/jST5CV8Q+Uzj/Z/ZciPeAElbwYu+82ZMe+dyL9PGESSaTZXhZmOdC7BGXYkvpsVDYsJG0BlxlOnP70jeQsVncoW03VbTUnF9vEi7KNMqWbePH5fgE+KZuz3MIf0JWfG0jXR10aG0FQL4=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by BL3PR04MB8028.namprd04.prod.outlook.com (2603:10b6:208:347::6) with
+ bh=qxwn3801cRla/bMxngxfGKLO+96VfHLuaNEmgeDL6Co=;
+ b=oopc2QeYeHW/sURlTirpY0QY8exIWCWy5OMSqiF+y6yNgZjxOdSEAkmOpHXs3ITbHrnfx5dUBKgFEE7iW2sSr8AS+uSCRnX0+AL8HYa++lYFJ1p5QHtr2/gmIMGX/0G21/11GSKFlO/fyWMcVMxK84L+l1libq+Bgmh7lqQkciA=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by BLAPR10MB5313.namprd10.prod.outlook.com (2603:10b6:208:331::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.14; Mon, 4 Jul
- 2022 13:27:04 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::9865:ab44:68b:5d5e]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::9865:ab44:68b:5d5e%5]) with mapi id 15.20.5395.020; Mon, 4 Jul 2022
- 13:27:04 +0000
-From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     "hch@infradead.org" <hch@infradead.org>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 01/13] block: add bdev_max_segments() helper
-Thread-Topic: [PATCH 01/13] block: add bdev_max_segments() helper
-Thread-Index: AQHYj2LA7yvSiQoku0+iCKheJrOP661t3/oAgABUv4A=
-Date:   Mon, 4 Jul 2022 13:27:04 +0000
-Message-ID: <20220704132703.szvlx323jyvlyfy4@naota-xeon>
-References: <cover.1656909695.git.naohiro.aota@wdc.com>
- <a3eed5d77f1cd3c7768780356f1528f9ce6e540a.1656909695.git.naohiro.aota@wdc.com>
- <YsKjkIGBeUV/h6eD@infradead.org>
-In-Reply-To: <YsKjkIGBeUV/h6eD@infradead.org>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fcc85e6e-ffd5-44df-d0e7-08da5dc0e29b
-x-ms-traffictypediagnostic: BL3PR04MB8028:EE_
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: khnZINaBVIv+1/2cvxNvFLzDRQkWD6XcgW3gAJa5qJa2236PUfZBHPeQzabn4fQirNwsaN1btN4cpFGDrhKDXb2fc78U3vQlAfdGFqfcacsS+Nl7xM6DR+BKmzqwj9KZ0OJJKIbtnp5HtTWPzeuxeSx7t5Qg8hAJDG9KkORmRQZhVs9UhMQfVVUeoV6A3Sty8uptLsX2SekFvWoiEKEOVW9RZ7odTkaErhyv0k3mkfDL3p19NfWqRS9cyx8xwo+V6DqdRMgkEpJzU+6r+zQTbWxl5PD2xnI6JpfsZGyV8K2qTDEDblGkmrndgwr6nVQhsbudru/nB8cheu+xH/H0x6vkQ3W3cz71tTUZDGPu6pUS6RhwyZoXM+pU+A+YXyzFsYx+wSk3iTDrLV7LNOtdS3HXGfA5JcVLSctTgyaWdoB7R/FrO7xOxu9Z2A4vwN8601vWBdtvDmvUKehkPBirvtvD6Y1OxkfX77eG8KObLennMY8gvxORmlBv1m8b1VrP2++DRinitO5To+Xy09UGcbhq74ROWoDpOHMwwFhHm3BcL5UeQyIztu8CPIDXpX3jDvcD8DslEv695dT4CkXoVvX67OoeQANQVvYUoKG0oL19FKUbwV2LlVmHotlR6ZRGyYucH3oiQ8Xv6h0OE0ZXaLP1n6dvvwsm3Zsr9CvgBOG7vYuwfm7Hic2OxBxcUV1OrmUVk1tE1nuCCzdHoqaNV55n0P+46VBekGrEYQBxyM6BgINcZylbBVZidugkY2G2PNf2zbjB6K7M25PDb1U8GOhMWBuIU5aPCH9P5GQ8V7I8IAHjgKQ0SSaRsGj7yA92
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(7916004)(396003)(366004)(39860400002)(376002)(346002)(136003)(2906002)(26005)(82960400001)(6512007)(9686003)(38100700002)(6506007)(41300700001)(186003)(1076003)(83380400001)(33716001)(66476007)(8676002)(478600001)(6486002)(8936002)(6916009)(5660300002)(316002)(4326008)(64756008)(66446008)(71200400001)(66556008)(86362001)(66946007)(76116006)(91956017)(122000001)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?UwyY0oE0s8g4X5e0RP03ejCdV071/EfsA9WelIl8vxLXZLSLeFtm94r34kMp?=
- =?us-ascii?Q?W/71cEqdYOnCc5UHcMrVasrZDmRZSKXSLHjSeiOLZ44ObSBX6dYEUJNaxO4P?=
- =?us-ascii?Q?Zq0wtVV0v4ofklTOEywUdef77O2WszLEXi+iOy9LEv4z7y0WBJeYKyXtSB/v?=
- =?us-ascii?Q?t5FnDRp8KqlZJAuOSEr6HFdTaitqMgpJpG+GXtEhAo9X5ZoJH+R8BVaqXBoa?=
- =?us-ascii?Q?4MsiLuJDfanx9cavpZ1rsTVDmDh9HIBUoKOL9WaaCLRZttvnHEuxzScqdVQ9?=
- =?us-ascii?Q?0pIYMMilPWDJM5a6z6OsydhByFLAX0Qd5XPRd7l7ykMam7lRjh8PrdIh6mR1?=
- =?us-ascii?Q?+BVVPCkszKmzQRuixPI3Z81/tLrPDFQ2ysAlr8uTWW8pNZJoElEwfPktdgSZ?=
- =?us-ascii?Q?7MzBlGX24XEu7nCChIbVxQzdsy0V2Aw9KncCcVRbBoVTH1i5/51Liid6/6jq?=
- =?us-ascii?Q?+8xg5Y0+S7MGEWQK6O59qBW+XItb5ZaqcgHjSYKUiyKhatTpa68pujh+4qGB?=
- =?us-ascii?Q?aX5KRxkBMoQSsowTI9Zklqo2SJTOH5pEOp6RLgp6xtw3w0ruuYT6CjxXEUtq?=
- =?us-ascii?Q?Pt4IrIb/MG72H88TiX1wNHsvR6ddBSerxF6Xp4hPSoQz3dpLhBPgErgLNk+m?=
- =?us-ascii?Q?N4JJYs4J8qTzthOgxkdi6RA6DF4mHNM6BKamEO6Sx1Nc1rk9GMVYJlpd2NIG?=
- =?us-ascii?Q?DSmm4Fa/yrbY/nNwnNffXiYwl4r6xNRvDaetStm13dMTbX09jFor+aUZh9jl?=
- =?us-ascii?Q?QEc8qUoY3Z9U52YLzEKPCe16x1nrXMvjF+ZM9Alru/wKsKdr6nA5QqaqSvrS?=
- =?us-ascii?Q?hcCiZlounTLDcltzJ4MzD6FnFauWiXOJHMcxceI1j60eY0GcUDe5s7kpxTl9?=
- =?us-ascii?Q?3FI5mXm+qfVofwg2f2vDuPhVZqSvWYlKqH8OpjAJxksqdz4FqqXx8QbDzg/u?=
- =?us-ascii?Q?T3eLa1BAgP47v6RWn/Bq7p3eogSSz6GcWnrI61kBGH6JSNnmVU3iSU7Ly5n7?=
- =?us-ascii?Q?ZSjy8XxNXYDBqweDM59IokZMUtzvG7cb2DqD/MCCrlphdYi3yS/DyU8lpAQh?=
- =?us-ascii?Q?8UXsWn/uJUzDbR+tRYlKHI3K+mm5bHHMEfTxe4L5fR1fpZVLuEfkuqwIsf29?=
- =?us-ascii?Q?ntH5/5GETjmfgvodOxgndK6v9hS50uTTOc6U1mj/0FB+NH3C7EDzR68bJu6Y?=
- =?us-ascii?Q?fuyKu+Lr0ch/VE5+SPxA59d8pBgg2H384oe9LXI9iAfmts8m8qW1tO6Xwfba?=
- =?us-ascii?Q?bvYkDfs22G3yhFHfOcyhRKBEimd9dp4amUsa/6y0xQRtCQDd8YvNQTzkLuv7?=
- =?us-ascii?Q?WIif7TUhj+XKOPTqDz+7VFN0KgHFcwg9tATKatJM+Tn8+NSpX6mwFBxN4CJe?=
- =?us-ascii?Q?0QPgJG0tZPNO95Pl/tAZcPm5w7ryacTJYvsamP9bYp+rR6f86FDTNBW2NcHk?=
- =?us-ascii?Q?XKEpQ0CMwG5Zl6FUxEQmhxFC2DcTzhzunEEjPVv08+iFKL6g6pZteum0fNQH?=
- =?us-ascii?Q?R8sPrOk8WDfeBiwgCk921IZwM4kRRwQraJVhyYuPpLBnmzpD3/92xhPXjoBi?=
- =?us-ascii?Q?2gCSg+LVXmVyGeEhSGHHwxGIyL5Iz6nxNBbWQqLJA7cuP9o5491cVi3pj/vg?=
- =?us-ascii?Q?WQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E9DA309E1B1ABF44A2C9BC87FC3F0BD9@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ 2022 15:01:04 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::957a:9b8f:bb27:2173]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::957a:9b8f:bb27:2173%9]) with mapi id 15.20.5395.020; Mon, 4 Jul 2022
+ 15:01:04 +0000
+Message-ID: <21e90405-559d-d8ec-1c82-81cfab9819f5@oracle.com>
+Date:   Mon, 4 Jul 2022 23:00:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 1/2] common: provide generic block error injection helper
+To:     Christoph Hellwig <hch@lst.de>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20220704090346.108134-1-hch@lst.de>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20220704090346.108134-1-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR06CA0232.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::16) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0b4d2bae-fa69-4283-3c43-08da5dce03e6
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5313:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 08OhV8Mv6c9MVw70JPmFyrZ4GHKhbORE64GDP8oO/07MEKRZtOVvGjH7lcvk2ybJar78mJhXDglAQ5/qDl7HMMIamxOwpQeh9xGYcq8j61B8ouAUmgR3vP9ghYwUz9aG78Yy2+svq27J3XSbMxiOHpK/InZ7pdqhhTmH8nFmHX4wzmIbnmTwdK9RWW8w/pxVZqIrp1sCZDZX3DVd8mhrVRvHkvDy66fwS+78iTlMa7kXaGP+Gz4G/FVvxRb0Tj2R5ixMPOMJaWJFnCR6tplaQ/piNGyQnplaVWKgz4H9etvepvy7NsUmBs5DHuMJJUZAyto+uEUP9wv0LZp4fUwU4gPClSi6q03EcXe8PhjJBowkfb25JxOCfZISWE4UDgGsHBQccUlzEbC4vdZhMYTng0jzSN8H/5r/SZSD4uOaGd3mniecCICBd4q+ybvA34xEhlS0wkEKXgz9SLgTPQeT3V+A9uBCWOCQguzQuaFj+2cqV1N1QVTDDjnDwdwNR19A2omXV+OXGs4iM2VGBl6nJLY/M8X/srp3cWAQa1ep+Wz7fD1Y7i6CdKmo9bRH5JjEI8jnbFymxglUFKYxiv4JAasoipNaj4TD83aF+1Cp0PT4Gozsu9J7pIc5hDhCMQCQihqRR08wDVkdtpOODbwF3WQYewn3nne9+VTw8IpBAGT3OwaeE53hdcMft22WcmtYU+tAFJ9qHQSNjLza2q9BX1nW7cvCuUen2D/NIwufmCnd+J2MokQ1peWmr7W1hvWHTS3D8NPYmYvtJPuKSS2YLKX6u9qoHQB04OMd995ynSG5WHcXMZbmZstjYOhjhl0S8CHYEtN9uiKU+qWwHOa+pGkBjv0gzwCuOMlVELEyZ+A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(396003)(136003)(39860400002)(376002)(346002)(366004)(86362001)(5660300002)(31696002)(38100700002)(36756003)(186003)(2616005)(83380400001)(8936002)(31686004)(6506007)(8676002)(6486002)(478600001)(6512007)(316002)(53546011)(41300700001)(26005)(66476007)(66946007)(2906002)(44832011)(66556008)(6666004)(41533002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R2dlQkx2eDl4QjVyRks4TWhzU2hZTEUvZ0c5WXlBQ2RjUGhCM1Y4R3FvSzYw?=
+ =?utf-8?B?bzEybEttcHJSN0tQS1dsOE5WR0VpdHpNZEo2cWkvdnlSL0FUSjlwaUw2Qi9Z?=
+ =?utf-8?B?YTQ4VVZua1VMNTJZaktJaDhCSE43NVl3THkyckdyaWNXUlZsVWVVZEhLbmYv?=
+ =?utf-8?B?RzhHcWl3Y3pqcllkQUtnUmx1NDhDTURoSmtVOWVLbVlQMmhaZ0RoTWROS2Fz?=
+ =?utf-8?B?NC9PMjRMK1RmQ2RGdGVQZzBoaFArZlpzUXArWDlJN2xQdDRTRDdzOGtXVDM0?=
+ =?utf-8?B?c0JFYnRKOU1OR1VOMnVQb2hxTkI4ak9wRHJDKzRVcDBLT3p5dlBhWUdOb1k2?=
+ =?utf-8?B?a1dqSXFWaWtOT1o5ZlNveFRRMmVDTnlFVFVDSzMyakE1TUxDM0t5NERiMlpM?=
+ =?utf-8?B?UDEwVGp0dkZFemE2UFIwbEFXUVBHNnMwOTBFUU9CVW5ERlVIUmZRU0xNZlMx?=
+ =?utf-8?B?QTd4S1QvVldJMWNMbFRGUk9YS1F4Ymc5WmgwcHQ4YVk3TTJJeVVKQ1VGUWhN?=
+ =?utf-8?B?S3IyZHVMNFR1ZFN0OTVQRnpXNDlKcXhhUjNwTU4wYkxPODFjbjFtRDFIL3R2?=
+ =?utf-8?B?ZVQ1MktRd3Jwamw4N2M1N21NaE4rZmxxK3FyRklWeVFmdHRPMmNwTGIrcU9l?=
+ =?utf-8?B?S0hrNzBwNk1CK0lRMm14R2NuME56N2pYaU1kNXh2dUhWS3NMK29hcXBDMHZX?=
+ =?utf-8?B?SUdVU0g3YkFHM3VSRFIrRUx3ZnhtZXhaTUtBdFk5VEswV1VDQkhJUUZmdnpT?=
+ =?utf-8?B?ekJuS0p1WldackJUclJ5SzJLUEFobjJML3BhdEYzd3o1b2N1d1NIaU5yWEsy?=
+ =?utf-8?B?R01rOTJ1S1Q2dWtITFI3Nkpud1VmODI0MGFjSzRyM3lrMENhK2JvYnRSS0NS?=
+ =?utf-8?B?bXFsUDJlNjJRVERxQzJjWnRSa0xoeS9oWUdtakVjd3FjWGxMVlM5OTZhRW9l?=
+ =?utf-8?B?UkxhOHJlZkJndmZOeng2Q3EvSnBZOUN6Tm8zZ3ZicDV0eDhpWVVwL29rQmNv?=
+ =?utf-8?B?V3BuZm03S0E5aUE4REtkSUwwd2MxTzlEK0t6em5UbkZmVktFSHUxZTZHMlRY?=
+ =?utf-8?B?ZGpiWGsyY2VaS3BnZUNuNVFKQXVmRGQ1OG5zQWpaNEkxb1k2a1JiaDlTWno3?=
+ =?utf-8?B?QVkrdXhjTWI0dXliSDljbWpBbkQvV2o0Z0Jqckk0Q3VQTzFyeFcyWmdzVmRH?=
+ =?utf-8?B?dzVoMU01OHVJU002cWpGUldhSzJHc3BTbTYwYWhLWU5yWFdVWWNkaC9iVUdn?=
+ =?utf-8?B?N3N3TllUVjFWSENuNGQyZUZYc0NTRmxIVGFHTkRxMUYzT2JWNmpocG0xbFZC?=
+ =?utf-8?B?OGUrckRlczNJNFhnb0NCZWFZNXVwNGFGNFgrSjgvYWxqVUp0MGI3VnZVOUFz?=
+ =?utf-8?B?MVdPNWxHWkZTNkRDSG1KQTNuM25SSWlyNlZ1QTVJcHJ2bE1pTkx3WEg3Vmhx?=
+ =?utf-8?B?YmxOclNRUzV3eVRSN1FDeWxvR1ZBM2wvWEhpZWhndHdZbXgrbDQzOVQ2NDlZ?=
+ =?utf-8?B?eHFjZXZrTHNnd1p1TU1jYkJvWkQxSW45dzRoZFkrRHNCVnVhaFg4MjVEQkZK?=
+ =?utf-8?B?MGZJYllSM0ttWWJFOWtwN1FPRG52V2tuY3BLbTlNSUlhOVdxQ3R5U081R2xk?=
+ =?utf-8?B?T1VWTGJZbmpndlJzK0NYOFQvaWJsbXpVRHdQMHVzLzZyaGJUVjhMaTVEUDdF?=
+ =?utf-8?B?TWpDOUJYQ2tRcGozUk9hNXQwN2c1SHpubzBkRnNDdklFc1RteHRHMldwdlYy?=
+ =?utf-8?B?MGZZSmVROTVMRWNvcWxXbHBBVTY2UHlxczVlRUM0ck9YTy9peitLejZVR1BM?=
+ =?utf-8?B?anNBM21OdEs2a2NPSXNxcjZjZFJOSTR2MzRoSVBodzNwbEVpZTQ0dlZpd2x6?=
+ =?utf-8?B?a25sbEdlRVVLMWFrRXd3N1R5b282VVd2ZnlneWxEeGUxVm1PU3piUFM3M0Zp?=
+ =?utf-8?B?ejFKSHhTMzRQc1hnVkZUNGhmYVNTNU9WWG9zMStMNHhOY3cyS1RCWDc1Vkp4?=
+ =?utf-8?B?WXduT0pvNlcwU241Z1kxbjFsWXFmQ203eUZDcWNMK0g5NndRYnhtWlR1SE9Y?=
+ =?utf-8?B?N1NxMWQ3TXFQUFp6TUtWekRRSWtGWWd3VEFvMGpQcEUzL1JTOTc2ZFpjaHJu?=
+ =?utf-8?Q?dapG2sy5He9JgnFTwBOnNzQe6?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b4d2bae-fa69-4283-3c43-08da5dce03e6
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcc85e6e-ffd5-44df-d0e7-08da5dc0e29b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jul 2022 13:27:04.2844
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jul 2022 15:01:03.9838
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: f37Cn2I+AXcbU7HUvZ/d+0+2lnWrlj2tSUqmjX+7jhEXOVsCp5rolFdQ/zTns5oTxw78DXQBfkzZ1NoDeX4DzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR04MB8028
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9qMWLD+g4Ig4PpYAc6fkWHhJqTnOPS3bAiGmlgZfpVgus/r4d982y05gPe+RwKNfX9OSUPU+kq3khqWyXxlo1g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5313
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.517,18.0.883
+ definitions=2022-07-04_14:2022-06-28,2022-07-04 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2204290000
+ definitions=main-2207040066
+X-Proofpoint-GUID: pjqOfCLU9kz1xGVso51eXhbxB4cWBNsC
+X-Proofpoint-ORIG-GUID: pjqOfCLU9kz1xGVso51eXhbxB4cWBNsC
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 04, 2022 at 01:23:44AM -0700, Christoph Hellwig wrote:
-> Please Cc the block list.
+On 04/07/2022 17:03, Christoph Hellwig wrote:
+> Various tests have more or less copy and pasted code to enable and
+> disable block layer "fail make request" error injection.  Move that
+> to a set of common helpers and use those in the drivers.
+> 
 
-Oops, I completely forgot about it. I will do so from the next version.
+> btrfs/150 differened from the other two in a few ways, like selecting
+> a not quite as big number to fail all requests in the small critical
+> section and clearing a bunch of never set attributes in the failure
+> injection configuration, but none of those matter for the test
+> execution.
 
-> On Mon, Jul 04, 2022 at 01:58:05PM +0900, Naohiro Aota wrote:
-> > Add bdev_max_segments() like other queue parameters.
-> >=20
-> > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> > ---
-> >  include/linux/blkdev.h | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >=20
-> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> > index 2f7b43444c5f..62e3ff52ab03 100644
-> > --- a/include/linux/blkdev.h
-> > +++ b/include/linux/blkdev.h
-> > @@ -1206,6 +1206,11 @@ bdev_max_zone_append_sectors(struct block_device=
- *bdev)
-> >  	return queue_max_zone_append_sectors(bdev_get_queue(bdev));
-> >  }
-> > =20
-> > +static inline unsigned int bdev_max_segments(struct block_device *bdev=
-)
-> > +{
-> > +	return queue_max_segments(bdev_get_queue(bdev));
-> > +}
-> > +
-> >  static inline unsigned queue_logical_block_size(const struct request_q=
-ueue *q)
-> >  {
-> >  	int retval =3D 512;
-> > --=20
-> > 2.35.1
-> >=20
-> ---end quoted text---=
+Hm. more below.
+
+
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   common/inject     | 33 +++++++++++++++++++++++++++++++++
+>   tests/btrfs/088   | 24 +++++-------------------
+>   tests/btrfs/150   | 27 +++++----------------------
+>   tests/generic/019 | 44 +++++++++-----------------------------------
+>   4 files changed, 52 insertions(+), 76 deletions(-)
+> 
+> diff --git a/common/inject b/common/inject
+> index 6b590804..137ff5fd 100644
+> --- a/common/inject
+> +++ b/common/inject
+> @@ -111,3 +111,36 @@ _scratch_inject_error()
+>   		_fail "Cannot inject error ${type} value ${value}."
+>   	fi
+>   }
+> +
+> +# enable block error injection globally
+> +_enable_fail_make_request()
+> +{
+> +	echo 100 > $DEBUGFS_MNT/fail_make_request/probability
+
+> +	echo 9999999 > $DEBUGFS_MNT/fail_make_request/times
+
+Instead, can we do
+    printf %#x -1  > $DEBUGFS_MNT/fail_make_request/times
+(as in the documentation).
+
+
+<snip>
+
+> @@ -25,24 +26,6 @@ _require_fail_make_request
+>   _require_scratch_dev_pool 2
+>   _scratch_dev_pool_get 2
+>   
+> -SYSFS_BDEV=`_sysfs_dev $SCRATCH_DEV`
+> -enable_io_failure()
+> -{
+> -	echo 100 > $DEBUGFS_MNT/fail_make_request/probability
+> -	echo 1000 > $DEBUGFS_MNT/fail_make_request/times
+> -	echo 0 > $DEBUGFS_MNT/fail_make_request/verbose
+
+
+> -	echo 1 > $DEBUGFS_MNT/fail_make_request/task-filter
+Only extra line in btrfs/150 is the above line (or did I miss any)?
+Which is deleted in this patch.
+
+Per 'task-filter' documentation
+--------------
+- /sys/kernel/debug/fail*/task-filter:
+
+         Format: { 'Y' | 'N' }
+
+         A value of 'N' disables filtering by process (default).
+         Any positive value limits failures to only processes indicated by
+         /proc/<pid>/make-it-fail==1.
+--------------
+
+<snip>
+
+> -	enable_io_failure
+> -
+> +	_enable_fail_make_request
+> +	_start_fail_dev $SCRATCH_DEV
+>   	result=$(bash -c "
+>   	if [ \$((\$\$ % 2)) == 1 ]; then
+
+>   		echo 1 > /proc/\$\$/make-it-fail
+
+  So this won't work now.
+
+Thanks, Anand
