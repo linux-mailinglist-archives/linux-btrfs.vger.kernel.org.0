@@ -2,146 +2,211 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 275475670DB
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jul 2022 16:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F91D567157
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jul 2022 16:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232739AbiGEOWy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Jul 2022 10:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
+        id S232453AbiGEOkd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Jul 2022 10:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233218AbiGEOWJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Jul 2022 10:22:09 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6102F7;
-        Tue,  5 Jul 2022 07:21:39 -0700 (PDT)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 265E53JS029319;
-        Tue, 5 Jul 2022 14:21:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=PJ6sfBrteaY3d3xMJ6YNRiQMX0P+Yb8RFk/boKnsfdA=;
- b=IcuaBfPCkS3JBXYz13zKb07+pE4O5NfRXxI17vqqWrsxI9QnLGk2v5mZykumnvlyD596
- JnzP3Xr2SmrPg/NxyGSkMxukISXEpNDW3j33H2bcKBWhj45hrAE6dFCgQaTnCmRCgnm8
- 1VqLGH6AeD/AMn8X4+xRRGhCCYZaVMG4FL9e2qViWnvcQdk4Zovx6MAD795soSn2VKfw
- /hrPviNQX29R4lSK2+MqBA+oJK36WrI7OKPOQyC056E7SRQX3uEWTbF6gK1f4Eo/JL3y
- v547QbiLcQC7mzuV16VVZ1sQ4sm7MNQJtYmTjgMMoZcnDwBTE1zwY+Dk7g00wq5ZiBv+ nQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3h4pg0s49g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Jul 2022 14:21:26 +0000
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 265E59PY030047;
-        Tue, 5 Jul 2022 14:21:26 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3h4pg0s48x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Jul 2022 14:21:25 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 265E6SMd031049;
-        Tue, 5 Jul 2022 14:21:24 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3h2d9jc58c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Jul 2022 14:21:24 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 265ELTtp32899530
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Jul 2022 14:21:29 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CEBA55204F;
-        Tue,  5 Jul 2022 14:21:20 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.76.42])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 272035204E;
-        Tue,  5 Jul 2022 14:21:20 +0000 (GMT)
-Date:   Tue, 5 Jul 2022 16:21:18 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Jan Kara <jack@suse.cz>, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove btrfs_writepage_cow_fixup
-Message-ID: <20220705162118.153efe62@thinkpad>
-In-Reply-To: <20220629075837.GA22346@lst.de>
-References: <20220624122334.80603-1-hch@lst.de>
-        <7c30b6a4-e628-baea-be83-6557750f995a@gmx.com>
-        <20220624125118.GA789@lst.de>
-        <20220624130750.cu26nnm6hjrru4zd@quack3.lan>
-        <20220625091143.GA23118@lst.de>
-        <20220627101914.gpoz7f6riezkolad@quack3.lan>
-        <e73be42e-fce5-733a-310d-db9dc5011796@gmx.com>
-        <20220628115356.GB20633@suse.cz>
-        <20220629075837.GA22346@lst.de>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-redhat-linux-gnu)
+        with ESMTP id S232156AbiGEOk0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Jul 2022 10:40:26 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B69A1AD
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Jul 2022 07:40:25 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C0D8B2246E;
+        Tue,  5 Jul 2022 14:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1657032023; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x5rBuowXigbhMsh7vUUQ2PFeU+YwmWf7EM48N0N2T/s=;
+        b=RDbnaCjVz0WKl7Y3/Z6S3HRKag5OCtT0dVj6s5pSiRe92CCjvQ4psU5IIqclf37SWZwDmK
+        4uo6rjGhhj/yMuDHzNKde7LtIrYi4ZJUYNf3zjiVEPuVPxoz7aBuFUG6PNRMIba6xd0F6G
+        xdfcQvo7zA8H6luykI6eFYaHX/p4ckA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5C2AF1339A;
+        Tue,  5 Jul 2022 14:40:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 3dq4E1dNxGIjBgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 05 Jul 2022 14:40:23 +0000
+Message-ID: <47d3c2ee-e602-b6be-bd48-d6d913455a29@suse.com>
+Date:   Tue, 5 Jul 2022 17:40:22 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: qQir0kRs4iE1Xk7GHT__fz80lb2HMA69
-X-Proofpoint-ORIG-GUID: VSjWlvkv1KztAt_UQzmGzsCnbd9pp_os
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-05_10,2022-06-28_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
- priorityscore=1501 mlxscore=0 impostorscore=0 lowpriorityscore=0
- spamscore=0 bulkscore=0 mlxlogscore=710 adultscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2204290000 definitions=main-2207050061
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH 1/4] btrfs: simplify the pending I/O counting in struct
+ compressed_bio
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Boris Burkov <boris@bur.io>
+References: <20220630160130.2550001-1-hch@lst.de>
+ <20220630160130.2550001-2-hch@lst.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <20220630160130.2550001-2-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 29 Jun 2022 09:58:37 +0200
-Christoph Hellwig <hch@lst.de> wrote:
 
-> On Tue, Jun 28, 2022 at 01:53:56PM +0200, David Sterba wrote:
-> > This would work only for the higher level API where eg. RDMA notifies
-> > the filesystem, but there's still the s390 case that is part of the
-> > hardware architecture. The fixup worker is there as a safety for all
-> > other cases, I'm not fine removing or ignoring it.  
+
+On 30.06.22 г. 19:01 ч., Christoph Hellwig wrote:
+> Instead of counting the bytes just count the bios, with an extra
+> reference held during submission.  This significantly simplifies the
+> submission side error handling.
 > 
-> I'd really like to have a confirmation of this whole s390 theory.
-> s390 does treat some dirtying different than the other architectures,
-> but none of that should leak into the file system API if any way that
-> bypasses ->page_mkwrite.
+> This reverts the change commit 6ec9765d746d ("btrfs: introduce
+> compressed_bio::pending_sectors to trace compressed bio") that moved to
+> counting sectors, but unlike the state before that commit the extra
+> reference held during the submission actually keeps the refcounting
+> sane.
 > 
-> Because if it did most file systems would be completely broken on
-> s390.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Boris Burkov <boris@bur.io>
+> ---
+>   fs/btrfs/compression.c | 126 ++++++++++-------------------------------
+>   fs/btrfs/compression.h |   4 +-
+>   2 files changed, 33 insertions(+), 97 deletions(-)
+> 
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 907fc8a4c092c..e756da640fd7b 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -191,44 +191,6 @@ static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
+>   	return 0;
+>   }
+>   
 
-Could you please be more specific about what exactly you mean with
-"the s390 case that is part of the hardware architecture"?
+<snip>
 
-One thing that s390 might handle different from others, is that it
-is not using a HW dirty bit in the PTE, but instead a fault-triggered
-SW dirty bit.
 
-E.g. pte_mkwrite() will mark a PTE as writable (via another SW bit),
-but not clear the HW protection bit, which would then generate a
-fault on first write access. In handle_pte_fault(), the PTE would
-then be marked as dirty via pte_mkdirty(), which also clears the HW
-protection bit, at least for pte_write() PTEs.
-For the !pte_write() COW case, we would go through do_wp_page() like
-everybody else, but probably still end up in some pte_mkdirty()
-eventually, to avoid getting another fault.
+>   		btrfs_record_physical_zoned(cb->inode, cb->start, bio);
+> @@ -476,7 +444,7 @@ static struct bio *alloc_compressed_bio(struct compressed_bio *cb, u64 disk_byte
+>   		return ERR_PTR(ret);
+>   	}
+>   	*next_stripe_start = disk_bytenr + geom.len;
+> -
+> +	refcount_inc(&cb->pending_ios);
+>   	return bio;
+>   }
+>   
+> @@ -503,17 +471,17 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+>   	struct compressed_bio *cb;
+>   	u64 cur_disk_bytenr = disk_start;
+>   	u64 next_stripe_start;
+> -	blk_status_t ret;
+>   	int skip_sum = inode->flags & BTRFS_INODE_NODATASUM;
+>   	const bool use_append = btrfs_use_zone_append(inode, disk_start);
+>   	const unsigned int bio_op = use_append ? REQ_OP_ZONE_APPEND : REQ_OP_WRITE;
+> +	blk_status_t ret = BLK_STS_OK;
+>   
+>   	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+>   	       IS_ALIGNED(len, fs_info->sectorsize));
+>   	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
+>   	if (!cb)
+>   		return BLK_STS_RESOURCE;
+> -	refcount_set(&cb->pending_sectors, compressed_len >> fs_info->sectorsize_bits);
+> +	refcount_set(&cb->pending_ios, 1);
+>   	cb->status = BLK_STS_OK;
+>   	cb->inode = &inode->vfs_inode;
+>   	cb->start = start;
+> @@ -543,8 +511,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+>   				&next_stripe_start);
+>   			if (IS_ERR(bio)) {
+>   				ret = errno_to_blk_status(PTR_ERR(bio));
+> -				bio = NULL;
+> -				goto finish_cb;
+> +				break;
+>   			}
+>   			if (blkcg_css)
+>   				bio->bi_opf |= REQ_CGROUP_PUNT;
+> @@ -588,8 +555,11 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+>   		if (submit) {
+>   			if (!skip_sum) {
+>   				ret = btrfs_csum_one_bio(inode, bio, start, true);
+> -				if (ret)
+> -					goto finish_cb;
+> +				if (ret) {
+> +					bio->bi_status = ret;
+> +					bio_endio(bio);
+> +					break;
+> +				}
+>   			}
+>   
+>   			ASSERT(bio->bi_iter.bi_size);
+> @@ -598,33 +568,12 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+>   		}
+>   		cond_resched();
+>   	}
+> -	if (blkcg_css)
+> -		kthread_associate_blkcg(NULL);
+>   
+> -	return 0;
+> -
+> -finish_cb:
+>   	if (blkcg_css)
+>   		kthread_associate_blkcg(NULL);
+>   
+> -	if (bio) {
+> -		bio->bi_status = ret;
+> -		bio_endio(bio);
+> -	}
+> -	/* Last byte of @cb is submitted, endio will free @cb */
+> -	if (cur_disk_bytenr == disk_start + compressed_len)
+> -		return ret;
+> -
+> -	wait_var_event(cb, refcount_read(&cb->pending_sectors) ==
+> -			   (disk_start + compressed_len - cur_disk_bytenr) >>
+> -			   fs_info->sectorsize_bits);
+> -	/*
+> -	 * Even with previous bio ended, we should still have io not yet
+> -	 * submitted, thus need to finish manually.
+> -	 */
+> -	ASSERT(refcount_read(&cb->pending_sectors));
+> -	/* Now we are the only one referring @cb, can finish it safely. */
+> -	finish_compressed_bio_write(cb);
+> +	if (refcount_dec_and_test(&cb->pending_ios))
+> +		finish_compressed_bio_write(cb);
 
-Not being familiar with either btrfs, any other fs, or RDMA, I cannot
-really follow the discussion here. Still it seems to me that you are
-not talking about special s390 HW architecture regarding PTE, but
-rather about some (struct) page dirtying on the COW path, which should
-be completely common code and not subject to any s390 special case.
+nit: This slightly changes the semantics of the function because with 
+the old code the bio could have been completed in 
+submit_compressed_write iff there was an error during submission for one 
+of the sub-bios. Whilst with this new code there is a chance even in the 
+success case this happens (if the sub bios complete by the time we 
+arrive at this code). Generally that'd be very unlikely due to io 
+latency and indeed this code becomes effective iff there is an error. 
+Personally I'd like such changes to be called out explicitly in the 
+change log or at least with a comment. I guess this ties into the "keeps 
+ref counting sane" in the changelog but what exactly do you mean by 
+sane? I guess it ties into what Qu mentions in his changelog about 
+ensuring the compressed bio is not freed/finished by some completing 
+sub-bio _before_ the submitter had a chance to submit all sub-bios and 
+that the old code was doing another subtle thing - setting the counter 
+the pending bios to 1, and noot incrementing it when doing the final 
+submission, thus ensuring everything works out.
 
-Somewhere in this thread it was also mentioned that "s390 can not do
-page flags update atomically", which I can not confirm, in case this
-was the question. The code in include/linux/page-flags.h seems to
-use normal (arch)_test/set/clear_bit operations, which should always be
-atomic on s390.
+I agree your code is much better however I'd like to have the above 
+details put (perhaps slightly reworded) in the changelog so that those 
+subtle aspects are more visible to someone reading it some months down 
+the line :) .
+
+<snip>
