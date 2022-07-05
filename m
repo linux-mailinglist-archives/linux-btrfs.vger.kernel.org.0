@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6306656644A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jul 2022 09:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82348566435
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jul 2022 09:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbiGEHjp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Jul 2022 03:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37410 "EHLO
+        id S230325AbiGEHjq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Jul 2022 03:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230221AbiGEHjl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Jul 2022 03:39:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A261109A
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Jul 2022 00:39:40 -0700 (PDT)
+        with ESMTP id S230220AbiGEHjm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Jul 2022 03:39:42 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948D0FA
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Jul 2022 00:39:41 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CC3521F9BF
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Jul 2022 07:39:38 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 574672249A
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Jul 2022 07:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657006778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1657006780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dBi5WGj9aezXxqUleDv8hzvocrwOcs6IzI2Veovr3po=;
-        b=AmkfRUSlQ3gO/zh2AK/KduXO9Beg46/4wvVn97MmwKQPSnFCbwtJwjvsx+XK+E9kG71QFp
-        qXAi49K2c0u37H5lNYjJe8SYopoghj9OPyOeI+HBJDnOsyFmZ4B6+1RANBKwYngUCvUr9U
-        y9bmC7f6sEruZKgXq4g+RbkWNrIGB8A=
+        bh=32kkV2b9UJYF/+hS/a3si09xjSXjodQbLEoVgveK+0M=;
+        b=S3FLSx5Luk2RsJWraEQwWzAEU788RR1xT3nefCwxQP203UHtWKJRddGKIUzhkWrDv6oiYE
+        fjI6VbN8GjX7OSjK5CLTE/5fwuKXIuyuDTwiKhSdZBvDWzT5wEa9tGbKcz5H4xcL0ey97X
+        XeiQ7xVHxxgzkPAJjphv+8qYowFWDBQ=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A9DB1339A
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Jul 2022 07:39:37 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A7CC71339A
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Jul 2022 07:39:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4NhYObnqw2L6OwAAMHmgww
+        id aCbPAbvqw2L6OwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Jul 2022 07:39:37 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Jul 2022 07:39:39 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 06/11] btrfs: write-intent: introduce an internal helper to set bits for a range.
-Date:   Tue,  5 Jul 2022 15:39:08 +0800
-Message-Id: <ad68fad714efc8ab938ca69af099afd0e1201075.1657004556.git.wqu@suse.com>
+Subject: [PATCH RFC 07/11] btrfs: write-intent: introduce an internal helper to clear bits for a range.
+Date:   Tue,  5 Jul 2022 15:39:09 +0800
+Message-Id: <98eb4725a05c047ac6b44b398c59da1e6705f005.1657004556.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1657004556.git.wqu@suse.com>
 References: <cover.1657004556.git.wqu@suse.com>
@@ -60,74 +60,45 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This new helper. write_intent_clear_bits(), is much simpler than the set
+bits counter part.
+
+As if we can not find a entry for our target range, then it must be
+something wrong, and we only need to warn and skip to next entry.
+
+Although there has one extra thing to do, if we have emptied one entry,
+we have to delete that empty entry.
+
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/write-intent.c | 251 ++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/write-intent.h |  16 +++
- 2 files changed, 267 insertions(+)
+ fs/btrfs/write-intent.c | 175 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 175 insertions(+)
 
 diff --git a/fs/btrfs/write-intent.c b/fs/btrfs/write-intent.c
-index a43c6d94f8cd..0650f168db79 100644
+index 0650f168db79..6b99e7c70908 100644
 --- a/fs/btrfs/write-intent.c
 +++ b/fs/btrfs/write-intent.c
-@@ -259,6 +259,257 @@ static int write_intent_init(struct btrfs_fs_info *fs_info)
- 	return 0;
+@@ -326,6 +326,36 @@ static void set_bits_in_one_entry(struct write_intent_ctrl *ctrl,
+ 	wie_set_bitmap(entry, bitmaps);
  }
  
-+static struct write_intent_entry *write_intent_entry_nr(
-+				struct write_intent_ctrl *ctrl, int nr)
++static bool is_entry_empty(struct write_intent_ctrl *ctrl,
++			   struct write_intent_entry *entry)
 +{
++	unsigned long bitmaps[2];
 +
-+	ASSERT(nr < WRITE_INTENT_INTERNAL_BITMAPS_MAX_ENTRIES);
-+	return (page_address(ctrl->page) +
-+		sizeof(struct write_intent_super) +
-+		nr * sizeof(struct write_intent_entry));
++	wie_get_bitmap(entry, bitmaps);
++
++	return bitmap_empty(bitmaps, WRITE_INTENT_BITS_PER_ENTRY);
 +}
 +
 +/*
-+ * Return <0 if the bytenr is before the given entry.
-+ * Return 0 if the bytenr is inside the given entry.
-+ * Return >0 if the bytenr is after the given entry.
++ * NOTE: This function may clear all bits of an entry, caller must check if
++ * that's the case, and delete the empty entry if needed.
 + */
-+static int compare_bytenr_to_range(u64 bytenr, u64 start, u32 len)
-+{
-+	if (bytenr < start)
-+		return -1;
-+	if (start <= bytenr && bytenr < start + len)
-+		return 0;
-+	return 1;
-+}
-+
-+/*
-+ * Move all non-empty entries starting from @nr, to the right, and make room
-+ * for @nr_new entries.
-+ * Those new entries will be all zero filled.
-+ *
-+ * Caller should ensure we have enough room for @nr_new new entries.
-+ */
-+static void move_entries_right(struct write_intent_ctrl *ctrl, int nr,
-+			       int nr_new)
-+{
-+	struct write_intent_super *wis = page_address(ctrl->page);
-+	int move_size;
-+
-+	ASSERT(nr_new > 0);
-+	ASSERT(wi_super_nr_entries(wis) + nr_new <=
-+	       WRITE_INTENT_INTERNAL_BITMAPS_MAX_ENTRIES);
-+
-+	move_size = (wi_super_nr_entries(wis) - nr) *
-+		     sizeof(struct write_intent_entry);
-+
-+	memmove(write_intent_entry_nr(ctrl, nr + nr_new),
-+		write_intent_entry_nr(ctrl, nr), move_size);
-+	memset(write_intent_entry_nr(ctrl, nr), 0,
-+	       nr_new * sizeof(struct write_intent_entry));
-+	wi_set_super_nr_entries(wis, wi_super_nr_entries(wis) + nr_new);
-+}
-+
-+static void set_bits_in_one_entry(struct write_intent_ctrl *ctrl,
-+				  struct write_intent_entry *entry,
-+				  u64 bytenr, u32 len)
++static void clear_bits_in_one_entry(struct write_intent_ctrl *ctrl,
++				    struct write_intent_entry *entry,
++				    u64 bytenr, u32 len)
 +{
 +	const u64 entry_start = wi_entry_bytenr(entry);
 +	const u32 entry_len = write_intent_entry_size(ctrl);
@@ -136,67 +107,51 @@ index a43c6d94f8cd..0650f168db79 100644
 +	wie_get_bitmap(entry, bitmaps);
 +
 +	ASSERT(entry_start <= bytenr && bytenr + len <= entry_start + entry_len);
-+	bitmap_set(bitmaps, (bytenr - entry_start) / ctrl->blocksize,
++	bitmap_clear(bitmaps, (bytenr - entry_start) / ctrl->blocksize,
 +		   len / ctrl->blocksize);
 +	wie_set_bitmap(entry, bitmaps);
 +}
 +
-+/*
-+ * Insert new entries for the range [@bytenr, @bytenr + @len) at slot @nr
-+ * and fill the new entries with proper bytenr and bitmaps.
-+ */
-+static void insert_new_entries(struct write_intent_ctrl *ctrl, int nr,
-+			       u64 bytenr, u32 len)
+ /*
+  * Insert new entries for the range [@bytenr, @bytenr + @len) at slot @nr
+  * and fill the new entries with proper bytenr and bitmaps.
+@@ -371,6 +401,25 @@ static void insert_new_entries(struct write_intent_ctrl *ctrl, int nr,
+ 	}
+ }
+ 
++static void delete_one_entry(struct write_intent_ctrl *ctrl, int nr)
 +{
-+	const u32 entry_size = write_intent_entry_size(ctrl);
-+	u64 entry_start;
-+	u64 new_start = round_down(bytenr, entry_size);
-+	u64 new_end;
-+	int nr_new_entries;
-+	u64 cur;
++	struct write_intent_super *wis = page_address(ctrl->page);
++	int cur_nr_entries = wi_super_nr_entries(wis);
 +
-+	if (nr >= wi_super_nr_entries(page_address(ctrl->page)) ||
-+	    nr >= WRITE_INTENT_INTERNAL_BITMAPS_MAX_ENTRIES)
-+		entry_start = U64_MAX;
-+	else
-+		entry_start = wi_entry_bytenr(write_intent_entry_nr(ctrl, nr));
++	ASSERT(is_entry_empty(ctrl, write_intent_entry_nr(ctrl, nr)));
++	ASSERT(nr < cur_nr_entries);
 +
-+	ASSERT(bytenr < entry_start);
++	/* Move all the entries after slot @nr by one slot. */
++	memmove(write_intent_entry_nr(ctrl, nr),
++		write_intent_entry_nr(ctrl, nr + 1),
++		(cur_nr_entries - nr - 1) * sizeof(struct write_intent_entry));
 +
-+	new_end = min(entry_start, round_up(bytenr + len, entry_size));
-+	nr_new_entries = (new_end - new_start) / entry_size;
-+
-+	if (nr_new_entries == 0)
-+		return;
-+
-+	move_entries_right(ctrl, nr, nr_new_entries);
-+
-+	for (cur = new_start; cur < new_end; cur += entry_size, nr++) {
-+		struct write_intent_entry *entry =
-+			write_intent_entry_nr(ctrl, nr);
-+		u64 range_start = max(cur, bytenr);
-+		u64 range_len = min(cur + entry_size, bytenr + len) -
-+				range_start;
-+
-+		/* Fill the bytenr into the new empty entries.*/
-+		wi_set_entry_bytenr(entry, cur);
-+
-+		/* And set the bitmap. */
-+		set_bits_in_one_entry(ctrl, entry, range_start, range_len);
-+	}
++	/* Memzero the right most entry. */
++	memset(write_intent_entry_nr(ctrl, cur_nr_entries - 1), 0,
++	       sizeof(struct write_intent_entry));
++	wi_set_super_nr_entries(wis, cur_nr_entries - 1);
 +}
 +
-+/*
-+ * This should be only called when we have enough room in the bitmaps, and hold
-+ * the wi_ctrl->lock.
-+ */
-+static void write_intent_set_bits(struct write_intent_ctrl *ctrl, u64 bytenr,
-+				  u32 len)
+ /*
+  * This should be only called when we have enough room in the bitmaps, and hold
+  * the wi_ctrl->lock.
+@@ -510,6 +559,132 @@ static void write_intent_set_bits(struct write_intent_ctrl *ctrl, u64 bytenr,
+ 	}
+ }
+ 
++/* This should be only called with wi_ctrl->lock hold. */
++static void write_intent_clear_bits(struct write_intent_ctrl *ctrl, u64 bytenr,
++				    u32 len)
 +{
 +	struct write_intent_super *wis = page_address(ctrl->page);
 +	const u32 entry_size = write_intent_entry_size(ctrl);
 +	int i;
-+	u64 nr_entries = wi_super_nr_entries(wis);
 +	u64 cur_bytenr;
 +
 +	/*
@@ -205,18 +160,6 @@ index a43c6d94f8cd..0650f168db79 100644
 +	 */
 +	ASSERT(IS_ALIGNED(len, BTRFS_STRIPE_LEN));
 +
-+	/*
-+	 * We should have room to contain the worst case scenario, in which we
-+	 * need to create one or more new entry.
-+	 */
-+	ASSERT(nr_entries + bytes_to_entries(bytenr, len, BTRFS_STRIPE_LEN) <=
-+	       WRITE_INTENT_INTERNAL_BITMAPS_MAX_ENTRIES);
-+
-+	/* Empty bitmap, just insert new ones. */
-+	if (wi_super_nr_entries(wis) == 0)
-+		return insert_new_entries(ctrl, 0, bytenr, len);
-+
-+	/* Go through entries to find the one covering our range. */
 +	for (i = 0, cur_bytenr = bytenr;
 +	     i < wi_super_nr_entries(wis) && cur_bytenr < bytenr + len; i++) {
 +		struct write_intent_entry *entry = write_intent_entry_nr(ctrl, i);
@@ -237,20 +180,16 @@ index a43c6d94f8cd..0650f168db79 100644
 +		 *	|<-- entry -->|
 +		 * |<-- bytenr/len -->|
 +		 *
-+		 * We need to insert one or more new entries for the range not
-+		 * covered by the existing entry.
++		 * This case should not happen, it means we have some logged
++		 * dirty range, but it's no longer there.
++		 * Just warn and skip to the next covered range.
 +		 */
-+		if (compare_bytenr_to_range(cur_bytenr, entry_start,
-+					    entry_size) < 0) {
-+			u64 new_range_end;
-+
-+			new_range_end = min(entry_start, bytenr + len);
-+			insert_new_entries(ctrl, i, cur_bytenr,
-+					   new_range_end - cur_bytenr);
-+
-+			cur_bytenr = new_range_end;
++		if (compare_bytenr_to_range(cur_bytenr, entry_start, entry_size) < 0) {
++			WARN_ON_ONCE(1);
++			cur_bytenr = max(bytenr + len, entry_start);
 +			continue;
 +		}
++
 +		/*
 +		 * |<-- entry -->|
 +		 *	|<-- bytenr/len -->|
@@ -260,18 +199,25 @@ index a43c6d94f8cd..0650f168db79 100644
 +		 * |<-------- entry ------->|
 +		 *	|<- bytenr/len ->|
 +		 *
-+		 * In this case, we just set the bitmap in the current entry, and
-+		 * advance @cur_bytenr to the end of the existing entry.
++		 * In this case, we just clear the bitmap in current entry, and
++		 * advance @cur_bytenr.
 +		 * By this, we either go check the range against the next entry,
 +		 * or we finish our current range.
 +		 */
-+		if (compare_bytenr_to_range(cur_bytenr, entry_start,
-+					    entry_size) == 0) {
++		if (compare_bytenr_to_range(cur_bytenr, entry_start, entry_size) == 0) {
 +			u64 range_end = min(entry_end, bytenr + len);
 +
-+			set_bits_in_one_entry(ctrl, entry, cur_bytenr,
-+					      range_end - cur_bytenr);
++			clear_bits_in_one_entry(ctrl, entry, cur_bytenr,
++						range_end - cur_bytenr);
 +			cur_bytenr = range_end;
++			/*
++			 * If the current entry is empty, we need to delete the
++			 * entry and decrease @nr.
++			 */
++			if (is_entry_empty(ctrl, entry)) {
++				delete_one_entry(ctrl, i);
++				i--;
++			}
 +			continue;
 +		}
 +
@@ -297,12 +243,15 @@ index a43c6d94f8cd..0650f168db79 100644
 +				write_intent_entry_nr(ctrl, i + 1);
 +			u64 next_start = wi_entry_bytenr(next);
 +
-+
 +			/* Case (A) and (B), insert the new entries. */
 +			if (cur_bytenr >= entry_end && cur_bytenr < next_start) {
-+				insert_new_entries(ctrl, i + 1, cur_bytenr,
-+						   bytenr + len - cur_bytenr);
++				/*
++				 * This should not happen, as we should always
++				 * have dirty bits in range.
++				 * Just warn and skip to next entry.
++				 */
 +				cur_bytenr = next_start;
++				WARN_ON_ONCE(1);
 +				continue;
 +			}
 +
@@ -316,52 +265,15 @@ index a43c6d94f8cd..0650f168db79 100644
 +		 * |<-- entry -->|
 +		 *		   |<-- bytenr/len -->|
 +		 *
-+		 * We're beyond the last entry. Need to insert new entries.
++		 * Another impossible case, just warn and continue.
 +		 */
-+		insert_new_entries(ctrl, i + 1, cur_bytenr,
-+				   bytenr + len - cur_bytenr);
-+
-+		cur_bytenr = bytenr + len;
++		WARN_ON_ONCE(1);
 +	}
 +}
 +
  int btrfs_write_intent_init(struct btrfs_fs_info *fs_info)
  {
  	struct btrfs_device *highest_dev = NULL;
-diff --git a/fs/btrfs/write-intent.h b/fs/btrfs/write-intent.h
-index 797e57aef0e1..d8f4d285512c 100644
---- a/fs/btrfs/write-intent.h
-+++ b/fs/btrfs/write-intent.h
-@@ -106,6 +106,15 @@ struct write_intent_entry {
- /* The number of bits we can have in one entry. */
- #define WRITE_INTENT_BITS_PER_ENTRY		(64)
- 
-+static inline u32 bytes_to_entries(u64 start, u32 length, u32 blocksize)
-+{
-+	u32 entry_len = blocksize * WRITE_INTENT_BITS_PER_ENTRY;
-+	u64 entry_start = round_down(start, entry_len);
-+	u64 entry_end = round_up(start + length, entry_len);
-+
-+	return DIV_ROUND_UP((u32)(entry_end - entry_start), entry_len);
-+}
-+
- /* In-memory write-intent control structure. */
- struct write_intent_ctrl {
- 	/* For the write_intent super and entries. */
-@@ -189,6 +198,13 @@ WRITE_INTENT_SETGET_FUNCS(super_csum_type, struct write_intent_super,
- 			  csum_type, 16);
- WRITE_INTENT_SETGET_FUNCS(entry_bytenr, struct write_intent_entry, bytenr, 64);
- 
-+static inline u32 write_intent_entry_size(struct write_intent_ctrl *ctrl)
-+{
-+	struct write_intent_super *wis = page_address(ctrl->page);
-+
-+	return wi_super_blocksize(wis) * WRITE_INTENT_BITS_PER_ENTRY;
-+}
-+
- static inline void wie_get_bitmap(struct write_intent_entry *entry,
- 				  unsigned long *bitmap)
- {
 -- 
 2.36.1
 
