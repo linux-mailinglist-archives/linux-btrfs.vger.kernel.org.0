@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDC256AB84
+	by mail.lfdr.de (Postfix) with ESMTP id AE72856AB86
 	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 21:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236718AbiGGTHl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Jul 2022 15:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
+        id S236720AbiGGTHn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Jul 2022 15:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236614AbiGGTHl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 15:07:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5234957230
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 12:07:40 -0700 (PDT)
+        with ESMTP id S236614AbiGGTHn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 15:07:43 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC3359241
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 12:07:42 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 13A811FA8D;
-        Thu,  7 Jul 2022 19:07:39 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 33ADF21FFC;
+        Thu,  7 Jul 2022 19:07:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657220859; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1657220861; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qWpVpX96PVNlgiR8ifg/fSP2iOZtDEvMnzP3k4qvMic=;
-        b=PhUshTz2Vi9/jgLoW3FBkDI5kXTWdK2Cj95aHmnu9tehM8bolzbH2UijDdvMGRyXVUSwLD
-        7FcbcnY7+0I7PUJwL8vIViWi+abRyz2T91m0WFkS+ZJp3K0TKhzJ9MXtXFezUO5MJZu36V
-        U1b7c48IU9eNuvuc53M2p/NSqYJoJDc=
+        bh=V7pdIyV28QhIMSgs5FYRGb4ibBS2zg4bQBHAQW/L6uI=;
+        b=o2Zl80+PpO4mnC/OD5gVoEBFSww0Kf2AV6donM/62rlxAaBkOjJL1S7mcXeFZxusEMc5rE
+        /KW9OEnhXakFYJF5LCgP5mjE7U1HPtqAgJ7Mbijo4MpzkzEDTIWkxAiFSPH1kKlnwI/Pf2
+        MBFYV5ms4X1wrAaJ9Y+pVrRRItOeS/w=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 0BC882C141;
-        Thu,  7 Jul 2022 19:07:39 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 2C2252C141;
+        Thu,  7 Jul 2022 19:07:41 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B0AE9DA83C; Thu,  7 Jul 2022 21:02:53 +0200 (CEST)
+        id D30B3DA83C; Thu,  7 Jul 2022 21:02:55 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH v2 2/3] btrfs: switch btrfs_block_rsv::failfast to bool
-Date:   Thu,  7 Jul 2022 21:02:53 +0200
-Message-Id: <6177f616aa77dc5aa9ab8251ff5acf09f67d78f6.1657220460.git.dsterba@suse.com>
+Subject: [PATCH v2 3/3] btrfs: use enum for btrfs_block_rsv::type
+Date:   Thu,  7 Jul 2022 21:02:55 +0200
+Message-Id: <7851f095eba6e66d1d3d46741f00ba895836c72d.1657220460.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1657220460.git.dsterba@suse.com>
 References: <cover.1657220460.git.dsterba@suse.com>
@@ -52,66 +52,92 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Use simple bool type for the block reserve failfast status, there's
-short to save space as there used to be int but there's no reason for
-that.
+The number of block group reserve types BTRFS_BLOCK_RSV_* is small and
+fits to u8 and there's enough left in case we want to add more.
+For type safety use the enum but make it 8 bits in the structure to save
+space.
+
+The structure size is now 48 on release build, making a slight
+improvement in structures where it's embedded, like btrfs_fs_info or
+btrfs_inode.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/block-rsv.h | 2 +-
- fs/btrfs/file.c      | 2 +-
- fs/btrfs/inode.c     | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/block-rsv.c |  6 +++---
+ fs/btrfs/block-rsv.h | 11 ++++++-----
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
+diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+index 26c43a6ef5d2..06be0644dd37 100644
+--- a/fs/btrfs/block-rsv.c
++++ b/fs/btrfs/block-rsv.c
+@@ -171,7 +171,7 @@ int btrfs_block_rsv_migrate(struct btrfs_block_rsv *src,
+ 	return 0;
+ }
+ 
+-void btrfs_init_block_rsv(struct btrfs_block_rsv *rsv, unsigned short type)
++void btrfs_init_block_rsv(struct btrfs_block_rsv *rsv, enum btrfs_rsv_type type)
+ {
+ 	memset(rsv, 0, sizeof(*rsv));
+ 	spin_lock_init(&rsv->lock);
+@@ -180,7 +180,7 @@ void btrfs_init_block_rsv(struct btrfs_block_rsv *rsv, unsigned short type)
+ 
+ void btrfs_init_metadata_block_rsv(struct btrfs_fs_info *fs_info,
+ 				   struct btrfs_block_rsv *rsv,
+-				   unsigned short type)
++				   enum btrfs_rsv_type type)
+ {
+ 	btrfs_init_block_rsv(rsv, type);
+ 	rsv->space_info = btrfs_find_space_info(fs_info,
+@@ -188,7 +188,7 @@ void btrfs_init_metadata_block_rsv(struct btrfs_fs_info *fs_info,
+ }
+ 
+ struct btrfs_block_rsv *btrfs_alloc_block_rsv(struct btrfs_fs_info *fs_info,
+-					      unsigned short type)
++					      enum btrfs_rsv_type type)
+ {
+ 	struct btrfs_block_rsv *block_rsv;
+ 
 diff --git a/fs/btrfs/block-rsv.h b/fs/btrfs/block-rsv.h
-index 99c491ef128e..0702d4087ff6 100644
+index 0702d4087ff6..0c183709be00 100644
 --- a/fs/btrfs/block-rsv.h
 +++ b/fs/btrfs/block-rsv.h
-@@ -26,8 +26,8 @@ struct btrfs_block_rsv {
- 	struct btrfs_space_info *space_info;
+@@ -9,7 +9,7 @@ enum btrfs_reserve_flush_enum;
+ /*
+  * Types of block reserves
+  */
+-enum {
++enum btrfs_rsv_type {
+ 	BTRFS_BLOCK_RSV_GLOBAL,
+ 	BTRFS_BLOCK_RSV_DELALLOC,
+ 	BTRFS_BLOCK_RSV_TRANS,
+@@ -27,7 +27,8 @@ struct btrfs_block_rsv {
  	spinlock_t lock;
  	bool full;
-+	bool failfast;
- 	unsigned short type;
--	unsigned short failfast;
+ 	bool failfast;
+-	unsigned short type;
++	/* Block reserve type, one of BTRFS_BLOCK_RSV_* */
++	enum btrfs_rsv_type type:8;
  
  	/*
  	 * Qgroup equivalent for @size @reserved
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 734baa729cd3..f406a662e942 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2736,7 +2736,7 @@ int btrfs_replace_file_extents(struct btrfs_inode *inode,
- 		goto out;
- 	}
- 	rsv->size = btrfs_calc_insert_metadata_size(fs_info, 1);
--	rsv->failfast = 1;
-+	rsv->failfast = true;
+@@ -49,13 +50,13 @@ struct btrfs_block_rsv {
+ 	u64 qgroup_rsv_reserved;
+ };
  
- 	/*
- 	 * 1 - update the inode
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7790e307bf54..b9485e19b696 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5433,7 +5433,7 @@ void btrfs_evict_inode(struct inode *inode)
- 	if (!rsv)
- 		goto no_delete;
- 	rsv->size = btrfs_calc_metadata_size(fs_info, 1);
--	rsv->failfast = 1;
-+	rsv->failfast = true;
- 
- 	btrfs_i_size_write(BTRFS_I(inode), 0);
- 
-@@ -8687,7 +8687,7 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
- 	if (!rsv)
- 		return -ENOMEM;
- 	rsv->size = min_size;
--	rsv->failfast = 1;
-+	rsv->failfast = true;
- 
- 	/*
- 	 * 1 for the truncate slack space
+-void btrfs_init_block_rsv(struct btrfs_block_rsv *rsv, unsigned short type);
++void btrfs_init_block_rsv(struct btrfs_block_rsv *rsv, enum btrfs_rsv_type type);
+ void btrfs_init_root_block_rsv(struct btrfs_root *root);
+ struct btrfs_block_rsv *btrfs_alloc_block_rsv(struct btrfs_fs_info *fs_info,
+-					      unsigned short type);
++					      enum btrfs_rsv_type type);
+ void btrfs_init_metadata_block_rsv(struct btrfs_fs_info *fs_info,
+ 				   struct btrfs_block_rsv *rsv,
+-				   unsigned short type);
++				   enum btrfs_rsv_type type);
+ void btrfs_free_block_rsv(struct btrfs_fs_info *fs_info,
+ 			  struct btrfs_block_rsv *rsv);
+ int btrfs_block_rsv_add(struct btrfs_fs_info *fs_info,
 -- 
 2.36.1
 
