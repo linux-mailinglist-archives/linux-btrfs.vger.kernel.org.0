@@ -2,66 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD0056A823
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 18:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4067A56A82E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 18:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235957AbiGGQb0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Jul 2022 12:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
+        id S236161AbiGGQge (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Jul 2022 12:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235444AbiGGQbZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 12:31:25 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344B02A414
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 09:31:25 -0700 (PDT)
+        with ESMTP id S235405AbiGGQgd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 12:36:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B2B4D4C7
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 09:36:32 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D43EE21FF0;
-        Thu,  7 Jul 2022 16:31:23 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A32421FE2E;
+        Thu,  7 Jul 2022 16:36:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1657211483;
+        t=1657211791;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=tHMKhlp7/eLV3yGHGYvVRC/zpkChY7dKLOB5w0yBH0s=;
-        b=qfnOyU0l2s2smAgIDprHXDyS0z4uj0l4OqXWoX3BEKSNiysgIiPS99Kpsh7CNhC36M2MCm
-        DZoLmwMHp/OQXiBvfQySczEb/76A4wcHD4NV6ksbJ21i9146O65Wsl82t8ofb5lp5Hgu4x
-        KIJ8yubi/zquLIGJ4GvpkH4oJDI2NFw=
+        bh=S1Fboi7JfybtZj+SKxbAUkVxj41WGKq7qToDFUedJGM=;
+        b=GOuVcK+bx8U/qD1Zm9gIBrtiuoS02ZsRnCcI2xE+e0Tu5RiOyg5wP9LylWieDxNY1TC49M
+        LYijdJWllLv5hYff6qcqnn0kasYDMZb77bBnihmavpUZg+E2VVCvMy5aP43MblralJWF8O
+        3gyoczlA8rbrKJLq+Dh823tl5hiBorE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1657211483;
+        s=susede2_ed25519; t=1657211791;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=tHMKhlp7/eLV3yGHGYvVRC/zpkChY7dKLOB5w0yBH0s=;
-        b=bByIKGfWtCWxGXLEqL3znHoR51Pyb0LBH+ZuBzh3XOgWsZXKdSvpW/mSaGS8/guHVwt+KQ
-        Sx3sYY/tM0Txy0Cg==
+        bh=S1Fboi7JfybtZj+SKxbAUkVxj41WGKq7qToDFUedJGM=;
+        b=RP8nrrRdU/yWzxwjOqii5cDbTPZao2e44XgIZCjx06aBeirF9zpqXBktUyTqMuwrM0GqDZ
+        MXyKDGdSrt+m4QAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ABE8313A33;
-        Thu,  7 Jul 2022 16:31:23 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74FAA13A33;
+        Thu,  7 Jul 2022 16:36:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id vLgVKVsKx2LxZgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 07 Jul 2022 16:31:23 +0000
-Date:   Thu, 7 Jul 2022 18:26:37 +0200
+        id vvOgG48Lx2K2aAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 07 Jul 2022 16:36:31 +0000
+Date:   Thu, 7 Jul 2022 18:31:44 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove the inode cache check at
- btrfs_is_free_space_inode()
-Message-ID: <20220707162637.GF15169@twin.jikos.cz>
+Cc:     linux-btrfs@vger.kernel.org, willy@infradead.org
+Subject: Re: [PATCH 0/3] btrfs: fix a couple sleeps while holding a spinlock
+Message-ID: <20220707163144.GG15169@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <41a45a354624cbe3bc1ccfb100af7699e73090d3.1657102391.git.fdmanana@suse.com>
+        linux-btrfs@vger.kernel.org, willy@infradead.org
+References: <cover.1657097693.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <41a45a354624cbe3bc1ccfb100af7699e73090d3.1657102391.git.fdmanana@suse.com>
+In-Reply-To: <cover.1657097693.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -73,34 +72,16 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 06, 2022 at 11:14:23AM +0100, fdmanana@kernel.org wrote:
+Adding Matthew to CC
+
+On Wed, Jul 06, 2022 at 10:09:44AM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> The inode cache feature was removed in kernel 5.11, and we no longer have
-> any code that reads from or writes to inode caches. We may still mount a
-> filesystem that has inode caches, but they are ignored.
-> 
-> Remove the check for an inode cache from btrfs_is_free_space_inode(),
-> since we no longer have code to trigger reads from an inode cache or
-> writes to an inode cache. The check at send.c is still needed, because
-> in case we find a filesystem with an inode cache, we must ignore it.
-> Also leave the checks at tree-checker.c, as they are sanity checks.
-> 
-> This eliminates a dead branch and reduces the amount of code since it's
-> in an inline function.
-> 
-> Before:
-> 
-> $ size fs/btrfs/btrfs.ko
->    text	   data	    bss	    dec	    hex	filename
-> 1620662	 189240	  29032	1838934	 1c0f56	fs/btrfs/btrfs.ko
-> 
-> After:
-> 
-> $ size fs/btrfs/btrfs.ko
->    text	   data	    bss	    dec	    hex	filename
-> 1620502	 189240	  29032	1838774	 1c0eb6	fs/btrfs/btrfs.ko
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> After the recent conversions of a couple radix trees to XArrays, we now
+> can end up attempting to sleep while holding a spinlock.
 
-Added to misc-next, thanks.
+Ouch, I worked on the asumption that the old preload API is
+transparently provided by xarray and that sleeping under spinlock won't
+happen, otherwise the conversion from radix to xarray is not just an API
+rename. Note that for some time the radix_tree structure was just an
+alias for xarray, so this is not a new behaviour.
