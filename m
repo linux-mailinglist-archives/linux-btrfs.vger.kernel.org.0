@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5D25699E3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 07:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754C05699E5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 07:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234900AbiGGFdD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Jul 2022 01:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
+        id S234908AbiGGFdE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Jul 2022 01:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiGGFdC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 01:33:02 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795F031345
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Jul 2022 22:33:01 -0700 (PDT)
+        with ESMTP id S229538AbiGGFdD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 01:33:03 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9343134C
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Jul 2022 22:33:02 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 373991F8D3
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 05:33:00 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3C37721D94
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 05:33:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657171980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1657171981; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QCVTq+nLUTbwjNpOFA353mI3mKirIJBPM6fhcatjdWk=;
-        b=ZvdZhZOnGRrbHTM/6sHf/ZDsgn4d+vMwGHiLAM3/0x/kEcEc+HjEN6PwGLhJFJo/rQaHdt
-        WuY097MEQAskrTv/eW7EFz0+SCgyBP1rEX0NivoeY/1Sf8kMzZUunJCjwR3sfy7gFoMgSZ
-        Kt5PRZ8NXhdWKtJaWZRCHq2zhalbmuM=
+        bh=c0ZUXn5ypN199wPptlBGguCI5w7lGApL6vasq0MC4OY=;
+        b=qPCHSgLPelzS7WCe2a9GhU9mZHuHTjnPSLcXmzi97T4w/92zB2Uyos0jDYJtwyj7s7rZ8G
+        bmaBLDl8JvbOawcLeyttaU+qNXceZrtg2Rs4pRVpjdgnFytaMmfpw9KXfcsyqx8INHZIn1
+        2a8QJb3FbmA2NQyjwCFB6X/r4CyM0Fs=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 295DB13488
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 05:32:58 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 95E6113488
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 05:33:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id CDPwBgpwxmKcLAAAMHmgww
+        id WFx0GAxwxmKcLAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 07 Jul 2022 05:32:58 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 07 Jul 2022 05:33:00 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 03/12] btrfs: introduce the on-disk format of btrfs write intent bitmaps
-Date:   Thu,  7 Jul 2022 13:32:28 +0800
-Message-Id: <20e6fdb9e8fa3ba80a5b2c1988a377e7f5733abb.1657171615.git.wqu@suse.com>
+Subject: [PATCH 04/12] btrfs: load/create write-intent bitmaps at mount time
+Date:   Thu,  7 Jul 2022 13:32:29 +0800
+Message-Id: <ea4fb51b43020793d37c022eb0597b851c4c20ad.1657171615.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1657171615.git.wqu@suse.com>
 References: <cover.1657171615.git.wqu@suse.com>
@@ -60,256 +60,284 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With extra comments explaining the on-disk format and the basic
-workflow.
+This patch will introduce btrfs_fs_info::wi_ctrl, which will have a
+non-highmem page for the write intent bitmaps.
+
+Please note that, if we can't find a valid bitmaps, the newly create one
+will only be in memory for now, the bitmaps writeback functionality will
+be introduced in the next commit.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c      |   4 +-
- fs/btrfs/raid56.c       |   1 +
- fs/btrfs/write-intent.h | 199 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 203 insertions(+), 1 deletion(-)
- create mode 100644 fs/btrfs/write-intent.h
+ fs/btrfs/Makefile       |   2 +-
+ fs/btrfs/ctree.h        |   1 +
+ fs/btrfs/disk-io.c      |   7 ++
+ fs/btrfs/write-intent.c | 174 ++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/write-intent.h |  15 ++++
+ 5 files changed, 198 insertions(+), 1 deletion(-)
+ create mode 100644 fs/btrfs/write-intent.c
 
+diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+index 99f9995670ea..af93119d52e2 100644
+--- a/fs/btrfs/Makefile
++++ b/fs/btrfs/Makefile
+@@ -31,7 +31,7 @@ btrfs-y += super.o ctree.o extent-tree.o print-tree.o root-tree.o dir-item.o \
+ 	   backref.o ulist.o qgroup.o send.o dev-replace.o raid56.o \
+ 	   uuid-tree.o props.o free-space-tree.o tree-checker.o space-info.o \
+ 	   block-rsv.o delalloc-space.o block-group.o discard.o reflink.o \
+-	   subpage.o tree-mod-log.o
++	   subpage.o tree-mod-log.o write-intent.o
+ 
+ btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
+ btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) += check-integrity.o
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 908a735a66cf..fcc8ae4b7fb4 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -989,6 +989,7 @@ struct btrfs_fs_info {
+ 	struct workqueue_struct *scrub_wr_completion_workers;
+ 	struct workqueue_struct *scrub_parity_workers;
+ 	struct btrfs_subpage_info *subpage_info;
++	struct write_intent_ctrl *wi_ctrl;
+ 
+ 	struct btrfs_discard_ctl discard_ctl;
+ 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 967c020c380a..963a89cd4bfb 100644
+index 963a89cd4bfb..edbb21706bda 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -42,6 +42,7 @@
- #include "space-info.h"
- #include "zoned.h"
- #include "subpage.h"
-+#include "write-intent.h"
+@@ -3699,6 +3699,12 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 			  ret);
+ 		goto fail_block_groups;
+ 	}
++	ret = btrfs_write_intent_init(fs_info);
++	if (ret) {
++		btrfs_err(fs_info, "failed to init write-intent bitmaps: %d",
++			  ret);
++		goto fail_block_groups;
++	}
+ 	ret = btrfs_recover_balance(fs_info);
+ 	if (ret) {
+ 		btrfs_err(fs_info, "failed to recover balance: %d", ret);
+@@ -4639,6 +4645,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 		ret = btrfs_commit_super(fs_info);
+ 		if (ret)
+ 			btrfs_err(fs_info, "commit super ret %d", ret);
++		btrfs_write_intent_free(fs_info);
+ 	}
  
- #define BTRFS_SUPER_FLAG_SUPP	(BTRFS_HEADER_FLAG_WRITTEN |\
- 				 BTRFS_HEADER_FLAG_RELOC |\
-@@ -2844,7 +2845,8 @@ static int validate_super(struct btrfs_fs_info *fs_info,
- 		 * Extra check like the length check against the reserved space
- 		 * will happen at bitmap load time.
- 		 */
--		if (btrfs_super_reserved_bytes(sb) < BTRFS_DEVICE_RANGE_RESERVED) {
-+		if (btrfs_super_reserved_bytes(sb) <
-+		    BTRFS_DEVICE_RANGE_RESERVED + WRITE_INTENT_BITMAPS_SIZE) {
- 			btrfs_err(fs_info,
- 			"not enough reserved space for write intent bitmap");
- 			ret = -EINVAL;
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index c6411c849fea..7b2d2b6c8c61 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -19,6 +19,7 @@
- #include "volumes.h"
- #include "raid56.h"
- #include "async-thread.h"
-+#include "write-intent.h"
- 
- /* set when additional merges to this rbio are not allowed */
- #define RBIO_RMW_LOCKED_BIT	1
-diff --git a/fs/btrfs/write-intent.h b/fs/btrfs/write-intent.h
+ 	if (BTRFS_FS_ERROR(fs_info))
+diff --git a/fs/btrfs/write-intent.c b/fs/btrfs/write-intent.c
 new file mode 100644
-index 000000000000..b851917bb0b6
+index 000000000000..a7ed21182525
 --- /dev/null
-+++ b/fs/btrfs/write-intent.h
-@@ -0,0 +1,199 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++++ b/fs/btrfs/write-intent.c
+@@ -0,0 +1,174 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+/* Btrfs specific write-intent bitmaps. */
-+
-+#ifndef BTRFS_WRITE_INTENT_H
-+#define BTRFS_WRITE_INTENT_H
-+
-+#include <linux/types.h>
-+#include <linux/sizes.h>
-+/* For BTRFS_STRIPE_LEN. */
++#include "ctree.h"
 +#include "volumes.h"
-+
-+#define WRITE_INTENT_SUPER_MAGIC 0x515F62536249775FULL /* ascii _wIbSb_Q */
-+
-+/* This write-intent bitmap records writes for RAID56 writes. */
-+#define WRITE_INTENT_FLAGS_TARGET_RAID56	(1ULL << 0)
-+
-+/* This write-intent bitmap is internal, aka locates at 1MiB of each device. */
-+#define WRITE_INTENT_FLAGS_INTERNAL		(1ULL << 1)
-+
-+/* This write-intent bitmap uses logical bytenr. */
-+#define WRITE_INTENT_FLAGS_BYTENR_LOGICAL	(1ULL << 2)
-+
-+#define WRITE_INTENT_FLAGS_SUPPORTED			\
-+	(WRITE_INTENT_FLAGS_TARGET_RAID56 |		\
-+	 WRITE_INTENT_FLAGS_INTERNAL |			\
-+	 WRITE_INTENT_FLAGS_BYTENR_LOGICAL)
++#include "write-intent.h"
 +
 +/*
-+ * We use BTRFS_STRIPE_LEN as blocksize.
-+ * This makes a RAID56 full stripe to @nr_data bits, and greatly
-+ * enlarge how many bytes we can represent just using 4KiB.
++ * Return 0 if a valid write intent bitmap can be found.
++ * Return 1 if no valid write intent bitmap can be found.
++ * Return <0 for other fatal errors.
 + */
-+#define WRITE_INTENT_BLOCKSIZE			(BTRFS_STRIPE_LEN)
++static int write_intent_load(struct btrfs_device *device, struct page *dst)
++{
++	struct btrfs_fs_info *fs_info = device->fs_info;
++	struct write_intent_super *wis;
++	struct bio *bio;
++	int ret;
 +
-+/*
-+ * For now, 4KiB is enough, as using 64KiB blocksize we can save bitmaps
-+ * for 896MiB (224 entries, each entri can cache 64KiB * 64) sized logical
-+ * range.
-+ */
-+#define WRITE_INTENT_BITMAPS_SIZE		(SZ_4K)
++	bio = bio_alloc(device->bdev, 1, REQ_OP_READ | REQ_SYNC | REQ_META,
++			GFP_NOFS);
++	/* It's backed by fs_bioset. */
++	ASSERT(bio);
++	bio->bi_iter.bi_sector = BTRFS_DEVICE_RANGE_RESERVED >> SECTOR_SHIFT;
++	__bio_add_page(bio, dst, WRITE_INTENT_BITMAPS_SIZE, 0);
++	ret = submit_bio_wait(bio);
++	if (ret < 0)
++		return ret;
 +
++	wis = page_address(dst);
++	if (wi_super_magic(wis) != WRITE_INTENT_SUPER_MAGIC)
++		return 1;
 +
-+/*
-+ * The super block of write intent bitmaps, should be at physical offset 1MiB of
-+ * every writeable device.
-+ */
-+struct write_intent_super {
-+	/* Csum for the super block and all the internal entries. */
-+	__u8 csum[BTRFS_CSUM_SIZE];
-+	__u8 fsid[BTRFS_FSID_SIZE];
++	/* Stale bitmaps, doesn't belong to our fs. */
++	if (memcmp(wis->fsid, device->fs_devices->fsid, BTRFS_FSID_SIZE))
++		return 1;
 +
-+	__le64 magic;
++	/* Above checks pass, but still csum mismatch, a big problem. */
++	if (btrfs_super_csum_type(fs_info->super_copy) !=
++	    wi_super_csum_type(wis)) {
++		btrfs_err(fs_info,
++		"csum type mismatch, write intent bitmap has %u fs has %u",
++			  wi_super_csum_type(wis),
++			  btrfs_super_csum_type(fs_info->super_copy));
++		return -EUCLEAN;
++	}
 +
-+	/* Important behavior flags would be set here. */
-+	__le64 flags;
++	if (wi_super_flags(wis) & ~WRITE_INTENT_FLAGS_SUPPORTED) {
++		btrfs_err(fs_info, "unsupported flags 0x%llx",
++			  wi_super_flags(wis) & ~WRITE_INTENT_FLAGS_SUPPORTED);
++		return -EOPNOTSUPP;
++	}
++
++	return ret;
++}
++
++static void write_intent_init(struct btrfs_fs_info *fs_info)
++{
++	struct write_intent_ctrl *ctrl = fs_info->wi_ctrl;
++	struct write_intent_super *wis;
++
++	ASSERT(ctrl);
++	ASSERT(ctrl->page);
++
++	/* Always start event count from 1. */
++	atomic64_set(&ctrl->event, 1);
++	ctrl->blocksize = WRITE_INTENT_BLOCKSIZE;
++	memzero_page(ctrl->page, 0, WRITE_INTENT_BITMAPS_SIZE);
++
++	wis = page_address(ctrl->page);
++	memcpy(wis->fsid, fs_info->fs_devices->fsid, BTRFS_FSID_SIZE);
++	wi_set_super_magic(wis, WRITE_INTENT_SUPER_MAGIC);
++	wi_set_super_csum_type(wis, btrfs_super_csum_type(fs_info->super_copy));
++	wi_set_super_events(wis, 1);
++	wi_set_super_flags(wis, WRITE_INTENT_FLAGS_SUPPORTED);
++	wi_set_super_size(wis, WRITE_INTENT_BITMAPS_SIZE);
++	wi_set_super_blocksize(wis, ctrl->blocksize);
++	wi_set_super_nr_entries(wis, 0);
++	btrfs_info(fs_info, "creating new write intent bitmaps");
++}
++
++int btrfs_write_intent_init(struct btrfs_fs_info *fs_info)
++{
++	struct btrfs_device *highest_dev = NULL;
++	struct btrfs_device *dev;
++	struct write_intent_super *wis;
++	u64 highest_event = 0;
++	int ret;
++
++	ASSERT(fs_info->wi_ctrl == NULL);
++	if (!btrfs_fs_compat_ro(fs_info, WRITE_INTENT_BITMAP))
++		return 0;
++
++	fs_info->wi_ctrl = kzalloc(sizeof(*fs_info->wi_ctrl), GFP_NOFS);
++	if (!fs_info->wi_ctrl)
++		return -ENOMEM;
++
++	fs_info->wi_ctrl->page = alloc_page(GFP_NOFS);
++	if (!fs_info->wi_ctrl->page) {
++		ret = -ENOMEM;
++		goto cleanup;
++	}
 +
 +	/*
-+	 * Event counter for the bitmap, every time the bitmaps get written
-+	 * this value increases.
-+	 */
-+	__le64 events;
-+
-+	/*
-+	 * Total size of the bitmaps, including this super block and all the
-+	 * entries.
++	 * Go through every writeable device to find the highest event.
 +	 *
-+	 * U32 should be enough for internal bitmaps, but just in case we want
-+	 * to support external device as dedicated journal/bitmap device.
++	 * Only the write-intent with highest event number makes sense.
++	 * If during bitmap writeback we lost power, some dev may have old
++	 * bitmap which is already stale.
 +	 */
-+	__le64 size;
++	list_for_each_entry(dev, &fs_info->fs_devices->devices, dev_list) {
++		u64 cur_event;
 +
-+	/* How many entries we have utilized. */
-+	__le64 nr_entries;
++		if (!dev->bdev)
++			continue;
 +
-+	/* How many bytes one bit represents. */
-+	__le32 blocksize;
-+	/*
-+	 * This should be the same as btrfs_super_block::csum_type.
-+	 * Cache csum type here so we read the write intent superblock without
-+	 * a fully opened btrfs (for dump purpose).
-+	 */
-+	__le16 csum_type;
++		ret = write_intent_load(dev, fs_info->wi_ctrl->page);
++		if (ret > 0)
++			continue;
++		if (ret < 0) {
++			btrfs_err(fs_info,
++			"failed to load write intent from devid %llu: %d",
++				  dev->devid, ret);
++			goto cleanup;
++		}
++		wis = page_address(fs_info->wi_ctrl->page);
++		cur_event = wi_super_events(wis);
++		if (cur_event > highest_event) {
++			highest_dev = dev;
++			highest_event = cur_event;
++		}
++	}
 +
-+	/* For future expansion, padding to 512 bytes. */
-+	__u8 reserved1[418];
-+} __attribute__ ((__packed__));
++	/* Load the bitmap with lowest event as our bitmap. */
++	if (highest_dev) {
++		ret = write_intent_load(highest_dev, fs_info->wi_ctrl->page);
++		if (ret < 0) {
++			btrfs_err(fs_info,
++			"failed to load write intent from devid %llu: %d",
++				  dev->devid, ret);
++			goto cleanup;
++		}
++		wis = page_address(fs_info->wi_ctrl->page);
++		atomic64_set(&fs_info->wi_ctrl->event, wi_super_events(wis));
++		fs_info->wi_ctrl->blocksize = wi_super_blocksize(wis);
++		btrfs_info(fs_info,
++			"loaded write intent bitmaps, event count %llu",
++			atomic64_read(&fs_info->wi_ctrl->event));
++		return 0;
++	}
 +
-+static_assert(sizeof(struct write_intent_super) == 512);
++	/* No valid bitmap found, create a new one. */
++	write_intent_init(fs_info);
++	return 0;
++cleanup:
++	if (fs_info->wi_ctrl) {
++		if (fs_info->wi_ctrl->page)
++			__free_page(fs_info->wi_ctrl->page);
++		kfree(fs_info->wi_ctrl);
++		fs_info->wi_ctrl = NULL;
++	}
++	return ret;
++}
 +
-+struct write_intent_entry {
-+	/*
-+	 * Bytenr 0 is special, means this entry is empty, and also means the
-+	 * end of the bitmaps.
-+	 */
-+	__le64 bytenr;
-+	__le64 bitmap;
++void btrfs_write_intent_free(struct btrfs_fs_info *fs_info)
++{
++	struct write_intent_ctrl *ctrl = fs_info->wi_ctrl;
++
++	if (!ctrl)
++		return;
++	ASSERT(ctrl->page);
++	__free_page(ctrl->page);
++	kfree(ctrl);
++	fs_info->wi_ctrl = NULL;
++}
+diff --git a/fs/btrfs/write-intent.h b/fs/btrfs/write-intent.h
+index b851917bb0b6..2c5cd434e978 100644
+--- a/fs/btrfs/write-intent.h
++++ b/fs/btrfs/write-intent.h
+@@ -106,6 +106,18 @@ struct write_intent_entry {
+ /* The number of bits we can have in one entry. */
+ #define WRITE_INTENT_BITS_PER_ENTRY		(64)
+ 
++/* In-memory write-intent control structure. */
++struct write_intent_ctrl {
++	/* For the write_intent super and entries. */
++	struct page *page;
++
++	/* Cached event counter.*/
++	atomic64_t event;
++
++	/* Cached blocksize from write intent super. */
++	u32 blocksize;
 +};
 +
-+/* How many entries we can have in the bitmaps. */
-+#define WRITE_INTENT_INTERNAL_BITMAPS_MAX_ENTRIES		\
-+	((WRITE_INTENT_BITMAPS_SIZE -				\
-+	  sizeof(struct write_intent_super)) /			\
-+	 sizeof(struct write_intent_entry))
+ /*
+  * ON-DISK FORMAT
+  * ==============
+@@ -196,4 +208,7 @@ static inline void wie_set_bitmap(struct write_intent_entry *entry,
+ #endif
+ }
+ 
++int btrfs_write_intent_init(struct btrfs_fs_info *fs_info);
++void btrfs_write_intent_free(struct btrfs_fs_info *fs_info);
 +
-+/* The number of bits we can have in one entry. */
-+#define WRITE_INTENT_BITS_PER_ENTRY		(64)
-+
-+/*
-+ * ON-DISK FORMAT
-+ * ==============
-+ *
-+ * [ super ][ entry 1 ][ entry 2 ] ... [entry N]
-+ * |<------------  super::size --------------->|
-+ *
-+ * Normally it's 4KiB in size for internal bitmap.
-+ *
-+ * Currently the write-intent bitmaps is only for RAID56 writes, thus its
-+ * blocksize is always 64KiB.
-+ * Thus one entry can represent at most 4MiB (64 * 64 KiB) of logical range.
-+ *
-+ * When one raid56 full stripe needs partial writeback, the full stripe logical
-+ * bytenr range will be included into at least one entry.
-+ *
-+ * After the last used entry, the remaining entries will all be filled with 0.
-+ *
-+ * WORKFLOW
-+ * ========
-+ *
-+ * 1) Write bio arrive
-+ *    Every write meets the requirement (so far, only RAID56 partial write) will
-+ *    have its bio delayed, until corresponding range are marked in the entry.
-+ *
-+ * 2) Update the write-intent bitmaps
-+ *    The entries will be populated, and write back to all writeable devices,
-+ *    with FUA flag set.
-+ *    Will wait until the write reaches disks.
-+ *
-+ * 3) Allow the involved write bios to be submitted
-+ *
-+ * 4) Write bios finish
-+ *    The corresponding range will be recorded to be freed at next flush.
-+ *
-+ * 5) All devices get flushed (caused by btrfs super block writeback or bitmaps
-+ *    pressure)
-+ *    The recorded ranges will be cleared. And if an entry is empty, it will be
-+ *    freed.
-+ *    Then update the write-intent bitmaps with its superblock (writeback with FUA
-+ *    flag and wait for it).
-+ */
-+
-+#define WRITE_INTENT_SETGET_FUNCS(name, type, member, bits)	\
-+static inline u##bits wi_##name(const type *s)			\
-+{								\
-+	return le##bits##_to_cpu(s->member);			\
-+}								\
-+static inline void wi_set_##name(type *s, u##bits val)		\
-+{								\
-+	s->member = cpu_to_le##bits(val);			\
-+}
-+
-+WRITE_INTENT_SETGET_FUNCS(super_magic, struct write_intent_super, magic, 64);
-+WRITE_INTENT_SETGET_FUNCS(super_flags, struct write_intent_super, flags, 64);
-+WRITE_INTENT_SETGET_FUNCS(super_events, struct write_intent_super, events, 64);
-+WRITE_INTENT_SETGET_FUNCS(super_size, struct write_intent_super, size, 64);
-+WRITE_INTENT_SETGET_FUNCS(super_nr_entries, struct write_intent_super,
-+			  nr_entries, 64);
-+WRITE_INTENT_SETGET_FUNCS(super_blocksize, struct write_intent_super,
-+			  blocksize, 32);
-+WRITE_INTENT_SETGET_FUNCS(super_csum_type, struct write_intent_super,
-+			  csum_type, 16);
-+WRITE_INTENT_SETGET_FUNCS(entry_bytenr, struct write_intent_entry, bytenr, 64);
-+
-+static inline void wie_get_bitmap(struct write_intent_entry *entry,
-+				  unsigned long *bitmap)
-+{
-+#ifdef __LITTLE_ENDIAN
-+	bitmap_from_arr64(bitmap, &entry->bitmap, WRITE_INTENT_BITS_PER_ENTRY);
-+#else
-+	u64 val = le64_to_cpu(entry->bitmap);
-+
-+	bitmap_from_arr64(bitmap, &val, WRITE_INTENT_BITS_PER_ENTRY);
-+#endif
-+}
-+
-+static inline void wie_set_bitmap(struct write_intent_entry *entry,
-+				  unsigned long *bitmap)
-+{
-+#ifdef __LITTLE_ENDIAN
-+	bitmap_to_arr64(&entry->bitmap, bitmap, WRITE_INTENT_BITS_PER_ENTRY);
-+#else
-+	u64 val;
-+
-+	bitmap_to_arr64(&val, bitmap, WRITE_INTENT_BITS_PER_ENTRY);
-+	entry->bitmap = cpu_to_le64(val);
-+#endif
-+}
-+
-+#endif
+ #endif
 -- 
 2.36.1
 
