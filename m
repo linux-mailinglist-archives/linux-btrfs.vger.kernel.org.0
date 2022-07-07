@@ -2,65 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4067A56A82E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 18:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CD256A8A5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 18:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236161AbiGGQge (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Jul 2022 12:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        id S235367AbiGGQwe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Jul 2022 12:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235405AbiGGQgd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 12:36:33 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B2B4D4C7
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 09:36:32 -0700 (PDT)
+        with ESMTP id S236296AbiGGQwZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 12:52:25 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD29457200
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 09:52:24 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A32421FE2E;
-        Thu,  7 Jul 2022 16:36:31 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5580621FE1;
+        Thu,  7 Jul 2022 16:52:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1657211791;
+        t=1657212743;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=S1Fboi7JfybtZj+SKxbAUkVxj41WGKq7qToDFUedJGM=;
-        b=GOuVcK+bx8U/qD1Zm9gIBrtiuoS02ZsRnCcI2xE+e0Tu5RiOyg5wP9LylWieDxNY1TC49M
-        LYijdJWllLv5hYff6qcqnn0kasYDMZb77bBnihmavpUZg+E2VVCvMy5aP43MblralJWF8O
-        3gyoczlA8rbrKJLq+Dh823tl5hiBorE=
+        bh=gTUl6c7wv6QQ0iR9NVEOKsO5XJ/lX51qMTXbK9caEro=;
+        b=NwRblmWbdzZLeTrZfhGyv1rqNZ8mTnFJ/EAOqTFmPVZ1lBvwCHIBI6aNULeQZ78ovx8erj
+        buSXYZ8fBLVStbPyPe2m80k+bhVGYGPSemtjEUywTAczueB2z24INdWHwMAOrnnZoOA5tQ
+        67sAg/h2y0E1xywQcm61visQ3g5s0EY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1657211791;
+        s=susede2_ed25519; t=1657212743;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=S1Fboi7JfybtZj+SKxbAUkVxj41WGKq7qToDFUedJGM=;
-        b=RP8nrrRdU/yWzxwjOqii5cDbTPZao2e44XgIZCjx06aBeirF9zpqXBktUyTqMuwrM0GqDZ
-        MXyKDGdSrt+m4QAw==
+        bh=gTUl6c7wv6QQ0iR9NVEOKsO5XJ/lX51qMTXbK9caEro=;
+        b=NQuKu0wJEW1gAQzNrFgl9ZxcflD4HBzkOYyuZmwfpR2N+RGvMNFasZMiewp78Djyc3KUjA
+        cqdw3kS4h2RRedCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74FAA13A33;
-        Thu,  7 Jul 2022 16:36:31 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 334FC13461;
+        Thu,  7 Jul 2022 16:52:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id vvOgG48Lx2K2aAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 07 Jul 2022 16:36:31 +0000
-Date:   Thu, 7 Jul 2022 18:31:44 +0200
+        id K41UC0cPx2LwbgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 07 Jul 2022 16:52:23 +0000
+Date:   Thu, 7 Jul 2022 18:47:36 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org, willy@infradead.org
-Subject: Re: [PATCH 0/3] btrfs: fix a couple sleeps while holding a spinlock
-Message-ID: <20220707163144.GG15169@twin.jikos.cz>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] btrfs: return -EAGAIN for NOWAIT dio reads/writes on
+ compressed and inline extents
+Message-ID: <20220707164736.GH15169@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org, willy@infradead.org
-References: <cover.1657097693.git.fdmanana@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@infradead.org>,
+        fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1656934419.git.fdmanana@suse.com>
+ <b3864441547e49a69d45c7771aa8cc5e595d18fc.1656934419.git.fdmanana@suse.com>
+ <YsLVtZ+SpKOfiD5Z@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1657097693.git.fdmanana@suse.com>
+In-Reply-To: <YsLVtZ+SpKOfiD5Z@infradead.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -72,16 +75,24 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Adding Matthew to CC
-
-On Wed, Jul 06, 2022 at 10:09:44AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Mon, Jul 04, 2022 at 04:57:41AM -0700, Christoph Hellwig wrote:
+> On Mon, Jul 04, 2022 at 12:42:03PM +0100, fdmanana@kernel.org wrote:
+> > +		 * filemap_read(), we fail to fault in pages for the read buffer,
+> > +		 * in which case filemap_read() returns a short read (the number
+> > +		 * of bytes previously read is > 0, so it does not return -EFAULT).
 > 
-> After the recent conversions of a couple radix trees to XArrays, we now
-> can end up attempting to sleep while holding a spinlock.
+> Two overly long lines here, which are especially annoying in block
+> comments as they completely break the layout.
 
-Ouch, I worked on the asumption that the old preload API is
-transparently provided by xarray and that sleeping under spinlock won't
-happen, otherwise the conversion from radix to xarray is not just an API
-rename. Note that for some time the radix_tree structure was just an
-alias for xarray, so this is not a new behaviour.
+The only line that is not under 81 is the last one and what does not if
+is "T).". This is within the acceptable overflow and I adjust many lines
+in patches based on how the code looks (ie. avoiding some line breaks)
+and if the potentially overflown text does not obscure the meaning.
+
+Keeping the lines under 80 makes sense for me personally when resolving
+conflicts in the 3+1 vimdiff view, but the limit is not strict and the
+criteria is if the code follows the common patterns we've settled on and
+what people in the btrfs group are used to, either reading or writing.
+The kernel coding style does not cover everything and is a good starting
+point. The rest is at
+https://btrfs.wiki.kernel.org/index.php/Development_notes#Coding_style_preferences
