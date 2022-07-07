@@ -2,215 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 783B3569634
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 01:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A656569708
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 02:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234652AbiGFXhI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Jul 2022 19:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
+        id S233543AbiGGAul (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Jul 2022 20:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbiGFXg5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Jul 2022 19:36:57 -0400
-Received: from out20-111.mail.aliyun.com (out20-111.mail.aliyun.com [115.124.20.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1ABC2CDCD
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Jul 2022 16:36:54 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0472963|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.657614-0.000173854-0.342212;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047204;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.OLuY6Jr_1657150611;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.OLuY6Jr_1657150611)
-          by smtp.aliyun-inc.com;
-          Thu, 07 Jul 2022 07:36:52 +0800
-Date:   Thu, 07 Jul 2022 07:36:53 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH RFC 00/11] btrfs: introduce write-intent bitmaps for RAID56
+        with ESMTP id S229695AbiGGAuk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Jul 2022 20:50:40 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947A92CDDF
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Jul 2022 17:50:38 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 687FA5C00FE;
+        Wed,  6 Jul 2022 20:50:35 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 06 Jul 2022 20:50:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1657155035; x=1657241435; bh=84M44SSBAf
+        W69MbFwkUisOLPBhZazgNlD6sLkanbgbI=; b=CKEdiEk2v4vmRluMTrqsl32X+R
+        z1iSTVXuC/v5nCumkRKoIosDAvp109g4EE/AfFFb6ytbjHP/9pBEDkWY8xDbdlhl
+        p+ahnQ/iRRp0EOlgd7J2Ql+n/6YeWKnKT7Irm3AT4JL+zIBZnpiLgU7IK0iUGhYi
+        VopEiFrqiJvoVxw4yux2KIEiSiskWbUsUrzEpH2xHuJwKveiUjVW3milICvhV7Zl
+        iDvjUEJyYZAO02rZVQjwe/ZrWEGSf2dxEa1fOOLec2EzKMrdMqn4E1gRbuUTcBom
+        XjH5d2V9axQZuIcDUs5kPiCNGWfxrbNbSInuve85duY5JEgIBOt29nL/IVTQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1657155035; x=1657241435; bh=84M44SSBAfW69MbFwkUisOLPBhZa
+        zgNlD6sLkanbgbI=; b=xto38vBkDwKHooA731tnxCiiUvvyTcT+wXFACogFo+vO
+        lSvNrbrY167wQJLKH+G0B7WgfE2cYoUFp7wBVSP00uPXEwtL+g5i1kOFbfxYCdk/
+        a1d9uXDBOf6LnPn+c9AV5k4yUthQoisGxUNM9MCAJ2NEWvJURzU9SmaeIzlbf+ds
+        C6CATEqUQrFIhcHF+xQ/0gQXzsC/vbUQ1jCGk70BOsr7+a9LjkBlEL/UEoRtfFfw
+        52GZCV0RKq8YzKf9GcRykcpLUPJ+1BEeZWKQe5qZmggrihzxcSUvCJS3NEX/6PVY
+        Q65NEfuPBj8gjbdirPrB/gR1LS9wGA5W9+2/7MkwVg==
+X-ME-Sender: <xms:2y3GYpeuuPXU8ZLUru--ARiaNW0sQEXNDLr-FUq-SIYEeRoObbPaqQ>
+    <xme:2y3GYnMcqLnVQLIzOSKJTYjc5cTnNiehBKhfzgUVBUkgEEmORYbOEZWhyB86GQr1l
+    0WZ3iO4vqB7aG8wDZU>
+X-ME-Received: <xmr:2y3GYijHhwGXm4-xiTDk-R_I-4S-vNI56uTffyPD0kuJshM5Zi30ypMHJkREKq6bF82lj-D0fkWPsDeZZfQQxJ14z_8o0w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudeigedggedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttd
+    ertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
+    rdhioheqnecuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvve
+    eiieeiudfguefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:2y3GYi8ogTFVg91ZEnbGI3fi5mL7APGn9J-7VA23QFXy3IpiNMD2qQ>
+    <xmx:2y3GYlsasCcVEO4WLQS_ecVSufkSDbsNlpk6zboaHCRkrvEMzM1hNg>
+    <xmx:2y3GYhGXc9TwBc9kMJXLGQ4PQiIr7CX6Zxhr4AnLxhUsMrXxFfit1A>
+    <xmx:2y3GYj2hR1CXL1HDTDcVnIWEH4LhmIDMLRNrWwO9yieW2PpN-XOFtg>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 6 Jul 2022 20:50:34 -0400 (EDT)
+Date:   Wed, 6 Jul 2022 17:50:33 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <cover.1657004556.git.wqu@suse.com>
-References: <cover.1657004556.git.wqu@suse.com>
-Message-Id: <20220707073652.D696.409509F4@e16-tech.com>
+Subject: Re: [PATCH] btrfs: remove the inode cache check at
+ btrfs_is_free_space_inode()
+Message-ID: <YsYtun4/16y2/1bT@zen>
+References: <41a45a354624cbe3bc1ccfb100af7699e73090d3.1657102391.git.fdmanana@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.04 [en]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41a45a354624cbe3bc1ccfb100af7699e73090d3.1657102391.git.fdmanana@suse.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-
-> [BACKGROUND]
-> Unlike md-raid, btrfs RAID56 has nothing to sync its devices when power
-> loss happens.
+On Wed, Jul 06, 2022 at 11:14:23AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> For pure mirror based profiles it's fine as btrfs can utilize its csums
-> to find the correct mirror the repair the bad ones.
+> The inode cache feature was removed in kernel 5.11, and we no longer have
+> any code that reads from or writes to inode caches. We may still mount a
+> filesystem that has inode caches, but they are ignored.
 > 
-> But for RAID56, the repair itself needs the data from other devices,
-> thus any out-of-sync data can degrade the tolerance.
+> Remove the check for an inode cache from btrfs_is_free_space_inode(),
+> since we no longer have code to trigger reads from an inode cache or
+> writes to an inode cache. The check at send.c is still needed, because
+> in case we find a filesystem with an inode cache, we must ignore it.
+> Also leave the checks at tree-checker.c, as they are sanity checks.
 > 
-> Even worse, incorrect RMW can use the stale data to generate P/Q,
-> removing the possibility of recovery the data.
+> This eliminates a dead branch and reduces the amount of code since it's
+> in an inline function.
 > 
+> Before:
 > 
-> For md-raid, it goes with write-intent bitmap, to do faster resilver,
-> and goes journal (partial parity log for RAID5) to ensure it can even
-> stand a powerloss + device lose.
+> $ size fs/btrfs/btrfs.ko
+>    text	   data	    bss	    dec	    hex	filename
+> 1620662	 189240	  29032	1838934	 1c0f56	fs/btrfs/btrfs.ko
 > 
-> [OBJECTIVE]
+> After:
 > 
-> This patchset will introduce a btrfs specific write-intent bitmap.
+> $ size fs/btrfs/btrfs.ko
+>    text	   data	    bss	    dec	    hex	filename
+> 1620502	 189240	  29032	1838774	 1c0eb6	fs/btrfs/btrfs.ko
 > 
-> The bitmap will locate at physical offset 1MiB of each device, and the
-> content is the same between all devices.
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/btrfs_inode.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> When there is a RAID56 write (currently all RAID56 write, including full
-> stripe write), before submitting all the real bios to disks,
-> write-intent bitmap will be updated and flushed to all writeable
-> devices.
-> 
-> So even if a powerloss happened, at the next mount time we know which
-> full stripes needs to check, and can start a scrub for those involved
-> logical bytenr ranges.
-> 
-> [NO RECOVERY CODE YET]
-> 
-> Unfortunately, this patchset only implements the write-intent bitmap
-> code, the recovery part is still a place holder, as we need some scrub
-> refactor to make it only scrub a logical bytenr range.
-> 
-> [ADVANTAGE OF BTRFS SPECIFIC WRITE-INTENT BITMAPS]
-> 
-> Since btrfs can utilize csum for its metadata and CoWed data, unlike
-> dm-bitmap which can only be used for faster re-silver, we can fully
-> rebuild the full stripe, as long as:
-> 
-> 1) There is no missing device
->    For missing device case, we still need to go full journal.
-> 
-> 2) Untouched data stays untouched
->    This should be mostly sane for sane hardware.
-
-Is there a case that write-intent bitmap log is rotated?
-
-For hardware raid of broadcom/LSI,  once a disk is unpluged,
-the whole disk will be rebuild after this disk  is plugged again.
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2022/07/07
-
-
-> And since the btrfs specific write-intent bitmaps are pretty small (4KiB
-> in size), the overhead much lower than full journal.
-> 
-> In the future, we may allow users to choose between just bitmaps or full
-> journal to meet their requirement.
-> 
-> [BITMAPS DESIGN]
-> 
-> The bitmaps on-disk format looks like this:
-> 
->  [ super ][ entry 1 ][ entry 2 ] ... [entry N]
->  |<---------  super::size (4K) ------------->|
-> 
-> Super block contains how many entires are in use.
-> 
-> Each entry is 128 bits (16 bytes) in size, containing one u64 for
-> bytenr, and u64 for one bitmap.
-> 
-> And all utilized entries will be sorted in their bytenr order, and no
-> bit can overlap.
-> 
-> The blocksize is now fixed to BTRFS_STRIPE_LEN (64KiB), so each entry
-> can contain at most 4MiB, and the whole bitmaps can contain 224 entries.
-> 
-> For the worst case, it can contain 14MiB dirty ranges.
-> (1 bits set per bitmap, also means 2 disks RAID5 or 3 disks RAID6).
-> 
-> For the best case, it can contain 896MiB dirty ranges.
-> (all bits set per bitmap)
-> 
-> [WHY NOT BTRFS BTREE]
-> 
-> Current write-intent structure needs two features:
-> 
-> - Its data needs to survive cross stripe boundary
->   Normally this means write-intent btree needs to acts like a proper
->   tree root, has METADATA_ITEMs for all its tree blocks.
-> 
-> - Its data update must be outside of a transaction
->   Currently only log tree can do such thing.
->   But unfortunately log tree can not survive across transaction
->   boundary.
-> 
-> Thus write-intent btree can only meet one of the requirement, not a
-> suitable solution here.
-> 
-> [TESTING AND BENCHMARK]
-> 
-> For performance benchmark, unfortunately I don't have 3 HDDs to test.
-> Will do the benchmark after secured enough hardware.
-> 
-> For testing, it can survive volume/raid/dev-replace test groups, and no
-> write-intent bitmap leakage.
-> 
-> Unfortunately there is still a warning triggered in btrfs/070, still
-> under investigation, hopefully to be a false alert in bitmap clearing
-> path.
-> 
-> [TODO]
-> - Scrub refactor to allow us to do proper recovery at mount time
->   Need to change scrub interface to scrub based on logical bytenr.
-> 
->   This can be a super big work, thus currently we will focus only on
->   RAID56 new scrub interface for write-intent recovery only.
-> 
-> - Extra optimizations
->   * Skip full stripe writes
->   * Enlarge the window between btrfs_write_intent_mark_dirty() and
->     btrfs_write_intent_writeback()
-> 
-> - Bug hunts and more fstests runs
-> 
-> - Proper performance benchmark
->   Needs hardware/baremetal VMs, since I don't have any physical machine
->   large enough to contian 3 3.5" HDDs.
-> 
-> 
-> Qu Wenruo (11):
->   btrfs: introduce new compat RO flag, EXTRA_SUPER_RESERVED
->   btrfs: introduce a new experimental compat RO flag,
->     WRITE_INTENT_BITMAP
->   btrfs: introduce the on-disk format of btrfs write intent bitmaps
->   btrfs: load/create write-intent bitmaps at mount time
->   btrfs: write-intent: write the newly created bitmaps to all disks
->   btrfs: write-intent: introduce an internal helper to set bits for a
->     range.
->   btrfs: write-intent: introduce an internal helper to clear bits for a
->     range.
->   btrfs: write back write intent bitmap after barrier_all_devices()
->   btrfs: update and writeback the write-intent bitmap for RAID56 write.
->   btrfs: raid56: clear write-intent bimaps when a full stripe finishes.
->   btrfs: warn and clear bitmaps if there is dirty bitmap at mount time
-> 
->  fs/btrfs/Makefile          |   2 +-
->  fs/btrfs/ctree.h           |  24 +-
->  fs/btrfs/disk-io.c         |  54 +++
->  fs/btrfs/raid56.c          |  16 +
->  fs/btrfs/sysfs.c           |   2 +
->  fs/btrfs/volumes.c         |  34 +-
->  fs/btrfs/write-intent.c    | 962 +++++++++++++++++++++++++++++++++++++
->  fs/btrfs/write-intent.h    | 288 +++++++++++
->  fs/btrfs/zoned.c           |   8 +
->  include/uapi/linux/btrfs.h |  17 +
->  10 files changed, 1399 insertions(+), 8 deletions(-)
->  create mode 100644 fs/btrfs/write-intent.c
->  create mode 100644 fs/btrfs/write-intent.h
-> 
+> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+> index 33811e896623..b467264bd1bb 100644
+> --- a/fs/btrfs/btrfs_inode.h
+> +++ b/fs/btrfs/btrfs_inode.h
+> @@ -305,8 +305,7 @@ static inline bool btrfs_is_free_space_inode(struct btrfs_inode *inode)
+>  	if (root == root->fs_info->tree_root &&
+>  	    btrfs_ino(inode) != BTRFS_BTREE_INODE_OBJECTID)
+>  		return true;
+> -	if (inode->location.objectid == BTRFS_FREE_INO_OBJECTID)
+> -		return true;
+> +
+>  	return false;
+>  }
+>  
 > -- 
-> 2.36.1
-
-
+> 2.35.1
+> 
