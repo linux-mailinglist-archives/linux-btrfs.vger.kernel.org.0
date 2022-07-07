@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6640456AB85
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDC256AB84
 	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 21:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236717AbiGGTHl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S236718AbiGGTHl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Thu, 7 Jul 2022 15:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236176AbiGGTHj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 15:07:39 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349D759241
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 12:07:38 -0700 (PDT)
+        with ESMTP id S236614AbiGGTHl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 15:07:41 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5234957230
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 12:07:40 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E88CB21B9D;
-        Thu,  7 Jul 2022 19:07:36 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 13A811FA8D;
+        Thu,  7 Jul 2022 19:07:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657220856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1657220859; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TUMPtusZ6/FmOLt6bjUt9mFYfmBrfZXddrEuPVfZ/S0=;
-        b=X+Ci2Kxg+vFAO9oowGecqxXPahbjtRX3m1eAWk9lhlPvnhMi1KpB8P3sL4n4ghqaZCePgq
-        Nxdvnb9kMpiMgs42mzCQRHEXVEBxIW/pg3cnNM0mIKpMWJ59FyqBSLs78NYfFZufopFI8x
-        bmPRzxU2G+w1/kQA91hYueHYpzAPWjs=
+        bh=qWpVpX96PVNlgiR8ifg/fSP2iOZtDEvMnzP3k4qvMic=;
+        b=PhUshTz2Vi9/jgLoW3FBkDI5kXTWdK2Cj95aHmnu9tehM8bolzbH2UijDdvMGRyXVUSwLD
+        7FcbcnY7+0I7PUJwL8vIViWi+abRyz2T91m0WFkS+ZJp3K0TKhzJ9MXtXFezUO5MJZu36V
+        U1b7c48IU9eNuvuc53M2p/NSqYJoJDc=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E03252C141;
-        Thu,  7 Jul 2022 19:07:36 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 0BC882C141;
+        Thu,  7 Jul 2022 19:07:39 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 92AB4DA83C; Thu,  7 Jul 2022 21:02:51 +0200 (CEST)
+        id B0AE9DA83C; Thu,  7 Jul 2022 21:02:53 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH v2 1/3] btrfs: switch btrfs_block_rsv::full to bool
-Date:   Thu,  7 Jul 2022 21:02:51 +0200
-Message-Id: <db712e74bcc822a6468ceeef85608dc73f7e79d3.1657220460.git.dsterba@suse.com>
+Subject: [PATCH v2 2/3] btrfs: switch btrfs_block_rsv::failfast to bool
+Date:   Thu,  7 Jul 2022 21:02:53 +0200
+Message-Id: <6177f616aa77dc5aa9ab8251ff5acf09f67d78f6.1657220460.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1657220460.git.dsterba@suse.com>
 References: <cover.1657220460.git.dsterba@suse.com>
@@ -52,112 +52,66 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Use simple bool type for the block reserve full status, there's short to
-save space as there used to be int but there's no reason for that.
+Use simple bool type for the block reserve failfast status, there's
+short to save space as there used to be int but there's no reason for
+that.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/block-rsv.c   | 15 ++++++---------
- fs/btrfs/block-rsv.h   |  2 +-
- fs/btrfs/delayed-ref.c |  4 ++--
- 3 files changed, 9 insertions(+), 12 deletions(-)
+ fs/btrfs/block-rsv.h | 2 +-
+ fs/btrfs/file.c      | 2 +-
+ fs/btrfs/inode.c     | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index b3ee49b0b1e8..26c43a6ef5d2 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -118,7 +118,7 @@ static u64 block_rsv_release_bytes(struct btrfs_fs_info *fs_info,
- 	if (block_rsv->reserved >= block_rsv->size) {
- 		num_bytes = block_rsv->reserved - block_rsv->size;
- 		block_rsv->reserved = block_rsv->size;
--		block_rsv->full = 1;
-+		block_rsv->full = true;
- 	} else {
- 		num_bytes = 0;
- 	}
-@@ -142,7 +142,7 @@ static u64 block_rsv_release_bytes(struct btrfs_fs_info *fs_info,
- 				bytes_to_add = min(num_bytes, bytes_to_add);
- 				dest->reserved += bytes_to_add;
- 				if (dest->reserved >= dest->size)
--					dest->full = 1;
-+					dest->full = true;
- 				num_bytes -= bytes_to_add;
- 			}
- 			spin_unlock(&dest->lock);
-@@ -304,7 +304,7 @@ int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv, u64 num_bytes)
- 	if (block_rsv->reserved >= num_bytes) {
- 		block_rsv->reserved -= num_bytes;
- 		if (block_rsv->reserved < block_rsv->size)
--			block_rsv->full = 0;
-+			block_rsv->full = false;
- 		ret = 0;
- 	}
- 	spin_unlock(&block_rsv->lock);
-@@ -319,7 +319,7 @@ void btrfs_block_rsv_add_bytes(struct btrfs_block_rsv *block_rsv,
- 	if (update_size)
- 		block_rsv->size += num_bytes;
- 	else if (block_rsv->reserved >= block_rsv->size)
--		block_rsv->full = 1;
-+		block_rsv->full = true;
- 	spin_unlock(&block_rsv->lock);
- }
- 
-@@ -341,7 +341,7 @@ int btrfs_cond_migrate_bytes(struct btrfs_fs_info *fs_info,
- 	}
- 	global_rsv->reserved -= num_bytes;
- 	if (global_rsv->reserved < global_rsv->size)
--		global_rsv->full = 0;
-+		global_rsv->full = false;
- 	spin_unlock(&global_rsv->lock);
- 
- 	btrfs_block_rsv_add_bytes(dest, num_bytes, true);
-@@ -408,10 +408,7 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
- 		btrfs_try_granting_tickets(fs_info, sinfo);
- 	}
- 
--	if (block_rsv->reserved == block_rsv->size)
--		block_rsv->full = 1;
--	else
--		block_rsv->full = 0;
-+	block_rsv->full = (block_rsv->reserved == block_rsv->size);
- 
- 	if (block_rsv->size >= sinfo->total_bytes)
- 		sinfo->force_alloc = CHUNK_ALLOC_FORCE;
 diff --git a/fs/btrfs/block-rsv.h b/fs/btrfs/block-rsv.h
-index 3b67ff08d434..99c491ef128e 100644
+index 99c491ef128e..0702d4087ff6 100644
 --- a/fs/btrfs/block-rsv.h
 +++ b/fs/btrfs/block-rsv.h
-@@ -25,7 +25,7 @@ struct btrfs_block_rsv {
- 	u64 reserved;
+@@ -26,8 +26,8 @@ struct btrfs_block_rsv {
  	struct btrfs_space_info *space_info;
  	spinlock_t lock;
--	unsigned short full;
-+	bool full;
+ 	bool full;
++	bool failfast;
  	unsigned short type;
- 	unsigned short failfast;
+-	unsigned short failfast;
  
-diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index 99f37fca2e96..36a3debe9493 100644
---- a/fs/btrfs/delayed-ref.c
-+++ b/fs/btrfs/delayed-ref.c
-@@ -132,7 +132,7 @@ void btrfs_update_delayed_refs_rsv(struct btrfs_trans_handle *trans)
+ 	/*
+ 	 * Qgroup equivalent for @size @reserved
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 734baa729cd3..f406a662e942 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2736,7 +2736,7 @@ int btrfs_replace_file_extents(struct btrfs_inode *inode,
+ 		goto out;
+ 	}
+ 	rsv->size = btrfs_calc_insert_metadata_size(fs_info, 1);
+-	rsv->failfast = 1;
++	rsv->failfast = true;
  
- 	spin_lock(&delayed_rsv->lock);
- 	delayed_rsv->size += num_bytes;
--	delayed_rsv->full = 0;
-+	delayed_rsv->full = false;
- 	spin_unlock(&delayed_rsv->lock);
- 	trans->delayed_ref_updates = 0;
- }
-@@ -175,7 +175,7 @@ void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
- 	if (num_bytes)
- 		delayed_refs_rsv->reserved += num_bytes;
- 	if (delayed_refs_rsv->reserved >= delayed_refs_rsv->size)
--		delayed_refs_rsv->full = 1;
-+		delayed_refs_rsv->full = true;
- 	spin_unlock(&delayed_refs_rsv->lock);
+ 	/*
+ 	 * 1 - update the inode
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 7790e307bf54..b9485e19b696 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -5433,7 +5433,7 @@ void btrfs_evict_inode(struct inode *inode)
+ 	if (!rsv)
+ 		goto no_delete;
+ 	rsv->size = btrfs_calc_metadata_size(fs_info, 1);
+-	rsv->failfast = 1;
++	rsv->failfast = true;
  
- 	if (num_bytes)
+ 	btrfs_i_size_write(BTRFS_I(inode), 0);
+ 
+@@ -8687,7 +8687,7 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
+ 	if (!rsv)
+ 		return -ENOMEM;
+ 	rsv->size = min_size;
+-	rsv->failfast = 1;
++	rsv->failfast = true;
+ 
+ 	/*
+ 	 * 1 for the truncate slack space
 -- 
 2.36.1
 
