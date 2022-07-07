@@ -2,71 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAA456AB0A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 20:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1AA756AB1B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jul 2022 20:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236540AbiGGSvR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Jul 2022 14:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
+        id S236332AbiGGS5B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Jul 2022 14:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236303AbiGGSvQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 14:51:16 -0400
+        with ESMTP id S233606AbiGGS46 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 14:56:58 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C35524BC6
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 11:51:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F1B2B630
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 11:56:57 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1F8F81FDB8;
-        Thu,  7 Jul 2022 18:51:14 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A13FE1FAD8;
+        Thu,  7 Jul 2022 18:56:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1657219874;
+        t=1657220216;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bpUGDZU6M9w4XNDgtbzPNtC6nlBAKeu18igcO1Dw4Jc=;
-        b=wK5AjOtqpQ1fAS8vCcBoIbzck8wTn1RN/x9I7pZ+kp+DUmcejucY9qeQE5/VlpC9lb1CmO
-        8LYWeLliILiz3I71TSYfPXNBMUjm5wCPCFE1Lag3j2de7uMlxbb85yhOusbTonEekr6CDz
-        Hhdi127S0WxaKCYEjo64aRmXUWzsnP4=
+        bh=GjKgD5TybIcXItGapc44VXynad0yKlz+1eLmsqBTjXM=;
+        b=IKWI8hiK7NorHO1I7X0oSj6YFvc26UXzYju7YTekM8QiS0+bE2vUjjBCgWOTIgqJ2Xjn9Q
+        qHnjpwtDSFs+JeyhdgIuBoFekl4Xs4l7mUBPpEPzmjmh8qYwBGBXBwPX2I7RkS84jVAa6D
+        /ZOGQElFNPgb+Q3Y1PXEU4Ify0RZF3o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1657219874;
+        s=susede2_ed25519; t=1657220216;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bpUGDZU6M9w4XNDgtbzPNtC6nlBAKeu18igcO1Dw4Jc=;
-        b=XMvgFxF0BKH1N8ZYeAlE9qucn1z+aHo9WJ3rb1QjCq5Jr7yxxc1v9EvTsSJByZAYJuu+69
-        TPHw4avfrb/oSgDA==
+        bh=GjKgD5TybIcXItGapc44VXynad0yKlz+1eLmsqBTjXM=;
+        b=EDiRQdN5fge58Xa+4mgOZ03d/2fScaVAkiOvlFCKPYqITVJT6FgJ+9S1zkVz7TjAx992kQ
+        N4TbZOxEOPkoXbAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EDA3913A33;
-        Thu,  7 Jul 2022 18:51:13 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6DF8113461;
+        Thu,  7 Jul 2022 18:56:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6afkOCErx2LMGgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 07 Jul 2022 18:51:13 +0000
-Date:   Thu, 7 Jul 2022 20:46:27 +0200
+        id nt/HGXgsx2KWHAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 07 Jul 2022 18:56:56 +0000
+Date:   Thu, 7 Jul 2022 20:52:09 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Antonio =?iso-8859-1?Q?P=E9rez?= <aperez@skarcha.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/3] btrfs: switch btrfs_block_rsv::full to bool
-Message-ID: <20220707184627.GN15169@twin.jikos.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/3] btrfs: use u8 type for btrfs_block_rsv::type
+Message-ID: <20220707185209.GO15169@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz,
-        Antonio =?iso-8859-1?Q?P=E9rez?= <aperez@skarcha.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <cover.1656079178.git.dsterba@suse.com>
- <845f7ad07062c689f23d2c6346dfc5f74fe9d92d.1656079178.git.dsterba@suse.com>
- <80428a51-4e0c-f109-d469-c6dc3da2ac7f@skarcha.com>
+ <2ff62613189d8f58f8da90a1558ad5726172057b.1656079178.git.dsterba@suse.com>
+ <PH0PR04MB74165896B1D1967356A84A7A9BB99@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <20220627164018.GZ20633@twin.jikos.cz>
+ <PH0PR04MB74165A85F6DAD1C596F1F61C9BB89@PH0PR04MB7416.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <80428a51-4e0c-f109-d469-c6dc3da2ac7f@skarcha.com>
+In-Reply-To: <PH0PR04MB74165A85F6DAD1C596F1F61C9BB89@PH0PR04MB7416.namprd04.prod.outlook.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -78,18 +80,35 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 24, 2022 at 07:12:09PM +0200, Antonio Pérez wrote:
-> Hi!
+On Tue, Jun 28, 2022 at 07:15:14AM +0000, Johannes Thumshirn wrote:
+> On 27.06.22 18:45, David Sterba wrote:
+> > On Mon, Jun 27, 2022 at 06:51:30AM +0000, Johannes Thumshirn wrote:
+> >> On 24.06.22 16:15, David Sterba wrote:
+> >>> diff --git a/fs/btrfs/block-rsv.h b/fs/btrfs/block-rsv.h
+> >>> index 0702d4087ff6..bb449c75ee4c 100644
+> >>> --- a/fs/btrfs/block-rsv.h
+> >>> +++ b/fs/btrfs/block-rsv.h
+> >>> @@ -27,7 +27,8 @@ struct btrfs_block_rsv {
+> >>>  	spinlock_t lock;
+> >>>  	bool full;
+> >>>  	bool failfast;
+> >>> -	unsigned short type;
+> >>> +	/* Block reserve type, one of BTRFS_BLOCK_RSV_* */
+> >>> +	u8 type;
+> >>>  
+> >>
+> >> Is there any reason to not use the enum?
+> > 
+> > Enum would be 'int', 4 bytes to the space optimization would be
+> > lost. Enum types can be shortened as
+> > 
+> > 	enum btrfs_reserve type:8
+> > 
+> > but I'm not sure it's an improvement.
+> > 
 > 
-> El 24/6/22 a las 16:01, David Sterba escribió:
-> 
-> > @@ -175,7 +175,7 @@ void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
-> >   	if (num_bytes)
-> >   		delayed_refs_rsv->reserved += num_bytes;
-> >   	if (delayed_refs_rsv->reserved >= delayed_refs_rsv->size)
-> > -		delayed_refs_rsv->full = 1;
-> > +		delayed_refs_rsv->full = false;
-> 
-> Should it be 'true'?
+> Using an enum would give some type safety (I think -Wenum-compare is 
+> on by default in the kernel). Packing that enum would give us the 1 byte
+> size you're looking for.
 
-Yes of course, thanks
+Yeah I'll go with the named enum and :8 in the structure.
