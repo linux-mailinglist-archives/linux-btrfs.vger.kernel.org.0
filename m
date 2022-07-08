@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2C856C52A
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Jul 2022 02:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB24F56C52D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Jul 2022 02:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236955AbiGHXTW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Jul 2022 19:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
+        id S239308AbiGHXTX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Jul 2022 19:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239176AbiGHXTR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jul 2022 19:19:17 -0400
+        with ESMTP id S239055AbiGHXTS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jul 2022 19:19:18 -0400
 Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D195841980;
-        Fri,  8 Jul 2022 16:19:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58AC4198E;
+        Fri,  8 Jul 2022 16:19:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1657322356; x=1688858356;
+  t=1657322357; x=1688858357;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=EmpJCR6lPLjG6aCHj437xrpIe7wUnZTT8lVACC21V5w=;
-  b=mG+w6Uwk1RBE6QYDPtNkuTcwA6ZMkoGUw4nsyUugLSRZroezWrEx6mTB
-   tHTSk5tFVNNElVKsjumoyH9sHtzbfL/gTqswdAQVqRLLx9hlmIfQK3OKZ
-   PWTKK9AgX8pc3Xq3rFwIh/rH5v9NnP+bxHK102LATwMSBv2LBaEnoJ6/Y
-   dJDJmXUwE2jSOUV9/HVxllXna2NfDaYuehQf7PcdHj4Z3GYv0kDUGQwie
-   yW90o21PfaceOpDKdL6v4QRhZPDpPjLcrqhOY5sdWRMQjUAxbmH5loTFm
-   LqyGyW4m6WDObvBZ81D7Igjiib61Isuq97XrrJsSYI0xFZsfBftU2aSMl
-   g==;
+  bh=pc1V+hc3nLWgOYR+olBZbWKKUSmpRc4Pzg4j2XhZTsc=;
+  b=d3s20VfXAQpo7EUYJhov3LbnxmCHb0PsxoC/WVTpNulf9jSSbvFvjrX5
+   fLrCi/+D8vibq94+rLMT4VDL9+vzkdma8SBZDWAaPZ6CyzfFiHtn+gJ9l
+   uDyKq8qcXXk8PLl0NQun8IM0o8nlQJW2LVhs70HZQ/l/4A2y49vv+kz7X
+   yzJBXZ0ap1fbn/heJM1GeKTsDVhSEiNi/RTLnm7EnO7H3fbMBBoos5QN7
+   mJRdUXv99KFmTJGG5tlvMQVTIxlCZLQdIOYhwuLKQDlB0ofVYXXu9F96y
+   LQAw+aaGliTD/NCpMXj+8Bp2AZkGQwITCAzgJQIYSBrztW6r641GH4Mv3
+   A==;
 X-IronPort-AV: E=Sophos;i="5.92,256,1650902400"; 
-   d="scan'208";a="203871835"
+   d="scan'208";a="203871836"
 Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Jul 2022 07:19:16 +0800
-IronPort-SDR: zyMsGKem96ts4yraFEw1Zo1KnNuOKmjTB99wf0qr7n4OS2YwCh1hL/6xDyuSTnBN7qNTTes51d
- Gxm06E9AcEDCmvJtVX3fqh+Bpftl4mJwEZCabqhTWsYY1QaE1zNdUcI+hIKMIE7+z3heQwDWwr
- pcumqcEtL8xp6bw3MialvM4ZBsGcPlUlPmWeb2IzMzVboThXhUJX5AC2S0FumGFgA8B/pBR2cw
- HekFuuw006M00HADY6s6HwDXUwepC39K8+rLActoisBDSXtp7k0mmUn5ffRqxQD+8WUKC5qyfJ
- UG7cTvnLmUj5Exo0R4I4dTOe
+  by ob1.hgst.iphmx.com with ESMTP; 09 Jul 2022 07:19:17 +0800
+IronPort-SDR: fwdJIj+8vtiTFBvlPVAfN0DqXZKVziEowQ7etfKPZRKh73SWByZie0zT/mpN7CnY2plsLVfBiu
+ RqwTibA29BCC6ZCwybuwO8/5g+36BYAMDkJRr091DV/W9IUBkeEa9+e1Dg1DbZSmy2m10eJ6Ls
+ E+MRqMwoTKksf3WYG0BBk7/KNJpNAFLTVSfU3NGOg8gGd9MKoRfbpV96BbnCtqHvkIsM1aLgi5
+ 71oVWYhGfNDI0qxuHBYvmeJ8qX8XGE2MQOPGnZ1hfSRs8Mdx34rbtxnTj599t75g28uvv5yNTn
+ 0XCbYX1IqusGBtSZNZlBWJvT
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Jul 2022 15:36:21 -0700
-IronPort-SDR: wwVNYIbhT0pKRWgedCIUZGcgnlMNBbjSTNeqmr9Ft+fsj1ROzm0i4VQKhWitbrJu6in+3zn2HU
- RnIvqeppWh9m40cYF16p19JgFvnaM7IWOAkxhlhAo3lDtTsL0FjtgbWVjyVZiKDpgFpu0KCS5v
- D+X+nAm7/ZZCDICgjfYrvsQ66WRlzRNLBUZUpIeQXEftSNjkXP3ECb7ZkEXEapVBXLbFj4udMw
- TDqzloD/3XIUKtnJ8IqbvTrXRfJk9XerpOHTWP0uCuL4o6cK5zujcUpldgLElhsB3Pzezahsvg
- VfU=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Jul 2022 15:36:22 -0700
+IronPort-SDR: +9lmFEz7PD2i02CoLXx4j06g+16XdH2CuHirM0FvmwbCBHG2fyHc+zVwAHy36SYa2yi+VWKrxj
+ I63ZtHTp7uTQeVcTPy1hkz1Z5NjNnb54fjQbKIKAf7eCh/U58BjqYGrr9Gq+pTslKbcxLnricQ
+ x8bFZ1wpLx1XxAOHPlnPwfYEU90FoT98SR4j0+/MDBdrCIddvaqenaV61Wx0wwBmcJWbS7NhOM
+ q6YlgwAh93M3B+6VNqT6A2TtM42zDl6DvSC+oo7cECDSQiTAn/kXKWyP4keIltwyCXeli1Ze82
+ cwI=
 WDCIronportException: Internal
 Received: from phd010370.ad.shared (HELO naota-xeon.wdc.com) ([10.225.55.250])
   by uls-op-cesaip01.wdc.com with ESMTP; 08 Jul 2022 16:19:16 -0700
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     linux-block@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 12/13] btrfs: zoned: write out partially allocated region
-Date:   Sat,  9 Jul 2022 08:18:49 +0900
-Message-Id: <e1ec90b1c83c03631822ec5078353f07396dee2c.1657321126.git.naohiro.aota@wdc.com>
+Subject: [PATCH 13/13] btrfs: zoned: wait until zone is finished when allocation didn't progress
+Date:   Sat,  9 Jul 2022 08:18:50 +0900
+Message-Id: <bfda89d79a418ce9bdb68bf3f444a95a04b63181.1657321126.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1657321126.git.naohiro.aota@wdc.com>
 References: <cover.1657321126.git.naohiro.aota@wdc.com>
@@ -67,178 +67,104 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-cow_file_range() works in an all-or-nothing way: if it fails to allocate an
-extent for a part of the given region, it gives up all the region including
-the successfully allocated parts. On cow_file_range(), run_delalloc_zoned()
-writes data for the region only when it successfully allocate all the
-region.
+When the allocated position doesn't progress, we cannot submit IOs to
+finish a block group, but there should be ongoing IOs that will finish a
+block group. So, in that case, we wait for a zone to be finished and retry
+the allocation after that.
 
-This all-or-nothing allocation and write-out are problematic when available
-space in all the block groups are get tight with the active zone
-restriction. btrfs_reserve_extent() try hard to utilize the left space in
-the active block groups and gives up finally and fails with
--ENOSPC. However, if we send IOs for the successfully allocated region, we
-can finish a zone and can continue on the rest of the allocation on a newly
-allocated block group.
-
-This patch implements the partial write-out for run_delalloc_zoned(). With
-this patch applied, cow_file_range() returns -EAGAIN to tell the caller to
-do something to progress the further allocation, and tells the successfully
-allocated region with done_offset. Furthermore, the zoned extent allocator
-returns -EAGAIN to tell cow_file_range() going back to the caller side.
-
-Actually, we still need to wait for an IO to complete to continue the
-allocation. The next patch implements that part.
+Introduce a new flag BTRFS_FS_NEED_ZONE_FINISH for fs_info->flags to
+indicate we need a zone finish to have proceeded. The flag is set when the
+allocator detected it cannot activate a new block group. And, it is cleared
+once a zone is finished.
 
 CC: stable@vger.kernel.org # 5.16+
 Fixes: afba2bc036b0 ("btrfs: zoned: implement active zone tracking")
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/extent-tree.c | 10 +++++++
- fs/btrfs/inode.c       | 63 ++++++++++++++++++++++++++++++++----------
- 2 files changed, 59 insertions(+), 14 deletions(-)
+ fs/btrfs/ctree.h   | 4 ++++
+ fs/btrfs/disk-io.c | 1 +
+ fs/btrfs/inode.c   | 9 +++++++--
+ fs/btrfs/zoned.c   | 6 ++++++
+ 4 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 5589e04eda0e..1b29b16f6736 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -3995,6 +3995,16 @@ static int can_allocate_chunk_zoned(struct btrfs_fs_info *fs_info,
- 	if (ffe_ctl->max_extent_size >= ffe_ctl->min_alloc_size)
- 		return -ENOSPC;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index c215e15baea2..ddecd92fa848 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -638,6 +638,9 @@ enum {
+ 	/* Indicate we have half completed snapshot deletions pending. */
+ 	BTRFS_FS_UNFINISHED_DROPS,
  
-+	/*
-+	 * Even min_alloc_size is not left in any block groups. Since we cannot
-+	 * activate a new block group, allocating it may not help. Let's tell a
-+	 * caller to try again and hope it progress something by writing some
-+	 * parts of the region. That is only possible for data block groups,
-+	 * where a part of the region can be written.
-+	 */
-+	if (ffe_ctl->flags & BTRFS_BLOCK_GROUP_DATA)
-+		return -EAGAIN;
++	/* Indicate we have to finish a zone to do next allocation. */
++	BTRFS_FS_NEED_ZONE_FINISH,
 +
- 	/*
- 	 * We cannot activate a new block group and no enough space left in any
- 	 * block groups. So, allocating a new block group may not help. But,
+ #if BITS_PER_LONG == 32
+ 	/* Indicate if we have error/warn message printed on 32bit systems */
+ 	BTRFS_FS_32BIT_ERROR,
+@@ -1084,6 +1087,7 @@ struct btrfs_fs_info {
+ 
+ 	spinlock_t zone_active_bgs_lock;
+ 	struct list_head zone_active_bgs;
++	wait_queue_head_t zone_finish_wait;
+ 
+ 	/* Updates are not protected by any lock */
+ 	struct btrfs_commit_stats commit_stats;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 914557d59472..1fe5f79770a0 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3135,6 +3135,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
+ 	init_waitqueue_head(&fs_info->transaction_blocked_wait);
+ 	init_waitqueue_head(&fs_info->async_submit_wait);
+ 	init_waitqueue_head(&fs_info->delayed_iputs_wait);
++	init_waitqueue_head(&fs_info->zone_finish_wait);
+ 
+ 	/* Usable values until the real ones are cached from the superblock */
+ 	fs_info->nodesize = 4096;
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 8ce937b0b014..681e2cb4dd9c 100644
+index 681e2cb4dd9c..815121350d91 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -117,7 +117,8 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback);
- static noinline int cow_file_range(struct btrfs_inode *inode,
- 				   struct page *locked_page,
- 				   u64 start, u64 end, int *page_started,
--				   unsigned long *nr_written, int unlock);
-+				   unsigned long *nr_written, int unlock,
-+				   u64 *done_offset);
- static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
- 				       u64 len, u64 orig_start, u64 block_start,
- 				       u64 block_len, u64 orig_block_len,
-@@ -921,7 +922,7 @@ static int submit_uncompressed_range(struct btrfs_inode *inode,
- 	 * can directly submit them without interruption.
- 	 */
- 	ret = cow_file_range(inode, locked_page, start, end, &page_started,
--			     &nr_written, 0);
-+			     &nr_written, 0, NULL);
- 	/* Inline extent inserted, page gets unlocked and everything is done */
- 	if (page_started) {
- 		ret = 0;
-@@ -1170,7 +1171,8 @@ static u64 get_extent_allocation_hint(struct btrfs_inode *inode, u64 start,
- static noinline int cow_file_range(struct btrfs_inode *inode,
- 				   struct page *locked_page,
- 				   u64 start, u64 end, int *page_started,
--				   unsigned long *nr_written, int unlock)
-+				   unsigned long *nr_written, int unlock,
-+				   u64 *done_offset)
- {
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
-@@ -1363,6 +1365,21 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
- 	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 1);
- out_unlock:
-+	/*
-+	 * If done_offset is non-NULL and ret == -EAGAIN, we expect the
-+	 * caller to write out the successfully allocated region and retry.
-+	 */
-+	if (done_offset && ret == -EAGAIN) {
-+		if (orig_start < start)
-+			*done_offset = start - 1;
-+		else
-+			*done_offset = start;
-+		return ret;
-+	} else if (ret == -EAGAIN) {
-+		/* Convert to -ENOSPC since the caller cannot retry. */
-+		ret = -ENOSPC;
-+	}
+@@ -1643,8 +1643,13 @@ static noinline int run_delalloc_zoned(struct btrfs_inode *inode,
+ 		if (ret == 0)
+ 			done_offset = end;
+ 
+-		if (done_offset == start)
+-			return -ENOSPC;
++		if (done_offset == start) {
++			struct btrfs_fs_info *info = inode->root->fs_info;
 +
- 	/*
- 	 * Now, we have three regions to clean up:
- 	 *
-@@ -1608,19 +1625,37 @@ static noinline int run_delalloc_zoned(struct btrfs_inode *inode,
- 				       u64 end, int *page_started,
- 				       unsigned long *nr_written)
- {
-+	u64 done_offset = end;
- 	int ret;
-+	bool locked_page_done = false;
- 
--	ret = cow_file_range(inode, locked_page, start, end, page_started,
--			     nr_written, 0);
--	if (ret)
--		return ret;
-+	while (start <= end) {
-+		ret = cow_file_range(inode, locked_page, start, end, page_started,
-+				     nr_written, 0, &done_offset);
-+		if (ret && ret != -EAGAIN)
-+			return ret;
- 
--	if (*page_started)
--		return 0;
-+		if (*page_started) {
-+			ASSERT(ret == 0);
-+			return 0;
++			wait_var_event(&info->zone_finish_wait,
++				       !test_bit(BTRFS_FS_NEED_ZONE_FINISH, &info->flags));
++			continue;
 +		}
-+
-+		if (ret == 0)
-+			done_offset = end;
-+
-+		if (done_offset == start)
-+			return -ENOSPC;
-+
-+		if (!locked_page_done) {
-+			__set_page_dirty_nobuffers(locked_page);
-+			account_page_redirty(locked_page);
-+		}
-+		locked_page_done = true;
-+		extent_write_locked_range(&inode->vfs_inode, start, done_offset);
-+
-+		start = done_offset + 1;
-+	}
  
--	__set_page_dirty_nobuffers(locked_page);
--	account_page_redirty(locked_page);
--	extent_write_locked_range(&inode->vfs_inode, start, end);
- 	*page_started = 1;
+ 		if (!locked_page_done) {
+ 			__set_page_dirty_nobuffers(locked_page);
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 67098f3fcd14..471d870875ed 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -2006,6 +2006,9 @@ static int do_zone_finish(struct btrfs_block_group *block_group, bool fully_writ
+ 	/* For active_bg_list */
+ 	btrfs_put_block_group(block_group);
  
++	clear_bit(BTRFS_FS_NEED_ZONE_FINISH, &fs_info->flags);
++	wake_up_all(&fs_info->zone_finish_wait);
++
  	return 0;
-@@ -1712,7 +1747,7 @@ static int fallback_to_cow(struct btrfs_inode *inode, struct page *locked_page,
- 	}
- 
- 	return cow_file_range(inode, locked_page, start, end, page_started,
--			      nr_written, 1);
-+			      nr_written, 1, NULL);
  }
  
- struct can_nocow_file_extent_args {
-@@ -2185,7 +2220,7 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
- 						 page_started, nr_written);
- 		else
- 			ret = cow_file_range(inode, locked_page, start, end,
--					     page_started, nr_written, 1);
-+					     page_started, nr_written, 1, NULL);
- 	} else {
- 		set_bit(BTRFS_INODE_HAS_ASYNC_EXTENT, &inode->runtime_flags);
- 		ret = cow_file_range_async(inode, wbc, locked_page, start, end,
+@@ -2042,6 +2045,9 @@ bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags)
+ 	}
+ 	mutex_unlock(&fs_info->chunk_mutex);
+ 
++	if (!ret)
++		set_bit(BTRFS_FS_NEED_ZONE_FINISH, &fs_info->flags);
++
+ 	return ret;
+ }
+ 
 -- 
 2.35.1
 
