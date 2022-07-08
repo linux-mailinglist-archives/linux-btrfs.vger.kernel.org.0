@@ -2,166 +2,222 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2854A56B09A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jul 2022 04:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342E156B0BE
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jul 2022 04:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237016AbiGHCWv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Jul 2022 22:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        id S236981AbiGHCuh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Jul 2022 22:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237001AbiGHCWu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 22:22:50 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234887393A
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 19:22:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1657246953;
-        bh=O1XO4sBWcix25zpBd3NNhyHJZwt0kfwNRuG0mjfDEJ8=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=QkzqO03lHZNG9nPiHYx7Zc6oHmw7UmyjmkB+J7cda18v1aCvrgMRKIsB6SLw89O4j
-         yBv4ddemWkoy+w7k+fB9OmvLwHJJ+thocg4cIzhC3dnpn2WoW4kN/Dtn+UDx+Ez/u3
-         xOu88HoPvbAnP8lnYpIItQ7IQisRFX9P4exG4RpQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWzfl-1o7G6L49lJ-00XH04; Fri, 08
- Jul 2022 04:22:33 +0200
-Message-ID: <5d95e738-2e80-ee5f-58fd-1ebb45cd5ae2@gmx.com>
-Date:   Fri, 8 Jul 2022 10:22:28 +0800
+        with ESMTP id S236902AbiGHCug (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jul 2022 22:50:36 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1CA74788
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 19:50:33 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id i11so25575112qtr.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 07 Jul 2022 19:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=Ad97sT16le5gjY7PgDU6gmeetvBzm9wlE8bQkILVjNc=;
+        b=tCcxRqjITVsiKb1O2qN38oOtehuQYEQmQlnA5EmpLLTcqVHGWkBNn5r6VjhB95uftz
+         oBhwab0Wa2p2hfzUf6HitqoN4V8My4lx3Sr3LHdaGn7TrTI27nd6mE0wsQOIBv87ES7u
+         uwlTgHRa2iafBHAxVTfOiHdPWVETU8CJjwRGskRUwQecY/1YbABG8fpWqJ0i5forgO17
+         n0R7m15mcAmskoYtfNfHUvAotB5BgPlp6Llxsn+Fa0qYPR44yx2cfMCeEIswKRQZAgPI
+         NLOhCVeNcKdBjtuIw/nnF9iOSfGliNNxy/YqmZphg0HMl4dZzroFochhJCRrtxDrneBV
+         hZ4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=Ad97sT16le5gjY7PgDU6gmeetvBzm9wlE8bQkILVjNc=;
+        b=PGiGzuOFrriL83OBODWhG8oQVATMsLDx+6IIf3Ly10t+7EK8vK3rRYpjFQZPakAm/N
+         NfQ+K5Htu8Y9e8JF406ev2og773LJOmhft/WhsFGh13Or0RCw24A7UIa+LyDFUKgNSG+
+         FOMH1XEHBS4c8VKm3yt8T+A2mzrvFZlLo9cZRoMpa3d0qjGtssZjARQ7Ncr/nKF0VPto
+         ViXbgaWbDcBSrH4Y5tQWO+DF/cb/XA4HlfFqLKXg0Pf2oq6h1thBfnnLcmjBMKZH2vQr
+         890pvCrqOfAed7E52DDk7AU6/s4H4C5eRVeks5nVh2c9WxYh/hPxefVtoV68iQ0nsFye
+         PBRQ==
+X-Gm-Message-State: AJIora8NyBIxWIL142jE9mLUIE/l+rPZPvYTTjVfVRERW3ov6wBbeDaX
+        Wdd9e2JmpodC3az7YtPypptIJA==
+X-Google-Smtp-Source: AGRyM1tJqq+vsbrqVwAmw8UZQYXdEmN7Cq4ADeDpayYOUxqHMEno4PbopiKhNsYF91bJVygTm51HMQ==
+X-Received: by 2002:ac8:7d52:0:b0:319:51f0:e418 with SMTP id h18-20020ac87d52000000b0031951f0e418mr1088284qtb.481.1657248632632;
+        Thu, 07 Jul 2022 19:50:32 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id s7-20020a05620a254700b006a65c58db99sm35676841qko.64.2022.07.07.19.50.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jul 2022 19:50:32 -0700 (PDT)
+Date:   Thu, 7 Jul 2022 19:50:17 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 07/19] mm/migrate: Convert expected_page_refs() to
+ folio_expected_refs()
+In-Reply-To: <20220608150249.3033815-8-willy@infradead.org>
+Message-ID: <6e7599d1-8a5f-bf16-383c-febd753bd051@google.com>
+References: <20220608150249.3033815-1-willy@infradead.org> <20220608150249.3033815-8-willy@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH 06/12] btrfs: write-intent: introduce an internal helper
- to set bits for a range.
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     kbuild-all@lists.01.org
-References: <1574950e8caee003d1682ca6a9c6c85142cef5bd.1657171615.git.wqu@suse.com>
- <202207080925.VUcOcv89-lkp@intel.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <202207080925.VUcOcv89-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QwJ0ceWMRDRUWYHtd0khGDuHHCDpkNPcIdcOV2CUV+akjthZTxN
- GX++yc1fd6dqV6PmsNNq1z9Q6ZjFGSOwMO84LhRmh6IBn0REAbp74PNE20lJxkbEC2aZC3L
- HFpLYZRzPfahl4WxR9gDrPnSLizxz3sdWQVnxamOa6/qFEm49HLP2zL5ZGh96ufEZp+4VhF
- ZYdtj8o5RSU5H4MVl68hw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OcDr0aUMoyk=:Xkx/+4kNIcROBkIqfFYQJv
- 0NwamN5Fv0S4hg2r5MwP8fHKljl3G3PADvkAy9yr8dpzXfGjMOirGeYu5Alsd1bMBijpjLolh
- 9JdB+yf75VEFIVJh+RV0EiAU804bFoyntkZ0H5jqjmfW8H0bfkiD9AK/mTvvbIWSwYiAYeFp8
- ckT7Mhn0NRFGnxu4K60XToXUmo+brDv+qcTNQSNUpNY1rUSwH2TQAXHyy5fVwJJZENcT+K/xW
- jtAtjBenlvfYDTtqTJz8bNOw6LgnTL47KVd36cXrd/xtDo6UhHftWXc+3OW75lmysvw30beeP
- m56kaQBzwAYDd7CtObvBNoFwHwz5Wvu657SKwSOPNUXWTIYmMlgCoE+S+65ET7vK3ycH1gnOJ
- cpS7SUM/8/i2fiwsQrtrK4AnZvyRfRSSeol+xObAjuVL82QpRvOs5glzquYlmR3hF73yGlfps
- JQEOttvVS+4V4HALJffkWLQYEOv3nJz11+eh7R0EGY8n2/u9yki1WNsmX9hsxbijuXeIWlDzk
- lq8S+wew0qzC5jHqk0kUl+sqGTUdQ2nQxTpDC5LcpDfETFdFVCiMFK+xmBXtDXr2fe2mFWwFM
- nByRYbSi4lZ3BThZevkGVdnFlfj+7lPJm1fyhuvS6d+23KS62WCjbAp48NgPqN/K8anzyW/rI
- ufWWQaERSg/n2zxJZXh3oqHNSYimCTSL+t9dncGf74/DMxf1MhiNexfWDH6ZCQKLiYNl2++ar
- bb6Hj/6alR/0qEEAVlx2DNDRXx3CCmfg4n/TyWNd7haR6nz3ZYlfnrlZY4cjXjH7Z+a6jpCQ9
- SQtbm3JhS8+HWFPHrGzpgNEAm4WuMPNF4gQI3v6BPZ6pVUJp5Q6h2Hu24llND8ATA1aCWxWNi
- eebX+qA72lANecQtyD5LQLLl5OZrKRro2D6lDlGrYjUZfVpfjfrzsNyr57yjttmEFZpBca3IO
- r30PnS0RBajIEnu9fGTy1iKQmNMq+fWzKgDPrK0lHIFQg2z8qGNOsRET0Zmpb2TlKqDyf0r0A
- feQrIwpk8J7cq47mu07vY0ZjZRd9XGokNik9d8hOyrsQ+U5CuBZilfz01zzTDWz3ySTkf3qyN
- cvzOC+K8/qpoOlai/bCp/6GM5oOYTUfD785ZUMTeFFxhkqZ+7Lt/OE1qQ==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, 8 Jun 2022, Matthew Wilcox (Oracle) wrote:
 
+> Now that both callers have a folio, convert this function to
+> take a folio & rename it.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  mm/migrate.c | 19 ++++++++++++-------
+>  1 file changed, 12 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 2975f0c4d7cf..2e2f41572066 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -336,13 +336,18 @@ void pmd_migration_entry_wait(struct mm_struct *mm, pmd_t *pmd)
+>  }
+>  #endif
+>  
+> -static int expected_page_refs(struct address_space *mapping, struct page *page)
+> +static int folio_expected_refs(struct address_space *mapping,
+> +		struct folio *folio)
+>  {
+> -	int expected_count = 1;
+> +	int refs = 1;
+> +	if (!mapping)
+> +		return refs;
+>  
+> -	if (mapping)
+> -		expected_count += compound_nr(page) + page_has_private(page);
+> -	return expected_count;
+> +	refs += folio_nr_pages(folio);
+> +	if (folio_get_private(folio))
+> +		refs++;
+> +
+> +	return refs;
+>  }
+>  
+>  /*
+> @@ -359,7 +364,7 @@ int folio_migrate_mapping(struct address_space *mapping,
+>  	XA_STATE(xas, &mapping->i_pages, folio_index(folio));
+>  	struct zone *oldzone, *newzone;
+>  	int dirty;
+> -	int expected_count = expected_page_refs(mapping, &folio->page) + extra_count;
+> +	int expected_count = folio_expected_refs(mapping, folio) + extra_count;
+>  	long nr = folio_nr_pages(folio);
+>  
+>  	if (!mapping) {
+> @@ -669,7 +674,7 @@ static int __buffer_migrate_folio(struct address_space *mapping,
+>  		return migrate_page(mapping, &dst->page, &src->page, mode);
+>  
+>  	/* Check whether page does not have extra refs before we do more work */
+> -	expected_count = expected_page_refs(mapping, &src->page);
+> +	expected_count = folio_expected_refs(mapping, src);
+>  	if (folio_ref_count(src) != expected_count)
+>  		return -EAGAIN;
+>  
+> -- 
+> 2.35.1
 
-On 2022/7/8 09:55, kernel test robot wrote:
-> Hi Qu,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on kdave/for-next]
-> [also build test ERROR on next-20220707]
-> [cannot apply to linus/master v5.19-rc5]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-i=
-ntroduce-write-intent-bitmaps-for-RAID56/20220707-133435
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git =
-for-next
-> config: mips-allyesconfig (https://download.01.org/0day-ci/archive/20220=
-708/202207080925.VUcOcv89-lkp@intel.com/config)
-> compiler: mips-linux-gcc (GCC) 11.3.0
-> reproduce (this is a W=3D1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
-bin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://github.com/intel-lab-lkp/linux/commit/2b051857a66f031=
-0589455c06f962908016b5f9b
->          git remote add linux-review https://github.com/intel-lab-lkp/li=
-nux
->          git fetch --no-tags linux-review Qu-Wenruo/btrfs-introduce-writ=
-e-intent-bitmaps-for-RAID56/20220707-133435
->          git checkout 2b051857a66f0310589455c06f962908016b5f9b
->          # save the config file
->          mkdir build_dir && cp config build_dir/.config
->          COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-11.3.0 make.c=
-ross W=3D1 O=3Dbuild_dir ARCH=3Dmips SHELL=3D/bin/bash
->
-> If you fix the issue, kindly add following tag where applicable
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->     arch/mips/kernel/head.o: in function `kernel_entry':
->     (.ref.text+0xac): relocation truncated to fit: R_MIPS_26 against `st=
-art_kernel'
->     init/main.o: in function `set_reset_devices':
->     main.c:(.init.text+0x20): relocation truncated to fit: R_MIPS_26 aga=
-inst `_mcount'
->     main.c:(.init.text+0x30): relocation truncated to fit: R_MIPS_26 aga=
-inst `__sanitizer_cov_trace_pc'
->     init/main.o: in function `debug_kernel':
->     main.c:(.init.text+0xa4): relocation truncated to fit: R_MIPS_26 aga=
-inst `_mcount'
->     main.c:(.init.text+0xb4): relocation truncated to fit: R_MIPS_26 aga=
-inst `__sanitizer_cov_trace_pc'
->     init/main.o: in function `quiet_kernel':
->     main.c:(.init.text+0x128): relocation truncated to fit: R_MIPS_26 ag=
-ainst `_mcount'
->     main.c:(.init.text+0x138): relocation truncated to fit: R_MIPS_26 ag=
-ainst `__sanitizer_cov_trace_pc'
->     init/main.o: in function `warn_bootconfig':
->     main.c:(.init.text+0x1ac): relocation truncated to fit: R_MIPS_26 ag=
-ainst `_mcount'
->     main.c:(.init.text+0x1bc): relocation truncated to fit: R_MIPS_26 ag=
-ainst `__sanitizer_cov_trace_pc'
->     init/main.o: in function `init_setup':
->     main.c:(.init.text+0x238): relocation truncated to fit: R_MIPS_26 ag=
-ainst `_mcount'
->     main.c:(.init.text+0x258): additional relocation overflows omitted f=
-rom the output
->     mips-linux-ld: fs/btrfs/write-intent.o: in function `set_bits_in_one=
-_entry':
->>> write-intent.c:(.text.set_bits_in_one_entry+0x1ec): undefined referenc=
-e to `__udivdi3'
->>> mips-linux-ld: write-intent.c:(.text.set_bits_in_one_entry+0x2b0): und=
-efined reference to `__udivdi3'
->     mips-linux-ld: fs/btrfs/write-intent.o: in function `insert_new_entr=
-ies':
+This commit (742e89c9e352d38df1a5825fe40c4de73a5d5f7a in pagecache.git
+folio/for-next and recent linux-next) is dangerously wrong, at least
+for swapcache, and probably for some others.
 
-Thanks for the report, it looks like there are still u64/u32 cases used
-in bitmap_clear()/bitmap_set().
+I say "dangerously" because it tells page migration a swapcache page
+is safe for migration when it certainly is not.
 
-In fact, that two locations can go with u32 for the dividend.
+The fun that typically ensues is kernel BUG at include/linux/mm.h:750!
+put_page_testzero() VM_BUG_ON_PAGE(page_ref_count(page) == 0, page),
+if CONFIG_DEBUG_VM=y (bisecting for that is what brought me to this).
+But I guess you might get silent data corruption too.
 
-Anyway, I'd go the regular blocksize_bits way instead in the next update.
+I assumed at first that you'd changed the rules, and were now expecting
+any subsystem that puts a non-zero value into folio->private to raise
+its refcount - whereas the old convention (originating with buffer heads)
+is that setting PG_private says an extra refcount has been taken, please
+call try_to_release_page() to lower it, and maybe that will use data in
+page->private to do so; but page->private free for the subsystem owning
+the page to use as it wishes, no refcount implication.  But that you
+had missed updating swapcache.
 
-THanks,
-Qu
+So I got working okay with the patch below; but before turning it into
+a proper patch, noticed that there were still plenty of other places
+applying the test for PG_private: so now think that maybe you set out
+with intention as above, realized it wouldn't work, but got distracted
+before cleaning up some places you'd already changed.  And patch below
+now goes in the wrong direction.
 
->>> write-intent.c:(.text.insert_new_entries+0x294): undefined reference t=
-o `__udivdi3'
->
+Or maybe you didn't intend any change, but the PG_private test just got
+missed in a few places.  I don't know, hope you remember, but current
+linux-next badly inconsistent.
+Over to you, thanks,
+
+Hugh
+
+--- a/mm/migrate.c	2022-07-06 14:24:44.499941975 -0700
++++ b/mm/migrate.c	2022-07-06 15:49:25.000000000 -0700
+@@ -351,6 +351,10 @@ unlock:
+ }
+ #endif
+ 
++static inline bool folio_counted_private(struct folio *folio)
++{
++	return !folio_test_swapcache(folio) && folio_get_private(folio);
++}
+ static int folio_expected_refs(struct address_space *mapping,
+ 		struct folio *folio)
+ {
+@@ -359,7 +363,7 @@ static int folio_expected_refs(struct ad
+ 		return refs;
+ 
+ 	refs += folio_nr_pages(folio);
+-	if (folio_get_private(folio))
++	if (folio_counted_private(folio))
+ 		refs++;
+ 
+ 	return refs;
+--- a/mm/vmscan.c	2022-07-06 14:24:44.531942217 -0700
++++ b/mm/vmscan.c	2022-07-06 15:49:37.000000000 -0700
+@@ -2494,6 +2494,10 @@ shrink_inactive_list(unsigned long nr_to
+  * The downside is that we have to touch folio->_refcount against each folio.
+  * But we had to alter folio->flags anyway.
+  */
++static inline bool folio_counted_private(struct folio *folio)
++{
++	return !folio_test_swapcache(folio) && folio_get_private(folio);
++}
+ static void shrink_active_list(unsigned long nr_to_scan,
+ 			       struct lruvec *lruvec,
+ 			       struct scan_control *sc,
+@@ -2538,8 +2542,9 @@ static void shrink_active_list(unsigned
+ 		}
+ 
+ 		if (unlikely(buffer_heads_over_limit)) {
+-			if (folio_get_private(folio) && folio_trylock(folio)) {
+-				if (folio_get_private(folio))
++			if (folio_counted_private(folio) &&
++			    folio_trylock(folio)) {
++				if (folio_counted_private(folio))
+ 					filemap_release_folio(folio, 0);
+ 				folio_unlock(folio);
+ 			}
