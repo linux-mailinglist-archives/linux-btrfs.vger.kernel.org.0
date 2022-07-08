@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED57856B289
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBC956B286
 	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jul 2022 08:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237202AbiGHGH6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Jul 2022 02:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41680 "EHLO
+        id S237209AbiGHGH7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Jul 2022 02:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237191AbiGHGH4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jul 2022 02:07:56 -0400
+        with ESMTP id S237193AbiGHGH6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jul 2022 02:07:58 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A15424F17
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 23:07:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29ABB13E94
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jul 2022 23:07:57 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CF73F21D55
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Jul 2022 06:07:54 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DE17921D56
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Jul 2022 06:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657260474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1657260475; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VZgE/NvbxUZrxn493zZPrNShAuZy0i4HUW2TWbxht4A=;
-        b=Xefeb1kjc3T5xkM4XlR5FUCwMk1bebsqa2I3/hMnQUpeHDA8tug8YCtWrFSyGJ42Kr8cOU
-        mGiTAabiVxyxnERGTWuf0q1dgF0yBITb7xbJ2OYGhigyZybUzXKBjLApNtLJrZTQvghTcS
-        XkbjdbeXkeUrCNq8jG8ZT+0Sz4sWRLQ=
+        bh=OFOEQu6zn9hZUNgwaegxbTg7wbL5RHo0otIcvzYBYj4=;
+        b=JlGjkpIxhPZUlPVOuFgGR3AijqHyVL8egWV56P33F6P1uwyI4uQPs18KX682GpWjtZsjh+
+        uQzbTCgw+dJvT2+Tf/T1jmwX3/aeC90437A1zZDjK0xSXv+YT7bBzcrq35aonrxoTJ3W0X
+        ITLsNocEmWK2PhELZlOOtt33bszRJvg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BFBD913A80
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Jul 2022 06:07:53 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4081C13A80
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Jul 2022 06:07:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id YDXkIbnJx2KUcgAAMHmgww
+        id IGbqArvJx2KUcgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 08 Jul 2022 06:07:53 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Jul 2022 06:07:55 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 4/5] btrfs: introduce BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING to skip qgroup accounting
-Date:   Fri,  8 Jul 2022 14:07:29 +0800
-Message-Id: <2101234c3d491846623724f6d5dbd31fe7831093.1657260271.git.wqu@suse.com>
+Subject: [PATCH v3 5/5] btrfs: skip subtree scan if it's too high to avoid low stall in btrfs_commit_transaction()
+Date:   Fri,  8 Jul 2022 14:07:30 +0800
+Message-Id: <a358055dd172683132d14fbb8061869fe118008d.1657260271.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1657260271.git.wqu@suse.com>
 References: <cover.1657260271.git.wqu@suse.com>
@@ -60,88 +60,166 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The new flag will make btrfs qgroup to skip all its time consuming
-qgroup accounting.
+Btrfs qgroup has a long history of bringing performance penalty in
+btrfs_commit_transaction().
 
-The lifespan is the same as BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN,
-only get cleared after a new rescan.
+Although we tried our best to migrate such impact, there is still an
+unsolved call site, btrfs_drop_snapshot().
+
+This function will find the highest shared tree block and modify its
+extent ownership to do a subvolume/snapshot dropping.
+
+Such change will affect the whole subtree, and cause tons of qgroup
+dirty extents and stall btrfs_commit_transaction().
+
+To avoid such problem, here we introduce a new sysfs interface,
+/sys/fs/btrfs/<uuid>/qgroups/drop_subptree_threshold, to determine at
+whether and at which level we should skip qgroup accounting for subtree
+dropping.
+
+The default value is BTRFS_MAX_LEVEL, thus every subtree drop will go
+through qgroup accounting, to ensure qgroup numbers are kept as
+consistent as possible.
+
+While for performance sensitive users, they can change the values to
+more reasonable values like 3, to make any subtree, which is at or higher
+than level 3, to mark qgroup inconsistent and skip the accounting.
+
+The cost is obvious, the qgroup number is no longer consistent, but at
+least performance is more reasonable, and users have the control.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/qgroup.c | 18 ++++++++++++++----
- fs/btrfs/qgroup.h |  1 +
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ fs/btrfs/ctree.h   |  1 +
+ fs/btrfs/disk-io.c |  1 +
+ fs/btrfs/qgroup.c  | 18 ++++++++++++++++++
+ fs/btrfs/sysfs.c   | 39 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 59 insertions(+)
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 57e24a8ebc2a..32aef75af9b7 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -337,8 +337,11 @@ static void qgroup_mark_inconsistent(struct btrfs_fs_info *fs_info)
- {
- 	BUILD_BUG_ON(BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN &
- 		     BTRFS_QGROUP_STATUS_FLAGS_MASK);
-+	BUILD_BUG_ON(BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING &
-+		     BTRFS_QGROUP_STATUS_FLAGS_MASK);
- 	fs_info->qgroup_flags |= (BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT |
--				  BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN);
-+				  BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN |
-+				  BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING);
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 4e2569f84aab..85273bce0a1c 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1012,6 +1012,7 @@ struct btrfs_fs_info {
+ 	struct completion qgroup_rescan_completion;
+ 	struct btrfs_work qgroup_rescan_work;
+ 	bool qgroup_rescan_running;	/* protected by qgroup_rescan_lock */
++	u8 qgroup_drop_subtree_thres;
+ 
+ 	/* filesystem state */
+ 	unsigned long fs_state;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 70b388de4d66..4bdd81fec648 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2329,6 +2329,7 @@ static void btrfs_init_qgroup(struct btrfs_fs_info *fs_info)
+ 	fs_info->qgroup_seq = 1;
+ 	fs_info->qgroup_ulist = NULL;
+ 	fs_info->qgroup_rescan_running = false;
++	fs_info->qgroup_drop_subtree_thres = BTRFS_MAX_LEVEL;
+ 	mutex_init(&fs_info->qgroup_rescan_lock);
  }
  
- /*
-@@ -1800,6 +1803,10 @@ int btrfs_qgroup_trace_extent_post(struct btrfs_trans_handle *trans,
- 	 */
- 	ASSERT(trans != NULL);
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 32aef75af9b7..1b7294463a8d 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -1268,6 +1268,7 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
+ 	quota_root = fs_info->quota_root;
+ 	fs_info->quota_root = NULL;
+ 	fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_ON;
++	fs_info->qgroup_drop_subtree_thres = BTRFS_MAX_LEVEL;
+ 	spin_unlock(&fs_info->qgroup_lock);
  
-+	if (trans->fs_info->qgroup_flags &
-+	    BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING)
+ 	btrfs_free_qgroup_config(fs_info);
+@@ -2297,6 +2298,7 @@ int btrfs_qgroup_trace_subtree(struct btrfs_trans_handle *trans,
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	int ret = 0;
+ 	int level;
++	u8 drop_subptree_thres;
+ 	struct extent_buffer *eb = root_eb;
+ 	struct btrfs_path *path = NULL;
+ 
+@@ -2306,6 +2308,22 @@ int btrfs_qgroup_trace_subtree(struct btrfs_trans_handle *trans,
+ 	if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags))
+ 		return 0;
+ 
++	spin_lock(&fs_info->qgroup_lock);
++	drop_subptree_thres = fs_info->qgroup_drop_subtree_thres;
++	spin_unlock(&fs_info->qgroup_lock);
++	/*
++	 * This function only get called for snapshot drop, if we hit a high
++	 * node here, it means we are going to change ownership for quite a lot
++	 * of extents, which will greatly slow down btrfs_commit_transaction().
++	 *
++	 * So here if we find a high tree here, we just skip the accounting and
++	 * mark qgroup inconsistent.
++	 */
++	if (root_level >= drop_subptree_thres) {
++		qgroup_mark_inconsistent(fs_info);
 +		return 0;
++	}
 +
- 	ret = btrfs_find_all_roots(NULL, trans->fs_info, bytenr, 0, &old_root,
- 				   true);
- 	if (ret < 0) {
-@@ -2614,7 +2621,8 @@ int btrfs_qgroup_account_extent(struct btrfs_trans_handle *trans, u64 bytenr,
- 	 * If quotas get disabled meanwhile, the resources need to be freed and
- 	 * we can't just exit here.
- 	 */
--	if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags))
-+	if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags) ||
-+	    fs_info->qgroup_flags & BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING)
- 		goto out_free;
+ 	if (!extent_buffer_uptodate(root_eb)) {
+ 		ret = btrfs_read_extent_buffer(root_eb, root_gen, root_level, NULL);
+ 		if (ret)
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 5e1280c50aba..f667e7356ae5 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -2078,6 +2078,44 @@ static ssize_t qgroup_inconsistent_show(struct kobject *qgroups_kobj,
  
- 	if (new_roots) {
-@@ -2710,7 +2718,8 @@ int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans)
- 		num_dirty_extents++;
- 		trace_btrfs_qgroup_account_extents(fs_info, record);
+ BTRFS_ATTR(qgroups, inconsistent, qgroup_inconsistent_show);
  
--		if (!ret) {
-+		if (!ret && !(fs_info->qgroup_flags &
-+			      BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING)) {
- 			/*
- 			 * Old roots should be searched when inserting qgroup
- 			 * extent record
-@@ -3448,7 +3457,8 @@ qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objectid,
- 
- 	memset(&fs_info->qgroup_rescan_progress, 0,
- 		sizeof(fs_info->qgroup_rescan_progress));
--	fs_info->qgroup_flags &= ~BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN;
-+	fs_info->qgroup_flags &= ~(BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN |
-+				   BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING);
- 	fs_info->qgroup_rescan_progress.objectid = progress_objectid;
- 	init_completion(&fs_info->qgroup_rescan_completion);
- 	mutex_unlock(&fs_info->qgroup_rescan_lock);
-diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-index 90d3632c5524..578c77e94200 100644
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -101,6 +101,7 @@
-  */
- 
- #define BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN		(1UL << 3)
-+#define BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING		(1UL << 4)
- 
++static ssize_t qgroup_drop_subtree_thres_show(struct kobject *qgroups_kobj,
++					      struct kobj_attribute *a,
++					      char *buf)
++{
++	struct btrfs_fs_info *fs_info = to_fs_info(qgroups_kobj->parent);
++	u8 result;
++
++	spin_lock(&fs_info->qgroup_lock);
++	result = fs_info->qgroup_drop_subtree_thres;
++	spin_unlock(&fs_info->qgroup_lock);
++
++	return scnprintf(buf, PAGE_SIZE, "%d\n", result);
++}
++
++static ssize_t qgroup_drop_subtree_thres_store(struct kobject *qgroups_kobj,
++					       struct kobj_attribute *a,
++					       const char *buf, size_t len)
++{
++	struct btrfs_fs_info *fs_info = to_fs_info(qgroups_kobj->parent);
++	u8 new_thres;
++	int ret;
++
++	ret = kstrtou8(buf, 10, &new_thres);
++	if (ret)
++		return -EINVAL;
++
++	if (new_thres > BTRFS_MAX_LEVEL)
++		return -EINVAL;
++
++	spin_lock(&fs_info->qgroup_lock);
++	fs_info->qgroup_drop_subtree_thres = new_thres;
++	spin_unlock(&fs_info->qgroup_lock);
++	return len;
++}
++
++BTRFS_ATTR_RW(qgroups, drop_subtree_threshold, qgroup_drop_subtree_thres_show,
++	      qgroup_drop_subtree_thres_store);
++
  /*
-  * Record a dirty extent, and info qgroup to update quota on it
+  * Qgroups global info
+  *
+@@ -2086,6 +2124,7 @@ BTRFS_ATTR(qgroups, inconsistent, qgroup_inconsistent_show);
+ static struct attribute *qgroups_attrs[] = {
+ 	BTRFS_ATTR_PTR(qgroups, enabled),
+ 	BTRFS_ATTR_PTR(qgroups, inconsistent),
++	BTRFS_ATTR_PTR(qgroups, drop_subtree_threshold),
+ 	NULL
+ };
+ ATTRIBUTE_GROUPS(qgroups);
 -- 
 2.36.1
 
