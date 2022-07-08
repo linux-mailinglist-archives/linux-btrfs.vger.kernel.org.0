@@ -2,78 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E190656BA09
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jul 2022 14:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA1A56BA57
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jul 2022 15:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237619AbiGHMsQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Jul 2022 08:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38074 "EHLO
+        id S237982AbiGHNKs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Jul 2022 09:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237469AbiGHMsP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jul 2022 08:48:15 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA2C73922;
-        Fri,  8 Jul 2022 05:48:12 -0700 (PDT)
+        with ESMTP id S237969AbiGHNKq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jul 2022 09:10:46 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3A12A950
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Jul 2022 06:10:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1657284456;
-        bh=2oifC1piO8UrA5RD6gRdN5bklPa6gY2fh5BSHJmbwxI=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=gY1zx0EzZhRpeFKj2v6WyGFl44GFcPeiRc006HBcMP8J3NVqHYZ5Xs46WeKGlJyPo
-         OONBRczA7wqQQVJTSkY6KTfkeZSfv2ukD6B+bV5lh3kf6n+QFpJtm2K3OlbAFTf1y8
-         AcnwpNatfUdsx6AKKztLUiLRgvFLgpmFcIFqadYc=
+        s=badeba3b8450; t=1657285843;
+        bh=D7Zc2S/UM5rC0clADnDm6KXcw0lUG3iIoOEBR+Q3vew=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=aK2uQ71VlkGT4DVHU57504QKcomuH1ZlTFMSS/mcOFfiveQiqs9PXFix/dE+ljFTL
+         QvFd3KA93RkAVLQudlmgM03xzcP02o1nZkw9KBatDjbsMaTlWUY45HDcrMw0oL1zXu
+         VksjsRXQV8sM30+L7+sTpyAVXWV7DKqAXCV0ZPiI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.171.120]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MXGvG-1o4tp000dC-00YfQI; Fri, 08
- Jul 2022 14:47:36 +0200
-Message-ID: <a665668a-4a10-d39e-d879-7f43aafad333@gmx.de>
-Date:   Fri, 8 Jul 2022 14:47:00 +0200
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M7sDg-1oElpQ1chO-005177; Fri, 08
+ Jul 2022 15:10:43 +0200
+Message-ID: <98714041-d872-081a-b9fb-174aa17d734a@gmx.com>
+Date:   Fri, 8 Jul 2022 21:10:39 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v6 1/2] highmem: Make __kunmap_{local,atomic}() take
- "const void *"
+ Thunderbird/91.10.0
+Subject: Re: Cannot mount
 Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Nick Terrell <terrelln@fb.com>, linux-btrfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "James E. J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
-        linux-parisc@vger.kernel.org, David Sterba <dsterba@suse.cz>
-References: <20220706111520.12858-1-fmdefrancesco@gmail.com>
- <20220706111520.12858-2-fmdefrancesco@gmail.com>
- <20220706120712.31b4313f17cb7ae08618c90e@linux-foundation.org>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <20220706120712.31b4313f17cb7ae08618c90e@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
+To:     =?UTF-8?B?xJDhuqF0IE5ndXnhu4Vu?= <snapeandcandy@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CAGXSV6aseVoQJGOBDC7JoNUpW_8UfBxWgsg6ExPQUWajtUeu=w@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CAGXSV6aseVoQJGOBDC7JoNUpW_8UfBxWgsg6ExPQUWajtUeu=w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mxaLCL8eT7tSvJnbIMGyZhGv6tob6iP9FCVQevHsK9zdzyMY+LV
- f/cNx/A9qwklApoQaPBkepG+YxURZwrf10v/sf77ErAtg1z0vmEDVeZSaqmj+x+bIa7vsnN
- iv4nzt/Ht+4cfiRu9XLCcq29qabamyXOs0/qydsVdroxagQvO4VAYeBTlo6p1zdPJ48MuX7
- vIx3z5DeNODaOqp/EQGuw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:k0uTu86fgK0=:rSa2j3/Xwq0fb+19DZDIbQ
- FbNfrrTpSNR4BuG9FxPHFpskMQOj9z/NpeTY2u9wFCl36L1y5xOsrpbX/A+x35Q5BDkv+hgZZ
- r84rhu6btQtT/flkWnrlkE9W3IYPksptQJylHTzVy9eO/hgIAUpVhOqwrHfzZndyhvh4mqo8u
- WnWNfsQLtfVoIugwOpF6qwNc4yDPdfv1ncv+JIgXCzXmfgOWgb3RI1PvTYWQtQQI1o2glzA93
- ByyFBe8YclOTPxV7c4M8f2P7+DtyTebzdZ63gjPURxz0KnoBtZgg/kihQB/wM6R2DnwPu8cEX
- sjK+KNSQpfOef6lZR3dI4TIBgTaNYMn7J/5RzVzof49w3HpnM6QIdjXbRumoy2kUFkzPFAuNV
- aT6DXE1t7EzfCdASbXgCynwD/HfwfiCNlDzBFRM2FzeLdk8oFJ1cPnsoeDgTnWYFI4H1Dn4YW
- ubY/vUD2SnrEOZQUzIYTj/7QvTSqm/P6oiDidgKxiB2Zea5sb/0Ful0rL2TwzB44/KdWcZJcL
- gn4MRCoCxY329Opg9F4Ppt3ZwodJHj9Lu3lTb8SmoC0RoWTzW8mfj4MCDzJPF67x9ZS5xsLI/
- mw69TL+ZRbnVotnaorcEwj8DkgfhrewdkDBL9n45hX/zVTsiDe03HKHLG8rLCeqKJC3oPQyvn
- LGJGKawd4jNowIlDsNO1oUAqumDrhBCz5wdTgI/9SAHJapkjRcsi4hKs1jvEWkTxR6+2/IlgK
- BMrE1C3ADfNXH8eDDg5y67rDpASMd2hEAjYcJFcQb9p0rL4PgZFbVR+dudwHaH6ReCJL2BTBa
- 9mARIcEdzGEvnRgqP/PG9EVKKdkjlrzaEJszVsXIIIFMnA+Q1o2hNoJIwTm09EFuv8puAVLgn
- SpHCZqpFoyx+6vlpJJYYJPgAJXwy6yqIEHVxmg20SzjYCcH4n9e0/Ik8VTu94LP3yGwXuObNP
- JE8rS8FQGdXFiWUQHM6xkJmqF5482OfLubW3B/U6w2r93PDegp/Uk0K5OzUkzHluHMesBaFFA
- tshXCGJhhFp2vYLH4bAwxG3g7Ort30TgjWUner7hYcWtoay/dwC32o98xyHafIS24vxr5StHb
- 8mWFazgIKvmvYklLTDOeD5fENvAVPIFct7hrmJY3aKV1vs2e/JWH8u87A==
+X-Provags-ID: V03:K1:XcN3QoePqRnBnz9keVaV+fdTFMLSURVDN6Jndyeygjv3dwiSgNd
+ txGBr/IswZmwW2weEbx7srKVq81pdm1JNzJ3PlYuki0uALxgm0yBHZaj33XOHl1P3Zp7Roz
+ 4KNCf9hphBgYk8er/If3/GPBVcrty8PuAUfj5K0JL9KiEVV7RvbcRAfNi2/e1o3bSmXhiHn
+ GskS4KdtGHvAugqXxVFIA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ur0jlUcbMmo=:wdwG/bRfnt4kuTZQ6QYzJX
+ QYX0YGPd01D/JfgCWFsbVnHK6/pQYU0qoRVAPPEjGz3B7bHiVibwE1ROd7L8hqa2vstzo0ChJ
+ LQhVYIg4wDwCsBaVauDaoFqEaM7vKSXwhZ+ap3Ces09sg52k0qaDpfJBvcU/OP0pTi1Dx0yhn
+ 7sHiFm3RKMT2KYRn8J/C8tioMeakLMyvY1Df11uFn/FqUJOiM897UebamJjDDNMTVVQydR5b1
+ rvPnQwjDnnZ93lG0XoeNN15qNn3Klbd8shx+ODkayQ+1Z499c+L9QsFl1SgFYy9zdZsBKQwF2
+ 739YsTNvD2WuBwhWrNqjGW7u/1NxMDnNxfbWi2xZDVYch+PRt25BcmHQtiXKum2Pa4bc7Bos+
+ 0vUqkN+EsHBVtjKOxcvysmqRxg7I4ssv9gQubglgguAcBQBcmxCKO9EmuPEgqGr+HkrbJpmLy
+ 0xFKu1QFfO713sqcli+Jx0Lz5YOr3OA1Btgiw7o+0CQxjlV8cr/1OIntbiHaiIzhk4fJjcSN6
+ BK2Nee9J9y4koErzTIxTbd3bIYCNbNq/k9tnGPryUcVKNzlhYypa9EkO7oWv4iELEQOanj+p4
+ y5PELgPx+Cg/1xmZIa1wYQKHmxzI1qrTmSburDtvPAqw0GXyfzSpWlGl0Nqwnr9Iul4uWLJ/8
+ QfYH+t4rcdWlMf+EhJ7e/I7fE8kfNzkO3C+25NZS6FTw5y8B7NVMFr+dn6OW0mneudu7d4HPB
+ dmowKJ5M/aWcj+ELGnw/pi7OfO6P7WICfiC2CNm0lRj2zoKzPvKy0OdO9PBLvo6UQUaXXA43j
+ wnUaNSqSSnQFRaPQbl9GHz9EDT3QkdhHHiHI2wG+rZllTuPd6SxUaiI6mLYbwkbxbqIpf6aZ7
+ HG54Ynh7asCE6ymt170rDjK5y0cso5TfXUKTcejc8rHkD7eH2kT70n1BAE+K/cdaSYhAixJZ+
+ xbgR00rm57U4dC9K7R6oa9EHZIcdnq4QC0JmB4me/A1r2+ZLGbJEdJgacfXDDXBDLIJGrK04K
+ 4MkfMO1z6usqAghThLj32GFWiGV+U/FGriUN/f5ekef7zCaku+Rzt9OjVZGFnSeEdForC59vY
+ 8II6IkTs90j0Dn/EkcPhJUeNo4Azel8gNLOcPlwkTogvJaVAcz/Y+adrg==
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,28 +70,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/6/22 21:07, Andrew Morton wrote:
-> On Wed,  6 Jul 2022 13:15:19 +0200 "Fabio M. De Francesco" <fmdefrancesc=
-o@gmail.com> wrote:
+
+
+On 2022/7/8 20:18, =C4=90=E1=BA=A1t Nguy=E1=BB=85n wrote:
+> Hi,
 >
->> __kunmap_ {local,atomic}() currently take pointers to void. However, th=
-is
->> is semantically incorrect, since these functions do not change the memo=
-ry
->> their arguments point to.
->>
->> Therefore, make this semantics explicit by modifying the
->> __kunmap_{local,atomic}() prototypes to take pointers to const void.
->>
->> As a side effect, compilers will likely produce more efficient code.
->>
+> I have 2 drives in mirror mode in pc A (ubuntu 18.04 server). A
+> mainboard problem occurred in pc A, then I attached those 2 drivers
+> into pc B (ubuntu 20.04 desktop) but cannot mount them. Here is the
+> information.
 >
-> Acked-by: Andrew Morton <akpm@linux-foundation.org>
+> ~ =E2=9D=AF=E2=9D=AF=E2=9D=AF uname -a
+> Linux pc 5.13.0-52-generic #59~20.04.1-Ubuntu SMP Thu Jun 16 21:21:28
+> UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+> ~ =E2=9D=AF=E2=9D=AF=E2=9D=AF btrfs --version
+> btrfs-progs v5.4.1
+> ~ =E2=9D=AF=E2=9D=AF=E2=9D=AF sudo btrfs fi show
+> Label: 'data'  uuid: f6abe13d-a8da-4bf4-9a5c-402fec4a2bce
+>      Total devices 2 FS bytes used 656.04GiB
+>      devid    1 size 1.82TiB used 701.03GiB path /dev/sdb1
+>      devid    2 size 3.62TiB used 701.03GiB path /dev/sda1
+>
+> The dmesg log is in the attached file. Basically it just tell
+>
+> [111997.422691] BTRFS info (device sdb1): flagging fs with big metadata =
+feature
+> [111997.422716] BTRFS error (device sdb1): open_ctree failed
 
-Acked-by: Helge Deller <deller@gmx.de>  # parisc
+This no error message looks like some unrecognized mount option, mostly
+for newer compression method (like zstd?)
 
-> Please include this in the btrfs tree if/when [2/2] is added.
+Could you please provide the mount command to confirm if that's the case?
 
-Yes, agreed. Please take both through btrfs.
+Another thing can help debugging is "btrfs check" output.
 
-Helge
+Thanks,
+Qu
+>
+> Please help me recover my data.
+>
+> Thanks and regards.
+> Dat
