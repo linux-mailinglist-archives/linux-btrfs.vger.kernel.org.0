@@ -2,98 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBDE56B364
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jul 2022 09:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D73F56B5CA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jul 2022 11:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237544AbiGHHXi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Jul 2022 03:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
+        id S234525AbiGHJhr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Jul 2022 05:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237162AbiGHHXe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jul 2022 03:23:34 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926EDE0F1
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Jul 2022 00:23:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657265013; x=1688801013;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IR2Tr+DpvEWtSdz6yHVmBXdt2rYVOao/UkQoschYRfo=;
-  b=Ui5EmRVdB6GopE+4f447u/CEjFGCVpE+a84bmnGlV/DZRvV9+eZeCQWg
-   DL+0cVqrhZhPT7bQRlk1aV+Tge/d0zP5/BiHahPzRdBJ3JTu0jPNxo4MJ
-   RO8mzHRdaimtBtgTpIkRVEuN9MDBClX0FwI+Gomkj6u5cPrXqdqzyVoCO
-   P9UZS+M078/XfUiVqyFCwcibK5uXyNb1CIS/H2mDZRN4r/H4n/MT2kRwJ
-   WVC8t2Nf84IM2WQCWeCZdS3Fetz06yav+V9dDxj6iUrfb9yJyMHxrHSMi
-   FQ8Twzmz6eJFRGk+pZxAkZDrzyiQi+DvIWjJGJ9ticAtHmHD0FaAEJ1v3
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10401"; a="284957767"
-X-IronPort-AV: E=Sophos;i="5.92,254,1650956400"; 
-   d="scan'208";a="284957767"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2022 00:23:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,254,1650956400"; 
-   d="scan'208";a="568843907"
-Received: from lkp-server01.sh.intel.com (HELO 68b931ab7ac1) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 08 Jul 2022 00:23:32 -0700
-Received: from kbuild by 68b931ab7ac1 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1o9iKp-000N5w-Bf;
-        Fri, 08 Jul 2022 07:23:31 +0000
-Date:   Fri, 8 Jul 2022 15:23:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     kbuild-all@lists.01.org
-Subject: Re: [PATCH 06/12] btrfs: write-intent: introduce an internal helper
- to set bits for a range.
-Message-ID: <202207081504.knAOU6FY-lkp@intel.com>
-References: <1574950e8caee003d1682ca6a9c6c85142cef5bd.1657171615.git.wqu@suse.com>
+        with ESMTP id S237477AbiGHJho (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jul 2022 05:37:44 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B089660537
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Jul 2022 02:37:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 73BBE1FDC9;
+        Fri,  8 Jul 2022 09:37:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1657273060; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ICqaTOJKz/0JIm3pJ52wxkvqIIm8Qot5BI4cRUmKp+M=;
+        b=iuKS5CQ5VODVlgLenRo42j19Hud4G9sO2ks5rmMkIGBVAGnVofxW8UABmgFNAkyn4FtqXJ
+        QAevztWi1FGRqxF+RkBCPcdNCqTlOqPu2U88yAPqamwENbVz0AyNBDks/J+nJT+nvozfLd
+        ueojMwued5LFaKD0LItZ9B1MGrWVfs8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1CAAF13A7D;
+        Fri,  8 Jul 2022 09:37:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id n3GUA+T6x2KKTgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Fri, 08 Jul 2022 09:37:40 +0000
+Message-ID: <fbe18ef7-a75a-4bca-043a-048dcd1cd2e7@suse.com>
+Date:   Fri, 8 Jul 2022 12:37:39 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1574950e8caee003d1682ca6a9c6c85142cef5bd.1657171615.git.wqu@suse.com>
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: fix read repair on compressed extents v3
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20220707053331.211259-1-hch@lst.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <20220707053331.211259-1-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
 
-Thank you for the patch! Yet something to improve:
 
-[auto build test ERROR on kdave/for-next]
-[also build test ERROR on next-20220707]
-[cannot apply to linus/master v5.19-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On 7.07.22 г. 8:33 ч., Christoph Hellwig wrote:
+> Hi all,
+> 
+> while looking into the repair code I found that read repair of compressed
+> extents is current fundamentally broken, in that repair tries to write
+> the uncompressed data into a corrupted extent during a repair.  This is
+> demonstrated by the "btrfs: test read repair on a corrupted compressed
+> extent" test submitted to xfstests.
+> 
+> This series fixes that, but is a bit invaside as it requires both
+> refactoring of the compression code and changes to the repair code to
+> not look up the logic address on every repair attempt.  On the plus
+> side it removes a whole lot of code.
+> 
+> The series is on top of the for-next branch, as that includes other
+> bio changes not in misc-next yet.
+> 
+> Changes since v2:
+>   - include the previous submitted and reviewed repair all mirrors patch
+>     to simplify the stack of patches
+>   - include an additional cleanup patch at the end
+>   - improve a commit log
+>   
+> Changes since v1:
+>   - describe the partial revert that happens in patch 1 better in the
+>     commit log
+>   - drop a now incorrect comment
+>   - do not add a prototype for a non-existent function
+> 
+> Diffstat:
+>   compression.c |  287 ++++++++++++++++------------------------------------------
+>   compression.h |   11 --
+>   ctree.h       |    2
+>   extent_io.c   |   93 +++++++-----------
+>   extent_io.h   |    9 -
+>   inode.c       |   34 +++---
+>   volumes.h     |    2
+>   7 files changed, 146 insertions(+), 292 deletions(-)
+>   compression.c |  311 ++++++++++++++++------------------------------------------
+>   compression.h |   11 --
+>   ctree.h       |    4
+>   extent_io.c   |  202 ++++++++++++++++---------------------
+>   extent_io.h   |   10 -
+>   inode.c       |   39 +++----
+>   6 files changed, 203 insertions(+), 374 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-introduce-write-intent-bitmaps-for-RAID56/20220707-133435
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-config: i386-randconfig-a003 (https://download.01.org/0day-ci/archive/20220708/202207081504.knAOU6FY-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/2b051857a66f0310589455c06f962908016b5f9b
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Qu-Wenruo/btrfs-introduce-write-intent-bitmaps-for-RAID56/20220707-133435
-        git checkout 2b051857a66f0310589455c06f962908016b5f9b
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+For the whole series :
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
->> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
