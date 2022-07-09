@@ -2,169 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB24F56C52D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Jul 2022 02:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CF656C5BE
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Jul 2022 03:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239308AbiGHXTX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Jul 2022 19:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53604 "EHLO
+        id S229468AbiGIBe4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Jul 2022 21:34:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239055AbiGHXTS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jul 2022 19:19:18 -0400
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58AC4198E;
-        Fri,  8 Jul 2022 16:19:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1657322357; x=1688858357;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=pc1V+hc3nLWgOYR+olBZbWKKUSmpRc4Pzg4j2XhZTsc=;
-  b=d3s20VfXAQpo7EUYJhov3LbnxmCHb0PsxoC/WVTpNulf9jSSbvFvjrX5
-   fLrCi/+D8vibq94+rLMT4VDL9+vzkdma8SBZDWAaPZ6CyzfFiHtn+gJ9l
-   uDyKq8qcXXk8PLl0NQun8IM0o8nlQJW2LVhs70HZQ/l/4A2y49vv+kz7X
-   yzJBXZ0ap1fbn/heJM1GeKTsDVhSEiNi/RTLnm7EnO7H3fbMBBoos5QN7
-   mJRdUXv99KFmTJGG5tlvMQVTIxlCZLQdIOYhwuLKQDlB0ofVYXXu9F96y
-   LQAw+aaGliTD/NCpMXj+8Bp2AZkGQwITCAzgJQIYSBrztW6r641GH4Mv3
-   A==;
-X-IronPort-AV: E=Sophos;i="5.92,256,1650902400"; 
-   d="scan'208";a="203871836"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Jul 2022 07:19:17 +0800
-IronPort-SDR: fwdJIj+8vtiTFBvlPVAfN0DqXZKVziEowQ7etfKPZRKh73SWByZie0zT/mpN7CnY2plsLVfBiu
- RqwTibA29BCC6ZCwybuwO8/5g+36BYAMDkJRr091DV/W9IUBkeEa9+e1Dg1DbZSmy2m10eJ6Ls
- E+MRqMwoTKksf3WYG0BBk7/KNJpNAFLTVSfU3NGOg8gGd9MKoRfbpV96BbnCtqHvkIsM1aLgi5
- 71oVWYhGfNDI0qxuHBYvmeJ8qX8XGE2MQOPGnZ1hfSRs8Mdx34rbtxnTj599t75g28uvv5yNTn
- 0XCbYX1IqusGBtSZNZlBWJvT
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Jul 2022 15:36:22 -0700
-IronPort-SDR: +9lmFEz7PD2i02CoLXx4j06g+16XdH2CuHirM0FvmwbCBHG2fyHc+zVwAHy36SYa2yi+VWKrxj
- I63ZtHTp7uTQeVcTPy1hkz1Z5NjNnb54fjQbKIKAf7eCh/U58BjqYGrr9Gq+pTslKbcxLnricQ
- x8bFZ1wpLx1XxAOHPlnPwfYEU90FoT98SR4j0+/MDBdrCIddvaqenaV61Wx0wwBmcJWbS7NhOM
- q6YlgwAh93M3B+6VNqT6A2TtM42zDl6DvSC+oo7cECDSQiTAn/kXKWyP4keIltwyCXeli1Ze82
- cwI=
-WDCIronportException: Internal
-Received: from phd010370.ad.shared (HELO naota-xeon.wdc.com) ([10.225.55.250])
-  by uls-op-cesaip01.wdc.com with ESMTP; 08 Jul 2022 16:19:16 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     linux-block@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 13/13] btrfs: zoned: wait until zone is finished when allocation didn't progress
-Date:   Sat,  9 Jul 2022 08:18:50 +0900
-Message-Id: <bfda89d79a418ce9bdb68bf3f444a95a04b63181.1657321126.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1657321126.git.naohiro.aota@wdc.com>
-References: <cover.1657321126.git.naohiro.aota@wdc.com>
+        with ESMTP id S229453AbiGIBez (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jul 2022 21:34:55 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5037378DF6
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Jul 2022 18:34:54 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id j1so277710qtv.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Jul 2022 18:34:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=GDW0QOLARGppkbZeTkUYtx7NydK/YBTqyzhmqVqRdSs=;
+        b=NeGHzIAtQWWLDCIShh17uy7znA/1W8fxbsaJHip+xYpPA8Td3bH8LM07k3nf7WNbl4
+         SWZ0IFGFjYwdu1vxA3yXJDqg7Sj4goC0Ta6F/FdtOvQJoCkdrHAr+qPWLlCqtX/EfVYm
+         5qD3iTfjVCM3pW8K+PsoLFUtQUm/HIk3c7w2Qg098aFXpb663ptkYqVy6FttPmYjZYZX
+         0tAex5di+UdcA8l8WuxuQqh10hlIy8HC46alWB0I0BbUBvygzwcRmVAr3Y4cJ1uO2HDA
+         N7WrWfMV0sjx6k91GhNkl+zHZz9S57meJfwq1f4x4duAo/8cI0k/9PZnJJ4XA5FQR9s9
+         Pz6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=GDW0QOLARGppkbZeTkUYtx7NydK/YBTqyzhmqVqRdSs=;
+        b=uU+eypc0uqqE9HJ8a1d5zAAZYw6JzWqY4vLA5k08IURg237heyUXO2N9B8w4yjEAH7
+         K7DAhI8bWPQQuvtfeF3gStmBeVKWTBVND+XB8G4zGsLibae6XHDnpUBrJ+p54jt/jwHC
+         NKSxl5pMpNQxg9ii8gU2NM2PtnN+JWfRscGePFv0jvHk8X/2fDS1xr3wH8bdeJggVgcJ
+         a5lAkMZIDbHpbX0e0Du1N0FuISjJIT+yUIuNlFhzn8NGGurjN0z5OgXk0q9GWEwfvxrN
+         wTCH9PVYZbBho58CeTv8m/dMymopcMg8pASKad+rZudK/rv47gTyxzPRZN0uM14Uojp5
+         glWQ==
+X-Gm-Message-State: AJIora9/av6AVGuj8qkAjhFG3XwLhyeTmj6XZcSmH2vjCCl/qQaLN6SK
+        DBb0HkJGLf0nM5no5iYbUoc=
+X-Google-Smtp-Source: AGRyM1sY8kLliorrpPWcAxguCLFlVWaw9VLhpY9iT/2sZmzShJxW4TJaeqdXuh4okU5+sZzHwBWv5A==
+X-Received: by 2002:a05:6214:d0e:b0:473:16b:8953 with SMTP id 14-20020a0562140d0e00b00473016b8953mr5198080qvh.75.1657330493473;
+        Fri, 08 Jul 2022 18:34:53 -0700 (PDT)
+Received: from [10.5.100.6] (modemcable117.130-83-70.mc.videotron.ca. [70.83.130.117])
+        by smtp.gmail.com with ESMTPSA id x15-20020ac84d4f000000b00304df6f73f0sm389337qtv.0.2022.07.08.18.34.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Jul 2022 18:34:52 -0700 (PDT)
+Message-ID: <d7276c15-37d5-d4e5-cab5-0e2703216a95@gmail.com>
+Date:   Fri, 8 Jul 2022 21:34:51 -0400
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.8.0
+Subject: Re: BTRFS critical (device md126): corrupt node: root=1
+ block=13404298215424 slot=307, unaligned pointer, have 12567101254720864896
+ should be aligned to 4096
+Content-Language: en-CA
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <1d43c273-5af3-6968-de18-d70a346b51aa@suse.com>
+ <BD6F70A8-17FB-40E3-87DE-E185049DEA2E@gmail.com>
+ <c7c50f16-92de-c9d2-d665-40f9556c6c80@gmx.com>
+From:   Denis Roy <denisjroy@gmail.com>
+In-Reply-To: <c7c50f16-92de-c9d2-d665-40f9556c6c80@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When the allocated position doesn't progress, we cannot submit IOs to
-finish a block group, but there should be ongoing IOs that will finish a
-block group. So, in that case, we wait for a zone to be finished and retry
-the allocation after that.
+Love to comply to run the latest version, but I past from my 
+experiences. Maybe you could help me on update/upgrading so I can do the 
+check. I trying to learn here, need some help
 
-Introduce a new flag BTRFS_FS_NEED_ZONE_FINISH for fs_info->flags to
-indicate we need a zone finish to have proceeded. The flag is set when the
-allocator detected it cannot activate a new block group. And, it is cleared
-once a zone is finished.
-
-CC: stable@vger.kernel.org # 5.16+
-Fixes: afba2bc036b0 ("btrfs: zoned: implement active zone tracking")
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/ctree.h   | 4 ++++
- fs/btrfs/disk-io.c | 1 +
- fs/btrfs/inode.c   | 9 +++++++--
- fs/btrfs/zoned.c   | 6 ++++++
- 4 files changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index c215e15baea2..ddecd92fa848 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -638,6 +638,9 @@ enum {
- 	/* Indicate we have half completed snapshot deletions pending. */
- 	BTRFS_FS_UNFINISHED_DROPS,
- 
-+	/* Indicate we have to finish a zone to do next allocation. */
-+	BTRFS_FS_NEED_ZONE_FINISH,
-+
- #if BITS_PER_LONG == 32
- 	/* Indicate if we have error/warn message printed on 32bit systems */
- 	BTRFS_FS_32BIT_ERROR,
-@@ -1084,6 +1087,7 @@ struct btrfs_fs_info {
- 
- 	spinlock_t zone_active_bgs_lock;
- 	struct list_head zone_active_bgs;
-+	wait_queue_head_t zone_finish_wait;
- 
- 	/* Updates are not protected by any lock */
- 	struct btrfs_commit_stats commit_stats;
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 914557d59472..1fe5f79770a0 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3135,6 +3135,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
- 	init_waitqueue_head(&fs_info->transaction_blocked_wait);
- 	init_waitqueue_head(&fs_info->async_submit_wait);
- 	init_waitqueue_head(&fs_info->delayed_iputs_wait);
-+	init_waitqueue_head(&fs_info->zone_finish_wait);
- 
- 	/* Usable values until the real ones are cached from the superblock */
- 	fs_info->nodesize = 4096;
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 681e2cb4dd9c..815121350d91 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1643,8 +1643,13 @@ static noinline int run_delalloc_zoned(struct btrfs_inode *inode,
- 		if (ret == 0)
- 			done_offset = end;
- 
--		if (done_offset == start)
--			return -ENOSPC;
-+		if (done_offset == start) {
-+			struct btrfs_fs_info *info = inode->root->fs_info;
-+
-+			wait_var_event(&info->zone_finish_wait,
-+				       !test_bit(BTRFS_FS_NEED_ZONE_FINISH, &info->flags));
-+			continue;
-+		}
- 
- 		if (!locked_page_done) {
- 			__set_page_dirty_nobuffers(locked_page);
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 67098f3fcd14..471d870875ed 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -2006,6 +2006,9 @@ static int do_zone_finish(struct btrfs_block_group *block_group, bool fully_writ
- 	/* For active_bg_list */
- 	btrfs_put_block_group(block_group);
- 
-+	clear_bit(BTRFS_FS_NEED_ZONE_FINISH, &fs_info->flags);
-+	wake_up_all(&fs_info->zone_finish_wait);
-+
- 	return 0;
- }
- 
-@@ -2042,6 +2045,9 @@ bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags)
- 	}
- 	mutex_unlock(&fs_info->chunk_mutex);
- 
-+	if (!ret)
-+		set_bit(BTRFS_FS_NEED_ZONE_FINISH, &fs_info->flags);
-+
- 	return ret;
- }
- 
--- 
-2.35.1
-
+On 2022-07-08 3:04 a.m., Qu Wenruo wrote:
+>
+>
+> On 2022/7/8 14:20, Denis Roy wrote:
+>> Ok, great. How do I do that?
+>
+> Considering you're using a vendor specific firmware/hardware, I don't
+> have any good suggestion, other than upgrade to the latest version the
+> vendor provides, and hope they upgraded the kernel.
+>
+> Or you may want to jump into the rabbit hole of running a common distro
+> on the NAS hardware so that you have full control of the system, but
+> lose all the out-of-box experience provided by those NAS vendors.
+>
+>
+> For the corrupted fs, you may want to run btrfs check (latest version
+> recommended) and post it.
+> Then we may be able to decide if the fs can be repaired properly.
+>
+> Thanks,
+> Qu
+>>
+>> Sent from my iPhone
+>>
+>>> On Jul 8, 2022, at 2:01 AM, Qu Wenruo <wqu@suse.com> wrote:
+>>>
+>>> ﻿
+>>>
+>>>> On 2022/7/8 13:50, Denis Roy wrote:
+>>>>      key (7652251795456 EXTENT_ITEM 72057594063093760) block 
+>>>> 12567101254720864896 (383517494345729) gen 72340209471334675
+>>>>      key (2959901138859622420 EXTENT_CSUM 3664676558733568) block 
+>>>> 2234066886193184768 (68178310735876) gen 18374696375462128179
+>>>>      key (1153765929541501184 EXTENT_CSUM 0) block 0 (0) gen 0
+>>>>      key (0 UNKNOWN.0 0) block 0 (0) gen 0
+>>>
+>>> The above dump shows the tree node is completely corrupted by some 
+>>> weird data.
+>>>
+>>> The offending slot is not aligned, and its offset (extent size for 
+>>> EXTENT_ITEM) is definitely not correct.
+>>>
+>>> But the offset looks like a bitflip:
+>>>
+>>> hex(72057594063093760) = '0x100000001800000'
+>>>
+>>> Ignoring the high bit, 0x1800000 is completely sane for the size of 
+>>> an data extent.
+>>>
+>>> The next slot even has incorrect type, (EXTENT_CSUM) should not 
+>>> occur in
+>>> extent tree, but this time I can not find a pattern in the corrupted 
+>>> type.
+>>>
+>>> The offset, 3664676558733568, is also not aligned but without a 
+>>> solid corruption pattern.
+>>>
+>>> And finally we have an UNKNOWN key, which should not occur there at 
+>>> all.
+>>>
+>>>
+>>> So this looks like that tree node is by somehow screwed up in the 
+>>> middle.
+>>> I don't have any clue how this could happen, but considering the 
+>>> checksum still passed, it must happen at runtime.
+>>>
+>>>
+>>> For now, I can only recommend to go kernel newer than 5.11 which 
+>>> introduced mandatory write-time tree block sanity check, and should 
+>>> reject such bad tree block before it can be written to disk.
+>>>
+>>> Thanks,
+>>> Qu
