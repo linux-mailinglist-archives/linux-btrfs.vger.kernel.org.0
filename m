@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF32956D495
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jul 2022 08:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DA956D4C9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jul 2022 08:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbiGKGVe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jul 2022 02:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
+        id S229540AbiGKGiO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jul 2022 02:38:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbiGKGVd (ORCPT
+        with ESMTP id S229491AbiGKGiN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jul 2022 02:21:33 -0400
+        Mon, 11 Jul 2022 02:38:13 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545AB167FC
-        for <linux-btrfs@vger.kernel.org>; Sun, 10 Jul 2022 23:21:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1771C1402D
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Jul 2022 23:38:12 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0534A226B1
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 06:21:31 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CB94B22760
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 06:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657520491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1657521490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=gtAl+nD01cPdijRDAngPlq3AZeK3B3ieswU3M1zxu+Y=;
-        b=e8CJ6jGByq24gOX6oW0VJwnSFu6S/wX1gFj0bCtH2wqqsXlN/p0ZgZuh+0VXxZovAjeHUi
-        0pQLAFJJmdUJsRCBVPQ/b9fbOhIv+q+dyLIQAi4my5jX85yixoPhZXYhFWNK6rA1e2GSMa
-        PsPrqCjtc2fMM67s2T4RnhYDPnYqAyc=
+        bh=vg+LaHkud2OIaQ+zrzGzlFkwu1gQZqbIsLIxaPlN3gg=;
+        b=d3Pxrj0hQlCpN1+uCvL6D1KeodxcUW9KvViDG1ismHqERIBe7B9WNc0+X/TTN5+lMdZkCX
+        vqDfvsRSvQ+nAKLkCF34jEKAvOUscVN5MYMuYjBsu3mG16X+Ogp9iYz4W0QyIPikxwPRwH
+        3kfhMHGMAPvji/VZG27j8d9Yx+7R7u4=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2CDD613322
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 06:21:29 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2AB1F13322
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 06:38:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id d+JNOmnBy2K7cAAAMHmgww
+        id El5GOVHFy2JJdgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 06:21:29 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 06:38:09 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: don't save block group root into super block
-Date:   Mon, 11 Jul 2022 14:21:12 +0800
-Message-Id: <40ce67d5bbb8f9c471b3c9a33504b0bb4022a51b.1657520391.git.wqu@suse.com>
+Subject: [PATCH] btrfs: don't update the block group item if used bytes are the same
+Date:   Mon, 11 Jul 2022 14:37:52 +0800
+Message-Id: <64e4434370badd801a79a782613c405830475dde.1657521468.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,160 +57,84 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The extent tree v2 (both thankfully not yet fully materialized) needs a
-new root for storing all block group items.
+When committing a transaction, we will update block group items for all
+dirty block groups.
 
-My initial proposal years just added a new tree rootid, and load it from
-tree root, just like what we did for quota/free space tree/uuid/extent
-roots.
+But in fact, dirty block groups don't always need to update their block
+group items.
+It's pretty common to have a metadata block group which experienced
+several CoW operations, but still have the same amount of used bytes.
 
-But the extent tree v2 patches introduced a completely new (and to me,
-wasteful) way to store block group tree root into super block.
+In that case, we may unnecessarily CoW a tree block doing nothing.
 
-Currently only two roots enjoying the privilege to stay in super blocks:
-tree root and chunk root.
+This patch will introduce btrfs_block_group::commit_used member to
+remember the last used bytes, and use that new member to skip
+unnecessary block group item update.
 
-There is no special reason to store block group root into super block,
-even performance wise it doesn't make sense.
+This would be more common for large fs, which metadata block group can
+be as large as 1GiB, containing at most 64K metadata items.
 
-So just move block group root from super block into tree root.
+In that case, if CoW added and the deleted one metadata item near the end
+of the block group, then it's completely possible we don't need to touch
+the block group item at all.
+
+I don't have any benchmark to prove this, but this should not cause any
+hurt either.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
-v2:
-- Fix a wrong check in btrfs_read_roots(), which makes us to read
-  block group root when EXTENT_TREE_V2 is not enabled 
----
- fs/btrfs/block-rsv.c   |  1 +
- fs/btrfs/ctree.h       | 16 ++--------------
- fs/btrfs/disk-io.c     | 32 +++++++++++++++++++++-----------
- fs/btrfs/transaction.c |  8 --------
- 4 files changed, 24 insertions(+), 33 deletions(-)
+ fs/btrfs/block-group.c | 6 ++++++
+ fs/btrfs/block-group.h | 6 ++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index 06be0644dd37..6ce704d3bdd2 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -424,6 +424,7 @@ void btrfs_init_root_block_rsv(struct btrfs_root *root)
- 	case BTRFS_CSUM_TREE_OBJECTID:
- 	case BTRFS_EXTENT_TREE_OBJECTID:
- 	case BTRFS_FREE_SPACE_TREE_OBJECTID:
-+	case BTRFS_BLOCK_GROUP_TREE_OBJECTID:
- 		root->block_rsv = &fs_info->delayed_refs_rsv;
- 		break;
- 	case BTRFS_ROOT_TREE_OBJECTID:
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4e2569f84aab..2ffd8daaa26e 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -288,14 +288,9 @@ struct btrfs_super_block {
- 	/* the UUID written into btree blocks */
- 	u8 metadata_uuid[BTRFS_FSID_SIZE];
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 0148a6d719a4..5b08ac282ace 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2024,6 +2024,7 @@ static int read_one_block_group(struct btrfs_fs_info *info,
  
--	/* Extent tree v2 */
--	__le64 block_group_root;
--	__le64 block_group_root_generation;
--	u8 block_group_root_level;
--
- 	/* future expansion */
--	u8 reserved8[7];
--	__le64 reserved[25];
-+	u8 reserved8[8];
-+	__le64 reserved[27];
- 	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
- 	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
+ 	cache->length = key->offset;
+ 	cache->used = btrfs_stack_block_group_used(bgi);
++	cache->commit_used = cache->used;
+ 	cache->flags = btrfs_stack_block_group_flags(bgi);
+ 	cache->global_root_id = btrfs_stack_block_group_chunk_objectid(bgi);
  
-@@ -2532,13 +2527,6 @@ BTRFS_SETGET_STACK_FUNCS(super_cache_generation, struct btrfs_super_block,
- BTRFS_SETGET_STACK_FUNCS(super_magic, struct btrfs_super_block, magic, 64);
- BTRFS_SETGET_STACK_FUNCS(super_uuid_tree_generation, struct btrfs_super_block,
- 			 uuid_tree_generation, 64);
--BTRFS_SETGET_STACK_FUNCS(super_block_group_root, struct btrfs_super_block,
--			 block_group_root, 64);
--BTRFS_SETGET_STACK_FUNCS(super_block_group_root_generation,
--			 struct btrfs_super_block,
--			 block_group_root_generation, 64);
--BTRFS_SETGET_STACK_FUNCS(super_block_group_root_level, struct btrfs_super_block,
--			 block_group_root_level, 8);
+@@ -2724,6 +2725,10 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
+ 	struct btrfs_block_group_item bgi;
+ 	struct btrfs_key key;
  
- int btrfs_super_csum_size(const struct btrfs_super_block *s);
- const char *btrfs_super_csum_name(u16 csum_type);
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 76835394a61b..470f6f4962e8 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1606,6 +1606,9 @@ static struct btrfs_root *btrfs_get_global_root(struct btrfs_fs_info *fs_info,
- 	if (objectid == BTRFS_UUID_TREE_OBJECTID)
- 		return btrfs_grab_root(fs_info->uuid_root) ?
- 			fs_info->uuid_root : ERR_PTR(-ENOENT);
-+	if (objectid == BTRFS_BLOCK_GROUP_TREE_OBJECTID)
-+		return btrfs_grab_root(fs_info->block_group_root) ?
-+			fs_info->block_group_root : ERR_PTR(-ENOENT);
- 	if (objectid == BTRFS_FREE_SPACE_TREE_OBJECTID) {
- 		struct btrfs_root *root = btrfs_global_root(fs_info, &key);
- 
-@@ -2596,6 +2599,23 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
- 	if (ret)
- 		return ret;
- 
-+	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
-+		location.objectid = BTRFS_BLOCK_GROUP_TREE_OBJECTID;
-+		location.type = BTRFS_ROOT_ITEM_KEY;
-+		location.offset = 0;
++	/* No change in used bytes, can safely skip it. */
++	if (cache->commit_used == cache->used)
++		return 0;
 +
-+		root = btrfs_read_tree_root(tree_root, &location);
-+		if (IS_ERR(root)) {
-+			if (!btrfs_test_opt(fs_info, IGNOREBADROOTS)) {
-+				ret = PTR_ERR(root);
-+				goto out;
-+			}
-+		} else {
-+			set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
-+			fs_info->block_group_root = root;
-+		}
-+	}
-+
- 	location.objectid = BTRFS_DEV_TREE_OBJECTID;
- 	location.type = BTRFS_ROOT_ITEM_KEY;
- 	location.offset = 0;
-@@ -2927,17 +2947,7 @@ static int load_important_roots(struct btrfs_fs_info *fs_info)
- 		btrfs_warn(fs_info, "couldn't read tree root");
- 		return ret;
- 	}
--
--	if (!btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
--		return 0;
--
--	bytenr = btrfs_super_block_group_root(sb);
--	gen = btrfs_super_block_group_root_generation(sb);
--	level = btrfs_super_block_group_root_level(sb);
--	ret = load_super_root(fs_info->block_group_root, bytenr, gen, level);
--	if (ret)
--		btrfs_warn(fs_info, "couldn't read block group root");
--	return ret;
-+	return 0;
- }
+ 	key.objectid = cache->start;
+ 	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
+ 	key.offset = cache->length;
+@@ -2743,6 +2748,7 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
+ 	btrfs_set_stack_block_group_flags(&bgi, cache->flags);
+ 	write_extent_buffer(leaf, &bgi, bi, sizeof(bgi));
+ 	btrfs_mark_buffer_dirty(leaf);
++	cache->commit_used = cache->used;
+ fail:
+ 	btrfs_release_path(path);
+ 	return ret;
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index 35e0e860cc0b..3f92b8eb9a05 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -74,6 +74,12 @@ struct btrfs_block_group {
+ 	u64 cache_generation;
+ 	u64 global_root_id;
  
- static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 0a50d5746f6f..192f08c5a557 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1898,14 +1898,6 @@ static void update_super_roots(struct btrfs_fs_info *fs_info)
- 		super->cache_generation = 0;
- 	if (test_bit(BTRFS_FS_UPDATE_UUID_TREE_GEN, &fs_info->flags))
- 		super->uuid_tree_generation = root_item->generation;
--
--	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
--		root_item = &fs_info->block_group_root->root_item;
--
--		super->block_group_root = root_item->bytenr;
--		super->block_group_root_generation = root_item->generation;
--		super->block_group_root_level = root_item->level;
--	}
- }
- 
- int btrfs_transaction_in_commit(struct btrfs_fs_info *info)
++	/*
++	 * The last committed used bytes of this block group, if above @used
++	 * is still the same as @commit_used, we don't need to update block
++	 * group item of this block group.
++	 */
++	u64 commit_used;
+ 	/*
+ 	 * If the free space extent count exceeds this number, convert the block
+ 	 * group to bitmaps.
 -- 
 2.36.1
 
