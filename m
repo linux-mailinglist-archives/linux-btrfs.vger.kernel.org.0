@@ -2,67 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAC056D896
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jul 2022 10:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE08F56D8A7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jul 2022 10:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbiGKIpK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jul 2022 04:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55362 "EHLO
+        id S229779AbiGKIrf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jul 2022 04:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbiGKIot (ORCPT
+        with ESMTP id S229865AbiGKIrd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jul 2022 04:44:49 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FD61A040
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 01:44:43 -0700 (PDT)
+        Mon, 11 Jul 2022 04:47:33 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E18F251
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 01:47:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1657529081;
-        bh=x1D5jhylmYubQiM9fWG9t5OL4RAC+egdyrX9T5kgMko=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=fXggmVuKtxbLSfg7tWDx7BVp3Mi1zVIkLrkF2znH5J+l8eukCw/KOTnUS/X0Extx1
-         CWWA69PTMAj26LWtS7mj9FH73ukffh+u2/EU/1IFhnyCZq+Qm2/mtI/DkacOwBVld6
-         32ZGDBQNCGd69ZYJ+X9CqOgVrN1sh0Wcz+P62yLw=
+        s=badeba3b8450; t=1657529249;
+        bh=sHpNeYsfqP82oH8wLnNtpATi/2E8gHZtX2+7E6NJJGM=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=OHrYuIyu4NKtLJqpI57Wl+cXs4Fd2fZNuQAuEOY7hjY3wg2V3Osv/CAZbx2BNhaKB
+         jbmE1PO/gCmkf7WFxOJzlFHE5OqHqDnmAZJqZeDmPW/DLmAAG7G4t71eWnbYBHbT6k
+         vjiD3b6buWQEViyfoRnGSCFbWq+ZDSSMN3mpHS5g=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MRTRN-1nyOwn0upR-00NRwk; Mon, 11
- Jul 2022 10:44:40 +0200
-Message-ID: <4cd0eb6a-4893-a5c8-a758-947d8502368a@gmx.com>
-Date:   Mon, 11 Jul 2022 16:44:36 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8GQs-1nX09w1I6y-014AuI; Mon, 11
+ Jul 2022 10:47:28 +0200
+Message-ID: <ab444642-8a17-cc97-8fff-3446d1ddef0e@gmx.com>
+Date:   Mon, 11 Jul 2022 16:47:25 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.10.0
-Subject: Re: [PATCH v2] btrfs: don't save block group root into super block
+Subject: Re: [PATCH] btrfs: don't update the block group item if used bytes
+ are the same
 Content-Language: en-US
 To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>
-References: <40ce67d5bbb8f9c471b3c9a33504b0bb4022a51b.1657520391.git.wqu@suse.com>
- <866899c1-6952-e0f1-3a78-9caa483a7db9@suse.com>
+References: <64e4434370badd801a79a782613c405830475dde.1657521468.git.wqu@suse.com>
+ <5db1f702-f6fa-3b0e-e34b-30c7ac6358e4@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <866899c1-6952-e0f1-3a78-9caa483a7db9@suse.com>
+In-Reply-To: <5db1f702-f6fa-3b0e-e34b-30c7ac6358e4@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fN/ytsZNKjIAxCTPhTK2hQ6fnx+50efbTndLnIEpia6NaX0sXYq
- /Jpg3LHT0dFwQ76qftXxI2N7hqcx7MzsBspNc5QEvFhk6PH1julYW3uLXm01GRmkfYzmDrD
- 6fStWjkvlpnL+3MPSPOc91rvKLSVvIuRMeU8SAYK15CDsE/VAZ4buTE4nLJ7XjTA/jhe3dn
- T7/kUDsg9Daf3mZdCUzfQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:V4nJ86mzkzQ=:P5r4TujdhNtQOIpJ4KL6NN
- nct0jEZQyzAqUmYDNzW9pnrTtC69MlX47o3QEFKjlQ1cXUfaeLZXKNIw4L5kn5xmJdieGurgL
- SraQgWQVZ4OiFV9f3UbVLvVWCcHVOiAPyv0wuYN2cnD1QkOSq1HKRF4PxswF6FkxkdONjY8ux
- FogketZ5CJp+JdlkcpHtGCBeYm158hC8Sb7eA99Of/lA/Hjr9kxvsr3cYUD+saACvkLpn68Hn
- j2BFlTIMz0+chvIpVAeP8B6DxNxPQAEKv/eK5saUPFEkVDzuAbTeFdQ2XvJT8+QmHB6yL6o+g
- cJ1lp6SA/sjPsYaenuEqZaBE6qDzYuftbeYR1HrEyNQrsOO7QJGxvhFSbYaYzfNsSycmRCEwY
- NaJaylpTBYCcp+NGtgf3pWbo6IEM09riakEg4Nv2SliacoKik6tlXjtvHVX7JPN79tpwuVJ8z
- qKbLhXZzLSR3JJ/ZKSdcJROyH4wLmj+KvcIblG7R9YaDDYtg4Iovs9e8iso4aPh/n1NRPZS5n
- xPnd8nV3+Q0DQqzbsJo3MhsVnoCIYiDRgUhYCd+YJZAGcAgjSvLEqLd7AtSMISHerd5nriBx7
- ilPcSmNyywWSKbTWAGMuJ/xSu5MbWVEKUbiyHczv4medbDVZRT2nKcaAsLc4O48jLbY2Esmic
- rbJaIuUFO3wWtq6YC3BAvJog9IUdaZX6T/8HeDH6EjsmVmxGbcdI2R1L9elPIHygtLNRZuYnZ
- 4sHLRJ+9yLCPgeK/b9SS2fT/xQCKfHfMHJsGgSMjO4d/vwd6dm+5Z19Cpnon/Qi9duWIIKP2K
- ictMPjTz3RS7Khlctozpb9Ej9cmuwIU1j3fDg7Powb37yuSRuFTVnorwqE0Lxqpjmj2Fpfr4V
- er5G55ZmWEspXYJ0UwNu3Rh2JxmUcCddrryJfF9pUMJSlM4zdtnSGzASNf3Bv8nWRPbSC3Bhr
- xBwC7eptlMJCrWQDjr2/un7tVSJIAmLLXK5ciaJccTRVOwrk+OetA6prbVhBSAmaZH9AntGpq
- utyefkqs6iQWKYiQDosCL21KIDhgM4SLUGJU07YNtzzeIdQ7wBveyiDDvda7ltmmBxuOws2Ku
- BQQJMG0mksqIsieEboCab1xLWYR5AqM/307o6qR8efMDEmO9fS5kzq+Ug==
+X-Provags-ID: V03:K1:Lc2TkuJzqy49+R/zkIIbJvN+WXkaZXwv+y7045r0dTbQJ1OiFJC
+ 7VlyJpGCY6mjwQYLO1pQMzSnev+iDNa0AhECaYYsmrq0gCv5njg3fCX+/zFCqNDjtUhGV2k
+ Ujim5NxavX9GIwO8peFRZGKfUwVDhpuwvAIjGCchiyVzr2915PbWFN0FRWKqR9mXZHkBnpq
+ WV96dQFQlDdoOv9Uxig3A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:sN+mO/zF6fw=:OUUSvl2Yte90u4XAbJByRr
+ kAM1XnVUd8hl5nUhpTrRCt+UYdQyJUAiGQAv626bjgX5zV9dUzYSb+St3zJaqv6QK+1mxtM+X
+ sk7Zfp95r41nPoFjh/2zfkHrn5LUmFvCourKXwoS9PZgTBNSiABQZioY04we4Q7Yn7Syx/nXk
+ XrLvWLT+CMHy/JWV7+/tFu7z33ynfWXRgOZN557kCS5jap6RJT5pp/elwnCHOl7jwpcDqUktU
+ hPRdIlPer1rCfDUwy/ZIqzf4+GB50En1Kg2htP+tgJ3C66bTI0CHlD+vhCORhjByx0zATsDBA
+ OuPesyvaP1AblFOWx2Klvr6yqvk0pkKYKrIBPRfZQ9ecB3GHCYOwNEfKpPuAFoT6rdxl8uRPU
+ xXdrSV8tTrirBv2CCyLqAZXFnEJhhizbGTA+s12PqCN0gjAXRcpafIZzFKhp3ZhBGmUp8ZZ5Q
+ vGCIZP26e1JmDnhpGSlWbUeZusCU6TZMG5+ilrYcr7DfQildABXeld2ORUwCh5rxtJCR44W4e
+ NC5Mv9KYHBHEDkwKg4IggR/r8eXl8TOOyKVR6yooxzXn0JU4eMXhWhMgIWrtJFkEPzCGLDW2F
+ xvm3MFOeM6Keew7Bog5IcEuIVXYZ/Fwki4rWZZ0fuuRds/BkMxXfpCHufNjhovQtLm/nfzqL6
+ GkTd9whbE6C0MOyUXe5nAfo1pu0y4tf33wuDkV+F1iq8nN/l4cVZ8Wm4VEJSuXg/M/0jAUwXU
+ /Tiyt30NwEpTcGIeSJSdJfN0fiSRiCHp3y9ukTWPltC8+G1KZZcpfx9FvdY3HQmVBdUKlo1fj
+ 8lkkI3XMwsKDauaLIwfxYQIZYQDWwu/6b7Qroz5h7kzbPNrje4JUCYGYOhoV6Ts9VNE9Vmvk6
+ Dac69X2XaAgMENJcq3K5cIMqphsxkFbXIwEV6aMAkBqdMduoJLRV7j9hCUSZfFBcCPfGkTmbw
+ GzATqsZAg87iiJ2iVbnCrOc3+oHQY1Mqs3QRXb6Fk2dZ4ICBGQCjEnwWuo1F+Cmd2vO7JcLfX
+ HhqzZFg2dYM+Bx25H4ZvVGkbNck+qxKQXOgY2HMiBFVmWg1xPDkn1QW09zhLydyL7cbm4bDxq
+ ttSnKY3Rxju0VbNXMFPjL0sEP4aMGtTgEzPuUjBaFy0eJ+H+HAN4d6yaw==
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,156 +75,123 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/7/11 16:27, Nikolay Borisov wrote:
+On 2022/7/11 16:30, Nikolay Borisov wrote:
 >
 >
-> On 11.07.22 =D0=B3. 9:21 =D1=87., Qu Wenruo wrote:
->> The extent tree v2 (both thankfully not yet fully materialized) needs a
->> new root for storing all block group items.
+> On 11.07.22 =D0=B3. 9:37 =D1=87., Qu Wenruo wrote:
+>> When committing a transaction, we will update block group items for all
+>> dirty block groups.
 >>
->> My initial proposal years just added a new tree rootid, and load it fro=
-m
->> tree root, just like what we did for quota/free space tree/uuid/extent
->> roots.
->>
->> But the extent tree v2 patches introduced a completely new (and to me,
->> wasteful) way to store block group tree root into super block.
->>
->> Currently only two roots enjoying the privilege to stay in super blocks=
-:
->> tree root and chunk root.
->>
->> There is no special reason to store block group root into super block,
->> even performance wise it doesn't make sense.
->>
->> So just move block group root from super block into tree root.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> But in fact, dirty block groups don't always need to update their block
+>> group items.
+>> It's pretty common to have a metadata block group which experienced
+>> several CoW operations, but still have the same amount of used bytes.
 >
+> This could happen if for example the allocated/freed extents in a single
+> transaction cancel each other out, right? Are there other cases where it
+> could matter?
+
+No need to completely cancel each other.
+
+In fact, just COWing a path without adding/deleting new cousins would be
+enough, and that would be very common for a lot of tree block operations.
+
 >
-> Overall looks good but I'd like to hear Josef's take on this, but indeed
-> it's better to make those changes before unleashing extent v2.
+>>
+>> In that case, we may unnecessarily CoW a tree block doing nothing.
+>>
+>> This patch will introduce btrfs_block_group::commit_used member to
+>> remember the last used bytes, and use that new member to skip
+>> unnecessary block group item update.
+>>
+>> This would be more common for large fs, which metadata block group can
+>> be as large as 1GiB, containing at most 64K metadata items.
+>>
+>> In that case, if CoW added and the deleted one metadata item near the e=
+nd
+>> of the block group, then it's completely possible we don't need to touc=
+h
+>> the block group item at all.
+>>
+>> I don't have any benchmark to prove this, but this should not cause any
+>> hurt either.
+>
+> It should not but adds more state and is overall a maintenance burden.
+> One way to test this would be to rig up the fs to count how many times
+> the optimization has been hit over the course of, say, a full xfstest
+> run or at least demonstrate a particular workload where this makes
+> tangible difference.
 
-Yep, that's exact the purpose of the patch.
+But in this particular case, there is really not that much status to bothe=
+r.
 
-In fact I have more things to discuss on the extent tree v2 things.
-
-I really hope we can split the whole extent tree v2 into the following
-parts:
-
-- Block group tree
-   I'm already doing the work to splitting the code from extent tree v2
-   into a new compat RO flag BLOCK_GROUP_TREE.
-
-- Reduced on-disk extent backrefs
-
-- Split extent tree into multiple tree roots.
-   In fact I'm not a fan of the idea at all.
-
-Personally speaking, this should be something done in the very beginning
-of the extent tree v2 idea, instead of spending years and put everything
-into a big death ball crushing every one.
-
-(And I should also defend my previous block group tree patches more,
-other than really relying on extent-tree-v2, not solving the real world
-mount time problem for years, and push everything to Josef)
+In fact, we don't care about if there is any status, we only care about
+the block_group::used is different from committed one.
+Even no change to lock schemes.
 
 Thanks,
 Qu
 >
->> ---
->> Changelog:
->> v2:
->> - Fix a wrong check in btrfs_read_roots(), which makes us to read
->> =C2=A0=C2=A0 block group root when EXTENT_TREE_V2 is not enabled
->> ---
->> =C2=A0 fs/btrfs/block-rsv.c=C2=A0=C2=A0 |=C2=A0 1 +
->> =C2=A0 fs/btrfs/ctree.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 16 ++----=
-----------
->> =C2=A0 fs/btrfs/disk-io.c=C2=A0=C2=A0=C2=A0=C2=A0 | 32 ++++++++++++++++=
-+++++-----------
->> =C2=A0 fs/btrfs/transaction.c |=C2=A0 8 --------
->> =C2=A0 4 files changed, 24 insertions(+), 33 deletions(-)
 >>
->> diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
->> index 06be0644dd37..6ce704d3bdd2 100644
->> --- a/fs/btrfs/block-rsv.c
->> +++ b/fs/btrfs/block-rsv.c
->> @@ -424,6 +424,7 @@ void btrfs_init_root_block_rsv(struct btrfs_root
->> *root)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BTRFS_CSUM_TREE_OBJECTID:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BTRFS_EXTENT_TREE_OBJECTID:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BTRFS_FREE_SPACE_TREE_OBJECTID:
->> +=C2=A0=C2=A0=C2=A0 case BTRFS_BLOCK_GROUP_TREE_OBJECTID:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 root->block_rsv =
-=3D &fs_info->delayed_refs_rsv;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BTRFS_ROOT_TREE_OBJECTID:
->> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->> index 4e2569f84aab..2ffd8daaa26e 100644
->> --- a/fs/btrfs/ctree.h
->> +++ b/fs/btrfs/ctree.h
->> @@ -288,14 +288,9 @@ struct btrfs_super_block {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* the UUID written into btree blocks */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 metadata_uuid[BTRFS_FSID_SIZE];
->> -=C2=A0=C2=A0=C2=A0 /* Extent tree v2 */
->> -=C2=A0=C2=A0=C2=A0 __le64 block_group_root;
->> -=C2=A0=C2=A0=C2=A0 __le64 block_group_root_generation;
->> -=C2=A0=C2=A0=C2=A0 u8 block_group_root_level;
->> -
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* future expansion */
->> -=C2=A0=C2=A0=C2=A0 u8 reserved8[7];
->> -=C2=A0=C2=A0=C2=A0 __le64 reserved[25];
->> +=C2=A0=C2=A0=C2=A0 u8 reserved8[8];
->
-> nit: This array of 8 u8's is simply a single u64 so just collapse it
-> into the subsequent array.
->
->> +=C2=A0=C2=A0=C2=A0 __le64 reserved[27];
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_AR=
-RAY_SIZE];
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_root_backup super_roots[BTR=
-FS_NUM_BACKUP_ROOTS];
->
-> <snip>
->
->> @@ -2596,6 +2599,23 @@ static int btrfs_read_roots(struct
->> btrfs_fs_info *fs_info)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> +=C2=A0=C2=A0=C2=A0 if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 location.objectid =3D BTRFS=
-_BLOCK_GROUP_TREE_OBJECTID;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 location.type =3D BTRFS_ROO=
-T_ITEM_KEY;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 location.offset =3D 0;
->
-> nit: Factor out the setting of .type/.offset at the beginning of the
-> function. Subsequent loads of the various root tree depend on only
-> .objectid, that makes the code somewhat straighforward.
->
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> =C2=A0 fs/btrfs/block-group.c | 6 ++++++
+>> =C2=A0 fs/btrfs/block-group.h | 6 ++++++
+>> =C2=A0 2 files changed, 12 insertions(+)
+>>
+>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>> index 0148a6d719a4..5b08ac282ace 100644
+>> --- a/fs/btrfs/block-group.c
+>> +++ b/fs/btrfs/block-group.c
+>> @@ -2024,6 +2024,7 @@ static int read_one_block_group(struct
+>> btrfs_fs_info *info,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->length =3D key->offset;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->used =3D btrfs_stack_block_group_=
+used(bgi);
+>> +=C2=A0=C2=A0=C2=A0 cache->commit_used =3D cache->used;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->flags =3D btrfs_stack_block_group=
+_flags(bgi);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->global_root_id =3D
+>> btrfs_stack_block_group_chunk_objectid(bgi);
+>> @@ -2724,6 +2725,10 @@ static int update_block_group_item(struct
+>> btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_item bgi;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_key key;
+>> +=C2=A0=C2=A0=C2=A0 /* No change in used bytes, can safely skip it. */
+>> +=C2=A0=C2=A0=C2=A0 if (cache->commit_used =3D=3D cache->used)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
 >> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 root =3D btrfs_read_tree_ro=
-ot(tree_root, &location);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(root)) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if =
-(!btrfs_test_opt(fs_info, IGNOREBADROOTS)) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ret =3D PTR_ERR(root);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 goto out;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set=
-_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_=
-info->block_group_root =3D root;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 }
->> +
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 location.objectid =3D BTRFS_DEV_TREE_OBJ=
-ECTID;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 location.type =3D BTRFS_ROOT_ITEM_KEY;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 location.offset =3D 0;
->
-> <snip>
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.objectid =3D cache->start;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.type =3D BTRFS_BLOCK_GROUP_ITEM_KEY;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.offset =3D cache->length;
+>> @@ -2743,6 +2748,7 @@ static int update_block_group_item(struct
+>> btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_flags(&bgi, =
+cache->flags);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 write_extent_buffer(leaf, &bgi, bi, size=
+of(bgi));
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_mark_buffer_dirty(leaf);
+>> +=C2=A0=C2=A0=C2=A0 cache->commit_used =3D cache->used;
+>> =C2=A0 fail:
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_release_path(path);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>> diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+>> index 35e0e860cc0b..3f92b8eb9a05 100644
+>> --- a/fs/btrfs/block-group.h
+>> +++ b/fs/btrfs/block-group.h
+>> @@ -74,6 +74,12 @@ struct btrfs_block_group {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 cache_generation;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 global_root_id;
+>> +=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * The last committed used bytes of this block=
+ group, if above @used
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * is still the same as @commit_used, we don't=
+ need to update block
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * group item of this block group.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0 u64 commit_used;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If the free space extent count e=
+xceeds this number, convert
+>> the block
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * group to bitmaps.
