@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66604570575
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jul 2022 16:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA19B570573
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jul 2022 16:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbiGKOW7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jul 2022 10:22:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbiGKOW6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
+        id S230420AbiGKOW6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 11 Jul 2022 10:22:58 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ED165556
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 07:22:57 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229795AbiGKOW5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 Jul 2022 10:22:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07F232EDF
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 07:22:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0040BB80FB3
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C0B561508
         for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 14:22:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 402CDC341C8
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 14:22:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 310C5C3411C
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 14:22:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657549374;
-        bh=W1C8DAytyQwkXqm2aj8IyvMCU/pUSkmum7gAZ0XPzJM=;
+        s=k20201202; t=1657549375;
+        bh=re0Tl83jaIcmQguB3TQaXyXKBInBfHsnAGO4jVrTcAY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=nnNQyUBoZH9yCCbOdgrxguSoV/z5Tf+4KzR/l1SYkQDJmXRVK/bBZY3xQCO2y5mrP
-         1AMfRbNYKsbOzo2mXtm0TWBOogezyyb7xIDq0ZX/ICs6rv3zR/bOlBGkdAS0KdCM8y
-         o5ER+3vi1Kl6wIVz99r4UCGRGOwGsA0RB3xzfjPEKqWvNZFxxt3vYMSRwsnvUBEnkJ
-         //KVLznEkCfuf/SVoAw5fthRI3Ka8o5z/q5m3RCJvEFARry4vzKLoaBLWrVySNXLMQ
-         Hd9g32NSZCR75bTE/Wt/HagWrbX9LuUaN432jZ86M9K3CqgMVFhIqnn0x+0JsqYngS
-         bddi0GEQ7t58Q==
+        b=hylsFANTs7mTypYwBaUdE2uCW9HeaaC+NUa9uf6As8QR7EOJFIC/cIvnpa7bCEUN2
+         Wgpn0lGxzjLF//tD8Lxqqh9RDaQEBkWeuYGr/MFVvtg8f566bTg4d/CGBr5sDE9EAh
+         wPb0r7EsmvcblZ4dTaES4FZjJ0QFDKtS26e1H+2EV7SVrL9BKvlfSYVTHJJFIZ6DT/
+         8W8bsQx9XEKAtQREvlq2WY5t0u4yFPNt6BpuLzU3d2EnPzZRdK4I1j/aQqFo+5flIb
+         3tvCuwoXhdjpI57MMXbqwLkr0gdL/Dk+5vrRP7BdVbRClUG0BKaVmrbFQgOgOsPbeJ
+         /GJvGSxzEelKw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: set the objectid of the btree inode's location key
-Date:   Mon, 11 Jul 2022 15:22:49 +0100
-Message-Id: <92f0a873da8c66fd4b6615a3b2c580d3a410a11f.1657549024.git.fdmanana@suse.com>
+Subject: [PATCH 2/2] btrfs: add optimized btrfs_ino() version for 64 bits systems
+Date:   Mon, 11 Jul 2022 15:22:50 +0100
+Message-Id: <838f6184cb7423b8da16659c88e8b33fa34c23d2.1657549024.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1657549024.git.fdmanana@suse.com>
 References: <cover.1657549024.git.fdmanana@suse.com>
@@ -54,72 +54,88 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We currently don't use the location key of the btree inode, its content
-is set to zeroes, as it's a special inode that is not persisted (it has
-no inode item stored in any btree).
+Currently btrfs_ino() tries to use first the objectid of the inode's
+location key. This is to avoid truncation of the inode number on 32 bits
+platforms because the i_ino field of struct inode has the unsigned long
+type, while the objectid is a 64 bits unsigned type (u64) on every system.
+This logic was added in commit 33345d01522f81 ("Btrfs: Always use 64bit
+inode number").
 
-At btrfs_ino(), an inline function used extensively in btrfs, we have
-this special check if the given inode's location objectid is 0, and if it
-is, we return the value stored in the VFS' inode i_ino field instead
-(which is BTRFS_BTREE_INODE_OBJECTID for the btree inode).
+However if we are running on a 64 bits system, we can always directly
+return the i_ino value from struct inode, which eliminates the need for
+he special if statement that tests for a location key type of
+BTRFS_ROOT_ITEM_KEY - in which case i_ino may not have the same value as
+the objectid in the inode's location objectid, it may have a value of
+BTRFS_EMPTY_SUBVOL_DIR_OBJECTID, for the case of snapshots of trees with
+subvolumes/snapshots inside them.
 
-To reduce the code at btrfs_ino(), we can simply set the objectid of the
-btree inode to the value BTRFS_BTREE_INODE_OBJECTID. This eliminates the
-need to check for the special case of the objectid being zero, with the
-side effect of reducing the overall code size and having less code to
-execute, as btrfs_ino() is an inline function.
+So add a special version for 64 bits system that directly returns i_ino
+of struct inode. This eliminates one branch and reduces the overall code
+size, since btrfs_ino() is an inline function that is extensively used.
 
 Before:
 
 $ size fs/btrfs/btrfs.ko
    text	   data	    bss	    dec	    hex	filename
-1620502	 189240	  29032	1838774	 1c0eb6	fs/btrfs/btrfs.ko
+1617487	 189240	  29032	1835759	 1c02ef	fs/btrfs/btrfs.ko
 
 After:
 
 $ size fs/btrfs/btrfs.ko
    text	   data	    bss	    dec	    hex	filename
-1617487	 189240	  29032	1835759	 1c02ef	fs/btrfs/btrfs.ko
+1612028	 189180	  29032	1830240	 1bed60	fs/btrfs/btrfs.ko
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/btrfs_inode.h | 7 ++-----
- fs/btrfs/disk-io.c     | 4 +++-
- 2 files changed, 5 insertions(+), 6 deletions(-)
+ fs/btrfs/btrfs_inode.h       | 15 +++++++++++++++
+ fs/btrfs/tests/btrfs-tests.c |  1 +
+ 2 files changed, 16 insertions(+)
 
 diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index b467264bd1bb..a18f90ff16f1 100644
+index a18f90ff16f1..e38d0f09b89f 100644
 --- a/fs/btrfs/btrfs_inode.h
 +++ b/fs/btrfs/btrfs_inode.h
-@@ -283,11 +283,8 @@ static inline u64 btrfs_ino(const struct btrfs_inode *inode)
+@@ -279,6 +279,12 @@ static inline void btrfs_insert_inode_hash(struct inode *inode)
+ 	__insert_inode_hash(inode, h);
+ }
+ 
++#if BITS_PER_LONG == 32
++
++/*
++ * On 32 bits systems the i_ino of struct inode is 32 bits (unsigned long), so
++ * we use the inode's location objectid which is a u64 to avoid truncation.
++ */
+ static inline u64 btrfs_ino(const struct btrfs_inode *inode)
  {
  	u64 ino = inode->location.objectid;
- 
--	/*
--	 * !ino: btree_inode
--	 * type == BTRFS_ROOT_ITEM_KEY: subvol dir
--	 */
--	if (!ino || inode->location.type == BTRFS_ROOT_ITEM_KEY)
-+	/* type == BTRFS_ROOT_ITEM_KEY: subvol dir */
-+	if (inode->location.type == BTRFS_ROOT_ITEM_KEY)
- 		ino = inode->vfs_inode.i_ino;
+@@ -289,6 +295,15 @@ static inline u64 btrfs_ino(const struct btrfs_inode *inode)
  	return ino;
  }
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 0da86fba370e..b42908ad4af7 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2306,7 +2306,9 @@ static void btrfs_init_btree_inode(struct btrfs_fs_info *fs_info)
- 	extent_map_tree_init(&BTRFS_I(inode)->extent_tree);
  
- 	BTRFS_I(inode)->root = btrfs_grab_root(fs_info->tree_root);
--	memset(&BTRFS_I(inode)->location, 0, sizeof(struct btrfs_key));
-+	BTRFS_I(inode)->location.objectid = BTRFS_BTREE_INODE_OBJECTID;
-+	BTRFS_I(inode)->location.type = 0;
-+	BTRFS_I(inode)->location.offset = 0;
- 	set_bit(BTRFS_INODE_DUMMY, &BTRFS_I(inode)->runtime_flags);
- 	btrfs_insert_inode_hash(inode);
- }
++#else
++
++static inline u64 btrfs_ino(const struct btrfs_inode *inode)
++{
++	return inode->vfs_inode.i_ino;
++}
++
++#endif
++
+ static inline void btrfs_i_size_write(struct btrfs_inode *inode, u64 size)
+ {
+ 	i_size_write(&inode->vfs_inode, size);
+diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
+index 1591bfa55bcc..293e01228375 100644
+--- a/fs/btrfs/tests/btrfs-tests.c
++++ b/fs/btrfs/tests/btrfs-tests.c
+@@ -59,6 +59,7 @@ struct inode *btrfs_new_test_inode(void)
+ 		return NULL;
+ 
+ 	inode->i_mode = S_IFREG;
++	inode->i_ino = BTRFS_FIRST_FREE_OBJECTID;
+ 	BTRFS_I(inode)->location.type = BTRFS_INODE_ITEM_KEY;
+ 	BTRFS_I(inode)->location.objectid = BTRFS_FIRST_FREE_OBJECTID;
+ 	BTRFS_I(inode)->location.offset = 0;
 -- 
 2.35.1
 
