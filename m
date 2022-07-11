@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E76156D442
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jul 2022 07:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF32956D495
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jul 2022 08:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbiGKFSE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jul 2022 01:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
+        id S229502AbiGKGVe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jul 2022 02:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbiGKFSD (ORCPT
+        with ESMTP id S229470AbiGKGVd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jul 2022 01:18:03 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29851903E
-        for <linux-btrfs@vger.kernel.org>; Sun, 10 Jul 2022 22:18:02 -0700 (PDT)
+        Mon, 11 Jul 2022 02:21:33 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545AB167FC
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Jul 2022 23:21:32 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 56E6A1FE38
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 05:18:01 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0534A226B1
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 06:21:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657516681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1657520491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=FLBw3FdgAM2PArR4VhBqHlDoPPIIJgHR/9hfYok1PD4=;
-        b=RaKsAALJSkxJAlalEpj6dn7dXXgEoz5wkFQmgindG2vU/vvk+P+fdIond/d620fSwxurxl
-        U2sKJpjzFWw5qppX8qClnZFFDAnY4hde7CWiK2cZgrqsuoa3RRkFXDKtau9zbfGPUKQOWH
-        UZk7ml4sOIsExJcbozbk3V7RejvmYTI=
+        bh=gtAl+nD01cPdijRDAngPlq3AZeK3B3ieswU3M1zxu+Y=;
+        b=e8CJ6jGByq24gOX6oW0VJwnSFu6S/wX1gFj0bCtH2wqqsXlN/p0ZgZuh+0VXxZovAjeHUi
+        0pQLAFJJmdUJsRCBVPQ/b9fbOhIv+q+dyLIQAi4my5jX85yixoPhZXYhFWNK6rA1e2GSMa
+        PsPrqCjtc2fMM67s2T4RnhYDPnYqAyc=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A778313524
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 05:18:00 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2CDD613322
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 06:21:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id /K/cAIiyy2K/WwAAMHmgww
+        id d+JNOmnBy2K7cAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 05:18:00 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jul 2022 06:21:29 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: don't save block group root into super block
-Date:   Mon, 11 Jul 2022 13:17:42 +0800
-Message-Id: <15e24e3dce9b8034b4662acc6aeb2dcb3d7d0e26.1657516576.git.wqu@suse.com>
+Subject: [PATCH v2] btrfs: don't save block group root into super block
+Date:   Mon, 11 Jul 2022 14:21:12 +0800
+Message-Id: <40ce67d5bbb8f9c471b3c9a33504b0bb4022a51b.1657520391.git.wqu@suse.com>
 X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -76,6 +76,11 @@ even performance wise it doesn't make sense.
 So just move block group root from super block into tree root.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Fix a wrong check in btrfs_read_roots(), which makes us to read
+  block group root when EXTENT_TREE_V2 is not enabled 
 ---
  fs/btrfs/block-rsv.c   |  1 +
  fs/btrfs/ctree.h       | 16 ++--------------
@@ -131,7 +136,7 @@ index 4e2569f84aab..2ffd8daaa26e 100644
  int btrfs_super_csum_size(const struct btrfs_super_block *s);
  const char *btrfs_super_csum_name(u16 csum_type);
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 76835394a61b..965a343580db 100644
+index 76835394a61b..470f6f4962e8 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
 @@ -1606,6 +1606,9 @@ static struct btrfs_root *btrfs_get_global_root(struct btrfs_fs_info *fs_info,
@@ -148,7 +153,7 @@ index 76835394a61b..965a343580db 100644
  	if (ret)
  		return ret;
  
-+	if (!btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
++	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
 +		location.objectid = BTRFS_BLOCK_GROUP_TREE_OBJECTID;
 +		location.type = BTRFS_ROOT_ITEM_KEY;
 +		location.offset = 0;
