@@ -2,92 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C125718CF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jul 2022 13:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1198C5719E8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jul 2022 14:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbiGLLpp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Jul 2022 07:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
+        id S233203AbiGLMZc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Jul 2022 08:25:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbiGLLpn (ORCPT
+        with ESMTP id S233200AbiGLMZM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Jul 2022 07:45:43 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCF8B1CDF
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jul 2022 04:45:42 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3894C1FA40;
-        Tue, 12 Jul 2022 11:45:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657626341; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V1S8qogZiRC80TfH0l8t4zL3x9N9mKGcMQ45SdoKZTc=;
-        b=fRbOwQ6Nsb12sWz48kQ8UyAeW8a1uuOixRlta7T/z9Neb5mC4XFCPSNJ5biI7wyvc7YoF2
-        kZ+nZZ97ixgFA8HdH1OhFzUH0R8Y/GnHeyaEzGgJbvNT9O4kbAGfGRJW7iKSMY/S81h/Wk
-        LZtmIUI9WrfK4MYojTvBTUnZT+z8u1k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 02A1313638;
-        Tue, 12 Jul 2022 11:45:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id LN1DOeRezWL/EQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 12 Jul 2022 11:45:40 +0000
-Message-ID: <a03f8feb-b235-adeb-3981-2a21205734ea@suse.com>
-Date:   Tue, 12 Jul 2022 14:45:40 +0300
+        Tue, 12 Jul 2022 08:25:12 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0BCAA824
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jul 2022 05:24:57 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id n7so7632516ioo.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jul 2022 05:24:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=VlsEmllhnRayw2tgxIpHosIpeVc1uFRI3UUMGWk8xSs=;
+        b=nEqOdfYLImVg/MPnnhW2ukicZdqEWzIZY76KyQZsxGTC3Mp6axlt21z+gbmButnCAT
+         f57laC8oq60/8G1xnnProbDQWAaU9E/61W8p5ASmKyLyHswv/3EoT/YhL1lS7SS90fT4
+         ipbjwP/78S3oGFpz6ypbBB9D/6IXelwoHB/Ef5BXOlpiGfopIPD6f0BeCAkZwMNg244h
+         JjXwqRs0pR6M+4Ma+yQznuCV8g1ClzD3FBlOdz4XQNFuWMKGSnEp63G8IQP1sEV5SqBd
+         g7DR6MoTE1ECv1Jzwr/iHBalMh21IbTRaWANt787LskcCILNb8SFpf89LYeWxwmiv4Kg
+         PTdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=VlsEmllhnRayw2tgxIpHosIpeVc1uFRI3UUMGWk8xSs=;
+        b=iZI3DyRMuQmcE2xbGgvvYMyiJJ9MD0rGj9sq5cRrvx3YaRGyUBmZGeyjz52d6ViZGZ
+         HEXe5AcO8pEV/2IZ/FD7RcAKO2o3QUevjBhRC7XfnOrIeNLO6SW9XkS0M8Hc+WW4/AAD
+         pqYsT2+yodOHCDi00/JRa0Q1A52Tsg1OVn3xkxJ2HNkGhJVk6jVeJ4gaouqKgLrWbIy3
+         owz75ZlwOMT8eoCCerDi8fVvnZm/QI/9nVWR6PE6jRGEIj1uex05OS658L3VAW+naGY6
+         bj07SWNVVcMIqwzyTakffFyPtuFCv5tKw+7Rba3EW5HyyWxNYtTV9LWPCnqVWo2hPG1F
+         exFg==
+X-Gm-Message-State: AJIora8u5ILzTJGYAhCaASiFEWa/QhcLSnvLrWZA9Qv5d5WmZHXUaV3r
+        gxwpxG5LCPlgtfGvcdwYhS8o2bnOTfS0I8GTJ3CwIFcWoew=
+X-Google-Smtp-Source: AGRyM1tcM0SV2hXKalpl0pFKeSdIa95c6CJtZsRh+hs9Y1IvNRW+qDt5OYq4uIkewsFBZiggQqrSrBSR6RV2v7hYFQo=
+X-Received: by 2002:a05:6638:2404:b0:33f:7105:ed23 with SMTP id
+ z4-20020a056638240400b0033f7105ed23mr1587776jat.50.1657628696779; Tue, 12 Jul
+ 2022 05:24:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH 0/3] btrfs: fix a couple sleeps while holding a spinlock
-Content-Language: en-US
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1657097693.git.fdmanana@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <cover.1657097693.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Peter Allebone <allebone@gmail.com>
+Date:   Tue, 12 Jul 2022 08:24:41 -0400
+Message-ID: <CAGSM=J8K7_GfaqL3-7obOSytNhtoqmJ1GQrOKAUgE2dF7OehTg@mail.gmail.com>
+Subject: BIG_METADATA - dont understand fix or implications
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi there,
 
+Apologies in advance, I dont understand how I am affected by this issue here:
 
-On 6.07.22 г. 12:09 ч., fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> After the recent conversions of a couple radix trees to XArrays, we now
-> can end up attempting to sleep while holding a spinlock. This happens
-> because if xa_insert() allocates memory (using GFP_NOFS) it may need to
-> sleep (more likely to happen when under memory pressure). In the old
-> code this did not happen because we had radix_tree_preload() called
-> before taking the spinlocks.
-> 
-> Filipe Manana (3):
->    btrfs: fix sleep while under a spinlock when allocating delayed inode
->    btrfs: fix sleep while under a spinlock when inserting a fs root
->    btrfs: free qgroup metadata without holding the fs roots lock
-> 
->   fs/btrfs/ctree.h         |  6 +++---
->   fs/btrfs/delayed-inode.c | 24 ++++++++++++------------
->   fs/btrfs/disk-io.c       | 38 +++++++++++++++++++-------------------
->   fs/btrfs/inode.c         | 30 ++++++++++++++++--------------
->   fs/btrfs/relocation.c    | 11 +++++++----
->   fs/btrfs/transaction.c   | 14 +++++++-------
->   6 files changed, 64 insertions(+), 59 deletions(-)
-> 
+https://lore.kernel.org/linux-btrfs/20220623142641.GQ20633@twin.jikos.cz/
 
+I have a problem where if I run "sudo btrfs inspect-internal
+dump-super /dev/sdbx" on some disks it  shows the BIG_METADATA flag
+and some disks it does not. I posted about it here on reddit:
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+https://www.reddit.com/r/btrfs/comments/vo8run/why_does_the_inspectinternal_command_not_show_big/
+
+My concern is what effect does this have and how do I fix it, once the
+patch makes its way down to me. Is there any concern with data on that
+disk changing in an unexpected way?
+
+Many thanks for any insight you can shed. I did read the thread but
+was not able to easily follow or understand what was implied or what
+would happen to someone affected by the issue.
+
+Thank you again in advance. Sorry for emailing in. Hope that is ok. I
+was just concerned.
+
+Kind regards
+Peter
