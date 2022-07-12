@@ -2,43 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4EC571D67
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jul 2022 16:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3627C571F3A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jul 2022 17:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbiGLOzE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Jul 2022 10:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
+        id S231263AbiGLPbe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Jul 2022 11:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232838AbiGLOyx (ORCPT
+        with ESMTP id S229810AbiGLPbe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Jul 2022 10:54:53 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13675B7D53
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jul 2022 07:54:52 -0700 (PDT)
+        Tue, 12 Jul 2022 11:31:34 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFA276EA9
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jul 2022 08:31:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 1CED8CE1BBD
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jul 2022 14:54:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85898C3411C;
-        Tue, 12 Jul 2022 14:54:47 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CD3F5B819D1
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jul 2022 15:31:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93F8EC341C0;
+        Tue, 12 Jul 2022 15:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657637688;
-        bh=YVyFM4aomFyWlLNOrkMa602SW+h9y1SbnqxiLDuGUI0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=emg5UGMtqC9Ul5AsPs+qUSpDaIEqNGjcIw3WqUDFsC3v/GGgOfFTsUmgYtqIzGVhJ
-         igyGX7bygTTJQnWDXDc0MxARf6DvpiPEbHY59VUigG8fRUREJeeKqK8ut8hEyqlTCB
-         vvT3dg73NVAz+uOFerh7BnhfV/CzyfK+wd8LnmSEgz2d/pKmudL872wBQh1dTLeWa+
-         gSgB0WXah64WmUKuwdXICECsqRyaY5J0zoJLVhYBxEi0+iX5D7YaerWDAWaMeNQcGL
-         0Ao6Yps7YjBBNZuqPkY9vL0ob/EbRn3GpX+nSzIZV1SkslpgoFQDKfYFs0ObBeYD/l
-         stUn7925n26AA==
+        s=k20201202; t=1657639889;
+        bh=8AqHxDBPL3k9psRjXtoqkmFCyrU1Ejl897UU0ejqx9g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=raqZoZ+3GkPb4wz53/q/AnpGnnY1uZTBBMBbdlIVQus2L2ktcE9ek65GMFZj5kpKm
+         w+faxnaeakWAgHKWU+CHTQwVPA8a6fSUHckwj5O92NSOHJSZQOzvxKG8hUkktp7KY1
+         gEc1E6mVdC8lD9Y5pwSWB2IyUo8IFXRl7Q1DC4rNQqGAmjxDgNZvfGktRma00o3h7j
+         BWZsk5p3o2v5TAbA/qYcj4S51KKDWlXDqb1HmMvjOS83fFcX96CiYTmEuVGapeur/j
+         SH6DbA69XOv2Le5Gq7k148lt9nKB0rC9uoUOkOsqrhkZ2mLNUNMbejJYN5tIWA4dww
+         wUnC76/G95gVA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
 Cc:     bingjingc@synology.com, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: send: always use the rbtree based inode ref management infrastructure
-Date:   Tue, 12 Jul 2022 15:54:39 +0100
-Message-Id: <7ceaa34df153e9aada0a093407542fa81355c83c.1657637387.git.fdmanana@suse.com>
+Subject: [PATCH v2] btrfs: send: always use the rbtree based inode ref management infrastructure
+Date:   Tue, 12 Jul 2022 16:31:22 +0100
+Message-Id: <4b2af2eb7790ca710edeb123e449b9c1595c7210.1657639757.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <7ceaa34df153e9aada0a093407542fa81355c83c.1657637387.git.fdmanana@suse.com>
+References: <7ceaa34df153e9aada0a093407542fa81355c83c.1657637387.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -74,15 +76,18 @@ to use the new one.
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
 
+V2: Also remove the no longer used definition of struct find_ref_ctx.
+
 This applies on top of the patchset at:
 
 https://lore.kernel.org/linux-btrfs/20220712013632.7042-1-bingjingc@synology.com/
 
- fs/btrfs/send.c | 187 ++++--------------------------------------------
- 1 file changed, 12 insertions(+), 175 deletions(-)
+
+ fs/btrfs/send.c | 195 +++---------------------------------------------
+ 1 file changed, 12 insertions(+), 183 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 480189257e1a..2e013c9e3ba9 100644
+index 480189257e1a..dff336b5fbc9 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
 @@ -2189,7 +2189,7 @@ static int __get_cur_name_and_parent(struct send_ctx *sctx,
@@ -179,10 +184,18 @@ index 480189257e1a..2e013c9e3ba9 100644
  static int rbtree_ref_comp(const void *k, const struct rb_node *node)
  {
  	const struct recorded_ref *data = k;
-@@ -4565,113 +4494,16 @@ struct find_ref_ctx {
- 	int found_idx;
- };
+@@ -4557,121 +4486,16 @@ static int record_deleted_ref(struct send_ctx *sctx)
+ 	return ret;
+ }
  
+-struct find_ref_ctx {
+-	u64 dir;
+-	u64 dir_gen;
+-	struct btrfs_root *root;
+-	struct fs_path *name;
+-	int found_idx;
+-};
+-
 -static int __find_iref(int num, u64 dir, int index,
 -		       struct fs_path *name,
 -		       void *ctx_)
@@ -295,7 +308,7 @@ index 480189257e1a..2e013c9e3ba9 100644
  	if (ret < 0)
  		goto out;
  	ret = 0;
-@@ -4702,10 +4534,10 @@ static int process_all_refs(struct send_ctx *sctx,
+@@ -4702,10 +4526,10 @@ static int process_all_refs(struct send_ctx *sctx,
  
  	if (cmd == BTRFS_COMPARE_TREE_NEW) {
  		root = sctx->send_root;
@@ -308,7 +321,7 @@ index 480189257e1a..2e013c9e3ba9 100644
  	} else {
  		btrfs_err(sctx->send_root->fs_info,
  				"Wrong command %d in process_all_refs", cmd);
-@@ -6545,8 +6377,13 @@ static int record_parent_ref(int num, u64 dir, int index, struct fs_path *name,
+@@ -6545,8 +6369,13 @@ static int record_parent_ref(int num, u64 dir, int index, struct fs_path *name,
  {
  	struct parent_paths_ctx *ppctx = ctx;
  
