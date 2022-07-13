@@ -2,41 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 045B3573433
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 12:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CA1573448
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 12:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236026AbiGMKa2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Jul 2022 06:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
+        id S236013AbiGMKae (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Jul 2022 06:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236034AbiGMKaV (ORCPT
+        with ESMTP id S235991AbiGMKab (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Jul 2022 06:30:21 -0400
-X-Greylist: delayed 47036 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Jul 2022 03:30:19 PDT
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8241FB8FB
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 03:30:19 -0700 (PDT)
+        Wed, 13 Jul 2022 06:30:31 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEECDFC989
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 03:30:30 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 2435780025;
-        Wed, 13 Jul 2022 06:30:19 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id F18B6800E3;
+        Wed, 13 Jul 2022 06:30:29 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1657708219; bh=mo8Hn7AgzL+gApvkhAxpv4zormpI06WaQ9lTncood/E=;
-        h=From:To:Cc:Subject:Date:From;
-        b=xDwVLGOrm8VYWj/pZ6GnkpgUcEyh9tOBgFvxZeUd0yYHzfVGjX/0ESNzFKx4sHafa
-         14cmQfaGkgWa43hDgApbTaKcxr1natm0qIeO2DRkmzhcnpwl1nAhU7lfiZ6Yh96vvU
-         5pM/rz2Hm+J65ZdOCcnoi7a2/feaMbA+52nvEM/oZi0RVGVM1fxaU9z71P6tulcjuH
-         ZPWU2hXJf0CR223be1U9gkPQVomlO1L7quJfHOSR9ccrBggZJD0KShlU7E+zIifqzX
-         ZopuZYpmLj86kLlmNNCMnnCFo28hb162jQ5nrcuW+/d3W6H83mGNIRer77rL1em2Qr
-         o/Znhtyiz2LSw==
+        t=1657708230; bh=hJwjrkM7sbjKkmMCEskDCEA0B2CaXAXdjO53qmeWx+E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BMsuvbdFlV44QW7ajkwWsFmKO+bE/Bj0GBMNZJ5gadknSTZsie/PUWuBQf5RGMhXj
+         5+8oNRcw02loucz5tRbTq63slmDc8uygX/MNaWkao49B5TW5wDvBz7ywqVaKMEXPbO
+         2L+jTgnQjgk+fVv3xSksHdjgeogjZU0MZTBkroI+Vd9H/hMtN1PuxnrdPH2Qne0bMc
+         Eh/Y1ptavT78z4ufcEoV2oZRqsiC57QF6rwa7IWYK3kZmDu+pDwzoVGA2dtCCzUsGQ
+         ECQcl9cd30ZCBl2wRdHbLLLFSbWPkNh0DuYRwv5ApVd9TrTNT1ZMFKtzguyEzj9D+X
+         QNkRtHS2u9lkA==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [RFC ONLY 00/23] btrfs: add fscrypt integration
-Date:   Wed, 13 Jul 2022 06:29:33 -0400
-Message-Id: <cover.1657707686.git.sweettea-kernel@dorminy.me>
+Cc:     Omar Sandoval <osandov@fb.com>,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [RFC ONLY 01/23] btrfs: change btrfs_insert_file_extent() to btrfs_insert_hole_extent()
+Date:   Wed, 13 Jul 2022 06:29:34 -0400
+Message-Id: <f73654d9652778dfcbdd0e8176a8fa782130687b.1657707686.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <cover.1657707686.git.sweettea-kernel@dorminy.me>
+References: <cover.1657707686.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
@@ -48,114 +50,145 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a first, partial draft of adding fscrypt integration to btrfs.
+From: Omar Sandoval <osandov@fb.com>
 
-Last October, Omar sent out a design document for having fscrypt
-integration with btrfs [1]. In summary, it proposes btrfs storing its
-own encryption IVs on a per-file-extent basis. fscrypt usually encrypts
-files using an IV derived from per-inode information; this would prevent
-snapshotting or reflinking or data relocation for btrfs, but by using an
-IV associated with each file extent, all the inodes sharing a particular
-key and file extent may decrypt successfully.
+btrfs_insert_file_extent() is only ever used to insert holes, so rename
+it and remove the redundant parameters.
 
-This series starts implementing it on the kernel side for the simplest
-case, non-compressed data extents. My goal in sending out this RFC is to
-get feedback from btrfs folks whether these are going in a reasonable
-direction; while there are a couple of additional parts, they're
-fundamentally minor compared to this.
+Signed-off-by: Omar Sandoval <osandov@fb.com>
+Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+---
+ fs/btrfs/ctree.h     |  9 +++------
+ fs/btrfs/file-item.c | 21 +++++++++------------
+ fs/btrfs/file.c      |  4 ++--
+ fs/btrfs/inode.c     |  4 ++--
+ fs/btrfs/tree-log.c  | 13 +++++--------
+ 5 files changed, 21 insertions(+), 30 deletions(-)
 
-Not included are a couple of minor changes to btrfs-progs; additionally,
-none of the fscrypt tool changes needed to use the new encryption policy
-are included. Obviously, additional fstests will be needed.
-
-Known issues are a couple of compile warnings; a mysterious EUCLEAN
-return on file read that I've been trying to hunt down; no prevention of
-other policies being used with btrfs, and probably other bugs and
-missing code; I've been hunting bugs for the past month and keep finding
-more, which is why this is so much later than I hoped last month.
-
-Not sent out in this patchset are encryption for inline data extents,
-verity items, and compressed data.
-
-Also available as a branch at [2].
-
-Feedback heartily appreciated.
-
-[1] https://lore.kernel.org/linux-btrfs/YXGyq+buM79A1S0L@relinquished.localdomain/
-[2] https://github.com/sweettea/btrfs-fscrypt/tree/draft-for-rfc
-
-Omar Sandoval (12):
-  btrfs: change btrfs_insert_file_extent() to btrfs_insert_hole_extent()
-  btrfs: rename dir_item's dir_type field to dir_flags
-  btrfs: add new FT_FSCRYPT flag for directories.
-  btrfs: explicitly keep track of file extent item size.
-  btrfs: factor out a memcmp for two extent_buffers.
-  btrfs: factor a fscrypt_name matching method
-  fscrypt: add fscrypt_have_same_policy() to check inode's compatibility
-  btrfs: disable various operations on encrypted inodes
-  btrfs: Add new FEATURE_INCOMPAT_FSCRYPT feature flag.
-  btrfs: reuse encrypted filename hash when possible.
-  btrfs: implement fscrypt ioctls
-  btrfs: adapt directory read and lookup to potentially encrypted
-    filenames
-
-Sweet Tea Dorminy (11):
-  btrfs: use fscrypt_name's instead of name/len everywhere.
-  btrfs: setup fscrypt_names from dentrys using helper
-  fscrypt: expose fscrypt_nokey_name
-  fscrypt: expose a method to check whether a fscrypt_name is encrypted.
-  btrfs: add fscrypt operation table to superblock
-  btrfs: start using fscrypt hooks.
-  btrfs: add a subvolume flag for whole-volume encryption
-  btrfs: translate btrfs encryption flags and encrypted inode flag.
-  fscrypt: Add new encryption policy for btrfs.
-  btrfs: add iv generation function
-  btrfs: enable encryption for normal file extent data
-
- fs/btrfs/Makefile               |   1 +
- fs/btrfs/btrfs_inode.h          |   3 +
- fs/btrfs/ctree.h                | 122 +++++--
- fs/btrfs/delayed-inode.c        |  48 ++-
- fs/btrfs/delayed-inode.h        |   9 +-
- fs/btrfs/dir-item.c             | 115 ++++---
- fs/btrfs/extent_io.c            | 139 +++++++-
- fs/btrfs/extent_io.h            |   6 +
- fs/btrfs/extent_map.h           |   8 +
- fs/btrfs/file-item.c            |  41 ++-
- fs/btrfs/file.c                 |  15 +-
- fs/btrfs/fscrypt.c              | 222 +++++++++++++
- fs/btrfs/fscrypt.h              |  49 +++
- fs/btrfs/inode-item.c           |  84 ++---
- fs/btrfs/inode-item.h           |  14 +-
- fs/btrfs/inode.c                | 551 +++++++++++++++++++++++---------
- fs/btrfs/ioctl.c                |  80 ++++-
- fs/btrfs/ordered-data.c         |  12 +-
- fs/btrfs/ordered-data.h         |   3 +-
- fs/btrfs/print-tree.c           |   4 +-
- fs/btrfs/props.c                |  11 +-
- fs/btrfs/reflink.c              |   8 +
- fs/btrfs/root-tree.c            |  20 +-
- fs/btrfs/send.c                 | 141 ++++----
- fs/btrfs/super.c                |   8 +-
- fs/btrfs/transaction.c          |  41 ++-
- fs/btrfs/tree-checker.c         |  56 +++-
- fs/btrfs/tree-log.c             | 307 ++++++++++--------
- fs/btrfs/tree-log.h             |   4 +-
- fs/btrfs/xattr.c                |  21 +-
- fs/crypto/crypto.c              |  28 +-
- fs/crypto/fname.c               |  56 +---
- fs/crypto/fscrypt_private.h     |   4 +-
- fs/crypto/inline_crypt.c        |  20 +-
- fs/crypto/keysetup.c            |   6 +
- fs/crypto/policy.c              |  34 +-
- include/linux/fscrypt.h         |  67 +++-
- include/uapi/linux/btrfs.h      |   1 +
- include/uapi/linux/btrfs_tree.h |  26 ++
- include/uapi/linux/fscrypt.h    |   1 +
- 40 files changed, 1767 insertions(+), 619 deletions(-)
- create mode 100644 fs/btrfs/fscrypt.c
- create mode 100644 fs/btrfs/fscrypt.h
-
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 0ae7f6530da1..4c351b96115b 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3260,12 +3260,9 @@ int btrfs_find_orphan_item(struct btrfs_root *root, u64 offset);
+ int btrfs_del_csums(struct btrfs_trans_handle *trans,
+ 		    struct btrfs_root *root, u64 bytenr, u64 len);
+ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio, u8 *dst);
+-int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
+-			     struct btrfs_root *root,
+-			     u64 objectid, u64 pos,
+-			     u64 disk_offset, u64 disk_num_bytes,
+-			     u64 num_bytes, u64 offset, u64 ram_bytes,
+-			     u8 compression, u8 encryption, u16 other_encoding);
++int btrfs_insert_hole_extent(struct btrfs_trans_handle *trans,
++			     struct btrfs_root *root, u64 objectid, u64 pos,
++			     u64 num_bytes);
+ int btrfs_lookup_file_extent(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_root *root,
+ 			     struct btrfs_path *path, u64 objectid,
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index c828f971a346..29999686d234 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -129,12 +129,9 @@ static inline u32 max_ordered_sum_bytes(struct btrfs_fs_info *fs_info,
+ 	return ncsums * fs_info->sectorsize;
+ }
+ 
+-int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
++int btrfs_insert_hole_extent(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_root *root,
+-			     u64 objectid, u64 pos,
+-			     u64 disk_offset, u64 disk_num_bytes,
+-			     u64 num_bytes, u64 offset, u64 ram_bytes,
+-			     u8 compression, u8 encryption, u16 other_encoding)
++			     u64 objectid, u64 pos, u64 num_bytes)
+ {
+ 	int ret = 0;
+ 	struct btrfs_file_extent_item *item;
+@@ -157,16 +154,16 @@ int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
+ 	leaf = path->nodes[0];
+ 	item = btrfs_item_ptr(leaf, path->slots[0],
+ 			      struct btrfs_file_extent_item);
+-	btrfs_set_file_extent_disk_bytenr(leaf, item, disk_offset);
+-	btrfs_set_file_extent_disk_num_bytes(leaf, item, disk_num_bytes);
+-	btrfs_set_file_extent_offset(leaf, item, offset);
++	btrfs_set_file_extent_disk_bytenr(leaf, item, 0);
++	btrfs_set_file_extent_disk_num_bytes(leaf, item, 0);
++	btrfs_set_file_extent_offset(leaf, item, 0);
+ 	btrfs_set_file_extent_num_bytes(leaf, item, num_bytes);
+-	btrfs_set_file_extent_ram_bytes(leaf, item, ram_bytes);
++	btrfs_set_file_extent_ram_bytes(leaf, item, num_bytes);
+ 	btrfs_set_file_extent_generation(leaf, item, trans->transid);
+ 	btrfs_set_file_extent_type(leaf, item, BTRFS_FILE_EXTENT_REG);
+-	btrfs_set_file_extent_compression(leaf, item, compression);
+-	btrfs_set_file_extent_encryption(leaf, item, encryption);
+-	btrfs_set_file_extent_other_encoding(leaf, item, other_encoding);
++	btrfs_set_file_extent_compression(leaf, item, 0);
++	btrfs_set_file_extent_encryption(leaf, item, 0);
++	btrfs_set_file_extent_other_encoding(leaf, item, 0);
+ 
+ 	btrfs_mark_buffer_dirty(leaf);
+ out:
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 1876072dee9d..d0172cb54d9f 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2549,8 +2549,8 @@ static int fill_holes(struct btrfs_trans_handle *trans,
+ 	}
+ 	btrfs_release_path(path);
+ 
+-	ret = btrfs_insert_file_extent(trans, root, btrfs_ino(inode),
+-			offset, 0, 0, end - offset, 0, end - offset, 0, 0, 0);
++	ret = btrfs_insert_hole_extent(trans, root, btrfs_ino(inode), offset,
++				       end - offset);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index c4e1d1491c6c..2a9e6675c77e 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -5027,8 +5027,8 @@ static int maybe_insert_hole(struct btrfs_root *root, struct btrfs_inode *inode,
+ 		return ret;
+ 	}
+ 
+-	ret = btrfs_insert_file_extent(trans, root, btrfs_ino(inode),
+-			offset, 0, 0, len, 0, len, 0, 0, 0);
++	ret = btrfs_insert_hole_extent(trans, root, btrfs_ino(inode), offset,
++				       len);
+ 	if (ret) {
+ 		btrfs_abort_transaction(trans, ret);
+ 	} else {
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index d898ba13285f..fa923a9e79c4 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -5219,10 +5219,9 @@ static int btrfs_log_holes(struct btrfs_trans_handle *trans,
+ 			 * leafs from the log root.
+ 			 */
+ 			btrfs_release_path(path);
+-			ret = btrfs_insert_file_extent(trans, root->log_root,
+-						       ino, prev_extent_end, 0,
+-						       0, hole_len, 0, hole_len,
+-						       0, 0, 0);
++			ret = btrfs_insert_hole_extent(trans, root->log_root,
++						       ino, prev_extent_end,
++						       hole_len);
+ 			if (ret < 0)
+ 				return ret;
+ 
+@@ -5251,10 +5250,8 @@ static int btrfs_log_holes(struct btrfs_trans_handle *trans,
+ 
+ 		btrfs_release_path(path);
+ 		hole_len = ALIGN(i_size - prev_extent_end, fs_info->sectorsize);
+-		ret = btrfs_insert_file_extent(trans, root->log_root,
+-					       ino, prev_extent_end, 0, 0,
+-					       hole_len, 0, hole_len,
+-					       0, 0, 0);
++		ret = btrfs_insert_hole_extent(trans, root->log_root, ino,
++					       prev_extent_end, hole_len);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
 -- 
 2.35.1
 
