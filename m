@@ -2,153 +2,271 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D21573A5A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 17:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F4049573B00
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 18:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231853AbiGMPnU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Jul 2022 11:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
+        id S236312AbiGMQSv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Jul 2022 12:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbiGMPnS (ORCPT
+        with ESMTP id S236184AbiGMQSu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Jul 2022 11:43:18 -0400
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443634B0FC
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 08:43:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1657726998; x=1689262998;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=CqGSBkKRoojmEU0Ma0NCeXVFGSabrS50x20IOX99UG4=;
-  b=UWa48SzGoocr5bYRYZ6n1eBXCNVJJoDTmGg7IxeOPAOz8c9zsfmGwEh6
-   nDX8NgUpHkK4Cqz6IYyj3jJmk6LJQmVJkIKBsOXtjloLJF0GjUPGjYr0k
-   ydTIFa+3OHChRqnNpvzaZz+2riX7rGnidML7EbKTGYB9pYEgLEX0UTjV8
-   lp99Mzn5OrRBtp62p8NaL6qVuBUTxQmvzsPCBH9DGk4Lb5ScE//ZP9nz+
-   FcDkX19/JdWdcEBC7pLEM6T/tJeQ99DkHZsrIjHvXGwzZi4BYIWH2JfS0
-   gQ2wvH2i0BI5YhOV/uuOWjFw4IbVp4wxo8rl9rRIVSDDTpHKdBx7aaQ+l
-   g==;
-X-IronPort-AV: E=Sophos;i="5.92,267,1650902400"; 
-   d="scan'208";a="204251890"
-Received: from mail-mw2nam12lp2045.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.45])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Jul 2022 23:43:16 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f0XYQoDA+k9N8otg+tyATtx++BkPVRngIfkvybbzeNr02QUfNBHIBj2IdGIynlUbx45D/iS70gcw9h/XlXxJZtjO9AtHQI4kuQoZPPORRAQEUgAyptUOqOmECedbtlQAjxmiMeaiUh2lz81ioLwMGjJGeDLG3C3gixIUUudvREz6HKQ3FwI3LOQdbINOq3vde2rqpxEpgxKlxy2vc2i+wWy4rrDA+03+joEtuh8Q3G/tLxRbHrRQ3NSh42MRXNiDzhHWb3EwOeUc0itgszXsyzPKNDzEV8E0y6K8z4FXuXOnHT0EYKWnHy+okCvfNWvyqPdF2GnfOPmjS0kc+lLFFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tDhRkhDhFfRt97mllYfbYfWdChEVM0yvogq/5isdy8Y=;
- b=HHYheVfVk+YgiehAxFPSnxjb8y7A6YkCkkPosmz4wzGhDCKw9Eta3VQZ44ddO0ZhjXRf0Bqiy+rtJosczSsHOtOKMGE6SLAMr5YkyxVPy0NkUrIKPAg3V1qP+kRppEo2KAYgFsuHhtHQNG65IMNlQE/OnJDCgLSDjzz7evD8B4pMpWc9rlwN1R/+YytwDQTHB2sVJc6d7Tzxmrda4O0fDyoHhlZ6eFaECIlBCbnaK6YwWWo/gDIWGlrrtZffHuEaGMMB8BN7wbvd87CW31ggbGpkBuf4/PhrATocN2UaiOtw6tHVtPISWF8p+3tspr8Scdk8n+6cayYXxAYhhESGNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tDhRkhDhFfRt97mllYfbYfWdChEVM0yvogq/5isdy8Y=;
- b=Zt9bCey//zCRMlOHHSDTZPy4kIMc398dFMJBlCSw4HfSEC784dsb4EzmGq797vvyd4BEvpcocwW9JAmm9XwrEyQydjv4Zw4MbiheLnZWEossMiY3ceRmY/C6+ulEnFiII5B5sm8yMBr304wp2ZXOTQkxHl67abV69zJeYWvEKnM=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by BN0PR04MB7917.namprd04.prod.outlook.com (2603:10b6:408:150::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.20; Wed, 13 Jul
- 2022 15:43:15 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::d54b:24e1:a45b:ab91]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::d54b:24e1:a45b:ab91%9]) with mapi id 15.20.5417.026; Wed, 13 Jul 2022
- 15:43:15 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Ioannis Angelakopoulos <iangelak@fb.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: Re: [PATCH 1/2] btrfs: Add a lockdep model for the num_writers wait
- event
-Thread-Topic: [PATCH 1/2] btrfs: Add a lockdep model for the num_writers wait
- event
-Thread-Index: AQHYkwbFK9lbodl4ikWp8TqJRWAD9Q==
-Date:   Wed, 13 Jul 2022 15:43:14 +0000
-Message-ID: <PH0PR04MB7416DCB82032542A95F5A7599B899@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <20220708200829.3682503-1-iangelak@fb.com>
- <20220708200829.3682503-2-iangelak@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 008ada62-00da-4cd2-a340-08da64e66661
-x-ms-traffictypediagnostic: BN0PR04MB7917:EE_
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: a3KezF6No4fHqyUR7KjprRDPKPd7CznWVRmcTBP2hKvnce276hSxchRmRq2ofcXZN6378fD+IZiPYm90pCj1uNg+whLuGuuxdJlxt1oykxhHG7egCrYFpyYMi9sh8c2YxfI0xsdQoEUqt7YlQ+6tzjUGys11ms6DWjw9i4mU489gDof6ngGv6TDoJv12IeQwFZ+s2DfOgvK7zqIxY6zSaYxSvUmHB7vt4DBhM3FbUooMAG+7GtARGirhMqQ+5tf0lqRfbup+qT4aaef1U9YNd0LI+hjSAzP1B/xJCyxwmvYbhZT+ln1zQYHjNRxEvzbEPs628A4+Yj5dDfkewv3V74StQlQyUdVa6ZB0+ckHCqF9TaIFxxhf5md3hYvJyC8H4+d0FEiIxRBhrUI8yFASOXc1urMLjZwLgkSh3Yv+WhXdmbknQTpJ2sXKRXH/2/TSRgQLN9azvhyLQ3A+WPT+1ynptGMJuLm+CbeBhlDUnI38OZoJr6+tQ0LIIMPsG1Gz1BWz5M38cxxFVZJX/EIkRpyBptEidnWE7WwgvvAHHpk7sYInACpzgfn7gwEZATPK3jumkbnzcfMiHZ9DbWtnMf9JfZcVYGf7mh7qsj19giV4FnixwOXN7hed8o5NrgKfBqa8XCrDt2E0oC/8s75ZR7JTaXobrcYGDpeo4WprzXAZn7MEY7UhsDIMiAbRXvrw9V71lKTTvQAYmvEOk8NO5Uo2pyaKhv5T1n2FlIMHL3hM9R/M9N9VV4EWC8MwGbb+cRKk96DugHJn+Xktj6kuj5ZhCbNwvtHCFAjKM6Vdc6xytBmVPB1ZlOQ6aOtu55/H
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(39860400002)(366004)(346002)(136003)(376002)(4744005)(38070700005)(110136005)(83380400001)(66446008)(52536014)(38100700002)(122000001)(8936002)(82960400001)(5660300002)(55016003)(2906002)(66556008)(66476007)(186003)(71200400001)(7696005)(53546011)(91956017)(76116006)(6506007)(66946007)(64756008)(478600001)(41300700001)(86362001)(316002)(8676002)(9686003)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lbFz2Y7hZU+lE8EcXR1aXNWYct1BvFhl6cgXqMmG0L9HBjcsGZKvo3kgDfAN?=
- =?us-ascii?Q?PRFCzZ/OmE0HUrQo4bQ6PDI7R0019FYgcQRbHvF5lQ16cdDMp/RMO8BY37oK?=
- =?us-ascii?Q?oF6q1MmgGb3VF1KsK/F7+qhf1FEeb2zgJXH+ZFBfhCSrQNL9WpRp2/EwDKE8?=
- =?us-ascii?Q?NEfI5t43GaNdbfLprEGxc9+3cVgAyF/M5RceeXEdgZV4J0X5GQ3GhYsJqGdg?=
- =?us-ascii?Q?UVexXeXR9kFs6e7VKCnUQS3BvFDLr1gQ1/lWRXfYjKvxCrykxdrXner3Ziz0?=
- =?us-ascii?Q?YgadujbnH1Cc9uxhZsuLmrKt0bZ5nFtXmxRjriPFxzofDcJ0hm6ft+Bkpkvr?=
- =?us-ascii?Q?upPQVoIwKNEGb3aGzhJHnsYN2J2YgSPssjMHM6lht5vzx3kS1LdHiEzTk/Tk?=
- =?us-ascii?Q?qa2+S/wtI9ThthKhmiyn+Ykho1ggYMzMtfSQYySs1w9riM8wpHtnCZR7xINz?=
- =?us-ascii?Q?5IYpZCAI9clqqN6txP7o0j9saq0WjaU+UU+pYscv65GYxvHEdNskfGlvMKHJ?=
- =?us-ascii?Q?QxVPhdwOiymb4DgIax+HMXFqpZWsewOgCuzE3qeGv9tO/7roQWBxKPoWlTEi?=
- =?us-ascii?Q?JtqvSPDUB3vup2RAVqfKFrwhPI1YxFSZc2mtkhaXKJ98oMRzZAsRZe4/fUe7?=
- =?us-ascii?Q?vcFokcZk18Bz9Ll5ar9KzBgV64v0ZX9lgfKfHE43AqGNdw5ZynaI/EIm0Oek?=
- =?us-ascii?Q?LfoOvcO6Bw4OLr4yC76oGDnUgvKQqyylBsQ+RnzDrFUj6QaSVfFSnH8ejvPD?=
- =?us-ascii?Q?8r3uPmbVP5Twfv2L+ZZzLFoAbu5bBoz4547OyTTjjsck/lExO/992Z6M4G5+?=
- =?us-ascii?Q?L0MBMoeO8ZoBj05Qwk6/GCeWwqCP16gytZoru9T5oBKWONPpWPgI0YfDrEts?=
- =?us-ascii?Q?IOb1Jfe5mj+bG5C7e1DGkYsLbZ4vCYix5tH2BCK1j9OL2tKsKWnlzrdfOvkz?=
- =?us-ascii?Q?HymA9S5LFBCFTAnAwGAtj/gq6NZoA4Bf98WMFvKtEvKvmJPrcNH39XrjliQ+?=
- =?us-ascii?Q?ChZjko/PF8kcELc/Uw4c9lRD09KZWRn/1qiWC21/X+w9suV4VbwXkWCwh6Bc?=
- =?us-ascii?Q?SoBwkvymo144Zm2ffCHHpXdSOlG20N7FQWF5B6MBVGmTE/K/Q8v+qWkbZGdf?=
- =?us-ascii?Q?rxfZgpobYMRKOYRM7cTZxqjrPrGiu51F/1JPSl587Z58sKzLXljOQ/95/pVS?=
- =?us-ascii?Q?+jZ4hGJIhrZVl7yNint/4eququbISp2z+tu+lJyB0f7SJ++6mtcmsG/aIF5H?=
- =?us-ascii?Q?OU7eFHsLd0uTxsL2RzzGTAQUA6S9wnuwaPv1eV7UxDybYzoj4YIhgoTcr5Hx?=
- =?us-ascii?Q?sPmzHOiOKIYywkM3wKK9FEYptOxs+2/QzwwpQgK1SGiPTv119hgM6zj7qFd3?=
- =?us-ascii?Q?Por5npn9xkie2FVVeYLMezi6LakyURoxMhPnGDaTl9Ev6k+a5EEMLCd7/sE2?=
- =?us-ascii?Q?Dm/iG6eUQpmy/ifkd4q/ZJYPILIwooBsX680oLEYILtTNLs1p0uj9xDW8VIU?=
- =?us-ascii?Q?DuEQeDlbEATo1n307En7OhKQXJ+VQO4Ad2KLOPTy6aCE2CeBRQJCjWCULz5Z?=
- =?us-ascii?Q?y7oQZMiP5tJCRlvSQoMNSQ/qvBUpPgfo+oO3avWaKbp8yLIrKJalIMozaHAE?=
- =?us-ascii?Q?rM2veZDN3q8thY/bvQ+VtYMQzpeC5MUc4QAtlwbU+eOG/y86HKt0Ca3x2weB?=
- =?us-ascii?Q?Gm/wyrlkm2+gFY7ukvANyuOgYhk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 13 Jul 2022 12:18:50 -0400
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81891641C
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 09:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1657729124;
+        bh=9xvM/Ve21D5q43tsCozIr3ku0rXPOxSUQhqR9jeJS58=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=VbjzD/lTPaYBtd5l37G2uuxkSd2/zwSf7+1+0t/c6MLMeFmwxG8NcXaSw1I3Gw+vR
+         g6nVnVO+idpqT1rNcVjSCjObFDjUfpAEs/CgWDp5rVpjbaNXN3QhHd1pUR/oBx3O8A
+         9ekAEoAhglgLaWfyIhRxN8j1HUn29NtG6t6m8eQE=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from gecko ([46.223.150.144]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mrft2-1noNXM2dk4-00ncFQ; Wed, 13
+ Jul 2022 18:18:44 +0200
+Date:   Wed, 13 Jul 2022 16:18:35 +0000
+From:   Lukas Straub <lukasstraub2@web.de>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>
+Subject: Re: [PATCH 00/12] btrfs: introduce write-intent bitmaps for RAID56
+Message-ID: <20220713161835.63ad1b00@gecko>
+In-Reply-To: <cover.1657171615.git.wqu@suse.com>
+References: <cover.1657171615.git.wqu@suse.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 008ada62-00da-4cd2-a340-08da64e66661
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2022 15:43:14.8964
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 065csJJ7PM6H+yRcZll/ksy0FI1HxYDuXBqaP2OTFUiTARpyQsDjl2YLx+6yuW+cuF0enRg/mjCv7og2S7VGhYXoeTfAmYeJQ5nP8zhx7xw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR04MB7917
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/Ji=SrAmm51TMCwWTx77R.1r";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Provags-ID: V03:K1:CQkIp3bq8FI3x6gQUTkEabUT4UqJMuRAjaKQ0pwrxdG6rFv4Tph
+ yH12Op9bWCPYjm+jPdRvPYpZ8fCA9637Pdf42pQDekggXYtIsHXyXCb9C9BOhVlxRV/WsT8
+ T74WKVyLvrTvqa0Y9+uwBkG+NHlT7fTFIrcVjxMoUR7szttDjejho1lKGltLhybw08b7fXk
+ 74M41qEkO/4sdKOxScpgg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wQD268w8ijw=:8J3VxTjW5JY22e+iidxqGt
+ /Qz2T92x4RJR5r7RaQf8Bnz0alO9jttob8rswZ0AcbPM1kBfLZ84G8H9kAmxusCwIhFuohqa0
+ v/BUBv4Z75NepbWmjeSom1+0YDh5+Zt1AiKfJTuc89DVq4ZCjadHmYJDuhwxevLzVNPwNvsaD
+ OLpBi6SgEX3aH11RqftriUEMbU3veJzXDD4IHmeqVr/70/iJTUVq3keft68DlYgNXiDqQaecK
+ 4V9iqmygq1PvnpHnpbttM+g3YMLkDVmFtOgeNWH5US1ko06f4MlnVKPsBjpo4hMtEjUnQKe8o
+ lNJKjLEem89atXpyddA8AHzA79gGpZFKwDf4N6zkFkho6w+OQfewO40w8+42vPnaCrRhbP4Ss
+ PsWf2pa8gUcktkMf+tJXLB1xkhV28vP2W9G6V+2fia64+leQA7JLkY7jXnEAK0CbOpGQBcETN
+ 3EUn1Wb4idj/3wE/d6952NTJpAAMIbBjQGT/eL90c6oZJd6Q2HooPo+ADBWC7dHM9htg7lhHX
+ WxDN07VxOaBzh6J74rNuqxJgzau+pdno26GkaseDOSniUEscMw7CvHjtGmSjDuKS7m8VUryKn
+ IwiQHdxUYYktbOheNOSz3Pl2cwfVigZfcW7abxhB1isIc6FiSWOzdkdzltpqBtzS6S75NuXf3
+ XmGSxScfGlFg8OkSJ+87BKqe2Ghcx/Uw3yQ1qamAUTwk9g8bYgPkK5lsHIAk2iDzZZZ/v6Jvq
+ mfn51/SKRRtctJCSXBTILqtyMBGfiAAo2Xo2I7bvG+4TwVc4i8+Z6k76rZ6fx7xS99PjkK8xw
+ 8ThRpQrlO5TT51qFCUbneMmR3k7Cu6HTYDtYp0kKCnJMnlO4knNoq0uw86QWlsuocWOjy5wE2
+ lb5Bd1F1y4oZ5laJuxcFDeBYm9Q+mu+pIQ0rf9mLieLBmGq/at1i4+jtl5MmJnbJPn2r2qP46
+ hfZksby/mfJbM+hTCTSZvK4M/eankrfrgcZSfXQ11+MuR98krNcXbCmUzZ8fVqxapS9X7rR1+
+ 19GoXpfex2tYZuJ6oklkqeafuXiuUKXT0hQ1pHl+idbHIE3TZHBU9466tjeJoNZF30IURQd9I
+ AcquvAr2N9GAWvvh/amZw/ACjdxxwWvFZu2VgSgDaG05mXl4REk+PDwLQ==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 08.07.22 22:10, Ioannis Angelakopoulos wrote:=0A=
-> +#define btrfs_might_wait_for_event(b, lock) \=0A=
-> +	do { \=0A=
-> +		rwsem_acquire(&b->lock##_map, 0, 0, _THIS_IP_); \=0A=
-> +		rwsem_release(&b->lock##_map, _THIS_IP_); \=0A=
-> +	} while (0)=0A=
-> +=0A=
-> +#define btrfs_lockdep_acquire(b, lock) \=0A=
-> +	rwsem_acquire_read(&b->lock##_map, 0, 0, _THIS_IP_)=0A=
-> +=0A=
-> +#define btrfs_lockdep_release(b, lock) \=0A=
-> +	rwsem_release(&b->lock##_map, _THIS_IP_)=0A=
-=0A=
-Shouldn't this be only defined for CONFIG_LOCKDEP=3Dy and be=0A=
-stubbed out for CONFIG_LOCKDEP=3Dn?=0A=
+--Sig_/Ji=SrAmm51TMCwWTx77R.1r
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hello Qu,
+
+I think I mentioned it elsewhere, but could this be made general to all
+raid levels (e.g. raid1/10 too)? This way, the bitmap can also be used
+to fix the corruption of nocow files on btrfs raid. IMHO this is very
+important since openSUSE and Fedora use nocow for certain files
+(databases, vm images) by default and currently anyone using btrfs raid
+there will be shot in the foot by this.
+
+More comments below.
+
+On Thu,  7 Jul 2022 13:32:25 +0800
+Qu Wenruo <wqu@suse.com>=20
+> [...]
+> [OBJECTIVE]
+>=20
+> This patchset will introduce a btrfs specific write-intent bitmap.
+>=20
+> The bitmap will locate at physical offset 1MiB of each device, and the
+> content is the same between all devices.
+>=20
+> When there is a RAID56 write (currently all RAID56 write, _including full
+> stripe write_), before submitting all the real bios to disks,
+> write-intent bitmap will be updated and flushed to all writeable
+> devices.
+
+You'll need to update the bitmap even with full stripe writes. I don't
+know btrfs internals well, but this example should apply:
+
+1. Powerloss happens during a full stripe write. If the bitmap wasn't set,
+the whole stripe will contain inconsistent data:
+
+	0		32K		64K
+Disk 1	|iiiiiiiiiiiiiiiiiiiiiiiiiiiiiii| (data stripe)
+Disk 2  |iiiiiiiiiiiiiiiiiiiiiiiiiiiiiii| (data stripe)
+Disk 3	|iiiiiiiiiiiiiiiiiiiiiiiiiiiiiii| (parity stripe)
+
+2. Partial stripe write happens, only updates one data + parity:
+
+	0		32K		64K
+Disk 1	|XXiiiiiiiiiiiiiiiiiiiiiiiiiiiii| (data stripe)
+Disk 2  |iiiiiiiiiiiiiiiiiiiiiiiiiiiiiii| (data stripe)
+Disk 3	|XXiiiiiiiiiiiiiiiiiiiiiiiiiiiii| (parity stripe)
+
+3. We loose Disk 1. We try to recover Disk 1 data by using Disk 2 data
++ parity. Because Disk 2 is inconsistent we get invalid data.
+
+Thus, we need to scrub the stripe even after a full stripe write to
+prevent this.
+
+> So even if a powerloss happened, at the next mount time we know which
+> full stripes needs to check, and can start a scrub for those involved
+> logical bytenr ranges.
+>=20
+> [...]
+>=20
+> [BITMAPS DESIGN]
+>=20
+> The bitmaps on-disk format looks like this:
+>=20
+>  [ super ][ entry 1 ][ entry 2 ] ... [entry N]
+>  |<---------  super::size (4K) ------------->|
+>=20
+> Super block contains how many entires are in use.
+>=20
+> Each entry is 128 bits (16 bytes) in size, containing one u64 for
+> bytenr, and u64 for one bitmap.
+>=20
+> And all utilized entries will be sorted in their bytenr order, and no
+> bit can overlap.
+>=20
+> The blocksize is now fixed to BTRFS_STRIPE_LEN (64KiB), so each entry
+> can contain at most 4MiB, and the whole bitmaps can contain 224 entries.
+
+IMHO we can go much larger, mdraid for example uses a blocksize of
+64MiB by default. Sure, we'll scrub many unrelated stripes on recovery
+but write performance will be better.
+
+Regards,
+Lukas Straub
+
+> For the worst case, it can contain 14MiB dirty ranges.
+> (1 bits set per bitmap, also means 2 disks RAID5 or 3 disks RAID6).
+>=20
+> For the best case, it can contain 896MiB dirty ranges.
+> (all bits set per bitmap)
+>=20
+> [WHY NOT BTRFS BTREE]
+>=20
+> Current write-intent structure needs two features:
+>=20
+> - Its data needs to survive cross stripe boundary
+>   Normally this means write-intent btree needs to acts like a proper
+>   tree root, has METADATA_ITEMs for all its tree blocks.
+>=20
+> - Its data update must be outside of a transaction
+>   Currently only log tree can do such thing.
+>   But unfortunately log tree can not survive across transaction
+>   boundary.
+>=20
+> Thus write-intent btree can only meet one of the requirement, not a
+> suitable solution here.
+>=20
+> [TESTING AND BENCHMARK]
+>=20
+> For performance benchmark, unfortunately I don't have 3 HDDs to test.
+> Will do the benchmark after secured enough hardware.
+>=20
+> For testing, it can survive volume/raid/dev-replace test groups, and no
+> write-intent bitmap leakage.
+>=20
+> Unfortunately there is still a warning triggered in btrfs/070, still
+> under investigation, hopefully to be a false alert in bitmap clearing
+> path.
+>=20
+> [TODO]
+> - Scrub refactor to allow us to do proper recovery at mount time
+>   Need to change scrub interface to scrub based on logical bytenr.
+>=20
+>   This can be a super big work, thus currently we will focus only on
+>   RAID56 new scrub interface for write-intent recovery only.
+>=20
+> - Extra optimizations
+>   * Skip full stripe writes
+>   * Enlarge the window between btrfs_write_intent_mark_dirty() and
+>     btrfs_write_intent_writeback()
+>     So that we can merge more dirty bites and cause less bitmaps
+>     writeback
+>=20
+> - Proper performance benchmark
+>   Needs hardware/baremetal VMs, since I don't have any physical machine
+>   large enough to contian 3 3.5" HDDs.
+>=20
+>=20
+> Qu Wenruo (12):
+>   btrfs: introduce new compat RO flag, EXTRA_SUPER_RESERVED
+>   btrfs: introduce a new experimental compat RO flag,
+>     WRITE_INTENT_BITMAP
+>   btrfs: introduce the on-disk format of btrfs write intent bitmaps
+>   btrfs: load/create write-intent bitmaps at mount time
+>   btrfs: write-intent: write the newly created bitmaps to all disks
+>   btrfs: write-intent: introduce an internal helper to set bits for a
+>     range.
+>   btrfs: write-intent: introduce an internal helper to clear bits for a
+>     range.
+>   btrfs: selftests: add selftests for write-intent bitmaps
+>   btrfs: write back write intent bitmap after barrier_all_devices()
+>   btrfs: update and writeback the write-intent bitmap for RAID56 write.
+>   btrfs: raid56: clear write-intent bimaps when a full stripe finishes.
+>   btrfs: warn and clear bitmaps if there is dirty bitmap at mount time
+>=20
+>  fs/btrfs/Makefile                           |   5 +-
+>  fs/btrfs/ctree.h                            |  24 +-
+>  fs/btrfs/disk-io.c                          |  54 ++
+>  fs/btrfs/raid56.c                           |  16 +
+>  fs/btrfs/sysfs.c                            |   2 +
+>  fs/btrfs/tests/btrfs-tests.c                |   4 +
+>  fs/btrfs/tests/btrfs-tests.h                |   2 +
+>  fs/btrfs/tests/write-intent-bitmaps-tests.c | 247 ++++++
+>  fs/btrfs/volumes.c                          |  34 +-
+>  fs/btrfs/write-intent.c                     | 903 ++++++++++++++++++++
+>  fs/btrfs/write-intent.h                     | 303 +++++++
+>  fs/btrfs/zoned.c                            |   8 +
+>  include/uapi/linux/btrfs.h                  |  17 +
+>  13 files changed, 1610 insertions(+), 9 deletions(-)
+>  create mode 100644 fs/btrfs/tests/write-intent-bitmaps-tests.c
+>  create mode 100644 fs/btrfs/write-intent.c
+>  create mode 100644 fs/btrfs/write-intent.h
+>=20
+
+
+
+--=20
+
+
+--Sig_/Ji=SrAmm51TMCwWTx77R.1r
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEg/qxWKDZuPtyYo+kNasLKJxdslgFAmLO8FsACgkQNasLKJxd
+slgtpw/+IWtZB4ATFr3tEGpKtV+Jd69EscLvqz1C8IO6szi4l4ITJuNuiOj0sxxB
+EYcw4WgxsPLTvIQC1A9yJHLLkFvwfYTsAYuE2svkPEZ7GgaWMV12ylWDd11BtvLT
+QXZOP81MU+ZiML7A3DfoHpUK2ceIFBHDYsmzDSlAE/AHUbwvMupvD7egQ6KTmnr0
+WVVZs1qEoImgxyM9KfCxPNU1YeUKHK/5Mlc4HiMPbKqTUqvq0fu3vuwmzCg1k15e
+Jds4k6WFbu59OseQIywDXq4zDQGOD526orvzEasB063wAMdEEflDiqtbPHd+qKtM
+GOe7p4fhqJzHa2IYECdwXuzVaOwQ3NXDfNBLzSC0qnAumCR5Oipxs8dzkEcnTKSX
+tKr3097/lwjSqc5OSqrHx+eNJtccdAwFqG7QrjrF1m3yDUGPmCHIGhJHJo0gJOx9
+hZ8IJG0YiGx6jfUOvW+cpuTG0QOwUQTDHske1pOgpe+rDjFkuFolhylYV/EBphUf
+IpDcP4oG6sHw5KIFJB11JwO5uy1mRbfkO/gm8nh7ilsrSOS0O5BDIXkgH6oJO70u
+qWAoBCeDW2ChwRNAhYz/xa1OFJferuw8PcRJk/xKTbTDepUsA+czGbQ7vCz9jwnJ
+fE45HCF3tW7dYBYw655hjRNG9WkVg2rHGxXPiRH46cgJe1FjleQ=
+=xBri
+-----END PGP SIGNATURE-----
+
+--Sig_/Ji=SrAmm51TMCwWTx77R.1r--
