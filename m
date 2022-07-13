@@ -2,49 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A535572FD2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 09:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74D5572FD1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 09:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbiGMH6J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Jul 2022 03:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55832 "EHLO
+        id S234955AbiGMH6M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Jul 2022 03:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234942AbiGMH6D (ORCPT
+        with ESMTP id S234953AbiGMH6G (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Jul 2022 03:58:03 -0400
+        Wed, 13 Jul 2022 03:58:06 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C61DE9CE
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 00:58:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D7ADF391
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 00:58:04 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 11B511F9D1
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:01 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 010721F86B
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657699081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=OASxt4UCsPxo9kq7mq2O3/rE3gJzXtxCo1yahmmzJS0=;
-        b=gO9HyTNzsmksMs37pF2Ps/y6b82qE1pMdj4ZldENhSbUcLVfiy+9oXnB2MmGpnG03c28vX
-        YXWnOVofFjP8ZRTqUscobOUs78P+udX8TJwN6++Zmm2U1b278eyU556aPGKqHBBKem2sok
-        Fk5Fay1pF+JweVslVUhfglef/P7wgXo=
+        t=1657699082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u+p4zM/yWzimBQZDcxi6K0U/bstBnvAloS71lIG8jOc=;
+        b=emC2/JQTa6y8meh8YgcdAFY+FZ5CWV70OtyLmwC4ek0dhy8kfSVPethzKltxsS4G4yKi0E
+        bg3h50+SL2IZ0KBLm6w5oTaYshBC2IUuLFnyeOPe7SXngoyrwJhAhMZEID31fTGQf/0cg/
+        rUkybWjWk7PepaYt24OAhGcYPhXoDMc=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 70FD913AAD
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:00 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 64E0113AAD
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id VjY7Dwh7zmK/KQAAMHmgww
+        id EG1NDQl7zmK/KQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:00 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:01 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/3] btrfs-progs: separate BLOCK_GROUP_TREE feature from extent-tree-v2
-Date:   Wed, 13 Jul 2022 15:57:40 +0800
-Message-Id: <cover.1657698964.git.wqu@suse.com>
+Subject: [PATCH 1/3] btrfs-progs: mkfs: dynamically modify mkfs blocks array
+Date:   Wed, 13 Jul 2022 15:57:41 +0800
+Message-Id: <febf59c659d2fd8922d6e6a16c6ac63e34a0d850.1657698964.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.0
+In-Reply-To: <cover.1657698964.git.wqu@suse.com>
+References: <cover.1657698964.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -57,73 +61,189 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The block group tree idea is introduced to greatly reduce mount time for
-large fs, over SEVERN years ago.
+In mkfs_btrfs(), we have a btrfs_mkfs_block array to store how many tree
+blocks we need to reserve for the initial btrfs image.
 
-And 4 years ago, it's determined to let extent-tree-v2 to implement the
-feature.
+Currently we have two very similar arrays, extent_tree_v1_blocks and
+extent_tree_v2_blocks.
 
-However extent tree v2 still doesn't have a consistent on-disk format,
-nor any implementation on the real extent items, nor any tests on some
-independent sub-features.
+The only difference is just v2 has an extra block for block group tree.
 
-I strongly doubt if that's a correct decision, especially considering
-there is really no dependency from extent tree v2 on this block group
-tree feature.
+This patch will add two helpers, mkfs_blocks_add() and
+mkfs_blocks_remove() to properly add/remove one block dynamically from
+the array.
 
-Not to mention this is against the common idea on progressive
-improvement.
+This allows 3 things:
 
-So now is the time to revive the independent block group compat RO flag.
+- Merge extent_tree_v1_blocks and extent_tree_v2_blocks into one array
+  The new array will be the same as extent_tree_v1_blocks.
+  For extent-tree-v2, we just dynamically add MKFS_BLOCK_GROUP_TREE.
 
-[CHANGE FROM EXTENT-TREE-V2]
-- Don't store block group root into super block
-  There is no special reason for block group root to be stored in super
-  block.
+- Remove free space tree block on-demand
+  This only works for extent-tree-v1 case, as v2 has a hard requirement
+  on free space tree.
+  But this still make code much cleaner, not doing any special hacks.
 
-- Separate block-group-tree as a compat RO flag from extent-tree-v2
-  The change to extent tree is not affecting read-only opeartions.
-  No reason to make it incompat.
+- Allow future expansion without introduce new array
+  I strongly doubt why this is not properly done in extent-tree-v2
+  preparation patches.
+  We should not allow bad practice to sneak in just because it's some
+  preparation patches for a larger feature.
 
-- Fix a bug in extent-tree-v2 which doesn't initialize block group item
-  correctly.
-  Since we're re-using the existing block group item structure, we
-  should properly initialize chunk_objectid to 256, or tree block
-  will reject it.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ mkfs/common.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++-----
+ mkfs/common.h | 20 +++-----------
+ 2 files changed, 69 insertions(+), 24 deletions(-)
 
-- Dynamically arrange the mkfs_block array
-  Instead a completely new array dedicated for extent-tree-v2, now we
-  have proper helpers to add/delete block from the array on-the-fly.
-
-[TODO]
-- Add btrfstune support to convert to block-group-tree feature
-  and back.
-  This is supported in previous push, but now due to the new
-  changes introduced by extent-tree-v2, I need to revisit the
-  convert tool.
-
-  And due to recent inspirations from csum conversion, I will
-  go the double tree co-exist method to do the conversion,
-  instead of the old one transaction conversion.
-
-Qu Wenruo (3):
-  btrfs-progs: mkfs: dynamically modify mkfs blocks array
-  btrfs-progs: don't save block group root into super block
-  btrfs-progs: separate block group tree from extent tree v2
-
- check/main.c               |   8 +--
- cmds/inspect-dump-tree.c   |  11 ----
- common/fsfeatures.c        |   8 +++
- common/fsfeatures.h        |   2 +
- kernel-shared/ctree.h      |  35 +++---------
- kernel-shared/disk-io.c    |  77 ++++++-------------------
- kernel-shared/disk-io.h    |   2 +-
- kernel-shared/print-tree.c |  11 +---
- mkfs/common.c              | 113 ++++++++++++++++++++++++++++++-------
- mkfs/common.h              |  20 +------
- mkfs/main.c                |   3 +-
- 11 files changed, 138 insertions(+), 152 deletions(-)
-
+diff --git a/mkfs/common.c b/mkfs/common.c
+index 218854491c14..d5a49ca11cde 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -260,6 +260,60 @@ next:
+ 	__builtin_unreachable();
+ }
+ 
++/*
++ * Add @block into the @blocks array.
++ *
++ * The @blocks should already be in ascending order and no duplicate.
++ */
++static void mkfs_blocks_add(enum btrfs_mkfs_block *blocks, int *blocks_nr,
++			    enum btrfs_mkfs_block to_add)
++{
++	int i;
++
++	for (i = 0; i < *blocks_nr; i++) {
++		/* The target is already in the array. */
++		if (blocks[i] == to_add)
++			return;
++
++		/*
++		 * We find the first one past @to_add, move the array one slot
++		 * right, insert a new one.
++		 */
++		if (blocks[i] > to_add) {
++			memmove(blocks + i + 1, blocks + i, *blocks_nr - i);
++			blocks[i] = to_add;
++			(*blocks_nr)++;
++			return;
++		}
++		/* Current one still smaller than @to_add, go to next slot. */
++	}
++	/* All slots iterated and not match, insert into the last slot. */
++	blocks[i] = to_add;
++	(*blocks_nr)++;
++	return;
++}
++
++/*
++ * Remove @block from the @blocks array.
++ *
++ * The @blocks should already be in ascending order and no duplicate.
++ */
++static void mkfs_blocks_remove(enum btrfs_mkfs_block *blocks, int *blocks_nr,
++			       enum btrfs_mkfs_block to_remove)
++{
++	int i;
++
++	for (i = 0; i < *blocks_nr; i++) {
++		/* Found the target, move the array one slot left. */
++		if (blocks[i] == to_remove) {
++			memmove(blocks + i, blocks + i + 1, *blocks_nr - i - 1);
++			(*blocks_nr)--;
++		}
++	}
++	/* Nothing found, exit directly. */
++	return;
++}
++
+ /*
+  * @fs_uuid - if NULL, generates a UUID, returns back the new filesystem UUID
+  *
+@@ -290,12 +344,12 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	struct btrfs_chunk *chunk;
+ 	struct btrfs_dev_item *dev_item;
+ 	struct btrfs_dev_extent *dev_extent;
+-	const enum btrfs_mkfs_block *blocks = extent_tree_v1_blocks;
++	enum btrfs_mkfs_block blocks[MKFS_BLOCK_COUNT];
+ 	u8 chunk_tree_uuid[BTRFS_UUID_SIZE];
+ 	u8 *ptr;
+ 	int i;
+ 	int ret;
+-	int blocks_nr = ARRAY_SIZE(extent_tree_v1_blocks);
++	int blocks_nr;
+ 	int blk;
+ 	u32 itemoff;
+ 	u32 nritems = 0;
+@@ -315,16 +369,21 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	bool extent_tree_v2 = !!(cfg->features &
+ 				 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2);
+ 
+-	/* Don't include the free space tree in the blocks to process. */
+-	if (!free_space_tree)
+-		blocks_nr--;
++	memcpy(blocks, default_blocks,
++	       sizeof(enum btrfs_mkfs_block) * ARRAY_SIZE(default_blocks));
++	blocks_nr = ARRAY_SIZE(default_blocks);
+ 
++	/* Extent tree v2 needs an extra block for block group tree.*/
+ 	if (extent_tree_v2) {
+-		blocks = extent_tree_v2_blocks;
+-		blocks_nr = ARRAY_SIZE(extent_tree_v2_blocks);
++		mkfs_blocks_add(blocks, &blocks_nr, MKFS_BLOCK_GROUP_TREE);
+ 		add_block_group = false;
+ 	}
+ 
++	/* Don't include the free space tree in the blocks to process. */
++	if (!free_space_tree)
++		mkfs_blocks_remove(blocks, &blocks_nr, MKFS_FREE_SPACE_TREE);
++
++
+ 	if ((cfg->features & BTRFS_FEATURE_INCOMPAT_ZONED)) {
+ 		system_group_offset = zoned_system_group_offset(cfg->zone_size);
+ 		system_group_size = cfg->zone_size;
+diff --git a/mkfs/common.h b/mkfs/common.h
+index 3533e114e81c..47b14cdae2f3 100644
+--- a/mkfs/common.h
++++ b/mkfs/common.h
+@@ -52,25 +52,12 @@ enum btrfs_mkfs_block {
+ 	MKFS_CSUM_TREE,
+ 	MKFS_FREE_SPACE_TREE,
+ 	MKFS_BLOCK_GROUP_TREE,
+-	MKFS_BLOCK_COUNT
+-};
+-
+-static const enum btrfs_mkfs_block extent_tree_v1_blocks[] = {
+-	MKFS_ROOT_TREE,
+-	MKFS_EXTENT_TREE,
+-	MKFS_CHUNK_TREE,
+-	MKFS_DEV_TREE,
+-	MKFS_FS_TREE,
+-	MKFS_CSUM_TREE,
+ 
+-	/*
+-	 * Since the free space tree is optional with v1 it must always be last
+-	 * in this array.
+-	 */
+-	MKFS_FREE_SPACE_TREE,
++	/* MKFS_BLOCK_COUNT should be the max blocks we can have at mkfs time. */
++	MKFS_BLOCK_COUNT
+ };
+ 
+-static const enum btrfs_mkfs_block extent_tree_v2_blocks[] = {
++static const enum btrfs_mkfs_block default_blocks[] = {
+ 	MKFS_ROOT_TREE,
+ 	MKFS_EXTENT_TREE,
+ 	MKFS_CHUNK_TREE,
+@@ -78,7 +65,6 @@ static const enum btrfs_mkfs_block extent_tree_v2_blocks[] = {
+ 	MKFS_FS_TREE,
+ 	MKFS_CSUM_TREE,
+ 	MKFS_FREE_SPACE_TREE,
+-	MKFS_BLOCK_GROUP_TREE,
+ };
+ 
+ struct btrfs_mkfs_config {
 -- 
 2.37.0
 
