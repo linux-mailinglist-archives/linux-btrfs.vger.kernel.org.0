@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C74D5572FD1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 09:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E69572FD4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 09:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234955AbiGMH6M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Jul 2022 03:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55882 "EHLO
+        id S234968AbiGMH6L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Jul 2022 03:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234953AbiGMH6G (ORCPT
+        with ESMTP id S234952AbiGMH6G (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 13 Jul 2022 03:58:06 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D7ADF391
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF7FDE9CE
         for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 00:58:04 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 010721F86B
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:02 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 580D21F9E8
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657699082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1657699083; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=u+p4zM/yWzimBQZDcxi6K0U/bstBnvAloS71lIG8jOc=;
-        b=emC2/JQTa6y8meh8YgcdAFY+FZ5CWV70OtyLmwC4ek0dhy8kfSVPethzKltxsS4G4yKi0E
-        bg3h50+SL2IZ0KBLm6w5oTaYshBC2IUuLFnyeOPe7SXngoyrwJhAhMZEID31fTGQf/0cg/
-        rUkybWjWk7PepaYt24OAhGcYPhXoDMc=
+        bh=zei6QOEl9asGeAuNGsZeCsNS2NGrshNK5kvYybTlNMM=;
+        b=J1El1NH1bPKSf4/NASfCM9k7Qc8Cr5uas7Xj+arEDx9BaT5fr+ib++D2x/4BBbvfnqA1I0
+        lXxmbFDQxe82sv/iKgoak4VkhnqXW0fDlkiPJwObdb5ZETzSuiPqoj2JO9xHUEifo9dsQF
+        y2OWFcYCQb6vnfEj8aPKqcD9p77MO84=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 64E0113AAD
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:01 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5A09113AAD
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id EG1NDQl7zmK/KQAAMHmgww
+        id YBuiCgp7zmK/KQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:01 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 07:58:02 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs-progs: mkfs: dynamically modify mkfs blocks array
-Date:   Wed, 13 Jul 2022 15:57:41 +0800
-Message-Id: <febf59c659d2fd8922d6e6a16c6ac63e34a0d850.1657698964.git.wqu@suse.com>
+Subject: [PATCH 2/3] btrfs-progs: don't save block group root into super block
+Date:   Wed, 13 Jul 2022 15:57:42 +0800
+Message-Id: <9cb9b430afb99e55bd9c5b57cfb062fbaafd9c99.1657698964.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <cover.1657698964.git.wqu@suse.com>
 References: <cover.1657698964.git.wqu@suse.com>
@@ -61,189 +61,310 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In mkfs_btrfs(), we have a btrfs_mkfs_block array to store how many tree
-blocks we need to reserve for the initial btrfs image.
+The extent tree v2 (thankfully not yet fully materialized) needs a
+new root for storing all block group items.
 
-Currently we have two very similar arrays, extent_tree_v1_blocks and
-extent_tree_v2_blocks.
+My initial proposal years ago just added a new tree rootid, and load it
+from tree root, just like what we did for quota/free space tree/uuid/extent
+roots.
 
-The only difference is just v2 has an extra block for block group tree.
+But the extent tree v2 patches introduced a completely new (and to me,
+wasteful) way to store block group tree root into super block.
 
-This patch will add two helpers, mkfs_blocks_add() and
-mkfs_blocks_remove() to properly add/remove one block dynamically from
-the array.
+Currently there are only 3 trees stored in super blocks, and they all
+have their valid reasons:
 
-This allows 3 things:
+- Chunk root
+  Needed for bootstrap.
 
-- Merge extent_tree_v1_blocks and extent_tree_v2_blocks into one array
-  The new array will be the same as extent_tree_v1_blocks.
-  For extent-tree-v2, we just dynamically add MKFS_BLOCK_GROUP_TREE.
+- Tree root
+  Really the entrance of all trees.
 
-- Remove free space tree block on-demand
-  This only works for extent-tree-v1 case, as v2 has a hard requirement
-  on free space tree.
-  But this still make code much cleaner, not doing any special hacks.
+- Log root
+  This is special as log root has to be updated out of existing
+  transaction mechanism.
 
-- Allow future expansion without introduce new array
-  I strongly doubt why this is not properly done in extent-tree-v2
-  preparation patches.
-  We should not allow bad practice to sneak in just because it's some
-  preparation patches for a larger feature.
+There is not even any reason to put block group root into super blocks,
+the block group tree is updated at the same timing as old extent tree,
+no need for extra bootstrap/out-of-transaction update.
+
+So just move block group root from super block into tree root.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- mkfs/common.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++-----
- mkfs/common.h | 20 +++-----------
- 2 files changed, 69 insertions(+), 24 deletions(-)
+ cmds/inspect-dump-tree.c   | 11 ------
+ kernel-shared/ctree.h      | 26 +------------
+ kernel-shared/disk-io.c    | 75 ++++++++------------------------------
+ kernel-shared/print-tree.c |  6 ---
+ mkfs/common.c              | 11 ++----
+ 5 files changed, 20 insertions(+), 109 deletions(-)
 
-diff --git a/mkfs/common.c b/mkfs/common.c
-index 218854491c14..d5a49ca11cde 100644
---- a/mkfs/common.c
-+++ b/mkfs/common.c
-@@ -260,6 +260,60 @@ next:
- 	__builtin_unreachable();
- }
+diff --git a/cmds/inspect-dump-tree.c b/cmds/inspect-dump-tree.c
+index 73ffd57eb13d..6374f137f7fb 100644
+--- a/cmds/inspect-dump-tree.c
++++ b/cmds/inspect-dump-tree.c
+@@ -517,11 +517,6 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+ 				       info->log_root_tree->node->start,
+ 					btrfs_header_level(
+ 						info->log_root_tree->node));
+-			if (info->block_group_root)
+-				printf("block group tree: %llu level %d\n",
+-				       info->block_group_root->node->start,
+-					btrfs_header_level(
+-						info->block_group_root->node));
+ 		} else {
+ 			if (info->tree_root->node) {
+ 				printf("root tree\n");
+@@ -540,12 +535,6 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+ 				btrfs_print_tree(info->log_root_tree->node,
+ 					BTRFS_PRINT_TREE_FOLLOW | print_mode);
+ 			}
+-
+-			if (info->block_group_root) {
+-				printf("block group tree\n");
+-				btrfs_print_tree(info->block_group_root->node,
+-					BTRFS_PRINT_TREE_FOLLOW | print_mode);
+-			}
+ 		}
+ 	}
+ 	tree_root_scan = info->tree_root;
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index fc8b61eda829..c12076202577 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -457,13 +457,7 @@ struct btrfs_super_block {
  
-+/*
-+ * Add @block into the @blocks array.
-+ *
-+ * The @blocks should already be in ascending order and no duplicate.
-+ */
-+static void mkfs_blocks_add(enum btrfs_mkfs_block *blocks, int *blocks_nr,
-+			    enum btrfs_mkfs_block to_add)
-+{
-+	int i;
-+
-+	for (i = 0; i < *blocks_nr; i++) {
-+		/* The target is already in the array. */
-+		if (blocks[i] == to_add)
-+			return;
-+
-+		/*
-+		 * We find the first one past @to_add, move the array one slot
-+		 * right, insert a new one.
-+		 */
-+		if (blocks[i] > to_add) {
-+			memmove(blocks + i + 1, blocks + i, *blocks_nr - i);
-+			blocks[i] = to_add;
-+			(*blocks_nr)++;
-+			return;
-+		}
-+		/* Current one still smaller than @to_add, go to next slot. */
-+	}
-+	/* All slots iterated and not match, insert into the last slot. */
-+	blocks[i] = to_add;
-+	(*blocks_nr)++;
-+	return;
-+}
-+
-+/*
-+ * Remove @block from the @blocks array.
-+ *
-+ * The @blocks should already be in ascending order and no duplicate.
-+ */
-+static void mkfs_blocks_remove(enum btrfs_mkfs_block *blocks, int *blocks_nr,
-+			       enum btrfs_mkfs_block to_remove)
-+{
-+	int i;
-+
-+	for (i = 0; i < *blocks_nr; i++) {
-+		/* Found the target, move the array one slot left. */
-+		if (blocks[i] == to_remove) {
-+			memmove(blocks + i, blocks + i + 1, *blocks_nr - i - 1);
-+			(*blocks_nr)--;
-+		}
-+	}
-+	/* Nothing found, exit directly. */
-+	return;
-+}
-+
- /*
-  * @fs_uuid - if NULL, generates a UUID, returns back the new filesystem UUID
-  *
-@@ -290,12 +344,12 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 	struct btrfs_chunk *chunk;
- 	struct btrfs_dev_item *dev_item;
- 	struct btrfs_dev_extent *dev_extent;
--	const enum btrfs_mkfs_block *blocks = extent_tree_v1_blocks;
-+	enum btrfs_mkfs_block blocks[MKFS_BLOCK_COUNT];
- 	u8 chunk_tree_uuid[BTRFS_UUID_SIZE];
- 	u8 *ptr;
- 	int i;
- 	int ret;
--	int blocks_nr = ARRAY_SIZE(extent_tree_v1_blocks);
-+	int blocks_nr;
- 	int blk;
- 	u32 itemoff;
- 	u32 nritems = 0;
-@@ -315,16 +369,21 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 	bool extent_tree_v2 = !!(cfg->features &
- 				 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2);
+ 	__le64 nr_global_roots;
  
--	/* Don't include the free space tree in the blocks to process. */
--	if (!free_space_tree)
--		blocks_nr--;
-+	memcpy(blocks, default_blocks,
-+	       sizeof(enum btrfs_mkfs_block) * ARRAY_SIZE(default_blocks));
-+	blocks_nr = ARRAY_SIZE(default_blocks);
+-	__le64 block_group_root;
+-	__le64 block_group_root_generation;
+-	u8 block_group_root_level;
+-
+-	/* future expansion */
+-	u8 reserved8[7];
+-	__le64 reserved[24];
++	__le64 reserved[27];
+ 	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
+ 	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
+ 	/* Padded to 4096 bytes */
+@@ -2304,17 +2298,6 @@ BTRFS_SETGET_STACK_FUNCS(backup_bytes_used, struct btrfs_root_backup,
+ BTRFS_SETGET_STACK_FUNCS(backup_num_devices, struct btrfs_root_backup,
+ 		   num_devices, 64);
  
-+	/* Extent tree v2 needs an extra block for block group tree.*/
- 	if (extent_tree_v2) {
--		blocks = extent_tree_v2_blocks;
--		blocks_nr = ARRAY_SIZE(extent_tree_v2_blocks);
-+		mkfs_blocks_add(blocks, &blocks_nr, MKFS_BLOCK_GROUP_TREE);
- 		add_block_group = false;
+-/*
+- * Extent tree v2 doesn't have a global csum or extent root, so we use the
+- * extent root slot for the block group root.
+- */
+-BTRFS_SETGET_STACK_FUNCS(backup_block_group_root, struct btrfs_root_backup,
+-		   extent_root, 64);
+-BTRFS_SETGET_STACK_FUNCS(backup_block_group_root_gen, struct btrfs_root_backup,
+-		   extent_root_gen, 64);
+-BTRFS_SETGET_STACK_FUNCS(backup_block_group_root_level, struct btrfs_root_backup,
+-		   extent_root_level, 8);
+-
+ /* struct btrfs_super_block */
+ 
+ BTRFS_SETGET_STACK_FUNCS(super_bytenr, struct btrfs_super_block, bytenr, 64);
+@@ -2365,13 +2348,6 @@ BTRFS_SETGET_STACK_FUNCS(super_cache_generation, struct btrfs_super_block,
+ BTRFS_SETGET_STACK_FUNCS(super_uuid_tree_generation, struct btrfs_super_block,
+ 			 uuid_tree_generation, 64);
+ BTRFS_SETGET_STACK_FUNCS(super_magic, struct btrfs_super_block, magic, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_block_group_root, struct btrfs_super_block,
+-			 block_group_root, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_block_group_root_generation,
+-			 struct btrfs_super_block,
+-			 block_group_root_generation, 64);
+-BTRFS_SETGET_STACK_FUNCS(super_block_group_root_level,
+-			 struct btrfs_super_block, block_group_root_level, 8);
+ BTRFS_SETGET_STACK_FUNCS(super_nr_global_roots, struct btrfs_super_block,
+ 			 nr_global_roots, 64);
+ 
+diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+index 26b1c9aa192a..80db5976cc3f 100644
+--- a/kernel-shared/disk-io.c
++++ b/kernel-shared/disk-io.c
+@@ -1209,33 +1209,9 @@ static int load_important_roots(struct btrfs_fs_info *fs_info,
+ 		goto tree_root;
  	}
  
-+	/* Don't include the free space tree in the blocks to process. */
-+	if (!free_space_tree)
-+		mkfs_blocks_remove(blocks, &blocks_nr, MKFS_FREE_SPACE_TREE);
-+
-+
- 	if ((cfg->features & BTRFS_FEATURE_INCOMPAT_ZONED)) {
- 		system_group_offset = zoned_system_group_offset(cfg->zone_size);
- 		system_group_size = cfg->zone_size;
-diff --git a/mkfs/common.h b/mkfs/common.h
-index 3533e114e81c..47b14cdae2f3 100644
---- a/mkfs/common.h
-+++ b/mkfs/common.h
-@@ -52,25 +52,12 @@ enum btrfs_mkfs_block {
- 	MKFS_CSUM_TREE,
- 	MKFS_FREE_SPACE_TREE,
- 	MKFS_BLOCK_GROUP_TREE,
--	MKFS_BLOCK_COUNT
--};
+-	if (backup) {
+-		bytenr = btrfs_backup_block_group_root(backup);
+-		gen = btrfs_backup_block_group_root_gen(backup);
+-		level = btrfs_backup_block_group_root_level(backup);
+-	} else {
+-		bytenr = btrfs_super_block_group_root(sb);
+-		gen = btrfs_super_block_group_root_generation(sb);
+-		level = btrfs_super_block_group_root_level(sb);
+-	}
+ 	root = fs_info->block_group_root;
+ 	btrfs_setup_root(root, fs_info, BTRFS_BLOCK_GROUP_TREE_OBJECTID);
+ 
+-	ret = read_root_node(fs_info, root, bytenr, gen, level);
+-	if (ret) {
+-		fprintf(stderr, "Couldn't read block group root\n");
+-		return -EIO;
+-	}
 -
--static const enum btrfs_mkfs_block extent_tree_v1_blocks[] = {
--	MKFS_ROOT_TREE,
--	MKFS_EXTENT_TREE,
--	MKFS_CHUNK_TREE,
--	MKFS_DEV_TREE,
--	MKFS_FS_TREE,
--	MKFS_CSUM_TREE,
+-	if (maybe_load_block_groups(fs_info, flags)) {
+-		int ret = btrfs_read_block_groups(fs_info);
+-		if (ret < 0 && ret != -ENOENT) {
+-			errno = -ret;
+-			error("failed to read block groups: %m");
+-			return ret;
+-		}
+-	}
+-
+ tree_root:
+ 	if (backup) {
+ 		bytenr = btrfs_backup_tree_root(backup);
+@@ -1280,6 +1256,17 @@ int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
+ 	if (ret)
+ 		return ret;
  
--	/*
--	 * Since the free space tree is optional with v1 it must always be last
--	 * in this array.
--	 */
--	MKFS_FREE_SPACE_TREE,
-+	/* MKFS_BLOCK_COUNT should be the max blocks we can have at mkfs time. */
-+	MKFS_BLOCK_COUNT
- };
++	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
++		ret = find_and_setup_root(root, fs_info,
++				BTRFS_BLOCK_GROUP_TREE_OBJECTID,
++				fs_info->block_group_root);
++		if (ret) {
++			error("Couldn't load block group tree\n");
++			return -EIO;
++		}
++		fs_info->block_group_root->track_dirty = 1;
++	}
++
+ 	ret = find_and_setup_root(root, fs_info, BTRFS_DEV_TREE_OBJECTID,
+ 				  fs_info->dev_root);
+ 	if (ret) {
+@@ -1288,6 +1275,7 @@ int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
+ 	}
+ 	fs_info->dev_root->track_dirty = 1;
  
--static const enum btrfs_mkfs_block extent_tree_v2_blocks[] = {
-+static const enum btrfs_mkfs_block default_blocks[] = {
- 	MKFS_ROOT_TREE,
- 	MKFS_EXTENT_TREE,
- 	MKFS_CHUNK_TREE,
-@@ -78,7 +65,6 @@ static const enum btrfs_mkfs_block extent_tree_v2_blocks[] = {
- 	MKFS_FS_TREE,
- 	MKFS_CSUM_TREE,
- 	MKFS_FREE_SPACE_TREE,
--	MKFS_BLOCK_GROUP_TREE,
- };
++
+ 	ret = find_and_setup_root(root, fs_info, BTRFS_UUID_TREE_OBJECTID,
+ 				  fs_info->uuid_root);
+ 	if (ret) {
+@@ -1313,8 +1301,7 @@ int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
+ 			return -EIO;
+ 	}
  
- struct btrfs_mkfs_config {
+-	if (!btrfs_fs_incompat(fs_info, EXTENT_TREE_V2) &&
+-	    maybe_load_block_groups(fs_info, flags)) {
++	if (maybe_load_block_groups(fs_info, flags)) {
+ 		ret = btrfs_read_block_groups(fs_info);
+ 		/*
+ 		 * If we don't find any blockgroups (ENOENT) we're either
+@@ -1834,20 +1821,6 @@ int btrfs_check_super(struct btrfs_super_block *sb, unsigned sbflags)
+ 		goto error_out;
+ 	}
+ 
+-	if (btrfs_super_incompat_flags(sb) & BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2) {
+-		if (btrfs_super_block_group_root_level(sb) >= BTRFS_MAX_LEVEL) {
+-			error("block_group_root level too big: %d >= %d",
+-			      btrfs_super_block_group_root_level(sb),
+-			      BTRFS_MAX_LEVEL);
+-			goto error_out;
+-		}
+-		if (!IS_ALIGNED(btrfs_super_block_group_root(sb), 4096)) {
+-			error("block_group_root block unaligned: %llu",
+-			      btrfs_super_block_group_root(sb));
+-			goto error_out;
+-		}
+-	}
+-
+ 	if (btrfs_super_incompat_flags(sb) & BTRFS_FEATURE_INCOMPAT_METADATA_UUID)
+ 		metadata_uuid = sb->metadata_uuid;
+ 	else
+@@ -2165,16 +2138,9 @@ static void backup_super_roots(struct btrfs_fs_info *info)
+ 	btrfs_set_backup_num_devices(root_backup,
+ 			     btrfs_super_num_devices(info->super_copy));
+ 
+-	if (btrfs_fs_incompat(info, EXTENT_TREE_V2)) {
+-		btrfs_set_backup_block_group_root(root_backup,
+-				info->block_group_root->node->start);
+-		btrfs_set_backup_block_group_root_gen(root_backup,
+-			btrfs_header_generation(info->block_group_root->node));
+-		btrfs_set_backup_block_group_root_level(root_backup,
+-			btrfs_header_level(info->block_group_root->node));
+-	} else {
+-		struct btrfs_root *csum_root = btrfs_csum_root(info, 0);
++	if (!btrfs_fs_incompat(info, EXTENT_TREE_V2)) {
+ 		struct btrfs_root *extent_root = btrfs_extent_root(info, 0);
++		struct btrfs_root *csum_root = btrfs_csum_root(info, 0);
+ 
+ 		btrfs_set_backup_csum_root(root_backup, csum_root->node->start);
+ 		btrfs_set_backup_csum_root_gen(root_backup,
+@@ -2235,7 +2201,7 @@ int write_ctree_super(struct btrfs_trans_handle *trans)
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_root *tree_root = fs_info->tree_root;
+ 	struct btrfs_root *chunk_root = fs_info->chunk_root;
+-	struct btrfs_root *block_group_root = fs_info->block_group_root;
++
+ 	if (fs_info->readonly)
+ 		return 0;
+ 
+@@ -2252,15 +2218,6 @@ int write_ctree_super(struct btrfs_trans_handle *trans)
+ 	btrfs_set_super_chunk_root_generation(fs_info->super_copy,
+ 				btrfs_header_generation(chunk_root->node));
+ 
+-	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
+-		btrfs_set_super_block_group_root(fs_info->super_copy,
+-						 block_group_root->node->start);
+-		btrfs_set_super_block_group_root_generation(fs_info->super_copy,
+-				btrfs_header_generation(block_group_root->node));
+-		btrfs_set_super_block_group_root_level(fs_info->super_copy,
+-				btrfs_header_level(block_group_root->node));
+-	}
+-
+ 	ret = write_all_supers(fs_info);
+ 	if (ret)
+ 		fprintf(stderr, "failed to write new super block err %d\n", ret);
+diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
+index a5886ff602ee..bffe30b405c7 100644
+--- a/kernel-shared/print-tree.c
++++ b/kernel-shared/print-tree.c
+@@ -2046,12 +2046,6 @@ void btrfs_print_superblock(struct btrfs_super_block *sb, int full)
+ 	       (unsigned long long)btrfs_super_cache_generation(sb));
+ 	printf("uuid_tree_generation\t%llu\n",
+ 	       (unsigned long long)btrfs_super_uuid_tree_generation(sb));
+-	printf("block_group_root\t%llu\n",
+-	       (unsigned long long)btrfs_super_block_group_root(sb));
+-	printf("block_group_root_generation\t%llu\n",
+-	       (unsigned long long)btrfs_super_block_group_root_generation(sb));
+-	printf("block_group_root_level\t%llu\n",
+-	       (unsigned long long)btrfs_super_block_group_root_level(sb));
+ 
+ 	uuid_unparse(sb->dev_item.uuid, buf);
+ 	printf("dev_item.uuid\t\t%s\n", buf);
+diff --git a/mkfs/common.c b/mkfs/common.c
+index d5a49ca11cde..b72338551dfb 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -98,8 +98,7 @@ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
+ 
+ 	for (i = 0; i < blocks_nr; i++) {
+ 		blk = blocks[i];
+-		if (blk == MKFS_ROOT_TREE || blk == MKFS_CHUNK_TREE ||
+-		    blk == MKFS_BLOCK_GROUP_TREE)
++		if (blk == MKFS_ROOT_TREE || blk == MKFS_CHUNK_TREE)
+ 			continue;
+ 
+ 		btrfs_set_root_bytenr(&root_item, cfg->blocks[blk]);
+@@ -440,13 +439,9 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 		btrfs_set_super_compat_ro_flags(&super, ro_flags);
+ 		btrfs_set_super_cache_generation(&super, 0);
+ 	}
+-	if (extent_tree_v2) {
++	if (extent_tree_v2)
+ 		btrfs_set_super_nr_global_roots(&super, 1);
+-		btrfs_set_super_block_group_root(&super,
+-						 cfg->blocks[MKFS_BLOCK_GROUP_TREE]);
+-		btrfs_set_super_block_group_root_generation(&super, 1);
+-		btrfs_set_super_block_group_root_level(&super, 0);
+-	}
++
+ 	if (cfg->label)
+ 		__strncpy_null(super.label, cfg->label, BTRFS_LABEL_SIZE - 1);
+ 
 -- 
 2.37.0
 
