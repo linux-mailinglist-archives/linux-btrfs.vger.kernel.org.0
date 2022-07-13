@@ -2,248 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F35C572E06
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 08:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC60E572E1F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 08:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbiGMGOc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Jul 2022 02:14:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
+        id S229888AbiGMG1c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Jul 2022 02:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbiGMGOb (ORCPT
+        with ESMTP id S229568AbiGMG1b (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Jul 2022 02:14:31 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116AADA9B3
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jul 2022 23:14:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=rDWuzPCaFUG1P1OmRga14+jR0mfDR0yUrCiyFH8Bzgw=; b=K/4UQ/hyOwaNw/fL0zMhZwB1Lr
-        +aA2WxCd/AALJAVekbcMG/ZdRFjN9nLsyMKw+/65Icx8Me48C5g7QLU3nqL93DNyuGZe8OiW7zIJs
-        aZghAnyVz8SjlQFuQ8P/O5zTbgVN9YG2Cfr+71XOWFNqc/OrGLdWu9/CbHhkIY8MBbu/UDFsGh5hA
-        ECkeIBL/+pcgpFKOlNG4bGwlSi0O7gEOqX8WJniI29/j/eoKnstQ5VVcJiYbXd9vwe5QD4+8fsPOw
-        XfvNcsJLi6a4KnD7PjLe18+2pxxyk4hepMqAVs3uzP3i44Sovx+iBHfaCW/61KC8QpzqfqX0KFt5D
-        TSX8zq6w==;
-Received: from ip4d15c27d.dynamic.kabel-deutschland.de ([77.21.194.125] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oBVdj-000T9Q-8A; Wed, 13 Jul 2022 06:14:27 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Wed, 13 Jul 2022 02:27:31 -0400
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D41CC037
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jul 2022 23:27:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1657693648; x=1689229648;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=e36Zi3OczPGiTVUnBhRrPeVqcv2J1wl0lhi5Lmz2gN8VX2iU7JM11exY
+   HwxZ+sFTZ97I4h/Bal1Ee+swxdb5o/psjQSNw4ttW4WqHetLWccuJMgg8
+   cvTdtj1nXkbaMPJXdXUNcXCTmfjazdI2VDXnxLIjk0jXvjNjvb73U/5sF
+   5drZ/hLzRoW4YVYgumZ40vsclLtyXJBIg92HYohtU0QQiJDM4To+XCodf
+   wtSlNAHxLpN8byPZ0/RWFcSdkwofL8c1q8S2tpUh450he0JZ2zKIcM3hh
+   OwlWR0jijEHtbIUUTJkm08hk1NErgQ5pRBqQfCoJp1OdNSIUnjsA1gAXT
+   w==;
+X-IronPort-AV: E=Sophos;i="5.92,267,1650902400"; 
+   d="scan'208";a="205575632"
+Received: from mail-bn8nam12lp2169.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.169])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Jul 2022 14:27:26 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J7s1QsIqzBIZgx6o7+CxnghLmhgDys7MUp0NSm7B3D1JONy2mFzz3ujiQqHgrLrswHcw0vMav3yv4jlX7QI3EWJAtZ+G1IspjfliM6gM6ijFfwnO+RWAnRsXJ2dcOfSsxb4o8mCaLkn//iKaqPMgz3Kd+ISI7/ElWPDeZDRcbiHuh2XWhuarv+Dm0ZhxmwpijZw9KiL+4bJyAGUyroIQWmcttRRfwqSDKdg2YDbL0f2k4SvacojVfMRZE/tYtFNHiCMkzwvIqDbH5dtqYpbOzQ1K8fPhJmGr01CEbvrtXa3rCIANTWfJZ3PAJD6+r2YuvtLIRjYUTPGSgaL9rOVMvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=UgddSxxKwFnunpd7A9ka/tAe72UhE5pjGHnOB7QxGSXO1N+uzYF2EjQjJNeLpwmOt3UiNtSb5CYh35lJECR1/3H4d+kZExXEDjB6wh1hVM4yzzNyQdfwGAaqCN0ivPEoq31DNUWMBWyO6uYHJSDItG2eRTlBXJJ7v/0L9xkipacpwygnpHVpaHvNXxElRH14Paeq+0DQEk0lOT6ignadWOeQh8LRk1n8nVyYwA/fo/YnkDQzlBrIXjrGE7DmWaQTzgwhkiun2cKkSYfnL4V8ty9sS8IRM7mCog9aRjev0wyzpNC0hwh19YyqPRCVtKdMne5o1X6TTX73elT+ge+AJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=YcYK9z59XjHv/UgVHlNJHYrTQhV7j7hsdn6zUrd7tmkeRxKmhFIXjECdD78KW7arSmfoJ7dz/77d8kGE3LtAkU+ePsnBhhydX7QlL5IiiZGDb0wC3QKCavqr0+ot1YxckYivxlxZjxY5Ruw0n7f8QqG/BxWGP4uwJ5q92XF1sno=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by DM6PR04MB4203.namprd04.prod.outlook.com (2603:10b6:5:9c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.26; Wed, 13 Jul
+ 2022 06:27:25 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::d54b:24e1:a45b:ab91]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::d54b:24e1:a45b:ab91%9]) with mapi id 15.20.5417.026; Wed, 13 Jul 2022
+ 06:27:25 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH 11/11] btrfs: stop allocation a btrfs_io_context for simple I/O
-Date:   Wed, 13 Jul 2022 08:13:59 +0200
-Message-Id: <20220713061359.1980118-12-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220713061359.1980118-1-hch@lst.de>
+CC:     Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 04/11] btrfs: don't take a bio_counter reference for
+ cloned bios
+Thread-Topic: [PATCH 04/11] btrfs: don't take a bio_counter reference for
+ cloned bios
+Thread-Index: AQHYln/Jo33DexcjVUufKfcBWCqhAw==
+Date:   Wed, 13 Jul 2022 06:27:25 +0000
+Message-ID: <PH0PR04MB7416F98B33A6E2F4E05AA2C39B899@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <20220713061359.1980118-1-hch@lst.de>
+ <20220713061359.1980118-5-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6d1a53ef-3fd3-44b7-de0b-08da6498c067
+x-ms-traffictypediagnostic: DM6PR04MB4203:EE_
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qq8Xeq6lLUsqWbLytyzPPor/MYjEQ3LRYyEUSGuYGXcZSOFlNBgqjA2DjmwU6yX0kZF2wy746zEzi7tv1kTVFZAJ8ktQztPK6RbaEN7qbJBIwCXygQHaZBbSAj8smPRb/NLfuc2zc4E9mI8PP5a5rVKovZnIYux1whiGovgtcHKvC3d0avz99raFymZhyqq4RBpFHwpU8ewxL8nWD2WbJerW3AjnJmQ36oEBeSMDcQ57KM6pk52YWjakELKwXJRL3rvCw/igY/ZSmcOh9QgCag0ADKT92zIKJI5tGX2QNsvnYaf4AsG+IS1gVatICom4ZonY4BXbKdcLNh+UdwdOkJTV33eqQEeorbUZ+fA2ICpHn8D1vtqc7XZnXETsV4hcgrkfAwts+nyd9U+WMbY5Dq36zk/U+g96ShLihJ2f2+deLN3tBb+cAkGvWHvb6eQMQR0bvcoXi9wvTYlwe1ClcKEyJHAEJ2KPCuk6SyQbkK6rxKBOR96/5iBbrL5dhruxk920k/LaXI3sQTjjDFPyR5kGcdj7VizNot8/CDV3lPs5bR1iLqaIdLTwOzbXjgakryDNFSMUZC4rX/tS3r1PJRrw9lQqx6fYoPNmWSFmFDirOZ1Lg4cC/PojVc4a3y1ylZZ5zihmQv5hBvJfKpmGAc9cjhjfNdDG9M+seFJXHgtWAEGD9ImkXwc/0Jpedi8zVjnKtyD6AgoHgbFuRM1yn0+kojystse2ZcM9jYAMjP6NuatuY3ehcXt2ccxiYI+D2d1juetQYhgL8tpI/txpUigCJ+p7nB5Bgxx+4Tq07uUccZJH84ugYvc9mY5Zg2wn
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(396003)(136003)(376002)(39860400002)(346002)(91956017)(8676002)(52536014)(5660300002)(8936002)(4326008)(71200400001)(66446008)(478600001)(6506007)(186003)(66556008)(55016003)(26005)(66476007)(76116006)(64756008)(9686003)(41300700001)(66946007)(7696005)(4270600006)(86362001)(82960400001)(38070700005)(122000001)(110136005)(2906002)(19618925003)(54906003)(316002)(38100700002)(33656002)(558084003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?aCakwUEG/E6aucgefKtbNU3CQBCniFjbT5trTt7FToCEC6AN3Gr0NvypSYFz?=
+ =?us-ascii?Q?tgZU1DIOsxpPHBw8snpNpOmg+8kKdft91TDMKvDKYCqq4NEdcec4y/2MoPFd?=
+ =?us-ascii?Q?9y3ec5BEqfyk4mnT2rV+gUgTef9BqHYL98HSOvm7bBrkng5pPLIQc9PSsvG9?=
+ =?us-ascii?Q?8WblN2BfosOJ/g/UicP1ikC1bVbXhX7UaQ31iGteVyNQXrko+1f+Aq1ATYqw?=
+ =?us-ascii?Q?IJN1HVa4niQjDr00JcALuST4HvrgeWlElCwKXwmM/sq2IC6It4LuPnb6VZe3?=
+ =?us-ascii?Q?7UJd91LDJpKtUewm8kwkRNJiT9ILgcFHR3GqtAUTJLjNve6dzSgh6EI6cD+c?=
+ =?us-ascii?Q?C9Dgs1vhn//TSsLUE5VlcpR6/UaCYiJ1pBxKYpti1Yqv7Jm98rVNtN5/E3yx?=
+ =?us-ascii?Q?wLOjei/UPZ4DMwjJC8aKth+3T9xNEQ8JcHFHyekje/KYewhfJThZ8Q9hqYMm?=
+ =?us-ascii?Q?hTY5o0UpOiLhCm3a52qiA3FcBkItmo2+OYpcd+dqsqfRs8PvQzzKbAs0qha1?=
+ =?us-ascii?Q?zU2Q0y9D/1MAUakXF3aXCwd396CchbgKxMyhJZrdkuLN0iMpUBBK0Orjon1P?=
+ =?us-ascii?Q?sN56pXcFm7Qq2sOz+Fr/wSokLUIWQJpLvgQw06n5fsKVfrObJaYU+N+9B26f?=
+ =?us-ascii?Q?g0DR2QnrK16x44Csdjpzkr+w2NmV545Za4y8t8kowxnaRo4GA4HXFwHltojQ?=
+ =?us-ascii?Q?URRw8Fg0Z9JhlPQ7agMBZ1jBWsPNOJhY/RCKVYaCJS70lWrIkeMvBCpZTywl?=
+ =?us-ascii?Q?A34BWFeLXZ4UrAVojQiYIDQQY+61PWm71SGWtOfF/2BqekwXLzRBDgCO4o9P?=
+ =?us-ascii?Q?ucFVwYW8j59jywaPN/V8ZNIEy+3qemilyjzygwMrRsoNh8WfBLVBXqMDaY4E?=
+ =?us-ascii?Q?lly0QaaO4PyzWpQl5YVnpenzxfGtQrvB4W4hOPysxS3t1SYCxQKonKVkF+pV?=
+ =?us-ascii?Q?mm+jKE/O4FSzLT80Zj2lM1iQeIHB3qOBMHByQbLP7V4wg7wyI/IkWzS7UFKC?=
+ =?us-ascii?Q?bfbQ3j92IyWJOKeG9qOfkJIvZbBQL6l5a1ZpseJNz4fhIpbafZD/DmqTH04S?=
+ =?us-ascii?Q?acMFXryUXpcN3E+JXrTKuRZ78TySjJck1v0nFI+yFdbmBS59Aj+v6it2AkvT?=
+ =?us-ascii?Q?TD9HJm4wR3eZaWMYbSIrUhEFjtS/kSmou03ClcHPh09bczLYsoIVz8llhcN/?=
+ =?us-ascii?Q?Et7vNIeYlQ0VORbpGhCTJtYH0J0UTDKQTbkBwRPwNLkuA7cocbauJha3lRPm?=
+ =?us-ascii?Q?/Lp/J/IhvkqfvoSFFC4dybO7HE/ZARoBFPVtKZ425xfpk52fVyFF6U5B9I/N?=
+ =?us-ascii?Q?xlbapr3HKtlnvbTRccbh50i2RXKVfMRsCt2UdIFbtvXs6PmeG+lhOqkjBaA5?=
+ =?us-ascii?Q?mZzDdVZziK5JgNqsEWma6gyGZMqgvfyCrvP2Cx6DyrXT2vek4yh6gEdH7xuq?=
+ =?us-ascii?Q?WJGljEqtre8qo/Eu8DhI1fKXug03zxbIUixGfW2D3t+8BprZevFrjQaM+mjh?=
+ =?us-ascii?Q?z/ocIKzx5IOwU4aKMlLLfWYn6rnxZDujWwJUI12HYyk7+CZu/+Qitl/CzYRY?=
+ =?us-ascii?Q?5vycYd7radaaG4nus6EHVbxBc7s0xsUACyy4QGFwf7q/r+PAXiv+x/n0DUJ+?=
+ =?us-ascii?Q?mqx1jactVecdjOo64iXrsqE=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d1a53ef-3fd3-44b7-de0b-08da6498c067
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2022 06:27:25.1716
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UGSc77syH8YQiI8SRLoklJCH1pqIhJmrsomzSlJCfH0HQRPdawk5jZaJkQhqG9yYDwHxF1gq0EQR/oBb1/ikyF/iiSVg6C26/tRnyjImi2U=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4203
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The I/O context structure is only used to pass the btrfs_device to
-the end I/O handler for I/Os that go to a single device.
-
-Stop allocating the I/O context for these cases by passing the optional
-btrfs_io_stripe argument to __btrfs_map_block to query the mapping
-information and then using a fast path submission and I/O completion
-handler.  As the old btrfs_io_context based I/O submission path is
-only used for mirrored writes, rename the functions to make that
-clear and stop setting the btrfs_bio device and mirror_num field
-that is only used for reads.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Tested-by: Nikolay Borisov <nborisov@suse.com>
-Tested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/volumes.c | 94 ++++++++++++++++++++++++++++------------------
- 1 file changed, 57 insertions(+), 37 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 6824634786c2c..35164be4159d4 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6703,11 +6703,12 @@ static void btrfs_log_dev_io_error(struct bio *bio, struct btrfs_device *dev)
- 		btrfs_dev_stat_inc_and_print(dev, BTRFS_DEV_STAT_FLUSH_ERRS);
- }
- 
--static struct workqueue_struct *btrfs_end_io_wq(struct btrfs_io_context *bioc)
-+static struct workqueue_struct *btrfs_end_io_wq(struct btrfs_fs_info *fs_info,
-+						struct bio *bio)
- {
--	if (bioc->orig_bio->bi_opf & REQ_META)
--		return bioc->fs_info->endio_meta_workers;
--	return bioc->fs_info->endio_workers;
-+	if (bio->bi_opf & REQ_META)
-+		return fs_info->endio_meta_workers;
-+	return fs_info->endio_workers;
- }
- 
- static void btrfs_end_bio_work(struct work_struct *work)
-@@ -6718,6 +6719,24 @@ static void btrfs_end_bio_work(struct work_struct *work)
- 	bbio->end_io(bbio);
- }
- 
-+static void btrfs_simple_end_io(struct bio *bio)
-+{
-+	struct btrfs_fs_info *fs_info = bio->bi_private;
-+	struct btrfs_bio *bbio = btrfs_bio(bio);
-+
-+	btrfs_bio_counter_dec(fs_info);
-+
-+	if (bio->bi_status)
-+		btrfs_log_dev_io_error(bio, bbio->device);
-+
-+	if (bio_op(bio) == REQ_OP_READ) {
-+		INIT_WORK(&bbio->end_io_work, btrfs_end_bio_work);
-+		queue_work(btrfs_end_io_wq(fs_info, bio), &bbio->end_io_work);
-+	} else {
-+		bbio->end_io(bbio);
-+	}
-+}
-+
- static void btrfs_raid56_end_io(struct bio *bio)
- {
- 	struct btrfs_io_context *bioc = bio->bi_private;
-@@ -6730,7 +6749,7 @@ static void btrfs_raid56_end_io(struct bio *bio)
- 	btrfs_put_bioc(bioc);
- }
- 
--static void btrfs_end_bio(struct bio *bio)
-+static void btrfs_orig_write_end_io(struct bio *bio)
- {
- 	struct btrfs_io_stripe *stripe = bio->bi_private;
- 	struct btrfs_io_context *bioc = stripe->bioc;
-@@ -6743,8 +6762,6 @@ static void btrfs_end_bio(struct bio *bio)
- 		btrfs_log_dev_io_error(bio, stripe->dev);
- 	}
- 
--	bbio->mirror_num = bioc->mirror_num;
--
- 	/*
- 	 * Only send an error to the higher layers if it is beyond the tolerance
- 	 * threshold.
-@@ -6754,13 +6771,7 @@ static void btrfs_end_bio(struct bio *bio)
- 	else
- 		bio->bi_status = BLK_STS_OK;
- 
--	if (btrfs_op(bio) == BTRFS_MAP_READ) {
--		INIT_WORK(&bbio->end_io_work, btrfs_end_bio_work);
--		queue_work(btrfs_end_io_wq(bioc), &bbio->end_io_work);
--	} else {
--		bbio->end_io(bbio);
--	}
--
-+	bbio->end_io(bbio);
- 	btrfs_put_bioc(bioc);
- }
- 
-@@ -6817,15 +6828,16 @@ static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
- 	submit_bio(bio);
- }
- 
--static void submit_stripe_bio(struct btrfs_io_context *bioc, int dev_nr)
-+static void btrfs_submit_mirrored_bio(struct btrfs_io_context *bioc, int dev_nr)
- {
- 	struct bio *orig_bio = bioc->orig_bio, *bio;
- 
-+	ASSERT(bio_op(orig_bio) != REQ_OP_READ);
-+
- 	/* Reuse the bio embedded into the btrfs_bio for the last mirror */
- 	if (dev_nr == bioc->num_stripes - 1) {
- 		bio = orig_bio;
--		btrfs_bio(bio)->device = bioc->stripes[dev_nr].dev;
--		bio->bi_end_io = btrfs_end_bio;
-+		bio->bi_end_io = btrfs_orig_write_end_io;
- 	} else {
- 		bio = bio_alloc_clone(NULL, orig_bio, GFP_NOFS, &fs_bio_set);
- 		bio_inc_remaining(orig_bio);
-@@ -6843,34 +6855,19 @@ void btrfs_submit_bio(struct btrfs_fs_info *fs_info, struct bio *bio, int mirror
- 	u64 logical = bio->bi_iter.bi_sector << 9;
- 	u64 length = bio->bi_iter.bi_size;
- 	u64 map_length = length;
--	int ret;
--	int dev_nr;
--	int total_devs;
- 	struct btrfs_io_context *bioc = NULL;
-+	struct btrfs_io_stripe smap;
-+	int ret;
- 
- 	btrfs_bio_counter_inc_blocked(fs_info);
- 	ret = __btrfs_map_block(fs_info, btrfs_op(bio), logical, &map_length,
--				&bioc, NULL, &mirror_num, 1);
-+				&bioc, &smap, &mirror_num, 1);
- 	if (ret) {
- 		btrfs_bio_counter_dec(fs_info);
- 		btrfs_bio_end_io(btrfs_bio(bio), errno_to_blk_status(ret));
- 		return;
- 	}
- 
--	total_devs = bioc->num_stripes;
--	bioc->orig_bio = bio;
--
--	if ((bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
--	    ((btrfs_op(bio) == BTRFS_MAP_WRITE) || (mirror_num > 1))) {
--		bio->bi_private = bioc;
--		bio->bi_end_io = btrfs_raid56_end_io;
--		if (btrfs_op(bio) == BTRFS_MAP_WRITE)
--			raid56_parity_write(bio, bioc);
--		else
--			raid56_parity_recover(bio, bioc, mirror_num);
--		return;
--	}
--
- 	if (map_length < length) {
- 		btrfs_crit(fs_info,
- 			   "mapping failed logical %llu bio len %llu len %llu",
-@@ -6878,8 +6875,31 @@ void btrfs_submit_bio(struct btrfs_fs_info *fs_info, struct bio *bio, int mirror
- 		BUG();
- 	}
- 
--	for (dev_nr = 0; dev_nr < total_devs; dev_nr++)
--		submit_stripe_bio(bioc, dev_nr);
-+	if (!bioc) {
-+		/* Single mirror read/write fast path */
-+		btrfs_bio(bio)->mirror_num = mirror_num;
-+		btrfs_bio(bio)->device = smap.dev;
-+		bio->bi_iter.bi_sector = smap.physical >> SECTOR_SHIFT;
-+		bio->bi_private = fs_info;
-+		bio->bi_end_io = btrfs_simple_end_io;
-+		btrfs_submit_dev_bio(smap.dev, bio);
-+	} else if (bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
-+		/* Parity RAID write or read recovery */
-+		bio->bi_private = bioc;
-+		bio->bi_end_io = btrfs_raid56_end_io;
-+		if (bio_op(bio) == REQ_OP_READ)
-+			raid56_parity_recover(bio, bioc, mirror_num);
-+		else
-+			raid56_parity_write(bio, bioc);
-+	} else {
-+		/* Write to multiple mirrors */
-+		int total_devs = bioc->num_stripes;
-+		int dev_nr;
-+
-+		bioc->orig_bio = bio;
-+		for (dev_nr = 0; dev_nr < total_devs; dev_nr++)
-+			btrfs_submit_mirrored_bio(bioc, dev_nr);
-+	}
- }
- 
- static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_args *args,
--- 
-2.30.2
-
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
