@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7C957344C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 12:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C313C573438
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jul 2022 12:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236020AbiGMKao (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Jul 2022 06:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
+        id S236023AbiGMKar (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Jul 2022 06:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236034AbiGMKan (ORCPT
+        with ESMTP id S236018AbiGMKaq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Jul 2022 06:30:43 -0400
+        Wed, 13 Jul 2022 06:30:46 -0400
 Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD7CFC997
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 03:30:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA38E6837
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Jul 2022 03:30:44 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 8AFE9806E0;
-        Wed, 13 Jul 2022 06:30:41 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id C687680025;
+        Wed, 13 Jul 2022 06:30:43 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1657708242; bh=KRDfQQ1XpGCjjKVjRpwiQNGfKQ8imAWi4dsTAgZ/0Cc=;
+        t=1657708244; bh=UUsWW2H74bRM8CltDA3VrKMB1e9TXdqubzY/rNa+OWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RAjgSe9Tr3AzSUqx84Sbh5Qw1HnjTbkWQRPEcUVMh3sHd6KZLbUH/ozT8FxwNaGfk
-         Q/IiP4jeMbGyPh8dRGWsBoCelWj1iJ+JlhGbrwbvT8C1NtQaJWWkgCMUCCCFu3qsVT
-         Np9Qim9B8UxAQ3Tn84O1rjhhkSQtxiIfrOBzP/wW+YV4s98QoyeHHjtbA5iU4398ND
-         cDFKVN3lVpNnhPKvCHshZuUM+0tLRU72JLUSO5P8cQBtotrHfe8oOP+nyroApkyk3Y
-         0h9TliE9yysjT18XN8uvV+t/b4Lwx6f9kj7FqmWSPGEoB8bideZRgFJnNaTz0Zk+C5
-         n0vCQzSGg4jmg==
+        b=nO0udH1CEpk1Jt0j0Ebc+0XGAkOAblmDqZBZW/kpPS4C8myYyX3WqMR0V4M8iluk2
+         D0gHSUfI9hmEtyeXF+RdbjWPeReEAVHMMPATp52n/iY1mQ5HpLU5B5Ib1M5vgStkE7
+         Mqtqcb6URWgrgM6qhNfDdSuAx0GrZX0FpBW/VituL3xHNR+XCAqxkG6imU0hqWEbpW
+         wJZX23Uj9btC7QVpWeOSwL9fnm0Ue3i5y6tYw61uCxnnnCmRlN5JaAYLEdd/fT3r1M
+         bpPSH+mTg+PdD7IE+BjQsi3FogY6OcF8dL0quLzWwhsf9e/Ud51n9xUnbUWm261Xnp
+         5ATZXfMrdC4wA==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     Omar Sandoval <osandov@osandov.com>,
         Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [RFC ONLY 04/23] btrfs: explicitly keep track of file extent item size.
-Date:   Wed, 13 Jul 2022 06:29:37 -0400
-Message-Id: <1683e20a7e9827a8197c15d006c78ea278641182.1657707686.git.sweettea-kernel@dorminy.me>
+Subject: [RFC ONLY 05/23] btrfs: factor out a memcmp for two extent_buffers.
+Date:   Wed, 13 Jul 2022 06:29:38 -0400
+Message-Id: <1597152cf099a878c604106d3db0200f0aceed09.1657707686.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1657707686.git.sweettea-kernel@dorminy.me>
 References: <cover.1657707686.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -52,78 +52,163 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Omar Sandoval <osandov@osandov.com>
 
-Previously, file extents were always of constant size. However, for
-fscrypt, they will need to store an IV, and this IV varies in length
-according to the encryption algorithm, making the file extent items also
-of variable length. Therefore, this begins passing around the actual
-file extent item size instead of assuming it is merely the size of the
-item in memory.
+Tree log has its own implementation of comparing two extent_buffer's
+contents; pull it out and generalize it into extent_io.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- fs/btrfs/ctree.h   | 1 +
- fs/btrfs/file.c    | 4 ++--
- fs/btrfs/inode.c   | 1 +
- fs/btrfs/reflink.c | 1 +
- 4 files changed, 5 insertions(+), 2 deletions(-)
+ fs/btrfs/extent_io.c | 49 ++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/extent_io.h |  4 ++++
+ fs/btrfs/tree-log.c  | 33 +++++++++++------------------
+ 3 files changed, 65 insertions(+), 21 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 538a1f357e59..ddff384604ee 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1355,6 +1355,7 @@ struct btrfs_replace_extent_info {
- 	u64 file_offset;
- 	/* Pointer to a file extent item of type regular or prealloc. */
- 	char *extent_buf;
-+	u32 extent_buf_size;
- 	/*
- 	 * Set to true when attempting to replace a file range with a new extent
- 	 * described by this structure, set to false when attempting to clone an
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index d0172cb54d9f..a93b205c663b 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2687,14 +2687,14 @@ static int btrfs_insert_replace_extent(struct btrfs_trans_handle *trans,
- 	key.type = BTRFS_EXTENT_DATA_KEY;
- 	key.offset = extent_info->file_offset;
- 	ret = btrfs_insert_empty_item(trans, root, path, &key,
--				      sizeof(struct btrfs_file_extent_item));
-+				      extent_info->extent_buf_size);
- 	if (ret)
- 		return ret;
- 	leaf = path->nodes[0];
- 	slot = path->slots[0];
- 	write_extent_buffer(leaf, extent_info->extent_buf,
- 			    btrfs_item_ptr_offset(leaf, slot),
--			    sizeof(struct btrfs_file_extent_item));
-+			    extent_info->extent_buf_size);
- 	extent = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
- 	ASSERT(btrfs_file_extent_type(leaf, extent) != BTRFS_FILE_EXTENT_INLINE);
- 	btrfs_set_file_extent_offset(leaf, extent, extent_info->data_offset);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 057744b8815c..43ebf37a156e 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9966,6 +9966,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
- 	extent_info.data_len = len;
- 	extent_info.file_offset = file_offset;
- 	extent_info.extent_buf = (char *)&stack_fi;
-+	extent_info.extent_buf_size = sizeof(stack_fi);
- 	extent_info.is_new_extent = true;
- 	extent_info.update_times = true;
- 	extent_info.qgroup_reserved = qgroup_released;
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index 9acf47b11fe6..e5c2616a486e 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -495,6 +495,7 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
- 			clone_info.data_len = datal;
- 			clone_info.file_offset = new_key.offset;
- 			clone_info.extent_buf = buf;
-+			clone_info.extent_buf_size = size;
- 			clone_info.is_new_extent = false;
- 			clone_info.update_times = !no_time_update;
- 			ret = btrfs_replace_file_extents(BTRFS_I(inode), path,
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 54ed383e7400..754db5fa262b 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -6853,6 +6853,55 @@ int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
+ 	return ret;
+ }
+ 
++int memcmp_2_extent_buffers(const struct extent_buffer *eb1,
++			    unsigned long start1,
++			    const struct extent_buffer *eb2,
++			    unsigned long start2, unsigned long len)
++{
++	unsigned long i1, i2;
++	size_t offset1, offset2;
++	char *kaddr1, *kaddr2;
++	int ret = 0;
++
++	if (check_eb_range(eb1, start1, len) ||
++	    check_eb_range(eb2, start2, len))
++		return -EINVAL;
++
++	if (len == 0)
++		return ret;
++
++	i1 = get_eb_page_index(start1);
++	offset1 = get_eb_offset_in_page(eb1, start1);
++	kaddr1 = page_address(eb1->pages[i1]);
++
++	i2 = get_eb_page_index(start2);
++	offset2 = get_eb_offset_in_page(eb2, start2);
++	kaddr2 = page_address(eb2->pages[i2]);
++
++	while (true) {
++		size_t cur;
++
++		cur = min3(len, PAGE_SIZE - offset1, PAGE_SIZE - offset2);
++		ret = memcmp(kaddr1 + offset1, kaddr2 + offset2, cur);
++		if (ret || cur == len)
++			break;
++		len -= cur;
++		offset1 += cur;
++		if (offset1 == PAGE_SIZE) {
++			offset1 = 0;
++			i1++;
++			kaddr1 = page_address(eb1->pages[i1]);
++		}
++		offset2 += cur;
++		if (offset2 == PAGE_SIZE) {
++			offset2 = 0;
++			i2++;
++			kaddr2 = page_address(eb2->pages[i2]);
++		}
++	}
++	return ret;
++}
++
+ /*
+  * Check that the extent buffer is uptodate.
+  *
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index a76c6ef74cd3..df0ff1c78998 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -197,6 +197,10 @@ static inline int extent_buffer_uptodate(const struct extent_buffer *eb)
+ 
+ int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
+ 			 unsigned long start, unsigned long len);
++int memcmp_2_extent_buffers(const struct extent_buffer *eb1,
++			    unsigned long start1,
++			    const struct extent_buffer *eb2,
++			    unsigned long start2, unsigned long len);
+ void read_extent_buffer(const struct extent_buffer *eb, void *dst,
+ 			unsigned long start,
+ 			unsigned long len);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 87a4438b90da..dc4bc6b384d5 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -635,11 +635,13 @@ static noinline int replay_one_extent(struct btrfs_trans_handle *trans,
+ 	u64 start = key->offset;
+ 	u64 nbytes = 0;
+ 	struct btrfs_file_extent_item *item;
++	u32 item_size;
+ 	struct inode *inode = NULL;
+ 	unsigned long size;
+ 	int ret = 0;
+ 
+ 	item = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
++	item_size = btrfs_item_size(eb, slot);
+ 	found_type = btrfs_file_extent_type(eb, item);
+ 
+ 	if (found_type == BTRFS_FILE_EXTENT_REG ||
+@@ -679,29 +681,18 @@ static noinline int replay_one_extent(struct btrfs_trans_handle *trans,
+ 
+ 	if (ret == 0 &&
+ 	    (found_type == BTRFS_FILE_EXTENT_REG ||
+-	     found_type == BTRFS_FILE_EXTENT_PREALLOC)) {
+-		struct btrfs_file_extent_item cmp1;
+-		struct btrfs_file_extent_item cmp2;
+-		struct btrfs_file_extent_item *existing;
+-		struct extent_buffer *leaf;
+-
+-		leaf = path->nodes[0];
+-		existing = btrfs_item_ptr(leaf, path->slots[0],
+-					  struct btrfs_file_extent_item);
+-
+-		read_extent_buffer(eb, &cmp1, (unsigned long)item,
+-				   sizeof(cmp1));
+-		read_extent_buffer(leaf, &cmp2, (unsigned long)existing,
+-				   sizeof(cmp2));
+-
++	     found_type == BTRFS_FILE_EXTENT_PREALLOC) &&
++	    btrfs_item_size(path->nodes[0], path->slots[0]) == item_size &&
++	    memcmp_2_extent_buffers(eb, (unsigned long)item, path->nodes[0],
++				    btrfs_item_ptr_offset(path->nodes[0],
++							  path->slots[0]),
++				    item_size) == 0) {
+ 		/*
+ 		 * we already have a pointer to this exact extent,
+ 		 * we don't have to do anything
+ 		 */
+-		if (memcmp(&cmp1, &cmp2, sizeof(cmp1)) == 0) {
+-			btrfs_release_path(path);
+-			goto out;
+-		}
++		btrfs_release_path(path);
++		goto out;
+ 	}
+ 	btrfs_release_path(path);
+ 
+@@ -724,13 +715,13 @@ static noinline int replay_one_extent(struct btrfs_trans_handle *trans,
+ 			goto update_inode;
+ 
+ 		ret = btrfs_insert_empty_item(trans, root, path, key,
+-					      sizeof(*item));
++					      item_size);
+ 		if (ret)
+ 			goto out;
+ 		dest_offset = btrfs_item_ptr_offset(path->nodes[0],
+ 						    path->slots[0]);
+ 		copy_extent_buffer(path->nodes[0], eb, dest_offset,
+-				(unsigned long)item,  sizeof(*item));
++				   (unsigned long)item, item_size);
+ 
+ 		ins.objectid = btrfs_file_extent_disk_bytenr(eb, item);
+ 		ins.offset = btrfs_file_extent_disk_num_bytes(eb, item);
 -- 
 2.35.1
 
