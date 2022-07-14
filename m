@@ -2,194 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B67EB574634
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jul 2022 09:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7376574642
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jul 2022 10:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237789AbiGNHxr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Jul 2022 03:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51364 "EHLO
+        id S233796AbiGNIAw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Jul 2022 04:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237791AbiGNHxR (ORCPT
+        with ESMTP id S229667AbiGNIA1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Jul 2022 03:53:17 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3398764F
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jul 2022 00:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1657785189;
-        bh=cwYyGweQNwGSDrJpoV//68B/9733PLgLofVU46OlAWE=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=UnA8NFj/n5ZIfb5ySpWbNOnNwttAfq3weVc1sbNGkdxqbX1WDVY4HS1/hQ4poI+7u
-         cmn8WFKO/BNQNiAYmPGtlAwtQBRSQ/ndGHo2VBPL+u6KGIajWO8+NDijQqFmrJfnbR
-         9XSI1XLidqU7AdxTf2bfbv+qld0HYiSI0Y6w//EU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MAwbz-1oIFJ7368v-00BH6m; Thu, 14
- Jul 2022 09:53:09 +0200
-Message-ID: <f54f6709-9b31-fc9c-6b5d-10dd43b089ca@gmx.com>
-Date:   Thu, 14 Jul 2022 15:53:04 +0800
+        Thu, 14 Jul 2022 04:00:27 -0400
+Received: from out20-217.mail.aliyun.com (out20-217.mail.aliyun.com [115.124.20.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872A722522
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jul 2022 01:00:25 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0448401|-1;BR=01201311R841S35rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.369116-0.0120662-0.618818;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.OSMOoxz_1657785621;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.OSMOoxz_1657785621)
+          by smtp.aliyun-inc.com;
+          Thu, 14 Jul 2022 16:00:22 +0800
+Date:   Thu, 14 Jul 2022 16:00:23 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: slience the sparse warn of rcu_string
+Cc:     Wang Yugui <wangyugui@e16-tech.com>
+In-Reply-To: <20220714011102.10544-1-wangyugui@e16-tech.com>
+References: <20220714011102.10544-1-wangyugui@e16-tech.com>
+Message-Id: <20220714160023.0424.409509F4@e16-tech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: RAID56 discussion related to RST. (Was "Re: [RFC ONLY 0/8] btrfs:
- introduce raid-stripe-tree")
-Content-Language: en-US
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
- <78daa7e4-7c88-d6c0-ccaa-fb148baf7bc8@gmx.com>
- <PH0PR04MB74164213B5F136059236B78C9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <03630cb7-e637-3375-37c6-d0eb8546c958@gmx.com>
- <PH0PR04MB7416D257F7B349FC754E30169B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <1cf403d4-46a7-b122-96cf-bd1307829e5b@gmx.com>
- <PH0PR04MB741638E2A15F4E106D8A6FAF9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <96da9455-f30d-b3fc-522b-7cbd08ad3358@suse.com>
- <PH0PR04MB7416E68375C1C27C33D347119B889@PH0PR04MB7416.namprd04.prod.outlook.com>
- <61694368-30ea-30a0-df74-fd607c4b7456@gmx.com>
- <PH0PR04MB7416243FCD419B4BDDB04D8C9B889@PH0PR04MB7416.namprd04.prod.outlook.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <PH0PR04MB7416243FCD419B4BDDB04D8C9B889@PH0PR04MB7416.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:83/m7NUcMSbkqWjVAWBj1YMOQzto7/j2zsX3Hx6qpiE0p5O5W4S
- Te9Ho7ndGmbNQdTf0H/kvF00NslXqaRfBl3kpz1g+EsV1Ei5pilR42cnUH4rDJuWhHilwlo
- MsAZKjGLrfH5m3Em/ysElZaJflKFav0yQkiEKffRB5+JuZj/43GszqJ8d4MQ1xB7ZbZYtvA
- WY8zIGfR8KHNA9I53I3Gg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vtr/lKogQP0=:yaovDNXd98P08OjMca5lll
- PgMnIbIqRHtf6TfJ6b8CqEL9jWoPV4mAvIoEZyo33Nr2bxPflTByUwTZlwEJAejKb5ahIl3gH
- jza0Ea0hgymrl5HVnLsMpuiLTVET1G3zU9QiHHKJWrF6ra1yggqs8UcYaNWDAocWCOQj245fD
- DxY2PHmsqYOeLowHEWLSjb+Kq6SX3sxOVwjaoqaqIeouIthXZYQrQ4irCRQxUboYqqvFdZeH+
- /ExP04GDIIcSwY+vvNu/dzLQsL24sVwdnFCz6YXc1M3KeIYKXetTvtisPxVgrf2kFlhc0UhZ2
- d0vC2gqL1383Y+J4Upx98qMdV2U1WsC3aXfafPe4mYYcwsbvl48NvrCYdQMrtl+u70K5X/fGI
- jOa6AZASlQxiqgge2gwjm+jJHxVtiv3TfP12aTgisCF1dV7SoW8VrSBNgnZsIhSDfq1+NkoIV
- PrArGB0l8sJsOud7jJih3tYaVsz9XHTBXlm6peGCdeq5ne3uC4NUyP6057f3n+/1yybsdr3kD
- IOcylTNL2yFmp/weiIowo9tplxEjbSZskKNM8yobS452oaBDBJrPd5bQRXd1mbAC6wFODXzPw
- Sye8lVtXYd3BP6c0lisUQMuRuu7A7nz8GOsURuuPsqCHS0/9DQlZ8BiuQwqMhHTvZ61rGsMsU
- J1d6plweB2UNetZyqWRy3SPAhIiUAA2UHpMWWo+ExeVswp2nLr6I6kD6uzX6MlOXvzHL1Et2z
- VoDLm490MO7ZCsOfcnQOvg0z/24Fjeg0338yZGk8YXtfEOCqGXSB7dMpNeTQCfpBt88C5aUOI
- bf/IM1fUBrEtmnSk2lqSYOY5oPTlTpZ8dBDmibE0dbpBxupE9KElmenOxuB+AW65f+4MgPkOo
- Ty341JVQlPCj2IRvyXPBVwNuQY/iGK0Q5/1kw2qefFQaOiV2m3ITniG4JpyfZ5FqXWxZVQmsB
- t+T9DWSaHxZObLa1dZvXcCRe6/fqd1yIOsXz6oWPBJapTfnlvgj9zZq/922psCPA27oe0JzDn
- cCjEF0Mgn4QjvmBDEXf6MczVZmPOW2MTfsDhRcKt9M1HR5IBiBazIYYkGKDERYDtU7+yQCLvi
- qliLnRDRDkvtazCc20aMh1YQLDI4f+H+aSlKeNnvC/GWyETABJhZGLYzQ==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
+
+A warn example could be added to changelog.
+
+warn example:
+fs/btrfs/volumes.c:2300:41: warning: incorrect type in argument 3 (different address spaces)
+fs/btrfs/volumes.c:2300:41:    expected char const *device_path
+fs/btrfs/volumes.c:2300:41:    got char [noderef] __rcu *
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/07/14
+
+> slience the sparse warn of rcu_string reported by 'make C=1'
+> 
+> Signed-off-by: Wang Yugui <wangyugui@e16-tech.com>
+> ---
+>  fs/btrfs/dev-replace.c |  2 +-
+>  fs/btrfs/volumes.c     | 14 +++++++-------
+>  2 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> index f43196a893ca..25b94e0e433f 100644
+> --- a/fs/btrfs/dev-replace.c
+> +++ b/fs/btrfs/dev-replace.c
+> @@ -1007,7 +1007,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+>  	btrfs_sysfs_update_devid(tgt_device);
+>  	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &src_device->dev_state))
+>  		btrfs_scratch_superblocks(fs_info, src_device->bdev,
+> -					  src_device->name->str);
+> +					  rcu_str_deref(src_device->name));
+>  
+>  	/* write back the superblocks */
+>  	trans = btrfs_start_transaction(root, 0);
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index bf4e140f6bfc..e9f62c9c3db5 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -398,7 +398,7 @@ static struct btrfs_fs_devices *alloc_fs_devices(const u8 *fsid,
+>  void btrfs_free_device(struct btrfs_device *device)
+>  {
+>  	WARN_ON(!list_empty(&device->post_commit_list));
+> -	rcu_string_free(device->name);
+> +	rcu_string_free(rcu_dereference(device->name));
+>  	extent_io_tree_release(&device->alloc_state);
+>  	btrfs_destroy_dev_zone_info(device);
+>  	kfree(device);
+> @@ -606,7 +606,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  	if (!device->name)
+>  		return -EINVAL;
+>  
+> -	ret = btrfs_get_bdev_and_sb(device->name->str, flags, holder, 1,
+> +	ret = btrfs_get_bdev_and_sb(rcu_str_deref(device->name), flags, holder, 1,
+>  				    &bdev, &disk_super);
+>  	if (ret)
+>  		return ret;
+> @@ -873,7 +873,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>  				disk_super->fsid, devid, found_transid, path,
+>  				current->comm, task_pid_nr(current));
+>  
+> -	} else if (!device->name || strcmp(device->name->str, path)) {
+> +	} else if (!device->name || strcmp(rcu_str_deref(device->name), path)) {
+>  		/*
+>  		 * When FS is already mounted.
+>  		 * 1. If you are here and if the device->name is NULL that
+> @@ -943,7 +943,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>  			mutex_unlock(&fs_devices->device_list_mutex);
+>  			return ERR_PTR(-ENOMEM);
+>  		}
+> -		rcu_string_free(device->name);
+> +		rcu_string_free(rcu_dereference(device->name));
+>  		rcu_assign_pointer(device->name, name);
+>  		if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state)) {
+>  			fs_devices->missing_devices--;
+> @@ -1000,7 +1000,7 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
+>  		 * uuid mutex so nothing we touch in here is going to disappear.
+>  		 */
+>  		if (orig_dev->name) {
+> -			name = rcu_string_strdup(orig_dev->name->str,
+> +			name = rcu_string_strdup(rcu_str_deref(orig_dev->name),
+>  					GFP_KERNEL);
+>  			if (!name) {
+>  				btrfs_free_device(device);
+> @@ -2182,7 +2182,7 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info,
+>  	 */
+>  	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+>  		btrfs_scratch_superblocks(fs_info, device->bdev,
+> -					  device->name->str);
+> +					  rcu_str_deref(device->name));
+>  		if (device->bdev) {
+>  			sync_blockdev(device->bdev);
+>  			invalidate_bdev(device->bdev);
+> @@ -2297,7 +2297,7 @@ void btrfs_destroy_dev_replace_tgtdev(struct btrfs_device *tgtdev)
+>  	mutex_unlock(&fs_devices->device_list_mutex);
+>  
+>  	btrfs_scratch_superblocks(tgtdev->fs_info, tgtdev->bdev,
+> -				  tgtdev->name->str);
+> +				  rcu_str_deref(tgtdev->name));
+>  
+>  	btrfs_close_bdev(tgtdev);
+>  	synchronize_rcu();
+> -- 
+> 2.36.2
 
 
-On 2022/7/14 15:46, Johannes Thumshirn wrote:
-> On 14.07.22 09:32, Qu Wenruo wrote:
->>
->>
->> On 2022/7/14 15:08, Johannes Thumshirn wrote:
->>> On 14.07.22 03:08, Qu Wenruo wrote:> [CASE 2 CURRENT WRITE ORDER, PADD=
-ING> No difference than case 1, just when we have finished sector 7, all >=
- zones are exhausted.>> Total written bytes: 64K> Expected written bytes: =
-128K (nr_data * 64K)> Efficiency:	1 / nr_data.>
->>> I'm sorry but I have to disagree.
->>> If we're writing less than 64k, everything beyond these 64k will get f=
-illed up with 0
->>>
->>>          0                               64K
->>> Disk 1 | D1| 0 | 0 | 0 | 0 | 0 | 0 | 0 | (Data stripe)
->>> Disk 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | (Data stripe)
->>> Disk 3 | P | P | P | P | P | P | P | P | (Parity stripe)
->>>
->>> So the next write (the CoW) will then be:
->>>
->>>         64k                              128K
->>> Disk 1 | D1| 0 | 0 | 0 | 0 | 0 | 0 | 0 | (Data stripe)
->>> Disk 2 | D2| 0 | 0 | 0 | 0 | 0 | 0 | 0 | (Data stripe)
->>> Disk 3 | P'| P'| P'| P'| P'| P'| P'| P'| (Parity stripe)
->>
->> Nope, currently full stripe write should still go into disk1, not disk =
-2.
->> Sorry I did use a bad example from the very beginning.
->>
->> In that case, what we should have is:
->>
->>          0                               64K
->> Disk 1 | D1| D2| 0 | 0 | 0 | 0 | 0 | 0 | (Data stripe)
->> Disk 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | (Data stripe)
->> Disk 3 | P | P | 0 | 0 | 0 | 0 | 0 | 0 | (Parity stripe)
->>
->> In that case, Parity should still needs two blocks.
->>
->> And when Disk 1 get filled up, we have no way to write into Disk 2.
->>
->>>
->>> For zoned we can play this game zone_size/stripe_size times, which on =
-a typical
->>> SMR HDD would be:
->>>
->>> 126M/64k =3D 4096 times until you fill up a zone.
->>
->> No difference.
->>
->> You have extra zone to use, but the result is, the space efficiency wil=
-l
->> not be better than RAID1 for the worst case.
->>
->>>
->>> I.e. if you do stupid things you get stupid results. C'est la vie.
->>>
->>
->> You still didn't answer the space efficient problem.
->>
->> RAID56 really rely on overwrite on its P/Q stripes.
->
-> Nope, btrfs raid56 does this. Another implementation could for instance
-> buffer each stripe in an NVRAM (like described in [1]), or like Chris
-> suggested in a RAID1 area on the drives, or doing variable stripe length
-> like ZFS' RAID-Z, and so on.
-
-Not only btrfs raid56, but also dm-raid56 also do this.
-
-And what you mention is just an variant of journal, delay the write
-until got a full stripe.
-
->
->> The total write amount is really twice the data writes, that's somethin=
-g
->> you can not avoid.
->>
->
-> Again if you're doing sub-stripe size writes, you're asking stupid thing=
-s and
-> then there's no reason to not give the user stupid answers.
-
-No, you can not limit what users do.
-
-As long as btrfs itself support writes in sectorsize (4K), you can not
-stop user doing that.
-
-In your argument, I can also say, write-intent is a problem of end
-users, and no need to fix at all.
-
-That's definitely not the correct way to do, let user to adapt the
-limitation? No, just big no.
-
-Thanks,
-Qu
-
->
-> If a user is concerned about the write or space amplicfication of sub-st=
-ripe
-> writes on RAID56 he/she really needs to rethink the architecture.
->
->
->
-> [1]
-> S. K. Mishra and P. Mohapatra,
-> "Performance study of RAID-5 disk arrays with data and parity cache,"
-> Proceedings of the 1996 ICPP Workshop on Challenges for Parallel Process=
-ing,
-> 1996, pp. 222-229 vol.1, doi: 10.1109/ICPP.1996.537164.
