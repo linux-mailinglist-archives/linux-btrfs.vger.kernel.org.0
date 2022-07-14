@@ -2,93 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F48574D46
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jul 2022 14:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3E9574DD6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jul 2022 14:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238804AbiGNMPl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Jul 2022 08:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33682 "EHLO
+        id S239421AbiGNMiM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Jul 2022 08:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237521AbiGNMPj (ORCPT
+        with ESMTP id S238628AbiGNMiL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Jul 2022 08:15:39 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9A825283
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jul 2022 05:15:37 -0700 (PDT)
+        Thu, 14 Jul 2022 08:38:11 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7CD5C9CE;
+        Thu, 14 Jul 2022 05:38:09 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A70F733BC1;
-        Thu, 14 Jul 2022 12:15:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657800936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A54E01F8FB;
+        Thu, 14 Jul 2022 12:38:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1657802288;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=urzysNyG8NUPyYZMzEeQ10Fo5OyzbG1IGloSB84IFOo=;
-        b=r96w/fEShRA/9xTgTz91FnkXodMlsvglmFgp9Ncs4gllj4Blw0QPYIxYjE3f0wwKIyKeSM
-        dcFuhvlSpmphn3h9/+NVryeQFryT1gW2IjoakTexzjg1ruaWRCIUpP9NTUwjNH9gJMwErl
-        pjVK7MCMlKn4JpriBh2pK9uoMGl2aT8=
+        bh=tN/KMnzfK08k1zHwz3a76YlKl7qTFBSFPkaQtZzhBJo=;
+        b=YV5Hx2NpBVlFYKIBvEqpgHXPQQwef9F25yCzKOdH0qA8OdWvRjPiFxnl++EZu9IXCFrg9O
+        EMtEVZk2ClHOE8Kljugr8+FrFPvpKPTKZ7B8nLeVCp0QW5e4XBAwzRFfuB6WyT3Bf4Hc7G
+        IQE9yM/CB4rhQSOEHqUONIATGKxyev0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1657802288;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tN/KMnzfK08k1zHwz3a76YlKl7qTFBSFPkaQtZzhBJo=;
+        b=UoPb/YSnPgXbrGsO++XfxbnF53as2lYK0wlytATcczF6KFt5QYJm3TuyK8XOlfX8HaWsNk
+        F5l7YY+nQokV2uAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4F597133A6;
-        Thu, 14 Jul 2022 12:15:36 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 52920133A6;
+        Thu, 14 Jul 2022 12:38:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id EA+XEOgI0GKrdAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 14 Jul 2022 12:15:36 +0000
-Message-ID: <d8d787dc-a3be-9207-0f2d-3e089ea5b9ea@suse.com>
-Date:   Thu, 14 Jul 2022 15:15:35 +0300
+        id WawDEzAO0GKcfwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 14 Jul 2022 12:38:08 +0000
+Date:   Thu, 14 Jul 2022 14:33:17 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nick Terrell <terrelln@fb.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Filipe Manana <fdmanana@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH] btrfs: Replace kmap() with kmap_local_page() in zstd.c
+Message-ID: <20220714123317.GI15169@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Wang Yugui <wangyugui@e16-tech.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Nick Terrell <terrelln@fb.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Filipe Manana <fdmanana@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>
+References: <20220611135203.27992-1-fmdefrancesco@gmail.com>
+ <20220714082519.A7C9.409509F4@e16-tech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH 05/11] btrfs: remove bioc->stripes_pending
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org
-References: <20220713061359.1980118-1-hch@lst.de>
- <20220713061359.1980118-6-hch@lst.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <20220713061359.1980118-6-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220714082519.A7C9.409509F4@e16-tech.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 13.07.22 г. 9:13 ч., Christoph Hellwig wrote:
-> The stripes_pending in the btrfs_io_context counts number of inflight
-> low-level bios for an upper btrfs_bio.  For reads this is generally
-> one as reads are never cloned, while for writes we can trivially use
-> the bio remaining mechanisms that is used for chained bios.
+On Thu, Jul 14, 2022 at 08:25:20AM +0800, Wang Yugui wrote:
+> Hi,
 > 
-> To be able to make use of that mechanism, split out a separate trivial
-> end_io handler for the cloned bios that does a minimal amount of error
-> tracking and which then calls bio_endio on the original bio to transfer
-> control to that, with the remaining counter making sure it is completed
-> last.  This then allows to merge btrfs_end_bioc into the original bio
-> bi_end_io handler.  To make this all work all error handling needs to
-> happen through the bi_end_io handler, which requires a small amount
-> of reshuffling in submit_stripe_bio so that the bio is cloned already
-> by the time the suitability of the device is checked.
+> Compiler warning:
 > 
-> This reduces the size of the btrfs_io_context and prepares splitting
-> the btrfs_bio at the stripe boundary.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> fs/btrfs/zstd.c:478:55: warning: passing argument 1 of ‘__kunmap_local’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+>   478 |                         kunmap_local(workspace->in_buf.src);
+> ./include/linux/highmem-internal.h:284:24: note: in definition of macro ‘kunmap_local’
+>   284 |         __kunmap_local(__addr);                                 \
+>       |                        ^~~~~~
+> ./include/linux/highmem-internal.h:200:41: note: expected ‘void *’ but argument is of type ‘const void *’
+>   200 | static inline void __kunmap_local(void *addr)
+>       |                                   ~~~~~~^~~~
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+This requires patch
+https://lore.kernel.org/all/20220706111520.12858-2-fmdefrancesco@gmail.com/
+that adds const to kmap/kunmap API.
