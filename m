@@ -2,58 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0FA5767A4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jul 2022 21:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DC05767A5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jul 2022 21:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbiGOTpd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Jul 2022 15:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46596 "EHLO
+        id S230299AbiGOTpf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Jul 2022 15:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbiGOTpd (ORCPT
+        with ESMTP id S229448AbiGOTpe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Jul 2022 15:45:33 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF4D6392F
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 12:45:32 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id mi10so4438921qvb.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 12:45:32 -0700 (PDT)
+        Fri, 15 Jul 2022 15:45:34 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B76B61723
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 12:45:33 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id r17so4532722qtx.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 12:45:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=3pLLRif0+ITK0IF/iQ0NFU22dk08s8Bs8YCFtfz7GTU=;
-        b=jt6grtQPv+5XfxbUnahgDU2qNJS5yre+3sK+z2sSxnoUoCvmB+mxR6zYmBz6qqNBeE
-         9OmQ1nnsgGp04NyAGHJzSlpSBPjO8xXGjY37XxAJegWsckvlfmSmh0BFN75MTsAMWpcO
-         aT14kwrLN33tOwVqLZ4RxNy0wAhjXZZfWfwemqimT+3tIjCqG8sD2Q/DWseownsNR1tX
-         umMTw1ZNRFuXkmmVF/eBpIBClLxlNbyJK1W9bhM8rgRzT62qvX54Iwdukb2gtZ4rw9mZ
-         z2M3RSQ6thXRHK023WjufolapWdru15ho3NJh/f7xCdSAmtiOVj3/LEaA2n2bdzKMmQe
-         soeA==
+        bh=3c2liFqiUTLj/7c9QXj7muzA6VTKrrRDMy8LKzdfPMY=;
+        b=5GB5k6zLzmMrbusoVa+6cvlmdMZKtJ/0tBqaQIylHOtulOKiWOxQ0E2sCgBA/s9hMu
+         NAqip9RdlcwYB+lCJatB45hT/34eBqZyuKq9y+8xG/7dOy+Wm0YiVfimXZh4wj6tdG9u
+         YXroQIps5QIquMtUvYMX/e2trV6UOb+Zud7Wk5IO9XN7AZZCrk1ncyeB/X3V3y9qpz/Y
+         0SPpks5R/LwS7V/qIDXydDeL05mERbU2RleUAofhxCNM7gnWyse7VEVslNUfgOSZ+NXi
+         GvPBeW9NVepW8stzltt8saD0UTAy2amjHEm536Anlw0OtHMZu54KFQ1+cPQOERCtlJ0i
+         gdYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3pLLRif0+ITK0IF/iQ0NFU22dk08s8Bs8YCFtfz7GTU=;
-        b=jwHoSezkjk2fTcdYoJbAxd5gRfbGvON4jsWWJ9XTO1MFH8hU5c/4udRDA7rxRFQXjr
-         MhNt0luJtoOgXxjjpbusI8oUKPa+6AO/dcDrV/z8r/fNSNAUnADl9eXjnXOBI+ExG/Mp
-         tB2rUTpX3/kCUE8CyAGkay8guhnBswbjgd66M9gfbgXTID7ZSMcHIVQe3MXFM7IOSctc
-         7TLkKmoUoM/MP9wIpy58YMuL8qBCOsfSns6FUoejVbJ6fBaX6ryY3Qp31QdPqttyqIiT
-         gCMPI8O+tCJ3kFu8ypUPddbXeiffmD1oiHdhca/t9ixSNlugHcJ4WbbRAF+vWe1mbi8+
-         4Hog==
-X-Gm-Message-State: AJIora9oZIqD19HpQ4QEkGwM7wjee4vAtxPzV1JbKmCJdrA2/5binRQb
-        nfLHzN0aCY+xKZzsz/xevhF1WDBRrKPUtA==
-X-Google-Smtp-Source: AGRyM1sjCdtm5iXuBkIiqn0W8ZtzZ4pTwjmjq2IlXk5e54AnQnNksdS96bHuE1skndvLugCuwkpD3w==
-X-Received: by 2002:ad4:4e89:0:b0:472:fd70:ff88 with SMTP id dy9-20020ad44e89000000b00472fd70ff88mr13622919qvb.97.1657914330747;
-        Fri, 15 Jul 2022 12:45:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3c2liFqiUTLj/7c9QXj7muzA6VTKrrRDMy8LKzdfPMY=;
+        b=afXqTxfIWecfbgvQzm6+tFxNoVnrMSNSYZDT6tCsjp1X0899V2PbEdIrisn3Op+jbH
+         B8pRZf+M63K6zizTwReAjuGenUcF5XUWIVxPPO7Q9SO4d5Fttn87Hrx8Y9HmCPx7SMVe
+         ZI6CXzZqWPBvvpyndjP+I1ju1p7CFsB862zr/X+AvmtPlpJVgRtQxsmmGfWbsKZDFEIN
+         UdKvl8DGoqBRiXHJ9BNa0tGMfvmokR2KAfUrqim/MLbnzErWSD2kxL7/+BGmPT6Nr+8f
+         n2lLImIrMb1k1ySI/XSwMnUbvK1RJVzwjeo6IcFQiaHv/SIMNGbGiYYrKltITOIZjE8E
+         WjRA==
+X-Gm-Message-State: AJIora/CZT5VFgOOjMvfJxDYR6tQatziHNX+Rqv8/HNnd+YBAW6bt+iN
+        Nf2v3asfZl2JCwQf+zlqOM/9KnBTYuZpxw==
+X-Google-Smtp-Source: AGRyM1uQkyQm+KtnbYaj6NhLjqYFSLqROUiTesQEsKJ1PzKLQiFRU5hJcawZ+ahsx/QKHhlEIWc6zA==
+X-Received: by 2002:a05:622a:1802:b0:31e:af62:5701 with SMTP id t2-20020a05622a180200b0031eaf625701mr13468175qtc.327.1657914332136;
+        Fri, 15 Jul 2022 12:45:32 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id bl25-20020a05620a1a9900b006a787380a5csm4806640qkb.67.2022.07.15.12.45.29
+        by smtp.gmail.com with ESMTPSA id n18-20020a05620a295200b006af0ce13499sm5012897qkp.115.2022.07.15.12.45.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jul 2022 12:45:30 -0700 (PDT)
+        Fri, 15 Jul 2022 12:45:31 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 0/9] btrfs: block group cleanups
-Date:   Fri, 15 Jul 2022 15:45:20 -0400
-Message-Id: <cover.1657914198.git.josef@toxicpanda.com>
+Subject: [PATCH v2 1/9] btrfs: use btrfs_fs_closing for background bg work
+Date:   Fri, 15 Jul 2022 15:45:21 -0400
+Message-Id: <229802bd630b15eab2029c1b33915c6d6fcc1ffe.1657914198.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1657914198.git.josef@toxicpanda.com>
+References: <cover.1657914198.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -65,51 +67,41 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-v1->v2:
-- I'm an idiot and didn't rebase properly, so adding the two other cleanups I
-  had that I didn't send.
-- Rebased onto a recent misc-next and fixed the compile errors.
-- Realized that with the new zoned patches that caused the compile error that
-  btrfs_update_space_info needed to be cleaned up, so added patches for that.
+For both the deletion of unused block groups and the async balance work
+we'll only skip running if we don't have BTRFS_FS_OPEN set, however
+during teardown we park the cleaner kthread and cancel the reclaim work
+right away, effectively stopping the work from running.
 
---- Original email ---
+Fix the condition to bail if btrfs_fs_closing() is true instead of if
+!BTRFS_FS_OPEN, which is cleared much further in the process.
 
-I'm reworking our relocation and delete unused block group workqueues which
-require some cleanups of how we deal with flags on the block group.  We've had a
-bit field for various flags on the block group for a while, but there's a subtle
-gotcha with this bitfield in that you have to protect every modification with
-bg->lock in order to not mess with the values, and there were a few places that
-we weren't holding the lock.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/block-group.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Rework these to be normal flags, and then go behind this conversion and cleanup
-some of the usage of the different flags.  Additionally there's a cleanup around
-when to break out of the background workers.  Thanks,
-
-Josef
-
-Josef Bacik (9):
-  btrfs: use btrfs_fs_closing for background bg work
-  btrfs: simplify btrfs_update_space_info
-  btrfs: handle space_info setting of bg in btrfs_add_bg_to_space_info
-  btrfs: convert block group bit field to use bit helpers
-  btrfs: remove block_group->lock protection for TO_COPY
-  btrfs: simplify btrfs_put_block_group_cache
-  btrfs: remove BLOCK_GROUP_FLAG_HAS_CACHING_CTL
-  btrfs: remove bg->lock protection for relocation repair flag
-  btrfs: delete btrfs_wait_space_cache_v1_finished
-
- fs/btrfs/block-group.c      | 142 +++++++++++++-----------------------
- fs/btrfs/block-group.h      |  21 +++---
- fs/btrfs/dev-replace.c      |  11 +--
- fs/btrfs/extent-tree.c      |   7 +-
- fs/btrfs/free-space-cache.c |  18 ++---
- fs/btrfs/scrub.c            |  16 ++--
- fs/btrfs/space-info.c       |  38 +++++-----
- fs/btrfs/space-info.h       |   6 +-
- fs/btrfs/volumes.c          |  16 ++--
- fs/btrfs/zoned.c            |  34 ++++++---
- 10 files changed, 137 insertions(+), 172 deletions(-)
-
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index c3aecfb0a71d..1e61d967d8be 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1318,7 +1318,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+ 	const bool async_trim_enabled = btrfs_test_opt(fs_info, DISCARD_ASYNC);
+ 	int ret = 0;
+ 
+-	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
++	if (btrfs_fs_closing(fs_info))
+ 		return;
+ 
+ 	/*
+@@ -1557,7 +1557,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 	struct btrfs_block_group *bg;
+ 	struct btrfs_space_info *space_info;
+ 
+-	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
++	if (btrfs_fs_closing(fs_info))
+ 		return;
+ 
+ 	if (!btrfs_should_reclaim(fs_info))
 -- 
 2.26.3
 
