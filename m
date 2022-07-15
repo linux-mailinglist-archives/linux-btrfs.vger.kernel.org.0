@@ -2,115 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F62576582
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jul 2022 19:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7849257666B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jul 2022 19:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbiGOQ6S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Jul 2022 12:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
+        id S229667AbiGORzp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Jul 2022 13:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235390AbiGOQ55 (ORCPT
+        with ESMTP id S229527AbiGORzn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Jul 2022 12:57:57 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326647AB3F
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 09:57:56 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B568420393;
-        Fri, 15 Jul 2022 16:57:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1657904244;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MmQDOzMayGpqH+bIMZth8L3q+pR4w2anXAFC8nz5vlU=;
-        b=Jzy6IWSSrg/H9q/E5x8yA7abAEHo50Obe42daSZ5CalTP1SwKbx6X/h0O5GxoOTuaTQCJS
-        2oPZX6RQIohFJWZE1VVLdJJVKrMaL9wOIrqx3tEA7fSAfFXCZINFtHGr8ZA0hiRNUWnQh0
-        oCtg8na1FISmdgGptRJ+R0qQQO3C2oQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1657904244;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MmQDOzMayGpqH+bIMZth8L3q+pR4w2anXAFC8nz5vlU=;
-        b=csNflpR98b7asizwh+JznwYsF4fNgBhv80TIlybv4Je23kJImRNsVTTNPsLHAlOjdFoB7A
-        4zqaKy50wrG15YAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 874D113754;
-        Fri, 15 Jul 2022 16:57:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6pz8H3Sc0WJLewAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 15 Jul 2022 16:57:24 +0000
-Date:   Fri, 15 Jul 2022 18:52:33 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com
-Subject: Re: [PATCH 0/3] btrfs: fix a couple sleeps while holding a spinlock
-Message-ID: <20220715165232.GC13489@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Filipe Manana <fdmanana@kernel.org>, linux-btrfs@vger.kernel.org,
-        dsterba@suse.com
-References: <cover.1657097693.git.fdmanana@suse.com>
- <20220713135955.GA1114299@falcondesktop>
- <20220715120129.GA13489@twin.jikos.cz>
- <383472a6-75e2-8c70-2c1e-a27234e7b761@suse.com>
+        Fri, 15 Jul 2022 13:55:43 -0400
+X-Greylist: delayed 60 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 15 Jul 2022 10:55:40 PDT
+Received: from libero.it (smtp-31-wd.italiaonline.it [213.209.13.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478EB371BA
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 10:55:40 -0700 (PDT)
+Received: from [192.168.1.27] ([94.34.5.22])
+        by smtp-31.iol.local with ESMTPA
+        id CPWPo4VEgRKx7CPWPoGvqQ; Fri, 15 Jul 2022 19:54:37 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1657907677; bh=oJLox+d4s27vFHN6XoSGrvoU0wTqdORgtryXrqPWnJo=;
+        h=From;
+        b=bXMRxJTDCS2p1LWL/3EMGFR7KLuGeN2ncIFlX6+Ltu4UNOCwr1nW2kabCTFs+cNvd
+         LDIBJgsydr8i+vwS0B+JA3iL1Blfd/UT87oYgivYC5CqBGSC1Eo//6Agm1tZvIyJ/x
+         QpCsByL63UUk5igPnE1KEzlw8ZFWzyEyLsEUJUVceBjAGuBdQbnNH/366tX21lb5PS
+         ov3J/yfH5olAhncQCUI++lUgxcLFchA6BiRO7kchI9VMH3NOiBiNB5PBN77UK12X0i
+         J/Nbghwz00AzDHK0phsx2+DEYUzCSoQJCIZPVisCd+hwPLGNmeHPbv6eD5uL7pa1wg
+         /oii6JIxJ6SgQ==
+X-CNFS-Analysis: v=2.4 cv=BqtYfab5 c=1 sm=1 tr=0 ts=62d1a9dd cx=a_exe
+ a=hwDnfLutCD/4BcDojJwT2A==:117 a=hwDnfLutCD/4BcDojJwT2A==:17
+ a=IkcTkHD0fZMA:10 a=_vluBC-bBg8jSFdFxHcA:9 a=QEXdDO2ut3YA:10
+Message-ID: <8b3cf3d0-4812-0e92-d850-09a8d08b8169@libero.it>
+Date:   Fri, 15 Jul 2022 19:54:36 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <383472a6-75e2-8c70-2c1e-a27234e7b761@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.1
+Reply-To: kreijack@inwind.it
+Subject: Re: RAID56 discussion related to RST. (Was "Re: [RFC ONLY 0/8] btrfs:
+ introduce raid-stripe-tree")
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
+ <78daa7e4-7c88-d6c0-ccaa-fb148baf7bc8@gmx.com>
+ <PH0PR04MB74164213B5F136059236B78C9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <03630cb7-e637-3375-37c6-d0eb8546c958@gmx.com>
+ <PH0PR04MB7416D257F7B349FC754E30169B899@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <1cf403d4-46a7-b122-96cf-bd1307829e5b@gmx.com>
+ <PH0PR04MB741638E2A15F4E106D8A6FAF9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <96da9455-f30d-b3fc-522b-7cbd08ad3358@suse.com>
+ <PH0PR04MB7416E68375C1C27C33D347119B889@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <61694368-30ea-30a0-df74-fd607c4b7456@gmx.com>
+ <PH0PR04MB7416243FCD419B4BDDB04D8C9B889@PH0PR04MB7416.namprd04.prod.outlook.com>
+Content-Language: en-US
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <PH0PR04MB7416243FCD419B4BDDB04D8C9B889@PH0PR04MB7416.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfINWIitgIbU0w9jCNCLOtwjvm0kTMX0krK6yhHiM7+RkhYimZzJl6IdHlCHovnO3XswxVbfBwksc7WziZDYtQJ0vu9Yv4pAEZTEAagB+yiB+zbtNrn7I
+ CFDDJsFSMAdKo0fi24Ia01/vMf0MFOAFEvVQWS8tWrQ6QRtGkxp0apxotLAJQUA5BIwscs4rerzg3OjsErE7kDHn2dkZUjaoELdLTYSi8nYR3DtWx0ktI+0k
+ aj5mW0y2Di7W56HzRnSS5coL25J9F/7UHrn1xr/zM+VRF9s6p73huZEF/qW30vZx
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 15, 2022 at 03:47:34PM +0300, Nikolay Borisov wrote:
+On 14/07/2022 09.46, Johannes Thumshirn wrote:
+> On 14.07.22 09:32, Qu Wenruo wrote:
+>>[...]
 > 
+> Again if you're doing sub-stripe size writes, you're asking stupid things and
+> then there's no reason to not give the user stupid answers.
 > 
-> On 15.07.22 г. 15:01 ч., David Sterba wrote:
-> > On Wed, Jul 13, 2022 at 02:59:55PM +0100, Filipe Manana wrote:
-> >> On Wed, Jul 06, 2022 at 10:09:44AM +0100, fdmanana@kernel.org wrote:
-> >>> From: Filipe Manana <fdmanana@suse.com>
-> >>>
-> >>> After the recent conversions of a couple radix trees to XArrays, we now
-> >>> can end up attempting to sleep while holding a spinlock. This happens
-> >>> because if xa_insert() allocates memory (using GFP_NOFS) it may need to
-> >>> sleep (more likely to happen when under memory pressure). In the old
-> >>> code this did not happen because we had radix_tree_preload() called
-> >>> before taking the spinlocks.
-> >>>
-> >>> Filipe Manana (3):
-> >>>    btrfs: fix sleep while under a spinlock when allocating delayed inode
-> >>>    btrfs: fix sleep while under a spinlock when inserting a fs root
-> >>>    btrfs: free qgroup metadata without holding the fs roots lock
-> >>
-> >> David, are you going to pick these up or revert the patches that did the
-> >> radix tree to xarray conversion?
-> > 
-> > Switching sping lock to mutex seems quite heavy weight, and reverting
-> > xarray conversion is intrusive, so it's choosing from two bad options,
-> > also that we haven't identified the problems earlier. Doing such changes
-> > in rc6 is quite unpleasant, I'll explore the options.
-> 
-> 
-> I'm actually in favor of using the mutexes. For example looking at the 
-> users of root->inode_lock:
 
-We want to do the xarray conversion eventually but this would be better
-done in the whole cycle, so I'm going to send the revert.
+Qu is right, if we consider only full stripe write the "raid hole" problem
+disappear, because if a "full stripe" is not fully written it is not
+referenced either.
+
+
+Personally I think that the ZFS variable stripe size, may be interesting
+to evaluate. Moreover, because the BTRFS disk format is quite flexible,
+we can store different BG with different number of disks. Let me to make an
+example: if we have 10 disks, we could allocate:
+1 BG RAID1
+1 BG RAID5, spread over 4 disks only
+1 BG RAID5, spread over 8 disks only
+1 BG RAID5, spread over 10 disks
+
+So if we have short writes, we could put the extents in the RAID1 BG; for longer
+writes we could use a RAID5 BG with 4 or 8 or 10 disks depending by length
+of the data.
+
+Yes this would require a sort of garbage collector to move the data to the biggest
+raid5 BG, but this would avoid (or reduce) the fragmentation which affect the
+variable stripe size.
+
+Doing so we don't need any disk format change and it would be backward compatible.
+
+
+Moreover, if we could put the smaller BG in the faster disks, we could have a
+decent tiering....
+
+
+> If a user is concerned about the write or space amplicfication of sub-stripe
+> writes on RAID56 he/she really needs to rethink the architecture.
+> 
+> 
+> 
+> [1]
+> S. K. Mishra and P. Mohapatra,
+> "Performance study of RAID-5 disk arrays with data and parity cache,"
+> Proceedings of the 1996 ICPP Workshop on Challenges for Parallel Processing,
+> 1996, pp. 222-229 vol.1, doi: 10.1109/ICPP.1996.537164.
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
