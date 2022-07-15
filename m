@@ -2,132 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAFB576804
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jul 2022 22:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F69157681C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jul 2022 22:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbiGOUOe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Jul 2022 16:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
+        id S230510AbiGOUcD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Jul 2022 16:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbiGOUOe (ORCPT
+        with ESMTP id S230210AbiGOUcC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Jul 2022 16:14:34 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202F745981
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 13:14:33 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id l9-20020a056830268900b006054381dd35so4309039otu.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 13:14:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uFPxVNys5mN0QNKD0/uGugU2wPX4Nn2cNUdeiIqosNo=;
-        b=T9ILOIEL+t7aHORdAuGjTH8bPJojpA/bYXv0YWkoGqir2wd87Pm3IeEzmqkMAZkLVP
-         LeLptir+3ry0jbZqkYxMM87HFZfE4PDJ4hCGaarYait4b4Ibvc7cjrvOwaFlQpqMJuy1
-         wTIF+EG+GvXjqHTlRXzHw7IXHk96vKWZXJHwt0FClO33o2fbZX11/QOprDbf4z18rqcK
-         HDTZOcJ249TS8aK7ECuxk7RAFbBKS/0/eo8yvQ+fUwCDE5EW8uotQRrurQJi0O1JK6Yq
-         UIvt8TwECiKY/0/ximIWWruuH51EHyjI64gUl6GOamyOqEknrEB6Z32+j+lkCAMe2MC4
-         QjEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uFPxVNys5mN0QNKD0/uGugU2wPX4Nn2cNUdeiIqosNo=;
-        b=HnGqiHCXCRoddEm48DS3eWAD3DJ2BWKroIaRIxbE5NAhjAK2qy+wfTTqzmk7FgbjdX
-         tjCwnRb9II9IRHqBkJ5gktD8XQVAgT6Oa0OayDg3xmnawrMd+jtXufJfOEyVI8mLXzmv
-         M3GpCJGzhpzq8Znpy4hnJ1IHWtP9kyuclE8OXzMI5NXnorJJeth8uBNRXEQPUfXw938Q
-         d7bP069Z2Mrwo901e+ERKsQE55X8v77mXmkt8vDX9oQRSehmGJbeSCHJE9N4aihM6Jdt
-         TRYG794Q7fG1XE7FJekheNeBlLI2lzDKE3sL1epf5ZmWWHBLLKrWVA3XCTv9gXrgi+m4
-         r+tg==
-X-Gm-Message-State: AJIora9UZfhR9ulVPod6ihYmBAMmS2kKohmxDrFtGb+S4JXX5tIGlpZs
-        9MH18CMyrW34OcXAMFWMYovwEH/wTz14W+2cxaqKkg==
-X-Google-Smtp-Source: AGRyM1uRXNODOyQxwPep0uaCS2ziQ6zci8EYxR73WFHhCnub2h7kfYL3dxSpXMF4C0AT9MPKxuOYSxjuXJkbncpCQN8=
-X-Received: by 2002:a05:6830:2645:b0:61c:5aad:632 with SMTP id
- f5-20020a056830264500b0061c5aad0632mr6397542otu.169.1657916072238; Fri, 15
- Jul 2022 13:14:32 -0700 (PDT)
+        Fri, 15 Jul 2022 16:32:02 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6115B04F;
+        Fri, 15 Jul 2022 13:31:57 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7681C5C00CC;
+        Fri, 15 Jul 2022 16:31:54 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Fri, 15 Jul 2022 16:31:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm3; t=1657917114; x=1658003514; bh=TM2gJiO+BOwaovUnwnzH0G1Z7
+        YMxp0m2bwFNikC8+Xc=; b=YUMMtaXjzWu5Jf584HvKsN7l35QHrn5fWuobi3AtW
+        7WwNoRCxEOub8vM6/nrnqYVjkskAkuUyNMrtWBW64RNFXfGDerKeK3LwYTNHrQjU
+        DPU8EAJCDZ+n+RVXByz5COP8/ZdCEOySx/W77vdsA/kJumKSW6IfdoCyKqe1rtl2
+        U5sRpxvL1y9VLpngNHOqnI5mOM+jfm8cvWIXOAxwy4zNQNDtdfzvjFum6JmGOf8r
+        bz16ZaIdS0uj/MBGvi0xrRfhgvXaHURO6t+wweJRyLD3DFG/vzFhXPmhmKnwkSHF
+        5Uh0JWdaejV4W3TylJNyu69NeitXyxRwkximhILJXxMAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1657917114; x=1658003514; bh=TM2gJiO+BOwaovUnwnzH0G1Z7YMxp0m2bwF
+        NikC8+Xc=; b=KukZ7wGuBi3hkN1u4sVVr0IbKfqVBmBG0tzEdZMsMaYdCDVSgkQ
+        OregSIJgEszeL5aRIAhQBrO35dRaLcD55y9sd2/7ZJElx42SCYnhFcWSQQG4K3Oy
+        sGGjUzQRT7yqJkw99agdwae4iuWM7q3WqXtxsQzDlO9FNFKihjvJPRRSVCIIvvKI
+        3cE2nzHDolWhEXJUfe+kv9aO5hMCjT3+XFQPvhAyXRo8IpqfVvcvCJn9w1PDMcc/
+        +2+AGSHU1FsKPfRQ4qlMalvWHDz7SGa6yckW9duggYWa6qM2nvuQL3+//uXxa6gg
+        7KhlMCojZARks4aOhWnEwJfqtBanc4/wehg==
+X-ME-Sender: <xms:us7RYiv177ou7E62uGJ4JgRlrZgZ5GIYNEVJLwXVgcaV5Ty3386mZA>
+    <xme:us7RYnchCsTh2hWUpyy5CDnpsIOlic63vH6VP1zD0OMuqanEp8xpLCNUiGRIGSKP2
+    6qSO6apYpbeM1JKLwM>
+X-ME-Received: <xmr:us7RYtyBdZU3yRXoHj2x2EeXPAd5ezXQ9DP_JD3j3DZM5BOvpvGhDxRnIOVDjHQe5xBvaerSVgaFQdOWwrNEGgINhGHonw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudekuddgudehfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepud
+    duhfevvddugffggefgkeeggfdvieejgfegkedvudetkeehhfdvffeugeevfedunecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihho
+X-ME-Proxy: <xmx:us7RYtNeZ_kR6C3pgzIKtWtzp8EUckWqds8qzRS7Vxe5E0akWedRZQ>
+    <xmx:us7RYi-2_LAkzQvB2HL012_XjRZ7sYwdqvNeV680LXHq_20Mvrtgjw>
+    <xmx:us7RYlVogp3-MLYjliyUjN8S_RTYaifUMoo7FNRagJBsBygV1e4OvA>
+    <xmx:us7RYmYKI3W8KKMHkY74ZSWJBwlQsYRtwVbS_CYBYbOdCpxFSIZsXQ>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 15 Jul 2022 16:31:53 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     Eric Biggers <ebiggers@google.com>,
+        Josef Bacik <josefbacik@toxicpanda.com>
+Subject: [PATCH v10 0/5] tests for btrfs fsverity
+Date:   Fri, 15 Jul 2022 13:31:47 -0700
+Message-Id: <cover.1657916662.git.boris@bur.io>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
-References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
- <78daa7e4-7c88-d6c0-ccaa-fb148baf7bc8@gmx.com> <PH0PR04MB74164213B5F136059236B78C9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <03630cb7-e637-3375-37c6-d0eb8546c958@gmx.com> <PH0PR04MB7416D257F7B349FC754E30169B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <1cf403d4-46a7-b122-96cf-bd1307829e5b@gmx.com> <PH0PR04MB741638E2A15F4E106D8A6FAF9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <96da9455-f30d-b3fc-522b-7cbd08ad3358@suse.com> <PH0PR04MB7416E68375C1C27C33D347119B889@PH0PR04MB7416.namprd04.prod.outlook.com>
- <61694368-30ea-30a0-df74-fd607c4b7456@gmx.com> <PH0PR04MB7416243FCD419B4BDDB04D8C9B889@PH0PR04MB7416.namprd04.prod.outlook.com>
- <8b3cf3d0-4812-0e92-d850-09a8d08b8169@libero.it>
-In-Reply-To: <8b3cf3d0-4812-0e92-d850-09a8d08b8169@libero.it>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Fri, 15 Jul 2022 16:14:15 -0400
-Message-ID: <CAJCQCtTJ=gs7JT4Tdxt3cOVTjkDD1_rQRqv6rbfwohu-Escw6w@mail.gmail.com>
-Subject: Re: RAID56 discussion related to RST. (Was "Re: [RFC ONLY 0/8] btrfs:
- introduce raid-stripe-tree")
-To:     Goffredo Baroncelli <kreijack@inwind.it>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 15, 2022 at 1:55 PM Goffredo Baroncelli <kreijack@libero.it> wrote:
->
-> On 14/07/2022 09.46, Johannes Thumshirn wrote:
-> > On 14.07.22 09:32, Qu Wenruo wrote:
-> >>[...]
-> >
-> > Again if you're doing sub-stripe size writes, you're asking stupid things and
-> > then there's no reason to not give the user stupid answers.
-> >
->
-> Qu is right, if we consider only full stripe write the "raid hole" problem
-> disappear, because if a "full stripe" is not fully written it is not
-> referenced either.
->
->
-> Personally I think that the ZFS variable stripe size, may be interesting
-> to evaluate. Moreover, because the BTRFS disk format is quite flexible,
-> we can store different BG with different number of disks. Let me to make an
-> example: if we have 10 disks, we could allocate:
-> 1 BG RAID1
-> 1 BG RAID5, spread over 4 disks only
-> 1 BG RAID5, spread over 8 disks only
-> 1 BG RAID5, spread over 10 disks
->
-> So if we have short writes, we could put the extents in the RAID1 BG; for longer
-> writes we could use a RAID5 BG with 4 or 8 or 10 disks depending by length
-> of the data.
->
-> Yes this would require a sort of garbage collector to move the data to the biggest
-> raid5 BG, but this would avoid (or reduce) the fragmentation which affect the
-> variable stripe size.
->
-> Doing so we don't need any disk format change and it would be backward compatible.
+This patchset provides tests for fsverity support in btrfs.
 
-My 2 cents...
-
-Regarding the current raid56 support, in order of preference:
-
-a. Fix the current bugs, without changing format. Zygo has an extensive list.
-b. Mostly fix the write hole, also without changing the format, by
-only doing COW with full stripe writes. Yes you could somehow get
-corrupt parity still and not know it until degraded operation produces
-a bad reconstruction of data - but checksum will still catch that.
-This kind of "unreplicated corruption" is not quite the same thing as
-the write hole, because it isn't pernicious like the write hole.
-c. A new de-clustered parity raid56 implementation that is not
-backwards compatible.
-
-Ergo, I think it's best to not break the format twice. Even if a new
-raid implementation is years off.
-
-Metadata centric workloads suck on parity raid anyway. If Btrfs always
-does full stripe COW won't matter even if the performance is worse
-because no one should use parity raid for this workload anyway.
-
+It includes modifications for generic tests to pass with btrfs as well
+as new tests.
 
 --
-Chris Murphy
+v10:
+- rebase
+- add nodatasum instead of setting it
+- rewrite eof block test to read zap_len at eof and to compare with a
+  zero file instead of using xxd
+- add _require_loop to the log_writes test
+  
+v9:
+- use nodatasum for btrfs corruption tests.
+- modify eof block corruption test to allow all zeroes rather than
+  requiring an error.
+v8:
+- reorganize to have a patch for enabling generic tests followed by the
+  patches with new and specific tests.
+- fix some rebasing miscues from v7.
+- fix a chunk of space characters instead of a tab in the new requires
+  function.
+v7:
+- add a new patch to make the new corruption requires more clear
+- require corruption in generic/576
+- require only btrfs_corrupt_block in btrfs/290
+- add missing xfs_io requirements in btrfs/290
+- remove unneeded zero byte check from btrfs corruption function
+- fix sloppy extras in generic/690
+v6:
+- refactor "requires" for verity corruption tests so that other verity
+  tests can run on btrfs even without the corruption command available.
+  Also, explicitly require xfs_io fiemap for all corruption tests.
+- simplify and clarify "non-trivial EFBIG" calculation and documentation
+  per suggestions by Eric Biggers.
+- remove unnecessary adjustment to max file size in the new EFBIG test;
+  the bug it worked around has been fixed.
+v5:
+- more idiomatic requires structure for making efbig test generic
+- make efbig test use truncate instead of pwrite for making a big file
+- improve documentation for efbig test approximation
+- fix underscores vs dashes in btrfs_requires_corrupt_block
+- improvements in missing/redundant requires invocations
+- move orphan test image file to $TEST_DIR
+- make orphan test replay/snapshot device size depend on log device
+  instead of hard-coding it.
+- rebase (signicant: no more "groups" file; use preamble)
+v4:
+- mark local variables
+- get rid of redundant mounts and syncs
+- use '_' in function names correctly
+- add a test for the EFBIG case
+- reduce usage of requires_btrfs_corrupt_block
+- handle variable input when corrupting merkle tree
+v3: rebase onto xfstests master branch
+v2: pass generic tests, add logwrites test
+
+
+Boris Burkov (5):
+  common/verity: require corruption functionality
+  common/verity: support btrfs in generic fsverity tests
+  btrfs: test btrfs specific fsverity corruption
+  btrfs: test verity orphans with dmlogwrites
+  generic: test fs-verity EFBIG scenarios
+
+ common/btrfs          |   5 ++
+ common/config         |   1 +
+ common/verity         |  49 ++++++++++++
+ tests/btrfs/290       | 168 ++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/290.out   |  25 +++++++
+ tests/btrfs/291       | 162 ++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/291.out   |   2 +
+ tests/generic/574     |  38 +++++++++-
+ tests/generic/574.out |  13 +---
+ tests/generic/576     |   1 +
+ tests/generic/692     |  64 ++++++++++++++++
+ tests/generic/692.out |   7 ++
+ 12 files changed, 523 insertions(+), 12 deletions(-)
+ create mode 100755 tests/btrfs/290
+ create mode 100644 tests/btrfs/290.out
+ create mode 100755 tests/btrfs/291
+ create mode 100644 tests/btrfs/291.out
+ create mode 100644 tests/generic/692
+ create mode 100644 tests/generic/692.out
+
+-- 
+2.35.1
+
