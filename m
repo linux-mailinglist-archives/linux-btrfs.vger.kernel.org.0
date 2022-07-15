@@ -2,285 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 002CD575BE9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jul 2022 08:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01224575D27
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jul 2022 10:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbiGOG6Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Jul 2022 02:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
+        id S230265AbiGOIO6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Jul 2022 04:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbiGOG6N (ORCPT
+        with ESMTP id S229608AbiGOIO5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Jul 2022 02:58:13 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1073459241
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jul 2022 23:58:12 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C33721FACC
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 06:58:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657868290; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zQMniJ1zDblsrsJ2juimLo90qaL/athyHUyOEUN9vYQ=;
-        b=fSvlgPYFyuqJoxt4PM4BR9+m78X3HYgXk9UNvl0ZVegVx45pey+Gu5J6cTUNeXltFblEbN
-        Du0r2XISwoF4xdyFDJo5nS9h5/ick5fXRG0uDxxqzK/VVrl6aXcJDHMryRrXUbgfB5WL50
-        0w/PwIz4gdDcCVLfzTDidigt1zqUqqQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 163EE13754
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 06:58:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6EljMwEQ0WKtfQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 06:58:09 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/4] btrfs: dump all space infos if we abort transaction due to ENOSPC
-Date:   Fri, 15 Jul 2022 14:57:47 +0800
-Message-Id: <e37365946a5b98e5c93e8d0169ba0e19765a3418.1657867842.git.wqu@suse.com>
-X-Mailer: git-send-email 2.37.0
-In-Reply-To: <cover.1657867842.git.wqu@suse.com>
+        Fri, 15 Jul 2022 04:14:57 -0400
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD92B2F3A5
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 01:14:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1657872895; x=1689408895;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=iCYzZl6N1H29DGt/98HN4xUV4yGp9z2mrTmRkKqHrrY=;
+  b=rSErftgeXhOCM0SJxi5bWz5iHTsFMvcTSznSfyjFZilCArCbjOIJIhp4
+   yvXx8D0lwnAzeXf80IX6emQ5243llF0oisb43xV6SQ/yACbVpwdJ+UFpZ
+   xWrPD+VYyXMS4YKDERbdrmXoeGh63U5eXqVFxSiRcSO8RiJnJ0Nan7xFr
+   TSfNMRAzQhq9PNayNAjp8Uh8cB/W3WAuEpdlGrBUbGlvDOQnBYew0I4DB
+   bCaYq9TRE3HIbD7syzhYwyUGdacirzaTKsEJE/b+AtR492l6mlGeb0Cxg
+   oVi06/8TcVpBQRCQEvJRGUuKT9ebjGHtOTLn2cosh+dxqXUF6jCCOnFgd
+   A==;
+X-IronPort-AV: E=Sophos;i="5.92,273,1650902400"; 
+   d="scan'208";a="205825068"
+Received: from mail-bn8nam11lp2169.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.169])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Jul 2022 16:14:54 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=agGgCMkNAKXvUmxagR2yCURD5WJ2QkA5X3kywosoBLxfKz+g1GUxWtKt1D1tcnrSRSiWSo10+CVl8xmKSm5tKqdjHEqhJ2WegETJBbIIje+MneIgZ3BWy7IY1qFnKz3usbmA0RWlNhIMXneIQzS45t4lu+hm9EODeZ9Ber1UZV+B9LK6BBfTNnPCY5qUjQs9VGTPESFRWrhRIpbxnZuRYBpSer386R3iywSlwWFNII5T8UWOatqtycS6xsU3KjeJoFypjuVfKIcRDQWj3xnjq8tx6yGJFHqrb+2ma1p7Skh3+BNWdp+Wa+mDIuAslg73gVU0r0G4zAXcdFOhg0WAqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vvFd4bBSv1EfLBqa58KNrGtAjDOblUT3zkh7tH1rfU0=;
+ b=Vl26RxJ+RdEjYtNdU/RnSMN2BgafTHzwt3mnjhy0nOG4JsiOTKvobc1L5VAweCe3NHzHK/2Ob0LVKCfUue/qhLpqxr773G35E8z0oxxuAEj+FudBa4M1Xx8fKN/yvMNk5/d1+Y/SNX3J48T556ysQSkv7WxhJt/6P2hcnMKZrk1qL5eizZh8jiFmgQA2gw1zAsXS0YsrLjKCdIBGBuxlRffqUReFtZaEuI77S4/ru98W1OjD1QMxe4pAZEizjtgI5F6zyS+jcawsShfIWMfnQ1xOqNqAsDkXlLX6Cvvysqc6yan8XX0jGrmAMDC+AcyXf3wwIJ/cq/ZTg+gPoF0Waw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vvFd4bBSv1EfLBqa58KNrGtAjDOblUT3zkh7tH1rfU0=;
+ b=t50ny3ZtYjtqhnlTgcLNTab0YA07e6ZUXx+JS/KoH9mRfE7FvGmif1o1HjVrmobarfBBg9g9MSGtjNzQu4Snot/eXIZ/JpqaGI2pN1oftQHbvx8gJSSoShHHe2mbv0aX5pTKBKcZHWEDbBZQ2itdYiPF7juNfQCf16/xCZrctSw=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by BY5PR04MB6723.namprd04.prod.outlook.com (2603:10b6:a03:226::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.12; Fri, 15 Jul
+ 2022 08:14:54 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ccb9:68a4:d8c4:89f5]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ccb9:68a4:d8c4:89f5%7]) with mapi id 15.20.5438.014; Fri, 15 Jul 2022
+ 08:14:53 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/4] btrfs: make DUMP_BLOCK_RSV() to have better output
+Thread-Topic: [PATCH 3/4] btrfs: make DUMP_BLOCK_RSV() to have better output
+Thread-Index: AQHYmBhF7QwMy6jcLEGUIrdMeDdI5w==
+Date:   Fri, 15 Jul 2022 08:14:53 +0000
+Message-ID: <PH0PR04MB7416789E6373C3685094D8009B8B9@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <cover.1657867842.git.wqu@suse.com>
+ <d0096ee10270e00362471c7a842aeefed20806c5.1657867842.git.wqu@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e5cc281a-c9dc-4164-d9f5-08da663a18d9
+x-ms-traffictypediagnostic: BY5PR04MB6723:EE_
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jjt3vmtH8Mgl+FjzMoQoWqcs/MqGkGSOow7w8cyRQ1+pwd+Aq1ZqeCzQ148tQtDLvHSiOVi/vN3zId2qcPzSSkW/c/V6vqM8fLXT+nn1hlTcC0pZuyDWIX/fjPQOlOH8o+nkI80Q9GctAJFsY9aWibgEaXj7w5FexWm/cFHGGaMCcUBrz693ZpeWj5t8MqpOPALnvaIu3gOkh1VbSQvCOpzVUAviZhPMkdSSwIdVWfvNqq9i4YjLlrFOmDqMc9wvoGZPTKN+YsqhPQZE8u0jAgmgXIq1mkRSPavxURHA6QHZJTIv38xT6XYA3gXsmRyKy8zLlOCCSqUH5trkWJDyDbSqS5DErcPh9rVH1Id/o7qCuDQmuTr2L/iooZGDCXw8aUkNC9rm3lE+WJ7uYxgDoO4jrWPINQP59pN341SeKc7D5drUKKokh5aK5i4jIhRzAenIdXq3+RHycYF9Wg0NwpD5M/gwemt/89FDJyEXcQShLZNqVksARjV9d04Uq8jJV3ueSKV5b6CYCAq7S+P/UOxFSkT1QZplxRm4bcpmmte0HHTffmbDvKxwETQTPs5eRab0P81x3hshW/bbdyk+XCPEmQ+JKAodN0WPJZtEnSavtxEC5xW2LdKZoDAltVeKfdJGd8rTdwGjGsZKiCbjjHx+dT9bFJJWwJIF8Ykh6y2JIYeGl9cABCaFlAjye5qR2RcSn6h6UuLYb7xawUZMWGzTtunoO/bz3W+OojauwQHWSvLN5mmvmid6f1AOdPEtxY+hSvzwKk+1QyiqnILu+/1EkGwkdFQ8EqACKwaYWyalLL30ysiBrY4BvdWuO1Iv
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(376002)(366004)(396003)(346002)(136003)(8936002)(76116006)(86362001)(186003)(52536014)(41300700001)(38070700005)(83380400001)(5660300002)(2906002)(33656002)(110136005)(55016003)(64756008)(91956017)(122000001)(8676002)(66556008)(66446008)(66476007)(316002)(53546011)(6506007)(26005)(9686003)(82960400001)(38100700002)(478600001)(71200400001)(7696005)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?WUkeRPCbPp7v+PHy2zi2lGlXKQthSRNAi/oN9HkjsWKZIGcHvkat5Q5w6LYk?=
+ =?us-ascii?Q?t2/v1/p9L1ZRsUvbRh0ccDxGehxU61BBdn+RLZiKvOaYV1mTjFI4jd8S2YX+?=
+ =?us-ascii?Q?95le8aTYGJX0UNWRwU2nfhC8I8wo9WpuOpUC9fx1rjGVRWh4GAoF2khxHCsM?=
+ =?us-ascii?Q?OXXJ+L47IwdmZW7NJwhF8gyKaq4uT88Xaf25d8xW6J0IOTJSPXcgGxqblduI?=
+ =?us-ascii?Q?mGaqgAREQEV1B7gFYmhMvcEqRz8zXvGnvwP93BxBUavu+ZBTInh3RNuhLwFW?=
+ =?us-ascii?Q?Pa0zKrAJgpMh+/br5zGBkikDpc7wyMghADreSIMIWsomtyuSr7WnRMvlRna0?=
+ =?us-ascii?Q?NMh31PuYMQ8aE5PbXQvcgl/mQgERwYS8BAEFhWNcJ5o1lQMHeqk+4DN+nh6P?=
+ =?us-ascii?Q?ZCmutKLvPZwnUsf1Ki1VUNT82Qe507dE+lAtnGTFtcX9BtM+lLEcaZD+ClgJ?=
+ =?us-ascii?Q?cCzvkfSTAbRrba7CMYLpiv94FIYaHa8eEXYEJ/1fwhTwQHm0PU70R14wj55G?=
+ =?us-ascii?Q?MVvQUgMM5vZocVzD06Uh40kPiRSXq1Fklr5kMF1Mem3HM2XunOlEG2xwhRaD?=
+ =?us-ascii?Q?4E44jycH9sTy9v0jRV2Z5H+QFGVxhJrpsSb/iW7wTHCei0/UyTLTfHl23NJ1?=
+ =?us-ascii?Q?nqnnX9Iz4WhtnxrfL7H3Afi+M4+BvQ2k80JP40V4wsUPRK+q3G4GUHLG/nCb?=
+ =?us-ascii?Q?rkKdAe2TUPxT4zln6EyYi7kr5SniTJD6o8L9qL73AA0ehwhAHIgP+1Z3zA4S?=
+ =?us-ascii?Q?5zvKtW99gaDWN79J7QiyRDYMS1862M6ia1iOyl+klbgVa6SNWi5bOJer6Yf1?=
+ =?us-ascii?Q?jN9Fw5YL2oAmHTNY56zKF7urUSsEGSoRfelSwf3tqe6zhaTjQDsxia3AQQQO?=
+ =?us-ascii?Q?84/9y4AEGaLQ/QCEeFPrRqjdfM51l0hyDC0B2i8TYpHbv27Ko5O19Zg3h/Tp?=
+ =?us-ascii?Q?O30lCfTq48tMTazcm8dtKQQN7LvrXT9R2BvFs7I8ybJBSNA4Q16w4zBPvmz8?=
+ =?us-ascii?Q?2WgAGO01rb9gysBs3ytfqjWvk8lkIhvwAQkCVoPP9vCWcsMklS7CbIrA33St?=
+ =?us-ascii?Q?b8QjL31cz4JBzzrQ5wBbmZ8QVznuOsLhcLdQY3JWZyMjc76E5obvL08ouQrM?=
+ =?us-ascii?Q?BPFnZq6lywbsIg5gnPe2hDueb+Ljc0GmRyA9RD9edCZ9NRj8w1Oy/j0bfdkG?=
+ =?us-ascii?Q?3eX3Mndr6vfB19O2baySx9CAwdWQ/5rwGtRnMVftP6fMWXEceG8EMem0ECt9?=
+ =?us-ascii?Q?GMo4v74uXvw4DJn7FIZhiHFWITqHP5EZTrBAGohOG5E/qT2zi4yoADqS7XKC?=
+ =?us-ascii?Q?JGTUFMsxvKuJZDoKHTBa1dGGv6jGyBqi5cjd3s2CcPQgbWgHP+vcMNx36rGY?=
+ =?us-ascii?Q?QBbQianOTMoigZcdkNbR4AO4D77kew2yzLP1be6TAqTiMWbaGzbplvkCD3Md?=
+ =?us-ascii?Q?oq5vf9+XJCnYzKAUSQpiUjbmU6F+LDX0RexDcivNptmO1DZhH+LCxl4Y/H43?=
+ =?us-ascii?Q?vBz5ZKdKDbAhpVKP7tkZniY3xhQ9fx0Wwp66v9neXe7noejhj88tPYB66v9E?=
+ =?us-ascii?Q?7CY3q2pcH5e/eMV+bMLQjGA+Vj0K9Qt4P4nrt5CKhqZ9irc0ATvK326lQODk?=
+ =?us-ascii?Q?/A=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5cc281a-c9dc-4164-d9f5-08da663a18d9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2022 08:14:53.7100
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mB2g5n08svEqjTtD6XjO0INHoJ6rt5McvD98O0bDud91BaGHN4QHiU6mkMDpCLmdmJN2G08Wg6mdZ2fdbpIT8ZqxP293BU/d3AB2ZhKDQlo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6723
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have hit some transaction abort due to -ENOSPC internally.
-
-Normally we should always reserve enough space for metadata for every
-transaction, thus hitting -ENOSPC should really indicate some cases we
-didn't expect.
-
-But unfrotunately current error reporting will only give a kernel
-wanring and backtrace, not really helpful to debug what's causing the
-problem.
-
-And debug_enospc can only help when user can reproduce the problem, but
-under most cases, such transaction abort by -ENOSPC is really hard to
-reproduce.
-
-So this patch will dump all space infos (data, metadata, system) when we
-abort the first transaction with -ENOSPC.
-
-This should at least provide some clue to us.
-
-The example of a dump would look like this:
-
- ------------[ cut here ]------------
- <skip stack dump>
- ---[ end trace 0000000000000000 ]---
- BTRFS info (device dm-1: state A): dumpping space info:
- BTRFS info (device dm-1: state A): space_info DATA has 1175552 free, is not full
- BTRFS info (device dm-1: state A):   total:         8388608
- BTRFS info (device dm-1: state A):   used:          7163904
- BTRFS info (device dm-1: state A):   pinned:        49152
- BTRFS info (device dm-1: state A):   reserved:      0
- BTRFS info (device dm-1: state A):   may_use:       0
- BTRFS info (device dm-1: state A):   read_only:     0
- BTRFS info (device dm-1: state A): space_info META has 263798784 free, is not full
- BTRFS info (device dm-1: state A):   total:         268435456
- BTRFS info (device dm-1: state A):   used:          180224
- BTRFS info (device dm-1: state A):   pinned:        196608
- BTRFS info (device dm-1: state A):   reserved:      0
- BTRFS info (device dm-1: state A):   may_use:       4194304
- BTRFS info (device dm-1: state A):   read_only:     65536
- BTRFS info (device dm-1: state A): space_info SYS has 8372224 free, is not full
- BTRFS info (device dm-1: state A):   total:         8388608
- BTRFS info (device dm-1: state A):   used:          16384
- BTRFS info (device dm-1: state A):   pinned:        0
- BTRFS info (device dm-1: state A):   reserved:      0
- BTRFS info (device dm-1: state A):   may_use:       0
- BTRFS info (device dm-1: state A):   read_only:     0
- BTRFS info (device dm-1: state A): dumpping metadata reservation:
- BTRFS info (device dm-1: state A):   global:          (3670016/3670016)
- BTRFS info (device dm-1: state A):   trans:           (0/0)
- BTRFS info (device dm-1: state A):   chuuk:           (0/0)
- BTRFS info (device dm-1: state A):   delayed_inode:   (0/0)
- BTRFS info (device dm-1: state A):   delayed_refs:    (524288/524288)
- BTRFS: error (device dm-1: state A) in cleanup_transaction:1971: errno=-28 No space left
- BTRFS info (device dm-1: state EA): forced readonly
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ctree.h      |  6 ++++--
- fs/btrfs/space-info.c | 46 ++++++++++++++++++++++++++++++++-----------
- fs/btrfs/space-info.h |  2 ++
- fs/btrfs/super.c      |  4 +++-
- 4 files changed, 44 insertions(+), 14 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4e2569f84aab..3d6fd7f6b339 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3739,7 +3739,7 @@ const char * __attribute_const__ btrfs_decode_error(int errno);
- __cold
- void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
- 			       const char *function,
--			       unsigned int line, int errno);
-+			       unsigned int line, int errno, bool first_hit);
- 
- /*
-  * Call btrfs_abort_transaction as early as possible when an error condition is
-@@ -3747,9 +3747,11 @@ void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
-  */
- #define btrfs_abort_transaction(trans, errno)		\
- do {								\
-+	bool first = false;					\
- 	/* Report first abort since mount */			\
- 	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
- 			&((trans)->fs_info->fs_state))) {	\
-+		first = true;					\
- 		if ((errno) != -EIO && (errno) != -EROFS) {		\
- 			WARN(1, KERN_DEBUG				\
- 			"BTRFS: Transaction aborted (error %d)\n",	\
-@@ -3761,7 +3763,7 @@ do {								\
- 		}						\
- 	}							\
- 	__btrfs_abort_transaction((trans), __func__,		\
--				  __LINE__, (errno));		\
-+				  __LINE__, (errno), first);	\
- } while (0)
- 
- #ifdef CONFIG_PRINTK_INDEX
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 6bbf95e8e4f7..6a62cc8dc31a 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -441,12 +441,12 @@ void btrfs_try_granting_tickets(struct btrfs_fs_info *fs_info,
- 	}
- }
- 
--#define DUMP_BLOCK_RSV(fs_info, member, name)				\
-+#define DUMP_BLOCK_RSV(fs_info, member, name, prefix)			\
- do {									\
- 	struct btrfs_block_rsv *__rsv = &(fs_info)->member;		\
- 	spin_lock(&__rsv->lock);					\
--	btrfs_info(fs_info, "%-16s (%llu/%llu)",			\
--		   name, __rsv->reserved, __rsv->size);			\
-+	btrfs_info(fs_info, "%s%-16s (%llu/%llu)",			\
-+		   prefix, name, __rsv->reserved, __rsv->size);		\
- 	spin_unlock(&__rsv->lock);					\
- } while (0)
- 
-@@ -465,7 +465,8 @@ static const char *space_info_flag_to_str(struct btrfs_space_info *space_info)
- }
- 
- static void __btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
--				    struct btrfs_space_info *info)
-+				    struct btrfs_space_info *info,
-+				    bool dump_block_rsvs)
- {
- 	const char *flag_str = space_info_flag_to_str(info);
- 	lockdep_assert_held(&info->lock);
-@@ -485,11 +486,14 @@ static void __btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
- 		btrfs_info(fs_info,
- 			    "  zone_unusable: %llu", info->bytes_zone_unusable);
- 
--	DUMP_BLOCK_RSV(fs_info, global_block_rsv, "global:");
--	DUMP_BLOCK_RSV(fs_info, trans_block_rsv, "trans:");
--	DUMP_BLOCK_RSV(fs_info, chunk_block_rsv, "chunk:");
--	DUMP_BLOCK_RSV(fs_info, delayed_block_rsv, "delayed_inode:");
--	DUMP_BLOCK_RSV(fs_info, delayed_refs_rsv, "delayed_refs:");
-+	if (!dump_block_rsvs)
-+		return;
-+
-+	DUMP_BLOCK_RSV(fs_info, global_block_rsv, "global:", "");
-+	DUMP_BLOCK_RSV(fs_info, trans_block_rsv, "trans:", "");
-+	DUMP_BLOCK_RSV(fs_info, chunk_block_rsv, "chunk:", "");
-+	DUMP_BLOCK_RSV(fs_info, delayed_block_rsv, "delayed_inode:", "");
-+	DUMP_BLOCK_RSV(fs_info, delayed_refs_rsv, "delayed_refs:", "");
- }
- 
- void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
-@@ -500,7 +504,7 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
- 	int index = 0;
- 
- 	spin_lock(&info->lock);
--	__btrfs_dump_space_info(fs_info, info);
-+	__btrfs_dump_space_info(fs_info, info, true);
- 	spin_unlock(&info->lock);
- 
- 	if (!dump_block_groups)
-@@ -955,7 +959,7 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
- 
- 	if (btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
- 		btrfs_info(fs_info, "cannot satisfy tickets, dumping space info");
--		__btrfs_dump_space_info(fs_info, space_info);
-+		__btrfs_dump_space_info(fs_info, space_info, true);
- 	}
- 
- 	while (!list_empty(&space_info->tickets) &&
-@@ -1711,3 +1715,23 @@ int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
- 	}
- 	return ret;
- }
-+
-+/* Dump all the space infos when we abort a transaction due to ENOSPC. */
-+__cold void btrfs_dump_fs_space_info(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_space_info *space_info;
-+
-+	btrfs_info(fs_info, "dumpping space info:");
-+	list_for_each_entry(space_info, &fs_info->space_info, list) {
-+		spin_lock(&space_info->lock);
-+		__btrfs_dump_space_info(fs_info, space_info, false);
-+		spin_unlock(&space_info->lock);
-+	}
-+	btrfs_info(fs_info, "dumpping metadata reservation:");
-+
-+	DUMP_BLOCK_RSV(fs_info, global_block_rsv, "global:", "  ");
-+	DUMP_BLOCK_RSV(fs_info, trans_block_rsv, "trans:", "  ");
-+	DUMP_BLOCK_RSV(fs_info, chunk_block_rsv, "chunk:", "  ");
-+	DUMP_BLOCK_RSV(fs_info, delayed_block_rsv, "delayed_inode:", "  ");
-+	DUMP_BLOCK_RSV(fs_info, delayed_refs_rsv, "delayed_refs:", "  ");
-+}
-diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-index e7de24a529cf..01287a7a22a4 100644
---- a/fs/btrfs/space-info.h
-+++ b/fs/btrfs/space-info.h
-@@ -157,4 +157,6 @@ static inline void btrfs_space_info_free_bytes_may_use(
- }
- int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
- 			     enum btrfs_reserve_flush_enum flush);
-+void btrfs_dump_fs_space_info(struct btrfs_fs_info *fs_info);
-+
- #endif /* BTRFS_SPACE_INFO_H */
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 4c7089b1681b..f6bc8aa00f44 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -346,12 +346,14 @@ void __cold btrfs_err_32bit_limit(struct btrfs_fs_info *fs_info)
- __cold
- void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
- 			       const char *function,
--			       unsigned int line, int errno)
-+			       unsigned int line, int errno, bool first_hit)
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 
- 	WRITE_ONCE(trans->aborted, errno);
- 	WRITE_ONCE(trans->transaction->aborted, errno);
-+	if (first_hit && errno == -ENOSPC)
-+		btrfs_dump_fs_space_info(fs_info);
- 	/* Wake up anybody who may be waiting on this transaction */
- 	wake_up(&fs_info->transaction_wait);
- 	wake_up(&fs_info->transaction_blocked_wait);
--- 
-2.37.0
-
+On 15.07.22 08:58, Qu Wenruo wrote:=0A=
+> - Skip "size" and "reserved" output=0A=
+>   Just output the numbers directly=0A=
+> =0A=
+> Before:=0A=
+> =0A=
+>   BTRFS info (device dm-1: state A): global_block_rsv: size 3670016 reser=
+ved 3653632=0A=
+>   BTRFS info (device dm-1: state A): trans_block_rsv: size 0 reserved 0=
+=0A=
+>   BTRFS info (device dm-1: state A): chunk_block_rsv: size 0 reserved 0=
+=0A=
+>   BTRFS info (device dm-1: state A): delayed_block_rsv: size 0 reserved 0=
+=0A=
+>   BTRFS info (device dm-1: state A): delayed_refs_rsv: size 524288 reserv=
+ed 360448=0A=
+> =0A=
+> After:=0A=
+> =0A=
+>  BTRFS info (device dm-1: state A): global:          (3670016/3670016)=0A=
+>  BTRFS info (device dm-1: state A): trans:           (0/0)=0A=
+>  BTRFS info (device dm-1: state A): chunk:           (0/0)=0A=
+>  BTRFS info (device dm-1: state A): delayed_inode:   (0/0)=0A=
+>  BTRFS info (device dm-1: state A): delayed_refs:    (524288/524288)=0A=
+=0A=
+Pure personal preference, but I find it a tad bit easier to have size and =
+=0A=
+reserved printed. So you don't have to look up the code when you encounter=
+=0A=
+the error.=0A=
+=0A=
+Maybe:=0A=
+BTRFS info (device dm-1: state A): global:          size:3670016,res:367001=
+6=0A=
+=0A=
+But in the end of the day it doesn't matter I guess.=0A=
