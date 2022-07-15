@@ -2,71 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A557576724
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jul 2022 21:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0FA5767A4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jul 2022 21:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbiGOTIb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Jul 2022 15:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
+        id S229762AbiGOTpd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Jul 2022 15:45:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbiGOTIa (ORCPT
+        with ESMTP id S229448AbiGOTpd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Jul 2022 15:08:30 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828C648E94
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 12:08:28 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-31c89653790so55546017b3.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 12:08:28 -0700 (PDT)
+        Fri, 15 Jul 2022 15:45:33 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF4D6392F
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 12:45:32 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id mi10so4438921qvb.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jul 2022 12:45:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pjnjmWegb6B51c2v1Uq4pezCb2kWtc0QsCHn7cTDtsE=;
-        b=qtYZWbLcBbgL1vJ9cBJ5KVKFsieGT2JeCJvqrlo3dcXQaXx8q1J0UFt0J0QrQ/LA/E
-         JF6joVLfOMYVgNoxzLDTcIym0lA1stXln0rbd/xyvefxZtp/qaJdAMq8e8VNQgTQkC/c
-         1Uf1DBXiHAlexxBH8cWDxn724XYUPoGv2ZhBB1R5QAWarvZZ0oGHhiR0MYNttpy688Ek
-         Ka87zvOeJL7oGzoBQddg3lsg1UtktqD/4O+UrBdq6wycu8L4VkXNunA7LVVmKh0w9AlQ
-         hYR+QjDannBfP3RJzjZRa394m54DvyvMnfKL9QxieQ2RYr0Rl3eugpKqDIsirtMW6vdm
-         vnMQ==
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3pLLRif0+ITK0IF/iQ0NFU22dk08s8Bs8YCFtfz7GTU=;
+        b=jt6grtQPv+5XfxbUnahgDU2qNJS5yre+3sK+z2sSxnoUoCvmB+mxR6zYmBz6qqNBeE
+         9OmQ1nnsgGp04NyAGHJzSlpSBPjO8xXGjY37XxAJegWsckvlfmSmh0BFN75MTsAMWpcO
+         aT14kwrLN33tOwVqLZ4RxNy0wAhjXZZfWfwemqimT+3tIjCqG8sD2Q/DWseownsNR1tX
+         umMTw1ZNRFuXkmmVF/eBpIBClLxlNbyJK1W9bhM8rgRzT62qvX54Iwdukb2gtZ4rw9mZ
+         z2M3RSQ6thXRHK023WjufolapWdru15ho3NJh/f7xCdSAmtiOVj3/LEaA2n2bdzKMmQe
+         soeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pjnjmWegb6B51c2v1Uq4pezCb2kWtc0QsCHn7cTDtsE=;
-        b=aQYRt5SbL13mDNOsZ0Oekebmn6Jz4E58+KD7LTkC43lmtk2sM8IYngKoBFoNIfd6kP
-         vwVm+yxNa8ff+gDaiJFAwPP+Md4s8/ztkGnC3SuPZ79eWrD/J7C1zvw4r/uUmaI5aYnd
-         5/pY7LFubMYaMMVRFFc/xlhKTXFY06xtzyRQKmfN8WS9kem4dGKYIRs9ggcpZx/KadbU
-         xdr1+5qvX8Mfsr4CVQafixFWe0wytuAEL0ySelLCgjfue7W3kxnSHdkf+QLYERmyX4yW
-         dpvKdvcj+AThagz1wq1G9QV4S/DBm3MIg0iF2o4C3UfywF17o6+UVebUKIVxAIyaYEX+
-         odlg==
-X-Gm-Message-State: AJIora+RGE/YbNnyw0jF4QEJlJ4Y/muYr9yuvXOaUDGeHBHiTcFiD4dY
-        cv8Rptdu/fpYv10Hqs8kVzpLZxsAh5P6R5x/hTc=
-X-Google-Smtp-Source: AGRyM1svR6asuCkgOe/3+MYQEKDroOZIWLKATTQaqM32mtALoO5gousVRRfAhAWns+dzO59NnKVxKoR7cO1MnTcHkEc=
-X-Received: by 2002:a81:53c1:0:b0:31d:825d:949e with SMTP id
- h184-20020a8153c1000000b0031d825d949emr17870617ywb.413.1657912107726; Fri, 15
- Jul 2022 12:08:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3pLLRif0+ITK0IF/iQ0NFU22dk08s8Bs8YCFtfz7GTU=;
+        b=jwHoSezkjk2fTcdYoJbAxd5gRfbGvON4jsWWJ9XTO1MFH8hU5c/4udRDA7rxRFQXjr
+         MhNt0luJtoOgXxjjpbusI8oUKPa+6AO/dcDrV/z8r/fNSNAUnADl9eXjnXOBI+ExG/Mp
+         tB2rUTpX3/kCUE8CyAGkay8guhnBswbjgd66M9gfbgXTID7ZSMcHIVQe3MXFM7IOSctc
+         7TLkKmoUoM/MP9wIpy58YMuL8qBCOsfSns6FUoejVbJ6fBaX6ryY3Qp31QdPqttyqIiT
+         gCMPI8O+tCJ3kFu8ypUPddbXeiffmD1oiHdhca/t9ixSNlugHcJ4WbbRAF+vWe1mbi8+
+         4Hog==
+X-Gm-Message-State: AJIora9oZIqD19HpQ4QEkGwM7wjee4vAtxPzV1JbKmCJdrA2/5binRQb
+        nfLHzN0aCY+xKZzsz/xevhF1WDBRrKPUtA==
+X-Google-Smtp-Source: AGRyM1sjCdtm5iXuBkIiqn0W8ZtzZ4pTwjmjq2IlXk5e54AnQnNksdS96bHuE1skndvLugCuwkpD3w==
+X-Received: by 2002:ad4:4e89:0:b0:472:fd70:ff88 with SMTP id dy9-20020ad44e89000000b00472fd70ff88mr13622919qvb.97.1657914330747;
+        Fri, 15 Jul 2022 12:45:30 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id bl25-20020a05620a1a9900b006a787380a5csm4806640qkb.67.2022.07.15.12.45.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Jul 2022 12:45:30 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 0/9] btrfs: block group cleanups
+Date:   Fri, 15 Jul 2022 15:45:20 -0400
+Message-Id: <cover.1657914198.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
- <78daa7e4-7c88-d6c0-ccaa-fb148baf7bc8@gmx.com> <PH0PR04MB74164213B5F136059236B78C9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <03630cb7-e637-3375-37c6-d0eb8546c958@gmx.com> <PH0PR04MB7416D257F7B349FC754E30169B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <1cf403d4-46a7-b122-96cf-bd1307829e5b@gmx.com> <PH0PR04MB741638E2A15F4E106D8A6FAF9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <96da9455-f30d-b3fc-522b-7cbd08ad3358@suse.com> <PH0PR04MB7416E68375C1C27C33D347119B889@PH0PR04MB7416.namprd04.prod.outlook.com>
- <61694368-30ea-30a0-df74-fd607c4b7456@gmx.com> <PH0PR04MB7416243FCD419B4BDDB04D8C9B889@PH0PR04MB7416.namprd04.prod.outlook.com>
- <8b3cf3d0-4812-0e92-d850-09a8d08b8169@libero.it>
-In-Reply-To: <8b3cf3d0-4812-0e92-d850-09a8d08b8169@libero.it>
-From:   Thiago Ramon <thiagoramon@gmail.com>
-Date:   Fri, 15 Jul 2022 16:08:16 -0300
-Message-ID: <CAO1Y9woJUhuQ+Q2yWSvscnBJb9D5cYiBaY-WG3Re=7V=OzWVhw@mail.gmail.com>
-Subject: Re: RAID56 discussion related to RST. (Was "Re: [RFC ONLY 0/8] btrfs:
- introduce raid-stripe-tree")
-To:     kreijack@inwind.it
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,76 +65,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-As a user of RAID6 here, let me jump in because I think this
-suggestion is actually a very good compromise.
+v1->v2:
+- I'm an idiot and didn't rebase properly, so adding the two other cleanups I
+  had that I didn't send.
+- Rebased onto a recent misc-next and fixed the compile errors.
+- Realized that with the new zoned patches that caused the compile error that
+  btrfs_update_space_info needed to be cleaned up, so added patches for that.
 
-With stripes written only once, we completely eliminate any possible
-write-hole, and even without any changes on the current disk layout
-and allocation, there shouldn't be much wasted space (in my case, I
-have a 12-disk RAID6, so each full stripe holds 640kb, and discounting
-single-sector writes that should go into metadata space, any
-reasonable write should fill that buffer in a few seconds).
+--- Original email ---
 
-The additional suggestion of using smaller stripe widths in case there
-isn't enough data to fill a whole stripe would make it very easy to
-reclaim the wasted space by rebalancing with a stripe count filter,
-which can be easily automated and run very frequently.
+I'm reworking our relocation and delete unused block group workqueues which
+require some cleanups of how we deal with flags on the block group.  We've had a
+bit field for various flags on the block group for a while, but there's a subtle
+gotcha with this bitfield in that you have to protect every modification with
+bg->lock in order to not mess with the values, and there were a few places that
+we weren't holding the lock.
 
-On-disk format also wouldn't change and be fully usable by older
-kernels, and it should "only" require changes on the allocator to
-implement.
+Rework these to be normal flags, and then go behind this conversion and cleanup
+some of the usage of the different flags.  Additionally there's a cleanup around
+when to break out of the background workers.  Thanks,
 
-On Fri, Jul 15, 2022 at 2:58 PM Goffredo Baroncelli <kreijack@libero.it> wrote:
->
-> On 14/07/2022 09.46, Johannes Thumshirn wrote:
-> > On 14.07.22 09:32, Qu Wenruo wrote:
-> >>[...]
-> >
-> > Again if you're doing sub-stripe size writes, you're asking stupid things and
-> > then there's no reason to not give the user stupid answers.
-> >
->
-> Qu is right, if we consider only full stripe write the "raid hole" problem
-> disappear, because if a "full stripe" is not fully written it is not
-> referenced either.
->
->
-> Personally I think that the ZFS variable stripe size, may be interesting
-> to evaluate. Moreover, because the BTRFS disk format is quite flexible,
-> we can store different BG with different number of disks. Let me to make an
-> example: if we have 10 disks, we could allocate:
-> 1 BG RAID1
-> 1 BG RAID5, spread over 4 disks only
-> 1 BG RAID5, spread over 8 disks only
-> 1 BG RAID5, spread over 10 disks
->
-> So if we have short writes, we could put the extents in the RAID1 BG; for longer
-> writes we could use a RAID5 BG with 4 or 8 or 10 disks depending by length
-> of the data.
->
-> Yes this would require a sort of garbage collector to move the data to the biggest
-> raid5 BG, but this would avoid (or reduce) the fragmentation which affect the
-> variable stripe size.
->
-> Doing so we don't need any disk format change and it would be backward compatible.
->
->
-> Moreover, if we could put the smaller BG in the faster disks, we could have a
-> decent tiering....
->
->
-> > If a user is concerned about the write or space amplicfication of sub-stripe
-> > writes on RAID56 he/she really needs to rethink the architecture.
-> >
-> >
-> >
-> > [1]
-> > S. K. Mishra and P. Mohapatra,
-> > "Performance study of RAID-5 disk arrays with data and parity cache,"
-> > Proceedings of the 1996 ICPP Workshop on Challenges for Parallel Processing,
-> > 1996, pp. 222-229 vol.1, doi: 10.1109/ICPP.1996.537164.
->
-> --
-> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
->
+Josef
+
+Josef Bacik (9):
+  btrfs: use btrfs_fs_closing for background bg work
+  btrfs: simplify btrfs_update_space_info
+  btrfs: handle space_info setting of bg in btrfs_add_bg_to_space_info
+  btrfs: convert block group bit field to use bit helpers
+  btrfs: remove block_group->lock protection for TO_COPY
+  btrfs: simplify btrfs_put_block_group_cache
+  btrfs: remove BLOCK_GROUP_FLAG_HAS_CACHING_CTL
+  btrfs: remove bg->lock protection for relocation repair flag
+  btrfs: delete btrfs_wait_space_cache_v1_finished
+
+ fs/btrfs/block-group.c      | 142 +++++++++++++-----------------------
+ fs/btrfs/block-group.h      |  21 +++---
+ fs/btrfs/dev-replace.c      |  11 +--
+ fs/btrfs/extent-tree.c      |   7 +-
+ fs/btrfs/free-space-cache.c |  18 ++---
+ fs/btrfs/scrub.c            |  16 ++--
+ fs/btrfs/space-info.c       |  38 +++++-----
+ fs/btrfs/space-info.h       |   6 +-
+ fs/btrfs/volumes.c          |  16 ++--
+ fs/btrfs/zoned.c            |  34 ++++++---
+ 10 files changed, 137 insertions(+), 172 deletions(-)
+
+-- 
+2.26.3
+
