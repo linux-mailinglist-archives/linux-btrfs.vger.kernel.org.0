@@ -2,73 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C450E5771C0
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Jul 2022 00:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA085577286
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Jul 2022 02:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbiGPWKO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 16 Jul 2022 18:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
+        id S229687AbiGQAEh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 16 Jul 2022 20:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbiGPWKM (ORCPT
+        with ESMTP id S229619AbiGQAEg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 16 Jul 2022 18:10:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FB01D0E0;
-        Sat, 16 Jul 2022 15:10:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 58C246130A;
-        Sat, 16 Jul 2022 22:10:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A1E10C34114;
-        Sat, 16 Jul 2022 22:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658009410;
-        bh=Bje2ilZrUR9lD6VMB27ouSShVhQoklmqL0Up7U5MZxw=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=K0YQPjeQADIAlPFOzTfft4MC7W1KZdVgtw7NhF+rnyOhJisZN0a2G1kEIBNVu2jGz
-         JaLTZKqruTxSAD2vfZ2yKe6VXdFJrFjbJtOcPQRI83EZ7MH1wCXW42xwyaYuXKuqNo
-         HxccrzOR/oXA5Nk+hpJeC64eQTPNH4huaVU09Qd/0GaA+ZxAT+3VTVsPWHGnBz0A+l
-         V+sPYhXcFPrn2ITjTv5Hv3OQyzMUxcWwivtOa5mN8D0iB7pkIDGfzVHdQqG5FfgJNg
-         eUfFl+Pz0hEZ9UDnu3oti3J3cWN5jjzwl1gw+x81Zvo+ptjdX+cxe7OCR2w1bmfnvR
-         IffwRTl5mWsCw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 81C3BE45227;
-        Sat, 16 Jul 2022 22:10:10 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 5.19-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1657976305.git.dsterba@suse.com>
-References: <cover.1657976305.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1657976305.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.19-rc7-tag
-X-PR-Tracked-Commit-Id: 088aea3b97e0ae5a2a86f5d142ad10fec8a1b80f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 972a278fe60c361eb8f37619f562f092e8786d7c
-Message-Id: <165800941048.14726.9050276456572030018.pr-tracker-bot@kernel.org>
-Date:   Sat, 16 Jul 2022 22:10:10 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, willy@infradead.org
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 16 Jul 2022 20:04:36 -0400
+Received: from avasout-ptp-003.plus.net (avasout-ptp-003.plus.net [84.93.230.244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485D29583
+        for <linux-btrfs@vger.kernel.org>; Sat, 16 Jul 2022 17:04:34 -0700 (PDT)
+Received: from APOLLO ([212.159.61.44])
+        by smtp with ESMTPA
+        id CrlooCuEAGjO8CrlpozAlr; Sun, 17 Jul 2022 01:04:31 +0100
+X-Clacks-Overhead: "GNU Terry Pratchett"
+X-CM-Score: 0.00
+X-CNFS-Analysis: v=2.4 cv=HttlpmfS c=1 sm=1 tr=0 ts=62d3520f
+ a=AGp1duJPimIJhwGXxSk9fg==:117 a=AGp1duJPimIJhwGXxSk9fg==:17
+ a=kj9zAlcOel0A:10 a=O-dTtCbMAAAA:8 a=P1kZ4gAsAAAA:8 a=VwQbUJbxAAAA:8
+ a=A4Ad5zX8oVWg5oTyvsEA:9 a=CjuIK1q_8ugA:10 a=p5snsyuY6O_wh2DS_HCF:22
+ a=fn9vMg-Z9CMH7MoVPInU:22 a=AjGcO6oz07-iQ99wixmX:22
+X-AUTH: perdrix52@:2500
+From:   "David C. Partridge" <david.partridge@perdrix.co.uk>
+To:     "'Forza'" <forza@tnonline.net>, <linux-btrfs@vger.kernel.org>
+References: <004c01d8994d$f5677800$e0366800$@perdrix.co.uk> <be35d86.ae31e4f5.18208d825f0@tnonline.net>
+In-Reply-To: <be35d86.ae31e4f5.18208d825f0@tnonline.net>
+Subject: RE: Oh dear - some new problems
+Date:   Sun, 17 Jul 2022 01:04:24 +0100
+Message-ID: <001701d89970$ca0965b0$5e1c3110$@perdrix.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQH/1A1EjAIfI5rk0EkkKTArGSpYeAGNjxJRrSbLh7A=
+Content-Language: en-gb
+X-CMAE-Envelope: MS4xfJxlx5DgA1322u1hYPEQ+HxkPcqr55QYbF8iIT8OdUeOF3+eBZRbhKnBKSUvwS9x5rF670PJnQjpeadj79rZAuA/Rrql574aTOKbGKlP40vb9CoVQTe5
+ efdJTdUBRJK8zQImIi0EKMDzJsB8hpO7T/qytwgcQRssJ9TK+osZZiWGGyKVbwyuFBDekvrS3X8MRwjTh5uqolfl668raQU0M/M=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Sat, 16 Jul 2022 16:06:20 +0200:
+Adaptec ASR-8885 raid card.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.19-rc7-tag
+Will delete/reDL the suspect files
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/972a278fe60c361eb8f37619f562f092e8786d7c
+Thank you
+David
 
-Thank you!
+-----Original Message-----
+From: Forza <forza@tnonline.net> 
+Sent: 16 July 2022 22:09
+To: David C. Partridge <david.partridge@perdrix.co.uk>;
+linux-btrfs@vger.kernel.org
+Subject: Re: Oh dear - some new problems
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
+
+---- From: "David C. Partridge" <david.partridge@perdrix.co.uk> -- Sent:
+2022-07-16 - 21:55 ----
+
+> I get an error log from a weekly btrfs scrub:
+> 
+> Scrub started:    Sat Jul 16 07:45:26 2022
+> Status:           finished
+> Duration:         6:12:24
+> Total to scrub:   9.99TiB
+> Rate:             455.57MiB/s
+> Error summary:    csum=36
+>   Corrected:      0
+>   Uncorrectable:  36
+>   Unverified:     0
+> 
+> Have now run the scrub again and it's showing errors even though it isn't
+> yet complete.
+> 
+> Please see attached journalctl log file
+> 
+> The raid array detected an error on one of the drives which I have now
+> replaced and the raid is now rebuilding ...
+
+What kind of raid device are you using? 
+
+> 
+> What should I do at this juncture.
+
+The errors are uncorrectable because Btrfs doesn't have a good copy to
+repair from. You have to replace the damaged files. Since they are torrents
+it should not be too bad since the torrent protocol can repair/re-download
+individual blocks in files. 
+
+
+> 
+> Thanks, David
+> 
+
+
