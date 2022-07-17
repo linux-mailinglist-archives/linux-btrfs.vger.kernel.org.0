@@ -2,104 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3055777A0
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Jul 2022 19:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F219577841
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Jul 2022 23:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbiGQR6U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 17 Jul 2022 13:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
+        id S229629AbiGQVFN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 17 Jul 2022 17:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbiGQR6S (ORCPT
+        with ESMTP id S229591AbiGQVFM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 17 Jul 2022 13:58:18 -0400
-Received: from libero.it (smtp-17.italiaonline.it [213.209.10.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E33013D5D
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Jul 2022 10:58:16 -0700 (PDT)
-Received: from [192.168.1.27] ([94.34.5.22])
-        by smtp-17.iol.local with ESMTPA
-        id D8WyoG7CFX0RaD8Wzot21b; Sun, 17 Jul 2022 19:58:13 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1658080694; bh=BaVwJEHmRUeYDGnivJGDdxKVjyxJ1aGzfe9iPUOfsJI=;
-        h=From;
-        b=YiOjQdnDPMlp5B19qalqxyvleuhfpzqhiZeZX81CHkm5VUK3Edk9jjB0QejGZyzYq
-         9Iu468khlOlwN6/Qu027yQzntYjTlZNLmTugRrBofbi1aHBCXzDHAP95+bb+A6Yne6
-         Dk5tOexOuUfeKRyaXDTyKmWwKv53DdzBMa/xtEoGW8AXkleqdVAcRMjmRTaQnekSrN
-         J0cYFj+F5yGtcfJwBQxsJiM4h9l63hm2MLOjdqOqB+E4FrWtXfOiKEgtfVbt5yinoK
-         YRH0dA9S916iZLrxWeVmuFvk2QVf8Np/3CcyRsZM4pP5ZSlIl/Iu8Ehih8cXJaeQPg
-         fZbnPPwxOir0A==
-X-CNFS-Analysis: v=2.4 cv=P7T/OgMu c=1 sm=1 tr=0 ts=62d44db6 cx=a_exe
- a=hwDnfLutCD/4BcDojJwT2A==:117 a=hwDnfLutCD/4BcDojJwT2A==:17
- a=IkcTkHD0fZMA:10 a=MiViPHvKzwGMHcKa0VoA:9 a=QEXdDO2ut3YA:10
-Message-ID: <7734292e-2ceb-cd4e-db54-2ab3629ff75e@inwind.it>
-Date:   Sun, 17 Jul 2022 19:58:12 +0200
+        Sun, 17 Jul 2022 17:05:12 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A508412742
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Jul 2022 14:05:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 373A1B80E6D
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Jul 2022 21:05:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E6A7C3411E
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Jul 2022 21:05:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658091908;
+        bh=tstnJ+yufm+bEclzY/qyPCr6xg3/iBH7N7r5DCMtAac=;
+        h=From:To:Subject:Date:From;
+        b=CbQUWMl/w77WaZcxMlodk1aOLnIh8G62z4OETRgM59Ep1mI58BdoEaE/w07vDaQjo
+         v7HBX/M+i2J25fzQFyA9qz/tpkraOP9ggcurOnVhU5gkRe0LGT4nQa3m67ISli5/ir
+         oVJ63iRwlcNm6h/8ld8ffLt9JMtTcXKSX2PptGZcjNDEV4emV0qmT9xsgYTqx1MSlO
+         9WQDCSqzfxOo2m7/zwyoowfmk/IkD3xejPhZpNEn4z8gJ/1YnGU60qC7THBSuDAR56
+         bqrPGvtb4VDjf65UG59gSarjK2BBl++jHJl/8hSQ58kyjEZLN0qdw4kpku8SNBKC4b
+         KjJkOUStId74Q==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: join running log transaction when logging new name
+Date:   Sun, 17 Jul 2022 22:05:05 +0100
+Message-Id: <502f1d2cc23000b8585ad87122b7f6c0a8c2c6ab.1658091704.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Reply-To: kreijack@inwind.it
-Subject: Re: RAID56 discussion related to RST. (Was "Re: [RFC ONLY 0/8] btrfs:
- introduce raid-stripe-tree")
-Content-Language: en-US
-From:   Goffredo Baroncelli <kreijack@inwind.it>
-To:     Thiago Ramon <thiagoramon@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
- <PH0PR04MB74164213B5F136059236B78C9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <03630cb7-e637-3375-37c6-d0eb8546c958@gmx.com>
- <PH0PR04MB7416D257F7B349FC754E30169B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <1cf403d4-46a7-b122-96cf-bd1307829e5b@gmx.com>
- <PH0PR04MB741638E2A15F4E106D8A6FAF9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <96da9455-f30d-b3fc-522b-7cbd08ad3358@suse.com>
- <PH0PR04MB7416E68375C1C27C33D347119B889@PH0PR04MB7416.namprd04.prod.outlook.com>
- <61694368-30ea-30a0-df74-fd607c4b7456@gmx.com>
- <PH0PR04MB7416243FCD419B4BDDB04D8C9B889@PH0PR04MB7416.namprd04.prod.outlook.com>
- <8b3cf3d0-4812-0e92-d850-09a8d08b8169@libero.it>
- <CAO1Y9woJUhuQ+Q2yWSvscnBJb9D5cYiBaY-WG3Re=7V=OzWVhw@mail.gmail.com>
- <1dcfecba-92fc-6f49-bdea-705896ece036@gmx.com>
- <928e46e3-51d2-4d7a-583a-5440f415671e@gmx.com>
- <CAO1Y9woENiZOokwqSeSbmr30w7ksw+ZkXUR9pU68Kmfm8X+K=g@mail.gmail.com>
- <d49eca7a-74be-c3a9-a70b-055e9e37bcc2@inwind.it>
-In-Reply-To: <d49eca7a-74be-c3a9-a70b-055e9e37bcc2@inwind.it>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfMMPPwwGVbvadmrNt0+wv7ZcbtZNEUv9fkPelHRPONJ1CNM6SZFGO3bmsOmXhBiJPYneNRU/cmXsobOcBXUARA1brtfcKvpvlbS7CZN6AsesXVCr8fgS
- Q8vJwH9Du1aKtQtm/n09lMsdx6RntbUNSrJdqeYHtyyzT1oB+1fi5Yx1e6IxhaxjcdD+3IcwWXLITpCtM+1TbtTyxBL3LBELVlHAc9lFbuXmn0qt3NDYTRA5
- Qa5NXfTsSR7WJ153e3uxKFUNe5/hZMJEH5cOSHd3tu2qMqm4VDqChaTlNWpdLhyKeHktTP6NC+8RLu5LgwfpJg==
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 16/07/2022 16.26, Goffredo Baroncelli wrote:
-> On 16/07/2022 15.52, Thiago Ramon wrote:
->>> Good luck implementing that feature just for RAID56 on non-zoned devices.
->> DIO definitely would be a problem this way. As you mention, a separate
->> zone for high;y modified data would make things a lot easier (maybe a
->> RAID1Cx zone), but that definitely would be a huge change on the way
->> things are handled.
-> 
-> 
-> When you talk about DIO, do you mean O_DIRECT ? Because this is full reliable
-> even without RAID56...
-ehmm... I forgot a "not". So my last sentence is
+From: Filipe Manana <fdmanana@suse.com>
 
-          Because this is NOT fully reliable even without RAID56...
+When logging a new name, in case of a rename, we pin the log before
+changing it. We then either delete a directory entry from the log or
+insert a key range item to mark the old name for deletion on log replay.
 
-> See my email
-> 
-> "BUG: BTRFS and O_DIRECT could lead to wrong checksum and wrong data", sent 15/09/2017
-> 
-> 
-> 
+However when doing one of those log changes we may have another task that
+started writing out the log (at btrfs_sync_log()) and it started before
+we pinned the log root. So we may end up changing a log tree while its
+writeback is being started by another task syncing the log. This can lead
+to inconsistencies in a log tree and other unexpected results during log
+replay, because we can get some committed node pointing to a node/leaf
+that ends up not getting written to disk before the next log commit.
 
+The problem, conceptually, started to happen in commit 88d2beec7e53fc
+("btrfs: avoid logging all directory changes during renames"), because
+there we started to update the log without joining its current transaction
+first.
+
+However the problem only became visible with commit 259c4b96d78dda
+("btrfs: stop doing unnecessary log updates during a rename"), and that is
+because we used to pin the log at btrfs_rename() and then before entering
+btrfs_log_new_name(), when unlinking the old dentry, we ended up at
+btrfs_del_inode_ref_in_log() and btrfs_del_dir_entries_in_log(). Both
+of them join the current log transaction, effectively waiting for any log
+transaction writeout (due to acquiring the root's log_mutex). This made it
+safe even after leaving the current log transaction, because we remained
+with the log pinned when we called btrfs_log_new_name().
+
+Then in commit 259c4b96d78dda ("btrfs: stop doing unnecessary log updates
+during a rename"), we removed the log pinning from btrfs_rename() and
+stopped calling btrfs_del_inode_ref_in_log() and
+btrfs_del_dir_entries_in_log() during the rename, and started to do all
+the needed work at btrfs_log_new_name(), but without joining the current
+log transaction, only pinning the log, which is racy because another task
+may have started writeout of the log tree right before we pinned the log.
+
+Both commits landed in kernel 5.18, so it doesn't make any practical
+difference which should be blamed, but I'm blaming the second commit only
+because with the first one, by chance, the problem did not happen due to
+the fact we joined the log transaction after pinning the log and unpinned
+it only after calling btrfs_log_new_name().
+
+So make btrfs_log_new_name() join the current log transaction instead of
+pinning it, so that we never do log updates if it's writeout is starting.
+
+Fixes: 259c4b96d78dda ("btrfs: stop doing unnecessary log updates during a rename")
+CC: stable@vger.kernel.org # 5.18+
+Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Tested-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/tree-log.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 1201f083d4db..9acf68ef4a49 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -7029,8 +7029,15 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 		 * anyone from syncing the log until we have updated both inodes
+ 		 * in the log.
+ 		 */
++		ret = join_running_log_trans(root);
++		/*
++		 * At least one of the inodes was logged before, so this should
++		 * not fail, but if it does, it's not serious, just bail out and
++		 * mark the log for a full commit.
++		 */
++		if (WARN_ON_ONCE(ret < 0))
++			goto out;
+ 		log_pinned = true;
+-		btrfs_pin_log_trans(root);
+ 
+ 		path = btrfs_alloc_path();
+ 		if (!path) {
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+2.35.1
 
