@@ -2,70 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAD2578D5B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 00:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA72B578D5F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 00:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbiGRWNT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Jul 2022 18:13:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
+        id S233409AbiGRWNU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Jul 2022 18:13:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231687AbiGRWNR (ORCPT
+        with ESMTP id S229647AbiGRWNR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 18 Jul 2022 18:13:17 -0400
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EEE313AD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A41313B8
         for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 15:13:16 -0700 (PDT)
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id E78425C016D;
-        Mon, 18 Jul 2022 18:13:13 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 18 Jul 2022 18:13:13 -0400
+        by mailout.nyi.internal (Postfix) with ESMTP id CA4015C016C;
+        Mon, 18 Jul 2022 18:13:15 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 18 Jul 2022 18:13:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:date:date:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm3; t=1658182393; x=1658268793; bh=wdWdwaEIhUyoRKste0G1+R61v
-        VCK3WBL6md7MtZaBO0=; b=Wi+4RUJ7e3gucBuEaiFbfdEMLTVjpFxtoXN0GbpyJ
-        /19nYql9fMTR9SNu4/7Fn7fTai7I03LskPicqJ8pN6PEQLnhOnXNr/0Iarxh1Kha
-        ZKc/QKlFYI19k0iMe1TWTt+q3CTBQR4hQcNPz3HWaqV2s5j+UxVm4sv/3kyIOPXa
-        AgqRvJLWGTff/p3UsZ5F9CNksl0w2Ck+E/ngHDp3ZNWMSJ2gKOXPaGUf+m3JhSNp
-        tVVNpcttgqjuS/WVJpHTg0CRpc4WovDKieeHmBv/C5jQ2mM7A6vHuYoTjcK/QTsW
-        /ygHqvZT3zcdNCeh6HQydJXUsGTZQrrrySvheOOJKUpwA==
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1658182395; x=1658268795; bh=L4
+        eJ/WaMzm7flUldaaApsNiFlTtgq6/eU3AVwU1oxcM=; b=ke5aIr5/VX+W6ELFua
+        s/CdO0vHCWSLloICYXdkM71VoSIQI/Mb7HXfI6Yqfs33jMyFifGuwOXDBv2gn92a
+        ixElHcwMN8+cw1eu/87Acchjz3D3CNFv8VJApAbtr66SFgEQMdBl/rs4ApJEa0cF
+        jTO6HWWzMR2JIOdJAgZ08+v5faTxGlVpdRkBOthY6+CraL7BCVeSJU24X7IYfs5D
+        isHTJw1iZ86DhrX2j0K+aBRPb/5LUh67CliJkumsHpRe21fIFp3XPhHWYsC8RNzF
+        /gGSk4qGQ+Jm1Z4hKe2k8G6K8H2goAu6TWTvGKRbgwHqJAFckqKYxhgKrCIsxfKD
+        XL+w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:message-id
-        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1658182393; x=1658268793; bh=wdWdwaEIhUyoRKste0G1+R61vVCK3WBL6md
-        7MtZaBO0=; b=tQc3B9rk+yc+RWXowFbforSfMYQfzY3KeOafZYWlgNodLw4H0Xn
-        GwOBajXEeGhs5wkuSbNsgmbKc1J0R5cbYreOpStV+Zf8E7URQP+gM2SXSmR8PUph
-        8smMknCbRpHyZ1/tk8RSuUOPYmg1Lb7np2PHxvuPjBt4DOeQga7qwziTg/bwygMV
-        pm34w6/lD4Mkbd8+hz6rrSi3U/VBnfVhbQOZgsJQTlA3IZlF07QfZWeO9mojc4lx
-        Um5utahNRtKr0baT6hhlwk+WM4zihZ+kFljqztE+icDdZ1N4psFJ1mXidW+FCYp8
-        PVJLtbyJs9T/dhUyHt73NkNPmAYGjO5vwEw==
-X-ME-Sender: <xms:-drVYrf0YGzqmeSPS__u9HiVNi1l7LjMg1JFw_ParOGwt0GLNv0kJw>
-    <xme:-drVYhO4ztOItOMrOvsaEfq2y86Vcp-W-5ot9Am2tKS51dJK035zeTXHzmWWJ-hL2
-    eMVhKyYj8-RRkh7iz0>
-X-ME-Received: <xmr:-drVYkjKSQsKgI_av51W3DK1VBr46gjsdUH-CpVNqm1_r7ZMQkIPDmD_s7nMq8lfi0vczcK3NZE59tQyg1npNFiJbwoqJw>
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1658182395; x=1658268795; bh=L4eJ/WaMzm7fl
+        UldaaApsNiFlTtgq6/eU3AVwU1oxcM=; b=sLVyFHfZXMiDDAgYRRDDcwC692U3J
+        b3a+w9Gxw9fMcV+liAzDFi2RiBTMahUbfeRsjW7ceE+5oiClbMlX28QCCDcwv8GD
+        1dFHoPb0Ncfo/wwTf6D3nJBTXGt9poRFyBG/BuoHJsVIJXg7XKGF97bJ1cRroZ0V
+        A9mkAZ8g5H/CtAGI6FIf0pUUUy04b3Qxvt/viggwlIyIl0ZnbfzF2NaQJk6Rt6C6
+        FvV5rQYnJ2rUEAdUVVZrdlaaNme2CCF4auJsUzy6TDwlY6vQ66p8bVWmivPOcj2D
+        kObxL+aQytlkWndS9D8UIvYVJoiH9K8iwrC7ZxsCFcyhbZrO3OtcUD5Kw==
+X-ME-Sender: <xms:-9rVYoz5vGkTrdTSb_UeIGoP-nM79Fw5kLPJOpQMxU7HZ28VKO1SJw>
+    <xme:-9rVYsQksIpxL0ln2lMDILg3peh02Lq94ajafSzMaMySTFEd5uNW65ivzC7TXIe5R
+    JH8b2AJEuTtc6L7oBc>
+X-ME-Received: <xmr:-9rVYqUXGCJJOnO3NleHEuFFvEq8bIGuFUfN9OqP0FpF8q7cJBK1yFmhRZpDypWQij2arsVOKcg25XcoYuR3SFZJo-iwNw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudekledgtdekucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
-    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:-drVYs88a0k-c3xWANbpHCFIPRROQKvR9z0f_iFVrfJPTqOh_HXjLg>
-    <xmx:-drVYnuiYmi9WNSlMefisLG8l0U0nqZAvamii8m59KQrY39Ub51BnQ>
-    <xmx:-drVYrFMRAR6py-Tub01-Rrk5YOa_Q_I9ESyEKThtSECSXJGhNxJuw>
-    <xmx:-drVYl3o2mVeANFrXCj6cIyETCNygQnUbPYw2R5B7QF-9e6QRF0AYQ>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+    dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
+    ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
+    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:-9rVYmi7f1AD1RRL5ZGVChTPD-LMqWgRGvLrPmFBSARkfGUuudsxAw>
+    <xmx:-9rVYqD_5TgHZiNEd0i_e2osU4B8MzueF-q4Ysvyc3Nys0Hi9gzU8Q>
+    <xmx:-9rVYnIz_sUIO2GeoxsEn7poYxUDR0lqP37Sesd28s8rF0XxP8jCMQ>
+    <xmx:-9rVYlqk8GlHhjInZJVCtXVFVT7jIl3Ksj40AP9d3Jw_PFGO2lKdnA>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Jul 2022 18:13:13 -0400 (EDT)
+ 18 Jul 2022 18:13:15 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 0/4] btrfs-progs: support for fs-verity fstests
-Date:   Mon, 18 Jul 2022 15:13:07 -0700
-Message-Id: <cover.1658182042.git.boris@bur.io>
+Subject: [PATCH v3 1/4] btrfs-corrupt-block: define (u64)-1 as UNSET_U64
+Date:   Mon, 18 Jul 2022 15:13:08 -0700
+Message-Id: <d1957fea4642be76275713c9e0800896f6f6353f.1658182042.git.boris@bur.io>
 X-Mailer: git-send-email 2.37.0
+In-Reply-To: <cover.1658182042.git.boris@bur.io>
+References: <cover.1658182042.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,32 +80,133 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Adding fstests for fs-verity on btrfs needs some light support from
-btrfs-progs. Specifically, it needs additional device corruption
-features to test corruption detection, and it needs the RO COMPAT flag.
+we use this placeholder for many inputs in this script, so give it a
+name for clarity.
 
-The first patch defines (u64)-1 as "UNSET_U64"
-The second patch adds corrupting arbitrary regions of item data with -I.
-The third patch adds corrupting holes and prealloc in extent data.
-The fourth patch includes BTRFS_FEATURE_RO_COMPAT_VERITY to ctree.h
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ btrfs-corrupt-block.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
---
-v3: add patch #defining (u64)-1 in btrfs-corrupt-block
-    check item bounds in corruption function
-    improve usage message for new corruption use case
-    add patch with verity ro compat flag
-v2: minor cleanups from rebasing after a year  
-
-Boris Burkov (4):
-  btrfs-corrupt-block: define (u64)-1 as UNSET_U64
-  btrfs-progs: corrupt generic item data with btrfs-corrupt-block
-  btrfs-progs: expand corrupt_file_extent in btrfs-corrupt-block
-  btrfs-progs: add VERITY ro compat flag
-
- btrfs-corrupt-block.c | 128 ++++++++++++++++++++++++++++++++++--------
- kernel-shared/ctree.h |   4 +-
- 2 files changed, 109 insertions(+), 23 deletions(-)
-
+diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
+index e961255d5..b826c9c2e 100644
+--- a/btrfs-corrupt-block.c
++++ b/btrfs-corrupt-block.c
+@@ -35,6 +35,7 @@
+ #include "common/help.h"
+ 
+ #define FIELD_BUF_LEN 80
++#define UNSET_U64 ((u64)-1)
+ 
+ static int debug_corrupt_block(struct extent_buffer *eb,
+ 		struct btrfs_root *root, u64 bytenr, u32 blocksize, u64 copy)
+@@ -180,7 +181,7 @@ static int corrupt_extent(struct btrfs_trans_handle *trans,
+ 
+ 	key.objectid = bytenr;
+ 	key.type = (u8)-1;
+-	key.offset = (u64)-1;
++	key.offset = UNSET_U64;
+ 
+ 	extent_root = btrfs_extent_root(trans->fs_info, bytenr);
+ 	while(1) {
+@@ -664,7 +665,7 @@ static int corrupt_inode(struct btrfs_trans_handle *trans,
+ 
+ 	key.objectid = inode;
+ 	key.type = BTRFS_INODE_ITEM_KEY;
+-	key.offset = (u64)-1;
++	key.offset = UNSET_U64;
+ 
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+@@ -880,7 +881,7 @@ static int corrupt_metadata_block(struct btrfs_fs_info *fs_info, u64 block,
+ 
+ 		root_key.objectid = root_objectid;
+ 		root_key.type = BTRFS_ROOT_ITEM_KEY;
+-		root_key.offset = (u64)-1;
++		root_key.offset = UNSET_U64;
+ 
+ 		root = btrfs_read_fs_root(fs_info, &root_key);
+ 		if (IS_ERR(root)) {
+@@ -1084,8 +1085,8 @@ static int corrupt_chunk_tree(struct btrfs_trans_handle *trans,
+ 	if (!path)
+ 		return -ENOMEM;
+ 
+-	key.objectid = (u64)-1;
+-	key.offset = (u64)-1;
++	key.objectid = UNSET_U64;
++	key.offset = UNSET_U64;
+ 	key.type = (u8)-1;
+ 
+ 	/* Here, cow and ins_len must equals 0 for the following reasons:
+@@ -1193,7 +1194,7 @@ static struct btrfs_root *open_root(struct btrfs_fs_info *fs_info,
+ 
+ 	root_key.objectid = root_objectid;
+ 	root_key.type = BTRFS_ROOT_ITEM_KEY;
+-	root_key.offset = (u64)-1;
++	root_key.offset = UNSET_U64;
+ 
+ 	root = btrfs_read_fs_root(fs_info, &root_key);
+ 	if (IS_ERR(root)) {
+@@ -1209,8 +1210,8 @@ int main(int argc, char **argv)
+ 	struct btrfs_key key;
+ 	struct btrfs_root *root, *target_root;
+ 	char *dev;
+-	/* chunk offset can be 0,so change to (u64)-1 */
+-	u64 logical = (u64)-1;
++	/* chunk offset can be 0,so change to UNSET_U64 */
++	u64 logical = UNSET_U64;
+ 	int ret = 0;
+ 	u64 copy = 0;
+ 	u64 bytes = 4096;
+@@ -1225,7 +1226,7 @@ int main(int argc, char **argv)
+ 	int should_corrupt_key = 0;
+ 	u64 metadata_block = 0;
+ 	u64 inode = 0;
+-	u64 file_extent = (u64)-1;
++	u64 file_extent = UNSET_U64;
+ 	u64 root_objectid = 0;
+ 	u64 csum_bytenr = 0;
+ 	u64 block_group = 0;
+@@ -1353,7 +1354,7 @@ int main(int argc, char **argv)
+ 	if (extent_rec) {
+ 		struct btrfs_trans_handle *trans;
+ 
+-		if (logical == (u64)-1)
++		if (logical == UNSET_U64)
+ 			print_usage(1);
+ 		trans = btrfs_start_transaction(root, 1);
+ 		BUG_ON(IS_ERR(trans));
+@@ -1378,7 +1379,7 @@ int main(int argc, char **argv)
+ 		struct btrfs_path *path;
+ 		int del;
+ 
+-		if (logical == (u64)-1)
++		if (logical == UNSET_U64)
+ 			print_usage(1);
+ 		del = rand_range(3);
+ 		path = btrfs_alloc_path();
+@@ -1420,7 +1421,7 @@ int main(int argc, char **argv)
+ 
+ 		trans = btrfs_start_transaction(root, 1);
+ 		BUG_ON(IS_ERR(trans));
+-		if (file_extent == (u64)-1) {
++		if (file_extent == UNSET_U64) {
+ 			printf("corrupting inode\n");
+ 			ret = corrupt_inode(trans, root, inode, field);
+ 		} else {
+@@ -1481,10 +1482,10 @@ int main(int argc, char **argv)
+ 	 * If we made it here and we have extent set then we didn't specify
+ 	 * inode and we're screwed.
+ 	 */
+-	if (file_extent != (u64)-1)
++	if (file_extent != UNSET_U64)
+ 		print_usage(1);
+ 
+-	if (logical == (u64)-1)
++	if (logical == UNSET_U64)
+ 		print_usage(1);
+ 
+ 	if (bytes == 0)
 -- 
 2.37.1
 
