@@ -2,149 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 117B2578D15
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 23:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAD2578D5B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 00:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236241AbiGRVuJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 18 Jul 2022 17:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
+        id S233352AbiGRWNT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Jul 2022 18:13:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233585AbiGRVuH (ORCPT
+        with ESMTP id S231687AbiGRWNR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Jul 2022 17:50:07 -0400
-Received: from ste-pvt-msa1.bahnhof.se (ste-pvt-msa1.bahnhof.se [213.80.101.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720172D1ED
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 14:50:05 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id C6AD83F447;
-        Mon, 18 Jul 2022 23:50:02 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.9
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id aHmFBjfAZxpo; Mon, 18 Jul 2022 23:50:02 +0200 (CEST)
-Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 7C54D3F311;
-        Mon, 18 Jul 2022 23:50:01 +0200 (CEST)
-Received: from [192.168.0.119] (port=55342)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1oDYco-000FeX-VY; Mon, 18 Jul 2022 23:49:59 +0200
-Date:   Mon, 18 Jul 2022 23:49:57 +0200 (GMT+02:00)
-From:   Forza <forza@tnonline.net>
-To:     Chris Murphy <lists@colorremedies.com>,
-        Goffredo Baroncelli <kreijack@inwind.it>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Message-ID: <b62a80a.e3c8d435.182134a0f8d@tnonline.net>
-In-Reply-To: <CAJCQCtTJ=gs7JT4Tdxt3cOVTjkDD1_rQRqv6rbfwohu-Escw6w@mail.gmail.com>
-References: <cover.1652711187.git.johannes.thumshirn@wdc.com> <78daa7e4-7c88-d6c0-ccaa-fb148baf7bc8@gmx.com> <PH0PR04MB74164213B5F136059236B78C9B899@PH0PR04MB7416.namprd04.prod.outlook.com> <03630cb7-e637-3375-37c6-d0eb8546c958@gmx.com> <PH0PR04MB7416D257F7B349FC754E30169B899@PH0PR04MB7416.namprd04.prod.outlook.com> <1cf403d4-46a7-b122-96cf-bd1307829e5b@gmx.com> <PH0PR04MB741638E2A15F4E106D8A6FAF9B899@PH0PR04MB7416.namprd04.prod.outlook.com> <96da9455-f30d-b3fc-522b-7cbd08ad3358@suse.com> <PH0PR04MB7416E68375C1C27C33D347119B889@PH0PR04MB7416.namprd04.prod.outlook.com> <61694368-30ea-30a0-df74-fd607c4b7456@gmx.com> <PH0PR04MB7416243FCD419B4BDDB04D8C9B889@PH0PR04MB7416.namprd04.prod.outlook.com> <8b3cf3d0-4812-0e92-d850-09a8d08b8169@libero.it> <CAJCQCtTJ=gs7JT4Tdxt3cOVTjkDD1_rQRqv6rbfwohu-Escw6w@mail.gmail.com>
-Subject: Re: RAID56 discussion related to RST. (Was "Re: [RFC ONLY 0/8]
- btrfs: introduce raid-stripe-tree")
+        Mon, 18 Jul 2022 18:13:17 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EEE313AD
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 15:13:16 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id E78425C016D;
+        Mon, 18 Jul 2022 18:13:13 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 18 Jul 2022 18:13:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm3; t=1658182393; x=1658268793; bh=wdWdwaEIhUyoRKste0G1+R61v
+        VCK3WBL6md7MtZaBO0=; b=Wi+4RUJ7e3gucBuEaiFbfdEMLTVjpFxtoXN0GbpyJ
+        /19nYql9fMTR9SNu4/7Fn7fTai7I03LskPicqJ8pN6PEQLnhOnXNr/0Iarxh1Kha
+        ZKc/QKlFYI19k0iMe1TWTt+q3CTBQR4hQcNPz3HWaqV2s5j+UxVm4sv/3kyIOPXa
+        AgqRvJLWGTff/p3UsZ5F9CNksl0w2Ck+E/ngHDp3ZNWMSJ2gKOXPaGUf+m3JhSNp
+        tVVNpcttgqjuS/WVJpHTg0CRpc4WovDKieeHmBv/C5jQ2mM7A6vHuYoTjcK/QTsW
+        /ygHqvZT3zcdNCeh6HQydJXUsGTZQrrrySvheOOJKUpwA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1658182393; x=1658268793; bh=wdWdwaEIhUyoRKste0G1+R61vVCK3WBL6md
+        7MtZaBO0=; b=tQc3B9rk+yc+RWXowFbforSfMYQfzY3KeOafZYWlgNodLw4H0Xn
+        GwOBajXEeGhs5wkuSbNsgmbKc1J0R5cbYreOpStV+Zf8E7URQP+gM2SXSmR8PUph
+        8smMknCbRpHyZ1/tk8RSuUOPYmg1Lb7np2PHxvuPjBt4DOeQga7qwziTg/bwygMV
+        pm34w6/lD4Mkbd8+hz6rrSi3U/VBnfVhbQOZgsJQTlA3IZlF07QfZWeO9mojc4lx
+        Um5utahNRtKr0baT6hhlwk+WM4zihZ+kFljqztE+icDdZ1N4psFJ1mXidW+FCYp8
+        PVJLtbyJs9T/dhUyHt73NkNPmAYGjO5vwEw==
+X-ME-Sender: <xms:-drVYrf0YGzqmeSPS__u9HiVNi1l7LjMg1JFw_ParOGwt0GLNv0kJw>
+    <xme:-drVYhO4ztOItOMrOvsaEfq2y86Vcp-W-5ot9Am2tKS51dJK035zeTXHzmWWJ-hL2
+    eMVhKyYj8-RRkh7iz0>
+X-ME-Received: <xmr:-drVYkjKSQsKgI_av51W3DK1VBr46gjsdUH-CpVNqm1_r7ZMQkIPDmD_s7nMq8lfi0vczcK3NZE59tQyg1npNFiJbwoqJw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudekledgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
+    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
+    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:-drVYs88a0k-c3xWANbpHCFIPRROQKvR9z0f_iFVrfJPTqOh_HXjLg>
+    <xmx:-drVYnuiYmi9WNSlMefisLG8l0U0nqZAvamii8m59KQrY39Ub51BnQ>
+    <xmx:-drVYrFMRAR6py-Tub01-Rrk5YOa_Q_I9ESyEKThtSECSXJGhNxJuw>
+    <xmx:-drVYl3o2mVeANFrXCj6cIyETCNygQnUbPYw2R5B7QF-9e6QRF0AYQ>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Jul 2022 18:13:13 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v3 0/4] btrfs-progs: support for fs-verity fstests
+Date:   Mon, 18 Jul 2022 15:13:07 -0700
+Message-Id: <cover.1658182042.git.boris@bur.io>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-X-Mailer: R2Mail2
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Adding fstests for fs-verity on btrfs needs some light support from
+btrfs-progs. Specifically, it needs additional device corruption
+features to test corruption detection, and it needs the RO COMPAT flag.
 
+The first patch defines (u64)-1 as "UNSET_U64"
+The second patch adds corrupting arbitrary regions of item data with -I.
+The third patch adds corrupting holes and prealloc in extent data.
+The fourth patch includes BTRFS_FEATURE_RO_COMPAT_VERITY to ctree.h
 
----- From: Chris Murphy <lists@colorremedies.com> -- Sent: 2022-07-15 - 22:14 ----
+--
+v3: add patch #defining (u64)-1 in btrfs-corrupt-block
+    check item bounds in corruption function
+    improve usage message for new corruption use case
+    add patch with verity ro compat flag
+v2: minor cleanups from rebasing after a year  
 
-> On Fri, Jul 15, 2022 at 1:55 PM Goffredo Baroncelli <kreijack@libero.it> wrote:
->>
->> On 14/07/2022 09.46, Johannes Thumshirn wrote:
->> > On 14.07.22 09:32, Qu Wenruo wrote:
->> >>[...]
->> >
->> > Again if you're doing sub-stripe size writes, you're asking stupid things and
->> > then there's no reason to not give the user stupid answers.
->> >
->>
->> Qu is right, if we consider only full stripe write the "raid hole" problem
->> disappear, because if a "full stripe" is not fully written it is not
->> referenced either.
->>
->>
->> Personally I think that the ZFS variable stripe size, may be interesting
->> to evaluate. Moreover, because the BTRFS disk format is quite flexible,
->> we can store different BG with different number of disks. 
+Boris Burkov (4):
+  btrfs-corrupt-block: define (u64)-1 as UNSET_U64
+  btrfs-progs: corrupt generic item data with btrfs-corrupt-block
+  btrfs-progs: expand corrupt_file_extent in btrfs-corrupt-block
+  btrfs-progs: add VERITY ro compat flag
 
-We can create new types of BGs too. For example parity BGs. 
+ btrfs-corrupt-block.c | 128 ++++++++++++++++++++++++++++++++++--------
+ kernel-shared/ctree.h |   4 +-
+ 2 files changed, 109 insertions(+), 23 deletions(-)
 
->>Let me to make an
->> example: if we have 10 disks, we could allocate:
->> 1 BG RAID1
->> 1 BG RAID5, spread over 4 disks only
->> 1 BG RAID5, spread over 8 disks only
->> 1 BG RAID5, spread over 10 disks
->>
->> So if we have short writes, we could put the extents in the RAID1 BG; for longer
->> writes we could use a RAID5 BG with 4 or 8 or 10 disks depending by length
->> of the data.
->>
->> Yes this would require a sort of garbage collector to move the data to the biggest
->> raid5 BG, but this would avoid (or reduce) the fragmentation which affect the
->> variable stripe size.
->>
->> Doing so we don't need any disk format change and it would be backward compatible.
-
-Do we need to implement RAID56 in the traditional sense? As the user/sysadmin I care about redundancy and performance and cost. The option to create redundancy for any 'n drives is appealing from a cost perspective, otherwise I'd use RAID1/10.
-
-Since the current RAID56 mode have several important drawbacks - and that it's officially not recommended for production use - it is a good idea to reconstruct new btrfs 'redundant-n' profiles that doesn't have the inherent issues of traditional RAID. For example a non-striped redundant-n profile as well as a striped redundant-n profile. 
-
-> 
-> My 2 cents...
-> 
-> Regarding the current raid56 support, in order of preference:
-> 
-> a. Fix the current bugs, without changing format. Zygo has an extensive list.
-
-I agree that relatively simple fixes should be made. But it seems we will need quite a large rewrite to solve all issues? Is there a minium viable option here? 
-
-> b. Mostly fix the write hole, also without changing the format, by
-> only doing COW with full stripe writes. Yes you could somehow get
-> corrupt parity still and not know it until degraded operation produces
-> a bad reconstruction of data - but checksum will still catch that.
-> This kind of "unreplicated corruption" is not quite the same thing as
-> the write hole, because it isn't pernicious like the write hole.
-
-What is the difference to a)? Is write hole the worst issue? Judging from the #brtfs channel discussions there seems to be other quite severe issues, for example real data corruption risks in degraded mode. 
-
-> c. A new de-clustered parity raid56 implementation that is not
-> backwards compatible.
-
-Yes. We have a good opportunity to work out something much better than current implementations. We could have  redundant-n profiles that also works with tired storage like ssd/nvme similar to the metadata on ssd idea. 
-
-Variable stripe width has been brought up before, but received cool responses. Why is that? IMO it could improve random 4k ios by doing equivalent to RAID1 instead of RMW, while also closing the write hole. Perhaps there is a middle ground to be found? 
-
-
-> 
-> Ergo, I think it's best to not break the format twice. Even if a new
-> raid implementation is years off.
-
-I very agree here. Btrfs already suffers in public opinion from the lack of a stable and safe-for-data RAID56, and requiring several non-compatible chances isn't going to help. 
-
-I also think it's important that the 'temporary' changes actually leads to a stable filesystem. Because what is the point otherwise? 
-
-Thanks
-Forza
-
-> 
-> Metadata centric workloads suck on parity raid anyway. If Btrfs always
-> does full stripe COW won't matter even if the performance is worse
-> because no one should use parity raid for this workload anyway.
-> 
-> 
-> --
-> Chris Murphy
-
+-- 
+2.37.1
 
