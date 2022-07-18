@@ -2,70 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB7A578D5E
+	by mail.lfdr.de (Postfix) with ESMTP id 314D3578D5D
 	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 00:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbiGRWNV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Jul 2022 18:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
+        id S232460AbiGRWNW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Jul 2022 18:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232460AbiGRWNT (ORCPT
+        with ESMTP id S233381AbiGRWNU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Jul 2022 18:13:19 -0400
+        Mon, 18 Jul 2022 18:13:20 -0400
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A2D313A5
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 15:13:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDF531913
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 15:13:19 -0700 (PDT)
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 60BAC5C0179;
-        Mon, 18 Jul 2022 18:13:17 -0400 (EDT)
+        by mailout.nyi.internal (Postfix) with ESMTP id 078965C0174;
+        Mon, 18 Jul 2022 18:13:19 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 18 Jul 2022 18:13:17 -0400
+  by compute2.internal (MEProxy); Mon, 18 Jul 2022 18:13:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1658182397; x=1658268797; bh=rN
-        V174Xun5ycsp04TqWRQX0ro8jgxtFYEOTEEv3if0k=; b=F5xx7gcB+HVIxV1Zj9
-        Dvx5go1F5EzowPoAXcW0Vv934+byR7gddHAGr2bplM+LK8sNFf/dKP42IDVvlzOa
-        kil1KZB9k2FSMUwTQGjlidLH+T15ZKPBJ01pdnudLiCtbwAVg5ZHVda1kQyR3Ee6
-        v9vIPPBAhdfZxaTj0uX9IH0ijjM/FFVXx9/fxEC8+OJNL1mDXUP3yTeZprlbJr3/
-        ulL5RXk7T4pXRux47Kvnh7LZWdFtRZ77LUEyteAtnB4u1lu/FfzDo4VUPKIjq5da
-        kuSplBr/NPvvRrWs0PY2KE7NbMQZ5YIHO4mRznTiB+1u+16M/2AdB5z63wA66g/A
-        mZXQ==
+        :subject:subject:to:to; s=fm3; t=1658182399; x=1658268799; bh=ww
+        cT/havCH3A+wPQ+zCgxMtFb1NLQqhsio4ZZc8u9hY=; b=MxOoyRXKf0aQcf+sxf
+        b5D+S15wz6e8G9QQzioNIs3xxgdQJTnlefk8Rz+2jgQuuFNOc2RAB4k/0QAHm3pH
+        Ll3swaKFPbKa6S0CjY9jI6c2Ah2SE1EtMbhHUpe6DVSFiDkeonyL9cSEr8uB8nlT
+        iLQJvt3QqWOrhrSgHN6bwJSaSvG2wzRlok/SFIuCmTILCrMg0qZ4i3K+jJOVWmAR
+        RbtsHn0RPF+wmBhTtvzFpHN7tK+yIPGLePZMjonV7j9vaucLG2RzA78P68XhZDfo
+        mGOG2GaH+RwRYf7vlK0pmwdAFxCy6ZzL1KQpR1gmn5mNfEXamk7vzl4XdubxB/K4
+        ZXLA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1658182397; x=1658268797; bh=rNV174Xun5ycs
-        p04TqWRQX0ro8jgxtFYEOTEEv3if0k=; b=nYYuyU+TErj0idJhXD2CK4ZEhAHKa
-        wgphH5DZ9BaGaN0ff/ZpVfG8BF9C5e5t9dEHCYMtHSqSTJEaWv77y6kQkX8suPUL
-        L18fktGlMy6J/8afd+HNOq0Bq/uXrR1gDqvNGrFyaZDdQWJjzBsrJBU7pK2Kquog
-        Zuz06m2zTSm3X/52I85Z1WXYbyyf/vXmlih48NszkaA7BmFgarioZkJ75rXGE3FM
-        w0I2gJ5/nc0U+X1Ku6vaY2MgqaNmXNV+ELXfdBngxMZQGimwhMy7JHAKjYGLXfl2
-        g2EYxzS4gn0XBOXx2ESpfJhGfKbPbQqFEWeuLyFL2i+uqiD9PU9a4Hj2g==
-X-ME-Sender: <xms:_drVYmZfSwN_OozkqoLwsLlDWIAkRxZCLabXQSfMLCxpAoeBfLdfOw>
-    <xme:_drVYpZey8w3zMP106jZSp6t8qW6GC-AaJiJmY0nFASD4Ybp9rt6EPapSgbQezTOi
-    H58I65oTtQS7r9xYvs>
-X-ME-Received: <xmr:_drVYg9iOieazsnBoS5Dmwst6x_-XttVRBlzYkjy2J9uIHMmT8AN1wlfMX4RhpC8MtJvEoRjePfiXJm5YYyAok8T7KVl_w>
+        :x-sasl-enc; s=fm3; t=1658182399; x=1658268799; bh=wwcT/havCH3A+
+        wPQ+zCgxMtFb1NLQqhsio4ZZc8u9hY=; b=VFNcZJkfF+Sg/+uYiAwe700vUBOLW
+        TLe+S0Zq07P3MMOqMo2/sRZ+m7Y1T6BaqQtNkIW3TUTRf6SA+hhnhugJJvAmHkcY
+        86zQS72NULwK1Wpgm+IIhepNYI6UdTdLdwoE+y+Euo0ufFCZCTGZkOiBrvX6Qq61
+        k4vejBOoI9ARsPuACihQ+gHjZD1d7FybPiStjlZN6p7dcLEfib6dkqclx767ACKb
+        N+lb1FoXd+rypG4zXhnqfQ9cIJU0DTP1Dz4zfjWVUO67EflzUH1NK09Jt6XwaDov
+        L63qnvBoMTZ+8LPiDev0G7jFBVLopwMA62IwXcCG0f+ftJhDlP4qTqG2Q==
+X-ME-Sender: <xms:_trVYjpQTpKU4A1h978nBsYJCjfX5dIvvK-140puyELWrRb7TUWowg>
+    <xme:_trVYtpg2jDo3i_RmcR5kd0a9z3fIAc0i0pUw81g_baHIGF7TVZK7OHFh4JHsyDOi
+    NtE2d3G41PaIDtst7E>
+X-ME-Received: <xmr:_trVYgNxV0xL--iBMrdIhMusCj6ppuVw28OH9u0gTMQ4K9ZgPad8fKMOna_I8L6xn0Yk0hE-TMJCBt7lAxhEjuk46F2ylg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudekledgtdejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
     dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
     ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
-    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhep
     mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:_drVYoqmrNT670Y7cQ8_3JUCYL2hrmFQzoDkiWPzvmjQJ0xx6dHZUQ>
-    <xmx:_drVYhqpnhrK-Srrw1yskbFKpZXUWTF7U8tCxbX6T1Cl4skDtkBVyA>
-    <xmx:_drVYmT4WdKUPxhuaT_XDMIyZlbOKe6WTdB8NTmzbNzmxL2Z65WlDg>
-    <xmx:_drVYgQS5vb4OgARJtF0AJNu_iNGf7rkPbBJ2UJ-zJqgNPWgulN3kA>
+X-ME-Proxy: <xmx:_trVYm48ax4a_nw_HGU55-1yEXYMnmfjgaaosWzt2b_10TrE9MPTPg>
+    <xmx:_trVYi5Tn6FGeamF5PO0rJnwzeFDM--dWeOgUy-ha0cRzRl-agtokQ>
+    <xmx:_trVYuha4AgBixTu8b35ZMOZqRFKO5WlamLDUEN_rhLg9HjORoiUmQ>
+    <xmx:_9rVYniLMoFryJhpHAnF5cvLuL2huC3D-usV4Becj2bQvLz3SMVX-w>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Jul 2022 18:13:16 -0400 (EDT)
+ 18 Jul 2022 18:13:18 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 2/4] btrfs-progs: corrupt generic item data with btrfs-corrupt-block
-Date:   Mon, 18 Jul 2022 15:13:09 -0700
-Message-Id: <c997560fffbd67ef460876bf9ddb7b33c034a7ff.1658182042.git.boris@bur.io>
+Subject: [PATCH v3 3/4] btrfs-progs: expand corrupt_file_extent in btrfs-corrupt-block
+Date:   Mon, 18 Jul 2022 15:13:10 -0700
+Message-Id: <959164e11c888f87a5def699f4f5ec209b223a4e.1658182042.git.boris@bur.io>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <cover.1658182042.git.boris@bur.io>
 References: <cover.1658182042.git.boris@bur.io>
@@ -80,157 +80,86 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs-corrupt-block already has a mix of generic and specific corruption
-options, but currently lacks the capacity for totally arbitrary
-corruption in item data.
-
-There is already a flag for corruption size (bytes/-b), so add a flag
-for an offset and a value to memset the item with. Exercise the new
-flags with a new variant for -I (item) corruption. Look up the item as
-before, but instead of corrupting a field in the item struct, corrupt an
-offset/size in the item data.
-
-The motivating example for this is that in testing fsverity with btrfs,
-we need to corrupt the generated Merkle tree--metadata item data which
-is an opaque blob to btrfs.
+To corrupt holes/prealloc/inline extents, we need to mess with
+extent data items. This patch makes it possible to modify
+disk_bytenr with a specific value (useful for hole corruptions)
+and to modify the type field (useful for prealloc corruptions)
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- btrfs-corrupt-block.c | 77 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 74 insertions(+), 3 deletions(-)
+ btrfs-corrupt-block.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
 diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
-index b826c9c2e..225818817 100644
+index 225818817..50e2ebcba 100644
 --- a/btrfs-corrupt-block.c
 +++ b/btrfs-corrupt-block.c
-@@ -99,12 +99,14 @@ static void print_usage(int ret)
- 	printf("\t-m   The metadata block to corrupt (must also specify -f for the field to corrupt)\n");
- 	printf("\t-K <u64,u8,u64> Corrupt the given key (must also specify -f for the field and optionally -r for the root)\n");
- 	printf("\t-f   The field in the item to corrupt\n");
--	printf("\t-I <u64,u8,u64> Corrupt an item corresponding to the passed key triplet (must also specify the field to corrupt and root for the item)\n");
-+	printf("\t-I <u64,u8,u64> Corrupt an item corresponding to the passed key triplet (must also specify the field, or a (bytes, offset, value) tuple to corrupt and root for the item)\n");
- 	printf("\t-D <u64,u8,u64> Corrupt a dir item corresponding to the passed key triplet, must also specify a field\n");
- 	printf("\t-d <u64,u8,u64> Delete item corresponding to passed key triplet\n");
- 	printf("\t-r   Operate on this root\n");
- 	printf("\t-C   Delete a csum for the specified bytenr.  When used with -b it'll delete that many bytes, otherwise it's just sectorsize\n");
- 	printf("\t--block-group OFFSET  corrupt the given block group\n");
-+	printf("\t-v   Value to use for corrupting item data\n");
-+	printf("\t-o   Offset to use for corrupting item data\n");
- 	exit(ret);
- }
+@@ -308,6 +308,7 @@ enum btrfs_inode_field {
  
-@@ -975,6 +977,56 @@ out:
- 	return ret;
- }
+ enum btrfs_file_extent_field {
+ 	BTRFS_FILE_EXTENT_DISK_BYTENR,
++	BTRFS_FILE_EXTENT_TYPE,
+ 	BTRFS_FILE_EXTENT_BAD,
+ };
  
-+static int corrupt_btrfs_item_data(struct btrfs_root *root,
-+				   struct btrfs_key *key,
-+				   u64 bogus_offset, u64 bogus_size,
-+				   char bogus_value)
-+{
-+	struct btrfs_trans_handle *trans;
-+	struct btrfs_path *path;
-+	int ret;
-+	void *data;
-+	struct extent_buffer *leaf;
-+	int slot;
-+	u32 item_size;
-+
-+	path = btrfs_alloc_path();
-+	if (!path)
-+		return -ENOMEM;
-+
-+	trans = btrfs_start_transaction(root, 1);
-+	if (IS_ERR(trans)) {
-+		fprintf(stderr, "Couldn't start transaction %ld\n",
-+			PTR_ERR(trans));
-+		ret = PTR_ERR(trans);
-+		goto free_path;
-+	}
-+
-+	ret = btrfs_search_slot(trans, root, key, path, 0, 1);
-+	if (ret != 0) {
-+		fprintf(stderr, "Error searching to node %d\n", ret);
-+		goto commit_txn;
-+	}
-+	leaf = path->nodes[0];
-+	slot = path->slots[0];
-+	data = btrfs_item_ptr(leaf, slot, void);
-+	item_size = btrfs_item_size(leaf, slot);
-+	if (bogus_offset + bogus_size > item_size) {
-+		fprintf(stderr, "Item corruption past end of item: %llu > %u\n", bogus_offset + bogus_size, item_size);
-+		ret = -EINVAL;
-+		goto commit_txn;
-+	}
-+	data += bogus_offset;
-+	memset_extent_buffer(leaf, bogus_value, (unsigned long)data, bogus_size);
-+	btrfs_mark_buffer_dirty(leaf);
-+
-+commit_txn:
-+	btrfs_commit_transaction(trans, root);
-+free_path:
-+	btrfs_free_path(path);
-+	return ret;
-+}
-+
- static int delete_item(struct btrfs_root *root, struct btrfs_key *key)
+@@ -380,6 +381,8 @@ static enum btrfs_file_extent_field convert_file_extent_field(char *field)
  {
- 	struct btrfs_trans_handle *trans;
-@@ -1231,6 +1283,8 @@ int main(int argc, char **argv)
- 	u64 csum_bytenr = 0;
- 	u64 block_group = 0;
- 	char field[FIELD_BUF_LEN];
-+	u64 bogus_value = UNSET_U64;
-+	u64 bogus_offset = UNSET_U64;
+ 	if (!strncmp(field, "disk_bytenr", FIELD_BUF_LEN))
+ 		return BTRFS_FILE_EXTENT_DISK_BYTENR;
++	if (!strncmp(field, "type", FIELD_BUF_LEN))
++		return BTRFS_FILE_EXTENT_TYPE;
+ 	return BTRFS_FILE_EXTENT_BAD;
+ }
  
- 	field[0] = '\0';
- 	memset(&key, 0, sizeof(key));
-@@ -1259,11 +1313,13 @@ int main(int argc, char **argv)
- 			{ "root", no_argument, NULL, 'r'},
- 			{ "csum", required_argument, NULL, 'C'},
- 			{ "block-group", required_argument, NULL, GETOPT_VAL_BLOCK_GROUP},
-+			{ "value", required_argument, NULL, 'v'},
-+			{ "offset", required_argument, NULL, 'o'},
- 			{ "help", no_argument, NULL, GETOPT_VAL_HELP},
- 			{ NULL, 0, NULL, 0 }
- 		};
+@@ -753,14 +756,14 @@ out:
  
--		c = getopt_long(argc, argv, "l:c:b:eEkuUi:f:x:m:K:I:D:d:r:C:",
-+		c = getopt_long(argc, argv, "l:c:b:eEkuUi:f:x:m:K:I:D:d:r:C:v:o:",
- 				long_options, NULL);
- 		if (c < 0)
- 			break;
-@@ -1329,6 +1385,12 @@ int main(int argc, char **argv)
- 			case GETOPT_VAL_BLOCK_GROUP:
- 				block_group = arg_strtou64(optarg);
- 				break;
-+			case 'v':
-+				bogus_value = arg_strtou64(optarg);
-+				break;
-+			case 'o':
-+				bogus_offset = arg_strtou64(optarg);
-+				break;
- 			case GETOPT_VAL_HELP:
- 			default:
- 				print_usage(c != GETOPT_VAL_HELP);
-@@ -1455,7 +1517,16 @@ int main(int argc, char **argv)
- 		if (!root_objectid)
- 			print_usage(1);
+ static int corrupt_file_extent(struct btrfs_trans_handle *trans,
+ 			       struct btrfs_root *root, u64 inode, u64 extent,
+-			       char *field)
++			       char *field, u64 bogus)
+ {
+ 	struct btrfs_file_extent_item *fi;
+ 	struct btrfs_path *path;
+ 	struct btrfs_key key;
+ 	enum btrfs_file_extent_field corrupt_field;
+-	u64 bogus;
+ 	u64 orig;
++	u8 bogus_type = bogus;
+ 	int ret = 0;
  
--		ret = corrupt_btrfs_item(target_root, &key, field);
-+		if (*field != 0)
-+			ret = corrupt_btrfs_item(target_root, &key, field);
-+		else if (bogus_offset != UNSET_U64 &&
-+			 bytes != UNSET_U64 &&
-+			 bogus_value != UNSET_U64)
-+			ret = corrupt_btrfs_item_data(target_root, &key,
-+						      bogus_offset, bytes,
-+						      bogus_value);
-+		else
-+			print_usage(1);
+ 	corrupt_field = convert_file_extent_field(field);
+@@ -792,9 +795,18 @@ static int corrupt_file_extent(struct btrfs_trans_handle *trans,
+ 	switch (corrupt_field) {
+ 	case BTRFS_FILE_EXTENT_DISK_BYTENR:
+ 		orig = btrfs_file_extent_disk_bytenr(path->nodes[0], fi);
+-		bogus = generate_u64(orig);
++		if (bogus == UNSET_U64)
++			bogus = generate_u64(orig);
+ 		btrfs_set_file_extent_disk_bytenr(path->nodes[0], fi, bogus);
+ 		break;
++	case BTRFS_FILE_EXTENT_TYPE:
++		if (bogus == UNSET_U64) {
++			fprintf(stderr, "Specify a new extent type value (-v)\n");
++			ret = -EINVAL;
++			goto out;
++		}
++		btrfs_set_file_extent_type(path->nodes[0], fi, bogus_type);
++		break;
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
+@@ -1487,9 +1499,9 @@ int main(int argc, char **argv)
+ 			printf("corrupting inode\n");
+ 			ret = corrupt_inode(trans, root, inode, field);
+ 		} else {
+-			printf("corrupting file extent\n");
+ 			ret = corrupt_file_extent(trans, root, inode,
+-						  file_extent, field);
++						  file_extent, field,
++						  bogus_value);
+ 		}
+ 		btrfs_commit_transaction(trans, root);
  		goto out_close;
- 	}
- 	if (delete) {
 -- 
 2.37.1
 
