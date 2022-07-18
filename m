@@ -2,90 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 210E8577E7D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 11:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA24C577FDA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 12:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbiGRJSh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 18 Jul 2022 05:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47300 "EHLO
+        id S233898AbiGRKj0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Jul 2022 06:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233955AbiGRJST (ORCPT
+        with ESMTP id S230249AbiGRKj0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Jul 2022 05:18:19 -0400
-Received: from avasout-ptp-001.plus.net (avasout-ptp-001.plus.net [84.93.230.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4B7101D4
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 02:18:17 -0700 (PDT)
-Received: from APOLLO ([212.159.61.44])
-        by smtp with ESMTPA
-        id DMtJo495JCVxYDMtKoh6BU; Mon, 18 Jul 2022 10:18:16 +0100
-X-Clacks-Overhead: "GNU Terry Pratchett"
-X-CM-Score: 0.00
-X-CNFS-Analysis: v=2.4 cv=ENUVbnVC c=1 sm=1 tr=0 ts=62d52558
- a=AGp1duJPimIJhwGXxSk9fg==:117 a=AGp1duJPimIJhwGXxSk9fg==:17
- a=IkcTkHD0fZMA:10 a=7pan45PUXvOoycvVN40A:9 a=QEXdDO2ut3YA:10
-X-AUTH: perdrix52@:2500
-From:   "David C. Partridge" <david.partridge@perdrix.co.uk>
-To:     "'Qu Wenruo'" <quwenruo.btrfs@gmx.com>,
-        <linux-btrfs@vger.kernel.org>,
-        "'Nikolay Borisov'" <nborisov@suse.com>
-References: <000001d899d0$57fb6490$07f22db0$@perdrix.co.uk> <38d342a0-9057-7fd7-6ed9-d9b07bc4c27c@gmx.com>
-In-Reply-To: <38d342a0-9057-7fd7-6ed9-d9b07bc4c27c@gmx.com>
-Subject: RE: Odd output from scrub status
-Date:   Mon, 18 Jul 2022 10:18:13 +0100
-Message-ID: <004901d89a87$500ea870$f02bf950$@perdrix.co.uk>
+        Mon, 18 Jul 2022 06:39:26 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284D06308;
+        Mon, 18 Jul 2022 03:39:25 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-10cf9f5b500so21415014fac.2;
+        Mon, 18 Jul 2022 03:39:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Vz8thXfyqmr8/ZGBgzP+4ncQZsqZIti3MIOVrQPZcf4=;
+        b=UYrX4jNghz7l+TMu1SjHr0EY0oK4QtNJwXWXzW1OWV9IGqHjzN4L4uScGFTH3lh6+n
+         FWjA33OtTjRxqNoUy2tUFKejBrjafdEVCPzpfaU+vB/W0oGN6axOFfZ5cRkmzwJyyReh
+         CHOwmzAOrqtapvbnFwKc+UyoGb71wjnZvEkV5NafYWR/KAdHBnuZBTqRnfTe3uClrecb
+         eI6UZLY4AEJkRkXay+9qF63zCyEIa4H9zcfwh6SaxYDgMq2zfApdDMxbnwQAFGoB2YT7
+         3BvVn4M/CG+xRFJsWZl4sswbIBFawxZiM8J1BnAl5BADwKSTErJG0SZvSCIStZ6Fm+7r
+         tDGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Vz8thXfyqmr8/ZGBgzP+4ncQZsqZIti3MIOVrQPZcf4=;
+        b=ZSSl3P1dO97GlXmxotZA7O2dacBX8lK2WmdSN2lKMFYU30NYeLSsUeTbdHJidmrwe6
+         HGZc5y0J+f28yrLMUr3HvAuA7eYVPIVuZ80SWbNtmo8S8pkLg2Moq0L3W3H8c0l41YFM
+         axIMApWcr5cdee5bnycZVNXSrBlfi1FZgn5HNSIh73KIpIP+62g7iyeV1EBzvwFaRRvt
+         KgCnb9vJeUrBGTi1vHCezXbP10psFBvGxVNNR5A6pFrjyy5BwJFa0ztYD9ChE4DjB1jo
+         CMjFw5fxU55B38lEtpWD8p8LjBUi1Hm53h+RrO90Ns9A9CyNhX5+F1aJjH/rif+4I7kV
+         7Lhw==
+X-Gm-Message-State: AJIora90I1/D6JPr9h6iYb2UHbGoqyqiaUdRsZaalludwNR/nPx4OOng
+        dfOyRatpuxtbx9zxLXrd1tGpUAS76BppR5YhqGk=
+X-Google-Smtp-Source: AGRyM1uQOqVeM+UIDqTpNmTACLVwDpYhkfFVH7exxRRhDtnftOV9C6MxkZWzz27cPD3MJSJooxjEFQklnfn5c+TLsBA=
+X-Received: by 2002:a05:6870:c889:b0:10c:7f1:c6b8 with SMTP id
+ er9-20020a056870c88900b0010c07f1c6b8mr13629698oab.280.1658140764394; Mon, 18
+ Jul 2022 03:39:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-gb
-Thread-Index: AQG0I+mo95iLQgivBE5YQgylXxMxEwGizODprb+vxyA=
-X-CMAE-Envelope: MS4xfKpah8+NNFuBXh9G7nY8IiMGQztoEbIu4DAqgcue62SZKQwyv1V2Uhs82ju+S7KhtQ0pGYV+FHDWWGTVa2xlddSKpABwDRW+rVgc24dS/YejLe8gOlz/
- 2wB3RXHF5Om6YkBAfmJyeQEqPNjAnd1+h494NWComHqebk1qCHAnTh9tjhP8LvpSenCbfAfTYMMZHxD8WLclqhEURHkCoii6kkc=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220712013632.7042-1-bingjingc@synology.com> <20220712145201.GA1074561@falcondesktop>
+In-Reply-To: <20220712145201.GA1074561@falcondesktop>
+From:   bingjing chang <bxxxjxxg@gmail.com>
+Date:   Mon, 18 Jul 2022 18:39:12 +0800
+Message-ID: <CAMmgxWGu9AJELK3hM10CoS8q38JfVB0yvbFr6=LpFqApXFqXVg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] btrfs: send: fix sending link commands for
+ existing file paths
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     bingjingc <bingjingc@synology.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Robbie Ko <robbieko@synology.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> Mind to share the following commands output?
+Filipe Manana <fdmanana@kernel.org>=E6=96=BC 2022=E5=B9=B47=E6=9C=8812=E6=
+=97=A5 =E9=80=B1=E4=BA=8C=EF=BC=8C=E4=B8=8B=E5=8D=8810:52=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> On Tue, Jul 12, 2022 at 09:36:30AM +0800, bingjingc wrote:
+> > From: BingJing Chang <bingjingc@synology.com>
+> >
+> > There is a bug sending link commands for existing file paths. When we'r=
+e
+> > processing an inode, we go over all references. All the new file paths =
+are
+> > added to the "new_refs" list. And all the deleted file paths are added =
+to
+> > the "deleted_refs" list. In the end, when we finish processing the inod=
+e,
+> > we iterate over all the items in the "new_refs" list and send link comm=
+ands
+> > for those file paths. After that, we go over all the items in the
+> > "deleted_refs" list and send unlink commands for them. If there are
+> > duplicated file paths in both lists, we will try to create them before =
+we
+> > remove them. Then the receiver gets an -EEXIST error when trying the li=
+nk
+> > operations.
+> >
+> > BingJing Chang (2):
+> >   btrfs: send: introduce recorded_ref_alloc and recorded_ref_free
+> >   btrfs: send: fix sending link commands for existing file paths
+> >
+> >  fs/btrfs/send.c | 195 ++++++++++++++++++++++++++++++++++++++++++++----
+> >  1 file changed, 181 insertions(+), 14 deletions(-)
+>
+> Looks good now, thanks.
+>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+>
+> Also, are you planning on submitting a test case for fstests too?
 
-Sure, no problem
+Sorry for my late reply. I will try to add a test case to fstests,
+thanks for reminding me.
 
-root@charon:/home/amonra# btrfs fi df /shared
-Data, single: total=8.37TiB, used=5.76TiB
-System, DUP: total=32.00MiB, used=1.09MiB
-Metadata, DUP: total=11.00GiB, used=5.56GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
-root@charon:/home/amonra# btrfs fi usage /shared
-Overall:
-    Device size:		  25.46TiB
-    Device allocated:		   8.39TiB
-    Device unallocated:		  17.07TiB
-    Device missing:		     0.00B
-    Used:			   5.77TiB
-    Free (estimated):		  19.68TiB	(min: 11.14TiB)
-    Data ratio:			      1.00
-    Metadata ratio:		      2.00
-    Global reserve:		 512.00MiB	(used: 0.00B)
-
-Data,single: Size:8.37TiB, Used:5.76TiB (68.89%)
-   /dev/sdb1	   8.37TiB
-
-Metadata,DUP: Size:11.00GiB, Used:5.56GiB (50.53%)
-   /dev/sdb1	  22.00GiB
-
-System,DUP: Size:32.00MiB, Used:1.09MiB (3.42%)
-   /dev/sdb1	  64.00MiB
-
-Unallocated:
-   /dev/sdb1	  17.07TiB
-root@charon:/home/amonra# uname -a
-Linux charon 5.4.0-122-generic #138-Ubuntu SMP Wed Jun 22 15:00:31 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
-root@charon:/home/amonra#
-
-David
-
+>
+> >
+> > --
+> > 2.37.0
+> >
