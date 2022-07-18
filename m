@@ -2,83 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 907DD5780EA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 13:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41AF55780F9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 13:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233074AbiGRLhg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Jul 2022 07:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56692 "EHLO
+        id S234428AbiGRLik (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Jul 2022 07:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbiGRLhf (ORCPT
+        with ESMTP id S234348AbiGRLib (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Jul 2022 07:37:35 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29DDE0B9
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 04:37:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=LJQhiHnZz2aCHItbo7c1nKd9oRnWpKA1FlorumekbZQ=; b=Rj1O8euoPqKKjE10LXM9yICWeg
-        4tNXM1F2kGr9M4IcnraJ4+NtwdE1WL5Lr8bE1MwRPBpL9esnzC93Ntz2YFAmSC0EsEAEIp+R1ce8L
-        1DeEjZK9yWfKb/BwfGtdaGV0VwnsWeyCM6+e2UAf0P1I2ehPZVf8xG9toqED5D06mZjLDAsdn9n8F
-        z27Fa6OT9YMzYq6sTql4WPKYo+7Miyicd9y8EbAJnTY2rRHLUQ6CjTsx7VLbtLIVWm6NaPK4QGtpr
-        Qp6QrZ01IMqfNTTbh1Lpif5TpiP9Fz0JfDDbZY9A5AsPX9IhMmVbVlLS71bq+ClkQrMdXUzBJkjH+
-        7l0/vCvQ==;
-Received: from [89.144.222.108] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oDP45-00CtW9-1P; Mon, 18 Jul 2022 11:37:29 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btfs: remove btrfs_dev_stat_print_on_error
-Date:   Mon, 18 Jul 2022 13:37:23 +0200
-Message-Id: <20220718113723.558377-1-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
+        Mon, 18 Jul 2022 07:38:31 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7E121E26
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 04:38:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EA0B133AEF;
+        Mon, 18 Jul 2022 11:38:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1658144308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p0u9GS33DAIQEqbS1OB42/87Lo2avxxtPWDg1lNjKdc=;
+        b=W9X0VIc4/9e9/sGXM3oykJrst5wUadp8mfif2SnbMFXOGKCpgB1RVzPn7W3Q4nFHuY0UnI
+        YdbutNUQtmhWam/ZhjX8v1hUZuxX0bAZrDbVYVFs+rB27TLilBDC45QBVx8Td+hTmgq1S/
+        +iK5KUl1shfBq5lkPuoOjcW5MVmPFfo=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C71313754;
+        Mon, 18 Jul 2022 11:38:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id zblBIzRG1WJsbgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Mon, 18 Jul 2022 11:38:28 +0000
+Message-ID: <50a9dca6-8890-0eee-b17b-d5c4949e5aff@suse.com>
+Date:   Mon, 18 Jul 2022 14:38:28 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] btfs: remove btrfs_dev_stat_print_on_error
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org
+References: <20220718113723.558377-1-hch@lst.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <20220718113723.558377-1-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just fold it into the only caller instead.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/btrfs/volumes.c | 5 -----
- 1 file changed, 5 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index d98dc78f83af5..a02a6d0754906 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -256,7 +256,6 @@ out_overflow:;
- 
- static int init_first_rw_device(struct btrfs_trans_handle *trans);
- static int btrfs_relocate_sys_chunks(struct btrfs_fs_info *fs_info);
--static void btrfs_dev_stat_print_on_error(struct btrfs_device *dev);
- static void btrfs_dev_stat_print_on_load(struct btrfs_device *device);
- static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
- 			     enum btrfs_map_op op, u64 logical, u64 *length,
-@@ -8287,11 +8286,7 @@ int btrfs_run_dev_stats(struct btrfs_trans_handle *trans)
- void btrfs_dev_stat_inc_and_print(struct btrfs_device *dev, int index)
- {
- 	btrfs_dev_stat_inc(dev, index);
--	btrfs_dev_stat_print_on_error(dev);
--}
- 
--static void btrfs_dev_stat_print_on_error(struct btrfs_device *dev)
--{
- 	if (!dev->dev_stats_valid)
- 		return;
- 	btrfs_err_rl_in_rcu(dev->fs_info,
--- 
-2.30.2
+On 18.07.22 г. 14:37 ч., Christoph Hellwig wrote:
+> Just fold it into the only caller instead.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
