@@ -2,217 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 515F8578AA3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 21:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB7D578B42
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 21:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235825AbiGRTYR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Jul 2022 15:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
+        id S233595AbiGRTvM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Jul 2022 15:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235909AbiGRTYO (ORCPT
+        with ESMTP id S230411AbiGRTu7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Jul 2022 15:24:14 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011EA12760;
-        Mon, 18 Jul 2022 12:24:12 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7DA1F5C0143;
-        Mon, 18 Jul 2022 15:24:10 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 18 Jul 2022 15:24:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1658172250; x=1658258650; bh=7gP5SfXBLY
-        zvYPQmm363Nym+7P+Hib8IvxPnXWqbi3s=; b=kD8wnI0hBFb0DyxjDK4oj/rgO7
-        5MOa5VvzhBOGimSI0TT1jdCzyi9uTV4wB0jN9U7BZTKcn481Hh6RDjKjJ9c1uLOa
-        WNqkaVlTSNGDyEOiCTcjkcLLhyt442rY8zLdemhoncy3Z0Ky2cUpvBC13mIAaIqY
-        wAo388nUsH0LTvYXSbgLU5wFiTlsHtGd9Fy+x4lx+v/I6S8SjIheDtS1VVswAFbX
-        ixvGvS/5Z05Rop/sllCgwu+Szxhtm/tDVA/CdE3qDsRoHeVls+MAzmNPZR5GhTCT
-        FtuJspIRjyVmolo1OMTZiLEylnUDGsB52XWBf/DGyQv07XS5b8RqjE9OreTQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1658172250; x=1658258650; bh=7gP5SfXBLYzvYPQmm363Nym+7P+H
-        ib8IvxPnXWqbi3s=; b=hT8IZaQFjq4bhCONhLJksXAaV6Y0F1Xaxw+wzr9Y5Zjv
-        IwsZbUouuPtDBVzbpPOfu+WgFq8N9GIAJ2f7gA6kkcmdX2mTnOXuILV40P3DqOPz
-        PVID9xQ3FL1xLjaG+axhodaLTIUNGFdCv7+nBnI0AaII9yUgDvvy3NI3zUXrCLfQ
-        Yae+ZtK/19nZzu9p3si/xln6MLJdkqfWc6TH9i1LJQihWzCg7iN2zdvthlS1mWXC
-        uBw+o3LTJXrlliWfTtqi87acxZyl+4z2sgPIXU0uZawzP2Ashtwutf+IwZeWNgsO
-        aihqbXQfb7/6Jxl/mopwIm8OJi4chYxHQZLFbWGEiw==
-X-ME-Sender: <xms:WrPVYgETcGmBZ_Cku75cDzTEhxOiYHrTd4K7ulhcDkyURc8Xly2KzQ>
-    <xme:WrPVYpUZrUA7haC-L_2G7D_55kh44wXkNvIYtiDFuuD38ROAYg5d596GQJJMsSdzi
-    X3ykuxq64ZhFV6TYg4>
-X-ME-Received: <xmr:WrPVYqIabNHHWdnnLB2tVoE7rm8WIW-6hShV0EhP9uLf7u94bzJ9AM6tsYGHYIcfIpHRwc-LlGcy9sVOL3lt1u-Vc6bv9A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudekkedgudefhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
-    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
-    epleffgeevgeetueegledtueeluddtudekhefhudeuheegfeevieehteevieejueetnecu
-    ffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:WrPVYiFPMJnlXtl21JPemU4PypaBFoTmHGe2LZIm-itsHpoMCnXtYg>
-    <xmx:WrPVYmUbWW0xBM1VtwAg6Q2du5isdMNmoaZINgVC_IzmbOdCgtPMig>
-    <xmx:WrPVYlMEkPWWvjA5SXqgZF7PDBByuDMzesXGGiMEOZfCl57Pvd73TA>
-    <xmx:WrPVYodmWRML3wiJwdq-45pLZrrB_O8ap4LlGg4TOUK59pskIDu-kw>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Jul 2022 15:24:09 -0400 (EDT)
-Date:   Mon, 18 Jul 2022 12:24:08 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Eric Biggers <ebiggers@google.com>,
-        Josef Bacik <josefbacik@toxicpanda.com>
-Subject: Re: [PATCH v10 4/5] btrfs: test verity orphans with dmlogwrites
-Message-ID: <YtWzWN3R4pbftK4o@zen>
-References: <28979252b803c073d6a8084c11b5ba27@dorminy.me>
+        Mon, 18 Jul 2022 15:50:59 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD614305
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 12:50:58 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id r22-20020a056830419600b0061c6edc5dcfso10047087otu.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 12:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GPV0kA7TRl1uBedL0vmhtumNfaD83UB/vHWzacnCYNI=;
+        b=5ZB8IhM+brajx7tQ7DtBc+frfib0NkGOlgkyWML2TSt/bBr7dVkB+pIigiZoJ/9vhj
+         qqz6SVzDYPYjl83YmKiRWbbgKhYpn6HAv2NidZ7T+p7INfiIzmHtIDaMzwLtdRH5yjB5
+         BT+/mdB2cCOSc83P6qZU+uAQ9ZTBApPwEmBtrBH+N5bpC7TqbL/4wP3/Jv+3EA13L31+
+         ERMNg/6shZ3TOYxsl7WAM+k1fB/C3sjI25xV84o5gV2panmQEKQyLdBZMkHO+4LvHUCw
+         PLYDYJ2ZgEywOcKhdj32bo3bsCKZZ+3neLSxLV/ly1+ELHYfvy4Y6S/Tqm54ha7Y9uIT
+         cxfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GPV0kA7TRl1uBedL0vmhtumNfaD83UB/vHWzacnCYNI=;
+        b=ojUdQU9QUFGWkAnkpmGJDgfuwSVp9DOoEDU3VzWvnT52ipTuh+KYQ+pIUkbmjc9dVs
+         1TnVFyqimRpGWfpsDk6jo/TmiVpKRcYISBxVoRWNMJXi4Nyu+9zK+FHwPHk4T3jyrzg/
+         n9jnH3zkwgmeodNkTDFvLfUBUKSCpAqRoipWVBfPcCReGboiMr1geWQ9W8meVJQWmOj7
+         LMV6Ptm2ABRIni5G+6KLUGoYaK+2hv23KmMDJDGJLRzzN315eAJuRyrrWcG0z9gAxLM5
+         6r9uxJ0rMfSJEOM3rKLH+YNtrUD5V+4kurYj3C6auFShmWk4JjUVGrxwVrLIXhDQ3ZuB
+         fAiQ==
+X-Gm-Message-State: AJIora85fWvgzSiK5dK/8uQK+YSQYaz+WzjCnDCZwXnf4ZIbczqXnAwD
+        kQzlRsBR+4FFxHdK79dVmhtEvKzHT5GEb7ZLy+4wBqoWx67tmrOp
+X-Google-Smtp-Source: AGRyM1ufq/Oa7utN+2OzdSptc83g+VOEmW1HNPAv12S2DfduYMaHe5drCrGyXCrifhfOcsOjCRYZTgOXGP83gm1bo7E=
+X-Received: by 2002:a9d:61d7:0:b0:61c:7bed:ce14 with SMTP id
+ h23-20020a9d61d7000000b0061c7bedce14mr9210946otk.366.1658173858146; Mon, 18
+ Jul 2022 12:50:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <28979252b803c073d6a8084c11b5ba27@dorminy.me>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <000001d899d0$57fb6490$07f22db0$@perdrix.co.uk>
+In-Reply-To: <000001d899d0$57fb6490$07f22db0$@perdrix.co.uk>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 18 Jul 2022 15:50:41 -0400
+Message-ID: <CAJCQCtTAx=82boq175vtAu1Z_S9D1tcNSErir1wTK8MbtMfsvw@mail.gmail.com>
+Subject: Re: Odd output from scrub status
+To:     "David C. Partridge" <david.partridge@perdrix.co.uk>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 18, 2022 at 02:22:44PM -0400, Sweet Tea Dorminy wrote:
-> 
-> > At each log entry, we want to assert a
-> > somewhat complicated invariant:
-> > 
-> > If verity has not yet started: an orphan indicates that verity has
-> > started.
-> > If verity has started: mount should handle the orphan and blow away
-> > verity data: expect 0 merkle items after mounting the snapshot dev. If
-> > we can measure the file, verity has finished.
-> > If verity has finished: the orphan should be gone, so mount should not
-> > blow away merkle items. Expect the same number of merkle items before
-> > and after mounting the snapshot dev.
-> 
-> I was a bit confused by the mix of invariants and state transition
-> conditions, and think this would be somewhat clearer to split into 'state
-> transition' and 'state invariant' sections, perhaps as follows:
-> 
-> There are three possible states for a given point in the log: initially
-> verity has not yet started; then verity has started but not finished; and
-> finally verity has finished. The log must proceed through these states in
-> order: verity starts when an orphan item is added; and
-> verity has finished when, post-mount, the verity tool can measure the file.
-> 
-> Each state has its own invariant for testing:
-> - If verity has not yet started: no verity items exist.
-> - If verity has started: mount should handle the orphan and blow away
->  verity data: expect 0 merkle items after mounting.
-> - If verity has finished: the orphan should be gone and mount should not
->  blow away merkle items. Expect the same number of merkle items before
->  and after mounting.
+On Sun, Jul 17, 2022 at 7:28 AM David C. Partridge
+<david.partridge@perdrix.co.uk> wrote:
+>
+> root@charon:~/bin# btrfs scrub status /dev/sdb1
+> UUID:             f9655777-8c81-4d5e-8f14-c1906b7b27a3
+> Scrub started:    Sun Jul 17 10:27:39 2022
+> Status:           running
+> Duration:         1:59:29
+> Time left:        6095267:46:37
+> ETA:              Tue Nov 20 23:13:45 2717
+> Total to scrub:   4.99TiB
+> Bytes scrubbed:   5.48TiB
+> Rate:             801.72MiB/s
+> Error summary:    no errors found
+> root@charon:~/bin#
 
-Thank you so much for untangling the state transitions from the
-invariant at each state, that makes it much much clearer.
 
-> 
-> > 
-> > Note that this relies on grepping btrfs inspect-internal dump-tree.
-> > Until btrfs-progs has the ability to print the new Merkle items, they
-> > will show up as UNKNOWN.36/37.
-> 
-> I think that progs versions 5.17+ include print verity items [1] but I don't
-> know how tests deal with version-dependent output...
-> 
-> [1] https://github.com/kdave/btrfs-progs/commit/c4947248580c20869e75e8e61fb9b5e020053b3c
+What version of btrfs-progs? Looks like 96ed8e801 fixed an issue with
+ETA reporting, which I'm guessing made it into btrfs-progs 5.2 or
+5.2.1?
 
-Good point! I think we should just target the new one?
 
-> 
-> > +replay_log_prog=$here/src/log-writes/replay-log
-> > +num_entries=$($replay_log_prog --log $LOGWRITES_DEV --num-entries)
-> > +entry=$($replay_log_prog --log $LOGWRITES_DEV --replay $replay_dev
-> > --find --end-mark mkfs | cut -d@ -f1)
-> > +$replay_log_prog --log $LOGWRITES_DEV --replay $replay_dev --limit
-> > $entry || \
-> > + _fail "failed to replay to start entry $entry"
-> > +let entry+=1
-> > +
-> > +# state = 0: verity hasn't started
-> > +# state = 1: verity underway
-> > +# state = 2: verity done
-> > +state=0
-> > +while [ $entry -lt $num_entries ];
-> > +do
-> > + $replay_log_prog --limit 1 --log $LOGWRITES_DEV --replay $replay_dev
-> > --start $entry || \
-> > + _fail "failed to take replay step at entry: $entry"
-> > +
-> > + $LVM_PROG lvcreate -s -L 4M -n $snapname $vgname/$lvname
-> > >>$seqres.full 2>&1 || \
-> > + _fail "Failed to create snapshot"
-> > + $UDEV_SETTLE_PROG >>$seqres.full 2>&1
-> > +
-> > + orphan=$(count_item $snap_dev ORPHAN)
-> > + if [ $state -eq 0 ]; then
-> > + [ $orphan -gt 0 ] && state=1
-> > + fi
-> This being in an if is inconsistent with the state transitions a few lines
-> down; it would be nice to be consistent, though I don't have a preference
-> about which way.
-
-Oh yeah, I am a bit inconsistent. I'll try to make it more uniform.
-
-> > +
-> > + pre_mount=$(count_item $snap_dev UNKNOWN.3[67])
-> > + _mount $snap_dev $SCRATCH_MNT || _fail "mount failed at entry $entry"
-> > + fsverity measure $SCRATCH_MNT/fsv >>$seqres.full 2>&1
-> > + measured=$?
-> > + umount $SCRATCH_MNT
-> > + [ $state -eq 1 ] && [ $measured -eq 0 ] && state=2
-> > + [ $state -eq 2 ] && ([ $measured -eq 0 ] || _fail "verity done, but
-> > measurement failed at entry $entry")
-> > + post_mount=$(count_item $snap_dev UNKNOWN.3[67])
-> > +
-> > + echo "entry: $entry, state: $state, orphan: $orphan, pre_mount:
-> > $pre_mount, post_mount: $post_mount" >> $seqres.full
-> > +
-> > + if [ $state -eq 1 ]; then
-> > + [ $post_mount -eq 0 ] || \
-> > + _fail "mount failed to clear under-construction merkle items pre:
-> > $pre_mount, post: $post_mount at entry $entry";
-> > + fi
-> > + if [ $state -eq 2 ]; then
-> > + [ $pre_mount -gt 0 ] || \
-> > + _fail "expected to have verity items before mount at entry $entry"
-> > + [ $pre_mount -eq $post_mount ] || \
-> > + _fail "mount cleared merkle items after verity was enabled
-> > $pre_mount vs $post_mount at entry $entry";
-> > + fi
-> > +
-> > + let entry+=1
-> > + $LVM_PROG lvremove $vgname/$snapname -y >>$seqres.full
-> > +done
-> 
-> I'm not understanding the snapshot part. It seems like most tests using
-> log-writes do `_log_writes_replay_log_range $cur $SCRATCH_DEV >>
-> $seqres.full` to start each iteration; and then it seems like this test can
-> check the item counts before and after a _scratch_mount/_scratch_umount
-> cycle  and get the same results. (And, if that worked, the test wouldn't
-> need its own _cleanup() and its own lv management, I think?) But I'm
-> probably missing something.
-
-IIRC, the purpose of the snapshots is that the mount/unmount cycle is
-destructive in the middle of the operation. If the orphan is present,
-we'll blow up all the verity items, so if we did it on the device we
-were replaying onto, it would leave it in a messed up state as we kept
-replaying. So we snapshot at each entry and mount/unmount that to check
-the invariants.
-
-I think I might be able to switch to the helper functions for advancing
-the log from FUA to FUA instead of by 1 entry each time, though. That
-might make the test a bit faster :)
+-- 
+Chris Murphy
