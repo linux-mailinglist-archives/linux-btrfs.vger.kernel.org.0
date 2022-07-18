@@ -2,99 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BBD578754
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 18:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC1657876E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 18:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbiGRQ0P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Jul 2022 12:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57628 "EHLO
+        id S233151AbiGRQbH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Jul 2022 12:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235815AbiGRQZw (ORCPT
+        with ESMTP id S233881AbiGRQas (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Jul 2022 12:25:52 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274C02AC79
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 09:25:51 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Mon, 18 Jul 2022 12:30:48 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C302A953
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 09:30:47 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id C15FF803C6;
-        Mon, 18 Jul 2022 12:25:50 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1658161550; bh=oJqSkCSvdk7Um9FDrD/vY05JARX3gieXdGtrCQk5tdI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Izf6Hh9KEl+1ZPj6KEbPpIJl8/hgQNpibw6HyEgPdLOglIwaE5Gld8nlhdv+9PV2x
-         5DUhLZ3R3FJm+yHjbwCZ4Nm359l+XShv0rW4OgrglL3yAXuG9nZLd1qv0/p1MIhYaQ
-         ny7gu6DPLvhXhwXzjEP6lvnvx18z4gskCP6j1QDkHwrXicbk580X23fRnJR9Iwr4wP
-         q8R+PdfzVujVNPKuPt8CBr6NekdIFRaj1reITAqYBNRMt1/bw9MAGWJFYWWL0TleJY
-         w49QVLrx/KuWL/BBDCdjWd4UXaffRqaVCUR0PG2hosz/4CIQgAwXx+OJyNP4lcoQ10
-         BTuQsbNr4j6vg==
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 32FE834614;
+        Mon, 18 Jul 2022 16:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1658161846;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+/QRuv49bjiF31S+8BhW1JvHYWdgFWpOjfIoC2UQQlQ=;
+        b=fDPwHYAtmJ4iRMWWpPPVj902hY4iajCxu9PDJ7dtBDpxb3dt9Q3qxZ+n+ZRON/BaWaJXLk
+        3J9Y/JhwLVxdKPM+yFpki2UjgBuGszVcvXaarphd11OBZWNBAcY4wT+aG4xTPF9ibIU2ZZ
+        322QM/7GLVoJTvP35xukBHktXFDb2F8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1658161846;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+/QRuv49bjiF31S+8BhW1JvHYWdgFWpOjfIoC2UQQlQ=;
+        b=Vbjc7lbp0CvbH5ip2v+LfkqRer6Q8Dxa5P0qmZBsDTAxOxr3VHamp06TEdpyvCxrufOmHE
+        Y7H+9kOju/WZJxDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1424D13A37;
+        Mon, 18 Jul 2022 16:30:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id vBjuA7aK1WL8dwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 18 Jul 2022 16:30:46 +0000
+Date:   Mon, 18 Jul 2022 18:25:53 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Su Yue <l@damenly.su>
+Cc:     linux-btrfs@vger.kernel.org, Wenqing Liu <wenqingliu0120@gmail.com>
+Subject: Re: [PATCH] btrfs-progs: save item data end in u64 to avoid overflow
+ in btrfs_check_leaf()
+Message-ID: <20220718162553.GI13489@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Su Yue <l@damenly.su>,
+        linux-btrfs@vger.kernel.org, Wenqing Liu <wenqingliu0120@gmail.com>
+References: <20220222090528.1211-1-l@damenly.su>
 MIME-Version: 1.0
-Date:   Mon, 18 Jul 2022 12:25:50 -0400
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 1/2] btrfs-progs: corrupt generic item data with
- btrfs-corrupt-block
-Message-ID: <8c4bef8cb04e5a617119b8f8e302bf05@dorminy.me>
-X-Sender: sweettea-kernel@dorminy.me
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220222090528.1211-1-l@damenly.su>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Feb 22, 2022 at 05:05:28PM +0800, Su Yue wrote:
+> Similar to kernel check_leaf(), calling btrfs_item_end_nr() may get a
+> reasonable value even an item has invalid offset/size due to u32
+> overflow.
+> 
+> Fix it by use u64 variable to store item data end in btrfs_check_leaf()
+> to avoid u32 overflow.
+> 
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=215299
+> Reported-by: Wenqing Liu <wenqingliu0120@gmail.com>
+> Signed-off-by: Su Yue <l@damenly.su>
 
-> -	printf("\t-I <u64,u8,u64> Corrupt an item corresponding to the
-> passed key triplet (must also specify the field to corrupt and root
-> for the item)\n");
-> +	printf("\t-I <u64,u8,u64> Corrupt an item corresponding to the
-> passed key triplet (must also specify the field, or bytes, offset, and
-> value to corrupt and root for the item)\n");
-
-I'd find it a little more understandable, even though I know it's not 
-intended to be read often, as:
-+	printf("\t-I <u64,u8,u64> Corrupt an item corresponding to the passed 
-key triplet (must also specify the field, or (bytes, offset, value) 
-tuple, to corrupt, and root for the item)\n");
-
-
-
-> +	data = btrfs_item_ptr(leaf, slot, void);
-> +	// TODO: check offset/size legitimacy
-
-Is it worth fixing this todo?
-
-I'd prefer if there was a check that the existing data at the offset 
-isn't the same as the new value, so as to ensure we notice if we're 
-failing to corrupt.
-
-> +			case 'v':
-> +				bogus_value = arg_strtou64(optarg);
-> +				break;
-
-You're parsing, and storing here, a u64; meanwhile 
-corrupt_btrfs_item_data() takes a char bogus_value. I think it probably 
-makes sense to only parse and store a char, but
-
-> +		else if (bogus_offset != (u64)-1 &&
-> +			 bytes != (u64)-1 &&
-> +			 bogus_value != (u64)-1)
-Might be worth calling out (u64)-1 as #define UNSET_VALUE for easier 
-readability?
-
-> +			ret = corrupt_btrfs_item_data(target_root, &key,
-> +						      bogus_offset, bytes,
-> +						      bogus_value);
-> +		else
-> +			print_usage(1);
-Maybe add an extra message here to say that either field or all of 
-offset, bytes, and value have to be set?
-
-Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Added to devel, thanks.
