@@ -2,47 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D91578CAC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 23:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117B2578D15
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 23:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233960AbiGRVZq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Jul 2022 17:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
+        id S236241AbiGRVuJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 18 Jul 2022 17:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234676AbiGRVZg (ORCPT
+        with ESMTP id S233585AbiGRVuH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Jul 2022 17:25:36 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E5629818
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 14:25:35 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 8385B803E2;
-        Mon, 18 Jul 2022 17:25:34 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1658179535; bh=OeIp1zwaW7yZEhW9i1XBxP37a2SXTMLXV/czQM2mp3c=;
-        h=Date:From:Subject:To:References:In-Reply-To:From;
-        b=ODuWc+HWehrDD0JubVsvf6B5wkFDPH4cn+V0wTRlNg2UOFw/9FHMZzxyebBxwf60u
-         mQoss/tpRYdxN8vaGliKOAX8FEpGUEs+FnUlPCF2gr5Fj4BYIc2Iekl+o8MPS8DnnG
-         cSvZPk33MCwelZlhkEW0KqUD854Ko04b1+UG8511QHDzcsVEi9hPj1DkxpoYDXtZjz
-         mvOPC8doCqsRx4e+iGbeKI6lVOyZ3PDVwqYxBCCIuPBpVHNjRuBhn86Jp8Hix+gklg
-         ngjJUa5laaUVvB4HwI6UA/jsCnK3nyxTZAeI9VR9Uqt9Z7ttggoBaOli4YQH6gOfEf
-         zyc0LQZR3o4nQ==
-Message-ID: <98681a8f-c9c1-4480-a232-7c5e4589e0b3@dorminy.me>
-Date:   Mon, 18 Jul 2022 17:25:31 -0400
+        Mon, 18 Jul 2022 17:50:07 -0400
+Received: from ste-pvt-msa1.bahnhof.se (ste-pvt-msa1.bahnhof.se [213.80.101.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720172D1ED
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 14:50:05 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id C6AD83F447;
+        Mon, 18 Jul 2022 23:50:02 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id aHmFBjfAZxpo; Mon, 18 Jul 2022 23:50:02 +0200 (CEST)
+Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 7C54D3F311;
+        Mon, 18 Jul 2022 23:50:01 +0200 (CEST)
+Received: from [192.168.0.119] (port=55342)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1oDYco-000FeX-VY; Mon, 18 Jul 2022 23:49:59 +0200
+Date:   Mon, 18 Jul 2022 23:49:57 +0200 (GMT+02:00)
+From:   Forza <forza@tnonline.net>
+To:     Chris Murphy <lists@colorremedies.com>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Message-ID: <b62a80a.e3c8d435.182134a0f8d@tnonline.net>
+In-Reply-To: <CAJCQCtTJ=gs7JT4Tdxt3cOVTjkDD1_rQRqv6rbfwohu-Escw6w@mail.gmail.com>
+References: <cover.1652711187.git.johannes.thumshirn@wdc.com> <78daa7e4-7c88-d6c0-ccaa-fb148baf7bc8@gmx.com> <PH0PR04MB74164213B5F136059236B78C9B899@PH0PR04MB7416.namprd04.prod.outlook.com> <03630cb7-e637-3375-37c6-d0eb8546c958@gmx.com> <PH0PR04MB7416D257F7B349FC754E30169B899@PH0PR04MB7416.namprd04.prod.outlook.com> <1cf403d4-46a7-b122-96cf-bd1307829e5b@gmx.com> <PH0PR04MB741638E2A15F4E106D8A6FAF9B899@PH0PR04MB7416.namprd04.prod.outlook.com> <96da9455-f30d-b3fc-522b-7cbd08ad3358@suse.com> <PH0PR04MB7416E68375C1C27C33D347119B889@PH0PR04MB7416.namprd04.prod.outlook.com> <61694368-30ea-30a0-df74-fd607c4b7456@gmx.com> <PH0PR04MB7416243FCD419B4BDDB04D8C9B889@PH0PR04MB7416.namprd04.prod.outlook.com> <8b3cf3d0-4812-0e92-d850-09a8d08b8169@libero.it> <CAJCQCtTJ=gs7JT4Tdxt3cOVTjkDD1_rQRqv6rbfwohu-Escw6w@mail.gmail.com>
+Subject: Re: RAID56 discussion related to RST. (Was "Re: [RFC ONLY 0/8]
+ btrfs: introduce raid-stripe-tree")
 MIME-Version: 1.0
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: Re: [PATCH RFC] btrfs: customizable log message id
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20220607224337.11898-1-dsterba@suse.com>
-Content-Language: en-US
-In-Reply-To: <20220607224337.11898-1-dsterba@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+X-Mailer: R2Mail2
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -51,263 +57,94 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 6/7/22 18:43, David Sterba wrote:
-> The btrfs messages are made of several parts, like prefix, the device
-> for identification, and the message:
-> 
->    BTRFS info (device loop0): using free space tree
-> 
-> Based on user feedback, something else than the device would be desired,
-> like the uuid or label. As the messages are sort of a public interface,
-> eg. for log scrapers or monitoring tools, changing current 'device' to
-> a new default would potentially break that, and users have different
-> preferences as the discussion showed.
-> 
-> Thus it's configurable. As implemented now it's per filesystem and can
-> be set after mount. There's no global setting but can be implemented.
-> 
-> Configuration is done by sysfs by writing following strings to the file
-> /sys/fs/btrfs/UUID/msgid:
-> 
-> - device (current default)
-> - uuid - will print the filesystem uuid/fsid
-> 
->    BTRFS info (uuid 7989fadb-469d-4969-ba6b-d1ead726a920): using free space tree
-> 
-> - uuid-short - print only first part of the uuid
-> 
->    BTRFS info (uuid 7989fadb-469d): using free space tree
-> 
-> - label - print label
-> 
->    BTRFS info (label TEST): using free space tree
-> 
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
-> 
-> This is RFC, questions to discuss:
-> 
-> - rename 'msgid' to something else
-> - configurable at module load time as a parameter as the default
-> - configurable after load gobally in sysfs (/sys/fs/btrfs/msgid)
-> - both global and per-filesystem sysfs knob
-> - change the default eventually but to what
-> - other identification, suggestions were eg. devid, uuid+devid
+---- From: Chris Murphy <lists@colorremedies.com> -- Sent: 2022-07-15 - 22:14 ----
 
+> On Fri, Jul 15, 2022 at 1:55 PM Goffredo Baroncelli <kreijack@libero.it> wrote:
+>>
+>> On 14/07/2022 09.46, Johannes Thumshirn wrote:
+>> > On 14.07.22 09:32, Qu Wenruo wrote:
+>> >>[...]
+>> >
+>> > Again if you're doing sub-stripe size writes, you're asking stupid things and
+>> > then there's no reason to not give the user stupid answers.
+>> >
+>>
+>> Qu is right, if we consider only full stripe write the "raid hole" problem
+>> disappear, because if a "full stripe" is not fully written it is not
+>> referenced either.
+>>
+>>
+>> Personally I think that the ZFS variable stripe size, may be interesting
+>> to evaluate. Moreover, because the BTRFS disk format is quite flexible,
+>> we can store different BG with different number of disks. 
 
-I've certainly had the problem occasionally that I can't remember which 
-device is associated with which FS, and it takes some effort to figure 
-out what log message is associated with which filesystem. So thank you, 
-I really like this idea and have been trying to mull it for a while to 
-figure out what else would be nice. I haven't gotten anywhere much, so 
-here are some random thoughts I've had:
+We can create new types of BGs too. For example parity BGs. 
 
-Seems like there are a couple of different classes of message (with the 
-disclaimer that I'm pretty new to btrfs and may not be using terminology 
-correctly).
+>>Let me to make an
+>> example: if we have 10 disks, we could allocate:
+>> 1 BG RAID1
+>> 1 BG RAID5, spread over 4 disks only
+>> 1 BG RAID5, spread over 8 disks only
+>> 1 BG RAID5, spread over 10 disks
+>>
+>> So if we have short writes, we could put the extents in the RAID1 BG; for longer
+>> writes we could use a RAID5 BG with 4 or 8 or 10 disks depending by length
+>> of the data.
+>>
+>> Yes this would require a sort of garbage collector to move the data to the biggest
+>> raid5 BG, but this would avoid (or reduce) the fragmentation which affect the
+>> variable stripe size.
+>>
+>> Doing so we don't need any disk format change and it would be backward compatible.
 
-There are messages that are device-specific, and it's useful to know 
-what device in particular caused the message. If, theoretically, a read 
-from one device turned out to have a bad checksum, knowing that device 
-ID in some form is important.
+Do we need to implement RAID56 in the traditional sense? As the user/sysadmin I care about redundancy and performance and cost. The option to create redundancy for any 'n drives is appealing from a cost perspective, otherwise I'd use RAID1/10.
 
-There are messages that effect the whole filesystem, and every subvolume 
-on it. E.g. pushing out delayed items is filesystem-wide and unrelated 
-to devices, as far as I know.
+Since the current RAID56 mode have several important drawbacks - and that it's officially not recommended for production use - it is a good idea to reconstruct new btrfs 'redundant-n' profiles that doesn't have the inherent issues of traditional RAID. For example a non-striped redundant-n profile as well as a striped redundant-n profile. 
 
-(I'm sure there are other classes too that I'm not thinking about)
+> 
+> My 2 cents...
+> 
+> Regarding the current raid56 support, in order of preference:
+> 
+> a. Fix the current bugs, without changing format. Zygo has an extensive list.
 
-As far as I know, a particular device only ever belongs to one 
-filesystem, and a particular mountpoint/subvol only ever belongs to one 
-filesystem. Thus, a user could enumerate (devices, global uuid, 
-mountpoints, subvolume IDs) and go from any of those pieces of data to 
-any other. It's just a matter of convenience and ability to do 
-historical analysis (on log messages whose full filesystem knowledge is 
-no longer known). And it would be nice to know mountpoints too -- as a 
-filesystem user I usually think in terms of mount points, rather than 
-uuids or labels or underlying devices -- but that gets complicated; I 
-tried prototyping that when you first sent this and I didn't succeed, 
-but maybe I missed something that would make it easier.
+I agree that relatively simple fixes should be made. But it seems we will need quite a large rewrite to solve all issues? Is there a minium viable option here? 
 
-So in an ideal world I guess I'd propose:
+> b. Mostly fix the write hole, also without changing the format, by
+> only doing COW with full stripe writes. Yes you could somehow get
+> corrupt parity still and not know it until degraded operation produces
+> a bad reconstruction of data - but checksum will still catch that.
+> This kind of "unreplicated corruption" is not quite the same thing as
+> the write hole, because it isn't pernicious like the write hole.
 
-a) log messages should be tagged with FS UUID, and either a subvol ID or 
-a device ID or nothing, depending on how specific the message is. 
-(Obviously a bunch of tedious work to go check and tweak all the print 
-message origins, not to mention the impact on logscraping scripts)
-b) the filesystem should log fs UUID/label, mounted subvol UUID/labels, 
-and component devices (to easily associate all the information) anytime 
-a new log message is going to be emitted and it's been at least X 
-minutes since the last message of that form (X = 30, perhaps, in 
-concrete terms? Or maybe 1 day, on the assumption everyone should have a 
-day of logs saved?).
+What is the difference to a)? Is write hole the worst issue? Judging from the #brtfs channel discussions there seems to be other quite severe issues, for example real data corruption risks in degraded mode. 
 
-But that would probably be too large a change from the present format.
+> c. A new de-clustered parity raid56 implementation that is not
+> backwards compatible.
 
-So to specifically address your question, subvolume UUID would be a nice 
-additional option since the list of mounts might not list the filesystem 
-UUID; and an option to print mount point(s) would match my instincts but 
-I'm not sure it's doable. But I'm not sure.
+Yes. We have a good opportunity to work out something much better than current implementations. We could have  redundant-n profiles that also works with tired storage like ssd/nvme similar to the metadata on ssd idea. 
 
-Thanks for working on this, though: I definitely like the additional 
-choices for logmessages and am excited for them.
+Variable stripe width has been brought up before, but received cool responses. Why is that? IMO it could improve random 4k ios by doing equivalent to RAID1 instead of RMW, while also closing the write hole. Perhaps there is a middle ground to be found? 
 
 
 > 
->   fs/btrfs/ctree.h   | 10 ++++++++++
->   fs/btrfs/disk-io.c |  3 +++
->   fs/btrfs/super.c   | 31 +++++++++++++++++++++++++++++--
->   fs/btrfs/sysfs.c   | 40 ++++++++++++++++++++++++++++++++++++++++
->   4 files changed, 82 insertions(+), 2 deletions(-)
+> Ergo, I think it's best to not break the format twice. Even if a new
+> raid implementation is years off.
+
+I very agree here. Btrfs already suffers in public opinion from the lack of a stable and safe-for-data RAID56, and requiring several non-compatible chances isn't going to help. 
+
+I also think it's important that the 'temporary' changes actually leads to a stable filesystem. Because what is the point otherwise? 
+
+Thanks
+Forza
+
 > 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index f7afdfd0bae7..e448394451f1 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -646,6 +646,14 @@ enum {
->   #endif
->   };
->   
-> +enum btrfs_msgid_type {
-> +	BTRFS_MSGID_DEVICE,
-> +	BTRFS_MSGID_UUID,
-> +	BTRFS_MSGID_UUID_SHORT,
-> +	BTRFS_MSGID_LABEL,
-> +	BTRFS_MSGID_COUNT
-> +};
-> +
->   /*
->    * Exclusive operations (device replace, resize, device add/remove, balance)
->    */
-> @@ -744,6 +752,8 @@ struct btrfs_fs_info {
->   	 */
->   	u64 max_inline;
->   
-> +	enum btrfs_msgid_type msgid_type;
-> +
->   	struct btrfs_transaction *running_transaction;
->   	wait_queue_head_t transaction_throttle;
->   	wait_queue_head_t transaction_wait;
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 800ad3a9c68e..d1c6d372d5f7 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3138,6 +3138,9 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
->   
->   	fs_info->bg_reclaim_threshold = BTRFS_DEFAULT_RECLAIM_THRESH;
->   	INIT_WORK(&fs_info->reclaim_bgs_work, btrfs_reclaim_bgs_work);
-> +
-> +	/* Set default here */
-> +	fs_info->msgid_type = BTRFS_MSGID_UUID;
->   }
->   
->   static int init_mount_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 719dda57dc7a..8227bcce9817 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -291,10 +291,37 @@ void __cold _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt,
->   	if (__ratelimit(ratelimit)) {
->   		if (fs_info) {
->   			char statestr[STATE_STRING_BUF_LEN];
-> +			char *idtype;
-> +			char id[64] = { 0 };
-> +			bool short_fsid = false;
-> +
-> +			switch (READ_ONCE(fs_info->msgid_type)) {
-> +			default:
-> +			case BTRFS_MSGID_DEVICE:
-> +				idtype = "device";
-> +				scnprintf(id, sizeof(id), "%s", fs_info->sb->s_id);
-> +				break;
-> +			case BTRFS_MSGID_UUID_SHORT:
-> +				short_fsid = true;
-> +				fallthrough;
-> +			case BTRFS_MSGID_UUID:
-> +				idtype = "fsid";
-> +				scnprintf(id, sizeof(id), "%pU",
-> +					  fs_info->fs_devices->fsid);
-> +				if (short_fsid)
-> +					id[13] = 0;
-> +				break;
-> +			case BTRFS_MSGID_LABEL:
-> +				idtype = "label";
-> +				/* Fixme: first 64 from label */
-> +				scnprintf(id, sizeof(id), "%s",
-> +					  fs_info->super_copy->label);
-> +				break;
-> +			}
->   
->   			btrfs_state_to_string(fs_info, statestr);
-> -			_printk("%sBTRFS %s (device %s%s): %pV\n", lvl, type,
-> -				fs_info->sb->s_id, statestr, &vaf);
-> +			_printk("%sBTRFS %s (%s %s%s): %pV\n", lvl, type,
-> +				idtype, id, statestr, &vaf);
->   		} else {
->   			_printk("%sBTRFS %s: %pV\n", lvl, type, &vaf);
->   		}
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 3554c7b4204f..94dd28112414 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -962,6 +962,8 @@ static ssize_t btrfs_label_store(struct kobject *kobj,
->   	memcpy(fs_info->super_copy->label, buf, p_len);
->   	spin_unlock(&fs_info->super_lock);
->   
-> +	/* Fixme: if label is empty, reset msgid_type to default */
-> +
->   	/*
->   	 * We don't want to do full transaction commit from inside sysfs
->   	 */
-> @@ -1214,6 +1216,43 @@ static ssize_t btrfs_bg_reclaim_threshold_store(struct kobject *kobj,
->   BTRFS_ATTR_RW(, bg_reclaim_threshold, btrfs_bg_reclaim_threshold_show,
->   	      btrfs_bg_reclaim_threshold_store);
->   
-> +static const char *msgid_strings[] = {
-> +	[BTRFS_MSGID_DEVICE]	= "device",
-> +	[BTRFS_MSGID_UUID]	= "uuid",
-> +	[BTRFS_MSGID_UUID_SHORT] = "uuid-short",
-> +	[BTRFS_MSGID_LABEL]	= "label",
-> +};
-> +
-> +static ssize_t btrfs_msgid_show(struct kobject *kobj,
-> +				struct kobj_attribute *a,
-> +				char *buf)
-> +{
-> +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> +
-> +	return sysfs_emit(buf, "%s\n", msgid_strings[fs_info->msgid_type]);
-> +}
-> +
-> +static ssize_t btrfs_msgid_store(struct kobject *kobj,
-> +				 struct kobj_attribute *a,
-> +				 const char *buf, size_t len)
-> +{
-> +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> +	int i;
-> +
-> +	for (i = 0; i < BTRFS_MSGID_COUNT; i++) {
-> +		/* Fixme: if label is empty do a fallback */
-> +		if (strmatch(buf, msgid_strings[i])) {
-> +			WRITE_ONCE(fs_info->msgid_type, i);
-> +			break;
-> +		}
-> +	}
-> +	if (i == BTRFS_MSGID_COUNT)
-> +		return -EINVAL;
-> +
-> +	return len;
-> +}
-> +BTRFS_ATTR_RW(, msgid, btrfs_msgid_show, btrfs_msgid_store);
-> +
->   /*
->    * Per-filesystem information and stats.
->    *
-> @@ -1231,6 +1270,7 @@ static const struct attribute *btrfs_attrs[] = {
->   	BTRFS_ATTR_PTR(, generation),
->   	BTRFS_ATTR_PTR(, read_policy),
->   	BTRFS_ATTR_PTR(, bg_reclaim_threshold),
-> +	BTRFS_ATTR_PTR(, msgid),
->   	NULL,
->   };
->   
+> Metadata centric workloads suck on parity raid anyway. If Btrfs always
+> does full stripe COW won't matter even if the performance is worse
+> because no one should use parity raid for this workload anyway.
+> 
+> 
+> --
+> Chris Murphy
+
+
