@@ -2,68 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0EFC57792F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 03:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B87577964
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 03:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbiGRBQ6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 17 Jul 2022 21:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
+        id S230015AbiGRBo0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 17 Jul 2022 21:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232759AbiGRBQ5 (ORCPT
+        with ESMTP id S229536AbiGRBoZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 17 Jul 2022 21:16:57 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912D411806
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Jul 2022 18:16:55 -0700 (PDT)
+        Sun, 17 Jul 2022 21:44:25 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBEC247
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Jul 2022 18:44:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1658107010;
-        bh=8I3ip1Rp21+OI5dl4lDtpSNo8jjMFoYbb9MEVrSojUA=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=cnY0HZ8gMThf+4lWBAHpWO2cCpK2NG13EesP04ZcV7u0d9nvZwxL0zOyJjTIKIW/l
-         HcjUYRoqYTHHq5giAqo8aezAO2p7+WY3F7cklDEME1kriXkpK+QmikwvpT6DcaKQTm
-         QHkkpOmtVKCMWIUdEkGe6/Wkv2lsO87ikNFHag24=
+        s=badeba3b8450; t=1658108657;
+        bh=TAMagYfYfr4qmRgrmqQCvt2rbHyS3QKYNK+rnXTZBqI=;
+        h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:In-Reply-To;
+        b=YxV+LC98RufQPto3oIItwVlOVp6hJDGEO+cIW9HBreBnOznn/Tt/mDvPDnNxChp1S
+         QnNc6oxj/JGbK9p7ObWRP290+ymXnPw+VUvGz4dK6/X6uuH4Ve5UX8YTTt7oMNQE5m
+         Mj1EtbSciPvi+euNs8oPjErR2F5TL2BoYkcSFVk8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MtfJX-1nOJWI2RlH-00v7aD; Mon, 18
- Jul 2022 03:16:50 +0200
-Message-ID: <42fe2853-87a5-625c-7808-3f7af8c7ec37@gmx.com>
-Date:   Mon, 18 Jul 2022 09:16:45 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1McpJg-1neSx82U4Y-00Zw3Q; Mon, 18
+ Jul 2022 03:44:17 +0200
+Message-ID: <bd729dba-1517-dada-5073-da1d5ea5fdc7@gmx.com>
+Date:   Mon, 18 Jul 2022 09:44:13 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
+Subject: Re: [PATCH] btrfs-progs: resize: automatically add devid if device is
+ not specifically
 Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
         Li Zhang <zhanglikernel@gmail.com>
 Cc:     linux-btrfs@vger.kernel.org
 References: <1658070503-25238-1-git-send-email-zhanglikernel@gmail.com>
  <YtRJT+J2W/Z4G/gS@hungrycats.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH] btrfs-progs: resize: automatically add devid if device is
- not specifically
-In-Reply-To: <YtRJT+J2W/Z4G/gS@hungrycats.org>
+ <42fe2853-87a5-625c-7808-3f7af8c7ec37@gmx.com>
+In-Reply-To: <42fe2853-87a5-625c-7808-3f7af8c7ec37@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:s9SgSHV6cVKcVqGCLjz6sYu9vbcks00atnIeOxFwRprgC2ANogv
- ECDdCXLcE8agfwC73pXYkmPln0S5x98pe/QjoyB6AqXD0G2fYeXHGN/VXw269y0C/rSLAbb
- tkfvgVLNOf3vI/F8l6ox1qb7eZQaVoy38MhgMxcEHIsVRLjWAtX/TPZ0BG7YzKR9xjglorx
- kEijEUJ5JGrtuhI5xr8TQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AFLydae3jh8=:BNmaanZi4D7v+Vame1f4Uz
- dmyyRBfuoEO0F9TTZ8aXgf1aOiWCv/IR8FSaqzG6cn9+l1csPWcPNGa0BF8FfcHAL1IJ0UuPr
- 4Oxsns610uMN24tcG5tZ5DEhiGIlf4J+Jw3kEUt4KpWFRy1+7R73ud5uPK0CgnqhZ5sgvgZOf
- adHK+Uxt9ehxHW8By+JfWB26UwZ84kwfPOICGHJ4d8o6rtX8kG3w5OZnDeF4ziUfOZuar0bt5
- 0g4E64GaY7McDQ+DAjNHiTXqhZliUy/6F4dYriroVs9MC7doMxru1ampUwGYGY3igXdxUJsX9
- I6ZyNY4AmetHFRxQczgl9uSTxMHQ3nJ7NnOVkaZcj4aYw60/s80hgkyEvYEu84EXyR4PNuSWK
- Sn7KKn5fsSCYaBoiPh3ZxXbtulqtM+reYnLhNig+lYYa55h+DlVMcsRMI1y2OFXZHtH/81T7i
- OHX3yiyI/ZZLfVovR+Bi5ugxLQocGmJOHKB7sS+eHTjwXr8/cM/vqJ8TcDbsdP+zQvruLQPDc
- T4ck5BCmfzPC+LBTHs4jLNNP/yYQG3PLCKtts/pfUs1T82EaXMULTKSEAR6qIq9WvapzSkqHP
- itU6qoPIInPprKdB0EcFD/itb/YTKL/dM8BhtVXyp1LVJX/vdFQG4SGHMfdUo8ywauOuh5Eln
- tp5aa+rbj+jp7fICKxuTLXV3zkmO57K8FCr6neZUDATBOI9xanSPakNbezyAoToCbDzuHnxDT
- 6n/aeSdXmH5dtyN0tM9jhLGRJmnfohFDYUA0mn0mIVQKRbb4ElkcREHDhROtE1izuOUCp+oyC
- aXNoDhA2TU+h3cpIV8oFMnIAb9gPA9rCcZYo5o8oqekZGVm1cKuQ5/lZ+XXQnuqzSeXcDWuGU
- PmC5h5KHCHQxmPwISQWDTY04JutmtYvd14SCm/Zz6o4DQAs4oMkBfNjfnjZIf1OGVgvZ59NQv
- 6kS3SGzf2CwyzS1zEe926W9fCQBRBpQLJuGkzjRWiKE/of7QLOq3cOZ3H/CQ/Ck4KRUw3+c43
- MyYrFgXgQNVUPpwc+W6tNYQWyVqap/DGKXMhosX3kfVqGE+5VckczN+R6YPfruEnD6u5ne49d
- 01X4+4JM97UUuzccnA6qJcchHCXCMBKQvddnhSoBfxkHONcyVNTBz/Tdg==
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:OVDmkWLHHP1KEEOGpQZ5JD5fF1G4LeVRLLZBdInV0UAQQHqm9Sc
+ DjnvkXrKPrWWWfXKrOAP7sVZg3A6bXPx/9g6eX5Z0GbLM/u90ynyeyG/jT0wbfnXQb7Z7gB
+ 0N9tJhmmt8uq49jAtaCak2nxyJc2191fYYJR1KKqrCuUSS1fQsaIbSoPyU0JeM+jNiUCzTE
+ LbctQ6WAGsX84bFKv7omA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lif+xt8BLoo=:HpSdxrNz2+sNlSefXyVw7s
+ wv8WyOzrrWkgUzwbLuKnhOyirJrjEZ2vi6+FpEK8iqroN4c/fH+wuVAhoYKrRx9sVUH/hIx2/
+ aMYOG6tOxMelNRlTxHqL5Z5mertuYzwyRnEpJd64pFOxbfXKhjnNr148rWTOZVbjkxpnIXEuo
+ KtzTmLfVim5xY64l6stD/lQCDUrlEvg0uUPfzSvRgRblwpjhCSTaj+HzAANFuv7aP9PVPX9pz
+ tjP2oSS/XkYNk+Mu+xW8snoOxanR1dR5jZ9FKb/Oieco25opMj0PxNzVCpF7CrIaX30Ow47tZ
+ /o7nWGsxqsTSpDYXYrf6XOWKhqfMHcKIHfPrUbgQIvmhR+KHxYunD8jA9YnW6Q2PrjlzpzmtI
+ BDr/l3ZVX38jbCSaXFMMnG826LHKfPX3ybV+NEUv6yZB/R9VE3XCz0x0ANLTkzau+zxbVc9Bv
+ jCdsVWAndj0c+Ufko9UEIGRSxYfJLtyIwo0vTnoBCa1M1gEdaSVUJ3iUIlODmlgE8fWpWOcT2
+ ZBgMxs1glFfBzwWmW7SN3UOPsjOUHSSvjBEG2S991BGPvzUX3HIDMN/wwKCwRD6FhwYMY1QBB
+ STORke9TG5UBbMFsp9zmdlF2FJ78gNIqjdGBMiQBxkmI8540R60cI0nysmvDsoOJYH1d/dCYe
+ xAKncQMo7X/nWR0d8ynkJGJYMe4qX0RxYG4ppvB5cts3uI/GD/vSVNDRC2KL1w3h9bmv1IJlX
+ MABa3dDszjtX4dW1pHVFkC43Vte8m3Tbw/3+DPK4l9n91Bg/Sh+YU8Iw5JZCF8r5iNPUNG5t9
+ L8UuIkbvm5/lZJpGaQXmOda1Be6EsvQI+SdcIjo+YL3L1hx9q4fM4g1m80dedTD5E8ZhgKNDv
+ Flb+IEfyIvDspwtuxKO6HSkFFhU4x5uBwRGjJIQF0Nd0G7YoMKR8tQRsQ6p4ZZPRVn9YT7/0p
+ Qf6P0e3HCrpJnV9aXCgWZO+FDXDdoi9TXtzwGQM4kCiNzTsYvPJe87skUnfjRXMbixt+z60J4
+ Bhv/UM09mcHENtV+UrqEtu/wOEZcts/fXGxgSU9QP7VvBOmMqsPY8f+a3piwv/v1m7ySSAy08
+ qiXrGLdEP14xMJlIeWsf+19EUjymAMsgAYf9c4f/VhObUHydKXB6V3dQA==
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -74,223 +75,156 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/7/18 01:39, Zygo Blaxell wrote:
-> On Sun, Jul 17, 2022 at 11:08:23PM +0800, Li Zhang wrote:
->> related issues:
->> https://github.com/kdave/btrfs-progs/issues/470
->>
->> [BUG]
->> If there is no devid=3D1, when the user uses the btrfs file system tool=
-, the following error will be reported,
->>
->> $ sudo btrfs filesystem show /mnt/1
->> Label: none  uuid: 64dc0f68-9afa-4465-9ea1-2bbebfdb6cec
->>      Total devices 2 FS bytes used 704.00KiB
->>      devid    2 size 15.00GiB used 1.16GiB path /dev/loop2
->>      devid    3 size 15.00GiB used 1.16GiB path /dev/loop3
->> $ sudo btrfs filesystem resize -1G /mnt/1
->> ERROR: cannot find devid: 1
->> ERROR: unable to resize '/mnt/1': No such device
->>
->> [CAUSE]
->> If the user does not specify the devid id explicitly, btrfs will use th=
-e default devid 1, so it will report an error when dev 1 is missing.
->>
->> [FIX]
->> If there is no special devid, the first devid is added automatically an=
-d check the maximum length of args passed to kernel space.
->> After patch, when resize filesystem without specified, it would resize =
-the first device, the result is list as following.
->>
->> $ sudo btrfs filesystem show /mnt/1/
->> Label: none  uuid: 7b4827da-bc6e-42aa-b03d-52c2533dfe94
->>      Total devices 2 FS bytes used 144.00KiB
->>      devid    2 size 15.00GiB used 1.16GiB path /dev/loop2
->>      devid    3 size 15.00GiB used 1.16GiB path /dev/loop3
->>
->> $ sudo btrfs filesystem resize -1G /mnt/1
->> Resize device id 2 (/dev/loop2) from 15.00GiB to 14.00GiB
->> $ sudo btrfs filesystem show /mnt/1/
->> Label: none  uuid: 7b4827da-bc6e-42aa-b03d-52c2533dfe94
->>      Total devices 2 FS bytes used 144.00KiB
->>      devid    2 size 14.00GiB used 1.16GiB path /dev/loop2
->>      devid    3 size 15.00GiB used 1.16GiB path /dev/loop3
->
-> Is that desirable behavior?  I'd expect that if there are multiple
-> devices present, and I haven't specified which one to resize, that the
-> command would fail with an error, requiring me to specify which device I
-> want resized.  Under that expectation, the current behavior of resizing
-> devid 1 by default is also incorrect.
-
-I agree with Zygo.
-
-If there is only one device, then we can definitely use the first device
-we find.
-
-If there are multiple devices, then it's better to output an error
-message, provide candidate devids, and error out.
-
-Thanks,
-Qu
-
->
-> If there's only one device, then 'btrfs fi resize -1G' should resize
-> that device, since no ambiguity is possible.
->
->> Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
->> ---
->>   cmds/filesystem.c | 49 ++++++++++++++++++++++++++++++++++++++--------=
----
->>   1 file changed, 38 insertions(+), 11 deletions(-)
->>
->> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
->> index 7cd08fc..2e2414d 100644
->> --- a/cmds/filesystem.c
->> +++ b/cmds/filesystem.c
->> @@ -1087,7 +1087,8 @@ static const char * const cmd_filesystem_resize_u=
-sage[] =3D {
->>   	NULL
->>   };
->>
->> -static int check_resize_args(const char *amount, const char *path) {
->> +static int check_resize_args(char * const amount, const char *path)
->> +{
->>   	struct btrfs_ioctl_fs_info_args fi_args;
->>   	struct btrfs_ioctl_dev_info_args *di_args =3D NULL;
->>   	int ret, i, dev_idx =3D -1;
->> @@ -1102,7 +1103,8 @@ static int check_resize_args(const char *amount, =
-const char *path) {
->>
->>   	if (ret) {
->>   		error("unable to retrieve fs info");
->> -		return 1;
->> +		ret =3D 1;
->> +		goto out;
->>   	}
->>
->>   	if (!fi_args.num_devices) {
->> @@ -1112,11 +1114,14 @@ static int check_resize_args(const char *amount=
-, const char *path) {
->>   	}
->>
->>   	ret =3D snprintf(amount_dup, BTRFS_VOL_NAME_MAX, "%s", amount);
->> +check:
->>   	if (strlen(amount) !=3D ret) {
->>   		error("newsize argument is too long");
->>   		ret =3D 1;
->>   		goto out;
->>   	}
->> +	if (strcmp(amount, amount_dup) !=3D 0)
->> +		strcpy(amount, amount_dup);
->>
->>   	sizestr =3D amount_dup;
->>   	devstr =3D strchr(sizestr, ':');
->> @@ -1137,6 +1142,13 @@ static int check_resize_args(const char *amount,=
- const char *path) {
->>
->>   	dev_idx =3D -1;
->>   	for(i =3D 0; i < fi_args.num_devices; i++) {
->> +		if (!devstr) {
->> +			memset(amount_dup, 0, BTRFS_VOL_NAME_MAX);
->> +			ret =3D snprintf(amount_dup, BTRFS_VOL_NAME_MAX, "%llu:", di_args[i=
-].devid);
->> +			ret =3D snprintf(amount_dup + strlen(amount_dup),
->> +				BTRFS_VOL_NAME_MAX - strlen(amount_dup), "%s", amount);
->> +			goto check;
->> +		}
->>   		if (di_args[i].devid =3D=3D devid) {
->>   			dev_idx =3D i;
->>   			break;
->> @@ -1235,8 +1247,10 @@ static int cmd_filesystem_resize(const struct cm=
-d_struct *cmd,
->>   		}
->>   	}
->>
->> -	if (check_argc_exact(argc - optind, 2))
->> -		return 1;
->> +	if (check_argc_exact(argc - optind, 2)) {
->> +		ret =3D 1;
->> +		goto out;
->> +	}
->>
->>   	amount =3D argv[optind];
->>   	path =3D argv[optind + 1];
->> @@ -1244,7 +1258,8 @@ static int cmd_filesystem_resize(const struct cmd=
-_struct *cmd,
->>   	len =3D strlen(amount);
->>   	if (len =3D=3D 0 || len >=3D BTRFS_VOL_NAME_MAX) {
->>   		error("resize value too long (%s)", amount);
->> -		return 1;
->> +		ret =3D 1;
->> +		goto out;
->>   	}
->>
->>   	cancel =3D (strcmp("cancel", amount) =3D=3D 0);
->> @@ -1258,7 +1273,8 @@ static int cmd_filesystem_resize(const struct cmd=
-_struct *cmd,
->>   		"directories as argument. Passing file containing a btrfs image\n"
->>   		"would resize the underlying filesystem instead of the image.\n");
->>   		}
->> -		return 1;
->> +		ret =3D 1;
->> +		goto out;
->>   	}
->>
->>   	/*
->> @@ -1273,14 +1289,22 @@ static int cmd_filesystem_resize(const struct c=
-md_struct *cmd,
->>   				error(
->>   			"unable to check status of exclusive operation: %m");
->>   			close_file_or_dir(fd, dirstream);
->> -			return 1;
->> +			goto out;
->>   		}
->>   	}
->>
->> +	amount =3D (char *)malloc(BTRFS_VOL_NAME_MAX);
->> +	if (!amount) {
->> +		ret =3D -ENOMEM;
->> +		goto out;
->> +	}
->> +	strcpy(amount, argv[optind]);
->> +
->>   	ret =3D check_resize_args(amount, path);
->>   	if (ret !=3D 0) {
->>   		close_file_or_dir(fd, dirstream);
->> -		return 1;
->> +		ret =3D 1;
->> +		goto free_amount;
->>   	}
->>
->>   	memset(&args, 0, sizeof(args));
->> @@ -1298,7 +1322,7 @@ static int cmd_filesystem_resize(const struct cmd=
-_struct *cmd,
->>   			error("unable to resize '%s': %m", path);
->>   			break;
->>   		}
->> -		return 1;
->> +		ret =3D 1;
->>   	} else if (res > 0) {
->>   		const char *err_str =3D btrfs_err_str(res);
->>
->> @@ -1308,9 +1332,12 @@ static int cmd_filesystem_resize(const struct cm=
-d_struct *cmd,
->>   			error("resizing of '%s' failed: unknown error %d",
->>   				path, res);
->>   		}
->> -		return 1;
->> +		ret =3D 1;
->>   	}
->> -	return 0;
->> +free_amount:
->> +	free(amount);
->> +out:
->> +	return ret;
->>   }
->>   static DEFINE_SIMPLE_COMMAND(filesystem_resize, "resize");
->>
->> --
->> 1.8.3.1
->>
+DQoNCk9uIDIwMjIvNy8xOCAwOToxNiwgUXUgV2VucnVvIHdyb3RlOg0KPiANCj4gDQo+IE9uIDIw
+MjIvNy8xOCAwMTozOSwgWnlnbyBCbGF4ZWxsIHdyb3RlOg0KPj4gT24gU3VuLCBKdWwgMTcsIDIw
+MjIgYXQgMTE6MDg6MjNQTSArMDgwMCwgTGkgWmhhbmcgd3JvdGU6DQo+Pj4gcmVsYXRlZCBpc3N1
+ZXM6DQo+Pj4gaHR0cHM6Ly9naXRodWIuY29tL2tkYXZlL2J0cmZzLXByb2dzL2lzc3Vlcy80NzAN
+Cj4+Pg0KPj4+IFtCVUddDQo+Pj4gSWYgdGhlcmUgaXMgbm8gZGV2aWQ9MSwgd2hlbiB0aGUgdXNl
+ciB1c2VzIHRoZSBidHJmcyBmaWxlIHN5c3RlbSANCj4+PiB0b29sLCB0aGUgZm9sbG93aW5nIGVy
+cm9yIHdpbGwgYmUgcmVwb3J0ZWQsDQo+Pj4NCj4+PiAkIHN1ZG8gYnRyZnMgZmlsZXN5c3RlbSBz
+aG93IC9tbnQvMQ0KPj4+IExhYmVsOiBub25lwqAgdXVpZDogNjRkYzBmNjgtOWFmYS00NDY1LTll
+YTEtMmJiZWJmZGI2Y2VjDQo+Pj4gwqDCoMKgwqAgVG90YWwgZGV2aWNlcyAyIEZTIGJ5dGVzIHVz
+ZWQgNzA0LjAwS2lCDQo+Pj4gwqDCoMKgwqAgZGV2aWTCoMKgwqAgMiBzaXplIDE1LjAwR2lCIHVz
+ZWQgMS4xNkdpQiBwYXRoIC9kZXYvbG9vcDINCj4+PiDCoMKgwqDCoCBkZXZpZMKgwqDCoCAzIHNp
+emUgMTUuMDBHaUIgdXNlZCAxLjE2R2lCIHBhdGggL2Rldi9sb29wMw0KPj4+ICQgc3VkbyBidHJm
+cyBmaWxlc3lzdGVtIHJlc2l6ZSAtMUcgL21udC8xDQo+Pj4gRVJST1I6IGNhbm5vdCBmaW5kIGRl
+dmlkOiAxDQo+Pj4gRVJST1I6IHVuYWJsZSB0byByZXNpemUgJy9tbnQvMSc6IE5vIHN1Y2ggZGV2
+aWNlDQo+Pj4NCj4+PiBbQ0FVU0VdDQo+Pj4gSWYgdGhlIHVzZXIgZG9lcyBub3Qgc3BlY2lmeSB0
+aGUgZGV2aWQgaWQgZXhwbGljaXRseSwgYnRyZnMgd2lsbCB1c2UgDQo+Pj4gdGhlIGRlZmF1bHQg
+ZGV2aWQgMSwgc28gaXQgd2lsbCByZXBvcnQgYW4gZXJyb3Igd2hlbiBkZXYgMSBpcyBtaXNzaW5n
+Lg0KPj4+DQo+Pj4gW0ZJWF0NCj4+PiBJZiB0aGVyZSBpcyBubyBzcGVjaWFsIGRldmlkLCB0aGUg
+Zmlyc3QgZGV2aWQgaXMgYWRkZWQgYXV0b21hdGljYWxseSANCj4+PiBhbmQgY2hlY2sgdGhlIG1h
+eGltdW0gbGVuZ3RoIG9mIGFyZ3MgcGFzc2VkIHRvIGtlcm5lbCBzcGFjZS4NCj4+PiBBZnRlciBw
+YXRjaCwgd2hlbiByZXNpemUgZmlsZXN5c3RlbSB3aXRob3V0IHNwZWNpZmllZCwgaXQgd291bGQg
+DQo+Pj4gcmVzaXplIHRoZSBmaXJzdCBkZXZpY2UsIHRoZSByZXN1bHQgaXMgbGlzdCBhcyBmb2xs
+b3dpbmcuDQo+Pj4NCj4+PiAkIHN1ZG8gYnRyZnMgZmlsZXN5c3RlbSBzaG93IC9tbnQvMS8NCj4+
+PiBMYWJlbDogbm9uZcKgIHV1aWQ6IDdiNDgyN2RhLWJjNmUtNDJhYS1iMDNkLTUyYzI1MzNkZmU5
+NA0KPj4+IMKgwqDCoMKgIFRvdGFsIGRldmljZXMgMiBGUyBieXRlcyB1c2VkIDE0NC4wMEtpQg0K
+Pj4+IMKgwqDCoMKgIGRldmlkwqDCoMKgIDIgc2l6ZSAxNS4wMEdpQiB1c2VkIDEuMTZHaUIgcGF0
+aCAvZGV2L2xvb3AyDQo+Pj4gwqDCoMKgwqAgZGV2aWTCoMKgwqAgMyBzaXplIDE1LjAwR2lCIHVz
+ZWQgMS4xNkdpQiBwYXRoIC9kZXYvbG9vcDMNCj4+Pg0KPj4+ICQgc3VkbyBidHJmcyBmaWxlc3lz
+dGVtIHJlc2l6ZSAtMUcgL21udC8xDQo+Pj4gUmVzaXplIGRldmljZSBpZCAyICgvZGV2L2xvb3Ay
+KSBmcm9tIDE1LjAwR2lCIHRvIDE0LjAwR2lCDQo+Pj4gJCBzdWRvIGJ0cmZzIGZpbGVzeXN0ZW0g
+c2hvdyAvbW50LzEvDQo+Pj4gTGFiZWw6IG5vbmXCoCB1dWlkOiA3YjQ4MjdkYS1iYzZlLTQyYWEt
+YjAzZC01MmMyNTMzZGZlOTQNCj4+PiDCoMKgwqDCoCBUb3RhbCBkZXZpY2VzIDIgRlMgYnl0ZXMg
+dXNlZCAxNDQuMDBLaUINCj4+PiDCoMKgwqDCoCBkZXZpZMKgwqDCoCAyIHNpemUgMTQuMDBHaUIg
+dXNlZCAxLjE2R2lCIHBhdGggL2Rldi9sb29wMg0KPj4+IMKgwqDCoMKgIGRldmlkwqDCoMKgIDMg
+c2l6ZSAxNS4wMEdpQiB1c2VkIDEuMTZHaUIgcGF0aCAvZGV2L2xvb3AzDQo+Pg0KPj4gSXMgdGhh
+dCBkZXNpcmFibGUgYmVoYXZpb3I/wqAgSSdkIGV4cGVjdCB0aGF0IGlmIHRoZXJlIGFyZSBtdWx0
+aXBsZQ0KPj4gZGV2aWNlcyBwcmVzZW50LCBhbmQgSSBoYXZlbid0IHNwZWNpZmllZCB3aGljaCBv
+bmUgdG8gcmVzaXplLCB0aGF0IHRoZQ0KPj4gY29tbWFuZCB3b3VsZCBmYWlsIHdpdGggYW4gZXJy
+b3IsIHJlcXVpcmluZyBtZSB0byBzcGVjaWZ5IHdoaWNoIGRldmljZSBJDQo+PiB3YW50IHJlc2l6
+ZWQuwqAgVW5kZXIgdGhhdCBleHBlY3RhdGlvbiwgdGhlIGN1cnJlbnQgYmVoYXZpb3Igb2YgcmVz
+aXppbmcNCj4+IGRldmlkIDEgYnkgZGVmYXVsdCBpcyBhbHNvIGluY29ycmVjdC4NCj4gDQo+IEkg
+YWdyZWUgd2l0aCBaeWdvLg0KPiANCj4gSWYgdGhlcmUgaXMgb25seSBvbmUgZGV2aWNlLCB0aGVu
+IHdlIGNhbiBkZWZpbml0ZWx5IHVzZSB0aGUgZmlyc3QgZGV2aWNlDQo+IHdlIGZpbmQuDQo+IA0K
+PiBJZiB0aGVyZSBhcmUgbXVsdGlwbGUgZGV2aWNlcywgdGhlbiBpdCdzIGJldHRlciB0byBvdXRw
+dXQgYW4gZXJyb3INCj4gbWVzc2FnZSwgcHJvdmlkZSBjYW5kaWRhdGUgZGV2aWRzLCBhbmQgZXJy
+b3Igb3V0Lg0KDQpBbmQgZm9yZ290IHRvIG1lbnRpb24sIGFmdGVyIGFsbCB0aGVzZSBjaGFuZ2Vz
+LCB3ZSBhbHNvIG5lZWQgdG8gdXBkYXRlIA0KdGhlIG1hbiBwYWdlIG9mICJidHJmcy1maWxlc3lz
+dGVtIiBzdWJjb21tYW5kLg0KDQpUaGFua3MsDQpRdQ0KDQo+IA0KPiBUaGFua3MsDQo+IFF1DQo+
+IA0KPj4NCj4+IElmIHRoZXJlJ3Mgb25seSBvbmUgZGV2aWNlLCB0aGVuICdidHJmcyBmaSByZXNp
+emUgLTFHJyBzaG91bGQgcmVzaXplDQo+PiB0aGF0IGRldmljZSwgc2luY2Ugbm8gYW1iaWd1aXR5
+IGlzIHBvc3NpYmxlLg0KPj4NCj4+PiBTaWduZWQtb2ZmLWJ5OiBMaSBaaGFuZyA8emhhbmdsaWtl
+cm5lbEBnbWFpbC5jb20+DQo+Pj4gLS0tDQo+Pj4gwqAgY21kcy9maWxlc3lzdGVtLmMgfCA0OSAN
+Cj4+PiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tDQo+
+Pj4gwqAgMSBmaWxlIGNoYW5nZWQsIDM4IGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQ0K
+Pj4+DQo+Pj4gZGlmZiAtLWdpdCBhL2NtZHMvZmlsZXN5c3RlbS5jIGIvY21kcy9maWxlc3lzdGVt
+LmMNCj4+PiBpbmRleCA3Y2QwOGZjLi4yZTI0MTRkIDEwMDY0NA0KPj4+IC0tLSBhL2NtZHMvZmls
+ZXN5c3RlbS5jDQo+Pj4gKysrIGIvY21kcy9maWxlc3lzdGVtLmMNCj4+PiBAQCAtMTA4Nyw3ICsx
+MDg3LDggQEAgc3RhdGljIGNvbnN0IGNoYXIgKiBjb25zdCANCj4+PiBjbWRfZmlsZXN5c3RlbV9y
+ZXNpemVfdXNhZ2VbXSA9IHsNCj4+PiDCoMKgwqDCoMKgIE5VTEwNCj4+PiDCoCB9Ow0KPj4+DQo+
+Pj4gLXN0YXRpYyBpbnQgY2hlY2tfcmVzaXplX2FyZ3MoY29uc3QgY2hhciAqYW1vdW50LCBjb25z
+dCBjaGFyICpwYXRoKSB7DQo+Pj4gK3N0YXRpYyBpbnQgY2hlY2tfcmVzaXplX2FyZ3MoY2hhciAq
+IGNvbnN0IGFtb3VudCwgY29uc3QgY2hhciAqcGF0aCkNCj4+PiArew0KPj4+IMKgwqDCoMKgwqAg
+c3RydWN0IGJ0cmZzX2lvY3RsX2ZzX2luZm9fYXJncyBmaV9hcmdzOw0KPj4+IMKgwqDCoMKgwqAg
+c3RydWN0IGJ0cmZzX2lvY3RsX2Rldl9pbmZvX2FyZ3MgKmRpX2FyZ3MgPSBOVUxMOw0KPj4+IMKg
+wqDCoMKgwqAgaW50IHJldCwgaSwgZGV2X2lkeCA9IC0xOw0KPj4+IEBAIC0xMTAyLDcgKzExMDMs
+OCBAQCBzdGF0aWMgaW50IGNoZWNrX3Jlc2l6ZV9hcmdzKGNvbnN0IGNoYXIgDQo+Pj4gKmFtb3Vu
+dCwgY29uc3QgY2hhciAqcGF0aCkgew0KPj4+DQo+Pj4gwqDCoMKgwqDCoCBpZiAocmV0KSB7DQo+
+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGVycm9yKCJ1bmFibGUgdG8gcmV0cmlldmUgZnMgaW5mbyIp
+Ow0KPj4+IC3CoMKgwqDCoMKgwqDCoCByZXR1cm4gMTsNCj4+PiArwqDCoMKgwqDCoMKgwqAgcmV0
+ID0gMTsNCj4+PiArwqDCoMKgwqDCoMKgwqAgZ290byBvdXQ7DQo+Pj4gwqDCoMKgwqDCoCB9DQo+
+Pj4NCj4+PiDCoMKgwqDCoMKgIGlmICghZmlfYXJncy5udW1fZGV2aWNlcykgew0KPj4+IEBAIC0x
+MTEyLDExICsxMTE0LDE0IEBAIHN0YXRpYyBpbnQgY2hlY2tfcmVzaXplX2FyZ3MoY29uc3QgY2hh
+ciANCj4+PiAqYW1vdW50LCBjb25zdCBjaGFyICpwYXRoKSB7DQo+Pj4gwqDCoMKgwqDCoCB9DQo+
+Pj4NCj4+PiDCoMKgwqDCoMKgIHJldCA9IHNucHJpbnRmKGFtb3VudF9kdXAsIEJUUkZTX1ZPTF9O
+QU1FX01BWCwgIiVzIiwgYW1vdW50KTsNCj4+PiArY2hlY2s6DQo+Pj4gwqDCoMKgwqDCoCBpZiAo
+c3RybGVuKGFtb3VudCkgIT0gcmV0KSB7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGVycm9yKCJu
+ZXdzaXplIGFyZ3VtZW50IGlzIHRvbyBsb25nIik7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIHJl
+dCA9IDE7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gb3V0Ow0KPj4+IMKgwqDCoMKgwqAg
+fQ0KPj4+ICvCoMKgwqAgaWYgKHN0cmNtcChhbW91bnQsIGFtb3VudF9kdXApICE9IDApDQo+Pj4g
+K8KgwqDCoMKgwqDCoMKgIHN0cmNweShhbW91bnQsIGFtb3VudF9kdXApOw0KPj4+DQo+Pj4gwqDC
+oMKgwqDCoCBzaXplc3RyID0gYW1vdW50X2R1cDsNCj4+PiDCoMKgwqDCoMKgIGRldnN0ciA9IHN0
+cmNocihzaXplc3RyLCAnOicpOw0KPj4+IEBAIC0xMTM3LDYgKzExNDIsMTMgQEAgc3RhdGljIGlu
+dCBjaGVja19yZXNpemVfYXJncyhjb25zdCBjaGFyIA0KPj4+ICphbW91bnQsIGNvbnN0IGNoYXIg
+KnBhdGgpIHsNCj4+Pg0KPj4+IMKgwqDCoMKgwqAgZGV2X2lkeCA9IC0xOw0KPj4+IMKgwqDCoMKg
+wqAgZm9yKGkgPSAwOyBpIDwgZmlfYXJncy5udW1fZGV2aWNlczsgaSsrKSB7DQo+Pj4gK8KgwqDC
+oMKgwqDCoMKgIGlmICghZGV2c3RyKSB7DQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbWVt
+c2V0KGFtb3VudF9kdXAsIDAsIEJUUkZTX1ZPTF9OQU1FX01BWCk7DQo+Pj4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgcmV0ID0gc25wcmludGYoYW1vdW50X2R1cCwgQlRSRlNfVk9MX05BTUVfTUFY
+LCAiJWxsdToiLCANCj4+PiBkaV9hcmdzW2ldLmRldmlkKTsNCj4+PiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCByZXQgPSBzbnByaW50ZihhbW91bnRfZHVwICsgc3RybGVuKGFtb3VudF9kdXApLA0K
+Pj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQlRSRlNfVk9MX05BTUVfTUFYIC0g
+c3RybGVuKGFtb3VudF9kdXApLCAiJXMiLCBhbW91bnQpOw0KPj4+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIGdvdG8gY2hlY2s7DQo+Pj4gK8KgwqDCoMKgwqDCoMKgIH0NCj4+PiDCoMKgwqDCoMKg
+wqDCoMKgwqAgaWYgKGRpX2FyZ3NbaV0uZGV2aWQgPT0gZGV2aWQpIHsNCj4+PiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBkZXZfaWR4ID0gaTsNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBicmVhazsNCj4+PiBAQCAtMTIzNSw4ICsxMjQ3LDEwIEBAIHN0YXRpYyBpbnQgY21kX2Zp
+bGVzeXN0ZW1fcmVzaXplKGNvbnN0IHN0cnVjdCANCj4+PiBjbWRfc3RydWN0ICpjbWQsDQo+Pj4g
+wqDCoMKgwqDCoMKgwqDCoMKgIH0NCj4+PiDCoMKgwqDCoMKgIH0NCj4+Pg0KPj4+IC3CoMKgwqAg
+aWYgKGNoZWNrX2FyZ2NfZXhhY3QoYXJnYyAtIG9wdGluZCwgMikpDQo+Pj4gLcKgwqDCoMKgwqDC
+oMKgIHJldHVybiAxOw0KPj4+ICvCoMKgwqAgaWYgKGNoZWNrX2FyZ2NfZXhhY3QoYXJnYyAtIG9w
+dGluZCwgMikpIHsNCj4+PiArwqDCoMKgwqDCoMKgwqAgcmV0ID0gMTsNCj4+PiArwqDCoMKgwqDC
+oMKgwqAgZ290byBvdXQ7DQo+Pj4gK8KgwqDCoCB9DQo+Pj4NCj4+PiDCoMKgwqDCoMKgIGFtb3Vu
+dCA9IGFyZ3Zbb3B0aW5kXTsNCj4+PiDCoMKgwqDCoMKgIHBhdGggPSBhcmd2W29wdGluZCArIDFd
+Ow0KPj4+IEBAIC0xMjQ0LDcgKzEyNTgsOCBAQCBzdGF0aWMgaW50IGNtZF9maWxlc3lzdGVtX3Jl
+c2l6ZShjb25zdCBzdHJ1Y3QgDQo+Pj4gY21kX3N0cnVjdCAqY21kLA0KPj4+IMKgwqDCoMKgwqAg
+bGVuID0gc3RybGVuKGFtb3VudCk7DQo+Pj4gwqDCoMKgwqDCoCBpZiAobGVuID09IDAgfHwgbGVu
+ID49IEJUUkZTX1ZPTF9OQU1FX01BWCkgew0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBlcnJvcigi
+cmVzaXplIHZhbHVlIHRvbyBsb25nICglcykiLCBhbW91bnQpOw0KPj4+IC3CoMKgwqDCoMKgwqDC
+oCByZXR1cm4gMTsNCj4+PiArwqDCoMKgwqDCoMKgwqAgcmV0ID0gMTsNCj4+PiArwqDCoMKgwqDC
+oMKgwqAgZ290byBvdXQ7DQo+Pj4gwqDCoMKgwqDCoCB9DQo+Pj4NCj4+PiDCoMKgwqDCoMKgIGNh
+bmNlbCA9IChzdHJjbXAoImNhbmNlbCIsIGFtb3VudCkgPT0gMCk7DQo+Pj4gQEAgLTEyNTgsNyAr
+MTI3Myw4IEBAIHN0YXRpYyBpbnQgY21kX2ZpbGVzeXN0ZW1fcmVzaXplKGNvbnN0IHN0cnVjdCAN
+Cj4+PiBjbWRfc3RydWN0ICpjbWQsDQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgICJkaXJlY3Rvcmll
+cyBhcyBhcmd1bWVudC4gUGFzc2luZyBmaWxlIGNvbnRhaW5pbmcgYSBidHJmcyANCj4+PiBpbWFn
+ZVxuIg0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCAid291bGQgcmVzaXplIHRoZSB1bmRlcmx5aW5n
+IGZpbGVzeXN0ZW0gaW5zdGVhZCBvZiB0aGUgDQo+Pj4gaW1hZ2UuXG4iKTsNCj4+PiDCoMKgwqDC
+oMKgwqDCoMKgwqAgfQ0KPj4+IC3CoMKgwqDCoMKgwqDCoCByZXR1cm4gMTsNCj4+PiArwqDCoMKg
+wqDCoMKgwqAgcmV0ID0gMTsNCj4+PiArwqDCoMKgwqDCoMKgwqAgZ290byBvdXQ7DQo+Pj4gwqDC
+oMKgwqDCoCB9DQo+Pj4NCj4+PiDCoMKgwqDCoMKgIC8qDQo+Pj4gQEAgLTEyNzMsMTQgKzEyODks
+MjIgQEAgc3RhdGljIGludCBjbWRfZmlsZXN5c3RlbV9yZXNpemUoY29uc3Qgc3RydWN0IA0KPj4+
+IGNtZF9zdHJ1Y3QgKmNtZCwNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IGVycm9yKA0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJ1bmFibGUgdG8gY2hlY2sg
+c3RhdHVzIG9mIGV4Y2x1c2l2ZSBvcGVyYXRpb246ICVtIik7DQo+Pj4gwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgY2xvc2VfZmlsZV9vcl9kaXIoZmQsIGRpcnN0cmVhbSk7DQo+Pj4gLcKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIDE7DQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+Z290byBvdXQ7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0NCj4+PiDCoMKgwqDCoMKgIH0NCj4+
+Pg0KPj4+ICvCoMKgwqAgYW1vdW50ID0gKGNoYXIgKiltYWxsb2MoQlRSRlNfVk9MX05BTUVfTUFY
+KTsNCj4+PiArwqDCoMKgIGlmICghYW1vdW50KSB7DQo+Pj4gK8KgwqDCoMKgwqDCoMKgIHJldCA9
+IC1FTk9NRU07DQo+Pj4gK8KgwqDCoMKgwqDCoMKgIGdvdG8gb3V0Ow0KPj4+ICvCoMKgwqAgfQ0K
+Pj4+ICvCoMKgwqAgc3RyY3B5KGFtb3VudCwgYXJndltvcHRpbmRdKTsNCj4+PiArDQo+Pj4gwqDC
+oMKgwqDCoCByZXQgPSBjaGVja19yZXNpemVfYXJncyhhbW91bnQsIHBhdGgpOw0KPj4+IMKgwqDC
+oMKgwqAgaWYgKHJldCAhPSAwKSB7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGNsb3NlX2ZpbGVf
+b3JfZGlyKGZkLCBkaXJzdHJlYW0pOw0KPj4+IC3CoMKgwqDCoMKgwqDCoCByZXR1cm4gMTsNCj4+
+PiArwqDCoMKgwqDCoMKgwqAgcmV0ID0gMTsNCj4+PiArwqDCoMKgwqDCoMKgwqAgZ290byBmcmVl
+X2Ftb3VudDsNCj4+PiDCoMKgwqDCoMKgIH0NCj4+Pg0KPj4+IMKgwqDCoMKgwqAgbWVtc2V0KCZh
+cmdzLCAwLCBzaXplb2YoYXJncykpOw0KPj4+IEBAIC0xMjk4LDcgKzEzMjIsNyBAQCBzdGF0aWMg
+aW50IGNtZF9maWxlc3lzdGVtX3Jlc2l6ZShjb25zdCBzdHJ1Y3QgDQo+Pj4gY21kX3N0cnVjdCAq
+Y21kLA0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVycm9yKCJ1bmFibGUgdG8gcmVz
+aXplICclcyc6ICVtIiwgcGF0aCk7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnJl
+YWs7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0NCj4+PiAtwqDCoMKgwqDCoMKgwqAgcmV0dXJu
+IDE7DQo+Pj4gK8KgwqDCoMKgwqDCoMKgIHJldCA9IDE7DQo+Pj4gwqDCoMKgwqDCoCB9IGVsc2Ug
+aWYgKHJlcyA+IDApIHsNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgY29uc3QgY2hhciAqZXJyX3N0
+ciA9IGJ0cmZzX2Vycl9zdHIocmVzKTsNCj4+Pg0KPj4+IEBAIC0xMzA4LDkgKzEzMzIsMTIgQEAg
+c3RhdGljIGludCBjbWRfZmlsZXN5c3RlbV9yZXNpemUoY29uc3Qgc3RydWN0IA0KPj4+IGNtZF9z
+dHJ1Y3QgKmNtZCwNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlcnJvcigicmVzaXpp
+bmcgb2YgJyVzJyBmYWlsZWQ6IHVua25vd24gZXJyb3IgJWQiLA0KPj4+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgcGF0aCwgcmVzKTsNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAg
+fQ0KPj4+IC3CoMKgwqDCoMKgwqDCoCByZXR1cm4gMTsNCj4+PiArwqDCoMKgwqDCoMKgwqAgcmV0
+ID0gMTsNCj4+PiDCoMKgwqDCoMKgIH0NCj4+PiAtwqDCoMKgIHJldHVybiAwOw0KPj4+ICtmcmVl
+X2Ftb3VudDoNCj4+PiArwqDCoMKgIGZyZWUoYW1vdW50KTsNCj4+PiArb3V0Og0KPj4+ICvCoMKg
+wqAgcmV0dXJuIHJldDsNCj4+PiDCoCB9DQo+Pj4gwqAgc3RhdGljIERFRklORV9TSU1QTEVfQ09N
+TUFORChmaWxlc3lzdGVtX3Jlc2l6ZSwgInJlc2l6ZSIpOw0KPj4+DQo+Pj4gLS0gDQo+Pj4gMS44
+LjMuMQ0KPj4+DQo=
