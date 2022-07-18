@@ -2,58 +2,234 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79283578261
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 14:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006AF578532
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jul 2022 16:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbiGRMdK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Jul 2022 08:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
+        id S235177AbiGROT7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Jul 2022 10:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbiGRMdJ (ORCPT
+        with ESMTP id S235028AbiGROTy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Jul 2022 08:33:09 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D2A205F7
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 05:33:08 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 96F6C68AA6; Mon, 18 Jul 2022 14:33:04 +0200 (CEST)
-Date:   Mon, 18 Jul 2022 14:33:04 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: error writing primary super block on zoned btrfs
-Message-ID: <20220718123304.GA15340@lst.de>
-References: <20220718054944.GA22359@lst.de> <YtVSBLTuRCED9mYb@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Mon, 18 Jul 2022 10:19:54 -0400
+X-Greylist: delayed 302 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Jul 2022 07:19:52 PDT
+Received: from static.213-239-213-133.clients.your-server.de (luckmann.name [213.239.213.133])
+        by lindbergh.monkeyblade.net (Postfix) with UTF8SMTPS id 2FA911FA
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 07:19:51 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+  (uid 502)
+  by static.213-239-213-133.clients.your-server.de with local
+  id 0000000000E62056.0000000062D56AD8.00006109; Mon, 18 Jul 2022 16:14:48 +0200
+Date:   Mon, 18 Jul 2022 16:14:47 +0200
+From:   Helge Kreutzmann <debian@helgefjell.de>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Mario =?utf-8?Q?Bl=C3=A4ttermann?= <mario.blaettermann@gmail.com>
+Subject: Issues in man pages of btrfs-progs
+Message-ID: <20220718141447.GA24796@Debian-50-lenny-64-minimal>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256; protocol="application/pgp-signature"; boundary="=_luckmann.name-24841-1658153688-0001-2"
 Content-Disposition: inline
-In-Reply-To: <YtVSBLTuRCED9mYb@casper.infradead.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Public-Key-URL: http://www.helgefjell.de/data/debian_neu.asc
+X-homepage: http://www.helgefjell.de/debian
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=1.7 required=5.0 tests=BAYES_05,CK_HELO_GENERIC,
+        HELO_DYNAMIC_IPADDR,SPF_HELO_NONE,SPF_NONE,URIBL_SBL_A autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 18, 2022 at 01:28:52PM +0100, Matthew Wilcox wrote:
-> A "value" entry in the block device's i_pages will be a shadow entry --
-> that is, the page has reached the end of the LRU list and been discarded,
-> so we made a note that we would have liked to keep it in the LRU list,
-> but we didn't have enough memory in the system to do so.  That helps
-> us put it back in the right position in the LRU list when it gets
-> brought back in from disc.
-> 
-> I'd sugegst something else has gone wrong, maybe the refcount should
-> have been kept elevated to prevent the superblock from being paged out.
-> I find it hard to believe that we can be so low on memory that we need
-> to page out a superblock to make room for some other memory allocation.
-> 
-> (Although maybe if you have millions of unusued filesystems mounted ...?)
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-This is a freshly booted VM running the test on the only non-root
-disk file system.  So yeah, there must be a logic error somewhere
-in the use of the page cache.
+--=_luckmann.name-24841-1658153688-0001-2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Dear btrfs-progs maintainer,
+the manpage-l10n project maintains a large number of translations of
+man pages both from a large variety of sources (including btrfs-progs) as
+well for a large variety of target languages.
+
+During their work translators notice different possible issues in the
+original (english) man pages. Sometimes this is a straightforward
+typo, sometimes a hard to read sentence, sometimes this is a
+convention not held up and sometimes we simply do not understand the
+original.
+
+We use several distributions as sources and update regularly (at
+least every 2 month). This means we are fairly recent (some
+distributions like archlinux also update frequently) but might miss
+the latest upstream version once in a while, so the error might be
+already fixed. We apologize and ask you to close the issue immediately
+if this should be the case, but given the huge volume of projects and
+the very limited number of volunteers we are not able to double check
+each and every issue.
+
+Secondly we translators see the manpages in the neutral po format,
+i.e. converted and harmonized, but not the original source (be it man,
+groff, xml or other). So we cannot provide a true patch (where
+possible), but only an approximation which you need to convert into
+your source format.
+
+Finally the issues I'm reporting have accumulated over time and are
+not always discovered by me, so sometimes my description of the
+problem my be a bit limited - do not hesitate to ask so we can clarify
+them.
+
+I'm now reporting the errors for your project. If future reports
+should use another channel, please let me know.
+
+Man page: btrfs.8
+Issue:    B<btrfs(5)> =E2=86=92 B<btrfs>(5)
+
+"For other topics (mount options, etc) please refer to the separate manual "
+"page B<btrfs(5)>\\&."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-balance(8)> =E2=86=92 B<btrfs-balance>(8)
+
+"Balance btrfs filesystem chunks across single or several devices.  See "
+"B<btrfs-balance(8)> for details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-check(8)> =E2=86=92 B<btrfs-check>(8)
+
+"Do off-line check on a btrfs filesystem.  See B<btrfs-check(8)> for detail=
+s."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-device(8)> =E2=86=92 B<btrfs-device>(8)
+
+"Manage devices managed by btrfs, including add/delete/scan and so on.  See=
+ "
+"B<btrfs-device(8)> for details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-filesystem(8)> =E2=86=92 B<btrfs-filesystem>(8)
+
+"Manage a btrfs filesystem, including label setting/sync and so on.  See "
+"B<btrfs-filesystem(8)> for details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-inspect-internal(8)> =E2=86=92 B<btrfs-inspect-internal>(=
+8)
+
+"Debug tools for developers/hackers.  See B<btrfs-inspect-internal(8)> for "
+"details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-property(8)> =E2=86=92 B<btrfs-property>(8)
+
+"Get/set a property from/to a btrfs object.  See B<btrfs-property(8)> for "
+"details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-qgroup(8)> =E2=86=92 B<btrfs-qgroup>(8)
+
+"Manage quota group(qgroup) for btrfs filesystem.  See B<btrfs-qgroup(8)> f=
+or "
+"details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-quota(8)> and B<btrfs-qgroup(8)> =E2=86=92 B<btrfs-quota>=
+(8) and B<btrfs-qgroup>(8)
+
+"Manage quota on btrfs filesystem like enabling/rescan and etc.  See B<btrf=
+s-"
+"quota(8)> and B<btrfs-qgroup(8)> for details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-receive(8)> =E2=86=92 B<btrfs-receive>(8)
+
+"Receive subvolume data from stdin/file for restore and etc.  See B<btrfs-"
+"receive(8)> for details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-replace(8)> =E2=86=92 B<btrfs-replace>(8)
+
+"Replace btrfs devices.  See B<btrfs-replace(8)> for details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-rescue(8)> =E2=86=92 B<btrfs-rescue>(8)
+
+"Try to rescue damaged btrfs filesystem.  See B<btrfs-rescue(8)> for detail=
+s."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-restore(8)> =E2=86=92 B<btrfs-restore>(8)
+
+"Try to restore files from a damaged btrfs filesystem.  See B<btrfs-"
+"restore(8)> for details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-scrub(8)> =E2=86=92 B<btrfs-scrub>(8)
+
+"Scrub a btrfs filesystem.  See B<btrfs-scrub(8)> for details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-send(8)> =E2=86=92 B<btrfs-send>(8)
+
+"Send subvolume data to stdout/file for backup and etc.  See B<btrfs-send(8=
+)> "
+"for details."
+--
+Man page: btrfs.8
+Issue:    B<btrfs-subvolume(8)> =E2=86=92 B<btrfs-subvolume>(8)
+
+"Create/delete/list/manage btrfs subvolume.  See B<btrfs-subvolume(8)> for "
+"details."
+--
+Man page: btrfs.8
+Issue:    btrfs wiki I<\\%http://btrfs.wiki.kernel.org> =E2=86=92 E<.UR htt=
+ps://btrfs.wiki.kernel.org>btrfs wiki<.UE> (Note: https)A
+
+"B<btrfs> is part of btrfs-progs.  Please refer to the btrfs wiki I<\\%http=
+://"
+"btrfs.wiki.kernel.org> for further details."
+--
+Man page: btrfs.8
+Issue:    section number in such links must not be bold: B<btrfs(5)> =E2=86=
+=92 B<btrfs>(5) etc.
+
+"B<btrfs(5)>, B<btrfs-balance(8)>, B<btrfs-check(8)>, B<btrfs-convert(8)>, "
+"B<btrfs-device(8)>, B<btrfs-filesystem(8)>, B<btrfs-inspect-internal(8)>, "
+"B<btrfs-property(8)>, B<btrfs-qgroup(8)>, B<btrfs-quota(8)>, B<btrfs-"
+"receive(8)>, B<btrfs-replace(8)>, B<btrfs-rescue(8)>, B<btrfs-restore(8)>,=
+ "
+"B<btrfs-scrub(8)>, B<btrfs-send(8)>, B<btrfs-subvolume(8)>, B<btrfstune(8)=
+>, "
+"B<mkfs.btrfs(8)>"
+
+--=20
+      Dr. Helge Kreutzmann                     debian@helgefjell.de
+           Dipl.-Phys.                   http://www.helgefjell.de/debian.php
+        64bit GNU powered                     gpg signed mail preferred
+           Help keep free software "libre": http://www.ffii.de/
+
+--=_luckmann.name-24841-1658153688-0001-2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEbZZfteMW0gNUynuwQbqlJmgq5nAFAmLVatAACgkQQbqlJmgq
+5nAFmxAAqaVG9vUgP1FgLrC+3p4ovAD4ek1SA4rnzPI9iKJ2GrSe0qH4At8MGD+t
+OrCOeTghG6ty1g5AHMWZGA3z+k1S1lGf1OktAv7Cfvv4tPEXO0Rry+fEoVvSVfky
+ihT/GYRd3amna61u7xxuew85LrFckyZV5e09EHLBVml3UR87Ruhbydk3hHPbtP/R
+7M4cW6PI4voU0DmFm/25Cq70ufWGwl+hF7sGF6aoKKAkRh5jBedt9LGVY1nS2s/W
+Y9YUjhJ28ZC8YpOamJ/0+VVoQMxmtV+p/KeZxTz77UqiVcMpnZ6drzhKptQZuxtY
+Fy2TxF7N3H7b1zVs+KshhL2L5KFQBb2K9gVG8ozPHqdOKXQGgeC33JEMDfx7WnyR
+sqvLn1vDIw8m1ivkoUgvAqMCq2gdqzkGlw6HiF7GX1o95LlE7DOdTkRtg6eYxLMB
+7L2STol+HejvMCL6vjZmrre14zL8FCePZbHRxS79dobbHKCWpNOmnd2OxYbMnUpv
+fRLKN0LPg28fTx/8bXuT4kU/ePkpLh5x9Tkn62JE5WICcicC3OaqEgdHHuPpXp3+
+nczxmpZnzYoabcXlkKkgeGNE6LdzeK18/RSmDMop8mlnV1U3Az78dXH+Kcm77Cb+
+UVBZ//9/VIlqW9CLyoApxLZYZU8PxodjU3zocuUFFw/4oPY19tk=
+=MEKP
+-----END PGP SIGNATURE-----
+
+--=_luckmann.name-24841-1658153688-0001-2--
