@@ -2,87 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 980EA578EA7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 02:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C828A578FCC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 03:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234915AbiGSABn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Jul 2022 20:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
+        id S230317AbiGSBWv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Jul 2022 21:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234888AbiGSABm (ORCPT
+        with ESMTP id S229888AbiGSBWv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Jul 2022 20:01:42 -0400
-Received: from avasout-ptp-003.plus.net (avasout-ptp-003.plus.net [84.93.230.244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDD72DEB
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 17:01:40 -0700 (PDT)
-Received: from APOLLO ([212.159.61.44])
-        by smtp with ESMTPA
-        id Dag5ohasB1SPADag6oAxNt; Tue, 19 Jul 2022 01:01:38 +0100
-X-Clacks-Overhead: "GNU Terry Pratchett"
-X-CM-Score: 0.00
-X-CNFS-Analysis: v=2.4 cv=dKK1JcVb c=1 sm=1 tr=0 ts=62d5f462
- a=AGp1duJPimIJhwGXxSk9fg==:117 a=AGp1duJPimIJhwGXxSk9fg==:17
- a=IkcTkHD0fZMA:10 a=lZFbU4aQAAAA:8 a=P1kZ4gAsAAAA:8 a=VwQbUJbxAAAA:8
- a=Xe7UgJ0w4vn_hh0pY4cA:9 a=QEXdDO2ut3YA:10 a=yKZbCDypxrTF-tGext6c:22
- a=fn9vMg-Z9CMH7MoVPInU:22 a=AjGcO6oz07-iQ99wixmX:22
-X-AUTH: perdrix52@:2500
-From:   "David C. Partridge" <david.partridge@perdrix.co.uk>
-To:     "'Chris Murphy'" <lists@colorremedies.com>
-Cc:     "'Btrfs BTRFS'" <linux-btrfs@vger.kernel.org>
-References: <000001d899d0$57fb6490$07f22db0$@perdrix.co.uk> <CAJCQCtTAx=82boq175vtAu1Z_S9D1tcNSErir1wTK8MbtMfsvw@mail.gmail.com>
-In-Reply-To: <CAJCQCtTAx=82boq175vtAu1Z_S9D1tcNSErir1wTK8MbtMfsvw@mail.gmail.com>
-Subject: RE: Odd output from scrub status
-Date:   Tue, 19 Jul 2022 01:01:29 +0100
-Message-ID: <009001d89b02$b7f2eb60$27d8c220$@perdrix.co.uk>
+        Mon, 18 Jul 2022 21:22:51 -0400
+X-Greylist: delayed 1888 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Jul 2022 18:22:47 PDT
+Received: from mailgate.kemenperin.go.id (mailgate.kemenperin.go.id [202.47.80.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5611DA7E
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 18:22:47 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id C232A36C5474;
+        Tue, 19 Jul 2022 07:47:58 +0700 (WIB)
+Received: from mailgate.kemenperin.go.id ([127.0.0.1])
+        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id UKTFvOlh_oEv; Tue, 19 Jul 2022 07:47:57 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 79D7036C5410;
+        Tue, 19 Jul 2022 07:47:41 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mailgate.kemenperin.go.id 79D7036C5410
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kemenperin.go.id;
+        s=3298A942-BBC6-11E3-B333-483736368EC2; t=1658191661;
+        bh=OMsLnFCRj1kkCFX89wTPl6LEK64BDUxWdO5Mjh3Ezxs=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=KF61iI9B4U5pIMM0Qp6ykuf58GZ9iU30gqYAuhpQ4o0YqCwj9mV2JocdWlSAovtI4
+         ZlzlHpU+akABgKqrZInknDpz4KUnEhiOUwOtYzFaNKl8dNUGe+Wwp9redwumGdty4n
+         SaksN/PkOxe0Ymu/LNGg/V+UJfT7q+OgzicflgBg=
+X-Virus-Scanned: amavisd-new at kemenperin.go.id
+Received: from mailgate.kemenperin.go.id ([127.0.0.1])
+        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 6JbbzFqgZS92; Tue, 19 Jul 2022 07:47:41 +0700 (WIB)
+Received: from mailgate.kemenperin.go.id (mailgate.kemenperin.go.id [10.1.0.89])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id F17E436C5412;
+        Tue, 19 Jul 2022 07:47:20 +0700 (WIB)
+Date:   Tue, 19 Jul 2022 07:47:20 +0700 (WIB)
+From:   Quarter Loans Company Inc <s-agusman@kemenperin.go.id>
+Reply-To: Quarter Loans Company Inc <mail.quarterloan@gmail.com>
+Message-ID: <1142539691.1414223.1658191640939.JavaMail.zimbra@kemenperin.go.id>
+Subject: lening aanbod
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQG0I+mo95iLQgivBE5YQgylXxMxEwG/+wJwrb+9o3A=
-Content-Language: en-gb
-X-CMAE-Envelope: MS4xfL8D761ga0vdlcCmVpgbQyx26VH4f8zOguOJfwgNKXVwDkbNzoG2+xXW7ay6IzjuXm4IEIKOm9l7Xep7gxue1/Sm/tNnZhZVPJ6oakLDhHJMML5c5pZb
- eS1NJaTwAp2nMetUL1PtvWle5adexR13gZLBV99Aan28Kc7HSM/2wyWj4wvj91JxEYvPYjtrxo0Q7pFXwIXq1eCDJz9dfHDntB8=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.1.0.89]
+Thread-Index: +kPPQ5CQPGaRhmlkKM85yC0+8AjPuQ==
+Thread-Topic: lening aanbod
+X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        MISSING_HEADERS,REPLYTO_WITHOUT_TO_CC,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5126]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  1.0 MISSING_HEADERS Missing To: header
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  1.6 REPLYTO_WITHOUT_TO_CC No description available.
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs-progs 5.4.1-2
+Goede dag,
 
------Original Message-----
-From: Chris Murphy <lists@colorremedies.com> 
-Sent: 18 July 2022 20:51
-To: David C. Partridge <david.partridge@perdrix.co.uk>
-Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Odd output from scrub status
+Wij verstrekken leningen aan particulieren en bedrijven met een rente van 3=
+% per jaar. Wij zijn ge=C3=AFnteresseerd in het financieren van grootschali=
+ge projecten en het verstrekken van leningen. de terugbetaling
 
-On Sun, Jul 17, 2022 at 7:28 AM David C. Partridge
-<david.partridge@perdrix.co.uk> wrote:
->
-> root@charon:~/bin# btrfs scrub status /dev/sdb1
-> UUID:             f9655777-8c81-4d5e-8f14-c1906b7b27a3
-> Scrub started:    Sun Jul 17 10:27:39 2022
-> Status:           running
-> Duration:         1:59:29
-> Time left:        6095267:46:37
-> ETA:              Tue Nov 20 23:13:45 2717
-> Total to scrub:   4.99TiB
-> Bytes scrubbed:   5.48TiB
-> Rate:             801.72MiB/s
-> Error summary:    no errors found
-> root@charon:~/bin#
+termijn is 1-30 jaar en met gratis 6 maanden respijt.
 
+   Wij bieden: -
+* Project financiering
+* Zakelijke lening
+* Persoonlijke lening
 
-What version of btrfs-progs? Looks like 96ed8e801 fixed an issue with
-ETA reporting, which I'm guessing made it into btrfs-progs 5.2 or
-5.2.1?
+Neem dan contact met ons op via onderstaande gegevens, zodat wij u kunnen i=
+nformeren over de voorwaarden van de lening.
 
+          Benodigd leenbedrag:
+          Terugbetalingstermijn:
+          Mobiel nummer:
 
--- 
-Chris Murphy
+Reageer voor meer informatie.
 
+Groeten
+Online reclame agent.
