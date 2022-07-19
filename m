@@ -2,85 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F164578FC6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 03:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C41578FDA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 03:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbiGSBTk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Jul 2022 21:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
+        id S234019AbiGSBbo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Jul 2022 21:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbiGSBTk (ORCPT
+        with ESMTP id S229793AbiGSBbm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Jul 2022 21:19:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6569B63C1
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 18:19:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1658193568;
-        bh=h41QOzYDPZINh/CYkTMF3CXxPmwZBgRSx9dlEpAnyu4=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=I5dpoLsuUPMpGGyZGyE9ymHdvnStKIwdXrvRft03U8I+K9AM2UsXlD/oXmvTS6VPe
-         O/3kdArssnY5ZXj6EhWHFWYzequvsxWwwccjQFtuysaccyr2akN42jvvRljrYPEgAS
-         8JZtWXJFyQrJfHORP7g7hMb0jTkNqeHDFdP54hAs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8hZJ-1o9VHy1xD7-004frU; Tue, 19
- Jul 2022 03:19:28 +0200
-Message-ID: <829a9b85-db35-1527-bf3d-081c3f4211b2@gmx.com>
-Date:   Tue, 19 Jul 2022 09:19:21 +0800
-MIME-Version: 1.0
+        Mon, 18 Jul 2022 21:31:42 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-eopbgr60064.outbound.protection.outlook.com [40.107.6.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7631B17ABE
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 18:31:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GGRdnn/Hgz/4EsM4zDRs++dEg3bLcNqFD+XWVoxKVSujUtDHELgvqpmjZYldu3SzeqkSpWyz0TGV1WF0KvKP9mtnfQ/J0NxKHTv8CtvXPZ9yNSZTv8iuP2+rueYmdZlCPiVCzZYWi/2ZZoUxCwDx7zQVuGSwCCXnmXOOFcPwo5h1zEaQedF8feA/blYAR+LPC6bTOsphWeYUOOInrmYTd/0eaUWlEVmqSSQ0SX6mqMVAxrcrO5z61obpMK9BHWVfl0/3qfU0PiqBqbql3xc4N1BQ9oH6UsIp2DmDKj6mmrG9TmrKnIl2FDSPt5bFlvH11qrR3xxN0YtY0IukHuydLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sZVOCSwmY4vQXM2WMXO0h8XTnW4sg0E9svh5ccDIGyE=;
+ b=obqhO47uYSQ1elae+qBS143/zM8werLm+GO22y76w8tmHAuK+yK/76KxejujySaCuLV2wLrcHu7fCWHnTz5vGaBayZb7m0ksMmqCgEEJGpTP1t5kfWJUEVnugZhnDOnO80L6W15Lwi+FjsLJHfWpNPt6BhmLVqwrwWefjR76dwVZYdZc/jtNie18l/HaNUCDgVKOWPx+ir/zD9WkREXNseJFftejOvjeXsFHsg+mxS8UzmcqHgWnM4riJEJKRAwPYOulRJxBtM09GdqzomJyTj6GPYh7c1bbymWGNWlEBlCz/rKZdwTvu811xaUZ1+PM2p9Ytz+V1RIKwPFYawoFmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sZVOCSwmY4vQXM2WMXO0h8XTnW4sg0E9svh5ccDIGyE=;
+ b=HOadhA0mHHNE+mvEpJYnhtkK86ZO0+Jph2WzzC/9cv5/vAS7ioB8G+Pz54qCeaG6fI3pmQ4YZX19sSKAOF5uoESZFYBN8C7mG/gg4cHzBhxUeSxww7HCH1eU+cwzYooJqE36iF1HyjXe40HV6cjEJvhAN+un44qR1/DjoLQDte0Y/SzASY1O48rR81wmUNHXof55povGakVTvt30kYEfZvrntPYlOXlRJliFGRPCUm/YFZQlp5/wB5H6v9gK1N3fK3SLG1LtdCAyGf6Mgr++t5QGOYvFktq3gKM27lf0kKBVjXoa0BLz2Zacu8ub6let5jb0XTg0nl59abWeen9tmg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
+ by AM5PR04MB2947.eurprd04.prod.outlook.com (2603:10a6:206:6::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.23; Tue, 19 Jul
+ 2022 01:31:36 +0000
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::f592:23b0:9094:cd33]) by AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::f592:23b0:9094:cd33%9]) with mapi id 15.20.5438.023; Tue, 19 Jul 2022
+ 01:31:36 +0000
+Message-ID: <03436e26-8408-6771-2f13-d4bbdbd99b7a@suse.com>
+Date:   Tue, 19 Jul 2022 09:31:28 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
+Subject: Re: [PATCH] btrfs-progs: make btrfs_super_block::log_root_transid
+ deprecated
 Content-Language: en-US
-To:     Forza <forza@tnonline.net>, Chris Murphy <lists@colorremedies.com>,
-        Goffredo Baroncelli <kreijack@inwind.it>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cover.1652711187.git.johannes.thumshirn@wdc.com>
- <78daa7e4-7c88-d6c0-ccaa-fb148baf7bc8@gmx.com>
- <PH0PR04MB74164213B5F136059236B78C9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <03630cb7-e637-3375-37c6-d0eb8546c958@gmx.com>
- <PH0PR04MB7416D257F7B349FC754E30169B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <1cf403d4-46a7-b122-96cf-bd1307829e5b@gmx.com>
- <PH0PR04MB741638E2A15F4E106D8A6FAF9B899@PH0PR04MB7416.namprd04.prod.outlook.com>
- <96da9455-f30d-b3fc-522b-7cbd08ad3358@suse.com>
- <PH0PR04MB7416E68375C1C27C33D347119B889@PH0PR04MB7416.namprd04.prod.outlook.com>
- <61694368-30ea-30a0-df74-fd607c4b7456@gmx.com>
- <PH0PR04MB7416243FCD419B4BDDB04D8C9B889@PH0PR04MB7416.namprd04.prod.outlook.com>
- <8b3cf3d0-4812-0e92-d850-09a8d08b8169@libero.it>
- <CAJCQCtTJ=gs7JT4Tdxt3cOVTjkDD1_rQRqv6rbfwohu-Escw6w@mail.gmail.com>
- <b62a80a.e3c8d435.182134a0f8d@tnonline.net>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: RAID56 discussion related to RST. (Was "Re: [RFC ONLY 0/8] btrfs:
- introduce raid-stripe-tree")
-In-Reply-To: <b62a80a.e3c8d435.182134a0f8d@tnonline.net>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <ad5b8dbe66567eddd09025cf46114cc9412d1add.1654603274.git.wqu@suse.com>
+ <20220718153410.GF13489@twin.jikos.cz>
+From:   Qu Wenruo <wqu@suse.com>
+In-Reply-To: <20220718153410.GF13489@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ETAdV/1+MoV7jKvYby3T82WuO0vJUV40FPgjjbljK5qOlRiP+1w
- Gr4g7fx2BCecosn/p4hCHtV0HHl1ZFoLIu81KwE0k2Y60+TYrIkFYawsqsSOU1G86h1Ya4X
- VuHaDXP63NRuRDGAF5Tk7H92OCQd9/n+aH2ln1k/ARFOw0GJ+gj4g8NX/PGNmy4MVeJwkYl
- M7FwCx2QzuMPQUc0vdoYg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JEHZyUaosAw=:9w1m7J/rZUFhJN1dbMBTuE
- or4Cd3SgWWSBThu09eVUxb8+O0J41S0cWdKhkfnnWVk1JPHCJfeTRlX1WEpTuC84C0aTMUpRf
- dztILZ9LvU873flwEgQfiYhNIwOuK2sJcXXs8WwdokS8GRJF7/5Gfet4+LR3owc6ujVPn0x1R
- hd5LdFY01n7Y6Jr1XixnaR9nRmY/yQp9uL47BVGBnpsOKrsi554n9GfQsuVKMPga4K9Se81IS
- 43sp619iVd5j2HUDMGOmmxNCMK7GNXmb/KmWHVc0lEATvOHzWjexhAIPYbJL6Uuuu0452b6l6
- hceJf8tl0alBeHb8PdCeJgv/y5mIgp89nBfF7V7fzDxSHf15t9LVKv+y7xFr1QD7MWBwizQCk
- p0JyGNiYNFVlwyeUqtRZX3K6cqurzR/46ZJm6ZElM91CZxU1nRV9A/TT3bn/VBP9b2t/T0UcO
- jOB0JqtnuB/pUHKc1W2BjkD4+2Ah5RCwlVt7txY+abH2fr95CKvltVE/Qjmqf119BDJ2VV81O
- 4A3WoInChD+HRibOQkIunpKUZzBjGL+WgUW1eDsifGzxuiVczuJtEoMiJDVAICDqPBc/1oK3x
- p8oXu4qDpUw1WxDOud0DkVIrlUUliJTrki8IPPBBBlkePGge4mGOy8fb9DADpdL6Ac3OUzLtz
- RSAtBHiLCmLZYf63aLmonmkuRriCm/Wn6sSsLXN3vFqYC248XSgOporrHMFx7u4E0fU2U+fuc
- qyLAb/P9tuvdvfjlxCl7GicdTgGNBVtWs1M47s+OIJW2Nv7UbKZvKMeBnTJjIMnrcNZW1ReGB
- JJg0rt1rjh58oLaS3r5yzMrkhR9we+fO0F0j3BTXMjz2YTg8DRuZpbTNZffCU1dQCNIDPLv89
- 08d0vPoTZPXo1NQEMaB1H2ys5DMQRZIfjYewKS8fqPLBGJqyDg5NII84UVvqONQMnXLsiK57h
- u/EsWuiMpLnGkw6jh1YVsDrrN2xmuSzmqG8IAnJL0gqx6I1/LCRT2MA8ZVR3B1tzr2gHCeD64
- AhckNh0JqjuvEDM6gFaSVfBEk3EmnzjM/rNgzKp0QiL87ZM213rAzTINJvQaIQpKdiJYZ2Grm
- j4Kv6KB3GRqBVlctXd+LC2Fb7jG6VRWUKKTU7Wf3TiIG0OnyHQ5R03fKA==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0267.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a0::32) To AS8PR04MB8465.eurprd04.prod.outlook.com
+ (2603:10a6:20b:348::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 21782514-f3c1-408d-6f61-08da69266b93
+X-MS-TrafficTypeDiagnostic: AM5PR04MB2947:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OjzEVrUgVG1GojnUXh2bqpMcRxuXRYeIqz9a8Qe9pdQkmaVfeDhUt9j5GDCWSQtCXgs8me1HR/ktBcWU4tIjkSGXQ2AwKyjzIgP5djTtkF8PyBOmJZuB6wp1PgPHq/5HWmfPTjaB28UGZgQMQV1omThQgGHzwaMT9oTfnESdT86Rfz3F8aViAuruZO7Ixl+BL0+EOKMCLKgxcuXuiUzY9PkY2uw7cU8PzkV7/BF1Q2Sh7liVUsAQmAHTY8a6mtP0nDOp/aQC2JyGT/mV0GDGyXyqeQiBrZ7d/zEiKEwjTbMNGu7GsBL6mMqdATwI6px8U51A3Myusb0o7FChCe1MMGC76vafaqjLdxzaY317cbclLDEAHnM41KvOaVZF+dAA/ee59zadtx/yVcg5utXJ/ywWq0I0SFnVByQWEdOAdNMgzKhIr/m4zG1LjsOiM7YpNC0WplDCozQNe/vFb3HTBrLtUrtTqde3dAQlCBA78zW2Lm2IQWu581CbRS2R0wIYYsSl85CpE+Sy5aZbVbqbiKJvMcyqRE6AslZALV+XL3o0NRpAvAEZ8sHBbhmwebTsBw0lBa275VBgx864AnEBQaV9nnHwZo682gBLqg4lcr8Knbf43qbVmlVys5+jKi8G5MMYDGAqnPIm31mPOsf/Fx/3oqr3O7rYMuwDtIiFYb15AAmfljp22mGWn99LMtaeui3FU6aiG1dSvj8mzEtOUeTLb7G+HVAV9enQ9TMROp/pBOmJCF0uPXxVGVGoJ9sTtIj8fuCHw7m8IMntWUG2jq1wq1/ZuPfmvYOSrnYqLiYrTrzeZdZlizlxF7L8p+EwyjP8wsnwg/TR/KTINhPlKA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(376002)(136003)(366004)(39860400002)(346002)(396003)(83380400001)(6512007)(2906002)(41300700001)(6666004)(86362001)(478600001)(6506007)(5660300002)(53546011)(186003)(6486002)(2616005)(31696002)(8936002)(8676002)(316002)(38100700002)(36756003)(66476007)(66946007)(31686004)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d3g5STNtclFhK1NEWldMOTRXa0R2TWZ2bVBoZnluQS83VVNkdGt4TmVPVWJ2?=
+ =?utf-8?B?QTVCbEFVbWFuYU0wb3U1ekhFUm16SUxEZ0RIdnduNmJhbERDNXYxT0lEZjN5?=
+ =?utf-8?B?YWg5RVQ3ekhuUnpiVDFkV1pQcUhod29VaDhKQWh4QUNzUmhYVk5SMmcwN25w?=
+ =?utf-8?B?dTdocVcrMDA5OFQvMnhvS0M3WVAyb1NlRHd0NjdsMVVtMSt3cTlYeWMwb0Q3?=
+ =?utf-8?B?dGhFOENQWXJJeklpMkEraDRFenZFVmhaL3VKSUx2SkhTYiszSEU2Y0l4eGxn?=
+ =?utf-8?B?MTJqYXBVNXVZOS8yc3lRbTgwUnlnWGVCaHAwRFQ1SHZCQWhTeVNyZVc3dkox?=
+ =?utf-8?B?Q2pJaXptZVAvTDlzQWt4NktjTG9rQXhVNTVNSFNxYlJQVGFsc0NaODJIMWQ2?=
+ =?utf-8?B?NnBhYndDNFNOUDZxL2tvOGxIblBnUk9sWG56K3NoVmdDS1d1SDZ6Vmx0R0xi?=
+ =?utf-8?B?WGFuQWw1bDFBVm5meWJ4TFVuWmMxWHp3UXRLVEJjRUdpSHQwSVVkZE9VaWdr?=
+ =?utf-8?B?ZFdWVnU1by9VaE1Fc2Y3QWQydFdDZkhXTzZ5dldYSnl2ODZSbG5ndlJnaVJ4?=
+ =?utf-8?B?WmNUc0trSjIwd1VKOHVPMTJlMC9rWFpESWZ3bjNZQ3N5ZHcxdjV2OGZ2QU52?=
+ =?utf-8?B?Vzh1OFNXTXcrQmlSNDBZektmMmU3Tk9vYmJ1VkJxdEZVME10SVVKVnlGZUc3?=
+ =?utf-8?B?MlJUZFVwMXZoQStWMXRrRXdIN20xaEFUZXU3YW1WSnBYb3MxcHYxeVlzUlgx?=
+ =?utf-8?B?QlRHdW80cGpvbHNFNlhlUFgzV0t1TTNkR2tzdGcra3RybzBRNGNvYUJzdi9o?=
+ =?utf-8?B?Y08vVlhUSldtNG01WU9GdCtaYkF1REx5dnlBVE4zamdLeXJWWUtZTTd6MWh0?=
+ =?utf-8?B?L3RDMFpxNzJyMDYzK2hPMXpZUU9DUFBXOHZlVUVoTVFXQ1dCTmZkK2kxSFF4?=
+ =?utf-8?B?VXEwemtxWk55VnlTVFFkTUtGUW1jWmkrN05Ub3d3d1RSRGwwQXcxYklicGRr?=
+ =?utf-8?B?NlBOZHovQnlway9MNzJET1Vpb1VUVkRxSG51bitQV1JBbUxpQzVjc1FNVkVp?=
+ =?utf-8?B?YWdlcm5XamVmVHVPWWZOcEZVWmpiNnEySmpHbndDZm8wL3orSlhINTBzTEJy?=
+ =?utf-8?B?L0tici9xTHVxT01vQkE4RHZBZmZZQTYwRk5vZmFZZElrc2FuRFArS3NEM0sw?=
+ =?utf-8?B?MFhzd1ZGc2w3MHNybUxMTmxNVFhuMVVJNWxJMW5iZUsyQzRLSlo5MDhKOWtv?=
+ =?utf-8?B?Q0xnZ05kSGg1WmlOaVBVWjJtVGs1dFFDK1dTWmNQUGhTWkh2TVg0RXBjeFVE?=
+ =?utf-8?B?N3ZqcFo3cSs4eVkva3Jpb0VMMGJYQk5icXk4Wk15R1Z4V3RHV3RDb1ZuK3M3?=
+ =?utf-8?B?cTFKRkhUV0V6KzZaNkR5ODFlbG1wZEJPQmxsWjM5RlEyeVRtUjRSQWdPKzlz?=
+ =?utf-8?B?T0phMUZkcW1MSEFaVXF0b2tQb3M4b2tNZXM0ZUN2NDcrMm5xaktjTDdTMGhk?=
+ =?utf-8?B?by95TkY3dmE1aXNFVFFhY1BJeVVod2Q5N2gzVWZ1VlBiZW91ZW1aeWlOZDIw?=
+ =?utf-8?B?U0d6WXYrWEd0UHVnZEt0eHQ5V0tPTTdMSjc2TmZwUWU2WnVLZTFFbjVlcWdj?=
+ =?utf-8?B?V25NY3o0amN3bDFjNjBHZEN4TDNSUzZvUnNpT05rdFRjQjdadjIvRU4xcGJ3?=
+ =?utf-8?B?THNvb2NNRFdVdmVjMEllNzhWSEIwR2ludDU3OFdmbDJFQzhieURCYUQrRFVa?=
+ =?utf-8?B?a3BHMHB3KzN2ZlhJdGs0cElhRk03U2FhcHhJMHBoZHdlOHV6eG1qaVU1SFow?=
+ =?utf-8?B?aFFBSkd4MGNXOWhrRmZYNGVxd0lFbDloZ0h4UTdlUUVqaTQxb291dFVnNVpi?=
+ =?utf-8?B?TEtmNGJXanAwR29JSWlNTjlXc2hXN0h3UVcralBibCtzazVxWlZkc3N0Z0xN?=
+ =?utf-8?B?Ni9DdTZUVkNOU1dnWXBCZ05ST1dQMkJ1TUVOWFZpSjhncys2aGI3UnlWVUVs?=
+ =?utf-8?B?SUM0cmlSemRndXZBWjl0R2tDL1NqUi9TY2xPRHlXeEplRHRwcUQ5TDVHeDlz?=
+ =?utf-8?B?eU04UVd3NmVQYUpaVUVFTEF5VmRRTEhqdldja3JsRXROWHpySXpPY0pjcE5w?=
+ =?utf-8?B?SzFvTnlKZTczQzdiQjV3MmpQQXlMWVFiR1pqeXBEV0NpUHJmV3pjNlZTYWhz?=
+ =?utf-8?Q?TCSmPaulRq1cwHV0x+3oeQE=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21782514-f3c1-408d-6f61-08da69266b93
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2022 01:31:36.4295
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wuiM0+aDUwnexSZXHddzx3TvmyeiORCFAo9c6Tz218vtgfpXdB01+HfbxcHpNm6e
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR04MB2947
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,164 +127,49 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/7/19 05:49, Forza wrote:
->
->
-> ---- From: Chris Murphy <lists@colorremedies.com> -- Sent: 2022-07-15 - =
-22:14 ----
->
->> On Fri, Jul 15, 2022 at 1:55 PM Goffredo Baroncelli <kreijack@libero.it=
-> wrote:
->>>
->>> On 14/07/2022 09.46, Johannes Thumshirn wrote:
->>>> On 14.07.22 09:32, Qu Wenruo wrote:
->>>>> [...]
->>>>
->>>> Again if you're doing sub-stripe size writes, you're asking stupid th=
-ings and
->>>> then there's no reason to not give the user stupid answers.
->>>>
->>>
->>> Qu is right, if we consider only full stripe write the "raid hole" pro=
-blem
->>> disappear, because if a "full stripe" is not fully written it is not
->>> referenced either.
->>>
->>>
->>> Personally I think that the ZFS variable stripe size, may be interesti=
-ng
->>> to evaluate. Moreover, because the BTRFS disk format is quite flexible=
-,
->>> we can store different BG with different number of disks.
->
-> We can create new types of BGs too. For example parity BGs.
->
->>> Let me to make an
->>> example: if we have 10 disks, we could allocate:
->>> 1 BG RAID1
->>> 1 BG RAID5, spread over 4 disks only
->>> 1 BG RAID5, spread over 8 disks only
->>> 1 BG RAID5, spread over 10 disks
->>>
->>> So if we have short writes, we could put the extents in the RAID1 BG; =
-for longer
->>> writes we could use a RAID5 BG with 4 or 8 or 10 disks depending by le=
-ngth
->>> of the data.
->>>
->>> Yes this would require a sort of garbage collector to move the data to=
- the biggest
->>> raid5 BG, but this would avoid (or reduce) the fragmentation which aff=
-ect the
->>> variable stripe size.
->>>
->>> Doing so we don't need any disk format change and it would be backward=
- compatible.
->
-> Do we need to implement RAID56 in the traditional sense? As the user/sys=
-admin I care about redundancy and performance and cost. The option to crea=
-te redundancy for any 'n drives is appealing from a cost perspective, othe=
-rwise I'd use RAID1/10.
-
-Have you heard any recent problems related to dm-raid56?
-
-If your answer is no, then I guess we already have an  answer to your
-question.
-
->
-> Since the current RAID56 mode have several important drawbacks
-
-Let me to be clear:
-
-If you can ensure you didn't hit power loss, or after a power loss do a
-scrub immediately before any new write, then current RAID56 is fine, at
-least not obviously worse than dm-raid56.
-
-(There are still common problems shared between both btrfs raid56 and
-dm-raid56, like destructive-RMW)
-
-> - and that it's officially not recommended for production use - it is a =
-good idea to reconstruct new btrfs 'redundant-n' profiles that doesn't hav=
-e the inherent issues of traditional RAID.
-
-I'd say the complexity is hugely underestimated.
-
-> For example a non-striped redundant-n profile as well as a striped redun=
-dant-n profile.
-
-Non-striped redundant-n profile is already so complex that I can't
-figure out a working idea right now.
-
-But if there is such way, I'm pretty happy to consider.
-
->
+On 2022/7/18 23:34, David Sterba wrote:
+> On Tue, Jun 07, 2022 at 08:01:17PM +0800, Qu Wenruo wrote:
+>> This is the same on-disk format update synchronized from the kernel
+>> code.
 >>
->> My 2 cents...
+>> Unlike kernel, there are two callers reading this member:
 >>
->> Regarding the current raid56 support, in order of preference:
+>> - btrfs inspect dump-super
+>>    It's just outputting the value, since it's always 0 we can skip
+>>    that output.
 >>
->> a. Fix the current bugs, without changing format. Zygo has an extensive=
- list.
->
-> I agree that relatively simple fixes should be made. But it seems we wil=
-l need quite a large rewrite to solve all issues? Is there a minium viable=
- option here?
+>> - btrfs-find-root
+>>    In that case, since we always got 0, the root search for log root
+>>    should never find a perfect match.
+>>
+>>    Use btrfs_super_geneartion() + 1 to provide a better result.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> 
+> Added to devel, thanks.
+> 
+>> --- a/kernel-shared/print-tree.c
+>> +++ b/kernel-shared/print-tree.c
+>> @@ -2014,8 +2014,6 @@ void btrfs_print_superblock(struct btrfs_super_block *sb, int full)
+>>   	       (unsigned long long)btrfs_super_chunk_root_level(sb));
+>>   	printf("log_root\t\t%llu\n",
+>>   	       (unsigned long long)btrfs_super_log_root(sb));
+>> -	printf("log_root_transid\t%llu\n",
+>> -	       (unsigned long long)btrfs_super_log_root_transid(sb));
+> 
+> For dump super I'd like to keep it there, same as we print the value of
+> leafsize even if it's deprecated.
 
-Nope. Just see my write-intent code, already have prototype (just needs
-new scrub based recovery code at mount time) working.
+In that case, we only need add "(deprecated)" to the string and adjust 
+the offset.
 
-And based on my write-intent code, I don't think it's that hard to
-implement a full journal.
+Do I need to update the patch or send a incremental update?
 
 Thanks,
 Qu
-
->
->> b. Mostly fix the write hole, also without changing the format, by
->> only doing COW with full stripe writes. Yes you could somehow get
->> corrupt parity still and not know it until degraded operation produces
->> a bad reconstruction of data - but checksum will still catch that.
->> This kind of "unreplicated corruption" is not quite the same thing as
->> the write hole, because it isn't pernicious like the write hole.
->
-> What is the difference to a)? Is write hole the worst issue? Judging fro=
-m the #brtfs channel discussions there seems to be other quite severe issu=
-es, for example real data corruption risks in degraded mode.
->
->> c. A new de-clustered parity raid56 implementation that is not
->> backwards compatible.
->
-> Yes. We have a good opportunity to work out something much better than c=
-urrent implementations. We could have  redundant-n profiles that also work=
-s with tired storage like ssd/nvme similar to the metadata on ssd idea.
->
-> Variable stripe width has been brought up before, but received cool resp=
-onses. Why is that? IMO it could improve random 4k ios by doing equivalent=
- to RAID1 instead of RMW, while also closing the write hole. Perhaps there=
- is a middle ground to be found?
->
->
->>
->> Ergo, I think it's best to not break the format twice. Even if a new
->> raid implementation is years off.
->
-> I very agree here. Btrfs already suffers in public opinion from the lack=
- of a stable and safe-for-data RAID56, and requiring several non-compatibl=
-e chances isn't going to help.
->
-> I also think it's important that the 'temporary' changes actually leads =
-to a stable filesystem. Because what is the point otherwise?
->
-> Thanks
-> Forza
->
->>
->> Metadata centric workloads suck on parity raid anyway. If Btrfs always
->> does full stripe COW won't matter even if the performance is worse
->> because no one should use parity raid for this workload anyway.
->>
->>
->> --
->> Chris Murphy
->
->
+> 
+>>   	printf("log_root_level\t\t%llu\n",
+>>   	       (unsigned long long)btrfs_super_log_root_level(sb));
+>>   	printf("total_bytes\t\t%llu\n",
+>> -- 
+>> 2.36.1
