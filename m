@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD76657941C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 09:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04DE579419
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 09:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236309AbiGSHYh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jul 2022 03:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50804 "EHLO
+        id S236347AbiGSHYi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jul 2022 03:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236275AbiGSHYf (ORCPT
+        with ESMTP id S236305AbiGSHYg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jul 2022 03:24:35 -0400
+        Tue, 19 Jul 2022 03:24:36 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8716D32D83
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 00:24:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E6132DAF
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 00:24:35 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 48CEC33A16
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:33 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4D79733B1D
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658215473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1658215474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=46+kZzgGZkraKiM1xiHHWi+hlzgdvkr7f2QkCr2TwqM=;
-        b=hWr/zTjoG7AJjp67Ux2Fmylv/QnPI+m3RiID9mnRxDkajpEvgBC5fJhAjF4Z4nV20F10Lc
-        1MSUzC97TKbUdnL3WCQ2OmkoBhY5aoOiZZq4Y6Dqt8SMjBlQzPXQNMHGU5JaZbijd+NyKB
-        9F7Yct52VHAdDVZ3eepdG/F9vf5qqbU=
+        bh=YopVIcdYFhYpafhetheJbEgDDMM7EqwyNTgfcHVdubE=;
+        b=vRCBQ0nvSUb8XfWWAUaDmCSizPZXIQ2ml5LZSMSlW+uKs/J7nWcmCLySFseRyANYE4Ejve
+        BuTm+CJNIfpD7s0Tyl9x0fwqQajlqR6NJR04nMOS7IytYYiVtD+pBHm6GgTbmx60RhAwnL
+        WSoX5ynoi9hHrnWPVKcausiUD5NuNC4=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A22A213488
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:32 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A70E213488
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id SLufGzBc1mKvLAAAMHmgww
+        id OJqYHDFc1mKvLAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:32 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:33 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/5] btrfs: extract the allocation and initialization of scrub_sector into a helper
-Date:   Tue, 19 Jul 2022 15:24:10 +0800
-Message-Id: <a1076ec58ac0d56cb646584b966d1dc84efcdac6.1658215183.git.wqu@suse.com>
+Subject: [PATCH v2 4/5] btrfs: scrub: introduce scrub_block::pages for more efficient memory usage for subpage
+Date:   Tue, 19 Jul 2022 15:24:11 +0800
+Message-Id: <14ea03b93f2708cce7ccbdc1321df51938c468e9.1658215183.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <cover.1658215183.git.wqu@suse.com>
 References: <cover.1658215183.git.wqu@suse.com>
@@ -60,172 +60,322 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The allocation and initialization is shared by 3 call sites, and we're
-going to change the initialization of some members in the upcoming
-patches.
+[BACKGROUND]
+Currently for scrub, we allocate one page for one sector, this is fine
+for PAGE_SIZE == sectorsize support, but can waste extra memory for
+subpage support.
 
-So extra the allocation and initialization of scrub_sector into a
-helper, alloc_scrub_sector(), which will do the following work:
+[CODE CHANGE]
+So this patch will make scrub_block to contain all the pages, so if
+we're scrubing an extent sized 64K, and our page size is also 64K, we
+only need to allocate one page.
 
-- Allocate the memory for scrub_sector
+[LIFESPAN CHANGE]
+Since now scrub_sector no longer holds a page, but using
+scrub_block::pages[] instead, we have to ensure scrub_block has a longer
+lifespan for write bio.
 
-- Allocate a page for scrub_sector::page
+(The lifespan for read bio is already large enough)
 
-- Initialize scrub_sector::refs to 1
+Now scrub_block will only be released after the write bio finished.
 
-- Attach the allocated scrub_sector to scrub_block
-  The attachment is bidirectional, which means scrub_block::sectorv[]
-  will be updated and scrub_sector::sblock will also be updated.
+[COMING NEXT]
+Currently we only added scrub_block::pages[] for this purpose, but
+scrub_sector is still utilizing the old scrub_sector::page.
 
-- Update scrub_block::sector_count and do extra sanity check on it
+The switch will happen in the next patch.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 63 ++++++++++++++++++++++++------------------------
- 1 file changed, 31 insertions(+), 32 deletions(-)
+ fs/btrfs/scrub.c | 137 +++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 115 insertions(+), 22 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 7c845dec78b3..b9acc1e30514 100644
+index b9acc1e30514..57edf4234fc3 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -215,6 +215,33 @@ static struct scrub_block *alloc_scrub_block(struct scrub_ctx *sctx)
+@@ -54,6 +54,8 @@ struct scrub_ctx;
+  */
+ #define SCRUB_MAX_SECTORS_PER_BLOCK	(BTRFS_MAX_METADATA_BLOCKSIZE / SZ_4K)
+ 
++#define SCRUB_MAX_PAGES			(DIV_ROUND_UP(BTRFS_MAX_METADATA_BLOCKSIZE, PAGE_SIZE))
++
+ struct scrub_recover {
+ 	refcount_t		refs;
+ 	struct btrfs_io_context	*bioc;
+@@ -94,8 +96,16 @@ struct scrub_bio {
+ };
+ 
+ struct scrub_block {
++	/*
++	 * Each page will has its page::private used to record the logical
++	 * bytenr.
++	 */
++	struct page		*pages[SCRUB_MAX_PAGES];
+ 	struct scrub_sector	*sectors[SCRUB_MAX_SECTORS_PER_BLOCK];
++	u64			logical; /* Logical bytenr of the sblock */
++	u32			len; /* The length of sblock in bytes */
+ 	int			sector_count;
++
+ 	atomic_t		outstanding_sectors;
+ 	refcount_t		refs; /* free mem on transition to zero */
+ 	struct scrub_ctx	*sctx;
+@@ -202,7 +212,46 @@ struct full_stripe_lock {
+ 	struct mutex mutex;
+ };
+ 
+-static struct scrub_block *alloc_scrub_block(struct scrub_ctx *sctx)
++#ifndef CONFIG_64BIT
++/* This structure is for archtectures whose (void *) is smaller than u64 */
++struct scrub_page_private {
++	u64 logical;
++};
++#endif
++
++static int attach_scrub_page_private(struct page *page, u64 logical)
++{
++#ifdef CONFIG_64BIT
++	attach_page_private(page, (void *)logical);
++	return 0;
++#else
++	struct scrub_page_private *spp;
++
++	spp = kmalloc(sizeof(*spp), GFP_KERNEL);
++	if (!spp)
++		return -ENOMEM;
++	spp->logical = logical;
++	attach_page_private(page, (void *)spp);
++	return 0;
++#endif
++}
++
++static void detach_scrub_page_private(struct page *page)
++{
++#ifdef CONFIG_64BIT
++	detach_page_private(page);
++	return;
++#else
++	struct scrub_page_private *spp;
++
++	spp = detach_page_private(page);
++	kfree(spp);
++	return;
++#endif
++}
++
++static struct scrub_block *alloc_scrub_block(struct scrub_ctx *sctx,
++					     u64 logical)
+ {
+ 	struct scrub_block *sblock;
+ 
+@@ -211,28 +260,55 @@ static struct scrub_block *alloc_scrub_block(struct scrub_ctx *sctx)
+ 		return NULL;
+ 	refcount_set(&sblock->refs, 1);
+ 	sblock->sctx = sctx;
++	sblock->logical = logical;
+ 	sblock->no_io_error_seen = 1;
++	/*
++	 * Scrub_block::pages will be allocated at alloc_scrub_sector() when
++	 * the corresponding page is not allocated.
++	 */
  	return sblock;
  }
  
-+/* Allocate a new scrub sector and attach it to @sblock */
-+static struct scrub_sector *alloc_scrub_sector(struct scrub_block *sblock,
-+					       gfp_t gfp)
-+{
-+	struct scrub_sector *ssector;
+-/* Allocate a new scrub sector and attach it to @sblock */
++/*
++ * Allocate a new scrub sector and attach it to @sblock.
++ *
++ * Will also allocate new pages for @sblock if needed.
++ */
+ static struct scrub_sector *alloc_scrub_sector(struct scrub_block *sblock,
+-					       gfp_t gfp)
++					       u64 logical, gfp_t gfp)
+ {
++	const int page_index = (logical - sblock->logical) >> PAGE_SHIFT;
+ 	struct scrub_sector *ssector;
+ 
+ 	ssector = kzalloc(sizeof(*ssector), gfp);
+ 	if (!ssector)
+ 		return NULL;
+-	ssector->page = alloc_page(gfp);
+-	if (!ssector->page) {
+-		kfree(ssector);
+-		return NULL;
 +
-+	ssector = kzalloc(sizeof(*ssector), gfp);
-+	if (!ssector)
-+		return NULL;
-+	ssector->page = alloc_page(gfp);
-+	if (!ssector->page) {
-+		kfree(ssector);
-+		return NULL;
-+	}
-+	atomic_set(&ssector->refs, 1);
-+	ssector->sblock = sblock;
-+	/* This sector to be added should not be used */
-+	ASSERT(sblock->sectors[sblock->sector_count] == NULL);
-+	/* And the sector count should be smaller than the limit */
-+	ASSERT(sblock->sector_count < SCRUB_MAX_SECTORS_PER_BLOCK);
++	/* Allocate a new page if the slot is not allocated*/
++	if (!sblock->pages[page_index]) {
++		int ret;
 +
-+	sblock->sectors[sblock->sector_count] = ssector;
-+	sblock->sector_count++;
++		sblock->pages[page_index] = alloc_page(gfp);
++		if (!sblock->pages[page_index]) {
++			kfree(ssector);
++			return NULL;
++		}
++		ret = attach_scrub_page_private(sblock->pages[page_index],
++				sblock->logical + (page_index << PAGE_SHIFT));
++		if (ret < 0) {
++			kfree(ssector);
++			__free_page(sblock->pages[page_index]);
++			sblock->pages[page_index] = NULL;
++			return NULL;
++		}
+ 	}
 +
-+	return ssector;
-+}
+ 	atomic_set(&ssector->refs, 1);
+ 	ssector->sblock = sblock;
+ 	/* This sector to be added should not be used */
+ 	ASSERT(sblock->sectors[sblock->sector_count] == NULL);
++	ssector->logical = logical;
 +
- static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
- 				     struct scrub_block *sblocks_for_recheck[]);
- static void scrub_recheck_block(struct btrfs_fs_info *fs_info,
-@@ -1330,18 +1357,14 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+ 	/* And the sector count should be smaller than the limit */
+ 	ASSERT(sblock->sector_count < SCRUB_MAX_SECTORS_PER_BLOCK);
+ 
+@@ -952,7 +1028,8 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 		 * But alloc_scrub_block() will initialize sblock::ref anyway,
+ 		 * so we can use scrub_block_put() to clean them up.
+ 		 */
+-		sblocks_for_recheck[mirror_index] = alloc_scrub_block(sctx);
++		sblocks_for_recheck[mirror_index] = alloc_scrub_block(sctx,
++								      logical);
+ 		if (!sblocks_for_recheck[mirror_index]) {
+ 			spin_lock(&sctx->stat_lock);
+ 			sctx->stat.malloc_errors++;
+@@ -1357,7 +1434,7 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
  			sblock = sblocks_for_recheck[mirror_index];
  			sblock->sctx = sctx;
  
--			sector = kzalloc(sizeof(*sector), GFP_NOFS);
-+			sector = alloc_scrub_sector(sblock, GFP_NOFS);
+-			sector = alloc_scrub_sector(sblock, GFP_NOFS);
++			sector = alloc_scrub_sector(sblock, logical, GFP_NOFS);
  			if (!sector) {
--leave_nomem:
  				spin_lock(&sctx->stat_lock);
  				sctx->stat.malloc_errors++;
- 				spin_unlock(&sctx->stat_lock);
- 				scrub_put_recover(fs_info, recover);
- 				return -ENOMEM;
+@@ -1367,7 +1444,6 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
  			}
--			scrub_sector_get(sector);
--			sblock->sectors[sector_index] = sector;
--			sector->sblock = sblock;
  			sector->flags = flags;
  			sector->generation = generation;
- 			sector->logical = logical;
-@@ -1367,13 +1390,8 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
- 			sector->physical_for_dev_replace =
- 				original_sblock->sectors[sector_index]->
- 				physical_for_dev_replace;
--			/* For missing devices, dev->bdev is NULL */
-+			/* for missing devices, dev->bdev is NULL */
- 			sector->mirror_num = mirror_index + 1;
--			sblock->sector_count++;
--			sector->page = alloc_page(GFP_NOFS);
--			if (!sector->page)
--				goto leave_nomem;
--
- 			scrub_get_recover(recover);
- 			sector->recover = recover;
+-			sector->logical = logical;
+ 			sector->have_csum = have_csum;
+ 			if (have_csum)
+ 				memcpy(sector->csum,
+@@ -1646,6 +1722,11 @@ static int fill_writer_pointer_gap(struct scrub_ctx *sctx, u64 physical)
+ 	return ret;
+ }
+ 
++static void scrub_block_get(struct scrub_block *sblock)
++{
++	refcount_inc(&sblock->refs);
++}
++
+ static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
+ 				      struct scrub_sector *sector)
+ {
+@@ -1706,6 +1787,13 @@ static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
+ 
+ 	sbio->sectors[sbio->sector_count] = sector;
+ 	scrub_sector_get(sector);
++	/*
++	 * Since ssector no longer holds a page, but uses sblock::pages, we
++	 * have to ensure the sblock didn't get freed before our write bio
++	 * finished.
++	 */
++	scrub_block_get(sector->sblock);
++
+ 	sbio->sector_count++;
+ 	if (sbio->sector_count == sctx->sectors_per_bio)
+ 		scrub_wr_submit(sctx);
+@@ -1767,8 +1855,14 @@ static void scrub_wr_bio_end_io_worker(struct work_struct *work)
  		}
-@@ -2262,19 +2280,14 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 	}
+ 
+-	for (i = 0; i < sbio->sector_count; i++)
++	/*
++	 * In scrub_add_sector_to_wr_bio() we grab extra ref for sblock,
++	 * now in endio we should put the sblock.
++	 */
++	for (i = 0; i < sbio->sector_count; i++) {
++		scrub_block_put(sbio->sectors[i]->sblock);
+ 		scrub_sector_put(sbio->sectors[i]);
++	}
+ 
+ 	bio_put(sbio->bio);
+ 	kfree(sbio);
+@@ -1959,11 +2053,6 @@ static int scrub_checksum_super(struct scrub_block *sblock)
+ 	return fail_cor + fail_gen;
+ }
+ 
+-static void scrub_block_get(struct scrub_block *sblock)
+-{
+-	refcount_inc(&sblock->refs);
+-}
+-
+ static void scrub_block_put(struct scrub_block *sblock)
+ {
+ 	if (refcount_dec_and_test(&sblock->refs)) {
+@@ -1974,6 +2063,12 @@ static void scrub_block_put(struct scrub_block *sblock)
+ 
+ 		for (i = 0; i < sblock->sector_count; i++)
+ 			scrub_sector_put(sblock->sectors[i]);
++		for (i = 0; i < DIV_ROUND_UP(sblock->len, PAGE_SIZE); i++) {
++			if (sblock->pages[i]) {
++				detach_scrub_page_private(sblock->pages[i]);
++				__free_page(sblock->pages[i]);
++			}
++		}
+ 		kfree(sblock);
+ 	}
+ }
+@@ -2263,7 +2358,7 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 	const u32 sectorsize = sctx->fs_info->sectorsize;
+ 	int index;
+ 
+-	sblock = alloc_scrub_block(sctx);
++	sblock = alloc_scrub_block(sctx, logical);
+ 	if (!sblock) {
+ 		spin_lock(&sctx->stat_lock);
+ 		sctx->stat.malloc_errors++;
+@@ -2280,7 +2375,7 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
  		 */
  		u32 l = min(sectorsize, len);
  
--		sector = kzalloc(sizeof(*sector), GFP_KERNEL);
-+		sector = alloc_scrub_sector(sblock, GFP_KERNEL);
+-		sector = alloc_scrub_sector(sblock, GFP_KERNEL);
++		sector = alloc_scrub_sector(sblock, logical, GFP_KERNEL);
  		if (!sector) {
--leave_nomem:
  			spin_lock(&sctx->stat_lock);
  			sctx->stat.malloc_errors++;
- 			spin_unlock(&sctx->stat_lock);
- 			scrub_block_put(sblock);
- 			return -ENOMEM;
- 		}
--		ASSERT(index < SCRUB_MAX_SECTORS_PER_BLOCK);
--		scrub_sector_get(sector);
--		sblock->sectors[index] = sector;
--		sector->sblock = sblock;
+@@ -2291,7 +2386,6 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
  		sector->dev = dev;
  		sector->flags = flags;
  		sector->generation = gen;
-@@ -2288,10 +2301,6 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
- 		} else {
- 			sector->have_csum = 0;
- 		}
--		sblock->sector_count++;
--		sector->page = alloc_page(GFP_KERNEL);
--		if (!sector->page)
--			goto leave_nomem;
- 		len -= l;
- 		logical += l;
- 		physical += l;
-@@ -2606,23 +2615,18 @@ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
+-		sector->logical = logical;
+ 		sector->physical = physical;
+ 		sector->physical_for_dev_replace = physical_for_dev_replace;
+ 		sector->mirror_num = mirror_num;
+@@ -2601,7 +2695,7 @@ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
+ 
+ 	ASSERT(IS_ALIGNED(len, sectorsize));
+ 
+-	sblock = alloc_scrub_block(sctx);
++	sblock = alloc_scrub_block(sctx, logical);
+ 	if (!sblock) {
+ 		spin_lock(&sctx->stat_lock);
+ 		sctx->stat.malloc_errors++;
+@@ -2615,7 +2709,7 @@ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
  	for (index = 0; len > 0; index++) {
  		struct scrub_sector *sector;
  
--		sector = kzalloc(sizeof(*sector), GFP_KERNEL);
-+		sector = alloc_scrub_sector(sblock, GFP_KERNEL);
+-		sector = alloc_scrub_sector(sblock, GFP_KERNEL);
++		sector = alloc_scrub_sector(sblock, logical, GFP_KERNEL);
  		if (!sector) {
--leave_nomem:
  			spin_lock(&sctx->stat_lock);
  			sctx->stat.malloc_errors++;
- 			spin_unlock(&sctx->stat_lock);
- 			scrub_block_put(sblock);
- 			return -ENOMEM;
- 		}
--		ASSERT(index < SCRUB_MAX_SECTORS_PER_BLOCK);
--		/* For scrub block */
--		scrub_sector_get(sector);
- 		sblock->sectors[index] = sector;
- 		/* For scrub parity */
- 		scrub_sector_get(sector);
- 		list_add_tail(&sector->list, &sparity->sectors_list);
--		sector->sblock = sblock;
+@@ -2630,7 +2724,6 @@ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
  		sector->dev = dev;
  		sector->flags = flags;
  		sector->generation = gen;
-@@ -2635,11 +2639,6 @@ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
- 		} else {
- 			sector->have_csum = 0;
- 		}
--		sblock->sector_count++;
--		sector->page = alloc_page(GFP_KERNEL);
--		if (!sector->page)
--			goto leave_nomem;
--
- 
- 		/* Iterate over the stripe range in sectorsize steps */
- 		len -= sectorsize;
+-		sector->logical = logical;
+ 		sector->physical = physical;
+ 		sector->mirror_num = mirror_num;
+ 		if (csum) {
 -- 
 2.37.0
 
