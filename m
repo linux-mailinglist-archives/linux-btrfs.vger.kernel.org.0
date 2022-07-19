@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B561E579256
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 07:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D468579257
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 07:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235434AbiGSFLq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jul 2022 01:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
+        id S234913AbiGSFLo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jul 2022 01:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234561AbiGSFLm (ORCPT
+        with ESMTP id S229763AbiGSFLm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 19 Jul 2022 01:11:42 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9607E2B1BE
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 22:11:39 -0700 (PDT)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74372B248
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Jul 2022 22:11:40 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3856C343B6;
-        Tue, 19 Jul 2022 05:11:38 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6E3BB2068F;
+        Tue, 19 Jul 2022 05:11:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658207498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1658207499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0rChjh1HO/l13BAhBfXwPLZO5mxkEvqBKAqXCNXLOJA=;
-        b=X1c9nn6rS3Bd0GsHzodbaRfTelVi6b+NGS9obeWhBGAt5NtJRhVqFytjAwvAqFE1IKvYao
-        bH2FCJxT9xxQ/QsRkVqlmeBF/YDIvi+r0ptxY0rRDEN0HF5KHQLyOClCBkBTYomqSVexkh
-        DMiqdCl6U1c5pIvlciJP9bwryFvgC0I=
+        bh=+OXX/Cr5aRGX42o3l3VBj7li7zJ36hiwajy68S+pYD8=;
+        b=C/pHjpEw8ZIGy1cjoDhZ3N70ZykGMlXUIng81yNZWr3E+bGrNWxDu9pSCgbo0pa/lyVILr
+        WtBFyXnRr/arFXkkZZNzMntqKAMyWM3Aky6+Pd/u9nWp7evWWRxgIJ0YoLcAApSFWEzhu7
+        hldssHox9idg0MtjZLdRE8xmUApw5dk=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5DAB613754;
-        Tue, 19 Jul 2022 05:11:37 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9808B13754;
+        Tue, 19 Jul 2022 05:11:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id mAJ0Cgk91mJTeAAAMHmgww
-        (envelope-from <wqu@suse.com>); Tue, 19 Jul 2022 05:11:37 +0000
+        id +HUZGQo91mJTeAAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 19 Jul 2022 05:11:38 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 1/4] btrfs: output human readable space info flag
-Date:   Tue, 19 Jul 2022 13:11:15 +0800
-Message-Id: <79cbc7064028a2f214a60abbb702f0d174b630a5.1658207325.git.wqu@suse.com>
+Subject: [PATCH v2 2/4] btrfs: make __btrfs_dump_space_info() output better formatted
+Date:   Tue, 19 Jul 2022 13:11:16 +0800
+Message-Id: <dc40ddc78b7173d757065dcdde910bcf593d3a5c.1658207325.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <cover.1658207325.git.wqu@suse.com>
 References: <cover.1658207325.git.wqu@suse.com>
@@ -60,61 +60,57 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For btrfs_space_info, its flags has only 4 possible values:
-- BTRFS_BLOCK_GROUP_SYSTEM
-- BTRFS_BLOCK_GROUP_METADATA | BTRFS_BLOCK_GROUP_DATA
-- BTRFS_BLOCK_GROUP_METADATA
-- BTRFS_BLOCK_GROUP_DATA
+The format change includes:
 
-Thus do debuggers a favor by output a human readable flags in
-__btrfs_dump_space_info().
+- Output each bytes_* in a separate line
 
-Now the summary line of __btrfs_dump_space_info() looks like:
+- All bytes_* output starts at the same vertical position
+  Do human a favor reading the numbers
+
+- Skip zone specific numbers if zone is not enabled
+
+Now one example of __btrfs_dump_space_info() looks like this for its
+bytes_* members.
 
  BTRFS info (device dm-1: state A): space_info META has 251494400 free, is not full
+ BTRFS info (device dm-1: state A):   total:         268435456
+ BTRFS info (device dm-1: state A):   used:          376832
+ BTRFS info (device dm-1: state A):   pinned:        229376
+ BTRFS info (device dm-1: state A):   reserved:      0
+ BTRFS info (device dm-1: state A):   may_use:       16269312
+ BTRFS info (device dm-1: state A):   read_only:     65536
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/space-info.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ fs/btrfs/space-info.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 62d25112310d..36b466525318 100644
+index 36b466525318..623fa0488545 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -450,14 +450,29 @@ do {									\
- 	spin_unlock(&__rsv->lock);					\
- } while (0)
- 
-+static const char *space_info_flag_to_str(struct btrfs_space_info *space_info)
-+{
-+	if (space_info->flags == BTRFS_BLOCK_GROUP_SYSTEM)
-+		return "SYS";
-+
-+	/* Handle mixed data+metadata first. */
-+	if (space_info->flags == (BTRFS_BLOCK_GROUP_METADATA |
-+				  BTRFS_BLOCK_GROUP_DATA))
-+		return "DATA+META";
-+	if (space_info->flags == BTRFS_BLOCK_GROUP_DATA)
-+		return "DATA";
-+	return "META";
-+}
-+
- static void __btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
- 				    struct btrfs_space_info *info)
- {
-+	const char *flag_str = space_info_flag_to_str(info);
- 	lockdep_assert_held(&info->lock);
- 
- 	/* The free space could be negative in case of overcommit */
--	btrfs_info(fs_info, "space_info %llu has %lld free, is %sfull",
--		   info->flags,
-+	btrfs_info(fs_info, "space_info %s has %lld free, is %sfull",
-+		   flag_str,
+@@ -475,11 +475,15 @@ static void __btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+ 		   flag_str,
  		   (s64)(info->total_bytes - btrfs_space_info_used(info, true)),
  		   info->full ? "" : "not ");
- 	btrfs_info(fs_info,
+-	btrfs_info(fs_info,
+-		"space_info total=%llu, used=%llu, pinned=%llu, reserved=%llu, may_use=%llu, readonly=%llu zone_unusable=%llu",
+-		info->total_bytes, info->bytes_used, info->bytes_pinned,
+-		info->bytes_reserved, info->bytes_may_use,
+-		info->bytes_readonly, info->bytes_zone_unusable);
++	btrfs_info(fs_info, "  total:         %llu", info->total_bytes);
++	btrfs_info(fs_info, "  used:          %llu", info->bytes_used);
++	btrfs_info(fs_info, "  pinned:        %llu", info->bytes_pinned);
++	btrfs_info(fs_info, "  reserved:      %llu", info->bytes_reserved);
++	btrfs_info(fs_info, "  may_use:       %llu", info->bytes_may_use);
++	btrfs_info(fs_info, "  read_only:     %llu", info->bytes_readonly);
++	if (btrfs_is_zoned(fs_info))
++		btrfs_info(fs_info,
++			    "  zone_unusable: %llu", info->bytes_zone_unusable);
+ 
+ 	DUMP_BLOCK_RSV(fs_info, global_block_rsv);
+ 	DUMP_BLOCK_RSV(fs_info, trans_block_rsv);
 -- 
 2.37.0
 
