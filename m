@@ -2,141 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E21579308
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 08:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A256579414
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 09:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237020AbiGSGPB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jul 2022 02:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
+        id S236221AbiGSHYd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jul 2022 03:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234444AbiGSGPA (ORCPT
+        with ESMTP id S235378AbiGSHYc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jul 2022 02:15:00 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3441C11F;
-        Mon, 18 Jul 2022 23:14:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=JNfIOmb3pZUjyCwdfZUagOuJbfz98B4d+ZnwP0UG7uY=; b=3goxqST7R90v7QrpJTuy6B80M7
-        FExUoHLMOujZ44C67nnetuX3jUaPZzKD+GJRUfaY7ac3rLT0PuXMTRktrsWdANe0y9Qhwvn1Nr2hn
-        t3lhij/0hztyG+Vh+p+mLEUTKIeqBA8yqjB9DUfq+bQ33/fudQPuY+Fz18LIbPW+eXiL5Oe2AcNOr
-        5dvt3i19ADeKArVHylIdeUPrhHR40HWJNiugZZ9pHio8wvX/qLYLm/kukow0BwTPwrJvft50pZZQH
-        2rkQHInjGICICxAntPWZG0HqdXTH4K5dJRISCttACSQv4L0d7foH1lJf93U2n7Hy3R+QdBQhq6D8L
-        u8mag85w==;
-Received: from 089144198117.atnat0007.highway.a1.net ([89.144.198.117] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oDgVU-005dPF-LJ; Tue, 19 Jul 2022 06:14:57 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix btrfs/271
-Date:   Tue, 19 Jul 2022 08:14:54 +0200
-Message-Id: <20220719061454.829559-1-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
+        Tue, 19 Jul 2022 03:24:32 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7B632BA1
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 00:24:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3B72833A16
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1658215470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=l4FV/aVtTOYZPLSRv9GoMKFwl4RvvRpp6FRDRMUnRts=;
+        b=KIJO2AlBTjfqjXPl8WGeK00nB42b88J61quGi2h19/OhfTxJ658JUz1P3udRhIOAHUvOJV
+        Xyin83ogRkR3dPkhra3/eg1HNl/3RlLFNMCArRvOXx9Ga4l/+1YTbyjLxkLvUvx7QYvQ2D
+        u9MVQvA9tGktfwDQv46VfoBbC4Xj8DU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 967C913488
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9xO0GC1c1mKvLAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:29 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/5] btrfs: scrub: make scrub uses less memory for metadata scrub
+Date:   Tue, 19 Jul 2022 15:24:07 +0800
+Message-Id: <cover.1658215183.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The commited old version test the broken behavior of the current
-upstream code that writes the uncompressed data into a previously
-bad mirror.  Fix the test to check that the compressed data gets
-re-replicated and add it to the compress group while we're at it.
+[Changelog]
+v2:
+- Rebased to latest misc-next
+  The conflicts are mostly from the member renaming.
+  Has re-ran the tests on both aarch64 64K page size, and x86_64.
+  For both scrub and replace groups.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- tests/btrfs/270     | 11 +++++++----
- tests/btrfs/270.out | 34 ----------------------------------
- 2 files changed, 7 insertions(+), 38 deletions(-)
 
-diff --git a/tests/btrfs/270 b/tests/btrfs/270
-index 4229a02c..5b73fb15 100755
---- a/tests/btrfs/270
-+++ b/tests/btrfs/270
-@@ -7,7 +7,7 @@
- # Regression test for btrfs buffered read repair of compressed data.
- #
- . ./common/preamble
--_begin_fstest auto quick read_repair
-+_begin_fstest auto quick read_repair compress
- 
- . ./common/filter
- 
-@@ -60,7 +60,9 @@ _scratch_unmount
- echo "step 2......corrupt file extent"
- echo " corrupt stripe #1, devid $devid devpath $devpath physical $physical" \
- 	>> $seqres.full
--$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $physical 64K" $devpath > /dev/null
-+dd if=$devpath of=$TEST_DIR/$seq.dump.good skip=$physical bs=1 count=4096 \
-+	2>/dev/null
-+$XFS_IO_PROG -c "pwrite -S 0xbb -b 4K $physical 4K" $devpath > /dev/null
- 
- _scratch_mount
- 
-@@ -70,8 +72,9 @@ _btrfs_buffered_read_on_mirror 1 2 "$SCRATCH_MNT/foobar" 0 128K
- _scratch_unmount
- 
- echo "step 4......check if the repair worked"
--$XFS_IO_PROG -c "pread -v -b 512 $physical 512" $devpath |\
--	_filter_xfs_io_offset
-+dd if=$devpath of=$TEST_DIR/$seq.dump skip=$physical bs=1 count=4096 \
-+	2>/dev/null
-+cmp -bl $TEST_DIR/$seq.dump.good $TEST_DIR/$seq.dump
- 
- _scratch_dev_pool_put
- # success, all done
-diff --git a/tests/btrfs/270.out b/tests/btrfs/270.out
-index 53a80692..6d744c02 100644
---- a/tests/btrfs/270.out
-+++ b/tests/btrfs/270.out
-@@ -5,37 +5,3 @@ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- step 2......corrupt file extent
- step 3......repair the bad copy
- step 4......check if the repair worked
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--read 512/512 bytes
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+Although btrfs scrub works for subpage from day one, it has a small
+pitfall:
+
+  Scrub will always allocate a full page for each sector.
+
+This causes increased memory usage, although not a big deal, it's still
+not ideal.
+
+The patchset will change the behavior by integrating all pages into
+scrub_block::pages[], instead of using scrub_sector::page.
+
+Now scrub_sector will no longer hold a page pointer, but uses its
+logical bytenr to caculate which page and page range it should use.
+
+This behavior unfortunately still only affects memory usage on metadata
+scrub, which uses nodesize for scrub.
+
+For the best case, 64K node size with 64K page size, we waste no memory
+to scrub one tree block.
+
+For the worst case, 4K node size with 64K page size, we are no worse
+than the existing behavior (still one 64K page for the tree block)
+
+For the default case (16K nodesize), we use one 64K page, compared to
+4x64K pages previously.
+
+For data scrubing, we uses sector size, thus it causes no difference.
+In the future, we may want to enlarge the data scrub size so that
+subpage can waste less memory.
+
+[PATCHSET STRUCTURE]
+The first 3 patches are just cleanups, mostly to make scrub_sector
+allocation much easier.
+
+The 4th patch is to introduce the new page array for sblock, and
+the last one to completely remove the usage of scrub_sector::page.
+
+Qu Wenruo (5):
+  btrfs: scrub: use pointer array to replace @sblocks_for_recheck
+  btrfs: extract the initialization of scrub_block into a helper
+    function
+  btrfs: extract the allocation and initialization of scrub_sector into
+    a helper
+  btrfs: scrub: introduce scrub_block::pages for more efficient memory
+    usage for subpage
+  btrfs: scrub: remove scrub_sector::page and use scrub_block::pages
+    instead
+
+ fs/btrfs/scrub.c | 398 +++++++++++++++++++++++++++++++----------------
+ 1 file changed, 266 insertions(+), 132 deletions(-)
+
 -- 
-2.30.2
+2.37.0
 
