@@ -2,75 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE7357A435
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 18:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0991E57A66F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 20:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235786AbiGSQc2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 19 Jul 2022 12:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
+        id S240111AbiGSSYY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jul 2022 14:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237638AbiGSQc1 (ORCPT
+        with ESMTP id S235139AbiGSSYY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jul 2022 12:32:27 -0400
-Received: from avasout-peh-001.plus.net (avasout-peh-001.plus.net [212.159.14.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26DE550A8
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 09:32:24 -0700 (PDT)
-Received: from APOLLO ([212.159.61.44])
-        by smtp with ESMTPA
-        id Dq8zoHwNNiXxBDq90o2lgr; Tue, 19 Jul 2022 17:32:22 +0100
-X-Clacks-Overhead: "GNU Terry Pratchett"
-X-CM-Score: 0.00
-X-CNFS-Analysis: v=2.4 cv=T+Gf8tGQ c=1 sm=1 tr=0 ts=62d6dc96
- a=AGp1duJPimIJhwGXxSk9fg==:117 a=AGp1duJPimIJhwGXxSk9fg==:17
- a=IkcTkHD0fZMA:10 a=lZFbU4aQAAAA:8 a=P1kZ4gAsAAAA:8 a=VwQbUJbxAAAA:8
- a=avuI7u2LPdAhfE06yZ8A:9 a=QEXdDO2ut3YA:10 a=yKZbCDypxrTF-tGext6c:22
- a=fn9vMg-Z9CMH7MoVPInU:22 a=AjGcO6oz07-iQ99wixmX:22
-X-AUTH: perdrix52@:2500
-From:   "David C. Partridge" <david.partridge@perdrix.co.uk>
-To:     "'Chris Murphy'" <lists@colorremedies.com>
-Cc:     "'Btrfs BTRFS'" <linux-btrfs@vger.kernel.org>
-References: <000001d899d0$57fb6490$07f22db0$@perdrix.co.uk> <CAJCQCtTAx=82boq175vtAu1Z_S9D1tcNSErir1wTK8MbtMfsvw@mail.gmail.com> <009001d89b02$b7f2eb60$27d8c220$@perdrix.co.uk> <CAJCQCtTV4gSBXCmqVG-6dqEC151V=MWRatrTX+hthur_PLT4eQ@mail.gmail.com>
-In-Reply-To: <CAJCQCtTV4gSBXCmqVG-6dqEC151V=MWRatrTX+hthur_PLT4eQ@mail.gmail.com>
-Subject: RE: Odd output from scrub status
-Date:   Tue, 19 Jul 2022 17:32:21 +0100
-Message-ID: <002d01d89b8d$1f8df280$5ea9d780$@perdrix.co.uk>
+        Tue, 19 Jul 2022 14:24:24 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7D75C9CD
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 11:24:22 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 509891FE8E;
+        Tue, 19 Jul 2022 18:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1658255061;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7SV6KudBB6zfjuOdDV+dSgLVwyukqRhoOQThznsJSC8=;
+        b=E1WyzY/uR6V+rCE0rGUKNY7S4cCxhrwa/R/ysSRbO1NjyD1PLrJGNzmuq/gQXlLDViZYcZ
+        jDR4MkpaBc3uuzBMChPJ21ynQ7jvt/kwKLDJAnQKPQYYddz4o6vQkFnp+ZybMINyREpk2D
+        OjmdMjVZMJ7yvHd7eBCJqNzF7QDf5bs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1658255061;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7SV6KudBB6zfjuOdDV+dSgLVwyukqRhoOQThznsJSC8=;
+        b=fDdkk1R7+5eKl6bOIhZ/sRg+ffRySEO4oV1fpVqXzh1Nmg9cWuoFCYiR86rGokRtC6TcwX
+        FLENAQLCbYVTlWAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 284EB13A72;
+        Tue, 19 Jul 2022 18:24:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id i4ftCNX21mIpVgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 19 Jul 2022 18:24:21 +0000
+Date:   Tue, 19 Jul 2022 20:19:27 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: fix read repair on compressed extents v3
+Message-ID: <20220719181927.GQ13489@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20220707053331.211259-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-gb
-Thread-Index: AQG0I+mo95iLQgivBE5YQgylXxMxEwG/+wJwAf9OapICzoQXRK2aY/Lw
-X-CMAE-Envelope: MS4xfLtskthhDSWBG8sxNuhVf1i60EntfS1997UE1IzXOZG95hse5Am8Z/08M/Av6H+BJ6oidr3dqSQlmjHT84Kt/NvsrO3vnDRw+UHNPI1xNGdPif8CD2Wp
- rpfY0qSSzQYSvY8F0M097JWZMnMX55eOVLZVX4ejUFw2FD4p6hOD+wGl9DAswuXsbAB2W9OgylKFxWsAwrdP7XxUcRjqSBcaRdk=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220707053331.211259-1-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Intermittent problem ...
+On Thu, Jul 07, 2022 at 07:33:25AM +0200, Christoph Hellwig wrote:
+> Hi all,
+> 
+> while looking into the repair code I found that read repair of compressed
+> extents is current fundamentally broken, in that repair tries to write
+> the uncompressed data into a corrupted extent during a repair.  This is
+> demonstrated by the "btrfs: test read repair on a corrupted compressed
+> extent" test submitted to xfstests.
+> 
+> This series fixes that, but is a bit invaside as it requires both
+> refactoring of the compression code and changes to the repair code to
+> not look up the logic address on every repair attempt.  On the plus
+> side it removes a whole lot of code.
+> 
+> The series is on top of the for-next branch, as that includes other
+> bio changes not in misc-next yet.
+> 
+> Changes since v2:
+>  - include the previous submitted and reviewed repair all mirrors patch
+>    to simplify the stack of patches
+>  - include an additional cleanup patch at the end
+>  - improve a commit log
+>  
+> Changes since v1:
+>  - describe the partial revert that happens in patch 1 better in the
+>    commit log
+>  - drop a now incorrect comment
+>  - do not add a prototype for a non-existent function
 
------Original Message-----
-From: Chris Murphy <lists@colorremedies.com> 
-Sent: 19 July 2022 04:35
-To: David C. Partridge <david.partridge@perdrix.co.uk>
-Cc: Chris Murphy <lists@colorremedies.com>; Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Odd output from scrub status
-
-On Mon, Jul 18, 2022 at 8:01 PM David C. Partridge
-<david.partridge@perdrix.co.uk> wrote:
->
-> btrfs-progs 5.4.1-2
-
-Well, if you can find a newer version that'd help determine if it's a
-current bug or one long since fixed. Current version is 5.18.1.
-
-
-
--- 
-Chris Murphy
-
+Moved from topic branch to misc-next, with some fixup, thanks.
