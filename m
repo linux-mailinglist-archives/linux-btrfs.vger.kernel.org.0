@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDBD57941E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 09:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD76657941C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jul 2022 09:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236243AbiGSHYg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jul 2022 03:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
+        id S236309AbiGSHYh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jul 2022 03:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236230AbiGSHYe (ORCPT
+        with ESMTP id S236275AbiGSHYf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jul 2022 03:24:34 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F353207A
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 00:24:33 -0700 (PDT)
+        Tue, 19 Jul 2022 03:24:35 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8716D32D83
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 00:24:34 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4432A1FACA
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:32 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 48CEC33A16
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658215472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1658215473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HH6tTm7YU3DAZtrWE7rPZsBW+c0nofcUk7+HQBD04Bs=;
-        b=G+JzGfheOwYZRIyfLsd0r0TDHAK4K+h0nzFAUCGIFXzh6zQyzjpheKrSeKtKnn4kN4s+v1
-        UBEj+0POzX0Cccsm4W5Gj2Kcb61ngINPVxvjwFqxXkvXfEIjdqpfWgLc6y8M7hGEdb+J4H
-        tOoDsVjlrMonNbCypwBHpIiGK37jMRw=
+        bh=46+kZzgGZkraKiM1xiHHWi+hlzgdvkr7f2QkCr2TwqM=;
+        b=hWr/zTjoG7AJjp67Ux2Fmylv/QnPI+m3RiID9mnRxDkajpEvgBC5fJhAjF4Z4nV20F10Lc
+        1MSUzC97TKbUdnL3WCQ2OmkoBhY5aoOiZZq4Y6Dqt8SMjBlQzPXQNMHGU5JaZbijd+NyKB
+        9F7Yct52VHAdDVZ3eepdG/F9vf5qqbU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9DCE913488
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:31 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A22A213488
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id yMZvGi9c1mKvLAAAMHmgww
+        id SLufGzBc1mKvLAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:31 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 07:24:32 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/5] btrfs: extract the initialization of scrub_block into a helper function
-Date:   Tue, 19 Jul 2022 15:24:09 +0800
-Message-Id: <766270f94ee53c682690087e00d448990a556f7c.1658215183.git.wqu@suse.com>
+Subject: [PATCH v2 3/5] btrfs: extract the allocation and initialization of scrub_sector into a helper
+Date:   Tue, 19 Jul 2022 15:24:10 +0800
+Message-Id: <a1076ec58ac0d56cb646584b966d1dc84efcdac6.1658215183.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <cover.1658215183.git.wqu@suse.com>
 References: <cover.1658215183.git.wqu@suse.com>
@@ -60,122 +60,172 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Although there are only two callers, we are going to add some members
-for scrub_block in the incoming patches.
+The allocation and initialization is shared by 3 call sites, and we're
+going to change the initialization of some members in the upcoming
+patches.
 
-Extracting the initialization code will make later expansion easier.
+So extra the allocation and initialization of scrub_sector into a
+helper, alloc_scrub_sector(), which will do the following work:
 
-One thing to note is, even scrub_handle_errored_block() doesn't utilize
-scrub_block::refs, we still use alloc_scrub_block() to initialize
-sblock::ref, allowing us to use scrub_block_put() to do cleanup.
+- Allocate the memory for scrub_sector
+
+- Allocate a page for scrub_sector::page
+
+- Initialize scrub_sector::refs to 1
+
+- Attach the allocated scrub_sector to scrub_block
+  The attachment is bidirectional, which means scrub_block::sectorv[]
+  will be updated and scrub_sector::sblock will also be updated.
+
+- Update scrub_block::sector_count and do extra sanity check on it
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 49 ++++++++++++++++++++++++------------------------
- 1 file changed, 24 insertions(+), 25 deletions(-)
+ fs/btrfs/scrub.c | 63 ++++++++++++++++++++++++------------------------
+ 1 file changed, 31 insertions(+), 32 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 256f1374787b..7c845dec78b3 100644
+index 7c845dec78b3..b9acc1e30514 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -202,6 +202,19 @@ struct full_stripe_lock {
- 	struct mutex mutex;
- };
+@@ -215,6 +215,33 @@ static struct scrub_block *alloc_scrub_block(struct scrub_ctx *sctx)
+ 	return sblock;
+ }
  
-+static struct scrub_block *alloc_scrub_block(struct scrub_ctx *sctx)
++/* Allocate a new scrub sector and attach it to @sblock */
++static struct scrub_sector *alloc_scrub_sector(struct scrub_block *sblock,
++					       gfp_t gfp)
 +{
-+	struct scrub_block *sblock;
++	struct scrub_sector *ssector;
 +
-+	sblock = kzalloc(sizeof(*sblock), GFP_KERNEL);
-+	if (!sblock)
++	ssector = kzalloc(sizeof(*ssector), gfp);
++	if (!ssector)
 +		return NULL;
-+	refcount_set(&sblock->refs, 1);
-+	sblock->sctx = sctx;
-+	sblock->no_io_error_seen = 1;
-+	return sblock;
++	ssector->page = alloc_page(gfp);
++	if (!ssector->page) {
++		kfree(ssector);
++		return NULL;
++	}
++	atomic_set(&ssector->refs, 1);
++	ssector->sblock = sblock;
++	/* This sector to be added should not be used */
++	ASSERT(sblock->sectors[sblock->sector_count] == NULL);
++	/* And the sector count should be smaller than the limit */
++	ASSERT(sblock->sector_count < SCRUB_MAX_SECTORS_PER_BLOCK);
++
++	sblock->sectors[sblock->sector_count] = ssector;
++	sblock->sector_count++;
++
++	return ssector;
 +}
 +
  static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
  				     struct scrub_block *sblocks_for_recheck[]);
  static void scrub_recheck_block(struct btrfs_fs_info *fs_info,
-@@ -904,8 +917,15 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
- 	 * the statistics.
- 	 */
- 	for (mirror_index = 0; mirror_index < BTRFS_MAX_MIRRORS; mirror_index++) {
--		sblocks_for_recheck[mirror_index] =
--			kzalloc(sizeof(struct scrub_block), GFP_KERNEL);
-+		/*
-+		 * Note: the two members refs and outstanding_sectors
-+		 * are not used in the blocks that are used for the recheck
-+		 * procedure.
-+		 *
-+		 * But alloc_scrub_block() will initialize sblock::ref anyway,
-+		 * so we can use scrub_block_put() to clean them up.
-+		 */
-+		sblocks_for_recheck[mirror_index] = alloc_scrub_block(sctx);
- 		if (!sblocks_for_recheck[mirror_index]) {
+@@ -1330,18 +1357,14 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+ 			sblock = sblocks_for_recheck[mirror_index];
+ 			sblock->sctx = sctx;
+ 
+-			sector = kzalloc(sizeof(*sector), GFP_NOFS);
++			sector = alloc_scrub_sector(sblock, GFP_NOFS);
+ 			if (!sector) {
+-leave_nomem:
+ 				spin_lock(&sctx->stat_lock);
+ 				sctx->stat.malloc_errors++;
+ 				spin_unlock(&sctx->stat_lock);
+ 				scrub_put_recover(fs_info, recover);
+ 				return -ENOMEM;
+ 			}
+-			scrub_sector_get(sector);
+-			sblock->sectors[sector_index] = sector;
+-			sector->sblock = sblock;
+ 			sector->flags = flags;
+ 			sector->generation = generation;
+ 			sector->logical = logical;
+@@ -1367,13 +1390,8 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+ 			sector->physical_for_dev_replace =
+ 				original_sblock->sectors[sector_index]->
+ 				physical_for_dev_replace;
+-			/* For missing devices, dev->bdev is NULL */
++			/* for missing devices, dev->bdev is NULL */
+ 			sector->mirror_num = mirror_index + 1;
+-			sblock->sector_count++;
+-			sector->page = alloc_page(GFP_NOFS);
+-			if (!sector->page)
+-				goto leave_nomem;
+-
+ 			scrub_get_recover(recover);
+ 			sector->recover = recover;
+ 		}
+@@ -2262,19 +2280,14 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 		 */
+ 		u32 l = min(sectorsize, len);
+ 
+-		sector = kzalloc(sizeof(*sector), GFP_KERNEL);
++		sector = alloc_scrub_sector(sblock, GFP_KERNEL);
+ 		if (!sector) {
+-leave_nomem:
  			spin_lock(&sctx->stat_lock);
  			sctx->stat.malloc_errors++;
-@@ -916,16 +936,6 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
- 						     BTRFS_DEV_STAT_READ_ERRS);
- 			goto out;
+ 			spin_unlock(&sctx->stat_lock);
+ 			scrub_block_put(sblock);
+ 			return -ENOMEM;
  		}
--		/*
--		 * note: the two members refs and outstanding_sectors
--		 * are not used in the blocks that are used for the recheck
--		 * procedure.
--		 *
--		 * But to make the cleanup easier, we just put one ref for
--		 * each sblocks.
--		 */
--		refcount_set(&sblocks_for_recheck[mirror_index]->refs, 1);
--		sblocks_for_recheck[mirror_index]->sctx = sctx;
- 	}
- 
- 	/* Setup the context, map the logical blocks and alloc the sectors */
-@@ -2235,7 +2245,7 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
- 	const u32 sectorsize = sctx->fs_info->sectorsize;
- 	int index;
- 
--	sblock = kzalloc(sizeof(*sblock), GFP_KERNEL);
-+	sblock = alloc_scrub_block(sctx);
- 	if (!sblock) {
- 		spin_lock(&sctx->stat_lock);
- 		sctx->stat.malloc_errors++;
-@@ -2243,12 +2253,6 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
- 		return -ENOMEM;
- 	}
- 
--	/* one ref inside this function, plus one for each page added to
--	 * a bio later on */
--	refcount_set(&sblock->refs, 1);
--	sblock->sctx = sctx;
--	sblock->no_io_error_seen = 1;
--
+-		ASSERT(index < SCRUB_MAX_SECTORS_PER_BLOCK);
+-		scrub_sector_get(sector);
+-		sblock->sectors[index] = sector;
+-		sector->sblock = sblock;
+ 		sector->dev = dev;
+ 		sector->flags = flags;
+ 		sector->generation = gen;
+@@ -2288,10 +2301,6 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 		} else {
+ 			sector->have_csum = 0;
+ 		}
+-		sblock->sector_count++;
+-		sector->page = alloc_page(GFP_KERNEL);
+-		if (!sector->page)
+-			goto leave_nomem;
+ 		len -= l;
+ 		logical += l;
+ 		physical += l;
+@@ -2606,23 +2615,18 @@ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
  	for (index = 0; len > 0; index++) {
  		struct scrub_sector *sector;
- 		/*
-@@ -2588,7 +2592,7 @@ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
  
- 	ASSERT(IS_ALIGNED(len, sectorsize));
+-		sector = kzalloc(sizeof(*sector), GFP_KERNEL);
++		sector = alloc_scrub_sector(sblock, GFP_KERNEL);
+ 		if (!sector) {
+-leave_nomem:
+ 			spin_lock(&sctx->stat_lock);
+ 			sctx->stat.malloc_errors++;
+ 			spin_unlock(&sctx->stat_lock);
+ 			scrub_block_put(sblock);
+ 			return -ENOMEM;
+ 		}
+-		ASSERT(index < SCRUB_MAX_SECTORS_PER_BLOCK);
+-		/* For scrub block */
+-		scrub_sector_get(sector);
+ 		sblock->sectors[index] = sector;
+ 		/* For scrub parity */
+ 		scrub_sector_get(sector);
+ 		list_add_tail(&sector->list, &sparity->sectors_list);
+-		sector->sblock = sblock;
+ 		sector->dev = dev;
+ 		sector->flags = flags;
+ 		sector->generation = gen;
+@@ -2635,11 +2639,6 @@ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
+ 		} else {
+ 			sector->have_csum = 0;
+ 		}
+-		sblock->sector_count++;
+-		sector->page = alloc_page(GFP_KERNEL);
+-		if (!sector->page)
+-			goto leave_nomem;
+-
  
--	sblock = kzalloc(sizeof(*sblock), GFP_KERNEL);
-+	sblock = alloc_scrub_block(sctx);
- 	if (!sblock) {
- 		spin_lock(&sctx->stat_lock);
- 		sctx->stat.malloc_errors++;
-@@ -2596,11 +2600,6 @@ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
- 		return -ENOMEM;
- 	}
- 
--	/* one ref inside this function, plus one for each page added to
--	 * a bio later on */
--	refcount_set(&sblock->refs, 1);
--	sblock->sctx = sctx;
--	sblock->no_io_error_seen = 1;
- 	sblock->sparity = sparity;
- 	scrub_parity_get(sparity);
- 
+ 		/* Iterate over the stripe range in sectorsize steps */
+ 		len -= sectorsize;
 -- 
 2.37.0
 
