@@ -2,97 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 778B657B88C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jul 2022 16:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E400857B8B5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jul 2022 16:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbiGTOaf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Jul 2022 10:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43626 "EHLO
+        id S234031AbiGTOqX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Jul 2022 10:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbiGTOad (ORCPT
+        with ESMTP id S229577AbiGTOqT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Jul 2022 10:30:33 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE52F46DA5;
-        Wed, 20 Jul 2022 07:30:30 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id D96CB811CF;
-        Wed, 20 Jul 2022 10:30:29 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1658327430; bh=j6pSIsicmSDYHHmekm0xrii0oHIr0LiP8jaXBAoTmiI=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=uey/8sEPUCRod0x24n3hRuEawsN0hZ6771lb5tdbsYX0ap/1lJyxEBhjNyAuMf3QH
-         4lsW561Uiqccx2J+zfLcXFxAVZnmG1RS0QTsiiuT/0wUkNr6tDDlNCUZt9jHh1JesY
-         OvNSGLJfxnxiNj7DwG3gzmtgbDBuANhhBezheUlRzDyWZpiu2TgpJTIdT9INYjkWit
-         saq0tzqNQfUg6w1Li6e3nSv4YPIjxwY7PTtTS1acM8ctQCge8QE+MuWdwwPYtJbZMM
-         hjNbXZBK6CuNqqXVreeRAK41G2rO1wDzZMZGP0HMcscNigBV2HoQk6cFQ1hz48ISMW
-         +XSQORv04F4+w==
-Message-ID: <14f33fb7-c7f1-5463-ad4a-fe031d2a8583@dorminy.me>
-Date:   Wed, 20 Jul 2022 10:30:27 -0400
+        Wed, 20 Jul 2022 10:46:19 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC6F4C619
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jul 2022 07:46:18 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id c3so8040568qko.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jul 2022 07:46:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AEvXSiXG+LK3hGyI5/WoYX4mBgh+ZcZK4d/qzNsJMlg=;
+        b=nCctB7gs29ADSGCRbvmaEYNqNIFk6eT4uf+czM1/BrHXFwiBCCOy1mL+0qaZlG+Atv
+         AJKNRNV40p7N/qkJ4BNlj5LmIBpyNXu6V5PabMPGmR4JmvBElJY8GCsNEIKx02VK9xSC
+         iaNPAwBIoX+JSWUvuCuMgbNIIaJlV7GQ5uhe63122dhXubejJTIHX71bSMVvBVclqicr
+         ka61NX0wf0YaIuzn0YNCBP6AvGno2pld+Y2P7ASfwjTjjipRex8tg9lV66tIHZgGYdpY
+         P68c4gCkLqKo4+/Y+F84Q7ifOOmfB5XYdwhUNsWbkMstmrFTytzwog01xM1m089DxDK5
+         2c4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AEvXSiXG+LK3hGyI5/WoYX4mBgh+ZcZK4d/qzNsJMlg=;
+        b=SCiyWfh5FSkl0Q/yw/Ex6nlBqhc6/TcI5tFlzcoxKDmEm6duurl2+sgktd0iEZXUu3
+         lmexHxmLH62yvlkuSoJrdLhYtP32212DTscsNH5zjs/t5Jq5TpurxcVU+khIw3QubEWp
+         Uh756AkHdyWScRxfRDOLyPUOWIFQqSg+OcsPcgjf55GVUG6hhA/h5NjBrZ3h63wfI9If
+         S0p3AQxvo57n1pNZVYSB1Dbu0a14unXc/7PBOAMqfJ3Co1geZ/w1DYm3eSADmLSYRCC9
+         j2uC6FH2Pout1ZFPO3FrMK3AiC+t7gZzh0OTgrE28okVNTmVqCFyoevrjUMwO3E6TUM4
+         XHuw==
+X-Gm-Message-State: AJIora/wm0lSYtllgH57jl09yQRSfUybEiM5Q8TZBCAfNwD8/ZgRhYiv
+        vcFIKdGBPLUZpCSszXWhsleajOAm6qeaHw==
+X-Google-Smtp-Source: AGRyM1vL7/2e2OjnHns/Mkl4iizERNuk5/yKcwAdeFaoFvvZc81ExdlOZGlvWczFV/KY4JmfTAddMQ==
+X-Received: by 2002:a05:620a:1478:b0:6b5:e085:9c03 with SMTP id j24-20020a05620a147800b006b5e0859c03mr12757144qkl.550.1658328377290;
+        Wed, 20 Jul 2022 07:46:17 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id l5-20020a37f905000000b006b56a4400f6sm15869192qkj.16.2022.07.20.07.46.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jul 2022 07:46:16 -0700 (PDT)
+Date:   Wed, 20 Jul 2022 10:46:15 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Ioannis Angelakopoulos <iangelak@fb.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 1/5] btrfs: Add a lockdep model for the num_writers
+ wait event
+Message-ID: <YtgVN+VONGZMwu9j@localhost.localdomain>
+References: <20220719040954.3964407-1-iangelak@fb.com>
+ <20220719040954.3964407-2-iangelak@fb.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v13 4/5] btrfs: test verity orphans with dmlogwrites
-Content-Language: en-US
-To:     Boris Burkov <boris@bur.io>, fstests@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1658277755.git.boris@bur.io>
- <57123fe31da2886cfae01e27ffc43095ef7db7d1.1658277755.git.boris@bur.io>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <57123fe31da2886cfae01e27ffc43095ef7db7d1.1658277755.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220719040954.3964407-2-iangelak@fb.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/19/22 20:49, Boris Burkov wrote:
-> The behavior of orphans is most interesting across mounts, interrupted
-> at arbitrary points during fsverity enable. To cover as many such cases
-> as possible, use dmlogwrites and dmsnapshot as in
-> log-writes/replay-individual.sh. As we replay the log events, we run a
-> state machine with different invariants enforced at each state.
+On Mon, Jul 18, 2022 at 09:09:52PM -0700, Ioannis Angelakopoulos wrote:
+> Annotate the num_writers wait event in fs/btrfs/transaction.c with lockdep
+> in order to catch deadlocks involving this wait event.
 > 
-> There are three possible states for a given point in the log:
-> 0. Verity has not yet started
-> 1. Verity has started but not finished
-> 2. Verity has finished.
+> Use a read/write lockdep map for the annotation. A thread starting/joining
+> the transaction acquires the map as a reader when it increments
+> cur_trans->num_writers and it acquires the map as a writer before it
+> blocks on the wait event.
 > 
-> The possible transitions with causes are:
-> 0->1: We see an orphan item for the file.
-> 1->2: Running 'fsverity measure' succeeds on the file.
-> 
-> Each state has its own invariant for testing:
-> 0: No verity items exist.
-> 1: Mount should handle the orphan and blow away verity data: expect 0
->     Merkle items after mounting.
-> 2: The orphan should be gone and mount should not blow away merkle
->     items. Expect the same number of merkle items before and after
->     mounting.
-> 
-> As a result, we can be confident that if the file system loses power at
-> any point during enabling verity on a file, the work is either completed,
-> or gets rolled-back by mount.
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
->   tests/btrfs/291     | 168 ++++++++++++++++++++++++++++++++++++++++++++
->   tests/btrfs/291.out |   2 +
->   2 files changed, 170 insertions(+)
->   create mode 100755 tests/btrfs/291
->   create mode 100644 tests/btrfs/291.out
-> 
+> Signed-off-by: Ioannis Angelakopoulos <iangelak@fb.com>
 
-Still looks good to me, with the fua-hunting rewrite.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-It occurred to me last night that the test doesn't verify that it sees a 
-disk state in state 1 -- theoretically it could go directly from state 0 
-to state 2 -- but I don't see a good way to ensure the test spends time 
-in state 1.
+Thanks,
+
+Josef
