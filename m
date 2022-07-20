@@ -2,210 +2,348 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C591757AB2C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jul 2022 02:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652A757AB48
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jul 2022 03:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238423AbiGTAuL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jul 2022 20:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47002 "EHLO
+        id S233294AbiGTBDu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jul 2022 21:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbiGTAuK (ORCPT
+        with ESMTP id S230104AbiGTBDt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jul 2022 20:50:10 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BF8284;
-        Tue, 19 Jul 2022 17:50:09 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 2229332001FF;
-        Tue, 19 Jul 2022 20:50:07 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 19 Jul 2022 20:50:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1658278207; x=1658364607; bh=Z/
-        ScZcYly62LPugXqA1E0RFAVGO1KRdhrR/RtutZVQU=; b=FVmBlks/BqbtwugQbA
-        5ZaVFW133P0/K6KAlMthoEHcVeGdRtoyv/fZUAPtkGZEvL7k9GcX+rKGc4oaBwo4
-        gwpBsspkP3vcaOcrGCRaQh6vyWNXY09KP8bhhoX6wRaMqTb9ll2LKPfz3mMPqXJo
-        KenYHtzDzFpinx7k2VFLxrzmsTMT/7HUZt+Jlfv0AtZmQcxswbvFPXUYs2EAPujI
-        84V+ClhO3I3AhysUZMuUZTUsWJCCpcq4vCLU9Dhvb+LNA2u3TfeK2BEX1CGx+iAK
-        K80eFMrxNYvyVK/oDWpuIIPly3Rfg2JO6gKePJmuGMrXY/jc7GU9RoXns74GOmeO
-        CRZw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1658278207; x=1658364607; bh=Z/ScZcYly62LP
-        ugXqA1E0RFAVGO1KRdhrR/RtutZVQU=; b=zjzF88279Z+sAFoC4vXDREx1ApAPh
-        tdscfRpKLX8V2UeH3+H1cw0FGBu23jQsSZi/40zuKoEQYkF/uON/eHF1axRWC2bk
-        lAbMl3msl7WI/P6zqUokf9ehJ2EY8DoktXuTIsqeXzyUF3XYMhl8qs8BZGHI1jri
-        m4Sl8yLVwvD06x6rwC+HMQR7jOpybK42WprbvN+x2M+hr9jTt5Et+qf35BAE54Ac
-        wtCctiPBwW1GWFicXHKhekL5oO5IybtkB4+tDpNzC6qkZqFqOXa6aALQORZoGEk2
-        9sxPNkeXzOMVAHZqPu8fnUP9zQ3u5zm/YZVZpyC8WV7NuKBCUPGJFfWRw==
-X-ME-Sender: <xms:P1HXYnkNKMi9Fv-L9lHA4B0-TyXrK9_B5zjdKzXIhTwyf-qHxOzotw>
-    <xme:P1HXYq2OqtY5hk1cqJzeBkRLfUNWL0XlHfOp5A-bYSMRKasP6MjtFjAIF2sArUG-h
-    rsv_GMrpQBluxSNoPw>
-X-ME-Received: <xmr:P1HXYtqFqieSUTQPJ_PK4kfhwDBmnaEXkeG1QyN7ACfCKXmBzN-QkcpFBO2iabCM3BqkOB5htQ4w9czkde0V0ctkIluQ5A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudeluddgfeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
-    ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
-    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:P1HXYvlFuM31q9QYGTarq6sFucSNMmuc-XqFITmBwHiau9atS9Xz-A>
-    <xmx:P1HXYl1FI9KlqhYTaVFeNSfxLPvRXrXXo3RRzRXMKaI2m0V7PoyBkg>
-    <xmx:P1HXYuuy-EEhCnqvQyHuN_-MsX3sHV31vNpDKPtgkwzXZNk6GNC4wQ>
-    <xmx:P1HXYjDB3IQfDgO0vwCj8ejkc6JbsUv1mY5YUsz3C1xdByVWjQRaOw>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 19 Jul 2022 20:50:06 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v13 5/5] generic: test fs-verity EFBIG scenarios
-Date:   Tue, 19 Jul 2022 17:49:50 -0700
-Message-Id: <ff74fa26e99c7aef886a770bfc72b3694211c84f.1658277755.git.boris@bur.io>
-X-Mailer: git-send-email 2.37.0
-In-Reply-To: <cover.1658277755.git.boris@bur.io>
-References: <cover.1658277755.git.boris@bur.io>
+        Tue, 19 Jul 2022 21:03:49 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093A65A15E
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 18:03:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1658279018;
+        bh=JnoC9Vu6xxrZF6BZIzLiwbUM7K5DZIVI+vaR41G56dg=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=a16ammyCqSmQxTJyTXDCsAzaY0ATw1Y7dr3wZnYz+6uVnBUHYZ1I7WxG/tWrlO3Xd
+         HC6kwJbuGOhRC5twyIw42dTgJCthJx8VpNV7ugJXVkgdvBJMwMBFODRL1GxOs1vT99
+         Ggl+W17W0YhnLoY+k3VgJQdkE5MqWxCFrSl1G1OY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3DJl-1oEnbQ1pPx-003heY; Wed, 20
+ Jul 2022 03:03:38 +0200
+Message-ID: <8d2c653a-eddf-e9b4-7912-d46993705680@gmx.com>
+Date:   Wed, 20 Jul 2022 09:03:33 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Content-Language: en-US
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <cover.1658207325.git.wqu@suse.com>
+ <621654191a02dc3cbc5c3b03f6c00963b7e6f382.1658207325.git.wqu@suse.com>
+ <4b4b9f52-9c40-2f91-d8a3-a6ed29c379ee@dorminy.me>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH v2 4/4] btrfs: dump all space infos if we abort
+ transaction due to ENOSPC
+In-Reply-To: <4b4b9f52-9c40-2f91-d8a3-a6ed29c379ee@dorminy.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:T7sgSlBbJeoCoQZ+PQEompidXmzj4LXlCWaWvxnWI6fnnIzvzY1
+ SrNnQB8CaYOxyRQoXL7n5uaLKvaqHDyUIkwQVQEQjD439aeQZxKul93321bECtAGw4ArD2s
+ T20aKFMRfEiVNwSz2cOcIBeP3NzKmOVKwYilYUasSHD4d1fnc9D9RY0bp0wiO67miLPsYl2
+ XcBCQAsCCMwE3YJ5jpRMA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:B/EjIm9rn2I=:zBECxPxEXFytBtc+ngn319
+ ydxZVpRhh9pyCH05x4TgTwa7vwDtf0mSCZEsJjE5KHmm5jc5kdAj3eKnl/2S37m/pxTMesKgk
+ 3BbRyZyZdiGZt3Fi+gJYVeMF5xenYvTqM93sGOSxXNlSfsd7dikEqT00Kw7zoMj+0yEriHVsL
+ Swfzu8BponBsE3FG7Iaedyyl2doGETst0tgAPHSh2zJuoaMkPI7/VTx0PAuiM4kzFkCQqRbc2
+ +Umj2cbEDTQSzd1Pn6nlqReShtUHA2H7d4jdtdjVjkj386mJyQPQvzUUPv40jhlO8pYW2s2UD
+ LGBqVfxP62n52n9rRUJWOuMpoe0s+fQbBX3a17zyKTjFAp98k5u4Jht+sm/yT6afxd+S+Fjrg
+ dOoFI98lIbbUSDm9sQtrVWf+4wUvAxL51sNL1s5s5nDENr/X9DBVuiBpBKFxs265UTB6i5VJl
+ m56O2KEV7MsVR3OI1yUjhL4+GyWhuO9O4VvMznx23vUn5VXuBLUiw+XGtwGhKwoyXf3RctPf/
+ GOFFgKPOt9UpNI8mGdbSLRiv2HT2MFKDQkIX/chYd3C6C1/laEYrXuAD0DLt0ZZKKT3cOVWuQ
+ 2gWfGAxLSDHf2eDEBcCiSxmCyjnVfooqJCOWQAyjQiwb5Ke35JyB8PVKw4aoxF0R/ttuotWqd
+ LbO/gk2FYshny8bySw8P3Ywc5hyy8Hgf9O/OdfQFVrDeVY3+KNbWJ0ZZRlbG3fgr7jc/EbyGI
+ SlIVuHU6CbgZx4JlzCukREtCgjCBFpM5WooukfDzcaIzfR9O6/R5gEfeaNS0PhZGV3oMl2u0d
+ ZysyWerwJ+myE55JbOhjJDmjg9/5Au8uWucnlGrm+wS7PkJrI6qwiKQ2ijxA6dZU1aTMhbCF2
+ Un9vjwZp05tpyI0DMfsOmvZ0q1w3tDzNTEhm6I2ZVg/vG/Lo6lalfkaIB2n6BTp79lGi1SMXx
+ aKv4I9hC1hI2NYyD8RBU5DFpEKaxHE3nVSKZZy9e0v8Ov3tPgrk+1kfrPldK9Cj+pqcN7w5AK
+ 9xWyXNFNl5FJWydReK0V/MdF6t7rCsABDwELpbq7mdS1Pkph8fILwOhG1dSzB7X8evnKlLKkQ
+ KtTuxAJJhEzS2lyQMKH1oVuI9TCnM9Y4rN2E16b9522eu0yn49X70q6Rg==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs, ext4, and f2fs cache the Merkle tree past EOF, which restricts
-the maximum file size beneath the normal maximum. Test the logic in
-those filesystems against files with sizes near the maximum.
 
-To work properly, this does require some understanding of the practical
-but not standardized layout of the Merkle tree. This is a bit unpleasant
-and could make the test incorrect in the future, if the implementation
-changes. On the other hand, it feels quite useful to test this tricky
-edge case. It could perhaps be made more generic by adding some ioctls
-to let the file system communicate the maximum file size for a verity
-file or some information about the storage of the Merkle tree.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- common/verity         | 11 ++++++++
- tests/generic/692     | 64 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/692.out |  7 +++++
- 3 files changed, 82 insertions(+)
- create mode 100644 tests/generic/692
- create mode 100644 tests/generic/692.out
+On 2022/7/20 08:42, Sweet Tea Dorminy wrote:
+>
+>
+> On 7/19/22 01:11, Qu Wenruo wrote:
+>> We have hit some transaction abort due to -ENOSPC internally.
+>>
+>> Normally we should always reserve enough space for metadata for every
+>> transaction, thus hitting -ENOSPC should really indicate some cases we
+>> didn't expect.
+>>
+>> But unfrotunately current error reporting will only give a kernel
+>> wanring and backtrace, not really helpful to debug what's causing the
+>> problem.
+>>
+>> And debug_enospc can only help when user can reproduce the problem, but
+>> under most cases, such transaction abort by -ENOSPC is really hard to
+>> reproduce.
+>>
+>> So this patch will dump all space infos (data, metadata, system) when w=
+e
+>> abort the first transaction with -ENOSPC.
+>>
+>> This should at least provide some clue to us.
+>>
+>> The example of a dump would look like this:
+>>
+>> =C2=A0 ------------[ cut here ]------------
+>> =C2=A0 <skip stack dump>
+>> =C2=A0 ---[ end trace 0000000000000000 ]---
+>> =C2=A0 BTRFS info (device dm-4: state A): dumpping space info >=C2=A0=
+=C2=A0 BTRFS
+>> info (device dm-4: state A): space_info DATA has 8388608
+> free, is not full
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 total:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8388608
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 used:=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 pinned:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 reserved:=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 0
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 may_use:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 read_only:=C2=A0=
+=C2=A0=C2=A0=C2=A0 0
+>> =C2=A0 BTRFS info (device dm-4: state A): space_info META has 263979008
+>> free, is not full
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 total:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 268435456
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 used:=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 131072
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 pinned:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 65536
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 reserved:=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 0
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 may_use:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 4194304
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 read_only:=C2=A0=
+=C2=A0=C2=A0=C2=A0 65536
+>> =C2=A0 BTRFS info (device dm-4: state A): space_info SYS has 8372224 fr=
+ee,
+>> is not full
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 total:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8388608
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 used:=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 16384
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 pinned:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 reserved:=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 0
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 may_use:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 read_only:=C2=A0=
+=C2=A0=C2=A0=C2=A0 0
+>> =C2=A0 BTRFS info (device dm-4: state A): dumping metadata reservation:
+>> (reserved/size)
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 global:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (3670016/3670016)
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 trans:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (0/0)
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 chunk:=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (0/0)
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 delayed_inode:=C2=
+=A0=C2=A0 (0/0)
+>> =C2=A0 BTRFS info (device dm-4: state A):=C2=A0=C2=A0 delayed_refs:=C2=
+=A0=C2=A0=C2=A0 (524288/524288)
+>> =C2=A0 BTRFS: error (device dm-1: state A) in cleanup_transaction:1971:
+>> errno=3D-28 No space left
+>> =C2=A0 BTRFS info (device dm-1: state EA): forced readonly
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>> ---
+>> =C2=A0 fs/btrfs/ctree.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 6 ++++--
+>> =C2=A0 fs/btrfs/space-info.c | 14 ++++++++++++++
+>> =C2=A0 fs/btrfs/space-info.h |=C2=A0 2 ++
+>> =C2=A0 fs/btrfs/super.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 4 +++-
+>> =C2=A0 4 files changed, 23 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>> index 4e2569f84aab..3d6fd7f6b339 100644
+>> --- a/fs/btrfs/ctree.h
+>> +++ b/fs/btrfs/ctree.h
+>> @@ -3739,7 +3739,7 @@ const char * __attribute_const__
+>> btrfs_decode_error(int errno);
+>> =C2=A0 __cold
+>> =C2=A0 void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char *function,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int line, int errno);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int line, int errno, bool=
+ first_hit);
+>> =C2=A0 /*
+>> =C2=A0=C2=A0 * Call btrfs_abort_transaction as early as possible when a=
+n error
+>> condition is
+>> @@ -3747,9 +3747,11 @@ void __btrfs_abort_transaction(struct
+>> btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0 */
+>> =C2=A0 #define btrfs_abort_transaction(trans, errno)=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 \
+>> =C2=A0 do {=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
+>> +=C2=A0=C2=A0=C2=A0 bool first =3D false;=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 \
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Report first abort since mount */=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!test_and_set_bit(BTRFS_FS_STATE_TRA=
+NS_ABORTED,=C2=A0=C2=A0=C2=A0 \
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 &((trans)->fs_info->fs_state))) {=C2=A0=C2=A0=C2=A0 \
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 first =3D true;=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((errno) !=3D=
+ -EIO && (errno) !=3D -EROFS) {=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+\
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 WARN(1, KERN_DEBUG=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 "BTRFS: Transaction aborted (error %d)\n",=C2=A0=C2=A0=C2=A0 \
+>> @@ -3761,7 +3763,7 @@ do {=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __btrfs_abort_transaction((trans), __fun=
+c__,=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __LINE__, (errno));=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 \
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __LINE__, (errno), first);=C2=A0=C2=A0=
+=C2=A0 \
+>> =C2=A0 } while (0)
+>> =C2=A0 #ifdef CONFIG_PRINTK_INDEX
+>> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+>> index 81457049816e..af2b3f5ef2b0 100644
+>> --- a/fs/btrfs/space-info.c
+>> +++ b/fs/btrfs/space-info.c
+>> @@ -1717,3 +1717,17 @@ int btrfs_reserve_data_bytes(struct
+>> btrfs_fs_info *fs_info, u64 bytes,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>> =C2=A0 }
+>> +
+>> +/* Dump all the space infos when we abort a transaction due to
+>> ENOSPC. */
+>> +__cold void btrfs_dump_fs_space_info(struct btrfs_fs_info *fs_info)
+>> +{
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_space_info *space_info;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 btrfs_info(fs_info, "dumping space info:");
+>> +=C2=A0=C2=A0=C2=A0 list_for_each_entry(space_info, &fs_info->space_inf=
+o, list) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&space_info->lock=
+);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __btrfs_dump_space_info(fs_=
+info, space_info);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock(&space_info->lo=
+ck);
+>> +=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 dump_metadata_rsv(fs_info);
+>> +}
+> This function looks similar to btrfs_dump_space_info(), and the name and
+> callsite doesn't help distinguish it very much to me. It seems
+> potentially useful to print all the space_infos when one space_info
+> encounters a problem,
 
-diff --git a/common/verity b/common/verity
-index 4c50d2b1..65a39d3e 100644
---- a/common/verity
-+++ b/common/verity
-@@ -350,3 +350,14 @@ _fsv_scratch_corrupt_merkle_tree()
- 		;;
- 	esac
- }
-+
-+_require_fsverity_max_file_size_limit()
-+{
-+	case $FSTYP in
-+	btrfs|ext4|f2fs)
-+		;;
-+	*)
-+		_notrun "$FSTYP does not store verity data past EOF; no special file size limit"
-+		;;
-+	esac
-+}
-diff --git a/tests/generic/692 b/tests/generic/692
-new file mode 100644
-index 00000000..0bb1fd33
---- /dev/null
-+++ b/tests/generic/692
-@@ -0,0 +1,64 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 Meta, Inc.  All Rights Reserved.
-+#
-+# FS QA Test 692
-+#
-+# fs-verity requires the filesystem to decide how it stores the Merkle tree,
-+# which can be quite large.
-+# It is convenient to treat the Merkle tree as past EOF, and ext4, f2fs, and
-+# btrfs do so in at least some fashion. This leads to an edge case where a
-+# large file can be under the file system file size limit, but trigger EFBIG
-+# on enabling fs-verity. Test enabling verity on some large files to exercise
-+# EFBIG logic for filesystems with fs-verity specific limits.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick verity
-+
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/verity
-+
-+# real QA test starts here
-+_supported_fs generic
-+_require_test
-+_require_math
-+_require_scratch_verity
-+_require_fsverity_max_file_size_limit
-+
-+_scratch_mkfs_verity &>> $seqres.full
-+_scratch_mount
-+
-+fsv_file=$SCRATCH_MNT/file.fsv
-+
-+max_sz=$(_get_max_file_size)
-+_fsv_scratch_begin_subtest "way too big: fail on first merkle block"
-+truncate -s $max_sz $fsv_file
-+_fsv_enable $fsv_file |& _filter_scratch
-+
-+# The goal of this second test is to make a big enough file that we trip the
-+# EFBIG codepath, but not so big that we hit it immediately when writing the
-+# first Merkle leaf.
-+#
-+# The Merkle tree is stored with the leaf node level (L0) last, but it is
-+# written first.  To get an interesting overflow, we need the maximum file size
-+# (MAX) to be in the middle of L0 -- ideally near the beginning of L0 so that we
-+# don't have to write many blocks before getting an error.
-+#
-+# With SHA-256 and 4K blocks, there are 128 hashes per block.  Thus, ignoring
-+# padding, L0 is 1/128 of the file size while the other levels in total are
-+# 1/128**2 + 1/128**3 + 1/128**4 + ... = 1/16256 of the file size.  So still
-+# ignoring padding, for L0 start exactly at MAX, the file size must be s such
-+# that s + s/16256 = MAX, i.e. s = MAX * (16256/16257).  Then to get a file size
-+# where MAX occurs *near* the start of L0 rather than *at* the start, we can
-+# just subtract an overestimate of the padding: 64K after the file contents,
-+# then 4K per level, where the consideration of 8 levels is sufficient.
-+sz=$(echo "scale=20; $max_sz * (16256/16257) - 65536 - 4096*8" | $BC -q | cut -d. -f1)
-+_fsv_scratch_begin_subtest "still too big: fail on first invalid merkle block"
-+truncate -s $sz $fsv_file
-+_fsv_enable $fsv_file |& _filter_scratch
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/692.out b/tests/generic/692.out
-new file mode 100644
-index 00000000..05996713
---- /dev/null
-+++ b/tests/generic/692.out
-@@ -0,0 +1,7 @@
-+QA output created by 692
-+
-+# way too big: fail on first merkle block
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': File too large
-+
-+# still too big: fail on first invalid merkle block
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': File too large
--- 
-2.37.1
+This is fine for trans abort dump, but may not be a good idea for
+enospc_debug output.
 
+enospc_debug can be triggered way more frequent than trans abort, and
+the extra info of unrelated space info may just be noise.
+
+> and it seems potentially useful to print the block
+> group infos when we're dumping all the space infos already, so maybe the
+> two functions could be combined.
+
+You mean block group infos? That can be very large for large fses.
+Thus it's avoided for most call sites other than btrfs_reserve_extent().
+
+>
+> Maybe you could adjust btrfs_dump_space_info() to print all the space
+> infos, starting with the one passed in (potentially NULL), and call it
+> instead of this new function?
+>
+>> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+>> index e7de24a529cf..01287a7a22a4 100644
+>> --- a/fs/btrfs/space-info.h
+>> +++ b/fs/btrfs/space-info.h
+>> @@ -157,4 +157,6 @@ static inline void
+>> btrfs_space_info_free_bytes_may_use(
+>> =C2=A0 }
+>> =C2=A0 int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 =
+bytes,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 enum btrfs_reserve_flush_enum flus=
+h);
+>> +void btrfs_dump_fs_space_info(struct btrfs_fs_info *fs_info);
+>> +
+>> =C2=A0 #endif /* BTRFS_SPACE_INFO_H */
+>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+>> index 4c7089b1681b..f6bc8aa00f44 100644
+>> --- a/fs/btrfs/super.c
+>> +++ b/fs/btrfs/super.c
+>> @@ -346,12 +346,14 @@ void __cold btrfs_err_32bit_limit(struct
+>> btrfs_fs_info *fs_info)
+>> =C2=A0 __cold
+>> =C2=A0 void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char *function,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int line, int errno)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int line, int errno, bool=
+ first_hit)
+>> =C2=A0 {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_info =3D trans-=
+>fs_info;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WRITE_ONCE(trans->aborted, errno);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WRITE_ONCE(trans->transaction->aborted, =
+errno);
+>> +=C2=A0=C2=A0=C2=A0 if (first_hit && errno =3D=3D -ENOSPC)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_dump_fs_space_info(fs=
+_info);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Wake up anybody who may be waiting on=
+ this transaction */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 wake_up(&fs_info->transaction_wait);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 wake_up(&fs_info->transaction_blocked_wa=
+it);
+> DO_ONCE_LITE(btrfs_dump_fs_space_info, fs_info) from <linux/once_lite.h>
+> seems like a more lightweight way to dump the space infos once upon
+> first transaction abort. Then you don't have to plumb through the
+> 'first_hit' parameter from btrfs_abort_transaction(), and this change
+> becomes even more minimal than it already is.
+
+Sounds pretty awesome!
+
+Thanks,
+Qu
