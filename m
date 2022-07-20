@@ -2,101 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4386557B467
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jul 2022 12:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4AB657B844
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jul 2022 16:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbiGTKUu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Jul 2022 06:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39022 "EHLO
+        id S240788AbiGTOOC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Jul 2022 10:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbiGTKUt (ORCPT
+        with ESMTP id S231936AbiGTOOA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Jul 2022 06:20:49 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB527DB9;
-        Wed, 20 Jul 2022 03:20:47 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9EF632088D;
-        Wed, 20 Jul 2022 10:20:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658312446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0yRNLFALfo3JzdiLRUOet7Bysw0ehkydRnEvlaNcyKw=;
-        b=VrgDuenn+USESylfDRGe9sEEG2ADxGr5s+H8S4rAIeBwr2PWEL9K5F3DezqiuxXa+/kXD5
-        xY44XBmB2trNe18evZwBgMjdLIMKIVZ+s27M4pHw6IyHfCdXB1hMU4uHimNLyVXh830cp6
-        ZE9hZjtF1dGC6PTXCVhst89kzVrHOZo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 678AF13AAD;
-        Wed, 20 Jul 2022 10:20:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id dz+MFv7W12LcJgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Wed, 20 Jul 2022 10:20:46 +0000
-Message-ID: <6dd5918a-4d6b-f118-d233-56a865ac0683@suse.com>
-Date:   Wed, 20 Jul 2022 13:20:45 +0300
+        Wed, 20 Jul 2022 10:14:00 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D5E4D16B
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jul 2022 07:13:59 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id y9so10036697qtv.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jul 2022 07:13:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2paShj/WbCID2vVVBGSDwJweFW9y6tZT6y1FyYfDR78=;
+        b=pnRZdg0o/aDh+EtWwCpkGiL7AOC/jK+KYRWd1+UcNYrR7mUvNFbCksK3TWzkAVXiZ1
+         ZSAS83huODYKeyQw31IIZKB6IH9vk+dM7Vcbczi7QTVFb7lBLJ0I75wjucCfJREMRJcA
+         0tWWivQY39JdoEcKDH7ulZxAYpo98iUBm7uxcTlgz6wKCoWho7a9jUXo2iclLpqCcPU4
+         0ECRJXQ1nArcHpuiMX7f4KKvla7AhhmdgWVzhmfFOmaYZWSXO3YbbWbNOGinYUALIft1
+         Q4+QTCTut8nDIzETy+hxpvl2IFil14U/Ip79i9AJnhIuCLcuxRa7olu3JZ+CXVAOiIUt
+         HEjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2paShj/WbCID2vVVBGSDwJweFW9y6tZT6y1FyYfDR78=;
+        b=VRtNpPwINbmzo7EKbKlk6B5D3LzTXzwJEst5OefFI8LYOd+hj9P4ENvN0MresfWqAZ
+         vUySLmA/juQoeQp3x6yf1vi5Cpk+VEShKRGfXdIoKX7ivCliVMX/YG1D2cEh2tCX7+4V
+         Mw0bs4Bys2OZbryPKCjRU5J+dGTDob/oLb7sIEkwc8oqvb9UGP7umqQd0XWYh9ZbE3Un
+         7Osc4u2L9EcM9pH3Es3bFgl2XLMuV/x9jdzGc/afLfBj+xUHuu2pxe9XykjKPXDxgWC5
+         2ODF/93gJXLdIdAPp4lKDUefTy4VWhRaGIRqKgVYH37+6W8NnNhrxQD5/DaKdUaXypNW
+         FGvg==
+X-Gm-Message-State: AJIora+p/9PFanuPVKnM8LDPW7KhulK3ZD+fL+V5Pv9OI/FwzFQfSOsz
+        laE13cCCnX6Nkzabkt91qB1vAw==
+X-Google-Smtp-Source: AGRyM1tr7DPMNFgBzMX6CveG8RFSQi0ZOUGnW9e7h+aVWfeZzv5Zphsp0FHq50T8/XQrrFIYvuDh/Q==
+X-Received: by 2002:ac8:5b0e:0:b0:31d:3b3d:37cd with SMTP id m14-20020ac85b0e000000b0031d3b3d37cdmr29680008qtw.657.1658326438269;
+        Wed, 20 Jul 2022 07:13:58 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id bk8-20020a05620a1a0800b006b5fe4c333fsm4174482qkb.85.2022.07.20.07.13.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jul 2022 07:13:57 -0700 (PDT)
+Date:   Wed, 20 Jul 2022 10:13:56 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Boris Burkov <boris@bur.io>
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v13 0/5] tests for btrfs fsverity
+Message-ID: <YtgNpAa8qu4LOSyP@localhost.localdomain>
+References: <cover.1658277755.git.boris@bur.io>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v2 1/3] btrfs: enhance unsupported compat RO flags
- handling
-Content-Language: en-US
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     stable@vger.kernel.org
-References: <cover.1658293417.git.wqu@suse.com>
- <937879049c71370b6a1ca192b67fbcf2989d5915.1658293417.git.wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <937879049c71370b6a1ca192b67fbcf2989d5915.1658293417.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1658277755.git.boris@bur.io>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Jul 19, 2022 at 05:49:45PM -0700, Boris Burkov wrote:
+> This patchset provides tests for fsverity support in btrfs.
+> 
+> It includes modifications for generic tests to pass with btrfs as well
+> as new tests.
+>
 
+These ran fine on our overnight CI testing, the patches look good as well, you
+can add
 
-On 20.07.22 г. 8:06 ч., Qu Wenruo wrote:
-> Currently there are two corner cases not handling compat RO flags
-> correctly:
-> 
-> - Remount
->    We can still mount the fs RO with compat RO flags, then remount it RW.
->    We should not allow any write into a fs with unsupported RO flags.
-> 
-> - Still try to search block group items
->    In fact, behavior/on-disk format change to extent tree should not
->    need a full incompat flag.
-> 
->    And since we can ensure fs with unsupported RO flags never got any
->    writes (with above case fixed), then we can even skip block group
->    items search at mount time.
-> 
-> This patch will enhance the unsupported RO compat flags by:
-> 
-> - Reject RW remount if there is unsupported RO compat flags
-> 
-> - Go dummy block group items directly for unsupported RO compat flags
->    In fact, only changes to chunk/subvolume/root/csum trees should go
->    incompat flags.
-> 
-> The latter part should allow future change to extent tree to be compat
-> RO flags.
-> 
-> Thus this patch also needs to be backported to all stable trees.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Thanks,
+
+Josef 
