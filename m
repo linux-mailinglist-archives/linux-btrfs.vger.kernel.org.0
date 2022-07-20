@@ -2,74 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7579F57AA1B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jul 2022 00:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290D657AB0F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jul 2022 02:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240479AbiGSW6f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jul 2022 18:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
+        id S237483AbiGTAmK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jul 2022 20:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238632AbiGSW6e (ORCPT
+        with ESMTP id S232544AbiGTAmJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jul 2022 18:58:34 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADFB62A5A
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 15:58:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1658271501;
-        bh=pYsHVogdCQqMIf7j4q7zsH3jaSP09MjNLXvV0qhjrF4=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=A2HqIKrHGn990BHg1sImrNdWEWk8yOi+t9M0e1dstYRqQFE/VxWIF6CsiPj6k2akb
-         6TeywtMS4YmZVKG13rY6pS4Z4lKwveTsL/ksqgCpjYjaZ1jy98QvVWZ8Fc88ywZn+d
-         BnS+b2fjqyu80b+iw7O/jmN9dS5T1EPOVagad1AU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4s0t-1oC0MN440N-0022xP; Wed, 20
- Jul 2022 00:58:21 +0200
-Message-ID: <3cfc9569-ff22-c04d-f7d0-fea1396ba4b5@gmx.com>
-Date:   Wed, 20 Jul 2022 06:58:16 +0800
+        Tue, 19 Jul 2022 20:42:09 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E44F5AC
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jul 2022 17:42:07 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        by box.fidei.email (Postfix) with ESMTPSA id 1836780425;
+        Tue, 19 Jul 2022 20:42:05 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1658277727; bh=2P5JprYgoTjQR2AW3DIwf3vkIu/HEbbql1EYQndXdX0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ZwU301Fp6upV8Ka3/wH0nLqhfbIqGmbsNFnm6NbqsBX+BUTa72H0FScKtJFJ9JrTv
+         2sz+ekhEJo8QaanqWOxGVr5xE/VHirC3yJJL11RZooJBJsLBHTUoBQXPLjM/c5lOS7
+         XwdBj4FZcvcVBf0QniduAfx6fF3iU6U15Rj8ttOmXyce7NrtrngX+HFElFqyLagxcW
+         12KXZpcHkAmvbfvMA4lWo0tJRO4C6MOEMPrAUK3BeoadvuK0pXuAaB2WasYNeaZtBD
+         z07wmXc7wFR0o74xVEGXcyRGO9Cyf+3UVwgY23mLUZ0UJEtFlyLjEdDY0v9KGohXLh
+         rhZb8vd5reYGg==
+Message-ID: <4b4b9f52-9c40-2f91-d8a3-a6ed29c379ee@dorminy.me>
+Date:   Tue, 19 Jul 2022 20:42:04 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v2 2/4] btrfs: make __btrfs_dump_space_info() output
- better formatted
+Subject: Re: [PATCH v2 4/4] btrfs: dump all space infos if we abort
+ transaction due to ENOSPC
 Content-Language: en-US
-To:     dsterba@suse.cz, Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
 References: <cover.1658207325.git.wqu@suse.com>
- <dc40ddc78b7173d757065dcdde910bcf593d3a5c.1658207325.git.wqu@suse.com>
- <a5321725-1667-fd6f-2bfd-8ddb7b78d038@dorminy.me>
- <20220719213804.GT13489@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220719213804.GT13489@twin.jikos.cz>
+ <621654191a02dc3cbc5c3b03f6c00963b7e6f382.1658207325.git.wqu@suse.com>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <621654191a02dc3cbc5c3b03f6c00963b7e6f382.1658207325.git.wqu@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UwXEvjc5Bz0rHNbHHrXPvY07E/FgaIR9qrepYSjReMnrpOOHfeu
- TOM6ooG43+b467vr7B7wZqqJASDQseJncGHSna/b22yFBfqU2M+yqrTb0nxyO+tc9BMeRlA
- XKX8SAAQJAFFFW+pk3RnsNvNaQrFcoBzlURax03fUusjl8xiEha6+5RmPoH2HZ2Bzmqswtx
- 3EC0rCV7XAcy+1R8Uxd+A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:m9EH7r/MaG4=:MrL0yLAXQRo5TdwMXCpkvq
- EmbpmmV1PaH8/gAH2AODWDggutQ5rfm8MExxx778h4L2XTJ3l+mM4tHUv0sUCC6v1V1/y0D1g
- ifysKFV3JVhlsRkt4KtQ+SD4/ACaAzwtFP9w8p0/mvtmudpUQp4IUa5x6ixET5hik0XSpEsJf
- iMhNhkeKcYDUtkTOaNbfZoudLAwBz5nMYe06pleOh+9o/rVtlw/J3YJQomWeVVMjSR9r0W3fm
- 9P191xU2GpLDdP2c7LgKf6nBrwhA/7UGB4kYRCRI7845BYaXpIn3d984b+Bhg7ZsCS1fkBjwK
- cV6hNoeDuZm19axyJiPn0N75JfkelWntY9fkuQbcuG4MfcuxtLcBRtivSsBUkBbAZf0IsFbxK
- 3wZefsLfh/hu4gWstP7vryIUjFsLaT49hP2ht79TAqtR1LM3TOm0KmvoTbaMsR7r1JF7lFAMq
- Ugcqd0my6ytoH6LWT3OgLzqjb4AgodhuykulYnJRG1+nv87mxjgj9948pdpIlt0wIhfRPm9Ta
- S3iu1LLykRHIad6uyM8mIfBwmmTWX8OLu6FFu8EqtMvB9fWDvAIlJyhJscly/+qrj37PqF57J
- Z81qF+01/JD3V1Q/O4gI5KPbHuiZq5Yli3nkxgoodvbHovzRdI18BhJrx6XPkn8K7mHFCeNBj
- qG6WdcjlU1Kv/5pFsWlr075kMgR8Kmu++r8KcMpR5nsRfgRTekEpX5n3jL/p0n8lhhvDoTWs6
- XsoyPep9ZZ1bXYfhH4NZ+iF2VAWYiy2Jhl5Si3APtkVlE7BYbtROSJhnw1sR+KLDkxuPqoHp/
- zTxl/KSng2DGEHJ3oBg/0V4+PYXKSVNQNcBR2q1BoIy4ElomCeqzisFnyilQ9qiI9MoYntfWF
- F83IgFwvsvWUEk61L1c7zNKQDxHKP49E0FkIClJJ6Bv2FxpxrwxMelJ7FbmA1CfrK8x2YSruZ
- LRCzUP8JkJ/TrQxPAa6a7AW6jkqULMwHIuTO4Kd1m6jUAXWygcTMMTahtZDjWZEJl8CSyE8b6
- Std1eaHKE36gIdnDIQ+oRnwzLAbfrTD2RluHq32QdoTaZqszO0ywdcrEDrj2gy+tikTRhO5QM
- Put073KcHbgAcYrCAW6Y9GOYQVgPD9sDf5APECcKr/EcPdd6Howh0eEfA==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,61 +54,171 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/7/20 05:38, David Sterba wrote:
-> On Tue, Jul 19, 2022 at 04:56:00PM -0400, Sweet Tea Dorminy wrote:
->> On 7/19/22 01:11, Qu Wenruo wrote:
->>>
->>> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
->>> index 36b466525318..623fa0488545 100644
->>> --- a/fs/btrfs/space-info.c
->>> +++ b/fs/btrfs/space-info.c
->>> @@ -475,11 +475,15 @@ static void __btrfs_dump_space_info(struct btrfs=
-_fs_info *fs_info,
->>>    		   flag_str,
->>>    		   (s64)(info->total_bytes - btrfs_space_info_used(info, true)),
->>>    		   info->full ? "" : "not ");
->>> -	btrfs_info(fs_info,
->>> -		"space_info total=3D%llu, used=3D%llu, pinned=3D%llu, reserved=3D%l=
-lu, may_use=3D%llu, readonly=3D%llu zone_unusable=3D%llu",
->>> -		info->total_bytes, info->bytes_used, info->bytes_pinned,
->>> -		info->bytes_reserved, info->bytes_may_use,
->>> -		info->bytes_readonly, info->bytes_zone_unusable);
->>> +	btrfs_info(fs_info, "  total:         %llu", info->total_bytes);
->>> +	btrfs_info(fs_info, "  used:          %llu", info->bytes_used);
->>> +	btrfs_info(fs_info, "  pinned:        %llu", info->bytes_pinned);
->>> +	btrfs_info(fs_info, "  reserved:      %llu", info->bytes_reserved);
->>> +	btrfs_info(fs_info, "  may_use:       %llu", info->bytes_may_use);
->>> +	btrfs_info(fs_info, "  read_only:     %llu", info->bytes_readonly);
->>> +	if (btrfs_is_zoned(fs_info))
->>> +		btrfs_info(fs_info,
->>> +			    "  zone_unusable: %llu", info->bytes_zone_unusable);
->>
->> I'm (perhaps needlessly) worried about splitting this up into six/seven
->> messages, because of the ratelimiting rolled into btrfs_printk. The
->> ratelimit is 100 messages per 5 * HZ, and it seems like it would be
->> unfortunate if it kicked in during the middle of this dump and prevente=
-d
->> later info from being dumped.
->>
->> Maybe we should add a btrfs_dump_printk() helper that doesn't have a
->> ratelimit built in, for exceptional cases like this where we really,
->> really don't want anything ratelimited?
->
-> Splitting the message is IMHO wrong thing, there are other subysystems
-> writing to the log so the lines can become scattered or interleaved with
-> the same message from other threads.
+On 7/19/22 01:11, Qu Wenruo wrote:
+> We have hit some transaction abort due to -ENOSPC internally.
+> 
+> Normally we should always reserve enough space for metadata for every
+> transaction, thus hitting -ENOSPC should really indicate some cases we
+> didn't expect.
+> 
+> But unfrotunately current error reporting will only give a kernel
+> wanring and backtrace, not really helpful to debug what's causing the
+> problem.
+> 
+> And debug_enospc can only help when user can reproduce the problem, but
+> under most cases, such transaction abort by -ENOSPC is really hard to
+> reproduce.
+> 
+> So this patch will dump all space infos (data, metadata, system) when we
+> abort the first transaction with -ENOSPC.
+> 
+> This should at least provide some clue to us.
+> 
+> The example of a dump would look like this:
+> 
+>   ------------[ cut here ]------------
+>   <skip stack dump>
+>   ---[ end trace 0000000000000000 ]---
+>   BTRFS info (device dm-4: state A): dumpping space info >   BTRFS info (device dm-4: state A): space_info DATA has 8388608 
+free, is not full
+>   BTRFS info (device dm-4: state A):   total:         8388608
+>   BTRFS info (device dm-4: state A):   used:          0
+>   BTRFS info (device dm-4: state A):   pinned:        0
+>   BTRFS info (device dm-4: state A):   reserved:      0
+>   BTRFS info (device dm-4: state A):   may_use:       0
+>   BTRFS info (device dm-4: state A):   read_only:     0
+>   BTRFS info (device dm-4: state A): space_info META has 263979008 free, is not full
+>   BTRFS info (device dm-4: state A):   total:         268435456
+>   BTRFS info (device dm-4: state A):   used:          131072
+>   BTRFS info (device dm-4: state A):   pinned:        65536
+>   BTRFS info (device dm-4: state A):   reserved:      0
+>   BTRFS info (device dm-4: state A):   may_use:       4194304
+>   BTRFS info (device dm-4: state A):   read_only:     65536
+>   BTRFS info (device dm-4: state A): space_info SYS has 8372224 free, is not full
+>   BTRFS info (device dm-4: state A):   total:         8388608
+>   BTRFS info (device dm-4: state A):   used:          16384
+>   BTRFS info (device dm-4: state A):   pinned:        0
+>   BTRFS info (device dm-4: state A):   reserved:      0
+>   BTRFS info (device dm-4: state A):   may_use:       0
+>   BTRFS info (device dm-4: state A):   read_only:     0
+>   BTRFS info (device dm-4: state A): dumping metadata reservation: (reserved/size)
+>   BTRFS info (device dm-4: state A):   global:          (3670016/3670016)
+>   BTRFS info (device dm-4: state A):   trans:           (0/0)
+>   BTRFS info (device dm-4: state A):   chunk:           (0/0)
+>   BTRFS info (device dm-4: state A):   delayed_inode:   (0/0)
+>   BTRFS info (device dm-4: state A):   delayed_refs:    (524288/524288)
+>   BTRFS: error (device dm-1: state A) in cleanup_transaction:1971: errno=-28 No space left
+>   BTRFS info (device dm-1: state EA): forced readonly
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>   fs/btrfs/ctree.h      |  6 ++++--
+>   fs/btrfs/space-info.c | 14 ++++++++++++++
+>   fs/btrfs/space-info.h |  2 ++
+>   fs/btrfs/super.c      |  4 +++-
+>   4 files changed, 23 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 4e2569f84aab..3d6fd7f6b339 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -3739,7 +3739,7 @@ const char * __attribute_const__ btrfs_decode_error(int errno);
+>   __cold
+>   void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
+>   			       const char *function,
+> -			       unsigned int line, int errno);
+> +			       unsigned int line, int errno, bool first_hit);
+>   
+>   /*
+>    * Call btrfs_abort_transaction as early as possible when an error condition is
+> @@ -3747,9 +3747,11 @@ void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
+>    */
+>   #define btrfs_abort_transaction(trans, errno)		\
+>   do {								\
+> +	bool first = false;					\
+>   	/* Report first abort since mount */			\
+>   	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
+>   			&((trans)->fs_info->fs_state))) {	\
+> +		first = true;					\
+>   		if ((errno) != -EIO && (errno) != -EROFS) {		\
+>   			WARN(1, KERN_DEBUG				\
+>   			"BTRFS: Transaction aborted (error %d)\n",	\
+> @@ -3761,7 +3763,7 @@ do {								\
+>   		}						\
+>   	}							\
+>   	__btrfs_abort_transaction((trans), __func__,		\
+> -				  __LINE__, (errno));		\
+> +				  __LINE__, (errno), first);	\
+>   } while (0)
+>   
+>   #ifdef CONFIG_PRINTK_INDEX
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 81457049816e..af2b3f5ef2b0 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -1717,3 +1717,17 @@ int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
+>   	}
+>   	return ret;
+>   }
+> +
+> +/* Dump all the space infos when we abort a transaction due to ENOSPC. */
+> +__cold void btrfs_dump_fs_space_info(struct btrfs_fs_info *fs_info)
+> +{
+> +	struct btrfs_space_info *space_info;
+> +
+> +	btrfs_info(fs_info, "dumping space info:");
+> +	list_for_each_entry(space_info, &fs_info->space_info, list) {
+> +		spin_lock(&space_info->lock);
+> +		__btrfs_dump_space_info(fs_info, space_info);
+> +		spin_unlock(&space_info->lock);
+> +	}
+> +	dump_metadata_rsv(fs_info);
+> +}
+This function looks similar to btrfs_dump_space_info(), and the name and 
+callsite doesn't help distinguish it very much to me. It seems 
+potentially useful to print all the space_infos when one space_info 
+encounters a problem, and it seems potentially useful to print the block 
+group infos when we're dumping all the space infos already, so maybe the
+two functions could be combined.
 
-But that one line output is really hard to read for human beings.
+Maybe you could adjust btrfs_dump_space_info() to print all the space 
+infos, starting with the one passed in (potentially NULL), and call it 
+instead of this new function?
 
-Or do you mean that, as long as it's debug info, we should not care
-about readability at all?
-
-Thanks,
-Qu
->
-> We should prefer single line messages if possible, if not only for
-> better grep-ability, pretty printing can be done by any utility that
-> parses the logs.
->
-> I did not think about the rate limiting, but you're right that it could
-> be problematic.
+> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+> index e7de24a529cf..01287a7a22a4 100644
+> --- a/fs/btrfs/space-info.h
+> +++ b/fs/btrfs/space-info.h
+> @@ -157,4 +157,6 @@ static inline void btrfs_space_info_free_bytes_may_use(
+>   }
+>   int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
+>   			     enum btrfs_reserve_flush_enum flush);
+> +void btrfs_dump_fs_space_info(struct btrfs_fs_info *fs_info);
+> +
+>   #endif /* BTRFS_SPACE_INFO_H */
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 4c7089b1681b..f6bc8aa00f44 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -346,12 +346,14 @@ void __cold btrfs_err_32bit_limit(struct btrfs_fs_info *fs_info)
+>   __cold
+>   void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
+>   			       const char *function,
+> -			       unsigned int line, int errno)
+> +			       unsigned int line, int errno, bool first_hit)
+>   {
+>   	struct btrfs_fs_info *fs_info = trans->fs_info;
+>   
+>   	WRITE_ONCE(trans->aborted, errno);
+>   	WRITE_ONCE(trans->transaction->aborted, errno);
+> +	if (first_hit && errno == -ENOSPC)
+> +		btrfs_dump_fs_space_info(fs_info);
+>   	/* Wake up anybody who may be waiting on this transaction */
+>   	wake_up(&fs_info->transaction_wait);
+>   	wake_up(&fs_info->transaction_blocked_wait);
+DO_ONCE_LITE(btrfs_dump_fs_space_info, fs_info) from <linux/once_lite.h> 
+seems like a more lightweight way to dump the space infos once upon 
+first transaction abort. Then you don't have to plumb through the 
+'first_hit' parameter from btrfs_abort_transaction(), and this change 
+becomes even more minimal than it already is.
