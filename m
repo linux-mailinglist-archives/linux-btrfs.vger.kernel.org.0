@@ -2,124 +2,179 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE3357CC15
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jul 2022 15:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07CD57CC81
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jul 2022 15:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbiGUNhv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Jul 2022 09:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45740 "EHLO
+        id S230038AbiGUNsP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Jul 2022 09:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbiGUNhs (ORCPT
+        with ESMTP id S230355AbiGUNro (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Jul 2022 09:37:48 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9856A7E800;
-        Thu, 21 Jul 2022 06:37:45 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3C5BA1F381;
-        Thu, 21 Jul 2022 13:37:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658410664; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sLxPDxaM3pGA+SPBUqfQiTnWfVBidgjd2tCWjISh03w=;
-        b=sZ4dIBZTG+0nINDK/hL8I6fk2f9mRAwN6Q098UHGyA4HFW2E9sM0CDaQyPk1M9u2JVCs3Y
-        2GDiHtU6bwpiMgWcTzhJZeoJEq8GB56SVDJdrdxFq0ZjANrYbYqipYTJbYrw8teNJdI81k
-        15n1p8tc/5JqmeD5LXYJ2UwhOz3u8Bw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CF49313A1B;
-        Thu, 21 Jul 2022 13:37:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id C1zrL6dW2WKUKwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 21 Jul 2022 13:37:43 +0000
-Message-ID: <0c2337c3-2b39-c54c-27e9-dd4f0a99cf71@suse.com>
-Date:   Thu, 21 Jul 2022 16:37:43 +0300
+        Thu, 21 Jul 2022 09:47:44 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB26343E75
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Jul 2022 06:47:42 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id mh14so1205042qvb.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Jul 2022 06:47:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wO/snL79naOLQxq4QCCLXyQQsq7XdyxRDs5OsxX95gk=;
+        b=3E1wJUDk0k/cfvAaBvKWP7m9gN+bs5nCmW3jgeoGxyyTOXPvieRpxCf/ZucQzyQRC5
+         myzfN1qDLhcAAVFjPqnAbxAksz4ZZGu2MOlIBudIWOup7y9cKot3J+TvuOmgP1pw9Qta
+         MgZdi0jFRU9URylGi6hR4tIK0XVWZ5XEUVANe2MvcQHB4+4IWDhtJaAV2D0C5c8e2KSa
+         m9618Vc90HsvUN8nHdtK2qkvL7nz8dHg5R9VrZUbC1Ye0hWBBz0ANueVUj33VYkmcYpZ
+         9ECc74phPBTr/19xM6ZnWKsqXYH06f2yYMyuFYMwlxrmTC0ykAIAJUG+jxNKWKv0D8cD
+         mwXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wO/snL79naOLQxq4QCCLXyQQsq7XdyxRDs5OsxX95gk=;
+        b=4f0LncanfXsOCgL/meGcgfBZqi5Sc6Lr8DZaGj6Ek89QGFja9AXh+5QIAjBOiYda5I
+         HaASE8+0BD2NNliTy9SPlCwNWn+laK8xCxbIkemQacgtCRogp6nYwZPkLFjy7gquWBJC
+         9giBNLAEW0lq4rGyYy4ie86gQUhT+vWm1N9v66TFOj0Nvwy4jre99vQc49xUJTj4DIid
+         siXNH9ioJW2GaIO7xETgKm7TVYSiyZVQTigFWdmmFHKrVcsoX7pUmM+N7A7WYCLUsGL8
+         hxDiyWvdHhBLhEmmfs/A6XsqrOS7XQueO7zLIny8JGLH5QI0Yn2P1Xxs/r5yw8G5AC82
+         DenA==
+X-Gm-Message-State: AJIora9w8oQZNTjVpJ0n9RJWavnqw4x92fVDNmBQtix0lLyhfG5hbuYj
+        fB0JQ7Jqfl9iHuoQJX8GgsvKIQRIIkNrbw==
+X-Google-Smtp-Source: AGRyM1sKYicS5Q4fOw99b3n2C7FM3fQyqMSrhubAInzwtYfY/hGrBr45doNtFn+8xrmTyyJlu17uhw==
+X-Received: by 2002:a05:6214:624:b0:473:27e8:95d6 with SMTP id a4-20020a056214062400b0047327e895d6mr33596973qvx.109.1658411261378;
+        Thu, 21 Jul 2022 06:47:41 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id x8-20020a05620a12a800b006b5b7a8e6a2sm1329334qki.23.2022.07.21.06.47.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jul 2022 06:47:40 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v2] btrfs: do not batch insert non-consecutive dir indexes during log replay
+Date:   Thu, 21 Jul 2022 09:47:39 -0400
+Message-Id: <a69adbc22b4b4340a7289d8b9bbb9878d6c00192.1658411151.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH]btrfs: Fix fstest case btrfs/219
-Content-Language: en-US
-To:     "Flint.Wang" <hmsjwzb@zoho.com>, anand.jain@oracle.com
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20220721083609.5695-1-hmsjwzb@zoho.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <20220721083609.5695-1-hmsjwzb@zoho.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+While running generic/475 in a loop I got the following error
 
+BTRFS critical (device dm-11): corrupt leaf: root=5 block=31096832 slot=69, bad key order, prev (263 96 531) current (263 96 524)
+<snip>
+ item 65 key (263 96 517) itemoff 14132 itemsize 33
+ item 66 key (263 96 523) itemoff 14099 itemsize 33
+ item 67 key (263 96 525) itemoff 14066 itemsize 33
+ item 68 key (263 96 531) itemoff 14033 itemsize 33
+ item 69 key (263 96 524) itemoff 14000 itemsize 33
 
-On 21.07.22 г. 11:36 ч., Flint.Wang wrote:
-> Hi,
-> fstest btrfs/291 failed.
-> 
-> [How to reproduce]
-> mkdir -p /mnt/test/219.mnt
-> xfs_io -f -c "truncate 256m" /mnt/test/219.img1
-> mkfs.btrfs /mnt/test/219.img1
-> cp /mnt/test/219.img1 /mnt/test/219.img2
-> mount -o loop /mnt/test/219.img1 /mnt/test/219.mnt
-> umount /mnt/test/219.mnt
-> losetup -f --show /mnt/test/219.img1 dev
-> mount /dev/loop0 /mnt/test/219.mnt
-> umount /mnt/test/219.mnt
-> mount -o loop /mnt/test/219.img2 /mnt/test/219.mnt
-> 
-> [Root cause]
-> if (fs_devices->opened && found_transid < device->generation) {
-> 	/*
-> 	 * That is if the FS is _not_ mounted and if you
-> 	 * are here, that means there is more than one
-> 	 * disk with same uuid and devid.We keep the one
-> 	 * with larger generation number or the last-in if
-> 	 * generation are equal.
-> 	 */
-> 	mutex_unlock(&fs_devices->device_list_mutex);
-> 	return ERR_PTR(-EEXIST);
-> }
-> 
-> [Personal opinion]
-> User might back up a block device to another. I think it is improper
-> to forbid user from mounting it.
-> 
-> Signed-off-by: Flint.Wang <hmsjwzb@zoho.com>
+As you can see here we have 3 dir index keys with the dir index value of
+523, 524, and 525 inserted between 517 and 524.  This occurs because our
+dir index insertion code will bulk insert all dir index items on the
+node regardless of their actual key value.
 
+This makes sense on a normally running system, because if there's a gap
+in between the items there was a deletion before the item was inserted,
+so there's not going to be an overlap of the dir index items that need
+to be inserted and what exists on disk.
 
-This lacks any explanation whatsoever so it's not possible to judge 
-whether the fix is correct or not.
+However during log replay this isn't necessarily true, we could have any
+number of dir indexes in the tree already.
 
-> ---
->   fs/btrfs/volumes.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 6aa6bc769569a..76af32032ac85 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -900,7 +900,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->   		 * tracking a problem where systems fail mount by subvolume id
->   		 * when we reject replacement on a mounted FS.
->   		 */
-> -		if (!fs_devices->opened && found_transid < device->generation) {
-> +		if (fs_devices->opened && found_transid < device->generation) {
->   			/*
->   			 * That is if the FS is _not_ mounted and if you
->   			 * are here, that means there is more than one
+Fix this by seeing if we're replaying the log, and if we are simply skip
+batching if there's a gap in the key space.
+
+This file system was left broken from the fstest, I tested this patch
+against the broken fs to make sure it replayed the log properly, and
+then btrfs check'ed the file system after the log replay to verify
+everything was ok.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/delayed-inode.c | 35 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 33 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 823aa05b3e38..e7f34871a132 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -691,9 +691,22 @@ static int btrfs_insert_delayed_item(struct btrfs_trans_handle *trans,
+ 	int total_size;
+ 	char *ins_data = NULL;
+ 	int ret;
++	bool continuous_keys_only = false;
+ 
+ 	lockdep_assert_held(&node->mutex);
+ 
++	/*
++	 * During normal operation the delayed index offset is continuously
++	 * increasing, so we can batch insert all items as there will not be any
++	 * overlapping keys in the tree.
++	 *
++	 * The exception to this is log replay, where we may have interleaved
++	 * offsets in the tree, so our batch needs to be continuous keys only in
++	 * order to ensure we do not end up with out of order items in our leaf.
++	 */
++	if (test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags))
++		continuous_keys_only = true;
++
+ 	/*
+ 	 * For delayed items to insert, we track reserved metadata bytes based
+ 	 * on the number of leaves that we will use.
+@@ -715,6 +728,14 @@ static int btrfs_insert_delayed_item(struct btrfs_trans_handle *trans,
+ 		if (!next)
+ 			break;
+ 
++		/*
++		 * We cannot allow gaps in the key space if we're doing log
++		 * replay.
++		 */
++		if (continuous_keys_only &&
++		    (next->key.offset != curr->key.offset + 1))
++			break;
++
+ 		ASSERT(next->bytes_reserved == 0);
+ 
+ 		next_size = next->data_len + sizeof(struct btrfs_item);
+@@ -775,7 +796,17 @@ static int btrfs_insert_delayed_item(struct btrfs_trans_handle *trans,
+ 
+ 	ASSERT(node->index_item_leaves > 0);
+ 
+-	if (next) {
++	/*
++	 * For normal operations we will batch an entire leaf's worth of delayed
++	 * items, so if there are more items to process we can decrement
++	 * index_item_leaves by 1 as we inserted 1 leaf's worth of items.
++	 *
++	 * However for log replay we may not have inserted an entire leaf's
++	 * worth of items, we may have not had continuous items, so decrementing
++	 * here would mess up the index_item_leaves accounting.  For this case
++	 * only clean up the accounting when there are no items left.
++	 */
++	if (next && !continuous_keys_only) {
+ 		/*
+ 		 * We inserted one batch of items into a leaf a there are more
+ 		 * items to flush in a future batch, now release one unit of
+@@ -784,7 +815,7 @@ static int btrfs_insert_delayed_item(struct btrfs_trans_handle *trans,
+ 		 */
+ 		btrfs_delayed_item_release_leaves(node, 1);
+ 		node->index_item_leaves--;
+-	} else {
++	} else if (!next) {
+ 		/*
+ 		 * There are no more items to insert. We can have a number of
+ 		 * reserved leaves > 1 here - this happens when many dir index
+-- 
+2.36.1
+
