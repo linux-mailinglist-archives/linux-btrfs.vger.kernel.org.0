@@ -2,121 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E2E57DF76
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jul 2022 12:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CBB57E266
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jul 2022 15:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234630AbiGVKOu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Jul 2022 06:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49708 "EHLO
+        id S234376AbiGVNge (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Jul 2022 09:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234641AbiGVKOs (ORCPT
+        with ESMTP id S229605AbiGVNgd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Jul 2022 06:14:48 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA1E78597
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jul 2022 03:14:47 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CFDC320085;
-        Fri, 22 Jul 2022 10:14:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658484885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lHT1ddvwte2AfAAzlcbtyCztnWpQRAYF0kQLbKquQHk=;
-        b=coRR+rQ3tQjOuqW/WfLiTq3Ox941ov1wrMPMA6mkDB49obkzIIejBeNEO9IU3qDfLt7L8k
-        nKwF9f8DbnIjOda39nZTUJmXnZqTgpwy1pIjc+q6IdxJ1n7CakiO0Qpxj4J5Sa8gk3TIW3
-        ++7HIGdH9B4qLd5UKLca2Tj76K2AXKQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C7C913AB3;
-        Fri, 22 Jul 2022 10:14:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6GZ9I5V42mLzegAAMHmgww
-        (envelope-from <nborisov@suse.com>); Fri, 22 Jul 2022 10:14:45 +0000
-Message-ID: <a747c87b-3d38-7819-472c-db9480599ad6@suse.com>
-Date:   Fri, 22 Jul 2022 13:14:45 +0300
+        Fri, 22 Jul 2022 09:36:33 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7E713FA7
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jul 2022 06:36:32 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id l14so3487793qtv.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jul 2022 06:36:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FhAqNzMjHItCBXxJNn0CnK8km/tkB3iKgy6yFIjV8PM=;
+        b=MscrtghFTqC5Gt5QBloA4g+xw9aGO2WSTRt/JsG/Mm4bDuvmtW3VOZlTgnHLLayNcB
+         fCzN8v58ZtV9HMj6QiKHP0ohQKMwHoCuW0SxUnfBlpdFjZiv0yzVe4NcZ+Gq9StvwkjC
+         CzCc+8mcwr6mD0rMonFG2MsO+EgOfPf/v9vy8J3whtXlRfQdsfzxfKC3KhzTSeb6Lv5i
+         ETahs3Pz2GiFHAYlv/5Ye2V64JQN8TbkG0S9brhtconnUYe8hduVOdWp9LpzHmcU3ml9
+         87ZKb6V+el2uwIFOMOz4z0fr/+L8W53shP0occcXT8moFk3ujUAStzlcruCeTb4Toze1
+         vFHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FhAqNzMjHItCBXxJNn0CnK8km/tkB3iKgy6yFIjV8PM=;
+        b=h2F9p1vpsLKu+KT24csqwuM3lHksQcrRnfSam4UyRQu6OsvSEJ1pcf69GZfqf4bVCn
+         szuAsM1lhWsk5FklPgRVzjDrzguGETreci+yKi/ypcNAx8fuwF3+4KQYEcatAzw0dCcn
+         BHultnuqtzEY4ef+h8IhE+n61+WYwFBUSX/l0k0QbaLCwPx0AZdw8SE5Od+gScw8OJGd
+         eREUxWrCoF0aJ9EoEbfBIBRUIPgWH67eFsZJWeHuSBfcgBD/B/NjxmE2nA9xk+5cF+4p
+         W+KGewaB8E0I1euTLAd6EXBGtd+2tWtZE6nq/N8gPK8pfeRgE/a5LlXLxjiMroO+HocF
+         Jrtg==
+X-Gm-Message-State: AJIora+KkrjONydMIzX/qI8Zi3hc1VoKNbk7rUt5/EhhVJifUllGNgA+
+        gQKvXB5fkNmBuJvUCvBsb4vTUNUnwh9SmA==
+X-Google-Smtp-Source: AGRyM1t3UyS5fWuzxHasz9RrimiSG0KZJzIV6VNVvqY8g1x02NdnqHtQKhtBNuis+cC0aDDGGinmfA==
+X-Received: by 2002:ac8:5746:0:b0:31e:d0d6:30bc with SMTP id 6-20020ac85746000000b0031ed0d630bcmr32342qtx.493.1658496991393;
+        Fri, 22 Jul 2022 06:36:31 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id cf5-20020a05622a400500b0031ee01443b4sm2779598qtb.74.2022.07.22.06.36.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jul 2022 06:36:30 -0700 (PDT)
+Date:   Fri, 22 Jul 2022 09:36:29 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Ioannis Angelakopoulos <iangelak@fb.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v3 0/6]  btrfs: Annotate wait events with lockdep
+Message-ID: <Ytqn3ROQAGJxkTL3@localhost.localdomain>
+References: <20220720233818.3107724-1-iangelak@fb.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v2 2/2] btrfs-progs: expand corrupt_file_extent in
- btrfs-corrupt-block
-Content-Language: en-US
-To:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1657919808.git.boris@bur.io>
- <d3e7d721bb98a6643ba243c21013ddfc929ccd12.1657919808.git.boris@bur.io>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <d3e7d721bb98a6643ba243c21013ddfc929ccd12.1657919808.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220720233818.3107724-1-iangelak@fb.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 16.07.22 г. 0:22 ч., Boris Burkov wrote:
-> To corrupt holes/prealloc/inline extents, we need to mess with
-> extent data items. This patch makes it possible to modify
-> disk_bytenr with a specific value (useful for hole corruptions)
-> and to modify the type field (useful for prealloc corruptions)
+On Wed, Jul 20, 2022 at 04:38:13PM -0700, Ioannis Angelakopoulos wrote:
+> Hello,
 > 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
->   btrfs-corrupt-block.c | 22 +++++++++++++++++-----
->   1 file changed, 17 insertions(+), 5 deletions(-)
+> With this patch series we annotate wait events in btrfs with lockdep to
+> catch deadlocks involving these wait events.
 > 
-> diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
-> index 5c39459db..27844b184 100644
-> --- a/btrfs-corrupt-block.c
-> +++ b/btrfs-corrupt-block.c
-> @@ -307,6 +307,7 @@ enum btrfs_inode_field {
->   
->   enum btrfs_file_extent_field {
->   	BTRFS_FILE_EXTENT_DISK_BYTENR,
-> +	BTRFS_FILE_EXTENT_TYPE,
->   	BTRFS_FILE_EXTENT_BAD,
->   };
->   
-> @@ -379,6 +380,8 @@ static enum btrfs_file_extent_field convert_file_extent_field(char *field)
->   {
->   	if (!strncmp(field, "disk_bytenr", FIELD_BUF_LEN))
->   		return BTRFS_FILE_EXTENT_DISK_BYTENR;
-> +	if (!strncmp(field, "type", FIELD_BUF_LEN))
-> +		return BTRFS_FILE_EXTENT_TYPE;
->   	return BTRFS_FILE_EXTENT_BAD;
->   }
->   
-> @@ -752,14 +755,14 @@ out:
->   
->   static int corrupt_file_extent(struct btrfs_trans_handle *trans,
->   			       struct btrfs_root *root, u64 inode, u64 extent,
-> -			       char *field)
-> +			       char *field, u64 bogus)
->   {
->   	struct btrfs_file_extent_item *fi;
->   	struct btrfs_path *path;
->   	struct btrfs_key key;
->   	enum btrfs_file_extent_field corrupt_field;
-> -	u64 bogus;
->   	u64 orig;
-> +	u8 bogus_type = bogus;
+> Recently the btrfs developers fixed a non trivial deadlock involving
+> wait events
+> https://lore.kernel.org/linux-btrfs/20220614131413.GJ20633@twin.jikos.cz/
+> 
+> Currently lockdep is unable to catch these deadlocks since it does not
+> support wait events by default.
+> 
+> With our lockdep annotations we train lockdep to track these wait events
+> and catch more potential deadlocks.
+> 
+> Specifically, we annotate the below wait events in fs/btrfs/transaction.c
+> and in fs/btrfs/ordered-data.c:
+> 
+>   1) The num_writers wait event
+>   2) The num_extwriters wait event
+>   3) The transaction states wait events
+>   4) The pending_ordered wait event
+>   5) The ordered extents wait event
+>
 
-nit: Why do the truncation here, when you can simply pass bogus to 
-btrfs_set_file_extent_type and the truncation would be done when the 
-value is passed? Or simply cast it when passing bogus to 
-btrfs_set_file_extent_type, it makes the code somewhat simpler since we 
-now don't have this bogus_type which is really field-specific.
+You can add
 
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+to the series, thanks,
+
+Josef 
