@@ -2,96 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5E057E49C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jul 2022 18:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3AE57EA6A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jul 2022 01:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235654AbiGVQnQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Jul 2022 12:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
+        id S236314AbiGVXtt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Jul 2022 19:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbiGVQnP (ORCPT
+        with ESMTP id S234919AbiGVXts (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Jul 2022 12:43:15 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D278CEA7
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jul 2022 09:43:14 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id ku18so4852960pjb.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jul 2022 09:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bb/urPHZHGtaqFSyZLowx2ewPSAvXUU/K6Hq5nJ8PNs=;
-        b=qWEV/0IQ/TKwU0/9Nsw9iz9k2TACZ0ZgZEC0mcEsgP93aLMVFHPyIUmwICJ8bb5CrV
-         jCYe6YtxvpPKCkwj57C8/SmA163O3VzalBEuf0Sd/fcv1YOUEPhiVJfF0DrsEy5gCQjM
-         N1fDuyKTAmEQz7sw6aKFRHbC5j1Cp2s5IRJJJ5mB89/cU0n8IZF/2sBS0pfnzLTC70Fm
-         zv3JVpj9A7lFoWA0s0gpCr504zjuj+DTO++kW1sZ5QdxbtzmG3Hz9yAS7wsnEEcVLj2T
-         KJaxE09mlyMV/lGAeFUHgD+LWVZU4yX1vhL9WA3hiKR0zZTWSvNU3qyYiYYWAbmQAqim
-         wH9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bb/urPHZHGtaqFSyZLowx2ewPSAvXUU/K6Hq5nJ8PNs=;
-        b=O+fL2ijOdCgHXrKP1wXWxBurEzm3dnP0UpWNYmPSZh9hkMjWGsMzlpZEeFIojgW4kF
-         oqaqjM+krEHcuolaB1Gg2O+8hJkEBGsWfNC9r41uaD6K8Q3y1VF5ZqbHVUk+CiQn2KEF
-         1x9s8gTO4JRVaoNMqA6adebw4t1Ue654tMYxlKYWh2RJolcohmDcjgEsWtlanICA83C0
-         TyR/hCa2fXoyjC8PwxeuUQSmvV+uzRE1hCIUvMOexczVGOHCxWZ5wsBjBUjyD3twOoO3
-         fYqeHfIYWKoPimHzqQSi8C0QreR/rzw+3r+L/7tCtAq2xG+JUpjvGXhmiEuw23ckbwRN
-         +Cug==
-X-Gm-Message-State: AJIora8+Oy9d2vHl+TkUuOTZVR03Nw2/CTanbJFOjRozWlvVREzn6AO1
-        ag/awL86zKHVs+5GR5Otv8x4ww==
-X-Google-Smtp-Source: AGRyM1vwe00RJwcCdjXBmmfKLgvPibWNGA0LHofdnMUV5DQm21pfWyqJ4YVMEEeyVnZ0dpPH9slVTw==
-X-Received: by 2002:a17:90a:9315:b0:1f1:fea7:5899 with SMTP id p21-20020a17090a931500b001f1fea75899mr17892691pjo.123.1658508193933;
-        Fri, 22 Jul 2022 09:43:13 -0700 (PDT)
-Received: from relinquished.localdomain ([2601:602:a300:cc0::2344])
-        by smtp.gmail.com with ESMTPSA id g3-20020a1709026b4300b0016c6e360ff6sm3934348plt.303.2022.07.22.09.43.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jul 2022 09:43:13 -0700 (PDT)
-Date:   Fri, 22 Jul 2022 09:43:11 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/6] More send v2 updates: otime, fileattr
-Message-ID: <YtrTn30IumaM305L@relinquished.localdomain>
-References: <cover.1655299339.git.dsterba@suse.com>
- <20220623142905.GR20633@twin.jikos.cz>
+        Fri, 22 Jul 2022 19:49:48 -0400
+Received: from out20-157.mail.aliyun.com (out20-157.mail.aliyun.com [115.124.20.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B16DC06C2
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jul 2022 16:49:47 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04832241|-1;BR=01201311R161S84rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00578754-9.82518e-06-0.994203;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.ObE0iWJ_1658533774;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.ObE0iWJ_1658533774)
+          by smtp.aliyun-inc.com;
+          Sat, 23 Jul 2022 07:49:34 +0800
+Date:   Sat, 23 Jul 2022 07:49:37 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Stefan Roesch <shr@fb.com>
+Subject: Re: [PATCH v6 1/4] btrfs: store chunk size in space-info struct.
+Cc:     <linux-btrfs@vger.kernel.org>, <kernel-team@fb.com>
+In-Reply-To: <20211203220445.2312182-2-shr@fb.com>
+References: <20211203220445.2312182-1-shr@fb.com> <20211203220445.2312182-2-shr@fb.com>
+Message-Id: <20220723074936.30FD.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220623142905.GR20633@twin.jikos.cz>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 04:29:05PM +0200, David Sterba wrote:
-> On Wed, Jun 15, 2022 at 03:24:55PM +0200, David Sterba wrote:
-> > New protocol enhancements:
-> > 
-> > - send otime with utimes command
-> > - rename SETFLAGS to FILEATTR and send the btrfs inode flags
-> > - other cleanups
-> > 
-> > David Sterba (6):
-> >   btrfs: send: add OTIME as utimes attribute for proto 2+ by default
-> >   btrfs: send: add new command FILEATTR for file attributes
-> >   btrfs: send: drop __KERNEL__ ifdef from send.h
-> >   btrfs: send: simplify includes
-> >   btrfs: send: remove old TODO regarding ERESTARTSYS
-> >   btrfs: send: use boolean types for current inode status
+Hi,
+
+In this patch, the max chunk size is changed from 
+BTRFS_MAX_DATA_CHUNK_SIZE(10G) to SZ_1G without any comment ?
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/07/23
+
+> The chunk size is stored in the btrfs_space_info structure.
+> It is initialized at the start and is then used.
 > 
-> Moving from topic branch to misc-next. I got no feedback on the protocol
-> extensions, there's still time though.
+> A new api is added to update the current chunk size.
+> 
+> This api is used to be able to expose the chunk_size
+> as a sysfs setting.
+> 
+> Signed-off-by: Stefan Roesch <shr@fb.com>
+> ---
+>  fs/btrfs/space-info.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/space-info.h |  3 +++
+>  fs/btrfs/volumes.c    | 28 +++++++++-------------------
+>  3 files changed, 53 insertions(+), 19 deletions(-)
+> 
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 79fe0ad17acf..437d1240f491 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -181,6 +181,46 @@ void btrfs_clear_space_info_full(struct btrfs_fs_info *info)
+>  		found->full = 0;
+>  }
+>  
+> +/*
+> + * Compute chunk size depending on block type for regular volumes.
+> + */
+> +static u64 compute_chunk_size_regular(struct btrfs_fs_info *info, u64 flags)
+> +{
+> +	ASSERT(flags & BTRFS_BLOCK_GROUP_TYPE_MASK);
+> +
+> +	if (flags & BTRFS_BLOCK_GROUP_DATA)
+> +		return SZ_1G;
+> +	else if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
+> +		return SZ_32M;
+> +
+> +	/* Handle BTRFS_BLOCK_GROUP_METADATA */
+> +	if (info->fs_devices->total_rw_bytes > 50ULL * SZ_1G)
+> +		return SZ_1G;
+> +
+> +	return SZ_256M;
+> +}
+> +
+> +/*
+> + * Compute chunk size depending on volume type.
+> + */
+> +static u64 compute_chunk_size(struct btrfs_fs_info *info, u64 flags)
+> +{
+> +	if (btrfs_is_zoned(info))
+> +		return info->zone_size;
+> +
+> +	return compute_chunk_size_regular(info, flags);
+> +}
+> +
+> +/*
+> + * Update default chunk size.
+> + *
+> + */
+> +void btrfs_update_space_info_chunk_size(struct btrfs_space_info *space_info,
+> +					u64 chunk_size)
+> +{
+> +	atomic64_set(&space_info->chunk_size, chunk_size);
+> +}
+> +
+>  static int create_space_info(struct btrfs_fs_info *info, u64 flags)
+>  {
+>  
+> @@ -202,6 +242,7 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
+>  	INIT_LIST_HEAD(&space_info->tickets);
+>  	INIT_LIST_HEAD(&space_info->priority_tickets);
+>  	space_info->clamp = 1;
+> +	btrfs_update_space_info_chunk_size(space_info, compute_chunk_size(info, flags));
+>  
+>  	ret = btrfs_sysfs_add_space_info_type(info, space_info);
+>  	if (ret)
+> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+> index d841fed73492..c1a64bbfb6d1 100644
+> --- a/fs/btrfs/space-info.h
+> +++ b/fs/btrfs/space-info.h
+> @@ -23,6 +23,7 @@ struct btrfs_space_info {
+>  	u64 max_extent_size;	/* This will hold the maximum extent size of
+>  				   the space info if we had an ENOSPC in the
+>  				   allocator. */
+> +	atomic64_t chunk_size;  /* chunk size in bytes */
+>  
+>  	int clamp;		/* Used to scale our threshold for preemptive
+>  				   flushing. The value is >> clamp, so turns
+> @@ -115,6 +116,8 @@ void btrfs_update_space_info(struct btrfs_fs_info *info, u64 flags,
+>  			     u64 total_bytes, u64 bytes_used,
+>  			     u64 bytes_readonly, u64 bytes_zone_unusable,
+>  			     struct btrfs_space_info **space_info);
+> +void btrfs_update_space_info_chunk_size(struct btrfs_space_info *space_info,
+> +			     u64 chunk_size);
+>  struct btrfs_space_info *btrfs_find_space_info(struct btrfs_fs_info *info,
+>  					       u64 flags);
+>  u64 __pure btrfs_space_info_used(struct btrfs_space_info *s_info,
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index f38c230111be..546c39551648 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -5106,26 +5106,16 @@ static void init_alloc_chunk_ctl_policy_regular(
+>  				struct btrfs_fs_devices *fs_devices,
+>  				struct alloc_chunk_ctl *ctl)
+>  {
+> -	u64 type = ctl->type;
+> +	struct btrfs_space_info *space_info;
+>  
+> -	if (type & BTRFS_BLOCK_GROUP_DATA) {
+> -		ctl->max_stripe_size = SZ_1G;
+> -		ctl->max_chunk_size = BTRFS_MAX_DATA_CHUNK_SIZE;
+> -	} else if (type & BTRFS_BLOCK_GROUP_METADATA) {
+> -		/* For larger filesystems, use larger metadata chunks */
+> -		if (fs_devices->total_rw_bytes > 50ULL * SZ_1G)
+> -			ctl->max_stripe_size = SZ_1G;
+> -		else
+> -			ctl->max_stripe_size = SZ_256M;
+> -		ctl->max_chunk_size = ctl->max_stripe_size;
+> -	} else if (type & BTRFS_BLOCK_GROUP_SYSTEM) {
+> -		ctl->max_stripe_size = SZ_32M;
+> -		ctl->max_chunk_size = 2 * ctl->max_stripe_size;
+> -		ctl->devs_max = min_t(int, ctl->devs_max,
+> -				      BTRFS_MAX_DEVS_SYS_CHUNK);
+> -	} else {
+> -		BUG();
+> -	}
+> +	space_info = btrfs_find_space_info(fs_devices->fs_info, ctl->type);
+> +	ASSERT(space_info);
+> +
+> +	ctl->max_chunk_size = atomic64_read(&space_info->chunk_size);
+> +	ctl->max_stripe_size = ctl->max_chunk_size;
+> +
+> +	if (ctl->type & BTRFS_BLOCK_GROUP_SYSTEM)
+> +		ctl->devs_max = min_t(int, ctl->devs_max, BTRFS_MAX_DEVS_SYS_CHUNK);
+>  
+>  	/* We don't want a chunk larger than 10% of writable space */
+>  	ctl->max_chunk_size = min(div_factor(fs_devices->total_rw_bytes, 1),
+> -- 
+> 2.30.2
 
-This looks good to me. I think it's reasonable to send the inode flags
-exactly as is and implement applying them in receive later.
 
-I don't know whether you want to go back and add it, but for the series
-as it currently exists in misc-next:
-
-Reviewed-by: Omar Sandoval <osandov@fb.com>
