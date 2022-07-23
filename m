@@ -2,89 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D222B57F11C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jul 2022 21:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B059C57F128
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jul 2022 21:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbiGWTK0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 Jul 2022 15:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35610 "EHLO
+        id S234236AbiGWT0i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Jul 2022 15:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbiGWTKZ (ORCPT
+        with ESMTP id S229632AbiGWT0g (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Jul 2022 15:10:25 -0400
+        Sat, 23 Jul 2022 15:26:36 -0400
 Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFF111C2C
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Jul 2022 12:10:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F5813D66
+        for <linux-btrfs@vger.kernel.org>; Sat, 23 Jul 2022 12:26:35 -0700 (PDT)
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 165A8580A2E;
-        Sat, 23 Jul 2022 15:10:20 -0400 (EDT)
+        by mailnew.nyi.internal (Postfix) with ESMTP id DA982580995;
+        Sat, 23 Jul 2022 15:26:34 -0400 (EDT)
 Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Sat, 23 Jul 2022 15:10:20 -0400
+  by compute3.internal (MEProxy); Sat, 23 Jul 2022 15:26:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         colorremedies.com; h=cc:cc:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1658603420; x=
-        1658607020; bh=GR5lz9+0EzNCRSKrIjMIOuawNr5NEkV6gNpX4M1OoCs=; b=L
-        oYojk+s5cmY8CKAB+TKCNIjLX39bK4FQ1kVWCqEkH4Bsn4t1N6PMObChb2vBYlJT
-        n1h9rtro7fUzRvNtyLI3XOYl2eaFBYdW6w4QiKLoXbMsYbPMEiIng+x5DrKl7DCV
-        k0IfAn2J5FML1RafoMcK8xvD+H1fqPc8dkiGF9A9URPAhA+rR832kezvZZqgLqUu
-        Maek2YUAVyLEl9E7a/of1kzehCIr1saVOC8QMtyWNFnKp2swm35C05krXa0ZwFGn
-        XMnevLlEU9lV1AePbilvtE8UOM80oOvmMGeLk0gVBuM/uRTjoqXQwIKXlzx60iIv
-        IheCBB270kKkaTh0vP0Hg==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1658604394; x=
+        1658607994; bh=lQBTQN0LivR3KR7+m26xL0L9xIO/4ipIglRlP8mZ8VA=; b=V
+        qrYS//iGclp/7EIKHp+8Lz0ba5h4W2TCiIoSZu/WiszXEslZ9k4WpJGjO25ELmXP
+        hkbb1N/WW52XTEXAYqdx0wpl/UQV6/vr06hEGnasgUW6xPPUkM6RxRWpqclK29Ra
+        ome/CEfp3yacThtAiFSrWpEd1TleIcC5/tx/9HEgbF9AxKI2Eiazx/P5EUBumgLX
+        FMmP+AbYwXXc21YnIYxdV3vJ8V6/Xf9Z4/oTFzvm7CpI4JKmDzC76o9Nw2GjqyME
+        Frb0WmJOBoqgoxhoi327wcsgzdyLblf7gf0x4dslm8ZYwiGMaIulOU1z3HoKfWYH
+        1VRNpAQUf/25wLDLXgPGg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
         :feedback-id:from:from:in-reply-to:in-reply-to:message-id
         :mime-version:references:reply-to:sender:subject:subject:to:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        i06494636.fm3; t=1658603420; x=1658607020; bh=GR5lz9+0EzNCRSKrIj
-        MIOuawNr5NEkV6gNpX4M1OoCs=; b=v3F40jpv/50IbRzAwGOvhVw41DUBEPY/cw
-        6HSYMGzTELXXUulwytB/aL/kbDHXhdIw4Of5NyptFCiANrNvmVCXHE2auyWilH4M
-        rnGt8Ga+t51b04mw/7Fy2KUlYjNlP5/8SQ5MNUk0JZIR/h+tF/saS2vgLJg6RiTj
-        BMWqnanWaBkHXVGjRZUTD+RyTMfZs8s5oimsoVCe6PiYGbUB3ApE6JDwjEqtr59j
-        4u2e1DN4KFi412QkTNQ4aoW495KFmDK4QhphsEPtvvkS3UqKcBLmqLU+B0uRfusy
-        zU/bkmOaDFkiFVadNkWmDG+WPqTpd6GBsuwoIrSnkmUIpCqAZgfw==
-X-ME-Sender: <xms:m0fcYtS6IWYirrCOB5klF6f2BGcHKy5xRMKjoybiedCkpotUiWWvAw>
-    <xme:m0fcYmwgnSWqUiJKeIOeQCQVZuOQEu4rLmdZuMawKblmXAZLRnVI4tvs2cdhS50wk
-    j-_LRPz0E4Rqhx50ws>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvddtgedgudefkecutefuodetggdotefrod
+        i06494636.fm3; t=1658604394; x=1658607994; bh=lQBTQN0LivR3KR7+m2
+        6xL0L9xIO/4ipIglRlP8mZ8VA=; b=ihMPMIWUuWGBIk2eFoipYHIKE6iJnSL2CN
+        BShhwYP1se9A+WVVKzFvN/i4BJpdotuBr/VlATBGLzhmfQ9ogjg9IjfyNNB08VjY
+        UXozu9AXN+tp98xNomDa9r8w9v6G3eFEXhBbiqJgeiH62Lfx/PxzXQmBaeP+VmLa
+        F3mQDt363GtWuYoJjR77AXclMH4rbbHv7Sb3NRjMK1qGsYGEz4ri2fRCjpukbS9B
+        0PjsDkMDAmfhbaEEaTGrWGI2zR1AhjP8VfGm2ckVmlADHVYpekLgMDDVqSzC2M6p
+        SMfE1nb0EkVS2PFvN4lXCZCgi2/0GpQqids3bt7znVcPvT/NUm9Q==
+X-ME-Sender: <xms:akvcYkM0Y_rhC8c7k6W4Q8MYJREnNG4MzB1u6IYltB4IkZkC4a1Ejg>
+    <xme:akvcYq-O60zJ9xUDloZ8clQipjE3PC_k54-8hL8chrplDO5LuSUKujidnMA-ctHG_
+    FkTOGkjZjlzp1r8uxo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvddtgedgudegudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
     enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdev
     hhhrihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtg
-    homheqnecuggftrfgrthhtvghrnhepieduueejkeelveeijeetteegkeekfeffuefhueev
-    vdejveffudfhleegtdfhjeefnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegt
-    ohhlohhrrhgvmhgvughivghsrdgtohhm
-X-ME-Proxy: <xmx:m0fcYi0u-LFl6TyI7gPvS3KPKZFglRZ7l16cNYky-pfVawWFRmh-MA>
-    <xmx:m0fcYlCDh5y9N6KpH2B-hhPV-JoIje9-F0SfO-FkygBlhMcNPNzMDA>
-    <xmx:m0fcYmiNsA8U093EbDrFqCEdWpXfro8r3Wrbcv-kksOOHypfEA90hQ>
-    <xmx:m0fcYpvfaHIqU92t0AqQjZVemOBvTwkyzSmrQXlacDv7W_ghpEaeqwtOKaA>
+    homheqnecuggftrfgrthhtvghrnhepgfdvueektdefgfefgfdtleffvdeileetgfefuddt
+    ffelueeiveeiveekhedtheeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
+X-ME-Proxy: <xmx:akvcYrRSMaWM56A7wXdI73q_h-bjzmpS72EtFl_Kzgr1xCQ_ED-4Yg>
+    <xmx:akvcYstaIUFpB35gwXt1TPFEmgBsmlrY2qiftqMV292qZftWTpyUtg>
+    <xmx:akvcYsfOLaxl2lofDP44wSKvfBoELaWngUYNKiv9ilFGaCzxhqMbKg>
+    <xmx:akvcYk4LsZHhYdG-unZDnKpVkindhSWImYU0Xga52KncT5iqOhUDb6qtEoE>
 Feedback-ID: i06494636:Fastmail
 Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B3596170007E; Sat, 23 Jul 2022 15:10:19 -0400 (EDT)
+        id 6CE191700082; Sat, 23 Jul 2022 15:26:34 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 User-Agent: Cyrus-JMAP/3.7.0-alpha0-757-gc3ad9c75d3-fm-20220722.001-gc3ad9c75
 Mime-Version: 1.0
-Message-Id: <79adde9b-0ef6-4845-ab5a-c10a3563c3de@www.fastmail.com>
-In-Reply-To: <t77bub$vp5$1@ciao.gmane.io>
+Message-Id: <e5bcf7ed-fdbe-40b1-bec9-e20daedfe822@www.fastmail.com>
+In-Reply-To: <Yfi2gVf5QOXkaM6+@hungrycats.org>
 References: <9bdd0eb6-4a4f-e168-0fb0-77f4d753ec19@gmail.com>
  <YfHCLhpkS+t8a8CG@zen> <4263e65e-f585-e7f6-b1aa-04885c0ed662@gmail.com>
  <YfHXFfHMeqx4MowJ@zen>
  <CAJCQCtR5ngU8oF6apChzBgFgX1W-9CVcF9kjvgStbkcAq_TsHQ@mail.gmail.com>
  <042e75ab-ded2-009a-d9fc-95887c26d4d2@libero.it>
- <CAJCQCtQv327wHwsT+j+mq3Fvt2fJwyC7SqFcj_+Ph80OuLKTAw@mail.gmail.com>
- <295c62ca-1864-270f-c1b1-3e5cb8fc58dd@inwind.it>
- <367f0891-f286-198b-617c-279dc61a2c3b@colin.guthr.ie>
- <CAEg-Je9rr4Y7JQbD3iO1UqMy48j7feAXFFeaqpJc6eP7FSduEw@mail.gmail.com>
- <t752jd$pjm$1@ciao.gmane.io> <24613105-faa7-8b0d-5d55-53d01a7c1172@libero.it>
- <t77bub$vp5$1@ciao.gmane.io>
-Date:   Sat, 23 Jul 2022 15:09:59 -0400
+ <Yfi2gVf5QOXkaM6+@hungrycats.org>
+Date:   Sat, 23 Jul 2022 15:26:13 -0400
 From:   "Chris Murphy" <lists@colorremedies.com>
-To:     "Colin Guthrie" <gmane@colin.guthr.ie>,
-        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Cc:     "systemd List" <systemd-devel@lists.freedesktop.org>,
-        "Goffredo Baroncelli" <kreijack@libero.it>,
-        "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>
+To:     "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>,
+        "Goffredo Baroncelli" <kreijack@inwind.it>
+Cc:     "Boris Burkov" <boris@bur.io>, "Apostolos B." <barz621@gmail.com>,
+        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>,
+        "systemd List" <systemd-devel@lists.freedesktop.org>
 Subject: Re: No space left errors on shutdown with systemd-homed /home dir
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -96,61 +90,20 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[sorry had to resend to get it on btrfs list, due to html in the original :\]
+On Mon, Jan 31, 2022, at 11:26 PM, Zygo Blaxell wrote:
+> On Sat, Jan 29, 2022 at 10:53:00AM +0100, Goffredo Baroncelli wrote:
 
-On Wed, Jun 1, 2022, at 5:36 AM, Colin Guthrie wrote:
-> Goffredo Baroncelli wrote on 31/05/2022 19:12:
-> 
-> > I suppose that colin.home is a sparse file, so even it has a length of 
-> > 394GB, it consumes only 184GB. So to me these are valid values. It 
-> > doesn't matter the length of the files. What does matter is the value 
-> > returned by "du -sh".
-> > 
-> > Below I create a file with a length of 1000GB. However being a sparse 
-> > file, it doesn't consume any space and "du -sh" returns 0
-> > 
-> > $ truncate -s 1000GB foo
-> > $ du -sh foo
-> > 0    foo
-> > $ ls -l foo
-> > -rw-r--r-- 1 ghigo ghigo 1000000000000 May 31 19:29 foo
-> 
-> Yeah the file will be sparse.
-> 
-> That's not really an issue, I'm not worried about the fact it's not 
-> consuming as much as it reports as that's all expected.
-> 
-> The issue is that systemd-homed (or btrfs's fallocate) can't handle this 
-> situation and that user is effectively bricked unless migrated to a host 
-> with more storage space!
+> It does suck that the kernel handles resizing below the minimum size of
+> the filesystem so badly; however, even if it rejected the resize request
+> cleanly with an error, it's not necessarily a good idea to attempt it.
+> Pushing the lower limits of what is possible in resize to save a handful
+> of GB is asking for trouble.  It's far better to overestimate generously
+> than to underestimate the minimum size.
 
-Hopefully there's time for systemd-252 for a change still? That version is what I expect to ship in Fedora 37 [1] There's merit to sd-homed and I want it to be safe and reliable for users to keep using, in order to build momentum. 
+Yeah there's an inherent conflict with online shrink: the longer the time needed to relocate bg's, the more unpredictable operations can occur during that time to thwart any original estimations made about the shrink operation.
 
-I really think sd-homed must move the shrink on logout, to login.
-
-When the user logs out, they are decently likely to immediately close the laptop lid thus suspend-to-ram; or shutdown. I don't know if shrink can be cancelled. But regardless, there's going to be a period of time where the file system and storage stacks are busy, right at the time the user is expecting *imminent* suspend or shutdown, which no matter what has to be inhibited until the shrink is cancelled or completed, and all pending writes are flushed to stable media.
-
-Next, consider the low battery situation. Upon notification, anyone with an 18+ month old battery knows there may be no additional warnings, and you could in fact get a power failure next. In this scenario we have to depend on all storage stack layers, and the drive firmware, doing the exact correct thing in order for the file system to be in a consistent state to be mountable at next boot. I just think this is too much risk, and since sd-homed is targeted at laptop users primarily, all the more reason the fs resize operation should happen at login time, not logout.
-
-In fact, sd-homed might want to inhibit a resize shrink operation if (a) AC power is not plugged in and (b) battery remaining is less than 30%, or some other reasonable value. The resize grow operation is sufficiently cheap and fast that I don't think it needs inhibiting.
-
-Thoughts?
-
-I also just found a few bug reports with a non-exhaustive search that also make me nervous about fs shrink at logout (also implying restart and shutdown) time.
-
-On shutdown, homed resizes until it gets killed
-https://github.com/systemd/systemd/issues/22901
-Getting "New partition doesn't fit into backing storage, refusing"
-https://github.com/systemd/systemd/issues/22255
-fails to resize 
-https://github.com/systemd/systemd/issues/22124
+I wondered a bit ago about a shrink API that takes shrink size as a suggestion rather than as a definite, and then the file system does the best job it can. Either this API reports actual shrink size once it completes, or the requesting program needs to know to call BTRFS_IOC_FS_INFO and BTRFS_IOC_DEV_INFO to know the actual size. This hypothetical API could have boundaries outside of which if the kernel code estimates it's going to fall short of, could trigger a cancel of the shrink. This could be size or time based.  e.g. BTRFS_IOC_RESIZE_BEST (effort).
 
 
-
-[1]
-Branch from Rawhide August 9, the earliest release date would be October 18.
-
-
-
---
+-- 
 Chris Murphy
