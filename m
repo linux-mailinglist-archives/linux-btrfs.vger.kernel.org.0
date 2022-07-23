@@ -2,283 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1471557EF1B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jul 2022 14:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D222B57F11C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jul 2022 21:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbiGWMCY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 Jul 2022 08:02:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
+        id S230300AbiGWTK0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Jul 2022 15:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbiGWMCY (ORCPT
+        with ESMTP id S229632AbiGWTKZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Jul 2022 08:02:24 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2185F9FE3
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Jul 2022 05:02:23 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id ku18so6451600pjb.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Jul 2022 05:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=yZDSjFlBqTyPgDDSYyOzpwaAh0DhKD46dx/+k62ky0E=;
-        b=hQ0FzeOdzAybutiFBsV00UYzs9TQz3kCbKYQbapMHNNVcQ+KrVjnRom3k/PBGf4gSn
-         xbvJ4TcYAGMhf1qahSFj28SmfZ3qdMMAUnAfelswSfm9ZZPzxTavopxX6yLGFwNiBwny
-         9A1Y3+8IZH97SGABqoJoURM71q+X4jY6XoBZIoMEhRTyG37Mi8TvyczzGJBxod0bG7yK
-         PKbxczm+tYwU86rJ0gnM0veNjd1dZ6gcOcJHo2oUUieBZEVasLy5/8/xyASHFeknu4R0
-         gdlJs729MtYGEaZ55IepaYyp1mp/bkzsMBs8Kck/2DA8K5/UNu8/waM+vHfPfyA7K9jw
-         8FYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=yZDSjFlBqTyPgDDSYyOzpwaAh0DhKD46dx/+k62ky0E=;
-        b=r4VCQmqlNVWFzm3gyavmgANXOsKZyrZjOA2PY1UJ27v2QNHrfcG+fqcN9VimvAug2g
-         JNEimfH8DSu4rUlkSIr7yXGjwztp+FMMjzaEMQcB32UgN7yv/oAWfail48X+qsc2IeuO
-         LnfzApsjMrvSP7Pby0ned8p2EwkpGKjXO5pmwly8Kjex7SUTC5TOyCnCsl7mPHAzQxhU
-         o/a5GJqBgAxKgdJw2HsCNqy3RxU6rRBdMfkyuBLzTFC0z6dO/rIe30hITewJ3mlEi7kp
-         r7u0KkwqaYRln7v6YZe6t5eF+96lLYVPVZDsukWiGKYL6S5pat0m46xyQZMKWT8PrbDs
-         HFig==
-X-Gm-Message-State: AJIora866JRmHB/R1/kCmNMkMMNLcxlumsIqQMb+vFHRKwrN3gb0IXd/
-        aQpYBwyxRYLfKXp+QVAZe0rQJfKIXGttzUGO/lY=
-X-Google-Smtp-Source: AGRyM1uSJ88g23G4vRKFFVXLANH3H0NOTUxXTaMLOVCWdwzVHh6pBq80n8Hg5FzyonkvcMPhH0nIWA==
-X-Received: by 2002:a17:90b:4b49:b0:1ef:a03e:b671 with SMTP id mi9-20020a17090b4b4900b001efa03eb671mr21996934pjb.108.1658577741960;
-        Sat, 23 Jul 2022 05:02:21 -0700 (PDT)
-Received: from zllke.localdomain ([219.137.142.59])
-        by smtp.gmail.com with ESMTPSA id d30-20020a631d1e000000b0041a6638b357sm4943037pgd.72.2022.07.23.05.02.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 23 Jul 2022 05:02:21 -0700 (PDT)
-From:   Li Zhang <zhanglikernel@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Li Zhang <zhanglikernel@gmail.com>
-Subject: [PATCH] btrfs-progs: fix btrfs resize failed.
-Date:   Sat, 23 Jul 2022 20:02:10 +0800
-Message-Id: <1658577730-11447-1-git-send-email-zhanglikernel@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sat, 23 Jul 2022 15:10:25 -0400
+Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFF111C2C
+        for <linux-btrfs@vger.kernel.org>; Sat, 23 Jul 2022 12:10:20 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 165A8580A2E;
+        Sat, 23 Jul 2022 15:10:20 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute3.internal (MEProxy); Sat, 23 Jul 2022 15:10:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        colorremedies.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1658603420; x=
+        1658607020; bh=GR5lz9+0EzNCRSKrIjMIOuawNr5NEkV6gNpX4M1OoCs=; b=L
+        oYojk+s5cmY8CKAB+TKCNIjLX39bK4FQ1kVWCqEkH4Bsn4t1N6PMObChb2vBYlJT
+        n1h9rtro7fUzRvNtyLI3XOYl2eaFBYdW6w4QiKLoXbMsYbPMEiIng+x5DrKl7DCV
+        k0IfAn2J5FML1RafoMcK8xvD+H1fqPc8dkiGF9A9URPAhA+rR832kezvZZqgLqUu
+        Maek2YUAVyLEl9E7a/of1kzehCIr1saVOC8QMtyWNFnKp2swm35C05krXa0ZwFGn
+        XMnevLlEU9lV1AePbilvtE8UOM80oOvmMGeLk0gVBuM/uRTjoqXQwIKXlzx60iIv
+        IheCBB270kKkaTh0vP0Hg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        i06494636.fm3; t=1658603420; x=1658607020; bh=GR5lz9+0EzNCRSKrIj
+        MIOuawNr5NEkV6gNpX4M1OoCs=; b=v3F40jpv/50IbRzAwGOvhVw41DUBEPY/cw
+        6HSYMGzTELXXUulwytB/aL/kbDHXhdIw4Of5NyptFCiANrNvmVCXHE2auyWilH4M
+        rnGt8Ga+t51b04mw/7Fy2KUlYjNlP5/8SQ5MNUk0JZIR/h+tF/saS2vgLJg6RiTj
+        BMWqnanWaBkHXVGjRZUTD+RyTMfZs8s5oimsoVCe6PiYGbUB3ApE6JDwjEqtr59j
+        4u2e1DN4KFi412QkTNQ4aoW495KFmDK4QhphsEPtvvkS3UqKcBLmqLU+B0uRfusy
+        zU/bkmOaDFkiFVadNkWmDG+WPqTpd6GBsuwoIrSnkmUIpCqAZgfw==
+X-ME-Sender: <xms:m0fcYtS6IWYirrCOB5klF6f2BGcHKy5xRMKjoybiedCkpotUiWWvAw>
+    <xme:m0fcYmwgnSWqUiJKeIOeQCQVZuOQEu4rLmdZuMawKblmXAZLRnVI4tvs2cdhS50wk
+    j-_LRPz0E4Rqhx50ws>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvddtgedgudefkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdev
+    hhhrihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtg
+    homheqnecuggftrfgrthhtvghrnhepieduueejkeelveeijeetteegkeekfeffuefhueev
+    vdejveffudfhleegtdfhjeefnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegt
+    ohhlohhrrhgvmhgvughivghsrdgtohhm
+X-ME-Proxy: <xmx:m0fcYi0u-LFl6TyI7gPvS3KPKZFglRZ7l16cNYky-pfVawWFRmh-MA>
+    <xmx:m0fcYlCDh5y9N6KpH2B-hhPV-JoIje9-F0SfO-FkygBlhMcNPNzMDA>
+    <xmx:m0fcYmiNsA8U093EbDrFqCEdWpXfro8r3Wrbcv-kksOOHypfEA90hQ>
+    <xmx:m0fcYpvfaHIqU92t0AqQjZVemOBvTwkyzSmrQXlacDv7W_ghpEaeqwtOKaA>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id B3596170007E; Sat, 23 Jul 2022 15:10:19 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-757-gc3ad9c75d3-fm-20220722.001-gc3ad9c75
+Mime-Version: 1.0
+Message-Id: <79adde9b-0ef6-4845-ab5a-c10a3563c3de@www.fastmail.com>
+In-Reply-To: <t77bub$vp5$1@ciao.gmane.io>
+References: <9bdd0eb6-4a4f-e168-0fb0-77f4d753ec19@gmail.com>
+ <YfHCLhpkS+t8a8CG@zen> <4263e65e-f585-e7f6-b1aa-04885c0ed662@gmail.com>
+ <YfHXFfHMeqx4MowJ@zen>
+ <CAJCQCtR5ngU8oF6apChzBgFgX1W-9CVcF9kjvgStbkcAq_TsHQ@mail.gmail.com>
+ <042e75ab-ded2-009a-d9fc-95887c26d4d2@libero.it>
+ <CAJCQCtQv327wHwsT+j+mq3Fvt2fJwyC7SqFcj_+Ph80OuLKTAw@mail.gmail.com>
+ <295c62ca-1864-270f-c1b1-3e5cb8fc58dd@inwind.it>
+ <367f0891-f286-198b-617c-279dc61a2c3b@colin.guthr.ie>
+ <CAEg-Je9rr4Y7JQbD3iO1UqMy48j7feAXFFeaqpJc6eP7FSduEw@mail.gmail.com>
+ <t752jd$pjm$1@ciao.gmane.io> <24613105-faa7-8b0d-5d55-53d01a7c1172@libero.it>
+ <t77bub$vp5$1@ciao.gmane.io>
+Date:   Sat, 23 Jul 2022 15:09:59 -0400
+From:   "Chris Murphy" <lists@colorremedies.com>
+To:     "Colin Guthrie" <gmane@colin.guthr.ie>,
+        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Cc:     "systemd List" <systemd-devel@lists.freedesktop.org>,
+        "Goffredo Baroncelli" <kreijack@libero.it>,
+        "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>
+Subject: Re: No space left errors on shutdown with systemd-homed /home dir
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-related issuse:
-https://github.com/kdave/btrfs-progs/issues/470
+[sorry had to resend to get it on btrfs list, due to html in the original :\]
 
-V1 link:
-https://www.spinics.net/lists/linux-btrfs/msg126661.html
+On Wed, Jun 1, 2022, at 5:36 AM, Colin Guthrie wrote:
+> Goffredo Baroncelli wrote on 31/05/2022 19:12:
+> 
+> > I suppose that colin.home is a sparse file, so even it has a length of 
+> > 394GB, it consumes only 184GB. So to me these are valid values. It 
+> > doesn't matter the length of the files. What does matter is the value 
+> > returned by "du -sh".
+> > 
+> > Below I create a file with a length of 1000GB. However being a sparse 
+> > file, it doesn't consume any space and "du -sh" returns 0
+> > 
+> > $ truncate -s 1000GB foo
+> > $ du -sh foo
+> > 0    foo
+> > $ ls -l foo
+> > -rw-r--r-- 1 ghigo ghigo 1000000000000 May 31 19:29 foo
+> 
+> Yeah the file will be sparse.
+> 
+> That's not really an issue, I'm not worried about the fact it's not 
+> consuming as much as it reports as that's all expected.
+> 
+> The issue is that systemd-homed (or btrfs's fallocate) can't handle this 
+> situation and that user is effectively bricked unless migrated to a host 
+> with more storage space!
 
-[BUG]
-If there is no devid=1, when the user uses the btrfs file system tool, 
-the following error will be reported,
+Hopefully there's time for systemd-252 for a change still? That version is what I expect to ship in Fedora 37 [1] There's merit to sd-homed and I want it to be safe and reliable for users to keep using, in order to build momentum. 
 
-$ sudo btrfs filesystem show /mnt/1
-Label: none  uuid: 64dc0f68-9afa-4465-9ea1-2bbebfdb6cec
-    Total devices 2 FS bytes used 704.00KiB
-    devid    2 size 15.00GiB used 1.16GiB path /dev/loop2
-    devid    3 size 15.00GiB used 1.16GiB path /dev/loop3
-$ sudo btrfs filesystem resize -1G /mnt/1
-ERROR: cannot find devid: 1
-ERROR: unable to resize '/mnt/1': No such device
+I really think sd-homed must move the shrink on logout, to login.
 
-[CAUSE]
-If the user does not specify the devid id explicitly,
-btrfs will use the default devid 1, so it will report an error when dev 1 is missing.
+When the user logs out, they are decently likely to immediately close the laptop lid thus suspend-to-ram; or shutdown. I don't know if shrink can be cancelled. But regardless, there's going to be a period of time where the file system and storage stacks are busy, right at the time the user is expecting *imminent* suspend or shutdown, which no matter what has to be inhibited until the shrink is cancelled or completed, and all pending writes are flushed to stable media.
 
-[FIX]
-If the file system contains multiple devices, output an error message to the user.
+Next, consider the low battery situation. Upon notification, anyone with an 18+ month old battery knows there may be no additional warnings, and you could in fact get a power failure next. In this scenario we have to depend on all storage stack layers, and the drive firmware, doing the exact correct thing in order for the file system to be in a consistent state to be mountable at next boot. I just think this is too much risk, and since sd-homed is targeted at laptop users primarily, all the more reason the fs resize operation should happen at login time, not logout.
 
-If the filesystem has only one device, resize should automatically add the unique devid.
+In fact, sd-homed might want to inhibit a resize shrink operation if (a) AC power is not plugged in and (b) battery remaining is less than 30%, or some other reasonable value. The resize grow operation is sufficiently cheap and fast that I don't think it needs inhibiting.
 
-[RESULT]
+Thoughts?
 
-$ sudo btrfs filesystem show /mnt/1/
-Label: none  uuid: 2025e6ae-0b6d-40b4-8685-3e7e9fc9b2c2
-	Total devices 2 FS bytes used 144.00KiB
-	devid    2 size 15.00GiB used 1.16GiB path /dev/loop2
-	devid    3 size 15.00GiB used 1.16GiB path /dev/loop3
+I also just found a few bug reports with a non-exhaustive search that also make me nervous about fs shrink at logout (also implying restart and shutdown) time.
 
-$ sudo btrfs filesystem resize -1G /mnt/1
-ERROR: The file system has multiple devices, please specify devid exactly.
-ERROR: The device information list is as follows.
-	devid    2 size 15.00GiB used 1.16GiB path /dev/loop2
-	devid    3 size 15.00GiB used 1.16GiB path /dev/loop3
+On shutdown, homed resizes until it gets killed
+https://github.com/systemd/systemd/issues/22901
+Getting "New partition doesn't fit into backing storage, refusing"
+https://github.com/systemd/systemd/issues/22255
+fails to resize 
+https://github.com/systemd/systemd/issues/22124
 
-$ sudo btrfs device delete 2 /mnt/1/
 
-$ sudo btrfs filesystem show /mnt/1/
-Label: none  uuid: 2025e6ae-0b6d-40b4-8685-3e7e9fc9b2c2
-	Total devices 1 FS bytes used 144.00KiB
-	devid    3 size 15.00GiB used 1.28GiB path /dev/loop3
 
-$ sudo btrfs filesystem resize -1G /mnt/1
-Resize device id 3 (/dev/loop3) from 15.00GiB to 14.00GiB
+[1]
+Branch from Rawhide August 9, the earliest release date would be October 18.
 
-Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
----
- cmds/filesystem.c | 63 ++++++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 51 insertions(+), 12 deletions(-)
 
-diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-index 7cd08fc..c26ba2b 100644
---- a/cmds/filesystem.c
-+++ b/cmds/filesystem.c
-@@ -1087,7 +1087,8 @@ static const char * const cmd_filesystem_resize_usage[] = {
- 	NULL
- };
- 
--static int check_resize_args(const char *amount, const char *path) {
-+static int check_resize_args(char * const amount, const char *path)
-+{
- 	struct btrfs_ioctl_fs_info_args fi_args;
- 	struct btrfs_ioctl_dev_info_args *di_args = NULL;
- 	int ret, i, dev_idx = -1;
-@@ -1102,7 +1103,8 @@ static int check_resize_args(const char *amount, const char *path) {
- 
- 	if (ret) {
- 		error("unable to retrieve fs info");
--		return 1;
-+		ret = 1;
-+		goto out;
- 	}
- 
- 	if (!fi_args.num_devices) {
-@@ -1112,11 +1114,14 @@ static int check_resize_args(const char *amount, const char *path) {
- 	}
- 
- 	ret = snprintf(amount_dup, BTRFS_VOL_NAME_MAX, "%s", amount);
-+check:
- 	if (strlen(amount) != ret) {
- 		error("newsize argument is too long");
- 		ret = 1;
- 		goto out;
- 	}
-+	if (strcmp(amount, amount_dup) != 0)
-+		strcpy(amount, amount_dup);
- 
- 	sizestr = amount_dup;
- 	devstr = strchr(sizestr, ':');
-@@ -1133,6 +1138,24 @@ static int check_resize_args(const char *amount, const char *path) {
- 			ret = 1;
- 			goto out;
- 		}
-+	} else if (fi_args.num_devices != 1) {
-+		error("The file system has multiple devices, please specify devid exactly.");
-+		error("The device information list is as follows.");
-+		for (i = 0; i < fi_args.num_devices; i++) {
-+			fprintf(stderr, "\tdevid %4llu size %s used %s path %s\n",
-+				di_args[i].devid,
-+				pretty_size_mode(di_args[i].total_bytes, UNITS_DEFAULT),
-+				pretty_size_mode(di_args[i].bytes_used, UNITS_DEFAULT),
-+				di_args[i].path);
-+		}
-+		ret = 1;
-+		goto out;
-+	} else {
-+		memset(amount_dup, 0, BTRFS_VOL_NAME_MAX);
-+		ret = snprintf(amount_dup, BTRFS_VOL_NAME_MAX, "%llu:", di_args[0].devid);
-+		ret = snprintf(amount_dup + strlen(amount_dup),
-+			BTRFS_VOL_NAME_MAX - strlen(amount_dup), "%s", amount);
-+		goto check;
- 	}
- 
- 	dev_idx = -1;
-@@ -1200,10 +1223,11 @@ static int check_resize_args(const char *amount, const char *path) {
- 		di_args[dev_idx].path,
- 		pretty_size_mode(di_args[dev_idx].total_bytes, UNITS_DEFAULT),
- 		res_str);
-+	ret = 1;
- 
- out:
- 	free(di_args);
--	return 0;
-+	return ret;
- }
- 
- static int cmd_filesystem_resize(const struct cmd_struct *cmd,
-@@ -1235,8 +1259,10 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
- 		}
- 	}
- 
--	if (check_argc_exact(argc - optind, 2))
--		return 1;
-+	if (check_argc_exact(argc - optind, 2)) {
-+		ret = 1;
-+		goto out;
-+	}
- 
- 	amount = argv[optind];
- 	path = argv[optind + 1];
-@@ -1244,7 +1270,8 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
- 	len = strlen(amount);
- 	if (len == 0 || len >= BTRFS_VOL_NAME_MAX) {
- 		error("resize value too long (%s)", amount);
--		return 1;
-+		ret = 1;
-+		goto out;
- 	}
- 
- 	cancel = (strcmp("cancel", amount) == 0);
-@@ -1258,7 +1285,8 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
- 		"directories as argument. Passing file containing a btrfs image\n"
- 		"would resize the underlying filesystem instead of the image.\n");
- 		}
--		return 1;
-+		ret = 1;
-+		goto out;
- 	}
- 
- 	/*
-@@ -1273,14 +1301,22 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
- 				error(
- 			"unable to check status of exclusive operation: %m");
- 			close_file_or_dir(fd, dirstream);
--			return 1;
-+			goto out;
- 		}
- 	}
- 
-+	amount = (char *)malloc(BTRFS_VOL_NAME_MAX);
-+	if (!amount) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	strcpy(amount, argv[optind]);
-+
- 	ret = check_resize_args(amount, path);
- 	if (ret != 0) {
- 		close_file_or_dir(fd, dirstream);
--		return 1;
-+		ret = 1;
-+		goto free_amount;
- 	}
- 
- 	memset(&args, 0, sizeof(args));
-@@ -1298,7 +1334,7 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
- 			error("unable to resize '%s': %m", path);
- 			break;
- 		}
--		return 1;
-+		ret = 1;
- 	} else if (res > 0) {
- 		const char *err_str = btrfs_err_str(res);
- 
-@@ -1308,9 +1344,12 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
- 			error("resizing of '%s' failed: unknown error %d",
- 				path, res);
- 		}
--		return 1;
-+		ret = 1;
- 	}
--	return 0;
-+free_amount:
-+	free(amount);
-+out:
-+	return ret;
- }
- static DEFINE_SIMPLE_COMMAND(filesystem_resize, "resize");
- 
--- 
-1.8.3.1
 
+--
+Chris Murphy
