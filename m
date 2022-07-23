@@ -2,108 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B059C57F128
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jul 2022 21:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FA157F1DF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Jul 2022 00:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbiGWT0i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 Jul 2022 15:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42048 "EHLO
+        id S231633AbiGWWZh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Jul 2022 18:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbiGWT0g (ORCPT
+        with ESMTP id S229473AbiGWWZg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Jul 2022 15:26:36 -0400
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F5813D66
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Jul 2022 12:26:35 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id DA982580995;
-        Sat, 23 Jul 2022 15:26:34 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Sat, 23 Jul 2022 15:26:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        colorremedies.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1658604394; x=
-        1658607994; bh=lQBTQN0LivR3KR7+m26xL0L9xIO/4ipIglRlP8mZ8VA=; b=V
-        qrYS//iGclp/7EIKHp+8Lz0ba5h4W2TCiIoSZu/WiszXEslZ9k4WpJGjO25ELmXP
-        hkbb1N/WW52XTEXAYqdx0wpl/UQV6/vr06hEGnasgUW6xPPUkM6RxRWpqclK29Ra
-        ome/CEfp3yacThtAiFSrWpEd1TleIcC5/tx/9HEgbF9AxKI2Eiazx/P5EUBumgLX
-        FMmP+AbYwXXc21YnIYxdV3vJ8V6/Xf9Z4/oTFzvm7CpI4JKmDzC76o9Nw2GjqyME
-        Frb0WmJOBoqgoxhoi327wcsgzdyLblf7gf0x4dslm8ZYwiGMaIulOU1z3HoKfWYH
-        1VRNpAQUf/25wLDLXgPGg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        i06494636.fm3; t=1658604394; x=1658607994; bh=lQBTQN0LivR3KR7+m2
-        6xL0L9xIO/4ipIglRlP8mZ8VA=; b=ihMPMIWUuWGBIk2eFoipYHIKE6iJnSL2CN
-        BShhwYP1se9A+WVVKzFvN/i4BJpdotuBr/VlATBGLzhmfQ9ogjg9IjfyNNB08VjY
-        UXozu9AXN+tp98xNomDa9r8w9v6G3eFEXhBbiqJgeiH62Lfx/PxzXQmBaeP+VmLa
-        F3mQDt363GtWuYoJjR77AXclMH4rbbHv7Sb3NRjMK1qGsYGEz4ri2fRCjpukbS9B
-        0PjsDkMDAmfhbaEEaTGrWGI2zR1AhjP8VfGm2ckVmlADHVYpekLgMDDVqSzC2M6p
-        SMfE1nb0EkVS2PFvN4lXCZCgi2/0GpQqids3bt7znVcPvT/NUm9Q==
-X-ME-Sender: <xms:akvcYkM0Y_rhC8c7k6W4Q8MYJREnNG4MzB1u6IYltB4IkZkC4a1Ejg>
-    <xme:akvcYq-O60zJ9xUDloZ8clQipjE3PC_k54-8hL8chrplDO5LuSUKujidnMA-ctHG_
-    FkTOGkjZjlzp1r8uxo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvddtgedgudegudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdev
-    hhhrihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtg
-    homheqnecuggftrfgrthhtvghrnhepgfdvueektdefgfefgfdtleffvdeileetgfefuddt
-    ffelueeiveeiveekhedtheeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
-X-ME-Proxy: <xmx:akvcYrRSMaWM56A7wXdI73q_h-bjzmpS72EtFl_Kzgr1xCQ_ED-4Yg>
-    <xmx:akvcYstaIUFpB35gwXt1TPFEmgBsmlrY2qiftqMV292qZftWTpyUtg>
-    <xmx:akvcYsfOLaxl2lofDP44wSKvfBoELaWngUYNKiv9ilFGaCzxhqMbKg>
-    <xmx:akvcYk4LsZHhYdG-unZDnKpVkindhSWImYU0Xga52KncT5iqOhUDb6qtEoE>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 6CE191700082; Sat, 23 Jul 2022 15:26:34 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-757-gc3ad9c75d3-fm-20220722.001-gc3ad9c75
-Mime-Version: 1.0
-Message-Id: <e5bcf7ed-fdbe-40b1-bec9-e20daedfe822@www.fastmail.com>
-In-Reply-To: <Yfi2gVf5QOXkaM6+@hungrycats.org>
-References: <9bdd0eb6-4a4f-e168-0fb0-77f4d753ec19@gmail.com>
- <YfHCLhpkS+t8a8CG@zen> <4263e65e-f585-e7f6-b1aa-04885c0ed662@gmail.com>
- <YfHXFfHMeqx4MowJ@zen>
- <CAJCQCtR5ngU8oF6apChzBgFgX1W-9CVcF9kjvgStbkcAq_TsHQ@mail.gmail.com>
- <042e75ab-ded2-009a-d9fc-95887c26d4d2@libero.it>
- <Yfi2gVf5QOXkaM6+@hungrycats.org>
-Date:   Sat, 23 Jul 2022 15:26:13 -0400
-From:   "Chris Murphy" <lists@colorremedies.com>
-To:     "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>,
-        "Goffredo Baroncelli" <kreijack@inwind.it>
-Cc:     "Boris Burkov" <boris@bur.io>, "Apostolos B." <barz621@gmail.com>,
-        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>,
-        "systemd List" <systemd-devel@lists.freedesktop.org>
-Subject: Re: No space left errors on shutdown with systemd-homed /home dir
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 23 Jul 2022 18:25:36 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FE4635A;
+        Sat, 23 Jul 2022 15:25:35 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.fidei.email (Postfix) with ESMTPSA id 52C2F8126C;
+        Sat, 23 Jul 2022 18:25:33 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1658615133; bh=b8FBeJXUGntg/2vTzkYxvVc2szA7CIqhc0Cj2zBULu8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hQDVjOMHR6/iYziBAnnlqq8Ms/HM4XjjEI0j7VSX+4CDE85JmTGBsNe+aZMPthNE8
+         XBDhBo02HvYQFrK3nQHWoP6nGPmmjW0MvuUrO0799Bq60q6mQiRQk7rZz6zh+Ch5vR
+         jxBLu3iTHmyL0J5FEmKGXZKRCD+QAB47H32LL0NVFS+7eaBCjmwa/Fi+U7UAKC/yQv
+         +hu0HWSdBSRWPE9pU2ukiNmzyjpwuaRS/eykMtKhNhXkPfTRcn0LdQvSmbCXTzU1hY
+         lDmihvYwN+AgNNFtFZljU4+kfyL8bPUHj9rVEX1phTKRgCHRwmb20KNmYEPdFlkZWZ
+         ugLjSCCHJdfsA==
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Cc:     Omar Sandoval <osandov@osandov.com>,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH] btrfs: change btrfs_insert_file_extent() to btrfs_insert_hole_extent()
+Date:   Sat, 23 Jul 2022 18:25:29 -0400
+Message-Id: <41e212570f521d9c0838b5ab8e66da0f942c7f46.1658615058.git.sweettea-kernel@dorminy.me>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 31, 2022, at 11:26 PM, Zygo Blaxell wrote:
-> On Sat, Jan 29, 2022 at 10:53:00AM +0100, Goffredo Baroncelli wrote:
+From: Omar Sandoval <osandov@osandov.com>
 
-> It does suck that the kernel handles resizing below the minimum size of
-> the filesystem so badly; however, even if it rejected the resize request
-> cleanly with an error, it's not necessarily a good idea to attempt it.
-> Pushing the lower limits of what is possible in resize to save a handful
-> of GB is asking for trouble.  It's far better to overestimate generously
-> than to underestimate the minimum size.
+btrfs_insert_file_extent() is only ever used to insert holes, so rename
+it and remove the redundant parameters.
 
-Yeah there's an inherent conflict with online shrink: the longer the time needed to relocate bg's, the more unpredictable operations can occur during that time to thwart any original estimations made about the shrink operation.
+Signed-off-by: Omar Sandoval <osandov@osandov.com>
+Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+---
+ fs/btrfs/ctree.h     |  9 +++------
+ fs/btrfs/file-item.c | 21 +++++++++------------
+ fs/btrfs/file.c      |  4 ++--
+ fs/btrfs/inode.c     |  4 ++--
+ fs/btrfs/tree-log.c  | 13 +++++--------
+ 5 files changed, 21 insertions(+), 30 deletions(-)
 
-I wondered a bit ago about a shrink API that takes shrink size as a suggestion rather than as a definite, and then the file system does the best job it can. Either this API reports actual shrink size once it completes, or the requesting program needs to know to call BTRFS_IOC_FS_INFO and BTRFS_IOC_DEV_INFO to know the actual size. This hypothetical API could have boundaries outside of which if the kernel code estimates it's going to fall short of, could trigger a cancel of the shrink. This could be size or time based.  e.g. BTRFS_IOC_RESIZE_BEST (effort).
-
-
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 4db85b9dc7ed..3482eea0f1b8 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3258,12 +3258,9 @@ int btrfs_find_orphan_item(struct btrfs_root *root, u64 offset);
+ int btrfs_del_csums(struct btrfs_trans_handle *trans,
+ 		    struct btrfs_root *root, u64 bytenr, u64 len);
+ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio, u8 *dst);
+-int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
+-			     struct btrfs_root *root,
+-			     u64 objectid, u64 pos,
+-			     u64 disk_offset, u64 disk_num_bytes,
+-			     u64 num_bytes, u64 offset, u64 ram_bytes,
+-			     u8 compression, u8 encryption, u16 other_encoding);
++int btrfs_insert_hole_extent(struct btrfs_trans_handle *trans,
++			     struct btrfs_root *root, u64 objectid, u64 pos,
++			     u64 num_bytes);
+ int btrfs_lookup_file_extent(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_root *root,
+ 			     struct btrfs_path *path, u64 objectid,
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index c828f971a346..29999686d234 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -129,12 +129,9 @@ static inline u32 max_ordered_sum_bytes(struct btrfs_fs_info *fs_info,
+ 	return ncsums * fs_info->sectorsize;
+ }
+ 
+-int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
++int btrfs_insert_hole_extent(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_root *root,
+-			     u64 objectid, u64 pos,
+-			     u64 disk_offset, u64 disk_num_bytes,
+-			     u64 num_bytes, u64 offset, u64 ram_bytes,
+-			     u8 compression, u8 encryption, u16 other_encoding)
++			     u64 objectid, u64 pos, u64 num_bytes)
+ {
+ 	int ret = 0;
+ 	struct btrfs_file_extent_item *item;
+@@ -157,16 +154,16 @@ int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
+ 	leaf = path->nodes[0];
+ 	item = btrfs_item_ptr(leaf, path->slots[0],
+ 			      struct btrfs_file_extent_item);
+-	btrfs_set_file_extent_disk_bytenr(leaf, item, disk_offset);
+-	btrfs_set_file_extent_disk_num_bytes(leaf, item, disk_num_bytes);
+-	btrfs_set_file_extent_offset(leaf, item, offset);
++	btrfs_set_file_extent_disk_bytenr(leaf, item, 0);
++	btrfs_set_file_extent_disk_num_bytes(leaf, item, 0);
++	btrfs_set_file_extent_offset(leaf, item, 0);
+ 	btrfs_set_file_extent_num_bytes(leaf, item, num_bytes);
+-	btrfs_set_file_extent_ram_bytes(leaf, item, ram_bytes);
++	btrfs_set_file_extent_ram_bytes(leaf, item, num_bytes);
+ 	btrfs_set_file_extent_generation(leaf, item, trans->transid);
+ 	btrfs_set_file_extent_type(leaf, item, BTRFS_FILE_EXTENT_REG);
+-	btrfs_set_file_extent_compression(leaf, item, compression);
+-	btrfs_set_file_extent_encryption(leaf, item, encryption);
+-	btrfs_set_file_extent_other_encoding(leaf, item, other_encoding);
++	btrfs_set_file_extent_compression(leaf, item, 0);
++	btrfs_set_file_extent_encryption(leaf, item, 0);
++	btrfs_set_file_extent_other_encoding(leaf, item, 0);
+ 
+ 	btrfs_mark_buffer_dirty(leaf);
+ out:
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 687fb372093f..d199275adfa4 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2520,8 +2520,8 @@ static int fill_holes(struct btrfs_trans_handle *trans,
+ 	}
+ 	btrfs_release_path(path);
+ 
+-	ret = btrfs_insert_file_extent(trans, root, btrfs_ino(inode),
+-			offset, 0, 0, end - offset, 0, end - offset, 0, 0, 0);
++	ret = btrfs_insert_hole_extent(trans, root, btrfs_ino(inode), offset,
++				       end - offset);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index ecc5fa3343fc..f2c83ef8d4aa 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -5022,8 +5022,8 @@ static int maybe_insert_hole(struct btrfs_root *root, struct btrfs_inode *inode,
+ 		return ret;
+ 	}
+ 
+-	ret = btrfs_insert_file_extent(trans, root, btrfs_ino(inode),
+-			offset, 0, 0, len, 0, len, 0, 0, 0);
++	ret = btrfs_insert_hole_extent(trans, root, btrfs_ino(inode), offset,
++				       len);
+ 	if (ret) {
+ 		btrfs_abort_transaction(trans, ret);
+ 	} else {
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index dcf75a8daa20..f99fd0a08902 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -5219,10 +5219,9 @@ static int btrfs_log_holes(struct btrfs_trans_handle *trans,
+ 			 * leafs from the log root.
+ 			 */
+ 			btrfs_release_path(path);
+-			ret = btrfs_insert_file_extent(trans, root->log_root,
+-						       ino, prev_extent_end, 0,
+-						       0, hole_len, 0, hole_len,
+-						       0, 0, 0);
++			ret = btrfs_insert_hole_extent(trans, root->log_root,
++						       ino, prev_extent_end,
++						       hole_len);
+ 			if (ret < 0)
+ 				return ret;
+ 
+@@ -5251,10 +5250,8 @@ static int btrfs_log_holes(struct btrfs_trans_handle *trans,
+ 
+ 		btrfs_release_path(path);
+ 		hole_len = ALIGN(i_size - prev_extent_end, fs_info->sectorsize);
+-		ret = btrfs_insert_file_extent(trans, root->log_root,
+-					       ino, prev_extent_end, 0, 0,
+-					       hole_len, 0, hole_len,
+-					       0, 0, 0);
++		ret = btrfs_insert_hole_extent(trans, root->log_root, ino,
++					       prev_extent_end, hole_len);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
 -- 
-Chris Murphy
+2.35.1
+
