@@ -2,77 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F37057F547
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Jul 2022 15:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE2D57F5E3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Jul 2022 17:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbiGXNr0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 24 Jul 2022 09:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
+        id S232381AbiGXPsG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 24 Jul 2022 11:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232691AbiGXNrZ (ORCPT
+        with ESMTP id S229818AbiGXPsF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 24 Jul 2022 09:47:25 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936F012A99
-        for <linux-btrfs@vger.kernel.org>; Sun, 24 Jul 2022 06:47:24 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id r22so3492002uap.13
-        for <linux-btrfs@vger.kernel.org>; Sun, 24 Jul 2022 06:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=LIYkXsh8NuZ+kWZJQV6Z3UgDflGRM7baotKUMbx/XVo=;
-        b=V53hUo+GTkaeTShaF7h4/MViv6RC0VeYXufFKgC7NSifXr8fE/aMw7ZGTsJwZcD1Mh
-         2RHm+HFS+ILVgbcY+Igm2nsoINQU9jBzMpJy1uLp2qQv+T639WbZKV74mSGJkgEb+llW
-         4hlQhjhUvnEmJyRh2oOXfSLvBpj4iAU9QzCFN/7lihvpeUoYYqL1EEv8mnR/4uA0dTJx
-         o23PEBqkz8LSJ2+g5UFHG0ixQMBhrkzRrjNOxZyMX0ltTDqGwYNxtMPSD+rlNtnFJMtw
-         l438+ttw/euWzKUudq57qGVddo+BO1ZauspCgVa1QaQ8uBF3Q9EHTc6jmD8D6i1qdZWr
-         YGzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=LIYkXsh8NuZ+kWZJQV6Z3UgDflGRM7baotKUMbx/XVo=;
-        b=BnmGF1+aiG5P2pd+7NvUk6btTTAwenip7005y52sd32BNgOvk4Rn/dNZbJAU/FlvA0
-         roB1GmKEg+3XpfVrxIOM8+GxgVFjFxb9tz1MpkcD1oB8DhG7cix7Zd3/bcLdn7groKfw
-         s+PbCi51twvonyUjG7SD9tRjCraqlAPdU20jC50TEp0SaQ+WqAABrBOf0FOIKFg11J/6
-         p/fm7ca9tFJmYjO+Q2nx8bTLRF0p9aDakTmIpd47RVDfmtvKmgdG3QE7sWWdnbkm1DS0
-         C3O5xBQQJyJELLHNy8sZroezIJH/5OtnVHFPl4KkiAhoQC4fXJnIp64FRnQ8PbQJRgjo
-         6eMw==
-X-Gm-Message-State: AJIora9khrndm+BWvvVbB23BfkEpqawCzn1PkzLZkVkw1VAJkiZATd/1
-        o/1M1EUuaxk0Hy8mAScGHUFenpbCNRGAPONh3mE=
-X-Google-Smtp-Source: AGRyM1v6DGlG3GvurzcIuMszAZMT7oKUFYYAM+ooli9+E9hEYsYrzZquNlFd0AdglncDkpKS8s918nAn2oSre3qcZmI=
-X-Received: by 2002:ab0:69cf:0:b0:384:b1a:521a with SMTP id
- u15-20020ab069cf000000b003840b1a521amr2202686uaq.30.1658670443678; Sun, 24
- Jul 2022 06:47:23 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a59:d088:0:b0:2d6:1571:aac5 with HTTP; Sun, 24 Jul 2022
- 06:47:23 -0700 (PDT)
-Reply-To: te463602@gmail.com
-From:   "Mr. KAbore Aouessian" <kiboraouessian@gmail.com>
-Date:   Sun, 24 Jul 2022 06:47:23 -0700
-Message-ID: <CALGXYcSSLCHvhrVf49GfbaA+0Q3bzXzbzu+2puDYr4-o2tv5Rw@mail.gmail.com>
-Subject: Greetings,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_HK_NAME_FM_MR_MRS,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ****
+        Sun, 24 Jul 2022 11:48:05 -0400
+X-Greylist: delayed 944 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 24 Jul 2022 08:48:03 PDT
+Received: from smtpq3.tb.ukmail.iss.as9143.net (smtpq3.tb.ukmail.iss.as9143.net [212.54.57.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92105E0F3
+        for <linux-btrfs@vger.kernel.org>; Sun, 24 Jul 2022 08:48:03 -0700 (PDT)
+Received: from [212.54.57.96] (helo=smtpq1.tb.ukmail.iss.as9143.net)
+        by smtpq3.tb.ukmail.iss.as9143.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <mike.fleetwood@googlemail.com>)
+        id 1oFdad-00086Q-DB
+        for linux-btrfs@vger.kernel.org; Sun, 24 Jul 2022 17:32:19 +0200
+Received: from [212.54.57.105] (helo=csmtp1.tb.ukmail.iss.as9143.net)
+        by smtpq1.tb.ukmail.iss.as9143.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <mike.fleetwood@googlemail.com>)
+        id 1oFdab-0002Bi-Ao
+        for linux-btrfs@vger.kernel.org; Sun, 24 Jul 2022 17:32:17 +0200
+Received: from rockover.duckdns.org ([82.18.143.172])
+        by cmsmtp with ESMTP
+        id FdaboHlWu2CkpFdaboMFsV; Sun, 24 Jul 2022 17:32:17 +0200
+X-SourceIP: 82.18.143.172
+X-Authenticated-Sender: 
+X-Spam: 0
+X-Authority: v=2.4 cv=S5fKfagP c=1 sm=1 tr=0 ts=62dd6601 cx=a_exe
+ a=sf9uXwBI4K/vBKiXuhgC7Q==:117 a=sf9uXwBI4K/vBKiXuhgC7Q==:17
+ a=RgO8CyIxsXoA:10 a=x7bEGLp0ZPQA:10 a=AtKE3pWXn8QA:10 a=mK_AVkanAAAA:8
+ a=A32VDEbvp05V50FcH1IA:9 a=Uz9EnhuHEG25YKoRyM-d:22 a=3gWm3jAn84ENXaBijsEo:22
+Received: from rockover.localdomain (localhost [127.0.0.1])
+        by rockover.duckdns.org (Postfix) with ESMTP id 13E93202FCBD;
+        Sun, 24 Jul 2022 16:32:17 +0100 (BST)
+From:   Mike Fleetwood <mike.fleetwood@googlemail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Mike Fleetwood <mike.fleetwood@googlemail.com>
+Subject: [PATCH] btrfs-progs: exit with failure when printing bad superblock
+Date:   Sun, 24 Jul 2022 16:32:14 +0100
+Message-Id: <1658676734-15294-1-git-send-email-mike.fleetwood@googlemail.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CMAE-Envelope: MS4xfGsczMjFmR9dspZmhkrL9lRCA6UUkMJW67ivJa5BQAoK1tFQSZpDKrniM6x+4R5EBDn6TN7Thwntnp4P/bAW1pmkSkPSdIVt1/uJ7WqdOvub4DE/g5VJ
+ pPjkz5ISUbtEgNM2loEFI2hcbG3RhXTMH/nSbGb8SvmBCbrfJy3XgRcARhXoF8USIkFtfSDwLpCZaBBublBm6UXTbmwHGWQVYGBYHj0kgw+M6Kf9031zasOR
+ zbeGmC6WHxlbwPKeH+LRs0+JWxsYX55+kzYY9PrvuLU=
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-Greetings,
-I'm Mr. KAbore Aouessian, how are you doing hope you are in good
-health, the Board irector try to reach you on phone several times
-Meanwhile, your number was not connecting. before he ask me to send
-you an email to hear from you if you are fine. hope to hear you are in
-good Health.
+Attempting to dump a bad btrfs superblock returns successful exit status
+zero.  According to the manual page non-zero should be returned on
+failure.  Fix this.
+    $ btrfs inspect-internal dump-super /dev/zero
+    superblock: bytenr=65536, device=/dev/zero
+    ---------------------------------------------------------
+    ERROR: bad magic on superblock on /dev/zero at 65536
 
-Thanks,
-Mr. KAbore Aouessian.
+    $ echo $?
+    0
+
+Signed-off-by: Mike Fleetwood <mike.fleetwood@googlemail.com>
+---
+ cmds/inspect-dump-super.c                       | 11 ++++++++---
+ tests/misc-tests/015-dump-super-garbage/test.sh |  6 +++---
+ 2 files changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/cmds/inspect-dump-super.c b/cmds/inspect-dump-super.c
+index d843562..4187da8 100644
+--- a/cmds/inspect-dump-super.c
++++ b/cmds/inspect-dump-super.c
+@@ -52,9 +52,9 @@ static int load_and_dump_sb(char *filename, int fd, u64 sb_bytenr, int full,
+ 	if (btrfs_super_magic(&sb) != BTRFS_MAGIC && !force) {
+ 		error("bad magic on superblock on %s at %llu",
+ 				filename, (unsigned long long)sb_bytenr);
+-	} else {
+-		btrfs_print_superblock(&sb, full);
++		return 1;
+ 	}
++	btrfs_print_superblock(&sb, full);
+ 	return 0;
+ }
+ 
+@@ -177,7 +177,12 @@ static int cmd_inspect_dump_super(const struct cmd_struct *cmd,
+ 				putchar('\n');
+ 			}
+ 		} else {
+-			load_and_dump_sb(filename, fd, sb_bytenr, full, force);
++			if (load_and_dump_sb(filename, fd,
++						sb_bytenr, full, force)) {
++				close(fd);
++				ret = 1;
++				goto out;
++			}
+ 			putchar('\n');
+ 		}
+ 		close(fd);
+diff --git a/tests/misc-tests/015-dump-super-garbage/test.sh b/tests/misc-tests/015-dump-super-garbage/test.sh
+index b346945..1e6afa1 100755
+--- a/tests/misc-tests/015-dump-super-garbage/test.sh
++++ b/tests/misc-tests/015-dump-super-garbage/test.sh
+@@ -6,9 +6,9 @@ source "$TEST_TOP/common"
+ 
+ check_prereq btrfs
+ 
+-run_check "$TOP/btrfs" inspect-internal dump-super /dev/urandom
+-run_check "$TOP/btrfs" inspect-internal dump-super -a /dev/urandom
+-run_check "$TOP/btrfs" inspect-internal dump-super -fa /dev/urandom
++run_mustfail "attempt to print bad superblock without force" "$TOP/btrfs" inspect-internal dump-super /dev/urandom
++run_mustfail "attempt to print bad superblock without force" "$TOP/btrfs" inspect-internal dump-super -a /dev/urandom
++run_mustfail "attempt to print bad superblock without force" "$TOP/btrfs" inspect-internal dump-super -fa /dev/urandom
+ run_check "$TOP/btrfs" inspect-internal dump-super -Ffa /dev/urandom
+ run_check "$TOP/btrfs" inspect-internal dump-super -Ffa /dev/urandom
+ run_check "$TOP/btrfs" inspect-internal dump-super -Ffa /dev/urandom
+-- 
+1.8.3.1
+
