@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D95EC57F911
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jul 2022 07:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C9D57F912
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jul 2022 07:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231888AbiGYFih (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Jul 2022 01:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57700 "EHLO
+        id S231893AbiGYFii (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Jul 2022 01:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbiGYFid (ORCPT
+        with ESMTP id S231296AbiGYFie (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jul 2022 01:38:33 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB22FD3B
-        for <linux-btrfs@vger.kernel.org>; Sun, 24 Jul 2022 22:38:32 -0700 (PDT)
+        Mon, 25 Jul 2022 01:38:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81967101CE
+        for <linux-btrfs@vger.kernel.org>; Sun, 24 Jul 2022 22:38:33 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4F8FB34968
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 05:38:31 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3EC6A1F992
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 05:38:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658727511; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1658727512; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JkKTzrIEYKqicgHa6U9PkAncDWAz4CjTiJDLEwTucY0=;
-        b=VhVzNGl7zX3ORPFBgh82z1N3n7sHAzbP7LKS0bnKyzz0pQZmZbk9zGVLucesH7s4cpiGkj
-        9OoE9Vb3nSStrzPu0KfcDd8PXcJzCaQh2I88cA6RN32n9BBvrjtCtPQf/el2c5gUdhFgNn
-        A4oGKFWnTDyf2v05+wxHVeAIOsbqfY4=
+        bh=AzoKvqArmDq0IxdcurTeKhMOUl2ijHIpRQqglPs0l24=;
+        b=B9R8peLWSeIruBlVcFz9539X8/f1XXbhfTOjgNs2WPO2dNTOKNd9kXan3DePkE62EtrwBB
+        sMePU0ck5oyOTs9nDbSbR07bTogR6Z8FW+PEmux00BiPkE7UBIIL5mtLNzPtNOZSkK29ub
+        3iMEuORW1SWv/RZ2+JFZ3gQunY7lVac=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B86EE13A8D
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 05:38:30 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A5D8513A8D
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 05:38:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id eNYHIlYs3mJOLAAAMHmgww
+        id AMh+HVcs3mJOLAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 05:38:30 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 05:38:31 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 12/14] btrfs: warn and clear bitmaps if there is dirty bitmap at mount time
-Date:   Mon, 25 Jul 2022 13:38:00 +0800
-Message-Id: <eb8490c67393058494aedc31e8af89cd1fe61fd9.1658726692.git.wqu@suse.com>
+Subject: [PATCH 13/14] btrfs: avoid recording full stripe write into write-intent bitmaps
+Date:   Mon, 25 Jul 2022 13:38:01 +0800
+Message-Id: <441b7bd4a0966c9f1d7ef17dea7a2e875440a728.1658726692.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <cover.1658726692.git.wqu@suse.com>
 References: <cover.1658726692.git.wqu@suse.com>
@@ -60,102 +60,74 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-To properly cleanup the bitmaps, we need to scrub the logical ranges in
-the bitmaps.
+Full stripe write can happen in the following cases:
 
-Unfortunately there is no such convient interface at all (scrub only
-works at device offset for now).
+- Writing into a completely new stripe
+  In this case, even if powerloss happened, we won't have any committed
+  metadata referring the new full stripe.
 
-So just introduce a place holder to warn and clear the bitmap.
+  Thus we don't need to recover.
+
+- Writing into a NODATACOW range
+  In this case, although in theory we should recovery after power loss,
+  but NODATACOW implies NODATASUM, thus we have no way to determine
+  which data is correct.
+
+  Thus we don't need to and can't recover either.
+
+So just avoid recording full stripe write into write-intent bitmaps.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c      |  7 +++++++
- fs/btrfs/write-intent.c | 35 +++++++++++++++++++++++++++++++++++
- fs/btrfs/write-intent.h |  8 ++++++++
- 3 files changed, 50 insertions(+)
+ fs/btrfs/raid56.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 89bf3b2693a5..d29fad12d459 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3729,6 +3729,13 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 			  ret);
- 		goto fail_block_groups;
- 	}
-+
-+	ret = btrfs_write_intent_recover(fs_info);
-+	if (ret < 0) {
-+		btrfs_err(fs_info, "failed to recover write-intent bitmap: %d",
-+			  ret);
-+		goto fail_block_groups;
-+	}
- 	ret = btrfs_recover_balance(fs_info);
- 	if (ret) {
- 		btrfs_err(fs_info, "failed to recover balance: %d", ret);
-diff --git a/fs/btrfs/write-intent.c b/fs/btrfs/write-intent.c
-index 40d579574f3d..82228713e621 100644
---- a/fs/btrfs/write-intent.c
-+++ b/fs/btrfs/write-intent.c
-@@ -704,6 +704,41 @@ void btrfs_write_intent_clear_dirty(struct btrfs_fs_info *fs_info, u64 logical,
- 	spin_unlock_irqrestore(&ctrl->lock, flags);
- }
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index 0a0a2a1e96c3..37e5fd5df1f9 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -818,8 +818,13 @@ static void rbio_orig_end_io(struct btrfs_raid_bio *rbio, blk_status_t err)
+ 	if (rbio->generic_bio_cnt)
+ 		btrfs_bio_counter_sub(rbio->bioc->fs_info, rbio->generic_bio_cnt);
  
-+int btrfs_write_intent_recover(struct btrfs_fs_info *fs_info)
-+{
-+	struct write_intent_ctrl *ctrl = fs_info->wi_ctrl;
-+	struct write_intent_super *wis;
-+	int ret = 0;
-+
-+	if (!btrfs_fs_compat_ro(fs_info, WRITE_INTENT_BITMAP))
-+		return ret;
-+
-+	ASSERT(ctrl);
-+	wis = page_address(ctrl->page);
-+
-+	if (wi_super_nr_entries(wis) != 0) {
-+		int i;
-+
-+		btrfs_warn(fs_info, "dirty write intent bitmap found:");
-+		for (i = 0; i < wi_super_nr_entries(wis); i++) {
-+			struct write_intent_entry *entry =
-+				write_intent_entry_nr(ctrl, i);
-+
-+			btrfs_warn(fs_info,
-+				"  entry=%u bytenr=%llu bitmap=0x%016llx\n", i,
-+				   wi_entry_bytenr(entry),
-+				   wi_entry_raw_bitmap(entry));
-+		}
-+		/* For now, we just clear the whole bitmap. */
-+		memzero_page(ctrl->page, sizeof(struct write_intent_super),
-+			     WRITE_INTENT_BITMAPS_SIZE -
-+			     sizeof(struct write_intent_super));
-+		wi_set_super_nr_entries(wis, 0);
-+		ret = write_intent_writeback(fs_info);
+-	/* Clear the write-intent bitmap range for write operation. */
+-	if (rbio->operation == BTRFS_RBIO_WRITE)
++	/*
++	 * Clear the write-intent bitmap range for write operation.
++	 * For full stripe write we didn't record it into write-intent thus no
++	 * need to clear the bits for full stripe write.
++	 */
++	if (rbio->operation == BTRFS_RBIO_WRITE &&
++	    rbio->bio_list_bytes < rbio->nr_data * BTRFS_STRIPE_LEN)
+ 		btrfs_write_intent_clear_dirty(rbio->bioc->fs_info,
+ 				       rbio->bioc->raid_map[0],
+ 				       rbio->nr_data * BTRFS_STRIPE_LEN);
+@@ -1342,13 +1347,19 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
+ 	atomic_set(&rbio->stripes_pending, bio_list_size(&bio_list));
+ 	BUG_ON(atomic_read(&rbio->stripes_pending) == 0);
+ 
+-	/* Update the write intent bitmap before we start submitting bios. */
+-	btrfs_write_intent_mark_dirty(bioc->fs_info, rbio->bioc->raid_map[0],
+-				     rbio->nr_data * BTRFS_STRIPE_LEN, &event);
+-	ret = btrfs_write_intent_writeback(bioc->fs_info, event);
++	/*
++	 * Update the write intent bitmap if it's a sub-stripe write,
++	 * before we start submitting bios.
++	 */
++	if (rbio->bio_list_bytes < rbio->nr_data * BTRFS_STRIPE_LEN) {
++		btrfs_write_intent_mark_dirty(bioc->fs_info,
++				rbio->bioc->raid_map[0],
++				rbio->nr_data * BTRFS_STRIPE_LEN, &event);
++		ret = btrfs_write_intent_writeback(bioc->fs_info, event);
++		if (ret < 0)
++			goto cleanup;
 +	}
-+	return ret;
-+}
-+
- int btrfs_write_intent_writeback(struct btrfs_fs_info *fs_info, u64 event)
- {
- 	struct write_intent_ctrl *ctrl = fs_info->wi_ctrl;
-diff --git a/fs/btrfs/write-intent.h b/fs/btrfs/write-intent.h
-index 872a707ef67d..bb6e9b599373 100644
---- a/fs/btrfs/write-intent.h
-+++ b/fs/btrfs/write-intent.h
-@@ -292,4 +292,12 @@ void btrfs_write_intent_mark_dirty(struct btrfs_fs_info *fs_info, u64 logical,
-  */
- void btrfs_write_intent_clear_dirty(struct btrfs_fs_info *fs_info, u64 logical,
- 				    u32 len);
-+
-+/*
-+ * Rebuild the range in the write-intent bitmaps.
-+ *
-+ * Currently not working, it will just output a warning and clear the bitmap.
-+ */
-+int btrfs_write_intent_recover(struct btrfs_fs_info *fs_info);
-+
- #endif
+ 
+-	if (ret < 0)
+-		goto cleanup;
+ 	while ((bio = bio_list_pop(&bio_list))) {
+ 		bio->bi_end_io = raid_write_end_io;
+ 
 -- 
 2.37.0
 
