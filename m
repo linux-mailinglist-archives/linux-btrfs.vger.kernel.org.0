@@ -2,90 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D74B258031F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jul 2022 18:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E873580348
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jul 2022 19:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbiGYQuT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Jul 2022 12:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
+        id S236511AbiGYRFO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Jul 2022 13:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236586AbiGYQuO (ORCPT
+        with ESMTP id S234995AbiGYRFL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jul 2022 12:50:14 -0400
-Received: from mail.tol.fr (mail.tol.fr [82.66.50.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CEC10DF
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 09:50:12 -0700 (PDT)
-Message-ID: <849cf4c4-a9cb-c53a-e26b-7cf9349a2699@couderc.eu>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=couderc.eu; s=2017;
-        t=1658767808; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZxKvVsutwX5ueoLqpFg6Gy5l3cBLr4Om9WMVJ7dsf1w=;
-        b=Dy/VLBvfGESEdqIxSk4rju70mYb1z7ux80v3dx9YkRxYJmIsHEFtoZj16dEBGCgj3hp8SV
-        x5Nf8E+TmwK+DelqMX9aHSWFVDMWkozx/dBSg0VO2rfloyr8yEjZkPxAVsVO+pD9IRbcU+
-        WXxPQLePyBVeuFBM85dYhobNfJsDJYQG1ajKNesaZ73ESoI/FP3kaFT/2BGFRQOga8rnJc
-        30+elRyoknkHC9CCcNAvyO1nTBbo3leX82GpVXmaHbCL4EIE53+SEikhFx5PhA41vNKJWX
-        uH7kC6S5MqbPnJmZoRjNZoNbsjTjjyc+JSnJXbWkya693YoLnuBcweN7sdaZ3Q==
-Date:   Mon, 25 Jul 2022 18:50:08 +0200
+        Mon, 25 Jul 2022 13:05:11 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D45DCD
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 10:05:09 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id mn11so4475817qvb.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 10:05:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HZrMJ1F0QXJeY0gFLKRcQg2WFlfw/X1HoyC8rQJcX7k=;
+        b=cfULKsalLu5pBqKqC3bhohhREacmvhMRuc3XjdzF6SSy9ogRtGX/9wQIgXWn8u9ivv
+         R8bPSpDcfsCpOigtNN+6pUYQB0aJHYQM7jSE3IrKPvVOuYz7TvuWFa/3LPeb0rwOpqFu
+         H8UmfzKUOE1ppDTdGOyLwRw7fb1hByE/mUobT0kBiKW8JIxXqSZvGEf8+lRZ4O5iK+p7
+         yt29lyM8hwXooR8o3WG1XlyDqdsrwDtaDRcFFBI+HmXbmhEG/zB2ozmPyh9EXy2A18sw
+         mkTq6c45iQOq4ZlmdHrk2cTe2mU6pPrHFKXBCx0z+hDjrcEK/KLZ47Ajr2D0fqCfvvpj
+         N0HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HZrMJ1F0QXJeY0gFLKRcQg2WFlfw/X1HoyC8rQJcX7k=;
+        b=TKDC6CcHIO/FiFiXq9x3X9p3iY4pyEGGMRj8lc8Xt4rVNLimHZn96+CHV2fh1N6J8I
+         ilniLdeXFytAMtuzYClKf/l1zHdPsDVAI3yplFdhuzksmRA4k//QlKd5ygZ9Ez/CnTeb
+         eSx3sGYYiFuhSbdR44I74K+gsNC7JNch8L7Ay8Gs5Ptc4N0IwobDnrXo+D9ZL3MtIW14
+         UTKJROpRB0khPloNcy/S4nPL+r1V+EAFEE2KqFDgp9oN1UjNsDG7aees5+euRFmkYRZU
+         uPzSAxZSN1Q+8RUjZpQZiDltkV0pIZoHrODR0DQNziXseXI+2UDlWpjoOvnuXzujXRBr
+         REyw==
+X-Gm-Message-State: AJIora9YMZfcxf5vNYfsAV1cyie6iURm4/SfBxOcYWlj7zqhgJwwD6XR
+        sicS40VYC7+OGinflXNOBqcaA4ZbpdpJyw==
+X-Google-Smtp-Source: AGRyM1srOzmAzAL90DdLXW86dvk6Qzaf+jzuzG0HB6eQGJcidniSjpiB5FnAvSForpqaYPJTTDkgYw==
+X-Received: by 2002:a05:6214:248d:b0:473:fb6c:36aa with SMTP id gi13-20020a056214248d00b00473fb6c36aamr11171628qvb.66.1658768708619;
+        Mon, 25 Jul 2022 10:05:08 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id f22-20020ac84716000000b0031ed590433bsm7532168qtp.78.2022.07.25.10.05.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jul 2022 10:05:06 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: reset RO counter on block group if we fail to relocate
+Date:   Mon, 25 Jul 2022 13:05:05 -0400
+Message-Id: <ca31fa4152849cee02f16c49f7ef818b89995a25.1658768686.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Subject: Re: Best way to programmatically send/receive ?
-Content-Language: fr
-To:     linux-btrfs@vger.kernel.org
-References: <4ade214c-db16-dd74-7118-8d0fa128ea52@couderc.eu>
- <20220725162343.GB13489@twin.jikos.cz>
-From:   Pierre Couderc <pierre@couderc.eu>
-In-Reply-To: <20220725162343.GB13489@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=couderc.eu;
-        s=2017; t=1658767808; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZxKvVsutwX5ueoLqpFg6Gy5l3cBLr4Om9WMVJ7dsf1w=;
-        b=Kpk91JQpOtZCTpAqp9CGhqeyitUKRsILMRRhEJx6cdOPFpDW3gBVzgFYaFPhriXb6e5P+p
-        Wj5Bkw8i1kLYXvZBUJwBc1lRQ/mfwEmUZ3BxlSm8gs+WKmgIUEpQHxAUukFMALal0sCBx1
-        jYAYCCfG5UDzlhsH7lo4lpLp1d/cXCZp6bVFrqnqVVcXxmtlQfP5ZjE6N+sTltWVxPIGLQ
-        cS/Rt5lFu2KTYDi69q4drY8GWsecxhr3sIOT5eumog5AlIF/zHALV4CEyaJ1A2WW0y4Yud
-        bO0WlEpRcU5yJIJlKxafXaersrGSnLFGBNB4zOJ8gWYg4et+TvOl+TdNvOB3vw==
-ARC-Seal: i=1; s=2017; d=couderc.eu; t=1658767808; a=rsa-sha256; cv=none;
-        b=AZoHEUR6BzYIeGnpnOEfgg7KaoNCnXmtyuPZoWfqxICoe87VX+k+5ZvDXtiLkcD4WcyJZswhgp2439aPoinlLNHTFDbDAau8Y2WOH2yDjCBwtICDtlBXiA/3kctW41zMahS2mdFv+i9UVy4zyoYTUPTBLajI3sxAgNayGCOU0F3zBbxBKxmy0EtgczpIugypplxF5VjDQZ6MZe8rVuvtaczg9DhZhJox3SJjjcSYTa9LVkKM2EKfM+i4jrBGh3mpA38JzIAG5EfLQQA5ZHufnXWrDA1sEngDDn2SBgPnXbJNAvKIyhYtDX/Mfo5cblCErPs6b5mDxVNGVj1G91acHA==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=tol smtp.mailfrom=pierre@couderc.eu
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+With the automatic block group reclaim code we will preemptively try to
+mark the block group RO before we start the relocation.  We do this to
+make sure we should actually try to relocate the block group.
 
-On 7/25/22 18:23, David Sterba wrote:
-> On Sat, Jul 23, 2022 at 08:22:48AM +0200, Pierre Couderc wrote:
->> I am doing a utility to manage backup of btrfs subvolumes.
->>
->> I need to save a subvolume using btrfs send/receive
->>
->>
->> I use libbtrfsutils, which is very fine, but I have found no entry about
->> send/receive in it.
-> The send/receive support is lacking in libbtrfsutil.
->
->> What is the best  way to do that in C/C++...?
-> Right now it's available in libbtrfs and an example implementation in
-> C/C++ is snapper. However, the libbtrfs library has several issues so
-> I'd rather not encourage new use. The interface is frozen and can be
-> considered stable, which also means that the v2 stream won't be ported
-> there.
->
-> The libbtrfs is a library done the wrong way, no clean namespace,
-> naming, GPL so libbtrfsutil is supposed to provide the proper interface.
-> But right now that's the plan.
-Thank you, libbtrfs seems to be the best solution even if not 
-satisfactory...
+However if we hit an error during the actual relocation we won't clean
+up our RO counter and the block group will remain RO.  This was observed
+internally with file systems reporting less space available from df when
+we had failed background relocations.
+
+Fix this by doing the dec_ro in the error case.
+
+Fixes: 18bb8bbf13c1 ("btrfs: zoned: automatically reclaim zones")
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/block-group.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index c3aecfb0a71d..993aca2f1e18 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1640,9 +1640,11 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 				div64_u64(zone_unusable * 100, bg->length));
+ 		trace_btrfs_reclaim_block_group(bg);
+ 		ret = btrfs_relocate_chunk(fs_info, bg->start);
+-		if (ret)
++		if (ret) {
++			btrfs_dec_block_group_ro(bg);
+ 			btrfs_err(fs_info, "error relocating chunk %llu",
+ 				  bg->start);
++		}
+ 
+ next:
+ 		btrfs_put_block_group(bg);
+-- 
+2.26.3
+
