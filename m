@@ -2,332 +2,265 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D7557F7CE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jul 2022 02:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D92C57F90C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jul 2022 07:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbiGYAeu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 24 Jul 2022 20:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53326 "EHLO
+        id S231162AbiGYFiY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Jul 2022 01:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbiGYAet (ORCPT
+        with ESMTP id S229552AbiGYFiX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 24 Jul 2022 20:34:49 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D76511A1E
-        for <linux-btrfs@vger.kernel.org>; Sun, 24 Jul 2022 17:34:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1658709282;
-        bh=5L143YGpDhqmwJraZzyGgAeIwjTrfTFBV5JP95Xv7TA=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=MdSlLkGvedD/fsHu2C5q17uCBKC0IBxVdoeAxwlhJftTgvtTOJEdAZ7syqqoKqTJU
-         fk2BSCLyr9MSEL0pxP8GXSok8WtUzA+qbKRAukg63PqQhbI81DTcosXUdv1Tgl17sT
-         rR+ElI80nrYKM96FQYUZSlNKw6bgsL7iCOj0y1ww=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MG9g4-1oGrS10vxE-00GdS2; Mon, 25
- Jul 2022 02:34:41 +0200
-Message-ID: <d6a18603-6bba-0eb3-a8d0-e341afaf37f5@gmx.com>
-Date:   Mon, 25 Jul 2022 08:34:38 +0800
+        Mon, 25 Jul 2022 01:38:23 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72ED7D124
+        for <linux-btrfs@vger.kernel.org>; Sun, 24 Jul 2022 22:38:21 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 30C9234968
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 05:38:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1658727500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=WV5Z+Cf/Tc7klF0XpFBfnCrO+i6g/xlT7ZYvhclFueI=;
+        b=bR7Bmb7M6CxNRIBT3aD2je34ppCD/JHIe20QVsvmEfP1A8vVbpDxuJAADdHTn56k6JLOxY
+        UUrKemY+t9oEkxioa7CRwcjutCF2g81PQiQwN6E3/VoLdkU70Jziyf/+DWQdVIbNemL6Tv
+        i3wq1VylwyL0NlRW5Y8Yo48EfNagbbk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 98EC413A8D
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 05:38:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ygxUGkss3mJOLAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 05:38:19 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/14] btrfs: introduce write-intent bitmaps for RAID56
+Date:   Mon, 25 Jul 2022 13:37:48 +0800
+Message-Id: <cover.1658726692.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Content-Language: en-US
-To:     Li Zhang <zhanglikernel@gmail.com>, linux-btrfs@vger.kernel.org
-References: <1658666627-27889-1-git-send-email-zhanglikernel@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v3] btrfs-progs: fix btrfs resize failed.
-In-Reply-To: <1658666627-27889-1-git-send-email-zhanglikernel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:G+B6lyj/urNOypkZvpLj7KAPliazc2XqGGvvZWvVUJfY44Aai1X
- SOlWvfRC70cEKy+C/8gyjc/1rDjF4EBP8IKmxF2n622V4jYK6XLtBnl7h7y8R5XZ7FNWzTW
- /NlqhsCIxUXhOnxbvu84osk34xkDeZuFpZbP+NrRXaBucKlL0urEK+CXU3O3axgwFTtmi5f
- +D5o/JLwOkoEDGAi9828w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ar/5AY406Ak=:/165mkwgwj2CzqHS+cVC/e
- 4RqIx7Z7Ad4E4fVjG/7dPpWY2vBmECqOZaPU4GcuoneiF783Cw+Vu1P1c36hvHuAySVMCklpR
- LBydZ/jkiJ+9JKCOZVgkHPJxn35Q88+KkjDJ6M78mKigPy9hZagdueS72L6vItstJY4/IgYs1
- sydpwo1Dbi/2twwDjKxmhFd+SvPAre8M6wyKd2FbvhgZJ5owMtGkVBBi3ks7I0CIAWQLDOQAf
- /7kXEptfmrijWoPXInj+fJY7eUQnaq6TQthTHquRF/j7P1NEF6h9Uq0LjfDYkWDsYRGxtGu3m
- gfr5piwFlQWntfI9dKDVK6I0w2UflBlS5Lw9k5bUuEaU1LPfP1T9nTNwgbLPh4BWwXvqm0Bn5
- 9ga5uV7XJjZmYZTZx2KtQhbEZ4D4xDvZcZnm3IxM4GylxRRp2k/AGe7ImWIWAf46pt/WPjigw
- MBjQBfgjG5yvD4f2p625FXLJDh3kfsjnYiGh8blHq2yHiSlxFHt/MCdlOsphK+USiKpmtQRwK
- jmBh2xk1Qr7TYUmU4JOmvuDjGaJiAoaAlXLjNvbaBhL/Zjy5Oe+q+/sEf5B/5YLUsN/CzPM6h
- QQofSasUH0LhzHIBEQOY+YPjCiwC8pCQXjSYK9mR1vzreQzNm0pLrfNUgNAHSpkZTwbFlcqu9
- wToH/1NjYAtVM1YWSmC4W55Az6qaNM2Bkit6NmK4ywQGWwg36MIURXBV+UkzhFiZbW4t1oMjX
- ulR52defYQYMFrQxKIOo64pqk+A43Zl6tZgZyM3Sqze5c8LcEcvF+xjjFeKcOp36oUanLX0cb
- AzP40HfF37rutDM27V1Yzk6A5bYlPlDTpiv12/TFn6EAh0yXJ6ohbEcxC+9T9y8RA0F4/EHuK
- tQpYXjGABFt/KlI3x2VMym+G2jNvlOrnZ+GVvT98vVmiHg/ls4OTIDbyduiC360y3os0kijsy
- XjVNyvPkXuZ6QcqIU28SfGlusADQxeubwzNr3cvrW/7xsl1CNgjZtRLiqKMkakZhpOV6DfGXA
- NZ/mk9uRvvuVrFZKe6ref7tHxR2VwGqp/iouheBuIfhXy7g5bq1VpNiVw5NoPa+EM5maYhc83
- QVJaGDQVfJrv01nxRtQA0zWP6X0UIL4dqMLfLTbJrVqsbRPVFyTQRtZ7w==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[CHANGELOG]
+v2->v1:
+- Add mount time recovery functionality
+  Now if a dirty bitmap is found, we will do proper recovery at mount
+  time.
+
+  The code is using scrub routine to do the proper recovery for both
+  data and P/Q parity.
+
+  Currently we can only test this by manually setting up a dirty bitmap,
+  and corrupt the full stripe, then mounting it and verify the full
+  stripe using "btrfs check --check-data-csum"
+
+- Skip full stripe writes
+  Full stripe writes are either:
+  * New writes into unallocated space
+    After powerloss, we won't read any data from the full stripe.
+
+  * Writes into NODATACOW ranges
+    We won't have csum for them anyway, thus new way to do any recovery.
+
+- Fix a memory leakage caused by RO mount
+  Previously we only cleanup the write-intent ctrl if it's RW mount,
+  thus for RO mount we will cause memory leak.
+ 
+
+RFC->v1:
+- Fix a corner case in write_intent_set_bits()
+  If the range covers the last existing entry, but still needs a new
+  entry, the old code will not insert the new entry, causing
+  write_intent_clear_bits() to cause a warning.
+
+- Add selftests for the write intent bitmaps
+  The write intent bitmaps is an sparse array of bitmaps.
+  There are some corner cases tricky to get it done correctly in the
+  first try (see above case).
+  The test case would prevent such problems from happening again.
+
+- Fix hang with dev-replace, and better bitmaps bio submission
+  Previously we will hold device_list_mutex while submitting the bitmaps
+  bio, this can lead to deadlock with dev-replace/dev-removal.
+  Fix it by using RCU to keep an local copy of devices and use them
+  to submit the bitmaps bio.
+
+  Furthermore, there is no need to follow the way of superblocks
+  writeback, as the content of bitmaps are always the same for all
+  devices, we can just submitting the same page and use atomic counter
+  to wait for them to finish.
+
+  Now there is no more crash/warning/deadlock in btrfs/070.
+
+[BACKGROUND]
+Unlike md-raid, btrfs RAID56 has nothing to sync its devices when power
+loss happens.
+
+For pure mirror based profiles it's fine as btrfs can utilize its csums
+to find the correct mirror the repair the bad ones.
+
+But for RAID56, the repair itself needs the data from other devices,
+thus any out-of-sync data can degrade the tolerance.
+
+Even worse, incorrect RMW can use the stale data to generate P/Q,
+removing the possibility of recovery the data.
 
 
-On 2022/7/24 20:43, Li Zhang wrote:
-> related issuse:
-> https://github.com/kdave/btrfs-progs/issues/470
+For md-raid, it goes with write-intent bitmap, to do faster resilver,
+and goes journal (partial parity log for RAID5) to ensure it can even
+stand a powerloss + device lose.
 
-Something I forgot to mention is related to the changelog part.
+[OBJECTIVE]
 
-This can be replaced by the following tag before SOB line:
+This patchset will introduce a btrfs specific write-intent bitmap.
 
-Issue: 470
+The bitmap will locate at physical offset 1MiB of each device, and the
+content is the same between all devices.
 
->
-> V1 link:
-> https://www.spinics.net/lists/linux-btrfs/msg126661.html
->
-> V2 link:
-> https://www.spinics.net/lists/linux-btrfs/msg126853.html
+When there is a RAID56 write (currently all RAID56 write, including full
+stripe write), before submitting all the real bios to disks,
+write-intent bitmap will be updated and flushed to all writeable
+devices.
 
-Changelog for single patch can be put after all the tags, and with a
-line of "---", so at apply time git will discard the extra info.
+So even if a powerloss happened, at the next mount time we know which
+full stripes needs to check, and can start a scrub for those involved
+logical bytenr ranges.
 
-One example can be found here:
+[ADVANTAGE OF BTRFS SPECIFIC WRITE-INTENT BITMAPS]
 
-https://lore.kernel.org/linux-btrfs/20220617151133.GO20633@twin.jikos.cz/T=
-/
+Since btrfs can utilize csum for its metadata and CoWed data, unlike
+dm-bitmap which can only be used for faster re-silver, we can fully
+rebuild the full stripe, as long as:
 
->
-> [BUG]
-> 1. If there is no devid=3D1, when the user uses the btrfs file system to=
-ol,
-> the following error will be reported,
->
-> $ sudo btrfs filesystem show /mnt/1
-> Label: none  uuid: 64dc0f68-9afa-4465-9ea1-2bbebfdb6cec
->      Total devices 2 FS bytes used 704.00KiB
->      devid    2 size 15.00GiB used 1.16GiB path /dev/loop2
->      devid    3 size 15.00GiB used 1.16GiB path /dev/loop3
-> $ sudo btrfs filesystem resize -1G /mnt/1
-> ERROR: cannot find devid: 1
-> ERROR: unable to resize '/mnt/1': No such device
->
-> 2. Function check_resize_args, if get_fs_info is successful,
-> check_resize_args always returns 0, Even if the parameter
-> passed to kernel space is longer than the size allowed to
-> be passed to kernel space (BTRFS_VOL_NAME_MAX).
->
-> [CAUSE]
-> 1. If the user does not specify the devid id explicitly,
-> btrfs will use the default devid 1, so it will report an error when dev =
-1 is missing.
->
-> 2. The last line of the function check_resize_args is return 0.
->
-> [FIX]
-> 1. If the file system contains multiple devices, output an error message=
- to the user.
-> If the filesystem has only one device, resize should automatically add t=
-he unique devid.
->
-> 2. The function check_resize_args should not return 0 on the last line,
-> it should return ret representing the return value.
->
-> 3. Update the "btrfs-filesystem" man page
->
-> [RESULT]
->
-> $ sudo btrfs filesystem resize --help
-> usage: btrfs filesystem resize [options] [devid:][+/-]<newsize>[kKmMgGtT=
-pPeE]|[devid:]max <path>
->
->      Resize a filesystem
->
->      If the filesystem contains only one device, devid can be ignored.
->      If 'max' is passed, the filesystem will occupy all available space
->      on the device 'devid'.
->      [kK] means KiB, which denotes 1KiB =3D 1024B, 1MiB =3D 1024KiB, etc=
-.
->
->      --enqueue         wait if there's another exclusive operation runni=
-ng,
->                        otherwise continue
+1) There is no missing device
+   For missing device case, we still need to go full journal.
 
-Although help string is updated, the manpage is still not updated.
+2) Untouched data stays untouched
+   This should be mostly sane for sane hardware.
 
-Thanks,
-Qu
+And since the btrfs specific write-intent bitmaps are pretty small (4KiB
+in size), the overhead much lower than full journal.
 
->
-> $ sudo btrfs filesystem show /mnt/1/
-> Label: none  uuid: 2025e6ae-0b6d-40b4-8685-3e7e9fc9b2c2
->          Total devices 2 FS bytes used 144.00KiB
->          devid    2 size 15.00GiB used 1.16GiB path /dev/loop2
->          devid    3 size 15.00GiB used 1.16GiB path /dev/loop3
->
-> $ sudo btrfs filesystem resize -1G /mnt/1
-> ERROR: The file system has multiple devices, please specify devid exactl=
-y.
-> ERROR: The device information list is as follows.
->          devid    2 size 15.00GiB used 1.16GiB path /dev/loop2
->          devid    3 size 15.00GiB used 1.16GiB path /dev/loop3
->
-> $ sudo btrfs device delete 2 /mnt/1/
->
-> $ sudo btrfs filesystem show /mnt/1/
-> Label: none  uuid: 2025e6ae-0b6d-40b4-8685-3e7e9fc9b2c2
->          Total devices 1 FS bytes used 144.00KiB
->          devid    3 size 15.00GiB used 1.28GiB path /dev/loop3
->
-> $ sudo btrfs filesystem resize -1G /mnt/1
-> Resize device id 3 (/dev/loop3) from 15.00GiB to 14.00GiB
->
-> $ sudo btrfs filesystem show /mnt/1/
-> Label: none  uuid: cc6e1beb-255b-431f-baf5-02e8056fd0b6
-> 	Total devices 1 FS bytes used 144.00KiB
-> 	devid    3 size 14.00GiB used 1.28GiB path /dev/loop3
->
-> Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
-> ---
->   cmds/filesystem.c | 47 ++++++++++++++++++++++++++++++++++++++++-------
->   1 file changed, 40 insertions(+), 7 deletions(-)
->
-> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-> index 7cd08fc..e641fcb 100644
-> --- a/cmds/filesystem.c
-> +++ b/cmds/filesystem.c
-> @@ -1078,6 +1078,7 @@ static DEFINE_SIMPLE_COMMAND(filesystem_defrag, "d=
-efragment");
->   static const char * const cmd_filesystem_resize_usage[] =3D {
->   	"btrfs filesystem resize [options] [devid:][+/-]<newsize>[kKmMgGtTpPe=
-E]|[devid:]max <path>",
->   	"Resize a filesystem",
-> +	"If the filesystem contains only one device, devid can be ignored.",
->   	"If 'max' is passed, the filesystem will occupy all available space",
->   	"on the device 'devid'.",
->   	"[kK] means KiB, which denotes 1KiB =3D 1024B, 1MiB =3D 1024KiB, etc.=
-",
-> @@ -1087,7 +1088,8 @@ static const char * const cmd_filesystem_resize_us=
-age[] =3D {
->   	NULL
->   };
->
-> -static int check_resize_args(const char *amount, const char *path) {
-> +static int check_resize_args(char * const amount, const char *path)
-> +{
->   	struct btrfs_ioctl_fs_info_args fi_args;
->   	struct btrfs_ioctl_dev_info_args *di_args =3D NULL;
->   	int ret, i, dev_idx =3D -1;
-> @@ -1112,11 +1114,14 @@ static int check_resize_args(const char *amount,=
- const char *path) {
->   	}
->
->   	ret =3D snprintf(amount_dup, BTRFS_VOL_NAME_MAX, "%s", amount);
-> +check:
->   	if (strlen(amount) !=3D ret) {
->   		error("newsize argument is too long");
->   		ret =3D 1;
->   		goto out;
->   	}
-> +	if (strcmp(amount, amount_dup) !=3D 0)
-> +		strcpy(amount, amount_dup);
->
->   	sizestr =3D amount_dup;
->   	devstr =3D strchr(sizestr, ':');
-> @@ -1133,6 +1138,24 @@ static int check_resize_args(const char *amount, =
-const char *path) {
->   			ret =3D 1;
->   			goto out;
->   		}
-> +	} else if (fi_args.num_devices !=3D 1) {
-> +		error("The file system has multiple devices, please specify devid exa=
-ctly.");
-> +		error("The device information list is as follows.");
-> +		for (i =3D 0; i < fi_args.num_devices; i++) {
-> +			fprintf(stderr, "\tdevid %4llu size %s used %s path %s\n",
-> +				di_args[i].devid,
-> +				pretty_size_mode(di_args[i].total_bytes, UNITS_DEFAULT),
-> +				pretty_size_mode(di_args[i].bytes_used, UNITS_DEFAULT),
-> +				di_args[i].path);
-> +		}
-> +		ret =3D 1;
-> +		goto out;
-> +	} else {
-> +		memset(amount_dup, 0, BTRFS_VOL_NAME_MAX);
-> +		ret =3D snprintf(amount_dup, BTRFS_VOL_NAME_MAX, "%llu:", di_args[0].=
-devid);
-> +		ret =3D snprintf(amount_dup + strlen(amount_dup),
-> +			BTRFS_VOL_NAME_MAX - strlen(amount_dup), "%s", amount);
-> +		goto check;
->   	}
->
->   	dev_idx =3D -1;
-> @@ -1200,10 +1223,11 @@ static int check_resize_args(const char *amount,=
- const char *path) {
->   		di_args[dev_idx].path,
->   		pretty_size_mode(di_args[dev_idx].total_bytes, UNITS_DEFAULT),
->   		res_str);
-> +	ret =3D 0;
->
->   out:
->   	free(di_args);
-> -	return 0;
-> +	return ret;
->   }
->
->   static int cmd_filesystem_resize(const struct cmd_struct *cmd,
-> @@ -1213,7 +1237,7 @@ static int cmd_filesystem_resize(const struct cmd_=
-struct *cmd,
->   	int	fd, res, len, e;
->   	char	*amount, *path;
->   	DIR	*dirstream =3D NULL;
-> -	int ret;
-> +	int ret =3D 0;
->   	bool enqueue =3D false;
->   	bool cancel =3D false;
->
-> @@ -1277,10 +1301,17 @@ static int cmd_filesystem_resize(const struct cm=
-d_struct *cmd,
->   		}
->   	}
->
-> +	amount =3D (char *)malloc(BTRFS_VOL_NAME_MAX);
-> +	if (!amount)
-> +		return -ENOMEM;
-> +
-> +	strcpy(amount, argv[optind]);
-> +
->   	ret =3D check_resize_args(amount, path);
->   	if (ret !=3D 0) {
->   		close_file_or_dir(fd, dirstream);
-> -		return 1;
-> +		ret =3D 1;
-> +		goto free_amount;
->   	}
->
->   	memset(&args, 0, sizeof(args));
-> @@ -1298,7 +1329,7 @@ static int cmd_filesystem_resize(const struct cmd_=
-struct *cmd,
->   			error("unable to resize '%s': %m", path);
->   			break;
->   		}
-> -		return 1;
-> +		ret =3D 1;
->   	} else if (res > 0) {
->   		const char *err_str =3D btrfs_err_str(res);
->
-> @@ -1308,9 +1339,11 @@ static int cmd_filesystem_resize(const struct cmd=
-_struct *cmd,
->   			error("resizing of '%s' failed: unknown error %d",
->   				path, res);
->   		}
-> -		return 1;
-> +		ret =3D 1;
->   	}
-> -	return 0;
-> +free_amount:
-> +	free(amount);
-> +	return ret;
->   }
->   static DEFINE_SIMPLE_COMMAND(filesystem_resize, "resize");
->
+In the future, we may allow users to choose between just bitmaps or full
+journal to meet their requirement.
+
+[BITMAPS DESIGN]
+
+The bitmaps on-disk format looks like this:
+
+ [ super ][ entry 1 ][ entry 2 ] ... [entry N]
+ |<---------  super::size (4K) ------------->|
+
+Super block contains how many entires are in use.
+
+Each entry is 128 bits (16 bytes) in size, containing one u64 for
+bytenr, and u64 for one bitmap.
+
+And all utilized entries will be sorted in their bytenr order, and no
+bit can overlap.
+
+The blocksize is now fixed to BTRFS_STRIPE_LEN (64KiB), so each entry
+can contain at most 4MiB, and the whole bitmaps can contain 224 entries.
+
+For the worst case, it can contain 14MiB dirty ranges.
+(1 bits set per bitmap, also means 2 disks RAID5 or 3 disks RAID6).
+
+For the best case, it can contain 896MiB dirty ranges.
+(all bits set per bitmap)
+
+[WHY NOT BTRFS BTREE]
+
+Current write-intent structure needs two features:
+
+- Its data needs to survive cross stripe boundary
+  Normally this means write-intent btree needs to acts like a proper
+  tree root, has METADATA_ITEMs for all its tree blocks.
+
+- Its data update must be outside of a transaction
+  Currently only log tree can do such thing.
+  But unfortunately log tree can not survive across transaction
+  boundary.
+
+Thus write-intent btree can only meet one of the requirement, not a
+suitable solution here.
+
+[TESTING AND BENCHMARK]
+
+For performance benchmark, unfortunately I don't have 3 HDDs to test.
+Will do the benchmark after secured enough hardware.
+
+For testing, it can survive volume/raid/dev-replace test groups, and no
+write-intent bitmap leakage.
+
+Unfortunately there is still a warning triggered in btrfs/070, still
+under investigation, hopefully to be a false alert in bitmap clearing
+path.
+
+[TODO]
+- Extra optimizations
+  * Enlarge the window between btrfs_write_intent_mark_dirty() and
+    btrfs_write_intent_writeback()
+    So that we can merge more dirty bites and cause less bitmaps
+    writeback
+
+- Proper performance benchmark
+  Needs hardware/baremetal VMs, since I don't have any physical machine
+  large enough to contian 3 3.5" HDDs.
+
+
+Qu Wenruo (14):
+  btrfs: introduce new compat RO flag, EXTRA_SUPER_RESERVED
+  btrfs: introduce a new experimental compat RO flag,
+    WRITE_INTENT_BITMAP
+  btrfs: introduce the on-disk format of btrfs write intent bitmaps
+  btrfs: load/create write-intent bitmaps at mount time
+  btrfs: write-intent: write the newly created bitmaps to all disks
+  btrfs: write-intent: introduce an internal helper to set bits for a
+    range.
+  btrfs: write-intent: introduce an internal helper to clear bits for a
+    range.
+  btrfs: selftests: add selftests for write-intent bitmaps
+  btrfs: write back write intent bitmap after barrier_all_devices()
+  btrfs: update and writeback the write-intent bitmap for RAID56 write.
+  btrfs: raid56: clear write-intent bimaps when a full stripe finishes.
+  btrfs: warn and clear bitmaps if there is dirty bitmap at mount time
+  btrfs: avoid recording full stripe write into write-intent bitmaps
+  btrfs: scrub the full stripe which had sub-stripe write at mount time
+
+ fs/btrfs/Makefile                           |   5 +-
+ fs/btrfs/ctree.h                            |  26 +-
+ fs/btrfs/disk-io.c                          |  58 +-
+ fs/btrfs/raid56.c                           |  27 +
+ fs/btrfs/scrub.c                            | 177 +++-
+ fs/btrfs/sysfs.c                            |   2 +
+ fs/btrfs/tests/btrfs-tests.c                |   4 +
+ fs/btrfs/tests/btrfs-tests.h                |   2 +
+ fs/btrfs/tests/write-intent-bitmaps-tests.c | 247 ++++++
+ fs/btrfs/volumes.c                          |  34 +-
+ fs/btrfs/write-intent.c                     | 923 ++++++++++++++++++++
+ fs/btrfs/write-intent.h                     | 303 +++++++
+ fs/btrfs/zoned.c                            |   8 +
+ include/uapi/linux/btrfs.h                  |  17 +
+ 14 files changed, 1812 insertions(+), 21 deletions(-)
+ create mode 100644 fs/btrfs/tests/write-intent-bitmaps-tests.c
+ create mode 100644 fs/btrfs/write-intent.c
+ create mode 100644 fs/btrfs/write-intent.h
+
+-- 
+2.37.0
+
