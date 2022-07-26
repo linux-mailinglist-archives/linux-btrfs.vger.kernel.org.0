@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9E2580AC1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 07:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95CE580AC2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 07:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237556AbiGZFWn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jul 2022 01:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34626 "EHLO
+        id S237560AbiGZFWq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jul 2022 01:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbiGZFWn (ORCPT
+        with ESMTP id S231258AbiGZFWp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Jul 2022 01:22:43 -0400
+        Tue, 26 Jul 2022 01:22:45 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5146A27CDC
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 22:22:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BB327CE0
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jul 2022 22:22:44 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 018211F9C4;
-        Tue, 26 Jul 2022 05:22:41 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ABA651F9CB;
+        Tue, 26 Jul 2022 05:22:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658812961; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1658812963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hLFMOt1flQ4obNFnHHK1XUxfaNIUa1/lP6U3/ytUnyQ=;
-        b=sqaIrwJ+4++b+lOWLdFsrsS0ReKNzBGuWTzhuEf1XKvQ9hZTb6UrIKanKF6wNFOyCkGN/F
-        x2RLFz9O0qe4xWzP7xH6GApLgiJkaqCCHGB8IhEv25e4y6fACWGZntBcxPIIHBLAlziJ/p
-        PG/ROJnUx1/pDJGtV2sBdZS/Xs4vTZQ=
+        bh=60QKSZRDYmiSFFkaLjJ9PS6V3yMYs7nLJ/2LOgJ1nBU=;
+        b=XqxJaDZrfD5VNWvfm0AQg8hAoe+FWFNHshHgyuk8RjTSDEeNyY+Tf3PXA+SQSqiIhynIkp
+        GHiH6ovh/RH1RfX1qleSoSj2XcEwVw/yG1nFK7Y+sHEzOpBTZQu6jfhejK4pEBw3VNxAwG
+        xGJAtXDEI/4PIwOJsQ1n+2Vd0xRqVcE=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CEE9813A12;
-        Tue, 26 Jul 2022 05:22:37 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5319E13A12;
+        Tue, 26 Jul 2022 05:22:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id iIbiJx1632IFOwAAMHmgww
-        (envelope-from <wqu@suse.com>); Tue, 26 Jul 2022 05:22:37 +0000
+        id OBeOCSF632IFOwAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 26 Jul 2022 05:22:41 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     u-boot@lists.denx.de
 Cc:     marek.behun@nic.cz, linux-btrfs@vger.kernel.org,
         jnhuang95@gmail.com, linux-erofs@lists.ozlabs.org,
         trini@konsulko.com, joaomarcos.costa@bootlin.com,
         thomas.petazzoni@bootlin.com, miquel.raynal@bootlin.com
-Subject: [PATCH v2 1/8] fs: fat: unexport file_fat_read_at()
-Date:   Tue, 26 Jul 2022 13:22:09 +0800
-Message-Id: <ee01c16f20f02230c3cfd0b266f06564fa211f62.1658812744.git.wqu@suse.com>
+Subject: [PATCH v2 2/8] fs: btrfs: fix a bug which no data get read if the length is not 0
+Date:   Tue, 26 Jul 2022 13:22:10 +0800
+Message-Id: <8caea01ab60ad356e06558cdf18dfba0db622daf.1658812744.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <cover.1658812744.git.wqu@suse.com>
 References: <cover.1658812744.git.wqu@suse.com>
@@ -63,42 +63,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-That function is only utilized inside fat driver, unexport it.
+[BUG]
+When testing with unaligned read, if a specific length is passed in,
+btrfs driver will read out nothing:
+
+ => load host 0 $kernel_addr_r 5k_file 0x1000 0
+ 0 bytes read in 0 ms
+
+But if no length is passed in, it works fine, even if we pass a non-zero
+length:
+
+ => load host 0 $kernel_addr_r 5k_file 0 0x1000
+ 1024 bytes read in 0 ms
+
+[CAUSE]
+In btrfs_read() if we have a larger size than our file, we will try to
+truncate it using the file size.
+
+However the real file size is not initialized if @len is not zero, thus
+we always truncate our length to 0, and cause the problem.
+
+[FIX]
+Fix it by just always do the file size check.
+
+In fact btrfs_size() always follow soft link, thus it will return the
+real file size correctly.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/fat/fat.c  | 4 ++--
- include/fat.h | 2 --
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ fs/btrfs/btrfs.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/fs/fat/fat.c b/fs/fat/fat.c
-index df9ea2c028fc..dcceccbcee0a 100644
---- a/fs/fat/fat.c
-+++ b/fs/fat/fat.c
-@@ -1243,8 +1243,8 @@ out_free_itr:
- 	return ret;
- }
+diff --git a/fs/btrfs/btrfs.c b/fs/btrfs/btrfs.c
+index 741c6e20f533..9145727058d4 100644
+--- a/fs/btrfs/btrfs.c
++++ b/fs/btrfs/btrfs.c
+@@ -246,16 +246,17 @@ int btrfs_read(const char *file, void *buf, loff_t offset, loff_t len,
+ 		return -EINVAL;
+ 	}
  
--int file_fat_read_at(const char *filename, loff_t pos, void *buffer,
--		     loff_t maxsize, loff_t *actread)
-+static int file_fat_read_at(const char *filename, loff_t pos, void *buffer,
-+			    loff_t maxsize, loff_t *actread)
- {
- 	fsdata fsdata;
- 	fat_itr *itr;
-diff --git a/include/fat.h b/include/fat.h
-index bd8e450b33a3..a9756fb4cd1b 100644
---- a/include/fat.h
-+++ b/include/fat.h
-@@ -200,8 +200,6 @@ static inline u32 sect_to_clust(fsdata *fsdata, int sect)
- int file_fat_detectfs(void);
- int fat_exists(const char *filename);
- int fat_size(const char *filename, loff_t *size);
--int file_fat_read_at(const char *filename, loff_t pos, void *buffer,
--		     loff_t maxsize, loff_t *actread);
- int file_fat_read(const char *filename, void *buffer, int maxsize);
- int fat_set_blk_dev(struct blk_desc *rbdd, struct disk_partition *info);
- int fat_register_device(struct blk_desc *dev_desc, int part_no);
+-	if (!len) {
+-		ret = btrfs_size(file, &real_size);
+-		if (ret < 0) {
+-			error("Failed to get inode size: %s", file);
+-			return ret;
+-		}
+-		len = real_size;
++	ret = btrfs_size(file, &real_size);
++	if (ret < 0) {
++		error("Failed to get inode size: %s", file);
++		return ret;
+ 	}
+ 
+-	if (len > real_size - offset)
++	/*
++	 * If the length is 0 (meaning read the whole file) or the range is
++	 * beyond file size, truncate it to the end of the file.
++	 */
++	if (!len || len > real_size - offset)
+ 		len = real_size - offset;
+ 
+ 	ret = btrfs_file_read(root, ino, offset, len, buf);
 -- 
 2.37.0
 
