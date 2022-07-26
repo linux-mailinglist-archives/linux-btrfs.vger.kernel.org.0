@@ -2,108 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A99FE581A3A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 21:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567AA581A4C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 21:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239789AbiGZTV5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jul 2022 15:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
+        id S239806AbiGZT3S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jul 2022 15:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbiGZTV4 (ORCPT
+        with ESMTP id S229379AbiGZT3R (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Jul 2022 15:21:56 -0400
-X-Greylist: delayed 114 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 26 Jul 2022 12:21:55 PDT
-Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8887733E39;
-        Tue, 26 Jul 2022 12:21:55 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id A251F2B05A51;
-        Tue, 26 Jul 2022 15:21:54 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Tue, 26 Jul 2022 15:21:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        colorremedies.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1658863313; x=
-        1658866913; bh=PweAMHjIOF+cYwdE1sZvaXlEvHMPXsTwGJg3RCero2A=; b=s
-        E4jewDf/Y186GuJwrzpJjZHrzlm5ACMkQXEi8FvBHZO7LY0IB2xJ4fZdmP1Tp3/8
-        WtOQ27WItUBGA5DqezCiwVxcZ5vqUL7mwEon2k+hgORrDXr562AJgpjChfB001QC
-        cIP6TxEUrbqqYNl9g960vSdDvADBYOpB7OqlHy8aVvSvXZdATUeheHvQOkN62l+r
-        07+ObqS5iaAl8398HWSCMipL+SnNm+TqRkBRzVeKwJ/FiQI/G6U0ftmcRgU2bBqt
-        HEQXJBzxn/a/GHn/x9cmNagIc36yoMwvppf3CF1cfl/qNQAvJrsctoBl3W+GvF82
-        2Ccq6epBophGUxSXJVpuw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        i06494636.fm3; t=1658863313; x=1658866913; bh=PweAMHjIOF+cYwdE1s
-        ZvaXlEvHMPXsTwGJg3RCero2A=; b=OG/aZT1lhkvxuon3xOhXN69opPfmNSxdOe
-        fuP/yBp61U4YRAvSzhTrWN/IqDxkpFWR1P0RctvfxfApo0cH2VDLgkaCdE33ayXQ
-        xSXcHCdFa9eTvQlUD2EeuplRz+LzL9REEReXxWMKejb9nE/zJptpbo8dB6vB07PP
-        6PM/skbfqT1TeAUjPcIKwf9mFYHkpwY3vtgWuxln5vO4K/LZWL9jtp/1AeWrSrj5
-        fq+FN6I7PTmIYMQ0xs8pBTeqvGLMx8FI6Ry0JXXbXaqOqGBcucIc1ljbzdZVdPr4
-        dI6WsSSLJQ4xbTcFwDflR7efTt2UukJLNE976iFxxTBbpsPNQeaw==
-X-ME-Sender: <xms:0D7gYvhRhQB72pQV0y4cd_SxUmBmxya7toPD2dpIXs9295mL9ats8A>
-    <xme:0D7gYsDS_uhXvCuYxKEXVAL84BH6vViMk1lumhgN5tVsuwlUZbwr7PhqOoFjcfC_r
-    m8yqD3vG6CWXXOWts8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvddutddgudefjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdev
-    hhhrihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtg
-    homheqnecuggftrfgrthhtvghrnhepgfdvueektdefgfefgfdtleffvdeileetgfefuddt
-    ffelueeiveeiveekhedtheeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
-X-ME-Proxy: <xmx:0D7gYvGTOOZ36ji9VpPzcyLMkV7YiZSQxNfpfSZxuel9DUKgEgiI0w>
-    <xmx:0D7gYsTvEIA86sBvGN8guB4bLH1xqZ-qS8_T_D-d756lE46n7h2mHA>
-    <xmx:0D7gYszyk_sqHkmtLIoS_BqiiaZrGW6ewCe0EDw_2LrBZQYoXIb8ug>
-    <xmx:0T7gYpqvxIVlHjsnS4_B69XZ5BlqZ6Ks22vmLeE4d68Zz1_9kKTB4q_2DrovD-1g>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A9D31170007E; Tue, 26 Jul 2022 15:21:52 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-757-gc3ad9c75d3-fm-20220722.001-gc3ad9c75
-Mime-Version: 1.0
-Message-Id: <92e9ca9b-f458-409f-a9c4-150f6bce0b75@www.fastmail.com>
-In-Reply-To: <fa57195c-cd1e-464e-b099-7552f65e39f5@www.fastmail.com>
-References: <CABXGCsN+BcaGO0+0bJszDPvA=5JF_bOPfXC=OLzMzsXY2M8hyQ@mail.gmail.com>
- <20220726164250.GE13489@twin.jikos.cz>
- <fa57195c-cd1e-464e-b099-7552f65e39f5@www.fastmail.com>
-Date:   Tue, 26 Jul 2022 15:21:32 -0400
-From:   "Chris Murphy" <lists@colorremedies.com>
-To:     "David Sterba" <dsterba@suse.cz>,
-        =?UTF-8?Q?=D0=9C=D0=B8=D1=85=D0=B0=D0=B8=D0=BB_=D0=93=D0=B0=D0=B2=D1=80?=
-         =?UTF-8?Q?=D0=B8=D0=BB=D0=BE=D0=B2?= 
-        <mikhail.v.gavrilov@gmail.com>
-Cc:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 26 Jul 2022 15:29:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EA21A807;
+        Tue, 26 Jul 2022 12:29:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 211086156B;
+        Tue, 26 Jul 2022 19:29:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 226E2C433D7;
+        Tue, 26 Jul 2022 19:29:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658863755;
+        bh=WlwSgYuZ7DFZd25furNi2YJWO8JHrpAPXAv1LXJRhNI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vIZ6FT+gIccoXebDvLukleSESPSpc77naQ7Nq5Xa8ZsRAtW6rPeZLVUx0Md888S+M
+         WTw/z0N6gZJ9+VNeeBE29/EyuWIc+x9Eo1HiG3scsWcoanfMws5Qhnp4g20pPnjnZb
+         eSLb9QeSc7DPTUIRQODcBmQg7CvmIdKg2+9oGeipCwkrVVMZd9wn9wZ+bEn+Fx5cGh
+         VwOIrcgXYnpk9AlSrvLw/1KzWCKXQpAyS8VnZlwm2QT3s0dhi/PdqzsF0kIfrFG4gR
+         tjuKtuKbdE0W0pf0LO07KgdnDXuOyCARCvLyzHkPpO4H3xjggL8xkTw/jcY1mxYqtR
+         HgblGPdqp0H4g==
+Date:   Tue, 26 Jul 2022 19:29:13 +0000
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, osandov@osandov.com,
+        kernel-team@fb.com
+Subject: Re: [PATCH RFC 4/4] fscrypt: Add new encryption policy for btrfs.
+Message-ID: <YuBAiRg9K8IrlCqV@gmail.com>
+References: <cover.1658623235.git.sweettea-kernel@dorminy.me>
+ <675dd03f1a4498b09925fbf93cc38b8430cb7a59.1658623235.git.sweettea-kernel@dorminy.me>
+ <Yt8oEiN6AkglKfIc@sol.localdomain>
+ <7130dd3f-202c-2e70-c37f-57be9b85548b@dorminy.me>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7130dd3f-202c-2e70-c37f-57be9b85548b@dorminy.me>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Jul 25, 2022 at 10:16:07PM -0400, Sweet Tea Dorminy wrote:
+> 
+> 
+> On 7/25/22 19:32, Eric Biggers wrote:
+> > On Sat, Jul 23, 2022 at 08:52:28PM -0400, Sweet Tea Dorminy wrote:
+> > > Certain filesystems may want to use IVs generated and stored outside of
+> > > fscrypt's inode-based IV generation policies.  In particular, btrfs can
+> > > have multiple inodes referencing a single block of data, and moves
+> > > logical data blocks to different physical locations on disk; these two
+> > > features mean inode or physical-location-based IV generation policies
+> > > will not work for btrfs. For these or similar reasons, such filesystems
+> > > may want to implement their own IV generation and storage for data
+> > > blocks.
+> > > 
+> > > Plumbing each such filesystem's internals into fscrypt for IV generation
+> > > would be ungainly and fragile. Thus, this change adds a new policy,
+> > > IV_FROM_FS, and a new operation function pointer, get_fs_derived_iv.  If
+> > > this policy is selected, the filesystem is required to provide the
+> > > function pointer, which populates the IV for a particular data block.
+> > > The IV buffer passed to get_fs_derived_iv() is pre-populated with the
+> > > inode contexts' nonce, in case the filesystem would like to use this
+> > > information; for btrfs, this is used for filename encryption.  Any
+> > > filesystem using this policy is expected to appropriately generate and
+> > > store a persistent random IV for each block of data.
+> > 
+> > This is changed from the original proposal to store just a random "starting IV"
+> > per extent, right?
+> 
+> This is intended to be a generic interface that doesn't require any
+> particular IV scheme from the filesystem. 
 
+I don't think that's a good way to do it.  The fscrypt settings are supposed to
+be very concrete, meaning that they specify a particular way of doing the
+encryption, which can be reviewed for its security and which can be tested for
+correctness of the on-disk format.  There shouldn't be cryptographic differences
+between how different filesystems implement the same setting.
 
-On Tue, Jul 26, 2022, at 3:19 PM, Chris Murphy wrote:
-> On Tue, Jul 26, 2022, at 12:42 PM, David Sterba wrote:
->> On Tue, Jul 26, 2022 at 05:32:54PM +0500, Mikhail Gavrilov wrote:
->>> Hi guys.
->>> Always with intensive writing on a btrfs volume, the message "BUG:
->>> MAX_LOCKDEP_CHAIN_HLOCKS too low!" appears in the kernel logs.
->>
->> Increase the config value of LOCKDEP_CHAINS_BITS, default is 16, 18
->> tends to work.
->
-> Fedora is using 17. I'll make a request to bump it to 18. Thanks.
+The fscrypt settings also shouldn't specify internal implementation details of
+the code, as "IV_FROM_FS" does.  From userspace's perspective, *all* fscrypt
+settings have IVs chosen by the filesystem; the division between the
+"filesystem" and fs/crypto/ is an internal kernel implementation detail.
 
-Should it be 18 across all archs? Or is it OK to only bump x86_64?
+So I think you should go with something like RANDOM_IV or IV_PER_EXTENT.
 
--- 
-Chris Murphy
+> In practice, the btrfs side of the code is using a per-extent starting IV, as
+> originally proposed. 
+
+This is inconsistent with your commit message, which says that there is a random
+IV for each block of data.  It's also inconsistent with your proposed change to
+fscrypt_limit_io_blocks().  So I don't know which to believe.
+
+Clearly this can't be properly reviewed on its own, so please send out the whole
+patch series and not just the fs/crypto/ parts.
+
+- Eric
