@@ -2,73 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 433BD581BF7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 00:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE63581BFC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 00:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbiGZWJK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jul 2022 18:09:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
+        id S239817AbiGZWLJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jul 2022 18:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbiGZWJJ (ORCPT
+        with ESMTP id S229550AbiGZWLI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Jul 2022 18:09:09 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E90357E9
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 15:09:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1658873345;
-        bh=IVzJtL8Cv8lKufLPmIZN8nWMCPYNq12ZBTm15g2aZPg=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=UcubzE+4FXhz7TiikBrsNdzc/1msSncP9JMg0QjB9LDRq2shYebh1V59GyAHOPLuq
-         fRSeI2Ivmmr8ciFNYfTt/DzysG15Stqx2i4JqGcMAgNRkuq7j6uQTY7zpEqKF+D8OW
-         wYdUe7sxUPUAhhk9t0lr8TDGwOhyYRK8jlLhvUA0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3KPq-1nHRw21HNK-010Ox1; Wed, 27
- Jul 2022 00:09:04 +0200
-Message-ID: <27f3ed12-6b94-d370-279d-aba825d5a643@gmx.com>
-Date:   Wed, 27 Jul 2022 06:09:01 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v2 0/3] btrfs: separate BLOCK_GROUP_TREE feature from
- extent-tree-v2
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1658293417.git.wqu@suse.com>
- <20220726175922.GH13489@twin.jikos.cz>
- <56492a5b-8d98-38af-50f2-57a75a3417fc@gmx.com>
- <20220726215252.GQ13489@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220726215252.GQ13489@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3v2NIsC7hbuny6syXFEmnESduPjLr2SDgbUQP9utf4UHgcRjBDc
- 3IEgk09hFjElQX7kejus7k1aLzwmNj3Ji7Fc+Dh7DsEgZDqaFZjfxmATQTi0mfURRjWtFtk
- s4XKXOl6Keb5K+UD/WjWwL5kJ+cDfckAgupMTxbtqOmxPDaz2VGHTP9mt9IlS3wTIDNh+Br
- +/mBvAUBSHwqqA5ipKQUA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:J0aKWXFLtTw=:h46Eq8FpSUFxFUtn1gbyKe
- 14Zi+Ib+oQQ+h3diHnqAiErRWvCQq5FjiN0/js0GkizTvs2lXj4F2PK2snequ+OoWAX0pkAc2
- B77l0oY1XAd635K7+sQP3N5/XISHyjiJ/n62YKqkKc+4+83lVlV8kGpchbNDziEn1KBOjqKn1
- 1Maza1xGNvaIiGwL04eR32nE+wGfdDDq3oxbdlDYT6O35yW/p0bcwtCqcw8bugv8JLan/K8iY
- Xww+RT1m0jtd4wp793QczngL4o7yFKARwT13qlMyLTDOpRoMPNZI2K2I1hY8AVmBIM8YD9Ea7
- fvO1eCC1QmTV4WtnUGSaTneG8Dt21S4hgZ4DbHHh5xSvKsPWg6O1tF6EpMm/6x/ICbahpx24z
- Us1rr53w1QiAPsc8HY97WY0rZMXQC2F7wFl0goZQ6KnBNyx9Jy8ijxnIXFVhZQnpPIt5s0C0V
- tktndlAHnseSwf4dk7mhznPsk3Hhd2aMtGFIKYWy3+q0EnJjL3rXFeo/7o9dqU3nsmDFm0Unv
- BKlaDBXp26KSLfnzmmsGvatuYfB4c2aKRExaCd1/opqWQTOS2ZSv7Gk0QiQVHzPNgPpFVi4kB
- 3/Kqo2ykmr8fXEnowLDuvzZ0SjZATSNXSj3pn8TkI+H37j51WsQ2z9PtAQCiIWBeDgmAsivBG
- 2zwiOprmR6COnjz+QQkOiX044CgjcRdSy6GlRkw1k5udRQqlPaydd7BuGuEf5wm5hOB+u8jF8
- 8e397nOkFfBEGuuRQloix8Pip1srwBie08DCV09dwuOals38gB4RjfQmFgfmFBkcF9Ss3djH1
- 3blIL7/j6AUxGckf350bEKBy22daEoYW0iu8dMj8VUongZnQi/YLOethnJ3Pngocc1ema1uAG
- PrMDXa27k+uHsIbM0CKnQBsQCm4fm1A9voknH/8EZS5tygzk7nC1F+68GXVywBntJCfujNkyD
- VbWw3zSZdSMlFWXRMrnoJZd8qLybgKL3b5p8HPFqHL9SotxJDaKHV3WMz6isda/mnXS9v+WC7
- 9JekA83uZQbaD0zqgXTA+oAhZCaUc1TgQXVIePyWJ/DqTHuUPyPjTHyPn32BpaMlEiuju9T/5
- 8YvYEmvNCa064gjumfLGxcCzPxsI7hJPD9AylJJ/PeYVkSVbYkzCejcTQ==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 26 Jul 2022 18:11:08 -0400
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEEA63FA
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 15:11:05 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id 197042B059CF;
+        Tue, 26 Jul 2022 18:11:03 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute3.internal (MEProxy); Tue, 26 Jul 2022 18:11:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        colorremedies.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1658873462; x=
+        1658877062; bh=Au/Kt9y05S7wczAYuEY0C0GCF7BjjFJGJ7VRB/aBw4s=; b=X
+        slUpzR7bhtSkJWCtPHVOEzKoag16DYxtSjHk/AK/HS/KEvQuCDlmHv0it4UuD0D1
+        Af6ehePqo6rIR2oR9VqDy8CbMmiDfWWZTymE/FTi+X+t3ZiewFxX0EOH0n45Zzyp
+        thaUcLsM3wHHOrPl1rHbcNVydlEfdL1B4t2Lc9IN8ykY4wbMubF+yUCga2Yl8m7G
+        YRg7FlLMowAmwFCGFIvWr516r6BucCBvvgKar4KXP/Gu6MfyhJwBZmAkSMwL6FUx
+        myUhvXMlbLosY7Rjui4yzW9SCbp/AGkJmf8j+MyLxh9qGNMdQ6wx3WzqEyWLjjgt
+        Iic7jgOjAf2+oQqcJy9bg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        i06494636.fm3; t=1658873462; x=1658877062; bh=Au/Kt9y05S7wczAYuE
+        Y0C0GCF7BjjFJGJ7VRB/aBw4s=; b=Zgl3RFgYQbFwKc+nPNJcdPMhDj3IOGPkJu
+        t3QikTuInAAcTDicAQHyOHkRV9N0l/3msKSbDKhQ5EsqN7xcXAJsmO/Ty80HekSP
+        u5w37PaamMqeOkastn5MsCaThASMBJm/a3uD/fZKNdVVhpzKWkRT9hyfZscNW53M
+        WXCknndgBLXwkvV9YH/uJefJQY+rQdf8TFbLpoG32oOY9Smfx7sE93smC3yk351M
+        n7Lu5ct9noWMqoy7OqyeenSRqmUY2Gkrh9U+xknX22sQWh55VviNt34mYpA6/XOw
+        EumX8zZak0CL44eIl5MSNgJtWXGXHGKy/UljXYAGayyvPiVfHvOA==
+X-ME-Sender: <xms:dmbgYkxo1d5DfJeop1KC6xLW-JEALKeh0gWBoV4TZaR6jj-Fj3T5Eg>
+    <xme:dmbgYoTMl_J1DSYrkfW0-zD7hBiUI6mWS6a5FLuNMyLevzL7Y0i2eNS4N6NAsLaZz
+    m3Q5d_Cebr796yBKrI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdduuddgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfvehh
+    rhhishcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtoh
+    hmqeenucggtffrrghtthgvrhhnpefgvdeukedtfefgfefgtdelffdvieeltefgfedutdff
+    leeuieevieevkeehtdehueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhm
+X-ME-Proxy: <xmx:dmbgYmUEcaVAWsYoX31qYHgldg-DAHgSHKAia09ogUq6xTLu4BRjTQ>
+    <xmx:dmbgYigJEePrFwC9tvSGD2iMPl-jGL7VlpbkMOlL9V4lSpE6O6PRzg>
+    <xmx:dmbgYmCanllMWP9U40sqEkGmcWIlZHCYpEghSQKHdS-OemAluWFzYg>
+    <xmx:dmbgYpOT_rvFHGIq4HAEvqL0prGLGOj-idr1wjI8NuDCrJn6qwSyYRG8xQDKKHNn>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 1B1F6170007E; Tue, 26 Jul 2022 18:11:02 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-757-gc3ad9c75d3-fm-20220722.001-gc3ad9c75
+Mime-Version: 1.0
+Message-Id: <fb723544-1c98-4275-a8f0-a250937675d6@www.fastmail.com>
+In-Reply-To: <20220726213628.GO13489@twin.jikos.cz>
+References: <CAEg-Je_b1YtdsCR0zS5XZ_SbvJgN70ezwvRwLiCZgDGLbeMB=w@mail.gmail.com>
+ <20220725190811.GD13489@twin.jikos.cz>
+ <336b3dc2-2ca9-4f14-ad45-1896b36e0e82@www.fastmail.com>
+ <20220726213628.GO13489@twin.jikos.cz>
+Date:   Tue, 26 Jul 2022 18:10:40 -0400
+From:   "Chris Murphy" <lists@colorremedies.com>
+To:     "David Sterba" <dsterba@suse.cz>
+Cc:     "Neal Gompa" <ngompa13@gmail.com>,
+        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>,
+        "Chris Mason" <clm@fb.com>, "Josef Bacik" <josef@toxicpanda.com>
+Subject: Re: Using async discard by default with SSDs?
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -77,64 +89,48 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/7/27 05:52, David Sterba wrote:
-> On Wed, Jul 27, 2022 at 05:47:25AM +0800, Qu Wenruo wrote:
->>
->>
->> On 2022/7/27 01:59, David Sterba wrote:
->>> On Wed, Jul 20, 2022 at 01:06:58PM +0800, Qu Wenruo wrote:
->>>> Qu Wenruo (3):
->>>>     btrfs: enhance unsupported compat RO flags handling
->>>>     btrfs: don't save block group root into super block
->>>>     btrfs: separate BLOCK_GROUP_TREE compat RO flag from EXTENT_TREE_=
-V2
->>>
->>> It's short series and I don't see any new code to use the separate tre=
-e
->>> for bg items, so it's on top of the extent tree v2, right?
->>
->> Yes, it's based on extent tree v2 prepare code that is already in the
->> mainline code.
->>
->>>
->>>   From the last time we were experimenting with the block group tree, =
-I
->>> was trying to avoid a new tree but there were problems. So, I think we
->>> can go with the separate tree that you suggest. We have reports about
->>> slow mount and people use large filesystems, so this is justified.
->>>
->>> Will it be possible to convert existing filesystem to use the bg tree?
->>
->> Yes, that's completely planned as the old bg tree code, btrfs-progs
->> convert tool will be provided (mostly in btrfstune).
+On Tue, Jul 26, 2022, at 5:36 PM, David Sterba wrote:
+> On Tue, Jul 26, 2022 at 04:00:42PM -0400, Chris Murphy wrote:
+>> 
+>> 
+>> On Mon, Jul 25, 2022, at 3:08 PM, David Sterba wrote:
+>> 
+>> > I think it's safe to use by default, with the usual question who could
+>> > be affected by that negatively. The async triggers, timeouts and
+>> > thresholds are preset conservatively and so far there have been no
+>> > complaints.
+>> >
+>> > The tunables have been hidden under debug, but there are also some stats
+>> > (like how many bytes could be discarded in the next round), so it would
+>> > be good to also publish that when it's on by default.
+>> 
+>> In my testing, discard=async rather quickly submits recently freed
+>> metadata blocks for gc, blocks referred by the backup roots in the
+>> super. Is this a concern for recovery? Is there a way to exclude the
+>> most recent ~5 generations of metadata from gc, and could it improve
+>> the usefulness of backup roots for recovery?
 >
-> Ok, good. I'm thinking if we should go for an online conversion too or
-> not, because on a many-TB filesystem it would possibly take a long time
-> but the benefit is not to unmount and do the conversion.
+> What is quickly here?
 
-For my previous tests, even TB level (used space) fs, it only takes
-seconds to do the convert (although on SSD).
+Seconds, less than a minute, all the blocks pointed to by backup roots are empty (zeros).
 
-For HDD systems, it would be as slow as the mount time for the convert.
-Most of time spent would be just searching the block group items,
-writing them into bg tree would be super fast though.
+ The default timeout is set to 2 minutes and that's
+> what I've seen when testing that on a fresh filesystem. 
 
-Currently I'm working on a multi-transaction solution in btrfstune to be
-extra safe on the convert.
-(Previous code is one transaction to do the convert, which may or may
-not handle thousands of bg items).
+Ok I'll retest with 5.19 series. The last time I tested time to drive gc backup rootswas circa 5.8.
 
+There's some
+> additional logic that's adaptive and derived from the latency increase
+> caused by the discard, but this could be observed on some specific
+> delete heavy workloads.
 >
-> We could copy what the free space conversion does on remount, for bg
-> tree implemented as "set some flag via sysfs" and ten trigger remount
-> that does all th work. It should be less or comparable work to free
-> space tree conversion, it's basically copying the block group items to
-> the new tree and deleting from extent tree.
+> There's no logic that would take into account generation so it could
+> interfere with the backup root feature, but it's been unreliable already
+> and there are no guarantees to keep the recently freed blocks unallocated.
+> I've heared some feedback that the feature should be removed or
+> improved, I'm personally in the "removed" camp.
 
-I tend not to do any convert in kernel even it may not be that complex.
+I have no strong opinion. If it very rarely works, I'm less concerned. But if it can sometimes work a significant minority of the time, some folks occasionally benefit in a pretty significant way.
 
-Shouldn't we keep the kernel code small and put the convert thing all
-into progs?
-
-Thanks,
-Qu
+--
+Chris Murphy
