@@ -2,186 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF885819E4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 20:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36E45819D9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 20:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239253AbiGZSnZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jul 2022 14:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
+        id S239297AbiGZSir (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jul 2022 14:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbiGZSnY (ORCPT
+        with ESMTP id S230287AbiGZSir (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Jul 2022 14:43:24 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11752D1DC;
-        Tue, 26 Jul 2022 11:43:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Tue, 26 Jul 2022 14:38:47 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EF032ED7
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 11:38:46 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 57C721F9F3;
-        Tue, 26 Jul 2022 18:43:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1658861002;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TTiR4Rj7a7i+4taUmgliJ6Lzey5oIZm0ImPZfCjUCq4=;
-        b=wR2cHz/QKkCnntnFSMrNYmBy3J2tl3rYKVEMnA2Z+NfeSrnRb0wD2x+D/FZldcu3vE0Kkp
-        JU9U+lSxa8pIkJzJen/lJA8J8bdIrHIfqneBD+6GWORKgwOE85wacfWOYVxCO141VBf6gI
-        4+DMmE3O57MLFhB45hqGTN7trd/Wp5E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1658861002;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TTiR4Rj7a7i+4taUmgliJ6Lzey5oIZm0ImPZfCjUCq4=;
-        b=IkzZPx64FXtCcAad35qXVAYOVlbcZqWYCaSRVvzEoG+BX7uF5FdA4wpuQ/xMkDGfSpoJWE
-        QvXvjPe75ouPeqDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1B9E013322;
-        Tue, 26 Jul 2022 18:43:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1x24Bco14GIkIAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 26 Jul 2022 18:43:22 +0000
-Date:   Tue, 26 Jul 2022 20:38:24 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     hmsjwzb <hmsjwzb@zoho.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, anand.jain@oracle.com,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH]btrfs: Fix fstest case btrfs/219
-Message-ID: <20220726183824.GL13489@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, hmsjwzb <hmsjwzb@zoho.com>,
-        Nikolay Borisov <nborisov@suse.com>, anand.jain@oracle.com,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20220721083609.5695-1-hmsjwzb@zoho.com>
- <0c2337c3-2b39-c54c-27e9-dd4f0a99cf71@suse.com>
- <1aaff0ac-436e-7782-081c-3549ff3d8c8f@zoho.com>
+        by box.fidei.email (Postfix) with ESMTPSA id 12BCA812C8;
+        Tue, 26 Jul 2022 14:38:44 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1658860725; bh=e7CwSIo8ACjGt0L6XQUrJPYctV1uKRRufECAgH0d0Sw=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=D3MDW2Qg1NIqfwz+O8z8ttj8u7qnf8Saa/D/zLvIWXmT6InKH9ApkH1SCvX2YFrfy
+         oIf+kH1XSbFygZTtPPfZNmtoZ1lXxQ08PMxsNcgO1xpAkcT3X+DIEkr2Md4/IozUOB
+         H4MP7n3Z7ZprQSyiaHjLX6HvpClDE/BZneRuxfo2m8OGWD71GEF/OhznPs2oEpnVGj
+         nd+2MT8w/+MMWuxJH5ki9XLamDxqzhAX335YeGB8nLBlvq6rCF+xef5oApSdAxOaJ0
+         /OXnCksp8ZKgVTLy/MfvAlisV1pLWPkK6ik3y6QBBjQiwFeWJ+HhumOZOvWk+rZkDU
+         iTks4VfvjdyfA==
+Message-ID: <df4a3d08-cc63-6b15-9e14-d8228f1bf873@dorminy.me>
+Date:   Tue, 26 Jul 2022 14:38:43 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH v2 4/4] btrfs: dump all space infos if we abort
+ transaction due to ENOSPC
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <cover.1658207325.git.wqu@suse.com>
+ <621654191a02dc3cbc5c3b03f6c00963b7e6f382.1658207325.git.wqu@suse.com>
+ <4b4b9f52-9c40-2f91-d8a3-a6ed29c379ee@dorminy.me>
+ <8d2c653a-eddf-e9b4-7912-d46993705680@gmx.com>
+ <20220726182050.GK13489@twin.jikos.cz>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <20220726182050.GK13489@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1aaff0ac-436e-7782-081c-3549ff3d8c8f@zoho.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 01:34:11AM -0400, hmsjwzb wrote:
-> On 7/21/22 09:37, Nikolay Borisov wrote:
-> > On 21.07.22 г. 11:36 ч., Flint.Wang wrote:
-> >> Hi,
-> >> fstest btrfs/291 failed.
-> >>
-> >> [How to reproduce]
-> >> mkdir -p /mnt/test/219.mnt
-> >> xfs_io -f -c "truncate 256m" /mnt/test/219.img1
-> >> mkfs.btrfs /mnt/test/219.img1
-> >> cp /mnt/test/219.img1 /mnt/test/219.img2
-> >> mount -o loop /mnt/test/219.img1 /mnt/test/219.mnt
-> >> umount /mnt/test/219.mnt
-> >> losetup -f --show /mnt/test/219.img1 dev
-> >> mount /dev/loop0 /mnt/test/219.mnt
-> >> umount /mnt/test/219.mnt
-> >> mount -o loop /mnt/test/219.img2 /mnt/test/219.mnt
-> >>
-> >> [Root cause]
-> >> if (fs_devices->opened && found_transid < device->generation) {
-> >>     /*
-> >>      * That is if the FS is _not_ mounted and if you
-> >>      * are here, that means there is more than one
-> >>      * disk with same uuid and devid.We keep the one
-> >>      * with larger generation number or the last-in if
-> >>      * generation are equal.
-> >>      */
-> >>     mutex_unlock(&fs_devices->device_list_mutex);
-> >>     return ERR_PTR(-EEXIST);
-> >> }
-> >>
-> >> [Personal opinion]
-> >> User might back up a block device to another. I think it is improper
-> >> to forbid user from mounting it.
-> >>
-> >> Signed-off-by: Flint.Wang <hmsjwzb@zoho.com>
-> > 
-> > 
-> > This lacks any explanation whatsoever so it's not possible to judge whether the fix is correct or not.
-> > 
-> >> ---
-> >>   fs/btrfs/volumes.c | 2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> >> index 6aa6bc769569a..76af32032ac85 100644
-> >> --- a/fs/btrfs/volumes.c
-> >> +++ b/fs/btrfs/volumes.c
-> >> @@ -900,7 +900,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
-> >>            * tracking a problem where systems fail mount by subvolume id
-> >>            * when we reject replacement on a mounted FS.
-> >>            */
-> >> -        if (!fs_devices->opened && found_transid < device->generation) {
-> >> +        if (fs_devices->opened && found_transid < device->generation) {
-> >>               /*
-> >>                * That is if the FS is _not_ mounted and if you
-> >>                * are here, that means there is more than one
-> 
-> Hi Nikolay,
-> 
-> It seems the failure of btrfs/219 needs some explanation.
-> 
-> Here is the thing.
->         1. A storage device A with btrfs filesystem is running on a host.
->         2. For example, we backup the device A to an exactly some device B.
->         3. The device A continue to run for a while so the device->generation is getting bigger.
->         4. Then you umount the device A and try to mount device B.
->         5. Kernel find that device A has the same UUID as device B and has bigger device->generation.
->            So the mount request of device B will be rejected.
 
-That's on purpose, devices are matched by UUIDs and making block copies
-of the same filesystem is known "don't do that" and discouraged.
 
-If you must store the block copies then you can change the UUID by
-btrfstune, there are two ways (fast metadata_uuid, and slow rewriting
-all metadata uuids in all blocks).
-
+On 7/26/22 14:20, David Sterba wrote:
+> On Wed, Jul 20, 2022 at 09:03:33AM +0800, Qu Wenruo wrote:
+>>>> @@ -346,12 +346,14 @@ void __cold btrfs_err_32bit_limit(struct
+>>>> btrfs_fs_info *fs_info)
+>>>>    __cold
+>>>>    void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
+>>>>                       const char *function,
+>>>> -                   unsigned int line, int errno)
+>>>> +                   unsigned int line, int errno, bool first_hit)
+>>>>    {
+>>>>        struct btrfs_fs_info *fs_info = trans->fs_info;
+>>>>        WRITE_ONCE(trans->aborted, errno);
+>>>>        WRITE_ONCE(trans->transaction->aborted, errno);
+>>>> +    if (first_hit && errno == -ENOSPC)
+>>>> +        btrfs_dump_fs_space_info(fs_info);
+>>>>        /* Wake up anybody who may be waiting on this transaction */
+>>>>        wake_up(&fs_info->transaction_wait);
+>>>>        wake_up(&fs_info->transaction_blocked_wait);
+>>> DO_ONCE_LITE(btrfs_dump_fs_space_info, fs_info) from <linux/once_lite.h>
+>>> seems like a more lightweight way to dump the space infos once upon
+>>> first transaction abort. Then you don't have to plumb through the
+>>> 'first_hit' parameter from btrfs_abort_transaction(), and this change
+>>> becomes even more minimal than it already is.
+>>
+>> Sounds pretty awesome!
 > 
->             if (!fs_devices->opened && found_transid < device->generation) {
->                  /*
->                   * That is if the FS is _not_ mounted and if you
->                   * are here, that means there is more than one
->                   * disk with same uuid and devid.We keep the one
->                   * with larger generation number or the last-in if
->                   * generation are equal.
->                   */
->                   mutex_unlock(&fs_devices->device_list_mutex);
->                   return ERR_PTR(-EEXIST);
->             }
-> 
-> I think it is improper to reject that request. Because device A is not in open state.
+> But DO_ONCE_LITE stores the status in one static variable, this cant' be
+> used because we want to track the status per filesystem, and also per
+> mount. Ie. repeated ENOSPC after umount/mount cycle won't be reported,
+> also another filesystem hitting abort due to ENOSPC.
 
-But this would prevent mounting A. There should really be some way to
-distiguish the filesystems, the block device is not a stable identifier,
-the UUID is. Imagine having 10 copies of the same filesystem identified
-by the same UUID and device UUID, but with different generations and
-data. That's asking for problems.
-
-There's not much the filesystem driver can do than to avoid using old
-devices and giving preference to the highest generation device. All
-devices with btrfs signature are registered in memory and this is the
-primary source when mounting the devices, not the block device itself.
+That's a great point, I agree it would be better to print the first 
+abort per filesystem/mount instead of only once per reboot now that it's 
+noted.
