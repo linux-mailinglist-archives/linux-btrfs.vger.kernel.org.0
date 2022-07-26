@@ -2,77 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05498581C45
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 01:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2521581C5F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 01:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbiGZXJS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jul 2022 19:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        id S239965AbiGZXUW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jul 2022 19:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbiGZXJR (ORCPT
+        with ESMTP id S232753AbiGZXUV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Jul 2022 19:09:17 -0400
+        Tue, 26 Jul 2022 19:20:21 -0400
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E328654E;
-        Tue, 26 Jul 2022 16:09:16 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5FDD15C0193;
-        Tue, 26 Jul 2022 19:09:12 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 26 Jul 2022 19:09:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F2964C8
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 16:20:20 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id B7C535C01BB;
+        Tue, 26 Jul 2022 19:20:19 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 26 Jul 2022 19:20:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-type:date:date:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1658876952; x=1658963352; bh=Pk7fPDyN1m
-        hcn9AmZJJSQrWGf3bFrll2wfVC739XpTk=; b=CJcUReuQSOK29U2tGnyliGHuQ9
-        DZps2SYGb6xrKvYqWW+bGrqAfNvpr8qiOwuUK6a4XTj5K6L06lt2bZfczsPpuYEK
-        aMT3wJjefPZxstkWMVcscS8OO1oFQ1PkMjmG09u55O0tpPOvgpm0UKiWm7YmNwOV
-        BRkquO8e0gIewEoVybE1tutvc3tyXtYGpbgULrvLfF3j8tnSKfBJVTKjnWo6CqUr
-        8NZvFbACxDaSg1oWhXUSfVuMEpUAHJc8vmiYCRdoNBDYUphnnBI8p3pXgoewJPWp
-        txZa0xBhKUUbH8T0bSSvL812F58YqwFpJKQGmmNnLzNNMqOh/78Mwhlrl1uw==
+        :subject:to:to; s=fm3; t=1658877619; x=1658964019; bh=HOp+hLHRWD
+        bgW7aU9+dTaVqs8eDLH0PkcrePCGUdv14=; b=ea4hLekqf2T9sfqHBN6XkG53Oi
+        Rczex8or5XSWx83UCjXwJKlBqI2eXC3CxZWpkyTDJU4pXwQRynR0j59HIfPeBmL9
+        PX+PT307sLVo7NBmUgsSC9PS+M2iIPTC2YJ9DpYMtPLm18KvtHmy8uHnKqPd7650
+        ziATJa/WorMQQGw/WamjQJF3LkyCT4G8fgVWM9vVEmzQu/15Gq8joetcIxYF9xhL
+        Iavpcjv3EskOslxcYCvcRCKemhQEMKUs6Qn7OAIH5xI8jF+aRSyTJ3GsENqh4Bma
+        vSkNCFQbfbobd7RDXF6domyiGG9zlgBgNInwoDgzkAidjqiBBjOGgqOAbxxw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        messagingengine.com; h=cc:content-type:date:date:feedback-id
         :feedback-id:from:from:in-reply-to:in-reply-to:message-id
         :mime-version:references:reply-to:sender:subject:subject:to:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1658876952; x=1658963352; bh=Pk7fPDyN1mhcn9AmZJJSQrWGf3bF
-        rll2wfVC739XpTk=; b=RPz69GhfFADmiQZhaq6pZwZEXboNZCq64r1xg70r0Hbh
-        th2GJhWO+nLpRt9MZj3s3TROKrmVi0weqlksYSZt7Dnig52lvcfq9HpLfCRECFCO
-        I/2H2Dp5HFMes51XE7VVGRmjGycJlfUO+cw88lu84Qer6I7V8kR4qVDI4GniSwgp
-        QmmvFCytQ9FAYXt1eZMDOlozBDBtYdf4pdIGvS29EOK7gSW5PK2PMEGRZWH/HFc3
-        goDvv9e2jxf+iAqpt0nAXC7pl7FsugnQPdx72y34VaQ0Ny0ZxlqFluSCARpB8ibO
-        fcnCf7GD/RRCBI75Z5N8y8VnXVCT2swthYSvDET4TQ==
-X-ME-Sender: <xms:GHTgYmoLx2HBUyrUhX7dyAYwaxhUDQfw5_Hi1c2J_uZLfMDoQGtdBA>
-    <xme:GHTgYko0ry--1nnuL3fmk_MkyYk5rasSUtAhf42kzwCz-Y9Em4O3l5ShBc7S5YQFI
-    sGcYEQVcW0aRgm2yIw>
-X-ME-Received: <xmr:GHTgYrMXLA6iyIU3Ooo62k_Nj5ufWJMzg67Dcmi43zfwiwhk3HnINw8IMndpkqVaOzSr7o-aG0Gnams6ugQGE-QLsS-bYQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdduuddgudelucetufdoteggodetrfdotf
+        fm3; t=1658877619; x=1658964019; bh=HOp+hLHRWDbgW7aU9+dTaVqs8eDL
+        H0PkcrePCGUdv14=; b=BIlAFZjrJvuRXGcTh6q6jOCp/boqsmia38iUU9QY4CPI
+        9Uv+VrjRd6EVtLK2hxspd0C21E8Mv9tUvt2AHsscdaa5LglTGt8jOoi7ThFUqF8f
+        Qio9RixihDJtCefxZ8w53NKmVopI3ThxHzfDVhLVqRsq9YQ/h6F9JKAWTjSzdXc6
+        hU8WA9SjzNyyoPOd2eQ2DfB4hYugaL5QoazOgWvo3gNHjhCv/76sqCFJE/oS4SJK
+        ScxcERHhHuY+ZI5yLS68UuY31mrfmtNngfNSvotYxNTOGYQIqILI6m+ZeJ1tFdfM
+        7tWmEFXxZAQdR9tG890optbvvjblmA5BSTcJwA/dhw==
+X-ME-Sender: <xms:s3bgYgW1h4SwqItt2sF2qB3Z_K4yNsYjENmv9InKiU5hT2Ssm6mgig>
+    <xme:s3bgYkmt_Ng53Q_0tGvoP1y9MDIM5LWLHSI9M8osLu82ETcUc1C9Hg792cTDzHwPQ
+    8tYUQZuGQRd3_tx2pQ>
+X-ME-Received: <xmr:s3bgYka28WtDCLj_TyAyt85escGea_i0hJzjwR_5c4jEE0GvoxLvVvGequ4TXi8f4VmHxaYER2Nhlq6_d05J8qUAAvxE_A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdduuddgvddvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:GHTgYl5V-P2Dr9HsiRh_jebylnK-T9oH5TYgNaNa_jbslMgnonV0Hg>
-    <xmx:GHTgYl6RWrIWhBLrVVFEJDnc2QugLLPb46_7UwZxthMyAbzhKe_OOg>
-    <xmx:GHTgYlj1uFa231JHrB8x9cADIPi0AIKEGulRrj96pIS0sedyihq0cg>
-    <xmx:GHTgYnRu9c1O-lbscpgEQV4I4OuhgJP1SdqbKJK89JLFzwadUmAtzQ>
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
+    duveelkeeiteelveeiuefhudehtdeigfehkeeffeegledvueevgefgudeuveefnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihho
+X-ME-Proxy: <xmx:s3bgYvXrGCGlbF13bikd9P734QNbuQq4qEsP_RjY166Rwrqi6ZfYuQ>
+    <xmx:s3bgYqlZurMyvfxodAsDdAG3Zv2b7bpDWaSKp7LvQf1mL5U3QPg0NQ>
+    <xmx:s3bgYkefmKlkZbnS-CEM-v6DSTpMS8nMlSxtfIzEwX1kQRVI_oYSvQ>
+    <xmx:s3bgYrAyrxRhWTDs9KJrxuQsWyGC319TZWHq8MsS4t0zKMAMqAe6MQ>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 26 Jul 2022 19:09:11 -0400 (EDT)
-Date:   Tue, 26 Jul 2022 16:09:56 -0700
+ 26 Jul 2022 19:20:18 -0400 (EDT)
+Date:   Tue, 26 Jul 2022 16:21:03 -0700
 From:   Boris Burkov <boris@bur.io>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH] fstests: add test case to make sure btrfs can handle one
- corrupted device
-Message-ID: <YuB0RD9fx5nBnv2m@zen>
-References: <20220726062948.56315-1-wqu@suse.com>
+To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH v2 2/4] btrfs: make __btrfs_dump_space_info() output
+ better formatted
+Message-ID: <YuB238MyKE0VTDtq@zen>
+References: <cover.1658207325.git.wqu@suse.com>
+ <dc40ddc78b7173d757065dcdde910bcf593d3a5c.1658207325.git.wqu@suse.com>
+ <a5321725-1667-fd6f-2bfd-8ddb7b78d038@dorminy.me>
+ <20220719213804.GT13489@twin.jikos.cz>
+ <3cfc9569-ff22-c04d-f7d0-fea1396ba4b5@gmx.com>
+ <20220726181353.GJ13489@twin.jikos.cz>
+ <YuBUTX1i63o7Uo1O@zen>
+ <20220726213928.GP13489@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220726062948.56315-1-wqu@suse.com>
+In-Reply-To: <20220726213928.GP13489@twin.jikos.cz>
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
@@ -83,169 +92,33 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 26, 2022 at 02:29:48PM +0800, Qu Wenruo wrote:
-> The new test case will verify that btrfs can handle one corrupted device
-> without affecting the consistency of the filesystem.
+On Tue, Jul 26, 2022 at 11:39:28PM +0200, David Sterba wrote:
+> On Tue, Jul 26, 2022 at 01:53:33PM -0700, Boris Burkov wrote:
+> > > Yes we shold care about readability but kernel printk output lines can
+> > > be interleaved, single line is much easier to grep for and all the
+> > > values are from one event. The format where it's a series of "key=value"
+> > > is common and I think we're used to it from tracepoints too. There are
+> > > lines that do not put "=" between keys and values we could unify that
+> > > eventually.
+> > 
+> > Agreed that a long line is OK, and preferable to full on splitting.
+> > 
+> > What about making some btrfs printing macros that use KERN_CONT? I think
+> > that would do what Qu wants without splitting the lines or being bad for
+> > ratelimiting.
 > 
-> Unlike a missing device, one corrupted device can return garbage to the fs,
-> thus btrfs has to utilize its data/metadata checksum to verify which
-> data is correct.
+> IIRC I've read some discussions about KERN_CONT suggesting not to use
+> it, I'll ask what's the status.
 
-> 
-> The test case will:
-> 
-> - Create a small fs
->   Mostly to speedup the test
-> 
-> - Fill the fs with a regular file
-> 
-> - Use fsstress to create some contents
-> 
-> - Save the fssum for later verification
-> 
-> - Corrupt one device with garbage but keep the primary superblock
->   untouched
-> 
-> - Run fssum verification
-> 
-> - Run scrub to fix the fs
-> 
-> - Run scrub again to make sure the fs is fine
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+I just saw a comment at its definition that reads:
 
-Works for me, and looks like a nice test to complement btrfs/027.
-Reviewed-by: Boris Burkov <boris@bur.io>
+/*
+ * Annotation for a "continued" line of log printout (only done after a
+ * line that had no enclosing \n). Only to be used by core/arch code
+ * during early bootup (a continued line is not SMP-safe otherwise).
+ */
+#define KERN_CONT       KERN_SOH "c"
 
-> ---
->  tests/btrfs/261     | 94 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/261.out |  2 +
->  2 files changed, 96 insertions(+)
->  create mode 100755 tests/btrfs/261
->  create mode 100644 tests/btrfs/261.out
-> 
-> diff --git a/tests/btrfs/261 b/tests/btrfs/261
-> new file mode 100755
-> index 00000000..15218e28
-> --- /dev/null
-> +++ b/tests/btrfs/261
-> @@ -0,0 +1,94 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 261
-> +#
-> +# Make sure btrfs raid profiles can handling one corrupted device
-> +# without affecting the consistency of the fs.
-> +#
-> +. ./common/preamble
-> +_begin_fstest raid
-> +
-> +. ./common/filter
-> +. ./common/populate
-> +
-> +_supported_fs btrfs
-> +_require_scratch_dev_pool 4
-> +_require_fssum
-> +
-> +prepare_fs()
-> +{
-> +	local profile=$1
-> +
-> +	# We don't want too large fs which can take too long to populate
-> +	# And the extra redirection of stderr is to avoid the RAID56 warning
-> +	# message to polluate the golden output
-> +	_scratch_pool_mkfs -m $profile -d $profile -b 1G >> $seqres.full 2>&1
-> +	if [ $? -ne 0 ]; then
-> +		echo "mkfs $mkfs_opts failed"
-> +		return
-> +	fi
-> +
-> +	# Disable compression, as compressed read repair is known to have problems
-> +	_scratch_mount -o compress=no
-> +
-> +	# Fill some part of the fs first
-> +	$XFS_IO_PROG -f -c "pwrite -S 0xfe 0 400M" $SCRATCH_MNT/garbage > /dev/null 2>&1
-> +
-> +	# Then use fsstress to generate some extra contents.
-> +	# Disable setattr related operations, as it may set NODATACOW which will
-> +	# not allow us to use btrfs checksum to verify the content.
-> +	$FSSTRESS_PROG -f setattr=0 -d $SCRATCH_MNT -w -n 3000 > /dev/null 2>&1
-> +	sync
-> +
-> +	# Save the fssum of this fs
-> +	$FSSUM_PROG -A -f -w $tmp.saved_fssum $SCRATCH_MNT
-> +	$BTRFS_UTIL_PROG fi show $SCRATCH_MNT >> $seqres.full
-> +	_scratch_unmount
-> +}
-> +
-> +workload()
-> +{
-> +	local target=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $1}')
-> +	local profile=$1
-> +	local num_devs=$2
-> +
-> +	_scratch_dev_pool_get $num_devs
-> +	echo "=== Testing profile $profile ===" >> $seqres.full
-> +	rm -f -- $tmp.saved_fssum
-> +	prepare_fs $profile
-> +
-> +	# Corrupt the target device, only keep the superblock.
-> +	$XFS_IO_PROG -c "pwrite 1M 1023M" $target > /dev/null 2>&1
-> +
-> +	_scratch_mount
-> +
-> +	# All content should be fine
-> +	$FSSUM_PROG -r $tmp.saved_fssum $SCRATCH_MNT > /dev/null
-> +
-> +	# Scrub to fix the fs, this is known to report various correctable
-> +	# errors
-> +	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >> $seqres.full 2>&1
-> +
-> +	# Make sure above scrub fixed the fs
-> +	$BTRFS_UTIL_PROG scrub start -Br $SCRATCH_MNT >> $seqres.full
-> +	if [ $? -ne 0 ]; then
-> +		echo "scrub failed to fix the fs for profile $profile"
-> +	fi
-> +	_scratch_unmount
-> +	_scratch_dev_pool_put
-> +}
-> +
-> +workload raid1 2
-> +workload raid1c3 3
-> +workload raid1c4 4
-> +workload raid10 4
-> +workload raid5 3
-> +workload raid6 4
-
-Speaking of 027, 
-
-Can you implement this with _btrfs_profile_configs?
-
-Further, you could imagine writing a more generic test that does:
-for raid in raids:
-        create-fs raid
-        screw-up disk(s)
-        check-condition
-
-and make 027 and this new one (and others?) special cases of that.
-I think this might fall under YAGNI.. Food for thought :)
-
-> +
-> +echo "Silence is golden"
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/261.out b/tests/btrfs/261.out
-> new file mode 100644
-> index 00000000..679ddc0f
-> --- /dev/null
-> +++ b/tests/btrfs/261.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 261
-> +Silence is golden
-> -- 
-> 2.36.1
-> 
+So that's not an encouraging sign. OTOH, I found some code in
+ext4/super.c that prints its errors with KERN_CONT here:
+'ext4: super.c: Update logging style using KERN_CONT'
