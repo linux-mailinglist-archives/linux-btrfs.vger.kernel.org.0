@@ -2,54 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A36E45819D9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 20:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FDA581A45
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 21:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239297AbiGZSir (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jul 2022 14:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        id S239800AbiGZTZ4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jul 2022 15:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230287AbiGZSir (ORCPT
+        with ESMTP id S229379AbiGZTZz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Jul 2022 14:38:47 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EF032ED7
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 11:38:46 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 12BCA812C8;
-        Tue, 26 Jul 2022 14:38:44 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1658860725; bh=e7CwSIo8ACjGt0L6XQUrJPYctV1uKRRufECAgH0d0Sw=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=D3MDW2Qg1NIqfwz+O8z8ttj8u7qnf8Saa/D/zLvIWXmT6InKH9ApkH1SCvX2YFrfy
-         oIf+kH1XSbFygZTtPPfZNmtoZ1lXxQ08PMxsNcgO1xpAkcT3X+DIEkr2Md4/IozUOB
-         H4MP7n3Z7ZprQSyiaHjLX6HvpClDE/BZneRuxfo2m8OGWD71GEF/OhznPs2oEpnVGj
-         nd+2MT8w/+MMWuxJH5ki9XLamDxqzhAX335YeGB8nLBlvq6rCF+xef5oApSdAxOaJ0
-         /OXnCksp8ZKgVTLy/MfvAlisV1pLWPkK6ik3y6QBBjQiwFeWJ+HhumOZOvWk+rZkDU
-         iTks4VfvjdyfA==
-Message-ID: <df4a3d08-cc63-6b15-9e14-d8228f1bf873@dorminy.me>
-Date:   Tue, 26 Jul 2022 14:38:43 -0400
-MIME-Version: 1.0
-Subject: Re: [PATCH v2 4/4] btrfs: dump all space infos if we abort
- transaction due to ENOSPC
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <cover.1658207325.git.wqu@suse.com>
- <621654191a02dc3cbc5c3b03f6c00963b7e6f382.1658207325.git.wqu@suse.com>
- <4b4b9f52-9c40-2f91-d8a3-a6ed29c379ee@dorminy.me>
- <8d2c653a-eddf-e9b4-7912-d46993705680@gmx.com>
- <20220726182050.GK13489@twin.jikos.cz>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <20220726182050.GK13489@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+        Tue, 26 Jul 2022 15:25:55 -0400
+Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A018B1A807;
+        Tue, 26 Jul 2022 12:25:54 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id 963022B05B4C;
+        Tue, 26 Jul 2022 15:19:58 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute3.internal (MEProxy); Tue, 26 Jul 2022 15:19:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        colorremedies.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1658863198; x=
+        1658866798; bh=y3t0wMrfyAqUUNVLPOLMRMGGh0t/qSHeaVbcb4BusIw=; b=D
+        oZFPi6fuudfAb6NIcUi2L0g7R2dj+ZZueMT5LIgc4i0/yfEasJvJnA9D1kOEBrwl
+        icbgyf7YBv5OrjUSm7IPQnge+xRqAO1+vCLPlg2MbCSohqzUxekkkn9IerCWKfnY
+        q+p5ViSG2BEkmC/UYCrnHtYRUhvnNXIL4Ba/Qd1Lk1E+7CaPeFLmowpSRTekUWak
+        2vxsJ6Ozye12crn735EL8SQKomOoYnzFEOU6+BY5iUZxHyGmtgUpQX7R5QYdXxEG
+        GZjwnZQs/591MUwQXEQkvEC/dY+4Rsojayl+V0RBalBoLejKHqCuCT/Vyu02VKIP
+        6Gcqpe3KScjj1x3rKVO4w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        i06494636.fm3; t=1658863198; x=1658866798; bh=y3t0wMrfyAqUUNVLPO
+        LMRMGGh0t/qSHeaVbcb4BusIw=; b=QNPLNe5allO8z/7dyz17HVBl0CB+jmUYAx
+        P7XtU1G0gDJiK7fDnyLy53XxSL9prQd+pWYRfydkM4YqcDLIshb7QFPv/gtnbmG3
+        ulJrEiA4o4IIUl0JVmGtXY8q2h4XNVOtqdj0aWpPnTaCaWlZ5AvvHbM1vKZt3W/A
+        AhzPt8dYiJlvtgfR0wQ4061QpQUPt2YchB/UxXIDhbYIwg0srl/3FRDrSRD+6cK+
+        BXb6inoZMgmkXH0pYQAz3P+rwNiUIodhWveJ9JnL9oH4PcZ13KaeUvoceT/fAtcf
+        OdrdlpKTLlsbfd15JujTfSXceMNQwX334Oznd/LQvklRBM9zel0Q==
+X-ME-Sender: <xms:XT7gYpdXfQJbL-mihJa-J_MeXWnFoV9EKW-J5I9siK4bOvH6Z9dpHA>
+    <xme:XT7gYnMROqXTyXYFk_rx2ma0KmIVQFJ7VJqeA9E7Qz8t9L1ADBPH7-nvQCj1Ciyyj
+    TfS3JWgOb04ma2gz8o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvddutddgudefiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdev
+    hhhrihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtg
+    homheqnecuggftrfgrthhtvghrnhepgfdvueektdefgfefgfdtleffvdeileetgfefuddt
+    ffelueeiveeiveekhedtheeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
+X-ME-Proxy: <xmx:XT7gYigYy0xpOS4NrNX2IRZhecy6BkXiC_dpvTrEZDddyQBfmB5mMg>
+    <xmx:XT7gYi-l8GMLm4XqOV9kQYSgjK6vtTPzjiEGeEZH4jNA-qAd98cz8Q>
+    <xmx:XT7gYltTdgfp0RvWP8dQ3__NhEL0UV8RPcyxY6h7T20AO9FvhUGdXQ>
+    <xmx:Xj7gYmWHv4TxmKPjnNi_6X4iBadIXOtk0o7YAhX7Ziy-8EnbOesh9CzKwHQ6kkgb>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 970E6170007E; Tue, 26 Jul 2022 15:19:57 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-757-gc3ad9c75d3-fm-20220722.001-gc3ad9c75
+Mime-Version: 1.0
+Message-Id: <fa57195c-cd1e-464e-b099-7552f65e39f5@www.fastmail.com>
+In-Reply-To: <20220726164250.GE13489@twin.jikos.cz>
+References: <CABXGCsN+BcaGO0+0bJszDPvA=5JF_bOPfXC=OLzMzsXY2M8hyQ@mail.gmail.com>
+ <20220726164250.GE13489@twin.jikos.cz>
+Date:   Tue, 26 Jul 2022 15:19:34 -0400
+From:   "Chris Murphy" <lists@colorremedies.com>
+To:     "David Sterba" <dsterba@suse.cz>,
+        =?UTF-8?Q?=D0=9C=D0=B8=D1=85=D0=B0=D0=B8=D0=BB_=D0=93=D0=B0=D0=B2=D1=80?=
+         =?UTF-8?Q?=D0=B8=D0=BB=D0=BE=D0=B2?= 
+        <mikhail.v.gavrilov@gmail.com>
+Cc:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -58,37 +89,16 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 7/26/22 14:20, David Sterba wrote:
-> On Wed, Jul 20, 2022 at 09:03:33AM +0800, Qu Wenruo wrote:
->>>> @@ -346,12 +346,14 @@ void __cold btrfs_err_32bit_limit(struct
->>>> btrfs_fs_info *fs_info)
->>>>    __cold
->>>>    void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
->>>>                       const char *function,
->>>> -                   unsigned int line, int errno)
->>>> +                   unsigned int line, int errno, bool first_hit)
->>>>    {
->>>>        struct btrfs_fs_info *fs_info = trans->fs_info;
->>>>        WRITE_ONCE(trans->aborted, errno);
->>>>        WRITE_ONCE(trans->transaction->aborted, errno);
->>>> +    if (first_hit && errno == -ENOSPC)
->>>> +        btrfs_dump_fs_space_info(fs_info);
->>>>        /* Wake up anybody who may be waiting on this transaction */
->>>>        wake_up(&fs_info->transaction_wait);
->>>>        wake_up(&fs_info->transaction_blocked_wait);
->>> DO_ONCE_LITE(btrfs_dump_fs_space_info, fs_info) from <linux/once_lite.h>
->>> seems like a more lightweight way to dump the space infos once upon
->>> first transaction abort. Then you don't have to plumb through the
->>> 'first_hit' parameter from btrfs_abort_transaction(), and this change
->>> becomes even more minimal than it already is.
->>
->> Sounds pretty awesome!
-> 
-> But DO_ONCE_LITE stores the status in one static variable, this cant' be
-> used because we want to track the status per filesystem, and also per
-> mount. Ie. repeated ENOSPC after umount/mount cycle won't be reported,
-> also another filesystem hitting abort due to ENOSPC.
+On Tue, Jul 26, 2022, at 12:42 PM, David Sterba wrote:
+> On Tue, Jul 26, 2022 at 05:32:54PM +0500, Mikhail Gavrilov wrote:
+>> Hi guys.
+>> Always with intensive writing on a btrfs volume, the message "BUG:
+>> MAX_LOCKDEP_CHAIN_HLOCKS too low!" appears in the kernel logs.
+>
+> Increase the config value of LOCKDEP_CHAINS_BITS, default is 16, 18
+> tends to work.
 
-That's a great point, I agree it would be better to print the first 
-abort per filesystem/mount instead of only once per reboot now that it's 
-noted.
+Fedora is using 17. I'll make a request to bump it to 18. Thanks.
+
+--
+Chris Murphy
