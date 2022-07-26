@@ -2,75 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C8B581992
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 20:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E735819AE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 20:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239419AbiGZSS5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jul 2022 14:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
+        id S233972AbiGZSZz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jul 2022 14:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239617AbiGZSS4 (ORCPT
+        with ESMTP id S239539AbiGZSZu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Jul 2022 14:18:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6041032443
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 11:18:52 -0700 (PDT)
+        Tue, 26 Jul 2022 14:25:50 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2C232D99
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 11:25:49 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 176BD37A3B;
-        Tue, 26 Jul 2022 18:18:51 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3D04C1FA10;
+        Tue, 26 Jul 2022 18:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1658859531;
+        t=1658859948;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ACNLkosggPPI8Enx/ZdI6ApakYwwtUtpXgr5MUlVLk8=;
-        b=s4E5KpnQMJISvwyD0gZ7Pe7AC90bfHwtlsV5oF7o0k2EHDQ0QBZNTzGyn8TanCMoNl9rC4
-        HDE9JFw/nzbY4550txaMPVa0zTsOLlmnAGMHajOry6JftHfLjqj+Yk/71gv7jM85pQdMWm
-        DI7XBUmvGWWBn+v5SIIBPbwS1kKXrog=
+        bh=D1M5A/Ul03xmPWzwhh+CHJOfMwztH3Ija6UWOYUPLY4=;
+        b=Zs17s+w9pOFpFD+2sgF4ernK4fLg3go6rkCLVJ8Ww18fMzb86pzAOBYyBHTOae9c0zRcGq
+        MyuO8SJeVi4YYFeQmSGOzyFg09eJHRmbsPSJ5dKjoHcbXacfFZrV2NxTmyDLTHi0QrWTkp
+        CTiHXLPDCCuHLDJihaMaKR3U9s28xoA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1658859531;
+        s=susede2_ed25519; t=1658859948;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ACNLkosggPPI8Enx/ZdI6ApakYwwtUtpXgr5MUlVLk8=;
-        b=blMRL+f7WysQlNkS+jDjwY5QnVENWeNSQkUiG1mYconBvQ3NjpgbpqeIfzDfYsqz7idWJv
-        2LnH4app2f5DNsBA==
+        bh=D1M5A/Ul03xmPWzwhh+CHJOfMwztH3Ija6UWOYUPLY4=;
+        b=SWT0R2HfFcdrP/06QTh+/oQ+abRLQrKte30hhzjHQ4EV8V4Jk42peAZT/AaPEPwduWMxcy
+        zaIWnjgn9QVZ7QCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DF2AA13A7C;
-        Tue, 26 Jul 2022 18:18:50 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0503413A7C;
+        Tue, 26 Jul 2022 18:25:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id bm1vNQow4GLdFwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 26 Jul 2022 18:18:50 +0000
-Date:   Tue, 26 Jul 2022 20:13:53 +0200
+        id TVMrAKwx4GJVGgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 26 Jul 2022 18:25:48 +0000
+Date:   Tue, 26 Jul 2022 20:20:50 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
         Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH v2 2/4] btrfs: make __btrfs_dump_space_info() output
- better formatted
-Message-ID: <20220726181353.GJ13489@twin.jikos.cz>
+Subject: Re: [PATCH v2 4/4] btrfs: dump all space infos if we abort
+ transaction due to ENOSPC
+Message-ID: <20220726182050.GK13489@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
         Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
         Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
 References: <cover.1658207325.git.wqu@suse.com>
- <dc40ddc78b7173d757065dcdde910bcf593d3a5c.1658207325.git.wqu@suse.com>
- <a5321725-1667-fd6f-2bfd-8ddb7b78d038@dorminy.me>
- <20220719213804.GT13489@twin.jikos.cz>
- <3cfc9569-ff22-c04d-f7d0-fea1396ba4b5@gmx.com>
+ <621654191a02dc3cbc5c3b03f6c00963b7e6f382.1658207325.git.wqu@suse.com>
+ <4b4b9f52-9c40-2f91-d8a3-a6ed29c379ee@dorminy.me>
+ <8d2c653a-eddf-e9b4-7912-d46993705680@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <3cfc9569-ff22-c04d-f7d0-fea1396ba4b5@gmx.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8d2c653a-eddf-e9b4-7912-d46993705680@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -81,36 +83,35 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 20, 2022 at 06:58:16AM +0800, Qu Wenruo wrote:
-> >>> +	btrfs_info(fs_info, "  reserved:      %llu", info->bytes_reserved);
-> >>> +	btrfs_info(fs_info, "  may_use:       %llu", info->bytes_may_use);
-> >>> +	btrfs_info(fs_info, "  read_only:     %llu", info->bytes_readonly);
-> >>> +	if (btrfs_is_zoned(fs_info))
-> >>> +		btrfs_info(fs_info,
-> >>> +			    "  zone_unusable: %llu", info->bytes_zone_unusable);
-> >>
-> >> I'm (perhaps needlessly) worried about splitting this up into six/seven
-> >> messages, because of the ratelimiting rolled into btrfs_printk. The
-> >> ratelimit is 100 messages per 5 * HZ, and it seems like it would be
-> >> unfortunate if it kicked in during the middle of this dump and prevented
-> >> later info from being dumped.
-> >>
-> >> Maybe we should add a btrfs_dump_printk() helper that doesn't have a
-> >> ratelimit built in, for exceptional cases like this where we really,
-> >> really don't want anything ratelimited?
-> >
-> > Splitting the message is IMHO wrong thing, there are other subysystems
-> > writing to the log so the lines can become scattered or interleaved with
-> > the same message from other threads.
+On Wed, Jul 20, 2022 at 09:03:33AM +0800, Qu Wenruo wrote:
+> >> @@ -346,12 +346,14 @@ void __cold btrfs_err_32bit_limit(struct
+> >> btrfs_fs_info *fs_info)
+> >>   __cold
+> >>   void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
+> >>                      const char *function,
+> >> -                   unsigned int line, int errno)
+> >> +                   unsigned int line, int errno, bool first_hit)
+> >>   {
+> >>       struct btrfs_fs_info *fs_info = trans->fs_info;
+> >>       WRITE_ONCE(trans->aborted, errno);
+> >>       WRITE_ONCE(trans->transaction->aborted, errno);
+> >> +    if (first_hit && errno == -ENOSPC)
+> >> +        btrfs_dump_fs_space_info(fs_info);
+> >>       /* Wake up anybody who may be waiting on this transaction */
+> >>       wake_up(&fs_info->transaction_wait);
+> >>       wake_up(&fs_info->transaction_blocked_wait);
+> > DO_ONCE_LITE(btrfs_dump_fs_space_info, fs_info) from <linux/once_lite.h>
+> > seems like a more lightweight way to dump the space infos once upon
+> > first transaction abort. Then you don't have to plumb through the
+> > 'first_hit' parameter from btrfs_abort_transaction(), and this change
+> > becomes even more minimal than it already is.
 > 
-> But that one line output is really hard to read for human beings.
-> 
-> Or do you mean that, as long as it's debug info, we should not care
-> about readability at all?
+> Sounds pretty awesome!
 
-Yes we shold care about readability but kernel printk output lines can
-be interleaved, single line is much easier to grep for and all the
-values are from one event. The format where it's a series of "key=value"
-is common and I think we're used to it from tracepoints too. There are
-lines that do not put "=" between keys and values we could unify that
-eventually.
+But DO_ONCE_LITE stores the status in one static variable, this cant' be
+used because we want to track the status per filesystem, and also per
+mount. Ie. repeated ENOSPC after umount/mount cycle won't be reported,
+also another filesystem hitting abort due to ENOSPC.
+
+The first_hit logic as you have it now that passes the first transaction
+abort to the report is correct.
