@@ -2,102 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C3F581AA2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 22:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C956F581AFA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 22:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbiGZUBK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jul 2022 16:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
+        id S239895AbiGZUYJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jul 2022 16:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239357AbiGZUBI (ORCPT
+        with ESMTP id S229932AbiGZUYI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Jul 2022 16:01:08 -0400
-Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9612326EF
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 13:01:04 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id E3ECC2B059CB;
-        Tue, 26 Jul 2022 16:01:03 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Tue, 26 Jul 2022 16:01:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        colorremedies.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1658865663; x=
-        1658869263; bh=SVdSqTdD0laPilubivUhklhYEy008iudz7e/SbYgf9E=; b=v
-        mD6a2xUQj6ldmS1fOaTEw9shvcxr3wou22U6h7H22vPEYkN5AWaDELoY393ICKTD
-        H0hiTM7VxkW+YYpZtqXYPurFpmy6qnEokkiyC/GzLM09hoFmabFD1WCcytxZFZWi
-        /YdWjQ9CvmI06cF1Gp8PTMYMEQS4eLihvG01dx+XmVeLU3oqQqSeLISCY/EmjTrt
-        VjEA6+Lml1Gj+kAdE6vRUDjwVV7MP6KQ9nJtoBv9JqgGttejR6eMncTW743MgvIB
-        TdcIgIINhS04Mf/pD3v+JbmJPgtOwQTCL9Ap6a2ddcpYestJHcHNU2BQ+KyouxMT
-        d6RT+r3wjOx3Qk9YNZv7A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        i06494636.fm3; t=1658865663; x=1658869263; bh=SVdSqTdD0laPilubiv
-        UhklhYEy008iudz7e/SbYgf9E=; b=ZQop+97YkUFieYIaPD6XFfYvDKhDtVSK/V
-        blolnRQCw9bqW9mHANmAkiiRDa8gCHXQKdnJ/9SDt1YWZgXouNOpeATh8emesy6/
-        kx7Cj+7hfbQsGo001GaiAuOvFemdXtOk7biLQcfwvI2oGIAoLjPwdFyRlktiHJh1
-        eUeDbvUHheK0/PdEBD3v37eOF72iPY6d9nmXWpe+TihrcNkuI0G1nKHaII0srkgH
-        AadbKQDlhqPLvt8XOOMfbxPQJLoQFHuTAg+9KbN87Qn6vue1XHNLPSKIDHGwyDMg
-        +ydyF5OY+BRsYFRqNtucHr36Lu5Q6VzMozyEoFhtOmwUtl9O6dMA==
-X-ME-Sender: <xms:_kfgYnIiEmgx1oLXTMWIbUzKQ6InW8W4ZfojMfQjZQ-Td6hqJVuN1w>
-    <xme:_kfgYrIyuX-VUPYHV8O_j3-xCdDX9apTKnU1CmgHXmkfmJY12YBXQtpH--I5PFnH7
-    zD6btkEVG_KVkKy4po>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvddutddgudeghecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdev
-    hhhrihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtg
-    homheqnecuggftrfgrthhtvghrnhepgfdvueektdefgfefgfdtleffvdeileetgfefuddt
-    ffelueeiveeiveekhedtheeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
-X-ME-Proxy: <xmx:_kfgYvvZ3tTuT2nKO00ii3pO8lS9NV-6YIzXYKuoMfk7zCSgvclQfQ>
-    <xmx:_kfgYga-Ab3T-cy-NgGCD1Vmr_ZQITeF3StW_b5nDaP3nF2luZqB1g>
-    <xmx:_kfgYuYQQ6grQJ56S4nMiArFVc1Yd8pUf0QM4Nr2lWKK_Ymyw_94fQ>
-    <xmx:_0fgYtkULWBefUrWkFKMXZi1PDoTMVFULfBU4BfkLjq1pYSwmC8aTUyL5MS9fVI_>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id AA29E170007E; Tue, 26 Jul 2022 16:01:02 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-757-gc3ad9c75d3-fm-20220722.001-gc3ad9c75
-Mime-Version: 1.0
-Message-Id: <336b3dc2-2ca9-4f14-ad45-1896b36e0e82@www.fastmail.com>
-In-Reply-To: <20220725190811.GD13489@twin.jikos.cz>
-References: <CAEg-Je_b1YtdsCR0zS5XZ_SbvJgN70ezwvRwLiCZgDGLbeMB=w@mail.gmail.com>
- <20220725190811.GD13489@twin.jikos.cz>
-Date:   Tue, 26 Jul 2022 16:00:42 -0400
-From:   "Chris Murphy" <lists@colorremedies.com>
-To:     "David Sterba" <dsterba@suse.cz>, "Neal Gompa" <ngompa13@gmail.com>
-Cc:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>,
-        "Chris Mason" <clm@fb.com>, "Josef Bacik" <josef@toxicpanda.com>
-Subject: Re: Using async discard by default with SSDs?
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 26 Jul 2022 16:24:08 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA5C32074
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 13:24:06 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id l3so11894213qkl.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 13:24:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VR/Dwa+/VxQA264DU6ReAHBR9xfIxhT1G+tqPFjdvaI=;
+        b=Hk8iJUJejTWIpnq4+7VvnNfOcUyVWaorXTk9dxTe9MDCdvGr4EeQ6nz55WjBgnlmHq
+         Kq9+QNhvGs0bgQLEhcN70tF0iRHZrK75N2+SFQIxb5a6+fetU9zyRYGFOxKOytidqnpv
+         Dl1fBdi7MmbqbcUexYOglWKiAO1FewXXg8imyVOVwTseV0KFd/AtzWsrL+Q3oJI98MAR
+         xf2kAnAf1uj1MDi0nrhgXPOJvA/kOHaZ8SpvYCWEznCWQqLpeERYF/ZMozhGeY4cRa81
+         iX77ZsoR8ubpC2jeanDSRKOkpKpTLviob66FW4Wc77wwVDuYCBHP8Byl0QRX7zarLg5q
+         3vhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VR/Dwa+/VxQA264DU6ReAHBR9xfIxhT1G+tqPFjdvaI=;
+        b=0Ocjgoe4Ff2h3gevg6SRQ+7o1EV7At9mnB9P1jF/NB+meUGqNhMhAJ1Ug3hvSpEXhF
+         m8VXZoy/aMcGPn8ELAXA1+E3nuWpv0LLz8YHXOHWIv3LzKUOuZ9tdo8tLLx2NXaR06FI
+         gooJaEvvCr5NzJugS3scRKtTpYPLmO9QBP+zoCoR0bAJSKdyMQNnAd09kkxxw8BLQs4p
+         1JoMQ/0z1LzuY7D4KDIqrk/iyezoCx0BvPGhOlTsMYVyOanB9ZjdOVZQO1xFgkWaXdoa
+         1XzfvodNUG7sKO9v+ikZiONY/ULIZWRBE4UdRDvHhgknSnS91/BxvGDJahoDU+QWjePG
+         mVtg==
+X-Gm-Message-State: AJIora/6UFzZqTWE38KInMrCc+9eXJHsRLrK+MiAO96dZy3hHuva85xP
+        8H9arvL3rUIMEVLtCOQQzWiC6FWfACqqIQ==
+X-Google-Smtp-Source: AGRyM1vTIwzNBBrLA/VczIA5oeqLPtk/OW0cNK/4/M94ZxvIzm20YbvVcx1vWr9ssKoXG5w8iz0hCw==
+X-Received: by 2002:a05:620a:19a7:b0:6b6:b88:3c77 with SMTP id bm39-20020a05620a19a700b006b60b883c77mr13886902qkb.128.1658867045737;
+        Tue, 26 Jul 2022 13:24:05 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id bl10-20020a05620a1a8a00b006b640efe6dasm7887096qkb.132.2022.07.26.13.24.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jul 2022 13:24:05 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/2] Fix relocation lockdep splat
+Date:   Tue, 26 Jul 2022 16:24:02 -0400
+Message-Id: <cover.1658866962.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
 
+This fixes the long standing lockdep splat we were getting in btrfs/187.  The
+detailed description of the fix can be found in the changelog in the second
+patch.  The first patch simply moves the lockdep related code into locking.c
+where it more logically fits in.  Thanks,
 
-On Mon, Jul 25, 2022, at 3:08 PM, David Sterba wrote:
+Josef
 
-> I think it's safe to use by default, with the usual question who could
-> be affected by that negatively. The async triggers, timeouts and
-> thresholds are preset conservatively and so far there have been no
-> complaints.
->
-> The tunables have been hidden under debug, but there are also some stats
-> (like how many bytes could be discarded in the next round), so it would
-> be good to also publish that when it's on by default.
+Josef Bacik (2):
+  btrfs: move lockdep class helpers to locking.*
+  btrfs: fix lockdep splat with reloc root extent buffers
 
-In my testing, discard=async rather quickly submits recently freed metadata blocks for gc, blocks referred by the backup roots in the super. Is this a concern for recovery? Is there a way to exclude the most recent ~5 generations of metadata from gc, and could it improve the usefulness of backup roots for recovery?
+ fs/btrfs/ctree.c       |  3 ++
+ fs/btrfs/ctree.h       |  2 +
+ fs/btrfs/disk-io.c     | 82 ------------------------------------
+ fs/btrfs/disk-io.h     | 10 -----
+ fs/btrfs/extent-tree.c | 18 +++++++-
+ fs/btrfs/extent_io.c   | 11 ++++-
+ fs/btrfs/locking.c     | 95 ++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/locking.h     | 16 +++++++
+ fs/btrfs/relocation.c  |  2 +
+ 9 files changed, 145 insertions(+), 94 deletions(-)
 
 -- 
-Chris Murphy
+2.26.3
+
