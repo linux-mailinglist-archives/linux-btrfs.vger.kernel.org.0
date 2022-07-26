@@ -2,83 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07726581B14
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 22:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21056581B49
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jul 2022 22:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbiGZUck (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jul 2022 16:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
+        id S233443AbiGZUrm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jul 2022 16:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbiGZUcj (ORCPT
+        with ESMTP id S229662AbiGZUrl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Jul 2022 16:32:39 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3325C11168
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 13:32:35 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id x91so19063014ede.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jul 2022 13:32:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=TCHjfk3yn6FOFV0XiDwQHvDJfHa/K3UJeljyJ4JvCSA=;
-        b=UCD5bZqun+Lk3qFkXPeL3nrSSrgFjPdlwZSABp/OsRp/FK0Ph4VomDtjwqDau+kBv2
-         hlPMHWai9Ci/b3i5eDyjusOmbSNaeLWRwZw6xVX4l2L2kBbWDbDXyF5j4BoeCOOGw5gF
-         3m1NT1h4iy6M0rt8sgZSyTTerj/ptC5R1iiTWHhH+2PwOa1ZHZsJof8JliZFp6QKwZ4J
-         2KsXaLz9Kr4ZAzzNuJ5cEPPM44ZzSiduhT/o+xn3XaDwmRpQglbnGrhhJWAaowF+tlaZ
-         SjETl1r/fQyrrUC59sA4876MM8YIODGJozY+EeiK+e8aYt7apVtn8YyI5hwG68vv+Uce
-         zGog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=TCHjfk3yn6FOFV0XiDwQHvDJfHa/K3UJeljyJ4JvCSA=;
-        b=PxOMZ6S/rzYYOa0whCRcy5S69H1lZXQfOKd3SOSksHo6gVKBFV3zLDHa1wOjBXua3Q
-         CAsO/DLFu3144eIPyceL3QrJqQGaXv7m3UMUJaa8Qsam2G52UWqje3BREMRnf0zFECOE
-         kU7pZyi7gocn4T0e2GGySrOBsPu9bhRsXA/B0LmOxSmhFssTOZ2v6W8PQlJwpqpx47Ve
-         Po/U4WnKnz/+HteK1wCo4/F3Bhx9cnwvFgBZ0eUsJXyWfgapFgYBCSePWS0X3yag0b88
-         G3s/ZDzD8J7rVj9CFMQ5dqVP9b3ttTAgjyisFuBxDVD7eJDNI2o42OG7BB4xrV6TKrvq
-         xaCQ==
-X-Gm-Message-State: AJIora9A1AF4uV4sDCigBkeP9QxEovNpReBJs7RixN5kHuWwRhTmaZB8
-        N7360HQ/Gj2IIYnk8oP3urYVGuWHS9Nk4JR/rQArvcWO
-X-Google-Smtp-Source: AGRyM1s56CUtQQ8JyS/kRTsYx8E8G7etYXezCH0YMOuqDRzf/49e0mz5dCaa2x9+9yP7kDyrksV0zPw1EOAUtQIuT5M=
-X-Received: by 2002:a05:6402:5c8:b0:433:545f:a811 with SMTP id
- n8-20020a05640205c800b00433545fa811mr19945901edx.101.1658867553552; Tue, 26
- Jul 2022 13:32:33 -0700 (PDT)
+        Tue, 26 Jul 2022 16:47:41 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3555E19015;
+        Tue, 26 Jul 2022 13:47:39 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D6A921FEBF;
+        Tue, 26 Jul 2022 20:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1658868457;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mCeYiM98qk7/jdAtlpy7MJlNkO1AbBgsrKc1/3FMchM=;
+        b=IMTvg6jcK1KStNU/fBNfruGXCGwQXHRiN8KYjKphqFuVD+Q6dgsTGJgttO9K9bvhRWaEBu
+        vXhzSsvlH8eB7Dg12XyNXTDwhEiXbNX1X4cXiAngUAeXeSqssFm9aDG9R+bfGaV7ztEPiV
+        QmOzlBPHCgrEa0tlEbnB+FStZAYBCCE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1658868457;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mCeYiM98qk7/jdAtlpy7MJlNkO1AbBgsrKc1/3FMchM=;
+        b=0zA8p2rnCZzUJPgvYWQZ9svxtqJk1Ko6a8BmcYe1oXvlNcbr7sOvaiGsL+nspUXnY//mHq
+        /hFc7qOdK6eOzkDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B0BC613A7C;
+        Tue, 26 Jul 2022 20:47:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IRclKulS4GKqSAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 26 Jul 2022 20:47:37 +0000
+Date:   Tue, 26 Jul 2022 22:42:40 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     David Sterba <dsterba@suse.cz>,
+        =?utf-8?B?0JzQuNGF0LDQuNC7INCT0LDQstGA0LjQu9C+0LI=?= 
+        <mikhail.v.gavrilov@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+Message-ID: <20220726204240.GM13489@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Chris Murphy <lists@colorremedies.com>,
+        =?utf-8?B?0JzQuNGF0LDQuNC7INCT0LDQstGA0LjQu9C+0LI=?= <mikhail.v.gavrilov@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <CABXGCsN+BcaGO0+0bJszDPvA=5JF_bOPfXC=OLzMzsXY2M8hyQ@mail.gmail.com>
+ <20220726164250.GE13489@twin.jikos.cz>
+ <fa57195c-cd1e-464e-b099-7552f65e39f5@www.fastmail.com>
+ <92e9ca9b-f458-409f-a9c4-150f6bce0b75@www.fastmail.com>
 MIME-Version: 1.0
-From:   Rich Rauenzahn <rrauenza@gmail.com>
-Date:   Tue, 26 Jul 2022 13:32:22 -0700
-Message-ID: <CAG+QAKUu6TXJqoq=eQczE+CWJCL06bN8oymbSFQVCzXto+fzyQ@mail.gmail.com>
-Subject: Combining two filesystems into single pool
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_40,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92e9ca9b-f458-409f-a9c4-150f6bce0b75@www.fastmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I've spent a little while trying to google for this and haven't seem
-to hit the right keywords yet or it just isn't possible.
+On Tue, Jul 26, 2022 at 03:21:32PM -0400, Chris Murphy wrote:
+> 
+> 
+> On Tue, Jul 26, 2022, at 3:19 PM, Chris Murphy wrote:
+> > On Tue, Jul 26, 2022, at 12:42 PM, David Sterba wrote:
+> >> On Tue, Jul 26, 2022 at 05:32:54PM +0500, Mikhail Gavrilov wrote:
+> >>> Hi guys.
+> >>> Always with intensive writing on a btrfs volume, the message "BUG:
+> >>> MAX_LOCKDEP_CHAIN_HLOCKS too low!" appears in the kernel logs.
+> >>
+> >> Increase the config value of LOCKDEP_CHAINS_BITS, default is 16, 18
+> >> tends to work.
+> >
+> > Fedora is using 17. I'll make a request to bump it to 18. Thanks.
+> 
+> Should it be 18 across all archs? Or is it OK to only bump x86_64?
 
-I have two btrfs filesystems.  These are independent filesystems with
-mutually exclusive sets of disks.  RAID1, if that matters.
-
-They are mounted on / -- let's say /A and /B.
-
-I'd like to combine the disks into a single filesystem.  These file
-systems are large, so creating a third filesystem and merging them is
-not practical, nor is copying /B onto /A.
-
-Could I, say, move /A to a subvolume A in itself and then permanently
-"connect" /B as a subvolume B, putting all the disks into a single
-pool?  And then mount the two subvolumes as /A and /B?
-
-I'd swear I'd seen instructions on how to combine filesystem pools
-before, but I can't find it again.
-
-Thoughts or other ideas?
-
-Rich
+I think it applies to all achritectures equally but I'm no lockdep
+expert.
