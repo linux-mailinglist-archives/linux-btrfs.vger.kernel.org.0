@@ -2,167 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E70AC582949
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 17:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EEC358294F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 17:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbiG0PHC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jul 2022 11:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
+        id S229780AbiG0PJP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jul 2022 11:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233351AbiG0PG7 (ORCPT
+        with ESMTP id S233742AbiG0PJN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jul 2022 11:06:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0142C4199C
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jul 2022 08:06:57 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Wed, 27 Jul 2022 11:09:13 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470A831DC6
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jul 2022 08:09:12 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A6D4C33EA8;
-        Wed, 27 Jul 2022 15:06:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658934416;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=fEtP/NLcPab52v1yOPgjRWNTlaconryLQNj1ofrit5M=;
-        b=SriQO+psfNaph0ZySoGJ2qai+9hB4hF8xYRb732E5Tm6NrJu5MRVJYdTZafi1c3d6to9qT
-        Ff3FD9Hm44oVTI+8vFi+sYeQnlAyoNdX7jrndic806LOppn4ofHuaqW9Oei2DM3hHHtanR
-        bsWrsg4+nArtBF1uZpmsO1uAOLGVKPY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8315913A8E;
-        Wed, 27 Jul 2022 15:06:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UxwRH5BU4WJAZgAAMHmgww
-        (envelope-from <dsterba@suse.com>); Wed, 27 Jul 2022 15:06:56 +0000
-Date:   Wed, 27 Jul 2022 17:01:58 +0200
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: auto enable discard=async when possible
-Message-ID: <20220727150158.GT13489@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, linux-btrfs@vger.kernel.org
+        by box.fidei.email (Postfix) with ESMTPSA id 284638006E;
+        Wed, 27 Jul 2022 11:09:10 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1658934551; bh=U/UWpStK6PyKIAOCAmeP/qpa61cbWsfg5PUE6AHb5lw=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=lTItA+8JYDXhs4a/SmvF0WwYpoi0uO98MoFzmBdjcl6fehK42GFOAM3Wmh82a9aN3
+         DGtf7fKxyEuLJS41pIpQsIoLa5zJXk375gtbBKHv77bKcB+MQqCgl3D0cFRWbl/ZZ7
+         PphBqSTLak53Q2XWx7AQMsX4a1Pi8ZdPHkI1SiVhTdbe3Io410a6IoYh8wRZEf2l3V
+         60QXhIpi1FjkTsXw8ffxK81ozbVyxHcILQk/9MnCXG1PiqaKg68XTg3iMuiytrKqbv
+         IuJ6Ylho/PLTTQ7PsSNjiD3Yfdq21WZ91U21QEM7LEycX9JVX5t8NrSLIoFrTsu55S
+         EjNivBH5xqOpQ==
+Message-ID: <05e134a8-c26e-0cd4-29b4-a9fdfdcef2b3@dorminy.me>
+Date:   Wed, 27 Jul 2022 11:09:09 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 2/4] btrfs: make __btrfs_dump_space_info() output
+ better formatted
+Content-Language: en-US
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Boris Burkov <boris@bur.io>,
+        dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <cover.1658207325.git.wqu@suse.com>
+ <dc40ddc78b7173d757065dcdde910bcf593d3a5c.1658207325.git.wqu@suse.com>
+ <a5321725-1667-fd6f-2bfd-8ddb7b78d038@dorminy.me>
+ <20220719213804.GT13489@twin.jikos.cz>
+ <3cfc9569-ff22-c04d-f7d0-fea1396ba4b5@gmx.com>
+ <20220726181353.GJ13489@twin.jikos.cz> <YuBUTX1i63o7Uo1O@zen>
+ <20220726213928.GP13489@twin.jikos.cz> <YuB238MyKE0VTDtq@zen>
+ <a33107a0-1207-7b56-39f4-1465a74f8fe3@dorminy.me>
+ <59e228e2-9927-56a1-5fac-ab6b7e49451e@gmx.com>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <59e228e2-9927-56a1-5fac-ab6b7e49451e@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There's a request to automatically enable async discard for capable
-devices. We can do that, the async mode is designed to wait for larger
-freed extents and is not intrusive, with limits to iops, kbps or latency.
 
-The status and tunables will be exported in /sys/fs/btrfs/FSID/discard .
 
-The automatic selection is done if there's at least one discard capable
-device in the filesystem (not capable devices are skipped). Mounting
-with any other discard option will honor that option, notably mounting
-with nodiscard will keep it disabled.
+On 7/26/22 21:44, Qu Wenruo wrote:
+> 
+> 
+> On 2022/7/27 09:21, Sweet Tea Dorminy wrote:
+>>
+>>
+>> On 7/26/22 19:21, Boris Burkov wrote:
+>>> On Tue, Jul 26, 2022 at 11:39:28PM +0200, David Sterba wrote:
+>>>> On Tue, Jul 26, 2022 at 01:53:33PM -0700, Boris Burkov wrote:
+>>>>>> Yes we shold care about readability but kernel printk output lines 
+>>>>>> can
+>>>>>> be interleaved, single line is much easier to grep for and all the
+>>>>>> values are from one event. The format where it's a series of
+>>>>>> "key=value"
+>>>>>> is common and I think we're used to it from tracepoints too. There 
+>>>>>> are
+>>>>>> lines that do not put "=" between keys and values we could unify that
+>>>>>> eventually.
+>>>>>
+>>>>> Agreed that a long line is OK, and preferable to full on splitting.
+>>>>>
+>>>>> What about making some btrfs printing macros that use KERN_CONT? I
+>>>>> think
+>>>>> that would do what Qu wants without splitting the lines or being bad
+>>>>> for
+>>>>> ratelimiting.
+>>>>
+>>>> IIRC I've read some discussions about KERN_CONT suggesting not to use
+>>>> it, I'll ask what's the status.
+>>>
+>>> I just saw a comment at its definition that reads:
+>>>
+>>> /*
+>>>   * Annotation for a "continued" line of log printout (only done after a
+>>>   * line that had no enclosing \n). Only to be used by core/arch code
+>>>   * during early bootup (a continued line is not SMP-safe otherwise).
+>>>   */
+>>> #define KERN_CONT       KERN_SOH "c"
+>>>
+>>> So that's not an encouraging sign. OTOH, I found some code in
+>>> ext4/super.c that prints its errors with KERN_CONT here:
+>>> 'ext4: super.c: Update logging style using KERN_CONT
+>>
+>> Some other log message from somewhere else could be emitted to the
+>> printk ringbuffer between the original and the continued message. In
+>> such a case, the continued message instead gets treated as its own
+>> message of loglevel default. (kernel/printk/printk.c:2173ish) Using
+>> KERN_CONT seems like it has a lot of potential for confusion, especially
+>> if the default message level has been changed to be different from the
+>> original messages' level.
+> 
+> Thanks for all the discussion, it looks like the current long single
+> line is the way to go (in fact, the space info dumping itself is still
+> two lines, and we may want to fix it).
+> 
+> Although it's not that human readable, the racy nature of message output
+> is indeed a concern.
+> This also means the old DUMP_BLOCK_RSV() function calls are not safe 
+> either.
+> 
+> 
+> But on the other hand, what if we output one line with multiple '\n'?
+> Would it keep things readable while still count as one single line?
 
-Link: https://lore.kernel.org/linux-btrfs/CAEg-Je_b1YtdsCR0zS5XZ_SbvJgN70ezwvRwLiCZgDGLbeMB=w@mail.gmail.com/
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/ctree.h   |  1 +
- fs/btrfs/disk-io.c | 14 ++++++++++++++
- fs/btrfs/super.c   |  2 ++
- fs/btrfs/volumes.c |  3 +++
- fs/btrfs/volumes.h |  2 ++
- 5 files changed, 22 insertions(+)
+Yes, it would count as only one message, but it would break scripts that 
+assume dmesg etc outputs a timestamp for every line; I think many kernel 
+log scrapers make that assumption.
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4db85b9dc7ed..0a338311f8e2 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1503,6 +1503,7 @@ enum {
- 	BTRFS_MOUNT_DISCARD_ASYNC		= (1UL << 28),
- 	BTRFS_MOUNT_IGNOREBADROOTS		= (1UL << 29),
- 	BTRFS_MOUNT_IGNOREDATACSUMS		= (1UL << 30),
-+	BTRFS_MOUNT_NODISCARD			= (1UL << 31),
- };
- 
- #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 3fac429cf8a4..8f8e33219d4d 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3767,6 +3767,20 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		btrfs_set_and_info(fs_info, SSD, "enabling ssd optimizations");
- 	}
- 
-+	/*
-+	 * For devices supporting discard turn on discard=async automatically,
-+	 * unless it's already set or disabled. This could be turned off by
-+	 * nodiscard for the same mount.
-+	 */
-+	if (!(btrfs_test_opt(fs_info, DISCARD_SYNC) ||
-+	      btrfs_test_opt(fs_info, DISCARD_ASYNC) ||
-+	      btrfs_test_opt(fs_info, NODISCARD)) &&
-+	    fs_info->fs_devices->discardable) {
-+		btrfs_set_and_info(fs_info, DISCARD_ASYNC,
-+				"auto enabling discard=async");
-+	      btrfs_clear_opt(fs_info->mount_opt, NODISCARD);
-+	}
-+
- 	/*
- 	 * Mount does not set all options immediately, we can do it now and do
- 	 * not have to wait for transaction commit
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 4c7089b1681b..1032aaa2c2f4 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -915,12 +915,14 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 				ret = -EINVAL;
- 				goto out;
- 			}
-+			btrfs_clear_opt(info->mount_opt, NODISCARD);
- 			break;
- 		case Opt_nodiscard:
- 			btrfs_clear_and_info(info, DISCARD_SYNC,
- 					     "turning off discard");
- 			btrfs_clear_and_info(info, DISCARD_ASYNC,
- 					     "turning off async discard");
-+			btrfs_set_opt(info->mount_opt, NODISCARD);
- 			break;
- 		case Opt_space_cache:
- 		case Opt_space_cache_version:
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 272901514b0c..22bfc7806ccb 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -639,6 +639,9 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
- 	if (!bdev_nonrot(bdev))
- 		fs_devices->rotating = true;
- 
-+	if (bdev_max_discard_sectors(bdev))
-+		fs_devices->discardable = true;
-+
- 	device->bdev = bdev;
- 	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
- 	device->mode = flags;
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 5639961b3626..4c716603449d 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -329,6 +329,8 @@ struct btrfs_fs_devices {
- 	 * nonrot flag set
- 	 */
- 	bool rotating;
-+	/* Devices support TRIM/discard commands */
-+	bool discardable;
- 
- 	struct btrfs_fs_info *fs_info;
- 	/* sysfs kobjects */
--- 
-2.36.1
+sample dmesg -T
 
+[Wed Jul 27 10:59:54 2022] test three
+                            line message
+
+[Wed Jul 27 11:03:50 2022] next message.
+
+sample journalctl:
+
+Jul 27 10:59:54 vmcentral unknown: test three
+                            line message
+Jul 27 11:03:50 vmcentral unknown: next message.
