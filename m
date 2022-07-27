@@ -2,204 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BDA58328F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 20:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E62583305
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 21:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbiG0S6C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jul 2022 14:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
+        id S235480AbiG0TI5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jul 2022 15:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233217AbiG0S5s (ORCPT
+        with ESMTP id S235105AbiG0TIk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jul 2022 14:57:48 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E97E6B
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jul 2022 11:02:01 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C74933E739;
-        Wed, 27 Jul 2022 18:01:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658944919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=rL4JI1Y9e5+luxJtUoAQ23ch+F57SdDAXQi3b88fZDc=;
-        b=G+8RG4KlF+jLJdrMkO1/GmD8uy7QcDZDpmro6UqscXsLh2lFxfsXvq1r8dpBIf5KabQ5GC
-        Ih7Z4WQmDltO1TdifFnQ4Ft26TG51f/Y86lqvuhAW1qJRQYr9z0o8iIqKIVhjSZb/xbBof
-        aQAWTfPz2ov1DY+Mb/UkapGF2FS6dbM=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id C002E2C141;
-        Wed, 27 Jul 2022 18:01:59 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BEDF1DA83C; Wed, 27 Jul 2022 19:57:02 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH] btrfs: sysfs: show discard stats and tunables in non-debug build
-Date:   Wed, 27 Jul 2022 19:56:59 +0200
-Message-Id: <20220727175659.16661-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.36.1
+        Wed, 27 Jul 2022 15:08:40 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAFB1120
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jul 2022 11:45:58 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id B28935C0165;
+        Wed, 27 Jul 2022 14:45:57 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 27 Jul 2022 14:45:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1658947557; x=1659033957; bh=Ni2KuqICsP
+        cqhCStz5ez0H7T9D2/ZP9y0IoFuCvIxPw=; b=X1j/VeS8eUMwwo9MeLRNpKVnzT
+        ndiATnVQkJGJeKpTiANEQejaXuKlwc0JaUGtoDFs3AzU8fk4vpg5yzeJJJyD+NlV
+        pN9awr7qyZRKMS8SviyJvHZPap0QlIn8XtQuIjL2dqd320AmgyvsWOiUdsmrU5Lx
+        XM2gDmS6VeNay8of38A6A9ovoPF72xTWZ+qNY00WOVbDPMzLXauronIM2Bl7nl9h
+        R675PxvbNN4oHMfeVA4kqraoRYkRouIF3c3E865qMAn03rMe22NOOz7t3mjAaB3k
+        nbmXh6GIdfy7Cqla58EciKJtNwzFzMF6nOr03V6F+GXoGiGbxGbn/O8j3QVw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1658947557; x=1659033957; bh=Ni2KuqICsPcqhCStz5ez0H7T9D2/
+        ZP9y0IoFuCvIxPw=; b=2m5Ceu31FkLtR8qPelg5lkUBTh5ySgLxyOOYjon+OiWi
+        hpa5e2tYa9NcyKTBxvcvWd21W8QlSnzmb1qbaZPJNhsdIYT/USvhaZX29YFwxaYX
+        ISgnALycm2UuYZDlOpG4hx5SVcpDS3T4MjfgvescpDzmHLMB1IwkLphRQIozz/Bk
+        Uz69rQ38rO36sTIdaCIh8IhEVAIwSmDcTOqfnvp24ZW95kGCWT1eHH+zjuY4tVGX
+        ANcV/MSK9vezryaaZAWfMeXzKAbdYczhGufDbkcVjjHh931SMMZkr3SQ6IdwLgwy
+        AGmiSk5Og+lrtJ5NRxnWdgPGPVfc4/dJeOyRVGHmqw==
+X-ME-Sender: <xms:5YfhYhm0_0wkxCIQ4jAh6EjFDq9FK6pgrCMLo-4EfYCQyFrR48cwNA>
+    <xme:5YfhYs1AsIGWe-95tv-iYINJpe2rBRc4jmZGM7gwg-8fa0iwhyKlfiHlvRhVX7oDu
+    9nSa5uGJL5EFLnjNoI>
+X-ME-Received: <xmr:5YfhYnodoAzVGiHAQ2Do_z5BFnQZq_wQWzimfyWjQwsB-cvu_ZBEx62feRPFQTqCGa3ESjEozdm39eXMlOhB7BXGhPWE6w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdduvddgudeftdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
+    ertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
+    rdhioheqnecuggftrfgrthhtvghrnheptddvffdtvdevudeijeetudefuedufeeufefhud
+    ejuddtgedttdffffeigfetgfdtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:5YfhYhmVA3gDgNb68Eayq2F0hQ1h5ID8o-iRYvTDeXQw118uudZy-A>
+    <xmx:5YfhYv21yq6Bc9TvX0MKQBH44nizE2fDCX89tw8NVngZQ_xoet-rZQ>
+    <xmx:5YfhYgtn8zfm3D-KXg_BZqFx6d_L2W_KM0k_Gg63rQLbGzVoVps_eA>
+    <xmx:5YfhYs-v4UPyJPD-KmdeJLvpJMYkRugB-Cn3PHUDRN13yeuXyQzAAA>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 27 Jul 2022 14:45:57 -0400 (EDT)
+Date:   Wed, 27 Jul 2022 11:46:14 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: auto enable discard=async when possible
+Message-ID: <YuGH9pOwvW0ttrdc@zen>
+References: <20220727150158.GT13489@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220727150158.GT13489@suse.cz>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When discard=async was introduced there were also sysfs knobs and stats
-for debugging and tuning, hidden under CONFIG_BTRFS_DEBUG. The defaults
-have been set and so far seem to satisfy all users on a range of
-workloads. As there are not only tunables (like iops or kbps) but also
-stats tracking amount of discardable bytes, that should be available
-when the async discard is on (otherwise it's not).
-
-The stats are moved from the per-fs debug directory, so it's under
-  /sys/fs/btrfs/FSID/discard
-
-- discard_bitmap_bytes - amount of discarded bytes from data tracked as
-                         bitmaps
-- discard_extent_bytes - dtto but as extents
-- discard_bytes_saved -
-- discardable_bytes - amount of bytes that can be discarded
-- discardable_extents - number of extents to be discarded
-- iops_limit - tunable limit of number of discard IOs to be issued
-- kbps_limit - tunable limit of kilobytes per second issued as discard IO
-- max_discard_size - tunable limit for size of one IO discard request
-
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/ctree.h |  2 +-
- fs/btrfs/sysfs.c | 36 ++++++++++++++++--------------------
- 2 files changed, 17 insertions(+), 21 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4db85b9dc7ed..9631059d2733 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -891,6 +891,7 @@ struct btrfs_fs_info {
- 
- 	struct kobject *space_info_kobj;
- 	struct kobject *qgroups_kobj;
-+	struct kobject *discard_kobj;
- 
- 	/* used to keep from writing metadata until there is a nice batch */
- 	struct percpu_counter dirty_metadata_bytes;
-@@ -1102,7 +1103,6 @@ struct btrfs_fs_info {
- 
- #ifdef CONFIG_BTRFS_DEBUG
- 	struct kobject *debug_kobj;
--	struct kobject *discard_debug_kobj;
- 	struct list_head allocated_roots;
- 
- 	spinlock_t eb_leak_lock;
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index d5d0717fd09a..95782f3b55da 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -35,12 +35,12 @@
-  * qgroup_attrs				/sys/fs/btrfs/<uuid>/qgroups/<level>_<qgroupid>
-  * space_info_attrs			/sys/fs/btrfs/<uuid>/allocation/<bg-type>
-  * raid_attrs				/sys/fs/btrfs/<uuid>/allocation/<bg-type>/<bg-profile>
-+ * discard_attrs			/sys/fs/btrfs/<uuid>/discard
-  *
-  * When built with BTRFS_CONFIG_DEBUG:
-  *
-  * btrfs_debug_feature_attrs		/sys/fs/btrfs/debug
-  * btrfs_debug_mount_attrs		/sys/fs/btrfs/<uuid>/debug
-- * discard_debug_attrs			/sys/fs/btrfs/<uuid>/debug/discard
-  */
- 
- struct btrfs_feature_attr {
-@@ -429,12 +429,10 @@ static const struct attribute_group btrfs_static_feature_attr_group = {
- 	.attrs = btrfs_supported_static_feature_attrs,
- };
- 
--#ifdef CONFIG_BTRFS_DEBUG
--
- /*
-  * Discard statistics and tunables
-  */
--#define discard_to_fs_info(_kobj)	to_fs_info((_kobj)->parent->parent)
-+#define discard_to_fs_info(_kobj)	to_fs_info(get_btrfs_kobj(_kobj))
- 
- static ssize_t btrfs_discardable_bytes_show(struct kobject *kobj,
- 					    struct kobj_attribute *a,
-@@ -583,11 +581,11 @@ BTRFS_ATTR_RW(discard, max_discard_size, btrfs_discard_max_discard_size_show,
- 	      btrfs_discard_max_discard_size_store);
- 
- /*
-- * Per-filesystem debugging of discard (when mounted with discard=async).
-+ * Per-filesystem stats for discard (when mounted with discard=async).
-  *
-- * Path: /sys/fs/btrfs/<uuid>/debug/discard/
-+ * Path: /sys/fs/btrfs/<uuid>/discard/
-  */
--static const struct attribute *discard_debug_attrs[] = {
-+static const struct attribute *discard_attrs[] = {
- 	BTRFS_ATTR_PTR(discard, discardable_bytes),
- 	BTRFS_ATTR_PTR(discard, discardable_extents),
- 	BTRFS_ATTR_PTR(discard, discard_bitmap_bytes),
-@@ -599,6 +597,8 @@ static const struct attribute *discard_debug_attrs[] = {
- 	NULL,
- };
- 
-+#ifdef CONFIG_BTRFS_DEBUG
-+
- /*
-  * Per-filesystem runtime debugging exported via sysfs.
-  *
-@@ -1427,19 +1427,17 @@ void btrfs_sysfs_remove_mounted(struct btrfs_fs_info *fs_info)
- 		kobject_del(fs_info->space_info_kobj);
- 		kobject_put(fs_info->space_info_kobj);
- 	}
--#ifdef CONFIG_BTRFS_DEBUG
--	if (fs_info->discard_debug_kobj) {
--		sysfs_remove_files(fs_info->discard_debug_kobj,
--				   discard_debug_attrs);
--		kobject_del(fs_info->discard_debug_kobj);
--		kobject_put(fs_info->discard_debug_kobj);
-+	if (fs_info->discard_kobj) {
-+		sysfs_remove_files(fs_info->discard_kobj, discard_attrs);
-+		kobject_del(fs_info->discard_kobj);
-+		kobject_put(fs_info->discard_kobj);
- 	}
- 	if (fs_info->debug_kobj) {
- 		sysfs_remove_files(fs_info->debug_kobj, btrfs_debug_mount_attrs);
- 		kobject_del(fs_info->debug_kobj);
- 		kobject_put(fs_info->debug_kobj);
- 	}
--#endif
-+
- 	addrm_unknown_feature_attrs(fs_info, false);
- 	sysfs_remove_group(fsid_kobj, &btrfs_feature_attr_group);
- 	sysfs_remove_files(fsid_kobj, btrfs_attrs);
-@@ -2001,20 +1999,18 @@ int btrfs_sysfs_add_mounted(struct btrfs_fs_info *fs_info)
- 	error = sysfs_create_files(fs_info->debug_kobj, btrfs_debug_mount_attrs);
- 	if (error)
- 		goto failure;
-+#endif
- 
- 	/* Discard directory */
--	fs_info->discard_debug_kobj = kobject_create_and_add("discard",
--						     fs_info->debug_kobj);
--	if (!fs_info->discard_debug_kobj) {
-+	fs_info->discard_kobj = kobject_create_and_add("discard", fsid_kobj);
-+	if (!fs_info->discard_kobj) {
- 		error = -ENOMEM;
- 		goto failure;
- 	}
- 
--	error = sysfs_create_files(fs_info->discard_debug_kobj,
--				   discard_debug_attrs);
-+	error = sysfs_create_files(fs_info->discard_kobj, discard_attrs);
- 	if (error)
- 		goto failure;
--#endif
- 
- 	error = addrm_unknown_feature_attrs(fs_info, true);
- 	if (error)
--- 
-2.36.1
-
+On Wed, Jul 27, 2022 at 05:01:58PM +0200, David Sterba wrote:
+> There's a request to automatically enable async discard for capable
+> devices. We can do that, the async mode is designed to wait for larger
+> freed extents and is not intrusive, with limits to iops, kbps or latency.
+> 
+> The status and tunables will be exported in /sys/fs/btrfs/FSID/discard .
+> 
+> The automatic selection is done if there's at least one discard capable
+> device in the filesystem (not capable devices are skipped). Mounting
+> with any other discard option will honor that option, notably mounting
+> with nodiscard will keep it disabled.
+> 
+> Link: https://lore.kernel.org/linux-btrfs/CAEg-Je_b1YtdsCR0zS5XZ_SbvJgN70ezwvRwLiCZgDGLbeMB=w@mail.gmail.com/
+> Signed-off-by: David Sterba <dsterba@suse.com>
+Works for me, on mount and ro mount.
+Reviewed-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/ctree.h   |  1 +
+>  fs/btrfs/disk-io.c | 14 ++++++++++++++
+>  fs/btrfs/super.c   |  2 ++
+>  fs/btrfs/volumes.c |  3 +++
+>  fs/btrfs/volumes.h |  2 ++
+>  5 files changed, 22 insertions(+)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 4db85b9dc7ed..0a338311f8e2 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -1503,6 +1503,7 @@ enum {
+>  	BTRFS_MOUNT_DISCARD_ASYNC		= (1UL << 28),
+>  	BTRFS_MOUNT_IGNOREBADROOTS		= (1UL << 29),
+>  	BTRFS_MOUNT_IGNOREDATACSUMS		= (1UL << 30),
+> +	BTRFS_MOUNT_NODISCARD			= (1UL << 31),
+>  };
+>  
+>  #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 3fac429cf8a4..8f8e33219d4d 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3767,6 +3767,20 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+>  		btrfs_set_and_info(fs_info, SSD, "enabling ssd optimizations");
+>  	}
+>  
+> +	/*
+> +	 * For devices supporting discard turn on discard=async automatically,
+> +	 * unless it's already set or disabled. This could be turned off by
+> +	 * nodiscard for the same mount.
+> +	 */
+> +	if (!(btrfs_test_opt(fs_info, DISCARD_SYNC) ||
+> +	      btrfs_test_opt(fs_info, DISCARD_ASYNC) ||
+> +	      btrfs_test_opt(fs_info, NODISCARD)) &&
+> +	    fs_info->fs_devices->discardable) {
+> +		btrfs_set_and_info(fs_info, DISCARD_ASYNC,
+> +				"auto enabling discard=async");
+> +	      btrfs_clear_opt(fs_info->mount_opt, NODISCARD);
+> +	}
+> +
+>  	/*
+>  	 * Mount does not set all options immediately, we can do it now and do
+>  	 * not have to wait for transaction commit
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 4c7089b1681b..1032aaa2c2f4 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -915,12 +915,14 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+>  				ret = -EINVAL;
+>  				goto out;
+>  			}
+> +			btrfs_clear_opt(info->mount_opt, NODISCARD);
+>  			break;
+>  		case Opt_nodiscard:
+>  			btrfs_clear_and_info(info, DISCARD_SYNC,
+>  					     "turning off discard");
+>  			btrfs_clear_and_info(info, DISCARD_ASYNC,
+>  					     "turning off async discard");
+> +			btrfs_set_opt(info->mount_opt, NODISCARD);
+>  			break;
+>  		case Opt_space_cache:
+>  		case Opt_space_cache_version:
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 272901514b0c..22bfc7806ccb 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -639,6 +639,9 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  	if (!bdev_nonrot(bdev))
+>  		fs_devices->rotating = true;
+>  
+> +	if (bdev_max_discard_sectors(bdev))
+> +		fs_devices->discardable = true;
+> +
+>  	device->bdev = bdev;
+>  	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
+>  	device->mode = flags;
+> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> index 5639961b3626..4c716603449d 100644
+> --- a/fs/btrfs/volumes.h
+> +++ b/fs/btrfs/volumes.h
+> @@ -329,6 +329,8 @@ struct btrfs_fs_devices {
+>  	 * nonrot flag set
+>  	 */
+>  	bool rotating;
+> +	/* Devices support TRIM/discard commands */
+> +	bool discardable;
+>  
+>  	struct btrfs_fs_info *fs_info;
+>  	/* sysfs kobjects */
+> -- 
+> 2.36.1
+> 
