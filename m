@@ -2,104 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E80915822EA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 11:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF308582563
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 13:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbiG0JRr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jul 2022 05:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60446 "EHLO
+        id S231499AbiG0L1d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jul 2022 07:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbiG0JRq (ORCPT
+        with ESMTP id S231373AbiG0L1d (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jul 2022 05:17:46 -0400
-Received: from sender4-pp-o93.zoho.com (sender4-pp-o93.zoho.com [136.143.188.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3739D3B95B;
-        Wed, 27 Jul 2022 02:17:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1658913454; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=jvtsXujE1niNFpJmnKma3mexAyKwPimFZXpVFIVSmsfDiOhsm8A7TD5QYYgNr/YrJZd1qdJhzNwyGs2Emmj7DlQGtpRb+9kUEBwUPIqetEgiIayK1rVlSF7CWMBw9cyibAe76nMP3Gewzw+ABM3nf1XU9NW4Ix8XFqXldc2rV2E=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1658913454; h=Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=tbBLibR6scgO9qEy5TFmX57B29Vru5orCKKuf3M47YM=; 
-        b=lo5Z7a8FvTU6AflmKqCNI2YWDwUK8VAjiCH2USoa2kzjDJB4HGTcVaKXXiayh78GPrRVypJT19wdKa1Ug7Y5GVFgKQiBfiE3wrzz/MepQ+BNq+xnzsr/q2H0bWk+DphQjFLIks/cVAuet9K0OIPupHKwYRgoDqt3rwJIOBdmABk=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=zoho.com;
-        spf=pass  smtp.mailfrom=hmsjwzb@zoho.com;
-        dmarc=pass header.from=<hmsjwzb@zoho.com>
-DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; 
-  s=zapps768; d=zoho.com; 
-  h=from:to:cc:subject:date:message-id:in-reply-to:references:mime-version; 
-  b=fL0WfHL8yINXRurDjRoeO6YIXlhhtk18YeT5GSN4LkdLivlfdR8S0nqzLsQcc1lLJVQ5jk4q4xgX
-    XX7TqrwanG/+j/ZwANEMJVSQ0F2P58NXY1BBG/13iP4+fmbTeHig  
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1658913454;
-        s=zm2022; d=zoho.com; i=hmsjwzb@zoho.com;
-        h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Reply-To;
-        bh=tbBLibR6scgO9qEy5TFmX57B29Vru5orCKKuf3M47YM=;
-        b=FjNjkRgfi4H2Uhr/qLddGWBe5DjkQycgj89wXafu/sV/dLfBN1KQ4huZou4hZKcY
-        ZdlPcdGPAmsmUC9qmDqP5zoUs1kwcfHTskBmNYtUindzjBwJ67eu3sXgKyHpSLHpWzk
-        jt4evuDxIXvQfSc5qreYmhquB5IjMwt9eEO90LGU=
-Received: from localhost.localdomain (58.247.201.117 [58.247.201.117]) by mx.zohomail.com
-        with SMTPS id 1658913450622251.66284437874526; Wed, 27 Jul 2022 02:17:30 -0700 (PDT)
-From:   "Flint.Wang" <hmsjwzb@zoho.com>
-To:     dsterba@suse.cz, nborisov@suse.com, josef@toxicpanda.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs/219: fix problems with mount old generation
-Date:   Wed, 27 Jul 2022 17:16:57 +0800
-Message-Id: <20220727091657.4998-1-hmsjwzb@zoho.com>
-X-Mailer: git-send-email 2.37.0
-In-Reply-To: <1aaff0ac-436e-7782-081c-3549ff3d8c8f@zoho.com>
-References: <1aaff0ac-436e-7782-081c-3549ff3d8c8f@zoho.com>
+        Wed, 27 Jul 2022 07:27:33 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B23C42AD4
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jul 2022 04:27:32 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id u9so20425190oiv.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jul 2022 04:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=m3csfU7DGyV83X6zJlkcQN6Z1nTINh3JYfhn02mQF6g=;
+        b=SgdlbftESL9P6JhmyU504HHEGu5SgG6I/5N8TjrxIsNWpTjbPz0bvZ57Bou74Vc9qW
+         NklSkgPLeqyVcaKNEJk1mY3FPZFBKmvs4vM+w/+5dagF/uk/Lp6s78iiDm6une/uYWHZ
+         k6Y0z9g7AjiT1rSuo+TU+by8BJr+dq/6cIkIQzkbprI66yt9KOAsXv7GjnPVtKVh+1pU
+         PEar6eMrhR1e42CMqhD1qhx57NFu1PNn23SyyFaP4iXLOdIoyLWmZCiT8eIOr2QxLV7H
+         EbUgSDIzOpgkszivA2rUtk00zSZJ4ybRsJhDJeNGAT7IvBKdIQ4vyZMSTGi4Pwr3BAFe
+         Uyew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=m3csfU7DGyV83X6zJlkcQN6Z1nTINh3JYfhn02mQF6g=;
+        b=BJO02p7szvInJf/qeoQliq2BEncsnoZhGKVOHrdJDbzdY0QDYptFJFeCA9Syv76I1m
+         NSE/v6A1raI5/ayGm+VKRFFTxubKvtrpmA92Z9NhuMQbdUg+7q+EwiefEq0n2IR+QIbO
+         We+PlXbH/SccCul9vgYZRiAwj5JESAj3rLLHtDbIC3mkAkJFw1pDJuv/82j1Lj6NNF0e
+         pSWPMvvtsBnO2lHJrkU/xp7U/0kkHtNhajc+jJvLIVe7KFq8mUGBFKzy69CxjX+e2JjK
+         Pvdm+fK9tKrQyPcPKZgQw+PfwdNI0VSIvJHrL36esmgJKIMmLcGpSLJtvgutdlK4E+Ov
+         nyKA==
+X-Gm-Message-State: AJIora8NR6IdndpsD8ANVQhtUQnu/cFaSVAA3zpVQQSKibjnzp5xQptn
+        Va2moQ74zyPsT5rfPe3ftwaNsKJAWfF69tMEAcE=
+X-Google-Smtp-Source: AGRyM1vs7j6tjrpbQOAW2FTZWKzVzaeGXDqAsgY2e1AzWZQRQV+OLt2Lf4yEr1bfhhYNoZbDcibOwhG23vZXVdSx+wU=
+X-Received: by 2002:a05:6808:2121:b0:33a:5639:5bc6 with SMTP id
+ r33-20020a056808212100b0033a56395bc6mr1493956oiw.160.1658921251486; Wed, 27
+ Jul 2022 04:27:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Received: by 2002:a05:6838:bac4:0:0:0:0 with HTTP; Wed, 27 Jul 2022 04:27:31
+ -0700 (PDT)
+Reply-To: fofoj6432@gmail.com
+From:   john fofo <fabioverde047@gmail.com>
+Date:   Wed, 27 Jul 2022 04:27:31 -0700
+Message-ID: <CAMRdTVXFbGUFJsitWy7Uwd5xV4PdTyUuzsP_zY6AjEnXKCw=iw@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:235 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5624]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [fabioverde047[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [fabioverde047[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [fofoj6432[at]gmail.com]
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Nikolay & David,
+Good Afternoon,
 
-As we discussed, I changed the test btrfs/219 to make it pass.
+How are you? I guess you're well, i sent you a message last week, did
+you read my previous email? get back to me upon the receipt of this
+mail.
 
-This test try to mount btrfs filesystem with old generation.
-
-Devices are matched by UUID in btrfs filesystem. The mount of btrfs with
-old generation should be failed on purpose.
-
-Signed-off-by: Flint.Wang <hmsjwzb@zoho.com>
----
- tests/btrfs/219     | 3 +--
- tests/btrfs/219.out | 1 +
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tests/btrfs/219 b/tests/btrfs/219
-index 528175b8..5152fa91 100755
---- a/tests/btrfs/219
-+++ b/tests/btrfs/219
-@@ -73,8 +73,7 @@ _mount $loop_dev $loop_mnt > /dev/null 2>&1 || \
- $UMOUNT_PROG $loop_mnt
- 
- _mount -o loop $fs_img2 $loop_mnt > /dev/null 2>&1 || \
--	_fail "We couldn't mount the old generation"
--$UMOUNT_PROG $loop_mnt
-+	echo "We couldn't mount the old generation"
- 
- _mount $loop_dev $loop_mnt > /dev/null 2>&1 || \
- 	_fail "Failed to mount the second time"
-diff --git a/tests/btrfs/219.out b/tests/btrfs/219.out
-index 162074d3..6fe85f24 100644
---- a/tests/btrfs/219.out
-+++ b/tests/btrfs/219.out
-@@ -1,2 +1,3 @@
- QA output created by 219
-+We couldn't mount the old generation
- Silence is golden
--- 
-2.37.0
-
-Thanks
+Thank You,
+Mr.John Fofo
