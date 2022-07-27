@@ -2,118 +2,204 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C94DB58327D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 20:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BDA58328F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jul 2022 20:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbiG0Sya (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jul 2022 14:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
+        id S229966AbiG0S6C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jul 2022 14:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232882AbiG0Sxv (ORCPT
+        with ESMTP id S233217AbiG0S5s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jul 2022 14:53:51 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BD96557C
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jul 2022 10:52:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 057FE20078;
-        Wed, 27 Jul 2022 17:52:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1658944345;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VagTfcZcH+y1lXT+CwDnRSGo8j2eRZiWB2uExKh4u6E=;
-        b=C17YIG0cAOYnbISoWsZcBGh3zJuenFanQvi9lgbaex+SpkC2MGOqY5YEJ9KtR3MwbhkDJE
-        OgL5ILurzeo7iTDJcWecei88MVkCGHQ98R/EFmG6LyTzKorJV28S26YbhnQ8q3MFHRBKyv
-        DQisWo4OCWJ33BX6QpuLKrNu3ClCq1o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1658944345;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VagTfcZcH+y1lXT+CwDnRSGo8j2eRZiWB2uExKh4u6E=;
-        b=hppriu8XriG1F+1nf3+F6SrHwQmupeqhTxeNv5kcSUtTrokiKC5H1XVgRRGSUsv04jnhb5
-        JUDQlZCL5/fdMGCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C8B2613A8E;
-        Wed, 27 Jul 2022 17:52:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id /pFhL1h74WKmJwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 27 Jul 2022 17:52:24 +0000
-Date:   Wed, 27 Jul 2022 19:47:26 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Neal Gompa <ngompa13@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>
-Subject: Re: Using async discard by default with SSDs?
-Message-ID: <20220727174726.GU13489@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Chris Murphy <lists@colorremedies.com>,
-        Neal Gompa <ngompa13@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>
-References: <CAEg-Je_b1YtdsCR0zS5XZ_SbvJgN70ezwvRwLiCZgDGLbeMB=w@mail.gmail.com>
- <20220725190811.GD13489@twin.jikos.cz>
- <336b3dc2-2ca9-4f14-ad45-1896b36e0e82@www.fastmail.com>
- <20220726213628.GO13489@twin.jikos.cz>
- <fb723544-1c98-4275-a8f0-a250937675d6@www.fastmail.com>
- <68dc27f3-32a8-4a2a-bfcc-0cf26bca8fec@www.fastmail.com>
- <20220727145640.GS13489@suse.cz>
- <f14ed453-390b-4537-8a8c-0600e08d4278@www.fastmail.com>
+        Wed, 27 Jul 2022 14:57:48 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E97E6B
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jul 2022 11:02:01 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C74933E739;
+        Wed, 27 Jul 2022 18:01:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1658944919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=rL4JI1Y9e5+luxJtUoAQ23ch+F57SdDAXQi3b88fZDc=;
+        b=G+8RG4KlF+jLJdrMkO1/GmD8uy7QcDZDpmro6UqscXsLh2lFxfsXvq1r8dpBIf5KabQ5GC
+        Ih7Z4WQmDltO1TdifFnQ4Ft26TG51f/Y86lqvuhAW1qJRQYr9z0o8iIqKIVhjSZb/xbBof
+        aQAWTfPz2ov1DY+Mb/UkapGF2FS6dbM=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id C002E2C141;
+        Wed, 27 Jul 2022 18:01:59 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BEDF1DA83C; Wed, 27 Jul 2022 19:57:02 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: sysfs: show discard stats and tunables in non-debug build
+Date:   Wed, 27 Jul 2022 19:56:59 +0200
+Message-Id: <20220727175659.16661-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f14ed453-390b-4537-8a8c-0600e08d4278@www.fastmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 27, 2022 at 11:14:01AM -0400, Chris Murphy wrote:
-> 
-> 
-> On Wed, Jul 27, 2022, at 10:56 AM, David Sterba wrote:
-> > On Wed, Jul 27, 2022 at 10:50:01AM -0400, Chris Murphy wrote:
-> >> What is a likely target kernel version to make discard=async the
-> >> default? The merge window for 5.20 closes August 14. Is 5.21 a
-> >> practical target?
-> >
-> > The changes for the next merge window are supposed to be done a week or
-> > two before it opens, but as this is a simple change I think I can
-> > squeeze it in.
-> 
-> For 5.20?
+When discard=async was introduced there were also sysfs knobs and stats
+for debugging and tuning, hidden under CONFIG_BTRFS_DEBUG. The defaults
+have been set and so far seem to satisfy all users on a range of
+workloads. As there are not only tunables (like iops or kbps) but also
+stats tracking amount of discardable bytes, that should be available
+when the async discard is on (otherwise it's not).
 
-Yes, 5.20.
+The stats are moved from the per-fs debug directory, so it's under
+  /sys/fs/btrfs/FSID/discard
 
-> I'm not aware of any conflict with fstrim. But I wonder if there's a
-> preference to coordinate the change with util-linux folks? 
+- discard_bitmap_bytes - amount of discarded bytes from data tracked as
+                         bitmaps
+- discard_extent_bytes - dtto but as extents
+- discard_bytes_saved -
+- discardable_bytes - amount of bytes that can be discarded
+- discardable_extents - number of extents to be discarded
+- iops_limit - tunable limit of number of discard IOs to be issued
+- kbps_limit - tunable limit of kilobytes per second issued as discard IO
+- max_discard_size - tunable limit for size of one IO discard request
 
-The -o discard and fstrim are independent and can be used at the same
-time.
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/ctree.h |  2 +-
+ fs/btrfs/sysfs.c | 36 ++++++++++++++++--------------------
+ 2 files changed, 17 insertions(+), 21 deletions(-)
 
-> Currently, util-linux provides fstrim.timer which runs fstrim.service every Monday at 00:00 local time. The command is:
-> 
-> ExecStart=/usr/sbin/fstrim --listed-in /etc/fstab:/proc/self/mountinfo --verbose --quiet-unsupported
-> 
-> I'm not sure how they'd go about implementing an exception for Btrfs,
-> either entirely or only if a discard mount option is detected. But I
-> can ask?
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 4db85b9dc7ed..9631059d2733 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -891,6 +891,7 @@ struct btrfs_fs_info {
+ 
+ 	struct kobject *space_info_kobj;
+ 	struct kobject *qgroups_kobj;
++	struct kobject *discard_kobj;
+ 
+ 	/* used to keep from writing metadata until there is a nice batch */
+ 	struct percpu_counter dirty_metadata_bytes;
+@@ -1102,7 +1103,6 @@ struct btrfs_fs_info {
+ 
+ #ifdef CONFIG_BTRFS_DEBUG
+ 	struct kobject *debug_kobj;
+-	struct kobject *discard_debug_kobj;
+ 	struct list_head allocated_roots;
+ 
+ 	spinlock_t eb_leak_lock;
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index d5d0717fd09a..95782f3b55da 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -35,12 +35,12 @@
+  * qgroup_attrs				/sys/fs/btrfs/<uuid>/qgroups/<level>_<qgroupid>
+  * space_info_attrs			/sys/fs/btrfs/<uuid>/allocation/<bg-type>
+  * raid_attrs				/sys/fs/btrfs/<uuid>/allocation/<bg-type>/<bg-profile>
++ * discard_attrs			/sys/fs/btrfs/<uuid>/discard
+  *
+  * When built with BTRFS_CONFIG_DEBUG:
+  *
+  * btrfs_debug_feature_attrs		/sys/fs/btrfs/debug
+  * btrfs_debug_mount_attrs		/sys/fs/btrfs/<uuid>/debug
+- * discard_debug_attrs			/sys/fs/btrfs/<uuid>/debug/discard
+  */
+ 
+ struct btrfs_feature_attr {
+@@ -429,12 +429,10 @@ static const struct attribute_group btrfs_static_feature_attr_group = {
+ 	.attrs = btrfs_supported_static_feature_attrs,
+ };
+ 
+-#ifdef CONFIG_BTRFS_DEBUG
+-
+ /*
+  * Discard statistics and tunables
+  */
+-#define discard_to_fs_info(_kobj)	to_fs_info((_kobj)->parent->parent)
++#define discard_to_fs_info(_kobj)	to_fs_info(get_btrfs_kobj(_kobj))
+ 
+ static ssize_t btrfs_discardable_bytes_show(struct kobject *kobj,
+ 					    struct kobj_attribute *a,
+@@ -583,11 +581,11 @@ BTRFS_ATTR_RW(discard, max_discard_size, btrfs_discard_max_discard_size_show,
+ 	      btrfs_discard_max_discard_size_store);
+ 
+ /*
+- * Per-filesystem debugging of discard (when mounted with discard=async).
++ * Per-filesystem stats for discard (when mounted with discard=async).
+  *
+- * Path: /sys/fs/btrfs/<uuid>/debug/discard/
++ * Path: /sys/fs/btrfs/<uuid>/discard/
+  */
+-static const struct attribute *discard_debug_attrs[] = {
++static const struct attribute *discard_attrs[] = {
+ 	BTRFS_ATTR_PTR(discard, discardable_bytes),
+ 	BTRFS_ATTR_PTR(discard, discardable_extents),
+ 	BTRFS_ATTR_PTR(discard, discard_bitmap_bytes),
+@@ -599,6 +597,8 @@ static const struct attribute *discard_debug_attrs[] = {
+ 	NULL,
+ };
+ 
++#ifdef CONFIG_BTRFS_DEBUG
++
+ /*
+  * Per-filesystem runtime debugging exported via sysfs.
+  *
+@@ -1427,19 +1427,17 @@ void btrfs_sysfs_remove_mounted(struct btrfs_fs_info *fs_info)
+ 		kobject_del(fs_info->space_info_kobj);
+ 		kobject_put(fs_info->space_info_kobj);
+ 	}
+-#ifdef CONFIG_BTRFS_DEBUG
+-	if (fs_info->discard_debug_kobj) {
+-		sysfs_remove_files(fs_info->discard_debug_kobj,
+-				   discard_debug_attrs);
+-		kobject_del(fs_info->discard_debug_kobj);
+-		kobject_put(fs_info->discard_debug_kobj);
++	if (fs_info->discard_kobj) {
++		sysfs_remove_files(fs_info->discard_kobj, discard_attrs);
++		kobject_del(fs_info->discard_kobj);
++		kobject_put(fs_info->discard_kobj);
+ 	}
+ 	if (fs_info->debug_kobj) {
+ 		sysfs_remove_files(fs_info->debug_kobj, btrfs_debug_mount_attrs);
+ 		kobject_del(fs_info->debug_kobj);
+ 		kobject_put(fs_info->debug_kobj);
+ 	}
+-#endif
++
+ 	addrm_unknown_feature_attrs(fs_info, false);
+ 	sysfs_remove_group(fsid_kobj, &btrfs_feature_attr_group);
+ 	sysfs_remove_files(fsid_kobj, btrfs_attrs);
+@@ -2001,20 +1999,18 @@ int btrfs_sysfs_add_mounted(struct btrfs_fs_info *fs_info)
+ 	error = sysfs_create_files(fs_info->debug_kobj, btrfs_debug_mount_attrs);
+ 	if (error)
+ 		goto failure;
++#endif
+ 
+ 	/* Discard directory */
+-	fs_info->discard_debug_kobj = kobject_create_and_add("discard",
+-						     fs_info->debug_kobj);
+-	if (!fs_info->discard_debug_kobj) {
++	fs_info->discard_kobj = kobject_create_and_add("discard", fsid_kobj);
++	if (!fs_info->discard_kobj) {
+ 		error = -ENOMEM;
+ 		goto failure;
+ 	}
+ 
+-	error = sysfs_create_files(fs_info->discard_debug_kobj,
+-				   discard_debug_attrs);
++	error = sysfs_create_files(fs_info->discard_kobj, discard_attrs);
+ 	if (error)
+ 		goto failure;
+-#endif
+ 
+ 	error = addrm_unknown_feature_attrs(fs_info, true);
+ 	if (error)
+-- 
+2.36.1
 
-No need for an exception, during mount btrfs track ranges that have been
-trimmed and skips them when discard is requested by fstrim, so it's a
-no-op.
