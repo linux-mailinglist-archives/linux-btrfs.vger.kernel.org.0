@@ -2,106 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F2F58520B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Jul 2022 17:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0020F585209
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Jul 2022 17:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236711AbiG2PEM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Jul 2022 11:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36116 "EHLO
+        id S236747AbiG2PEO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Jul 2022 11:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236696AbiG2PEL (ORCPT
+        with ESMTP id S236756AbiG2PEN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Jul 2022 11:04:11 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5622617594
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Jul 2022 08:04:10 -0700 (PDT)
+        Fri, 29 Jul 2022 11:04:13 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C42317594
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Jul 2022 08:04:12 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 072B7344AE;
-        Fri, 29 Jul 2022 15:04:09 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 3B1BE20127;
+        Fri, 29 Jul 2022 15:04:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1659107049; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1659107051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qwH5ZUluiwR7VvjqTY2FaxqNo9W0hVOgbNjKSSZtLN8=;
-        b=mY6q/x95ACKTP7IlefMXt4c+vEzBvR6GTZlYn3we3XPyNsdYXjT+skDXsWqWr8CEy7HdyP
-        nFEw7TwvLvaRQtZQ0q2CeY1r8mEP7xigQLnUvtwyzGf2PqFu2E6GsQU/o2JjWnj53HA/V6
-        mI/RoHlSzhmJo1eI1ayaeGTIX/ofPlw=
+        bh=FcV40/KjyFxf9KMvqSVJmJIHMuo0PNmfKPtC2todH/I=;
+        b=OGBuHG8mWY9Nv2IbrM/mMsNaVA7Ahb+Khi6q9x7m9K/SKtiP6uERnAkp5MRuDd7anv89VI
+        Vdn3oOFQ4lDnR5FMhbbRoPPUFdBpdTe+SyUhR7LKv23XqKCqnYeMp28HEDAo74NONB2r4Y
+        8znfeWJxrbRdsgPAd3oOsOMku5hlQmo=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id F29CF2C141;
-        Fri, 29 Jul 2022 15:04:08 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 334E12C142;
+        Fri, 29 Jul 2022 15:04:11 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 02489DA85A; Fri, 29 Jul 2022 16:59:10 +0200 (CEST)
+        id 289C5DA85A; Fri, 29 Jul 2022 16:59:13 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 2/4] btrfs: assign checksum shash slots on init
-Date:   Fri, 29 Jul 2022 16:59:10 +0200
-Message-Id: <32716bb3c21666ba4019bca40675cc46130af149.1659106597.git.dsterba@suse.com>
+Subject: [PATCH 3/4] btrfs: add checksum implementation selection after mount
+Date:   Fri, 29 Jul 2022 16:59:13 +0200
+Message-Id: <7f9d78aa4f3248353a4c92fc7db9720823cf765c.1659106597.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1659106597.git.dsterba@suse.com>
 References: <cover.1659106597.git.dsterba@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When initializing checksum implementation on first mount, assign it to
-the proper slot based on the driver name. If it contains "generic" it's
-considered the non-accelerated one. Based on that properly set the
-BTRFS_FS_CSUM_IMPL_FAST bit, previously it could be mistakenly set as
-fast despite a different checksum (eg. sha256) with generic
-implementation.
+The sysfs file /sys/fs/btrfs/FSID/checksum shows the filesystem checksum
+and the crypto module implementing it. In the scenario when there's only
+the default generic implementation available during mount it's selected,
+even if there's an unloaded module with accelerated version.
+
+This happens with sha256 that's often built-in so the crypto API may not
+trigger loading the modules and select the fastest implementation. Such
+filesystem could be left using in the generic for the whole time.
+Remount can't fix that and full umount/mount cycle may be impossible eg.
+for a root filesystem.
+
+Allow writing strings to the sysfs checksum file that will trigger
+loading the crypto shash again and check if the found module is the
+desired one.
+
+Possible values:
+
+- default - select whatever is considered default by crypto subsystem,
+            either generic or accelerated
+- accel   - try loading an accelerated implementation (must not contain
+            "generic" in the name)
+- generic - load and select the generic implementation
+
+A typical scenario, assuming sha256 is built-in:
+
+  $ mkfs.btrfs --csum sha256
+  $ lsmod | grep sha256
+  $ mount /dev /mnt
+  $ cat ...FSID/checksum
+  sha256 (sha256-generic)
+  $ modprobe sha256
+  $ lsmod | grep sha256
+  sha256_ssse3
+  $ echo accel > ...FSID/checksum
+  sha256 (sha256-ni)
+
+The crypto shash for all slots has the same lifetime as the mount, so
+it's not possible to unload the crypto module.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/disk-io.c | 13 ++++++++++++-
- fs/btrfs/super.c   |  2 --
- 2 files changed, 12 insertions(+), 3 deletions(-)
+ fs/btrfs/sysfs.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 85 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index dc41db822322..2f5d8d2e2c48 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2536,7 +2536,18 @@ static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
- 		return PTR_ERR(csum_shash);
- 	}
- 
--	fs_info->csum_shash[CSUM_DEFAULT] = csum_shash;
-+	/*
-+	 * Find the fastest implementation available, but keep the slots
-+	 * matching the type.
-+	 */
-+	if (strstr(crypto_shash_driver_name(fs_info->csum_shash[CSUM_DEFAULT]),
-+		   "generic") != NULL) {
-+		fs_info->csum_shash[CSUM_GENERIC] = csum_shash;
-+		clear_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
-+	} else {
-+		fs_info->csum_shash[CSUM_ACCEL] = csum_shash;
-+		set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
-+	}
- 
- 	return 0;
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index caa84d398fec..0909f1da425c 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -942,7 +942,91 @@ static ssize_t btrfs_checksum_show(struct kobject *kobj,
+ 			  crypto_shash_driver_name(fs_info->csum_shash[CSUM_DEFAULT]));
  }
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 6627dd7875ee..0d306f555e09 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1816,8 +1816,6 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
- 	} else {
- 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
- 		btrfs_sb(s)->bdev_holder = fs_type;
--		if (!strstr(crc32c_impl(), "generic"))
--			set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
- 		error = btrfs_fill_super(s, fs_devices, data);
- 	}
- 	if (!error)
+ 
+-BTRFS_ATTR(, checksum, btrfs_checksum_show);
++static const char csum_impl[][8] = {
++	[CSUM_DEFAULT]	= "default",
++	[CSUM_GENERIC]	= "generic",
++	[CSUM_ACCEL]	= "accel",
++};
++
++static int select_checksum(struct btrfs_fs_info *fs_info, enum btrfs_csum_impl type)
++{
++	/* Already set */
++	if (fs_info->csum_shash[CSUM_DEFAULT] == fs_info->csum_shash[type])
++		return 0;
++
++	/* Allocate new if needed */
++	if (!fs_info->csum_shash[type]) {
++		const u16 csum_type = btrfs_super_csum_type(fs_info->super_copy);
++		const char *csum_driver = btrfs_super_csum_driver(csum_type);
++		struct crypto_shash *shash1, *tmp;
++		char full_name[32];
++		u32 mask = 0;
++
++		/*
++		 * Generic must be requested explicitly, otherwise it could
++		 * be accelerated implementation with highest priority.
++		 */
++		scnprintf(full_name, sizeof(full_name), "%s%s", csum_driver,
++			  (type == CSUM_GENERIC ? "-generic" : ""));
++
++		shash1 = crypto_alloc_shash(full_name, 0, mask);
++		if (IS_ERR(shash1))
++			return PTR_ERR(shash1);
++
++		/* Accelerated requested but generic found */
++		if (type != CSUM_GENERIC &&
++		    strstr(crypto_shash_driver_name(shash1), "generic")) {
++			crypto_free_shash(shash1);
++			return -ENOENT;
++		}
++
++		tmp = cmpxchg(&fs_info->csum_shash[type], NULL, shash1);
++		if (tmp) {
++			/* Something raced in */
++			crypto_free_shash(shash1);
++		}
++	}
++
++	/* Select it */
++	fs_info->csum_shash[CSUM_DEFAULT] = fs_info->csum_shash[type];
++	return 0;
++}
++
++static bool strmatch(const char *buffer, const char *string);
++
++static ssize_t btrfs_checksum_store(struct kobject *kobj,
++				    struct kobj_attribute *a,
++				    const char *buf, size_t len)
++{
++	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
++
++	if (!fs_info)
++		return -EPERM;
++
++	/* Pick the best available, generic or accelerated */
++	if (strmatch(buf, csum_impl[CSUM_DEFAULT])) {
++		if (fs_info->csum_shash[CSUM_ACCEL]) {
++			fs_info->csum_shash[CSUM_DEFAULT] =
++				fs_info->csum_shash[CSUM_ACCEL];
++			return len;
++		}
++		ASSERT(fs_info->csum_shash[CSUM_GENERIC]);
++		fs_info->csum_shash[CSUM_DEFAULT] = fs_info->csum_shash[CSUM_GENERIC];
++		return len;
++	}
++
++	for (int i = 1; i < CSUM_COUNT; i++) {
++		if (strmatch(buf, csum_impl[i])) {
++			int ret;
++
++			ret = select_checksum(fs_info, i);
++			return ret < 0 ? ret : len;
++		}
++	}
++
++	return -EINVAL;
++}
++BTRFS_ATTR_RW(, checksum, btrfs_checksum_show, btrfs_checksum_store);
+ 
+ static ssize_t btrfs_exclusive_operation_show(struct kobject *kobj,
+ 		struct kobj_attribute *a, char *buf)
 -- 
 2.36.1
 
