@@ -2,778 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 784E658495B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Jul 2022 03:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C82258498E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Jul 2022 04:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbiG2Bko (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Jul 2022 21:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
+        id S233841AbiG2CFk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Jul 2022 22:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233691AbiG2Bkk (ORCPT
+        with ESMTP id S233920AbiG2CFe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Jul 2022 21:40:40 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246EF1D31F
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Jul 2022 18:40:38 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D127C206B3
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Jul 2022 01:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1659058836; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EhGyl2V3g8lIlemRZ9c/s/Vti4uL3gkbHkBrBGy67Co=;
-        b=uDPqVyODfKpb/WEPNkj2VGLAEDztl++obl26mmAa/dzw6c1KhlNIZSON+EUj5LdVNr3LdX
-        IQ6gwHbR7bMpR3v7u4gBdEfMtkf0JdSLiBJJ8l23p4VA4FwSp7s96dRAvLM4KJJ/qXvn88
-        f02qjJM4VBll46dUMLAGU47M0w3Cwzw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 204A6133A6
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Jul 2022 01:40:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MFToOJM642I5QgAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Jul 2022 01:40:35 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/4] btrfs-progs: btrfstune: add the ability to convert to block group tree feature
-Date:   Fri, 29 Jul 2022 09:40:15 +0800
-Message-Id: <30977023eb4f15b31b870b68000fde882bd46558.1659058423.git.wqu@suse.com>
-X-Mailer: git-send-email 2.37.0
-In-Reply-To: <cover.1659058423.git.wqu@suse.com>
-References: <cover.1659058423.git.wqu@suse.com>
+        Thu, 28 Jul 2022 22:05:34 -0400
+Received: from out20-98.mail.aliyun.com (out20-98.mail.aliyun.com [115.124.20.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8611B2655E
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Jul 2022 19:05:32 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04451565|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.34906-0.000108119-0.650832;FP=0|0|0|0|0|0|0|0;HT=ay29a033018047190;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.OgMLQOU_1659060329;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.OgMLQOU_1659060329)
+          by smtp.aliyun-inc.com;
+          Fri, 29 Jul 2022 10:05:29 +0800
+Date:   Fri, 29 Jul 2022 10:05:31 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     dsterba@suse.cz, Stefan Roesch <shr@fb.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v6 1/4] btrfs: store chunk size in space-info struct.
+In-Reply-To: <20220729092323.995A.409509F4@e16-tech.com>
+References: <20220726170802.GF13489@twin.jikos.cz> <20220729092323.995A.409509F4@e16-tech.com>
+Message-Id: <20220729100530.32AB.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="------_62E3400F0000000032A6_MULTIPART_MIXED_"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The new '-b' option will be responsible for converting to block group
-tree compat ro feature.
+--------_62E3400F0000000032A6_MULTIPART_MIXED_
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
-The workflow looks like this for new convert:
+Hi,
 
-- Setting CHANGEING_BG_TREE flag
-  And initialize fs_info->last_converted_bg_bytenr value to (u64)-1.
+attachement file(folded-v2.patch):
 
-  Any bg with bytenr >= last_converted_bg_bytenr will have its bg item
-  update go to the new root (bg tree).
+changes:
+   move ASSERT(space_info) into btrfs_update_space_info_chunk_size();
 
-- Iterate each block group by their bytenr in descending order
-  This involves:
-  * Delete the old bg item from the old tree (extent tree)
-  * Update last_converted_bg_bytenr to the bytenr of the bg
-  * Add the new bg item into the new tree (bg tree)
-  * If we have converted a bunch of bgs, commit current transaction
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/07/29
 
-- Clear CHANGEING_BG_TREE flag
-  And set the new BLOCK_GROUP_TREE compat ro flag and commit.
+> Hi,
+> 
+> I tried to fold my fix/comment into the attachement file(folded.patch).
+> 
+> Just the following is new, others are just orig feature or refactor.
+> 
+> +	if(ctl->max_stripe_size > ctl->max_chunk_size)
+> +		ctl->max_stripe_size = ctl->max_chunk_size;
+> 
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2022/07/29
+> 
+> > On Tue, Jul 26, 2022 at 06:25:38AM +0800, Wang Yugui wrote:
+> > > > On Sat, Jul 23, 2022 at 07:49:37AM +0800, Wang Yugui wrote:
+> > > > > In this patch, the max chunk size is changed from 
+> > > > > BTRFS_MAX_DATA_CHUNK_SIZE(10G) to SZ_1G without any comment ?
+> > > > 
+> > > > The patch hasn't been merged, the change from 1G to 10G without proper
+> > > > evaluation won't happen. The sysfs knob is available for users who want
+> > > > to test it or know that the non-default value works in their
+> > > > environment.
+> > > 
+> > > this patch is in misc-next( 5.19.0-rc8 based, 5.19.0-rc7 based) now.
+> > > 
+> > > 5.19.0-rc8 based:
+> > > f6fca3917b4d btrfs: store chunk size in space-info struct
+> > >
+> > > The sysfs knob show that current default chunk size is 1G, not 10G as
+> > > older version.
+> > 
+> > So there are two things regarding chunk size, the default size and that
+> > it's settable by user (with some limitations). I was replying to the
+> > default size change while you are concerned about the max_chunk_size.
+> > 
+> > You're right that the value changed in the patch, but as I'm reading the
+> > code it should not have any effect. When user sets a value in
+> > btrfs_chunk_size_store() it's limited inside the sysfs handler to the
+> > 10G. Also there are various adjustments when the chunk size is
+> > initialized (init_alloc_chunk_ctl_policy_regular).
+> > 
+> > The only difference I can see comparing master and misc-next is in
+> > decide_stripe_size_regular()
+> > 
+> > 5259         /*
+> > 5260          * Use the number of data stripes to figure out how big this chunk is
+> > 5261          * really going to be in terms of logical address space, and compare
+> > 5262          * that answer with the max chunk size. If it's higher, we try to
+> > 5263          * reduce stripe_size.
+> > 5264          */
+> > 5265         if (ctl->stripe_size * data_stripes > ctl->max_chunk_size) {
+> > ^^^^
+> > 5266                 /*
+> > 5267                  * Reduce stripe_size, round it up to a 16MB boundary again and
+> > 5268                  * then use it, unless it ends up being even bigger than the
+> > 5269                  * previous value we had already.
+> > 5270                  */
+> > 5271                 ctl->stripe_size = min(round_up(div_u64(ctl->max_chunk_size,
+> > 5272                                                         data_stripes), SZ_16M),
+> > 5273                                        ctl->stripe_size);
+> > 5274         }
+> > 
+> > Here it could lead to a different stripe_size when max_chunk_size would
+> > be 1G vs 10G, though the other adjustments could change the upper value.
+> 
 
-And since we're doing the convert in multiple transactions, we also need
-to resume from last interrupted convert.
 
-In that case, we just grab the last unconverted bg, and start from it.
+--------_62E3400F0000000032A6_MULTIPART_MIXED_
+Content-Type: application/octet-stream;
+ name="folded-v2.patch"
+Content-Disposition: attachment;
+ filename="folded-v2.patch"
+Content-Transfer-Encoding: base64
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- Documentation/btrfstune.rst |   5 +
- btrfstune.c                 | 139 +++++++++++++++++++-
- kernel-shared/ctree.c       |   8 ++
- kernel-shared/ctree.h       |  20 +++
- kernel-shared/disk-io.c     |  32 +++--
- kernel-shared/disk-io.h     |   3 +
- kernel-shared/extent-tree.c | 247 ++++++++++++++++++++++++++++++++++--
- 7 files changed, 427 insertions(+), 27 deletions(-)
-
-diff --git a/Documentation/btrfstune.rst b/Documentation/btrfstune.rst
-index 47caccc647b2..01c59d6dbf3b 100644
---- a/Documentation/btrfstune.rst
-+++ b/Documentation/btrfstune.rst
-@@ -24,6 +24,11 @@ means.  Please refer to the *FILESYSTEM FEATURES* in ``btrfs(5)``.
- OPTIONS
- -------
- 
-+-b
-+        (since kernel 6.0)
-+        Enable block group tree feature (greatly reduce mount time),
-+        enabled by mkfs feature *block-group-tree*.
-+
- -f
-         Allow dangerous changes, e.g. clear the seeding flag or change fsid.
-         Make sure that you are aware of the dangers.
-diff --git a/btrfstune.c b/btrfstune.c
-index d1a1877ee45c..7ffd8f6148f9 100644
---- a/btrfstune.c
-+++ b/btrfstune.c
-@@ -775,12 +775,130 @@ out:
- 	return ret;
- }
- 
-+/* After this many block groups we need to commit transaction. */
-+#define BLOCK_GROUP_BATCH	64
-+
-+static int convert_to_bg_tree(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_super_block *sb = fs_info->super_copy;
-+	struct btrfs_trans_handle *trans;
-+	struct cache_extent *ce;
-+	int converted_bgs = 0;
-+	int ret;
-+
-+	trans = btrfs_start_transaction(fs_info->tree_root, 2);
-+	if (IS_ERR(trans)) {
-+		ret = PTR_ERR(trans);
-+		error("failed to start transaction: %d", ret);
-+		return ret;
-+	}
-+
-+	/* We're resuming from previous run. */
-+	if (btrfs_super_flags(sb) & BTRFS_SUPER_FLAG_CHANGING_BG_TREE)
-+		goto iterate_bgs;
-+
-+	ret = btrfs_create_root(trans, fs_info,
-+				BTRFS_BLOCK_GROUP_TREE_OBJECTID);
-+	if (ret < 0) {
-+		error("failed to create block group root: %d", ret);
-+		goto error;
-+	}
-+	btrfs_set_super_flags(sb,
-+			btrfs_super_flags(sb) |
-+			BTRFS_SUPER_FLAG_CHANGING_BG_TREE);
-+	fs_info->last_converted_bg_bytenr = (u64)-1;
-+
-+	/* Now commit the transaction to make above changes to reach disks. */
-+	ret = btrfs_commit_transaction(trans, fs_info->tree_root);
-+	if (ret < 0) {
-+		error("failed to commit transaction for the new bg root: %d",
-+		      ret);
-+		goto error;
-+	}
-+	trans = btrfs_start_transaction(fs_info->tree_root, 2);
-+	if (IS_ERR(trans)) {
-+		ret = PTR_ERR(trans);
-+		error("failed to start transaction: %d", ret);
-+		return ret;
-+	}
-+
-+iterate_bgs:
-+	if (fs_info->last_converted_bg_bytenr == (u64)-1) {
-+		ce = last_cache_extent(&fs_info->mapping_tree.cache_tree);
-+	} else {
-+		ce = search_cache_extent(&fs_info->mapping_tree.cache_tree,
-+					 fs_info->last_converted_bg_bytenr);
-+		if (!ce) {
-+			error("failed to find block group for bytenr %llu",
-+			      fs_info->last_converted_bg_bytenr);
-+			ret = -ENOENT;
-+			goto error;
-+		}
-+		ce = prev_cache_extent(ce);
-+		if (!ce) {
-+			error("no more block group before bytenr %llu",
-+			      fs_info->last_converted_bg_bytenr);
-+			ret = -ENOENT;
-+			goto error;
-+		}
-+	}
-+
-+	/* Now convert each block */
-+	while (ce) {
-+		struct cache_extent *prev = prev_cache_extent(ce);
-+		u64 bytenr = ce->start;
-+
-+		ret = btrfs_convert_one_bg(trans, bytenr);
-+		if (ret < 0)
-+			goto error;
-+		converted_bgs++;
-+		ce = prev;
-+
-+		if (converted_bgs % BLOCK_GROUP_BATCH == 0) {
-+			ret = btrfs_commit_transaction(trans,
-+							fs_info->tree_root);
-+			if (ret < 0) {
-+				error("failed to commit transaction: %d", ret);
-+				return ret;
-+			}
-+			trans = btrfs_start_transaction(fs_info->tree_root, 2);
-+			if (IS_ERR(trans)) {
-+				ret = PTR_ERR(trans);
-+				error("failed to start transaction: %d", ret);
-+				return ret;
-+			}
-+		}
-+	}
-+	/*
-+	 * All bgs converted, remove the CHANGING_BG flag and set the compat ro
-+	 * flag.
-+	 */
-+	fs_info->last_converted_bg_bytenr = 0;
-+	btrfs_set_super_flags(sb,
-+		btrfs_super_flags(sb) &
-+		~BTRFS_SUPER_FLAG_CHANGING_BG_TREE);
-+	btrfs_set_super_compat_ro_flags(sb,
-+			btrfs_super_compat_ro_flags(sb) |
-+			BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE);
-+	ret = btrfs_commit_transaction(trans, fs_info->tree_root);
-+	if (ret < 0) {
-+		error("faield to commit the final transaction: %d", ret);
-+		return ret;
-+	}
-+	printf("Converted the filesystem to block group tree feature\n");
-+	return 0;
-+error:
-+	btrfs_abort_transaction(trans, ret);
-+	return ret;
-+}
-+
- static void print_usage(void)
- {
- 	printf("usage: btrfstune [options] device\n");
- 	printf("Tune settings of filesystem features on an unmounted device\n\n");
- 	printf("Options:\n");
- 	printf("  change feature status:\n");
-+	printf("\t-b          enable block group tree (mkfs: block-group-tree, for less mount time)\n");
- 	printf("\t-r          enable extended inode refs (mkfs: extref, for hardlink limits)\n");
- 	printf("\t-x          enable skinny metadata extent refs (mkfs: skinny-metadata)\n");
- 	printf("\t-n          enable no-holes feature (mkfs: no-holes, more efficient sparse file representation)\n");
-@@ -811,6 +929,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- 	u64 seeding_value = 0;
- 	int random_fsid = 0;
- 	int change_metadata_uuid = 0;
-+	bool to_bg_tree = false;
- 	int csum_type = -1;
- 	char *new_fsid_str = NULL;
- 	int ret;
-@@ -826,11 +945,14 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- #endif
- 			{ NULL, 0, NULL, 0 }
- 		};
--		int c = getopt_long(argc, argv, "S:rxfuU:nmM:", long_options, NULL);
-+		int c = getopt_long(argc, argv, "S:rxfuU:nmM:b", long_options, NULL);
- 
- 		if (c < 0)
- 			break;
- 		switch(c) {
-+		case 'b':
-+			to_bg_tree = true;
-+			break;
- 		case 'S':
- 			seeding_flag = 1;
- 			seeding_value = arg_strtou64(optarg);
-@@ -890,7 +1012,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- 		return 1;
- 	}
- 	if (!super_flags && !seeding_flag && !(random_fsid || new_fsid_str) &&
--	    !change_metadata_uuid && csum_type == -1) {
-+	    !change_metadata_uuid && csum_type == -1 && !to_bg_tree) {
- 		error("at least one option should be specified");
- 		print_usage();
- 		return 1;
-@@ -936,6 +1058,19 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- 		return 1;
- 	}
- 
-+	if (to_bg_tree) {
-+		if (btrfs_fs_compat_ro(root->fs_info, BLOCK_GROUP_TREE)) {
-+			error("the filesystem already has block group tree feature");
-+			ret = 1;
-+			goto out;
-+		}
-+		ret = convert_to_bg_tree(root->fs_info);
-+		if (ret < 0) {
-+			error("failed to convert the filesystem to block group tree feature");
-+			goto out;
-+		}
-+		goto out;
-+	}
- 	if (seeding_flag) {
- 		if (btrfs_fs_incompat(root->fs_info, METADATA_UUID)) {
- 			fprintf(stderr, "SEED flag cannot be changed on a metadata-uuid changed fs\n");
-diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-index 2707e0e64f31..834dcf412e11 100644
---- a/kernel-shared/ctree.c
-+++ b/kernel-shared/ctree.c
-@@ -267,6 +267,14 @@ int btrfs_create_root(struct btrfs_trans_handle *trans,
- 		fs_info->quota_root = new_root;
- 		fs_info->quota_enabled = 1;
- 		break;
-+	case BTRFS_BLOCK_GROUP_TREE_OBJECTID:
-+		if (fs_info->block_group_root) {
-+			error("bg root already exists");
-+			ret = -EEXIST;
-+			goto free;
-+		}
-+		fs_info->block_group_root = new_root;
-+		break;
- 	/*
- 	 * Essential trees can't be created by this function, yet.
- 	 * As we expect such skeleton exists, or a lot of functions like
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index d8909b3fdf20..d9ec945690d6 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -324,6 +324,13 @@ static inline unsigned long btrfs_chunk_item_size(int num_stripes)
- #define BTRFS_SUPER_FLAG_CHANGING_FSID_V2	(1ULL << 36)
- #define BTRFS_SUPER_FLAG_CHANGING_CSUM		(1ULL << 37)
- 
-+/*
-+ * The fs is undergoing block group tree feature change.
-+ * If no BLOCK_GROUP_TREE compat ro flag, it's changing from regular
-+ * bg item in extent tree to new bg tree.
-+ */
-+#define BTRFS_SUPER_FLAG_CHANGING_BG_TREE	(1ULL << 38)
-+
- #define BTRFS_BACKREF_REV_MAX		256
- #define BTRFS_BACKREF_REV_SHIFT		56
- #define BTRFS_BACKREF_REV_MASK		(((u64)BTRFS_BACKREF_REV_MAX - 1) << \
-@@ -1264,6 +1271,18 @@ struct btrfs_fs_info {
- 	struct cache_tree *fsck_extent_cache;
- 	struct cache_tree *corrupt_blocks;
- 
-+	/*
-+	 * For converting to/from bg tree feature, this records the bytenr
-+	 * of the last processed block group item.
-+	 *
-+	 * Any new block group item after this bytenr is using the target
-+	 * block group item format. (e.g. if converting to bg tree, bg item
-+	 * after this bytenr should go into block group tree).
-+	 *
-+	 * Thus the number should decrease as our convert progress goes.
-+	 */
-+	u64 last_converted_bg_bytenr;
-+
- 	/* Cached block sizes */
- 	u32 nodesize;
- 	u32 sectorsize;
-@@ -2665,6 +2684,7 @@ int exclude_super_stripes(struct btrfs_fs_info *fs_info,
- u64 add_new_free_space(struct btrfs_block_group *block_group,
- 		       struct btrfs_fs_info *info, u64 start, u64 end);
- u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset);
-+int btrfs_convert_one_bg(struct btrfs_trans_handle *trans, u64 bytenr);
- 
- /* ctree.c */
- int btrfs_comp_cpu_keys(const struct btrfs_key *k1, const struct btrfs_key *k2);
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index 6eeb5ecd1d59..58030ebf16cd 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -562,9 +562,9 @@ err:
- 	return -EIO;
- }
- 
--static int find_and_setup_root(struct btrfs_root *tree_root,
--			       struct btrfs_fs_info *fs_info,
--			       u64 objectid, struct btrfs_root *root)
-+int btrfs_find_and_setup_root(struct btrfs_root *tree_root,
-+			      struct btrfs_fs_info *fs_info,
-+			      u64 objectid, struct btrfs_root *root)
- {
- 	int ret;
- 
-@@ -644,7 +644,7 @@ struct btrfs_root *btrfs_read_fs_root_no_cache(struct btrfs_fs_info *fs_info,
- 	if (!root)
- 		return ERR_PTR(-ENOMEM);
- 	if (location->offset == (u64)-1) {
--		ret = find_and_setup_root(tree_root, fs_info,
-+		ret = btrfs_find_and_setup_root(tree_root, fs_info,
- 					  location->objectid, root);
- 		if (ret) {
- 			free(root);
-@@ -1203,7 +1203,9 @@ static int load_important_roots(struct btrfs_fs_info *fs_info,
- 		backup = sb->super_roots + index;
- 	}
- 
--	if (!btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE)) {
-+	if (!btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE) &&
-+	    !(btrfs_super_flags(fs_info->super_copy) &
-+	      BTRFS_SUPER_FLAG_CHANGING_BG_TREE)) {
- 		free(fs_info->block_group_root);
- 		fs_info->block_group_root = NULL;
- 		goto tree_root;
-@@ -1256,8 +1258,9 @@ int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
- 	if (ret)
- 		return ret;
- 
--	if (btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE)) {
--		ret = find_and_setup_root(root, fs_info,
-+	if (btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE) ||
-+	    btrfs_super_flags(sb) & BTRFS_SUPER_FLAG_CHANGING_BG_TREE) {
-+		ret = btrfs_find_and_setup_root(root, fs_info,
- 				BTRFS_BLOCK_GROUP_TREE_OBJECTID,
- 				fs_info->block_group_root);
- 		if (ret) {
-@@ -1267,8 +1270,9 @@ int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
- 		fs_info->block_group_root->track_dirty = 1;
- 	}
- 
--	ret = find_and_setup_root(root, fs_info, BTRFS_DEV_TREE_OBJECTID,
--				  fs_info->dev_root);
-+	ret = btrfs_find_and_setup_root(root, fs_info,
-+					BTRFS_DEV_TREE_OBJECTID,
-+					fs_info->dev_root);
- 	if (ret) {
- 		printk("Couldn't setup device tree\n");
- 		return -EIO;
-@@ -1276,8 +1280,9 @@ int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
- 	fs_info->dev_root->track_dirty = 1;
- 
- 
--	ret = find_and_setup_root(root, fs_info, BTRFS_UUID_TREE_OBJECTID,
--				  fs_info->uuid_root);
-+	ret = btrfs_find_and_setup_root(root, fs_info,
-+					BTRFS_UUID_TREE_OBJECTID,
-+					fs_info->uuid_root);
- 	if (ret) {
- 		free(fs_info->uuid_root);
- 		fs_info->uuid_root = NULL;
-@@ -1285,8 +1290,9 @@ int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
- 		fs_info->uuid_root->track_dirty = 1;
- 	}
- 
--	ret = find_and_setup_root(root, fs_info, BTRFS_QUOTA_TREE_OBJECTID,
--				  fs_info->quota_root);
-+	ret = btrfs_find_and_setup_root(root, fs_info,
-+					BTRFS_QUOTA_TREE_OBJECTID,
-+					fs_info->quota_root);
- 	if (ret) {
- 		free(fs_info->quota_root);
- 		fs_info->quota_root = NULL;
-diff --git a/kernel-shared/disk-io.h b/kernel-shared/disk-io.h
-index 6c8eaa2bd13d..2424060d705f 100644
---- a/kernel-shared/disk-io.h
-+++ b/kernel-shared/disk-io.h
-@@ -228,6 +228,9 @@ struct btrfs_root *btrfs_global_root(struct btrfs_fs_info *fs_info,
- u64 btrfs_global_root_id(struct btrfs_fs_info *fs_info, u64 bytenr);
- int btrfs_global_root_insert(struct btrfs_fs_info *fs_info,
- 			     struct btrfs_root *root);
-+int btrfs_find_and_setup_root(struct btrfs_root *tree_root,
-+			      struct btrfs_fs_info *fs_info,
-+			      u64 objectid, struct btrfs_root *root);
- 
- static inline struct btrfs_root *btrfs_block_group_root(
- 						struct btrfs_fs_info *fs_info)
-diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-index 5807b11a7b1a..4e8cf635b7e8 100644
---- a/kernel-shared/extent-tree.c
-+++ b/kernel-shared/extent-tree.c
-@@ -1546,6 +1546,15 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
- 	struct extent_buffer *leaf;
- 	struct btrfs_key key;
- 
-+	/*
-+	 * If we're doing convert and the bg is beyond our last converted bg,
-+	 * it should go to the new root.
-+	 */
-+	if (btrfs_super_flags(fs_info->super_copy) &
-+	    BTRFS_SUPER_FLAG_CHANGING_BG_TREE &&
-+	    cache->start >= fs_info->last_converted_bg_bytenr)
-+		root = fs_info->block_group_root;
-+
- 	key.objectid = cache->start;
- 	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
- 	key.offset = cache->length;
-@@ -2726,33 +2735,99 @@ static int read_one_block_group(struct btrfs_fs_info *fs_info,
- 	return 0;
- }
- 
--int btrfs_read_block_groups(struct btrfs_fs_info *fs_info)
-+static int get_last_converted_bg(struct btrfs_fs_info *fs_info)
- {
--	struct btrfs_path path;
--	struct btrfs_root *root;
-+	struct btrfs_root *bg_root = fs_info->block_group_root;
-+	struct btrfs_path path = {0};
-+	struct btrfs_key key = {0};
- 	int ret;
-+
-+	/* Load the first bg in bg tree, that would be our last converted bg. */
-+	ret = btrfs_search_slot(NULL, bg_root, &key, &path, 0, 0);
-+	if (ret < 0)
-+		return ret;
-+	ASSERT(ret > 0);
-+	/* We should always be at the slot 0 of the first leaf. */
-+	ASSERT(path.slots[0] == 0);
-+
-+	/* Empty bg tree, no converted bg item at all. */
-+	if (btrfs_header_nritems(path.nodes[0]) == 0) {
-+		fs_info->last_converted_bg_bytenr = (u64)-1;
-+		ret = 0;
-+		goto out;
-+	}
-+	btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
-+	ASSERT(key.type == BTRFS_BLOCK_GROUP_ITEM_KEY);
-+	fs_info->last_converted_bg_bytenr = key.objectid;
-+
-+out:
-+	btrfs_release_path(&path);
-+	return ret;
-+}
-+
-+/*
-+ * Helper to read old block groups items from specified root.
-+ *
-+ * The difference between this and read_block_groups_from_root() is,
-+ * we will exit if we have already read the last bg in the old root.
-+ *
-+ * This is to avoid wasting time finding bg items which should be in the
-+ * new root.
-+ */
-+static int read_old_block_groups_from_root(struct btrfs_fs_info *fs_info,
-+					   struct btrfs_root *root)
-+{
-+	struct btrfs_path path = {0};
- 	struct btrfs_key key;
-+	struct cache_extent *ce;
-+	/* The last block group bytenr in the old root. */
-+	u64 last_bg_in_old_root;
-+	int ret;
-+
-+	if (fs_info->last_converted_bg_bytenr != (u64)-1) {
-+		/*
-+		 * We know the last converted bg in the other tree, load the chunk
-+		 * before that last converted as our last bg in the tree.
-+		 */
-+		ce = search_cache_extent(&fs_info->mapping_tree.cache_tree,
-+			         fs_info->last_converted_bg_bytenr);
-+		if (!ce || ce->start != fs_info->last_converted_bg_bytenr) {
-+			error("no chunk found for bytenr %llu",
-+			      fs_info->last_converted_bg_bytenr);
-+			return -ENOENT;
-+		}
-+		ce = prev_cache_extent(ce);
-+		/*
-+		 * We should have previous unconverted chunk, or we have
-+		 * already finished the convert.
-+		 */
-+		ASSERT(ce);
-+
-+		last_bg_in_old_root = ce->start;
-+	} else {
-+		last_bg_in_old_root = (u64)-1;
-+	}
- 
--	root = btrfs_block_group_root(fs_info);
--	key.objectid = 0;
--	key.offset = 0;
- 	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
--	btrfs_init_path(&path);
- 
--	while(1) {
-+	while (true) {
- 		ret = find_first_block_group(root, &path, &key);
- 		if (ret > 0) {
- 			ret = 0;
--			goto error;
-+			goto out;
- 		}
- 		if (ret != 0) {
--			goto error;
-+			goto out;
- 		}
- 		btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
- 
- 		ret = read_one_block_group(fs_info, &path);
- 		if (ret < 0 && ret != -ENOENT)
--			goto error;
-+			goto out;
-+
-+		/* We have reached last bg in the old root, no need to continue */
-+		if (key.objectid >= last_bg_in_old_root)
-+			break;
- 
- 		if (key.offset == 0)
- 			key.objectid++;
-@@ -2762,11 +2837,91 @@ int btrfs_read_block_groups(struct btrfs_fs_info *fs_info)
- 		btrfs_release_path(&path);
- 	}
- 	ret = 0;
--error:
-+out:
-+	btrfs_release_path(&path);
-+	return ret;
-+}
-+
-+/* Helper to read all block groups items from specified root. */
-+static int read_block_groups_from_root(struct btrfs_fs_info *fs_info,
-+					   struct btrfs_root *root)
-+{
-+	struct btrfs_path path = {0};
-+	struct btrfs_key key = {0};
-+	int ret;
-+
-+	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
-+
-+	while (true) {
-+		ret = find_first_block_group(root, &path, &key);
-+		if (ret > 0) {
-+			ret = 0;
-+			goto out;
-+		}
-+		if (ret != 0) {
-+			goto out;
-+		}
-+		btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
-+
-+		ret = read_one_block_group(fs_info, &path);
-+		if (ret < 0 && ret != -ENOENT)
-+			goto out;
-+
-+		if (key.offset == 0)
-+			key.objectid++;
-+		else
-+			key.objectid = key.objectid + key.offset;
-+		key.offset = 0;
-+		btrfs_release_path(&path);
-+	}
-+	ret = 0;
-+out:
- 	btrfs_release_path(&path);
- 	return ret;
- }
- 
-+static int read_converting_block_groups(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_root *old_root = btrfs_extent_root(fs_info, 0);
-+	struct btrfs_root *new_root = btrfs_block_group_root(fs_info);
-+	int ret;
-+
-+	/* Currently we only support converting to bg tree feature. */
-+	ASSERT(!btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE));
-+
-+	ret = get_last_converted_bg(fs_info);
-+	if (ret < 0) {
-+		error("failed to load the last converted bg: %d", ret);
-+		return ret;
-+	}
-+
-+	ret = read_old_block_groups_from_root(fs_info, old_root);
-+	if (ret < 0) {
-+		error("failed to load block groups from the old root: %d", ret);
-+		return ret;
-+	}
-+
-+	/* For block group items in the new tree, just read them all. */
-+	ret = read_block_groups_from_root(fs_info, new_root);
-+	if (ret < 0) {
-+		error("failed to load block groups from the new root: %d", ret);
-+		return ret;
-+	}
-+	return ret;
-+}
-+
-+int btrfs_read_block_groups(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_root *root;
-+
-+	if (btrfs_super_flags(fs_info->super_copy) &
-+	    BTRFS_SUPER_FLAG_CHANGING_BG_TREE)
-+		return read_converting_block_groups(fs_info);
-+
-+	root = btrfs_block_group_root(fs_info);
-+	return read_block_groups_from_root(fs_info, root);
-+}
-+
- /*
-  * For extent tree v2 we use the block_group_item->chunk_offset to point at our
-  * global root id.  For v1 it's always set to BTRFS_FIRST_CHUNK_TREE_OBJECTID.
-@@ -2834,6 +2989,15 @@ static int insert_block_group_item(struct btrfs_trans_handle *trans,
- 	key.offset = block_group->length;
- 
- 	root = btrfs_block_group_root(fs_info);
-+	/*
-+	 * If we're doing convert and the bg is beyond our last converted bg,
-+	 * it should go to the new root.
-+	 */
-+	if (btrfs_super_flags(fs_info->super_copy) &
-+	    BTRFS_SUPER_FLAG_CHANGING_BG_TREE &&
-+	    block_group->start >= fs_info->last_converted_bg_bytenr)
-+		root = fs_info->block_group_root;
-+
- 	return btrfs_insert_item(trans, root, &key, &bgi, sizeof(bgi));
- }
- 
-@@ -2958,6 +3122,15 @@ static int remove_block_group_item(struct btrfs_trans_handle *trans,
- 	key.offset = block_group->length;
- 	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
- 
-+	/*
-+	 * If we're doing convert and the bg is beyond our last converted bg,
-+	 * it should go to the new root.
-+	 */
-+	if (btrfs_super_flags(fs_info->super_copy) &
-+	    BTRFS_SUPER_FLAG_CHANGING_BG_TREE &&
-+	    block_group->start >= fs_info->last_converted_bg_bytenr)
-+		root = fs_info->block_group_root;
-+
- 	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
- 	if (ret > 0)
- 		ret = -ENOENT;
-@@ -3849,3 +4022,53 @@ int btrfs_run_delayed_refs(struct btrfs_trans_handle *trans, unsigned long nr)
- 
- 	return 0;
- }
-+
-+int btrfs_convert_one_bg(struct btrfs_trans_handle *trans, u64 bytenr)
-+{
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_root *new_root = fs_info->block_group_root;
-+	struct btrfs_root *old_root = btrfs_extent_root(fs_info, 0);
-+	struct btrfs_block_group *bg;
-+	struct btrfs_path path = {0};
-+	int ret;
-+
-+	ASSERT(new_root);
-+	ASSERT(old_root);
-+	ASSERT(btrfs_super_flags(fs_info->super_copy) &
-+	       BTRFS_SUPER_FLAG_CHANGING_BG_TREE);
-+	/*
-+	 * Only support converting to bg tree yet, thus the feature should not
-+	 * be set.
-+	 */
-+	ASSERT(!btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE));
-+
-+	bg = btrfs_lookup_block_group(fs_info, bytenr);
-+	if (!bg) {
-+		error("failed to find block group for bytenr %llu", bytenr);
-+		return -ENOENT;
-+	}
-+	/*
-+	 * Delete the block group item from the old tree first.
-+	 * As we haven't yet update last_converted_bg_bytenr, the delete will
-+	 * be done in the old tree.
-+	 */
-+	ret = remove_block_group_item(trans, &path, bg);
-+	btrfs_release_path(&path);
-+	if (ret < 0) {
-+		error("failed to delete block group item from the old root: %d",
-+		      ret);
-+		return ret;
-+	}
-+	fs_info->last_converted_bg_bytenr = bytenr;
-+	/*
-+	 * Now last_converted_bg_bytenr is updated, the insert will happen for
-+	 * the new root.
-+	 */
-+	ret = insert_block_group_item(trans, bg);
-+	if (ret < 0) {
-+		error("failed to insert block group item into the new root: %d",
-+		      ret);
-+		return ret;
-+	}
-+	return ret;
-+}
--- 
-2.37.0
+ZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL3NwYWNlLWluZm8uYyBiL2ZzL2J0cmZzL3NwYWNlLWluZm8u
+YwppbmRleCAyY2Y4ZGExMTE2ZWIuLmJmZTg4NGYxMzkzNCAxMDA2NDQKLS0tIGEvZnMvYnRyZnMv
+c3BhY2UtaW5mby5jCisrKyBiL2ZzL2J0cmZzL3NwYWNlLWluZm8uYwpAQCAtMTg3LDYgKzE4Nywx
+NiBAQCB2b2lkIGJ0cmZzX2NsZWFyX3NwYWNlX2luZm9fZnVsbChzdHJ1Y3QgYnRyZnNfZnNfaW5m
+byAqaW5mbykKICAqLwogI2RlZmluZSBCVFJGU19ERUZBVUxUX1pPTkVEX1JFQ0xBSU1fVEhSRVNI
+CQkJKDc1KQogCisvKgorICogVXBkYXRlIGRlZmF1bHQgY2h1bmsgc2l6ZS4KKyAqLwordm9pZCBi
+dHJmc191cGRhdGVfc3BhY2VfaW5mb19jaHVua19zaXplKHN0cnVjdCBidHJmc19zcGFjZV9pbmZv
+ICpzcGFjZV9pbmZvLAorCQkJCQl1NjQgY2h1bmtfc2l6ZSkKK3sKKwlBU1NFUlQoc3BhY2VfaW5m
+byk7CisJV1JJVEVfT05DRShzcGFjZV9pbmZvLT5jaHVua19zaXplLCBjaHVua19zaXplKTsKK30K
+Kwogc3RhdGljIGludCBjcmVhdGVfc3BhY2VfaW5mbyhzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqaW5m
+bywgdTY0IGZsYWdzKQogewogCmRpZmYgLS1naXQgYS9mcy9idHJmcy9zcGFjZS1pbmZvLmggYi9m
+cy9idHJmcy9zcGFjZS1pbmZvLmgKaW5kZXggYzA5NjY5NTU5OGMxLi5lN2RlMjRhNTI5Y2YgMTAw
+NjQ0Ci0tLSBhL2ZzL2J0cmZzL3NwYWNlLWluZm8uaAorKysgYi9mcy9idHJmcy9zcGFjZS1pbmZv
+LmgKQEAgLTI1LDYgKzI1LDggQEAgc3RydWN0IGJ0cmZzX3NwYWNlX2luZm8gewogCXU2NCBtYXhf
+ZXh0ZW50X3NpemU7CS8qIFRoaXMgd2lsbCBob2xkIHRoZSBtYXhpbXVtIGV4dGVudCBzaXplIG9m
+CiAJCQkJICAgdGhlIHNwYWNlIGluZm8gaWYgd2UgaGFkIGFuIEVOT1NQQyBpbiB0aGUKIAkJCQkg
+ICBhbGxvY2F0b3IuICovCisJLyogQ2h1bmsgc2l6ZSBpbiBieXRlcyAqLworCXU2NCBjaHVua19z
+aXplOwogCiAJLyoKIAkgKiBPbmNlIGEgYmxvY2sgZ3JvdXAgZHJvcHMgYmVsb3cgdGhpcyB0aHJl
+c2hvbGQgKHBlcmNlbnRzKSB3ZSdsbApAQCAtMTIzLDYgKzEyNSw4IEBAIHZvaWQgYnRyZnNfdXBk
+YXRlX3NwYWNlX2luZm8oc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmluZm8sIHU2NCBmbGFncywKIAkJ
+CSAgICAgdTY0IHRvdGFsX2J5dGVzLCB1NjQgYnl0ZXNfdXNlZCwKIAkJCSAgICAgdTY0IGJ5dGVz
+X3JlYWRvbmx5LCB1NjQgYnl0ZXNfem9uZV91bnVzYWJsZSwKIAkJCSAgICAgc3RydWN0IGJ0cmZz
+X3NwYWNlX2luZm8gKipzcGFjZV9pbmZvKTsKK3ZvaWQgYnRyZnNfdXBkYXRlX3NwYWNlX2luZm9f
+Y2h1bmtfc2l6ZShzdHJ1Y3QgYnRyZnNfc3BhY2VfaW5mbyAqc3BhY2VfaW5mbywKKwkJCQkJdTY0
+IGNodW5rX3NpemUpOwogc3RydWN0IGJ0cmZzX3NwYWNlX2luZm8gKmJ0cmZzX2ZpbmRfc3BhY2Vf
+aW5mbyhzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqaW5mbywKIAkJCQkJICAgICAgIHU2NCBmbGFncyk7
+CiB1NjQgX19wdXJlIGJ0cmZzX3NwYWNlX2luZm9fdXNlZChzdHJ1Y3QgYnRyZnNfc3BhY2VfaW5m
+byAqc19pbmZvLApkaWZmIC0tZ2l0IGEvZnMvYnRyZnMvdm9sdW1lcy5jIGIvZnMvYnRyZnMvdm9s
+dW1lcy5jCmluZGV4IGEyYmIwOTI4ZGMwNi4uYjdiN2QyNTRlY2YwIDEwMDY0NAotLS0gYS9mcy9i
+dHJmcy92b2x1bWVzLmMKKysrIGIvZnMvYnRyZnMvdm9sdW1lcy5jCkBAIC01MDcyLDYgKzUwNzIs
+NyBAQCBzdGF0aWMgdm9pZCBpbml0X2FsbG9jX2NodW5rX2N0bF9wb2xpY3lfcmVndWxhcigKIAkJ
+CQlzdHJ1Y3QgYWxsb2NfY2h1bmtfY3RsICpjdGwpCiB7CiAJdTY0IHR5cGUgPSBjdGwtPnR5cGU7
+CisJc3RydWN0IGJ0cmZzX3NwYWNlX2luZm8gKnNwYWNlX2luZm87CiAKIAlpZiAodHlwZSAmIEJU
+UkZTX0JMT0NLX0dST1VQX0RBVEEpIHsKIAkJY3RsLT5tYXhfc3RyaXBlX3NpemUgPSBTWl8xRzsK
+QEAgLTUwOTUsNyArNTA5NiwxNiBAQCBzdGF0aWMgdm9pZCBpbml0X2FsbG9jX2NodW5rX2N0bF9w
+b2xpY3lfcmVndWxhcigKIAkvKiBXZSBkb24ndCB3YW50IGEgY2h1bmsgbGFyZ2VyIHRoYW4gMTAl
+IG9mIHdyaXRhYmxlIHNwYWNlICovCiAJY3RsLT5tYXhfY2h1bmtfc2l6ZSA9IG1pbihkaXZfZmFj
+dG9yKGZzX2RldmljZXMtPnRvdGFsX3J3X2J5dGVzLCAxKSwKIAkJCQkgIGN0bC0+bWF4X2NodW5r
+X3NpemUpOworCWlmKGN0bC0+bWF4X3N0cmlwZV9zaXplID4gY3RsLT5tYXhfY2h1bmtfc2l6ZSkK
+KwkJY3RsLT5tYXhfc3RyaXBlX3NpemUgPSBjdGwtPm1heF9jaHVua19zaXplOworCiAJY3RsLT5k
+ZXZfZXh0ZW50X21pbiA9IEJUUkZTX1NUUklQRV9MRU4gKiBjdGwtPmRldl9zdHJpcGVzOworCisJ
+aWYgKGN0bC0+dHlwZSAmIEJUUkZTX0JMT0NLX0dST1VQX1NZU1RFTSkKKwkJY3RsLT5kZXZzX21h
+eCA9IG1pbl90KGludCwgY3RsLT5kZXZzX21heCwgQlRSRlNfTUFYX0RFVlNfU1lTX0NIVU5LKTsK
+KworCXNwYWNlX2luZm8gPSBidHJmc19maW5kX3NwYWNlX2luZm8oZnNfZGV2aWNlcy0+ZnNfaW5m
+bywgY3RsLT50eXBlKTsKKwlidHJmc191cGRhdGVfc3BhY2VfaW5mb19jaHVua19zaXplKHNwYWNl
+X2luZm8sIGN0bC0+bWF4X2NodW5rX3NpemUpOwogfQogCiBzdGF0aWMgdm9pZCBpbml0X2FsbG9j
+X2NodW5rX2N0bF9wb2xpY3lfem9uZWQoCkBAIC01MTA4LDYgKzUxMTksNyBAQCBzdGF0aWMgdm9p
+ZCBpbml0X2FsbG9jX2NodW5rX2N0bF9wb2xpY3lfem9uZWQoCiAJaW50IG1pbl9kYXRhX3N0cmlw
+ZXMgPSAobWluX251bV9zdHJpcGVzIC0gY3RsLT5ucGFyaXR5KSAvIGN0bC0+bmNvcGllczsKIAl1
+NjQgbWluX2NodW5rX3NpemUgPSBtaW5fZGF0YV9zdHJpcGVzICogem9uZV9zaXplOwogCXU2NCB0
+eXBlID0gY3RsLT50eXBlOworCXN0cnVjdCBidHJmc19zcGFjZV9pbmZvICpzcGFjZV9pbmZvOwog
+CiAJY3RsLT5tYXhfc3RyaXBlX3NpemUgPSB6b25lX3NpemU7CiAJaWYgKHR5cGUgJiBCVFJGU19C
+TE9DS19HUk9VUF9EQVRBKSB7CkBAIC01MTI5LDYgKzUxNDEsOSBAQCBzdGF0aWMgdm9pZCBpbml0
+X2FsbG9jX2NodW5rX2N0bF9wb2xpY3lfem9uZWQoCiAJCSAgICBtaW5fY2h1bmtfc2l6ZSk7CiAJ
+Y3RsLT5tYXhfY2h1bmtfc2l6ZSA9IG1pbihsaW1pdCwgY3RsLT5tYXhfY2h1bmtfc2l6ZSk7CiAJ
+Y3RsLT5kZXZfZXh0ZW50X21pbiA9IHpvbmVfc2l6ZSAqIGN0bC0+ZGV2X3N0cmlwZXM7CisKKwlz
+cGFjZV9pbmZvID0gYnRyZnNfZmluZF9zcGFjZV9pbmZvKGZzX2RldmljZXMtPmZzX2luZm8sIGN0
+bC0+dHlwZSk7CisJYnRyZnNfdXBkYXRlX3NwYWNlX2luZm9fY2h1bmtfc2l6ZShzcGFjZV9pbmZv
+LCBjdGwtPm1heF9jaHVua19zaXplKTsKIH0KIAogc3RhdGljIHZvaWQgaW5pdF9hbGxvY19jaHVu
+a19jdGwoc3RydWN0IGJ0cmZzX2ZzX2RldmljZXMgKmZzX2RldmljZXMsCg==
+--------_62E3400F0000000032A6_MULTIPART_MIXED_--
 
