@@ -2,78 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4A6585CBE
-	for <lists+linux-btrfs@lfdr.de>; Sun, 31 Jul 2022 02:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFE7585DA1
+	for <lists+linux-btrfs@lfdr.de>; Sun, 31 Jul 2022 07:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbiGaAeo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 30 Jul 2022 20:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
+        id S231181AbiGaFOL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 31 Jul 2022 01:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbiGaAem (ORCPT
+        with ESMTP id S230492AbiGaFOK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 30 Jul 2022 20:34:42 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CE462F2
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Jul 2022 17:34:42 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id i13so9743215edj.11
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Jul 2022 17:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=2ER2WW01ET2wH1WV2jGlyhputEhjwKA2tNpxchjmONE=;
-        b=dZoKSq/8YO/dCUCDemsKnPSTlJJ/+rex41/NfTqBGPu4aDu0LNafL3VzC/MhnYZqPI
-         gVN5RzTTEqK4GRqexAYOTd1wUvTKSx0KxN91v3HWZ6jXdcY6oj4gc+c+S28fgDnOA9el
-         XU5os1bRKfp0LUiAkuSSxs8cojbuPCzgjTTA4VZfsElj9VAQihmQPT4V6ofdCLclAD/9
-         oBOV2j2KHkSLLsI3cmFznocZlokSelIDBnVSk12SO6Cn/sLD1YoUDtoAHBlS5qpadK93
-         7F1KY5Wf6d6f4UbnzQSAex5Tj6DIdccc9qkmt0XhimnEKPjldLSFbIokcerAaZvYL7Lt
-         u1GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=2ER2WW01ET2wH1WV2jGlyhputEhjwKA2tNpxchjmONE=;
-        b=dttVkNp4QqoK6ax+mKg4zx+RfrvRf9SkdFfKldy3uPg4tsVLHOmhcVh6JHZO6qEcNB
-         v21CMAmGEsxIBa56ZRp4Uy7e9ROrtMGwHGF1o1p59siPeR60RWq8drgiTbzoyKpx9pHO
-         kECv5I4QTY0bBBUJi/XVeUlDmxlwvZYb1yZkoXKzRrY9q0UyFY7iOCYbAvIELU5JNiXv
-         tjmA948KdxHloPxpRbg+J3EFGE2CrMvTxvz9JqOct0gXsTGzlcTwO9q89bTSltqJgvAW
-         FhQWYPBP10kahdzZECX1486+HcdhelFxeDn15qTIU99QB9SoygF0t+naFsxMEfB0V/N7
-         KwWw==
-X-Gm-Message-State: AJIora+S9K+WzQG8409/ydjCQNsemTYSUH1e7zHlFkEolNDIoR1HYtAX
-        8myLFJafForFqelW3bB8aKFjTvbfSsBqdBBdZRQ=
-X-Google-Smtp-Source: AGRyM1vzhWGJ+WzJfulYH/NBkz+hornrxB+htalg7H0DEi/d+Kvfou2G0/b81PE7zYgezDJujc7UnF5aNKjQGjbtc0Q=
-X-Received: by 2002:a05:6402:378f:b0:43a:d3f5:79f2 with SMTP id
- et15-20020a056402378f00b0043ad3f579f2mr9553517edb.338.1659227680705; Sat, 30
- Jul 2022 17:34:40 -0700 (PDT)
+        Sun, 31 Jul 2022 01:14:10 -0400
+Received: from mail.tol.fr (mail.tol.fr [82.66.50.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1593512A8F
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Jul 2022 22:14:06 -0700 (PDT)
+Message-ID: <c2665619-1d8f-4c3c-f9b8-62bd36c0c344@couderc.eu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=couderc.eu; s=2017;
+        t=1659244443; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pOBNesG4VY6mKXZGQf9JDL+2He5NT6fYVTBIDhEEUGU=;
+        b=gt6/gsZw58SN1ub+KTV008A0hSUjndd7S3W7TtDmeXqDw6xlCdIzpkSKfKxCz49ts7IrmE
+        iDkQI/DXN5J6vF2+0fu/hZjTAoGWt939ZCiVJEZWGdHBhNIQxszxy9TCmtDaQMlLGIb11v
+        W6oVhwieWTIJfUOq+6s07Re1Eu+3DC/XJRca+gCfNuqkF59xK5UZTuEWumGzXmZU89NZKC
+        aj0xh/8/yesPxi01PALqJSF88lqEgRG98XcWFmh7CTeNdgrd/czyym4P6ZcThS6mQkuDV4
+        wLCDV6S80h90qI467iBPARBHTyfJwYu05WKTCsu1seU6aXU81eE2J3rZ4HgoSQ==
+Date:   Sun, 31 Jul 2022 07:14:02 +0200
 MIME-Version: 1.0
-Received: by 2002:aa7:d543:0:b0:43b:c4b4:6d19 with HTTP; Sat, 30 Jul 2022
- 17:34:40 -0700 (PDT)
-Reply-To: Drlisawilliams919@gmail.com
-From:   Drlisawilliams <helenaphilobrown@gmail.com>
-Date:   Sun, 31 Jul 2022 02:34:40 +0200
-Message-ID: <CADCWihX5mCWNWsOfOQ-VeqVRccNdrJh2FbuMkSL4SiTEz98QuQ@mail.gmail.com>
-Subject: Hi.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Subject: Re: How to get the lsit of subvolumes with
+ btrfs_util_create_subvolume_iterator
+Content-Language: fr
+To:     kreijack@inwind.it, linux-btrfs@vger.kernel.org
+References: <6a22d8d1-f11e-e37e-3d37-1ab28d0235eb@couderc.eu>
+ <c2e7bd2e-e317-4741-5522-d7a311f5ff70@libero.it>
+ <5d9e7395-1d8d-e1b5-5c1e-e7fe4c9b390c@couderc.eu>
+ <55ffd61a-772d-97d4-0e5d-01d8a43bacd3@inwind.it>
+From:   Pierre Couderc <pierre@couderc.eu>
+In-Reply-To: <55ffd61a-772d-97d4-0e5d-01d8a43bacd3@inwind.it>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=couderc.eu;
+        s=2017; t=1659244443; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pOBNesG4VY6mKXZGQf9JDL+2He5NT6fYVTBIDhEEUGU=;
+        b=hFoZxcvq3RqTZtbhCWIg3G82xfuHsB3rYn+SM5djg7XeOQAKmi3M/ESEpZtr20j6z4Yk/Z
+        p56qrASzjSETsWrSaijUXGfyl5paX6j14FQ9Z6dvc8ahjjLvyIxjQT/PgeuS0bydqdaEM5
+        nMEZGvACfN8dVPflfbp/JrsTxVtOGKrf4N3S0ryEeiFgKoS5diDB/4kQZYjcgpWgQM4gyf
+        DiJfdsaPwZlICPzYef9U4kk45MD03Jp9JQXqIkOyUpByOGcR0mgZtVF+Fi7ZI16yy7Ldti
+        Mp+vWM2lkXdVoc1qRppbLKchXQNssAHqk9ia3R7bvd73hOF2P3mpVPfa4pjyBg==
+ARC-Seal: i=1; s=2017; d=couderc.eu; t=1659244443; a=rsa-sha256; cv=none;
+        b=O6HjMyKnGzXp/SJh0fjLFr6ZMUFbTEThKaK3zmmvnPQWXAalHdaPmmnMRcnZMbC1utoKZ2us+tdNcNFxDOtIu8FSd/hVkIx34bXCYqUrwkMEhvyOPca/KBsawwZXXyX1KfnTYG+06uIKKigzdOIgcTx09TYGKOQeyWg0Bd5YWoemNFHmS51oVgiRQM85dDYehcQ4wNneFcedOUlgqqlJyA1Oe6aYYfYzAuidTJ3SuSnIt9sL5pxwAcEK4PCfdc/V4eFlrzS7q2SCBp3j2nlTnj9u3djKVH+nLUT0i5CWow9xqFrxBkLyfpM/zbQn+V98jFbMOx0sw6reelgw/Drdnw==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=tol smtp.mailfrom=pierre@couderc.eu
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Dear,
 
-My name is Dr Lisa Williams from the United States.I am a French and
-American nationality (dual) living in the U.S and sometimes in France
-for Work Purpose.
-
-I hope you consider my friend request. I will share some of my pics
-and more details about myself when I get your response.
-
-Thanks
-With love
-Lisa
+On 7/30/22 19:43, Goffredo Baroncelli wrote:
+> On 30/07/2022 18.29, Pierre Couderc wrote:
+>> On 7/30/22 17:38, Goffredo Baroncelli wrote:
+>>> On 30/07/2022 17.01, Pierre Couderc wrote:
+>>>> btrfs_util_create_subvolume_iterator("/",0, 0, &iter);
+>>>
+>>>
+>>> From the btrfs header "./libbtrfsutil/btrfsutil.h"
+>> Thank you, I had seen other documentations, but not this 
+>> particularly. The key is : "To list all subvolumes,
+>>
+>>   * pass %BTRFS_FS_TREE_OBJECTID (i.e., 5)."...
+>>
+>> I still do ont understand what is 
+>> BTRFS_UTIL_SUBVOLUME_ITERATOR_POST_ORDER but it does not seem to 
+>> matter...
+>>
+> It should mean first father then children instead of first children 
+> then father
+>
+>
+OK, than you !
