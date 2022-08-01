@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9169C586C66
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Aug 2022 15:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA60586C68
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Aug 2022 15:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbiHAN6C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Aug 2022 09:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51108 "EHLO
+        id S231322AbiHAN6D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Aug 2022 09:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbiHAN6A (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 Aug 2022 09:58:00 -0400
+        with ESMTP id S231640AbiHAN6B (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 Aug 2022 09:58:01 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71ACD13CF1
-        for <linux-btrfs@vger.kernel.org>; Mon,  1 Aug 2022 06:57:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5822DE8
+        for <linux-btrfs@vger.kernel.org>; Mon,  1 Aug 2022 06:58:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EC5FC6126E
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E0BB26131B
+        for <linux-btrfs@vger.kernel.org>; Mon,  1 Aug 2022 13:57:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA9D5C433D6
         for <linux-btrfs@vger.kernel.org>; Mon,  1 Aug 2022 13:57:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D77ACC433D7
-        for <linux-btrfs@vger.kernel.org>; Mon,  1 Aug 2022 13:57:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659362278;
-        bh=C5k3MavFlKdVVjILbxt9C0MpxsbVbkWmL136fxrHzQ4=;
+        s=k20201202; t=1659362279;
+        bh=djzP1n4LjsaCB08LT8QfOKNNx4Eas9PBHdRP6Bwd5iM=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=fy5PwOV+jCbu+S2qKIVGtAtvBYF1BhJntJZZ6685e7dJLpH6VIg5vuwE4chzt7nRi
-         UOE+UYyS7yhMp9sTm5N19mmgRUbwgZWaheZ995HNTV93v4LJPK/QujLgt69qolP1bk
-         35QkA7dyAFNlauV0qjr2vsWqMCqVDY/PT+jFVAe5gyzVrNyymSRL7AFK6euRjkxk+7
-         d8Um6Us5j8CKLgy9JxXN4yJQE9yF9eZr12Dtzlk0ibuvbpahjejjP6iL8+I8/HsBjN
-         w1za7pnSpQP5gAgqIW4JqPF3XhVUgJgnTZF30XporQU7tBd+af2X9343JY2mSnXtCe
-         PbuZQJSG9BNNg==
+        b=d2fmFPEJMj5zFBfVW80tY4Lwt/Jx1FVsAqsPbZCBK+6tb6ChRpcFZ4Iz8TC8SEsWs
+         ARHbiEa+uCsrSUlHFBARNWJ04ke7VIcqWR1oag/zkDGoHii1A7VjQNW99XCubsmc4e
+         ZiIL02KG8/G0BWhTIyX2n6QnounueZkIO/Sx7eF86CZGvSa5bwQKmEVswExuGbZftH
+         jxruSZgmWok4OaPnS2In+3zhh/i69fw4kRoA8KHXnqYt208I5QDxzdZFf4HGpdXABX
+         gmNTP/yzt1IYXv4mrqF/u1shOvKbwnPNXcMD05ftefi1QbCUtaaldSDyJTlkLwFmt5
+         oOYXXzik+yM1A==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs: fix lost error handling when looking up extended ref on log replay
-Date:   Mon,  1 Aug 2022 14:57:51 +0100
-Message-Id: <49766a99f4f0fe3f0757fc8bfaeae6c7343314a6.1659361747.git.fdmanana@suse.com>
+Subject: [PATCH 2/3] btrfs: fix warning during log replay when bumping inode link count
+Date:   Mon,  1 Aug 2022 14:57:52 +0100
+Message-Id: <55311bcaf0bce109e52a7032bf9148dccff65d10.1659361747.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1659361747.git.fdmanana@suse.com>
 References: <cover.1659361747.git.fdmanana@suse.com>
@@ -52,38 +52,90 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-During log replay, when processing inode references, if we get an error
-when looking up for an extended reference at __add_inode_ref(), we ignore
-it and proceed, returning success (0) if no other error happens after the
-lookup. This is obviously wrong because in case an extended reference
-exists and it encodes some name not in the log, we need to unlink it,
-otherwise the filesystem state will not match the state it had after the
-last fsync.
+During log replay, at add_link(), we may increment the link count of
+another inode that has a reference that conflicts with a new reference
+for the inode currently being processed.
 
-So just make __add_inode_ref() return an error it gets from the extended
-reference lookup.
+During log replay, at add_link(), we may drop (unlink) a reference from
+some inode in the subvolume tree if that reference conflicts with a new
+reference found in the log for the inode we are currently processing.
 
-Fixes: f186373fef005c ("btrfs: extended inode refs")
+After the unlink, If the link count has decreased from 1 to 0, then we
+increment the link count to prevent the inode from being deleted if it's
+evicted by an iput() call, because we may have references to add to that
+inode later on (and we will fixup its link count later during log replay).
+
+However incrementing the link count from 0 to 1 triggers a warning:
+
+  $ cat fs/inode.c
+  (...)
+  void inc_nlink(struct inode *inode)
+  {
+        if (unlikely(inode->i_nlink == 0)) {
+                 WARN_ON(!(inode->i_state & I_LINKABLE));
+                 atomic_long_dec(&inode->i_sb->s_remove_count);
+        }
+  (...)
+
+The I_LINKABLE flag is only set when creating an O_TMPFILE file, so it's
+never set during log replay.
+
+Most of the time, the warning isn't triggered even if we dropped the last
+reference of the conflicting inode, and this is because:
+
+1) The conflicting inode was previously marked for fixup, through a call
+   to link_to_fixup_dir(), which increments the inode's link count;
+
+2) And the last iput() on the inode has not triggered eviction of the
+   inode, nor was eviction triggered after the iput(). So at add_link(),
+   even if we unlink the last reference of the inode, its link count ends
+   up being 1 and not 0.
+
+So this means that if eviction is triggered after link_to_fixup_dir() is
+called, at add_link() we will read the inode back from the subvolume tree
+and have it with a correct link count, matching the number of references
+it has on the subvolume tree. So if when we are at add_link() the inode
+has exactly one reference only, its link count is 1, and after the unlink
+its link count becomes 0.
+
+So fix this by using set_nlink() instead of inc_nlink(), as the former
+accepts a transition from 0 to 1 and it's what we use in other similar
+contextes (like at link_to_fixup_dir().
+
+Also make add_inode_ref() use set_nlink() instead of inc_nlink() to
+bump the link count from 0 to 1.
+
+The warning is actually harmless, but it may scare users. Josef also ran
+into it recently.
+
+CC: stable@vger.kernel.org # 5.1+
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/btrfs/tree-log.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 9acf68ef4a49..ccf93ac58e73 100644
+index ccf93ac58e73..ff786e712f2b 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -1146,7 +1146,9 @@ static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
- 	extref = btrfs_lookup_inode_extref(NULL, root, path, name, namelen,
- 					   inode_objectid, parent_objectid, 0,
- 					   0);
--	if (!IS_ERR_OR_NULL(extref)) {
-+	if (IS_ERR(extref)) {
-+		return PTR_ERR(extref);
-+	} else if (extref) {
- 		u32 item_size;
- 		u32 cur_offset = 0;
- 		unsigned long base;
+@@ -1459,7 +1459,7 @@ static int add_link(struct btrfs_trans_handle *trans,
+ 	 * on the inode will not free it. We will fixup the link count later.
+ 	 */
+ 	if (other_inode->i_nlink == 0)
+-		inc_nlink(other_inode);
++		set_nlink(other_inode, 1);
+ add_link:
+ 	ret = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
+ 			     name, namelen, 0, ref_index);
+@@ -1602,7 +1602,7 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
+ 				 * free it. We will fixup the link count later.
+ 				 */
+ 				if (!ret && inode->i_nlink == 0)
+-					inc_nlink(inode);
++					set_nlink(inode, 1);
+ 			}
+ 			if (ret < 0)
+ 				goto out;
 -- 
 2.35.1
 
