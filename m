@@ -2,100 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7D1587C7C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Aug 2022 14:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9C1587C83
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Aug 2022 14:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236664AbiHBMdb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Aug 2022 08:33:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
+        id S235903AbiHBMhU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Aug 2022 08:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236311AbiHBMda (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Aug 2022 08:33:30 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B0D37F8E
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 Aug 2022 05:33:30 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C75AD37150;
-        Tue,  2 Aug 2022 12:33:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1659443608; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+        with ESMTP id S235854AbiHBMhT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Aug 2022 08:37:19 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB6221277;
+        Tue,  2 Aug 2022 05:37:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 11FDF3738F;
+        Tue,  2 Aug 2022 12:37:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1659443837;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=E0JpVcS6h02LH5PGP4MdT7IfRGajbIHA2kqjo6COCFg=;
-        b=UcHSbuafrrhWoV5lOfG1NZ1quJORrCrkEN8k25KcGB81XAkwnlNltnL5Ou3OB15w05lE/B
-        6V0Tf0t+ThzvwsO8Pw5m+JCpyAmmdAbcW81LsrkSwxdRtiYNzGxP0bZSB0QZFsP9ebR5AQ
-        mqJetfZCLqxD7avui3/9FwWFaFJAvtc=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id BEEC82C141;
-        Tue,  2 Aug 2022 12:33:28 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 74AD6DA85A; Tue,  2 Aug 2022 14:28:28 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH v2 4/4] btrfs: sysfs: print all loaded csums implementations
-Date:   Tue,  2 Aug 2022 14:28:28 +0200
-Message-Id: <0aab25d0dc9853d035d0ae76810447aac2f3ecf8.1659443199.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <cover.1659443199.git.dsterba@suse.com>
-References: <cover.1659443199.git.dsterba@suse.com>
+        bh=3HfC4HYHoemQeatFoai8aWeqbtAIvEIrdWu0ZbndmPA=;
+        b=NsXkFLAGYRQ/94SoOj3ILjVrtbb+NTvgSb+xWx1Za8zLOJ16Sb7yz3IRdQ5W1rb+FfWT3N
+        CFJjKsXNtdXPftnCqPMyxeUBI3zHTuBb9PCZ4kKg/A2fkvO885CAZ2KtMjU187NCuwGmLR
+        +mBybjSpvUqkKVkgOPMoX3UTTk26oXs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1659443837;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3HfC4HYHoemQeatFoai8aWeqbtAIvEIrdWu0ZbndmPA=;
+        b=MbuVwMeZFtMLmOT0+f/eCJD9TlhKHH6SUYG3RW0fyJVk+mLe/ztwI6I+HCRMD3/p/W1X56
+        gcMS8l+t1rR2FgAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E005013A8E;
+        Tue,  2 Aug 2022 12:37:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 4Ja/NXwa6WLyQwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 02 Aug 2022 12:37:16 +0000
+Date:   Tue, 2 Aug 2022 14:32:15 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, torvalds@linux-foundation.org,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Btrfs updates for 5.20
+Message-ID: <20220802123215.GJ13489@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1659357652.git.dsterba@suse.com>
+ <c360943e-c922-9688-5956-e3e5a35c06d8@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c360943e-c922-9688-5956-e3e5a35c06d8@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Extend the sysfs FSID/checksum file and append lines with the selector
-strings and implementation if loaded, or 'none'.
+On Tue, Aug 02, 2022 at 09:11:09AM +0800, Qu Wenruo wrote:
+> On 2022/8/2 00:40, David Sterba wrote:
+> > Notable fixes:
+> >
+> > - raid56
+> >    - reduce parity writes, skip sectors of stripe when there are no data
+> >      updates
+> >    - restore reading from stripe cache instead of triggering new read
+> 
+> Small typo I guess.
+> It's the opposite, restore reading from on-disk data instead of using
+> stripe cache.
 
-Output may look like:
+Thanks.
 
-  crc32c (crc32c-generic)
-  generic: crc32c-generic
-  accel:   crc32c-intel
+Linus, please replace the sentence with
 
-Scripts that rely on single line in the file need to be updated.
-
-All available and loaded implementations can be found in /proc/crypto .
-
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/sysfs.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 0044644056ed..2f8bd75ce69d 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -1095,9 +1095,18 @@ static ssize_t btrfs_checksum_show(struct kobject *kobj,
- 	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
- 	u16 csum_type = btrfs_super_csum_type(fs_info->super_copy);
- 
--	return sysfs_emit(buf, "%s (%s)\n",
--			  btrfs_super_csum_name(csum_type),
--			  crypto_shash_driver_name(fs_info->csum_shash[CSUM_DEFAULT]));
-+	return sysfs_emit(buf,
-+			"%s (%s)\n"
-+			"generic: %s\n"
-+			"accel:   %s\n",
-+			btrfs_super_csum_name(csum_type),
-+			crypto_shash_driver_name(fs_info->csum_shash[CSUM_DEFAULT]),
-+			fs_info->csum_shash[CSUM_GENERIC]
-+			? crypto_shash_driver_name(fs_info->csum_shash[CSUM_GENERIC])
-+			: "none",
-+			fs_info->csum_shash[CSUM_ACCEL]
-+			? crypto_shash_driver_name(fs_info->csum_shash[CSUM_ACCEL])
-+			: "none");
- }
- 
- static const char csum_impl[][8] = {
--- 
-2.36.1
-
+       - restore reading from on-disk data instead of using stripe
+	 cache, this reduces chances to damage correct data due to RMW
+	 cycle
