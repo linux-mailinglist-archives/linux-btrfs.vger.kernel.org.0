@@ -2,168 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FF7588350
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Aug 2022 23:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E82588418
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Aug 2022 00:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbiHBVLi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Aug 2022 17:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
+        id S231972AbiHBWSa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Aug 2022 18:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbiHBVLh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Aug 2022 17:11:37 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FEF46D86
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 Aug 2022 14:11:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659474696; x=1691010696;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4eGvQTYhYbmGxKRVGTyb9SEfWIwt/tyIhjOVmvn61QE=;
-  b=EU71gKrLOggCuDoCJLRrGKIgmaZQAcULvVUJqhb2odRUkMjhM5/BP/In
-   jBr8fjpV4qzoa7g+Q2unOY9B1vLGE7jRThYi/fmddnByzBGAugq0H0ZlU
-   RGWu47gwNDQ9TX8Q6KVi6IuuBYG+FKtoaS6VDawe2KIXjgjm67tSzjJWf
-   iZDturwzF9ZXOyN1mTCDp8f//fLt398QHEgzuhzbSWCX9zE/Kat6p1/WV
-   of/L7WEfV1rXEY6r8SogPSSvaQuz+Eg/ZeBPOu1zu/xQw9nWE+fmNhExQ
-   1etHmmNT2WhOvmAvDGvVAW5yXSrEGnCfND2cNWqKXVcMz/QKWgtBFhEXB
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10427"; a="272566483"
-X-IronPort-AV: E=Sophos;i="5.93,212,1654585200"; 
-   d="scan'208";a="272566483"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2022 14:11:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,212,1654585200"; 
-   d="scan'208";a="691999104"
-Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Aug 2022 14:11:34 -0700
-Received: from kbuild by e0eace57cfef with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oIzAr-000GRl-1a;
-        Tue, 02 Aug 2022 21:11:33 +0000
-Date:   Wed, 3 Aug 2022 05:10:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH v2 2/4] btrfs: assign checksum shash slots on init
-Message-ID: <202208030448.34fSi3hk-lkp@intel.com>
-References: <c637b01a1742d0841b71d67a91aab50ac22539f7.1659443199.git.dsterba@suse.com>
+        with ESMTP id S230252AbiHBWS3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Aug 2022 18:18:29 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16EA643F
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 Aug 2022 15:18:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1659478704;
+        bh=BLCVTNkTrgSdcQBPYnPzyTLqPMV7RdnlFjBqgmg8poo=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=ilwfMrBLRFnPZeQUASzDRniKJYKJ7MqLQ1xv1WyRwADncLYwBK7y0ACADvlUsvTZN
+         SSxO2DTx1TJ/CjkpiHOhJTzcKfEujpgcYxynXnmfFZQ81i5gsBiPgsHrVM6vg5v998
+         j0lHUarPQWCzLekn/JiXidz0/OSr48rwIgIs6UiE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MplXp-1ndtAI2Q1d-00q6se; Wed, 03
+ Aug 2022 00:18:24 +0200
+Message-ID: <6c1700f0-7389-268c-1d15-4f35288a2b9a@gmx.com>
+Date:   Wed, 3 Aug 2022 06:18:20 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c637b01a1742d0841b71d67a91aab50ac22539f7.1659443199.git.dsterba@suse.com>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 0/2] btrfs: scrub: small enhancement related to super
+ block errors
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1659423009.git.wqu@suse.com>
+ <20220802142234.GL13489@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220802142234.GL13489@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:L0Un34utDGywv1VIewEybncnP/Txf+cJ601SB2eMysF6pBAIW7X
+ ALcMozwceO9gyUiwi/hXnM1dTg9SM0YcF+TH8l3agDGusmTAEKHUHxjfRvPfsqslQOy4f+J
+ 8Nvwssb+uRwyRaCCyaJdmADJVv2LYeN+PwOqiAsiWcTp1QHlPGU1NBzsktk60TTnNGOuM1z
+ ERKqTriGadBmDd5lDPuRQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SWRd7iIuZ2s=:qaLBnpwbsjF8ZV7B6mXYRN
+ gtlxvCivuHIF0Aitl5v+D90Dud/CZPRRRKdZCXYU1otzwBYVxmJZ+UoCU6Vwq+aZRoNSnC142
+ dcfTxokpmbCd/9AXM/5YL3RJ0FNSd2Upei9TdiUNSy74NyRYcADCdnS7vyXzZE1yqw/RW9/Co
+ Or85TqnB8cO7ut5lirwWxWWYDC5lKyTA4GCPSsyeDCEmuP5PGvKXQppAyqB2HSLPh/o8cL4zB
+ P045a39CsHbOONfn078dOlLRTHvd95xf9sIkFPspvGtlDeTonRo7P/f8gxQUXjTfMBqf973Mt
+ ostA2xWqk0j8Xy4GzvHi52RoEKAhH8KCQq3yRQnuZnaLIQ/G97fvoHjVo1jjHCLZkIL0BHmBF
+ m3GCevX+DuUb+2M0F+pM1gjrZI8Mz2xS8CGM6bYInM4pX60sD5kXaCkQ/AWC64B9F2lIiPPWl
+ VPtjjy6iCFvz3t+QuHOG+z2c4XyHnqI//w1OKhGq4VKqJMaUKHhn5R+R1c/zirjpksG76VD5g
+ J6/cTjYUAOdquS4rNWWhyoZ+aYhYZVT8Sr3UiPdpP48J0CPHE7DLbVbHjP0MBb0fR63W3d6Js
+ c/otmoIN+4k2uC5TgwuE88eupJI8v2rue7r1bznjY+kadUkLEw98RzjDthia6AMD1/ZzG0+xk
+ E9N27dBoQCtxPUqKSlh8kaDczDmGWKRyBnUaIhi3ALje9QCXO10+ex3JXqfSbiT8++1pNUbpL
+ bFdBavL0+wH83WetEYpp1yengWFMNfmkwQMbevFAlOzQKW9NKMYBty2VgU9akWJUMdDncELWN
+ pWSu6n0hP77SzZ+on/sgvjZPvLcT9rZRWptW2yrRkfj36t9UVlhWbCAjU5sYWzPCNuLsDUDKc
+ nFVBPTBBOz1smECl8IA5UYxMKaA91bPA7qXsl/pq/kjVYLQ/4zIDMY4L9F/D/7caDNLehEBOl
+ 8NbyMyKk1GvL3wvDIxNkWMkbpy5AWdjNUPh6Rm30C6b3p4nduWktmnBCTmJjiNf3z1MJFTWqN
+ truNsmjnV18v4H2WfFhMZLd90nqnvUtkj+HtcRKRilziXMr8B9KLt2TLhHdabE1kp3xluyahw
+ LyI95lWzcNRHtuFsPKYkeQkQDWalhdvuj3htS4I+/50XibaQOoiePM0Ww==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi David,
-
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on kdave/for-next]
-[also build test WARNING on next-20220728]
-[cannot apply to linus/master v5.19]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/David-Sterba/Selectable-checksum-implementation/20220802-203426
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-config: i386-allyesconfig (https://download.01.org/0day-ci/archive/20220803/202208030448.34fSi3hk-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/335830d3f7aa692840402c4813c125f96f510812
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review David-Sterba/Selectable-checksum-implementation/20220802-203426
-        git checkout 335830d3f7aa692840402c4813c125f96f510812
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash fs/btrfs/
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   fs/btrfs/disk-io.c: In function 'btrfs_init_csum_hash':
-   fs/btrfs/disk-io.c:2438:13: error: too few arguments to function 'strstr'
-    2438 |         if (strstr(crypto_shash_driver_name(csum_shash)), "generic") != NULL) {
-         |             ^~~~~~
-   In file included from arch/x86/include/asm/string.h:3,
-                    from include/linux/string.h:20,
-                    from arch/x86/include/asm/page_32.h:22,
-                    from arch/x86/include/asm/page.h:14,
-                    from arch/x86/include/asm/thread_info.h:12,
-                    from include/linux/thread_info.h:60,
-                    from arch/x86/include/asm/preempt.h:7,
-                    from include/linux/preempt.h:78,
-                    from include/linux/spinlock.h:55,
-                    from include/linux/wait.h:9,
-                    from include/linux/wait_bit.h:8,
-                    from include/linux/fs.h:6,
-                    from fs/btrfs/disk-io.c:6:
-   arch/x86/include/asm/string_32.h:185:14: note: declared here
-     185 | extern char *strstr(const char *cs, const char *ct);
-         |              ^~~~~~
->> fs/btrfs/disk-io.c:2438:57: warning: left-hand operand of comma expression has no effect [-Wunused-value]
-    2438 |         if (strstr(crypto_shash_driver_name(csum_shash)), "generic") != NULL) {
-         |                                                         ^
-   fs/btrfs/disk-io.c:2438:70: error: expected expression before '!=' token
-    2438 |         if (strstr(crypto_shash_driver_name(csum_shash)), "generic") != NULL) {
-         |                                                                      ^~
->> fs/btrfs/disk-io.c:2438:9: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
-    2438 |         if (strstr(crypto_shash_driver_name(csum_shash)), "generic") != NULL) {
-         |         ^~
-   fs/btrfs/disk-io.c:2438:77: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
-    2438 |         if (strstr(crypto_shash_driver_name(csum_shash)), "generic") != NULL) {
-         |                                                                             ^
-   fs/btrfs/disk-io.c:2438:77: error: expected statement before ')' token
-   fs/btrfs/disk-io.c:2441:11: error: 'else' without a previous 'if'
-    2441 |         } else {
-         |           ^~~~
 
 
-vim +2438 fs/btrfs/disk-io.c
+On 2022/8/2 22:22, David Sterba wrote:
+> On Tue, Aug 02, 2022 at 02:53:01PM +0800, Qu Wenruo wrote:
+>> Recently during a new test case to verify btrfs can handle a fully
+>> corrupted disk (but with a good primary super block), I found that scru=
+b
+>> doesn't really try to repair super blocks.
+>
+> As the comment says, superblock gets overwritten eventually, I'm not
+> sure we need to start the commit if it's found to be corrupted.
 
-  2419	
-  2420	static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
-  2421	{
-  2422		struct crypto_shash *csum_shash;
-  2423		const char *csum_driver = btrfs_super_csum_driver(csum_type);
-  2424	
-  2425		csum_shash = crypto_alloc_shash(csum_driver, 0, 0);
-  2426	
-  2427		if (IS_ERR(csum_shash)) {
-  2428			btrfs_err(fs_info, "error allocating %s hash for checksum",
-  2429				  csum_driver);
-  2430			return PTR_ERR(csum_shash);
-  2431		}
-  2432	
-  2433		/*
-  2434		 * Find the fastest implementation available, but keep the slots
-  2435		 * matching the type.
-  2436		 */
-  2437		fs_info->csum_shash[CSUM_DEFAULT] = csum_shash;
-> 2438		if (strstr(crypto_shash_driver_name(csum_shash)), "generic") != NULL) {
-  2439			fs_info->csum_shash[CSUM_GENERIC] = csum_shash;
-  2440			clear_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
-  2441		} else {
-  2442			fs_info->csum_shash[CSUM_ACCEL] = csum_shash;
-  2443			set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
-  2444		}
-  2445	
-  2446		btrfs_info(fs_info, "using %s (%s) checksum algorithm",
-  2447				btrfs_super_csum_name(csum_type),
-  2448				crypto_shash_driver_name(csum_shash));
-  2449		return 0;
-  2450	}
-  2451	
+The problem is, if someone like me to expect scrub to repair everything
+it can, thus doing scrub (to repair) then scrub (to check), then the
+second scrub still report super block error is definitely not expected.
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Furthermore, just committing one transaction for one device doesn't look
+that costly to me.
+
+Thus the choice not to do anything looks pretty weird to me.
+
+Thanks,
+Qu
+>
+>> And scrub doesn't report super block errors in dmesg either.
+>
+> Yeah it makes sense to report it.
