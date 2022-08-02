@@ -2,131 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B955878AA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Aug 2022 10:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8399F5878B0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Aug 2022 10:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236337AbiHBIFG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Aug 2022 04:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
+        id S236350AbiHBIGB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Aug 2022 04:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232747AbiHBIFD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Aug 2022 04:05:03 -0400
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228D23AE73
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 Aug 2022 01:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1659427501; x=1690963501;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=GtKqjYoVLLlyQ76e3daPCfd7pgtrmpJjAvkR25fNSMs=;
-  b=iHUPDCgDsgwU3K8jgStDO/+uQwRG/2uHtxIGZxNWKKR+ipO8kEfp3E40
-   cXIc22eiz2A7BeJh66kdhVhY47Qp4fJa9HAQKE8pgJbvpKIi9xRFXOmzX
-   nqWNtCMhyQTSzAcu//tEGAcR4rhUus7GWmV/NSDxZvRUjvvU88i3oYk7q
-   Py2LbWkc1J42Za/VMNuxGJpPKTLfiBqdAxn4fWmPCW0a0ik1viTKk7sMe
-   q87gs4d8wYBR6QzAmz/TY2H+92DyIUyywW67d1PYIatAEiY6j7L8xs0nz
-   dctaSKj4YwDAhUehaShHpJgTMFqqrOOH6dFKHIEvrg8HMhlavEL9HfjXR
-   w==;
-X-IronPort-AV: E=Sophos;i="5.93,210,1654531200"; 
-   d="scan'208";a="212525286"
-Received: from mail-co1nam11lp2171.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.171])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Aug 2022 16:05:00 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H1rKasDA8iza9AqCeymum+pxN6pVMphk6Y8xvjkQTvP19DYtgYRdARxq6741s5Rc401SPbQneSRVfaXlpFFsjOPu4Fv9E7PI8v9xRd207do0EsHrDOKQq6NETU/48Q8tqTmk786SiW8l27hQdsG4ANJ1gWaZdZ4SQ3s660acQJejDOqEZxQsQcGblqBqYWBFtwjy/5GzBsG0vZmkT7ZIVN12rx7Dn/vDlwrVM1HgleW/ZshewO4irxHbktQnRERksfgEvR7sysQM96UUpAcWHv5+6gukmKz1LIg700j/UFM61XNdfN0PhY7FrUZdwbTEFQFYeKBPCM5tNzjtqdJbmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GtKqjYoVLLlyQ76e3daPCfd7pgtrmpJjAvkR25fNSMs=;
- b=Hmciy9rE6OwgDW8q63tEFt4G73/0azuvpRXnO5ykP/9/i7spkiFKHQeQaic5I4j3h46vzcypTq0qurAcBtAdAcq23ODTIno7nNHGF4qspcxQEeicIFu34dNDWcxznoReJ4QXnxLi4gsMC80CHM+MyM7driCJXuGavq35SGT92oRSO5SefJhI842Dwj7ochmkcDiBtB8B3tXxlf+FugY329BC+q/WqEkJdk7c5EqaCQHx5QXPqD9lhnppfkynH9XhMZ5NpfA6Kco+dWlWZ70O1RK2MOqzZ6F+Gh9DKY/jV9lcQ5a3uwpHjgxFZikOnsv71gKkDoanX1LKeJuXnH92BQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GtKqjYoVLLlyQ76e3daPCfd7pgtrmpJjAvkR25fNSMs=;
- b=TVlcUIB7DHeJng7xzaAW2VuqUtDkmNdkaa6wvQhuYX6aTNWemiZDIQbJgwLEb+oXlC4lb/fcOe0zfEEnMrAjTa/X+VAPQZmyqoQj6pZpHLshZpgLV5u7JY/s4On137m8zv+TYGIOsqyCRxzHIXY4C8cznh/oysxdef13gPzDxUg=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by DM6PR04MB7033.namprd04.prod.outlook.com (2603:10b6:5:22a::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.12; Tue, 2 Aug
- 2022 08:05:00 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ccb9:68a4:d8c4:89f5]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ccb9:68a4:d8c4:89f5%9]) with mapi id 15.20.5482.016; Tue, 2 Aug 2022
- 08:04:59 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 0/3] btrfs-progs: avoid repeated data write for
- metadata and a small cleanup
-Thread-Topic: [PATCH v2 0/3] btrfs-progs: avoid repeated data write for
- metadata and a small cleanup
-Thread-Index: AQHYpkTwWd77x5eIVUW4m3egw5pSzw==
-Date:   Tue, 2 Aug 2022 08:04:59 +0000
-Message-ID: <PH0PR04MB7416920769E0F9FF573040C59B9D9@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <cover.1659426744.git.wqu@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 930d90e8-dc89-4416-9387-08da745db23e
-x-ms-traffictypediagnostic: DM6PR04MB7033:EE_
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZXsFwta6iM2cUMBf6mGN8n3K1DUBl1F1+4iSsnoSlOYkL3eSbdJvqPJ1c/685fSwk/YDktI/islBpUBnlNFgTfhe/L7wbM0OIAflFZ7B+/enxLYUUGokLRqjCwzje6m+253YS3AoaCAmIFVpyw7BN68ErbsS6k8quM5Hn5x5r0qwgsfzOMertkKYgoXVjyRP4/HRBz3Gb4minrRVsQLf79kEbRuh5DWWEWui3eYTCUWWfj39xplL2qX1ZvMgWLSAU6N1WR3thDAZ33d3fbjQJPGNKchDenzxEf5lbI9AhWcRqmGzrwEMdp1KRoLA91pNoMuTwmp33YJkzmZWkozY1bQ/bKdGCEjappVjXpKjjRw+KnnTo3lLtXQVy9KrKwF7DXm4brbWN3K/COmUAb4xMIveh3CK4HF0tCifEpScOoU39jIMFzVyvrdOOpea38XpCflm1IyqUSGu8CqaGPQDmXpXjaWIEmXD7iEBYbKRnbJt1grKyRdcks/xHtlkxDuMKQRQ2aln8+WhckxsF3zwmf5Dp/iG3jJeoqBoLBqX2snR7SxUtBBSyxIWFre2ImOqybKcxZsHYtioO0RqLn8VCxxl9DuuOIBpkOaTTpcSeD3XvkGHQuiLiHbpJlBSP2HaSMF3ukW8uU7xAo20d0rpmc9F6NSkLCDzMOKRgvlTrWNarsL7fGvjSNWx5rUKpBqXcVtgk4a5dJ+S2tyt3nIQXDzwfiV5/UtqPVmg6OUf2pbQoMRKGFid0yaiQVxH6BtOvqsPsoGztyBsJnA1QMI1NoxQsKIyrknfq5GT8KTrb8sggqyoNLW91oCWwmXgpJB+
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(136003)(39860400002)(396003)(366004)(346002)(478600001)(71200400001)(38100700002)(41300700001)(9686003)(186003)(316002)(2906002)(7696005)(6506007)(53546011)(33656002)(83380400001)(55016003)(110136005)(76116006)(8936002)(122000001)(66556008)(66476007)(66446008)(64756008)(38070700005)(52536014)(66946007)(86362001)(91956017)(5660300002)(8676002)(4744005)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?8IHacFKu+6/cW3ik2AZ1F6HmZ6YmA3YnalQbQl8jxhrUGNlRPqiQpukKRbJv?=
- =?us-ascii?Q?Zo63kjs4HwIsJv5fqM+NvGHxOycU1ZienkVS1+Q01GMzNW57URleObEImRsJ?=
- =?us-ascii?Q?rL6EiQNPS49iHoVhxTqj0H9SkaCd39mlgHiOrnKSZ4/ZhAcWxEx2GCo/+LTv?=
- =?us-ascii?Q?slp5CjkzLQGg5UksNKO3Spg6LIC9nNHZPROiRns2F2uM/ImpjUC4KJa+Nx5H?=
- =?us-ascii?Q?dIjL0i5SO39uqWtCb/9iLF/jkqbkt+kH8b5I2Hj2cu+9KAxQejtetNLIQfGZ?=
- =?us-ascii?Q?xxclxoBCJtcFZAvGjUNNiO25zjDJb8TaZt/zft72akeS1sVHTwpXCFVxbmqL?=
- =?us-ascii?Q?jTOI/BO7qR3zweta+1s0L8SQg/mRUDMmU0wXy0vPLgxRLwC28PDU/VNQFEmk?=
- =?us-ascii?Q?k4k5wEY9fIRn0/Qcint7SnUFaKdi1FuOFJIkuom82UhznOZFyPDqWrB1QuRn?=
- =?us-ascii?Q?XUM65hrW2eUYd2zg4TektbI9zFreBymVwRyoH0cfbzTVpH6vwTW8Pmjr2BV7?=
- =?us-ascii?Q?wDwzPFFV55NXGpmTPfwncU3A33l1zxze04bfuVipFfX0Abqyuw6KlLlNVO+s?=
- =?us-ascii?Q?N6+l2CwCi7qF86bUeXJQFWH9ePgqclMwhPaWkUkk1D/BDeZsv2xzTXJIEThd?=
- =?us-ascii?Q?6rG6NDoCCfXlzzRcmrriKcRSd/7nlCjdsrsfNG7aR2IJIEP1lA7AzLDahgnC?=
- =?us-ascii?Q?+D6umOPpjiuoudF7W+wxDwtrFuX7WPf2C5nLsHGfqllb7chVITq09vCHiykY?=
- =?us-ascii?Q?oXZjSBATtAfOGFu2tXrD43VNAMichgQOCACeE6oDEFjeDXnANbDqBTdxHYVD?=
- =?us-ascii?Q?Sp5aKn4mYos3UAGfE5MhMC13znzfcb8aerz405SSe/h/epDtrKSA5/EYfeB/?=
- =?us-ascii?Q?W+Mfwdgv7K6viGTpvc1c22j0sMTt2oYZPWtAdQfQ/Tg9Iwb+5dBKcN8Uq5Vb?=
- =?us-ascii?Q?hupUayuE3x9Eu/rULCq+whOh70FHF/ikFFQu34l7BxNS7W/1KSh7fbzLrVQn?=
- =?us-ascii?Q?2tmtSwWduIFnFvLZzyX0S0f1aJv9OAsnuLHWZ69H1vnAJhMROkmiK7gnXHpd?=
- =?us-ascii?Q?d73/LT/MKO5oV+SXiLYofUOlxaalgnU+dkvP2xEXIFvLwnJeZiCXWVJGDQLR?=
- =?us-ascii?Q?K4zHQHbpAm4aYtrmGNUFoEXBkgNjXL1JQ9t+sIq/sngxYKkWxi1F1pNlhWmb?=
- =?us-ascii?Q?65muDWnM1hTL3zjiqF9u37Eew6bimuzamCcBEAnJ9wZ8oOAtsj5mPZk9qevB?=
- =?us-ascii?Q?KNwmUsPqyFXEYxM1UgQt+cr9DbubWEykHwc8UGWZzLugMdpROMnON8rPeNXc?=
- =?us-ascii?Q?ImXnzC1HGmW79JLOIolIJQNUDOUgI7clN0j77F75twV+0WoASK+BYDiIibeE?=
- =?us-ascii?Q?wrGWZ9QdOTGZkdslGQLqG5i4qFPwUkxnnyTu1HmJtcYQ3vi9wSTZWXnUOgvA?=
- =?us-ascii?Q?AY04frzuWMUo+3bEpU7DXXhx01YkDmrUF7V1/U+Qnlq28f0/J+4gaomS87Le?=
- =?us-ascii?Q?uYOhiuChSBmP1NNObmHshSxnzJl9/5sLuOYBWXlRGlHQRaG8HWjkZuGIqdjb?=
- =?us-ascii?Q?EbNt97ZcRLKRVAkEGTTYBFWIjo+6kFw3l7dPWCuIljRcsa1zdOSyhl1ZmXO9?=
- =?us-ascii?Q?g82YZYUBxwLpO7ain5obGDpis4FGh+NvP15XpdSkCrDLcVz8TezaCG1tOnhc?=
- =?us-ascii?Q?1H4Ejk93sojCavNVU/V7bRdsc8E=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S236347AbiHBIFt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Aug 2022 04:05:49 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2E333A2C
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 Aug 2022 01:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1659427529;
+        bh=d4+xflw2f2M06txRwGIjGQFI+A7RRSQhW0n3Yx+l5iI=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=ke/FoU/ag9Ih8fGidZSoYcBPjrt4UbMC6y0bXnXonHsqhmhBgfeR6QPFV0mNLjhuS
+         cVeXBWQJ+BQEJ2BDx7QYkmVWbJHO/dg9koZ/JyuTn45JwzjmTn/4nM2FovCO1ePEQ1
+         Hl0ewfQzc2c42apAFZF39C3Glj0lBV6HKnfyIHKY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1McpJq-1nk03G3X0M-00Ztd8; Tue, 02
+ Aug 2022 10:05:29 +0200
+Message-ID: <de9629df-3203-23b0-86bc-4d6ecf017417@gmx.com>
+Date:   Tue, 2 Aug 2022 16:05:25 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 930d90e8-dc89-4416-9387-08da745db23e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2022 08:04:59.7103
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KdkwQNNfid/aXHUEw1B158ez9ElXPubZje59o2Am19sjKZLbwFyzLyMenfWWAF6WEl8OH2XFAiAn9EaVR+5RkF6h4VGvEOt2aTB8zptqbIA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB7033
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] btrfs-progs: avoid repeated data write for metadata
+Content-Language: en-US
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Qu Wenruo <wqu@suse.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <cdfef9acd4b34751791cafc49612a35328847847.1659425462.git.wqu@suse.com>
+ <20220802080231.kzrywmuduunmhsn4@shindev>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220802080231.kzrywmuduunmhsn4@shindev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/1UG7ZlZV4VWZUoelvlSxpn+bQBEh6/HXaUaSP+KVY+lbjyp2yE
+ B7sdTOZVnJ5LQFPAMAiKMAuQxLVJTrdFWINRi1oy8ajL1f9Vvndsc8oIoaWjJBbn72K1ORq
+ UPCBFMuBUzmB0GbZ3LagSEdc/z7f0iEoSNA7MbKz23/oGF3DjupQ25F5UPwpW9VQQzsGuaj
+ gE0vCoer8GTCLMSQz2X1Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QWurLWDpngg=:M5GpbvDzNgMi05GF6A0qCS
+ rGoo5GnshjgzeZnxhoqhPQhsHCQ0W0JRU0dvYt1a/tIipXQFT6b3AwJFUo+32wKth/h/VzlMt
+ 7v9mojQaMX/thdr1B+a36itL2hgqDmBtNnfJyUhrxDL7JkHhY6VYwmNrIXz5x8NHJHvUtyC+T
+ yUOLGvCJDJLSCsPMlqHGN90rWTvR2BtscJq0ylOj5d4EVFCnOJpfuMtnfVZBVBqakyezLoh5Y
+ 1tNnI+fMCz5R0PaPVr3tmeIk0/eODo2T2ROC9kWh7hGvu28cjULyEq4GE41ehIHvepKXswolx
+ BzTakBSUssdSwPOEaRfjKWOcUiOVyDOLahbdZl+y47zOBAyUfNah5ZLkljJT2ydcQsZqwTcXw
+ BwXQPGt2R1O9i8jyzu2KY6tBf5vVx9vAxQPL6wbGfCI4GqqjQiOzcTgGczQ5V0pHhVVoVuq1f
+ ROttyyAaWo1HpMfO6NKr2++N/owTokvTu0+ynnRcusD92NreLkuyNKn9r5fTuo9ip9yeKismJ
+ 65Rs3lJnANfug3bTIVE4hCqfruR0kBu2OE7wMDmGtRHmYp/nupDhkYU1AO5WwA8jZ1DUogada
+ vstIqH3aR4pGN16kZrFxPJtHBiMoTIJKcosY0zSDlh5c2Yv2zlA77vsmDilKJZD9+QurTgEBq
+ vhBh3NO8H7yH6TTQo9pdhW2GIv0VQmDXeu7WfYrGZY0xvhjApTpR7iRDBU7gttRcqm4d2kRje
+ TB/FXIzK+2T+mvfQi7phUWJRLQL9ZzvUuTUJaskkDFGYF+L9aQbBjXMKNhD5FO9UUfOf7J3Nw
+ BDHmAGGghu734Plp9ASq5WOBKJWyCb9Glmu+abS5jzBxSnDsp+Fh1IPKRkps0nkuRpXIUcuwg
+ 5utkCHTGmkgXK20XAIAAinksqmTsyEd1ffX98N3v62MpqDKD57Oit5LhYhbhpwb9AS7/Rf1ji
+ YWHPox2eMgPQ/ZRQtoWzKJkkDF/PLNuYTlzvitCU5c8bbRybBXL9pAUdml2frKXdAW+tHaf2B
+ CQ3GKdOIUzB5rzFPwQsHcKAb1/+bqshh8W59oPUOJ7wLd8GJkSFhKvSlDNF+VOb9A49bGHtKF
+ V9fNYi9szRhFvoYaoJyxvSrFw1bF9uzqPKqPNGkmm37ydzOjI+O6DGGFA==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -134,17 +72,95 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 02.08.22 09:53, Qu Wenruo wrote:=0A=
-> [CHANGELOG]=0A=
-> v2:=0A=
-> - Separate the fixes from the initial patch=0A=
-> - Fix a bug in BUG_ON() condition which causes mkfs test failure=0A=
-> =0A=
-> There is a bug report from Shinichiro that for zoned device mkfs -m DUP=
-=0A=
-> (using RST) doesn't work.=0A=
-=0A=
-Nit, it's without RST.=0A=
-=0A=
-Anyways, for the series:=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+
+
+On 2022/8/2 16:02, Shinichiro Kawasaki wrote:
+> On Aug 02, 2022 / 15:31, Qu Wenruo wrote:
+>> [BUG]
+>> Shinichiro reported that "mkfs.btrfs -m DUP" is doing repeated write
+>> into the device.
+>> For non-zoned device this is not a big deal, but for zoned device this
+>> is critical, as zoned device doesn't support overwrite at all.
+>>
+>> [CAUSE]
+>> The problem is related to write_and_map_eb() call, since commit
+>> 2a93728391a1 ("btrfs-progs: use write_data_to_disk() to replace
+>> write_extent_to_disk()"), we call write_data_to_disk() for metadata
+>> write back.
+>>
+>> But the problem is, write_data_to_disk() will call btrfs_map_block()
+>> with rw =3D WRITE.
+>>
+>> By that btrfs_map_block() will always return all stripes, while in
+>> write_data_to_disk() we also iterate through each mirror of the range.
+>>
+>> This results above repeated writeback.
+>>
+>> [FIX]
+>> To avoid any further confusion, completely remove the @mirror arugument
+>> of write_data_to_disk().
+>>
+>> Furthermore, since write_data_to_disk() will properly handle RAID56 all
+>> by itself, no need to handle RAID56 differently in write_and_map_eb(),
+>> just call write_data_to_disk() to handle everything.
+>>
+>> Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+>> Fixes: 2a93728391a1 ("btrfs-progs: use write_data_to_disk() to replace =
+write_extent_to_disk()")
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+> Thanks for this swift fix. I confirmed it avoids the mkfs.btrfs failure =
+with
+> zoned block devices. Also I confirmed that the duplicated write is avoid=
+ed on
+> non-zoned image file [1]. Thanks!
+
+Sorry, I have already updated to version 2, as this version will cause
+problem for RAID56 mkfs (caused by an outdated BUG_ON() condition).
+
+But the main idea and code should stay the same.
+
+Thanks,
+Qu
+>
+> Tested-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+>
+>
+> [1]
+>
+> $ truncate -s 1G /tmp/btrfs.img
+> $ git checkout v5.18.1
+> $ make -j
+> $ sudo strace -y -s 0 -e pwrite64 ./mkfs.btrfs -f -d single -m dup /tmp/=
+btrfs.img |& grep btrfs.img > /tmp/prefix.log
+> (apply the patch)
+> $ make -j
+> $ sudo strace -y -s 0 -e pwrite64 ./mkfs.btrfs -f -d single -m dup /tmp/=
+btrfs.img |& grep btrfs.img > /tmp/postfix.log
+> $ diff -u /tmp/prefix.log /tmp/postfix.log
+> --- /tmp/prefix.log     2022-08-02 16:58:43.517472861 +0900
+> +++ /tmp/postfix.log    2022-08-02 16:59:08.197196602 +0900
+> @@ -32,66 +32,36 @@
+>   pwrite64(5</tmp/btrfs.img>, ""..., 16384, 5357568) =3D 16384
+>   pwrite64(5</tmp/btrfs.img>, ""..., 16384, 38797312) =3D 16384
+>   pwrite64(5</tmp/btrfs.img>, ""..., 16384, 92471296) =3D 16384
+> -pwrite64(5</tmp/btrfs.img>, ""..., 16384, 38797312) =3D 16384
+> -pwrite64(5</tmp/btrfs.img>, ""..., 16384, 92471296) =3D 16384
+>   pwrite64(5</tmp/btrfs.img>, ""..., 4096, 65536) =3D 4096
+>   pwrite64(5</tmp/btrfs.img>, ""..., 4096, 67108864) =3D 4096
+>   pwrite64(5</tmp/btrfs.img>, ""..., 16384, 22020096) =3D 16384
+>   pwrite64(5</tmp/btrfs.img>, ""..., 16384, 30408704) =3D 16384
+> -pwrite64(5</tmp/btrfs.img>, ""..., 16384, 22020096) =3D 16384
+> -pwrite64(5</tmp/btrfs.img>, ""..., 16384, 30408704) =3D 16384
+>   pwrite64(5</tmp/btrfs.img>, ""..., 16384, 38813696) =3D 16384
+>   pwrite64(5</tmp/btrfs.img>, ""..., 16384, 92487680) =3D 16384
+> -pwrite64(5</tmp/btrfs.img>, ""..., 16384, 38813696) =3D 16384
+> -pwrite64(5</tmp/btrfs.img>, ""..., 16384, 92487680) =3D 16384
+> -pwrite64(5</tmp/btrfs.img>, ""..., 16384, 38830080) =3D 16384
+> -pwrite64(5</tmp/btrfs.img>, ""..., 16384, 92504064) =3D 16384
+>   pwrite64(5</tmp/btrfs.img>, ""..., 16384, 38830080) =3D 16384
+>   pwrite64(5</tmp/btrfs.img>, ""..., 16384, 92504064) =3D 16384
+>   pwrite64(5</tmp/btrfs.img>, ""..., 16384, 38846464) =3D 16384
+>   pwrite64(5</tmp/btrfs.img>, ""..., 16384, 92520448) =3D 16384
+> ....
+>
