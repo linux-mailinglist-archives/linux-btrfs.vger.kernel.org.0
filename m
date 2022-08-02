@@ -2,145 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEC2588323
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Aug 2022 22:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4E6588324
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Aug 2022 22:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbiHBUah (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Aug 2022 16:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
+        id S234684AbiHBUcz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Aug 2022 16:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234441AbiHBUaf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Aug 2022 16:30:35 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF68612D17
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 Aug 2022 13:30:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659472234; x=1691008234;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nIRhpTpA5XQopi5Sj/KK5SNSpqzS64Odt58zId2QWZg=;
-  b=O729aZLIwL9WffoFmFeon1GUdsza3nusbS1MeLBBqc8lXTE8bvO57hJW
-   Y4kTWBjgiyuTd+krR2wQ2sSWOCPkC1uiU5NBc8JsOuWYFdP4EPgGpT3KY
-   ugi4aZVACgfIUkXSEq99w8+4ExS4bRVGQO2TAPqIZApwP8t5AyJl1AEb5
-   UlvUM6sa+Shn06NKuxukvLlUjMqmwmlHPXC95LTXzE4eVnZoMj3UjMsgD
-   eLco4+DbsXAtDvBZ1WUlBgTW6Z73/uW0+nvj0AeINAysTiD1Q9KcfAfWf
-   7EJ99tcZxbwAyts+sJj3S0luTz3d4HDitnlbntx2GWFRxgsauEEkiIQMq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10427"; a="315366703"
-X-IronPort-AV: E=Sophos;i="5.93,212,1654585200"; 
-   d="scan'208";a="315366703"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2022 13:30:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,212,1654585200"; 
-   d="scan'208";a="553055165"
-Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 02 Aug 2022 13:30:32 -0700
-Received: from kbuild by e0eace57cfef with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oIyXA-000GPP-0s;
-        Tue, 02 Aug 2022 20:30:32 +0000
-Date:   Wed, 3 Aug 2022 04:30:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH v2 2/4] btrfs: assign checksum shash slots on init
-Message-ID: <202208030418.x0l9k9HX-lkp@intel.com>
-References: <c637b01a1742d0841b71d67a91aab50ac22539f7.1659443199.git.dsterba@suse.com>
+        with ESMTP id S230060AbiHBUcy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Aug 2022 16:32:54 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF1417E3B
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 Aug 2022 13:32:53 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 272I2Wnu009580
+        for <linux-btrfs@vger.kernel.org>; Tue, 2 Aug 2022 13:32:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=jQXMVD17Q+oY1vQphivwjVRtcDEGg5bEem2kARFesYk=;
+ b=qAyOMi7bZYNvENMzOmVY0oqbM0eZheloTjHmV76fIqCtjkKsd+IOsDwdNRh8zVVF06lU
+ EWBla84eOhzI7pGy7befoH77mJffUwlwFGj5z8aHyZz1wEi8Ih3CeZsAysXe288KjsKz
+ Bd9jZgbw0HQWQXGMW5VdALih4lRHtPi9q88= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3hn0av6c6j-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 Aug 2022 13:32:52 -0700
+Received: from twshared25107.07.ash9.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Tue, 2 Aug 2022 13:32:51 -0700
+Received: by devvm6390.atn0.facebook.com (Postfix, from userid 352741)
+        id E7BCA1B76716; Tue,  2 Aug 2022 13:32:48 -0700 (PDT)
+From:   <alexlzhu@fb.com>
+To:     <kernel-team@fb.com>, <linux-mm@kvack.org>, <clm@fb.com>,
+        <josef@toxicpanda.com>, <dsterba@suse.com>,
+        <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Alexander Zhu <alexlzhu@fb.com>
+Subject: [PATCH v3] btrfs: fix alginment of VMA for memory mapped files on THP
+Date:   Tue, 2 Aug 2022 13:32:46 -0700
+Message-ID: <20220802203246.434560-1-alexlzhu@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c637b01a1742d0841b71d67a91aab50ac22539f7.1659443199.git.dsterba@suse.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: f_bxGz6StB_mQ-72-JYXUN9dGnmUuhRB
+X-Proofpoint-ORIG-GUID: f_bxGz6StB_mQ-72-JYXUN9dGnmUuhRB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-02_14,2022-08-02_01,2022-06-22_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi David,
+From: Alexander Zhu <alexlzhu@fb.com>
 
-I love your patch! Yet something to improve:
+With CONFIG_READ_ONLY_THP_FOR_FS, the Linux kernel supports using THPs fo=
+r
+read-only mmapped files, such as shared libraries. However, the kernel
+makes no attempt to actually align those mappings on 2MB boundaries,
+which makes it impossible to use those THPs most of the time. This issue
+applies to general file mapping THP as well as existing setups using
+CONFIG_READ_ONLY_THP_FOR_FS. This is easily fixed by using
+thp_get_unmapped_area for the unmapped_area function in btrfs, which
+is what ext2, ext4, fuse, and xfs all use.
 
-[auto build test ERROR on kdave/for-next]
-[also build test ERROR on next-20220728]
-[cannot apply to linus/master v5.19]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Initially btrfs had been left out in Commit 8c07fc452ac0 ("btrfs: fix
+alginment of VMA for memory mapped files on THP") as btrfs does not suppo=
+rt
+DAX. However, Commit 1854bc6e2420 ("mm/readahead: Align file mappings
+for non-DAX") removed the DAX requirement. We should now be able to call
+thp_get_unmapped_area() for btrfs.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/David-Sterba/Selectable-checksum-implementation/20220802-203426
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-config: arm64-randconfig-r005-20220801 (https://download.01.org/0day-ci/archive/20220803/202208030418.x0l9k9HX-lkp@intel.com/config)
-compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project 52cd00cabf479aa7eb6dbb063b7ba41ea57bce9e)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/335830d3f7aa692840402c4813c125f96f510812
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review David-Sterba/Selectable-checksum-implementation/20220802-203426
-        git checkout 335830d3f7aa692840402c4813c125f96f510812
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash fs/btrfs/
+The problem can be seen in /proc/PID/smaps where THPeligible is set to 0
+on mappings to eligible shared object files as shown below.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Before this patch:
 
-All errors (new ones prefixed by >>):
+7fc6a7e18000-7fc6a80cc000 r-xp 00000000 00:1e 199856
+/usr/lib64/libcrypto.so.1.1.1k
+Size:               2768 kB
+THPeligible:    0
+VmFlags: rd ex mr mw me
 
->> fs/btrfs/disk-io.c:2438:49: error: too few arguments to function call, expected 2, have 1
-           if (strstr(crypto_shash_driver_name(csum_shash)), "generic") != NULL) {
-               ~~~~~~                                     ^
->> fs/btrfs/disk-io.c:2438:63: error: expected expression
-           if (strstr(crypto_shash_driver_name(csum_shash)), "generic") != NULL) {
-                                                                        ^
-   2 errors generated.
+With this patch the library is mapped at a 2MB aligned address:
 
+fbdfe200000-7fbdfe4b4000 r-xp 00000000 00:1e 199856
+/usr/lib64/libcrypto.so.1.1.1k
+Size:               2768 kB
+THPeligible:    1
+VmFlags: rd ex mr mw me
 
-vim +2438 fs/btrfs/disk-io.c
+This fixes the alignment of VMAs for any mmap of a file that has the
+rd and ex permissions and size >=3D 2MB. The VMA alignment and
+THPeligible field for anonymous memory is handled separately and
+is thus not effected by this change.
 
-  2419	
-  2420	static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
-  2421	{
-  2422		struct crypto_shash *csum_shash;
-  2423		const char *csum_driver = btrfs_super_csum_driver(csum_type);
-  2424	
-  2425		csum_shash = crypto_alloc_shash(csum_driver, 0, 0);
-  2426	
-  2427		if (IS_ERR(csum_shash)) {
-  2428			btrfs_err(fs_info, "error allocating %s hash for checksum",
-  2429				  csum_driver);
-  2430			return PTR_ERR(csum_shash);
-  2431		}
-  2432	
-  2433		/*
-  2434		 * Find the fastest implementation available, but keep the slots
-  2435		 * matching the type.
-  2436		 */
-  2437		fs_info->csum_shash[CSUM_DEFAULT] = csum_shash;
-> 2438		if (strstr(crypto_shash_driver_name(csum_shash)), "generic") != NULL) {
-  2439			fs_info->csum_shash[CSUM_GENERIC] = csum_shash;
-  2440			clear_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
-  2441		} else {
-  2442			fs_info->csum_shash[CSUM_ACCEL] = csum_shash;
-  2443			set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
-  2444		}
-  2445	
-  2446		btrfs_info(fs_info, "using %s (%s) checksum algorithm",
-  2447				btrfs_super_csum_name(csum_type),
-  2448				crypto_shash_driver_name(csum_shash));
-  2449		return 0;
-  2450	}
-  2451	
+Signed-off-by: Alexander Zhu <alexlzhu@fb.com>
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Changes in v3:
+-Fixed subject to be btrfs instead of mm
+-Fixed Signed-off-by to use full name
+-Added to description explaining why thp_get_unmapped_area can be
+used for btrfs
+
+Changes in v2:
+-Changed from x86_64 diff to btrfs diff using thp_get_unmapped_area
+---
+ fs/btrfs/file.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 9dfde1af8a64..2423040db167 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3808,6 +3808,7 @@ const struct file_operations btrfs_file_operations =
+=3D {
+ 	.mmap		=3D btrfs_file_mmap,
+ 	.open		=3D btrfs_file_open,
+ 	.release	=3D btrfs_release_file,
++	.get_unmapped_area =3D thp_get_unmapped_area,
+ 	.fsync		=3D btrfs_sync_file,
+ 	.fallocate	=3D btrfs_fallocate,
+ 	.unlocked_ioctl	=3D btrfs_ioctl,
+--=20
+2.30.2
+
