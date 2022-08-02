@@ -2,100 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B04DA587D0B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Aug 2022 15:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5097587D73
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Aug 2022 15:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235980AbiHBN0U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Aug 2022 09:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
+        id S235536AbiHBNve (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Aug 2022 09:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234420AbiHBN0T (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Aug 2022 09:26:19 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B8815FC3
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 Aug 2022 06:26:17 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 894C11FECD;
-        Tue,  2 Aug 2022 13:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1659446776;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4db24kbMBVt7QagB/IIS51hpC6avQXek2sR4SA9yscI=;
-        b=GWDLsQkJCJc3R9+zuYkq3HAK7Fm/vuzP/6W7jsK+xarD3DIeQ9GYs/HASUaO/PaZwpeFkH
-        shvyl33EuVMgXMrjXRL2Nn17yP/huA9+c5jWYOfBnPVbDHMofiv9STlnnZS4vs+Hlm3/qk
-        Q+5HQN7LxCf+xMSHx0cHA8e32iNUxAA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1659446776;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4db24kbMBVt7QagB/IIS51hpC6avQXek2sR4SA9yscI=;
-        b=M/neZgmyx96/YR20j/fkYVblyrtvCkQVczs6v7M08PShuKr620PDddYypnmMGlkAnaeZ1M
-        fsvIKQHDDsE/60Dw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B9D71345B;
-        Tue,  2 Aug 2022 13:26:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id SNtmGfgl6WLlWAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 02 Aug 2022 13:26:16 +0000
-Date:   Tue, 2 Aug 2022 15:21:14 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 3/4] btrfs: add checksum implementation selection
- after mount
-Message-ID: <20220802132114.GK13489@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cover.1659443199.git.dsterba@suse.com>
- <cc590040e5393aad0294e3d7c592de991706cf2e.1659443199.git.dsterba@suse.com>
- <PH0PR04MB7416F25B2C1D7CACC27F83859B9D9@PH0PR04MB7416.namprd04.prod.outlook.com>
+        with ESMTP id S233816AbiHBNvd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Aug 2022 09:51:33 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662B2248D9
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 Aug 2022 06:51:32 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1D2113756D;
+        Tue,  2 Aug 2022 13:51:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1659448291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=8y4B6ucbBDnG+CNvtrmouUgxGJTaKnYTPu9OLXyXw50=;
+        b=Lao1U6XHW4ex5wO6GayG5nhBD2f0D05qCzD1C+VUy8mEN67JcVNjTsd2x1VLndrvXQzjbH
+        VbQOZD//3XR1GVE4ZQcIbGm+Fhi/1bmR03MCcVslpPecxekhRyXfOPBMWorPgxWWlK7hGH
+        QTsxta1236lJBq03J03vD+VvkMNsklA=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 1726D2C1DC;
+        Tue,  2 Aug 2022 13:51:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 60E2FDA85A; Tue,  2 Aug 2022 15:46:30 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: sysfs: use sysfs_streq for string matching
+Date:   Tue,  2 Aug 2022 15:46:28 +0200
+Message-Id: <20220802134628.3464-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR04MB7416F25B2C1D7CACC27F83859B9D9@PH0PR04MB7416.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 02, 2022 at 01:00:28PM +0000, Johannes Thumshirn wrote:
-> On 02.08.22 14:33, David Sterba wrote:
-> > +static bool strmatch(const char *buffer, const char *string);
-> > +
-> > +static ssize_t btrfs_checksum_store(struct kobject *kobj,
-> > +				    struct kobj_attribute *a,
-> > +				    const char *buf, size_t len)
-> > +{
-> > +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> > +
-> > +	if (!fs_info)
-> > +		return -EPERM;
-> > +
-> > +	/* Pick the best available, generic or accelerated */
-> > +	if (strmatch(buf, csum_impl[CSUM_DEFAULT])) {
-> 
-> Same question as with v1, why not sysfs_streq()?
+We have own string matching helper that duplicates what sysfs_streq
+does, with a slight difference that it skips initial whitespace. So far
+this is used for the drive allocation policy. The initial whitespace
+of written sysfs values should be rather discouraged and we should use a
+standard helper.
 
-The semantics a bit different with our strmatch that skips initial
-whitespace, but otherwise should be same. Nevertheless we should
-probablly drop strmatch and use sysfs_streq. I'll change it in this
-patch and send another to delete the other one.
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/sysfs.c | 21 +--------------------
+ 1 file changed, 1 insertion(+), 20 deletions(-)
+
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 32714ef8e22b..84a992681801 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1150,25 +1150,6 @@ static ssize_t btrfs_generation_show(struct kobject *kobj,
+ }
+ BTRFS_ATTR(, generation, btrfs_generation_show);
+ 
+-/*
+- * Look for an exact string @string in @buffer with possible leading or
+- * trailing whitespace
+- */
+-static bool strmatch(const char *buffer, const char *string)
+-{
+-	const size_t len = strlen(string);
+-
+-	/* Skip leading whitespace */
+-	buffer = skip_spaces(buffer);
+-
+-	/* Match entire string, check if the rest is whitespace or empty */
+-	if (strncmp(string, buffer, len) == 0 &&
+-	    strlen(skip_spaces(buffer + len)) == 0)
+-		return true;
+-
+-	return false;
+-}
+-
+ static const char * const btrfs_read_policy_name[] = { "pid" };
+ 
+ static ssize_t btrfs_read_policy_show(struct kobject *kobj,
+@@ -1202,7 +1183,7 @@ static ssize_t btrfs_read_policy_store(struct kobject *kobj,
+ 	int i;
+ 
+ 	for (i = 0; i < BTRFS_NR_READ_POLICY; i++) {
+-		if (strmatch(buf, btrfs_read_policy_name[i])) {
++		if (sysfs_streq(buf, btrfs_read_policy_name[i])) {
+ 			if (i != fs_devices->read_policy) {
+ 				fs_devices->read_policy = i;
+ 				btrfs_info(fs_devices->fs_info,
+-- 
+2.36.1
+
