@@ -2,208 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE44589280
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Aug 2022 20:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE13C58929F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Aug 2022 21:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233008AbiHCS44 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Aug 2022 14:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42862 "EHLO
+        id S238503AbiHCTQA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Aug 2022 15:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbiHCS4z (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Aug 2022 14:56:55 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA9B6561
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 Aug 2022 11:56:53 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id tk8so33044533ejc.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Aug 2022 11:56:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=LNDqYV3hUcCA8uHXuiDF1qGOy8I9WBj76bkVdtI5kxQ=;
-        b=cGt1MoFVx1LOwMe7MB5XEEN8ZhuFkMXxv47KSZAxN9pfDHrHeZcH+IueW6xhIyLwfS
-         jInkAK9sUiPbeqno/uSzQJRYJkINEP3IE1mTKEgnHJSBPi9lzAcs3681jY40pzaQwSCh
-         B7AUwvwLkx0kqPIkP7NkryJekN8YX/UICA5LXZhzI7fAkOkTQistQtj5Iyayda9JceF7
-         QtbevKtusjPeLaogXxYeHYDJ9jKRIKQ9kPGc5P/rfUBN4bWIRkTAVgMObjRV9ckIX+tI
-         wcBHSF6JyWcBwB7XA+lyr0jwtE7JySZhbyG3aU4cfFogu9gu8L73FkZqCaqHCYVxUJE8
-         eC2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=LNDqYV3hUcCA8uHXuiDF1qGOy8I9WBj76bkVdtI5kxQ=;
-        b=qFKdnKkvWDvBoMhmHaHOKtTUCl7MhL96vzKjrVKWMUxSNMxn6aLDIeLIPMrCZZHqc1
-         I3DXUtTXnju0ibyEeOCHgWqpsxiBpWcRrRPiXyMYox0IvcAF34lpgN/wRi+DZrsSrP0L
-         mkpkfLqhUUd1DCdSxhHFE75HcUsU+GkNv7tkhp2TxIeJcV4qF/kbgUTjD0s8u/HEbcwM
-         GhIUN/sanS24yFAZTxnbNzWg1VyHlHD/PHHTO88jZiQepogHe7XX2afAF/Pb/UELTghe
-         s9JNaObwrf9mkgnF6Z7xQLh4aouAgH374/6pjW/Q/S560NakXe5sscCZdYrbs1XjNxj9
-         PNXw==
-X-Gm-Message-State: AJIora8ssiRAPiuaR9mwFtWGU2+nCxs4Duzhu7grYVe9RwBu0k3Rzkw9
-        SSDfx0paBAcUEoYzzkvMU3R6hJLpB6oT7x4eJJbUlue2cSk=
-X-Google-Smtp-Source: AGRyM1tD3qqZMHZa3A37U3vb8udufqnyKjbfGJh4nMBNuYsi6Td3nOaw00dRG6eLyQIJEm1MH3ci3t5bI2SICnV8wwk=
-X-Received: by 2002:a17:906:7955:b0:72f:5c1f:1816 with SMTP id
- l21-20020a170906795500b0072f5c1f1816mr21788078ejo.396.1659553011501; Wed, 03
- Aug 2022 11:56:51 -0700 (PDT)
+        with ESMTP id S238144AbiHCTPq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Aug 2022 15:15:46 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BACD18360
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 Aug 2022 12:15:42 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CF8D133744;
+        Wed,  3 Aug 2022 19:15:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1659554140;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ulq2ZESnc3SkgFWGL9j1qQc7OHFMx5Zuc4oZQSnLVB8=;
+        b=Prkqy1rBXvjhedUa04xUepXblLignl9PV3tc+mnVmcv0KCyw4yPFRNPET38ShN2ODzXHWt
+        PvdI7idKeqDFV4F8Tqpf+XTGiki2Av0lOu+aI6tlfxt7mZrr+2OFJk4tKK5ZoqeGhN2v9q
+        OAwmdFXgnKrIBWkp03VXPdgGuR7wLpU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1659554140;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ulq2ZESnc3SkgFWGL9j1qQc7OHFMx5Zuc4oZQSnLVB8=;
+        b=hCuf/83ID4G4DUgCzitb3GMuOU1fsibfzeCYNjKNAOQCxmyGv0HzXAaXOOfwMLpFNVXHB9
+        54DQP5Sd/gD5pCBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 914A513AD8;
+        Wed,  3 Aug 2022 19:15:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wZ5wIlzJ6mJ9EwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 03 Aug 2022 19:15:40 +0000
+Date:   Wed, 3 Aug 2022 21:10:38 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] btrfs: separate BLOCK_GROUP_TREE feature from
+ extent-tree-v2
+Message-ID: <20220803191038.GI13489@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1658293417.git.wqu@suse.com>
+ <20220726175922.GH13489@twin.jikos.cz>
+ <56492a5b-8d98-38af-50f2-57a75a3417fc@gmx.com>
+ <20220726215252.GQ13489@twin.jikos.cz>
+ <27f3ed12-6b94-d370-279d-aba825d5a643@gmx.com>
+ <46235fd6-8b31-9291-5025-b4305be1c678@gmx.com>
 MIME-Version: 1.0
-From:   Martin <mbakiev@gmail.com>
-Date:   Wed, 3 Aug 2022 12:56:15 -0600
-Message-ID: <CAHs_hg1NTbSsoev93y0Sx6NguVKndR+d410yZzbMhii2ipaBcQ@mail.gmail.com>
-Subject: Balance fails with csum errors, but scrub passes without errors
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <46235fd6-8b31-9291-5025-b4305be1c678@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Thu, Jul 28, 2022 at 06:02:44PM +0800, Qu Wenruo wrote:
+> >> Ok, good. I'm thinking if we should go for an online conversion too or
+> >> not, because on a many-TB filesystem it would possibly take a long time
+> >> but the benefit is not to unmount and do the conversion.
+> >
+> > For my previous tests, even TB level (used space) fs, it only takes
+> > seconds to do the convert (although on SSD).
+> >
+> > For HDD systems, it would be as slow as the mount time for the convert.
+> > Most of time spent would be just searching the block group items,
+> > writing them into bg tree would be super fast though.
+> 
+> Despite the incoming multi-transaction bg tree convert tool
+> (bidirectional), mind me to update the kernel series to address one of
+> the concern from Josef?
+> 
+> To reduce the test matrix, I'd like to make bg tree to rely on free
+> space tree and no holes features.
+> 
+> Although those features have no linkage to each other, such artificial
+> requirement should greatly reduce our test combinations.
 
-I've recently had a hard drive that started showing csum errors in a
-raid6 configuration with 13 drives, but smartctl wasn't reporting any
-issues with the hard drive.
-- I ran a scrub on the whole FS, it showed a bunch of errors that (I
-think) it repaired.
-- Then I tried adding a new drive and running a balance, this failed
-with csum errors pretty quickly - pointing at that same drive that had
-the scrub errors.
-- I ran scrub just on that drive with the errors again, and the scrub
-passed without reporting any issues!
-- Balance still fails with errors on that drive.
-- I replaced the drive (btrfs replace), which finished just fine, but
-balance still fails with errors.
-I'm not sure what to do from here, can someone advise on how I can
-either repair these issues or delete the affected files and continue?
+That's a good idea, we add the features incrementally and we've probably
+reached the point where we should have a basic set that everybody wants
+and should use.
 
+Features that are clear optimizations or improvements should be easy to
+decide, the other depend eg. on hardware (zoned) or are individual
+features like quotas or raid1c34.
 
-Initial scrub showing 260k errors:
-    BTRFS warning (device sdf): checksum error at logical
-63224657018880 on dev /dev/sde, physical 3870029381632, root 258,
-inode 7735, offset 22675456, length 4096, links 1 (path: ...)
-    BTRFS error (device sdf): bdev /dev/sde errs: wr 0, rd 0, flush 0,
-corrupt 268348, gen 4074
-    BTRFS error (device sdf): fixed up error at logical 63224657018880
-on dev /dev/sde
-    BTRFS warning (device sdf): checksum error at logical
-63224666390528 on dev /dev/sde, physical 3870030233600, root 258,
-inode 7735, offset 32047104, length 4096, links 1 (path: ...)
-    BTRFS error (device sdf): bdev /dev/sde errs: wr 0, rd 0, flush 0,
-corrupt 268349, gen 4074
-    BTRFS warning (device sdf): checksum error at logical
-63224675762176 on dev /dev/sde, physical 3870031085568, root 258,
-inode 7735, offset 41418752, length 4096, links 1 (path: ...)
-    BTRFS error (device sdf): bdev /dev/sde errs: wr 0, rd 0, flush 0,
-corrupt 268350, gen 4074
-    BTRFS warning (device sdf): checksum error at logical
-63224685133824 on dev /dev/sde, physical 3870031937536, root 258,
-inode 7735, offset 50790400, length 4096, links 1 (path: ...)
-    BTRFS error (device sdf): bdev /dev/sde errs: wr 0, rd 0, flush 0,
-corrupt 268351, gen 4074
-    BTRFS error (device sdf): fixed up error at logical 63224666390528
-on dev /dev/sde
-    BTRFS error (device sdf): fixed up error at logical 63224675762176
-on dev /dev/sde
-    BTRFS error (device sdf): fixed up error at logical 63224685133824
-on dev /dev/sde
-    BTRFS war   ning (device sdf): checksum error at logical
-63224694505472 on dev /dev/sde, physical 3870032789504, root 258,
-inode 7735, offset 59375616, length 4096, links 1 (path: ...)
-    BTRFS error (device sdf): bdev /dev/sde errs: wr 0, rd 0, flush 0,
-corrupt 268352, gen 4074
-    BTRFS error (device sdf): fixed up error at logical 63224694505472
-on dev /dev/sde
-    BTRFS warning (device sdf): checksum error at logical
-63225491095552 on dev /dev/sde, physical 3870105206784, root 258,
-inode 7735, offset 69664768, length 4096, links 1 (path: ...)
-    BTRFS error (device sdf): bdev /dev/sde errs: wr 0, rd 0, flush 0,
-corrupt 268353, gen 4074
-    BTRFS warning (device sdf): checksum error at logical
-63225500467200 on dev /dev/sde, physical 3870106058752, root 258,
-inode 7735, offset 78118912, length 4096, links 1 (path: ...)
-    BTRFS error (device sdf): bdev /dev/sde errs: wr 0, rd 0, flush 0,
-corrupt 268354, gen 4074
-    BTRFS error (device sdf): fixed up error at logical 63225491095552
-on dev /dev/sde
-    BTRFS error (device sdf): fixed up error at logical 63225500467200
-on dev /dev/sde
-
-Balance fails with these errors:
-    [Wed Aug  3 12:13:26 2022] BTRFS info (device sdn): balance: start
--dstripes=13..13
-    [Wed Aug  3 12:13:26 2022] BTRFS info (device sdn): relocating
-block group 103549454516224 flags data|raid6
-    [Wed Aug  3 12:13:45 2022] btrfs_print_data_csum_error: 55
-callbacks suppressed
-    [Wed Aug  3 12:13:45 2022] BTRFS warning (device sdn): csum failed
-root -9 ino 257 off 6809305088 csum 0x26262de7 expected csum
-0x0473ecb8 mirror 1
-    [Wed Aug  3 12:13:45 2022] BTRFS error (device sdn): bdev /dev/sdk
-errs: wr 0, rd 0, flush 0, corrupt 6, gen 0
-    [Wed Aug  3 12:13:45 2022] BTRFS warning (device sdn): csum failed
-root -9 ino 257 off 6809309184 csum 0x13e9e2a0 expected csum
-0x723f00ca mirror 1
-    [Wed Aug  3 12:13:45 2022] BTRFS error (device sdn): bdev /dev/sdk
-errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
-    [Wed Aug  3 12:13:45 2022] BTRFS warning (device sdn): csum failed
-root -9 ino 257 off 6809313280 csum 0x5c509a8f expected csum
-0xfd89f318 mirror 1
-    [Wed Aug  3 12:13:45 2022] BTRFS error (device sdn): bdev /dev/sdk
-errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
-    [Wed Aug  3 12:13:45 2022] BTRFS warning (device sdn): csum failed
-root -9 ino 257 off 6809317376 csum 0x42455521 expected csum
-0x07cf450d mirror 1
-    [Wed Aug  3 12:13:45 2022] BTRFS error (device sdn): bdev /dev/sdk
-errs: wr 0, rd 0, flush 0, corrupt 9, gen 0
-    [Wed Aug  3 12:13:45 2022] BTRFS warning (device sdn): csum failed
-root -9 ino 257 off 6809305088 csum 0x26262de7 expected csum
-0x0473ecb8 mirror 2
-    [Wed Aug  3 12:13:45 2022] BTRFS warning (device sdn): csum failed
-root -9 ino 257 off 6809309184 csum 0x13e9e2a0 expected csum
-0x723f00ca mirror 2
-    [Wed Aug  3 12:13:45 2022] BTRFS warning (device sdn): csum failed
-root -9 ino 257 off 6809313280 csum 0x5c509a8f expected csum
-0xfd89f318 mirror 2
-    [Wed Aug  3 12:13:45 2022] BTRFS warning (device sdn): csum failed
-root -9 ino 257 off 6809317376 csum 0x42455521 expected csum
-0x07cf450d mirror 2
-    [Wed Aug  3 12:13:45 2022] BTRFS warning (device sdn): csum failed
-root -9 ino 257 off 6809305088 csum 0x26262de7 expected csum
-0x0473ecb8 mirror 3
-    [Wed Aug  3 12:13:45 2022] BTRFS warning (device sdn): csum failed
-root -9 ino 257 off 6809309184 csum 0x13e9e2a0 expected csum
-0x723f00ca mirror 3
-    [Wed Aug  3 12:13:45 2022] BTRFS error (device sdn): bdev /dev/sdk
-errs: wr 0, rd 0, flush 0, corrupt 10, gen 0
-    [Wed Aug  3 12:13:48 2022] BTRFS info (device sdn): balance: ended
-with status: -5
-
-uname -a:
-    Linux magneto 5.18.11-200.fc36.x86_64 #1 SMP PREEMPT_DYNAMIC Tue
-Jul 12 22:52:35 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
-
-btrfs --version
-    btrfs-progs v5.18
-
-btrfs fi show
-    Label: 'raid6'  uuid: 4557fc3c-b70a-44cc-81b8-019658ea6cfd
-    Total devices 14 FS bytes used 37.11TiB
-    devid    1 size 9.10TiB used 3.44TiB path /dev/sdn
-    devid    2 size 9.10TiB used 3.44TiB path /dev/sdk
-    devid    3 size 7.28TiB used 3.41TiB path /dev/sdc
-    devid    4 size 5.46TiB used 3.42TiB path /dev/sdh
-    devid    5 size 3.64TiB used 3.41TiB path /dev/sdl
-    devid    6 size 3.64TiB used 3.41TiB path /dev/sdb
-    devid    7 size 5.46TiB used 3.41TiB path /dev/sdq
-    devid    8 size 4.55TiB used 3.41TiB path /dev/sdf
-    devid    9 size 4.55TiB used 3.41TiB path /dev/sdj
-    devid   10 size 4.55TiB used 3.41TiB path /dev/sdm
-    devid   11 size 4.55TiB used 3.41TiB path /dev/sdi
-    devid   12 size 9.10TiB used 3.45TiB path /dev/sdg
-    devid   13 size 9.10TiB used 3.45TiB path /dev/sde
-    devid   14 size 9.10TiB used 61.09GiB path /dev/sdr
-
-
-Thanks,
-Martin
+On mkfs side it would require more checks so that selecting
+block-group-tree and disabling free-space-tree can't be done and
+additional checks in kernel.
