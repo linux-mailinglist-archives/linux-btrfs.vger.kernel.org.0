@@ -2,68 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2398558853B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Aug 2022 02:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8F1588742
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Aug 2022 08:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236986AbiHCA6U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Aug 2022 20:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
+        id S236883AbiHCGTe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Aug 2022 02:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235306AbiHCA6Q (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Aug 2022 20:58:16 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2CD50070
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 Aug 2022 17:58:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1659488291;
-        bh=GLPRIX+38u3m5iI0oc5Jb66tv+At/KJkhOXQ5P1UYqY=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=SIAkMl8eiPsoAEUNver2H9LB6a2dbwCS/YEEQfhCSFvL15+j29+JFcdOjGM5vqGeI
-         h8QLcD5JGYRz07RqtT2SHCi8uaX0+OXvypOrOA9oa1IJ9R/Wzs4rfYaVkoqJ3NoGfK
-         Bc+EuUI0NqBZBptRej92F1c9tqhPXF205c8Bcsfw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mqs0X-1nf5O73jTF-00molz; Wed, 03
- Aug 2022 02:58:11 +0200
-Message-ID: <e2ea258a-baa8-e437-a303-c55184a55106@gmx.com>
-Date:   Wed, 3 Aug 2022 08:58:07 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+        with ESMTP id S236832AbiHCGTd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Aug 2022 02:19:33 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822E84E873;
+        Tue,  2 Aug 2022 23:19:31 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2735TA24005102;
+        Wed, 3 Aug 2022 06:19:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=8KPzX0v0rwIICCD6GHl2ZHnlIcPdfZMgyBLjyMYdz4w=;
+ b=ZSnvUxP5eNKyvJkU1BkUt9PPXyiYfvX800MXzVDMBG5KVN6ABq8ypR1PCXJdcOdw/rY9
+ 3EnIhlaGEtkNI4RNaeNKT/J3uaQiBloLc1XPTmLIMJdHdjaeQSpXKyYr9bzIK1uEgspv
+ lPw4DO5En4rLg2HG/reZcWHlVGKiV6VfBh+lNv/P9BaPHPhD09WoQG2JL3BEuRBTiyEe
+ Ix4w3tIsgXYo7VrRsWZObjElIneVH9VixjkCaVOa/kFJ+fq6c1EdRr02wJVPmNJDCP45
+ +WRcxoFqw1INuDHFTFg8Bwfmpxf8zSewk79xtsVX3Z1TkLfGKaP9OaKqeM9GyjV26ce7 OQ== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3hmv8s8xt9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Aug 2022 06:19:24 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 27365sVa008364;
+        Wed, 3 Aug 2022 06:19:23 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3hmu32rwyd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Aug 2022 06:19:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nDIWOan1Y5PmYJo0geiruvX6nx07f+800AklcfclhjY42StIMeARGNGZJnGQdTApH0zntZ83D127uOnY4fDKvIpjnOrAG0eZEKJsjbF4YeqI5ghs9mAnOLSbYxWO4okL2BwI3UoHg56QxPuu5jOst8hE7+YbXE+RJ/gy6yb8E0xVj6PTMWroVaeg0ZltYyiYOD0EwTV4ONi1ksyAhAEi9ohVIhyxFr92UG9aSo3i3QvrdqsvGjwAmAujsvSbQm9AB2WL9A0si1HA91YMY5qIh1gVrWEP4VJlEQYM9L8PubaN1tAc3zJtTqJuubu5Xy532DeuECyCgNBLJoYUpyqw7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8KPzX0v0rwIICCD6GHl2ZHnlIcPdfZMgyBLjyMYdz4w=;
+ b=VeXqVMm9KN+dAqKRpccv4mc1nKbkoj+O4S1HHDVAf0xXbDyLEalygPh5BrztKZWFIJqdF8iRDAs7K8TFJZF7w0gMPBLx/YULRbXBtHAqqlY8XcnNJ9uPHJStYCYHQRgo3bTx8PBwQN00S/8V5UNim3/RXK40qL4BxwC9IS60TxkIHHteAd+JXfFk0vBnNn+NGrOLTGtFX1gudoeoGuIbJujmmPsBE9klZ1AIt4rBaam7rWlUQFHvw3EH+VfhtT1EwnQx2ZGqOQRZQ5eBRXLLEfqTOCRe4wF8ZHhWrC4ZWOg8sqbExYwtb+BnwEkIKi+oqGyYsVGKvhSOkqTmwZgqcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8KPzX0v0rwIICCD6GHl2ZHnlIcPdfZMgyBLjyMYdz4w=;
+ b=i/ugSnT2CFozq7+EAFjc6dZer2hkdDwQpwmnAtxO47082VltrYDItuP3O9tN2BdTu0LoJdEWH10/qVMUFR3MBv4b5A2MfYojP36rxOWOavhKsQFJT2hZAYkdb0v9hokuCYgPMqwO1lb6kTPLVGTGh7GfV8aRfZlGBC/C925J3+s=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by SJ0PR10MB4733.namprd10.prod.outlook.com (2603:10b6:a03:2ae::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5504.14; Wed, 3 Aug
+ 2022 06:19:21 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::55d1:d16a:c681:2078]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::55d1:d16a:c681:2078%8]) with mapi id 15.20.5482.016; Wed, 3 Aug 2022
+ 06:19:20 +0000
+Message-ID: <da885cc8-1f60-d586-b8c7-f3f51f451ada@oracle.com>
+Date:   Wed, 3 Aug 2022 14:19:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Content-Language: en-US
-To:     "me@jse.io" <me@jse.io>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1658726692.git.wqu@suse.com>
- <CAFMvigdrNM4Jspc=_Pu1UM8Z=+YBdcMuAqJVTK6=LJzC43Aokw@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 00/14] btrfs: introduce write-intent bitmaps for RAID56
-In-Reply-To: <CAFMvigdrNM4Jspc=_Pu1UM8Z=+YBdcMuAqJVTK6=LJzC43Aokw@mail.gmail.com>
+Subject: Re: [PATCH]btrfs: Fix fstest case btrfs/219
+To:     dsterba@suse.cz, hmsjwzb <hmsjwzb@zoho.com>,
+        Nikolay Borisov <nborisov@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20220721083609.5695-1-hmsjwzb@zoho.com>
+ <0c2337c3-2b39-c54c-27e9-dd4f0a99cf71@suse.com>
+ <1aaff0ac-436e-7782-081c-3549ff3d8c8f@zoho.com>
+ <20220726183824.GL13489@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20220726183824.GL13489@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eFvcgmwDKRBzaVcqUdBNI7oXEQaRN+2CGuwsNO1uIc2FYpAe3Qq
- gY8AljE37ITwSZT+NjNHM5ROlxPPcflEGMr9V6XTAqDKgNoqVjmBrYKLn6xAszWV0qrjecs
- 96OCTyl2vGGDOu4dqOtcbHAWqh7IefmCpgtIbebpUsZHtvCJewvF3xcp1SCzf2oh2Kl8ckM
- TQNVZIuXLbsgy6CksApDw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UGT8elYWlII=:oeeV07RKVzhHRSMgJj8mPC
- 44//xGd4ELrT/Wyexd9MELeGfkEB4N2QKSjvGovaTjhsazMVXNzHneSz+BRW2bio4m9Kd66JW
- PxgRM5AbFKGDXrPE8wqCgj3mmxjfueTax+HqkTZCfX1qm1WFD/1XHSsBI5HCmiZFd4T4Nw4mN
- iGc4H3dppY3WHHILbaSsK7/5GbpzP+/MjBYwCoRwkn635NRVs64APGAOaoSRI2d/dEAA9xa9Z
- msGSDMdTxNcRWRrWHOFd2Hf6s1z//9NMYfHpK0N/ruXeUwBoy8fxmHjmCaSO8INUvbTXsKL/m
- 0evLeoZ5vX2trBQzlIJDt3Sz4sxDQDrfo9ERZqFRaRTKfUVvlxksF4BaRMEIkgtB1ptkPNR4r
- 0z4eSrvaEl9th2WW+1kFN0T2s/URuEcBUkU+oNEwZpVcGwigdj17rwMLqtCYopngekcw5ReBJ
- B0PHKq8RF2YWBL1VqiLY+N14NdBlJz2Dr78j+QPxPsT9BccpQZ/Hi+r4kNex9TatFC0ZHrEkb
- vkLZ6i72oT04nk+D5cBNb7bk1NZmjAMkmHxyNR+tDhbFMyDJBL/vwBP6pcdoW9GNpd0UGI6+H
- SuT98RsIRZbj0oGq/HJF/aYiusSy94YwWzaSfATo7aqcLpTcOktkBKj/CXPdC+yYnQPGDVo36
- Bny7FNIWSDaskoJUMA519ARkv36vmClfvjMwoT5qQfCU8/2knjOyMQ1RlTtaG5CwSh7aOOizg
- tpJLZXBbjiPzhaLJWxXhDY3Juru5F9s+pbp17J/C3oqcx3gS3IA9jyASZ6ryThwEJ6MOJbAm8
- tqkYkKhM8oyiQz1YvijPaHkgAND3ie7NRlYU9dNnGLJlRwLSAkCnc7VPAFINofAxIDcwh2vLO
- Q4FQtfvWPaxKpXH//jhRr3shFegqZFqRxvHkpBSLkchPbL8cbDjUTSTFTnYIPwMoWIZxPxDjh
- 24QUeDxiLPXeBsNXKJlJGHtIwwOERIq+YTSWB8GapKKMMB+e5leUFh9HYK7aISe2p2cr/BiW+
- YQ+7ZoTLB4PgSUU9Buetf/Z9/9dQ425h1kordaC6YeNTzpSIAR2VjD+1XjDdgiFJw7W966SmO
- 3DsG2g/S6HspGUjkGatLuVYcpneI/kmmGwTwH0sMOh98m13ri9P67gB/A==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI2PR02CA0041.apcprd02.prod.outlook.com
+ (2603:1096:4:196::20) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 87fadadd-83f3-4f5c-89df-08da75181a31
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4733:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PBSKDKh/DdbWe+rOh9NAZZLgl6u4SsM9noxfzyRg2opaGPnQGejNPccxB/OU9kzX0QQrYrG40RDaVicAAYW/g15NszWSlGGsLFYIs7L5nsYWj51zjrArCnsSjL71BlVxN5O4o2IjACoUJXsr7imd/I3cVnd9bk25phO4HHH5GWMVu4yWdddsHwzdrcQMaN+uXoLvQO7n2wz1YgkUa5dytZpgfrI+uxUoQGhoDibnjTc+yF2OREIeiRmsPu29ASFp8Gthr/0SH3VQwQ0VFNKcLQlsLpRBivHAtjg5MjJFE39bbKj/x+8h8fwFhC3B6jKaGQ9hzgVNx3V9iHrXCs31nvOO1f0SqV9TaK9nvEobr6ItMqH8oxcFtdKV/Nua9eLox4YMb68RYoC/PfLoNzhNRbvH0B2s8ptK4Z4VuiopwXp5g+ZyVnWdKahoq2LV6cH2yVubHOKW43nasPgzhD+fW8VGPWeW3CkDXkT/Vxb2BkTCf+q0daW8vLaKhzSs3dShpUthGeCnjKMyonuVq+sfBziZx0ntByJumQ4MQ8W2E/viJoGGzzA6qZSyjbAwHoB5+ek/dNzbncY569qc7n+CpqGkGMJsyQBS687Ms4ZMxBEUdqTOCHUh3DXtfY2N6oIzdI7LC9CHT9TZ3DbcVWaoLkPKgiw+gQyFxTFW0iBLWr6dary5903R0CZCrHTJyOWmenMk1KjrWyskWnT7FKVj+tAZ3EWdTpE3//7Ui/o25OS+0rQgqZtx+qnK0q4nWkj8Pu0tTlqg7SD3R9WWvYilB7YPM9mBg7PQz0EOJnnIQxXjj8r6ryL5zQLh65PtcKmJQK+01tWHJ17wLIvJG6IcfA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(396003)(366004)(136003)(39860400002)(346002)(376002)(66476007)(38100700002)(6666004)(66556008)(316002)(66946007)(44832011)(5660300002)(8676002)(41300700001)(2906002)(8936002)(6486002)(83380400001)(36756003)(86362001)(186003)(478600001)(31686004)(6512007)(26005)(31696002)(53546011)(110136005)(2616005)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OVlPRlI0SDlxYTJUd0JjYjMwZXpOK0lRSFJUbHNydUtIdEdwV281UFYrZ2Rq?=
+ =?utf-8?B?dGNpQ3RrYzRJUVY4MHVyRFcrV2lWMU43VGc5dzd4UGNiM0NZOExlQXRHSDVQ?=
+ =?utf-8?B?a0Vic3o3anF3bmlHVEdIS3JxUXRNWE9IM3ZMRHVwVldPSFpNcFBSUUN4amh3?=
+ =?utf-8?B?V2g1SEgrUVZxMWMzeWhVcE1DVHVMOWc2cHNUWG1UZC9hZFV6a2NjR2xZdWt1?=
+ =?utf-8?B?eXhwdWdGWUZUMDN4ZlY1dC9tOFpnamdBR2lUdFhFbVk2NFhTVXk1RExCSmc4?=
+ =?utf-8?B?SlZNbnBWaTF1QXRJcElCR2k2Y2o2NmNLR0tCWllwYmtvZDBWc21TQnd2bm5O?=
+ =?utf-8?B?cEQzVkllS0dwbFFnS2N5T20wMlN3ZGJNaXAybVpiNVg3b2hCcklxNHBsck5P?=
+ =?utf-8?B?aENQMENaTmhKYWNPWEUvcXVodVZVVzd5ZkJLV1FiR3dHbzRaYzBKbllrMWRm?=
+ =?utf-8?B?YlM1a0JraUtENzluakpiZjZudlNULzllWXp5cFlYb1pNOXN0bFc3aElFZEJJ?=
+ =?utf-8?B?ZTR0SEVaMUlRQ0hvc1VmdWl4eHlFamZRNXFLMEFjcTRqY2RldXBIMXdNd29W?=
+ =?utf-8?B?bUpkdTJGL2tXSlgzaU02cFZyMkNqL3gwNllmRGJENUhya0xzOFF0ZVFuOVpx?=
+ =?utf-8?B?NXlPU2FuL2RPc0Eydm5lU1M2YjJETnlTL0FRRmJQN0JZMk1xL1dwdWprNHZR?=
+ =?utf-8?B?Vm90SEs1SUNiT3RoaDJkQW0vU2ovQjRiRU5MQkczKzhmS3FXdlRRNW0vR0ty?=
+ =?utf-8?B?dXBlRUpDYlRoTTlXT0xURXliY0xLNnRpU0lEcWVwUFVldm8vbkpEWXIwVmpT?=
+ =?utf-8?B?Y2FpbHA1RTk2Tkl0TmJTeGlPZGxuU2lSd2VZTU9pTVhOVWVDR0ZzR2htS3dv?=
+ =?utf-8?B?b2lTeXJiSVNPWVpkd1h2YzZrMWJtOElVMGZRa3EyUXFaa2pXYkFFTG1RODlU?=
+ =?utf-8?B?WTZPUVdSM1ZPWnpSK0cxNnZEdzR3MVJvbWZuSzNidzdRK0s3Z1dWODZCMUpu?=
+ =?utf-8?B?a0hwOU1icXEwZ2RIdHU1d3NiS1h4WE5xK0RrSVFmU1pwd0YyQWZwMWYrUndI?=
+ =?utf-8?B?WTBDbkZvamNNdndSb3NtMVZZQmVaT0hPUW5jU3hnTWVvdVE4V0dSS1NsSjNP?=
+ =?utf-8?B?UHZXVU9pdHByTXBkcVBCeHVwK3dnR3g3NW0ycG1KSlQxa0c4VlBpUTNvWGl1?=
+ =?utf-8?B?N0twd3BucWgrTjlxQjFyb0lIZHdvWkZaYjJ6bi95T1pqWENvbWZ1RDlCa0hj?=
+ =?utf-8?B?dVRYdGgrN240Nkp4N1NXRWpPMXFwaktHb2ZoMDZhcERtcW02Z1lZT3pFcUpN?=
+ =?utf-8?B?YVRPTDQ1ZTYxdnphdXVyeW9VTlNDRDhvMGNwdTdLaDhZMmdrN2JBMUJ5UXpP?=
+ =?utf-8?B?cXNnRlNNbXp0U1lSc3h0WGZXNFF4YytISnJBVW1OMndsZkcyc1dScG0yZk9z?=
+ =?utf-8?B?aElFZmVOTndleXg4a3NhaGhwcXNhVndkTnVtNEZBYlZRNmY4NVNGWDNERWhq?=
+ =?utf-8?B?QzdBVXlTUlhHM1lHb2JlaDNGeG8zRy9DbVJOSlRpUXNqaHNabjB5MGM1blk4?=
+ =?utf-8?B?Wk0xR0pzM1VFUWxXY3FvZVdlMGQ3NTJUZHE0UlNDQXI1YVEzRUNKNDdrTzZu?=
+ =?utf-8?B?MnRSa0JkWURoeW9qWVpUQUZLTFh0Z3hWcWM2SHozQ3RMdTBzMS80UkQyb0hI?=
+ =?utf-8?B?Z0R1cGVEanFUMndDZmtmZ1dLSHJyRmFnbEV1Tk1HOWVScDJoVXNDRFBrK0c4?=
+ =?utf-8?B?TnBnZk5UVU80MHdiYSsyTlYxR1hwS2hsMjhZcU5pcTRrdUxZbjBsS0h0VVRp?=
+ =?utf-8?B?aG1xdEwzSzA3M0VSeDZpR3R2WGxnbTVhMlRTcXRUaHJUZXAzc0o3WmJVV2tI?=
+ =?utf-8?B?RjBTMmwvbnFibVlFWEtFQ3JCWDlsSGNVemZoQi9Ca1FjbWVXL0dWckNnblUx?=
+ =?utf-8?B?czRKY1JqRE05Q1FzcGhjRFdxS2dOb0FDdnFTREd4Ujd1emZveFY3Ky9oK1JJ?=
+ =?utf-8?B?MWk5c1FET0VZRVoxZFhPNFM1UG0zR2RoR3hDb0I5QWVjd3Fvdm4yTG9CcGNP?=
+ =?utf-8?B?aGxKUm12enNWanZKek0zaGFBUk9SdktiU2tVR1dGNFRaNUY3QWlxUzNSQjBw?=
+ =?utf-8?Q?HhiGzBhOfi5YyNrNF4iJ10S3M?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87fadadd-83f3-4f5c-89df-08da75181a31
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2022 06:19:20.9204
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yUZmJ3P3Pb42NMkVpKOy5wrN4jDXXMR+zHn9qhcwCO3q3h9U14pekDZs3WRc6j67oWc4h7xEE7L9rP7uNJCE7w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4733
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-03_03,2022-08-02_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 suspectscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
+ definitions=main-2208030030
+X-Proofpoint-GUID: Dfc2cWE1THp1u2pC78ySQuOtCC1ap9l0
+X-Proofpoint-ORIG-GUID: Dfc2cWE1THp1u2pC78ySQuOtCC1ap9l0
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,296 +160,126 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/8/3 08:29, me@jse.io wrote:
-> Hey there,
-> It would be nice if a bitmap could be used for other purposes too, not
-> just for RAID5/6. To not only improve resilver times without scrubbing
-> the entire array,
 
-That's already in the todo list.
 
-> but also for just syncing up NOCOW files.
 
-But I'm not sure if it can help for NOCOW files.
+On 27/07/2022 02:38, David Sterba wrote:
+> On Fri, Jul 22, 2022 at 01:34:11AM -0400, hmsjwzb wrote:
+>> On 7/21/22 09:37, Nikolay Borisov wrote:
+>>> On 21.07.22 г. 11:36 ч., Flint.Wang wrote:
+>>>> Hi,
+>>>> fstest btrfs/291 failed.
+>>>>
+>>>> [How to reproduce]
+>>>> mkdir -p /mnt/test/219.mnt
+>>>> xfs_io -f -c "truncate 256m" /mnt/test/219.img1
+>>>> mkfs.btrfs /mnt/test/219.img1
+>>>> cp /mnt/test/219.img1 /mnt/test/219.img2
+>>>> mount -o loop /mnt/test/219.img1 /mnt/test/219.mnt
+>>>> umount /mnt/test/219.mnt
+>>>> losetup -f --show /mnt/test/219.img1 dev
+>>>> mount /dev/loop0 /mnt/test/219.mnt
+>>>> umount /mnt/test/219.mnt
+>>>> mount -o loop /mnt/test/219.img2 /mnt/test/219.mnt
+>>>>
+>>>> [Root cause]
+>>>> if (fs_devices->opened && found_transid < device->generation) {
+>>>>      /*
+>>>>       * That is if the FS is _not_ mounted and if you
+>>>>       * are here, that means there is more than one
+>>>>       * disk with same uuid and devid.We keep the one
+>>>>       * with larger generation number or the last-in if
+>>>>       * generation are equal.
+>>>>       */
+>>>>      mutex_unlock(&fs_devices->device_list_mutex);
+>>>>      return ERR_PTR(-EEXIST);
+>>>> }
+>>>>
+>>>> [Personal opinion]
+>>>> User might back up a block device to another. I think it is improper
+>>>> to forbid user from mounting it.
+>>>>
+>>>> Signed-off-by: Flint.Wang <hmsjwzb@zoho.com>
+>>>
+>>>
+>>> This lacks any explanation whatsoever so it's not possible to judge whether the fix is correct or not.
+>>>
+>>>> ---
+>>>>    fs/btrfs/volumes.c | 2 +-
+>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>>>> index 6aa6bc769569a..76af32032ac85 100644
+>>>> --- a/fs/btrfs/volumes.c
+>>>> +++ b/fs/btrfs/volumes.c
+>>>> @@ -900,7 +900,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>>>>             * tracking a problem where systems fail mount by subvolume id
+>>>>             * when we reject replacement on a mounted FS.
+>>>>             */
+>>>> -        if (!fs_devices->opened && found_transid < device->generation) {
+>>>> +        if (fs_devices->opened && found_transid < device->generation) {
+>>>>                /*
+>>>>                 * That is if the FS is _not_ mounted and if you
+>>>>                 * are here, that means there is more than one
+>>
+>> Hi Nikolay,
+>>
+>> It seems the failure of btrfs/219 needs some explanation.
+>>
+>> Here is the thing.
+>>          1. A storage device A with btrfs filesystem is running on a host.
+>>          2. For example, we backup the device A to an exactly some device B.
+>>          3. The device A continue to run for a while so the device->generation is getting bigger.
+>>          4. Then you umount the device A and try to mount device B.
+>>          5. Kernel find that device A has the same UUID as device B and has bigger device->generation.
+>>             So the mount request of device B will be rejected.
+> 
+> That's on purpose, devices are matched by UUIDs and making block copies
+> of the same filesystem is known "don't do that" and discouraged.
+> 
+> If you must store the block copies then you can change the UUID by
+> btrfstune, there are two ways (fast metadata_uuid, and slow rewriting
+> all metadata uuids in all blocks).
+> 
+>>
+>>              if (!fs_devices->opened && found_transid < device->generation) {
+>>                   /*
+>>                    * That is if the FS is _not_ mounted and if you
+>>                    * are here, that means there is more than one
+>>                    * disk with same uuid and devid.We keep the one
+>>                    * with larger generation number or the last-in if
+>>                    * generation are equal.
+>>                    */
+>>                    mutex_unlock(&fs_devices->device_list_mutex);
+>>                    return ERR_PTR(-EEXIST);
+>>              }
+>>
+>> I think it is improper to reject that request. Because device A is not in open state.
+> 
+> But this would prevent mounting A. There should really be some way to
+> distiguish the filesystems, the block device is not a stable identifier,
+> the UUID is. Imagine having 10 copies of the same filesystem identified
+> by the same UUID and device UUID, but with different generations and
+> data. That's asking for problems.
+> 
+> There's not much the filesystem driver can do than to avoid using old
+> devices and giving preference to the highest generation device. All
+> devices with btrfs signature are registered in memory and this is the
+> primary source when mounting the devices, not the block device itself.
 
-> Corruption
-> sucks, and using NOCOW the user should assume you have no protection
-> from csums. However, the problem with NOCOW right now is on any
-> redundant profile, it seems once one copy goes out of sync with
-> another, unless the user balances the affected chunks or cp
-> --reflink=3Dnever the file, you can end up in a case where one copy may
-> always be out of sync with the other. Then, the application reading
-> the file can get different results depending on which disk it reads
-> from.
->
-> That seems worse than the corruption itself that can't be repaired due
-> to no CSUMs, and is by far worse than MD.
 
-The problem for NOCOW file is, it also implies NOCSUM, and even we can
-detect mismatches in copies, it only really helps limited profiles like
-RAID1C3, RAID1C4, and maybe RAID56.
+David,
 
-The problem here is, for 2 mirrors profiles, even if we can detect the
-mismatch, we have no idea which is correct.
+  The unintegrated patch [1] also used the same use case.
 
-We rely on csum to determine which copy is correct, but NOCOW/NOCSUM
-makes it very hard to do.
+   [1]
+     [PATCH v2][RESEND] btrfs: allow single disk devices to mount with 
+older generations
 
-For RAID1C3/C4 we can go democracy, but for RAID1C4 it's also possible
-that we got two different content from all the mirrors.
+  IMO device-copy and mount (without changing the UUID) can be allowed
+  for a single device btrfs volume only. We even have a fstest case
+  btrfs/219, which tests single device duplicate UUIDs.
 
-If we really want to solve the NOCOW/NOCSUM problem, I guess full
-journal is the only solution, and I'm pretty sure we will go that
-direction anyway (after the write-intent part get merged, as the full
-journal still relies on a lot of things from write-intent code).
+  Please integrate [1].
 
->
-> This is especially worrisome since a number of distros and userspace
-> tools and distros these days are defaulting to using the NOCOW
-> attribute for common applications. ie. Arch and mySQL, or libvirt.
->
-> Is there any way this could be used for these purposes as well, in
-> addition to the stated purpose for RAID5/6?
-
-For now, the plan for future development on write-intent only includes:
-
-- For degraded mount
-- As basis for later full journal implement.
-
-For your concern, it's in fact not related to write-intent, but in scrub
-code.
-
-In that part, I have some plan to rework the scrub interface completely,
-and with the rework, it will have the ability to detect content
-difference between mirrors, even without csum.
-
-But that would take a longer time, and the main purpose is to improve
-the RAID56 scrub perf, not really the problem you mentioned.
-
-Thanks,
-Qu
-
->
-> On Mon, Jul 25, 2022 at 2:38 AM Qu Wenruo <wqu@suse.com> wrote:
->>
->> [CHANGELOG]
->> v2->v1:
->> - Add mount time recovery functionality
->>    Now if a dirty bitmap is found, we will do proper recovery at mount
->>    time.
->>
->>    The code is using scrub routine to do the proper recovery for both
->>    data and P/Q parity.
->>
->>    Currently we can only test this by manually setting up a dirty bitma=
-p,
->>    and corrupt the full stripe, then mounting it and verify the full
->>    stripe using "btrfs check --check-data-csum"
->>
->> - Skip full stripe writes
->>    Full stripe writes are either:
->>    * New writes into unallocated space
->>      After powerloss, we won't read any data from the full stripe.
->>
->>    * Writes into NODATACOW ranges
->>      We won't have csum for them anyway, thus new way to do any recover=
-y.
->>
->> - Fix a memory leakage caused by RO mount
->>    Previously we only cleanup the write-intent ctrl if it's RW mount,
->>    thus for RO mount we will cause memory leak.
->>
->>
->> RFC->v1:
->> - Fix a corner case in write_intent_set_bits()
->>    If the range covers the last existing entry, but still needs a new
->>    entry, the old code will not insert the new entry, causing
->>    write_intent_clear_bits() to cause a warning.
->>
->> - Add selftests for the write intent bitmaps
->>    The write intent bitmaps is an sparse array of bitmaps.
->>    There are some corner cases tricky to get it done correctly in the
->>    first try (see above case).
->>    The test case would prevent such problems from happening again.
->>
->> - Fix hang with dev-replace, and better bitmaps bio submission
->>    Previously we will hold device_list_mutex while submitting the bitma=
-ps
->>    bio, this can lead to deadlock with dev-replace/dev-removal.
->>    Fix it by using RCU to keep an local copy of devices and use them
->>    to submit the bitmaps bio.
->>
->>    Furthermore, there is no need to follow the way of superblocks
->>    writeback, as the content of bitmaps are always the same for all
->>    devices, we can just submitting the same page and use atomic counter
->>    to wait for them to finish.
->>
->>    Now there is no more crash/warning/deadlock in btrfs/070.
->>
->> [BACKGROUND]
->> Unlike md-raid, btrfs RAID56 has nothing to sync its devices when power
->> loss happens.
->>
->> For pure mirror based profiles it's fine as btrfs can utilize its csums
->> to find the correct mirror the repair the bad ones.
->>
->> But for RAID56, the repair itself needs the data from other devices,
->> thus any out-of-sync data can degrade the tolerance.
->>
->> Even worse, incorrect RMW can use the stale data to generate P/Q,
->> removing the possibility of recovery the data.
->>
->>
->> For md-raid, it goes with write-intent bitmap, to do faster resilver,
->> and goes journal (partial parity log for RAID5) to ensure it can even
->> stand a powerloss + device lose.
->>
->> [OBJECTIVE]
->>
->> This patchset will introduce a btrfs specific write-intent bitmap.
->>
->> The bitmap will locate at physical offset 1MiB of each device, and the
->> content is the same between all devices.
->>
->> When there is a RAID56 write (currently all RAID56 write, including ful=
-l
->> stripe write), before submitting all the real bios to disks,
->> write-intent bitmap will be updated and flushed to all writeable
->> devices.
->>
->> So even if a powerloss happened, at the next mount time we know which
->> full stripes needs to check, and can start a scrub for those involved
->> logical bytenr ranges.
->>
->> [ADVANTAGE OF BTRFS SPECIFIC WRITE-INTENT BITMAPS]
->>
->> Since btrfs can utilize csum for its metadata and CoWed data, unlike
->> dm-bitmap which can only be used for faster re-silver, we can fully
->> rebuild the full stripe, as long as:
->>
->> 1) There is no missing device
->>     For missing device case, we still need to go full journal.
->>
->> 2) Untouched data stays untouched
->>     This should be mostly sane for sane hardware.
->>
->> And since the btrfs specific write-intent bitmaps are pretty small (4Ki=
-B
->> in size), the overhead much lower than full journal.
->>
->> In the future, we may allow users to choose between just bitmaps or ful=
-l
->> journal to meet their requirement.
->>
->> [BITMAPS DESIGN]
->>
->> The bitmaps on-disk format looks like this:
->>
->>   [ super ][ entry 1 ][ entry 2 ] ... [entry N]
->>   |<---------  super::size (4K) ------------->|
->>
->> Super block contains how many entires are in use.
->>
->> Each entry is 128 bits (16 bytes) in size, containing one u64 for
->> bytenr, and u64 for one bitmap.
->>
->> And all utilized entries will be sorted in their bytenr order, and no
->> bit can overlap.
->>
->> The blocksize is now fixed to BTRFS_STRIPE_LEN (64KiB), so each entry
->> can contain at most 4MiB, and the whole bitmaps can contain 224 entries=
-.
->>
->> For the worst case, it can contain 14MiB dirty ranges.
->> (1 bits set per bitmap, also means 2 disks RAID5 or 3 disks RAID6).
->>
->> For the best case, it can contain 896MiB dirty ranges.
->> (all bits set per bitmap)
->>
->> [WHY NOT BTRFS BTREE]
->>
->> Current write-intent structure needs two features:
->>
->> - Its data needs to survive cross stripe boundary
->>    Normally this means write-intent btree needs to acts like a proper
->>    tree root, has METADATA_ITEMs for all its tree blocks.
->>
->> - Its data update must be outside of a transaction
->>    Currently only log tree can do such thing.
->>    But unfortunately log tree can not survive across transaction
->>    boundary.
->>
->> Thus write-intent btree can only meet one of the requirement, not a
->> suitable solution here.
->>
->> [TESTING AND BENCHMARK]
->>
->> For performance benchmark, unfortunately I don't have 3 HDDs to test.
->> Will do the benchmark after secured enough hardware.
->>
->> For testing, it can survive volume/raid/dev-replace test groups, and no
->> write-intent bitmap leakage.
->>
->> Unfortunately there is still a warning triggered in btrfs/070, still
->> under investigation, hopefully to be a false alert in bitmap clearing
->> path.
->>
->> [TODO]
->> - Extra optimizations
->>    * Enlarge the window between btrfs_write_intent_mark_dirty() and
->>      btrfs_write_intent_writeback()
->>      So that we can merge more dirty bites and cause less bitmaps
->>      writeback
->>
->> - Proper performance benchmark
->>    Needs hardware/baremetal VMs, since I don't have any physical machin=
-e
->>    large enough to contian 3 3.5" HDDs.
->>
->>
->> Qu Wenruo (14):
->>    btrfs: introduce new compat RO flag, EXTRA_SUPER_RESERVED
->>    btrfs: introduce a new experimental compat RO flag,
->>      WRITE_INTENT_BITMAP
->>    btrfs: introduce the on-disk format of btrfs write intent bitmaps
->>    btrfs: load/create write-intent bitmaps at mount time
->>    btrfs: write-intent: write the newly created bitmaps to all disks
->>    btrfs: write-intent: introduce an internal helper to set bits for a
->>      range.
->>    btrfs: write-intent: introduce an internal helper to clear bits for =
-a
->>      range.
->>    btrfs: selftests: add selftests for write-intent bitmaps
->>    btrfs: write back write intent bitmap after barrier_all_devices()
->>    btrfs: update and writeback the write-intent bitmap for RAID56 write=
-.
->>    btrfs: raid56: clear write-intent bimaps when a full stripe finishes=
-.
->>    btrfs: warn and clear bitmaps if there is dirty bitmap at mount time
->>    btrfs: avoid recording full stripe write into write-intent bitmaps
->>    btrfs: scrub the full stripe which had sub-stripe write at mount tim=
-e
->>
->>   fs/btrfs/Makefile                           |   5 +-
->>   fs/btrfs/ctree.h                            |  26 +-
->>   fs/btrfs/disk-io.c                          |  58 +-
->>   fs/btrfs/raid56.c                           |  27 +
->>   fs/btrfs/scrub.c                            | 177 +++-
->>   fs/btrfs/sysfs.c                            |   2 +
->>   fs/btrfs/tests/btrfs-tests.c                |   4 +
->>   fs/btrfs/tests/btrfs-tests.h                |   2 +
->>   fs/btrfs/tests/write-intent-bitmaps-tests.c | 247 ++++++
->>   fs/btrfs/volumes.c                          |  34 +-
->>   fs/btrfs/write-intent.c                     | 923 +++++++++++++++++++=
-+
->>   fs/btrfs/write-intent.h                     | 303 +++++++
->>   fs/btrfs/zoned.c                            |   8 +
->>   include/uapi/linux/btrfs.h                  |  17 +
->>   14 files changed, 1812 insertions(+), 21 deletions(-)
->>   create mode 100644 fs/btrfs/tests/write-intent-bitmaps-tests.c
->>   create mode 100644 fs/btrfs/write-intent.c
->>   create mode 100644 fs/btrfs/write-intent.h
->>
->> --
->> 2.37.0
->>
+-Anand
