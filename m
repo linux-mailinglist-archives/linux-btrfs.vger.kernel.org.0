@@ -2,62 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C235E589442
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Aug 2022 00:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B39EC589447
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Aug 2022 00:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236734AbiHCWDh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Aug 2022 18:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
+        id S236723AbiHCWJm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Aug 2022 18:09:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233816AbiHCWDg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Aug 2022 18:03:36 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B2E5C9FB
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 Aug 2022 15:03:35 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id gb36so8199254ejc.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Aug 2022 15:03:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xWvo1hXHcm4c74Fa6EiiDmZCWQLToep9LsievYqATlk=;
-        b=glex+ulSc5pp/uo50vjjV6bOJCnWlEqFVycxULeTvgDGFPMwFfpGtUl7XdNTX54nlN
-         8wU/mEqDdvnbqXA3hgum/EyTtvnG7BQR/5SGKzzDWwgcTLC4MFXaaW0GalZMaBIeDPfy
-         di20YzSxZ3UBaLYjC3qdeUAottwXCpUmn0nUaUGA7TQVX+VHx6V2iez7p9nIS+OknYuC
-         53lyi7SgD12YIKXlOd19sySnxaPpDWQOztKdGfcA6B9h6G2co1jDohIDsm2tTPHVyROb
-         Y5b7r/vsQHZXGQKOBpOMGW8K8JkCoQv3hzQ1OVNIotPswRQjtFxWhJEMTKFA+mYkzDBQ
-         Gi7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xWvo1hXHcm4c74Fa6EiiDmZCWQLToep9LsievYqATlk=;
-        b=KiLrWz5vqe+lfMsLC3vzkYi4hUA/Cdt3UpsBy6Sg1mb7ViJVpnj+PYZ2TMvl60+ABG
-         d4aa2PrNnZbRDftTUh3xGu/znlGpbf1eJHtSponiT0G9qQA0V9yhKRLnjuZ6miAoksJu
-         D87W5Lk7g9iX0oVPWQ7d8epJ6S4GqZA3gMPQGAW7nySEGkIqik/9CgnDNMc5lSdt5bT0
-         wFkWDBQ987DYr+wuL+UPJYYeWiWEfNrzuuQLxGRIpGgxhm1L5FZwcJ2nT41UCHf9oJ1g
-         +X4HGDIlO2mc1IU0rSzuUr01St99YX0AtCbUWr9XJQJta7MOktsqckyyPZViYS4EeiZJ
-         8KqA==
-X-Gm-Message-State: AJIora+sdAA2jXmobZUbUvnZTJV4tuY6olWpD+yac5tSAQZc7M0xfgb4
-        SPSJDeb7iIuoIfMvjjNE4K5B6eY9TYTiV4XQgJtMOuMs
-X-Google-Smtp-Source: AGRyM1uK8gMg8sWOtJTZXHlkq/msdkd0+S/tCLYp+jPRglcCjnVJ77GPrQb3Oc24t6nyv3I6oALvdKRzaNuiM6oji44=
-X-Received: by 2002:a17:906:5d08:b0:6ff:8ed:db63 with SMTP id
- g8-20020a1709065d0800b006ff08eddb63mr22200138ejt.408.1659564213683; Wed, 03
- Aug 2022 15:03:33 -0700 (PDT)
+        with ESMTP id S229529AbiHCWJl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Aug 2022 18:09:41 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075EA1D31C
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 Aug 2022 15:09:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1659564574;
+        bh=BVEKQxq4vNBAS9rE90DlQBKGcR3KOPNlxmeYSY59DxY=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=AKYOiu0g71R5UdYWB30IziLnHoGBRJOif8jJ2/36/27nuqr2V76LzoaWdYn74Di4Q
+         ekQDYdxoTqbJK5YMwQyJQXpPDSSjO3j1JCouEAnzA/JwsauAmsLZPb74uG2soi4PGf
+         MxhwwjDPvUeq5Vm6ex9DIy2lJ/ngHWaSycuKcquU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMofc-1o2ndp1r64-00IpqG; Thu, 04
+ Aug 2022 00:09:34 +0200
+Message-ID: <a0f908d8-a6ee-4fe5-83b4-090b555dd324@gmx.com>
+Date:   Thu, 4 Aug 2022 06:09:30 +0800
 MIME-Version: 1.0
-References: <CAHs_hg1NTbSsoev93y0Sx6NguVKndR+d410yZzbMhii2ipaBcQ@mail.gmail.com>
- <CAO1Y9wo_HcouRuOa8b7+2bXwZJOHNiy9PsxcYxsQAZ8ggvTxzw@mail.gmail.com>
-In-Reply-To: <CAO1Y9wo_HcouRuOa8b7+2bXwZJOHNiy9PsxcYxsQAZ8ggvTxzw@mail.gmail.com>
-From:   Martin <mbakiev@gmail.com>
-Date:   Wed, 3 Aug 2022 16:02:57 -0600
-Message-ID: <CAHs_hg3_KFLSC+kMpT+cbKuhUCJqwaYWcWL7R7Q1xT9_-xWvvw@mail.gmail.com>
-Subject: Re: Balance fails with csum errors, but scrub passes without errors
-To:     Thiago Ramon <thiagoramon@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] btrfs: check for overlapping extent items in tree checker
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <0a9f7ca2717c0378acf77d71a0d1b680d4d5d6b9.1659551313.git.josef@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <0a9f7ca2717c0378acf77d71a0d1b680d4d5d6b9.1659551313.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VIwwZ6mOeBuDV+PGxGQq5a6rHQn05/c8ukaOj0fSKGDHt8AM/9S
+ 3YI3AgNpIXVJ2QpORWDjCtQnS17q7xKaCrbXXI/KIyGYq7ztQNNIabku9rmzE7PrMRsCKVu
+ WGeZM19b/T0jgXBz9aOl+B8OP4UKG1dqB8poKK7fcalDDwsWInGQL2pQsuEgFIP4yjfsogW
+ 1zAa1ZWtj4mBAnmcr0UyA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:c/NKG/KJ59M=:Q0kfIGeoGfq0NiF8iqVSuj
+ pEF7bdrW3bs/X9fQ64s3HWPEubK6VDSgovdrLCuZZVdwCBao94OflV4/nAA5Ce1UxHYmTNYZj
+ TFRcdjEGhT3t6DlbzlL7a7sdkXTMX8PtSvvzyctT9W1K8C3TUY4Iw7RONdRgOWimcfMFerli5
+ nr3INFj575CQuPgmdJUAtIxCfGKYnSvnjA47BCOYhK2PErd757ocqES4ZbK0xUr6Z6efLysqq
+ GlTPi+77zNti42Fe28rISLK8f3z7HiYdjQghkCibogIg8E6hIjIKezRMFCzCywKRTdB5SBssJ
+ vc1trDxXIVU2GaxsZBGxrTXhdfzT9uv7UaW1avONdUv5wVlXY/QmAPCtNi4fpRkE+dRg3+Tu4
+ 65OSfJDLH8SOaHZKDVykGdVSOegcJZP3uUQn+MVOt3wtG8VrImqGhlculmXVpT9xnaS4eVCaU
+ EehBt12qGI7tl15gKKpwIYo3unR36c2QRLyXLTQBIST02B5o6MsOeqIFNx/FabFELQz1+4vub
+ l9iq5oo7bBTOQPCpJzqcMOPc2+u256w/Y8vN0UNG2LvN+WJR36JHvE7QfOxeU1ALP/D073OVo
+ Sukbjs7T9Mza5HdzYZA9ZJCI5LN54Xc09Aeo/RvTTn+2b9RT55GP/PcKfTESKpTb1m4VOY4rq
+ O2FpRHJclylTPbffSNvhMUjJQ8zpfSXOCHYKKziPELJdMZ1DgJHtloI1uZ+gaaQfC8+mPu9z6
+ AoK8nR6gA+0uR5Ksx0BenxRLejO9cqli91envJ3va3ZGeIsUmbnEtAxfB/X5TzozhTLrZWC6t
+ ssRZ28xCoQEb58JmHXBghA5gk/SbxCsUz9KgxfCy7sTvIc4MuVFqx2Et/HljtXN/ugE9tJ1eg
+ qaTjxqEW0Y3z1fqVrbmbEXMyetRAFUfnLU1MpTAA9oq+S20PfaSWsI1M4XCL6JWnv+y0fCSrO
+ KS/vkvmiwYoyNAcB1WE6IfTb+n84We/1PuyK0lpCrb1P7/ujzbq1aFE0UGm+f8aHv5PUms5+Z
+ Vm1tlya6IGbnDLA+irCz327aWjLzphQQn99zywN3UmTA4xOQ8+kVfcivQewkcQgJoHKQj3qNn
+ 5CjmgExhdIGH9Vgf2s5GhYWKXzpvqmCzSPpK8Y5BAjug2QXYd3VOBk61w==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,27 +70,76 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> I've had similar issues. There's 2 general cases which you need to
-> find and correct: actual csum errors on file data, and csum errors
-> outside the file data (AFAIK only on compressed files).
-> The first one is easier to spot by reading all files in the FS and
-> logging anything that throws an IO error. Just running a find and
-> cat'ing the files to /dev/null should do and list all errors, though
-> you might prefer to use something more sophisticated to log and resume
-> if you encounter any problems while doing it (might stumble on some
-> kernel BUG while doing it).
-> After you found all the actually damaged files and dealt with them
-> (ddrescue or just deleting them), you are left with pretty much trying
-> to balance, getting an error, finding the responsible file from the
-> offset on the error message (it's the offset inside the block group
-> being currently relocated) and then just defragging the file should be
-> enough to clear the error. Then just resume the balance and continue
-> on to the next one...
 
-Do you have more information on how to figure out which files are
-affected from the log error messages there?
-Reading all the files first seems unnecessary if I can just use the
-block group/offset to figure out the damaged files.
-Using `find . -inum 257` points me to a file, but the entire file
-reads just fine, so I suspect that's incorrect and has something to do
-with the "root -9" part of the error message.
+
+On 2022/8/4 02:28, Josef Bacik wrote:
+> We're seeing a weird problem in production where we have overlapping
+> extent items in the extent tree.  It's unclear where these are coming
+> from, and in debugging we realized there's no check in the tree checker
+> for this sort of problem.  Add a check to the tree-checker to make sure
+> that the extents do not overlap each other.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+> ---
+>   fs/btrfs/tree-checker.c | 25 +++++++++++++++++++++++--
+>   1 file changed, 23 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index 9e0e0ae2288c..43f905ab0a18 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -1233,7 +1233,8 @@ static void extent_err(const struct extent_buffer =
+*eb, int slot,
+>   }
+>
+>   static int check_extent_item(struct extent_buffer *leaf,
+> -			     struct btrfs_key *key, int slot)
+> +			     struct btrfs_key *key, int slot,
+> +			     struct btrfs_key *prev_key)
+>   {
+>   	struct btrfs_fs_info *fs_info =3D leaf->fs_info;
+>   	struct btrfs_extent_item *ei;
+> @@ -1453,6 +1454,26 @@ static int check_extent_item(struct extent_buffer=
+ *leaf,
+>   			   total_refs, inline_refs);
+>   		return -EUCLEAN;
+>   	}
+> +
+> +	if ((prev_key->type =3D=3D BTRFS_EXTENT_ITEM_KEY) ||
+> +	    (prev_key->type =3D=3D BTRFS_METADATA_ITEM_KEY)) {
+> +		u64 prev_end =3D prev_key->objectid;
+> +
+> +		if (prev_key->type =3D=3D BTRFS_METADATA_ITEM_KEY)
+> +			prev_end +=3D fs_info->nodesize;
+> +		else
+> +			prev_end +=3D prev_key->offset;
+> +
+> +		if (unlikely(prev_end > key->objectid)) {
+> +			extent_err(leaf, slot,
+> +	"previous extent [%llu %u %llu] overlaps current extent [%llu %u %llu]=
+",
+> +				   prev_key->objectid, prev_key->type,
+> +				   prev_key->offset, key->objectid, key->type,
+> +				   key->offset);
+> +			return -EUCLEAN;
+> +		}
+> +	}
+> +
+>   	return 0;
+>   }
+>
+> @@ -1621,7 +1642,7 @@ static int check_leaf_item(struct extent_buffer *l=
+eaf,
+>   		break;
+>   	case BTRFS_EXTENT_ITEM_KEY:
+>   	case BTRFS_METADATA_ITEM_KEY:
+> -		ret =3D check_extent_item(leaf, key, slot);
+> +		ret =3D check_extent_item(leaf, key, slot, prev_key);
+>   		break;
+>   	case BTRFS_TREE_BLOCK_REF_KEY:
+>   	case BTRFS_SHARED_DATA_REF_KEY:
