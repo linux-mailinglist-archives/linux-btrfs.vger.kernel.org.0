@@ -2,106 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 087EC5892CB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Aug 2022 21:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668955892C8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Aug 2022 21:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237931AbiHCTai (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Aug 2022 15:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33480 "EHLO
+        id S238697AbiHCT3v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Aug 2022 15:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238655AbiHCTaT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Aug 2022 15:30:19 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE715B7A1
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 Aug 2022 12:30:04 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 35EAC34BD7;
-        Wed,  3 Aug 2022 19:30:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1659555003;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wdiJvRqmMh1kUJU+gCpTLeRKgBWuos/Ofg4M1pPK1SE=;
-        b=ZPoNtEaMC84phiy6zDOP2gVxFGHHjL5ivpnatZdMdBgVBDjWbpOrdPikm6iFG7oBXbdZvf
-        MvwQHLOwsoVNZhuUxhZPVFHuCKxWlSmW3QrC/OKwC2+XCAScqIhK2JKHdSTDakQoDgNIJ8
-        3zQSSmJg9sx9q4j+rF6Lw6NDUGS9hok=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1659555003;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wdiJvRqmMh1kUJU+gCpTLeRKgBWuos/Ofg4M1pPK1SE=;
-        b=dnH0jQiYdxbOAM882L3BeeaqiaNGGO6pJZk6+yZgPBCaRyjRnZs0fmCpt/LwUjfi7lznSB
-        EXUmSceQfrKbFiDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A15513AD8;
-        Wed,  3 Aug 2022 19:30:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id eGSKAbvM6mK1GAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 03 Aug 2022 19:30:03 +0000
-Date:   Wed, 3 Aug 2022 21:25:00 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] btrfs-progs: avoid repeated data write for
- metadata and a small cleanup
-Message-ID: <20220803192500.GJ13489@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1659426744.git.wqu@suse.com>
+        with ESMTP id S238444AbiHCT3c (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Aug 2022 15:29:32 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135385B798;
+        Wed,  3 Aug 2022 12:28:43 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id u12so13434176qtk.0;
+        Wed, 03 Aug 2022 12:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=j6ua6sSOMR01Px12y7LQZ7sRXPuWjo+RHnWucuaPxno=;
+        b=nFavfSVf4GaJ45pNBa9bpH1I0dEul2AoNgoS13aXm0cw3J1IxW3XneSEKO50iU6gLm
+         vHp4LOsHMcUKGSckeiHJ0xUW1XG6tdXTb9YvHA/bc5ZThulmvQgUSzSsrnZyIkye2WNf
+         Gd+2kZaE9opkD31v/NFditb0gS4/TSv4tYTFzcyHPIQQNnBWgyRBTEECim2q+smDEffS
+         5EGy2EeXXALA03Q5io8L0M0jxbcwRr/U7e/bDcSgqmYwXvfacsYVY9v6yLgKUsr4ZZ3/
+         MRN9aoatDVS7+GSYyT9YQGYObw3wa+pqhu5srDsRx+jBuBYXpDvMdjpO8JTjRLTIolPI
+         4XJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=j6ua6sSOMR01Px12y7LQZ7sRXPuWjo+RHnWucuaPxno=;
+        b=V3YINXf4Iz/nyEk5zREIduvMDc4iKABLBz9Nk7B0QZo/DGMeWwBtg9H185Rr5sS7bq
+         EuD1/eqmmU/0guIWK3UzAPn/8u4VID74iZW1TkKK9a1c92sL6GVrQLBYyDR2pkq+G0Es
+         k6muTCUaQe9HLQq4NWKB8AZLZ+7KdDz/8N/qvgkR0IAs6uWWxwXFJKVS51ntk4ocDjQ1
+         WBY8RWBu2K2wqqZLtYTgyy+iY7IDx948QI2o6oD1BGcz+M5gQyGdAge/EB+MfBdfqaQe
+         iHF1X7lAxrybcwu1seXw0/fwnRtppXW+874QLQBUjWZjkLiTjV1wTXJey8GnusAEvxC2
+         B/uQ==
+X-Gm-Message-State: AJIora+G7oZfLm7EextXOudxF0IJQD2bOuZCWfM5NxpvX48gYChZIReY
+        CuKFFW6Ml+bSnWK5srxvlo5QUtY/nNkIX8fDgFI=
+X-Google-Smtp-Source: AGRyM1sKsNtOmA0uxL5XpZY/qqHfTGj5qb1aIPlGf97a4nzpeDMDnxOUU7vl0oK8CDue6thIYHzB0UU5X3wkc9Vl6uw=
+X-Received: by 2002:ac8:5fd1:0:b0:31f:31a6:55c0 with SMTP id
+ k17-20020ac85fd1000000b0031f31a655c0mr23480147qta.506.1659554922083; Wed, 03
+ Aug 2022 12:28:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1659426744.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL
-        autolearn=no autolearn_force=no version=3.4.6
+References: <CABXGCsN+BcaGO0+0bJszDPvA=5JF_bOPfXC=OLzMzsXY2M8hyQ@mail.gmail.com>
+ <20220726164250.GE13489@twin.jikos.cz>
+In-Reply-To: <20220726164250.GE13489@twin.jikos.cz>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Thu, 4 Aug 2022 00:28:31 +0500
+Message-ID: <CABXGCsMNF_SKns-av1kAWtR5Yd7u6sjwsFT9er8tSebfuLG8VQ@mail.gmail.com>
+Subject: Re: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+To:     dsterba@suse.cz, Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        dvyukov@google.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 02, 2022 at 03:52:40PM +0800, Qu Wenruo wrote:
-> [CHANGELOG]
-> v2:
-> - Separate the fixes from the initial patch
-> - Fix a bug in BUG_ON() condition which causes mkfs test failure
-> 
-> There is a bug report from Shinichiro that for zoned device mkfs -m DUP
-> (using RST) doesn't work.
-> 
-> It turns out to be a bug in commit 2a93728391a1 ("btrfs-progs: use
-> write_data_to_disk() to replace write_extent_to_disk()"), which I
-> wrongly assumed that write_data_to_disk() will only write the data to
-> one mirror.
-> 
-> In fact, write_data_to_disk() writes data to all mirrors, thus the
-> @mirror argument is completely unnecessary.
-> 
-> The first patch will fix the problem and cleanup the unnecessary
-> argument to avoid confusion.
-> 
-> Then the 2nd patch will fix a BUG_ON() condition.
-> 
-> Finally the last patch will cleanup write_and_map_eb() to completely
-> rely on write_data_to_disk(), without manually handling RAID56. 
-> 
-> 
-> Qu Wenruo (3):
->   btrfs-progs: avoid repeated data write for metadata
->   btrfs-progs: fix a BUG_ON() condition for write_data_to_disk()
->   btrfs-progs: use write_data_to_disk() to handle RAID56 in
->     write_and_map_eb()
+On Tue, Jul 26, 2022 at 9:47 PM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Tue, Jul 26, 2022 at 05:32:54PM +0500, Mikhail Gavrilov wrote:
+> > Hi guys.
+> > Always with intensive writing on a btrfs volume, the message "BUG:
+> > MAX_LOCKDEP_CHAIN_HLOCKS too low!" appears in the kernel logs.
+>
+> Increase the config value of LOCKDEP_CHAINS_BITS, default is 16, 18
+> tends to work.
 
-Added to devel, thanks.
+I confirm that after bumping LOCKDEP_CHAINS_BITS to 18 several days of
+continuous writing on the BTRFS partition with different files with a
+total size of 10Tb I didn't see this kernel bug message again.
+Tetsuo, I saw your commit 5dc33592e95534dc8455ce3e9baaaf3dae0fff82 [1]
+set for LOCKDEP_CHAINS_BITS default value 16.
+Why not increase LOCKDEP_CHAINS_BITS to 18 by default?
+Thanks.
+
+
+[1] https://github.com/torvalds/linux/blame/master/lib/Kconfig.debug#L1387
+
+-- 
+Best Regards,
+Mike Gavrilov.
