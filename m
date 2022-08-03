@@ -2,131 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5944588878
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Aug 2022 10:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3B45888D8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Aug 2022 10:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbiHCIIB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Aug 2022 04:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
+        id S234513AbiHCIsh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Aug 2022 04:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbiHCIIA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Aug 2022 04:08:00 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A412181C;
-        Wed,  3 Aug 2022 01:07:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659514079; x=1691050079;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bN+iGNKBmewghUZbv5zf9l2jDbuQeSJS/vMS1thbQP0=;
-  b=gvCXACCsO4ktt1lcpm1Fr/oUYnUh6j3auu+fDY5rVw3ducjOucj+I8/J
-   6D5n2lbOX393zBZ2WogYexpOF3seYDd4ktyel304hDwPSS3jkz6sDrtEL
-   +XB3pj6HOiu7IJdzaKRBY7/p9b8GmLtfUi2jodGbEaUEkZYtxGON2jcnb
-   Kn6Ts+YzsE9ReIr4gmWZP1MTWd6efAZxn97J41frUsLv38BxMQPuI2+8O
-   ImQgEbedyhsnYlExy8gju7WLX5kptAR0Y/I6WZasXDAMDrT5VzQh4kDjZ
-   uyHnENhfvH2c69V+Zqo5g1jnR43++0Qwx2LOFA7kSSGpxumjeyVQKRtNT
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10427"; a="351328251"
-X-IronPort-AV: E=Sophos;i="5.93,213,1654585200"; 
-   d="scan'208";a="351328251"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2022 01:07:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,213,1654585200"; 
-   d="scan'208";a="635597437"
-Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 03 Aug 2022 01:07:57 -0700
-Received: from kbuild by e0eace57cfef with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oJ9Q4-000H1d-05;
-        Wed, 03 Aug 2022 08:07:56 +0000
-Date:   Wed, 3 Aug 2022 16:07:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Boris Burkov <boris@bur.io>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     kbuild-all@lists.01.org
-Subject: Re: [PATCH v3] btrfs: send: add support for fs-verity
-Message-ID: <202208031528.55Suyci3-lkp@intel.com>
-References: <7ac3a01572a872f8779f357598215e0e07d191bd.1659379913.git.boris@bur.io>
+        with ESMTP id S234474AbiHCIsf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Aug 2022 04:48:35 -0400
+Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739091E3FB
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 Aug 2022 01:48:32 -0700 (PDT)
+Received: from [192.168.1.27] ([84.222.35.163])
+        by smtp-16.iol.local with ESMTPA
+        id JA3Jo86TQnJ6yJA3JoQong; Wed, 03 Aug 2022 10:48:29 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1659516509; bh=dqClaYc79WpyeJDqajj7uc4WY/Py4NyZAIFFqB27DKM=;
+        h=From;
+        b=AXLuZbMgFU4BqfrwZs9Ny+hR/27Fgy4Tf0RnoucpzIo2Cfc27mmgxKlFQPBrb9Rwe
+         KnvWdu+Tgiu86Gdu2FW9t/8gVA/yWpabZtVlscc97JOpC1GOzcxGikLAKSJUXxYN6x
+         8sxWqVExzPKef6Fhji4JxrAtf4g/NR5z9I9G21DZwpbCOiAljgmK9Thm4pkM+/Fw9R
+         yDq7I1m5SEMT+hOSFy7nwf0XhKcHCoArwG4TXmwevgpK6wJcT1Phy1gVWXLJrdVURv
+         kj67Y+VdFtYSbCjmxIzfKRiGUaf9qBxEI4HcAH1BF2ufq/Yti9lEmt9tokTaY7GevB
+         scVCC0qDwiJ+A==
+X-CNFS-Analysis: v=2.4 cv=E9MIGYRl c=1 sm=1 tr=0 ts=62ea365d cx=a_exe
+ a=FwZ7J7/P4KMHneBNQvmhbg==:117 a=FwZ7J7/P4KMHneBNQvmhbg==:17
+ a=IkcTkHD0fZMA:10 a=JH9p4vlxT8AVIMDDvhcA:9 a=QEXdDO2ut3YA:10
+Message-ID: <9494ba7a-baf4-540f-dba5-b47bdc85162d@libero.it>
+Date:   Wed, 3 Aug 2022 10:48:29 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ac3a01572a872f8779f357598215e0e07d191bd.1659379913.git.boris@bur.io>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH 00/14] btrfs: introduce write-intent bitmaps for RAID56
+Content-Language: en-US
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1658726692.git.wqu@suse.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <cover.1658726692.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfFf1XSz3hshhTxYfQsdfELjobbxu29l6nOpA62tP3HACkEjRnLtTA4/cu6U2Wj3rGIuLwKYm2Py0fVZ0lEZrcbgnGfzYFZt0xcCOcpHZzJkcRV9Tp1Ol
+ hwBhpXgSfFfwF5JGITyE0XmoFLrmmI1LeKV2tkqjDkgtjTOrAHl3qWf/P+DfR+1U+Z+KKFSvDw8qKFF27Y4sIaY9xKSYFQNtTuIKDY1Z4Syk1NSPCJdXQbYF
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Boris,
+Hi Qu,
+one minor tip in the cover letter
 
-Thank you for the patch! Perhaps something to improve:
+On 25/07/2022 07.37, Qu Wenruo wrote:
+> [CHANGELOG]
+> v2->v1:
 
-[auto build test WARNING on kdave/for-next]
-[also build test WARNING on next-20220802]
-[cannot apply to fscrypt/fsverity linus/master v5.19]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+[...]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Boris-Burkov/btrfs-send-add-support-for-fs-verity/20220802-025522
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-config: loongarch-randconfig-s042-20220803 (https://download.01.org/0day-ci/archive/20220803/202208031528.55Suyci3-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.1.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-39-gce1a6720-dirty
-        # https://github.com/intel-lab-lkp/linux/commit/7edb074602581840675f2c1d8fafb6a16f4a1f47
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Boris-Burkov/btrfs-send-add-support-for-fs-verity/20220802-025522
-        git checkout 7edb074602581840675f2c1d8fafb6a16f4a1f47
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=loongarch SHELL=/bin/bash fs/btrfs/
+> 
+> When there is a RAID56 write (currently all RAID56 write, including full
+> stripe write), before submitting all the real bios to disks,
+> write-intent bitmap will be updated and flushed to all writeable
+> devices.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+I think that the previous statement is not fully correct; now (with patch #13)
+the fully stripe is not logged anymore in the intent bitmap.
 
-sparse warnings: (new ones prefixed by >>)
->> fs/btrfs/send.c:4907:9: sparse: sparse: cast from restricted __le32
-   fs/btrfs/send.c: note: in included file (through include/linux/uaccess.h, include/linux/sched/task.h, include/linux/sched/signal.h, ...):
-   arch/loongarch/include/asm/uaccess.h:232:32: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const *from @@     got void const [noderef] __user *from @@
-   arch/loongarch/include/asm/uaccess.h:232:32: sparse:     expected void const *from
-   arch/loongarch/include/asm/uaccess.h:232:32: sparse:     got void const [noderef] __user *from
-
-vim +4907 fs/btrfs/send.c
-
-  4892	
-  4893	#ifdef CONFIG_FS_VERITY
-  4894	static int send_verity(struct send_ctx *sctx, struct fs_path *path,
-  4895			       struct fsverity_descriptor *desc)
-  4896	{
-  4897		int ret;
-  4898	
-  4899		ret = begin_cmd(sctx, BTRFS_SEND_C_ENABLE_VERITY);
-  4900		if (ret < 0)
-  4901			goto out;
-  4902	
-  4903		TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, path);
-  4904		TLV_PUT_U8(sctx, BTRFS_SEND_A_VERITY_ALGORITHM, desc->hash_algorithm);
-  4905		TLV_PUT_U32(sctx, BTRFS_SEND_A_VERITY_BLOCK_SIZE, 1U << desc->log_blocksize);
-  4906		TLV_PUT(sctx, BTRFS_SEND_A_VERITY_SALT_DATA, desc->salt, desc->salt_size);
-> 4907		TLV_PUT(sctx, BTRFS_SEND_A_VERITY_SIG_DATA, desc->signature, (int)desc->sig_size);
-  4908	
-  4909		ret = send_cmd(sctx);
-  4910	
-  4911	tlv_put_failure:
-  4912	out:
-  4913		return ret;
-  4914	}
-  4915	
+[...]
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
