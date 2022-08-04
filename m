@@ -2,261 +2,408 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E1F58990A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Aug 2022 10:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AC9589A6A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Aug 2022 12:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239452AbiHDIL3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Aug 2022 04:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
+        id S238194AbiHDK0I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Aug 2022 06:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237383AbiHDILY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Aug 2022 04:11:24 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE596554B;
-        Thu,  4 Aug 2022 01:11:22 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4B2354D6C4;
-        Thu,  4 Aug 2022 08:11:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1659600681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PSVQ7b4/nOknyC64abAk1qJafuvGoum8XkZvSyPJNL0=;
-        b=X1gRPGRn5Q470YHdSbvcGst0FZdv30HQXiJkPWpSjveQvPFaTF9dpOm6cb5Man5Jualj76
-        ApoY+szcG1gutSWEOi4BvimXvNyU/+r9aJGL2VWT/JJTnO7o6ZIzdxhn8M3fLrdJ9wqV71
-        Fv2U01BdEkns+zJemuRi9VaI5m+bOGs=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3294B13AE1;
-        Thu,  4 Aug 2022 08:11:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YOoVOyd/62L1KQAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 04 Aug 2022 08:11:19 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH STABLE 5.18 2/2] btrfs: raid56: don't trust any cached sector in __raid56_parity_recover()
-Date:   Thu,  4 Aug 2022 16:10:59 +0800
-Message-Id: <cc0daef58bcb1d333b2a5e174adbdbc84960659b.1659600630.git.wqu@suse.com>
-X-Mailer: git-send-email 2.37.0
-In-Reply-To: <cover.1659600630.git.wqu@suse.com>
-References: <cover.1659600630.git.wqu@suse.com>
+        with ESMTP id S231707AbiHDK0G (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Aug 2022 06:26:06 -0400
+Received: from out20-51.mail.aliyun.com (out20-51.mail.aliyun.com [115.124.20.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDE463CD;
+        Thu,  4 Aug 2022 03:25:56 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1277323|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.672946-0.000268406-0.326785;FP=0|0|0|0|0|0|0|0;HT=ay29a033018047202;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.OluGSOT_1659608753;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.OluGSOT_1659608753)
+          by smtp.aliyun-inc.com;
+          Thu, 04 Aug 2022 18:25:54 +0800
+Date:   Thu, 04 Aug 2022 18:25:55 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH STABLE 5.10 5.15 0/2] btrfs: raid56 backports to reduce destructive RMW
+Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+In-Reply-To: <cover.1659596446.git.wqu@suse.com>
+References: <cover.1659596446.git.wqu@suse.com>
+Message-Id: <20220804182554.303B.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="------_62EB9C26000000003036_MULTIPART_MIXED_"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,OBFU_TEXT_ATTACH,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-commit f6065f8edeb25f4a9dfe0b446030ad995a84a088 upstream.
+--------_62EB9C26000000003036_MULTIPART_MIXED_
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
-[BUG]
-There is a small workload which will always fail with recent kernel:
-(A simplified version from btrfs/125 test case)
+Hi,
 
-  mkfs.btrfs -f -m raid5 -d raid5 -b 1G $dev1 $dev2 $dev3
-  mount $dev1 $mnt
-  xfs_io -f -c "pwrite -S 0xee 0 1M" $mnt/file1
-  sync
-  umount $mnt
-  btrfs dev scan -u $dev3
-  mount -o degraded $dev1 $mnt
-  xfs_io -f -c "pwrite -S 0xff 0 128M" $mnt/file2
-  umount $mnt
-  btrfs dev scan
-  mount $dev1 $mnt
-  btrfs balance start --full-balance $mnt
-  umount $mnt
+xfstest btrfs/158 trigged a panic after these 2 patches are applied.
 
-The failure is always failed to read some tree blocks:
+btrfs-158-dmesg.txt
+	dmesg output when panic
+btrfs-158-dmesg-decoded.txt
+	dmesg output decoded by decode_stacktrace.sh
+	and some source code is added too.
 
-  BTRFS info (device dm-4): relocating block group 217710592 flags data|raid5
-  BTRFS error (device dm-4): parent transid verify failed on 38993920 wanted 9 found 7
-  BTRFS error (device dm-4): parent transid verify failed on 38993920 wanted 9 found 7
-  ...
+reproduce rate:
+	not 100%, but 2 times here.
 
-[CAUSE]
-With the recently added debug output, we can see all RAID56 operations
-related to full stripe 38928384:
+xfstest  './check -g scrub' seem higher rate  than
+'./check test/btrfs/158' to reproduce this problem .
 
-  56.1183: raid56_read_partial: full_stripe=38928384 devid=2 type=DATA1 offset=0 opf=0x0 physical=9502720 len=65536
-  56.1185: raid56_read_partial: full_stripe=38928384 devid=3 type=DATA2 offset=16384 opf=0x0 physical=9519104 len=16384
-  56.1185: raid56_read_partial: full_stripe=38928384 devid=3 type=DATA2 offset=49152 opf=0x0 physical=9551872 len=16384
-  56.1187: raid56_write_stripe: full_stripe=38928384 devid=3 type=DATA2 offset=0 opf=0x1 physical=9502720 len=16384
-  56.1188: raid56_write_stripe: full_stripe=38928384 devid=3 type=DATA2 offset=32768 opf=0x1 physical=9535488 len=16384
-  56.1188: raid56_write_stripe: full_stripe=38928384 devid=1 type=PQ1 offset=0 opf=0x1 physical=30474240 len=16384
-  56.1189: raid56_write_stripe: full_stripe=38928384 devid=1 type=PQ1 offset=32768 opf=0x1 physical=30507008 len=16384
-  56.1218: raid56_write_stripe: full_stripe=38928384 devid=3 type=DATA2 offset=49152 opf=0x1 physical=9551872 len=16384
-  56.1219: raid56_write_stripe: full_stripe=38928384 devid=1 type=PQ1 offset=49152 opf=0x1 physical=30523392 len=16384
-  56.2721: raid56_parity_recover: full stripe=38928384 eb=39010304 mirror=2
-  56.2723: raid56_parity_recover: full stripe=38928384 eb=39010304 mirror=2
-  56.2724: raid56_parity_recover: full stripe=38928384 eb=39010304 mirror=2
+linux kernel: 5.15.59 with some local backport patches too.
 
-Before we enter raid56_parity_recover(), we have triggered some metadata
-write for the full stripe 38928384, this leads to us to read all the
-sectors from disk.
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/08/04
 
-Furthermore, btrfs raid56 write will cache its calculated P/Q sectors to
-avoid unnecessary read.
+> Hi Greg and Sasha,
+> 
+> This two patches are backports for v5.15 and v5.10 (for v5.10 conflicts
+> can be auto resolved) stable branches.
+> 
+> (For older branches from v4.9 to v5.4, due to some naming change,
+> although the patches can be applied with auto-resolve, they won't compile).
+> 
+> These two patches are reducing the chance of destructive RMW cycle,
+> where btrfs can use corrupted data to generate new P/Q, thus making some
+> repairable data unrepairable.
+> 
+> Those patches are more important than what I initially thought, thus
+> unfortunately they are not CCed to stable by themselves.
+> 
+> Furthermore due to recent refactors/renames, there are quite some member
+> change related to those patches, thus have to be manually backported.
+> 
+> 
+> One of the fastest way to verify the behavior is the existing btrfs/125
+> test case from fstests. (not in auto group AFAIK).
+> 
+> Qu Wenruo (2):
+>   btrfs: only write the sectors in the vertical stripe which has data
+>     stripes
+>   btrfs: raid56: don't trust any cached sector in
+>     __raid56_parity_recover()
+> 
+>  fs/btrfs/raid56.c | 74 ++++++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 57 insertions(+), 17 deletions(-)
+> 
+> -- 
+> 2.37.0
 
-This means, for that full stripe, after any partial write, we will have
-stale data, along with P/Q calculated using that stale data.
 
-Thankfully due to patch "btrfs: only write the sectors in the vertical stripe
-which has data stripes" we haven't submitted all the corrupted P/Q to disk.
+--------_62EB9C26000000003036_MULTIPART_MIXED_
+Content-Type: application/octet-stream;
+ name="btrfs-158-dmesg.txt"
+Content-Disposition: attachment;
+ filename="btrfs-158-dmesg.txt"
+Content-Transfer-Encoding: base64
 
-When we really need to recover certain range, aka in
-raid56_parity_recover(), we will use the cached rbio, along with its
-cached sectors (the full stripe is all cached).
+WyAxODUyLjE5MDk3OF0gcnVuIGZzdGVzdHMgYnRyZnMvMTU4IGF0IDIwMjItMDgtMDQgMTg6MDA6
+MzkKWyAxODUyLjM3MzY3Nl0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjEpOiBlbmFibGluZyB0aWVy
+aW5nKHRpZXI9YXV0bykKWyAxODUyLjM4MDU4M10gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjEpOiB1
+c2luZyBmcmVlIHNwYWNlIHRyZWUKWyAxODUyLjM4OTkyNV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNk
+YjEpOiBlbmFibGluZyBzc2Qgb3B0aW1pemF0aW9ucwpbIDE4NTIuNjk3MDA5XSBCVFJGUzogZGV2
+aWNlIGZzaWQgY2IxYjUyMWEtNTI4Ny00MTYxLWJmODEtYjQwOWY2YmQ5Y2M0IGRldmlkIDEgdHJh
+bnNpZCA2IC9kZXYvc2RiMiBzY2FubmVkIGJ5IHN5c3RlbWQtdWRldmQgKDE5ODQ5MCkKWyAxODUy
+LjcwOTY2M10gQlRSRlM6IGRldmljZSBmc2lkIGNiMWI1MjFhLTUyODctNDE2MS1iZjgxLWI0MDlm
+NmJkOWNjNCBkZXZpZCAyIHRyYW5zaWQgNiAvZGV2L3NkYjMgc2Nhbm5lZCBieSBzeXN0ZW1kLXVk
+ZXZkICgxOTg0ODgpClsgMTg1Mi43MjIxODZdIEJUUkZTOiBkZXZpY2UgZnNpZCBjYjFiNTIxYS01
+Mjg3LTQxNjEtYmY4MS1iNDA5ZjZiZDljYzQgZGV2aWQgMyB0cmFuc2lkIDYgL2Rldi9zZGI0IHNj
+YW5uZWQgYnkgc3lzdGVtZC11ZGV2ZCAoMTk4NDg5KQpbIDE4NTIuNzM0Nzk3XSBCVFJGUzogZGV2
+aWNlIGZzaWQgY2IxYjUyMWEtNTI4Ny00MTYxLWJmODEtYjQwOWY2YmQ5Y2M0IGRldmlkIDQgdHJh
+bnNpZCA2IC9kZXYvc2RiNSBzY2FubmVkIGJ5IHN5c3RlbWQtdWRldmQgKDIwMDQ5MikKWyAxODUy
+LjkzNTI2OV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjIpOiBlbmFibGluZyB0aWVyaW5nKHRpZXI9
+YXV0bykKWyAxODUyLjk0MjAyMF0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjIpOiB1c2luZyBmcmVl
+IHNwYWNlIHRyZWUKWyAxODUyLjk1MDkxMF0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjIpOiBlbmFi
+bGluZyBzc2Qgb3B0aW1pemF0aW9ucwpbIDE4NTIuOTU3OTMzXSBCVFJGUyBpbmZvIChkZXZpY2Ug
+c2RiMik6IGNoZWNraW5nIFVVSUQgdHJlZQpbIDE4NTMuMzMwOTU3XSBCVFJGUyBpbmZvIChkZXZp
+Y2Ugc2RiMik6IGVuYWJsaW5nIHRpZXJpbmcodGllcj1hdXRvKQpbIDE4NTMuMzM3NzM0XSBCVFJG
+UyBpbmZvIChkZXZpY2Ugc2RiMik6IHVzaW5nIGZyZWUgc3BhY2UgdHJlZQpbIDE4NTMuMzQ2Nzk3
+XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiMik6IGVuYWJsaW5nIHNzZCBvcHRpbWl6YXRpb25zClsg
+MTg1My4zNTU2NTFdIEJUUkZTIGluZm8gKGRldmljZSBzZGIyKTogc2NydWI6IHN0YXJ0ZWQgb24g
+ZGV2aWQgMQpbIDE4NTMuMzU1NjY2XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiMik6IHNjcnViOiBz
+dGFydGVkIG9uIGRldmlkIDMKWyAxODUzLjM1NTY4M10gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjIp
+OiBzY3J1Yjogc3RhcnRlZCBvbiBkZXZpZCAyClsgMTg1My4zNTU3NjRdIEJUUkZTIGluZm8gKGRl
+dmljZSBzZGIyKTogc2NydWI6IHN0YXJ0ZWQgb24gZGV2aWQgNApbIDE4NTMuMzg0MTU5XSBCVFJG
+UyB3YXJuaW5nIChkZXZpY2Ugc2RiMik6IGNoZWNrc3VtIGVycm9yIGF0IGxvZ2ljYWwgMjk4OTA5
+Njk2IG9uIGRldiAvZGV2L3NkYjMsIHBoeXNpY2FsIDEwNDg1NzYsIHJvb3QgNSwgaW5vZGUgMjU3
+LCBvZmZzZXQgNjU1MzYsIGxlbmd0aCA0MDk2LCBsaW5rcyAxIChwYXRoOiBmb29iYXIpClsgMTg1
+My40MDE3MjRdIEJUUkZTIGVycm9yIChkZXZpY2Ugc2RiMik6IGJkZXYgL2Rldi9zZGIzIGVycnM6
+IHdyIDAsIHJkIDAsIGZsdXNoIDAsIGNvcnJ1cHQgMSwgZ2VuIDAKWyAxODUzLjQxMTM1NV0gQlVH
+OiBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlLCBhZGRyZXNzOiAwMDAwMDAwMDAwMDAw
+Y2VjClsgMTg1My40MTY3MTRdICNQRjogc3VwZXJ2aXNvciByZWFkIGFjY2VzcyBpbiBrZXJuZWwg
+bW9kZQpbIDE4NTMuNDIxNzE3XSAjUEY6IGVycm9yX2NvZGUoMHgwMDAwKSAtIG5vdC1wcmVzZW50
+IHBhZ2UKWyAxODUzLjQyNzcxNF0gUEdEIDAgUDREIDAKWyAxODUzLjQzMTcxOF0gT29wczogMDAw
+MCBbIzFdIFNNUCBOT1BUSQpbIDE4NTMuNDM2NzE0XSBDUFU6IDkgUElEOiA4ODA3MyBDb21tOiBr
+d29ya2VyL3U4MTo1IE5vdCB0YWludGVkIDUuMTUuNTktMy5lbDcueDg2XzY0ICMxClsgMTg1My40
+NDY3MTNdIEhhcmR3YXJlIG5hbWU6IERlbGwgSW5jLiBQcmVjaXNpb24gVDc2MTAvME5LNzBOLCBC
+SU9TIEExOCAwOS8xMS8yMDE5ClsgMTg1My40NTM3MjldIFdvcmtxdWV1ZTogYnRyZnMtc2NydWIg
+YnRyZnNfd29ya19oZWxwZXIgW2J0cmZzXQpbIDE4NTMuNDU5NzI4XSBSSVA6IDAwMTA6cmJpb19h
+ZGRfYmlvKzB4NDkvMHhjMCBbYnRyZnNdClsgMTg1My40NjY3MTNdIENvZGU6IDM5IGQwIDBmIDgy
+IGRjIDY5IDAyIDAwIDhiIDg3IGJjIDAwIDAwIDAwIDBmIGFmIDg3IGI4IDAwIDAwIDAwIDRkIDAx
+IGMyIDQ4IDk4IDQ4IDAxIGQwIDQ5IDM5IGMyIDBmIDg3IGJlIDY5IDAyIDAwIDQ4IDhiIDU5IDA4
+IDw0ND4gOGIgOWIgZWMgMGMgMDAgMDAgNDggYzcgMDYgMDAgMDAgMDAgMDAgNDggOGIgODcgOTAg
+MDAgMDAgMDAgNDgKWyAxODUzLjQ4NzcxM10gUlNQOiAwMDE4OmZmZmZiOWJiOGVkZjdjODAgRUZM
+QUdTOiAwMDAxMDI0NgpbIDE4NTMuNDkzNzE1XSBSQVg6IDAwMDAwMDAwMTFkMjAwMDAgUkJYOiAw
+MDAwMDAwMDAwMDAwMDAwIFJDWDogZmZmZjkzNjAxYjE1NmIwMApbIDE4NTMuNDk4NzE0XSBSRFg6
+IDAwMDAwMDAwMTFkMDAwMDAgUlNJOiBmZmZmOTMzZWQzYmEzYjM4IFJESTogZmZmZjkzNDE2OWRl
+NjAwMApbIDE4NTMuNTA4NzE0XSBSQlA6IGZmZmY5MzYwMWIxNTZiMDAgUjA4OiAwMDAwMDAwMDEx
+ZDEwMDAwIFIwOTogZmZmZjkzNDE2OWRlNjAwMApbIDE4NTMuNTEzNzE3XSBSMTA6IDAwMDAwMDAw
+MTFkMjAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMDAwIFIxMjogMDAwMDAwMDAwMDAwMDAwMApbIDE4
+NTMuNTIzNzE4XSBSMTM6IGZmZmY5MzQxMDc0NWMwMDAgUjE0OiBmZmZmOTM0MTY5ZGU2MDAwIFIx
+NTogZmZmZjkzM2VkM2JhM2IzOApbIDE4NTMuNTMyNzIzXSBGUzogIDAwMDAwMDAwMDAwMDAwMDAo
+MDAwMCkgR1M6ZmZmZjkzNWRhZmE0MDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwClsg
+MTg1My41NDI3MTRdIENTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAw
+NTAwMzMKWyAxODUzLjU0NzcxM10gQ1IyOiAwMDAwMDAwMDAwMDAwY2VjIENSMzogMDAwMDAwMWZk
+MDAxMDAwMSBDUjQ6IDAwMDAwMDAwMDAxNzA2ZTAKWyAxODUzLjU1NTcyNl0gQ2FsbCBUcmFjZToK
+WyAxODUzLjU2MDcxNF0gIDxUQVNLPgpbIDE4NTMuNTYwNzE0XSAgcmFpZDU2X3Bhcml0eV9yZWNv
+dmVyKzB4NjUvMHgxZDAgW2J0cmZzXQpbIDE4NTMuNTY5NzE2XSAgc2NydWJfcmVjaGVja19ibG9j
+aysweDI3MS8weDJmMCBbYnRyZnNdClsgMTg1My41NzQ3MTVdICBzY3J1Yl9oYW5kbGVfZXJyb3Jl
+ZF9ibG9jaysweDdlOC8weDEwYjAgW2J0cmZzXQpbIDE4NTMuNTc5NzIxXSAgc2NydWJfYmlvX2Vu
+ZF9pb193b3JrZXIrMHhlZi8weDJmMCBbYnRyZnNdClsgMTg1My41ODg3MTVdICA/IHB1dF9wcmV2
+X3Rhc2tfZmFpcisweDIxLzB4NDAKWyAxODUzLjU5MzcxNF0gID8gcGlja19uZXh0X3Rhc2srMHg5
+Ni8weGJlMApbIDE4NTMuNTk4NzE1XSAgYnRyZnNfd29ya19oZWxwZXIrMHhiZi8weDMwMCBbYnRy
+ZnNdClsgMTg1My42MDM3MTddICBwcm9jZXNzX29uZV93b3JrKzB4MWNiLzB4MzcwClsgMTg1My42
+MDg3MTVdICB3b3JrZXJfdGhyZWFkKzB4MzAvMHgzODAKWyAxODUzLjYxMzcxNl0gID8gcHJvY2Vz
+c19vbmVfd29yaysweDM3MC8weDM3MApbIDE4NTMuNjE3NzE3XSAga3RocmVhZCsweDExOC8weDE0
+MApbIDE4NTMuNjIyNzE0XSAgPyBzZXRfa3RocmVhZF9zdHJ1Y3QrMHg1MC8weDUwClsgMTg1My42
+Mjc3MTVdICByZXRfZnJvbV9mb3JrKzB4MWYvMHgzMApbIDE4NTMuNjMxNzE3XSAgPC9UQVNLPgpb
+IDE4NTMuNjM2NzIxXSBNb2R1bGVzIGxpbmtlZCBpbjogcnBjc2VjX2dzc19rcmI1IGF1dGhfcnBj
+Z3NzIG5mc3Y0IGRuc19yZXNvbHZlciBuZnMgbG9ja2QgZ3JhY2UgZnNjYWNoZSBuZXRmcyByZmtp
+bGwgaWJfY29yZSBzdW5ycGMgZG1fbXVsdGlwYXRoIGludGVsX3JhcGxfbXNyIGludGVsX3JhcGxf
+Y29tbW9uIHNiX2VkYWMgeDg2X3BrZ190ZW1wX3RoZXJtYWwgc25kX2hkYV9jb2RlY19yZWFsdGVr
+IGludGVsX3Bvd2VyY2xhbXAgc25kX2hkYV9jb2RlY19nZW5lcmljIGNvcmV0ZW1wIHJhZGVvbiBs
+ZWR0cmlnX2F1ZGlvIHNuZF9oZGFfY29kZWNfaGRtaSBidHJmcyBzbmRfaGRhX2ludGVsIHNuZF9p
+bnRlbF9kc3BjZmcgc25kX2ludGVsX3Nkd19hY3BpIGt2bV9pbnRlbCBzbmRfaGRhX2NvZGVjIHNu
+ZF9oZGFfY29yZSBpMmNfYWxnb19iaXQgZHJtX3R0bV9oZWxwZXIgbWVpX3dkdCBrdm0gc25kX2h3
+ZGVwIHJhaWQ2X3BxIHpzdGRfY29tcHJlc3Mgc25kX3NlcSB0dG0gZGNkYmFzIHpzdGRfZGVjb21w
+cmVzcyBzbmRfc2VxX2RldmljZSBpcnFieXBhc3MgaVRDT193ZHQgcmFwbCBpVENPX3ZlbmRvcl9z
+dXBwb3J0IGRlbGxfc21tX2h3bW9uIHNuZF9wY20gaW50ZWxfY3N0YXRlIGRybV9rbXNfaGVscGVy
+IG1laV9tZSBzbmRfdGltZXIgaTJjX2k4MDEgc3lzY29weWFyZWEgaW50ZWxfdW5jb3JlIHBjc3Br
+ciBpMmNfc21idXMgc3lzZmlsbHJlY3QgZG1fbW9kIGxwY19pY2ggbWVpIHNuZCBzeXNpbWdibHQg
+ZmJfc3lzX2ZvcHMgY2VjIHNvdW5kY29yZSBkcm0gZnVzZSB4ZnMgc2RfbW9kIHQxMF9waSBzcl9t
+b2QgY2Ryb20gc2cgYm54MnggYWhjaSBjcmN0MTBkaWZfcGNsbXVsIGNyYzMyX3BjbG11bCBjcmMz
+MmNfaW50ZWwgbGliYWhjaSBtcHQzc2FzIGxpYmF0YSBnaGFzaF9jbG11bG5pX2ludGVsIGUxMDAw
+ZSBtZGlvIHJhaWRfY2xhc3Mgc2NzaV90cmFuc3BvcnRfc2FzIHdtaSBpMmNfZGV2IGlwbWlfZGV2
+aW50ZiBpcG1pX21zZ2hhbmRsZXIKWyAxODUzLjcyODcxNF0gQ1IyOiAwMDAwMDAwMDAwMDAwY2Vj
+ClsgMTg1My43MzM3MTNdIC0tLVsgZW5kIHRyYWNlIDdmMzI1NjRmNDUwYzQ3MTQgXS0tLQpbIDE4
+NTMuODg4NzE3XSBSSVA6IDAwMTA6cmJpb19hZGRfYmlvKzB4NDkvMHhjMCBbYnRyZnNdClsgMTg1
+My45MzA3MjVdIENvZGU6IDM5IGQwIDBmIDgyIGRjIDY5IDAyIDAwIDhiIDg3IGJjIDAwIDAwIDAw
+IDBmIGFmIDg3IGI4IDAwIDAwIDAwIDRkIDAxIGMyIDQ4IDk4IDQ4IDAxIGQwIDQ5IDM5IGMyIDBm
+IDg3IGJlIDY5IDAyIDAwIDQ4IDhiIDU5IDA4IDw0ND4gOGIgOWIgZWMgMGMgMDAgMDAgNDggYzcg
+MDYgMDAgMDAgMDAgMDAgNDggOGIgODcgOTAgMDAgMDAgMDAgNDgKWyAxODUzLjk0OTcyNV0gUlNQ
+OiAwMDE4OmZmZmZiOWJiOGVkZjdjODAgRUZMQUdTOiAwMDAxMDI0NgpbIDE4NTMuOTU5NzIzXSBS
+QVg6IDAwMDAwMDAwMTFkMjAwMDAgUkJYOiAwMDAwMDAwMDAwMDAwMDAwIFJDWDogZmZmZjkzNjAx
+YjE1NmIwMApbIDE4NTMuOTY1NzIwXSBSRFg6IDAwMDAwMDAwMTFkMDAwMDAgUlNJOiBmZmZmOTMz
+ZWQzYmEzYjM4IFJESTogZmZmZjkzNDE2OWRlNjAwMApbIDE4NTMuOTc0NzI0XSBSQlA6IGZmZmY5
+MzYwMWIxNTZiMDAgUjA4OiAwMDAwMDAwMDExZDEwMDAwIFIwOTogZmZmZjkzNDE2OWRlNjAwMApb
+IDE4NTMuOTgzNzI2XSBSMTA6IDAwMDAwMDAwMTFkMjAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMDAw
+IFIxMjogMDAwMDAwMDAwMDAwMDAwMApbIDE4NTMuOTkxNzI1XSBSMTM6IGZmZmY5MzQxMDc0NWMw
+MDAgUjE0OiBmZmZmOTM0MTY5ZGU2MDAwIFIxNTogZmZmZjkzM2VkM2JhM2IzOApbIDE4NTQuMDAx
+NzE3XSBGUzogIDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjkzNWRhZmE0MDAwMCgwMDAw
+KSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwClsgMTg1NC4wMTE3MjFdIENTOiAgMDAxMCBEUzogMDAw
+MCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMKWyAxODU0LjAxNjcxOV0gQ1IyOiAwMDAw
+MDAwMDAwMDAwY2VjIENSMzogMDAwMDAwMWZkMDAxMDAwMSBDUjQ6IDAwMDAwMDAwMDAxNzA2ZTAK
+WyAxODU0LjAyNjcyMV0gS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IEZhdGFsIGV4Y2VwdGlv
+bgpbIDE4NTQuMDMwNzIyXSBLZXJuZWwgT2Zmc2V0OiAweDJlNDAwMDAwIGZyb20gMHhmZmZmZmZm
+ZjgxMDAwMDAwIChyZWxvY2F0aW9uIHJhbmdlOiAweGZmZmZmZmZmODAwMDAwMDAtMHhmZmZmZmZm
+ZmJmZmZmZmZmKQpbIDE4NTQuMDMwNzIyXSAtLS1bIGVuZCBLZXJuZWwgcGFuaWMgLSBub3Qgc3lu
+Y2luZzogRmF0YWwgZXhjZXB0aW9uIF0tLS0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=
+--------_62EB9C26000000003036_MULTIPART_MIXED_
+Content-Type: application/octet-stream;
+ name="btrfs-158-dmesg-decoded.txt"
+Content-Disposition: attachment;
+ filename="btrfs-158-dmesg-decoded.txt"
+Content-Transfer-Encoding: base64
 
-This explains why we have no event raid56_scrub_read_recover()
-triggered.
-
-Since we have the cached P/Q which is calculated using the stale data,
-the recovered one will just be stale.
-
-In our particular test case, it will always return the same incorrect
-metadata, thus causing the same error message "parent transid verify
-failed on 39010304 wanted 9 found 7" again and again.
-
-[BTRFS DESTRUCTIVE RMW PROBLEM]
-
-Test case btrfs/125 (and above workload) always has its trouble with
-the destructive read-modify-write (RMW) cycle:
-
-        0       32K     64K
-Data1:  | Good  | Good  |
-Data2:  | Bad   | Bad   |
-Parity: | Good  | Good  |
-
-In above case, if we trigger any write into Data1, we will use the bad
-data in Data2 to re-generate parity, killing the only chance to recovery
-Data2, thus Data2 is lost forever.
-
-This destructive RMW cycle is not specific to btrfs RAID56, but there
-are some btrfs specific behaviors making the case even worse:
-
-- Btrfs will cache sectors for unrelated vertical stripes.
-
-  In above example, if we're only writing into 0~32K range, btrfs will
-  still read data range (32K ~ 64K) of Data1, and (64K~128K) of Data2.
-  This behavior is to cache sectors for later update.
-
-  Incidentally commit d4e28d9b5f04 ("btrfs: raid56: make steal_rbio()
-  subpage compatible") has a bug which makes RAID56 to never trust the
-  cached sectors, thus slightly improve the situation for recovery.
-
-  Unfortunately, follow up fix "btrfs: update stripe_sectors::uptodate in
-  steal_rbio" will revert the behavior back to the old one.
-
-- Btrfs raid56 partial write will update all P/Q sectors and cache them
-
-  This means, even if data at (64K ~ 96K) of Data2 is free space, and
-  only (96K ~ 128K) of Data2 is really stale data.
-  And we write into that (96K ~ 128K), we will update all the parity
-  sectors for the full stripe.
-
-  This unnecessary behavior will completely kill the chance of recovery.
-
-  Thankfully, an unrelated optimization "btrfs: only write the sectors
-  in the vertical stripe which has data stripes" will prevent
-  submitting the write bio for untouched vertical sectors.
-
-  That optimization will keep the on-disk P/Q untouched for a chance for
-  later recovery.
-
-[FIX]
-Although we have no good way to completely fix the destructive RMW
-(unless we go full scrub for each partial write), we can still limit the
-damage.
-
-With patch "btrfs: only write the sectors in the vertical stripe which
-has data stripes" now we won't really submit the P/Q of unrelated
-vertical stripes, so the on-disk P/Q should still be fine.
-
-Now we really need to do is just drop all the cached sectors when doing
-recovery.
-
-By this, we have a chance to read the original P/Q from disk, and have a
-chance to recover the stale data, while still keep the cache to speed up
-regular write path.
-
-In fact, just dropping all the cache for recovery path is good enough to
-allow the test case btrfs/125 along with the small script to pass
-reliably.
-
-The lack of metadata write after the degraded mount, and forced metadata
-COW is saving us this time.
-
-So this patch will fix the behavior by not trust any cache in
-__raid56_parity_recover(), to solve the problem while still keep the
-cache useful.
-
-But please note that this test pass DOES NOT mean we have solved the
-destructive RMW problem, we just do better damage control a little
-better.
-
-Related patches:
-
-- btrfs: only write the sectors in the vertical stripe
-- d4e28d9b5f04 ("btrfs: raid56: make steal_rbio() subpage compatible")
-- btrfs: update stripe_sectors::uptodate in steal_rbio
-
-Cc: stable@vger.kernel.org # 5.18
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/raid56.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
-
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index ca92a20d5c27..39c4c513bf97 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -2084,9 +2084,12 @@ static int __raid56_parity_recover(struct btrfs_raid_bio *rbio)
- 	atomic_set(&rbio->error, 0);
- 
- 	/*
--	 * read everything that hasn't failed.  Thanks to the
--	 * stripe cache, it is possible that some or all of these
--	 * pages are going to be uptodate.
-+	 * Read everything that hasn't failed. However this time we will
-+	 * not trust any cached sector.
-+	 * As we may read out some stale data but higher layer is not reading
-+	 * that stale part.
-+	 *
-+	 * So here we always re-read everything in recovery path.
- 	 */
- 	for (stripe = 0; stripe < rbio->real_stripes; stripe++) {
- 		if (rbio->faila == stripe || rbio->failb == stripe) {
-@@ -2095,16 +2098,6 @@ static int __raid56_parity_recover(struct btrfs_raid_bio *rbio)
- 		}
- 
- 		for (pagenr = 0; pagenr < rbio->stripe_npages; pagenr++) {
--			struct page *p;
--
--			/*
--			 * the rmw code may have already read this
--			 * page in
--			 */
--			p = rbio_stripe_page(rbio, stripe, pagenr);
--			if (PageUptodate(p))
--				continue;
--
- 			ret = rbio_add_io_page(rbio, &bio_list,
- 				       rbio_stripe_page(rbio, stripe, pagenr),
- 				       stripe, pagenr, rbio->stripe_len);
--- 
-2.37.0
+WyAxODUyLjE5MDk3OF0gcnVuIGZzdGVzdHMgYnRyZnMvMTU4IGF0IDIwMjItMDgtMDQgMTg6MDA6
+MzkKWyAxODUyLjM3MzY3Nl0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjEpOiBlbmFibGluZyB0aWVy
+aW5nKHRpZXI9YXV0bykKWyAxODUyLjM4MDU4M10gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjEpOiB1
+c2luZyBmcmVlIHNwYWNlIHRyZWUKWyAxODUyLjM4OTkyNV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNk
+YjEpOiBlbmFibGluZyBzc2Qgb3B0aW1pemF0aW9ucwpbIDE4NTIuNjk3MDA5XSBCVFJGUzogZGV2
+aWNlIGZzaWQgY2IxYjUyMWEtNTI4Ny00MTYxLWJmODEtYjQwOWY2YmQ5Y2M0IGRldmlkIDEgdHJh
+bnNpZCA2IC9kZXYvc2RiMiBzY2FubmVkIGJ5IHN5c3RlbWQtdWRldmQgKDE5ODQ5MCkKWyAxODUy
+LjcwOTY2M10gQlRSRlM6IGRldmljZSBmc2lkIGNiMWI1MjFhLTUyODctNDE2MS1iZjgxLWI0MDlm
+NmJkOWNjNCBkZXZpZCAyIHRyYW5zaWQgNiAvZGV2L3NkYjMgc2Nhbm5lZCBieSBzeXN0ZW1kLXVk
+ZXZkICgxOTg0ODgpClsgMTg1Mi43MjIxODZdIEJUUkZTOiBkZXZpY2UgZnNpZCBjYjFiNTIxYS01
+Mjg3LTQxNjEtYmY4MS1iNDA5ZjZiZDljYzQgZGV2aWQgMyB0cmFuc2lkIDYgL2Rldi9zZGI0IHNj
+YW5uZWQgYnkgc3lzdGVtZC11ZGV2ZCAoMTk4NDg5KQpbIDE4NTIuNzM0Nzk3XSBCVFJGUzogZGV2
+aWNlIGZzaWQgY2IxYjUyMWEtNTI4Ny00MTYxLWJmODEtYjQwOWY2YmQ5Y2M0IGRldmlkIDQgdHJh
+bnNpZCA2IC9kZXYvc2RiNSBzY2FubmVkIGJ5IHN5c3RlbWQtdWRldmQgKDIwMDQ5MikKWyAxODUy
+LjkzNTI2OV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjIpOiBlbmFibGluZyB0aWVyaW5nKHRpZXI9
+YXV0bykKWyAxODUyLjk0MjAyMF0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjIpOiB1c2luZyBmcmVl
+IHNwYWNlIHRyZWUKWyAxODUyLjk1MDkxMF0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjIpOiBlbmFi
+bGluZyBzc2Qgb3B0aW1pemF0aW9ucwpbIDE4NTIuOTU3OTMzXSBCVFJGUyBpbmZvIChkZXZpY2Ug
+c2RiMik6IGNoZWNraW5nIFVVSUQgdHJlZQpbIDE4NTMuMzMwOTU3XSBCVFJGUyBpbmZvIChkZXZp
+Y2Ugc2RiMik6IGVuYWJsaW5nIHRpZXJpbmcodGllcj1hdXRvKQpbIDE4NTMuMzM3NzM0XSBCVFJG
+UyBpbmZvIChkZXZpY2Ugc2RiMik6IHVzaW5nIGZyZWUgc3BhY2UgdHJlZQpbIDE4NTMuMzQ2Nzk3
+XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiMik6IGVuYWJsaW5nIHNzZCBvcHRpbWl6YXRpb25zClsg
+MTg1My4zNTU2NTFdIEJUUkZTIGluZm8gKGRldmljZSBzZGIyKTogc2NydWI6IHN0YXJ0ZWQgb24g
+ZGV2aWQgMQpbIDE4NTMuMzU1NjY2XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiMik6IHNjcnViOiBz
+dGFydGVkIG9uIGRldmlkIDMKWyAxODUzLjM1NTY4M10gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjIp
+OiBzY3J1Yjogc3RhcnRlZCBvbiBkZXZpZCAyClsgMTg1My4zNTU3NjRdIEJUUkZTIGluZm8gKGRl
+dmljZSBzZGIyKTogc2NydWI6IHN0YXJ0ZWQgb24gZGV2aWQgNApbIDE4NTMuMzg0MTU5XSBCVFJG
+UyB3YXJuaW5nIChkZXZpY2Ugc2RiMik6IGNoZWNrc3VtIGVycm9yIGF0IGxvZ2ljYWwgMjk4OTA5
+Njk2IG9uIGRldiAvZGV2L3NkYjMsIHBoeXNpY2FsIDEwNDg1NzYsIHJvb3QgNSwgaW5vZGUgMjU3
+LCBvZmZzZXQgNjU1MzYsIGxlbmd0aCA0MDk2LCBsaW5rcyAxIChwYXRoOiBmb29iYXIpClsgMTg1
+My40MDE3MjRdIEJUUkZTIGVycm9yIChkZXZpY2Ugc2RiMik6IGJkZXYgL2Rldi9zZGIzIGVycnM6
+IHdyIDAsIHJkIDAsIGZsdXNoIDAsIGNvcnJ1cHQgMSwgZ2VuIDAKWyAxODUzLjQxMTM1NV0gQlVH
+OiBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlLCBhZGRyZXNzOiAwMDAwMDAwMDAwMDAw
+Y2VjClsgMTg1My40MTY3MTRdICNQRjogc3VwZXJ2aXNvciByZWFkIGFjY2VzcyBpbiBrZXJuZWwg
+bW9kZQpbIDE4NTMuNDIxNzE3XSAjUEY6IGVycm9yX2NvZGUoMHgwMDAwKSAtIG5vdC1wcmVzZW50
+IHBhZ2UKWyAxODUzLjQyNzcxNF0gUEdEIDAgUDREIDAKWyAxODUzLjQzMTcxOF0gT29wczogMDAw
+MCBbIzFdIFNNUCBOT1BUSQpbIDE4NTMuNDM2NzE0XSBDUFU6IDkgUElEOiA4ODA3MyBDb21tOiBr
+d29ya2VyL3U4MTo1IE5vdCB0YWludGVkIDUuMTUuNTktMy5lbDcueDg2XzY0ICMxClsgMTg1My40
+NDY3MTNdIEhhcmR3YXJlIG5hbWU6IERlbGwgSW5jLiBQcmVjaXNpb24gVDc2MTAvME5LNzBOLCBC
+SU9TIEExOCAwOS8xMS8yMDE5ClsgMTg1My40NTM3MjldIFdvcmtxdWV1ZTogYnRyZnMtc2NydWIg
+YnRyZnNfd29ya19oZWxwZXIgW2J0cmZzXQpbIDE4NTMuNDU5NzI4XSBSSVA6IDAwMTA6cmJpb19h
+ZGRfYmlvICgvdXNyL3NyYy9kZWJ1Zy9rZXJuZWwtNS4xNS41OS9saW51eC01LjE1LjU5LTMuZWw3
+Lng4Nl82NC9mcy9idHJmcy9yYWlkNTYuYzoxNzQ3KSBidHJmcwpbIDE4NTMuNDY2NzEzXSBDb2Rl
+OiAzOSBkMCAwZiA4MiBkYyA2OSAwMiAwMCA4YiA4NyBiYyAwMCAwMCAwMCAwZiBhZiA4NyBiOCAw
+MCAwMCAwMCA0ZCAwMSBjMiA0OCA5OCA0OCAwMSBkMCA0OSAzOSBjMiAwZiA4NyBiZSA2OSAwMiAw
+MCA0OCA4YiA1OSAwOCA8NDQ+IDhiIDliIGVjIDBjIDAwIDAwIDQ4IGM3IDA2IDAwIDAwIDAwIDAw
+IDQ4IDhiIDg3IDkwIDAwIDAwIDAwIDQ4CkFsbCBjb2RlCj09PT09PT09CiAgIDA6CTM5IGQwICAg
+ICAgICAgICAgICAgIAljbXAgICAgJWVkeCwlZWF4CiAgIDI6CTBmIDgyIGRjIDY5IDAyIDAwICAg
+IAlqYiAgICAgMHgyNjllNAogICA4Ogk4YiA4NyBiYyAwMCAwMCAwMCAgICAJbW92ICAgIDB4YmMo
+JXJkaSksJWVheAogICBlOgkwZiBhZiA4NyBiOCAwMCAwMCAwMCAJaW11bCAgIDB4YjgoJXJkaSks
+JWVheAogIDE1Ogk0ZCAwMSBjMiAgICAgICAgICAgICAJYWRkICAgICVyOCwlcjEwCiAgMTg6CTQ4
+IDk4ICAgICAgICAgICAgICAgIAljbHRxICAgCiAgMWE6CTQ4IDAxIGQwICAgICAgICAgICAgIAlh
+ZGQgICAgJXJkeCwlcmF4CiAgMWQ6CTQ5IDM5IGMyICAgICAgICAgICAgIAljbXAgICAgJXJheCwl
+cjEwCiAgMjA6CTBmIDg3IGJlIDY5IDAyIDAwICAgIAlqYSAgICAgMHgyNjllNAogIDI2Ogk0OCA4
+YiA1OSAwOCAgICAgICAgICAJbW92ICAgIDB4OCglcmN4KSwlcmJ4CiAgMmE6Kgk0NCA4YiA5YiBl
+YyAwYyAwMCAwMCAJbW92ICAgIDB4Y2VjKCVyYngpLCVyMTFkCQk8LS0gdHJhcHBpbmcgaW5zdHJ1
+Y3Rpb24KICAzMToJNDggYzcgMDYgMDAgMDAgMDAgMDAgCW1vdnEgICAkMHgwLCglcnNpKQogIDM4
+Ogk0OCA4YiA4NyA5MCAwMCAwMCAwMCAJbW92ICAgIDB4OTAoJXJkaSksJXJheAogIDNmOgk0OCAg
+ICAgICAgICAgICAgICAgICAJcmV4LlcKCkNvZGUgc3RhcnRpbmcgd2l0aCB0aGUgZmF1bHRpbmcg
+aW5zdHJ1Y3Rpb24KPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQog
+ICAwOgk0NCA4YiA5YiBlYyAwYyAwMCAwMCAJbW92ICAgIDB4Y2VjKCVyYngpLCVyMTFkCiAgIDc6
+CTQ4IGM3IDA2IDAwIDAwIDAwIDAwIAltb3ZxICAgJDB4MCwoJXJzaSkKICAgZToJNDggOGIgODcg
+OTAgMDAgMDAgMDAgCW1vdiAgICAweDkwKCVyZGkpLCVyYXgKICAxNToJNDggICAgICAgICAgICAg
+ICAgICAgCXJleC5XClsgMTg1My40ODc3MTNdIFJTUDogMDAxODpmZmZmYjliYjhlZGY3YzgwIEVG
+TEFHUzogMDAwMTAyNDYKWyAxODUzLjQ5MzcxNV0gUkFYOiAwMDAwMDAwMDExZDIwMDAwIFJCWDog
+MDAwMDAwMDAwMDAwMDAwMCBSQ1g6IGZmZmY5MzYwMWIxNTZiMDAKWyAxODUzLjQ5ODcxNF0gUkRY
+OiAwMDAwMDAwMDExZDAwMDAwIFJTSTogZmZmZjkzM2VkM2JhM2IzOCBSREk6IGZmZmY5MzQxNjlk
+ZTYwMDAKWyAxODUzLjUwODcxNF0gUkJQOiBmZmZmOTM2MDFiMTU2YjAwIFIwODogMDAwMDAwMDAx
+MWQxMDAwMCBSMDk6IGZmZmY5MzQxNjlkZTYwMDAKWyAxODUzLjUxMzcxN10gUjEwOiAwMDAwMDAw
+MDExZDIwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDAwMCBSMTI6IDAwMDAwMDAwMDAwMDAwMDAKWyAx
+ODUzLjUyMzcxOF0gUjEzOiBmZmZmOTM0MTA3NDVjMDAwIFIxNDogZmZmZjkzNDE2OWRlNjAwMCBS
+MTU6IGZmZmY5MzNlZDNiYTNiMzgKWyAxODUzLjUzMjcyM10gRlM6ICAwMDAwMDAwMDAwMDAwMDAw
+KDAwMDApIEdTOmZmZmY5MzVkYWZhNDAwMDAoMDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMApb
+IDE4NTMuNTQyNzE0XSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgw
+MDUwMDMzClsgMTg1My41NDc3MTNdIENSMjogMDAwMDAwMDAwMDAwMGNlYyBDUjM6IDAwMDAwMDFm
+ZDAwMTAwMDEgQ1I0OiAwMDAwMDAwMDAwMTcwNmUwClsgMTg1My41NTU3MjZdIENhbGwgVHJhY2U6
+ClsgMTg1My41NjA3MTRdICA8VEFTSz4KWyAxODUzLjU2MDcxNF0gcmFpZDU2X3Bhcml0eV9yZWNv
+dmVyICgvdXNyL3NyYy9kZWJ1Zy9rZXJuZWwtNS4xNS41OS9saW51eC01LjE1LjU5LTMuZWw3Lng4
+Nl82NC9mcy9idHJmcy9yYWlkNTYuYzoxMzg1IC91c3Ivc3JjL2RlYnVnL2tlcm5lbC01LjE1LjU5
+L2xpbnV4LTUuMTUuNTktMy5lbDcueDg2XzY0L2ZzL2J0cmZzL3JhaWQ1Ni5jOjIxODEpIGJ0cmZz
+CgpzdGF0aWMgaW50IGZpbmRfbG9naWNhbF9iaW9fc3RyaXBlKHN0cnVjdCBidHJmc19yYWlkX2Jp
+byAqcmJpbywKICAgICAgICAgICAgICAgICAgIHN0cnVjdCBiaW8gKmJpbykKewpMMTM4NTogICAg
+dTY0IGxvZ2ljYWwgPSBiaW8tPmJpX2l0ZXIuYmlfc2VjdG9yIDw8IDk7CgoKICAgIHJiaW8tPm9w
+ZXJhdGlvbiA9IEJUUkZTX1JCSU9fUkVBRF9SRUJVSUxEOwogICAgcmJpb19hZGRfYmlvKHJiaW8s
+IGJpbyk7CgpMMjE4MTogICAgcmJpby0+ZmFpbGEgPSBmaW5kX2xvZ2ljYWxfYmlvX3N0cmlwZShy
+YmlvLCBiaW8pOwogICAgaWYgKHJiaW8tPmZhaWxhID09IC0xKSB7CiAgICAgICAgYnRyZnNfd2Fy
+bihmc19pbmZvLAoKWyAxODUzLjU2OTcxNl0gc2NydWJfcmVjaGVja19ibG9jayAoL3Vzci9zcmMv
+ZGVidWcva2VybmVsLTUuMTUuNTkvbGludXgtNS4xNS41OS0zLmVsNy54ODZfNjQvZnMvYnRyZnMv
+c2NydWIuYzoxNDA2IC91c3Ivc3JjL2RlYnVnL2tlcm5lbC01LjE1LjU5L2xpbnV4LTUuMTUuNTkt
+My5lbDcueDg2XzY0L2ZzL2J0cmZzL3NjcnViLmM6MTQzNSAvdXNyL3NyYy9kZWJ1Zy9rZXJuZWwt
+NS4xNS41OS9saW51eC01LjE1LjU5LTMuZWw3Lng4Nl82NC9mcy9idHJmcy9zY3J1Yi5jOjE0Njkp
+IGJ0cmZzClsgMTg1My41NzQ3MTVdIHNjcnViX2hhbmRsZV9lcnJvcmVkX2Jsb2NrICgvdXNyL3Ny
+Yy9kZWJ1Zy9rZXJuZWwtNS4xNS41OS9saW51eC01LjE1LjU5LTMuZWw3Lng4Nl82NC9mcy9idHJm
+cy9zY3J1Yi5jOjEwNDYpIGJ0cmZzClsgMTg1My41Nzk3MjFdIHNjcnViX2Jpb19lbmRfaW9fd29y
+a2VyICgvdXNyL3NyYy9kZWJ1Zy9rZXJuZWwtNS4xNS41OS9saW51eC01LjE1LjU5LTMuZWw3Lng4
+Nl82NC9mcy9idHJmcy9zY3J1Yi5jOjI0NjUgL3Vzci9zcmMvZGVidWcva2VybmVsLTUuMTUuNTkv
+bGludXgtNS4xNS41OS0zLmVsNy54ODZfNjQvZnMvYnRyZnMvc2NydWIuYzoyMzg4KSBidHJmcwpb
+IDE4NTMuNTg4NzE1XSA/IHB1dF9wcmV2X3Rhc2tfZmFpciAoL3Vzci9zcmMvZGVidWcva2VybmVs
+LTUuMTUuNTkvbGludXgtNS4xNS41OS0zLmVsNy54ODZfNjQva2VybmVsL3NjaGVkL2ZhaXIuYzo3
+NDMwIChkaXNjcmltaW5hdG9yIDIpKSAKWyAxODUzLjU5MzcxNF0gPyBwaWNrX25leHRfdGFzayAo
+L3Vzci9zcmMvZGVidWcva2VybmVsLTUuMTUuNTkvbGludXgtNS4xNS41OS0zLmVsNy54ODZfNjQv
+a2VybmVsL3NjaGVkL3NjaGVkLmg6MjE4NiAvdXNyL3NyYy9kZWJ1Zy9rZXJuZWwtNS4xNS41OS9s
+aW51eC01LjE1LjU5LTMuZWw3Lng4Nl82NC9rZXJuZWwvc2NoZWQvY29yZS5jOjU2MTEgL3Vzci9z
+cmMvZGVidWcva2VybmVsLTUuMTUuNTkvbGludXgtNS4xNS41OS0zLmVsNy54ODZfNjQva2VybmVs
+L3NjaGVkL2NvcmUuYzo1NzI1KSAKWyAxODUzLjU5ODcxNV0gYnRyZnNfd29ya19oZWxwZXIgKC91
+c3Ivc3JjL2RlYnVnL2tlcm5lbC01LjE1LjU5L2xpbnV4LTUuMTUuNTktMy5lbDcueDg2XzY0L2Zz
+L2J0cmZzL2FzeW5jLXRocmVhZC5jOjMyNSkgYnRyZnMKWyAxODUzLjYwMzcxN10gcHJvY2Vzc19v
+bmVfd29yayAoL3Vzci9zcmMvZGVidWcva2VybmVsLTUuMTUuNTkvbGludXgtNS4xNS41OS0zLmVs
+Ny54ODZfNjQva2VybmVsL3dvcmtxdWV1ZS5jOjIzMDYpIApbIDE4NTMuNjA4NzE1XSB3b3JrZXJf
+dGhyZWFkICgvdXNyL3NyYy9kZWJ1Zy9rZXJuZWwtNS4xNS41OS9saW51eC01LjE1LjU5LTMuZWw3
+Lng4Nl82NC9pbmNsdWRlL2xpbnV4L2xpc3QuaDoyOTAgL3Vzci9zcmMvZGVidWcva2VybmVsLTUu
+MTUuNTkvbGludXgtNS4xNS41OS0zLmVsNy54ODZfNjQva2VybmVsL3dvcmtxdWV1ZS5jOjI0NTQp
+IApbIDE4NTMuNjEzNzE2XSA/IHByb2Nlc3Nfb25lX3dvcmsgKC91c3Ivc3JjL2RlYnVnL2tlcm5l
+bC01LjE1LjU5L2xpbnV4LTUuMTUuNTktMy5lbDcueDg2XzY0L2tlcm5lbC93b3JrcXVldWUuYzoy
+Mzk2KSAKWyAxODUzLjYxNzcxN10ga3RocmVhZCAoL3Vzci9zcmMvZGVidWcva2VybmVsLTUuMTUu
+NTkvbGludXgtNS4xNS41OS0zLmVsNy54ODZfNjQva2VybmVsL2t0aHJlYWQuYzozMTkpIApbIDE4
+NTMuNjIyNzE0XSA/IHNldF9rdGhyZWFkX3N0cnVjdCAoL3Vzci9zcmMvZGVidWcva2VybmVsLTUu
+MTUuNTkvbGludXgtNS4xNS41OS0zLmVsNy54ODZfNjQva2VybmVsL2t0aHJlYWQuYzoyNzIpIApb
+IDE4NTMuNjI3NzE1XSByZXRfZnJvbV9mb3JrICgvdXNyL3NyYy9kZWJ1Zy9rZXJuZWwtNS4xNS41
+OS9saW51eC01LjE1LjU5LTMuZWw3Lng4Nl82NC9hcmNoL3g4Ni9lbnRyeS9lbnRyeV82NC5TOjI5
+OCkgClsgMTg1My42MzE3MTddICA8L1RBU0s+ClsgMTg1My42MzY3MjFdIE1vZHVsZXMgbGlua2Vk
+IGluOiBycGNzZWNfZ3NzX2tyYjUgYXV0aF9ycGNnc3MgbmZzdjQgZG5zX3Jlc29sdmVyIG5mcyBs
+b2NrZCBncmFjZSBmc2NhY2hlIG5ldGZzIHJma2lsbCBpYl9jb3JlIHN1bnJwYyBkbV9tdWx0aXBh
+dGggaW50ZWxfcmFwbF9tc3IgaW50ZWxfcmFwbF9jb21tb24gc2JfZWRhYyB4ODZfcGtnX3RlbXBf
+dGhlcm1hbCBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaW50ZWxfcG93ZXJjbGFtcCBzbmRfaGRhX2Nv
+ZGVjX2dlbmVyaWMgY29yZXRlbXAgcmFkZW9uIGxlZHRyaWdfYXVkaW8gc25kX2hkYV9jb2RlY19o
+ZG1pIGJ0cmZzIHNuZF9oZGFfaW50ZWwgc25kX2ludGVsX2RzcGNmZyBzbmRfaW50ZWxfc2R3X2Fj
+cGkga3ZtX2ludGVsIHNuZF9oZGFfY29kZWMgc25kX2hkYV9jb3JlIGkyY19hbGdvX2JpdCBkcm1f
+dHRtX2hlbHBlciBtZWlfd2R0IGt2bSBzbmRfaHdkZXAgcmFpZDZfcHEgenN0ZF9jb21wcmVzcyBz
+bmRfc2VxIHR0bSBkY2RiYXMgenN0ZF9kZWNvbXByZXNzIHNuZF9zZXFfZGV2aWNlIGlycWJ5cGFz
+cyBpVENPX3dkdCByYXBsIGlUQ09fdmVuZG9yX3N1cHBvcnQgZGVsbF9zbW1faHdtb24gc25kX3Bj
+bSBpbnRlbF9jc3RhdGUgZHJtX2ttc19oZWxwZXIgbWVpX21lIHNuZF90aW1lciBpMmNfaTgwMSBz
+eXNjb3B5YXJlYSBpbnRlbF91bmNvcmUgcGNzcGtyIGkyY19zbWJ1cyBzeXNmaWxscmVjdCBkbV9t
+b2QgbHBjX2ljaCBtZWkgc25kIHN5c2ltZ2JsdCBmYl9zeXNfZm9wcyBjZWMgc291bmRjb3JlIGRy
+bSBmdXNlIHhmcyBzZF9tb2QgdDEwX3BpIHNyX21vZCBjZHJvbSBzZyBibngyeCBhaGNpIGNyY3Qx
+MGRpZl9wY2xtdWwgY3JjMzJfcGNsbXVsIGNyYzMyY19pbnRlbCBsaWJhaGNpIG1wdDNzYXMgbGli
+YXRhIGdoYXNoX2NsbXVsbmlfaW50ZWwgZTEwMDBlIG1kaW8gcmFpZF9jbGFzcyBzY3NpX3RyYW5z
+cG9ydF9zYXMgd21pIGkyY19kZXYgaXBtaV9kZXZpbnRmIGlwbWlfbXNnaGFuZGxlcgpbIDE4NTMu
+NzI4NzE0XSBDUjI6IDAwMDAwMDAwMDAwMDBjZWMKWyAxODUzLjczMzcxM10gLS0tWyBlbmQgdHJh
+Y2UgN2YzMjU2NGY0NTBjNDcxNCBdLS0tClsgMTg1My44ODg3MTddIFJJUDogMDAxMDpyYmlvX2Fk
+ZF9iaW8gKC91c3Ivc3JjL2RlYnVnL2tlcm5lbC01LjE1LjU5L2xpbnV4LTUuMTUuNTktMy5lbDcu
+eDg2XzY0L2ZzL2J0cmZzL3JhaWQ1Ni5jOjE3NDcpIGJ0cmZzClsgMTg1My45MzA3MjVdIENvZGU6
+IDM5IGQwIDBmIDgyIGRjIDY5IDAyIDAwIDhiIDg3IGJjIDAwIDAwIDAwIDBmIGFmIDg3IGI4IDAw
+IDAwIDAwIDRkIDAxIGMyIDQ4IDk4IDQ4IDAxIGQwIDQ5IDM5IGMyIDBmIDg3IGJlIDY5IDAyIDAw
+IDQ4IDhiIDU5IDA4IDw0ND4gOGIgOWIgZWMgMGMgMDAgMDAgNDggYzcgMDYgMDAgMDAgMDAgMDAg
+NDggOGIgODcgOTAgMDAgMDAgMDAgNDgKQWxsIGNvZGUKPT09PT09PT0KICAgMDoJMzkgZDAgICAg
+ICAgICAgICAgICAgCWNtcCAgICAlZWR4LCVlYXgKICAgMjoJMGYgODIgZGMgNjkgMDIgMDAgICAg
+CWpiICAgICAweDI2OWU0CiAgIDg6CThiIDg3IGJjIDAwIDAwIDAwICAgIAltb3YgICAgMHhiYygl
+cmRpKSwlZWF4CiAgIGU6CTBmIGFmIDg3IGI4IDAwIDAwIDAwIAlpbXVsICAgMHhiOCglcmRpKSwl
+ZWF4CiAgMTU6CTRkIDAxIGMyICAgICAgICAgICAgIAlhZGQgICAgJXI4LCVyMTAKICAxODoJNDgg
+OTggICAgICAgICAgICAgICAgCWNsdHEgICAKICAxYToJNDggMDEgZDAgICAgICAgICAgICAgCWFk
+ZCAgICAlcmR4LCVyYXgKICAxZDoJNDkgMzkgYzIgICAgICAgICAgICAgCWNtcCAgICAlcmF4LCVy
+MTAKICAyMDoJMGYgODcgYmUgNjkgMDIgMDAgICAgCWphICAgICAweDI2OWU0CiAgMjY6CTQ4IDhi
+IDU5IDA4ICAgICAgICAgIAltb3YgICAgMHg4KCVyY3gpLCVyYngKICAyYToqCTQ0IDhiIDliIGVj
+IDBjIDAwIDAwIAltb3YgICAgMHhjZWMoJXJieCksJXIxMWQJCTwtLSB0cmFwcGluZyBpbnN0cnVj
+dGlvbgogIDMxOgk0OCBjNyAwNiAwMCAwMCAwMCAwMCAJbW92cSAgICQweDAsKCVyc2kpCiAgMzg6
+CTQ4IDhiIDg3IDkwIDAwIDAwIDAwIAltb3YgICAgMHg5MCglcmRpKSwlcmF4CiAgM2Y6CTQ4ICAg
+ICAgICAgICAgICAgICAgIAlyZXguVwoKQ29kZSBzdGFydGluZyB3aXRoIHRoZSBmYXVsdGluZyBp
+bnN0cnVjdGlvbgo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAg
+IDA6CTQ0IDhiIDliIGVjIDBjIDAwIDAwIAltb3YgICAgMHhjZWMoJXJieCksJXIxMWQKICAgNzoJ
+NDggYzcgMDYgMDAgMDAgMDAgMDAgCW1vdnEgICAkMHgwLCglcnNpKQogICBlOgk0OCA4YiA4NyA5
+MCAwMCAwMCAwMCAJbW92ICAgIDB4OTAoJXJkaSksJXJheAogIDE1Ogk0OCAgICAgICAgICAgICAg
+ICAgICAJcmV4LlcKWyAxODUzLjk0OTcyNV0gUlNQOiAwMDE4OmZmZmZiOWJiOGVkZjdjODAgRUZM
+QUdTOiAwMDAxMDI0NgpbIDE4NTMuOTU5NzIzXSBSQVg6IDAwMDAwMDAwMTFkMjAwMDAgUkJYOiAw
+MDAwMDAwMDAwMDAwMDAwIFJDWDogZmZmZjkzNjAxYjE1NmIwMApbIDE4NTMuOTY1NzIwXSBSRFg6
+IDAwMDAwMDAwMTFkMDAwMDAgUlNJOiBmZmZmOTMzZWQzYmEzYjM4IFJESTogZmZmZjkzNDE2OWRl
+NjAwMApbIDE4NTMuOTc0NzI0XSBSQlA6IGZmZmY5MzYwMWIxNTZiMDAgUjA4OiAwMDAwMDAwMDEx
+ZDEwMDAwIFIwOTogZmZmZjkzNDE2OWRlNjAwMApbIDE4NTMuOTgzNzI2XSBSMTA6IDAwMDAwMDAw
+MTFkMjAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMDAwIFIxMjogMDAwMDAwMDAwMDAwMDAwMApbIDE4
+NTMuOTkxNzI1XSBSMTM6IGZmZmY5MzQxMDc0NWMwMDAgUjE0OiBmZmZmOTM0MTY5ZGU2MDAwIFIx
+NTogZmZmZjkzM2VkM2JhM2IzOApbIDE4NTQuMDAxNzE3XSBGUzogIDAwMDAwMDAwMDAwMDAwMDAo
+MDAwMCkgR1M6ZmZmZjkzNWRhZmE0MDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwClsg
+MTg1NC4wMTE3MjFdIENTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAw
+NTAwMzMKWyAxODU0LjAxNjcxOV0gQ1IyOiAwMDAwMDAwMDAwMDAwY2VjIENSMzogMDAwMDAwMWZk
+MDAxMDAwMSBDUjQ6IDAwMDAwMDAwMDAxNzA2ZTAKWyAxODU0LjAyNjcyMV0gS2VybmVsIHBhbmlj
+IC0gbm90IHN5bmNpbmc6IEZhdGFsIGV4Y2VwdGlvbgpbIDE4NTQuMDMwNzIyXSBLZXJuZWwgT2Zm
+c2V0OiAweDJlNDAwMDAwIGZyb20gMHhmZmZmZmZmZjgxMDAwMDAwIChyZWxvY2F0aW9uIHJhbmdl
+OiAweGZmZmZmZmZmODAwMDAwMDAtMHhmZmZmZmZmZmJmZmZmZmZmKQpbIDE4NTQuMDMwNzIyXSAt
+LS1bIGVuZCBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogRmF0YWwgZXhjZXB0aW9uIF0tLS0K
+--------_62EB9C26000000003036_MULTIPART_MIXED_--
 
