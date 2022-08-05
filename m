@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B1E58AC40
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Aug 2022 16:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9594958AC3A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Aug 2022 16:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240911AbiHEOPS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Aug 2022 10:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
+        id S240929AbiHEOPT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Aug 2022 10:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240907AbiHEOPN (ORCPT
+        with ESMTP id S240904AbiHEOPN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Aug 2022 10:15:13 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB645B7B4
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Aug 2022 07:15:09 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id mk9so1807149qvb.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Aug 2022 07:15:09 -0700 (PDT)
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C4B5C366
+        for <linux-btrfs@vger.kernel.org>; Fri,  5 Aug 2022 07:15:11 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id y11so1838774qvn.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 05 Aug 2022 07:15:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=zPAERh5PKVzP4IMDM9RG80tYsQKkWjMXr4WF/iPhzSQ=;
-        b=5PpigyZRa9ZRw6+dq+BL+l+2mE8+fB2NmQkSaEGJT/MjdvZdNFbI4qfkT1d3KKCbo0
-         MgKNKCGVw18dN2OqZ8ou5RmG7k6/J862Z5gBUW9aFExOOcRwFbmp4PaZjaushTOZC+8v
-         kn2jVZcwiIuFkrKSs+7WZHU+GhJkmHj8PLOkaHkt9JUue+wUD5VQjVAGWoUbjM2VeAIx
-         EkW/9BAmtujTjdgeygbGCK/Ob6K4RYyZrNOHl4J3x/xmy+TzQwWqSjeVy9nlsgZUd5m1
-         tzSOAYbUtcT3XK3SbzGlgG7DQMNBR/vwGLE8lab4doJiX6QzucOS6SkneMukdeW6KtzN
-         3ucA==
+        bh=0sjoeNK17wGi/2+ba6yI/ierfDGnAup5lWL1rQ4HndA=;
+        b=JFJxmjgTiYAGGAT/6XrlWEFWIdnat2ukpga3oNePt8KRn08whnCcRRB3cgRQMf5ybA
+         1hE8FYQwfdSkuBh+EYG/FRFyJ/Cyassjm1g6ZHOapfi2L+Tgu3i9Vh6aiga13anYQ41W
+         raoOm5o6rp7Rqh5rIQ6qARH81SclmDqumjBkpJ6twwJp5k6hA/vWw1OHkLJHIfFe1HhU
+         p1gxnObuWDoqIZmcX3CD0WUsClCnPdMy61KJiY5aQE7ptvhDb6n09wFAl9+bFBkWxVA9
+         v5FFNdAC9MsuSZRWCuzaPp4ItmwY5YISlh84ge3poeL4pwkwt3yxAB/mL92Sp2mnGd7o
+         WNgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zPAERh5PKVzP4IMDM9RG80tYsQKkWjMXr4WF/iPhzSQ=;
-        b=gxDql6659dra7cnz9Z9EFjDQ2VUJc72ulRawrbFrloouk23gtK4LBHXZtKohMxiMle
-         vZLpqesyNe9TOrfjB5BLANEgRhVJv2Xl32t8+V8l4iDQk/NUCJ8yV3BsWTVqasxVDETB
-         T/sj2IkALXQfSptdoNS5tn+80xyNVA15VE2JwCrSXdnkZb+oao362mUkQJ0O7jzdRuFc
-         0eDu4qFjpOkqlcse09SM2nE1eVf32L3Zde1ZPQSSVkRKY8SMcAlGxfeE5nhbiQZiL2N6
-         b2y/pRLy+4YfU+V7wEk2uw/GT9BEtt27kEAP2BKnCtsu5FumuFdxCJR09NsnBNiY81Iz
-         F79A==
-X-Gm-Message-State: ACgBeo0GqoAA8jeYpoRU9AHSfwNaUoSSlKmeiKCZctpe9ItBlOn4oGqP
-        hbUpkXye2PUqNdCqMeyDvPUUJu8u2sKWTg==
-X-Google-Smtp-Source: AA6agR7BDN3OBPBavyuHMu8Mwe9bYq4K9BT5dxURykhCEWLlEzqiy86SYKZ+/aiklp5OqRmmOKcmfw==
-X-Received: by 2002:ad4:5c4b:0:b0:474:7aa4:b0ba with SMTP id a11-20020ad45c4b000000b004747aa4b0bamr5813483qva.49.1659708908551;
-        Fri, 05 Aug 2022 07:15:08 -0700 (PDT)
+        bh=0sjoeNK17wGi/2+ba6yI/ierfDGnAup5lWL1rQ4HndA=;
+        b=QSD56WqHWsssPwCVGqEWimPtM2uYg1iOa7BYdlNASfSOaIkoPA/9pGW0E0PwHlICip
+         WHgFofYbUw5hGli2RvnZyHLy3FyKqqXJ1NnyxG23RTihV8rcZe3zklqYHDXNxjQaOsKa
+         bzI6flSGkEEuC9n015nA79Lc+NKFN/SGjjUHq8bIYfOH3cwBc2v8grseNDHQj0yo+h4n
+         7CxTRyY4TeTctUp5z/dXfCRdjsURhLB/IAjEHBS0sVtg2W9DVlfBi21mWVlqxwp793Et
+         x3zYv7gjgG4TxD6NHoRGEiwPJX5yRqSdXA2exFAC115vrvucMiAZcL8+Rl2NmArCNmv9
+         ZOaA==
+X-Gm-Message-State: ACgBeo3X8sQmfaYhyTET0JWqva4XFDN4yienlplI1mzXbdX/12lvy+EP
+        tUPsbJdKhnpb+km/hDGNXN559f3i1D+6uQ==
+X-Google-Smtp-Source: AA6agR6tbe6GOXTJan7xrkiwr05I2xG3y0KGlLzDc3g3LQZO7+zjIKXRae+HMqw1NZ5K+g4x6k0fyA==
+X-Received: by 2002:a0c:f1c7:0:b0:474:725e:753e with SMTP id u7-20020a0cf1c7000000b00474725e753emr5781101qvl.49.1659708909821;
+        Fri, 05 Aug 2022 07:15:09 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id q8-20020a05620a0d8800b006b8cf08d37bsm2995501qkl.130.2022.08.05.07.15.07
+        by smtp.gmail.com with ESMTPSA id fy11-20020a05622a5a0b00b0033d1ac2517esm2686256qtb.64.2022.08.05.07.15.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Aug 2022 07:15:08 -0700 (PDT)
+        Fri, 05 Aug 2022 07:15:09 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 5/9] btrfs: remove block_group->lock protection for TO_COPY
-Date:   Fri,  5 Aug 2022 10:14:56 -0400
-Message-Id: <43147dace77ecc3e88dc2d5d034bfa6f1f5ba4c4.1659708822.git.josef@toxicpanda.com>
+Subject: [PATCH v3 6/9] btrfs: simplify btrfs_put_block_group_cache
+Date:   Fri,  5 Aug 2022 10:14:57 -0400
+Message-Id: <6416d8cd6a0a767f312093ebe586caa74656f2ca.1659708822.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1659708822.git.josef@toxicpanda.com>
 References: <cover.1659708822.git.josef@toxicpanda.com>
@@ -66,76 +66,72 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We use this during device replace for zoned devices, we were simply
-taking the lock because it was in a bit field and we needed the lock to
-be safe with other modifications in the bitfield.  With the bit helpers
-we no longer require that locking.
+We're breaking out and re-searching for the next block group while
+evicting any of the block group cache inodes.  This is not needed, the
+block groups aren't disappearing here, we can simply loop through the
+block groups like normal and iput any inode that we find.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/dev-replace.c | 5 -----
- fs/btrfs/scrub.c       | 3 ---
- fs/btrfs/volumes.c     | 2 --
- 3 files changed, 10 deletions(-)
+ fs/btrfs/block-group.c | 42 +++++++++++++++---------------------------
+ 1 file changed, 15 insertions(+), 27 deletions(-)
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index f85bbd99230b..488f2105c5d0 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -545,10 +545,7 @@ static int mark_block_group_to_copy(struct btrfs_fs_info *fs_info,
- 		if (!cache)
- 			continue;
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 8fd54f4dd2de..b94aa8087d98 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -3969,36 +3969,24 @@ void btrfs_reserve_chunk_metadata(struct btrfs_trans_handle *trans,
+ void btrfs_put_block_group_cache(struct btrfs_fs_info *info)
+ {
+ 	struct btrfs_block_group *block_group;
+-	u64 last = 0;
  
--		spin_lock(&cache->lock);
- 		set_bit(BLOCK_GROUP_FLAG_TO_COPY, &cache->runtime_flags);
--		spin_unlock(&cache->lock);
+-	while (1) {
+-		struct inode *inode;
 -
- 		btrfs_put_block_group(cache);
- 	}
- 	if (iter_ret < 0)
-@@ -610,9 +607,7 @@ bool btrfs_finish_block_group_to_copy(struct btrfs_device *srcdev,
- 	}
+-		block_group = btrfs_lookup_first_block_group(info, last);
+-		while (block_group) {
+-			btrfs_wait_block_group_cache_done(block_group);
+-			spin_lock(&block_group->lock);
+-			if (test_bit(BLOCK_GROUP_FLAG_IREF,
+-				     &block_group->runtime_flags))
+-				break;
++	block_group = btrfs_lookup_first_block_group(info, 0);
++	while (block_group) {
++		btrfs_wait_block_group_cache_done(block_group);
++		spin_lock(&block_group->lock);
++		if (test_and_clear_bit(BLOCK_GROUP_FLAG_IREF,
++				       &block_group->runtime_flags)) {
++			struct inode *inode = block_group->inode;
++
++			block_group->inode = NULL;
+ 			spin_unlock(&block_group->lock);
+-			block_group = btrfs_next_block_group(block_group);
+-		}
+-		if (!block_group) {
+-			if (last == 0)
+-				break;
+-			last = 0;
+-			continue;
+-		}
  
- 	/* Last stripe on this device */
--	spin_lock(&cache->lock);
- 	clear_bit(BLOCK_GROUP_FLAG_TO_COPY, &cache->runtime_flags);
--	spin_unlock(&cache->lock);
- 
- 	return true;
+-		inode = block_group->inode;
+-		clear_bit(BLOCK_GROUP_FLAG_IREF, &block_group->runtime_flags);
+-		block_group->inode = NULL;
+-		spin_unlock(&block_group->lock);
+-		ASSERT(block_group->io_ctl.inode == NULL);
+-		iput(inode);
+-		last = block_group->start + block_group->length;
+-		btrfs_put_block_group(block_group);
++			ASSERT(block_group->io_ctl.inode == NULL);
++			iput(inode);
++		} else {
++			spin_unlock(&block_group->lock);
++		}
++		block_group = btrfs_next_block_group(block_group);
+ 	}
  }
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index b7be62f1cd8e..14af085fe868 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3764,14 +3764,11 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
- 		}
  
- 		if (sctx->is_dev_replace && btrfs_is_zoned(fs_info)) {
--			spin_lock(&cache->lock);
- 			if (!test_bit(BLOCK_GROUP_FLAG_TO_COPY,
- 				      &cache->runtime_flags)) {
--				spin_unlock(&cache->lock);
- 				btrfs_put_block_group(cache);
- 				goto skip;
- 			}
--			spin_unlock(&cache->lock);
- 		}
- 
- 		/*
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 4de09c730d3c..8a6b5f6a8f8c 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6150,9 +6150,7 @@ static bool is_block_group_to_copy(struct btrfs_fs_info *fs_info, u64 logical)
- 
- 	cache = btrfs_lookup_block_group(fs_info, logical);
- 
--	spin_lock(&cache->lock);
- 	ret = test_bit(BLOCK_GROUP_FLAG_TO_COPY, &cache->runtime_flags);
--	spin_unlock(&cache->lock);
- 
- 	btrfs_put_block_group(cache);
- 	return ret;
 -- 
 2.26.3
 
