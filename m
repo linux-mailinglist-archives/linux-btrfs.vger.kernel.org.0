@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D49458AC42
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Aug 2022 16:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384AA58AC3C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Aug 2022 16:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240908AbiHEOPU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Aug 2022 10:15:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46100 "EHLO
+        id S240914AbiHEOPW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Aug 2022 10:15:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240920AbiHEOPR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Aug 2022 10:15:17 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C69CB
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Aug 2022 07:15:14 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id r11so1924342qkm.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Aug 2022 07:15:14 -0700 (PDT)
+        with ESMTP id S240907AbiHEOPS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Aug 2022 10:15:18 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AD8BC0
+        for <linux-btrfs@vger.kernel.org>; Fri,  5 Aug 2022 07:15:15 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d16so2099953qtw.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 05 Aug 2022 07:15:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=jUGPBZ5oxW4yT11QIYfmobfVY4Y1QanvhsLfItcTPR4=;
-        b=xbizgm+CT/chgRFwwcrxOqZ0BGJlSe398GBeJvKTI3EBErMb2r5DeWfhtU58Manqgy
-         JfAMEJXeBPJcfCRIGyrcU3vqfBfwa5RcmE9do7+QSiapBA15WK5LE0BpzjsyHoOwtPst
-         G2BKa0u9UOrGlWtQ9O0XyVvAQaTrwVqx2y5hKhspfireEWNj0VT5ORolf9iqN7RwZPLX
-         DxdbdqcUA325u3FqYzUYTQEjDaTLaU330V459myMIfpgwALtZUrD2UM0cST4mqP6WOyd
-         JZUJhLxzIE2Al2kTOhqOz9Ibyus2ypH88+jkuPfiZqSO9+jfJMS/nHJXP2JjQoLkG9n5
-         2scw==
+        bh=myCiLxZUhctKOC0V6TYsgEep63NSo41G2R6Ef0Puz7w=;
+        b=ZLs48eio9u+aRfDcthq60yqb8SazoZTtaNEOm+nCNQNDJdB/ae5eZAF9blteJIEHtN
+         ODJOrhuCf2qyYOtjOySJtJj7wIALfub6/vrkUOFPi321UM7UBSl0FumJoVy+UiRy9l6f
+         jcgMT4kdXovfums3/FMXoF+o1AH+5MdQuVkEWLRFU/ZTh+TSqD6Elegmy3XQniXqyGLc
+         275sdr8+TrsDiuipB50hgLdMv5XVCo8NlBNSpL0sjnTV7VgXLgpC4y4Tq5tG7PahmKPp
+         JmTJPu1DBhDwlWZzlkT+x3gv00g+uXDYDI/oBovWrrNg3QxelBraEbQeVWqf14AMvNgO
+         grgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jUGPBZ5oxW4yT11QIYfmobfVY4Y1QanvhsLfItcTPR4=;
-        b=tiijzple2QV0icQ0VVSGYrU0oWedLzC/B7bdYUBIKgXGqgNY1mhW7I2LRLx30bh23f
-         o+f1tAi4OJ1WjkDoQiCzRGyyh55oekI+ylQWY/WDiwqFy3hmQy2giPm3MQZ/W62LX2cW
-         IlI/PYLfFcVPNrGsbMHv2kEvhFxCCUpFCScwgk8vcgivKWvt2LX3qjW6lickAkwtripi
-         HnScnkQp8ne/3E58eRgnjrzqTqSmHCXQuWnVpmqGHtKPD8+ZP0DcfIlOT39ctCG/stCh
-         In/i5q0xV05bGnxGndHGT/UlbaxLSmbiFrB38CqVxaI5LLkG9kevn2coggHB0p+WsQwA
-         Xr2g==
-X-Gm-Message-State: ACgBeo2p1kQNLZkMymxWwrYnZwAEvQh0dEkCzMrMfcUwRMnRRH1RqOpv
-        AgvWXudole72pj/8WO4YXQX1AdpQaQheQg==
-X-Google-Smtp-Source: AA6agR6Pnahb1b5zlAcMGQp9JeTUmx5zTWzhLmnw8wbleq77VOmZTkotpBcjTSWazoJfNStjK9qu1w==
-X-Received: by 2002:a37:b041:0:b0:6b5:ce22:62c8 with SMTP id z62-20020a37b041000000b006b5ce2262c8mr5090351qke.640.1659708912698;
-        Fri, 05 Aug 2022 07:15:12 -0700 (PDT)
+        bh=myCiLxZUhctKOC0V6TYsgEep63NSo41G2R6Ef0Puz7w=;
+        b=t6eEydBAk1OJ1SaFLIPTLjHNB1SfA6l3GBmXfKw+n7gZH5m+imI+ERPxQfw5KrhCBK
+         QnvhMeA/ew/cTMlboNfCkDyxI3Bs7F2FhsJ/NsnMAc3H2OYeXs0QzWF0myKfvxbsiW+O
+         oOhVZ0FK7yHJ2lpOcLhBsI9EhkGaQ7KX6aXHAQmTM/NpusjSiWQvHNFT5kW40Ml/0GRg
+         6Kjfp9G/002fkg0KAKInslCFkXZUj+Vcs6Q95axRvbIIjErK51PmeDS6gmVJe7md+c4Q
+         1w6nFmqmJk5Fk1GyhD2Sfh3oMY2g94MevEj18pOiwXWkEZaWE/fqnfUXDL/DjP3hjM2k
+         Mxpw==
+X-Gm-Message-State: ACgBeo1DEpcEUbsLqYkT61szgFTcV4bPsmVCgc2R5hgtAZV/rNBozqNH
+        EasPbNe/5fXRPB4LABm3XgNfWjK9cK965A==
+X-Google-Smtp-Source: AA6agR4bwiqK9zPoVE7DezASYraCB5uQwsNEJ5lC2M47JG890godyshmcX6lnGY1n3tpLMFw58ua2w==
+X-Received: by 2002:ac8:7f09:0:b0:31f:1e5e:4c05 with SMTP id f9-20020ac87f09000000b0031f1e5e4c05mr5881353qtk.437.1659708914100;
+        Fri, 05 Aug 2022 07:15:14 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id m22-20020ac866d6000000b0031f229d4427sm2594407qtp.96.2022.08.05.07.15.12
+        by smtp.gmail.com with ESMTPSA id h13-20020a05620a284d00b006a6d7c3a82esm1600859qkp.15.2022.08.05.07.15.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Aug 2022 07:15:12 -0700 (PDT)
+        Fri, 05 Aug 2022 07:15:13 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 8/9] btrfs: remove bg->lock protection for relocation repair flag
-Date:   Fri,  5 Aug 2022 10:14:59 -0400
-Message-Id: <0559d7a06b24a557bd9d308fd708a284e18a8cb8.1659708822.git.josef@toxicpanda.com>
+Subject: [PATCH v3 9/9] btrfs: delete btrfs_wait_space_cache_v1_finished
+Date:   Fri,  5 Aug 2022 10:15:00 -0400
+Message-Id: <e905a31f40e21f2afd50c02ac0be8a9108a1120f.1659708822.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1659708822.git.josef@toxicpanda.com>
 References: <cover.1659708822.git.josef@toxicpanda.com>
@@ -66,34 +66,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Before when this was modifying the bit field we had to protect it with
-the bg->lock, however now we're using bit helpers so we can stop
-using the bg->lock.
+We used to use this in a few spots, but now we only use it directly
+inside of block-group.c, so remove the helper and just open code where
+we were using it.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/volumes.c | 3 ---
- 1 file changed, 3 deletions(-)
+ fs/btrfs/block-group.c | 8 +-------
+ fs/btrfs/block-group.h | 2 --
+ 2 files changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 8a6b5f6a8f8c..7eebd2c5e5b3 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -8277,14 +8277,11 @@ bool btrfs_repair_one_zone(struct btrfs_fs_info *fs_info, u64 logical)
- 	if (!cache)
- 		return true;
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 6215f50b62d2..8028a4c26b89 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -467,12 +467,6 @@ static bool space_cache_v1_done(struct btrfs_block_group *cache)
+ 	return ret;
+ }
  
--	spin_lock(&cache->lock);
- 	if (test_and_set_bit(BLOCK_GROUP_FLAG_RELOCATING_REPAIR,
- 			     &cache->runtime_flags)) {
--		spin_unlock(&cache->lock);
- 		btrfs_put_block_group(cache);
- 		return true;
- 	}
--	spin_unlock(&cache->lock);
+-void btrfs_wait_space_cache_v1_finished(struct btrfs_block_group *cache,
+-				struct btrfs_caching_control *caching_ctl)
+-{
+-	wait_event(caching_ctl->wait, space_cache_v1_done(cache));
+-}
+-
+ #ifdef CONFIG_BTRFS_DEBUG
+ static void fragment_free_space(struct btrfs_block_group *block_group)
+ {
+@@ -801,7 +795,7 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, int load_cache_only
+ 	btrfs_queue_work(fs_info->caching_workers, &caching_ctl->work);
+ out:
+ 	if (load_cache_only && caching_ctl)
+-		btrfs_wait_space_cache_v1_finished(cache, caching_ctl);
++		wait_event(caching_ctl->wait, space_cache_v1_done(cache));
+ 	if (caching_ctl)
+ 		btrfs_put_caching_control(caching_ctl);
  
- 	kthread_run(relocating_repair_kthread, cache,
- 		    "btrfs-relocating-repair");
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index fffcc7789fa7..96382ca5cbfb 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -310,8 +310,6 @@ void btrfs_reserve_chunk_metadata(struct btrfs_trans_handle *trans,
+ u64 btrfs_get_alloc_profile(struct btrfs_fs_info *fs_info, u64 orig_flags);
+ void btrfs_put_block_group_cache(struct btrfs_fs_info *info);
+ int btrfs_free_block_groups(struct btrfs_fs_info *info);
+-void btrfs_wait_space_cache_v1_finished(struct btrfs_block_group *cache,
+-				struct btrfs_caching_control *caching_ctl);
+ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
+ 		       struct block_device *bdev, u64 physical, u64 **logical,
+ 		       int *naddrs, int *stripe_len);
 -- 
 2.26.3
 
