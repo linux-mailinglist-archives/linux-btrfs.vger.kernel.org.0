@@ -2,142 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8448058B253
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Aug 2022 00:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A30158B27D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Aug 2022 00:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241592AbiHEWGp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Aug 2022 18:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
+        id S237402AbiHEWo4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Aug 2022 18:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241654AbiHEWGn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Aug 2022 18:06:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D10FA11C2F
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Aug 2022 15:06:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659737199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zlDrYXgDCUthUhiy73M1xjmezLFpu3vi4ADVmnqoFtM=;
-        b=IZZ179FP/9ItWRAObFFeQllCWkBijN1zarTlzOSekT8m1c3A8iTVUmVaq6T5F7iDd3PmTb
-        avuzWnfr3EWEru75w6hpPOONLYmtIZMJBYkkUKxndsoiko79gOZyrc2zPbaS+/0Crwpt9o
-        StmUl+KbQGTVG1O0yGhpdxAnAfcClWo=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-376-zrUxPxWSMvmNeaZHCoIotw-1; Fri, 05 Aug 2022 18:06:38 -0400
-X-MC-Unique: zrUxPxWSMvmNeaZHCoIotw-1
-Received: by mail-qk1-f198.google.com with SMTP id y17-20020a05620a25d100b006b66293d75aso2947586qko.17
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Aug 2022 15:06:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc;
-        bh=zlDrYXgDCUthUhiy73M1xjmezLFpu3vi4ADVmnqoFtM=;
-        b=e+oHnRYxpoNu/XpdY064xH5Da23Pdk9JKwSz+HISeFIMJoelDzaOn446UuNQHOzneH
-         0KpbycrPMBqMGKSqJTty6zgJxpeDPWq+6rtQJQlR13MylxfWkuVSxXkCeI6FdgXWqkmH
-         joB9q8Sw3DzDRuwTXrgae3aOkJmilLab+RUVRpVPnL0q+mmxUQ3lyFTQnpHfut3krHXl
-         s5W2ogmMczB4Ys3AJJ6N0GwrsDGPl1Qk6x5tg4zGt54oo9l3b6jVG82vTcBTmY+O7UTl
-         B+RJIH/4bGMg1YN307hDp6vVUa105FCWJLdqRK+ORNIrGkM9P62/1iU6bRYk9ejLNM6c
-         xvAw==
-X-Gm-Message-State: ACgBeo2/c+8kHYhP6x7w/omCkCMtOipUo/f5NxWvpv478OjobfyQKv18
-        /lcG7PwWZYaqLd6cmiilXmeKq3Hi89PMKFahm0LGIhiN0uo0PKKs8n5TVTVCd7cMWN76XnH+/CX
-        NeGM2TEu11tL/1cSF8YPIofs=
-X-Received: by 2002:a05:620a:170e:b0:6b8:fa02:6110 with SMTP id az14-20020a05620a170e00b006b8fa026110mr6704337qkb.184.1659737198074;
-        Fri, 05 Aug 2022 15:06:38 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR7xEDaXjDnYGgwNPYVw0vUMBp/ecTy5raNl40Xwriy8H7D/VAv8N6Y/Htlz8LTyvWjvxbIRbw==
-X-Received: by 2002:a05:620a:170e:b0:6b8:fa02:6110 with SMTP id az14-20020a05620a170e00b006b8fa026110mr6704322qkb.184.1659737197860;
-        Fri, 05 Aug 2022 15:06:37 -0700 (PDT)
-Received: from [192.168.1.3] (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
-        by smtp.gmail.com with ESMTPSA id g18-20020a05620a40d200b006b5f9b7ac87sm4514981qko.26.2022.08.05.15.06.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Aug 2022 15:06:37 -0700 (PDT)
-Message-ID: <c10e4aa381aea86bb51b005887533e28f9c7302b.camel@redhat.com>
-Subject: Re: [RFC PATCH 1/4] vfs: report change attribute in statx for
- IS_I_VERSION inodes
-From:   Jeff Layton <jlayton@redhat.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        lczerner@redhat.com, bxue@redhat.com, ceph-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Date:   Fri, 05 Aug 2022 18:06:36 -0400
-In-Reply-To: <20220805220136.GG3600936@dread.disaster.area>
-References: <20220805183543.274352-1-jlayton@kernel.org>
-         <20220805183543.274352-2-jlayton@kernel.org>
-         <20220805220136.GG3600936@dread.disaster.area>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.3 (3.44.3-1.fc36) 
+        with ESMTP id S230106AbiHEWoy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Aug 2022 18:44:54 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FD21DA73
+        for <linux-btrfs@vger.kernel.org>; Fri,  5 Aug 2022 15:44:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1659739486;
+        bh=EZDEeLHDCHT05JeDxPkGDFiOONLqP3koUfqpjxms1WM=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=gQ3fGTxxmy1cemWYxA4cRJLv4+ADLYFHoGYAvRNy+NqbjCNL5Zb3GvBOUTah4NnEA
+         Kdybhkl7RIDdoV0yWW1nZbxOdiE7+XMyX1yX3w5spFBVxWTxNzCkNxj3dwdhjjWotX
+         6odr098paYBfVeUE6tGGDKaWRAmfUJdj1re3yvKI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MUowb-1ntWdI0ICn-00Qmu2; Sat, 06
+ Aug 2022 00:44:45 +0200
+Message-ID: <99d73f60-868c-28e9-e862-04a934e741ef@gmx.com>
+Date:   Sat, 6 Aug 2022 06:44:38 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v2 1/8] fs: fat: unexport file_fat_read_at()
+Content-Language: en-US
+To:     Tom Rini <trini@konsulko.com>, Qu Wenruo <wqu@suse.com>
+Cc:     u-boot@lists.denx.de, marek.behun@nic.cz,
+        linux-btrfs@vger.kernel.org, jnhuang95@gmail.com,
+        linux-erofs@lists.ozlabs.org, joaomarcos.costa@bootlin.com,
+        thomas.petazzoni@bootlin.com, miquel.raynal@bootlin.com
+References: <cover.1658812744.git.wqu@suse.com>
+ <ee01c16f20f02230c3cfd0b266f06564fa211f62.1658812744.git.wqu@suse.com>
+ <20220805211420.GA3027583@bill-the-cat>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220805211420.GA3027583@bill-the-cat>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6fHU6tg0nJ2s08uFblW8t60l1ohZpMVr6Bpr4V00P/yhoCy5qfS
+ SzIPnQkUcphor7fCrVjeZFBqSvtSsr7TmWci1SKkU1C27wdXxZhkVXsj8C5WjKPbC2l3YCh
+ iXokM+iF/M0I0MbQ7mCkSmkXEEKJKe4uKcXvhAORBi93zFNJked1jzLcW8e4Gn7s3MPAvq5
+ q4x8/uStHaGoQ3Qq7MpyQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zaZGEnTNer8=:CADUofRyEbnLnZdbMz7KKA
+ olt83JhXTzhPhq4X6PIuOqrj0+xNVt5jtSBZNpJ7mKPXpWhd7phsV5RiQ5IWrpFhTQjFAm2Mw
+ NjIeb4/S4ZL8F6Bv/ZpBH/kwFmnmIgRJTobO6Sy1uAwxpZgSN6MYJTSNohyLUXE+Gyns+fEP5
+ Cp8gDdK9hQA/uZqSfeGNls8Vh0FQT8kdCE03QOloLZvB2FA1ZO1l0BqKOfRWLwgpcBIwWUA0T
+ vlrNkMk4akqVpuZ0q9+yIlDPnKGaA4mx0nQYhQ2zmCPYE0S1mjIPo3S8CMhJeJey42LFxQcW4
+ q6h1V1ElGV5vUwA7D6NiZXMlJNkpgvv9i1br5ZAqmagYqqopzfZfaExqmX2SDEDd68mDr8214
+ DiPJMmDj7LC9b6KNxq9GldN2b3pSVUML9kUDCzkPzbVjfp6OLrTQOLxVPmGELdhzB2oS8anTE
+ n0wTdJTafhTDlAvMPPzr7NMiHsSvXSQjPNJwGXKWV+ltmIgEffMTOGsaG33w1BANLBXS+sOHT
+ 8dtsNI2r3+yQ5sXbaxh75g9n3Rru/OJCiv+VuOQAsWmY7qYT12ntvHzMg7RxBXvoczL9i7HVT
+ pmv63e668325re4yNJ13ZbKEkPPFZO9EOZ2tI6SEPz5UV32vcYqFeqIVeVnRDvYnhnTJ1exGr
+ EnTtpFLTS0ZhbZfBrTWqLxoIvEG5qz296f9BQZGAd4mrnSQdxRvB51VT3Ggynjpw1ORQdnMny
+ /XLXqACKiNDXAtuE3ZZCbLQqa3jT3OxWTxbuBonrSYPCcjvPe/kAVkRYOAgzmM31vf3D2a4lh
+ ayMDir7mC/klnG4YLC9+wPjb2zF8GV70sdHIPurmSLW6qDwuA/Bhh7vFZF2WdsARUf/9h0mXj
+ uFpw+OeiZSUNG+cOEmDQPrDvCfGmbsdy/OGSHQZhljKgGRai+k9GznPaQ0HYWEk/CDOFJ6BKX
+ 8A+krGqRTvFdrC45KEvt3q03kt/e2ctiiMb6UwxXtZXWwm4MtFgcwWpv7+47m3on94YZm3m4l
+ CvEXJlhewGkc7kP9GYfLAuTdY3sYUgXO8PA3ksant42w3yvpI1IWRDM5At6gn2NIDpE/AHRFn
+ Q5x0agEmSzB3ALWdNBs3IZc1Mb+hJXcl9i/u+vahIcx8GaC8VfOgvII/A==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, 2022-08-06 at 08:01 +1000, Dave Chinner wrote:
-> On Fri, Aug 05, 2022 at 02:35:40PM -0400, Jeff Layton wrote:
-> > From: Jeff Layton <jlayton@redhat.com>
-> >=20
-> > Claim one of the spare fields in struct statx to hold a 64-bit change
-> > attribute. When statx requests this attribute, do an
-> > inode_query_iversion and fill the result in the field.
-> >=20
-> > Also update the test-statx.c program to fetch the change attribute as
-> > well.
-> >=20
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/stat.c                 | 7 +++++++
-> >  include/linux/stat.h      | 1 +
-> >  include/uapi/linux/stat.h | 3 ++-
-> >  samples/vfs/test-statx.c  | 4 +++-
-> >  4 files changed, 13 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/fs/stat.c b/fs/stat.c
-> > index 9ced8860e0f3..976e0a59ab23 100644
-> > --- a/fs/stat.c
-> > +++ b/fs/stat.c
-> > @@ -17,6 +17,7 @@
-> >  #include <linux/syscalls.h>
-> >  #include <linux/pagemap.h>
-> >  #include <linux/compat.h>
-> > +#include <linux/iversion.h>
-> > =20
-> >  #include <linux/uaccess.h>
-> >  #include <asm/unistd.h>
-> > @@ -118,6 +119,11 @@ int vfs_getattr_nosec(const struct path *path, str=
-uct kstat *stat,
-> >  	stat->attributes_mask |=3D (STATX_ATTR_AUTOMOUNT |
-> >  				  STATX_ATTR_DAX);
-> > =20
-> > +	if ((request_mask & STATX_CHGATTR) && IS_I_VERSION(inode)) {
-> > +		stat->result_mask |=3D STATX_CHGATTR;
-> > +		stat->chgattr =3D inode_query_iversion(inode);
-> > +	}
->=20
-> If you're going to add generic support for it, shouldn't there be a
-> generic test in fstests that ensures that filesystems that advertise
-> STATX_CHGATTR support actually behave correctly? Including across
-> mounts, and most importantly, that it is made properly stable by
-> fsync?
->=20
-> i.e. what good is this if different filesystems have random quirks
-> that mean it can't be relied on by userspace to tell it changes have
-> occurred?
 
-Absolutely. Being able to better test the i_version field for consistent
-behavior is a primary goal. I haven't yet written any yet, but we'd
-definitely want something in xfstests if we decide this is worthwhile.
---=20
-Jeff Layton <jlayton@redhat.com>
 
+On 2022/8/6 05:14, Tom Rini wrote:
+> On Tue, Jul 26, 2022 at 01:22:09PM +0800, Qu Wenruo wrote:
+>
+>> That function is only utilized inside fat driver, unexport it.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+> Unfortunately, the series fails CI:
+> https://source.denx.de/u-boot/u-boot/-/jobs/478838
+>
+
+OK, it's a bug in the unsupported fses (which squashfs doesn't support)
+
+The actual read bytes is not updated.
+
+Sorry for the inconvenience.
+
+Any idea that how to run the full tests locally so I can prevent such
+problem?
+
+Thanks,
+Qu
