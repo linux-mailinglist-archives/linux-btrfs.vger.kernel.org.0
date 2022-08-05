@@ -2,78 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B13D958AE4C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Aug 2022 18:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0226658AFE1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Aug 2022 20:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238657AbiHEQmZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Aug 2022 12:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42708 "EHLO
+        id S241423AbiHESfu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Aug 2022 14:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238117AbiHEQmL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Aug 2022 12:42:11 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5FA1581C
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Aug 2022 09:42:10 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S241130AbiHESft (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Aug 2022 14:35:49 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8E9765E;
+        Fri,  5 Aug 2022 11:35:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B16A533C9E;
-        Fri,  5 Aug 2022 16:42:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1659717728;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a2ppQzVy8kykjlF82iJP1AMubPfEF0BHC5o/pMaKzWU=;
-        b=Q3BOvwuPnzMcj7igO9Mk/qBiw9Mxm6Os4lcyLqtlL4N0OAzt2OgDINTl8TUkzxyFRagjd9
-        ntiLugbeWRg4EOSgXwHYHUTUER9CMuYSAVExC5+oDetwlD+0NT79ekAlJKYv7lNM8IEE3U
-        oOQ8s8bQZNbqZcQss8oYJWLJ6mf1tsk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1659717728;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a2ppQzVy8kykjlF82iJP1AMubPfEF0BHC5o/pMaKzWU=;
-        b=rE1fYi1GyTWeXumyLNuyy1S2+NMfTr8y0cyovAxRmCl3Kt+00SQNwOGPnwvmyzweyQgSJC
-        EsaZgqZkQGgs7WAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 82417133B5;
-        Fri,  5 Aug 2022 16:42:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id CjSaHmBI7WKAdwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 05 Aug 2022 16:42:08 +0000
-Date:   Fri, 5 Aug 2022 18:37:05 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v3 0/9] btrfs: block group cleanups
-Message-ID: <20220805163704.GA13489@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1659708822.git.josef@toxicpanda.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 66EAEB80D83;
+        Fri,  5 Aug 2022 18:35:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E91FC433D6;
+        Fri,  5 Aug 2022 18:35:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659724546;
+        bh=0nXuhjdJNF9HU4zM6ykQuL5s8Oky62WY1qkxmt9LyPg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lGCbyajAonhHywdyKx4A4xVUbXE6QpFYgWo1K1jBW9mZOSGz9j+yy7RMJttRLu5v7
+         vZeYpF40ZRBQnGviqeHrXhX5prfwnhpKh9gx8h1cAWn/YAfwteNd8AUB2aaV81uQaG
+         NUmc/zHpVmHxwyCgfX+jKfV1kK1nfUc0L/jbSu93a+qUOZmTG3NyEtCUyEu2KuXhqf
+         NIiiwnLFRhsQ334bAuZ4BuI9ybLGRN5u5AN9YNQ7xQ3AfdN69hIw878y8lZSgs3pAm
+         lLyp6L6pXHcM8mQwYM9oGjkFrlSg8LcoK4VvwPyk0gRX8vAju5/x8W95jWApO0loh1
+         iyePi98+oobMw==
+From:   Jeff Layton <jlayton@kernel.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     dhowells@redhat.com, lczerner@redhat.com, bxue@redhat.com,
+        ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: [RFC PATCH 0/4] vfs: allow querying i_version via statx
+Date:   Fri,  5 Aug 2022 14:35:39 -0400
+Message-Id: <20220805183543.274352-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1659708822.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 05, 2022 at 10:14:51AM -0400, Josef Bacik wrote:
-> v2->v3:
-> - I removed a check for FS_OPEN in the first patch which was incorrect.
+Recently I posted a patch to turn on the i_version counter
+unconditionally in ext4, and Lukas rightly pointed out that we don't
+currently have an easy way to validate its functionality. You can fetch
+it via NFS (and see it in network traces), but there's no way to get to
+it from userland.
 
-V3 replaced in misc-next, thanks.
+Besides testing, this may also be of use for userland NFS servers, or by
+any program that wants to accurately check for file changes, and not be
+subject to mtime granularity problems.
+
+Comments and suggestions welcome. I'm not 100% convinced that this is a
+great idea, but we've had people ask for it before and it seems like a
+reasonable thing to provide.
+
+Jeff Layton (4):
+  vfs: report change attribute in statx for IS_I_VERSION inodes
+  nfs: report the change attribute if requested
+  afs: fill out change attribute in statx replies
+  ceph: fill in the change attribute in statx requests
+
+ fs/afs/inode.c            |  2 ++
+ fs/ceph/inode.c           | 14 +++++++++-----
+ fs/nfs/inode.c            |  3 +++
+ fs/stat.c                 |  7 +++++++
+ include/linux/stat.h      |  1 +
+ include/uapi/linux/stat.h |  3 ++-
+ samples/vfs/test-statx.c  |  4 +++-
+ 7 files changed, 27 insertions(+), 7 deletions(-)
+
+-- 
+2.37.1
+
