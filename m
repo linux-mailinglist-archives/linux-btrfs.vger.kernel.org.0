@@ -2,137 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FDD58B410
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Aug 2022 08:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8552158B435
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Aug 2022 09:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241522AbiHFGaN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 6 Aug 2022 02:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37474 "EHLO
+        id S231799AbiHFH3w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 6 Aug 2022 03:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239172AbiHFGaM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 6 Aug 2022 02:30:12 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA8213F07
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Aug 2022 23:30:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1659767406;
-        bh=uMVLBIKeoP03ZgGnQ71EyLPTmA+MF1ZfusXAoVs1hYw=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=DIPqkVA9pzntHmJ8CfZHLQYgoquVvH2gRXQ0ZpWpZmRrtA75TeMYebHaj78CosEOe
-         jGsn6kdLoaAxKftm5FwFlHq+xORSUWrfIb2YQiKeej8FO5ik1Gz+FDjrw+JelGIe6N
-         SaSlMvurRjEZXKik6fnCKoLEfZPj0qnXhYjiGbso=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MDQeU-1o9nid47D4-00AU59; Sat, 06
- Aug 2022 08:30:06 +0200
-Message-ID: <2aee4f0b-9bfd-fd79-c5c4-21733f24a73c@gmx.com>
-Date:   Sat, 6 Aug 2022 14:30:02 +0800
+        with ESMTP id S229446AbiHFH3v (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 6 Aug 2022 03:29:51 -0400
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39680CE29
+        for <linux-btrfs@vger.kernel.org>; Sat,  6 Aug 2022 00:29:48 -0700 (PDT)
+Received: by mail-qk1-f178.google.com with SMTP id p4so2140507qkm.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 06 Aug 2022 00:29:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc;
+        bh=DzUluBnEg/xa31e66n/ClDwZ7pOu+S1N1s6splcrgGA=;
+        b=0HO4rc/D8qNawPxmemOy/DqI0eTMuCHhRLBVOa+K7nMYEKMgmF2WVL+FKlpGJoCUV/
+         5vYmd1SbQtjXHGVFDNi+zbCh326b5PjY2V+UCp/NUq6Oi1PyCylRVGRUZkNb8MX3j9gW
+         cJbAgDJLKXyogOy2k0hzNTT4DaTwlbQxnIYlZMeMUQLms9UH6B6rm8DPxU4P4LF/aX0u
+         ontUTYBQ4L9Uq3DNJsdZpRT45U/UYSaTfQ59c+kAD831+7stqA8DyFXqg5GS4Ug1QlgJ
+         4m/KUk9vh8huAdHQnC8vX++YSEUfy+ysiLW3IIgTBhi5vj6R+80qoWECae06Q4hmaamW
+         0bUA==
+X-Gm-Message-State: ACgBeo1sqRhfCYbUQ8Fpmh2jI3BZ4ZpsVYQM4SYSwreD4OJ/Aj/D6HCC
+        t9IsrUYRL0ZPNfJufr0vWWboe96IHa8=
+X-Google-Smtp-Source: AA6agR61AD7gR3zkpdO89CenzqeuqiA/6tQf6xJFbI4Kc9C+EzLSurWW6ydAWx4gTX6IcYkmRkPC1Q==
+X-Received: by 2002:a05:620a:1029:b0:6b9:714:47d9 with SMTP id a9-20020a05620a102900b006b9071447d9mr7530658qkk.274.1659770987085;
+        Sat, 06 Aug 2022 00:29:47 -0700 (PDT)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id bl38-20020a05620a1aa600b006b8df80471csm4500344qkb.119.2022.08.06.00.29.46
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Aug 2022 00:29:46 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id z5so6846697yba.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 06 Aug 2022 00:29:46 -0700 (PDT)
+X-Received: by 2002:a25:ef50:0:b0:671:85f8:f01c with SMTP id
+ w16-20020a25ef50000000b0067185f8f01cmr8413177ybm.19.1659770986548; Sat, 06
+ Aug 2022 00:29:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 2/2] btrfs: scrub: try to fix super block errors
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1659423009.git.wqu@suse.com>
- <9f95c1c4437371d8ad1b51042e5dc82a5e42449f.1659423009.git.wqu@suse.com>
- <20220803125513.GC13489@twin.jikos.cz>
- <52323456-6820-ce55-101a-8aecc3e73539@gmx.com>
- <20220804130621.GM13489@twin.jikos.cz>
- <7dd7fd85-863a-3c16-16d6-0f4436091d33@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <7dd7fd85-863a-3c16-16d6-0f4436091d33@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:t+rfxJ5ux3xHOh3pydiglW9H9uPXEMo9REZHtfPcRn0Di8jVhhj
- RVZYVf4QFbw9KUl8MQtqS7fRd9td+BVo3m+/Fh7Mr50wCzO/cMVmO3OwUzOKVRPwPe2yX45
- 2C6ar5cc6tsW/4hg0gwZGx8h2jokEvsK9HeAPFOLTzqP6sktIl8gwNpSQoFhoCZETocI45p
- OE7SlDCmZzK79kg3lyV0A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Z9JWKn/g9Sc=:gnHWMrjtQDMwasuo2ZeWWK
- DeZ4psyjTF0dLs41IcVZLaYVYgbvajRDK7K7oA9kW7gMN/mH0hEdVDlmcJoRArgdHssVGEbV8
- 0AJPcfdkUegRku3kJS+lw8hJ7s1aEGntLhrCTRmBjFaCW/hvew37pLDzCPG/9FfTGHUSMQ811
- NqR2pUm38gBmYrAHQHV9NdkqRFNoRQHlTgsO0l/sIaBZtk8o0eYNQliyjD0Qcam5tH8xb83Xl
- Bn9a4/vOzoosdjPx6AONkTVSQNGWGAMdPY22OPn2WpapT981bYfqmdmRkULHCkFnWqFkC6l3f
- ohsFuiAaAWthALAg/e0eNLmVlnj0ixnPoUn59YZpQOkWqaacz16eTkxSmrf+Bvle7ZyXUUzqB
- SL3kc3Dxi6EQySci0Fj6mt8AuXtWoLf1KUMuZXhT7RLW/jAqG8WrBa238aWt9u5b13/uYG8l3
- R9HyF2jDHGK0cvkXzgOGUlC97jM7Duyr4uD94b+92cGPJw1RHOizbwZyqCpHwtzFYuxEw0mKg
- MhDAbYUyP5l1D2XQmlQNKSscG/iFtNTS0GbDM6CTbeK9DwI3MzbeE+teCm594wj+ewXjgM7ex
- bYnkAnoubBpRbeh/aCSOsZgY3cczThbMJBQw7kRgwHFCqHphL43Z1AoX3tfyZC8quAPk3PO+D
- 9SN1c8EMq5c7LzJrvS4pjCccDnKA3QdXRlP5RwWe7t4pz3QNQ7rHGs8+boo3/vatVWtGd7UF9
- QOpv1wvgXZC5JYv6VK0XrljuoH5DvTCJmNKFR16LWy9dHxV2jmd1RidvYtXzBq9JSkbwb3XN3
- BsQ2CwHjupU0hwFgT0dob5gauFcn53JrH2P1t1nA2vApSgZzJXZoNMsT348y20ib1vYT7Az/k
- KIRnRSK3OEQiafoG3iPJVC1a/1OK0NFGI5PWvijFEkjxQp+E5gIFb/USH/mtR9mtBnPzmgMLH
- tI7dRTk8/cys5UMZFqwfQ5hQ7n2Za0vmvmeH9debbyXTsf1ig2szBbRGdIPgSG+K77mWT/GXb
- kRtfOq35wCiMorv9AGB5FWA2i4L64cVVI7IRAa0KuoLrG7xPN/s4H/e+RD8RnRrOXQjA1ONyz
- iNk6NHShxrpMVyTCHa3nDPNF6CHYwJXeTr47IS9bqVXN6T1uLfzN385Dg==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220727150158.GT13489@suse.cz>
+In-Reply-To: <20220727150158.GT13489@suse.cz>
+From:   Neal Gompa <ngompa@fedoraproject.org>
+Date:   Sat, 6 Aug 2022 03:29:09 -0400
+X-Gmail-Original-Message-ID: <CAEg-Je80F9VK_Azv8naQa_yvteQiRa6ZQ_ezt4f9rpA1h-wnag@mail.gmail.com>
+Message-ID: <CAEg-Je80F9VK_Azv8naQa_yvteQiRa6ZQ_ezt4f9rpA1h-wnag@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: auto enable discard=async when possible
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/8/6 14:01, Qu Wenruo wrote:
+On Wed, Jul 27, 2022 at 11:28 AM David Sterba <dsterba@suse.com> wrote:
 >
+> There's a request to automatically enable async discard for capable
+> devices. We can do that, the async mode is designed to wait for larger
+> freed extents and is not intrusive, with limits to iops, kbps or latency.
 >
-> On 2022/8/4 21:06, David Sterba wrote:
->> On Thu, Aug 04, 2022 at 05:49:20AM +0800, Qu Wenruo wrote:
->>>
->>>
->>> On 2022/8/3 20:55, David Sterba wrote:
->>>> On Tue, Aug 02, 2022 at 02:53:03PM +0800, Qu Wenruo wrote:
->>>>> @@ -4231,6 +4248,26 @@ int btrfs_scrub_dev(struct btrfs_fs_info
->>>>> *fs_info, u64 devid, u64 start,
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 scrub_workers_put(fs_info);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 scrub_put_ctx(sctx);
->>>>>
->>>>> +=C2=A0=C2=A0=C2=A0 /*
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * We found some super block errors before,=
- now try to force a
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * transaction commit, as all scrub has fin=
-ished, we're safe to
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * commit a transaction.
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>>
->>>> Scrub can be started in read-only mode, which is basicaly report-only
->>>> mode, so forcing the transaction commit should be also skipped. It
->>>> would
->>>> fail with -EROFS right at the beginning of transaction start.
->>>
->>> It's already checked in the code:
->>>
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (sctx->stat.super_error=
-s > old_super_errors &&
->>> !sctx->readonly)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ne=
-ed_commit =3D true;
->>
->> Great, I overlooked it and searched only for BTRFS_SCRUB_READONLY.
+> The status and tunables will be exported in /sys/fs/btrfs/FSID/discard .
 >
-> My bad, I didn't test it with replace group, and it can cause hang in
-> btrfs/100.
+> The automatic selection is done if there's at least one discard capable
+> device in the filesystem (not capable devices are skipped). Mounting
+> with any other discard option will honor that option, notably mounting
+> with nodiscard will keep it disabled.
 >
-> The cause is, dev-replace will call btrfs_scrub_dev() with extra
-> dev-replace related locking.
-> However btrfs_commit_transaction() will also need to wait that lock,
-> thus we will dead lock there.
+> Link: https://lore.kernel.org/linux-btrfs/CAEg-Je_b1YtdsCR0zS5XZ_SbvJgN70ezwvRwLiCZgDGLbeMB=w@mail.gmail.com/
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
-Ops, this is not the case, it looks like the discard related bug.
+Looks great.
 
-Although dev-replace is holding replace related locks, we should still
-be able to commit transaction during dev-replace.
+Reviewed-by: Neal Gompa <ngompa@fedoraproject.org>
 
-Thus nothing needs to be done here.
-
-Thanks,
-Qu
->
-> I'll fix the last patch, meanwhile please remove it from misc-next.
->
-> Thanks,
-> Qu
+-- 
+Neal Gompa (FAS: ngompa)
