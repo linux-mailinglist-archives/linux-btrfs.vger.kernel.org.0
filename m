@@ -2,37 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6666058C903
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Aug 2022 15:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB61A58C941
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Aug 2022 15:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243179AbiHHNHb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Aug 2022 09:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
+        id S243234AbiHHNTM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Aug 2022 09:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243148AbiHHNHa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 09:07:30 -0400
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 08 Aug 2022 06:07:26 PDT
-Received: from mail-out-02.servage.net (mail-out-02.servage.net [93.90.146.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D158E9FD1
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 06:07:26 -0700 (PDT)
-X-Halon-ID: e5a712b9-171a-11ed-a59e-005056913d2d
-Authorized-sender: u1m2114@blauwurf.info
-Received: from [10.2.10.3] (firewall1a.robinson.cam.ac.uk [193.60.93.97])
-        by mail-out-01.servage.net (Halon) with ESMTPSA
-        id e5a712b9-171a-11ed-a59e-005056913d2d;
-        Mon, 08 Aug 2022 15:06:21 +0200 (CEST)
-Message-ID: <12ad8fa0-a4f6-815d-dcab-1b6efa1c9da8@bluemole.com>
-Date:   Mon, 8 Aug 2022 13:06:20 +0000
+        with ESMTP id S242568AbiHHNTM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 09:19:12 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277715FA9;
+        Mon,  8 Aug 2022 06:19:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 7F45DCE1099;
+        Mon,  8 Aug 2022 13:19:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B482AC433C1;
+        Mon,  8 Aug 2022 13:19:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659964747;
+        bh=WbW+9qCSkRr5VwrXe92AgJ0Tev43dg13deHgbic44V4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Yh3mbFYzZUnNBxKTPwVezwm6HiAsFsHl5nh1qlT6WKVAvyKnTLsie9XVJ3mifX07k
+         VYMusmLxyzuAc7Nc7HK1jWeBytVwnj4PLC3uucfYB9tDslEyU7Z+E5xDlGWpkprpTV
+         DnCaWPnU8jTItqadwNDXS/cl140h8pWYlnbtO6XbdfdIiZvve8FSyNwJTs3twYIfLT
+         jbIPZAo/WY6HQSxRtv9vY6W0VM0hYJed4l+VKBCB9ZdqrNh/cTUjjlAIC9ZSbPYT+Z
+         nCb53y++ylMfbGRnsGYC2Pi17nCbIX3v659yZBDQdNt/PW08Wo3dt3X3CmjhZcZoAJ
+         0GnPt+Tsn71PQ==
+Message-ID: <33176ee0f896aef889ad1930fb1e008323135a2e.camel@kernel.org>
+Subject: Re: [RFC PATCH 1/4] vfs: report change attribute in statx for
+ IS_I_VERSION inodes
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
+        lczerner@redhat.com, bxue@redhat.com, ceph-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, fstests <fstests@vger.kernel.org>
+Date:   Mon, 08 Aug 2022 09:19:05 -0400
+In-Reply-To: <c10e4aa381aea86bb51b005887533e28f9c7302b.camel@redhat.com>
+References: <20220805183543.274352-1-jlayton@kernel.org>
+         <20220805183543.274352-2-jlayton@kernel.org>
+         <20220805220136.GG3600936@dread.disaster.area>
+         <c10e4aa381aea86bb51b005887533e28f9c7302b.camel@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.3 (3.44.3-1.fc36) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.1
-From:   Michael Zacherl <ubu@bluemole.com>
-Subject: Corrupted btrfs (LUKS), seeking advice
-To:     linux-btrfs@vger.kernel.org
-Content-Language: en-US, en-GB
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -41,126 +61,72 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-on the occasion of retrofitting a 2TB ssd for my old XPS13 9350 I decided to give btrfs w/ encryption a try (this was in June).
-Now, by a dumb mistake, I have a corrupted btrfs (LUKS encrypted).
-Since I can't boot from this partition anymore I'm using the distro's live system.
-This partition can't be mounted.
+On Fri, 2022-08-05 at 18:06 -0400, Jeff Layton wrote:
+> On Sat, 2022-08-06 at 08:01 +1000, Dave Chinner wrote:
+> > On Fri, Aug 05, 2022 at 02:35:40PM -0400, Jeff Layton wrote:
+> > > From: Jeff Layton <jlayton@redhat.com>
+> > >=20
+> > > Claim one of the spare fields in struct statx to hold a 64-bit change
+> > > attribute. When statx requests this attribute, do an
+> > > inode_query_iversion and fill the result in the field.
+> > >=20
+> > > Also update the test-statx.c program to fetch the change attribute as
+> > > well.
+> > >=20
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > ---
+> > >  fs/stat.c                 | 7 +++++++
+> > >  include/linux/stat.h      | 1 +
+> > >  include/uapi/linux/stat.h | 3 ++-
+> > >  samples/vfs/test-statx.c  | 4 +++-
+> > >  4 files changed, 13 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/fs/stat.c b/fs/stat.c
+> > > index 9ced8860e0f3..976e0a59ab23 100644
+> > > --- a/fs/stat.c
+> > > +++ b/fs/stat.c
+> > > @@ -17,6 +17,7 @@
+> > >  #include <linux/syscalls.h>
+> > >  #include <linux/pagemap.h>
+> > >  #include <linux/compat.h>
+> > > +#include <linux/iversion.h>
+> > > =20
+> > >  #include <linux/uaccess.h>
+> > >  #include <asm/unistd.h>
+> > > @@ -118,6 +119,11 @@ int vfs_getattr_nosec(const struct path *path, s=
+truct kstat *stat,
+> > >  	stat->attributes_mask |=3D (STATX_ATTR_AUTOMOUNT |
+> > >  				  STATX_ATTR_DAX);
+> > > =20
+> > > +	if ((request_mask & STATX_CHGATTR) && IS_I_VERSION(inode)) {
+> > > +		stat->result_mask |=3D STATX_CHGATTR;
+> > > +		stat->chgattr =3D inode_query_iversion(inode);
+> > > +	}
+> >=20
+> > If you're going to add generic support for it, shouldn't there be a
+> > generic test in fstests that ensures that filesystems that advertise
+> > STATX_CHGATTR support actually behave correctly? Including across
+> > mounts, and most importantly, that it is made properly stable by
+> > fsync?
+> >=20
+> > i.e. what good is this if different filesystems have random quirks
+> > that mean it can't be relied on by userspace to tell it changes have
+> > occurred?
+>=20
+> Absolutely. Being able to better test the i_version field for consistent
+> behavior is a primary goal. I haven't yet written any yet, but we'd
+> definitely want something in xfstests if we decide this is worthwhile.
 
-# uname -a
-Linux EndeavourOS 5.18.5-arch1-1 #1 SMP PREEMPT_DYNAMIC Thu, 16 Jun 2022 20:40:45 +0000 x86_64 GNU/Linux
+I started writing some tests for this today, and hit a bit of a chicken-
+and-egg problem:
 
-# btrfs --version
-btrfs-progs v5.18.1
+I'd prefer to use xfs_io for easier maintainability, but the STATX_*
+constants are defined via UAPI header. Older kernels don't have them and
+old xfs_io programs don't understand or report this value.
 
-What I did so far:
+Should I just write a one-off binary program for xfstests to fetch this
+value for now, or are we better off merging the patchset first, and then
+fix xfs_io and then write the tests using the updated xfs_io program?
 
-# cryptsetup open /dev/nvme0n1p2 luks-test
-Enter passphrase for /dev/nvme0n1p2:
-[worked]
-# mount -o ro,rescue=usebackuproot  /dev/mapper/luks-test /mnt
-mount: /mnt: wrong fs type, bad option, bad superblock on /dev/mapper/luks-test, missing codepage or helper program, or other error.
-        dmesg(1) may have more information after failed mount system call.
-
-      dmesg after this mount attempt:
-[ 5179.422225] BTRFS info (device dm-1): flagging fs with big metadata feature
-[ 5179.422248] BTRFS info (device dm-1): trying to use backup root at mount time
-[ 5179.422255] BTRFS info (device dm-1): using free space tree
-[ 5179.422260] BTRFS info (device dm-1): has skinny extents
-[ 5179.431117] BTRFS error (device dm-1): parent transid verify failed on 334692352 wanted 14761 found 14765
-[ 5179.431338] BTRFS error (device dm-1): parent transid verify failed on 334692352 wanted 14761 found 14765
-[ 5179.431358] BTRFS error (device dm-1): failed to read block groups: -5
-[ 5179.433358] BTRFS error (device dm-1): open_ctree failed
-
-# btrfs check /dev/mapper/luks-test 2>&1|less -I
-parent transid verify failed on 334692352 wanted 14761 found 14765
-parent transid verify failed on 334692352 wanted 14761 found 14765
-parent transid verify failed on 334692352 wanted 14761 found 14765
-Ignoring transid failure
-[1/7] checking root items
-parent transid verify failed on 334643200 wanted 14761 found 14765
-parent transid verify failed on 334643200 wanted 14761 found 14765
-parent transid verify failed on 334643200 wanted 14761 found 14765
-Ignoring transid failure
-parent transid verify failed on 334659584 wanted 14761 found 14765
-parent transid verify failed on 334659584 wanted 14761 found 14765
-parent transid verify failed on 334659584 wanted 14761 found 14765
-Ignoring transid failure
-parent transid verify failed on 334430208 wanted 6728 found 14763
-parent transid verify failed on 334430208 wanted 6728 found 14763
-parent transid verify failed on 334430208 wanted 6728 found 14763
-Ignoring transid failure
-parent transid verify failed on 334675968 wanted 14761 found 14765
-parent transid verify failed on 334675968 wanted 14761 found 14765
-parent transid verify failed on 334675968 wanted 14761 found 14765
-Ignoring transid failure
-parent transid verify failed on 335216640 wanted 6728 found 14765
-parent transid verify failed on 335216640 wanted 6728 found 14765
-parent transid verify failed on 335216640 wanted 6728 found 14765
-Ignoring transid failure
-parent transid verify failed on 320847872 wanted 14323 found 14763
-parent transid verify failed on 320847872 wanted 14323 found 14763
-parent transid verify failed on 320847872 wanted 14323 found 14763
-Ignoring transid failure
-ERROR: child eb corrupted: parent bytenr=119848960 item=49 parent level=1 child bytenr=320847872 child level=1
-ERROR: failed to repair root items: Input/output error
-[2/7] checking extents
-parent transid verify failed on 340246528 wanted 14741 found 14764
-parent transid verify failed on 340246528 wanted 14741 found 14764
-parent transid verify failed on 340246528 wanted 14741 found 14764
-Ignoring transid failure
-[... skipping many lines]
-root 257 inode 1866942 errors 2001, no inode item, link count wrong
-         unresolved ref dir 5719 index 9016 namelen 28 name SiteSecurityServiceState.txt filetype 1 errors 4, no inode ref
-root 257 inode 1866943 errors 2001, no inode item, link count wrong
-         unresolved ref dir 5719 index 9018 namelen 21 name AlternateServices.txt filetype 1 errors 4, no inode ref
-root 257 inode 1866989 errors 2001, no inode item, link count wrong
-         unresolved ref dir 346 index 16043 namelen 4 name user filetype 1 errors 4, no inode ref
-root 257 inode 1866990 errors 2001, no inode item, link count wrong
-         unresolved ref dir 1216 index 11701 namelen 46 name 0_3_1920_1080_8b47947fd8179de11b12e22fa2a454c8 filetype 1 errors 4, no inode ref
-root 257 inode 1866991 errors 2001, no inode item, link count wrong
-         unresolved ref dir 5720 index 6961 namelen 16 name recovery.jsonlz4 filetype 1 errors 4, no inode ref
-root 257 inode 1866995 errors 2001, no inode item, link count wrong
-         unresolved ref dir 6765 index 134 namelen 42 name 3647222921wleabcEoxlt-eengsairo.sqlite-wal filetype 1 errors 4, no inode ref
-parent transid verify failed on 348258304 wanted 14749 found 14766
-Ignoring transid failure
-parent transid verify failed on 348258304 wanted 14749 found 14766
-Ignoring transid failure
-parent transid verify failed on 348258304 wanted 14749 found 14766
-Ignoring transid failure
-parent transid verify failed on 348258304 wanted 14749 found 14766
-Ignoring transid failure
-ERROR: errors found in fs roots
-Opening filesystem to check...
-Checking filesystem on /dev/mapper/luks-test
-UUID: 2d1dc6b4-84ab-4c64-91a0-669b6228c516
-found 83720974336 bytes used, error(s) found
-total csum bytes: 50467580
-total tree bytes: 266665984
-total fs tree bytes: 186236928
-total extent tree bytes: 17317888
-btree space waste bytes: 40645922
-file data blocks allocated: 87345299456
-  referenced 47847440384
-[less: lines 1364572-1364611/1364611 byte 90015202/90015202 (END)  (press RETURN)]
-
-# btrfs-find-root /dev/mapper/luks-test
-parent transid verify failed on 334692352 wanted 14761 found 14765
-parent transid verify failed on 334692352 wanted 14761 found 14765
-ERROR: failed to read block groups: Input/output error
-Superblock thinks the generation is 14761
-Superblock thinks the level is 0
-Found tree root at 444612608 gen 14761 level 0
-Well block 347160576(gen: 14768 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
-Well block 348192768(gen: 14766 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
-Well block 347865088(gen: 14765 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
-Well block 418840576(gen: 14758 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
-Well block 417120256(gen: 14749 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
-Well block 352256000(gen: 14743 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
-[end]
-
-This is what I found out by reading.
-A fix - if possible - is out of my league now and don't want to poke around and make things worse.
-Any chance to get this FS at least mounted for RO?
-
-Thanks a lot, Michael.
+--=20
+Jeff Layton <jlayton@kernel.org>
