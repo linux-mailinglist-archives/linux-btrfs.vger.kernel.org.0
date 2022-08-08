@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC8758CEE8
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Aug 2022 22:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60BB58CEE9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Aug 2022 22:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244143AbiHHUKk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Aug 2022 16:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
+        id S244088AbiHHUKl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Aug 2022 16:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244088AbiHHUKe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 16:10:34 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75212E1C
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 13:10:33 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id y11so7168636qvn.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 08 Aug 2022 13:10:33 -0700 (PDT)
+        with ESMTP id S244115AbiHHUKg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 16:10:36 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBA1E1C
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 13:10:34 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id ct13so7150843qvb.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Aug 2022 13:10:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=1a/PTqmQnrbO2Qwrjvlx/7P+OEnBwxH8oZcG0PeC+Tg=;
-        b=bQk9FnGiTRY/0lX4+v112/65Wq1m1sj325NLmK6kMzz8zJKwQ8EgvNYu576l7X8jRK
-         NvAgCLJ7C80VQ498sc4I+dnbcZPozOyTEZ/xLeVGi1ujJ318OXr3Bh/+6Dfx9e+vsiAf
-         ok0kokWb6gsXXmSjBYMUVfYkdYFPxfKfXllAbjc+Ka554BOx2UWQY3k/55AuPmSj11VZ
-         phSoueGR5i+RV7+KeZ5LKyWLofnZRYrj4TF8trpubn3ExWEm4r/oj9njFzwrjDo4yikf
-         Fm8O8TevgIodXbw5cueAIEPXz0B99kLoYbp1biFROVYCay4f93OI93UrKzb6XHuTJHK4
-         KyjQ==
+        bh=CsbkyX5GgHkVLzNpcD5gZN5JJcPm7Aoi+Rr8DQx58Rg=;
+        b=W5plFGqi4pNwg9Xjo6W3U+Z0edvE0g1qPxAJd3CYCPhPko7eRkV+kBAyrYmkcnl3Nh
+         m2FonBlG2+0z2R+CNU/Pd902fDnJGAXzK0kekwHg9dg5egyNRYRjo6NcgfI4uIg1zdtJ
+         JKHiMKFy5L/kEuOa6lj0XY5vEtRn2Tg1O00XLg3326kztknu6U7NJ7DScYZ7ErAgokxS
+         H2StblncvwHIS7qzwH0Qj7RkVlUOmxCE4xGGSGJaZjfmjpj7aKFuc6WNGxmUjyIhO3Y9
+         wHnoBtVeWYGpnuY7Kq7nBUI+dLkt2WVuvx2k6DHe7mOsujiom+dPZBf6GeR6X+loIxIP
+         8KIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1a/PTqmQnrbO2Qwrjvlx/7P+OEnBwxH8oZcG0PeC+Tg=;
-        b=PsywLPbELJmUQtvOM2WtT8qjVZ452TXHSqAeBPeOA73cXCjlOEx7F5e4AV7tIHgtnC
-         CmkZHLPm19pj7n+BsDOjJx0qBNqfwKdat7Fp8TCPpzqnI9YaqrUMciARBdNktRDIHg79
-         Ohqe5ybqSKLDtH+Rh0/trDlZJas7OA9dOUqPwaNZ85CRNnYgOXRA5S8MiqtHLDkSE0UB
-         lnzGzY05l7kj4tRj+QBNT8LamEXluOpWNVmSUHkSHIQ0qFEGcBn6WfT+UfzZyghiZnYU
-         nC+zPGZS7+lzH8J54qirYENMX/dL3q2Hhr0YnHxxOVnqFYSH8+qbxhWxNEyr1rapNDqG
-         NXnQ==
-X-Gm-Message-State: ACgBeo2gQ5saT2/i7KF8+kFFIEy5HcaO/CmS5QTBTEnYE+GSC2ypudYC
-        pjM65cMh4/bwSBZyiitFQqqb9L6GajJiVA==
-X-Google-Smtp-Source: AA6agR7QaCMCq5OlCQEijGrIqKcEomJc+xQbhu41HU7rXOntmypIxYIN1jZTEkTJrxNYOgYjD6kFwQ==
-X-Received: by 2002:ad4:5aec:0:b0:474:79af:12bb with SMTP id c12-20020ad45aec000000b0047479af12bbmr17380618qvh.45.1659989432211;
-        Mon, 08 Aug 2022 13:10:32 -0700 (PDT)
+        bh=CsbkyX5GgHkVLzNpcD5gZN5JJcPm7Aoi+Rr8DQx58Rg=;
+        b=KAQDWDxWTs5eF9f1lKyqnxpskginAzhuq5UZ5pR3kVBkZ1VSMfZtoKdsxRYxMiic9U
+         h1TVFx7aRlVmuul8LPp224BFGvuvt3eJLTh/apYEo/JG0rTSbePwcV2GmFwtpgg2ftqK
+         ID13QB0MYmQlayOnuP4QA1iFOfO3PHfGaj//YW8NaMoI8qOts9ztZC/q7M6S3HeELy8W
+         44YNMosX/U64oAKFm0049zO7cA8KKDimGBRYvV0RcXL6eh2EIP6NNOlOf7noh5XDlH7H
+         dYefQcpmdTv1unYihTtMk2AeJEfKN0nohQU3W1mHMa3mK4wvE8F+/GjvaptagfPUAu7w
+         a6lg==
+X-Gm-Message-State: ACgBeo3phI+ZpFcZmNfIYCjQpbIFomuPsZqsxbRUSFG+2iPG2wDsPQs1
+        p5qK2fdPDlrR7zyj1oRtLWjLEdth/XGfkA==
+X-Google-Smtp-Source: AA6agR7HLDeOzEF4jKzoIbFdSawOOxkMEsXJNi91E60Fc28zU9d0WIQQo+mnRbxLlARK2uzbWnGHUw==
+X-Received: by 2002:a0c:a90f:0:b0:473:93b1:81ef with SMTP id y15-20020a0ca90f000000b0047393b181efmr17043489qva.27.1659989433547;
+        Mon, 08 Aug 2022 13:10:33 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j26-20020ac8551a000000b00342f917444csm2652892qtq.85.2022.08.08.13.10.30
+        by smtp.gmail.com with ESMTPSA id gd9-20020a05622a5c0900b0031eb393aa45sm8705338qtb.40.2022.08.08.13.10.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Aug 2022 13:10:30 -0700 (PDT)
+        Mon, 08 Aug 2022 13:10:33 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/2] btrfs: call __btrfs_remove_free_space_cache_locked on cache load failure
-Date:   Mon,  8 Aug 2022 16:10:26 -0400
-Message-Id: <e1cde76ba6cf7b14d6f38310113588d6486d5a00.1659989333.git.josef@toxicpanda.com>
+Subject: [PATCH 2/2] btrfs: remove use btrfs_remove_free_space_cache instead of variant
+Date:   Mon,  8 Aug 2022 16:10:27 -0400
+Message-Id: <8dd29aebfc9d33f400ba60d916fcb4df1aa30d8c.1659989333.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1659989333.git.josef@toxicpanda.com>
 References: <cover.1659989333.git.josef@toxicpanda.com>
@@ -66,148 +66,230 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that lockdep is staying enabled through our entire CI runs I started
-seeing the following stack in generic/475
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 2171864 at fs/btrfs/discard.c:604 btrfs_discard_update_discardable+0x98/0xb0
-CPU: 1 PID: 2171864 Comm: kworker/u4:0 Not tainted 5.19.0-rc8+ #789
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-Workqueue: btrfs-cache btrfs_work_helper
-RIP: 0010:btrfs_discard_update_discardable+0x98/0xb0
-RSP: 0018:ffffb857c2f7bad0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff8c85c605c200 RCX: 0000000000000001
-RDX: 0000000000000000 RSI: ffffffff86807c5b RDI: ffffffff868a831e
-RBP: ffff8c85c4c54000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffff8c85c66932f0 R11: 0000000000000001 R12: ffff8c85c3899010
-R13: ffff8c85d5be4f40 R14: ffff8c85c4c54000 R15: ffff8c86114bfa80
-FS:  0000000000000000(0000) GS:ffff8c863bd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2e7f168160 CR3: 000000010289a004 CR4: 0000000000370ee0
-Call Trace:
-
- __btrfs_remove_free_space_cache+0x27/0x30
- load_free_space_cache+0xad2/0xaf0
- caching_thread+0x40b/0x650
- ? lock_release+0x137/0x2d0
- btrfs_work_helper+0xf2/0x3e0
- ? lock_is_held_type+0xe2/0x140
- process_one_work+0x271/0x590
- ? process_one_work+0x590/0x590
- worker_thread+0x52/0x3b0
- ? process_one_work+0x590/0x590
- kthread+0xf0/0x120
- ? kthread_complete_and_exit+0x20/0x20
- ret_from_fork+0x1f/0x30
-
-This is the code
-
-        ctl = block_group->free_space_ctl;
-        discard_ctl = &block_group->fs_info->discard_ctl;
-
-        lockdep_assert_held(&ctl->tree_lock);
-
-We have a temporary free space ctl for loading the free space cache in
-order to avoid having allocations happening while we're loading the
-cache.  When we hit an error we free it all up, however this also calls
-btrfs_discard_update_discardable, which requires
-block_group->free_space_ctl->tree_lock to be held.  However this is our
-temporary ctl so this lock isn't held.  Fix this by calling
-__btrfs_remove_free_space_cache_locked instead so that we only clean up
-the entries and do not mess with the discardable stats.
+We are calling __btrfs_remove_free_space_cache everywhere to cleanup the
+block group free space, however we can just use
+btrfs_remove_free_space_cache and pass in the block group in all of
+these places.  Then we can remove __btrfs_remove_free_space_cache and
+rename __btrfs_remove_free_space_cache_locked to
+__btrfs_remove_free_space_cache.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/free-space-cache.c | 55 +++++++++++++++++++++++--------------
- 1 file changed, 34 insertions(+), 21 deletions(-)
+ fs/btrfs/block-group.c            |  2 +-
+ fs/btrfs/free-space-cache.c       | 26 ++++----------------------
+ fs/btrfs/free-space-cache.h       |  1 -
+ fs/btrfs/tests/btrfs-tests.c      |  2 +-
+ fs/btrfs/tests/free-space-tests.c | 22 +++++++++++-----------
+ 5 files changed, 17 insertions(+), 36 deletions(-)
 
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index c8162b8d85a2..699b69be2cb9 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -4132,7 +4132,7 @@ void btrfs_unfreeze_block_group(struct btrfs_block_group *block_group)
+ 		 * tasks trimming this block group have left 1 entry each one.
+ 		 * Free them if any.
+ 		 */
+-		__btrfs_remove_free_space_cache(block_group->free_space_ctl);
++		btrfs_remove_free_space_cache(block_group);
+ 	}
+ }
+ 
 diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 81d9fe33672f..ca9b190f3b80 100644
+index ca9b190f3b80..6b70371d4918 100644
 --- a/fs/btrfs/free-space-cache.c
 +++ b/fs/btrfs/free-space-cache.c
-@@ -48,6 +48,25 @@ static void bitmap_clear_bits(struct btrfs_free_space_ctl *ctl,
+@@ -48,8 +48,7 @@ static void bitmap_clear_bits(struct btrfs_free_space_ctl *ctl,
  			      struct btrfs_free_space *info, u64 offset,
  			      u64 bytes, bool update_stats);
  
-+static void __btrfs_remove_free_space_cache_locked(
-+				struct btrfs_free_space_ctl *ctl)
-+{
-+	struct btrfs_free_space *info;
-+	struct rb_node *node;
-+
-+	while ((node = rb_last(&ctl->free_space_offset)) != NULL) {
-+		info = rb_entry(node, struct btrfs_free_space, offset_index);
-+		if (!info->bitmap) {
-+			unlink_free_space(ctl, info, true);
-+			kmem_cache_free(btrfs_free_space_cachep, info);
-+		} else {
-+			free_bitmap(ctl, info);
-+		}
-+
-+		cond_resched_lock(&ctl->tree_lock);
-+	}
-+}
-+
- static struct inode *__lookup_free_space_inode(struct btrfs_root *root,
- 					       struct btrfs_path *path,
- 					       u64 offset)
-@@ -878,7 +897,14 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
- 	return ret;
+-static void __btrfs_remove_free_space_cache_locked(
+-				struct btrfs_free_space_ctl *ctl)
++static void __btrfs_remove_free_space_cache(struct btrfs_free_space_ctl *ctl)
+ {
+ 	struct btrfs_free_space *info;
+ 	struct rb_node *node;
+@@ -898,12 +897,8 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
  free_cache:
  	io_ctl_drop_pages(&io_ctl);
--	__btrfs_remove_free_space_cache(ctl);
-+
-+	/*
-+	 * We need to call the _locked variant so we don't try to update the
-+	 * discard counters.
-+	 */
-+	spin_lock(&ctl->tree_lock);
-+	__btrfs_remove_free_space_cache_locked(ctl);
-+	spin_unlock(&ctl->tree_lock);
+ 
+-	/*
+-	 * We need to call the _locked variant so we don't try to update the
+-	 * discard counters.
+-	 */
+ 	spin_lock(&ctl->tree_lock);
+-	__btrfs_remove_free_space_cache_locked(ctl);
++	__btrfs_remove_free_space_cache(ctl);
+ 	spin_unlock(&ctl->tree_lock);
  	goto out;
  }
- 
-@@ -1014,7 +1040,13 @@ int load_free_space_cache(struct btrfs_block_group *block_group)
+@@ -1040,12 +1035,8 @@ int load_free_space_cache(struct btrfs_block_group *block_group)
  		if (ret == 0)
  			ret = 1;
  	} else {
--		__btrfs_remove_free_space_cache(&tmp_ctl);
-+		/*
-+		 * We need to call the _locked variant so we don't try to update
-+		 * the discard counters.
-+		 */
-+		spin_lock(&ctl->tree_lock);
-+		__btrfs_remove_free_space_cache_locked(&tmp_ctl);
-+		spin_unlock(&ctl->tree_lock);
+-		/*
+-		 * We need to call the _locked variant so we don't try to update
+-		 * the discard counters.
+-		 */
+ 		spin_lock(&ctl->tree_lock);
+-		__btrfs_remove_free_space_cache_locked(&tmp_ctl);
++		__btrfs_remove_free_space_cache(&tmp_ctl);
+ 		spin_unlock(&ctl->tree_lock);
  		btrfs_warn(fs_info,
  			   "block group %llu has wrong amount of free space",
- 			   block_group->start);
-@@ -2978,25 +3010,6 @@ static void __btrfs_return_cluster_to_free_space(
+@@ -3010,15 +3001,6 @@ static void __btrfs_return_cluster_to_free_space(
  	btrfs_put_block_group(block_group);
  }
  
--static void __btrfs_remove_free_space_cache_locked(
--				struct btrfs_free_space_ctl *ctl)
+-void __btrfs_remove_free_space_cache(struct btrfs_free_space_ctl *ctl)
 -{
--	struct btrfs_free_space *info;
--	struct rb_node *node;
--
--	while ((node = rb_last(&ctl->free_space_offset)) != NULL) {
--		info = rb_entry(node, struct btrfs_free_space, offset_index);
--		if (!info->bitmap) {
--			unlink_free_space(ctl, info, true);
--			kmem_cache_free(btrfs_free_space_cachep, info);
--		} else {
--			free_bitmap(ctl, info);
--		}
--
--		cond_resched_lock(&ctl->tree_lock);
--	}
+-	spin_lock(&ctl->tree_lock);
+-	__btrfs_remove_free_space_cache_locked(ctl);
+-	if (ctl->block_group)
+-		btrfs_discard_update_discardable(ctl->block_group);
+-	spin_unlock(&ctl->tree_lock);
 -}
 -
- void __btrfs_remove_free_space_cache(struct btrfs_free_space_ctl *ctl)
+ void btrfs_remove_free_space_cache(struct btrfs_block_group *block_group)
  {
- 	spin_lock(&ctl->tree_lock);
+ 	struct btrfs_free_space_ctl *ctl = block_group->free_space_ctl;
+@@ -3036,7 +3018,7 @@ void btrfs_remove_free_space_cache(struct btrfs_block_group *block_group)
+ 
+ 		cond_resched_lock(&ctl->tree_lock);
+ 	}
+-	__btrfs_remove_free_space_cache_locked(ctl);
++	__btrfs_remove_free_space_cache(ctl);
+ 	btrfs_discard_update_discardable(block_group);
+ 	spin_unlock(&ctl->tree_lock);
+ 
+diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
+index 15591b299895..6d419ba53e95 100644
+--- a/fs/btrfs/free-space-cache.h
++++ b/fs/btrfs/free-space-cache.h
+@@ -113,7 +113,6 @@ int btrfs_add_free_space_async_trimmed(struct btrfs_block_group *block_group,
+ 				       u64 bytenr, u64 size);
+ int btrfs_remove_free_space(struct btrfs_block_group *block_group,
+ 			    u64 bytenr, u64 size);
+-void __btrfs_remove_free_space_cache(struct btrfs_free_space_ctl *ctl);
+ void btrfs_remove_free_space_cache(struct btrfs_block_group *block_group);
+ bool btrfs_is_free_space_trimmed(struct btrfs_block_group *block_group);
+ u64 btrfs_find_space_for_alloc(struct btrfs_block_group *block_group,
+diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
+index cc9377cf56a3..9c478fa256f6 100644
+--- a/fs/btrfs/tests/btrfs-tests.c
++++ b/fs/btrfs/tests/btrfs-tests.c
+@@ -243,7 +243,7 @@ void btrfs_free_dummy_block_group(struct btrfs_block_group *cache)
+ {
+ 	if (!cache)
+ 		return;
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 	kfree(cache->free_space_ctl);
+ 	kfree(cache);
+ }
+diff --git a/fs/btrfs/tests/free-space-tests.c b/fs/btrfs/tests/free-space-tests.c
+index 5930cdcae5cb..ebf68fcd2149 100644
+--- a/fs/btrfs/tests/free-space-tests.c
++++ b/fs/btrfs/tests/free-space-tests.c
+@@ -82,7 +82,7 @@ static int test_extents(struct btrfs_block_group *cache)
+ 	}
+ 
+ 	/* Cleanup */
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 
+ 	return 0;
+ }
+@@ -149,7 +149,7 @@ static int test_bitmaps(struct btrfs_block_group *cache, u32 sectorsize)
+ 		return -1;
+ 	}
+ 
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 
+ 	return 0;
+ }
+@@ -230,7 +230,7 @@ static int test_bitmaps_and_extents(struct btrfs_block_group *cache,
+ 		return -1;
+ 	}
+ 
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 
+ 	/* Now with the extent entry offset into the bitmap */
+ 	ret = test_add_free_space_entry(cache, SZ_4M, SZ_4M, 1);
+@@ -266,7 +266,7 @@ static int test_bitmaps_and_extents(struct btrfs_block_group *cache,
+ 	 *      [ bitmap ]
+ 	 *        [ del ]
+ 	 */
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 	ret = test_add_free_space_entry(cache, bitmap_offset + SZ_4M, SZ_4M, 1);
+ 	if (ret) {
+ 		test_err("couldn't add bitmap %d", ret);
+@@ -291,7 +291,7 @@ static int test_bitmaps_and_extents(struct btrfs_block_group *cache,
+ 		return -1;
+ 	}
+ 
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 
+ 	/*
+ 	 * This blew up before, we have part of the free space in a bitmap and
+@@ -317,7 +317,7 @@ static int test_bitmaps_and_extents(struct btrfs_block_group *cache,
+ 		return ret;
+ 	}
+ 
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 	return 0;
+ }
+ 
+@@ -629,7 +629,7 @@ test_steal_space_from_bitmap_to_extent(struct btrfs_block_group *cache,
+ 	if (ret)
+ 		return ret;
+ 
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 
+ 	/*
+ 	 * Now test a similar scenario, but where our extent entry is located
+@@ -819,7 +819,7 @@ test_steal_space_from_bitmap_to_extent(struct btrfs_block_group *cache,
+ 		return ret;
+ 
+ 	cache->free_space_ctl->op = orig_free_space_ops;
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 
+ 	return 0;
+ }
+@@ -868,7 +868,7 @@ static int test_bytes_index(struct btrfs_block_group *cache, u32 sectorsize)
+ 	}
+ 
+ 	/* Now validate bitmaps do the correct thing. */
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 	for (i = 0; i < 2; i++) {
+ 		offset = i * BITS_PER_BITMAP * sectorsize;
+ 		bytes = (i + 1) * SZ_1M;
+@@ -891,7 +891,7 @@ static int test_bytes_index(struct btrfs_block_group *cache, u32 sectorsize)
+ 	}
+ 
+ 	/* Now validate bitmaps with different ->max_extent_size. */
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 	orig_free_space_ops = cache->free_space_ctl->op;
+ 	cache->free_space_ctl->op = &test_free_space_ops;
+ 
+@@ -998,7 +998,7 @@ static int test_bytes_index(struct btrfs_block_group *cache, u32 sectorsize)
+ 	}
+ 
+ 	cache->free_space_ctl->op = orig_free_space_ops;
+-	__btrfs_remove_free_space_cache(cache->free_space_ctl);
++	btrfs_remove_free_space_cache(cache);
+ 	return 0;
+ }
+ 
 -- 
 2.26.3
 
