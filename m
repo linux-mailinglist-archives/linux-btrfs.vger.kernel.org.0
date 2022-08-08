@@ -2,143 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C2858C800
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Aug 2022 13:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6666058C903
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Aug 2022 15:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242769AbiHHL47 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Aug 2022 07:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
+        id S243179AbiHHNHb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Aug 2022 09:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242849AbiHHL45 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 07:56:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 767AE9FD4
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 04:56:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659959815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6TsElmCORhqXP8jgwrJUUvOp+RZV2x4q8imaLygih6I=;
-        b=AoSssQ/BUca7br6spDpSWOaHwVTAjDptuEEk3/WWvKtft90EpIz51T5SI5PowLZfhJN0YD
-        5P/P6Ghu/3V/9Yu2/4nAUuCG6UdVf16XJcbMb8ZELtDIysfE2sjIDfXyBQ27lmYqakr4SY
-        3rU4GxAJksX3bFM6jg7hlCgfVvQxozs=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-509-ht2GCx0JPE-yE6ajfjC5fw-1; Mon, 08 Aug 2022 07:56:52 -0400
-X-MC-Unique: ht2GCx0JPE-yE6ajfjC5fw-1
-Received: by mail-pl1-f199.google.com with SMTP id f13-20020a170902ce8d00b0016eebfe70fcso6096818plg.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 08 Aug 2022 04:56:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-language:content-transfer-encoding:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc;
-        bh=6TsElmCORhqXP8jgwrJUUvOp+RZV2x4q8imaLygih6I=;
-        b=cb7gDx6dQk9Smk15oBAcQY7EVvOLMmQbiPf/M4eGR9IVas6iiJ4ucO6PZdS2utlANf
-         xU0StON+IW25kUwvsXZmPrCHgZ4dwD6cZVqXl0HlLrnGp3Ks6/ViMvYzVaQpQUO2UQVt
-         3JI0+OW6Z5QCRTPRCoD6ryvHDn2zDQoHPaDQ0WOGe4wnBCEXFRzJNvrMWSpWYow16lqB
-         c5aDmxRnNUYFnorVewW7+zrds7O4efB++PmaldaMxJ47qMVO0q/p3Zyr7MJ2oof7RUah
-         b139zSrzieyVOgSB6BDqzn5sWAoAGFHsXHfhi1RQA50CFTJizRksZrVWITJBw0f/WoDy
-         Mz6Q==
-X-Gm-Message-State: ACgBeo1dc2M/bF3dXjYX4VDNaKyXrmC1vH8Oe6lB2VirBhkzsdi6auGc
-        GceBdTmJGUKyN31Xjt3Sn3Lq6OPZpWhV+kbeIYpwTC0HGpnwxo22JAAqQ0hbEmVbtTLs1Qx4j2u
-        Rp+dj1RziZqHAC2R0A5OwUiS8e7dBOMmgqIRGHFfl6YT1Xd6RbZhdU+KlPkZ4jQdxT9tr83X5
-X-Received: by 2002:a63:b95e:0:b0:41d:6498:2ad5 with SMTP id v30-20020a63b95e000000b0041d64982ad5mr5220528pgo.446.1659959811352;
-        Mon, 08 Aug 2022 04:56:51 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR4C3sNPs6TggvMZ4t7Q7yksKQiNSRb4z6RQlytFFTEdh74+vSsCOXNYe9sU2IgG9chhA2nNeQ==
-X-Received: by 2002:a63:b95e:0:b0:41d:6498:2ad5 with SMTP id v30-20020a63b95e000000b0041d64982ad5mr5220501pgo.446.1659959810869;
-        Mon, 08 Aug 2022 04:56:50 -0700 (PDT)
-Received: from [10.72.12.61] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id b7-20020a1709027e0700b0016cf195eb16sm1338072plm.185.2022.08.08.04.56.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Aug 2022 04:56:50 -0700 (PDT)
-Subject: Re: [RFC PATCH 4/4] ceph: fill in the change attribute in statx
- requests
-To:     Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org
-Cc:     dhowells@redhat.com, lczerner@redhat.com, bxue@redhat.com,
-        ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20220805183543.274352-1-jlayton@kernel.org>
- <20220805183543.274352-5-jlayton@kernel.org>
-From:   Xiubo Li <xiubli@redhat.com>
-Message-ID: <42ec7d51-71ee-03b2-39bc-1ea624880a3e@redhat.com>
-Date:   Mon, 8 Aug 2022 19:56:43 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        with ESMTP id S243148AbiHHNHa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 09:07:30 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 08 Aug 2022 06:07:26 PDT
+Received: from mail-out-02.servage.net (mail-out-02.servage.net [93.90.146.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D158E9FD1
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 06:07:26 -0700 (PDT)
+X-Halon-ID: e5a712b9-171a-11ed-a59e-005056913d2d
+Authorized-sender: u1m2114@blauwurf.info
+Received: from [10.2.10.3] (firewall1a.robinson.cam.ac.uk [193.60.93.97])
+        by mail-out-01.servage.net (Halon) with ESMTPSA
+        id e5a712b9-171a-11ed-a59e-005056913d2d;
+        Mon, 08 Aug 2022 15:06:21 +0200 (CEST)
+Message-ID: <12ad8fa0-a4f6-815d-dcab-1b6efa1c9da8@bluemole.com>
+Date:   Mon, 8 Aug 2022 13:06:20 +0000
 MIME-Version: 1.0
-In-Reply-To: <20220805183543.274352-5-jlayton@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.1
+From:   Michael Zacherl <ubu@bluemole.com>
+Subject: Corrupted btrfs (LUKS), seeking advice
+To:     linux-btrfs@vger.kernel.org
+Content-Language: en-US, en-GB
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
+on the occasion of retrofitting a 2TB ssd for my old XPS13 9350 I decided to give btrfs w/ encryption a try (this was in June).
+Now, by a dumb mistake, I have a corrupted btrfs (LUKS encrypted).
+Since I can't boot from this partition anymore I'm using the distro's live system.
+This partition can't be mounted.
 
-On 8/6/22 2:35 AM, Jeff Layton wrote:
-> When statx requests the change attribute, request the full gamut of caps
-> (similarly to how ctime is handled). When the change attribute seems to
-> be valid, return it in the chgattr field.
->
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->   fs/ceph/inode.c | 14 +++++++++-----
->   1 file changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-> index 56c53ab3618e..fb2ed85f9083 100644
-> --- a/fs/ceph/inode.c
-> +++ b/fs/ceph/inode.c
-> @@ -2408,10 +2408,10 @@ static int statx_to_caps(u32 want, umode_t mode)
->   {
->   	int mask = 0;
->   
-> -	if (want & (STATX_MODE|STATX_UID|STATX_GID|STATX_CTIME|STATX_BTIME))
-> +	if (want & (STATX_MODE|STATX_UID|STATX_GID|STATX_CTIME|STATX_BTIME|STATX_CHGATTR))
->   		mask |= CEPH_CAP_AUTH_SHARED;
->   
-> -	if (want & (STATX_NLINK|STATX_CTIME)) {
-> +	if (want & (STATX_NLINK|STATX_CTIME|STATX_CHGATTR)) {
->   		/*
->   		 * The link count for directories depends on inode->i_subdirs,
->   		 * and that is only updated when Fs caps are held.
-> @@ -2422,11 +2422,10 @@ static int statx_to_caps(u32 want, umode_t mode)
->   			mask |= CEPH_CAP_LINK_SHARED;
->   	}
->   
-> -	if (want & (STATX_ATIME|STATX_MTIME|STATX_CTIME|STATX_SIZE|
-> -		    STATX_BLOCKS))
-> +	if (want & (STATX_ATIME|STATX_MTIME|STATX_CTIME|STATX_SIZE| STATX_BLOCKS|STATX_CHGATTR))
->   		mask |= CEPH_CAP_FILE_SHARED;
->   
-> -	if (want & (STATX_CTIME))
-> +	if (want & (STATX_CTIME|STATX_CHGATTR))
->   		mask |= CEPH_CAP_XATTR_SHARED;
->   
->   	return mask;
-> @@ -2468,6 +2467,11 @@ int ceph_getattr(struct user_namespace *mnt_userns, const struct path *path,
->   		valid_mask |= STATX_BTIME;
->   	}
->   
-> +	if (request_mask & STATX_CHGATTR) {
-> +		stat->chgattr = inode_peek_iversion_raw(inode);
-> +		valid_mask |= STATX_CHGATTR;
-> +	}
-> +
->   	if (ceph_snap(inode) == CEPH_NOSNAP)
->   		stat->dev = inode->i_sb->s_dev;
->   	else
+# uname -a
+Linux EndeavourOS 5.18.5-arch1-1 #1 SMP PREEMPT_DYNAMIC Thu, 16 Jun 2022 20:40:45 +0000 x86_64 GNU/Linux
 
-Reviewed-by: Xiubo Li <xiubli@redhat.com>
+# btrfs --version
+btrfs-progs v5.18.1
 
+What I did so far:
 
+# cryptsetup open /dev/nvme0n1p2 luks-test
+Enter passphrase for /dev/nvme0n1p2:
+[worked]
+# mount -o ro,rescue=usebackuproot  /dev/mapper/luks-test /mnt
+mount: /mnt: wrong fs type, bad option, bad superblock on /dev/mapper/luks-test, missing codepage or helper program, or other error.
+        dmesg(1) may have more information after failed mount system call.
+
+      dmesg after this mount attempt:
+[ 5179.422225] BTRFS info (device dm-1): flagging fs with big metadata feature
+[ 5179.422248] BTRFS info (device dm-1): trying to use backup root at mount time
+[ 5179.422255] BTRFS info (device dm-1): using free space tree
+[ 5179.422260] BTRFS info (device dm-1): has skinny extents
+[ 5179.431117] BTRFS error (device dm-1): parent transid verify failed on 334692352 wanted 14761 found 14765
+[ 5179.431338] BTRFS error (device dm-1): parent transid verify failed on 334692352 wanted 14761 found 14765
+[ 5179.431358] BTRFS error (device dm-1): failed to read block groups: -5
+[ 5179.433358] BTRFS error (device dm-1): open_ctree failed
+
+# btrfs check /dev/mapper/luks-test 2>&1|less -I
+parent transid verify failed on 334692352 wanted 14761 found 14765
+parent transid verify failed on 334692352 wanted 14761 found 14765
+parent transid verify failed on 334692352 wanted 14761 found 14765
+Ignoring transid failure
+[1/7] checking root items
+parent transid verify failed on 334643200 wanted 14761 found 14765
+parent transid verify failed on 334643200 wanted 14761 found 14765
+parent transid verify failed on 334643200 wanted 14761 found 14765
+Ignoring transid failure
+parent transid verify failed on 334659584 wanted 14761 found 14765
+parent transid verify failed on 334659584 wanted 14761 found 14765
+parent transid verify failed on 334659584 wanted 14761 found 14765
+Ignoring transid failure
+parent transid verify failed on 334430208 wanted 6728 found 14763
+parent transid verify failed on 334430208 wanted 6728 found 14763
+parent transid verify failed on 334430208 wanted 6728 found 14763
+Ignoring transid failure
+parent transid verify failed on 334675968 wanted 14761 found 14765
+parent transid verify failed on 334675968 wanted 14761 found 14765
+parent transid verify failed on 334675968 wanted 14761 found 14765
+Ignoring transid failure
+parent transid verify failed on 335216640 wanted 6728 found 14765
+parent transid verify failed on 335216640 wanted 6728 found 14765
+parent transid verify failed on 335216640 wanted 6728 found 14765
+Ignoring transid failure
+parent transid verify failed on 320847872 wanted 14323 found 14763
+parent transid verify failed on 320847872 wanted 14323 found 14763
+parent transid verify failed on 320847872 wanted 14323 found 14763
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=119848960 item=49 parent level=1 child bytenr=320847872 child level=1
+ERROR: failed to repair root items: Input/output error
+[2/7] checking extents
+parent transid verify failed on 340246528 wanted 14741 found 14764
+parent transid verify failed on 340246528 wanted 14741 found 14764
+parent transid verify failed on 340246528 wanted 14741 found 14764
+Ignoring transid failure
+[... skipping many lines]
+root 257 inode 1866942 errors 2001, no inode item, link count wrong
+         unresolved ref dir 5719 index 9016 namelen 28 name SiteSecurityServiceState.txt filetype 1 errors 4, no inode ref
+root 257 inode 1866943 errors 2001, no inode item, link count wrong
+         unresolved ref dir 5719 index 9018 namelen 21 name AlternateServices.txt filetype 1 errors 4, no inode ref
+root 257 inode 1866989 errors 2001, no inode item, link count wrong
+         unresolved ref dir 346 index 16043 namelen 4 name user filetype 1 errors 4, no inode ref
+root 257 inode 1866990 errors 2001, no inode item, link count wrong
+         unresolved ref dir 1216 index 11701 namelen 46 name 0_3_1920_1080_8b47947fd8179de11b12e22fa2a454c8 filetype 1 errors 4, no inode ref
+root 257 inode 1866991 errors 2001, no inode item, link count wrong
+         unresolved ref dir 5720 index 6961 namelen 16 name recovery.jsonlz4 filetype 1 errors 4, no inode ref
+root 257 inode 1866995 errors 2001, no inode item, link count wrong
+         unresolved ref dir 6765 index 134 namelen 42 name 3647222921wleabcEoxlt-eengsairo.sqlite-wal filetype 1 errors 4, no inode ref
+parent transid verify failed on 348258304 wanted 14749 found 14766
+Ignoring transid failure
+parent transid verify failed on 348258304 wanted 14749 found 14766
+Ignoring transid failure
+parent transid verify failed on 348258304 wanted 14749 found 14766
+Ignoring transid failure
+parent transid verify failed on 348258304 wanted 14749 found 14766
+Ignoring transid failure
+ERROR: errors found in fs roots
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/luks-test
+UUID: 2d1dc6b4-84ab-4c64-91a0-669b6228c516
+found 83720974336 bytes used, error(s) found
+total csum bytes: 50467580
+total tree bytes: 266665984
+total fs tree bytes: 186236928
+total extent tree bytes: 17317888
+btree space waste bytes: 40645922
+file data blocks allocated: 87345299456
+  referenced 47847440384
+[less: lines 1364572-1364611/1364611 byte 90015202/90015202 (END)  (press RETURN)]
+
+# btrfs-find-root /dev/mapper/luks-test
+parent transid verify failed on 334692352 wanted 14761 found 14765
+parent transid verify failed on 334692352 wanted 14761 found 14765
+ERROR: failed to read block groups: Input/output error
+Superblock thinks the generation is 14761
+Superblock thinks the level is 0
+Found tree root at 444612608 gen 14761 level 0
+Well block 347160576(gen: 14768 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
+Well block 348192768(gen: 14766 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
+Well block 347865088(gen: 14765 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
+Well block 418840576(gen: 14758 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
+Well block 417120256(gen: 14749 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
+Well block 352256000(gen: 14743 level: 0) seems good, but generation/level doesn't match, want gen: 14761 level: 0
+[end]
+
+This is what I found out by reading.
+A fix - if possible - is out of my league now and don't want to poke around and make things worse.
+Any chance to get this FS at least mounted for RO?
+
+Thanks a lot, Michael.
