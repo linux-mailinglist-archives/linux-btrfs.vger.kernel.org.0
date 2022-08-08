@@ -2,91 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA0958CCB0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Aug 2022 19:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC88A58CE54
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Aug 2022 21:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbiHHReP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Aug 2022 13:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
+        id S244180AbiHHTJP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Aug 2022 15:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbiHHReO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 13:34:14 -0400
-X-Greylist: delayed 61 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 08 Aug 2022 10:34:12 PDT
-Received: from mail-out-02.servage.net (mail-out-02.servage.net [93.90.146.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E959DBC82
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 10:34:12 -0700 (PDT)
-X-Halon-ID: 2905bef0-1740-11ed-a59e-005056913d2d
-Authorized-sender: u1m2114@blauwurf.info
-Received: from [10.2.10.3] (firewall1a.robinson.cam.ac.uk [193.60.93.97])
-        by mail-out-01.servage.net (Halon) with ESMTPSA
-        id 2905bef0-1740-11ed-a59e-005056913d2d;
-        Mon, 08 Aug 2022 19:33:08 +0200 (CEST)
-Message-ID: <60689fac-9a38-9045-262c-7f147d71a3d2@bluemole.com>
-Date:   Mon, 8 Aug 2022 17:33:05 +0000
+        with ESMTP id S238225AbiHHTJP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 15:09:15 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EB615FE1
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 12:09:14 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id m7so7178557qkk.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Aug 2022 12:09:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DzzUNsdWVwFrqHXep4GxMye3QWRhH2Sr6ANI0kjR9ho=;
+        b=PWP7fIqKVwd2QcjZg+SEwsspXY0CYph01ofRaTjheAiV4kOeVYlv5JPKzjVA1BT2Vl
+         eH8oo3rnLgHm+4IHixvFws2Fg2GSlJFN128dRbSBBZkRYomz8oKTdYGQ812GAMHa6pLn
+         sQC277+EqNa8e3TgVcw74PuQJN3Nc0yKob4myzzfoy8G4S8tpONgZx0DfWt/Sr9H8zFh
+         18Td8sBQxeAkfTFqozSYQaD6GyFlbJPSoV8u5d23oBgMUOgf5TP3gMwxKk07PTn9Twmq
+         8TsQKe42dbhwcit0+KDBcoklMM1o11I3aYxIID+oMq/FquZw0K91Q/haZPbKTok8sWfN
+         1Vhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DzzUNsdWVwFrqHXep4GxMye3QWRhH2Sr6ANI0kjR9ho=;
+        b=tEY0bX+K5+oLqFdJEVtGEh5bF8bSdDPs+CvOGHccxjkr3TzszFoSQwxGzdmlTIKJSr
+         vvcX03OsIpQDCd3+INvkt9o2ljIW2jLI/54rnMG43/usEY0jvyBrdjYbYkJCjmhkymDu
+         ANWINHYILf20W0Z/+XfH38W1v9irED9WVOdIfm+PhtE/Um7sVCteBMXrMx1ydhfmyVdu
+         mMlHHlG9nxJ3NRYnlja85InHlKPhS3HCgF8wjtHn5iiJzBhBjGDcieZDWgMDtaH0tqqe
+         zXyCm2vM5KVpqoJujXGlbp9eZKNmX9mLoPZ5Gd4zNKVQnmx70/+ACIdNKcp80gwHrOo0
+         ek6A==
+X-Gm-Message-State: ACgBeo0j5gZ+ajG1DvDk1HCwtzsVczYbGNaIf7sbRNdXkjwgSjQobT+9
+        UtLhQt/XIGj0YcGWpDH94q1mu4nXYmxdSw==
+X-Google-Smtp-Source: AA6agR4aITQTADwiVUXxyp6BUlgb/rZ2u5TFZhNwXKPIPA5u5HQHHScwPgeS/ydmNebwI541PdLQsw==
+X-Received: by 2002:a05:620a:4154:b0:6b9:6563:daa1 with SMTP id k20-20020a05620a415400b006b96563daa1mr2408811qko.563.1659985752643;
+        Mon, 08 Aug 2022 12:09:12 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id cp10-20020a05622a420a00b00342f8984348sm2780163qtb.87.2022.08.08.12.09.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Aug 2022 12:09:11 -0700 (PDT)
+Date:   Mon, 8 Aug 2022 15:09:09 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: update generation of hole file extent item when
+ merging holes
+Message-ID: <YvFfVbEMitFzBHiC@localhost.localdomain>
+References: <98d51d2ad8fca034c9605605394c15b516f13e5d.1659956764.git.fdmanana@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.1
-Subject: Re: Corrupted btrfs (LUKS), seeking advice
-Content-Language: en-GB
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <12ad8fa0-a4f6-815d-dcab-1b6efa1c9da8@bluemole.com>
- <ebc960af-2511-457e-88ef-d1ee2d995c7d@www.fastmail.com>
-From:   Michael Zacherl <mz01@bluemole.com>
-In-Reply-To: <ebc960af-2511-457e-88ef-d1ee2d995c7d@www.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <98d51d2ad8fca034c9605605394c15b516f13e5d.1659956764.git.fdmanana@suse.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/8/22 16:57, Chris Murphy wrote:
-> mount -o ro,rescue=all
+On Mon, Aug 08, 2022 at 12:18:37PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> If that works you can umount and try again adding all the rescue options except idatacsums.> It's nice to have datacsum warnings (unless there's just to many errors.)
+> When punching a hole into a file range that is adjacent with a hole and we
+> are not using the no-holes feature, we expand the range of the adjacent
+> file extent item that represents a hole, to save metadata space.
+> 
+> However we don't update the generation of hole file extent item, which
+> means a full fsync will not log that file extent item if the fsync happens
+> in a later transaction (since commit 7f30c07288bb9e ("btrfs: stop copying
+> old file extents when doing a full fsync")).
+> 
+> For example, if we do this:
+> 
+>     $ mkfs.btrfs -f -O ^no-holes /dev/sdb
+>     $ mount /dev/sdb /mnt
+>     $ xfs_io -f -c "pwrite -S 0xab 2M 2M" /mnt/foobar
+>     $ sync
+> 
+> We end up with 2 file extent items in our file:
+> 
+> 1) One that represents the hole for the file range [0, 2M), with a
+>    generation of 7;
+> 
+> 2) Another one that represents an extent covering the range [2M, 4M).
+> 
+> After that if we do the following:
+> 
+>     $ xfs_io -c "fpunch 2M 2M" /mnt/foobar
+> 
+> We end up with a single file extent item in the file, which represents a
+> hole for the range [0, 4M) and with a generation of 7 - because we end
+> dropping the data extent for range [2M, 4M) and then update the file
+> extent item that represented the hole at [0, 2M), by increasing
+> length from 2M to 4M.
+> 
+> Then doing a full fsync and power failing:
+> 
+>     $ xfs_io -c "fsync" /mnt/foobar
+>     <power failure>
+> 
+> will result in the full fsync not logging the file extent item that
+> represents the hole for the range [0, 4M), because its generation is 7,
+> which is lower than the generation of the current transaction (8).
+> As a consequence, after mounting again the filesystem (after log replay),
+> the region [2M, 4M) does not have a hole, it still points to the
+> previous data extent.
+> 
+> So fix this by always updating the generation of existing file extent
+> items representing holes when we merge/expand them. This solves the
+> problem and it's the same approach as when we merge prealloc extents that
+> got written (at btrfs_mark_extent_written()). Setting the generation to
+> the current transaction's generation is also what we do when merging
+> the new hole extent map with the previous one or the next one.
+> 
+> A test case for fstests, covering both cases of hole file extent item
+> merging (to the left and to the right), will be sent soon.
+> 
+> Fixes: 7f30c07288bb9e ("btrfs: stop copying old file extents when doing a full fsync")
+> CC: stable@vger.kernel.org # 5.18+
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-rescue=all mounts.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-dmesg from   mount -o ro,rescue=usebackuproot,rescue=nologreplay,rescue=ignorebadroots /dev/mapper/luks-test /mnt :
+Thanks,
 
-[20680.066631] BTRFS info (device dm-1): flagging fs with big metadata feature
-[20680.066641] BTRFS info (device dm-1): trying to use backup root at mount time
-[20680.066646] BTRFS info (device dm-1): disabling log replay at mount time
-[20680.066650] BTRFS info (device dm-1): ignoring bad roots
-[20680.066652] BTRFS info (device dm-1): using free space tree
-[20680.066654] BTRFS info (device dm-1): has skinny extents
-[20680.072359] BTRFS error (device dm-1): parent transid verify failed on 334692352 wanted 14761 found 14765
-[20680.072571] BTRFS error (device dm-1): parent transid verify failed on 334692352 wanted 14761 found 14765
-[20680.073296] BTRFS info (device dm-1): enabling ssd optimizations
-
-A brief look shows I can access data!
-
-When also omitting nologreplay the FS wouldn't mount and dmesg shows
-
-[20837.557120] BTRFS info (device dm-1): flagging fs with big metadata feature
-[20837.557138] BTRFS info (device dm-1): trying to use backup root at mount time
-[20837.557148] BTRFS info (device dm-1): ignoring bad roots
-[20837.557152] BTRFS info (device dm-1): using free space tree
-[20837.557156] BTRFS info (device dm-1): has skinny extents
-[20837.567354] BTRFS error (device dm-1): parent transid verify failed on 334692352 wanted 14761 found 14765
-[20837.567809] BTRFS error (device dm-1): parent transid verify failed on 334692352 wanted 14761 found 14765
-[20837.569387] BTRFS info (device dm-1): enabling ssd optimizationsquite understans
-[20837.569403] BTRFS info (device dm-1): start tree-log replay
-[20837.637057] BTRFS error (device dm-1): parent transid verify failed on 337412096 wanted 5492 found 14764
-[20837.637223] BTRFS error (device dm-1): parent transid verify failed on 337412096 wanted 5492 found 14764
-[20837.656541] BTRFS error (device dm-1): parent transid verify failed on 334643200 wanted 14761 found 14765
-[20837.656670] BTRFS error (device dm-1): parent transid verify failed on 334643200 wanted 14761 found 14765
-[20837.656676] BTRFS: error (device dm-1: state A) in btrfs_run_delayed_refs:2151: errno=-5 IO failure
-[20837.656682] BTRFS: error (device dm-1: state EA) in btrfs_replay_log:2567: errno=-5 IO failure (Failed to recover log tree)
-[20837.675238] BTRFS error (device dm-1: state EA): open_ctree failed
-
-Is this FS repairable to a usable state?
-
-Thanks a lot, Michael.
-
-
-
+Josef
