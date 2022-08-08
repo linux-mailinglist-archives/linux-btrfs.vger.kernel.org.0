@@ -2,147 +2,196 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9731458C18C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Aug 2022 04:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2611958C194
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Aug 2022 04:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242709AbiHHCYs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 7 Aug 2022 22:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51504 "EHLO
+        id S242366AbiHHC0j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 7 Aug 2022 22:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241838AbiHHCYc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 7 Aug 2022 22:24:32 -0400
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E1B11811;
-        Sun,  7 Aug 2022 19:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1659924150; x=1691460150;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=464mKJOcENT8/jWX3CKvvBL8fIiP88Nj5Nh21OYdmbc=;
-  b=LMGIt4alZUtAmNFr+B9MXt2LRAviRuIGABdv4m/yB8mSq9g+NSch+2AR
-   MQcsrZIvkCL8XXoP0RnosRUWh+wJhSK5WN0y4JTanVabqhBD1BrLny2gE
-   5v8FQfyBxl9dY1OwmS0lJj0ocV9cN5lbDjkFPK27DdLvWZL20JTw3gOmE
-   uS6qfDRz6bkahXCG/bQPTxeLF4kvIyqKcjYPpY1cMYb1bdBONXIZIKCpR
-   KZ6+cyTCY20cXz4+20Q5mKb5OoaoxaMPmMyYjzO7DfMU9ibL3Bfa1MBLt
-   jd/IFpl3O7RES4d3XwhbWFnPCpiyRsnan4906DoR1rdb7ukAxQUGsVTyG
-   A==;
-X-IronPort-AV: E=Sophos;i="5.93,221,1654531200"; 
-   d="scan'208";a="320182420"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 08 Aug 2022 10:02:30 +0800
-IronPort-SDR: 04mWyEz27TtVNEckA0vUBt3mX58qxf78kNSn6OkcReA+iwWZ+voa0S0qzjGg8ilYfgnqSbe2aj
- OTsJaU744D7QFwgD/VKY0b+a605SgABsrTfz7gxfk/e4jdglI+qgly/WDJkSckvtxqJgqx48Wg
- AFv3USglZItFCQUKuwFPI+J8SQG7RC0/aYuAIWls/AwSYXnHKRlg1locFxi5reJzJ32mrIAm76
- c3R62MJ/NVaBVdkiPLRCWZu4gSI+2FzRlnVETbILyxA6swF3P5T1VAYx4ok1D7oHHvDTN9gszO
- JSzAx8Bzf4PTzf2aSOgkAxfW
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Aug 2022 18:18:12 -0700
-IronPort-SDR: Scd2HmbfaV1r1sYZd7ijC8AJuOSfloMjneI3PPFMm2SXddwXTHKDJXDfd0EX596goVzdT/A/3O
- 8Ibq1QHpcVdmf04o6gXMZ/3oQvCrdfL2ty4ewqegXpOUFQbCw6Gr2Tg5IERSrBcAfom0Geipgc
- 58WK2JYMsn0jxtCVzcEibWKgDR12sEQsVDLsLvdWUvzMIIng5xXJ62aDKscG2FZIVrrjEUBWzH
- a+hHXptbd/wEfMM8GpwSm5yYr0qDuXvoVZZo8K5RhxEYxbK5R2Qqye2edM+ow+Ei0U5RO/dlh7
- Gu8=
-WDCIronportException: Internal
-Received: from ctl002.ad.shared (HELO naota-xeon.wdc.com) ([10.225.53.129])
-  by uls-op-cesaip02.wdc.com with ESMTP; 07 Aug 2022 19:02:30 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH STABLE 5.18 v2 3/3] btrfs: zoned: drop optimization of zone finish
-Date:   Mon,  8 Aug 2022 11:02:01 +0900
-Message-Id: <20220808020201.712924-4-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220808020201.712924-1-naohiro.aota@wdc.com>
-References: <20220808020201.712924-1-naohiro.aota@wdc.com>
+        with ESMTP id S242536AbiHHC0N (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 7 Aug 2022 22:26:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8B09513FA7
+        for <linux-btrfs@vger.kernel.org>; Sun,  7 Aug 2022 19:09:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1659924588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fp2+CQGzi3KSxNsaZsdYp9vxjcxW5nKXb3Uu0mTJcsM=;
+        b=P4Zau4D9N1BniF4/DbpS5CnzBuaUtle1Q6co/1lVJy4PKUWWmVc8l6++WgpqRx5S3raBi5
+        rH2CATI40+vOsfdGjeHXvL7zxT5BvBzpNhctMOvTlbPRfuYhybzK/tL7DG0TpKtaRappfs
+        49trak4YxOSiKPq3jM1zt5iv01r2Mjs=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-618-15S92uHlPoe2r39hfa4uUg-1; Sun, 07 Aug 2022 22:09:47 -0400
+X-MC-Unique: 15S92uHlPoe2r39hfa4uUg-1
+Received: by mail-pg1-f198.google.com with SMTP id x33-20020a634a21000000b0041cc1c51cf4so2467017pga.22
+        for <linux-btrfs@vger.kernel.org>; Sun, 07 Aug 2022 19:09:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-language:content-transfer-encoding:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc;
+        bh=Fp2+CQGzi3KSxNsaZsdYp9vxjcxW5nKXb3Uu0mTJcsM=;
+        b=OsuOq053Ko1bTMozo4+FCHuVq9vhbknpj6A+K5qpemD1ygNzsPLLUEz1KfKFzCZYAO
+         zLDvuThW8ACHfy3kdaB/iTINQJmk9fyMsj2SYvdILAgXbSwzRtKuTptxrK+k/bccGsXJ
+         hJXn3mZjfPeput3O/3M8amB3MeRWYncycQpiB46KgfMd3OI8qdZqh1XV13yyAC7KvOBc
+         62xDtOGgw00BkOgeQA0uvsUhsd66GM3Iw1BdsqdJ/7Y864QuJ5Ah6WjmhDVnjM+pWLvt
+         kfYTP1yrCYqeYD00BuQTwZcYLsjvpB0ENrzPBOrKYRA2/RLAz4z+Ydh9A8AXRjk8Dgnl
+         h+vA==
+X-Gm-Message-State: ACgBeo3ZhRNZhbb9Iusr1CnCKw2RabwVxiuG3HOkLJ9ckTLvw56XV8Tx
+        YMNEHm2HyadxRMkn+uTYkJFs6A+MoIiX24IykofAFLakOvLUm5MwC33EC5325tmQJ452sQKIeuG
+        vOI+cTe+x+F2r92fai1ufQ7I=
+X-Received: by 2002:a17:903:18a:b0:16f:9027:60dc with SMTP id z10-20020a170903018a00b0016f902760dcmr13030872plg.147.1659924585828;
+        Sun, 07 Aug 2022 19:09:45 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR4zqX7r5qFKMhz9KRWguq7HBIFHBtnusMNNSoWRAijv2u40o8w+3I/4CY4N0UozWx7nIVgbhA==
+X-Received: by 2002:a17:903:18a:b0:16f:9027:60dc with SMTP id z10-20020a170903018a00b0016f902760dcmr13030849plg.147.1659924585530;
+        Sun, 07 Aug 2022 19:09:45 -0700 (PDT)
+Received: from [10.72.12.61] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id z23-20020aa79597000000b00528c066678csm7312097pfj.72.2022.08.07.19.09.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Aug 2022 19:09:45 -0700 (PDT)
+Subject: Re: [RFC PATCH 1/4] vfs: report change attribute in statx for
+ IS_I_VERSION inodes
+To:     Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org
+Cc:     dhowells@redhat.com, lczerner@redhat.com, bxue@redhat.com,
+        ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Jeff Layton <jlayton@redhat.com>
+References: <20220805183543.274352-1-jlayton@kernel.org>
+ <20220805183543.274352-2-jlayton@kernel.org>
+From:   Xiubo Li <xiubli@redhat.com>
+Message-ID: <8a87ee82-fa04-6b99-8716-9acf24446c5a@redhat.com>
+Date:   Mon, 8 Aug 2022 10:09:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220805183543.274352-2-jlayton@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-commit b3a3b0255797e1d395253366ba24a4cc6c8bdf9c upstream
 
-We have an optimization in do_zone_finish() to send REQ_OP_ZONE_FINISH only
-when necessary, i.e. we don't send REQ_OP_ZONE_FINISH when we assume we
-wrote fully into the zone.
+On 8/6/22 2:35 AM, Jeff Layton wrote:
+> From: Jeff Layton <jlayton@redhat.com>
+>
+> Claim one of the spare fields in struct statx to hold a 64-bit change
+> attribute. When statx requests this attribute, do an
+> inode_query_iversion and fill the result in the field.
+>
+> Also update the test-statx.c program to fetch the change attribute as
+> well.
+>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>   fs/stat.c                 | 7 +++++++
+>   include/linux/stat.h      | 1 +
+>   include/uapi/linux/stat.h | 3 ++-
+>   samples/vfs/test-statx.c  | 4 +++-
+>   4 files changed, 13 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/stat.c b/fs/stat.c
+> index 9ced8860e0f3..976e0a59ab23 100644
+> --- a/fs/stat.c
+> +++ b/fs/stat.c
+> @@ -17,6 +17,7 @@
+>   #include <linux/syscalls.h>
+>   #include <linux/pagemap.h>
+>   #include <linux/compat.h>
+> +#include <linux/iversion.h>
+>   
+>   #include <linux/uaccess.h>
+>   #include <asm/unistd.h>
+> @@ -118,6 +119,11 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
+>   	stat->attributes_mask |= (STATX_ATTR_AUTOMOUNT |
+>   				  STATX_ATTR_DAX);
+>   
+> +	if ((request_mask & STATX_CHGATTR) && IS_I_VERSION(inode)) {
+> +		stat->result_mask |= STATX_CHGATTR;
+> +		stat->chgattr = inode_query_iversion(inode);
+> +	}
+> +
+>   	mnt_userns = mnt_user_ns(path->mnt);
+>   	if (inode->i_op->getattr)
+>   		return inode->i_op->getattr(mnt_userns, path, stat,
+> @@ -611,6 +617,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+>   	tmp.stx_dev_major = MAJOR(stat->dev);
+>   	tmp.stx_dev_minor = MINOR(stat->dev);
+>   	tmp.stx_mnt_id = stat->mnt_id;
+> +	tmp.stx_chgattr = stat->chgattr;
+>   
+>   	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+>   }
+> diff --git a/include/linux/stat.h b/include/linux/stat.h
+> index 7df06931f25d..4a17887472f6 100644
+> --- a/include/linux/stat.h
+> +++ b/include/linux/stat.h
+> @@ -50,6 +50,7 @@ struct kstat {
+>   	struct timespec64 btime;			/* File creation time */
+>   	u64		blocks;
+>   	u64		mnt_id;
+> +	u64		chgattr;
+>   };
+>   
+>   #endif
+> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> index 1500a0f58041..b45243a0fbc5 100644
+> --- a/include/uapi/linux/stat.h
+> +++ b/include/uapi/linux/stat.h
+> @@ -124,7 +124,7 @@ struct statx {
+>   	__u32	stx_dev_minor;
+>   	/* 0x90 */
+>   	__u64	stx_mnt_id;
+> -	__u64	__spare2;
+> +	__u64	stx_chgattr;	/* Inode change attribute */
+>   	/* 0xa0 */
+>   	__u64	__spare3[12];	/* Spare space for future expansion */
+>   	/* 0x100 */
+> @@ -152,6 +152,7 @@ struct statx {
+>   #define STATX_BASIC_STATS	0x000007ffU	/* The stuff in the normal stat struct */
+>   #define STATX_BTIME		0x00000800U	/* Want/got stx_btime */
+>   #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
+> +#define STATX_CHGATTR		0x00002000U	/* Want/git stx_chgattr */
 
-The assumption is determined by "alloc_offset == capacity". This condition
-won't work if the last ordered extent is canceled due to some errors. In
-that case, we consider the zone is deactivated without sending the finish
-command while it's still active.
+s/git/get/ ?
 
-This inconstancy results in activating another block group while we cannot
-really activate the underlying zone, which causes the active zone exceeds
-errors like below.
-
-    BTRFS error (device nvme3n2): allocation failed flags 1, wanted 520192 tree-log 0, relocation: 0
-    nvme3n2: I/O Cmd(0x7d) @ LBA 160432128, 127 blocks, I/O Error (sct 0x1 / sc 0xbd) MORE DNR
-    active zones exceeded error, dev nvme3n2, sector 0 op 0xd:(ZONE_APPEND) flags 0x4800 phys_seg 1 prio class 0
-    nvme3n2: I/O Cmd(0x7d) @ LBA 160432128, 127 blocks, I/O Error (sct 0x1 / sc 0xbd) MORE DNR
-    active zones exceeded error, dev nvme3n2, sector 0 op 0xd:(ZONE_APPEND) flags 0x4800 phys_seg 1 prio class 0
-
-Fix the issue by removing the optimization for now.
-
-Fixes: 8376d9e1ed8f ("btrfs: zoned: finish superblock zone once no space left for new SB")
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/zoned.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 2c0851d94eff..84b6d39509bd 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -2005,6 +2005,7 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical, u64 len
- 	struct btrfs_device *device;
- 	u64 min_alloc_bytes;
- 	u64 physical;
-+	int i;
- 
- 	if (!btrfs_is_zoned(fs_info))
- 		return;
-@@ -2039,13 +2040,25 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical, u64 len
- 	spin_unlock(&block_group->lock);
- 
- 	map = block_group->physical_map;
--	device = map->stripes[0].dev;
--	physical = map->stripes[0].physical;
-+	for (i = 0; i < map->num_stripes; i++) {
-+		int ret;
- 
--	if (!device->zone_info->max_active_zones)
--		goto out;
-+		device = map->stripes[i].dev;
-+		physical = map->stripes[i].physical;
-+
-+		if (device->zone_info->max_active_zones == 0)
-+			continue;
- 
--	btrfs_dev_clear_active_zone(device, physical);
-+		ret = blkdev_zone_mgmt(device->bdev, REQ_OP_ZONE_FINISH,
-+				       physical >> SECTOR_SHIFT,
-+				       device->zone_info->zone_size >> SECTOR_SHIFT,
-+				       GFP_NOFS);
-+
-+		if (ret)
-+			return;
-+
-+		btrfs_dev_clear_active_zone(device, physical);
-+	}
- 
- 	spin_lock(&fs_info->zone_active_bgs_lock);
- 	ASSERT(!list_empty(&block_group->active_bg_list));
--- 
-2.35.1
+>   
+>   #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
+>   
+> diff --git a/samples/vfs/test-statx.c b/samples/vfs/test-statx.c
+> index 49c7a46cee07..767208d2f564 100644
+> --- a/samples/vfs/test-statx.c
+> +++ b/samples/vfs/test-statx.c
+> @@ -109,6 +109,8 @@ static void dump_statx(struct statx *stx)
+>   		printf(" Inode: %-11llu", (unsigned long long) stx->stx_ino);
+>   	if (stx->stx_mask & STATX_NLINK)
+>   		printf(" Links: %-5u", stx->stx_nlink);
+> +	if (stx->stx_mask & STATX_CHGATTR)
+> +		printf(" Change Attr: 0x%llx", stx->stx_chgattr);
+>   	if (stx->stx_mask & STATX_TYPE) {
+>   		switch (stx->stx_mode & S_IFMT) {
+>   		case S_IFBLK:
+> @@ -218,7 +220,7 @@ int main(int argc, char **argv)
+>   	struct statx stx;
+>   	int ret, raw = 0, atflag = AT_SYMLINK_NOFOLLOW;
+>   
+> -	unsigned int mask = STATX_BASIC_STATS | STATX_BTIME;
+> +	unsigned int mask = STATX_BASIC_STATS | STATX_BTIME | STATX_CHGATTR;
+>   
+>   	for (argv++; *argv; argv++) {
+>   		if (strcmp(*argv, "-F") == 0) {
 
