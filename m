@@ -2,50 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6556458DADD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 17:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6E658DB23
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 17:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242535AbiHIPN4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Aug 2022 11:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
+        id S244864AbiHIPdy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Aug 2022 11:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243623AbiHIPNy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Aug 2022 11:13:54 -0400
+        with ESMTP id S236852AbiHIPdx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Aug 2022 11:33:53 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C5C64DE;
-        Tue,  9 Aug 2022 08:13:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE65CF04;
+        Tue,  9 Aug 2022 08:33:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C373261222;
-        Tue,  9 Aug 2022 15:13:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2977DC433D6;
-        Tue,  9 Aug 2022 15:13:52 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BA7A61281;
+        Tue,  9 Aug 2022 15:33:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96E7CC433C1;
+        Tue,  9 Aug 2022 15:33:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660058032;
-        bh=Wos6TXyMgiMXJTG0+pg/wLCuR7N/v3e3SKuhbsSb6fY=;
+        s=k20201202; t=1660059226;
+        bh=uEM2II5ZhoclAW3oVUSmDhxIMZ4eqsmn7nBLYONcDbU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O3GhtqceCxXV9iVP6uagPdMwx7/vjbZU9BClW+L7Yo1iov1iJ0fMRNLYfePa43a25
-         RmQO/Xd0qqUk1OWUiBVKGNlYHaLVRaEvK04FSHbGI6EXMcM7M5J/7u+OVJqDKsCQNH
-         OihCVEF8mh7kc5N16sT5OAGldEO5z5GYh3/gt3XxDNccADBT5XbPWDa2t1dVNGL9n+
-         +nV8rO9ObTyjLz/j4IcZIQLXmkYQ4/0QSnv7+lrnYw9rGPXKKODYI3+fvgBUSbCoYp
-         kC67Kgm7SJ00k+wHfG49R97FERAlpKLY17wUev5D7yZcTVHnozicUw0gSnvduxL5wA
-         raaEkQJA/30hg==
-Date:   Tue, 9 Aug 2022 08:13:51 -0700
+        b=ADqackvhvCC8wIl5U58Kf/J+cARc/gGRlEfxvLyA16uJd34PobSGVVfmZLN/PJ34Q
+         vLDEp9gMXE0wV1ro4j4eTbVie9tq1uE/nHYaLgjzDvADXUIRH+ti9hier4bBxNdsYr
+         PkkG4N5k1Vqbk1z+UCpBgBZdz+CrcxlIJvlCs6tf+MPqCQiA9thw4tIztumaKTpiMR
+         oBhrFrWDmdlcMoIph0Ea97MGZFV8ik7ZHNTZ6U9DDlrRa1b0HofZmHwJm3QcTTT9TJ
+         DL6hGoGPiCQ05x7vPGP9dv5rKWOSdKMGtXaEUnbhN9u2i+vnxzocOZgW4Me8NyZ9yT
+         vzkJo+IUAZ7UA==
+Date:   Tue, 9 Aug 2022 08:33:46 -0700
 From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] generic: test fsync after punching hole adjacent to an
- existing hole
-Message-ID: <YvJ5r3u9wpq+JHo1@magnolia>
-References: <83a74ba89e9e4ee1060b7dfa1f190d4b51691909.1659957268.git.fdmanana@suse.com>
- <20220809033551.ip3lq5kkhvabdppn@zlang-mailbox>
- <20220809072956.GA2067106@falcondesktop>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org,
+        dhowells@redhat.com, lczerner@redhat.com, bxue@redhat.com,
+        ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        fstests <fstests@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/4] vfs: report change attribute in statx for
+ IS_I_VERSION inodes
+Message-ID: <YvJ+WkrtStRujU2/@magnolia>
+References: <20220805183543.274352-1-jlayton@kernel.org>
+ <20220805183543.274352-2-jlayton@kernel.org>
+ <20220805220136.GG3600936@dread.disaster.area>
+ <c10e4aa381aea86bb51b005887533e28f9c7302b.camel@redhat.com>
+ <33176ee0f896aef889ad1930fb1e008323135a2e.camel@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220809072956.GA2067106@falcondesktop>
+In-Reply-To: <33176ee0f896aef889ad1930fb1e008323135a2e.camel@kernel.org>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -56,227 +62,164 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 09, 2022 at 08:29:56AM +0100, Filipe Manana wrote:
-> On Tue, Aug 09, 2022 at 11:35:51AM +0800, Zorro Lang wrote:
-> > On Mon, Aug 08, 2022 at 12:18:58PM +0100, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
+On Mon, Aug 08, 2022 at 09:19:05AM -0400, Jeff Layton wrote:
+> On Fri, 2022-08-05 at 18:06 -0400, Jeff Layton wrote:
+> > On Sat, 2022-08-06 at 08:01 +1000, Dave Chinner wrote:
+> > > On Fri, Aug 05, 2022 at 02:35:40PM -0400, Jeff Layton wrote:
+> > > > From: Jeff Layton <jlayton@redhat.com>
+> > > > 
+> > > > Claim one of the spare fields in struct statx to hold a 64-bit change
+> > > > attribute. When statx requests this attribute, do an
+> > > > inode_query_iversion and fill the result in the field.
+> > > > 
+> > > > Also update the test-statx.c program to fetch the change attribute as
+> > > > well.
+> > > > 
+> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > > ---
+> > > >  fs/stat.c                 | 7 +++++++
+> > > >  include/linux/stat.h      | 1 +
+> > > >  include/uapi/linux/stat.h | 3 ++-
+> > > >  samples/vfs/test-statx.c  | 4 +++-
+> > > >  4 files changed, 13 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/fs/stat.c b/fs/stat.c
+> > > > index 9ced8860e0f3..976e0a59ab23 100644
+> > > > --- a/fs/stat.c
+> > > > +++ b/fs/stat.c
+> > > > @@ -17,6 +17,7 @@
+> > > >  #include <linux/syscalls.h>
+> > > >  #include <linux/pagemap.h>
+> > > >  #include <linux/compat.h>
+> > > > +#include <linux/iversion.h>
+> > > >  
+> > > >  #include <linux/uaccess.h>
+> > > >  #include <asm/unistd.h>
+> > > > @@ -118,6 +119,11 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
+> > > >  	stat->attributes_mask |= (STATX_ATTR_AUTOMOUNT |
+> > > >  				  STATX_ATTR_DAX);
+> > > >  
+> > > > +	if ((request_mask & STATX_CHGATTR) && IS_I_VERSION(inode)) {
+> > > > +		stat->result_mask |= STATX_CHGATTR;
+> > > > +		stat->chgattr = inode_query_iversion(inode);
+> > > > +	}
 > > > 
-> > > Test that if we punch a hole adjacent to an existing hole, fsync the file
-> > > and then power fail, the new hole exists after mounting again the
-> > > filesystem.
+> > > If you're going to add generic support for it, shouldn't there be a
+> > > generic test in fstests that ensures that filesystems that advertise
+> > > STATX_CHGATTR support actually behave correctly? Including across
+> > > mounts, and most importantly, that it is made properly stable by
+> > > fsync?
 > > > 
-> > > This currently fails on btrfs with kernels 5.18 and 5.19 when not using
-> > > the "no-holes" feature. The "no-holes" feature is enabled by default at
-> > > mkfs time starting with btrfs-progs 5.15, so to trigger the issue with
-> > > btrfs-progs 5.15+ and kernel 5.18 or kernel 5.19, one must set
-> > > "-O ^no-holes" in the MKFS_OPTIONS environment variable (part of the
-> > > btrfs test matrix).
-> > > 
-> > > The issue is fixed for btrfs with the following kernel patch:
-> > > 
-> > >   "btrfs: update generation of hole file extent item when merging holes"
+> > > i.e. what good is this if different filesystems have random quirks
+> > > that mean it can't be relied on by userspace to tell it changes have
+> > > occurred?
 > > 
-> > CC btrfs list
+> > Absolutely. Being able to better test the i_version field for consistent
+> > behavior is a primary goal. I haven't yet written any yet, but we'd
+> > definitely want something in xfstests if we decide this is worthwhile.
 > 
-> It was already in cc (and I always cc the btrfs list).
+> I started writing some tests for this today, and hit a bit of a chicken-
+> and-egg problem:
 > 
-> > 
-> > > 
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > ---
-> > >  tests/generic/694     | 85 +++++++++++++++++++++++++++++++++++++++++++
-> > >  tests/generic/694.out | 15 ++++++++
-> > >  2 files changed, 100 insertions(+)
-> > >  create mode 100755 tests/generic/694
-> > >  create mode 100644 tests/generic/694.out
-> > > 
-> > > diff --git a/tests/generic/694 b/tests/generic/694
-> > > new file mode 100755
-> > > index 00000000..c034f914
-> > > --- /dev/null
-> > > +++ b/tests/generic/694
-> > > @@ -0,0 +1,85 @@
-> > > +#! /bin/bash
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
-> > > +#
-> > > +# FS QA Test 694
-> > > +#
-> > > +# Test that if we punch a hole adjacent to an existing hole, fsync the file and
-> > > +# then power fail, the new hole exists after mounting again the filesystem.
-> > 
-> > Better to explain this's a known regression test at here.
+> I'd prefer to use xfs_io for easier maintainability, but the STATX_*
+> constants are defined via UAPI header. Older kernels don't have them and
+> old xfs_io programs don't understand or report this value.
 > 
-> So, duplicate the changelog here?
-> 
-> > 
-> > And add _fixed_by_kernel_commit later, after that kernel patch is merged and
-> > has a fixed commit id.
-> 
-> I wasn't aware we have that nowadays.
+> Should I just write a one-off binary program for xfstests to fetch this
+> value for now, or are we better off merging the patchset first, and then
+> fix xfs_io and then write the tests using the updated xfs_io program?
 
-It's a recent addition to try to standardize the process of identifying
-bugfixes for LTS kernels.  Whereas before we just stuffed them adhoc in
-the test comments, this new helper will tell you which commits you need
-to apply if the regression test fails.
+What we've done in the past to support new APIs until they land in
+kernel headers is:
 
-> Does that mean that tests get merged only after the corresponding kernel fix
-> is merged in Linus' tree?
+Add an autoconf macro to decide if the system header files are recent
+enough to support whatever functionality is needed by xfs_io;
 
-I usually put in an obvious placeholder:
+Modify the build system to #define OVERRIDE_FUBAR if the system headers
+aren't new enough to have FUBAR; and
 
-_fixed_by_kernel_commit XXXXXX "xfs: fix the frobnitech"
+Modify (or create) the relevant header file to override the system
+header definitions as needed to support building the relevant pieces of
+code.  A year or so after the functionality lands, we can then remove
+the overrides, or just leave them in place until the next time we need
+it.
 
-...and hope someone remembers to clean it up.
+For example, Eric Biggers wanted to teach the fscrypt commands to use a
+new feature he was adding to an existing API, so he AC_DEFUN'd a macro
+that checks to see if the system linux/fs.h *does not* define a
+structure containing the desired field.  If this is the case, it sets
+need_internal_fscrypt_add_key_arg=yes.
 
-> > 
-> > > +#
-> > > +. ./common/preamble
-> > > +_begin_fstest quick log punch
-> > 
-> > "auto" group?
-> 
-> Yes, forgotten when running the "new" script.
-> 
-> > 
-> > > +
-> > > +_cleanup()
-> > > +{
-> > > +	_cleanup_flakey
-> > > +	cd /
-> > > +	rm -r -f $tmp.*
-> > > +}
-> > > +
-> > > +# Import common functions.
-> > > +. ./common/filter
-> > > +. ./common/dmflakey
-> > > +. ./common/punch
-> > > +
-> > > +# real QA test starts here
-> > > +
-> > > +# Modify as appropriate.
-> >    ^^^^
-> > This's just a reminder, please remove it.
-> > 
-> > > +_supported_fs generic
-> > > +_require_scratch
-> > > +_require_dm_target flakey
-> > > +_require_xfs_io_command "fpunch"
-> > > +_require_xfs_io_command "fiemap"
-> > > +
-> > > +_scratch_mkfs >>$seqres.full 2>&1
-> > > +_require_metadata_journaling $SCRATCH_DEV
-> > > +_init_flakey
-> > > +_mount_flakey
-> > > +
-> > > +# Create our test file with the following layout:
-> > > +#
-> > > +# [0, 2M)    - hole
-> > > +# [2M, 10M)  - extent
-> > > +# [10M, 12M) - hole
-> > > +$XFS_IO_PROG -f -c "truncate 12M" \
-> > > +	     -c "pwrite -S 0xab 2M 8M" \
-> > > +	     $SCRATCH_MNT/foobar | _filter_xfs_io
-> > > +
-> > > +# Persist everything, commit the filesystem's transaction.
-> > > +sync
-> > > +
-> > > +# Now punch two holes in the file:
-> > > +#
-> > > +# 1) For the range [2M, 4M), which is adjacent to the existing hole in the range
-> > > +#    [0, 2M);
-> > > +# 2) For the range [8M, 10M), which is adjacent to the existing hole in the
-> > > +#    range [10M, 12M).
-> > > +#
-> > > +# These operations start a new filesystem transaction.
-> > > +# Then finally fsync the file.
-> > > +$XFS_IO_PROG -c "fpunch 2M 2M" \
-> > > +	     -c "fpunch 8M 2M" \
-> > > +	     -c "fsync" $SCRATCH_MNT/foobar
-> > 
-> > Darrick added a new helper _require_congruent_file_oplen(), might worth
-> > using it. Any thoughts?
-> 
-> Wasn't aware of it. Seems like it's to deal with some rare xfs realtime configurations.
-> So I suppose, this needs:
+AC_DEFUN([AC_NEED_INTERNAL_FSCRYPT_ADD_KEY_ARG],
+  [
+    AC_CHECK_TYPE(struct fscrypt_add_key_arg,
+      [
+        AC_CHECK_MEMBER(struct fscrypt_add_key_arg.key_id,
+          ,
+          need_internal_fscrypt_add_key_arg=yes,
+          [#include <linux/fs.h>]
+        )
+      ],,
+      [#include <linux/fs.h>]
+    )
+    AC_SUBST(need_internal_fscrypt_add_key_arg)
+  ])
 
-Weird xfs realtime configs was the initial purpose (e.g. 28k allocation
-units) but it also _notruns tests that don't expect things like punching
-a 4k hole failing on an fs with 64k blocksize.
+This macro is called from configure.ac.
 
-(Granted, anything in tests/generic/ should be assuming at least a 64k
-block size as a possibility, as you do here...)
+Next, include/builddefs.in was modified to include the selected value in
+the make variables:
 
-> _require_congruent_file_oplen $((2 * 1024 * 1024))
+NEED_INTERNAL_FSCRYPT_ADD_KEY_ARG = @need_internal_fscrypt_add_key_arg@
 
-Yep.
+And then the shouty variable is used in the same file to set a compiler
+define:
 
-> 
-> > 
-> > > +
-> > > +# Simulate a power failure and mount the filesystem to check that everything
-> > > +# is in the same state as before the power failure.
-> > > +_flakey_drop_and_remount
-> > > +
-> > > +# We expect the following file layout:
-> > > +#
-> > > +# [0, 4M)    - hole
-> > > +# [4M, 8M)   - extent
-> > > +# [8M, 12M)  - hole
-> > > +echo "File layout after power failure:"
-> > > +$XFS_IO_PROG -c "fiemap -v" $SCRATCH_MNT/foobar | _filter_fiemap
-> > > +
-> > > +# When reading the file we expect to get the range [4M, 8M) filled with bytes
-> > > +# that have a value of 0xab and 0x00 for anything outside that range.
-> > > +echo "File content after power failure:"
-> > > +od -A d -t x1 $SCRATCH_MNT/foobar
-> > 
-> > Can _hexdump in common/rc help ?
-> 
-> It can, I wasn't aware that helper existed. It's relatively new.
-> Glad to see od is being preferred over hexdump, and I have always used it in
-> tests over the years.
-> 
-> Btw, _hexdump is asking od to output file offsets in hex.
-> I find it a lot more friendly to read decimal values (maybe I'm weird), so
-> I always pass '-A d' to od. Thoughts on that?
+ifeq ($(NEED_INTERNAL_FSCRYPT_ADD_KEY_ARG),yes)
+PCFLAGS+= -DOVERRIDE_SYSTEM_FSCRYPT_ADD_KEY_ARG
+endif
 
-Same here, though my preference is eroding as we convert the xfs
-tracepoints to report in hexadecimal. :)
+Then io/encrypt.c does the following to move the system's definition of
+struct fscrypt_add_key_arg out of the way...
+
+#ifdef OVERRIDE_SYSTEM_FSCRYPT_ADD_KEY_ARG
+#  define fscrypt_add_key_arg sys_fscrypt_add_key_arg
+#endif
+#include <linux/fs.h>  /* via io.h -> xfs.h -> xfs/linux.h */
+
+...so that the file can provide its own definition further down:
+
+/*
+ * Since the key_id field was added later than struct
+ * fscrypt_add_key_arg itself, we may need to override the system
+ * definition to get that field.
+ */
+#if !defined(FS_IOC_ADD_ENCRYPTION_KEY) || \
+	defined(OVERRIDE_SYSTEM_FSCRYPT_ADD_KEY_ARG)
+#undef fscrypt_add_key_arg
+struct fscrypt_add_key_arg {
+	struct fscrypt_key_specifier key_spec;
+	__u32 raw_size;
+	__u32 key_id;
+	__u32 __reserved[8];
+	__u8 raw[];
+};
+#endif
+
+Obviously, #defined constants are much easier to override:
+
+#ifndef FS_IOC_ADD_ENCRYPTION_KEY
+#  define FS_IOC_ADD_ENCRYPTION_KEY		_IOWR('f', 23, struct fscrypt_add_key_arg)
+#endif
+
+But I went for the full solution since you're adding fields to struct
+statx.
+
+Also, whatever you do, don't put your overrides in any file that gets
+exported via xfslibs-dev, because those files get put in /usr/include.
+We just learned that lesson the hard way with MAP_SYNC.
 
 --D
 
-> Thanks.
-> 
-> > 
-> > > +
-> > > +_unmount_flakey
-> > > +
-> > > +# success, all done
-> > > +status=0
-> > > +exit
-> > > diff --git a/tests/generic/694.out b/tests/generic/694.out
-> > > new file mode 100644
-> > > index 00000000..f55212f3
-> > > --- /dev/null
-> > > +++ b/tests/generic/694.out
-> > > @@ -0,0 +1,15 @@
-> > > +QA output created by 694
-> > > +wrote 8388608/8388608 bytes at offset 2097152
-> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> > > +File layout after power failure:
-> > > +0: [0..8191]: hole
-> > > +1: [8192..16383]: data
-> > > +2: [16384..24575]: hole
-> > > +File content after power failure:
-> > > +0000000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > > +*
-> > > +4194304 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
-> > > +*
-> > > +8388608 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > > +*
-> > > +12582912
-> > > -- 
-> > > 2.35.1
-> > > 
-> > 
+> -- 
+> Jeff Layton <jlayton@kernel.org>
