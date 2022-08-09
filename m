@@ -2,224 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6E658DB23
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 17:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C015558DC36
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 18:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244864AbiHIPdy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Aug 2022 11:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
+        id S245036AbiHIQg7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Aug 2022 12:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236852AbiHIPdx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Aug 2022 11:33:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE65CF04;
-        Tue,  9 Aug 2022 08:33:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BA7A61281;
-        Tue,  9 Aug 2022 15:33:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96E7CC433C1;
-        Tue,  9 Aug 2022 15:33:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660059226;
-        bh=uEM2II5ZhoclAW3oVUSmDhxIMZ4eqsmn7nBLYONcDbU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ADqackvhvCC8wIl5U58Kf/J+cARc/gGRlEfxvLyA16uJd34PobSGVVfmZLN/PJ34Q
-         vLDEp9gMXE0wV1ro4j4eTbVie9tq1uE/nHYaLgjzDvADXUIRH+ti9hier4bBxNdsYr
-         PkkG4N5k1Vqbk1z+UCpBgBZdz+CrcxlIJvlCs6tf+MPqCQiA9thw4tIztumaKTpiMR
-         oBhrFrWDmdlcMoIph0Ea97MGZFV8ik7ZHNTZ6U9DDlrRa1b0HofZmHwJm3QcTTT9TJ
-         DL6hGoGPiCQ05x7vPGP9dv5rKWOSdKMGtXaEUnbhN9u2i+vnxzocOZgW4Me8NyZ9yT
-         vzkJo+IUAZ7UA==
-Date:   Tue, 9 Aug 2022 08:33:46 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org,
-        dhowells@redhat.com, lczerner@redhat.com, bxue@redhat.com,
-        ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        fstests <fstests@vger.kernel.org>
-Subject: Re: [RFC PATCH 1/4] vfs: report change attribute in statx for
- IS_I_VERSION inodes
-Message-ID: <YvJ+WkrtStRujU2/@magnolia>
-References: <20220805183543.274352-1-jlayton@kernel.org>
- <20220805183543.274352-2-jlayton@kernel.org>
- <20220805220136.GG3600936@dread.disaster.area>
- <c10e4aa381aea86bb51b005887533e28f9c7302b.camel@redhat.com>
- <33176ee0f896aef889ad1930fb1e008323135a2e.camel@kernel.org>
+        with ESMTP id S245186AbiHIQgq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Aug 2022 12:36:46 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5291D7;
+        Tue,  9 Aug 2022 09:36:45 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id n4so13160461wrp.10;
+        Tue, 09 Aug 2022 09:36:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=Ok5+N/ROSsdYONZgRo7NN1XD5pWHK7Ij0qh3WOIp4Hk=;
+        b=oKtlwHul5j/zPHGlStukJ7puPsBguip4EroHiSwJj69SbsyIQOpOT70cl5OMzYVAXe
+         I+HxbGGO4NqFB35SbGR5zgsEBBzKNtYkYGEe7q7bJYbZUEPvBQ1UT9KAtBEqtqK/hnaG
+         ShUgVOUKcGhnmAHCL5q2o2p+ertnx/8x7UVBbQP+7aVJ50ykQ/The/m16DuqZ1ALEuEl
+         t4Sr15Ng/WVy/KuWppQsFAa81SPVCdacWM4WxUYABmGAhmE/ren06b63cJElTfdqr+zI
+         mqCtbaYP+kd1Q/vgmINgk3RKqjKqoc+MoIMS8RTP0J+a740hCjtCDt0GtetWe4+1ZhWr
+         TBZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=Ok5+N/ROSsdYONZgRo7NN1XD5pWHK7Ij0qh3WOIp4Hk=;
+        b=xHG2x1+Y320tjVjt1q19yUW/32avgNbN2tDxooOZmne0hyHw9BpqKVlx883623gPPs
+         9UgquMwEht0P411ka7LfuW4vZZy4Z+f65U1uWi9Mj+PIw33pMMSB/+R+q3XA5gITO27D
+         nBDYxmxQ8LA0u2NouFZchhadOsMNh7aM2A1TczvAxj6zCqZSaP19Qs3mCe95E4RTJ2hp
+         quAro/RJmIbmRFVX+nO3V6yv6BOu3Y4fNzrrq150Syv+F8lx+juAo5zBrDJkfE9YV3pp
+         whBas2mOPzDyi+vwKVV3Un5yuC0C+8Q4FrFcAJnm/+7iaDhhESinrK6wQsbPL1n/uaDL
+         ctOQ==
+X-Gm-Message-State: ACgBeo0gFZ7QtDZ2+ojgNuqOsLsLnF0DIx17vEZQmUyyTrZjlIkBnXGN
+        gD2qrLyB1OslDVrdlntLNyCbRFsHKrGhSA==
+X-Google-Smtp-Source: AA6agR6/nHRlqGWl2s71vXeZAAz1IiObS2iTo4xTRzVR/0nfk3Jy9qj99Lp4kxI2Gj1WaUJ27p/TBQ==
+X-Received: by 2002:adf:de0f:0:b0:21e:ead4:23f5 with SMTP id b15-20020adfde0f000000b0021eead423f5mr14580915wrm.641.1660063003709;
+        Tue, 09 Aug 2022 09:36:43 -0700 (PDT)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id a7-20020a056000100700b0021f0c0c62d1sm13856980wrx.13.2022.08.09.09.36.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Aug 2022 09:36:43 -0700 (PDT)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH] fs/btrfs: Use atomic_try_cmpxchg in free_extent_buffer
+Date:   Tue,  9 Aug 2022 18:36:33 +0200
+Message-Id: <20220809163633.8255-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <33176ee0f896aef889ad1930fb1e008323135a2e.camel@kernel.org>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 08, 2022 at 09:19:05AM -0400, Jeff Layton wrote:
-> On Fri, 2022-08-05 at 18:06 -0400, Jeff Layton wrote:
-> > On Sat, 2022-08-06 at 08:01 +1000, Dave Chinner wrote:
-> > > On Fri, Aug 05, 2022 at 02:35:40PM -0400, Jeff Layton wrote:
-> > > > From: Jeff Layton <jlayton@redhat.com>
-> > > > 
-> > > > Claim one of the spare fields in struct statx to hold a 64-bit change
-> > > > attribute. When statx requests this attribute, do an
-> > > > inode_query_iversion and fill the result in the field.
-> > > > 
-> > > > Also update the test-statx.c program to fetch the change attribute as
-> > > > well.
-> > > > 
-> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > > ---
-> > > >  fs/stat.c                 | 7 +++++++
-> > > >  include/linux/stat.h      | 1 +
-> > > >  include/uapi/linux/stat.h | 3 ++-
-> > > >  samples/vfs/test-statx.c  | 4 +++-
-> > > >  4 files changed, 13 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/fs/stat.c b/fs/stat.c
-> > > > index 9ced8860e0f3..976e0a59ab23 100644
-> > > > --- a/fs/stat.c
-> > > > +++ b/fs/stat.c
-> > > > @@ -17,6 +17,7 @@
-> > > >  #include <linux/syscalls.h>
-> > > >  #include <linux/pagemap.h>
-> > > >  #include <linux/compat.h>
-> > > > +#include <linux/iversion.h>
-> > > >  
-> > > >  #include <linux/uaccess.h>
-> > > >  #include <asm/unistd.h>
-> > > > @@ -118,6 +119,11 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
-> > > >  	stat->attributes_mask |= (STATX_ATTR_AUTOMOUNT |
-> > > >  				  STATX_ATTR_DAX);
-> > > >  
-> > > > +	if ((request_mask & STATX_CHGATTR) && IS_I_VERSION(inode)) {
-> > > > +		stat->result_mask |= STATX_CHGATTR;
-> > > > +		stat->chgattr = inode_query_iversion(inode);
-> > > > +	}
-> > > 
-> > > If you're going to add generic support for it, shouldn't there be a
-> > > generic test in fstests that ensures that filesystems that advertise
-> > > STATX_CHGATTR support actually behave correctly? Including across
-> > > mounts, and most importantly, that it is made properly stable by
-> > > fsync?
-> > > 
-> > > i.e. what good is this if different filesystems have random quirks
-> > > that mean it can't be relied on by userspace to tell it changes have
-> > > occurred?
-> > 
-> > Absolutely. Being able to better test the i_version field for consistent
-> > behavior is a primary goal. I haven't yet written any yet, but we'd
-> > definitely want something in xfstests if we decide this is worthwhile.
-> 
-> I started writing some tests for this today, and hit a bit of a chicken-
-> and-egg problem:
-> 
-> I'd prefer to use xfs_io for easier maintainability, but the STATX_*
-> constants are defined via UAPI header. Older kernels don't have them and
-> old xfs_io programs don't understand or report this value.
-> 
-> Should I just write a one-off binary program for xfstests to fetch this
-> value for now, or are we better off merging the patchset first, and then
-> fix xfs_io and then write the tests using the updated xfs_io program?
+Use `atomic_try_cmpxchg(ptr, &old, new)` instead of
+`atomic_cmpxchg(ptr, old, new) == old` in free_extent_buffer. This
+has two benefits:
 
-What we've done in the past to support new APIs until they land in
-kernel headers is:
+- The x86 cmpxchg instruction returns success in the ZF flag, so this
+  change saves a compare after cmpxchg, as well as a related move
+  instruction in the front of cmpxchg.
 
-Add an autoconf macro to decide if the system header files are recent
-enough to support whatever functionality is needed by xfs_io;
+- atomic_try_cmpxchg implicitly assigns the *ptr value to &old when
+  cmpxchg fails, enabling further code simplifications.
 
-Modify the build system to #define OVERRIDE_FUBAR if the system headers
-aren't new enough to have FUBAR; and
+This patch has no functional change.
 
-Modify (or create) the relevant header file to override the system
-header definitions as needed to support building the relevant pieces of
-code.  A year or so after the functionality lands, we can then remove
-the overrides, or just leave them in place until the next time we need
-it.
+Cc: Chris Mason <clm@fb.com>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: David Sterba <dsterba@suse.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+---
+ fs/btrfs/extent_io.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-For example, Eric Biggers wanted to teach the fscrypt commands to use a
-new feature he was adding to an existing API, so he AC_DEFUN'd a macro
-that checks to see if the system linux/fs.h *does not* define a
-structure containing the desired field.  If this is the case, it sets
-need_internal_fscrypt_add_key_arg=yes.
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index bfae67c593c5..15ff196cbd6d 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -6328,18 +6328,16 @@ static int release_extent_buffer(struct extent_buffer *eb)
+ void free_extent_buffer(struct extent_buffer *eb)
+ {
+ 	int refs;
+-	int old;
+ 	if (!eb)
+ 		return;
+ 
++	refs = atomic_read(&eb->refs);
+ 	while (1) {
+-		refs = atomic_read(&eb->refs);
+ 		if ((!test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags) && refs <= 3)
+ 		    || (test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags) &&
+ 			refs == 1))
+ 			break;
+-		old = atomic_cmpxchg(&eb->refs, refs, refs - 1);
+-		if (old == refs)
++		if (atomic_try_cmpxchg(&eb->refs, &refs, refs - 1))
+ 			return;
+ 	}
+ 
+-- 
+2.37.1
 
-AC_DEFUN([AC_NEED_INTERNAL_FSCRYPT_ADD_KEY_ARG],
-  [
-    AC_CHECK_TYPE(struct fscrypt_add_key_arg,
-      [
-        AC_CHECK_MEMBER(struct fscrypt_add_key_arg.key_id,
-          ,
-          need_internal_fscrypt_add_key_arg=yes,
-          [#include <linux/fs.h>]
-        )
-      ],,
-      [#include <linux/fs.h>]
-    )
-    AC_SUBST(need_internal_fscrypt_add_key_arg)
-  ])
-
-This macro is called from configure.ac.
-
-Next, include/builddefs.in was modified to include the selected value in
-the make variables:
-
-NEED_INTERNAL_FSCRYPT_ADD_KEY_ARG = @need_internal_fscrypt_add_key_arg@
-
-And then the shouty variable is used in the same file to set a compiler
-define:
-
-ifeq ($(NEED_INTERNAL_FSCRYPT_ADD_KEY_ARG),yes)
-PCFLAGS+= -DOVERRIDE_SYSTEM_FSCRYPT_ADD_KEY_ARG
-endif
-
-Then io/encrypt.c does the following to move the system's definition of
-struct fscrypt_add_key_arg out of the way...
-
-#ifdef OVERRIDE_SYSTEM_FSCRYPT_ADD_KEY_ARG
-#  define fscrypt_add_key_arg sys_fscrypt_add_key_arg
-#endif
-#include <linux/fs.h>  /* via io.h -> xfs.h -> xfs/linux.h */
-
-...so that the file can provide its own definition further down:
-
-/*
- * Since the key_id field was added later than struct
- * fscrypt_add_key_arg itself, we may need to override the system
- * definition to get that field.
- */
-#if !defined(FS_IOC_ADD_ENCRYPTION_KEY) || \
-	defined(OVERRIDE_SYSTEM_FSCRYPT_ADD_KEY_ARG)
-#undef fscrypt_add_key_arg
-struct fscrypt_add_key_arg {
-	struct fscrypt_key_specifier key_spec;
-	__u32 raw_size;
-	__u32 key_id;
-	__u32 __reserved[8];
-	__u8 raw[];
-};
-#endif
-
-Obviously, #defined constants are much easier to override:
-
-#ifndef FS_IOC_ADD_ENCRYPTION_KEY
-#  define FS_IOC_ADD_ENCRYPTION_KEY		_IOWR('f', 23, struct fscrypt_add_key_arg)
-#endif
-
-But I went for the full solution since you're adding fields to struct
-statx.
-
-Also, whatever you do, don't put your overrides in any file that gets
-exported via xfslibs-dev, because those files get put in /usr/include.
-We just learned that lesson the hard way with MAP_SYNC.
-
---D
-
-> -- 
-> Jeff Layton <jlayton@kernel.org>
