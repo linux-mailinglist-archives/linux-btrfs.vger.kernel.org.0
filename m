@@ -2,115 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C980258D155
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 02:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C15158D156
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 02:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244630AbiHIAXJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Aug 2022 20:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60156 "EHLO
+        id S244356AbiHIAYg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Aug 2022 20:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244535AbiHIAXI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 20:23:08 -0400
-Received: from EUR02-VE1-obe.outbound.protection.outlook.com (mail-eopbgr20058.outbound.protection.outlook.com [40.107.2.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D9BDEBD
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 17:23:06 -0700 (PDT)
+        with ESMTP id S236278AbiHIAYf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 20:24:35 -0400
+Received: from EUR02-VE1-obe.outbound.protection.outlook.com (mail-eopbgr20077.outbound.protection.outlook.com [40.107.2.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC0F1AF0A
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 17:24:34 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G7xt9iL/CcFmeegdjIyG5qwhIe5kDm2ggjueS+vfb2TDcA/c3x+ZhpktTYOFtHhl7Ri/P8pZZDUsOEsf63JFfI0Qx8XrZ3Pst2PNTOUi64qhv7IKfOt7LUVI3WgaltJb7qHfihewjkjbHnAez84sn1O5gwJYraUQw23vqU+EYNKk6i07uprkeS3UEtvOHpS6k67pUzLEanoSKd58tUtZrMA9HJBo50KTi921TR8tpApzMgmhYZor9FmIV4paEwMQeKNLm7NE5ALDrq+zP3oJZ85f0FNpbDgBHwQx/G+RzoOlzLFQWItWwUnhfm+nIResUmMX57DuQqhOOz/tWHnCgw==
+ b=dqb28PUefxFhasrJ+OBRftZ4Pz9DxwXu+noAvCNWVrLU14fh8/nvjewfFkntsZnWbHiTELNMnMpaPtNX61ZKaM9DYQmGRuQiqZ6efXR/oHZ3V7aSrcfGvdNuZlxUfC8l+SJM0Tr5EMDl+M+7rTOjtCu71tl7nBUrtEtMAgpvzRXM5M81GAkWc4lLEgMNJfpKMqzxksMyKNoW2Pl6b9C9UxVpebU4utrkhllW7tWnczQVRziNmBP47SvH1y+TdGBOj9It2alHDP9DcjIWTD4RoGNLZuv0wyf7WDO7dl2++5b6mLvHVJq6zf1jgNgKNHVUc37DIlF913E7eCQcsMgSXA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=P692dgW9xL97LVWUNfzn0Zqqpf7CYGJtJWhL1nmCFk8=;
- b=maSx/jUWpIrRVTNFBbToVa2UQlHDJRITHwxOF4N+rH0AaNQ7px879274tdpyM8OMyQIWt1G5kJxgCPPxY29aS1MU95i/G9nGMdcCcX4OWMiaND9VD5lTj4urEItVHUEAJ21WCuhInFFpzruoO88crldqfz8V5P33bXLhhriLVTlOOg6L3H7p6n4HHIPyZcKNviSCRdZVe2ZNc5R6dK/BeinHvmhMUAhZpthuHYH35bxdnCNkkk5OG432GaK4KXYf10cAzliqNwf8YlkrdrdxKz4qjYOsAvnY6T45A6p7vag7QgIVhtweBT4OnMYOFyoWLnO0ecIbGy5T6fzgAqMgiA==
+ bh=+MGY+ZdcOBj7xtoK0gp7viHL74iY8nel/p4zKc3oP0s=;
+ b=e2VBBNJgA9VtUhSp3/7BAvZuboxpO9mG2bGHSvIhQ1jbC7kNlQOEXXDRYUmoCjIeQCrvtBaFBncpgMg3AlK47yabTrkH6zVkQOxsOmbm0PPW160HUQOX5r15GFhWfkgQwStm73rQyqsszYUMcWig3O0JrDGakCIdjwaCiYg4LjJL4G7bsFhW6y8JZLN/1YuMPKi2rGdgs3AwfOR0c9OLZG1i7kDRXBv2iXvRZ2yTy3Utc6hsn78pEvq9IrWssmTv167MqePMouOGdQadzGeqeF06OpJg4ACVyqhdClp2914ShxaiuiKhT0PaPDLTTyvc5+THFqiWTzinTN40JR5XUA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P692dgW9xL97LVWUNfzn0Zqqpf7CYGJtJWhL1nmCFk8=;
- b=uIuS8HOH3r5Y4AcLYqHvYjY1+YEJd9tovtaF6ayFF240wug4wxnaQcLe51Yfjdpa2E07guklVSLgW4+es0Z2fpbQbpITXN7EI7v7k9WjHo6y+BMQ4CmP4c5MhrZ1mGC8RSVTrU/DdZ+2ZZkHR3TE0YCL6A+qTbwLi7IK/SF1bSlFBguxu816kLfYiJpwIOrQznYiRL+pzhHKLWp6ab32Xt35Flr4IRY2fcouPA5sm+2TafkKXvmH0Othgru6VlN5pfq+/VejYJYeJa0dUcRGVJWjyL0nvTWZZ7PM4tswhSXmEPpbICxT8yr+On6nhuhaewV7bgGKVBmQ8d9rgDF+MQ==
+ bh=+MGY+ZdcOBj7xtoK0gp7viHL74iY8nel/p4zKc3oP0s=;
+ b=iabaf3v/f6cPwBK7EBaSiixs1mr8LBRku+HOjVDhbBUn9pez1zX6GwFELeOFEL/M7k/izysh2PGCjgafnjDpdaejg9e+nZQ0j4bnDLbAt9uWoaPafoXt3ITYPjlU+EOUMn09KRvqSwiUCkHGEwBBatuccvG/Ra/IzTpwrm3fjz8oVuw6AzHU29xc0WhWmIGY+l9c6tORpi/xnyFMckXXO078DbjEV0wkWUYvOZ4F1SqzaBbs2pRC8gLN/n9CNexoYX1mWBHEW8WKin9jyHdVyzG1dGP+Pft+5L0LOkeTqeA6AFUxPoEo27MUGguFGFY7Dvzy5FVcEDfv3cEKvmYszQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
  by DB7PR04MB4940.eurprd04.prod.outlook.com (2603:10a6:10:22::26) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5504.20; Tue, 9 Aug
- 2022 00:23:03 +0000
+ 2022 00:24:32 +0000
 Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
  ([fe80::c4b3:5f3a:8bf5:f6e9]) by AS8PR04MB8465.eurprd04.prod.outlook.com
  ([fe80::c4b3:5f3a:8bf5:f6e9%9]) with mapi id 15.20.5504.020; Tue, 9 Aug 2022
- 00:23:03 +0000
-Message-ID: <162fc903-e122-3365-671d-84c8d9897b92@suse.com>
-Date:   Tue, 9 Aug 2022 08:22:54 +0800
+ 00:24:31 +0000
+Message-ID: <b817538a-687e-0fee-fa05-a1b0cfe956f3@suse.com>
+Date:   Tue, 9 Aug 2022 08:24:27 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
 Subject: Re: Corrupted btrfs (LUKS), seeking advice
 Content-Language: en-US
-To:     Michael Zacherl <ubu@bluemole.com>, linux-btrfs@vger.kernel.org
+To:     Michael Zacherl <mz01@bluemole.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 References: <12ad8fa0-a4f6-815d-dcab-1b6efa1c9da8@bluemole.com>
+ <ebc960af-2511-457e-88ef-d1ee2d995c7d@www.fastmail.com>
+ <60689fac-9a38-9045-262c-7f147d71a3d2@bluemole.com>
 From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <12ad8fa0-a4f6-815d-dcab-1b6efa1c9da8@bluemole.com>
+In-Reply-To: <60689fac-9a38-9045-262c-7f147d71a3d2@bluemole.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BYAPR07CA0104.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::45) To AS8PR04MB8465.eurprd04.prod.outlook.com
+X-ClientProxiedBy: LO2P265CA0334.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a4::34) To AS8PR04MB8465.eurprd04.prod.outlook.com
  (2603:10a6:20b:348::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c86b2557-3e48-408e-05d0-08da799d5285
+X-MS-Office365-Filtering-Correlation-Id: 84c092ef-99e5-4400-3577-08da799d879a
 X-MS-TrafficTypeDiagnostic: DB7PR04MB4940:EE_
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gys79dkLvu3WwM1bibl3Tpgf5yrPS0pZ8sFMYjEVB5iuoWnR+nTL7awMndf5L1wjtJ47mRR5f+FpOvjyI869gUAQvO3SBvNFL0HW6fq4GzQTqTqTInuKT64PxQKPLJ/ehZB2G9feFc/3iPfrKmUCphdMNICg6FG2V7VI2iMG7qv+0202y2VIUmb0WysQRW84OZ7bhbREq0V1nkHOVMjX9Kt03sbx7QQ8E1sZyb0NjfNcQzcKKHzIWLmTEf9616KApvM91LTzWFecZ1kLbmXb31HjWhMxy4OFOztEPDBLA7PeItIYRraAeAuaqcxEym6xX8wxS/LXQES/7n9bSFHUt0N725G2yfoEIPlOeq/QfNyksEMhbfrDkJSrxYGHB7StQC/8cLVjnfXlGbsc/pPJM7ZvKQvySyQmpQcxtv52legowJ/T53R/YQ1NYuooLiiEPz939UWgBk5QF4SYj1TOzB7RwskQsuN66OeVmPbkK2BKrgS//VjQWUxpUjXcm/hjeCC+tYo1sgbaUphMXOkJ50QkJRXYJPKJ5KWHcadVuz1WAI4W1n5F40iUD6AyiCSSEmeXVObl9DAHbUaYuZxs2idrv5T+pviF8YLujcbfavAPWJmZHkoTX5+zETybTTqgUghU/2L8VBaLyIU6ScQ4ixA+t/KxRVjnRan+SU5EqojrpsDgleZ3MaT6Rb6tgxzluozg/5II2vNn4B9S268lzEBUlnuqPwClprFTGUMAoUFOJkWHULvd1UpVQDhIMbzGBOciGbZP/gMfZzpFnd8HTwwvf8/bNMK4rU/6CTldFZxjUvyDn1UdF65+Flx10ZY1GP8yTXDU9y+0do4BOItYAw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(136003)(39860400002)(376002)(366004)(346002)(396003)(5660300002)(2906002)(36756003)(6486002)(316002)(478600001)(66946007)(31686004)(8936002)(38100700002)(86362001)(2616005)(6512007)(31696002)(41300700001)(6666004)(53546011)(6506007)(66556008)(8676002)(66476007)(186003)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: GgZ0M11m5gUJkIcJnUk+Z5KnuK6eFenbSPZeHeHXi/1xwZLH9NNyWizXgLSdriZmzqmEvWpNzZwHIkfFd5Hp1fyRKtlxDa6avVf16aJ98psZQ+8MIIwTrpEihWprAJQQRy6VQAZN3Ka7dZFbG6XJi7Py3AdXuZ8T465x9Y6562eOXDU6hk+bSj0D+43slCQkb9D3OGEeegtmuztPKt+avbCwHq2j/2rP4BKb527tQafHJQuCjdC2zsPmczbTxNzibOHiMDQxZzKnBIPzJB8ifxk8AUZlBOJ+vELE9mhWIyDli1+71Dmk7zM3VhpoMtuRN5fTYKB282ibsszIAxfNXFMIOTjvBqO81D8zH9Mvn+nKucv7IJ8y0MHnmvfkZ3CsJy40kGghtNusTWPE183ynHEor30X5Qr6+2DyTB524muiUIMDPAKGrnsZbDPYij6kPigqlrCrXF7Z98fFFoCOlP9o7wKsNpiQwmBhblPTGxXndODf1goTAgMN74wdiN+KKaZBmM79U7pVrGixwVJylfawAg5xvInAlMK8NK4iDizUDxZMlVn7QxqRIM+HVYFO4WhhziocDmZWaFkNLakYbBUTsZ7AeZdFsZYyeWHKcOObNfwhIlMuABQrfAw+2vzKVGL+TY+L7GLG3QG3iGyieM+3L99rsC1vPsQZLqwqRD5pdbLp2wjXWAAplfx7wk/tbo27zzYdpf7HcXEimAVWKBCqr4UCPmLw3ZaXvwGZEC8YfrgnFhtitsBMP5D/WbQ78SFNWl247wvOAaqU2sw8mVHrYKC8CdoUS646UopBnmiV2UBaU12Ps3iaIL3WMVO3QaSCq50Tf2kRdGrky6Ir+A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(136003)(39860400002)(376002)(366004)(346002)(396003)(5660300002)(2906002)(36756003)(6486002)(110136005)(316002)(478600001)(66946007)(31686004)(8936002)(38100700002)(86362001)(2616005)(6512007)(31696002)(41300700001)(6666004)(53546011)(6506007)(66556008)(8676002)(66476007)(186003)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UUlOazNueXovenJncEh5TXM3ekhidjYydzBaNUozNXhGN2wrWXNCdWpNVTB1?=
- =?utf-8?B?UzJaOHBPRU9SMzBvTVcwUEVWcGtESFlSVDZ2ZVZaTUY3ZkgwRTVYZGRaSG5D?=
- =?utf-8?B?V1N6NEdacDJpRnJianluVVluanlpWlVhOUZzSTNnZ0dHVzVqOHg0WFQvVlhr?=
- =?utf-8?B?MlFBOUw0cEVJaEppMkpxMSsxZ2R4UUNZbkI2ODVWUVFxc243ZmlrWlg3NE1v?=
- =?utf-8?B?T2tYZUFRRjkzR1FMY2VJU1IxTlU4eTFzK0d2aWljR3RmSWhWVEwrNEhBTDBl?=
- =?utf-8?B?dzRLN2VTMnQ2MVhpQ1Awb2ozbXBGMCs0K0RpRVo2Qko2alh6U1pJNFczOTAx?=
- =?utf-8?B?V0VGR1gvaS9GWEdLVFlqVTR4YzVKSFJmK0FrYTBBSEN3UGpKdEZaTmlULzc2?=
- =?utf-8?B?VGNSMUY3dFNXN1dBajJmMUNjU0pQbkpHMlF2QWdJQUlkUkNXSVBrMlpMU0Qx?=
- =?utf-8?B?dDI2MFpQWHhkMHJkYmMvdkZ1cUl1cTRPYTdLQXR1WFNSZmhESmVnNlFTVjRa?=
- =?utf-8?B?OXRQNWdadjZxdzZWaXAweHVYdWhTMDFvZHRGeDQ2aldOYmZiRUUwVEJyT20x?=
- =?utf-8?B?akU3NFlRRks1cnBCZC9yNTQ4akJVdUtNeCtXMHhYbC9QSkx1Z2tuak9yRVFr?=
- =?utf-8?B?L1ZEaW9YRUlCNzMwZUhLdXRRczlXVlJRVkNwcnlzS0pUVE0xYTlCeU9RQVVU?=
- =?utf-8?B?bjczNkhJYUZGSDJ5aFRTeVVzaGZDL1ZBRWRsemxZSnM0ZXRmdW83dzdxMVla?=
- =?utf-8?B?N08xMm1FY3RldjRwL0dRbDFrWTFOUXZ1cGJ6azRWUnk3RC9pWXpSb1lSbDZU?=
- =?utf-8?B?LzI5d09CY1luQkM3ZzJ2cjlONmVSclNmejVvbG4rb2pLRlcyUm5uRlZmcnBC?=
- =?utf-8?B?WEFKRzVrUytXMGFSYmtRSFdzNmx3N0xENnM4MzRsR29zaDJhcDhYWnE5Y0NT?=
- =?utf-8?B?dDkraUtuLzhsdm5XT0V5SGRvOWZoNEYxak5VWDFDekIwUlhkYWFxVk9aYWNO?=
- =?utf-8?B?b3dObDI4aUpTMU1YbVFhWmdSa3BYekhNenJOVlFqMEp1S2ovbXNkZnQva0ZF?=
- =?utf-8?B?V0MxSmRaZjhsc0VtakVvdU4vZHlGS3c0Y1F1R2JPeWd3L2xVRDZKVTZjdlRr?=
- =?utf-8?B?ZXFXMUxBSUdhalJZL1BkY1dodDlIbDdlZVc5VXRhZXpnN2ZXUEwrdnl6ZFlj?=
- =?utf-8?B?S20waDhyZXBwTG85dG5ZZ3Nsd2xlVFZqQ0dXM0lna2NGTHVLbVVMZGR6L3Jx?=
- =?utf-8?B?S2w0YTRvYXQrdGtiS2dOeHZOdkxkMmJxSDVpd1dqb3R5WkdldUtmdzg2SFkr?=
- =?utf-8?B?MnNGa0UrRk05cjM5TnhYQkc1MDdBRFRRVjZxbEtNVDFQWXFXQ25XZVhUSlhM?=
- =?utf-8?B?clowZ0xQcmloTWRBRXZLUnlHRUNmdEM4aWlZTld5TFBqa2lNS3VQbEpkaHox?=
- =?utf-8?B?c3BmNzZkRTgxa0RUS0FqazM4b0IzVmhaYUY5amNULzdVUlFvdUZ6QkIrbitz?=
- =?utf-8?B?WkNlR0JYK2ZMMXpETnozWWdKSWZIeS9CSURxN0c3c0NRQzcyNWsxMWRSa1N1?=
- =?utf-8?B?UC85UGxnSUpobitZSzZiMkdld2YwWDZDZ05HNW9KOFN4WjZhUE9oMXZVV1Fj?=
- =?utf-8?B?Y1NOYXZsL3diWHllYkQ1U3lFVmlJVVMwWXBTanlyYlFwUmIwR09IeHdjVFlU?=
- =?utf-8?B?aDEyZnMwNDUzNi9wRHl3VnhXZmlVTWFNcWhzRHhUL1Z2TjR0cG9sYkk1Z0xI?=
- =?utf-8?B?NXRGaEpZZG1uVmk2aStEemk0OG8rQ0VFWDZCcmJYQ29ENSsrZlNIWmhwZTBU?=
- =?utf-8?B?UXdVWFBGTXZLdEx6Mzc0cG1sbVN1SCtiNVYya1JacDcrUVRnVmFnNUJRdjBs?=
- =?utf-8?B?bExUQXFRcFFiOWwwWnNDRFgyc2VUQjJ5OFR5bHdvTWk5RGJmeE9HWElINjZm?=
- =?utf-8?B?WHBPOGh0S2ZyeUtCZ3NnK0FFdnlKNHl2STg3TnVDcWsrTE1jd0JFcFphdFRY?=
- =?utf-8?B?QzZEcHlCYWwzUHBObUw3MmdDV2xkK2llUUluOWtHWXZxQTdlTTBlSHB0bjQx?=
- =?utf-8?B?ejJCbGR6WWloYXk2VGlBQmI5V0FxQU5yNG1QNWFONkNLSi9lQWRYUVFlQTMr?=
- =?utf-8?B?MHhqZnQzbHF2RkR4SnF5UDIzZVdOQzFHRVp6RGxSTC9GL080Z0lielM1d2Nv?=
- =?utf-8?Q?0gFL6Zf56E2Vr6sHvoD7htw=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bDZ1NGowUTMyN0dWU2lOSW1xZ2tHeUlUTmpkMEtQTGxtb2IvL3NzTmdHc3BC?=
+ =?utf-8?B?cFhubnhlR3VQZ3g0UWVwN2Jvb3k2YWtvU29TcFB5U3g0ekVmZmpHV1M2anRs?=
+ =?utf-8?B?QUxhY05qaUg4K2h0SHo1TDhYMVIxbDYvUWo4SmZRd0VaazZDNEYyVENXa3J3?=
+ =?utf-8?B?Z0hXcXBubzEyZUF0eW1Rdk8yeXFqS042aTdFUHM3bDNjVjZOQUduZDhub1hy?=
+ =?utf-8?B?RjNkMEdOaDVYRUVJVnZtRTdUZ200aGd1czdRYXhjRWRScm9uUmVUMGUzdUw1?=
+ =?utf-8?B?b1VEV2xRQjZBZHRlT1A5ZWFhZGpodHhLUkdBcy91cXh3U1BESmVpL3kxQlJ6?=
+ =?utf-8?B?Q1lGZktxRk00OFJRN0FoZy83VzZOZmxGeGtVUmNXZXE1Vkx4WUt5RE15cDFV?=
+ =?utf-8?B?MG5EeWlCSGtib0lNTEk4NzNwZmo3a1RLUWk3ejV1U2N3TDQ3SFFCb2c3MXZI?=
+ =?utf-8?B?TGtLeHU1V2FTalBkUFN3N0w3Rk9XeFpaeDBwN3A3ZVR0L3pmSkVOZDFhODVk?=
+ =?utf-8?B?NmJrOXhYc0lBSTljY2xGRUN4VTBQUVZzS3NCeW90SUdzOFRaODI4MXBUcm5t?=
+ =?utf-8?B?MVFKYnEzSEw2b3daaEozV1lId3VmMFBFRXZGN3ZMdjR1MTQxOFdrVE1ZWWs2?=
+ =?utf-8?B?azl2NVdtTG1GTUNxYWFnYS9IRnJRVWsycHRYODZmeTh6Nk0ySmtkQjJUODgy?=
+ =?utf-8?B?akxnUzV5MUROb1BaMUlyeWIrcWkrSlNWRFBTM0g3bXpXUzVFUXVtYnNyZk1P?=
+ =?utf-8?B?cllIZm4zZWRNdEhuc09tQmJzektmcUhMNzVYR29McmRMUzFubTlKSmdJbEI0?=
+ =?utf-8?B?NytUODk4bmRWVEk0bzhHTk9QODZNRXJsWjd3YnZyTmxCYWVuUFFPTExuWkxq?=
+ =?utf-8?B?T0orV1ZTdFdyV1VOYmpFdU05WVNhOW9hYUd0Ni9YaFc2T0NNUnlaV215Z2w0?=
+ =?utf-8?B?UjFjWCsvUlVjSjFNcno3SmtEUGVCWVQybDFha0ZMaGQ3QXZOYm84SFk3ZzA2?=
+ =?utf-8?B?Si9LSitXajgxK1d1aTZBbVp5SzRNU0pxdUxtUEpUMzM3TDVFQkxLOXExclB6?=
+ =?utf-8?B?akhjV2YyaXB2QlR6eHdLMm9MR01nWDQ3UGFJclNYOXFqeTVBNllWRjZJODFC?=
+ =?utf-8?B?TmVQZFhEL2JkMjhoanNiaFJ2M1NWbnM2SHZvYVByUkdNUTVhdWFYWFhibHNB?=
+ =?utf-8?B?TnNDaW1mMU1QWjY0TkhJNXNFUGgrK0tBaWErN3Fvc2RxVDJqUnVyUFdrUE9C?=
+ =?utf-8?B?UlVzRHprQXN2RDBNZTdraWxpUWFob1VaU3p0M0FGZVc0a2pCODhKczVPM1M5?=
+ =?utf-8?B?U21iWEh4TWlyc3lHbHhxNUltYUdqK0tlcno5UU02TUxPK0tjR3Y0SGYzbGZC?=
+ =?utf-8?B?MmI0elVveU50SEdEcFZ3YytMZjhrY0NDUHRBcHNIWW5mZmMra1NPS2JsNkN2?=
+ =?utf-8?B?SkUycWwxTkVENWphQzJsSStQclZHSjBLbXBiME1qTUJZUDVscnJLVTF4R2ls?=
+ =?utf-8?B?NXdRSnlPcGM2dWpoRVYvYXhNU3NYb01OMTg2VHQ5OGMzMWtpTmlsMjljbXpX?=
+ =?utf-8?B?L2VVeDB1NnloSWhvTnh5VytvY0xEZ3BaeGphaUZSK0hIZ0dHdnloWFFTb0hH?=
+ =?utf-8?B?NDkxbnpweXM4N3JxdjJKZmhPbEUyVGR0djVFM3F4aWR2emdHb2RWMlpMSkNw?=
+ =?utf-8?B?bUtCYnBFRVlVbFE1Ukg5aE1yanFzNzdsa2JDaU0ydjVjcDlpZFFJaDIxYVV6?=
+ =?utf-8?B?emZXMys2R3AwcEdOUWk0MlVNVFNkV3JDWTBWdzRISzE4SmUrOUFOcUd6aEFz?=
+ =?utf-8?B?TStJMWRTWkNSZ3YyQjB1TWxXbkR6QUE1V2txcVJjVmdTcUR5OUswVUIvaG9I?=
+ =?utf-8?B?d1oxeWRBbTMzYVVyWmRmSHJmU0FickdXVjFOUTFxYWVldFA1RkNPRTNxVzZu?=
+ =?utf-8?B?eUpTM0kwcE4vb1lubVNnWTFZNUxFKzhVc0dpRlVNdFZLek83MUxjL3hDbUp4?=
+ =?utf-8?B?TGl1NkgxZ1FQczlLN25aRlVFR1NtY1M5SlNXb0h1SlhJSFpiN1d4WGNreXJU?=
+ =?utf-8?B?Vk5yVjVicDAzbEV6UXhHUDVqQk9CdEgzZ0lNNHhmRkp3RjJHakk1ek1jajl5?=
+ =?utf-8?B?WUVJQWp5RE05UndXS092RlNDOThHSkpsT29JRnJTYmFSQ2lRcFZrWVNmUG5t?=
+ =?utf-8?Q?yHToY6mWmheSSvPCe+oMvig=3D?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c86b2557-3e48-408e-05d0-08da799d5285
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84c092ef-99e5-4400-3577-08da799d879a
 X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2022 00:23:03.0278
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2022 00:24:31.8983
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HUGp+a2PyafM64MIVipEFgTCwce4KnwRRz98X7AsJYankldOANlNpP/C+VhjVZcS
+X-MS-Exchange-CrossTenant-UserPrincipalName: Mw8TJZd8Gb3kGBL35ZZaUqeif2KRAsY3tYa1pUnD/AbGZ95iyfcAb9HPS/ZmNc68
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4940
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
@@ -124,165 +127,77 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/8/8 21:06, Michael Zacherl wrote:
-> Hello,
-> on the occasion of retrofitting a 2TB ssd for my old XPS13 9350 I 
-> decided to give btrfs w/ encryption a try (this was in June).
-> Now, by a dumb mistake, I have a corrupted btrfs (LUKS encrypted).
-> Since I can't boot from this partition anymore I'm using the distro's 
-> live system.
-> This partition can't be mounted.
+On 2022/8/9 01:33, Michael Zacherl wrote:
+> On 8/8/22 16:57, Chris Murphy wrote:
+>> mount -o ro,rescue=all
+>>
+>> If that works you can umount and try again adding all the rescue 
+>> options except idatacsums.> It's nice to have datacsum warnings 
+>> (unless there's just to many errors.)
 > 
-> # uname -a
-> Linux EndeavourOS 5.18.5-arch1-1 #1 SMP PREEMPT_DYNAMIC Thu, 16 Jun 2022 
-> 20:40:45 +0000 x86_64 GNU/Linux
+> rescue=all mounts.
 > 
-> # btrfs --version
-> btrfs-progs v5.18.1
+> dmesg from   mount -o 
+> ro,rescue=usebackuproot,rescue=nologreplay,rescue=ignorebadroots 
+> /dev/mapper/luks-test /mnt :
 > 
-> What I did so far:
-> 
-> # cryptsetup open /dev/nvme0n1p2 luks-test
-> Enter passphrase for /dev/nvme0n1p2:
-> [worked]
-> # mount -o ro,rescue=usebackuproot  /dev/mapper/luks-test /mnt
-> mount: /mnt: wrong fs type, bad option, bad superblock on 
-> /dev/mapper/luks-test, missing codepage or helper program, or other error.
->         dmesg(1) may have more information after failed mount system call.
-> 
->       dmesg after this mount attempt:
-> [ 5179.422225] BTRFS info (device dm-1): flagging fs with big metadata 
+> [20680.066631] BTRFS info (device dm-1): flagging fs with big metadata 
 > feature
-> [ 5179.422248] BTRFS info (device dm-1): trying to use backup root at 
+> [20680.066641] BTRFS info (device dm-1): trying to use backup root at 
 > mount time
-> [ 5179.422255] BTRFS info (device dm-1): using free space tree
-> [ 5179.422260] BTRFS info (device dm-1): has skinny extents
-> [ 5179.431117] BTRFS error (device dm-1): parent transid verify failed 
+> [20680.066646] BTRFS info (device dm-1): disabling log replay at mount time
+> [20680.066650] BTRFS info (device dm-1): ignoring bad roots
+> [20680.066652] BTRFS info (device dm-1): using free space tree
+> [20680.066654] BTRFS info (device dm-1): has skinny extents
+> [20680.072359] BTRFS error (device dm-1): parent transid verify failed 
 > on 334692352 wanted 14761 found 14765
-> [ 5179.431338] BTRFS error (device dm-1): parent transid verify failed 
+> [20680.072571] BTRFS error (device dm-1): parent transid verify failed 
 > on 334692352 wanted 14761 found 14765
-> [ 5179.431358] BTRFS error (device dm-1): failed to read block groups: -5
-> [ 5179.433358] BTRFS error (device dm-1): open_ctree failed
+> [20680.073296] BTRFS info (device dm-1): enabling ssd optimizations
 > 
-> # btrfs check /dev/mapper/luks-test 2>&1|less -I
-> parent transid verify failed on 334692352 wanted 14761 found 14765
-> parent transid verify failed on 334692352 wanted 14761 found 14765
-> parent transid verify failed on 334692352 wanted 14761 found 14765
-> Ignoring transid failure
-> [1/7] checking root items
-> parent transid verify failed on 334643200 wanted 14761 found 14765
-> parent transid verify failed on 334643200 wanted 14761 found 14765
-> parent transid verify failed on 334643200 wanted 14761 found 14765
-> Ignoring transid failure
-> parent transid verify failed on 334659584 wanted 14761 found 14765
-> parent transid verify failed on 334659584 wanted 14761 found 14765
-> parent transid verify failed on 334659584 wanted 14761 found 14765
-> Ignoring transid failure
-> parent transid verify failed on 334430208 wanted 6728 found 14763
-> parent transid verify failed on 334430208 wanted 6728 found 14763
-> parent transid verify failed on 334430208 wanted 6728 found 14763
-> Ignoring transid failure
-> parent transid verify failed on 334675968 wanted 14761 found 14765
-> parent transid verify failed on 334675968 wanted 14761 found 14765
-> parent transid verify failed on 334675968 wanted 14761 found 14765
-> Ignoring transid failure
-> parent transid verify failed on 335216640 wanted 6728 found 14765
-> parent transid verify failed on 335216640 wanted 6728 found 14765
-> parent transid verify failed on 335216640 wanted 6728 found 14765
-> Ignoring transid failure
-> parent transid verify failed on 320847872 wanted 14323 found 14763
-> parent transid verify failed on 320847872 wanted 14323 found 14763
-> parent transid verify failed on 320847872 wanted 14323 found 14763
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=119848960 item=49 parent 
-> level=1 child bytenr=320847872 child level=1
-> ERROR: failed to repair root items: Input/output error
-> [2/7] checking extents
-> parent transid verify failed on 340246528 wanted 14741 found 14764
-> parent transid verify failed on 340246528 wanted 14741 found 14764
-> parent transid verify failed on 340246528 wanted 14741 found 14764
-> Ignoring transid failure
-> [... skipping many lines]
-> root 257 inode 1866942 errors 2001, no inode item, link count wrong
->          unresolved ref dir 5719 index 9016 namelen 28 name 
-> SiteSecurityServiceState.txt filetype 1 errors 4, no inode ref
-> root 257 inode 1866943 errors 2001, no inode item, link count wrong
->          unresolved ref dir 5719 index 9018 namelen 21 name 
-> AlternateServices.txt filetype 1 errors 4, no inode ref
-> root 257 inode 1866989 errors 2001, no inode item, link count wrong
->          unresolved ref dir 346 index 16043 namelen 4 name user filetype 
-> 1 errors 4, no inode ref
-> root 257 inode 1866990 errors 2001, no inode item, link count wrong
->          unresolved ref dir 1216 index 11701 namelen 46 name 
-> 0_3_1920_1080_8b47947fd8179de11b12e22fa2a454c8 filetype 1 errors 4, no 
-> inode ref
-> root 257 inode 1866991 errors 2001, no inode item, link count wrong
->          unresolved ref dir 5720 index 6961 namelen 16 name 
-> recovery.jsonlz4 filetype 1 errors 4, no inode ref
-> root 257 inode 1866995 errors 2001, no inode item, link count wrong
->          unresolved ref dir 6765 index 134 namelen 42 name 
-> 3647222921wleabcEoxlt-eengsairo.sqlite-wal filetype 1 errors 4, no inode 
-> ref
-> parent transid verify failed on 348258304 wanted 14749 found 14766
-> Ignoring transid failure
-> parent transid verify failed on 348258304 wanted 14749 found 14766
-> Ignoring transid failure
-> parent transid verify failed on 348258304 wanted 14749 found 14766
-> Ignoring transid failure
-> parent transid verify failed on 348258304 wanted 14749 found 14766
-> Ignoring transid failure
-> ERROR: errors found in fs roots
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/luks-test
-> UUID: 2d1dc6b4-84ab-4c64-91a0-669b6228c516
-> found 83720974336 bytes used, error(s) found
-> total csum bytes: 50467580
-> total tree bytes: 266665984
-> total fs tree bytes: 186236928
-> total extent tree bytes: 17317888
-> btree space waste bytes: 40645922
-> file data blocks allocated: 87345299456
->   referenced 47847440384
-> [less: lines 1364572-1364611/1364611 byte 90015202/90015202 (END)  
-> (press RETURN)]
+> A brief look shows I can access data!
 > 
-> # btrfs-find-root /dev/mapper/luks-test
-> parent transid verify failed on 334692352 wanted 14761 found 14765
-> parent transid verify failed on 334692352 wanted 14761 found 14765
-> ERROR: failed to read block groups: Input/output error
-> Superblock thinks the generation is 14761
-> Superblock thinks the level is 0
-> Found tree root at 444612608 gen 14761 level 0
-> Well block 347160576(gen: 14768 level: 0) seems good, but 
-> generation/level doesn't match, want gen: 14761 level: 0
-> Well block 348192768(gen: 14766 level: 0) seems good, but 
-> generation/level doesn't match, want gen: 14761 level: 0
-> Well block 347865088(gen: 14765 level: 0) seems good, but 
-> generation/level doesn't match, want gen: 14761 level: 0
-> Well block 418840576(gen: 14758 level: 0) seems good, but 
-> generation/level doesn't match, want gen: 14761 level: 0
-> Well block 417120256(gen: 14749 level: 0) seems good, but 
-> generation/level doesn't match, want gen: 14761 level: 0
-> Well block 352256000(gen: 14743 level: 0) seems good, but 
-> generation/level doesn't match, want gen: 14761 level: 0
-> [end]
+> When also omitting nologreplay the FS wouldn't mount and dmesg shows
 > 
-> This is what I found out by reading.
-> A fix - if possible - is out of my league now and don't want to poke 
-> around and make things worse.
-> Any chance to get this FS at least mounted for RO?
+> [20837.557120] BTRFS info (device dm-1): flagging fs with big metadata 
+> feature
+> [20837.557138] BTRFS info (device dm-1): trying to use backup root at 
+> mount time
+> [20837.557148] BTRFS info (device dm-1): ignoring bad roots
+> [20837.557152] BTRFS info (device dm-1): using free space tree
+> [20837.557156] BTRFS info (device dm-1): has skinny extents
+> [20837.567354] BTRFS error (device dm-1): parent transid verify failed 
+> on 334692352 wanted 14761 found 14765
+> [20837.567809] BTRFS error (device dm-1): parent transid verify failed 
+> on 334692352 wanted 14761 found 14765
+> [20837.569387] BTRFS info (device dm-1): enabling ssd optimizationsquite 
+> understans
+> [20837.569403] BTRFS info (device dm-1): start tree-log replay
 
-You can try "mount -o ro,rescue=all", which will skip the block group 
-item search, but still there will be other corruptions.
+Try this mount option "-o ro,rescue=all,rescue=nologreplay".
 
-I'm more interested in how this happened.
-The main point here is, the found transid is newer than the on-disk 
-transid, which means metadata COW is not working at all.
+> [20837.637057] BTRFS error (device dm-1): parent transid verify failed 
+> on 337412096 wanted 5492 found 14764
+> [20837.637223] BTRFS error (device dm-1): parent transid verify failed 
+> on 337412096 wanted 5492 found 14764
+> [20837.656541] BTRFS error (device dm-1): parent transid verify failed 
+> on 334643200 wanted 14761 found 14765
+> [20837.656670] BTRFS error (device dm-1): parent transid verify failed 
+> on 334643200 wanted 14761 found 14765
+> [20837.656676] BTRFS: error (device dm-1: state A) in 
+> btrfs_run_delayed_refs:2151: errno=-5 IO failure
+> [20837.656682] BTRFS: error (device dm-1: state EA) in 
+> btrfs_replay_log:2567: errno=-5 IO failure (Failed to recover log tree)
+> [20837.675238] BTRFS error (device dm-1: state EA): open_ctree failed
+> 
+> Is this FS repairable to a usable state?
 
-Are you using unsafe mount options like disabling barriers?
+Definitely no.
 
 Thanks,
 Qu
-
 > 
 > Thanks a lot, Michael.
+> 
+> 
+> 
