@@ -2,124 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A5258D30E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 07:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C325458D30D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 07:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbiHIFCk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Aug 2022 01:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
+        id S233353AbiHIFCm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Aug 2022 01:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbiHIFCj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Aug 2022 01:02:39 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056C01DA5B
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 22:02:37 -0700 (PDT)
+        with ESMTP id S232502AbiHIFCk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Aug 2022 01:02:40 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CEB1DA61;
+        Mon,  8 Aug 2022 22:02:38 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6E9E92013F
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Aug 2022 05:02:36 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 86F2A34826;
+        Tue,  9 Aug 2022 05:02:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1660021356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=wc+irLmLTu9/sXz42lfApWGxgwl9NE5/VwxReMTLgFw=;
-        b=cRmgcYnb+FV+V0R1Cjhh1R8js/MsBr1pobOHw6stlPluea7cmak3+U1VDa6JAycITi3mDm
-        NhtdRLIowmOsnQ6UJZHhSWbqcXYWoEatrzD3sMXtDK/fx2M1MYCMtczW73Hhf4B3afvezt
-        awriUQ+mjG/D0PMphq2PKztc/k19J5Y=
+        t=1660021357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MzuKjwsM7mL/RWMKbmyd6R2lSLhZ3tGwGd+bajpWDkY=;
+        b=j7/lMetc4hpV6/BtMuRB9pil7QZfppzRySS4saEgfIFdgpUZzxf42ug1Suyr45OxeMJ7YI
+        JsYBiDFwNjzIYfrGNVhcilokmvk4CBqlMBl/Cr/h3Z6XlXS3VhA2L1GXAX78YIqH9tPMRy
+        CGG4zCA3YLslaDOUl/RUUq+glwAKN3A=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D8FF913A9D
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Aug 2022 05:02:35 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C2FF413A9D;
+        Tue,  9 Aug 2022 05:02:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id dsc5Kmvq8WKaPwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 09 Aug 2022 05:02:35 +0000
+        id 2JO/JGzq8WKaPwAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 09 Aug 2022 05:02:36 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 0/3] btrfs: separate BLOCK_GROUP_TREE feature from extent-tree-v2
-Date:   Tue,  9 Aug 2022 13:02:15 +0800
-Message-Id: <cover.1660021230.git.wqu@suse.com>
+Cc:     stable@vger.kernel.org
+Subject: [PATCH v3 1/3] btrfs: enhance unsupported compat RO flags handling
+Date:   Tue,  9 Aug 2022 13:02:16 +0800
+Message-Id: <1b3011f4b1bf4e60479568fcd3e090ea8b68d253.1660021230.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.0
+In-Reply-To: <cover.1660021230.git.wqu@suse.com>
+References: <cover.1660021230.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[Changelog]
-v3:
-- Add artificial requirement on fst and no-holes
-  This is to address the concern from Josef on too many feature
-  combinations.
-  In fact I believe future features should also have hard requirement
-  on the latest default features.
+Currently there are two corner cases not handling compat RO flags
+correctly:
 
-v2:
-- Rebased to latest misc-next
-  This fixes some random crash not related to btrfs.
+- Remount
+  We can still mount the fs RO with compat RO flags, then remount it RW.
+  We should not allow any write into a fs with unsupported RO flags.
 
-- Fix some missing conversion due to bad branch
-  I got my code messed up due to some bad local branch naming.
-  The previous version sent to the ML lacks some essential conversion.
+- Still try to search block group items
+  In fact, behavior/on-disk format change to extent tree should not
+  need a full incompat flag.
 
-  Now it can properly pass full fstest run with block group tree.
+  And since we can ensure fs with unsupported RO flags never got any
+  writes (with above case fixed), then we can even skip block group
+  items search at mount time.
 
-This is the kernel part to revive block-group-tree feature.
+This patch will enhance the unsupported RO compat flags by:
 
-Thanfully unlike btrfs-progs, the changes to kernel is much smaller, and
-we can re-use most of the infrastructures from the extent-tree-v2
-preparation patches.
+- Reject RW remount if there is unsupported RO compat flags
 
-But there are still some changes needed:
+- Go dummy block group items directly for unsupported RO compat flags
+  In fact, only changes to chunk/subvolume/root/csum trees should go
+  incompat flags.
 
-- Enhance unsupporter compat RO flags handling
-  Extent tree is only needed for read-write opeartions, and for
-  unsupported compat RO flags, we should not do any write into the fs.
+The latter part should allow future change to extent tree to be compat
+RO flags.
 
-  So this patch will make the kernel to skip block group items search
-  if there is any unsupport RO compat flags.
+Thus this patch also needs to be backported to all stable trees.
 
-  And really make the incoming block-group-tree feature compat RO.
+Cc: stable@vger.kernel.org
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/block-group.c | 11 ++++++++++-
+ fs/btrfs/super.c       |  9 +++++++++
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
-  Unfortunately, we need that patch to be backported, or older kernels
-  will still reject RO mounts of fses with block-group-tree feature.
-
-- Don't store block group root into super block
-  There is no special reason for block group root to be stored in super
-  block.
-  We should review those preparation patches with more scrutiny.
-
-
-For the proper time reduction introduced by this patchset, the old data
-should still be correct, as the on-disk format is not changed.
-https://lwn.net/Articles/801990/
-
-
-Qu Wenruo (3):
-  btrfs: enhance unsupported compat RO flags handling
-  btrfs: don't save block group root into super block
-  btrfs: separate BLOCK_GROUP_TREE compat RO flag from EXTENT_TREE_V2
-
- fs/btrfs/block-group.c     | 11 ++++++-
- fs/btrfs/block-rsv.c       |  1 +
- fs/btrfs/ctree.h           | 30 +++----------------
- fs/btrfs/disk-io.c         | 59 +++++++++++++++++++-------------------
- fs/btrfs/disk-io.h         |  2 +-
- fs/btrfs/super.c           |  9 ++++++
- fs/btrfs/sysfs.c           |  2 ++
- fs/btrfs/transaction.c     |  8 ------
- include/uapi/linux/btrfs.h |  6 ++++
- 9 files changed, 62 insertions(+), 66 deletions(-)
-
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 38a740d5297c..4a78136bcd17 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2186,7 +2186,16 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+ 	int need_clear = 0;
+ 	u64 cache_gen;
+ 
+-	if (!root)
++	/*
++	 * Either no extent root (with ibadroots rescue option) or we have
++	 * unsupporter RO options. The fs can never be mounted RW, so no
++	 * need to waste time search block group items.
++	 *
++	 * This also allows new extent tree related changes to be RO compat,
++	 * no need for a full incompat flag.
++	 */
++	if (!root || (btrfs_super_compat_ro_flags(info->super_copy) &
++		      ~BTRFS_FEATURE_COMPAT_RO_SUPP))
+ 		return fill_dummy_bgs(info);
+ 
+ 	key.objectid = 0;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 4c7089b1681b..7d3213e67fb5 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -2110,6 +2110,15 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 			ret = -EINVAL;
+ 			goto restore;
+ 		}
++		if (btrfs_super_compat_ro_flags(fs_info->super_copy) &
++		    ~BTRFS_FEATURE_COMPAT_RO_SUPP) {
++			btrfs_err(fs_info,
++		"can not remount read-write due to unsupported optional flags 0x%llx",
++				btrfs_super_compat_ro_flags(fs_info->super_copy) &
++				~BTRFS_FEATURE_COMPAT_RO_SUPP);
++			ret = -EINVAL;
++			goto restore;
++		}
+ 		if (fs_info->fs_devices->rw_devices == 0) {
+ 			ret = -EACCES;
+ 			goto restore;
 -- 
 2.37.0
 
