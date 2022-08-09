@@ -2,128 +2,241 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A6C58D265
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 05:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668BB58D266
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 05:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbiHIDco (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Aug 2022 23:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
+        id S231289AbiHIDgF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Aug 2022 23:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbiHIDcX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 23:32:23 -0400
-Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 96DF11EC73
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 20:32:22 -0700 (PDT)
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 3DAE248CBC2; Mon,  8 Aug 2022 23:32:19 -0400 (EDT)
-Date:   Mon, 8 Aug 2022 23:31:51 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: misc-next and for-next: kernel BUG at fs/btrfs/extent_io.c:2350!
- during raid5 recovery
-Message-ID: <YvHVJ8t5vzxH9fS9@hungrycats.org>
+        with ESMTP id S229600AbiHIDgC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Aug 2022 23:36:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 01AB81D33C
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 Aug 2022 20:36:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1660016160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tRpTzSCutRhSU7KrxI5EUYYsl3ijEUMNVGzdJ2ADq2k=;
+        b=VHkx4nODCdL8Gy9pUHyPeFBqFCnhCIUmZkVW1VvBCCPcvMAF7smkyUTG9pMVOzTF/1UrN7
+        ynblRNzCnL9cNlm8o+GHV2URCCgCWHjuY/r3HCQnQOFWo+kW90fYoS9Ky7NMFGuake8U6l
+        OoZbYzDa7RLwovLEZWTDnn3DRRyw6OA=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-358-w4eIppBtP6CJNEPVKDvuBA-1; Mon, 08 Aug 2022 23:35:58 -0400
+X-MC-Unique: w4eIppBtP6CJNEPVKDvuBA-1
+Received: by mail-qt1-f198.google.com with SMTP id bb40-20020a05622a1b2800b00342eb08cc48so5420165qtb.17
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Aug 2022 20:35:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tRpTzSCutRhSU7KrxI5EUYYsl3ijEUMNVGzdJ2ADq2k=;
+        b=bmzvR1zOOemPDism/C7VXQkQVKLjeOWyIV4TDDYW/AZLNoqbw+ASlFppt9Js45MM/z
+         0rpiD7MBOvqFT+Bbm91lzI0WLOkOAzMDOAzJHbafwFVhjLK0cu5lALicVJGLOWlLmLUc
+         p68ySXWeiK8xUcH1AUo0x/+z3o4heCP2xZSP9QGQpFZHx/2HnHVuYkGt7zdsU7l+r9xB
+         SHJrCJ5Wi5Frw0KO0QNVQrsbQn8c7PW1UfYxprbLOmnIgbP3xi0RK/8N5YlTM7f+dRhW
+         nWWxsKUpOvy8M3bBSFSnFgz/ogAIJebs/EzhmTD5Ae0/ZxXgiRaOGyXfLluMgjRekWKV
+         tShg==
+X-Gm-Message-State: ACgBeo3gizCIWo00rLhvTYEBNm81UZamEYcKx8l1Dy02LNPvVmy+ll/Q
+        Riasv2Qdwi2E0FC7wxrmq8+fUeRCBJqFEGZydV8eDR1hzlTmZDvRVudx8U710PYn6Z+ksUvCll4
+        l9QdzjTqj3C4en2Dy6R4Dsas=
+X-Received: by 2002:a05:622a:30a:b0:31e:fa39:2dd with SMTP id q10-20020a05622a030a00b0031efa3902ddmr18323746qtw.679.1660016158335;
+        Mon, 08 Aug 2022 20:35:58 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR6lMAJ7tS6WQTGe6/LKnZhG5yNZBSYxUa0l9SRjNn1H5Uc2p9iCqA3Yobgn/CUA5zgwtnPsEg==
+X-Received: by 2002:a05:622a:30a:b0:31e:fa39:2dd with SMTP id q10-20020a05622a030a00b0031efa3902ddmr18323730qtw.679.1660016158010;
+        Mon, 08 Aug 2022 20:35:58 -0700 (PDT)
+Received: from zlang-mailbox ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id s11-20020a05622a1a8b00b0031d283f4c4dsm9843839qtc.60.2022.08.08.20.35.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Aug 2022 20:35:57 -0700 (PDT)
+Date:   Tue, 9 Aug 2022 11:35:51 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     fdmanana@kernel.org
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        djwong@kernel.org
+Subject: Re: [PATCH] generic: test fsync after punching hole adjacent to an
+ existing hole
+Message-ID: <20220809033551.ip3lq5kkhvabdppn@zlang-mailbox>
+References: <83a74ba89e9e4ee1060b7dfa1f190d4b51691909.1659957268.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <83a74ba89e9e4ee1060b7dfa1f190d4b51691909.1659957268.git.fdmanana@suse.com>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test case is:
+On Mon, Aug 08, 2022 at 12:18:58PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Test that if we punch a hole adjacent to an existing hole, fsync the file
+> and then power fail, the new hole exists after mounting again the
+> filesystem.
+> 
+> This currently fails on btrfs with kernels 5.18 and 5.19 when not using
+> the "no-holes" feature. The "no-holes" feature is enabled by default at
+> mkfs time starting with btrfs-progs 5.15, so to trigger the issue with
+> btrfs-progs 5.15+ and kernel 5.18 or kernel 5.19, one must set
+> "-O ^no-holes" in the MKFS_OPTIONS environment variable (part of the
+> btrfs test matrix).
+> 
+> The issue is fixed for btrfs with the following kernel patch:
+> 
+>   "btrfs: update generation of hole file extent item when merging holes"
 
-	- start with a -draid5 -mraid1 filesystem on 2 disks
+CC btrfs list
 
-	- run assorted IO with a mix of reads and writes (randomly
-	run rsync, bees, snapshot create/delete, balance, scrub, start
-	replacing one of the disks...)
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  tests/generic/694     | 85 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/694.out | 15 ++++++++
+>  2 files changed, 100 insertions(+)
+>  create mode 100755 tests/generic/694
+>  create mode 100644 tests/generic/694.out
+> 
+> diff --git a/tests/generic/694 b/tests/generic/694
+> new file mode 100755
+> index 00000000..c034f914
+> --- /dev/null
+> +++ b/tests/generic/694
+> @@ -0,0 +1,85 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 694
+> +#
+> +# Test that if we punch a hole adjacent to an existing hole, fsync the file and
+> +# then power fail, the new hole exists after mounting again the filesystem.
 
-	- cat /dev/zero > /dev/vdb (device 1) in the VM guest, or run
-	blkdiscard on the underlying SSD in the VM host, to simulate
-	single-disk data corruption
+Better to explain this's a known regression test at here.
 
-	- repeat until something goes badly wrong, like unrecoverable
-	read error or crash
+And add _fixed_by_kernel_commit later, after that kernel patch is merged and
+has a fixed commit id.
 
-This test case always failed quickly before (corruption was rarely
-if ever fully repaired on btrfs raid5 data), and it still doesn't work
-now, but now it doesn't work for a new reason.  Progress?
+> +#
+> +. ./common/preamble
+> +_begin_fstest quick log punch
 
-There is now a BUG_ON arising from this test case:
+"auto" group?
 
-	[  241.051326][   T45] btrfs_print_data_csum_error: 156 callbacks suppressed
-	[  241.100910][   T45] ------------[ cut here ]------------
-	[  241.102531][   T45] kernel BUG at fs/btrfs/extent_io.c:2350!
-	[  241.103261][   T45] invalid opcode: 0000 [#2] PREEMPT SMP PTI
-	[  241.104044][   T45] CPU: 2 PID: 45 Comm: kworker/u8:4 Tainted: G      D           5.19.0-466d9d7ea677-for-next+ #85 89955463945a81b56a449b1f12383cf0d5e6b898
-	[  241.105652][   T45] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-	[  241.106726][   T45] Workqueue: btrfs-endio-raid56 raid_recover_end_io_work
-	[  241.107716][   T45] RIP: 0010:repair_io_failure+0x359/0x4b0
-	[  241.108569][   T45] Code: 2b e8 cb 12 79 ff 48 c7 c6 20 23 ac 85 48 c7 c7 00 b9 14 88 e8 d8 e3 72 ff 48 8d bd 48 ff ff ff e8 5c 7e 26 00 e9 f6 fd ff ff <0f> 0b e8 60 d1 5e 01 85 c0 74 cc 48 c
-	7 c7 b0 1d 45 88 e8 d0 8e 98
-	[  241.111990][   T45] RSP: 0018:ffffbca9009f7a08 EFLAGS: 00010246
-	[  241.112911][   T45] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-	[  241.115676][   T45] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-	[  241.118009][   T45] RBP: ffffbca9009f7b00 R08: 0000000000000000 R09: 0000000000000000
-	[  241.119484][   T45] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9cd1b9da4000
-	[  241.120717][   T45] R13: 0000000000000000 R14: ffffe60cc81a4200 R15: ffff9cd235b4dfa4
-	[  241.122594][   T45] FS:  0000000000000000(0000) GS:ffff9cd2b7600000(0000) knlGS:0000000000000000
-	[  241.123831][   T45] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-	[  241.125003][   T45] CR2: 00007fbb76b1a738 CR3: 0000000109c26001 CR4: 0000000000170ee0
-	[  241.126226][   T45] Call Trace:
-	[  241.126646][   T45]  <TASK>
-	[  241.127165][   T45]  ? __bio_clone+0x1c0/0x1c0
-	[  241.128354][   T45]  clean_io_failure+0x21a/0x260
-	[  241.128384][   T45]  end_compressed_bio_read+0x2a9/0x470
-	[  241.128411][   T45]  bio_endio+0x361/0x3c0
-	[  241.128427][   T45]  rbio_orig_end_io+0x127/0x1c0
-	[  241.128447][   T45]  __raid_recover_end_io+0x405/0x8f0
-	[  241.128477][   T45]  raid_recover_end_io_work+0x8c/0xb0
-	[  241.128494][   T45]  process_one_work+0x4e5/0xaa0
-	[  241.128528][   T45]  worker_thread+0x32e/0x720
-	[  241.128541][   T45]  ? _raw_spin_unlock_irqrestore+0x7d/0xa0
-	[  241.128573][   T45]  ? process_one_work+0xaa0/0xaa0
-	[  241.128588][   T45]  kthread+0x1ab/0x1e0
-	[  241.128600][   T45]  ? kthread_complete_and_exit+0x40/0x40
-	[  241.128628][   T45]  ret_from_fork+0x22/0x30
-	[  241.128659][   T45]  </TASK>
-	[  241.128667][   T45] Modules linked in:
-	[  241.129700][   T45] ---[ end trace 0000000000000000 ]---
-	[  241.152310][   T45] RIP: 0010:repair_io_failure+0x359/0x4b0
-	[  241.153328][   T45] Code: 2b e8 cb 12 79 ff 48 c7 c6 20 23 ac 85 48 c7 c7 00 b9 14 88 e8 d8 e3 72 ff 48 8d bd 48 ff ff ff e8 5c 7e 26 00 e9 f6 fd ff ff <0f> 0b e8 60 d1 5e 01 85 c0 74 cc 48 c
-	7 c7 b0 1d 45 88 e8 d0 8e 98
-	[  241.156882][   T45] RSP: 0018:ffffbca902487a08 EFLAGS: 00010246
-	[  241.158103][   T45] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-	[  241.160072][   T45] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-	[  241.161984][   T45] RBP: ffffbca902487b00 R08: 0000000000000000 R09: 0000000000000000
-	[  241.164067][   T45] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9cd1b9da4000
-	[  241.165979][   T45] R13: 0000000000000000 R14: ffffe60cc7589740 R15: ffff9cd1f45495e4
-	[  241.167928][   T45] FS:  0000000000000000(0000) GS:ffff9cd2b7600000(0000) knlGS:0000000000000000
-	[  241.169978][   T45] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-	[  241.171649][   T45] CR2: 00007fbb76b1a738 CR3: 0000000109c26001 CR4: 0000000000170ee0
+> +
+> +_cleanup()
+> +{
+> +	_cleanup_flakey
+> +	cd /
+> +	rm -r -f $tmp.*
+> +}
+> +
+> +# Import common functions.
+> +. ./common/filter
+> +. ./common/dmflakey
+> +. ./common/punch
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+   ^^^^
+This's just a reminder, please remove it.
 
-KFENCE and UBSAN aren't reporting anything before the BUG_ON.
+> +_supported_fs generic
+> +_require_scratch
+> +_require_dm_target flakey
+> +_require_xfs_io_command "fpunch"
+> +_require_xfs_io_command "fiemap"
+> +
+> +_scratch_mkfs >>$seqres.full 2>&1
+> +_require_metadata_journaling $SCRATCH_DEV
+> +_init_flakey
+> +_mount_flakey
+> +
+> +# Create our test file with the following layout:
+> +#
+> +# [0, 2M)    - hole
+> +# [2M, 10M)  - extent
+> +# [10M, 12M) - hole
+> +$XFS_IO_PROG -f -c "truncate 12M" \
+> +	     -c "pwrite -S 0xab 2M 8M" \
+> +	     $SCRATCH_MNT/foobar | _filter_xfs_io
+> +
+> +# Persist everything, commit the filesystem's transaction.
+> +sync
+> +
+> +# Now punch two holes in the file:
+> +#
+> +# 1) For the range [2M, 4M), which is adjacent to the existing hole in the range
+> +#    [0, 2M);
+> +# 2) For the range [8M, 10M), which is adjacent to the existing hole in the
+> +#    range [10M, 12M).
+> +#
+> +# These operations start a new filesystem transaction.
+> +# Then finally fsync the file.
+> +$XFS_IO_PROG -c "fpunch 2M 2M" \
+> +	     -c "fpunch 8M 2M" \
+> +	     -c "fsync" $SCRATCH_MNT/foobar
 
-KCSAN complains about a lot of stuff as usual, including several issues
-in the btrfs allocator, but it doesn't look like anything that would
-mess with a bio.
+Darrick added a new helper _require_congruent_file_oplen(), might worth
+using it. Any thoughts?
 
-	$ git log --no-walk --oneline FETCH_HEAD
-	6130a25681d4 (kdave/for-next) Merge branch 'for-next-next-v5.20-20220804' into for-next-20220804
+> +
+> +# Simulate a power failure and mount the filesystem to check that everything
+> +# is in the same state as before the power failure.
+> +_flakey_drop_and_remount
+> +
+> +# We expect the following file layout:
+> +#
+> +# [0, 4M)    - hole
+> +# [4M, 8M)   - extent
+> +# [8M, 12M)  - hole
+> +echo "File layout after power failure:"
+> +$XFS_IO_PROG -c "fiemap -v" $SCRATCH_MNT/foobar | _filter_fiemap
+> +
+> +# When reading the file we expect to get the range [4M, 8M) filled with bytes
+> +# that have a value of 0xab and 0x00 for anything outside that range.
+> +echo "File content after power failure:"
+> +od -A d -t x1 $SCRATCH_MNT/foobar
 
-	repair_io_failure at fs/btrfs/extent_io.c:2350 (discriminator 1)
-	 2345           u64 sector;
-	 2346           struct btrfs_io_context *bioc = NULL;
-	 2347           int ret = 0;
-	 2348   
-	 2349           ASSERT(!(fs_info->sb->s_flags & SB_RDONLY));
-	>2350<          BUG_ON(!mirror_num);
-	 2351   
-	 2352           if (btrfs_repair_one_zone(fs_info, logical))
-	 2353                   return 0;
-	 2354   
-	 2355           map_length = length;
+Can _hexdump in common/rc help ?
+
+> +
+> +_unmount_flakey
+> +
+> +# success, all done
+> +status=0
+> +exit
+> diff --git a/tests/generic/694.out b/tests/generic/694.out
+> new file mode 100644
+> index 00000000..f55212f3
+> --- /dev/null
+> +++ b/tests/generic/694.out
+> @@ -0,0 +1,15 @@
+> +QA output created by 694
+> +wrote 8388608/8388608 bytes at offset 2097152
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +File layout after power failure:
+> +0: [0..8191]: hole
+> +1: [8192..16383]: data
+> +2: [16384..24575]: hole
+> +File content after power failure:
+> +0000000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> +*
+> +4194304 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
+> +*
+> +8388608 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> +*
+> +12582912
+> -- 
+> 2.35.1
+> 
+
