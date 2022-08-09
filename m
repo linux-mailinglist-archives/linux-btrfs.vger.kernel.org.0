@@ -2,175 +2,281 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EFC58D847
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 13:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6556458DADD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 17:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242306AbiHILhU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Aug 2022 07:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
+        id S242535AbiHIPN4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Aug 2022 11:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242155AbiHILhK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Aug 2022 07:37:10 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CE1C59
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Aug 2022 04:37:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1660045026;
-        bh=3It5Znc0VnX+n5vkbqDYnK8e/zY7pGCb7+g73iibKyg=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=WZ5poUnYreGBICOvg6BCboz3pDbaZ6vnbNSxbaZ74zddwjD21FUccpnzC8YcJDbl6
-         bqyn6rMo26AW5BdS1SKingmyWVQERagnVMpOQvhFBWI8QxPR7VGsK3WYYUVNxspRqY
-         S00svfs3eiJW1St7FMdSLMne+dkjYA8D+CpbewjQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MQe5k-1nzs7Y0NnS-00Ngfi; Tue, 09
- Aug 2022 13:37:06 +0200
-Message-ID: <6c15d5db-4e87-dd49-d42a-2fcf08157b25@gmx.com>
-Date:   Tue, 9 Aug 2022 19:37:02 +0800
+        with ESMTP id S243623AbiHIPNy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Aug 2022 11:13:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C5C64DE;
+        Tue,  9 Aug 2022 08:13:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C373261222;
+        Tue,  9 Aug 2022 15:13:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2977DC433D6;
+        Tue,  9 Aug 2022 15:13:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660058032;
+        bh=Wos6TXyMgiMXJTG0+pg/wLCuR7N/v3e3SKuhbsSb6fY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O3GhtqceCxXV9iVP6uagPdMwx7/vjbZU9BClW+L7Yo1iov1iJ0fMRNLYfePa43a25
+         RmQO/Xd0qqUk1OWUiBVKGNlYHaLVRaEvK04FSHbGI6EXMcM7M5J/7u+OVJqDKsCQNH
+         OihCVEF8mh7kc5N16sT5OAGldEO5z5GYh3/gt3XxDNccADBT5XbPWDa2t1dVNGL9n+
+         +nV8rO9ObTyjLz/j4IcZIQLXmkYQ4/0QSnv7+lrnYw9rGPXKKODYI3+fvgBUSbCoYp
+         kC67Kgm7SJ00k+wHfG49R97FERAlpKLY17wUev5D7yZcTVHnozicUw0gSnvduxL5wA
+         raaEkQJA/30hg==
+Date:   Tue, 9 Aug 2022 08:13:51 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] generic: test fsync after punching hole adjacent to an
+ existing hole
+Message-ID: <YvJ5r3u9wpq+JHo1@magnolia>
+References: <83a74ba89e9e4ee1060b7dfa1f190d4b51691909.1659957268.git.fdmanana@suse.com>
+ <20220809033551.ip3lq5kkhvabdppn@zlang-mailbox>
+ <20220809072956.GA2067106@falcondesktop>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Content-Language: en-US
-To:     linux-btrfs@vger.kernel.org
-Cc:     wqu@suse.com
-References: <12ad8fa0-a4f6-815d-dcab-1b6efa1c9da8@bluemole.com>
- <ebc960af-2511-457e-88ef-d1ee2d995c7d@www.fastmail.com>
- <60689fac-9a38-9045-262c-7f147d71a3d2@bluemole.com>
- <b817538a-687e-0fee-fa05-a1b0cfe956f3@suse.com>
- <83bf3b4b-7f4c-387a-b286-9251e3991e34@bluemole.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Corrupted btrfs (LUKS), seeking advice
-In-Reply-To: <83bf3b4b-7f4c-387a-b286-9251e3991e34@bluemole.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8AX+sotcB4o3bW7amKDVxBRYnkhYoT8aLK3xQIkp2EpW/SinN20
- /XrmKRe/t/fueFUHMtF57DPSwt38utejJznOLHYymYxgrR7OMXfhY/omoVxAoNI2Deb0Bi5
- bXe7/DhYdy9lY7yftm+2F2qjMfJCqjUROHmbgqeYlFXIjk/PqZQ6+lkJjvoetusrT8q4P4X
- 4fqfGI46P27OlzChkXCUA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9OsDCTVYa2c=:Uatgc5zP38tHUkrqkYLOg2
- BPhyw65kiDh55VhFQL4Zfgl2zKf/7ChgvbK8nCs4zW/ctMAMUljGp0zxaAd8snFTSLUYX07QP
- XJ4ed8/piQ9zd1oGQPKc6yInewbn1rKKiYw9w1JvG7z5byjvGJxAUlhPhuI6oAkH5Pm3wLsPx
- /gtdhZekilurBzr0h9v9u7ZwQz75r6ztFVCWrVl8U2OUnpMItAE80aC4N18OICK6c7k53kQ4w
- yHhDPsmeMaGvB6JxLMwmbaOCSaWN59oeyU5k4kwooV+dyImdX24/Lw/IUbOgki42+MbwpfIBD
- 877vaCIjjOHjfVaL8euhGIZzi2xjxaPHM5aRKWv9dLN296eds3KNvTylc1gy5O/qPUU7bves6
- 7yY6PJcMeDnAUDBcnc71ukQs90FzgWWNP27KRIrkw7O/Y6DZcnR8hTQuO4SQealKjBIvYQ2tW
- PquYM6sMxY+OqJQuGTaFHQBqsbnEgGwlP2VBE4SGmgeM0gSGKaSj0OT10F9PoH9fnOgMHemc1
- XA+yNwc3m71MX+Hvn2zYcaZ3KN0Nh+1sz3r8iu7AdSdQzlsQvshA260actsWPo4/r16RjK+ce
- FYzMNsbozodFVgHKj6LZ3KOp7KGDj26HSJ7PyvZyqCpgkojonnKzU9gyEnOSkJTpLODnxqnxX
- drIxXYU6mt4j4YTW9upQdz99apuIPNcWjsIHaCVxu/9sZpmKVtyTEphaSmvK69x8KUJhi+ZVc
- vSJnUj78n9Zo5ULuh1i6KZnnPR6J0nFFtNzT9yiItdwFIq2YL2pMcGqbObGVWE6HO02GnugJs
- JP2uJkvTDvQRQpyX2T3i4IEucek2SIVH1fkZGN40M+jVMrCU/eCb1xTwJCgc4VY+nS/YkaC9a
- iBN8ZRvPe8aX5/KftjnZOgkRwRhCsJtzB9lesfMLHfjCbLk5Ido8BuFoih6E23odj1DkqemBu
- 9TzbiOQ5DHruih7NjHrEL4dV8RYCNnqzCC0t7PcWECGCZid9FFKCUUfV7MKPWQQfsDQeA2Cgs
- H24ZAgWBdbs2duRCtxf5eGes/6pb9UToFBdbjUjdMgT33vK3PTnv9n+qSEyfdi0WUYv1YPyD3
- sIsUC352bGC26UcFb+8Pes//J3x2miAwDTJrH4h2JpcQBOyvQpAkFtntw==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220809072956.GA2067106@falcondesktop>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Aug 09, 2022 at 08:29:56AM +0100, Filipe Manana wrote:
+> On Tue, Aug 09, 2022 at 11:35:51AM +0800, Zorro Lang wrote:
+> > On Mon, Aug 08, 2022 at 12:18:58PM +0100, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > > 
+> > > Test that if we punch a hole adjacent to an existing hole, fsync the file
+> > > and then power fail, the new hole exists after mounting again the
+> > > filesystem.
+> > > 
+> > > This currently fails on btrfs with kernels 5.18 and 5.19 when not using
+> > > the "no-holes" feature. The "no-holes" feature is enabled by default at
+> > > mkfs time starting with btrfs-progs 5.15, so to trigger the issue with
+> > > btrfs-progs 5.15+ and kernel 5.18 or kernel 5.19, one must set
+> > > "-O ^no-holes" in the MKFS_OPTIONS environment variable (part of the
+> > > btrfs test matrix).
+> > > 
+> > > The issue is fixed for btrfs with the following kernel patch:
+> > > 
+> > >   "btrfs: update generation of hole file extent item when merging holes"
+> > 
+> > CC btrfs list
+> 
+> It was already in cc (and I always cc the btrfs list).
+> 
+> > 
+> > > 
+> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > > ---
+> > >  tests/generic/694     | 85 +++++++++++++++++++++++++++++++++++++++++++
+> > >  tests/generic/694.out | 15 ++++++++
+> > >  2 files changed, 100 insertions(+)
+> > >  create mode 100755 tests/generic/694
+> > >  create mode 100644 tests/generic/694.out
+> > > 
+> > > diff --git a/tests/generic/694 b/tests/generic/694
+> > > new file mode 100755
+> > > index 00000000..c034f914
+> > > --- /dev/null
+> > > +++ b/tests/generic/694
+> > > @@ -0,0 +1,85 @@
+> > > +#! /bin/bash
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> > > +#
+> > > +# FS QA Test 694
+> > > +#
+> > > +# Test that if we punch a hole adjacent to an existing hole, fsync the file and
+> > > +# then power fail, the new hole exists after mounting again the filesystem.
+> > 
+> > Better to explain this's a known regression test at here.
+> 
+> So, duplicate the changelog here?
+> 
+> > 
+> > And add _fixed_by_kernel_commit later, after that kernel patch is merged and
+> > has a fixed commit id.
+> 
+> I wasn't aware we have that nowadays.
 
+It's a recent addition to try to standardize the process of identifying
+bugfixes for LTS kernels.  Whereas before we just stuffed them adhoc in
+the test comments, this new helper will tell you which commits you need
+to apply if the regression test fails.
 
-On 2022/8/9 19:23, Michael Zacherl wrote:
-> On 8/9/22 01:22, Qu Wenruo wrote:
->> You can try "mount -o ro,rescue=3Dall", which will skip the block group
->> item search, but still there will be other corruptions.
->>
->> I'm more interested in how this happened.
->> The main point here is, the found transid is newer than the on-disk
->> transid, which means metadata COW is not working at all.
->>
->> Are you using unsafe mount options like disabling barriers?
->
-> No, this upgraded setup is fairly new and completely stock.
-> (and most of that terminology I have to look up anyway)
-> Btrfs is new to me and I don't experiment on systems I need for work.
->
-> I think what happened is having had mounted the FS twice by accident:
-> The former system (Mint 19.3/ext4) has been cloned to a USB-stick which
-> I can boot from.
-> In one such session I mounted the new btrfs nvme on the old system for
-> some data exchange.
-> I put the old system to hibernation but forgot to unmount the nvme prior
-> to that. :(
+> Does that mean that tests get merged only after the corresponding kernel fix
+> is merged in Linus' tree?
 
-Hibernation, I'm not sure about the details, but it looks like there
-were some corruption reports related to that.
+I usually put in an obvious placeholder:
 
->
-> So when booting up the new system from the nvme it was like having had a
-> hard shutdown.
+_fixed_by_kernel_commit XXXXXX "xfs: fix the frobnitech"
 
-A hard shutdown to btrfs itself should not cause anything wrong, that's
-ensured by its mandatory metadata COW.
+...and hope someone remembers to clean it up.
 
-> So that in itself wouldn't be the problem, I'd think.
-> But the other day I again booted from the old system from its
-> hibernation with the forgotten nvme mounted.
+> > 
+> > > +#
+> > > +. ./common/preamble
+> > > +_begin_fstest quick log punch
+> > 
+> > "auto" group?
+> 
+> Yes, forgotten when running the "new" script.
+> 
+> > 
+> > > +
+> > > +_cleanup()
+> > > +{
+> > > +	_cleanup_flakey
+> > > +	cd /
+> > > +	rm -r -f $tmp.*
+> > > +}
+> > > +
+> > > +# Import common functions.
+> > > +. ./common/filter
+> > > +. ./common/dmflakey
+> > > +. ./common/punch
+> > > +
+> > > +# real QA test starts here
+> > > +
+> > > +# Modify as appropriate.
+> >    ^^^^
+> > This's just a reminder, please remove it.
+> > 
+> > > +_supported_fs generic
+> > > +_require_scratch
+> > > +_require_dm_target flakey
+> > > +_require_xfs_io_command "fpunch"
+> > > +_require_xfs_io_command "fiemap"
+> > > +
+> > > +_scratch_mkfs >>$seqres.full 2>&1
+> > > +_require_metadata_journaling $SCRATCH_DEV
+> > > +_init_flakey
+> > > +_mount_flakey
+> > > +
+> > > +# Create our test file with the following layout:
+> > > +#
+> > > +# [0, 2M)    - hole
+> > > +# [2M, 10M)  - extent
+> > > +# [10M, 12M) - hole
+> > > +$XFS_IO_PROG -f -c "truncate 12M" \
+> > > +	     -c "pwrite -S 0xab 2M 8M" \
+> > > +	     $SCRATCH_MNT/foobar | _filter_xfs_io
+> > > +
+> > > +# Persist everything, commit the filesystem's transaction.
+> > > +sync
+> > > +
+> > > +# Now punch two holes in the file:
+> > > +#
+> > > +# 1) For the range [2M, 4M), which is adjacent to the existing hole in the range
+> > > +#    [0, 2M);
+> > > +# 2) For the range [8M, 10M), which is adjacent to the existing hole in the
+> > > +#    range [10M, 12M).
+> > > +#
+> > > +# These operations start a new filesystem transaction.
+> > > +# Then finally fsync the file.
+> > > +$XFS_IO_PROG -c "fpunch 2M 2M" \
+> > > +	     -c "fpunch 8M 2M" \
+> > > +	     -c "fsync" $SCRATCH_MNT/foobar
+> > 
+> > Darrick added a new helper _require_congruent_file_oplen(), might worth
+> > using it. Any thoughts?
+> 
+> Wasn't aware of it. Seems like it's to deal with some rare xfs realtime configurations.
+> So I suppose, this needs:
 
-Oh I got it now, it's not after the hibernation immediately, but the
-resume from hibernation, and then some write into the already
-out-of-sync fs caused the problem.
+Weird xfs realtime configs was the initial purpose (e.g. 28k allocation
+units) but it also _notruns tests that don't expect things like punching
+a 4k hole failing on an fs with 64k blocksize.
 
-> And that was the killer, I'd say, since a lot of metadata has changed on
-> that btrfs meanwhile.
+(Granted, anything in tests/generic/ should be assuming at least a 64k
+block size as a possibility, as you do here...)
 
-Yes, I believe that's the case.
+> _require_congruent_file_oplen $((2 * 1024 * 1024))
 
->
-> On top of it, btrfs is v4.15.1 on the old system, many things just don't
-> exits on this version, AFAICT.
-> If that made things worse, I can't say.
->
-> On 8/9/22 01:24, Qu Wenruo wrote:
->> Try this mount option "-o ro,rescue=3Dall,rescue=3Dnologreplay".
->
-> Oh, I thought "nologgreplay" would be included in "all"?
+Yep.
 
-I checked the code, and the latest code is indeed including that.
+> 
+> > 
+> > > +
+> > > +# Simulate a power failure and mount the filesystem to check that everything
+> > > +# is in the same state as before the power failure.
+> > > +_flakey_drop_and_remount
+> > > +
+> > > +# We expect the following file layout:
+> > > +#
+> > > +# [0, 4M)    - hole
+> > > +# [4M, 8M)   - extent
+> > > +# [8M, 12M)  - hole
+> > > +echo "File layout after power failure:"
+> > > +$XFS_IO_PROG -c "fiemap -v" $SCRATCH_MNT/foobar | _filter_fiemap
+> > > +
+> > > +# When reading the file we expect to get the range [4M, 8M) filled with bytes
+> > > +# that have a value of 0xab and 0x00 for anything outside that range.
+> > > +echo "File content after power failure:"
+> > > +od -A d -t x1 $SCRATCH_MNT/foobar
+> > 
+> > Can _hexdump in common/rc help ?
+> 
+> It can, I wasn't aware that helper existed. It's relatively new.
+> Glad to see od is being preferred over hexdump, and I have always used it in
+> tests over the years.
+> 
+> Btw, _hexdump is asking od to output file offsets in hex.
+> I find it a lot more friendly to read decimal values (maybe I'm weird), so
+> I always pass '-A d' to od. Thoughts on that?
 
-But that's weird, if included we should not try to replay the log, thus
-that "start tree-log replay" should not occur.
+Same here, though my preference is eroding as we convert the xfs
+tracepoints to report in hexadecimal. :)
 
-Anyway if rescue=3Dall doesn't work, you may try "btrfs rescue zero-log"
-to manually delete that dirty log and then RO mount should still be
-possible.
+--D
 
->
->>> Is this FS repairable to a usable state?
->>
->> Definitely no.
->
-> Ouch. But meanwhile I can see the damage I did to it.
-> I'm currently abroad, so no access to my regular backup infrastructure.
->
-> However, since I've to re-install the new system when I'm back:
-> There would be enough space on the new ssd for a second partition, which
-> I'd like not to go for.
-> Or is there an option for additional redundancy within the same btrfs to
-> help in case of such a bad mistake (I'd dearly try to avoid anyway, but
-> ...)?
-
-I'm not sure if there is anyway to prevent such out-of-sync RW mount
-from corrupting the fs.
-
-We can go RAID1 (if you have multiple disks) or DUP (single device,
-double copy), but none of them can handle the case you hit.
-
-Personally speaking, I never trust hibernation/suspension, although due
-to other ACPI related reasons.
-Now I won't even touch hibernation/suspension at all, just to avoid any
-removable storage corruption.
-
-Thanks,
-Qu
-
->
-> Thanks a lot for your time, Michael.
->
->
+> Thanks.
+> 
+> > 
+> > > +
+> > > +_unmount_flakey
+> > > +
+> > > +# success, all done
+> > > +status=0
+> > > +exit
+> > > diff --git a/tests/generic/694.out b/tests/generic/694.out
+> > > new file mode 100644
+> > > index 00000000..f55212f3
+> > > --- /dev/null
+> > > +++ b/tests/generic/694.out
+> > > @@ -0,0 +1,15 @@
+> > > +QA output created by 694
+> > > +wrote 8388608/8388608 bytes at offset 2097152
+> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > > +File layout after power failure:
+> > > +0: [0..8191]: hole
+> > > +1: [8192..16383]: data
+> > > +2: [16384..24575]: hole
+> > > +File content after power failure:
+> > > +0000000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > > +*
+> > > +4194304 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
+> > > +*
+> > > +8388608 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > > +*
+> > > +12582912
+> > > -- 
+> > > 2.35.1
+> > > 
+> > 
