@@ -2,34 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC7458E073
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 21:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4763258E07D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Aug 2022 21:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344315AbiHITrg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 9 Aug 2022 15:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
+        id S1343815AbiHITxG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Aug 2022 15:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346295AbiHITqn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Aug 2022 15:46:43 -0400
+        with ESMTP id S245393AbiHITwr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Aug 2022 15:52:47 -0400
 Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8300DE5
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Aug 2022 12:46:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 06C0221E36
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Aug 2022 12:52:44 -0700 (PDT)
 Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id F078E490603; Tue,  9 Aug 2022 15:46:41 -0400 (EDT)
-Date:   Tue, 9 Aug 2022 15:46:41 -0400
+        id 5A169490776; Tue,  9 Aug 2022 15:52:44 -0400 (EDT)
+Date:   Tue, 9 Aug 2022 15:52:44 -0400
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
-Subject: Re: misc-next and for-next: kernel BUG at fs/btrfs/extent_io.c:2350!
- during raid5 recovery
-Message-ID: <YvK5oY6ctbDFspCm@hungrycats.org>
-References: <YvHVJ8t5vzxH9fS9@hungrycats.org>
- <aac1dade-646a-8bf9-6b63-754b03bf1cd1@gmx.com>
+To:     Alex Lieflander <atlief@icloud.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Help fixing filesystem after stupid lvresize
+Message-ID: <YvK7DHBN39teoOne@hungrycats.org>
+References: <98E508AD-82F0-4DCC-B9F6-73D03462A604@icloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <aac1dade-646a-8bf9-6b63-754b03bf1cd1@gmx.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <98E508AD-82F0-4DCC-B9F6-73D03462A604@icloud.com>
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
@@ -39,116 +37,112 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 09, 2022 at 12:36:44PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2022/8/9 11:31, Zygo Blaxell wrote:
-> > Test case is:
-> > 
-> > 	- start with a -draid5 -mraid1 filesystem on 2 disks
-> > 
-> > 	- run assorted IO with a mix of reads and writes (randomly
-> > 	run rsync, bees, snapshot create/delete, balance, scrub, start
-> > 	replacing one of the disks...)
-> > 
-> > 	- cat /dev/zero > /dev/vdb (device 1) in the VM guest, or run
-> > 	blkdiscard on the underlying SSD in the VM host, to simulate
-> > 	single-disk data corruption
-> > 
-> > 	- repeat until something goes badly wrong, like unrecoverable
-> > 	read error or crash
-> > 
-> > This test case always failed quickly before (corruption was rarely
-> > if ever fully repaired on btrfs raid5 data), and it still doesn't work
-> > now, but now it doesn't work for a new reason.  Progress?
-> 
-> The new read repair work for compressed extents, adding HCH to the thread.
-> 
-> But just curious, have you tested without compression?
+On Tue, Aug 09, 2022 at 01:18:37PM +0200, Alex Lieflander wrote:
+> Hello,
+>
+> Thank you for your continued work on this awesome filesystem. I just
+> made a really stupid mistake and now I can’t seem to `mount`, `btrfs
+> check`, or `btrfs rescue` my filesystem. I’m wondering (hoping)
+> that there’s an easy fix.
+>
+> The filesystem size was 4606G (3.78T used), the parent block device
+> was 5T, it was mounted read-write, and there was a `btrfs receive`
+> operation running. I accidentally `lvresize`-d the parent block
+> device to 4792 bytes (but probably 1M since that’s my PV extent
+> size) instead of 4792G. I didn’t realize the mistake yet and ran
+> `btrfs file resize max` which completed without printing any errors.
+>
+> Within a few minutes I `lvresized`-d the filesystem back to 5T and
+> tried to `btrfs file resize max` it, but by that point it was mounted
+> read-only. I `umount`-ed it and could no longer `mount` it. When I try
+> (with or without `-o usebackuproot`), I get "wrong fs type, bad option,
+> bad superblock on /dev/dm-2, missing codepage or helper program,
+> or other error.” `btrfs rescue -b` prints "All supers are valid,
+> no need to recover”. `btrfs version` prints "btrfs-progs v5.18.1”
+> (I compiled it myself). Please see the attached files for the output of
+> `btrfs check` and `btrfs inspect-internal dump-super`.
+>
+> I don’t have any other disks large enough for `btrfs recover`
+> and I’d really like to avoid using `btrfs rescue chunk-recover`
+> if possible. Do you have any other suggestions?
 
-All of the ~200 BUG_ON stack traces in my logs have the same list of
-functions as above.  If the bug affected uncompressed data, I'd expect
-to see two different stack traces.  It's a fairly decent sample size,
-so I'd say it's most likely not happening with uncompressed extents.
+You might want to look in /etc/lvm/backup or /etc/lvm/archive for old
+versions of your LVM configuration.  The resized LV might not be in
+the same location on disk as it used to be, and if that's the case,
+it will break btrfs completely.
 
-All the production workloads have compression enabled, so we don't
-normally test with compression disabled.  I can run a separate test for
-that if you'd like.
+If you're lucky, the missing btrfs blocks are still on the disk, and
+you can do a vgcfgrestore and get the old layout of the LV back;
+otherwise, it's mkfs+restore time.
 
 > Thanks,
-> Qu
-> > 
-> > There is now a BUG_ON arising from this test case:
-> > 
-> > 	[  241.051326][   T45] btrfs_print_data_csum_error: 156 callbacks suppressed
-> > 	[  241.100910][   T45] ------------[ cut here ]------------
-> > 	[  241.102531][   T45] kernel BUG at fs/btrfs/extent_io.c:2350!
-> > 	[  241.103261][   T45] invalid opcode: 0000 [#2] PREEMPT SMP PTI
-> > 	[  241.104044][   T45] CPU: 2 PID: 45 Comm: kworker/u8:4 Tainted: G      D           5.19.0-466d9d7ea677-for-next+ #85 89955463945a81b56a449b1f12383cf0d5e6b898
-> > 	[  241.105652][   T45] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-> > 	[  241.106726][   T45] Workqueue: btrfs-endio-raid56 raid_recover_end_io_work
-> > 	[  241.107716][   T45] RIP: 0010:repair_io_failure+0x359/0x4b0
-> > 	[  241.108569][   T45] Code: 2b e8 cb 12 79 ff 48 c7 c6 20 23 ac 85 48 c7 c7 00 b9 14 88 e8 d8 e3 72 ff 48 8d bd 48 ff ff ff e8 5c 7e 26 00 e9 f6 fd ff ff <0f> 0b e8 60 d1 5e 01 85 c0 74 cc 48 c
-> > 	7 c7 b0 1d 45 88 e8 d0 8e 98
-> > 	[  241.111990][   T45] RSP: 0018:ffffbca9009f7a08 EFLAGS: 00010246
-> > 	[  241.112911][   T45] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> > 	[  241.115676][   T45] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> > 	[  241.118009][   T45] RBP: ffffbca9009f7b00 R08: 0000000000000000 R09: 0000000000000000
-> > 	[  241.119484][   T45] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9cd1b9da4000
-> > 	[  241.120717][   T45] R13: 0000000000000000 R14: ffffe60cc81a4200 R15: ffff9cd235b4dfa4
-> > 	[  241.122594][   T45] FS:  0000000000000000(0000) GS:ffff9cd2b7600000(0000) knlGS:0000000000000000
-> > 	[  241.123831][   T45] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > 	[  241.125003][   T45] CR2: 00007fbb76b1a738 CR3: 0000000109c26001 CR4: 0000000000170ee0
-> > 	[  241.126226][   T45] Call Trace:
-> > 	[  241.126646][   T45]  <TASK>
-> > 	[  241.127165][   T45]  ? __bio_clone+0x1c0/0x1c0
-> > 	[  241.128354][   T45]  clean_io_failure+0x21a/0x260
-> > 	[  241.128384][   T45]  end_compressed_bio_read+0x2a9/0x470
-> > 	[  241.128411][   T45]  bio_endio+0x361/0x3c0
-> > 	[  241.128427][   T45]  rbio_orig_end_io+0x127/0x1c0
-> > 	[  241.128447][   T45]  __raid_recover_end_io+0x405/0x8f0
-> > 	[  241.128477][   T45]  raid_recover_end_io_work+0x8c/0xb0
-> > 	[  241.128494][   T45]  process_one_work+0x4e5/0xaa0
-> > 	[  241.128528][   T45]  worker_thread+0x32e/0x720
-> > 	[  241.128541][   T45]  ? _raw_spin_unlock_irqrestore+0x7d/0xa0
-> > 	[  241.128573][   T45]  ? process_one_work+0xaa0/0xaa0
-> > 	[  241.128588][   T45]  kthread+0x1ab/0x1e0
-> > 	[  241.128600][   T45]  ? kthread_complete_and_exit+0x40/0x40
-> > 	[  241.128628][   T45]  ret_from_fork+0x22/0x30
-> > 	[  241.128659][   T45]  </TASK>
-> > 	[  241.128667][   T45] Modules linked in:
-> > 	[  241.129700][   T45] ---[ end trace 0000000000000000 ]---
-> > 	[  241.152310][   T45] RIP: 0010:repair_io_failure+0x359/0x4b0
-> > 	[  241.153328][   T45] Code: 2b e8 cb 12 79 ff 48 c7 c6 20 23 ac 85 48 c7 c7 00 b9 14 88 e8 d8 e3 72 ff 48 8d bd 48 ff ff ff e8 5c 7e 26 00 e9 f6 fd ff ff <0f> 0b e8 60 d1 5e 01 85 c0 74 cc 48 c
-> > 	7 c7 b0 1d 45 88 e8 d0 8e 98
-> > 	[  241.156882][   T45] RSP: 0018:ffffbca902487a08 EFLAGS: 00010246
-> > 	[  241.158103][   T45] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> > 	[  241.160072][   T45] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> > 	[  241.161984][   T45] RBP: ffffbca902487b00 R08: 0000000000000000 R09: 0000000000000000
-> > 	[  241.164067][   T45] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9cd1b9da4000
-> > 	[  241.165979][   T45] R13: 0000000000000000 R14: ffffe60cc7589740 R15: ffff9cd1f45495e4
-> > 	[  241.167928][   T45] FS:  0000000000000000(0000) GS:ffff9cd2b7600000(0000) knlGS:0000000000000000
-> > 	[  241.169978][   T45] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > 	[  241.171649][   T45] CR2: 00007fbb76b1a738 CR3: 0000000109c26001 CR4: 0000000000170ee0
-> > 
-> > KFENCE and UBSAN aren't reporting anything before the BUG_ON.
-> > 
-> > KCSAN complains about a lot of stuff as usual, including several issues
-> > in the btrfs allocator, but it doesn't look like anything that would
-> > mess with a bio.
-> > 
-> > 	$ git log --no-walk --oneline FETCH_HEAD
-> > 	6130a25681d4 (kdave/for-next) Merge branch 'for-next-next-v5.20-20220804' into for-next-20220804
-> > 
-> > 	repair_io_failure at fs/btrfs/extent_io.c:2350 (discriminator 1)
-> > 	 2345           u64 sector;
-> > 	 2346           struct btrfs_io_context *bioc = NULL;
-> > 	 2347           int ret = 0;
-> > 	 2348
-> > 	 2349           ASSERT(!(fs_info->sb->s_flags & SB_RDONLY));
-> > 	>2350<          BUG_ON(!mirror_num);
-> > 	 2351
-> > 	 2352           if (btrfs_repair_one_zone(fs_info, logical))
-> > 	 2353                   return 0;
-> > 	 2354
-> > 	 2355           map_length = length;
+> Alex Lieflander
+> 
+
+> Opening filesystem to check...
+> checksum verify failed on 6393548521472 wanted 0x18a23d5c found 0xa56c5634
+> checksum verify failed on 6393548521472 wanted 0x69c424f0 found 0x89318211
+> checksum verify failed on 6393548521472 wanted 0x18a23d5c found 0xa56c5634
+> bad tree block 6393548521472, bytenr mismatch, want=6393548521472, have=16977026753978170276
+> ERROR: failed to read block groups: Input/output error
+> ERROR: cannot open file system
+
+> superblock: bytenr=65536, device=backup_crypt_3
+> ---------------------------------------------------------
+> csum_type		0 (crc32c)
+> csum_size		4
+> csum			0x3ce13204 [match]
+> bytenr			65536
+> flags			0x1
+> 			( WRITTEN )
+> magic			_BHRfS_M [match]
+> fsid			bae77875-a496-4758-9de1-28263b6a678f
+> metadata_uuid		bae77875-a496-4758-9de1-28263b6a678f
+> label			Postulate_Backup_3_Main
+> generation		139646
+> root			5959629045760
+> sys_array_size		129
+> chunk_root_generation	139300
+> root_level		1
+> chunk_root		23412736
+> chunk_root_level	1
+> log_root		0
+> log_root_transid	0
+> log_root_level		0
+> total_bytes		4945654841344
+> bytes_used		4159119925248
+> sectorsize		4096
+> nodesize		16384
+> leafsize (deprecated)	16384
+> stripesize		4096
+> root_dir		6
+> num_devices		1
+> compat_flags		0x0
+> compat_ro_flags		0x0
+> incompat_flags		0x179
+> 			( MIXED_BACKREF |
+> 			  COMPRESS_LZO |
+> 			  COMPRESS_ZSTD |
+> 			  BIG_METADATA |
+> 			  EXTENDED_IREF |
+> 			  SKINNY_METADATA )
+> cache_generation	139646
+> uuid_tree_generation	139646
+> block_group_root	0
+> block_group_root_generation	0
+> block_group_root_level	0
+> dev_item.uuid		b815cbe9-80b3-4439-a614-1a75bd4bb314
+> dev_item.fsid		bae77875-a496-4758-9de1-28263b6a678f [match]
+> dev_item.type		0
+> dev_item.total_bytes	4945654841344
+> dev_item.bytes_used	4247704829952
+> dev_item.io_align	4096
+> dev_item.io_width	4096
+> dev_item.sector_size	4096
+> dev_item.devid		1
+> dev_item.dev_group	0
+> dev_item.seek_speed	0
+> dev_item.bandwidth	0
+> dev_item.generation	0
+> 
+
