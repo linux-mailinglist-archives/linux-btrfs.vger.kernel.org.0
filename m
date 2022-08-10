@@ -2,73 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 418FB58F03F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Aug 2022 18:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23F558F0AF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Aug 2022 18:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbiHJQUQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Aug 2022 12:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48102 "EHLO
+        id S232372AbiHJQqL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Aug 2022 12:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbiHJQUP (ORCPT
+        with ESMTP id S233075AbiHJQp6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Aug 2022 12:20:15 -0400
+        Wed, 10 Aug 2022 12:45:58 -0400
 Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BF94B0D2
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Aug 2022 09:20:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4254D18E04;
+        Wed, 10 Aug 2022 09:45:48 -0700 (PDT)
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id EE2905808F8
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Aug 2022 12:20:11 -0400 (EDT)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5AA815808B4;
+        Wed, 10 Aug 2022 12:35:55 -0400 (EDT)
 Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Wed, 10 Aug 2022 12:20:11 -0400
+  by compute3.internal (MEProxy); Wed, 10 Aug 2022 12:35:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        colorremedies.com; h=cc:content-type:date:date:from:from
+        colorremedies.com; h=cc:cc:content-type:date:date:from:from
         :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1660148411; x=1660152011; bh=e3g91IGliV
-        QkQSIjW+HdESuEVmMXsuB1u0sea5LriDo=; b=nG3LBj+8LDTfQmejn2keQASiEY
-        Qz45yhCzt8EJaa8UyNtOzA2cHetO1o3+Wz6dEjvMS1tTExnHfV8yK2Pk407CgLrz
-        1XwhLENpj12bb82tJNmn9vPiB3/NWIg3/6nhjKTJPFXM6dJ1SHnDsC37u1hx6ggA
-        xz7jOdWKusSa7xrAqFNdwHo+ys6aAZquTIRqBlzcFuzIpkAm7EQM0tkZh8TbuusM
-        odIlD2hne2RUcJNCYniVD7Rpb98sC5c/ESLxvCCRQgdft6+6amoKbut9eWPkCwVp
-        rDdIMIO7iap9HKWHnuOqAyqyb6iIviQjxrbw3PTz9cTQ2Yo4GlVAKUiBOFeQ==
+        :subject:to:to; s=fm1; t=1660149355; x=1660152955; bh=a5G2IQ23cL
+        Cu11/Dp61pjDw8jpOTjVuQZnVVwZuO120=; b=E5rcuw1Lzya7Hd9QgncERZJ+DM
+        3erv7Qs5pOlJ3aUk2u5R1Drx14Ej4xg9OFUX7RDcCfNpYFT/me+V7Ihsez/rdFfB
+        +56KLWTrqZBZcsPoDnfBY8reNZ+iyqRghhF7py4WzVd5FHuRo/O+nOH0ZM7uInAs
+        79QkukhEk6Ny3ntzeYWXr7f2B2+h1o0h/SiFTN5ubuJ6yshvbpm3mAA1368E8GLB
+        xEEGHdGJDiL+yfTJ64cNKY7TXY9jWUfGNJYymA5wNTJdMtf58p2Jmp32dclTOSzR
+        igoVEauuJ1Vp8M4cHOlVB19/ThpVOgog8r4iRdsdaHV/JSrby2HfJsjMN9/Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:date:feedback-id
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
         :feedback-id:from:from:in-reply-to:message-id:mime-version
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1660148411; x=
-        1660152011; bh=e3g91IGliVQkQSIjW+HdESuEVmMXsuB1u0sea5LriDo=; b=d
-        NHbrc/ZS5zkIcLTWSK3vihdeQQpR4kXWCUXeorBjfFqzyMRFNlj7NCQJbKh7wWTw
-        eTfu/p4saSSjlBM9K5WUtqxqSmPRe1ENFC4jVAm4qUlHUPHdBb9O7y55CywbifGE
-        funi5la4nMEj7bnQqGwgtje9hrhBnF3S6OLjC8uLlP+A+10/ZZl8VamL7xFlUrwL
-        c8L+Eqsh2gg5eLwtDtnaBfbvVYxP77Fgzg6a8O/L5qRekC81YRpyI6P/kZVV3OE0
-        R0GHhtz0E0ixnfbL7ZdxDCi158kpgy3qJgwKLqCVmdKjULIgJh/Vqn7bdhFHssOI
-        VET1XyDQ5gYkT4W+VMSKg==
-X-ME-Sender: <xms:u9rzYnVqsjbWrBCtIo-dWuerDpd8jlstmitJ3Hq0vJhDv7C5ahO24g>
-    <xme:u9rzYvmNbncNIYZYptR0BcDvjVV6e97xBiIROp69wAdVNh9JidRjEfm94ygLJ7Ry_
-    D9hObvlbMkwNB81RR4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdegvddgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkfffhvffutgesthdtredtreertdenucfhrhhomhepfdevhhhrihhs
-    ucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomheqne
-    cuggftrfgrthhtvghrnhepfeefledtjeehfeduteejvdelffdvveeigeeugeffvdffveff
-    veekiedvhfekieeknecuffhomhgrihhnpehrvgguhhgrthdrtghomhenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegtohhlohhr
-    rhgvmhgvughivghsrdgtohhm
-X-ME-Proxy: <xmx:u9rzYjaBjPSoRNUbypJ7mt4rJ-g526bbN-0qZXVhCVYnrHmhS6Glog>
-    <xmx:u9rzYiX0lJLVxvFHDtbFDRAbTq9omjRhfHlHmZ9bdqlVmYGBCy3yFA>
-    <xmx:u9rzYhn2JKEfiWoulKPff_gzQlEZ2p_eTjg4srhSlQzF787saEEblg>
-    <xmx:u9rzYtzOV3cNhSrKro6bJeYRC6sXl0nlbsEJNnrsxBdNDkq-wiB8uQ>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1660149355; x=
+        1660152955; bh=a5G2IQ23cLCu11/Dp61pjDw8jpOTjVuQZnVVwZuO120=; b=i
+        QAlnvmltaI0+qqHZDEFRzJWpwhuxxw7oRyzuJbZUTBNRthP/6TGX5EtwfuZp0nFp
+        KLvyN2iz8RWxhBe6hLittmTZXZL2cKVFyQKVgItsCQYXl/dOytlP7qTebCIQP3v8
+        j18DXXOY9Sa9EZGKh/8dd41dPZPMNUDYzhpRVoZwgdfvXLjL6sUgm9mKqEzpUEtU
+        +NWZfGeM+UmLOHUYtRVHhA6jW/G9kvIu/MAyWU/YsUmGHQU4AMF+ruR8lbeeyH5N
+        6ohQGDpy0yjJlZWdBXkHNydNje37EwzzYgkBId7tOlHxt9saKkHo4u2szgHz5ivR
+        xEb22wBUL6ybtSGiGwjkQ==
+X-ME-Sender: <xms:at7zYihx_unb8Y37UslQb4rHWqNmFqyKW6Xqie9-5BQ9TdhFf6BIXQ>
+    <xme:at7zYjA61oOTOvUCq0Ik4EkLyFhQ0Oiqf-im02yPtZcw78osMtmD2Um4Et1SJbTRW
+    wbHLfMmxYt7p6dcyLg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdegvddguddttdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enogfuuhhsphgvtghtffhomhgrihhnucdlgeelmdenucfjughrpefofgggkfffhffvvefu
+    tgesthdtredtreertdenucfhrhhomhepfdevhhhrihhsucfouhhrphhhhidfuceolhhish
+    htshestgholhhorhhrvghmvgguihgvshdrtghomheqnecuggftrfgrthhtvghrnhepffei
+    gfefgeefleejfedtudelieetfefhtefhteejkefhtdevtdeufeffffdvteelnecuffhomh
+    grihhnpehhthhtphgujhhouhhrnhgrlhgurghuughithgurghnughpohhsthhgrhgvshhq
+    lhdrihhopdhgohhoghhlvgdrtghomhdpkhgvrhhnvghlrdhorhhgpdhkvghrnhgvlhdrug
+    hknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhi
+    shhtshestgholhhorhhrvghmvgguihgvshdrtghomh
+X-ME-Proxy: <xmx:at7zYqE-HtauFBCyQ9yJuM4ehPc1mXFdvQWtu1wf5fF_im_u0VIj4A>
+    <xmx:at7zYrS8dPYG12zhatdeHSkEgAYfo36uF9UmvRoWZ6qLARhaicMLWQ>
+    <xmx:at7zYvzUcRunktnbi1VaVsyMdbCty0n-7JoscqAxHhEsWhTVZNbSkQ>
+    <xmx:a97zYq8FLEaBP3xE5IHCoY-YAJ7q5K6Ngc_M9zmPRtT9l2DrIw77-w>
 Feedback-ID: i06494636:Fastmail
 Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 6EF3A1700083; Wed, 10 Aug 2022 12:20:11 -0400 (EDT)
+        id C62691700082; Wed, 10 Aug 2022 12:35:54 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 User-Agent: Cyrus-JMAP/3.7.0-alpha0-811-gb808317eab-fm-20220801.001-gb808317e
 Mime-Version: 1.0
-Message-Id: <f7c14f0f-56e5-4748-a3f7-d44bc635b020@www.fastmail.com>
-Date:   Wed, 10 Aug 2022 12:19:46 -0400
+Message-Id: <e38aa76d-6034-4dde-8624-df1745bb17fc@www.fastmail.com>
+Date:   Wed, 10 Aug 2022 12:35:34 -0400
 From:   "Chris Murphy" <lists@colorremedies.com>
-To:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Subject: 5.19.0: dnf install hangs when system is under load
+To:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>,
+        Linux-RAID <linux-raid@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     "Josef Bacik" <josef@toxicpanda.com>
+Subject: stalling IO regression in linux 5.12
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
@@ -80,157 +86,71 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Downstream bug - 5.19.0: dnf install hangs when system is under load
-https://bugzilla.redhat.com/show_bug.cgi?id=2117326
+CPU: Intel E5-2680 v3
+RAM: 128 G
+02:00.0 RAID bus controller [0104]: Broadcom / LSI MegaRAID SAS-3 3108 [Invader] [1000:005d] (rev 02), using megaraid_sas driver
+8 Disks: TOSHIBA AL13SEB600
 
-5.19.0-65.fc37.x86_64
 
-Setup
-btrfs raid10 on 8x plain partitions
+The problem exhibits as increasing load, increasing IO pressure (PSI), and actual IO goes to zero. It never happens on kernel 5.11 series, and always happens after 5.12-rc1 and persists through 5.18.0. There's a new mix of behaviors with 5.19, I suspect the mm improvements in this series might be masking the problem.
 
-Command
-sudo dnf install pciutils
+The workload involves openqa, which spins up 30 qemu-kvm instances, and does a bunch of tests, generating quite a lot of writes: qcow2 files, and video in the form of many screenshots, and various log files, for each VM. These VMs are each in their own cgroup. As the problem begins, I see increasing IO pressure, and decreasing IO, for each qemu instance's cgroup, and the cgroups for httpd, journald, auditd, and postgresql. IO pressure goes to nearly ~99% and IO is literally 0.
 
-Reproducible:
-About 1 in 3, correlates with the system being under heavy load, otherwise it's not happening
+The problem left unattended to progress will eventually result in a completely unresponsive system, with no kernel messages. It reproduces in the following configurations, the first two I provide links to full dmesg with sysrq+w:
 
-Get stuck at 
-Running scriptlet: sg3_utils-1.46-3.fc36.x86_64   2/2 
+btrfs raid10 (native) on plain partitions [1]
+btrfs single/dup on dmcrypt on mdadm raid 10 and parity raid [2]
+XFS on dmcrypt on mdadm raid10 or parity raid
 
-ps aux status for dnf is D+, kill -9 does nothing, strace shows nothing. The hang last at least 10 minutes, didn't test beyond that.
+I've started a bisect, but for some reason I haven't figured out I've started getting compiled kernels that don't boot the hardware. The failure is very early on such that the UUID for the root file system isn't found, but not much to go on as to why.[3] I have tested the first and last skipped commits in the bisect log below, they successfully boot a VM but not the hardware.
 
-Full dmesg with sysrq+w is attached to the bug report.
+Anyway, I'm kinda stuck at this point trying to narrow it down further. Any suggestions? Thanks.
 
-snippet
+[1] btrfs raid10, plain partitions
+https://drive.google.com/file/d/1-oT3MX-hHYtQqI0F3SpgPjCIDXXTysLU/view?usp=sharing
 
-[ 2268.057017] sysrq: Show Blocked State
-[ 2268.057866] task:kworker/u97:11  state:D stack:    0 pid:  340 ppid:     2 flags:0x00004000
-[ 2268.058361] Workqueue: writeback wb_workfn (flush-btrfs-1)
-[ 2268.058825] Call Trace:
-[ 2268.059261]  <TASK>
-[ 2268.059692]  __schedule+0x335/0x1240
-[ 2268.060145]  ? __blk_mq_sched_dispatch_requests+0xe0/0x130
-[ 2268.060611]  schedule+0x4e/0xb0
-[ 2268.061059]  io_schedule+0x42/0x70
-[ 2268.061473]  blk_mq_get_tag+0x10c/0x290
-[ 2268.061910]  ? dequeue_task_stop+0x70/0x70
-[ 2268.062359]  __blk_mq_alloc_requests+0x16e/0x2a0
-[ 2268.062797]  blk_mq_submit_bio+0x2a2/0x590
-[ 2268.063226]  __submit_bio+0xf5/0x180
-[ 2268.063660]  submit_bio_noacct_nocheck+0x1f9/0x2b0
-[ 2268.064055]  btrfs_map_bio+0x170/0x410
-[ 2268.064451]  btrfs_submit_data_bio+0x134/0x220
-[ 2268.064859]  ? __mod_memcg_lruvec_state+0x93/0x110
-[ 2268.065246]  submit_extent_page+0x17a/0x4b0
-[ 2268.065637]  ? page_vma_mkclean_one.constprop.0+0x1b0/0x1b0
-[ 2268.066018]  __extent_writepage_io.constprop.0+0x271/0x550
-[ 2268.066363]  ? end_extent_writepage+0x100/0x100
-[ 2268.066720]  ? writepage_delalloc+0x8a/0x180
-[ 2268.067094]  __extent_writepage+0x115/0x490
-[ 2268.067472]  extent_write_cache_pages+0x178/0x500
-[ 2268.067889]  extent_writepages+0x60/0x140
-[ 2268.068274]  do_writepages+0xac/0x1a0
-[ 2268.068643]  __writeback_single_inode+0x3d/0x350
-[ 2268.069022]  ? _raw_spin_lock+0x13/0x40
-[ 2268.069419]  writeback_sb_inodes+0x1c5/0x460
-[ 2268.069824]  __writeback_inodes_wb+0x4c/0xe0
-[ 2268.070230]  wb_writeback+0x1c9/0x2a0
-[ 2268.070622]  wb_workfn+0x298/0x490
-[ 2268.070988]  process_one_work+0x1c7/0x380
-[ 2268.071366]  worker_thread+0x4d/0x380
-[ 2268.071775]  ? process_one_work+0x380/0x380
-[ 2268.072179]  kthread+0xe9/0x110
-[ 2268.072588]  ? kthread_complete_and_exit+0x20/0x20
-[ 2268.073002]  ret_from_fork+0x22/0x30
-[ 2268.073408]  </TASK>
-[ 2268.073912] task:systemd-journal state:D stack:    0 pid: 1208 ppid:     1 flags:0x00000002
-[ 2268.074334] Call Trace:
-[ 2268.074756]  <TASK>
-[ 2268.075165]  __schedule+0x335/0x1240
-[ 2268.075586]  ? __blk_flush_plug+0xf2/0x130
-[ 2268.075950]  schedule+0x4e/0xb0
-[ 2268.076305]  io_schedule+0x42/0x70
-[ 2268.076692]  folio_wait_bit_common+0x116/0x390
-[ 2268.077075]  ? filemap_alloc_folio+0xc0/0xc0
-[ 2268.077447]  filemap_fault+0xcf/0x980
-[ 2268.077821]  __do_fault+0x36/0x130
-[ 2268.078153]  do_fault+0x1da/0x440
-[ 2268.078483]  __handle_mm_fault+0x9cf/0xed0
-[ 2268.078837]  handle_mm_fault+0xae/0x280
-[ 2268.079202]  do_user_addr_fault+0x1c5/0x670
-[ 2268.079567]  exc_page_fault+0x70/0x170
-[ 2268.079929]  asm_exc_page_fault+0x22/0x30
-[ 2268.080282] RIP: 0033:0x7f3d8efd6519
-[ 2268.080657] RSP: 002b:00007ffd4a073ac0 EFLAGS: 00010202
-[ 2268.081017] RAX: 00007f3d8c6586d8 RBX: 00000000016bb6d8 RCX: 00007f3d8efe1309
-[ 2268.081374] RDX: 00007ffd4a073ac0 RSI: 000055d6da7a52e8 RDI: 000055d6da7a52a0
-[ 2268.081756] RBP: 00007ffd4a073b48 R08: 000055d6da7b7a00 R09: 000055d6da7aaea8
-[ 2268.082147] R10: 0000000000000004 R11: 00007ffd4a073e00 R12: 000055d6da7aae70
-[ 2268.082511] R13: 0000000000000001 R14: 00007ffd4a073ac0 R15: 00000000016bb6d8
-[ 2268.082883]  </TASK>
-[ 2268.083757] task:kworker/u97:0   state:D stack:    0 pid: 7664 ppid:     2 flags:0x00004000
-[ 2268.084149] Workqueue: writeback wb_workfn (flush-btrfs-1)
-[ 2268.084537] Call Trace:
-[ 2268.084918]  <TASK>
-[ 2268.085289]  __schedule+0x335/0x1240
-[ 2268.085675]  ? __blk_flush_plug+0xf2/0x130
-[ 2268.086056]  schedule+0x4e/0xb0
-[ 2268.086406]  io_schedule+0x42/0x70
-[ 2268.086786]  blk_mq_get_tag+0x10c/0x290
-[ 2268.087160]  ? dequeue_task_stop+0x70/0x70
-[ 2268.087539]  __blk_mq_alloc_requests+0x16e/0x2a0
-[ 2268.087912]  blk_mq_submit_bio+0x2a2/0x590
-[ 2268.088287]  __submit_bio+0xf5/0x180
-[ 2268.088676]  submit_bio_noacct_nocheck+0x1f9/0x2b0
-[ 2268.089052]  btrfs_map_bio+0x170/0x410
-[ 2268.089426]  btrfs_submit_data_bio+0x134/0x220
-[ 2268.089813]  ? __mod_memcg_lruvec_state+0x93/0x110
-[ 2268.090192]  submit_extent_page+0x17a/0x4b0
-[ 2268.090587]  ? page_vma_mkclean_one.constprop.0+0x1b0/0x1b0
-[ 2268.090975]  __extent_writepage_io.constprop.0+0x271/0x550
-[ 2268.091365]  ? end_extent_writepage+0x100/0x100
-[ 2268.091757]  ? writepage_delalloc+0x8a/0x180
-[ 2268.092141]  __extent_writepage+0x115/0x490
-[ 2268.092534]  extent_write_cache_pages+0x178/0x500
-[ 2268.092890]  extent_writepages+0x60/0x140
-[ 2268.093247]  do_writepages+0xac/0x1a0
-[ 2268.093624]  ? __blk_mq_sched_dispatch_requests+0xe0/0x130
-[ 2268.094004]  __writeback_single_inode+0x3d/0x350
-[ 2268.094376]  ? _raw_spin_lock+0x13/0x40
-[ 2268.094765]  writeback_sb_inodes+0x1c5/0x460
-[ 2268.095151]  __writeback_inodes_wb+0x4c/0xe0
-[ 2268.095531]  wb_writeback+0x1c9/0x2a0
-[ 2268.095913]  wb_workfn+0x306/0x490
-[ 2268.096291]  process_one_work+0x1c7/0x380
-[ 2268.096686]  worker_thread+0x4d/0x380
-[ 2268.097070]  ? process_one_work+0x380/0x380
-[ 2268.097448]  kthread+0xe9/0x110
-[ 2268.097842]  ? kthread_complete_and_exit+0x20/0x20
-[ 2268.098224]  ret_from_fork+0x22/0x30
-[ 2268.098623]  </TASK>
-[ 2268.099008] task:kworker/u97:7   state:D stack:    0 pid: 7665 ppid:     2 flags:0x00004000
-[ 2268.099410] Workqueue: blkcg_punt_bio blkg_async_bio_workfn
-[ 2268.099815] Call Trace:
-[ 2268.100198]  <TASK>
-[ 2268.100589]  __schedule+0x335/0x1240
-[ 2268.100982]  ? __blk_mq_sched_dispatch_requests+0xe0/0x130
-[ 2268.101377]  schedule+0x4e/0xb0
-[ 2268.101772]  io_schedule+0x42/0x70
-[ 2268.102153]  blk_mq_get_tag+0x10c/0x290
-[ 2268.102537]  ? dequeue_task_stop+0x70/0x70
-[ 2268.102902]  __blk_mq_alloc_requests+0x16e/0x2a0
-[ 2268.103275]  blk_mq_submit_bio+0x2a2/0x590
-[ 2268.103659]  __submit_bio+0xf5/0x180
-[ 2268.104032]  submit_bio_noacct_nocheck+0x1f9/0x2b0
-[ 2268.104408]  blkg_async_bio_workfn+0x66/0x90
-[ 2268.104797]  process_one_work+0x1c7/0x380
-[ 2268.105181]  worker_thread+0x1d6/0x380
-[ 2268.105572]  ? process_one_work+0x380/0x380
-[ 2268.105949]  kthread+0xe9/0x110
-[ 2268.106319]  ? kthread_complete_and_exit+0x20/0x20
-[ 2268.106667]  ret_from_fork+0x22/0x30
-[ 2268.106882]  </TASK>
+[2] btrfs single/dup, dmcrypt, mdadm raid10
+https://drive.google.com/file/d/1m_T3YYaEjBKUROz6dHt5_h92ZVRji9FM/view?usp=sharing
 
+[3] 
+$ git bisect log
+git bisect start
+# status: waiting for both good and bad commits
+# bad: [c03c21ba6f4e95e406a1a7b4c34ef334b977c194] Merge tag 'keys-misc-20210126' of git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs
+git bisect bad c03c21ba6f4e95e406a1a7b4c34ef334b977c194
+# status: waiting for good commit(s), bad commit known
+# good: [f40ddce88593482919761f74910f42f4b84c004b] Linux 5.11
+git bisect good f40ddce88593482919761f74910f42f4b84c004b
+# bad: [df24212a493afda0d4de42176bea10d45825e9a0] Merge tag 's390-5.12-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux
+git bisect bad df24212a493afda0d4de42176bea10d45825e9a0
+# good: [82851fce6107d5a3e66d95aee2ae68860a732703] Merge tag 'arm-dt-v5.12' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+git bisect good 82851fce6107d5a3e66d95aee2ae68860a732703
+# good: [99f1a5872b706094ece117368170a92c66b2e242] Merge tag 'nfsd-5.12' of git://git.kernel.org/pub/scm/linux/kernel/git/cel/linux
+git bisect good 99f1a5872b706094ece117368170a92c66b2e242
+# bad: [9eef02334505411667a7b51a8f349f8c6c4f3b66] Merge tag 'locking-core-2021-02-17' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+git bisect bad 9eef02334505411667a7b51a8f349f8c6c4f3b66
+# bad: [9820b4dca0f9c6b7ab8b4307286cdace171b724d] Merge tag 'for-5.12/drivers-2021-02-17' of git://git.kernel.dk/linux-block
+git bisect bad 9820b4dca0f9c6b7ab8b4307286cdace171b724d
+# good: [bd018bbaa58640da786d4289563e71c5ef3938c7] Merge tag 'for-5.12/libata-2021-02-17' of git://git.kernel.dk/linux-block
+git bisect good bd018bbaa58640da786d4289563e71c5ef3938c7
+# skip: [203c018079e13510f913fd0fd426370f4de0fd05] Merge branch 'md-next' of https://git.kernel.org/pub/scm/linux/kernel/git/song/md into for-5.12/drivers
+git bisect skip 203c018079e13510f913fd0fd426370f4de0fd05
+# skip: [49d1ec8573f74ff1e23df1d5092211de46baa236] block: manage bio slab cache by xarray
+git bisect skip 49d1ec8573f74ff1e23df1d5092211de46baa236
+# bad: [73d90386b559d6f4c3c5db5e6bb1b68aae8fd3e7] nvme: cleanup zone information initialization
+git bisect bad 73d90386b559d6f4c3c5db5e6bb1b68aae8fd3e7
+# skip: [71217df39dc67a0aeed83352b0d712b7892036a2] block, bfq: make waker-queue detection more robust
+git bisect skip 71217df39dc67a0aeed83352b0d712b7892036a2
+# bad: [8358c28a5d44bf0223a55a2334086c3707bb4185] block: fix memory leak of bvec
+git bisect bad 8358c28a5d44bf0223a55a2334086c3707bb4185
+# skip: [3a905c37c3510ea6d7cfcdfd0f272ba731286560] block: skip bio_check_eod for partition-remapped bios
+git bisect skip 3a905c37c3510ea6d7cfcdfd0f272ba731286560
+# skip: [3c337690d2ebb7a01fa13bfa59ce4911f358df42] block, bfq: avoid spurious switches to soft_rt of interactive queues
+git bisect skip 3c337690d2ebb7a01fa13bfa59ce4911f358df42
+# skip: [3e1a88ec96259282b9a8b45c3f1fda7a3ff4f6ea] bio: add a helper calculating nr segments to alloc
+git bisect skip 3e1a88ec96259282b9a8b45c3f1fda7a3ff4f6ea
+# skip: [4eb1d689045552eb966ebf25efbc3ce648797d96] blk-crypto: use bio_kmalloc in blk_crypto_clone_bio
+git bisect skip 4eb1d689045552eb966ebf25efbc3ce648797d96
 
 
 --
