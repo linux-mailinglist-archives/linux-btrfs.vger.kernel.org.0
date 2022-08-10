@@ -2,62 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C82FC58E723
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Aug 2022 08:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B97758E751
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Aug 2022 08:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbiHJGKe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Aug 2022 02:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
+        id S230453AbiHJG36 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Aug 2022 02:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbiHJGKd (ORCPT
+        with ESMTP id S230168AbiHJG34 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Aug 2022 02:10:33 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8067CD7
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Aug 2022 23:10:31 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id t1so19848292lft.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 09 Aug 2022 23:10:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=T+NN90y9gPhLV+F0IRQg2DuVvbvHifr5dOe5YZkss7s=;
-        b=XKKY1GA/KRaquJfPK7XpG87hredbMcXRjz62tNgHBprxPU6wBVNIyjxuuGha/S/Kyy
-         rG14uQ3Ee6sZKPRYckQ5VEk8uZynXV4QU8lRxJStR6HewN6PpIKJ1XadWBnQjCXLbEqq
-         MqVMD7HEmL77CUQ6BLqGETwlO9ewXE+H2m4J0NjSLrZOs3PYL1b5J+rT92CO/aBZDVuZ
-         Bsn1+uB99gwnhavvKEuiCdiDGSkaq3S6p3kOqkeyvpv2hAZXAuaAb2c+HZFnUfjWrixj
-         WppdK1+AXmFDr9cgazw8rys1a76bD9ProImz7E84olCMv5TUn9KJ2sSAdb93alPMWjfQ
-         EahQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=T+NN90y9gPhLV+F0IRQg2DuVvbvHifr5dOe5YZkss7s=;
-        b=Lgdg6eeFaZQ9nmDZlcmec+wMVQKY7bLB4yRzXNq/Z/novFhJe5yhjR3c4qgTp6AJXO
-         mDe/pVvdqYxsCuTDUKGOxZeXZ16OBOcsl6Z8KxCzMDBRkeT6Y6G2WhgiGILrgT/WcBjP
-         QKbR4AIX9fJkbjZZtvIjINLlGjdjcy0Pes2wO/oR3/XtQP8zPWSI4O349elY8/gjlu0z
-         /BVsnztkl5fwmgHyClgSA/SuHSHOVRbewrARKs2SdG22TmKhSG8j1keyHZIfOGF0GSaS
-         pZVMbkURnI4PoHCLnQyqkcuxUffKTcUkHkcax3unJyICl+AacgRpbaeP/tCMmuFjtNDT
-         O8dg==
-X-Gm-Message-State: ACgBeo0PmuX0oIRfcPCbtMxbEp4ULdufdjvyo1Dk7pmi9EGt+Rz7y5tc
-        8rvKpyoIpvBdOtvnK8prPoA=
-X-Google-Smtp-Source: AA6agR7qcU+ErQkju715GL3RyBbAG0t+Ae2JnXRgu2fl8x/tgzoJTmsfY0hai9CgdWW/NatBmr9Mcg==
-X-Received: by 2002:a05:6512:3dac:b0:48b:694:bb35 with SMTP id k44-20020a0565123dac00b0048b0694bb35mr10058021lfv.215.1660111829890;
-        Tue, 09 Aug 2022 23:10:29 -0700 (PDT)
-Received: from [192.168.1.109] ([176.124.146.232])
-        by smtp.gmail.com with ESMTPSA id p21-20020a2eb7d5000000b0025fde1697b0sm266480ljo.135.2022.08.09.23.10.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Aug 2022 23:10:29 -0700 (PDT)
-Message-ID: <6ab45148-cf37-43cc-1bd0-809af792e24a@gmail.com>
-Date:   Wed, 10 Aug 2022 09:10:28 +0300
+        Wed, 10 Aug 2022 02:29:56 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAB26D9E4
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Aug 2022 23:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1660112978;
+        bh=AOrNm3rkk4lryCn+zUF2IW+dr9P19XTE6T2ixBVQ7PI=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=l79Z1DUufcePalV+dJF42l/DdUCrCS/de3SQxNT9LuYC6E/RB5scoYk120OK2EVw4
+         P3okUf8cJc2c85Xf/wRREekMLCpSSkVPm/82k1VKt3FS5raWG2VJb4noyva4/B9HEP
+         0kQFk4q+L9X4TzeCEXsBRZkMs3s/E+XFxyowDXZM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MTRR0-1nyXm92bnA-00Tm3k; Wed, 10
+ Aug 2022 08:29:38 +0200
+Message-ID: <3c47ebef-a76c-3206-7954-42c6de557efa@gmx.com>
+Date:   Wed, 10 Aug 2022 14:29:34 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
 Subject: Re: Corrupted btrfs (LUKS), seeking advice
 Content-Language: en-US
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+To:     Andrei Borzenkov <arvidjaar@gmail.com>, linux-btrfs@vger.kernel.org
 Cc:     wqu@suse.com
 References: <12ad8fa0-a4f6-815d-dcab-1b6efa1c9da8@bluemole.com>
  <ebc960af-2511-457e-88ef-d1ee2d995c7d@www.fastmail.com>
@@ -65,13 +41,35 @@ References: <12ad8fa0-a4f6-815d-dcab-1b6efa1c9da8@bluemole.com>
  <b817538a-687e-0fee-fa05-a1b0cfe956f3@suse.com>
  <83bf3b4b-7f4c-387a-b286-9251e3991e34@bluemole.com>
  <6c15d5db-4e87-dd49-d42a-2fcf08157b25@gmx.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <6c15d5db-4e87-dd49-d42a-2fcf08157b25@gmx.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+ <6ab45148-cf37-43cc-1bd0-809af792e24a@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <6ab45148-cf37-43cc-1bd0-809af792e24a@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zNb68EqJ1H8+6HZdwwlg3Ug5obVGHwhSI6gP/dAlsq6l5rHtKg4
+ jCEfHthg5n8b1nw9H3KHTyMJz8FStGuZT+MPHUpQuHIpilq2+vIooZziH05am3aPaTv1Ona
+ RETy3Nofh7qGVnOznTJG4v8HWFiZHf94ar1HzD5EcZu60ekbmJn5C+vSDjQRnQnSpJkgdaT
+ dxk8/kOEjkaxtaDtdhwRQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iRAoL/h6EzE=:JDSTdHAO/KVU/sYTkLVaSo
+ 9jBWAlCKyzl8+WMUlnsdKwIidrYdzm7kvF7Z8iiIr7aEjzNcF1iAB/hapLzFkma8QZ5v/oSFB
+ sLjL5x4mqtginEGNZgfFFCfOQ4CFdtLnwrLf/x6iwD49b9n2/gzbkAee+E04Oy3lCyKwlbXnL
+ q1b+xh2JxzheWlxEoNGrde2JQKfMKWmD/ogUjyNP5vyZVDMQD0w3TZB7SV3rHxd9yI0ur8aE4
+ TRtClkcS8ruuc7RNCIXu+4F6+Tj/MFvaIzZrKx338VvOzgmXJypLMIeGB6N8PB9ev4Z4agQU8
+ ZkRWQ7zQWANbL089OUGODQYchokWXTMz+dNdpMlHphym90ZLC4SpXfCysjR9qdB1hQPNggpOS
+ irMD1CnkAzgDjtjPmLi+O8ZL78TuOOoG/+0GEd5pixtL2+WrWvCjAylr8+gBfBd+hnPP594oG
+ TAwWS4aTrnGw1A9O0Ke38nLTaHV9XML6Y1DClvaYrASV8QqjzN38Kscw2hAdBoqeCgkWRx+YU
+ vPHmtxlcBHWnNsgtYZYJ63EjQL3GDiU3dDrDMznUObIyndQYIuJRJfDQA7POwnVxSQoUaCVxR
+ Sl5KNfreIg4qfegSDwaq85nucWJI7pmyLovYJToXBG0oQ4NyneTNiVSKXfXD8k3pyVp2/gMWi
+ 5wZ4SbMBuERpAuN+581EXNi65PIFCjJJ0Z1ZAZBNtHJiU9+BJk19sFIEhiqICkL9eAokneX2m
+ zF02gJggt8x6GNedY0qeyP+diQc7t1db/IejcEEpmMr+/oraXPj2CETfJEo7HpowrfV8irRnO
+ qWPj5RTkHolmaIrR9vSRjWBHIriAq5NY5yKR2EG6q4p8bGwuxoRr2EXLs8liZkIowLDxM0YYO
+ nWN9ite8Z+wl111XH+R3pxuNtAJ9rCzHesTyxK0Pt7ybxLs4qd4FGyNHeCmzZk+Y44uj8lTJd
+ 2uz/ThE/7tV8ZCrvwEP0gslJVAyY33WZeKXQI7xvbtEAo2wb7JiMDHpv5XKhzm1vhBMpGjpsN
+ w78pZqQ+6Fd5agUIEKI0+rCDsTXFUzGYiESdvYQjV8kNUsIvHqv1OAzjZ33lsdUOZjXkLNBp4
+ 3vyidrTRimWCK6jHR3snsZarq4a1l4rNYUpNYo7kg8mAl3hV/O2pSSJZQ==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,48 +77,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 09.08.2022 14:37, Qu Wenruo wrote:
-...
->>
->> I think what happened is having had mounted the FS twice by accident:
->> The former system (Mint 19.3/ext4) has been cloned to a USB-stick which
->> I can boot from.
->> In one such session I mounted the new btrfs nvme on the old system for
->> some data exchange.
->> I put the old system to hibernation but forgot to unmount the nvme prior
->> to that. :(
-> 
-> Hibernation, I'm not sure about the details, but it looks like there
-> were some corruption reports related to that.
-> 
->>
->> So when booting up the new system from the nvme it was like having had a
->> hard shutdown.
-> 
-> A hard shutdown to btrfs itself should not cause anything wrong, that's
-> ensured by its mandatory metadata COW.
-> 
->> So that in itself wouldn't be the problem, I'd think.
->> But the other day I again booted from the old system from its
->> hibernation with the forgotten nvme mounted.
-> 
-> Oh I got it now, it's not after the hibernation immediately, but the
-> resume from hibernation, and then some write into the already
-> out-of-sync fs caused the problem.
-> 
->> And that was the killer, I'd say, since a lot of metadata has changed on
->> that btrfs meanwhile.
-> 
-> Yes, I believe that's the case.
-> 
-...
-> 
-> Personally speaking, I never trust hibernation/suspension, although due
-> to other ACPI related reasons.
-> Now I won't even touch hibernation/suspension at all, just to avoid any
-> removable storage corruption.
-> 
 
-I wonder if it is possible to add resume hook to check that on-disk
-state matches in-memory state and go read-only if on-disk state changed.
-Checking current generation should be enough to detect it?
+
+On 2022/8/10 14:10, Andrei Borzenkov wrote:
+> On 09.08.2022 14:37, Qu Wenruo wrote:
+> ...
+>>>
+>>> I think what happened is having had mounted the FS twice by accident:
+>>> The former system (Mint 19.3/ext4) has been cloned to a USB-stick whic=
+h
+>>> I can boot from.
+>>> In one such session I mounted the new btrfs nvme on the old system for
+>>> some data exchange.
+>>> I put the old system to hibernation but forgot to unmount the nvme pri=
+or
+>>> to that. :(
+>>
+>> Hibernation, I'm not sure about the details, but it looks like there
+>> were some corruption reports related to that.
+>>
+>>>
+>>> So when booting up the new system from the nvme it was like having had=
+ a
+>>> hard shutdown.
+>>
+>> A hard shutdown to btrfs itself should not cause anything wrong, that's
+>> ensured by its mandatory metadata COW.
+>>
+>>> So that in itself wouldn't be the problem, I'd think.
+>>> But the other day I again booted from the old system from its
+>>> hibernation with the forgotten nvme mounted.
+>>
+>> Oh I got it now, it's not after the hibernation immediately, but the
+>> resume from hibernation, and then some write into the already
+>> out-of-sync fs caused the problem.
+>>
+>>> And that was the killer, I'd say, since a lot of metadata has changed =
+on
+>>> that btrfs meanwhile.
+>>
+>> Yes, I believe that's the case.
+>>
+> ...
+>>
+>> Personally speaking, I never trust hibernation/suspension, although due
+>> to other ACPI related reasons.
+>> Now I won't even touch hibernation/suspension at all, just to avoid any
+>> removable storage corruption.
+>>
+>
+> I wonder if it is possible to add resume hook to check that on-disk
+> state matches in-memory state and go read-only if on-disk state changed.
+
+AFAIK what we should do is, using hooks to unmount all removable disks,
+before entering suspension/hibernation.
+
+> Checking current generation should be enough to detect it?
+
+IMHO fs doesn't really have any way to know we're going into
+hibernation/suspension.
+
+If we have such mechanism, then yes it's possible.
+
+Thanks,
+Qu
