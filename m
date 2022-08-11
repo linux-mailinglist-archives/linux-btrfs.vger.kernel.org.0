@@ -2,361 +2,268 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8E158F787
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Aug 2022 08:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAF358F7B7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Aug 2022 08:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234038AbiHKGWT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Aug 2022 02:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
+        id S234012AbiHKGhd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Aug 2022 02:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234010AbiHKGWS (ORCPT
+        with ESMTP id S234248AbiHKGhS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Aug 2022 02:22:18 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC877D7B5
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Aug 2022 23:22:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1660198925;
-        bh=pDePluPPnM1jd0EuRdNmdKe4bCoC8jRAfZIJjSV+NXk=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=kdz55qeiZgUN/WxTQwFle5DmbltoLjr61quNmOItTRG3kHx7zml10zDHs+EGICESp
-         gz3kfMfO1/oPEer4g2G0Hl+C7UFcSRLe/7LE6WkKK8b/g5vIEquXL0dQTmxOOiypPF
-         Uoex3i85AqOiM/ydhXG+3TAL4enKf9tp5nnxb98s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOzOm-1o1E0W1tIi-00POY8; Thu, 11
- Aug 2022 08:22:05 +0200
-Message-ID: <5d90f06e-0ee0-4744-0c84-c8cddf2edef2@gmx.com>
-Date:   Thu, 11 Aug 2022 14:21:57 +0800
+        Thu, 11 Aug 2022 02:37:18 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3345770E5C
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Aug 2022 23:37:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D9589202C5
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Aug 2022 06:37:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1660199834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=tEg+cTL1n8bXlgmgF1qlxmA6NQvCGlmaszI2mlot0Wc=;
+        b=PI4TPeZmNwOQR8vvsvkuXSjB5cANAAb9/EULUixUXnQiL2eYh4r/wlZPyetGxovpUCXsFz
+        LS/UEZ91f8q/Z2J+wYyPz5xlxIxFcbHhmtlHnlBHSqpTYQWU0Ion0dJ1mOKG4afmac5U24
+        N6sf+PzvCLWNHSTG0/tvLn50Hj/ppXg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2B2BC1342A
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Aug 2022 06:37:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IDJgOJmj9GJ6IQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Aug 2022 06:37:13 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: check the superblock to ensure the fs is not modified at thaw time
+Date:   Thu, 11 Aug 2022 14:36:56 +0800
+Message-Id: <41c43c7d6aa25af13391905061e2d203f7853382.1660199812.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: [PATCH] btrfs-progs: Fix seed device bug for btrfs249
-Content-Language: en-US
-To:     hmsjwzb <hmsjwzb@zoho.com>, anand.jain@oracle.com,
-        nborisov@suse.com
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com,
-        josef@toxicpanda.com, clm@fb.com
-References: <20220810073347.4998-1-hmsjwzb@zoho.com>
- <d410d2f3-497c-d79b-f413-fbacc9211fac@gmx.com>
- <548b9707-1fbd-c906-b195-3b8ffe93863e@zoho.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <548b9707-1fbd-c906-b195-3b8ffe93863e@zoho.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2MlfDhKKHrVSC4CZ4en7M7r2r+asxaZw0l0aYQRSRk+jIlNcR/L
- rwlabVQal594cH7oDVquJWwKtK0INK4jWFGhsqCtiernBc66w0ULGTi7HL55w2h77N5qISf
- v5BosaL2AWBE3pfh5oZnJNB1I6WVlUh0teluH+NGjhfdMZ6Gaoido4N1EcTGrgSn8zEw5i5
- W8lfpn0w73Gs8EIpR+RwA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EFb4WlRjw78=:Oa5hifDyvPk+913YpNevam
- ESRqdvjB54W6n1AR7riAyitnIAHRTU57j5WIRl9SHBV1jUuM9hk2Bkv/J+MfDo/N8hJ4iCizY
- gCZFa+PSwdaWcf4rsrC/ro7AlsSgDNlcq5LNqxbppy96Xx0CQqi9X6u0ntirpLsl9lhYeF2D4
- 6pEWGUv9VXj6H4bImCPByLzoPKrtD2kohofAmqrfDx3+UXoP5kyfVtB3mdKPXS/LfAS8XTcmC
- /bKK1ifAzfyZMy7IC7XvvlffTRBTNoH1RGuChPX4IfXYP3HpOuUC0YI7Kpm+r9X6/7ytKXnmX
- pzWlZw/Km9QhGjOz9ud+Vecx3E2SSU6FDgLcNpMa7KCXpQL89gFXt+teEXLfwKu/xsa0YVo3b
- GCu7ajFvl9/Gzxirw7/o0SS+XdZcJJYh4K6+D/VE52bPkqw1GZuhKMtay8VG4qOaHOd8PJWrv
- ZjN7shAe8EMecOrsukQ+GbgCJG0QsSKKhRdjxFyMA9UH5ydSiz1eg3yOSsi68qukJDA5mZRb6
- VAR4Hwe5+munMnJZ7L207ysRr9rHTlp101KHHZCvXugxI4bQ6VeoniSP2O67sufCS/IJzWyoC
- uslNqFoCz9DnwM3V02QujDcR6zZo4F+iTlP3YPSXRVvjhHav4PxbozzjRFp6eKo053vRGklAz
- HFYICVzAHnP5H46tngfs0kPI8eC6N61aeiqZuNU2J2E4ZjmPWsb9j3NB7WhgiC8Vy6z0IoltV
- OOMR1dNyBHRhmZOmMLtS95BMVjGblNYjlAU4BIzrAgwKnA5CDOPw1sMeXH1gCyRDFKZ9LUzrM
- rTexBK7ua4KLxKyXMmvKzMh/CxQe9oydh7+jV/NOXmFiLbBrwQ9FpCvwBRev9vBa0r3PuQa4J
- ihddVI21VQ4x3fln7RlMGvM4JoUBFSyajziOpEq16o6gTQb1xujT1WjO1w04bdvsZYjJxOqnB
- 29WETaYMu5w9jEmDzpAxnuHkr41iETMNPsX2/NU//2Z9VOUnDbdE67rTiLr6HOTVm1ZbLFCEK
- ALOjDniBfnm9PB8xK9AFGwefwguaBovqZ2+/qrK9R1jq2Nart92TAvgu2BP5syrkXnTPSCbZK
- VOGFGOSpQTEHYkbFbRYh4xpocRispGMctmWLfd4yG2M30L/LpH35JqCNQ==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BACKGROUND]
+There is an incident report that, one user hibernated the system, with
+one btrfs on removable device still mounted.
 
+Then by some incident, the btrfs got mounted and modified by another
+system/OS, then back to the hibernated system.
 
-On 2022/8/11 14:07, hmsjwzb wrote:
-> Hi Qu,
->
-> Thanks for you reply. I am working on the tree-search based solution.
-> I have got the btrfs_dev_item from the chunk tree.
-> But I don't know how to tell whether it is a seed device.
+After resuming from the hibernation, new write happened into the victim btrfs.
 
-You can check the fsid.
+Now the fs is completely broken, since the underlying btrfs is no longer
+the same one before the hibernation, and the user lost their data due to
+various transid mismatch.
 
-Seed device has a different fsid than the one returned by BTRFS_IOC_FS_INF=
-O.
+[REPRODUCER]
+We can emulate the situation using the following small script:
 
-Thanks,
-Qu
+ truncate -s 1G $dev
+ mkfs.btrfs -f $dev
+ mount $dev $mnt
+ fsstress -w -d $mnt -n 500
+ sync
+ xfs_freeze -f $mnt
+ cp $dev $dev.backup
 
-> Do you have some solution to tell whether it is a seed device or not?
->
-> Thanks,
-> Flint
->
-> On 8/10/22 03:56, Qu Wenruo wrote:
->> Commit message please.
->>
->> On 2022/8/10 15:33, Flint.Wang wrote:
->>> Signed-off-by: Flint.Wang <hmsjwzb@zoho.com>
->>> ---
->>>  =C2=A0 cmds/device.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |=C2=A0 2 +-
->>>  =C2=A0 cmds/filesystem-usage.c | 10 +++++-----
->>>  =C2=A0 cmds/filesystem-usage.h |=C2=A0 2 +-
->>>  =C2=A0 common/utils.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 |=C2=A0 9 +++++----
->>>  =C2=A0 common/utils.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 |=C2=A0 2 +-
->>>  =C2=A0 ioctl.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 ++
->>>  =C2=A0 6 files changed, 15 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/cmds/device.c b/cmds/device.c
->>> index 7d3febff..81559110 100644
->>> --- a/cmds/device.c
->>> +++ b/cmds/device.c
->>> @@ -752,7 +752,7 @@ static int _cmd_device_usage(int fd, const char *p=
-ath, unsigned unit_mode)
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int devcount =3D 0;
->>>
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D load_chunk_and_device_info(fd,=
- &chunkinfo, &chunkcount, &devinfo,
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &d=
-evcount);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &d=
-evcount, false);
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
->>>
->>> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
->>> index 01729e18..b2ed3212 100644
->>> --- a/cmds/filesystem-usage.c
->>> +++ b/cmds/filesystem-usage.c
->>> @@ -693,7 +693,7 @@ out:
->>>  =C2=A0=C2=A0 *=C2=A0 This function loads the device_info structure an=
-d put them in an array
->>>  =C2=A0=C2=A0 */
->>>  =C2=A0 static int load_device_info(int fd, struct device_info **devic=
-e_info_ptr,
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 int *device_info_count)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 int *device_info_count, bool noseed)
->>>  =C2=A0 {
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret, i, ndevs;
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_fs_info_args fi_arg=
-s;
->>> @@ -727,7 +727,7 @@ static int load_device_info(int fd, struct device_=
-info **device_info_ptr,
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 goto out;
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(&dev_in=
-fo, 0, sizeof(dev_info));
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
-, i, &dev_info);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
-, i, &dev_info, noseed);
->>>
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D=
- -ENODEV)
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 continue;
->>> @@ -779,7 +779,7 @@ out:
->>>  =C2=A0 }
->>>
->>>  =C2=A0 int load_chunk_and_device_info(int fd, struct chunk_info **chu=
-nkinfo,
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int *chunkcount, struct de=
-vice_info **devinfo, int *devcount)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int *chunkcount, struct de=
-vice_info **devinfo, int *devcount, bool noseed)
->>>  =C2=A0 {
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>>
->>> @@ -791,7 +791,7 @@ int load_chunk_and_device_info(int fd, struct chun=
-k_info **chunkinfo,
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>
->>> -=C2=A0=C2=A0=C2=A0 ret =3D load_device_info(fd, devinfo, devcount);
->>> +=C2=A0=C2=A0=C2=A0 ret =3D load_device_info(fd, devinfo, devcount, no=
-seed);
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D -EPERM) {
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 warning(
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "cannot get fi=
-lesystem info from ioctl(FS_INFO), run as root");
->>> @@ -1172,7 +1172,7 @@ static int cmd_filesystem_usage(const struct cmd=
-_struct *cmd,
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 printf("\n");
->>>
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D load_c=
-hunk_and_device_info(fd, &chunkinfo, &chunkcount,
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 &devinfo, &devcount);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 &devinfo, &devcount, true);
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 goto cleanup;
->>>
->>> diff --git a/cmds/filesystem-usage.h b/cmds/filesystem-usage.h
->>> index cab38462..6fd04172 100644
->>> --- a/cmds/filesystem-usage.h
->>> +++ b/cmds/filesystem-usage.h
->>> @@ -45,7 +45,7 @@ struct chunk_info {
->>>  =C2=A0 };
->>>
->>>  =C2=A0 int load_chunk_and_device_info(int fd, struct chunk_info **chu=
-nkinfo,
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int *chunkcount, struct de=
-vice_info **devinfo, int *devcount);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int *chunkcount, struct de=
-vice_info **devinfo, int *devcount, bool noseed);
->>>  =C2=A0 void print_device_chunks(struct device_info *devinfo,
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct chunk_i=
-nfo *chunks_info_ptr,
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int chunks_inf=
-o_count, unsigned unit_mode);
->>> diff --git a/common/utils.c b/common/utils.c
->>> index 1ed5571f..72d50885 100644
->>> --- a/common/utils.c
->>> +++ b/common/utils.c
->>> @@ -285,14 +285,15 @@ void btrfs_format_csum(u16 csum_type, const u8 *=
-data, char *output)
->>>  =C2=A0 }
->>>
->>>  =C2=A0 int get_device_info(int fd, u64 devid,
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_dev_inf=
-o_args *di_args)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_dev_inf=
-o_args *di_args, bool noseed)
->>>  =C2=A0 {
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>> +=C2=A0=C2=A0=C2=A0 unsigned long req =3D noseed ? BTRFS_IOC_DEV_INFO_=
-NOSEED : BTRFS_IOC_DEV_INFO;
->>>
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 di_args->devid =3D devid;
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(&di_args->uuid, '\0', sizeof(di=
-_args->uuid));
->>>
->>> -=C2=A0=C2=A0=C2=A0 ret =3D ioctl(fd, BTRFS_IOC_DEV_INFO, di_args);
->>> +=C2=A0=C2=A0=C2=A0 ret =3D ioctl(fd, req, di_args);
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret < 0 ? -errno : 0;
->>>  =C2=A0 }
->>>
->>> @@ -498,7 +499,7 @@ int get_fs_info(const char *path, struct btrfs_ioc=
-tl_fs_info_args *fi_args,
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * search=
-_chunk_tree_for_fs_info() will lacks the devid 0
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * so man=
-ual probe for it here.
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
-, 0, &tmp);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
-, 0, &tmp, false);
->>
->> No, I don't think we should go that complex.
->>
->> The root cause is pretty simple, btrfs_ioctl_fs_info() just return RW
->> devices for its fi_args->num_devices.
->>
->> This is fine for most cases, but for seed devices cases, we can not rel=
-y
->> on that.
->>
->>
->> Knowing that, it's much easier to fix in user space, do a tree-search
->> ioctl to grab the device items from chunk tree, then we can easily chec=
-k
->> the total number of devices (including RW and seed devices).
->>
->> With that info, we even have the FSID of each devices, then we can call
->> btrfs_ioctl_dev_info() to get each device.
->>
->>
->> I'd like to have a better optimization, to skip above chunk tree search=
-,
->> but I don't have a quick idea on how to determine if a fs has seed devi=
-ces.
->>
->>
->> Another more elegant solution is to make btrfs_ioctl_fs_info_args to
->> include one new member, total_devs, so that we can get rid of all the
->> problems.
->>
->> But for compatibility reasons, above tree-search based solution is stil=
-l
->> needed as a fallback.
->>
->> Thanks,
->> Qu
->>
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!ret) {
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 fi_args->num_devices++;
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 ndevs++;
->>> @@ -521,7 +522,7 @@ int get_fs_info(const char *path, struct btrfs_ioc=
-tl_fs_info_args *fi_args,
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memcpy(di_args=
-, &tmp, sizeof(tmp));
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (; last_devid <=3D fi_args->max_id=
- && ndevs < fi_args->num_devices;
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 last_dev=
-id++) {
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
-, last_devid, &di_args[ndevs]);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
-, last_devid, &di_args[ndevs], false);
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D=
- -ENODEV)
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 continue;
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
->>> diff --git a/common/utils.h b/common/utils.h
->>> index ea05fe5b..de4f93ca 100644
->>> --- a/common/utils.h
->>> +++ b/common/utils.h
->>> @@ -68,7 +68,7 @@ int lookup_path_rootid(int fd, u64 *rootid);
->>>  =C2=A0 int find_mount_fsroot(const char *subvol, const char *subvolid=
-, char **mount);
->>>  =C2=A0 int find_mount_root(const char *path, char **mount_root);
->>>  =C2=A0 int get_device_info(int fd, u64 devid,
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_dev_inf=
-o_args *di_args);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_dev_inf=
-o_args *di_args, bool noseed);
->>>  =C2=A0 int get_df(int fd, struct btrfs_ioctl_space_args **sargs_ret);
->>>
->>>  =C2=A0 const char *subvol_strip_mountpoint(const char *mnt, const cha=
-r *full_path);
->>> diff --git a/ioctl.h b/ioctl.h
->>> index 368a87b2..e68fe58d 100644
->>> --- a/ioctl.h
->>> +++ b/ioctl.h
->>> @@ -883,6 +883,8 @@ static inline char *btrfs_err_str(enum btrfs_err_c=
-ode err_code)
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioc=
-tl_scrub_args)
->>>  =C2=A0 #define BTRFS_IOC_DEV_INFO _IOWR(BTRFS_IOCTL_MAGIC, 30, \
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioc=
-tl_dev_info_args)
->>> +#define BTRFS_IOC_DEV_INFO_NOSEED _IOR(BTRFS_IOCTL_MAGIC, 30, \
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btr=
-fs_ioctl_dev_info_args)
->>>  =C2=A0 #define BTRFS_IOC_FS_INFO _IOR(BTRFS_IOCTL_MAGIC, 31, \
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btr=
-fs_ioctl_fs_info_args)
->>>  =C2=A0 #define BTRFS_IOC_BALANCE_V2 _IOWR(BTRFS_IOCTL_MAGIC, 32, \
+ # There is no way to mount the same cloned fs on the same system,
+ # as the conflicting fsid will be rejected by btrfs.
+ # Thus here we have to wipe the fs using a different btrfs.
+ mkfs.btrfs -f $dev.backup
+
+ dd if=$dev.backup of=$dev bs=1M
+ xfs_freeze -u $mnt
+ fsstress -w -d $mnt -n 20
+ umount $mnt
+ btrfs check $dev
+
+The final fsck will fail due to some tree blocks has incorrect fsid.
+
+This is enough to emulate the problem hit by the unfortunate user.
+
+[ENHANCEMENT]
+Although such case should not be that common, it can still happen from
+time to time.
+
+From the view of btrfs, we can detect any unexpected super block change,
+and if there is any unexpected change, we just mark the fs RO, and thaw
+the fs.
+
+By this we can limit the damage to minimal, and I hope no one would lose
+their data by this anymore.
+
+Link: https://lore.kernel.org/linux-btrfs/83bf3b4b-7f4c-387a-b286-9251e3991e34@bluemole.com/
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/disk-io.c |  9 +++++--
+ fs/btrfs/disk-io.h |  2 +-
+ fs/btrfs/ioctl.c   |  2 ++
+ fs/btrfs/super.c   | 58 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c |  2 +-
+ 5 files changed, 69 insertions(+), 4 deletions(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 6268dafeeb2d..7d99c42bdc51 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3849,7 +3849,7 @@ static void btrfs_end_super_write(struct bio *bio)
+ }
+ 
+ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
+-						   int copy_num)
++						   int copy_num, bool drop_cache)
+ {
+ 	struct btrfs_super_block *super;
+ 	struct page *page;
+@@ -3867,6 +3867,11 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
+ 	if (bytenr + BTRFS_SUPER_INFO_SIZE >= bdev_nr_bytes(bdev))
+ 		return ERR_PTR(-EINVAL);
+ 
++	if (drop_cache)
++		truncate_inode_pages_range(bdev->bd_inode->i_mapping,
++				round_down(bytenr, PAGE_SIZE),
++				round_up(bytenr + BTRFS_SUPER_INFO_SIZE,
++					 PAGE_SIZE) - 1);
+ 	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
+ 	if (IS_ERR(page))
+ 		return ERR_CAST(page);
+@@ -3898,7 +3903,7 @@ struct btrfs_super_block *btrfs_read_dev_super(struct block_device *bdev)
+ 	 * later supers, using BTRFS_SUPER_MIRROR_MAX instead
+ 	 */
+ 	for (i = 0; i < 1; i++) {
+-		super = btrfs_read_dev_one_super(bdev, i);
++		super = btrfs_read_dev_one_super(bdev, i, false);
+ 		if (IS_ERR(super))
+ 			continue;
+ 
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 47ad8e0a2d33..d0946f502f62 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -49,7 +49,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info);
+ int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirrors);
+ struct btrfs_super_block *btrfs_read_dev_super(struct block_device *bdev);
+ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
+-						   int copy_num);
++						   int copy_num, bool drop_cache);
+ int btrfs_commit_super(struct btrfs_fs_info *fs_info);
+ struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
+ 					struct btrfs_key *key);
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index fe0cc816b4eb..c06d5e725cd8 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3690,6 +3690,8 @@ static long btrfs_ioctl_fs_info(struct btrfs_fs_info *fs_info,
+ 			fi_args->max_id = device->devid;
+ 	}
+ 	rcu_read_unlock();
++	pr_info("%s: num_devices=%llu max=%llu\n", __func__,
++		fs_devices->num_devices, fi_args->max_id);
+ 
+ 	memcpy(&fi_args->fsid, fs_devices->fsid, sizeof(fi_args->fsid));
+ 	fi_args->nodesize = fs_info->nodesize;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 4c7089b1681b..3d53cf1501ae 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -2548,11 +2548,69 @@ static int btrfs_freeze(struct super_block *sb)
+ 	return btrfs_commit_transaction(trans);
+ }
+ 
++static int check_dev_super(struct btrfs_device *dev)
++{
++	struct btrfs_fs_info *fs_info = dev->fs_info;
++	struct btrfs_super_block *sb;
++	int ret = 0;
++
++	/* This should be called with fs still frozen. */
++	ASSERT(test_bit(BTRFS_FS_FROZEN, &fs_info->flags));
++
++	/* Missing dev,  no need to check. */
++	if (!dev->bdev)
++		return 0;
++
++	/* Only need to check the primary super block. */
++	sb = btrfs_read_dev_one_super(dev->bdev, 0, true);
++	if (IS_ERR(sb))
++		return PTR_ERR(sb);
++
++	if (memcmp(sb->fsid, dev->fs_devices->fsid, BTRFS_FSID_SIZE)) {
++		btrfs_err(fs_info, "fsid doesn't match, has %pU expect %pU",
++			  sb->fsid, dev->fs_devices->fsid);
++		ret = -EUCLEAN;
++		goto out;
++	}
++
++	if (btrfs_super_generation(sb) != fs_info->last_trans_committed) {
++		btrfs_err(fs_info, "transid mismatch, has %llu expect %llu",
++			btrfs_super_generation(sb),
++			fs_info->last_trans_committed);
++		ret = -EUCLEAN;
++		goto out;
++	}
++out:
++	btrfs_release_disk_super(sb);
++	return ret;
++}
++
+ static int btrfs_unfreeze(struct super_block *sb)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
++	struct btrfs_device *device;
++	int ret = 0;
+ 
++	/*
++	 * Make sure the fs is not changed by accident (like hibernation then
++	 * modified by other OS).
++	 * If we found anything wrong, we mark the fs error immediately.
++	 */
++	list_for_each_entry(device, &fs_info->fs_devices->devices, dev_list) {
++		ret = check_dev_super(device);
++		if (ret < 0) {
++			btrfs_handle_fs_error(fs_info, ret,
++				"filesystem got modified unexpectedly");
++			break;
++		}
++	}
+ 	clear_bit(BTRFS_FS_FROZEN, &fs_info->flags);
++
++	/*
++	 * We still return 0, to allow VFS layer to unfreeze the fs even above
++	 * checks failed. This allows VFS to unfreeze us, and since the
++	 * fs is either fine or RO, we're safe to continue.
++	 */
+ 	return 0;
+ }
+ 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 8c64dda69404..a02066ae5812 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -2017,7 +2017,7 @@ void btrfs_scratch_superblocks(struct btrfs_fs_info *fs_info,
+ 		struct page *page;
+ 		int ret;
+ 
+-		disk_super = btrfs_read_dev_one_super(bdev, copy_num);
++		disk_super = btrfs_read_dev_one_super(bdev, copy_num, false);
+ 		if (IS_ERR(disk_super))
+ 			continue;
+ 
+-- 
+2.37.1
+
