@@ -2,833 +2,361 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5E258F772
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Aug 2022 08:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8E158F787
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Aug 2022 08:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233483AbiHKGJn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Aug 2022 02:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47874 "EHLO
+        id S234038AbiHKGWT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Aug 2022 02:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbiHKGJm (ORCPT
+        with ESMTP id S234010AbiHKGWS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Aug 2022 02:09:42 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0347C19E;
-        Wed, 10 Aug 2022 23:09:39 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id l188so20159152oia.4;
-        Wed, 10 Aug 2022 23:09:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=ETA8bDvdUvhDtSq22x3oJI/mQy0RdyF/anflw5a+Rzg=;
-        b=pf1Lv7PL3btk/QM7CjF0+x3k8LyqdZjbyo63A2WC5/Hc8/wqVeXnMS5YG/vZE26fHC
-         0GEZQ0lxkNNScq5OvejnDRHDCYM8w/p2wbUfgk17o2ls8RUnZWMPEBSntr7Aa5+qNchp
-         ncRFH1QjOUT30TH8yf8nndEOTuQsGpTHRYKJiKg8CW5LzosNl96pBxsPm9KcAcnnakRO
-         8ItpVKpuZCeosl0pUyJgodf49f1nJwg6QGOYUWxd7RvIm2hbZmw48/pxlWpax5vI7zBu
-         MowWQMFALuXbqKPAmm2izDg85FkAC+mnshnyhcaTr7zzi+WD3ZDFqfoAw4t6HmEb8ALg
-         dLIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=ETA8bDvdUvhDtSq22x3oJI/mQy0RdyF/anflw5a+Rzg=;
-        b=Xc33McYcJGuakQx9C83cbz4h+n1j+n/Hwu1IW1nxc4OrGIBsONavL4VGnjAhAxUav2
-         +JZNcESiVPPpXfaruXxqruH8KtdemEDBbz+uC/+l9gINKRCD2L8BQ6xbL7nXIpqgllxX
-         n27YAUXo0AQjZo0do2p5KBXVJB1F+Rz5bAMalQ9iPz4pJAox+Q85AQQvvzDxeasMmFu4
-         MAX++r6RykO9JvYVjmyCzwm3GUlzTSmwdFaUycBcKzeLCGcUfeh0nN6vgWSXLIGiaZOs
-         YXekLOZfMOq10GhLrk3lr2aONC2PmZRAtqRcFviiTZOkLguzfLJ6nNps1dbi6CkSu3zd
-         R1fQ==
-X-Gm-Message-State: ACgBeo13bO+FZiKD6HC6Ewehlk63Hlm8A2mxobnVdOg8Cf6LPojWAmN7
-        M9J6dHzXq+8dTxn4nCGfOjsEuZnxa04abJmli+0=
-X-Google-Smtp-Source: AA6agR43GaE23Y1aG1Y6opNXvmhbtl987//TWKPaCxlrxLspbqxYYPqhszvZ+pR2qWt8U2bjN5OYMHO9bkrzRfjqYLg=
-X-Received: by 2002:a05:6808:6da:b0:342:cf1e:45be with SMTP id
- m26-20020a05680806da00b00342cf1e45bemr2815357oih.138.1660198178175; Wed, 10
- Aug 2022 23:09:38 -0700 (PDT)
+        Thu, 11 Aug 2022 02:22:18 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC877D7B5
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Aug 2022 23:22:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1660198925;
+        bh=pDePluPPnM1jd0EuRdNmdKe4bCoC8jRAfZIJjSV+NXk=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=kdz55qeiZgUN/WxTQwFle5DmbltoLjr61quNmOItTRG3kHx7zml10zDHs+EGICESp
+         gz3kfMfO1/oPEer4g2G0Hl+C7UFcSRLe/7LE6WkKK8b/g5vIEquXL0dQTmxOOiypPF
+         Uoex3i85AqOiM/ydhXG+3TAL4enKf9tp5nnxb98s=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOzOm-1o1E0W1tIi-00POY8; Thu, 11
+ Aug 2022 08:22:05 +0200
+Message-ID: <5d90f06e-0ee0-4744-0c84-c8cddf2edef2@gmx.com>
+Date:   Thu, 11 Aug 2022 14:21:57 +0800
 MIME-Version: 1.0
-References: <20220808102735.4556-1-bingjingc@synology.com> <20220808102735.4556-3-bingjingc@synology.com>
- <CAL3q7H5Rr6DAQ+rFJUu8aWnGTVkd1GiP2o4_6k93hc1DXcCi1A@mail.gmail.com>
-In-Reply-To: <CAL3q7H5Rr6DAQ+rFJUu8aWnGTVkd1GiP2o4_6k93hc1DXcCi1A@mail.gmail.com>
-From:   bingjing chang <bxxxjxxg@gmail.com>
-Date:   Thu, 11 Aug 2022 14:09:26 +0800
-Message-ID: <CAMmgxWH9sy-yLK54p+zLqAETnf736euhdfw5bC33nmX_MsGqpg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btrfs: send: fix a bug that sending unlink commands
- for directories
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     bingjingc <bingjingc@synology.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Robbie Ko <robbieko@synology.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Subject: Re: [PATCH] btrfs-progs: Fix seed device bug for btrfs249
+Content-Language: en-US
+To:     hmsjwzb <hmsjwzb@zoho.com>, anand.jain@oracle.com,
+        nborisov@suse.com
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        josef@toxicpanda.com, clm@fb.com
+References: <20220810073347.4998-1-hmsjwzb@zoho.com>
+ <d410d2f3-497c-d79b-f413-fbacc9211fac@gmx.com>
+ <548b9707-1fbd-c906-b195-3b8ffe93863e@zoho.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <548b9707-1fbd-c906-b195-3b8ffe93863e@zoho.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Provags-ID: V03:K1:2MlfDhKKHrVSC4CZ4en7M7r2r+asxaZw0l0aYQRSRk+jIlNcR/L
+ rwlabVQal594cH7oDVquJWwKtK0INK4jWFGhsqCtiernBc66w0ULGTi7HL55w2h77N5qISf
+ v5BosaL2AWBE3pfh5oZnJNB1I6WVlUh0teluH+NGjhfdMZ6Gaoido4N1EcTGrgSn8zEw5i5
+ W8lfpn0w73Gs8EIpR+RwA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EFb4WlRjw78=:Oa5hifDyvPk+913YpNevam
+ ESRqdvjB54W6n1AR7riAyitnIAHRTU57j5WIRl9SHBV1jUuM9hk2Bkv/J+MfDo/N8hJ4iCizY
+ gCZFa+PSwdaWcf4rsrC/ro7AlsSgDNlcq5LNqxbppy96Xx0CQqi9X6u0ntirpLsl9lhYeF2D4
+ 6pEWGUv9VXj6H4bImCPByLzoPKrtD2kohofAmqrfDx3+UXoP5kyfVtB3mdKPXS/LfAS8XTcmC
+ /bKK1ifAzfyZMy7IC7XvvlffTRBTNoH1RGuChPX4IfXYP3HpOuUC0YI7Kpm+r9X6/7ytKXnmX
+ pzWlZw/Km9QhGjOz9ud+Vecx3E2SSU6FDgLcNpMa7KCXpQL89gFXt+teEXLfwKu/xsa0YVo3b
+ GCu7ajFvl9/Gzxirw7/o0SS+XdZcJJYh4K6+D/VE52bPkqw1GZuhKMtay8VG4qOaHOd8PJWrv
+ ZjN7shAe8EMecOrsukQ+GbgCJG0QsSKKhRdjxFyMA9UH5ydSiz1eg3yOSsi68qukJDA5mZRb6
+ VAR4Hwe5+munMnJZ7L207ysRr9rHTlp101KHHZCvXugxI4bQ6VeoniSP2O67sufCS/IJzWyoC
+ uslNqFoCz9DnwM3V02QujDcR6zZo4F+iTlP3YPSXRVvjhHav4PxbozzjRFp6eKo053vRGklAz
+ HFYICVzAHnP5H46tngfs0kPI8eC6N61aeiqZuNU2J2E4ZjmPWsb9j3NB7WhgiC8Vy6z0IoltV
+ OOMR1dNyBHRhmZOmMLtS95BMVjGblNYjlAU4BIzrAgwKnA5CDOPw1sMeXH1gCyRDFKZ9LUzrM
+ rTexBK7ua4KLxKyXMmvKzMh/CxQe9oydh7+jV/NOXmFiLbBrwQ9FpCvwBRev9vBa0r3PuQa4J
+ ihddVI21VQ4x3fln7RlMGvM4JoUBFSyajziOpEq16o6gTQb1xujT1WjO1w04bdvsZYjJxOqnB
+ 29WETaYMu5w9jEmDzpAxnuHkr41iETMNPsX2/NU//2Z9VOUnDbdE67rTiLr6HOTVm1ZbLFCEK
+ ALOjDniBfnm9PB8xK9AFGwefwguaBovqZ2+/qrK9R1jq2Nart92TAvgu2BP5syrkXnTPSCbZK
+ VOGFGOSpQTEHYkbFbRYh4xpocRispGMctmWLfd4yG2M30L/LpH35JqCNQ==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Filipe,
 
-Thank you for your review and the detailed comments.
-I will submit a patch v2 to fix unclear sentences and problem you mentioned=
-.
 
-Filipe Manana <fdmanana@kernel.org> =E6=96=BC 2022=E5=B9=B48=E6=9C=889=E6=
-=97=A5 =E9=80=B1=E4=BA=8C =E5=87=8C=E6=99=A812:23=E5=AF=AB=E9=81=93=EF=BC=
-=9A
+On 2022/8/11 14:07, hmsjwzb wrote:
+> Hi Qu,
 >
-> On Mon, Aug 8, 2022 at 11:27 AM bingjingc <bingjingc@synology.com> wrote:
-> >
-> > From: BingJing Chang <bingjingc@synology.com>
-> >
->
-> Reading the subject is confusing, something sounds off:
->
-> "btrfs: send: fix a bug that sending unlink commands for directories"
->
-> May I suggest something more clear like:
->
-> "btrfs: send: fix failures when processing inodes with no links"
->
-> Since it does not only address the case of directories but also for
-> regular files on the parent snapshot,
-> as you mention further below in the changelog.
+> Thanks for you reply. I am working on the tree-search based solution.
+> I have got the btrfs_dev_item from the chunk tree.
+> But I don't know how to tell whether it is a seed device.
 
-Yes, I tried to handle all orphan cases I can come up with.
-Your suggested subject is better and clear. Thank you for the subject.
+You can check the fsid.
 
->
-> > There is a bug sending unlink commands for directories. In
-> > commit 46b2f4590aab ("Btrfs: fix send failure when root has deleted fil=
-es
-> > still open")', orphan inode issue was addressed. There're no reference
-> > paths for these orphan inodes, so the send operation fails with an ENOE=
-NT
-> > error. Therefore, in that patch, sctx->ignore_cur_inode was introduced =
-to
-> > be set if the current inode has a link count of zero for bypassing some
-> > unnecessary steps. And a helper function btrfs_unlink_all_paths() was
-> > introduced and called to clean up old reference paths found in the pare=
-nt
-> > snapshot. However, not only regular files but also directories can be
-> > orphan inodes. So if it meets an orphan directory, a wrong unlink comma=
-nd
-> > for this directory will be issued. Soon the unlink command fails with a=
-n
-> > EISDIR error.
->
-> So, there are two things happening:
->
-> 1) Send fails with -ENOENT, because it tries to generate a path for a dir=
-ectory
-> that has no links. This is just like the case of a regular file before
-> commit 46b2f4590aab.
->
-> 2) Before the send ioctl failed with -ENOENT, it generated an unlink
-> command for the
-> directory. This is the only part you mention.
->
+Seed device has a different fsid than the one returned by BTRFS_IOC_FS_INF=
+O.
 
-Yes, that's all what happened. I should have mentioned that the send
-operation would also fail with -ENOENT. But I only addressed the first
-problem the receive operation met. I will mention both in the patch v2.
+Thanks,
+Qu
 
-> >
-> > Similar example but making an orphan dir for an incremental send:
-> >
-> >   $ btrfs subvolume create vol
-> >   $ mkdir vol/dir
-> >   $ touch vol/dir/foo
-> >
-> >   $ btrfs subvolume snapshot -r vol snap1
-> >   $ btrfs subvolume snapshot -r vol snap2
-> >
-> >   # Turn the second snapshot to RW mode and delete the whole dir while
-> >   # holding an open file descriptor on it.
-> >   $ btrfs property set snap2 ro false
-> >   $ exec 73<snap2/dir
-> >   $ rm -rf snap2/dir
-> >
-> >   # Set the second snapshot back to RO mode and do an incremental send.
-> >   $ btrfs property set snap2 ro true
-> >   $ mkdir receive_dir
-> >   $ btrfs send snap2 -p snap1 | btrfs receive receive_dir/
-> >   At subvol snap2
-> >   ERROR: unlink dir failed. Is a directory
+> Do you have some solution to tell whether it is a seed device or not?
 >
-> So running your reproducer, I get send failing with -ENOENT, but oddly in=
- your
-> output that doesn't happen. Perhaps that's when running with some
-> custom and specific
-> synology codebase? Or you unintentionally omitted a part of the output?
+> Thanks,
+> Flint
 >
-I tried to reproduce the problem in my Ubuntu machine and made a mistake.
-Since I just wanted to address only the unlink issue in patch v1, I guess t=
-hat
-I piped the stderr to /dev/null for the send operation like:
-$ btrfs send snap2 -p snap1 2>/dev/null | btrfs receive receive_dir/
-But I made a mistake removing the pipe command from the example.
-
-> This is what I get:
->
-> $ cat test.sh
-> #!/bin/bash
->
-> DEV=3D/dev/sdj
-> MNT=3D/mnt/sdj
->
-> umount $DEV &>/dev/null
-> mkfs.btrfs -f $DEV 2>/dev/null
-> mount $DEV $MNT
->
-> btrfs subvolume create $MNT/vol
-> mkdir $MNT/vol/dir
-> touch $MNT/vol/dir/foo
->
-> btrfs subvolume snapshot -r $MNT/vol $MNT/snap1
-> btrfs subvolume snapshot -r $MNT/vol $MNT/snap2
->
-> # Turn the second snapshot to RW mode and delete the whole dir while
-> # holding an open file descriptor on it.
-> btrfs property set $MNT/snap2 ro false
-> exec 73<$MNT/snap2/dir
-> rm -rf $MNT/snap2/dir
->
-> # Set the second snapshot back to RO mode and do an incremental send.
-> btrfs property set $MNT/snap2 ro true
-> mkdir $MNT/receive_dir
-> btrfs send $MNT/snap2 -p $MNT/snap1 | btrfs receive $MNT/receive_dir/
->
-> $ ./test.sh
-> (...)
-> Create subvolume '/mnt/sdj/vol'
-> Create a readonly snapshot of '/mnt/sdj/vol' in '/mnt/sdj/snap1'
-> Create a readonly snapshot of '/mnt/sdj/vol' in '/mnt/sdj/snap2'
-> At subvol /mnt/sdj/snap2
-> At snapshot snap2
-> ERROR: send ioctl failed with -2: No such file or directory
-> ERROR: unlink dir failed: Is a directory
->
-> >
-> > Actually, orphan inodes are more common use cases in cascading backups.
-> > (Please see the illustration below.) In a cascading backup, a user want=
-s
-> > to replicate a couple of snapshots from Machine A to Machine B and from
-> > Machine B to Machine C. Machine B doesn't take any RO snapshots for
-> > sending. All a receiver does is clone an RW subvolume from its parent
->
-> What do you mean by cloning a RW subvolume?
-> Create a (RW) snapshot of it? Please make it more clear in the next
-> patch version.
->
-> > snapshot, replay the changes and turn it into RO mode at the end. After
-> > all reference paths of some inodes are deleted in applying changes,
->
-> "reference paths" is confusing, just say paths only.
->
-> "in applying changes" -> "when applying the send stream"
->
-> > there's no guarantee that orphan inodes will be cleaned up after subvol=
-umes
-> > are turned into RO mode.
->
-> Orphan cleanup is not supposed to happen when changing the subvolume
-> state from RW to RO (and vice versa).
-> Once an inode's link count drops to 0, it's marked as an orphan for
-> cleanup, but the cleanup only happens later,
-> more on this below.
->
-> > Moreover, orphan inodes can occur not only in send
-> > snapshots but also in parent snapshots because Machine B may do a batch
-> > replication of a couple of snapshots.
-> >
-> > An illustration for cascading backups:
-> > Machine A (snapshot {1..n}) --> Machine B --> Machine C
-> >
-> > The intuition to solve the problem is to do orphan cleanups before usin=
-g
-> > these snapshots for sending. The more reasonable timing is doing orphan
-> > cleanups during the ioctl of turning an RW subvolume into an RO snapsho=
-t.
->
-> No, attempting to do orphan cleanup in the ioctl would be pointless.
-> More details below.
->
-> The cleanup, deleting the inode's items etc, can not happen while
-> someone is using a file descriptor for the inode,
-> which is precisely the case in the reproducer above.
->
-> It will happen only once the reference count on the inode drops to 0
-> (after the last file descriptor is closed).
-> The final iput() triggers the eviction, which will delete all the
-> inode items, etc, if the inode still has a link count of 0.
->
-> > And it's also because an RO snapshot is regarded that the fs tree has
-> > already frozen and will never be adjusted anymore.
->
-> We can do orphan cleanup on a RO subvolume/snapshot - that's not a
-> problem. We only skip orphan cleanup
-> when the fs is mounted in RO mode. It's just pointless for the type of
-> reproducer you provided, see below.
->
-
-Thank you for the detailed explanation. Saying doing orphan cleanup here
-is not clear. The actual goal is to delete all the items of orphan inodes
-before using these snapshots for sending. And the evictions of them
-are not promised after doing an orphan cleanup because there can be
-some file descriptors still hold on those inodes. So you said attempting to
-do orphan cleanup in the ioctl would be pointless. I will revised this
-paragraph.
-
-> > However, that would make
-> > the work of property changes more complicated than expected. And the
-> > btrfs_orphan_cleanup() is also not promised to remove all orphans
-> > successfully.
->
-> In this case btrfs_orphan_cleanup() would never trigger the cleanup of
-> the inode because there's still
-> a process holding a file descriptor open, so the iput() done by
-> btrfs_orphan_cleanup() is not the final
-> iput - therefore it doesn't not trigger eviction, which is what
-> deletes all the items of the inode.
->
-> For that test, what will trigger the cleanup is the closing of the
-> file descriptor - that triggers the final iput,
-> which triggers eviction and that finally triggers the deletions of all
-> the items that belong to the inode, etc.
->
-> > So we try to extend the original patch to handle orphans in
-> > send/parent snapshots. Here are several cases that need to be considere=
-d:
-> >
-> > Case 1: BTRFS_COMPARE_TREE_NEW
-> >        |  send snapshot  | action
-> >  --------------------------------
-> >  nlink |        0        | ignore
-> >
-> > In case 1, when we get a BTRFS_COMPARE_TREE_NEW tree comparison result,
-> > it means that a new inode is found in the send snapshot and it doesn't
-> > appear in the parent snapshot. Since this inode has a link count of zer=
-o
-> > (It's an orphan and there're no reference paths.), we can leverage
->
-> Please don't use the term "reference paths", it's confusing. Just say
-> it has no links,
-> or that it doesn't have any inode reference items.
-
-Indeed, I will revise all of them in patch v2.
-
->
-> > sctx->ignore_cur_inode in the original patch to prevent it from being
-> > created.
-> >
-> > Case 2: BTRFS_COMPARE_TREE_DELETED
-> >        | parent snapshot | action
-> >  ----------------------------------
-> >  nlink |        0        | as usual
-> >
-> > In case 2, when we get a BTRFS_COMPARE_TREE_DELETED tree comparison
-> > result, it means that the inode only appears in the parent snapshot.
-> > As usual, the send operation will try to delete all its reference paths=
-.
->
-> "all its reference paths" -> "all its paths"
->
-> > However, this inode has a link count of zero, so no reference paths wil=
-l
->
-> Same as before and same note for everywhere else in the changelog and cod=
-e
-> comments.
->
-> > be found. No deletion operations will be issued. We don't need to chang=
-e
-> > any logics.
-> >
-> > Case 3: BTRFS_COMPARE_TREE_CHANGED
-> >            |       | parent snapshot | send snapshot | action
-> >  ----------------------------------------------------------------------=
--
-> >  subcase 1 | nlink |        0        |       0       | ignore
-> >  subcase 2 | nlink |       >0        |       0       | new_gen(deletion=
-)
-> >  subcase 3 | nlink |        0        |      >0       | new_gen(creation=
-)
-> >
-> > In case 3, when we get a BTRFS_COMPARE_TREE_CHANGED tree comparison res=
-ult,
-> > it means that the inode appears in both snapshots. Here're three subcas=
-es.
-> >
-> > First, if the inode has link counts of zero in both snapshots. Since th=
-ere
-> > are no reference paths for this inode in (source/destination) parent
-> > snapshots and we don't care about whether there is also an orphan inode=
- in
-> > destination or not, we can set sctx->ignore_cur_inode on to prevent it
-> > from being created.
-> >
-> > For the second and the third subcases, if there're reference paths in o=
-ne
-> > snapshot and there're no reference paths in the other snapshot. We can
-> > treat this inode as a new generation. We can also leverage the logic
-> > handling a new generation of an inode with small adjustments. Then it w=
-ill
-> > delete all old reference paths and create a new inode with new attribut=
-es
-> > and paths only when there's a positive link count in the send snapshot.
-> > Unlike regular files, which just require unlink operations for deleting
-> > their old reference paths, a directory may require more operations to
-> > remove its old reference paths. For a non-empty directory, the send
-> > operation will rename it first and finally issue a rmdir operation to
-> > remove it after the last item under this directory has been deleted.
->
-> How can we have a non-empty directory with a link count of 0?
-> To be able to rmdir a directory (even if some process is holding an
-> open file descriptor on it), one
-> has to delete all its dentries first - there's no way around this,
-> it's enforced in generic code, outside btrfs.
->
-> So I don't understand your suggestion that we can have a snapshot with
-> a non-empty directory
-> that has a link count of 0.
-
-Sorry, it's unclear here. I will revise the sentences here. In subcase 2,
-we wants to delete all old paths in the parent snapshot for an inode
-because it becomes an orphan (with a link count of 0) in the send
-snapshot. But if the inode is a non-empty dir in the parent snapshot,
-the send operation may need to issue more operations for deleting
-all old paths against a non-empty dir as in the parent snapshot.
-
->
-> > Therefore, we also need to modify the existence definition of inodes to
->
-> "existence definition of inodes" - this is super confusing. I can
-> understand it only
-> by looking at the code changes. You mean, to treat inodes with a link cou=
-nt of 0
-> as if they didn't exist.
->
-> Maybe just say "... we also need to consider inodes without links as dele=
-ted".
->
-> > exclude orphan inodes in get_cur_inode_state(), which is used in
-> > process_recorded_refs(). Then it can properly issue the rmdir operation
-> > after the last item in the directory has been removed.
-> >
-> > Note that subcase 3 is not a common case. That's because it's easy to
-> > reduce the hard links of an inode, but once all valid paths are removed=
+> On 8/10/22 03:56, Qu Wenruo wrote:
+>> Commit message please.
+>>
+>> On 2022/8/10 15:33, Flint.Wang wrote:
+>>> Signed-off-by: Flint.Wang <hmsjwzb@zoho.com>
+>>> ---
+>>>  =C2=A0 cmds/device.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |=C2=A0 2 +-
+>>>  =C2=A0 cmds/filesystem-usage.c | 10 +++++-----
+>>>  =C2=A0 cmds/filesystem-usage.h |=C2=A0 2 +-
+>>>  =C2=A0 common/utils.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 |=C2=A0 9 +++++----
+>>>  =C2=A0 common/utils.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 |=C2=A0 2 +-
+>>>  =C2=A0 ioctl.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 ++
+>>>  =C2=A0 6 files changed, 15 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/cmds/device.c b/cmds/device.c
+>>> index 7d3febff..81559110 100644
+>>> --- a/cmds/device.c
+>>> +++ b/cmds/device.c
+>>> @@ -752,7 +752,7 @@ static int _cmd_device_usage(int fd, const char *p=
+ath, unsigned unit_mode)
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int devcount =3D 0;
+>>>
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D load_chunk_and_device_info(fd,=
+ &chunkinfo, &chunkcount, &devinfo,
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &d=
+evcount);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &d=
+evcount, false);
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>>>
+>>> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+>>> index 01729e18..b2ed3212 100644
+>>> --- a/cmds/filesystem-usage.c
+>>> +++ b/cmds/filesystem-usage.c
+>>> @@ -693,7 +693,7 @@ out:
+>>>  =C2=A0=C2=A0 *=C2=A0 This function loads the device_info structure an=
+d put them in an array
+>>>  =C2=A0=C2=A0 */
+>>>  =C2=A0 static int load_device_info(int fd, struct device_info **devic=
+e_info_ptr,
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 int *device_info_count)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 int *device_info_count, bool noseed)
+>>>  =C2=A0 {
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret, i, ndevs;
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_fs_info_args fi_arg=
+s;
+>>> @@ -727,7 +727,7 @@ static int load_device_info(int fd, struct device_=
+info **device_info_ptr,
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 goto out;
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(&dev_in=
+fo, 0, sizeof(dev_info));
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
+, i, &dev_info);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
+, i, &dev_info, noseed);
+>>>
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D=
+ -ENODEV)
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 continue;
+>>> @@ -779,7 +779,7 @@ out:
+>>>  =C2=A0 }
+>>>
+>>>  =C2=A0 int load_chunk_and_device_info(int fd, struct chunk_info **chu=
+nkinfo,
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int *chunkcount, struct de=
+vice_info **devinfo, int *devcount)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int *chunkcount, struct de=
+vice_info **devinfo, int *devcount, bool noseed)
+>>>  =C2=A0 {
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>>>
+>>> @@ -791,7 +791,7 @@ int load_chunk_and_device_info(int fd, struct chun=
+k_info **chunkinfo,
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>
+>>> -=C2=A0=C2=A0=C2=A0 ret =3D load_device_info(fd, devinfo, devcount);
+>>> +=C2=A0=C2=A0=C2=A0 ret =3D load_device_info(fd, devinfo, devcount, no=
+seed);
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D -EPERM) {
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 warning(
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "cannot get fi=
+lesystem info from ioctl(FS_INFO), run as root");
+>>> @@ -1172,7 +1172,7 @@ static int cmd_filesystem_usage(const struct cmd=
+_struct *cmd,
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 printf("\n");
+>>>
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D load_c=
+hunk_and_device_info(fd, &chunkinfo, &chunkcount,
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 &devinfo, &devcount);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 &devinfo, &devcount, true);
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 goto cleanup;
+>>>
+>>> diff --git a/cmds/filesystem-usage.h b/cmds/filesystem-usage.h
+>>> index cab38462..6fd04172 100644
+>>> --- a/cmds/filesystem-usage.h
+>>> +++ b/cmds/filesystem-usage.h
+>>> @@ -45,7 +45,7 @@ struct chunk_info {
+>>>  =C2=A0 };
+>>>
+>>>  =C2=A0 int load_chunk_and_device_info(int fd, struct chunk_info **chu=
+nkinfo,
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int *chunkcount, struct de=
+vice_info **devinfo, int *devcount);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int *chunkcount, struct de=
+vice_info **devinfo, int *devcount, bool noseed);
+>>>  =C2=A0 void print_device_chunks(struct device_info *devinfo,
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct chunk_i=
+nfo *chunks_info_ptr,
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int chunks_inf=
+o_count, unsigned unit_mode);
+>>> diff --git a/common/utils.c b/common/utils.c
+>>> index 1ed5571f..72d50885 100644
+>>> --- a/common/utils.c
+>>> +++ b/common/utils.c
+>>> @@ -285,14 +285,15 @@ void btrfs_format_csum(u16 csum_type, const u8 *=
+data, char *output)
+>>>  =C2=A0 }
+>>>
+>>>  =C2=A0 int get_device_info(int fd, u64 devid,
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_dev_inf=
+o_args *di_args)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_dev_inf=
+o_args *di_args, bool noseed)
+>>>  =C2=A0 {
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>>> +=C2=A0=C2=A0=C2=A0 unsigned long req =3D noseed ? BTRFS_IOC_DEV_INFO_=
+NOSEED : BTRFS_IOC_DEV_INFO;
+>>>
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 di_args->devid =3D devid;
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(&di_args->uuid, '\0', sizeof(di=
+_args->uuid));
+>>>
+>>> -=C2=A0=C2=A0=C2=A0 ret =3D ioctl(fd, BTRFS_IOC_DEV_INFO, di_args);
+>>> +=C2=A0=C2=A0=C2=A0 ret =3D ioctl(fd, req, di_args);
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret < 0 ? -errno : 0;
+>>>  =C2=A0 }
+>>>
+>>> @@ -498,7 +499,7 @@ int get_fs_info(const char *path, struct btrfs_ioc=
+tl_fs_info_args *fi_args,
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * search=
+_chunk_tree_for_fs_info() will lacks the devid 0
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * so man=
+ual probe for it here.
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
+, 0, &tmp);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
+, 0, &tmp, false);
+>>
+>> No, I don't think we should go that complex.
+>>
+>> The root cause is pretty simple, btrfs_ioctl_fs_info() just return RW
+>> devices for its fi_args->num_devices.
+>>
+>> This is fine for most cases, but for seed devices cases, we can not rel=
+y
+>> on that.
+>>
+>>
+>> Knowing that, it's much easier to fix in user space, do a tree-search
+>> ioctl to grab the device items from chunk tree, then we can easily chec=
+k
+>> the total number of devices (including RW and seed devices).
+>>
+>> With that info, we even have the FSID of each devices, then we can call
+>> btrfs_ioctl_dev_info() to get each device.
+>>
+>>
+>> I'd like to have a better optimization, to skip above chunk tree search=
 ,
-> > there're no valid paths for creating other hard links. The only way to =
-do
-> > that is trying to send a older snapshot after a newer snapshot has been
-> > sent.
->
-> >
-> > Fixes: 46b2f4590aab ("Btrfs: fix send failure when root has deleted fil=
-es still open")
->
-> So the Fixes tag is meant to identify a commit that introduced a bug.
->
-> That commit only addressed one case of inodes with no links - when
-> they are regular files and in the send snapshot only.
-> The other cases you identified didn't work before that commit - they
-> have never worked since send was introduced in 2012 (commit
-> 31db9f7c23fbf7e95026143f79645de6507b583b).
->
-> If your intention is to have this backported, and simply mark that
-> commit as a dependency, then use a proper CC tag as mentioned at:
->
-> https://www.kernel.org/doc/html/v4.10/process/stable-kernel-rules.html#op=
-tion-3
->
-> Like this I suppose:
->
-> Cc: <stable@vger.kernel.org> # 4.9: 46b2f4590aab: Btrfs: fix send
-> failure when root has deleted files still open
-> Cc: <stable@vger.kernel.org> # 4.9: 71ecfc133b03: btrfs: send:
-> introduce recorded_ref_alloc and recorded_ref_free
-> Cc: <stable@vger.kernel.org> # 4.9: 3aa5bd367fa5: btrfs: send: fix
-> sending link commands for existing file paths
-> Cc: <stable@vger.kernel.org> # 4.9: 0d8869fb6b6f8: btrfs: send: always
-> use the rbtree based inode ref management infrastructure
->
-> Maybe there are other patches that are needed for a clean backport,
-> but those are the only ones I have in mind because they are recent.
-> Otherwise we would have to change the version of the patch submitted
-> for stable releases.
->
-Thank you for the suggestions.
-
-> > Reviewed-by: Robbie Ko <robbieko@synology.com>
-> > Signed-off-by: BingJing Chang <bingjingc@synology.com>
-> > ---
-> >  fs/btrfs/send.c | 218 ++++++++++++++++++++----------------------------
-> >  1 file changed, 89 insertions(+), 129 deletions(-)
-> >
-> > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> > index 84b09d428ca3..351fb7cdec4c 100644
-> > --- a/fs/btrfs/send.c
-> > +++ b/fs/btrfs/send.c
-> > @@ -850,6 +850,7 @@ enum inode_field {
-> >         INODE_GID =3D 0x1 << 4,
-> >         INODE_RDEV =3D 0x1 << 5,
-> >         INODE_ATTR =3D 0x1 << 6,
-> > +       INODE_NLINK =3D 0x1 << 7,
-> >  };
-> >
-> >  struct inode_info {
-> > @@ -860,6 +861,7 @@ struct inode_info {
-> >         u64 gid;
-> >         u64 rdev;
-> >         u64 attr;
-> > +       u64 nlink;
-> >  };
-> >
-> >  /*
-> > @@ -904,6 +906,8 @@ static int get_inode_info(struct btrfs_root *root, =
-u64 ino, unsigned int flags,
-> >                 info->gid =3D btrfs_inode_gid(path->nodes[0], ii);
-> >         if (flags & INODE_RDEV)
-> >                 info->rdev =3D btrfs_inode_rdev(path->nodes[0], ii);
-> > +       if (flags & INODE_NLINK)
-> > +               info->nlink =3D btrfs_inode_nlink(path->nodes[0], ii);
-> >         /*
-> >          * Transfer the unchanged u64 value of btrfs_inode_item::flags,=
- that's
-> >          * otherwise logically split to 32/32 parts.
-> > @@ -1669,19 +1673,24 @@ static int get_cur_inode_state(struct send_ctx =
-*sctx, u64 ino, u64 gen)
-> >         int right_ret;
-> >         u64 left_gen;
-> >         u64 right_gen;
-> > +       struct inode_info info;
-> >
-> > -       ret =3D get_inode_gen(sctx->send_root, ino, &left_gen);
-> > +       ret =3D get_inode_info(sctx->send_root, ino, INODE_GEN|INODE_NL=
-INK,
-> > +                            &info);
-> >         if (ret < 0 && ret !=3D -ENOENT)
-> >                 goto out;
-> > -       left_ret =3D ret;
-> > +       left_ret =3D (info.nlink =3D=3D 0) ? -ENOENT : ret;
-> > +       left_gen =3D info.gen;
-> >
-> >         if (!sctx->parent_root) {
-> >                 right_ret =3D -ENOENT;
-> >         } else {
-> > -               ret =3D get_inode_gen(sctx->parent_root, ino, &right_ge=
-n);
-> > +               ret =3D get_inode_info(sctx->parent_root, ino,
-> > +                                    INODE_GEN|INODE_NLINK, &info);
-> >                 if (ret < 0 && ret !=3D -ENOENT)
-> >                         goto out;
-> > -               right_ret =3D ret;
-> > +               right_ret =3D (info.nlink =3D=3D 0) ? -ENOENT : ret;
-> > +               right_gen =3D info.gen;
-> >         }
-> >
-> >         if (!left_ret && !right_ret) {
-> > @@ -6437,86 +6446,6 @@ static int finish_inode_if_needed(struct send_ct=
-x *sctx, int at_end)
-> >         return ret;
-> >  }
-> >
-> > -struct parent_paths_ctx {
-> > -       struct list_head *refs;
-> > -       struct send_ctx *sctx;
-> > -};
-> > -
-> > -static int record_parent_ref(int num, u64 dir, int index, struct fs_pa=
-th *name,
-> > -                            void *ctx)
-> > -{
-> > -       struct parent_paths_ctx *ppctx =3D ctx;
-> > -
-> > -       /*
-> > -        * Pass 0 as the generation for the directory, we don't care ab=
-out it
-> > -        * here as we have no new references to add, we just want to de=
-lete all
-> > -        * references for an inode.
-> > -        */
-> > -       return record_ref_in_tree(&ppctx->sctx->rbtree_deleted_refs, pp=
-ctx->refs,
-> > -                                 name, dir, 0, ppctx->sctx);
-> > -}
-> > -
-> > -/*
-> > - * Issue unlink operations for all paths of the current inode found in=
- the
-> > - * parent snapshot.
-> > - */
-> > -static int btrfs_unlink_all_paths(struct send_ctx *sctx)
-> > -{
-> > -       LIST_HEAD(deleted_refs);
-> > -       struct btrfs_path *path;
-> > -       struct btrfs_root *root =3D sctx->parent_root;
-> > -       struct btrfs_key key;
-> > -       struct btrfs_key found_key;
-> > -       struct parent_paths_ctx ctx;
-> > -       int iter_ret =3D 0;
-> > -       int ret;
-> > -
-> > -       path =3D alloc_path_for_send();
-> > -       if (!path)
-> > -               return -ENOMEM;
-> > -
-> > -       key.objectid =3D sctx->cur_ino;
-> > -       key.type =3D BTRFS_INODE_REF_KEY;
-> > -       key.offset =3D 0;
-> > -
-> > -       ctx.refs =3D &deleted_refs;
-> > -       ctx.sctx =3D sctx;
-> > -
-> > -       btrfs_for_each_slot(root, &key, &found_key, path, iter_ret) {
-> > -               if (found_key.objectid !=3D key.objectid)
-> > -                       break;
-> > -               if (found_key.type !=3D key.type &&
-> > -                   found_key.type !=3D BTRFS_INODE_EXTREF_KEY)
-> > -                       break;
-> > -
-> > -               ret =3D iterate_inode_ref(root, path, &found_key, 1,
-> > -                                       record_parent_ref, &ctx);
-> > -               if (ret < 0)
-> > -                       goto out;
-> > -       }
-> > -       /* Catch error found during iteration */
-> > -       if (iter_ret < 0) {
-> > -               ret =3D iter_ret;
-> > -               goto out;
-> > -       }
-> > -
-> > -       while (!list_empty(&deleted_refs)) {
-> > -               struct recorded_ref *ref;
-> > -
-> > -               ref =3D list_first_entry(&deleted_refs, struct recorded=
-_ref, list);
-> > -               ret =3D send_unlink(sctx, ref->full_path);
-> > -               if (ret < 0)
-> > -                       goto out;
-> > -               recorded_ref_free(ref);
-> > -       }
-> > -       ret =3D 0;
-> > -out:
-> > -       btrfs_free_path(path);
-> > -       if (ret)
-> > -               __free_recorded_refs(&deleted_refs);
-> > -       return ret;
-> > -}
-> > -
-> >  static void close_current_inode(struct send_ctx *sctx)
-> >  {
-> >         u64 i_size;
-> > @@ -6607,25 +6536,37 @@ static int changed_inode(struct send_ctx *sctx,
-> >          * file descriptor against it or turning a RO snapshot into RW =
-mode,
-> >          * keep an open file descriptor against a file, delete it and t=
-hen
-> >          * turn the snapshot back to RO mode before using it for a send
-> > -        * operation. So if we find such cases, ignore the inode and al=
-l its
-> > -        * items completely if it's a new inode, or if it's a changed i=
-node
-> > -        * make sure all its previous paths (from the parent snapshot) =
-are all
-> > -        * unlinked and all other the inode items are ignored.
-> > +        * operation. The former is what the receiver operation does.
-> > +        * Therefore, if we want to send these snapshots soon after the=
-y're
-> > +        * received, we need to handle orphan inodes as well. Moreover,
-> > +        * orphans can appear not only in the send snapshot but also in=
- the
-> > +        * parent snapshot. Here are several cases:
-> > +        *
-> > +        * Case 1: BTRFS_COMPARE_TREE_NEW
-> > +        *       |  send snapshot  | action
-> > +        * --------------------------------
-> > +        * nlink |        0        | ignore
-> > +        *
-> > +        * Case 2: BTRFS_COMPARE_TREE_DELETED
-> > +        *       | parent snapshot | action
-> > +        * ----------------------------------
-> > +        * nlink |        0        | as usual
-> > +        * Note: No unlinks will be sent bacause there're no reference =
-paths.
->
-> bacause -> because
->
-> The code looks good to me, it's a good solution.
->
-> Can you please send a test case for fstests covering all these scenarios?
-> I.e. directory with a link count of 0, like the reproducer in the
-> changelog, parent snapshot with an inode have 0 links as well, etc.
-
-Okay. I will also submit a test case covering all of them.
-
->
-> Thanks.
->
-> > +        *
-> > +        * Case 3: BTRFS_COMPARE_TREE_CHANGED
-> > +        *           |       | parent snapshot | send snapshot | action
-> > +        * ------------------------------------------------------------=
------------
-> > +        * subcase 1 | nlink |        0        |       0       | ignore
-> > +        * subcase 2 | nlink |       >0        |       0       | new_ge=
-n(deletion)
-> > +        * subcase 3 | nlink |        0        |      >0       | new_ge=
-n(creation)
-> > +        *
-> >          */
-> > -       if (result =3D=3D BTRFS_COMPARE_TREE_NEW ||
-> > -           result =3D=3D BTRFS_COMPARE_TREE_CHANGED) {
-> > -               u32 nlinks;
-> > -
-> > -               nlinks =3D btrfs_inode_nlink(sctx->left_path->nodes[0],=
- left_ii);
-> > -               if (nlinks =3D=3D 0) {
-> > +       if (result =3D=3D BTRFS_COMPARE_TREE_NEW) {
-> > +               if (btrfs_inode_nlink(sctx->left_path->nodes[0], left_i=
-i) =3D=3D
-> > +                                     0) {
-> >                         sctx->ignore_cur_inode =3D true;
-> > -                       if (result =3D=3D BTRFS_COMPARE_TREE_CHANGED)
-> > -                               ret =3D btrfs_unlink_all_paths(sctx);
-> >                         goto out;
-> >                 }
-> > -       }
-> > -
-> > -       if (result =3D=3D BTRFS_COMPARE_TREE_NEW) {
-> >                 sctx->cur_inode_gen =3D left_gen;
-> >                 sctx->cur_inode_new =3D true;
-> >                 sctx->cur_inode_deleted =3D false;
-> > @@ -6646,6 +6587,18 @@ static int changed_inode(struct send_ctx *sctx,
-> >                 sctx->cur_inode_mode =3D btrfs_inode_mode(
-> >                                 sctx->right_path->nodes[0], right_ii);
-> >         } else if (result =3D=3D BTRFS_COMPARE_TREE_CHANGED) {
-> > +               u32 new_nlinks, old_nlinks;
-> > +
-> > +               new_nlinks =3D btrfs_inode_nlink(sctx->left_path->nodes=
-[0],
-> > +                                              left_ii);
-> > +               old_nlinks =3D btrfs_inode_nlink(sctx->right_path->node=
-s[0],
-> > +                                              right_ii);
-> > +               if (new_nlinks =3D=3D 0 && old_nlinks =3D=3D 0) {
-> > +                       sctx->ignore_cur_inode =3D true;
-> > +                       goto out;
-> > +               } else if (new_nlinks =3D=3D 0 || old_nlinks =3D=3D 0) =
-{
-> > +                       sctx->cur_inode_new_gen =3D 1;
-> > +               }
-> >                 /*
-> >                  * We need to do some special handling in case the inod=
-e was
-> >                  * reported as changed with a changed generation number=
-. This
-> > @@ -6672,38 +6625,45 @@ static int changed_inode(struct send_ctx *sctx,
-> >                         /*
-> >                          * Now process the inode as if it was new.
-> >                          */
-> > -                       sctx->cur_inode_gen =3D left_gen;
-> > -                       sctx->cur_inode_new =3D true;
-> > -                       sctx->cur_inode_deleted =3D false;
-> > -                       sctx->cur_inode_size =3D btrfs_inode_size(
-> > -                                       sctx->left_path->nodes[0], left=
-_ii);
-> > -                       sctx->cur_inode_mode =3D btrfs_inode_mode(
-> > -                                       sctx->left_path->nodes[0], left=
-_ii);
-> > -                       sctx->cur_inode_rdev =3D btrfs_inode_rdev(
-> > -                                       sctx->left_path->nodes[0], left=
-_ii);
-> > -                       ret =3D send_create_inode_if_needed(sctx);
-> > -                       if (ret < 0)
-> > -                               goto out;
-> > +                       if (new_nlinks > 0) {
-> > +                               sctx->cur_inode_gen =3D left_gen;
-> > +                               sctx->cur_inode_new =3D true;
-> > +                               sctx->cur_inode_deleted =3D false;
-> > +                               sctx->cur_inode_size =3D btrfs_inode_si=
-ze(
-> > +                                               sctx->left_path->nodes[=
-0],
-> > +                                               left_ii);
-> > +                               sctx->cur_inode_mode =3D btrfs_inode_mo=
-de(
-> > +                                               sctx->left_path->nodes[=
-0],
-> > +                                               left_ii);
-> > +                               sctx->cur_inode_rdev =3D btrfs_inode_rd=
-ev(
-> > +                                               sctx->left_path->nodes[=
-0],
-> > +                                               left_ii);
-> > +                               ret =3D send_create_inode_if_needed(sct=
-x);
-> > +                               if (ret < 0)
-> > +                                       goto out;
-> >
-> > -                       ret =3D process_all_refs(sctx, BTRFS_COMPARE_TR=
-EE_NEW);
-> > -                       if (ret < 0)
-> > -                               goto out;
-> > -                       /*
-> > -                        * Advance send_progress now as we did not get =
-into
-> > -                        * process_recorded_refs_if_needed in the new_g=
-en case.
-> > -                        */
-> > -                       sctx->send_progress =3D sctx->cur_ino + 1;
-> > +                               ret =3D process_all_refs(sctx,
-> > +                                               BTRFS_COMPARE_TREE_NEW)=
-;
-> > +                               if (ret < 0)
-> > +                                       goto out;
-> > +                               /*
-> > +                                * Advance send_progress now as we did =
-not get
-> > +                                * into process_recorded_refs_if_needed=
- in the
-> > +                                * new_gen case.
-> > +                                */
-> > +                               sctx->send_progress =3D sctx->cur_ino +=
- 1;
-> >
-> > -                       /*
-> > -                        * Now process all extents and xattrs of the in=
-ode as if
-> > -                        * they were all new.
-> > -                        */
-> > -                       ret =3D process_all_extents(sctx);
-> > -                       if (ret < 0)
-> > -                               goto out;
-> > -                       ret =3D process_all_new_xattrs(sctx);
-> > -                       if (ret < 0)
-> > -                               goto out;
-> > +                               /*
-> > +                                * Now process all extents and xattrs o=
-f the
-> > +                                * inode as if they were all new.
-> > +                                */
-> > +                               ret =3D process_all_extents(sctx);
-> > +                               if (ret < 0)
-> > +                                       goto out;
-> > +                               ret =3D process_all_new_xattrs(sctx);
-> > +                               if (ret < 0)
-> > +                                       goto out;
-> > +                       }
-> >                 } else {
-> >                         sctx->cur_inode_gen =3D left_gen;
-> >                         sctx->cur_inode_new =3D false;
-> > --
-> > 2.37.1
-> >
+>> but I don't have a quick idea on how to determine if a fs has seed devi=
+ces.
+>>
+>>
+>> Another more elegant solution is to make btrfs_ioctl_fs_info_args to
+>> include one new member, total_devs, so that we can get rid of all the
+>> problems.
+>>
+>> But for compatibility reasons, above tree-search based solution is stil=
+l
+>> needed as a fallback.
+>>
+>> Thanks,
+>> Qu
+>>
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!ret) {
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 fi_args->num_devices++;
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 ndevs++;
+>>> @@ -521,7 +522,7 @@ int get_fs_info(const char *path, struct btrfs_ioc=
+tl_fs_info_args *fi_args,
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memcpy(di_args=
+, &tmp, sizeof(tmp));
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (; last_devid <=3D fi_args->max_id=
+ && ndevs < fi_args->num_devices;
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 last_dev=
+id++) {
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
+, last_devid, &di_args[ndevs]);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D get_device_info(fd=
+, last_devid, &di_args[ndevs], false);
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D=
+ -ENODEV)
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 continue;
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
+>>> diff --git a/common/utils.h b/common/utils.h
+>>> index ea05fe5b..de4f93ca 100644
+>>> --- a/common/utils.h
+>>> +++ b/common/utils.h
+>>> @@ -68,7 +68,7 @@ int lookup_path_rootid(int fd, u64 *rootid);
+>>>  =C2=A0 int find_mount_fsroot(const char *subvol, const char *subvolid=
+, char **mount);
+>>>  =C2=A0 int find_mount_root(const char *path, char **mount_root);
+>>>  =C2=A0 int get_device_info(int fd, u64 devid,
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_dev_inf=
+o_args *di_args);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_dev_inf=
+o_args *di_args, bool noseed);
+>>>  =C2=A0 int get_df(int fd, struct btrfs_ioctl_space_args **sargs_ret);
+>>>
+>>>  =C2=A0 const char *subvol_strip_mountpoint(const char *mnt, const cha=
+r *full_path);
+>>> diff --git a/ioctl.h b/ioctl.h
+>>> index 368a87b2..e68fe58d 100644
+>>> --- a/ioctl.h
+>>> +++ b/ioctl.h
+>>> @@ -883,6 +883,8 @@ static inline char *btrfs_err_str(enum btrfs_err_c=
+ode err_code)
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioc=
+tl_scrub_args)
+>>>  =C2=A0 #define BTRFS_IOC_DEV_INFO _IOWR(BTRFS_IOCTL_MAGIC, 30, \
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioc=
+tl_dev_info_args)
+>>> +#define BTRFS_IOC_DEV_INFO_NOSEED _IOR(BTRFS_IOCTL_MAGIC, 30, \
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btr=
+fs_ioctl_dev_info_args)
+>>>  =C2=A0 #define BTRFS_IOC_FS_INFO _IOR(BTRFS_IOCTL_MAGIC, 31, \
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btr=
+fs_ioctl_fs_info_args)
+>>>  =C2=A0 #define BTRFS_IOC_BALANCE_V2 _IOWR(BTRFS_IOCTL_MAGIC, 32, \
