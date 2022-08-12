@@ -2,142 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51748590F86
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Aug 2022 12:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A24590FF5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Aug 2022 13:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238565AbiHLKcz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Aug 2022 06:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
+        id S234847AbiHLLVe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Aug 2022 07:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238562AbiHLKcy (ORCPT
+        with ESMTP id S229704AbiHLLVd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Aug 2022 06:32:54 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E779A1123
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Aug 2022 03:32:52 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27CAQ2ct027439;
-        Fri, 12 Aug 2022 10:32:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version; s=corp-2022-7-12;
- bh=HT/rQeQNKMJKbFgUijM1BSWEJq0TwghLBl9rJvt10p4=;
- b=g+b5PUP2EJYxxmLqsfRlEcZv68mRDQgZr73gl46idv2K1iSedaypaOyBtbY/ObCVndhC
- 0oy0SAF682S4grjSdxhf50a0AfhDTfl2zh+tKuJ1pB7QRrQ50nXOfms4rD4RcdCKDonz
- YZeuj6Jb7v+tiIODCMMtVt3aCHf3I5fgR85mpp5yi3oUap7joxYNFbBDQKUZZfKEi+rN
- 8JlW9PzmjA74IC29Q6JHsbnbIPevzakFGatzCDTXDclEiVRg93gLrm6JrMMpqSHFqb2C
- m2qItpFQHVrAEGG3o4rUn+OL1NcgEG6DKWJypC1eanC7Bn02pb2h5ITz3kmAKB/wWOw/ bQ== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3huwq977h3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Aug 2022 10:32:39 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 27C7uuH0004900;
-        Fri, 12 Aug 2022 10:32:39 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2047.outbound.protection.outlook.com [104.47.51.47])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3huwqkhh7k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Aug 2022 10:32:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cl8lMvI31lXgQ0lMsVV1OLo5+g8DQdhlhidCyhH7lybdKCBz5LvGxhIFEuuNI4gVORieZsn0PoQyPt5vVTqqstm651MMRiVS/Ej7hYvaJlEinUYE+FrPaW31U8icc9QJI5oMy8YukEMiaCkNq22dDopmP7MgK4YNnJa9zn5tjL+nF2vJC8h8AOaZAMy2O+ywmL9ePonecVYP1nYYRTowuUp43s7NQp5xvb2oeeBf0MimWdOwJhkAkc2ibsmbsCW5imPbPKyI7wwtG/tSnQ3qp2WJa/BiPRLGnrIrb/xhv4Dmv3Im7JegyKKt93ZHM3vovaAI77xST+ecEE+XY27w7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HT/rQeQNKMJKbFgUijM1BSWEJq0TwghLBl9rJvt10p4=;
- b=dxrk2xyXuV+dh2/PABB28sJOC94TEk60SyhihVmAQTOFA1v2ARj9f4I5va/xJonFrkZ5xhUTMLupJXf21T9RaFDTIq+7MabUQ4FBliMZMlspi5UDrZWHm/vfX3kDn2UoCYM94pnQ0gE5S/+XFvgqE24sMy5fFAuDPH6+3WT/qJ6O00uOo6dV7+Ky0TF69OM3I4dvxl9csi9V1U2pDf50NqZqsdQGPSGmtepEZbyLcolt7kktwt2T4/fVxJp918t5v9kIPwPH2OsTKeA57L92Q0s3DXrPQ9PzDgjUrN64xYn5t1iPfRnBcHL0p2CqqerDcpgzgChmoSQiHvLC7mUUHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HT/rQeQNKMJKbFgUijM1BSWEJq0TwghLBl9rJvt10p4=;
- b=ZXpiflZkbG7Qz7kxb6JGBN2gpWs85vEfQS8k9V+WXVSf3qFIdwBE3SV/lVRIjniGnhFRn2Zg1BSHI+bXZvLvkhe4KRQfXMkclY1zIN7wdIec+PiXL++36+fS7K3xNDylV8cC95AKD/fC9S57nI/aSO9W8v6kI/fURIGi+p41QIU=
-Received: from SJ0PR10MB5694.namprd10.prod.outlook.com (2603:10b6:a03:3ed::15)
- by MN2PR10MB3598.namprd10.prod.outlook.com (2603:10b6:208:112::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5504.14; Fri, 12 Aug
- 2022 10:32:37 +0000
-Received: from SJ0PR10MB5694.namprd10.prod.outlook.com
- ([fe80::1806:9736:d068:d5c7]) by SJ0PR10MB5694.namprd10.prod.outlook.com
- ([fe80::1806:9736:d068:d5c7%3]) with mapi id 15.20.5525.010; Fri, 12 Aug 2022
- 10:32:37 +0000
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Samuel Greiner <samuel@balkonien.org>
-Subject: [PATCH 2/2] btrfs: add info when mount fails due to stale replace target
-Date:   Fri, 12 Aug 2022 18:32:19 +0800
-Message-Id: <6a99394d3248034a908f8f1e22df8917c193446d.1660299977.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1660299977.git.anand.jain@oracle.com>
-References: <cover.1660299977.git.anand.jain@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR01CA0053.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::7) To SJ0PR10MB5694.namprd10.prod.outlook.com
- (2603:10b6:a03:3ed::15)
+        Fri, 12 Aug 2022 07:21:33 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD486AB189
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Aug 2022 04:21:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1660303284;
+        bh=srUjM3CgoyobxwuJc68JbWMacRkq0zrguRB6As4sg9M=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=R9hRszTvcOTMMRVEcyTZma8si5NXGJ3FXEyV/y77/yrGQuuQLDrV/KA2ZrmRHGdrG
+         02m6G4SJtWRfwAFomGkaiU2Po5XHk4gidz9B5TvXbgMYG3O1SODrXmQ5BbZT471qK+
+         A4ztLAchs3T6/o4m4fyk3LVrSZVXpt56Lis3FzBk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvK0R-1nW95e3dc9-00rK5A; Fri, 12
+ Aug 2022 13:21:24 +0200
+Message-ID: <ea61624a-26ed-38e4-1f92-400cab7d504a@gmx.com>
+Date:   Fri, 12 Aug 2022 19:21:19 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 72562189-cd18-467d-6bc1-08da7c4df9e7
-X-MS-TrafficTypeDiagnostic: MN2PR10MB3598:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q49yGvc5Z9I96i9ZSjtLgXd4awcZDwtax59B6SXqMOMoifgu+WhSE/SqvCuS+K1l1LGZnnaTWcx7okFKuDwBnKGxTmpmk6zlKA3MNLLha9+maY1RGgeCYF5oQ/SYmfveR8flAokc3o8i0pcsJGdOOYso+9xFZjJg8jzjVM8kjGnuBChkvGOeboTMJANAs4CiH7O8cVi+YNf/nqolkgDkDOGIbgk7oqM2twssXN4eRmCv7PFj52f9O360P8/MnuoWWBuoPNyJ7lcW6oQ4/xxNEMAPfVQ623umyxwNIzirqQrI78o+1Fk2m1BHoSgxxPC3lTjiBT/6mdZXVNxUCLXwdrtVsNH3YLdi6w+L8fVYf/E+RXEZccD/SN9xpgIt1zQRbZKUkuJ0eG+en9gs+/LU0bOwJUR6RV3oXd108KOAa+vsbotQgWNKl1IqB65KpCtIakUk5cClPdvvrkVCmxHe1vGJSqe1bY38VgNuwjetqhYlNR4+BVXhD1hjOj+EeUuOCVhgmndc8IOYkN45KGa+LM6jPpGbQZjplFHTDgyjuXRPhSaYS3pL+Cbp9bCVHoA0/3gbJXS8PtfQelS4kVcoj1Dtjgf0kb55/Akb8cEariHoSTmALSpt9YBacbGDrIL1v+6k+Fu8kqVDUBwiiEOxhJN9ht/6nFwl9NqAcNf0kkJ/wWg6JoaGZjzTmmdeGagsBlmcHH89Jlf6zLhbCl266BPBWbNhe5CqNS2iBjzIwtiBP/QWeesaCRJ9Bf/0WqMNdgconk7/oXENToAvgruVNw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB5694.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(136003)(39860400002)(366004)(346002)(396003)(376002)(6506007)(41300700001)(26005)(6666004)(6512007)(6486002)(478600001)(966005)(38100700002)(186003)(86362001)(2616005)(83380400001)(5660300002)(44832011)(2906002)(66946007)(66556008)(316002)(8936002)(36756003)(6916009)(66476007)(4326008)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uISWjbOyyry+JwfOt61FhiqqsxwNbHX/xfq6F5+1fXI+AX3gQ+TsH5keM9U7?=
- =?us-ascii?Q?YP8VPLT9Z7424TEHJj/a247b+N5xwwsOI7eS7hHa6IkJ+bpXmF2B8aSbzPE5?=
- =?us-ascii?Q?+S46onzDWLqxKqInkhRNg2XOvgvfOsePz4FeClJHMRNK+1YVgx79Sqilo/6q?=
- =?us-ascii?Q?9OMLwx1LnJ3U03TYrBh4wHer+KetcWY6i+JnIUNJLwu/yCoa+slgPQBz5nr1?=
- =?us-ascii?Q?X3uMmSB2kxBNlVtEQ8BEBQxtDCHZBp/sOLt6m7O/aw91p7sv9XLX6SxWA4tC?=
- =?us-ascii?Q?xKCLf5e8MyJwlPNeqGXMmCbE0UuVRoIfp2gCkZup/F56xwROMbB86JWA4B1c?=
- =?us-ascii?Q?sgUqo/HyjOhA1ysLMCkKDhqXcYUzvYkRPCcWhrRR2c2I8HQxF8FTyMxiVM8X?=
- =?us-ascii?Q?uBWW0hm9CQoe4hnMmUIz30UHWDLDJ6pncM05zv2FuwlJnlWDdNgLhkt0qcvD?=
- =?us-ascii?Q?VCsKpmKKmJjT0WXzgB3j1p1rvUfcsZ/BKL2xMMioGJRJubTJulLTzRjO3IE/?=
- =?us-ascii?Q?ACywIS0qYofFJjDmyRukY/u66aymZc+sdtatQIi3VoAm2yf8sr6QV4yt4jTb?=
- =?us-ascii?Q?zyAogwKghJkNpbCJE8qLPUZMkoOLnuvz3H2glPli/1ankBy2uWMQFouUOA4t?=
- =?us-ascii?Q?8FUDGeNHqGNd32LZFQscKaT2QcHpJb9WoKZbkC8WQeebDsO5JOh7BgEZIr1t?=
- =?us-ascii?Q?ITHb5lrHjaOfQaZHDkpWZ0uk4WTPl0aLioG+ysxEJmB3mZxEZv4Xe7zbiTlg?=
- =?us-ascii?Q?Uh4vnc+NYn9T4zu3KDfv3Ge1o5C3hCJgizg9s8HukKZM3lbRj8Dftu7zdagV?=
- =?us-ascii?Q?8q+dz4cEqubDloUBD/IQ1/cgxldcO8CAqRygr292wKL3mAgO/zeoxpOCW5km?=
- =?us-ascii?Q?ngR+CwpFoyDUHKBUtTPh9bD0u5MX2myR1GMR0sErjHQBM6ZWuoJ4wcoNR77W?=
- =?us-ascii?Q?Qrv2pXWgLMQQwyPWmfoRLBh8vrttqxV5lfAF2vDq9qqCP/yS4C0o/BfaGHLA?=
- =?us-ascii?Q?6wiGlI9dTaJSFk6mMG641PyQMel6sYcd1zjBhk03VtWmqYvt0pv+gGKqUtrj?=
- =?us-ascii?Q?7Ti5M83600d1qJN2a+u9oNQM2HdNtxYAAoF7ydlYJQuvz9DKp3HQ8YGr7iFT?=
- =?us-ascii?Q?ZC8TwbPdq7dK8ltZhy+8FtMqeQF/RaqPWfpoomWm+Vybqe+lAgDNxMpECai0?=
- =?us-ascii?Q?yDnaMHu0Ctevls9nhsgZVgoEWy3MWNS1IiL+JEEe7sqgvwMXNlJyBeUKDsgt?=
- =?us-ascii?Q?RBEeKKTdrfyLbKTeFDiRGNVzNYRw8TqKNWLBfYNfX+tJYvlmyv4iYH2pNMvo?=
- =?us-ascii?Q?Dy9FNQ7rXM3mPVlQocSTkw5ypb7DY8/Bnk7watKk5GDhPq18tHVmHRobviES?=
- =?us-ascii?Q?nH3VzoCJFUAD9ppo1EqoG0DDLZ37VfLhNKWjbanTxTb0V3IGE+/Vk5jP7MqO?=
- =?us-ascii?Q?nwXgXqVJeND0ELr2gEZZUjT97740Znm9nkschR5R+6MtICrrrZc9lMvOAYcm?=
- =?us-ascii?Q?mYibjpSj0PMohPBjTVQt0JhwUKinVaxdrlAXHUkkmX+fy4Pd+0V4HAXYt/a4?=
- =?us-ascii?Q?CS+LVDUxZkT6vvpDWMrJ4UYUGxiBfwBoNVhBo7WL?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: NHkF1N3wknurZQY6YeZmlCHyFUF2dBhRBRlMhsbInMLt2OMHIteSuEsUA31rPJbEz4mwj2CEQSNOp0goFwpQDkTKAyJHAUCWmStMINSdM2IhIOpEWQ4NqtDVBcELjZq4mR1fibh9Ijvh6x6BTmfCU5m8CWcSialHnh3KkN5t+gdnQ5tYCsShzBE/SJ5Blq2ETqc+nlY29jOdV26Qhvq2vmNQ1Qr1Zp6319Jk5h6tRaUj3mTknYmY76xylTiIhIzSUow1oQdHuRzCVmbU/U6hd2dzFTb1bw9zmWGKxa+xGMMWf5Rgnvcv/D9jN3sXO2Uxy1jjnYlvIojEi/4RsP23bUI393ArHc1R5eNRguucYN/Age9lE0iw/WdTxZ/+PM7XewvLGy3XEFMlPw2yYXBqiqWPpPO6NgBt1u0vfb5RFT62nISybSk8bPmQjc2crDXBRUrO78ny+9irUBKFhqEPMgJN0TVCxqQu+mK0OJ4pKytJv+QOD1ZPVjAmnA5k4ZeMnTKSA2ko/LtsFycYuab/gVJjjeZq6cnxgCgQLQXgS2FYzeNcWGP4Nz4iYJLwbZFBx5oPWduOXwXeS/Jk4EsxprQtjTG0vyYcQk/mCGhpCPNv9cK4a7tpaZ2V5JDNXQrIF0EUzZ0qPsYYcyqUJvwk+VtTX95I7SY6Ea/TAKraBiFTzMIH2YaASDA5LEDJmcg0+4OzYc+3JsSqcmgORBbNyFP1HuvB/rCSLLQy1BJXYZxEPsCoOiBdRbgARyHTlMRD9JhcOu6v9VsUfCrOqPyXJotqy36i/TSHSWk/ia/6m00=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72562189-cd18-467d-6bc1-08da7c4df9e7
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB5694.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2022 10:32:37.5877
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 26QlSlb9pstSuTd57QJWGR0LOIPMdLnHlPDEBLl4nOe+O7N+aj/c5o5UlHbPbzaG56iF6kfhoaBkglQmG1KDaA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3598
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-12_08,2022-08-11_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2207270000 definitions=main-2208120029
-X-Proofpoint-GUID: 5PEdWtjR8YH8DLfVKFUcHBiFVR-mCoqw
-X-Proofpoint-ORIG-GUID: 5PEdWtjR8YH8DLfVKFUcHBiFVR-mCoqw
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20220707053331.211259-1-hch@lst.de>
+ <20220707053331.211259-4-hch@lst.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH 3/6] btrfs: pass a btrfs_bio to btrfs_repair_one_sector
+In-Reply-To: <20220707053331.211259-4-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1BvYXunMVT6V8j3O1tNRDSMrF+84XvKICtV89hshx1ZKoyWPRir
+ MK1YSr5UOSlLn0GFwR7o17f+3Exe8y8LrH705Kh1oFQIkiO7CuIL7S0ktnFf9/VwJGApoax
+ yVMsfHWLh9bDce8a9mYYLfteEvVpGsNyWh9o8vKQxFrzYwKrO22sRm7ppSj2TZFniy6LZlB
+ cGJEdAiTn0lt4g8V2LHFg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:d4Xmo2cP1Gs=:kXp6907oFhKp61rezJ4OuP
+ YzswJ8/EF81BQXkDtZPHsK5/i65yxMFztj/wRBrWk8DqzOuG676XolDVRTGqr7bcBOA2XO3QG
+ N7vpPPmMqUSxEeC8Avlci8/8UlEUi19LsbJEGTre6P6L6ZigAxvP+H4iNcwX6V6nDvErhlH0p
+ 9Nh0BqIJcL8ZIf0VPCAfKSGXonodHPj1iDD3KyT9+llV52ZCoeZCQmvtcwiIl/KnTc2tqtPoa
+ lhvk/dAMuoJ4OLBpndkDA3XQ9C++XCRDqEuCZH5N9UQ1GbU/3ZG8qDoHYoivPZvliAjqjXE1x
+ PeLBSb+LISjdv9osPfo1gMY/0gAiCQpIemYXMQsr2dPH7q9BxYD2CDFhxWpQ8HpGR1IVDt+jq
+ 7Z5HmI3pxlL3Y2x6EEXf2KcuT9EhMbowd21cg4YAXt/URJWw5ROPE2d4Y3lC8dN67PaBCMgzw
+ 3Y+lxhFS9q1G1P6NRCuqPZR6AZ19av4X36+Gb6n4MlSfKrYXRDDkEvgLhgqp4P4PD7g6AXRzf
+ 6n3e8mlAMBSLpeJhOA6SMI7G+xfWZ7V+XN+xpzLHFzYQTIWtgcJ/mAizm77OPyv/RRnSVQjLx
+ YoCRjikmJSMXH/D+AuLtFYeT+8D6UTVL+ReLxfnPJdHwqBpCG35uk2clpcOqLHxNkGHSGWi6S
+ u9rEUDtYSpduoq2aarAvxlgV7dTZ7uYcu1Dvq0MOoYNjb2671mLEA7I3iXQ2EInSw8ESBV5B+
+ TopYGOGZm+s+rSLE1t+rUpaD6TvN5DKZsFgTm/pqhac1DaYIGfRy+cJlZDDw5UF2Sw+4wTBUP
+ 2EXko//6ZYCi6FMlHjkmm/CfqViU24hGndFmIvIY5pjTXbrIkH65DncFVV6/vgZh2P3N7rAmB
+ 06/JZain67IA6fSUCVQHwg9jLPWXwFYJjs20VY91RHfUShMEIV8ayuTayLW/n9ZCiIqkMbzaB
+ fBDRUjA2r8xQM0Yi8Giu9MoQntUOXVpKVDH0hGW4mvmgUW6FDHnqkCCPRgdAXQDuMZuqHUZ7V
+ +9YoRIuIK5j+RVpacEMhOZD4hkzYHRp/m9Nuc/0hkqtMw+Evka6OrbbCZQ93RVut2Grh1hB5k
+ pszF9qQ4/D6O4wgemDTvwnKmJ1erzoNIxtlJkNn72L6S/dC+B6Gc3M2ag==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -145,43 +74,279 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If the replace-target device re-appears after the suspended replace is
-cancelled, it blocks the mount operation as it can't find the matching
-replace-item in the metadata. As shown below,
 
-   BTRFS error (device sda5): replace devid present without an active replace item
 
-To overcome this situation, the user can run the command
+On 2022/7/7 13:33, Christoph Hellwig wrote:
+> Pass the btrfs_bio instead of the plain bio to btrfs_repair_one_sector,
+> an remove the start and failed_mirror arguments in favor of deriving
+> them from the btrfs_bio.  For this to work ensure that the file_offset
+> field is also initialized for buffered I/O.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-   btrfs device scan --forget <device-path-to-devid=0>
+Unfortuantely new test case btrfs/261 will expose some problems in
+latest misc-next, the first commit I can pin down is back to this patch.
 
-and try the mount command again. And also, to avoid repeating the issue,
-superblock on the devid=0 must be wiped.
+The simplified reproducer is here:
 
-   wipefs -a device-path-to-devid=0.
+         mkfs.btrfs -f -d raid5 -m raid5 $dev1 $dev2 $dev3 -b 1G
+         mount $dev1 $mnt
+         xfs_io -f -c "pwrite 0 200m" $mnt/garbage > /dev/null
+         $fsstress -s 1660413672 -w -d $mnt -n 2000
+         sync
+         $fssum -A -f -w /tmp/fssum.saved $mnt
+         umount $mnt
 
-This patch adds some info when this situation occurs.
+         xfs_io -c "pwrite -S 0x0 1m 1023m" $dev1
+         mount $dev1 $mnt
+         $fssum -r /tmp/fssum.saved $mnt > /dev/null
+         umount $mnt
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reported-by: Samuel Greiner <samuel@balkonien.org>
-Link: https://lore.kernel.org/linux-btrfs/b4f62b10-b295-26ea-71f9-9a5c9299d42c@balkonien.org/T/
----
- fs/btrfs/dev-replace.c | 2 ++
- 1 file changed, 2 insertions(+)
+This will cause the following weird output at the end of the tests:
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 9d46a702bc11..7202b76ce59f 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -166,6 +166,8 @@ int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
- 		if (btrfs_find_device(fs_info->fs_devices, &args)) {
- 			btrfs_err(fs_info,
- 			"replace devid present without an active replace item");
-+			btrfs_info(fs_info,
-+	"mount after the command 'btrfs deivce scan --forget <devpath-of-id-0>'");
- 			ret = -EUCLEAN;
- 		} else {
- 			dev_replace->srcdev = NULL;
--- 
-2.33.1
+[ 3671.459747] BTRFS critical (device dm-1): unable to find logical
+18446744073709551613 length 4096
+[ 3671.460449] BTRFS critical (device dm-1): unable to find logical 4093
+length 4096
+[ 3671.461271] BTRFS critical (device dm-1): unable to find logical
+18446744073709551613 length 4096
+[ 3671.461914] BTRFS critical (device dm-1): unable to find logical 4093
+length 4096
 
+The reason is, now btrfs_get_io_failure_record() can hit the following
+range:
+
+r/i=3D5/269 file_offset=3D6987776 em->block_start=3D-3 (HOLE)
+
+This means, we're now trying to repair a hole.
+
+But weirdly, just before this commit, at the previous commit, (btrfs:
+simplify the pending I/O counting in struct compressed_bio), that hole
+range is not passed to btrfs_repair_one_sector() at all.
+
+And just comparing the two trace I dumpped for
+btrfs_repair_one_sector(), I can not find obvious problems, except those
+hole extents are not queued into btrfs_repair_one_sector() at all.
+
+Any clue how could this happen?
+
+Thanks,
+Qu
+> ---
+>   fs/btrfs/extent_io.c | 47 ++++++++++++++++++++++++--------------------
+>   fs/btrfs/extent_io.h |  8 ++++----
+>   fs/btrfs/inode.c     |  5 ++---
+>   3 files changed, 32 insertions(+), 28 deletions(-)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 3778d58092dea..ec7bdb3fa0921 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -182,6 +182,7 @@ static int add_extent_changeset(struct extent_state =
+*state, u32 bits,
+>   static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
+>   {
+>   	struct bio *bio;
+> +	struct bio_vec *bv;
+>   	struct inode *inode;
+>   	int mirror_num;
+>
+> @@ -189,12 +190,15 @@ static void submit_one_bio(struct btrfs_bio_ctrl *=
+bio_ctrl)
+>   		return;
+>
+>   	bio =3D bio_ctrl->bio;
+> -	inode =3D bio_first_page_all(bio)->mapping->host;
+> +	bv =3D bio_first_bvec_all(bio);
+> +	inode =3D bv->bv_page->mapping->host;
+>   	mirror_num =3D bio_ctrl->mirror_num;
+>
+>   	/* Caller should ensure the bio has at least some range added */
+>   	ASSERT(bio->bi_iter.bi_size);
+>
+> +	btrfs_bio(bio)->file_offset =3D page_offset(bv->bv_page) + bv->bv_offs=
+et;
+> +
+>   	if (!is_data_inode(inode))
+>   		btrfs_submit_metadata_bio(inode, bio, mirror_num);
+>   	else if (btrfs_op(bio) =3D=3D BTRFS_MAP_WRITE)
+> @@ -2533,10 +2537,11 @@ void btrfs_free_io_failure_record(struct btrfs_i=
+node *inode, u64 start, u64 end)
+>   }
+>
+>   static struct io_failure_record *btrfs_get_io_failure_record(struct in=
+ode *inode,
+> -							     u64 start,
+> -							     int failed_mirror)
+> +							     struct btrfs_bio *bbio,
+> +							     unsigned int bio_offset)
+>   {
+>   	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
+> +	u64 start =3D bbio->file_offset + bio_offset;
+>   	struct io_failure_record *failrec;
+>   	struct extent_map *em;
+>   	struct extent_io_tree *failure_tree =3D &BTRFS_I(inode)->io_failure_t=
+ree;
+> @@ -2556,7 +2561,7 @@ static struct io_failure_record *btrfs_get_io_fail=
+ure_record(struct inode *inode
+>   		 * (e.g. with a list for failed_mirror) to make
+>   		 * clean_io_failure() clean all those errors at once.
+>   		 */
+> -		ASSERT(failrec->this_mirror =3D=3D failed_mirror);
+> +		ASSERT(failrec->this_mirror =3D=3D bbio->mirror_num);
+>   		ASSERT(failrec->len =3D=3D fs_info->sectorsize);
+>   		return failrec;
+>   	}
+> @@ -2567,7 +2572,7 @@ static struct io_failure_record *btrfs_get_io_fail=
+ure_record(struct inode *inode
+>
+>   	failrec->start =3D start;
+>   	failrec->len =3D sectorsize;
+> -	failrec->failed_mirror =3D failrec->this_mirror =3D failed_mirror;
+> +	failrec->failed_mirror =3D failrec->this_mirror =3D bbio->mirror_num;
+>   	failrec->compress_type =3D BTRFS_COMPRESS_NONE;
+>
+>   	read_lock(&em_tree->lock);
+> @@ -2632,17 +2637,17 @@ static struct io_failure_record *btrfs_get_io_fa=
+ilure_record(struct inode *inode
+>   	return failrec;
+>   }
+>
+> -int btrfs_repair_one_sector(struct inode *inode,
+> -			    struct bio *failed_bio, u32 bio_offset,
+> -			    struct page *page, unsigned int pgoff,
+> -			    u64 start, int failed_mirror,
+> +int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *fail=
+ed_bbio,
+> +			    u32 bio_offset, struct page *page,
+> +			    unsigned int pgoff,
+>   			    submit_bio_hook_t *submit_bio_hook)
+>   {
+> +	u64 start =3D failed_bbio->file_offset + bio_offset;
+>   	struct io_failure_record *failrec;
+>   	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
+>   	struct extent_io_tree *tree =3D &BTRFS_I(inode)->io_tree;
+>   	struct extent_io_tree *failure_tree =3D &BTRFS_I(inode)->io_failure_t=
+ree;
+> -	struct btrfs_bio *failed_bbio =3D btrfs_bio(failed_bio);
+> +	struct bio *failed_bio =3D &failed_bbio->bio;
+>   	const int icsum =3D bio_offset >> fs_info->sectorsize_bits;
+>   	struct bio *repair_bio;
+>   	struct btrfs_bio *repair_bbio;
+> @@ -2652,7 +2657,7 @@ int btrfs_repair_one_sector(struct inode *inode,
+>
+>   	BUG_ON(bio_op(failed_bio) =3D=3D REQ_OP_WRITE);
+>
+> -	failrec =3D btrfs_get_io_failure_record(inode, start, failed_mirror);
+> +	failrec =3D btrfs_get_io_failure_record(inode, failed_bbio, bio_offset=
+);
+>   	if (IS_ERR(failrec))
+>   		return PTR_ERR(failrec);
+>
+> @@ -2750,9 +2755,10 @@ static void end_sector_io(struct page *page, u64 =
+offset, bool uptodate)
+>   				    offset + sectorsize - 1, &cached);
+>   }
+>
+> -static void submit_data_read_repair(struct inode *inode, struct bio *fa=
+iled_bio,
+> +static void submit_data_read_repair(struct inode *inode,
+> +				    struct btrfs_bio *failed_bbio,
+>   				    u32 bio_offset, const struct bio_vec *bvec,
+> -				    int failed_mirror, unsigned int error_bitmap)
+> +				    unsigned int error_bitmap)
+>   {
+>   	const unsigned int pgoff =3D bvec->bv_offset;
+>   	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
+> @@ -2763,7 +2769,7 @@ static void submit_data_read_repair(struct inode *=
+inode, struct bio *failed_bio,
+>   	const int nr_bits =3D (end + 1 - start) >> fs_info->sectorsize_bits;
+>   	int i;
+>
+> -	BUG_ON(bio_op(failed_bio) =3D=3D REQ_OP_WRITE);
+> +	BUG_ON(bio_op(&failed_bbio->bio) =3D=3D REQ_OP_WRITE);
+>
+>   	/* This repair is only for data */
+>   	ASSERT(is_data_inode(inode));
+> @@ -2775,7 +2781,7 @@ static void submit_data_read_repair(struct inode *=
+inode, struct bio *failed_bio,
+>   	 * We only get called on buffered IO, thus page must be mapped and bi=
+o
+>   	 * must not be cloned.
+>   	 */
+> -	ASSERT(page->mapping && !bio_flagged(failed_bio, BIO_CLONED));
+> +	ASSERT(page->mapping && !bio_flagged(&failed_bbio->bio, BIO_CLONED));
+>
+>   	/* Iterate through all the sectors in the range */
+>   	for (i =3D 0; i < nr_bits; i++) {
+> @@ -2792,10 +2798,9 @@ static void submit_data_read_repair(struct inode =
+*inode, struct bio *failed_bio,
+>   			goto next;
+>   		}
+>
+> -		ret =3D btrfs_repair_one_sector(inode, failed_bio,
+> -				bio_offset + offset,
+> -				page, pgoff + offset, start + offset,
+> -				failed_mirror, btrfs_submit_data_read_bio);
+> +		ret =3D btrfs_repair_one_sector(inode, failed_bbio,
+> +				bio_offset + offset, page, pgoff + offset,
+> +				btrfs_submit_data_read_bio);
+>   		if (!ret) {
+>   			/*
+>   			 * We have submitted the read repair, the page release
+> @@ -3127,8 +3132,8 @@ static void end_bio_extent_readpage(struct bio *bi=
+o)
+>   			 * submit_data_read_repair() will handle all the good
+>   			 * and bad sectors, we just continue to the next bvec.
+>   			 */
+> -			submit_data_read_repair(inode, bio, bio_offset, bvec,
+> -						mirror, error_bitmap);
+> +			submit_data_read_repair(inode, bbio, bio_offset, bvec,
+> +						error_bitmap);
+>   		} else {
+>   			/* Update page status and unlock */
+>   			end_page_read(page, uptodate, start, len);
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index 280af70c04953..a78051c7627c4 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -57,6 +57,7 @@ enum {
+>   #define BITMAP_LAST_BYTE_MASK(nbits) \
+>   	(BYTE_MASK >> (-(nbits) & (BITS_PER_BYTE - 1)))
+>
+> +struct btrfs_bio;
+>   struct btrfs_root;
+>   struct btrfs_inode;
+>   struct btrfs_io_bio;
+> @@ -266,10 +267,9 @@ struct io_failure_record {
+>   	int num_copies;
+>   };
+>
+> -int btrfs_repair_one_sector(struct inode *inode,
+> -			    struct bio *failed_bio, u32 bio_offset,
+> -			    struct page *page, unsigned int pgoff,
+> -			    u64 start, int failed_mirror,
+> +int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *fail=
+ed_bbio,
+> +			    u32 bio_offset, struct page *page,
+> +			    unsigned int pgoff,
+>   			    submit_bio_hook_t *submit_bio_hook);
+>
+>   #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 784c1ad4a9634..a627b2af9e243 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -7953,9 +7953,8 @@ static blk_status_t btrfs_check_read_dio_bio(struc=
+t btrfs_dio_private *dip,
+>   		} else {
+>   			int ret;
+>
+> -			ret =3D btrfs_repair_one_sector(inode, &bbio->bio, offset,
+> -					bv.bv_page, bv.bv_offset, start,
+> -					bbio->mirror_num,
+> +			ret =3D btrfs_repair_one_sector(inode, bbio, offset,
+> +					bv.bv_page, bv.bv_offset,
+>   					submit_dio_repair_bio);
+>   			if (ret)
+>   				err =3D errno_to_blk_status(ret);
