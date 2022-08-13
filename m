@@ -2,125 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2D459195D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Aug 2022 10:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7028459195E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Aug 2022 10:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbiHMIGE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 13 Aug 2022 04:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
+        id S235100AbiHMIHR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 13 Aug 2022 04:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbiHMIGC (ORCPT
+        with ESMTP id S229507AbiHMIHQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 13 Aug 2022 04:06:02 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D861AF1F
-        for <linux-btrfs@vger.kernel.org>; Sat, 13 Aug 2022 01:06:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1660377958;
-        bh=3ew61xR18Gt9yVqcH2DH0w68PH4AWGlsxQndrCkXCJI=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=GWe6nteue20DCOnlNORcLmsK+HqJBDgU+XTSnKesQxcEFUmJ9YzFeqKUEOiMSRAeL
-         63O1zVn5TuxghCnXfDmftb+enKEE/b52MLHLVovHB0pB639upYaaUg6J/62PrkVxzL
-         PadGFab9VrurFft0sImtGZV8xi6WA8DNfBdqeFl4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYvcG-1nrvSX2FHc-00UsVZ; Sat, 13
- Aug 2022 10:05:58 +0200
-Message-ID: <a9d3eb38-e939-4751-4dc8-896fa653be73@gmx.com>
-Date:   Sat, 13 Aug 2022 16:05:54 +0800
+        Sat, 13 Aug 2022 04:07:16 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68821F2DB
+        for <linux-btrfs@vger.kernel.org>; Sat, 13 Aug 2022 01:07:14 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 531F73F759;
+        Sat, 13 Aug 2022 08:07:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1660378033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=m8z/TH0zlk4E5643aoIHVDMaY4KGDtNCnholj440Ym8=;
+        b=qB+70ESQuhWug5+ohJZeNUr5TDEr80+xinQB9+JiCgKIF55YlPcXforDrrbTk/dfH0rBGu
+        bx8CbdCAQmvnOFr9D6k6k+fEp4gfD/OEWrIF3IK2hgmFUDJcCkLyd1jaCTddBWNiGKnXXe
+        w7XGUuTIStX87Iq2dEanc7htGB1ZCRM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A750213A0D;
+        Sat, 13 Aug 2022 08:07:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 1AqfGq9b92I6HQAAMHmgww
+        (envelope-from <wqu@suse.com>); Sat, 13 Aug 2022 08:07:11 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v2] btrfs: don't merge pages into bio if their page offset is not continuous
+Date:   Sat, 13 Aug 2022 16:06:53 +0800
+Message-Id: <1d9b69af6ce0a79e54fbaafcc65ead8f71b54b60.1660377678.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: Corrupt leaf, trying to recover
-Content-Language: en-US
-To:     Ash Logan <ash@heyquark.com>, linux-btrfs@vger.kernel.org
-References: <6270a749-5fb2-0b36-529b-07f0e2ce4639@heyquark.com>
- <0b4a3bca-cafd-b47d-d03c-a97922e49228@gmx.com>
- <c1b246ad-6665-1216-166c-a1ad32222b35@heyquark.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <c1b246ad-6665-1216-166c-a1ad32222b35@heyquark.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6YmGgfSju9XGkxfVj2B3ieF39TQGbgzCPhTJmQM3btl9DYXZwUe
- sOvOQLUGGNBuGk3OogQztxM4XXnNbtQpYVug8MytLXK+sCSaoQCYkYFfpDfY6qt1SxuhFud
- hSUau37xKc/XfsAE2FPPRA9w8X0UXBHoX6ZE6BJPHdqjuXWzekPh/orYGVuHu8yNLEWs0Js
- qwOwCGMUV8Px0gldVVp8A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:c6btngokW3g=:JGAF4sp240Kc9x/Q7JU3cR
- CSy9ObDiFERtkFQKmioqZfMHMQzV2AmVpimAVOTqjilqbABfHTE2JpwM+En+ULLK734A9/WZF
- QrnU9vc6fY+SYZwjRNKIHb74qw1H80RV6SPT4Qa3J9azvMygLBy58pW5riWZqZ9Mh/lerrBv1
- F3C04jY2OQGKv2DKKtC0Q2DOrcGbFmEmMimHu1OosX/DpR60M01pFVw5MNlMAhD7cG5DEW00m
- Ypks/XNMZEpx2PUIAKOUPbAPm7pO2a+2AXlidSFp0HUdvdk6KEbn1HQtJ51aViVltkTWiyemk
- tDynbzMgbyN2PdgxDfPdNnstzFVkiVBQHLUmRFCiHojivEL8+CYmiNLIkg6frHCyEmJXymrLm
- e+xaOfX9h4dPYM6jwQgEsClZoZQZutGwOkuwZm4lOnRmoaxDmlkrBKGQwgP21zFCahBJziM4J
- 9YRFIcyzKFVuGi285IWOF0zoSH5vg38wORqeID6gMEdMn3XgX+jd5Qvml2SNYmsJTCx0yKrNx
- 6Ah3lOceUuyWC28Weg29NPo1ILVWhuOO70Rlyxz1uI8yctbLaHn7ioG/dd2qSutCAhaOuIle9
- fC9J3gIKti58gFKvC6eiRlNev73nQem3+z1USAhQVBdi5BsdZN+A//hFiTeDrp1lUyas2vgcu
- np3u6HQlE3Ez+azdWEMpn/3i91V3/UjR80OFaGcYY9fwjH3pU1l9041nltHw2qmDTC5kqRifg
- q7yFMgv6nPIQRMBNVkmQ1FQAhngoxT5RYYd5Fq/AZsWZZqGPRJNyeRzOTADI5Y0yuAMPxtXaT
- AiE+SfJM3h49MYRlsoi94YRP6IgRqV8MM4veH5ywd3ZamaiYUBvVM6bOa89CnR2CbD0xlOvyA
- MftTRjCfyui9jCZ+W5oLiLgBfUChwRoURVQmvfw4/EUgHaSRTo2cof0/2dOwAF1moK5pTmy4C
- yvon4aGvPDAY5qdJFB7v9iNP4jU0jidLGWos17KIedmcDHBNfuOaNpz9KTVxqxuNNls8XPfCR
- dQaUuiuaq6Zebxw75tf3ZaQvuXmARFzwDP+G+rNQYmb+faGzUzx8CRyjDvzYcpSCgkl/v9Rxc
- JE/0ayc7WV+R3bh9K1Vqf1ovWWTWKbw+YWzMo5g8RaS0/g4wZad4vSdlg==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+Zygo reported on latest devel branch, he can hit ASSERT()/BUG_ON()
+caused crash when doing RAID5 recovery (intentionally corrupt one disk,
+and let btrfs to recovery the data during read/scrub).
 
+And The following minimal reproducer can cause extent state leakage at
+rmmod time:
 
-On 2022/8/13 15:56, Ash Logan wrote:
-> Hi, thanks for your email!
->
->> Please post the output of command "btrfs ins dump-tree -b 35291136
->> <device>"
->
-> Attached.
+  mkfs.btrfs -f -d raid5 -m raid5 $dev1 $dev2 $dev3 -b 1G > /dev/null
+  mount $dev1 $mnt
+  fsstress -w -d $mnt -n 25 -s 1660807876
+  sync
+  fssum -A -f -w /tmp/fssum.saved $mnt
+  umount $mnt
 
-It looks correct, all other ROOT_ITEMS has no extra flags, and only that
-offending root has the problem.
+  # Wipe the dev1 but keeps its super block
+  xfs_io -c "pwrite -S 0x0 1m 1023m" $dev1
+  mount $dev1 $mnt
+  fssum -r /tmp/fssum.saved $mnt > /dev/null
+  umount $mnt
+  rmmod btrfs
 
-Thus it looks more like a bitflip.
+This will lead to the following extent states leakage:
 
->
->> It looks like a bitflip so far, and if that's the case, I strongly
->> recommend to do a memtest before continuing.
->
-> Will run now, hopefully it comes back clean.
->
->> Unfortunately since you're upgrading to Debian 11, I believe the damage
->> is there for a long time until you have upgraded to a newer kernel with
->> such sanity checks.
-> Ouch. At least this suggests that a kernel downgrade could still allow
-> mounting and data recovery.
+ BTRFS: state leak: start 499712 end 503807 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 495616 end 499711 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 491520 end 495615 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 487424 end 491519 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 483328 end 487423 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 479232 end 483327 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 475136 end 479231 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 471040 end 475135 state 5 in tree 1 refs 1
 
-Yes.
+[CAUSE]
+Since commit 7aa51232e204 ("btrfs: pass a btrfs_bio to
+btrfs_repair_one_sector"), we always use btrfs_bio->file_offset to
+determine the file offset of a page.
 
-As long as that's the only bitflip, everything else should be fine.
+But that usage assume that, one bio has all its page having a continuous
+page offsets.
 
-If you want, you can remove subvolume 389 (and if that's the only
-bitflip) using the older kernel and then mount using much newer kernel.
+Unfortunately that's not true, btrfs only requires the logical bytenr
+continuous when assembling its bios.
 
-Personally speaking, it's strongly recommended to use kernel newer than
-v5.11, even if a memtest is clean.
+From above script, we have one bio looks like this:
+  fssum-27671  submit_one_bio: bio logical=217739264 len=36864
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=466944 <<<
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=724992 <<<
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=729088
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=733184
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=737280
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=741376
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=745472
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=749568
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=753664
 
-That new sanity check introduced in v5.11 should save a lot of hassle
-like this.
+Note that the 1st and the 2nd page has non-continuous page offsets.
 
-Thanks,
-Qu
+This means, at repair time, we will have completely wrong file offset
+passed in:
 
->>
->> Thanks,
->> Qu
->>>
->>> Let me know if you have any advice.
->>>
->>> Thanks,
->>> Ash
->>>
+   kworker/u32:2-19927  btrfs_repair_one_sector: r/i=5/261 page_off=729088 file_off=475136 bio_offset=8192
+
+Since the file offset is incorrect, we latter incorrectly set the extent
+states, and no way to really release them.
+
+Thus later it causes the leakage.
+
+In fact, this can be even worse, since the file offset is incorrect, we
+can hit cases like the incorrect file offset belongs to a HOLE, and
+later cause btrfs_num_copies() to trigger error, finally hit
+BUG_ON()/ASSERT() later.
+
+[FIX]
+This patch will add an extra condition in btrfs_bio_add_page() for
+uncompressed IO.
+
+Now we will have more strict requirement for bio pages:
+
+- They should all have the same mapping
+  (the mapping check is already implied by the call chain)
+
+- Their logical bytenr should be adjacent
+  This is the same as the old condition.
+
+- Their page_offset() (file offset) should be adjacent
+  This is the new check.
+  This would result a slightly increased amount of bios from btrfs
+  (needs holes and inside the same stripe boundary to trigger).
+
+  But this would greatly reduce the confusion, as it's pretty common
+  to assume a btrfs bio would only contain continuous page cache.
+
+Later we may need extra cleanups, as we no longer needs to handle gaps
+between page offsets in endio functions.
+
+Currently this should be the minimal patch to fix commit 7aa51232e204
+("btrfs: pass a btrfs_bio to btrfs_repair_one_sector").
+
+Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Fixes: 7aa51232e204 ("btrfs: pass a btrfs_bio to btrfs_repair_one_sector")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+- Code style cleanups to improve readability
+---
+ fs/btrfs/extent_io.c | 32 ++++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index bc30c0a4a7f2..56dd6997c0ec 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3256,7 +3256,7 @@ static int btrfs_bio_add_page(struct btrfs_bio_ctrl *bio_ctrl,
+ 	u32 bio_size = bio->bi_iter.bi_size;
+ 	u32 real_size;
+ 	const sector_t sector = disk_bytenr >> SECTOR_SHIFT;
+-	bool contig;
++	bool contig = false;
+ 	int ret;
+ 
+ 	ASSERT(bio);
+@@ -3265,10 +3265,34 @@ static int btrfs_bio_add_page(struct btrfs_bio_ctrl *bio_ctrl,
+ 	if (bio_ctrl->compress_type != compress_type)
+ 		return 0;
+ 
+-	if (bio_ctrl->compress_type != BTRFS_COMPRESS_NONE)
++
++	if (bio->bi_iter.bi_size == 0) {
++		/* We can always add a page into an empty bio. */
++		contig = true;
++	} else if (bio_ctrl->compress_type == BTRFS_COMPRESS_NONE) {
++		struct bio_vec *bvec = bio_last_bvec_all(bio);
++
++		/*
++		 * The contig check requires the following conditions to be met:
++		 * 1) The pages are belonging to the same inode
++		 *    This is implied by the call chain.
++		 *
++		 * 2) The range has adjacent logical bytenr
++		 *
++		 * 3) The range has adjacent file offset (NEW)
++		 *    This is required for the usage of btrfs_bio->file_offset.
++		 */
++		contig = bio_end_sector(bio) == sector &&
++			 page_offset(bvec->bv_page) + bvec->bv_offset +
++			 bvec->bv_len == page_offset(page) + pg_offset;
++	} else {
++		/*
++		 * For compression, all IO should have its logical bytenr
++		 * set to the starting bytenr of the compressed extent.
++		 */
+ 		contig = bio->bi_iter.bi_sector == sector;
+-	else
+-		contig = bio_end_sector(bio) == sector;
++	}
++
+ 	if (!contig)
+ 		return 0;
+ 
+-- 
+2.37.1
+
