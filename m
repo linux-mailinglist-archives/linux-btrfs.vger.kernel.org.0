@@ -2,320 +2,729 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9655918EC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Aug 2022 07:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1755918FE
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Aug 2022 08:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238680AbiHMFfE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 13 Aug 2022 01:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51108 "EHLO
+        id S238407AbiHMGAu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 13 Aug 2022 02:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237942AbiHMFeh (ORCPT
+        with ESMTP id S238439AbiHMGAs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 13 Aug 2022 01:34:37 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C6296FE0
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Aug 2022 22:33:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1660368821;
-        bh=0cC/HcrWXO4cdet8KrUmVg4tnASh3RTX6AqkQ90fWNk=;
-        h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:In-Reply-To;
-        b=UFo8fyKTh6XEUeBQpGB/XE6EZHw0rHGFIW9uFQsvB8whp6tZvLDqbG+Ec4+9BNHcn
-         C/xYCY6Y2Ih1Ards9QOaFWBLLGz9giLghq2tiGJV1pFxSVDz8U62UdFk3Tq88bmPeR
-         1WuKoKxt7hZx5pS3T1sFv8O4saAeqaXktfnZe5kU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MCKBm-1oDLqC1jpS-009OQv; Sat, 13
- Aug 2022 07:33:41 +0200
-Message-ID: <6a32f56c-60a1-7f34-deee-4fdc55c91131@gmx.com>
-Date:   Sat, 13 Aug 2022 13:33:32 +0800
+        Sat, 13 Aug 2022 02:00:48 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D5643306
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Aug 2022 23:00:46 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5A55E2033F;
+        Sat, 13 Aug 2022 06:00:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1660370444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=RA0lprbYJ0G4qhpl0Sxsdc7JWIh+uc6x4fNMJJWGSSY=;
+        b=L5SosPmGDb7SSnLpyq6S4ZDJEIDnfPuk/fY5qljV36ILh/4yevewCQS5gPg/iDjwIK9HGI
+        x5260OvzezlfDXFT+M2OO4AJzJsqcfFxuSG1NsWBo2RDVIHA3b/loXq56z+6zP1rK3FtBP
+        cSyR7DRMMDJ6bSzdHqtBzPlW+eyNbR0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D18831341F;
+        Sat, 13 Aug 2022 06:00:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Ei20Jgo+92JEdQAAMHmgww
+        (envelope-from <wqu@suse.com>); Sat, 13 Aug 2022 06:00:42 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH] Revert "btrfs: fix repair of compressed extents" and "btrfs: pass a btrfs_bio to btrfs_repair_one_sector"
+Date:   Sat, 13 Aug 2022 14:00:25 +0800
+Message-Id: <09b666a5e355472749a243946a9199ce2d6cef77.1660370422.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: [PATCH 3/6] btrfs: pass a btrfs_bio to btrfs_repair_one_sector
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20220707053331.211259-1-hch@lst.de>
- <20220707053331.211259-4-hch@lst.de>
- <ea61624a-26ed-38e4-1f92-400cab7d504a@gmx.com>
-In-Reply-To: <ea61624a-26ed-38e4-1f92-400cab7d504a@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:3zhwuC5ETBJTFekyLKXLiS3p7gxMn07zSU75qST2jBUz09K2NZx
- 4KOfGe++nAAZKZLGYnYXw8Q+W/mOw8JMZSDvsjTNZZMB1QQG3qhQcUkrlh+iUBEQzklipf2
- 4lHP6RUynUvHFKAlGDMftGhxZ1OqFf5qP1ap6+oB6p2qjfxpxLR7AQ/A4KykH+snQ9BD3Oc
- /ZUXs+a+YSXmxBsX148qA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8xFQY6j/eY4=:lZ75xpqY1KtopJ78rcwJL5
- yWMQus+Ol0zNPJ6NjuaYqI0jnRr26JTI4w4bDonDklxHD6RiXm4ZabzkU20z8m0+HTgPatf3+
- lcSo3xdhbaE9E+RRL2mFrZ3uHKJC2QaHI/eQ6xaJ6+bIA9c/9KNUJE5uZAXETmvlffpodQCn8
- JilrqWAQoo1gY7MBG1nLOjoESVNSucc+NDmAlIIKqZy5x3f4fUzW47Er6pfN6TwQd/IPCor+u
- 0hfp13IbUxTrJkcP+42fymn81av9x9ABIeFN0xVPS4lnYUIA4iYNVGanI8mjqFHTGk/Ku7c9+
- 5+Z5A0LvYxj1XeDZnL+ybOUnUyROwjvx7dxFctDMVbF04tgFc7Wk/A6oFajbZ+XQv4YDUx451
- NWKy9i/c03lEw+9OATUomi0GXOc2wIHYc0ifXawyTItzUUVjtL1Gan0HVdW8wqA1xlWyO1IJ+
- uohWe5qjj/yykcAmA+vaoKlOHs4GEdt4oBucSCFKOBOnh2/YDvz3yMBd2EU7Z9nSztx9U/GOx
- EQP1QtJarHOBsCadnDmUINXLkfwG4N+9gYAqdONq4VI90ofkOkWYtmopUuR0xEeMQHHEeQOIa
- Tf3ww9AHWW/eddP0DtRT/Kwg5t4dEWTe95VTgQsO5iX9xB+oic2QtAmBTJTpEPk/TdIkV1sz0
- s0zgxyvOF0we2L0rFs0XH1v9BuR1xfogYqgZdK72WXIyAmf/x3mIbyFiJhaAZBC8M0EVCFruZ
- +LlPESlYw+vJMlkEmFfgyhD+hxnTT06ntzIgHrPQL5l77vAPlhQrJtDqD8MNxC2wKUe3jpvGK
- lL7BT0ivCDERDyBzJmCuJUs6dM/qwjLRwubOtMSP/1JgCx6thfqZGvDlfXcQEwsQUWzrB1cW8
- qlM0YXzeZJsNXr145Om1paDERkbVysz5FCJgrbYUADuTgyIQEC3Tpe1IPWiAX75RytYZ9W/H7
- X0a+BcnMBU2Vn6ziFuEc45vPnpScposzJNutSHpvO1tMqI5nZCSxq/OspLoyMw8WsdEG018o6
- KQB9CvGB3dGd0Ixne8BWoLGAdwN+wrUsTYYjuslPS9DcMhDpm6PdCSx2UHWb/aMg1AbAaoX63
- poDBtj85Xt4WBfoqzMgmXwYGGeN4VT/zLnIiM+KAo7F5Tf0yWvP+EiBWw==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjIvOC8xMiAxOToyMSwgUXUgV2VucnVvIHdyb3RlOg0KPiANCj4gDQo+IE9uIDIw
-MjIvNy83IDEzOjMzLCBDaHJpc3RvcGggSGVsbHdpZyB3cm90ZToNCj4+IFBhc3MgdGhlIGJ0cmZz
-X2JpbyBpbnN0ZWFkIG9mIHRoZSBwbGFpbiBiaW8gdG8gYnRyZnNfcmVwYWlyX29uZV9zZWN0b3Is
-DQo+PiBhbiByZW1vdmUgdGhlIHN0YXJ0IGFuZCBmYWlsZWRfbWlycm9yIGFyZ3VtZW50cyBpbiBm
-YXZvciBvZiBkZXJpdmluZw0KPj4gdGhlbSBmcm9tIHRoZSBidHJmc19iaW8uwqAgRm9yIHRoaXMg
-dG8gd29yayBlbnN1cmUgdGhhdCB0aGUgZmlsZV9vZmZzZXQNCj4+IGZpZWxkIGlzIGFsc28gaW5p
-dGlhbGl6ZWQgZm9yIGJ1ZmZlcmVkIEkvTy4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3Rv
-cGggSGVsbHdpZyA8aGNoQGxzdC5kZT4NCj4gDQo+IFVuZm9ydHVhbnRlbHkgbmV3IHRlc3QgY2Fz
-ZSBidHJmcy8yNjEgd2lsbCBleHBvc2Ugc29tZSBwcm9ibGVtcyBpbg0KPiBsYXRlc3QgbWlzYy1u
-ZXh0LCB0aGUgZmlyc3QgY29tbWl0IEkgY2FuIHBpbiBkb3duIGlzIGJhY2sgdG8gdGhpcyBwYXRj
-aC4NCj4gDQo+IFRoZSBzaW1wbGlmaWVkIHJlcHJvZHVjZXIgaXMgaGVyZToNCj4gDQo+ICDCoMKg
-wqDCoMKgwqDCoCBta2ZzLmJ0cmZzIC1mIC1kIHJhaWQ1IC1tIHJhaWQ1ICRkZXYxICRkZXYyICRk
-ZXYzIC1iIDFHDQo+ICDCoMKgwqDCoMKgwqDCoCBtb3VudCAkZGV2MSAkbW50DQo+ICDCoMKgwqDC
-oMKgwqDCoCB4ZnNfaW8gLWYgLWMgInB3cml0ZSAwIDIwMG0iICRtbnQvZ2FyYmFnZSA+IC9kZXYv
-bnVsbA0KPiAgwqDCoMKgwqDCoMKgwqAgJGZzc3RyZXNzIC1zIDE2NjA0MTM2NzIgLXcgLWQgJG1u
-dCAtbiAyMDAwDQo+ICDCoMKgwqDCoMKgwqDCoCBzeW5jDQo+ICDCoMKgwqDCoMKgwqDCoCAkZnNz
-dW0gLUEgLWYgLXcgL3RtcC9mc3N1bS5zYXZlZCAkbW50DQo+ICDCoMKgwqDCoMKgwqDCoCB1bW91
-bnQgJG1udA0KPiANCj4gIMKgwqDCoMKgwqDCoMKgIHhmc19pbyAtYyAicHdyaXRlIC1TIDB4MCAx
-bSAxMDIzbSIgJGRldjENCj4gIMKgwqDCoMKgwqDCoMKgIG1vdW50ICRkZXYxICRtbnQNCj4gIMKg
-wqDCoMKgwqDCoMKgICRmc3N1bSAtciAvdG1wL2Zzc3VtLnNhdmVkICRtbnQgPiAvZGV2L251bGwN
-Cj4gIMKgwqDCoMKgwqDCoMKgIHVtb3VudCAkbW50DQo+IA0KPiBUaGlzIHdpbGwgY2F1c2UgdGhl
-IGZvbGxvd2luZyB3ZWlyZCBvdXRwdXQgYXQgdGhlIGVuZCBvZiB0aGUgdGVzdHM6DQo+IA0KPiBb
-IDM2NzEuNDU5NzQ3XSBCVFJGUyBjcml0aWNhbCAoZGV2aWNlIGRtLTEpOiB1bmFibGUgdG8gZmlu
-ZCBsb2dpY2FsDQo+IDE4NDQ2NzQ0MDczNzA5NTUxNjEzIGxlbmd0aCA0MDk2DQo+IFsgMzY3MS40
-NjA0NDldIEJUUkZTIGNyaXRpY2FsIChkZXZpY2UgZG0tMSk6IHVuYWJsZSB0byBmaW5kIGxvZ2lj
-YWwgNDA5Mw0KPiBsZW5ndGggNDA5Ng0KPiBbIDM2NzEuNDYxMjcxXSBCVFJGUyBjcml0aWNhbCAo
-ZGV2aWNlIGRtLTEpOiB1bmFibGUgdG8gZmluZCBsb2dpY2FsDQo+IDE4NDQ2NzQ0MDczNzA5NTUx
-NjEzIGxlbmd0aCA0MDk2DQo+IFsgMzY3MS40NjE5MTRdIEJUUkZTIGNyaXRpY2FsIChkZXZpY2Ug
-ZG0tMSk6IHVuYWJsZSB0byBmaW5kIGxvZ2ljYWwgNDA5Mw0KPiBsZW5ndGggNDA5Ng0KPiANCj4g
-VGhlIHJlYXNvbiBpcywgbm93IGJ0cmZzX2dldF9pb19mYWlsdXJlX3JlY29yZCgpIGNhbiBoaXQg
-dGhlIGZvbGxvd2luZw0KPiByYW5nZToNCj4gDQo+IHIvaT01LzI2OSBmaWxlX29mZnNldD02OTg3
-Nzc2IGVtLT5ibG9ja19zdGFydD0tMyAoSE9MRSkNCj4gDQo+IFRoaXMgbWVhbnMsIHdlJ3JlIG5v
-dyB0cnlpbmcgdG8gcmVwYWlyIGEgaG9sZS4NCj4gDQo+IEJ1dCB3ZWlyZGx5LCBqdXN0IGJlZm9y
-ZSB0aGlzIGNvbW1pdCwgYXQgdGhlIHByZXZpb3VzIGNvbW1pdCwgKGJ0cmZzOg0KPiBzaW1wbGlm
-eSB0aGUgcGVuZGluZyBJL08gY291bnRpbmcgaW4gc3RydWN0IGNvbXByZXNzZWRfYmlvKSwgdGhh
-dCBob2xlDQo+IHJhbmdlIGlzIG5vdCBwYXNzZWQgdG8gYnRyZnNfcmVwYWlyX29uZV9zZWN0b3Io
-KSBhdCBhbGwuDQo+IA0KPiBBbmQganVzdCBjb21wYXJpbmcgdGhlIHR3byB0cmFjZSBJIGR1bXBw
-ZWQgZm9yDQo+IGJ0cmZzX3JlcGFpcl9vbmVfc2VjdG9yKCksIEkgY2FuIG5vdCBmaW5kIG9idmlv
-dXMgcHJvYmxlbXMsIGV4Y2VwdCB0aG9zZQ0KPiBob2xlIGV4dGVudHMgYXJlIG5vdCBxdWV1ZWQg
-aW50byBidHJmc19yZXBhaXJfb25lX3NlY3RvcigpIGF0IGFsbC4NCj4gDQo+IEFueSBjbHVlIGhv
-dyBjb3VsZCB0aGlzIGhhcHBlbj8NCg0KSXQgbG9va3MgbGlrZSB3ZSBpZ25vcmVkIG9uZSBzcGVj
-aWFsIGNhc2UsIGJ0cmZzIGNhbiBtZXJnZSBwYWdlIGludG8gb25lIA0KYmlvLCBhcyBsb25nIGFz
-IHRoZWlyIGxvZ2ljYWwgYnl0ZW5yIGlzIGFkamFjZW50Lg0KDQpUaGlzIG1lYW5zLCB0aGUgZm9s
-bG93aW5nIGJpb3MgYXJlIGNvbXBsZXRlbHkgcG9zc2libGU6DQoNCiAgc3VibWl0X29uZV9iaW86
-IGJpbyBsb2dpY2FsPTIxNzczOTI2NCBsZW49MzY4NjQNCiAgc3VibWl0X29uZV9iaW86ICAgci9p
-PTUvMjYxIHBhZ2U9NDY2OTQ0DQogIHN1Ym1pdF9vbmVfYmlvOiAgIHIvaT01LzI2MSBwYWdlPTcy
-NDk5Mg0KICBzdWJtaXRfb25lX2JpbzogICByL2k9NS8yNjEgcGFnZT03MjkwODgNCiAgc3VibWl0
-X29uZV9iaW86ICAgci9pPTUvMjYxIHBhZ2U9NzMzMTg0DQogIHN1Ym1pdF9vbmVfYmlvOiAgIHIv
-aT01LzI2MSBwYWdlPTczNzI4MA0KICBzdWJtaXRfb25lX2JpbzogICByL2k9NS8yNjEgcGFnZT03
-NDEzNzYNCiAgc3VibWl0X29uZV9iaW86ICAgci9pPTUvMjYxIHBhZ2U9NzQ1NDcyDQogIHN1Ym1p
-dF9vbmVfYmlvOiAgIHIvaT01LzI2MSBwYWdlPTc0OTU2OA0KICBzdWJtaXRfb25lX2JpbzogICBy
-L2k9NS8yNjEgcGFnZT03NTM2NjQNCg0KTm90ZSB0aGUgZmlyc3QgcGFnZSBpcyBzdGlsbCBhdCBm
-aWxlIG9mZnNldCA0NjY5NDQsIHRoZSAybmQgcGFnZSBpcyB0aGVuIA0KYXQgZmlsZSBvZmZzZXQg
-NzI0OTkyLg0KDQpUaHVzIHdlIGNhbiBub3QgcmVseSBvbiBiYmlvLT5maWxlX29mZnNldCwgYXMg
-eW91ciBhc3N1bXB0aW9uIGlzLCB0aGUgDQpmdWxsIGJpbyBoYXMgcGFnZXMgd2hvc2Ugb2Zmc2V0
-IGFyZSBhZGphY2VudCwgYnV0IHRoYXQncyBubyB0cnVlLg0KDQpJIGRvbid0IGhhdmUgYSBiZXR0
-ZXIgc29sdXRpb24gdG8gaGFuZGxlIHRoZSBwcm9ibGVtIHJpZ2h0IG5vdywgdGh1cyBJIA0KZ3Vl
-c3MgSSBoYXZlIHRvIHJldmVydCB0aGlzIGNvbW1pdC4NCg0KVGhhbmtzLA0KUXUNCg0KPiANCj4g
-VGhhbmtzLA0KPiBRdQ0KPj4gLS0tDQo+PiDCoCBmcy9idHJmcy9leHRlbnRfaW8uYyB8IDQ3ICsr
-KysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+PiDCoCBmcy9idHJm
-cy9leHRlbnRfaW8uaCB8wqAgOCArKysrLS0tLQ0KPj4gwqAgZnMvYnRyZnMvaW5vZGUuY8KgwqDC
-oMKgIHzCoCA1ICsrLS0tDQo+PiDCoCAzIGZpbGVzIGNoYW5nZWQsIDMyIGluc2VydGlvbnMoKyks
-IDI4IGRlbGV0aW9ucygtKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9mcy9idHJmcy9leHRlbnRfaW8u
-YyBiL2ZzL2J0cmZzL2V4dGVudF9pby5jDQo+PiBpbmRleCAzNzc4ZDU4MDkyZGVhLi5lYzdiZGIz
-ZmEwOTIxIDEwMDY0NA0KPj4gLS0tIGEvZnMvYnRyZnMvZXh0ZW50X2lvLmMNCj4+ICsrKyBiL2Zz
-L2J0cmZzL2V4dGVudF9pby5jDQo+PiBAQCAtMTgyLDYgKzE4Miw3IEBAIHN0YXRpYyBpbnQgYWRk
-X2V4dGVudF9jaGFuZ2VzZXQoc3RydWN0IA0KPj4gZXh0ZW50X3N0YXRlICpzdGF0ZSwgdTMyIGJp
-dHMsDQo+PiDCoCBzdGF0aWMgdm9pZCBzdWJtaXRfb25lX2JpbyhzdHJ1Y3QgYnRyZnNfYmlvX2N0
-cmwgKmJpb19jdHJsKQ0KPj4gwqAgew0KPj4gwqDCoMKgwqDCoCBzdHJ1Y3QgYmlvICpiaW87DQo+
-PiArwqDCoMKgIHN0cnVjdCBiaW9fdmVjICpidjsNCj4+IMKgwqDCoMKgwqAgc3RydWN0IGlub2Rl
-ICppbm9kZTsNCj4+IMKgwqDCoMKgwqAgaW50IG1pcnJvcl9udW07DQo+Pg0KPj4gQEAgLTE4OSwx
-MiArMTkwLDE1IEBAIHN0YXRpYyB2b2lkIHN1Ym1pdF9vbmVfYmlvKHN0cnVjdCBidHJmc19iaW9f
-Y3RybCANCj4+ICpiaW9fY3RybCkNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm47DQo+Pg0K
-Pj4gwqDCoMKgwqDCoCBiaW8gPSBiaW9fY3RybC0+YmlvOw0KPj4gLcKgwqDCoCBpbm9kZSA9IGJp
-b19maXJzdF9wYWdlX2FsbChiaW8pLT5tYXBwaW5nLT5ob3N0Ow0KPj4gK8KgwqDCoCBidiA9IGJp
-b19maXJzdF9idmVjX2FsbChiaW8pOw0KPj4gK8KgwqDCoCBpbm9kZSA9IGJ2LT5idl9wYWdlLT5t
-YXBwaW5nLT5ob3N0Ow0KPj4gwqDCoMKgwqDCoCBtaXJyb3JfbnVtID0gYmlvX2N0cmwtPm1pcnJv
-cl9udW07DQo+Pg0KPj4gwqDCoMKgwqDCoCAvKiBDYWxsZXIgc2hvdWxkIGVuc3VyZSB0aGUgYmlv
-IGhhcyBhdCBsZWFzdCBzb21lIHJhbmdlIGFkZGVkICovDQo+PiDCoMKgwqDCoMKgIEFTU0VSVChi
-aW8tPmJpX2l0ZXIuYmlfc2l6ZSk7DQo+Pg0KPj4gK8KgwqDCoCBidHJmc19iaW8oYmlvKS0+Zmls
-ZV9vZmZzZXQgPSBwYWdlX29mZnNldChidi0+YnZfcGFnZSkgKyANCj4+IGJ2LT5idl9vZmZzZXQ7
-DQo+PiArDQo+PiDCoMKgwqDCoMKgIGlmICghaXNfZGF0YV9pbm9kZShpbm9kZSkpDQo+PiDCoMKg
-wqDCoMKgwqDCoMKgwqAgYnRyZnNfc3VibWl0X21ldGFkYXRhX2Jpbyhpbm9kZSwgYmlvLCBtaXJy
-b3JfbnVtKTsNCj4+IMKgwqDCoMKgwqAgZWxzZSBpZiAoYnRyZnNfb3AoYmlvKSA9PSBCVFJGU19N
-QVBfV1JJVEUpDQo+PiBAQCAtMjUzMywxMCArMjUzNywxMSBAQCB2b2lkIGJ0cmZzX2ZyZWVfaW9f
-ZmFpbHVyZV9yZWNvcmQoc3RydWN0IA0KPj4gYnRyZnNfaW5vZGUgKmlub2RlLCB1NjQgc3RhcnQs
-IHU2NCBlbmQpDQo+PiDCoCB9DQo+Pg0KPj4gwqAgc3RhdGljIHN0cnVjdCBpb19mYWlsdXJlX3Jl
-Y29yZCAqYnRyZnNfZ2V0X2lvX2ZhaWx1cmVfcmVjb3JkKHN0cnVjdCANCj4+IGlub2RlICppbm9k
-ZSwNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIHU2NCBzdGFydCwNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGludCBmYWlsZWRfbWlycm9y
-KQ0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgc3RydWN0IGJ0cmZzX2JpbyAqYmJpbywNCj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHVuc2ln
-bmVkIGludCBiaW9fb2Zmc2V0KQ0KPj4gwqAgew0KPj4gwqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNf
-ZnNfaW5mbyAqZnNfaW5mbyA9IGJ0cmZzX3NiKGlub2RlLT5pX3NiKTsNCj4+ICvCoMKgwqAgdTY0
-IHN0YXJ0ID0gYmJpby0+ZmlsZV9vZmZzZXQgKyBiaW9fb2Zmc2V0Ow0KPj4gwqDCoMKgwqDCoCBz
-dHJ1Y3QgaW9fZmFpbHVyZV9yZWNvcmQgKmZhaWxyZWM7DQo+PiDCoMKgwqDCoMKgIHN0cnVjdCBl
-eHRlbnRfbWFwICplbTsNCj4+IMKgwqDCoMKgwqAgc3RydWN0IGV4dGVudF9pb190cmVlICpmYWls
-dXJlX3RyZWUgPSANCj4+ICZCVFJGU19JKGlub2RlKS0+aW9fZmFpbHVyZV90cmVlOw0KPj4gQEAg
-LTI1NTYsNyArMjU2MSw3IEBAIHN0YXRpYyBzdHJ1Y3QgaW9fZmFpbHVyZV9yZWNvcmQgDQo+PiAq
-YnRyZnNfZ2V0X2lvX2ZhaWx1cmVfcmVjb3JkKHN0cnVjdCBpbm9kZSAqaW5vZGUNCj4+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgICogKGUuZy4gd2l0aCBhIGxpc3QgZm9yIGZhaWxlZF9taXJyb3IpIHRv
-IG1ha2UNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgICogY2xlYW5faW9fZmFpbHVyZSgpIGNsZWFu
-IGFsbCB0aG9zZSBlcnJvcnMgYXQgb25jZS4NCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgICovDQo+
-PiAtwqDCoMKgwqDCoMKgwqAgQVNTRVJUKGZhaWxyZWMtPnRoaXNfbWlycm9yID09IGZhaWxlZF9t
-aXJyb3IpOw0KPj4gK8KgwqDCoMKgwqDCoMKgIEFTU0VSVChmYWlscmVjLT50aGlzX21pcnJvciA9
-PSBiYmlvLT5taXJyb3JfbnVtKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBBU1NFUlQoZmFpbHJl
-Yy0+bGVuID09IGZzX2luZm8tPnNlY3RvcnNpemUpOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIHJl
-dHVybiBmYWlscmVjOw0KPj4gwqDCoMKgwqDCoCB9DQo+PiBAQCAtMjU2Nyw3ICsyNTcyLDcgQEAg
-c3RhdGljIHN0cnVjdCBpb19mYWlsdXJlX3JlY29yZCANCj4+ICpidHJmc19nZXRfaW9fZmFpbHVy
-ZV9yZWNvcmQoc3RydWN0IGlub2RlICppbm9kZQ0KPj4NCj4+IMKgwqDCoMKgwqAgZmFpbHJlYy0+
-c3RhcnQgPSBzdGFydDsNCj4+IMKgwqDCoMKgwqAgZmFpbHJlYy0+bGVuID0gc2VjdG9yc2l6ZTsN
-Cj4+IC3CoMKgwqAgZmFpbHJlYy0+ZmFpbGVkX21pcnJvciA9IGZhaWxyZWMtPnRoaXNfbWlycm9y
-ID0gZmFpbGVkX21pcnJvcjsNCj4+ICvCoMKgwqAgZmFpbHJlYy0+ZmFpbGVkX21pcnJvciA9IGZh
-aWxyZWMtPnRoaXNfbWlycm9yID0gYmJpby0+bWlycm9yX251bTsNCj4+IMKgwqDCoMKgwqAgZmFp
-bHJlYy0+Y29tcHJlc3NfdHlwZSA9IEJUUkZTX0NPTVBSRVNTX05PTkU7DQo+Pg0KPj4gwqDCoMKg
-wqDCoCByZWFkX2xvY2soJmVtX3RyZWUtPmxvY2spOw0KPj4gQEAgLTI2MzIsMTcgKzI2MzcsMTcg
-QEAgc3RhdGljIHN0cnVjdCBpb19mYWlsdXJlX3JlY29yZCANCj4+ICpidHJmc19nZXRfaW9fZmFp
-bHVyZV9yZWNvcmQoc3RydWN0IGlub2RlICppbm9kZQ0KPj4gwqDCoMKgwqDCoCByZXR1cm4gZmFp
-bHJlYzsNCj4+IMKgIH0NCj4+DQo+PiAtaW50IGJ0cmZzX3JlcGFpcl9vbmVfc2VjdG9yKHN0cnVj
-dCBpbm9kZSAqaW5vZGUsDQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cnVj
-dCBiaW8gKmZhaWxlZF9iaW8sIHUzMiBiaW9fb2Zmc2V0LA0KPj4gLcKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBzdHJ1Y3QgcGFnZSAqcGFnZSwgdW5zaWduZWQgaW50IHBnb2ZmLA0KPj4g
-LcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1NjQgc3RhcnQsIGludCBmYWlsZWRfbWly
-cm9yLA0KPj4gK2ludCBidHJmc19yZXBhaXJfb25lX3NlY3RvcihzdHJ1Y3QgaW5vZGUgKmlub2Rl
-LCBzdHJ1Y3QgYnRyZnNfYmlvIA0KPj4gKmZhaWxlZF9iYmlvLA0KPj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCB1MzIgYmlvX29mZnNldCwgc3RydWN0IHBhZ2UgKnBhZ2UsDQo+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHVuc2lnbmVkIGludCBwZ29mZiwNCj4+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3VibWl0X2Jpb19ob29rX3QgKnN1Ym1p
-dF9iaW9faG9vaykNCj4+IMKgIHsNCj4+ICvCoMKgwqAgdTY0IHN0YXJ0ID0gZmFpbGVkX2JiaW8t
-PmZpbGVfb2Zmc2V0ICsgYmlvX29mZnNldDsNCj4+IMKgwqDCoMKgwqAgc3RydWN0IGlvX2ZhaWx1
-cmVfcmVjb3JkICpmYWlscmVjOw0KPj4gwqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAq
-ZnNfaW5mbyA9IGJ0cmZzX3NiKGlub2RlLT5pX3NiKTsNCj4+IMKgwqDCoMKgwqAgc3RydWN0IGV4
-dGVudF9pb190cmVlICp0cmVlID0gJkJUUkZTX0koaW5vZGUpLT5pb190cmVlOw0KPj4gwqDCoMKg
-wqDCoCBzdHJ1Y3QgZXh0ZW50X2lvX3RyZWUgKmZhaWx1cmVfdHJlZSA9IA0KPj4gJkJUUkZTX0ko
-aW5vZGUpLT5pb19mYWlsdXJlX3RyZWU7DQo+PiAtwqDCoMKgIHN0cnVjdCBidHJmc19iaW8gKmZh
-aWxlZF9iYmlvID0gYnRyZnNfYmlvKGZhaWxlZF9iaW8pOw0KPj4gK8KgwqDCoCBzdHJ1Y3QgYmlv
-ICpmYWlsZWRfYmlvID0gJmZhaWxlZF9iYmlvLT5iaW87DQo+PiDCoMKgwqDCoMKgIGNvbnN0IGlu
-dCBpY3N1bSA9IGJpb19vZmZzZXQgPj4gZnNfaW5mby0+c2VjdG9yc2l6ZV9iaXRzOw0KPj4gwqDC
-oMKgwqDCoCBzdHJ1Y3QgYmlvICpyZXBhaXJfYmlvOw0KPj4gwqDCoMKgwqDCoCBzdHJ1Y3QgYnRy
-ZnNfYmlvICpyZXBhaXJfYmJpbzsNCj4+IEBAIC0yNjUyLDcgKzI2NTcsNyBAQCBpbnQgYnRyZnNf
-cmVwYWlyX29uZV9zZWN0b3Ioc3RydWN0IGlub2RlICppbm9kZSwNCj4+DQo+PiDCoMKgwqDCoMKg
-IEJVR19PTihiaW9fb3AoZmFpbGVkX2JpbykgPT0gUkVRX09QX1dSSVRFKTsNCj4+DQo+PiAtwqDC
-oMKgIGZhaWxyZWMgPSBidHJmc19nZXRfaW9fZmFpbHVyZV9yZWNvcmQoaW5vZGUsIHN0YXJ0LCBm
-YWlsZWRfbWlycm9yKTsNCj4+ICvCoMKgwqAgZmFpbHJlYyA9IGJ0cmZzX2dldF9pb19mYWlsdXJl
-X3JlY29yZChpbm9kZSwgZmFpbGVkX2JiaW8sIA0KPj4gYmlvX29mZnNldCk7DQo+PiDCoMKgwqDC
-oMKgIGlmIChJU19FUlIoZmFpbHJlYykpDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIFBU
-Ul9FUlIoZmFpbHJlYyk7DQo+Pg0KPj4gQEAgLTI3NTAsOSArMjc1NSwxMCBAQCBzdGF0aWMgdm9p
-ZCBlbmRfc2VjdG9yX2lvKHN0cnVjdCBwYWdlICpwYWdlLCANCj4+IHU2NCBvZmZzZXQsIGJvb2wg
-dXB0b2RhdGUpDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-b2Zmc2V0ICsgc2VjdG9yc2l6ZSAtIDEsICZjYWNoZWQpOw0KPj4gwqAgfQ0KPj4NCj4+IC1zdGF0
-aWMgdm9pZCBzdWJtaXRfZGF0YV9yZWFkX3JlcGFpcihzdHJ1Y3QgaW5vZGUgKmlub2RlLCBzdHJ1
-Y3QgYmlvIA0KPj4gKmZhaWxlZF9iaW8sDQo+PiArc3RhdGljIHZvaWQgc3VibWl0X2RhdGFfcmVh
-ZF9yZXBhaXIoc3RydWN0IGlub2RlICppbm9kZSwNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNfYmlvICpmYWlsZWRfYmJpbywNCj4+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1MzIgYmlvX29mZnNldCwgY29u
-c3Qgc3RydWN0IGJpb192ZWMgKmJ2ZWMsDQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgaW50IGZhaWxlZF9taXJyb3IsIHVuc2lnbmVkIGludCBlcnJvcl9iaXRtYXAp
-DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdW5zaWduZWQgaW50
-IGVycm9yX2JpdG1hcCkNCj4+IMKgIHsNCj4+IMKgwqDCoMKgwqAgY29uc3QgdW5zaWduZWQgaW50
-IHBnb2ZmID0gYnZlYy0+YnZfb2Zmc2V0Ow0KPj4gwqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNfZnNf
-aW5mbyAqZnNfaW5mbyA9IGJ0cmZzX3NiKGlub2RlLT5pX3NiKTsNCj4+IEBAIC0yNzYzLDcgKzI3
-NjksNyBAQCBzdGF0aWMgdm9pZCBzdWJtaXRfZGF0YV9yZWFkX3JlcGFpcihzdHJ1Y3QgaW5vZGUg
-DQo+PiAqaW5vZGUsIHN0cnVjdCBiaW8gKmZhaWxlZF9iaW8sDQo+PiDCoMKgwqDCoMKgIGNvbnN0
-IGludCBucl9iaXRzID0gKGVuZCArIDEgLSBzdGFydCkgPj4gZnNfaW5mby0+c2VjdG9yc2l6ZV9i
-aXRzOw0KPj4gwqDCoMKgwqDCoCBpbnQgaTsNCj4+DQo+PiAtwqDCoMKgIEJVR19PTihiaW9fb3Ao
-ZmFpbGVkX2JpbykgPT0gUkVRX09QX1dSSVRFKTsNCj4+ICvCoMKgwqAgQlVHX09OKGJpb19vcCgm
-ZmFpbGVkX2JiaW8tPmJpbykgPT0gUkVRX09QX1dSSVRFKTsNCj4+DQo+PiDCoMKgwqDCoMKgIC8q
-IFRoaXMgcmVwYWlyIGlzIG9ubHkgZm9yIGRhdGEgKi8NCj4+IMKgwqDCoMKgwqAgQVNTRVJUKGlz
-X2RhdGFfaW5vZGUoaW5vZGUpKTsNCj4+IEBAIC0yNzc1LDcgKzI3ODEsNyBAQCBzdGF0aWMgdm9p
-ZCBzdWJtaXRfZGF0YV9yZWFkX3JlcGFpcihzdHJ1Y3QgaW5vZGUgDQo+PiAqaW5vZGUsIHN0cnVj
-dCBiaW8gKmZhaWxlZF9iaW8sDQo+PiDCoMKgwqDCoMKgwqAgKiBXZSBvbmx5IGdldCBjYWxsZWQg
-b24gYnVmZmVyZWQgSU8sIHRodXMgcGFnZSBtdXN0IGJlIG1hcHBlZCANCj4+IGFuZCBiaW8NCj4+
-IMKgwqDCoMKgwqDCoCAqIG11c3Qgbm90IGJlIGNsb25lZC4NCj4+IMKgwqDCoMKgwqDCoCAqLw0K
-Pj4gLcKgwqDCoCBBU1NFUlQocGFnZS0+bWFwcGluZyAmJiAhYmlvX2ZsYWdnZWQoZmFpbGVkX2Jp
-bywgQklPX0NMT05FRCkpOw0KPj4gK8KgwqDCoCBBU1NFUlQocGFnZS0+bWFwcGluZyAmJiAhYmlv
-X2ZsYWdnZWQoJmZhaWxlZF9iYmlvLT5iaW8sIA0KPj4gQklPX0NMT05FRCkpOw0KPj4NCj4+IMKg
-wqDCoMKgwqAgLyogSXRlcmF0ZSB0aHJvdWdoIGFsbCB0aGUgc2VjdG9ycyBpbiB0aGUgcmFuZ2Ug
-Ki8NCj4+IMKgwqDCoMKgwqAgZm9yIChpID0gMDsgaSA8IG5yX2JpdHM7IGkrKykgew0KPj4gQEAg
-LTI3OTIsMTAgKzI3OTgsOSBAQCBzdGF0aWMgdm9pZCBzdWJtaXRfZGF0YV9yZWFkX3JlcGFpcihz
-dHJ1Y3QgDQo+PiBpbm9kZSAqaW5vZGUsIHN0cnVjdCBiaW8gKmZhaWxlZF9iaW8sDQo+PiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBnb3RvIG5leHQ7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAg
-fQ0KPj4NCj4+IC3CoMKgwqDCoMKgwqDCoCByZXQgPSBidHJmc19yZXBhaXJfb25lX3NlY3Rvcihp
-bm9kZSwgZmFpbGVkX2JpbywNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYmlv
-X29mZnNldCArIG9mZnNldCwNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcGFn
-ZSwgcGdvZmYgKyBvZmZzZXQsIHN0YXJ0ICsgb2Zmc2V0LA0KPj4gLcKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBmYWlsZWRfbWlycm9yLCBidHJmc19zdWJtaXRfZGF0YV9yZWFkX2Jpbyk7
-DQo+PiArwqDCoMKgwqDCoMKgwqAgcmV0ID0gYnRyZnNfcmVwYWlyX29uZV9zZWN0b3IoaW5vZGUs
-IGZhaWxlZF9iYmlvLA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBiaW9fb2Zm
-c2V0ICsgb2Zmc2V0LCBwYWdlLCBwZ29mZiArIG9mZnNldCwNCj4+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgYnRyZnNfc3VibWl0X2RhdGFfcmVhZF9iaW8pOw0KPj4gwqDCoMKgwqDC
-oMKgwqDCoMKgIGlmICghcmV0KSB7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvKg0K
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIFdlIGhhdmUgc3VibWl0dGVkIHRoZSBy
-ZWFkIHJlcGFpciwgdGhlIHBhZ2UgcmVsZWFzZQ0KPj4gQEAgLTMxMjcsOCArMzEzMiw4IEBAIHN0
-YXRpYyB2b2lkIGVuZF9iaW9fZXh0ZW50X3JlYWRwYWdlKHN0cnVjdCBiaW8gDQo+PiAqYmlvKQ0K
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIHN1Ym1pdF9kYXRhX3JlYWRfcmVwYWly
-KCkgd2lsbCBoYW5kbGUgYWxsIHRoZSBnb29kDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgICogYW5kIGJhZCBzZWN0b3JzLCB3ZSBqdXN0IGNvbnRpbnVlIHRvIHRoZSBuZXh0IGJ2ZWMu
-DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICovDQo+PiAtwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBzdWJtaXRfZGF0YV9yZWFkX3JlcGFpcihpbm9kZSwgYmlvLCBiaW9fb2Zmc2V0LCBi
-dmVjLA0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-bWlycm9yLCBlcnJvcl9iaXRtYXApOw0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3VibWl0
-X2RhdGFfcmVhZF9yZXBhaXIoaW5vZGUsIGJiaW8sIGJpb19vZmZzZXQsIGJ2ZWMsDQo+PiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlcnJvcl9iaXRtYXAp
-Ow0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0gZWxzZSB7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCAvKiBVcGRhdGUgcGFnZSBzdGF0dXMgYW5kIHVubG9jayAqLw0KPj4gwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgZW5kX3BhZ2VfcmVhZChwYWdlLCB1cHRvZGF0ZSwgc3RhcnQsIGxl
-bik7DQo+PiBkaWZmIC0tZ2l0IGEvZnMvYnRyZnMvZXh0ZW50X2lvLmggYi9mcy9idHJmcy9leHRl
-bnRfaW8uaA0KPj4gaW5kZXggMjgwYWY3MGMwNDk1My4uYTc4MDUxYzc2MjdjNCAxMDA2NDQNCj4+
-IC0tLSBhL2ZzL2J0cmZzL2V4dGVudF9pby5oDQo+PiArKysgYi9mcy9idHJmcy9leHRlbnRfaW8u
-aA0KPj4gQEAgLTU3LDYgKzU3LDcgQEAgZW51bSB7DQo+PiDCoCAjZGVmaW5lIEJJVE1BUF9MQVNU
-X0JZVEVfTUFTSyhuYml0cykgXA0KPj4gwqDCoMKgwqDCoCAoQllURV9NQVNLID4+ICgtKG5iaXRz
-KSAmIChCSVRTX1BFUl9CWVRFIC0gMSkpKQ0KPj4NCj4+ICtzdHJ1Y3QgYnRyZnNfYmlvOw0KPj4g
-wqAgc3RydWN0IGJ0cmZzX3Jvb3Q7DQo+PiDCoCBzdHJ1Y3QgYnRyZnNfaW5vZGU7DQo+PiDCoCBz
-dHJ1Y3QgYnRyZnNfaW9fYmlvOw0KPj4gQEAgLTI2NiwxMCArMjY3LDkgQEAgc3RydWN0IGlvX2Zh
-aWx1cmVfcmVjb3JkIHsNCj4+IMKgwqDCoMKgwqAgaW50IG51bV9jb3BpZXM7DQo+PiDCoCB9Ow0K
-Pj4NCj4+IC1pbnQgYnRyZnNfcmVwYWlyX29uZV9zZWN0b3Ioc3RydWN0IGlub2RlICppbm9kZSwN
-Cj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IGJpbyAqZmFpbGVkX2Jp
-bywgdTMyIGJpb19vZmZzZXQsDQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0
-cnVjdCBwYWdlICpwYWdlLCB1bnNpZ25lZCBpbnQgcGdvZmYsDQo+PiAtwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIHU2NCBzdGFydCwgaW50IGZhaWxlZF9taXJyb3IsDQo+PiAraW50IGJ0
-cmZzX3JlcGFpcl9vbmVfc2VjdG9yKHN0cnVjdCBpbm9kZSAqaW5vZGUsIHN0cnVjdCBidHJmc19i
-aW8gDQo+PiAqZmFpbGVkX2JiaW8sDQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHUzMiBiaW9fb2Zmc2V0LCBzdHJ1Y3QgcGFnZSAqcGFnZSwNCj4+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgdW5zaWduZWQgaW50IHBnb2ZmLA0KPj4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBzdWJtaXRfYmlvX2hvb2tfdCAqc3VibWl0X2Jpb19ob29rKTsNCj4+
-DQo+PiDCoCAjaWZkZWYgQ09ORklHX0JUUkZTX0ZTX1JVTl9TQU5JVFlfVEVTVFMNCj4+IGRpZmYg
-LS1naXQgYS9mcy9idHJmcy9pbm9kZS5jIGIvZnMvYnRyZnMvaW5vZGUuYw0KPj4gaW5kZXggNzg0
-YzFhZDRhOTYzNC4uYTYyN2IyYWY5ZTI0MyAxMDA2NDQNCj4+IC0tLSBhL2ZzL2J0cmZzL2lub2Rl
-LmMNCj4+ICsrKyBiL2ZzL2J0cmZzL2lub2RlLmMNCj4+IEBAIC03OTUzLDkgKzc5NTMsOCBAQCBz
-dGF0aWMgYmxrX3N0YXR1c190IA0KPj4gYnRyZnNfY2hlY2tfcmVhZF9kaW9fYmlvKHN0cnVjdCBi
-dHJmc19kaW9fcHJpdmF0ZSAqZGlwLA0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0gZWxzZSB7DQo+
-PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpbnQgcmV0Ow0KPj4NCj4+IC3CoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIHJldCA9IGJ0cmZzX3JlcGFpcl9vbmVfc2VjdG9yKGlub2RlLCAmYmJpby0+
-YmlvLCBvZmZzZXQsDQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-YnYuYnZfcGFnZSwgYnYuYnZfb2Zmc2V0LCBzdGFydCwNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBiYmlvLT5taXJyb3JfbnVtLA0KPj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgcmV0ID0gYnRyZnNfcmVwYWlyX29uZV9zZWN0b3IoaW5vZGUsIGJiaW8sIG9mZnNl
-dCwNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBidi5idl9wYWdl
-LCBidi5idl9vZmZzZXQsDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgc3VibWl0X2Rpb19yZXBhaXJfYmlvKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIGlmIChyZXQpDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVyciA9
-IGVycm5vX3RvX2Jsa19zdGF0dXMocmV0KTsNCg==
+This reverts commit 81bd9328ab9f9bf818923b92a64896fd4cf58f2b.
+This reverts commit 7aa51232e2046cdd719a2f5c9a4537b84554d5a4.
+
+[BUG]
+Zygo reported on latest devel branch, he can hit ASSERT()/BUG_ON()
+caused crash when doing RAID5 recovery (intentionally corrupt one disk,
+and let btrfs to recovery the data during read/scrub).
+
+And The following minimal reproducer can cause extent state leakage at
+rmmod time:
+
+  mkfs.btrfs -f -d raid5 -m raid5 $dev1 $dev2 $dev3 -b 1G > /dev/null
+  mount $dev1 $mnt
+  fsstress -w -d $mnt -n 25 -s 1660807876
+  sync
+  fssum -A -f -w /tmp/fssum.saved $mnt
+  umount $mnt
+
+  # Wipe the dev1 but keeps its super block
+  xfs_io -c "pwrite -S 0x0 1m 1023m" $dev1
+  mount $dev1 $mnt
+  fssum -r /tmp/fssum.saved $mnt > /dev/null
+  umount $mnt
+  rmmod btrfs
+
+This will lead to the following extent states leakage:
+
+ BTRFS: state leak: start 499712 end 503807 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 495616 end 499711 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 491520 end 495615 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 487424 end 491519 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 483328 end 487423 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 479232 end 483327 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 475136 end 479231 state 5 in tree 1 refs 1
+ BTRFS: state leak: start 471040 end 475135 state 5 in tree 1 refs 1
+
+[CAUSE]
+Since commit 7aa51232e204 ("btrfs: pass a btrfs_bio to
+btrfs_repair_one_sector"), we always use btrfs_bio->file_offset to
+determine the file offset of a page.
+
+But that usage assume that, one bio has all its page having a continuous
+page offsets.
+
+Unfortunately that's not true, btrfs only requires the logical bytenr
+continuous when assembling its bios.
+
+From above script, we have one bio looks like this:
+  fssum-27671  submit_one_bio: bio logical=217739264 len=36864
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=466944 <<<
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=724992 <<<
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=729088
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=733184
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=737280
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=741376
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=745472
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=749568
+  fssum-27671  submit_one_bio:   r/i=5/261 page_offset=753664
+
+Note that the 1st and the 2nd page has non-continuous page offsets.
+
+This means, at repair time, we will have completely wrong file offset
+passed in:
+
+   kworker/u32:2-19927  btrfs_repair_one_sector: r/i=5/261 page_off=729088 file_off=475136 bio_offset=8192
+
+Since the file offset is incorrect, we latter incorrectly set the extent
+states, and no way to really release them.
+
+Thus later it causes the leakage.
+
+In fact, this can be even worse, since the file offset is incorrect, we
+can hit cases like the incorrect file offset belongs to a HOLE, and
+later cause btrfs_num_copies() to trigger error, finally hit
+BUG_ON()/ASSERT() later.
+
+[FIX]
+To fix the problem, we need to revert commit 7aa51232e204 ("btrfs: pass
+a btrfs_bio to btrfs_repair_one_sector"), but unfortunately later commit
+81bd9328ab9f ("btrfs: fix repair of compressed extents") has a
+dependency on that commit.
+
+Thus we have to revert both commits to fix the problem.
+
+Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/compression.c | 171 +++++++++++++++++++++++++++--------------
+ fs/btrfs/compression.h |   7 ++
+ fs/btrfs/ctree.h       |   2 -
+ fs/btrfs/extent_io.c   |  93 +++++++++++++---------
+ fs/btrfs/extent_io.h   |   8 +-
+ fs/btrfs/inode.c       |  12 +--
+ 6 files changed, 186 insertions(+), 107 deletions(-)
+
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index e84d22c5c6a8..5f82151454cb 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -136,14 +136,66 @@ static int compression_decompress(int type, struct list_head *ws,
+ 
+ static int btrfs_decompress_bio(struct compressed_bio *cb);
+ 
++static inline int compressed_bio_size(struct btrfs_fs_info *fs_info,
++				      unsigned long disk_size)
++{
++	return sizeof(struct compressed_bio) +
++		(DIV_ROUND_UP(disk_size, fs_info->sectorsize)) * fs_info->csum_size;
++}
++
++static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
++				 u64 disk_start)
++{
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++	const u32 csum_size = fs_info->csum_size;
++	const u32 sectorsize = fs_info->sectorsize;
++	struct page *page;
++	unsigned int i;
++	u8 csum[BTRFS_CSUM_SIZE];
++	struct compressed_bio *cb = bio->bi_private;
++	u8 *cb_sum = cb->sums;
++
++	if ((inode->flags & BTRFS_INODE_NODATASUM) ||
++	    test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state))
++		return 0;
++
++	for (i = 0; i < cb->nr_pages; i++) {
++		u32 pg_offset;
++		u32 bytes_left = PAGE_SIZE;
++		page = cb->compressed_pages[i];
++
++		/* Determine the remaining bytes inside the page first */
++		if (i == cb->nr_pages - 1)
++			bytes_left = cb->compressed_len - i * PAGE_SIZE;
++
++		/* Hash through the page sector by sector */
++		for (pg_offset = 0; pg_offset < bytes_left;
++		     pg_offset += sectorsize) {
++			int ret;
++
++			ret = btrfs_check_sector_csum(fs_info, page, pg_offset,
++						      csum, cb_sum);
++			if (ret) {
++				btrfs_print_data_csum_error(inode, disk_start,
++						csum, cb_sum, cb->mirror_num);
++				if (btrfs_bio(bio)->device)
++					btrfs_dev_stat_inc_and_print(
++						btrfs_bio(bio)->device,
++						BTRFS_DEV_STAT_CORRUPTION_ERRS);
++				return -EIO;
++			}
++			cb_sum += csum_size;
++			disk_start += sectorsize;
++		}
++	}
++	return 0;
++}
++
+ static void finish_compressed_bio_read(struct compressed_bio *cb)
+ {
+ 	unsigned int index;
+ 	struct page *page;
+ 
+-	if (cb->status == BLK_STS_OK)
+-		cb->status = errno_to_blk_status(btrfs_decompress_bio(cb));
+-
+ 	/* Release the compressed pages */
+ 	for (index = 0; index < cb->nr_pages; index++) {
+ 		page = cb->compressed_pages[index];
+@@ -161,54 +213,59 @@ static void finish_compressed_bio_read(struct compressed_bio *cb)
+ 	kfree(cb);
+ }
+ 
+-/*
+- * Verify the checksums and kick off repair if needed on the uncompressed data
+- * before decompressing it into the original bio and freeing the uncompressed
+- * pages.
++/* when we finish reading compressed pages from the disk, we
++ * decompress them and then run the bio end_io routines on the
++ * decompressed pages (in the inode address space).
++ *
++ * This allows the checksumming and other IO error handling routines
++ * to work normally
++ *
++ * The compressed pages are freed here, and it must be run
++ * in process context
+  */
+ static void end_compressed_bio_read(struct bio *bio)
+ {
+ 	struct compressed_bio *cb = bio->bi_private;
+-	struct inode *inode = cb->inode;
+-	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-	struct btrfs_inode *bi = BTRFS_I(inode);
+-	bool csum = !(bi->flags & BTRFS_INODE_NODATASUM) &&
+-		    !test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state);
+-	blk_status_t status = bio->bi_status;
+-	struct btrfs_bio *bbio = btrfs_bio(bio);
+-	struct bvec_iter iter;
+-	struct bio_vec bv;
+-	u32 offset;
+-
+-	btrfs_bio_for_each_sector(fs_info, bv, bbio, iter, offset) {
+-		u64 start = bbio->file_offset + offset;
+-
+-		if (!status &&
+-		    (!csum || !btrfs_check_data_csum(inode, bbio, offset,
+-						     bv.bv_page, bv.bv_offset))) {
+-			clean_io_failure(fs_info, &bi->io_failure_tree,
+-					 &bi->io_tree, start, bv.bv_page,
+-					 btrfs_ino(bi), bv.bv_offset);
+-		} else {
+-			int ret;
++	struct inode *inode;
++	unsigned int mirror = btrfs_bio(bio)->mirror_num;
++	int ret = 0;
+ 
+-			refcount_inc(&cb->pending_ios);
+-			ret = btrfs_repair_one_sector(inode, bbio, offset,
+-						      bv.bv_page, bv.bv_offset,
+-						      btrfs_submit_data_read_bio);
+-			if (ret) {
+-				refcount_dec(&cb->pending_ios);
+-				status = errno_to_blk_status(ret);
+-			}
+-		}
+-	}
++	if (bio->bi_status)
++		cb->status = bio->bi_status;
+ 
+-	if (status)
+-		cb->status = status;
++	if (!refcount_dec_and_test(&cb->pending_ios))
++		goto out;
+ 
+-	if (refcount_dec_and_test(&cb->pending_ios))
+-		finish_compressed_bio_read(cb);
+-	btrfs_bio_free_csum(bbio);
++	/*
++	 * Record the correct mirror_num in cb->orig_bio so that
++	 * read-repair can work properly.
++	 */
++	btrfs_bio(cb->orig_bio)->mirror_num = mirror;
++	cb->mirror_num = mirror;
++
++	/*
++	 * Some IO in this cb have failed, just skip checksum as there
++	 * is no way it could be correct.
++	 */
++	if (cb->status != BLK_STS_OK)
++		goto csum_failed;
++
++	inode = cb->inode;
++	ret = check_compressed_csum(BTRFS_I(inode), bio,
++				    bio->bi_iter.bi_sector << 9);
++	if (ret)
++		goto csum_failed;
++
++	/* ok, we're the last bio for this extent, lets start
++	 * the decompression.
++	 */
++	ret = btrfs_decompress_bio(cb);
++
++csum_failed:
++	if (ret)
++		cb->status = errno_to_blk_status(ret);
++	finish_compressed_bio_read(cb);
++out:
+ 	bio_put(bio);
+ }
+ 
+@@ -401,7 +458,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 
+ 	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+ 	       IS_ALIGNED(len, fs_info->sectorsize));
+-	cb = kmalloc(sizeof(struct compressed_bio), GFP_NOFS);
++	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
+ 	if (!cb)
+ 		return BLK_STS_RESOURCE;
+ 	refcount_set(&cb->pending_ios, 1);
+@@ -409,6 +466,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 	cb->inode = &inode->vfs_inode;
+ 	cb->start = start;
+ 	cb->len = len;
++	cb->mirror_num = 0;
+ 	cb->compressed_pages = compressed_pages;
+ 	cb->compressed_len = compressed_len;
+ 	cb->writeback = writeback;
+@@ -677,6 +735,7 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	blk_status_t ret;
+ 	int ret2;
+ 	int i;
++	u8 *sums;
+ 
+ 	em_tree = &BTRFS_I(inode)->extent_tree;
+ 
+@@ -694,7 +753,7 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 
+ 	ASSERT(em->compress_type != BTRFS_COMPRESS_NONE);
+ 	compressed_len = em->block_len;
+-	cb = kmalloc(sizeof(struct compressed_bio), GFP_NOFS);
++	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
+ 	if (!cb) {
+ 		ret = BLK_STS_RESOURCE;
+ 		goto out;
+@@ -703,6 +762,8 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	refcount_set(&cb->pending_ios, 1);
+ 	cb->status = BLK_STS_OK;
+ 	cb->inode = inode;
++	cb->mirror_num = mirror_num;
++	sums = cb->sums;
+ 
+ 	cb->start = em->orig_start;
+ 	em_len = em->len;
+@@ -785,25 +846,19 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 			submit = true;
+ 
+ 		if (submit) {
+-			/* Save the original iter for read repair */
+-			if (bio_op(comp_bio) == REQ_OP_READ)
+-				btrfs_bio(comp_bio)->iter = comp_bio->bi_iter;
+-
+-			/*
+-			 * Save the initial offset of this chunk, as there
+-			 * is no direct correlation between compressed pages and
+-			 * the original file offset.  The field is only used for
+-			 * priting error messages.
+-			 */
+-			btrfs_bio(comp_bio)->file_offset = file_offset;
++			unsigned int nr_sectors;
+ 
+-			ret = btrfs_lookup_bio_sums(inode, comp_bio, NULL);
++			ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
+ 			if (ret) {
+ 				comp_bio->bi_status = ret;
+ 				bio_endio(comp_bio);
+ 				break;
+ 			}
+ 
++			nr_sectors = DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
++						  fs_info->sectorsize);
++			sums += fs_info->csum_size * nr_sectors;
++
+ 			ASSERT(comp_bio->bi_iter.bi_size);
+ 			btrfs_submit_bio(fs_info, comp_bio, mirror_num);
+ 			comp_bio = NULL;
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index 1aa02903de69..e94cd36e7d7e 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -59,12 +59,19 @@ struct compressed_bio {
+ 
+ 	/* IO errors */
+ 	blk_status_t status;
++	int mirror_num;
+ 
+ 	union {
+ 		/* For reads, this is the bio we are copying the data into */
+ 		struct bio *orig_bio;
+ 		struct work_struct write_end_work;
+ 	};
++
++	/*
++	 * the start of a variable length array of checksums only
++	 * used by reads
++	 */
++	u8 sums[];
+ };
+ 
+ static inline unsigned int btrfs_compress_type(unsigned int type_level)
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 4db85b9dc7ed..c567c73f7509 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3293,8 +3293,6 @@ void btrfs_submit_data_read_bio(struct inode *inode, struct bio *bio,
+ 			int mirror_num, enum btrfs_compression_type compress_type);
+ int btrfs_check_sector_csum(struct btrfs_fs_info *fs_info, struct page *page,
+ 			    u32 pgoff, u8 *csum, const u8 * const csum_expected);
+-int btrfs_check_data_csum(struct inode *inode, struct btrfs_bio *bbio,
+-			  u32 bio_offset, struct page *page, u32 pgoff);
+ unsigned int btrfs_verify_data_csum(struct btrfs_bio *bbio,
+ 				    u32 bio_offset, struct page *page,
+ 				    u64 start, u64 end);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index bfae67c593c5..bc30c0a4a7f2 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -182,7 +182,6 @@ static int add_extent_changeset(struct extent_state *state, u32 bits,
+ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
+ {
+ 	struct bio *bio;
+-	struct bio_vec *bv;
+ 	struct inode *inode;
+ 	int mirror_num;
+ 
+@@ -190,15 +189,12 @@ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
+ 		return;
+ 
+ 	bio = bio_ctrl->bio;
+-	bv = bio_first_bvec_all(bio);
+-	inode = bv->bv_page->mapping->host;
++	inode = bio_first_page_all(bio)->mapping->host;
+ 	mirror_num = bio_ctrl->mirror_num;
+ 
+ 	/* Caller should ensure the bio has at least some range added */
+ 	ASSERT(bio->bi_iter.bi_size);
+ 
+-	btrfs_bio(bio)->file_offset = page_offset(bv->bv_page) + bv->bv_offset;
+-
+ 	if (!is_data_inode(inode))
+ 		btrfs_submit_metadata_bio(inode, bio, mirror_num);
+ 	else if (btrfs_op(bio) == BTRFS_MAP_WRITE)
+@@ -2539,16 +2535,18 @@ void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start, u64 end)
+ }
+ 
+ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode,
+-							     struct btrfs_bio *bbio,
+-							     unsigned int bio_offset)
++							     u64 start,
++							     int failed_mirror)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-	u64 start = bbio->file_offset + bio_offset;
+ 	struct io_failure_record *failrec;
++	struct extent_map *em;
+ 	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
+ 	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
++	struct extent_map_tree *em_tree = &BTRFS_I(inode)->extent_tree;
+ 	const u32 sectorsize = fs_info->sectorsize;
+ 	int ret;
++	u64 logical;
+ 
+ 	failrec = get_state_failrec(failure_tree, start);
+ 	if (!IS_ERR(failrec)) {
+@@ -2560,7 +2558,7 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
+ 		 * (e.g. with a list for failed_mirror) to make
+ 		 * clean_io_failure() clean all those errors at once.
+ 		 */
+-		ASSERT(failrec->this_mirror == bbio->mirror_num);
++		ASSERT(failrec->this_mirror == failed_mirror);
+ 		ASSERT(failrec->len == fs_info->sectorsize);
+ 		return failrec;
+ 	}
+@@ -2571,15 +2569,43 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
+ 
+ 	failrec->start = start;
+ 	failrec->len = sectorsize;
+-	failrec->failed_mirror = bbio->mirror_num;
+-	failrec->this_mirror = bbio->mirror_num;
+-	failrec->logical = (bbio->iter.bi_sector << SECTOR_SHIFT) + bio_offset;
++	failrec->failed_mirror = failed_mirror;
++	failrec->this_mirror = failed_mirror;
++	failrec->compress_type = BTRFS_COMPRESS_NONE;
++
++	read_lock(&em_tree->lock);
++	em = lookup_extent_mapping(em_tree, start, failrec->len);
++	if (!em) {
++		read_unlock(&em_tree->lock);
++		kfree(failrec);
++		return ERR_PTR(-EIO);
++	}
++
++	if (em->start > start || em->start + em->len <= start) {
++		free_extent_map(em);
++		em = NULL;
++	}
++	read_unlock(&em_tree->lock);
++	if (!em) {
++		kfree(failrec);
++		return ERR_PTR(-EIO);
++	}
++
++	logical = start - em->start;
++	logical = em->block_start + logical;
++	if (test_bit(EXTENT_FLAG_COMPRESSED, &em->flags)) {
++		logical = em->block_start;
++		failrec->compress_type = em->compress_type;
++	}
+ 
+ 	btrfs_debug(fs_info,
+-		    "new io failure record logical %llu start %llu",
+-		    failrec->logical, start);
++		    "Get IO Failure Record: (new) logical=%llu, start=%llu, len=%llu",
++		    logical, start, failrec->len);
+ 
+-	failrec->num_copies = btrfs_num_copies(fs_info, failrec->logical, sectorsize);
++	failrec->logical = logical;
++	free_extent_map(em);
++
++	failrec->num_copies = btrfs_num_copies(fs_info, logical, sectorsize);
+ 	if (failrec->num_copies == 1) {
+ 		/*
+ 		 * We only have a single copy of the data, so don't bother with
+@@ -2609,16 +2635,17 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
+ 	return failrec;
+ }
+ 
+-int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *failed_bbio,
+-			    u32 bio_offset, struct page *page, unsigned int pgoff,
++int btrfs_repair_one_sector(struct inode *inode,
++			    struct bio *failed_bio, u32 bio_offset,
++			    struct page *page, unsigned int pgoff,
++			    u64 start, int failed_mirror,
+ 			    submit_bio_hook_t *submit_bio_hook)
+ {
+-	u64 start = failed_bbio->file_offset + bio_offset;
+ 	struct io_failure_record *failrec;
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+ 	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
+-	struct bio *failed_bio = &failed_bbio->bio;
++	struct btrfs_bio *failed_bbio = btrfs_bio(failed_bio);
+ 	const int icsum = bio_offset >> fs_info->sectorsize_bits;
+ 	struct bio *repair_bio;
+ 	struct btrfs_bio *repair_bbio;
+@@ -2628,7 +2655,7 @@ int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *failed_bbio,
+ 
+ 	BUG_ON(bio_op(failed_bio) == REQ_OP_WRITE);
+ 
+-	failrec = btrfs_get_io_failure_record(inode, failed_bbio, bio_offset);
++	failrec = btrfs_get_io_failure_record(inode, start, failed_mirror);
+ 	if (IS_ERR(failrec))
+ 		return PTR_ERR(failrec);
+ 
+@@ -2678,7 +2705,7 @@ int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *failed_bbio,
+ 	 * will be handled by the endio on the repair_bio, so we can't return an
+ 	 * error here.
+ 	 */
+-	submit_bio_hook(inode, repair_bio, failrec->this_mirror, 0);
++	submit_bio_hook(inode, repair_bio, failrec->this_mirror, failrec->compress_type);
+ 	return BLK_STS_OK;
+ }
+ 
+@@ -2724,10 +2751,9 @@ static void end_sector_io(struct page *page, u64 offset, bool uptodate)
+ 				    offset + sectorsize - 1, &cached);
+ }
+ 
+-static void submit_data_read_repair(struct inode *inode,
+-				    struct btrfs_bio *failed_bbio,
++static void submit_data_read_repair(struct inode *inode, struct bio *failed_bio,
+ 				    u32 bio_offset, const struct bio_vec *bvec,
+-				    unsigned int error_bitmap)
++				    int failed_mirror, unsigned int error_bitmap)
+ {
+ 	const unsigned int pgoff = bvec->bv_offset;
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+@@ -2738,7 +2764,7 @@ static void submit_data_read_repair(struct inode *inode,
+ 	const int nr_bits = (end + 1 - start) >> fs_info->sectorsize_bits;
+ 	int i;
+ 
+-	BUG_ON(bio_op(&failed_bbio->bio) == REQ_OP_WRITE);
++	BUG_ON(bio_op(failed_bio) == REQ_OP_WRITE);
+ 
+ 	/* This repair is only for data */
+ 	ASSERT(is_data_inode(inode));
+@@ -2750,7 +2776,7 @@ static void submit_data_read_repair(struct inode *inode,
+ 	 * We only get called on buffered IO, thus page must be mapped and bio
+ 	 * must not be cloned.
+ 	 */
+-	ASSERT(page->mapping && !bio_flagged(&failed_bbio->bio, BIO_CLONED));
++	ASSERT(page->mapping && !bio_flagged(failed_bio, BIO_CLONED));
+ 
+ 	/* Iterate through all the sectors in the range */
+ 	for (i = 0; i < nr_bits; i++) {
+@@ -2767,9 +2793,10 @@ static void submit_data_read_repair(struct inode *inode,
+ 			goto next;
+ 		}
+ 
+-		ret = btrfs_repair_one_sector(inode, failed_bbio,
+-				bio_offset + offset, page, pgoff + offset,
+-				btrfs_submit_data_read_bio);
++		ret = btrfs_repair_one_sector(inode, failed_bio,
++				bio_offset + offset,
++				page, pgoff + offset, start + offset,
++				failed_mirror, btrfs_submit_data_read_bio);
+ 		if (!ret) {
+ 			/*
+ 			 * We have submitted the read repair, the page release
+@@ -3086,10 +3113,6 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 			 * Only try to repair bios that actually made it to a
+ 			 * device.  If the bio failed to be submitted mirror
+ 			 * is 0 and we need to fail it without retrying.
+-			 *
+-			 * This also includes the high level bios for compressed
+-			 * extents - these never make it to a device and repair
+-			 * is already handled on the lower compressed bio.
+ 			 */
+ 			if (mirror > 0)
+ 				repair = true;
+@@ -3107,8 +3130,8 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 			 * submit_data_read_repair() will handle all the good
+ 			 * and bad sectors, we just continue to the next bvec.
+ 			 */
+-			submit_data_read_repair(inode, bbio, bio_offset, bvec,
+-						error_bitmap);
++			submit_data_read_repair(inode, bio, bio_offset, bvec,
++						mirror, error_bitmap);
+ 		} else {
+ 			/* Update page status and unlock */
+ 			end_page_read(page, uptodate, start, len);
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 4bc72a87b9a9..280af70c0495 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -57,7 +57,6 @@ enum {
+ #define BITMAP_LAST_BYTE_MASK(nbits) \
+ 	(BYTE_MASK >> (-(nbits) & (BITS_PER_BYTE - 1)))
+ 
+-struct btrfs_bio;
+ struct btrfs_root;
+ struct btrfs_inode;
+ struct btrfs_io_bio;
+@@ -261,13 +260,16 @@ struct io_failure_record {
+ 	u64 start;
+ 	u64 len;
+ 	u64 logical;
++	enum btrfs_compression_type compress_type;
+ 	int this_mirror;
+ 	int failed_mirror;
+ 	int num_copies;
+ };
+ 
+-int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *failed_bbio,
+-			    u32 bio_offset, struct page *page, unsigned int pgoff,
++int btrfs_repair_one_sector(struct inode *inode,
++			    struct bio *failed_bio, u32 bio_offset,
++			    struct page *page, unsigned int pgoff,
++			    u64 start, int failed_mirror,
+ 			    submit_bio_hook_t *submit_bio_hook);
+ 
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index f0c97d25b4a0..691a849cd6c1 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2749,9 +2749,6 @@ void btrfs_submit_data_read_bio(struct inode *inode, struct bio *bio,
+ 		return;
+ 	}
+ 
+-	/* Save the original iter for read repair */
+-	btrfs_bio(bio)->iter = bio->bi_iter;
+-
+ 	/*
+ 	 * Lookup bio sums does extra checks around whether we need to csum or
+ 	 * not, which is why we ignore skip_sum here.
+@@ -8008,8 +8005,9 @@ static blk_status_t btrfs_check_read_dio_bio(struct btrfs_dio_private *dip,
+ 		} else {
+ 			int ret;
+ 
+-			ret = btrfs_repair_one_sector(inode, bbio, offset,
+-					bv.bv_page, bv.bv_offset,
++			ret = btrfs_repair_one_sector(inode, &bbio->bio, offset,
++					bv.bv_page, bv.bv_offset, start,
++					bbio->mirror_num,
+ 					submit_dio_repair_bio);
+ 			if (ret)
+ 				err = errno_to_blk_status(ret);
+@@ -8058,10 +8056,6 @@ static void btrfs_submit_dio_bio(struct bio *bio, struct inode *inode,
+ 	struct btrfs_dio_private *dip = bio->bi_private;
+ 	blk_status_t ret;
+ 
+-	/* Save the original iter for read repair */
+-	if (btrfs_op(bio) == BTRFS_MAP_READ)
+-		btrfs_bio(bio)->iter = bio->bi_iter;
+-
+ 	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+ 		goto map;
+ 
+-- 
+2.37.1
+
