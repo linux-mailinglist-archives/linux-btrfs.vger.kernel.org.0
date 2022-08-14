@@ -2,109 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0F1591E7C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Aug 2022 07:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57AA591E7E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Aug 2022 07:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbiHNFbr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 Aug 2022 01:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39868 "EHLO
+        id S229601AbiHNFkG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Aug 2022 01:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240101AbiHNFbq (ORCPT
+        with ESMTP id S229436AbiHNFkF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 Aug 2022 01:31:46 -0400
-Received: from out20-207.mail.aliyun.com (out20-207.mail.aliyun.com [115.124.20.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563472E690
-        for <linux-btrfs@vger.kernel.org>; Sat, 13 Aug 2022 22:31:42 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04550197|-1;BR=01201311R201S51rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00500068-0.000225383-0.994774;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.OszY22d_1660455079;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.OszY22d_1660455079)
-          by smtp.aliyun-inc.com;
-          Sun, 14 Aug 2022 13:31:19 +0800
-Date:   Sun, 14 Aug 2022 13:31:20 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: Uncorrectable error during multiple scrub (raid5 recovery).
-In-Reply-To: <20220814111026.25EF.409509F4@e16-tech.com>
-References: <20220814111026.25EF.409509F4@e16-tech.com>
-Message-Id: <20220814133119.4D12.409509F4@e16-tech.com>
+        Sun, 14 Aug 2022 01:40:05 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82AF33432;
+        Sat, 13 Aug 2022 22:40:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7195C60217;
+        Sun, 14 Aug 2022 05:40:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1660455601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=CEjboMcdqsMdJyrDKToa7VObRYscq/R9KI6TJJDGEqk=;
+        b=n6kAIleK5B1SbnlSA+KrB3OEH8k+CMa2NCBwA8dUyWG8+Lk4WNVVPrSlaeDga6tEmBdsTB
+        9yV0PQDuW9zd3/rQQ3gNTtbDa5OWMv6QQhS8iVI/z0RqZQ7H4en33cAsf2yboG4PwsFMbC
+        m/mC8caSz3k6/EyT2fZ6/OSXg1zadiY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 485DC13305;
+        Sun, 14 Aug 2022 05:40:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id /t/PA7CK+GI3CgAAMHmgww
+        (envelope-from <wqu@suse.com>); Sun, 14 Aug 2022 05:40:00 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH STABLE v5.10] btrfs: reject log replay if there is unsupported RO compat flag
+Date:   Sun, 14 Aug 2022 13:39:42 +0800
+Message-Id: <08ae6c89c11423933bb95bc04f603bdcbb9afc87.1660455547.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.04 [en]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+commit dc4d31684974d140250f3ee612c3f0cab13b3146 upstream.
 
-> Uncorrectable error during multiple scrub (raid5 recovery).
-> 
-> This reproducer is based on some reproducer [1],
-> but it seems a new problem, so I open a new thread.
-> 
-> reproducer:
-> 
-> mkfs.btrfs -f -draid5 -mraid1 ${SCRATCH_DEV_POOL}
-> SCRATCH_DEV_ARRAY=($SCRATCH_DEV_POOL)
-> mount ${SCRATCH_DEV_ARRAY[0]} $SCRATCH_MNT # -o compress=zstd,noatime
-> 
-> /bin/cp -a /usr/bin $SCRATCH_MNT/
-> #(OK)dd if=/dev/urandom bs=1M count=1K of=$SCRATCH_MNT/1G.img
-> du -sh $SCRATCH_MNT
-> 
-> for((i=1;i<=15;++i)); do
-> 
-> 	#(OK)umount $SCRATCH_MNT; mount ${SCRATCH_DEV_ARRAY[0]} $SCRATCH_MNT # -o compress=zstd,noatime
-> 	sync; sleep 5; sync; sleep 5; sync; sleep 25;
-> 
-> 	# change the device to discard in every loop
-> 	j=$(( i % ${#SCRATCH_DEV_ARRAY[@]} ))
-> 	/usr/sbin/blkdiscard -f ${SCRATCH_DEV_ARRAY[$j]} # --offset 2M
-> 
-> 	btrfs scrub start -Bd $SCRATCH_MNT | grep 'summary\|Uncorrectable'
-> 
-> done
+[BUG]
+If we have a btrfs image with dirty log, along with an unsupported RO
+compatible flag:
 
+log_root		30474240
+...
+compat_flags		0x0
+compat_ro_flags		0x40000003
+			( FREE_SPACE_TREE |
+			  FREE_SPACE_TREE_VALID |
+			  unknown flag: 0x40000000 )
 
-Add some info about the logical of this reproducer.
+Then even if we can only mount it RO, we will still cause metadata
+update for log replay:
 
-For btrfs RAID5, if only one disk is corrupted (blkdiscard in this
-reproducer) at the same time, we can recovery it by 'btrfs scrub'.
+  BTRFS info (device dm-1): flagging fs with big metadata feature
+  BTRFS info (device dm-1): using free space tree
+  BTRFS info (device dm-1): has skinny extents
+  BTRFS info (device dm-1): start tree-log replay
 
-Once this recovery is finished, and then if another disk is corrupted
-(blkdiscard in this reproducer) too, we can recovery it by 'btrfs scrub'
-too.
+This is definitely against RO compact flag requirement.
 
-We do multiple RAID5 recovery(btrfs scrub) with different disk, as a way
-to try to detect some mismatched info inside.
+[CAUSE]
+RO compact flag only forces us to do RO mount, but we will still do log
+replay for plain RO mount.
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2022/08/14
+Thus this will result us to do log replay and update metadata.
 
+This can be very problematic for new RO compat flag, for example older
+kernel can not understand v2 cache, and if we allow metadata update on
+RO mount and invalidate/corrupt v2 cache.
 
-> 
-> This problem will not happen if we change the test data to simpler one.
-> # about 220M data of '/usr/bin' to single 1G file
-> 
-> This problem will not happen if we clear cache with 'umount; mount'
-> between multiple loop.
-> # 'sync; sleep 5; ...' to  'umount; mount'
-> 
-> so it seems that some info in memory is wrong after RAID5 recovery?
-> 
-> [1]
-> Subject: misc-next and for-next: kernel BUG at fs/btrfs/extent_io.c:2350!
-> during raid5 recovery
-> https://lore.kernel.org/linux-btrfs/9dfb0b60-9178-7bbe-6ba1-10d056a7e84c@gmx.com/T/#t
-> 
-> Best Regards
-> Wang Yugui (wangyugui@e16-tech.com)
-> 2022/08/14
-> 
+[FIX]
+Just reject the mount unless rescue=nologreplay is provided:
 
+  BTRFS error (device dm-1): cannot replay dirty log with unsupport optional features (0x40000000), try rescue=nologreplay instead
+
+We don't want to set rescue=nologreply directly, as this would make the
+end user to read the old data, and cause confusion.
+
+Since the such case is really rare, we're mostly fine to just reject the
+mount with an error message, which also includes the proper workaround.
+
+CC: stable@vger.kernel.org #5.10
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/disk-io.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 35acdab56a1c..2c7e50980a70 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3104,6 +3104,20 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		err = -EINVAL;
+ 		goto fail_alloc;
+ 	}
++	/*
++	 * We have unsupported RO compat features, although RO mounted, we
++	 * should not cause any metadata write, including log replay.
++	 * Or we could screw up whatever the new feature requires.
++	 */
++	if (unlikely(features && btrfs_super_log_root(disk_super) &&
++		     !btrfs_test_opt(fs_info, NOLOGREPLAY))) {
++		btrfs_err(fs_info,
++"cannot replay dirty log with unsupported compat_ro features (0x%llx), try rescue=nologreplay",
++			  features);
++		err = -EINVAL;
++		goto fail_alloc;
++	}
++
+ 
+ 	ret = btrfs_init_workqueues(fs_info, fs_devices);
+ 	if (ret) {
+-- 
+2.37.1
 
