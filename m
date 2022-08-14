@@ -2,61 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F01591D3D
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Aug 2022 02:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02BD591D38
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Aug 2022 02:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbiHNARb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 13 Aug 2022 20:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58446 "EHLO
+        id S229899AbiHNALW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 13 Aug 2022 20:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbiHNAR3 (ORCPT
+        with ESMTP id S229555AbiHNALV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 13 Aug 2022 20:17:29 -0400
-X-Greylist: delayed 409 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 13 Aug 2022 17:17:27 PDT
-Received: from mwb-bld-mts-003c1.ocn.ad.jp (mwb-bld-mts-003c1.ocn.ad.jp [153.128.188.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9182B198
-        for <linux-btrfs@vger.kernel.org>; Sat, 13 Aug 2022 17:17:27 -0700 (PDT)
-Received: from cmn-spm-mts-005c1.ocn.ad.jp (cmn-spm-mts-005c1.ocn.ad.jp [153.153.67.157])
-        by mwb-bld-mts-003c1.ocn.ad.jp (Postfix) with ESMTP id B213F3C000FBB
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 Aug 2022 09:10:36 +0900 (JST)
-Received: from mwb-vc-mts-001c1.ocn.ad.jp ([153.138.237.203])
-        by cmn-spm-mts-005c1.ocn.ad.jp with ESMTP
-        id N1DAojEmGOT9EN1DAotlfY; Sun, 14 Aug 2022 09:10:36 +0900
-X-BIZ-RELAY: yes
-Received: from mwb-sdgw-mts-002c1.ocn.ad.jp ([122.28.88.77])
-        by mwb-vc-mts-001c1.ocn.ad.jp with ESMTP
-        id N1DAoz1DCNbgwN1DAoY4F2; Sun, 14 Aug 2022 09:10:36 +0900
-Received: from daizen-home.co.jp (daizen-home.co.jp [61.126.18.182])
-        by mwb-sdgw-mts-002c1.ocn.ad.jp (Postfix) with ESMTP id 9556D8000234
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 Aug 2022 09:10:36 +0900 (JST)
-Received: by daizen-home.co.jp (Postfix, from userid 5014)
-        id EA0C9401591DB; Sun, 14 Aug 2022 09:10:34 +0900 (JST)
-To:     linux-btrfs@vger.kernel.org
-Subject: =?UTF-8?Q?=E9=87=91=E5=AD=90=E5=B7=A5=E5=8B=99=E5=BA=97_"The?=  =?UTF-8?Q?_Telegraph:_$72,000_per_day_on_investments"?=
-Date:   Sun, 14 Aug 2022 00:10:34 +0000
-From:   =?UTF-8?B?6YeR5a2Q5bel5YuZ5bqX?= <kaneko@daizen-home.co.jp>
-Reply-To: mw2prxh0bw@daizen-home.co.jp
-Message-ID: <iEC3lzI5kmpR7SOzlnYZfZ6UhWnlRqVvmoE6bM3auMM@daizen-home.co.jp>
-X-Mailer: PHPMailer 6.1.6 (https://github.com/PHPMailer/PHPMailer)
+        Sat, 13 Aug 2022 20:11:21 -0400
+X-Greylist: delayed 58490 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 13 Aug 2022 17:11:19 PDT
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949351CFE5
+        for <linux-btrfs@vger.kernel.org>; Sat, 13 Aug 2022 17:11:19 -0700 (PDT)
+Received: (Authenticated sender: ash@heyquark.com)
+        by mail.gandi.net (Postfix) with ESMTPSA id 20EB61C0006;
+        Sun, 14 Aug 2022 00:11:15 +0000 (UTC)
+Message-ID: <69235bca-d420-37de-54a2-68790af40d7a@heyquark.com>
+Date:   Sun, 14 Aug 2022 10:11:12 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=3.7 required=5.0 tests=BAYES_99,BAYES_999,
-        LOTS_OF_MONEY,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: Corrupt leaf, trying to recover
+Content-Language: en-AU
+To:     Roman Mamedov <rm@romanrm.net>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <6270a749-5fb2-0b36-529b-07f0e2ce4639@heyquark.com>
+ <0b4a3bca-cafd-b47d-d03c-a97922e49228@gmx.com>
+ <c1b246ad-6665-1216-166c-a1ad32222b35@heyquark.com>
+ <a9d3eb38-e939-4751-4dc8-896fa653be73@gmx.com>
+ <593e9196-7455-1874-750f-2f11443d7841@heyquark.com>
+ <20220813223613.0245732f@nvm>
+From:   Ash Logan <ash@heyquark.com>
+In-Reply-To: <20220813223613.0245732f@nvm>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-お問い合わせありがとうございます。
-以下のメールが送信されました。ご返信させていただきます。
 
-メッセージ本文:
-$250 for 5 minutes on investments http://news-that-matters.michelleyan.com/bild-4139
+On 14/8/22 03:36, Roman Mamedov wrote:
+> On Sat, 13 Aug 2022 18:28:36 +1000
+> Ash Logan <ash@heyquark.com> wrote:
+>
+>>> That new sanity check introduced in v5.11 should save a lot of hassle
+>>> like this.
+>> Debian doesn't ship it, though.. Will have to see what my options are
+>> there. Maybe time to build my own.
+> Kernel 5.18 is available in the backports repository for Debian 11:
+> https://packages.debian.org/search?keywords=linux-image-5.18
+>
+> See https://backports.debian.org/Instructions/
+Perfect, thanks.
+> As for bitflip, I would be concerned to keep using this hardware (RAM). It
+> might be that you are using tests that are not rigorous enough. For instance
+> once I got some sticks which were "stable" in MemTest86+, but TestMem5 with
+> its custom 'extreme' profiles has reported errors.
+>
+> Or at least next time you get a weird Btrfs issue, which is quite good, with
+> its currently present write-time/read-time sanity checks, at tripping on any
+> bad RAM in a loud way, you will know there is definitely something wrong with
+> it.
 
--- 
-このメールは 金子工務店 (http://daizen-home.co.jp) のお問い合わせフォームから送信されました
+I did end up finding another (larger!) RAM stick which also tested 
+clean, so I now have that in there.
+
+I actually had another subvolume (ID 410) with the exact same incorrect 
+flag bit set. Given the filesystem otherwise seems totally clean, I no 
+longer suspect a memory bitflip - it seems more likely that across 
+various software versions (ReadyNAS OS, Debian versions, etc...) someone 
+had a customisation or a bug that went unnoticed due to the lack of checks.
+
+<speculation> I noticed the two problematic subvolumes also are the only 
+ones that had snapshots.. perhaps ReadyNAS or the like used such a flag 
+to track if snapshots are enabled? </speculation>
+
+Thanks,
+Ash
 
