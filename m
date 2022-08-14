@@ -2,44 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F02BD591D38
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Aug 2022 02:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9AB591DB1
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Aug 2022 05:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbiHNALW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 13 Aug 2022 20:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
+        id S229561AbiHNDKf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 13 Aug 2022 23:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbiHNALV (ORCPT
+        with ESMTP id S229485AbiHNDKc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 13 Aug 2022 20:11:21 -0400
-X-Greylist: delayed 58490 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 13 Aug 2022 17:11:19 PDT
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949351CFE5
-        for <linux-btrfs@vger.kernel.org>; Sat, 13 Aug 2022 17:11:19 -0700 (PDT)
-Received: (Authenticated sender: ash@heyquark.com)
-        by mail.gandi.net (Postfix) with ESMTPSA id 20EB61C0006;
-        Sun, 14 Aug 2022 00:11:15 +0000 (UTC)
-Message-ID: <69235bca-d420-37de-54a2-68790af40d7a@heyquark.com>
-Date:   Sun, 14 Aug 2022 10:11:12 +1000
+        Sat, 13 Aug 2022 23:10:32 -0400
+Received: from out20-159.mail.aliyun.com (out20-159.mail.aliyun.com [115.124.20.159])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203EE765F
+        for <linux-btrfs@vger.kernel.org>; Sat, 13 Aug 2022 20:10:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.05100216|-1;BR=01201311R501S38rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00801485-0.000219503-0.991766;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.OswPL9b_1660446626;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.OswPL9b_1660446626)
+          by smtp.aliyun-inc.com;
+          Sun, 14 Aug 2022 11:10:26 +0800
+Date:   Sun, 14 Aug 2022 11:10:27 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Uncorrectable error during multiple scrub (raid5 recovery).
+Message-Id: <20220814111026.25EF.409509F4@e16-tech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: Corrupt leaf, trying to recover
-Content-Language: en-AU
-To:     Roman Mamedov <rm@romanrm.net>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <6270a749-5fb2-0b36-529b-07f0e2ce4639@heyquark.com>
- <0b4a3bca-cafd-b47d-d03c-a97922e49228@gmx.com>
- <c1b246ad-6665-1216-166c-a1ad32222b35@heyquark.com>
- <a9d3eb38-e939-4751-4dc8-896fa653be73@gmx.com>
- <593e9196-7455-1874-750f-2f11443d7841@heyquark.com>
- <20220813223613.0245732f@nvm>
-From:   Ash Logan <ash@heyquark.com>
-In-Reply-To: <20220813223613.0245732f@nvm>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,43 +37,52 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
 
-On 14/8/22 03:36, Roman Mamedov wrote:
-> On Sat, 13 Aug 2022 18:28:36 +1000
-> Ash Logan <ash@heyquark.com> wrote:
->
->>> That new sanity check introduced in v5.11 should save a lot of hassle
->>> like this.
->> Debian doesn't ship it, though.. Will have to see what my options are
->> there. Maybe time to build my own.
-> Kernel 5.18 is available in the backports repository for Debian 11:
-> https://packages.debian.org/search?keywords=linux-image-5.18
->
-> See https://backports.debian.org/Instructions/
-Perfect, thanks.
-> As for bitflip, I would be concerned to keep using this hardware (RAM). It
-> might be that you are using tests that are not rigorous enough. For instance
-> once I got some sticks which were "stable" in MemTest86+, but TestMem5 with
-> its custom 'extreme' profiles has reported errors.
->
-> Or at least next time you get a weird Btrfs issue, which is quite good, with
-> its currently present write-time/read-time sanity checks, at tripping on any
-> bad RAM in a loud way, you will know there is definitely something wrong with
-> it.
+Uncorrectable error during multiple scrub (raid5 recovery).
 
-I did end up finding another (larger!) RAM stick which also tested 
-clean, so I now have that in there.
+This reproducer is based on some reproducer [1],
+but it seems a new problem, so I open a new thread.
 
-I actually had another subvolume (ID 410) with the exact same incorrect 
-flag bit set. Given the filesystem otherwise seems totally clean, I no 
-longer suspect a memory bitflip - it seems more likely that across 
-various software versions (ReadyNAS OS, Debian versions, etc...) someone 
-had a customisation or a bug that went unnoticed due to the lack of checks.
+reproducer:
 
-<speculation> I noticed the two problematic subvolumes also are the only 
-ones that had snapshots.. perhaps ReadyNAS or the like used such a flag 
-to track if snapshots are enabled? </speculation>
+mkfs.btrfs -f -draid5 -mraid1 ${SCRATCH_DEV_POOL}
+SCRATCH_DEV_ARRAY=($SCRATCH_DEV_POOL)
+mount ${SCRATCH_DEV_ARRAY[0]} $SCRATCH_MNT # -o compress=zstd,noatime
 
-Thanks,
-Ash
+/bin/cp -a /usr/bin $SCRATCH_MNT/
+#(OK)dd if=/dev/urandom bs=1M count=1K of=$SCRATCH_MNT/1G.img
+du -sh $SCRATCH_MNT
+
+for((i=1;i<=15;++i)); do
+
+	#(OK)umount $SCRATCH_MNT; mount ${SCRATCH_DEV_ARRAY[0]} $SCRATCH_MNT # -o compress=zstd,noatime
+	sync; sleep 5; sync; sleep 5; sync; sleep 25;
+
+	# change the device to discard in every loop
+	j=$(( i % ${#SCRATCH_DEV_ARRAY[@]} ))
+	/usr/sbin/blkdiscard -f ${SCRATCH_DEV_ARRAY[$j]} # --offset 2M
+
+	btrfs scrub start -Bd $SCRATCH_MNT | grep 'summary\|Uncorrectable'
+
+done
+
+This problem will not happen if we change the test data to simpler one.
+# about 220M data of '/usr/bin' to single 1G file
+
+This problem will not happen if we clear cache with 'umount; mount'
+between multiple loop.
+# 'sync; sleep 5; ...' to  'umount; mount'
+
+so it seems that some info in memory is wrong after RAID5 recovery?
+
+[1]
+Subject: misc-next and for-next: kernel BUG at fs/btrfs/extent_io.c:2350!
+during raid5 recovery
+https://lore.kernel.org/linux-btrfs/9dfb0b60-9178-7bbe-6ba1-10d056a7e84c@gmx.com/T/#t
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/08/14
+
 
