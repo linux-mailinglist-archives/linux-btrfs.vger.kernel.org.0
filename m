@@ -2,269 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 389C7592D52
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Aug 2022 12:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E75D592E2B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Aug 2022 13:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbiHOIGz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Aug 2022 04:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
+        id S231152AbiHOLZ6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Aug 2022 07:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbiHOIGy (ORCPT
+        with ESMTP id S230512AbiHOLZ4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Aug 2022 04:06:54 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176B355A6
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Aug 2022 01:06:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1660550803;
-        bh=ajUd3aPilN48VKnGloyzW8PK1oyKrAJV/0ll3EEhLro=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=VKYWP8X616OUQLcrE5exLd7ZCcG188CQStyW3xkIxnqn9aUdLirPKGOkTfTGYy6ku
-         8PCTjnxfBo29Nf1fhbiHVB6VgDjk2a7828rEp1tuvNiVtcjzg79NN55mRUa4HqEHD1
-         OiyuvyvHt0n2cI+YGmNW6SqiNA0J+zw4SqVrj8Ho=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MtwYu-1nVNvy0Rky-00uMEq; Mon, 15
- Aug 2022 10:06:42 +0200
-Message-ID: <65c8f002-eef7-365a-8f1f-53a4d8b216c4@gmx.com>
-Date:   Mon, 15 Aug 2022 16:06:37 +0800
+        Mon, 15 Aug 2022 07:25:56 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC41023BEE;
+        Mon, 15 Aug 2022 04:25:54 -0700 (PDT)
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1oNYEC-0003gE-T4; Mon, 15 Aug 2022 13:25:52 +0200
+Message-ID: <2004c259-6ec7-76d9-cad6-7c381dbfcf0c@leemhuis.info>
+Date:   Mon, 15 Aug 2022 13:25:52 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: stalling IO regression in linux 5.12
 Content-Language: en-US
-To:     "Flint.Wang" <hmsjwzb@zoho.com>
-Cc:     linux-btrfs@vger.kernel.org, anand.jain@oracle.com
-References: <20220815024341.4677-1-hmsjwzb@zoho.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v2] btrfs-progs: chunk tree search solution for btrfs249
-In-Reply-To: <20220815024341.4677-1-hmsjwzb@zoho.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vl12y41Ny/rmIVO+eB9o8I83jxIgyICqwaeFxe/GjFUlHWFpFnO
- p/bqdDqgPpRQdlS7Gv277Nnomeohhfd98h+EV1lb4KlQArxyTE51GzuYSDtuEXWqmUoH5QI
- Oms//9XQm6HEuEvG6cM7PPpB4DInQS5XtdoU15QDDJq7tYlrt8pGnOlkvmauLrPhlZS9Q4F
- jFvIUpLveKReOxC/4c7Lw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:soC9/gZC5vc=:Ps56/pzZC3iJxFqnNJIihR
- Z/QgtJnw6DfirRtc/8OFZVTeEXt6/IAk22l9W2ofSDYotYQa1ER2pFIM9fUW1/Yu00uUKOG76
- a5Ca1+Sau4JlV367L7miQ9F3AG8z84GoQs26Fj338uvNSgslIw5bwNOvDfZxB6ctLkAdAx29R
- cIuSAtigrtTWUKC4pYvT+VlDYEziv8B5cYADF6AGjHAHCJIIA+QYzWC+Gv1wJC1upjPtum6Og
- 9XFx34vDU2zeplv2iTRnidLXf3LOpuXIzc0HoN5uddg0QowJUczGcAd0hsNAwX1piZX7XnO/x
- Gdf2JsZcQJ8XwjFwl/GAU0FRBndaqpbcs7kIo3IauhBsGd/yweuLL0IpTn42CdrTyGFLACA76
- kgRrBvsrB41WFlO0Aap9yVcyEGnubLmyFvuPQAB1mFOE8VflR8Xsfi9qp3c37s+PTaHpRUmKu
- RMxkjeIIONlqo9wKH1Eq3UOVXaD9KM8Sm20TEfKh5Z1Rq+EEh3TD/ZutuSv8SitcQaUjfOfcP
- 78/ackMZNT7r7fsog0Qv9fXcq8V/2N2RhxTLeANM19kl+qBWdLUvxTtdCb1hg/fyRvcBTBKbl
- KZkULi256AfCNoqHW6SWjq6QCUM4kUq3M4SrLWlQGgTYdog3CkICD+cW7Sul/a3MBSR4vNmdq
- JQRmBJO3h0Zg5kbfUfSTTtDkvX525gveCp/SoYgZ75cpf4J6OPQW4tTNPzFrnfX3aDCzEMjDG
- LTVSWuhXfzHgoBz1ih3FhfkKodLA7PnAVKv8h54rPIuPCRJgQPMo0sQbDu41eW+BL6ojAztbh
- +ztygutQrdPPIDlmRE6QgE8oFxLoJSzEIfRxFU3Of2psSGWCQSwu1KoHIO0GghDUZ6+JrefYH
- amSAZUToKourLD8nuLybnd6axnqoAKV7Z9x3MRJ0fiH3J1aPZtPXLclqPFkyQHQc5GpIAbExp
- 094440FFSre3gNvWKqia3z0O6/FN6zDyPRy1g+IYeNfk4v0Ktc7eHP+6d6MMQ5flPA+i0wUfJ
- dtKB6hJQdUpYBorpxPVywoKMKHTU2tsRPlR4lhZZffnDRzA0QLEXzF+yz9w4Swl26bwrDEcO1
- PhavGhp7KkEp+kgHpKX7w0b+cUv8VDZuaxt9rKjD/vxj/L22sBUQwEV6Q==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux-RAID <linux-raid@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+References: <e38aa76d-6034-4dde-8624-df1745bb17fc@www.fastmail.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <e38aa76d-6034-4dde-8624-df1745bb17fc@www.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1660562754;e5363ca9;
+X-HE-SMSGID: 1oNYEC-0003gE-T4
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[TLDR: I'm adding this regression report to the list of tracked
+regressions; all text from me you find below is based on a few templates
+paragraphs you might have encountered already already in similar form.]
 
+Hi, this is your Linux kernel regression tracker.
 
-On 2022/8/15 10:43, Flint.Wang wrote:
-> Hi Qu,
->
-> Thanks for your comment. I fix the issue you suggest.
-> It is much clean now.
->
-> Btrfs249 failed due to btrfs_ioctl_fs_info() return RW devices for fi_ar=
-gs->num_devices.
-> This patch search chunk tree to find rw devices.
-The commit message needs some improvement.
+On 10.08.22 18:35, Chris Murphy wrote:
+> CPU: Intel E5-2680 v3
+> RAM: 128 G
+> 02:00.0 RAID bus controller [0104]: Broadcom / LSI MegaRAID SAS-3 3108 [Invader] [1000:005d] (rev 02), using megaraid_sas driver
+> 8 Disks: TOSHIBA AL13SEB600
+> 
+> 
+> The problem exhibits as increasing load, increasing IO pressure (PSI), and actual IO goes to zero. It never happens on kernel 5.11 series, and always happens after 5.12-rc1 and persists through 5.18.0. There's a new mix of behaviors with 5.19, I suspect the mm improvements in this series might be masking the problem.
+> 
+> The workload involves openqa, which spins up 30 qemu-kvm instances, and does a bunch of tests, generating quite a lot of writes: qcow2 files, and video in the form of many screenshots, and various log files, for each VM. These VMs are each in their own cgroup. As the problem begins, I see increasing IO pressure, and decreasing IO, for each qemu instance's cgroup, and the cgroups for httpd, journald, auditd, and postgresql. IO pressure goes to nearly ~99% and IO is literally 0.
+> 
+> The problem left unattended to progress will eventually result in a completely unresponsive system, with no kernel messages. It reproduces in the following configurations, the first two I provide links to full dmesg with sysrq+w:
+> 
+> btrfs raid10 (native) on plain partitions [1]
+> btrfs single/dup on dmcrypt on mdadm raid 10 and parity raid [2]
+> XFS on dmcrypt on mdadm raid10 or parity raid
+> 
+> I've started a bisect, but for some reason I haven't figured out I've started getting compiled kernels that don't boot the hardware. The failure is very early on such that the UUID for the root file system isn't found, but not much to go on as to why.[3] I have tested the first and last skipped commits in the bisect log below, they successfully boot a VM but not the hardware.
+> 
+> Anyway, I'm kinda stuck at this point trying to narrow it down further. Any suggestions? Thanks.
+> 
+> [1] btrfs raid10, plain partitions
+> https://drive.google.com/file/d/1-oT3MX-hHYtQqI0F3SpgPjCIDXXTysLU/view?usp=sharing
+> 
+> [2] btrfs single/dup, dmcrypt, mdadm raid10
+> https://drive.google.com/file/d/1m_T3YYaEjBKUROz6dHt5_h92ZVRji9FM/view?usp=sharing
+> 
+> [3] 
+> $ git bisect log
+> git bisect start
+> # status: waiting for both good and bad commits
+> # bad: [c03c21ba6f4e95e406a1a7b4c34ef334b977c194] Merge tag 'keys-misc-20210126' of git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs
+> git bisect bad c03c21ba6f4e95e406a1a7b4c34ef334b977c194
+> # status: waiting for good commit(s), bad commit known
+> # good: [f40ddce88593482919761f74910f42f4b84c004b] Linux 5.11
+> git bisect good f40ddce88593482919761f74910f42f4b84c004b
+> # bad: [df24212a493afda0d4de42176bea10d45825e9a0] Merge tag 's390-5.12-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux
+> git bisect bad df24212a493afda0d4de42176bea10d45825e9a0
+> # good: [82851fce6107d5a3e66d95aee2ae68860a732703] Merge tag 'arm-dt-v5.12' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+> git bisect good 82851fce6107d5a3e66d95aee2ae68860a732703
+> # good: [99f1a5872b706094ece117368170a92c66b2e242] Merge tag 'nfsd-5.12' of git://git.kernel.org/pub/scm/linux/kernel/git/cel/linux
+> git bisect good 99f1a5872b706094ece117368170a92c66b2e242
+> # bad: [9eef02334505411667a7b51a8f349f8c6c4f3b66] Merge tag 'locking-core-2021-02-17' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+> git bisect bad 9eef02334505411667a7b51a8f349f8c6c4f3b66
+> # bad: [9820b4dca0f9c6b7ab8b4307286cdace171b724d] Merge tag 'for-5.12/drivers-2021-02-17' of git://git.kernel.dk/linux-block
+> git bisect bad 9820b4dca0f9c6b7ab8b4307286cdace171b724d
+> # good: [bd018bbaa58640da786d4289563e71c5ef3938c7] Merge tag 'for-5.12/libata-2021-02-17' of git://git.kernel.dk/linux-block
+> git bisect good bd018bbaa58640da786d4289563e71c5ef3938c7
+> # skip: [203c018079e13510f913fd0fd426370f4de0fd05] Merge branch 'md-next' of https://git.kernel.org/pub/scm/linux/kernel/git/song/md into for-5.12/drivers
+> git bisect skip 203c018079e13510f913fd0fd426370f4de0fd05
+> # skip: [49d1ec8573f74ff1e23df1d5092211de46baa236] block: manage bio slab cache by xarray
+> git bisect skip 49d1ec8573f74ff1e23df1d5092211de46baa236
+> # bad: [73d90386b559d6f4c3c5db5e6bb1b68aae8fd3e7] nvme: cleanup zone information initialization
+> git bisect bad 73d90386b559d6f4c3c5db5e6bb1b68aae8fd3e7
+> # skip: [71217df39dc67a0aeed83352b0d712b7892036a2] block, bfq: make waker-queue detection more robust
+> git bisect skip 71217df39dc67a0aeed83352b0d712b7892036a2
+> # bad: [8358c28a5d44bf0223a55a2334086c3707bb4185] block: fix memory leak of bvec
+> git bisect bad 8358c28a5d44bf0223a55a2334086c3707bb4185
+> # skip: [3a905c37c3510ea6d7cfcdfd0f272ba731286560] block: skip bio_check_eod for partition-remapped bios
+> git bisect skip 3a905c37c3510ea6d7cfcdfd0f272ba731286560
+> # skip: [3c337690d2ebb7a01fa13bfa59ce4911f358df42] block, bfq: avoid spurious switches to soft_rt of interactive queues
+> git bisect skip 3c337690d2ebb7a01fa13bfa59ce4911f358df42
+> # skip: [3e1a88ec96259282b9a8b45c3f1fda7a3ff4f6ea] bio: add a helper calculating nr segments to alloc
+> git bisect skip 3e1a88ec96259282b9a8b45c3f1fda7a3ff4f6ea
+> # skip: [4eb1d689045552eb966ebf25efbc3ce648797d96] blk-crypto: use bio_kmalloc in blk_crypto_clone_bio
+> git bisect skip 4eb1d689045552eb966ebf25efbc3ce648797d96
 
-Firstly, the commit message should only explain what the problem is and
-how this patch is going to solve it.
+Thanks for the report. To be sure below issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, my Linux kernel regression
+tracking bot:
 
-Currently there are tons of unnecessary things in the commit message,
-including the first paragraph and the changelog.
+#regzbot ^introduced v5.11..v5.12-rc1
+#regzbot ignore-activity
 
-Those things should go after the "---" line, so at apply time those
-unnecessary lines will be ignored by git directly.
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply -- ideally with also
+telling regzbot about it, as explained here:
+https://linux-regtracking.leemhuis.info/tracked-regression/
 
-Secondly the subject can be more specific.
+Reminder for developers: When fixing the issue, add 'Link:' tags
+pointing to the report (the mail this one replies to), as explained for
+in the Linux kernel's documentation; above webpage explains why this is
+important for tracked regressions.
 
-I would go something like the following:
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
 
-Subject: [PATCH v2] btrfs-progs: search chunk tree to get correct device
-info
-
-[BUG]
-Test case btrfs/249 failed with the following output:
-
-   <The failure output>
-
-[CAUSE]
-Function btrfs_ioctl_fs_info() only returns the number of RW devices for
-its num_devices, not including the seed device(s).
-
-Thus above test case will fail as we have two more seed devices,
-exceeding the num_device returned by btrfs_ioctl_fs_info().
-
-[FIX]
-Fix the bug by doing a tree-search ioctl to grab all devices from chunk
-tree, which includes all RW and seed devices.
-
-=2D--
-Changelog and other things should go here.
->
-> v2 change:
-> 1. code style fix.
-> 2. noseed_dev =3D> rw_devs, noseed_fsid =3D> fsid.
-> 3. remove redundant structure devid_uuid.
-> 4. reuse the dev_info structure.
-> 5. remove redundant uuid argument.
->
-> Signed-off-by: Flint.Wang <hmsjwzb@zoho.com>
-> ---
->   cmds/filesystem-usage.c | 83 ++++++++++++++++++++++++++++++++---------
->   1 file changed, 66 insertions(+), 17 deletions(-)
->
-> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
-> index 01729e18..71f0e14c 100644
-> --- a/cmds/filesystem-usage.c
-> +++ b/cmds/filesystem-usage.c
-> @@ -25,6 +25,7 @@
->   #include <getopt.h>
->   #include <fcntl.h>
->   #include <linux/limits.h>
-> +#include <uuid/uuid.h>
->
->   #include "common/utils.h"
->   #include "kerncompat.h"
-> @@ -689,6 +690,62 @@ out:
->   	return ret;
->   }
->
-> +static int load_devid(int fd, struct device_info *info,
-> +			    int ndev, u8 *fsid)
-> +{
-> +	struct btrfs_ioctl_search_args_v2 *args2;
-> +	struct btrfs_ioctl_search_key *sk;
-> +	struct btrfs_ioctl_search_header *sh;
-> +	struct btrfs_dev_item *dev_item;
-> +	int args2_size =3D 1024;
-> +	char args2_buf[args2_size];
-> +	int ret =3D 0;
-> +	int i =3D 0;
-> +	int num =3D 0;
-> +	int rw_devs =3D 0;
-> +	int idx =3D 0;
-> +
-> +	args2 =3D (struct btrfs_ioctl_search_args_v2 *) args2_buf;
-> +	sk =3D &(args2->key);
-> +
-> +	sk->tree_id =3D BTRFS_CHUNK_TREE_OBJECTID;
-> +	sk->min_objectid =3D BTRFS_DEV_ITEMS_OBJECTID;
-> +	sk->max_objectid =3D BTRFS_DEV_ITEMS_OBJECTID;
-> +	sk->min_type =3D BTRFS_DEV_ITEM_KEY;
-> +	sk->max_type =3D BTRFS_DEV_ITEM_KEY;
-> +	sk->min_offset =3D 0;
-> +	sk->max_offset =3D (u64)-1;
-> +	sk->min_transid =3D 0;
-> +	sk->max_transid =3D (u64)-1;
-> +	sk->nr_items =3D -1;
-> +	args2->buf_size =3D args2_size - sizeof(struct btrfs_ioctl_search_args=
-_v2);
-> +	ret =3D ioctl(fd, BTRFS_IOC_TREE_SEARCH_V2, args2);
-> +	if (ret !=3D 0)
-> +	       return -1;
-
-It's better to output an error message and return -errno instead.
-
--1 is -EINVAL, which is not really helpful to debug what's going wrong.
-
-> +
-> +	sh =3D (struct btrfs_ioctl_search_header *) args2->buf;
-> +	num =3D sk->nr_items;
-> +
-> +	dev_item =3D (struct btrfs_dev_item *) (sh + 1);
-> +	for (i =3D 0; i < num; i++) {
-> +		if (!uuid_compare(dev_item->fsid, fsid)) {
-> +			rw_devs +=3D 1;
-> +			info[idx++].devid =3D dev_item->devid;
-> +		}
-> +		if (idx > ndev) {
-> +			error("unexpected number of devices: %d >=3D %d", idx, ndev);
-> +			return -1;
-> +		}
-> +		sh =3D (struct btrfs_ioctl_search_header *) dev_item + 1;
-> +		dev_item =3D (struct btrfs_dev_item *) sh + 1;
-> +	}
-> +
-> +	if (ndev !=3D rw_devs)
-> +		error("unexpected number of devices: %d !=3D %d", ndev, rw_devs);
-> +
-> +	return 0;
-> +}
-> +
->   /*
->    *  This function loads the device_info structure and put them in an a=
-rray
->    */
-> @@ -718,19 +775,17 @@ static int load_device_info(int fd, struct device_=
-info **device_info_ptr,
->   		return 1;
->   	}
->
-> -	for (i =3D 0, ndevs =3D 0 ; i <=3D fi_args.max_id ; i++) {
-> -		if (ndevs >=3D fi_args.num_devices) {
-> -			error("unexpected number of devices: %d >=3D %llu", ndevs,
-> -				(unsigned long long)fi_args.num_devices);
-> -			error(
-> -		"if seed device is used, try running this command as root");
-> -			goto out;
-> -		}
-> +	ret =3D load_devid(fd, info, fi_args.num_devices, fi_args.fsid);
-
-This will only load the device info for rw devices.
-
-But no seed device will be populated, wouldn't this cause problem
-showing missing seed devices?
-
-Or is this always the case for the command from the very beginning?
-
-Thanks,
-Qu
-
-> +	if (ret =3D=3D -1)
-> +		goto out;
-> +
-> +	for (i =3D 0, ndevs =3D 0 ; i < fi_args.num_devices ; i++) {
->   		memset(&dev_info, 0, sizeof(dev_info));
-> -		ret =3D get_device_info(fd, i, &dev_info);
-> +		ret =3D get_device_info(fd, info[i].devid, &dev_info);
->
-> -		if (ret =3D=3D -ENODEV)
-> -			continue;
-> +		if (ret =3D=3D -ENODEV) {
-> +			error("device not found\n");
-> +		}
->   		if (ret) {
->   			error("cannot get info about device devid=3D%d", i);
->   			goto out;
-> @@ -759,12 +814,6 @@ static int load_device_info(int fd, struct device_i=
-nfo **device_info_ptr,
->   		++ndevs;
->   	}
->
-> -	if (ndevs !=3D fi_args.num_devices) {
-> -		error("unexpected number of devices: %d !=3D %llu", ndevs,
-> -				(unsigned long long)fi_args.num_devices);
-> -		goto out;
-> -	}
-> -
->   	qsort(info, fi_args.num_devices,
->   		sizeof(struct device_info), cmp_device_info);
->
+P.S.: As the Linux kernel's regression tracker I deal with a lot of
+reports and sometimes miss something important when writing mails like
+this. If that's the case here, don't hesitate to tell me in a public
+reply, it's in everyone's interest to set the public record straight.
