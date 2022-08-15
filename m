@@ -2,140 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F24592E60
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Aug 2022 13:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B36592EFB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Aug 2022 14:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233573AbiHOLqL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Aug 2022 07:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
+        id S232128AbiHOMhQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Aug 2022 08:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbiHOLqL (ORCPT
+        with ESMTP id S229623AbiHOMhP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Aug 2022 07:46:11 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1957EBC28
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Aug 2022 04:46:10 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C6C881FE69;
-        Mon, 15 Aug 2022 11:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1660563968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nmei75UQLrXMG2L7/xFI+FjzoA3oEelPp+lH7jJuaIs=;
-        b=RXdEnIvMc1W7juWH+dQBLJza+h04qayfi59RzDYwBuc1a5htaxzLCM16rW9wTTDGBTy5Xw
-        sBN6ZC2yhv78D0XJ7+Ms0CExP0xEmO+YpW5t26NVAF/PL433WXoJm0wYDEkVNXra6/DNZ8
-        MlCDCCw9L4Fwjj2Vhj0kb6+frqvR4so=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 089D313A93;
-        Mon, 15 Aug 2022 11:46:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id sCGlLv0x+mLsGAAAMHmgww
-        (envelope-from <wqu@suse.com>); Mon, 15 Aug 2022 11:46:05 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     u-boot@lists.denx.de
-Cc:     marek.behun@nic.cz, linux-btrfs@vger.kernel.org,
-        jnhuang95@gmail.com, linux-erofs@lists.ozlabs.org,
-        trini@konsulko.com, joaomarcos.costa@bootlin.com,
-        thomas.petazzoni@bootlin.com, miquel.raynal@bootlin.com
-Subject: [PATCH v3 8/8] fs: erofs: add unaligned read range handling
-Date:   Mon, 15 Aug 2022 19:45:19 +0800
-Message-Id: <a1ac116d3416d13161312a5a08c4d0e9f6218639.1660563403.git.wqu@suse.com>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <cover.1660563403.git.wqu@suse.com>
-References: <cover.1660563403.git.wqu@suse.com>
+        Mon, 15 Aug 2022 08:37:15 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1C01EC66
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Aug 2022 05:37:13 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id 13so6193141plo.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Aug 2022 05:37:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=T1UfNu4f+rVvsx1YdFcBiMg+GL/kJZ/ghdBps7XP4cU=;
+        b=YVS+wIH8Dk89zvFwfMZmYEbnrIgb6//X4VgvU9AVOhDIKQdtqkUXqZXL1R1iLiCQO5
+         E6OZiFaNSPceyWcdZgG3sfUbJ5ngVgFyYIIP96ElwAMviX9rIEGHHTX5fY6ft8S7Jogc
+         KDeQyHGCU1lKKb9PrpY+7su2+OVBl1H4yfI3hNi/zBkltcIjicYmgYcelPeqK/m5+gmJ
+         vUuF9Qci+/b0mXzMnT79sTQ6GErqOLgYONulJqHWO54Pt5DhrPkdVHwJPbxvEkgWtGhB
+         zpd9/BpQ5I7PuU+WHTlpHa+c50ysaBJ62jnYPyGZIVZ6acOaOvOYkt8tZMkiT5AferYf
+         pXFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=T1UfNu4f+rVvsx1YdFcBiMg+GL/kJZ/ghdBps7XP4cU=;
+        b=VEvIer2M7Zh0HYtXRRgU9252yRSQLyt48ENhl+81UuvotLX5A6G/JvcusjAobYo/EJ
+         vyz6uTfIjnfixX5DDwzRfr0XXarXbh4LQjPwk9d123FqvMKCnH5hlEwDgPGAm0NFAJdA
+         UisHRPAxKN376eMob17B6rc+CTEqe2mcXqT1E52TaUYDgtPkeA376FzA+CtAnALMJ8uh
+         awwN20dazMHF8kuGoAjolw9sRY3NYXE/WEVomkBViRLR3wnYRMHBgt5qjA6RskJ/N5Xg
+         qCyB5DUfYvlcV5JOoIHKD95ZjPuyYtDg3z19UJJChCug94A6kGAzmd6/nEmP+1Lft7cy
+         d15w==
+X-Gm-Message-State: ACgBeo0ys6BcVPok1rPDk5Wnr6b76ZDdSEyIxNcotGNmqOieornE2n7a
+        oMIKbUnrYPKKQYlyOHMfPDHfCPk6GFw=
+X-Google-Smtp-Source: AA6agR46LN9Nd7czCSQ1E1OA5+QvrVqNElDE1Mzo2eZ32wzqmnIpLXSBS8yHEKLDXE1Uow9npGHOzw==
+X-Received: by 2002:a17:902:b086:b0:171:2632:cd3b with SMTP id p6-20020a170902b08600b001712632cd3bmr17500304plr.111.1660567032000;
+        Mon, 15 Aug 2022 05:37:12 -0700 (PDT)
+Received: from realwakka-vm.. ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id i17-20020aa796f1000000b0052d46b43006sm6485533pfq.156.2022.08.15.05.37.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Aug 2022 05:37:11 -0700 (PDT)
+From:   Sidong Yang <realwakka@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [RFC PATCH 0/2] support all option for resize command
+Date:   Mon, 15 Aug 2022 12:36:50 +0000
+Message-Id: <20220815123652.52314-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I'm not an expert on erofs, but my quick glance didn't expose any
-special handling on unaligned range, thus I think the U-boot erofs
-driver doesn't really support unaligned read range.
+Hi,
 
-This patch will add erofs_get_blocksize() so erofs can benefit from the
-generic unaligned read support.
+This patch series is for supporting resize command in btrfs-progs.
+It resolves btrfs-progs github issue #471
 
-Cc: Huang Jianan <jnhuang95@gmail.com>
-Cc: linux-erofs@lists.ozlabs.org
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/erofs/internal.h | 1 +
- fs/erofs/super.c    | 6 ++++++
- fs/fs.c             | 2 +-
- include/erofs.h     | 1 +
- 4 files changed, 9 insertions(+), 1 deletion(-)
+This is prototype for work. It also needs to add manual for option.
+I want to know that it's good way to implement the option.
 
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 4af7c91560cc..d368a6481bf1 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -83,6 +83,7 @@ struct erofs_sb_info {
- 	u16 available_compr_algs;
- 	u16 lz4_max_distance;
- 	u32 checksum;
-+	u32 blocksize;
- 	u16 extra_devices;
- 	union {
- 		u16 devt_slotoff;		/* used for mkfs */
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index 8277d9b53fb3..82625da59001 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -99,7 +99,13 @@ int erofs_read_superblock(void)
- 
- 	sbi.build_time = le64_to_cpu(dsb->build_time);
- 	sbi.build_time_nsec = le32_to_cpu(dsb->build_time_nsec);
-+	sbi.blocksize = 1 << blkszbits;
- 
- 	memcpy(&sbi.uuid, dsb->uuid, sizeof(dsb->uuid));
- 	return erofs_init_devices(&sbi, dsb);
- }
-+
-+int erofs_get_blocksize(const char *filename)
-+{
-+	return sbi.blocksize;
-+}
-diff --git a/fs/fs.c b/fs/fs.c
-index 43c7128bcfc5..2ac43c05fcd8 100644
---- a/fs/fs.c
-+++ b/fs/fs.c
-@@ -376,7 +376,7 @@ static struct fstype_info fstypes[] = {
- 		.readdir = erofs_readdir,
- 		.ls = fs_ls_generic,
- 		.read = erofs_read,
--		.get_blocksize = fs_get_blocksize_unsupported,
-+		.get_blocksize = erofs_get_blocksize,
- 		.size = erofs_size,
- 		.close = erofs_close,
- 		.closedir = erofs_closedir,
-diff --git a/include/erofs.h b/include/erofs.h
-index 1fbe82bf72cb..18bd6807c538 100644
---- a/include/erofs.h
-+++ b/include/erofs.h
-@@ -10,6 +10,7 @@ int erofs_probe(struct blk_desc *fs_dev_desc,
- 		struct disk_partition *fs_partition);
- int erofs_read(const char *filename, void *buf, loff_t offset,
- 	       loff_t len, loff_t *actread);
-+int erofs_get_blocksize(const char *filename);
- int erofs_size(const char *filename, loff_t *size);
- int erofs_exists(const char *filename);
- void erofs_close(void);
+If there is better way, I'd appreciate it.
+
+Sidong Yang (2):
+  btrfs-progs: fi resize: refactor function check_resize_args()
+  btrfs-progs: fi resize: support all option for resize
+
+ cmds/filesystem.c | 218 +++++++++++++++++++++++++++-------------------
+ 1 file changed, 127 insertions(+), 91 deletions(-)
+
 -- 
-2.37.1
+2.34.1
 
