@@ -2,78 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 501B8594D3E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 03:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB12B594E1D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 03:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbiHPBVB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Aug 2022 21:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
+        id S241398AbiHPBoB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Aug 2022 21:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233373AbiHPBU1 (ORCPT
+        with ESMTP id S233940AbiHPBnb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Aug 2022 21:20:27 -0400
+        Mon, 15 Aug 2022 21:43:31 -0400
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643021C1865;
-        Mon, 15 Aug 2022 14:12:09 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 4480232004AE;
-        Mon, 15 Aug 2022 17:12:07 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F745FF63;
+        Mon, 15 Aug 2022 14:35:04 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 2933C320090F;
+        Mon, 15 Aug 2022 17:35:03 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 15 Aug 2022 17:12:08 -0400
+  by compute5.internal (MEProxy); Mon, 15 Aug 2022 17:35:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
         :content-type:date:date:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1660597926; x=1660684326; bh=duedlCLDEu
-        9t8HnT+Y8HmDQ++Q7DMuHbP3sR5+RPBD8=; b=ncmQW4mdway+eYunr02KKcLLnB
-        qeoRtm4heWV5bPDmXKCULOeCVxp5QfxYU0zRWVG25Bt9CTRduQaQyi2jQg/bSI9x
-        6UqH8JzoV47QuYxZvE7ccJCgudeCUjejz5HXfPudr0jVaK9qJcQr+D0vdMpao+Hr
-        sWpK4DZS8L5SL5IYs1laqKojYbOeQGfKRVmp5iUdwZCT3MXriwqeLY0w6QOdVhKQ
-        mhFZ98ngEMEkpfeyeD9DtuiR46txJtj0iwYxltZw4bdc8MGqvbsvuiiVGuXN5+1p
-        rOcHElfAIAFp37RVpVYJddz/PiO5NOz3PWOA4Vxsl0JGklAhBQyKpciOy4wQ==
+        :subject:to:to; s=fm1; t=1660599302; x=1660685702; bh=q1GHOVR2HG
+        8hGzbylQv89Zpmm6U7IK8HwWlEMQHeE0Q=; b=p3DcQwx3UhVFNJ4Ne5ggFH8HYU
+        ATT7E9nfCS8FTf9zCUoIhljDt29iiTJWrtOK/Ab/CQvN7XGl7piu6A2EeQ9S8l7s
+        colERk4NTdmTr9hj9AELhEw8ZBYpt58zkcKkafj5nH/SFcndpasyMgICCdu/4/JS
+        KUNXKHMAUmP3wKXX0FHxUz7wPNMKCw591YgYwOXQT5TS3oJpn2Lze0pkBn401VLK
+        x7ul9uVCoYdKajgrlyHmaijX1IDUCEHhA7dotI0NV3BT2uxlVxmx08mle76kmGON
+        JMgl2tzeKi0LR9MLXE0v/VwrPa9WBFlTXPGsHtRiLsvNAE93BPeCmZjG94ew==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
         :feedback-id:from:from:in-reply-to:in-reply-to:message-id
         :mime-version:references:reply-to:sender:subject:subject:to:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1660597926; x=1660684326; bh=duedlCLDEu9t8HnT+Y8HmDQ++Q7D
-        MuHbP3sR5+RPBD8=; b=UhY1MFd0BSHNck9qz+wHrdZjIu0VqjwBtM6eCdIM3+Pb
-        cTl1rqreTSh/XuQXip5V06QM6eD40t5yHnh//biLvoXoZE694dUn35EpbgrFUX54
-        In5lSMBtiNAaLY8LqDF9+EMet/6Um9Ok5MPNoOBbI7CVnRhCWRbbL4q7TH3LvCwM
-        c+vZ+aPBeWHIXooGtXegKlI9ymLZB5toK7H+gEjXxNsGrhJXkjL+fKkDuFGNbAwR
-        BY+RUJYoEWLcgi1+wjFdQ0jKANvcbc9t4H/Etp8YT7GKkgOWaSmHsY92Zu3kyNx8
-        EIY7RmcSjBupFEC//bQ7x1aw2IiArIRR7s1uJk/guw==
-X-ME-Sender: <xms:pbb6YqYdHobCAelZ7xNWnF5o0CwhRvUzh8W3KlRqsKaQ9lp8Sp2kZg>
-    <xme:pbb6Ytbfc7qcHL2O2PJyxXwqJujRiPRZuKNxYiamCFFaHOudoMGjRerj8i9_XG20i
-    HRyaBqyXZhQEQaM8Fw>
-X-ME-Received: <xmr:pbb6Yk_qGGPBERhlmIMHWnFnaL7j5w7XNX69dNUzxe9B9TefWhv9K79eT4oLzKqIOLl7E17Uk9UgeIlirpAFiRol0EuOcA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehvddgudeitdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkfhggtggujgesth
-    dtredttddtvdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghu
-    rhdrihhoqeenucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvd
-    evieeiiedugfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
-    mhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:pbb6Ysop1lsXOOFMHT1RA1DY5xfzrzTKFdekNZBcpZuS4MOm4FtzBw>
-    <xmx:pbb6YloLN3K-WvhF3UbI_yxBChNdwVW2Tv6JVCYVA1pGrnDqYCSurQ>
-    <xmx:pbb6YqRNgRn4GduhrhdTsxeWUA-h48zui3BBOKN7I70BIxQ9WaqGkQ>
-    <xmx:prb6Ymc4hqTqn1QZ7_5AC3aIOhL8qDEhmX0AifcitlFY_9TYjI5WWQ>
+        fm1; t=1660599302; x=1660685702; bh=q1GHOVR2HG8hGzbylQv89Zpmm6U7
+        IK8HwWlEMQHeE0Q=; b=Vxg/pwxQbhtAkJ0Q2vd4ulSLVjnVhVTflw2nXiy58SeF
+        acjKBnkJ5NTuQoSVt7cOzyknL7BdAIyo2R3Tz9dmJSUUDBNVPur2Zz5UTDrqMoxs
+        xfG5x5ZbjdE3a3CrLlo8o+u3kUbmQPIC/U4RIvpvgVI/UahZMEDJgoYu1oWwDtd+
+        wpKH6OMydaDaSOd2CrvvU125bE8YgfCZGJWkxoM5oDdKotZiF0GC9dXDQF4gx3fK
+        3HeHTmmBF/cTvpbg6WxxPObLA3Su+iq+sN8J6udrbMp+ZfHHbScW/uGgOLuzBRe6
+        yXlCaKHZ0Wj0GCw6I2f6RyKMV33i7tZmsFgLFosMJg==
+X-ME-Sender: <xms:Brz6YpDtXH1F8rzGvUVQIZVNV2vktbAnDBSHYQ-Cw9IuZH7H8f1svg>
+    <xme:Brz6YniitgapBWPd7WpR2qmqIrZ7Veo3vXcW4kQv4BREew4T4MlKGuvjKa_X5Oc_h
+    imFrTlLMbZilR8FaWE>
+X-ME-Received: <xmr:Brz6YklVu7-0Ia1kTzxS2V2ncdVINpS8qyFKR-xtY1hw7GMwhAVfRZEt-kEVcHlt05qMKgWVvftJtu1VmHIxxSh6dQgV0w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehfedgtdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:Brz6YjxSkiM2fJQeWQcvFurVIBMAfSK17pzY6KKUASqtqrZiPylTsA>
+    <xmx:Brz6YuSvwq6P4R72--bl5Z3EA90W7kbjOsu8Y6F1i2l6RXgQ7aez4w>
+    <xmx:Brz6YmZYArL9TJxZI4eON9okZLZ5xqgUa1TWQPEC1zTNsQhA5WSyVQ>
+    <xmx:Brz6YkMSIWAARV3P_73MYpqn3Io3sVc0ezOaelra0qlsvNEPxAWtdA>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 15 Aug 2022 17:12:05 -0400 (EDT)
-Date:   Mon, 15 Aug 2022 14:13:28 -0700
+ 15 Aug 2022 17:35:02 -0400 (EDT)
+Date:   Mon, 15 Aug 2022 14:36:25 -0700
 From:   Boris Burkov <boris@bur.io>
-To:     Zixuan Fu <r33s3n6@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: Re: [PATCH] fs: btrfs: fix possible memory leaks in
- btrfs_get_dev_args_from_path()
-Message-ID: <Yvq2+EWVBc5L1LZH@zen>
-References: <20220815151606.3479183-1-r33s3n6@gmail.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH] fs/btrfs: Use atomic_try_cmpxchg in free_extent_buffer
+Message-ID: <Yvq8WaTZzWWusB25@zen>
+References: <20220809163633.8255-1-ubizjak@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220815151606.3479183-1-r33s3n6@gmail.com>
+In-Reply-To: <20220809163633.8255-1-ubizjak@gmail.com>
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,40 +84,54 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 11:16:06PM +0800, Zixuan Fu wrote:
-> In btrfs_get_dev_args_from_path(), btrfs_get_bdev_and_sb() can fail if the
-> path is invalid. In this case, btrfs_get_dev_args_from_path() returns
-> directly without freeing args->uuid and args->fsid allocated before, which
-> causes memory leaks.
+On Tue, Aug 09, 2022 at 06:36:33PM +0200, Uros Bizjak wrote:
+> Use `atomic_try_cmpxchg(ptr, &old, new)` instead of
+> `atomic_cmpxchg(ptr, old, new) == old` in free_extent_buffer. This
+> has two benefits:
 > 
-> To fix these possible leaks, when btrfs_get_bdev_and_sb() fails, 
-> btrfs_put_dev_args_from_path() is called to clean up the memory.
+> - The x86 cmpxchg instruction returns success in the ZF flag, so this
+>   change saves a compare after cmpxchg, as well as a related move
+>   instruction in the front of cmpxchg.
 > 
-> Fixes: faa775c41d655 ("btrfs: add a btrfs_get_dev_args_from_path helper")
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Zixuan Fu <r33s3n6@gmail.com>
+> - atomic_try_cmpxchg implicitly assigns the *ptr value to &old when
+>   cmpxchg fails, enabling further code simplifications.
+> 
+> This patch has no functional change.
+> 
+> Cc: Chris Mason <clm@fb.com>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: David Sterba <dsterba@suse.com>
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 Reviewed-by: Boris Burkov <boris@bur.io>
 > ---
->  fs/btrfs/volumes.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>  fs/btrfs/extent_io.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 272901514b0c..064ab2a79c80 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -2345,8 +2345,11 @@ int btrfs_get_dev_args_from_path(struct btrfs_fs_info *fs_info,
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index bfae67c593c5..15ff196cbd6d 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -6328,18 +6328,16 @@ static int release_extent_buffer(struct extent_buffer *eb)
+>  void free_extent_buffer(struct extent_buffer *eb)
+>  {
+>  	int refs;
+> -	int old;
+>  	if (!eb)
+>  		return;
 >  
->  	ret = btrfs_get_bdev_and_sb(path, FMODE_READ, fs_info->bdev_holder, 0,
->  				    &bdev, &disk_super);
-> -	if (ret)
-> +	if (ret) {
-> +		btrfs_put_dev_args_from_path(args);
->  		return ret;
-> +	}
-> +
->  	args->devid = btrfs_stack_device_id(&disk_super->dev_item);
->  	memcpy(args->uuid, disk_super->dev_item.uuid, BTRFS_UUID_SIZE);
->  	if (btrfs_fs_incompat(fs_info, METADATA_UUID))
+> +	refs = atomic_read(&eb->refs);
+>  	while (1) {
+> -		refs = atomic_read(&eb->refs);
+>  		if ((!test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags) && refs <= 3)
+>  		    || (test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags) &&
+>  			refs == 1))
+>  			break;
+> -		old = atomic_cmpxchg(&eb->refs, refs, refs - 1);
+> -		if (old == refs)
+> +		if (atomic_try_cmpxchg(&eb->refs, &refs, refs - 1))
+>  			return;
+>  	}
+>  
 > -- 
-> 2.25.1
+> 2.37.1
 > 
