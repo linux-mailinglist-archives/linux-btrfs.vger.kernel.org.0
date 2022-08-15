@@ -2,187 +2,392 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 348FF594EE8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 05:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B38459515B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 06:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbiHPDB6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Aug 2022 23:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
+        id S232936AbiHPE4c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Aug 2022 00:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbiHPDAO (ORCPT
+        with ESMTP id S233953AbiHPEzv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Aug 2022 23:00:14 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4790E2DD5ED;
-        Mon, 15 Aug 2022 16:34:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1660606485; x=1692142485;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EU3WVIPEiTVCLq3r1ATnkbH8mOj++2Yt6SGbSryJ5r0=;
-  b=MdhohSoUqeuVP1wJ3W+x3DA0fk22RTfQ/qOlaj/cd/d724w8nmAhteeA
-   lrVwtVkytJOyPqGYMipBWefLIt/aGEPOSzcf+7C2Ad5XCyvN6UbipU39j
-   wFd6Dey8rB1F0pRilan1H3HyeX6wLsAMWLV6tsJusgOhkkfuA73kaa96h
-   7WcANTc0ClGwB7iU/xK9FPeLDXtzgEo7NOurOOwZOalTTSXaKMx69b3z5
-   v2FWgbps1ClXKxeRvIAWMtt3PdMUPz1cuYu8/aScTb868xa+EYZkWoVs4
-   B7ycmxJGf1alvk1RTp8rPiO2y94dt04a9a/aVLGmEGKwBhn8QBiA8C35c
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10440"; a="289650012"
-X-IronPort-AV: E=Sophos;i="5.93,239,1654585200"; 
-   d="scan'208";a="289650012"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2022 16:34:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,239,1654585200"; 
-   d="scan'208";a="583073534"
-Received: from lkp-server02.sh.intel.com (HELO 3d2a4d02a2a9) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 15 Aug 2022 16:34:41 -0700
-Received: from kbuild by 3d2a4d02a2a9 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oNjbU-0001Gv-1b;
-        Mon, 15 Aug 2022 23:34:40 +0000
-Date:   Tue, 16 Aug 2022 07:34:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        linux-fsdevel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, linux-btrfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: Re: [PATCH 5/7] nilfs2: Convert nilfs_find_uncommited_extent() to
- use filemap_get_folios_contig()
-Message-ID: <202208160738.yErltyXd-lkp@intel.com>
-References: <20220815185452.37447-6-vishal.moola@gmail.com>
+        Tue, 16 Aug 2022 00:55:51 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924FD1A626B;
+        Mon, 15 Aug 2022 13:53:07 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 1A8BE3200935;
+        Mon, 15 Aug 2022 16:53:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 15 Aug 2022 16:53:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm1; t=1660596784; x=1660683184; bh=t4RKx5KJWfVX1MkpVI+yTo2r8
+        jqS8Jk9H1Qno5Uo7Hk=; b=s+yDYulo+3F6ysBCMEsuu1/dDQjCucpzVX0mG8G5I
+        2XrxIOp5NRtaUI0Lg91F8BfTtMZHbtRy4veTdK2j2pzgsEtyl9aYwjmOv63offK1
+        4C5KtrSYIIzeSkPtuGrNY4E9AvqwtEosc9sQzartljhsYM7W6u2LBCTTfZzvQ3os
+        W2frtFzV9caI5KwOIf9isk81hhoTe5SCcIRv95uHkGfekxo2lurdLt6MJXsA8ChX
+        LPouGH286L8fFB6G8VtYouKfm7CqiLa/c9HC2jV+1UtJWbo+C7v8jHfud/xnV3Ee
+        DIR/66vA/FzxTNyMx1PRZDOgZgj0FDGHS6SCypFidXoxQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1660596784; x=1660683184; bh=t4RKx5KJWfVX1MkpVI+yTo2r8jqS8Jk9H1Q
+        no5Uo7Hk=; b=Mx3JI1tZMgJKuE0vepgjIPWT9jOiJkRzxrKyrxgkT16oUI5upND
+        vD1/8KglVBv25C9wXlxPpmX0S2KWjMvD6cf0zvK4+oez19WiAS45cjm1uXYomsdu
+        CnSlsg7kCxFLgMm3XT3CXoMT2UvGJITghZ+kv2pZDVmNJ+LTodDalWvl/Nu5PYRa
+        iF0tOTxk03IGEPfzMo1nqVXGTIdRunJ9MZEsEFMIyDI9bt4agCc3e9dLUUNs2lbl
+        mtLh3rEUzcsVt/7TC1QPczDTwM4gbh2vSKKLQ2seM5eWUjQGnkrE3BJcxvBk3LXG
+        mq1ayv+J54968AhWnaM0MeqEzLEJyxaNukw==
+X-ME-Sender: <xms:MLL6YnaC0jSrV8XPu74_C4_mXNpDB4u_i5df33fFgFtmuSR8Q_2UMw>
+    <xme:MLL6YmaslX-xYGYBNHeWIAtmZxlEPVEYR0IORLdLhhO20qBkVnrhjP6_7kQgoItz8
+    2_ZeOHKptWkb6ymFWw>
+X-ME-Received: <xmr:MLL6Yp9jBiXY8PDw8eLxYMT1d6Rgm5BvIBIDs2SJMJBCqBgNt44kycJ2OIRL6sG_04Klm3pbzRyDJbKCWr6h8JGglyF3Yw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehvddgudehjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
+    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:MLL6YtqwsH59vRRdqrPJFYRrW8nR5NBpKeMgZttiFlUhQDGiOygaxw>
+    <xmx:MLL6YirtWgE_oEuuIE7qedZb8lfmP0Z7ScsNR2e75Z0HlkuC_Zx9MQ>
+    <xmx:MLL6YjRTadQbeZCKKR5uEuxNw1mYSrlHmr1zRg6pi6_W5uixtHOT_w>
+    <xmx:MLL6YnA9dyN1PkGBmft4WaZ4Lg1PxVodSOhQnTFwXKIiNaBP3Q_1SQ>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 15 Aug 2022 16:53:04 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fscrypt@vger.kernel.org
+Subject: [PATCH v4] btrfs: send: add support for fs-verity
+Date:   Mon, 15 Aug 2022 13:54:28 -0700
+Message-Id: <0561e8a33f991fa15053054b7b089d176fde6523.1660596577.git.boris@bur.io>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220815185452.37447-6-vishal.moola@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi "Vishal,
+Preserve the fs-verity status of a btrfs file across send/recv.
 
-Thank you for the patch! Perhaps something to improve:
+There is no facility for installing the Merkle tree contents directly on
+the receiving filesystem, so we package up the parameters used to enable
+verity found in the verity descriptor. This gives the receive side
+enough information to properly enable verity again. Note that this means
+that receive will have to re-compute the whole Merkle tree, similar to
+how compression worked before encoded_write.
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.0-rc1 next-20220815]
-[cannot apply to kdave/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Since the file becomes read-only after verity is enabled, it is
+important that verity is added to the send stream after any file writes.
+Therefore, when we process a verity item, merely note that it happened,
+then actually create the command in the send stream during
+'finish_inode_if_needed'.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Moola-Oracle/Convert-to-filemap_get_folios_contig/20220816-025830
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 568035b01cfb107af8d2e4bd2fb9aea22cf5b868
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20220816/202208160738.yErltyXd-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-5) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/ce1966344933bbe10010035cd25f23ec7dd76914
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Vishal-Moola-Oracle/Convert-to-filemap_get_folios_contig/20220816-025830
-        git checkout ce1966344933bbe10010035cd25f23ec7dd76914
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash fs/nilfs2/
+This also creates V3 of the send stream format, without any format
+changes besides adding the new commands and attributes.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Boris Burkov <boris@bur.io>
 
-All warnings (new ones prefixed by >>):
+--
+Changes in v4:
+- Use btrfs_get_verity_descriptor instead of verity ops get descriptor.
+  Move that definition to ctree.h for conditional building. This cleaned
+  up most of the conditional building issues, in my opinion.
+- Rename process_new_verity to process_verity.
+- Use le-to-cpu conversion for all fsverity descriptor fields.
+- Don't check NULL for kvfree of the send descriptor.
+Changes in v3:
+- Fixed build failure when CONFIG_FS_VERITY was not set. This required a
+  kludge to avoid a build warning as well.
+Changes in v2:
+- Allocate 16K with kvmalloc and keep it around till the end of send
+instead of re-allocating on each file with fs-verity.
+- Use unsigned literal for bitshift.
+---
+ fs/btrfs/ctree.h             |  6 +++
+ fs/btrfs/send.c              | 99 ++++++++++++++++++++++++++++++++++++
+ fs/btrfs/send.h              | 15 ++++--
+ fs/btrfs/verity.c            |  3 +-
+ fs/verity/fsverity_private.h |  2 -
+ include/linux/fsverity.h     |  3 ++
+ 6 files changed, 121 insertions(+), 7 deletions(-)
 
-   fs/nilfs2/page.c: In function 'nilfs_find_uncommitted_extent':
->> fs/nilfs2/page.c:542:1: warning: label 'out' defined but not used [-Wunused-label]
-     542 | out:
-         | ^~~
-
-
-vim +/out +542 fs/nilfs2/page.c
-
-622daaff0a8975 Ryusuke Konishi       2010-12-26  466  
-622daaff0a8975 Ryusuke Konishi       2010-12-26  467  /**
-622daaff0a8975 Ryusuke Konishi       2010-12-26  468   * nilfs_find_uncommitted_extent - find extent of uncommitted data
-622daaff0a8975 Ryusuke Konishi       2010-12-26  469   * @inode: inode
-622daaff0a8975 Ryusuke Konishi       2010-12-26  470   * @start_blk: start block offset (in)
-622daaff0a8975 Ryusuke Konishi       2010-12-26  471   * @blkoff: start offset of the found extent (out)
-622daaff0a8975 Ryusuke Konishi       2010-12-26  472   *
-622daaff0a8975 Ryusuke Konishi       2010-12-26  473   * This function searches an extent of buffers marked "delayed" which
-622daaff0a8975 Ryusuke Konishi       2010-12-26  474   * starts from a block offset equal to or larger than @start_blk.  If
-622daaff0a8975 Ryusuke Konishi       2010-12-26  475   * such an extent was found, this will store the start offset in
-622daaff0a8975 Ryusuke Konishi       2010-12-26  476   * @blkoff and return its length in blocks.  Otherwise, zero is
-622daaff0a8975 Ryusuke Konishi       2010-12-26  477   * returned.
-622daaff0a8975 Ryusuke Konishi       2010-12-26  478   */
-622daaff0a8975 Ryusuke Konishi       2010-12-26  479  unsigned long nilfs_find_uncommitted_extent(struct inode *inode,
-622daaff0a8975 Ryusuke Konishi       2010-12-26  480  					    sector_t start_blk,
-622daaff0a8975 Ryusuke Konishi       2010-12-26  481  					    sector_t *blkoff)
-622daaff0a8975 Ryusuke Konishi       2010-12-26  482  {
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  483) 	unsigned int i, nr;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  484  	pgoff_t index;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  485  	unsigned int nblocks_in_page;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  486  	unsigned long length = 0;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  487  	sector_t b;
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  488) 	struct folio_batch fbatch;
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  489) 	struct folio *folio;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  490  
-622daaff0a8975 Ryusuke Konishi       2010-12-26  491  	if (inode->i_mapping->nrpages == 0)
-622daaff0a8975 Ryusuke Konishi       2010-12-26  492  		return 0;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  493  
-09cbfeaf1a5a67 Kirill A. Shutemov    2016-04-01  494  	index = start_blk >> (PAGE_SHIFT - inode->i_blkbits);
-09cbfeaf1a5a67 Kirill A. Shutemov    2016-04-01  495  	nblocks_in_page = 1U << (PAGE_SHIFT - inode->i_blkbits);
-622daaff0a8975 Ryusuke Konishi       2010-12-26  496  
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  497) 	folio_batch_init(&fbatch);
-622daaff0a8975 Ryusuke Konishi       2010-12-26  498  
-622daaff0a8975 Ryusuke Konishi       2010-12-26  499  repeat:
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  500) 	nr = filemap_get_folios_contig(inode->i_mapping, &index, ULONG_MAX,
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  501) 			&fbatch);
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  502) 	if (nr == 0)
-622daaff0a8975 Ryusuke Konishi       2010-12-26  503  		return length;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  504  
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  505) 	b = fbatch.folios[0]->index << (PAGE_SHIFT - inode->i_blkbits);
-622daaff0a8975 Ryusuke Konishi       2010-12-26  506  	i = 0;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  507  	do {
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  508) 		folio = fbatch.folios[i];
-622daaff0a8975 Ryusuke Konishi       2010-12-26  509  
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  510) 		folio_lock(folio);
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  511) 		if (folio_buffers(folio)) {
-622daaff0a8975 Ryusuke Konishi       2010-12-26  512  			struct buffer_head *bh, *head;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  513  
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  514) 			bh = head = folio_buffers(folio);
-622daaff0a8975 Ryusuke Konishi       2010-12-26  515  			do {
-622daaff0a8975 Ryusuke Konishi       2010-12-26  516  				if (b < start_blk)
-622daaff0a8975 Ryusuke Konishi       2010-12-26  517  					continue;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  518  				if (buffer_delay(bh)) {
-622daaff0a8975 Ryusuke Konishi       2010-12-26  519  					if (length == 0)
-622daaff0a8975 Ryusuke Konishi       2010-12-26  520  						*blkoff = b;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  521  					length++;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  522  				} else if (length > 0) {
-622daaff0a8975 Ryusuke Konishi       2010-12-26  523  					goto out_locked;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  524  				}
-622daaff0a8975 Ryusuke Konishi       2010-12-26  525  			} while (++b, bh = bh->b_this_page, bh != head);
-622daaff0a8975 Ryusuke Konishi       2010-12-26  526  		} else {
-622daaff0a8975 Ryusuke Konishi       2010-12-26  527  			if (length > 0)
-622daaff0a8975 Ryusuke Konishi       2010-12-26  528  				goto out_locked;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  529  
-622daaff0a8975 Ryusuke Konishi       2010-12-26  530  			b += nblocks_in_page;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  531  		}
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  532) 		folio_unlock(folio);
-622daaff0a8975 Ryusuke Konishi       2010-12-26  533  
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  534) 	} while (++i < nr);
-622daaff0a8975 Ryusuke Konishi       2010-12-26  535  
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  536) 	folio_batch_release(&fbatch);
-622daaff0a8975 Ryusuke Konishi       2010-12-26  537  	cond_resched();
-622daaff0a8975 Ryusuke Konishi       2010-12-26  538  	goto repeat;
-622daaff0a8975 Ryusuke Konishi       2010-12-26  539  
-622daaff0a8975 Ryusuke Konishi       2010-12-26  540  out_locked:
-ce1966344933bb Vishal Moola (Oracle  2022-08-15  541) 	folio_unlock(folio);
-622daaff0a8975 Ryusuke Konishi       2010-12-26 @542  out:
-
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 51c480439263..7c55af4aa048 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -4106,6 +4106,7 @@ static inline int btrfs_defrag_cancelled(struct btrfs_fs_info *fs_info)
+ 
+ extern const struct fsverity_operations btrfs_verityops;
+ int btrfs_drop_verity_items(struct btrfs_inode *inode);
++int btrfs_get_verity_descriptor(struct inode *inode, void *buf, size_t buf_size);
+ 
+ BTRFS_SETGET_FUNCS(verity_descriptor_encryption, struct btrfs_verity_descriptor_item,
+ 		   encryption, 8);
+@@ -4123,6 +4124,11 @@ static inline int btrfs_drop_verity_items(struct btrfs_inode *inode)
+ 	return 0;
+ }
+ 
++static inline int btrfs_get_verity_descriptor(struct inode *inode, void *buf, size_t buf_size)
++{
++	return -EPERM;
++}
++
+ #endif
+ 
+ /* Sanity test specific functions */
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index e7671afcee4f..9e8679848d54 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -3,6 +3,7 @@
+  * Copyright (C) 2012 Alexander Block.  All rights reserved.
+  */
+ 
++#include "linux/compiler_attributes.h"
+ #include <linux/bsearch.h>
+ #include <linux/fs.h>
+ #include <linux/file.h>
+@@ -15,6 +16,7 @@
+ #include <linux/string.h>
+ #include <linux/compat.h>
+ #include <linux/crc32c.h>
++#include <linux/fsverity.h>
+ 
+ #include "send.h"
+ #include "ctree.h"
+@@ -127,6 +129,8 @@ struct send_ctx {
+ 	bool cur_inode_new_gen;
+ 	bool cur_inode_deleted;
+ 	bool ignore_cur_inode;
++	bool cur_inode_needs_verity;
++	void *verity_descriptor;
+ 
+ 	u64 send_progress;
+ 
+@@ -624,6 +628,7 @@ static int tlv_put(struct send_ctx *sctx, u16 attr, const void *data, int len)
+ 		return tlv_put(sctx, attr, &__tmp, sizeof(__tmp));	\
+ 	}
+ 
++TLV_PUT_DEFINE_INT(8)
+ TLV_PUT_DEFINE_INT(32)
+ TLV_PUT_DEFINE_INT(64)
+ 
+@@ -4886,6 +4891,79 @@ static int process_all_new_xattrs(struct send_ctx *sctx)
+ 	return ret;
+ }
+ 
++static int send_verity(struct send_ctx *sctx, struct fs_path *path,
++		       struct fsverity_descriptor *desc)
++{
++	int ret;
++
++	ret = begin_cmd(sctx, BTRFS_SEND_C_ENABLE_VERITY);
++	if (ret < 0)
++		goto out;
++
++	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, path);
++	TLV_PUT_U8(sctx, BTRFS_SEND_A_VERITY_ALGORITHM, le8_to_cpu(desc->hash_algorithm));
++	TLV_PUT_U32(sctx, BTRFS_SEND_A_VERITY_BLOCK_SIZE, 1U << le8_to_cpu(desc->log_blocksize));
++	TLV_PUT(sctx, BTRFS_SEND_A_VERITY_SALT_DATA, desc->salt, le8_to_cpu(desc->salt_size));
++	TLV_PUT(sctx, BTRFS_SEND_A_VERITY_SIG_DATA, desc->signature, le32_to_cpu(desc->sig_size));
++
++	ret = send_cmd(sctx);
++
++tlv_put_failure:
++out:
++	return ret;
++}
++
++static int process_verity(struct send_ctx *sctx)
++{
++	int ret = 0;
++	struct btrfs_fs_info *fs_info = sctx->send_root->fs_info;
++	struct inode *inode;
++	struct fs_path *p;
++
++	inode = btrfs_iget(fs_info->sb, sctx->cur_ino, sctx->send_root);
++	if (IS_ERR(inode))
++		return PTR_ERR(inode);
++
++	ret = btrfs_get_verity_descriptor(inode, NULL, 0);
++	if (ret < 0)
++		goto iput;
++
++	if (ret > FS_VERITY_MAX_DESCRIPTOR_SIZE) {
++		ret = -EMSGSIZE;
++		goto iput;
++	}
++	if (!sctx->verity_descriptor) {
++		sctx->verity_descriptor = kvmalloc(FS_VERITY_MAX_DESCRIPTOR_SIZE, GFP_KERNEL);
++		if (!sctx->verity_descriptor) {
++			ret = -ENOMEM;
++			goto iput;
++		}
++	}
++
++	ret = btrfs_get_verity_descriptor(inode, sctx->verity_descriptor, ret);
++	if (ret < 0)
++		goto iput;
++
++	p = fs_path_alloc();
++	if (!p) {
++		ret = -ENOMEM;
++		goto iput;
++	}
++	ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, p);
++	if (ret < 0)
++		goto free_path;
++
++	ret = send_verity(sctx, p, sctx->verity_descriptor);
++	if (ret < 0)
++		goto free_path;
++
++free_path:
++	fs_path_free(p);
++iput:
++	iput(inode);
++	return ret;
++}
++
+ static inline u64 max_send_read_size(const struct send_ctx *sctx)
+ {
+ 	return sctx->send_max_size - SZ_16K;
+@@ -6377,6 +6455,11 @@ static int finish_inode_if_needed(struct send_ctx *sctx, int at_end)
+ 		if (ret < 0)
+ 			goto out;
+ 	}
++	if (sctx->cur_inode_needs_verity) {
++		ret = process_verity(sctx);
++		if (ret < 0)
++			goto out;
++	}
+ 
+ 	ret = send_capabilities(sctx);
+ 	if (ret < 0)
+@@ -6785,6 +6868,18 @@ static int changed_extent(struct send_ctx *sctx,
+ 	return ret;
+ }
+ 
++static int changed_verity(struct send_ctx *sctx,
++			  enum btrfs_compare_tree_result result)
++{
++	int ret = 0;
++
++	if (!sctx->cur_inode_new_gen && !sctx->cur_inode_deleted) {
++		if (result == BTRFS_COMPARE_TREE_NEW)
++			sctx->cur_inode_needs_verity = true;
++	}
++	return ret;
++}
++
+ static int dir_changed(struct send_ctx *sctx, u64 dir)
+ {
+ 	u64 orig_gen, new_gen;
+@@ -6939,6 +7034,9 @@ static int changed_cb(struct btrfs_path *left_path,
+ 			ret = changed_xattr(sctx, result);
+ 		else if (key->type == BTRFS_EXTENT_DATA_KEY)
+ 			ret = changed_extent(sctx, result);
++		else if (key->type == BTRFS_VERITY_DESC_ITEM_KEY &&
++			 key->offset == 0)
++			ret = changed_verity(sctx, result);
+ 	}
+ 
+ out:
+@@ -8036,6 +8134,7 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 		kvfree(sctx->clone_roots);
+ 		kfree(sctx->send_buf_pages);
+ 		kvfree(sctx->send_buf);
++		kvfree(sctx->verity_descriptor);
+ 
+ 		name_cache_free(sctx);
+ 
+diff --git a/fs/btrfs/send.h b/fs/btrfs/send.h
+index 4bb4e6a638cb..0a4537775e0c 100644
+--- a/fs/btrfs/send.h
++++ b/fs/btrfs/send.h
+@@ -92,8 +92,11 @@ enum btrfs_send_cmd {
+ 	BTRFS_SEND_C_ENCODED_WRITE	= 25,
+ 	BTRFS_SEND_C_MAX_V2		= 25,
+ 
++	/* Version 3 */
++	BTRFS_SEND_C_ENABLE_VERITY	= 26,
++	BTRFS_SEND_C_MAX_V3		= 26,
+ 	/* End */
+-	BTRFS_SEND_C_MAX		= 25,
++	BTRFS_SEND_C_MAX		= 26,
+ };
+ 
+ /* attributes in send stream */
+@@ -160,8 +163,14 @@ enum {
+ 	BTRFS_SEND_A_ENCRYPTION		= 31,
+ 	BTRFS_SEND_A_MAX_V2		= 31,
+ 
+-	/* End */
+-	BTRFS_SEND_A_MAX		= 31,
++	/* Version 3 */
++	BTRFS_SEND_A_VERITY_ALGORITHM	= 32,
++	BTRFS_SEND_A_VERITY_BLOCK_SIZE	= 33,
++	BTRFS_SEND_A_VERITY_SALT_DATA	= 34,
++	BTRFS_SEND_A_VERITY_SIG_DATA	= 35,
++	BTRFS_SEND_A_MAX_V3		= 35,
++
++	__BTRFS_SEND_A_MAX		= 35,
+ };
+ 
+ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg);
+diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
+index 90eb5c2830a9..ee00e33c309e 100644
+--- a/fs/btrfs/verity.c
++++ b/fs/btrfs/verity.c
+@@ -659,8 +659,7 @@ static int btrfs_end_enable_verity(struct file *filp, const void *desc,
+  *
+  * Returns the size on success or a negative error code on failure.
+  */
+-static int btrfs_get_verity_descriptor(struct inode *inode, void *buf,
+-				       size_t buf_size)
++int btrfs_get_verity_descriptor(struct inode *inode, void *buf, size_t buf_size)
+ {
+ 	u64 true_size;
+ 	int ret = 0;
+diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
+index 629785c95007..dbe1ce5b450a 100644
+--- a/fs/verity/fsverity_private.h
++++ b/fs/verity/fsverity_private.h
+@@ -70,8 +70,6 @@ struct fsverity_info {
+ 	const struct inode *inode;
+ };
+ 
+-/* Arbitrary limit to bound the kmalloc() size.  Can be changed. */
+-#define FS_VERITY_MAX_DESCRIPTOR_SIZE	16384
+ 
+ #define FS_VERITY_MAX_SIGNATURE_SIZE	(FS_VERITY_MAX_DESCRIPTOR_SIZE - \
+ 					 sizeof(struct fsverity_descriptor))
+diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
+index 7af030fa3c36..40f14e5fed9d 100644
+--- a/include/linux/fsverity.h
++++ b/include/linux/fsverity.h
+@@ -22,6 +22,9 @@
+  */
+ #define FS_VERITY_MAX_DIGEST_SIZE	SHA512_DIGEST_SIZE
+ 
++/* Arbitrary limit to bound the kmalloc() size.  Can be changed. */
++#define FS_VERITY_MAX_DESCRIPTOR_SIZE	16384
++
+ /* Verity operations for filesystems */
+ struct fsverity_operations {
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.37.0
+
