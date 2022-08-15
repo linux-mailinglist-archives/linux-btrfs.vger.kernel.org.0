@@ -2,124 +2,204 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8185927E6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Aug 2022 04:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD1A5927DD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Aug 2022 04:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbiHOCwP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 Aug 2022 22:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42550 "EHLO
+        id S230074AbiHOCok (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Aug 2022 22:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbiHOCwN (ORCPT
+        with ESMTP id S229534AbiHOCoj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 Aug 2022 22:52:13 -0400
-X-Greylist: delayed 564 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 14 Aug 2022 19:52:12 PDT
-Received: from synology.com (mail.synology.com [211.23.38.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29F913DF4
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 Aug 2022 19:52:12 -0700 (PDT)
-Received: from localhost.localdomain (unknown [10.17.45.240])
-        by synology.com (Postfix) with ESMTPA id D2EAA2E550A5E;
-        Mon, 15 Aug 2022 10:42:46 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1660531367; bh=CbrwuBdZ1Bg1tixDuz5o/NB2QhoyjVqpY+azz61lXb0=;
-        h=From:To:Cc:Subject:Date;
-        b=XYnkNhLB/9eoCMRGR/E7RdNnN5YvzQZbtIfSTi9rR+4QfzB+bMX617zU4K7wjLVSV
-         vJJi7wLQF9oA2wG2FtKsWmchcQEK5KlkwQkxJTXsqJb6kigi6of/qf5da5Id1qE7pb
-         F6L+Y7tj+CWZ2+C3e7lXn/aty4rYOWaDfVSZNoRI=
-From:   ethanlien <ethanlien@synology.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     cunankimo@gmail.com, Ethan Lien <ethanlien@synology.com>
-Subject: [PATCH] btrfs: remove unnecessary EXTENT_UPTODATE state in buffered I/O path
-Date:   Mon, 15 Aug 2022 10:42:09 +0800
-Message-Id: <20220815024209.26122-1-ethanlien@synology.com>
-X-Mailer: git-send-email 2.17.1
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        Sun, 14 Aug 2022 22:44:39 -0400
+Received: from sender4-pp-o92.zoho.com (sender4-pp-o92.zoho.com [136.143.188.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5392B13DD6
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 Aug 2022 19:44:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1660531474; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=BZuXRCg13pxY9AJeD9Nc68hzqrwfVeBwi41sYO7G9FhTH8jPJ0tcVzwfVBYE/OczU1E0i29JXcfcxKp6IhFO7VLd7jfw9mc7cQUZ7BYiJtQ1u7TkLSe2MCdIPYM34V8buNBvprwbvL7d7TaZdyUcHHofpDocaCt2kFbd6lFZjfg=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1660531474; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=60fMEgfWjYf4r0iUL49Z0pT8INo3I6auU7CdUaBfUBk=; 
+        b=ffMpKRmOJhDgVl+3ycmy8QAzPk/dexU0nf/rPhlkh4y/V1QyErqTDEGWHExdUCn1tPC3aC6MidCHsbrr3uXNi7APu6EX+XYzb2VRf5Gs7KFIk1mTz5t8iBSAPUFklRrD74PP6cwhc42RtCKSEcOwfOpjnfxnNAY9HbBP2JVMj6c=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=zoho.com;
+        spf=pass  smtp.mailfrom=hmsjwzb@zoho.com;
+        dmarc=pass header.from=<hmsjwzb@zoho.com>
+DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; 
+  s=zapps768; d=zoho.com; 
+  h=from:to:cc:subject:date:message-id:mime-version; 
+  b=P7n5oHdFFMhf7UCmMK/VYBjRH+26HopIRfbijsHGIPrBcohqR6QZuMtuWYhKrJ28KdE7HNyH0rMz
+    kEDLXA/vHn/7OB0x9qzdVdWoRqQBHm3fA/iit3Zy+UkVs1i1mSdt  
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1660531474;
+        s=zm2022; d=zoho.com; i=hmsjwzb@zoho.com;
+        h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:MIME-Version:Content-Transfer-Encoding:Reply-To;
+        bh=60fMEgfWjYf4r0iUL49Z0pT8INo3I6auU7CdUaBfUBk=;
+        b=W32EPuAF2/E6ywSEGM7nZfmQZbrln0AYUxUoA5OnUO0Zvu0u+wV/NEW/PIrM2zYJ
+        rPD/E8WhBfa2dbMeruRrnrDNhvGXTqxAn4o0v5SH2jpOEM98lKXmkY82W1eZpWkUpXD
+        5IWNezqiQDGNj40LxC0VMrbryLlKUNiGjkE7UXhA=
+Received: from localhost.localdomain (58.247.201.46 [58.247.201.46]) by mx.zohomail.com
+        with SMTPS id 1660531473221747.4671818330204; Sun, 14 Aug 2022 19:44:33 -0700 (PDT)
+From:   "Flint.Wang" <hmsjwzb@zoho.com>
+To:     quwenruo.btrfs@gmx.com
+Cc:     linux-btrfs@vger.kernel.org, anand.jain@oracle.com,
+        hmsjwzb@zoho.com
+Subject: [PATCH v2] btrfs-progs: chunk tree search solution for btrfs249
+Date:   Mon, 15 Aug 2022 10:43:41 +0800
+Message-Id: <20220815024341.4677-1-hmsjwzb@zoho.com>
+X-Mailer: git-send-email 2.37.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Ethan Lien <ethanlien@synology.com>
+Hi Qu,
 
-After we copied data to page cache in buffered I/O, we
-1. Insert a EXTENT_UPTODATE state into inode's io_tree, by
-   endio_readpage_release_extent(), set_extent_delalloc() or
-   set_extent_defrag().
-2. Set page uptodate before we unlock the page.
+Thanks for your comment. I fix the issue you suggest.
+It is much clean now.
 
-But the only place we check io_tree's EXTENT_UPTODATE state is in
-btrfs_do_readpage(). We know we enter btrfs_do_readpage() only when we
-have a non-uptodate page, so it is unnecessary to set EXTENT_UPTODATE.
+Btrfs249 failed due to btrfs_ioctl_fs_info() return RW devices for fi_args->num_devices.
+This patch search chunk tree to find rw devices.
 
-For example, when performing a buffered random read:
+v2 change:
+1. code style fix.
+2. noseed_dev => rw_devs, noseed_fsid => fsid.
+3. remove redundant structure devid_uuid.
+4. reuse the dev_info structure.
+5. remove redundant uuid argument.
 
-	fio --rw=randread --ioengine=libaio --direct=0 --numjobs=4 \
-		--filesize=32G --size=4G --bs=4k --name=job \
-		--filename=/mnt/file --name=job
-
-Then check how many extent_state in io_tree:
-
-	cat /proc/slabinfo | grep btrfs_extent_state | awk '{print $2}'
-
-w/o this patch, we got 640567 btrfs_extent_state.
-w/  this patch, we got    204 btrfs_extent_state.
-
-Maintaining such a big tree brings overhead since every I/O needs to insert
-EXTENT_LOCKED, insert EXTENT_UPTODATE, then remove EXTENT_LOCKED. And in
-every insert or remove, we need to lock io_tree, do tree search, alloc or
-dealloc extent states. By removing unnecessary EXTENT_UPTODATE, we keep
-io_tree in a minimal size and reduce overhead when performing buffered I/O.
-
-Signed-off-by: Ethan Lien <ethanlien@synology.com>
-Reviewed-by: Robbie Ko <robbieko@synology.com>
+Signed-off-by: Flint.Wang <hmsjwzb@zoho.com>
 ---
- fs/btrfs/extent-io-tree.h | 4 ++--
- fs/btrfs/extent_io.c      | 3 ---
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ cmds/filesystem-usage.c | 83 ++++++++++++++++++++++++++++++++---------
+ 1 file changed, 66 insertions(+), 17 deletions(-)
 
-diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index c3eb52dbe61c..53ae849d0248 100644
---- a/fs/btrfs/extent-io-tree.h
-+++ b/fs/btrfs/extent-io-tree.h
-@@ -211,7 +211,7 @@ static inline int set_extent_delalloc(struct extent_io_tree *tree, u64 start,
- 				      struct extent_state **cached_state)
- {
- 	return set_extent_bit(tree, start, end,
--			      EXTENT_DELALLOC | EXTENT_UPTODATE | extra_bits,
-+			      EXTENT_DELALLOC | extra_bits,
- 			      0, NULL, cached_state, GFP_NOFS, NULL);
+diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+index 01729e18..71f0e14c 100644
+--- a/cmds/filesystem-usage.c
++++ b/cmds/filesystem-usage.c
+@@ -25,6 +25,7 @@
+ #include <getopt.h>
+ #include <fcntl.h>
+ #include <linux/limits.h>
++#include <uuid/uuid.h>
+ 
+ #include "common/utils.h"
+ #include "kerncompat.h"
+@@ -689,6 +690,62 @@ out:
+ 	return ret;
  }
  
-@@ -219,7 +219,7 @@ static inline int set_extent_defrag(struct extent_io_tree *tree, u64 start,
- 		u64 end, struct extent_state **cached_state)
- {
- 	return set_extent_bit(tree, start, end,
--			      EXTENT_DELALLOC | EXTENT_UPTODATE | EXTENT_DEFRAG,
-+			      EXTENT_DELALLOC | EXTENT_DEFRAG,
- 			      0, NULL, cached_state, GFP_NOFS, NULL);
- }
++static int load_devid(int fd, struct device_info *info,
++			    int ndev, u8 *fsid)
++{
++	struct btrfs_ioctl_search_args_v2 *args2;
++	struct btrfs_ioctl_search_key *sk;
++	struct btrfs_ioctl_search_header *sh;
++	struct btrfs_dev_item *dev_item;
++	int args2_size = 1024;
++	char args2_buf[args2_size];
++	int ret = 0;
++	int i = 0;
++	int num = 0;
++	int rw_devs = 0;
++	int idx = 0;
++
++	args2 = (struct btrfs_ioctl_search_args_v2 *) args2_buf;
++	sk = &(args2->key);
++
++	sk->tree_id = BTRFS_CHUNK_TREE_OBJECTID;
++	sk->min_objectid = BTRFS_DEV_ITEMS_OBJECTID;
++	sk->max_objectid = BTRFS_DEV_ITEMS_OBJECTID;
++	sk->min_type = BTRFS_DEV_ITEM_KEY;
++	sk->max_type = BTRFS_DEV_ITEM_KEY;
++	sk->min_offset = 0;
++	sk->max_offset = (u64)-1;
++	sk->min_transid = 0;
++	sk->max_transid = (u64)-1;
++	sk->nr_items = -1;
++	args2->buf_size = args2_size - sizeof(struct btrfs_ioctl_search_args_v2);
++	ret = ioctl(fd, BTRFS_IOC_TREE_SEARCH_V2, args2);
++	if (ret != 0)
++	       return -1;
++
++	sh = (struct btrfs_ioctl_search_header *) args2->buf;
++	num = sk->nr_items;
++
++	dev_item = (struct btrfs_dev_item *) (sh + 1);
++	for (i = 0; i < num; i++) {
++		if (!uuid_compare(dev_item->fsid, fsid)) {
++			rw_devs += 1;
++			info[idx++].devid = dev_item->devid;
++		}
++		if (idx > ndev) {
++			error("unexpected number of devices: %d >= %d", idx, ndev);
++			return -1;
++		}
++		sh = (struct btrfs_ioctl_search_header *) dev_item + 1;
++		dev_item = (struct btrfs_dev_item *) sh + 1;
++	}
++
++	if (ndev != rw_devs)
++		error("unexpected number of devices: %d != %d", ndev, rw_devs);
++
++	return 0;
++}
++
+ /*
+  *  This function loads the device_info structure and put them in an array
+  */
+@@ -718,19 +775,17 @@ static int load_device_info(int fd, struct device_info **device_info_ptr,
+ 		return 1;
+ 	}
  
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index bfae67c593c5..e0f0a39cd6eb 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2924,9 +2924,6 @@ static void endio_readpage_release_extent(struct processed_extent *processed,
- 	 * Now we don't have range contiguous to the processed range, release
- 	 * the processed range now.
- 	 */
--	if (processed->uptodate && tree->track_uptodate)
--		set_extent_uptodate(tree, processed->start, processed->end,
--				    &cached, GFP_ATOMIC);
- 	unlock_extent_cached_atomic(tree, processed->start, processed->end,
- 				    &cached);
+-	for (i = 0, ndevs = 0 ; i <= fi_args.max_id ; i++) {
+-		if (ndevs >= fi_args.num_devices) {
+-			error("unexpected number of devices: %d >= %llu", ndevs,
+-				(unsigned long long)fi_args.num_devices);
+-			error(
+-		"if seed device is used, try running this command as root");
+-			goto out;
+-		}
++	ret = load_devid(fd, info, fi_args.num_devices, fi_args.fsid);
++	if (ret == -1)
++		goto out;
++
++	for (i = 0, ndevs = 0 ; i < fi_args.num_devices ; i++) {
+ 		memset(&dev_info, 0, sizeof(dev_info));
+-		ret = get_device_info(fd, i, &dev_info);
++		ret = get_device_info(fd, info[i].devid, &dev_info);
+ 
+-		if (ret == -ENODEV)
+-			continue;
++		if (ret == -ENODEV) {
++			error("device not found\n");
++		}
+ 		if (ret) {
+ 			error("cannot get info about device devid=%d", i);
+ 			goto out;
+@@ -759,12 +814,6 @@ static int load_device_info(int fd, struct device_info **device_info_ptr,
+ 		++ndevs;
+ 	}
+ 
+-	if (ndevs != fi_args.num_devices) {
+-		error("unexpected number of devices: %d != %llu", ndevs,
+-				(unsigned long long)fi_args.num_devices);
+-		goto out;
+-	}
+-
+ 	qsort(info, fi_args.num_devices,
+ 		sizeof(struct device_info), cmp_device_info);
  
 -- 
-2.17.1
+2.37.0
 
+Thanks,
+Flint
