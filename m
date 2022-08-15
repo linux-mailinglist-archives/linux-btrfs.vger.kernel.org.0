@@ -2,136 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB12B594E1D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 03:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348FF594EE8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 05:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241398AbiHPBoB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Aug 2022 21:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
+        id S233426AbiHPDB6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Aug 2022 23:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233940AbiHPBnb (ORCPT
+        with ESMTP id S231618AbiHPDAO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Aug 2022 21:43:31 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F745FF63;
-        Mon, 15 Aug 2022 14:35:04 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 2933C320090F;
-        Mon, 15 Aug 2022 17:35:03 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 15 Aug 2022 17:35:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1660599302; x=1660685702; bh=q1GHOVR2HG
-        8hGzbylQv89Zpmm6U7IK8HwWlEMQHeE0Q=; b=p3DcQwx3UhVFNJ4Ne5ggFH8HYU
-        ATT7E9nfCS8FTf9zCUoIhljDt29iiTJWrtOK/Ab/CQvN7XGl7piu6A2EeQ9S8l7s
-        colERk4NTdmTr9hj9AELhEw8ZBYpt58zkcKkafj5nH/SFcndpasyMgICCdu/4/JS
-        KUNXKHMAUmP3wKXX0FHxUz7wPNMKCw591YgYwOXQT5TS3oJpn2Lze0pkBn401VLK
-        x7ul9uVCoYdKajgrlyHmaijX1IDUCEHhA7dotI0NV3BT2uxlVxmx08mle76kmGON
-        JMgl2tzeKi0LR9MLXE0v/VwrPa9WBFlTXPGsHtRiLsvNAE93BPeCmZjG94ew==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1660599302; x=1660685702; bh=q1GHOVR2HG8hGzbylQv89Zpmm6U7
-        IK8HwWlEMQHeE0Q=; b=Vxg/pwxQbhtAkJ0Q2vd4ulSLVjnVhVTflw2nXiy58SeF
-        acjKBnkJ5NTuQoSVt7cOzyknL7BdAIyo2R3Tz9dmJSUUDBNVPur2Zz5UTDrqMoxs
-        xfG5x5ZbjdE3a3CrLlo8o+u3kUbmQPIC/U4RIvpvgVI/UahZMEDJgoYu1oWwDtd+
-        wpKH6OMydaDaSOd2CrvvU125bE8YgfCZGJWkxoM5oDdKotZiF0GC9dXDQF4gx3fK
-        3HeHTmmBF/cTvpbg6WxxPObLA3Su+iq+sN8J6udrbMp+ZfHHbScW/uGgOLuzBRe6
-        yXlCaKHZ0Wj0GCw6I2f6RyKMV33i7tZmsFgLFosMJg==
-X-ME-Sender: <xms:Brz6YpDtXH1F8rzGvUVQIZVNV2vktbAnDBSHYQ-Cw9IuZH7H8f1svg>
-    <xme:Brz6YniitgapBWPd7WpR2qmqIrZ7Veo3vXcW4kQv4BREew4T4MlKGuvjKa_X5Oc_h
-    imFrTlLMbZilR8FaWE>
-X-ME-Received: <xmr:Brz6YklVu7-0Ia1kTzxS2V2ncdVINpS8qyFKR-xtY1hw7GMwhAVfRZEt-kEVcHlt05qMKgWVvftJtu1VmHIxxSh6dQgV0w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehfedgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:Brz6YjxSkiM2fJQeWQcvFurVIBMAfSK17pzY6KKUASqtqrZiPylTsA>
-    <xmx:Brz6YuSvwq6P4R72--bl5Z3EA90W7kbjOsu8Y6F1i2l6RXgQ7aez4w>
-    <xmx:Brz6YmZYArL9TJxZI4eON9okZLZ5xqgUa1TWQPEC1zTNsQhA5WSyVQ>
-    <xmx:Brz6YkMSIWAARV3P_73MYpqn3Io3sVc0ezOaelra0qlsvNEPxAWtdA>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 15 Aug 2022 17:35:02 -0400 (EDT)
-Date:   Mon, 15 Aug 2022 14:36:25 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH] fs/btrfs: Use atomic_try_cmpxchg in free_extent_buffer
-Message-ID: <Yvq8WaTZzWWusB25@zen>
-References: <20220809163633.8255-1-ubizjak@gmail.com>
+        Mon, 15 Aug 2022 23:00:14 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4790E2DD5ED;
+        Mon, 15 Aug 2022 16:34:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660606485; x=1692142485;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EU3WVIPEiTVCLq3r1ATnkbH8mOj++2Yt6SGbSryJ5r0=;
+  b=MdhohSoUqeuVP1wJ3W+x3DA0fk22RTfQ/qOlaj/cd/d724w8nmAhteeA
+   lrVwtVkytJOyPqGYMipBWefLIt/aGEPOSzcf+7C2Ad5XCyvN6UbipU39j
+   wFd6Dey8rB1F0pRilan1H3HyeX6wLsAMWLV6tsJusgOhkkfuA73kaa96h
+   7WcANTc0ClGwB7iU/xK9FPeLDXtzgEo7NOurOOwZOalTTSXaKMx69b3z5
+   v2FWgbps1ClXKxeRvIAWMtt3PdMUPz1cuYu8/aScTb868xa+EYZkWoVs4
+   B7ycmxJGf1alvk1RTp8rPiO2y94dt04a9a/aVLGmEGKwBhn8QBiA8C35c
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10440"; a="289650012"
+X-IronPort-AV: E=Sophos;i="5.93,239,1654585200"; 
+   d="scan'208";a="289650012"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2022 16:34:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,239,1654585200"; 
+   d="scan'208";a="583073534"
+Received: from lkp-server02.sh.intel.com (HELO 3d2a4d02a2a9) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 15 Aug 2022 16:34:41 -0700
+Received: from kbuild by 3d2a4d02a2a9 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oNjbU-0001Gv-1b;
+        Mon, 15 Aug 2022 23:34:40 +0000
+Date:   Tue, 16 Aug 2022 07:34:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        linux-fsdevel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, linux-btrfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Subject: Re: [PATCH 5/7] nilfs2: Convert nilfs_find_uncommited_extent() to
+ use filemap_get_folios_contig()
+Message-ID: <202208160738.yErltyXd-lkp@intel.com>
+References: <20220815185452.37447-6-vishal.moola@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220809163633.8255-1-ubizjak@gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220815185452.37447-6-vishal.moola@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 09, 2022 at 06:36:33PM +0200, Uros Bizjak wrote:
-> Use `atomic_try_cmpxchg(ptr, &old, new)` instead of
-> `atomic_cmpxchg(ptr, old, new) == old` in free_extent_buffer. This
-> has two benefits:
-> 
-> - The x86 cmpxchg instruction returns success in the ZF flag, so this
->   change saves a compare after cmpxchg, as well as a related move
->   instruction in the front of cmpxchg.
-> 
-> - atomic_try_cmpxchg implicitly assigns the *ptr value to &old when
->   cmpxchg fails, enabling further code simplifications.
-> 
-> This patch has no functional change.
-> 
-> Cc: Chris Mason <clm@fb.com>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: David Sterba <dsterba@suse.com>
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Reviewed-by: Boris Burkov <boris@bur.io>
-> ---
->  fs/btrfs/extent_io.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index bfae67c593c5..15ff196cbd6d 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -6328,18 +6328,16 @@ static int release_extent_buffer(struct extent_buffer *eb)
->  void free_extent_buffer(struct extent_buffer *eb)
->  {
->  	int refs;
-> -	int old;
->  	if (!eb)
->  		return;
->  
-> +	refs = atomic_read(&eb->refs);
->  	while (1) {
-> -		refs = atomic_read(&eb->refs);
->  		if ((!test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags) && refs <= 3)
->  		    || (test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags) &&
->  			refs == 1))
->  			break;
-> -		old = atomic_cmpxchg(&eb->refs, refs, refs - 1);
-> -		if (old == refs)
-> +		if (atomic_try_cmpxchg(&eb->refs, &refs, refs - 1))
->  			return;
->  	}
->  
-> -- 
-> 2.37.1
-> 
+Hi "Vishal,
+
+Thank you for the patch! Perhaps something to improve:
+
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.0-rc1 next-20220815]
+[cannot apply to kdave/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Moola-Oracle/Convert-to-filemap_get_folios_contig/20220816-025830
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 568035b01cfb107af8d2e4bd2fb9aea22cf5b868
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20220816/202208160738.yErltyXd-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-5) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/ce1966344933bbe10010035cd25f23ec7dd76914
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Vishal-Moola-Oracle/Convert-to-filemap_get_folios_contig/20220816-025830
+        git checkout ce1966344933bbe10010035cd25f23ec7dd76914
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash fs/nilfs2/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+   fs/nilfs2/page.c: In function 'nilfs_find_uncommitted_extent':
+>> fs/nilfs2/page.c:542:1: warning: label 'out' defined but not used [-Wunused-label]
+     542 | out:
+         | ^~~
+
+
+vim +/out +542 fs/nilfs2/page.c
+
+622daaff0a8975 Ryusuke Konishi       2010-12-26  466  
+622daaff0a8975 Ryusuke Konishi       2010-12-26  467  /**
+622daaff0a8975 Ryusuke Konishi       2010-12-26  468   * nilfs_find_uncommitted_extent - find extent of uncommitted data
+622daaff0a8975 Ryusuke Konishi       2010-12-26  469   * @inode: inode
+622daaff0a8975 Ryusuke Konishi       2010-12-26  470   * @start_blk: start block offset (in)
+622daaff0a8975 Ryusuke Konishi       2010-12-26  471   * @blkoff: start offset of the found extent (out)
+622daaff0a8975 Ryusuke Konishi       2010-12-26  472   *
+622daaff0a8975 Ryusuke Konishi       2010-12-26  473   * This function searches an extent of buffers marked "delayed" which
+622daaff0a8975 Ryusuke Konishi       2010-12-26  474   * starts from a block offset equal to or larger than @start_blk.  If
+622daaff0a8975 Ryusuke Konishi       2010-12-26  475   * such an extent was found, this will store the start offset in
+622daaff0a8975 Ryusuke Konishi       2010-12-26  476   * @blkoff and return its length in blocks.  Otherwise, zero is
+622daaff0a8975 Ryusuke Konishi       2010-12-26  477   * returned.
+622daaff0a8975 Ryusuke Konishi       2010-12-26  478   */
+622daaff0a8975 Ryusuke Konishi       2010-12-26  479  unsigned long nilfs_find_uncommitted_extent(struct inode *inode,
+622daaff0a8975 Ryusuke Konishi       2010-12-26  480  					    sector_t start_blk,
+622daaff0a8975 Ryusuke Konishi       2010-12-26  481  					    sector_t *blkoff)
+622daaff0a8975 Ryusuke Konishi       2010-12-26  482  {
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  483) 	unsigned int i, nr;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  484  	pgoff_t index;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  485  	unsigned int nblocks_in_page;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  486  	unsigned long length = 0;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  487  	sector_t b;
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  488) 	struct folio_batch fbatch;
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  489) 	struct folio *folio;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  490  
+622daaff0a8975 Ryusuke Konishi       2010-12-26  491  	if (inode->i_mapping->nrpages == 0)
+622daaff0a8975 Ryusuke Konishi       2010-12-26  492  		return 0;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  493  
+09cbfeaf1a5a67 Kirill A. Shutemov    2016-04-01  494  	index = start_blk >> (PAGE_SHIFT - inode->i_blkbits);
+09cbfeaf1a5a67 Kirill A. Shutemov    2016-04-01  495  	nblocks_in_page = 1U << (PAGE_SHIFT - inode->i_blkbits);
+622daaff0a8975 Ryusuke Konishi       2010-12-26  496  
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  497) 	folio_batch_init(&fbatch);
+622daaff0a8975 Ryusuke Konishi       2010-12-26  498  
+622daaff0a8975 Ryusuke Konishi       2010-12-26  499  repeat:
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  500) 	nr = filemap_get_folios_contig(inode->i_mapping, &index, ULONG_MAX,
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  501) 			&fbatch);
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  502) 	if (nr == 0)
+622daaff0a8975 Ryusuke Konishi       2010-12-26  503  		return length;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  504  
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  505) 	b = fbatch.folios[0]->index << (PAGE_SHIFT - inode->i_blkbits);
+622daaff0a8975 Ryusuke Konishi       2010-12-26  506  	i = 0;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  507  	do {
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  508) 		folio = fbatch.folios[i];
+622daaff0a8975 Ryusuke Konishi       2010-12-26  509  
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  510) 		folio_lock(folio);
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  511) 		if (folio_buffers(folio)) {
+622daaff0a8975 Ryusuke Konishi       2010-12-26  512  			struct buffer_head *bh, *head;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  513  
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  514) 			bh = head = folio_buffers(folio);
+622daaff0a8975 Ryusuke Konishi       2010-12-26  515  			do {
+622daaff0a8975 Ryusuke Konishi       2010-12-26  516  				if (b < start_blk)
+622daaff0a8975 Ryusuke Konishi       2010-12-26  517  					continue;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  518  				if (buffer_delay(bh)) {
+622daaff0a8975 Ryusuke Konishi       2010-12-26  519  					if (length == 0)
+622daaff0a8975 Ryusuke Konishi       2010-12-26  520  						*blkoff = b;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  521  					length++;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  522  				} else if (length > 0) {
+622daaff0a8975 Ryusuke Konishi       2010-12-26  523  					goto out_locked;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  524  				}
+622daaff0a8975 Ryusuke Konishi       2010-12-26  525  			} while (++b, bh = bh->b_this_page, bh != head);
+622daaff0a8975 Ryusuke Konishi       2010-12-26  526  		} else {
+622daaff0a8975 Ryusuke Konishi       2010-12-26  527  			if (length > 0)
+622daaff0a8975 Ryusuke Konishi       2010-12-26  528  				goto out_locked;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  529  
+622daaff0a8975 Ryusuke Konishi       2010-12-26  530  			b += nblocks_in_page;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  531  		}
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  532) 		folio_unlock(folio);
+622daaff0a8975 Ryusuke Konishi       2010-12-26  533  
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  534) 	} while (++i < nr);
+622daaff0a8975 Ryusuke Konishi       2010-12-26  535  
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  536) 	folio_batch_release(&fbatch);
+622daaff0a8975 Ryusuke Konishi       2010-12-26  537  	cond_resched();
+622daaff0a8975 Ryusuke Konishi       2010-12-26  538  	goto repeat;
+622daaff0a8975 Ryusuke Konishi       2010-12-26  539  
+622daaff0a8975 Ryusuke Konishi       2010-12-26  540  out_locked:
+ce1966344933bb Vishal Moola (Oracle  2022-08-15  541) 	folio_unlock(folio);
+622daaff0a8975 Ryusuke Konishi       2010-12-26 @542  out:
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
