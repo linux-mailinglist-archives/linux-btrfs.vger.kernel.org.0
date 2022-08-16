@@ -2,158 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0A25954D8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 10:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A8C5954CA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 10:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbiHPITL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Aug 2022 04:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
+        id S232462AbiHPIPI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Aug 2022 04:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbiHPISg (ORCPT
+        with ESMTP id S231847AbiHPIOi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Aug 2022 04:18:36 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38ED6555A
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Aug 2022 22:38:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1660628288;
-        bh=2uPX5arQa+M/FFGsIGZLBPvnnk2035l1JRDAyTXcD/0=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=WgzfFHRKQ1H/DP/UznV61US/I5TBQil9UScareEXvsfnntt/aYPh5Ekm65Ewd29sz
-         gzviIk/FFvuCrMSR6eU9ruYEVn8qo1bdGBTAKIVj6ASgvVF4c0ulUQjRd+neOcDqnC
-         W11ceLfLAy2rAsDnoAE36tbYHTPvAQ/y0+GEakEY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mqs4Z-1nbH2613B3-00msae; Tue, 16
- Aug 2022 07:38:07 +0200
-Message-ID: <7553372e-1485-63ae-d3f1-e9e0a318b2f6@gmx.com>
-Date:   Tue, 16 Aug 2022 13:38:04 +0800
+        Tue, 16 Aug 2022 04:14:38 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDC3A00FE;
+        Mon, 15 Aug 2022 23:21:21 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 53DBC5BD0F;
+        Tue, 16 Aug 2022 06:21:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1660630880; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=5aVGzAWQvMfe6IW//9T7qw8GP0WcddjvAVIo+6BJdNc=;
+        b=M2wyF9GdD4LkBZEp2K7FUceawIUQT8sFVEBQQng+n73JmuCmR8wy6fKCaCGsWYfZDoWrWJ
+        QxxNmRz5jTnJT3xWoMIMiE0vWyu11ngBtG6FF++fT54kImi9RQG5A9eO7HWxFJsovNd2Li
+        zLZnxbLRjWH0uugMX3rFzXaJY94AqH0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BB541345B;
+        Tue, 16 Aug 2022 06:21:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id hcAWDV83+2IvLAAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 16 Aug 2022 06:21:19 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] btrfs: add test case to check if btrfs RAID5 can detect corrupted data stripe
+Date:   Tue, 16 Aug 2022 14:21:01 +0800
+Message-Id: <20220816062101.36119-1-wqu@suse.com>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Content-Language: en-US
-To:     hmsjwzb <hmsjwzb@zoho.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <fb056073-5bd6-6143-9699-4a5af1bd496d@zoho.com>
- <655f97cc-64e6-9f57-5394-58f9c3b83a6f@gmx.com>
- <40b209eb-9048-da0c-e776-5e143ab38571@zoho.com>
- <72a78cc0-4524-47e7-803c-7d094b8713ee@gmx.com>
- <00984321-3006-764d-c29e-1304f89652ae@zoho.com>
- <18300547-1811-e9da-252e-f9476dca078c@gmx.com>
- <4691b710-3d71-bd26-d00a-66cc398f57c5@zoho.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: some help for improvement in btrfs
-In-Reply-To: <4691b710-3d71-bd26-d00a-66cc398f57c5@zoho.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jpD2R5FCqnmTVMNURY7MRAbVtNpoaItW/VgGtnWHosGAs6iwZZa
- qC9Vj6wl9eKcw0P+lFXrjyAgP/7RzTYtDj+YPJIzoRfKX2uS342PbgaLffMc19OZ1iORfCQ
- X7Nq2L3o699guQHh5u8DYBcaWLZUgg1LEyfEICRTvQXZVKogmBzcdcZqlf2421/OnJCPWDR
- xNjB9N5CQu90hvXFRVy4A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jwjKEMlAq2Y=:06unGffnRvZ8rgxNsRFeV8
- 2pbKSW1cVMQ+8gX4NCcpsln51lC3G40aL+S0X3o2zGGahVY+tylPED6zTEO2BTkIbSbQ0yMfj
- nee0IlcDGsK8hH8goaA3ECcfVXcFiVewMBekInAGXd4tlFB4r4AJJ6+n4+NJX21WBBZrKDmFI
- LVBm/sGQjCqwsbEqBlwBobum3ShEQfUYNT77VuijAhUTq6Epnrml+QVULJOSGtAtIMoiYRDIe
- hSNLzqOoWyBIZQDzbfDMuDuHJ89JOboynZh5nK3hi5utFFsow3sd23n+yxIEtnIUlcxUZjRVO
- uh6owr3CW9OS5ro3jlVp3+yMMmJBKN/vYjEGWOgmKM9P8NpRyqi+71XgQcb0IiH+0gM+sQ5Ox
- BbzSbbnnd3rmBiQyiLVE40wBVm4AeqSDbMdZgv/HeoD5y5WnVtOuR35D6PEW6PuvrNrjcfPCH
- f6ixhFfjaGh8Eq45kWAiVNyn75s9AMBLdetKlfj+Tm/h+Zfvv+hGfUyGtiv27DtSX69g286bE
- LHjN2hmRyGu3o45cm6fDVh2msWGqgXpabJY4wjmXNtrvcePzKjOuNPxBUt3VWDj4IPPZHdUBw
- y8J43NLsDuVRM++ADG0L756Ikv2wnoCb3gN8dmw+Fun0QqVuny2lcQjKPInoXbF5ur2FqiLi9
- qKGNbfSO/cfkcLt6M7oqnDsBmB9xLX402p77s/vuMEpjEQqpYzCkklpLeuSIpghCbfI8d+KEV
- yh7jsXmm7VIbl4JKBjxGng+M/EtALCMwS3ZkHQuVFpsnCQ1RM86bniJGkzbbwmMKNYXxTn0yO
- VgUZdOwFaklQ+Yb1uJCMpMmbBilt9iwjYqxK0gmBU/1inV1rp8yr6GqaRAIDY3bB1s2dTwNHd
- CMdRc+n/CL4SQ/qjHvZhUvLyLU1datDNvRBnEI+i2oTQSkeJhB/+Vykc5WrgO6suCT08C0HEe
- gvHqRi7ERvktJrBE3FcuLeoiJU262EigO3zhBo9BQ31GohADgxAeU6LOQG25YOTVagBHJTC0K
- uojSp8a7UjSh33iHyHAdjfQgbN4bIfkZCTX0zUnUYcu8Kq9ifK2c77Fuj2rA9pORM4T3Do6Uf
- 5Wd8SkFoFBlZQvfKU6HwrhJMpiR1gHzlyds/cCIvAz7GTf7YqTOhNvA8w==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This test case is not intended to pass with current btrfs code.
 
+The problem of "destructive RMW" is affecting btrfs from the very
+beginning of btrfs RAID56.
 
-On 2022/8/16 10:47, hmsjwzb wrote:
-> Hi Qu,
->
-> Sorry for interrupt you so many times.
->
-> As for
-> 	scrub level checks at RAID56 substripe write time.
->
-> Is this feature available in latest linux-next branch?
+The "destructive RMW" happens by:
 
-Nope, no one is working on that, thus no patches at all.
+- Do some sub-stripe writes into data stripe 1
 
-> Or may I need to get patches from mail list.
-> What is the core function of this feature ?
+- Corrupt above written data stripe 1
 
-The following small script would explain it pretty well:
+- Do some sub-stripe writes into data stripe 2 of the same full stripe
+  We need to do RMW to calculate a new P/Q stripe.
+  However btrfs RAID56 code has no way to determine on-disk data stripes
+  are correct or not. It just read the corrupted data stripe 1, and
+  use them to calculate new P stripe.
 
-   mkfs.btrfs -f -m raid5 -d raid5 -b 1G $dev1 $dev2 $dev3
-   mount $dev1 $mnt
+  Since data stripe 1 is already corrupted, the new P stripe (with
+  correct data stripe 2) can not recover the original data stripe 1,
+  making data stripe 1 unable to recover.
 
-   xfs_io -f -c "pwrite -S 0xee 0 64K" $mnt/file1
-   sync
-   umount $mnt
+The test case itself will intentionally create such "destructive RMW" to
+check if btrfs can handle it.
 
-   # Currupt data stripe 1 of full stripe of above 64K write
-   xfs_io -f -c "pwrite -S 0xff 119865344 64K" $dev1
+Unfortunately current btrfs code can not handle it at all, thus the test
+case is going to always fail.
 
-   mount $dev1 $mnt
+Thus the test case is here mostly to leave a warning sign for now, and
+that's why it's only in "raid" and "repair" groups.
 
-   # Do a new write into data stripe 2,
-   # We will trigger a RMW, which will use on-disk (corrupted) data to
-   # generate new P/Q.
-   xfs_io -f -c "pwrite -S 0xee 0 64K" -c sync $mnt/file2
+It will only moved to "auto" and "quick" groups after upstream kernel
+has a way to solve it.
 
-   # Now we can no longer read file1, as its data is corrupted, and
-   # above write generated new P/Q using corrupted data stripe 1,
-   # preventing us to recover the data stripe 1.
-   cat $mnt/file1 > /dev/null
-   umount $mnt
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tests/btrfs/272     | 62 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/272.out |  5 ++++
+ 2 files changed, 67 insertions(+)
+ create mode 100755 tests/btrfs/272
+ create mode 100644 tests/btrfs/272.out
 
-Above script is the best way to demonstrate the "destructive RMW".
-Although this is not btrfs specific (other RAID56 is also affected),
-it's definitely a real problem.
+diff --git a/tests/btrfs/272 b/tests/btrfs/272
+new file mode 100755
+index 00000000..d4aa7737
+--- /dev/null
++++ b/tests/btrfs/272
+@@ -0,0 +1,62 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 272
++#
++# Test if btrfs RAID5 can detects corrupted data stripes before doing RMW.
++#
++# If not properly detected, this can make btrfs RAID56 to use corrupted data
++# stripes to calculate new P/Q stripes, and result unrecoverable corruption.
++#
++# Unfortunately such error detection is not implemented in btrfs RAID56 yet.
++#
++. ./common/preamble
++_begin_fstest quick raid repair
++
++# Import common functions.
++. ./common/btrfs
++. ./common/filter
++
++# real QA test starts here
++_supported_fs btrfs
++_require_scratch_dev_pool 3
++_scratch_dev_pool_get 3
++
++# mkfs using RAID5 will cause WARNING message, needs to redirect it.
++_scratch_pool_mkfs "-d raid5 -m raid5" >> $seqres.full 2>&1
++
++_scratch_mount
++
++# Btrfs RAID all uses 64K as stripe length, so this should
++# fill data stripe 1.
++$XFS_IO_PROG -f -c "pwrite -S 0x11 0 64K" $SCRATCH_MNT/file1 -c sync > /dev/null
++
++echo "=== MD5 before corruption ==="
++_md5_checksum $SCRATCH_MNT/file1
++
++logical=$(_btrfs_get_first_logical $SCRATCH_MNT/file1)
++physical=$(_btrfs_get_physical $logical 1)
++dev=$(_btrfs_get_device_path $logical 1)
++
++echo "=== Data stripe 1, logical=$logical dev=$dev physical=$physical ===" >> $seqres.full
++_scratch_unmount
++
++# Corrupt data stripe 1
++$XFS_IO_PROG -c "pwrite -S 0xff $physical 64K" $dev > /dev/null
++
++_scratch_mount
++
++# Do a new write into data stripe 2, this write will trigger RMW, which will
++# read data stripe 1 (already corrupted) to calculate P stripe.
++$XFS_IO_PROG -f -c "pwrite -S 0x22 0 64K" $SCRATCH_MNT/file2 -c sync > /dev/null
++
++# Check if file1 (aka, data stripe 1) can still be recovered
++echo "=== MD5 after corruption and RMW ==="
++_md5_checksum $SCRATCH_MNT/file1
++
++_scratch_unmount
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/272.out b/tests/btrfs/272.out
+new file mode 100644
+index 00000000..b7bb02f4
+--- /dev/null
++++ b/tests/btrfs/272.out
+@@ -0,0 +1,5 @@
++QA output created by 272
++=== MD5 before corruption ===
++876f4f724f70c185824f120574658786
++=== MD5 after corruption and RMW ===
++876f4f724f70c185824f120574658786
+-- 
+2.37.2
 
-There are several different directions to solve it:
-
-- A way to add CSUM for P/Q stripes
-   In theory this should be the easiest way implementation wise.
-   We can easily know if a P/Q stripe is correct, then before doing
-   RMW, we verify the result of P/Q.
-   If the result doesn't match, we know some data stripe(s) are
-   corrupted, then rebuild the data first before write.
-
-   Unfortunately, this needs a on-disk format.
-
-- Full stripe verification before writes
-   This means, before we submit sub-stripe writes, we use some scrub like
-   method to verify all data stripes first.
-   Then we can do recovery if needed, then do writes.
-
-   Unfortunately, scrub-like checks has quite some limitations.
-   Regular scrub only works on RO block groups, thus extent tree and csum
-   tree are consistent.
-   But for RAID56 writes, we have no such luxury, I'm not 100% sure if
-   this can even pass stress tests.
-
-Thanks,
-Qu
-
->
-> I think I may use qemu and gdb to get basic understanding about this fea=
-ture.
->
-> Thanks,
-> Flint
->
-> On 8/15/22 04:54, Qu Wenruo wrote:
->> scrub level checks at RAID56 substripe write time.
