@@ -2,59 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3B5595706
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 11:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1283459582C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 12:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbiHPJts (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Aug 2022 05:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37266 "EHLO
+        id S234577AbiHPK1a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Aug 2022 06:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233920AbiHPJtZ (ORCPT
+        with ESMTP id S234531AbiHPK1E (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Aug 2022 05:49:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B72CCE44E
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Aug 2022 01:49:41 -0700 (PDT)
+        Tue, 16 Aug 2022 06:27:04 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1071417E14
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Aug 2022 01:35:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BEA586121E
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Aug 2022 08:49:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2516BC433D7
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Aug 2022 08:49:40 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B410AB80EB2
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Aug 2022 08:35:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 587EAC433C1
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Aug 2022 08:35:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660639780;
-        bh=gRhHNZSafxMdhjM7qdUvyLyMabhlJbFxoByZmbaLdcg=;
+        s=k20201202; t=1660638903;
+        bh=ncx3aaUGLzw7bbFG8aKkt88R038nEkdko7aczTU9vD8=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=alt0KOCfK1IameSqjx3+SJSWTApiY5LeCsOfgJ3cN7vs4ar9A5PzhJ2Z+hG7lrO5w
-         S2egFTG3UYcjwQxP/ahjz/NmB/Xe6hzDKppdQW96IvkLJypKnY+huxsxEOmbWoECU2
-         KaLbTk9HAuBMBcywZ9TFhlUDYotzhm+qxiamn85yNetUelTAL1ICscMFpnfG+1Xvby
-         GG7zRVNvkjnyjeAXc+yqptTKPMVFf2VxFYyxAylls84dHUp9/1uWIPvTWO2zYILcoV
-         f7QOxC3IudIrvuuSdC8+mvlnWPq5213Rz0qaVTT6yK3moYRaKgM/NLfnRHiYOhws3Q
-         EXyDpJOiMod6w==
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-11ba6e79dd1so5799503fac.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Aug 2022 01:49:40 -0700 (PDT)
-X-Gm-Message-State: ACgBeo0x+1InVzOiG0oXmZmAOUGIjCKPviSEEfU3VKgUnT+Zpp2YivJp
-        YQqr/7sLIxRNEyITVMcsWfLK45oimIUl2N/VNxE=
-X-Google-Smtp-Source: AA6agR6hVxbcc4+xKBzeT/U3TBbQmwf9V7EsJ9c2qlJyRN+exlHwtREAMXYmog1c/IHyV91sWYdHIAHccqfW1uJrCcg=
-X-Received: by 2002:a05:6870:42cb:b0:10f:530:308 with SMTP id
- z11-20020a05687042cb00b0010f05300308mr8910903oah.294.1660639779144; Tue, 16
- Aug 2022 01:49:39 -0700 (PDT)
+        b=fx1GFUlub3XOJgCeFMF76bQxhtSKzouM0J0COSLLG7zsJBux5N1xClarxraWRok5o
+         C7dE5gJrG1gzw2d1Y6N7oGHMjOY98dYVCt5ukG4h8UB9hPQVA3aPC63v4GmVIioH4q
+         JbcQGsCzAccfaYDHuc6s2PIRukATFTYisPR16txKshXWOycqfjUhatKko3AU8tGd22
+         oTFzEPRFv9HNbdX8tWNuBjOotYoA7SmKLZJLv3Cz2xC5WNj/rtFEnX/GJFJkpbeaNR
+         kUd3pkZwbCX75Ky1QOGCG7choDKQHQaOn7yfAGcCX+8MoX5VeucU/sD14n+GcLVLMP
+         zpN9QewLzeAhA==
+Received: by mail-oi1-f171.google.com with SMTP id w197so11353843oie.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Aug 2022 01:35:03 -0700 (PDT)
+X-Gm-Message-State: ACgBeo3kFHM4whtnAOdKSHfyWQ612+JEOeDgE71b8ILpWjz2E4XqyjHD
+        OnPt2+DuP6mZjoXU5nvF20PXn8hf496Wnary2Vk=
+X-Google-Smtp-Source: AA6agR5JERWiLjScDJNjiZxoDIE2MSrNR1PFgzAJrUU75vvabeBCNrMgkgM9QPmrHvQBqU7+xvzp5ItC9pNJAVlOK7A=
+X-Received: by 2002:a05:6808:1b85:b0:33a:7a2b:3ff7 with SMTP id
+ cj5-20020a0568081b8500b0033a7a2b3ff7mr8298933oib.152.1660638902428; Tue, 16
+ Aug 2022 01:35:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220815024209.26122-1-ethanlien@synology.com>
-In-Reply-To: <20220815024209.26122-1-ethanlien@synology.com>
+References: <20220815193402.7fmuwafu3qpalniz@fiona>
+In-Reply-To: <20220815193402.7fmuwafu3qpalniz@fiona>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 16 Aug 2022 09:49:02 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6DkF-tJA2K8beUg93o851-2tqxyD7LtJwoirO060EOLQ@mail.gmail.com>
-Message-ID: <CAL3q7H6DkF-tJA2K8beUg93o851-2tqxyD7LtJwoirO060EOLQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: remove unnecessary EXTENT_UPTODATE state in
- buffered I/O path
-To:     ethanlien <ethanlien@synology.com>
-Cc:     linux-btrfs@vger.kernel.org, cunankimo@gmail.com
+Date:   Tue, 16 Aug 2022 09:34:25 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4LQ0THXa-1bAa3knvJEKeOHYeLKn8ZMZ669ccTebcj6w@mail.gmail.com>
+Message-ID: <CAL3q7H4LQ0THXa-1bAa3knvJEKeOHYeLKn8ZMZ669ccTebcj6w@mail.gmail.com>
+Subject: Re: [PATCH] Check if root is readonly while setting xattr
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,101 +61,75 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 4:16 AM ethanlien <ethanlien@synology.com> wrote:
+On Tue, Aug 16, 2022 at 1:40 AM Goldwyn Rodrigues <rgoldwyn@suse.de> wrote:
 >
-> From: Ethan Lien <ethanlien@synology.com>
->
-> After we copied data to page cache in buffered I/O, we
-> 1. Insert a EXTENT_UPTODATE state into inode's io_tree, by
->    endio_readpage_release_extent(), set_extent_delalloc() or
->    set_extent_defrag().
-> 2. Set page uptodate before we unlock the page.
->
-> But the only place we check io_tree's EXTENT_UPTODATE state is in
-> btrfs_do_readpage(). We know we enter btrfs_do_readpage() only when we
-> have a non-uptodate page, so it is unnecessary to set EXTENT_UPTODATE.
->
-> For example, when performing a buffered random read:
->
->         fio --rw=randread --ioengine=libaio --direct=0 --numjobs=4 \
->                 --filesize=32G --size=4G --bs=4k --name=job \
->                 --filename=/mnt/file --name=job
->
-> Then check how many extent_state in io_tree:
->
->         cat /proc/slabinfo | grep btrfs_extent_state | awk '{print $2}'
->
-> w/o this patch, we got 640567 btrfs_extent_state.
-> w/  this patch, we got    204 btrfs_extent_state.
+> For a filesystem which has btrfs read-only property set to true, all
+> write operations including xattr should be denied. However, security
+> xattr can still be changed even if btrfs ro property is true.
 
-Did fio also report increased throughput?
+Why does that happen only for security xattrs, and not  for xattrs in
+the user.* and btrfs.* namespaces?
 
 >
-> Maintaining such a big tree brings overhead since every I/O needs to insert
-> EXTENT_LOCKED, insert EXTENT_UPTODATE, then remove EXTENT_LOCKED. And in
-> every insert or remove, we need to lock io_tree, do tree search, alloc or
-> dealloc extent states. By removing unnecessary EXTENT_UPTODATE, we keep
-> io_tree in a minimal size and reduce overhead when performing buffered I/O.
+> This patch checks if the root is read-only before performing the set
+> xattr operation.
+>
+> Testcase:
+>
+> #!/bin/bash
+>
+> DEV=/dev/vdb
+> MNT=/mnt
+>
+> mkfs.btrfs -f $DEV
+> mount $DEV $MNT
+> echo "file one" > $MNT/f1
+> setfattr -n "security.one" -v 2 $MNT/f1
+> btrfs property set $MNT ro true
+>
+> # Following statement should fail
+> setfattr -n "security.one" -v 1 $MNT/f1
+>
+> umount $MNT
 
-The idea is sound, and I don't see a reason to keep using
-EXTENT_UPTODATE as well.
+A test case only in a changelog isn't super useful to prevent future
+regressions :)
+
+Can you send a test case for fstests, that also tests user.* and
+btrfs.* namespaces, and creating and deleting xattrs too?
 
 >
-> Signed-off-by: Ethan Lien <ethanlien@synology.com>
-> Reviewed-by: Robbie Ko <robbieko@synology.com>
-> ---
->  fs/btrfs/extent-io-tree.h | 4 ++--
->  fs/btrfs/extent_io.c      | 3 ---
->  2 files changed, 2 insertions(+), 5 deletions(-)
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 >
-> diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-> index c3eb52dbe61c..53ae849d0248 100644
-> --- a/fs/btrfs/extent-io-tree.h
-> +++ b/fs/btrfs/extent-io-tree.h
-> @@ -211,7 +211,7 @@ static inline int set_extent_delalloc(struct extent_io_tree *tree, u64 start,
->                                       struct extent_state **cached_state)
+>
+> diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
+> index 7421abcf325a..5bb8d8c86311 100644
+> --- a/fs/btrfs/xattr.c
+> +++ b/fs/btrfs/xattr.c
+> @@ -371,6 +371,9 @@ static int btrfs_xattr_handler_set(const struct xattr_handler *handler,
+>                                    const char *name, const void *buffer,
+>                                    size_t size, int flags)
 >  {
->         return set_extent_bit(tree, start, end,
-> -                             EXTENT_DELALLOC | EXTENT_UPTODATE | extra_bits,
-> +                             EXTENT_DELALLOC | extra_bits,
->                               0, NULL, cached_state, GFP_NOFS, NULL);
->  }
->
-> @@ -219,7 +219,7 @@ static inline int set_extent_defrag(struct extent_io_tree *tree, u64 start,
->                 u64 end, struct extent_state **cached_state)
->  {
->         return set_extent_bit(tree, start, end,
-> -                             EXTENT_DELALLOC | EXTENT_UPTODATE | EXTENT_DEFRAG,
-> +                             EXTENT_DELALLOC | EXTENT_DEFRAG,
->                               0, NULL, cached_state, GFP_NOFS, NULL);
->  }
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index bfae67c593c5..e0f0a39cd6eb 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2924,9 +2924,6 @@ static void endio_readpage_release_extent(struct processed_extent *processed,
->          * Now we don't have range contiguous to the processed range, release
->          * the processed range now.
->          */
-> -       if (processed->uptodate && tree->track_uptodate)
-> -               set_extent_uptodate(tree, processed->start, processed->end,
-> -                                   &cached, GFP_ATOMIC);
+> +       if (btrfs_root_readonly(BTRFS_I(inode)->root))
+> +               return -EROFS;
+> +
 
-This is another good thing, to get rid of a GFP_ATOMIC allocation.
+The same type of check should be done at btrfs_xattr_handler_set_prop() as well.
+Even though trying the same test on a btrfs.compression xattr fails with -EROFS.
 
-Why didn't you remove the set_extent_uptodate() call at btrfs_get_extent() too?
-It can only be set during a page read at btrfs_do_readpage(), for an
-inline extent.
+I'm still curious why trying the same on a user.* xattr happens to
+fail with -EROFS,
+but not for a secutiry.* xattr, since both have
+btrfs_xattr_handler_set() as their entry point.
 
-Also, having the tests for EXTENT_UPTODATE at btrfs_do_readpage() now become
-useless too, don't they? Why have you kept them?
+I think this should be detailed in the changelog, and presume you
+verified why that happens.
 
 Thanks.
 
->         unlock_extent_cached_atomic(tree, processed->start, processed->end,
->                                     &cached);
+>         name = xattr_full_name(handler, name);
+>         return btrfs_setxattr_trans(inode, name, buffer, size, flags);
+>  }
 >
 > --
-> 2.17.1
->
+> Goldwyn
