@@ -2,288 +2,330 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D23C595193
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 07:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F2F594F89
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Aug 2022 06:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbiHPFBu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Aug 2022 01:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41368 "EHLO
+        id S229790AbiHPEZG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Aug 2022 00:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234638AbiHPFBQ (ORCPT
+        with ESMTP id S229794AbiHPEYw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Aug 2022 01:01:16 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E739F2D1C4;
-        Mon, 15 Aug 2022 13:56:33 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 0BC94320092F;
-        Mon, 15 Aug 2022 16:56:32 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 15 Aug 2022 16:56:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-transfer-encoding:date:date:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm1; t=1660596992; x=1660683392; bh=+AeD9/fPYivTmizjOXPOejqGH
-        WW8ff0iMGTf0qo3xbg=; b=LnLoBjXTv73gO/AgbpxLhsB/tws9nUaBqNXsYRMKa
-        Nd9Wf8i8cg6H1w3kQtI3FabKiCUek5u5g1legD8LFdwyMh3i5vTx2vVtLfM/SSOI
-        nYns23MtHl122i45AogXhyoSp0xTIHamNEdNCaR1lA1QoMHVMiopWFWSO5657Fbi
-        G60mrG/mfsaz3cV0s+LjBUZivnwv/vpYagglGhy0N78uGGENZlRdmO98uoSHX6GK
-        /Us9itCJ1qP/gCnkLetkqdTQmFXDScsgZ43vnjsczUW8krpeYzs5RY7RO66Y9ylR
-        W1hMlekC7afNuyX7I6UsX1vD4ULMXUIiz+PgF3cJHUXRQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:message-id
-        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1660596992; x=1660683392; bh=+AeD9/fPYivTmizjOXPOejqGHWW8ff0iMGT
-        f0qo3xbg=; b=t47c2ynB+zqehYQH1ivXn2hg4NdS/Pq/E2wxbW3Vy199FxbD2LW
-        lD9utXB6d1pBZRUleZfYhdawRPAXNXm3+OvDWlNhILsLNvkgg4PBX71/dowSpEqh
-        cYAdy7oZXCYCN2TvAmxc2571wGyn5Q/kiuNhOVJ/8S+9ATs+HiNUprPKveua44tX
-        2EhjNjILzyNere8ynCg0LEkhy///JaasgyMJX6VDVDtknsvMl5shEKdV8Wi3DXyp
-        jZhPTjcsHZvz0+lRfQnAtonlucIdzCys6W+B43TAPtV9cukRnB+n2ws1SDawo1k2
-        PirQKSTHqf1Mz1ZCMJf2u57VabS7VS4mcdQ==
-X-ME-Sender: <xms:ALP6YmFMbHOJyvP0qjuehHJyCoA3kLjh9_VaNGTd_bQRnQKbEi3KSA>
-    <xme:ALP6YnXHHUGIa_QiTFFO4MmiK_H2doWVy3aFFoFW8dCUYb355nAiNavunVtILP4KS
-    aGroPhWWVYfzrpObek>
-X-ME-Received: <xmr:ALP6YgJjHci73xEaC4TLfDWMQy_vOInejwYEeuPlm6geMVMAnmP77LI8WPvD9i-lt5en-CdAMllZDSp6RDvz5XGSjZ5Rdg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehvddgudehjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekre
-    dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
-    ihhoqeenucggtffrrghtthgvrhhnpeejkeffleevudfgudffleffgeeludevvdekleefue
-    fgjeehudduhffhlefhuefhtdenucffohhmrghinhepfhhsvhdrshhsnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrih
-    ho
-X-ME-Proxy: <xmx:ALP6YgFgMuJiECEFzIwv70XXc9aJpabk897e_MhN_jkaUr_agrgRdg>
-    <xmx:ALP6YsWK4yxudbOB0YTQmhPaQnuhPFmwhMCKccLqZOZnHz9E9w4dYw>
-    <xmx:ALP6YjOwEdBfNIApexejGfgvY6eJmTF_eMDPP-yEFBGEOgMEJvvtEw>
-    <xmx:ALP6YphLyUIjYCY--D0uFKgcu5atMCbM0LPv6LjdbldiVTz_Ma6wug>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 15 Aug 2022 16:56:32 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Cc:     kernel-team@fb.com, linux-fscrypt@vger.kernel.org
-Subject: [PATCH] fstests: add btrfs fs-verity send/recv test
-Date:   Mon, 15 Aug 2022 13:57:56 -0700
-Message-Id: <9e0ee6345a406765cf06594b805cb3568de16acc.1660596985.git.boris@bur.io>
-X-Mailer: git-send-email 2.37.0
+        Tue, 16 Aug 2022 00:24:52 -0400
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 54C20380055
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Aug 2022 18:03:10 -0700 (PDT)
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id 5DFF14A6F73; Mon, 15 Aug 2022 21:01:55 -0400 (EDT)
+Date:   Mon, 15 Aug 2022 21:01:54 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
+Subject: Re: misc-next and for-next: kernel BUG at fs/btrfs/extent_io.c:2350!
+ during raid5 recovery
+Message-ID: <Yvrsggjtc67YvTig@hungrycats.org>
+References: <YvHVJ8t5vzxH9fS9@hungrycats.org>
+ <aac1dade-646a-8bf9-6b63-754b03bf1cd1@gmx.com>
+ <YvK5oY6ctbDFspCm@hungrycats.org>
+ <5b29a8ec-2308-a58a-8754-0e2b0ecd0b36@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5b29a8ec-2308-a58a-8754-0e2b0ecd0b36@gmx.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test btrfs send/recv support for fs-verity. Includes tests for
-signatures, salts, and interaction with chmod/caps. The last of those is
-to ensure the various features that go in during inode_finalize interact
-properly.
+On Sun, Aug 14, 2022 at 12:52:24PM +0800, Qu Wenruo wrote:
+> Hi Zygo,
+> 
+> We have pinned down the root cause of the crash, and got a quick fix for it.
+> 
+> https://lore.kernel.org/linux-btrfs/1d9b69af6ce0a79e54fbaafcc65ead8f71b54b60.1660377678.git.wqu@suse.com/
+> 
+> Mind to test above patch to see if this can solve your crash?
 
-This depends on the kernel patch adding support for send:
-btrfs: send: add support for fs-verity
+Without the patch, tests using compressed data and uncompressed data
+both lead to crashes:
 
-And the btrfs-progs patch adding support for recv:
-btrfs-progs: receive: add support for fs-verity
+	Compressed data hits the BUG_ON from end_compressed_bio_read
+	as previously reported, in less than 30 minutes.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- tests/btrfs/271     | 114 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/271.out |  59 +++++++++++++++++++++++
- 2 files changed, 173 insertions(+)
- create mode 100755 tests/btrfs/271
- create mode 100644 tests/btrfs/271.out
+	Uncompressed data hits a BUG at fs/btrfs/tree-mod-log.c:675 about
+	once every 2 hours.
 
-diff --git a/tests/btrfs/271 b/tests/btrfs/271
-new file mode 100755
-index 00000000..93b34540
---- /dev/null
-+++ b/tests/btrfs/271
-@@ -0,0 +1,114 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 YOUR NAME HERE.  All Rights Reserved.
-+#
-+# FS QA Test 271
-+#
-+# Test sendstreams involving fs-verity enabled files
-+#
-+. ./common/preamble
-+_begin_fstest auto quick verity send
-+
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+	cd /
-+	_restore_fsverity_signatures
-+	rm -r -f $tmp.*
-+}
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/verity
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_scratch_verity
-+_require_fsverity_builtin_signatures
-+_require_command "$SETCAP_PROG" setcap
-+_require_command "$GETCAP_PROG" getcap
-+_require_test
-+
-+subv=$SCRATCH_MNT/subv
-+fsv_file=$subv/file.fsv
-+keyfile=$tmp.key.pem
-+certfile=$tmp.cert.pem
-+certfileder=$tmp.cert.der
-+sigfile=$tmp.sig
-+stream=$tmp.fsv.ss
-+
-+_test_send_verity() {
-+	local sig=$1
-+	local salt=$2
-+	local extra_args=""
-+
-+	_scratch_mkfs >> $seqres.full
-+	_scratch_mount
-+	echo -e "\nverity send/recv test: sig: $sig salt: $salt"
-+	_disable_fsverity_signatures
-+
-+	echo "create subvolume"
-+	$BTRFS_UTIL_PROG subv create $subv >> $seqres.full
-+	echo "create file"
-+	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $fsv_file
-+	if [ $salt -eq 1 ]; then
-+		extra_args+=" --salt=deadbeef"
-+	fi
-+	if [ $sig -eq 1 ]; then
-+		echo "generate keys and cert"
-+		_fsv_generate_cert $keyfile $certfile $certfileder
-+		echo "clear keyring"
-+		_fsv_clear_keyring
-+		echo "load cert into keyring"
-+		_fsv_load_cert $certfileder
-+		echo "require signatures"
-+		_enable_fsverity_signatures
-+		echo "sign file digest"
-+		_fsv_sign $fsv_file $sigfile --key=$keyfile --cert=$certfile \
-+			$extra_args | _filter_scratch >> $seqres.full
-+		extra_args+=" --signature=$sigfile"
-+	fi
-+	echo "enable verity"
-+	_fsv_enable $fsv_file $extra_args
-+	_fsv_measure $fsv_file > $tmp.digest-before
-+
-+	# ensure send plays nice with other properties that are set when
-+	# finishing the file during send, like chmod and capabilities.
-+	echo "modify other properties"
-+	chmod a+x $fsv_file
-+	$SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" $fsv_file
-+	$GETCAP_PROG $fsv_file > $tmp.cap-before
-+
-+	echo "set subvolume read only"
-+	$BTRFS_UTIL_PROG property set $subv ro true
-+	echo "send subvolume"
-+	$BTRFS_UTIL_PROG send $subv -f $stream -q >> $seqres.full
-+
-+	echo "blow away fs"
-+	_scratch_unmount
-+	_scratch_mkfs >> $seqres.full
-+	_scratch_mount
-+
-+	echo "receive sendstream"
-+	$BTRFS_UTIL_PROG receive $SCRATCH_MNT -f $stream -q >> $seqres.full
-+
-+	echo "check received subvolume..."
-+	echo 3 > /proc/sys/vm/drop_caches
-+	_fsv_measure $fsv_file > $tmp.digest-after
-+	$GETCAP_PROG $fsv_file > $tmp.cap-after
-+	diff $tmp.digest-before $tmp.digest-after
-+	diff $tmp.cap-before $tmp.cap-after
-+	_scratch_unmount
-+	echo OK
-+}
-+
-+_test_send_verity 0 0
-+_test_send_verity 0 1
-+_test_send_verity 1 0
-+_test_send_verity 1 1
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/271.out b/tests/btrfs/271.out
-new file mode 100644
-index 00000000..9a484404
---- /dev/null
-+++ b/tests/btrfs/271.out
-@@ -0,0 +1,59 @@
-+QA output created by 271
-+
-+verity send/recv test: sig: 0 salt: 0
-+create subvolume
-+create file
-+enable verity
-+modify other properties
-+set subvolume read only
-+send subvolume
-+blow away fs
-+receive sendstream
-+check received subvolume...
-+OK
-+
-+verity send/recv test: sig: 0 salt: 1
-+create subvolume
-+create file
-+enable verity
-+modify other properties
-+set subvolume read only
-+send subvolume
-+blow away fs
-+receive sendstream
-+check received subvolume...
-+OK
-+
-+verity send/recv test: sig: 1 salt: 0
-+create subvolume
-+create file
-+generate keys and cert
-+clear keyring
-+load cert into keyring
-+require signatures
-+sign file digest
-+enable verity
-+modify other properties
-+set subvolume read only
-+send subvolume
-+blow away fs
-+receive sendstream
-+check received subvolume...
-+OK
-+
-+verity send/recv test: sig: 1 salt: 1
-+create subvolume
-+create file
-+generate keys and cert
-+clear keyring
-+load cert into keyring
-+require signatures
-+sign file digest
-+enable verity
-+modify other properties
-+set subvolume read only
-+send subvolume
-+blow away fs
-+receive sendstream
-+check received subvolume...
-+OK
--- 
-2.37.1
+Since applying the patch, neither of these crashes has occurred so far
+(37 hours).
 
+The BUG in tree-mod-log doesn't seem to be related to the raid5 corruption
+issues.  The BUG starts happening before I corrupt any of the disk data.
+It might have been present before, but obscured by the much more frequent
+end_compressed_bio_read crashes.
+
+I find it very interesting that the tree-mod-log BUG seems to have
+stopped immediately after applying this patch.  Could they have the same
+root cause, or a related cause?
+
+I'll treat the tree-mod-log thing as a separate bug for now, and start
+a new thread if I can still reproduce it on up-to-date for-next or
+misc-next.
+
+> For the RAID56 recovery, unfortunately we don't have any better way to
+> enhance it during writes yet.
+> 
+> So your tests will still lead to data corruption anyway.
+
+One bug at a time...  ;)
+
+I've adapted my setup for future tests to stop writes, sync, inject the
+corruption on one drive, then either run scrub or a readonly test to
+correct errors, before resuming writes.  If I understand the constraints
+correctly, all errors should be recoverable.
+
+Thanks
+
+> Thanks,
+> Qu
+> 
+> On 2022/8/10 03:46, Zygo Blaxell wrote:
+> > On Tue, Aug 09, 2022 at 12:36:44PM +0800, Qu Wenruo wrote:
+> > > 
+> > > 
+> > > On 2022/8/9 11:31, Zygo Blaxell wrote:
+> > > > Test case is:
+> > > > 
+> > > > 	- start with a -draid5 -mraid1 filesystem on 2 disks
+> > > > 
+> > > > 	- run assorted IO with a mix of reads and writes (randomly
+> > > > 	run rsync, bees, snapshot create/delete, balance, scrub, start
+> > > > 	replacing one of the disks...)
+> > > > 
+> > > > 	- cat /dev/zero > /dev/vdb (device 1) in the VM guest, or run
+> > > > 	blkdiscard on the underlying SSD in the VM host, to simulate
+> > > > 	single-disk data corruption
+> > > > 
+> > > > 	- repeat until something goes badly wrong, like unrecoverable
+> > > > 	read error or crash
+> > > > 
+> > > > This test case always failed quickly before (corruption was rarely
+> > > > if ever fully repaired on btrfs raid5 data), and it still doesn't work
+> > > > now, but now it doesn't work for a new reason.  Progress?
+> > > 
+> > > The new read repair work for compressed extents, adding HCH to the thread.
+> > > 
+> > > But just curious, have you tested without compression?
+> > 
+> > All of the ~200 BUG_ON stack traces in my logs have the same list of
+> > functions as above.  If the bug affected uncompressed data, I'd expect
+> > to see two different stack traces.  It's a fairly decent sample size,
+> > so I'd say it's most likely not happening with uncompressed extents.
+> > 
+> > All the production workloads have compression enabled, so we don't
+> > normally test with compression disabled.  I can run a separate test for
+> > that if you'd like.
+> > 
+> > > Thanks,
+> > > Qu
+> > > > 
+> > > > There is now a BUG_ON arising from this test case:
+> > > > 
+> > > > 	[  241.051326][   T45] btrfs_print_data_csum_error: 156 callbacks suppressed
+> > > > 	[  241.100910][   T45] ------------[ cut here ]------------
+> > > > 	[  241.102531][   T45] kernel BUG at fs/btrfs/extent_io.c:2350!
+> > > > 	[  241.103261][   T45] invalid opcode: 0000 [#2] PREEMPT SMP PTI
+> > > > 	[  241.104044][   T45] CPU: 2 PID: 45 Comm: kworker/u8:4 Tainted: G      D           5.19.0-466d9d7ea677-for-next+ #85 89955463945a81b56a449b1f12383cf0d5e6b898
+> > > > 	[  241.105652][   T45] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+> > > > 	[  241.106726][   T45] Workqueue: btrfs-endio-raid56 raid_recover_end_io_work
+> > > > 	[  241.107716][   T45] RIP: 0010:repair_io_failure+0x359/0x4b0
+> > > > 	[  241.108569][   T45] Code: 2b e8 cb 12 79 ff 48 c7 c6 20 23 ac 85 48 c7 c7 00 b9 14 88 e8 d8 e3 72 ff 48 8d bd 48 ff ff ff e8 5c 7e 26 00 e9 f6 fd ff ff <0f> 0b e8 60 d1 5e 01 85 c0 74 cc 48 c
+> > > > 	7 c7 b0 1d 45 88 e8 d0 8e 98
+> > > > 	[  241.111990][   T45] RSP: 0018:ffffbca9009f7a08 EFLAGS: 00010246
+> > > > 	[  241.112911][   T45] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> > > > 	[  241.115676][   T45] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > > > 	[  241.118009][   T45] RBP: ffffbca9009f7b00 R08: 0000000000000000 R09: 0000000000000000
+> > > > 	[  241.119484][   T45] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9cd1b9da4000
+> > > > 	[  241.120717][   T45] R13: 0000000000000000 R14: ffffe60cc81a4200 R15: ffff9cd235b4dfa4
+> > > > 	[  241.122594][   T45] FS:  0000000000000000(0000) GS:ffff9cd2b7600000(0000) knlGS:0000000000000000
+> > > > 	[  241.123831][   T45] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > 	[  241.125003][   T45] CR2: 00007fbb76b1a738 CR3: 0000000109c26001 CR4: 0000000000170ee0
+> > > > 	[  241.126226][   T45] Call Trace:
+> > > > 	[  241.126646][   T45]  <TASK>
+> > > > 	[  241.127165][   T45]  ? __bio_clone+0x1c0/0x1c0
+> > > > 	[  241.128354][   T45]  clean_io_failure+0x21a/0x260
+> > > > 	[  241.128384][   T45]  end_compressed_bio_read+0x2a9/0x470
+> > > > 	[  241.128411][   T45]  bio_endio+0x361/0x3c0
+> > > > 	[  241.128427][   T45]  rbio_orig_end_io+0x127/0x1c0
+> > > > 	[  241.128447][   T45]  __raid_recover_end_io+0x405/0x8f0
+> > > > 	[  241.128477][   T45]  raid_recover_end_io_work+0x8c/0xb0
+> > > > 	[  241.128494][   T45]  process_one_work+0x4e5/0xaa0
+> > > > 	[  241.128528][   T45]  worker_thread+0x32e/0x720
+> > > > 	[  241.128541][   T45]  ? _raw_spin_unlock_irqrestore+0x7d/0xa0
+> > > > 	[  241.128573][   T45]  ? process_one_work+0xaa0/0xaa0
+> > > > 	[  241.128588][   T45]  kthread+0x1ab/0x1e0
+> > > > 	[  241.128600][   T45]  ? kthread_complete_and_exit+0x40/0x40
+> > > > 	[  241.128628][   T45]  ret_from_fork+0x22/0x30
+> > > > 	[  241.128659][   T45]  </TASK>
+> > > > 	[  241.128667][   T45] Modules linked in:
+> > > > 	[  241.129700][   T45] ---[ end trace 0000000000000000 ]---
+> > > > 	[  241.152310][   T45] RIP: 0010:repair_io_failure+0x359/0x4b0
+> > > > 	[  241.153328][   T45] Code: 2b e8 cb 12 79 ff 48 c7 c6 20 23 ac 85 48 c7 c7 00 b9 14 88 e8 d8 e3 72 ff 48 8d bd 48 ff ff ff e8 5c 7e 26 00 e9 f6 fd ff ff <0f> 0b e8 60 d1 5e 01 85 c0 74 cc 48 c
+> > > > 	7 c7 b0 1d 45 88 e8 d0 8e 98
+> > > > 	[  241.156882][   T45] RSP: 0018:ffffbca902487a08 EFLAGS: 00010246
+> > > > 	[  241.158103][   T45] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> > > > 	[  241.160072][   T45] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > > > 	[  241.161984][   T45] RBP: ffffbca902487b00 R08: 0000000000000000 R09: 0000000000000000
+> > > > 	[  241.164067][   T45] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9cd1b9da4000
+> > > > 	[  241.165979][   T45] R13: 0000000000000000 R14: ffffe60cc7589740 R15: ffff9cd1f45495e4
+> > > > 	[  241.167928][   T45] FS:  0000000000000000(0000) GS:ffff9cd2b7600000(0000) knlGS:0000000000000000
+> > > > 	[  241.169978][   T45] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > 	[  241.171649][   T45] CR2: 00007fbb76b1a738 CR3: 0000000109c26001 CR4: 0000000000170ee0
+> > > > 
+> > > > KFENCE and UBSAN aren't reporting anything before the BUG_ON.
+> > > > 
+> > > > KCSAN complains about a lot of stuff as usual, including several issues
+> > > > in the btrfs allocator, but it doesn't look like anything that would
+> > > > mess with a bio.
+> > > > 
+> > > > 	$ git log --no-walk --oneline FETCH_HEAD
+> > > > 	6130a25681d4 (kdave/for-next) Merge branch 'for-next-next-v5.20-20220804' into for-next-20220804
+> > > > 
+> > > > 	repair_io_failure at fs/btrfs/extent_io.c:2350 (discriminator 1)
+> > > > 	 2345           u64 sector;
+> > > > 	 2346           struct btrfs_io_context *bioc = NULL;
+> > > > 	 2347           int ret = 0;
+> > > > 	 2348
+> > > > 	 2349           ASSERT(!(fs_info->sb->s_flags & SB_RDONLY));
+> > > > 	>2350<          BUG_ON(!mirror_num);
+> > > > 	 2351
+> > > > 	 2352           if (btrfs_repair_one_zone(fs_info, logical))
+> > > > 	 2353                   return 0;
+> > > > 	 2354
+> > > > 	 2355           map_length = length;
+> 
+> enhance it during writes yet.
+> 
+> So your tests will still lead to data corruption anyway.
+> 
+> Thanks,
+> Qu
+> 
+> On 2022/8/10 03:46, Zygo Blaxell wrote:
+> > On Tue, Aug 09, 2022 at 12:36:44PM +0800, Qu Wenruo wrote:
+> > > 
+> > > 
+> > > On 2022/8/9 11:31, Zygo Blaxell wrote:
+> > > > Test case is:
+> > > > 
+> > > > 	- start with a -draid5 -mraid1 filesystem on 2 disks
+> > > > 
+> > > > 	- run assorted IO with a mix of reads and writes (randomly
+> > > > 	run rsync, bees, snapshot create/delete, balance, scrub, start
+> > > > 	replacing one of the disks...)
+> > > > 
+> > > > 	- cat /dev/zero > /dev/vdb (device 1) in the VM guest, or run
+> > > > 	blkdiscard on the underlying SSD in the VM host, to simulate
+> > > > 	single-disk data corruption
+> > > > 
+> > > > 	- repeat until something goes badly wrong, like unrecoverable
+> > > > 	read error or crash
+> > > > 
+> > > > This test case always failed quickly before (corruption was rarely
+> > > > if ever fully repaired on btrfs raid5 data), and it still doesn't work
+> > > > now, but now it doesn't work for a new reason.  Progress?
+> > > 
+> > > The new read repair work for compressed extents, adding HCH to the thread.
+> > > 
+> > > But just curious, have you tested without compression?
+> > 
+> > All of the ~200 BUG_ON stack traces in my logs have the same list of
+> > functions as above.  If the bug affected uncompressed data, I'd expect
+> > to see two different stack traces.  It's a fairly decent sample size,
+> > so I'd say it's most likely not happening with uncompressed extents.
+> > 
+> > All the production workloads have compression enabled, so we don't
+> > normally test with compression disabled.  I can run a separate test for
+> > that if you'd like.
+> > 
+> > > Thanks,
+> > > Qu
+> > > > 
+> > > > There is now a BUG_ON arising from this test case:
+> > > > 
+> > > > 	[  241.051326][   T45] btrfs_print_data_csum_error: 156 callbacks suppressed
+> > > > 	[  241.100910][   T45] ------------[ cut here ]------------
+> > > > 	[  241.102531][   T45] kernel BUG at fs/btrfs/extent_io.c:2350!
+> > > > 	[  241.103261][   T45] invalid opcode: 0000 [#2] PREEMPT SMP PTI
+> > > > 	[  241.104044][   T45] CPU: 2 PID: 45 Comm: kworker/u8:4 Tainted: G      D           5.19.0-466d9d7ea677-for-next+ #85 89955463945a81b56a449b1f12383cf0d5e6b898
+> > > > 	[  241.105652][   T45] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+> > > > 	[  241.106726][   T45] Workqueue: btrfs-endio-raid56 raid_recover_end_io_work
+> > > > 	[  241.107716][   T45] RIP: 0010:repair_io_failure+0x359/0x4b0
+> > > > 	[  241.108569][   T45] Code: 2b e8 cb 12 79 ff 48 c7 c6 20 23 ac 85 48 c7 c7 00 b9 14 88 e8 d8 e3 72 ff 48 8d bd 48 ff ff ff e8 5c 7e 26 00 e9 f6 fd ff ff <0f> 0b e8 60 d1 5e 01 85 c0 74 cc 48 c
+> > > > 	7 c7 b0 1d 45 88 e8 d0 8e 98
+> > > > 	[  241.111990][   T45] RSP: 0018:ffffbca9009f7a08 EFLAGS: 00010246
+> > > > 	[  241.112911][   T45] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> > > > 	[  241.115676][   T45] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > > > 	[  241.118009][   T45] RBP: ffffbca9009f7b00 R08: 0000000000000000 R09: 0000000000000000
+> > > > 	[  241.119484][   T45] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9cd1b9da4000
+> > > > 	[  241.120717][   T45] R13: 0000000000000000 R14: ffffe60cc81a4200 R15: ffff9cd235b4dfa4
+> > > > 	[  241.122594][   T45] FS:  0000000000000000(0000) GS:ffff9cd2b7600000(0000) knlGS:0000000000000000
+> > > > 	[  241.123831][   T45] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > 	[  241.125003][   T45] CR2: 00007fbb76b1a738 CR3: 0000000109c26001 CR4: 0000000000170ee0
+> > > > 	[  241.126226][   T45] Call Trace:
+> > > > 	[  241.126646][   T45]  <TASK>
+> > > > 	[  241.127165][   T45]  ? __bio_clone+0x1c0/0x1c0
+> > > > 	[  241.128354][   T45]  clean_io_failure+0x21a/0x260
+> > > > 	[  241.128384][   T45]  end_compressed_bio_read+0x2a9/0x470
+> > > > 	[  241.128411][   T45]  bio_endio+0x361/0x3c0
+> > > > 	[  241.128427][   T45]  rbio_orig_end_io+0x127/0x1c0
+> > > > 	[  241.128447][   T45]  __raid_recover_end_io+0x405/0x8f0
+> > > > 	[  241.128477][   T45]  raid_recover_end_io_work+0x8c/0xb0
+> > > > 	[  241.128494][   T45]  process_one_work+0x4e5/0xaa0
+> > > > 	[  241.128528][   T45]  worker_thread+0x32e/0x720
+> > > > 	[  241.128541][   T45]  ? _raw_spin_unlock_irqrestore+0x7d/0xa0
+> > > > 	[  241.128573][   T45]  ? process_one_work+0xaa0/0xaa0
+> > > > 	[  241.128588][   T45]  kthread+0x1ab/0x1e0
+> > > > 	[  241.128600][   T45]  ? kthread_complete_and_exit+0x40/0x40
+> > > > 	[  241.128628][   T45]  ret_from_fork+0x22/0x30
+> > > > 	[  241.128659][   T45]  </TASK>
+> > > > 	[  241.128667][   T45] Modules linked in:
+> > > > 	[  241.129700][   T45] ---[ end trace 0000000000000000 ]---
+> > > > 	[  241.152310][   T45] RIP: 0010:repair_io_failure+0x359/0x4b0
+> > > > 	[  241.153328][   T45] Code: 2b e8 cb 12 79 ff 48 c7 c6 20 23 ac 85 48 c7 c7 00 b9 14 88 e8 d8 e3 72 ff 48 8d bd 48 ff ff ff e8 5c 7e 26 00 e9 f6 fd ff ff <0f> 0b e8 60 d1 5e 01 85 c0 74 cc 48 c
+> > > > 	7 c7 b0 1d 45 88 e8 d0 8e 98
+> > > > 	[  241.156882][   T45] RSP: 0018:ffffbca902487a08 EFLAGS: 00010246
+> > > > 	[  241.158103][   T45] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> > > > 	[  241.160072][   T45] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > > > 	[  241.161984][   T45] RBP: ffffbca902487b00 R08: 0000000000000000 R09: 0000000000000000
+> > > > 	[  241.164067][   T45] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9cd1b9da4000
+> > > > 	[  241.165979][   T45] R13: 0000000000000000 R14: ffffe60cc7589740 R15: ffff9cd1f45495e4
+> > > > 	[  241.167928][   T45] FS:  0000000000000000(0000) GS:ffff9cd2b7600000(0000) knlGS:0000000000000000
+> > > > 	[  241.169978][   T45] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > 	[  241.171649][   T45] CR2: 00007fbb76b1a738 CR3: 0000000109c26001 CR4: 0000000000170ee0
+> > > > 
+> > > > KFENCE and UBSAN aren't reporting anything before the BUG_ON.
+> > > > 
+> > > > KCSAN complains about a lot of stuff as usual, including several issues
+> > > > in the btrfs allocator, but it doesn't look like anything that would
+> > > > mess with a bio.
+> > > > 
+> > > > 	$ git log --no-walk --oneline FETCH_HEAD
+> > > > 	6130a25681d4 (kdave/for-next) Merge branch 'for-next-next-v5.20-20220804' into for-next-20220804
+> > > > 
+> > > > 	repair_io_failure at fs/btrfs/extent_io.c:2350 (discriminator 1)
+> > > > 	 2345           u64 sector;
+> > > > 	 2346           struct btrfs_io_context *bioc = NULL;
+> > > > 	 2347           int ret = 0;
+> > > > 	 2348
+> > > > 	 2349           ASSERT(!(fs_info->sb->s_flags & SB_RDONLY));
+> > > > 	>2350<          BUG_ON(!mirror_num);
+> > > > 	 2351
+> > > > 	 2352           if (btrfs_repair_one_zone(fs_info, logical))
+> > > > 	 2353                   return 0;
+> > > > 	 2354
+> > > > 	 2355           map_length = length;
+> 
