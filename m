@@ -2,96 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 845C7597357
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Aug 2022 17:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE561597430
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Aug 2022 18:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239012AbiHQPzB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Aug 2022 11:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
+        id S241126AbiHQQaK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Aug 2022 12:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234850AbiHQPzA (ORCPT
+        with ESMTP id S241159AbiHQQ3v (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Aug 2022 11:55:00 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A1896742;
-        Wed, 17 Aug 2022 08:54:59 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        Wed, 17 Aug 2022 12:29:51 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D64EA2622;
+        Wed, 17 Aug 2022 09:29:00 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 173C781150;
-        Wed, 17 Aug 2022 11:54:57 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1660751699; bh=PCq741HCIYiBTSDmQL6BV/iOo1sZ2Z3I+aX8vIQZme4=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=g8D2N8EXW0TmK9TxyXb/HsTDdFw5F/X8qMYbsJl1Hl2vvCEXYqdTvBJc5We82vtz9
-         fOx2TqUHBeeBwm0FnDJ7KLADLEsM/DTovsLRExIodE44vRn8knIuFFXBGquJBH1Vim
-         KD58Vp5U5BdRW+xSmSG+jkZ+8qT9vVmqWU1p1rkcrf+P28vVg3FP6pB1O5LWHOKuC1
-         O7c7EVQfjOfGmnqEeNRdDk/jhEhDiB2b6/CMp1MvON4mUxQW1HOUaZB6c4MGnP/3MY
-         oLBYQP34pdza8vsGniBsQ7s3lwYn1nyGiHvdP/8q3TSg6w8QOnVzYjThEo2Eq0ZGEq
-         ru53aiX3O6ing==
-Message-ID: <89d9ff01-c405-ec25-736a-bfba4c03e72c@dorminy.me>
-Date:   Wed, 17 Aug 2022 11:54:56 -0400
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8E04F37CA9;
+        Wed, 17 Aug 2022 16:28:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1660753738;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lL2oRxUB2zNiDSHL08lc1EgwtUwwuRJxehS/wfuxEr8=;
+        b=gTJptUcWDH9T32V6Of5E4f+an9thPxzAqL2zZ4uFoaV32CH/kC5Oqo3vZ9LHTmTlJ+tuVL
+        A3+dhsBh5eZdfCmtH7xL/RQmfyMQDcGUzBKRNZme0snq0i9GrTs/Uv/03JleGFJ8Qio7Bf
+        EZWqi5eB5Z1tnJlzobNWGKw7Eu4jJuc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1660753738;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lL2oRxUB2zNiDSHL08lc1EgwtUwwuRJxehS/wfuxEr8=;
+        b=oQlChQs+3AqvuskTD+p7PyrlbFGLHkNkA4Q7T/ZAeXWAIss/IBZKuESNJEiq28uBip5Bba
+        EPXRnNLmC1ChRADQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 616FA13A8E;
+        Wed, 17 Aug 2022 16:28:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id cg/SFkoX/WJXKAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 17 Aug 2022 16:28:58 +0000
+Date:   Wed, 17 Aug 2022 18:23:47 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, Qu Wenruo <wqu@suse.com>,
+        David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH STABLE 5.18 0/2] btrfs: raid56 backports to reduce
+ destructive RMW
+Message-ID: <20220817162347.GF13489@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Greg KH <gregkh@linuxfoundation.org>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+References: <cover.1659600630.git.wqu@suse.com>
+ <YvESBmvjMqIXvqjp@kroah.com>
+ <Yvejlr1Nds8wtyKj@kroah.com>
+ <b10f1e72-0846-f46c-816a-352646ae5661@gmx.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 05/21] fscrypt: add new encryption policy for btrfs.
-Content-Language: en-US
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1660744500.git.sweettea-kernel@dorminy.me>
- <66fcd64620c0c0711bbe80aa85e92f04d539bd83.1660744500.git.sweettea-kernel@dorminy.me>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <66fcd64620c0c0711bbe80aa85e92f04d539bd83.1660744500.git.sweettea-kernel@dorminy.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b10f1e72-0846-f46c-816a-352646ae5661@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sun, Aug 14, 2022 at 06:17:45AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2022/8/13 21:13, Greg KH wrote:
+> > On Mon, Aug 08, 2022 at 03:39:18PM +0200, Greg KH wrote:
+> >> On Thu, Aug 04, 2022 at 04:10:57PM +0800, Qu Wenruo wrote:
+> >>> Hi Greg and Sasha,
+> >>>
+> >>> This two patches are backports for v5.18 branch.
+> >>
+> >> I also need these for the 5.19.y branch if we were to take them into
+> >> 5.18.y as you do not want anyone to suffer a regression when moving to
+> >> the newer kernel release.
+> >>
+> >> So I'll wait for those to be sent before taking any of these.
+> >
+> > I've dropped all of these btrfs backports from my "to review" queue now.
+> > Please fix them all up, get the needed acks, and then resend them and I
+> > will be glad to reconsider them at that point in time.
+> 
+> To David,
+> 
+> Mind to give an ACK for these backports?
 
-
-On 8/17/22 10:49, Sweet Tea Dorminy wrote:
-> Encryption for btrfs must be extent-based, rather than fscrypt's
-> inode-based IV generation policies.  In particular, btrfs can have
-> multiple inodes referencing a single block of data, and moves logical
-> data blocks to different physical locations on disk; these two features
-> mean inode or physical-location-based IV generation policies will not
-> work for btrfs. Instead, btrfs can store an IV per extent, generated by
-> fscrypt and iterated per block within the extent, and provide that IV to
-> fscrypt for encryption/decryption.
-> 
-> Plumbing filesystem internals into fscrypt for IV generation would be
-> ungainly and fragile. Thus, this change adds a new policy, IV_FROM_FS,
-> and a new operation function pointer, get_fs_derived_iv.  btrfs will
-> require this policy to be used, and implements get_fs_derived_iv by
-> getting the IV stored with the relevant file extent and iterating the IV
-> to the appropriate block number. Thus, each individual block has its own
-> IV, but all blocks within a file extent have iterated IVs according to
-> their block number, similarly to the IV_INO_LBLK* policy iterating IVs
-> for a given inode by lblk number.
-> 
-> The IV buffer passed to get_fs_derived_iv() is pre-populated with the
-> inode contexts' nonce, as not all data to be encrypted is associated
-> with a file extent: for btrfs, this is used for filename encryption.
-> 
-> Filesystems implementing this policy are expected to be incompatible
-> with existing IV generation policies, so if the function pointer is set,
-> only dummy or IV_FROM_FS policies are permitted. If there is a
-> filesystem which allows other policies as well as IV_FROM_FS, it may be
-> better to expose the policy to filesystems, so they can determine
-> whether any given policy is compatible with their operation.
-> 
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
-
-I realized after sending that this doesn't have Documentation/ updates 
-for the new policy, still; apologies, and it remains on my queue.
+Acked-by: David Sterba <dsterba@suse.com>
