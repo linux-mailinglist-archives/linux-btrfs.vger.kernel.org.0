@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28026596D73
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Aug 2022 13:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4674596D79
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Aug 2022 13:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234752AbiHQLW6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Aug 2022 07:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38294 "EHLO
+        id S235400AbiHQLW7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Aug 2022 07:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231172AbiHQLW4 (ORCPT
+        with ESMTP id S234057AbiHQLW5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Aug 2022 07:22:56 -0400
+        Wed, 17 Aug 2022 07:22:57 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05E7606A4
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 04:22:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18AB6CF45
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 04:22:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 99239614C7
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F05D614C9
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 11:22:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F5BCC433B5
         for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 11:22:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7212DC433D7
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 11:22:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660735375;
-        bh=j/ODHUZcA8OtCTa/SH4CvYiotd90a7Eerw3O0tw+FbI=;
+        s=k20201202; t=1660735376;
+        bh=xMMo1GFYJ7m6Lbnm9+ridGF3gHkC/kuAQUkyT8oNIWs=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=kRRh44esS593MoSSbTEPM80OPYc4Ku4ShE5G24kxN+Uda74NO2TOgB0TAynPpmkp4
-         xTUHg1uXAMha2PHcYIYaREjD4AyHkvvsDZ1u4e0Qx65GzHXf41ju2xgWESsa8OgJmr
-         Ror6bJdWec2yWYsuy1uANfBpst7ravlc0mF7QnMqVvcGUkw73oeV+wkwFwMHNyCEiT
-         4jBfdETVfRrPXal8Umi0XDF5oCLjq0mw4e7NK1b1leGau1oKQRQml8AI/QEeGDfMON
-         wH29CiDiOjglaAsyL66HUvyfxZyIClnCMLXre8iNWfizCxQS+rBq3q9GXU8k5YOmWa
-         Uy8p+jqFjCOhw==
+        b=S4DAXU1w4+DqxDvRZAEIxbkBOjUnnjzZs0KOocNMbDnmyzyYl/M6i2AQ2onks1jFI
+         1VYsVE/5+rdUqZs/RBhN4KVM4YRlnARU6vWNQJoKCrG5X3Y/k+9d+yA0RtTiJ3Vrjw
+         r9BYCkDauHea8X9a9qRCKA3eGRj4POTz02zNfw4znVar+HNlDU4dKpHaGcMucpOVhE
+         eN+ScDatCHYzx6H4tu0n8W7PN0oJvc0+TgmupZ+0Or3d9yOKyiRC6gNSrWEwDeXg9U
+         MagD5O6BOBHxqJIKVXCaF5DROZ6Ng92NOFkF33atQLYcjOu1Tm1lDQNcWxXFGVwFKy
+         lK6KjZr/7NAfw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 01/15] btrfs: don't drop dir index range items when logging a directory
-Date:   Wed, 17 Aug 2022 12:22:34 +0100
-Message-Id: <f3363d4a3f46944f5788940871b00b2cc4009c5e.1660735024.git.fdmanana@suse.com>
+Subject: [PATCH 02/15] btrfs: remove the root argument from log_new_dir_dentries()
+Date:   Wed, 17 Aug 2022 12:22:35 +0100
+Message-Id: <c0e3db51951312b3b91ab558f28084df942c8c39.1660735024.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1660735024.git.fdmanana@suse.com>
 References: <cover.1660735024.git.fdmanana@suse.com>
@@ -54,52 +54,49 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When logging a directory that was previously logged in the current
-transaction, we drop all the range items (BTRFS_DIR_LOG_INDEX_KEY key
-type). This is because we will process all leaves in the subvolume's tree
-that were changed in the current transaction and then add range items for
-covering new dir index items and deleted dir index items, which could
-cover now a larger range than before.
-
-We used to fail if we tried to insert a range item key that already
-exists, so we dropped all range items to avoid failing. However nowadays,
-since commit 750ee454908e90 ("btrfs: fix assertion failure when logging
-directory key range item"), we simply update any range item that already
-exists, increasing its range's last dir index if needed. Since the range
-covered by a range item can never decrease, due to the fact that dir index
-values come from a monotonically increasing counter and are never reused,
-we can stop dropping all range items before we start logging a directory.
-By not dropping the items we can avoid having occasional tree rebalance
-operations.
-
-This will also be needed for an incoming change where we start logging
-delayed items directly, without flushing them first.
+There's no point in passing a root argument to log_new_dir_dentries()
+because it always corresponds to the root of the given inode. So remove
+it and extract the root from the given inode.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ fs/btrfs/tree-log.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 4d2d19fea112..cffd15e23614 100644
+index cffd15e23614..56fbd3b9f642 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -5716,14 +5716,10 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 	 * copies of everything.
- 	 */
- 	if (S_ISDIR(inode->vfs_inode.i_mode)) {
--		int max_key_type = BTRFS_DIR_LOG_INDEX_KEY;
--
- 		clear_bit(BTRFS_INODE_COPY_EVERYTHING, &inode->runtime_flags);
--		if (inode_only == LOG_INODE_EXISTS)
--			max_key_type = BTRFS_XATTR_ITEM_KEY;
- 		if (ctx->logged_before)
- 			ret = drop_inode_items(trans, log, path, inode,
--					       max_key_type);
-+					       BTRFS_XATTR_ITEM_KEY);
- 	} else {
- 		if (inode_only == LOG_INODE_EXISTS && ctx->logged_before) {
- 			/*
+@@ -5969,10 +5969,10 @@ struct btrfs_dir_list {
+  *    do_overwrite_item()).
+  */
+ static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
+-				struct btrfs_root *root,
+ 				struct btrfs_inode *start_inode,
+ 				struct btrfs_log_ctx *ctx)
+ {
++	struct btrfs_root *root = start_inode->root;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct btrfs_path *path;
+ 	LIST_HEAD(dir_list);
+@@ -6199,7 +6199,7 @@ static int btrfs_log_all_parents(struct btrfs_trans_handle *trans,
+ 			ret = btrfs_log_inode(trans, BTRFS_I(dir_inode),
+ 					      LOG_INODE_ALL, ctx);
+ 			if (!ret && ctx->log_new_dentries)
+-				ret = log_new_dir_dentries(trans, root,
++				ret = log_new_dir_dentries(trans,
+ 						   BTRFS_I(dir_inode), ctx);
+ 			btrfs_add_delayed_iput(dir_inode);
+ 			if (ret)
+@@ -6514,7 +6514,7 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
+ 		goto end_trans;
+ 
+ 	if (log_dentries)
+-		ret = log_new_dir_dentries(trans, root, inode, ctx);
++		ret = log_new_dir_dentries(trans, inode, ctx);
+ 	else
+ 		ret = 0;
+ end_trans:
 -- 
 2.35.1
 
