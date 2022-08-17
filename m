@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C87A596D7D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Aug 2022 13:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70044596D74
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Aug 2022 13:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235969AbiHQLXD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Aug 2022 07:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        id S235977AbiHQLXE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Aug 2022 07:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235652AbiHQLXC (ORCPT
+        with ESMTP id S235937AbiHQLXD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Aug 2022 07:23:02 -0400
+        Wed, 17 Aug 2022 07:23:03 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752FF6E2EA
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 04:23:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDDC6DAD6
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 04:23:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 276EFB81CC2
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 11:23:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6745BC433D7
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 11:22:58 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 41FE8B81D49
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 11:23:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64DE6C433B5
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 11:22:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660735378;
-        bh=/1WURF2Y9G9fQ69S2W9mZ3IrBKFe0uDBOg3UOwjD/2A=;
+        s=k20201202; t=1660735379;
+        bh=9ls91ugzqt+2lsQ6hmYR/x0CTNdK0bDW2ELEIvW/PD8=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=uWC25OdhyTDWvEFcCq858yb1TIAZ+3EAKkJHppNt9FObdelmAZWmdqaWgzCd4EoyW
-         zqJL3OZG0skqtQEo3lFlg69SQ1CZdLvLAmZadrmkyKgskMUZBtsX+OIzHdGvndjejh
-         vtrf7t4MSfHEjW7O+usdc4Es1l/bm4nm+4MgIUvNVuxCNK5uDPi7BK1MQPCNHTMeJD
-         WORU94Tg8+JZjteI9ZQEZiQHE/38mmoG9sbz8W/JtVYEFL/mFbuy4uaiFSi/uxT/AM
-         MGL40F8ANML5ANayMMzB1Jo1opSaHva9va2qqUUhb8tr4KWLUgpo+xK42RVxpDBJu7
-         UHsgbgoiepNcg==
+        b=BxeuvuSJy1uJldB9Kfo8FZL0IXecjJuOPDRcmfn6WTZUPwDBgKi3o99dPnlZ/f8aQ
+         I94F37uLP7gi4PvMBoCqz/BqA70wQdS5kPkrc/+w2GADPkt1MZKZ7Ax9bFaPg0IPep
+         CNWwujRYafhXNKvdAdifb+/ZTtDmek18G5XAFzfEYWe/VVGRiKkMbL4GHG8vORce78
+         PM3j8CaJaFb1rHPh7t5+2x2byQ4HUeWAZi0bGNc2myfnK4CCZvo6zdcEdGLtdmMX9b
+         /EFQeq1w6OrnKQ6o9w9fCXIsmQgxnnbE8qLO+lp5wfh3L2MI0M9yqeA1EUSqNhjzs3
+         SlhLYRYQJArDg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 05/15] btrfs: avoid memory allocation at log_new_dir_dentries() for common case
-Date:   Wed, 17 Aug 2022 12:22:38 +0100
-Message-Id: <40fb8d577df3c5473b0316e78c3c0070786a1d37.1660735025.git.fdmanana@suse.com>
+Subject: [PATCH 06/15] btrfs: remove root argument from btrfs_delayed_item_reserve_metadata()
+Date:   Wed, 17 Aug 2022 12:22:39 +0100
+Message-Id: <acd7124b046ac4c69bba6f9aeb848ceade7b6402.1660735025.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1660735024.git.fdmanana@suse.com>
 References: <cover.1660735024.git.fdmanana@suse.com>
@@ -54,90 +54,52 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At log_new_dir_dentries() we always start by allocating a list element
-for the starting inode and then do a while loop with the condition being
-a list emptiness check.
-
-This however is not needed, we can avoid allocating this initial list
-element and then just check for the list emptiness at the end of the
-loop's body. So just do that to save one memory allocation from the
-kmalloc-32 slab.
-
-This allows for not doing any memory allocation when we don't have any
-subdirectory to log, which is a very common case.
+The root argument of btrfs_delayed_item_reserve_metadata() is used only
+to get the fs_info object, but we already have a transaction handle, which
+we can use to get the fs_info. So remove the root argument.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 29 ++++++++++++-----------------
- 1 file changed, 12 insertions(+), 17 deletions(-)
+ fs/btrfs/delayed-inode.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index bd50509e9839..94026098bb68 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -5977,6 +5977,7 @@ static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
- 	struct btrfs_path *path;
- 	LIST_HEAD(dir_list);
- 	struct btrfs_dir_list *dir_elem;
-+	u64 ino = btrfs_ino(start_inode);
- 	int ret = 0;
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index e7f34871a132..a080e08bbb4d 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -520,12 +520,11 @@ static struct btrfs_delayed_item *__btrfs_next_delayed_item(
+ }
  
- 	/*
-@@ -5991,28 +5992,13 @@ static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
- 	if (!path)
- 		return -ENOMEM;
+ static int btrfs_delayed_item_reserve_metadata(struct btrfs_trans_handle *trans,
+-					       struct btrfs_root *root,
+ 					       struct btrfs_delayed_item *item)
+ {
+ 	struct btrfs_block_rsv *src_rsv;
+ 	struct btrfs_block_rsv *dst_rsv;
+-	struct btrfs_fs_info *fs_info = root->fs_info;
++	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	u64 num_bytes;
+ 	int ret;
  
--	dir_elem = kmalloc(sizeof(*dir_elem), GFP_NOFS);
--	if (!dir_elem) {
--		btrfs_free_path(path);
--		return -ENOMEM;
--	}
--	dir_elem->ino = btrfs_ino(start_inode);
--	list_add_tail(&dir_elem->list, &dir_list);
--
--	while (!list_empty(&dir_list)) {
-+	while (true) {
- 		struct extent_buffer *leaf;
- 		struct btrfs_key min_key;
--		u64 ino;
- 		bool continue_curr_inode = true;
- 		int nritems;
- 		int i;
- 
--		dir_elem = list_first_entry(&dir_list, struct btrfs_dir_list,
--					    list);
--		ino = dir_elem->ino;
--		list_del(&dir_elem->list);
--		kfree(dir_elem);
--
- 		min_key.objectid = ino;
- 		min_key.type = BTRFS_DIR_INDEX_KEY;
- 		min_key.offset = 0;
-@@ -6023,7 +6009,7 @@ static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
- 			break;
- 		} else if (ret > 0) {
- 			ret = 0;
--			continue;
-+			goto next;
- 		}
- 
- 		leaf = path->nodes[0];
-@@ -6086,6 +6072,15 @@ static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
- 			min_key.offset++;
- 			goto again;
- 		}
-+
-+next:
-+		if (list_empty(&dir_list))
-+			break;
-+
-+		dir_elem = list_first_entry(&dir_list, struct btrfs_dir_list, list);
-+		ino = dir_elem->ino;
-+		list_del(&dir_elem->list);
-+		kfree(dir_elem);
+@@ -1490,8 +1489,7 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
  	}
- out:
- 	btrfs_free_path(path);
+ 
+ 	if (reserve_leaf_space) {
+-		ret = btrfs_delayed_item_reserve_metadata(trans, dir->root,
+-							  delayed_item);
++		ret = btrfs_delayed_item_reserve_metadata(trans, delayed_item);
+ 		/*
+ 		 * Space was reserved for a dir index item insertion when we
+ 		 * started the transaction, so getting a failure here should be
+@@ -1614,7 +1612,7 @@ int btrfs_delete_delayed_dir_index(struct btrfs_trans_handle *trans,
+ 	item->key = item_key;
+ 	item->ins_or_del = BTRFS_DELAYED_DELETION_ITEM;
+ 
+-	ret = btrfs_delayed_item_reserve_metadata(trans, dir->root, item);
++	ret = btrfs_delayed_item_reserve_metadata(trans, item);
+ 	/*
+ 	 * we have reserved enough space when we start a new transaction,
+ 	 * so reserving metadata failure is impossible.
 -- 
 2.35.1
 
