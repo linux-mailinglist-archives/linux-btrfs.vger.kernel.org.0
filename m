@@ -2,311 +2,385 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0407596C44
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Aug 2022 11:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F6F596D05
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Aug 2022 12:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbiHQJsQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Aug 2022 05:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59844 "EHLO
+        id S239024AbiHQKwF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Aug 2022 06:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235135AbiHQJrz (ORCPT
+        with ESMTP id S236115AbiHQKwE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Aug 2022 05:47:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A01E6AA38
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 02:47:53 -0700 (PDT)
+        Wed, 17 Aug 2022 06:52:04 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A596C77F;
+        Wed, 17 Aug 2022 03:52:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9BC026142A
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 09:47:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0D10C433D6;
-        Wed, 17 Aug 2022 09:47:51 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9E113B815DF;
+        Wed, 17 Aug 2022 10:52:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EA87C433D6;
+        Wed, 17 Aug 2022 10:51:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660729672;
-        bh=7IgIvpItRzG5n///Wmmzb32VY8HdvCwJmIYxglZOdl8=;
+        s=k20201202; t=1660733520;
+        bh=KG8xvvbGiZe/TkhMXPD6bsus1SW8j0TgQ/LLNUFBJl4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PSHzizp6jxRR8f4JynH9BPLXp4LCNp2J1x/1GSKMPTaDJZx7oW8+K9vQIwlpsZt57
-         9t1qke5YqBccMnMeQWpEZOI26BzX20taEY6YoaWwN4skwY+Fuwv5tDOwr+bk/eQXXV
-         AqPp+v0ZCpq5RwNY+MBvAUrRHorUbuTNxGJvFddxuIZqSUbqT06hb0bT+/poLe1opt
-         Svdl0+/8K5eZWtKU9Xw6H03jaEDmr6S5DAHiRkbm2NVnBOrEMvUBR02WGGJXII1XhZ
-         d/179zKpNM/m5nI6TS75WppUKzqYU130W/UFqYGzmah0OI34uLBMGEx7k1zRe+w0C/
-         zCyAJozCJuHQA==
-Date:   Wed, 17 Aug 2022 10:47:49 +0100
+        b=md2t5MRIZwFZzv5lV6xLWrCGAp1KrXTW+ixASKqAM7Ngn5js/oz7AeF8SEz3JsbiO
+         CoVqdiNyE2vmwVsShpRFI2ul5ovo3Aiv/vqaO6iIMBasfCr2nmZJYBi4omBs8uadz4
+         L+YArt2pa7X2bu+xfkW3eWPSJ8f6X2taCS8plrpMU5H8uvr/XqU6a8vRvuL94UoHV4
+         8nhO6P4YvHpKLZU7LtO/YNkE55qQCrYz29JCshApopiCQtj4p4Tzt23k2Kti18uNch
+         4F2HUg+WVAviB2wIMScixXN/aj9TUfTx80j8vvDGUXS0xVxVHjSmnk0dBiteoLq1rT
+         gHJzIid7aEmBQ==
+Date:   Wed, 17 Aug 2022 11:51:57 +0100
 From:   Filipe Manana <fdmanana@kernel.org>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 2/2] btrfs: get rid of block group caching progress logic
-Message-ID: <20220817094749.GB2815552@falcondesktop>
-References: <cover.1660690698.git.osandov@fb.com>
- <1ac68be51384f9cc2433bb7979f4cda563e72976.1660690698.git.osandov@fb.com>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Test xattr changes for read-only btrfs property
+Message-ID: <20220817105157.GC2815552@falcondesktop>
+References: <20220816214051.wsw75y3mtjdsim6w@fiona>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1ac68be51384f9cc2433bb7979f4cda563e72976.1660690698.git.osandov@fb.com>
+In-Reply-To: <20220816214051.wsw75y3mtjdsim6w@fiona>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 16, 2022 at 04:12:16PM -0700, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
+On Tue, Aug 16, 2022 at 04:40:51PM -0500, Goldwyn Rodrigues wrote:
+> Test creation, modification and deletion of xattr for a BTRFS filesystem
+> which has the read-only property set to true.
 > 
-> struct btrfs_caching_ctl::progress and struct
-> btrfs_block_group::last_byte_to_unpin were previously needed to ensure
-> that unpin_extent_range() didn't return a range to the free space cache
-> before the caching thread had a chance to cache that range. However, the
-> previous commit made it so that we always synchronously cache the block
-> group at the time that we pin the extent, so this machinery is no longer
-> necessary.
+> Re-test the same after BTRFS read-only property is set to false.
 > 
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> This tests the bug for "security.*" modifications which escape
+> xattr_permission(), because security parameters are let through
+> in xattr_permission(), without checks from
+> inode_permission()->btrfs_permission(). There is no restriction on
+> security.* from VFS and decision is left to the underlying filesystem.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+When a test currently fails and we have a patch that fixes it, we mention
+it in the changelog and/or the test itself.
 
-Looks good, thanks.
+Nowadays (and I learned this recently as it's new), we have an annotation
+to add to the test itself, like this:
 
-> ---
->  fs/btrfs/block-group.c     | 13 ------------
->  fs/btrfs/block-group.h     |  2 --
->  fs/btrfs/extent-tree.c     |  9 ++-------
->  fs/btrfs/free-space-tree.c |  8 --------
->  fs/btrfs/transaction.c     | 41 --------------------------------------
->  fs/btrfs/zoned.c           |  1 -
->  6 files changed, 2 insertions(+), 72 deletions(-)
+_fixed_by_kernel_commit XXXXXXXXXXXX "btrfs: check if root is readonly while setting security xattr"
+
+(Notice that I changed "Check" to "check", because that's the convention
+for btrfs patches, and David would fix that when picking the patch anyway)
+
+In this case since the patch is not yet in Linus' tree, we can leave
+the XXXXXXXXXXXX marker and later update it once it lands in his tree.
+
 > 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 1af6fc395a52..68992ad9ff2a 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -593,8 +593,6 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
->  
->  			if (need_resched() ||
->  			    rwsem_is_contended(&fs_info->commit_root_sem)) {
-> -				if (wakeup)
-> -					caching_ctl->progress = last;
->  				btrfs_release_path(path);
->  				up_read(&fs_info->commit_root_sem);
->  				mutex_unlock(&caching_ctl->mutex);
-> @@ -618,9 +616,6 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
->  			key.objectid = last;
->  			key.offset = 0;
->  			key.type = BTRFS_EXTENT_ITEM_KEY;
-> -
-> -			if (wakeup)
-> -				caching_ctl->progress = last;
->  			btrfs_release_path(path);
->  			goto next;
->  		}
-> @@ -655,7 +650,6 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
->  
->  	total_found += add_new_free_space(block_group, last,
->  				block_group->start + block_group->length);
-> -	caching_ctl->progress = (u64)-1;
->  
->  out:
->  	btrfs_free_path(path);
-> @@ -725,8 +719,6 @@ static noinline void caching_thread(struct btrfs_work *work)
->  	}
->  #endif
->  
-> -	caching_ctl->progress = (u64)-1;
-> -
->  	up_read(&fs_info->commit_root_sem);
->  	btrfs_free_excluded_extents(block_group);
->  	mutex_unlock(&caching_ctl->mutex);
-> @@ -755,7 +747,6 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, bool wait)
->  	mutex_init(&caching_ctl->mutex);
->  	init_waitqueue_head(&caching_ctl->wait);
->  	caching_ctl->block_group = cache;
-> -	caching_ctl->progress = cache->start;
->  	refcount_set(&caching_ctl->count, 2);
->  	btrfs_init_work(&caching_ctl->work, caching_thread, NULL, NULL);
->  
-> @@ -2076,11 +2067,9 @@ static int read_one_block_group(struct btrfs_fs_info *info,
->  		/* Should not have any excluded extents. Just in case, though. */
->  		btrfs_free_excluded_extents(cache);
->  	} else if (cache->length == cache->used) {
-> -		cache->last_byte_to_unpin = (u64)-1;
->  		cache->cached = BTRFS_CACHE_FINISHED;
->  		btrfs_free_excluded_extents(cache);
->  	} else if (cache->used == 0) {
-> -		cache->last_byte_to_unpin = (u64)-1;
->  		cache->cached = BTRFS_CACHE_FINISHED;
->  		add_new_free_space(cache, cache->start,
->  				   cache->start + cache->length);
-> @@ -2136,7 +2125,6 @@ static int fill_dummy_bgs(struct btrfs_fs_info *fs_info)
->  		/* Fill dummy cache as FULL */
->  		bg->length = em->len;
->  		bg->flags = map->type;
-> -		bg->last_byte_to_unpin = (u64)-1;
->  		bg->cached = BTRFS_CACHE_FINISHED;
->  		bg->used = em->len;
->  		bg->flags = map->type;
-> @@ -2482,7 +2470,6 @@ struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *tran
->  	set_free_space_tree_thresholds(cache);
->  	cache->used = bytes_used;
->  	cache->flags = type;
-> -	cache->last_byte_to_unpin = (u64)-1;
->  	cache->cached = BTRFS_CACHE_FINISHED;
->  	cache->global_root_id = calculate_global_root_id(fs_info, cache->start);
->  
-> diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-> index 9dba28bb1806..59a86e82a28e 100644
-> --- a/fs/btrfs/block-group.h
-> +++ b/fs/btrfs/block-group.h
-> @@ -63,7 +63,6 @@ struct btrfs_caching_control {
->  	wait_queue_head_t wait;
->  	struct btrfs_work work;
->  	struct btrfs_block_group *block_group;
-> -	u64 progress;
->  	refcount_t count;
->  };
->  
-> @@ -115,7 +114,6 @@ struct btrfs_block_group {
->  	/* Cache tracking stuff */
->  	int cached;
->  	struct btrfs_caching_control *caching_ctl;
-> -	u64 last_byte_to_unpin;
->  
->  	struct btrfs_space_info *space_info;
->  
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 86ac953c69ac..bcd0e72cded3 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -2686,13 +2686,8 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
->  		len = cache->start + cache->length - start;
->  		len = min(len, end + 1 - start);
->  
-> -		down_read(&fs_info->commit_root_sem);
-> -		if (start < cache->last_byte_to_unpin && return_free_space) {
-> -			u64 add_len = min(len, cache->last_byte_to_unpin - start);
-> -
-> -			btrfs_add_free_space(cache, start, add_len);
-> -		}
-> -		up_read(&fs_info->commit_root_sem);
-> +		if (return_free_space)
-> +			btrfs_add_free_space(cache, start, len);
->  
->  		start += len;
->  		total_unpinned += len;
-> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-> index 1bf89aa67216..367bcfcf68f5 100644
-> --- a/fs/btrfs/free-space-tree.c
-> +++ b/fs/btrfs/free-space-tree.c
-> @@ -1453,8 +1453,6 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
->  		ASSERT(key.type == BTRFS_FREE_SPACE_BITMAP_KEY);
->  		ASSERT(key.objectid < end && key.objectid + key.offset <= end);
->  
-> -		caching_ctl->progress = key.objectid;
-> -
->  		offset = key.objectid;
->  		while (offset < key.objectid + key.offset) {
->  			bit = free_space_test_bit(block_group, path, offset);
-> @@ -1490,8 +1488,6 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
->  		goto out;
->  	}
->  
-> -	caching_ctl->progress = (u64)-1;
-> -
->  	ret = 0;
->  out:
->  	return ret;
-> @@ -1531,8 +1527,6 @@ static int load_free_space_extents(struct btrfs_caching_control *caching_ctl,
->  		ASSERT(key.type == BTRFS_FREE_SPACE_EXTENT_KEY);
->  		ASSERT(key.objectid < end && key.objectid + key.offset <= end);
->  
-> -		caching_ctl->progress = key.objectid;
-> -
->  		total_found += add_new_free_space(block_group, key.objectid,
->  						  key.objectid + key.offset);
->  		if (total_found > CACHING_CTL_WAKE_UP) {
-> @@ -1552,8 +1546,6 @@ static int load_free_space_extents(struct btrfs_caching_control *caching_ctl,
->  		goto out;
->  	}
->  
-> -	caching_ctl->progress = (u64)-1;
-> -
->  	ret = 0;
->  out:
->  	return ret;
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index 6e3b2cb6a04a..4c87bf2abc14 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -161,7 +161,6 @@ static noinline void switch_commit_roots(struct btrfs_trans_handle *trans)
->  	struct btrfs_transaction *cur_trans = trans->transaction;
->  	struct btrfs_fs_info *fs_info = trans->fs_info;
->  	struct btrfs_root *root, *tmp;
-> -	struct btrfs_caching_control *caching_ctl, *next;
->  
->  	/*
->  	 * At this point no one can be using this transaction to modify any tree
-> @@ -196,46 +195,6 @@ static noinline void switch_commit_roots(struct btrfs_trans_handle *trans)
->  	}
->  	spin_unlock(&cur_trans->dropped_roots_lock);
->  
-> -	/*
-> -	 * We have to update the last_byte_to_unpin under the commit_root_sem,
-> -	 * at the same time we swap out the commit roots.
-> -	 *
-> -	 * This is because we must have a real view of the last spot the caching
-> -	 * kthreads were while caching.  Consider the following views of the
-> -	 * extent tree for a block group
-> -	 *
-> -	 * commit root
-> -	 * +----+----+----+----+----+----+----+
-> -	 * |\\\\|    |\\\\|\\\\|    |\\\\|\\\\|
-> -	 * +----+----+----+----+----+----+----+
-> -	 * 0    1    2    3    4    5    6    7
-> -	 *
-> -	 * new commit root
-> -	 * +----+----+----+----+----+----+----+
-> -	 * |    |    |    |\\\\|    |    |\\\\|
-> -	 * +----+----+----+----+----+----+----+
-> -	 * 0    1    2    3    4    5    6    7
-> -	 *
-> -	 * If the cache_ctl->progress was at 3, then we are only allowed to
-> -	 * unpin [0,1) and [2,3], because the caching thread has already
-> -	 * processed those extents.  We are not allowed to unpin [5,6), because
-> -	 * the caching thread will re-start it's search from 3, and thus find
-> -	 * the hole from [4,6) to add to the free space cache.
-> -	 */
-> -	write_lock(&fs_info->block_group_cache_lock);
-> -	list_for_each_entry_safe(caching_ctl, next,
-> -				 &fs_info->caching_block_groups, list) {
-> -		struct btrfs_block_group *cache = caching_ctl->block_group;
-> -
-> -		if (btrfs_block_group_done(cache)) {
-> -			cache->last_byte_to_unpin = (u64)-1;
-> -			list_del_init(&caching_ctl->list);
-> -			btrfs_put_caching_control(caching_ctl);
-> -		} else {
-> -			cache->last_byte_to_unpin = caching_ctl->progress;
-> -		}
-> -	}
-> -	write_unlock(&fs_info->block_group_cache_lock);
->  	up_write(&fs_info->commit_root_sem);
->  }
->  
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 61ae58c3a354..56a147a6e571 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -1558,7 +1558,6 @@ void btrfs_calc_zone_unusable(struct btrfs_block_group *cache)
->  	free = cache->zone_capacity - cache->alloc_offset;
->  
->  	/* We only need ->free_space in ALLOC_SEQ block groups */
-> -	cache->last_byte_to_unpin = (u64)-1;
->  	cache->cached = BTRFS_CACHE_FINISHED;
->  	cache->free_space_ctl->free_space = free;
->  	cache->zone_unusable = unusable;
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> diff --git a/tests/btrfs/273 b/tests/btrfs/273
+> new file mode 100755
+> index 00000000..ec7d264d
+> --- /dev/null
+> +++ b/tests/btrfs/273
+> @@ -0,0 +1,78 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test No. 273
+> +#
+> +# Test that no xattr can be changed once btrfs property is set to RO
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick attr
+
+subvol group too.
+
+> +
+> +# Import common functions.
+> +#. ./common/filter
+
+Ratther than comment, remove it, but we'll need a filter, see below.
+
+> +. ./common/attr
+> +
+> +# real QA test starts here
+> +_supported_fs btrfs
+> +_require_attrs
+> +_require_btrfs_command "property"
+> +_require_scratch
+> +
+> +_scratch_mkfs > /dev/null 2>&1 || _fail "mkfs failed"
+> +_scratch_mount
+> +
+> +FILENAME=$SCRATCH_MNT/foo
+> +
+> +set_xattr() {
+> +	local value=$1
+> +	$SETFATTR_PROG -n "user.one" -v $value $FILENAME
+> +	$SETFATTR_PROG -n "security.one" -v $value $FILENAME
+> +	$SETFATTR_PROG -n "trusted.one" -v $value $FILENAME
+> +}
+> +
+> +get_xattr() {
+> +	$GETFATTR_PROG -n "user.one" $FILENAME
+> +	$GETFATTR_PROG -n "security.one" $FILENAME
+> +	$GETFATTR_PROG -n "trusted.one" $FILENAME
+> +}
+> +
+> +del_xattr() {
+> +	$SETFATTR_PROG -x "user.one" $FILENAME
+> +	$SETFATTR_PROG -x "security.one" $FILENAME
+> +	$SETFATTR_PROG -x "trusted.one" $FILENAME
+> +}
+> +
+> +# Create a test file.
+> +echo "hello world" > $FILENAME
+> +
+> +set_xattr 1
+> +
+> +$BTRFS_UTIL_PROG property set $SCRATCH_MNT ro true
+> +$BTRFS_UTIL_PROG property get $SCRATCH_MNT ro
+> +
+> +# Attempt to change values of RO (property) filesystem
+> +set_xattr 2
+> +
+> +# Check the values of RO (property) filesystem is not changed
+> +get_xattr
+> +
+> +# Attempt to remove xattr from RO (property) filesystem
+> +del_xattr
+
+Here we should call get_xattr() again to verify the xattrs were
+not deleted, just like we did before.
+
+> +
+> +# Change filesystem property RO to false
+> +
+> +$BTRFS_UTIL_PROG property set $SCRATCH_MNT ro false
+> +$BTRFS_UTIL_PROG property get $SCRATCH_MNT ro
+> +
+> +# Change the xattrs after RO is false
+> +set_xattr 2
+> +
+> +# Get the changed values
+> +get_xattr
+> +
+> +# Remove xattr
+> +del_xattr
+> +
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/273.out b/tests/btrfs/273.out
+> new file mode 100644
+> index 00000000..f6fca029
+> --- /dev/null
+> +++ b/tests/btrfs/273.out
+> @@ -0,0 +1,33 @@
+> +QA output created by 273
+> +ro=true
+> +setfattr: /scratch/foo: Read-only file system
+> +setfattr: /scratch/foo: Read-only file system
+> +setfattr: /scratch/foo: Read-only file system
+> +getfattr: Removing leading '/' from absolute path names
+
+We can get rid of this message by passing --absolute-names to getfattr.
+We do that in every generic test case I can find.
+
+> +# file: scratch/foo
+
+And --absolute-names is also used in order to be able to filter the
+golden output.
+
+The test fails on any config where SCRATCH_MNT is not "/scratch",
+like in my environment:
+
+   -# file: scratch/foo
+   +# file: home/fdmanana/btrfs-tests/scratch_1/foo
+
+By passing --absolute-names we can then use _filter_scratch and have
+this instead in the golden output:
+
+# file: SCRATCH_MNT/foo
+
+> +user.one="1"
+> +
+> +getfattr: Removing leading '/' from absolute path names
+> +# file: scratch/foo
+> +security.one="1"
+> +
+> +getfattr: Removing leading '/' from absolute path names
+> +# file: scratch/foo
+> +trusted.one="1"
+> +
+> +setfattr: /scratch/foo: Read-only file system
+
+Same here. The test fails if SCRATCH_MNT is not "/scratch".
+We need to append "2>&1 | _filter_scratch" to every setfattr call in the test.
+
+And then have the following in the golden output instead:
+
+setfattr: SCRATCH_MNT/foo: Read-only file system
+
+Here's a diff that fixes the golden output and adds the other things
+mentioned before:
+
+diff --git a/tests/btrfs/273 b/tests/btrfs/273
+index ec7d264d..37e9e52c 100755
+--- a/tests/btrfs/273
++++ b/tests/btrfs/273
+@@ -7,14 +7,15 @@
+ # Test that no xattr can be changed once btrfs property is set to RO
+ #
+ . ./common/preamble
+-_begin_fstest auto quick attr
++_begin_fstest auto quick attr subvol
+ 
+ # Import common functions.
+-#. ./common/filter
++. ./common/filter
+ . ./common/attr
+ 
+ # real QA test starts here
+ _supported_fs btrfs
++_fixed_by_kernel_commit XXXXXXXXXXXX "btrfs: check if root is readonly while setting security xattr"
+ _require_attrs
+ _require_btrfs_command "property"
+ _require_scratch
+@@ -23,24 +24,23 @@ _scratch_mkfs > /dev/null 2>&1 || _fail "mkfs failed"
+ _scratch_mount
+ 
+ FILENAME=$SCRATCH_MNT/foo
+-
+ set_xattr() {
+ 	local value=$1
+-	$SETFATTR_PROG -n "user.one" -v $value $FILENAME
+-	$SETFATTR_PROG -n "security.one" -v $value $FILENAME
+-	$SETFATTR_PROG -n "trusted.one" -v $value $FILENAME
++	$SETFATTR_PROG -n "user.one" -v $value $FILENAME 2>&1 | _filter_scratch
++	$SETFATTR_PROG -n "security.one" -v $value $FILENAME 2>&1 | _filter_scratch
++	$SETFATTR_PROG -n "trusted.one" -v $value $FILENAME 2>&1 | _filter_scratch
+ }
+ 
+ get_xattr() {
+-	$GETFATTR_PROG -n "user.one" $FILENAME
+-	$GETFATTR_PROG -n "security.one" $FILENAME
+-	$GETFATTR_PROG -n "trusted.one" $FILENAME
++	$GETFATTR_PROG -n "user.one" --absolute-names $FILENAME | _filter_scratch
++	$GETFATTR_PROG -n "security.one" --absolute-names $FILENAME | _filter_scratch
++	$GETFATTR_PROG -n "trusted.one" --absolute-names $FILENAME | _filter_scratch
+ }
+ 
+ del_xattr() {
+-	$SETFATTR_PROG -x "user.one" $FILENAME
+-	$SETFATTR_PROG -x "security.one" $FILENAME
+-	$SETFATTR_PROG -x "trusted.one" $FILENAME
++	$SETFATTR_PROG -x "user.one" $FILENAME 2>&1 | _filter_scratch
++	$SETFATTR_PROG -x "security.one" $FILENAME 2>&1 | _filter_scratch
++	$SETFATTR_PROG -x "trusted.one" $FILENAME 2>&1 | _filter_scratch
+ }
+ 
+ # Create a test file.
+@@ -54,12 +54,15 @@ $BTRFS_UTIL_PROG property get $SCRATCH_MNT ro
+ # Attempt to change values of RO (property) filesystem
+ set_xattr 2
+ 
+-# Check the values of RO (property) filesystem is not changed
++# Check the values of RO (property) filesystem are not changed
+ get_xattr
+ 
+ # Attempt to remove xattr from RO (property) filesystem
+ del_xattr
+ 
++# Check the values of RO (property) filesystem are not changed
++get_xattr
++
+ # Change filesystem property RO to false
+ 
+ $BTRFS_UTIL_PROG property set $SCRATCH_MNT ro false
+diff --git a/tests/btrfs/273.out b/tests/btrfs/273.out
+index f6fca029..ae85b0a5 100644
+--- a/tests/btrfs/273.out
++++ b/tests/btrfs/273.out
+@@ -1,33 +1,36 @@
+ QA output created by 273
+ ro=true
+-setfattr: /scratch/foo: Read-only file system
+-setfattr: /scratch/foo: Read-only file system
+-setfattr: /scratch/foo: Read-only file system
+-getfattr: Removing leading '/' from absolute path names
+-# file: scratch/foo
++setfattr: SCRATCH_MNT/foo: Read-only file system
++setfattr: SCRATCH_MNT/foo: Read-only file system
++setfattr: SCRATCH_MNT/foo: Read-only file system
++# file: SCRATCH_MNT/foo
+ user.one="1"
+ 
+-getfattr: Removing leading '/' from absolute path names
+-# file: scratch/foo
++# file: SCRATCH_MNT/foo
+ security.one="1"
+ 
+-getfattr: Removing leading '/' from absolute path names
+-# file: scratch/foo
++# file: SCRATCH_MNT/foo
++trusted.one="1"
++
++setfattr: SCRATCH_MNT/foo: Read-only file system
++setfattr: SCRATCH_MNT/foo: Read-only file system
++setfattr: SCRATCH_MNT/foo: Read-only file system
++# file: SCRATCH_MNT/foo
++user.one="1"
++
++# file: SCRATCH_MNT/foo
++security.one="1"
++
++# file: SCRATCH_MNT/foo
+ trusted.one="1"
+ 
+-setfattr: /scratch/foo: Read-only file system
+-setfattr: /scratch/foo: Read-only file system
+-setfattr: /scratch/foo: Read-only file system
+ ro=false
+-getfattr: Removing leading '/' from absolute path names
+-# file: scratch/foo
++# file: SCRATCH_MNT/foo
+ user.one="2"
+ 
+-getfattr: Removing leading '/' from absolute path names
+-# file: scratch/foo
++# file: SCRATCH_MNT/foo
+ security.one="2"
+ 
+-getfattr: Removing leading '/' from absolute path names
+-# file: scratch/foo
++# file: SCRATCH_MNT/foo
+ trusted.one="2"
+ 
+
+Thanks.
+
+
+> +setfattr: /scratch/foo: Read-only file system
+> +setfattr: /scratch/foo: Read-only file system
+> +ro=false
+> +getfattr: Removing leading '/' from absolute path names
+> +# file: scratch/foo
+> +user.one="2"
+> +
+> +getfattr: Removing leading '/' from absolute path names
+> +# file: scratch/foo
+> +security.one="2"
+> +
+> +getfattr: Removing leading '/' from absolute path names
+> +# file: scratch/foo
+> +trusted.one="2"
+> +
+> 
 > -- 
-> 2.37.2
-> 
+> Goldwyn
