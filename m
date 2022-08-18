@@ -2,74 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3571598331
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 14:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B81598380
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 14:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244528AbiHRMbj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Aug 2022 08:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58434 "EHLO
+        id S244835AbiHRMzq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Aug 2022 08:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243967AbiHRMbh (ORCPT
+        with ESMTP id S244892AbiHRMzo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Aug 2022 08:31:37 -0400
+        Thu, 18 Aug 2022 08:55:44 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B15A895C
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Aug 2022 05:31:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427DD21838
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Aug 2022 05:55:43 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 442083EFAE;
-        Thu, 18 Aug 2022 12:31:35 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F1E4C3EF74;
+        Thu, 18 Aug 2022 12:55:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1660825895;
+        t=1660827342;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WRkeYUzVeeUIxe8cRr+i0WuQkv6oODN7FignUlqV91k=;
-        b=G40Sa7LAH/pAaRhpViFJ+qFyCW+5Oo15YZWkvMlWJUJMLH6IU67OlAq+lcrOt4bjrZJGAK
-        3kCojRylQyXpOD/mthv3CnhRCLot0cOrKleDB7DjY+jd2oXprJMAC1TS73eFbffsM9DqbI
-        +LR4PDF8KZymh1zy2UYlkJimXVhqt/A=
+        bh=sJEwWSFqU6oCQ3hFoCpEh8KwtvEuuUKuQbO2CF8zCc8=;
+        b=h1OLkr82SewDyYOY4iBD9lIIE+v444KNmpoV3cbmGueLnAJ7EHicb4rHKxisw2La5Iglyu
+        FSm0RPrbXoRLnrV+1exuaPBzlROPGXoSRAg4yJKBwAbHVyJm7o6dC62ePZMSIKGmcwrrR4
+        30z+YpcY9gK2GzHyRbnbMSLPArHm9ZE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1660825895;
+        s=susede2_ed25519; t=1660827342;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WRkeYUzVeeUIxe8cRr+i0WuQkv6oODN7FignUlqV91k=;
-        b=JlSYVEeHF7T6UI+O2QEOpRPHd/ksH86lguJr7wnUNg1Wo1lJgM5NfqKLd+2nqK0RsUCISa
-        Q1LJPedxetm6T7Cg==
+        bh=sJEwWSFqU6oCQ3hFoCpEh8KwtvEuuUKuQbO2CF8zCc8=;
+        b=7GEb1o+ob+UZ0gz9UzqgWkBPASolx2pCDw+wtXcI+tDAhtGiEqFTONOckvRA9D8fr3s9bF
+        QThvU/Z5z18tfnBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A949133B5;
-        Thu, 18 Aug 2022 12:31:35 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BF00A133B5;
+        Thu, 18 Aug 2022 12:55:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id /gGRBScx/mKPRgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 18 Aug 2022 12:31:35 +0000
-Date:   Thu, 18 Aug 2022 14:26:24 +0200
+        id DeCjLc02/mKdUAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 18 Aug 2022 12:55:41 +0000
+Date:   Thu, 18 Aug 2022 14:50:30 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: don't update the block group item if used bytes
- are the same
-Message-ID: <20220818122624.GJ13489@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2] btrfs: don't merge pages into bio if their page
+ offset is not continuous
+Message-ID: <20220818125030.GK13489@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <64e4434370badd801a79a782613c405830475dde.1657521468.git.wqu@suse.com>
- <5db1f702-f6fa-3b0e-e34b-30c7ac6358e4@suse.com>
- <ab444642-8a17-cc97-8fff-3446d1ddef0e@gmx.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <1d9b69af6ce0a79e54fbaafcc65ead8f71b54b60.1660377678.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ab444642-8a17-cc97-8fff-3446d1ddef0e@gmx.com>
+In-Reply-To: <1d9b69af6ce0a79e54fbaafcc65ead8f71b54b60.1660377678.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
@@ -81,69 +78,139 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 11, 2022 at 04:47:25PM +0800, Qu Wenruo wrote:
+On Sat, Aug 13, 2022 at 04:06:53PM +0800, Qu Wenruo wrote:
+> [BUG]
+> Zygo reported on latest devel branch, he can hit ASSERT()/BUG_ON()
+> caused crash when doing RAID5 recovery (intentionally corrupt one disk,
+> and let btrfs to recovery the data during read/scrub).
 > 
+> And The following minimal reproducer can cause extent state leakage at
+> rmmod time:
 > 
-> On 2022/7/11 16:30, Nikolay Borisov wrote:
-> >
-> >
-> > On 11.07.22 г. 9:37 ч., Qu Wenruo wrote:
-> >> When committing a transaction, we will update block group items for all
-> >> dirty block groups.
-> >>
-> >> But in fact, dirty block groups don't always need to update their block
-> >> group items.
-> >> It's pretty common to have a metadata block group which experienced
-> >> several CoW operations, but still have the same amount of used bytes.
-> >
-> > This could happen if for example the allocated/freed extents in a single
-> > transaction cancel each other out, right? Are there other cases where it
-> > could matter?
+>   mkfs.btrfs -f -d raid5 -m raid5 $dev1 $dev2 $dev3 -b 1G > /dev/null
+>   mount $dev1 $mnt
+>   fsstress -w -d $mnt -n 25 -s 1660807876
+>   sync
+>   fssum -A -f -w /tmp/fssum.saved $mnt
+>   umount $mnt
 > 
-> No need to completely cancel each other.
+>   # Wipe the dev1 but keeps its super block
+>   xfs_io -c "pwrite -S 0x0 1m 1023m" $dev1
+>   mount $dev1 $mnt
+>   fssum -r /tmp/fssum.saved $mnt > /dev/null
+>   umount $mnt
+>   rmmod btrfs
 > 
-> In fact, just COWing a path without adding/deleting new cousins would be
-> enough, and that would be very common for a lot of tree block operations.
+> This will lead to the following extent states leakage:
+> 
+>  BTRFS: state leak: start 499712 end 503807 state 5 in tree 1 refs 1
+>  BTRFS: state leak: start 495616 end 499711 state 5 in tree 1 refs 1
+>  BTRFS: state leak: start 491520 end 495615 state 5 in tree 1 refs 1
+>  BTRFS: state leak: start 487424 end 491519 state 5 in tree 1 refs 1
+>  BTRFS: state leak: start 483328 end 487423 state 5 in tree 1 refs 1
+>  BTRFS: state leak: start 479232 end 483327 state 5 in tree 1 refs 1
+>  BTRFS: state leak: start 475136 end 479231 state 5 in tree 1 refs 1
+>  BTRFS: state leak: start 471040 end 475135 state 5 in tree 1 refs 1
+> 
+> [CAUSE]
+> Since commit 7aa51232e204 ("btrfs: pass a btrfs_bio to
+> btrfs_repair_one_sector"), we always use btrfs_bio->file_offset to
+> determine the file offset of a page.
+> 
+> But that usage assume that, one bio has all its page having a continuous
+> page offsets.
+> 
+> Unfortunately that's not true, btrfs only requires the logical bytenr
+> continuous when assembling its bios.
+> 
+> >From above script, we have one bio looks like this:
+>   fssum-27671  submit_one_bio: bio logical=217739264 len=36864
+>   fssum-27671  submit_one_bio:   r/i=5/261 page_offset=466944 <<<
+>   fssum-27671  submit_one_bio:   r/i=5/261 page_offset=724992 <<<
+>   fssum-27671  submit_one_bio:   r/i=5/261 page_offset=729088
+>   fssum-27671  submit_one_bio:   r/i=5/261 page_offset=733184
+>   fssum-27671  submit_one_bio:   r/i=5/261 page_offset=737280
+>   fssum-27671  submit_one_bio:   r/i=5/261 page_offset=741376
+>   fssum-27671  submit_one_bio:   r/i=5/261 page_offset=745472
+>   fssum-27671  submit_one_bio:   r/i=5/261 page_offset=749568
+>   fssum-27671  submit_one_bio:   r/i=5/261 page_offset=753664
+> 
+> Note that the 1st and the 2nd page has non-continuous page offsets.
+> 
+> This means, at repair time, we will have completely wrong file offset
+> passed in:
+> 
+>    kworker/u32:2-19927  btrfs_repair_one_sector: r/i=5/261 page_off=729088 file_off=475136 bio_offset=8192
+> 
+> Since the file offset is incorrect, we latter incorrectly set the extent
+> states, and no way to really release them.
+> 
+> Thus later it causes the leakage.
+> 
+> In fact, this can be even worse, since the file offset is incorrect, we
+> can hit cases like the incorrect file offset belongs to a HOLE, and
+> later cause btrfs_num_copies() to trigger error, finally hit
+> BUG_ON()/ASSERT() later.
+> 
+> [FIX]
+> This patch will add an extra condition in btrfs_bio_add_page() for
+> uncompressed IO.
+> 
+> Now we will have more strict requirement for bio pages:
+> 
+> - They should all have the same mapping
+>   (the mapping check is already implied by the call chain)
+> 
+> - Their logical bytenr should be adjacent
+>   This is the same as the old condition.
+> 
+> - Their page_offset() (file offset) should be adjacent
+>   This is the new check.
+>   This would result a slightly increased amount of bios from btrfs
+>   (needs holes and inside the same stripe boundary to trigger).
+> 
+>   But this would greatly reduce the confusion, as it's pretty common
+>   to assume a btrfs bio would only contain continuous page cache.
+> 
+> Later we may need extra cleanups, as we no longer needs to handle gaps
+> between page offsets in endio functions.
+> 
+> Currently this should be the minimal patch to fix commit 7aa51232e204
+> ("btrfs: pass a btrfs_bio to btrfs_repair_one_sector").
+> 
+> Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Fixes: 7aa51232e204 ("btrfs: pass a btrfs_bio to btrfs_repair_one_sector")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-I would be interested in numbers too, a percentage of skip/total would
-be good for some workloads so we have at least some idea.
+Thanks for fixing it, added to misc-next.
 
-> >> In that case, we may unnecessarily CoW a tree block doing nothing.
-> >>
-> >> This patch will introduce btrfs_block_group::commit_used member to
-> >> remember the last used bytes, and use that new member to skip
-> >> unnecessary block group item update.
-> >>
-> >> This would be more common for large fs, which metadata block group can
-> >> be as large as 1GiB, containing at most 64K metadata items.
-> >>
-> >> In that case, if CoW added and the deleted one metadata item near the end
-> >> of the block group, then it's completely possible we don't need to touch
-> >> the block group item at all.
-> >>
-> >> I don't have any benchmark to prove this, but this should not cause any
-> >> hurt either.
-> >
-> > It should not but adds more state and is overall a maintenance burden.
-> > One way to test this would be to rig up the fs to count how many times
-> > the optimization has been hit over the course of, say, a full xfstest
-> > run or at least demonstrate a particular workload where this makes
-> > tangible difference.
-> 
-> But in this particular case, there is really not that much status to bother.
-> 
-> In fact, we don't care about if there is any status, we only care about
-> the block_group::used is different from committed one.
-> Even no change to lock schemes.
+> @@ -3265,10 +3265,34 @@ static int btrfs_bio_add_page(struct btrfs_bio_ctrl *bio_ctrl,
+>  	if (bio_ctrl->compress_type != compress_type)
+>  		return 0;
+>  
+> -	if (bio_ctrl->compress_type != BTRFS_COMPRESS_NONE)
+> +
+> +	if (bio->bi_iter.bi_size == 0) {
+> +		/* We can always add a page into an empty bio. */
+> +		contig = true;
+> +	} else if (bio_ctrl->compress_type == BTRFS_COMPRESS_NONE) {
+> +		struct bio_vec *bvec = bio_last_bvec_all(bio);
+> +
+> +		/*
+> +		 * The contig check requires the following conditions to be met:
+> +		 * 1) The pages are belonging to the same inode
+> +		 *    This is implied by the call chain.
+> +		 *
+> +		 * 2) The range has adjacent logical bytenr
+> +		 *
+> +		 * 3) The range has adjacent file offset (NEW)
+> +		 *    This is required for the usage of btrfs_bio->file_offset.
+> +		 */
+> +		contig = bio_end_sector(bio) == sector &&
+> +			 page_offset(bvec->bv_page) + bvec->bv_offset +
+> +			 bvec->bv_len == page_offset(page) + pg_offset;
 
-Looking to update_block_group_item, there are other block grup items
-updated too:
-
-- used - the one one you check
-- flags - can't change on the fly, we'd have to do relocation, ie. a new
-  block group
-- chunk_objectid - that stays for the whole fileystem lifetime
-
-So I think it's safe to just check the 'used' value but it increases
-memory size of block group (that's been increasing in size recently) so
-I'd rather have a better idea about the justification.
+I've converted this to an if(), the one line condition assignments
+should be used for simple expressions like "X = (A == B)", otherwise
+it's hard to read.
