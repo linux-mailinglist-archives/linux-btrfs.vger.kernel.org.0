@@ -2,152 +2,250 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3AD597EF8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 09:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24B8597F3D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 09:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243730AbiHRHHL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Aug 2022 03:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50098 "EHLO
+        id S243891AbiHRHcT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Aug 2022 03:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243786AbiHRHHH (ORCPT
+        with ESMTP id S243789AbiHRHcN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Aug 2022 03:07:07 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64500876AE
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Aug 2022 00:07:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E8D7A20D67;
-        Thu, 18 Aug 2022 07:07:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1660806423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=zFH9vjjdlob3I3NIZeLIFDZ5XRP9BXs9cRB5BB/+JTs=;
-        b=lt/osvkkhwYIRdo1Wbbi3JFmSxoMFfFEoCgpLJuywqUUtAvC/pueVk9apOzULhueNeRpOQ
-        oALZV48dzTJHzsoYEW7K47ysRzvVSXjAidVTMgMZ1sJRAVt9/k08bphoYeNpZXnI2AuymC
-        +2W9VtyPUbURLk6DXEK6/3u7ruiNDoA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3193139B7;
-        Thu, 18 Aug 2022 07:07:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +p58KBbl/WIVRgAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 18 Aug 2022 07:07:02 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Wang Yugui <wangyugui@e16-tech.com>
-Subject: [PATCH] btrfs: fix the max chunk size and stripe length calculation
-Date:   Thu, 18 Aug 2022 15:06:44 +0800
-Message-Id: <17e7c38b0cc6fe90c90f4b383734c06eafd2f9b5.1660806386.git.wqu@suse.com>
-X-Mailer: git-send-email 2.37.1
+        Thu, 18 Aug 2022 03:32:13 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06729D8D2
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Aug 2022 00:32:11 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id x63-20020a17090a6c4500b001fabbf8debfso1010011pjj.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Aug 2022 00:32:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=ZNtLhHuzoEms5ErFtFzhJVQNX6Ekb2ggQdolvBV0ou8=;
+        b=fMtkhddyFSCkDhPMdgljgt5khvnQVR4APjQPuJoHhBADhtDhEOPqOrhYnz59iPHwFw
+         /mfeGQ9Dncnk4x9Oq7zNGjh77yhVIiUaYC6lHSU1PWpkg4bYYdV2VC9IcKy1ixga9kSQ
+         AdkAURdNGZC5t1J3EnVhDYb6aUEot5DflyWkPYtJpRtytS3x26Vne56PptCVCJ+clN6l
+         WK32nBwQ7I+WQHLwQEX6mn+1JG6RFXICjjjw5DgGXk6vncxGl/7R248c5eZHuHl+8Iob
+         2HDqdnmUQKkm9xnxCvrTgNepzBU+lNMzEAN7MhSlaMEUfbzBdM6RmogA/OOdWSWVDvwG
+         QLNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=ZNtLhHuzoEms5ErFtFzhJVQNX6Ekb2ggQdolvBV0ou8=;
+        b=kNzQUH6icum0LnnSgAKrMOYJwsvRqTfXZM8n9GvfOAUx36DnibsMMpATAY3ADmDdfl
+         cycIHm7vRIqZxjdEoIQLQd+F5klYKLN9Yh3xiwQzR1uI19BaBgdLNudjHmEbgjCXlKll
+         S42mh97ddANt+WIEDY/DOrQ+AzYqAFhqUNldZFaE8+MhmWIKydYNcStbGgdKv5JE8Jo8
+         xx2gL91+cj6vGS5gaLd9zFyDnK++KjibAQvocbEvPxcrKl4e2YfW7Qo/kAIQmPCgvFqG
+         oUTcquFn4uL98mckZ7tiHTgU3BaBYeaeAl4z/DjTzZE04OcUPFrmSP4YiYFiMCcpCiCF
+         kX0w==
+X-Gm-Message-State: ACgBeo2w6FXgOWxuHe/fJ12QdfQxTfxyLuCphezA0rRxQFe+rWZsN8eF
+        0jAGkrXHrumslqoSW5MAI0VTN0rglE9NQ4sKJTU=
+X-Google-Smtp-Source: AA6agR5Aq4/rybl6ww87XKZGbjeFfk5e0silJ/3vMdt7CYggvvVJCrrPh7ZVfRFEEafLCtaovJGRxC/FehHpLA1qlw8=
+X-Received: by 2002:a17:90b:33c5:b0:1fa:773f:d4d9 with SMTP id
+ lk5-20020a17090b33c500b001fa773fd4d9mr1797575pjb.90.1660807931217; Thu, 18
+ Aug 2022 00:32:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220815024209.26122-1-ethanlien@synology.com>
+ <CAL3q7H6DkF-tJA2K8beUg93o851-2tqxyD7LtJwoirO060EOLQ@mail.gmail.com>
+ <CA+SFa0NPa64rqJfQ+EdV2BUdwAhZOFqoXTG7iTHU0uhGf2erJA@mail.gmail.com> <20220817123556.GA2832930@falcondesktop>
+In-Reply-To: <20220817123556.GA2832930@falcondesktop>
+From:   Ethan Lien <cunankimo@gmail.com>
+Date:   Thu, 18 Aug 2022 15:32:00 +0800
+Message-ID: <CA+SFa0PNMYj_agC7vm-ECOQXO62R2JL6WLhUFO3vCCRPJmLj8Q@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: remove unnecessary EXTENT_UPTODATE state in
+ buffered I/O path
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     ethanlien <ethanlien@synology.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BEHAVIOR CHANGE]
-Since commit f6fca3917b4d ("btrfs: store chunk size in space-info
-struct"), btrfs no longer can create larger data chunks than 1G:
+Filipe Manana <fdmanana@kernel.org> =E6=96=BC 2022=E5=B9=B48=E6=9C=8817=E6=
+=97=A5 =E9=80=B1=E4=B8=89 =E6=99=9A=E4=B8=8A8:36=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Wed, Aug 17, 2022 at 02:30:25PM +0800, Ethan Lien wrote:
+> > Filipe Manana <fdmanana@kernel.org> =E6=96=BC 2022=E5=B9=B48=E6=9C=8816=
+=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:49=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> > >
+> > > On Mon, Aug 15, 2022 at 4:16 AM ethanlien <ethanlien@synology.com> wr=
+ote:
+> > > >
+> > > > From: Ethan Lien <ethanlien@synology.com>
+> > > >
+> > > > After we copied data to page cache in buffered I/O, we
+> > > > 1. Insert a EXTENT_UPTODATE state into inode's io_tree, by
+> > > >    endio_readpage_release_extent(), set_extent_delalloc() or
+> > > >    set_extent_defrag().
+> > > > 2. Set page uptodate before we unlock the page.
+> > > >
+> > > > But the only place we check io_tree's EXTENT_UPTODATE state is in
+> > > > btrfs_do_readpage(). We know we enter btrfs_do_readpage() only when=
+ we
+> > > > have a non-uptodate page, so it is unnecessary to set EXTENT_UPTODA=
+TE.
+> > > >
+> > > > For example, when performing a buffered random read:
+> > > >
+> > > >         fio --rw=3Drandread --ioengine=3Dlibaio --direct=3D0 --numj=
+obs=3D4 \
+> > > >                 --filesize=3D32G --size=3D4G --bs=3D4k --name=3Djob=
+ \
+> > > >                 --filename=3D/mnt/file --name=3Djob
+> > > >
+> > > > Then check how many extent_state in io_tree:
+> > > >
+> > > >         cat /proc/slabinfo | grep btrfs_extent_state | awk '{print =
+$2}'
+> > > >
+> > > > w/o this patch, we got 640567 btrfs_extent_state.
+> > > > w/  this patch, we got    204 btrfs_extent_state.
+> > >
+> > > Did fio also report increased throughput?
+> > >
+> >
+> > Yes, but only when we have a lot of memory (32GB or above).
+> > In a read benchmark, most of the memory can be used as page cache,
+> > so there are no ways we can free those UPTODATE extent states unless
+> > we explicitly call drop cache.
+> > We have observed millions of useless EXTENT_UPTODATE extent states
+> > in inode's io_tree, if w/o this patch.
+> >
+> > > >
+> > > > Maintaining such a big tree brings overhead since every I/O needs t=
+o insert
+> > > > EXTENT_LOCKED, insert EXTENT_UPTODATE, then remove EXTENT_LOCKED. A=
+nd in
+> > > > every insert or remove, we need to lock io_tree, do tree search, al=
+loc or
+> > > > dealloc extent states. By removing unnecessary EXTENT_UPTODATE, we =
+keep
+> > > > io_tree in a minimal size and reduce overhead when performing buffe=
+red I/O.
+> > >
+> > > The idea is sound, and I don't see a reason to keep using
+> > > EXTENT_UPTODATE as well.
+> > >
+> > > >
+> > > > Signed-off-by: Ethan Lien <ethanlien@synology.com>
+> > > > Reviewed-by: Robbie Ko <robbieko@synology.com>
+> > > > ---
+> > > >  fs/btrfs/extent-io-tree.h | 4 ++--
+> > > >  fs/btrfs/extent_io.c      | 3 ---
+> > > >  2 files changed, 2 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+> > > > index c3eb52dbe61c..53ae849d0248 100644
+> > > > --- a/fs/btrfs/extent-io-tree.h
+> > > > +++ b/fs/btrfs/extent-io-tree.h
+> > > > @@ -211,7 +211,7 @@ static inline int set_extent_delalloc(struct ex=
+tent_io_tree *tree, u64 start,
+> > > >                                       struct extent_state **cached_=
+state)
+> > > >  {
+> > > >         return set_extent_bit(tree, start, end,
+> > > > -                             EXTENT_DELALLOC | EXTENT_UPTODATE | e=
+xtra_bits,
+> > > > +                             EXTENT_DELALLOC | extra_bits,
+> > > >                               0, NULL, cached_state, GFP_NOFS, NULL=
+);
+> > > >  }
+> > > >
+> > > > @@ -219,7 +219,7 @@ static inline int set_extent_defrag(struct exte=
+nt_io_tree *tree, u64 start,
+> > > >                 u64 end, struct extent_state **cached_state)
+> > > >  {
+> > > >         return set_extent_bit(tree, start, end,
+> > > > -                             EXTENT_DELALLOC | EXTENT_UPTODATE | E=
+XTENT_DEFRAG,
+> > > > +                             EXTENT_DELALLOC | EXTENT_DEFRAG,
+> > > >                               0, NULL, cached_state, GFP_NOFS, NULL=
+);
+> > > >  }
+> > > >
+> > > > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > > > index bfae67c593c5..e0f0a39cd6eb 100644
+> > > > --- a/fs/btrfs/extent_io.c
+> > > > +++ b/fs/btrfs/extent_io.c
+> > > > @@ -2924,9 +2924,6 @@ static void endio_readpage_release_extent(str=
+uct processed_extent *processed,
+> > > >          * Now we don't have range contiguous to the processed rang=
+e, release
+> > > >          * the processed range now.
+> > > >          */
+> > > > -       if (processed->uptodate && tree->track_uptodate)
+> > > > -               set_extent_uptodate(tree, processed->start, process=
+ed->end,
+> > > > -                                   &cached, GFP_ATOMIC);
+> > >
+> > > This is another good thing, to get rid of a GFP_ATOMIC allocation.
+> > >
+> > > Why didn't you remove the set_extent_uptodate() call at btrfs_get_ext=
+ent() too?
+> > > It can only be set during a page read at btrfs_do_readpage(), for an
+> > > inline extent.
+> > >
+> > > Also, having the tests for EXTENT_UPTODATE at btrfs_do_readpage() now=
+ become
+> > > useless too, don't they? Why have you kept them?
+> > >
+> >
+> > Currently if we found a inline extent in btrfs_get_extent(), we set
+> > page uptodate
+> > or page error in btrfs_do_readpage().
+> > So we still need EXTENT_UPTODATE to let btrfs_do_readpage() knows what =
+to do.
+> >
+> > Or do you suggest we set page uptodate or error in btrfs_get_extent(),
+> > for inline extent?
+>
+> My idea was like this:
+>
+> 1) Remove the set_extent_uptodate() call at btrfs_get_extent();
+>
+> 2) At btrfs_do_readpage(), if we get a inline extent (em->block_start =3D=
+=3D EXTENT_MAP_INLINE),
+>    then we set the page up to date (at btrfs_do_readpage()).
+>
+> For step 2, we could also set the page up to date at btrfs_get_extent(), =
+as
+> you said.
+>
 
-  mkfs.btrfs -f -m raid1 -d raid0 $dev1 $dev2 $dev3 $dev4
-  mount $dev1 $mnt
+It is possible we found a compressed inline extent and got error in
+uncompress_inline().
+So we can't unconditionally set page uptodate in btrfs_do_readpage(),
+if we found em->block_start =3D=3D EXTENT_MAP_INLINE.
+I think the only solution is we set page uptodate in btrfs_get_extent()?
 
-  btrfs balance start --full $mnt
-  btrfs balance start --full $mnt
-  umount $mnt
+Thanks.
 
-  btrfs ins dump-tree -t chunk $dev1 | grep "DATA|RAID0" -C 2
-
-Before that offending commit, what we got is a 4G data chunk:
-
-	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491 itemsize 176
-		length 4294967296 owner 2 stripe_len 65536 type DATA|RAID0
-		io_align 65536 io_width 65536 sector_size 4096
-		num_stripes 4 sub_stripes 1
-
-Now what we got is only 1G data chunk:
-
-	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 6271533056) itemoff 15491 itemsize 176
-		length 1073741824 owner 2 stripe_len 65536 type DATA|RAID0
-		io_align 65536 io_width 65536 sector_size 4096
-		num_stripes 4 sub_stripes 1
-
-This will increase the number of data chunks by the number of devices,
-not only increase system chunk usage, but also greatly increase mount
-time.
-
-Without a properly reason, we should not change the max chunk size.
-
-[CAUSE]
-Previously, we set max data chunk size to 10G, while max data stripe
-length to 1G.
-
-Commit f6fca3917b4d ("btrfs: store chunk size in space-info struct")
-completely ignored the 10G limit, but use 1G max stripe limit instead,
-causing above shrink in max data chunk size.
-
-[FIX]
-Fix the max data chunk size to 10G, and in decide_stripe_size_regular()
-we limit stripe_size to 1G manually.
-
-This should only affect data chunks, as for metadata chunks we always
-set the max stripe size the same as max chunk size (256M or 1G
-depending on fs size).
-
-Now the same script result the same old result:
-
-	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491 itemsize 176
-		length 4294967296 owner 2 stripe_len 65536 type DATA|RAID0
-		io_align 65536 io_width 65536 sector_size 4096
-		num_stripes 4 sub_stripes 1
-
-Reported-by: Wang Yugui <wangyugui@e16-tech.com>
-Fixes: f6fca3917b4d ("btrfs: store chunk size in space-info struct")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/space-info.c | 2 +-
- fs/btrfs/volumes.c    | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 477e57ace48d..b74bc31e9a8e 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -199,7 +199,7 @@ static u64 calc_chunk_size(const struct btrfs_fs_info *fs_info, u64 flags)
- 	ASSERT(flags & BTRFS_BLOCK_GROUP_TYPE_MASK);
- 
- 	if (flags & BTRFS_BLOCK_GROUP_DATA)
--		return SZ_1G;
-+		return BTRFS_MAX_DATA_CHUNK_SIZE;
- 	else if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
- 		return SZ_32M;
- 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 8c64dda69404..e0fd1aecf447 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5264,6 +5264,9 @@ static int decide_stripe_size_regular(struct alloc_chunk_ctl *ctl,
- 				       ctl->stripe_size);
- 	}
- 
-+	/* Stripe size should never go beyond 1G. */
-+	ctl->stripe_size = min_t(u64, ctl->stripe_size, SZ_1G);
-+
- 	/* Align to BTRFS_STRIPE_LEN */
- 	ctl->stripe_size = round_down(ctl->stripe_size, BTRFS_STRIPE_LEN);
- 	ctl->chunk_size = ctl->stripe_size * data_stripes;
--- 
-2.37.1
-
+> The only case where we get a page passed to btrfs_get_extent() is through
+> btrfs_do_readpage(), so I think either approach should work, and then rem=
+ove
+> the remaining cases where we test for the EXTENT_UPTODATE state at
+> btrfs_do_readpage().
+>
+> Thanks.
+>
+> >
+> > Thanks.
+> >
+> > > Thanks.
+> > >
+> > > >         unlock_extent_cached_atomic(tree, processed->start, process=
+ed->end,
+> > > >                                     &cached);
+> > > >
+> > > > --
+> > > > 2.17.1
+> > > >
