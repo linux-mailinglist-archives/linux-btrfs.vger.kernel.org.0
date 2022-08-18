@@ -2,114 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2579597A9E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 02:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F490597AD1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 03:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242507AbiHRAac (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Aug 2022 20:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
+        id S241380AbiHRBDj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Aug 2022 21:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242505AbiHRAab (ORCPT
+        with ESMTP id S239207AbiHRBDh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Aug 2022 20:30:31 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FD7A5715
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 17:30:30 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id o7so137957pfb.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 17:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc;
-        bh=zXxGzXq7Ta7zj5dP+FgLbvP1ctxgNRKfYlOGN51+aK0=;
-        b=FebtVmAU48S2149QHfNn51JNkskBjNC66+X5n3VMcR4X3gBzvnC0mCiB82MtipDw+T
-         FBw5LnXn3mhmvQDpbi9A3hXCwO40NK6i3tXMbGzHSGynVgYGs6YqCrGhPJWpF2D5X3wj
-         ekev66XcRXrfRWM3eEXsddlB7GEXNohRcoGajdZZMuSrXHJELnclJ43Zx0v6H3iTxxUF
-         VxFt5R28e39Gmz0oolNUqj06xL7EwkzT6q40PbiKe4M6iFwADqsrmoSTNoPg1HR1cxUQ
-         NcDQN5rzoN1oIj1nI/77+zdHnFuUQluS3kpcS4OkO9jLDjZqrTVWpp49cf6MtV/4hihH
-         XQKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=zXxGzXq7Ta7zj5dP+FgLbvP1ctxgNRKfYlOGN51+aK0=;
-        b=zgIhRNpxjDs913WfDuaz4y2dgARfRMghT4kCagHvTHe6g25Y+v6bGbTu1+XGwYXsrp
-         1a1xN+z9ssalRCx3MwjXr4pAdrbmRnBPwTimYY9Xd1vX15v+3/jo8Dxj8F+kgPB86xL1
-         k4yA6wIVZQX+ibHFFjDJKYERCpUNWg5EFvPotFu74nlFCuB2qZAn2ytFT2+Rkey0dKHq
-         VxDWMFJIBwEJ+ch/4Mj+aZXbQZe5/d7R8ZtxWgG09CPieB0739+jso2U1heMN+Cy4H7C
-         IyTmdPwxJwIJEXig01umVppNuMrI6evD+SUT/WHghc1wpi+0XZNR/B2le7RJEzsbZboL
-         E07A==
-X-Gm-Message-State: ACgBeo1pJttCgnQDUxThGGicPL9VAJLnutAyJiJmYDUohTPU1p5NsmpS
-        B7EW1Q/0aUNVYJrE5a1a/0jqQH9pr5DcIw==
-X-Google-Smtp-Source: AA6agR5wUMxURXMdAIXqu005nTbk4Q+wEGCvrsAuUYtF9vWgTZqYYeHu+5eF1o6zPlySoMFoNLHy4Q==
-X-Received: by 2002:a63:491a:0:b0:41d:7380:f43e with SMTP id w26-20020a63491a000000b0041d7380f43emr603868pga.44.1660782629827;
-        Wed, 17 Aug 2022 17:30:29 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:8ab0])
-        by smtp.gmail.com with ESMTPSA id c2-20020aa79522000000b005323a1a9fecsm2293pfp.101.2022.08.17.17.30.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Aug 2022 17:30:29 -0700 (PDT)
-Date:   Wed, 17 Aug 2022 17:30:27 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Christoph Anton Mitterer <calestyo@scientia.org>
-Cc:     Linux BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 1/2] btrfs: fix space cache corruption and potential
- double allocations
-Message-ID: <Yv2IIwNQBb3ivK7D@relinquished.localdomain>
-References: <cover.1660690698.git.osandov@fb.com>
- <9ee45db86433bb8e4d7daff35502db241c69ad16.1660690698.git.osandov@fb.com>
- <CAK-xaQZYDBuL2DMeOiZDubujSmZTcNJfkgqa03Q+24=nhCmynw@mail.gmail.com>
- <dbc8b0ee60b174f1b2c17a7469918a32a381c51b.camel@scientia.org>
- <Yv2A+Du6J7BWWWih@relinquished.localdomain>
- <b5d37d4d059e220313341d2804cbf1daf2956563.camel@scientia.org>
+        Wed, 17 Aug 2022 21:03:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB1B2AE00
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 18:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1660784612;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C60ajPdlC/CsFP22IBpGKTjlxuh488qoa5A4DbUUh+Y=;
+        b=TIFTsTlz1ofYz8MZ10G0BNg7xApfTdJyve7izl1WtolFbyJgitLNg5fA0we9ekrduI5ccP
+        QGUFkQubAkYW3XtLhW1s7+cEFF9r22gbqlLSoUW+/mPrBlsUJ8qXzq8RLH0YLtUVP5Z0Ol
+        EAumzGezIgqC+fi3gxKN79wVgGbFEas=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-388-Aug8zyljPeaUXo98D8mcwQ-1; Wed, 17 Aug 2022 21:03:28 -0400
+X-MC-Unique: Aug8zyljPeaUXo98D8mcwQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4D1C23C01D9F;
+        Thu, 18 Aug 2022 01:03:28 +0000 (UTC)
+Received: from T590 (ovpn-8-20.pek2.redhat.com [10.72.8.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 705F6492C3B;
+        Thu, 18 Aug 2022 01:03:20 +0000 (UTC)
+Date:   Thu, 18 Aug 2022 09:03:15 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Jan Kara <jack@suse.cz>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux-RAID <linux-raid@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: stalling IO regression since linux 5.12, through 5.18
+Message-ID: <Yv2P0zyoVvz35w/m@T590>
+References: <61e5ccda-a527-4fea-9850-91095ffa91c4@www.fastmail.com>
+ <4995baed-c561-421d-ba3e-3a75d6a738a3@www.fastmail.com>
+ <dcd8beea-d2d9-e692-6e5d-c96b2d29dfd1@suse.com>
+ <2b8a38fa-f15f-45e8-8caa-61c5f8cd52de@www.fastmail.com>
+ <CAFj5m9+6Vj3NdSg_n3nw1icscY1qr9f9SOvkWYyqpEtFBb_-1g@mail.gmail.com>
+ <b236ca6e-2e69-4faf-9c95-642339d04543@www.fastmail.com>
+ <Yv0A6UhioH3rbi0E@T590>
+ <f633c476-bdc9-40e2-a93f-29601979f833@www.fastmail.com>
+ <Yv0KmT8UYos2/4SX@T590>
+ <35f0d608-7448-4276-8922-19a23d8f9049@www.fastmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b5d37d4d059e220313341d2804cbf1daf2956563.camel@scientia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <35f0d608-7448-4276-8922-19a23d8f9049@www.fastmail.com>
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 02:22:00AM +0200, Christoph Anton Mitterer wrote:
-> On Wed, 2022-08-17 at 16:59 -0700, Omar Sandoval wrote:
-> > I'm working on a tool that can be run on a mounted filesystem to
-> > detect
-> > most of the corruptions that could result from this bug. I'll share
-> > that
-> > in the next couple of days.
-> 
-> That sounds quite good.
-> 
-> Maybe such thing should find it's way into btrfs-progs.
-> 
-> I remember back then whether there were some corruption issues that
-> occurred with holes in compressed files, there were also some ways to
-> search for files which may have been affected.
-> 
-> So I mean such things wouldn't be the day2day tools of btrfs-progs, but
-> could be helpful to those who'd like to investigate more... and having
-> it as part of btrfs-progrs would make them much more accessible to end-
-> users (no need to search for it, no need to compile it, no need to
-> trust their author (well at least not more than they anyway need to
-> trust btrfs-progs)).
+On Wed, Aug 17, 2022 at 12:34:42PM -0400, Chris Murphy wrote:
 > 
 > 
-> > 
-> > From what I've found, it's much more likely to happen if you delete a
-> > lot of data soon after boot with space_cache=v2/nospace_cache and
-> > discard/discard=sync. I can't say that it'd never happen outside of
-> > those conditions, but I suspect that it's much harder to hit
-> > otherwise.
+> On Wed, Aug 17, 2022, at 11:34 AM, Ming Lei wrote:
 > 
-> Okay, but deletion *is* necessary, right?
+> > From the 2nd log of blockdebugfs-all.txt, still not see any in-flight IO on
+> > request based block devices, but sda is _not_ included in this log, and
+> > only sdi, sdg and sdf are collected, is that expected?
+> 
+> While the problem was happening I did
+> 
+> cd /sys/kernel/debug/block
+> find . -type f -exec grep -aH . {} \;
+> 
+> The file has the nodes out of order, but I don't know enough about the interface to see if there are things that are missing, or what it means.
+> 
+> 
+> > BTW, all request based block devices should be observed in blk-mq debugfs.
+> 
+> /sys/kernel/debug/block contains
+> 
+> drwxr-xr-x.  2 root root 0 Aug 17 15:20 md0
+> drwxr-xr-x. 51 root root 0 Aug 17 15:20 sda
+> drwxr-xr-x. 51 root root 0 Aug 17 15:20 sdb
+> drwxr-xr-x. 51 root root 0 Aug 17 15:20 sdc
+> drwxr-xr-x. 51 root root 0 Aug 17 15:20 sdd
+> drwxr-xr-x. 51 root root 0 Aug 17 15:20 sde
+> drwxr-xr-x. 51 root root 0 Aug 17 15:20 sdf
+> drwxr-xr-x. 51 root root 0 Aug 17 15:20 sdg
+> drwxr-xr-x. 51 root root 0 Aug 17 15:20 sdh
+> drwxr-xr-x.  4 root root 0 Aug 17 15:20 sdi
+> drwxr-xr-x.  2 root root 0 Aug 17 15:20 zram0
 
-Yes, but metadata deletions also count, so basically any modification
-results in a deletion. We haven't seen this in practice, but I couldn't
-find anything that would make it impossible.
+OK, so lots of devices are missed in your log, and the following command
+is supposed to work for collecting log from all block device's debugfs:
 
-In place modifications of files also result in COW and deletion of the
-old data, so that also technically counts.
+(cd /sys/kernel/debug/block/ && find . -type f -exec grep -aH . {} \;)
+
+
+Thanks,
+Ming
+
