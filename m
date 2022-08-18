@@ -2,67 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 211DE597FEB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 10:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACFA59818B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 12:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236907AbiHRINa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Aug 2022 04:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
+        id S244094AbiHRKkq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Aug 2022 06:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbiHRIN3 (ORCPT
+        with ESMTP id S238978AbiHRKkp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Aug 2022 04:13:29 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BA2356FB
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Aug 2022 01:13:25 -0700 (PDT)
+        Thu, 18 Aug 2022 06:40:45 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF536CF54
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Aug 2022 03:40:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1660810400;
-        bh=D6HdVqD9ID+tX1jF06feSsh9Jm+zip1iAuQMXyKSgUA=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=AsAqvPo4r2MAy2VCW+7xFauRJAEuBWIhi3PlT/+xhg2AJ8P5NbIjHBE4sk3B4YhvZ
-         g65w9sLhrNH5vy0r6JPnjk8VCCunEThHvpQotHjXlmcP2Wf+yVkxCGI6QV7YR9K/0/
-         rL3TuUx9xqi6KSCeAOIaWqKlVFhNDbP52OF9uIMA=
+        s=badeba3b8450; t=1660819238;
+        bh=F+xM4H+x41ikUfVV0VswCTgA1nR6DEwVAKJpMcZhdU8=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=dOq+UdejEdLlgsk/hlASFRan3/CxGSEyL2fuA4D6icEGHrYdXAMgdeVoGACSM2Slg
+         poruEkjQvC4uYkTb+gCrA3YzvBQadegPFqtNi+LCeah1EZChD1Z4Z57t7hvlxCLw1I
+         JOHSOtZf8BrNkoE+8b6rXfU/VnBBD9uBEUwbvk4I=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4hvR-1nNvYW2IqN-011jr0; Thu, 18
- Aug 2022 10:13:20 +0200
-Message-ID: <69f30de8-0d1d-4ada-c563-6f88bc4a4f40@gmx.com>
-Date:   Thu, 18 Aug 2022 16:13:16 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbRfl-1nneNL0SCn-00bsTy; Thu, 18
+ Aug 2022 12:40:38 +0200
+Message-ID: <fe02d56b-f2cf-d9d7-8929-5744f11ce82c@gmx.com>
+Date:   Thu, 18 Aug 2022 18:40:34 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.12.0
-Subject: Re: [PATCH] btrfs: fix the max chunk size and stripe length
- calculation
 Content-Language: en-US
-To:     Wang Yugui <wangyugui@e16-tech.com>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <17e7c38b0cc6fe90c90f4b383734c06eafd2f9b5.1660806386.git.wqu@suse.com>
- <20220818160425.511E.409509F4@e16-tech.com>
+To:     Stefan Roesch <shr@fb.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20211203220445.2312182-1-shr@fb.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220818160425.511E.409509F4@e16-tech.com>
+Subject: Re: [PATCH v6 0/4] btrfs: sysfs: set / query btrfs chunk size
+In-Reply-To: <20211203220445.2312182-1-shr@fb.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TLOfWUuMfJsZBrDyVORp0Bi32UJmAR7UBU3KQCFLPAPKrdtZqg1
- 3duwO1bEKmDIbI+KjombsDQhmzWzGpOBomDNAEhSr8CFiDqT9MVCkshlEOI8ArlUiY/hjWG
- qTuqBIwRhW2++VQT05tdCBb5a/44Li2B4Qx1HomFhVGF4YiwNTRDpf1aWZXomzpADteKgha
- wh3JhZoSiN/O5/4BkBb9w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:x6ZK89kl8XA=:j/7JlLPlanbsSYftUiauCH
- WWRALV0vID3Kw0kj7LzNggl345xlqG+PiKl7bxEVE06yTdzbBzUFULpRFwBoMpXGOM8Y4eZPU
- 6BeJDtyFfYCUWhwwOkq//xR1/xRM7NHHc+V+Mk9cx0XxHv/oNOaNgVf1zTKa17R7qkPEa2V8n
- Z7cAJymXvtADrk+x1bZ/Al5kKHIlFn7SPTVeJoK40XZlOAEM17vj1u+odlrG+2x6GAz9v2v36
- 1gMxUCCw8WBA+c0/VRB5lkQ2+jaHToVqYKGDb/9cKc4+yTbD1tKWBAJ8i/Q/wQ3CoYIFX8rkV
- 23Aqc5EiZrOzb3nV+agmLrbsq3xTD3EH1ATQFKPJmLv+70K5rzVxWPUisYhxr0WLuDEmK9g6p
- s5rRGSck0PLvypDMZD+cxSXddgwplat2MR+U/jE+u6na0Egroc1jP4FwFMUkHBP6sf4mjdxS+
- MB3bKiQXlbD05b91OmShYyMmE3NvASlMe3N/trTkLCJXa3hrZ8K9EpF5fbTj5TFKxE+lE2kbN
- rv/VNK+Nl7uQpc9KRq3oZQ2Vlbh61posikGF6GmNHfJ+MI1svujkQGKt8ywlfPeUIzm1TBSoz
- QXD0yD7NlI5nomoIPKbXG5ExDD0FfYkLnlxC8piu/4lOJSIXiVO3R7Hca0KvLjYXHVRz5N7XM
- jSBz2oAAP2S4tkL5HN8WKskiR8zXAc49+Qt2RoLikvSXcU5w3AMMzZERvniHeFl20hGnjq23C
- olcIUtu+gk8KpNYjFOi83X7/51rwb8IjBoSwWJrF3fjxiO8o5B9pB0uMWlLYC3oqINLcGe5SP
- sghoGBsd/RsIvaxb9pfYJ4fVq5SDtjYQVQ+W6XH6p2NO+BBcVtmnd1gJt+M2P9hxTu17Xd6T4
- 7nYMEC7P9iQ8j3du+Otpluvy3xV0NyQT/AdGm4f/QleyJhGJ4PCE7IKL8zeQjtSBejzxNlAs/
- M9dj72IxsokDVZQoa1u7UEe2YA3CizGyEZXq+NyWQZFXCBzNAIr7INCgl3j/uKWDVHA8sUHCE
- etprDECvT521QqkcUEt4tnLjSs2DOuMaCvv/fVN9ZU3pN3ZCJdCThAF8RRs5o1fRwAeWdppdV
- trotrFAdEd/7g3uiIHW0zpUSvrF1Jr0QirbXLKbc/dtCRl3r2UpXnmqzw==
+X-Provags-ID: V03:K1:S/ff0djZGX2mfSp+/J8qFyrI4H0P3EQOpCuovVx5+xTwrf4/5tq
+ ToLgHExRRmc0G73Rllha6r0wocM5pZdSI6S3voGwY/zEWDkx3n3RwJ0B5tJ8dGTkuB+I0/6
+ zmwc5SsfHkCNfDhYKZF/uGsPm9CTDJAPF3JnRohA+kaVsC8Ag0s8hnRywXQDWgTn9fyLwjF
+ pwkSgtMlT6FLMZLCNvj5w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kFrG8p8MmS0=:mHTQMENl0Ovs3USFtKWXI5
+ V27veu0xsv+ZI0R/ikP4B6cZLLskkWNtDq5Ophn4/kOmbgUzb6fVGP24+B4/pQRDpgYDxsjE6
+ geRl/CgFVN89WQcBGxiPYFfrgdFbdcag9XCAVoL8p15TAyGP9+sNcURn2C5FVdm2UaQ1Yt+Zv
+ gQPZSzglrGN4sbFi69cGFanwpWWQ40TVmwwZE3I8JxkafsLSZFvAhoPmtcnQ6qe4I+nlWlnc1
+ Eybx8SopJ5Y7QS2X1aTWoC9xrVKc+FhlD7/H9cDybDaegCwrKlijvw63XqQJxVv4uWE0Zwdg8
+ kycStXuou2F2TI4Hwe3wIlTMSPYTbJlvuK8W74S42Zd5WIsbmRrKVH5b9MhmqyawVgwMsFIZA
+ 4wpVWVhEj2Iu34LRN+6ykDMAxlYqj/j9s2GE3ow2OUNsm9god09RAUNUtnrxUQdWhrNmHMgOY
+ PmCbtkwh6WyzqPRphfjGhaC8kLj3dfgTaPNVi6PDX+GGi8VEcUAsJ6BS7bVN9ab4qFIBsTELG
+ 7lpNnOOKu39xkx64DaWIMO9FECWv2vv8AYe/r0wZPaNmmnKnsHgN4vwdWlSAJkUqc6y25U+Sd
+ oRUiOQv7vJ0XuertMUz4/kLvEIDFLIJksoemuJqZ7n01ED47TJbF+L2wXzTyi67bQO9W7QN8A
+ 4Uvc7OeVJzrxXieFD1l4TgsmcVTcuSKBltId9U+nnzieBHMKoQPCsybA/Zb+MXZqn5vlA3T2R
+ EUojrvfo7kTeI8sfVlsK1+ngzNjGqzcokvsS0gzbzbkMNE/05D6WnVGDXhRLiIo51GBp1G2/4
+ vZmTtPbY2wJBUWMV5AioyTRh2uBJLLz64qYTvbr6DXmwZIMrpDcK0XwrHlKxdiFdFixmvzAF+
+ ucZjqmBQgJpbUwCT5lGYwNQeLOfkBS0SY2V1ujxDMfbyZDOJkVbTi/yjsJSi5Iudk2UW6zDb+
+ tce7VmhE172IR3jO0yZHRSUeldx9RwrQ2Zx2hW0yJzZrxaQg4Y7WmEsek/tI1QE9kaAl1+PLV
+ 2aRfHAf0AwF4o5r5bJqeuZctrf4R/VvnwIxB5LqRCWV6QcHFOsL1Irj1hKBK6SxnevWbbSGR0
+ 3c9MIFsOsdZ5LOti0Z/pmDh8tKeQdfWKkhwIAJSmcFas+I4zLiDdKWhKA==
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,126 +73,103 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/8/18 16:04, Wang Yugui wrote:
-> Hi,
+On 2021/12/4 06:04, Stefan Roesch wrote:
+> The btrfs allocator is currently not ideal for all workloads. It tends
+> to suffer from overallocating data block groups and underallocating
+> metadata block groups. This results in filesystems becoming read-only
+> even though there is plenty of "free" space.
 >
->> [BEHAVIOR CHANGE]
->> Since commit f6fca3917b4d ("btrfs: store chunk size in space-info
->> struct"), btrfs no longer can create larger data chunks than 1G:
->>
->>    mkfs.btrfs -f -m raid1 -d raid0 $dev1 $dev2 $dev3 $dev4
->>    mount $dev1 $mnt
->>
->>    btrfs balance start --full $mnt
->>    btrfs balance start --full $mnt
->>    umount $mnt
->>
->>    btrfs ins dump-tree -t chunk $dev1 | grep "DATA|RAID0" -C 2
->>
->> Before that offending commit, what we got is a 4G data chunk:
->>
->> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491 item=
-size 176
->> 		length 4294967296 owner 2 stripe_len 65536 type DATA|RAID0
->> 		io_align 65536 io_width 65536 sector_size 4096
->> 		num_stripes 4 sub_stripes 1
->>
->> Now what we got is only 1G data chunk:
->>
->> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 6271533056) itemoff 15491 item=
-size 176
->> 		length 1073741824 owner 2 stripe_len 65536 type DATA|RAID0
->> 		io_align 65536 io_width 65536 sector_size 4096
->> 		num_stripes 4 sub_stripes 1
->>
->> This will increase the number of data chunks by the number of devices,
->> not only increase system chunk usage, but also greatly increase mount
->> time.
->>
->> Without a properly reason, we should not change the max chunk size.
->>
->> [CAUSE]
->> Previously, we set max data chunk size to 10G, while max data stripe
->> length to 1G.
->>
->> Commit f6fca3917b4d ("btrfs: store chunk size in space-info struct")
->> completely ignored the 10G limit, but use 1G max stripe limit instead,
->> causing above shrink in max data chunk size.
->>
->> [FIX]
->> Fix the max data chunk size to 10G, and in decide_stripe_size_regular()
->> we limit stripe_size to 1G manually.
->>
->> This should only affect data chunks, as for metadata chunks we always
->> set the max stripe size the same as max chunk size (256M or 1G
->> depending on fs size).
->>
->> Now the same script result the same old result:
->>
->> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491 item=
-size 176
->> 		length 4294967296 owner 2 stripe_len 65536 type DATA|RAID0
->> 		io_align 65536 io_width 65536 sector_size 4096
->> 		num_stripes 4 sub_stripes 1
->>
->> Reported-by: Wang Yugui <wangyugui@e16-tech.com>
->> Fixes: f6fca3917b4d ("btrfs: store chunk size in space-info struct")
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/space-info.c | 2 +-
->>   fs/btrfs/volumes.c    | 3 +++
->>   2 files changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
->> index 477e57ace48d..b74bc31e9a8e 100644
->> --- a/fs/btrfs/space-info.c
->> +++ b/fs/btrfs/space-info.c
->> @@ -199,7 +199,7 @@ static u64 calc_chunk_size(const struct btrfs_fs_in=
-fo *fs_info, u64 flags)
->>   	ASSERT(flags & BTRFS_BLOCK_GROUP_TYPE_MASK);
->>
->>   	if (flags & BTRFS_BLOCK_GROUP_DATA)
->> -		return SZ_1G;
->> +		return BTRFS_MAX_DATA_CHUNK_SIZE;
->>   	else if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
->>   		return SZ_32M;
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 8c64dda69404..e0fd1aecf447 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -5264,6 +5264,9 @@ static int decide_stripe_size_regular(struct allo=
-c_chunk_ctl *ctl,
->>   				       ctl->stripe_size);
->>   	}
->>
->> +	/* Stripe size should never go beyond 1G. */
+> This is naturally confusing and distressing to users.
 >
-> Currently we  limit  the stripe size to SIZE_1G.
->
-> Is there some technical limit such as 'used as signed 32bit, so max
-> SIZE_1G or SIZE_2G?' or 'used as unsigned 32bit, so max SIZE_2G or
-> SIZE_4G?'
+> Patches:
+> 1) Store the chunk size in the btrfs_space_info structure
 
-AFAIK the only problem with larger stripe size is for unbalanced
-data/metadata case it will be harder to reclaim block groups.
+I guess it's too late, since the series is already in upstream, but I
+believe we need to do some more review on this feature.
 
-Other than that I'm not aware of certain problems related the stripe size.
+Firstly, I don't believe a single chunk_size (even it's per space-info)
+is good enough.
+
+The default chunk allocator has both checks on stripe_size and
+chunk_size, but the series only added chunk_size knob, missing
+stripe_size one.
+
+It would be much better to add another stripe_size knob for it.
+
+> 2) Add a sysfs entry to read and write the above information
+> 3) Add a sysfs entry to force a space allocation
+
+Any idea on how we handle the auto-reclaim on empty bgs?
+AKA, what's preventing the newly allocated bgs from being immediately
+reclaimed?
+
+I didn't see any special handling in the 3rd patch.
+
+> 4) Increase the default size of the metadata chunk allocation to 5GB
+>     for volumes greater than 50GB.
+
+It would be better to also allow users to tweak the size threshold.
+(E.g. allowing a knob for threshold on different chunk/stripe size
+limits, along with above mentioned stripe size knob).
 
 Thanks,
 Qu
 >
-> Best Regards
-> Wang Yugui (wangyugui@e16-tech.com)
-> 2022/08/18
+> Testing:
+>    A new test is being added to the xfstest suite. For reference the
+>    corresponding patch has the title:
+>      [PATCH] btrfs: Test chunk allocation with different sizes
+>
+>    In addition also manual testing has been performed.
+>      - Run xfstests with the changes and the new test. It does not
+>        show new diffs.
+>      - Test with storage devices 10G, 20G, 30G, 50G, 60G
+>        - Default allocation
+>        - Increase of chunk size
+>        - If the stripe size is > the free space, it allocates
+>          free space - 1MB. The 1MB is left as free space.
+>        - If the device has a storage size > 50G, it uses a 5GB
+>          chunk size for new allocations.
+>
+> ---
+> v6: - Update btrfs_force_chunk_alloc_store to use tree_root
+>        instead of extent_root.
+> V5: - Changed the field name in the btrfs_space_info struct from
+>        default_chunk_size to chunk_size and made it atomic
+>      - Removed the compute_chunk_size_zoned function
+>      - Added further checks when writing /sys/fs/btrfs/<id>/allocation/<=
+type>/chunk_size
+>      - Removed the ability to query /sys/fs/btrfs/<id>/allocation/<type>=
+/force_alloc_chunk
+>
+> V4: - Patch email contained duplicate entries.
+>
+> V3: - Rename sysfs entry from stripe_size to chunk_size
+>      - Remove max_chunk_size field in data structure btrfs_space_info
+>      - Rename max_stripe_size field to default_chunk_size in data
+>        structure btrfs_space_info
+>      - Remove max_chunk_size logic
+>      - Use stripe_size =3D chunk_size
+>
+> V2:
+>     - Split the patch in 4 patches
+>     - Added checks for zone volumes in sysfs.c
+>     - Replaced the BUG() with ASSERT()
+>     - Changed if with fallthrough
+>     - Removed comments in space-info.h
+> --
+> Stefan Roesch (4):
+>    btrfs: store chunk size in space-info struct.
+>    btrfs: expose chunk size in sysfs.
+>    btrfs: add force_chunk_alloc sysfs entry to force allocation
+>    btrfs: increase metadata alloc size to 5GB for volumes > 50GB
+>
+>   fs/btrfs/space-info.c |  41 ++++++++++++
+>   fs/btrfs/space-info.h |   3 +
+>   fs/btrfs/sysfs.c      | 152 ++++++++++++++++++++++++++++++++++++++++++
+>   fs/btrfs/volumes.c    |  28 +++-----
+>   4 files changed, 205 insertions(+), 19 deletions(-)
 >
 >
->> +	ctl->stripe_size =3D min_t(u64, ctl->stripe_size, SZ_1G);
->> +
->>   	/* Align to BTRFS_STRIPE_LEN */
->>   	ctl->stripe_size =3D round_down(ctl->stripe_size, BTRFS_STRIPE_LEN);
->>   	ctl->chunk_size =3D ctl->stripe_size * data_stripes;
->> --
->> 2.37.1
->
->
+> Signed-off-by: Stefan Roesch <shr@fb.com>
+> base-commit: 87c673b657a7e4784fb7274a77a8529712232d0c
