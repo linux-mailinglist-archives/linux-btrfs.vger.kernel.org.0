@@ -2,76 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A1C598BFD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 20:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7344F598C0A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 20:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240585AbiHRStj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Aug 2022 14:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
+        id S1345429AbiHRSxG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Aug 2022 14:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238851AbiHRSth (ORCPT
+        with ESMTP id S1345235AbiHRSw6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Aug 2022 14:49:37 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9821167448;
-        Thu, 18 Aug 2022 11:49:36 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 061B65C0369;
-        Thu, 18 Aug 2022 14:49:36 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 18 Aug 2022 14:49:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1660848576; x=1660934976; bh=3ySdJpV1XZ
-        At+PUgbfOUVIheS6JYL2NC7K8b56PaHiM=; b=La9ZQG+k4FPb59cqAbWvcOCjwO
-        AJLbls9Dje+YE5jXZX1gTCOl0MmKfc9M40JKmZW+IKZIeRXw+uzd5TNcT5xYuYoL
-        NE5vP4bkqAzXx+4lXbTsAugjoJozXgUzZdrDQj1edpibM0VvhITiuedEpKU+f1pe
-        5WXgTARB6y3Dov1++6iJQKnEVYT15GgcArzGQ9ecltUJ8ExvSd60jp/pzqV5eC3k
-        WkWUimyYhV840cI+1tNVq2TAc+lhmg0Den5RnKNjuEfhIfbOKtD7k8kFj2a8/kLz
-        XswrDk/XhS56Z2UzbHAuR3PM+1jVE3x1ZfZ7yN8eAoWaN89IJ4Y9gfQDJKaw==
+        Thu, 18 Aug 2022 14:52:58 -0400
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585E9C2E84;
+        Thu, 18 Aug 2022 11:52:57 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 842235801B4;
+        Thu, 18 Aug 2022 14:52:56 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute3.internal (MEProxy); Thu, 18 Aug 2022 14:52:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:date:feedback-id
+        colorremedies.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1660848776; x=
+        1660852376; bh=Ts6SgEwcKB+gnnxX0Mg89SPTORlM9/ZfOczJIVc1pgY=; b=s
+        jHZfKEnrAWU7KnQmcdIQeoJaQKZ9a7y4Lzssq43mdkqlnmN38vMUWHeAVGl/92p9
+        EF5j2pfU/3ibfgMCIu+DPLxxLbhqlPCxe1krQs+xeoO/U/nB3NdR5hE3TXYXM7wX
+        ybnhDKA4MwlnPQ84ekJb8uD0ladMlnMxQol4eKsdHhZVXH76m85+kDT72CanzoOl
+        vURpyj2wIbWOaocr7PxF6u9BiusjRxYGHmGWqCNEWBrTZOWWRnfPL+xCcrDtyPv1
+        Q//iIxRkuneguH1OZX+KoE2msbjl33EIuqay+K6L10+1t5KqPqog/sYFMVzgWL0t
+        q/jvnk0S2Ww9xE8N98+kg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
         :feedback-id:from:from:in-reply-to:in-reply-to:message-id
         :mime-version:references:reply-to:sender:subject:subject:to:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1660848576; x=1660934976; bh=3ySdJpV1XZAt+PUgbfOUVIheS6JY
-        L2NC7K8b56PaHiM=; b=hK5GKw1l6CCkM1vj763xrZqQLjYDdPlT/PgcBNbKxH7s
-        3W3fGk+2SnVykRUWZujwUflToc7JeElRggOXWhrT0rQNdR5/VlSSRpPi3v/ZHOEI
-        6MJLkMuKJhY9DZ/2XTCn91KIOzjttC+vjcVpUnkduO8J2HAYBBwH+kmsYI1Ce3u2
-        OvFZVT6YmJapeSbOm/8Y3Uh3Sjyu4pHxN7BeHh54pQRZ0Z0vXDzCBvTIiPXHzk2O
-        gxA5TgZ/aqzXHzFkfSzmexTVpB6uMjFz8/Mzx9xDXEqpdAYNb+OE0+CrWhIFwsqB
-        4plHzXzYY32kXnDN+fmMCyX43u49CHstlZVgrP+YMw==
-X-ME-Sender: <xms:v4n-YkOevTCGx4TwcMYE1Ic58EyRtKPxxHnBeJHRJvBVuWG1-_D8hw>
-    <xme:v4n-Yq-wpmSvNK7M9x0PdJOSms9_KQBby7vUytSg5eXH_qRShc_U7AweZ_U15Ux8F
-    4eiv7lHryTtZTph0Ag>
-X-ME-Received: <xmr:v4n-YrTMajjm4Uj8xY0_w-DNFpm7_1XF1mqXkxvOkDdd6Z6IovocWAlJ472hDDPdf362HPc2MWxR8WPVLERftpkvn_C-FA>
+        fm1; t=1660848776; x=1660852376; bh=Ts6SgEwcKB+gnnxX0Mg89SPTORlM
+        9/ZfOczJIVc1pgY=; b=LHrMOXycIBvofkcqKnNkKZGsoW75RVE5rbIm62q68gef
+        hgNUfn66xH9tYrXJJj7hT4Uz+n0RSsuo5wHwjPeBycW6myH75JFXzd3HC9BhnxkJ
+        G3xRsIyQz+jRXb1BIcs07qYtffwjbR90MtF/mHBoTaxBYJiYJdR961qAAUmp8l/0
+        kpF+wQxfMIt9d0cgf0Wrji8rME8JBarxujmwI42L8PZw6IgLG//U1rMKt1HuqjII
+        G0mAqPR0Pc9/hIBt6try1mTR2JEq2D8Cjxxf3Jdo/0pyiZ/EhjkrYRzoJY0UVlot
+        yFNDPxRp4+VFE/QA3s6Jj9R3naFTKbpXxFfEUAbSag==
+X-ME-Sender: <xms:h4r-YmQ9WP2krC5G1entLJ7EUPya8p4CoU9562V313IWfSqAGQ7wYg>
+    <xme:h4r-YrwX4L2Xo8eZA1rkNZxVfMbkgQlG9SM6_7s3duRx0u5ilrUsIe3iOkVsHMd9u
+    N6Mf7i-Y_2T13YQCUk>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehledguddtgecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
-    rdhioheqnecuggftrfgrthhtvghrnhepheduveelkeeiteelveeiuefhudehtdeigfehke
-    effeegledvueevgefgudeuveefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:v4n-YstMNgy8Rb6fxqh59tYbja1JCuVny-DAT8JRV9HRnCn1xdnweQ>
-    <xmx:v4n-YsfYhA1xm5PRshrDn-t1tKhllwO7ZXF487NjPpngTarfBmvXbg>
-    <xmx:v4n-Yg2zrQYxS0hoEbMZUZw-1ssNGzNM8fVeRTJ7U_jOxI4lAqGm4w>
-    <xmx:wIn-YtqXUeuVizcJgjgKhyU-c9qTix_HV-pkyxlGShHpGlwyEuM7eg>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 18 Aug 2022 14:49:35 -0400 (EDT)
-Date:   Thu, 18 Aug 2022 11:49:33 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v4] btrfs: send: add support for fs-verity
-Message-ID: <Yv6JvbDZDL/5/7Y6@zen>
-References: <0561e8a33f991fa15053054b7b089d176fde6523.1660596577.git.boris@bur.io>
- <20220818173254.GN13489@twin.jikos.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220818173254.GN13489@twin.jikos.cz>
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enogfuuhhsphgvtghtffhomhgrihhnucdlgeelmdenucfjughrpefofgggkfgjfhffhffv
+    vefutgesthdtredtreertdenucfhrhhomhepfdevhhhrihhsucfouhhrphhhhidfuceolh
+    hishhtshestgholhhorhhrvghmvgguihgvshdrtghomheqnecuggftrfgrthhtvghrnhep
+    feehleeiudegueelteffueehgeektefgtdevvedufffgjedvgeevleejhfdvfefhnecuff
+    homhgrihhnpehgohhoghhlvgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtoh
+    hm
+X-ME-Proxy: <xmx:h4r-Yj1bbQ4madkVb0dx8BXBTl3dA1aeP0_Bg0NB73CzngWa6DM_yw>
+    <xmx:h4r-YiATqKs_aiFBNkKsfRUT_YaG9Bi6INsyAP09-vwxXEIwIEVMLg>
+    <xmx:h4r-YviogrXyWGUyIkP0dcrda1UG_9Xbc3abPNgOXpXgvjR3mRT6Rw>
+    <xmx:iIr-YvgIryn7QxtJm1dMEBop9bbI4FM64_OAQUUsWm2E0QVeCs0UWQ>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id DD34E1700082; Thu, 18 Aug 2022 14:52:55 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-841-g7899e99a45-fm-20220811.002-g7899e99a
+Mime-Version: 1.0
+Message-Id: <bfaa8b43-519f-4e4c-b04b-a37b0ee9babf@www.fastmail.com>
+In-Reply-To: <Yv3K4G/Sv2KDEqif@T590>
+References: <Yv0A6UhioH3rbi0E@T590>
+ <f633c476-bdc9-40e2-a93f-29601979f833@www.fastmail.com>
+ <Yv0KmT8UYos2/4SX@T590>
+ <35f0d608-7448-4276-8922-19a23d8f9049@www.fastmail.com>
+ <Yv2P0zyoVvz35w/m@T590>
+ <568465de-5c3b-4d94-a74b-5b83ce2f942f@www.fastmail.com>
+ <Yv2w+Tuhw1RAoXI5@T590>
+ <9f2f608a-cd5f-4736-9e6d-07ccc2eca12c@www.fastmail.com>
+ <a817431f-276f-4aab-9ff8-c3e397494339@www.fastmail.com>
+ <5426d0f9-6539-477d-8feb-2b49136b960f@www.fastmail.com>
+ <Yv3K4G/Sv2KDEqif@T590>
+Date:   Thu, 18 Aug 2022 14:52:34 -0400
+From:   "Chris Murphy" <lists@colorremedies.com>
+To:     "Ming Lei" <ming.lei@redhat.com>
+Cc:     "Nikolay Borisov" <nborisov@suse.com>,
+        "Jens Axboe" <axboe@kernel.dk>, "Jan Kara" <jack@suse.cz>,
+        "Paolo Valente" <paolo.valente@linaro.org>,
+        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>,
+        Linux-RAID <linux-raid@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Josef Bacik" <josef@toxicpanda.com>
+Subject: Re: stalling IO regression since linux 5.12, through 5.18
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
@@ -83,70 +103,45 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 07:32:54PM +0200, David Sterba wrote:
-> On Mon, Aug 15, 2022 at 01:54:28PM -0700, Boris Burkov wrote:
-> > Preserve the fs-verity status of a btrfs file across send/recv.
-> > 
-> > There is no facility for installing the Merkle tree contents directly on
-> > the receiving filesystem, so we package up the parameters used to enable
-> > verity found in the verity descriptor. This gives the receive side
-> > enough information to properly enable verity again. Note that this means
-> > that receive will have to re-compute the whole Merkle tree, similar to
-> > how compression worked before encoded_write.
-> > 
-> > Since the file becomes read-only after verity is enabled, it is
-> > important that verity is added to the send stream after any file writes.
-> > Therefore, when we process a verity item, merely note that it happened,
-> > then actually create the command in the send stream during
-> > 'finish_inode_if_needed'.
-> > 
-> > This also creates V3 of the send stream format, without any format
-> > changes besides adding the new commands and attributes.
-> > 
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> 
-> As for the merge target, a realistic one seems to be 6.2, we have too
-> many pending patches everywhere else. There's a todo list for v3 that
-> I'd really like to get done.
-> 
-> To be able to test things incrementally until then we can add v3 support
-> under debug config.
 
-That all sounds good and reasonable to me. Would you like me to re-send
-with gating V3 behind debug, or will you do it as part of taking it?
 
-Also, this just popped in my head, but could we acheive what we want
-with the "--proto" feature of the send CLI, and having a notion of a
-provisional version that is not yet hardened and properly named/fixed
-for future compatibility? For extra fanciness, we can do sub-versions
-or hashes of the commands or something. Maybe proto=(u64)-1 means
-experimental.
+On Thu, Aug 18, 2022, at 1:15 AM, Ming Lei wrote:
+> On Thu, Aug 18, 2022 at 12:27:04AM -0400, Chris Murphy wrote:
+>> 
+>> 
+>> On Thu, Aug 18, 2022, at 12:18 AM, Chris Murphy wrote:
+>> > On Thu, Aug 18, 2022, at 12:12 AM, Chris Murphy wrote:
+>> >> On Wed, Aug 17, 2022, at 11:41 PM, Ming Lei wrote:
+>> >>
+>> >>> OK, can you post the blk-mq debugfs log after you trigger it on v5.17?
+>> 
+>> Same boot, 3rd log. But the load is above 300 so I kinda need to sysrq+b soon.
+>> 
+>> https://drive.google.com/file/d/1375H558kqPTdng439rvG6LuXXWPXLToo/view?usp=sharing
+>> 
+>
+> Please test the following patch and see if it makes a difference:
+>
+> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+> index a4f7c101b53b..8e8d77e79dd6 100644
+> --- a/block/blk-mq-sched.c
+> +++ b/block/blk-mq-sched.c
+> @@ -44,7 +44,10 @@ void __blk_mq_sched_restart(struct blk_mq_hw_ctx *hctx)
+>  	 */
+>  	smp_mb();
+> 
+> -	blk_mq_run_hw_queue(hctx, true);
+> +	if (blk_mq_is_shared_tags(hctx->flags))
+> +		blk_mq_run_hw_queues(hctx->queue, true);
+> +	else
+> +		blk_mq_run_hw_queue(hctx, true);
+>  }
+> 
+>  static int sched_rq_cmp(void *priv, const struct list_head *a,
 
-Anyway, I'm totally fine with putting it behind debug till it's done,
-but figured I'd share that thought.
 
-> 
-> > --
-> > Changes in v4:
-> > - Use btrfs_get_verity_descriptor instead of verity ops get descriptor.
-> >   Move that definition to ctree.h for conditional building. This cleaned
-> >   up most of the conditional building issues, in my opinion.
-> 
-> Yes, that way it's ok.
-> 
-> > - Rename process_new_verity to process_verity.
-> > - Use le-to-cpu conversion for all fsverity descriptor fields.
-> > - Don't check NULL for kvfree of the send descriptor.
-> 
-> > --- a/fs/btrfs/ctree.h
-> > +++ b/fs/btrfs/ctree.h
-> > --- a/fs/btrfs/send.c
-> > +++ b/fs/btrfs/send.c
-> > @@ -3,6 +3,7 @@
-> >   * Copyright (C) 2012 Alexander Block.  All rights reserved.
-> >   */
-> >  
-> > +#include "linux/compiler_attributes.h"
-> 
-> As Eric pointed out, this is not necessary, I'll delete the line, no
-> need to resend just for that.
+I still get a stall. By the time I noticed it, I can't run any new commands (they just hang) so I had to sysrq+b. Let me know if I should rerun the test in order to capture block debug log.
+
+
+-- 
+Chris Murphy
