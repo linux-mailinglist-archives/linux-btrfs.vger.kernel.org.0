@@ -2,59 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D952B597FCF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 10:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211DE597FEB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 10:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236393AbiHRIK1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Aug 2022 04:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45520 "EHLO
+        id S236907AbiHRINa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Aug 2022 04:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239618AbiHRIKZ (ORCPT
+        with ESMTP id S231430AbiHRIN3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Aug 2022 04:10:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4ED83BE6;
-        Thu, 18 Aug 2022 01:10:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ACA096172E;
-        Thu, 18 Aug 2022 08:10:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17633C433D7;
-        Thu, 18 Aug 2022 08:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660810223;
-        bh=E1fQfZS5ERKG9i4AQ6XzlstUKAui8XJWz/lA3NQtSyk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cixTkJk0gGs8L2PlG5TX+byIG4DJNIpEpjwDK6kfN8cPFw2UU3wfLi7iPG/NfXvys
-         MooedvbwcuP4LJcvLgGmQ1PESgCjpZXfSUeebnz0XiKjKL1gjqD0C4ZKxiaKl000CB
-         QAeH9BOcCFPsRu2bz5Hl4uRxN9kAkoQikHkGrnQg2AbvQqkk6g3hlJnjvmAmhsN7E6
-         AfOhf6Rx3TJlUiFML4/yqK0bfFUdexFzDJQHhgfLHA8xAlo99nlOHbsB/UwHnrASgN
-         qWRox7iGJyVCSBbu30PXPYDv9SerpWASjB2KYzL22SKXWaxNXm7miL8t3rcBVhcX3v
-         2liUnCHekmT/g==
-Received: by mail-ej1-f44.google.com with SMTP id dc19so1799780ejb.12;
-        Thu, 18 Aug 2022 01:10:22 -0700 (PDT)
-X-Gm-Message-State: ACgBeo0BNE7UqbT3TKNzuew4b1sZyE5tXTrCE5FJsvqehdJG8QOHoqb4
-        XYO51cQaPRmalmisCKpm+QYCUh3MpSg29xqViDw=
-X-Google-Smtp-Source: AA6agR5TlQdExmmgc7kImRMYtA/RLYZOkVIRnG2EN+Ne9bWc3Bn0/05bX4VM1jHZEcsvgNSlvqcY3Nm3h6rYWQ6dLi8=
-X-Received: by 2002:a17:907:6d8b:b0:730:c160:1f9c with SMTP id
- sb11-20020a1709076d8b00b00730c1601f9cmr1226091ejc.342.1660810221229; Thu, 18
- Aug 2022 01:10:21 -0700 (PDT)
+        Thu, 18 Aug 2022 04:13:29 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BA2356FB
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Aug 2022 01:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1660810400;
+        bh=D6HdVqD9ID+tX1jF06feSsh9Jm+zip1iAuQMXyKSgUA=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=AsAqvPo4r2MAy2VCW+7xFauRJAEuBWIhi3PlT/+xhg2AJ8P5NbIjHBE4sk3B4YhvZ
+         g65w9sLhrNH5vy0r6JPnjk8VCCunEThHvpQotHjXlmcP2Wf+yVkxCGI6QV7YR9K/0/
+         rL3TuUx9xqi6KSCeAOIaWqKlVFhNDbP52OF9uIMA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4hvR-1nNvYW2IqN-011jr0; Thu, 18
+ Aug 2022 10:13:20 +0200
+Message-ID: <69f30de8-0d1d-4ada-c563-6f88bc4a4f40@gmx.com>
+Date:   Thu, 18 Aug 2022 16:13:16 +0800
 MIME-Version: 1.0
-References: <20220816214051.wsw75y3mtjdsim6w@fiona> <143a26d6-9237-b745-ece6-ce37dc7dca9a@oracle.com>
-In-Reply-To: <143a26d6-9237-b745-ece6-ce37dc7dca9a@oracle.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 18 Aug 2022 09:09:43 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H46y85Y4K14ud0Hv8bGS+6ikuRTj84CNYzg=hJwDSA95Q@mail.gmail.com>
-Message-ID: <CAL3q7H46y85Y4K14ud0Hv8bGS+6ikuRTj84CNYzg=hJwDSA95Q@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Test xattr changes for read-only btrfs property
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Subject: Re: [PATCH] btrfs: fix the max chunk size and stripe length
+ calculation
+Content-Language: en-US
+To:     Wang Yugui <wangyugui@e16-tech.com>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <17e7c38b0cc6fe90c90f4b383734c06eafd2f9b5.1660806386.git.wqu@suse.com>
+ <20220818160425.511E.409509F4@e16-tech.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220818160425.511E.409509F4@e16-tech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:TLOfWUuMfJsZBrDyVORp0Bi32UJmAR7UBU3KQCFLPAPKrdtZqg1
+ 3duwO1bEKmDIbI+KjombsDQhmzWzGpOBomDNAEhSr8CFiDqT9MVCkshlEOI8ArlUiY/hjWG
+ qTuqBIwRhW2++VQT05tdCBb5a/44Li2B4Qx1HomFhVGF4YiwNTRDpf1aWZXomzpADteKgha
+ wh3JhZoSiN/O5/4BkBb9w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:x6ZK89kl8XA=:j/7JlLPlanbsSYftUiauCH
+ WWRALV0vID3Kw0kj7LzNggl345xlqG+PiKl7bxEVE06yTdzbBzUFULpRFwBoMpXGOM8Y4eZPU
+ 6BeJDtyFfYCUWhwwOkq//xR1/xRM7NHHc+V+Mk9cx0XxHv/oNOaNgVf1zTKa17R7qkPEa2V8n
+ Z7cAJymXvtADrk+x1bZ/Al5kKHIlFn7SPTVeJoK40XZlOAEM17vj1u+odlrG+2x6GAz9v2v36
+ 1gMxUCCw8WBA+c0/VRB5lkQ2+jaHToVqYKGDb/9cKc4+yTbD1tKWBAJ8i/Q/wQ3CoYIFX8rkV
+ 23Aqc5EiZrOzb3nV+agmLrbsq3xTD3EH1ATQFKPJmLv+70K5rzVxWPUisYhxr0WLuDEmK9g6p
+ s5rRGSck0PLvypDMZD+cxSXddgwplat2MR+U/jE+u6na0Egroc1jP4FwFMUkHBP6sf4mjdxS+
+ MB3bKiQXlbD05b91OmShYyMmE3NvASlMe3N/trTkLCJXa3hrZ8K9EpF5fbTj5TFKxE+lE2kbN
+ rv/VNK+Nl7uQpc9KRq3oZQ2Vlbh61posikGF6GmNHfJ+MI1svujkQGKt8ywlfPeUIzm1TBSoz
+ QXD0yD7NlI5nomoIPKbXG5ExDD0FfYkLnlxC8piu/4lOJSIXiVO3R7Hca0KvLjYXHVRz5N7XM
+ jSBz2oAAP2S4tkL5HN8WKskiR8zXAc49+Qt2RoLikvSXcU5w3AMMzZERvniHeFl20hGnjq23C
+ olcIUtu+gk8KpNYjFOi83X7/51rwb8IjBoSwWJrF3fjxiO8o5B9pB0uMWlLYC3oqINLcGe5SP
+ sghoGBsd/RsIvaxb9pfYJ4fVq5SDtjYQVQ+W6XH6p2NO+BBcVtmnd1gJt+M2P9hxTu17Xd6T4
+ 7nYMEC7P9iQ8j3du+Otpluvy3xV0NyQT/AdGm4f/QleyJhGJ4PCE7IKL8zeQjtSBejzxNlAs/
+ M9dj72IxsokDVZQoa1u7UEe2YA3CizGyEZXq+NyWQZFXCBzNAIr7INCgl3j/uKWDVHA8sUHCE
+ etprDECvT521QqkcUEt4tnLjSs2DOuMaCvv/fVN9ZU3pN3ZCJdCThAF8RRs5o1fRwAeWdppdV
+ trotrFAdEd/7g3uiIHW0zpUSvrF1Jr0QirbXLKbc/dtCRl3r2UpXnmqzw==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,174 +73,128 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 4:08 AM Anand Jain <anand.jain@oracle.com> wrote:
->
->
->
->
-> On 8/17/22 05:40, Goldwyn Rodrigues wrote:
-> > Test creation, modification and deletion of xattr for a BTRFS filesystem
-> > which has the read-only property set to true.
-> >
-> > Re-test the same after BTRFS read-only property is set to false.
-> >
-> > This tests the bug for "security.*" modifications which escape
-> > xattr_permission(), because security parameters are let through
-> > in xattr_permission(), without checks from
-> > inode_permission()->btrfs_permission(). There is no restriction on
-> > security.* from VFS and decision is left to the underlying filesystem.
-> >
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> >
-> > diff --git a/tests/btrfs/273 b/tests/btrfs/273
-> > new file mode 100755
-> > index 00000000..ec7d264d
-> > --- /dev/null
-> > +++ b/tests/btrfs/273
-> > @@ -0,0 +1,78 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
-> > +#
-> > +# FS QA Test No. 273
-> > +#
-> > +# Test that no xattr can be changed once btrfs property is set to RO
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto quick attr
-> > +
-> > +# Import common functions.
-> > +#. ./common/filter
-> > +. ./common/attr
-> > +
-> > +# real QA test starts here
-> > +_supported_fs btrfs
-> > +_require_attrs
-> > +_require_btrfs_command "property"
-> > +_require_scratch
-> > +
-> > +_scratch_mkfs > /dev/null 2>&1 || _fail "mkfs failed"
-> > +_scratch_mount
-> > +
-> > +FILENAME=$SCRATCH_MNT/foo
-> > +
-> > +set_xattr() {
-> > +     local value=$1
-> > +     $SETFATTR_PROG -n "user.one" -v $value $FILENAME
-> > +     $SETFATTR_PROG -n "security.one" -v $value $FILENAME
-> > +     $SETFATTR_PROG -n "trusted.one" -v $value $FILENAME
-> > +}
-> > +
-> > +get_xattr() {
-> > +     $GETFATTR_PROG -n "user.one" $FILENAME
-> > +     $GETFATTR_PROG -n "security.one" $FILENAME
-> > +     $GETFATTR_PROG -n "trusted.one" $FILENAME
-> > +}
-> > +
-> > +del_xattr() {
-> > +     $SETFATTR_PROG -x "user.one" $FILENAME
-> > +     $SETFATTR_PROG -x "security.one" $FILENAME
-> > +     $SETFATTR_PROG -x "trusted.one" $FILENAME
-> > +}
-> > +
->
-> This output contains mnt references that need to be filtered.
-> Filter _filter_scratch should help.
 
-That was already pointed out in my previous review, wasn't it?
 
+On 2022/8/18 16:04, Wang Yugui wrote:
+> Hi,
 >
+>> [BEHAVIOR CHANGE]
+>> Since commit f6fca3917b4d ("btrfs: store chunk size in space-info
+>> struct"), btrfs no longer can create larger data chunks than 1G:
+>>
+>>    mkfs.btrfs -f -m raid1 -d raid0 $dev1 $dev2 $dev3 $dev4
+>>    mount $dev1 $mnt
+>>
+>>    btrfs balance start --full $mnt
+>>    btrfs balance start --full $mnt
+>>    umount $mnt
+>>
+>>    btrfs ins dump-tree -t chunk $dev1 | grep "DATA|RAID0" -C 2
+>>
+>> Before that offending commit, what we got is a 4G data chunk:
+>>
+>> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491 item=
+size 176
+>> 		length 4294967296 owner 2 stripe_len 65536 type DATA|RAID0
+>> 		io_align 65536 io_width 65536 sector_size 4096
+>> 		num_stripes 4 sub_stripes 1
+>>
+>> Now what we got is only 1G data chunk:
+>>
+>> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 6271533056) itemoff 15491 item=
+size 176
+>> 		length 1073741824 owner 2 stripe_len 65536 type DATA|RAID0
+>> 		io_align 65536 io_width 65536 sector_size 4096
+>> 		num_stripes 4 sub_stripes 1
+>>
+>> This will increase the number of data chunks by the number of devices,
+>> not only increase system chunk usage, but also greatly increase mount
+>> time.
+>>
+>> Without a properly reason, we should not change the max chunk size.
+>>
+>> [CAUSE]
+>> Previously, we set max data chunk size to 10G, while max data stripe
+>> length to 1G.
+>>
+>> Commit f6fca3917b4d ("btrfs: store chunk size in space-info struct")
+>> completely ignored the 10G limit, but use 1G max stripe limit instead,
+>> causing above shrink in max data chunk size.
+>>
+>> [FIX]
+>> Fix the max data chunk size to 10G, and in decide_stripe_size_regular()
+>> we limit stripe_size to 1G manually.
+>>
+>> This should only affect data chunks, as for metadata chunks we always
+>> set the max stripe size the same as max chunk size (256M or 1G
+>> depending on fs size).
+>>
+>> Now the same script result the same old result:
+>>
+>> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491 item=
+size 176
+>> 		length 4294967296 owner 2 stripe_len 65536 type DATA|RAID0
+>> 		io_align 65536 io_width 65536 sector_size 4096
+>> 		num_stripes 4 sub_stripes 1
+>>
+>> Reported-by: Wang Yugui <wangyugui@e16-tech.com>
+>> Fixes: f6fca3917b4d ("btrfs: store chunk size in space-info struct")
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/space-info.c | 2 +-
+>>   fs/btrfs/volumes.c    | 3 +++
+>>   2 files changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+>> index 477e57ace48d..b74bc31e9a8e 100644
+>> --- a/fs/btrfs/space-info.c
+>> +++ b/fs/btrfs/space-info.c
+>> @@ -199,7 +199,7 @@ static u64 calc_chunk_size(const struct btrfs_fs_in=
+fo *fs_info, u64 flags)
+>>   	ASSERT(flags & BTRFS_BLOCK_GROUP_TYPE_MASK);
+>>
+>>   	if (flags & BTRFS_BLOCK_GROUP_DATA)
+>> -		return SZ_1G;
+>> +		return BTRFS_MAX_DATA_CHUNK_SIZE;
+>>   	else if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
+>>   		return SZ_32M;
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 8c64dda69404..e0fd1aecf447 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -5264,6 +5264,9 @@ static int decide_stripe_size_regular(struct allo=
+c_chunk_ctl *ctl,
+>>   				       ctl->stripe_size);
+>>   	}
+>>
+>> +	/* Stripe size should never go beyond 1G. */
 >
+> Currently we  limit  the stripe size to SIZE_1G.
 >
-> > +# Create a test file.
-> > +echo "hello world" > $FILENAME
-> > +
-> > +set_xattr 1
-> > +
-> > +$BTRFS_UTIL_PROG property set $SCRATCH_MNT ro true
-> > +$BTRFS_UTIL_PROG property get $SCRATCH_MNT ro
-> > +
-> > +# Attempt to change values of RO (property) filesystem
-> > +set_xattr 2
-> > +
-> > +# Check the values of RO (property) filesystem is not changed
-> > +get_xattr
-> > +
-> > +# Attempt to remove xattr from RO (property) filesystem
-> > +del_xattr
-> > +
-> > +# Change filesystem property RO to false
-> > +
-> > +$BTRFS_UTIL_PROG property set $SCRATCH_MNT ro false
-> > +$BTRFS_UTIL_PROG property get $SCRATCH_MNT ro
-> > +
-> > +# Change the xattrs after RO is false
->
-> > +set_xattr 2
-> > +
->
->   Nit:  We are reusing the value "2" and changing it to "3"  makes it
->   unique and so the debugging easier.
+> Is there some technical limit such as 'used as signed 32bit, so max
+> SIZE_1G or SIZE_2G?' or 'used as unsigned 32bit, so max SIZE_2G or
+> SIZE_4G?'
 
-That's a good idea.
+AFAIK the only problem with larger stripe size is for unbalanced
+data/metadata case it will be harder to reclaim block groups.
 
->
->
-> > +# Get the changed values
-> > +get_xattr
-> > +
-> > +# Remove xattr
-> > +del_xattr
-> > +
-> > +status=0
-> > +exit
-> > diff --git a/tests/btrfs/273.out b/tests/btrfs/273.out
-> > new file mode 100644
-> > index 00000000..f6fca029
-> > --- /dev/null
-> > +++ b/tests/btrfs/273.out
-> > @@ -0,0 +1,33 @@
-> > +QA output created by 273
-> > +ro=true
-> > +setfattr: /scratch/foo: Read-only file system
-> > +setfattr: /scratch/foo: Read-only file system
-> > +setfattr: /scratch/foo: Read-only file system
-> > +getfattr: Removing leading '/' from absolute path names
-> > +# file: scratch/foo
-> > +user.one="1"
-> > +
-> > +getfattr: Removing leading '/' from absolute path names
-> > +# file: scratch/foo
-> > +security.one="1"
-> > +
-> > +getfattr: Removing leading '/' from absolute path names
-> > +# file: scratch/foo
-> > +trusted.one="1"
-> > +
-> > +setfattr: /scratch/foo: Read-only file system
-> > +setfattr: /scratch/foo: Read-only file system
-> > +setfattr: /scratch/foo: Read-only file system
-> > +ro=false
-> > +getfattr: Removing leading '/' from absolute path names
-> > +# file: scratch/foo
-> > +user.one="2"
-> > +
-> > +getfattr: Removing leading '/' from absolute path names
-> > +# file: scratch/foo
-> > +security.one="2"
-> > +
-> > +getfattr: Removing leading '/' from absolute path names
-> > +# file: scratch/foo
-> > +trusted.one="2"
->
->
-> > +
->
-> Nit: A whitespace.
+Other than that I'm not aware of certain problems related the stripe size.
 
-It's needed, getfattr prints a blank line at the end.
-
+Thanks,
+Qu
 >
-> Thanks.
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2022/08/18
+>
+>
+>> +	ctl->stripe_size =3D min_t(u64, ctl->stripe_size, SZ_1G);
+>> +
+>>   	/* Align to BTRFS_STRIPE_LEN */
+>>   	ctl->stripe_size =3D round_down(ctl->stripe_size, BTRFS_STRIPE_LEN);
+>>   	ctl->chunk_size =3D ctl->stripe_size * data_stripes;
+>> --
+>> 2.37.1
 >
 >
