@@ -2,104 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A094B597EAD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 08:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5D3597EBF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 08:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243692AbiHRGcn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Aug 2022 02:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
+        id S241568AbiHRGk5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Aug 2022 02:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbiHRGcm (ORCPT
+        with ESMTP id S233362AbiHRGk4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Aug 2022 02:32:42 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B88BA99F3
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 23:32:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1660804351;
-        bh=c4E2ugWo8rp8uefiVhLifwuNyXbquOwIu4WRW3heybA=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=RY8ENFsOiYHj5YG9dIGT+whNZqwTl61vP7yOEsLI6afqLpBVNfEGOrOc+wCJw/Gem
-         bC5/NN/DKLAuG1qKby7gy45tG/VJGNOo+RAerMMRuEp0vTWYs9yo8NjE1nHUexsSA4
-         kz8XMLqzr7+yrbffuA2eESCX1yQ0B/Jkr+jxzYzk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MZTqg-1ntA8u1CUA-00WW8O; Thu, 18
- Aug 2022 08:32:31 +0200
-Message-ID: <ed38f48f-0dbf-84f7-4fc0-1a50980b0f63@gmx.com>
-Date:   Thu, 18 Aug 2022 14:32:25 +0800
+        Thu, 18 Aug 2022 02:40:56 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D22CAEDAC
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 23:40:53 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id m2so754639pls.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Aug 2022 23:40:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=kXjh+oBhiEn9Ji0wHsA4tl8yjbLivCCs0CYl7qZz7jA=;
+        b=xn7MDOQUqcpzfCJzPgT3cDG6oqZPjf74HpAXKrPnEXWJ1yYHwm1resLlBXaydL9LGc
+         /8UghDv8oVR2RnpWF9kSMD9w+zub1xGk+cbEmaybnHT/l5MF65LsKZ6n1FUbji2wrJW2
+         ++cZXNx1eJmOsZZyAScDC8A9D5umMlAIHSz7Ez3W1yqIo5653pk6/aKUVFEqwtO6cQ61
+         fxIqaDXzsVhaDjOv4Pb4JdYnYRqgB6kWN1a0N9zoHNLM6i2vG9fMsB+gu2BH2I3a3kRq
+         kbweW3pNNr/ayseX6+SF23J2dIDCw9kwFMcO6yFwB14ovVPlZMjO+l2p4Wl0fqClBker
+         dMYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=kXjh+oBhiEn9Ji0wHsA4tl8yjbLivCCs0CYl7qZz7jA=;
+        b=bjnyfc3bj2K1y1YT5AVJ9hu8VruCgfoCjlK7NUajq+Pzv28NFVtpfyHLuzulBxsI3/
+         6PhwacADn7Z4oK+Ggj/dHPLFiuJGVkMTVOr9n49ZFyPUyPCS5f5ZFtjWqRa1Fa7uR9AD
+         HUMwBeGb1alIcbOiOm9IpQn/JtY/RC/YevakaDLbssD3SPJ4ElBTO3NbkMHWwBExi9k7
+         9FqYaamF4v6cpfyYS435k14cZqgFKTLs1gJNb9vPdDD1UGnh4Q+2UKD9tKbnEtIReacn
+         y5X+8IFnWuJTSP0BtmchvIuyuAE2ADkar6Gnb13itEAu7fvEYJWumZGGshX+ORJhNQ7K
+         fYFw==
+X-Gm-Message-State: ACgBeo0rDQ/lpjhAPylw5RFCGI73PFkQQC7UzIbXFYPeB7PhSMQazgAd
+        ni1Hb+0tUZVRDAHoQd69tFRebQ==
+X-Google-Smtp-Source: AA6agR6DKIxddQyYfBexn7zRBdmQAlTFluHv6oDE21IpTWkGIsQ31pCtrZjofy4phu8hMWI2f6hv6Q==
+X-Received: by 2002:a17:903:228c:b0:16e:df74:34e5 with SMTP id b12-20020a170903228c00b0016edf7434e5mr1460843plh.49.1660804852741;
+        Wed, 17 Aug 2022 23:40:52 -0700 (PDT)
+Received: from relinquished.localdomain ([2601:602:a300:cc0::f972])
+        by smtp.gmail.com with ESMTPSA id f20-20020a63f754000000b0041b823d4179sm578961pgk.22.2022.08.17.23.40.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Aug 2022 23:40:52 -0700 (PDT)
+Date:   Wed, 17 Aug 2022 23:40:51 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Andrea Gelmini <andrea.gelmini@gmail.com>
+Cc:     Christoph Anton Mitterer <calestyo@scientia.org>,
+        Linux BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/2] btrfs: fix space cache corruption and potential
+ double allocations
+Message-ID: <Yv3e8/82qugMFUSJ@relinquished.localdomain>
+References: <cover.1660690698.git.osandov@fb.com>
+ <9ee45db86433bb8e4d7daff35502db241c69ad16.1660690698.git.osandov@fb.com>
+ <CAK-xaQZYDBuL2DMeOiZDubujSmZTcNJfkgqa03Q+24=nhCmynw@mail.gmail.com>
+ <dbc8b0ee60b174f1b2c17a7469918a32a381c51b.camel@scientia.org>
+ <Yv2A+Du6J7BWWWih@relinquished.localdomain>
+ <CAK-xaQZh4DJf=6oxK2SVuodxE_bhUxEjAJXmYd6KfXGdg_9PEw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: [PATCH v6 1/4] btrfs: store chunk size in space-info struct.
-Content-Language: en-US
-To:     dsterba@suse.cz, Wang Yugui <wangyugui@e16-tech.com>,
-        Stefan Roesch <shr@fb.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20211203220445.2312182-1-shr@fb.com>
- <20211203220445.2312182-2-shr@fb.com>
- <20220723074936.30FD.409509F4@e16-tech.com>
- <20220725134149.GY13489@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20220725134149.GY13489@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ts8I6rCJIjijZ9Io4hEfRYgSq5Id1gkYuDLshbqhOU/OrmnlFYj
- CDoL8fmSlwuJuTLg5JkZUpgjgdkvnyAGxCTT64FC3TWAnlL2ILHCpx1xw8wv6nNOjrEJX/n
- 52McFIMcHK2KQJQWKDu/kWfElURqAqB74Wa8c75FcP7dTMFU7f3Ysyo8SQ9zgbjFBd2VvQA
- +FZx6dxUy25CRMcTbooYA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Y0CmHpHY3tc=:D6KvbPQOHuw85+BLae9D9I
- q5unyQiE4Lxsry+0mSCJ7Poif7N5RkSBXl2Vk7NmTKAKAUW3TUR85CFz9MVuH+lsEQzkYJo2Z
- boxYukFZLSt9+/9Q+1ofaG4FaC7jPmVwxh89j+trVeu/ssGbPMYjtdQftt0nArJCsorAQ2ls3
- l5+geFBqZkkmgSbSLG6UytA5ON1nExC8bdSguo0JsI173YO0ElcZ78mFsw/he0wxB+yzzfg6Z
- ShUdIaW20WN2uh9WH0mBOiBGjX3O/SzJmQUS+/DTzMXwMu6dxivgnVyXSEfx9u/fFhil1MRM1
- yHWyl/WvEhtBU43O4bI9mPEs1dvIVtrQQ2gitc5pxhpkJel/kt/ltdCQLmii6/R5qS1cvZe8n
- f50nc9xIxD+2Go0hEOlzkV8XofF1786ff6N1wERxFffBABi6mHaJxsgeLxjsbac8W7pcqu0of
- M6xdv6qCYgcPp17mX5vxNccI3vmtAflnOF5nv+ImbxiK3arpiF/Bg8qDSvRV/HQFnAzWrxPGu
- pU6Fx30RYK22o2TcFcoUcit5Dp/ZlJwKu9xXFq0h83vdWRnCqO76weq5PukvIqF50j41tRHbw
- UJRrl1lGfHJ4LLGA/SZoBHWKd+LLkrY9HCOTJgoPOm/LhpTCF0R7WhsJevArYwmHT76QsjS1H
- QAfsw+z+i9PETJJWxtSgXGCl5NlMF1UzHsxgZJT8XpGCCsr70B0FzE37KCTaIkvSQ1dwCIiVa
- xBFLnehD5dVoSI3+o8Ap6sE4NiW11jmXojtvcvIGmiE9WvXj7FFjWgWC4eqG1RmT3rFli9nRi
- HSDdE1/VYwxiU0MXjut4Ad67qpKermXjtwxDvroYFcd+nmzZg95kuiPN2cP47+UQOGFoH97dI
- xh4aeX/hfhnjs241jY2EjbLJq1hgMRXMDmbrbFnJWnU2W0g3udnXIlyMGvdKvgmgN4j5dYL+e
- MkXhwR4GHdjQQx+Y0IkPh9ccCFxx1hDkq0gAPJY4jMuSumKg9qbkPgm0TQ/2tboelO1DzK/K6
- z9DUuw2nd/bWd+D8Waf6SF6xsKaQoVn5AJ8Bt7Hl6QoLZVkyHKxkh2b0YNtt4U9f+8Za5E+9K
- azNtXZoN7uV4yHqLBGhq7NhBlLm6nCT89zmCVd/Ksu569MmLItxi2IgtA==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK-xaQZh4DJf=6oxK2SVuodxE_bhUxEjAJXmYd6KfXGdg_9PEw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Aug 18, 2022 at 08:21:30AM +0200, Andrea Gelmini wrote:
+> Il giorno gio 18 ago 2022 alle ore 01:59 Omar Sandoval
+> <osandov@osandov.com> ha scritto:
+> > From what I've found, it's much more likely to happen if you delete a
+> > lot of data soon after boot with space_cache=v2/nospace_cache and
+> > discard/discard=sync. I can't say that it'd never happen outside of
+> > those conditions, but I suspect that it's much harder to hit otherwise.
+> 
+> Thanks a lot for details.
+> 
+> If "discard" is a necessary condition, does it mean that on HDD we
+> don't have the problem?
+> 
+> Do you think is enough for the moment to disable "discard" on nvme/ssd?
 
-
-On 2022/7/25 21:41, David Sterba wrote:
-> On Sat, Jul 23, 2022 at 07:49:37AM +0800, Wang Yugui wrote:
->> Hi,
->>
->> In this patch, the max chunk size is changed from
->> BTRFS_MAX_DATA_CHUNK_SIZE(10G) to SZ_1G without any comment ?
->
-> The patch hasn't been merged, the change from 1G to 10G without proper
-> evaluation won't happen. The sysfs knob is available for users who want
-> to test it or know that the non-default value works in their
-> environment.
-
-Nope, this is already in torvalds master branch.
-
-Furthermore, this patch now completely limits all data chunk size to 1G,
-previously it can be 10G (but stripe size is still limited to 1G).
-
-Now for any RAID0/10 based profiles, it's completely off.
-
-For RAID0 we have at least one time more chunks, and the more device we
-have the more chunks we have.
-
-Such big behavior change is not really properly reviewed at all.
-
-Thanks,
-Qu
+Discard is not necessary, but it does make the race window larger. So it
+wouldn't hurt to disable it for now.
