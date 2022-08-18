@@ -2,96 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7344F598C0A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 20:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DEE598CB7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Aug 2022 21:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345429AbiHRSxG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Aug 2022 14:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
+        id S1343990AbiHRTih (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Aug 2022 15:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345235AbiHRSw6 (ORCPT
+        with ESMTP id S242246AbiHRTif (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Aug 2022 14:52:58 -0400
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585E9C2E84;
-        Thu, 18 Aug 2022 11:52:57 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 842235801B4;
-        Thu, 18 Aug 2022 14:52:56 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Thu, 18 Aug 2022 14:52:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        colorremedies.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1660848776; x=
-        1660852376; bh=Ts6SgEwcKB+gnnxX0Mg89SPTORlM9/ZfOczJIVc1pgY=; b=s
-        jHZfKEnrAWU7KnQmcdIQeoJaQKZ9a7y4Lzssq43mdkqlnmN38vMUWHeAVGl/92p9
-        EF5j2pfU/3ibfgMCIu+DPLxxLbhqlPCxe1krQs+xeoO/U/nB3NdR5hE3TXYXM7wX
-        ybnhDKA4MwlnPQ84ekJb8uD0ladMlnMxQol4eKsdHhZVXH76m85+kDT72CanzoOl
-        vURpyj2wIbWOaocr7PxF6u9BiusjRxYGHmGWqCNEWBrTZOWWRnfPL+xCcrDtyPv1
-        Q//iIxRkuneguH1OZX+KoE2msbjl33EIuqay+K6L10+1t5KqPqog/sYFMVzgWL0t
-        q/jvnk0S2Ww9xE8N98+kg==
+        Thu, 18 Aug 2022 15:38:35 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5AF218;
+        Thu, 18 Aug 2022 12:38:31 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6882C5C034F;
+        Thu, 18 Aug 2022 15:38:30 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 18 Aug 2022 15:38:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1660851510; x=1660937910; bh=8UR0J8zJ1L
+        jrrZyH8NmqHF4AKk5Fq/v8NXgw69Gnw6I=; b=P6FxC4XxgNI7WqncuE01WRxaID
+        jOYilaQMfT0g9RCdHfuRMUBQVmrXsYv6MD8/qI2FnXEQDT125PjJ+CokQn8j0qL1
+        PAhYRGDS0caHCVwl3xPtnnl5XN+U9mrJBvSeAF7pzzZyWCyfDwr8X7Lb9lPQIOQp
+        34JoBO8qblnY6Hj54ifQ1jhxaxq7NrpkRJiWzezJubXKL4p/EUqbNAvFDpoeqfhI
+        OvGNh4psy6SouH7OfdOHX2LdGgXqRnLzHAb2Hjhl44512GG+tuQbggRNe66Fm78I
+        WkV2EeEbAPqKuMc5fbdepL6istNZvPS/MZahlyclFognVB/hvx3Z2BgM12Pw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
         :feedback-id:from:from:in-reply-to:in-reply-to:message-id
         :mime-version:references:reply-to:sender:subject:subject:to:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1660848776; x=1660852376; bh=Ts6SgEwcKB+gnnxX0Mg89SPTORlM
-        9/ZfOczJIVc1pgY=; b=LHrMOXycIBvofkcqKnNkKZGsoW75RVE5rbIm62q68gef
-        hgNUfn66xH9tYrXJJj7hT4Uz+n0RSsuo5wHwjPeBycW6myH75JFXzd3HC9BhnxkJ
-        G3xRsIyQz+jRXb1BIcs07qYtffwjbR90MtF/mHBoTaxBYJiYJdR961qAAUmp8l/0
-        kpF+wQxfMIt9d0cgf0Wrji8rME8JBarxujmwI42L8PZw6IgLG//U1rMKt1HuqjII
-        G0mAqPR0Pc9/hIBt6try1mTR2JEq2D8Cjxxf3Jdo/0pyiZ/EhjkrYRzoJY0UVlot
-        yFNDPxRp4+VFE/QA3s6Jj9R3naFTKbpXxFfEUAbSag==
-X-ME-Sender: <xms:h4r-YmQ9WP2krC5G1entLJ7EUPya8p4CoU9562V313IWfSqAGQ7wYg>
-    <xme:h4r-YrwX4L2Xo8eZA1rkNZxVfMbkgQlG9SM6_7s3duRx0u5ilrUsIe3iOkVsHMd9u
-    N6Mf7i-Y_2T13YQCUk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehledguddtgecutefuodetggdotefrod
+        fm1; t=1660851510; x=1660937910; bh=8UR0J8zJ1LjrrZyH8NmqHF4AKk5F
+        q/v8NXgw69Gnw6I=; b=KTygfi890PsD+nDPpk/IACeD0Y81m+WsNr9+dYAre4UD
+        gp1UrUnMtm8FJEw94fLjy57i/G90w/iJPXFh1emtZDf0HjYE+/ImM3BLnf2NizPR
+        hTxrZnT3PxXuExV0Xvm0OFSC7esp27yV02rcd+e1MaCOlr8GUyqjhvg+vRtgeD/G
+        DLh5wF6koAX+mhwwiMikdVkXqdFbtJPMZHdjancjsi3+qQzB4F7ccduuHowo+61p
+        wcngbdQwZ2BbiwbmCEH3yIqG79j2YQ5WXGTYn8h1cNqeJeJSBbqqZhJhzbO2aK4C
+        sJM8q7vvihOMMUDcxdTup6ERvFhW4PcWAc2t6GMtqw==
+X-ME-Sender: <xms:NpX-Yj-6p5qew4QWyxbNdAB3uMtVqY5gTjajCd5W-e2nXHhFMqG9Bg>
+    <xme:NpX-YvsCySapFvAqLZuGoehkcTn8ea_LbazWoW5v5Zpw57G1GhdKdOnmtciHggjD0
+    kBHz_1YcvrZ4g3t7Nk>
+X-ME-Received: <xmr:NpX-YhAfCH25QVMJUJI7r0YF0dlrz3De4DYSAKJnnSEvazeFzJPIDi8tdpqDMz5GebK23qA9wN8xX5ib1A3fhD8k3_OrYQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehledguddufecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enogfuuhhsphgvtghtffhomhgrihhnucdlgeelmdenucfjughrpefofgggkfgjfhffhffv
-    vefutgesthdtredtreertdenucfhrhhomhepfdevhhhrihhsucfouhhrphhhhidfuceolh
-    hishhtshestgholhhorhhrvghmvgguihgvshdrtghomheqnecuggftrfgrthhtvghrnhep
-    feehleeiudegueelteffueehgeektefgtdevvedufffgjedvgeevleejhfdvfefhnecuff
-    homhgrihhnpehgohhoghhlvgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgr
-    rhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtoh
-    hm
-X-ME-Proxy: <xmx:h4r-Yj1bbQ4madkVb0dx8BXBTl3dA1aeP0_Bg0NB73CzngWa6DM_yw>
-    <xmx:h4r-YiATqKs_aiFBNkKsfRUT_YaG9Bi6INsyAP09-vwxXEIwIEVMLg>
-    <xmx:h4r-YviogrXyWGUyIkP0dcrda1UG_9Xbc3abPNgOXpXgvjR3mRT6Rw>
-    <xmx:iIr-YvgIryn7QxtJm1dMEBop9bbI4FM64_OAQUUsWm2E0QVeCs0UWQ>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id DD34E1700082; Thu, 18 Aug 2022 14:52:55 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-841-g7899e99a45-fm-20220811.002-g7899e99a
-Mime-Version: 1.0
-Message-Id: <bfaa8b43-519f-4e4c-b04b-a37b0ee9babf@www.fastmail.com>
-In-Reply-To: <Yv3K4G/Sv2KDEqif@T590>
-References: <Yv0A6UhioH3rbi0E@T590>
- <f633c476-bdc9-40e2-a93f-29601979f833@www.fastmail.com>
- <Yv0KmT8UYos2/4SX@T590>
- <35f0d608-7448-4276-8922-19a23d8f9049@www.fastmail.com>
- <Yv2P0zyoVvz35w/m@T590>
- <568465de-5c3b-4d94-a74b-5b83ce2f942f@www.fastmail.com>
- <Yv2w+Tuhw1RAoXI5@T590>
- <9f2f608a-cd5f-4736-9e6d-07ccc2eca12c@www.fastmail.com>
- <a817431f-276f-4aab-9ff8-c3e397494339@www.fastmail.com>
- <5426d0f9-6539-477d-8feb-2b49136b960f@www.fastmail.com>
- <Yv3K4G/Sv2KDEqif@T590>
-Date:   Thu, 18 Aug 2022 14:52:34 -0400
-From:   "Chris Murphy" <lists@colorremedies.com>
-To:     "Ming Lei" <ming.lei@redhat.com>
-Cc:     "Nikolay Borisov" <nborisov@suse.com>,
-        "Jens Axboe" <axboe@kernel.dk>, "Jan Kara" <jack@suse.cz>,
-        "Paolo Valente" <paolo.valente@linaro.org>,
-        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>,
-        Linux-RAID <linux-raid@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Josef Bacik" <josef@toxicpanda.com>
-Subject: Re: stalling IO regression since linux 5.12, through 5.18
-Content-Type: text/plain
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
+    essghurhdrihho
+X-ME-Proxy: <xmx:NpX-YvcFAVBbrNGRnE1hHL5hqikhMmZgZ-w194GSd9HOGMiANpTnXQ>
+    <xmx:NpX-YoM4w-nnnLGB0Xj4IlYXx5FtE0UDh3LSK8ZEAEbh_VKvXbS0_w>
+    <xmx:NpX-YhlejyBjeug-_42EXteevfr2-pV_krt5KhMOMCEm05undZ-Xog>
+    <xmx:NpX-YtoNMkTQWEnh57IzK4T8Mo3RJvl7QhJEVGYEUA33NJLG_7pXCA>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Aug 2022 15:38:29 -0400 (EDT)
+Date:   Thu, 18 Aug 2022 12:38:28 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        kernel-team@fb.com, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH] fstests: add btrfs fs-verity send/recv test
+Message-ID: <Yv6VNA3ZxnscnKh0@zen>
+References: <9e0ee6345a406765cf06594b805cb3568de16acc.1660596985.git.boris@bur.io>
+ <Yv3KJtM7L1CsIkVz@sol.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yv3KJtM7L1CsIkVz@sol.localdomain>
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
@@ -103,45 +85,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On Thu, Aug 18, 2022, at 1:15 AM, Ming Lei wrote:
-> On Thu, Aug 18, 2022 at 12:27:04AM -0400, Chris Murphy wrote:
->> 
->> 
->> On Thu, Aug 18, 2022, at 12:18 AM, Chris Murphy wrote:
->> > On Thu, Aug 18, 2022, at 12:12 AM, Chris Murphy wrote:
->> >> On Wed, Aug 17, 2022, at 11:41 PM, Ming Lei wrote:
->> >>
->> >>> OK, can you post the blk-mq debugfs log after you trigger it on v5.17?
->> 
->> Same boot, 3rd log. But the load is above 300 so I kinda need to sysrq+b soon.
->> 
->> https://drive.google.com/file/d/1375H558kqPTdng439rvG6LuXXWPXLToo/view?usp=sharing
->> 
->
-> Please test the following patch and see if it makes a difference:
->
-> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-> index a4f7c101b53b..8e8d77e79dd6 100644
-> --- a/block/blk-mq-sched.c
-> +++ b/block/blk-mq-sched.c
-> @@ -44,7 +44,10 @@ void __blk_mq_sched_restart(struct blk_mq_hw_ctx *hctx)
->  	 */
->  	smp_mb();
+On Wed, Aug 17, 2022 at 10:12:06PM -0700, Eric Biggers wrote:
+> On Mon, Aug 15, 2022 at 01:57:56PM -0700, Boris Burkov wrote:
+> > diff --git a/tests/btrfs/271 b/tests/btrfs/271
+> > new file mode 100755
+> > index 00000000..93b34540
+> > --- /dev/null
+> > +++ b/tests/btrfs/271
 > 
-> -	blk_mq_run_hw_queue(hctx, true);
-> +	if (blk_mq_is_shared_tags(hctx->flags))
-> +		blk_mq_run_hw_queues(hctx->queue, true);
-> +	else
-> +		blk_mq_run_hw_queue(hctx, true);
->  }
+> There is already a btrfs/271, so this patch doesn't apply anymore.  Best to use
+> a higher number and let the maintainer renumber the test when applying.
+
+I thought that, but now it looks like we have btrfs/290 and 291 from the
+last tests I added :/
+
+Will fix, though!
+
 > 
->  static int sched_rq_cmp(void *priv, const struct list_head *a,
-
-
-I still get a stall. By the time I noticed it, I can't run any new commands (they just hang) so I had to sysrq+b. Let me know if I should rerun the test in order to capture block debug log.
-
-
--- 
-Chris Murphy
+> > @@ -0,0 +1,114 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (c) 2022 YOUR NAME HERE.  All Rights Reserved.
+> 
+> YOUR NAME HERE is a great company to work for :-)
+> 
+> > +_require_test
+> 
+> I don't see where this uses the test filesystem; it seems to use scratch only.
+> 
+> > +	if [ $salt -eq 1 ]; then
+> > +		extra_args+=" --salt=deadbeef"
+> > +	fi
+> 
+> I like to use true and false for this sort of thing so you can just do:
+> 
+> 	if $salt; then
+> 
+> > +	echo "check received subvolume..."
+> > +	echo 3 > /proc/sys/vm/drop_caches
+> 
+> A comment explaining why the drop_caches is needed would be helpful.
+> And should there be a sync before it, and should it be _scratch_cycle_mount?
+> 
+> > +	_fsv_measure $fsv_file > $tmp.digest-after
+> > +	$GETCAP_PROG $fsv_file > $tmp.cap-after
+> > +	diff $tmp.digest-before $tmp.digest-after
+> > +	diff $tmp.cap-before $tmp.cap-after
+> > +	_scratch_unmount
+> > +	echo OK
+> 
+> Should this compare the file's contents too?
+> 
+> - Eric
