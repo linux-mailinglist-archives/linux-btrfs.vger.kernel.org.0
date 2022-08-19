@@ -2,242 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDA25991A5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 02:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EEE5991B3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 02:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239706AbiHSAQj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 18 Aug 2022 20:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35516 "EHLO
+        id S240905AbiHSAXA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Aug 2022 20:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbiHSAQi (ORCPT
+        with ESMTP id S232055AbiHSAW7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Aug 2022 20:16:38 -0400
-Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDE9BBA65
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Aug 2022 17:16:36 -0700 (PDT)
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 2DA9B1226A8;
-        Fri, 19 Aug 2022 00:16:36 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
-        (Authenticated sender: instrampxe0y3a)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 1240A122698;
-        Fri, 19 Aug 2022 00:16:34 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1660868195; a=rsa-sha256;
-        cv=none;
-        b=F/tgCTZphvxTHxCbVQlVitf1Ny26P7ainj0+3Q+UTwdmAERa2JHCj85JgFaOzlPV1EXWB9
-        29VNw+qTjHVcugZP14V8qCGXItLm2FnHpfZ4g/+JrhHjA9pOU12wZPMEOAaZgwOCVK7AHV
-        hoeLVGzjlCp8ifZFLMLiQcvByWTeXu5W0B29CzAT3JYdpUTt8uef71vAuKv7W5oI9A0T5+
-        Qx8VwLw+UBIWfFenFRCl6WS2t7CcZg0b5/SQElR5oTjzLwFFPTBs3RjTLK2Y43eo9iNv7T
-        6AXkGRaeoGtD4+d0UdN/o8jZ57tN6sXDbYwgXLAnsBfjjZsp9d/+U6Ma64l9Fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1660868195;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aL9zmd8VC5S5PZh3OhJ3ojjHbm6UUrSmrPNMA5txEz8=;
-        b=pi1uE7NsBoE8dJo9CiIVq0Hq5lQZ6oUlMczlGTS6gRfq6MeciA0Uqbw03tUQl6quPz/NbU
-        LLNaU+eyPYjFWbbUZuD8uoR6ZsG4CDViajdk1lXZF7R9LiSxLV8BWHs/1AWLUFTMJLrNEN
-        C6sKYHQWvCFkkIC5y9DyJ41oXBf9hMp8GxGgHVvCw916fT0DkaSAhz3In9X5MeRUfFtC1W
-        j8LxZ97Hc79+yT054jhBHxb0ddlMuafhzh3dpqo8GmsmjvuqimlVZrH+OXZVFWWUvcyYy8
-        n2kUVr3AaLGq6fQw7FUoIXEH6euk6kPzfESIMYKLgNvioqRaa49szCyASiFRvA==
-ARC-Authentication-Results: i=1;
-        rspamd-79945fd77c-qf2m6;
-        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Lyrical-Eight: 6c4a5c483b678cb4_1660868195897_4065343456
-X-MC-Loop-Signature: 1660868195897:1752898746
-X-MC-Ingress-Time: 1660868195897
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-        by 100.124.238.95 (trex/6.7.1);
-        Fri, 19 Aug 2022 00:16:35 +0000
-Received: from p54b6dab3.dip0.t-ipconnect.de ([84.182.218.179]:37330 helo=heisenberg.fritz.box)
-        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <calestyo@scientia.org>)
-        id 1oOpgd-00067d-Hp;
-        Fri, 19 Aug 2022 00:16:33 +0000
-Message-ID: <467e49af8348d085e21079e8969bedbe379b3145.camel@scientia.org>
-Subject: Re: [PATCH 1/2] btrfs: fix space cache corruption and potential
- double allocations
-From:   Christoph Anton Mitterer <calestyo@scientia.org>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     Linux BTRFS <linux-btrfs@vger.kernel.org>
-Date:   Fri, 19 Aug 2022 02:16:28 +0200
-In-Reply-To: <Yv2IIwNQBb3ivK7D@relinquished.localdomain>
-References: <cover.1660690698.git.osandov@fb.com>
-         <9ee45db86433bb8e4d7daff35502db241c69ad16.1660690698.git.osandov@fb.com>
-         <CAK-xaQZYDBuL2DMeOiZDubujSmZTcNJfkgqa03Q+24=nhCmynw@mail.gmail.com>
-         <dbc8b0ee60b174f1b2c17a7469918a32a381c51b.camel@scientia.org>
-         <Yv2A+Du6J7BWWWih@relinquished.localdomain>
-         <b5d37d4d059e220313341d2804cbf1daf2956563.camel@scientia.org>
-         <Yv2IIwNQBb3ivK7D@relinquished.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-1+b1 
+        Thu, 18 Aug 2022 20:22:59 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B67CE328;
+        Thu, 18 Aug 2022 17:22:56 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        by box.fidei.email (Postfix) with ESMTPSA id 8A7BF8037B;
+        Thu, 18 Aug 2022 20:22:54 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1660868575; bh=KJO8iwxrW0bVho80KCGrZkmxDyezgyXHpsErpPzQgHE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=N+93TpP6Li6o7H2ac0bwSroqd6xtkc3b8IAQyozKaUpO5jlWrOrQR4JbA8TX/Rk3P
+         2qvGPQAIsTsC/v6YF9aK2M69TAcpoB/bwehlvSBaWBRsRuN8w0V273S8I0upw7c6UF
+         1D38AQq3HG+C/nMsR7aQn9OtWj8E233WIB1xHUr+fC9CLptMe/VwyVEDoFhu+fL8oV
+         rG03UPzMkgiMHlaVroeEVAIHKUUATNc38CeR47WdlvfwS7EQ8B5pfLH0IU2DYFgnpu
+         z/ycNTPggm32sTYMwlrXNAeTJhfY6MiOhDVUbpo4maLdQi5nWu2ElRhCSmx9E11DCr
+         edOAGKmJ0MERg==
+Message-ID: <80a2e21a-0835-6a7e-d8b6-9c1ca4ae157c@dorminy.me>
+Date:   Thu, 18 Aug 2022 20:22:53 -0400
 MIME-Version: 1.0
-X-OutGoing-Spam-Status: No, score=-1.0
-X-AuthUser: calestyo@scientia.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 05/21] fscrypt: add new encryption policy for btrfs.
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1660744500.git.sweettea-kernel@dorminy.me>
+ <66fcd64620c0c0711bbe80aa85e92f04d539bd83.1660744500.git.sweettea-kernel@dorminy.me>
+ <89d9ff01-c405-ec25-736a-bfba4c03e72c@dorminy.me>
+ <Yv64LMFQjs081n3Z@sol.localdomain>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <Yv64LMFQjs081n3Z@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey Omar.
 
 
-I'd have some more questions, which I hope help others and myself to
-better asses the impact of this issue:
-
-
-On Wed, 2022-08-17 at 17:30 -0700, Omar Sandoval wrote:
-> > 
-> but metadata deletions also count, so basically any modification
-> results in a deletion. We haven't seen this in practice, but I
-> couldn't
-> find anything that would make it impossible.
+On 8/18/22 18:07, Eric Biggers wrote:
+> On Wed, Aug 17, 2022 at 11:54:56AM -0400, Sweet Tea Dorminy wrote:
+>>
+>>
+>> On 8/17/22 10:49, Sweet Tea Dorminy wrote:
+>>> Encryption for btrfs must be extent-based, rather than fscrypt's
+>>> inode-based IV generation policies.  In particular, btrfs can have
+>>> multiple inodes referencing a single block of data, and moves logical
+>>> data blocks to different physical locations on disk; these two features
+>>> mean inode or physical-location-based IV generation policies will not
+>>> work for btrfs. Instead, btrfs can store an IV per extent, generated by
+>>> fscrypt and iterated per block within the extent, and provide that IV to
+>>> fscrypt for encryption/decryption.
+>>>
+>>> Plumbing filesystem internals into fscrypt for IV generation would be
+>>> ungainly and fragile. Thus, this change adds a new policy, IV_FROM_FS,
+>>> and a new operation function pointer, get_fs_derived_iv.  btrfs will
+>>> require this policy to be used, and implements get_fs_derived_iv by
+>>> getting the IV stored with the relevant file extent and iterating the IV
+>>> to the appropriate block number. Thus, each individual block has its own
+>>> IV, but all blocks within a file extent have iterated IVs according to
+>>> their block number, similarly to the IV_INO_LBLK* policy iterating IVs
+>>> for a given inode by lblk number.
+>>>
+>>> The IV buffer passed to get_fs_derived_iv() is pre-populated with the
+>>> inode contexts' nonce, as not all data to be encrypted is associated
+>>> with a file extent: for btrfs, this is used for filename encryption.
+>>>
+>>> Filesystems implementing this policy are expected to be incompatible
+>>> with existing IV generation policies, so if the function pointer is set,
+>>> only dummy or IV_FROM_FS policies are permitted. If there is a
+>>> filesystem which allows other policies as well as IV_FROM_FS, it may be
+>>> better to expose the policy to filesystems, so they can determine
+>>> whether any given policy is compatible with their operation.
+>>>
+>>> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+>>> ---
+>>
+>> I realized after sending that this doesn't have Documentation/ updates for
+>> the new policy, still; apologies, and it remains on my queue.
 > 
-> In place modifications of files also result in COW and deletion of
-> the
-> old data, so that also technically counts.
+> It looks like you also didn't address my feedback about IV_FROM_FS at
+> https://lore.kernel.org/linux-fscrypt/YuBAiRg9K8IrlCqV@gmail.com ?
 
-
-1) I thought the issue happens primarily with space-cache-v2, and there
-only when extents are deleted, which is when e.g. deleting (or because
-of CoW: modifying) regular files.
-
-I assume also when doing balance or scrub (when the scrub causes a
-repair)?
-
-
-But now you wrote "metadata deletions also count"? Wouldn't that mean
-that any other tree (csum, etc.) of the fs could be affected?
-
-So can corruptions happen when moving/renaming files, writing any
-metadata (either btrfs internal trees or also things like file
-permissions bits, XATTRs, etc.) or creating snapshots or subvolumes (or
-moving files therein)?
-
-
-I may also happen with v1 (or no-space-cache), but only when that needs
-to be regenerated (i.e. when one sees that cheksum error messages on
-the v1 space cache), but less likely (because it already requires the
-v1 cache to get corrupted somehow?
-
-
-
-
-2) The silent data corruption itself happens by some range being sill
-used by some extent... AND also added back to the free space cache.
-So next time that range from the free space cache is assigned and
-written to the precious data would be lost.
-
-Or are there other ways that issue could strike?
-
-Or is it just a corruption of the free space cache, and the actual data
-in the extents is fine?
-
-
-
-
-3) In your commit, you described a number of symptoms that were seen
-when the issue occurred.
-AFAIU, some of the cases were silent (data corruption), right?
-
-Is the whole issue super rare (like back the corruption with
-compression and holes only happened under some very awkward and rare
-situations) for v2?
-
-I just wonder a bit,... cause if you say it was introduced with 5.12,
-and since 5.15 (IIRC) v2 is the default for btrfs-progs... why haven't
-more people seen any corruptions?
-
-Or is the silent corruption much less likely than the one giving EEXIST
-- or vice versa?
-
-
-
-
-4) The tool you're going to write - what will it be able to do?
-[I guess it will do something check whether any extent ranges are
- allocated AND also in the free space cache (v1 or v2)?]
-
-Will it just be able to tell whether one's current free space cache is
-corrupted.
-Or will it also be able to tell previously any actual data corruption
-already happened (i.e. still used extents got reallocated and
-overwritten)?
-
-
-
-
-5) Are there ways for people to *definitely* rule out whether their
-data OR any other part of the fs was corrupted?
-
-Like I personally have SHA512 hashsums attached as XATTRS on all files
-of some filesystems with just data.
-So I can easily go over those and verify.
-
-Would a scrub (csum verification) also tell any data corruption?
-But I guess that would only tell it for extents... not if any other
-metadata in btrfs could be affected, too?
-
-
-
-
-6) What should people do to get back to a safe and sound state?
-I mean if I'd now verify my hashsum XATTRS, even if they'd all be
-valid, my kernel would be still unpatched.
-
-
-But once the kernel is patched:
-
-Will it not be necessary to somehow check the free space cache then?
-Cause otherwise I could do my verification (and get an: all ok) but the
-free space tree is still bogus and some time later my data gets
-corrupted again - despite the fixed kernel.
-
-Wouldn't it be better to simply re-create the cache then (that is:
-after the kernel is patched BUT before doing the verification of data
-with e.g. hash sums or scrub), using:
-btrfs check --clear-space-cache v1|v2
-?
-
-
-When any other metadata could in principle have been affected by this
-issue,... wouldn't it - for 100%-safety - be recommended to start with
-creating a new filesystem (after having the fixed kernel) and recover
-from backups?
-
-(Right now this might be just quite some work... in 5 years or so
-people might simply no longer have their old backups. So I better re-
-create the fs now, than being sorry later.)
-
-
-
-
-7) What are people advised to do until they receive a fixed kernel?
-
-You said with nodiscard the race window is smaller. So HDDs should
-already have this, but SSDs not (and people may want to set it).
-What about btrfs e.g. on top of dm-crypt, which per default blocks
-discard, would that count (even if not specifically set for btrfs)?
-
-Should one switch from v2 to v1?
-
-
-
-
-Thanks,
-Chris.
+Apologies; I must not have grasped what you were requesting fully. 
+Should I change the name from IV_FROM_FS to IV_PER_EXTENT?
