@@ -2,148 +2,302 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24EF059A648
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 21:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9732459A69A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 21:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351542AbiHSTVe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Aug 2022 15:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41822 "EHLO
+        id S1350289AbiHSTeN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Aug 2022 15:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351547AbiHSTVJ (ORCPT
+        with ESMTP id S1349969AbiHSTeM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Aug 2022 15:21:09 -0400
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55889115587;
-        Fri, 19 Aug 2022 12:20:53 -0700 (PDT)
+        Fri, 19 Aug 2022 15:34:12 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC6DBD137;
+        Fri, 19 Aug 2022 12:34:10 -0700 (PDT)
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 3D19358036A;
-        Fri, 19 Aug 2022 15:20:47 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Fri, 19 Aug 2022 15:20:47 -0400
+        by mailout.west.internal (Postfix) with ESMTP id 90895320090B;
+        Fri, 19 Aug 2022 15:34:08 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Fri, 19 Aug 2022 15:34:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm1; t=1660937648; x=1661024048; bh=KOogtIxNy7p+8f7xZ1U+CpQiV
+        L2RpO9fzrnDJ36KbZk=; b=2J2+ozCrvwp0hdtnh+TA16F9c6uNal00ziJL6pyAC
+        6TsQDqOH67f8Je6nARDNmMANBcWzS8LwobXfnPnZKGwYQ0t43sZZehlEobPwKa+V
+        TszVJHN6C70+VelGRMOdFZ0Jr+1xYZkJZ17ODK47JURKcEBFnH4EglAIEhj44NSu
+        qXFIlgWuibO+A+jsbOYGd/OTxx5Sw/wYSIfWBDB/g11VXAkKhjymQltwXZbkIcor
+        Ez5GEdmxSvyW3hVYtVQ3Pve+jpqteQQs/tA0sMJO8voQAGqYZVUK0sM66iVKN31W
+        5nXLecoCFXGak2G1k+4ymYN3EBXOl7USbXN7buTVT9TWg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        colorremedies.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1660936847; x=
-        1660940447; bh=CvyHEbh2ZUEdzkoT+B+txpRgO4O1L+8cWUke1mfGNqg=; b=j
-        +ZEf1oMeiB338QYixL3bIOoDb0NNjvkmt7hQU1i4eIOF50eddqy8v9pAGxh0m46q
-        RnRhVW136WStCAel6iih1ILI4Q2k94glo/uEyhZ9TW6Po0yCjQEH3btLar0K72H3
-        x7We5MSIn48pNkLR3NdCSx+dIzTjxxEYN7aYzHN7lS0jbx9xU3bfrGBSepJoKQmN
-        q9ipu4sZWpY1YP34AGAJQNBN3J2PPpfD+tx3POr+BBYU49oKgl7vrfuGbG2Hp3xo
-        Kd3CN2mN1BSPqE5N2xgIdeN1jrLsW8Obv5Vp5ApXCoGkSZ29rvW9y651r18p+yvR
-        ktFJbeFJ1PJCMZV73uhqw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1660936847; x=1660940447; bh=CvyHEbh2ZUEdzkoT+B+txpRgO4O1
-        L+8cWUke1mfGNqg=; b=UPZCIu6efQhc7D2iSor4+HmuPDRBdw7/wvPEEw49GPLM
-        ns11K54N67th5zKCsCfukPtXGpMw4eYtr/VYBbuuP0iH0X9nobO2uDA5DJBlsAF+
-        0vYR8DzLO851e7u2ZGaez4AixR1fFqkGSzqB5FFOyBL2mVNH5pZqeLPhhEd6MxDd
-        ODk+A8bXtImj4jNKT3Svkocq/nagtXhCi5X8T3ERQ7JnA9FR327gR/E8LcPSiMoI
-        M2F8Tv2I5pWPA+/hfMeLfyE67Z6oS7RvASaG1evpaMNu/mHbQFADy9vWBCTgfOg7
-        EN2ABWXldiVMol87q3Ype5MMLuMZ8/Id7gkIdyBriw==
-X-ME-Sender: <xms:juL_Yg3OcJJLrKDOOZGUaRBGawGPz72En179-B6wxuwg6ANlVbuiyA>
-    <xme:juL_YrGFGTXDdHGZR9vMIuPvnweVCUhUj_6Esoc9OI6SxHO5qkh0opC21RSjO78Z-
-    EZSBaU_DWW4Up1UKSo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdeiuddgudeflecutefuodetggdotefrod
+        messagingengine.com; h=cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1660937648; x=1661024048; bh=KOogtIxNy7p+8f7xZ1U+CpQiVL2RpO9fzrn
+        DJ36KbZk=; b=O4rEiF7gEAsrACDZJfSJQmFke4K1bae5Ymymj6OQY1CuCrq3Gf/
+        XuPdVnk7DwOHicDzNq1ufYM3bnTg+XKo92xah5Ncgh8XnJGVMqC/RH2jYXnNGfKd
+        OdTF4yFBFgzkmMDK+VAS6FdCARIm/dXUT43Rk3sPl+nh36aJAckjEWKpmCSrGcH2
+        V4TXmfcsvXduHMghUrH7QXBiNaUZEm/hstQHEYwXsSbQgilpSvVEmruR8wArcE9R
+        wPMUrKetDKZ16GTWhZrkU/xPfyo+lvWLar4jwscNwyx8lTB6FTe+3lbBnWbR+37w
+        udXGc9Y/2/wFG6uLahPjkO3YDYxr+B9icIg==
+X-ME-Sender: <xms:r-X_YvYGRgQ_PHcQ6r2FVS3yQoz99xWzp6Geo8n-iIdI6JvJF2YmOw>
+    <xme:r-X_YuYW0MKe3CQ9fjU4T6svs2xsWvpq9POyjO9UWAck9T4S77iCUzFID7_YTv1wF
+    HM-i3FFu5JdaQL1fGc>
+X-ME-Received: <xmr:r-X_Yh-8lG5doXjUEENZf_Pvj8l348k1Eja7FpwD7EFLWskGS7O1LJQczSxzMymU21UEeaLNj3uXY9ALoUbSc--ZocZL8w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdeiuddgudegudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enogfuuhhsphgvtghtffhomhgrihhnucdlgeelmdenucfjughrpefofgggkfgjfhffhffv
-    vefutgesthdtredtreertdenucfhrhhomhepfdevhhhrihhsucfouhhrphhhhidfuceolh
-    hishhtshestgholhhorhhrvghmvgguihgvshdrtghomheqnecuggftrfgrthhtvghrnhep
-    feehleeiudegueelteffueehgeektefgtdevvedufffgjedvgeevleejhfdvfefhnecuff
-    homhgrihhnpehgohhoghhlvgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgr
-    rhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtoh
-    hm
-X-ME-Proxy: <xmx:juL_Yo5Khz7EQFsOc9QNRbOxGW2Jhj_gFmWWzIHnfhLVdQ6s-WRc1A>
-    <xmx:juL_Yp2-YVDJEq6af8iXFwSkcytbw61NzY1m8vshjwOJNcUXZaxhhA>
-    <xmx:juL_YjH73iV4Yf-TF3DetbtSJcnztdNAdJKpit10kCT83bppXWixqQ>
-    <xmx:j-L_Yi3eI5Ve0w4acMgNG9LwFJ9p6v7mTEVBMaewD_OGDJCtB-lmYA>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3607717003FD; Fri, 19 Aug 2022 15:20:46 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-841-g7899e99a45-fm-20220811.002-g7899e99a
-Mime-Version: 1.0
-Message-Id: <0f731b0a-fbd5-4e7b-a3df-0ed63360c1e0@www.fastmail.com>
-In-Reply-To: <Yv3NIQlDL0T3lstU@T590>
-References: <Yv0A6UhioH3rbi0E@T590>
- <f633c476-bdc9-40e2-a93f-29601979f833@www.fastmail.com>
- <Yv0KmT8UYos2/4SX@T590>
- <35f0d608-7448-4276-8922-19a23d8f9049@www.fastmail.com>
- <Yv2P0zyoVvz35w/m@T590>
- <568465de-5c3b-4d94-a74b-5b83ce2f942f@www.fastmail.com>
- <Yv2w+Tuhw1RAoXI5@T590>
- <9f2f608a-cd5f-4736-9e6d-07ccc2eca12c@www.fastmail.com>
- <a817431f-276f-4aab-9ff8-c3e397494339@www.fastmail.com>
- <5426d0f9-6539-477d-8feb-2b49136b960f@www.fastmail.com>
- <Yv3NIQlDL0T3lstU@T590>
-Date:   Fri, 19 Aug 2022 15:20:25 -0400
-From:   "Chris Murphy" <lists@colorremedies.com>
-To:     "Ming Lei" <ming.lei@redhat.com>
-Cc:     "Nikolay Borisov" <nborisov@suse.com>,
-        "Jens Axboe" <axboe@kernel.dk>, "Jan Kara" <jack@suse.cz>,
-        "Paolo Valente" <paolo.valente@linaro.org>,
-        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>,
-        Linux-RAID <linux-raid@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Josef Bacik" <josef@toxicpanda.com>
-Subject: Re: stalling IO regression since linux 5.12, through 5.18
-Content-Type: text/plain
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhepteevveetjeffveffueeuvdegffehlefgiedukeegge
+    etheetteegleejheevveeunecuffhomhgrihhnpehfshhvrdhsshenucevlhhushhtvghr
+    ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:r-X_Ylpfz0kKGba7cpl8sqVSq-BvsegI98xq-i8zemIB1dxqWuQMYw>
+    <xmx:r-X_Yqo5Mux3wMTIsRXVfyXYzWR9Y12pTkp4ba14rTYXzAUps1q-6A>
+    <xmx:r-X_YrTlz8aVJzAdx_nRQCtiN25OXknDWs0zs3cca6ot0puUsfdkTA>
+    <xmx:sOX_YvA7TRkglb0Mjg1LOXg4rlGED9pZ18hir5WTb0xICj__FlvHnw>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 19 Aug 2022 15:34:07 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        fstests@vger.kernel.org
+Subject: [PATCH v4] fstests: add btrfs fs-verity send/recv test
+Date:   Fri, 19 Aug 2022 12:34:05 -0700
+Message-Id: <c46544a9bd65f22debac5dfff0a624e3b4996ca6.1660937484.git.boris@bur.io>
+X-Mailer: git-send-email 2.37.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Test btrfs send/recv support for fs-verity. Includes tests for
+signatures, salts, and interaction with chmod/caps. The last of those is
+to ensure the various features that go in during inode_finalize interact
+properly.
+
+This depends on the kernel patch adding support for send:
+btrfs: send: add support for fs-verity
+
+And the btrfs-progs patch adding support for recv:
+btrfs-progs: receive: add support for fs-verity
+
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+Changes for v4:
+- btrfs subv -> btrfs subvolume
+Changes for v3:
+- commit a few things from v2 that I left unstaged (277 in output,
+  true/false)
+Changes for v2:
+- btrfs/271 -> btrfs/277
+- YOUR NAME HERE -> Meta
+- change 0/1 to false/true
+- change drop caches to cycle mount
+- get rid of unneeded _require_test
+- compare file contents
 
 
-On Thu, Aug 18, 2022, at 1:24 AM, Ming Lei wrote:
-> On Thu, Aug 18, 2022 at 12:27:04AM -0400, Chris Murphy wrote:
->> 
->> 
->> On Thu, Aug 18, 2022, at 12:18 AM, Chris Murphy wrote:
->> > On Thu, Aug 18, 2022, at 12:12 AM, Chris Murphy wrote:
->> >> On Wed, Aug 17, 2022, at 11:41 PM, Ming Lei wrote:
->> >>
->> >>> OK, can you post the blk-mq debugfs log after you trigger it on v5.17?
->> 
->> Same boot, 3rd log. But the load is above 300 so I kinda need to sysrq+b soon.
->> 
->> https://drive.google.com/file/d/1375H558kqPTdng439rvG6LuXXWPXLToo/view?usp=sharing
->> 
->
-> Also please test the following one too:
->
->
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index 5ee62b95f3e5..d01c64be08e2 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -1991,7 +1991,8 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx 
-> *hctx, struct list_head *list,
->  		if (!needs_restart ||
->  		    (no_tag && list_empty_careful(&hctx->dispatch_wait.entry)))
->  			blk_mq_run_hw_queue(hctx, true);
-> -		else if (needs_restart && needs_resource)
-> +		else if (needs_restart && (needs_resource ||
-> +					blk_mq_is_shared_tags(hctx->flags)))
->  			blk_mq_delay_run_hw_queue(hctx, BLK_MQ_RESOURCE_DELAY);
-> 
->  		blk_mq_update_dispatch_busy(hctx, true);
->
+ tests/btrfs/277     | 115 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/277.out |  59 +++++++++++++++++++++++
+ 2 files changed, 174 insertions(+)
+ create mode 100755 tests/btrfs/277
+ create mode 100644 tests/btrfs/277.out
 
-
-With just this patch on top of 5.17.0, it still hangs. I've captured block debugfs log:
-https://drive.google.com/file/d/1ic4YHxoL9RrCdy_5FNdGfh_q_J3d_Ft0/view?usp=sharing
-
-
-
+diff --git a/tests/btrfs/277 b/tests/btrfs/277
+new file mode 100755
+index 00000000..f5684fde
+--- /dev/null
++++ b/tests/btrfs/277
+@@ -0,0 +1,115 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2022 Meta, Inc.  All Rights Reserved.
++#
++# FS QA Test 277
++#
++# Test sendstreams involving fs-verity enabled files.
++#
++. ./common/preamble
++_begin_fstest auto quick verity send
++
++# Override the default cleanup function.
++_cleanup()
++{
++	cd /
++	_restore_fsverity_signatures
++	rm -r -f $tmp.*
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/verity
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_require_scratch_verity
++_require_fsverity_builtin_signatures
++_require_command "$SETCAP_PROG" setcap
++_require_command "$GETCAP_PROG" getcap
++
++subv=$SCRATCH_MNT/subv
++fsv_file=$subv/file.fsv
++keyfile=$tmp.key.pem
++certfile=$tmp.cert.pem
++certfileder=$tmp.cert.der
++sigfile=$tmp.sig
++stream=$tmp.fsv.ss
++
++_test_send_verity() {
++	local sig=$1
++	local salt=$2
++	local extra_args=""
++
++	_scratch_mkfs >> $seqres.full
++	_scratch_mount
++	echo -e "\nverity send/recv test: sig: $sig salt: $salt"
++	_disable_fsverity_signatures
++
++	echo "create subvolume"
++	$BTRFS_UTIL_PROG subvolume create $subv >> $seqres.full
++	echo "create file"
++	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $fsv_file
++	if $salt; then
++		extra_args+=" --salt=deadbeef"
++	fi
++	if $sig; then
++		echo "generate keys and cert"
++		_fsv_generate_cert $keyfile $certfile $certfileder
++		echo "clear keyring"
++		_fsv_clear_keyring
++		echo "load cert into keyring"
++		_fsv_load_cert $certfileder
++		echo "require signatures"
++		_enable_fsverity_signatures
++		echo "sign file digest"
++		_fsv_sign $fsv_file $sigfile --key=$keyfile --cert=$certfile \
++			$extra_args | _filter_scratch >> $seqres.full
++		extra_args+=" --signature=$sigfile"
++	fi
++	echo "enable verity"
++	_fsv_enable $fsv_file $extra_args
++	cat $fsv_file > $tmp.file-before
++	_fsv_measure $fsv_file > $tmp.digest-before
++
++	# ensure send plays nice with other properties that are set when
++	# finishing the file during send, like chmod and capabilities.
++	echo "modify other properties"
++	chmod a+x $fsv_file
++	$SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" $fsv_file
++	$GETCAP_PROG $fsv_file > $tmp.cap-before
++
++	echo "set subvolume read only"
++	$BTRFS_UTIL_PROG property set $subv ro true
++	echo "send subvolume"
++	$BTRFS_UTIL_PROG send $subv -f $stream -q >> $seqres.full
++
++	echo "blow away fs"
++	_scratch_unmount
++	_scratch_mkfs >> $seqres.full
++	_scratch_mount
++
++	echo "receive sendstream"
++	$BTRFS_UTIL_PROG receive $SCRATCH_MNT -f $stream -q >> $seqres.full
++
++	echo "check received subvolume..."
++	_scratch_cycle_mount
++	_fsv_measure $fsv_file > $tmp.digest-after
++	$GETCAP_PROG $fsv_file > $tmp.cap-after
++	diff $tmp.file-before $fsv_file
++	diff $tmp.digest-before $tmp.digest-after
++	diff $tmp.cap-before $tmp.cap-after
++	_scratch_unmount
++	echo OK
++}
++
++_test_send_verity false false # no sig; no salt
++_test_send_verity false true # no sig; salt
++_test_send_verity true false # sig; no salt
++_test_send_verity true true # sig; salt
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/277.out b/tests/btrfs/277.out
+new file mode 100644
+index 00000000..5f778cf4
+--- /dev/null
++++ b/tests/btrfs/277.out
+@@ -0,0 +1,59 @@
++QA output created by 277
++
++verity send/recv test: sig: false salt: false
++create subvolume
++create file
++enable verity
++modify other properties
++set subvolume read only
++send subvolume
++blow away fs
++receive sendstream
++check received subvolume...
++OK
++
++verity send/recv test: sig: false salt: true
++create subvolume
++create file
++enable verity
++modify other properties
++set subvolume read only
++send subvolume
++blow away fs
++receive sendstream
++check received subvolume...
++OK
++
++verity send/recv test: sig: true salt: false
++create subvolume
++create file
++generate keys and cert
++clear keyring
++load cert into keyring
++require signatures
++sign file digest
++enable verity
++modify other properties
++set subvolume read only
++send subvolume
++blow away fs
++receive sendstream
++check received subvolume...
++OK
++
++verity send/recv test: sig: true salt: true
++create subvolume
++create file
++generate keys and cert
++clear keyring
++load cert into keyring
++require signatures
++sign file digest
++enable verity
++modify other properties
++set subvolume read only
++send subvolume
++blow away fs
++receive sendstream
++check received subvolume...
++OK
 -- 
-Chris Murphy
+2.37.1
+
