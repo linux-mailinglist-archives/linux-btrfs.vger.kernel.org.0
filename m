@@ -2,128 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FA459A4E0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 20:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF85259A597
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 20:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354626AbiHSRfS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Aug 2022 13:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
+        id S1350520AbiHSSif (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Aug 2022 14:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354687AbiHSRes (ORCPT
+        with ESMTP id S1349937AbiHSSi2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Aug 2022 13:34:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80F73CBFD
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Aug 2022 09:53:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EFBE361899
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Aug 2022 16:50:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A4B3C433C1;
-        Fri, 19 Aug 2022 16:50:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660927819;
-        bh=QCJq3dlz4OeOaniJxAatfqVTa+7Opl6ErQdm438J/44=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h/xiP2zNgetAUEdyGj63KUB3qwRcejaS/UEbmtaBY/NBGh3cQdi+Ra7GF0KTGOZXI
-         c4gQi66/ofPLZFQBR2RF9ijVFPGmL7qJnau5d1ADp/P3SAhSp9S4KlHiMsptnE8mTa
-         i2rc3vrjtJXwHjw5qkhO9BWOnMi2SgQD1F8ZGsnfPQ2KnZMN99z1qWIyLIxnGPe0I4
-         Pbeh8Bc/iTac0vnRdctoX6AL7fwFagA9DQBrjm4zbZbnxIyb2GroNiIL7gkfax0HPN
-         rwXnouazXKVC/bFVejhJ3EPOp0WXARhjEm9IMjN5PikvI2lGu1hiUUz9XDwLJe4cI5
-         Hjx3iP5I7iG2A==
-Date:   Fri, 19 Aug 2022 17:50:16 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org,
-        Dylan Yudaken <dylany@fb.com>
-Subject: Re: [PATCH] btrfs: don't allow large NOWAIT direct reads
-Message-ID: <20220819165016.GB3012163@falcondesktop>
-References: <882730e60b58b8d970bd8bc3a670e598184eefef.1660924379.git.josef@toxicpanda.com>
+        Fri, 19 Aug 2022 14:38:28 -0400
+X-Greylist: delayed 537 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 19 Aug 2022 11:38:27 PDT
+Received: from vps.thesusis.net (vps.thesusis.net [34.202.238.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D034AD42
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Aug 2022 11:38:26 -0700 (PDT)
+Received: by vps.thesusis.net (Postfix, from userid 1000)
+        id B0264DE40B; Fri, 19 Aug 2022 14:28:58 -0400 (EDT)
+References: <a3fc9d94-4539-429a-b10f-105aa1fd3cf3@www.fastmail.com>
+User-agent: mu4e 1.7.12; emacs 27.1
+From:   Phillip Susi <phill@thesusis.net>
+To:     George Shammas <btrfs@shamm.as>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: What exactly is BTRFS Raid 10?
+Date:   Fri, 19 Aug 2022 14:10:24 -0400
+In-reply-to: <a3fc9d94-4539-429a-b10f-105aa1fd3cf3@www.fastmail.com>
+Message-ID: <87v8qokryt.fsf@vps.thesusis.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <882730e60b58b8d970bd8bc3a670e598184eefef.1660924379.git.josef@toxicpanda.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 11:53:39AM -0400, Josef Bacik wrote:
-> Dylan and Jens reported a problem where they had an io_uring test that
-> was returning short reads, and bisected it to ee5b46a353af ("btrfs:
-> increase direct io read size limit to 256 sectors").
-> 
-> The root cause is their test was doing larger reads via io_uring with
-> NOWAIT and async.  This was triggering a page fault during the direct
-> read, however the first page was able to work just fine and thus we
-> submitted a 4k read for a larger iocb.
-> 
-> Btrfs allows for partial IO's in this case specifically because we don't
-> allow page faults, and thus we'll attempt to do any io that we can,
-> submit what we could, come back and fault in the rest of the range and
-> try to do the remaining IO.
-> 
-> However for !is_sync_kiocb() we'll call ->ki_complete() as soon as the
-> partial dio is done, which is incorrect.  In the sync case we can exit
-> the iomap code, submit more io's, and return with the amount of IO we
-> were able to complete successfully.
-> 
-> We were always doing short reads in this case, but for NOWAIT we were
-> getting saved by the fact that we were limiting direct reads to
-> sectorsize, and if we were larger than that we would return EAGAIN.
-> 
-> Fix the regression by simply returning EAGAIN in the NOWAIT case with
-> larger reads, that way io_uring can retry and get the larger IO and have
-> the fault logic handle everything properly.
-> 
-> This still leaves the AIO short read case, but that existed before this
-> change.  The way to properly fix this would be to handle partial iocb
-> completions, but that's a lot of work, for now deal with the regression
-> in the most straightforward way possible.
-> 
-> Reported-by: Dylan Yudaken <dylany@fb.com>
-> Fixes: ee5b46a353af ("btrfs: increase direct io read size limit to 256 sectors")
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+"George Shammas" <btrfs@shamm.as> writes:
 
-Looks good, thanks.
+> Hello,
+>
+>  I've been searching and reading docs for a few days now, and btrfs raid 10 is a mystery to me. 
+>
+> This is mostly a documentation question, as many places reference it
+> but nothing actually describes it and the real question is how does it
+> differ from btrfs raid1.
+>
+> Both BTRFS Raid1 and Raid10 
+>  - Allows arbitrary number of drives (>=2), including odd numbers. 
+>  - Will write duplicate blocks across disks.
 
-> ---
->  fs/btrfs/inode.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 5101111c5557..b39673e49732 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -7694,6 +7694,20 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
->  	const u64 data_alloc_len = length;
->  	bool unlock_extents = false;
->  
-> +	/*
-> +	 * We could potentially fault if we have a buffer > PAGE_SIZE, and if
-> +	 * we're NOWAIT we may submit a bio for a partial range and return
-> +	 * EIOCBQUEUED, which would result in an errant short read.
-> +	 *
-> +	 * The best way to handle this would be to allow for partial completions
-> +	 * of iocb's, so we could submit the partial bio, return and fault in
-> +	 * the rest of the pages, and then submit the io for the rest of the
-> +	 * range.  However we don't have that currently, so simply return
-> +	 * -EAGAIN at this point so that the normal path is used.
-> +	 */
-> +	if (!write && (flags & IOMAP_NOWAIT) && length > PAGE_SIZE)
-> +		return -EAGAIN;
-> +
->  	/*
->  	 * Cap the size of reads to that usually seen in buffered I/O as we need
->  	 * to allocate a contiguous array for the checksums.
-> -- 
-> 2.26.3
-> 
+Btrfs raid10 requires an even number of drives with a minimum of 4.
+It's pretty much raid 1+0.
+
+
+> https://btrfs.readthedocs.io/en/latest/mkfs.btrfs.html?highlight=raid10#profile-layout
+>
+> The Raid 1 example there also likely needs a bit of explanation or
+> validation, as all the blocks are written to one device. In that raid
+> one example three devices could be lost as long as it is not one of
+> them is the first device. It also cannot be accurate once the amount
+> stored is above 1 full drive.
+
+It is meant to show a *possible* layout, not every potential layout.
+The data may be stored like than and then yes, you could lose multiple
+drives and still recover as long as the lost drives were 2, 3, and 4.
+
