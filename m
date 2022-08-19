@@ -2,82 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5DC59A6F4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 22:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4439959A78D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 23:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351530AbiHSUPU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Aug 2022 16:15:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34762 "EHLO
+        id S1352304AbiHSVOp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Aug 2022 17:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350921AbiHSUPK (ORCPT
+        with ESMTP id S1351689AbiHSVOn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Aug 2022 16:15:10 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AC3106528
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Aug 2022 13:15:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Fri, 19 Aug 2022 17:14:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650E3D399A;
+        Fri, 19 Aug 2022 14:14:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0B2DD20092;
-        Fri, 19 Aug 2022 20:14:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1660940099;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sjlsiXuwjnlSm+CqCv5kYXZEDGs4UOh8C23txiattUo=;
-        b=TCP/djLDIBqEWnfTozr6+xwhxAD0auW0M5pLGYmGZYOeuvMFRcxpnfFg/PoNnEA2Q6BAWq
-        0oFh14vQzwDMSJOLAjudeRY5Nnl8O7Au2juSjUVyXt+/ilwMS6Puuv7baNzSr7sykyTZin
-        EqPFYjzCagegWy4J71jCoeTRyCQvIME=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1660940099;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sjlsiXuwjnlSm+CqCv5kYXZEDGs4UOh8C23txiattUo=;
-        b=zjH0WPPkB/3YMNhae8jcuUbcoyVJV+d2b3Hq0/q/wlG4NOTmi5ielgLu+V4tluj3CzySnu
-        yuwPvUgE3kQiQbDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D264C13AE9;
-        Fri, 19 Aug 2022 20:14:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id J9N+MkLv/2JHZgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 19 Aug 2022 20:14:58 +0000
-Date:   Fri, 19 Aug 2022 22:09:46 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: take the correct ctl lock when removing free
- space cache
-Message-ID: <20220819200946.GR13489@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <409ff4f5a9365bec56c6a6dc77190b7a3b3645e6.1660938272.git.josef@toxicpanda.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <409ff4f5a9365bec56c6a6dc77190b7a3b3645e6.1660938272.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 02E5C6173F;
+        Fri, 19 Aug 2022 21:14:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6978FC433B5;
+        Fri, 19 Aug 2022 21:14:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660943681;
+        bh=4ygUPp+aIFecoGYX8y+QA9dNQzyIbBQ+ZAyD0vk6aYA=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=pHLWDctchzvdnFGiD7M0cT0b4uwa5PoMDtdfbu5bgPxJwYzotkpktO7u7TPb1N0HQ
+         iInZdPWIq+a1fO2LkCPslIzoIqn/sGxQgAM5Cq+huj1ik/vXTL3O2V67vPdlzdkb6K
+         ugwz0KBYrshX8zbTe4yvOHeUCD6NKkviOeJSqhGVHePp2gTjdFJE4iz+IOxco51Ald
+         ZKnHHwu6eBrhI5Fd9zKeKvLZQh78XZ8bgSOa5ZS1AaMlL0QHxsXi0WHSr1rAvkx0EB
+         n10/zQ10PdkjHfWofwkZSrP1h9tjpcfn7IEMiDPU0GmgbSgWz1s0wCluk1bATfVeW9
+         MYddUdboyeHsA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5704BC43142;
+        Fri, 19 Aug 2022 21:14:41 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 6.0-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1660908668.git.dsterba@suse.com>
+References: <cover.1660908668.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1660908668.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.0-rc1-tag
+X-PR-Tracked-Commit-Id: 899b7f69f244e539ea5df1b4d756046337de44a5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 42c54d5491ed7b9fe89a499224494277a33b23df
+Message-Id: <166094368135.15089.7383849118918589560.pr-tracker-bot@kernel.org>
+Date:   Fri, 19 Aug 2022 21:14:41 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 03:44:41PM -0400, Josef Bacik wrote:
-> This is a fixup for
-> 
-> btrfs: call __btrfs_remove_free_space_cache_locked on cache load failure
-> 
-> I was taking the wrong ctl lock, this can be folded into that patch.
+The pull request you sent on Fri, 19 Aug 2022 14:00:51 +0200:
 
-Folded and for-next updated.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.0-rc1-tag
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/42c54d5491ed7b9fe89a499224494277a33b23df
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
