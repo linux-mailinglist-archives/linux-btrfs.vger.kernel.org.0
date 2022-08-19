@@ -2,122 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0AD599DB9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 16:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B834A599FB8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 18:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349583AbiHSOjo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Aug 2022 10:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
+        id S1350852AbiHSQCk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Aug 2022 12:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349585AbiHSOjl (ORCPT
+        with ESMTP id S1351518AbiHSQBy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Aug 2022 10:39:41 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A66ED001;
-        Fri, 19 Aug 2022 07:39:39 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 07D7E32003CE;
-        Fri, 19 Aug 2022 10:39:36 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 19 Aug 2022 10:39:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1660919976; x=1661006376; bh=fZII8GyCA2
-        yRaqfhy5Sp+pvzUV5l79DuSRqq+3GxzNk=; b=mh9ClG6cRZI47g1MciZw9j6gIr
-        sM2TpsLKoCppnbmmV36Rb4ZKvtOOU8FO0G7TJ2xmYdpl8hmrLYeyWrRK75UclqOf
-        4V1gfXG72XcldRKbalBdjv9Tf3zJoYngELMcnYRa2cSEKpwEO69TR5VTb1jAgdYS
-        PCDJiA716fMtJR2Htl0IaaNYSkphAGQrnJcR8I/fXFz1O5DuX3FHDZx/xIMK1kaW
-        68RACwa3P5x8kewtFyIv2aKinNaM7w7s4m8T3DIpa5/T5Yjm3EdaIR0TSPxE5Diy
-        igA7rgxUn/0V/YBZ2ra4KvMfmclEUugOCkFkwxbDq5nngKTxif97ENIjICBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1660919976; x=1661006376; bh=fZII8GyCA2yRaqfhy5Sp+pvzUV5l
-        79DuSRqq+3GxzNk=; b=yKvWuz7rC8UvR1VkzCIrirGMOaBXHXkPi10ac5PoRu/4
-        iMSXwfb3vF/j9Wl473JIvIi60t58BI6n0KOtOQfqP3WkBLmsMjHvUAB5afMQlBRH
-        X/WZMv6daIlptrNc01vn+y99eX3asmEXSuEsbOy2GZyf6vdeZSjeV1wYF0FY7m7q
-        u0gvzt3fVqQvPfQBxD7Ebl2kuPqDM5FkmYO1jERaPAtK6aCiyoqSt03QkE5OkYs0
-        b6nSx2PDruimbKyF32+z9iOu9ZWOHk8+aAmCV4xmVSiq7XldOoJxdZBUAhNuid+u
-        Xj5ML1JZRNZPbUONgCKan5OvHDBlV1zSwLjneNb4eQ==
-X-ME-Sender: <xms:qKD_YoMwjchNwpFTd4mX1ePMzsyzwSfguhhD9P-Dx6ZI1DNc2CarBA>
-    <xme:qKD_Yu91bdgKicUEL5KqIQGdYWehDHQnc1DBz2VuUaKCadMUx2QFB9f7YfqYvsEK6
-    o0Nj--daIyTXQ>
-X-ME-Received: <xmr:qKD_YvRIRHD1rgvRibD1PVjBej8d3TDciYbnbwX63wEEGInw5SQYLOXJYtMH2xLJ2iZ9rLDNKT1e_D3PQY6wPD0dLKJahH-t>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdeiuddgkedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
-    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:qKD_Ygu0cUQAuEGAq0godjgh6w7vfijnnKos5PbFsu6t8flEiv0wdw>
-    <xmx:qKD_YgdPkwy6dvVxAIraVqG5CMzEGFGWiF6Jbxo95LNvl8IZ77qA-w>
-    <xmx:qKD_Yk2MEyF2Ne4Pgp6mJolrU1Tde2tP4B2lG4lN5brILlId5OOMhA>
-    <xmx:qKD_Yv6luiUwOCaHYiQx1LIoclNiJU2J_CZgS7Qfuj7mPV9rySH2qA>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Aug 2022 10:39:35 -0400 (EDT)
-Date:   Fri, 19 Aug 2022 16:39:31 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH STABLE 5.10 0/2] btrfs: raid56: backports to reduce
- corruption
-Message-ID: <Yv+go4KbjBbWoGo3@kroah.com>
-References: <cover.1660906975.git.wqu@suse.com>
+        Fri, 19 Aug 2022 12:01:54 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2AE83BE6
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Aug 2022 08:53:42 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id e28so3641440qts.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Aug 2022 08:53:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=t7z4r7Zusg/W4LPMQseQCHOEFh+27QvcLY2pwsJyL5M=;
+        b=8KCBtmGWEPSqG8nW5ZqD5oKOxMU1Ag+4uvQDxvhraIUXlyKM5L65GxBjz1gCLOXOEZ
+         kpenarO0w07yR/oSw9nT8GQ08Wp2Yii8avTOGCmL48Vyxg+TgCaPRUUT25tCzRk8QE7J
+         5NIQ6ABjy0zrur7+ivMP/wwFcPDCpLOUAEvV4WLr6L/n0HNPlteBiXOrYWX97ybTAt8H
+         +ClvWt/5bmdyYpPSHqLBkaan6SSO/JDu2LzQVnEkViFfnjFkA+EMeK03aYOBV67XwFwJ
+         ZVm4g9Kfb1laeTiRUJ/u51HXrcyBTHRnsABugiO5IrcFiL3XTXD7cHtgXFFZ5mL2eZt2
+         8jHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=t7z4r7Zusg/W4LPMQseQCHOEFh+27QvcLY2pwsJyL5M=;
+        b=kTVms622Ly60HZdrgL63tDDnegCAx5LUXdSgY3/K2EY43t+wjZe6FE1b+TuO+s3iAa
+         QnCPxMY+azmD66EZXg7yqnNl9yFHohzR+gPZzfgPuehJ6gx1ZyOX/y9vJSEjiZpujnlq
+         rBcEjZ/n/zWBI7Wq4p9N3bqLd4Gfn8YfpAAD2qMwGeDr/aefYkFRxGFTIlwCa1w0ENRD
+         Xuy9eGrxqpZawV9hQ7J08DZs/4X7st84r0fwLCiKaqIZSyzr9S+wT5He71A0YtPadzSg
+         5EQLO7RxgSwdwq02cHwpWqy1leoA+MGq/ccMgrx9AC912DumX0a29WDF0zUEb/osp5qV
+         G7KA==
+X-Gm-Message-State: ACgBeo3M4UUHrA4sKwLuBviJu3Rfdp4+qJkc34c2UHOz00lB6Jc57s5U
+        7Sr8kbGwP+HsJ96sIhZKIwDpDEF6WJfZhQ==
+X-Google-Smtp-Source: AA6agR7lNU2FvlRUiJYaaoPPzy9v6mCQAE+UfeO5ZIoF6sO6SholGo0r3sSR0CDKFB1s+qivfngQGg==
+X-Received: by 2002:a05:622a:38a:b0:344:aac4:780e with SMTP id j10-20020a05622a038a00b00344aac4780emr856871qtx.151.1660924420978;
+        Fri, 19 Aug 2022 08:53:40 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id v16-20020a05620a0f1000b006bbd2c4cccfsm2091272qkl.53.2022.08.19.08.53.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Aug 2022 08:53:40 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
+Cc:     Dylan Yudaken <dylany@fb.com>
+Subject: [PATCH] btrfs: don't allow large NOWAIT direct reads
+Date:   Fri, 19 Aug 2022 11:53:39 -0400
+Message-Id: <882730e60b58b8d970bd8bc3a670e598184eefef.1660924379.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1660906975.git.wqu@suse.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 08:01:08PM +0800, Qu Wenruo wrote:
-> This is the backport for v5.10.x stable branch.
-> 
-> The full explananation can be found here:
-> https://lore.kernel.org/linux-btrfs/cover.1660891713.git.wqu@suse.com/
-> 
-> Difference between v5.10.x and v5.15.x backports:
-> 
-> - Naming change in btrfs_io_contrl
->   In v5.15, we don't have the btrfs_io_contrl rename, thus only
->   btrfs_bio.
-> 
-> - Missing btrfs_fs_info::sectorsize_bits
->   Since RAID56 doesn't support anything but PAGE_SIZE == sectorsize
->   (until v5.19+), here we just use PAGE_SHIFT.
-> 
-> Another thing related to v5.10.x testing is, there are some lockdep
-> assert triggered related to uuid_mutex.
-> 
-> I'm not 100% sure, but at least RAID56 code is not touching that mutex,
-> thus I guess it's some other problems.
-> 
-> Qu Wenruo (2):
->   btrfs: only write the sectors in the vertical stripe which has data
->     stripes
->   btrfs: raid56: don't trust any cached sector in
->     __raid56_parity_recover()
-> 
->  fs/btrfs/raid56.c | 74 ++++++++++++++++++++++++++++++++++++-----------
->  1 file changed, 57 insertions(+), 17 deletions(-)
-> 
-> -- 
-> 2.37.1
-> 
+Dylan and Jens reported a problem where they had an io_uring test that
+was returning short reads, and bisected it to ee5b46a353af ("btrfs:
+increase direct io read size limit to 256 sectors").
 
-Now queued up, thanks.
+The root cause is their test was doing larger reads via io_uring with
+NOWAIT and async.  This was triggering a page fault during the direct
+read, however the first page was able to work just fine and thus we
+submitted a 4k read for a larger iocb.
 
-greg k-h
+Btrfs allows for partial IO's in this case specifically because we don't
+allow page faults, and thus we'll attempt to do any io that we can,
+submit what we could, come back and fault in the rest of the range and
+try to do the remaining IO.
+
+However for !is_sync_kiocb() we'll call ->ki_complete() as soon as the
+partial dio is done, which is incorrect.  In the sync case we can exit
+the iomap code, submit more io's, and return with the amount of IO we
+were able to complete successfully.
+
+We were always doing short reads in this case, but for NOWAIT we were
+getting saved by the fact that we were limiting direct reads to
+sectorsize, and if we were larger than that we would return EAGAIN.
+
+Fix the regression by simply returning EAGAIN in the NOWAIT case with
+larger reads, that way io_uring can retry and get the larger IO and have
+the fault logic handle everything properly.
+
+This still leaves the AIO short read case, but that existed before this
+change.  The way to properly fix this would be to handle partial iocb
+completions, but that's a lot of work, for now deal with the regression
+in the most straightforward way possible.
+
+Reported-by: Dylan Yudaken <dylany@fb.com>
+Fixes: ee5b46a353af ("btrfs: increase direct io read size limit to 256 sectors")
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/inode.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 5101111c5557..b39673e49732 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7694,6 +7694,20 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
+ 	const u64 data_alloc_len = length;
+ 	bool unlock_extents = false;
+ 
++	/*
++	 * We could potentially fault if we have a buffer > PAGE_SIZE, and if
++	 * we're NOWAIT we may submit a bio for a partial range and return
++	 * EIOCBQUEUED, which would result in an errant short read.
++	 *
++	 * The best way to handle this would be to allow for partial completions
++	 * of iocb's, so we could submit the partial bio, return and fault in
++	 * the rest of the pages, and then submit the io for the rest of the
++	 * range.  However we don't have that currently, so simply return
++	 * -EAGAIN at this point so that the normal path is used.
++	 */
++	if (!write && (flags & IOMAP_NOWAIT) && length > PAGE_SIZE)
++		return -EAGAIN;
++
+ 	/*
+ 	 * Cap the size of reads to that usually seen in buffered I/O as we need
+ 	 * to allocate a contiguous array for the checksums.
+-- 
+2.26.3
+
