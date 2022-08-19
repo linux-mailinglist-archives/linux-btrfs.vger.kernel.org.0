@@ -2,56 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B3359A89B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Aug 2022 00:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A9D59A8A8
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Aug 2022 00:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239001AbiHSWbW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Aug 2022 18:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        id S242238AbiHSWiY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Aug 2022 18:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbiHSWbV (ORCPT
+        with ESMTP id S239270AbiHSWiW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Aug 2022 18:31:21 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F32104441
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Aug 2022 15:31:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=dirtcellar.net; s=ds202112; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Reply-To:Sender:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=1kzYE/OrrXdKDlum+AlvyAL6EciqffRf5OO6Rs9U7uo=; b=E/BQ4ebmrIc126pMu9MMBNMVST
-        QEh/d4LNKRZfNm1BSgvvVkdGCi1/JpuJU4pv+fSWYTaMAAGC2aN5qAH8D7aHX07fkXtsAR8NIvV8A
-        wOY8fzrsEZWlbZ+gtOYDmACCBUrky4surHAYKzZr8JgWeDofFPmVvrL0eQ407UV4w5Ecvhs1swiYT
-        lgXYozXIS7wHk9MkiYN8MvrOScPLyO7vLiqiKx0YW7sGvRVQAnOQM007hwZkbjVac3DOPYkXeJhcP
-        YRgCoeseusyVNib/x0/sD616Teo1CLvzQrLQSOXgEx2ig6R3jh7Obxsra1CWPpEs008KjCycP/3B0
-        lXYNuxgg==;
-Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:15065 helo=[10.0.0.10])
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <waxhead@dirtcellar.net>)
-        id 1oPAWK-00032F-RO; Sat, 20 Aug 2022 00:31:17 +0200
-Reply-To: waxhead@dirtcellar.net
-Subject: Re: What exactly is BTRFS Raid 10?
-To:     George Shammas <btrfs@shamm.as>, Phillip Susi <phill@thesusis.net>
-Cc:     linux-btrfs@vger.kernel.org
+        Fri, 19 Aug 2022 18:38:22 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6CB2CDD8
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Aug 2022 15:38:21 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id C3BFF32002F9;
+        Fri, 19 Aug 2022 18:38:20 -0400 (EDT)
+Received: from imap52 ([10.202.2.102])
+  by compute5.internal (MEProxy); Fri, 19 Aug 2022 18:38:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shamm.as; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1660948700; x=1661035100; bh=rq6RrsY01S
+        gMUm6XwMnMU6xCgfoJMCwLI6nIYh/O3tI=; b=Z1dya6mnOB0kvu5TUagYyZ8QKd
+        qdrP3nGVWE92ckL3XuUvFMnAbO692SO8ubuotJ3HUM6uCt2rscq3nF2aUhsXdAF2
+        H+FNWzQANk0xyu5ZAyoRSHwr3nyT1GrXPNoEtAgzbSTtcuRVXrjez4JUAZyhRJjv
+        p0cui7KDBBF6IZaNxac9RJlFGJ0Gxv5WD9H3+lCkbL+isi3xKU3NDnAr352maHoY
+        vjCzK0dv/We7y35gJCCjgIt2/BpV2HvXKAaa8+Wcdlan/JTZB3Ty0YGOpfasPMO2
+        MPJ6qbKgxUA8V1Z/iEgWg04EJ73h69/m8b9yWHvB6bfODY24zibdbu8Nb5Dw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; t=1660948700; x=1661035100; bh=rq6RrsY01SgMUm6XwMnMU6xCgfoJ
+        MCwLI6nIYh/O3tI=; b=SJ2R9o6jI/wcXI6XcNbXRKBjheWcVEAPHr7gEGJlVtg4
+        JlziQuv0ZZb9xGatNUvgAxxKAEiOzsFqIs8o0SEbF3473soZFZQFHc2HbNqNyGX/
+        fKM3PoJQacbPHn4DBxWQofd/ujZV/GlS7iHSXbtjDSyyHi1qJ9bu0PLlkfO7ogme
+        BbhnvZ15mZX+k222UFMs0HHrWmsdOA16lRvqcVXOY0eELBqifF79WTnrekLN9Tl1
+        7GpKFraEqs9WlMgOaIW85yP5lDfsG92pCr4tkpCxH0EwIGMdzTKUWe++uHeeOPC5
+        o51fE0CPNnuVIla92yAh9vkB4bb8JZC/n/XFsLOKcA==
+X-ME-Sender: <xms:3BAAY1oBOkINlizVPCmfJpa17GGuU0E2ndAaFUS6f4UdITqJzvNpEA>
+    <xme:3BAAY3qL1-JTCsYhlCUKEpjTCnVB7V07j5UtG-8hS5e0ensLTMUM-I-8DP5SFo5s9
+    TmeCfjSvwROD2JEa4o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdeivddgudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfifgv
+    ohhrghgvucfuhhgrmhhmrghsfdcuoegsthhrfhhssehshhgrmhhmrdgrsheqnecuggftrf
+    grthhtvghrnhepgedvheeuffeitddvvddvhefhhfeujeehkeeluefgudegvefhkeeukeeu
+    geefudeinecuffhomhgrihhnpegsthhrfhhsrdhithenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsthhrfhhssehshhgrmhhmrdgrsh
+X-ME-Proxy: <xmx:3BAAYyNX7pTrR1jjmMaUexPD300ov5_jiDlne4kqjrdlGi0xbfR-Pw>
+    <xmx:3BAAYw74635jIWcRW78il4_JlAXx1pTyfnwYTATX_41Rd2LcIVjLJg>
+    <xmx:3BAAY072gBjPbaLyK7sTRNQw3Ltthj86xzJ_AaEq7WtSnhBHtkr0Ng>
+    <xmx:3BAAY-RLXVGvKey2d-B-Z2ftwEucj0gC-19lcgdlyg3KczoUP604aw>
+Feedback-ID: i1ac146fc:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 042ABC6008B; Fri, 19 Aug 2022 18:38:20 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-841-g7899e99a45-fm-20220811.002-g7899e99a
+Mime-Version: 1.0
+Message-Id: <6b835970-07c9-4b8c-a686-57776f494db8@www.fastmail.com>
+In-Reply-To: <1a102e00-144c-43c8-bb08-7bdb4072d056@www.fastmail.com>
 References: <a3fc9d94-4539-429a-b10f-105aa1fd3cf3@www.fastmail.com>
  <87v8qokryt.fsf@vps.thesusis.net>
  <a6b0c534-4f05-4f60-a7fa-f33cfce990d7@www.fastmail.com>
-From:   waxhead <waxhead@dirtcellar.net>
-Message-ID: <6f014dda-94d1-63cb-9ffb-583c34431a3d@dirtcellar.net>
-Date:   Sat, 20 Aug 2022 00:29:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Firefox/68.0 SeaMonkey/2.53.13
-MIME-Version: 1.0
-In-Reply-To: <a6b0c534-4f05-4f60-a7fa-f33cfce990d7@www.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <1a102e00-144c-43c8-bb08-7bdb4072d056@www.fastmail.com>
+Date:   Fri, 19 Aug 2022 18:37:46 -0400
+From:   "George Shammas" <btrfs@shamm.as>
+To:     "Chris Murphy" <lists@colorremedies.com>,
+        "Phillip Susi" <phill@thesusis.net>
+Cc:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Subject: Re: What exactly is BTRFS Raid 10?
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -60,41 +88,27 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-George Shammas wrote:
-> On Fri, Aug 19, 2022, at 2:10 PM, Phillip Susi wrote:
->>> The Raid 1 example there also likely needs a bit of explanation or
->>> validation, as all the blocks are written to one device. In that raid
->>> one example three devices could be lost as long as it is not one of
->>> them is the first device. It also cannot be accurate once the amount
->>> stored is above 1 full drive.
->>
->> It is meant to show a *possible* layout, not every potential layout.
->> The data may be stored like than and then yes, you could lose multiple
->> drives and still recover as long as the lost drives were 2, 3, and 4.
-> 
-> I wouldn't expect all potential layouts, but maybe the _worst_ possible layout and an text. IE. If the layout blocks is random and only guarantees that each block will be on two disks. That would mean raid1 setup of 4 disks is pretty much guaranteed to have data loss if _any_ two disks fail.  This is important and should be made clear somewhere.
+On Fri, Aug 19, 2022, at 6:18 PM, Chris Murphy wrote:
+> man mkfs.btrfs explains some of this. Minimum devices 2.
+
+My first mail included a link the the man page of mkfs.btrfs. It is devoid of information of raid10 other than it is an option.
+
+> And keep in mind all btrfs raid is at the chunk level. Not block device 
+> level. So there's no such thing as a mirrored device, but rather 
+> mirrored chunks (two copies of a block group on separate block devices).
 >
-I am just a regular user , but yes, BTRFS "RAID" is (IMHO) a stupid name 
-and confuses people easily. RAID1 means two instances of the data. That 
-is why RAID1c3 and RAID1c4 exists which gives you a bit more redundancy 
-(3 instances and 4 instances in case it was not obvious).
+> And yes, you can only lose one device with btrfs raid10. 
 
-RAID10 is also just 2 instances of the data spread over as many disks a 
-possible. E.g. any two disk lost means you might be in trouble.
+And this is exactly why I am asking this question. Given that 
+- both raid1 and raid10 can only tolerate a single disk failure
+- chucks are placed evenly across drives, effectively making files striped even if the chucks themselves are not striped. 
 
-Another interesting fact (last time I checked) is that BTRFS allows for 
-interesting configurations like data in RAID6 mode and metadata in 
-RAID10. This is a problem since small files can be stored directly in 
-metadata and since RAID10 can have dataloss with two disks lost and 
-RAID6 should not, you have to pick your configuration with care.
+It seems that both "raid1" and "raid10" are functionally equivalent in btrfs. Or there is a nuance that I'm missing and is not documented. 
 
-Now this sounds awfully critical, but BTRFS is a fantastic filesystem 
-and have saved me from silent corruption more than once.
+These gotchas are not obvious to me, even after 12 years of working with traditional raid setups. 
 
-There is also a fantastic little tool on the web (that should have a 
-ncurses version to be honest) here : https://carfax.org.uk/btrfs-usage/
+Perhaps raid1 does not require that chucks are placed evenly, allowing for hotspots? In which case raid10 is almost always preferable unless you have disks of unequal size?
 
-That gives you a pretty good idea about what is happening if you play 
-around with the values a bit. Good luck :)
+There needs to be some authoritative text on the differences and pros/cons  btrfs raid1 and btrfs raid10, especially since raid5/6 are not recommended.
 
-
+--George
