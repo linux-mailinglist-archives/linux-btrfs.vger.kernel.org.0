@@ -2,107 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EEE5991B3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 02:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B12599321
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 04:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240905AbiHSAXA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Aug 2022 20:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
+        id S245005AbiHSCow (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Aug 2022 22:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232055AbiHSAW7 (ORCPT
+        with ESMTP id S235620AbiHSCov (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Aug 2022 20:22:59 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B67CE328;
-        Thu, 18 Aug 2022 17:22:56 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 8A7BF8037B;
-        Thu, 18 Aug 2022 20:22:54 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1660868575; bh=KJO8iwxrW0bVho80KCGrZkmxDyezgyXHpsErpPzQgHE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=N+93TpP6Li6o7H2ac0bwSroqd6xtkc3b8IAQyozKaUpO5jlWrOrQR4JbA8TX/Rk3P
-         2qvGPQAIsTsC/v6YF9aK2M69TAcpoB/bwehlvSBaWBRsRuN8w0V273S8I0upw7c6UF
-         1D38AQq3HG+C/nMsR7aQn9OtWj8E233WIB1xHUr+fC9CLptMe/VwyVEDoFhu+fL8oV
-         rG03UPzMkgiMHlaVroeEVAIHKUUATNc38CeR47WdlvfwS7EQ8B5pfLH0IU2DYFgnpu
-         z/ycNTPggm32sTYMwlrXNAeTJhfY6MiOhDVUbpo4maLdQi5nWu2ElRhCSmx9E11DCr
-         edOAGKmJ0MERg==
-Message-ID: <80a2e21a-0835-6a7e-d8b6-9c1ca4ae157c@dorminy.me>
-Date:   Thu, 18 Aug 2022 20:22:53 -0400
-MIME-Version: 1.0
-Subject: Re: [PATCH 05/21] fscrypt: add new encryption policy for btrfs.
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1660744500.git.sweettea-kernel@dorminy.me>
- <66fcd64620c0c0711bbe80aa85e92f04d539bd83.1660744500.git.sweettea-kernel@dorminy.me>
- <89d9ff01-c405-ec25-736a-bfba4c03e72c@dorminy.me>
- <Yv64LMFQjs081n3Z@sol.localdomain>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <Yv64LMFQjs081n3Z@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Thu, 18 Aug 2022 22:44:51 -0400
+Received: from synology.com (mail.synology.com [211.23.38.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251249E2CE
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Aug 2022 19:44:50 -0700 (PDT)
+Received: from localhost.localdomain (unknown [10.17.45.240])
+        by synology.com (Postfix) with ESMTPA id 92BFE304E05C1;
+        Fri, 19 Aug 2022 10:44:48 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1660877088; bh=jpaNVO7yNJOJYEArErT2t4+7R2HV0RfknEOFy1PkReY=;
+        h=From:To:Cc:Subject:Date;
+        b=mu9nsvxGjtuhbeaaFNLAYbV7lynHVfrtaLDF9AvRGLxJeUlGs07WBiENJfKXYNhxP
+         qotTZzT7OyhN+DkQHli+HmsGKYJGNR8bVnQwRut/KyQ4JE6k//BxRibnhm/mHXOwyA
+         q51QkqZilDelz3gW6u+KEkcjfpw1654IkESeJ70Y=
+From:   ethanlien <ethanlien@synology.com>
+To:     linux-btrfs@vger.kernel.org, cunankimo@gmail.com
+Cc:     Ethan Lien <ethanlien@synology.com>
+Subject: [PATCH v2] btrfs: remove unnecessary EXTENT_UPTODATE state in buffered I/O path
+Date:   Fri, 19 Aug 2022 10:44:08 +0800
+Message-Id: <20220819024408.9714-1-ethanlien@synology.com>
+X-Mailer: git-send-email 2.17.1
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Ethan Lien <ethanlien@synology.com>
 
+After we copied data to page cache in buffered I/O, we
+1. Insert a EXTENT_UPTODATE state into inode's io_tree, by
+   endio_readpage_release_extent(), set_extent_delalloc() or
+   set_extent_defrag().
+2. Set page uptodate before we unlock the page.
 
-On 8/18/22 18:07, Eric Biggers wrote:
-> On Wed, Aug 17, 2022 at 11:54:56AM -0400, Sweet Tea Dorminy wrote:
->>
->>
->> On 8/17/22 10:49, Sweet Tea Dorminy wrote:
->>> Encryption for btrfs must be extent-based, rather than fscrypt's
->>> inode-based IV generation policies.  In particular, btrfs can have
->>> multiple inodes referencing a single block of data, and moves logical
->>> data blocks to different physical locations on disk; these two features
->>> mean inode or physical-location-based IV generation policies will not
->>> work for btrfs. Instead, btrfs can store an IV per extent, generated by
->>> fscrypt and iterated per block within the extent, and provide that IV to
->>> fscrypt for encryption/decryption.
->>>
->>> Plumbing filesystem internals into fscrypt for IV generation would be
->>> ungainly and fragile. Thus, this change adds a new policy, IV_FROM_FS,
->>> and a new operation function pointer, get_fs_derived_iv.  btrfs will
->>> require this policy to be used, and implements get_fs_derived_iv by
->>> getting the IV stored with the relevant file extent and iterating the IV
->>> to the appropriate block number. Thus, each individual block has its own
->>> IV, but all blocks within a file extent have iterated IVs according to
->>> their block number, similarly to the IV_INO_LBLK* policy iterating IVs
->>> for a given inode by lblk number.
->>>
->>> The IV buffer passed to get_fs_derived_iv() is pre-populated with the
->>> inode contexts' nonce, as not all data to be encrypted is associated
->>> with a file extent: for btrfs, this is used for filename encryption.
->>>
->>> Filesystems implementing this policy are expected to be incompatible
->>> with existing IV generation policies, so if the function pointer is set,
->>> only dummy or IV_FROM_FS policies are permitted. If there is a
->>> filesystem which allows other policies as well as IV_FROM_FS, it may be
->>> better to expose the policy to filesystems, so they can determine
->>> whether any given policy is compatible with their operation.
->>>
->>> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
->>> ---
->>
->> I realized after sending that this doesn't have Documentation/ updates for
->> the new policy, still; apologies, and it remains on my queue.
-> 
-> It looks like you also didn't address my feedback about IV_FROM_FS at
-> https://lore.kernel.org/linux-fscrypt/YuBAiRg9K8IrlCqV@gmail.com ?
+But the only place we check io_tree's EXTENT_UPTODATE state is in
+btrfs_do_readpage(). We know we enter btrfs_do_readpage() only when we
+have a non-uptodate page, so it is unnecessary to set EXTENT_UPTODATE.
 
-Apologies; I must not have grasped what you were requesting fully. 
-Should I change the name from IV_FROM_FS to IV_PER_EXTENT?
+For example, when performing a buffered random read:
+
+	fio --rw=randread --ioengine=libaio --direct=0 --numjobs=4 \
+		--filesize=32G --size=4G --bs=4k --name=job \
+		--filename=/mnt/file --name=job
+
+Then check how many extent_state in io_tree:
+
+	cat /proc/slabinfo | grep btrfs_extent_state | awk '{print $2}'
+
+w/o this patch, we got 640567 btrfs_extent_state.
+w/  this patch, we got    204 btrfs_extent_state.
+
+Maintaining such a big tree brings overhead since every I/O needs to insert
+EXTENT_LOCKED, insert EXTENT_UPTODATE, then remove EXTENT_LOCKED. And in
+every insert or remove, we need to lock io_tree, do tree search, alloc or
+dealloc extent states. By removing unnecessary EXTENT_UPTODATE, we keep
+io_tree in a minimal size and reduce overhead when performing buffered I/O.
+
+Signed-off-by: Ethan Lien <ethanlien@synology.com>
+Reviewed-by: Robbie Ko <robbieko@synology.com>
+---
+
+V2: Remove set_extent_uptodate() from btrfs_get_extent(), and when we found
+    a inline extent, set page uptodate in btrfs_do_readpage().
+
+ fs/btrfs/extent-io-tree.h |  4 ++--
+ fs/btrfs/extent_io.c      | 16 +---------------
+ fs/btrfs/inode.c          |  2 --
+ 3 files changed, 3 insertions(+), 19 deletions(-)
+
+diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+index c3eb52dbe61c..53ae849d0248 100644
+--- a/fs/btrfs/extent-io-tree.h
++++ b/fs/btrfs/extent-io-tree.h
+@@ -211,7 +211,7 @@ static inline int set_extent_delalloc(struct extent_io_tree *tree, u64 start,
+ 				      struct extent_state **cached_state)
+ {
+ 	return set_extent_bit(tree, start, end,
+-			      EXTENT_DELALLOC | EXTENT_UPTODATE | extra_bits,
++			      EXTENT_DELALLOC | extra_bits,
+ 			      0, NULL, cached_state, GFP_NOFS, NULL);
+ }
+ 
+@@ -219,7 +219,7 @@ static inline int set_extent_defrag(struct extent_io_tree *tree, u64 start,
+ 		u64 end, struct extent_state **cached_state)
+ {
+ 	return set_extent_bit(tree, start, end,
+-			      EXTENT_DELALLOC | EXTENT_UPTODATE | EXTENT_DEFRAG,
++			      EXTENT_DELALLOC | EXTENT_DEFRAG,
+ 			      0, NULL, cached_state, GFP_NOFS, NULL);
+ }
+ 
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index bfae67c593c5..7e082770a088 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2924,9 +2924,6 @@ static void endio_readpage_release_extent(struct processed_extent *processed,
+ 	 * Now we don't have range contiguous to the processed range, release
+ 	 * the processed range now.
+ 	 */
+-	if (processed->uptodate && tree->track_uptodate)
+-		set_extent_uptodate(tree, processed->start, processed->end,
+-				    &cached, GFP_ATOMIC);
+ 	unlock_extent_cached_atomic(tree, processed->start, processed->end,
+ 				    &cached);
+ 
+@@ -3718,20 +3715,9 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+ 			continue;
+ 		}
+ 		/* the get_extent function already copied into the page */
+-		if (test_range_bit(tree, cur, cur_end,
+-				   EXTENT_UPTODATE, 1, NULL)) {
+-			unlock_extent(tree, cur, cur + iosize - 1);
+-			end_page_read(page, true, cur, iosize);
+-			cur = cur + iosize;
+-			pg_offset += iosize;
+-			continue;
+-		}
+-		/* we have an inline extent but it didn't get marked up
+-		 * to date.  Error out
+-		 */
+ 		if (block_start == EXTENT_MAP_INLINE) {
+ 			unlock_extent(tree, cur, cur + iosize - 1);
+-			end_page_read(page, false, cur, iosize);
++			end_page_read(page, true, cur, iosize);
+ 			cur = cur + iosize;
+ 			pg_offset += iosize;
+ 			continue;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index f0c97d25b4a0..639edbcce9fe 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7031,8 +7031,6 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 			}
+ 			flush_dcache_page(page);
+ 		}
+-		set_extent_uptodate(io_tree, em->start,
+-				    extent_map_end(em) - 1, NULL, GFP_NOFS);
+ 		goto insert;
+ 	}
+ not_found:
+-- 
+2.17.1
+
