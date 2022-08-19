@@ -2,167 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 016A9599AB3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 13:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEEE2599AED
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Aug 2022 13:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348763AbiHSLOe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Aug 2022 07:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
+        id S1348415AbiHSLVU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Aug 2022 07:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348267AbiHSLOd (ORCPT
+        with ESMTP id S1348250AbiHSLVT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Aug 2022 07:14:33 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9D5CCE1A;
-        Fri, 19 Aug 2022 04:14:31 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Fri, 19 Aug 2022 07:21:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C6F201B9;
+        Fri, 19 Aug 2022 04:21:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C002D3F8CD;
-        Fri, 19 Aug 2022 11:14:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1660907669;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z1GDxJbx+KB/qA4pxm9HVh5vMJZlaEZx8YtS83ZfxTg=;
-        b=P541Xi9aO3pFkCcmOMJ6PLo+o9b1TBwcys/jYx0gp7NEL6OvWgMWdBYn++wg6Sj+gNVWK9
-        R/ZNvZB0IiXeBwcfdxq6KwKTWEWPVOEqD/tQGx8X7nCEqRiRaJMvE2bfs5XTd4YPaD8qMC
-        4w0yUX3DvgCw30kP3xth9u5V9dtPI58=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1660907669;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z1GDxJbx+KB/qA4pxm9HVh5vMJZlaEZx8YtS83ZfxTg=;
-        b=/GhM+MayMH8BLSN1+0urh0zTPlB3pozih4aK0+YFpPyS2jHIaQ7FmIQO85zIbMlE8qi5Fs
-        uFTZDsMwgE2/MZAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7BA9813AE9;
-        Fri, 19 Aug 2022 11:14:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fLc7HZVw/2JkKQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 19 Aug 2022 11:14:29 +0000
-Date:   Fri, 19 Aug 2022 13:09:17 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        fstests@vger.kernel.org
-Subject: Re: [PATCH v3] fstests: add btrfs fs-verity send/recv test
-Message-ID: <20220819110917.GQ13489@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        fstests@vger.kernel.org
-References: <e1e77ce5d7277b235e48adc8daf00a0dc0ae36e9.1660860807.git.boris@bur.io>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 557E161714;
+        Fri, 19 Aug 2022 11:21:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DA9FC433C1;
+        Fri, 19 Aug 2022 11:21:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1660908077;
+        bh=yT8EDrgNbjdWjlNQBG9B6Fy9zmyFIdtm8/pk4zRpl4M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pdXlDFbjQV65ThLVxRLIaQQ4LPW4zNjMxWy2U0mztyH8qxKnq/VBxkakd4cBVyxJX
+         R0S5HvcWT1jhjnl8SvSuhDXzyUo9M9y7f7oE1CC7n5BPPYCD1M6A78QiJzB6ZSXkbq
+         CsMK0WfvGOzRiAjOdnolJwafwmf6J6MidcDYP+u8=
+Date:   Fri, 19 Aug 2022 13:21:14 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH STABLE 5.15 0/2] btrfs: raid56: backports to reduce
+ corruption
+Message-ID: <Yv9yKtRffK6tX8K5@kroah.com>
+References: <cover.1660898037.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e1e77ce5d7277b235e48adc8daf00a0dc0ae36e9.1660860807.git.boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <cover.1660898037.git.wqu@suse.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 03:16:30PM -0700, Boris Burkov wrote:
-> Test btrfs send/recv support for fs-verity. Includes tests for
-> signatures, salts, and interaction with chmod/caps. The last of those is
-> to ensure the various features that go in during inode_finalize interact
-> properly.
+On Fri, Aug 19, 2022 at 04:39:48PM +0800, Qu Wenruo wrote:
+> This is the backport for v5.15.x stable branch.
 > 
-> This depends on the kernel patch adding support for send:
-> btrfs: send: add support for fs-verity
+> The full explananation can be found here:
+> https://lore.kernel.org/linux-btrfs/Yv85PTBsDhrQITZp@kroah.com/T/#t
 > 
-> And the btrfs-progs patch adding support for recv:
-> btrfs-progs: receive: add support for fs-verity
+> Difference between v5.15.x and v5.18.x backports:
 > 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
-> Changes for v3:
-> - commit a few things from v2 that I left unstaged (277 in output,
->   true/false)
-> Changes for v2:
-> - btrfs/271 -> btrfs/277
-> - YOUR NAME HERE -> Meta
-> - change 0/1 to false/true
-> - change drop caches to cycle mount
-> - get rid of unneeded _require_test
-> - compare file contents
+> - btrfs_io_contrl::fs_info and btrfs_raid_bio::fs_info refactor
+>   In v5.15 and older kernel, btrfs_raid_bio and btrfs_io_control both
+>   have fs_info member, and the new rbio_add_bio() function utilizes
+>   btrfs_io_ctrl::fs_info.
 > 
->  tests/btrfs/277     | 115 ++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/277.out |  59 +++++++++++++++++++++++
->  2 files changed, 174 insertions(+)
->  create mode 100755 tests/btrfs/277
->  create mode 100644 tests/btrfs/277.out
+>   Unfortunately that rbio->bioc->fs_info is not always initialized in
+>   v5.15 and older kernels.
+>   Thus has to use rbio->fs_info instead.
 > 
-> diff --git a/tests/btrfs/277 b/tests/btrfs/277
-> new file mode 100755
-> index 00000000..251e2818
-> --- /dev/null
-> +++ b/tests/btrfs/277
-> @@ -0,0 +1,115 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2022 Meta, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 277
-> +#
-> +# Test sendstreams involving fs-verity enabled files.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick verity send
-> +
-> +# Override the default cleanup function.
-> +_cleanup()
-> +{
-> +	cd /
-> +	_restore_fsverity_signatures
-> +	rm -r -f $tmp.*
-> +}
-> +
-> +# Import common functions.
-> +. ./common/filter
-> +. ./common/verity
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +_require_scratch_verity
-> +_require_fsverity_builtin_signatures
-> +_require_command "$SETCAP_PROG" setcap
-> +_require_command "$GETCAP_PROG" getcap
-> +
-> +subv=$SCRATCH_MNT/subv
-> +fsv_file=$subv/file.fsv
-> +keyfile=$tmp.key.pem
-> +certfile=$tmp.cert.pem
-> +certfileder=$tmp.cert.der
-> +sigfile=$tmp.sig
-> +stream=$tmp.fsv.ss
-> +
-> +_test_send_verity() {
-> +	local sig=$1
-> +	local salt=$2
-> +	local extra_args=""
-> +
-> +	_scratch_mkfs >> $seqres.full
-> +	_scratch_mount
-> +	echo -e "\nverity send/recv test: sig: $sig salt: $salt"
-> +	_disable_fsverity_signatures
-> +
-> +	echo "create subvolume"
-> +	$BTRFS_UTIL_PROG subv create $subv >> $seqres.full
+>   If not properly handled, can lead to btrfs/158 crash.
+> 
+> Qu Wenruo (2):
+>   btrfs: only write the sectors in the vertical stripe which has data
+>     stripes
+>   btrfs: raid56: don't trust any cached sector in
+>     __raid56_parity_recover()
+> 
+>  fs/btrfs/raid56.c | 74 ++++++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 57 insertions(+), 17 deletions(-)
+> 
+> -- 
+> 2.37.1
+> 
 
-Please use full name of subcommands, ie. 'subvolume'
+All now queued up, thanks.
+
+greg k-h
