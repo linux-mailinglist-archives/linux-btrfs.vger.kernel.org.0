@@ -2,70 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F2559BF2C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 14:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5F159BF1E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 13:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233689AbiHVMCI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Aug 2022 08:02:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
+        id S234422AbiHVL6T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Aug 2022 07:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbiHVMCH (ORCPT
+        with ESMTP id S234444AbiHVL6S (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Aug 2022 08:02:07 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B222DA83
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 05:02:04 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 19F0D344ED;
-        Mon, 22 Aug 2022 12:02:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1661169723;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+FnxzNbftSUSFX2upl+4Rx9qbpxZq0KE0laQDUGyDpU=;
-        b=vL7oB3s/zuTN9WuV16UOFkGG/FdX+X05YJ3XhAe4OcG5iDS8Os0RhVunsR1g2IaSmwMURO
-        vPFnV+nk78nbQ+jIntBlGQV6U8SKyfBKmUbVdjz/wBMKKtVp0enTz2+qdrsu2tFRZWSViw
-        up4mox7b0pC4aRTtnL4+HAuVOC9AJAY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1661169723;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+FnxzNbftSUSFX2upl+4Rx9qbpxZq0KE0laQDUGyDpU=;
-        b=1sHNs22D5z9V1nnGoloVqw0ST4sLSdV6Yn3T0sAAAFGmCnBsj5W8Tto+JF2JblOOL+vYaY
-        hOKDwgEUn8GArtDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DDF1513523;
-        Mon, 22 Aug 2022 12:02:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id jTZBNTpwA2NePgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 22 Aug 2022 12:02:02 +0000
-Date:   Mon, 22 Aug 2022 13:56:49 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     ethanlien <ethanlien@synology.com>
-Cc:     linux-btrfs@vger.kernel.org, cunankimo@gmail.com
-Subject: Re: [PATCH v2] btrfs: remove unnecessary EXTENT_UPTODATE state in
- buffered I/O path
-Message-ID: <20220822115649.GS13489@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, ethanlien <ethanlien@synology.com>,
-        linux-btrfs@vger.kernel.org, cunankimo@gmail.com
-References: <20220819024408.9714-1-ethanlien@synology.com>
+        Mon, 22 Aug 2022 07:58:18 -0400
+Received: from 1wt.eu (wtarreau.pck.nerim.net [62.212.114.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E069286;
+        Mon, 22 Aug 2022 04:58:12 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 27MBwBf8019247;
+        Mon, 22 Aug 2022 13:58:11 +0200
+Date:   Mon, 22 Aug 2022 13:58:11 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        stable <stable@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-x86_64@vger.kernel.org
+Subject: Re: LTS kernel Linux 4.14.290 unable to boot with edk2-ovmf (x86_64
+ UEFI runtime)
+Message-ID: <20220822115811.GE17080@1wt.eu>
+References: <2d6012e8-805d-4225-80ed-d317c28f1899@gmx.com>
+ <YwMhXX6OhROLZ/LR@kroah.com>
+ <1ed5a33a-b667-0e8e-e010-b4365f3713d6@gmx.com>
+ <YwMxRAfrrsPE6sNI@kroah.com>
+ <8aff5c17-d414-2412-7269-c9d15f574037@gmx.com>
+ <YwM3DwvPIGkfE4Tu@kroah.com>
+ <acc6051b-748f-4f06-63b3-919eb831217c@gmx.com>
+ <YwNFxIouYoRo/wT+@kroah.com>
+ <34793a7b-64e4-f1cb-b84e-5804b4f6fac3@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220819024408.9714-1-ethanlien@synology.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+In-Reply-To: <34793a7b-64e4-f1cb-b84e-5804b4f6fac3@gmx.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,43 +52,35 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 10:44:08AM +0800, ethanlien wrote:
-> From: Ethan Lien <ethanlien@synology.com>
+On Mon, Aug 22, 2022 at 07:43:18PM +0800, Qu Wenruo wrote:
+> Tried to compile gcc10 from AUR, which failed to compile.
 > 
-> After we copied data to page cache in buffered I/O, we
-> 1. Insert a EXTENT_UPTODATE state into inode's io_tree, by
->    endio_readpage_release_extent(), set_extent_delalloc() or
->    set_extent_defrag().
-> 2. Set page uptodate before we unlock the page.
 > 
-> But the only place we check io_tree's EXTENT_UPTODATE state is in
-> btrfs_do_readpage(). We know we enter btrfs_do_readpage() only when we
-> have a non-uptodate page, so it is unnecessary to set EXTENT_UPTODATE.
+> Anyway, thanks to the advice from Willy, I got the pre-built crosstool
+> (gcc 7.5) set up, with some small tweaks like disabling
+> CONFIG_RANDOMIZE_BASE to workaround the RELOCS failure, it at least
+> compiles for v4.14.0.
 > 
-> For example, when performing a buffered random read:
+> Although there is still warning from test_gen_len:
 > 
-> 	fio --rw=randread --ioengine=libaio --direct=0 --numjobs=4 \
-> 		--filesize=32G --size=4G --bs=4k --name=job \
-> 		--filename=/mnt/file --name=job
-> 
-> Then check how many extent_state in io_tree:
-> 
-> 	cat /proc/slabinfo | grep btrfs_extent_state | awk '{print $2}'
-> 
-> w/o this patch, we got 640567 btrfs_extent_state.
-> w/  this patch, we got    204 btrfs_extent_state.
-> 
-> Maintaining such a big tree brings overhead since every I/O needs to insert
-> EXTENT_LOCKED, insert EXTENT_UPTODATE, then remove EXTENT_LOCKED. And in
-> every insert or remove, we need to lock io_tree, do tree search, alloc or
-> dealloc extent states. By removing unnecessary EXTENT_UPTODATE, we keep
-> io_tree in a minimal size and reduce overhead when performing buffered I/O.
-> 
-> Signed-off-by: Ethan Lien <ethanlien@synology.com>
-> Reviewed-by: Robbie Ko <robbieko@synology.com>
-> ---
-> 
-> V2: Remove set_extent_uptodate() from btrfs_get_extent(), and when we found
->     a inline extent, set page uptodate in btrfs_do_readpage().
+>  Warning: ffffffff818158cc:	0f ff e9             	ud0    %ecx,%ebp
+>  Warning: objdump says 3 bytes, but insn_get_length() says 2
+>  Warning: arch/x86/tools/test_get_len found difference at
+> <cpu_idle_poll>:ffffffff818159b0
 
-Added to misc-next, thanks.
+Strange, sounds like a binutils issue though I could be wrong.
+
+> And unfortunately v4.14 still fails to boot, even with GCC 7.5, which
+> provides an almost perfect (except above wanrings) build.
+> 
+> I also tried to reduce the CPUid, from host-passthru to qemu64, and
+> rebuild, no change (same test_get_len wanrings, same boot failure).
+> 
+> No clue at all now, would try older debian in a VM then.
+
+I suggest that instead of switching distros you should rather first
+try 4.14.0 to verify if there was a regression affecting your system.
+And if so, then a bisect will certainly be welcome. If it still does
+not work, then maybe a different distro could help, though I doubt it.
+
+Willy
