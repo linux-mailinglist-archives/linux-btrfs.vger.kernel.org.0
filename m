@@ -2,44 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0960959C1E0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 16:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C564459C1DD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 16:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234987AbiHVOrR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Aug 2022 10:47:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36034 "EHLO
+        id S235335AbiHVOrS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Aug 2022 10:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbiHVOrP (ORCPT
+        with ESMTP id S234147AbiHVOrQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Aug 2022 10:47:15 -0400
+        Mon, 22 Aug 2022 10:47:16 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6A72A72A
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF94E2B250
         for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 07:47:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9B02560BCB
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F54B60EC8
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 14:47:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63BA1C433C1
         for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 14:47:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72507C433D7
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 14:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1661179634;
-        bh=mzH6VeDulyILoCEAjqpgWXUI/TIvUWaqD1T/Z8Ktw6Q=;
+        bh=sYMgyG5cnmto6HDXA8qk3LKkoWCdWyuh1tgaxI0AZLk=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=LpI1S92C3ETTvIzI6G45Q+Mkdi3lnwS1pG6FaWIv8vZqlIysnwFPmNuLpyIOM1+/6
-         ASVajEnusbqBCt6fSZ2EHy/pbTqV5qk1Dsjnv2oo+4MXlwUFkkfn2L8tOtJ6l8wCvX
-         u2WFwswjfh6EvvB3yRM8VBcfstVIgfwcc+4ySuQOCH1iUoARTklWxM0OncF/+Ttj+C
-         W/aO5CvklcXHpqTAMd7l6qGCwgQQshUrbRjOW5I5Y6XcBg+mBIwkX9tU+4pgKF0eF6
-         iR2eKIfv/3VnAQcR4RFoKXjQObPKblK1WDUmAWd5mlLQRT6LavJ+PzaduAce+P1XGJ
-         YSyr1iYZSkbYQ==
+        b=pgLuVxGx7+6feaBAV+FONuWlb2wuajRGshRu1Q3Qg1OBClZ+seu2MtSYmC0R8xklf
+         ZI69hAiyVViVUNY0jMQBdZaxO35lkzi1BFfmxlJ2o5szbuhEttU0SacgYLqff8WiiG
+         G+4GmwaUxdoa2lbkOK/dwkpXEazCE/zDk53ZsES5ZQRlQwSWEalm7g9+H0vLffxCdX
+         1YEsMrjn4KFEnJRnqrkpZ/FFrmONODZJGAcxWykTBImyGR8W4zKKkFW+EqeJbc6+B8
+         cYcZSKoxdtuxL7o1QZ22o+BuGhGdojKRFQqGNtV2Ck7kxy+/LVIs9/fpuKs5o3P6zY
+         D62iSrIs1BKYQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/2] btrfs: fix lost error value deleting root reference
-Date:   Mon, 22 Aug 2022 15:47:08 +0100
-Message-Id: <cover.1661179270.git.fdmanana@suse.com>
+Subject: [PATCH v2 1/2] btrfs: fix silent failure when deleting root reference
+Date:   Mon, 22 Aug 2022 15:47:09 +0100
+Message-Id: <f070919ec910b3682dd22742151a60f9e4c95cbf.1661179270.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1661168931.git.fdmanana@suse.com>
-References: <cover.1661168931.git.fdmanana@suse.com>
+In-Reply-To: <cover.1661179270.git.fdmanana@suse.com>
+References: <cover.1661179270.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -54,24 +54,37 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Fix a silent failure in case deleting a root reference fails when searching
-for an item. Then make btrfs_del_root_ref() less likely to run into such
-type of bug in the future. Details in the changelogs.
+At btrfs_del_root_ref(), if btrfs_search_slot() returns an error, we end
+up returning from the function with a value of 0 (success). This happens
+because the function returns the value stored in the variable 'err', which
+is 0, while the error value we got from btrfs_search_slot() is stored in
+the 'ret' variable.
 
-V2: Fix patch 2/2. If the BTRFS_ROOT_BACKREF_KEY item is not found, but
-    the BTRFS_ROOT_REF_KEY is found, then before we would return -ENOENT
-    and now we were returning 0 (unless an error happened when deleting
-    the BTRFS_ROOT_REF_KEY item). Just return -ENOENT whenever one of
-    the items is not found, all the callers abort the transaction if
-    btrfs_del_root_ref() returns an error.
+So fix it by setting 'err' with the error value.
 
-Filipe Manana (2):
-  btrfs: fix silent failure when deleting root reference
-  btrfs: simplify error handling at btrfs_del_root_ref()
+Fixes: 8289ed9f93bef2 ("btrfs: replace the BUG_ON in btrfs_del_root_ref with proper error handling")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/root-tree.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
- fs/btrfs/root-tree.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
-
+diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+index a64b26b16904..d647cb2938c0 100644
+--- a/fs/btrfs/root-tree.c
++++ b/fs/btrfs/root-tree.c
+@@ -349,9 +349,10 @@ int btrfs_del_root_ref(struct btrfs_trans_handle *trans, u64 root_id,
+ 	key.offset = ref_id;
+ again:
+ 	ret = btrfs_search_slot(trans, tree_root, &key, path, -1, 1);
+-	if (ret < 0)
++	if (ret < 0) {
++		err = ret;
+ 		goto out;
+-	if (ret == 0) {
++	} else if (ret == 0) {
+ 		leaf = path->nodes[0];
+ 		ref = btrfs_item_ptr(leaf, path->slots[0],
+ 				     struct btrfs_root_ref);
 -- 
 2.35.1
 
