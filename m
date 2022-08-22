@@ -2,122 +2,227 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C9E59BE3A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 13:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384A659BE63
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 13:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbiHVLJX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Aug 2022 07:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
+        id S232923AbiHVLY2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Aug 2022 07:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234040AbiHVLJI (ORCPT
+        with ESMTP id S230421AbiHVLY1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Aug 2022 07:09:08 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE21A33E28;
-        Mon, 22 Aug 2022 04:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1661166445;
-        bh=EuJxpwGW0kCugTdVp6i68Y2ET4g43DToAA8wC2D/R9I=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=d0BpwRlHZBoGxfuGd+9gR2HxSGzpf7d3gkxIKLPvwMhMef8WNjPEiGRRRlk61PI9O
-         OC8t6qoDDR5kP+9eY7Uu7/Xb+6ZUvPPR74/MGmJqhv0eCL/BPe6m3cMOF8wmZwNae6
-         LSvjxL52OrIZ9Ga0SfVBJYII5/BjUcjveR673dZE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MD9XF-1oYZaP0Vhx-0097DU; Mon, 22
- Aug 2022 13:07:24 +0200
-Message-ID: <9aa83875-0a05-6b28-b4df-4071ba8ee343@gmx.com>
-Date:   Mon, 22 Aug 2022 19:07:19 +0800
+        Mon, 22 Aug 2022 07:24:27 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F2618E28;
+        Mon, 22 Aug 2022 04:24:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C0134B810B5;
+        Mon, 22 Aug 2022 11:24:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A7E5C433C1;
+        Mon, 22 Aug 2022 11:24:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661167463;
+        bh=JwNSY5plLAag9VcO9i7Jir7Xc9dHuDUrSU1EV6N8OsQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RzmZ7Nn6t6ENKo8USffh1G03FNpCXnTBC+2h8cO7tKmUPRt4/Uh6ozPcZLT2mJ2f1
+         wR/iG9RBCs12MfFB6a3U8rBovP4kVZqIQrnQICcx6IRs9WAMVexM2/xy7fmrmGOk+9
+         OU/ov/fkNIUnWoyPw4QJlAkDZVu1sjXNb4oxzo9eV+DzTLhqaM4+903YCB37N+sgKT
+         BHq00CugZlj8Q3j7SvGY807FXLjjRYztUBbRrQ6aJ5rNtYyZw2N1bDsEJaZ6FbRKme
+         UOoUnpCoEphkManNySBC7KbjFPTuwkQ2XJX+IbKSnxSv1eFl3N2Ctgnq8AXej+dgaD
+         ualEbMXxuW1Ng==
+Date:   Mon, 22 Aug 2022 12:24:20 +0100
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     bingjingc <bingjingc@synology.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        bxxxjxxg@gmail.com
+Subject: Re: [PATCH v2] fstests: btrfs: test incremental send for changed
+ reference paths
+Message-ID: <20220822112420.GA3115262@falcondesktop>
+References: <20220822004932.1280053-1-bingjingc@synology.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Content-Language: en-US
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        stable <stable@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-x86_64@vger.kernel.org
-References: <2d6012e8-805d-4225-80ed-d317c28f1899@gmx.com>
- <YwMhXX6OhROLZ/LR@kroah.com> <1ed5a33a-b667-0e8e-e010-b4365f3713d6@gmx.com>
- <YwMxRAfrrsPE6sNI@kroah.com> <8aff5c17-d414-2412-7269-c9d15f574037@gmx.com>
- <20220822080456.GB17080@1wt.eu>
- <4c42af33-dc05-315a-87d9-be0747a74df4@gmx.com>
- <20220822083044.GC17080@1wt.eu>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: LTS kernel Linux 4.14.290 unable to boot with edk2-ovmf (x86_64
- UEFI runtime)
-In-Reply-To: <20220822083044.GC17080@1wt.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jWPvej0a40zHz8DlCmHr7AlmcK/R5vwa89aDPsLwwWdX22f54+P
- Af4xer/hyzXOaWtJwtX3zI1DOVMDap9dP+o+8PItJr5VZmrVhKq39HQfZKedzM0Dc+8Wl9E
- CO7/PdBHX9XDQua3A9IiBypYqGfyrePLUPxwBwQC4sSMIR8wB9sg46CY+eivCaLzUVadFe6
- jYL4a96hnK/dIhsDir4CA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fhXrvUu250M=:X/DS/ITfEIdrL8bPByhVlR
- m9yhoSSJoUImyHOStY74la41aAD/APodgWvCCPIpbitayHAcpg6SxKAw/TZ37UlEmHkOHuwNo
- 36bLP1aEmj1fFHCbRvSck65ARA51qW7eK37EXcSrKFmlRQxPK86dkHiG/GlmAUmQs8ynvQVFE
- mpIQ97ynJgxk7G26m+QpbGp6XnAcysT34HKF7jonOACpVz+QliVzmujkKsEuPqaDAnaHkNp7Q
- T4LXpsvAYvMfJHlqbskTeFBcncFmhW+1t3/bXHatT0g1PgYPHfZKlemsZlLV1A8A64wxT2961
- R2ulyfK8cFdjTx35iCWRedcZhN3oo+nSRMAuv9x/2do+PdHCTADL+9oG+t1urMwwUaPTAwQ6u
- aJDcCzKnh4vGRF7KuNJRu4WEZ3vrmOF26lNGP+v24g/f93sswP4+sQPBiPv4UNtRQ6EEGA4vY
- pQyMh6tSRKSzKlQ473uyw0UjcTkesIdhggkTFpMpKjU6kmZOgh3MwUv5zTPhDi83vn1zg7LYj
- mXRJhh3rINH2CI59fa86T8NRdcdktQz7B4Xco8rgo1dotnuQxsRyq7OGxSo2cavVgKJW0zUSR
- 0bsp8SlzVCcKf8m3xf2ucRhnswTHaYrZNgP4eS1Y9TTbhhIFYbTB+7aV8lzj3VDdffDpmrjrt
- ZWYhJV/DmrNrfbj9So0qJwACTT/xsNvhdR4I8D709ivBQBBEBQ1+Gm0RtAvh8KMzOais+FiSy
- 7f36Z1j+cTHNpySzc4flo1Hqp1A4+cTVcw4dNs//2qreIvrbFVoe4bY1fiD6fYMKt5UflRaFM
- NPSYdmaJqFYkVTooqGI1j2bIc5IKOYGfNhIil/ydnszf5SDN6w7EGPRSTOw8gk2RIIlqbAEEm
- dsk9dG84zB29Yu8VFdx5WM5XedKaf8h4We9K0AI13JcYtotlGOvxjn9Ef+bzVp7J9zyrD5IvU
- 2hHonGYoyQtNjZnKvOdDHZWoCwYL2XqEFekuek/tXD+XtjRlXDXs/V+Xl0s+VIPwL0soYlnQW
- oDIpFmU7ce4Bt5AUbJD1npvm6tLsVCJmUVbaIvmjgs5Z8kulSXKOWovS36gZ1IYAyU190+ok/
- 1TNeQXRwJL5wa6TIPdFmWa+jqXRgrC/uvoTf4EJwblixzlBNf/+FgFH4g==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220822004932.1280053-1-bingjingc@synology.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Aug 22, 2022 at 08:49:32AM +0800, bingjingc wrote:
+> From: BingJing Chang <bingjingc@synology.com>
+> 
+> Normally btrfs stores file paths in an array of ref items. However, items
+> for the same parent directory can not exceed the size of a leaf. So btrfs
+> also store the rest of them in extended ref items alternatively.
+> 
+> In this test, it creates a large number of links under a directory causing
+> the file paths stored in these two ways to be the parent snapshot. And it
+> deletes and recreates just an amount of them that can be stored within an
+> array of ref items to be the send snapshot. Test that an incremental send
+> operation correctly issues link/unlink operations only against new/deleted
+> paths, or the receive operation will fail due to a link on an existed path.
+> 
+> This currently fails on btrfs but is fixed by a kernel patch with the
+> commit 3aa5bd367fa5a3 ("btrfs: send: fix sending link commands for
+> existing file paths")
+> 
+> Signed-off-by: BingJing Chang <bingjingc@synology.com>
+> ---
+>  tests/btrfs/272     | 97 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/272.out |  3 ++
+>  2 files changed, 100 insertions(+)
+>  create mode 100755 tests/btrfs/272
+>  create mode 100644 tests/btrfs/272.out
+> 
+> diff --git a/tests/btrfs/272 b/tests/btrfs/272
+> new file mode 100755
+> index 00000000..e1986de9
+> --- /dev/null
+> +++ b/tests/btrfs/272
+> @@ -0,0 +1,97 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2022 BingJing Chang.
+> +#
+> +# FS QA Test No. btrfs/272
+> +#
+> +# Regression test for btrfs incremental send issue where a link instruction
+> +# is sent against an existing path, causing btrfs receive to fail.
+> +#
+> +# This issue is fixed by the following linux kernel btrfs patch:
+> +#
+> +#   commit 3aa5bd367fa5a3 ("btrfs: send: fix sending link commands for
+> +#   existing file paths")
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick send
+> +
+> +# Override the default cleanup function.
+> +_cleanup()
+> +{
+> +	cd /
+> +	rm -fr $send_files_dir
+> +	rm -f $tmp.*
+> +}
+> +
+> +# Import common functions.
+> +. ./common/filter
+> +
+> +# real QA test starts here
+> +_supported_fs btrfs
+
+I didn't tell you before, but I wasn't aware back then, that we now have
+an annotation to specify kernel commits, se here we should add:
+
+_fixed_by_kernel_commit 3aa5bd367fa5a3 \
+	"btrfs: send: fix sending link commands for existing file paths"
 
 
-On 2022/8/22 16:30, Willy Tarreau wrote:
-> On Mon, Aug 22, 2022 at 04:19:49PM +0800, Qu Wenruo wrote:
->>> Regardless, if you need an older compiler, just use these ones:
->>>
->>>      https://mirrors.edge.kernel.org/pub/tools/crosstool/
->>>
->>> They go back to 4.9.4 for x86, you'll surely find the right one for yo=
-ur
->>> usage. I've long used 4.7.4 for kernels up to 4.9 and 6.5 for 4.19 and
->>> above, so something within that area will surely match your needs.
->>
->> BTW, it would be way more awesome if the page can provide some hint on
->> the initial release date of the compilers.
->>
->> It would help a lot of choose the toolchain then.
->
-> It wouldn't help, if you look closely, you'll notice that in the "other
-> releases" section you have the most recent version of each of them. That
-> does not preclude the existence of the branch earlier. For example gcc-9
-> was released in 2019 and 9.5 was emitted 3 years later. That's quite an
-> amplitude that doesn't help.
+> +_require_test
+> +_require_scratch
+> +_require_fssum
+> +
+> +send_files_dir=$TEST_DIR/btrfs-test-$seq
+> +
+> +rm -fr $send_files_dir
+> +mkdir $send_files_dir
+> +
+> +_scratch_mkfs > /dev/null 2>&1
+> +_scratch_mount
+> +
+> +# Create a file and 2000 hard links to the same inode
+> +_run_btrfs_util_prog subvolume create $SCRATCH_MNT/vol
+> +touch $SCRATCH_MNT/vol/foo
+> +for i in {1..2000}; do
+> +	link $SCRATCH_MNT/vol/foo $SCRATCH_MNT/vol/$i
+> +done
+> +
+> +# Create a snapshot for a full send operation
+> +_run_btrfs_util_prog subvolume snapshot -r $SCRATCH_MNT/vol $SCRATCH_MNT/snap1
+> +_run_btrfs_util_prog send -f $send_files_dir/1.snap $SCRATCH_MNT/snap1
+> +
+> +# Remove 2000 hard links and re-create the last 1000 links
+> +for i in {1..2000}; do
+> +	rm $SCRATCH_MNT/vol/$i
+> +done
+> +for i in {1001..2000}; do
+> +	link $SCRATCH_MNT/vol/foo $SCRATCH_MNT/vol/$i
+> +done
+> +
+> +# Create another snapshot for an incremental send operation
+> +_run_btrfs_util_prog subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2
 
-Maybe I'm totally wrong, but if GCC10.1 is released May 2020, and even
-10.4 is released 2022, then shouldn't we expect the kernel releases
-around 2020 can be compiled for all GCC 10.x releases?
+So I ran the test on an unpatched kernel and it didn't fail!
 
-Thus the initial release date should be a good enough hint for most cases.
+The reason is that that command is taking a snapshot of $SCRATCH_MNT, when it
+should be $SCRATCH_MNT/vol. So it wasn't testing what we were supposed to test.
 
-If go this method, for v4.14 I guess I should go gcc 7.x, as gcc 7.1 is
-released May 2017, even the latest 7.5 is released 2019.
+> +_run_btrfs_util_prog send -p $SCRATCH_MNT/snap1 -f $send_files_dir/2.snap \
+> +		     $SCRATCH_MNT/snap2
+> +
+> +$FSSUM_PROG -A -f -w $send_files_dir/1.fssum $SCRATCH_MNT/snap1
+> +$FSSUM_PROG -A -f -w $send_files_dir/2.fssum \
+> +	-x $SCRATCH_MNT/snap2/snap1 $SCRATCH_MNT/snap2
+> +
+> +# Recreate the filesystem by receiving both send streams and verify we get
+> +# the same content that the original filesystem had.
+> +_scratch_unmount
+> +_scratch_mkfs >>$seqres.full 2>&1
+> +_scratch_mount
+> +
+> +# Add the first snapshot to the new filesystem by applying the first send
+> +# stream.
+> +_run_btrfs_util_prog receive -f $send_files_dir/1.snap $SCRATCH_MNT
+> +
+> +# The incremental receive operation below used to fail with the following
+> +# error:
+> +#
+> +#    ERROR: link 1238 -> foo failed: File exists
+> +#
+> +# This is because the path "1238" was stored as an extended ref item in the
+> +# original snapshot but as a normal ref item in the next snapshot. The send
+> +# operation cannot handle the duplicated paths, which are stored in
+> +# different ways, well, so it decides to issue a link operation for the
+> +# existing path. This results in the receiver to fail with the above error.
+> +_run_btrfs_util_prog receive -f $send_files_dir/2.snap $SCRATCH_MNT
 
-Or is my uneducated guess completely wrong?
+Thanks for following the style of btrfs/241 and putting here an explanation
+of why it failed!
 
-Thanks,
-Qu
+Btw, this patch didn't reach the btrfs mailing list, you typed the address as
+"linux-btrfs@vger.kernel.orgto", an extra "to" at the end.
 
->
-> Willy
+So I'm adding the list to cc.
+
+Anyway, with those two small changes, the patch will look good to me, then
+you can add:
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks for doing this!
+
+> +
+> +$FSSUM_PROG -r $send_files_dir/1.fssum $SCRATCH_MNT/snap1
+> +$FSSUM_PROG -r $send_files_dir/2.fssum $SCRATCH_MNT/snap2
+> +
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/272.out b/tests/btrfs/272.out
+> new file mode 100644
+> index 00000000..b009b87a
+> --- /dev/null
+> +++ b/tests/btrfs/272.out
+> @@ -0,0 +1,3 @@
+> +QA output created by 272
+> +OK
+> +OK
+> -- 
+> 2.37.1
+> 
