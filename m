@@ -2,95 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2275159BEFB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 13:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E220A59BF0A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 13:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234073AbiHVLxf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Aug 2022 07:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53346 "EHLO
+        id S230131AbiHVLyO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Aug 2022 07:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233264AbiHVLxc (ORCPT
+        with ESMTP id S229749AbiHVLyE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Aug 2022 07:53:32 -0400
-Received: from 1wt.eu (wtarreau.pck.nerim.net [62.212.114.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 518B560DA;
-        Mon, 22 Aug 2022 04:53:29 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 27MBrQVM019212;
-        Mon, 22 Aug 2022 13:53:26 +0200
-Date:   Mon, 22 Aug 2022 13:53:26 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        stable <stable@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-x86_64@vger.kernel.org
-Subject: Re: LTS kernel Linux 4.14.290 unable to boot with edk2-ovmf (x86_64
- UEFI runtime)
-Message-ID: <20220822115326.GD17080@1wt.eu>
-References: <2d6012e8-805d-4225-80ed-d317c28f1899@gmx.com>
- <YwMhXX6OhROLZ/LR@kroah.com>
- <1ed5a33a-b667-0e8e-e010-b4365f3713d6@gmx.com>
- <YwMxRAfrrsPE6sNI@kroah.com>
- <8aff5c17-d414-2412-7269-c9d15f574037@gmx.com>
- <20220822080456.GB17080@1wt.eu>
- <4c42af33-dc05-315a-87d9-be0747a74df4@gmx.com>
- <20220822083044.GC17080@1wt.eu>
- <9aa83875-0a05-6b28-b4df-4071ba8ee343@gmx.com>
+        Mon, 22 Aug 2022 07:54:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CAE1EEF5
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 04:53:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 336D76108B
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 11:53:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F657C433C1
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 11:53:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661169230;
+        bh=CjOjK4n5TCq1wWYYqrXy1+gmgCKkjxUfTURVo8P9K7k=;
+        h=From:To:Subject:Date:From;
+        b=s3Et/9wFzcaVfiklwfEespn2PjZdGsK/mN1z0Dd1FkEVuEJtwVhrNNBR68f9arcCv
+         Td9w2u0wfRsx5bNXkDI16hqTZfYe1PC0nKkoJmKLTU6MNvba4hxTQ4TPZNzwZMZXr8
+         F44RP74lKSx9BgGPPAuxkhvAvlO/Gn20+fYGNyub8YbGoiu8KfFjxbC7cfGXKp0iK6
+         XsoJQBktKhi6medPCNBYeMOP+oc/a/mf9Rd1jzM89j/h81X3AlUNN9fP6WweVCZ5bn
+         ibFLOh/4gER3xYTMCDyUR44Z0Kpyfc3MbqeNI94qLg5rnrRGKP4y/1mvHKJQvtiNp1
+         y8ao9nULNhiyQ==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs: fix lost error value deleting root reference
+Date:   Mon, 22 Aug 2022 12:53:45 +0100
+Message-Id: <cover.1661168931.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9aa83875-0a05-6b28-b4df-4071ba8ee343@gmx.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 22, 2022 at 07:07:19PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2022/8/22 16:30, Willy Tarreau wrote:
-> > On Mon, Aug 22, 2022 at 04:19:49PM +0800, Qu Wenruo wrote:
-> > > > Regardless, if you need an older compiler, just use these ones:
-> > > > 
-> > > >      https://mirrors.edge.kernel.org/pub/tools/crosstool/
-> > > > 
-> > > > They go back to 4.9.4 for x86, you'll surely find the right one for your
-> > > > usage. I've long used 4.7.4 for kernels up to 4.9 and 6.5 for 4.19 and
-> > > > above, so something within that area will surely match your needs.
-> > > 
-> > > BTW, it would be way more awesome if the page can provide some hint on
-> > > the initial release date of the compilers.
-> > > 
-> > > It would help a lot of choose the toolchain then.
-> > 
-> > It wouldn't help, if you look closely, you'll notice that in the "other
-> > releases" section you have the most recent version of each of them. That
-> > does not preclude the existence of the branch earlier. For example gcc-9
-> > was released in 2019 and 9.5 was emitted 3 years later. That's quite an
-> > amplitude that doesn't help.
-> 
-> Maybe I'm totally wrong, but if GCC10.1 is released May 2020, and even
-> 10.4 is released 2022, then shouldn't we expect the kernel releases
-> around 2020 can be compiled for all GCC 10.x releases?
-> 
-> Thus the initial release date should be a good enough hint for most cases.
+From: Filipe Manana <fdmanana@suse.com>
 
-If you speak about initial release, yes that should generally be a valid
-assumption.
+Fix a silent failure in case deleting a root reference fails when searching
+for an item. Then make btrfs_del_root_ref() less likely to run into such
+type of bug in the future. Details in the changelogs.
 
-> If go this method, for v4.14 I guess I should go gcc 7.x, as gcc 7.1 is
-> released May 2017, even the latest 7.5 is released 2019.
+Filipe Manana (2):
+  btrfs: fix silent failure when deleting root reference
+  btrfs: simplify error handling at btrfs_del_root_ref()
 
-Then it should definitely work. But I think you're spending way too much
-time comparing dates and discussing on the subject. By the time it took
-to check these dates, you could already have downloaded one such compiler
-and built a kernel to verify it did build correctly ;-)
+ fs/btrfs/root-tree.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-Willy
+-- 
+2.35.1
+
