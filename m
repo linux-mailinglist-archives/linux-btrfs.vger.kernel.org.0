@@ -2,67 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6D559B715
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 02:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E4559B733
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 03:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbiHVAud (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 21 Aug 2022 20:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
+        id S232210AbiHVBQK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 21 Aug 2022 21:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbiHVAub (ORCPT
+        with ESMTP id S229948AbiHVBQI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 21 Aug 2022 20:50:31 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF608205DD;
-        Sun, 21 Aug 2022 17:50:30 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id br15-20020a056830390f00b0061c9d73b8bdso6740858otb.6;
-        Sun, 21 Aug 2022 17:50:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=ogrq44B5V+KfOIiTvQpD9mPl6lAvLeedqlMou1XN3vg=;
-        b=imRtqRR61gODY5mNCubWjQbIZlKnz23YdkcDLY6Z6rhyC5IzDbGZForV6wONn79325
-         bQT4ReFdV2fbkoDE5H6U+lpoc3gH5RPSv/EySNBODf78BETCKjeP9t7YVCJeXJBP2+gp
-         8n2i2nkguW3jZoncGJZOJh7VS50yxqL4Lf/Y97SeQn1FsaeUFf8rxPcUjCLEh/uBr0pd
-         KNODD/cwzw1326AiHTctIDh+3R7xN6fELEe/j3jr5n48wCjExyE8dsnb9J62Zk9S/bR5
-         Q8WsgK1uOspHsd3bmopp4lUUopP8MtIgNzADVqd8kWz6UXINicTGOnoUB9WN4qCS4yyo
-         3xQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=ogrq44B5V+KfOIiTvQpD9mPl6lAvLeedqlMou1XN3vg=;
-        b=RxZ8c+ohst2kMfVCfz90WMemYczVTpRGGRVrOr7JZIwFyx5RbGiXENrWaN2AELcJvk
-         krc3LPvet8FNbA1OZAtli5zpkEKviyhnVPYiGEZGeYzCIlyb/rooLaY1jtUBsMpAxq/X
-         jrvMxnmEvWW5ihfqUvrzAwjalEvpklA3Fn0bpsnLH1cOUqe9Qid+2ArfU5eVKR7qHTcf
-         5JbVMAWbLJW0XqYONNeIJjK1v9LJvRPXSy5qnsKq/jTWWG8CElkETqd008WYdstk8tlP
-         zbmPwqnuM6nfgZabPQ9TwPosOfgk3kCnnIysV1MReTyjhLI9XG/XWNXwarkWYx9blixV
-         kYYQ==
-X-Gm-Message-State: ACgBeo3dYvn8DR5tFu4cERs5ZIqlP/V/RJ5vPo7OXZwrT5u3HQt4ZglC
-        HT1vflekfxRsn6UwjpqvPFGNL7BS4J+zNVFHh1cHGeTZwSc=
-X-Google-Smtp-Source: AA6agR7Vau4QCq0p7jQtEeqZIcAsHC4o9f3eIBjbmwgzFehSqNErevrrmoaY6C+3ZR+x9AaCp+O04oWqCfRDQuBxiQU=
-X-Received: by 2002:a9d:3e5d:0:b0:639:2702:b9e8 with SMTP id
- h29-20020a9d3e5d000000b006392702b9e8mr1450708otg.337.1661129429822; Sun, 21
- Aug 2022 17:50:29 -0700 (PDT)
+        Sun, 21 Aug 2022 21:16:08 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181D61FCEB;
+        Sun, 21 Aug 2022 18:16:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1661130965;
+        bh=x5pSxYkH1+MKJHQizQrAJ0MWNoO/BUWSG6YS+I3fQCw=;
+        h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+        b=EAcpOnwTymAvyYa1R4afV1u8B5MNrNb/azpV13iHXqqqV7m3eOzH/ch5UY9Qzpl+S
+         T4Psb2VU7eVxGl0h0JEgLgaatRyR0RwHQ96u6yX390qu3SmIgR9+1jsdfdYrS+PHfR
+         Ym8YqsGFRhJfL58HrID2GByckh1zlg8sR5vEHGkQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3DJl-1oTVU10F3N-003d7j; Mon, 22
+ Aug 2022 03:16:05 +0200
+Message-ID: <2d6012e8-805d-4225-80ed-d317c28f1899@gmx.com>
+Date:   Mon, 22 Aug 2022 09:15:59 +0800
 MIME-Version: 1.0
-References: <20220806143436.3501-1-bingjingc@synology.com> <CAL3q7H52=bJj7nGsso0zhD6kYHDtXGhR7FSM=aFkF2wUvtWOSQ@mail.gmail.com>
-In-Reply-To: <CAL3q7H52=bJj7nGsso0zhD6kYHDtXGhR7FSM=aFkF2wUvtWOSQ@mail.gmail.com>
-From:   bingjing chang <bxxxjxxg@gmail.com>
-Date:   Mon, 22 Aug 2022 08:50:18 +0800
-Message-ID: <CAMmgxWE4WQ2hbi_Fn5Zizpux=_R4ezPoi2Xc=+J7btw1pF_umw@mail.gmail.com>
-Subject: Re: [PATCH] fstests: btrfs: test incremental send for changed
- reference paths
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     bingjingc <bingjingc@synology.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        fstests <fstests@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Content-Language: en-US
+To:     stable <stable@vger.kernel.org>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-x86_64@vger.kernel.org
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: LTS kernel Linux 4.14.290 unable to boot with edk2-ovmf (x86_64 UEFI
+ runtime)
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Provags-ID: V03:K1:s6xZ76BCYb4OTJdeDQQ2yV2g8i10/2Ry6601fyssiI0Hd9Z5r2d
+ tJwT0WkUtCSvECZ3ir20Nqd4UpuabJxTvIZ8zoHeWwikZkb2+dHn89UdC8ps3/2tsGEbkBx
+ AbXLiJ8a5Iej21MpyUdWSI0zsNY06ATMCkFDWxL69TA8CiqoFwI0P1QxkQT7MnQRsa2t1zt
+ qWUQXjXEhet3PouG+jutg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:KG6Er7NV+bw=:QDaCbemftEYo5b/eRSq7n8
+ s6On5XJux3PigsetgcTY/zn4pax3prlgKakG4JGFoZDbCBuguJ4K+QQJEXA2FYT1rJTNz9dC0
+ jRtyyBDlqgiwj+J/O/r9g/7Xv/FlXN3KsudLazvf666kP4zJNYf/TNx/6MiMohDQb928fNRI0
+ UxzQGxk4uK/QWdJ7+3izb+X6m55QBtTPDmEvMRfOjMVYt1d3qY3ENJ2FBTAnze6wiAP1WuMJS
+ MFfEqL7fQBFtir7SfKxXgrnEXzirR2CvhxaKyofrADKBzaH3E6Jbdaal+ZlFxZD92ORHnFyEH
+ dCpKHpuNUIH5myyEReR6rjdNif4kWUNdfxF5I85mO0J/XgO8PoqUSGbNhJxn+q1Wbn1oFVmy6
+ qF/QJNRIWoGhVtjzBcsg+Y3XansIkTUpqdjrzFcTipmCCgmNmTIU4ZfrOrsQ7POEccjHeLqzl
+ XgnNct0uS0gnBl6ao1kUSByVwOppCNT05MsDcWGMWwuocL3vuFlU+K7xWonM8wt0H3edGf71w
+ exdRG84tJB3uc/jLpUprVtbwsUMn0pgVoRdh6aHqaqa2EYTL9k6enaeLbJnNmnU4XeSMgbutW
+ JanXCo1bBUEe8W7jScPUWuqR5p0IiCLGuinXuwSUyB3Bmd2mZy1h9gNEa92lDFZokMdv22a02
+ 3VFnMyMrbipZ55CkmIvbwi0R0M2tnfBzmBYyYRKXiHuUE38ADXJANYFzVK0eG+9DN1EXPNwDz
+ OiEBWtDp6WdZ3hQhbFFNr76BO4T/FoVJ8WHEUL1vezMJq3IEIN9u05yQIL27IwPQzLF67ZIXe
+ BdoyLgWtYCDn2LofWPRcxU8CbdAqUQJtdmveF3R/OEqzbq+/bO9xIwn283AuH3qvIqSOtr7kS
+ qzO6yWD/fWMoXR5uJ1K1qFMu9ppvTB+2BfCUtOZnJ4vYhWwII40n4+iZtfuYAA+HMjMgINTz8
+ iY1Dkaq03UtX/H+F8g73IdybtBb8klV+Ql4if+NVCvy9avNsAngokUzjRsutq7AZre6chuOsH
+ N4ryDfd3uHKVudx5Bz3XMECqEifk1t7X3sZJo0XoyGP4XAf3PbSwwVJwDEeeXJPmsM2x0BC9/
+ HbfZM8spbdy0rq/T8G/C6BvW5KbmQ5e2UPI2yGlo1sCuhIguALrPBUWoA==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,188 +72,23 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Filipe,
+Hi,
 
-Thank you for your review comments and the clear example (btrfs/241) for me=
-.
-I've revised and submitted the patch v2 using fssum utility.
+When backporting some btrfs specific patches to all LTS kernels, I found
+v4.14.290 kernel unable to boot as a KVM guest with edk2-ovmf
+(edk2-ovmf: 202205, qemu 7.0.0, libvirt 1:8.6.0).
 
-If there're still problems, please reply to that mail to let me know. Thank=
-s!
+While all other LTS/stable branches (4.19.x, 5.4.x, 5.10.x, 5.15.x,
+5.18.x, 5.19.x) can boot without a hipccup.
 
-Filipe Manana <fdmanana@kernel.org> =E6=96=BC 2022=E5=B9=B48=E6=9C=888=E6=
-=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=885:30=E5=AF=AB=E9=81=93=EF=BC=9A
+I tried the following configs, but none of them can even provide an
+early output:
 
->
-> On Sat, Aug 6, 2022 at 3:35 PM bingjingc <bingjingc@synology.com> wrote:
-> >
-> > From: BingJing Chang <bingjingc@synology.com>
-> >
-> > Normally btrfs stores reference paths in an array of ref items. However=
-,
-> > items for the same parent directory can not exceed the size of a leaf. =
-So
-> > btrfs also store the rest of them in extended ref items alternatively.
-> >
-> > In this test, it creates a large number of links under a directory
-> > causing the reference paths stored in these two ways as the parent
-> > snapshot. And it deletes and recreates just an amount of them that can =
-be
-> > stored within an array of ref items as the send snapshot. Test that an
-> > incremental send operation correctly issues link/unlink operations only
-> > against new/deleted reference paths, or the receive operation will fail
-> > due to a link on an existed path.
-> >
-> > This currently fails on btrfs but is fixed by a kernel patch with the
-> > following subject:
->
-> Thanks for sending the test BingJing!
-> Some comments below.
->
-> >
-> >   "btrfs: send: fix sending link commands for existing file paths"
->
-> Since the patch already landed in Linus' tree last week, the preferred
-> format here is:
->
-> commit 3aa5bd367fa5a3 ("btrfs: send: fix sending link commands for
-> existing file paths")
->
-> >
-> > Signed-off-by: BingJing Chang <bingjingc@synology.com>
-> > ---
-> >  tests/btrfs/272     | 65 +++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/btrfs/272.out |  2 ++
-> >  2 files changed, 67 insertions(+)
-> >  create mode 100755 tests/btrfs/272
-> >  create mode 100644 tests/btrfs/272.out
-> >
-> > diff --git a/tests/btrfs/272 b/tests/btrfs/272
-> > new file mode 100755
-> > index 00000000..a362d943
-> > --- /dev/null
-> > +++ b/tests/btrfs/272
-> > @@ -0,0 +1,65 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (c) 2022 BingJing Chang.
-> > +#
-> > +# FS QA Test No. btrfs/272
-> > +#
-> > +# Regression test for btrfs incremental send issue where a link instru=
-ction
-> > +# is sent against an existed file, causing btrfs receive to fail.
->
-> existed file -> existing path
->
-> > +#
-> > +# This issue is fixed by the following linux kernel btrfs patch:
-> > +#
-> > +#   btrfs: send: fix sending link commands for existing file paths
->
-> Same here.
->
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto quick send
-> > +
-> > +tmp=3D`mktemp -d`
->
-> Overriding $tmp, which is set by the fstests framework is not a good idea=
-.
-> It's expected to be a file and not a directory.
->
-> If you need a directory to store temporary files, you can use the test de=
-vice.
-> Take a look at btrfs/241 for example.
->
-> > +
-> > +# Override the default cleanup function.
-> > +_cleanup()
-> > +{
-> > +       rm -rf $tmp
->
-> Then here leave the standard "rm -f $tmp.*" followed by a rm -rf of
-> the temporary directory in the test mount point.
->
-> > +}
-> > +
-> > +# Import common functions.
-> > +. ./common/filter
-> > +
-> > +# real QA test starts here
-> > +_supported_fs btrfs
-> > +_require_test
-> > +_require_scratch
-> > +
-> > +_scratch_mkfs > /dev/null 2>&1
-> > +_scratch_mount
-> > +
-> > +_run_btrfs_util_prog subvolume create $SCRATCH_MNT/vol
-> > +
-> > +# create a file and 2000 hard links to the same inode
-> > +touch $SCRATCH_MNT/vol/foo
-> > +for i in {1..2000}; do
-> > +       link $SCRATCH_MNT/vol/foo $SCRATCH_MNT/vol/$i
-> > +done
-> > +
-> > +# take a snapshot for a parent snapshot
->
-> "take a snapshot for a full send operation"
->
-> > +_run_btrfs_util_prog subvolume snapshot -r $SCRATCH_MNT/vol $SCRATCH_M=
-NT/snap1
-> > +
-> > +# remove 2000 hard links and re-create the last 1000 links
-> > +for i in {1..2000}; do
-> > +       rm $SCRATCH_MNT/vol/$i
-> > +done
-> > +for i in {1001..2000}; do
-> > +       link $SCRATCH_MNT/vol/foo $SCRATCH_MNT/vol/$i
-> > +done
-> > +
-> > +# take another one for a send snapshot
->
-> "take a snapshot for an incremental send operation"
->
-> > +_run_btrfs_util_prog subvolume snapshot -r $SCRATCH_MNT/vol $SCRATCH_M=
-NT/snap2
-> > +
-> > +mkdir $SCRATCH_MNT/receive_dir
-> > +_run_btrfs_util_prog send -p $SCRATCH_MNT/snap1 -f $tmp/diff.snap \
-> > +       $SCRATCH_MNT/snap2
-> > +_run_btrfs_util_prog receive -f $tmp/diff.snap $SCRATCH_MNT/receive_di=
-r
-> > +_scratch_unmount
->
-> Btw, there's no need to call _scratch_unmount, the fstests framework
-> automatically does that when the test finishes.
->
-> So, this tests that the send and receive commands do not fail.
->
-> However it does not test that they produce the correct results: that
-> after the receive we have the file with the same hardlinks, mtime,
-> ctime, etc, as in the original subvolume.
-> For send/receive tests (well, most tests actually), we always want to
-> verify that the operations produce the expected results, not just that
-> they don't fail with an error.
->
-> The fssum utility can be used here to verify that, and we use it in
-> many send/receive tests like btrfs/241 for example.
->
-> Thanks for doing this!
->
-> > +
-> > +echo "Silence is golden"
-> > +status=3D0 ; exit
-> > diff --git a/tests/btrfs/272.out b/tests/btrfs/272.out
-> > new file mode 100644
-> > index 00000000..c18563ad
-> > --- /dev/null
-> > +++ b/tests/btrfs/272.out
-> > @@ -0,0 +1,2 @@
-> > +QA output created by 272
-> > +Silence is golden
-> > --
-> > 2.37.1
-> >
+- CONFIG_X86_VERBOSE_BOOTUP
+- CONFIG_EARLY_PRINTK
+- CONFIG_EARLY_PRINTK_EFI
+
+Is this a known bug or something new?
+
+Thanks,
+Qu
