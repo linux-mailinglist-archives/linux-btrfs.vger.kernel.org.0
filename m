@@ -2,135 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF8A59BF3E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 14:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D5959BFD8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 14:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234946AbiHVMHd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Aug 2022 08:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45818 "EHLO
+        id S233758AbiHVMzS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Aug 2022 08:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234933AbiHVMGo (ORCPT
+        with ESMTP id S232195AbiHVMzQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Aug 2022 08:06:44 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5143055F;
-        Mon, 22 Aug 2022 05:06:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1661169980;
-        bh=hhrfKulgIvWnC29k0lTd5flxmJIeXghHePCBFVX3MSg=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=fy/jpVlBlBOE+JOCKZSCQfmVJf3HF8iochCZcjb53yOfQqDy+X4au1l9yG/WTsK07
-         l3d5WCgA20hCqWxh4W+VpUulwweDWZ1JswcIBsrhiZB8OTMqts9OZXtzxVz8+IZgCl
-         ViIj8rtP3KrJZ3Q9inU4zF8d11oa7qnqQ7a/Q+04=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M9nxt-1oVJFu464b-005p3D; Mon, 22
- Aug 2022 14:06:20 +0200
-Message-ID: <c150cfb1-f719-6cd5-41ca-ca6ca23a4792@gmx.com>
-Date:   Mon, 22 Aug 2022 20:06:15 +0800
+        Mon, 22 Aug 2022 08:55:16 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B543DF04;
+        Mon, 22 Aug 2022 05:55:15 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DE8471FFF2;
+        Mon, 22 Aug 2022 12:55:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1661172913;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4SzcUY4wM0IXoQYYr0JNf2r1R0fFfPlNFUy34e5If4s=;
+        b=0eF+FdzKTdIZYIRmNlgikotnAvs5WjAaJTS0+VI4Lgfnwfts78NgYmqXtZFyLW8n2irnaz
+        LusDtaiD7hi4BM0+KbcvNlzcL9G0IcEy4H8XHeSMOKkD3VqhVt9s/W1EAFTxrSP1neufWt
+        6pTQ0bCKIJpgHTZZkZzUrPDvQu5BD9k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1661172913;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4SzcUY4wM0IXoQYYr0JNf2r1R0fFfPlNFUy34e5If4s=;
+        b=Ptz/Y/YBe66zfDODfdurNrRJN9xTupzRtUn6Oty7OeI6oIUs7AKsqahu1qVr4NA48kFUXU
+        HJwz8oWJ2cZErAAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF13E1332D;
+        Mon, 22 Aug 2022 12:55:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5kB1KbF8A2PcVAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 22 Aug 2022 12:55:13 +0000
+Date:   Mon, 22 Aug 2022 14:50:00 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Boris Burkov <boris@bur.io>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH v4] btrfs: send: add support for fs-verity
+Message-ID: <20220822125000.GU13489@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fscrypt@vger.kernel.org
+References: <0561e8a33f991fa15053054b7b089d176fde6523.1660596577.git.boris@bur.io>
+ <20220818173254.GN13489@twin.jikos.cz>
+ <Yv6JvbDZDL/5/7Y6@zen>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Content-Language: en-US
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        stable <stable@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-x86_64@vger.kernel.org
-References: <2d6012e8-805d-4225-80ed-d317c28f1899@gmx.com>
- <YwMhXX6OhROLZ/LR@kroah.com> <1ed5a33a-b667-0e8e-e010-b4365f3713d6@gmx.com>
- <YwMxRAfrrsPE6sNI@kroah.com> <8aff5c17-d414-2412-7269-c9d15f574037@gmx.com>
- <YwM3DwvPIGkfE4Tu@kroah.com> <acc6051b-748f-4f06-63b3-919eb831217c@gmx.com>
- <YwNFxIouYoRo/wT+@kroah.com> <34793a7b-64e4-f1cb-b84e-5804b4f6fac3@gmx.com>
- <20220822115811.GE17080@1wt.eu>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: LTS kernel Linux 4.14.290 unable to boot with edk2-ovmf (x86_64
- UEFI runtime)
-In-Reply-To: <20220822115811.GE17080@1wt.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NsbTg2Iway9vOeR2iqUbct9/YeyiOtQeRSeYJm5cw0TQCp6poRZ
- oQC7O7aVqzYsu6sC7gn2sKx1o0vjKKfp1PIZsbACJ1yvmER+GwfAmU+MzHl37Eft3o7w16F
- NRVCUaTBOkCfP6uFcp8y6r0da/BzTI8sU0aiHH80buVxXfjidOO5zw1vmhEF/3vxoFxxZVv
- oIMZFbD9Qm61NDItjHPrA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Q9ilmBReL2I=:C5smlabipydkaMl6KC6s7r
- k5Xe1Znp05bOz+gZUtOKRIbY2eQEAqcFpEJYjSwSmdRqp5Z7Kq8i5CZKHaqj2nhx14zKMb59G
- mLXgbwL5dnt12043384QA/Du9FuCadN1Vx+9QbnROVhivm5AYGfFIJA4e3fRva0IMQcEOeo4e
- 3o9UFoE4rIhBQD7KvmzhPBbdnTqMhKg/Fq+IXhuspj4XDFa2imV/hyfvfs0CtT/98K0fAgPzI
- 63EQazp8k8rVLXZM9vMwyxG/VeilxfDFqkhaQj6PI5L/7vcRKq8g3ngtAjlNxTUiNGDguOcV0
- 5+xr1LTyubVDK8KDoO8VnryI/Rgw3lFDMKTpoL/vRrQC5zRXps29S+cKZLoF+eszWJELEh+ii
- uoBo7yBWf0eHPpsSSHf19nxVwI2UN72kbBybauXvtr9trGM3bvuUggugdQsU+QKXYVVhRlhm2
- 3mM8UEfl840eBjSD21CiG4Q7OYrnp3lXjfJ0/TUELC6P54Fnb95njN7Oo6A+FDdVs+IMtaKp/
- HQ6i9WlrkzUdG64VMrUA5LtXXIMAe7eK+G7HHxin280JQulggxWwckAFUnVsAjicuVpisihND
- Rv3XcKxyJsYDsZ2uYH/1wt+iyuk/Qmoanaaf/n7BPb/yAuG2x7UxZnGmBy7BZsrpsznuGDkx8
- g8TeCyiJxDtSCTbY71+YyQaLvKiCmnhpd/Q9D/FpSI3AJkJXh05+9F3IAXgFlWdwtmLRRf875
- aF2tlxJaQm9dWiFTVl+CoVpZIZy/lV9BvZjkAr5cJ/k77twBxkQPhlKi4nhqvhAJKNkZHuhPJ
- RN6HQkFzgxkJ6xrTc/8Z6d230OF5+P8v0iHHGsViSneiXNlMRZh80ugpzrduKQ+IYg8ITM9f9
- x8cyP9iuFjC/F86pCTZWm5ft3iuE4/rh+y51YDbb1cubbNxUEkboaZ6C7Q14hIEpOVVH3voNY
- o6QKuJDaEK3UyeKZnM1SDemq0Il+uDpr/ri8MnRrC2/IKKTwx1ooYVw35Rx/StiK5petuxzmR
- zH4Dza6eTPRhzcSrpJRFoCqvsXMwuW0oQOfV4NNafqsqNc4kYUu0MpNJ/OK2QiurbMYlvX9t/
- K29agjHtv1vTV/s917uvq0bUSCGkSF7fNu5DNXOSBayTLfvV9BpMzqHRg==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yv6JvbDZDL/5/7Y6@zen>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Aug 18, 2022 at 11:49:33AM -0700, Boris Burkov wrote:
+> On Thu, Aug 18, 2022 at 07:32:54PM +0200, David Sterba wrote:
+> > On Mon, Aug 15, 2022 at 01:54:28PM -0700, Boris Burkov wrote:
+> > > Preserve the fs-verity status of a btrfs file across send/recv.
+> > > 
+> > > There is no facility for installing the Merkle tree contents directly on
+> > > the receiving filesystem, so we package up the parameters used to enable
+> > > verity found in the verity descriptor. This gives the receive side
+> > > enough information to properly enable verity again. Note that this means
+> > > that receive will have to re-compute the whole Merkle tree, similar to
+> > > how compression worked before encoded_write.
+> > > 
+> > > Since the file becomes read-only after verity is enabled, it is
+> > > important that verity is added to the send stream after any file writes.
+> > > Therefore, when we process a verity item, merely note that it happened,
+> > > then actually create the command in the send stream during
+> > > 'finish_inode_if_needed'.
+> > > 
+> > > This also creates V3 of the send stream format, without any format
+> > > changes besides adding the new commands and attributes.
+> > > 
+> > > Signed-off-by: Boris Burkov <boris@bur.io>
+> > 
+> > As for the merge target, a realistic one seems to be 6.2, we have too
+> > many pending patches everywhere else. There's a todo list for v3 that
+> > I'd really like to get done.
+> > 
+> > To be able to test things incrementally until then we can add v3 support
+> > under debug config.
+> 
+> That all sounds good and reasonable to me. Would you like me to re-send
+> with gating V3 behind debug, or will you do it as part of taking it?
 
+Please send a separate patch for that.
 
-On 2022/8/22 19:58, Willy Tarreau wrote:
-> On Mon, Aug 22, 2022 at 07:43:18PM +0800, Qu Wenruo wrote:
->> Tried to compile gcc10 from AUR, which failed to compile.
->>
->>
->> Anyway, thanks to the advice from Willy, I got the pre-built crosstool
->> (gcc 7.5) set up, with some small tweaks like disabling
->> CONFIG_RANDOMIZE_BASE to workaround the RELOCS failure, it at least
->> compiles for v4.14.0.
->>
->> Although there is still warning from test_gen_len:
->>
->>   Warning: ffffffff818158cc:	0f ff e9             	ud0    %ecx,%ebp
->>   Warning: objdump says 3 bytes, but insn_get_length() says 2
->>   Warning: arch/x86/tools/test_get_len found difference at
->> <cpu_idle_poll>:ffffffff818159b0
->
-> Strange, sounds like a binutils issue though I could be wrong.
+> Also, this just popped in my head, but could we acheive what we want
+> with the "--proto" feature of the send CLI, and having a notion of a
+> provisional version that is not yet hardened and properly named/fixed
+> for future compatibility? For extra fanciness, we can do sub-versions
+> or hashes of the commands or something. Maybe proto=(u64)-1 means
+> experimental.
 
-I'm using CROSS_COMPILE=3D option, which should cover the objdump from the
-prebuilt "x86_64-linux-objdump" from that precompiled 7.5 crosstool.
-
->
->> And unfortunately v4.14 still fails to boot, even with GCC 7.5, which
->> provides an almost perfect (except above wanrings) build.
->>
->> I also tried to reduce the CPUid, from host-passthru to qemu64, and
->> rebuild, no change (same test_get_len wanrings, same boot failure).
->>
->> No clue at all now, would try older debian in a VM then.
->
-> I suggest that instead of switching distros you should rather first
-> try 4.14.0 to verify if there was a regression affecting your system.
-
-Already tried, the v4.14 above really means v4.14.0 (aka v4.14 tag
-directly from upstream, not from stable).
-
-And the latest v4.14.290 can not boot neither, even rebuilt using that
-toolchain.
-
-> And if so, then a bisect will certainly be welcome. If it still does
-> not work, then maybe a different distro could help, though I doubt it.
-
-Will try debian for now, or even try some older hardware if I could find..=
-.
-
-Thanks,
-Qu
-
->
-> Willy
+This could be usefor for some cases but I think not for the protocol,
+the version is linear and we want to batch the changes into one
+version. Othewise it creates dependency and configuration
+complications, and users don't always listen to the "this is still
+experimental" should it be meant to be outside of the debug build.
