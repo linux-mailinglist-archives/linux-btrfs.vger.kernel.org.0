@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3254C59BDE5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 12:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB6B59BDE4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 12:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbiHVKv5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S233773AbiHVKv5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 22 Aug 2022 06:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233747AbiHVKvx (ORCPT
+        with ESMTP id S233679AbiHVKvw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Aug 2022 06:51:53 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 811C13121A
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 03:51:52 -0700 (PDT)
+        Mon, 22 Aug 2022 06:51:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD8C2F671
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 03:51:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3DF6CB81015
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A1B960FDE
         for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 10:51:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8077DC433D7
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 10:51:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ED73C433D6
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 10:51:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1661165510;
-        bh=xMMo1GFYJ7m6Lbnm9+ridGF3gHkC/kuAQUkyT8oNIWs=;
+        bh=mbx+WQp/WDRHPgNuv/DepEccXVahMV+YyevwAR9Pw6k=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Yf8o6M6OjjnVv8apD7QGmjBlc83MsX4Nbp9ymYu8jaLjrkqeOmVvHEODrcqjbgTMl
-         2A7TAq78pdeTfWPxGBfkevZJsOip++TDlEw3hSgR3rNCqEne61YlSYy2EyiU9MCM39
-         DXPXw/lILv9kkCOTVaVJMgqwkFon/QUexC5DBJy1hIh8MAmrS7G9cko2z8I/vnmsbT
-         +lEv1km/DX+pd87wE0iZeutgJVL4JjjfI4y8CHYrJP8jqQnwkiB5AYuIIeQQUAZ9hp
-         gAsWwd93MiSp968I8sg9eaGUpZIqDAe18WFQjsJIDo2AhtDBy9Wt55rqdJRJgttPjX
-         U/euWVV1ymIJg==
+        b=RFiYsQSnheOZRtbFui8FprLExFCyFcjFktFKIvKjgGAesEYkBewa9ly0vAvUcd7V0
+         hi/kPDdjAbOd7bzyb86VEdrKu+OK7ZU+s+4RNMByz1brVeZDQ//sB455lzZ21mZzqI
+         m2G+zoAjD1CMMiwYhe6Gr3WtrOcdTTpLyI0Y9bL6Zyn+VSab0Kg/PxX9Nf47+SQAY4
+         8A1n9nOfq4/Mz8RUOu3b05hDqlaY8KrlIdbDh1y0khhD18kXTBNFB0n35H9iB/+UrG
+         6zJHYdeel/sbFgNpoDcGyQFdmEcrk3IcFr3zL/0b3AWjNZsNglTJEcgCEQEsqFap2/
+         Q14+OW054KNnQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 02/15] btrfs: remove the root argument from log_new_dir_dentries()
-Date:   Mon, 22 Aug 2022 11:51:31 +0100
-Message-Id: <3696e99984ac2a21e57bfc2cfe75b8bf7c282b09.1661165149.git.fdmanana@suse.com>
+Subject: [PATCH v2 03/15] btrfs: update stale comment for log_new_dir_dentries()
+Date:   Mon, 22 Aug 2022 11:51:32 +0100
+Message-Id: <c6d19e12d63731ab5772f26a5c68b7796c3ff331.1661165149.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1661165149.git.fdmanana@suse.com>
 References: <cover.1661165149.git.fdmanana@suse.com>
@@ -54,49 +54,50 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-There's no point in passing a root argument to log_new_dir_dentries()
-because it always corresponds to the root of the given inode. So remove
-it and extract the root from the given inode.
+The comment refers to the function log_dir_items() in order to check why
+the inodes of new directory entries need to be logged, but the relevant
+comments are no longer at log_dir_items(), they were moved to the function
+process_dir_items_leaf() in commit eb10d85ee77f09 ("btrfs: factor out the
+copying loop of dir items from log_dir_items()"). So update it with the
+current function name.
+
+Also remove references with i_mutex to "VFS lock", since the inode lock
+is no longer a mutex since 2016 (it's now a rw semaphore).
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/btrfs/tree-log.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index cffd15e23614..56fbd3b9f642 100644
+index 56fbd3b9f642..9625707bfa8a 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -5969,10 +5969,10 @@ struct btrfs_dir_list {
-  *    do_overwrite_item()).
-  */
- static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
--				struct btrfs_root *root,
- 				struct btrfs_inode *start_inode,
- 				struct btrfs_log_ctx *ctx)
- {
-+	struct btrfs_root *root = start_inode->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_path *path;
- 	LIST_HEAD(dir_list);
-@@ -6199,7 +6199,7 @@ static int btrfs_log_all_parents(struct btrfs_trans_handle *trans,
- 			ret = btrfs_log_inode(trans, BTRFS_I(dir_inode),
- 					      LOG_INODE_ALL, ctx);
- 			if (!ret && ctx->log_new_dentries)
--				ret = log_new_dir_dentries(trans, root,
-+				ret = log_new_dir_dentries(trans,
- 						   BTRFS_I(dir_inode), ctx);
- 			btrfs_add_delayed_iput(dir_inode);
- 			if (ret)
-@@ -6514,7 +6514,7 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
- 		goto end_trans;
+@@ -5933,12 +5933,12 @@ struct btrfs_dir_list {
+ };
  
- 	if (log_dentries)
--		ret = log_new_dir_dentries(trans, root, inode, ctx);
-+		ret = log_new_dir_dentries(trans, inode, ctx);
- 	else
- 		ret = 0;
- end_trans:
+ /*
+- * Log the inodes of the new dentries of a directory. See log_dir_items() for
+- * details about the why it is needed.
++ * Log the inodes of the new dentries of a directory.
++ * See process_dir_items_leaf() for details about why it is needed.
+  * This is a recursive operation - if an existing dentry corresponds to a
+  * directory, that directory's new entries are logged too (same behaviour as
+  * ext3/4, xfs, f2fs, reiserfs, nilfs2). Note that when logging the inodes
+- * the dentries point to we do not lock their i_mutex, otherwise lockdep
++ * the dentries point to we do not acquire their VFS lock, otherwise lockdep
+  * complains about the following circular lock dependency / possible deadlock:
+  *
+  *        CPU0                                        CPU1
+@@ -5950,7 +5950,7 @@ struct btrfs_dir_list {
+  *
+  * Where sb_internal is the lock (a counter that works as a lock) acquired by
+  * sb_start_intwrite() in btrfs_start_transaction().
+- * Not locking i_mutex of the inodes is still safe because:
++ * Not acquiring the VFS lock of the inodes is still safe because:
+  *
+  * 1) For regular files we log with a mode of LOG_INODE_EXISTS. It's possible
+  *    that while logging the inode new references (names) are added or removed
 -- 
 2.35.1
 
