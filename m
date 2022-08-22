@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 420F659B838
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 06:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C725F59B900
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 08:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbiHVEJP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Aug 2022 00:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
+        id S232280AbiHVGHa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Aug 2022 02:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232429AbiHVEJP (ORCPT
+        with ESMTP id S229840AbiHVGH3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Aug 2022 00:09:15 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B7E1182B
-        for <linux-btrfs@vger.kernel.org>; Sun, 21 Aug 2022 21:09:13 -0700 (PDT)
+        Mon, 22 Aug 2022 02:07:29 -0400
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFFC20BD6;
+        Sun, 21 Aug 2022 23:07:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1661141353; x=1692677353;
+  t=1661148448; x=1692684448;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=pNTnsxqGR73TaP9dAchMGXEFgi2HxJ9zCEbvX4mnuiY=;
-  b=hPtdJffQYB5GfJOFUEE30lVcb5ENvEBvA8ZQwHZTu5ql84pmHh7HVDyw
-   ohUu2bOatuQB4F5/MeZP/l5t8i8W1XwHwKCgK7JevVTFbdHRGgyMJS1cH
-   8zz/M0Hi9fZcSd2h91Ewd68W6aMhiX73e14FbGBfoE1GA7LzQgG0BZKK0
-   uM892iU6OtrAHNGNKOjW4HJUwatdwG7Pj6zIW76dx23DitaPBy4gMzCjs
-   NmXT25nEUDwWLzbstN5Dhs7N8RhwRnvzcj0m0qpHAz/BJqLVcaatUEwOb
-   XFqcl5H0Rn/OQmI46op7uULpN9Od7ekIJ6ZdHLrkcWy47krue4RNyaefS
+  bh=GUuSyLB9RAxe6gl0cgCTwUI/qzd/Th5hOKBPDk0zlfM=;
+  b=Uop8mjH3Bm/vazq3D5PHofroYaw1THjZR+iZIwKbkBHm2aoAYXrRLYv9
+   nc3ixVYcB7dtvT0BuTO3DByqLr4mj4YfBathobqf0tZlKCcs0OSPw3jsf
+   p0IAIlFAwR0WE+bkZcUWDc+hJs6kEegJraPaGDCop2N9e1iIWDVlIVvst
+   UQKssxKYcuRxb4/T78wnNxxCK53BODOJB6bOJwfyEIaa9KP8Um+4r8vtv
+   C8CqssSXcOyp52hWH43PccZoB+69AZ28IQHkCrOqI38Bc38JKygAB2RJ1
+   anJzVlwVd5+C4cqqTtw8HxENU8sX6ff4M+YPteA6NHrMAv5YSBGmL5j8D
    A==;
 X-IronPort-AV: E=Sophos;i="5.93,254,1654531200"; 
-   d="scan'208";a="313568403"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 22 Aug 2022 12:09:12 +0800
-IronPort-SDR: HoWlckh8Ko4bUwq6jLAf4cEYMf8Jk7/YWFxf0XZZt9BO732oYXvqk29rQP5jTfHq8/xxMdrxgs
- x5su+5qToQ76QiwcShKfwAuv/G58srPl4TFs3EgCWfRcL1kgv7Uy9q7Np+rbTF22NGJD3ldtVR
- thuVs8RPENeuMN388/BIZbACjji2MtJ9A1hoo7RspIjXavk974UVM89TFZ/yuI1fi0orcxeGCz
- Els4t+CRCFuaYKac90FFiLXKnZ3uEBcSsgYc3JMO0oWph7PNMb1O6h8pQ7SYy8W4m5qhqpJgkq
- 2AnjSg6RRh9DA2ME+Ez0U24i
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Aug 2022 20:29:54 -0700
-IronPort-SDR: VpUdOeUKx4xHZN9WyLvCZS2KxihC9uIiclmYaLFCWvowqkFTnxEVyyZbtyCuonbIVvGQgZ5zBi
- 9/S6y4JmiSRJMkCD/tZMzRRCYdAmZXqCS8sRkuLShMnqFComsIClAqzyOj0DAofp9aVQstKD0+
- rG/ENO7elBH7jLjUu2AiGRJty7uhZHQmI4hdVDVrWGIDEK/QuUPD6hiSdUm2FvA8jADeXV9H/F
- j7Ok2N2IaqXo/e+6PWNlraz2m/m4znGIHABCJ9h4SdBOIIvEV+0a/UGMH0qUImLUZDeoyPdCu0
- xWY=
+   d="scan'208";a="321397067"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Aug 2022 14:07:27 +0800
+IronPort-SDR: 6KODIXRnUea+zsPIwxLXBBNZqiOtW+m9mwBT9v+KZAjuccx1cQ6Z1L3uBwAgl2fr/xFZPwg9nR
+ 3fo+nmmTLQAIqRI93o4uCIMbZxOosLK8iyQzFgY7UYkm0o9qgfkA9fJVa1pEY2/HfTv98K0Ag1
+ MGfiX75a8hN937UUHSnj1Uec+fMJRyho/CPl90xKUYt57Y6ClEwMHVV0Ygg5cGcmaV+bbTPHze
+ 08IoWv7TiaKVmSmKMM6hosEiD4Ht8QeJWEMnsKWXH68VlCIo1wgTLMjTVn+FP+tua7q7kYUXR+
+ sf6c/qZm3HM5gjE405ticCIx
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Aug 2022 22:28:09 -0700
+IronPort-SDR: CGXKaHPCxhDOpVcn+GIrlR/MWZGU7aMUcXU1ylo3j75Vduqpv0mRhDsRwBptMCmO9jqbXKzEcU
+ A6g21Oz1SPQaExqccyKBQP/2WL0pvNEtjc4BwsSpqoaA7jKe6CfiXbRy2YwNGn5s3O/I2KQwnv
+ WNfSeML9z7tFA4biQ30vb3PR6JXgO2mWfgRpr04FY4sgg2TT1FI0+wVhBlgCvXTdVH0BHcLKfP
+ xRJOCFGHS/aKq9YxytkYlHd4gEfWxTlE+u1tOJnQLJPXb6Fpdro8ml8qOuohhLoEpjRWNyshxI
+ NFQ=
 WDCIronportException: Internal
 Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.50.191])
-  by uls-op-cesaip01.wdc.com with ESMTP; 21 Aug 2022 21:09:11 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 21 Aug 2022 23:07:26 -0700
 From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org
+To:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
 Cc:     Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: zoned: revert mistakenly removed space accounting
-Date:   Mon, 22 Aug 2022 13:08:40 +0900
-Message-Id: <20220822040840.614891-1-naohiro.aota@wdc.com>
+Subject: [PATCH STABLE 5.15 0/5] btrfs: zoned: backport max_extent_size fix
+Date:   Mon, 22 Aug 2022 15:06:59 +0900
+Message-Id: <20220822060704.1278361-1-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,28 +66,34 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The commit ee1cd63d10a8 ("btrfs: convert block group bit field to use bit
-helpers") removed an accounting of space_info->active_total_bytes, maybe by
-mistake. Revert it back to make the active zone tracking properly work
-again.
+These patches are backport for the 5.15 branch.
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/zoned.c | 1 +
- 1 file changed, 1 insertion(+)
+This series backports fixes for expecting the number of on-going write
+extents on zoned mode.
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 61ae58c3a354..0043c09667c0 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1893,6 +1893,7 @@ bool btrfs_zone_activate(struct btrfs_block_group *block_group)
- 
- 	/* Successfully activated all the zones */
- 	set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &block_group->runtime_flags);
-+	space_info->active_total_bytes += block_group->length;
- 	spin_unlock(&block_group->lock);
- 	btrfs_try_granting_tickets(fs_info, space_info);
- 	spin_unlock(&space_info->lock);
+It picks up patches 1 to 3 for the dependencies of patches 4 and 5.
+
+Christoph Hellwig (1):
+  block: add a bdev_max_zone_append_sectors helper
+
+Naohiro Aota (4):
+  block: add bdev_max_segments() helper
+  btrfs: zoned: revive max_zone_append_bytes
+  btrfs: replace BTRFS_MAX_EXTENT_SIZE with fs_info->max_extent_size
+  btrfs: convert count_max_extents() to use fs_info->max_extent_size
+
+ drivers/nvme/target/zns.c |  3 +--
+ fs/btrfs/ctree.h          | 29 +++++++++++++++++++++--------
+ fs/btrfs/delalloc-space.c |  6 +++---
+ fs/btrfs/disk-io.c        |  2 ++
+ fs/btrfs/extent_io.c      |  4 +++-
+ fs/btrfs/inode.c          | 22 ++++++++++++----------
+ fs/btrfs/zoned.c          | 20 ++++++++++++++++++++
+ fs/btrfs/zoned.h          |  1 +
+ fs/zonefs/super.c         |  3 +--
+ include/linux/blkdev.h    | 11 +++++++++++
+ 10 files changed, 75 insertions(+), 26 deletions(-)
+
 -- 
 2.37.2
 
