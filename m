@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B0A59BDE3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 12:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1906A59BDE8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Aug 2022 12:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbiHVKwJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Aug 2022 06:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43554 "EHLO
+        id S233908AbiHVKwG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Aug 2022 06:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233905AbiHVKwF (ORCPT
+        with ESMTP id S233861AbiHVKwD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Aug 2022 06:52:05 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545CD2F659
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 03:52:03 -0700 (PDT)
+        Mon, 22 Aug 2022 06:52:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B4D31235
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 03:52:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C057DB81032
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F19D460FFD
         for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 10:52:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD339C433D6
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 10:51:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7619C433C1
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Aug 2022 10:52:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661165520;
-        bh=kN0AUxGZV4caTuK9Myv1uhh0Ec+kY5LoJvnsQuRQiXU=;
+        s=k20201202; t=1661165521;
+        bh=rVW89q5X2SO9ZTLTOPhpkD204k/lCf1NNo/8aIU8Z9E=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=et27sOzrEr7OJo8/qG7OQD4s7ts3K9Uhll+pTkyNamc6dv4flp2E1+Dk7L9Y4au23
-         C2YNrZB3tw12tk62Cf6xRnb+EF5zaDuzGR2HDRXiBHiaU45WjSi71OByQRI5nBYQI1
-         +DWWNdPWgoxjvrQpB3UeJzGrTZHbEWOdxIuayULyV14xfHOW5e63w1d/GO9aR6WaA+
-         XLgsP8D1n6p33hSTUd8VFBZcolpSFKezWmgF8R4fjMdNeWC9YMyE5/FsLmb0AujT+7
-         KS3vg/nuNqMOCCYeOh4bXKziIyP4YwPxDqXDgSmZriRBgzJM6emIQiVdz4x1PWOBTv
-         k4SMSdVokBylg==
+        b=nNsf31WCCjN9C5LDRw1SkfRkIRRTPSUVxm40h3NiY6IEIOHUACuRucOA8Fc2kssXF
+         FT8mCaFsBp8du5FXZmMnfBc85JYXOcC56RI9DC2M8+ebAIXAQ83779EfuFxvAB8+FI
+         PzoShsjBq6YnHRsO130O0und6aV/9PJ9/X+TeFeW+qkZ/cOpzTnmN08lK9NAZ0n0GW
+         8p4YbMy+fZkaf9ew7m4E5CnNk5abVvyR2Ap2pzZF+ZFdBCIfP4ln0TWvFLae6NPLzi
+         7GgVIA3bVyZ1J+DQIkCc9r9/m7XCOUZSb9I/nj036DVv5NGpy7QHNUTh61mNG1ozp4
+         w1LwfBhbF6QYA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 13/15] btrfs: log conflicting inodes without holding log mutex of the initial inode
-Date:   Mon, 22 Aug 2022 11:51:42 +0100
-Message-Id: <6703074a297ec70d7231b0f778dd2fac6045f03a.1661165149.git.fdmanana@suse.com>
+Subject: [PATCH v2 14/15] btrfs: skip logging parent dir when conflicting inode is not a dir
+Date:   Mon, 22 Aug 2022 11:51:43 +0100
+Message-Id: <9c7aee375e478950b23238a26a2a6a719c4a3db7.1661165149.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1661165149.git.fdmanana@suse.com>
 References: <cover.1661165149.git.fdmanana@suse.com>
@@ -54,553 +54,155 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When logging an inode, if we detect the inode has a reference that
-conflicts with some other inode that got renamed, we log that other inode
-while holding the log mutex of the current inode. We then find out if
-there are other inodes that conflict with the first conflicting inode,
-and log them while under the log mutex of the original inode. This is
-fine because the recursion can only happen once.
+When we find a conflicting inode (an inode that had the same name and
+parent directory as the inode we are logging now) that was deleted in the
+current transaction, we always end up logging its parent directory.
 
-For the upcoming work where we directly log delayed items without flushing
-them first to the subvolume tree, this recursion adds a lot of complexity
-and it's hard to keep lockdep happy about it.
+This is to deal with the case where the conflicting inode corresponds to
+a deleted subvolume/snapshot or a directory that had subvolumes/snapshots
+(or some subdirectory inside it had subvolumes/snapshots, etc), because
+we can't deal with dropping subvolumes/snapshots during log replay. So
+if we log the parent directory, and if we are dealing with these special
+cases, then we fallback to a transaction commit when logging the parent,
+because its last_unlink_trans will match the current transaction (which
+gets set and propagated when a subvolume/snapshot is deleted).
 
-So collect a list of conflicting inodes and then log the inodes after
-unlocking the log mutex of the inode we started with.
+This change skips the logging of the parent directory when the conflicting
+inode is not a directory (or a subvolume/snapshot). This is ok because in
+this case logging the current inode is enough to trigger an unlink of the
+conflicting inode during log replay.
 
-Also limit the maximum number of conflict inodes we log to 10, to avoid
-spending too much time logging (and maybe allocating too many list
-elements too), as typically we don't have more than 1 or 2 conflicting
-inodes - if we go over the limit, simply fallback to a transaction commit.
+So for a case like this:
 
-It is possible to have a very long list of conflicting inodes to be
-intentionally created by a user if he/she creates a very long succession
-of renames like this:
+  $ mkdir /mnt/dir
+  $ echo -n "first foo data" > /mnt/dir/foo
 
-  (...)
-  rename E to F
-  rename D to E
-  rename C to D
-  rename B to C
-  rename A to B
-  touch A (create a new file named A)
-  fsync A
+  $ sync
 
-If that happened for a sequence of hundreds or thousands of renames, it
-could massively slow down the logging and cause other secondary effects
-like for example blocking other fsync operations and transaction commits
-for a very long time (assuming it wouldn't run into -ENOSPC or -ENOMEM
-first). However such cases are very uncommon to happen in practice,
-nevertheless it's better to be prepared for them and avoid chaos.
-Such long sequence of conflicting inodes could be created before this
-change.
+  $ rm -f /mnt/dir/foo
+  $ echo -n "second foo data" > /mnt/dir/foo
+  $ xfs_io -c "fsync" /mnt/dir/foo
+
+We avoid logging parent directory "dir" when logging the new file "foo".
+In other cases it avoids falling back to a transaction commit, when the
+parent directory has a last_unlink_trans value that matches the current
+transaction, due to moving a file from it to some other directory.
+
+This is a case that happens frequently with dbench for example, where a
+new file that has the name/parent of another file that was deleted in the
+current transaction, is fsynced.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/file.c     |   1 +
- fs/btrfs/tree-log.c | 341 ++++++++++++++++++++++++--------------------
- fs/btrfs/tree-log.h |   6 +
- 3 files changed, 196 insertions(+), 152 deletions(-)
+ fs/btrfs/tree-log.c | 72 ++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 62 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 14466b99863b..9b693d780431 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2397,6 +2397,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	ret = btrfs_commit_transaction(trans);
- out:
- 	ASSERT(list_empty(&ctx.list));
-+	ASSERT(list_empty(&ctx.conflict_inodes));
- 	err = file_check_and_advance_wb_err(file);
- 	if (!ret)
- 		ret = err;
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 94ff4a4598dc..72e7c9e559cc 100644
+index 72e7c9e559cc..1d4c285bb26c 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -22,6 +22,8 @@
- #include "zoned.h"
- #include "inode-item.h"
+@@ -5504,8 +5504,46 @@ static void free_conflicting_inodes(struct btrfs_log_ctx *ctx)
+ 	}
+ }
  
-+#define MAX_CONFLICT_INODES 10
-+
- /* magic values for the inode_only field in btrfs_log_inode:
-  *
-  * LOG_INODE_ALL means to log everything
-@@ -31,8 +33,6 @@
- enum {
- 	LOG_INODE_ALL,
- 	LOG_INODE_EXISTS,
--	LOG_OTHER_INODE,
--	LOG_OTHER_INODE_ALL,
- };
- 
- /*
-@@ -5493,105 +5493,201 @@ struct btrfs_ino_list {
- 	struct list_head list;
- };
- 
--static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
--				  struct btrfs_root *root,
--				  struct btrfs_path *path,
--				  struct btrfs_log_ctx *ctx,
--				  u64 ino, u64 parent)
-+static void free_conflicting_inodes(struct btrfs_log_ctx *ctx)
++static int conflicting_inode_is_dir(struct btrfs_root *root, u64 ino,
++				    struct btrfs_path *path)
 +{
-+	struct btrfs_ino_list *curr;
-+	struct btrfs_ino_list *next;
++	struct btrfs_key key;
++	int ret;
 +
-+	list_for_each_entry_safe(curr, next, &ctx->conflict_inodes, list) {
-+		list_del(&curr->list);
-+		kfree(curr);
++	key.objectid = ino;
++	key.type = BTRFS_INODE_ITEM_KEY;
++	key.offset = 0;
++
++	path->search_commit_root = 1;
++	path->skip_locking = 1;
++
++	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
++	if (WARN_ON_ONCE(ret > 0)) {
++		/*
++		 * We have previously found the inode through the commit root
++		 * so this should not happen. If it does, just error out and
++		 * fallback to a transaction commit.
++		 */
++		ret = -ENOENT;
++	} else if (ret == 0) {
++		struct btrfs_inode_item *item;
++
++		item = btrfs_item_ptr(path->nodes[0], path->slots[0],
++				      struct btrfs_inode_item);
++		if (S_ISDIR(btrfs_inode_mode(path->nodes[0], item)))
++			ret = 1;
 +	}
++
++	btrfs_release_path(path);
++	path->search_commit_root = 0;
++	path->skip_locking = 0;
++
++	return ret;
 +}
 +
-+static int add_conflicting_inode(struct btrfs_trans_handle *trans,
-+				 struct btrfs_root *root,
-+				 u64 ino, u64 parent,
-+				 struct btrfs_log_ctx *ctx)
+ static int add_conflicting_inode(struct btrfs_trans_handle *trans,
+ 				 struct btrfs_root *root,
++				 struct btrfs_path *path,
+ 				 u64 ino, u64 parent,
+ 				 struct btrfs_log_ctx *ctx)
  {
- 	struct btrfs_ino_list *ino_elem;
--	LIST_HEAD(inode_list);
--	int ret = 0;
-+	struct inode *inode;
-+
-+	/*
-+	 * It's rare to have a lot of conflicting inodes, in practice it is not
-+	 * common to have more than 1 or 2. We don't want to collect too many,
-+	 * as we could end up logging too many inodes (even if only in
-+	 * LOG_INODE_EXISTS mode) and slow down other fsyncs or transaction
-+	 * commits.
-+	 */
-+	if (ctx->num_conflict_inodes >= MAX_CONFLICT_INODES)
-+		return BTRFS_LOG_FORCE_COMMIT;
-+
-+	inode = btrfs_iget(root->fs_info->sb, ino, root);
-+	/*
-+	 * If the other inode that had a conflicting dir entry was deleted in
-+	 * the current transaction, we need to log its parent directory.
-+	 * We can't simply ignore it and let the current inode's reference cause
-+	 * an unlink of the conflicting inode when replaying the log - because
-+	 * the conflicting inode may be a deleted subvolume/snapshot or it may
-+	 * be a directory that had subvolumes/snapshots inside it (or had one
-+	 * or more subdirectories with subvolumes/snapshots, etc). If that's the
-+	 * case, then when logging the parent directory we will fallback to a
-+	 * transaction commit because the parent directory will have a
-+	 * last_unlink_trans that matches the current transaction.
-+	 */
-+	if (IS_ERR(inode)) {
-+		int ret = PTR_ERR(inode);
-+
-+		if (ret != -ENOENT)
+@@ -5525,15 +5563,23 @@ static int add_conflicting_inode(struct btrfs_trans_handle *trans,
+ 	inode = btrfs_iget(root->fs_info->sb, ino, root);
+ 	/*
+ 	 * If the other inode that had a conflicting dir entry was deleted in
+-	 * the current transaction, we need to log its parent directory.
+-	 * We can't simply ignore it and let the current inode's reference cause
+-	 * an unlink of the conflicting inode when replaying the log - because
+-	 * the conflicting inode may be a deleted subvolume/snapshot or it may
+-	 * be a directory that had subvolumes/snapshots inside it (or had one
+-	 * or more subdirectories with subvolumes/snapshots, etc). If that's the
+-	 * case, then when logging the parent directory we will fallback to a
+-	 * transaction commit because the parent directory will have a
+-	 * last_unlink_trans that matches the current transaction.
++	 * the current transaction then we either:
++	 *
++	 * 1) Log the parent directory (later after adding it to the list) if
++	 *    the inode is a directory. This is because it may be a deleted
++	 *    subvolume/snapshot or it may be a regular directory that had
++	 *    deleted subvolumes/snapshots (or subdirectories that had them),
++	 *    and at the moment we can't deal with dropping subvolumes/snapshots
++	 *    during log replay. So we just log the parent, which will result in
++	 *    a fallback to a transaction commit if we are dealing with those
++	 *    cases (last_unlink_trans will match the current transaction);
++	 *
++	 * 2) Do nothing if it's not a directory. During log replay we simply
++	 *    unlink the conflicting dentry from the parent directory and then
++	 *    add the dentry for our inode. Like this we can avoid logging the
++	 *    parent directory (and maybe fallback to a transaction commit in
++	 *    case it has a last_unlink_trans == trans->transid, due to moving
++	 *    some inode from it to some other directory).
+ 	 */
+ 	if (IS_ERR(inode)) {
+ 		int ret = PTR_ERR(inode);
+@@ -5541,6 +5587,12 @@ static int add_conflicting_inode(struct btrfs_trans_handle *trans,
+ 		if (ret != -ENOENT)
+ 			return ret;
+ 
++		ret = conflicting_inode_is_dir(root, ino, path);
++		/* Not a directory or we got an error. */
++		if (ret <= 0)
 +			return ret;
 +
-+		ino_elem = kmalloc(sizeof(*ino_elem), GFP_NOFS);
-+		if (!ino_elem)
-+			return -ENOMEM;
-+		ino_elem->ino = ino;
-+		ino_elem->parent = parent;
-+		list_add_tail(&ino_elem->list, &ctx->conflict_inodes);
-+		ctx->num_conflict_inodes++;
-+
-+		return 0;
-+	}
-+
-+	/*
-+	 * If the inode was already logged skip it - otherwise we can hit an
-+	 * infinite loop. Example:
-+	 *
-+	 * From the commit root (previous transaction) we have the following
-+	 * inodes:
-+	 *
-+	 * inode 257 a directory
-+	 * inode 258 with references "zz" and "zz_link" on inode 257
-+	 * inode 259 with reference "a" on inode 257
-+	 *
-+	 * And in the current (uncommitted) transaction we have:
-+	 *
-+	 * inode 257 a directory, unchanged
-+	 * inode 258 with references "a" and "a2" on inode 257
-+	 * inode 259 with reference "zz_link" on inode 257
-+	 * inode 261 with reference "zz" on inode 257
-+	 *
-+	 * When logging inode 261 the following infinite loop could
-+	 * happen if we don't skip already logged inodes:
-+	 *
-+	 * - we detect inode 258 as a conflicting inode, with inode 261
-+	 *   on reference "zz", and log it;
-+	 *
-+	 * - we detect inode 259 as a conflicting inode, with inode 258
-+	 *   on reference "a", and log it;
-+	 *
-+	 * - we detect inode 258 as a conflicting inode, with inode 259
-+	 *   on reference "zz_link", and log it - again! After this we
-+	 *   repeat the above steps forever.
-+	 *
-+	 * Here we can use need_log_inode() because we only need to log the
-+	 * inode in LOG_INODE_EXISTS mode and rename operations update the log,
-+	 * so that the log ends up with the new name and without the old name.
-+	 */
-+	if (!need_log_inode(trans, BTRFS_I(inode))) {
-+		btrfs_add_delayed_iput(inode);
-+		return 0;
-+	}
-+
-+	btrfs_add_delayed_iput(inode);
- 
- 	ino_elem = kmalloc(sizeof(*ino_elem), GFP_NOFS);
- 	if (!ino_elem)
- 		return -ENOMEM;
- 	ino_elem->ino = ino;
- 	ino_elem->parent = parent;
--	list_add_tail(&ino_elem->list, &inode_list);
-+	list_add_tail(&ino_elem->list, &ctx->conflict_inodes);
-+	ctx->num_conflict_inodes++;
- 
--	while (!list_empty(&inode_list)) {
--		struct btrfs_fs_info *fs_info = root->fs_info;
--		struct btrfs_key key;
--		struct inode *inode;
-+	return 0;
-+}
- 
--		ino_elem = list_first_entry(&inode_list, struct btrfs_ino_list,
--					    list);
--		ino = ino_elem->ino;
--		parent = ino_elem->parent;
--		list_del(&ino_elem->list);
--		kfree(ino_elem);
--		if (ret)
--			continue;
-+static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
-+				  struct btrfs_root *root,
-+				  struct btrfs_log_ctx *ctx)
-+{
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	int ret = 0;
- 
--		btrfs_release_path(path);
-+	/*
-+	 * Conflicting inodes are logged by the first call to btrfs_log_inode(),
-+	 * otherwise we could have unbounded recursion of btrfs_log_inode()
-+	 * calls. This check guarantees we can have only 1 level of recursion.
-+	 */
-+	if (ctx->logging_conflict_inodes)
-+		return 0;
-+
-+	ctx->logging_conflict_inodes = true;
-+
-+	/*
-+	 * New conflicting inodes may be found and added to the list while we
-+	 * are logging a conflicting inode, so keep iterating while the list is
-+	 * not empty.
-+	 */
-+	while (!list_empty(&ctx->conflict_inodes)) {
-+		struct btrfs_ino_list *curr;
-+		struct inode *inode;
-+		u64 ino;
-+		u64 parent;
-+
-+		curr = list_first_entry(&ctx->conflict_inodes,
-+					struct btrfs_ino_list, list);
-+		ino = curr->ino;
-+		parent = curr->parent;
-+		list_del(&curr->list);
-+		kfree(curr);
- 
- 		inode = btrfs_iget(fs_info->sb, ino, root);
- 		/*
- 		 * If the other inode that had a conflicting dir entry was
- 		 * deleted in the current transaction, we need to log its parent
--		 * directory.
-+		 * directory. See the comment at add_conflicting_inode().
- 		 */
- 		if (IS_ERR(inode)) {
- 			ret = PTR_ERR(inode);
--			if (ret == -ENOENT) {
--				inode = btrfs_iget(fs_info->sb, parent, root);
--				if (IS_ERR(inode)) {
--					ret = PTR_ERR(inode);
--				} else {
--					ret = btrfs_log_inode(trans,
--						      BTRFS_I(inode),
--						      LOG_OTHER_INODE_ALL,
--						      ctx);
--					btrfs_add_delayed_iput(inode);
--				}
-+			if (ret != -ENOENT)
-+				break;
-+
-+			inode = btrfs_iget(fs_info->sb, parent, root);
-+			if (IS_ERR(inode)) {
-+				ret = PTR_ERR(inode);
-+				break;
- 			}
-+
-+			/*
-+			 * Always log the directory, we cannot make this
-+			 * conditional on need_log_inode() because the directory
-+			 * might have been logged in LOG_INODE_EXISTS mode or
-+			 * the dir index of the conflicting inode is not in a
-+			 * dir index key range logged for the directory. So we
-+			 * must make sure the deletion is recorded.
-+			 */
-+			ret = btrfs_log_inode(trans, BTRFS_I(inode),
-+					      LOG_INODE_ALL, ctx);
-+			btrfs_add_delayed_iput(inode);
-+			if (ret)
-+				break;
- 			continue;
- 		}
-+
- 		/*
--		 * If the inode was already logged skip it - otherwise we can
--		 * hit an infinite loop. Example:
--		 *
--		 * From the commit root (previous transaction) we have the
--		 * following inodes:
--		 *
--		 * inode 257 a directory
--		 * inode 258 with references "zz" and "zz_link" on inode 257
--		 * inode 259 with reference "a" on inode 257
--		 *
--		 * And in the current (uncommitted) transaction we have:
--		 *
--		 * inode 257 a directory, unchanged
--		 * inode 258 with references "a" and "a2" on inode 257
--		 * inode 259 with reference "zz_link" on inode 257
--		 * inode 261 with reference "zz" on inode 257
--		 *
--		 * When logging inode 261 the following infinite loop could
--		 * happen if we don't skip already logged inodes:
--		 *
--		 * - we detect inode 258 as a conflicting inode, with inode 261
--		 *   on reference "zz", and log it;
--		 *
--		 * - we detect inode 259 as a conflicting inode, with inode 258
--		 *   on reference "a", and log it;
-+		 * Here we can use need_log_inode() because we only need to log
-+		 * the inode in LOG_INODE_EXISTS mode and rename operations
-+		 * update the log, so that the log ends up with the new name and
-+		 * without the old name.
- 		 *
--		 * - we detect inode 258 as a conflicting inode, with inode 259
--		 *   on reference "zz_link", and log it - again! After this we
--		 *   repeat the above steps forever.
-+		 * We did this check at add_conflicting_inode(), but here we do
-+		 * it again because if some other task logged the inode after
-+		 * that, we can avoid doing it again.
- 		 */
--		spin_lock(&BTRFS_I(inode)->lock);
--		/*
--		 * Check the inode's logged_trans only instead of
--		 * btrfs_inode_in_log(). This is because the last_log_commit of
--		 * the inode is not updated when we only log that it exists (see
--		 * btrfs_log_inode()).
--		 */
--		if (BTRFS_I(inode)->logged_trans == trans->transid) {
--			spin_unlock(&BTRFS_I(inode)->lock);
-+		if (!need_log_inode(trans, BTRFS_I(inode))) {
- 			btrfs_add_delayed_iput(inode);
- 			continue;
- 		}
--		spin_unlock(&BTRFS_I(inode)->lock);
-+
- 		/*
- 		 * We are safe logging the other inode without acquiring its
- 		 * lock as long as we log with the LOG_INODE_EXISTS mode. We
-@@ -5599,67 +5695,16 @@ static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
- 		 * well because during a rename we pin the log and update the
- 		 * log with the new name before we unpin it.
- 		 */
--		ret = btrfs_log_inode(trans, BTRFS_I(inode), LOG_OTHER_INODE, ctx);
--		if (ret) {
--			btrfs_add_delayed_iput(inode);
--			continue;
--		}
--
--		key.objectid = ino;
--		key.type = BTRFS_INODE_REF_KEY;
--		key.offset = 0;
--		ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
--		if (ret < 0) {
--			btrfs_add_delayed_iput(inode);
--			continue;
--		}
--
--		while (true) {
--			struct extent_buffer *leaf = path->nodes[0];
--			int slot = path->slots[0];
--			u64 other_ino = 0;
--			u64 other_parent = 0;
--
--			if (slot >= btrfs_header_nritems(leaf)) {
--				ret = btrfs_next_leaf(root, path);
--				if (ret < 0) {
--					break;
--				} else if (ret > 0) {
--					ret = 0;
--					break;
--				}
--				continue;
--			}
--
--			btrfs_item_key_to_cpu(leaf, &key, slot);
--			if (key.objectid != ino ||
--			    (key.type != BTRFS_INODE_REF_KEY &&
--			     key.type != BTRFS_INODE_EXTREF_KEY)) {
--				ret = 0;
--				break;
--			}
--
--			ret = btrfs_check_ref_name_override(leaf, slot, &key,
--					BTRFS_I(inode), &other_ino,
--					&other_parent);
--			if (ret < 0)
--				break;
--			if (ret > 0) {
--				ino_elem = kmalloc(sizeof(*ino_elem), GFP_NOFS);
--				if (!ino_elem) {
--					ret = -ENOMEM;
--					break;
--				}
--				ino_elem->ino = other_ino;
--				ino_elem->parent = other_parent;
--				list_add_tail(&ino_elem->list, &inode_list);
--				ret = 0;
--			}
--			path->slots[0]++;
--		}
-+		ret = btrfs_log_inode(trans, BTRFS_I(inode), LOG_INODE_EXISTS, ctx);
- 		btrfs_add_delayed_iput(inode);
-+		if (ret)
-+			break;
- 	}
- 
-+	ctx->logging_conflict_inodes = false;
-+	if (ret)
-+		free_conflicting_inodes(ctx);
-+
- 	return ret;
- }
- 
-@@ -5670,7 +5715,6 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 				   struct btrfs_path *path,
- 				   struct btrfs_path *dst_path,
- 				   const u64 logged_isize,
--				   const bool recursive_logging,
- 				   const int inode_only,
- 				   struct btrfs_log_ctx *ctx,
- 				   bool *need_log_inode_item)
-@@ -5709,8 +5753,8 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 			break;
- 		} else if ((min_key->type == BTRFS_INODE_REF_KEY ||
- 			    min_key->type == BTRFS_INODE_EXTREF_KEY) &&
--			   inode->generation == trans->transid &&
--			   !recursive_logging) {
-+			   (inode->generation == trans->transid ||
-+			    ctx->logging_conflict_inodes)) {
- 			u64 other_ino = 0;
- 			u64 other_parent = 0;
- 
-@@ -5734,11 +5778,12 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 					return ret;
++		/* Conflicting inode is a directory, so we'll log its parent. */
+ 		ino_elem = kmalloc(sizeof(*ino_elem), GFP_NOFS);
+ 		if (!ino_elem)
+ 			return -ENOMEM;
+@@ -5779,7 +5831,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
  				ins_nr = 0;
  
--				ret = log_conflicting_inodes(trans, root, path,
--						ctx, other_ino, other_parent);
-+				btrfs_release_path(path);
-+				ret = add_conflicting_inode(trans, root,
-+							    other_ino,
-+							    other_parent, ctx);
+ 				btrfs_release_path(path);
+-				ret = add_conflicting_inode(trans, root,
++				ret = add_conflicting_inode(trans, root, path,
+ 							    other_ino,
+ 							    other_parent, ctx);
  				if (ret)
- 					return ret;
--				btrfs_release_path(path);
- 				goto next_key;
- 			}
- 		} else if (min_key->type == BTRFS_XATTR_ITEM_KEY) {
-@@ -5852,9 +5897,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 	u64 logged_isize = 0;
- 	bool need_log_inode_item = true;
- 	bool xattrs_logged = false;
--	bool recursive_logging = false;
- 	bool inode_item_dropped = true;
--	const bool orig_logged_before = ctx->logged_before;
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
-@@ -5893,16 +5936,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 			goto out;
- 	}
- 
--	if (inode_only == LOG_OTHER_INODE || inode_only == LOG_OTHER_INODE_ALL) {
--		recursive_logging = true;
--		if (inode_only == LOG_OTHER_INODE)
--			inode_only = LOG_INODE_EXISTS;
--		else
--			inode_only = LOG_INODE_ALL;
--		mutex_lock_nested(&inode->log_mutex, SINGLE_DEPTH_NESTING);
--	} else {
--		mutex_lock(&inode->log_mutex);
--	}
-+	mutex_lock(&inode->log_mutex);
- 
- 	/*
- 	 * For symlinks, we must always log their content, which is stored in an
-@@ -6008,7 +6042,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 
- 	ret = copy_inode_items_to_log(trans, inode, &min_key, &max_key,
- 				      path, dst_path, logged_isize,
--				      recursive_logging, inode_only, ctx,
-+				      inode_only, ctx,
- 				      &need_log_inode_item);
- 	if (ret)
- 		goto out_unlock;
-@@ -6117,8 +6151,10 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 	btrfs_free_path(path);
- 	btrfs_free_path(dst_path);
- 
--	if (recursive_logging)
--		ctx->logged_before = orig_logged_before;
-+	if (ret)
-+		free_conflicting_inodes(ctx);
-+	else
-+		ret = log_conflicting_inodes(trans, inode->root, ctx);
- 
- 	return ret;
- }
-@@ -6973,6 +7009,7 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
- 	 * inconsistent state after a rename operation.
- 	 */
- 	btrfs_log_inode_parent(trans, inode, parent, LOG_INODE_EXISTS, &ctx);
-+	ASSERT(list_empty(&ctx.conflict_inodes));
- out:
- 	/*
- 	 * If an error happened mark the log for a full commit because it's not
-diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
-index 57ab5f3b8dc7..4e34fe4b7762 100644
---- a/fs/btrfs/tree-log.h
-+++ b/fs/btrfs/tree-log.h
-@@ -28,6 +28,9 @@ struct btrfs_log_ctx {
- 	struct list_head list;
- 	/* Only used for fast fsyncs. */
- 	struct list_head ordered_extents;
-+	struct list_head conflict_inodes;
-+	int num_conflict_inodes;
-+	bool logging_conflict_inodes;
- };
- 
- static inline void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx,
-@@ -41,6 +44,9 @@ static inline void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx,
- 	ctx->inode = inode;
- 	INIT_LIST_HEAD(&ctx->list);
- 	INIT_LIST_HEAD(&ctx->ordered_extents);
-+	INIT_LIST_HEAD(&ctx->conflict_inodes);
-+	ctx->num_conflict_inodes = 0;
-+	ctx->logging_conflict_inodes = false;
- }
- 
- static inline void btrfs_release_log_ctx_extents(struct btrfs_log_ctx *ctx)
 -- 
 2.35.1
 
