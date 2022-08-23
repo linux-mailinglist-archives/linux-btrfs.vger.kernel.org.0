@@ -2,65 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC6559EC1F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Aug 2022 21:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A8659EC74
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Aug 2022 21:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbiHWTWF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Aug 2022 15:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35102 "EHLO
+        id S229807AbiHWTfA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Aug 2022 15:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbiHWTVq (ORCPT
+        with ESMTP id S230273AbiHWTeg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Aug 2022 15:21:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0B5B8F08;
-        Tue, 23 Aug 2022 11:02:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=F7agJyyQPBoKNSgYn2p8RhiVuoRJhF3uXfjMiiS+Xls=; b=Wkq47664wvidT/E01+KEhjp+FD
-        R/XHD8tSjJ7wbSR/mUYAeZLcN9Qztr4HbAaptjmHf13Xvc/HhezApMdO9elvyO4yJky2geT4qJGiw
-        ETVjqHkgyGMdGpfM/33Fu3FbWJdqyfvE7Gomlu8XUsphUa3UHMz1vW6QuUX6itShiWHOgh4mGnADK
-        YLDxjyt+6hcWU3rUXSjXdG6cQBEL2pNTZFjh++GgJJwfdeTjQ2/EajCeR3hrpA1nrARg48VXIBoRv
-        OY5Z8UvCwBhsFnazcFBsKtMiFMSi83zfhtHu4mnNppp6ZoBJ+FcwKhqsvBLgMFWMPweTwDT8k1nEh
-        EeOcNoqQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oQYDz-00FUl4-TM; Tue, 23 Aug 2022 18:02:03 +0000
-Date:   Tue, 23 Aug 2022 19:02:03 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     dsterba@suse.cz, "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] Convert to filemap_get_folios_contig()
-Message-ID: <YwUWG73OkS+3Eelr@casper.infradead.org>
-References: <20220816175246.42401-1-vishal.moola@gmail.com>
- <20220823172642.GJ13489@twin.jikos.cz>
+        Tue, 23 Aug 2022 15:34:36 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EB0120A5
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Aug 2022 11:28:22 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id ds12-20020a17090b08cc00b001fae6343d9fso2005319pjb.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Aug 2022 11:28:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=RMZdNYSzv4NjHaqZ4xDO3y/4EIPEqOokWOHVzWp9qXA=;
+        b=CfJvtwxpb36h3Tk7HEGEcvknXYGGOIUOtrTGa5/JUtw7An/l5vTyFtzzQBwo4etcct
+         mCYGO1NccsEiYChWf59M8QDxWdsId6IdNLYU/KpSY+pjN3gnZupsvu5hngo+nDbWF3/a
+         UljkZXMV/LH4BiIFMU+ENitTFDXKvm8wmpWdptQwlcE7xAeyRRhOlBsrKqxKmrUdo5U9
+         eKSe3kkcuDYF9Sm7SBKvKcYoQ78VwMp47gFM4bCvVnyP7OxnzPGrYXukUVtWFJ5yCNve
+         evZlq/+f3f1IWiLQ9sVA68U3IWaGNJWoY2lwPXU9RjtfZ6iLWH8dsvEgj3iZTtDke72m
+         06Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=RMZdNYSzv4NjHaqZ4xDO3y/4EIPEqOokWOHVzWp9qXA=;
+        b=bdncs+ISnAy0wzaJ/2IIQsUlWPsmVDRrJUpuh4OqS8xHp3ult5FDwCMG2HpnNdDO7v
+         hgBGRw7sG3I8+HqKLlnwa7g3uQk1QrMCvaz6JQoKLax+4YvL2BIDw6z+HKOkPi32YPdv
+         rt89oD4BABkmKczwxDVfRmePjy7FytHAwrIRzPAMvzQnz1cfZ15rZ57fhAv3qnxW22mo
+         4+CKmXSJK1gblKqc2CyInIy7OwiTdBEBYhzxhTL9zQeZSBrB7i76Uq5gLDTdAnMJnG/h
+         8eseAK3t6z7PDCEGgT0PU0gFelZ4i/ABfIX9FCJeVK9jBKXaFQftFjLF0rA27V/h2cu/
+         8Aeg==
+X-Gm-Message-State: ACgBeo3St7PUH/bEBzNGF4NfA7vMpvXm4CvrnAfCvljhoy4LW79ZOoF7
+        70YUJ7W41n2OxJjnwE4vu/H8jCX8HZK8tQ==
+X-Google-Smtp-Source: AA6agR43iP8ohCRvkvGYUYHp+2zp3kttvsr94zeH6g/NFMAbZcslhIkpgBy97uVRqaBwbicKai4WLg==
+X-Received: by 2002:a17:902:e54f:b0:172:ef3e:f725 with SMTP id n15-20020a170902e54f00b00172ef3ef725mr9213684plf.66.1661279301217;
+        Tue, 23 Aug 2022 11:28:21 -0700 (PDT)
+Received: from relinquished.thefacebook.com ([2620:10d:c090:500::2:9aae])
+        by smtp.gmail.com with ESMTPSA id f17-20020a170902f39100b0016bedcced2fsm7168184ple.35.2022.08.23.11.28.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Aug 2022 11:28:20 -0700 (PDT)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com
+Subject: [PATCH 0/2] btrfs: backports of space cache corruption fix
+Date:   Tue, 23 Aug 2022 11:28:12 -0700
+Message-Id: <cover.1661278864.git.osandov@fb.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220823172642.GJ13489@twin.jikos.cz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 23, 2022 at 07:26:42PM +0200, David Sterba wrote:
-> I've tested the whole branch in my fstest setup, no issues found and
-> did a light review of the code changes, looks ok as well.
+From: Omar Sandoval <osandov@fb.com>
 
-Thanks!
+Hi,
 
-> How do you want get the patches merged? As it's an API conversion I can
-> ack it and let it go via the mm tree. So far there are no conflicts with
-> our btrfs development patches, I assume it'll be a clean merge in the
-> future too.
+These are backports of
+https://lore.kernel.org/linux-btrfs/9ee45db86433bb8e4d7daff35502db241c69ad16.1660690698.git.osandov@fb.com/
+for 6.0 (which also applies to 5.19) and 5.15 resolving some minor merge
+conflicts. We should get this fixed in 6.0 and backported to 5.19/5.15.
 
-I was planning on taking this patch series through the pagecache tree;
-it's in -next, so any problems will show up as conflicts there.
+Thanks,
+Omar
+
+-- 
+2.30.2
+
