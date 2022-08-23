@@ -2,43 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DCB59DC9F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Aug 2022 14:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AC859E421
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Aug 2022 15:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353600AbiHWKhI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Aug 2022 06:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41606 "EHLO
+        id S241301AbiHWM4X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Aug 2022 08:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355506AbiHWKgV (ORCPT
+        with ESMTP id S243434AbiHWMzy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Aug 2022 06:36:21 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D982A61CC;
-        Tue, 23 Aug 2022 02:07:03 -0700 (PDT)
+        Tue, 23 Aug 2022 08:55:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7591123C86;
+        Tue, 23 Aug 2022 03:01:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id AD023CE1B5C;
-        Tue, 23 Aug 2022 09:07:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0B25C433B5;
-        Tue, 23 Aug 2022 09:06:59 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D41C2B81B1F;
+        Tue, 23 Aug 2022 10:00:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CC76C433D6;
+        Tue, 23 Aug 2022 10:00:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661245620;
-        bh=hAggGE8+OMUY52LWGZnvUhEBRK6XhKVWZUXs8+5eN7w=;
+        s=k20201202; t=1661248821;
+        bh=Fz6T4pAKdcT/lUNu0ZLLTw5HZ9Pw1Ljb7l2xDS0PqDs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CAPk4ROlbCmeyHvQXmvke0mnlr1HnPe2+SSez1l3HK+Adf+9flN2JTFHWNtlf+qTa
-         GnAXtmPxDHwI7xKCYeV383DXoVeLW/BENwCC5A+RhC+Z7cceOlzgkYahQFp1Qdw9Ba
-         ZguUwElNeppkXp/jYsrDds1rwLBgIhNkrkypl8fTRJToeLmHAbSR9LWUSRQ4Wqg3l1
-         3lVqnSxaGMwK25LuY0nRYh0iwq4BLNwAu+6pmUynQ4HXi/JFplBermLzDgWpztVNtV
-         VEBu/fhgQZMP3+xL6ljwQH5fWCAM8Jet/ShfO7cj5RO5YBhnxX2kO+ZJDBztn1w6xB
-         ln7U6TfOT4zrQ==
-Date:   Tue, 23 Aug 2022 10:06:57 +0100
+        b=ZvWRv9ElvPtUtONa6pCmqOoCPE5jxjCqodHw6pYyZ3g7qngvm1rsmwpnMUjAQBrsQ
+         lEbe9GRcM+CbH9tn1nUD3Kj8iWgiWuy5qCOy4Yce5ir/PDJxfX8ltoInsqPR4R7cyT
+         NwkngEMtP45fGNVYG4Ii5iNBOw6Ety04hgHA4YfaCpqkx7pepE129QJH4tmK0iQMz4
+         5X0wGhILhQ4ofg1BZ4Bh/WuEmoY9C6Hq2rIezpPtYWSYQVd5aYWPycKg2vR+Cu4JcP
+         Z1QrrHyD8MwP1jdA9PeGYGe4rf8FvUjykrTpSfoKAX4kKpmBPyFWOvHKXrEqNVPR0a
+         aGoHFS71+difg==
+Date:   Tue, 23 Aug 2022 11:00:18 +0100
 From:   Filipe Manana <fdmanana@kernel.org>
 To:     Ye Bin <yebin10@huawei.com>
 Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH -next] btrfs: fix use-after-free in btrfs_get_global_root
-Message-ID: <20220823090657.GB3171944@falcondesktop>
+Message-ID: <20220823100018.GA3180928@falcondesktop>
 References: <20220823015931.421355-1-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -206,6 +206,41 @@ On Tue, Aug 23, 2022 at 09:59:31AM +0800, Ye Bin wrote:
 > -	spin_unlock(&fs_info->qgroup_lock);
 > -
 >  	ret = qgroup_rescan_init(fs_info, 0, 1);
+
+In addition to what I mentioned in the previous mail, this is also not
+correct because the qgroup_rescan_init() call will always fail if
+BTRFS_FS_QUOTA_ENABLED is not set (with an -EBUSY error).
+
+Have you tested this at all? Every attempt to enable quotas will result
+in a -EBUSY being returned from the ioctl.
+
+All we need is:
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index db723c0026bd..67818b2f316f 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -1174,6 +1174,17 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+                fs_info->qgroup_rescan_running = true;
+                btrfs_queue_work(fs_info->qgroup_rescan_workers,
+                                 &fs_info->qgroup_rescan_work);
++       } else {
++               /*
++                * We have set both BTRFS_FS_QUOTA_ENABLED and
++                * BTRFS_QGROUP_STATUS_FLAG_ON, so we can only fail with
++                * -EINPROGRESS because someone started the rescan worker with
++                * the ioctl before we attempted to initialize it.
++                * Ignore such error, and any other error would need to undo
++                * everything we did in the transaction we just committed.
++                */
++               ASSERT(ret == -EINPROGRESS);
++               ret = 0;
+        }
+ 
+ out_free_path:
+
+
+
 >  	if (!ret) {
 > +		/*
 > +		 * Set quota enabled flag after committing the transaction, to
@@ -217,36 +252,6 @@ On Tue, Aug 23, 2022 at 09:59:31AM +0800, Ye Bin wrote:
 > +		set_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
 > +		spin_unlock(&fs_info->qgroup_lock);
 > +
-
-But how can the race happen? The changelog should explain that.
-
-To me this suggests that after we set BTRFS_FS_QUOTA_ENABLED and set the
-quota root, but before we called qgroup_rescan_init() at btrfs_quota_enable(),
-some other task started the rescan worker first - I can only think of
-someone else calling the ioctl to start the rescan worker (btrfs_ioctl_quota_rescan()).
-
-In that case we get "ret == -EINPROGRESS" at btrfs_quota_enable().
-
-So please provide a detailed explanation in the log of how the race can
-happen.
-
-This solution is also buggy. Because in case of an error, we will leave the
-quota tree created, the qgroup relation, etc. That is, we don't undo
-what btrfs_create_tree(), add_qgroup_item(), add_qgroup_rb(), etc did
-Which means a future btrfs_quota_enable() call would fail, and calling
-btrfs_quota_disable() to undo all those things will not work either,
-because fs_info->quota_root is NULL.
-
-I would suggest ignoring the error of qgroup_rescan_init() if it's
--EINPROGRESS, and ASSERT if it's anything different from 0 or
--EINPROGRESS. Also add a comment mentioning we can get -EINPROGRESS
-because someone may have called the qgroup rescan ioctl.
-
-Thanks.
-
-
-
-
 >  	        qgroup_rescan_zero_tracking(fs_info);
 >  		fs_info->qgroup_rescan_running = true;
 >  	        btrfs_queue_work(fs_info->qgroup_rescan_workers,
