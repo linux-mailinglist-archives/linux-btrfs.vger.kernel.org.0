@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D64759EC6F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Aug 2022 21:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E56959EC73
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Aug 2022 21:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbiHWTfE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Aug 2022 15:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
+        id S232446AbiHWTfJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Aug 2022 15:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbiHWTeh (ORCPT
+        with ESMTP id S231342AbiHWTel (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Aug 2022 15:34:37 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD2341D2E
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Aug 2022 11:28:24 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id p13so2180809pld.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Aug 2022 11:28:24 -0700 (PDT)
+        Tue, 23 Aug 2022 15:34:41 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD2178212
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Aug 2022 11:28:26 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id d71so12959466pgc.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Aug 2022 11:28:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=OsPOMeumfvgP/SFfFblsfBcSvrgBzUFUOGd6Mh3wnBk=;
-        b=0KccSHDKqZocyEbtxgGbir2OU8jgu2G+iVWLkGL7sinb/arVz6n1aHV4B6Y2qzf8fN
-         fkGHI3o8Te7AxYB0SwfHc2JjBZPoE0TbshKMliAFC7YUlBRSuIiShfaTZyoyRfgp6WWf
-         lKuJdeTeLdHtvPSGCvCcfr8bvPqeoLp3Tk/olCgGQBs6rgl7R/4C3Q4YfSPEjZKzFQaV
-         Dz0U/lWOCkKR5wstiGYL5DUFad95vGREGTTRJb7lzH/iGeUkwexU+KvPl7JRcbQxpLH1
-         sXV5YZBEKumCDXDOGLsiPg+KcL0rcl9/YlPMNBnj95VNBS8qSDNyz2BATSBm91G47BXI
-         1TYw==
+        bh=I2TJV1dX4RRMPDmYlqi8qLyE6vDuVBlWzphYwN/lozc=;
+        b=PyZ6P4IVQ9MukZVCmrDW2jmpbG8/uMC457niLjrjVeLZiiQPCb7TG903TQmHySTi/G
+         7CIxAoH6puDd6AEgA3GdQizdjEvR5tPbnC0J+AwbLQkhQiK5UCQbgAlmDzNciK/436z5
+         V98BvSvqXUeQd52fhyDLKbeY5nQnIcTqk9FcGKypoN0WmX+gYcHbbauu1aTg9QlRmBsy
+         DCUZ9K96TwsFCBeDJAcTMwUr/1xY6ebME5ZeMXPH1V1M3EWhnHVGZyNgApj191hf/ifv
+         ieUqh5QcjXSZ051kpR36kY/0U4tM1yW0pO7eXxeRD8ufaax4f3jibxgZBiWww+zGL7I7
+         FgIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=OsPOMeumfvgP/SFfFblsfBcSvrgBzUFUOGd6Mh3wnBk=;
-        b=FYynodf0ZXhtBLpkg74JzsEsH3lxAeBee3g38AdMJyEd2P/2bIpD6N2N2bDdLuHCu0
-         TGGHpGZQ8+SBl9zejZgkMC+NCkxsFgWb1JvhbTqhkFS434/KXgQ77mI/G+BLa6/1KJOM
-         EKQFBCklnoU9KF5JpYENNH3CmrnCtRcGR30mBuEQ7nmFCXeCGWXVnrBcruk0yNSat8uU
-         7ofnhOvKCiDlscSnjXleUpbHV286PujL8zDKUw4rWwkgPZuUPxcgG+CvKnsc9uyDKykP
-         KrVm2wWxqTlrOaW57eSeZFM21rYnETQL+a1bKNG9on9epIUBJgTmPLRFzfoAqTfAN63d
-         bJLA==
-X-Gm-Message-State: ACgBeo2J2egOVKTpPtZqpwCPJ72BmgTWMRIlPzMMfSj/FLsiRKvqDtMO
-        BteCkOoN3bVWnCVVGOgyKO/x08kXAsvpfg==
-X-Google-Smtp-Source: AA6agR4H5hZExSTgOeEItaknl5GnkHrZLWPElJgPx19jdtA+Og0rMpFRvFduZF3dLtaUOZGeyJ7/zQ==
-X-Received: by 2002:a17:902:b104:b0:172:f66d:6604 with SMTP id q4-20020a170902b10400b00172f66d6604mr7113804plr.117.1661279302694;
-        Tue, 23 Aug 2022 11:28:22 -0700 (PDT)
+        bh=I2TJV1dX4RRMPDmYlqi8qLyE6vDuVBlWzphYwN/lozc=;
+        b=3E0cbtYZ+mNvFIB1yT7Zoc1uBoLNmM3WmimOpEBZPCpJuYDj1TiMhPS0sqZnTuTRvC
+         hrsttu3yxuzqlYYlcwPmjq9UTvbyT3g0SwJyq6tuAF3S3h9Awwbsy/QiPbs3pSOtulFc
+         b9KQZ6jKYQDX/qpg2fEWP7AkQRHt3f3MlkgJqPOxwCwnZkj4evpXz4uvbopIDG0Tx7bk
+         Va3DHtfTpVau0iifeNhk28O/dQ2adqvO3KXZH6Wgl5TQ2o98REPRXl4pxa3Oo6d7tceD
+         /xZ2v5ZDLv9BV3AEPv4+3bL51AZeeYU38TecV9E2s7WfwnvOBOE0Uxo5EmPQMr1Cot+X
+         1m3w==
+X-Gm-Message-State: ACgBeo1A06jzwRhDscR6OAgg7c4+Lk7vJEAMwZM0TKHGeqF64N7kAaEc
+        u2oOfa0da+aeaN5+4Ln/o5fxZG0EUkc6zQ==
+X-Google-Smtp-Source: AA6agR4PNvtXiS/ugtCDr6qPq4Wx16Nt6Qack5jr5/VSFhyZSxAUUuQbko7cD4+zDoXo5fiaSl78QA==
+X-Received: by 2002:a63:8b44:0:b0:41c:df4c:7275 with SMTP id j65-20020a638b44000000b0041cdf4c7275mr22057265pge.434.1661279304087;
+        Tue, 23 Aug 2022 11:28:24 -0700 (PDT)
 Received: from relinquished.thefacebook.com ([2620:10d:c090:500::2:9aae])
-        by smtp.gmail.com with ESMTPSA id f17-20020a170902f39100b0016bedcced2fsm7168184ple.35.2022.08.23.11.28.21
+        by smtp.gmail.com with ESMTPSA id f17-20020a170902f39100b0016bedcced2fsm7168184ple.35.2022.08.23.11.28.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Aug 2022 11:28:22 -0700 (PDT)
+        Tue, 23 Aug 2022 11:28:23 -0700 (PDT)
 From:   Omar Sandoval <osandov@osandov.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com
-Subject: [PATCH for 6.0] btrfs: fix space cache corruption and potential double allocations
-Date:   Tue, 23 Aug 2022 11:28:13 -0700
-Message-Id: <0319c896ec0f6928082173fb7a839772232ac7b5.1661278864.git.osandov@fb.com>
+Subject: [PATCH for 5.15] btrfs: fix space cache corruption and potential double allocations
+Date:   Tue, 23 Aug 2022 11:28:14 -0700
+Message-Id: <24f0ad243a15ce80edf77620981a1a097acca297.1661278864.git.osandov@fb.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <cover.1661278864.git.osandov@fb.com>
 References: <cover.1661278864.git.osandov@fb.com>
@@ -185,10 +185,10 @@ Signed-off-by: Omar Sandoval <osandov@fb.com>
  4 files changed, 22 insertions(+), 60 deletions(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 993aca2f1e18..e0375ba9d0fe 100644
+index 4b2282aa274e..182ffa46fb7b 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -440,39 +440,26 @@ void btrfs_wait_block_group_cache_progress(struct btrfs_block_group *cache,
+@@ -418,39 +418,26 @@ void btrfs_wait_block_group_cache_progress(struct btrfs_block_group *cache,
  	btrfs_put_caching_control(caching_ctl);
  }
  
@@ -238,7 +238,7 @@ index 993aca2f1e18..e0375ba9d0fe 100644
  #ifdef CONFIG_BTRFS_DEBUG
  static void fragment_free_space(struct btrfs_block_group *block_group)
  {
-@@ -750,9 +737,8 @@ static noinline void caching_thread(struct btrfs_work *work)
+@@ -727,9 +714,8 @@ static noinline void caching_thread(struct btrfs_work *work)
  	btrfs_put_block_group(block_group);
  }
  
@@ -249,7 +249,7 @@ index 993aca2f1e18..e0375ba9d0fe 100644
  	struct btrfs_fs_info *fs_info = cache->fs_info;
  	struct btrfs_caching_control *caching_ctl = NULL;
  	int ret = 0;
-@@ -785,10 +771,7 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, int load_cache_only
+@@ -762,10 +748,7 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, int load_cache_only
  	}
  	WARN_ON(cache->caching_ctl);
  	cache->caching_ctl = caching_ctl;
@@ -261,7 +261,7 @@ index 993aca2f1e18..e0375ba9d0fe 100644
  	cache->has_caching_ctl = 1;
  	spin_unlock(&cache->lock);
  
-@@ -801,8 +784,8 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, int load_cache_only
+@@ -778,8 +761,8 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, int load_cache_only
  
  	btrfs_queue_work(fs_info->caching_workers, &caching_ctl->work);
  out:
@@ -272,7 +272,7 @@ index 993aca2f1e18..e0375ba9d0fe 100644
  	if (caching_ctl)
  		btrfs_put_caching_control(caching_ctl);
  
-@@ -3312,7 +3295,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+@@ -3198,7 +3181,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
  		 * space back to the block group, otherwise we will leak space.
  		 */
  		if (!alloc && !btrfs_block_group_done(cache))
@@ -282,10 +282,10 @@ index 993aca2f1e18..e0375ba9d0fe 100644
  		byte_in_group = bytenr - cache->start;
  		WARN_ON(byte_in_group > cache->length);
 diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index 35e0e860cc0b..6b3cdc4cbc41 100644
+index d73db0dfacb2..a15868d607a9 100644
 --- a/fs/btrfs/block-group.h
 +++ b/fs/btrfs/block-group.h
-@@ -263,9 +263,7 @@ void btrfs_dec_nocow_writers(struct btrfs_block_group *bg);
+@@ -251,9 +251,7 @@ void btrfs_dec_nocow_writers(struct btrfs_fs_info *fs_info, u64 bytenr);
  void btrfs_wait_nocow_writers(struct btrfs_block_group *bg);
  void btrfs_wait_block_group_cache_progress(struct btrfs_block_group *cache,
  				           u64 num_bytes);
@@ -297,10 +297,10 @@ index 35e0e860cc0b..6b3cdc4cbc41 100644
  struct btrfs_caching_control *btrfs_get_caching_control(
  		struct btrfs_block_group *cache);
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4edb4bfb2166..9ef162dbd4bc 100644
+index d1838de0b39c..8dafb6bf62bd 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -505,7 +505,6 @@ struct btrfs_free_cluster {
+@@ -462,7 +462,6 @@ struct btrfs_free_cluster {
  enum btrfs_caching_type {
  	BTRFS_CACHE_NO,
  	BTRFS_CACHE_STARTED,
@@ -309,10 +309,10 @@ index 4edb4bfb2166..9ef162dbd4bc 100644
  	BTRFS_CACHE_ERROR,
  };
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index ab944d1f94ef..6914cd8024ba 100644
+index 248ea15c9734..8c007abf81f0 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -2551,17 +2551,10 @@ int btrfs_pin_extent_for_log_replay(struct btrfs_trans_handle *trans,
+@@ -2572,17 +2572,10 @@ int btrfs_pin_extent_for_log_replay(struct btrfs_trans_handle *trans,
  		return -EINVAL;
  
  	/*
@@ -333,7 +333,7 @@ index ab944d1f94ef..6914cd8024ba 100644
  	if (ret)
  		goto out;
  
-@@ -2584,12 +2577,7 @@ static int __exclude_logged_extent(struct btrfs_fs_info *fs_info,
+@@ -2605,12 +2598,7 @@ static int __exclude_logged_extent(struct btrfs_fs_info *fs_info,
  	if (!block_group)
  		return -EINVAL;
  
@@ -347,16 +347,16 @@ index ab944d1f94ef..6914cd8024ba 100644
  	if (ret)
  		goto out;
  
-@@ -4399,7 +4387,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
- 		ffe_ctl->cached = btrfs_block_group_done(block_group);
- 		if (unlikely(!ffe_ctl->cached)) {
- 			ffe_ctl->have_caching_bg = true;
+@@ -4324,7 +4312,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
+ 		ffe_ctl.cached = btrfs_block_group_done(block_group);
+ 		if (unlikely(!ffe_ctl.cached)) {
+ 			ffe_ctl.have_caching_bg = true;
 -			ret = btrfs_cache_block_group(block_group, 0);
 +			ret = btrfs_cache_block_group(block_group, false);
  
  			/*
  			 * If we get ENOMEM here or something else we want to
-@@ -6169,13 +6157,7 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+@@ -6066,13 +6054,7 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
  
  		if (end - start >= range->minlen) {
  			if (!btrfs_block_group_done(cache)) {
