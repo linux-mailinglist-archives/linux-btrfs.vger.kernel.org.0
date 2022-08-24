@@ -2,34 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B63D59FA1E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Aug 2022 14:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C97E459FBDE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Aug 2022 15:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234682AbiHXMjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Aug 2022 08:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38328 "EHLO
+        id S238485AbiHXNn7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Aug 2022 09:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236296AbiHXMjY (ORCPT
+        with ESMTP id S237927AbiHXNmn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Aug 2022 08:39:24 -0400
-Received: from out20-219.mail.aliyun.com (out20-219.mail.aliyun.com [115.124.20.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD808E998
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Aug 2022 05:39:22 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1431015|-1;BR=01201311R111S03rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0435753-6.07244e-05-0.956364;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.P-tvXAS_1661344759;
-Received: from T640.e16-tech.com(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.P-tvXAS_1661344759)
-          by smtp.aliyun-inc.com;
-          Wed, 24 Aug 2022 20:39:20 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Wang Yugui <wangyugui@e16-tech.com>
-Subject: [PATCH v2] btrfs-progs: mkfs use same stripe/chunk size as kernel when fs > 50G
-Date:   Wed, 24 Aug 2022 20:39:19 +0800
-Message-Id: <20220824123919.31208-1-wangyugui@e16-tech.com>
-X-Mailer: git-send-email 2.36.2
+        Wed, 24 Aug 2022 09:42:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D664C7E03D
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Aug 2022 06:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1661348516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6brpFB0/duglLqKunC0MFCpekPPgM+VfGoMg7+ajU6Y=;
+        b=fAuyouk2KecBQdmxe5B3rL7rvO1P0c///Da7wwmAo2CwYYMKkW1WfQLH8EuinJ8EG1gDLW
+        0C/IXZK+ukGVq02F6tr3aDdzhsq7dKDaQgzwx5Nr74miku8Y24U0RqcqksmJ792g4TokCX
+        Auz8CncTgov545vqzoNCFGS2/FiEsxY=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-346-8N5U3jlXPW-BtiMqKKeA9g-1; Wed, 24 Aug 2022 09:41:55 -0400
+X-MC-Unique: 8N5U3jlXPW-BtiMqKKeA9g-1
+Received: by mail-qt1-f200.google.com with SMTP id o21-20020ac87c55000000b00344646ea2ccso12817123qtv.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Aug 2022 06:41:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=6brpFB0/duglLqKunC0MFCpekPPgM+VfGoMg7+ajU6Y=;
+        b=TsrErDKQuUTsPdhjMFAnW4dsrrx8wNlAOsw1XHr27cxrFGpeXgZlCuOnmWkZ8ET4nS
+         zMARa62Pqd91bCK444lBAgeg4GgGPbEd2y7p7XANi25Q41gHI6N3x8uW6bhV3JKaKDB7
+         CcdsaBUPRCMQINmkF1UpsLId1NGh5IelomLA1Tn3KEkNGF/K41p14wxZlMIjW/OANRU/
+         vMb4KLmcyEbJnDfKFcpzhqgPHjlv8XbngaO3FTsWpsqGBUugqAcgLqREnmrl0gtc1XEx
+         wONBatz5zspxgkAzie521S3Knm+7L7F3xkMyczy/Tgo0YXPG4SdxA4mxLH/p4s6APQAZ
+         Ra6A==
+X-Gm-Message-State: ACgBeo3ZlXcwuyg+cg8M62hat2em1fF65IwnioC8wF2+BOX3JBfT3Lwa
+        anxqJ5VPTf42W8WY1iNij75dq2a4jYwQXjyta9lo0nbipwQbjZVcvNr7+FO1D7C2N/j0cobjGqv
+        dkEKK6F1J0L9+Ba7SxwUH0nc=
+X-Received: by 2002:a05:622a:48c:b0:344:9d12:db79 with SMTP id p12-20020a05622a048c00b003449d12db79mr20388771qtx.351.1661348515368;
+        Wed, 24 Aug 2022 06:41:55 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR7/LsQ6s39s+BE/6b0NCioHReFFlhzfwY0fStioJ49pSgmKYNHTsO8UkKuWUq8fR3OrlRPnUA==
+X-Received: by 2002:a05:622a:48c:b0:344:9d12:db79 with SMTP id p12-20020a05622a048c00b003449d12db79mr20388740qtx.351.1661348515083;
+        Wed, 24 Aug 2022 06:41:55 -0700 (PDT)
+Received: from zlang-mailbox ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 22-20020ac85956000000b00343057845f7sm13495192qtz.20.2022.08.24.06.41.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Aug 2022 06:41:54 -0700 (PDT)
+Date:   Wed, 24 Aug 2022 21:41:48 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     bingjingc <bingjingc@synology.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        fdmanana@kernel.org, bxxxjxxg@gmail.com
+Subject: Re: [PATCH v3] fstests: btrfs: test incremental send for changed
+ reference paths
+Message-ID: <20220824134148.un2c2hq4xb6xmh7a@zlang-mailbox>
+References: <20220824104202.2505-1-bingjingc@synology.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220824104202.2505-1-bingjingc@synology.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,98 +77,145 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When mkfs.btrfs a 1TB device, the allocated chunks are
-  Data:             single            8.00MiB
-  Metadata:         DUP               1.00GiB
-  System:           DUP               8.00MiB
-After 'btrfs balance start -f', the allocated chunks are
-  Data:             single            1.00GiB
-  Metadata:         DUP               1.00GiB
-  System:           DUP               32.00MiB
+On Wed, Aug 24, 2022 at 06:42:02PM +0800, bingjingc wrote:
+> From: BingJing Chang <bingjingc@synology.com>
+> 
+> Normally btrfs stores file paths in an array of ref items. However, items
+> for the same parent directory can not exceed the size of a leaf. So btrfs
+> also store the rest of them in extended ref items alternatively.
+> 
+> In this test, it creates a large number of links under a directory causing
+> the file paths stored in these two ways to be the parent snapshot. And it
+> deletes and recreates just an amount of them that can be stored within an
+> array of ref items to be the send snapshot. Test that an incremental send
+> operation correctly issues link/unlink operations only against new/deleted
+> paths, or the receive operation will fail due to a link on an existed path.
+> 
+> This currently fails on btrfs but is fixed by a kernel patch with the
+> commit 3aa5bd367fa5a3 ("btrfs: send: fix sending link commands for
+> existing file paths")
+> 
+> Signed-off-by: BingJing Chang <bingjingc@synology.com>
+> ---
+>  tests/btrfs/272     | 91 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/272.out |  3 ++
+>  2 files changed, 94 insertions(+)
+>  create mode 100755 tests/btrfs/272
+>  create mode 100644 tests/btrfs/272.out
+> 
+> diff --git a/tests/btrfs/272 b/tests/btrfs/272
+> new file mode 100755
+> index 00000000..57dd065c
+> --- /dev/null
+> +++ b/tests/btrfs/272
+> @@ -0,0 +1,91 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2022 BingJing Chang.
+> +#
+> +# FS QA Test No. btrfs/272
+> +#
+> +# Regression test for btrfs incremental send issue where a link instruction
+> +# is sent against an existing path, causing btrfs receive to fail.
+> +#
+> +# This issue is fixed by the following linux kernel btrfs patch:
+> +#
+> +#   commit 3aa5bd367fa5a3 ("btrfs: send: fix sending link commands for
+> +#   existing file paths")
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick send
+> +
+> +# Import common functions.
+> +. ./common/filter
 
-So here we sync stripe/chunk size with kernel for the most common case that
-fs size > 50G, although there are still some cases to sync.
+I think this case doesn't use any helpers in common/filter, if so you can
+remove this line. Others looks good to me.
 
-Signed-off-by: Wang Yugui <wangyugui@e16-tech.com>
----
-changes since v1
-  import BTRFS_MAX_DATA_CHUNK_SIZE from kernel
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
- kernel-shared/volumes.c | 30 +++++++++++++++++++++++-------
- kernel-shared/volumes.h |  2 ++
- 2 files changed, 25 insertions(+), 7 deletions(-)
-
-diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
-index 40032a4b..ac82e767 100644
---- a/kernel-shared/volumes.c
-+++ b/kernel-shared/volumes.c
-@@ -1189,6 +1189,11 @@ error:
- static void init_alloc_chunk_ctl_policy_regular(struct btrfs_fs_info *info,
- 						struct alloc_chunk_ctl *ctl)
- {
-+	/*
-+	 * kernel: calc_chunk_size() init_alloc_chunk_ctl_policy_regular()
-+	 * sync stripe/chunk size with kernel when fs size > 50G
-+	 * and keep min btrfs file system size unchanged.
-+	 */
- 	u64 type = ctl->type;
- 	u64 percent_max;
- 
-@@ -1200,23 +1205,34 @@ static void init_alloc_chunk_ctl_policy_regular(struct btrfs_fs_info *info,
- 			ctl->max_stripes = BTRFS_MAX_DEVS_SYS_CHUNK;
- 		} else if (type & BTRFS_BLOCK_GROUP_DATA) {
- 			ctl->stripe_size = SZ_1G;
--			ctl->max_chunk_size = 10 * ctl->stripe_size;
-+			ctl->max_chunk_size = BTRFS_MAX_DATA_CHUNK_SIZE;
- 			ctl->min_stripe_size = SZ_64M;
- 			ctl->max_stripes = BTRFS_MAX_DEVS(info);
- 		} else if (type & BTRFS_BLOCK_GROUP_METADATA) {
--			/* For larger filesystems, use larger metadata chunks */
--			if (info->fs_devices->total_rw_bytes > 50ULL * SZ_1G)
--				ctl->max_chunk_size = SZ_1G;
--			else
--				ctl->max_chunk_size = SZ_256M;
-+			ctl->max_chunk_size = SZ_256M;
- 			ctl->stripe_size = ctl->max_chunk_size;
- 			ctl->min_stripe_size = SZ_32M;
- 			ctl->max_stripes = BTRFS_MAX_DEVS(info);
- 		}
- 	}
- 
-+	/* sync stripe/chunk size with kernel when fs size > 50G */
-+	if (info->fs_devices->total_rw_bytes > 50ULL * SZ_1G){
-+		if (type & BTRFS_BLOCK_GROUP_SYSTEM) {
-+			ctl->stripe_size = SZ_32M;
-+			ctl->max_chunk_size = ctl->stripe_size * 2;
-+		} else if (type & BTRFS_BLOCK_GROUP_DATA) {
-+			ctl->stripe_size = SZ_1G;
-+			ctl->max_chunk_size = BTRFS_MAX_DATA_CHUNK_SIZE;
-+		} else if (type & BTRFS_BLOCK_GROUP_METADATA) {
-+			ctl->max_chunk_size = SZ_1G;
-+			ctl->stripe_size = ctl->max_chunk_size;
-+		}
-+	}
-+
- 	/* We don't want a chunk larger than 10% of the FS */
--	percent_max = div_factor(btrfs_super_total_bytes(info->super_copy), 1);
-+	ASSERT(btrfs_super_total_bytes(info->super_copy) == info->fs_devices->total_rw_bytes);
-+	percent_max = div_factor(info->fs_devices->total_rw_bytes, 1);
- 	ctl->max_chunk_size = min(percent_max, ctl->max_chunk_size);
- }
- 
-diff --git a/kernel-shared/volumes.h b/kernel-shared/volumes.h
-index 6e9103a9..f5b6245a 100644
---- a/kernel-shared/volumes.h
-+++ b/kernel-shared/volumes.h
-@@ -23,6 +23,8 @@
- #include "kernel-shared/ctree.h"
- #include "kernel-lib/sizes.h"
- 
-+#define BTRFS_MAX_DATA_CHUNK_SIZE   (10ULL * SZ_1G)
-+
- #define BTRFS_STRIPE_LEN	SZ_64K
- 
- struct btrfs_device {
--- 
-2.36.2
+> +
+> +# real QA test starts here
+> +_supported_fs btrfs
+> +_fixed_by_kernel_commit 3aa5bd367fa5a3 \
+> +	"btrfs: send: fix sending link commands for existing file paths"
+> +_require_test
+> +_require_scratch
+> +_require_fssum
+> +
+> +send_files_dir=$TEST_DIR/btrfs-test-$seq
+> +
+> +rm -fr $send_files_dir
+> +mkdir $send_files_dir
+> +
+> +_scratch_mkfs >>$seqres.full 2>&1
+> +_scratch_mount
+> +
+> +# Create a file and 2000 hard links to the same inode
+> +_run_btrfs_util_prog subvolume create $SCRATCH_MNT/vol
+> +touch $SCRATCH_MNT/vol/foo
+> +for i in {1..2000}; do
+> +	link $SCRATCH_MNT/vol/foo $SCRATCH_MNT/vol/$i
+> +done
+> +
+> +# Create a snapshot for a full send operation
+> +_run_btrfs_util_prog subvolume snapshot -r $SCRATCH_MNT/vol $SCRATCH_MNT/snap1
+> +_run_btrfs_util_prog send -f $send_files_dir/1.snap $SCRATCH_MNT/snap1
+> +
+> +# Remove 2000 hard links and re-create the last 1000 links
+> +for i in {1..2000}; do
+> +	rm $SCRATCH_MNT/vol/$i
+> +done
+> +for i in {1001..2000}; do
+> +	link $SCRATCH_MNT/vol/foo $SCRATCH_MNT/vol/$i
+> +done
+> +
+> +# Create another snapshot for an incremental send operation
+> +_run_btrfs_util_prog subvolume snapshot -r $SCRATCH_MNT/vol $SCRATCH_MNT/snap2
+> +_run_btrfs_util_prog send -p $SCRATCH_MNT/snap1 -f $send_files_dir/2.snap \
+> +		     $SCRATCH_MNT/snap2
+> +
+> +$FSSUM_PROG -A -f -w $send_files_dir/1.fssum $SCRATCH_MNT/snap1
+> +$FSSUM_PROG -A -f -w $send_files_dir/2.fssum \
+> +	-x $SCRATCH_MNT/snap2/snap1 $SCRATCH_MNT/snap2
+> +
+> +# Recreate the filesystem by receiving both send streams and verify we get
+> +# the same content that the original filesystem had.
+> +_scratch_unmount
+> +_scratch_mkfs >>$seqres.full 2>&1
+> +_scratch_mount
+> +
+> +# Add the first snapshot to the new filesystem by applying the first send
+> +# stream.
+> +_run_btrfs_util_prog receive -f $send_files_dir/1.snap $SCRATCH_MNT
+> +
+> +# The incremental receive operation below used to fail with the following
+> +# error:
+> +#
+> +#    ERROR: link 1238 -> foo failed: File exists
+> +#
+> +# This is because the path "1238" was stored as an extended ref item in the
+> +# original snapshot but as a normal ref item in the next snapshot. The send
+> +# operation cannot handle the duplicated paths, which are stored in
+> +# different ways, well, so it decides to issue a link operation for the
+> +# existing path. This results in the receiver to fail with the above error.
+> +_run_btrfs_util_prog receive -f $send_files_dir/2.snap $SCRATCH_MNT
+> +
+> +$FSSUM_PROG -r $send_files_dir/1.fssum $SCRATCH_MNT/snap1
+> +$FSSUM_PROG -r $send_files_dir/2.fssum $SCRATCH_MNT/snap2
+> +
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/272.out b/tests/btrfs/272.out
+> new file mode 100644
+> index 00000000..b009b87a
+> --- /dev/null
+> +++ b/tests/btrfs/272.out
+> @@ -0,0 +1,3 @@
+> +QA output created by 272
+> +OK
+> +OK
+> -- 
+> 2.37.1
+> 
 
