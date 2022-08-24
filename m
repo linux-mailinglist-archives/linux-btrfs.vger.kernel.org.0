@@ -2,89 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D7459F269
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Aug 2022 06:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418A859F300
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Aug 2022 07:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234580AbiHXELj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Aug 2022 00:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57216 "EHLO
+        id S233701AbiHXFMQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Aug 2022 01:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbiHXELi (ORCPT
+        with ESMTP id S229660AbiHXFMO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Aug 2022 00:11:38 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FA87D1F4;
-        Tue, 23 Aug 2022 21:11:36 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id bj12so14132121ejb.13;
-        Tue, 23 Aug 2022 21:11:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=1SWmPxwQyH5LYZrwY6U9XBorttydo0GXweh3dw5/QKE=;
-        b=aB5Gk0PGmxav71TxeXANmr1pPDPghLTSfQ29XJ8LQy6WvkEb8HPfBSqN5qkhPDpuUS
-         7RXfKn4IOpvkyiAGIGpUlc8/7FaY0Z2NXa1XkOs9/zXwUfvDusGj+ct52/rKAulJ6Chf
-         lONMykmHKfe4ukqG1F/WMOfl3oqYGykOX1fErzqYsP/7D5TU7VkHGULWyaiGY8oKLumW
-         mliTpyuj5LrIBwrR10LcRQMn2zqdmDjcqi2PVcDmmBgJghBAwztDCODbjgnpxCS4XT19
-         GW9hWN6b5BneomBEXiE7nAjgVSOuT8gq6lIVEeutl71hFIevTTlSS1BwjFdshjZtW/+L
-         dL0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=1SWmPxwQyH5LYZrwY6U9XBorttydo0GXweh3dw5/QKE=;
-        b=ytJFg0LMCuvH+8J+Jm28kk/LGmDtJsscm/icAvWBSuIV8sv00XhwWFy2663dF2YzdK
-         7Pz7Hm4+OuuPaSF577dZ2/fJBQ9QwClrgcM70nCQFHT6CGHcNx3FNRa3owFV1gBEmULt
-         FpoV9vAqO262np839v6clNnU3DXXi3ZWlqXOGppqCXjvMEnqpCugMg9iUI5JDHMPzhoe
-         WLkZrYkJPE6+0jTt8vRDz8F7otjU41TwyUkuKvrK2oDfrT0AD51209kAFA9EkR6Eha1r
-         fBcGIGnMlxkezoUBe+C9TZ1YWGPWeDRTTsMAje6Pf5mGpulfMx06IrwfCSyZ2ON5Kkhi
-         FFPg==
-X-Gm-Message-State: ACgBeo17VNELAPiuBV4tlVhtWJdbkog7E4OsGXntP7TiC5J2fPvxmtPK
-        BL3/GWZWrFY55nUfex1emv8fK9Qha5EXtrhHLhOhwSMBbd2Hdw==
-X-Google-Smtp-Source: AA6agR4cufQC1ybMe0UuAZb3MJf2BHeBD6bTNPsU6naKJlaYsRTjLVGNlcd3crGT1O5HhTLM9yRM3D1aUHgdUSPVjaE=
-X-Received: by 2002:a17:907:e9e:b0:73d:69fa:9b1c with SMTP id
- ho30-20020a1709070e9e00b0073d69fa9b1cmr1551540ejc.681.1661314294805; Tue, 23
- Aug 2022 21:11:34 -0700 (PDT)
+        Wed, 24 Aug 2022 01:12:14 -0400
+Received: from out20-217.mail.aliyun.com (out20-217.mail.aliyun.com [115.124.20.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD4274DED
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Aug 2022 22:12:11 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04481984|-1;BR=01201311R591S72rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.110211-0.00648134-0.883308;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047203;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.P-Xi5gZ_1661317928;
+Received: from T640.e16-tech.com(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.P-Xi5gZ_1661317928)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Aug 2022 13:12:08 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Wang Yugui <wangyugui@e16-tech.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2] btrfs: slience the sparse warn of rcu_string
+Date:   Wed, 24 Aug 2022 13:12:08 +0800
+Message-Id: <20220824051208.19924-1-wangyugui@e16-tech.com>
+X-Mailer: git-send-email 2.36.2
 MIME-Version: 1.0
-References: <20220824004023.77310-1-vishal.moola@gmail.com> <20220824004023.77310-6-vishal.moola@gmail.com>
-In-Reply-To: <20220824004023.77310-6-vishal.moola@gmail.com>
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Wed, 24 Aug 2022 13:11:17 +0900
-Message-ID: <CAKFNMomaxii8r_B3XA4KdkvcD+9Crm=S=0KE-nDa4+qs78E4dQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/7] nilfs2: Convert nilfs_find_uncommited_extent() to
- use filemap_get_folios_contig()
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 9:43 AM Vishal Moola (Oracle)  wrote:
->
-> Converted function to use folios throughout. This is in preparation for
-> the removal of find_get_pages_contig(). Now also supports large folios.
->
-> Also cleaned up an unnecessary if statement - pvec.pages[0]->index > index
-> will always evaluate to false, and filemap_get_folios_contig() returns 0 if
-> there is no folio found at index.
->
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> ---
->  fs/nilfs2/page.c | 45 ++++++++++++++++++---------------------------
->  1 file changed, 18 insertions(+), 27 deletions(-)
+slience the sparse warn of rcu_string reported by 'make C=1'
 
-Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+warning example:
+fs/btrfs/volumes.c:2300:41: warning: incorrect type in argument 3 (different address spaces)
+fs/btrfs/volumes.c:2300:41:    expected char const *device_path
+fs/btrfs/volumes.c:2300:41:    got char [noderef] __rcu *
 
-Looks good, thank you!
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Wang Yugui <wangyugui@e16-tech.com>
+---
+changes since v1:
+ add a warn example.
+ add 'Reviewed-by: Johannes Thumshirn'.
 
+ fs/btrfs/dev-replace.c |  2 +-
+ fs/btrfs/volumes.c     | 14 +++++++-------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-Ryusuke Konishi
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index 70d001d..b30930e 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -1006,7 +1006,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+ 	btrfs_sysfs_update_devid(tgt_device);
+ 	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &src_device->dev_state))
+ 		btrfs_scratch_superblocks(fs_info, src_device->bdev,
+-					  src_device->name->str);
++					  rcu_str_deref(src_device->name));
+ 
+ 	/* write back the superblocks */
+ 	trans = btrfs_start_transaction(root, 0);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 9481108..2cd261c 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -390,7 +390,7 @@ static struct btrfs_fs_devices *alloc_fs_devices(const u8 *fsid,
+ void btrfs_free_device(struct btrfs_device *device)
+ {
+ 	WARN_ON(!list_empty(&device->post_commit_list));
+-	rcu_string_free(device->name);
++	rcu_string_free(rcu_dereference(device->name));
+ 	extent_io_tree_release(&device->alloc_state);
+ 	btrfs_destroy_dev_zone_info(device);
+ 	kfree(device);
+@@ -640,7 +640,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+ 	if (!device->name)
+ 		return -EINVAL;
+ 
+-	ret = btrfs_get_bdev_and_sb(device->name->str, flags, holder, 1,
++	ret = btrfs_get_bdev_and_sb(rcu_str_deref(device->name), flags, holder, 1,
+ 				    &bdev, &disk_super);
+ 	if (ret)
+ 		return ret;
+@@ -908,7 +908,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+ 				disk_super->fsid, devid, found_transid, path,
+ 				current->comm, task_pid_nr(current));
+ 
+-	} else if (!device->name || strcmp(device->name->str, path)) {
++	} else if (!device->name || strcmp(rcu_str_deref(device->name), path)) {
+ 		/*
+ 		 * When FS is already mounted.
+ 		 * 1. If you are here and if the device->name is NULL that
+@@ -978,7 +978,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+ 			mutex_unlock(&fs_devices->device_list_mutex);
+ 			return ERR_PTR(-ENOMEM);
+ 		}
+-		rcu_string_free(device->name);
++		rcu_string_free(rcu_dereference(device->name));
+ 		rcu_assign_pointer(device->name, name);
+ 		if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state)) {
+ 			fs_devices->missing_devices--;
+@@ -1035,7 +1035,7 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
+ 		 * uuid mutex so nothing we touch in here is going to disappear.
+ 		 */
+ 		if (orig_dev->name) {
+-			name = rcu_string_strdup(orig_dev->name->str,
++			name = rcu_string_strdup(rcu_str_deref(orig_dev->name),
+ 					GFP_KERNEL);
+ 			if (!name) {
+ 				btrfs_free_device(device);
+@@ -2217,7 +2217,7 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info,
+ 	 */
+ 	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+ 		btrfs_scratch_superblocks(fs_info, device->bdev,
+-					  device->name->str);
++					  rcu_str_deref(device->name));
+ 		if (device->bdev) {
+ 			sync_blockdev(device->bdev);
+ 			invalidate_bdev(device->bdev);
+@@ -2332,7 +2332,7 @@ void btrfs_destroy_dev_replace_tgtdev(struct btrfs_device *tgtdev)
+ 	mutex_unlock(&fs_devices->device_list_mutex);
+ 
+ 	btrfs_scratch_superblocks(tgtdev->fs_info, tgtdev->bdev,
+-				  tgtdev->name->str);
++				  rcu_str_deref(tgtdev->name));
+ 
+ 	btrfs_close_bdev(tgtdev);
+ 	synchronize_rcu();
+-- 
+2.36.2
+
