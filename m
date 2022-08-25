@@ -2,166 +2,363 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF195A0801
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Aug 2022 06:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68645A0867
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Aug 2022 07:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbiHYE2D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Aug 2022 00:28:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
+        id S233462AbiHYFUb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Aug 2022 01:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbiHYE2C (ORCPT
+        with ESMTP id S229577AbiHYFU3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Aug 2022 00:28:02 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F7877553
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Aug 2022 21:28:00 -0700 (PDT)
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20220825042758epoutp03272113607b9f21c7f5066369cabf5946~OfAY9zsdK1914419144epoutp03l
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Aug 2022 04:27:58 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20220825042758epoutp03272113607b9f21c7f5066369cabf5946~OfAY9zsdK1914419144epoutp03l
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1661401678;
-        bh=JJuWaWBA983uY23liNhORH0Mh82FAHzv6ulhPTviZ4A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=n9oBHfGGh+dkZw6T4Io5SHFr1XXKVRF/mMRgEwvfnDdUBor+yfIL6dKEuQ5lYvk3A
-         L0VZVc9Vk0vkbFyRMr1srFUHWdbD10Jnro+hDB1IGnu01dcbuEmUv9YgBOCo+dvCa1
-         SBXWQJLGuQmEkhohtf1teWiOuBmP/9Ex4D9SrYDU=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20220825042757epcas5p37271c9b4890ba1ae41c96fc192d5a2a5~OfAYFXIPb2043620436epcas5p31;
-        Thu, 25 Aug 2022 04:27:57 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.178]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4MCqhD1C4Cz4x9Q4; Thu, 25 Aug
-        2022 04:27:56 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F7.C0.25709.C4AF6036; Thu, 25 Aug 2022 13:27:56 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20220825042755epcas5p1b74cb6accae9ec3f25cc8d15d313fcbc~OfAWHl5GF0167101671epcas5p1C;
-        Thu, 25 Aug 2022 04:27:55 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20220825042755epsmtrp222750ad10fa10264323e48d4d19a62bd~OfAWGkW9b1831518315epsmtrp2L;
-        Thu, 25 Aug 2022 04:27:55 +0000 (GMT)
-X-AuditID: b6c32a49-a71ff7000000646d-d3-6306fa4caa0c
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        44.EA.14392.B4AF6036; Thu, 25 Aug 2022 13:27:55 +0900 (KST)
-Received: from test-zns (unknown [107.110.206.5]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20220825042753epsmtip22acbe0211b824db0a2630278fd0ae467~OfAUcmvsI0868208682epsmtip29;
-        Thu, 25 Aug 2022 04:27:53 +0000 (GMT)
-Date:   Thu, 25 Aug 2022 09:48:13 +0530
-From:   Kanchan Joshi <joshi.k@samsung.com>
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Adam Manzanares <a.manzanares@samsung.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "hare@suse.de" <hare@suse.de>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        Matias Bjorling <Matias.Bjorling@wdc.com>
-Subject: Re: [ANNOUNCE] CFP: Zoned Storage Microconference - Linux Plumbers
- Conference 2022
-Message-ID: <20220825041813.GA32607@test-zns>
+        Thu, 25 Aug 2022 01:20:29 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA559DB72
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Aug 2022 22:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1661404825;
+        bh=E8QYio2aovRzN6qEbqb0Ax2OBFJs17DXUe5AOzZyUjY=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=ibA8Fd8bSLdns8k4PguEmx/M2cjmDlyeco7nX+AwJ1ZHfIX0yGA81r/snC//l7Z/i
+         7s2eOtnxczk1Xyas/8U4g9OGpWg8Q4DA5ARLoVZidv5eAnAteCSIev9AHjAJZjcHBG
+         sTxgknYqItTClHzTWGIP/30GSHupTOLD/3k0iEOY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmDEg-1p9FkG1AAK-00i96n; Thu, 25
+ Aug 2022 07:20:24 +0200
+Message-ID: <c3dc352c-8393-c564-4366-42fb9ece021e@gmx.com>
+Date:   Thu, 25 Aug 2022 13:20:21 +0800
 MIME-Version: 1.0
-In-Reply-To: <589cb29e-d2aa-085f-db83-fa718f4fbef2@opensource.wdc.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmhq7PL7Zkg4mX2CymH1a0mPbhJ7PF
-        77PnmS32vpvNarFn0SQmi723tC0uPV7BbrFn70kWi8u75rBZTGj7ymxxY8JTRgduj8tXvD02
-        repk89jZep/V4/2+q2wefVtWMXpsPl3t8XmTnEf7gW6mAI6obJuM1MSU1CKF1Lzk/JTMvHRb
-        Je/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoCuVFMoSc0qBQgGJxcVK+nY2RfmlJakK
-        GfnFJbZKqQUpOQUmBXrFibnFpXnpenmpJVaGBgZGpkCFCdkZv9rvsBccF6iY/OY0UwPjbL4u
-        Rk4OCQETiVun37F0MXJxCAnsZpTYtH0eK0hCSOATo0T3Fy2IxDdGiQ2r57LAdLQ+28AGkdjL
-        KLG27TwThPOMUeLMr0WMIFUsAqoSB641AdkcHGwCmhIXJpeChEUETCXe9rSCrWMW+MMssfT2
-        MWaQhLBArMT6jjVMIDavgK7E1F9f2CBsQYmTM5+AbeYUcJOY9XU3WFxUQFniwLbjYIslBNZy
-        SBxuvckEcZ6LxOpFX5khbGGJV8e3sEPYUhKf3+1lg7CTJS7NPAdVXyLxeM9BKNteovVUP1gv
-        s0CGxKUV3VA2n0Tv7ydMIM9ICPBKdLQJQZQrStyb9JQVwhaXeDhjCZTtIfGyqZcdHnR3Vs1h
-        ncAoNwvJP7OQrICwrSQ6PzSxzgJawSwgLbH8HweEqSmxfpf+AkbWVYySqQXFuempxaYFhnmp
-        5fBITs7P3cQITrhanjsY7z74oHeIkYmD8RCjBAezkgiv1TGWZCHelMTKqtSi/Pii0pzU4kOM
-        psD4mcgsJZqcD0z5eSXxhiaWBiZmZmYmlsZmhkrivFO0GZOFBNITS1KzU1MLUotg+pg4OKUa
-        mCJqHvjydb5d96hSzHhFxmW9vWdjnTYsyY9YKOMSEbJ2wu0FvN6b3m+v+rROqcJJobQvKWb7
-        73Ux3h+ZQrcc31x2fPWrxdzGrOfunE7z3bX7kkHG1/MaET72YueWPbD8s/bm/spG6bVzNYum
-        zjjoIx/FW6Hy4rHLWuHLTnodXi+17076dFehI1027sVRv5SyH2/LXPX4PgeVvjJcvU2NSSNY
-        2UjvQ+2SS01a8ecqXF+EvVzoY2865z77ryP8my7MabKKs2USkLO+N39T+oMpB9Tbth003XrI
-        5NCiSUtcUha95d1zQM/ZJaXqfZ7YQp4t+0UXqb6b7L3I79PH84mM871u32s66vqM/XVG7vwP
-        +0OVWIozEg21mIuKEwFJCHwWQQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNLMWRmVeSWpSXmKPExsWy7bCSvK73L7Zkg1vrVS2mH1a0mPbhJ7PF
-        77PnmS32vpvNarFn0SQmi723tC0uPV7BbrFn70kWi8u75rBZTGj7ymxxY8JTRgduj8tXvD02
-        repk89jZep/V4/2+q2wefVtWMXpsPl3t8XmTnEf7gW6mAI4oLpuU1JzMstQifbsEroybf76z
-        F/zkrbjwML+B8Tl3FyMnh4SAiUTrsw1sXYxcHEICuxkl1jfcZINIiEs0X/vBDmELS6z89xzM
-        FhJ4wijRs84UxGYRUJU4cK2JsYuRg4NNQFPiwuRSkLCIgKnE255WFpCZzAINLBJvTl9nBUkI
-        C8RKrO9YwwRi8wroSkz99QVq8TdGibb9GxghEoISJ2c+YQGxmQXMJOZtfsgMsoBZQFpi+T8O
-        kDCngJvErK+7we4UFVCWOLDtONMERsFZSLpnIemehdC9gJF5FaNkakFxbnpusWGBYV5quV5x
-        Ym5xaV66XnJ+7iZGcPxoae5g3L7qg94hRiYOxkOMEhzMSiK8VsdYkoV4UxIrq1KL8uOLSnNS
-        iw8xSnOwKInzXug6GS8kkJ5YkpqdmlqQWgSTZeLglGpgmiAaerlQqOTmN07t33MV3aJO1P+z
-        sWuZdsv4cpr2um3ZV/pY1t5s5fkgpBGxgYn1eLNqTOwX9ua/AZciLWe9eWzizfF++qacsm+f
-        Z1dnWzXFnO/z/q7Hy3Orsc8iJZJns8D0NhmGhm4jle1+2zs5ujLcuO5d/TNJIHXG+2ntAU6H
-        PIurt18M2t0tPmPiqRMHwl3aZsRn671vO5d6YjK/2ZtTTN+rHeo4zpYEfZXZr/966aYyM/FZ
-        WY7WZ9Vczh2UdTfc/ftQxuJVwf1G6vcWeslzKGcc2px3dn+WWc/317tKnOt1k/c+Cf+sy838
-        ePuFv+5Z6xf4la91M66ZHr30KEc4x91HJxsXVK69sqRNiaU4I9FQi7moOBEAaSYJoQ4DAAA=
-X-CMS-MailID: 20220825042755epcas5p1b74cb6accae9ec3f25cc8d15d313fcbc
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----_GKj2UxOoZMooFpgW.UaNJF5RnPKrhbpXXK.PgNceyCDa.V5=_a7674_"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20220522220139uscas1p1e3426b4457e0753c701e9917fe3ec6d2
-References: <CGME20220522220139uscas1p1e3426b4457e0753c701e9917fe3ec6d2@uscas1p1.samsung.com>
-        <20220522220128.GA347919@bgt-140510-bm01>
-        <89b2bb4b-1848-22cc-9814-6cb6726afc18@acm.org>
-        <589cb29e-d2aa-085f-db83-fa718f4fbef2@opensource.wdc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Content-Language: en-US
+To:     Li Zhang <zhanglikernel@gmail.com>, linux-btrfs@vger.kernel.org
+References: <1661357103-22735-1-git-send-email-zhanglikernel@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH] Make btrfs_prepare_device parallel during mkfs.btrfs
+In-Reply-To: <1661357103-22735-1-git-send-email-zhanglikernel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vsP4mZ4hbbhXG/E3HRh7KMTCPhS0zdXCgblZyVAzr4L4TpB4M6z
+ 8oLp1Pu+E9yS4YLC5G+0D/lkgIO9pGuLhVZJ99yLD0SIG9+WcgjGjYeFo9+Tzvz3mmXz/J4
+ ZVkvv/RTm/Q4VcX4NYbL8TGC7erY7u+3vnAP/2p4MULxgqTj0P5Mjs9ixepxGSxc3hcaUMA
+ NP0tvVtEn2AqXrE4vjXMw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Le3licDkjRE=:vvtuyz1K5v0Vk/YnpBmHTn
+ wUynbsJ8SeipvGROmpXkJaO1z65t2/CndFdgVJ3Y4ZaC4GWfClEEn/IGS/kYbtOcXu4PaBqw+
+ cADZ2SDYCOPylb4IXh5eM2kgTDo/c6pd+QAa6d7q6pzVnat4UAYM9izwMnNow1f0e+zV7ailA
+ qJnEGFkDG7cmOQBO5Epx4fZJ5fTdZ7agDLUO9P41U5vagn45Wzzf47Pk300x3IDz6c7oZAtFo
+ 0UxM816f2C52KoySU7rhLOZjrRduUeiX/FFv+2IjM9PQ5JEsHdpny1JEIyOK+AwcHm6X+5OwV
+ j/J1BK7tNiapW7pUuvXd2QwOigqF7bP63cB9vRMtbHVC3AxHLfqmNoUJMP1Bp+9NK4eW3n8WO
+ A+Z70rfZ6i8bCTs+L1PqcfwH6kID+5HnxpX/WF97La0jHisd3cHoq4D9F2VHUi08hbgqMT7Cy
+ 8eo8z9vJFtbpix32jOMAWrOGJH095tze+0h+tp1njkYklU1r8zybVxi3CaAnzevTGfujfepSa
+ mauddDv73Uq6ihQLv6D3wAASpAgAyGKBRIKD1rYLUsQBMTkN7CT0nwFN3mOMFXMNP7/AATBo/
+ jZwoR/8S7cKo+iqF3UriyNz8p+kRDQBVFvREZ2MU+tPTmq8X6LrG68wUIUZ9ZoNESFwWA12q2
+ JbRl1+RrBSJ7hcSyt9cjtcXJk0Rf2cgmcrpF4HR0lTp8P+4F9cFcOsTY7gw/RxHdoCb4UpCxH
+ dWOcOXja5iL7MkpP53wY2qp2ov5o3rVWy03VWG0oNHZWE6XOlLjtkQhJFyKfnvahcGsZ+DO6g
+ 2NiPE3Vkwk5Sk8PU2RmGsCjRECTPxiVVIraqj9RHiULs4bIRyem2mxoYb6mMLGV0ehA111+R+
+ 5f/SK6k9j+u4n2UVCJL5nrXy6hUUsMxdhQ+6ubsniyAQbERZkwU2RWvIqYm843BM6deCpw0KA
+ oM0TCMYUj3wBog4JaSfgwMkwFYNjd+MF5Wcde4fafL65CzaEwhZ5vJK5pwDRy/g/eIzn6zxrx
+ pdymXXJJlJWT0J/pCMq/Kgfd1i6pE6F5RrRebPea94yrtNp4BiCfYkQVd1dvUQ/UkMq58dkLP
+ HdwwKZc06yBea4Hq7Z7NsOikoYjhjy4r6a2fi98y5y/SmvBVUP+aR+lbg==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-------_GKj2UxOoZMooFpgW.UaNJF5RnPKrhbpXXK.PgNceyCDa.V5=_a7674_
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Disposition: inline
 
-On Wed, Aug 24, 2022 at 05:15:28PM -0700, Damien Le Moal wrote:
->On 2022/08/24 16:43, Bart Van Assche wrote:
->> On 5/22/22 15:01, Adam Manzanares wrote:
->>> Zoned Storage Devices (SMR HDDs and ZNS SSDs) have demonstrated that they can
->>> improve storage capacity, throughput, and latency over conventional storage
->>> devices for many workloads. Zoned storage technology is deployed at scale in
->>> some of the largest data centers in the world. There's already a
->>> well-established set of storage vendors with increasing device availability and
->>> a mature software foundation for interacting with zoned storage devices is
->>> available. Zoned storage software support is evolving and their is room for
->>> increased file-system support and additional userspace applications.
->>>
->>> The Zoned Storage microconference focuses on evolving the Linux zoned
->>> storage ecosystem by improving kernel support, file systems, and applications.
->>> In addition, the forum allows us to open the discussion to incorporate and grow
->>> the zoned storage community making sure to meet everyone's needs and
->>> expectations. Finally, it is an excellent opportunity for anyone interested in
->>> zoned storage devices to meet and discuss how we can move the ecosystem forward
->>> together.
->>
->> Hi Adam,
->>
->> On https://protect2.fireeye.com/v1/url?k=755e6c2c-14d5791a-755fe763-000babff9b5d-6defb9d76a932655&q=1&e=e97b90a0-a315-4359-9fee-2976775b532e&u=https%3A%2F%2Flpc.events%2Fevent%2F16%2Fcontributions%2F1147%2F I see four speakers
->> but no agenda? Will an agenda be added before the microconference starts?
+
+On 2022/8/25 00:05, Li Zhang wrote:
+> [enhancement]
+> When a disk is formatted as btrfs, it calls
+> btrfs_prepare_device for each device, which takes too much time.
+
+The idea is awesome.
+
 >
->And the speaker list is not up-to-date either. I am a speaker too :)
+> [implementation]
+> Put each btrfs_prepare_device into a thread,
+> wait for the first thread to complete to mkfs.btrfs,
+> and wait for other threads to complete before adding
+> other devices to the file system.
+>
+> [test]
+> Using the btrfs-progs test case mkfs-tests, mkfs.btrfs works fine.
+>
+> But I don't have an actual zoed device,
+> so I don't know how much time it saves, If you guys
+> have a way to test it, please let me know.
+>
+> Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
+> ---
+> Issue: 496
+>
+>   mkfs/main.c | 113 +++++++++++++++++++++++++++++++++++++++++++++-------=
+--------
+>   1 file changed, 86 insertions(+), 27 deletions(-)
+>
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index ce096d3..35fefe2 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -31,6 +31,7 @@
+>   #include <uuid/uuid.h>
+>   #include <ctype.h>
+>   #include <blkid/blkid.h>
+> +#include <pthread.h>
+>   #include "kernel-shared/ctree.h"
+>   #include "kernel-shared/disk-io.h"
+>   #include "kernel-shared/free-space-tree.h"
+> @@ -60,6 +61,18 @@ struct mkfs_allocation {
+>   	u64 system;
+>   };
+>
+> +
+> +struct prepare_device_progress {
+> +	char *file;
+> +	u64 dev_block_count;
+> +	u64 block_count;
 
-This page shows the agenda: https://lpc.events/event/16/sessions/149/#20220914
+> +	bool zero_end;
+> +	bool discard;
+> +	bool zoned;
+> +	int oflags;
 
-------_GKj2UxOoZMooFpgW.UaNJF5RnPKrhbpXXK.PgNceyCDa.V5=_a7674_
-Content-Type: text/plain; charset="utf-8"
+A small nitpick.
+
+Aren't those 4 values the same shared by all devices?
+Thus I'm not sure if they need to be put into prepare_device_progress at
+all.
+
+IIRC, we may want some shared memory between all the threads:
+
+- A pthread_mutex
+   Will be explained later
+
+- All the other shared infos like above flags/oflags
+
+It can be global or passed by some pointers.
+
+> +	int ret;
+> +};
+> +
+>   static int create_metadata_block_groups(struct btrfs_root *root, bool =
+mixed,
+>   				struct mkfs_allocation *allocation)
+>   {
+> @@ -969,6 +982,28 @@ fail:
+>   	return ret;
+>   }
+>
+> +static void *prepare_one_dev(void *ctx)
+> +{
+> +	struct prepare_device_progress *prepare_ctx =3D ctx;
+> +	int fd;
+> +
+> +	fd =3D open(prepare_ctx->file, prepare_ctx->oflags);
+> +	if (fd < 0) {
+> +		error("unable to open %s: %m", prepare_ctx->file);
+
+If we have no permission for all devices (pretty common in fact, e.g.
+forgot to use sudo), we will have multiple threads printing out the same
+time.
+
+Without a lock, the output will be a mess.
+
+Thus we may want a mutex, even it's just for synchronizing the output.
+
+> +		prepare_ctx->ret =3D fd;
+> +		return NULL;
+> +	}
+> +	prepare_ctx->ret =3D btrfs_prepare_device(fd,
+> +		prepare_ctx->file, &prepare_ctx->dev_block_count,
+> +		prepare_ctx->block_count,
+> +		(bconf.verbose ? PREP_DEVICE_VERBOSE : 0) |
+> +		(prepare_ctx->zero_end ? PREP_DEVICE_ZERO_END : 0) |
+> +		(prepare_ctx->discard ? PREP_DEVICE_DISCARD : 0) |
+> +		(prepare_ctx->zoned ? PREP_DEVICE_ZONED : 0));
+> +	close(fd);
+> +	return NULL;
+> +}
+> +
+>   int BOX_MAIN(mkfs)(int argc, char **argv)
+>   {
+>   	char *file;
+> @@ -997,7 +1032,6 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   	bool ssd =3D false;
+>   	bool zoned =3D false;
+>   	bool force_overwrite =3D false;
+> -	int oflags;
+>   	char *source_dir =3D NULL;
+>   	bool source_dir_set =3D false;
+>   	bool shrink_rootdir =3D false;
+> @@ -1006,6 +1040,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   	u64 shrink_size;
+>   	int dev_cnt =3D 0;
+>   	int saved_optind;
+> +	pthread_t *t_prepare =3D NULL;
+> +	struct prepare_device_progress *prepare_ctx =3D NULL;
+>   	char fs_uuid[BTRFS_UUID_UNPARSED_SIZE] =3D { 0 };
+>   	u64 features =3D BTRFS_MKFS_DEFAULT_FEATURES;
+>   	u64 runtime_features =3D BTRFS_MKFS_DEFAULT_RUNTIME_FEATURES;
+> @@ -1428,29 +1464,45 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   		goto error;
+>   	}
+>
+> -	dev_cnt--;
+> -
+> -	oflags =3D O_RDWR;
+> -	if (zoned && zoned_model(file) =3D=3D ZONED_HOST_MANAGED)
+> -		oflags |=3D O_DIRECT;
+> +	t_prepare =3D malloc(dev_cnt * sizeof(*t_prepare));
+> +	prepare_ctx =3D malloc(dev_cnt * sizeof(*prepare_ctx));
+>
+> -	/*
+> -	 * Open without O_EXCL so that the problem should not occur by the
+> -	 * following operation in kernel:
+> -	 * (btrfs_register_one_device() fails if O_EXCL is on)
+> -	 */
+> -	fd =3D open(file, oflags);
+> -	if (fd < 0) {
+> -		error("unable to open %s: %m", file);
+> +	if (!t_prepare || !prepare_ctx) {
+> +		error("unable to prepare dev");
+
+Isn't this ENOMEM? The message doesn't seem to match the situation.
+
+>   		goto error;
+>   	}
+> -	ret =3D btrfs_prepare_device(fd, file, &dev_block_count, block_count,
+> -			(zero_end ? PREP_DEVICE_ZERO_END : 0) |
+> -			(discard ? PREP_DEVICE_DISCARD : 0) |
+> -			(bconf.verbose ? PREP_DEVICE_VERBOSE : 0) |
+> -			(zoned ? PREP_DEVICE_ZONED : 0));
+> +
+> +	for (i =3D 0; i < dev_cnt; i++) {
+> +		prepare_ctx[i].file =3D argv[optind + i - 1];
+> +		prepare_ctx[i].block_count =3D block_count;
+> +		prepare_ctx[i].dev_block_count =3D block_count;
+> +		prepare_ctx[i].zero_end =3D zero_end;
+> +		prepare_ctx[i].discard =3D discard;
+> +		prepare_ctx[i].zoned =3D zoned;
+> +		if (i =3D=3D 0) {
+> +			prepare_ctx[i].oflags =3D O_RDWR;
+> +			/*
+> +			 * Open without O_EXCL so that the problem should
+> +			 * not occur by the following operation in kernel:
+> +			 * (btrfs_register_one_device() fails if O_EXCL is on)
+> +			 */
+
+The comment seems out-dated, no O_EXCL involved anywhere.
+
+> +			if (zoned && zoned_model(file) =3D=3D ZONED_HOST_MANAGED)
+> +				prepare_ctx[i].oflags =3D O_RDWR | O_DIRECT;
+
+Do we need to treat the initial and other devices differently?
+
+Can't we use the same flags for all devices?
 
 
-------_GKj2UxOoZMooFpgW.UaNJF5RnPKrhbpXXK.PgNceyCDa.V5=_a7674_--
+> +		} else {
+> +			prepare_ctx[i].oflags =3D O_RDWR;
+> +		}
+> +		ret =3D pthread_create(&t_prepare[i], NULL,
+> +			prepare_one_dev, &prepare_ctx[i]);
+> +	}
+> +	pthread_join(t_prepare[0], NULL);
+> +	ret =3D prepare_ctx[0].ret; > +
+
+Can't we just wait for all devices?
+
+I don't think treating them different could have much benefit.
+
+Yes, we can have multiple-devices with different performance
+characteristics, thus if the first device is the fastest one, it may
+finish before all the others.
+
+But this also means, the first one can be the slowest.
+
+To me, parallel initialization is already a big enough improvement, and
+for the most common case, all the devices should have the same or
+similar performance characteristics, thus waiting for them all shouldn't
+cause much difference.
+
+>   	if (ret)
+>   		goto error;
+> +
+> +	dev_cnt--;
+> +	fd =3D open(file, prepare_ctx[0].oflags);
+> +	dev_block_count =3D prepare_ctx[0].dev_block_count;
+>   	if (block_count && block_count > dev_block_count) {
+>   		error("%s is smaller than requested size, expected %llu, found %llu"=
+,
+>   		      file, (unsigned long long)block_count,
+> @@ -1459,7 +1511,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   	}
+>
+>   	/* To create the first block group and chunk 0 in make_btrfs */
+> -	system_group_size =3D zoned ?  zone_size(file) : BTRFS_MKFS_SYSTEM_GRO=
+UP_SIZE;
+> +	system_group_size =3D zoned ? zone_size(file) : BTRFS_MKFS_SYSTEM_GROU=
+P_SIZE;
+>   	if (dev_block_count < system_group_size) {
+>   		error("device is too small to make filesystem, must be at least %llu=
+",
+>   				(unsigned long long)system_group_size);
+> @@ -1557,6 +1609,12 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   	if (dev_cnt =3D=3D 0)
+>   		goto raid_groups;
+>
+> +	for (i =3D 0 ; i < dev_cnt; i++) {
+> +		pthread_join(t_prepare[i+1], NULL);
+> +		if (prepare_ctx[i+1].ret) {
+> +			goto error;
+> +		}
+> +	}
+>   	while (dev_cnt-- > 0) {
+>   		file =3D argv[optind++];
+>
+> @@ -1578,12 +1636,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   			close(fd);
+>   			continue;
+>   		}
+> -		ret =3D btrfs_prepare_device(fd, file, &dev_block_count,
+> -				block_count,
+> -				(bconf.verbose ? PREP_DEVICE_VERBOSE : 0) |
+> -				(zero_end ? PREP_DEVICE_ZERO_END : 0) |
+> -				(discard ? PREP_DEVICE_DISCARD : 0) |
+> -				(zoned ? PREP_DEVICE_ZONED : 0));
+> +		dev_block_count =3D prepare_ctx[argc - saved_optind - dev_cnt - 1]
+> +			.dev_block_count;
+> +
+>   		if (ret) {
+>   			goto error;
+>   		}
+
+This goto error is a dead code now.
+
+Thanks for the great idea on reducing the preparation time!
+Qu
+
+> @@ -1763,12 +1818,16 @@ out:
+>
+>   	btrfs_close_all_devices();
+>   	free(label);
+> -
+> +	free(t_prepare);
+> +	free(prepare_ctx);
+>   	return !!ret;
+> +
+>   error:
+>   	if (fd > 0)
+>   		close(fd);
+>
+> +	free(t_prepare);
+> +	free(prepare_ctx);
+>   	free(label);
+>   	exit(1);
+>   success:
