@@ -2,144 +2,455 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4A85A0508
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Aug 2022 02:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED94D5A0524
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Aug 2022 02:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbiHYAPk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Aug 2022 20:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48892 "EHLO
+        id S229503AbiHYATn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Aug 2022 20:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232020AbiHYAPe (ORCPT
+        with ESMTP id S229437AbiHYATm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Aug 2022 20:15:34 -0400
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526D56A480
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Aug 2022 17:15:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1661386532; x=1692922532;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=NQ6YMt/Gh3taRCiJQmF6o9X3VadrlfeoDwP2+Ym6YvI=;
-  b=hcFtx2RS41kUYL7B0Pc4f21k766wGl+ithFnBZylk82eHPJ9sIL6lRNI
-   qyAAhxp6B0FJKXVJfs/pEXDO2BlXwD6sUUPmEb/nhaQ459vv4HJiKTx9V
-   94cFhMP07Kvf2f2yxe7tMrdi4k/cGJyDIw52l0DaGMFsK8G73M2jfPHNg
-   pTHli5cQlfQgHDwwf37sLP13l7YSejMGRFYdrECFxoiE5eecPZOBXrHep
-   JWXZ4s3/pueoTB51PYH8JKl6Jhxk4W2u9o4zpIPffjHEDOURSa4FYHpdN
-   qMsJj1hL7oZWjhA3M+3RnnsHu5X/ikVtauzMCEKrZqUpg0+QIr/Ox4nJ5
-   A==;
-X-IronPort-AV: E=Sophos;i="5.93,261,1654531200"; 
-   d="scan'208";a="214736282"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 25 Aug 2022 08:15:32 +0800
-IronPort-SDR: URXle3Et0iO3H4F7vo/tn5pkINiIuzeSXZxJ2bPXCm62E9DYDGX51EKGqaVAF4gnoh2Plmehj4
- 1SWSN1XLqM/ScDEM2wth35uB6TWmvvQ8/fzOrobm/g+CwOeupQCFokFLAhJ52zG6PBQZlfukIL
- A9OTzY7EP3ynMJBwvOoNDE8CFD43IeuVWBLO/aLsuyIl5pYpm7Jqv8nD1OPpE0n/awgDWrtqQy
- uKuNY+vtrlqAHlzAnlrY0ZCFMjBXpe2fGcdGvVhM1DtGNZMed5YqNS/YR1R9tY85zpljxWckFD
- KjPMv1KihDMYyyzzkNp08aip
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 24 Aug 2022 16:30:48 -0700
-IronPort-SDR: h4awsZmya/Zwt7vIvk0kzm6KrUsxQAHCdhcyCTo6mJ1w1H7yY6ds9w92O8HLLuu8630HvHvAA8
- DaTKr2rn5yJIhMyj2mQn/VPwl2efydlqtARiqVmcifji5exRzlY+u16zP8BCdUBUmn047hNqLt
- 1AQXs18jJm8auFGYkJd7hcKz1zoOahLi2dALkdPs0bp//DUHAAfXogsnlaZPp42sFN+I9KAeKL
- WQjaZckhIJnG3tayCV9Vb8KO3+hm2Df7LV792tDCcr1bIKlxwhzgr1I5Syj6Pp/mEdxGQrVJIr
- 3gc=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 24 Aug 2022 17:15:32 -0700
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4MCk501C5vz1Rwqy
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Aug 2022 17:15:32 -0700 (PDT)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1661386531; x=1663978532; bh=NQ6YMt/Gh3taRCiJQmF6o9X3VadrlfeoDwP
-        2+Ym6YvI=; b=f5MKhf91jeWoqx69eVdOIig+38dZxi+8cPTnEjrYiTHKWYrPk+B
-        a5kmyUfMwt6cEXwxmhQk4QvPfXUcoAUSAWGQloBjtsLUEqN8ktQppXAD8ZtClzdE
-        NE1uwE3jShdZDkNxMS0jTSHBnqYOpDEen6hEuUVxAvdlHgFio2LzxtyYeZLBnwvo
-        irB64osQy9PBKQZ/YmKia3WZ18mfysJO5HX2a/s290hL2x5c1bSWYO+t6n9JDRD1
-        oihFUUTCk+/B6eKFKrb96lGnlP3DXrLv14Qmu8tvqBSHNlJ6HxAyKEd8Nt1lte5Y
-        cWcNGao12pCCDQMmnzINr/JEXDp25pWqshQ==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id zUGW3UrPC1Cg for <linux-btrfs@vger.kernel.org>;
-        Wed, 24 Aug 2022 17:15:31 -0700 (PDT)
-Received: from [10.89.82.240] (c02drav6md6t.dhcp.fujisawa.hgst.com [10.89.82.240])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4MCk4x5QNsz1RtVk;
-        Wed, 24 Aug 2022 17:15:29 -0700 (PDT)
-Message-ID: <589cb29e-d2aa-085f-db83-fa718f4fbef2@opensource.wdc.com>
-Date:   Wed, 24 Aug 2022 17:15:28 -0700
+        Wed, 24 Aug 2022 20:19:42 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89FD8A1E0
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Aug 2022 17:19:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1661386774;
+        bh=gFlKGvV5DWcjvcg5rXIeY0jNaw29x+L7wqieY991F+E=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=QNM8Y7AE4p22D2UM1f456kKLAjWfAXN5s3zHM/88eh021OlbgvCMRZX+98XikHRqu
+         /Kou/2e78Q7p7sxN7AJxMMmv/c3s8lE+JUkRrAHfv48rrys8pa7J8PRAH2pBw8Ojdb
+         /uDwM3Ek75FlM17mhYevZiGN8oI7uW9inkyVZ1DY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MlNp7-1pAIB62ran-00lln6; Thu, 25
+ Aug 2022 02:19:34 +0200
+Message-ID: <c550b374-5c74-c2dd-6f1f-7270f31d1800@gmx.com>
+Date:   Thu, 25 Aug 2022 08:19:30 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.12.0
-Subject: Re: [ANNOUNCE] CFP: Zoned Storage Microconference - Linux Plumbers
- Conference 2022
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Subject: Re: [PATCH v3] btrfs: check the superblock to ensure the fs is not
+ modified at thaw time
 Content-Language: en-US
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Adam Manzanares <a.manzanares@samsung.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "hare@suse.de" <hare@suse.de>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        Matias Bjorling <Matias.Bjorling@wdc.com>
-References: <CGME20220522220139uscas1p1e3426b4457e0753c701e9917fe3ec6d2@uscas1p1.samsung.com>
- <20220522220128.GA347919@bgt-140510-bm01>
- <89b2bb4b-1848-22cc-9814-6cb6726afc18@acm.org>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <89b2bb4b-1848-22cc-9814-6cb6726afc18@acm.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     Goffredo Baroncelli <kreijack@libero.it>
+References: <e0a051edb23223036ebe21a01dd5d9ab63e54cc9.1661343122.git.wqu@suse.com>
+ <7a0a875d-c3de-2f65-65c0-9750b6e1d9c1@oracle.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <7a0a875d-c3de-2f65-65c0-9750b6e1d9c1@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wS4+ieQeJ0BzzfAFH2ZSzfcyi71DPu0ICpIc0dJ62RUcUWHRu4q
+ rggTHISP+JOBHzWcm0aylH4PExPiR4Jkam2PKYI2zHrfkFuyYhL0DlQUhUFb1Bb/f0hnh5G
+ 5TPSTU7k7ef6dkE8YJoHEbJBa9XfCDNtJpPzN98QO6tdsmd5YtiSmPWeqsjbGYscgbIRyV6
+ DFmcLUu1GGzJi9v9PlQfg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:G6a9VcDynSw=:KVOibudnHT7KlvY71nsr7X
+ DyzrVdWQZBxDmYexYec7h3/01cteCy6NivpVXSusl8xCWsec3q55Hlkqzj/Xrzr3CpEbPBBSu
+ qhgzV4jKjPagQ3+I/glBvw9FMWF/WuQCm68gnZ3rXBYeIoZNlghwo79ODYXWTfjXs3r2XjqcO
+ 89S2kVjlB+A8l+4Y87pwxCGEmIQtFS9YtECV92gNe3+HL9fSeS61yzyptvvCzDMfz9rp9fLyt
+ yfOAJsoo/Vb1DvG015DFaLR7Oy/3Z2SJWVrsUhr+UL2Nquo6cwgOYPpQel5InzUQdV09CPj7+
+ +5ofzzl7Zg+9ivt19VXQ5J1EG+rJ7evlNF4CKmLPqeJD1v7F9Nrq99ThVjqiKN1VpSrJJ94fR
+ V41N7fqybWPToqA8X/ANvV/5iPJ+yISAMxdn/M52COxvJ6++BTOIzT6SM53uMBaa8U65k8UsH
+ jvjbE0hEyBdARRlGj9Z5UdDhGWnTaPDE8fFGWrRvJZYH3o6jxIZZq3R//RpoYwRPKSdG67ZNm
+ SolIDDVBkoFUHWzbhPfD4G+BHZVBctvWhExVAFhUXFU7YcenrSV1/AbD2mMkE961H3UAXpikK
+ U/HclvMAe48RsjQ+iuEyrVdL9ITpdbTmsVGd8YIaddu72i6eStae7mxSIc8qISukL8X1kFm+0
+ emOzipEFKoactfLBy5OJFv6cT1A6UNA7xtBLIkXyRzgkQ9+/FIPRpjuwAPsJ8f3EBa0+ZtCsy
+ 01wMkPi8FebaMzm9TDbSyVrjEPcF97Dx14raEa8SQqDTrpEcCIJlUnNAZhFCv50EcIQSQT0ls
+ f5kUWV5+ORqK06gDmTYdSm4PE63fNu9ompnW76lVLDCTtTMaI+nqfdteJ/ZpTGpjmooxRJqVy
+ QTZpRSIxhlkKJ4xnsO2rRtYbSJQWFTwXtgK2oVhKhpXOiwXSik99Z2wVRIhHWB7MacP2F2qKm
+ WbQIR6vol5ERBlcjgmuuXjVJjf220afFfhewepCUUiMjDWS3eGLbi43lw4MnWaqAvdt1rdT8f
+ uFzaIvptYdB/w6/fnjW9FMUS5VFYcvKOm975qw6uVGeLtIxgxDZRRT3j1Zxl/pziZz16gMHqA
+ h3PGJYWlLnGQ6Qk5s2A9eaDgZy5EC7lI+2hJstVk8k1NSOEnPieU/lv6g==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2022/08/24 16:43, Bart Van Assche wrote:
-> On 5/22/22 15:01, Adam Manzanares wrote:
->> Zoned Storage Devices (SMR HDDs and ZNS SSDs) have demonstrated that they can
->> improve storage capacity, throughput, and latency over conventional storage
->> devices for many workloads. Zoned storage technology is deployed at scale in
->> some of the largest data centers in the world. There's already a
->> well-established set of storage vendors with increasing device availability and
->> a mature software foundation for interacting with zoned storage devices is
->> available. Zoned storage software support is evolving and their is room for
->> increased file-system support and additional userspace applications.
+
+
+On 2022/8/25 07:55, Anand Jain wrote:
+> On 8/24/22 20:16, Qu Wenruo wrote:
+>> [BACKGROUND]
+>> There is an incident report that, one user hibernated the system, with
+>> one btrfs on removable device still mounted.
 >>
->> The Zoned Storage microconference focuses on evolving the Linux zoned
->> storage ecosystem by improving kernel support, file systems, and applications.
->> In addition, the forum allows us to open the discussion to incorporate and grow
->> the zoned storage community making sure to meet everyone's needs and
->> expectations. Finally, it is an excellent opportunity for anyone interested in
->> zoned storage devices to meet and discuss how we can move the ecosystem forward
->> together.
-> 
-> Hi Adam,
-> 
-> On https://lpc.events/event/16/contributions/1147/ I see four speakers 
-> but no agenda? Will an agenda be added before the microconference starts?
+>> Then by some incident, the btrfs got mounted and modified by another
+>> system/OS, then back to the hibernated system.
+>>
+>> After resuming from the hibernation, new write happened into the
+>> victim btrfs.
+>>
+>> Now the fs is completely broken, since the underlying btrfs is no longe=
+r
+>> the same one before the hibernation, and the user lost their data due t=
+o
+>> various transid mismatch.
+>>
+>> [REPRODUCER]
+>> We can emulate the situation using the following small script:
+>>
+>> =C2=A0 truncate -s 1G $dev
+>> =C2=A0 mkfs.btrfs -f $dev
+>> =C2=A0 mount $dev $mnt
+>> =C2=A0 fsstress -w -d $mnt -n 500
+>> =C2=A0 sync
+>> =C2=A0 xfs_freeze -f $mnt
+>> =C2=A0 cp $dev $dev.backup
+>>
+>> =C2=A0 # There is no way to mount the same cloned fs on the same system=
+,
+>> =C2=A0 # as the conflicting fsid will be rejected by btrfs.
+>> =C2=A0 # Thus here we have to wipe the fs using a different btrfs.
+>> =C2=A0 mkfs.btrfs -f $dev.backup
+>>
+>> =C2=A0 dd if=3D$dev.backup of=3D$dev bs=3D1M
+>> =C2=A0 xfs_freeze -u $mnt
+>> =C2=A0 fsstress -w -d $mnt -n 20
+>> =C2=A0 umount $mnt
+>> =C2=A0 btrfs check $dev
+>>
+>> The final fsck will fail due to some tree blocks has incorrect fsid.
+>>
+>> This is enough to emulate the problem hit by the unfortunate user.
+>>
+>> [ENHANCEMENT]
+>> Although such case should not be that common, it can still happen from
+>> time to time.
+>>
+>> =C2=A0From the view of btrfs, we can detect any unexpected super block =
+change,
+>> and if there is any unexpected change, we just mark the fs read-only, a=
+nd
+>> thaw the fs.
+>>
+>> By this we can limit the damage to minimal, and I hope no one would los=
+e
+>> their data by this anymore.
+>>
+>> Suggested-by: Goffredo Baroncelli <kreijack@libero.it>
+>> Link:
+>> https://lore.kernel.org/linux-btrfs/83bf3b4b-7f4c-387a-b286-9251e3991e3=
+4@bluemole.com/
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+>
+> A nit below.
+>
+>> ---
+>> Changelog:
+>> v3:
+>> - Use invalidate_inode_pages2_range() to avoid tricky page alignment
+>> =C2=A0=C2=A0 Previously I use truncate_inode_pages_range() with page al=
+igned range.
+>> =C2=A0=C2=A0 But this can be confusing since truncate_inode_pages_ragen=
+() can
+>> =C2=A0=C2=A0 fill unaligned range with zero. (thus I intentionally alig=
+n the
+>> =C2=A0=C2=A0 range).
+>>
+>> =C2=A0=C2=A0 Since we're only interesting dropping the page cache, use
+>> =C2=A0=C2=A0 invalidate_inode_pages2_range() should be better.
+>>
+>> - Export btrfs_validate_super() to do full super block check at thaw
+>> =C2=A0=C2=A0 time
+>> =C2=A0=C2=A0 This brings all the checks, and since freeze/thaw should b=
+e a cold
+>> =C2=A0=C2=A0 path, the extra check shouldn't bother us much.
+>>
+>> - Add an extra comment on why we don't need to hold device_list_mutex.
+>>
+>> v2:
+>> - Remove one unrelated debug pr_info()
+>> - Slightly re-word some comments
+>> - Add suggested-by tag
+>> ---
+>> =C2=A0 fs/btrfs/disk-io.c | 25 ++++++++++++++-----
+>> =C2=A0 fs/btrfs/disk-io.h |=C2=A0 4 +++-
+>> =C2=A0 fs/btrfs/super.c=C2=A0=C2=A0 | 60 ++++++++++++++++++++++++++++++=
+++++++++++++++++
+>> =C2=A0 fs/btrfs/volumes.c |=C2=A0 2 +-
+>> =C2=A0 4 files changed, 83 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index e67614afcf4f..bc94feba2fe3 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -2600,8 +2600,8 @@ static int btrfs_read_roots(struct btrfs_fs_info
+>> *fs_info)
+>> =C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1, 2=C2=
+=A0=C2=A0=C2=A0 2nd and 3rd backup copy
+>> =C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 -1=C2=A0=C2=A0=C2=A0 skip bytenr check
+>> =C2=A0=C2=A0 */
+>> -static int validate_super(struct btrfs_fs_info *fs_info,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 struct btrfs_super_block *sb, int mirror_num)
+>> +int btrfs_validate_super(struct btrfs_fs_info *fs_info,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 struct btrfs_super_block *sb, int mirror_num)
+>> =C2=A0 {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 nodesize =3D btrfs_super_nodesize(sb=
+);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 sectorsize =3D btrfs_super_sectorsiz=
+e(sb);
+>> @@ -2785,7 +2785,7 @@ static int validate_super(struct btrfs_fs_info
+>> *fs_info,
+>> =C2=A0=C2=A0 */
+>> =C2=A0 static int btrfs_validate_mount_super(struct btrfs_fs_info *fs_i=
+nfo)
+>> =C2=A0 {
+>> -=C2=A0=C2=A0=C2=A0 return validate_super(fs_info, fs_info->super_copy,=
+ 0);
+>> +=C2=A0=C2=A0=C2=A0 return btrfs_validate_super(fs_info, fs_info->super=
+_copy, 0);
+>> =C2=A0 }
+>> =C2=A0 /*
+>> @@ -2799,7 +2799,7 @@ static int btrfs_validate_write_super(struct
+>> btrfs_fs_info *fs_info,
+>> =C2=A0 {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>> -=C2=A0=C2=A0=C2=A0 ret =3D validate_super(fs_info, sb, -1);
+>> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_validate_super(fs_info, sb, -1);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!btrfs_supported_super_csum(btrfs_su=
+per_csum_type(sb))) {
+>> @@ -3847,7 +3847,7 @@ static void btrfs_end_super_write(struct bio *bio=
+)
+>> =C2=A0 }
+>> =C2=A0 struct btrfs_super_block *btrfs_read_dev_one_super(struct
+>> block_device *bdev,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 int copy_num)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 int copy_num, bool drop_cache)
+>> =C2=A0 {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_super_block *super;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct page *page;
+>> @@ -3865,6 +3865,19 @@ struct btrfs_super_block
+>> *btrfs_read_dev_one_super(struct block_device *bdev,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (bytenr + BTRFS_SUPER_INFO_SIZE >=3D =
+bdev_nr_bytes(bdev))
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ERR_PTR(-=
+EINVAL);
+>> +=C2=A0=C2=A0=C2=A0 if (drop_cache) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* This should only be call=
+ed with the primary sb. */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ASSERT(copy_num =3D=3D 0);
+>> +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Drop the page of th=
+e primary superblock, so later
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * read will always re=
+ad from the device.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 invalidate_inode_pages2_ran=
+ge(mapping,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 bytenr >> PAGE_SHIFT,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 (bytenr + BTRFS_SUPER_INFO_SIZE) >> PAGE_SHIFT);
+>> +=C2=A0=C2=A0=C2=A0 }
+>> +
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 page =3D read_cache_page_gfp(mapping, by=
+tenr >> PAGE_SHIFT,
+>> GFP_NOFS);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(page))
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ERR_CAST(=
+page);
+>> @@ -3896,7 +3909,7 @@ struct btrfs_super_block
+>> *btrfs_read_dev_super(struct block_device *bdev)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * later supers, using BTRFS_SUPER_=
+MIRROR_MAX instead
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < 1; i++) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 super =3D btrfs_read_dev_on=
+e_super(bdev, i);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 super =3D btrfs_read_dev_on=
+e_super(bdev, i, false);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(super=
+))
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 continue;
+>> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+>> index 47ad8e0a2d33..aef981de672c 100644
+>> --- a/fs/btrfs/disk-io.h
+>> +++ b/fs/btrfs/disk-io.h
+>> @@ -46,10 +46,12 @@ int __cold open_ctree(struct super_block *sb,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 struct btrfs_fs_devices *fs_devices,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 char *options);
+>> =C2=A0 void __cold close_ctree(struct btrfs_fs_info *fs_info);
+>> +int btrfs_validate_super(struct btrfs_fs_info *fs_info,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 struct btrfs_super_block *sb, int mirror_num);
+>> =C2=A0 int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirr=
+ors);
+>> =C2=A0 struct btrfs_super_block *btrfs_read_dev_super(struct block_devi=
+ce
+>> *bdev);
+>> =C2=A0 struct btrfs_super_block *btrfs_read_dev_one_super(struct
+>> block_device *bdev,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 int copy_num);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 int copy_num, bool drop_cache);
+>> =C2=A0 int btrfs_commit_super(struct btrfs_fs_info *fs_info);
+>> =C2=A0 struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_=
+root,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_key=
+ *key);
+>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+>> index f1c6ca59299e..0857265ea8d8 100644
+>> --- a/fs/btrfs/super.c
+>> +++ b/fs/btrfs/super.c
+>> @@ -2553,11 +2553,71 @@ static int btrfs_freeze(struct super_block *sb)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return btrfs_commit_transaction(trans);
+>> =C2=A0 }
+>> +static int check_dev_super(struct btrfs_device *dev)
+>> +{
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_info =3D dev->fs_info;
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_super_block *sb;
+>> +=C2=A0=C2=A0=C2=A0 int ret =3D 0;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 /* This should be called with fs still frozen. */
+>> +=C2=A0=C2=A0=C2=A0 ASSERT(test_bit(BTRFS_FS_FROZEN, &fs_info->flags));
+>> +
+>> +=C2=A0=C2=A0=C2=A0 /* Missing dev,=C2=A0 no need to check. */
+>> +=C2=A0=C2=A0=C2=A0 if (!dev->bdev)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 /* Only need to check the primary super block. */
+>> +=C2=A0=C2=A0=C2=A0 sb =3D btrfs_read_dev_one_super(dev->bdev, 0, true)=
+;
+>> +=C2=A0=C2=A0=C2=A0 if (IS_ERR(sb))
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return PTR_ERR(sb);
+>> +
+>> +=C2=A0=C2=A0=C2=A0 /* Btrfs_validate_super() includes fsid check again=
+st
+>> super->fsid. */
+>> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_validate_super(fs_info, sb, 0);
+>> +=C2=A0=C2=A0=C2=A0 if (ret < 0)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 if (btrfs_super_generation(sb) !=3D fs_info->last_t=
+rans_committed) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_err(fs_info, "transid=
+ mismatch, has %llu expect %llu",
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btr=
+fs_super_generation(sb),
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_=
+info->last_trans_committed);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -EUCLEAN;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>> +=C2=A0=C2=A0=C2=A0 }
+>> +out:
+>> +=C2=A0=C2=A0=C2=A0 btrfs_release_disk_super(sb);
+>> +=C2=A0=C2=A0=C2=A0 return ret;
+>> +}
+>> +
+>> =C2=A0 static int btrfs_unfreeze(struct super_block *sb)
+>> =C2=A0 {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_info =3D btrfs_=
+sb(sb);
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_device *device;
+>> +=C2=A0=C2=A0=C2=A0 int ret =3D 0;
+>> +=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Make sure the fs is not changed by accident=
+ (like hibernation
+>> then
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * modified by other OS).
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * If we found anything wrong, we mark the fs =
+error immediately.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 *
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * And since the fs is frozen, no one can modi=
+fy the fs yet, thus
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * we don't need to hold device_list_mutex.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0 list_for_each_entry(device, &fs_info->fs_devices->d=
+evices,
+>> dev_list) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D check_dev_super(dev=
+ice);
+>
+>
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btr=
+fs_handle_fs_error(fs_info, ret,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 "super block on devid %llu got modified unexpectedly=
+",
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 device->devid);
+>
+> We may fail to read the sb if the page does not get brought uptodate,
+> read_cache_page_gfp() returns -EIO.
+>
+> check_dev_super()
+>  =C2=A0btrfs_read_dev_one_super()
+>  =C2=A0 read_cache_page_gfp()
+>
+>
+> But, the above error log is misleading.
 
-And the speaker list is not up-to-date either. I am a speaker too :)
+In that case, I'd say there is still something weird there.
 
-> 
-> Thanks,
-> 
-> Bart.
+By whatever reason, if we can not read a valid super block, even it's
+-EIO, it's worthy reporting at thaw time.
 
-
--- 
-Damien Le Moal
-Western Digital Research
+Thanks,
+Qu
+>
+> -Anand
+>
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bre=
+ak;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clear_bit(BTRFS_FS_FROZEN, &fs_info->fla=
+gs);
+>> +
+>> +=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * We still return 0, to allow VFS layer to un=
+freeze the fs even
+>> above
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * checks failed. Since the fs is either fine =
+or RO, we're safe to
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * continue, without causing further damage.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>> =C2=A0 }
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 95a2eaf8a958..5b2cafafce2e 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -2017,7 +2017,7 @@ void btrfs_scratch_superblocks(struct
+>> btrfs_fs_info *fs_info,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct page *pag=
+e;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 disk_super =3D btrfs_read_d=
+ev_one_super(bdev, copy_num);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 disk_super =3D btrfs_read_d=
+ev_one_super(bdev, copy_num, false);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(disk_=
+super))
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 continue;
+>
