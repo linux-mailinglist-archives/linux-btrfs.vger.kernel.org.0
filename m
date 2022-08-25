@@ -2,48 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CE35A061D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Aug 2022 03:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6005A0688
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Aug 2022 03:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbiHYBjR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Aug 2022 21:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
+        id S234245AbiHYBmT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Aug 2022 21:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbiHYBir (ORCPT
+        with ESMTP id S234248AbiHYBla (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Aug 2022 21:38:47 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A619A990;
-        Wed, 24 Aug 2022 18:37:33 -0700 (PDT)
+        Wed, 24 Aug 2022 21:41:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978019D8EF;
+        Wed, 24 Aug 2022 18:38:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3E005B826E5;
-        Thu, 25 Aug 2022 01:37:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10013C433D7;
-        Thu, 25 Aug 2022 01:37:09 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6E73E61AF3;
+        Thu, 25 Aug 2022 01:38:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED376C4347C;
+        Thu, 25 Aug 2022 01:38:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661391430;
-        bh=jDn5R73Bt18Fx1XLWE5EU1IXvOcHesoIfsyB67xjOIw=;
+        s=k20201202; t=1661391504;
+        bh=8N+mzoNMN7tQAB6gKqF+atcRFl7OB0EncNmJEg7+B8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CR9RkzfdzcoiVSqeAl2zIqVJU/DeECRJ5Ohh4WXeNBd1Ph1jGEaFgqiMddedg2uQn
-         3br2nXXb6tv4v7gENer0Wym//hIebf6ZeNQRojVemdrfFM0BhobRFiV5DyUX+U69uI
-         5Vaik/foKdPVnkSBz0VcH9ezxQ+02dbUgURoO90Hz25lHk2cyYkf8LDrYvg2a77aUa
-         bfP0t5Wt1F9gq5UnksnB03pq7sFZrxrhERn6bZhZF9ZbRlv+xSlz8kytFUUX8CZuHO
-         9/YoxeAdidjt4yIsTxvYNO0Mu7JzA8H+pNQPi72mMKGxJ2YM8nurd7TnQfC7+PzfF9
-         AmykqoziO1yAg==
+        b=HvGbfRhKFhHMQ/QYljq6ycIj0VsFAF0jQYWXVUEZn+am+8oVTaq49LlFppA+BomTn
+         7pEarfRBVapDOWGG74Qeejkj+/90SPOEc0zp/JSwzbwkDWWd0MeFfSs27Dm/eW6g1Y
+         NLeqHJciwJfq7O84Ok0cmUoRqdAVhsEnzE8/mfJ6H1N4aCIK8gG9+T4XgHGB5PSsYv
+         g9gnYDpR+2F9aKGPn3hZehWAVTGtknTCz3Sy1Ji0YePz3KypLz/ebzbqK7YOwhsDUS
+         8s6h/yyfsvCuk9JKx7B/xUmPpdBQ1ok039PFEH9SjCo1N7MgAurjyWzIoPqPcFFSZe
+         miEo0lYOUHKzw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 37/38] btrfs: tree-checker: check for overlapping extent items
-Date:   Wed, 24 Aug 2022 21:34:00 -0400
-Message-Id: <20220825013401.22096-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 17/20] btrfs: move lockdep class helpers to locking.c
+Date:   Wed, 24 Aug 2022 21:37:09 -0400
+Message-Id: <20220825013713.22656-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220825013401.22096-1-sashal@kernel.org>
-References: <20220825013401.22096-1-sashal@kernel.org>
+In-Reply-To: <20220825013713.22656-1-sashal@kernel.org>
+References: <20220825013713.22656-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -60,73 +61,244 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 899b7f69f244e539ea5df1b4d756046337de44a5 ]
+[ Upstream commit 0a27a0474d146eb79e09ec88bf0d4229f4cfc1b8 ]
 
-We're seeing a weird problem in production where we have overlapping
-extent items in the extent tree.  It's unclear where these are coming
-from, and in debugging we realized there's no check in the tree checker
-for this sort of problem.  Add a check to the tree-checker to make sure
-that the extents do not overlap each other.
+These definitions exist in disk-io.c, which is not related to the
+locking.  Move this over to locking.h/c where it makes more sense.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tree-checker.c | 25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+ fs/btrfs/disk-io.c | 82 ----------------------------------------------
+ fs/btrfs/disk-io.h | 10 ------
+ fs/btrfs/locking.c | 80 ++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/locking.h |  9 +++++
+ 4 files changed, 89 insertions(+), 92 deletions(-)
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 9e0e0ae2288c..43f905ab0a18 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -1233,7 +1233,8 @@ static void extent_err(const struct extent_buffer *eb, int slot,
- }
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index e65c3039caf1..c9edc668b3d9 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -121,88 +121,6 @@ struct async_submit_bio {
+ 	blk_status_t status;
+ };
  
- static int check_extent_item(struct extent_buffer *leaf,
--			     struct btrfs_key *key, int slot)
-+			     struct btrfs_key *key, int slot,
-+			     struct btrfs_key *prev_key)
- {
- 	struct btrfs_fs_info *fs_info = leaf->fs_info;
- 	struct btrfs_extent_item *ei;
-@@ -1453,6 +1454,26 @@ static int check_extent_item(struct extent_buffer *leaf,
- 			   total_refs, inline_refs);
- 		return -EUCLEAN;
- 	}
-+
-+	if ((prev_key->type == BTRFS_EXTENT_ITEM_KEY) ||
-+	    (prev_key->type == BTRFS_METADATA_ITEM_KEY)) {
-+		u64 prev_end = prev_key->objectid;
-+
-+		if (prev_key->type == BTRFS_METADATA_ITEM_KEY)
-+			prev_end += fs_info->nodesize;
-+		else
-+			prev_end += prev_key->offset;
-+
-+		if (unlikely(prev_end > key->objectid)) {
-+			extent_err(leaf, slot,
-+	"previous extent [%llu %u %llu] overlaps current extent [%llu %u %llu]",
-+				   prev_key->objectid, prev_key->type,
-+				   prev_key->offset, key->objectid, key->type,
-+				   key->offset);
-+			return -EUCLEAN;
-+		}
-+	}
-+
- 	return 0;
- }
+-/*
+- * Lockdep class keys for extent_buffer->lock's in this root.  For a given
+- * eb, the lockdep key is determined by the btrfs_root it belongs to and
+- * the level the eb occupies in the tree.
+- *
+- * Different roots are used for different purposes and may nest inside each
+- * other and they require separate keysets.  As lockdep keys should be
+- * static, assign keysets according to the purpose of the root as indicated
+- * by btrfs_root->root_key.objectid.  This ensures that all special purpose
+- * roots have separate keysets.
+- *
+- * Lock-nesting across peer nodes is always done with the immediate parent
+- * node locked thus preventing deadlock.  As lockdep doesn't know this, use
+- * subclass to avoid triggering lockdep warning in such cases.
+- *
+- * The key is set by the readpage_end_io_hook after the buffer has passed
+- * csum validation but before the pages are unlocked.  It is also set by
+- * btrfs_init_new_buffer on freshly allocated blocks.
+- *
+- * We also add a check to make sure the highest level of the tree is the
+- * same as our lockdep setup here.  If BTRFS_MAX_LEVEL changes, this code
+- * needs update as well.
+- */
+-#ifdef CONFIG_DEBUG_LOCK_ALLOC
+-# if BTRFS_MAX_LEVEL != 8
+-#  error
+-# endif
+-
+-#define DEFINE_LEVEL(stem, level)					\
+-	.names[level] = "btrfs-" stem "-0" #level,
+-
+-#define DEFINE_NAME(stem)						\
+-	DEFINE_LEVEL(stem, 0)						\
+-	DEFINE_LEVEL(stem, 1)						\
+-	DEFINE_LEVEL(stem, 2)						\
+-	DEFINE_LEVEL(stem, 3)						\
+-	DEFINE_LEVEL(stem, 4)						\
+-	DEFINE_LEVEL(stem, 5)						\
+-	DEFINE_LEVEL(stem, 6)						\
+-	DEFINE_LEVEL(stem, 7)
+-
+-static struct btrfs_lockdep_keyset {
+-	u64			id;		/* root objectid */
+-	/* Longest entry: btrfs-free-space-00 */
+-	char			names[BTRFS_MAX_LEVEL][20];
+-	struct lock_class_key	keys[BTRFS_MAX_LEVEL];
+-} btrfs_lockdep_keysets[] = {
+-	{ .id = BTRFS_ROOT_TREE_OBJECTID,	DEFINE_NAME("root")	},
+-	{ .id = BTRFS_EXTENT_TREE_OBJECTID,	DEFINE_NAME("extent")	},
+-	{ .id = BTRFS_CHUNK_TREE_OBJECTID,	DEFINE_NAME("chunk")	},
+-	{ .id = BTRFS_DEV_TREE_OBJECTID,	DEFINE_NAME("dev")	},
+-	{ .id = BTRFS_CSUM_TREE_OBJECTID,	DEFINE_NAME("csum")	},
+-	{ .id = BTRFS_QUOTA_TREE_OBJECTID,	DEFINE_NAME("quota")	},
+-	{ .id = BTRFS_TREE_LOG_OBJECTID,	DEFINE_NAME("log")	},
+-	{ .id = BTRFS_TREE_RELOC_OBJECTID,	DEFINE_NAME("treloc")	},
+-	{ .id = BTRFS_DATA_RELOC_TREE_OBJECTID,	DEFINE_NAME("dreloc")	},
+-	{ .id = BTRFS_UUID_TREE_OBJECTID,	DEFINE_NAME("uuid")	},
+-	{ .id = BTRFS_FREE_SPACE_TREE_OBJECTID,	DEFINE_NAME("free-space") },
+-	{ .id = 0,				DEFINE_NAME("tree")	},
+-};
+-
+-#undef DEFINE_LEVEL
+-#undef DEFINE_NAME
+-
+-void btrfs_set_buffer_lockdep_class(u64 objectid, struct extent_buffer *eb,
+-				    int level)
+-{
+-	struct btrfs_lockdep_keyset *ks;
+-
+-	BUG_ON(level >= ARRAY_SIZE(ks->keys));
+-
+-	/* find the matching keyset, id 0 is the default entry */
+-	for (ks = btrfs_lockdep_keysets; ks->id; ks++)
+-		if (ks->id == objectid)
+-			break;
+-
+-	lockdep_set_class_and_name(&eb->lock,
+-				   &ks->keys[level], ks->names[level]);
+-}
+-
+-#endif
+-
+ /*
+  * Compute the csum of a btree block and store the result to provided buffer.
+  */
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 0e7e9526b6a8..1b8fd3deafc9 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -140,14 +140,4 @@ int btrfs_init_root_free_objectid(struct btrfs_root *root);
+ int __init btrfs_end_io_wq_init(void);
+ void __cold btrfs_end_io_wq_exit(void);
  
-@@ -1621,7 +1642,7 @@ static int check_leaf_item(struct extent_buffer *leaf,
- 		break;
- 	case BTRFS_EXTENT_ITEM_KEY:
- 	case BTRFS_METADATA_ITEM_KEY:
--		ret = check_extent_item(leaf, key, slot);
-+		ret = check_extent_item(leaf, key, slot, prev_key);
- 		break;
- 	case BTRFS_TREE_BLOCK_REF_KEY:
- 	case BTRFS_SHARED_DATA_REF_KEY:
+-#ifdef CONFIG_DEBUG_LOCK_ALLOC
+-void btrfs_set_buffer_lockdep_class(u64 objectid,
+-			            struct extent_buffer *eb, int level);
+-#else
+-static inline void btrfs_set_buffer_lockdep_class(u64 objectid,
+-					struct extent_buffer *eb, int level)
+-{
+-}
+-#endif
+-
+ #endif
+diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+index 33461b4f9c8b..5747c63929df 100644
+--- a/fs/btrfs/locking.c
++++ b/fs/btrfs/locking.c
+@@ -13,6 +13,86 @@
+ #include "extent_io.h"
+ #include "locking.h"
+ 
++/*
++ * Lockdep class keys for extent_buffer->lock's in this root.  For a given
++ * eb, the lockdep key is determined by the btrfs_root it belongs to and
++ * the level the eb occupies in the tree.
++ *
++ * Different roots are used for different purposes and may nest inside each
++ * other and they require separate keysets.  As lockdep keys should be
++ * static, assign keysets according to the purpose of the root as indicated
++ * by btrfs_root->root_key.objectid.  This ensures that all special purpose
++ * roots have separate keysets.
++ *
++ * Lock-nesting across peer nodes is always done with the immediate parent
++ * node locked thus preventing deadlock.  As lockdep doesn't know this, use
++ * subclass to avoid triggering lockdep warning in such cases.
++ *
++ * The key is set by the readpage_end_io_hook after the buffer has passed
++ * csum validation but before the pages are unlocked.  It is also set by
++ * btrfs_init_new_buffer on freshly allocated blocks.
++ *
++ * We also add a check to make sure the highest level of the tree is the
++ * same as our lockdep setup here.  If BTRFS_MAX_LEVEL changes, this code
++ * needs update as well.
++ */
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++#if BTRFS_MAX_LEVEL != 8
++#error
++#endif
++
++#define DEFINE_LEVEL(stem, level)					\
++	.names[level] = "btrfs-" stem "-0" #level,
++
++#define DEFINE_NAME(stem)						\
++	DEFINE_LEVEL(stem, 0)						\
++	DEFINE_LEVEL(stem, 1)						\
++	DEFINE_LEVEL(stem, 2)						\
++	DEFINE_LEVEL(stem, 3)						\
++	DEFINE_LEVEL(stem, 4)						\
++	DEFINE_LEVEL(stem, 5)						\
++	DEFINE_LEVEL(stem, 6)						\
++	DEFINE_LEVEL(stem, 7)
++
++static struct btrfs_lockdep_keyset {
++	u64			id;		/* root objectid */
++	/* Longest entry: btrfs-free-space-00 */
++	char			names[BTRFS_MAX_LEVEL][20];
++	struct lock_class_key	keys[BTRFS_MAX_LEVEL];
++} btrfs_lockdep_keysets[] = {
++	{ .id = BTRFS_ROOT_TREE_OBJECTID,	DEFINE_NAME("root")	},
++	{ .id = BTRFS_EXTENT_TREE_OBJECTID,	DEFINE_NAME("extent")	},
++	{ .id = BTRFS_CHUNK_TREE_OBJECTID,	DEFINE_NAME("chunk")	},
++	{ .id = BTRFS_DEV_TREE_OBJECTID,	DEFINE_NAME("dev")	},
++	{ .id = BTRFS_CSUM_TREE_OBJECTID,	DEFINE_NAME("csum")	},
++	{ .id = BTRFS_QUOTA_TREE_OBJECTID,	DEFINE_NAME("quota")	},
++	{ .id = BTRFS_TREE_LOG_OBJECTID,	DEFINE_NAME("log")	},
++	{ .id = BTRFS_TREE_RELOC_OBJECTID,	DEFINE_NAME("treloc")	},
++	{ .id = BTRFS_DATA_RELOC_TREE_OBJECTID,	DEFINE_NAME("dreloc")	},
++	{ .id = BTRFS_UUID_TREE_OBJECTID,	DEFINE_NAME("uuid")	},
++	{ .id = BTRFS_FREE_SPACE_TREE_OBJECTID,	DEFINE_NAME("free-space") },
++	{ .id = 0,				DEFINE_NAME("tree")	},
++};
++
++#undef DEFINE_LEVEL
++#undef DEFINE_NAME
++
++void btrfs_set_buffer_lockdep_class(u64 objectid, struct extent_buffer *eb, int level)
++{
++	struct btrfs_lockdep_keyset *ks;
++
++	BUG_ON(level >= ARRAY_SIZE(ks->keys));
++
++	/* Find the matching keyset, id 0 is the default entry */
++	for (ks = btrfs_lockdep_keysets; ks->id; ks++)
++		if (ks->id == objectid)
++			break;
++
++	lockdep_set_class_and_name(&eb->lock, &ks->keys[level], ks->names[level]);
++}
++
++#endif
++
+ /*
+  * Extent buffer locking
+  * =====================
+diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
+index a2e1f1f5c6e3..97370ec0cd29 100644
+--- a/fs/btrfs/locking.h
++++ b/fs/btrfs/locking.h
+@@ -130,4 +130,13 @@ void btrfs_drew_write_unlock(struct btrfs_drew_lock *lock);
+ void btrfs_drew_read_lock(struct btrfs_drew_lock *lock);
+ void btrfs_drew_read_unlock(struct btrfs_drew_lock *lock);
+ 
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++void btrfs_set_buffer_lockdep_class(u64 objectid, struct extent_buffer *eb, int level);
++#else
++static inline void btrfs_set_buffer_lockdep_class(u64 objectid,
++					struct extent_buffer *eb, int level)
++{
++}
++#endif
++
+ #endif
 -- 
 2.35.1
 
