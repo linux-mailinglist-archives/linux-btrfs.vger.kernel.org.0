@@ -2,55 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2FC5A315E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Aug 2022 23:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDF55A333F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Aug 2022 02:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345310AbiHZVt1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Aug 2022 17:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
+        id S232996AbiH0Aw1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Aug 2022 20:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345237AbiHZVtL (ORCPT
+        with ESMTP id S232166AbiH0Aw0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Aug 2022 17:49:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D848E86B0;
-        Fri, 26 Aug 2022 14:47:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 77380611B8;
-        Fri, 26 Aug 2022 21:47:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0523C433C1;
-        Fri, 26 Aug 2022 21:47:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661550470;
-        bh=gLz5Ruse5elfcIgvMDWKp/BReownfZtaD32WbbWr76A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FfcrPUI2YtcwItJUli98wIyMhirsFq8i/ojoPLXVo4YVq5CrRAammwmg8IU+jM7nK
-         h3ZWcORGhfZ5E2MPhkdk4hMmEMx67+WTrQpYNf22qqBjkysL7AsDGszadAod937Rbl
-         kMGcojNQDcJaTl5ErtpYRKwsRj8WscbmbfDqROL4CeifPc/+ZerLa3gGarI8KU03o/
-         VT/ujDmyDKADuDo6MH9uECUTCmhpHyBKtyvxWcNWTJzjZYnmdL5BpVvNK6I95LeVgt
-         tA6Eq1HK4BaVHo+SoOMUxdSzH1nKqDzEOuJLX2D0LkzyE2OESJYNM/0pCWOM4/rlkI
-         c+/rmFfC8elyQ==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        david@fromorbit.com, trondmy@hammerspace.com, neilb@suse.de,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
-        brauner@kernel.org, linux-man@vger.kernel.org
-Cc:     linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ceph@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: [man-pages PATCH] statx, inode: document the new STATX_INO_VERSION field
-Date:   Fri, 26 Aug 2022 17:47:47 -0400
-Message-Id: <20220826214747.134964-1-jlayton@kernel.org>
-X-Mailer: git-send-email 2.37.2
+        Fri, 26 Aug 2022 20:52:26 -0400
+Received: from out20-15.mail.aliyun.com (out20-15.mail.aliyun.com [115.124.20.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B822DAEE5
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Aug 2022 17:52:24 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04818081|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_news_journal|0.00513821-0.000999786-0.993862;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.P0yXpGS_1661561541;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.P0yXpGS_1661561541)
+          by smtp.aliyun-inc.com;
+          Sat, 27 Aug 2022 08:52:22 +0800
+Date:   Sat, 27 Aug 2022 08:52:26 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Subject: Re: [PATCH 0/2] btrfs-progs: read device fsid from the sysfs
+Cc:     David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+In-Reply-To: <ae82f677-42dc-fe00-d7f9-0b9a71ebb16e@oracle.com>
+References: <20220826081444.A633.409509F4@e16-tech.com> <ae82f677-42dc-fe00-d7f9-0b9a71ebb16e@oracle.com>
+Message-Id: <20220827085225.BBC5.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,75 +42,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We're planning to expose the inode change attribute via statx. Document
-what this value means and what an observer can infer from a change in
-its value.
+Hi,
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- man2/statx.2 | 13 +++++++++++++
- man7/inode.7 | 10 ++++++++++
- 2 files changed, 23 insertions(+)
+> It worked on my end. I am on 6.0.0-rc1+.
+> 
+> Without the btrfs-progs patch mentioned in the test case:
+> 
+> ----------------
+> btrfs/249       [failed, exit status 1]- output mismatch (see /xfstests-dev/results//btrfs/249.out.bad)
+>      --- tests/btrfs/249.out	2022-03-19 20:34:36.307019541 +0800
+>      +++ /xfstests-dev/results//btrfs/249.out.bad	2022-08-26 17:23:53.912993906 +0800
+>      @@ -1,2 +1,5 @@
+>       QA output created by 249
+>      -Silence is golden
+>      +ERROR: unexpected number of devices: 1 >= 1
+>      +ERROR: if seed device is used, try running this command as root
+>      +FAILED: btrfs filesystem usage, ret 1. Check btrfs.ko and btrfs-progs version.
+>      +(see /xfstests-dev/results//btrfs/249.full for details)
+>      ...
+>      (Run 'diff -u /xfstests-dev/tests/btrfs/249.out /xfstests-dev/results//btrfs/249.out.bad'  to see the entire diff)
+> Ran: btrfs/249
+> Failures: btrfs/249
+> Failed 1 of 1 tests
+> ----------------
+> 
+> 
+> With the btrfs-progs patch mentioned in the test case:
+> 
+> ----------------
+> btrfs/249        1s
+> Ran: btrfs/249
+> Passed all 1 tests
+> ----------------
+> 
+> 
+> > [ 1064.768430] BTRFS: device fsid 00ebd666-e838-4377-b9b6-aa69449297af devid 1 transid 6 /dev/sdb2 scanned by systemd-udevd (3602)
+> > [ 1064.781504] BTRFS: device fsid 00ebd666-e838-4377-b9b6-aa69449297af devid 2 transid 6 /dev/sdb3 scanned by systemd-udevd (3605)
+> > [ 1065.065938] BTRFS: device fsid 00ebd666-e838-4377-b9b6-aa69449297af devid 2 transid 7 /dev/sdb3 scanned by systemd-udevd (3602)
+> 
+> Two processes 3605 and 3602 are scanning the same device /dev/sdb3.
+> One finds transid 6, and the other 7.
+> 
+> You may want to re-test on a clean machine again.
 
-diff --git a/man2/statx.2 b/man2/statx.2
-index 0d1b4591f74c..644fb251f114 100644
---- a/man2/statx.2
-+++ b/man2/statx.2
-@@ -62,6 +62,7 @@ struct statx {
-     __u32 stx_dev_major;   /* Major ID */
-     __u32 stx_dev_minor;   /* Minor ID */
-     __u64 stx_mnt_id;      /* Mount ID */
-+    __u64 stx_ino_version; /* Inode change attribute */
- };
- .EE
- .in
-@@ -247,6 +248,7 @@ STATX_BTIME	Want stx_btime
- STATX_ALL	The same as STATX_BASIC_STATS | STATX_BTIME.
- 	It is deprecated and should not be used.
- STATX_MNT_ID	Want stx_mnt_id (since Linux 5.8)
-+STATX_INO_VERSION	Want stx_ino_version (since Linux 6.1)
- .TE
- .in
- .PP
-@@ -411,6 +413,17 @@ and corresponds to the number in the first field in one of the records in
- For further information on the above fields, see
- .BR inode (7).
- .\"
-+.TP
-+.I stx_ino_version
-+The inode version, also known as the inode change attribute. This
-+value is intended to change any time there is an inode status change. Any
-+operation that would cause the stx_ctime to change should also cause
-+stx_ino_version to change, even when there is no apparent change to the
-+stx_ctime due to timestamp granularity.
-+.IP
-+Note that an observer cannot infer anything about the nature or
-+magnitude of the change from the value of this field. A change in this value
-+only indicates that there may have been an explicit change in the inode.
- .SS File attributes
- The
- .I stx_attributes
-diff --git a/man7/inode.7 b/man7/inode.7
-index 9b255a890720..d296bb6df70c 100644
---- a/man7/inode.7
-+++ b/man7/inode.7
-@@ -184,6 +184,16 @@ Last status change timestamp (ctime)
- This is the file's last status change timestamp.
- It is changed by writing or by setting inode information
- (i.e., owner, group, link count, mode, etc.).
-+.TP
-+Inode version (i_version)
-+(not returned in the \fIstat\fP structure); \fIstatx.stx_ino_version\fP
-+.IP
-+This is the inode change attribute. Any operation that would result in a ctime
-+change should also result in a change to this value. The value must change even
-+in the case where the ctime change is not evident due to timestamp granularity.
-+An observer cannot infer anything from the actual value about the nature or
-+magnitude of the change. If it is different from the last time it was checked,
-+then something may have made an explicit change to the inode.
- .PP
- The timestamp fields report time measured with a zero point at the
- .IR Epoch ,
--- 
-2.37.2
+btrfs/249 passed on a clean machine here.
+
+Thanks a lot.
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/08/27
+
 
