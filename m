@@ -2,74 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AE95A3F0A
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Aug 2022 20:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141AB5A3FD5
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Aug 2022 23:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbiH1SSi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 28 Aug 2022 14:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36602 "EHLO
+        id S229744AbiH1VG3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 28 Aug 2022 17:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbiH1SSd (ORCPT
+        with ESMTP id S229445AbiH1VG1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 28 Aug 2022 14:18:33 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E3826AED;
-        Sun, 28 Aug 2022 11:18:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2C56FB80B8A;
-        Sun, 28 Aug 2022 18:18:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D3525C43470;
-        Sun, 28 Aug 2022 18:18:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661710709;
-        bh=DvYkl+ieyA4IhDG/sdFILB+gMm14s2VYDeuX4qdiN5k=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=pMkEBcKAoAO/52YWb29UpUuIythuqmm9x5fB3uf1Ut04KR9jP4KoZ6B1FZhkqch5D
-         etnxtkPksDwHFMy6tv6kf9QSG2zSSZiaZsUFmR7n6UPJM4hNJl8dRUsbpy1xNfKk3e
-         8/rwD5QiltWf9v+r91P1UxUTxsjI2jeJ71mC1t/OaYWFcFJkO7fAP+Ac9JIv2M7yh1
-         PHaN5MY9usIegTYWYGlV/TUwNUDAiCLYgqm6nmaISSTV61VNsxvkPfEfd9S4gZTIzT
-         ZhbOQSCaUZKUT5wxodUnMBauRlac9MJ32N8TwfAe6AJEfi1aVSpLcMnbLNwLCyjj3E
-         UHP6iYdD+1e3g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C2A00C4166E;
-        Sun, 28 Aug 2022 18:18:29 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for v6.0-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1661690960.git.dsterba@suse.com>
-References: <cover.1661690960.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1661690960.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.0-rc3-tag
-X-PR-Tracked-Commit-Id: f2c3bec215694fb8bc0ef5010f2a758d1906fc2d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8379c0b31fbc5d20946f617f8e2fe4791e6f58c1
-Message-Id: <166171070979.6107.1251277983847921240.pr-tracker-bot@kernel.org>
-Date:   Sun, 28 Aug 2022 18:18:29 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 28 Aug 2022 17:06:27 -0400
+Received: from b5network.net (unknown [27.112.106.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4FE1582E
+        for <linux-btrfs@vger.kernel.org>; Sun, 28 Aug 2022 14:06:25 -0700 (PDT)
+Received: (qmail 2157 invoked by uid 48); 29 Aug 2022 06:06:24 +0900
+To:     linux-btrfs@vger.kernel.org
+Subject: Telegram: Sind Sie es leid, in Schulden zu leben? Es gibt einen Ausweg und es ist sehr einfach.
+X-PHP-Originating-Script: 10042:class-phpmailer.php
+Date:   Sun, 28 Aug 2022 21:06:24 +0000
+From:   Douglasabifs <linux-btrfs@vger.kernel.org>
+Message-ID: <9ba6e81ff5a302fb53dca9298c17abad@www.chups.co.jp>
+X-Priority: 3
+X-Mailer: PHPMailer 5.2.1 (http://code.google.com/a/apache-extras.org/p/phpmailer/)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="ISO-2022-JP"
+X-Spam-Status: Yes, score=7.6 required=5.0 tests=BAYES_50,BITCOIN_XPRIO,
+        MAY_BE_FORGED,RCVD_IN_PSBL,RCVD_IN_VALIDITY_RPBL,SPF_HELO_FAIL,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  2.7 RCVD_IN_PSBL RBL: Received via a relay in PSBL
+        *      [27.112.106.26 listed in psbl.surriel.com]
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [27.112.106.26 listed in bl.score.senderscore.com]
+        *  0.0 SPF_HELO_FAIL SPF: HELO does not match SPF record (fail)
+        *      [SPF failed: Please see http://www.openspf.org/Why?s=helo;id=b5network.net;ip=27.112.106.26;r=lindbergh.monkeyblade.net]
+        *  0.7 SPF_SOFTFAIL SPF: sender does not match SPF record (softfail)
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 BITCOIN_XPRIO Bitcoin + priority
+        *  2.1 MAY_BE_FORGED Relay IP's reverse DNS does not resolve to IP
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Sun, 28 Aug 2022 14:57:29 +0200:
+お問い合わせありがとうございます。
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.0-rc3-tag
+東大阪バレーボールクラブ・ロッキーです。
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8379c0b31fbc5d20946f617f8e2fe4791e6f58c1
+内容を確認次第お返事いたしますので今しばらくお待ちくださいませ。
 
-Thank you!
+メッセージ本文:
+Willst du reich werden? Fahre fort http://vaue-of-bitcoin-today.tracemyvideo.com/news-4564
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+--
+
