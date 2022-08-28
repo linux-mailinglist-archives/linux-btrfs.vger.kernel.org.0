@@ -2,57 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1565A3E0C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Aug 2022 16:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 911275A3E11
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Aug 2022 16:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbiH1Oax (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 28 Aug 2022 10:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
+        id S229777AbiH1Odd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 28 Aug 2022 10:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbiH1Oav (ORCPT
+        with ESMTP id S229771AbiH1Odc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 28 Aug 2022 10:30:51 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C816E1D31A
-        for <linux-btrfs@vger.kernel.org>; Sun, 28 Aug 2022 07:30:49 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id bh13so5569547pgb.4
-        for <linux-btrfs@vger.kernel.org>; Sun, 28 Aug 2022 07:30:49 -0700 (PDT)
+        Sun, 28 Aug 2022 10:33:32 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B420A1F632
+        for <linux-btrfs@vger.kernel.org>; Sun, 28 Aug 2022 07:33:31 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id w196so7725903oiw.10
+        for <linux-btrfs@vger.kernel.org>; Sun, 28 Aug 2022 07:33:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:subject:cc:to:from:from:to:cc;
-        bh=YCFcCM8t98NXuzQnTTx+PghMeYY7mXWRQT6NmMT9a2Y=;
-        b=kwuFhuPqlDy2dEegPFMN5HfFzPjJoq0PAOlCvRgbogWM6aFOjfuGeSnarY31hwREki
-         X3qa2TpfOYEUJewdr/7/xdyUFJm7ijRnyLor6lOISFdcyjfHBugGWt4mySPeOI7bCR21
-         AWDX/VQj79ZkScPEVfenHJqel6rIfxNDuCcsS+QMnSTYnISewcHIIEeVUpFw4ub5FBEI
-         ZV/JgI2Af6fTVIkSdMgMLjp0Bq32Viomx2fNLJuL3dI1GlPSABa2ZCZXGsgX/iB/Xwlh
-         08Worin/IyULPItPnHTq+7daEbs5bAs4n0LChJ+0zg6cNaBrw5HBA13APxFO3b67I0Jg
-         WHqQ==
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=uB+wf9JkJk6aVOCwqpeMPxEQGbaKqVTt+DszrqAIJrM=;
+        b=OtTib3uSwc/SQp1rl4RplCZiHV4LYqwMPVRYrUUSVm6WRYHPUUm7KrTjIl2KtagX7T
+         WCy7e4d0fHPgqaA2Jo0dU1iDu2xH+3cXWnshFXeroDGuaihbDEI2zJ0FBl/JpfZ1XBD0
+         t7tf0MltoMOVR4ToCksVYF0iSpls4nSlY9GRhRD9xGoDTWXjS8hGey2qpfwLyFdD/cAw
+         wq5U4S9h/KLdOey1ojfHXDmxZGYIFjbuDSWjhXowDmWKL4Y3ExxWYAsf5NG3kBh7WJBO
+         Pn8eBVvNJV+9nWB7/ptEfj5X2sQZwCe4m0fwfNs+pPVfBC3gQWTwlMjq2t4znOHCB24/
+         zaxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=YCFcCM8t98NXuzQnTTx+PghMeYY7mXWRQT6NmMT9a2Y=;
-        b=a9/p7irnkLjgZbxOfQiK7qZPE36Q5yvJvofESvhppB1EZcW96I2yUoJq/TZfxF0JIx
-         a9YY9LljHcUHNJdALqqKMapnQxxWEZit23B2mFozBG41YS316yJviHgFfwsY9x8HE5n0
-         Ga8IYnPhzSpy1+8n0/ejABbM2PC6y7wCcdhzU7oPSb8OfLhRnTnHG73ZKB5+qfeRTS9a
-         snzC9wu8rHvMjiDffc0dRVmpzTMZ7IcaK3Z2/fUYh2URzgOxqg7VD9sF0fVWziUJQrJS
-         7B+kYnRl6gpDr3dG/7HmBgblLpvIS5ddzxlFGz8/AqQiDwaeJZ2qGTrvx4sRyk4nv6kA
-         Gr3A==
-X-Gm-Message-State: ACgBeo2LdKjbGq169/TKqezXsOyFf1fPKe/mNC/jdciKyA1TS0TNy/HK
-        u7hTM8BuQAmS6r9g0IzSaDOdBIOmEN/sHg==
-X-Google-Smtp-Source: AA6agR7M8U7L4d5gPdjcefXp0rG6Tp1y8c/DqsIVnOC+wZThM7DSUT+Fhc7kOUsNpPbvLU4u7/6U/Q==
-X-Received: by 2002:a05:6a00:13a7:b0:538:39fc:ddc0 with SMTP id t39-20020a056a0013a700b0053839fcddc0mr1075219pfg.8.1661697049022;
-        Sun, 28 Aug 2022 07:30:49 -0700 (PDT)
-Received: from zllke.localdomain ([113.99.5.102])
-        by smtp.gmail.com with ESMTPSA id z9-20020a170903018900b001709b9d292esm5398336plg.268.2022.08.28.07.30.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 28 Aug 2022 07:30:48 -0700 (PDT)
-From:   Li Zhang <zhanglikernel@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Li Zhang <zhanglikernel@gmail.com>
-Subject: [PATCH V2] Make btrfs_prepare_device parallel during mkfs.btrfs
-Date:   Sun, 28 Aug 2022 22:30:00 +0800
-Message-Id: <1661697000-18809-1-git-send-email-zhanglikernel@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=uB+wf9JkJk6aVOCwqpeMPxEQGbaKqVTt+DszrqAIJrM=;
+        b=PPEoEmYnlyhvzrG/KQItw0WCtUEqY2AMgs2IgI1mN54hVC0i9NUfVrrGY/xuIFQbLX
+         JTOvSlFMp0HGkYKxTpdGT+7g+yoL+yguh2dU7ZuTAJzdTnuyhOZk6fG3C8rfzBE7V1bJ
+         q0qB/CVsR9IbEFePO4NJ6W+hMtVtMUbvrHCzfGJhDdFREGdpoDEHIhwbs6MHkfQjS7rB
+         cZgZf3wnSeXaPwqL9Tdzl4rjef/R7Vss3vCY7tMQ3qQ9PHV9/jqDDQmjcvrtPbx3G6te
+         S4UWCKmZcMUHIBtYEGh9w4AX6R1zRG2bWN68Jlez4QjmKZFQFqoeDSbAtwNjEyS6SevH
+         OZOw==
+X-Gm-Message-State: ACgBeo3gn0dYytKuVE7dyRWxtiGIdPEH6PAYlDjb3BfE6Ga2Yq0KFsoF
+        3cSg5WsjT2Hc9+DjrY+dRxVvpJoREvLUe0gNGUo=
+X-Google-Smtp-Source: AA6agR7bpmMvgBpRfzXpnMe4Ety/4nkoP3rnBYvNgSvKQJH9GUIAh4J9OgaJJ06/1Ytz3OaoOdfUQOKX7Wwz38EkL5k=
+X-Received: by 2002:aca:5e8b:0:b0:344:d1ef:2293 with SMTP id
+ s133-20020aca5e8b000000b00344d1ef2293mr5776880oib.158.1661697210955; Sun, 28
+ Aug 2022 07:33:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <1661357103-22735-1-git-send-email-zhanglikernel@gmail.com>
+ <c3dc352c-8393-c564-4366-42fb9ece021e@gmx.com> <PH0PR04MB7416B660C501F73F47E7D4159B729@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <CAAa-AGk67Ex8woPz=F-P-GdsY1i2N0w==AP9Bk2YpH=Yk+vPdg@mail.gmail.com>
+ <76515426-abd4-2ed7-ea58-db1ba7e3a123@gmx.com> <CAAa-AGnBSR7RKbzZBz-J5S92qcO4HGe09cL-ZsVwJf9oyri1xg@mail.gmail.com>
+In-Reply-To: <CAAa-AGnBSR7RKbzZBz-J5S92qcO4HGe09cL-ZsVwJf9oyri1xg@mail.gmail.com>
+From:   li zhang <zhanglikernel@gmail.com>
+Date:   Sun, 28 Aug 2022 22:33:19 +0800
+Message-ID: <CAAa-AGnN6tDzrX65pagLvcQJ+5FtGSoObqHG_JkQ92gBSi8K-g@mail.gmail.com>
+Subject: Re: [PATCH] Make btrfs_prepare_device parallel during mkfs.btrfs
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -63,266 +69,224 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[enhancement]
-When a disk is formatted as btrfs, it calls
-btrfs_prepare_device for each device, which takes too much time.
+By the way, my kernel version is 5.19.0, and I also tested the 5.0 version
+(maybe, I only remember that the version starts with 5), the same error out=
+put
 
-[implementation]
-Put each btrfs_prepare_device into a thread,
-wait for the first thread to complete to mkfs.btrfs,
-and wait for other threads to complete before adding
-other devices to the file system.
+thanks,
+Li Zhang
 
-[test]
-Using the btrfs-progs test case mkfs-tests, mkfs.btrfs works fine.
-
-But I don't have an actual zoed device,
-so I don't know how much time it saves, If you guys
-have a way to test it, please let me know.
-
-Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
----
-Issue: 496
-
-V1:
-* Put btrfs_prepare_device into threads and make them parallel
-
-V2:
-* Set the 4 variables used by btrfs_prepare_device as global variables.
-* Use pthread_mutex to ensure error messages are not messed up.
-* Correct the error message
-* Wait for all threads to exit in a loop
-
- mkfs/main.c | 132 +++++++++++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 95 insertions(+), 37 deletions(-)
-
-diff --git a/mkfs/main.c b/mkfs/main.c
-index ce096d3..b111f12 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -31,6 +31,7 @@
- #include <uuid/uuid.h>
- #include <ctype.h>
- #include <blkid/blkid.h>
-+#include <pthread.h>
- #include "kernel-shared/ctree.h"
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/free-space-tree.h"
-@@ -60,6 +61,20 @@ struct mkfs_allocation {
- 	u64 system;
- };
- 
-+static bool zero_end;
-+static bool discard;
-+static bool zoned;
-+static int oflags;
-+
-+static pthread_mutex_t prepare_mutex;
-+
-+struct prepare_device_progress {
-+	char *file;
-+	u64 dev_block_count;
-+	u64 block_count;
-+	int ret;
-+};
-+
- static int create_metadata_block_groups(struct btrfs_root *root, bool mixed,
- 				struct mkfs_allocation *allocation)
- {
-@@ -969,6 +984,30 @@ fail:
- 	return ret;
- }
- 
-+static void *prepare_one_dev(void *ctx)
-+{
-+	struct prepare_device_progress *prepare_ctx = ctx;
-+	int fd;
-+
-+	fd = open(prepare_ctx->file, oflags);
-+	if (fd < 0) {
-+		pthread_mutex_lock(&prepare_mutex);
-+		error("unable to open %s: %m", prepare_ctx->file);
-+		pthread_mutex_unlock(&prepare_mutex);
-+		prepare_ctx->ret = fd;
-+		return NULL;
-+	}
-+	prepare_ctx->ret = btrfs_prepare_device(fd,
-+		prepare_ctx->file, &prepare_ctx->dev_block_count,
-+		prepare_ctx->block_count,
-+		(bconf.verbose ? PREP_DEVICE_VERBOSE : 0) |
-+		(zero_end ? PREP_DEVICE_ZERO_END : 0) |
-+		(discard ? PREP_DEVICE_DISCARD : 0) |
-+		(zoned ? PREP_DEVICE_ZONED : 0));
-+	close(fd);
-+	return NULL;
-+}
-+
- int BOX_MAIN(mkfs)(int argc, char **argv)
- {
- 	char *file;
-@@ -984,7 +1023,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	u32 nodesize = 0;
- 	u32 sectorsize = 0;
- 	u32 stripesize = 4096;
--	bool zero_end = true;
-+	zero_end = true;
- 	int fd = -1;
- 	int ret = 0;
- 	int close_ret;
-@@ -993,11 +1032,10 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	bool nodesize_forced = false;
- 	bool data_profile_opt = false;
- 	bool metadata_profile_opt = false;
--	bool discard = true;
-+	discard = true;
- 	bool ssd = false;
--	bool zoned = false;
-+	zoned = false;
- 	bool force_overwrite = false;
--	int oflags;
- 	char *source_dir = NULL;
- 	bool source_dir_set = false;
- 	bool shrink_rootdir = false;
-@@ -1006,6 +1044,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	u64 shrink_size;
- 	int dev_cnt = 0;
- 	int saved_optind;
-+	pthread_t *t_prepare = NULL;
-+	struct prepare_device_progress *prepare_ctx = NULL;
- 	char fs_uuid[BTRFS_UUID_UNPARSED_SIZE] = { 0 };
- 	u64 features = BTRFS_MKFS_DEFAULT_FEATURES;
- 	u64 runtime_features = BTRFS_MKFS_DEFAULT_RUNTIME_FEATURES;
-@@ -1428,29 +1468,49 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 		goto error;
- 	}
- 
--	dev_cnt--;
-+	t_prepare = calloc(dev_cnt, sizeof(*t_prepare));
-+	prepare_ctx = calloc(dev_cnt, sizeof(*prepare_ctx));
-+
-+	if (!t_prepare || !prepare_ctx) {
-+		error("unable to alloc thread for preparing dev");
-+		goto error;
-+	}
- 
-+	pthread_mutex_init(&prepare_mutex, NULL);
-+	zero_end = zero_end;
-+	discard = discard;
-+	zoned = zoned;
- 	oflags = O_RDWR;
--	if (zoned && zoned_model(file) == ZONED_HOST_MANAGED)
--		oflags |= O_DIRECT;
-+	for (i = 0; i < dev_cnt; i++) {
-+		if (zoned && zoned_model(argv[optind + i - 1]) ==
-+			ZONED_HOST_MANAGED) {
-+			oflags |= O_DIRECT;
-+			break;
-+		}
-+	}
-+	for (i = 0; i < dev_cnt; i++) {
-+		prepare_ctx[i].file = argv[optind + i - 1];
-+		prepare_ctx[i].block_count = block_count;
-+		prepare_ctx[i].dev_block_count = block_count;
-+		ret = pthread_create(&t_prepare[i], NULL,
-+			prepare_one_dev, &prepare_ctx[i]);
-+		if (ret) {
-+			error("create thread for prepare devices failed, errno:%d", ret);
-+			goto error;
-+		}
-+	}
-+	for (i = 0; i < dev_cnt; i++)
-+		pthread_join(t_prepare[i], NULL);
-+	ret = prepare_ctx[0].ret;
- 
--	/*
--	 * Open without O_EXCL so that the problem should not occur by the
--	 * following operation in kernel:
--	 * (btrfs_register_one_device() fails if O_EXCL is on)
--	 */
--	fd = open(file, oflags);
--	if (fd < 0) {
--		error("unable to open %s: %m", file);
-+	if (ret) {
-+		error("unable prepare device:%s.\n", prepare_ctx[0].file);
- 		goto error;
- 	}
--	ret = btrfs_prepare_device(fd, file, &dev_block_count, block_count,
--			(zero_end ? PREP_DEVICE_ZERO_END : 0) |
--			(discard ? PREP_DEVICE_DISCARD : 0) |
--			(bconf.verbose ? PREP_DEVICE_VERBOSE : 0) |
--			(zoned ? PREP_DEVICE_ZONED : 0));
--	if (ret)
--		goto error;
-+
-+	dev_cnt--;
-+	fd = open(file, oflags);
-+	dev_block_count = prepare_ctx[0].dev_block_count;
- 	if (block_count && block_count > dev_block_count) {
- 		error("%s is smaller than requested size, expected %llu, found %llu",
- 		      file, (unsigned long long)block_count,
-@@ -1459,7 +1519,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	}
- 
- 	/* To create the first block group and chunk 0 in make_btrfs */
--	system_group_size = zoned ?  zone_size(file) : BTRFS_MKFS_SYSTEM_GROUP_SIZE;
-+	system_group_size = zoned ? zone_size(file) : BTRFS_MKFS_SYSTEM_GROUP_SIZE;
- 	if (dev_block_count < system_group_size) {
- 		error("device is too small to make filesystem, must be at least %llu",
- 				(unsigned long long)system_group_size);
-@@ -1558,14 +1618,10 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 		goto raid_groups;
- 
- 	while (dev_cnt-- > 0) {
-+		int dev_index = argc - saved_optind - dev_cnt - 1;
- 		file = argv[optind++];
- 
--		/*
--		 * open without O_EXCL so that the problem should not
--		 * occur by the following processing.
--		 * (btrfs_register_one_device() fails if O_EXCL is on)
--		 */
--		fd = open(file, O_RDWR);
-+		fd = open(file, oflags);
- 		if (fd < 0) {
- 			error("unable to open %s: %m", file);
- 			goto error;
-@@ -1578,13 +1634,11 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 			close(fd);
- 			continue;
- 		}
--		ret = btrfs_prepare_device(fd, file, &dev_block_count,
--				block_count,
--				(bconf.verbose ? PREP_DEVICE_VERBOSE : 0) |
--				(zero_end ? PREP_DEVICE_ZERO_END : 0) |
--				(discard ? PREP_DEVICE_DISCARD : 0) |
--				(zoned ? PREP_DEVICE_ZONED : 0));
--		if (ret) {
-+		dev_block_count = prepare_ctx[dev_index]
-+			.dev_block_count;
-+
-+		if (prepare_ctx[dev_index].ret) {
-+			error("unable prepare device:%s.\n", prepare_ctx[dev_index].file);
- 			goto error;
- 		}
- 
-@@ -1763,12 +1817,16 @@ out:
- 
- 	btrfs_close_all_devices();
- 	free(label);
--
-+	free(t_prepare);
-+	free(prepare_ctx);
- 	return !!ret;
-+
- error:
- 	if (fd > 0)
- 		close(fd);
- 
-+	free(t_prepare);
-+	free(prepare_ctx);
- 	free(label);
- 	exit(1);
- success:
--- 
-1.8.3.1
-
+li zhang <zhanglikernel@gmail.com> =E4=BA=8E2022=E5=B9=B48=E6=9C=8828=E6=97=
+=A5=E5=91=A8=E6=97=A5 22:26=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Yes, I see what you mean.
+>
+> There is no doubt that the loop device is not a zone device.
+> I simulated the zone device with the null_blk module and tested
+> mkfs.btrfs, but an error was reported. In addition, Not only
+> mkfs.btrfs does not work on null_blk zoned devices, mkfs.xfs and mkfs.ext=
+2 also
+> do not work on null_blk zoned devices, here is the test log. My first
+> instinct is
+> the null_blk problem . But I didn't test tcmu-runner, I'll dig into it
+> later anyway.
+>
+>
+> #emulate zoned device using null_blk
+> $ sudo modprobe null_blk nr_devices=3D4 zoned=3D1
+>
+> #mkfs.xfs failed
+> $ sudo mkfs.xfs -V
+> mkfs.xfs version 5.18.0
+> $ sudo mkfs.xfs /dev/nullb0 -f
+> meta-data=3D/dev/nullb0            isize=3D512    agcount=3D4, agsize=3D1=
+6384000 blks
+>          =3D                       sectsz=3D512   attr=3D2, projid32bit=
+=3D1
+>          =3D                       crc=3D1        finobt=3D1, sparse=3D1,=
+ rmapbt=3D0
+>          =3D                       reflink=3D1    bigtime=3D1 inobtcount=
+=3D1
+> data     =3D                       bsize=3D4096   blocks=3D65536000, imax=
+pct=3D25
+>          =3D                       sunit=3D0      swidth=3D0 blks
+> naming   =3Dversion 2              bsize=3D4096   ascii-ci=3D0, ftype=3D1
+> log      =3Dinternal log           bsize=3D4096   blocks=3D32000, version=
+=3D2
+>          =3D                       sectsz=3D512   sunit=3D0 blks, lazy-co=
+unt=3D1
+> realtime =3Dnone                   extsz=3D4096   blocks=3D0, rtextents=
+=3D0
+> mkfs.xfs: pwrite failed: Input/output error
+> libxfs_bwrite: write failed on (unknown) bno 0x1f3fff00/0x100, err=3D5
+> mkfs.xfs: Releasing dirty buffer to free list!
+> found dirty buffer (bulk) on free list!
+> mkfs.xfs: pwrite failed: Input/output error
+> libxfs_bwrite: write failed on (unknown) bno 0x0/0x100, err=3D5
+> mkfs.xfs: Releasing dirty buffer to free list!
+> found dirty buffer (bulk) on free list!
+> mkfs.xfs: pwrite failed: Input/output error
+> libxfs_bwrite: write failed on xfs_sb bno 0x0/0x1, err=3D5
+> mkfs.xfs: Releasing dirty buffer to free list!
+> mkfs.xfs: libxfs_device_zero write failed: Input/output error
+>
+> #mkfs.btrfs failed
+> $ sudo mkfs.btrfs --version
+> mkfs.btrfs, part of btrfs-progs v5.19
+> $ sudo mkfs.btrfs -d single -m single -O zoned /dev/nullb0 /dev/nullb1
+> /dev/nullb2 -f
+> btrfs-progs v5.19
+> See http://btrfs.wiki.kernel.org for more information.
+>
+> Resetting device zones /dev/nullb0 (1000 zones) ...
+> Resetting device zones /dev/nullb2 (1000 zones) ...
+> Resetting device zones /dev/nullb1 (1000 zones) ...
+> NOTE: several default settings have changed in version 5.15, please make =
+sure
+>       this does not affect your deployments:
+>       - DUP for metadata (-m dup)
+>       - enabled no-holes (-O no-holes)
+>       - enabled free-space-tree (-R free-space-tree)
+>
+> No valid Btrfs found on /dev/nullb0
+> ERROR: open ctree failed
+>
+> #mkfs.ext2 failed
+> $ sudo mke2fs -V
+> mke2fs 1.46.5 (30-Dec-2021)
+> Using EXT2FS Library version 1.46.5
+> $ sudo mke2fs /dev/nullb0
+> mke2fs 1.46.5 (30-Dec-2021)
+> Creating filesystem with 65536000 4k blocks and 16384000 inodes
+> Filesystem UUID: 747350a2-a1d5-4944-9f46-0fe4ca76df9d
+> Superblock backups stored on blocks:
+> 32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+> 4096000, 7962624, 11239424, 20480000, 23887872
+>
+> Allocating group tables: done
+> Writing inode tables: done
+> Writing superblocks and filesystem accounting information: mke2fs:
+> Input/output error while writing out and closing file system
+>
+>
+>
+> thanks,
+> Li Zhang
+>
+> Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2022=E5=B9=B48=E6=9C=8828=E6=
+=97=A5=E5=91=A8=E6=97=A5 17:54=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> >
+> >
+> > On 2022/8/28 16:53, li zhang wrote:
+> > > Hi, I'm a bit confused, do you mean if you open a zoned device
+> > > without O_DIRECT it will fail?
+> >
+> > Not a zoned device expert, but to my understanding, if we write into
+> > zoned device, without O_DIRECT, there is no guarantee that the data you
+> > submitted will end at the same bytenr you specified.
+> >
+> > E.g. if you do a pwrite() with a 1M buffer, at device bytenr 4M.
+> >
+> > Without O_DIRECT, the zoned code can re-locate the bytenr to any range
+> > after the write pointer inside the same zone.
+> >
+> > AKA, for zoned device, without O_DIRECT (queue length 1), you can only
+> > known the real physical bytenr after the write has fully finished.
+> >
+> > (The final physical bytenr is determined by the zoned device, no longer
+> > the write initiator).
+> >
+> > >
+> > > I tested and found that if I open a device with the O_DIRECT flag
+> > > on a virtual device like a loop device, the device cannot be written
+> > > to, but with or without O_DIRECT, it works fine on a real
+> > > device (for me, I only test A normal block device since I don't have
+> > > any zoned devices)
+> >
+> > IIRC currently there is no zoned emulation for loop device.
+> >
+> > If you want to test zoned device, you can use null block kernel module,
+> > with fully memory backed storage:
+> >
+> > https://zonedstorage.io/docs/getting-started/nullblk
+> >
+> >
+> > Or go a little further, using tcmu-runner to create file backed zoned
+> > device:
+> >
+> > https://zonedstorage.io/docs/tools/tcmu-runner
+> >
+> > >
+> > > If we use the same flags for all devices,
+> > > does that mean we can't use mkfs.btrfs
+> > > on both real and virtual devices at the same time.
+> > >
+> > >
+> > > Below is my test program and test results.
+> > >
+> > > code(main idea):
+> > > printf("filename:%s.\n", argv[1]);
+> > > int fd =3D open(argv[1], O_RDWR | O_DIRECT);
+> > > if (fd < 0) {
+> > >       printf("fd:error.\n");
+> > >       return -1;
+> > > }
+> > > int num =3D write(fd, "123", 3);
+> > > printf("num:%d.\n", num);
+> >
+> > O_DIRECT requires strict memory alignment, obviously the length 3 is no=
+t
+> > properly aligned.
+> >
+> > Please check open(2p) for the full requirement.
+> >
+> > For mkfs usage, all of our write is at least 4K aligned, thus O_DIRECT
+> > can work correctly.
+> >
+> >
+> > Back to btrfs-progs work, I'd say before we do anything, let's check al=
+l
+> > the devices passed in to determine if we want zoned mode (any zoned
+> > device should make it zoned).
+> >
+> > Then we can determine the open flags for all devices, and for regular
+> > devices, O_DIRECT mostly makes no difference (maybe a little slower, bu=
+t
+> > may not even be observable).
+> >
+> > Thanks,
+> > Qu
+> >
+> >
+> > > close(fd);
+> > >
+> > > result:
+> > > $ sudo losetup /dev/loop1 loopDev/loop1
+> > > $ sudo ./a.out /dev/loop1
+> > > filename:/dev/loop1.
+> > > num:-1.
+> > > # cannot write to loop1
+> > >
+> > >
+> > > Thanks,
+> > > Li Zhang
+> > >
+> > > Johannes Thumshirn <Johannes.Thumshirn@wdc.com> =E4=BA=8E2022=E5=B9=
+=B48=E6=9C=8825=E6=97=A5=E5=91=A8=E5=9B=9B 16:31=E5=86=99=E9=81=93=EF=BC=9A
+> > >>
+> > >> On 25.08.22 07:20, Qu Wenruo wrote:
+> > >>>> +                    if (zoned && zoned_model(file) =3D=3D ZONED_H=
+OST_MANAGED)
+> > >>>> +                            prepare_ctx[i].oflags =3D O_RDWR | O_=
+DIRECT;
+> > >>> Do we need to treat the initial and other devices differently?
+> > >>>
+> > >>> Can't we use the same flags for all devices?
+> > >>>
+> > >>>
+> > >>
+> > >> Yep we need to have the same flags for all devices. Otherwise only
+> > >> device 0 will be opened with O_DIRECT, in case of a host-managed one=
+ and
+> > >> the subsequent will be opened without O_DIRECT causing mkfs to fail.
