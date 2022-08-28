@@ -2,111 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7367C5A3ED8
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Aug 2022 19:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AE95A3F0A
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Aug 2022 20:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbiH1RaW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 28 Aug 2022 13:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
+        id S230249AbiH1SSi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 28 Aug 2022 14:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbiH1RaV (ORCPT
+        with ESMTP id S229797AbiH1SSd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 28 Aug 2022 13:30:21 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A4E7641;
-        Sun, 28 Aug 2022 10:30:19 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id c3so6322879vsc.6;
-        Sun, 28 Aug 2022 10:30:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=rC/kcvyTRMZn63lmOJ8Yw6MSQcVtIHue9Gs8f5KhzxI=;
-        b=QiXycj2Fdgnnrcm4Yd55Jnz3ZDDRPTXPBhcd/BxbbSyT3Zj+SXca6TuWA3S9oQYIpK
-         +DiNwzR4IFUcCb7F93FMJvDvLeKJE1idtoAe7Z7+HxoCXOYDxacZA86EHf0KbFyIF/Uy
-         BPoEEGpBZ0ykd4SmaC1S+kWWUyPoeA8Za81JF+uKMOeoHbf7wjWIyYIrDxuESx6uaiD0
-         nuAqZ9Dd5iytqXuVa+Yl6Obc9b6h6cEANAN4FCVBoi81wp93z2O3BTXvqwFgQrENj2GK
-         ODpG5xkdP+LrQLZXOK7+xcWTXmwoQc4EIhtXhI4QTJsmbChg+T/6xKH9jzGdBoprGUPi
-         qa/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=rC/kcvyTRMZn63lmOJ8Yw6MSQcVtIHue9Gs8f5KhzxI=;
-        b=G41h19QUFyVaeevEK2nMq07L+sjWbqN9qcGoL5fAO6gO5QjSkEX7mMDH5cinaNwllS
-         8/vAHfKrJDL6BvmRjGAhSfAElIJnvuRZ3r/+UBGIEA4Ddd+0B2LWFoeCqes2SoS8H93V
-         JbPNZGvoZZIpnPsiQIfabe0wIkUIoZ0aDm7CESNAa4XjDFZ8kXMfJ9eE66ktHgugmXba
-         /4Axqp43nPwZZw1Ri3KQZNtxJA9JAk2fXm24hBta+wOnGwlv0p4bSNPWmepeULW47EF8
-         Ufc4F+GxsvGHYRdTfbZyX8swmZt7zb+CAM6KEz81iY4hFG8kigD89qwRGlh+PpccYDi0
-         y3bg==
-X-Gm-Message-State: ACgBeo1Rm9TfTRcApnlj4MkOX1HlgUsYG4smilvYqBg/yInzHGfuBsPA
-        FjaAtL/ASUMApGzpC9HBJOQ3mqYhkVu4/F0Z6r4=
-X-Google-Smtp-Source: AA6agR7cmg57rCLNkmwrUUJk/RyfQYniAMvh9OKyjO2Yd3+bL6n6ixaimSWK3PPDLAo0oGuiuEXzn5LzJQt8j7+ovg4=
-X-Received: by 2002:a67:a649:0:b0:390:88c5:6a91 with SMTP id
- r9-20020a67a649000000b0039088c56a91mr2450540vsh.3.1661707819049; Sun, 28 Aug
- 2022 10:30:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220826214703.134870-1-jlayton@kernel.org> <20220826214703.134870-5-jlayton@kernel.org>
- <CAOQ4uxjzE_B_EQktLr8z8gXOhFDNm-_YpUTycfZCdaZNp-i0hQ@mail.gmail.com>
- <CAOQ4uxge86g=+HPnds-wRXkFHg67G=m9rGK7V_T8yS+2=w9tmg@mail.gmail.com>
- <35d31d0a5c6c9a20c58f55ef62355ff39a3f18c6.camel@kernel.org> <Ywo8cWRcJUpLFMxJ@magnolia>
-In-Reply-To: <Ywo8cWRcJUpLFMxJ@magnolia>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sun, 28 Aug 2022 20:30:07 +0300
-Message-ID: <CAOQ4uxj=+7n5vcxNt8CTkPCzv7u8AQYHdzF2mKS29Bj3S3NxnA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/7] xfs: don't bump the i_version on an atime update
- in xfs_vn_update_time
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Jeff Layton <jlayton@kernel.org>, Theodore Tso <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Dave Chinner <david@fromorbit.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Neil Brown <neilb@suse.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Mimi Zohar <zohar@linux.ibm.com>, xiubli@redhat.com,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Lukas Czerner <lczerner@redhat.com>, Jan Kara <jack@suse.cz>,
-        Christian Brauner <brauner@kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        David Wysochanski <dwysocha@redhat.com>,
-        ceph-devel <ceph-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 28 Aug 2022 14:18:33 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E3826AED;
+        Sun, 28 Aug 2022 11:18:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2C56FB80B8A;
+        Sun, 28 Aug 2022 18:18:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D3525C43470;
+        Sun, 28 Aug 2022 18:18:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661710709;
+        bh=DvYkl+ieyA4IhDG/sdFILB+gMm14s2VYDeuX4qdiN5k=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=pMkEBcKAoAO/52YWb29UpUuIythuqmm9x5fB3uf1Ut04KR9jP4KoZ6B1FZhkqch5D
+         etnxtkPksDwHFMy6tv6kf9QSG2zSSZiaZsUFmR7n6UPJM4hNJl8dRUsbpy1xNfKk3e
+         8/rwD5QiltWf9v+r91P1UxUTxsjI2jeJ71mC1t/OaYWFcFJkO7fAP+Ac9JIv2M7yh1
+         PHaN5MY9usIegTYWYGlV/TUwNUDAiCLYgqm6nmaISSTV61VNsxvkPfEfd9S4gZTIzT
+         ZhbOQSCaUZKUT5wxodUnMBauRlac9MJ32N8TwfAe6AJEfi1aVSpLcMnbLNwLCyjj3E
+         UHP6iYdD+1e3g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C2A00C4166E;
+        Sun, 28 Aug 2022 18:18:29 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for v6.0-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1661690960.git.dsterba@suse.com>
+References: <cover.1661690960.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1661690960.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.0-rc3-tag
+X-PR-Tracked-Commit-Id: f2c3bec215694fb8bc0ef5010f2a758d1906fc2d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8379c0b31fbc5d20946f617f8e2fe4791e6f58c1
+Message-Id: <166171070979.6107.1251277983847921240.pr-tracker-bot@kernel.org>
+Date:   Sun, 28 Aug 2022 18:18:29 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> > > >
-> > > > Forensics and other applications that care about atime updates can and
-> > > > should check atime and don't need i_version to know that it was changed.
-> > > > The reliability of atime as an audit tool has dropped considerably since
-> > > > the default in relatime.
->
-> I've been waiting for Amir to appear in this discussion -- ISTR that a
-> few years ago you were wanting the ability to scan a filesystem to look
-> for files that have changed since a given point.  If XFS exported its
-> di_changecount file attribute (as it currently behaves) via BULKSTAT,
-> you'd have the ability to do that, so long as your application could
-> persist bulkstat data and compare.
->
+The pull request you sent on Sun, 28 Aug 2022 14:57:29 +0200:
 
-It's true that exporting i_version via BULKSTAT could be useful
-to some backup/sync applications.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.0-rc3-tag
 
-For my case, I was interested in something a bit different -
-finding all the changes in a very large fs tree - or IOW finding if
-anything has changed inside a large tree since a point in time.
-So not sure if i_version would help for that use case.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8379c0b31fbc5d20946f617f8e2fe4791e6f58c1
 
-Thanks,
-Amir.
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
