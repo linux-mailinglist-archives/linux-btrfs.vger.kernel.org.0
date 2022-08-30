@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF2C5A5AF1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Aug 2022 06:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55C45A5B02
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Aug 2022 07:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbiH3E5k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Aug 2022 00:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
+        id S229748AbiH3FKw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Aug 2022 01:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbiH3E5i (ORCPT
+        with ESMTP id S229446AbiH3FKv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Aug 2022 00:57:38 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BC4AB42E
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Aug 2022 21:57:36 -0700 (PDT)
+        Tue, 30 Aug 2022 01:10:51 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AF67435D
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Aug 2022 22:10:49 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0338521D71
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Aug 2022 04:57:35 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 414D71F9AF
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Aug 2022 05:10:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1661835455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1661836248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=gS+bn0UBl8Q0oEHoDI0XZue5V6LhCkFUzy8e7xspGxc=;
-        b=r01kjxOq/jZ5ngWpvmmGpGMiP+R7LzdZTX89+vb/CRBOCFUy/QPLfNvlmnPGLT9f0Pubz2
-        9rm5VsK1GYin8DXJd22RYxK6O7TiDHyyzLLCuSvUPw6gGl6YqkheS1npGuk/V//q/Vet1Y
-        1dqzVF9UsH73n3MCJL2sE8OCQ5tAE4k=
+        bh=JMzQ8ruZ23n53jPME4TLbG4FFKLg3RY6BJ4wdNArb34=;
+        b=JEDsvAGNKUuWy9KPprp2u9jKWvbNSShilP/xbFQUObeiwJhPmdBLhzSCfG5QaLwU8dce5b
+        E22e+x6oa9ume6yIMn4wqv+UFSGd36f4tZrgtk7YL68dNoB0TInPkxHvDeCAkuWmoZm326
+        /gpeV6tFMnsunvddXMq5ox4x9aZmF+k=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5630513ACF
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Aug 2022 04:57:34 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 92A3213ACF
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Aug 2022 05:10:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id agw7CL6YDWO7BAAAMHmgww
+        id bOBHF9ebDWNSCAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Aug 2022 04:57:34 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Aug 2022 05:10:47 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: fix eb leakage caused by missing btrfs_release_path() call.
-Date:   Tue, 30 Aug 2022 12:57:16 +0800
-Message-Id: <043f1db2c7548723eaff302ebba4183afb910830.1661835430.git.wqu@suse.com>
+Subject: [PATCH DON'T MERGE] btrfs-progs: crash if eb has leaked for debug builds
+Date:   Tue, 30 Aug 2022 13:10:29 +0800
+Message-Id: <d1986a1743d1f0e56a680b6ab4ba92ba225c21db.1661836144.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,105 +57,73 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-Commit 06b6ad5e017e ("btrfs-progs: check: check for invalid free space
-tree entries") makes btrfs check to report eb leakage even on newly
-created btrfs:
+!!! DON'T MERGE !!!
 
- # mkfs.btrfs -f test.img
- # btrfs check test.img
-  Opening filesystem to check...
-  Checking filesystem on test.img
-  UUID: 13c26b6a-3b2c-49b3-94c7-80bcfa4e494b
-  [1/7] checking root items
-  [2/7] checking extents
-  [3/7] checking free space tree
-  [4/7] checking fs roots
-  [5/7] checking only csums items (without verifying data)
-  [6/7] checking root refs
-  [7/7] checking quota groups skipped (not enabled on this FS)
-  found 147456 bytes used, no error found
-  total csum bytes: 0
-  total tree bytes: 147456
-  total fs tree bytes: 32768
-  total extent tree bytes: 16384
-  btree space waste bytes: 140595
-  file data blocks allocated: 0
-   referenced 0
-  extent buffer leak: start 30572544 len 16384 <<< Extent buffer leakage
+Currently if we leaked some extent buffers, btrfs-progs can still work
+fine, and will only output a not-that-obvious message like:
 
-[CAUSE]
-Surprisingly the patch submitted to the mailing list is correct:
+ extent buffer leak: start 30572544 len 16384
 
-+	path = btrfs_alloc_path();
-+	if (!path)
-+		return -ENOMEM;
-+
-+	while (1) {
-...
-+		if (ret < 0)
-+			goto out;
-+		if (path->slots[0] >= btrfs_header_nritems(path->nodes[0]))
-+			break;
-...
-+	}
-+	ret = 0;
-+out:
-+	btrfs_free_path(path);
-+	return ret;
-+}
+This is pretty hard to catch and test cases will not be able to catch
+such regression.
 
-So no matter if it's an error or we exhausted the free space tree, the
-path will be released and freed eventually.
+This patch will add a new default debug cflags,
+-DDEBUG_ABORT_ON_EB_LEAK, and in extent_io_tree_cleanup(), if that
+debug flag is enabled, we will report all the leaked eb first, then
+crash to make users and test cases to catch this problem.
 
-But the commit merged into btrfs-progs goes on-stack path method:
+Unfortunately the eb leakage is a big problem, fsck tests can only reach
+002 before crashing at that test image.
 
-+       btrfs_init_path(&path);
-+
-+       while (1) {
-...
-+               if (ret < 0)
-+                       goto out;
-+               if (path.slots[0] >= btrfs_header_nritems(path.nodes[0]))
-+                       break;
-+
-+               btrfs_release_path(&path);
-...
-+       }
-+       ret = 0;
-+out:
-+       return ret;
-+}
-+
+If someone can help fixing all the eb leakage it would be great.
 
-Now we only release the path inside the while loop, no at out tag.
-This means, if we hit error or even just exhausted free space tree as
-expected, we will leak the path to free space tree root.
-
-Thus leading to the above leakage report.
-
-[FIX]
-Fix the bug by calling btrfs_release_path() at out: tag too.
-
-This should make the code behave the same as the patch submitted to the
-mailing list.
-
-Fixes: 06b6ad5e017e ("btrfs-progs: check: check for invalid free space tree entries")
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/main.c | 1 +
- 1 file changed, 1 insertion(+)
+ Makefile                  | 2 +-
+ kernel-shared/extent_io.c | 8 +++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/check/main.c b/check/main.c
-index 0ba38f73c0a4..0c5716a51ad1 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -5776,6 +5776,7 @@ static int check_free_space_tree(struct btrfs_root *root)
+diff --git a/Makefile b/Makefile
+index 2a37d1c6b5eb..beaa31d36f0e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -65,7 +65,7 @@ include Makefile.extrawarn
+ EXTRA_CFLAGS :=
+ EXTRA_LDFLAGS :=
+ 
+-DEBUG_CFLAGS_DEFAULT = -O0 -U_FORTIFY_SOURCE -ggdb3
++DEBUG_CFLAGS_DEFAULT = -O0 -U_FORTIFY_SOURCE -ggdb3 -DDEBUG_ABORT_ON_EB_LEAK
+ DEBUG_CFLAGS_INTERNAL =
+ DEBUG_CFLAGS :=
+ 
+diff --git a/kernel-shared/extent_io.c b/kernel-shared/extent_io.c
+index 48bcf2cf2f96..6def70a3fca4 100644
+--- a/kernel-shared/extent_io.c
++++ b/kernel-shared/extent_io.c
+@@ -84,6 +84,7 @@ static void free_extent_buffer_final(struct extent_buffer *eb);
+ void extent_io_tree_cleanup(struct extent_io_tree *tree)
+ {
+ 	struct extent_buffer *eb;
++	bool leaked = false;
+ 
+ 	while(!list_empty(&tree->lru)) {
+ 		eb = list_entry(tree->lru.next, struct extent_buffer, lru);
+@@ -92,11 +93,16 @@ void extent_io_tree_cleanup(struct extent_io_tree *tree)
+ 				"extent buffer leak: start %llu len %u\n",
+ 				(unsigned long long)eb->start, eb->len);
+ 			free_extent_buffer_nocache(eb);
++			leaked = true;
+ 		} else {
+ 			free_extent_buffer_final(eb);
+ 		}
  	}
- 	ret = 0;
- out:
-+	btrfs_release_path(&path);
- 	return ret;
+-
++	if (leaked) {
++#ifdef DEBUG_ABORT_ON_EB_LEAK
++		abort();
++#endif
++	}
+ 	cache_tree_free_extents(&tree->state, free_extent_state_func);
  }
  
 -- 
