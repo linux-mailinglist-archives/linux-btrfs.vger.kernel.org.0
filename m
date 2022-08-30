@@ -2,112 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AD05A6686
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Aug 2022 16:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8646B5A669A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Aug 2022 16:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbiH3Ood (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Aug 2022 10:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
+        id S229596AbiH3Osj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Aug 2022 10:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbiH3Ood (ORCPT
+        with ESMTP id S229510AbiH3Osi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Aug 2022 10:44:33 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B711EBD772;
-        Tue, 30 Aug 2022 07:44:31 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 2FB115FF7; Tue, 30 Aug 2022 10:44:30 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 2FB115FF7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1661870670;
-        bh=gzW+gZ2zemZDBvDj7lxziqabHjDHurKUBq1mFGCGqI8=;
-        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
-        b=BSjy+CUyTLErHrViU+opXQ2cWXmOTL2ZfD2Acjf0lTMt0/fw4MoPaPVE4+/K9LU3V
-         okT4PSZs6XXSuC8E4FQ06bFdTWWqmvEZX4iKGOFmVxFMcL/5lkLrui1Y56VBc/Uxzs
-         7nrPrYvha+41+GPYOQlBKo+PMXNaYlj2yPaWPkxA=
-Date:   Tue, 30 Aug 2022 10:44:30 -0400
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     NeilBrown <neilb@suse.de>, Dave Chinner <david@fromorbit.com>,
-        tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        trondmy@hammerspace.com, viro@zeniv.linux.org.uk,
-        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
-        lczerner@redhat.com, jack@suse.cz, brauner@kernel.org,
-        linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ceph@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Colin Walters <walters@verbum.org>
-Subject: Re: [PATCH v3 1/7] iversion: update comments with info about atime
- updates
-Message-ID: <20220830144430.GD26330@fieldses.org>
-References: <20220826214703.134870-1-jlayton@kernel.org>
- <20220826214703.134870-2-jlayton@kernel.org>
- <20220829075651.GS3600936@dread.disaster.area>
- <549776abfaddcc936c6de7800b6d8249d97d9f28.camel@kernel.org>
- <166181389550.27490.8200873228292034867@noble.neil.brown.name>
- <f5c42c0d87dfa45188c2109ccf9baeb7a42aa27e.camel@kernel.org>
- <20220830132443.GA26330@fieldses.org>
- <a07686e7e1d1ef15720194be2abe5681f6a6c78e.camel@kernel.org>
+        Tue, 30 Aug 2022 10:48:38 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2D8BFC46;
+        Tue, 30 Aug 2022 07:48:37 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id jm11so11311946plb.13;
+        Tue, 30 Aug 2022 07:48:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=PzFydKNwJFrQJTDHNguIpkAiPm6m9rG7392GYNGhqRM=;
+        b=hR7lNPvcJsuJ4wkmpQauiVWOOMK4TDxwDPY897qZj8FyJClUmDDPvR+9pwBQZGenNJ
+         JtBXbKWPXnhp4lahN5rHGhZEncnLARBvXEeUSVZ9OjF9+V2MYUAi2Cc4BLnFiRBxE483
+         dYjVd26A5NCDf3l6s28eGk43gLZamecwAbgMe0URV7VW4u5bY3VzVZy6CkGxmSlU0wAe
+         iejBP6L+Eev8s7QUIEUSoQx8w9mNTydTAh83DcwIuGCUA5FOqQnoreIAh+SViGsm6y+z
+         v/VIqA0Jn9uyX/LW4TW4RhozUXIy1OPzibiJzgiUTfpkFrQsOQEfGwXCLm8PgYLk9Fx5
+         IyHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=PzFydKNwJFrQJTDHNguIpkAiPm6m9rG7392GYNGhqRM=;
+        b=2QF3rYkUWZjf/JnwenZI3z9JpQe95X+t0h2ML+SmjC8l0/IDwmqSxure+TOzRFjVrB
+         U5Uyc5I0X1KFZXgOTsxDR4NlMbk9o18MAqTue8wVV/ATBFD8GmhwEChHhpqAXen1UXOM
+         dgUbEkiNydcqYl4S8Gj8cUdXzkcAp9f+9Cn9JbqpRGVhzX5GkqyuL3FZNv1jorJPLwpe
+         6ZQ859xCoUg4tFGHOBHQBGYhV8siv7XrMed6bUAFRAmyn++I39fMN62gpOpP96WmVnVE
+         lvE2AJq3F/e69kIMkJdhmZ2p02+7GvkApwWNri/zXWx5d+/cuuRtmBV8gAtKXfc2685o
+         C2JQ==
+X-Gm-Message-State: ACgBeo185aefeKQuhqLqcr7GV/k2ELgoc6ia5GvFop3Wu4rcxy2eD5jg
+        fckhXz13ffw9QJYYWHP+VLpPdJU/BC4=
+X-Google-Smtp-Source: AA6agR7Bpn4pRWGzH75l9rWYc/G3Y8PcuvLog4ycJEOKfM+z/mQxBS97LNbCFrNyluKkEqi1kgJE1g==
+X-Received: by 2002:a17:902:ccd1:b0:172:5c49:34be with SMTP id z17-20020a170902ccd100b001725c4934bemr21125748ple.23.1661870917172;
+        Tue, 30 Aug 2022 07:48:37 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id a1-20020a1709027e4100b00172c7dee22fsm9762718pln.236.2022.08.30.07.48.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Aug 2022 07:48:36 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: cui.jinpeng2@zte.com.cn
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jinpeng Cui <cui.jinpeng2@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] btrfs: remove redundant variables ret
+Date:   Tue, 30 Aug 2022 14:48:32 +0000
+Message-Id: <20220830144832.300092-1-cui.jinpeng2@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a07686e7e1d1ef15720194be2abe5681f6a6c78e.camel@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 30, 2022 at 09:50:02AM -0400, Jeff Layton wrote:
-> On Tue, 2022-08-30 at 09:24 -0400, J. Bruce Fields wrote:
-> > On Tue, Aug 30, 2022 at 07:40:02AM -0400, Jeff Layton wrote:
-> > > Yes, saying only that it must be different is intentional. What we
-> > > really want is for consumers to treat this as an opaque value for the
-> > > most part [1]. Therefore an implementation based on hashing would
-> > > conform to the spec, I'd think, as long as all of the relevant info is
-> > > part of the hash.
-> > 
-> > It'd conform, but it might not be as useful as an increasing value.
-> > 
-> > E.g. a client can use that to work out which of a series of reordered
-> > write replies is the most recent, and I seem to recall that can prevent
-> > unnecessary invalidations in some cases.
-> > 
-> 
-> That's a good point; the linux client does this. That said, NFSv4 has a
-> way for the server to advertise its change attribute behavior [1]
-> (though nfsd hasn't implemented this yet).
+From: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
 
-It was implemented and reverted.  The issue was that I thought nfsd
-should mix in the ctime to prevent the change attribute going backwards
-on reboot (see fs/nfsd/nfsfh.h:nfsd4_change_attribute()), but Trond was
-concerned about the possibility of time going backwards.  See
-1631087ba872 "Revert "nfsd4: support change_attr_type attribute"".
-There's some mailing list discussion to that I'm not turning up right
-now.
+Rturn value directly from iterate_object_props() instead of
+getting value from redundant variable ret.
 
-Did NFSv4 add change_attr_type because some implementations needed the
-unordered case, or because they realized ordering was useful but wanted
-to keep backwards compatibility?  I don't know which it was.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
+---
+ fs/btrfs/props.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---b.
+diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+index a2ec8ecae8de..055a631276ce 100644
+--- a/fs/btrfs/props.c
++++ b/fs/btrfs/props.c
+@@ -270,11 +270,8 @@ int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path)
+ {
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
+ 	u64 ino = btrfs_ino(BTRFS_I(inode));
+-	int ret;
+-
+-	ret = iterate_object_props(root, path, ino, inode_prop_iterator, inode);
+ 
+-	return ret;
++	return iterate_object_props(root, path, ino, inode_prop_iterator, inode);
+ }
+ 
+ static int prop_compression_validate(const struct btrfs_inode *inode,
+-- 
+2.25.1
 
-> We don't have a good way to
-> do that in userland for now.
-> 
-> This is another place where fsinfo() would have been nice to have. I
-> think until we have something like that, we'd want to keep our promises
-> to userland to a minimum.
-> 
-> [1]: https://www.rfc-editor.org/rfc/rfc7862.html#section-12.2.3 . I
-> guess I should look at plumbing this in for IS_I_VERSION inodes...
-> 
-> -- 
-> Jeff Layton <jlayton@kernel.org>
-> 
-> 
