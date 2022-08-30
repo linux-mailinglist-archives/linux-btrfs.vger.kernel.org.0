@@ -2,44 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1445A6243
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Aug 2022 13:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683245A638C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Aug 2022 14:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbiH3LmP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Aug 2022 07:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58360 "EHLO
+        id S229705AbiH3MiY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Aug 2022 08:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbiH3Llz (ORCPT
+        with ESMTP id S229484AbiH3MiU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Aug 2022 07:41:55 -0400
+        Tue, 30 Aug 2022 08:38:20 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956D55B7B0;
-        Tue, 30 Aug 2022 04:40:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F25DF0751;
+        Tue, 30 Aug 2022 05:38:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CEC9BB81A5C;
-        Tue, 30 Aug 2022 11:40:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C003C433D6;
-        Tue, 30 Aug 2022 11:40:03 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 43898B81B21;
+        Tue, 30 Aug 2022 12:38:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27181C43470;
+        Tue, 30 Aug 2022 12:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661859605;
-        bh=9U5YNZG5kGGVOkXBz5XYF4bS4GrVUMLFarYkV3ivBmI=;
+        s=k20201202; t=1661863096;
+        bh=Z2Uw+eKcR8qnBXxCJPNZXehF4kL5olAbE4MD9S5gmHc=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=LJGU2MlvihvbWDegzJW9x4zDzYfr4RuHN1avdf2LC/d0uILp5ZxoG8FZFFVC37yiC
-         zZ/k2xcy0WiPAfZhXY1pATPJqmDLFF2rR4+T4LT0HHIaLKuNbQ4o4FY+T2NtLmOAZv
-         DNHu8b6lkZjJU6fe+lHENGmYwS9JjFl6Tvr/A7puLdcTsrBc8w5UxI7qJUTUxVdGIs
-         NsH1AiofF7wbgJapwPcvITxWN2fyStNzOHWp+xq9dfReH1WzIibxnjxXqei4581RCt
-         kvzCCbkUpOXF+iA6klzKuW9BROz+ZHywvmfybrUpmqA2U/lGefISWYhJdJ5FRUAgYi
-         pddIxrdkoReoA==
-Message-ID: <f5c42c0d87dfa45188c2109ccf9baeb7a42aa27e.camel@kernel.org>
+        b=tzK2GUGaRSQpp5z3xwIGfwoqJzsSmm8NgGVMpqXAIAFPorSIH0xng4kbLHh2sHi/u
+         YBXYSJ0YYMUmZry4t8nynJ8zCLHes3EAGkHnVsTRVWbFsnRUKVOGhaQWk4TByJssyT
+         Fsi1p0AwmWPeItOMN1U8MLyHesuUqw4vH4GpySuLrb+y7PrZbSXXkeWf6dFS/NMFDH
+         P+uNlA4SexZ6D733rS0krvbOMBJ0v6FuI9/+5QwB0iSYvqNECxH6FnUW3IR7TtBXBc
+         rL3Mf/s5B8QA+OdnwyQz+QoggBkIip5qH3EL9ntgPt2BH9BCOvZ3WKNLdvg1Sr7x4E
+         TPomQStYs0aXA==
+Message-ID: <f3da0a35adfa829af5374b34746eac630b0e67fe.camel@kernel.org>
 Subject: Re: [PATCH v3 1/7] iversion: update comments with info about atime
  updates
 From:   Jeff Layton <jlayton@kernel.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Dave Chinner <david@fromorbit.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, djwong@kernel.org,
-        trondmy@hammerspace.com, viro@zeniv.linux.org.uk,
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
+        trondmy@hammerspace.com, neilb@suse.de, viro@zeniv.linux.org.uk,
         zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
         lczerner@redhat.com, jack@suse.cz, brauner@kernel.org,
         linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
@@ -47,13 +46,13 @@ Cc:     Dave Chinner <david@fromorbit.com>, tytso@mit.edu,
         linux-ceph@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
         Colin Walters <walters@verbum.org>
-Date:   Tue, 30 Aug 2022 07:40:02 -0400
-In-Reply-To: <166181389550.27490.8200873228292034867@noble.neil.brown.name>
+Date:   Tue, 30 Aug 2022 08:38:12 -0400
+In-Reply-To: <20220830010442.GW3600936@dread.disaster.area>
 References: <20220826214703.134870-1-jlayton@kernel.org>
-        , <20220826214703.134870-2-jlayton@kernel.org>
-        , <20220829075651.GS3600936@dread.disaster.area>
-        , <549776abfaddcc936c6de7800b6d8249d97d9f28.camel@kernel.org>
-         <166181389550.27490.8200873228292034867@noble.neil.brown.name>
+         <20220826214703.134870-2-jlayton@kernel.org>
+         <20220829075651.GS3600936@dread.disaster.area>
+         <549776abfaddcc936c6de7800b6d8249d97d9f28.camel@kernel.org>
+         <20220830010442.GW3600936@dread.disaster.area>
 Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
@@ -68,8 +67,8 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 2022-08-30 at 08:58 +1000, NeilBrown wrote:
-> On Mon, 29 Aug 2022, Jeff Layton wrote:
+On Tue, 2022-08-30 at 11:04 +1000, Dave Chinner wrote:
+> On Mon, Aug 29, 2022 at 06:39:04AM -0400, Jeff Layton wrote:
 > > On Mon, 2022-08-29 at 17:56 +1000, Dave Chinner wrote:
 > > > On Fri, Aug 26, 2022 at 05:46:57PM -0400, Jeff Layton wrote:
 > > > > The i_version field in the kernel has had different semantics over
@@ -152,22 +151,122 @@ lse cache
 > >=20
 > > Nonsense. The statx version counter specification is *whatever we decid=
 e
-> > to make it*. If we define it to allow for spurious version bumps, then
+> > to make it*.
+>=20
+> Yes, but...
+>=20
+> > If we define it to allow for spurious version bumps, then
 > > these implementations would be conformant.
-> >=20
+>=20
+> ... that's _not how you defined stx_ino_version to behave_!
+>=20
+
+I certainly didn't say that it must _only_ be incremented when the ctime
+would change, only that if the ctime would change that it must be
+incremented.
+
+The weasel-words make all the difference. But, point taken, the spec
+should be explicit about this. I'll plan to revise the manpage patch and
+resend it.
+
 > > Given that you can't tell what or how much changed in the inode wheneve=
 r
 > > the value changes, allowing it to be bumped on non-observable changes i=
 s
 > > ok and the counter is still useful. When you see it change you need to
 > > go stat/read/getxattr etc, to see what actually happened anyway.
-> >=20
+>=20
+> IDGI. If this is acceptible, then you're forcing userspace into
+> "store and filter" implementations as the only viable method of
+> using the change notification usefully.
+>=20
+
+Well, that's all it's really useful for anyway. The counter itself has
+tells you nothing other than that something changed.
+
+> That means atime is just another attribute in the "store and
+> filter" algorithm, so if this is how we define stx_ino_version
+> behaviour, why carve out an explicit exception for atime?
+>=20
+
+Because atime updates are particularly problematic. Ideally, we'd filter
+out all implicit updates, but that may not be feasible in all cases.
+
 > > Most applications won't be interested in every possible explicit change
 > > that can happen to an inode. It's likely these applications would check
 > > the parts of the inode they're interested in, and then go back to
 > > waiting for the next bump if the change wasn't significant to them.
-> >=20
-> >=20
+>=20
+> Yes, that is exactly my point.
+>=20
+> You make the argument that we must not bump iversion in certain
+> situations (atime) because it will cause spurious cache
+> invalidations, but then say it is OK to bump it in others regardless
+> of the fact that it will cause spurious cache invalidations. And you
+> justify this latter behaviour by saying it is up to the application
+> to avoid spurious invalidations by using "store and filter"
+> algorithms.
+>=20
+> If the application has to store state and filter changes indicated
+> by stx_ino_version changing, then by definition *it must be capable
+> of filtering iversion bumps as a result of atime changes*.
+>=20
+> The iversion exception carved out for atime requires the application
+> to implement "store and filter" algorithms only if it needs to care
+> about atime changes. The "invisible bump" exception carved out here
+> *requires* applications to implement "store and filter" algorithms
+> to filter out invisible bumps.
+>=20
+> Hence if we combine both these behaviours, atime bumping iversion
+> appears to userspace exactly the same as "invisible bump occurred,
+> followed by access that changes atime".  IOWs, userspace cannot tell the
+> difference between a filesystem implementation that doesn't bump
+> iversion on atime but has invisible bump, and a filesystem that
+> bumps iversion on atime updates and so it always needs to filter
+> atime changes if it doesn't care about them.
+>=20
+> Hence if stx_ino_version can have invisible bumps, it makes no
+> difference to userspace if atime updates bump iversion or not. They
+> will have to filter atime if they don't care about it, and they have
+> to store the new stx_ino_version every time they filter out an
+> invisible bump that doesn't change anything their filters care
+> about (e.g. atime!).
+>=20
+> At which point I have to ask: if we are expecting userspace to
+> filter out invisible iversion bumps because that's allowed,
+> conformant behaviour, then why aren't we requiring both the NFS
+> server and IMA applications to filter spurious iversion bumps as
+> well?
+>=20
+
+I think you're reading too much into my attempt to carve out atime from
+i_version updates. That is purely a pragmatic attempt to staunch the
+worst of the bleeding from this problem.
+
+atime updates are _very_ frequent, and the default relatime behavior
+ensures that each NFS client reading file data or dir info after a
+change to it will end up downloading it at least twice: once to read the
+file itself, and then again after it drops its cache due to the atime
+update from the prior read.
+
+In an ideal world, an implementation would only bump the i_version on
+explicit changes. If an implicit change only happens infrequently, or
+always happens in very close succession after an explicit change (such
+that readers can't race in as easily) then that's less harmful for
+performance.
+
+The i_version value itself can't tell you anything about the inode. It's
+only useful for comparing to an earlier sample to see if it is has
+changed. This attribute is mostly useful in the context of a store-and-
+invalidate kind of system. We want to keep the invalidations to a
+minimum, but eliminating spurious updates is more of an optimization
+problem than one of correctness.
+
+It would be best if we could eliminate all spurious updates, but I think
+the stx_ino_version is just as useful without being that strict, and
+that leaves the door open for other implementations that aren't able to
+filter out all spurious updates.
+
 > > > Hence I think anything that bumps iversion outside the bounds of the
 > > > statx definition should be declared as such:
 > > >=20
@@ -179,57 +278,16 @@ s
 > >=20
 > > I think this is more strict than is needed. An implementation that bump=
 s
-> > this value more often than is necessary is still useful. It's not
-> > _ideal_, but it still meets the needs of NFSv4, IMA and other potential
-> > users of it. After all, this is basically the definition of i_version
-> > today and it's still useful, even if atime update i_version bumps are
-> > currently harmful for performance.
+> > this value more often than is necessary is still useful.
 >=20
-> Why do you want to let it be OK?  Who is hurt by it being "more strict
-> than needed"?  There is an obvious cost in not being strict as an
-> implementation can be compliant but completely useless (increment every
-> nanosecond).  So there needs to be a clear benefit to balance this.  Who
-> benefits by not being strict?
->=20
+> I never said that non-conformant implementations aren't useful. What
+> I said is they aren't conformant with the provided definition of
+> stx_ino_version, and as a result we should not allow them to be
+> exposed to userspace.
 
-Other filesystems that may not be able to provide the strict semantics
-required. I don't have any names to name here -- I'm just trying to
-ensure that we don't paint ourselves into a corner with rules that are
-more strict than we really need.
+As I said above, I'll respin the manpage patch to better specify what a
+conformant implementation can and can't do, and we can discuss from
+there.
 
-If the consensus is that we should keep the definition strict, then Ican
-live with that. That might narrow the number of filesystems that can
-provide this attribute though.
-
-> Also: Your spec doesn't say it must increase, only it must be different.
-> So would as hash of all data and metadata be allowed (sysfs might be
-> able to provide that, but probably wouldn't bother).
->=20
-> Also: if stray updates are still conformant, can occasional repeated
-> values be still conformant?  I would like for a high-precision ctime
-> timestamp to be acceptable, but as time can go backwards it is currently
-> not conformant (even though the xfs iversion which is less useful is
-> actually conformant).
->=20
-
-Yes, saying only that it must be different is intentional. What we
-really want is for consumers to treat this as an opaque value for the
-most part [1]. Therefore an implementation based on hashing would
-conform to the spec, I'd think, as long as all of the relevant info is
-part of the hash.
-
-OTOH, hash collisions could be an issue here and I think we need to
-avoid allowing duplicate values. When it comes to watching for changes
-to an inode, false positives are generally ok since that should just
-affect performance but not functionality.
-
-False negatives are a different matter. They can lead to cache coherency
-issues with NFS, or missing remeasurements in IMA. Userland applications
-that use this could be subject to similar issues.
 --=20
 Jeff Layton <jlayton@kernel.org>
-
-
-[1]: which may not be reasonable in the case of write delegations on
-NFSv4, since the client is expected to increment it when it has cached
-local changes.
