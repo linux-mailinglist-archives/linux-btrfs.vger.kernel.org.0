@@ -2,72 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A05555A8089
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Aug 2022 16:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DBD5A80C2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Aug 2022 16:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbiHaOqN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 Aug 2022 10:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34982 "EHLO
+        id S229635AbiHaO6S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 Aug 2022 10:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbiHaOqI (ORCPT
+        with ESMTP id S231589AbiHaO5z (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 Aug 2022 10:46:08 -0400
+        Wed, 31 Aug 2022 10:57:55 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BB3CB5E3
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 Aug 2022 07:46:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C09D91EA
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 Aug 2022 07:57:28 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 256B5220D0;
-        Wed, 31 Aug 2022 14:46:05 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D4E2021B77;
+        Wed, 31 Aug 2022 14:57:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1661957165;
+        t=1661957835;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0UMtxoh8Ghv7U4sMboSL1f7TELYvIITdVV56vc4rDAs=;
-        b=uD0pzjZwqUNLp54Ran+6kUoufycspwYxOqiQPafBcpGQSjuxPUqJ/7UrRJFlADLpbAjjI1
-        uNQ2QB6ngR+W7MwnUKYXnkX9F9Wm5SJXH+oLKzlor/Eoi5GIVn4uRDDGPK5KalxNaX5T9+
-        xqlrEsbxYR5elyODR3yLu4vC1KZk8hg=
+        bh=iJ/kNiyjYB9f44RDuyDKmLRBILlfaTV5gS4BFiVSThk=;
+        b=C3x2MKZ/QNqgQJM8nwCUkkurT1qKcr2RrPhYR1vpfmQZadVfTqtKWfukxD2PtRvVaNeOns
+        rGBKTOY8K+XqGJWCiW3vATFtkshiJAgC4tWpiW+0UG6SqZ3S7gj/kf6jsX+ibpd30DAjv9
+        ihqs40hbPVlSqO2y7rT98T2W0gpj528=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1661957165;
+        s=susede2_ed25519; t=1661957835;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0UMtxoh8Ghv7U4sMboSL1f7TELYvIITdVV56vc4rDAs=;
-        b=f4ql7R4cp6XNOksCr9d5+aDMurcrDJ58UQTyNZ90Dr0udMD9112hMLTCvIFqguN7282Rf2
-        wxu53nUJ0YEBqCDQ==
+        bh=iJ/kNiyjYB9f44RDuyDKmLRBILlfaTV5gS4BFiVSThk=;
+        b=9QcTBf8nw96oAowxGJois1TKCr3RkB8y2Zs93snHbedDAZYWE6PPxmTzb28jx4LPcO7tqr
+        mE1wUr8EJD6T7pBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E325A13A7C;
-        Wed, 31 Aug 2022 14:46:04 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9362D13A7C;
+        Wed, 31 Aug 2022 14:57:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id VFhwNix0D2NcWwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 31 Aug 2022 14:46:04 +0000
-Date:   Wed, 31 Aug 2022 16:40:46 +0200
+        id X2D3Ist2D2OCYAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 31 Aug 2022 14:57:15 +0000
+Date:   Wed, 31 Aug 2022 16:51:56 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH v2] btrfs: zoned: set pseudo max append zone limit in
- zone emulation mode
-Message-ID: <20220831144046.GH13489@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Goffredo Baroncelli <kreijack@libero.it>
+Subject: Re: [PATCH v3] btrfs: check the superblock to ensure the fs is not
+ modified at thaw time
+Message-ID: <20220831145156.GI13489@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-References: <20220826074215.159686-1-shinichiro.kawasaki@wdc.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        Goffredo Baroncelli <kreijack@libero.it>
+References: <e0a051edb23223036ebe21a01dd5d9ab63e54cc9.1661343122.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220826074215.159686-1-shinichiro.kawasaki@wdc.com>
+In-Reply-To: <e0a051edb23223036ebe21a01dd5d9ab63e54cc9.1661343122.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -79,21 +76,78 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 04:42:15PM +0900, Shin'ichiro Kawasaki wrote:
-> The commit 7d7672bc5d10 ("btrfs: convert count_max_extents() to use
-> fs_info->max_extent_size") introduced a division by
-> fs_info->max_extent_size. This max_extent_size is initialized with max
-> zone append limit size of the device btrfs runs on. However, in zone
-> emulation mode, the device is not zoned then its zone append limit is
-> zero. This resulted in zero value of fs_info->max_extent_size and caused
-> zero division error.
+On Wed, Aug 24, 2022 at 08:16:22PM +0800, Qu Wenruo wrote:
+> [BACKGROUND]
+> There is an incident report that, one user hibernated the system, with
+> one btrfs on removable device still mounted.
 > 
-> Fix the error by setting non-zero pseudo value to max append zone limit
-> in zone emulation mode. Set the pseudo value based on max_segments as
-> suggested in the commit c2ae7b772ef4 ("btrfs: zoned: revive
-> max_zone_append_bytes").
+> Then by some incident, the btrfs got mounted and modified by another
+> system/OS, then back to the hibernated system.
 > 
-> Fixes: 7d7672bc5d10 ("btrfs: convert count_max_extents() to use fs_info->max_extent_size")
-> Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+> After resuming from the hibernation, new write happened into the victim btrfs.
+> 
+> Now the fs is completely broken, since the underlying btrfs is no longer
+> the same one before the hibernation, and the user lost their data due to
+> various transid mismatch.
+> 
+> [REPRODUCER]
+> We can emulate the situation using the following small script:
+> 
+>  truncate -s 1G $dev
+>  mkfs.btrfs -f $dev
+>  mount $dev $mnt
+>  fsstress -w -d $mnt -n 500
+>  sync
+>  xfs_freeze -f $mnt
+>  cp $dev $dev.backup
+> 
+>  # There is no way to mount the same cloned fs on the same system,
+>  # as the conflicting fsid will be rejected by btrfs.
+>  # Thus here we have to wipe the fs using a different btrfs.
+>  mkfs.btrfs -f $dev.backup
+> 
+>  dd if=$dev.backup of=$dev bs=1M
+>  xfs_freeze -u $mnt
+>  fsstress -w -d $mnt -n 20
+>  umount $mnt
+>  btrfs check $dev
+> 
+> The final fsck will fail due to some tree blocks has incorrect fsid.
+> 
+> This is enough to emulate the problem hit by the unfortunate user.
+> 
+> [ENHANCEMENT]
+> Although such case should not be that common, it can still happen from
+> time to time.
+> 
+> >From the view of btrfs, we can detect any unexpected super block change,
+> and if there is any unexpected change, we just mark the fs read-only, and
+> thaw the fs.
+> 
+> By this we can limit the damage to minimal, and I hope no one would lose
+> their data by this anymore.
+> 
+> Suggested-by: Goffredo Baroncelli <kreijack@libero.it>
+> Link: https://lore.kernel.org/linux-btrfs/83bf3b4b-7f4c-387a-b286-9251e3991e34@bluemole.com/
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v3:
+> - Use invalidate_inode_pages2_range() to avoid tricky page alignment
+>   Previously I use truncate_inode_pages_range() with page aligned range.
+>   But this can be confusing since truncate_inode_pages_ragen() can
+>   fill unaligned range with zero. (thus I intentionally align the
+>   range).
+> 
+>   Since we're only interesting dropping the page cache, use
+>   invalidate_inode_pages2_range() should be better.
+> 
+> - Export btrfs_validate_super() to do full super block check at thaw
+>   time
+>   This brings all the checks, and since freeze/thaw should be a cold
+>   path, the extra check shouldn't bother us much.
+> 
+> - Add an extra comment on why we don't need to hold device_list_mutex.
 
-Added to misc-next, thanks.
+And the superblock checksum verification? It makes sense to validate the
+individual sb items but after the checksum.
