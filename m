@@ -2,165 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 625E55A7BA6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Aug 2022 12:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA145A7E2E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Aug 2022 15:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbiHaKr4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 Aug 2022 06:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
+        id S231635AbiHaNBb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 Aug 2022 09:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbiHaKrx (ORCPT
+        with ESMTP id S231630AbiHaNB0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 Aug 2022 06:47:53 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1465AC9276
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 Aug 2022 03:47:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1661942867;
-        bh=T7qaXbnB5xQTCtdOxUQityyRSYCSZG1yvs5u0DjNScw=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=dfLZQXz5D+iYFlNtgfqkdzkExeYeyGdQQYgf7YMjygI1ic4FGY/sxE+ETT329aaed
-         xISkJHUHD9ULXDpQrbMHlU2v+3pni4UcSU8p/+4OK9+HYhUP6GKuRIQMiG9+7LmX2a
-         7u09NR3DSCfzBPPhal1xnNb+q/T10Cqx7X6/re+0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MORAU-1olX011818-00PqmI; Wed, 31
- Aug 2022 12:47:47 +0200
-Message-ID: <fdf31228-c047-ea0f-be3c-0c6198301c0b@gmx.com>
-Date:   Wed, 31 Aug 2022 18:47:44 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH] btrfs-progs: free extent buffer after repairing wrong
- transid eb
+        Wed, 31 Aug 2022 09:01:26 -0400
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF138C164E
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 Aug 2022 06:01:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1661950883; x=1693486883;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=iWOZ+F0HY3/7XT4RB1kBVEmSAIcVVZc5uuro/PNdTyA=;
+  b=W7rQ+oYcqlpuKK6FXk8R04hfvGvDx7fugDAV+boRPvMhm4ueWsQgY35A
+   nE3T82FBMuQl7msdpH/kOSgJ62LAx/cHxEIIopG99b+NEDcnKsravqIpp
+   M/3ds6P0npAhmNjyX/35LQfpIgXcSSa93B9ySeQVV0IrUYadNWc35QttX
+   Z/Y5YVAeadLep4noL60Gs4NS7zIWHyRN4MkJOpaD6w7c2m4JjRztFljGA
+   Xw6m4ZF/0D9CQW1X2t15/nEnz3HqESbSNcwdOXghsda9zr7HYTtFSTFvX
+   ZGs2+JXqCkx8gJRY9DZv5Zj1asifo2qbCLbs7bh3aP1wSKPN86McDx8ud
+   w==;
+X-IronPort-AV: E=Sophos;i="5.93,278,1654531200"; 
+   d="scan'208";a="208560758"
+Received: from mail-bn7nam10lp2102.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.102])
+  by ob1.hgst.iphmx.com with ESMTP; 31 Aug 2022 20:59:02 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SSTVVD2viYPjcnRTCwcoxxzxqirorOI9DJR6q/IhTW9/mcHGNiJgLu4ZkAGpsn5iFzOgB3SgZk3jinoe1Wqhf9jqnqUtOhlcDQv+l8BxrrmlxtvKHVzTqW0EYk+xP8qv6TpXORN7rLtNH5/R5TmNlpB8Jd8uRfmsvyDvTm5Xk2+a9qVbsjR9pPjWjc41g72TTjuYR93LSQFgpUJjRbSep+3LeeJQRp/x6iVbCo/S+8Ow/On0iHrHzaesJMZrAApQ1o3j+xNfl7EXIiNkYnLXx27VQdxsj5BdBCxJ+iS2KwPAir/iBj/74PwbWB4deq3bGps8JNekwO4aU5C4SXxUAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rklf3rNSeL2Ahi7Xk+TGQcQ7dNUkemkaHtEgVO0yPlo=;
+ b=XeR8KM+tIHw3WPwMirXI+BN14b4muLr+vuHsqwJj+NmIdcnDV6vkLLxJMIVqKqOlat75pFtukrAdA3HSEC9MqLonPuD3VrZ8fSX9eZMaJwEFJfw5aEWyuwZm/DCJas3JaZgESXB7nJlKA7J8+epJ+rflpwt8Is6vJ8LoBg3VH6TH3JPISCDtNIKANm56oHrzIjT8ApMb7yVFbkdJ/eJFX6Lh5WgBFX0vNStmsJ1MqrQTAa13Ti8DngFtOyr+ySyH5McWb+HeCrqB/ANYQ48uJYeCw383rH88iA2MjFdLTVTVl3s+EzY4q6B+B2BOH6rtmGMHET55Z8bsQLYxDypuOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rklf3rNSeL2Ahi7Xk+TGQcQ7dNUkemkaHtEgVO0yPlo=;
+ b=hSkhOXFDGjzCOvgLsE5ZMonLOaFLaSV75j6zNL+cmGa1LA3ClliDyWsEkBtJQ09qCys6i0RxqionyLt4w2jbz9onOjKhUoYUsRTYX7JmbYsxGFh30JhpVgZrPxPzItcnGZf9G/5A9KlBBqkjt71grP5V6Yphw6LxzkW55B0jfJ4=
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
+ by CH2PR04MB6869.namprd04.prod.outlook.com (2603:10b6:610:97::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.15; Wed, 31 Aug
+ 2022 12:58:20 +0000
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::7412:af67:635c:c0a9]) by SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::7412:af67:635c:c0a9%7]) with mapi id 15.20.5588.010; Wed, 31 Aug 2022
+ 12:58:20 +0000
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Subject: Re: [PATCH v2] btrfs: zoned: set pseudo max append zone limit in zone
+ emulation mode
+Thread-Topic: [PATCH v2] btrfs: zoned: set pseudo max append zone limit in
+ zone emulation mode
+Thread-Index: AQHYuR9kYk8diXEukkG4DTr7w2VC463JAG8A
+Date:   Wed, 31 Aug 2022 12:58:20 +0000
+Message-ID: <20220831125818.4ndksufgy4chrg4w@naota-xeon>
+References: <20220826074215.159686-1-shinichiro.kawasaki@wdc.com>
+In-Reply-To: <20220826074215.159686-1-shinichiro.kawasaki@wdc.com>
+Accept-Language: ja-JP, en-US
 Content-Language: en-US
-To:     Su Yue <glass@fydeos.io>, linux-btrfs@vger.kernel.org
-Cc:     l@damenly.su
-References: <20220830124752.45550-1-glass@fydeos.io>
- <bd6749cf-d04c-a26e-992b-a0f40a4461c5@gmx.com>
- <f47485f4-5d98-f4ed-b5f9-2cfb2bbe09db@fydeos.io>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <f47485f4-5d98-f4ed-b5f9-2cfb2bbe09db@fydeos.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 92a727c7-392b-4742-c0bf-08da8b507ad9
+x-ms-traffictypediagnostic: CH2PR04MB6869:EE_
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UjiYAt2Np5Q1DMORglhFLhKCDICZh/ee+isLsHHiSrpJVO+dxBzYIlQ/i/8I25JUAekXJSeHbf8vUR9bFV8h2wgEfe5noyw0G/CHVYwQ3hlM4LNvrOzBrIQ8VG3BlXDt7cD8P0YY6AyRx2GMzAgxyHEHLLZ3dCkwVXxTW781eBmdXoIIl6iGEPxPphIYj/ZOKTlBTTnSKebq2E/23Tu8lP2qikrsw0sVgeusOGJwlYVI/bLymW6YOel4f8sjewhJNJvh0JpHgxVWZdL6YNmuS5lGcyny3qmaW7AnuxTcACF4LfQOLoT+xuoHpEeZEleBe9Lvqc/uXJZAgdYmALXEp0RsfcrIFuTqnFzdikMg1KRgLDE5M/s1ed/9lvvAsGeBLERU6dPmPULlx1lOcd8JuKbY4Lp5HDi03Fopb9bRbTwGiMsPi3+tphHmEHubkPkFLRjO8iKM+pEFIAqMhgoBkt9k+3li/qrq6HyKFI3gEhHjHFDSIpmo1qTaiQ1sQ3X1tkDn/J6fVOFQ4C09K3HP33ehazPqq12wVzlWxKUAbVhhrmt3KWKRCsCY6Ku00jEjhQJm7K3fGnVjeRIW5QfSUAACepWA8Lt+eIwuuKkDHLFyLUp2vG0aqJN6qnK/mbVAUyoIZHlhJCLttd3lz2gugUYqocUrk8md4ZM0GNjg/xe5zbdb9vm8GdWRC60v1WCrZkesa1sagonmwtbBw7C8zNF3edQ9/iECq42t0KEnbhWrullSMEVkcfKSG699zeqjK/Ow/x6nuFeSOrVpVX3cAA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(7916004)(346002)(136003)(39860400002)(396003)(366004)(376002)(33716001)(91956017)(64756008)(66446008)(66476007)(66556008)(66946007)(8676002)(76116006)(4326008)(316002)(6512007)(54906003)(6636002)(9686003)(26005)(6506007)(71200400001)(478600001)(41300700001)(6486002)(1076003)(86362001)(38070700005)(122000001)(82960400001)(38100700002)(83380400001)(5660300002)(8936002)(6862004)(2906002)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?52jjZE5q4D4bfi4TRi8j8j4kJKEFTOfhS4jx/dtYawvyZrf2Qwv4HuTYhSZ7?=
+ =?us-ascii?Q?2RAn78MsgPNNnCIt/ui3w735dqYtj6n7axZY9vT+BEZUXwvbd57CiCsmEx9e?=
+ =?us-ascii?Q?QzLBwV7aFza+O9OA+tA+NHGpxGaqPEQRZqEo0OmlGvZYzckw9RwS39e+2xlF?=
+ =?us-ascii?Q?8wUfEnXNsvxhfIsRjHfpQk4FyZUIMDUYAM8rhvCvnuUnUdQdcOQl1VcAgXWD?=
+ =?us-ascii?Q?gCtql7ODktnyxlbYYtZ8qtYSHMPdJoGwGJQcaWGuB+Bwm3QPJtRujTjU+L93?=
+ =?us-ascii?Q?aO5vGQ3BqCT4tKUce96jxYiz86pFs296/IkNmovpSaWq79VJoO1948xsx0Eu?=
+ =?us-ascii?Q?3nAxqBJLGl/EIYOBnMQT0tCKYvmPB7ARCZ1A9GBSFrOA6NK2YlFJwf71Yw6N?=
+ =?us-ascii?Q?g0jlAv8VDs//9SSNJSYqltcksM+4fr9GrWev9gwlvXWJB7ecdm+pWKE6cild?=
+ =?us-ascii?Q?lyhXFuGR8LfuI+D2OSh4lMqv/SZUqDJ4pKxbsF31LoMmOFHUxppfB09itFS1?=
+ =?us-ascii?Q?pSLP8NS3vLFh4dAayYHF6MrYI5KsNCbUW19FlYbB0vpsCiY34ahBLuw++IXo?=
+ =?us-ascii?Q?9kmly9rSsJhOVEacsgrb10AqeiJZCZs26HTZgtlrRjUrSoLwdG122OrM8Eq2?=
+ =?us-ascii?Q?1Gc1C3x6BDZh4MA8GOTCQHm+oVB7cfySSv1sqa4n3GAonPxvoDlSzrm2ODNF?=
+ =?us-ascii?Q?gO3a3ivf9eQeu7pwjDjX7Km5rcFtHQ00aJeQSf6evL7qWQbTcC92K8dXcuSw?=
+ =?us-ascii?Q?NVuG6JLwGllavJyZUaU5Kerya4cp7V8oTC8ZNY666crm95wbD+ch+crhE2J2?=
+ =?us-ascii?Q?dmhEDcQX0uFUDxmEzSawDZhONJKdoM8Cx1Ix24/9zYyBRE3LLy2mQZXF+WAs?=
+ =?us-ascii?Q?SeR+t/fDe3OtLBsWVGdH+OawCxdaUeLF4pWyjvda7ghIkg2YYN8ykiRCdf/b?=
+ =?us-ascii?Q?31fsCvxbxUSFOjL8SegM7CYMjf/r61fritkeTYegDeQVsiRBant0HV/L6pcj?=
+ =?us-ascii?Q?wBMr+8tWsdzuoSs2k+qf2c/Gq4V+WHylabMRo3QPvrRBSDqryrJDWW8GXWb2?=
+ =?us-ascii?Q?Jhy7GiwoVItpLltG+qA7ja2sw0ZkiubdRgSxyd5AociOOCiPpEwb/TGuGRM6?=
+ =?us-ascii?Q?l61Hw0oW9pStNHq6u+SF3sKqx3Mh/nspx4AdhjKQncvIWFhZ6/jy5Wx5u8tX?=
+ =?us-ascii?Q?aIYixK0MNIobXKe5CCGkAdaLRjlP9kXRC2x0+5Ri1y2L1w4rhA3487uGlUb/?=
+ =?us-ascii?Q?y2sz3zmCa43MtogmthB5WmAR2htZNGX8UHj2KhBB63pCxnJ9H7Bz28sh9HFH?=
+ =?us-ascii?Q?8QW6WMl+VNMt3xn1q6bxiqVGqNcEHCypSCxkcRh080+kEnhQ9WX3KiDqw7FA?=
+ =?us-ascii?Q?3VLSqox6P5YkzedYtN96w52xWg54IhnfKEKT9jmronnuzMZUQKUSUMIANTgb?=
+ =?us-ascii?Q?5+S8tyLYxJiLe0lqRS7NsfRwdNL33ZsEkgrLaBpMfxa2BXezVhbZ8b/Lwz1z?=
+ =?us-ascii?Q?X1Pqp3Hjkbm2EFhtjkkURx37f14aUtWAomqZdQuw6Q8Ix9N9kfLLVZfggi/p?=
+ =?us-ascii?Q?6BBWiAMDou4AnI402nR2rvlKLTkNs/pGSyLwZhCDxIelkoaLmTRQFPg0v/cA?=
+ =?us-ascii?Q?hQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <43B33E94B07CD5489C9904EB128723E0@namprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:94BjhGlbai2//6gIDvVhPtcyCQyjvH7Wun6JWUonXVAcUBXSvmf
- IDWTwoXJbxTgDV2jJZWXM1nuP9B7omylBmqkybKisxwPGCtKY14VlWpIILFFWQhdXAlklRi
- dbNC0uSwoD2U9irm5omNlTcwaCFCc2PtUX5K5Lre9oX03BuZxeEDGo8Ub/SpvBSx27E8+di
- QmhxBUw6oeNbmkmWla4rA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Paot8NoJeGQ=:5bncJfexzMg/nP5koQddIz
- /8YKy1eoM7UG/XUBR9D/Ox1IYxX5Ey1Gs9xuyqlIoqmWJvfSdcVVHOWTaEtTGwr12B0YbEZkK
- EVk9FG6QlTrvzvr2kh1YF/875rl5QypTIQ9CdOYtmTMfWsMpyZzlcX+j4b7sMdE/Csydi+Nq3
- EOsUk3AVe2KkJy93I4m5sUeGUzfy//99qMoPH9fUfbYB6VMtORmfBaopXPlyfgH6+Yb2w/A6Q
- 0li/+saR8b7SL9MzWG3usUHD0LfHGe10gR0eTIwq8N8+9uYI50GQPVjcERkQ4noQWcGZiIKSv
- gdEcRVWocLSNgZb5hCvooYXL/RH/NvK/CumA/Jp1ogkYvgXkIDrnBkmd/SmvXUYP4SRIN2en6
- C5KtoEKQ0kwLVM9yF2hCEMj5WyaSsGDUe0k7LUukDFoZYnauC+q8VMmAd4ArrPCsuoYKFYtr8
- VI1AXq0tgj9XPdWoLaxpXLqqsqHLTcX5lSNJlHHu/LQMAtjlFms96gM8Ethje46oP9Tjqtkcg
- iXokq93sZmxIMLiSBydqyCpf5j3owzeqjaTcAav+5Y/HDXoXTrKUteYUJlIbEG88MqJufJ5J8
- 9gtYpBcM7xuAMm0jmtND9j1rYq8C0tfUxe/fM7Rzt6csMRBCNrJECw6L4y77t5DuXxDhunQ3a
- ql0lmJEu2gKhWBNAb4Ja16ICFtcQ7g+7u4h5Q7K/C/6iq4LXjy2B8p2l7wSRhXui+6UFhLCim
- DThXhecVaEpmrN72d2TlSFdhC6/npmdKoDH9l/T5MnoTMBO/eFbdkorAcNpO6RRqbwOrn9WEr
- XKn+C2VnujECI4d1pxgfOjlvulEYLiHrriboWMRWodeoQDWRdOSMeTrL1AytIuMPMSFGcsp4Y
- h8rk+jflNusiT4dvOqP58gFTFOw2bc4suPex7Y+th1Jby14J0Qx/TgzLXfeMDUp5Yfim4UjEm
- E05JPINFcY5yasW12EbVTZQrAWGxq+Ls21x5JSXcbrWlxhXHlDbwyLdOaSwHaQwL7K2ZmXwDT
- xGwODzMZB7csd+lTPQK+jl3yK5zN49CiUD6B+xT1/TsSeT52ImEyLHHQyt+i85d8vHvoBWV8K
- 2u91Bdkvu/nlM7tjUgTqO5kpRlVkvi5WZ0x/d76nfstMwlyLnElRUAxsZIcbakbmUb37HvhBW
- dpEQqKyDswARWsTQswj3C7Ha8i
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92a727c7-392b-4742-c0bf-08da8b507ad9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2022 12:58:20.0613
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3BLWMvO7GhSbHf5KVfeu8LnPSKoelhjoCaX1S74oT4vp3rqfX8/UqGRx9yzmEVAUDr9fIOgbX7CcQFBGEwf0+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6869
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Aug 26, 2022 at 04:42:15PM +0900, Shin'ichiro Kawasaki wrote:
+> The commit 7d7672bc5d10 ("btrfs: convert count_max_extents() to use
+> fs_info->max_extent_size") introduced a division by
+> fs_info->max_extent_size. This max_extent_size is initialized with max
+> zone append limit size of the device btrfs runs on. However, in zone
+> emulation mode, the device is not zoned then its zone append limit is
+> zero. This resulted in zero value of fs_info->max_extent_size and caused
+> zero division error.
+>=20
+> Fix the error by setting non-zero pseudo value to max append zone limit
+> in zone emulation mode. Set the pseudo value based on max_segments as
+> suggested in the commit c2ae7b772ef4 ("btrfs: zoned: revive
+> max_zone_append_bytes").
+>=20
+> Fixes: 7d7672bc5d10 ("btrfs: convert count_max_extents() to use fs_info->=
+max_extent_size")
+> Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+> ---
+> Changes from v1:
+> * Improved comment description as suggested
+> * Added missing type cast to u64
+>=20
+>  fs/btrfs/zoned.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
 
+Looks good as well.
 
-On 2022/8/31 18:45, Su Yue wrote:
->
->
-> On 2022/8/31 16:00, Qu Wenruo wrote:
->>
->>
->> On 2022/8/30 20:47, Su Yue wrote:
->>> In read_tree_block, extent buffer EXTENT_BAD_TRANSID flagged will
->>> be added into fs_info->recow_ebs with an increment of its refs.
->>>
->>> The corresponding free_extent_buffer should be called after we
->>> fix transid error by cowing extent buffer then remove them from
->>> fs_info->recow_ebs.
->>>
->>> Otherwise, extent buffers will be leaked as fsck-tests/002 reports:
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>> =3D=3D=3D=3D=3D=3D RUN CHECK /root/btrfs-progs/btrfs check --repair --=
-force
->>> ./default_case.img.restored
->>> parent transid verify failed on 29360128 wanted 9 found 755944791
->>> parent transid verify failed on 29360128 wanted 9 found 755944791
->>> parent transid verify failed on 29360128 wanted 9 found 755944791
->>> Ignoring transid failure
->>> [1/7] checking root items
->>> Fixed 0 roots.
->>> [2/7] checking extents
->>> [3/7] checking free space cache
->>> [4/7] checking fs roots
->>> [5/7] checking only csums items (without verifying data)
->>> [6/7] checking root refs
->>> [7/7] checking quota groups skipped (not enabled on this FS)
->>> extent buffer leak: start 29360128 len 4096
->>> enabling repair mode
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>>
->>> Fixes: c64485544baa ("Btrfs-progs: keep track of transid failures and
->>> fix them if possible")
->>> Signed-off-by: Su Yue <glass@fydeos.io>
->>
->> Great to fix the fsck/002 runs.
->>
->> Have you hit any other eb leaks? My extra noisy patch to crash progs
->> when eb leaks failed at fsck/002.
->>
-> No other eb leaks found with your patches.
-
-Awesome, and it looks like I should look into the problem more carefully
-before claiming we have tons of eb leaks.
-
-Thanks,
-Qu
->
->> Not sure if there are any other remaining.
->
-> At least `make tests` seems happy for now.
->
-> --
-> Su
->>
->> Thanks,
->> Qu
->>> ---
->>> =C2=A0 check/main.c | 1 +
->>> =C2=A0 1 file changed, 1 insertion(+)
->>>
->>> diff --git a/check/main.c b/check/main.c
->>> index 0ba38f73c0a4..0dd18d07ff5d 100644
->>> --- a/check/main.c
->>> +++ b/check/main.c
->>> @@ -10966,6 +10966,7 @@ static int cmd_check(const struct cmd_struct
->>> *cmd, int argc, char **argv)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 stru=
-ct extent_buffer, recow);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 list_del_init(&=
-eb->recow);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D recow_e=
-xtent_buffer(root, eb);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free_extent_buffer(eb);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 err |=3D !!ret;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret) {
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 error("fails to fix transid errors");
+Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>=
