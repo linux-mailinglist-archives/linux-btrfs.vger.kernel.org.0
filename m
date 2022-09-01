@@ -2,151 +2,196 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B34655A95B1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 13:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A985A9679
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 14:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234504AbiIAL2K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Sep 2022 07:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        id S232394AbiIAMPT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Sep 2022 08:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234497AbiIAL2I (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 07:28:08 -0400
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6AE13973B;
-        Thu,  1 Sep 2022 04:28:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1662031684; x=1693567684;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=k0QHj0qnA8mAq1rlzJYAMZCjrEf9jhzRtQzX47ua5fM=;
-  b=X+o9AEAOgyQc5zEYZg2fyLKJiT5l25It9NOupVmQRuJUKIzdjCQ6YAVf
-   5XhhRhTmCNnY+kYpSQirQCpLeG3NClI4YRMiawGN/MQhrglJzhBv0chJH
-   Wnxx7UYKCGd3XxoKwNJAbpVz+6OTyOZ9xMnvrMRY65oEr9qeoUnAka1E6
-   9Du90ftETuT5VyqvTqgs+NLSS4klAIXp1J7z8/le277MjeW5doSXSAE5g
-   fJ6FnbjE6sZZGzZYXMulu1Z1FqF87S4krpFWUInepcsUCjwI+24IVg3Gs
-   1dKwHCTmSeLSaz65CP+sGt7FhHc0fxfeXNSpVjuXIpzlqXMG5QU6yST7S
-   w==;
-X-IronPort-AV: E=Sophos;i="5.93,280,1654531200"; 
-   d="scan'208";a="210220717"
-Received: from mail-mw2nam12lp2045.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.45])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Sep 2022 19:28:02 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EBsHsQ9tWyN/hQG+PHVM1fQH4IEljR0cQrZ3aHtpEiB4PkqJzf1Aro1RTXv9V/zVThrnK1hh6sMkM/nmobmzEhh05QS5Zq5TxIuE4Zl7qkiRJojFIE2sL30SlOt/IaYMhUHxo+mldnXUIJBe1rtC5dQPvVTGJu3tW8ByUw+MFf2lwWDlxLApQFi4DhpFSNB561jY7lg0B+gGjovgNtdauhR+YfZQzKd4SzpHy7x6mVNYxYFx6pT1xm7/8hTolgY/Ysh41zerOxzz9QSZ/qnnGXCk1LVb9F53/77iZar6GXTUfr0nRI/wWDyQ/FPO+jkhfTTT/kQNkSt7mS9GrmgANg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k0QHj0qnA8mAq1rlzJYAMZCjrEf9jhzRtQzX47ua5fM=;
- b=EeggBONba5jUspHsxcNyjpsGjps3R8u4kqWMTKqEpLMrBLeDD5ulOSgJfoqUWPLlzFL3roJV58tk1x5+/XG/TzBFd8leiQ0nQi+DVmaVeX7ZWzhkC9BNFKGPZ4zsOBKqQSnPMPqPF1+i7IVWLjoMfpZGLmDqGSs5UeF+04ep7zu8qETFo3vc/pU6oMC7XR+ShtJvWH9wfQjF1RJNNqflNwZXPZsBpCbHkQTpmavsDn9DAJC8GqJVRiwnOyKl0HCmuM7zR9NlyeXCfeK2/BKaLPH1ZPWB+zgyArLdtzYn7/J2pz3+U4WoF6KsDtDbh3AxZW2sWMgtF1v4fkhuo9SVRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k0QHj0qnA8mAq1rlzJYAMZCjrEf9jhzRtQzX47ua5fM=;
- b=zQT0zmez/CRm1moD3V2isV7Ej6Vs9pOSuY095oKgkugcbBnZ1XAg5fCfQAVoLNLTBWo6Cg1HcRb66jdOseTsdcwf/6BpIR+2NyujvNJVBgKOV2wEoxJuA4yXBxMKaPqwImtP9tUyyffPM7tocpEedTzMjrYljYrk4hYe9JDBkuk=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by CH2PR04MB7109.namprd04.prod.outlook.com (2603:10b6:610:9e::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.10; Thu, 1 Sep
- 2022 11:28:02 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::bc05:f34a:403b:745c]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::bc05:f34a:403b:745c%7]) with mapi id 15.20.5566.023; Thu, 1 Sep 2022
- 11:28:02 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-CC:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 15/17] btrfs: calculate file system wide queue limit for
- zoned mode
-Thread-Topic: [PATCH 15/17] btrfs: calculate file system wide queue limit for
- zoned mode
-Thread-Index: AQHYvdaGhrMDZUd2SkCywmC4w368mw==
-Date:   Thu, 1 Sep 2022 11:28:02 +0000
-Message-ID: <PH0PR04MB7416325A65FAE8C9210F3F879B7B9@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <20220901074216.1849941-1-hch@lst.de>
- <20220901074216.1849941-16-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 65c00c5d-e1c7-43de-650b-08da8c0d07ff
-x-ms-traffictypediagnostic: CH2PR04MB7109:EE_
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /MFyPKeDYaghyZfoevqXO/o/ek/ppu/finGiRvhglyDF73HmuNZb1hMk18mdEC6CoI6fZcJhnSBWWozYwzH9nG+sAyKZ5N70jElHyzJuhSVYMV47vMVbtDwuCWc9su7UJYR00b+C3dPEoI4x9GEi11Skyew9Nz2jhffeIiALDva/y6zOI6gSQOOCoPpEj9/tJBupeJrcVQfspcW12XLR+34LlxPt6hr2U7x1LC9ssQcrKJnc5Oa55I+Z8yQqGCPJK/2sOaqfgWSGBXvU8ukSjfzp5xAILvOSvkqcSn5skBm2GKdYXEqueCrLfol6rwXW9ScWWhiGc6OKHwvOB0YxAIxYsWwkTGLBtFQ6lC63gOabMLgUyH29f99OMNTfNsHvprRouGeJ732OcZb3BWMji9MZsRtMH/ZmnfF0lxl+VqMtW31xZoBhMkzaowdG4xpcJpIzEA1Mo51+I621ySvXhmoN6aoPSAhWSJsUhiv2hUkOxbqjlWzaMCis5zPGKbISbh8qarrDFEKnapBsgtYry5EpcAATqEDlJTRKWN2/1IlEW7japnJIBfaU5eDlw2lFrPWGId9e6uP7ULJLL0BHtqUV1G9XR1P0q+K5494ZgWbSDIKmr4jjKveVKb0/fErpe8aNYZZDE/6A7muLX4p5+4LNYbcEH2CGPKFLTnErHvaRkZ6GGtDwlcuzndvF/4WP56YrjHjKqIyjHWxwBv96VrhGgJDAlRhY40vGGWwrAHv5XuNgsRbcAjaHd2OH2PfH/ZJBv7PDD+I+pMb/MTZhaw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(136003)(366004)(346002)(376002)(396003)(53546011)(9686003)(7696005)(6506007)(83380400001)(86362001)(186003)(38070700005)(82960400001)(38100700002)(26005)(122000001)(54906003)(66556008)(76116006)(66446008)(64756008)(8676002)(66476007)(110136005)(5660300002)(8936002)(316002)(4326008)(52536014)(2906002)(7416002)(4744005)(91956017)(55016003)(41300700001)(478600001)(71200400001)(33656002)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?RAuw9jqGCs3JKSDyaTrRzDNwfz6kohgZ4anMcHdGtp0gI2u1RmOqg9Iy6XKD?=
- =?us-ascii?Q?SAp/wlLxuHYepQCc6fYkHU1nlOd24nzcCLANRb8LzY8MHAVpVu0AmSCvuFss?=
- =?us-ascii?Q?QNBVaLBpNM6m+9EhQzIasJeSmgOuxonXMYSFDuy1VngO0r8N5zRlivIekVQm?=
- =?us-ascii?Q?LwOSxaEewFngSdUGPNwHAH8cKTYnohq2MZRvGhKf1x+lnYO5qzH2OW7HDJvR?=
- =?us-ascii?Q?YnmUlzeNBpQsfSlbk6PWoQWqBtN85d3I/cCAooxdDGPhPv5VIsu2UuBatqfd?=
- =?us-ascii?Q?z9KP0MWkWf/6Z8YO8pWLYQy54c24luRvsc4+LTfn+wBzbmDbxe8BMSZtAh8d?=
- =?us-ascii?Q?glYp/rNOg38kGNTgcAU6i1TBbiUGZQz+rWso2pd59F/dzUakMPoTKGjy9udh?=
- =?us-ascii?Q?7OyViAkwCZOJU/5JgXcRXuP9YuIPN1tLIVbVw/qJfs7Norkl/HBYgLGJTW/k?=
- =?us-ascii?Q?/6l2rAP8wdWRuzKIg/9BaYFG6TDJPzLVZPUYZtHB4NYzTiOaGRIKC3S505M8?=
- =?us-ascii?Q?IdJZ8WmyRmnm6YMxbYwsuzZUJ+J+dmgrRLVGqfqBJ8Yksj8tIRfpXfvzkIRp?=
- =?us-ascii?Q?h49YWZlsPZdui4yz3vQx/ypCGgr2ecnyB/sIxkOrqhU+erY7u03Ntx5aKY4W?=
- =?us-ascii?Q?5v7RlAMq4Zv7ztpZJ9RsJGlYSLKZU+olprgQRze5jlju6GtpwkWfOSVj8bCw?=
- =?us-ascii?Q?rxTEjPZpstREWqwwv2qCFxcMGk0AM3DU2pbVkO9cM87hy6S/SBy3Uir/c1pt?=
- =?us-ascii?Q?d3hg7wcjD36x+2IyxhOoHZxI4GmFNmr3yN/JzMV6T+KmIU7EHi+FA24jx7xY?=
- =?us-ascii?Q?gL1i1yPO5MmAtoNnselcV0g0rGTXdLfbvSg1yhPPgrfeQJDE2O+2sT19qw2N?=
- =?us-ascii?Q?ANNgnvsPrcxqoeq4F+2Y4VUgOH6QN7oWDnVSKBsdi2Z9ieL2Zu8fOpblbJbk?=
- =?us-ascii?Q?2GZBC1BXO5NU2RGAaCAUiaAMnWNnTYEOS7mVCh8Ax7xPiv0GZGy6Gm6lVM83?=
- =?us-ascii?Q?zj7Ekj8eYhWPxgrlOhHBjBUqIcoh8+6AoTubDNxhILwJmmi24R862mFe02YQ?=
- =?us-ascii?Q?0faLZLiUU3RR6thQ7Dpifh6xEldhq8TWDkJ5P4A4Hvnh4wYVUJfX+19Lvv/y?=
- =?us-ascii?Q?ZpPAqWMXsV3QEp7p/lzR8eFvkVkLV/MWQLm4byEl1wmWKqho/CPgZ1/uV7dH?=
- =?us-ascii?Q?zXquTM4vUHQuv5Hvw9brmqSd7XQJhiSrJS2dnrthWRcnapT+VIwFRG18pAlI?=
- =?us-ascii?Q?yekoFw/45aaop4IvCAS7BxdgjPUAdSUBaP/Zdz8gzRPBx3qmS7Q7qsftmlK4?=
- =?us-ascii?Q?q5SK6wSxA0wz4wP1qp46P3qyu5j0vwbChmLLp62GH7wj/KP0ECTiNpuQErFa?=
- =?us-ascii?Q?UcP9RuhJ7vw6A5wk52K47zriQ/BRmcUaamrCaXZ7JC8Lun1YdcSRGYnbuD3y?=
- =?us-ascii?Q?xIowhk5zNF/Pt0KhOUcm/D05qy5M7K9xUa0l082uysz5vv4adS5+OungzmJl?=
- =?us-ascii?Q?SE+eXCtHhLnKy/IEb705+AuarZa/hbxzqKmpI2kb+aComZbXQMYjYmGoEuQN?=
- =?us-ascii?Q?dpMaX152kcPrIHRM4AYE/MShsZq1w2GoLvEgp5zR5NJTY0WixAxI7kABOfaN?=
- =?us-ascii?Q?rL/iZ+5cBS5B4/aRXnw+vfM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S231737AbiIAMPS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 08:15:18 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD5627B0F
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 05:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1662034511;
+        bh=IICqHy2nD1zGFPeuJPUrW/PTRJW/HNehpkYWcAlPWT8=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=cLwLPVtTeIO+xIAXxK1Mqpnh8ww7icgm7ZqiVv14my3V98VR2ptIdYWLX59CwVXTx
+         pnbCqpTfwZN2c+Mq0sqSlbIKyoOJlXRMy7hfLU5gV2mKpd5G//hl8YFhwXAm2MHGX+
+         YhClfv+Uq6ZMXhw+Jb7A/7yXb06Q4ns0RJ4Mqk38=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MV67y-1ovoLI3JTi-00S7fv; Thu, 01
+ Sep 2022 14:15:11 +0200
+Message-ID: <ab123921-773a-9e1b-1d49-9e82614a37d9@gmx.com>
+Date:   Thu, 1 Sep 2022 20:15:07 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65c00c5d-e1c7-43de-650b-08da8c0d07ff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2022 11:28:02.2519
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DeOek7Gj9MH49oS672Ko+6/uTE8jlYXWIs/bxkdWMB9G8IipjXrVVS+MwDobN4CPPlnuPSlqv1DpX2xBwkg4XeQnfW6W+jaKZ0URCQ1rhlg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB7109
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1660024949.git.wqu@suse.com>
+ <5eef4fd2d55a02dab38a6d1dec43dbcd82652508.1660024949.git.wqu@suse.com>
+ <20220831191442.GL13489@twin.jikos.cz>
+ <66396669-7174-dd04-aaa9-d8322bc39fdb@gmx.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH v3 3/5] btrfs-progs: separate block group tree from extent
+ tree v2
+In-Reply-To: <66396669-7174-dd04-aaa9-d8322bc39fdb@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:A4HpbioxXWtaY8525P2Se7ScVzmc1BmLioc8e4W3bq5nCWBP0BH
+ 47ADqQYbH++0HSaBnPwnVziHoGFUTlsWvZgzTMPm+xPN///cpNeSEEG7LJ8Xepr+vSP2aAu
+ 3tXBSrAvyHImN+hLvmSTzrRO9vkTTVGFGATK4WEf0fjUl3sny03vBsUTQ69Dgv/yMiMVFmT
+ FrA0jfSzXij/tDVlnIICg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fA5/V/f1q4A=:jRIodWrmY3jUU67DVH0sK0
+ ccuoekGPky3AwXkhtoYl4aZx9ZjuhSwD8ibHbw/AeLGIvxVTuxSJiIGkJpHpWOsl5EYL/l4Pi
+ KiksuoccO1flXqYxdt1tkFy+Um5vpgzVxWMiuDibjpDsNpLd1x+Ewr7bnGAYrusOgNUVQqRDs
+ ZZ0uSKwWJvAPZm9qGSWxXwKz+8iOd2nDeaBTthp2F83AiZFLMhPrgY2RSQAM6+EQ9I1EVhXr4
+ Q03un1g1QoyVwC2wx7BXbj4J3ROodNc0j4wGaIqSsaPUq0MGVCuE74VlhyfevJxYF2vYpTNTU
+ 2msScS68KFQgDweKD6+UHaf2ECYNGJPeAdBCooOzbyoTQPS9Z1jr4DZiQuYjbcgLOhJ3YwDwb
+ dH3SvLO4SUwbHezFbapGsGxDdE4oDnBT8TgpYCuElZ42c8c25oJfwWnIdRSgm20b+1G/3wKK0
+ iQLoSgw3tt8JX4QW73bO90yX6hJqboxRyt3RrTIEE3tMHJ9Aqh4jWtx8Wv6/9tSpA+UI2d+/3
+ OuEr/FtFvSBj/9f4dDri2+UEhuTxtgn9DXdyHgEXC1+BCW0zd/QZ+23MtU5BzFry5yMxXEotV
+ c1YNNRn5nlnjC8Z2ARkuZ6SZgHPu5/vmGomIw0S34gxdXF8dxcpv73yOVk7U0IkwnbK1xUHCl
+ bdlc2RuFDXduDJD9BgbwYumiP+H+mc6PC83r9Qlt43C5AT5lBxrYaanLxvfdWdgSaLrovIDxq
+ In4w31wgR1fFyvxqnjWUKdiIdLVJhUjUepSOxZs2u+DUzvnL6Le8cMjcBfOtoXc/Y4s32yDuW
+ c4aVyrN7e+OiWdNqLsa6CKsNWNk3kB2ScpPA6NwYcZqjesQayVuB3/GJ3zWVYxslcDUIevAEX
+ +GGgP297Dn0g3zwRtAGXGMC1SNw0zmWQk8+KmGwtWElIvUXyny3U1A9Ez08Habvuz25oTWp4C
+ 8l5dnnMCz4L5UHlKvuDmXsRzbq3lDU7sbQzUKe0ZaN2apADJ3Dw7VU5p6PPw5wVnZBBxLSMzM
+ qok15q17+PDeagMaJzrBR9nz2BE0GU+BCkYg6QD6IbfUde86UWKkxbAafNk+n+nKdzOAmW5xB
+ 6SomTij6As5kSQOfiNDzKeMF2XScDHaJvGYauUM9HkFmLbCpOq9uJGcynzcVyPNYCgjKGu55L
+ m+R08kKX1JUVDVAnm9gh+O6XMP
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 01.09.22 09:43, Christoph Hellwig wrote:=0A=
-> To be able to split a write into properly sized zone append commands,=0A=
-> we need a queue_limits structure that contains the least common=0A=
-> denominator suitable for all devices.=0A=
-> =0A=
-=0A=
-This patch conflicts with Shinichiro's patch restoring functionality =0A=
-of the zone emulation mode.=0A=
+
+
+On 2022/9/1 05:43, Qu Wenruo wrote:
+>
+>
+> On 2022/9/1 03:14, David Sterba wrote:
+>> On Tue, Aug 09, 2022 at 02:03:53PM +0800, Qu Wenruo wrote:
+>>> Block group tree feature is completely a standalone feature, and it ha=
+s
+>>> been over 5 years before the initial introduction to solve the long
+>>> mount time.
+>>>
+>>> I don't really want to waste another 5 years waiting for a feature whi=
+ch
+>>> may or may not work, but definitely not properly reviewed for its
+>>> preparation patches.
+>>
+>> This should go to the cover letter but in the commit such ranting does
+>> not bring much information for the code change. And I rephrase or delet=
+e
+>> such things unless it's somehow relevant.
+>>
+>>> So this patch will separate the block group tree feature into a
+>>> standalone compat RO feature.
+>>>
+>>> There is a catch, in mkfs create_block_group_tree(), current
+>>> tree-checker only accepts block group item with valid chunk_objectid,
+>>> but the existing code from extent-tree-v2 didn't properly initialize i=
+t.
+>>>
+>>> This patch will also fix above mentioned problem so kernel can mount i=
+t
+>>> correctly.
+>>>
+>>> Now mkfs/fsck should be able to handle the fs with block group tree.
+>>>
+>>> --- a/common/fsfeatures.c
+>>> +++ b/common/fsfeatures.c
+>>> @@ -172,6 +172,14 @@ static const struct btrfs_feature
+>>> runtime_features[] =3D {
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 VERSION_TO_STRI=
+NG2(safe, 4,9),
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 VERSION_TO_STRI=
+NG2(default, 5,15),
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .desc=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =3D "free space tree (space_cache=3Dv2)"
+>>> +=C2=A0=C2=A0=C2=A0 }, {
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .name=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 =3D "block-group-tree",
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .flag=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 =3D BTRFS_RUNTIME_FEATURE_BLOCK_GROUP_TREE,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .sysfs_name =3D "block_gro=
+up_tree",
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 VERSION_TO_STRING2(compat,=
+ 6,0),
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 VERSION_NULL(safe),
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 VERSION_NULL(default),
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .desc=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 =3D "block group tree to reduce mount time"
+>>
+>> Like explaining that this is a runtime feature and I have not noticed
+>> until I tried to test it expecting to see it among the mkfs-time
+>> features but there was nothing in 'mkfs.btrfs -O list-all'.
+>>
+>> This is a mkfs-time feature as it creates a fundamental on-disk
+>> structure, basically a subset of extent tree.
+>
+> This comes to the decision to make bg-tree feature as a compat RO flag.
+>
+> As we didn't put free-space-tree into "-O" options, but "-R" options.
+> So the same should be done for most compat RO flags.
+>
+> Furthermore I remember I discussed about this before, extent tree change
+> should not need a full incompat flag, as pure read-only tools, like
+> btrfs-fuse should still be able to read the subvolume/csum/chunk/root
+> trees without any problem.
+>
+> So following above reasons, bg-tree is compat RO, and compat RO goes
+> into "-R" options, I see no reason to put it into "-O" options.
+
+After more consideration, I believe we shouldn't split all the features
+(including quota) between "-O" and "-R" options.
+
+Firstly, although free space tree is compat RO (and a lot of future
+features will also be compat RO), it's still a on-disk format change (a
+new tree, some new keys).
+
+It's even a bigger change compared to NO_HOLES features.
+No to mention the block group tree.
+
+Now we have a very bad split for -R and -O, some of them are on-disk
+format change that is large enough, but still compat RO.
+
+Some of them should be compat RO, but still set as incompt flags.
+
+To me, end users should not really bother what the feature is
+implemented, they only need to bother:
+
+- What the feature is doing
+- What is the compatibility
+   The incompat and compat RO doesn't make too much difference for most
+   users, they just care about which kernel version is compatible.
+
+So from this point of view, -O/-R split it not really helpful from the
+very beginning.
+
+It may make sense for quota, which is the only exception, it's supported
+from the very beginning, without a compat RO/incompat flag.
+
+But for more and more features, -O/-R split doesn't make much sense.
+
+Thanks,
+Qu
+
+>
+> Thanks,
+> Qu
+>
+>>
+>> As it's in one patch please send a fixup so I can fold it. Thanks.
