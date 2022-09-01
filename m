@@ -2,101 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2594D5AA0C8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 22:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5B65AA1B9
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 23:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234791AbiIAUR3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Sep 2022 16:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
+        id S233730AbiIAVuA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Sep 2022 17:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231589AbiIAUR2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 16:17:28 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D066E2E0;
-        Thu,  1 Sep 2022 13:17:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1A672B82934;
-        Thu,  1 Sep 2022 20:17:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01494C433D6;
-        Thu,  1 Sep 2022 20:17:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662063444;
-        bh=jWTMFH7oshcJJYNE2Zkgcv3wnsWAXwSMF+e6hfl3w1k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=g1e3H/hSxuQ7mjzZW/Y95G953g/qyIzIPEIHWNAAJw/gMonZP9wgzE4RBCLd1lEzd
-         sqIJRWxM+yN1rZnNft3aaP44GOga9jm3iSiOfkeZd0nNI+nrvJ3E5vCXRJuEMG1m2Y
-         BERo0qqOwv7NaeGJHHC6Y4anQygLe6Sr6sRtwOQ1nkdCj9WO9lJdPb0TMoW+LQr0To
-         0KIR1EugAzGzTk8jT5TvIyuF+uW8hGY852E0g+sMsSWRtZZljYIfeR5/IQsCsAD8Xe
-         ibP35R9vGnJ9v3DND7G8KG/WmcAQ8dK1anW7fpJRUWWzbnTZ/MCaj9bjhv1GOm+Hgm
-         ZD/qF56eXtVOg==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: fix btrfs/271 failure due to missing source of fail_make_request
-Date:   Thu,  1 Sep 2022 21:17:02 +0100
-Message-Id: <62ccab661ea8591cbc5f8b936fc4e0a47f2bfc86.1662063388.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S229892AbiIAVt6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 17:49:58 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65C11A38F
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 14:49:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1662068989;
+        bh=BYsQGsKLX4hzxflw2DNxVqpVqpbLASze476DuvApGUc=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=Kr3B6OtczM7P5dG04ZtnKw9q8EkRqaqWdctYMUdUnFVsz/8g2a3M1OJhZGWcMBRC9
+         cLXOJq4UMEsLZEPEAE9C8VASfvziLv0LcNkd5CFR6YjY1ZdXIZacwf+Ddj/TrjAAGz
+         AmjbIIJkvfjPp8gueuBKxpWX6R+yEMivyVjLhmdg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MwQTF-1pLhft3zev-00sP1k; Thu, 01
+ Sep 2022 23:49:49 +0200
+Message-ID: <b403daba-c615-282c-487e-ef174197c9ef@gmx.com>
+Date:   Fri, 2 Sep 2022 05:49:46 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH 01/10] btrfs: allow hole and data seeking to be
+ interruptible
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1662022922.git.fdmanana@suse.com>
+ <29ac2c59860774abb16bfb2660e0dd831d793cf5.1662022922.git.fdmanana@suse.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <29ac2c59860774abb16bfb2660e0dd831d793cf5.1662022922.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:KwG/Ov7LzXAGbZAxs9bWT1EgCorwARR7TEWOPS1PHn6Jt6pFaWU
+ wiCARu5giiIymasON7DfTnsZ6pDgZiLpFiOx+ZHiizSoNYIwSzH9Uj9JPx7Ubdgmtle7mTY
+ Q7WSL5fjYcpkjGWUK/5zOc/MxDhNqvQKNeAUdRHGzXqDoIUy/lpI7EhnoPJ3vZy4aUyl4hF
+ b++Zy0FOEc6YcztvJTubQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Ts/oijMPw2Q=:tmKV3aJ6Ur+URjV4Q/mC+s
+ WwDMeOTsDPi0vqudmQboj+yS0CeqslqjkVTSZUEzn7exqL8yue5cot17psyIrlRQkpUQ6c6Kw
+ xvxXqCSsRIeXiXNYKSfnZrwf7unv89geRvgX1I9gpyXlBnDCynov0QyZvRlUekcW7euUpXx5M
+ XbelfA3R9uqT+p+m+b9ewB7nuY0yO2ig4upLgg0eO7f798PAp6BzJsx3EBSwhwmFpsUskAJNS
+ ecbcQ3l2bgGDUdgDAhu+Tigt7F/wOAZXcJPxlI/BVT+CJDbnSv/7m1v9jeo4sthMsFT+pZy1z
+ IAaiZADj9opnPkxC/lO0l2zfHww7v6YLC99Dwqj7GMEPStLGTEYtaM5IS743yine9k+GojJFq
+ 4ese2LtRyT9hKZUTHOP7jSr+bziI3QVGU6ZAKx4L3u4YBQZCA7r1d+MSKWrO6s6KFin/NXL98
+ Kla6WcH2uc2YQTjgEH8nZGr4ysQ4XhCSWkLf41cw3NezT0YJQvU8A+doNbDXzj3lO5pz4UwGF
+ 8MELB5lHqpzepO8XajO8QxhBl4RUZYWEE/9+GukfnOOrQy7mFUJElXgj3UDJPHGgmK4WZXeM3
+ /mGfLGQ+CCEdsBDyXgHh/KafRgG/jM+aQ7h4n34j9/ornOatfBXJvatDpWietaOydaDlAmEE8
+ i+2bOfk6YcsZxRNg7QwkQrkYPMtevwHuaJ21BYeW3eRWOOjA6H7+DtptEZAngXeN81fA4sqor
+ yJ4sN8B3O3ulAOjCHRDqwgItYjJ8LL3EPrn9Ua8JUXGvA4CGJTT5PCM64VMU055l/1/5w+SSc
+ C7msQZDhUKwAaO5KZTN9B7NLLDxhF+SYJwNRhW6TYNQ9DSra0iPmJ0DIiAEnPOIJDWKiw2YWM
+ U0DoLJMpIvC4QWOs2c+q2xqjqrMIreKONmPcEhvhFnQ4hMZbpi/5FDfbesArWhy3zMHaVXXkT
+ Ubxi1anQv3Mv60f/P2ue5qgXvlXvoONmx64qUWHd7faBPOtVavDMnW4G5dggrB/GhSX39LMVq
+ LXywTQq/KmuVGcvzcO/wTgKFHIIaNyZotyIDYuIeZwoR9gCDtG7mRcspNDI/e9yO5EYjicWhV
+ obMjssJZPniTf+1wNbQYNXdWDMN/PCIpzeKA41OJ9I1qWEkLAN3qrlevNQjigkfi5Ong6pbPX
+ IFvS5LiQ+EYYekTndBXlIJ3K9d
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
 
-The recent commit 49272aacac850c ("common: refactor fail_make_request
-boilerplate") moved _require_fail_make_request() from common/rc into
-common/fail_make_request, but it forgot to make btrfs/271 source this
-new file, so now the test always fails:
 
-  $ ./check btrfs/271
-  FSTYP         -- btrfs
-  PLATFORM      -- Linux/x86_64 debian9 6.0.0-rc2-btrfs-next-122 #1 SMP PREEMPT_DYNAMIC Mon Aug 29 09:45:59 WEST 2022
-  MKFS_OPTIONS  -- /dev/sdb
-  MOUNT_OPTIONS -- /dev/sdb /home/fdmanana/btrfs-tests/scratch_1
+On 2022/9/1 21:18, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> Doing hole or data seeking on a file with a very large number of extents
+> can take a long time, and we have reports of it being too slow (such as
+> at LSFMM from 2017, see the Link below). So make it interruptible.
+>
+> Link: https://lwn.net/Articles/718805/
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-  btrfs/271 4s ... - output mismatch (see /home/fdmanana/git/hub/xfstests/results//btrfs/271.out.bad)
-      --- tests/btrfs/271.out	2022-08-08 10:36:20.404812893 +0100
-      +++ /home/fdmanana/git/hub/xfstests/results//btrfs/271.out.bad	2022-09-01 21:12:29.689481068 +0100
-      @@ -1,4 +1,5 @@
-       QA output created by 271
-      +/home/fdmanana/git/hub/xfstests/tests/btrfs/271: line 17: _require_fail_make_request: command not found
-       Step 1: writing with one failing mirror:
-       wrote 8192/8192 bytes at offset 0
-       XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-      ...
-      (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/271.out /home/fdmanana/git/hub/xfstests/results//btrfs/271.out.bad'  to see the entire diff)
-  Ran: btrfs/271
-  Failures: btrfs/271
-  Failed 1 of 1 tests
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Fix that by sourcing common/fail_make_request at btrfs/271.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/271 | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tests/btrfs/271 b/tests/btrfs/271
-index c21858d1..681fa965 100755
---- a/tests/btrfs/271
-+++ b/tests/btrfs/271
-@@ -10,6 +10,7 @@
- _begin_fstest auto quick raid
- 
- . ./common/filter
-+. ./common/fail_make_request
- 
- _supported_fs btrfs
- _require_scratch
--- 
-2.35.1
-
+Thanks,
+Qu
+> ---
+>   fs/btrfs/file.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 0a76ae8b8e96..96f444ad0951 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -3652,6 +3652,10 @@ static loff_t find_desired_extent(struct btrfs_in=
+ode *inode, loff_t offset,
+>   		start =3D em->start + em->len;
+>   		free_extent_map(em);
+>   		em =3D NULL;
+> +		if (fatal_signal_pending(current)) {
+> +			ret =3D -EINTR;
+> +			break;
+> +		}
+>   		cond_resched();
+>   	}
+>   	free_extent_map(em);
