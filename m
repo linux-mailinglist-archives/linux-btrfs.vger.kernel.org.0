@@ -2,66 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 986F75AA2C9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 00:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833255AA2DB
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 00:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235081AbiIAWTu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Sep 2022 18:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47002 "EHLO
+        id S233277AbiIAWVR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Sep 2022 18:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235080AbiIAWSu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 18:18:50 -0400
+        with ESMTP id S234519AbiIAWUs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 18:20:48 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B697D1EE
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 15:18:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18646A1D19
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 15:19:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1662070699;
-        bh=Q2HbG/Y54m3MHQ946jzNyxOwJ1LnV2MC2KNFZZIOlTM=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=k95pQbnq2ZwXtdqlSvXy2eM2IsFktMK79eh1YPSPwgLEbwf0yCuAqABF9PkLUsCOr
-         xvd0F/CRUtHQquP5mwbaXo1xcCI9n5Fum4V5CzTzcgJj8A6u0C++G/OvNQf9QE02Mp
-         IgIFfCur96oH+zXgZbGG8reAxgmgDD3R2C3Wtl6w=
+        s=badeba3b8450; t=1662070748;
+        bh=dHvmJljyymfrLEyge2UG1DsrovPFG8t1tuP/8r3IwV0=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=aEX3g1DnPHHjWl4lrVyI3mGc7f08og2Tft9AEc1wxty/YUznhQnN+chvDBU5OjARq
+         6teNL6izFkMJvqd+9nUqcaJQuAKuF0hH5FTjskuUWisS9f0zTxQxJ66EUXob2+ulGf
+         4XlfaIxusAphFNWBZRhyQ22aZQnRS4mXwjP1wmTo=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTiTt-1oxK1H1tVN-00U23g; Fri, 02
- Sep 2022 00:18:19 +0200
-Message-ID: <9015be05-9c35-f7b3-708f-d2205af353d2@gmx.com>
-Date:   Fri, 2 Sep 2022 06:18:15 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8hZJ-1oPDgo45XV-004nPH; Fri, 02
+ Sep 2022 00:19:08 +0200
+Message-ID: <b2eaf693-05af-6121-cddd-d8dc36e9d07f@gmx.com>
+Date:   Fri, 2 Sep 2022 06:19:05 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.0
+Subject: Re: [PATCH 03/10] btrfs: remove check for impossible block start for
+ an extent map at fiemap
 Content-Language: en-US
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1662022922.git.fdmanana@suse.com>
- <246cd5358b28e3e11a96fe2abd0a4a34840cdb85.1662022922.git.fdmanana@suse.com>
+ <a33ca7029931ae0a076cfe0a151881bd43016472.1662022922.git.fdmanana@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 02/10] btrfs: make hole and data seeking a lot more
- efficient
-In-Reply-To: <246cd5358b28e3e11a96fe2abd0a4a34840cdb85.1662022922.git.fdmanana@suse.com>
+In-Reply-To: <a33ca7029931ae0a076cfe0a151881bd43016472.1662022922.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1LBjvh2K0SUWDQYB6hy10rAr+943Mldm2EJgc1D7DlsMt0FsbcP
- hEhMYJORkhqvguIohM1TWiBQ7YTxhK3kbjMdy8GBo9dDPEaR/oZXysxZh34IzyHsY5WFY59
- EnevZ1JB76XUojnn6GEHAoEBMgO3aInT+fNbRFnUQ6v+oAR/5uH0kc6U/KeK7qRPOFB17a6
- GoUYqPcvY5trobfcvVtPA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Int7rXTQoAA=:6nDfEcMbpY3JYuwb0xNuVh
- xT6udWyz09mYBjvTsDxyjsEleOdEGtBiaHu9O155B6gHBjCdtInWQaMQ7nbJ4uBp/fW6JHY9F
- NU2bVuDVnrd/pY+ojHNFLqxJIbhBTcwn4wqyVysKVlFRj6NaiDlZs0wUaTrrIapDmBKQHRl87
- dVxQasb17oC7k+4vQ6qbvgflEJOMyhQAf0mDTFPTZIbjWZQs1mL3OuXECeNuQmdopGriQioKj
- sbMRpK1xhQZ0BnpLAOQOa9MNjzkKAvZLlUhcY2SIr4sDLhdg8VNYZuQratJHDRFHeqy0yy8Pj
- +5bke0eR0STgOZFlOpkF5pQMHSYDO8tW6lwMowTn7USwX/bRFxgeB+bCJ/m9dmo4UYK31COaT
- tCbjl/VUyqH7m62fofGoIAO1pHo0I9V7pVJtPQmClRoLme+jf35sB1njINfFAWarTkF4jbxH5
- RlzZ+gtzNsRjP9vmeKi2ZTAuBXHTEZdpVgqTw7VwZNDERrMdm9mxNJj7JRTDbkWDKcqGpNgnZ
- dG83pz2mHoZerLM8XPn4SObmITNHIUPxUmDTTAGOp2De05x9gY8c3bLJRkfojKRhQ+AuBcjfn
- etSCAKPZDVtENk2OvaTRvKisuq+m/jYYMnT+pdaGDnqoW1XQFCYBO3bsNDhSpCGeGq5VxZpKt
- 5sKOClc+Tqv+CNGxS4oasFT8QswehPV1UChHBlbPZo3WqzPKKvfYYsSMOw8VCw/pHZ1YEpdY6
- 1s61WNS5brEOipu6idQjTkmg7gBbgf80b1dz7V+x8tlrvK7gOEGquyjgRc0nxEWaGOANWN6zg
- k/LZlJVGZtf5UYTGcvLvimDCplGpsZhIHnlf78YHVbu5yxF7LRGDtEJZS4gyPUWndXpFTR9I4
- 7tTefcUSCUALVRuHH1kYPaGGgsZ0hC8nhEZIwg++5v1b3q6oJeZVsZz3ST+gngy3jABiZoPrA
- U/5eyKqRhEf39J6QezUo7HzZ0HdGWCbgYFQbHxxwSyXGWwKfRGJ+A8xkbY6uguWvclGoauT0G
- A/lRAylBr3Fqo40RTL4aqvoPSfW3dV1H1fESt1LPYu4ovro2MB5EF+VoSxrTDGrn28KtqTrJ0
- f6uJISyiQpNykmghIrg246puz15lR61Rg8hMODo2KU5r8I/M4HkfPvRq61aE0iVnGmIrgJ7Jn
- QBeQb3k9KE5E5kYVLkNLHpr5NR
+X-Provags-ID: V03:K1:ItGBCWacQEbKoA6S2KG8iPiOTwJpk/HgqoWfg8eup3xmvUKwCit
+ yQEeofQJUj6g0H9YIrZ2O1TZrZZb9Ef66ANiGFLB9Z9bhN2/MHuZhGO3n5VXI/XYjzrn08l
+ NtOtTrxTTSL5cniTZ22EaNCNwKplGzHyF4sagmrcihX0rfclqq+smqzyYgz4c+1dWBRtI07
+ UFSNaY+x9t5oFru6J1RGQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Kuxy0C4111U=:2ccUYb+UZd2N/n2cpeBNyG
+ +ZlwCijLihhfhZYThrib1OjOrzDs4Rz+A0TMYCRW0AYIZeHi1l9dJ6vgknBtr28WGrVs9FCoM
+ WIAKcrgbERp3OYPVc42+XI49Yvj7REx1ZR7vl8m3x4ID0yrZdvq6aVD++CZEDDIWn9xJix1HL
+ SbcS9EKehp+pGUjM8A10cZFwv0T27taAHjhyV/8OycYyjqZo8ZgnWzC6s9DmtZjDUdfS6UIWi
+ +RlZ+v/THEzgnuxzKtB+3NiWgcO0gP/ZH1hnaPPMjMm05wMOG1rQs7zzHIcAeNuD+jYDM+2sQ
+ 0YMh5UnTTtuMEnRoFs8lujLyS0XvxEx19sFJo0nnAn/4gnPWhR8wzJcBsXoTLs6AEVTaL8GKA
+ 5JGmKjtuMdvoj7qiFcCzyobEPx1x9OxN0q7vIS/pW/pNxWaglp80p0NAN5BweMCQ20CHIVUV6
+ Ojodqyruhq4YKs/CTEYwwYDtsrd5WMC2wWxH+aUhb1yWfvdaxL/qC6xa9lsgEmoRI8U2ZVu0S
+ 7xfM0BwahD98+/iqjNFZnUMVpN7cqNwoNi+Y6DJ0n8g5smPgZSxPcJCWzvLeU8FgdPhNOLrT9
+ 4Whfe/actQs20j8bzgK2qXYtAD+OLUXDP3wmzy4d/tB/tl9HcizrzU+BV9iNHXQPHRoywV8h8
+ n0qf7UTwrJc/7re3lgLlHsDfKU5Xxp6GJjn9rBadrV5aRyNNusTf5lRxhmisJRCLAzVEp2cpW
+ xscgCsCRiB9VTkCbK9r4i4U6GtjvdC7q4Ln6bhuPfnUQZLbl3MuSTN++viMPpPr07c2NXbJdO
+ oJInRo/K+C6e30M3FhIZgCDL+MjJeLZfLT0Q2A8WWPNPRgF2xM8h4BQFB2rdBNH9P/kXIYTAY
+ DCwNxsg+PJEvS9XTtRV6LP/kP4pacRnIlJP7ANBOOwyf7nvCR/5IKHlh6By2Xq/y3OzRYfKop
+ AxL5Kzssv8VxJr/feqY/HDQxxzdCUts0M9HSYkPnXdLIKPgBwEzMI3SwXWyk1HcSuOYoLycyC
+ CAJKK+HUqhDllG98OtqrZfHrATWBYOI/aocvaYTUbc7nTQgmREFBKKzLblNlfeqjJzyJrrlXJ
+ E2BvgMQgP6fBxL1MFE599mEia2mvZTU58FbeuAvReADgzBESncn3jyNV73PzG3WkS7uTuvh5M
+ slxXB/IsJZRKmPcfV5xlh0AVjz
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -77,719 +77,33 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 2022/9/1 21:18, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> The current implementation of hole and data seeking for llseek does not
-> scale well in regards to the number of extents and the distance between
-> the start offset and the next hole or extent. This is due to a very high
-> algorithmic complexity. Often we also get reports of btrfs' hole and dat=
-a
-> seeking (llseek) being too slow, such as at 2017's LSFMM (see the Link
-> tag at the bottom).
+> During fiemap we are testing if an extent map has a block start with a
+> value of EXTENT_MAP_LAST_BYTE, but that is never set on an extent map,
+> and never was according to git history. So remove that useless check.
 >
-> In order to better understand it, lets consider the case where the start
-> offset is 0, we are seeking for a hole and the file size is 16G. Between
-> file offset 0 and the first hole in the file there are 100K extents - th=
-is
-> is common for large files, specially if we have compression enabled, sin=
-ce
-> the maximum extent size is limited to 128K. The steps take by the main
-> loop of the current algorithm are the following:
->
-> 1) We start by calling btrfs_get_extent_fiemap(), for file offset 0, whi=
-ch
->     calls btrfs_get_extent(). This will first lookup for an extent map i=
-n
->     the inode's extent map tree (a red black tree). If the extent map is
->     not loaded in memory, then it will do a lookup for the corresponding
->     file extent item in the subvolume's b+tree, create an extent map bas=
-ed
->     on the contents of the file extent item and then add the extent map =
-to
->     the extent map tree of the inode;
->
-> 2) The second iteration calls btrfs_get_extent_fiemap() again, this time
->     with a start offset matching the end offset of the previous extent.
->     Again, btrfs_get_extent() will first search the extent map tree, and
->     if it doesn't find an extent map there, it will again search in the
->     b+tree of the subvolume for a matching file extent item, build an
->     extent map based on the file extent item, and add the extent map to
->     to the extent map tree of the inode;
->
-> 3) This repeats over and over until we find the first hole (when seeking
->     for holes) or until we find the first extent (when seeking for data)=
-.
->
->     If there no extent maps loaded in memory for each iteration, then on
->     each iteration we do 1 extent map tree search, 1 b+tree search, plus
->     1 more extent map tree traversal to insert an extent map - plus we
->     allocate memory for the extent map.
-
-I'm a little intereted in if we have other workload which are heavily
-relying on extent map tree search?
-
-If so, would it make sense to load a batch of file extents items into
-extent map tree in one go?
-
-
-Another thing not that related to the patchset is, since extent map
-doesn't really get freed up unless that inode is invicted/truncated, I'm
-wondering would it be a problem for heavily fragmented files to take up
-too much memory just for extent map tree?
-
-Would we need a way to drop extent map in the future?
-
->
->     On each iteration we are growing the size of the extent map tree,
->     making each future search slower, and also visiting the same b+tree
->     leaves over and over again - taking into account with the default le=
-af
->     size of 16K we can fit more than 200 file extent items in a leaf - s=
-o
->     we can visit the same b+tree leaf 200+ times, on each visit walking
->     down a path from the root to the leaf.
->
-> So it's easy to see that what we have now doesn't scale well. Also, it
-> loads an extent map for every file extent item into memory, which is not
-> efficient - we should add extents maps only when doing IO (writing or
-> reading file data).
->
-> This change implements a new algorithm which scales much better, and
-> works like this:
->
-> 1) We iterate over the subvolume's b+tree, visiting each leaf that has
->     file extent items once and only once;
->
-> 2) For any file extent items found, that don't represent holes or preall=
-oc
->     extents, it will not search the extent map tree - there's no need at
->     all for that - an extent map is just an in-memory representation of =
-a
->     file extent item;
->
-> 3) When a hole is found, or a prealloc extent, it will check if there's
->     delalloc for its range. For this it will search for EXTENT_DELALLOC
->     bits in the inode's io tree and check the extent map tree - this is
->     for accounting for unflushed delalloc and for flushed delalloc (the
->     period between running delalloc and ordered extent completion),
->     respectively. This is similar to what the current implementation doe=
-s
->     when it finds a hole or prealloc extent, but without creating extent
->     maps and adding them to the extent map tree in case they are not
->     loaded in memory;
-
-Would it be possible that, before we starting the subvolume tree search,
-just run all delalloc of that target inode and prevent new writes, so we
-can forget about the delalloc situation completely?
-
->
-> 4) It never allocates extent maps, or adds extent maps to the inode's
->     extent map tree. This not only saves memory and time (from the tree
->     insertions and allocations), but also eliminates the possibility of
->     -ENOMEM due to allocating too many extent maps.
->
-> Part of this new code will also be used later for fiemap (which also
-> suffers similar scalability problems).
->
-> The following test example can be used to quickly measure the efficiency
-> before and after this patch:
->
->      $ cat test-seek-hole.sh
->      #!/bin/bash
->
->      DEV=3D/dev/sdi
->      MNT=3D/mnt/sdi
->
->      mkfs.btrfs -f $DEV
->
->      mount -o compress=3Dlzo $DEV $MNT
->
->      # 16G file -> 131073 compressed extents.
->      xfs_io -f -c "pwrite -S 0xab -b 1M 0 16G" $MNT/foobar
->
->      # Leave a 1M hole at file offset 15G.
->      xfs_io -c "fpunch 15G 1M" $MNT/foobar
->
->      # Unmount and mount again, so that we can test when there's no
->      # metadata cached in memory.
->      umount $MNT
->      mount -o compress=3Dlzo $DEV $MNT
->
->      # Test seeking for hole from offset 0 (hole is at offset 15G).
->
->      start=3D$(date +%s%N)
->      xfs_io -c "seek -h 0" $MNT/foobar
->      end=3D$(date +%s%N)
->      dur=3D$(( (end - start) / 1000000 ))
->      echo "Took $dur milliseconds to seek first hole (metadata not cache=
-d)"
->      echo
->
->      start=3D$(date +%s%N)
->      xfs_io -c "seek -h 0" $MNT/foobar
->      end=3D$(date +%s%N)
->      dur=3D$(( (end - start) / 1000000 ))
->      echo "Took $dur milliseconds to seek first hole (metadata cached)"
->      echo
->
->      umount $MNT
->
-> Before this change:
->
->      $ ./test-seek-hole.sh
->      (...)
->      Whence	Result
->      HOLE	16106127360
->      Took 176 milliseconds to seek first hole (metadata not cached)
->
->      Whence	Result
->      HOLE	16106127360
->      Took 17 milliseconds to seek first hole (metadata cached)
->
-> After this change:
->
->      $ ./test-seek-hole.sh
->      (...)
->      Whence	Result
->      HOLE	16106127360
->      Took 43 milliseconds to seek first hole (metadata not cached)
->
->      Whence	Result
->      HOLE	16106127360
->      Took 13 milliseconds to seek first hole (metadata cached)
->
-> That's about 4X faster when no metadata is cached and about 30% faster
-> when all metadata is cached.
->
-> In practice the differences may often be significantly higher, either du=
-e
-> to a higher number of extents in a file or because the subvolume's b+tre=
-e
-> is much bigger than in this example, where we only have one file.
->
-> Link: https://lwn.net/Articles/718805/
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   fs/btrfs/file.c | 437 ++++++++++++++++++++++++++++++++++++++++++++----
->   1 file changed, 406 insertions(+), 31 deletions(-)
->
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 96f444ad0951..b292a8ada3a4 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -3601,22 +3601,281 @@ static long btrfs_fallocate(struct file *file, =
-int mode,
->   	return ret;
->   }
->
-> +/*
-> + * Helper for have_delalloc_in_range(). Find a subrange in a given rang=
-e that
-> + * has unflushed and/or flushing delalloc. There might be other adjacen=
-t
-> + * subranges after the one it found, so have_delalloc_in_range() keeps =
-looping
-> + * while it gets adjacent subranges, and merging them together.
-> + */
-> +static bool find_delalloc_subrange(struct btrfs_inode *inode, u64 start=
-, u64 end,
-> +				   u64 *delalloc_start_ret, u64 *delalloc_end_ret)
-> +{
-> +	const u64 len =3D end + 1 - start;
-> +	struct extent_map_tree *em_tree =3D &inode->extent_tree;
-> +	struct extent_map *em;
-> +	u64 em_end;
-> +	u64 delalloc_len;
-> +
-> +	/*
-> +	 * Search the io tree first for EXTENT_DELALLOC. If we find any, it
-> +	 * means we have delalloc (dirty pages) for which writeback has not
-> +	 * started yet.
-> +	 */
-> +	*delalloc_start_ret =3D start;
-> +	delalloc_len =3D count_range_bits(&inode->io_tree, delalloc_start_ret,=
- end,
-> +					len, EXTENT_DELALLOC, 1);
-> +	/*
-> +	 * If delalloc was found then *delalloc_start_ret has a sector size
-> +	 * aligned value (rounded down).
-> +	 */
-> +	if (delalloc_len > 0)
-> +		*delalloc_end_ret =3D *delalloc_start_ret + delalloc_len - 1;
-> +
-> +	/*
-> +	 * Now also check if there's any extent map in the range that does not
-> +	 * map to a hole or prealloc extent. We do this because:
-> +	 *
-> +	 * 1) When delalloc is flushed, the file range is locked, we clear the
-> +	 *    EXTENT_DELALLOC bit from the io tree and create an extent map fo=
-r
-> +	 *    an allocated extent. So we might just have been called after
-> +	 *    delalloc is flushed and before the ordered extent completes and
-> +	 *    inserts the new file extent item in the subvolume's btree;
-> +	 *
-> +	 * 2) We may have an extent map created by flushing delalloc for a
-> +	 *    subrange that starts before the subrange we found marked with
-> +	 *    EXTENT_DELALLOC in the io tree.
-> +	 */
-> +	read_lock(&em_tree->lock);
-> +	em =3D lookup_extent_mapping(em_tree, start, len);
-> +	read_unlock(&em_tree->lock);
-> +
-> +	/* extent_map_end() returns a non-inclusive end offset. */
-> +	em_end =3D em ? extent_map_end(em) : 0;
-> +
-> +	/*
-> +	 * If we have a hole/prealloc extent map, check the next one if this o=
-ne
-> +	 * ends before our range's end.
-> +	 */
-> +	if (em && (em->block_start =3D=3D EXTENT_MAP_HOLE ||
-> +		   test_bit(EXTENT_FLAG_PREALLOC, &em->flags)) && em_end < end) {
-> +		struct extent_map *next_em;
-> +
-> +		read_lock(&em_tree->lock);
-> +		next_em =3D lookup_extent_mapping(em_tree, em_end, len - em_end);
-> +		read_unlock(&em_tree->lock);
-> +
-> +		free_extent_map(em);
-> +		em_end =3D next_em ? extent_map_end(next_em) : 0;
-> +		em =3D next_em;
-> +	}
-> +
-> +	if (em && (em->block_start =3D=3D EXTENT_MAP_HOLE ||
-> +		   test_bit(EXTENT_FLAG_PREALLOC, &em->flags))) {
-> +		free_extent_map(em);
-> +		em =3D NULL;
-> +	}
-> +
-> +	/*
-> +	 * No extent map or one for a hole or prealloc extent. Use the delallo=
-c
-> +	 * range we found in the io tree if we have one.
-> +	 */
-> +	if (!em)
-> +		return (delalloc_len > 0);
-> +
-> +	/*
-> +	 * We don't have any range as EXTENT_DELALLOC in the io tree, so the
-> +	 * extent map is the only subrange representing delalloc.
-> +	 */
-> +	if (delalloc_len =3D=3D 0) {
-> +		*delalloc_start_ret =3D em->start;
-> +		*delalloc_end_ret =3D min(end, em_end - 1);
-> +		free_extent_map(em);
-> +		return true;
-> +	}
-> +
-> +	/*
-> +	 * The extent map represents a delalloc range that starts before the
-> +	 * delalloc range we found in the io tree.
-> +	 */
-> +	if (em->start < *delalloc_start_ret) {
-> +		*delalloc_start_ret =3D em->start;
-> +		/*
-> +		 * If the ranges are adjacent, return a combined range.
-> +		 * Otherwise return the extent map's range.
-> +		 */
-> +		if (em_end < *delalloc_start_ret)
-> +			*delalloc_end_ret =3D min(end, em_end - 1);
-> +
-> +		free_extent_map(em);
-> +		return true;
-> +	}
-> +
-> +	/*
-> +	 * The extent map starts after the delalloc range we found in the io
-> +	 * tree. If it's adjacent, return a combined range, otherwise return
-> +	 * the range found in the io tree.
-> +	 */
-> +	if (*delalloc_end_ret + 1 =3D=3D em->start)
-> +		*delalloc_end_ret =3D min(end, em_end - 1);
-> +
-> +	free_extent_map(em);
-> +	return true;
-> +}
-> +
-> +/*
-> + * Check if there's delalloc in a given range.
-> + *
-> + * @inode:               The inode.
-> + * @start:               The start offset of the range. It does not nee=
-d to be
-> + *                       sector size aligned.
-> + * @end:                 The end offset (inclusive value) of the search=
- range.
-> + *                       It does not need to be sector size aligned.
-> + * @delalloc_start_ret:  Output argument, set to the start offset of th=
-e
-> + *                       subrange found with delalloc (may not be secto=
-r size
-> + *                       aligned).
-> + * @delalloc_end_ret:    Output argument, set to he end offset (inclusi=
-ve value)
-> + *                       of the subrange found with delalloc.
-> + *
-> + * Returns true if a subrange with delalloc is found within the given r=
-ange, and
-> + * if so it sets @delalloc_start_ret and @delalloc_end_ret with the sta=
-rt and
-> + * end offsets of the subrange.
-> + */
-> +static bool have_delalloc_in_range(struct btrfs_inode *inode, u64 start=
-, u64 end,
-> +				   u64 *delalloc_start_ret, u64 *delalloc_end_ret)
-> +{
-> +	u64 cur_offset =3D round_down(start, inode->root->fs_info->sectorsize)=
-;
-> +	u64 prev_delalloc_end =3D 0;
-> +	bool ret =3D false;
-> +
-> +	while (cur_offset < end) {
-> +		u64 delalloc_start;
-> +		u64 delalloc_end;
-> +		bool delalloc;
-> +
-> +		delalloc =3D find_delalloc_subrange(inode, cur_offset, end,
-> +						  &delalloc_start,
-> +						  &delalloc_end);
-> +		if (!delalloc)
-> +			break;
-> +
-> +		if (prev_delalloc_end =3D=3D 0) {
-> +			/* First subrange found. */
-> +			*delalloc_start_ret =3D max(delalloc_start, start);
-> +			*delalloc_end_ret =3D delalloc_end;
-> +			ret =3D true;
-> +		} else if (delalloc_start =3D=3D prev_delalloc_end + 1) {
-> +			/* Subrange adjacent to the previous one, merge them. */
-> +			*delalloc_end_ret =3D delalloc_end;
-> +		} else {
-> +			/* Subrange not adjacent to the previous one, exit. */
-> +			break;
-> +		}
-> +
-> +		prev_delalloc_end =3D delalloc_end;
-> +		cur_offset =3D delalloc_end + 1;
-> +		cond_resched();
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Check if there's a hole or delalloc range in a range representing a =
-hole (or
-> + * prealloc extent) found in the inode's subvolume btree.
-> + *
-> + * @inode:      The inode.
-> + * @whence:     Seek mode (SEEK_DATA or SEEK_HOLE).
-> + * @start:      Start offset of the hole region. It does not need to be=
- sector
-> + *              size aligned.
-> + * @end:        End offset (inclusive value) of the hole region. It doe=
-s not
-> + *              need to be sector size aligned.
-> + * @start_ret:  Return parameter, used to set the start of the subrange=
- in the
-> + *              hole that matches the search criteria (seek mode), if s=
-uch
-> + *              subrange is found (return value of the function is true=
-).
-> + *              The value returned here may not be sector size aligned.
-> + *
-> + * Returns true if a subrange matching the given seek mode is found, an=
-d if one
-> + * is found, it updates @start_ret with the start of the subrange.
-> + */
-> +static bool find_desired_extent_in_hole(struct btrfs_inode *inode, int =
-whence,
-> +					u64 start, u64 end, u64 *start_ret)
-> +{
-> +	u64 delalloc_start;
-> +	u64 delalloc_end;
-> +	bool delalloc;
-> +
-> +	delalloc =3D have_delalloc_in_range(inode, start, end, &delalloc_start=
-,
-> +					  &delalloc_end);
-> +	if (delalloc && whence =3D=3D SEEK_DATA) {
-> +		*start_ret =3D delalloc_start;
-> +		return true;
-> +	}
-> +
-> +	if (delalloc && whence =3D=3D SEEK_HOLE) {
-> +		/*
-> +		 * We found delalloc but it starts after out start offset. So we
-> +		 * have a hole between our start offset and the delalloc start.
-> +		 */
-> +		if (start < delalloc_start) {
-> +			*start_ret =3D start;
-> +			return true;
-> +		}
-> +		/*
-> +		 * Delalloc range starts at our start offset.
-> +		 * If the delalloc range's length is smaller than our range,
-> +		 * then it means we have a hole that starts where the delalloc
-> +		 * subrange ends.
-> +		 */
-> +		if (delalloc_end < end) {
-> +			*start_ret =3D delalloc_end + 1;
-> +			return true;
-> +		}
-> +
-> +		/* There's delalloc for the whole range. */
-> +		return false;
-> +	}
-> +
-> +	if (!delalloc && whence =3D=3D SEEK_HOLE) {
-> +		*start_ret =3D start;
-> +		return true;
-> +	}
-> +
-> +	/*
-> +	 * No delalloc in the range and we are seeking for data. The caller ha=
-s
-> +	 * to iterate to the next extent item in the subvolume btree.
-> +	 */
-> +	return false;
-> +}
-> +
->   static loff_t find_desired_extent(struct btrfs_inode *inode, loff_t of=
-fset,
->   				  int whence)
->   {
->   	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
-> -	struct extent_map *em =3D NULL;
->   	struct extent_state *cached_state =3D NULL;
-> -	loff_t i_size =3D inode->vfs_inode.i_size;
-> +	const loff_t i_size =3D i_size_read(&inode->vfs_inode);
-> +	const u64 ino =3D btrfs_ino(inode);
-> +	struct btrfs_root *root =3D inode->root;
-> +	struct btrfs_path *path;
-> +	struct btrfs_key key;
-> +	u64 last_extent_end;
->   	u64 lockstart;
->   	u64 lockend;
->   	u64 start;
-> -	u64 len;
-> -	int ret =3D 0;
-> +	int ret;
-> +	bool found =3D false;
->
->   	if (i_size =3D=3D 0 || offset >=3D i_size)
->   		return -ENXIO;
->
-> +	/*
-> +	 * Quick path. If the inode has no prealloc extents and its number of
-> +	 * bytes used matches its i_size, then it can not have holes.
-> +	 */
-> +	if (whence =3D=3D SEEK_HOLE &&
-> +	    !(inode->flags & BTRFS_INODE_PREALLOC) &&
-> +	    inode_get_bytes(&inode->vfs_inode) =3D=3D i_size)
-> +		return i_size;
-> +
-
-Would we need a counter part for all holes quick path?'
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
->   	/*
->   	 * offset can be negative, in this case we start finding DATA/HOLE fr=
-om
->   	 * the very start of the file.
-> @@ -3628,49 +3887,165 @@ static loff_t find_desired_extent(struct btrfs_=
-inode *inode, loff_t offset,
->   	if (lockend <=3D lockstart)
->   		lockend =3D lockstart + fs_info->sectorsize;
->   	lockend--;
-> -	len =3D lockend - lockstart + 1;
-> +
-> +	path =3D btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
-> +	path->reada =3D READA_FORWARD;
-> +
-> +	key.objectid =3D ino;
-> +	key.type =3D BTRFS_EXTENT_DATA_KEY;
-> +	key.offset =3D start;
-> +
-> +	last_extent_end =3D lockstart;
+> ---
+>   fs/btrfs/extent_io.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
 >
->   	lock_extent_bits(&inode->io_tree, lockstart, lockend, &cached_state);
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index f57a3e91fc2c..ceb7dfe8d6dc 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -5642,10 +5642,7 @@ int extent_fiemap(struct btrfs_inode *inode, stru=
+ct fiemap_extent_info *fieinfo,
+>   		if (off >=3D max)
+>   			end =3D 1;
 >
-> +	ret =3D btrfs_search_slot(NULL, root, &key, path, 0, 0);
-> +	if (ret < 0) {
-> +		goto out;
-> +	} else if (ret > 0 && path->slots[0] > 0) {
-> +		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0] - 1);
-> +		if (key.objectid =3D=3D ino && key.type =3D=3D BTRFS_EXTENT_DATA_KEY)
-> +			path->slots[0]--;
-> +	}
-> +
->   	while (start < i_size) {
-> -		em =3D btrfs_get_extent_fiemap(inode, start, len);
-> -		if (IS_ERR(em)) {
-> -			ret =3D PTR_ERR(em);
-> -			em =3D NULL;
-> -			break;
-> +		struct extent_buffer *leaf =3D path->nodes[0];
-> +		struct btrfs_file_extent_item *extent;
-> +		u64 extent_end;
-> +
-> +		if (path->slots[0] >=3D btrfs_header_nritems(leaf)) {
-> +			ret =3D btrfs_next_leaf(root, path);
-> +			if (ret < 0)
-> +				goto out;
-> +			else if (ret > 0)
-> +				break;
-> +
-> +			leaf =3D path->nodes[0];
->   		}
->
-> -		if (whence =3D=3D SEEK_HOLE &&
-> -		    (em->block_start =3D=3D EXTENT_MAP_HOLE ||
-> -		     test_bit(EXTENT_FLAG_PREALLOC, &em->flags)))
-> -			break;
-> -		else if (whence =3D=3D SEEK_DATA &&
-> -			   (em->block_start !=3D EXTENT_MAP_HOLE &&
-> -			    !test_bit(EXTENT_FLAG_PREALLOC, &em->flags)))
-> +		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-> +		if (key.objectid !=3D ino || key.type !=3D BTRFS_EXTENT_DATA_KEY)
->   			break;
->
-> -		start =3D em->start + em->len;
-> -		free_extent_map(em);
-> -		em =3D NULL;
-> +		extent_end =3D btrfs_file_extent_end(path);
-> +
-> +		/*
-> +		 * In the first iteration we may have a slot that points to an
-> +		 * extent that ends before our start offset, so skip it.
-> +		 */
-> +		if (extent_end <=3D start) {
-> +			path->slots[0]++;
-> +			continue;
-> +		}
-> +
-> +		/* We have an implicit hole, NO_HOLES feature is likely set. */
-> +		if (last_extent_end < key.offset) {
-> +			u64 search_start =3D last_extent_end;
-> +			u64 found_start;
-> +
-> +			/*
-> +			 * First iteration, @start matches @offset and it's
-> +			 * within the hole.
-> +			 */
-> +			if (start =3D=3D offset)
-> +				search_start =3D offset;
-> +
-> +			found =3D find_desired_extent_in_hole(inode, whence,
-> +							    search_start,
-> +							    key.offset - 1,
-> +							    &found_start);
-> +			if (found) {
-> +				start =3D found_start;
-> +				break;
-> +			}
-> +			/*
-> +			 * Didn't find data or a hole (due to delalloc) in the
-> +			 * implicit hole range, so need to analyze the extent.
-> +			 */
-> +		}
-> +
-> +		extent =3D btrfs_item_ptr(leaf, path->slots[0],
-> +					struct btrfs_file_extent_item);
-> +
-> +		if (btrfs_file_extent_disk_bytenr(leaf, extent) =3D=3D 0 ||
-> +		    btrfs_file_extent_type(leaf, extent) =3D=3D
-> +		    BTRFS_FILE_EXTENT_PREALLOC) {
-> +			/*
-> +			 * Explicit hole or prealloc extent, search for delalloc.
-> +			 * A prealloc extent is treated like a hole.
-> +			 */
-> +			u64 search_start =3D key.offset;
-> +			u64 found_start;
-> +
-> +			/*
-> +			 * First iteration, @start matches @offset and it's
-> +			 * within the hole.
-> +			 */
-> +			if (start =3D=3D offset)
-> +				search_start =3D offset;
-> +
-> +			found =3D find_desired_extent_in_hole(inode, whence,
-> +							    search_start,
-> +							    extent_end - 1,
-> +							    &found_start);
-> +			if (found) {
-> +				start =3D found_start;
-> +				break;
-> +			}
-> +			/*
-> +			 * Didn't find data or a hole (due to delalloc) in the
-> +			 * implicit hole range, so need to analyze the next
-> +			 * extent item.
-> +			 */
-> +		} else {
-> +			/*
-> +			 * Found a regular or inline extent.
-> +			 * If we are seeking for data, adjust the start offset
-> +			 * and stop, we're done.
-> +			 */
-> +			if (whence =3D=3D SEEK_DATA) {
-> +				start =3D max_t(u64, key.offset, offset);
-> +				found =3D true;
-> +				break;
-> +			}
-> +			/*
-> +			 * Else, we are seeking for a hole, check the next file
-> +			 * extent item.
-> +			 */
-> +		}
-> +
-> +		start =3D extent_end;
-> +		last_extent_end =3D extent_end;
-> +		path->slots[0]++;
->   		if (fatal_signal_pending(current)) {
->   			ret =3D -EINTR;
-> -			break;
-> +			goto out;
->   		}
->   		cond_resched();
->   	}
-> -	free_extent_map(em);
-> +
-> +	/* We have an implicit hole from the last extent found up to i_size. *=
-/
-> +	if (!found && start < i_size) {
-> +		found =3D find_desired_extent_in_hole(inode, whence, start,
-> +						    i_size - 1, &start);
-> +		if (!found)
-> +			start =3D i_size;
-> +	}
-> +
-> +out:
->   	unlock_extent_cached(&inode->io_tree, lockstart, lockend,
->   			     &cached_state);
-> -	if (ret) {
-> -		offset =3D ret;
-> -	} else {
-> -		if (whence =3D=3D SEEK_DATA && start >=3D i_size)
-> -			offset =3D -ENXIO;
-> -		else
-> -			offset =3D min_t(loff_t, start, i_size);
-> -	}
-> +	btrfs_free_path(path);
-> +
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (whence =3D=3D SEEK_DATA && start >=3D i_size)
-> +		return -ENXIO;
->
-> -	return offset;
-> +	return min_t(loff_t, start, i_size);
->   }
->
->   static loff_t btrfs_file_llseek(struct file *file, loff_t offset, int =
-whence)
+> -		if (em->block_start =3D=3D EXTENT_MAP_LAST_BYTE) {
+> -			end =3D 1;
+> -			flags |=3D FIEMAP_EXTENT_LAST;
+> -		} else if (em->block_start =3D=3D EXTENT_MAP_INLINE) {
+> +		if (em->block_start =3D=3D EXTENT_MAP_INLINE) {
+>   			flags |=3D (FIEMAP_EXTENT_DATA_INLINE |
+>   				  FIEMAP_EXTENT_NOT_ALIGNED);
+>   		} else if (em->block_start =3D=3D EXTENT_MAP_DELALLOC) {
