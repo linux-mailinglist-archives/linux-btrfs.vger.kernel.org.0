@@ -2,215 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC0A5A9FA3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 21:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2594D5AA0C8
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 22:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233775AbiIATLK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Sep 2022 15:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
+        id S234791AbiIAUR3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Sep 2022 16:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233212AbiIATLI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 15:11:08 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D6417E03;
-        Thu,  1 Sep 2022 12:11:06 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S231589AbiIAUR2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 16:17:28 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D066E2E0;
+        Thu,  1 Sep 2022 13:17:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8B77F20485;
-        Thu,  1 Sep 2022 19:11:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1662059464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=ogKYoxob8wRiQa/UCeHnxAd7biELnk2bNLuKhEBTl8A=;
-        b=kU1QLQ7WXZB3+fXpLeEURm54Vm5IdtOhrr2sOqnKwpa3oGt6gN9OVtWBDlacNfU8f49SJK
-        GdIuhyWNBz/Oqb/rR5ThB7GBnV6xZofIZout/Cj7fI6ibeW3HMjA2xNis2ARgABlTq7Nk8
-        2LBBzfXbTSqGHS12Y8Tx9kEUXI6WWp8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1662059464;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=ogKYoxob8wRiQa/UCeHnxAd7biELnk2bNLuKhEBTl8A=;
-        b=kZar/ODc2A5Jt8chfX15GQ0T3aRcpiGh3Whfw1HnvORDn+b5iG2goizve39b56XctkKSgJ
-        QUlmRLK2yrZ18jAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 420AD13A79;
-        Thu,  1 Sep 2022 19:11:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id dLE5CMgDEWO+VQAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>); Thu, 01 Sep 2022 19:11:04 +0000
-Date:   Thu, 1 Sep 2022 14:11:02 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1A672B82934;
+        Thu,  1 Sep 2022 20:17:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01494C433D6;
+        Thu,  1 Sep 2022 20:17:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662063444;
+        bh=jWTMFH7oshcJJYNE2Zkgcv3wnsWAXwSMF+e6hfl3w1k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=g1e3H/hSxuQ7mjzZW/Y95G953g/qyIzIPEIHWNAAJw/gMonZP9wgzE4RBCLd1lEzd
+         sqIJRWxM+yN1rZnNft3aaP44GOga9jm3iSiOfkeZd0nNI+nrvJ3E5vCXRJuEMG1m2Y
+         BERo0qqOwv7NaeGJHHC6Y4anQygLe6Sr6sRtwOQ1nkdCj9WO9lJdPb0TMoW+LQr0To
+         0KIR1EugAzGzTk8jT5TvIyuF+uW8hGY852E0g+sMsSWRtZZljYIfeR5/IQsCsAD8Xe
+         ibP35R9vGnJ9v3DND7G8KG/WmcAQ8dK1anW7fpJRUWWzbnTZ/MCaj9bjhv1GOm+Hgm
+         ZD/qF56eXtVOg==
+From:   fdmanana@kernel.org
 To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@kernel.org>
-Subject: [PATCH v2] btrfs: test security xattr changes for RO btrfs property
-Message-ID: <20220901191102.zryecg6n635z6p5o@fiona>
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: fix btrfs/271 failure due to missing source of fail_make_request
+Date:   Thu,  1 Sep 2022 21:17:02 +0100
+Message-Id: <62ccab661ea8591cbc5f8b936fc4e0a47f2bfc86.1662063388.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test creation, modification and deletion of xattr for a BTRFS filesystem
-which has the read-only property set to true.
+From: Filipe Manana <fdmanana@suse.com>
 
-Re-test the same after read-only property is set to false.
+The recent commit 49272aacac850c ("common: refactor fail_make_request
+boilerplate") moved _require_fail_make_request() from common/rc into
+common/fail_make_request, but it forgot to make btrfs/271 source this
+new file, so now the test always fails:
 
-This tests the bug for "security.*" modifications which escape
-xattr_permission(), because security parameters are usually let through
-in xattr_permission, without checking
-inode_permission()->btrfs_permission().
+  $ ./check btrfs/271
+  FSTYP         -- btrfs
+  PLATFORM      -- Linux/x86_64 debian9 6.0.0-rc2-btrfs-next-122 #1 SMP PREEMPT_DYNAMIC Mon Aug 29 09:45:59 WEST 2022
+  MKFS_OPTIONS  -- /dev/sdb
+  MOUNT_OPTIONS -- /dev/sdb /home/fdmanana/btrfs-tests/scratch_1
 
-Signed-off-by: Filipe Manana <fdmanana@kernel.org>
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+  btrfs/271 4s ... - output mismatch (see /home/fdmanana/git/hub/xfstests/results//btrfs/271.out.bad)
+      --- tests/btrfs/271.out	2022-08-08 10:36:20.404812893 +0100
+      +++ /home/fdmanana/git/hub/xfstests/results//btrfs/271.out.bad	2022-09-01 21:12:29.689481068 +0100
+      @@ -1,4 +1,5 @@
+       QA output created by 271
+      +/home/fdmanana/git/hub/xfstests/tests/btrfs/271: line 17: _require_fail_make_request: command not found
+       Step 1: writing with one failing mirror:
+       wrote 8192/8192 bytes at offset 0
+       XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+      ...
+      (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/271.out /home/fdmanana/git/hub/xfstests/results//btrfs/271.out.bad'  to see the entire diff)
+  Ran: btrfs/271
+  Failures: btrfs/271
+  Failed 1 of 1 tests
 
-diff --git a/tests/btrfs/275 b/tests/btrfs/275
-new file mode 100755
-index 00000000..f7b10b18
---- /dev/null
-+++ b/tests/btrfs/275
-@@ -0,0 +1,85 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test No. 275
-+#
-+# Test that no xattr can be changed once btrfs property is set to RO
-+#
-+. ./common/preamble
-+_begin_fstest auto quick attr
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/attr
-+
-+# real QA test starts here
-+_supported_fs btrfs
-+_fixed_by_kernel_commit b51111271b03 \
-+	"btrfs: check if root is readonly while setting security xattr"
-+_require_attrs
-+_require_btrfs_command "property"
-+_require_scratch
-+
-+_scratch_mkfs > /dev/null 2>&1 || _fail "mkfs failed"
-+_scratch_mount
-+
-+FILENAME=$SCRATCH_MNT/foo
-+
-+set_xattr() {
-+	local value=$1
-+	$SETFATTR_PROG -n "user.one" -v $value $FILENAME 2>&1 | _filter_scratch
-+	$SETFATTR_PROG -n "security.one" -v $value $FILENAME 2>&1 | _filter_scratch
-+	$SETFATTR_PROG -n "trusted.one" -v $value $FILENAME 2>&1 | _filter_scratch
-+}
-+
-+get_xattr() {
-+	$GETFATTR_PROG --absolute-names -n "user.one" $FILENAME 2>&1 | _filter_scratch
-+	$GETFATTR_PROG --absolute-names -n "security.one" $FILENAME 2>&1 | _filter_scratch
-+	$GETFATTR_PROG --absolute-names -n "trusted.one" $FILENAME 2>&1 | _filter_scratch
-+}
-+
-+del_xattr() {
-+	$SETFATTR_PROG -x "user.one" $FILENAME 2>&1 | _filter_scratch
-+	$SETFATTR_PROG -x "security.one" $FILENAME 2>&1 | _filter_scratch
-+	$SETFATTR_PROG -x "trusted.one" $FILENAME 2>&1 | _filter_scratch
-+}
-+
-+# Create a test file.
-+echo "hello world" > $FILENAME
-+
-+set_xattr 1
-+
-+$BTRFS_UTIL_PROG property set $SCRATCH_MNT ro true
-+$BTRFS_UTIL_PROG property get $SCRATCH_MNT ro
-+
-+# Attempt to change values of RO (property) filesystem
-+set_xattr 2
-+
-+# Check the values of RO (property) filesystem are not changed
-+get_xattr
-+
-+# Attempt to remove xattr from RO (property) filesystem
-+del_xattr
-+
-+# Check if xattr still exist
-+get_xattr
-+
-+# Change filesystem property RO to false
-+$BTRFS_UTIL_PROG property set $SCRATCH_MNT ro false
-+$BTRFS_UTIL_PROG property get $SCRATCH_MNT ro
-+
-+# Change the xattrs after RO is false
-+set_xattr 2
-+
-+# Get the changed values
-+get_xattr
-+
-+# Remove xattr
-+del_xattr
-+
-+# check if the xattrs are really deleted
-+get_xattr
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/275.out b/tests/btrfs/275.out
-new file mode 100644
-index 00000000..fb8f02f8
---- /dev/null
-+++ b/tests/btrfs/275.out
-@@ -0,0 +1,39 @@
-+QA output created by 275
-+ro=true
-+setfattr: SCRATCH_MNT/foo: Read-only file system
-+setfattr: SCRATCH_MNT/foo: Read-only file system
-+setfattr: SCRATCH_MNT/foo: Read-only file system
-+# file: SCRATCH_MNT/foo
-+user.one="1"
-+
-+# file: SCRATCH_MNT/foo
-+security.one="1"
-+
-+# file: SCRATCH_MNT/foo
-+trusted.one="1"
-+
-+setfattr: SCRATCH_MNT/foo: Read-only file system
-+setfattr: SCRATCH_MNT/foo: Read-only file system
-+setfattr: SCRATCH_MNT/foo: Read-only file system
-+# file: SCRATCH_MNT/foo
-+user.one="1"
-+
-+# file: SCRATCH_MNT/foo
-+security.one="1"
-+
-+# file: SCRATCH_MNT/foo
-+trusted.one="1"
-+
-+ro=false
-+# file: SCRATCH_MNT/foo
-+user.one="2"
-+
-+# file: SCRATCH_MNT/foo
-+security.one="2"
-+
-+# file: SCRATCH_MNT/foo
-+trusted.one="2"
-+
-+SCRATCH_MNT/foo: user.one: No such attribute
-+SCRATCH_MNT/foo: security.one: No such attribute
-+SCRATCH_MNT/foo: trusted.one: No such attribute
+Fix that by sourcing common/fail_make_request at btrfs/271.
 
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ tests/btrfs/271 | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tests/btrfs/271 b/tests/btrfs/271
+index c21858d1..681fa965 100755
+--- a/tests/btrfs/271
++++ b/tests/btrfs/271
+@@ -10,6 +10,7 @@
+ _begin_fstest auto quick raid
+ 
+ . ./common/filter
++. ./common/fail_make_request
+ 
+ _supported_fs btrfs
+ _require_scratch
 -- 
-Goldwyn
+2.35.1
+
