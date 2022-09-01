@@ -2,66 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 833255AA2DB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 00:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DDB5AA317
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 00:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233277AbiIAWVR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Sep 2022 18:21:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46900 "EHLO
+        id S235218AbiIAWba (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Sep 2022 18:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234519AbiIAWUs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 18:20:48 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18646A1D19
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 15:19:14 -0700 (PDT)
+        with ESMTP id S235199AbiIAWbK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 18:31:10 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813301AF0B
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 15:30:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1662070748;
-        bh=dHvmJljyymfrLEyge2UG1DsrovPFG8t1tuP/8r3IwV0=;
+        s=badeba3b8450; t=1662071409;
+        bh=pcc2m/GRmUlExILZSCWBaD34UiG6V4kPbYrU6T4J+HU=;
         h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=aEX3g1DnPHHjWl4lrVyI3mGc7f08og2Tft9AEc1wxty/YUznhQnN+chvDBU5OjARq
-         6teNL6izFkMJvqd+9nUqcaJQuAKuF0hH5FTjskuUWisS9f0zTxQxJ66EUXob2+ulGf
-         4XlfaIxusAphFNWBZRhyQ22aZQnRS4mXwjP1wmTo=
+        b=De6dQDDcTmEiW4ecTKJrhSD32A7sJR7MXQ3rTQENSqQ78DkXcJwKq8VWCUeLv43v7
+         eY7qiBo+LEix/vOCmjusgPqkJdrAtPQYbcfkdoc427YwLN9M3D3SsCO08MWCku9nii
+         a/nr4Lwidpvxv80vQDLCIoFPmWs6clGa+4sdZkhg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8hZJ-1oPDgo45XV-004nPH; Fri, 02
- Sep 2022 00:19:08 +0200
-Message-ID: <b2eaf693-05af-6121-cddd-d8dc36e9d07f@gmx.com>
-Date:   Fri, 2 Sep 2022 06:19:05 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MplXz-1pAbHW1tG9-00q9o8; Fri, 02
+ Sep 2022 00:24:48 +0200
+Message-ID: <af276eba-1355-6ca8-0c62-33e94e133f47@gmx.com>
+Date:   Fri, 2 Sep 2022 06:24:44 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.0
-Subject: Re: [PATCH 03/10] btrfs: remove check for impossible block start for
- an extent map at fiemap
+Subject: Re: [PATCH 04/10] btrfs: remove zero length check when entering
+ fiemap
 Content-Language: en-US
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1662022922.git.fdmanana@suse.com>
- <a33ca7029931ae0a076cfe0a151881bd43016472.1662022922.git.fdmanana@suse.com>
+ <4d19dc86c76af6e7ca8577e7d3fdf5a319a7357d.1662022922.git.fdmanana@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <a33ca7029931ae0a076cfe0a151881bd43016472.1662022922.git.fdmanana@suse.com>
+In-Reply-To: <4d19dc86c76af6e7ca8577e7d3fdf5a319a7357d.1662022922.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ItGBCWacQEbKoA6S2KG8iPiOTwJpk/HgqoWfg8eup3xmvUKwCit
- yQEeofQJUj6g0H9YIrZ2O1TZrZZb9Ef66ANiGFLB9Z9bhN2/MHuZhGO3n5VXI/XYjzrn08l
- NtOtTrxTTSL5cniTZ22EaNCNwKplGzHyF4sagmrcihX0rfclqq+smqzyYgz4c+1dWBRtI07
- UFSNaY+x9t5oFru6J1RGQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Kuxy0C4111U=:2ccUYb+UZd2N/n2cpeBNyG
- +ZlwCijLihhfhZYThrib1OjOrzDs4Rz+A0TMYCRW0AYIZeHi1l9dJ6vgknBtr28WGrVs9FCoM
- WIAKcrgbERp3OYPVc42+XI49Yvj7REx1ZR7vl8m3x4ID0yrZdvq6aVD++CZEDDIWn9xJix1HL
- SbcS9EKehp+pGUjM8A10cZFwv0T27taAHjhyV/8OycYyjqZo8ZgnWzC6s9DmtZjDUdfS6UIWi
- +RlZ+v/THEzgnuxzKtB+3NiWgcO0gP/ZH1hnaPPMjMm05wMOG1rQs7zzHIcAeNuD+jYDM+2sQ
- 0YMh5UnTTtuMEnRoFs8lujLyS0XvxEx19sFJo0nnAn/4gnPWhR8wzJcBsXoTLs6AEVTaL8GKA
- 5JGmKjtuMdvoj7qiFcCzyobEPx1x9OxN0q7vIS/pW/pNxWaglp80p0NAN5BweMCQ20CHIVUV6
- Ojodqyruhq4YKs/CTEYwwYDtsrd5WMC2wWxH+aUhb1yWfvdaxL/qC6xa9lsgEmoRI8U2ZVu0S
- 7xfM0BwahD98+/iqjNFZnUMVpN7cqNwoNi+Y6DJ0n8g5smPgZSxPcJCWzvLeU8FgdPhNOLrT9
- 4Whfe/actQs20j8bzgK2qXYtAD+OLUXDP3wmzy4d/tB/tl9HcizrzU+BV9iNHXQPHRoywV8h8
- n0qf7UTwrJc/7re3lgLlHsDfKU5Xxp6GJjn9rBadrV5aRyNNusTf5lRxhmisJRCLAzVEp2cpW
- xscgCsCRiB9VTkCbK9r4i4U6GtjvdC7q4Ln6bhuPfnUQZLbl3MuSTN++viMPpPr07c2NXbJdO
- oJInRo/K+C6e30M3FhIZgCDL+MjJeLZfLT0Q2A8WWPNPRgF2xM8h4BQFB2rdBNH9P/kXIYTAY
- DCwNxsg+PJEvS9XTtRV6LP/kP4pacRnIlJP7ANBOOwyf7nvCR/5IKHlh6By2Xq/y3OzRYfKop
- AxL5Kzssv8VxJr/feqY/HDQxxzdCUts0M9HSYkPnXdLIKPgBwEzMI3SwXWyk1HcSuOYoLycyC
- CAJKK+HUqhDllG98OtqrZfHrATWBYOI/aocvaYTUbc7nTQgmREFBKKzLblNlfeqjJzyJrrlXJ
- E2BvgMQgP6fBxL1MFE599mEia2mvZTU58FbeuAvReADgzBESncn3jyNV73PzG3WkS7uTuvh5M
- slxXB/IsJZRKmPcfV5xlh0AVjz
+X-Provags-ID: V03:K1:rsMD8JqwF9X2KjBxmVUh8dRFRJ0MF6GC1f7BcE6acJ/76ne/Zbo
+ iAOLhD4l0W8H3HzwhEyOj4+yqiaqhbur1O3BxSH6/xCPRolv/Nxg9fiMTH/cuf4I+/9peRM
+ uZOCKrqq907DC4HCsAEssWZXrUzi+G+GROIwgVz2wVmHStqrwE3Q5NRUYZLKdRIgVSpa3n0
+ nr2c8J+r099apHMGXalyw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FdF7iWDFPu0=:VpOhM/QpXmy2qtHzDLDro/
+ YG4ErxVTjhhsK/8nosvq1pz+dDWdYYRVXJDhLAlEYOBwzPB2qlmfVPMRRcexY1ztZaI8mJuXZ
+ 56PDhDjJbE19v/27+4TPfv6eBPl1lSQpfeXrNMC6l2jkwmjz82dNhz7C2AzUXFZ61ENf4Bn5T
+ 8cWAJqiOC35JZGm6IPU5DM0j4nKf2EYI1TfY7Ww/j8EC5rf0A54xd+8UH43SZy67FzSF8SHCW
+ euwvU1+zxN8qFNhh+Uvz8cfbxLGx9mzca6EgUycBbaEsuwhA3Iob1RCVb13l0FJrjB6i+oMJk
+ zMqZkzTAGLFHRC8TZGqJ4kjDPRAVA7Xy30gg/lXSurpcYLMLAahkrYMcYlk5MihflIwR+1b8Q
+ t4y3exkyz0SHvAb5RYlU/wHIAHFC6v1bbOsFd1LSRFfpDjEN3x9KW51mVyDutfKgmX0GEf2u0
+ AeRwd0IZ1fg/M0Mr8BQV74N3kw/Tr0srm+DLQ2vdKvjPIleW+8UhUazh+uannCcWzvVz7NSCi
+ PQkjaxeVfeQRlocdo6qa95Z561MyUpts3v3cF17/IU7bYg+kD8fdAwrx+kqm8uwrH/ZeDKcQs
+ bqzhpPcsyCDS8krvPhomi9iX8Wy0qlEMqGq6IZIM+eUze2ostfhL/34t/qJnyhrlTRBhEuo2N
+ Pu+gZcYSRjwpEDdbFh7xHDJ4IL/T0p5/11ydKHzBlrrfu2t1CvQMvOu2DerpSfAnRB+hRn5rz
+ Y1UcCKVDJbJa+OQRp3DlWCyOIGRlMe8XV1CFPWvacdyjnEpe/96tq/JrDU6RwcoEY33Q30td7
+ M33QlPEQyPLKUW+8QvA4Hs6iNoEMYAKAwfA/OWoL/Ukc12tjvFn/NJMhc2F82DFxaJ81wAY35
+ ZNJKniP8JI0OBm8Wxf1D2cHjHux085IEO9Di3s/hjBk1x08JK9nlChrJYLmXvraz+qETL7NOo
+ p8EIfvEKhxL9Kq8DlEDmQj/hpd0nZPsLbuceFf0mqBSmDerRKYSq22U+YBnlRjErvSNHeHwz0
+ MAiA26qDCPaxFXk3Ht1oJD8foXf1MoY8uV408DteLyO5der/mAm/X/CAZRVOgyIA0CnKXioOV
+ yc8awjuTlVB9OBRNAgbq/SyUeFdJPIGrAzDRbIYrvbBYB8+wLZ08pHx5tV0wBwsnVUpJR0drG
+ tu1GWNNuUfJ3daLCLoKp3Dnz7f
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -77,33 +77,33 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 2022/9/1 21:18, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> During fiemap we are testing if an extent map has a block start with a
-> value of EXTENT_MAP_LAST_BYTE, but that is never set on an extent map,
-> and never was according to git history. So remove that useless check.
+> There's no point to check for a 0 length at extent_fiemap(), as before
+> calling it, we called fiemap_prep() at btrfs_fiemap(), which already
+> checks for a zero length and returns the same -EINVAL error. So remove
+> the pointless check.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 > ---
->   fs/btrfs/extent_io.c | 5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
+>   fs/btrfs/extent_io.c | 3 ---
+>   1 file changed, 3 deletions(-)
 >
 > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index f57a3e91fc2c..ceb7dfe8d6dc 100644
+> index ceb7dfe8d6dc..6e2143b6fba3 100644
 > --- a/fs/btrfs/extent_io.c
 > +++ b/fs/btrfs/extent_io.c
-> @@ -5642,10 +5642,7 @@ int extent_fiemap(struct btrfs_inode *inode, stru=
-ct fiemap_extent_info *fieinfo,
->   		if (off >=3D max)
->   			end =3D 1;
+> @@ -5526,9 +5526,6 @@ int extent_fiemap(struct btrfs_inode *inode, struc=
+t fiemap_extent_info *fieinfo,
+>   	u64 em_len =3D 0;
+>   	u64 em_end =3D 0;
 >
-> -		if (em->block_start =3D=3D EXTENT_MAP_LAST_BYTE) {
-> -			end =3D 1;
-> -			flags |=3D FIEMAP_EXTENT_LAST;
-> -		} else if (em->block_start =3D=3D EXTENT_MAP_INLINE) {
-> +		if (em->block_start =3D=3D EXTENT_MAP_INLINE) {
->   			flags |=3D (FIEMAP_EXTENT_DATA_INLINE |
->   				  FIEMAP_EXTENT_NOT_ALIGNED);
->   		} else if (em->block_start =3D=3D EXTENT_MAP_DELALLOC) {
+> -	if (len =3D=3D 0)
+> -		return -EINVAL;
+> -
+>   	path =3D btrfs_alloc_path();
+>   	if (!path)
+>   		return -ENOMEM;
