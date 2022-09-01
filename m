@@ -2,63 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07ACD5A99B6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 16:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBBB5A99B8
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 16:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbiIAOHh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Sep 2022 10:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47136 "EHLO
+        id S233632AbiIAOIO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Sep 2022 10:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233495AbiIAOHg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 10:07:36 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8EDBC0
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 07:07:35 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id q8so13496515qvr.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 01 Sep 2022 07:07:35 -0700 (PDT)
+        with ESMTP id S230136AbiIAOIN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 10:08:13 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DA725D
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 07:08:12 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id w28so13457082qtc.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 01 Sep 2022 07:08:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc;
-        bh=ORUtFkggG7I/9hHjseizvj+hcYhzU3gU9tm/dXelo1M=;
-        b=BdlnjlEVA5x97H9veiSWjWXAhB+fLeyLqPObgp9m3lxoZqykHJoxA+akfaVxzpzIY3
-         BiXwONAvq2mdSNXzQfCL1FRuWuQk64t6RAwT9H1jxyMV6HLj5wwA/dIFB6kl7koZdotk
-         RDE7Lgnnx6HM1qpO8q+w0whKlJPuHka7h9N/jC1TJZ8c/0lWPKBoDo1Dkh1MNf2tN/zX
-         ExqHPqIu4EHMnUUyLcr/ZZN32VjbPHC9w0mqbOcHBlA6o882kgS2voVpqAPkYsf12Ch4
-         96cseJzIVa5p3ie/4UQOx56gxWMQ7FEh5m1lJCTCCsg7nBV3mSw4kr38/3o0NokvpNmE
-         Qe1w==
+        bh=Z1Fi6zI4Ju9KwAPzT52zBSvEAAkLxv1kG+9eUFI1FOc=;
+        b=ntEttfGQG8TpR5mQFdpFFVXpLqVzz+9EQZQKOmByQEJwF6z9bHV6Ko6a4zZMugpD8/
+         R2QwksTSo5NeaqLfj4b0zH+xPnluPwXvCiLi1iPRHDbU96rmhMjy7KCgDyJSk7AHiYVz
+         1JkQOF+Xj4g1PNigfgWsSuFYwBt2oruQZ0YcjFxPKZZVYGfic8xOGIC0ue8wUGj//vRj
+         qOvL60Hj0MdFvacjZTA0dHu+BlIZ0UciZDISrmcV5WZOmBHwnQlmquJp+nrPBnsZQh9v
+         VXHHr2iWORZE/RAAFW0DpLi1rYEmvbUsDpjony7j2Qaj7IXtq6kZmKMty7ar699Bfctq
+         aPJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=ORUtFkggG7I/9hHjseizvj+hcYhzU3gU9tm/dXelo1M=;
-        b=fOixXxGilIHTWUA+7zsHAZe4MXRH6us92bnilP0qfg6dF4E7oypkuIS2hzK1U7EmhJ
-         5FTRXyJP8yPZhBnnOuopLamz8WX5vdP9pN6HznfSv+GQlsO1HkTekxHpQ1JKO7ykH/py
-         k4J6G0P8KlxgkhQtkO6iMJ/OXh6cOHa4KuLjyZ01zqKAINvaibqP9t6k1KH9Y074hZiS
-         LcmhUsIm94gBEJrwGD8LhK4vBXudlArl0q0KSk5go8xaDHN8MRURHODrsYPm5pNTjL3S
-         ZKOvzmuqyvYNWxwdX4TrS13k9178rHuc3Wg7CzcI1ree+uPrHU2bFndbwOvOWyofnBqF
-         7ytQ==
-X-Gm-Message-State: ACgBeo2lss84H5vNziS6DnG9TfawBASl0WjSFsp+3MvAkmMrDSSxBGkg
-        dnx3oi6ovlmap5ssLBrqxtQPq/dOA1bYSw==
-X-Google-Smtp-Source: AA6agR5ydot+IF5z/OSwTKlCDILdz9W2Xnl/es92jmxtT6zNn8etxmKdKNcv0FrJ2zWMG7NorcVYhA==
-X-Received: by 2002:a05:6214:da6:b0:499:449:38da with SMTP id h6-20020a0562140da600b00499044938damr16886479qvh.130.1662041254642;
-        Thu, 01 Sep 2022 07:07:34 -0700 (PDT)
+        bh=Z1Fi6zI4Ju9KwAPzT52zBSvEAAkLxv1kG+9eUFI1FOc=;
+        b=7d6N05OKEIRkLiqcQZV2SejFQ8FyfONiCHKF7xy+tpEuLFAo8bA/dqCUT/RoOj26kX
+         FHVcfkLrC+GCqsgrRp6EuRgM3y2KdFAqsPXuMmneD8ITiHGjt8Xl5x5zV5uDVzr1nhNA
+         cS0vToQhsHfQiFm+3oSoGUq+UeBh4tYosIrdpKRGD4gtJdSUf9ygy+bYtxoIKX7XmvNB
+         /z3YqfSIQyIBRsq2Pvsd3zYOnJMCqHaX637nYjcysKGQitqzqBP3XgZwnj5xCbIA8aXd
+         zv1vDXJ6bKwWK8Iddk+OuOZvJtsvh0IvLiXufj+cgsTe9wJxzJNf5c8c3kCJcQTPRGvS
+         uM5Q==
+X-Gm-Message-State: ACgBeo0mm7WJRCtDhYH9ybDlpSXzzBUQrxn9CtDQ4TARbPHQfWsbV7PC
+        UDunF8ihUe/wRZ5qozvLuLycw5TlkHf8fA==
+X-Google-Smtp-Source: AA6agR49VvkhNeJejfCO6lvGIm/0rHjzphun8PwfOqUdQLtIhGykzWCZFcJFbAcbnWmxAyjO1RfdVQ==
+X-Received: by 2002:ac8:5dd3:0:b0:344:94e6:d667 with SMTP id e19-20020ac85dd3000000b0034494e6d667mr24398423qtx.409.1662041291664;
+        Thu, 01 Sep 2022 07:08:11 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id t18-20020a05620a451200b006bc0c544d01sm12321049qkp.131.2022.09.01.07.07.34
+        by smtp.gmail.com with ESMTPSA id x17-20020a05620a449100b006bbd2c4cccfsm12933943qkp.53.2022.09.01.07.08.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Sep 2022 07:07:34 -0700 (PDT)
-Date:   Thu, 1 Sep 2022 10:07:32 -0400
+        Thu, 01 Sep 2022 07:08:11 -0700 (PDT)
+Date:   Thu, 1 Sep 2022 10:08:10 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 06/10] btrfs: allow fiemap to be interruptible
-Message-ID: <YxC8pLJ4MkmmkdRS@localhost.localdomain>
+Subject: Re: [PATCH 07/10] btrfs: rename btrfs_check_shared() to a more
+ descriptive name
+Message-ID: <YxC8ygjqRfBczjpi@localhost.localdomain>
 References: <cover.1662022922.git.fdmanana@suse.com>
- <5bf31c02f5117ece6a1f4709af1c8b938f149d3e.1662022922.git.fdmanana@suse.com>
+ <c9954cf24dce0f62ad89dd5839c36e3ba9b14b8d.1662022922.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5bf31c02f5117ece6a1f4709af1c8b938f149d3e.1662022922.git.fdmanana@suse.com>
+In-Reply-To: <c9954cf24dce0f62ad89dd5839c36e3ba9b14b8d.1662022922.git.fdmanana@suse.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -68,15 +69,18 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 01, 2022 at 02:18:26PM +0100, fdmanana@kernel.org wrote:
+On Thu, Sep 01, 2022 at 02:18:27PM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> Doing fiemap on a file with a very large number of extents can take a very
-> long time, and we have reports of it being too slow (two recent examples
-> in the Link tags below), so make it interruptible.
+> The function btrfs_check_shared() is supposed to be used to check if a
+> data extent is shared, but its name is too generic, may easily cause
+> confusion in the sense that it may be used for metadata extents.
 > 
-> Link: https://lore.kernel.org/linux-btrfs/21dd32c6-f1f9-f44a-466a-e18fdc6788a7@virtuozzo.com/
-> Link: https://lore.kernel.org/linux-btrfs/Ysace25wh5BbLd5f@atmark-techno.com/
+> So rename it to btrfs_is_data_extent_shared(), which will also make it
+> less confusing after the next change that adds a backref lookup cache for
+> the b+tree nodes that lead to the leaf that contains the file extent item
+> that points to the target data extent.
+> 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
