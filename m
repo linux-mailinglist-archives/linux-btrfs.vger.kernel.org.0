@@ -2,89 +2,196 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBBB5A99B8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 16:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187865A9A05
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 16:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbiIAOIO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Sep 2022 10:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
+        id S234670AbiIAOVi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Sep 2022 10:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbiIAOIN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 10:08:13 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DA725D
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 07:08:12 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id w28so13457082qtc.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 01 Sep 2022 07:08:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc;
-        bh=Z1Fi6zI4Ju9KwAPzT52zBSvEAAkLxv1kG+9eUFI1FOc=;
-        b=ntEttfGQG8TpR5mQFdpFFVXpLqVzz+9EQZQKOmByQEJwF6z9bHV6Ko6a4zZMugpD8/
-         R2QwksTSo5NeaqLfj4b0zH+xPnluPwXvCiLi1iPRHDbU96rmhMjy7KCgDyJSk7AHiYVz
-         1JkQOF+Xj4g1PNigfgWsSuFYwBt2oruQZ0YcjFxPKZZVYGfic8xOGIC0ue8wUGj//vRj
-         qOvL60Hj0MdFvacjZTA0dHu+BlIZ0UciZDISrmcV5WZOmBHwnQlmquJp+nrPBnsZQh9v
-         VXHHr2iWORZE/RAAFW0DpLi1rYEmvbUsDpjony7j2Qaj7IXtq6kZmKMty7ar699Bfctq
-         aPJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=Z1Fi6zI4Ju9KwAPzT52zBSvEAAkLxv1kG+9eUFI1FOc=;
-        b=7d6N05OKEIRkLiqcQZV2SejFQ8FyfONiCHKF7xy+tpEuLFAo8bA/dqCUT/RoOj26kX
-         FHVcfkLrC+GCqsgrRp6EuRgM3y2KdFAqsPXuMmneD8ITiHGjt8Xl5x5zV5uDVzr1nhNA
-         cS0vToQhsHfQiFm+3oSoGUq+UeBh4tYosIrdpKRGD4gtJdSUf9ygy+bYtxoIKX7XmvNB
-         /z3YqfSIQyIBRsq2Pvsd3zYOnJMCqHaX637nYjcysKGQitqzqBP3XgZwnj5xCbIA8aXd
-         zv1vDXJ6bKwWK8Iddk+OuOZvJtsvh0IvLiXufj+cgsTe9wJxzJNf5c8c3kCJcQTPRGvS
-         uM5Q==
-X-Gm-Message-State: ACgBeo0mm7WJRCtDhYH9ybDlpSXzzBUQrxn9CtDQ4TARbPHQfWsbV7PC
-        UDunF8ihUe/wRZ5qozvLuLycw5TlkHf8fA==
-X-Google-Smtp-Source: AA6agR49VvkhNeJejfCO6lvGIm/0rHjzphun8PwfOqUdQLtIhGykzWCZFcJFbAcbnWmxAyjO1RfdVQ==
-X-Received: by 2002:ac8:5dd3:0:b0:344:94e6:d667 with SMTP id e19-20020ac85dd3000000b0034494e6d667mr24398423qtx.409.1662041291664;
-        Thu, 01 Sep 2022 07:08:11 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id x17-20020a05620a449100b006bbd2c4cccfsm12933943qkp.53.2022.09.01.07.08.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Sep 2022 07:08:11 -0700 (PDT)
-Date:   Thu, 1 Sep 2022 10:08:10 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 07/10] btrfs: rename btrfs_check_shared() to a more
- descriptive name
-Message-ID: <YxC8ygjqRfBczjpi@localhost.localdomain>
-References: <cover.1662022922.git.fdmanana@suse.com>
- <c9954cf24dce0f62ad89dd5839c36e3ba9b14b8d.1662022922.git.fdmanana@suse.com>
+        with ESMTP id S234645AbiIAOVc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 10:21:32 -0400
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D955AC41
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 07:21:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1662042075; x=1693578075;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OCpUPrPhYWtnxmE8IcFkBlGUAKeG8x/pNSgiOu3ZNIk=;
+  b=kyZ9DK55mHXgg8G2H5N4lge0CgWK/xmLYR4ulVb6LZJ/v4X1sUw7s2vw
+   SpUX6RzTiI0akXiHbx804zrKCq3xSIu+3j4HE27erycA4cxClVx2pCvzw
+   LW7KcnPpeaJfkOAVG4QNEESxqrU3M+4uQrg6B/hJPpcfxd6dAPEgrUslk
+   rmyVnMmXGw1ERF4u30XnxzCWOM/A6zJqJH6qeCC2Ylh/rVypYDbdth0wM
+   sqF3THPObdXxerqK0lGzFIN0Tf+JNoFnp57WEuSeRbaw/YxQX2Lt7st8R
+   U00zUC7PNGRiGOrVHlCzzu0JX6Zh2aLtIKwfqZKLwjGCZMY2PSh3smeXd
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.93,281,1654531200"; 
+   d="scan'208";a="210729470"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 01 Sep 2022 22:21:13 +0800
+IronPort-SDR: /xlJCqVAc+oRPSqNY0pDV0YfWrnKGa4iU6l8is1RLL5bVjECjMVtuwqNzRuajqrUMTBKCZ0LoH
+ q7DAt2erQml+PWgHg8a869r3+CO7S4x8Olry+O+iemgGRrUPxo4lPQrhBdbbg+iiSXYA+XdloU
+ GibbOywHP6oqHECXf+QH/LUdTVkpGNAbBXLUJIk++TFC1TcwFawTj/cQ2uIAmLN7gRph9FpwPe
+ Hyxr4dQo6ZVPU3xAwszqfyNeMZAWVAGH7AJCFJn+rUxSDahH+odXGvCdHWqvgxrDddkdQS4nUj
+ 8+eIxSxss3nyIxYBHntZnzMT
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Sep 2022 06:41:42 -0700
+IronPort-SDR: 984x+CeTQcDTPP2NtmfbtSCLLqPLdzwYa63jdlSL4yITMNh0ZwNCtGQ0ygfaA+LIX7ubo10s2U
+ WvpheiyUv7PbAC7+6STqWxVU5VNQemMQEVun3cbzP4r7EhvGy981dCE14Kfuyx6osRkh1s/dLk
+ WkCqc84of4KY6v2/kNm9Ui1FJNE740jRs/CQzrZDMre4ZIbszk5xpzuAvDsuhklj5pKojnRtmV
+ yud3RO+dZnHHTW0mcqDNNvsatjKRVM3dhSCq4wVfirt9RaCHkKILOkZNNRr2NQ6PU5R+Zx6fst
+ EAc=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
+  by uls-op-cesaip01.wdc.com with ESMTP; 01 Sep 2022 07:21:13 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs: zoned: fix mounting with conventional zones
+Date:   Thu,  1 Sep 2022 07:21:07 -0700
+Message-Id: <0fef711e5ed1d9df00a5a749aab9e3cd3fe4c14c.1662042048.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c9954cf24dce0f62ad89dd5839c36e3ba9b14b8d.1662022922.git.fdmanana@suse.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 01, 2022 at 02:18:27PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> The function btrfs_check_shared() is supposed to be used to check if a
-> data extent is shared, but its name is too generic, may easily cause
-> confusion in the sense that it may be used for metadata extents.
-> 
-> So rename it to btrfs_is_data_extent_shared(), which will also make it
-> less confusing after the next change that adds a backref lookup cache for
-> the b+tree nodes that lead to the leaf that contains the file extent item
-> that points to the target data extent.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Since commit 6a921de58992 ("btrfs: zoned: introduce
+space_info->active_total_bytes"), we're only counting the bytes of a
+block-group on an active zone as usable for metadata writes. But on a SMR
+drive, we don't have active zones and short circuit some of the logic.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+This leads to an error on mount, because we cannot reserve space for
+metadata writes.
 
-Thanks,
+Fix this by also setting the BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE bit in the
+block-group's runtime flag if the zone is a conventional zone.
 
-Josef
+Fixes: 6a921de58992 ("btrfs: zoned: introduce space_info->active_total_bytes")
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/zoned.c | 68 ++++++++++++++++++++++++++----------------------
+ 1 file changed, 37 insertions(+), 31 deletions(-)
+
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index e12c0ca509fb..364f39decb4e 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -1187,7 +1187,7 @@ int btrfs_ensure_empty_zones(struct btrfs_device *device, u64 start, u64 size)
+  * offset.
+  */
+ static int calculate_alloc_pointer(struct btrfs_block_group *cache,
+-				   u64 *offset_ret)
++				   u64 *offset_ret, bool new)
+ {
+ 	struct btrfs_fs_info *fs_info = cache->fs_info;
+ 	struct btrfs_root *root;
+@@ -1197,6 +1197,21 @@ static int calculate_alloc_pointer(struct btrfs_block_group *cache,
+ 	int ret;
+ 	u64 length;
+ 
++	/*
++	 * Avoid  tree lookups for a new BG. It has no use for a new BG. It
++	 * must always be 0.
++	 *
++	 * Also, we have a lock chain of extent buffer lock -> chunk mutex.
++	 * For new a BG, this function is called from btrfs_make_block_group()
++	 * which is already taking the chunk mutex. Thus, we cannot call
++	 * calculate_alloc_pointer() which takes extent buffer locks to avoid
++	 * deadlock.
++	 */
++	if (new) {
++		*offset_ret = 0;
++		return 0;
++	}
++
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+ 		return -ENOMEM;
+@@ -1332,6 +1347,13 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
+ 		else
+ 			num_conventional++;
+ 
++		/*
++		 * Consider a zone as active if we can allow any number of
++		 * active zones.
++		 */
++		if (!device->zone_info->max_active_zones)
++			__set_bit(i, active);
++
+ 		if (!is_sequential) {
+ 			alloc_offsets[i] = WP_CONVENTIONAL;
+ 			continue;
+@@ -1398,45 +1420,29 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
+ 			__set_bit(i, active);
+ 			break;
+ 		}
+-
+-		/*
+-		 * Consider a zone as active if we can allow any number of
+-		 * active zones.
+-		 */
+-		if (!device->zone_info->max_active_zones)
+-			__set_bit(i, active);
+ 	}
+ 
+ 	if (num_sequential > 0)
+ 		cache->seq_zone = true;
+ 
+ 	if (num_conventional > 0) {
+-		/*
+-		 * Avoid calling calculate_alloc_pointer() for new BG. It
+-		 * is no use for new BG. It must be always 0.
+-		 *
+-		 * Also, we have a lock chain of extent buffer lock ->
+-		 * chunk mutex.  For new BG, this function is called from
+-		 * btrfs_make_block_group() which is already taking the
+-		 * chunk mutex. Thus, we cannot call
+-		 * calculate_alloc_pointer() which takes extent buffer
+-		 * locks to avoid deadlock.
+-		 */
+-
+ 		/* Zone capacity is always zone size in emulation */
+ 		cache->zone_capacity = cache->length;
+-		if (new) {
+-			cache->alloc_offset = 0;
++		ret = calculate_alloc_pointer(cache, &last_alloc, new);
++		if (ret) {
++			btrfs_err(fs_info,
++			  "zoned: failed to determine allocation offset of bg %llu",
++				  cache->start);
+ 			goto out;
+-		}
+-		ret = calculate_alloc_pointer(cache, &last_alloc);
+-		if (ret || map->num_stripes == num_conventional) {
+-			if (!ret)
+-				cache->alloc_offset = last_alloc;
+-			else
+-				btrfs_err(fs_info,
+-			"zoned: failed to determine allocation offset of bg %llu",
+-					  cache->start);
++		} else if (map->num_stripes == num_conventional) {
++			cache->alloc_offset = last_alloc;
++			set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE,
++				&cache->runtime_flags);
++			btrfs_get_block_group(cache);
++			spin_lock(&fs_info->zone_active_bgs_lock);
++			list_add_tail(&cache->active_bg_list,
++				      &fs_info->zone_active_bgs);
++			spin_unlock(&fs_info->zone_active_bgs_lock);
+ 			goto out;
+ 		}
+ 	}
+-- 
+2.37.2
+
