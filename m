@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54835A985D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 15:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8341D5A985F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 15:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234109AbiIANUW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Sep 2022 09:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
+        id S234270AbiIANU0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Sep 2022 09:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232445AbiIANTv (ORCPT
+        with ESMTP id S232449AbiIANTv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 09:19:51 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE56FF59
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE978F74
         for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 06:18:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 61659B826A9
+        by ams.source.kernel.org (Postfix) with ESMTPS id 75874B826AA
         for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 13:18:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEE12C433B5
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 13:18:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D566C433D6
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 13:18:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662038321;
-        bh=ITM9WwfPvayJZ5zveQDzocA6bXa3xkNVC5+fmrzWXxs=;
+        s=k20201202; t=1662038322;
+        bh=+me+WSRUG25FhWrSD6YWFzteVWK2qbQBixYVceJP6xM=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=lcVQAIsDfGriR3uAD7B+abMiNK/FaGZncJKgPXoGmpCZQVz3o9Bylbv3113MSGeCJ
-         uVjGuPQSsSYNvNAf2Gul/6WbcwsAU5Pg+2gPBIsnWllI8K1yCh6J+8CS6hnXU934pC
-         na5hb0PcRg6KLZGBYrN/1xMgwpCW3bXkPPKvag+ISAO1HdxivB87MmTPtJlvF5h47I
-         qnE3y1p58Du6IHX3i1w96qzJ+Xj3/dQRmmrS+cL2fe0akIs839cq0cKsQaK5LuFtXf
-         YDBhWXaBvnnY6F2dz78nW4sLC6Xb26DRd+eHdj1G7mZUIrBfDUnN+DNS5RjAapi1Np
-         u0unrcAqv7h7A==
+        b=eNZ9Xgh8+3o7Dg5kCFsa21r/WltjxJCOK6njQ8YJCMihWK+t5uVpFi4WiAdtXp2ld
+         8znknDomuWAKzOzG6NUXxSXVklpSQS3PsXXzqHPz5gytilMX/IXV/gXKsgGaJtSPmK
+         4VwvYeA82EeabXk0NCFDNS/BPyVJOeSnJ7aw8m0jdKIDcrWwXZTSXbKFc5IdzcCJ52
+         4lZWfCAuSHi4UU4fNRqWqU2/JIbVZXsZ3nH9ZZ19kfEf+Xh2pleD8vo/fvyUo+h8cU
+         z+Ck3mU7TrNtzG6nsqdZh/yY8d4DGm1+b/nzPzWKyWNs7ze5MbGHpWG9N/yg4Uz4lq
+         JAlNWJHGE955w==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 08/10] btrfs: speedup checking for extent sharedness during fiemap
-Date:   Thu,  1 Sep 2022 14:18:28 +0100
-Message-Id: <5e696c29b65f6558b8012596aa513101ed04a21a.1662022922.git.fdmanana@suse.com>
+Subject: [PATCH 09/10] btrfs: skip unnecessary extent buffer sharedness checks during fiemap
+Date:   Thu,  1 Sep 2022 14:18:29 +0100
+Message-Id: <d80f75e12d0212da59cbcccac2eddd506c8998af.1662022922.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1662022922.git.fdmanana@suse.com>
 References: <cover.1662022922.git.fdmanana@suse.com>
@@ -53,453 +53,198 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-One of the most expensive tasks performed during fiemap is to check if
-an extent is shared. This task has two major steps:
+During fiemap, for each file extent we find, we must check if it's shared
+or not. The sharedness check starts by verifying if the extent is directly
+shared (its refcount in the extent tree is > 1), and if it is not directly
+shared, then we will check if every node in the subvolume b+tree leading
+from the root to the leaf that has the file extent item (in reverse order),
+is shared (through snapshots).
 
-1) Check if the data extent is shared. This implies checking the extent
-   item in the extent tree, checking delayed references, etc. If we
-   find the data extent is directly shared, we terminate immediately;
+However this second step is not needed if our extent was created in a
+transaction more recent than the last transaction where a snapshot of the
+inode's root happened, because it can't be shared indirectly (through
+shared subtrees) without a snapshot created in a more recent transaction.
 
-2) If the data extent is not directly shared (its extent item has a
-   refcount of 1), then it may be shared if we have snapshots that share
-   subtrees of the inode's subvolume b+tree. So we check if the leaf
-   containing the file extent item is shared, then its parent node, then
-   the parent node of the parent node, etc, until we reach the root node
-   or we find one of them is shared - in which case we stop immediately.
+So grab the generation of the extent from the extent map and pass it to
+btrfs_is_data_extent_shared(), which will skip this second phase when the
+generation is more recent than the root's last snapshot value. Note that
+we skip this optimization if the extent map is the result of merging 2
+or more extent maps, because in this case its generation is the maximum
+of the generations of all merged extent maps.
 
-During fiemap we process the extents of a file from left to right, from
-file offset 0 to eof. This means that we iterate b+tree leaves from left
-to right, and has the implication that we keep repeating that second step
-above several times for the same b+tree path of the inode's subvolume
-b+tree.
+The fact the we use extent maps and they can be merged despite the
+underlying extents being distinct (different file extent items in the
+subvolume b+tree and different extent items in the extent b+tree), can
+result in some bugs when reporting shared extents. But this is a problem
+of the current implementation of fiemap relying on extent maps.
+One example where we get incorrect results is:
 
-For example, if we have two file extent items in leaf X, and the path to
-leaf X is A -> B -> C -> X, then when we try to determine if the data
-extent referenced by the first extent item is shared, we check if the data
-extent is shared - if it's not, then we check if leaf X is shared, if not,
-then we check if node C is shared, if not, then check if node B is shared,
-if not than check if node A is shared. When we move to the next file
-extent item, after determining the data extent is not shared, we repeat
-the checks for X, C, B and A - doing all the expensive searches in the
-extent tree, delayed refs, etc. If we have thousands of tile extents, then
-we keep repeating the sharedness checks for the same paths over and over.
-
-On a file that has no shared extents or only a small portion, it's easy
-to see that this scales terribly with the number of extents in the file
-and the sizes of the extent and subvolume b+trees.
-
-This change eliminates the repeated sharedness check on extent buffers
-by caching the results of the last path used. The results can be used as
-long as no snapshots were created since they were cached (for not shared
-extent buffers) or no roots were dropped since they were cached (for
-shared extent buffers). This greatly reduces the time spent by fiemap for
-files with thousands of extents and/or large extent and subvolume b+trees.
-
-Example performance test:
-
-    $ cat fiemap-perf-test.sh
+    $ cat fiemap-bug.sh
     #!/bin/bash
 
-    DEV=/dev/sdi
-    MNT=/mnt/sdi
+    DEV=/dev/sdj
+    MNT=/mnt/sdj
 
     mkfs.btrfs -f $DEV
-    mount -o compress=lzo $DEV $MNT
+    mount $DEV $MNT
 
-    # 40G gives 327680 128K file extents (due to compression).
-    xfs_io -f -c "pwrite -S 0xab -b 1M 0 40G" $MNT/foobar
+    # Create a file with two 256K extents.
+    # Since there is no other write activity, they will be contiguous,
+    # and their extent maps merged, despite having two distinct extents.
+    xfs_io -f -c "pwrite -S 0xab 0 256K" \
+              -c "fsync" \
+              -c "pwrite -S 0xcd 256K 256K" \
+              -c "fsync" \
+              $MNT/foo
 
-    umount $MNT
-    mount -o compress=lzo $DEV $MNT
+    # Now clone only the second extent into another file.
+    xfs_io -f -c "reflink $MNT/foo 256K 0 256K" $MNT/bar
 
-    start=$(date +%s%N)
-    filefrag $MNT/foobar
-    end=$(date +%s%N)
-    dur=$(( (end - start) / 1000000 ))
-    echo "fiemap took $dur milliseconds (metadata not cached)"
-
-    start=$(date +%s%N)
-    filefrag $MNT/foobar
-    end=$(date +%s%N)
-    dur=$(( (end - start) / 1000000 ))
-    echo "fiemap took $dur milliseconds (metadata cached)"
+    # Filefrag will report a single 512K extent, and say it's not shared.
+    echo
+    filefrag -v $MNT/foo
 
     umount $MNT
 
-Before this patch:
+Running the reproducer:
 
-    $ ./fiemap-perf-test.sh
-    (...)
-    /mnt/sdi/foobar: 327680 extents found
-    fiemap took 3597 milliseconds (metadata not cached)
-    /mnt/sdi/foobar: 327680 extents found
-    fiemap took 2107 milliseconds (metadata cached)
+    $ ./fiemap-bug.sh
+    wrote 262144/262144 bytes at offset 0
+    256 KiB, 64 ops; 0.0038 sec (65.479 MiB/sec and 16762.7030 ops/sec)
+    wrote 262144/262144 bytes at offset 262144
+    256 KiB, 64 ops; 0.0040 sec (61.125 MiB/sec and 15647.9218 ops/sec)
+    linked 262144/262144 bytes at offset 0
+    256 KiB, 1 ops; 0.0002 sec (1.034 GiB/sec and 4237.2881 ops/sec)
 
-After this patch:
+    Filesystem type is: 9123683e
+    File size of /mnt/sdj/foo is 524288 (128 blocks of 4096 bytes)
+     ext:     logical_offset:        physical_offset: length:   expected: flags:
+       0:        0..     127:       3328..      3455:    128:             last,eof
+    /mnt/sdj/foo: 1 extent found
 
-    $ ./fiemap-perf-test.sh
-    (...)
-    /mnt/sdi/foobar: 327680 extents found
-    fiemap took 1646 milliseconds (metadata not cached)
-    /mnt/sdi/foobar: 327680 extents found
-    fiemap took 698 milliseconds (metadata cached)
+We end up reporting that we have a single 512K that is not shared, however
+we have two 256K extents, and the second one is shared. Changing the
+reproducer to clone instead the first extent into file 'bar', makes us
+report a single 512K extent that is shared, which is algo incorrect since
+we have two 256K extents and only the first one is shared.
 
-That's about 2.2x faster when no metadata is cached, and about 3x faster
-when all metadata is cached. On a real filesystem with many other files,
-data, directories, etc, the b+trees will be 2 or 3 levels higher,
-therefore this optimization will have a higher impact.
+This is z problem that existed before this change, and remains after this
+change, as it can't be easily fixed. The next patch in the series reworks
+fiemap to primarily use file extent items instead of extent maps (except
+for checking for delalloc ranges), with the goal of improving its
+scalability and performance, but it also ends up fixing this particular
+bug caused by extent map merging.
 
-Several reports of a slow fiemap show up often, the two Link tags below
-refer to two recent reports of such slowness. This patch, together with
-the next ones in the series, is meant to address that.
-
-Link: https://lore.kernel.org/linux-btrfs/21dd32c6-f1f9-f44a-466a-e18fdc6788a7@virtuozzo.com/
-Link: https://lore.kernel.org/linux-btrfs/Ysace25wh5BbLd5f@atmark-techno.com/
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/backref.c     | 122 ++++++++++++++++++++++++++++++++++++++++-
- fs/btrfs/backref.h     |  17 +++++-
- fs/btrfs/ctree.h       |  18 ++++++
- fs/btrfs/extent-tree.c |  10 +++-
- fs/btrfs/extent_io.c   |  11 ++--
- 5 files changed, 170 insertions(+), 8 deletions(-)
+ fs/btrfs/backref.c   | 27 +++++++++++++++++++++------
+ fs/btrfs/backref.h   |  1 +
+ fs/btrfs/extent_io.c | 18 ++++++++++++++++--
+ 3 files changed, 38 insertions(+), 8 deletions(-)
 
 diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index e2ac10a695b6..40b48abb6978 100644
+index 40b48abb6978..bf4ca4a82550 100644
 --- a/fs/btrfs/backref.c
 +++ b/fs/btrfs/backref.c
-@@ -1511,6 +1511,105 @@ int btrfs_find_all_roots(struct btrfs_trans_handle *trans,
- 	return ret;
- }
- 
-+/*
-+ * The caller has joined a transaction or is holding a read lock on the
-+ * fs_info->commit_root_sem semaphore, so no need to worry about the root's last
-+ * snapshot field changing while updating or checking the cache.
-+ */
-+static bool lookup_backref_shared_cache(struct btrfs_backref_shared_cache *cache,
-+					struct btrfs_root *root,
-+					u64 bytenr, int level, bool *is_shared)
-+{
-+	struct btrfs_backref_shared_cache_entry *entry;
-+
-+	if (WARN_ON_ONCE(level >= BTRFS_MAX_LEVEL))
-+		return false;
-+
-+	/*
-+	 * Level -1 is used for the data extent, which is not reliable to cache
-+	 * because its reference count can increase or decrease without us
-+	 * realizing. We cache results only for extent buffers that lead from
-+	 * the root node down to the leaf with the file extent item.
-+	 */
-+	ASSERT(level >= 0);
-+
-+	entry = &cache->entries[level];
-+
-+	/* Unused cache entry or being used for some other extent buffer. */
-+	if (entry->bytenr != bytenr)
-+		return false;
-+
-+	/*
-+	 * We cached a false result, but the last snapshot generation of the
-+	 * root changed, so we now have a snapshot. Don't trust the result.
-+	 */
-+	if (!entry->is_shared &&
-+	    entry->gen != btrfs_root_last_snapshot(&root->root_item))
-+		return false;
-+
-+	/*
-+	 * If we cached a true result and the last generation used for dropping
-+	 * a root changed, we can not trust the result, because the dropped root
-+	 * could be a snapshot sharing this extent buffer.
-+	 */
-+	if (entry->is_shared &&
-+	    entry->gen != btrfs_get_last_root_drop_gen(root->fs_info))
-+		return false;
-+
-+	*is_shared = entry->is_shared;
-+
-+	return true;
-+}
-+
-+/*
-+ * The caller has joined a transaction or is holding a read lock on the
-+ * fs_info->commit_root_sem semaphore, so no need to worry about the root's last
-+ * snapshot field changing while updating or checking the cache.
-+ */
-+static void store_backref_shared_cache(struct btrfs_backref_shared_cache *cache,
-+				       struct btrfs_root *root,
-+				       u64 bytenr, int level, bool is_shared)
-+{
-+	struct btrfs_backref_shared_cache_entry *entry;
-+	u64 gen;
-+
-+	if (WARN_ON_ONCE(level >= BTRFS_MAX_LEVEL))
-+		return;
-+
-+	/*
-+	 * Level -1 is used for the data extent, which is not reliable to cache
-+	 * because its reference count can increase or decrease without us
-+	 * realizing. We cache results only for extent buffers that lead from
-+	 * the root node down to the leaf with the file extent item.
-+	 */
-+	ASSERT(level >= 0);
-+
-+	if (is_shared)
-+		gen = btrfs_get_last_root_drop_gen(root->fs_info);
-+	else
-+		gen = btrfs_root_last_snapshot(&root->root_item);
-+
-+	entry = &cache->entries[level];
-+	entry->bytenr = bytenr;
-+	entry->is_shared = is_shared;
-+	entry->gen = gen;
-+
-+	/*
-+	 * If we found an extent buffer is shared, set the cache result for all
-+	 * extent buffers below it to true. As nodes in the path are COWed,
-+	 * their sharedness is moved to their children, and if a leaf is COWed,
-+	 * then the sharedness of a data extent becomes direct, the refcount of
-+	 * data extent is increased in the extent item at the extent tree.
-+	 */
-+	if (is_shared) {
-+		for (int i = 0; i < level; i++) {
-+			entry = &cache->entries[i];
-+			entry->is_shared = is_shared;
-+			entry->gen = gen;
-+		}
-+	}
-+}
-+
+@@ -1613,12 +1613,14 @@ static void store_backref_shared_cache(struct btrfs_backref_shared_cache *cache,
  /**
   * Check if a data extent is shared or not.
   *
-@@ -1519,6 +1618,7 @@ int btrfs_find_all_roots(struct btrfs_trans_handle *trans,
-  * @bytenr: logical bytenr of the extent we are checking
-  * @roots:  list of roots this extent is shared among
-  * @tmp:    temporary list used for iteration
-+ * @cache:  a backref lookup result cache
+- * @root:   root inode belongs to
+- * @inum:   inode number of the inode whose extent we are checking
+- * @bytenr: logical bytenr of the extent we are checking
+- * @roots:  list of roots this extent is shared among
+- * @tmp:    temporary list used for iteration
+- * @cache:  a backref lookup result cache
++ * @root:        The root the inode belongs to.
++ * @inum:        Number of the inode whose extent we are checking.
++ * @bytenr:      Logical bytenr of the extent we are checking.
++ * @extent_gen:  Generation of the extent (file extent item) or 0 if it is
++ *               not known.
++ * @roots:       List of roots this extent is shared among.
++ * @tmp:         Temporary list used for iteration.
++ * @cache:       A backref lookup result cache.
   *
   * btrfs_is_data_extent_shared uses the backref walking code but will short
   * circuit as soon as it finds a root or inode that doesn't match the
-@@ -1532,7 +1632,8 @@ int btrfs_find_all_roots(struct btrfs_trans_handle *trans,
+@@ -1632,6 +1634,7 @@ static void store_backref_shared_cache(struct btrfs_backref_shared_cache *cache,
   * Return: 0 if extent is not shared, 1 if it is shared, < 0 on error.
   */
  int btrfs_is_data_extent_shared(struct btrfs_root *root, u64 inum, u64 bytenr,
--				struct ulist *roots, struct ulist *tmp)
-+				struct ulist *roots, struct ulist *tmp,
-+				struct btrfs_backref_shared_cache *cache)
++				u64 extent_gen,
+ 				struct ulist *roots, struct ulist *tmp,
+ 				struct btrfs_backref_shared_cache *cache)
  {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_trans_handle *trans;
-@@ -1545,6 +1646,7 @@ int btrfs_is_data_extent_shared(struct btrfs_root *root, u64 inum, u64 bytenr,
- 		.inum = inum,
- 		.share_count = 0,
- 	};
-+	int level;
- 
- 	ulist_init(roots);
- 	ulist_init(tmp);
-@@ -1561,22 +1663,40 @@ int btrfs_is_data_extent_shared(struct btrfs_root *root, u64 inum, u64 bytenr,
- 		btrfs_get_tree_mod_seq(fs_info, &elem);
- 	}
- 
-+	/* -1 means we are in the bytenr of the data extent. */
-+	level = -1;
- 	ULIST_ITER_INIT(&uiter);
- 	while (1) {
-+		bool is_shared;
-+		bool cached;
-+
- 		ret = find_parent_nodes(trans, fs_info, bytenr, elem.seq, tmp,
- 					roots, NULL, &shared, false);
- 		if (ret == BACKREF_FOUND_SHARED) {
- 			/* this is the only condition under which we return 1 */
- 			ret = 1;
-+			if (level >= 0)
-+				store_backref_shared_cache(cache, root, bytenr,
-+							   level, true);
- 			break;
- 		}
+@@ -1683,6 +1686,18 @@ int btrfs_is_data_extent_shared(struct btrfs_root *root, u64 inum, u64 bytenr,
  		if (ret < 0 && ret != -ENOENT)
  			break;
  		ret = 0;
-+		if (level >= 0)
-+			store_backref_shared_cache(cache, root, bytenr,
-+						   level, false);
- 		node = ulist_next(tmp, &uiter);
- 		if (!node)
- 			break;
- 		bytenr = node->val;
-+		level++;
-+		cached = lookup_backref_shared_cache(cache, root, bytenr, level,
-+						     &is_shared);
-+		if (cached) {
-+			ret = is_shared ? 1 : 0;
++		/*
++		 * If our data extent is not shared through reflinks and it was
++		 * created in a generation after the last one used to create a
++		 * snapshot of the inode's root, then it can not be shared
++		 * indirectly through subtrees, as that can only happen with
++		 * snapshots. In this case bail out, no need to check for the
++		 * sharedness of extent buffers.
++		 */
++		if (level == -1 &&
++		    extent_gen > btrfs_root_last_snapshot(&root->root_item))
 +			break;
-+		}
- 		shared.share_count = 0;
- 		cond_resched();
- 	}
++
+ 		if (level >= 0)
+ 			store_backref_shared_cache(cache, root, bytenr,
+ 						   level, false);
 diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index 08354394b1bb..797ba5371d55 100644
+index 797ba5371d55..7d18b5ac71dd 100644
 --- a/fs/btrfs/backref.h
 +++ b/fs/btrfs/backref.h
-@@ -17,6 +17,20 @@ struct inode_fs_paths {
- 	struct btrfs_data_container	*fspath;
- };
- 
-+struct btrfs_backref_shared_cache_entry {
-+	u64 bytenr;
-+	u64 gen;
-+	bool is_shared;
-+};
-+
-+struct btrfs_backref_shared_cache {
-+	/*
-+	 * A path from a root to a leaf that has a file extent item pointing to
-+	 * a given data extent should never exceed the maximum b+tree heigth.
-+	 */
-+	struct btrfs_backref_shared_cache_entry entries[BTRFS_MAX_LEVEL];
-+};
-+
- typedef int (iterate_extent_inodes_t)(u64 inum, u64 offset, u64 root,
- 		void *ctx);
- 
-@@ -63,7 +77,8 @@ int btrfs_find_one_extref(struct btrfs_root *root, u64 inode_objectid,
+@@ -77,6 +77,7 @@ int btrfs_find_one_extref(struct btrfs_root *root, u64 inode_objectid,
  			  struct btrfs_inode_extref **ret_extref,
  			  u64 *found_off);
  int btrfs_is_data_extent_shared(struct btrfs_root *root, u64 inum, u64 bytenr,
--				struct ulist *roots, struct ulist *tmp);
-+				struct ulist *roots, struct ulist *tmp,
-+				struct btrfs_backref_shared_cache *cache);
++				u64 extent_gen,
+ 				struct ulist *roots, struct ulist *tmp,
+ 				struct btrfs_backref_shared_cache *cache);
  
- int __init btrfs_prelim_ref_init(void);
- void __cold btrfs_prelim_ref_exit(void);
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 3dc30f5e6fd0..f7fe7f633eb5 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1095,6 +1095,13 @@ struct btrfs_fs_info {
- 	/* Updates are not protected by any lock */
- 	struct btrfs_commit_stats commit_stats;
- 
-+	/*
-+	 * Last generation where we dropped a non-relocation root.
-+	 * Use btrfs_set_last_root_drop_gen() and btrfs_get_last_root_drop_gen()
-+	 * to change it and to read it, respectively.
-+	 */
-+	u64 last_root_drop_gen;
-+
- 	/*
- 	 * Annotations for transaction events (structures are empty when
- 	 * compiled without lockdep).
-@@ -1119,6 +1126,17 @@ struct btrfs_fs_info {
- #endif
- };
- 
-+static inline void btrfs_set_last_root_drop_gen(struct btrfs_fs_info *fs_info,
-+						u64 gen)
-+{
-+	WRITE_ONCE(fs_info->last_root_drop_gen, gen);
-+}
-+
-+static inline u64 btrfs_get_last_root_drop_gen(const struct btrfs_fs_info *fs_info)
-+{
-+	return READ_ONCE(fs_info->last_root_drop_gen);
-+}
-+
- static inline struct btrfs_fs_info *btrfs_sb(struct super_block *sb)
- {
- 	return sb->s_fs_info;
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index bcd0e72cded3..9818285dface 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -5635,6 +5635,8 @@ static noinline int walk_up_tree(struct btrfs_trans_handle *trans,
-  */
- int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
- {
-+	const bool is_reloc_root = (root->root_key.objectid ==
-+				    BTRFS_TREE_RELOC_OBJECTID);
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_path *path;
- 	struct btrfs_trans_handle *trans;
-@@ -5794,6 +5796,9 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
- 				goto out_end_trans;
- 			}
- 
-+			if (!is_reloc_root)
-+				btrfs_set_last_root_drop_gen(fs_info, trans->transid);
-+
- 			btrfs_end_transaction_throttle(trans);
- 			if (!for_reloc && btrfs_need_cleaner_sleep(fs_info)) {
- 				btrfs_debug(fs_info,
-@@ -5828,7 +5833,7 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
- 		goto out_end_trans;
- 	}
- 
--	if (root->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID) {
-+	if (!is_reloc_root) {
- 		ret = btrfs_find_root(tree_root, &root->root_key, path,
- 				      NULL, NULL);
- 		if (ret < 0) {
-@@ -5860,6 +5865,9 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
- 		btrfs_put_root(root);
- 	root_dropped = true;
- out_end_trans:
-+	if (!is_reloc_root)
-+		btrfs_set_last_root_drop_gen(fs_info, trans->transid);
-+
- 	btrfs_end_transaction_throttle(trans);
- out_free:
- 	kfree(wc);
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index a47710516ecf..781436cc373c 100644
+index 781436cc373c..0e3fa9b08aaf 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -5519,6 +5519,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 	struct btrfs_path *path;
- 	struct btrfs_root *root = inode->root;
- 	struct fiemap_cache cache = { 0 };
-+	struct btrfs_backref_shared_cache *backref_cache;
- 	struct ulist *roots;
- 	struct ulist *tmp_ulist;
- 	int end = 0;
-@@ -5526,13 +5527,11 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 	u64 em_len = 0;
- 	u64 em_end = 0;
+@@ -5645,9 +5645,23 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 			flags |= (FIEMAP_EXTENT_DELALLOC |
+ 				  FIEMAP_EXTENT_UNKNOWN);
+ 		} else if (fieinfo->fi_extents_max) {
++			u64 extent_gen;
+ 			u64 bytenr = em->block_start -
+ 				(em->start - em->orig_start);
  
-+	backref_cache = kzalloc(sizeof(*backref_cache), GFP_KERNEL);
- 	path = btrfs_alloc_path();
--	if (!path)
--		return -ENOMEM;
--
- 	roots = ulist_alloc(GFP_KERNEL);
- 	tmp_ulist = ulist_alloc(GFP_KERNEL);
--	if (!roots || !tmp_ulist) {
-+	if (!backref_cache || !path || !roots || !tmp_ulist) {
- 		ret = -ENOMEM;
- 		goto out_free_ulist;
- 	}
-@@ -5658,7 +5657,8 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
++			/*
++			 * If two extent maps are merged, then their generation
++			 * is set to the maximum between their generations.
++			 * Otherwise its generation matches the one we have in
++			 * corresponding file extent item. If we have a merged
++			 * extent map, don't use its generation to speedup the
++			 * sharedness check below.
++			 */
++			if (test_bit(EXTENT_FLAG_MERGED, &em->flags))
++				extent_gen = 0;
++			else
++				extent_gen = em->generation;
++
+ 			/*
+ 			 * As btrfs supports shared space, this information
+ 			 * can be exported to userspace tools via
+@@ -5656,8 +5670,8 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 			 * lookup stuff.
  			 */
  			ret = btrfs_is_data_extent_shared(root, btrfs_ino(inode),
- 							  bytenr, roots,
--							  tmp_ulist);
-+							  tmp_ulist,
-+							  backref_cache);
+-							  bytenr, roots,
+-							  tmp_ulist,
++							  bytenr, extent_gen,
++							  roots, tmp_ulist,
+ 							  backref_cache);
  			if (ret < 0)
  				goto out_free;
- 			if (ret)
-@@ -5710,6 +5710,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 			     &cached_state);
- 
- out_free_ulist:
-+	kfree(backref_cache);
- 	btrfs_free_path(path);
- 	ulist_free(roots);
- 	ulist_free(tmp_ulist);
 -- 
 2.35.1
 
