@@ -2,69 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5B65AA1B9
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Sep 2022 23:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B936B5AA1EA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 00:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbiIAVuA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Sep 2022 17:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
+        id S234271AbiIAWCm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Sep 2022 18:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbiIAVt6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 17:49:58 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65C11A38F
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 14:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1662068989;
-        bh=BYsQGsKLX4hzxflw2DNxVqpVqpbLASze476DuvApGUc=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=Kr3B6OtczM7P5dG04ZtnKw9q8EkRqaqWdctYMUdUnFVsz/8g2a3M1OJhZGWcMBRC9
-         cLXOJq4UMEsLZEPEAE9C8VASfvziLv0LcNkd5CFR6YjY1ZdXIZacwf+Ddj/TrjAAGz
-         AmjbIIJkvfjPp8gueuBKxpWX6R+yEMivyVjLhmdg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MwQTF-1pLhft3zev-00sP1k; Thu, 01
- Sep 2022 23:49:49 +0200
-Message-ID: <b403daba-c615-282c-487e-ef174197c9ef@gmx.com>
-Date:   Fri, 2 Sep 2022 05:49:46 +0800
+        with ESMTP id S233994AbiIAWCj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 18:02:39 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064034F671;
+        Thu,  1 Sep 2022 15:02:38 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id l65so103773pfl.8;
+        Thu, 01 Sep 2022 15:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+        bh=CVjZRQRXjU7sjBLr6rHvAQKfUIl2rAWam+cMUVwdi8E=;
+        b=bv0LlXMBz1E57HLrV0PxYhOttdXPLA9G/hmytg6Pe0rd+F6zlztjWzFwbENyiMaQWR
+         F0y9cniRQ6tVYw7gWA96HxH7uvhLa7fAV6j9jf6hJKnH+nqTOa6IuccLgG2jeB4wnKbN
+         dXNbKHhDCRc0KcSaeocdSfxm7jfTTYEBJlJdkL7KuMup4EyoA3sh9A1lYrEFkmC6fktZ
+         zYtzraSEWM+6VBSfJSxJZMDmzsg1bohGoHF4buE8zyNN/Y+ges7udin1m1Ip09ANb1qi
+         yx9Dumn8NExq4UnKeww1kfiOzJo2ul+62vzxa7uoxr+6j09KzXtjhQLvasVG7qC/0CUb
+         sXvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=CVjZRQRXjU7sjBLr6rHvAQKfUIl2rAWam+cMUVwdi8E=;
+        b=yovhhEvdrqzSp954pT+KYK7g5BhrCtXvxqSi0K0xgDB8eOVgigDvwkyg/mtJjHL4Zd
+         YeMv+2XLq3SOiy9RneWFkpcmWH4BuOdfIWkRPDpA1N/79C2Vd9aGQvqcMHVrmSTrtVWu
+         S6Isgc7vwJb0PGm21+lN7jy/fh4PBeqfKVrPLgT8AHfqjKSkokb/rYEmWh7qoWlXItpM
+         RtXPUCi7V2WS0sx3CxYe7+0vrKSPFx+3SXBc57MFCHqJqjBawBDZ4QtaVhrgQMZyoZNR
+         EH7knkyH3p7KHQkviZfeYPvtlkfz15kiXc7pj9ILLMfNOYIwHhgiLEGWXJCcxILn9DZa
+         tZhw==
+X-Gm-Message-State: ACgBeo2j9ePa8YRK1KkvMyQtLagVyqSvE29ypmAtRUqlbauGPeVhTMVO
+        V9WOfuyJylVTPju3FbleF0JBV+5c6seaSA==
+X-Google-Smtp-Source: AA6agR5teCrNzMyLQkKmpfunK2hBqhwsyte/cVkAvHsCIIzpnsrjuH2ApmtR8GoGrfaDovrF9RfZdg==
+X-Received: by 2002:a63:6cc4:0:b0:41a:ff04:661f with SMTP id h187-20020a636cc4000000b0041aff04661fmr27931509pgc.600.1662069757234;
+        Thu, 01 Sep 2022 15:02:37 -0700 (PDT)
+Received: from vmfolio.. (c-73-189-111-8.hsd1.ca.comcast.net. [73.189.111.8])
+        by smtp.googlemail.com with ESMTPSA id fv4-20020a17090b0e8400b001fb350026f1sm128894pjb.4.2022.09.01.15.02.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Sep 2022 15:02:36 -0700 (PDT)
+From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, linux-mm@kvack.org,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Subject: [PATCH 02/23] filemap: Added filemap_get_folios_tag()
+Date:   Thu,  1 Sep 2022 15:01:17 -0700
+Message-Id: <20220901220138.182896-3-vishal.moola@gmail.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220901220138.182896-1-vishal.moola@gmail.com>
+References: <20220901220138.182896-1-vishal.moola@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH 01/10] btrfs: allow hole and data seeking to be
- interruptible
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1662022922.git.fdmanana@suse.com>
- <29ac2c59860774abb16bfb2660e0dd831d793cf5.1662022922.git.fdmanana@suse.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <29ac2c59860774abb16bfb2660e0dd831d793cf5.1662022922.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KwG/Ov7LzXAGbZAxs9bWT1EgCorwARR7TEWOPS1PHn6Jt6pFaWU
- wiCARu5giiIymasON7DfTnsZ6pDgZiLpFiOx+ZHiizSoNYIwSzH9Uj9JPx7Ubdgmtle7mTY
- Q7WSL5fjYcpkjGWUK/5zOc/MxDhNqvQKNeAUdRHGzXqDoIUy/lpI7EhnoPJ3vZy4aUyl4hF
- b++Zy0FOEc6YcztvJTubQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ts/oijMPw2Q=:tmKV3aJ6Ur+URjV4Q/mC+s
- WwDMeOTsDPi0vqudmQboj+yS0CeqslqjkVTSZUEzn7exqL8yue5cot17psyIrlRQkpUQ6c6Kw
- xvxXqCSsRIeXiXNYKSfnZrwf7unv89geRvgX1I9gpyXlBnDCynov0QyZvRlUekcW7euUpXx5M
- XbelfA3R9uqT+p+m+b9ewB7nuY0yO2ig4upLgg0eO7f798PAp6BzJsx3EBSwhwmFpsUskAJNS
- ecbcQ3l2bgGDUdgDAhu+Tigt7F/wOAZXcJPxlI/BVT+CJDbnSv/7m1v9jeo4sthMsFT+pZy1z
- IAaiZADj9opnPkxC/lO0l2zfHww7v6YLC99Dwqj7GMEPStLGTEYtaM5IS743yine9k+GojJFq
- 4ese2LtRyT9hKZUTHOP7jSr+bziI3QVGU6ZAKx4L3u4YBQZCA7r1d+MSKWrO6s6KFin/NXL98
- Kla6WcH2uc2YQTjgEH8nZGr4ysQ4XhCSWkLf41cw3NezT0YJQvU8A+doNbDXzj3lO5pz4UwGF
- 8MELB5lHqpzepO8XajO8QxhBl4RUZYWEE/9+GukfnOOrQy7mFUJElXgj3UDJPHGgmK4WZXeM3
- /mGfLGQ+CCEdsBDyXgHh/KafRgG/jM+aQ7h4n34j9/ornOatfBXJvatDpWietaOydaDlAmEE8
- i+2bOfk6YcsZxRNg7QwkQrkYPMtevwHuaJ21BYeW3eRWOOjA6H7+DtptEZAngXeN81fA4sqor
- yJ4sN8B3O3ulAOjCHRDqwgItYjJ8LL3EPrn9Ua8JUXGvA4CGJTT5PCM64VMU055l/1/5w+SSc
- C7msQZDhUKwAaO5KZTN9B7NLLDxhF+SYJwNRhW6TYNQ9DSra0iPmJ0DIiAEnPOIJDWKiw2YWM
- U0DoLJMpIvC4QWOs2c+q2xqjqrMIreKONmPcEhvhFnQ4hMZbpi/5FDfbesArWhy3zMHaVXXkT
- Ubxi1anQv3Mv60f/P2ue5qgXvlXvoONmx64qUWHd7faBPOtVavDMnW4G5dggrB/GhSX39LMVq
- LXywTQq/KmuVGcvzcO/wTgKFHIIaNyZotyIDYuIeZwoR9gCDtG7mRcspNDI/e9yO5EYjicWhV
- obMjssJZPniTf+1wNbQYNXdWDMN/PCIpzeKA41OJ9I1qWEkLAN3qrlevNQjigkfi5Ong6pbPX
- IFvS5LiQ+EYYekTndBXlIJ3K9d
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,39 +74,99 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is the equivalent of find_get_pages_range_tag(), except for folios
+instead of pages.
 
+One noteable difference is filemap_get_folios_tag() does not take in a
+maximum pages argument. It instead tries to fill a folio batch and stops
+either once full (15 folios) or reaching the end of the search range.
 
-On 2022/9/1 21:18, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> Doing hole or data seeking on a file with a very large number of extents
-> can take a long time, and we have reports of it being too slow (such as
-> at LSFMM from 2017, see the Link below). So make it interruptible.
->
-> Link: https://lwn.net/Articles/718805/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+The new function supports large folios, the initial function did not
+since all callers don't use large folios.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+---
+ include/linux/pagemap.h |  2 ++
+ mm/filemap.c            | 53 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 55 insertions(+)
 
-Thanks,
-Qu
-> ---
->   fs/btrfs/file.c | 4 ++++
->   1 file changed, 4 insertions(+)
->
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 0a76ae8b8e96..96f444ad0951 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -3652,6 +3652,10 @@ static loff_t find_desired_extent(struct btrfs_in=
-ode *inode, loff_t offset,
->   		start =3D em->start + em->len;
->   		free_extent_map(em);
->   		em =3D NULL;
-> +		if (fatal_signal_pending(current)) {
-> +			ret =3D -EINTR;
-> +			break;
-> +		}
->   		cond_resched();
->   	}
->   	free_extent_map(em);
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 4d3092d6b2c0..85cc96c82c2c 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -740,6 +740,8 @@ unsigned filemap_get_folios(struct address_space *mapping, pgoff_t *start,
+ 		pgoff_t end, struct folio_batch *fbatch);
+ unsigned find_get_pages_contig(struct address_space *mapping, pgoff_t start,
+ 			       unsigned int nr_pages, struct page **pages);
++unsigned filemap_get_folios_tag(struct address_space *mapping, pgoff_t *start,
++		pgoff_t end, xa_mark_t tag, struct folio_batch *fbatch);
+ unsigned find_get_pages_range_tag(struct address_space *mapping, pgoff_t *index,
+ 			pgoff_t end, xa_mark_t tag, unsigned int nr_pages,
+ 			struct page **pages);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 15800334147b..3ded72a65668 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2254,6 +2254,59 @@ unsigned find_get_pages_contig(struct address_space *mapping, pgoff_t index,
+ }
+ EXPORT_SYMBOL(find_get_pages_contig);
+ 
++/**
++ * filemap_get_folios_tag - Get a batch of folios matching @tag.
++ * @mapping:    The address_space to search
++ * @start:      The starting page index
++ * @end:        The final page index (inclusive)
++ * @tag:        The tag index
++ * @fbatch:     The batch to fill
++ *
++ * Same as filemap_get_folios, but only returning folios tagged with @tag
++ *
++ * Return: The number of folios found
++ * Also update @start to index the next folio for traversal
++ */
++unsigned filemap_get_folios_tag(struct address_space *mapping, pgoff_t *start,
++			pgoff_t end, xa_mark_t tag, struct folio_batch *fbatch)
++{
++	XA_STATE(xas, &mapping->i_pages, *start);
++	struct folio *folio;
++
++	rcu_read_lock();
++	while ((folio = find_get_entry(&xas, end, tag)) != NULL) {
++		/* Shadow entries should never be tagged, but this iteration
++		 * is lockless so there is a window for page reclaim to evict
++		 * a page we saw tagged. Skip over it.
++		 */
++		if (xa_is_value(folio))
++			continue;
++		if (!folio_batch_add(fbatch, folio)) {
++			unsigned long nr = folio_nr_pages(folio);
++
++			if (folio_test_hugetlb(folio))
++				nr = 1;
++			*start = folio->index + nr;
++			goto out;
++		}
++	}
++	/*
++	 * We come here when there is no page beyond @end. We take care to not
++	 * overflow the index @start as it confuses some of the callers. This
++	 * breaks the iteration when there is a page at index -1 but that is
++	 * already broke anyway.
++	 */
++	if (end == (pgoff_t)-1)
++		*start = (pgoff_t)-1;
++	else
++		*start = end + 1;
++out:
++	rcu_read_unlock();
++
++	return folio_batch_count(fbatch);
++}
++EXPORT_SYMBOL(filemap_get_folios_tag);
++
+ /**
+  * find_get_pages_range_tag - Find and return head pages matching @tag.
+  * @mapping:	the address_space to search
+-- 
+2.36.1
+
