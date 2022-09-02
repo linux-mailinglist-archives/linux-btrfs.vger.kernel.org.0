@@ -2,286 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2A05AB93C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 22:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DE85AB94B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 22:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbiIBUQb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Sep 2022 16:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38584 "EHLO
+        id S230032AbiIBUQ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Sep 2022 16:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbiIBUQa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 16:16:30 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735C4C12C9;
-        Fri,  2 Sep 2022 13:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662149789; x=1693685789;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=G1QyHL0Y+ZESOJ/0sIvIcNrwO+n+VamVBy4zwBJD12w=;
-  b=a1km6FVt1+hgzzgMPTdQ1MMR4hrOnDSimG7u3urvuPcuW8MW+1Je+a7/
-   ZnZIra4mt1mGvjdbpNZDk464XT1DiB4tm1m/JTeWGpXCcyFkH9T+W9RPX
-   t3Z2An2CVOW+dirRByJujyKyPQqtS9IQbeQsepfy0qH/kcDIKSYK/qZUq
-   kFqW9bNRYflc/L9fz5GiWADkkgIdnwNFmK9mY/iwjbhpF32DuKPHzlMpB
-   XLMFre6W9zCk0XDUqdQBfTyF/ZGGAApoo/Bwj/XEmddWVJ+Ig2Hux+REb
-   6XjakgbPGtVRJkELjK5D5CHDa1u24b5cB6vZfnYgKGkfo8/DeuHZnDu6h
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="293662504"
-X-IronPort-AV: E=Sophos;i="5.93,285,1654585200"; 
-   d="scan'208";a="293662504"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2022 12:58:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,285,1654585200"; 
-   d="scan'208";a="643037848"
-Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 02 Sep 2022 12:58:20 -0700
-Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oUCnz-0000Yt-2J;
-        Fri, 02 Sep 2022 19:58:19 +0000
-Date:   Sat, 3 Sep 2022 03:57:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        linux-fsdevel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nilfs@vger.kernel.org, linux-mm@kvack.org,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: Re: [PATCH 14/23] f2fs: Convert f2fs_write_cache_pages() to use
- filemap_get_folios_tag()
-Message-ID: <202209030346.t02z8VfY-lkp@intel.com>
-References: <20220901220138.182896-15-vishal.moola@gmail.com>
+        with ESMTP id S229847AbiIBUQx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 16:16:53 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13EF7DAEF1
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 13:16:40 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id cr9so2324849qtb.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Sep 2022 13:16:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date;
+        bh=HQL/8uY1z9MwiIcKW+FEa28PiwRxgGSc0LdbXMGJHaw=;
+        b=dOuF0Spvpz7KLrdLnDyThGALd4v2ibQoLxp1Q7f/AiN3kq1m8gsYGEQhcVT/4z6ldd
+         zbmRfzpFP3FFb7aEN1DptDXLySoTWoDYldRiTJToUfH+t1/aCX4DQU6o/8MPz9lcLgCh
+         ++3L0H9W3eP6iUz2VtBfYlhAkwiAC1wp0IFTvdAgcehFGniVchRZZIhL4e55Ks9LIAvV
+         3dI32Iic4ZyYjzK/YDQfGD8VyN0bYbKUlLpNmE55eTebA2qclswCYJrpryfy7QOmOZ1S
+         Ji+yUocvXG3uOyOGqt+voZtQ1xqdMtHHI4pLw1C84AS+/IptqlS/JjbS37MBXd29l1hA
+         B5Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date;
+        bh=HQL/8uY1z9MwiIcKW+FEa28PiwRxgGSc0LdbXMGJHaw=;
+        b=FUJHg4DHv8Q1+RKwuTWW4WHA9g6K7LsQs28y7zkMTCH1Tp7qgsOWgXzgseHV5E089J
+         31KINqu1EZSEEaW2r/+Ysqc107ub6FdypNDR+rhf0OGRkN/XG14FrZwcbDnzyooBkn3F
+         Q0gCADJ0454OGYr24WcY0i5kk2k+csweXx56/WgZ0Or3wurEExijvCPm5s2LKKu7QKlu
+         kBm8Mu/Chuu4ozay4/FPx5KSMdXiFFCCHXmd5raKWPoiYcPm9igIhycdHzsvdfGWLJwO
+         RoZv8vqiRFbf/b/tBED44/TefYDZKKJxo2UXPgsiNj6cSrK58M9rY3SANjzTvv073Zd9
+         1OhQ==
+X-Gm-Message-State: ACgBeo25mhxChwPcfdrFQAGRFD95OwHf0xoGDa9Dd7fQRN61rCIDzl+L
+        bV/ZQkzHDmKv1xKghaWggOe4s/85SM1e4g==
+X-Google-Smtp-Source: AA6agR57JeUA6HT8fjtWSMmpTB2Edw5lhGS6vr3TV75BWV/XKdvR2ddAKkVEKh+6sBAr43sJmbJ5mA==
+X-Received: by 2002:a05:622a:138f:b0:344:4ff1:f98f with SMTP id o15-20020a05622a138f00b003444ff1f98fmr29175958qtk.59.1662149798812;
+        Fri, 02 Sep 2022 13:16:38 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id e5-20020ac80105000000b00342b7e4241fsm1575702qtg.77.2022.09.02.13.16.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Sep 2022 13:16:38 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 00/31] btrfs: move extent_io_tree code and cleanups
+Date:   Fri,  2 Sep 2022 16:16:05 -0400
+Message-Id: <cover.1662149276.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220901220138.182896-15-vishal.moola@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi "Vishal,
+Hello,
 
-Thank you for the patch! Yet something to improve:
+In working on extent tree v2 I got really bogged down in trying to sync work
+between btrfs-progs and the kernel.  It basically takes me 3x as long, because
+there's a lot of different things missing in btrfs-progs, so each patchset has
+to be done from scratch and tested completely differently.
 
-[auto build test ERROR on jaegeuk-f2fs/dev-test]
-[also build test ERROR on kdave/for-next linus/master v6.0-rc3]
-[cannot apply to ceph-client/for-linus next-20220901]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Additionally there's just a lot of tech-debt in these areas in general.  So
+before tackling the rest of extent-tree-v2 I'm spending some time cleaning up
+things we all know are terrible.  This is the first step in that direction,
+finishing the separation of the extent_io_tree code from extent_io.c.  I started
+this a while ago, but got bogged down in other things.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Moola-Oracle/Convert-to-filemap_get_folios_tag/20220902-060430
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git dev-test
-config: hexagon-randconfig-r045-20220901 (https://download.01.org/0day-ci/archive/20220903/202209030346.t02z8VfY-lkp@intel.com/config)
-compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project c55b41d5199d2394dd6cdb8f52180d8b81d809d4)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/6c74320953cd3749db95f9f09c1fc7d044933635
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Vishal-Moola-Oracle/Convert-to-filemap_get_folios_tag/20220902-060430
-        git checkout 6c74320953cd3749db95f9f09c1fc7d044933635
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash fs/f2fs/
+This has 3 distinct parts
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+1. Cleanup the io_failure_record code.  This has been tightly integrated into
+   the extent_io_tree code forever without much reason for it.  The first part
+   of this series moves that handling into it's own tree, and uses our existing
+   helpers to reduce the code quite a bit.
 
-All errors (new ones prefixed by >>):
+2. Move the code out of extent_io.c.  This is easier than previous code moves
+   because I did a lot of the prep work earlier.  Unfortunately there is one big
+   patch that copy and pastes all the core code, since it all depends on itself
+   and would be more annoying to move.  However the independent parts were
+   moved piece by piece.
 
->> fs/f2fs/data.c:3016:18: error: use of undeclared identifier 'nr_pages'; did you mean 'dir_pages'?
-                                           &fbatch, i, nr_pages, true))
-                                                       ^~~~~~~~
-                                                       dir_pages
-   include/linux/pagemap.h:1404:29: note: 'dir_pages' declared here
-   static inline unsigned long dir_pages(struct inode *inode)
-                               ^
->> fs/f2fs/data.c:3017:11: error: use of undeclared label 'lock_page'
-                                           goto lock_page;
-                                                ^
-   2 errors generated.
+3. A wholesale cleanup of the extent_io_tree code.  We have a ton of helpers
+   here, that have all grown a ton of arguments over the years.  I've trimmed
+   down the arguments for our core helpers, and hidden the rest internally
+   inside of extent-io-tree.c.  Additionally I've cleaned up the lock/unlock
+   extent bit helpers so we only have one lock_extent/unlock_extent variant that
+   gets used everywhere.
 
+I've tested this locally to make sure I didn't break anything.  This isn't a
+simple code move so do please review most of it, the patches that start with
+"move X" are pure code move patches, but the rest do change things.  Thanks,
 
-vim +3016 fs/f2fs/data.c
+Josef
 
-  2908	
-  2909	/*
-  2910	 * This function was copied from write_cche_pages from mm/page-writeback.c.
-  2911	 * The major change is making write step of cold data page separately from
-  2912	 * warm/hot data page.
-  2913	 */
-  2914	static int f2fs_write_cache_pages(struct address_space *mapping,
-  2915						struct writeback_control *wbc,
-  2916						enum iostat_type io_type)
-  2917	{
-  2918		int ret = 0;
-  2919		int done = 0, retry = 0;
-  2920		struct folio_batch fbatch;
-  2921		struct f2fs_sb_info *sbi = F2FS_M_SB(mapping);
-  2922		struct bio *bio = NULL;
-  2923		sector_t last_block;
-  2924	#ifdef CONFIG_F2FS_FS_COMPRESSION
-  2925		struct inode *inode = mapping->host;
-  2926		struct compress_ctx cc = {
-  2927			.inode = inode,
-  2928			.log_cluster_size = F2FS_I(inode)->i_log_cluster_size,
-  2929			.cluster_size = F2FS_I(inode)->i_cluster_size,
-  2930			.cluster_idx = NULL_CLUSTER,
-  2931			.rpages = NULL,
-  2932			.nr_rpages = 0,
-  2933			.cpages = NULL,
-  2934			.valid_nr_cpages = 0,
-  2935			.rbuf = NULL,
-  2936			.cbuf = NULL,
-  2937			.rlen = PAGE_SIZE * F2FS_I(inode)->i_cluster_size,
-  2938			.private = NULL,
-  2939		};
-  2940	#endif
-  2941		int nr_folios;
-  2942		pgoff_t index;
-  2943		pgoff_t end;		/* Inclusive */
-  2944		pgoff_t done_index;
-  2945		int range_whole = 0;
-  2946		xa_mark_t tag;
-  2947		int nwritten = 0;
-  2948		int submitted = 0;
-  2949		int i;
-  2950	
-  2951		folio_batch_init(&fbatch);
-  2952	
-  2953		if (get_dirty_pages(mapping->host) <=
-  2954					SM_I(F2FS_M_SB(mapping))->min_hot_blocks)
-  2955			set_inode_flag(mapping->host, FI_HOT_DATA);
-  2956		else
-  2957			clear_inode_flag(mapping->host, FI_HOT_DATA);
-  2958	
-  2959		if (wbc->range_cyclic) {
-  2960			index = mapping->writeback_index; /* prev offset */
-  2961			end = -1;
-  2962		} else {
-  2963			index = wbc->range_start >> PAGE_SHIFT;
-  2964			end = wbc->range_end >> PAGE_SHIFT;
-  2965			if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
-  2966				range_whole = 1;
-  2967		}
-  2968		if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-  2969			tag = PAGECACHE_TAG_TOWRITE;
-  2970		else
-  2971			tag = PAGECACHE_TAG_DIRTY;
-  2972	retry:
-  2973		retry = 0;
-  2974		if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-  2975			tag_pages_for_writeback(mapping, index, end);
-  2976		done_index = index;
-  2977		while (!done && !retry && (index <= end)) {
-  2978			nr_folios = filemap_get_folios_tag(mapping, &index, end,
-  2979					tag, &fbatch);
-  2980			if (nr_folios == 0)
-  2981				break;
-  2982	
-  2983			for (i = 0; i < nr_folios; i++) {
-  2984				struct folio *folio = fbatch.folios[i];
-  2985				bool need_readd;
-  2986	readd:
-  2987				need_readd = false;
-  2988	#ifdef CONFIG_F2FS_FS_COMPRESSION
-  2989				if (f2fs_compressed_file(inode)) {
-  2990					void *fsdata = NULL;
-  2991					struct page *pagep;
-  2992					int ret2;
-  2993	
-  2994					ret = f2fs_init_compress_ctx(&cc);
-  2995					if (ret) {
-  2996						done = 1;
-  2997						break;
-  2998					}
-  2999	
-  3000					if (!f2fs_cluster_can_merge_page(&cc,
-  3001									folio->index)) {
-  3002						ret = f2fs_write_multi_pages(&cc,
-  3003							&submitted, wbc, io_type);
-  3004						if (!ret)
-  3005							need_readd = true;
-  3006						goto result;
-  3007					}
-  3008	
-  3009					if (unlikely(f2fs_cp_error(sbi)))
-  3010						goto lock_folio;
-  3011	
-  3012					if (!f2fs_cluster_is_empty(&cc))
-  3013						goto lock_folio;
-  3014	
-  3015					if (f2fs_all_cluster_page_ready(&cc,
-> 3016						&fbatch, i, nr_pages, true))
-> 3017						goto lock_page;
-  3018	
-  3019					ret2 = f2fs_prepare_compress_overwrite(
-  3020								inode, &pagep,
-  3021								folio->index, &fsdata);
-  3022					if (ret2 < 0) {
-  3023						ret = ret2;
-  3024						done = 1;
-  3025						break;
-  3026					} else if (ret2 &&
-  3027						(!f2fs_compress_write_end(inode,
-  3028							fsdata, folio->index, 1) ||
-  3029						 !f2fs_all_cluster_page_ready(&cc,
-  3030							&fbatch, i, nr_folios,
-  3031							false))) {
-  3032						retry = 1;
-  3033						break;
-  3034					}
-  3035				}
-  3036	#endif
-  3037				/* give a priority to WB_SYNC threads */
-  3038				if (atomic_read(&sbi->wb_sync_req[DATA]) &&
-  3039						wbc->sync_mode == WB_SYNC_NONE) {
-  3040					done = 1;
-  3041					break;
-  3042				}
-  3043	#ifdef CONFIG_F2FS_FS_COMPRESSION
-  3044	lock_folio:
-  3045	#endif
-  3046				done_index = folio->index;
-  3047	retry_write:
-  3048				folio_lock(folio);
-  3049	
-  3050				if (unlikely(folio->mapping != mapping)) {
-  3051	continue_unlock:
-  3052					folio_unlock(folio);
-  3053					continue;
-  3054				}
-  3055	
-  3056				if (!folio_test_dirty(folio)) {
-  3057					/* someone wrote it for us */
-  3058					goto continue_unlock;
-  3059				}
-  3060	
-  3061				if (folio_test_writeback(folio)) {
-  3062					if (wbc->sync_mode != WB_SYNC_NONE)
-  3063						f2fs_wait_on_page_writeback(
-  3064								&folio->page,
-  3065								DATA, true, true);
-  3066					else
-  3067						goto continue_unlock;
-  3068				}
-  3069	
-  3070				if (!folio_clear_dirty_for_io(folio))
-  3071					goto continue_unlock;
-  3072	
+Josef Bacik (31):
+  btrfs: cleanup clean_io_failure
+  btrfs: unexport internal failrec functions
+  btrfs: stop using extent_io_tree for io_failure_record's
+  btrfs: use find_first_extent_bit in btrfs_clean_io_failure
+  btrfs: separate out the extent state and extent buffer init code
+  btrfs: separate out the eb and extent state leak helpers
+  btrfs: temporarily export alloc_extent_state helpers
+  btrfs: move extent state init and alloc functions to their own file
+  btrfs: convert BUG_ON(EXTENT_BIT_LOCKED) checks to ASSERT's
+  btrfs: move simple extent bit helpers out of extent_io.c
+  btrfs: export wait_extent_bit
+  btrfs: move the core extent_io_tree code into extent-io-tree.c
+  btrfs: remove struct tree_entry
+  btrfs: use next_state instead of rb_next where we can
+  btrfs: make tree_search return struct extent_state
+  btrfs: make tree_search_for_insert return extent_state
+  btrfs: make tree_search_prev_next return extent_state's
+  btrfs: use next_state/prev_state in merge_state
+  btrfs: remove temporary exports for extent_state movement
+  btrfs: move irrelevant prototypes to their appropriate header
+  btrfs: drop exclusive_bits from set_extent_bit
+  btrfs: remove the wake argument from clear_extent_bits
+  btrfs: remove failed_start argument from set_extent_bit
+  btrfs: drop extent_changeset from set_extent_bit
+  btrfs: unify the lock/unlock extent variants
+  btrfs: get rid of track_uptodate
+  btrfs: get rid of ->dirty_bytes
+  btrfs: don't clear CTL bits when trying to release extent state
+  btrfs: replace delete argument with EXTENT_CLEAR_ALL_BITS
+  btrfs: don't init io tree with private data for non inodes
+  btrfs: remove is_data_inode() checks in extent-io-tree.c
+
+ fs/btrfs/Makefile                |    2 +-
+ fs/btrfs/btrfs_inode.h           |    3 +-
+ fs/btrfs/compression.c           |   11 +-
+ fs/btrfs/disk-io.c               |   10 +-
+ fs/btrfs/extent-io-tree.c        | 1673 ++++++++++++++++++++++++
+ fs/btrfs/extent-io-tree.h        |  119 +-
+ fs/btrfs/extent_io.c             | 2055 ++----------------------------
+ fs/btrfs/extent_io.h             |   14 +-
+ fs/btrfs/extent_map.c            |    2 +-
+ fs/btrfs/file-item.c             |    2 +-
+ fs/btrfs/file.c                  |   48 +-
+ fs/btrfs/free-space-cache.c      |   24 +-
+ fs/btrfs/inode.c                 |  159 ++-
+ fs/btrfs/ioctl.c                 |   24 +-
+ fs/btrfs/misc.h                  |   35 +
+ fs/btrfs/ordered-data.c          |    4 +-
+ fs/btrfs/reflink.c               |   10 +-
+ fs/btrfs/relocation.c            |   18 +-
+ fs/btrfs/super.c                 |   17 +-
+ fs/btrfs/tests/extent-io-tests.c |    6 +-
+ fs/btrfs/tests/inode-tests.c     |    8 +-
+ fs/btrfs/transaction.c           |    4 +-
+ fs/btrfs/tree-log.c              |    8 +-
+ include/trace/events/btrfs.h     |    1 -
+ 24 files changed, 2077 insertions(+), 2180 deletions(-)
+ create mode 100644 fs/btrfs/extent-io-tree.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.26.3
+
