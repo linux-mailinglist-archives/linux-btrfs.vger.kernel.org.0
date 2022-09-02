@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBC95AB944
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 22:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D895AB953
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 22:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbiIBURM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Sep 2022 16:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
+        id S229764AbiIBURN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Sep 2022 16:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbiIBURA (ORCPT
+        with ESMTP id S229936AbiIBURA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 16:17:00 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2331CE303
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 13:16:57 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id y15so2281496qvn.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Sep 2022 13:16:57 -0700 (PDT)
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A87D344C
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 13:16:58 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id g14so2335388qto.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Sep 2022 13:16:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=ZzcvWi/eDe71X+0jhazlHVz7b/oAGDfCILaIoMWD+vE=;
-        b=p7j6NPf6zJerjIM4WJhldVcy1TSJ6x88yl+mKubfx8kO5n3WHL37ZfJjpgVL7mGmv1
-         Jmm7jw29hr0ZExwtTcwbgKpfA5s+wBCckUmE3FmZ4u40Mi33O6U8fYq2kQERt+WJBJfc
-         AUhtrKOgmwEnAN08u2zDIQQvzz9b61Izsb6i0z8DdfQrAwE8WkJ6Lq7yLQ2uGEGuCZ7S
-         tHPB3bOP5hesw3LU3JZ5uIyBgaFP+nPKUH7vuPKIA/C7V1tVC41dFkMPKtI17PE74X/5
-         XkENdyuPXBXpaUzp7WxaxmNy7VJ9vm5HIIRc57+8oFQvLb92Dn82wVVFoW7nIao9zboR
-         aM/g==
+        bh=HRhiJtjzbat0qp8UfnLyt/cT/Aa6D+S4PuZAeaJNGJM=;
+        b=pLYXIOpVsTjibJLSJXa82BSfgDkS6gyNYsyT9rKU7p6pG/JgMz4gIDOKkEU8XP3DfX
+         9ignNsuliNJ+5jP+KosuvuhEtA94JHeBTINgIMXI64I4bFut+WyH2XqDRsa9A9m7ujqm
+         Ooxex5E6ByciD3Sj31ffsGylrJbRLVnxgMkgzjaUJEv6Wr9iWHU4apoeX1dLEzWiFAI1
+         OCdYGf96AKG6/UiGoOuK7EHiiCE1iWMF83pIdtqm8UcCceufOQg+Hq32lr+uUVNvSzL9
+         hqkKo9ncPywtFVNHCM5Y0AA8+8OrMUVljqY7PH3Zgrq7OgAtsMM0x6PptAQphnFpKD8j
+         P4IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=ZzcvWi/eDe71X+0jhazlHVz7b/oAGDfCILaIoMWD+vE=;
-        b=yS66F7jKRpsTRDsyM5tSwzLrFiHQmH2sEdewpAFRKM1hhEdO0Lo6NV4tAlAuTbR+Gc
-         1MIwmme7+M0cCJC0Gaj1BdvH3dqTK5RNHlHmukGOHZKIGbrczZ0zFiZPor+aF5L6Aoc3
-         0MWYntyO1sOKRH7mVqEOq2Hkfv8jNYe4pPiT2Y62YVMTU317kChTgwj5fEnUTgwvmaPM
-         JcP+hHb2GLnnq2RyJS3KCEoEKSvok8JiUWGtDW38IjNqBp+NMbHAnPIbJUW98S7FKbJS
-         smVbktk3RQEgBZAngRXcTkcHN6VSuVMahpk8InE9Ct2mp4tRctGCC1tnuUhyMFHQLN1x
-         5rnQ==
-X-Gm-Message-State: ACgBeo2NPOXM7AgacL5BYAU8QAcS0nSHE0JcmsqkpmKCubbVdnpFOgAZ
-        +5qH+Sc79mXGqm/FyB87h6POA8PxR2Ss8w==
-X-Google-Smtp-Source: AA6agR4wmGVh9XfzRWhW+87xisVzbGCSLGmyW7GgQKBLm6pNwJcC+kjLIcrPiqjpSmAlyRXS9RCtIw==
-X-Received: by 2002:ad4:5bc7:0:b0:48b:e9ed:47a8 with SMTP id t7-20020ad45bc7000000b0048be9ed47a8mr30616715qvt.108.1662149816453;
-        Fri, 02 Sep 2022 13:16:56 -0700 (PDT)
+        bh=HRhiJtjzbat0qp8UfnLyt/cT/Aa6D+S4PuZAeaJNGJM=;
+        b=51vGqum7TrxTpGl5cMpaDVnLiaHh+KD96HZa5jIxMJCIphOqFwFjPuCzJuULoZvEHy
+         ABo/2T3WR+B6FVpXZx3bvUAu/pcARCXG2/Oh+tdkuMZ1zchRzW3clgTNEXHk17MTT9B5
+         HfvqY/F2skGhjepTlIN/MaggfT9naNL7pSISbAKp3WIxASg38s6Knxu3NddkWeV+1EdG
+         rZO+wHs3eSH+WTBvGVWNAKpLscSA1CQGqDGFqM7H5QrdGYuOJ2+kfvC4UoSGIg/gAOrP
+         1YKSWC2jvw3mssRmxzrmqhFhOqqQRyLqn9GYL/PxJ5OXqfJ+XLP22J2ug2JIh7vVRXn4
+         KjEg==
+X-Gm-Message-State: ACgBeo2i2/qua+2EVZuSZq8M4lT0bvfH3e2OhHNoQa8dIBRFq6JGypGa
+        Tl/6ONbO0kS8QgfdSjaoWP9YAB7qHOUezg==
+X-Google-Smtp-Source: AA6agR6t2lXmMKCz19estObM3/EbMdAOE83tt9XAQaH1DJiBygFjM9ZnlqfwNPAgIgbkdl67WF2gwQ==
+X-Received: by 2002:a05:622a:1788:b0:344:7c86:f9a1 with SMTP id s8-20020a05622a178800b003447c86f9a1mr29446087qtk.22.1662149818149;
+        Fri, 02 Sep 2022 13:16:58 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id bl28-20020a05620a1a9c00b006bc5cdc890bsm1866755qkb.77.2022.09.02.13.16.55
+        by smtp.gmail.com with ESMTPSA id s11-20020a05620a29cb00b006bad20a6cfesm2166248qkp.102.2022.09.02.13.16.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Sep 2022 13:16:56 -0700 (PDT)
+        Fri, 02 Sep 2022 13:16:57 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 10/31] btrfs: move simple extent bit helpers out of extent_io.c
-Date:   Fri,  2 Sep 2022 16:16:15 -0400
-Message-Id: <066177b3509944b0af49e1900358b7e9d6b14139.1662149276.git.josef@toxicpanda.com>
+Subject: [PATCH 11/31] btrfs: export wait_extent_bit
+Date:   Fri,  2 Sep 2022 16:16:16 -0400
+Message-Id: <9a17df6dd26b9231b51843c205346bbad218034c.1662149276.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1662149276.git.josef@toxicpanda.com>
 References: <cover.1662149276.git.josef@toxicpanda.com>
@@ -67,193 +67,41 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-These are just variants and wrappers around the actual work horses of
-the extent state.  Extract these out of extent_io.c.
+This is used by the subpage code in addition to lock_extent_bits, so
+export it so we can move it out of extent_io.c
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-io-tree.c | 45 +++++++++++++++++++++++++++++
- fs/btrfs/extent-io-tree.h | 20 +++++++++----
- fs/btrfs/extent_io.c      | 60 ---------------------------------------
- 3 files changed, 60 insertions(+), 65 deletions(-)
+ fs/btrfs/extent-io-tree.h | 1 +
+ fs/btrfs/extent_io.c      | 3 +--
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-index 2aedac452636..7b8ac9b3bc55 100644
---- a/fs/btrfs/extent-io-tree.c
-+++ b/fs/btrfs/extent-io-tree.c
-@@ -142,6 +142,51 @@ void free_extent_state(struct extent_state *state)
- 	}
- }
- 
-+/* wrappers around set/clear extent bit */
-+int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
-+			   u32 bits, struct extent_changeset *changeset)
-+{
-+	/*
-+	 * We don't support EXTENT_LOCKED yet, as current changeset will
-+	 * record any bits changed, so for EXTENT_LOCKED case, it will
-+	 * either fail with -EEXIST or changeset will record the whole
-+	 * range.
-+	 */
-+	ASSERT(!(bits & EXTENT_LOCKED));
-+
-+	return set_extent_bit(tree, start, end, bits, 0, NULL, NULL, GFP_NOFS,
-+			      changeset);
-+}
-+
-+int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
-+		u32 bits, struct extent_changeset *changeset)
-+{
-+	/*
-+	 * Don't support EXTENT_LOCKED case, same reason as
-+	 * set_record_extent_bits().
-+	 */
-+	ASSERT(!(bits & EXTENT_LOCKED));
-+
-+	return __clear_extent_bit(tree, start, end, bits, 0, 0, NULL, GFP_NOFS,
-+				  changeset);
-+}
-+
-+int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end)
-+{
-+	int err;
-+	u64 failed_start;
-+
-+	err = set_extent_bit(tree, start, end, EXTENT_LOCKED, EXTENT_LOCKED,
-+			     &failed_start, NULL, GFP_NOFS, NULL);
-+	if (err == -EEXIST) {
-+		if (failed_start > start)
-+			clear_extent_bit(tree, start, failed_start - 1,
-+					 EXTENT_LOCKED, 1, 0, NULL);
-+		return 0;
-+	}
-+	return 1;
-+}
-+
- void __cold extent_state_free_cachep(void)
- {
- 	btrfs_extent_state_leak_debug_check();
 diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index 56266e75b4fe..16a9da4149f3 100644
+index 16a9da4149f3..3b63aeca941a 100644
 --- a/fs/btrfs/extent-io-tree.h
 +++ b/fs/btrfs/extent-io-tree.h
-@@ -120,14 +120,19 @@ int test_range_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 		   u32 bits, int filled, struct extent_state *cached_state);
- int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 			     u32 bits, struct extent_changeset *changeset);
--int clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		     u32 bits, int wake, int delete,
--		     struct extent_state **cached);
- int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 		     u32 bits, int wake, int delete,
- 		     struct extent_state **cached, gfp_t mask,
- 		     struct extent_changeset *changeset);
+@@ -253,6 +253,7 @@ int extent_invalidate_folio(struct extent_io_tree *tree,
+ bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
+ 			       u64 *end, u64 max_bytes,
+ 			       struct extent_state **cached_state);
++void wait_extent_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bits);
  
-+static inline int clear_extent_bit(struct extent_io_tree *tree, u64 start,
-+				   u64 end, u32 bits, int wake, int delete,
-+				   struct extent_state **cached)
-+{
-+	return __clear_extent_bit(tree, start, end, bits, wake, delete,
-+				  cached, GFP_NOFS, NULL);
-+}
-+
- static inline int unlock_extent(struct extent_io_tree *tree, u64 start, u64 end)
- {
- 	return clear_extent_bit(tree, start, end, EXTENT_LOCKED, 1, 0, NULL);
-@@ -164,8 +169,13 @@ int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 		   u32 bits, unsigned exclusive_bits, u64 *failed_start,
- 		   struct extent_state **cached_state, gfp_t mask,
- 		   struct extent_changeset *changeset);
--int set_extent_bits_nowait(struct extent_io_tree *tree, u64 start, u64 end,
--			   u32 bits);
-+
-+static inline int set_extent_bits_nowait(struct extent_io_tree *tree, u64 start,
-+					 u64 end, u32 bits)
-+{
-+	return set_extent_bit(tree, start, end, bits, 0, NULL, NULL,
-+			      GFP_NOWAIT, NULL);
-+}
- 
- static inline int set_extent_bits(struct extent_io_tree *tree, u64 start,
- 		u64 end, u32 bits)
+ /* This should be reworked in the future and put elsewhere. */
+ void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start,
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 028dc72d8b6a..b8fdd4aa7583 100644
+index b8fdd4aa7583..5bfa14f2b5e3 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -1283,50 +1283,6 @@ int convert_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 	return err;
- }
- 
--/* wrappers around set/clear extent bit */
--int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
--			   u32 bits, struct extent_changeset *changeset)
--{
--	/*
--	 * We don't support EXTENT_LOCKED yet, as current changeset will
--	 * record any bits changed, so for EXTENT_LOCKED case, it will
--	 * either fail with -EEXIST or changeset will record the whole
--	 * range.
--	 */
--	ASSERT(!(bits & EXTENT_LOCKED));
--
--	return set_extent_bit(tree, start, end, bits, 0, NULL, NULL, GFP_NOFS,
--			      changeset);
--}
--
--int set_extent_bits_nowait(struct extent_io_tree *tree, u64 start, u64 end,
--			   u32 bits)
--{
--	return set_extent_bit(tree, start, end, bits, 0, NULL, NULL,
--			      GFP_NOWAIT, NULL);
--}
--
--int clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		     u32 bits, int wake, int delete,
--		     struct extent_state **cached)
--{
--	return __clear_extent_bit(tree, start, end, bits, wake, delete,
--				  cached, GFP_NOFS, NULL);
--}
--
--int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
--		u32 bits, struct extent_changeset *changeset)
--{
--	/*
--	 * Don't support EXTENT_LOCKED case, same reason as
--	 * set_record_extent_bits().
--	 */
--	ASSERT(!(bits & EXTENT_LOCKED));
--
--	return __clear_extent_bit(tree, start, end, bits, 0, 0, NULL, GFP_NOFS,
--				  changeset);
--}
--
- /*
-  * either insert or lock state struct between start and end use mask to tell
-  * us if waiting is desired.
-@@ -1351,22 +1307,6 @@ int lock_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 	return err;
- }
- 
--int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end)
--{
--	int err;
--	u64 failed_start;
--
--	err = set_extent_bit(tree, start, end, EXTENT_LOCKED, EXTENT_LOCKED,
--			     &failed_start, NULL, GFP_NOFS, NULL);
--	if (err == -EEXIST) {
--		if (failed_start > start)
--			clear_extent_bit(tree, start, failed_start - 1,
--					 EXTENT_LOCKED, 1, 0, NULL);
--		return 0;
--	}
--	return 1;
--}
--
- void extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64 end)
+@@ -753,8 +753,7 @@ static void wait_on_state(struct extent_io_tree *tree,
+  * The range [start, end] is inclusive.
+  * The tree lock is taken by this function
+  */
+-static void wait_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+-			    u32 bits)
++void wait_extent_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bits)
  {
- 	unsigned long index = start >> PAGE_SHIFT;
+ 	struct extent_state *state;
+ 	struct rb_node *node;
 -- 
 2.26.3
 
