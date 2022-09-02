@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B795AA53E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 03:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64865AA55B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 03:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235214AbiIBBq1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Sep 2022 21:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
+        id S234191AbiIBB4s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Sep 2022 21:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235073AbiIBBqY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 21:46:24 -0400
+        with ESMTP id S233483AbiIBB4r (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Sep 2022 21:56:47 -0400
 Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6525209E
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 18:46:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84598B2D2
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 18:56:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1662083182; x=1693619182;
+  t=1662083806; x=1693619806;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=s/pEcQWbpoeTLCyab6Ap6TariBRem4AckSzVvuEamAk=;
-  b=pxOawOAqfK1tdmc0M06MIZTc2LwRC/XBnW9fnNFNuHMvn2pRveYAMMFO
-   kSxFxbE/Rjo/iDtD7G5oNJ8qx0wgEInGgxNqgsjXb4Wug14o/XpSBu/gG
-   TqMDOpm265mH+KRlt+t1dhrceBZgcxzAlmeu+PrU5z9aZrlAZECdaC3SW
-   A/kNYD+KpvhuN35XpqSrGN9j9W4TPns4W1om5ugb8DZiEEAB4xr8x6v8+
-   BypGmYY60f1RviJWgXt5KJeBHzmUUNtHEWf0wfpCjTc+dVWlEuPpwqtSe
-   T7j/q3/IlnYLizyWZCL4VhkDCZpU4pkwDp84i8O0SbQs+hKi6MpfFjY++
-   Q==;
+  bh=al/CnY7kQXrcz0e7K7fDQHFhM+LHnJ6CS/AHMcHJBWg=;
+  b=BcvImtwmELid3jRNpFfW7H47elx/bwl2ys+uqnzs3ScD/s99z3LW6g5B
+   V0apzYnjEi3hivOEpLBFRCwgYah2jVLLl6ReCQCnHUBla36qs0KierKTD
+   i2A7kDTrRMA8Vlb34MB2eQ2pOQBH0btYVE+UWrut3DvcRXvrhsQFJY9Us
+   ZF04ZyBMcYkauIRCLIy42iBYn3HRnnbVzcIBWen93GIXMIN38Re+e55ST
+   8LvtX5Xuo+CZdnD/U7ZgI/bjzh3Xf5YUfcRoNq/AvwxUKXpbqutfTYzaW
+   QAL0kl8sQlGAJuXYmcxOHafrrI8gytI0udEFojZ8MvmPpnsbH7FGRMVbn
+   w==;
 X-IronPort-AV: E=Sophos;i="5.93,281,1654531200"; 
-   d="scan'208";a="210774015"
+   d="scan'208";a="210774736"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Sep 2022 09:46:20 +0800
-IronPort-SDR: +f8apT3qJYATkUKJz9pBeo/VNvtiDAaLudc/wefBNVutt6tKMFij4e1e512LSXskk5jn2yHVVc
- r5qn1AoSqeEtrMI60obYdoiX97GCPsn7ahMu4PmW1ALjSHotbOp6bx7GiHc/QSFZnL5nCa8qGO
- nZtUuI9mdQnEaMzLmuO7InmuMcM7Jv+dDK2Z7RzzcHqaPOX+oE7tYDWe1TDm4yyUle2xJp50sK
- qUwnSNxEc9IG1A5I8ylB0vxrRA2DTW21Pm8Wq7Tq1llHSrJQHS9gffON7QPcGSnQkdzUmYUU+r
- FNZ3xCRYL4uQdodhcNEwM5j8
+  by ob1.hgst.iphmx.com with ESMTP; 02 Sep 2022 09:56:45 +0800
+IronPort-SDR: L3W4cmEsJGEwbTEuHWJhLZbBujoC2UmYon0fXKgHwFbURKbFM58IVx/2vb6y3hGz9bRcW2Q3dC
+ LJ3Mzo3jDTsUeSvKAZ6W1omHDhB/4kU/6TatR+gCS9DVkxSjRlDD80nHr9opEIaLu5UgTQ4uG7
+ lxtPa51w4ccIm3ZJRlkGdy0g1x8KP0QJRimVTKrIKODejz6Zf7qiUXKLK5mbTnFgajapAqahUH
+ GLrZoYeaLgov7JAUMoYFdvdA4MNTHIQZQXEwflKVw0GaTQyjs/JleMnfBkDxOfMYtuCVnBcfJn
+ gTbeVrZNfv0Qq91LMx2Nhs06
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Sep 2022 18:01:26 -0700
-IronPort-SDR: QToA/pd3mjHjtu/CfNBfCamJgz6o78BzHPTsjlPLUjxSVTeXvuF3oJKJOPxj951jykv5+Svkzr
- WO+zgXRp8s7SBecVCpFELsbP6J3RmSRmDN8xAiXf3gcxVPIljyEjEo98Aj4Ozo+VdzgTkrppkL
- dYQo2iVFfiiPmhLarFR5zCe3SWZ4e9zkhvtCF9s615cv3sl8dU9569M/KqD5PEe0tYzpc36o+q
- gOzIKlYdGwqOExA89bwtuO9uPdoQhOi0rwTyx77zxU0gmaCiUvJeChPOf8VY1dCmVbo+eKzdbk
- 2Dw=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Sep 2022 18:11:51 -0700
+IronPort-SDR: Y2PWph+SeAAM1xJkR9igWn0YbvlfzD87gPkgHtNW0ILyLs0K116acwTexGulgH/iTRxLTUpB6m
+ krNhpUNhkYt+UspAXlSVUiuqGybtZS5idKLZCQSCTyOJVYfT2bYkzstSAp8SE/T/6LGTjujEdB
+ VC4GP/NdtJ1UOHLESPHLeJTHEg4MkE3hMPoDdM6uiIqxqUwLRuhkOTvwpI19+XvSLI6HeVErcl
+ GE3nd4exuViTXfaE9/hDeGUaFBiILvCy/uIMlVBUeamR3raBxY6IBjeeKBdRt5BmkOTNDJpX51
+ z9o=
 WDCIronportException: Internal
 Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Sep 2022 18:46:21 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Sep 2022 18:56:46 -0700
 Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4MJgk41m9Sz1RwvT
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 18:46:20 -0700 (PDT)
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4MJgy46TLpz1RwvL
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Sep 2022 18:56:44 -0700 (PDT)
 Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
         reason="pass (just generated, assumed good)"
         header.d=opensource.wdc.com
@@ -56,27 +56,28 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
         opensource.wdc.com; h=content-transfer-encoding:content-type
         :in-reply-to:organization:from:references:to:content-language
         :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1662083176; x=1664675177; bh=s/pEcQWbpoeTLCyab6Ap6TariBRem4AckSz
-        VvuEamAk=; b=GZTFqWRCIo3Q1e4yOoxSJGKF18/efArj2MwKgIXZl0Qjw9PtK4d
-        wLVDi2USUV+Ra2bMs6m2nKjmvAXFVrbiFPmPcHqjIZrHAt4XK8aYeyVju4HsJmUj
-        ky1UNWVMy4pfZmw7dcs/M9uU/yeqacK98OFHbj0sdSTFaHcCHt2Vhl4ra1oPKQln
-        +/jlTEduS6WZ9GfmoULnHFyDD9O8o9D+Ewd/1Zpz1oddmuvaidy6mBv5KyI8oR9X
-        B3Es/pSXZpBiBEy4+HopYVP322p/vggXeV6fZ4FWVnZzdqnPkpiOSLSrwbhl3caO
-        xDTWYVbuY2tSP5zBKYYw56ROA9SJ72C36xA==
+        1662083804; x=1664675805; bh=al/CnY7kQXrcz0e7K7fDQHFhM+LHnJ6CS/A
+        HMcHJBWg=; b=K9lq6sRk1lf3n3qPe/oNm7QQKKzCi9/xw05H6VyRi9nyIJek0Yd
+        n4wmFsGNYStqe7guXF9GfrFvnNJ1pjH2i/dcDo4XIPbUGihoznqX4PIBJLbDCJ+P
+        70XOc056QCv6m5bmsq0J77dasC7aygvE+82hqLf6akOj+6G+9kHjQZME0r1ktiQ7
+        enB3EE5cceT3sD+sd0x2HsAUOIMEzJbVoW6RA0TfmxEMGEMlr3BvQ305rhEX5E42
+        EfQ2bqvJfEVjXvvEbGyb0P2/dR6e5FWKzwoZ427ZQwdOjsFZlpQLNa311eD0AccK
+        AkZuMut8ONWql5xJgZhk/Wk89LHIynPiw+g==
 X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
 Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
         by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gMuaepmdn4Wh for <linux-btrfs@vger.kernel.org>;
-        Thu,  1 Sep 2022 18:46:16 -0700 (PDT)
+        with ESMTP id CIyuYEoZ0RNx for <linux-btrfs@vger.kernel.org>;
+        Thu,  1 Sep 2022 18:56:44 -0700 (PDT)
 Received: from [10.225.163.56] (unknown [10.225.163.56])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4MJgjy1pR9z1RvLy;
-        Thu,  1 Sep 2022 18:46:14 -0700 (PDT)
-Message-ID: <d02a11c0-ea7c-8921-8993-5c9d3645c7ad@opensource.wdc.com>
-Date:   Fri, 2 Sep 2022 10:46:13 +0900
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4MJgy15tRJz1RvLy;
+        Thu,  1 Sep 2022 18:56:41 -0700 (PDT)
+Message-ID: <429d26b8-f7d8-6365-a2fa-f4ed892182e4@opensource.wdc.com>
+Date:   Fri, 2 Sep 2022 10:56:40 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.0
-Subject: Re: [PATCH 16/17] btrfs: split zone append bios in btrfs_submit_bio
+Subject: Re: [PATCH 15/17] btrfs: calculate file system wide queue limit for
+ zoned mode
 Content-Language: en-US
 To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
@@ -88,15 +89,15 @@ Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
         "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
         linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
 References: <20220901074216.1849941-1-hch@lst.de>
- <20220901074216.1849941-17-hch@lst.de>
+ <20220901074216.1849941-16-hch@lst.de>
 From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
 Organization: Western Digital Research
-In-Reply-To: <20220901074216.1849941-17-hch@lst.de>
+In-Reply-To: <20220901074216.1849941-16-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,521 +106,64 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 9/1/22 16:42, Christoph Hellwig wrote:
-> The current btrfs zoned device support is a little cumbersome in the data
-> I/O path as it requires the callers to not support more I/O than the
-> supported ZONE_APPEND size by the underlying device.  This leads to a lot
-
-Did you mean: "...as it requires the callers to not issue I/O larger than
-the supported ZONE_APPEND size for the underlying device." ?
-I think you do mean that :)
-
-> of extra accounting.  Instead change btrfs_submit_bio so that it can take
-> write bios of arbitrary size and form from the upper layers, and just
-> split them internally to the ZONE_APPEND queue limits.  Then remove all
-> the upper layer warts catering to limited write sized on zoned devices,
-> including the extra refcount in the compressed_bio.
+> To be able to split a write into properly sized zone append commands,
+> we need a queue_limits structure that contains the least common
+> denominator suitable for all devices.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  fs/btrfs/compression.c | 112 ++++++++---------------------------------
->  fs/btrfs/compression.h |   3 --
->  fs/btrfs/extent_io.c   |  74 ++++++---------------------
->  fs/btrfs/inode.c       |   4 --
->  fs/btrfs/volumes.c     |  40 +++++++++------
->  fs/btrfs/zoned.c       |  20 --------
->  fs/btrfs/zoned.h       |   9 ----
->  7 files changed, 62 insertions(+), 200 deletions(-)
+>  fs/btrfs/ctree.h |  4 +++-
+>  fs/btrfs/zoned.c | 36 ++++++++++++++++++------------------
+>  fs/btrfs/zoned.h |  1 -
+>  3 files changed, 21 insertions(+), 20 deletions(-)
 > 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 5e8b75b030ace..f89cac08dc4a4 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -255,57 +255,14 @@ static void btrfs_finish_compressed_write_work(struct work_struct *work)
->  static void end_compressed_bio_write(struct btrfs_bio *bbio)
->  {
->  	struct compressed_bio *cb = bbio->private;
-> +	struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
->  
-> -	if (bbio->bio.bi_status)
-> -		cb->status = bbio->bio.bi_status;
-> -
-> -	if (refcount_dec_and_test(&cb->pending_ios)) {
-> -		struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
-> +	cb->status = bbio->bio.bi_status;
-> +	queue_work(fs_info->compressed_write_workers, &cb->write_end_work);
->  
-> -		queue_work(fs_info->compressed_write_workers, &cb->write_end_work);
-> -	}
->  	bio_put(&bbio->bio);
->  }
->  
-> -/*
-> - * Allocate a compressed_bio, which will be used to read/write on-disk
-> - * (aka, compressed) * data.
-> - *
-> - * @cb:                 The compressed_bio structure, which records all the needed
-> - *                      information to bind the compressed data to the uncompressed
-> - *                      page cache.
-> - * @disk_byten:         The logical bytenr where the compressed data will be read
-> - *                      from or written to.
-> - * @endio_func:         The endio function to call after the IO for compressed data
-> - *                      is finished.
-> - */
-> -static struct bio *alloc_compressed_bio(struct compressed_bio *cb, u64 disk_bytenr,
-> -					blk_opf_t opf,
-> -					btrfs_bio_end_io_t endio_func)
-> -{
-> -	struct bio *bio;
-> -
-> -	bio = btrfs_bio_alloc(BIO_MAX_VECS, opf, cb->inode, endio_func, cb);
-> -	bio->bi_iter.bi_sector = disk_bytenr >> SECTOR_SHIFT;
-> -
-> -	if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
-> -		struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
-> -		struct extent_map *em;
-> -
-> -		em = btrfs_get_chunk_map(fs_info, disk_bytenr,
-> -					 fs_info->sectorsize);
-> -		if (IS_ERR(em)) {
-> -			bio_put(bio);
-> -			return ERR_CAST(em);
-> -		}
-> -
-> -		bio_set_dev(bio, em->map_lookup->stripes[0].dev->bdev);
-> -		free_extent_map(em);
-> -	}
-> -	refcount_inc(&cb->pending_ios);
-> -	return bio;
-> -}
-> -
->  /*
->   * worker function to build and submit bios for previously compressed pages.
->   * The corresponding pages in the inode should be marked for writeback
-> @@ -329,16 +286,12 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  	struct compressed_bio *cb;
->  	u64 cur_disk_bytenr = disk_start;
->  	blk_status_t ret = BLK_STS_OK;
-> -	const bool use_append = btrfs_use_zone_append(inode, disk_start);
-> -	const enum req_op bio_op = REQ_BTRFS_ONE_ORDERED |
-> -		(use_append ? REQ_OP_ZONE_APPEND : REQ_OP_WRITE);
->  
->  	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
->  	       IS_ALIGNED(len, fs_info->sectorsize));
->  	cb = kmalloc(sizeof(struct compressed_bio), GFP_NOFS);
->  	if (!cb)
->  		return BLK_STS_RESOURCE;
-> -	refcount_set(&cb->pending_ios, 1);
->  	cb->status = BLK_STS_OK;
->  	cb->inode = &inode->vfs_inode;
->  	cb->start = start;
-> @@ -349,8 +302,15 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  	INIT_WORK(&cb->write_end_work, btrfs_finish_compressed_write_work);
->  	cb->nr_pages = nr_pages;
->  
-> -	if (blkcg_css)
-> +	if (blkcg_css) {
->  		kthread_associate_blkcg(blkcg_css);
-> +		write_flags |= REQ_CGROUP_PUNT;
-> +	}
-> +
-> +	write_flags |= REQ_BTRFS_ONE_ORDERED;
-> +	bio = btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_WRITE | write_flags,
-> +			      cb->inode, end_compressed_bio_write, cb);
-> +	bio->bi_iter.bi_sector = cur_disk_bytenr >> SECTOR_SHIFT;
->  
->  	while (cur_disk_bytenr < disk_start + compressed_len) {
->  		u64 offset = cur_disk_bytenr - disk_start;
-> @@ -358,19 +318,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  		unsigned int real_size;
->  		unsigned int added;
->  		struct page *page = compressed_pages[index];
-> -		bool submit = false;
-> -
-> -		/* Allocate new bio if submitted or not yet allocated */
-> -		if (!bio) {
-> -			bio = alloc_compressed_bio(cb, cur_disk_bytenr,
-> -				bio_op | write_flags, end_compressed_bio_write);
-> -			if (IS_ERR(bio)) {
-> -				ret = errno_to_blk_status(PTR_ERR(bio));
-> -				break;
-> -			}
-> -			if (blkcg_css)
-> -				bio->bi_opf |= REQ_CGROUP_PUNT;
-> -		}
-> +
->  		/*
->  		 * We have various limits on the real read size:
->  		 * - page boundary
-> @@ -380,36 +328,21 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  		real_size = min_t(u64, real_size, compressed_len - offset);
->  		ASSERT(IS_ALIGNED(real_size, fs_info->sectorsize));
->  
-> -		if (use_append)
-> -			added = bio_add_zone_append_page(bio, page, real_size,
-> -					offset_in_page(offset));
-> -		else
-> -			added = bio_add_page(bio, page, real_size,
-> -					offset_in_page(offset));
-> -		/* Reached zoned boundary */
-> -		if (added == 0)
-> -			submit = true;
-> -
-> +		added = bio_add_page(bio, page, real_size, offset_in_page(offset));
-> +		/*
-> +		 * Maximum compressed extent is smaller than bio size limit,
-> +		 * thus bio_add_page() should always success.
-> +		 */
-> +		ASSERT(added == real_size);
->  		cur_disk_bytenr += added;
-> -
-> -		/* Finished the range */
-> -		if (cur_disk_bytenr == disk_start + compressed_len)
-> -			submit = true;
-> -
-> -		if (submit) {
-> -			ASSERT(bio->bi_iter.bi_size);
-> -			btrfs_bio(bio)->file_offset = start;
-> -			btrfs_submit_bio(fs_info, bio, 0);
-> -			bio = NULL;
-> -		}
-> -		cond_resched();
->  	}
->  
-> +	/* Finished the range */
-> +	ASSERT(bio->bi_iter.bi_size);
-> +	btrfs_bio(bio)->file_offset = start;
-> +	btrfs_submit_bio(fs_info, bio, 0);
->  	if (blkcg_css)
->  		kthread_associate_blkcg(NULL);
-> -
-> -	if (refcount_dec_and_test(&cb->pending_ios))
-> -		finish_compressed_bio_write(cb);
->  	return ret;
->  }
->  
-> @@ -613,7 +546,6 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->  		goto out;
->  	}
->  
-> -	refcount_set(&cb->pending_ios, 1);
->  	cb->status = BLK_STS_OK;
->  	cb->inode = inode;
->  
-> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-> index 1aa02903de697..25876f7a26949 100644
-> --- a/fs/btrfs/compression.h
-> +++ b/fs/btrfs/compression.h
-> @@ -30,9 +30,6 @@ static_assert((BTRFS_MAX_COMPRESSED % PAGE_SIZE) == 0);
->  #define	BTRFS_ZLIB_DEFAULT_LEVEL		3
->  
->  struct compressed_bio {
-> -	/* Number of outstanding bios */
-> -	refcount_t pending_ios;
-> -
->  	/* Number of compressed pages in the array */
->  	unsigned int nr_pages;
->  
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 33e80f8dd0b1b..40dadc46e00d8 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2597,7 +2597,6 @@ static int btrfs_bio_add_page(struct btrfs_bio_ctrl *bio_ctrl,
->  	u32 real_size;
->  	const sector_t sector = disk_bytenr >> SECTOR_SHIFT;
->  	bool contig = false;
-> -	int ret;
->  
->  	ASSERT(bio);
->  	/* The limit should be calculated when bio_ctrl->bio is allocated */
-> @@ -2646,12 +2645,7 @@ static int btrfs_bio_add_page(struct btrfs_bio_ctrl *bio_ctrl,
->  	if (real_size == 0)
->  		return 0;
->  
-> -	if (bio_op(bio) == REQ_OP_ZONE_APPEND)
-> -		ret = bio_add_zone_append_page(bio, page, real_size, pg_offset);
-> -	else
-> -		ret = bio_add_page(bio, page, real_size, pg_offset);
-> -
-> -	return ret;
-> +	return bio_add_page(bio, page, real_size, pg_offset);
->  }
->  
->  static void calc_bio_boundaries(struct btrfs_bio_ctrl *bio_ctrl,
-> @@ -2666,7 +2660,7 @@ static void calc_bio_boundaries(struct btrfs_bio_ctrl *bio_ctrl,
->  	 * to them.
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 5e57e3c6a1fd6..a37129363e184 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -1071,8 +1071,10 @@ struct btrfs_fs_info {
 >  	 */
->  	if (bio_ctrl->compress_type == BTRFS_COMPRESS_NONE &&
-> -	    bio_op(bio_ctrl->bio) == REQ_OP_ZONE_APPEND) {
-> +	    btrfs_use_zone_append(inode, logical)) {
->  		ordered = btrfs_lookup_ordered_extent(inode, file_offset);
->  		if (ordered) {
->  			bio_ctrl->len_to_oe_boundary = min_t(u32, U32_MAX,
-> @@ -2680,17 +2674,15 @@ static void calc_bio_boundaries(struct btrfs_bio_ctrl *bio_ctrl,
->  	bio_ctrl->len_to_oe_boundary = U32_MAX;
->  }
+>  	u64 zone_size;
 >  
-> -static int alloc_new_bio(struct btrfs_inode *inode,
-> -			 struct btrfs_bio_ctrl *bio_ctrl,
-> -			 struct writeback_control *wbc,
-> -			 blk_opf_t opf,
-> -			 btrfs_bio_end_io_t end_io_func,
-> -			 u64 disk_bytenr, u32 offset, u64 file_offset,
-> -			 enum btrfs_compression_type compress_type)
-> +static void alloc_new_bio(struct btrfs_inode *inode,
-> +			  struct btrfs_bio_ctrl *bio_ctrl,
-> +			  struct writeback_control *wbc, blk_opf_t opf,
-> +			  btrfs_bio_end_io_t end_io_func,
-> +			  u64 disk_bytenr, u32 offset, u64 file_offset,
-> +			  enum btrfs_compression_type compress_type)
->  {
->  	struct btrfs_fs_info *fs_info = inode->root->fs_info;
->  	struct bio *bio;
-> -	int ret;
->  
->  	bio = btrfs_bio_alloc(BIO_MAX_VECS, opf, &inode->vfs_inode, end_io_func,
->  			      NULL);
-> @@ -2708,40 +2700,14 @@ static int alloc_new_bio(struct btrfs_inode *inode,
->  
->  	if (wbc) {
->  		/*
-> -		 * For Zone append we need the correct block_device that we are
-> -		 * going to write to set in the bio to be able to respect the
-> -		 * hardware limitation.  Look it up here:
-> +		 * Pick the last added device to support cgroup writeback.  For
-> +		 * multi-device file systems this means blk-cgroup policies have
-> +		 * to always be set on the last added/replaced device.
-> +		 * This is a bit odd but has been like that for a long time.
->  		 */
-> -		if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
-> -			struct btrfs_device *dev;
-> -
-> -			dev = btrfs_zoned_get_device(fs_info, disk_bytenr,
-> -						     fs_info->sectorsize);
-> -			if (IS_ERR(dev)) {
-> -				ret = PTR_ERR(dev);
-> -				goto error;
-> -			}
-> -
-> -			bio_set_dev(bio, dev->bdev);
-> -		} else {
-> -			/*
-> -			 * Otherwise pick the last added device to support
-> -			 * cgroup writeback.  For multi-device file systems this
-> -			 * means blk-cgroup policies have to always be set on the
-> -			 * last added/replaced device.  This is a bit odd but has
-> -			 * been like that for a long time.
-> -			 */
-> -			bio_set_dev(bio, fs_info->fs_devices->latest_dev->bdev);
-> -		}
-> +		bio_set_dev(bio, fs_info->fs_devices->latest_dev->bdev);
->  		wbc_init_bio(wbc, bio);
-> -	} else {
-> -		ASSERT(bio_op(bio) != REQ_OP_ZONE_APPEND);
->  	}
-> -	return 0;
-> -error:
-> -	bio_ctrl->bio = NULL;
-> -	btrfs_bio_end_io(btrfs_bio(bio), errno_to_blk_status(ret));
-> -	return ret;
->  }
->  
->  /*
-> @@ -2767,7 +2733,6 @@ static int submit_extent_page(blk_opf_t opf,
->  			      enum btrfs_compression_type compress_type,
->  			      bool force_bio_submit)
->  {
-> -	int ret = 0;
->  	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
->  	unsigned int cur = pg_offset;
->  
-> @@ -2784,12 +2749,9 @@ static int submit_extent_page(blk_opf_t opf,
->  
->  		/* Allocate new bio if needed */
->  		if (!bio_ctrl->bio) {
-> -			ret = alloc_new_bio(inode, bio_ctrl, wbc, opf,
-> -					    end_io_func, disk_bytenr, offset,
-> -					    page_offset(page) + cur,
-> -					    compress_type);
-> -			if (ret < 0)
-> -				return ret;
-> +			alloc_new_bio(inode, bio_ctrl, wbc, opf, end_io_func,
-> +				      disk_bytenr, offset,
-> +				      page_offset(page) + cur, compress_type);
->  		}
->  		/*
->  		 * We must go through btrfs_bio_add_page() to ensure each
-> @@ -3354,10 +3316,6 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
->  		 * find_next_dirty_byte() are all exclusive
->  		 */
->  		iosize = min(min(em_end, end + 1), dirty_range_end) - cur;
-> -
-> -		if (btrfs_use_zone_append(inode, em->block_start))
-> -			op = REQ_OP_ZONE_APPEND;
-> -
->  		free_extent_map(em);
->  		em = NULL;
->  
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 9c562d36e4570..1a0bf381f2437 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -7727,10 +7727,6 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
->  	iomap->offset = start;
->  	iomap->bdev = fs_info->fs_devices->latest_dev->bdev;
->  	iomap->length = len;
-> -
-> -	if (write && btrfs_use_zone_append(BTRFS_I(inode), em->block_start))
-> -		iomap->flags |= IOMAP_F_ZONE_APPEND;
-> -
->  	free_extent_map(em);
->  
->  	return 0;
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index e497b63238189..0d828b58cc9c3 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -6632,13 +6632,22 @@ struct bio *btrfs_bio_alloc(unsigned int nr_vecs, blk_opf_t opf,
->  	return bio;
->  }
->  
-> -static struct bio *btrfs_split_bio(struct bio *orig, u64 map_length)
-> +static struct bio *btrfs_split_bio(struct btrfs_fs_info *fs_info,
-> +				   struct bio *orig, u64 map_length,
-> +				   bool use_append)
->  {
->  	struct btrfs_bio *orig_bbio = btrfs_bio(orig);
->  	struct bio *bio;
->  
-> -	bio = bio_split(orig, map_length >> SECTOR_SHIFT, GFP_NOFS,
-> -			&btrfs_clone_bioset);
-> +	if (use_append) {
-> +		unsigned int nr_segs;
-> +
-> +		bio = bio_split_rw(orig, &fs_info->limits, &nr_segs,
-> +				   &btrfs_clone_bioset, map_length);
-> +	} else {
-> +		bio = bio_split(orig, map_length >> SECTOR_SHIFT, GFP_NOFS,
-> +				&btrfs_clone_bioset);
-> +	}
->  	btrfs_bio_init(btrfs_bio(bio), orig_bbio->inode, NULL, orig_bbio);
->  
->  	btrfs_bio(bio)->file_offset = orig_bbio->file_offset;
-> @@ -6970,16 +6979,10 @@ static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
->  	 */
->  	if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
->  		u64 physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
-> +		u64 zone_start = round_down(physical, dev->fs_info->zone_size);
->  
-> -		if (btrfs_dev_is_sequential(dev, physical)) {
-> -			u64 zone_start = round_down(physical,
-> -						    dev->fs_info->zone_size);
-> -
-> -			bio->bi_iter.bi_sector = zone_start >> SECTOR_SHIFT;
-> -		} else {
-> -			bio->bi_opf &= ~REQ_OP_ZONE_APPEND;
-> -			bio->bi_opf |= REQ_OP_WRITE;
-> -		}
-> +		ASSERT(btrfs_dev_is_sequential(dev, physical));
-> +		bio->bi_iter.bi_sector = zone_start >> SECTOR_SHIFT;
->  	}
->  	btrfs_debug_in_rcu(dev->fs_info,
->  	"%s: rw %d 0x%x, sector=%llu, dev=%lu (%s id %llu), size=%u",
-> @@ -7179,9 +7182,11 @@ static bool btrfs_submit_chunk(struct btrfs_fs_info *fs_info, struct bio *bio,
->  			       int mirror_num)
->  {
->  	struct btrfs_bio *bbio = btrfs_bio(bio);
-> +	struct btrfs_inode *bi = BTRFS_I(bbio->inode);
->  	u64 logical = bio->bi_iter.bi_sector << 9;
->  	u64 length = bio->bi_iter.bi_size;
->  	u64 map_length = length;
-> +	bool use_append = btrfs_use_zone_append(bi, logical);
->  	struct btrfs_io_context *bioc = NULL;
->  	struct btrfs_io_stripe smap;
->  	int ret;
-> @@ -7193,8 +7198,11 @@ static bool btrfs_submit_chunk(struct btrfs_fs_info *fs_info, struct bio *bio,
->  		goto fail;
->  
->  	map_length = min(map_length, length);
-> +	if (use_append)
-> +		map_length = min(map_length, fs_info->max_zone_append_size);
-> +
->  	if (map_length < length) {
-> -		bio = btrfs_split_bio(bio, map_length);
-> +		bio = btrfs_split_bio(fs_info, bio, map_length, use_append);
->  		bbio = btrfs_bio(bio);
->  	}
->  
-> @@ -7210,9 +7218,9 @@ static bool btrfs_submit_chunk(struct btrfs_fs_info *fs_info, struct bio *bio,
->  	}
->  
->  	if (btrfs_op(bio) == BTRFS_MAP_WRITE) {
-> -		struct btrfs_inode *bi = BTRFS_I(bbio->inode);
-> -
-> -		if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
-> +		if (use_append) {
-> +			bio->bi_opf &= ~REQ_OP_WRITE;
-> +			bio->bi_opf |= REQ_OP_ZONE_APPEND;
->  			ret = btrfs_extract_ordered_extent(btrfs_bio(bio));
->  			if (ret)
->  				goto fail_put_bio;
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 6e04fbbd76b92..988e9fc5a6b7b 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -1818,26 +1818,6 @@ int btrfs_sync_zone_write_pointer(struct btrfs_device *tgt_dev, u64 logical,
->  	return btrfs_zoned_issue_zeroout(tgt_dev, physical_pos, length);
->  }
->  
-> -struct btrfs_device *btrfs_zoned_get_device(struct btrfs_fs_info *fs_info,
-> -					    u64 logical, u64 length)
-> -{
-> -	struct btrfs_device *device;
-> -	struct extent_map *em;
-> -	struct map_lookup *map;
-> -
-> -	em = btrfs_get_chunk_map(fs_info, logical, length);
-> -	if (IS_ERR(em))
-> -		return ERR_CAST(em);
-> -
-> -	map = em->map_lookup;
-> -	/* We only support single profile for now */
-> -	device = map->stripes[0].dev;
-> -
-> -	free_extent_map(em);
-> -
-> -	return device;
-> -}
-> -
->  /**
->   * Activate block group and underlying device zones
->   *
-> diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-> index 0f22b22fe359f..74153ab52169f 100644
-> --- a/fs/btrfs/zoned.h
-> +++ b/fs/btrfs/zoned.h
-> @@ -64,8 +64,6 @@ void btrfs_revert_meta_write_pointer(struct btrfs_block_group *cache,
->  int btrfs_zoned_issue_zeroout(struct btrfs_device *device, u64 physical, u64 length);
->  int btrfs_sync_zone_write_pointer(struct btrfs_device *tgt_dev, u64 logical,
->  				  u64 physical_start, u64 physical_pos);
-> -struct btrfs_device *btrfs_zoned_get_device(struct btrfs_fs_info *fs_info,
-> -					    u64 logical, u64 length);
->  bool btrfs_zone_activate(struct btrfs_block_group *block_group);
->  int btrfs_zone_finish(struct btrfs_block_group *block_group);
->  bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags);
-> @@ -209,13 +207,6 @@ static inline int btrfs_sync_zone_write_pointer(struct btrfs_device *tgt_dev,
->  	return -EOPNOTSUPP;
->  }
->  
-> -static inline struct btrfs_device *btrfs_zoned_get_device(
-> -						  struct btrfs_fs_info *fs_info,
-> -						  u64 logical, u64 length)
-> -{
-> -	return ERR_PTR(-EOPNOTSUPP);
-> -}
-> -
->  static inline bool btrfs_zone_activate(struct btrfs_block_group *block_group)
->  {
->  	return true;
+> -	/* Max size to emit ZONE_APPEND write command */
+> +	/* Constraints for ZONE_APPEND commands: */
+> +	struct queue_limits limits;
+>  	u64 max_zone_append_size;
+
+Can't we get rid of this one and have the code directly use
+fs_info->limits.max_zone_append_sectors through a little helper doing a
+conversion to bytes (a 9 bit shift) ?
+
+[...]
+>  	/* Count zoned devices */
+>  	list_for_each_entry(device, &fs_devices->devices, dev_list) {
+>  		enum blk_zoned_model model;
+> @@ -685,11 +677,9 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
+>  				ret = -EINVAL;
+>  				goto out;
+>  			}
+> -			if (!max_zone_append_size ||
+> -			    (zone_info->max_zone_append_size &&
+> -			     zone_info->max_zone_append_size < max_zone_append_size))
+> -				max_zone_append_size =
+> -					zone_info->max_zone_append_size;
+> +			blk_stack_limits(lim,
+> +					 &bdev_get_queue(device->bdev)->limits,
+> +					 0);
+
+This does:
+
+	t->max_zone_append_sectors = min(t->max_zone_append_sectors,
+                                        b->max_zone_append_sectors);
+
+So if we are mixing zoned and non-zoned devices in a multi-dev volume,
+we'll end up with max_zone_append_sectors being 0. The previous code
+prevented that.
+
+Note that I am not sure if it is allowed to mix zoned and non-zoned drives
+in the same volume. Given that we have a fake zone emulation for non-zoned
+drives with zoned btrfs, I do not see why it would not work. But I may be
+wrong.
 
 -- 
 Damien Le Moal
