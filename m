@@ -2,57 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DE85AB94B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 22:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D555AB95C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 22:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbiIBUQ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Sep 2022 16:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
+        id S229926AbiIBUQ6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Sep 2022 16:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbiIBUQx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 16:16:53 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13EF7DAEF1
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 13:16:40 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id cr9so2324849qtb.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Sep 2022 13:16:40 -0700 (PDT)
+        with ESMTP id S229907AbiIBUQy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 16:16:54 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E568DD8B3B
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 13:16:41 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id q8so2251394qvr.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Sep 2022 13:16:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date;
-        bh=HQL/8uY1z9MwiIcKW+FEa28PiwRxgGSc0LdbXMGJHaw=;
-        b=dOuF0Spvpz7KLrdLnDyThGALd4v2ibQoLxp1Q7f/AiN3kq1m8gsYGEQhcVT/4z6ldd
-         zbmRfzpFP3FFb7aEN1DptDXLySoTWoDYldRiTJToUfH+t1/aCX4DQU6o/8MPz9lcLgCh
-         ++3L0H9W3eP6iUz2VtBfYlhAkwiAC1wp0IFTvdAgcehFGniVchRZZIhL4e55Ks9LIAvV
-         3dI32Iic4ZyYjzK/YDQfGD8VyN0bYbKUlLpNmE55eTebA2qclswCYJrpryfy7QOmOZ1S
-         Ji+yUocvXG3uOyOGqt+voZtQ1xqdMtHHI4pLw1C84AS+/IptqlS/JjbS37MBXd29l1hA
-         B5Pw==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date;
+        bh=Dzw3EWx7kn6eUX0ykefO6AJK6Hnu5AfB5HKCh1k4CsU=;
+        b=yI4y11bSJy+ywMeKeo5RjBz2OObSFTGcXC3MklHWp+5k5EAa7wT6ys3vBTH+IZpPrU
+         8yx/VzmU5d3SR8GiTskg+sqj9oUcXml/NsKHrcf9XbFu8hO0edSzArhfG0l+ZJnRXFc0
+         CrsAOt1u0pObSJN0jOIXfSG4rJzWv/adJvE4Us+GMVg6WKJchfD8y1VF0ybLYae4h6Oc
+         Ir+THxuAXx+DSNDoptbp/KuSOdHTzuLVNN8ymZHv/x0nctGTqQJCGZ6H9WQVwmd2ydA4
+         QmnGn9ZH41Ju8gEQOUuJxf3YhwCl5hi0/B/Ksx2QiLgFvIKNvMj82fGJO6eUGCJidKIo
+         vflw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date;
-        bh=HQL/8uY1z9MwiIcKW+FEa28PiwRxgGSc0LdbXMGJHaw=;
-        b=FUJHg4DHv8Q1+RKwuTWW4WHA9g6K7LsQs28y7zkMTCH1Tp7qgsOWgXzgseHV5E089J
-         31KINqu1EZSEEaW2r/+Ysqc107ub6FdypNDR+rhf0OGRkN/XG14FrZwcbDnzyooBkn3F
-         Q0gCADJ0454OGYr24WcY0i5kk2k+csweXx56/WgZ0Or3wurEExijvCPm5s2LKKu7QKlu
-         kBm8Mu/Chuu4ozay4/FPx5KSMdXiFFCCHXmd5raKWPoiYcPm9igIhycdHzsvdfGWLJwO
-         RoZv8vqiRFbf/b/tBED44/TefYDZKKJxo2UXPgsiNj6cSrK58M9rY3SANjzTvv073Zd9
-         1OhQ==
-X-Gm-Message-State: ACgBeo25mhxChwPcfdrFQAGRFD95OwHf0xoGDa9Dd7fQRN61rCIDzl+L
-        bV/ZQkzHDmKv1xKghaWggOe4s/85SM1e4g==
-X-Google-Smtp-Source: AA6agR57JeUA6HT8fjtWSMmpTB2Edw5lhGS6vr3TV75BWV/XKdvR2ddAKkVEKh+6sBAr43sJmbJ5mA==
-X-Received: by 2002:a05:622a:138f:b0:344:4ff1:f98f with SMTP id o15-20020a05622a138f00b003444ff1f98fmr29175958qtk.59.1662149798812;
-        Fri, 02 Sep 2022 13:16:38 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=Dzw3EWx7kn6eUX0ykefO6AJK6Hnu5AfB5HKCh1k4CsU=;
+        b=K4Laq/Cif5jGt6qrO+XwO72lEZXNVFjzlgVfKpXZjAuvJcanSsE4fWIjUbKAR4OM0m
+         jaLtyGrEEEkPvVSMrU7ecGlGihm1zJkgNH/nNwKrT+kjTtICVJHc8BfY1D9oi58N+fSK
+         LspWq6Hq9I4yNIY4U+2f4PgtGi2UdIQKV3J+fDhf2GliVIK9JiAJ77n9SLQYjYU+NNtj
+         aMSwupGyvomG/VI+gwHjdh/6zqk8UngVc9lCP33LdyR3B5GhRq9XM7zPHg/7hrB3sJ6x
+         +kic/8Wq9+ByRfH6AywT4C45/BJ/SG1uJVUw/2bZi7816DYGRHxFJPCv4/h5/yuoN7lR
+         cnQw==
+X-Gm-Message-State: ACgBeo3LquHxViZdoXjnkGR01br9467+Wp9hWaFks2z0/6hKEkkXbbgA
+        Q3fh04sOMb1JSbUTFae089+53PYVtXPCzA==
+X-Google-Smtp-Source: AA6agR6C8oHC9j1qcoexhtgGdpzB6TaqecYU7M3fftWTRrPDkiQdWXjRpDM0kDKmxmgN4AMJCujMXw==
+X-Received: by 2002:a05:6214:d4e:b0:499:669:de05 with SMTP id 14-20020a0562140d4e00b004990669de05mr21164525qvr.9.1662149800535;
+        Fri, 02 Sep 2022 13:16:40 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id e5-20020ac80105000000b00342b7e4241fsm1575702qtg.77.2022.09.02.13.16.37
+        by smtp.gmail.com with ESMTPSA id 184-20020a3706c1000000b006b6757a11fcsm1885339qkg.36.2022.09.02.13.16.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Sep 2022 13:16:38 -0700 (PDT)
+        Fri, 02 Sep 2022 13:16:40 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 00/31] btrfs: move extent_io_tree code and cleanups
-Date:   Fri,  2 Sep 2022 16:16:05 -0400
-Message-Id: <cover.1662149276.git.josef@toxicpanda.com>
+Subject: [PATCH 01/31] btrfs: cleanup clean_io_failure
+Date:   Fri,  2 Sep 2022 16:16:06 -0400
+Message-Id: <7d5c4a3ca2ceb19fb3c84d5f3e716828cae0fb86.1662149276.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1662149276.git.josef@toxicpanda.com>
+References: <cover.1662149276.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -64,105 +67,126 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+This is exported, so rename it to btrfs_clean_io_failure.  Additionally
+we are passing in the io tree's and such from the inode, so instead of
+doing all that simply pass in the inode itself and get all the
+components we need directly inside of btrfs_clean_io_failure.
 
-In working on extent tree v2 I got really bogged down in trying to sync work
-between btrfs-progs and the kernel.  It basically takes me 3x as long, because
-there's a lot of different things missing in btrfs-progs, so each patchset has
-to be done from scratch and tested completely differently.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/compression.c    |  5 ++---
+ fs/btrfs/extent-io-tree.h |  6 ++----
+ fs/btrfs/extent_io.c      | 17 +++++++----------
+ fs/btrfs/inode.c          |  7 ++-----
+ 4 files changed, 13 insertions(+), 22 deletions(-)
 
-Additionally there's just a lot of tech-debt in these areas in general.  So
-before tackling the rest of extent-tree-v2 I'm spending some time cleaning up
-things we all know are terrible.  This is the first step in that direction,
-finishing the separation of the extent_io_tree code from extent_io.c.  I started
-this a while ago, but got bogged down in other things.
-
-This has 3 distinct parts
-
-1. Cleanup the io_failure_record code.  This has been tightly integrated into
-   the extent_io_tree code forever without much reason for it.  The first part
-   of this series moves that handling into it's own tree, and uses our existing
-   helpers to reduce the code quite a bit.
-
-2. Move the code out of extent_io.c.  This is easier than previous code moves
-   because I did a lot of the prep work earlier.  Unfortunately there is one big
-   patch that copy and pastes all the core code, since it all depends on itself
-   and would be more annoying to move.  However the independent parts were
-   moved piece by piece.
-
-3. A wholesale cleanup of the extent_io_tree code.  We have a ton of helpers
-   here, that have all grown a ton of arguments over the years.  I've trimmed
-   down the arguments for our core helpers, and hidden the rest internally
-   inside of extent-io-tree.c.  Additionally I've cleaned up the lock/unlock
-   extent bit helpers so we only have one lock_extent/unlock_extent variant that
-   gets used everywhere.
-
-I've tested this locally to make sure I didn't break anything.  This isn't a
-simple code move so do please review most of it, the patches that start with
-"move X" are pure code move patches, but the rest do change things.  Thanks,
-
-Josef
-
-Josef Bacik (31):
-  btrfs: cleanup clean_io_failure
-  btrfs: unexport internal failrec functions
-  btrfs: stop using extent_io_tree for io_failure_record's
-  btrfs: use find_first_extent_bit in btrfs_clean_io_failure
-  btrfs: separate out the extent state and extent buffer init code
-  btrfs: separate out the eb and extent state leak helpers
-  btrfs: temporarily export alloc_extent_state helpers
-  btrfs: move extent state init and alloc functions to their own file
-  btrfs: convert BUG_ON(EXTENT_BIT_LOCKED) checks to ASSERT's
-  btrfs: move simple extent bit helpers out of extent_io.c
-  btrfs: export wait_extent_bit
-  btrfs: move the core extent_io_tree code into extent-io-tree.c
-  btrfs: remove struct tree_entry
-  btrfs: use next_state instead of rb_next where we can
-  btrfs: make tree_search return struct extent_state
-  btrfs: make tree_search_for_insert return extent_state
-  btrfs: make tree_search_prev_next return extent_state's
-  btrfs: use next_state/prev_state in merge_state
-  btrfs: remove temporary exports for extent_state movement
-  btrfs: move irrelevant prototypes to their appropriate header
-  btrfs: drop exclusive_bits from set_extent_bit
-  btrfs: remove the wake argument from clear_extent_bits
-  btrfs: remove failed_start argument from set_extent_bit
-  btrfs: drop extent_changeset from set_extent_bit
-  btrfs: unify the lock/unlock extent variants
-  btrfs: get rid of track_uptodate
-  btrfs: get rid of ->dirty_bytes
-  btrfs: don't clear CTL bits when trying to release extent state
-  btrfs: replace delete argument with EXTENT_CLEAR_ALL_BITS
-  btrfs: don't init io tree with private data for non inodes
-  btrfs: remove is_data_inode() checks in extent-io-tree.c
-
- fs/btrfs/Makefile                |    2 +-
- fs/btrfs/btrfs_inode.h           |    3 +-
- fs/btrfs/compression.c           |   11 +-
- fs/btrfs/disk-io.c               |   10 +-
- fs/btrfs/extent-io-tree.c        | 1673 ++++++++++++++++++++++++
- fs/btrfs/extent-io-tree.h        |  119 +-
- fs/btrfs/extent_io.c             | 2055 ++----------------------------
- fs/btrfs/extent_io.h             |   14 +-
- fs/btrfs/extent_map.c            |    2 +-
- fs/btrfs/file-item.c             |    2 +-
- fs/btrfs/file.c                  |   48 +-
- fs/btrfs/free-space-cache.c      |   24 +-
- fs/btrfs/inode.c                 |  159 ++-
- fs/btrfs/ioctl.c                 |   24 +-
- fs/btrfs/misc.h                  |   35 +
- fs/btrfs/ordered-data.c          |    4 +-
- fs/btrfs/reflink.c               |   10 +-
- fs/btrfs/relocation.c            |   18 +-
- fs/btrfs/super.c                 |   17 +-
- fs/btrfs/tests/extent-io-tests.c |    6 +-
- fs/btrfs/tests/inode-tests.c     |    8 +-
- fs/btrfs/transaction.c           |    4 +-
- fs/btrfs/tree-log.c              |    8 +-
- include/trace/events/btrfs.h     |    1 -
- 24 files changed, 2077 insertions(+), 2180 deletions(-)
- create mode 100644 fs/btrfs/extent-io-tree.c
-
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 1c77de3239bc..cac0eeceb815 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -183,9 +183,8 @@ static void end_compressed_bio_read(struct btrfs_bio *bbio)
+ 		if (!status &&
+ 		    (!csum || !btrfs_check_data_csum(inode, bbio, offset,
+ 						     bv.bv_page, bv.bv_offset))) {
+-			clean_io_failure(fs_info, &bi->io_failure_tree,
+-					 &bi->io_tree, start, bv.bv_page,
+-					 btrfs_ino(bi), bv.bv_offset);
++			btrfs_clean_io_failure(bi, start, bv.bv_page,
++					       bv.bv_offset);
+ 		} else {
+ 			int ret;
+ 
+diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+index ec2f8b8e6faa..bb71b4a69022 100644
+--- a/fs/btrfs/extent-io-tree.h
++++ b/fs/btrfs/extent-io-tree.h
+@@ -256,9 +256,7 @@ void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start,
+ int free_io_failure(struct extent_io_tree *failure_tree,
+ 		    struct extent_io_tree *io_tree,
+ 		    struct io_failure_record *rec);
+-int clean_io_failure(struct btrfs_fs_info *fs_info,
+-		     struct extent_io_tree *failure_tree,
+-		     struct extent_io_tree *io_tree, u64 start,
+-		     struct page *page, u64 ino, unsigned int pg_offset);
++int btrfs_clean_io_failure(struct btrfs_inode *inode, u64 start,
++			   struct page *page, unsigned int pg_offset);
+ 
+ #endif /* BTRFS_EXTENT_IO_TREE_H */
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 591c191a58bc..acfbf029c18e 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2431,11 +2431,13 @@ static int prev_mirror(const struct io_failure_record *failrec, int cur_mirror)
+  * each time an IO finishes, we do a fast check in the IO failure tree
+  * to see if we need to process or clean up an io_failure_record
+  */
+-int clean_io_failure(struct btrfs_fs_info *fs_info,
+-		     struct extent_io_tree *failure_tree,
+-		     struct extent_io_tree *io_tree, u64 start,
+-		     struct page *page, u64 ino, unsigned int pg_offset)
++int btrfs_clean_io_failure(struct btrfs_inode *inode, u64 start,
++			   struct page *page, unsigned int pg_offset)
+ {
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++	struct extent_io_tree *failure_tree = &inode->io_failure_tree;
++	struct extent_io_tree *io_tree = &inode->io_tree;
++	u64 ino = btrfs_ino(inode);
+ 	u64 private;
+ 	struct io_failure_record *failrec;
+ 	struct extent_state *state;
+@@ -2963,7 +2965,6 @@ static void end_bio_extent_readpage(struct btrfs_bio *bbio)
+ {
+ 	struct bio *bio = &bbio->bio;
+ 	struct bio_vec *bvec;
+-	struct extent_io_tree *tree, *failure_tree;
+ 	struct processed_extent processed = { 0 };
+ 	/*
+ 	 * The offset to the beginning of a bio, since one bio can never be
+@@ -2990,8 +2991,6 @@ static void end_bio_extent_readpage(struct btrfs_bio *bbio)
+ 			"end_bio_extent_readpage: bi_sector=%llu, err=%d, mirror=%u",
+ 			bio->bi_iter.bi_sector, bio->bi_status,
+ 			bbio->mirror_num);
+-		tree = &BTRFS_I(inode)->io_tree;
+-		failure_tree = &BTRFS_I(inode)->io_failure_tree;
+ 
+ 		/*
+ 		 * We always issue full-sector reads, but if some block in a
+@@ -3032,9 +3031,7 @@ static void end_bio_extent_readpage(struct btrfs_bio *bbio)
+ 			loff_t i_size = i_size_read(inode);
+ 			pgoff_t end_index = i_size >> PAGE_SHIFT;
+ 
+-			clean_io_failure(BTRFS_I(inode)->root->fs_info,
+-					 failure_tree, tree, start, page,
+-					 btrfs_ino(BTRFS_I(inode)), 0);
++			btrfs_clean_io_failure(BTRFS_I(inode), start, page, 0);
+ 
+ 			/*
+ 			 * Zero out the remaining part if this range straddles
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index b9d40e25d978..a1b9e2a455d9 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7997,8 +7997,6 @@ static blk_status_t btrfs_check_read_dio_bio(struct btrfs_dio_private *dip,
+ {
+ 	struct inode *inode = dip->inode;
+ 	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
+-	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
+-	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
+ 	const bool csum = !(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM);
+ 	blk_status_t err = BLK_STS_OK;
+ 	struct bvec_iter iter;
+@@ -8011,9 +8009,8 @@ static blk_status_t btrfs_check_read_dio_bio(struct btrfs_dio_private *dip,
+ 		if (uptodate &&
+ 		    (!csum || !btrfs_check_data_csum(inode, bbio, offset, bv.bv_page,
+ 					       bv.bv_offset))) {
+-			clean_io_failure(fs_info, failure_tree, io_tree, start,
+-					 bv.bv_page, btrfs_ino(BTRFS_I(inode)),
+-					 bv.bv_offset);
++			btrfs_clean_io_failure(BTRFS_I(inode), start,
++					       bv.bv_page, bv.bv_offset);
+ 		} else {
+ 			int ret;
+ 
 -- 
 2.26.3
 
