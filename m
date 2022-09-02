@@ -2,71 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AB55AB029
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 14:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75CA5AB24E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 15:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237757AbiIBMu1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Sep 2022 08:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34710 "EHLO
+        id S238650AbiIBNze (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Sep 2022 09:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238008AbiIBMt3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 08:49:29 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE97F47E5;
-        Fri,  2 Sep 2022 05:36:10 -0700 (PDT)
+        with ESMTP id S237418AbiIBNzD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 09:55:03 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85243E9AAD;
+        Fri,  2 Sep 2022 06:29:13 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 667CE20440;
-        Fri,  2 Sep 2022 12:29:07 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6BC1C345C5;
+        Fri,  2 Sep 2022 12:33:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662121747;
+        t=1662122035;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6qCFOxxO+LMYV00zUvZObOY0/jrL79ZSovJuTBVwyco=;
-        b=iJ9CQY5kfRwAbA7g7Z3xJW2BCrOA8wgnIWzXMxAoCfpdW4xdtHXMD1ZiDvaVjyw+GEfo+1
-        fkAVWImqpV+d0yal5teYFFdsCYUEV58dewquPOoUKGdIKWaH7VqoysnbS5phGgD2/DTdvL
-        +EUMAsekpIKicwyE2KGUx3VScEQsBG8=
+        bh=+jpnO5WGU41jzsfLpSuXHy9sFbG9yNfncDVPRsohl2M=;
+        b=dKOpAPRGGbiosk2vfP4sbjBaI5m8lQFe+z7FpTyWw9pEnj0bEiWiDPnO1UeKqaZYUVF7GC
+        ONk4tq9i9RomYL73tc0i75G+W/Y2WurBqQm1X0ZnNdCyY6+A3tfjQIULxRDW7sVSNHDLVK
+        B4nOJyx0osNlSRLidjvyKAcuC+5ig5g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662121747;
+        s=susede2_ed25519; t=1662122035;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6qCFOxxO+LMYV00zUvZObOY0/jrL79ZSovJuTBVwyco=;
-        b=7fSqaAfgJjkgR9p7k+ZY+McQ0vk01A43UYqnLtSWHex+mxmMHoP05vUFaLutll0xv3OdSe
-        9MbNE3TzLBFWLxAw==
+        bh=+jpnO5WGU41jzsfLpSuXHy9sFbG9yNfncDVPRsohl2M=;
+        b=qk0qxrr0n9Qkr7w2j/qhhhqoaKRZLn5cucefTX6b4AiNFX5ESRDBTgsDgN8onErCkEW3tI
+        iDveCGWCyj8cdjDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3812613328;
-        Fri,  2 Sep 2022 12:29:07 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 27A3C13328;
+        Fri,  2 Sep 2022 12:33:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id sJO2DBP3EWOnZgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 02 Sep 2022 12:29:07 +0000
-Date:   Fri, 2 Sep 2022 14:23:47 +0200
+        id DkwhCDP4EWPTaAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 02 Sep 2022 12:33:55 +0000
+Date:   Fri, 2 Sep 2022 14:28:35 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     cgel.zte@gmail.com
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhang songyi <zhang.songyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] btrfs: Remove the unneeded result variable
-Message-ID: <20220902122346.GT13489@twin.jikos.cz>
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 06/23] btrfs: Convert btree_write_cache_pages() to use
+ filemap_get_folio_tag()
+Message-ID: <20220902122835.GU13489@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, cgel.zte@gmail.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        zhang songyi <zhang.songyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20220902074810.319914-1-zhang.songyi@zte.com.cn>
+Mail-Followup-To: dsterba@suse.cz,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20220901220138.182896-1-vishal.moola@gmail.com>
+ <20220901220138.182896-7-vishal.moola@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220902074810.319914-1-zhang.songyi@zte.com.cn>
+In-Reply-To: <20220901220138.182896-7-vishal.moola@gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
@@ -77,18 +84,10 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 02, 2022 at 07:48:10AM +0000, cgel.zte@gmail.com wrote:
-> From: zhang songyi <zhang.songyi@zte.com.cn>
+On Thu, Sep 01, 2022 at 03:01:21PM -0700, Vishal Moola (Oracle) wrote:
+> Converted function to use folios throughout. This is in preparation for
+> the removal of find_get_pages_range_tag().
 > 
-> Return the sysfs_emit() directly instead of storing it in another
-> redundant variable.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
-There's another patch doing a similar cleanup in btrfs_load_inode_props,
-can you please resend so it's all done in one patch? I did not want to
-apply a single fix but now that there are a few more instances of the
-pattern it makes slightly more sense to apply it. Thanks.
-
-https://lore.kernel.org/linux-btrfs/20220830083914.276926-1-ye.xingchen@zte.com.cn/
+Acked-by: David Sterba <dsterba@suse.com>
