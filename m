@@ -2,116 +2,218 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C94345AA911
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 09:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5825AA9E7
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 10:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235381AbiIBHsS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Sep 2022 03:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
+        id S235250AbiIBIYz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Sep 2022 04:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235313AbiIBHsR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 03:48:17 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA65A1D6E;
-        Fri,  2 Sep 2022 00:48:16 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id r69so1297662pgr.2;
-        Fri, 02 Sep 2022 00:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=M+fD8FD5+7TDwDC6zAvoE0sCYdDhCFrxXlMrBZifOxM=;
-        b=A5V0pbkqwQx0stbYGz0ZUwDlgAMJqcBrTtkKVn7KAd1zhyM4/Efp2XpNox9kmDJ9JO
-         kUcB0J2ZK8CiR+iDJh4dq+Y7SGbdI22z0XfUDY0OJxm7mOCbUmfkQUnLAjsX25ZT1ubz
-         dqXlqWzFOKnggz923HP1JX3/ROhpCga0S9Ppl9+VQLZ6dqqt7Nw7Dq9+H3HGuG9JHDjr
-         dtYvXnlj8P5Zaoc6Y/FifTDEoZbgcGI1756ggo25mR2f6uka2NgL5FNEZvHUtHZbiynD
-         p99ltZevNXFxuNG5vWZW71lNXjyo71pIPKRoe9xNXIeqVt+RXYXml3pvymqkUw20mR+T
-         M52Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=M+fD8FD5+7TDwDC6zAvoE0sCYdDhCFrxXlMrBZifOxM=;
-        b=YlPJ4AtZOqN/ylCxHrooVFRymj5XeEtYtQbBTlSVJ389vlw/mDBp0+E8H7EK1TG7fI
-         lq52IUfm1JkUr0hDHUbve84LEXcVWUxkX36qKiZnqJonkL5ecKjPDkwOAHuUU9+cCWV9
-         ADlfYduVk08BojxurhdQ9wPRpQ6DLci8VEenOSw4Yi2xB5Qlf0hQVylhZwx/81P1AMDW
-         J3dxIIM4QeOhF3+aS7obGYmYxVDPS1FvGEjYY9k0i49ahaKnaT1k3S8CRJG4/cQxHBlC
-         JRaU3uSXxnSVxN6CVmRsVH+NFOT3qD9c9l5unJj7ywu/9/t4ymclsnPoHTlrNY3oiQK8
-         dMew==
-X-Gm-Message-State: ACgBeo2KeqoRbjaZ5f1my2wahKvQa3Tbk5cBcClIDwN2vub9DTpN3fnZ
-        kun4I07lU4DAt9vuWuBRX09qLpmSHq4=
-X-Google-Smtp-Source: AA6agR4a9HbQFBgaX1xpz2+hcOxbmCixu3pSM4Ye+5Zl5li6Mu12y4rCUC9WkUMnV3T47ZuUXZUmng==
-X-Received: by 2002:aa7:92d8:0:b0:537:acbf:5e85 with SMTP id k24-20020aa792d8000000b00537acbf5e85mr34639862pfa.61.1662104896493;
-        Fri, 02 Sep 2022 00:48:16 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id az11-20020a056a02004b00b004296719538esm780208pgb.40.2022.09.02.00.48.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Sep 2022 00:48:16 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: zhang.songyi@zte.com.cn
-To:     clm@fb.com
-Cc:     josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhang songyi <zhang.songyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] btrfs: Remove the unneeded result variable
-Date:   Fri,  2 Sep 2022 07:48:10 +0000
-Message-Id: <20220902074810.319914-1-zhang.songyi@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S233218AbiIBIYx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 04:24:53 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB491022
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 01:24:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A30E5B829F8
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 08:24:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69A93C43140
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 08:24:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662107089;
+        bh=nbwEQkZjBDq+36TxrIWaXGs0nsRCqXpQ0KOI+T9rc3w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iry0d9rb33uN7zQg38wR3T4vBlPzt5tyCcmm6Hfshnfhcs3sL2mgMkHQuOjTARmGG
+         drwdDvXo6J/AXpaAl+w+PUcJqDf3kMLhBg6hdMXB7LQwpDHUpK/VRCr+/1m+Rgi4sd
+         rUvz56GSmUq9XyOoz1H2e1gPr2IqWzvhT8YUtU+vRGC90iptxJ4yWR9PAWzH35gLg5
+         hwx4J3JF1YxzoSP9712f9z0t80McNtEt6FWK6I3ykbDj+1bjmdBrt/xL0Gp/WWyVE+
+         AsbrnRb7xN/Hmo4v3/voapecQZG/bHzFId5pC1Do735RSo/m4okM0Q1tSkNj7zoftb
+         xdrHS4/5SC95g==
+Received: by mail-ot1-f51.google.com with SMTP id h20-20020a056830165400b00638ac7ddba5so973686otr.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Sep 2022 01:24:49 -0700 (PDT)
+X-Gm-Message-State: ACgBeo0/YBRBg6+PFYNGuHaqbSXEIw8DbS1i1UHPbpmxUjYvwLt0t+mz
+        29AduC4bwuvIjx4Mtp+jYpi+4x1/a1EqrJa71k4=
+X-Google-Smtp-Source: AA6agR6qVIzLk70LDHorbq/kee1l4pfIGeoPH0MOWo2POMhUBH+DqfH1LdYorobauMEy28o1SLcHdH94r9lB93Ru6ls=
+X-Received: by 2002:a9d:6f08:0:b0:638:8a51:2e46 with SMTP id
+ n8-20020a9d6f08000000b006388a512e46mr14379747otq.363.1662107088399; Fri, 02
+ Sep 2022 01:24:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1662022922.git.fdmanana@suse.com> <20220902085320.642A.409509F4@e16-tech.com>
+In-Reply-To: <20220902085320.642A.409509F4@e16-tech.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Fri, 2 Sep 2022 09:24:12 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H79BWAJVk2ecWqa4mbW0+WFJrEX-=a+Zg9FOc_UcAKjLg@mail.gmail.com>
+Message-ID: <CAL3q7H79BWAJVk2ecWqa4mbW0+WFJrEX-=a+Zg9FOc_UcAKjLg@mail.gmail.com>
+Subject: Re: [PATCH 00/10] btrfs: make lseek and fiemap much more efficient
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: zhang songyi <zhang.songyi@zte.com.cn>
+On Fri, Sep 2, 2022 at 2:09 AM Wang Yugui <wangyugui@e16-tech.com> wrote:
+>
+> Hi,
+>
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > We often get reports of fiemap and hole/data seeking (lseek) being too slow
+> > on btrfs, or even unusable in some cases due to being extremely slow.
+> >
+> > Some recent reports for fiemap:
+> >
+> >     https://lore.kernel.org/linux-btrfs/21dd32c6-f1f9-f44a-466a-e18fdc6788a7@virtuozzo.com/
+> >     https://lore.kernel.org/linux-btrfs/Ysace25wh5BbLd5f@atmark-techno.com/
+> >
+> > For lseek (LSF/MM from 2017):
+> >
+> >    https://lwn.net/Articles/718805/
+> >
+> > Basically both are slow due to very high algorithmic complexity which
+> > scales badly with the number of extents in a file and the heigth of
+> > subvolume and extent b+trees.
+> >
+> > Using Pavel's test case (first Link tag for fiemap), which uses files with
+> > many 4K extents and holes before and after each extent (kind of a worst
+> > case scenario), the speedup is of several orders of magnitude (for the 1G
+> > file, from ~225 seconds down to ~0.1 seconds).
+> >
+> > Finally the new algorithm for fiemap also ends up solving a bug with the
+> > current algorithm. This happens because we are currently relying on extent
+> > maps to report extents, which can be merged, and this may cause us to
+> > report 2 different extents as a single one that is not shared but one of
+> > them is shared (or the other way around). More details on this on patches
+> > 9/10 and 10/10.
+> >
+> > Patches 1/10 and 2/10 are for lseek, introducing some code that will later
+> > be used by fiemap too (patch 10/10). More details in the changelogs.
+> >
+> > There are a few more things that can be done to speedup fiemap and lseek,
+> > but I'll leave those other optimizations I have in mind for some other time.
+> >
+> > Filipe Manana (10):
+> >   btrfs: allow hole and data seeking to be interruptible
+> >   btrfs: make hole and data seeking a lot more efficient
+> >   btrfs: remove check for impossible block start for an extent map at fiemap
+> >   btrfs: remove zero length check when entering fiemap
+> >   btrfs: properly flush delalloc when entering fiemap
+> >   btrfs: allow fiemap to be interruptible
+> >   btrfs: rename btrfs_check_shared() to a more descriptive name
+> >   btrfs: speedup checking for extent sharedness during fiemap
+> >   btrfs: skip unnecessary extent buffer sharedness checks during fiemap
+> >   btrfs: make fiemap more efficient and accurate reporting extent sharedness
+> >
+> >  fs/btrfs/backref.c     | 153 ++++++++-
+> >  fs/btrfs/backref.h     |  20 +-
+> >  fs/btrfs/ctree.h       |  22 +-
+> >  fs/btrfs/extent-tree.c |  10 +-
+> >  fs/btrfs/extent_io.c   | 703 ++++++++++++++++++++++++++++-------------
+> >  fs/btrfs/file.c        | 439 +++++++++++++++++++++++--
+> >  fs/btrfs/inode.c       | 146 ++-------
+> >  7 files changed, 1111 insertions(+), 382 deletions(-)
+>
+>
+> An infinite loop happen when the 10 pathes applied to 6.0-rc3.
 
-Return the sysfs_emit() directly instead of storing it in another
-redundant variable.
+Nop, it's not an infinite loop, and it happens as well before the patchset.
+The reason is that the files created by the test are very sparse and
+with small extents.
+It's full of 4K extents surrounded by 8K holes.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
----
- fs/btrfs/sysfs.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+So any one doing hole seeking, advances 8K on every lseek call.
+If you strace the cp process, with
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 41f191682ad1..6268dade57d7 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -839,11 +839,8 @@ static ssize_t btrfs_sinfo_bg_reclaim_threshold_show(struct kobject *kobj,
- 						     char *buf)
- {
- 	struct btrfs_space_info *space_info = to_space_info(kobj);
--	ssize_t ret;
--
--	ret = sysfs_emit(buf, "%d\n", READ_ONCE(space_info->bg_reclaim_threshold));
- 
--	return ret;
-+	return sysfs_emit(buf, "%d\n", READ_ONCE(space_info->bg_reclaim_threshold));
- }
- 
- static ssize_t btrfs_sinfo_bg_reclaim_threshold_store(struct kobject *kobj,
-@@ -1205,11 +1202,8 @@ static ssize_t btrfs_bg_reclaim_threshold_show(struct kobject *kobj,
- 					       char *buf)
- {
- 	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
--	ssize_t ret;
--
--	ret = sysfs_emit(buf, "%d\n", READ_ONCE(fs_info->bg_reclaim_threshold));
- 
--	return ret;
-+	return sysfs_emit(buf, "%d\n", READ_ONCE(fs_info->bg_reclaim_threshold));
- }
- 
- static ssize_t btrfs_bg_reclaim_threshold_store(struct kobject *kobj,
--- 
-2.25.1
+strace -p <cp pid>
+
+You'll see something like this filling your terminal:
+
+(...)
+lseek(3, 18808832, SEEK_SET)            = 18808832
+write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+read(3, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+write(4, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+lseek(3, 18817024, SEEK_SET)            = 18817024
+write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+read(3, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+write(4, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+lseek(3, 18825216, SEEK_SET)            = 18825216
+write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+read(3, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+write(4, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+lseek(3, 18833408, SEEK_SET)            = 18833408
+write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+read(3, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+write(4, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+lseek(3, 18841600, SEEK_SET)            = 18841600
+write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+read(3, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+write(4, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+lseek(3, 18849792, SEEK_SET)            = 18849792
+write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+read(3, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+write(4, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+4096) = 4096
+lseek(3, 18857984, SEEK_SET)            = 18857984
+(...)
+
+It takes a long time, but it finishes. If you notice the difference
+between each return
+value is exactly 8K.
+
+That happens both before and after the patchset.
+
+Thanks.
 
 
+>
+> a file is created by 'pavels-test.c' of [PATCH 10/10].
+> and then '/bin/cp /mnt/test/file1 /dev/null' will trigger an infinite
+> loop.
+>
+> 'sysrq -l' output:
+>
+> [ 1437.765228] Call Trace:
+> [ 1437.765228]  <TASK>
+> [ 1437.765228]  set_extent_bit+0x33d/0x6e0 [btrfs]
+> [ 1437.765228]  lock_extent_bits+0x64/0xa0 [btrfs]
+> [ 1437.765228]  btrfs_file_llseek+0x192/0x5b0 [btrfs]
+> [ 1437.765228]  ksys_lseek+0x64/0xb0
+> [ 1437.765228]  do_syscall_64+0x58/0x80
+> [ 1437.765228]  ? syscall_exit_to_user_mode+0x12/0x30
+> [ 1437.765228]  ? do_syscall_64+0x67/0x80
+> [ 1437.765228]  ? do_syscall_64+0x67/0x80
+> [ 1437.765228]  ? exc_page_fault+0x64/0x140
+> [ 1437.765228]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> [ 1437.765228] RIP: 0033:0x7f5a263441bb
+>
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2022/09/02
+>
+>
