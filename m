@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A405AB94A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 22:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1D25AB948
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 22:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbiIBURW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Sep 2022 16:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39802 "EHLO
+        id S229637AbiIBURX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Sep 2022 16:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbiIBURO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 16:17:14 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448E0CE303
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 13:17:13 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id j17so2334011qtp.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Sep 2022 13:17:13 -0700 (PDT)
+        with ESMTP id S229956AbiIBURQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 16:17:16 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E1AD3EEB
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 13:17:14 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id j1so2260716qvv.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Sep 2022 13:17:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=NMpI4eQ6mi5IeRB8vcvK1+ytWBB9Hanr4llvJzPUIQs=;
-        b=Dn6HLZQ2TxZaBKRYv0dO+2eICxhzrEfywbqofPozvNlNjdAGpwtTfXqaoc1mS9lWk2
-         oeKOJ7BCJvMS3UcbiyrsocM9Up0w+xl4dgo5yyA1T0sLJoS3yy7PU1GxonQ//mHcAmyn
-         DbLnDwt10OyWraXAA5ary3q8Jux0TWEmVmTBjDps99+bjso3GxwkLgl7wLVTH14LD1Ih
-         7lnj9EPXxOY7vIpXbn2lc3IRN4LZy3JBxo74i/zVzrlCpt8Kwmfs8GMzux84evP/ooPN
-         0yB2MH9V4GOANjj3EmGrCg/9AP5IHvaLn5O2rRWr9GJwEoraC4aB0NWXodHHf9rUn6Fx
-         V1xA==
+        bh=20Yhsr54XoS92CwX/KkffhTXptoTrMLHY/7ZUT2KoZo=;
+        b=MUZhC6ZS1UN5NUOXLctr+Rr4PL3InaPRxXobMGjqAQU14/V4PJ8c916T3cmL4JQmYA
+         fQ5Uxv/9xdHYpEvw2lJMedIrbziRt+GmACfhEM+fXNehrpgydHoliaJmKyaLBiKllEdi
+         Asu7f96HMkitH2knsQBgHVlRDs9lmO1T/mbWtT3po7jOy28pV2vRqiXGdJK7HNsWetfX
+         mJgzQEEjcx4UNey0o+FTcQExmzS+hREbpyZza3Jr85P9VZ84qEktWfzQgiBhulIN9YvO
+         6iWumNLmPirSW/u2lgzFTCLrdhU0oAhh+3VfyNdVpSUlZu+pakGBfAgFbehKcJ2Kt/To
+         ef0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=NMpI4eQ6mi5IeRB8vcvK1+ytWBB9Hanr4llvJzPUIQs=;
-        b=6ELMSiKgE5hVzt7eNh9wijL0Bsz6272/01nn8mGrOxgyYw2lPxP/8J9yWWIweFaVjN
-         LvWTUFuDAF6Z5zlS0MbFNpYW7O+6T776WHF+XSTVFenbC+zCbiDKZqSYi7OD+rsNqqMX
-         5Y0LdlgnuDZ0MF1c8RIX2vFwm3Cyj5Zrq/6eGsZzpBuOCW8fT/gwA4SUnf8AwiiPTlkX
-         pRVZsoyIaSLOwppwDiHK+mqetvYDd4zOuUETubK6OZJZnn9c9qTsBcHKEdDruAIxN+9R
-         bKvMx6y4JmWs278kE1JKRndVjck/6c08Lgqs3B3Ze9bxBpZS9df7M4T7FPOJz5K1Apiw
-         2ACQ==
-X-Gm-Message-State: ACgBeo1HpwQbo8iwsd9UfvZUhOOanIQT4tNbSSzZGcekNc9JY7EdXpw9
-        +eyrAEfQVv6zWgVscr0CGjh/M2X8Lv39zg==
-X-Google-Smtp-Source: AA6agR4WzYxdVGdfwpRPARSSiwnkunHE6vO7UjcigOzIgP3eOUV4usl1FkXg2jAnetAITiQoQ6pAyg==
-X-Received: by 2002:a05:622a:650:b0:343:67f3:1b41 with SMTP id a16-20020a05622a065000b0034367f31b41mr29605964qtb.452.1662149832034;
-        Fri, 02 Sep 2022 13:17:12 -0700 (PDT)
+        bh=20Yhsr54XoS92CwX/KkffhTXptoTrMLHY/7ZUT2KoZo=;
+        b=KxJ9IkHg8xzobAhU40JBS/J/axDDB+UrM4iizYKVsaweoZvOKr26y40rzGABVuxU/I
+         LH9bV1Dd3BNZ5gKv6AfleRg21eb6186UMOcuAf0g9RYMO9F51M/X+tDhUdNmarjuUrMk
+         FyOSpVUhD7Yvy9EHA4a4qr2ahL6FFapdMZlprOgjKVqas2iXVqmxmVfXV4/fEam5uinv
+         1+IClym1qeIpCU8ZpF6AP4KVLFGU8ZNHXT/erbR4LWiwmsIfxoQZJpj1tO1uQOfdiO8N
+         7cbGGq7+Sc7NZrDPmxKfaoKmQV+t9E7DsNQgycQN8ceJXs2sLzTMN6vCZ83jCzd6GGdD
+         W/FA==
+X-Gm-Message-State: ACgBeo3huhtOV7PZW5j/qN0N9HVmFt1u7aQjVIOJO0GfpawE5+3lP5Bv
+        YDVAJ84sJZQQd4kv7ipsjfI2bl7I8wtVxg==
+X-Google-Smtp-Source: AA6agR7QV+NqvlkNnKPQdXrnbBaW5uNi6DUVNQb8YQLCL3XZiFJ+jRQXv6vBOucq/S1WItX57Q3EGw==
+X-Received: by 2002:ad4:5de7:0:b0:496:d0f8:7000 with SMTP id jn7-20020ad45de7000000b00496d0f87000mr30772453qvb.12.1662149833624;
+        Fri, 02 Sep 2022 13:17:13 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c4-20020ac84e04000000b00344f936bfc0sm1537637qtw.33.2022.09.02.13.17.11
+        by smtp.gmail.com with ESMTPSA id 2-20020ac85742000000b003434f7483a1sm1684712qtx.32.2022.09.02.13.17.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Sep 2022 13:17:11 -0700 (PDT)
+        Fri, 02 Sep 2022 13:17:13 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 19/31] btrfs: remove temporary exports for extent_state movement
-Date:   Fri,  2 Sep 2022 16:16:24 -0400
-Message-Id: <381be399ffd33a24732cd1d76788646ea9f4752b.1662149276.git.josef@toxicpanda.com>
+Subject: [PATCH 20/31] btrfs: move irrelevant prototypes to their appropriate header
+Date:   Fri,  2 Sep 2022 16:16:25 -0400
+Message-Id: <9724af5ba38bba89c9c4abc71301119d60bf8135.1662149276.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1662149276.git.josef@toxicpanda.com>
 References: <cover.1662149276.git.josef@toxicpanda.com>
@@ -67,66 +67,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that the code has been moved we can remove these temporary exports.
+These prototypes have nothing to do with the extent_io_tree helpers,
+move them to their appropriate header.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-io-tree.c | 9 +++++++--
- fs/btrfs/extent-io-tree.h | 9 ---------
- 2 files changed, 7 insertions(+), 11 deletions(-)
+ fs/btrfs/extent-io-tree.h | 8 --------
+ fs/btrfs/extent_io.h      | 6 ++++++
+ 2 files changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-index bd015f304142..5f0a00c6aa96 100644
---- a/fs/btrfs/extent-io-tree.c
-+++ b/fs/btrfs/extent-io-tree.c
-@@ -9,6 +9,11 @@
- 
- static struct kmem_cache *extent_state_cache;
- 
-+static inline bool extent_state_in_tree(const struct extent_state *state)
-+{
-+	return !RB_EMPTY_NODE(&state->rb_node);
-+}
-+
- #ifdef CONFIG_BTRFS_DEBUG
- static LIST_HEAD(states);
- static DEFINE_SPINLOCK(leak_lock);
-@@ -123,7 +128,7 @@ void extent_io_tree_release(struct extent_io_tree *tree)
- 	spin_unlock(&tree->lock);
- }
- 
--struct extent_state *alloc_extent_state(gfp_t mask)
-+static struct extent_state *alloc_extent_state(gfp_t mask)
- {
- 	struct extent_state *state;
- 
-@@ -144,7 +149,7 @@ struct extent_state *alloc_extent_state(gfp_t mask)
- 	return state;
- }
- 
--struct extent_state *alloc_extent_state_atomic(struct extent_state *prealloc)
-+static struct extent_state *alloc_extent_state_atomic(struct extent_state *prealloc)
- {
- 	if (!prealloc)
- 		prealloc = alloc_extent_state(GFP_ATOMIC);
 diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index 3b63aeca941a..3b17cc33bcec 100644
+index 3b17cc33bcec..85acdd13d2c4 100644
 --- a/fs/btrfs/extent-io-tree.h
 +++ b/fs/btrfs/extent-io-tree.h
-@@ -260,13 +260,4 @@ void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start,
- 		u64 end);
- int btrfs_clean_io_failure(struct btrfs_inode *inode, u64 start,
- 			   struct page *page, unsigned int pg_offset);
+@@ -248,16 +248,8 @@ void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
+ 				 u64 *start_ret, u64 *end_ret, u32 bits);
+ int find_contiguous_extent_bit(struct extent_io_tree *tree, u64 start,
+ 			       u64 *start_ret, u64 *end_ret, u32 bits);
+-int extent_invalidate_folio(struct extent_io_tree *tree,
+-			  struct folio *folio, size_t offset);
+ bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
+ 			       u64 *end, u64 max_bytes,
+ 			       struct extent_state **cached_state);
+ void wait_extent_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bits);
 -
--struct extent_state *alloc_extent_state_atomic(struct extent_state *prealloc);
--struct extent_state *alloc_extent_state(gfp_t mask);
--
--static inline bool extent_state_in_tree(const struct extent_state *state)
--{
--	return !RB_EMPTY_NODE(&state->rb_node);
--}
--
+-/* This should be reworked in the future and put elsewhere. */
+-void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start,
+-		u64 end);
+-int btrfs_clean_io_failure(struct btrfs_inode *inode, u64 start,
+-			   struct page *page, unsigned int pg_offset);
  #endif /* BTRFS_EXTENT_IO_TREE_H */
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 52e4dfea2164..ba331bced460 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -242,6 +242,8 @@ void extent_range_redirty_for_io(struct inode *inode, u64 start, u64 end);
+ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
+ 				  struct page *locked_page,
+ 				  u32 bits_to_clear, unsigned long page_ops);
++int extent_invalidate_folio(struct extent_io_tree *tree,
++			  struct folio *folio, size_t offset);
+ 
+ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array);
+ 
+@@ -272,6 +274,10 @@ struct io_failure_record {
+ int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *failed_bbio,
+ 			    u32 bio_offset, struct page *page, unsigned int pgoff,
+ 			    submit_bio_hook_t *submit_bio_hook);
++void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start,
++		u64 end);
++int btrfs_clean_io_failure(struct btrfs_inode *inode, u64 start,
++			   struct page *page, unsigned int pg_offset);
+ 
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ bool find_lock_delalloc_range(struct inode *inode,
 -- 
 2.26.3
 
