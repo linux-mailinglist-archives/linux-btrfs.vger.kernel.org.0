@@ -2,137 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B46865AB949
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 22:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17925ABA10
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Sep 2022 23:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbiIBURj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Sep 2022 16:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40096 "EHLO
+        id S231140AbiIBVbj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 2 Sep 2022 17:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbiIBURd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 16:17:33 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43E1D8E14
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 13:17:32 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id g14so2336610qto.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Sep 2022 13:17:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=gz6bRoIfAhL2QVg/hVUDAaMs8W87PD05jLnQ0mOTd5w=;
-        b=iU5b03KYanIHrHx5S8+V2uVMsSS8LekORuzkGr3xLXF3iAYic+qeVPYbJSXun+x9F/
-         u5njOhHAAD4ynskZPH9Gwh+EWxB1c98PN8izlWUTs8Coo6FwdDcqhdcO+DE17BcvklMo
-         GzPjQek5/imcOPHvcIAI0Byn+uxRHIicckq/tjeFFuMO+XW4DkpuWFJHEoaq90sl6Gin
-         3RHzYcM8s5dIg/C50gCy3cFJUYr3VxTGVNcz2MBqiZaXO5+SFe48TRBVT8EDF7x3+PVT
-         VxlHZRn53G1H26XSMkJbyGv9k2bK4Ij134f3akd96Xcw4uDaj5mVLyaNBw6RI3GNqyCw
-         U21g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=gz6bRoIfAhL2QVg/hVUDAaMs8W87PD05jLnQ0mOTd5w=;
-        b=GN+GakdOZxW3jpnuY0NCfsIzUfnTIext/YT7LDil2xI1hM5bXs5LOpNrqDclbcl9RK
-         cCPwVSjMKxvhyJyvWnkmXaXd900nhu9ocMrixQ+1wVeBFwpZPC4pt4Qu/NZlUoVEofmf
-         kkBOTYDL9NwobtKIYfpEx9vZkbSqqc8MaLQIrTk4Ct/IItpkd3ozASXJhz5IGph//hev
-         aQnYJanMrq0ot6uw/HjIE60be8QAkhjXqNbxP65DGQbc2oVBMH3aMs3sABWNDTHllx7A
-         9kx53kVfBJRYw9aJ9HuVMmXtDqV5CuqG2e06v6ci/+6qBfhWpMfu5UdaElPPMkGKflAy
-         ZQXw==
-X-Gm-Message-State: ACgBeo0ljzVyz6wmLaK451H0za5uAGJY1XkqwIbyenUKyLKuZFBPedCu
-        H9plo3fmQfxQMGpIJF9ZsMqFKzX/vJlqvw==
-X-Google-Smtp-Source: AA6agR5a6W0ppe824FdefcDITm06OXGGXjpLT0Zn6xvmmvIO3gPaWx/Y7nqOWjpE1YuhBaL59CBcpQ==
-X-Received: by 2002:a05:622a:5cb:b0:344:551a:c804 with SMTP id d11-20020a05622a05cb00b00344551ac804mr29588887qtb.645.1662149852284;
-        Fri, 02 Sep 2022 13:17:32 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id w17-20020a05620a0e9100b006a6d7c3a82esm1966690qkm.15.2022.09.02.13.17.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Sep 2022 13:17:31 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 31/31] btrfs: remove is_data_inode() checks in extent-io-tree.c
-Date:   Fri,  2 Sep 2022 16:16:36 -0400
-Message-Id: <e84ddae2199bc7cb88ace4d398ce570243fc1453.1662149276.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1662149276.git.josef@toxicpanda.com>
-References: <cover.1662149276.git.josef@toxicpanda.com>
+        with ESMTP id S231150AbiIBVbg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 17:31:36 -0400
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F2EEF02B
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 14:31:31 -0700 (PDT)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 342C2201298;
+        Fri,  2 Sep 2022 21:25:24 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 348312014E3;
+        Fri,  2 Sep 2022 21:25:23 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1662153923; a=rsa-sha256;
+        cv=none;
+        b=7xQ+TS+3dWTH8FGrU12UmjNcO0TRrSuzBcCR+M7MRqmwPvsrq25C/sHIXdleTtHdKmOfc2
+        mj+f/hjWqCfP6j2KtZbIrXtzGuuw7eWX7WXxPIjf49CW6enUsf0zUlPv3pIlkKy0xpChJ2
+        Uz6ypfkkHa8IxrlhZG+VsUdJ71X/GKivGMN1MLtpUijR5xX/OM1TeYOLkrBvFHRaJgTNhl
+        Xm0LYOP3rZflz3CeSB+OHNOBXPuq076o6InO+m1KTQExgV2NuN+9AFp2rW0G0iAXoHC3JP
+        GC4C9RIUfjSlyTZECKZvIbfYMFwNtGmf0BxRTV8NtUbIejHMEOrIhDyLN8MkCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1662153923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z4IH8EZ+NfOCyWbnRl11JIa8TT2qFlwQtVE5sdPNJOE=;
+        b=q7MPkEQnAudpQaHMiIfxcgKdhTtW906lSHdv+AJ1Ov8QtwRWk7AZNJs7thOyt5ymLlmM4A
+        hACuQL5fOCmT5o3ia2hUvnwfXUvOJs5CFECsYvz0+Jy42xLfvr/NFb3vzeZ3qPQgMXpU9r
+        SoWoGNdZ0MR8KRBQaioitZmlIjsEuMsEWpMHVh5vx6IWa7MXJfIP28zEgC6Oe1fe0SZwNx
+        erVmnMZ5aTydzUzowge3ZSB1ezr57y3vbBaRkeOTd7fjM6StAl/eLl0fUz/hiPIvf3Ra2V
+        2wVKOR3Se18EVS5tEHoNmBq13EOL2gDXHwNAt7BTo993/2n1Tln5SpaGPwRPWw==
+ARC-Authentication-Results: i=1;
+        rspamd-f776c45b8-2hk8x;
+        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Daffy-Robust: 745b566d3a67185f_1662153923845_4091846074
+X-MC-Loop-Signature: 1662153923844:519348373
+X-MC-Ingress-Time: 1662153923844
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.109.219.78 (trex/6.7.1);
+        Fri, 02 Sep 2022 21:25:23 +0000
+Received: from ppp-46-244-252-68.dynamic.mnet-online.de ([46.244.252.68]:48756 helo=heisenberg.fritz.box)
+        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <calestyo@scientia.org>)
+        id 1oUEAB-0004jQ-SS;
+        Fri, 02 Sep 2022 21:25:21 +0000
+Message-ID: <159804e368285248d992d333c3643a186193271e.camel@scientia.org>
+Subject: Re: [PATCH 1/2] btrfs: fix space cache corruption and potential
+ double allocations
+From:   Christoph Anton Mitterer <calestyo@scientia.org>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     Linux BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Fri, 02 Sep 2022 23:25:16 +0200
+In-Reply-To: <YxD3iM29bDpnxeNg@relinquished.localdomain>
+References: <cover.1660690698.git.osandov@fb.com>
+         <9ee45db86433bb8e4d7daff35502db241c69ad16.1660690698.git.osandov@fb.com>
+         <CAK-xaQZYDBuL2DMeOiZDubujSmZTcNJfkgqa03Q+24=nhCmynw@mail.gmail.com>
+         <dbc8b0ee60b174f1b2c17a7469918a32a381c51b.camel@scientia.org>
+         <Yv2A+Du6J7BWWWih@relinquished.localdomain>
+         <b5d37d4d059e220313341d2804cbf1daf2956563.camel@scientia.org>
+         <Yv2IIwNQBb3ivK7D@relinquished.localdomain>
+         <467e49af8348d085e21079e8969bedbe379b3145.camel@scientia.org>
+         <751cc484a56fc0bbe3838929feae3c214c297001.camel@scientia.org>
+         <YxD3iM29bDpnxeNg@relinquished.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-1+b1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AuthUser: calestyo@scientia.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We're only init'ing extent_io_tree's with a private data if we're a
-normal inode, so we don't need this extra check.
+Oh and one more
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/extent-io-tree.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+On Thu, 2022-09-01 at 11:18 -0700, Omar Sandoval wrote:
+> and any suggestions you have.
 
-diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-index f37de54056e8..c67370469548 100644
---- a/fs/btrfs/extent-io-tree.c
-+++ b/fs/btrfs/extent-io-tree.c
-@@ -59,7 +59,7 @@ static inline void __btrfs_debug_check_extent_io_range(const char *caller,
- 	struct inode *inode = tree->private_data;
- 	u64 isize;
- 
--	if (!inode || !is_data_inode(inode))
-+	if (!inode)
- 		return;
- 
- 	isize = i_size_read(inode);
-@@ -332,7 +332,7 @@ static void merge_state(struct extent_io_tree *tree,
- 	other = prev_state(state);
- 	if (other && other->end == state->start - 1 &&
- 	    other->state == state->state) {
--		if (tree->private_data && is_data_inode(tree->private_data))
-+		if (tree->private_data)
- 			btrfs_merge_delalloc_extent(tree->private_data,
- 						    state, other);
- 		state->start = other->start;
-@@ -343,7 +343,7 @@ static void merge_state(struct extent_io_tree *tree,
- 	other = next_state(state);
- 	if (other && other->start == state->end + 1 &&
- 	    other->state == state->state) {
--		if (tree->private_data && is_data_inode(tree->private_data))
-+		if (tree->private_data)
- 			btrfs_merge_delalloc_extent(tree->private_data, state,
- 						    other);
- 		state->end = other->end;
-@@ -437,7 +437,7 @@ static int split_state(struct extent_io_tree *tree, struct extent_state *orig,
- 	struct rb_node *parent = NULL;
- 	struct rb_node **node;
- 
--	if (tree->private_data && is_data_inode(tree->private_data))
-+	if (tree->private_data)
- 		btrfs_split_delalloc_extent(tree->private_data, orig, split);
- 
- 	prealloc->start = orig->start;
-@@ -485,7 +485,7 @@ static struct extent_state *clear_state_bit(struct extent_io_tree *tree,
- 	u32 bits_to_clear = bits & ~EXTENT_CTLBITS;
- 	int ret;
- 
--	if (tree->private_data && is_data_inode(tree->private_data))
-+	if (tree->private_data)
- 		btrfs_clear_delalloc_extent(tree->private_data, state, bits);
- 
- 	ret = add_extent_changeset(state, bits_to_clear, changeset, 0);
-@@ -747,7 +747,7 @@ static void set_state_bits(struct extent_io_tree *tree,
- 	u32 bits_to_set = bits & ~EXTENT_CTLBITS;
- 	int ret;
- 
--	if (tree->private_data && is_data_inode(tree->private_data))
-+	if (tree->private_data)
- 		btrfs_set_delalloc_extent(tree->private_data, state, bits);
- 
- 	ret = add_extent_changeset(state, bits_to_set, changeset, 1);
--- 
-2.26.3
+> "If you want to be extra cautious, you can also clear the v1 space cache.\n"
+> "There are two ways to do this. The first is:\n"
+> "\n"
+> "1. Add the clear_cache mount option to this filesystem in fstab.\n"
+> "2. Unmount then mount the filesystem. Note that `mount -o remount` is\n"
+> "   not sufficient; you need a full unmount/mount cycle. You can also\n"
+> "   reboot instead.\n"
+> "3. Remove the clear_cache mount option from fstab.\n"
 
+Wasn't the clear_cache flag only clearing it for stuff that get's
+actually written?
+And if so, wouldn't that be *not* enough to do?
+
+
+> "\n"
+> "The second way to clear the space cache is:\n"
+> "\n"
+> "1. Unmount the filesystem.\n"
+> "2. Run `btrfs check --clear-space-cache v1 <device>`.\n"
+> "3. Mount the filesystem.\n");
+
+
+Wouldn't it make sense to generally advise people to clear the v1 and
+v2 space cache?
+
+
+Cheers,
+Chris.
