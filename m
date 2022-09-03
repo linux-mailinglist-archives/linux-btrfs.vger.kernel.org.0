@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0165ABEBD
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 13:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFFF5ABEC5
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 13:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbiICLW3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 3 Sep 2022 07:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
+        id S229923AbiICLd3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 3 Sep 2022 07:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbiICLW2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 07:22:28 -0400
+        with ESMTP id S229586AbiICLd3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 07:33:29 -0400
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529B86B15C
-        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 04:22:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144A56D9C1
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 04:33:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662204147; x=1693740147;
+  t=1662204808; x=1693740808;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=Rh95A/TICuY0+rk3SH895uc1qVtQXetp7SXdDKTPP+g=;
-  b=I3ESd5XyegWyY+aIsWup57H/iKX60OfL15fkmaBsJU6VnCPm9DBHY0uQ
-   Gn6pbKkgEbB1kPAT+kGZ9Fms8fEpicQe/dWvnaRia9dAlNIjahmnzpvcB
-   K/MXlcKG3f+/1jSoFtrayZHYQXj3fKXpxqbzYY+VjYpLcwvJ2pXYrUu1r
-   eMQLqphA/MUbhm7+EtENNIyoBEAmHasZlGDJHZcFz56jsx440/YatpFAY
-   Hnl+RQnnnkizRxfXd/nOXsQfFHsIM6kfF1f2eTsO6JfLwewTuTBMCVY5c
-   NIa03tmro1KrqZFZshYlfN0k9d78eEQBLxgG5PkXQLN/Iw4wkhwlgP+PV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="297445173"
+  bh=bwuFF/h+pb3a4uxf5G1xrDWG4LVJKcY4K0JCaoPWshg=;
+  b=hfSy+nBLlEHjllDf0rn+k26d6Ne+KZjCJWYjpWR9gojgFgl9v4qLFJcj
+   pqorrSHWkfT4LDeMJnC/TX7zfN2fNjM3sSICZfCWlLD9QY0xLcFrG/+5E
+   VihUcfTpt6kKs2A75HK9QWDp21gZeQhpa+2i2SNXrabcUSLMY10tpJGzz
+   oIvX8wOrzwcITtVatviq8Rl91GP7Mv0JIxJUYdn2CyJD1/wOmmUPmfFF7
+   owxco0oYwa+gfIiafqINILFJSEg2OtgDvtx5GVF6GEsIlUyqBJG4MNIx+
+   g/3fPT1C3GeMp84p1yMXuWL0w3Qm7VZoshthGPpw0Jjv+0MrmzYdvqsj4
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="297445881"
 X-IronPort-AV: E=Sophos;i="5.93,287,1654585200"; 
-   d="scan'208";a="297445173"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2022 04:22:26 -0700
+   d="scan'208";a="297445881"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2022 04:33:27 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.93,287,1654585200"; 
-   d="scan'208";a="788928076"
+   d="scan'208";a="941576583"
 Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 03 Sep 2022 04:22:25 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 03 Sep 2022 04:33:26 -0700
 Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1oUREG-0001YW-2Z;
-        Sat, 03 Sep 2022 11:22:24 +0000
-Date:   Sat, 3 Sep 2022 19:22:09 +0800
+        id 1oUROv-0001Zb-28;
+        Sat, 03 Sep 2022 11:33:25 +0000
+Date:   Sat, 3 Sep 2022 19:33:09 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org
 Subject: Re: [PATCH PoC 9/9] btrfs: scrub: implement recoverable sectors
  report for scrub_fs
-Message-ID: <202209031950.mB6jb2hL-lkp@intel.com>
+Message-ID: <202209031939.5FTgOh5V-lkp@intel.com>
 References: <06e4f67a9e50c2b6dfc49a086ee62053cbdcc0ae.1662191784.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -75,20 +75,18 @@ https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-scrub-introduce-a-new-family-of-ioctl-scrub_fs/20220903-162128
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-config: arm-randconfig-r032-20220903 (https://download.01.org/0day-ci/archive/20220903/202209031950.mB6jb2hL-lkp@intel.com/config)
+config: hexagon-randconfig-r045-20220902 (https://download.01.org/0day-ci/archive/20220903/202209031939.5FTgOh5V-lkp@intel.com/config)
 compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project c55b41d5199d2394dd6cdb8f52180d8b81d809d4)
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        # install arm cross compiling tool for clang build
-        # apt-get install binutils-arm-linux-gnueabi
         # https://github.com/intel-lab-lkp/linux/commit/e6387ecfd7e78ac47fca972ef76f3286e6cd3900
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review Qu-Wenruo/btrfs-scrub-introduce-a-new-family-of-ioctl-scrub_fs/20220903-162128
         git checkout e6387ecfd7e78ac47fca972ef76f3286e6cd3900
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash fs/btrfs/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash fs/btrfs/
 
 If you fix the issue, kindly add following tag where applicable
 Reported-by: kernel test robot <lkp@intel.com>
