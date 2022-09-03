@@ -2,35 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6305ABE42
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 11:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0165ABEBD
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 13:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbiICJtS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 3 Sep 2022 05:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        id S229876AbiICLW3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 3 Sep 2022 07:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbiICJtR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 05:49:17 -0400
-Received: from out20-217.mail.aliyun.com (out20-217.mail.aliyun.com [115.124.20.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B70C2753
-        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 02:49:15 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04656945|-1;BR=01201311R201S27rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.634586-0.0278387-0.337575;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.P6rheoG_1662198552;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.P6rheoG_1662198552)
-          by smtp.aliyun-inc.com;
-          Sat, 03 Sep 2022 17:49:12 +0800
-Date:   Sat, 03 Sep 2022 17:49:14 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH PoC 1/9] btrfs: introduce BTRFS_IOC_SCRUB_FS family of ioctls
-In-Reply-To: <410234ec-1c4a-f683-6913-1df9757685ff@gmx.com>
-References: <20220903172506.447E.409509F4@e16-tech.com> <410234ec-1c4a-f683-6913-1df9757685ff@gmx.com>
-Message-Id: <20220903174913.BAEA.409509F4@e16-tech.com>
+        with ESMTP id S229586AbiICLW2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 07:22:28 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529B86B15C
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 04:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662204147; x=1693740147;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Rh95A/TICuY0+rk3SH895uc1qVtQXetp7SXdDKTPP+g=;
+  b=I3ESd5XyegWyY+aIsWup57H/iKX60OfL15fkmaBsJU6VnCPm9DBHY0uQ
+   Gn6pbKkgEbB1kPAT+kGZ9Fms8fEpicQe/dWvnaRia9dAlNIjahmnzpvcB
+   K/MXlcKG3f+/1jSoFtrayZHYQXj3fKXpxqbzYY+VjYpLcwvJ2pXYrUu1r
+   eMQLqphA/MUbhm7+EtENNIyoBEAmHasZlGDJHZcFz56jsx440/YatpFAY
+   Hnl+RQnnnkizRxfXd/nOXsQfFHsIM6kfF1f2eTsO6JfLwewTuTBMCVY5c
+   NIa03tmro1KrqZFZshYlfN0k9d78eEQBLxgG5PkXQLN/Iw4wkhwlgP+PV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="297445173"
+X-IronPort-AV: E=Sophos;i="5.93,287,1654585200"; 
+   d="scan'208";a="297445173"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2022 04:22:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,287,1654585200"; 
+   d="scan'208";a="788928076"
+Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 03 Sep 2022 04:22:25 -0700
+Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oUREG-0001YW-2Z;
+        Sat, 03 Sep 2022 11:22:24 +0000
+Date:   Sat, 3 Sep 2022 19:22:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org
+Subject: Re: [PATCH PoC 9/9] btrfs: scrub: implement recoverable sectors
+ report for scrub_fs
+Message-ID: <202209031950.mB6jb2hL-lkp@intel.com>
+References: <06e4f67a9e50c2b6dfc49a086ee62053cbdcc0ae.1662191784.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.04 [en]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <06e4f67a9e50c2b6dfc49a086ee62053cbdcc0ae.1662191784.git.wqu@suse.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -38,59 +63,133 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Hi Qu,
 
-> On 2022/9/3 17:25, Wang Yugui wrote:
-> > Hi,
-> >
-> >> The new ioctls are to address the disadvantages of the existing
-> >> btrfs_scrub_dev():
-> >>
-> >> a One thread per-device
-> >>    This can cause multiple block groups to be marked read-only for scrub,
-> >>    reducing available space temporarily.
-> >>
-> >>    This also causes higher CPU/IO usage.
-> >>    For scrub, we should use the minimal amount of CPU and cause less
-> >>    IO when possible.
-> >>
-> >> b Extra IO for RAID56
-> >>    For data stripes, we will cause at least 2x IO if we run "btrfs scrub
-> >>    start <mnt>".
-> >>    1x from scrubbing the device of data stripe.
-> >>    The other 1x from scrubbing the parity stripe.
-> >>
-> >>    This duplicated IO should definitely be avoided
-> >>
-> >> c Bad progress report for RAID56
-> >>    We can not report any repaired P/Q bytes at all.
-> >>
-> >> The a and b will be addressed by the new one thread per-fs
-> >> btrfs_scrub_fs ioctl.
-> >
-> > CRC check of scrub is CPU sensitive, so we still need multiple threads,
-> > such as one thread per-fs but with additional threads pool based on
-> > chunks?
-> 
-> This depends.
-> 
-> Scrub should be a background work, which can already be affected by
-> scheduling, and I don't think users would bother 5% or 10% longer
-> runtime for a several TB fs.
-> 
-> Furthermore if checksum in a single thread is going to be a bottleneck,
-> then I'd say your storage is already so fast that scrub duration is not
-> your primary concern any more.
+Thank you for the patch! Perhaps something to improve:
 
-scrub is sequence I/O, HDD is very fast too.
-HDD*10  with HW RAID6 is very fast for scrub, about 2GB/s or more.
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on linus/master v6.0-rc3 next-20220901]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> Yes, it can be possible to offload the csum verification into multiple
-> threads, like one thread per mirror/device, but I don't want to
-> sacrifice readability for very minor performance improvement.
+url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-scrub-introduce-a-new-family-of-ioctl-scrub_fs/20220903-162128
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+config: arm-randconfig-r032-20220903 (https://download.01.org/0day-ci/archive/20220903/202209031950.mB6jb2hL-lkp@intel.com/config)
+compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project c55b41d5199d2394dd6cdb8f52180d8b81d809d4)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm cross compiling tool for clang build
+        # apt-get install binutils-arm-linux-gnueabi
+        # https://github.com/intel-lab-lkp/linux/commit/e6387ecfd7e78ac47fca972ef76f3286e6cd3900
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Qu-Wenruo/btrfs-scrub-introduce-a-new-family-of-ioctl-scrub_fs/20220903-162128
+        git checkout e6387ecfd7e78ac47fca972ef76f3286e6cd3900
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash fs/btrfs/
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2022/09/03
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> fs/btrfs/scrub.c:5382:6: warning: variable 'nr_good' set but not used [-Wunused-but-set-variable]
+           int nr_good = 0;
+               ^
+   1 warning generated.
 
 
+vim +/nr_good +5382 fs/btrfs/scrub.c
+
+  5376	
+  5377	static void scrub_fs_recover_data(struct scrub_fs_ctx *sfctx, int sector_nr)
+  5378	{
+  5379		struct btrfs_fs_info *fs_info = sfctx->fs_info;
+  5380		const bool has_csum = !!sfctx->sectors[sector_nr].csum;
+  5381		bool mismatch_found = false;
+> 5382		int nr_good = 0;
+  5383		int io_fail = 0;
+  5384		int mirror_nr;
+  5385	
+  5386		for (mirror_nr = 0; mirror_nr < sfctx->nr_copies; mirror_nr++) {
+  5387			struct scrub_fs_sector *sector =
+  5388				scrub_fs_get_sector(sfctx, sector_nr, mirror_nr);
+  5389	
+  5390			if (sector->flags & SCRUB_FS_SECTOR_FLAG_GOOD)
+  5391				nr_good++;
+  5392			if (!(sector->flags & SCRUB_FS_SECTOR_FLAG_IO_DONE))
+  5393				io_fail++;
+  5394		}
+  5395	
+  5396		if (has_csum) {
+  5397			/*
+  5398			 * There is at least one good copy, thus all the other
+  5399			 * corrupted sectors can also be recovered.
+  5400			 */
+  5401			for (mirror_nr = 0; mirror_nr < sfctx->nr_copies; mirror_nr++) {
+  5402				struct scrub_fs_sector *sector =
+  5403					scrub_fs_get_sector(sfctx, sector_nr, mirror_nr);
+  5404	
+  5405				if (sector->flags & SCRUB_FS_SECTOR_FLAG_GOOD)
+  5406					continue;
+  5407				sector->flags |= SCRUB_FS_SECTOR_FLAG_RECOVERABLE;
+  5408				sfctx->stat.data_recoverable += fs_info->sectorsize;
+  5409			}
+  5410	
+  5411			/* Place holder for writeback */
+  5412			return;
+  5413		}
+  5414	
+  5415		/*
+  5416		 * No datasum case, it's much harder.
+  5417		 *
+  5418		 * The idea is, we have to compare all the sectors to determine if they
+  5419		 * match.
+  5420		 *
+  5421		 * Firstly rule out sectors which don't have extra working copies.
+  5422		 */
+  5423		if (sfctx->nr_copies - io_fail <= 1) {
+  5424			sfctx->stat.data_nocsum_uncertain += fs_info->sectorsize;
+  5425			return;
+  5426		}
+  5427	
+  5428		/*
+  5429		 * For now, we can only support one case, all data read matches with each
+  5430		 * other, or we consider them all uncertain.
+  5431		 */
+  5432		for (mirror_nr = 0; mirror_nr < sfctx->nr_copies - 1; mirror_nr++) {
+  5433			struct scrub_fs_sector *sector =
+  5434				scrub_fs_get_sector(sfctx, sector_nr, mirror_nr);
+  5435			struct scrub_fs_sector *next_sector;
+  5436			int ret;
+  5437	
+  5438			/* The first sector has IO error, skip to the next run. */
+  5439			if (!(sector->flags & SCRUB_FS_SECTOR_FLAG_IO_DONE))
+  5440				continue;
+  5441	
+  5442			next_sector = scrub_fs_find_next_working_mirror(sfctx,
+  5443					sector_nr, mirror_nr);
+  5444			/* We're already the last working copy, can break now. */
+  5445			if (!next_sector)
+  5446				break;
+  5447	
+  5448			ret = scrub_fs_memcmp_sectors(sfctx, sector, next_sector);
+  5449			if (ret)
+  5450				mismatch_found = true;
+  5451		}
+  5452	
+  5453		/*
+  5454		 * We have found mismatched contents, mark all those sectors
+  5455		 * which doesn't have IO error as uncertain.
+  5456		 */
+  5457		if (mismatch_found)
+  5458			sfctx->stat.data_nocsum_uncertain +=
+  5459				(sfctx->nr_copies - io_fail) << fs_info->sectorsize_bits;
+  5460	}
+  5461	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
