@@ -2,289 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9595ABDD0
+	by mail.lfdr.de (Postfix) with ESMTP id 964465ABDCF
 	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 10:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232564AbiICIVl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 3 Sep 2022 04:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
+        id S232561AbiICIVk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 3 Sep 2022 04:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231520AbiICIVj (ORCPT
+        with ESMTP id S232526AbiICIVj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 04:21:39 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5B417046
-        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 01:21:37 -0700 (PDT)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954ED5071C
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 01:21:38 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3D83A336D9
-        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 08:21:36 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4A2811F9F0
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 08:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1662193296; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1662193297; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1q67XtF1mFBaVXAlwFq0AKdFu3SaW0KhXErchj1uaKg=;
-        b=MJ+Y/m1Wh5/QUf5y9/cJ51HAIfy3N8og9SQkAKVcp/2qNlUzBHTUtyTSn19MLKplGQE/eZ
-        ED+/TG4IesBWQPMClimAQlx6sNlZsgNG2Z7E/hdRvBOoCb3bT6d67g04cVVbqGBCnBlhF7
-        3n7gsgzZXT5Pizcy8UE6SvbSQimo6BY=
+        bh=+QNtEqvuOnb6VDjhRZPY/DLdc0AuUjI5pUW97tLhEXM=;
+        b=MH9Kkl7Nv+BGDIPQQSc9/92u7EOKY6mZR1E5HpUDHZmHneW0w6fMtRr43ONM3Pd5HZUgrR
+        QDxCvy1gNcoMnpve4jqlVQ0P9iGazYsCZp+TLrImH4lw+RWRp9Qk/t1cXQrbSLmnXP4XXE
+        B8mWJYrFtyilYsKxdNjDhwMWnCanvl4=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 30283139F9
-        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 08:21:34 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F9B6139F9
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 08:21:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id aGeWIY4OE2NHawAAMHmgww
+        id cLaCGpAOE2NHawAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sat, 03 Sep 2022 08:21:34 +0000
+        for <linux-btrfs@vger.kernel.org>; Sat, 03 Sep 2022 08:21:36 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH POC 1/2] btrfs-progs: introduce BTRFS_IOC_SCRUB_FS family of ioctls
-Date:   Sat,  3 Sep 2022 16:21:14 +0800
-Message-Id: <e19a548432ee6f6b6ea2a63595f296a1de5a6abd.1662193185.git.wqu@suse.com>
+Subject: [PATCH POC 2/2] btrfs-progs: scrub: add an experimental entrance for scrub_fs
+Date:   Sat,  3 Sep 2022 16:21:15 +0800
+Message-Id: <1741d641ff2c7320aa502a8cebcdb7ab20d4dbac.1662193185.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1662193185.git.wqu@suse.com>
 References: <cover.1662193185.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is the progs counter part from the kernel scrub_fs patchset.
+The new entrance is really experimental and only provides very basic
+functionality:
 
-The new ioctls are to address the disadvantages of the existing
-btrfs_scrub_dev():
+- Foreground only scrub
+  It's always running in foreground for now.
 
-a One thread per-device
-  This can cause multiple block groups to be marked read-only for scrub,
-  reducing available space temporarily.
+- No support for scrub status file
 
-  This also causes higher CPU/IO usage.
-  For scrub, we should use the minimal amount of CPU and cause less
-  IO when possible.
+- No simple report
+  Only full scrub_fs_progress report.
 
-b Extra IO for RAID56
-  For data stripes, we will cause at least 2x IO if we run "btrfs scrub
-  start <mnt>".
-  1x from scrubbing the device of data stripe.
-  The other 1x from scrubbing the parity stripe.
+- No cancel/progress report
+  Not yet implemented in the kernel.
 
-  This duplicated IO should definitely be avoided
-
-c Bad progress report for RAID56
-  We can not report any repaired P/Q bytes at all.
-
-The a and b will be addressed by the new one thread per-fs
-btrfs_scrub_fs ioctl.
-
-While c will be addressed by the new btrfs_scrub_fs_progress structure,
-which has better comments and classification for all errors.
+So it's really for evaluation on the new scrub_fs interface.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- ioctl.h | 173 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 173 insertions(+)
+ cmds/scrub.c | 79 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 79 insertions(+)
 
-diff --git a/ioctl.h b/ioctl.h
-index f19695e30a63..753b8b9f4199 100644
---- a/ioctl.h
-+++ b/ioctl.h
-@@ -163,6 +163,174 @@ struct btrfs_ioctl_scrub_args {
- };
- BUILD_ASSERT(sizeof(struct btrfs_ioctl_scrub_args) == 1024);
- 
-+struct btrfs_scrub_fs_progress {
-+	/*
-+	 * Fatal errors, including -ENOMEM, or csum/extent tree search errors.
-+	 *
-+	 * Normally after hitting such fatal errors, we error out, thus later
-+	 * accounting will no longer be reliable.
-+	 */
-+	__u16	nr_fatal_errors;
-+
-+	/*
-+	 * All super errors, from invalid members and IO error all go into
-+	 * nr_super_errors.
-+	 */
-+	__u16	nr_super_errors;
-+
-+	/* Super block accounting. */
-+	__u16	nr_super_scrubbed;
-+	__u16	nr_super_repaired;
-+
-+	/*
-+	 * Data accounting in bytes.
-+	 *
-+	 * We only care about how many bytes we scrubbed, thus no
-+	 * accounting for number of extents.
-+	 *
-+	 * This accounting includes the extra mirrors.
-+	 * E.g. for RAID1, one 16KiB extent will cause 32KiB in @data_scrubbed.
-+	 */
-+	__u64	data_scrubbed;
-+
-+	/* How many bytes can be recovered. */
-+	__u64	data_recoverable;
-+
-+	/*
-+	 * How many bytes are uncertain, this can only happen for NODATASUM
-+	 * cases.
-+	 * Including NODATASUM, and no extra mirror/parity to verify.
-+	 * Or has extra mirrors, but they mismatch with each other.
-+	 */
-+	__u64	data_nocsum_uncertain;
-+
-+	/*
-+	 * For data error bytes, these means determining errors, including:
-+	 *
-+	 * - IO failure, including missing dev.
-+	 * - Data csum mismatch
-+	 *   Csum tree search failure must go above case.
-+	 */
-+	__u64	data_io_fail;
-+	__u64	data_csum_mismatch;
-+
-+	/*
-+	 * All the unmentioned cases, including data matching its csum (of
-+	 * course, implies IO suceeded) and data has no csum but matches all
-+	 * other copies/parities, are the expected cases, no need to record.
-+	 */
-+
-+	/*
-+	 * Metadata accounting in bytes, pretty much the same as data.
-+	 *
-+	 * And since metadata has mandatory csum, there is no uncertain case.
-+	 */
-+	__u64	meta_scrubbed;
-+	__u64	meta_recoverable;
-+
-+	/*
-+	 * For meta, the checks are mostly progressive:
-+	 *
-+	 * - Unable to read
-+	 *   @meta_io_fail
-+	 *
-+	 * - Unable to pass basic sanity checks (e.g. bytenr check)
-+	 *   @meta_invalid
-+	 *
-+	 * - Pass basic sanity checks, but bad csum
-+	 *   @meta_bad_csum
-+	 *
-+	 * - Pass basic checks and csum, but bad transid
-+	 *   @meta_bad_transid
-+	 *
-+	 * - Pass all checks
-+	 *   The expected case, no special accounting needed.
-+	 */
-+	__u64 meta_io_fail;
-+	__u64 meta_invalid;
-+	__u64 meta_bad_csum;
-+	__u64 meta_bad_transid;
-+
-+	/*
-+	 * Parity accounting.
-+	 *
-+	 * NOTE: for unused data sectors (but still contributes to P/Q
-+	 * calculation, like the following case), they don't contribute
-+	 * to any accounting.
-+	 *
-+	 * Data 1:	|<--- Unused ---->| <<<
-+	 * Data 2:	|<- Data extent ->|
-+	 * Parity:	|<--- Parity ---->|
-+	 */
-+	__u64 parity_scrubbed;
-+	__u64 parity_recoverable;
-+
-+	/*
-+	 * This happens when there is not enough info to determine if the
-+	 * parity is correct, mostly happens when vertical stripes are
-+	 * *all* NODATASUM sectors.
-+	 *
-+	 * If there is any sector with checksum in the vertical stripe,
-+	 * parity itself will be no longer uncertain.
-+	 */
-+	__u64 parity_uncertain;
-+
-+	/*
-+	 * For parity, the checks are progressive too:
-+	 *
-+	 * - Unable to read
-+	 *   @parity_io_fail
-+	 *
-+	 * - Mismatch and any veritical data stripe has csum and
-+	 *   the data stripe csum matches
-+	 *   @parity_mismatch
-+	 *   We want to repair the parity then.
-+	 *
-+	 * - Mismatch and veritical data stripe has csum, and data
-+	 *   csum mismatch. And rebuilt data passes csum.
-+	 *   This will go @data_recoverable or @data_csum_mismatch instead.
-+	 *
-+	 * - Mismatch but no veritical data stripe has csum
-+	 *   @parity_uncertain
-+	 *
-+	 */
-+	__u64 parity_io_fail;
-+	__u64 parity_mismatch;
-+
-+	/* Padding to 256 bytes, and for later expansion. */
-+	__u64 __unused[15];
-+};
-+static_assert(sizeof(struct btrfs_scrub_fs_progress) == 256);
-+
-+/*
-+ * Readonly scrub fs will not try any repair (thus *_repaired member
-+ * in scrub_fs_progress should always be 0).
-+ */
-+#define BTRFS_SCRUB_FS_FLAG_READONLY	(1ULL << 0)
-+
-+/*
-+ * All supported flags.
-+ *
-+ * From the very beginning, scrub_fs ioctl would reject any unsupported
-+ * flags, making later expansion much simper.
-+ */
-+#define BTRFS_SCRUB_FS_FLAG_SUPP	(BTRFS_SCRUB_FS_FLAG_READONLY)
-+
-+struct btrfs_ioctl_scrub_fs_args {
-+	/* Input, logical bytenr to start the scrub */
-+	__u64 start;
-+
-+	/* Input, the logical bytenr end (inclusive) */
-+	__u64 end;
-+
-+	__u64 flags;
-+	__u64 reserved[8];
-+	struct btrfs_scrub_fs_progress progress; /* out */
-+
-+	/* pad to 1K */
-+	__u8 unused[1024 - 24 - 64 - sizeof(struct btrfs_scrub_fs_progress)];
-+};
-+
- #define BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_ALWAYS	0
- #define BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_AVOID	1
- struct btrfs_ioctl_dev_replace_start_params {
-@@ -1098,6 +1266,11 @@ static inline char *btrfs_err_str(enum btrfs_err_code err_code)
- 				    struct btrfs_ioctl_encoded_io_args)
- #define BTRFS_IOC_ENCODED_WRITE _IOW(BTRFS_IOCTL_MAGIC, 64, \
- 				     struct btrfs_ioctl_encoded_io_args)
-+#define BTRFS_IOC_SCRUB_FS	_IOWR(BTRFS_IOCTL_MAGIC, 65, \
-+				      struct btrfs_ioctl_scrub_fs_args)
-+#define BTRFS_IOC_SCRUB_FS_CANCEL _IO(BTRFS_IOCTL_MAGIC, 66)
-+#define BTRFS_IOC_SCRUB_FS_PROGRESS _IOWR(BTRFS_IOCTL_MAGIC, 67, \
-+				       struct btrfs_ioctl_scrub_fs_args)
- 
- #ifdef __cplusplus
+diff --git a/cmds/scrub.c b/cmds/scrub.c
+index 7c2d9b79c275..1c1e8c71d451 100644
+--- a/cmds/scrub.c
++++ b/cmds/scrub.c
+@@ -1139,6 +1139,75 @@ static int is_scrub_running_in_kernel(int fd,
+ 	return 0;
  }
+ 
++/*
++ * The entrance for the new scrub_fs experimental ioctl.
++ * It doesn't support the following scrub start options:
++ *
++ * - Background scrub
++ *   It's always running in foreground for now.
++ *
++ * - No support for scrub status file
++ *
++ * - No simple report
++ *   Only full scrub_fs_progress report.
++ *
++ * And this is hidden behind the experimental flags.
++ */
++static int scrub_fs_start(int fd)
++{
++#if EXPERIMENTAL
++	struct btrfs_ioctl_scrub_fs_args sfsa = { 0 };
++	struct btrfs_scrub_fs_progress *progress = &sfsa.progress;
++	int ret;
++
++	sfsa.start = 0;
++	sfsa.end = (u64)-1;
++
++	ret = ioctl(fd, BTRFS_IOC_SCRUB_FS, &sfsa);
++	if (ret < 0) {
++		ret = -errno;
++		if (ret != -ENOTTY && ret != -EOPNOTSUPP)
++			error("failed to call scrub_fs ioctl: %m");
++		return ret;
++	}
++
++	printf("nr_fatal_errors:       %u\n", progress->nr_fatal_errors);
++	printf("\n");
++	printf("Super accountings: (in number of superblocks)\n");
++	printf("  nr_super_scrubbed:   %u\n", progress->nr_super_scrubbed);
++	printf("  nr_super_repaired:   %u\n", progress->nr_super_repaired);
++	printf("  nr_super_errors:     %u\n", progress->nr_super_errors);
++	printf("\n");
++	printf("Metadata accountings: (in bytes)\n");
++	printf("  meta_scrubbed:       %llu\n", progress->meta_scrubbed);
++	printf("  meta_recoverable:    %llu\n", progress->meta_recoverable);
++	printf("\n");
++	printf("  meta_io_fail:        %llu\n", progress->meta_io_fail);
++	printf("  meta_invalid:        %llu\n", progress->meta_invalid);
++	printf("  meta_bad_csum:       %llu\n", progress->meta_bad_csum);
++	printf("  meta_bad_transid:    %llu\n", progress->meta_bad_transid);
++	printf("\n");
++	printf("Data accountings: (in bytes)\n");
++	printf("  data_scrubbed:       %llu\n", progress->data_scrubbed);
++	printf("  data_recoverable:    %llu\n", progress->data_recoverable);
++	printf("  data_uncertain:      %llu\n", progress->data_nocsum_uncertain);
++	printf("\n");
++	printf("  data_io_fail:        %llu\n", progress->data_io_fail);
++	printf("  data_csum_mismatch:  %llu\n", progress->data_csum_mismatch);
++	printf("Parity accountings: (in bytes)\n");
++	printf("  parity_scrubbed:     %llu\n", progress->parity_scrubbed);
++	printf("  parity_recoverable:  %llu\n", progress->parity_recoverable);
++	printf("  parity_uncertain:    %llu\n", progress->parity_uncertain);
++	printf("\n");
++	printf("  parity_io_fail:      %llu\n", progress->parity_io_fail);
++	printf("  parity_mismatch:     %llu\n", progress->parity_mismatch);
++
++	return 0;
++#else
++	return -EOPNOTSUPP;
++#endif
++}
++
+ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
+ 		       bool resume)
+ {
+@@ -1246,6 +1315,16 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
+ 	if (fdmnt < 0)
+ 		return 1;
+ 
++	ret = scrub_fs_start(fdmnt);
++	/* The new interface has handled everything, can return directly. */
++	if (ret == 0)
++		return 0;
++	/* For kernels don't support the new interface, reset @ret to 0. */
++	if (ret == -EOPNOTSUPP || ret == -ENOTTY)
++		ret = 0;
++	if (ret < 0)
++		return 1;
++
+ 	ret = get_fs_info(path, &fi_args, &di_args);
+ 	if (ret) {
+ 		errno = -ret;
 -- 
 2.37.3
 
