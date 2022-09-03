@@ -2,158 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDA95AC03C
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 19:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B19C5AC174
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 23:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbiICRil (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 3 Sep 2022 13:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50818 "EHLO
+        id S231423AbiICVui convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 3 Sep 2022 17:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232143AbiICRi0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 13:38:26 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE9153D2B;
-        Sat,  3 Sep 2022 10:38:25 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id b19so5233073ljf.8;
-        Sat, 03 Sep 2022 10:38:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=xX2O58QMupv9rWIX/wz0TD9J8Ed7HqVnisBNPZl6V04=;
-        b=P/hsH1QKS4072Gai1EmOGCnjPTQWZiiOiE+P26T80mgV0tbTOnkDXKC3nEWi1Xoe/A
-         Hs7LLFSp+fCaJRWZVqv/8C2xzImMvLQoTDYUfx6u9PmIwXRQtB9n4gGmx+GH0S1f7zYT
-         EpKdDfbdqDAHgNmhwbrPGp06lVMfmsEbewBLDb/B+dQfW30xzF8F2l2F/gidKFJKBG6M
-         xlYX6S3WMrWsrSfVCDpCmKqprjSkUDidSKYHiXrhQ6jx9rWQ1os07RE+QbroswHSap0D
-         gOYyJOlFnRdNpKj+sEkb2UqwaGfM6EvoZTNoU3eDmRl2MoAiXkF/RCfX0IxvBDH8/V+n
-         XD8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=xX2O58QMupv9rWIX/wz0TD9J8Ed7HqVnisBNPZl6V04=;
-        b=imTLFN8Eux+H9bfSleRewZH/5DsXR08iBnirAYp8x+S0JfQBmlHrGXNN1Nh3DlOYwp
-         iSeScOiatLAIcV2QQXWsycH5nExk+rxB7Gkx6Ev0k1BvXc21ku/gWYj5FLIY1t5mlZja
-         TSwe0rI583L76zVdWL3yggKQ37/9MuBrEevDRIVGFOno+Jhq5scwA/9LE8kAMCWjgaTj
-         PfK7Bok2vlWQQRKSOAMgPnfhlim5fcJjXBJ3UOt4hNNz76LLd0JTGIQj75rnqGhWgnF+
-         q7lscpM8EwUz1wAj239CIOgDRmwmY13nyjxc4Rx2pG73MR5Tn50WhfRZn4YPo818v1Vy
-         uf3w==
-X-Gm-Message-State: ACgBeo3Cc2Y2VegKEuKQ/9rp0/0ZPZVf1OZ2nGmHq1yGZ41nC/+3e2Gx
-        dLQxqi1fUAL/Rjn/aDiOfT5enZ6HDPLHglijCyY=
-X-Google-Smtp-Source: AA6agR7+UPXECkLr9xecEnlHY9jJP9Sk53/z1csaRMZh+iBcI4PkxC6eajktqUCZxUcf8SInATP1uw7iY4QjQlwWETk=
-X-Received: by 2002:a2e:b8d5:0:b0:25f:e94d:10a2 with SMTP id
- s21-20020a2eb8d5000000b0025fe94d10a2mr13425885ljp.274.1662226704352; Sat, 03
- Sep 2022 10:38:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220901220138.182896-1-vishal.moola@gmail.com> <20220901220138.182896-19-vishal.moola@gmail.com>
-In-Reply-To: <20220901220138.182896-19-vishal.moola@gmail.com>
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Sun, 4 Sep 2022 02:38:06 +0900
-Message-ID: <CAKFNMo=YwdFOQNUuwNvYn6u41C8A2M905-nDkEFRejPZ2_svYg@mail.gmail.com>
-Subject: Re: [PATCH 18/23] nilfs2: Convert nilfs_lookup_dirty_data_buffers()
- to use filemap_get_folios_tag()
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
-        linux-mm@kvack.org
+        with ESMTP id S230417AbiICVuh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 17:50:37 -0400
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC2912614
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 14:50:35 -0700 (PDT)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 2B1EC3C121F
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 21:50:34 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 5798F3C1169
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 21:50:33 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1662241833; a=rsa-sha256;
+        cv=none;
+        b=V9S/l6wPSk/fFLlJw0HLdhZ7qGCIN8VlT7cPkvd1Z/aXqVi6IX4mMggUDjS2PTFpBpCfHC
+        5SyEMIBzmAzlCq6MyBj4blnG04E/SCDlgbjO40TDwP+vp1tw/ZTEZbNXn6UOg2Dph7J8MC
+        kgjs438jBkVzNrPv60ivVbJ3jqhmuMkAuaFHqu5UQty36dEdloqELDtm7f2RkvWdt8ZyUA
+        hTk/hfj6eq1GDRFviSUN47c0ktMatTwzRcE89DQMxceLy6XySjZbavvnyj6xepgamjLdkE
+        mQ6XUSI+jDtyzUav/d6JvV3SfNma1cFn2ymZ9r6r9ydR5N9Eowq08e+DHTV3Qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1662241833;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=04GuEp5uR7WAwx1RICuppPnqDlg0TUq0WKhxzr+aXOc=;
+        b=srMgvMXfJAicEo03fJTRAFbk5KNGfSF9JmvSRYMPPoA+tZxmAjZoa/sVE6AU920jlAJ6VS
+        xH1K8l854WOfOlCemIfxSXS9m/ZHrW5/RXxYfSD4w+q9BJNyN5VC4+zoYHr/yhAJmwUPWJ
+        dXl9zC2yMcIy2d5pepzbhmP+5z25aW4rj2RTHAj72sq25PHgiRU6IDbTr7LimS+I0KdcaL
+        WJQAtUtPf455yIlRjYuMlCl7obwFiiZcND5v7Fi8EaBsasiMDYYRaFYojeaAqr/b5OLB8a
+        Fu4SiqCuViXRi9aVj3gJ0zgyssBWlhNFuVHaRl55IjSBwqrOo9aD+Rs5TFARRg==
+ARC-Authentication-Results: i=1;
+        rspamd-f776c45b8-4hrph;
+        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Power-Daffy: 613fbbe55d217ab3_1662241833832_3403100123
+X-MC-Loop-Signature: 1662241833832:3016766880
+X-MC-Ingress-Time: 1662241833831
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.98.142.80 (trex/6.7.1);
+        Sat, 03 Sep 2022 21:50:33 +0000
+Received: from ppp-46-244-252-68.dynamic.mnet-online.de ([46.244.252.68]:56350 helo=heisenberg.fritz.box)
+        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <calestyo@scientia.org>)
+        id 1oUb26-0006Xh-6r
+        for linux-btrfs@vger.kernel.org;
+        Sat, 03 Sep 2022 21:50:31 +0000
+Message-ID: <d8b54f683ae5e711c4730971f717666cfc58f851.camel@scientia.org>
+Subject: btrfs check: extent buffer leak: start 30572544 len 16384
+From:   Christoph Anton Mitterer <calestyo@scientia.org>
+To:     Linux BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Sat, 03 Sep 2022 23:50:26 +0200
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-1+b1 
+MIME-Version: 1.0
+X-OutGoing-Spam-Status: No, score=-0.5
+X-AuthUser: calestyo@scientia.org
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,
+        HAS_X_OUTGOING_SPAM_STAT,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 2, 2022 at 7:07 AM Vishal Moola (Oracle) wrote:
->
-> Convert function to use folios throughout. This is in preparation for
-> the removal of find_get_pages_range_tag().
->
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> ---
->  fs/nilfs2/segment.c | 29 ++++++++++++++++-------------
->  1 file changed, 16 insertions(+), 13 deletions(-)
->
-> diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
-> index 0afe0832c754..e95c667bdc8f 100644
-> --- a/fs/nilfs2/segment.c
-> +++ b/fs/nilfs2/segment.c
-> @@ -680,7 +680,7 @@ static size_t nilfs_lookup_dirty_data_buffers(struct inode *inode,
->                                               loff_t start, loff_t end)
->  {
->         struct address_space *mapping = inode->i_mapping;
-> -       struct pagevec pvec;
-> +       struct folio_batch fbatch;
->         pgoff_t index = 0, last = ULONG_MAX;
->         size_t ndirties = 0;
->         int i;
-> @@ -694,23 +694,26 @@ static size_t nilfs_lookup_dirty_data_buffers(struct inode *inode,
->                 index = start >> PAGE_SHIFT;
->                 last = end >> PAGE_SHIFT;
->         }
-> -       pagevec_init(&pvec);
-> +       folio_batch_init(&fbatch);
->   repeat:
->         if (unlikely(index > last) ||
-> -           !pagevec_lookup_range_tag(&pvec, mapping, &index, last,
-> -                               PAGECACHE_TAG_DIRTY))
-> +             !filemap_get_folios_tag(mapping, &index, last,
-> +                     PAGECACHE_TAG_DIRTY, &fbatch))
->                 return ndirties;
->
-> -       for (i = 0; i < pagevec_count(&pvec); i++) {
-> +       for (i = 0; i < folio_batch_count(&fbatch); i++) {
->                 struct buffer_head *bh, *head;
-> -               struct page *page = pvec.pages[i];
-> +               struct folio *folio = fbatch.folios[i];
->
-> -               lock_page(page);
-> -               if (!page_has_buffers(page))
-> -                       create_empty_buffers(page, i_blocksize(inode), 0);
-> -               unlock_page(page);
+Hey.
 
-> +               head = folio_buffers(folio);
-> +               folio_lock(folio);
+On a freshly created, never mounted btrfs I get a new:
+extent buffer leak: start 30572544 len 16384
 
-Could you please swap these two lines to keep the "head" check in the lock?
+with btrfs-progs 5.19:
+
+# btrfs check --mode lowmem /dev/mapper/data-a-1 ; echo $?
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/data-a-1
+UUID: ff14e046-d72c-4671-b30a-6ec17c58a0f1
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space tree
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs done with fs roots in lowmem mode, skipping
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 147456 bytes used, no error found
+total csum bytes: 0
+total tree bytes: 147456
+total fs tree bytes: 32768
+total extent tree bytes: 16384
+btree space waste bytes: 140595
+file data blocks allocated: 0
+ referenced 0
+extent buffer leak: start 30572544 len 16384
+0
+# btrfs check /dev/mapper/data-a-1 ; echo $?
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/data-a-1
+UUID: ff14e046-d72c-4671-b30a-6ec17c58a0f1
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space tree
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 147456 bytes used, no error found
+total csum bytes: 0
+total tree bytes: 147456
+total fs tree bytes: 32768
+total extent tree bytes: 16384
+btree space waste bytes: 140595
+file data blocks allocated: 0
+ referenced 0
+extent buffer leak: start 30572544 len 16384
+0
+
+
+Is that just some diagnostics or what does it mean? "leak" never sounds
+so good ;-)
 
 Thanks,
-Ryusuke Konishi
-
-
-> +               if (!head) {
-> +                       create_empty_buffers(&folio->page, i_blocksize(inode), 0);
-> +                       head = folio_buffers(folio);
-> +               }
-> +               folio_unlock(folio);
->
-> -               bh = head = page_buffers(page);
-> +               bh = head;
->                 do {
->                         if (!buffer_dirty(bh) || buffer_async_write(bh))
->                                 continue;
-> @@ -718,13 +721,13 @@ static size_t nilfs_lookup_dirty_data_buffers(struct inode *inode,
->                         list_add_tail(&bh->b_assoc_buffers, listp);
->                         ndirties++;
->                         if (unlikely(ndirties >= nlimit)) {
-> -                               pagevec_release(&pvec);
-> +                               folio_batch_release(&fbatch);
->                                 cond_resched();
->                                 return ndirties;
->                         }
->                 } while (bh = bh->b_this_page, bh != head);
->         }
-> -       pagevec_release(&pvec);
-> +       folio_batch_release(&fbatch);
->         cond_resched();
->         goto repeat;
->  }
-> --
-> 2.36.1
->
+Chris.
