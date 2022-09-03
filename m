@@ -2,104 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DD35ABBFC
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 03:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10CC5ABD70
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 08:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbiICBJC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Sep 2022 21:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47598 "EHLO
+        id S232285AbiICGaA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 3 Sep 2022 02:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbiICBJB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Sep 2022 21:09:01 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492E7EA8AE
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 18:09:00 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-33dc31f25f9so30222487b3.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Sep 2022 18:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date;
-        bh=E+ajkPOCiKpgi10ZeArLTtbDc9uBNA7SEB1kzCenf2E=;
-        b=CgIVjwR7sIjVMBIX2528ixznS0Yil2U/iTg03LSX+N3BWS8aOr9/TH9AqEwKR+LNM4
-         5wToql9ATN/hDU2W11z71/oJB6l1t/0u0vkuw0/WFrkDPJSMaelJs5Gfa1eLW5/1fwN8
-         PGYz5njNc5Ish25/fPnALl1BouYDIjIlLS28ivIDXRAZ+y7nYGYqpEj1ivvG9K13EL0t
-         Zce5BJnC/QP29B9STyeC5vx/mDP8HDQzkKQhvi5Q6+oeYoTZqujwi2d830f6kc8q0px5
-         VZZW+GDUYtY3vffiN5rQH1YaDXO3a+Sve2LapO6c3SK+O/q95Ee92awEAZ+ikWeg6ep8
-         +qug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=E+ajkPOCiKpgi10ZeArLTtbDc9uBNA7SEB1kzCenf2E=;
-        b=V3w9ooz5HwElJCpWUHKExuSdn10/EdPyobmnM1cIqoABztAloxKqeiWgLi9MzkjlCi
-         /vT5AeXb+nKDYDWMrXoLqlp2BY+WurrwYFmH4LxClh/yyZZrzJmXPF9RQEdrXqFcJG3V
-         N7jkHZIas5pBwV0S52o+H7MLnBEZVBMdeamoL6O+ns2HYMMsHY0jHDVNdSURfx9tEW3n
-         dpVAKg5Y/wPHM1hru8xR85QZFarh9LkUvgG2C3hXmUZB1HqD8DCj3ib01mu/bJUjVwID
-         SLVkdLrUt1BzBpdLlXUZmxxD1h6fqwVoQ236xFRKgoEqS8apBN2iU5X4ZRfdikkm1zOJ
-         uOyg==
-X-Gm-Message-State: ACgBeo0blfcwWRDFEbry1rspRfX2D/SbEM21ifTBeOvZ+uMRjFfE5Ale
-        7fqPqT4akf5iUwMFD2gpdf9p4uTBSHlaIcIX3xE=
-X-Google-Smtp-Source: AA6agR7HVOc5FK5HTldMrCCFX9WMva6nfdRdzVRJsrhLyFgBQeY9eTRt1ymSykmAVkSDyjFsWQ7viMpc+7nWOkgs8uI=
-X-Received: by 2002:a81:ae5f:0:b0:33d:c00a:8c93 with SMTP id
- g31-20020a81ae5f000000b0033dc00a8c93mr30956775ywk.376.1662167338300; Fri, 02
- Sep 2022 18:08:58 -0700 (PDT)
+        with ESMTP id S229515AbiICG36 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 02:29:58 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18D02C13E
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 23:29:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662186596; x=1693722596;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EpZrrgoONi2r7ZpQwG7pfv5GsJb4n03feP4BLKjmxXc=;
+  b=EkoeoGrm/jjdob5QDZ28BoQBHW4U23EsptW5vEeQ7oTrbC3uIEyJ+jrc
+   a4z793kQurp2SRVG7IsfzzkA6n6KaxLszWm30ezIgmZtGsfj46G7QqvJw
+   /EVfbD8EpYF6b0Z0XU9vVJQEZS82ihMzgRGZjjjeYxoH786Rm0xAK7ztE
+   Dw97QMBIEMvl3ptUZzVQ9PwdO6Jj+jlYywksED00TtGPVblWlL1cw/Dil
+   HhifidzMxuxYiorSsTLlY2DEiJRBy8aN0KdGNl4tEPDJXAsrB3CTP+VRt
+   +nOsjRFHwB4W7GiP9DlqlzOpUHpyEecetRcs+bHz/OaXhhqLMSiJkCIEX
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="276534384"
+X-IronPort-AV: E=Sophos;i="5.93,286,1654585200"; 
+   d="scan'208";a="276534384"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2022 23:29:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,286,1654585200"; 
+   d="scan'208";a="702366429"
+Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Sep 2022 23:29:54 -0700
+Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oUMfB-0001Az-1z;
+        Sat, 03 Sep 2022 06:29:53 +0000
+Date:   Sat, 3 Sep 2022 14:28:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Cc:     kbuild-all@lists.01.org
+Subject: Re: [PATCH 12/31] btrfs: move the core extent_io_tree code into
+ extent-io-tree.c
+Message-ID: <202209031411.pvUL5nPj-lkp@intel.com>
+References: <c534c12c1dcf0821971b8918abced08aafd27055.1662149276.git.josef@toxicpanda.com>
 MIME-Version: 1.0
-Received: by 2002:a0d:d542:0:0:0:0:0 with HTTP; Fri, 2 Sep 2022 18:08:57 -0700 (PDT)
-Reply-To: mr.alabbashadi@gmail.com
-From:   Mr Abbas Hadi <genbellalogan21@gmail.com>
-Date:   Fri, 2 Sep 2022 18:08:57 -0700
-Message-ID: <CAPEfYkEEr4KjgGyssKZrkqO_hQm-SLS3Vsifvp3fS9C-Wrb_4Q@mail.gmail.com>
-Subject: Greetings,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:1129 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [genbellalogan21[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [genbellalogan21[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c534c12c1dcf0821971b8918abced08aafd27055.1662149276.git.josef@toxicpanda.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Josef,
+
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on next-20220901]
+[cannot apply to rostedt-trace/for-next linus/master v6.0-rc3]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Josef-Bacik/btrfs-move-extent_io_tree-code-and-cleanups/20220903-042359
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20220903/202209031411.pvUL5nPj-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/9fa98f420ce2ac5220d35bedf881d5e6bbd18e9d
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Josef-Bacik/btrfs-move-extent_io_tree-code-and-cleanups/20220903-042359
+        git checkout 9fa98f420ce2ac5220d35bedf881d5e6bbd18e9d
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=alpha SHELL=/bin/bash fs/btrfs/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> fs/btrfs/extent-io-tree.c:237: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Search @tree for an entry that contains @offset. Such entry would have
+   fs/btrfs/extent-io-tree.c:298: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Search offset in the tree or fill neighbor rbtree node pointers.
+   fs/btrfs/extent-io-tree.c:1393: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Find a contiguous area of bits
+   fs/btrfs/extent-io-tree.c:1431: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Find the first range that has @bits not set. This range could start before
+
+
+vim +237 fs/btrfs/extent-io-tree.c
+
+   235	
+   236	/**
+ > 237	 * Search @tree for an entry that contains @offset. Such entry would have
+   238	 * entry->start <= offset && entry->end >= offset.
+   239	 *
+   240	 * @tree:       the tree to search
+   241	 * @offset:     offset that should fall within an entry in @tree
+   242	 * @node_ret:   pointer where new node should be anchored (used when inserting an
+   243	 *	        entry in the tree)
+   244	 * @parent_ret: points to entry which would have been the parent of the entry,
+   245	 *               containing @offset
+   246	 *
+   247	 * Return a pointer to the entry that contains @offset byte address and don't change
+   248	 * @node_ret and @parent_ret.
+   249	 *
+   250	 * If no such entry exists, return pointer to entry that ends before @offset
+   251	 * and fill parameters @node_ret and @parent_ret, ie. does not return NULL.
+   252	 */
+   253	static inline struct rb_node *tree_search_for_insert(struct extent_io_tree *tree,
+   254						             u64 offset,
+   255							     struct rb_node ***node_ret,
+   256							     struct rb_node **parent_ret)
+   257	{
+   258		struct rb_root *root = &tree->state;
+   259		struct rb_node **node = &root->rb_node;
+   260		struct rb_node *prev = NULL;
+   261		struct tree_entry *entry;
+   262	
+   263		while (*node) {
+   264			prev = *node;
+   265			entry = rb_entry(prev, struct tree_entry, rb_node);
+   266	
+   267			if (offset < entry->start)
+   268				node = &(*node)->rb_left;
+   269			else if (offset > entry->end)
+   270				node = &(*node)->rb_right;
+   271			else
+   272				return *node;
+   273		}
+   274	
+   275		if (node_ret)
+   276			*node_ret = node;
+   277		if (parent_ret)
+   278			*parent_ret = prev;
+   279	
+   280		/* Search neighbors until we find the first one past the end */
+   281		while (prev && offset > entry->end) {
+   282			prev = rb_next(prev);
+   283			entry = rb_entry(prev, struct tree_entry, rb_node);
+   284		}
+   285	
+   286		return prev;
+   287	}
+   288	
+
 -- 
-
-
-
-Good Day,
-
-I am Mr. Abbas Hadi, the manager with BOA i contact you for a deal
-relating to the funds which are in my position I shall furnish
-you with more detail once your response.
-
-Regards,
-Mr. Abbas Hadi
+0-DAY CI Kernel Test Service
+https://01.org/lkp
