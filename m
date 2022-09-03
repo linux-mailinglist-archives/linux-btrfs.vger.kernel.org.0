@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD425ABDC4
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 10:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9C05ABDCA
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 10:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbiICIUE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 3 Sep 2022 04:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
+        id S232512AbiICIUH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 3 Sep 2022 04:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231741AbiICIUB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 04:20:01 -0400
+        with ESMTP id S232484AbiICIUD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 04:20:03 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D800D38446
-        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 01:19:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05219326E0
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 01:20:00 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 980CA337DC
-        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 08:19:57 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AF490336D9
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 08:19:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1662193197; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1662193198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WLUvtG6M2IIIaIfiy2r5oq9o6sxwem5CIfq7ZLNLQNA=;
-        b=K5VyUrnlCswCBcXPSNuUaZcxFD9f/YdhNIGmZEJsWFihzUIkS0TWAVnONNJOCxjIAee201
-        pPtkb7IyybkPOKu19u9tsjBY7Qz3R/6grMCE8ja7RdjyHGjHbSlI+D/KT9Aabgse3n/4av
-        lv9YFLdcv6/uLn7EaDHjqSe42qEjO9U=
+        bh=tKcYskMmq6cOw1OZ7yu/EPOje8CnSygaLDmUiKF0kG4=;
+        b=HJTHtMyLwSd2gVtOAbt+EH0Vda4xqFKi1bAnWizKwsyMFwFhEpXbGAgHETE983kkwyHen2
+        1skZPmVC4W/XyYraLXJw+1EW76z7w7OML3/9wOYnzyiwDFhzvcLEI6GEni3Ck/fzWw3fpx
+        BB4lAOYDGfBdAnWoLDUH41/TZpxloho=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E6D35139F9
-        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 08:19:56 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A2A5139F9
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 08:19:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id OMNMKywOE2OzagAAMHmgww
+        id uPYVMS0OE2OzagAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sat, 03 Sep 2022 08:19:56 +0000
+        for <linux-btrfs@vger.kernel.org>; Sat, 03 Sep 2022 08:19:57 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH PoC 6/9] btrfs: scrub: submit and wait for the read of each copy
-Date:   Sat,  3 Sep 2022 16:19:26 +0800
-Message-Id: <0caa3a0e2f9adac89b0f8c3b9747bede11faff26.1662191784.git.wqu@suse.com>
+Subject: [PATCH PoC 7/9] btrfs: scrub: implement metadata verification code for scrub_fs
+Date:   Sat,  3 Sep 2022 16:19:27 +0800
+Message-Id: <1b48b161aa6cd64378cdb83178deea49ef0625ce.1662191784.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1662191784.git.wqu@suse.com>
 References: <cover.1662191784.git.wqu@suse.com>
@@ -60,287 +60,406 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch introduce a helper, scrub_fs_one_stripe().
+This patch introduces the following functions:
 
-Currently it's only doing the following work:
+- scrub_fs_verify_one_stripe()
+  The entrance for all verification code.
 
-- Submit bios for each copy of 64K stripe
-  We don't need to skip any range which doesn't have data/metadata.
-  That would only eat up the IOPS performance of the disk.
+  Which will iterate every sector in the same vertical stripe.
 
-  At per-stripe initialization time we have marked all sectors unused,
-  until extent tree search time marks the needed sectors DATA/METADATA.
+- scrub_fs_verify_meta()
+  The helper to verify metadata in one vertical stripe.
+  (Since no RAID56 support, one vertical stripe just contains
+   all the same data from different mirrors)
 
-  So at verification time we can skip those unused sectors.
+- scrub_fs_verify_one_meta()
+  This is the real work, the checks includes:
 
-- Wait for the bios to finish
+  * Basic metadata header checks (bytenr, fsid, level)
+    For this part, we refactor those checks from
+    validate_extent_buffer() into btrfs_validate_eb_basic(),
+    allowing us to suppress the error messages.
 
-No csum verification yet.
+  * Checksum verification
+    For this part, we refactor this one check from
+    validate_extent_buffer() into btrfs_validate_eb_csum(),
+    allowing us to suppress the error message.
+
+  * Tree check verification (NEW)
+    This is the new one, the old scrub code never fully utilize the
+    whole extent buffer related facilities, thus only very basic checks.
+    Now scrub_fs has (almost) the same checks as tree block read
+    routine.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 220 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 218 insertions(+), 2 deletions(-)
+ fs/btrfs/disk-io.c |  83 ++++++++++++++++-------
+ fs/btrfs/disk-io.h |   2 +
+ fs/btrfs/scrub.c   | 164 ++++++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 222 insertions(+), 27 deletions(-)
 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index e67614afcf4f..6eda9e615ae7 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -457,55 +457,87 @@ static int check_tree_block_fsid(struct extent_buffer *eb)
+ 	return 1;
+ }
+ 
+-/* Do basic extent buffer checks at read time */
+-static int validate_extent_buffer(struct extent_buffer *eb)
++/*
++ * The very basic extent buffer checks, including:
++ *
++ * - Bytenr check
++ * - FSID check
++ * - Level check
++ *
++ * If @error_message is true, it will output error message (rate limited).
++ */
++int btrfs_validate_eb_basic(struct extent_buffer *eb, bool error_message)
+ {
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
+ 	u64 found_start;
+-	const u32 csum_size = fs_info->csum_size;
+ 	u8 found_level;
+-	u8 result[BTRFS_CSUM_SIZE];
+-	const u8 *header_csum;
+ 	int ret = 0;
+ 
+ 	found_start = btrfs_header_bytenr(eb);
+ 	if (found_start != eb->start) {
+-		btrfs_err_rl(fs_info,
++		if (error_message)
++			btrfs_err_rl(fs_info,
+ 			"bad tree block start, mirror %u want %llu have %llu",
+-			     eb->read_mirror, eb->start, found_start);
+-		ret = -EIO;
+-		goto out;
++				     eb->read_mirror, eb->start, found_start);
++		return -EIO;
+ 	}
+ 	if (check_tree_block_fsid(eb)) {
+-		btrfs_err_rl(fs_info, "bad fsid on logical %llu mirror %u",
+-			     eb->start, eb->read_mirror);
+-		ret = -EIO;
+-		goto out;
++		if (error_message)
++			btrfs_err_rl(fs_info, "bad fsid on logical %llu mirror %u",
++				     eb->start, eb->read_mirror);
++		return -EIO;
+ 	}
+ 	found_level = btrfs_header_level(eb);
+ 	if (found_level >= BTRFS_MAX_LEVEL) {
+-		btrfs_err(fs_info,
+-			"bad tree block level, mirror %u level %d on logical %llu",
+-			eb->read_mirror, btrfs_header_level(eb), eb->start);
+-		ret = -EIO;
+-		goto out;
++		if (error_message)
++			btrfs_err(fs_info,
++				"bad tree block level, mirror %u level %d on logical %llu",
++				eb->read_mirror, btrfs_header_level(eb), eb->start);
++		return -EIO;
+ 	}
++	return ret;
++}
++
++int btrfs_validate_eb_csum(struct extent_buffer *eb, bool error_message)
++{
++	struct btrfs_fs_info *fs_info = eb->fs_info;
++	u8 result[BTRFS_CSUM_SIZE];
++	const u8 *header_csum;
++	const u32 csum_size = fs_info->csum_size;
+ 
+ 	csum_tree_block(eb, result);
+ 	header_csum = page_address(eb->pages[0]) +
+ 		get_eb_offset_in_page(eb, offsetof(struct btrfs_header, csum));
+ 
+ 	if (memcmp(result, header_csum, csum_size) != 0) {
+-		btrfs_warn_rl(fs_info,
++		if (error_message)
++			btrfs_warn_rl(fs_info,
+ "checksum verify failed on logical %llu mirror %u wanted " CSUM_FMT " found " CSUM_FMT " level %d",
+-			      eb->start, eb->read_mirror,
+-			      CSUM_FMT_VALUE(csum_size, header_csum),
+-			      CSUM_FMT_VALUE(csum_size, result),
+-			      btrfs_header_level(eb));
+-		ret = -EUCLEAN;
+-		goto out;
++				      eb->start, eb->read_mirror,
++				      CSUM_FMT_VALUE(csum_size, header_csum),
++				      CSUM_FMT_VALUE(csum_size, result),
++				      btrfs_header_level(eb));
++		return -EUCLEAN;
+ 	}
++	return 0;
++}
++
++/* Do basic extent buffer checks at read time */
++static inline int validate_extent_buffer(struct extent_buffer *eb)
++{
++	struct btrfs_fs_info *fs_info = eb->fs_info;
++	u8 found_level;
++	int ret = 0;
++
++	ret = btrfs_validate_eb_basic(eb, true);
++	if (ret < 0)
++		return ret;
+ 
++	ret = btrfs_validate_eb_csum(eb, true);
++	if (ret < 0)
++		return ret;
++
++	found_level = btrfs_header_level(eb);
+ 	/*
+ 	 * If this is a leaf block and it is corrupt, set the corrupt bit so
+ 	 * that we don't try and read the other copies of this block, just
+@@ -525,7 +557,6 @@ static int validate_extent_buffer(struct extent_buffer *eb)
+ 		btrfs_err(fs_info,
+ 		"read time tree block corruption detected on logical %llu mirror %u",
+ 			  eb->start, eb->read_mirror);
+-out:
+ 	return ret;
+ }
+ 
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 47ad8e0a2d33..3d154873d4e5 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -80,6 +80,8 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
+ int btrfs_validate_metadata_buffer(struct btrfs_bio *bbio,
+ 				   struct page *page, u64 start, u64 end,
+ 				   int mirror);
++int btrfs_validate_eb_basic(struct extent_buffer *eb, bool error_message);
++int btrfs_validate_eb_csum(struct extent_buffer *eb, bool error_message);
+ void btrfs_submit_metadata_bio(struct inode *inode, struct bio *bio, int mirror_num);
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ struct btrfs_root *btrfs_alloc_dummy_root(struct btrfs_fs_info *fs_info);
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 96daed3f3274..70a54c6d8888 100644
+index 70a54c6d8888..f587d0373517 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -203,6 +203,11 @@ struct scrub_ctx {
- #define SCRUB_FS_SECTOR_FLAG_META		(1 << 2)
- #define SCRUB_FS_SECTOR_FLAG_PARITY		(1 << 3)
+@@ -20,6 +20,7 @@
+ #include "rcu-string.h"
+ #include "raid56.h"
+ #include "block-group.h"
++#include "tree-checker.h"
+ #include "zoned.h"
  
-+/* This marks if the sector belongs to a missing device. */
-+#define SCRUB_FS_SECTOR_FLAG_DEV_MISSING	(1 << 4)
-+#define SCRUB_FS_SECTOR_FLAG_IO_ERROR		(1 << 5)
-+#define SCRUB_FS_SECTOR_FLAG_IO_DONE		(1 << 6)
+ /*
+@@ -208,6 +209,9 @@ struct scrub_ctx {
+ #define SCRUB_FS_SECTOR_FLAG_IO_ERROR		(1 << 5)
+ #define SCRUB_FS_SECTOR_FLAG_IO_DONE		(1 << 6)
+ 
++/* This marks if the sector is a good one (aka, passed all checks). */
++#define SCRUB_FS_SECTOR_FLAG_GOOD		(1 << 7)
 +
  /*
   * Represent a sector.
   *
-@@ -305,6 +310,8 @@ struct scrub_fs_ctx {
- 	 * would point to the same location inside the buffer.
+@@ -311,6 +315,11 @@ struct scrub_fs_ctx {
  	 */
  	u8				*csum_buf;
-+
-+	wait_queue_head_t		wait;
+ 
++	/*
++	 * This is for METADATA block group verification, we use this dummy eb
++	 * to utilize all the accessors for extent buffers.
++	 */
++	struct extent_buffer		*dummy_eb;
+ 	wait_queue_head_t		wait;
  };
  
- struct scrub_warning {
-@@ -4559,6 +4566,7 @@ static struct scrub_fs_ctx *scrub_fs_alloc_ctx(struct btrfs_fs_info *fs_info,
- 	sfctx->fs_info = fs_info;
- 	sfctx->readonly = readonly;
- 	atomic_set(&sfctx->sectors_under_io, 0);
-+	init_waitqueue_head(&sfctx->wait);
- 	return sfctx;
- error:
- 	kfree(sfctx);
-@@ -4936,6 +4944,213 @@ static void scrub_fs_reset_stripe(struct scrub_fs_ctx *sfctx)
+@@ -4599,6 +4608,10 @@ static void scrub_fs_cleanup_for_bg(struct scrub_fs_ctx *sfctx)
+ 	kfree(sfctx->csum_buf);
+ 	sfctx->csum_buf = NULL;
+ 
++	if (sfctx->dummy_eb) {
++		free_extent_buffer_stale(sfctx->dummy_eb);
++		sfctx->dummy_eb = NULL;
++	}
+ 	/* NOTE: block group will only be put inside scrub_fs_iterate_bgs(). */
+ 	sfctx->cur_bg = NULL;
+ }
+@@ -4626,6 +4639,7 @@ static int scrub_fs_init_for_bg(struct scrub_fs_ctx *sfctx,
+ 	ASSERT(!sfctx->pages);
+ 	ASSERT(!sfctx->sectors);
+ 	ASSERT(!sfctx->csum_buf);
++	ASSERT(!sfctx->dummy_eb);
+ 
+ 	read_lock(&map_tree->lock);
+ 	em = lookup_extent_mapping(map_tree, bg->start, bg->length);
+@@ -4683,6 +4697,12 @@ static int scrub_fs_init_for_bg(struct scrub_fs_ctx *sfctx,
+ 		if (!sfctx->csum_buf)
+ 			goto enomem;
  	}
++	if (bg->flags & (BTRFS_BLOCK_GROUP_METADATA |
++			 BTRFS_BLOCK_GROUP_SYSTEM)) {
++		sfctx->dummy_eb = alloc_dummy_extent_buffer(fs_info, 0);
++		if (!sfctx->dummy_eb)
++			goto enomem;
++	}
+ 	sfctx->cur_bg = bg;
+ 	sfctx->cur_logical = bg->start;
+ 	return 0;
+@@ -5101,6 +5121,148 @@ static void submit_stripe_read_bio(struct scrub_fs_ctx *sfctx,
+ 	submit_bio(bio);
  }
  
-+static void mark_missing_dev_sectors(struct scrub_fs_ctx *sfctx,
-+				     int stripe_nr)
++static void scrub_fs_verify_one_meta(struct scrub_fs_ctx *sfctx, int sector_nr,
++				     int mirror_nr)
 +{
 +	struct btrfs_fs_info *fs_info = sfctx->fs_info;
-+	const int sectors_per_stripe = BTRFS_STRIPE_LEN >>
++	struct extent_buffer *eb = sfctx->dummy_eb;
++	const int sectors_per_mirror = BTRFS_STRIPE_LEN >>
 +				       fs_info->sectorsize_bits;
-+	int i;
-+
-+	for (i = 0; i < sectors_per_stripe; i++) {
-+		struct scrub_fs_sector *sector =
-+			scrub_fs_get_sector(sfctx, i, stripe_nr);
-+
-+		sector->flags |= SCRUB_FS_SECTOR_FLAG_DEV_MISSING;
-+	}
-+}
-+
-+static struct page *scrub_fs_get_page(struct scrub_fs_ctx *sfctx,
-+				      int sector_nr)
-+{
-+	const int sectors_per_stripe = BTRFS_STRIPE_LEN >>
-+				       sfctx->fs_info->sectorsize_bits;
-+	int page_index;
-+
-+	/* Basic checks to make sure we're accessing a valid sector. */
-+	ASSERT(sector_nr >= 0 && sector_nr < sfctx->nr_copies * sectors_per_stripe);
-+
-+	page_index = sector_nr / (PAGE_SIZE >> sfctx->fs_info->sectorsize_bits);
-+
-+	ASSERT(sfctx->pages[page_index]);
-+	return sfctx->pages[page_index];
-+}
-+
-+static unsigned int scrub_fs_get_page_offset(struct scrub_fs_ctx *sfctx,
-+					     int sector_nr)
-+{
-+	const int sectors_per_stripe = BTRFS_STRIPE_LEN >>
-+				       sfctx->fs_info->sectorsize_bits;
-+
-+	/* Basic checks to make sure we're accessing a valid sector. */
-+	ASSERT(sector_nr >= 0 && sector_nr < sfctx->nr_copies * sectors_per_stripe);
-+
-+	return offset_in_page(sector_nr << sfctx->fs_info->sectorsize_bits);
-+}
-+
-+static int scrub_fs_get_stripe_nr(struct scrub_fs_ctx *sfctx,
-+				  struct page *first_page,
-+				  unsigned int page_off)
-+{
-+	const int pages_per_stripe = BTRFS_STRIPE_LEN >> PAGE_SHIFT;
-+	bool found = false;
-+	int i;
-+
-+	/* The first sector should always be page aligned. */
-+	ASSERT(page_off == 0);
-+
-+	for (i = 0; i < pages_per_stripe * sfctx->nr_copies; i++) {
-+		if (first_page == sfctx->pages[i]) {
-+			found = true;
-+			break;
-+		}
-+	}
-+	if (!found)
-+		return -1;
-+
-+	ASSERT(IS_ALIGNED(i, pages_per_stripe));
-+
-+	return i / pages_per_stripe;
-+}
-+
-+static void scrub_fs_read_endio(struct bio *bio)
-+{
-+	struct scrub_fs_ctx *sfctx = bio->bi_private;
-+	struct btrfs_fs_info *fs_info = sfctx->fs_info;
-+	struct bio_vec *first_bvec = bio_first_bvec_all(bio);
-+	struct bio_vec *bvec;
-+	struct bvec_iter_all iter_all;
-+	int bio_size = 0;
-+	bool error = (bio->bi_status != BLK_STS_OK);
-+	const int stripe_nr = scrub_fs_get_stripe_nr(sfctx, first_bvec->bv_page,
-+						     first_bvec->bv_offset);
-+	int i;
-+
-+	/* Grab the bio size for later sanity checks. */
-+	bio_for_each_segment_all(bvec, bio, iter_all)
-+		bio_size += bvec->bv_len;
-+
-+	/* We always submit a bio for a stripe length. */
-+	ASSERT(bio_size == BTRFS_STRIPE_LEN);
-+
-+	for (i = 0; i < sfctx->sectors_per_stripe; i++) {
-+		struct scrub_fs_sector *sector =
-+			scrub_fs_get_sector(sfctx, i, stripe_nr);
-+		/*
-+		 * Here we only set the sector flags, don't do any stat update,
-+		 * that will be done by the main thread when doing verification.
-+		 */
-+		if (error)
-+			sector->flags |= SCRUB_FS_SECTOR_FLAG_IO_ERROR;
-+		else
-+			sector->flags |= SCRUB_FS_SECTOR_FLAG_IO_DONE;
-+	}
-+	atomic_sub(bio_size >> fs_info->sectorsize_bits,
-+		   &sfctx->sectors_under_io);
-+	wake_up(&sfctx->wait);
-+	bio_put(bio);
-+}
-+
-+static void submit_stripe_read_bio(struct scrub_fs_ctx *sfctx,
-+				   struct btrfs_io_context *bioc,
-+				   int stripe_nr)
-+{
-+	struct btrfs_fs_info *fs_info = sfctx->fs_info;
-+	const int sectors_per_stripe = BTRFS_STRIPE_LEN >>
-+				       fs_info->sectorsize_bits;
-+	struct btrfs_io_stripe *stripe = &bioc->stripes[stripe_nr];
-+	struct btrfs_device *dev = stripe->dev;
-+	struct bio *bio;
++	const u64 logical = sfctx->cur_logical + (sector_nr <<
++						  fs_info->sectorsize_bits);
++	const u64 expected_gen = sfctx->sectors[sector_nr].eb_generation;
 +	int ret;
 +	int i;
 +
-+	/*
-+	 * Missing device, just mark the sectors with missing device
-+	 * and continue to next copy.
-+	 */
-+	if (!dev || !dev->bdev) {
-+		mark_missing_dev_sectors(sfctx, stripe_nr);
++	sfctx->stat.meta_scrubbed += fs_info->nodesize;
++
++	/* No IO is done for the sectors. Just update the accounting and exit. */
++	if (sfctx->sectors[sector_nr + mirror_nr * sectors_per_mirror].flags &
++	    (SCRUB_FS_SECTOR_FLAG_DEV_MISSING | SCRUB_FS_SECTOR_FLAG_IO_ERROR)) {
++		sfctx->stat.meta_io_fail += fs_info->nodesize;
 +		return;
 +	}
 +
-+	/* Submit a bio to read the stripe length. */
-+	bio = bio_alloc(dev->bdev, BIO_MAX_VECS,
-+			REQ_OP_READ | REQ_BACKGROUND, GFP_KERNEL);
++	/* Sector_nr should always be the sector number in the first mirror. */
++	ASSERT(sector_nr >= 0 && sector_nr < sectors_per_mirror);
++	ASSERT(eb);
 +
-+	/* Bio is backed up by mempool, allocation should not fail. */
-+	ASSERT(bio);
++	eb->start = logical;
 +
-+	bio->bi_iter.bi_sector = stripe->physical >> SECTOR_SHIFT;
-+	for (i = sectors_per_stripe * stripe_nr;
-+	     i < sectors_per_stripe * (stripe_nr + 1); i++) {
++	/* Copy all the metadata sectors into the dummy eb. */
++	for (i = sector_nr + mirror_nr * sectors_per_mirror;
++	     i < sector_nr + mirror_nr * sectors_per_mirror +
++	     (fs_info->nodesize >> fs_info->sectorsize_bits); i++) {
 +		struct page *page = scrub_fs_get_page(sfctx, i);
-+		unsigned int page_off = scrub_fs_get_page_offset(sfctx, i);
++		int page_off = scrub_fs_get_page_offset(sfctx, i);
++		int off_in_eb = (i - mirror_nr * sectors_per_mirror -
++				 sector_nr) << fs_info->sectorsize_bits;
 +
-+		ret = bio_add_page(bio, page, fs_info->sectorsize, page_off);
-+
-+		/*
-+		 * Should not fail as we will at most add STRIPE_LEN / 4K
-+		 * (aka, 16) sectors, way smaller than BIO_MAX_VECS.
-+		 */
-+		ASSERT(ret == fs_info->sectorsize);
++		write_extent_buffer(eb, page_address(page) + page_off,
++				    off_in_eb, fs_info->sectorsize);
 +	}
 +
-+	bio->bi_private = sfctx;
-+	bio->bi_end_io = scrub_fs_read_endio;
-+	atomic_add(sectors_per_stripe, &sfctx->sectors_under_io);
-+	submit_bio(bio);
++	/* Basic extent buffer checks. */
++	ret = btrfs_validate_eb_basic(eb, false);
++	if (ret < 0) {
++		sfctx->stat.meta_invalid += fs_info->nodesize;
++		return;
++	}
++	/* Csum checks. */
++	ret = btrfs_validate_eb_csum(eb, false);
++	if (ret < 0) {
++		sfctx->stat.meta_bad_csum += fs_info->nodesize;
++		return;
++	}
++	/* Full tree-check checks. */
++	if (btrfs_header_level(eb) > 0)
++		ret = btrfs_check_node(eb);
++	else
++		ret = btrfs_check_leaf_full(eb);
++	if (ret < 0) {
++		sfctx->stat.meta_invalid += fs_info->nodesize;
++		return;
++	}
++
++	/* Transid check */
++	if (btrfs_header_generation(eb) != expected_gen) {
++		sfctx->stat.meta_bad_transid += fs_info->nodesize;
++		return;
++	}
++
++	/*
++	 * All good, set involved sectors with GOOD_COPY flag so later we can
++	 * know if the veritical stripe has any good copy, thus if corrupted
++	 * sectors can be recoverable.
++	 */
++	for (i = sector_nr + mirror_nr * sectors_per_mirror;
++	     i < sector_nr + mirror_nr * sectors_per_mirror +
++	     (fs_info->nodesize >> fs_info->sectorsize_bits); i++)
++		sfctx->sectors[i].flags |= SCRUB_FS_SECTOR_FLAG_GOOD;
 +}
 +
-+static int scrub_fs_one_stripe(struct scrub_fs_ctx *sfctx)
++static void scrub_fs_verify_meta(struct scrub_fs_ctx *sfctx, int sector_nr)
 +{
-+	struct btrfs_fs_info *fs_info = sfctx->fs_info;
-+	struct btrfs_io_context *bioc = NULL;
-+	u64 mapped_len = BTRFS_STRIPE_LEN;
++	struct extent_buffer *eb = sfctx->dummy_eb;
 +	int i;
-+	int ret;
 +
-+	/* We should at a stripe start inside current block group. */
-+	ASSERT(sfctx->cur_bg->start <= sfctx->cur_logical &&
-+	       sfctx->cur_logical < sfctx->cur_bg->start +
-+				    sfctx->cur_bg->length);
-+	ASSERT(IS_ALIGNED(sfctx->cur_logical - sfctx->cur_bg->start,
-+			  BTRFS_STRIPE_LEN));
-+
-+	btrfs_bio_counter_inc_blocked(fs_info);
-+	ret = btrfs_map_sblock(fs_info, BTRFS_MAP_GET_READ_MIRRORS,
-+			sfctx->cur_logical, &mapped_len, &bioc);
-+	if (ret < 0)
-+		goto out;
-+
-+	if (mapped_len < BTRFS_STRIPE_LEN) {
-+		btrfs_err_rl(fs_info,
-+	"get short map for bytenr %llu, got mapped length %llu expect %u",
-+			     sfctx->cur_logical, mapped_len, BTRFS_STRIPE_LEN);
-+		ret = -EUCLEAN;
-+		sfctx->stat.nr_fatal_errors++;
-+		goto out;
-+	}
-+
-+	if (bioc->num_stripes != sfctx->nr_copies) {
-+		btrfs_err_rl(fs_info,
-+		"got unexpected number of stripes, got %d stripes expect %d",
-+			     bioc->num_stripes, sfctx->nr_copies);
-+		ret = -EUCLEAN;
-+		sfctx->stat.nr_fatal_errors++;
-+		goto out;
++	/*
++	 * This should be allocated when we enter the metadata block group.
++	 * If not allocated, this means the block group flags is unreliable.
++	 *
++	 * Anyway we can only exit with invalid metadata errors increased.
++	 */
++	if (!eb) {
++		btrfs_err_rl(sfctx->fs_info,
++	"block group %llu flag 0x%llx should not have metadata at %llu",
++			     sfctx->cur_bg->start, sfctx->cur_bg->flags,
++			     sfctx->cur_logical +
++			     (sector_nr << sfctx->fs_info->sectorsize_bits));
++		sfctx->stat.meta_invalid += sfctx->fs_info->nodesize;
++		return;
 +	}
 +
 +	for (i = 0; i < sfctx->nr_copies; i++)
-+		submit_stripe_read_bio(sfctx, bioc, i);
-+	wait_event(sfctx->wait, atomic_read(&sfctx->sectors_under_io) == 0);
-+
-+	/* Place holder to verify the read data. */
-+out:
-+	btrfs_put_bioc(bioc);
-+	btrfs_bio_counter_dec(fs_info);
-+	return ret;
++		scrub_fs_verify_one_meta(sfctx, sector_nr, i);
 +}
 +
- static int scrub_fs_block_group(struct scrub_fs_ctx *sfctx,
- 				struct btrfs_block_group *bg)
++static void scrub_fs_verify_one_stripe(struct scrub_fs_ctx *sfctx)
++{
++	struct btrfs_fs_info *fs_info = sfctx->fs_info;
++	const int sectors_per_stripe = BTRFS_STRIPE_LEN >>
++				       fs_info->sectorsize_bits;
++	int sector_nr;
++
++	for (sector_nr = 0; sector_nr < sectors_per_stripe; sector_nr++) {
++		struct scrub_fs_sector *sector =
++			scrub_fs_get_sector(sfctx, sector_nr, 0);
++
++		/*
++		 * All sectors in the same veritical stripe should share
++		 * the same UNUSED/DATA/META flags, thus checking the UNUSED
++		 * flag of mirror 0 is enough to determine if this
++		 * vertical stripe needs verification.
++		 */
++		if (sector->flags & SCRUB_FS_SECTOR_FLAG_UNUSED)
++			continue;
++
++		if (sector->flags & SCRUB_FS_SECTOR_FLAG_META) {
++			scrub_fs_verify_meta(sfctx, sector_nr);
++			/*
++			 * For metadata, we need to skip to the end of the tree
++			 * block, and don't forget @sector_nr will get
++			 * increased by 1 from the for loop.
++			 */
++			sector_nr += (fs_info->nodesize >>
++				      fs_info->sectorsize_bits) - 1;
++			continue;
++		}
++
++		/* Place holder for data verification. */
++	}
++	/* Place holder for recoverable checks. */
++}
++
+ static int scrub_fs_one_stripe(struct scrub_fs_ctx *sfctx)
  {
-@@ -4982,8 +5197,9 @@ static int scrub_fs_block_group(struct scrub_fs_ctx *sfctx,
- 				break;
- 		}
+ 	struct btrfs_fs_info *fs_info = sfctx->fs_info;
+@@ -5144,7 +5306,7 @@ static int scrub_fs_one_stripe(struct scrub_fs_ctx *sfctx)
+ 		submit_stripe_read_bio(sfctx, bioc, i);
+ 	wait_event(sfctx->wait, atomic_read(&sfctx->sectors_under_io) == 0);
  
--		/* Place holder for real stripe scrubbing. */
--		ret = 0;
-+		ret = scrub_fs_one_stripe(sfctx);
-+		if (ret < 0)
-+			break;
- 
- 		/* Reset the stripe for next run. */
- 		scrub_fs_reset_stripe(sfctx);
+-	/* Place holder to verify the read data. */
++	scrub_fs_verify_one_stripe(sfctx);
+ out:
+ 	btrfs_put_bioc(bioc);
+ 	btrfs_bio_counter_dec(fs_info);
 -- 
 2.37.3
 
