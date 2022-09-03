@@ -2,166 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D10CC5ABD70
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 08:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A575ABDC9
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Sep 2022 10:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbiICGaA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 3 Sep 2022 02:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
+        id S229865AbiICITy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 3 Sep 2022 04:19:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbiICG36 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 02:29:58 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18D02C13E
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Sep 2022 23:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662186596; x=1693722596;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EpZrrgoONi2r7ZpQwG7pfv5GsJb4n03feP4BLKjmxXc=;
-  b=EkoeoGrm/jjdob5QDZ28BoQBHW4U23EsptW5vEeQ7oTrbC3uIEyJ+jrc
-   a4z793kQurp2SRVG7IsfzzkA6n6KaxLszWm30ezIgmZtGsfj46G7QqvJw
-   /EVfbD8EpYF6b0Z0XU9vVJQEZS82ihMzgRGZjjjeYxoH786Rm0xAK7ztE
-   Dw97QMBIEMvl3ptUZzVQ9PwdO6Jj+jlYywksED00TtGPVblWlL1cw/Dil
-   HhifidzMxuxYiorSsTLlY2DEiJRBy8aN0KdGNl4tEPDJXAsrB3CTP+VRt
-   +nOsjRFHwB4W7GiP9DlqlzOpUHpyEecetRcs+bHz/OaXhhqLMSiJkCIEX
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="276534384"
-X-IronPort-AV: E=Sophos;i="5.93,286,1654585200"; 
-   d="scan'208";a="276534384"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2022 23:29:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,286,1654585200"; 
-   d="scan'208";a="702366429"
-Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Sep 2022 23:29:54 -0700
-Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oUMfB-0001Az-1z;
-        Sat, 03 Sep 2022 06:29:53 +0000
-Date:   Sat, 3 Sep 2022 14:28:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Cc:     kbuild-all@lists.01.org
-Subject: Re: [PATCH 12/31] btrfs: move the core extent_io_tree code into
- extent-io-tree.c
-Message-ID: <202209031411.pvUL5nPj-lkp@intel.com>
-References: <c534c12c1dcf0821971b8918abced08aafd27055.1662149276.git.josef@toxicpanda.com>
+        with ESMTP id S229568AbiICITw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Sep 2022 04:19:52 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F2A2A401
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 01:19:50 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5735B336D9
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 08:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1662193189; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=8u4HtklBAPyBnAXcs/8pY2+qVagTDz5ckSkBMpM4b+U=;
+        b=Ot/x8y64TkO18VkDV06L8Z5FtpzHDL8H7KskuLJvV7zaibp5ynzGo/aQEiyHr9rAv/LfkH
+        HtgftB35kRBOPU9XOZuT/d9IQeRmtAMQCQ75J68j/mdT8S/1BrxFqe9Z5TJoL3rzGDTfny
+        j27CKer/A7ZnrF4maxM/WrKatdnU8eE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9E704139F9
+        for <linux-btrfs@vger.kernel.org>; Sat,  3 Sep 2022 08:19:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gl4iGSQOE2OzagAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Sat, 03 Sep 2022 08:19:48 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH PoC 0/9] btrfs: scrub: introduce a new family of ioctl, scrub_fs
+Date:   Sat,  3 Sep 2022 16:19:20 +0800
+Message-Id: <cover.1662191784.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c534c12c1dcf0821971b8918abced08aafd27055.1662149276.git.josef@toxicpanda.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Josef,
+Depite the write-hole problem of RAID56, scrub is neither RAID56
+friendly in the following points:
 
-I love your patch! Perhaps something to improve:
+- Extra IO for RAID56 scrub
+  Currently data strips of RAID56 can be read 2x (RAID5) or 3x (RAID6).
 
-[auto build test WARNING on kdave/for-next]
-[also build test WARNING on next-20220901]
-[cannot apply to rostedt-trace/for-next linus/master v6.0-rc3]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+  This is caused by the fact we do one-thread per-device scrub.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Josef-Bacik/btrfs-move-extent_io_tree-code-and-cleanups/20220903-042359
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20220903/202209031411.pvUL5nPj-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/9fa98f420ce2ac5220d35bedf881d5e6bbd18e9d
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Josef-Bacik/btrfs-move-extent_io_tree-code-and-cleanups/20220903-042359
-        git checkout 9fa98f420ce2ac5220d35bedf881d5e6bbd18e9d
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=alpha SHELL=/bin/bash fs/btrfs/
+  Dev 1    |  Data 1  | P(3 + 4) |
+  Dev 2    |  Data 2  |  Data 3  |
+  Dev 3    | P(1 + 2) |  Data 4  |
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+  When scrubbing Dev 1, we will read Data 1 (treated no differently than
+  SINGLE), then read Parity (3 + 4).
+  But to determine if Parity (3 + 4) is correct, we have to read Data 3
+  and Data 4.
 
-All warnings (new ones prefixed by >>):
+  On the other hand, Data 3 will also be read by scrubbing Dev 2,
+  and Data 4 will also be read by scrubbing Dev 3.
 
->> fs/btrfs/extent-io-tree.c:237: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Search @tree for an entry that contains @offset. Such entry would have
-   fs/btrfs/extent-io-tree.c:298: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Search offset in the tree or fill neighbor rbtree node pointers.
-   fs/btrfs/extent-io-tree.c:1393: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Find a contiguous area of bits
-   fs/btrfs/extent-io-tree.c:1431: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Find the first range that has @bits not set. This range could start before
+  Thus all data stripes will be read twice, causing slow down in RAID56
+  scrubbing.
+
+- No proper progress report for P/Q stripes
+  The scrub_progress has no member for P/Q error reporting at all.
+
+  Thus even if we fixed some P/Q error, it will not be reported at all.
+
+To address the above problems, this patchset will introduce a new
+family of ioctl, scrub_fs ioctls.
+
+[CORE DESIGN]
+The new scrub_fs ioctl will go block group by block group, to scrub the
+full fs.
+
+Inside each block group, we go BTRFS_STRIPE_LEN as one scrub unit (will
+be enlarged later to improve parallel for RAID0/10).
+
+Then we read the full BTRFS_STRIPE_LEN bytes from each mirror (if there
+is an extent inside the range).
+
+The read bios will be submitted to each device at once, so we can still
+take advantage of parallel IOs.
+
+But the verification part still only happens inside the scrub thread, no
+parallel csum check.
+
+Also this ioctl family will rely on a much larger progress structure,
+it's padded to 256 bytes, with parity specific error reporting (not yet
+implemented though).
+
+[THE GOOD]
+- Every stripe will be iterated at most once
+  No double read for data stripes.
+
+- Better error reports for parity mismatch
+
+- No need for complex bio form shaping
+  Since we already submit read bios in BTRFS_STRIPE_LEN unit, and wait
+  for them to finish, there are only at most nr_copies bios at fly.
+  (For later RAID0/10 optimization, it will be nr_stripes)
+
+  This behavior will reduce the IOPS usage by nature, thus no need to
+  do any bio form shaping.
+
+  This greatly reduce the code size, just check how much code are spent
+  for bio form shaping in the old scrub code.
+
+- Less block groups marked for read-only
+  Now there is at most one block group marked read-only for scrub,
+  reducing the possibility of ENOSPC during scrub.
+
+- Can check NODATASUM data between different copies
+  Now we can compare NODATASUM data between different copies, to
+  determine if they match.
+
+[THE BAD]
+- Slower for SINGLE profile
+  If some one is using SINGLE profile on multiple devices, scrub_fs will
+  slower.
+
+  Dev 1:   | SINGLE BG 1 |
+  Dev 2:   | SINGLE BG 2 |
+  Dev 3:   | SINGLE BG 3 |
+
+  The existing scrub code will scrub single BG 1~3 at the same time.
+  But the new scrub_fs will scrub single BG 1 first, then 2, then 3.
+  Causing much slower scrub for such case.
+
+  Although I'd argue, for above case, the user should go RAID0 anyway.
+
+[THE UGLY]
+Since this is just a proof-of-concept patchset, it lacks the following
+functionality/optimization:
+
+- Slower RAID0/RAID10 scrub.
+  Since we only scrub BTRFS_STRIPE_LEN, it will not utilize all devices
+  from RAID0/10.
+  Although it can be easily enhanced by enlarging the scrub unit to a
+  full stripe.
+
+- No RAID56 support
+  Ironically.
+
+- Very basic btrfs-progs support
+  Really only calls the ioctl and gives an output.
+  No background scrub or scrub status file support.
+
+- No drop-in full fstests run yet
 
 
-vim +237 fs/btrfs/extent-io-tree.c
+Qu Wenruo (9):
+  btrfs: introduce BTRFS_IOC_SCRUB_FS family of ioctls
+  btrfs: scrub: introduce place holder for btrfs_scrub_fs()
+  btrfs: scrub: introduce a place holder helper scrub_fs_iterate_bgs()
+  btrfs: scrub: introduce place holder helper scrub_fs_block_group()
+  btrfs: scrub: add helpers to fulfill csum/extent_generation
+  btrfs: scrub: submit and wait for the read of each copy
+  btrfs: scrub: implement metadata verification code for scrub_fs
+  btrfs: scrub: implement data verification code for scrub_fs
+  btrfs: scrub: implement recoverable sectors report for scrub_fs
 
-   235	
-   236	/**
- > 237	 * Search @tree for an entry that contains @offset. Such entry would have
-   238	 * entry->start <= offset && entry->end >= offset.
-   239	 *
-   240	 * @tree:       the tree to search
-   241	 * @offset:     offset that should fall within an entry in @tree
-   242	 * @node_ret:   pointer where new node should be anchored (used when inserting an
-   243	 *	        entry in the tree)
-   244	 * @parent_ret: points to entry which would have been the parent of the entry,
-   245	 *               containing @offset
-   246	 *
-   247	 * Return a pointer to the entry that contains @offset byte address and don't change
-   248	 * @node_ret and @parent_ret.
-   249	 *
-   250	 * If no such entry exists, return pointer to entry that ends before @offset
-   251	 * and fill parameters @node_ret and @parent_ret, ie. does not return NULL.
-   252	 */
-   253	static inline struct rb_node *tree_search_for_insert(struct extent_io_tree *tree,
-   254						             u64 offset,
-   255							     struct rb_node ***node_ret,
-   256							     struct rb_node **parent_ret)
-   257	{
-   258		struct rb_root *root = &tree->state;
-   259		struct rb_node **node = &root->rb_node;
-   260		struct rb_node *prev = NULL;
-   261		struct tree_entry *entry;
-   262	
-   263		while (*node) {
-   264			prev = *node;
-   265			entry = rb_entry(prev, struct tree_entry, rb_node);
-   266	
-   267			if (offset < entry->start)
-   268				node = &(*node)->rb_left;
-   269			else if (offset > entry->end)
-   270				node = &(*node)->rb_right;
-   271			else
-   272				return *node;
-   273		}
-   274	
-   275		if (node_ret)
-   276			*node_ret = node;
-   277		if (parent_ret)
-   278			*parent_ret = prev;
-   279	
-   280		/* Search neighbors until we find the first one past the end */
-   281		while (prev && offset > entry->end) {
-   282			prev = rb_next(prev);
-   283			entry = rb_entry(prev, struct tree_entry, rb_node);
-   284		}
-   285	
-   286		return prev;
-   287	}
-   288	
+ fs/btrfs/ctree.h           |    4 +
+ fs/btrfs/disk-io.c         |   83 ++-
+ fs/btrfs/disk-io.h         |    2 +
+ fs/btrfs/ioctl.c           |   45 ++
+ fs/btrfs/scrub.c           | 1424 ++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/btrfs.h |  173 +++++
+ 6 files changed, 1705 insertions(+), 26 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.37.3
+
