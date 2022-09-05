@@ -2,121 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 208815AD6BA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Sep 2022 17:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6D75AD6D2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Sep 2022 17:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238394AbiIEPkZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Sep 2022 11:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
+        id S237738AbiIEPr2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Sep 2022 11:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238391AbiIEPkY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Sep 2022 11:40:24 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53ADC167D7
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Sep 2022 08:40:23 -0700 (PDT)
+        with ESMTP id S237327AbiIEPr1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Sep 2022 11:47:27 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB8F5AC7C
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Sep 2022 08:47:26 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F350033906;
-        Mon,  5 Sep 2022 15:40:21 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 871E51FAA3;
+        Mon,  5 Sep 2022 15:47:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662392421;
+        t=1662392845;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=zeXX+lrXE3fjycCh1yJAfQnY/9gGLagzDmJQ0Oxx0ts=;
-        b=niEvE1GQ/T8vBpSOChsbEQKfaUbdjIG+0I/2L2iCo2by/6XNqzswiyYQa+6x252TfgamvH
-        dGtUp7xX5sluDp1d6Ci1nmch4DlvCCmSrpU/1lNIM45b60H5e4Svo3xMcbylQr+pWtKcox
-        +wGJq9jbRl8V/ozkMeheikYU4JN24oQ=
+        bh=uuphyaou6NjG+OuPxbJF5gNzHSz0uaEImPkavaeL9m4=;
+        b=wEALsG5Mav49nhDFAkNsd/e2vXroz/17y6NsJMLqQm0Th/IIYD/4KIgH+026RoT9RGG2Aj
+        OxTa4vwVu6PZfd/FG63vYFzcHAR8csOiDzpNHQRNoKO0O4b7BTx2oLGirts/wyz6cG1sF1
+        aIGK3X/UeByM88vxo5r5XNiX+tPe7s8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662392421;
+        s=susede2_ed25519; t=1662392845;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=zeXX+lrXE3fjycCh1yJAfQnY/9gGLagzDmJQ0Oxx0ts=;
-        b=PcpLwDd6goIIP5zCYSynQMxJowMd6n/8b/23q2u0N4YFp2uzKAZXgjKyUN2wva/HKWPBqZ
-        667vB8LD5O154CDA==
+        bh=uuphyaou6NjG+OuPxbJF5gNzHSz0uaEImPkavaeL9m4=;
+        b=8g30Y7Zt49OgWmwa1OQxOiaH8JvcyQR1aBHa+C/8sCyguj0ERrvOqBFf8XvJ37v/uE/Sua
+        zadRSWjf9d58HQCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D14B0139C7;
-        Mon,  5 Sep 2022 15:40:21 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6089D139C7;
+        Mon,  5 Sep 2022 15:47:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id bQYjMmUYFmOZXwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 05 Sep 2022 15:40:21 +0000
-Date:   Mon, 5 Sep 2022 17:34:59 +0200
+        id u8LDFg0aFmPGYgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 05 Sep 2022 15:47:25 +0000
+Date:   Mon, 5 Sep 2022 17:42:03 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Wang Yugui <wangyugui@e16-tech.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: slience the sparse warn of rcu_string
-Message-ID: <20220905153459.GI13489@twin.jikos.cz>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: for-next: KCSAN failures on 6130a25681d4 (kdave/for-next) Merge
+ branch 'for-next-next-v5.20-20220804' into for-next-20220804
+Message-ID: <20220905154203.GJ13489@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20220824051208.19924-1-wangyugui@e16-tech.com>
- <20220905115726.6C63.409509F4@e16-tech.com>
+References: <YvHU/vsXd7uz5V6j@hungrycats.org>
+ <CAL3q7H7XCZnsCfiz9yAgfSP8rekx7YntVKphdDu8LLSehJ1EAQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220905115726.6C63.409509F4@e16-tech.com>
+In-Reply-To: <CAL3q7H7XCZnsCfiz9yAgfSP8rekx7YntVKphdDu8LLSehJ1EAQ@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 05, 2022 at 11:57:26AM +0800, Wang Yugui wrote:
-> Hi,
+On Tue, Aug 09, 2022 at 08:35:42AM +0100, Filipe Manana wrote:
+> On Tue, Aug 9, 2022 at 4:33 AM Zygo Blaxell
+> <ce3g8jdj@umail.furryterror.org> wrote:
+> >
+> > Some KCSAN complaints I found while testing for other things...
+> >
+> > Here's one related to extent refs:
 > 
-> > slience the sparse warn of rcu_string reported by 'make C=1'
-> > 
-> > warning example:
-> > fs/btrfs/volumes.c:2300:41: warning: incorrect type in argument 3 (different address spaces)
-> > fs/btrfs/volumes.c:2300:41:    expected char const *device_path
-> > fs/btrfs/volumes.c:2300:41:    got char [noderef] __rcu *
+> It's about the block reserves, nothing to do with extents refs.
 > 
-> I'm sorry that some new WARNING is triggered when 
-> lockdep(CONFIG_PROVE_LOCKING/...) check is enabled.
+> These get reported every now and then like here:
 > 
-> [  112.742722] =============================
-> [  112.746835] WARNING: suspicious RCU usage
-> [  112.750917] 6.0.0-4.0.el7.x86_64 #1 Not tainted
-> [  112.755540] -----------------------------
-> [  112.759624] fs/btrfs/volumes.c:918 suspicious rcu_dereference_check() usage!
-> [  112.766776] 
->                other info that might help us debug this:
+> https://lore.kernel.org/linux-btrfs/CAAwBoOJDjei5Hnem155N_cJwiEkVwJYvgN-tQrwWbZQGhFU=cA@mail.gmail.com/
 > 
-> [  112.774921] 
->                rcu_scheduler_active = 2, debug_locks = 1
-> [  112.781566] 2 locks held by mount/1725:
-> [  112.785471]  #0: ffffffffc50592a8 (uuid_mutex){+.+.}-{3:3}, at: btrfs_mount_root+0xfe/0x520 [btrfs]
-> [  112.794763]  #1: ffffa1147bf068e0 (&fs_devs->device_list_mutex){+.+.}-{3:3}, at: device_list_add+0x28d/0x830 [btrfs]
-> 
-> 
-> The fix is yet not clear,  we may need rcu_read_lock() just like
-> 3181faa85bda3dc3f5e630a1846526c9caaa38e3 (cfq-iosched: fix a rcu warning)
+> It's actually harmless, but if we keep it like this, we'll keep
+> getting reports in the future.
 
-There are probably more instances that would need the rcu lock/unlock,
-eg. in btrfs_open_one_device, btrfs_dev_replace_finishing,
-btrfs_destroy_dev_replace_tgtdev, btrfs_rm_device, clone_fs_devices,
-device_list_add, btrfs_open_one_device where the dereference is done in
-parameter list.
-
-There's one dereference in the message helpers but not using the _in_rcu
-variant:
-
-zoned.c:
-1403                 case BLK_ZONE_COND_READONLY:
-1404                         btrfs_err(fs_info,
-1405                 "zoned: offline/readonly zone %llu on device %s (devid %llu)",
-1406                                   physical[i] >> device->zone_info->zone_size_shift,
-1407                                   rcu_str_deref(device->name), device->devid);
-
-We can keep the the patch in for-next and add the missing annotations as
-they appear, updating the patch so it may take some time but we'll fix
-all the warnings eventually.
+Can we add some kind of annotation so KCSAN understands that? The ->full
+member would be accessed using a helper when outside of the lock so the
+annotation can be there.
