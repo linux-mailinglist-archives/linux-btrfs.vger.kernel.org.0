@@ -2,56 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 963755ACEB7
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD3D5ACEB6
 	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Sep 2022 11:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236365AbiIEJVX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Sep 2022 05:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33852 "EHLO
+        id S236355AbiIEJWI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Sep 2022 05:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236676AbiIEJVL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Sep 2022 05:21:11 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A213E77A;
-        Mon,  5 Sep 2022 02:21:10 -0700 (PDT)
+        with ESMTP id S236631AbiIEJWD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Sep 2022 05:22:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A613DBFB;
+        Mon,  5 Sep 2022 02:22:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 40A31B80FA7;
-        Mon,  5 Sep 2022 09:21:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D59CC433D7;
-        Mon,  5 Sep 2022 09:21:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C0C276115A;
+        Mon,  5 Sep 2022 09:22:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31354C433C1;
+        Mon,  5 Sep 2022 09:22:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662369668;
-        bh=k7uGcDjpFJrQL5ZYOESLNfJtaWG202Pynt2OzdEYOiE=;
+        s=k20201202; t=1662369721;
+        bh=3sOKZKEVIWB5f18fA7rYTqUHTTu67DPs3jVzIYz9O8Q=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Yc8zsRUJR/DCdJxGPbBnJ76mnGGCGi9aOrCVcRhfXngtKjSXKw4jAjufrrm3jZvMq
-         Bz6rm5yiVqq9zIFDPcDAFIoqfftHYa62D7KmY1oqA0PW+iN6RBU96WdMaO/1dFxxi3
-         iAWJ+U2sYBOy8htzGAnFe7yt5x69Fn/txsFhMwyMOn09Qv2gIAaNPYhFItMqjvuLns
-         E6XukvFSwaZjdNfJdcK4A98ehmjlg5T8Ng5DvSvmbiH/fQlaiNWjk+WWUMpIsJDtpH
-         175llhVzyHqDIbCPzFcI3pUk5i4pVPxrAkb4QwtJnQeNIrEQPf+w02oS2cWCcv9eM+
-         Z55Rv7X6GdwDQ==
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-1278624b7c4so1869176fac.5;
-        Mon, 05 Sep 2022 02:21:07 -0700 (PDT)
-X-Gm-Message-State: ACgBeo0ing0EfuVH4JJqlyShxkACdu8heMEfYqwTlt71fgYwTf6CW4cn
-        DRWV93YfBTc2b2twPMsifRUBcE6+WvxgO8ZLqMk=
-X-Google-Smtp-Source: AA6agR4k+H8LRD+T27sZvVG66mNkftK+IBDSYkT4iT21yD9TjSLWx92P2B5yyJrfvUHtxShwxKs+7TZwp6hsl9HjtNc=
-X-Received: by 2002:a05:6870:ea83:b0:fe:365f:cb9d with SMTP id
- s3-20020a056870ea8300b000fe365fcb9dmr8678524oap.98.1662369667190; Mon, 05 Sep
- 2022 02:21:07 -0700 (PDT)
+        b=FykKsa8aIXIJ0WxISMTsmXVw2AND0OF2hBv1iysN+LUrP25zkRWeqSWmK5ejFxL0x
+         pvj/VrR7Su5Lrq9gGZP7g0hZm+y5qtR6YUaqlXbJ8lHoV6ILS7z37gL2KL0W0iRHGc
+         dc22TMTPyaQpznv6NY3gtfVwXBAnlGDxymeeiqRzWewdZ8GSqfWTakXJqkOEBoTun4
+         OLnLd2esvF2xkvP1iu066ZKdIQdxbPvwMqEQPDKakQahw69SqcT2kunAZR4g2VCesy
+         6l49YIPEa+c78CegkmsoPByEcxPDPw8OCJ6AIxH/EqAZSubmZLQ95Re+2C275ugtsw
+         uJjRVuRAkZKkA==
+Received: by mail-ot1-f53.google.com with SMTP id l5-20020a05683004a500b0063707ff8244so5767199otd.12;
+        Mon, 05 Sep 2022 02:22:01 -0700 (PDT)
+X-Gm-Message-State: ACgBeo2u77pmHDXQDMc3mWmvir06cYY9L9V5tqMMUyPRQu+BvfaBts7Z
+        qV7n2b01IgGo2GqI0u69jpmN5mSZtoSwa44UYjU=
+X-Google-Smtp-Source: AA6agR5FYKxFY0yuLdqPnAsZoqlmE6UmRRFYwqoWXSksAqYJ97n3RVllCgTHlPJLZe0aDJX1P+/BqJTohLyoYkIluDU=
+X-Received: by 2002:a9d:6f08:0:b0:638:8a51:2e46 with SMTP id
+ n8-20020a9d6f08000000b006388a512e46mr19814515otq.363.1662369720323; Mon, 05
+ Sep 2022 02:22:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <bc7149309a8eca5999f22477a838602023094cb8.1662048451.git.fdmanana@suse.com>
- <20220902020030.oho6ssdrdzjy66pw@zlang-mailbox> <20220902094424.GQ13489@twin.jikos.cz>
- <20220905063539.GA2092@lst.de> <20220905090809.54feouoalvrzmaao@zlang-mailbox>
-In-Reply-To: <20220905090809.54feouoalvrzmaao@zlang-mailbox>
+References: <0bc9cd4abfbde3f76b981628942f94631cef7162.1662110839.git.fdmanana@suse.com>
+ <20220903004401.xobe5elurx3bkh3f@zlang-mailbox>
+In-Reply-To: <20220903004401.xobe5elurx3bkh3f@zlang-mailbox>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 5 Sep 2022 10:20:31 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H57RikRRf2qj_GBSKkZ8fKOKrmS4Tv533M69txkosBNnQ@mail.gmail.com>
-Message-ID: <CAL3q7H57RikRRf2qj_GBSKkZ8fKOKrmS4Tv533M69txkosBNnQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: remove 'seek' group from btrfs/007
+Date:   Mon, 5 Sep 2022 10:21:24 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6zb9HzEUbHb-mjLEsHo_mQRM15qo101MdHLMCXyzEoXg@mail.gmail.com>
+Message-ID: <CAL3q7H6zb9HzEUbHb-mjLEsHo_mQRM15qo101MdHLMCXyzEoXg@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: test that we can not delete a subvolume with an
+ active swap file
 To:     Zorro Lang <zlang@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, dsterba@suse.cz,
-        fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Filipe Manana <fdmanana@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -64,65 +63,117 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 5, 2022 at 10:08 AM Zorro Lang <zlang@redhat.com> wrote:
+On Sat, Sep 3, 2022 at 1:44 AM Zorro Lang <zlang@redhat.com> wrote:
 >
-> On Mon, Sep 05, 2022 at 08:35:39AM +0200, Christoph Hellwig wrote:
-> > On Fri, Sep 02, 2022 at 11:44:24AM +0200, David Sterba wrote:
-> > > >   commit 6fd9210bc97710f81e5a7646a2abfd11af0f0c28
-> > > >   Author: Christoph Hellwig <hch@lst.de>
-> > > >   Date:   Mon Feb 18 10:05:03 2019 +0100
-> > > >
-> > > >       fstests: add a seek group
-> > > >
-> > > > So I'd like to let Christoph help to double check it.
-> > >
-> > > It's quite obvious from the test itself that it tests only send/receive,
-> > > which is mentioned in the changelog. The commit adding the seek group
-> > > does not provide any rationale so it's hard to argue but as it stands
-> > > now the 'seek' group should not be there.
+> On Fri, Sep 02, 2022 at 10:30:32AM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
 > >
-> > Probably.  Unless it somehow exercised seeks through the userspace
-> > seek code I can't see any good rationale for this addition, and the
-> > patch was far too long ago for me to remember.
+> > Verify that we can not delete a subvolume that has an active swap file,
+> > and that after disabling the swap file, we can delete it.
+> >
+> > This tests a fix done by kernel commit 60021bd754c6ca ("btrfs: prevent
+> > subvol with swapfile from being deleted"), which landed in kernel 5.18.
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >
+> > V2: Add _cleanup() override to make sure swapfile is disabled in case
+> >     the test is interrupted.
 >
-> Hi,
->
-> I just tried to learn about the history of this *problem*:
->
-> At first, Jan Schmidt added src/fssum.c into fstests by df0fd18101b6 ("xfstests:
-> add fssum tool"). In this original version, fssum does SEEK_DATA in both
-> sum_file_data_permissive() and sum_file_data_strict(), that means it always
-> does SEEK_DATA. So all cases run fssum, need SEEK_DATA/HOLE support.
->
-> Then 5 years later, Filipe removed SEEK_DATA operations from the
-> sum_file_data_permissive(), by 1deed13f69b2 ("fstests: fix fssum to actually
-> ignore file holes when supposed to"). And fssum run sum_file_data_permissive()
-> by default. So that cause fssum don't need SEEK_DATA support by default (except
-> you use "-s" option).
->
-> Then 1 year later, Christoph added btrfs/007 into seek group, I think that might
-> because btrfs/007 still keeps the *_require_seek_data_hole*, which runs the
-> src/seek_sanity_test.
->
-> So, now, if we all agree that btrfs/007 isn't a seek related test, we can remove
-> the seek group and the *_require_seek_data_hole*.
+> Thanks for doing this cleanup, now it's good to me.
 
-fssum exercises lseek (SEEK_DATA) only if we pass the -s option to it,
-which is not
-the case for btrfs/007 (as well as for all other btrfs tests that
-exercise send/receive and use fssum).
-And that is because send/receive does not always preserve holes and
-prealloc (specially on incremental send/receive).
-
-That's a short version of the changelog from 1deed13f69b2, hopefully
-clear enough.
-And yes, the _require_seek_data_hole can go away from btrfs/007 too.
+Great.
+Is there any reason why the test wasn't merged in yesterday's update?
 
 Thanks.
 
 >
-> Thanks,
-> Zorro
+> Reviewed-by: Zorro Lang <zlang@redhat.com>
 >
+> >
+> >  tests/btrfs/274     | 58 +++++++++++++++++++++++++++++++++++++++++++++
+> >  tests/btrfs/274.out |  6 +++++
+> >  2 files changed, 64 insertions(+)
+> >  create mode 100755 tests/btrfs/274
+> >  create mode 100644 tests/btrfs/274.out
+> >
+> > diff --git a/tests/btrfs/274 b/tests/btrfs/274
+> > new file mode 100755
+> > index 00000000..c0594e25
+> > --- /dev/null
+> > +++ b/tests/btrfs/274
+> > @@ -0,0 +1,58 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> > +#
+> > +# FS QA Test 274
+> > +#
+> > +# Test that we can not delete a subvolume that has an active swap file.
+> > +#
+> > +. ./common/preamble
+> > +_begin_fstest auto quick swap subvol
+> > +
+> > +_cleanup()
+> > +{
+> > +     cd /
+> > +     rm -f $tmp.*
+> > +     test -n "$swap_file" && swapoff $swap_file &> /dev/null
+> > +}
+> > +
+> > +. ./common/filter
+> > +
+> > +_supported_fs btrfs
+> > +_fixed_by_kernel_commit 60021bd754c6ca \
+> > +    "btrfs: prevent subvol with swapfile from being deleted"
+> > +_require_scratch_swapfile
+> > +
+> > +_scratch_mkfs >> $seqres.full 2>&1
+> > +_scratch_mount
+> > +
+> > +swap_file="$SCRATCH_MNT/subvol/swap"
+> > +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol | _filter_scratch
+> > +
+> > +echo "Creating and activating swap file..."
+> > +_format_swapfile $swap_file $(($(get_page_size) * 32)) >> $seqres.full
+> > +_swapon_file $swap_file
+> > +
+> > +echo "Attempting to delete subvolume with swap file enabled..."
+> > +# Output differs with different btrfs-progs versions and some display multiple
+> > +# lines on failure like this for example:
+> > +#
+> > +#   ERROR: Could not destroy subvolume/snapshot: Operation not permitted
+> > +#   WARNING: deletion failed with EPERM, send may be in progress
+> > +#   Delete subvolume (no-commit): '/home/fdmanana/btrfs-tests/scratch_1/subvol'
+> > +#
+> > +# So just redirect all output to the .full file and check the command's exit
+> > +# status instead.
+> > +$BTRFS_UTIL_PROG subvolume delete $SCRATCH_MNT/subvol >> $seqres.full 2>&1 && \
+> > +    echo "subvolume deletion successful, expected failure!"
+> > +
+> > +echo "Disabling swap file..."
+> > +swapoff $swap_file
+> > +
+> > +echo "Attempting to delete subvolume after disabling swap file..."
+> > +$BTRFS_UTIL_PROG subvolume delete $SCRATCH_MNT/subvol >> $seqres.full 2>&1 || \
+> > +   echo "subvolume deletion failure, expected success!"
+> > +
+> > +# success, all done
+> > +status=0
+> > +exit
+> > diff --git a/tests/btrfs/274.out b/tests/btrfs/274.out
+> > new file mode 100644
+> > index 00000000..66e0de25
+> > --- /dev/null
+> > +++ b/tests/btrfs/274.out
+> > @@ -0,0 +1,6 @@
+> > +QA output created by 274
+> > +Create subvolume 'SCRATCH_MNT/subvol'
+> > +Creating and activating swap file...
+> > +Attempting to delete subvolume with swap file enabled...
+> > +Disabling swap file...
+> > +Attempting to delete subvolume after disabling swap file...
+> > --
+> > 2.35.1
 > >
 >
