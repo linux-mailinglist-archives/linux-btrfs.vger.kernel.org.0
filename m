@@ -2,41 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A25B05AE3DD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Sep 2022 11:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A525AE44D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Sep 2022 11:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239295AbiIFJJQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Sep 2022 05:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
+        id S233958AbiIFJcg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Sep 2022 05:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233630AbiIFJJP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Sep 2022 05:09:15 -0400
-X-Greylist: delayed 487 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 06 Sep 2022 02:09:14 PDT
-Received: from kyoto-arc.or.jp (ns.kyoto-arc.or.jp [202.252.247.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F70D48E9F
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Sep 2022 02:09:14 -0700 (PDT)
-Received: from [192.168.2.28] ([202.252.247.10]:25604)
-        by kyoto-arc.or.jp with [XMail ESMTP Server]
-        id <S167E5C> for <linux-btrfs@vger.kernel.org> from <kengo@kyoto-arc.or.jp>;
-        Tue, 6 Sep 2022 18:01:03 +0900
-Mime-Version: 1.0
-X-Sender: kengo@ms.kyoto-arc.or.jp
-X-Mailer: QUALCOMM MacOS Classic Eudora Version 6J Jr6
-Message-Id: <p0600104adf3cb2552d24@kyoto-arc.or.jp>
-In-Reply-To: <9c295a8c-5167-116e-4fae-d548f1deb3b2@zoho.com>
-References: <fb056073-5bd6-6143-9699-4a5af1bd496d@zoho.com><655f97cc-64e6-9f57-5394-58
- f9c3b83a6f@gmx.com><40b209eb-9048-da0c-e776-5e143ab38571@zoho.com><72a78cc
- 0-4524-47e7-803c-7d094b8713ee@gmx.com><00984321-3006-764d-c29e-1304f89652a
- e@zoho.com><18300547-1811-e9da-252e-f9476dca078c@gmx.com><4691b710-3d71-bd
- 26-d00a-66cc398f57c5@zoho.com><7553372e-1485-63ae-d3f1-e9e0a318b2f6@gmx.co
- m> <9c295a8c-5167-116e-4fae-d548f1deb3b2@zoho.com>
-Date:   Tue, 6 Sep 2022 17:59:21 +0900
-To:     linux-btrfs@vger.kernel.org
-From:   "Kengo.M" <kengo@kyoto-arc.or.jp>
-Subject: delete whole file system
-Content-Type: text/plain; charset="us-ascii" ; format="flowed"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        with ESMTP id S233100AbiIFJcf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Sep 2022 05:32:35 -0400
+X-Greylist: delayed 1203 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 06 Sep 2022 02:32:34 PDT
+Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F726F56A
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Sep 2022 02:32:34 -0700 (PDT)
+Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
+        (envelope-from <hrm@savella.carfax.org.uk>)
+        id 1oVUcl-0000xO-JQ; Tue, 06 Sep 2022 10:12:03 +0100
+Date:   Tue, 6 Sep 2022 10:12:03 +0100
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     "Kengo.M" <kengo@kyoto-arc.or.jp>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: delete whole file system
+Message-ID: <20220906091203.GY1103@savella.carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        "Kengo.M" <kengo@kyoto-arc.or.jp>, linux-btrfs@vger.kernel.org
+References: <p0600104adf3cb2552d24@kyoto-arc.or.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <p0600104adf3cb2552d24@kyoto-arc.or.jp>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,34 +45,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi folks
+On Tue, Sep 06, 2022 at 05:59:21PM +0900, Kengo.M wrote:
+> Hi folks
+> 
+> I made raid5 file system by btrfs like below
+> 
+> sudo mkfs.btrfs -L raid5.btrfs -d raid5 -m raid1 -f /dev/sda /dev/sdb
+> /dev/sdc /dev/sdd /dev/sde
+> 
+> And mount /mnt/raid5.btrfs
+> 
+> sudo btrfs filesystem show
+> 
+> Label: 'raid5.btrf'  uuid: 23a34a45-8f5e-40f5-8cda-xxxxxxxxxxxx
+>         Total devices 5 FS bytes used 128.00KiB
+>         devid    1 size 2.73TiB used 1.13GiB path /dev/sda
+>         devid    2 size 2.73TiB used 1.13GiB path /dev/sdb
+>         devid    3 size 2.73TiB used 1.13GiB path /dev/sdc
+>         devid    4 size 2.73TiB used 1.13GiB path /dev/sdd
+>         devid    5 size 2.73TiB used 1.13GiB path /dev/sde
+> 
+> 
+> So,I want to delete this file system.
+> 
+> btrfs device delete /dev/sda /mnt/raid5.btrfs
+> 
+> But delete /dev/sda only.
+> 
+> Please Someone tell me how to delete whole this file system.
+> 
+> BRD
+> 
+> Kengo.m
 
-I made raid5 file system by btrfs like below
+   "btrfs dev delete" remove a device from the SF leaving the rest of
+it intact. To destroy the filesystem completely, wipe the start of the
+device on each device. You can do that with any tool that will write
+data (dd if=/dev/zero is a popular one here), but there's a generic
+tool called wipefs that will do it for any filesystem with minimal
+writes to the device and a good level of recoverability if you get it
+wrong.
 
-sudo mkfs.btrfs -L raid5.btrfs -d raid5 -m raid1 -f /dev/sda /dev/sdb 
-/dev/sdc /dev/sdd /dev/sde
+   Hugo.
 
-And mount /mnt/raid5.btrfs
-
-sudo btrfs filesystem show
-
-Label: 'raid5.btrf'  uuid: 23a34a45-8f5e-40f5-8cda-xxxxxxxxxxxx
-         Total devices 5 FS bytes used 128.00KiB
-         devid    1 size 2.73TiB used 1.13GiB path /dev/sda
-         devid    2 size 2.73TiB used 1.13GiB path /dev/sdb
-         devid    3 size 2.73TiB used 1.13GiB path /dev/sdc
-         devid    4 size 2.73TiB used 1.13GiB path /dev/sdd
-         devid    5 size 2.73TiB used 1.13GiB path /dev/sde
-
-
-So,I want to delete this file system.
-
-btrfs device delete /dev/sda /mnt/raid5.btrfs
-
-But delete /dev/sda only.
-
-Please Someone tell me how to delete whole this file system.
-
-BRD
-
-Kengo.m
+-- 
+Hugo Mills             | Klytus, I'm bored. What plaything can you offer me
+hugo@... carfax.org.uk | today?
+http://carfax.org.uk/  |
+PGP: E2AB1DE4          |                      Ming the Merciless, Flash Gordon
