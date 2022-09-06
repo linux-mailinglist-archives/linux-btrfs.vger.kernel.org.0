@@ -2,106 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C365ADC85
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Sep 2022 02:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CEF5ADD30
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Sep 2022 04:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbiIFAgY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Sep 2022 20:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
+        id S230510AbiIFCPY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Sep 2022 22:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbiIFAgU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Sep 2022 20:36:20 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171D06A4A8;
-        Mon,  5 Sep 2022 17:36:17 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 6CB93803C8;
-        Mon,  5 Sep 2022 20:36:17 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1662424577; bh=1njMgtLMCKXOazQmPtODjiDRbsI7pkHmvUqzqv2QlzQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QLl6XHHXZEOC7+yXnJk9vm158tW3yVanxuBp90+1t715oUoj3it0Y667AVpqdmZtN
-         KT0OZuqGyKi8qAEI0ZD7+KE6WKqlDaSAGENzlYFZ0p/gxl5AoOAljomNds7Xk452a5
-         331hJyaq5+lawr/3mA3Iecef46Dq5Q5XOvyRd/se6k8U3Vs69p43ACeOPPOx46D9vO
-         ZmQPOz7n651yHf4U+uuFfrctCjrz7GRPbc6LEAcElpzX/0BFmH3KsbvNkvTRG+Rg7m
-         T8MF3ZypyzNYMgftT+km4+t/zLZpo56sWK6H7VEPkI16xGXI4RYddsWybzKDH4WrTZ
-         OSEqn6uXW7X0Q==
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Omar Sandoval <osandov@osandov.com>,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v2 20/20] btrfs: implement fscrypt ioctls
-Date:   Mon,  5 Sep 2022 20:35:35 -0400
-Message-Id: <e7dd2cb0f4eef391566e1e60f05136244a288693.1662420177.git.sweettea-kernel@dorminy.me>
-In-Reply-To: <cover.1662420176.git.sweettea-kernel@dorminy.me>
-References: <cover.1662420176.git.sweettea-kernel@dorminy.me>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230116AbiIFCPW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Sep 2022 22:15:22 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443B440E10
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Sep 2022 19:15:20 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 26FC23200903;
+        Mon,  5 Sep 2022 22:15:17 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute3.internal (MEProxy); Mon, 05 Sep 2022 22:15:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        colorremedies.com; h=cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1662430516; x=
+        1662516916; bh=PXEwQfhwN+7sbMxwKe3o+TCY6atdZ0CIasmi+z3IGVI=; b=B
+        qwLlQVd8VHCyOD6d3/O/y9qwMaRzH3vXok3hqpwfXK5vl92W9U2TqqWud8ZjSlUq
+        XSzqXeFRRel7WwHV2Gelg4lbJ19qOyGHOvO/Z8zfhz+TFlCZ6ijhrZ7q5lXEZAZL
+        c85xvzzG00dPCQ+UK75ZjZrjxdjlrIww+WMfgxpN5jxcz0CHA/IA1yCT3LS3dRjg
+        LXCJhmV1XuGeU1+6pC9ntqOa+w/FInKVu8DjMzHf0aUotvWHqlfx7J6W51kKeK2p
+        em6RysnaWlHFLgJ8qkIt1lKgKVhnBlHYxghQDSu1el4j6fpLG9HVIrY4IqoAMcwT
+        gGLFoKAfDZ6VEZfgMIcNA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; t=1662430516; x=1662516916; bh=PXEwQfhwN+7sbMxwKe3o+TCY6atd
+        Z0CIasmi+z3IGVI=; b=QOdkfAlJBfRXRi84bow4Y3LMQ1pS4HjSiVXy07l6J16e
+        LXr+8H5m5fIzbrmiedY1mzgqjgOIxl4Qj+HjEdv3IaVjBq1mx6yXctTWeP6Q3xRF
+        udiZrdNSvz1PxdREHiOrceoDnUlNkDMOpcFB8Ieun2DvVXakFTiSeewurs3CtwEa
+        YsOJ6jRtr9k4NSiNaBkFJC0/WyYxoiUncDL/xHVYK1+FNIg+ghNjuiaXLmGh0fsK
+        7zpbHsl5baOW7LBoaOrXrb7q2IHa8Wa6tQIea/MJ4oELJ1Jud0ocK+JzJhMwU0fv
+        edJBXk07OPtTerZRQR+ZcZXmHtEfVOjbQnGCgvlucQ==
+X-ME-Sender: <xms:NK0WYx1gtLnwHMb7tIdr8HS_rmN5s-78DuNuNfXLUeQZgY5PwULvLg>
+    <xme:NK0WY4EW2SjvSB0lTzEFlpGqd7n-Y-wQxfBEEQsrIRKvHnxtNGArupLfNe4-BDUwF
+    U2QkLrgIIcu5u-IpAc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdeljedgheejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdevhhhr
+    ihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
+    eqnecuggftrfgrthhtvghrnhepudehieevueetgffhkeetkeelveffueeltdejvdejveev
+    vdeggfefhfegvddugeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
+X-ME-Proxy: <xmx:NK0WYx7T8gI3oRmfJiLFoHYPxI2ikV_ZFcS4261ubif7E14bCB-ilA>
+    <xmx:NK0WY-1DnFMcQ32HRWneDQAQRMy9WEYCLpz8PNmbY3zOv0xSKHb2mg>
+    <xmx:NK0WY0GeT18ySzi0_g2X0_GbBujUlgnxgnq7JOOgSz65D0brRLbm3w>
+    <xmx:NK0WY3w4X-gjwX5dgvlQ7xEOjTzejr-GktN5y-mvrWKtfaF83011eg>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 679511700082; Mon,  5 Sep 2022 22:15:16 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-927-gf4c98c8499-fm-20220826.002-gf4c98c84
+Mime-Version: 1.0
+Message-Id: <d759fd64-fe5c-491e-9c24-c27067cbb195@www.fastmail.com>
+In-Reply-To: <trinity-2ed29f2d-59e7-439a-893d-3fc3b41be07f-1662419772647@3c-app-gmx-bap56>
+References: <trinity-2ed29f2d-59e7-439a-893d-3fc3b41be07f-1662419772647@3c-app-gmx-bap56>
+Date:   Mon, 05 Sep 2022 22:14:56 -0400
+From:   "Chris Murphy" <lists@colorremedies.com>
+To:     "Steve Keller" <keller.steve@gmx.de>,
+        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Subject: Re: RAID1/RAID0, online replace
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@osandov.com>
 
-These ioctls allow encryption to be set up.
 
-Signed-off-by: Omar Sandoval <osandov@osandov.com>
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- fs/btrfs/ioctl.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+On Mon, Sep 5, 2022, at 7:16 PM, Steve Keller wrote:
+> A few questions on RAID1 on BTRFS:
+>
+> 1. With RAID1, can I replace a failed disk online, i.e. without
+>    unmounting the filesystem?  If yes, what happens with files that
+>    have data blocks which have only one copy?  Are they deleted?  Will
+>    the FS still be in a clean state?
+>
+> 2. Can I have some files with data blocks in RAID1 and other files in
+>    RAID0 or single mode?  Can I set this per directory?  E.g. I have
+>    directories with large multimedia files which change seldom or
+>    never, which I have in the backup, and for which I don't need high
+>    availability by RAID1.  Other directories, e.g. source code, change
+>    often which I'd like to have RAID1 for.
+>
+>    If that's not possible, can RAID1 for data vs. RAID0 be configured
+>    per sub-volume?
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 708e514aca25..ea1c14b26206 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -5457,6 +5457,34 @@ long btrfs_ioctl(struct file *file, unsigned int
- 		return btrfs_ioctl_get_fslabel(fs_info, argp);
- 	case FS_IOC_SETFSLABEL:
- 		return btrfs_ioctl_set_fslabel(file, argp);
-+	case FS_IOC_SET_ENCRYPTION_POLICY: {
-+		if (!IS_ENABLED(CONFIG_FS_ENCRYPTION))
-+			return -EOPNOTSUPP;
-+		if (sb_rdonly(fs_info->sb))
-+			return -EROFS;
-+		/*
-+		 *  If we crash before we commit, nothing encrypted could have
-+		 * been written so it doesn't matter whether the encrypted
-+		 * state persists.
-+		 */
-+		btrfs_set_fs_incompat(fs_info, FSCRYPT);
-+		return fscrypt_ioctl_set_policy(file, (const void __user *)arg);
-+	}
-+	case FS_IOC_GET_ENCRYPTION_POLICY:
-+		return fscrypt_ioctl_get_policy(file, (void __user *)arg);
-+	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
-+		return fscrypt_ioctl_get_policy_ex(file, (void __user *)arg);
-+	case FS_IOC_ADD_ENCRYPTION_KEY:
-+		return fscrypt_ioctl_add_key(file, (void __user *)arg);
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY:
-+		return fscrypt_ioctl_remove_key(file, (void __user *)arg);
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS:
-+		return fscrypt_ioctl_remove_key_all_users(file,
-+							  (void __user *)arg);
-+	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
-+		return fscrypt_ioctl_get_key_status(file, (void __user *)arg);
-+	case FS_IOC_GET_ENCRYPTION_NONCE:
-+		return fscrypt_ioctl_get_nonce(file, (void __user *)arg);
- 	case FITRIM:
- 		return btrfs_ioctl_fitrim(fs_info, argp);
- 	case BTRFS_IOC_SNAP_CREATE:
+Ostensibly it's all one profile per block group type. But if the conversion was interrupted or cancelled, yeah you'd have mixed profile block groups, thus some files could be one or the other. But this is not really controllable.
+
+`btrfs replace` is an online command.
+
+
 -- 
-2.35.1
-
+Chris Murphy
