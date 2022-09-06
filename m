@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC1F5ADC21
+	by mail.lfdr.de (Postfix) with ESMTP id A76CB5ADC22
 	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Sep 2022 02:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232634AbiIFABf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Sep 2022 20:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
+        id S232650AbiIFABg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Sep 2022 20:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbiIFABb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Sep 2022 20:01:31 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D51B52E47
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Sep 2022 17:01:30 -0700 (PDT)
+        with ESMTP id S232606AbiIFABe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Sep 2022 20:01:34 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C54D52E47
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Sep 2022 17:01:32 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id E55FE80E05;
-        Mon,  5 Sep 2022 20:01:29 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id DAA3F80C62;
+        Mon,  5 Sep 2022 20:01:31 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1662422490; bh=IttONbvphVIkopPhjOSpLTVvRVbkNnzCrnnJ1Poj8ns=;
+        t=1662422492; bh=oD4DapS1KZRP9/Db6zooV26L1WOCdxIdtO+uiwaRRok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V1zEMh8pG0YYa2n9tOuaaI+o8u4n4q8YVhK0Djksd0W0aYRAA7aLEBq/ni1U8HEdS
-         W5iO4X3KCPkR1FiZbJWTIY5S5xGuoh26cB5DHPw30Fc9qoEQYuLxqTr17msQqY6aM+
-         R3t99uW0lvbGYt0737Kwm2uyTFY1LuEE6kz6U7vg1wNmG1r3Rs8BOufmy4VsqN2E0s
-         zzx4zAJOk9hC2/emZj7esgrBb9cipBzQ1EbpyEndEwIcQX7QeYCc0WKammTvG12AhD
-         g9r3/JqZC6lrukz8TdNiUnzrrcE9CwJ/uhDbDq3fy4j1qU5I1fRls2X6lutVx7ixih
-         AWaEU2gmEdcFA==
+        b=UX+Xh8YdXwXM6yHhMRCJ+XgnFSjSLzTy43oba2tcwb6f+AMXvwKNHOB0PdzsdE7NZ
+         ndNF+Lufv1prBEv/aoQzTq5iWC8KE0w3LCtKNFGB8juFMy2J7KWouCCOv+fiYLBQ/T
+         lGXQhwEzb9dgGYuYJTLUChjoa7G0jyYSIxLLvApjCgHsRgeYID8pvk/0rjVy1R8gl8
+         AjaCXE8uFUFbLSci18WQbFa5JPkgtWAVz1BQ1o7BajSzJU2WyNZ7mEUUf+DoiK/F+q
+         0f0POEyAXHS+FnWhvbwKxTUSaj7MyboVAkX0rnNXDtsgKmJgBQEi7m7nUE8Fyp3HWt
+         IIvodZ+iZOiDA==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 5/6] btrfs-progs: escape unprintable characters in names
-Date:   Mon,  5 Sep 2022 20:01:06 -0400
-Message-Id: <95f07a265f40797ba81d3125364492f17e3b8780.1662417859.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH 6/6] btrfs-progs: check: update inline extent length checking
+Date:   Mon,  5 Sep 2022 20:01:07 -0400
+Message-Id: <4ec822ef3b3a6be3cbf07a878d475b273094795c.1662417859.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1662417859.git.sweettea-kernel@dorminy.me>
 References: <cover.1662417859.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
@@ -47,68 +47,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are several item types which have an associated name: inode refs
-and dir items. While they could always be unprintable, the advent of
-encryption makes it much more likely that the names contain characters
-outside the normal ASCII range. As such, it's useful to print the
-characters outside normal ASCII in hex format.
+As part of the encryption changes, encrypted inline file extents record
+their actual data length in ram_bytes, like compressed inline file
+extents, while the item's length records the actual size. As such,
+encrypted inline extents must be treated like compressed ones for
+inode length consistency checking.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- kernel-shared/print-tree.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ check/main.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index 2163f833..6365d961 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -28,6 +28,19 @@
- #include "kernel-shared/volumes.h"
- #include "common/utils.h"
+diff --git a/check/main.c b/check/main.c
+index be9b0134..5466f45d 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -1626,7 +1626,7 @@ static int process_file_extent(struct btrfs_root *root,
+ 	u64 mask = gfs_info->sectorsize - 1;
+ 	u32 max_inline_size = min_t(u32, mask,
+ 				BTRFS_MAX_INLINE_DATA_SIZE(gfs_info));
+-	u8 compression;
++	u8 compression, encryption;
+ 	int extent_type;
+ 	int ret;
  
-+static void print_name(const char *buf, size_t len)
-+{
-+	size_t i;
-+	printf("name: ");
-+	for(i = 0; i < len; i++) {
-+		if (buf[i] >= ' ' && buf[i] <= '~')
-+			printf("%c", buf[i]);
-+		else
-+			printf("\\x%02hhx", buf[i]);
-+	}
-+	printf("\n");
-+}
-+
- static void print_dir_item_type(struct extent_buffer *eb,
-                                 struct btrfs_dir_item *di)
- {
-@@ -77,7 +90,7 @@ static void print_dir_item(struct extent_buffer *eb, u32 size,
- 		} else {
- 			read_extent_buffer(eb, namebuf,
- 					(unsigned long)(di + 1), len);
--			printf("\t\tname: %.*s\n", len, namebuf);
-+			print_name(namebuf, len);
- 		}
+@@ -1651,25 +1651,25 @@ static int process_file_extent(struct btrfs_root *root,
+ 	fi = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
+ 	extent_type = btrfs_file_extent_type(eb, fi);
+ 	compression = btrfs_file_extent_compression(eb, fi);
++	encryption = btrfs_file_extent_encryption(eb, fi);
  
- 		if (data_len) {
-@@ -135,7 +148,7 @@ static void print_inode_extref_item(struct extent_buffer *eb, u32 size,
+ 	if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
+-		num_bytes = btrfs_file_extent_ram_bytes(eb, fi);
+-		if (num_bytes == 0)
++		u64 num_decoded_bytes = btrfs_file_extent_ram_bytes(eb, fi);
++		u64 num_disk_bytes =  btrfs_file_extent_inline_item_len(eb, slot);
++		if (num_decoded_bytes == 0)
+ 			rec->errors |= I_ERR_BAD_FILE_EXTENT;
+-		if (compression) {
+-			if (btrfs_file_extent_inline_item_len(eb, slot) >
+-			    max_inline_size ||
+-			    num_bytes > gfs_info->sectorsize)
++		if (compression || encryption) {
++			if (num_disk_bytes > max_inline_size ||
++			    num_decoded_bytes > gfs_info->sectorsize)
+ 				rec->errors |= I_ERR_FILE_EXTENT_TOO_LARGE;
  		} else {
- 			read_extent_buffer(eb, namebuf,
- 					(unsigned long)extref->name, len);
--			printf("name: %.*s\n", len, namebuf);
-+			print_name(namebuf, len);
+-			if (num_bytes > max_inline_size)
++			if (num_decoded_bytes > max_inline_size)
+ 				rec->errors |= I_ERR_FILE_EXTENT_TOO_LARGE;
+-			if (btrfs_file_extent_inline_item_len(eb, slot) !=
+-			    num_bytes)
++			if (num_disk_bytes != num_decoded_bytes)
+ 				rec->errors |= I_ERR_INLINE_RAM_BYTES_WRONG;
  		}
- 
- 		len = sizeof(*extref) + name_len;
-@@ -165,7 +178,7 @@ static void print_inode_ref_item(struct extent_buffer *eb, u32 size,
- 		} else {
- 			read_extent_buffer(eb, namebuf,
- 					(unsigned long)(ref + 1), len);
--			printf("name: %.*s\n", len, namebuf);
-+			print_name(namebuf, len);
- 		}
- 		len = sizeof(*ref) + name_len;
- 		ref = (struct btrfs_inode_ref *)((char *)ref + len);
+-		rec->found_size += num_bytes;
+-		num_bytes = (num_bytes + mask) & ~mask;
++		rec->found_size += num_decoded_bytes;
++		num_bytes = (num_decoded_bytes + mask) & ~mask;
+ 	} else if (extent_type == BTRFS_FILE_EXTENT_REG ||
+ 		   extent_type == BTRFS_FILE_EXTENT_PREALLOC) {
+ 		num_bytes = btrfs_file_extent_num_bytes(eb, fi);
 -- 
 2.35.1
 
