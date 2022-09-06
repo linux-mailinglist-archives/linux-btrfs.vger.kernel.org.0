@@ -2,114 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B619F5AE7D8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Sep 2022 14:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA225AE93B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Sep 2022 15:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240114AbiIFMVi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Sep 2022 08:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
+        id S240090AbiIFNR3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Sep 2022 09:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240033AbiIFMUv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Sep 2022 08:20:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9DC70E56
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Sep 2022 05:17:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1662466671;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YjvVsGnaOPZ/gpG0KVHSfjbjbq9SkmePYc60DJuuWGs=;
-        b=MSpEL0chRJ4GyrN5Qq8vlyUPFNaQFVg1WlpU2PJgR+ycutjus6T8uBg5UcDdXy1VPxBHWQ
-        ynLqXa6eMeqc5FsKG6dgx2QkkAKeorGE0pxwS8ieDBj1YFQT/AWgZcOBWYB0GbYYUoSaj5
-        XuzheYB43yK2my4Y16tZ+EE4lYN8drc=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-47-HSUfhPJXM-2ppp1fdmrDZw-1; Tue, 06 Sep 2022 08:17:46 -0400
-X-MC-Unique: HSUfhPJXM-2ppp1fdmrDZw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S234277AbiIFNR2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Sep 2022 09:17:28 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542F94F1A2
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Sep 2022 06:17:25 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E76891C06901;
-        Tue,  6 Sep 2022 12:17:44 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.192.109])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E9F5940334C;
-        Tue,  6 Sep 2022 12:17:39 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        david@fromorbit.com, trondmy@hammerspace.com, neilb@suse.de,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
-        bfields@fieldses.org, brauner@kernel.org,
-        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [RFC PATCH v2] statx, inode: document the new STATX_INO_VERSION
- field
-References: <20220901121714.20051-1-jlayton@kernel.org>
-        <874jxrqdji.fsf@oldenburg.str.redhat.com>
-        <81e57e81e4570d1659098f2bbc7c9049a605c5e8.camel@kernel.org>
-Date:   Tue, 06 Sep 2022 14:17:38 +0200
-In-Reply-To: <81e57e81e4570d1659098f2bbc7c9049a605c5e8.camel@kernel.org> (Jeff
-        Layton's message of "Thu, 01 Sep 2022 12:30:20 -0400")
-Message-ID: <87ilm066jh.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D052D1F8B3;
+        Tue,  6 Sep 2022 13:17:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1662470243;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TX6I2O5EhDSm01wZTFyseXdD+CiiT9aypru/TOUvsbo=;
+        b=i6srVq4wiWY6gyhbc4pDuUzAFvVD1s/lfeP6NtiJAQ/Z37xS+ijP7aZw97uiADMIiaU0ck
+        o/4KuIWspZVuT+ha25FDYNb3kubuMr0X0YsBUbgq7ZG5VwiMaLjUgzgbtsL9Bl7Gkj4mhT
+        qgmsLU/gz2ABZ8w0lSFuqaTaoFru9xI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1662470243;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TX6I2O5EhDSm01wZTFyseXdD+CiiT9aypru/TOUvsbo=;
+        b=GYylBoqPhrgeQVF4ROBOfcqvxiP13AnWSC2fhvXEscL1eIvIQOFNwOQnHoEiE1YbBd23Dc
+        p4SaOH/tdyPoAhBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9A00413A19;
+        Tue,  6 Sep 2022 13:17:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id kyWnJGNIF2NWWgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 06 Sep 2022 13:17:23 +0000
+Date:   Tue, 6 Sep 2022 15:12:01 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: btrfs I/O completion cleanup and single device I/O optimizations
+ v2
+Message-ID: <20220906131201.GM13489@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20220713061359.1980118-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220713061359.1980118-1-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-* Jeff Layton:
+On Wed, Jul 13, 2022 at 08:13:48AM +0200, Christoph Hellwig wrote:
+> Hi all,
+> 
+> this series cleans up the btrfs_bio API, most prominently by splitting
+> the end_io handler for the highlevel bio from the low-level bio
+> bi_end_io, which are really confusingly coupled in the current code.
+> Once that is done it then optimizes the bio submission to not allocate
+> a btrfs_io_context for I/Os tht just go to a single device.
+> 
+> This series sits on top of the for-next tree that has the "fix read
+> repair on compressed extents v2" series included.  To make everyones life
+> easier a git tree is also available:
+> 
+>     git://git.infradead.org/users/hch/misc.git btrfs-bio-api-cleanup
+> 
+> Gitweb:
+> 
+>     http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/btrfs-bio-api-cleanup
+> 
+> Note that I've picked up the reviews and tested tags from the last
+> posting for the patches that are relatively unchainged or just split,
+> so they might appear a little inconsistent.
+> 
+> Changes since v1:
+>  - add two previously submitted patches skipped from an earlier
+>    series
+>  - merged one of those patches with one from this series
+>  - split one of the patches in this series into three
+>  - improve various commit logs
 
-> All of the existing implementations use all 64 bits. If you were to
-> increment a 64 bit value every nanosecond, it will take >500 years for
-> it to wrap. I'm hoping that's good enough. ;)
->
-> The implementation that all of the local Linux filesystems use track
-> whether the value has been queried using one bit, so there you only get
-> 63 bits of counter.
->
-> My original thinking here was that we should leave the spec "loose" to
-> allow for implementations that may not be based on a counter. E.g. could
-> some filesystem do this instead by hashing certain metadata?
+This patchset has been merged a few weeks back, I wanted to reply
+regarding a few things. The changes touch critical code, there are
+cleanups but doing functional changes but the changelogs are IMHO
+insufficient.  The code is not touched often and the changelog is the
+only thing left that's supposed to hold some code documentation,
+explanations and descriptions of new logic. I'm not counting the obvious
+and fairly straightfowrad changes.
 
-Hashing might have collisions that could be triggered deliberately, so
-probably not a good idea.  It's also hard to argue that random
-collisions are unlikely.
+Let me point out one example, the 5/11 "btrfs: remove
+bioc->stripes_pending". The subject gives a false idea what's going on.
+There was a member removed, yes but the whole logic regarding bios is
+changed, it's now using the bio chaining, as mentioned in the first
+paragraph at least. Other patches state in words what the code does, not
+explaining why.
 
-> It's arguable though that the NFSv4 spec requires that this be based on
-> a counter, as the client is required to increment it in the case of
-> write delegations.
+Each such patch requires a more thorough review and rewriting or
+updating the changelog. I do that for free for irregular contributors,
+otherwise I'd rather see we're on the same page.
 
-Yeah, I think it has to be monotonic.
-
->> If the system crashes without flushing disks, is it possible to observe
->> new file contents without a change of i_version?
->
-> Yes, I think that's possible given the current implementations.
->
-> We don't have a great scheme to combat that at the moment, other than
-> looking at this in conjunction with the ctime. As long as the clock
-> doesn't jump backward after the crash and it takes more than one jiffy
-> to get the host back up, then you can be reasonably sure that
-> i_version+ctime should never repeat.
->
-> Maybe that's worth adding to the NOTES section of the manpage?
-
-I'd appreciate that.
-
-Thanks,
-Florian
-
+I'm also worried when none of the Reviewed-by come with a comment
+regarding the changelogs. Any code can be understood after enough time,
+but we need to track that so we can refer to it in the future.
