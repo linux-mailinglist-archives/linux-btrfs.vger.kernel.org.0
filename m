@@ -2,64 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA2C5AF072
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Sep 2022 18:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2AD5AF0D1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Sep 2022 18:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234956AbiIFQdI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Sep 2022 12:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
+        id S234030AbiIFQnO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Sep 2022 12:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233969AbiIFQcl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Sep 2022 12:32:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CA3857CD
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Sep 2022 09:06:40 -0700 (PDT)
+        with ESMTP id S234958AbiIFQlz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Sep 2022 12:41:55 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58097FF5
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Sep 2022 09:20:35 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 749FC1F9AC;
-        Tue,  6 Sep 2022 16:06:39 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 06A39336FB;
+        Tue,  6 Sep 2022 16:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662480399;
+        t=1662481234;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=IGx3brLlMAgtYbHzJb94yGjXj+1C38HTfthwjD1l/XM=;
-        b=PaJdX+pYm058la5bbcay66YMtLEzn4RZC1svpld0U9mT2uTW7tbkJRFo1r6NDwVCWxvqoW
-        SDTzxdf8ldlX6+BhQRgp9IrYH0dvzDNJiFP84tgRhov6rES41yN8o4jmTsEnw+aozi15Ll
-        NjsZ0xhwzD+JPC0bYkZ9HTLWEzed1Lo=
+        bh=9ZHqv9yU7lkBkBah81/eXLIan1gfgvBp94X980m8TCQ=;
+        b=e6+t1oqxrBoT26kNdzjoNHZjGYxpjM13CbWp+cn3N5ZOQ+YVhJ5G8iE6hxWRF1k/zMVyL7
+        mB+NXGAfjqYxu8dWxBC0ZxhHdvZGGFeMbbm0wmbZxItxG/yVe/XEunyW7YVilINRJP/5wz
+        WtCA68PHbBwc+1RdZepyd/xPb67RWSw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662480399;
+        s=susede2_ed25519; t=1662481234;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=IGx3brLlMAgtYbHzJb94yGjXj+1C38HTfthwjD1l/XM=;
-        b=yQM9C1vcGYxh30Yx4c5DkoF645PIaMS+D/euiUq6UAg0Tp1hWGsSE17K8dXugXP7UcF3uW
-        7rduj9e+ogJYZpAQ==
+        bh=9ZHqv9yU7lkBkBah81/eXLIan1gfgvBp94X980m8TCQ=;
+        b=kr9kHE16GFfXU1Bf9IRF+WK4b9n7p0Zhxx7KKA7gm9rWJTdTtADemPMp8wKJieKIkIIDMu
+        IYB/4yIs8yDBgnAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5174513A19;
-        Tue,  6 Sep 2022 16:06:39 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D18DF13A19;
+        Tue,  6 Sep 2022 16:20:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id vQcVEw9wF2OCLgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 06 Sep 2022 16:06:39 +0000
-Date:   Tue, 6 Sep 2022 18:01:16 +0200
+        id lo32MVFzF2PUNAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 06 Sep 2022 16:20:33 +0000
+Date:   Tue, 6 Sep 2022 18:15:11 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Wang Yugui <wangyugui@e16-tech.com>
-Subject: Re: [PATCH] btrfs: fix the max chunk size and stripe length
- calculation
-Message-ID: <20220906160116.GP13489@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] btrfs: separate BLOCK_GROUP_TREE compat RO flag
+ from EXTENT_TREE_V2
+Message-ID: <20220906161511.GQ13489@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <17e7c38b0cc6fe90c90f4b383734c06eafd2f9b5.1660806386.git.wqu@suse.com>
+References: <cover.1660021230.git.wqu@suse.com>
+ <5c396cb280e441bf37df48e05f406424859a03d3.1660021230.git.wqu@suse.com>
+ <20220905150127.GG13489@twin.jikos.cz>
+ <67b45a55-058e-55ca-9327-deb23e6ee7c0@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <17e7c38b0cc6fe90c90f4b383734c06eafd2f9b5.1660806386.git.wqu@suse.com>
+In-Reply-To: <67b45a55-058e-55ca-9327-deb23e6ee7c0@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
@@ -70,65 +74,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 03:06:44PM +0800, Qu Wenruo wrote:
-> [BEHAVIOR CHANGE]
-> Since commit f6fca3917b4d ("btrfs: store chunk size in space-info
-> struct"), btrfs no longer can create larger data chunks than 1G:
+On Tue, Sep 06, 2022 at 06:37:50AM +0800, Qu Wenruo wrote:
 > 
->   mkfs.btrfs -f -m raid1 -d raid0 $dev1 $dev2 $dev3 $dev4
->   mount $dev1 $mnt
 > 
->   btrfs balance start --full $mnt
->   btrfs balance start --full $mnt
->   umount $mnt
+> On 2022/9/5 23:01, David Sterba wrote:
+> > On Tue, Aug 09, 2022 at 01:02:18PM +0800, Qu Wenruo wrote:
+> >> --- a/include/uapi/linux/btrfs.h
+> >> +++ b/include/uapi/linux/btrfs.h
+> >> @@ -290,6 +290,12 @@ struct btrfs_ioctl_fs_info_args {
+> >>   #define BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID	(1ULL << 1)
+> >>   #define BTRFS_FEATURE_COMPAT_RO_VERITY			(1ULL << 2)
+> >>
+> >> +/*
+> >> + * Put all block group items into a dedicate block group tree, greatly
+> >> + * reduce mount time for large fs.
+> >> + */
+> >> +#define BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE	(1ULL << 5)
+> >
+> > Is there a reason to skip the bits 3 and 4? Ie. why isn't this (1 << 3) ?
 > 
->   btrfs ins dump-tree -t chunk $dev1 | grep "DATA|RAID0" -C 2
+> I was saving 3 and 4 for EXTRA_SUPER_RESERVE (extra reserved space after
+> 1MiB, needs a new member in super block) and WRITE_INTENT for raid56.
 > 
-> Before that offending commit, what we got is a 4G data chunk:
-> 
-> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491 itemsize 176
-> 		length 4294967296 owner 2 stripe_len 65536 type DATA|RAID0
-> 		io_align 65536 io_width 65536 sector_size 4096
-> 		num_stripes 4 sub_stripes 1
-> 
-> Now what we got is only 1G data chunk:
-> 
-> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 6271533056) itemoff 15491 itemsize 176
-> 		length 1073741824 owner 2 stripe_len 65536 type DATA|RAID0
-> 		io_align 65536 io_width 65536 sector_size 4096
-> 		num_stripes 4 sub_stripes 1
-> 
-> This will increase the number of data chunks by the number of devices,
-> not only increase system chunk usage, but also greatly increase mount
-> time.
-> 
-> Without a properly reason, we should not change the max chunk size.
-> 
-> [CAUSE]
-> Previously, we set max data chunk size to 10G, while max data stripe
-> length to 1G.
-> 
-> Commit f6fca3917b4d ("btrfs: store chunk size in space-info struct")
-> completely ignored the 10G limit, but use 1G max stripe limit instead,
-> causing above shrink in max data chunk size.
-> 
-> [FIX]
-> Fix the max data chunk size to 10G, and in decide_stripe_size_regular()
-> we limit stripe_size to 1G manually.
-> 
-> This should only affect data chunks, as for metadata chunks we always
-> set the max stripe size the same as max chunk size (256M or 1G
-> depending on fs size).
-> 
-> Now the same script result the same old result:
-> 
-> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491 itemsize 176
-> 		length 4294967296 owner 2 stripe_len 65536 type DATA|RAID0
-> 		io_align 65536 io_width 65536 sector_size 4096
-> 		num_stripes 4 sub_stripes 1
-> 
-> Reported-by: Wang Yugui <wangyugui@e16-tech.com>
-> Fixes: f6fca3917b4d ("btrfs: store chunk size in space-info struct")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> But obviously bg-tree is way easier to push, so would you mind to change
+> it (1<<3)?
 
-Added to misc-next, thanks. And thanks to Wang Yugui for the report.
+I see, the other patchset is not even in the queue yet so 1<<3 is the
+first free value, changed in git.
