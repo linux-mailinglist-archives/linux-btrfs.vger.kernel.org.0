@@ -2,85 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3175AF05B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Sep 2022 18:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA2C5AF072
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Sep 2022 18:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233605AbiIFQ05 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Sep 2022 12:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57890 "EHLO
+        id S234956AbiIFQdI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Sep 2022 12:33:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233512AbiIFQ0i (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Sep 2022 12:26:38 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D0AA6C1F
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Sep 2022 08:56:46 -0700 (PDT)
+        with ESMTP id S233969AbiIFQcl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Sep 2022 12:32:41 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CA3857CD
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Sep 2022 09:06:40 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 52E1E33939;
-        Tue,  6 Sep 2022 15:56:43 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 749FC1F9AC;
+        Tue,  6 Sep 2022 16:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662479803;
+        t=1662480399;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=WdNONZ6JYgSOyf83i5KxJxbKmH2UFUmYlSyiJ+TczUw=;
-        b=KBMZLJE83xmg7LnsLIbgaZ7t+7eIkdDUTQXwp01L9pNEtKKkjl82KTgcCM7h/BMOOt1iUz
-        q+gBrqr0UhtAEQk1I4KBw31UCaTQeaV01g+p1BujZkQRHjFvGLW7h/amLcOAkmVVo7W5bX
-        ugfYhOIQ9yehKuDNFcN5EAlxlywAZrE=
+        bh=IGx3brLlMAgtYbHzJb94yGjXj+1C38HTfthwjD1l/XM=;
+        b=PaJdX+pYm058la5bbcay66YMtLEzn4RZC1svpld0U9mT2uTW7tbkJRFo1r6NDwVCWxvqoW
+        SDTzxdf8ldlX6+BhQRgp9IrYH0dvzDNJiFP84tgRhov6rES41yN8o4jmTsEnw+aozi15Ll
+        NjsZ0xhwzD+JPC0bYkZ9HTLWEzed1Lo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662479803;
+        s=susede2_ed25519; t=1662480399;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=WdNONZ6JYgSOyf83i5KxJxbKmH2UFUmYlSyiJ+TczUw=;
-        b=V5t76I5gKCbmUAgZ3jSVvlTy2M67zMGpFlkEAZiOhyMymJ5Mx6GYhVOYh88q7i0Prx9sXu
-        VDiPNJKY+9Y7nQBA==
+        bh=IGx3brLlMAgtYbHzJb94yGjXj+1C38HTfthwjD1l/XM=;
+        b=yQM9C1vcGYxh30Yx4c5DkoF645PIaMS+D/euiUq6UAg0Tp1hWGsSE17K8dXugXP7UcF3uW
+        7rduj9e+ogJYZpAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3823613A19;
-        Tue,  6 Sep 2022 15:56:43 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5174513A19;
+        Tue,  6 Sep 2022 16:06:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id WCTLDLttF2NeKQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 06 Sep 2022 15:56:43 +0000
-Date:   Tue, 6 Sep 2022 17:51:20 +0200
+        id vQcVEw9wF2OCLgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 06 Sep 2022 16:06:39 +0000
+Date:   Tue, 6 Sep 2022 18:01:16 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: zoned: fix API misuse of zone finish waiting
-Message-ID: <20220906155120.GO13489@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Wang Yugui <wangyugui@e16-tech.com>
+Subject: Re: [PATCH] btrfs: fix the max chunk size and stripe length
+ calculation
+Message-ID: <20220906160116.GP13489@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <7f579ef2f4d4ab38577bd9768f4e38ac4d00fc48.1661921714.git.naohiro.aota@wdc.com>
+References: <17e7c38b0cc6fe90c90f4b383734c06eafd2f9b5.1660806386.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7f579ef2f4d4ab38577bd9768f4e38ac4d00fc48.1661921714.git.naohiro.aota@wdc.com>
+In-Reply-To: <17e7c38b0cc6fe90c90f4b383734c06eafd2f9b5.1660806386.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 31, 2022 at 01:55:48PM +0900, Naohiro Aota wrote:
-> The commit 2ce543f47843 ("btrfs: zoned: wait until zone is finished when
-> allocation didn't progress") implemented a zone finish waiting mechanism to
-> the write path of zoned mode. However, using wait_var_event()/wake_up_all()
-> on fs_info->zone_finish_wait is wrong and wait_var_event() just hangs
-> because no one ever wakes it up once it goes into sleep.
+On Thu, Aug 18, 2022 at 03:06:44PM +0800, Qu Wenruo wrote:
+> [BEHAVIOR CHANGE]
+> Since commit f6fca3917b4d ("btrfs: store chunk size in space-info
+> struct"), btrfs no longer can create larger data chunks than 1G:
 > 
-> Indeed, we can simply use wait_on_bit_io() and clear_and_wake_up_bit() on
-> fs_info->flags with a proper barrier installed.
+>   mkfs.btrfs -f -m raid1 -d raid0 $dev1 $dev2 $dev3 $dev4
+>   mount $dev1 $mnt
 > 
-> Fixes: 2ce543f47843 ("btrfs: zoned: wait until zone is finished when allocation didn't progress")
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>   btrfs balance start --full $mnt
+>   btrfs balance start --full $mnt
+>   umount $mnt
+> 
+>   btrfs ins dump-tree -t chunk $dev1 | grep "DATA|RAID0" -C 2
+> 
+> Before that offending commit, what we got is a 4G data chunk:
+> 
+> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491 itemsize 176
+> 		length 4294967296 owner 2 stripe_len 65536 type DATA|RAID0
+> 		io_align 65536 io_width 65536 sector_size 4096
+> 		num_stripes 4 sub_stripes 1
+> 
+> Now what we got is only 1G data chunk:
+> 
+> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 6271533056) itemoff 15491 itemsize 176
+> 		length 1073741824 owner 2 stripe_len 65536 type DATA|RAID0
+> 		io_align 65536 io_width 65536 sector_size 4096
+> 		num_stripes 4 sub_stripes 1
+> 
+> This will increase the number of data chunks by the number of devices,
+> not only increase system chunk usage, but also greatly increase mount
+> time.
+> 
+> Without a properly reason, we should not change the max chunk size.
+> 
+> [CAUSE]
+> Previously, we set max data chunk size to 10G, while max data stripe
+> length to 1G.
+> 
+> Commit f6fca3917b4d ("btrfs: store chunk size in space-info struct")
+> completely ignored the 10G limit, but use 1G max stripe limit instead,
+> causing above shrink in max data chunk size.
+> 
+> [FIX]
+> Fix the max data chunk size to 10G, and in decide_stripe_size_regular()
+> we limit stripe_size to 1G manually.
+> 
+> This should only affect data chunks, as for metadata chunks we always
+> set the max stripe size the same as max chunk size (256M or 1G
+> depending on fs size).
+> 
+> Now the same script result the same old result:
+> 
+> 	item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491 itemsize 176
+> 		length 4294967296 owner 2 stripe_len 65536 type DATA|RAID0
+> 		io_align 65536 io_width 65536 sector_size 4096
+> 		num_stripes 4 sub_stripes 1
+> 
+> Reported-by: Wang Yugui <wangyugui@e16-tech.com>
+> Fixes: f6fca3917b4d ("btrfs: store chunk size in space-info struct")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Added to misc-next, thanks.
+Added to misc-next, thanks. And thanks to Wang Yugui for the report.
