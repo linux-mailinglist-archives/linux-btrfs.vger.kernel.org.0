@@ -2,44 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDE75B02B7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Sep 2022 13:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629C65B02DF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Sep 2022 13:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbiIGLRy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Sep 2022 07:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37436 "EHLO
+        id S229656AbiIGL2G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Sep 2022 07:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbiIGLRx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 07:17:53 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD729E0CC
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 04:17:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=AoTSfvKTHAhRJ+VendpDQGpucncjrhoiZmvYqPKoLb8=; b=Qm8JhzTTJ4yYIhUzht6HlPOVQR
-        FAP046jMzUJaYVXYK4CX/v7W7I98kdelLo7gZuOsoGECewWi38TxZURSurUGgp2qfAu5boo3bIDyj
-        E+9vYwwDeFJoNUMhM4cFKC3Oc732cyiKXQsaGsSVxQOwxTB8FbXgfH68SauUY7+6/pXVxfHJ/qtoc
-        xSCI5jsqAZPppTQeihAWjplqR2j/q8r7h1Y+iGx7hwoaNYyH8Qrmb2DLBheAjHtvmAl1Z9Lnf47zb
-        dJLbN/LQcNz7V3G2eutBdK+9RwlrDfSlFbwR6pfOO0WHGDzevGEHbrxNV0zB8lffkmQaU/uLAunCH
-        Eygk4s5w==;
-Received: from [2001:4bb8:198:38af:1dd2:d819:3b45:2048] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oVt3z-005bwH-JD; Wed, 07 Sep 2022 11:17:48 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>
-Subject: [PATCH] btrfs: stop tracking failed reads in the I/O tree
-Date:   Wed,  7 Sep 2022 13:17:41 +0200
-Message-Id: <20220907111741.2572029-1-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S229580AbiIGL2F (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 07:28:05 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32991B0B3B
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 04:28:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1662550074;
+        bh=avFqwuHuKb3WpelmcZfRYfdlk2M93fbYgOpTIn8YRTQ=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=Oe2F+SgKqa+Y6ttdfCZ3zezCymZCmw9UuFeqSvg7PYw7O/jUAHNaqTfzgSKMFespZ
+         c+uIwKZ8ku2C4GX4e4izBzDoAXzgyh/GHhafTcihVUwau+oof7vH9Dt0mKrpKy9YCT
+         2fv5vZkI/DEJw4kCz/R3MhzkHPRHcQsSL8EKRvLg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MryT9-1pAmXE2SHt-00nwnp; Wed, 07
+ Sep 2022 13:27:54 +0200
+Message-ID: <f1d43420-3fda-1287-5fc2-4035ea988e0c@gmx.com>
+Date:   Wed, 7 Sep 2022 19:27:48 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: code placement for bio / storage layer code
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20220901074216.1849941-1-hch@lst.de>
+ <20220907091056.GA32007@lst.de>
+ <382f747b-7ea3-f1a9-805f-0550ae90963e@gmx.com> <20220907111009.GA8131@lst.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220907111009.GA8131@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6epaXZbK+UKolBk8Y1o0BDYgSfOtoginIj/NdSDUqaSJVR86KLR
+ T0LWi/VY+CeEi9w8YX0VAYSX763KOz2euoXQO2XssmGRw2Y/q5uTwcYsHULNaCQDAjm2YOC
+ y/MO4qbTmtVOucwWOEfGO7kFCi0ZyFb7ssLlCb6t7clel1DuYSmbcIFZzq0NY1XabWzKcfo
+ Ks0EA9PSTRXaaNyvul7lQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:S35CLr8/M4k=:/b7Hs1Ux6brBne1D3nVY8t
+ ekwxHq4ODEVWlZkbDNNNbNZmJJD1YCbTYKG2GagO9gX8bObAbdPNvl6FdMH5d0mywSkYLKQ8R
+ ntsw2baU5z5sJFwNLYbp0hPpwFMrEaovo5Og1dfjs/T1vz446ql/ZzTBkP9OIk3HDsKIn+uzK
+ 4XUz7/bTjX1d/dEkpwpdyKmKxtFvSG1dyTMB056vjrbafCV53AynPF5R+xu1y4A/c40ZwMOi5
+ J5m3qwYIqF7L/O119bOaG+L+/57OUbxHUlkRnHaFjLb3mfo7BKOxpSjlOvLCq0/EzdJfbpSkz
+ KbsAk4NDf0lcByr8w1sRnZDgKcymK9Mi4LhQB9rwBjczmI3aKlcZN5MK3D6HmH/XyeCie3heN
+ SeTeCSSYXd8rh4DxUXgKZcAWmiNsAEOXbW7iqxx9Ei8uYrgoE6FfxwehP97/+OQtsRQrsUJSw
+ DruoP3HwAl29a+wosACT5b290dvVuJvelDT7yxPdsAyL22VJNZXUoPPTTsgsqzB/sBo/qQEJv
+ BfofalvR7AU/oQwxc1Tayk7UQ9cMjARQfoZiSsOlh/XdFPqRlDT1zRbSqqcwqGnOtpnkwRMO/
+ YSAKhiMIvj3tLdTciQE9M6xFlyCPI1vSij4ReSpQPEcyXWKbBXSSrf2yMiqRhbPg6VTuRqyug
+ ++snHKQ8ZGjG8AVizXmah1azrqFLOTy+qP75inO7LH8hxUIdsC/SCIxSro2lVI81id2jKLDlo
+ Mgi8RXxiGEPaMpZX5JxfKN0nescZh4X7BKq06YsAiA/+rDEYXdorhIrWc1VJxR3lSHJNaRNiz
+ akpa5d68x50mHGTx79bmVHVOOjQjvY8RmrqZbRRI8h6DrvG13y2S2sHgUGQpztbL0W1HQVekO
+ rbKM5SM4aFFmZF2sp5dWbphm1pP/t/ter2hARkens/1fBoD4NWzVLKRTeOVHpmy14JgoL4wfa
+ 0oHaUlf2A6ELTsCa+Ksnl/KP7rp66oTnDaPFvIeWuF6cSvIwvc/AubaBAhRYB+KxYhCrvINSl
+ m34OnfHshsLl2x6DPixXQOXKquTVdtzOUkiXRQY4+cB8LbsX01IwclrtS/71d64Q+2Hl7iACv
+ xXomx52MbllPPRzHA+trh6z6VIU+6dYwGi14YjNGTI6ncyVTLs0zvFhLehMYLcbXwR9VTRyY4
+ FnGOoSoXGlIPFqYcDlTsp7VqLQ
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,105 +77,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a separate I/O failure tree to track the fail reads, so remove
-the extra EXTENT_DAMAGED bit in the I/O tree.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
----
 
-Split out from the "consolidate btrfs checksumming, repair and bio
-splitting" series as it makes sens on its own.
+On 2022/9/7 19:10, Christoph Hellwig wrote:
+> On Wed, Sep 07, 2022 at 06:28:05PM +0800, Qu Wenruo wrote:
+>> To me, the old volumes should really only contain the chunk tree relate=
+d
+>> code (read, add, delete a chunk), thus it may be better renamed to
+>> somethings like chunks.c?
+>
+> I'll leave that question to folks who know that area of code much better=
+.
+>
+>> Then the storage layer code should be the lower level code mostly
+>> touching the bio.
+>
+> For the initial version just doing the move, this would be
+>
+>   - btrfs_submit_bio
+>   - btrfs_submit_mirrored_bio
+>   - btrfs_submit_dev_bio
+>   - btrfs_clone_write_end_io
+>   - btrfs_orig_write_end_io
+>   - btrfs_raid56_end_io
 
- fs/btrfs/extent-io-tree.h        |  1 -
- fs/btrfs/extent_io.c             | 16 +---------------
- fs/btrfs/tests/extent-io-tests.c |  1 -
- include/trace/events/btrfs.h     |  1 -
- 4 files changed, 1 insertion(+), 18 deletions(-)
+This is scrub only usage, I guess we may find a better way to determine
+if it should go there.
 
-diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index ec2f8b8e6faa7..e218bb56d86ac 100644
---- a/fs/btrfs/extent-io-tree.h
-+++ b/fs/btrfs/extent-io-tree.h
-@@ -17,7 +17,6 @@ struct io_failure_record;
- #define EXTENT_NODATASUM	(1U << 7)
- #define EXTENT_CLEAR_META_RESV	(1U << 8)
- #define EXTENT_NEED_WAIT	(1U << 9)
--#define EXTENT_DAMAGED		(1U << 10)
- #define EXTENT_NORESERVE	(1U << 11)
- #define EXTENT_QGROUP_RESERVED	(1U << 12)
- #define EXTENT_CLEAR_DATA_RESV	(1U << 13)
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index cea7d09c2dc1d..b12870f9249a6 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2280,23 +2280,13 @@ int free_io_failure(struct extent_io_tree *failure_tree,
- 		    struct io_failure_record *rec)
- {
- 	int ret;
--	int err = 0;
- 
- 	set_state_failrec(failure_tree, rec->start, NULL);
- 	ret = clear_extent_bits(failure_tree, rec->start,
- 				rec->start + rec->len - 1,
- 				EXTENT_LOCKED | EXTENT_DIRTY);
--	if (ret)
--		err = ret;
--
--	ret = clear_extent_bits(io_tree, rec->start,
--				rec->start + rec->len - 1,
--				EXTENT_DAMAGED);
--	if (ret && !err)
--		err = ret;
--
- 	kfree(rec);
--	return err;
-+	return ret;
- }
- 
- /*
-@@ -2521,7 +2511,6 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
- 	u64 start = bbio->file_offset + bio_offset;
- 	struct io_failure_record *failrec;
- 	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
--	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
- 	const u32 sectorsize = fs_info->sectorsize;
- 	int ret;
- 
-@@ -2573,9 +2562,6 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
- 			      EXTENT_LOCKED | EXTENT_DIRTY);
- 	if (ret >= 0) {
- 		ret = set_state_failrec(failure_tree, start, failrec);
--		/* Set the bits in the inode's tree */
--		ret = set_extent_bits(tree, start, start + sectorsize - 1,
--				      EXTENT_DAMAGED);
- 	} else if (ret < 0) {
- 		kfree(failrec);
- 		return ERR_PTR(ret);
-diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
-index a232b15b8021f..ba4b7601e8c0a 100644
---- a/fs/btrfs/tests/extent-io-tests.c
-+++ b/fs/btrfs/tests/extent-io-tests.c
-@@ -80,7 +80,6 @@ static void extent_flag_to_str(const struct extent_state *state, char *dest)
- 	PRINT_ONE_FLAG(state, dest, cur, NODATASUM);
- 	PRINT_ONE_FLAG(state, dest, cur, CLEAR_META_RESV);
- 	PRINT_ONE_FLAG(state, dest, cur, NEED_WAIT);
--	PRINT_ONE_FLAG(state, dest, cur, DAMAGED);
- 	PRINT_ONE_FLAG(state, dest, cur, NORESERVE);
- 	PRINT_ONE_FLAG(state, dest, cur, QGROUP_RESERVED);
- 	PRINT_ONE_FLAG(state, dest, cur, CLEAR_DATA_RESV);
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 73df80d462dc8..f8a4118b16574 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -154,7 +154,6 @@ FLUSH_STATES
- 	{ EXTENT_NODATASUM,		"NODATASUM"},		\
- 	{ EXTENT_CLEAR_META_RESV,	"CLEAR_META_RESV"},	\
- 	{ EXTENT_NEED_WAIT,		"NEED_WAIT"},		\
--	{ EXTENT_DAMAGED,		"DAMAGED"},		\
- 	{ EXTENT_NORESERVE,		"NORESERVE"},		\
- 	{ EXTENT_QGROUP_RESERVED,	"QGROUP_RESERVED"},	\
- 	{ EXTENT_CLEAR_DATA_RESV,	"CLEAR_DATA_RESV"},	\
--- 
-2.30.2
+>   - btrfs_simple_end_io
+>   - btrfs_end_bio_work
+>   - btrfs_end_io_wq
+>   - btrfs_log_dev_io_error
+>   - btrfs_bio_clone_partial
+>   - btrfs_bio_alloc
+>   - btrfs_bio_init
+>   - btrfs_bioset_init
+>   - btrfs_bioset_exit
 
+Otherwise looks pretty good to me.
+
+Thanks,
+Qu
+>
+>> BTW, we may also want to extract a lot of code from extent_io.c to that
+>> new storage layer file.
+>
+> Yes, this series moves a fair chunk to volumes.c that should go into
+> the new file instead, and there might be a few more bits.
+>
+>> But I'm not sure if the bio.c is really the best name.
+>> What about storage.c?
+>
+> I'm fine either way with a slight preference for bio.c.
