@@ -2,148 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 167285B0746
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Sep 2022 16:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C435B074F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Sep 2022 16:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbiIGOnl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Sep 2022 10:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
+        id S229682AbiIGOoQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Sep 2022 10:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbiIGOnP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 10:43:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19927956BA;
-        Wed,  7 Sep 2022 07:43:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 745D9B81D4C;
-        Wed,  7 Sep 2022 14:43:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC28BC433D6;
-        Wed,  7 Sep 2022 14:43:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662561791;
-        bh=RJUuE6TtbAEmyXO144jflnrUxtajEUR5AU9O8xs0fkA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=G3Mqs2auJIxQBypGYorryf7m3qZLDZrNkCO2Ze1TQVFb6eeUpsTrFjepv3AgkfcUO
-         N7rmiK+hknBW94epBcdF3wYws+2vefcFR/8VL26f0xi4GPORhEtyhN/SS0wBlZrv6G
-         C+OufpGojYQTqW4iDUIONf6B6VD1TUrNY7dPEAJ3Yoy7udhhp2mQ0FII/UALu9pTyl
-         JE2X4fC5LAY0K5ZTwdx1AumiYyRGDARwPNX2qzHQWvZNSTOiM7QDDlla4LpeaBPFmY
-         sdwQCneyPDbAD6Nv10StzJ4VY1Bekdy1/k/Lr61M7W8oHoiYa6yXzN/X9iTJRLol3t
-         xg9VTtkCFaUUg==
-Message-ID: <36e2a19ea789aca3c1cdc9a93b26285b6e7b428c.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        NeilBrown <neilb@suse.de>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, djwong@kernel.org, david@fromorbit.com,
-        trondmy@hammerspace.com, viro@zeniv.linux.org.uk,
-        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
-        lczerner@redhat.com, brauner@kernel.org, fweimer@redhat.com,
-        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Date:   Wed, 07 Sep 2022 10:43:07 -0400
-In-Reply-To: <20220907135153.qvgibskeuz427abw@quack3>
-References: <20220907111606.18831-1-jlayton@kernel.org>
-         <166255065346.30452.6121947305075322036@noble.neil.brown.name>
-         <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>
-         <20220907125211.GB17729@fieldses.org>
-         <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
-         <20220907135153.qvgibskeuz427abw@quack3>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        with ESMTP id S229437AbiIGOnw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 10:43:52 -0400
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059F98A7D9
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 07:43:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1662561830; x=1694097830;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EUQ6y/wB554nlEJglIX44NAecHINnVjkz24AIdxFng0=;
+  b=b9qKCCR9Wi8379hxRMVgSGR8zHhfQEqcakTg9QMreWQwn6imjGT69Ntz
+   R+ZVBHTnpIUpWpfErz2GWpYdB6y+OJkwgSux1PNRF6c0kuBzRQPwsEJX3
+   KbzauIq0ahC/2jR3IG1M9/3scHS2Qz85ET5rCnY7nI2oJhuzyRaDUhZsl
+   D8hxKi2M27o8F7L4KSzQ67KLkjmxq3A0eikduzM23AKH+ACGHUgddLjKP
+   VIY4H8rB6jW8jrBOhdpxegDBBAGpB1z7KFjhWnu8HGj+A4EKi2tepsZqZ
+   ThhDRk+E6D8zGMB4fVqjPT46v4UN3BbOn8umYJUv7pnbEzwN5htLWWl3x
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.93,297,1654531200"; 
+   d="scan'208";a="209163334"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Sep 2022 22:43:49 +0800
+IronPort-SDR: zilbuS6wd96IBdXkX3UsZvHuZD4FmzksIJ2jOSe8eLEz4P66EpRWvHyeaQVbDPEBub0hI92ohW
+ en6ZA5J5105iQwi03trN3smUfaOGtjJwn01kCAkh8EDjL6gXr/b68et4sYjc0VX4tGVaAs9TRF
+ z42KZXC6NaFn0ZOssoS3Ry5u2gXYfYOXCHoTESC9ekErNHI5sbcBlePf6S10ROT3PfWeQkdaku
+ OoTH3CIGYZBkBS7BnlTmv0U6pKQlIasjZHL0PqgPgCKbx1X1bVeo4//HJw7NSe1ZGdOyno8IJR
+ TPzFTquNJOz+yQju+2laPzWU
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Sep 2022 07:04:10 -0700
+IronPort-SDR: kA1FfjMjntYZQCfmH8il0BzjMHvpufp19oSK3Zk0eoo/BemB1Y6+iSEAFC94h9l2bH/OdTJOgh
+ Hj5z5HCRMuOnOqQ0NUR8pza3KGKPNK4EHI3UErHdqSsvHypH9zFi2VfE96rs9X2yy+5/s7QNAz
+ rnmwIRJKxHrJHGd7xJluHWXIyMe3xNmkavWnqxfsDriwWcWxwrj/RJVyliUMGsvL4MhPlz1dXH
+ JR3e/IMohpiAqAS8nQEUEY+47S75EegNzbwS8+LPPC+4hVPsCRqTCHUziH4xRF0R0KaZxYf3RF
+ RPY=
+WDCIronportException: Internal
+Received: from 4f6fp13.ad.shared (HELO naota-xeon.wdc.com) ([10.225.58.210])
+  by uls-op-cesaip02.wdc.com with ESMTP; 07 Sep 2022 07:43:49 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs: zoned: wait extent buffer IOs before finishing a zone
+Date:   Wed,  7 Sep 2022 23:43:38 +0900
+Message-Id: <6ea8d3e9d0165f6ff37a1d12aad93ba279acfd93.1662561769.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 2022-09-07 at 15:51 +0200, Jan Kara wrote:
-> On Wed 07-09-22 09:12:34, Jeff Layton wrote:
-> > On Wed, 2022-09-07 at 08:52 -0400, J. Bruce Fields wrote:
-> > > On Wed, Sep 07, 2022 at 08:47:20AM -0400, Jeff Layton wrote:
-> > > > On Wed, 2022-09-07 at 21:37 +1000, NeilBrown wrote:
-> > > > > On Wed, 07 Sep 2022, Jeff Layton wrote:
-> > > > > > +The change to \fIstatx.stx_ino_version\fP is not atomic with r=
-espect to the
-> > > > > > +other changes in the inode. On a write, for instance, the i_ve=
-rsion it usually
-> > > > > > +incremented before the data is copied into the pagecache. Ther=
-efore it is
-> > > > > > +possible to see a new i_version value while a read still shows=
- the old data.
-> > > > >=20
-> > > > > Doesn't that make the value useless?
-> > > > >=20
-> > > >=20
-> > > > No, I don't think so. It's only really useful for comparing to an o=
-lder
-> > > > sample anyway. If you do "statx; read; statx" and the value hasn't
-> > > > changed, then you know that things are stable.=20
-> > >=20
-> > > I don't see how that helps.  It's still possible to get:
-> > >=20
-> > > 		reader		writer
-> > > 		------		------
-> > > 				i_version++
-> > > 		statx
-> > > 		read
-> > > 		statx
-> > > 				update page cache
-> > >=20
-> > > right?
-> > >=20
-> >=20
-> > Yeah, I suppose so -- the statx wouldn't necessitate any locking. In
-> > that case, maybe this is useless then other than for testing purposes
-> > and userland NFS servers.
-> >=20
-> > Would it be better to not consume a statx field with this if so? What
-> > could we use as an alternate interface? ioctl? Some sort of global
-> > virtual xattr? It does need to be something per-inode.
->=20
-> I was thinking how hard would it be to increment i_version after updating
-> data but it will be rather hairy. In particular because of stuff like
-> IOCB_NOWAIT support which needs to bail if i_version update is needed. So
-> yeah, I don't think there's an easy way how to provide useful i_version f=
-or
-> general purpose use.
->=20
+Before sending REQ_OP_ZONE_FINISH to a zone, we need to ensure that ongoing
+IOs already finished. Or, we will see a "Zone Is Full" error for the IOs,
+as the ZONE_FINISH command makes the zone full.
 
-Yeah, it does look ugly.
+We ensure that with btrfs_wait_block_group_reservations() and
+btrfs_wait_ordered_roots() for a data block group. And, for a metadata
+block group, the comparison of alloc_offset vs meta_write_pointer mostly
+ensures IOs for the allocated region already sent. However, there still can
+be a little time-frame where the IOs are sent but not yet completed.
 
-Another idea might be to just take the i_rwsem for read in the statx
-codepath when STATX_INO_VERSION has been requested. xfs, ext4 and btrfs
-hold the i_rwsem exclusively over their buffered write ops. Doing that
-should be enough to prevent the race above, I think. The ext4 DAX path
-also looks ok there.
+Introduce wait_eb_writebacks() to ensure such IOs are completed for a
+metadata block group. It walks the buffer_radix to find extent buffers in
+the block group and wait_on_extent_buffer_writeback() on them.
 
-The ext4 DIO write implementation seems to take the i_rwsem for read
-though unless the size is changing or the write is unaligned. So a
-i_rwsem readlock would probably not be enough to guard against changes
-there. Maybe we can just say if you're doing DIO, then don't expect real
-atomicity wrt i_version?
+Fixes: afba2bc036b0 ("btrfs: zoned: implement active zone tracking")
+CC: stable@vger.kernel.org # 5.19+
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ fs/btrfs/zoned.c | 40 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 38 insertions(+), 2 deletions(-)
 
-knfsd seems to already hold i_rwsem when doing directory morphing
-operations (where it fetches the pre and post attrs), but it doesn't
-take it when calling nfsd4_encode_fattr (which is used to fill out
-GETATTR and READDIR replies, etc.). We'd probably have to start taking
-it in those codepaths too.
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index e12c0ca509fb..c8315fe16214 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -1921,10 +1921,44 @@ bool btrfs_zone_activate(struct btrfs_block_group *block_group)
+ 	return ret;
+ }
+ 
++static void wait_eb_writebacks(struct btrfs_block_group *block_group)
++{
++	struct btrfs_fs_info *fs_info = block_group->fs_info;
++	const u64 end = block_group->start + block_group->length;
++	struct radix_tree_iter iter;
++	struct extent_buffer *eb;
++	void **slot;
++
++	rcu_read_lock();
++	radix_tree_for_each_slot(slot, &fs_info->buffer_radix, &iter,
++				 block_group->start >> fs_info->sectorsize_bits) {
++		eb = radix_tree_deref_slot(slot);
++		if (!eb)
++			continue;
++		if (radix_tree_deref_retry(eb)) {
++			slot = radix_tree_iter_retry(&iter);
++			continue;
++		}
++
++		if (eb->start < block_group->start)
++			continue;
++		if (eb->start >= end)
++			break;
++
++		slot = radix_tree_iter_resume(slot, &iter);
++		rcu_read_unlock();
++		wait_on_extent_buffer_writeback(eb);
++		rcu_read_lock();
++	}
++	rcu_read_unlock();
++}
++
+ static int do_zone_finish(struct btrfs_block_group *block_group, bool fully_written)
+ {
+ 	struct btrfs_fs_info *fs_info = block_group->fs_info;
+ 	struct map_lookup *map;
++	const bool is_metadata = block_group->flags &
++		(BTRFS_BLOCK_GROUP_METADATA | BTRFS_BLOCK_GROUP_SYSTEM);
+ 	int ret = 0;
+ 	int i;
+ 
+@@ -1935,8 +1969,7 @@ static int do_zone_finish(struct btrfs_block_group *block_group, bool fully_writ
+ 	}
+ 
+ 	/* Check if we have unwritten allocated space */
+-	if ((block_group->flags &
+-	     (BTRFS_BLOCK_GROUP_METADATA | BTRFS_BLOCK_GROUP_SYSTEM)) &&
++	if (is_metadata &&
+ 	    block_group->start + block_group->alloc_offset > block_group->meta_write_pointer) {
+ 		spin_unlock(&block_group->lock);
+ 		return -EAGAIN;
+@@ -1961,6 +1994,9 @@ static int do_zone_finish(struct btrfs_block_group *block_group, bool fully_writ
+ 		/* No need to wait for NOCOW writers. Zoned mode does not allow that */
+ 		btrfs_wait_ordered_roots(fs_info, U64_MAX, block_group->start,
+ 					 block_group->length);
++		/* Wait for extent buffers to be written. */
++		if (is_metadata)
++			wait_eb_writebacks(block_group);
+ 
+ 		spin_lock(&block_group->lock);
+ 
+-- 
+2.37.3
 
-We should also bear in mind that from userland, doing a read of a normal
-file and fetching the i_version takes two different syscalls. I'm not
-sure we need things to be truly "atomic", per-se. Whether and how we can
-exploit that fact, I'm not sure.
---=20
-Jeff Layton <jlayton@kernel.org>
