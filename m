@@ -2,93 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E075B00DA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Sep 2022 11:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0090D5B01E9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Sep 2022 12:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbiIGJsQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Sep 2022 05:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
+        id S229976AbiIGK2Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Sep 2022 06:28:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbiIGJsO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 05:48:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC079D8E3
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 02:48:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B9DCA61847
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 09:48:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A979C433C1
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 09:48:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662544093;
-        bh=EhsM04o/EtOaqcgLsC+uPMD4qMRCKqk8AyPJBMMpkBg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=r90yFRNBOH8+mI6uEqt+xlrAovbuGJOc6Y/sv98+z3O7ypmZAVVplmEcxM1E4XefU
-         ysXb3aAy33DHRRDs4hCITrvVhEsyfHfs0ez8hzo+zY4+ftPnv7YnuIVd+ZWL0Zipxl
-         Sby6XVJF60ay4v/EE5ViWQzG6fOngPfWFKRidhKc6yy2jRNRpNmR+t+BavvHwkwFQu
-         qcF1r3ys4OZxKff/xVfKqdZAgawoVeghtgRgVE7QRffR1hB3BPqF11Qj1yKivyAS10
-         n8kb2BIywEnLX5a8pHY3WhYtdxrwdfrUfWiwNI5YMZJ4ld1troLxmHZy47H1WC7Jd6
-         CVwVHbe2yCpkA==
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-127dca21a7dso7379945fac.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Sep 2022 02:48:13 -0700 (PDT)
-X-Gm-Message-State: ACgBeo1y7JlqMJVOlMcbDK4g/5Df7aFgdejU8MfXcStWEVzu3tcAyhU7
-        nWfMWgpV99AxUgtSM+Bht0+vmOcmtDwGdKE5gPU=
-X-Google-Smtp-Source: AA6agR4GLJ6aucwk0KukqahxXUliQ0mEv1Ep2rLSVaudM2lryMnctyPHBIhnBYyorvyb2ktTIk1yvD8Li3GK1TJgNUE=
-X-Received: by 2002:a05:6870:ea83:b0:fe:365f:cb9d with SMTP id
- s3-20020a056870ea8300b000fe365fcb9dmr1373796oap.98.1662544092298; Wed, 07 Sep
- 2022 02:48:12 -0700 (PDT)
+        with ESMTP id S229929AbiIGK2W (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 06:28:22 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACFE75FF4
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 03:28:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1662546491;
+        bh=qrxxW+7ejZ0aSJa11Gko7yBfikSfSOkkAC6m+T3w06U=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=d08z8NDIABuAjgLPdh/oD/s/k4KsOlOkXNZl7GhY6Ql4NiOImVIzihNuzn6nTLDrd
+         U7jNtCp6tZdmdthfwlQchybXdMZVBa76md5zTgx42QjZCI/mhzbb6JWn4ZGVabKg2N
+         iyQ4Vy+QbwzdoWSpAnzoCvqmYQB7o5ItA0jeg5JM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MfpOT-1oysVf2U0n-00gD37; Wed, 07
+ Sep 2022 12:28:11 +0200
+Message-ID: <382f747b-7ea3-f1a9-805f-0550ae90963e@gmx.com>
+Date:   Wed, 7 Sep 2022 18:28:05 +0800
 MIME-Version: 1.0
-References: <cover.1662022922.git.fdmanana@suse.com> <Yxhgl/p7xF1UfqHO@infradead.org>
-In-Reply-To: <Yxhgl/p7xF1UfqHO@infradead.org>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Wed, 7 Sep 2022 10:47:36 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4X994Vjia5NLDaS6XsnrQvp405CC71f2TMriWhzY6zmA@mail.gmail.com>
-Message-ID: <CAL3q7H4X994Vjia5NLDaS6XsnrQvp405CC71f2TMriWhzY6zmA@mail.gmail.com>
-Subject: Re: [PATCH 00/10] btrfs: make lseek and fiemap much more efficient
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: code placement for bio / storage layer code
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20220901074216.1849941-1-hch@lst.de>
+ <20220907091056.GA32007@lst.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20220907091056.GA32007@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:iMFbfp5sRaPcOKQD66UfutqLeYiIKP7PAmsdiGhIj4SXQ4y//ct
+ +BAIpHCdJLJB3lAPn/BxgtLUkOYuEi+vmsLFsgOAW7ONJ+UPnXXInCgyEAajPJFTUzdlrLb
+ YQ3iuH95Abm0HQ08QRDXzYYNe3FoSAwUfVqmtbXejnKlNdqa1kflImuHhsMO+llju9g7GDg
+ o2rF6IyxT74cE4YyQ6L3w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:b3GFfigcm7s=:lc0tblRVmAX37xPOy8H6Zv
+ e6/OQrHPsR3dk+sdxOayLZMuVqPid0e8OVgWcYc/qAIgvmv99nfmXFfCcCHOTSiEsaKB6mmV+
+ rPnlgkZwFt1ukXRl2gb0TjogtZznWYWZH/Lfz/LWdY4fSc2Q7W/M6IkuUOT1NR4i5E+QdB3+I
+ mmDly5A8FKqc2/0TF6YINximUDgfATBQC+CBYYuJRj7lsGRkSb4sskdNQF99uypqj40KRzufd
+ CEMsO2l8DAMjMImh+Z6m1hUP60mgCFMa5WSzD+cUfCfrW4in9TjRYARuvR8y2rf7BkqzvRLGx
+ C47L1jqBLRLJwXF1ZOL93GE3lAItb9Gw08jjQ53TRUN1JejUL5jSlU4HbTQQTv4SdrYJcegWN
+ StJOV7pBHq1iKuvrN6GaQZk8pQVt+BUZol6/kTHRTNIy8ZEDIyIWfj7s2pa6gK9CwGM+2+ImL
+ 1GR2rEDKeWT19uWM77BC0ASQDx62EZGgK4xs2ZRi3SuXHFhx/wrL37xcopxdXQQ+HKj2xcbfU
+ m9u1mglSKoJjjLtXMzgk7vU+Yffva2eqYG1GajfGhvtgRXMVDQlyDiapkIZJbTTEhMf0U4H3a
+ KLsy+S3GgWUXx9VUmMq/qnYIZE34OeAczHDwPZLFl6CNv+ume1Z+KMOzjKtEoBi3wklepciGr
+ M/WEOzLiwYieMX+vXrSth6iUZZX/tscdccp3LLcx/37ccToeDvlUEt9z4gLTolNdm8v+36Rb8
+ 372RXJ6WZaFLNX5GrDX6KMBiW+gGjICyirj02DW0IfRvd2zCD6lmXXKRXxoBY6+6gqCcpzkYA
+ lQCriZONXy/DdpjPY7fcREF9t7/1QCfJWR3jh2pnxO/ch7vSnf2aWQdn+nLZFFiXIBgGyOFT0
+ snm8QTOHQvaG2+9RwiWr4KaJWPmvG3rPhed1StcasMG/toP1dqOaOFik6QgImA09iqRUYSTmO
+ O7imu/rPdCEkFoKNbYNiEJqODqzqsxGc02FONh7vCDkO67SZe6fAtvIE29Xjezyz82fgNsn7K
+ Xuzz1gZ/vrGTKoTrt2jr4RnNmSB00GpXTwaYQNkpSsE0/vw3TQm7sDiWkweEfnKh0qc5JI7FJ
+ ArWEr/ncW01S6rX/WLa+SygwDp/huTRSf+OOLrvBBmdDH7dFEfAlin1hCZNAX4nX/8+zuIiZ8
+ 7AfPMT/WRl1XOHLtVNS2SBDWgy
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 7, 2022 at 10:13 AM Christoph Hellwig <hch@infradead.org> wrote:
+
+
+On 2022/9/7 17:10, Christoph Hellwig wrote:
+> Hi all,
 >
-> On a related question:  have you looked into using iomap for fiemap
-> seek in btrfs?  This won't remove the need for fixing some of the
-> underlying algorithmic complexity, but it should allow to shed some
-> boilerplate code and reuse bits used by other disk based file systems.
+> On Thu, Sep 01, 2022 at 10:41:59AM +0300, Christoph Hellwig wrote:
+>> Note: this adds a fair amount of code to volumes.c, which already is
+>> quite large.  It might make sense to add a prep patch to move
+>> btrfs_submit_bio into a new bio.c file, but I only want to do that
+>> if we have agreement on the move as the conflicts will be painful
+>> when rebasing.
+>
+> any comments on this question?  Should I just keep adding this code
+> to volumes.c?  Or create a new bio.c?  If so I could send out a
+> small prep series to do the move of the existing code ASAP.
 
-Yes, I took a brief look.
-But that would be something to do separately - right now I want to
-address user complaints
-about too slow fiemap/lseek (and a bug in fiemap with shared flag
-missing or incorrect).
+I'm pretty happy with a new file.
 
-So yes, it's left for some time later. Probably not before I work on
-the next set of changes
-to further improve fiemap's performance.
+But before that, I want something more guide lines on what to put into
+the two files.
 
-One thing I noticed is that iomap always sets FIEMAP_EXTENT_LAST on
-the last processed
-extent. On btrfs we only set the flag if it's really the last extent
-in the file, so the results are
-different from iomap in case we have a ranged fiemap with an end range
-that ends before the
-last extent in the file. That seems like a bug in iomap. It seems it
-can be worked around by returning
-an artificial hole in the last iteration, but that seems odd.
+To me, the old volumes should really only contain the chunk tree related
+code (read, add, delete a chunk), thus it may be better renamed to
+somethings like chunks.c?
 
-Looking again at iomap/fiemap.c, it doesn't seem like it would help
-reduce code or make anything
-simpler, it almost doesn't do anything except combining the delalloc flags.
+Then the storage layer code should be the lower level code mostly
+touching the bio.
 
-Thanks.
+BTW, we may also want to extract a lot of code from extent_io.c to that
+new storage layer file.
+
+
+But I'm not sure if the bio.c is really the best name.
+What about storage.c?
+
+Thanks,
+Qu
