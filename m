@@ -2,157 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B081F5B060A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Sep 2022 16:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9821D5B06D9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Sep 2022 16:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbiIGOFO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Sep 2022 10:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
+        id S230329AbiIGOct (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Sep 2022 10:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbiIGOFN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 10:05:13 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E982EF07;
-        Wed,  7 Sep 2022 07:05:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4CEC0B81CBB;
-        Wed,  7 Sep 2022 14:05:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4B7BC433D7;
-        Wed,  7 Sep 2022 14:05:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662559508;
-        bh=5lNGsOF2ajdE3eZM/ZhuIKJFPKWxkqc/O43CxlRdETw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=iHINgelRFdW9XpgWxJT4+BZAOcCagp76Jlx168FXARg9CGlzv1O9X1nbzOBkyWnfH
-         DvcNjBBa2NBfDaLCDdulT4eoGcqyRAfrU7Pkwia/jC++XRnrwvEDdA0yuBiidY8n9z
-         xkYy9xO+PosTOFM/Z5gioUWOqnPpGn/5RwsW5IwsGpJjb3aTgJMDcNaTBbwPxGb/9N
-         75WPXU/Rxqm3c7uF3u+uomA6YVE4jfr4fX45ocNA2xpSTYq8csdcEYk8JWzhh8IS7f
-         P17k7h+Nxi28WUxLZC8RBrkt6nvaFageSdyvAPIJW2/KPzvp7KNqmcmCCL7jNYUMVD
-         KO6UPHjE9x1IQ==
-Message-ID: <c22baa64133a23be3aba81df23b4af866df51343.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        "bfields@fieldses.org" <bfields@fieldses.org>
-Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "neilb@suse.de" <neilb@suse.de>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Date:   Wed, 07 Sep 2022 10:05:05 -0400
-In-Reply-To: <8a71986b4fb61cd9b4adc8b4250118cbb19eec58.camel@hammerspace.com>
-References: <20220907111606.18831-1-jlayton@kernel.org>
-         <166255065346.30452.6121947305075322036@noble.neil.brown.name>
-         <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>
-         <20220907125211.GB17729@fieldses.org>
-         <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
-         <8a71986b4fb61cd9b4adc8b4250118cbb19eec58.camel@hammerspace.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        with ESMTP id S230229AbiIGOcD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 10:32:03 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CEBC2F393
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 07:32:00 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id h21so10524370qta.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Sep 2022 07:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=GJ5VKA2x+Nd9nu8HD4Frr5ogzjEeMbC9k47mipdL0ww=;
+        b=c2qBD3aBWcAd8j5mSUv0w0RN5aN6Khd4m/dU3EO1IBu70V84Q06MXct93Gn3M5JAbf
+         5KJOPdIOKFkQ1qs99OhTrx1SxPCcu3KKt80mqeljiyf5lFGZx9i4NczEbLVJJ8s9HtH8
+         paYkAnglV5J8RG73CaMMj2vDJkTRizN7/DHW6LQh7ms0Gpr728H2LIaCvYGrHcsF+jbB
+         e47blE0QZMhp3oqz3wPe6hVhLRl+8QLeOjnDmPmRM+tBvTTn6GgaQeXdKYPQsnW1cSav
+         BiF0oZPNKeQ9Ree8Vh/VJgKRiHsPEZ0WfJ9dg5736o2KwfRWT6Oqyk4rQz3M6zEG4PMR
+         DOKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=GJ5VKA2x+Nd9nu8HD4Frr5ogzjEeMbC9k47mipdL0ww=;
+        b=8QUrnm1MwuGcud54S3wLucrv2SN8nQPECqKquZsmnYNfFsc+UgWGc1kNvgGm6YDDeE
+         kAtLdYqgy3MCC1MeB4ukacB8eCtUQWmNVf5UotZxw13Ful7pQeoC9OhJy/Qg8WIYBBmT
+         nuHYTVD6qhKTITuWjwI2+LfHdisv2q2gCiGiuUvl+R1AD5pgMEB6jjc1pyFqgBvNkTLa
+         1aKZJrUgau6a8125TgGNu0lTnIndTCpMiejYlIqVRr6gqVKvj2SRC0uGmKdZdIYd3nex
+         6BPIVdA5NBYXS2oR4exV1ZQ4lGTD+1RqWlKDGqSbt9MKou0r1ygqhBTr8S18RB+2gjkZ
+         JV8A==
+X-Gm-Message-State: ACgBeo1jlIhalWOQ7+oWtPA2jbYm1clQuZbBZA6NRh4KqezVSsz+86ky
+        NHJlPlxtg2dfJ3/gexG0gHjTdB0mtphnavDa
+X-Google-Smtp-Source: AA6agR6wahIYwrT/P5/pjg+leVcoRMWkBYbfZwdqZpUkRNZIu88FZT6HwE1BgnyU1omiajQHC4mJWg==
+X-Received: by 2002:a05:622a:190b:b0:343:73d1:d697 with SMTP id w11-20020a05622a190b00b0034373d1d697mr3361222qtc.605.1662561119628;
+        Wed, 07 Sep 2022 07:31:59 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id y9-20020ac81289000000b003434e47515csm12226946qti.7.2022.09.07.07.31.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Sep 2022 07:31:59 -0700 (PDT)
+Date:   Wed, 7 Sep 2022 10:31:58 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: don't update the block group item if used bytes
+ are the same
+Message-ID: <YxirXjl1Ur3VV3B6@localhost.localdomain>
+References: <64e4434370badd801a79a782613c405830475dde.1657521468.git.wqu@suse.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64e4434370badd801a79a782613c405830475dde.1657521468.git.wqu@suse.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 2022-09-07 at 13:55 +0000, Trond Myklebust wrote:
-> On Wed, 2022-09-07 at 09:12 -0400, Jeff Layton wrote:
-> > On Wed, 2022-09-07 at 08:52 -0400, J. Bruce Fields wrote:
-> > > On Wed, Sep 07, 2022 at 08:47:20AM -0400, Jeff Layton wrote:
-> > > > On Wed, 2022-09-07 at 21:37 +1000, NeilBrown wrote:
-> > > > > On Wed, 07 Sep 2022, Jeff Layton wrote:
-> > > > > > +The change to \fIstatx.stx_ino_version\fP is not atomic with
-> > > > > > respect to the
-> > > > > > +other changes in the inode. On a write, for instance, the
-> > > > > > i_version it usually
-> > > > > > +incremented before the data is copied into the pagecache.
-> > > > > > Therefore it is
-> > > > > > +possible to see a new i_version value while a read still
-> > > > > > shows the old data.
-> > > > >=20
-> > > > > Doesn't that make the value useless?
-> > > > >=20
-> > > >=20
-> > > > No, I don't think so. It's only really useful for comparing to an
-> > > > older
-> > > > sample anyway. If you do "statx; read; statx" and the value
-> > > > hasn't
-> > > > changed, then you know that things are stable.=20
-> > >=20
-> > > I don't see how that helps.=A0 It's still possible to get:
-> > >=20
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0reader=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0writer
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0------=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0------
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0i_version++
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0statx
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0read
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0statx
-> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0update page cache
-> > >=20
-> > > right?
-> > >=20
-> >=20
-> > Yeah, I suppose so -- the statx wouldn't necessitate any locking. In
-> > that case, maybe this is useless then other than for testing purposes
-> > and userland NFS servers.
-> >=20
-> > Would it be better to not consume a statx field with this if so? What
-> > could we use as an alternate interface? ioctl? Some sort of global
-> > virtual xattr? It does need to be something per-inode.
->=20
-> I don't see how a non-atomic change attribute is remotely useful even
-> for NFS.
->=20
-> The main problem is not so much the above (although NFS clients are
-> vulnerable to that too) but the behaviour w.r.t. directory changes.
->=20
-> If the server can't guarantee that file/directory/... creation and
-> unlink are atomically recorded with change attribute updates, then the
-> client has to always assume that the server is lying, and that it has
-> to revalidate all its caches anyway. Cue endless readdir/lookup/getattr
-> requests after each and every directory modification in order to check
-> that some other client didn't also sneak in a change of their own.
->=20
+On Mon, Jul 11, 2022 at 02:37:52PM +0800, Qu Wenruo wrote:
+> When committing a transaction, we will update block group items for all
+> dirty block groups.
+> 
+> But in fact, dirty block groups don't always need to update their block
+> group items.
+> It's pretty common to have a metadata block group which experienced
+> several CoW operations, but still have the same amount of used bytes.
+> 
+> In that case, we may unnecessarily CoW a tree block doing nothing.
+> 
+> This patch will introduce btrfs_block_group::commit_used member to
+> remember the last used bytes, and use that new member to skip
+> unnecessary block group item update.
+> 
+> This would be more common for large fs, which metadata block group can
+> be as large as 1GiB, containing at most 64K metadata items.
+> 
+> In that case, if CoW added and the deleted one metadata item near the end
+> of the block group, then it's completely possible we don't need to touch
+> the block group item at all.
+> 
+> I don't have any benchmark to prove this, but this should not cause any
+> hurt either.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-We generally hold the parent dir's inode->i_rwsem exclusively over most
-important directory changes, and the times/i_version are also updated
-while holding it. What we don't do is serialize reads of this value vs.
-the i_rwsem, so you could see new directory contents alongside an old
-i_version. Maybe we should be taking it for read when we query it on a
-directory?
+I've been seeing random btrfs check failures on our overnight testing since this
+patch was merged.  I can't blame it directly yet, I've mostly seen it on
+TEST_DEV, and once while running generic/648.  I'm running it in a loop now to
+reproduce and then fix it.
 
-Achieving atomicity with file writes though is another matter entirely.
-I'm not sure that's even doable or how to approach it if so.
-Suggestions?
---=20
-Jeff Layton <jlayton@kernel.org>
+We can start updating block groups before we're in the critical section, so we
+can update block_group->bytes_used while we're updating the block group item in
+a different thread.  So if we set the block_group item to some value of
+bytes_used, then update it in another thread, and then set ->commit_used to the
+new value we'll fail to update the block group item with the correct value
+later.
+
+We need to wrap this bit in the block_group->lock to avoid this particular
+problem.  Once I reproduce and validate the fix I'll send that, but I wanted to
+reply in case that takes longer than I expect.  Thanks,
+
+Josef
