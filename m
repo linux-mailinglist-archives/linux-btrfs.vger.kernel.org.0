@@ -2,257 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 441645B0E7A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Sep 2022 22:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCA65B0EA8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Sep 2022 22:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbiIGUsv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Sep 2022 16:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
+        id S229768AbiIGUzt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Sep 2022 16:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbiIGUsu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 16:48:50 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F421BD4DF;
-        Wed,  7 Sep 2022 13:48:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 22E9C3414D;
-        Wed,  7 Sep 2022 20:48:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662583728;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aHEaEAKRwavSIAayvx0qqQofw6QcD+TRdd1lvOvf8YU=;
-        b=FVnkne86xfID/0+i1hIuy+dNcwKj0xYnctIuP6NFtX8sxG7cfEgHxWv94qsDfc14Z0fgJy
-        m+YvB5jG5FxReCGFMRawHCNzJ8dWRIWzdyUErUAhHSuG0ACpjSgrR2mlMURimWAs1jEcwN
-        MCi8AWNvoSyLIFS2acIpW/Y5z4IUTss=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662583728;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aHEaEAKRwavSIAayvx0qqQofw6QcD+TRdd1lvOvf8YU=;
-        b=RFcP9qd28jHX1q1CbtShGmJtOqbNkYzRoikyUdDeNv4qCKIMf29rE/1hCdEWGNSlcKv8Ca
-        u1G4jr18f3q9tgBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CBB2A13486;
-        Wed,  7 Sep 2022 20:48:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id LmLJMK8DGWPKRwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 07 Sep 2022 20:48:47 +0000
-Date:   Wed, 7 Sep 2022 22:43:24 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Omar Sandoval <osandov@osandov.com>
-Subject: Re: [PATCH v2 13/20] btrfs: add fscrypt_context items.
-Message-ID: <20220907204324.GL32411@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1662420176.git.sweettea-kernel@dorminy.me>
- <827a00815cb4a9a91ff3977d71f40ff765728f04.1662420176.git.sweettea-kernel@dorminy.me>
+        with ESMTP id S229512AbiIGUzs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 16:55:48 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD90D75CE1
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 13:55:47 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id h22so11434946qtu.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Sep 2022 13:55:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=7QDpSKyGoyq0TfdmAsz5OOGorpsRw7jW9ugW7EIFS1Y=;
+        b=5x2RRgeSS/INucnvmU9HgGyW5hG2MO6YHA9sFrzyddKdJsIP38EUxb3H++yiBZr3Vw
+         MsrHqXqa76W0Ey39IRZ5xe8tKA/oN26D2czzVtwEekXbGdrBaGQBQSMSWLxtgay9YGRT
+         P8CO93qG4JAMzClS//KoyvwjCb27Bl4EKy4+/cIkb6qhqgZn3v26qjJMARXx58lPLoxL
+         QKaMXjCUwiYMkfHM1VfouuQmWzkCe1fDIwJWuT2FQ3wowsAioahwvaFqPQPi5cDrHWtz
+         k+hYXmKtQvJ0HbPISbzqfw66DZDVsameyPl2cmHt6ut5FmF9IkcD4lCRoPfrZSa3HYnl
+         AIGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=7QDpSKyGoyq0TfdmAsz5OOGorpsRw7jW9ugW7EIFS1Y=;
+        b=KP36L55tEMBU6zW5Z+QR6XOJfMC0bn9jXrUTf5f99zYOkSPa3sKQbwp0yEyvkynk2N
+         WfGrkKaO9JmO5IXWQkDqgtlcg9ylS+rna90YOJCfhpmFYwC6OfBq6pxjO6UMaI7m1WOi
+         voHV5pxQZ210Hn6LqvQzY/u50QkZ6h9IcZDi1+AnLoBJsPg9L0L8DFccWNQNuJe7gpFG
+         smzTkaIPm1d+apV064cZKiyMMdCUvLXHV1FPEZx5ieBogL6N9sqd3EEwnCjPiSyh23ni
+         C2qqFsw9D7nvAu7+TA8IGog1vzbX0WzMyPSf06D+ILbiFUYrbXmRD2w+Eg6McOToshst
+         QN9A==
+X-Gm-Message-State: ACgBeo3Ud3blYwITgqfuqcwoAab+l8K7cCySbzKoJwDVxGaDz17MaMD8
+        O0qFHiYghYek9IDM4zEWqlX7vg==
+X-Google-Smtp-Source: AA6agR6ZQ6FvGTHSjDRFmG4lPsnCGnHrEaMWr7Z46AK+gbY20ojw8yPogoqFqXUdktjW0eJ5BrWzXw==
+X-Received: by 2002:ac8:5f4a:0:b0:344:5dd9:27d8 with SMTP id y10-20020ac85f4a000000b003445dd927d8mr5070628qta.543.1662584146882;
+        Wed, 07 Sep 2022 13:55:46 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id h12-20020a05620a284c00b006b8d9d53605sm15287968qkp.125.2022.09.07.13.55.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Sep 2022 13:55:46 -0700 (PDT)
+Date:   Wed, 7 Sep 2022 16:55:45 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        osandov@osandov.com
+Subject: Re: [PATCH 07/17] btrfs: allow btrfs_submit_bio to split bios
+Message-ID: <YxkFUeLBWhnufb7U@localhost.localdomain>
+References: <20220901074216.1849941-1-hch@lst.de>
+ <20220901074216.1849941-8-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <827a00815cb4a9a91ff3977d71f40ff765728f04.1662420176.git.sweettea-kernel@dorminy.me>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220901074216.1849941-8-hch@lst.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 05, 2022 at 08:35:28PM -0400, Sweet Tea Dorminy wrote:
-> +static int btrfs_fscrypt_get_context(struct inode *inode, void *ctx, size_t len)
+On Thu, Sep 01, 2022 at 10:42:06AM +0300, Christoph Hellwig wrote:
+> Currently the I/O submitters have to split bios according to the
+> chunk stripe boundaries.  This leads to extra lookups in the extent
+> trees and a lot of boilerplate code.
+> 
+> To drop this requirement, split the bio when __btrfs_map_block
+> returns a mapping that is smaller than the requested size and
+> keep a count of pending bios in the original btrfs_bio so that
+> the upper level completion is only invoked when all clones have
+> completed.
+> 
+> Based on a patch from Qu Wenruo.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/btrfs/volumes.c | 106 +++++++++++++++++++++++++++++++++++++--------
+>  fs/btrfs/volumes.h |   1 +
+>  2 files changed, 90 insertions(+), 17 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 5c6535e10085d..0a2d144c20604 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -35,6 +35,7 @@
+>  #include "zoned.h"
+>  
+>  static struct bio_set btrfs_bioset;
+> +static struct bio_set btrfs_clone_bioset;
+>  static struct bio_set btrfs_repair_bioset;
+>  static mempool_t btrfs_failed_bio_pool;
+>  
+> @@ -6661,6 +6662,7 @@ static void btrfs_bio_init(struct btrfs_bio *bbio, struct inode *inode,
+>  	bbio->inode = inode;
+>  	bbio->end_io = end_io;
+>  	bbio->private = private;
+> +	atomic_set(&bbio->pending_ios, 1);
+>  }
+>  
+>  /*
+> @@ -6698,6 +6700,57 @@ struct bio *btrfs_bio_clone_partial(struct bio *orig, u64 offset, u64 size,
+>  	return bio;
+>  }
+>  
+> +static struct bio *btrfs_split_bio(struct bio *orig, u64 map_length)
 > +{
-> +	struct btrfs_root *root = BTRFS_I(inode)->root;
-> +	struct inode *put_inode = NULL;
-> +	struct btrfs_key key;
-> +	struct btrfs_path *path;
-> +	struct extent_buffer *leaf;
-> +	unsigned long ptr;
-> +	int ret;
+> +	struct btrfs_bio *orig_bbio = btrfs_bio(orig);
+> +	struct bio *bio;
 > +
-> +	if (btrfs_root_flags(&root->root_item) & BTRFS_ROOT_SUBVOL_FSCRYPT) {
-> +		inode = btrfs_iget(inode->i_sb, BTRFS_FIRST_FREE_OBJECTID,
-> +				   root);
-> +		if (IS_ERR(inode))
-> +			return PTR_ERR(inode);
-> +		put_inode = inode;
-> +	}
+> +	bio = bio_split(orig, map_length >> SECTOR_SHIFT, GFP_NOFS,
+> +			&btrfs_clone_bioset);
+> +	btrfs_bio_init(btrfs_bio(bio), orig_bbio->inode, NULL, orig_bbio);
 > +
-> +	path = btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
-> +
-> +	key = (struct btrfs_key) {
-> +		.objectid = btrfs_ino(BTRFS_I(inode)),
-> +		.type = BTRFS_FSCRYPT_CTXT_ITEM_KEY,
-> +		.offset = 0,
-> +	};
+> +	btrfs_bio(bio)->file_offset = orig_bbio->file_offset;
+> +	orig_bbio->file_offset += map_length;
 
-Please use the following for key initialization.
+I'm worried about this for the ONE_ORDERED case.  We specifically used the
+ONE_ORDERED thing because our file_offset was the start, but our length could go
+past the range of the ordered extent, and then we wouldn't find our ordered
+extent and things would go quite wrong.
 
-	key.objectid = ...;
-	key.type = ...;
-	key.offset = ...;
+Instead we should do something like
 
-> +static int btrfs_fscrypt_set_context(struct inode *inode, const void *ctx,
-> +				     size_t len, void *fs_data)
-> +{
-> +	struct btrfs_root *root = BTRFS_I(inode)->root;
-> +	struct btrfs_trans_handle *trans;
-> +	int is_subvolume = inode->i_ino == BTRFS_FIRST_FREE_OBJECTID;
-> +	int ret;
-> +	struct btrfs_path *path;
-> +	struct btrfs_key key = {
-> +		.objectid = btrfs_ino(BTRFS_I(inode)),
-> +		.type = BTRFS_FSCRYPT_CTXT_ITEM_KEY,
-> +		.offset = 0,
-> +	};
+if (!(orig->bi_opf & REQ_BTRFS_ONE_ORDERED))
+	orig_bbio->file_offset += map_length;
 
-This kind of initialization in the declaration block is ok, possibly
-with only the simple initializers like btrfs_ino or normal constants.
+I've cc'ed Omar since he's the one who added this and I'm a little confused
+about how this can happen.
 
-> +	if (btrfs_root_flags(&root->root_item) & BTRFS_ROOT_SUBVOL_FSCRYPT) {
-> +		bool same_policy;
-> +		struct inode *root_inode = NULL;
-
-Newlines between declrataions and statements
-
-> +		root_inode = btrfs_iget(inode->i_sb, BTRFS_FIRST_FREE_OBJECTID,
-> +				   root);
-> +		if (IS_ERR(inode))
-> +			return PTR_ERR(inode);
-> +		same_policy = fscrypt_have_same_policy(inode, root_inode);
-> +		iput(root_inode);
-> +		if (same_policy)
-> +			return 0;
-> +	}
 > +
-> +	if (fs_data) {
-> +		/*
-> +		 * We are setting the context as part of an existing
-> +		 * transaction. This happens when we are inheriting the context
-> +		 * for a new inode.
-> +		 */
-> +		trans = fs_data;
-> +	} else {
-> +		/*
-> +		 * 1 for the inode item
-> +		 * 1 for the fscrypt item
-> +		 * 1 for the root item if the inode is a subvolume
-> +		 */
-> +		trans = btrfs_start_transaction(root, 2 + is_subvolume);
-> +		if (IS_ERR(trans))
-> +			return PTR_ERR(trans);
-> +	}
-> +
-> +	path = btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
-> +	ret = btrfs_search_slot(trans, BTRFS_I(inode)->root, &key, path, 0, 1);
-> +	if (ret == 0) {
-> +		struct extent_buffer *leaf = path->nodes[0];
-> +		unsigned long ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
-
-Newlines between declrataions and statements, you'll find the rest
-
-> +		len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
-> +		write_extent_buffer(leaf, ctx, ptr, len);
-> +		btrfs_mark_buffer_dirty(leaf);
-> +		btrfs_free_path(path);
-> +		goto out;
-> +	} else if (ret < 0) {
-> +		goto out;
-> +	}
-> +	btrfs_free_path(path);
-> +
-> +	ret = btrfs_insert_item(trans, BTRFS_I(inode)->root, &key, (void *) ctx, len);
-> +	if (ret)
-> +		goto out;
-> +
-> +	BTRFS_I(inode)->flags |= BTRFS_INODE_FSCRYPT_CONTEXT;
-> +	btrfs_sync_inode_flags_to_i_flags(inode);
-> +	inode_inc_iversion(inode);
-> +	inode->i_ctime = current_time(inode);
-> +	ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
-> +	if (ret)
-> +		goto out;
-> +
-> +	/*
-> +	 * For new subvolumes, the root item is already initialized with
-> +	 * the BTRFS_ROOT_SUBVOL_FSCRYPT flag.
-> +	 */
-> +	if (!fs_data && is_subvolume) {
-> +		u64 root_flags = btrfs_root_flags(&root->root_item);
-> +
-> +		btrfs_set_root_flags(&root->root_item,
-> +				     root_flags |
-> +				     BTRFS_ROOT_SUBVOL_FSCRYPT);
-> +		ret = btrfs_update_root(trans, root->fs_info->tree_root,
-> +					&root->root_key,
-> +					&root->root_item);
-> +	}
-> +out:
-> +	if (fs_data)
-> +		return ret;
-> +
-> +	if (ret)
-> +		btrfs_abort_transaction(trans, ret);
-> +	else
-> +		btrfs_end_transaction(trans);
-> +	return ret;
+> +	atomic_inc(&orig_bbio->pending_ios);
+> +	return bio;
 > +}
 > +
-> +	if (args->encrypt)
-> +		(*trans_num_items)++; /* 1 to add fscrypt item */
+> +static void btrfs_orig_write_end_io(struct bio *bio);
+> +static void btrfs_bbio_propagate_error(struct btrfs_bio *bbio,
+> +				       struct btrfs_bio *orig_bbio)
+> +{
+> +	/*
+> +	 * For writes btrfs tolerates nr_mirrors - 1 write failures, so we
+> +	 * can't just blindly propagate a write failure here.
+> +	 * Instead increment the error count in the original I/O context so
+> +	 * that it is guaranteed to be larger than the error tolerance.
+> +	 */
+> +	if (bbio->bio.bi_end_io == &btrfs_orig_write_end_io) {
+> +		struct btrfs_io_stripe *orig_stripe = orig_bbio->bio.bi_private;
+> +		struct btrfs_io_context *orig_bioc = orig_stripe->bioc;
+> +		
 
-Please put the comment on a separate line, like it's on the lines below.
+Whitespace error here.  Thanks,
 
->  	if (args->orphan) {
->  		/* 1 to add orphan item */
->  		(*trans_num_items)++;
-> @@ -787,6 +788,13 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
->  		return -ETXTBSY;
->  	}
->  
-> +	if ((btrfs_root_flags(&root->root_item) & BTRFS_ROOT_SUBVOL_FSCRYPT) &&
-> +	    !IS_ENCRYPTED(dir)) {
-> +		btrfs_warn(fs_info,
-> +			   "cannot snapshot encrypted volume to unencrypted destination");
-
-Do we want to print that to the log? There are several EXDEV causes,
-only another one prints a message and I think it should not.
-
-> +		return -EXDEV;
-> +	}
-> +
->  	pending_snapshot = kzalloc(sizeof(*pending_snapshot), GFP_KERNEL);
->  	if (!pending_snapshot)
->  		return -ENOMEM;
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -144,6 +144,8 @@
->  #define BTRFS_VERITY_DESC_ITEM_KEY	36
->  #define BTRFS_VERITY_MERKLE_ITEM_KEY	37
->  
-> +#define BTRFS_FSCRYPT_CTXT_ITEM_KEY	41
-
-The context is per inode, so OK the key is needed and the number is
-leaving enough space in case we'd need to add more.
+Josef
