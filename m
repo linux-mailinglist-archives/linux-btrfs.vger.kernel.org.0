@@ -2,224 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F13715B0FDE
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Sep 2022 00:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AF25B10CE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Sep 2022 02:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbiIGWfn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Sep 2022 18:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49276 "EHLO
+        id S229775AbiIHAOo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Sep 2022 20:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbiIGWfm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 18:35:42 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4325B7E011
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 15:35:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1662590136;
-        bh=GxKg9uoLa/tGN71ecePqvRVSX0p6GUQvFkhO5ZM4smk=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=jnFqJ2xciYpO2q6ys5pF69sRnEgUt3YfZOwJDiUkPF+vYzMXDtlB4GHtlzN8AmGkz
-         ypu4+w039Z8S8rzd6otHefiF+UB+mlP3+oB271querwk/p1kpmwfoiiujVjN7ot8oJ
-         3AWf/vLMKv1RJvp9np5HARIWmXR/mA/wv7WdHHTg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mr9Bu-1pBSOM0PLy-00oBRf; Thu, 08
- Sep 2022 00:35:36 +0200
-Message-ID: <b09834f6-99c0-6253-4009-9975b5c2de88@gmx.com>
-Date:   Thu, 8 Sep 2022 06:35:32 +0800
+        with ESMTP id S229771AbiIHAOm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 20:14:42 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB1C2253B
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 17:14:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662596081; x=1694132081;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4XqZFeOz2EIPekahPLRfowofq8lVRFP2QuNl/K8SuII=;
+  b=NIhT8URF86IugjeJ1UtYUpchA0noP+VGl2JYKI1Yk7S3Nn/AADh2uiFX
+   9QxFc7AF8wpgCwmLZLBR3tgSx8q+nx1Rqy/lcPpRXCrItXcY1ZoiD9+8A
+   AkN28/Vy+gX6sVpP63Sk3+LQTm4fFfiWU4y6JmZQ0K5qNUVFAW+119eM1
+   ydPOLoKGHFAPKTnQTOp3feTASvtOMv6pAdmfpPGnhj0ia1fZyCGQQqTJl
+   IY5rwPvEWDKZioZsKE/HH/LAVoFYmiIxHjltehlwAfIZfEIEJsGp9WjJn
+   +VOX8lDwOwgP1nnDcZlDoEEB6LdIVAEL1NIHen+7gM9VJmnAcnKTfHFxY
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10463"; a="280058408"
+X-IronPort-AV: E=Sophos;i="5.93,298,1654585200"; 
+   d="scan'208";a="280058408"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2022 17:14:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,298,1654585200"; 
+   d="scan'208";a="943115627"
+Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 07 Sep 2022 17:14:39 -0700
+Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oW5Bn-000781-0F;
+        Thu, 08 Sep 2022 00:14:39 +0000
+Date:   Thu, 8 Sep 2022 08:13:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: Re: [PATCH] btrfs: zoned: wait extent buffer IOs before finishing a
+ zone
+Message-ID: <202209080826.AuNlP9ys-lkp@intel.com>
+References: <6ea8d3e9d0165f6ff37a1d12aad93ba279acfd93.1662561769.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH] btrfs: don't update the block group item if used bytes
- are the same
-Content-Language: en-US
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org
-References: <64e4434370badd801a79a782613c405830475dde.1657521468.git.wqu@suse.com>
- <YxirXjl1Ur3VV3B6@localhost.localdomain>
- <YxjVDY7jIH3Vv/il@localhost.localdomain>
- <8fe1128c-ebd9-87b6-a2ac-0a427223b456@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <8fe1128c-ebd9-87b6-a2ac-0a427223b456@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yoNvqIvzrlkrIorhvHJwok3DfVahvYsV5hio7rOPM9j4NHyn44c
- WBJjW469bgnZkigvvEt7tVwT1FPy+9i5pHejVj8ETF8r0/9CWU/o74tyKFgbKHA9VHcKUxd
- S7se6kZj5CraL1P7StPjgj8OtIgl9yOfYIB77fWjPisgsZzesANzROPEDDH1pTtocVvE2OZ
- 0uXDtN7Uh+etjWTZ+f5gQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qZLF1Rhytio=:K6aKO7eUx4wTVvqIXTlnZr
- G+neQj+Mv2RWBpVZVTJdsDjgejtWjF2lBVpPVcEu54cqKBQxiB7m64Av0oSyB3sHZU+Cl86GB
- CP2XipMEoLgffPWUBYIR9WFng05vax7D49Tcqxo8R0MmF4lLAaDiaWrATjLJrIIpMKSff3c6I
- AFXPgxQzsZyiTDbMu6gDT3uPwdUW+qbGLu+dqv7uVQ6i28wFdUNySWKH49YjUGXqlkB8lhZxz
- x5F63U0oOZzHx53E9msRzJXCh+5ozOQtcegzvKOG14GSuYXG9IYV/jPJP2C4T07tcXQHSE0Uh
- lAcF7UbLlV/i/lVUPC6jV/5JrMdT1dQq5GlmeSliYsU8SeM/Yj8d4v6n2/BRWZ7x0jSCVI7kn
- Ea2GHWtY7NEOq2h9KX8qJ3Ev70/4YFzwp+2/Vn4kKqzje325zY4wczkVfA6lLtVqZFctxfV+H
- V49PD5Qo5FLsnGESVWX1Wzy4JyY90CUHrtfKd/BYXJYzhXaUOP7hFMBR3dv0X+lK96uzTxwFa
- 2jzq9OXvFaFqRXa7SN7fRppFHwVoycofFD82lwgLPuZ3Z+AdxnBRwo3Q3Akl6gSaSnz4dQH9f
- 7VmoIdgGSmcBLzEG3XpxTMZhtgReHJBRlbs1HlfTDcydD+4KtISkDt98CJOudZTcz68ie9oHw
- dsXiO32cqzqeWXuixi1H09oqMLWzyerUv4EPwOxAaWoyGsXkuIA3PN/WpLaetgMVU4Qw4ohUy
- Rg8uXAMmqx1AbzewzbRYxNugwr63EkD4ugLaq42kPKJT+HYXJMSoHvRIkrj5Kyh6JmPbxQ1pD
- HeMa9DR5PsOJ4u5XyO/eIiKX5E4veTFpFch/T1xI2K7W4/3xLkaRm+t2+PPY2gPWWyPsHUUTM
- ItPvnZWDbSVV6hpOU1igkzMZO3OVTF/2CkjDnuyRm3gtMxjVdhC0laEMUs8xm+W5ylz4mkUxK
- 9pNHaOncWj8WUFsQfYS2l8nO6rlLoa1Trb90XRD7QUSEIuDJeQVLeTyxLi5+043QlsL0vFiML
- 4O6s+j/6TtI6ajFtaTqX6YJIJPYDmMwrvoTUllwl3dea8f7r+5W4nBDku7w/Tu/neGqjPJMK+
- hl8pAPv/RyVIgxgK7n1zPUl/UsKZ/QanCbgmPsDG7dbQC5E+tgi6w883O4qdqUnc4dGZqKXPJ
- oBAttbYGL/N+p56CUUS5a9Ez10
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6ea8d3e9d0165f6ff37a1d12aad93ba279acfd93.1662561769.git.naohiro.aota@wdc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Naohiro,
 
+I love your patch! Perhaps something to improve:
 
-On 2022/9/8 06:20, Qu Wenruo wrote:
->
->
-> On 2022/9/8 01:29, Josef Bacik wrote:
->> On Wed, Sep 07, 2022 at 10:31:58AM -0400, Josef Bacik wrote:
->>> On Mon, Jul 11, 2022 at 02:37:52PM +0800, Qu Wenruo wrote:
->>>> When committing a transaction, we will update block group items for a=
-ll
->>>> dirty block groups.
->>>>
->>>> But in fact, dirty block groups don't always need to update their blo=
-ck
->>>> group items.
->>>> It's pretty common to have a metadata block group which experienced
->>>> several CoW operations, but still have the same amount of used bytes.
->>>>
->>>> In that case, we may unnecessarily CoW a tree block doing nothing.
->>>>
->>>> This patch will introduce btrfs_block_group::commit_used member to
->>>> remember the last used bytes, and use that new member to skip
->>>> unnecessary block group item update.
->>>>
->>>> This would be more common for large fs, which metadata block group ca=
-n
->>>> be as large as 1GiB, containing at most 64K metadata items.
->>>>
->>>> In that case, if CoW added and the deleted one metadata item near
->>>> the end
->>>> of the block group, then it's completely possible we don't need to
->>>> touch
->>>> the block group item at all.
->>>>
->>>> I don't have any benchmark to prove this, but this should not cause a=
-ny
->>>> hurt either.
->>>>
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>
->>> I've been seeing random btrfs check failures on our overnight testing
->>> since this
->>> patch was merged.=C2=A0 I can't blame it directly yet, I've mostly see=
-n it on
->>> TEST_DEV, and once while running generic/648.=C2=A0 I'm running it in =
-a
->>> loop now to
->>> reproduce and then fix it.
->>>
->>> We can start updating block groups before we're in the critical
->>> section, so we
->>> can update block_group->bytes_used while we're updating the block
->>> group item in
->>> a different thread.=C2=A0 So if we set the block_group item to some va=
-lue of
->>> bytes_used, then update it in another thread, and then set
->>> ->commit_used to the
->>> new value we'll fail to update the block group item with the correct
->>> value
->>> later.
->>>
->>> We need to wrap this bit in the block_group->lock to avoid this
->>> particular
->>> problem.=C2=A0 Once I reproduce and validate the fix I'll send that, b=
-ut I
->>> wanted to
->>> reply in case that takes longer than I expect.=C2=A0 Thanks,
->>
->> Ok this is in fact the problem, this fixup made the problem go away.
->> Thanks,
->
-> This fix means, a bg members can change even we are at
-> update_block_group_item().
->
-> The old code is completely relying on the one time access on cache->used=
-.
->
-> Anyway thanks for the fix.
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on linus/master v6.0-rc4 next-20220907]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-So this is only happening if we execute
-btrfs_start_dirty_block_groups(), which unlike
-btrfs_write_dirty_block_groups(), is not yet protected by transaction
-critical path.
+url:    https://github.com/intel-lab-lkp/linux/commits/Naohiro-Aota/btrfs-zoned-wait-extent-buffer-IOs-before-finishing-a-zone/20220907-224702
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+config: s390-randconfig-s041-20220907 (https://download.01.org/0day-ci/archive/20220908/202209080826.AuNlP9ys-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 12.1.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-39-gce1a6720-dirty
+        # https://github.com/intel-lab-lkp/linux/commit/f858e96a8ad7eb5499e18501bfbcaad594eace1f
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Naohiro-Aota/btrfs-zoned-wait-extent-buffer-IOs-before-finishing-a-zone/20220907-224702
+        git checkout f858e96a8ad7eb5499e18501bfbcaad594eace1f
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=s390 SHELL=/bin/bash
 
-Thus we can have bg members changing halfway and caused the race.
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
 
+sparse warnings: (new ones prefixed by >>)
+   fs/btrfs/zoned.c:137:29: sparse: sparse: restricted __le64 degrades to integer
+   fs/btrfs/zoned.c:137:52: sparse: sparse: restricted __le64 degrades to integer
+>> fs/btrfs/zoned.c:1932:9: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void **slot @@     got void [noderef] __rcu ** @@
+   fs/btrfs/zoned.c:1932:9: sparse:     expected void **slot
+   fs/btrfs/zoned.c:1932:9: sparse:     got void [noderef] __rcu **
+>> fs/btrfs/zoned.c:1932:9: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void **slot @@     got void [noderef] __rcu ** @@
+   fs/btrfs/zoned.c:1932:9: sparse:     expected void **slot
+   fs/btrfs/zoned.c:1932:9: sparse:     got void [noderef] __rcu **
+>> fs/btrfs/zoned.c:1934:44: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __rcu **slot @@     got void **slot @@
+   fs/btrfs/zoned.c:1934:44: sparse:     expected void [noderef] __rcu **slot
+   fs/btrfs/zoned.c:1934:44: sparse:     got void **slot
+   fs/btrfs/zoned.c:1938:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void **slot @@     got void [noderef] __rcu ** @@
+   fs/btrfs/zoned.c:1938:30: sparse:     expected void **slot
+   fs/btrfs/zoned.c:1938:30: sparse:     got void [noderef] __rcu **
+   fs/btrfs/zoned.c:1947:47: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __rcu **slot @@     got void **slot @@
+   fs/btrfs/zoned.c:1947:47: sparse:     expected void [noderef] __rcu **slot
+   fs/btrfs/zoned.c:1947:47: sparse:     got void **slot
+   fs/btrfs/zoned.c:1947:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void **slot @@     got void [noderef] __rcu ** @@
+   fs/btrfs/zoned.c:1947:22: sparse:     expected void **slot
+   fs/btrfs/zoned.c:1947:22: sparse:     got void [noderef] __rcu **
+   fs/btrfs/zoned.c:1932:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __rcu **slot @@     got void **slot @@
+   fs/btrfs/zoned.c:1932:9: sparse:     expected void [noderef] __rcu **slot
+   fs/btrfs/zoned.c:1932:9: sparse:     got void **slot
+>> fs/btrfs/zoned.c:1932:9: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void **slot @@     got void [noderef] __rcu ** @@
+   fs/btrfs/zoned.c:1932:9: sparse:     expected void **slot
+   fs/btrfs/zoned.c:1932:9: sparse:     got void [noderef] __rcu **
+   fs/btrfs/zoned.c:2303:25: sparse: sparse: context imbalance in 'btrfs_zoned_activate_one_bg' - different lock contexts for basic block
 
-To David, do I need to send a updated version with extra comments on this?
+vim +1932 fs/btrfs/zoned.c
 
-Thanks,
-Qu
+  1922	
+  1923	static void wait_eb_writebacks(struct btrfs_block_group *block_group)
+  1924	{
+  1925		struct btrfs_fs_info *fs_info = block_group->fs_info;
+  1926		const u64 end = block_group->start + block_group->length;
+  1927		struct radix_tree_iter iter;
+  1928		struct extent_buffer *eb;
+  1929		void **slot;
+  1930	
+  1931		rcu_read_lock();
+> 1932		radix_tree_for_each_slot(slot, &fs_info->buffer_radix, &iter,
+  1933					 block_group->start >> fs_info->sectorsize_bits) {
+> 1934			eb = radix_tree_deref_slot(slot);
+  1935			if (!eb)
+  1936				continue;
+  1937			if (radix_tree_deref_retry(eb)) {
+  1938				slot = radix_tree_iter_retry(&iter);
+  1939				continue;
+  1940			}
+  1941	
+  1942			if (eb->start < block_group->start)
+  1943				continue;
+  1944			if (eb->start >= end)
+  1945				break;
+  1946	
+  1947			slot = radix_tree_iter_resume(slot, &iter);
+  1948			rcu_read_unlock();
+  1949			wait_on_extent_buffer_writeback(eb);
+  1950			rcu_read_lock();
+  1951		}
+  1952		rcu_read_unlock();
+  1953	}
+  1954	
 
->
-> Thanks,
-> Qu
->>
->> Josef
->>
->> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->> index 6e7bb1c0352d..1e2773b120d4 100644
->> --- a/fs/btrfs/block-group.c
->> +++ b/fs/btrfs/block-group.c
->> @@ -2694,10 +2694,16 @@ static int update_block_group_item(struct
->> btrfs_trans_handle *trans,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct extent_buffer *leaf;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_item bgi;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_key key;
->> +=C2=A0=C2=A0=C2=A0 u64 used;
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* No change in used bytes, can safely s=
-kip it. */
->> -=C2=A0=C2=A0=C2=A0 if (cache->commit_used =3D=3D cache->used)
->> +=C2=A0=C2=A0=C2=A0 spin_lock(&cache->lock);
->> +=C2=A0=C2=A0=C2=A0 used =3D cache->used;
->> +=C2=A0=C2=A0=C2=A0 if (cache->commit_used =3D=3D used) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock(&cache->lock);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->> +=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 spin_unlock(&cache->lock);
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.objectid =3D cache->start;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.type =3D BTRFS_BLOCK_GROUP_ITEM_KEY;
->> @@ -2712,13 +2718,14 @@ static int update_block_group_item(struct
->> btrfs_trans_handle *trans,
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 leaf =3D path->nodes[0];
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bi =3D btrfs_item_ptr_offset(leaf, path-=
->slots[0]);
->> -=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_used(&bgi, cache->used)=
-;
->> +
->> +=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_used(&bgi, used);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_chunk_object=
-id(&bgi,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->global_root_id);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_flags(&bgi, =
-cache->flags);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 write_extent_buffer(leaf, &bgi, bi, size=
-of(bgi));
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_mark_buffer_dirty(leaf);
->> -=C2=A0=C2=A0=C2=A0 cache->commit_used =3D cache->used;
->> +=C2=A0=C2=A0=C2=A0 cache->commit_used =3D used;
->> =C2=A0 fail:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_release_path(path);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
