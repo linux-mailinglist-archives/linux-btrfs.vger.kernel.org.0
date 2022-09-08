@@ -2,128 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 347245B25D1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Sep 2022 20:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D945B25F8
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Sep 2022 20:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbiIHSdv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Sep 2022 14:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
+        id S232072AbiIHSjK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Sep 2022 14:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbiIHSdt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Sep 2022 14:33:49 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32C7F22CD;
-        Thu,  8 Sep 2022 11:33:47 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 288IJ8KL019918;
-        Thu, 8 Sep 2022 11:33:44 -0700
+        with ESMTP id S232187AbiIHSjH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Sep 2022 14:39:07 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B16FDB9F;
+        Thu,  8 Sep 2022 11:39:03 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 288IJB2Y011731;
+        Thu, 8 Sep 2022 11:38:59 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : mime-version :
  content-type : content-transfer-encoding; s=facebook;
- bh=l/nHA+VmiWviEqsaL2iKhKxR27g/BcydhTNJ68Z7bpo=;
- b=PbDgTJ/KSEnyGfXH+fOPxKGGTAIPkN5YlB/aZ6KeIew5xQ5mnxi8EyDnMLmTQZRiqoBz
- o4gKc2DvxWf4IAqoTMTJMKjzOU4weBEozRirQTRZpcaRbWN3g1SP3X/qi90IrjCmyVw/
- 9amh7wQQmPcjDPBXxqCpS4GuVA1BMhhgQ7g= 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3jevdaj0p4-1
+ bh=M9YFLPpbP1L3xMQ7ZwhgAJUyJmxGwoQ0OeAyPMYUen0=;
+ b=EE0IY/fx/B0pDggcOLG1cLJkqqYj56nTgpsE5OA+Eijor8deI1kS8zrSdyUzsXf3oSL4
+ caS3wHQaJ9QZp375OFQQ42cL31UsN00ua4hU9M/+SX1j47VlHGfuDRZTkY/hL6b6AEuh
+ 7cZ48f9wS15kpYGHusZExrJ+ZAVtbiEkyyc= 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jfk74hg06-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Sep 2022 11:33:43 -0700
+        Thu, 08 Sep 2022 11:38:59 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QiIwnQfBN2QzA+m0deCac2i4TRIb3czuFZ6sxFGN0P/rtzwO9ftORPoTT7ecQVIpliarMEVs8kzkrIb2Af0QZh3dZOAldgEEfFDQDspGdmgvaTMR3tdqXzh3Sz65T7gqKHTr4pBgCR4xitiF2tiyr5/okRoQbNYLwuIdCPG+cwv8W/RUVKcKcf672CuMxGS+ls8/0jvW7keMG7+jxtAbBJFea5/wEi13T9bKySanzcrLtNrxfBsOofd6BsFs4aWt3EJvWsFmHc3U3cuNAr/wnmNXiCMYovG1ty8guBdXUeEhe4/G0CGRQhMUzQzInGNh9qHLsYMfGpVETMCbqrmDGw==
+ b=F49+U44cMM/q3Iq5apO6QT98HBh+w3H2bLTuQ4ZiY/l7NOnGGsCYOceuxm/uxImrBOxtPC3L2zw8JbwRGWdFBLx9A9K11tW8q6NKszUjY+8leO9cAyn3hVFRbtAVpyWhdD13j7RdwDL4UHeYY8qapG0Yr0ao6HgVU2PbnvjR74Kp5ZZAWjgdhwRXMQe+swKWxldQnDX0q4yxtE3BgR4GhVPw74h5bUA1Qb0T4WEuTbPKNpZv/ge2LosalQto3u8s0M4ApqoKJGm++3Aw0h/1u9Zi+wmW6HttvFMWJyCFe59Rvs1YRXGW4D1DdHixX/nIADrU/unvAWjv0m2EF+PGeg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nUvvn96bD/roa0JaKPRr6MfhRt1TJH6+qVHDal3KM3o=;
- b=IAtoASuuWhAWsQrHvcDmrs6uiBc4g2eh6fQJ+odmnkmsy5BOQNKfdmsaXiBiE0BwACRubGOUQkvofIx9S+cKdnvHgURsUbVIJT3GgytWsRggR5BipidStsoqVjI/HBuF0OgSc0hSFZYoo2weMd4hZGvgsRtVVfUiEx9XrZbHol8dU/s2oPAU1VFyIlkqujuX8oUdXtLdT/ipMGG7KPNaGbpWJ6aH88k69PC7R+TUiV24KeBljb78f2HclF8lvp54RqExVhSDE72hHIt3jDUqnARdEbvnj+l2yk8D6BK7k8a05o3MkMTZZQmmFrTYPgv8x2qudGlMdBGtJivhhE38uw==
+ bh=gtBvPZg6hZfMBZ2ULyyA23We1lPaAf3APqScxfXEbXU=;
+ b=h4t0h+SQSwh1Go2U18Hx5YsjCnlk/1x2af4Lqt5O5WAX+5yoq8goHuMx4cuyZKfxKYyhqWP63yba8H6qvjTzJlgR7DLK1Hlemkpo/frY2ASk+dRgbTFN+Mn0GslRFo/aABrRMJpCKj1mOGBx63QZNdJ+qbnNnSP+F9N5pMdekZ5in1iWczOpgJtNrx08BL0SG6RA/gbPQ1xERYUBsx0SY+7Q5tTBYwAYHSktjAvKKi7w5GtoLpXDqS4jeZgSkbI21ylRdyG62ucYh23z/sg5VMluhXiv2y7DVPO5QC+DT0ANqkbGQJgOk0nXrfOO3L7xbg4rcjddKlLC5eUk0zHMLQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from DM6PR15MB2316.namprd15.prod.outlook.com (2603:10b6:5:8d::10) by
- SN6PR1501MB1984.namprd15.prod.outlook.com (2603:10b6:805:f::12) with
+ BLAPR15MB4018.namprd15.prod.outlook.com (2603:10b6:208:255::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.18; Thu, 8 Sep
- 2022 18:33:37 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.14; Thu, 8 Sep
+ 2022 18:38:55 +0000
 Received: from DM6PR15MB2316.namprd15.prod.outlook.com
  ([fe80::c052:c6b9:41f8:e5ae]) by DM6PR15MB2316.namprd15.prod.outlook.com
  ([fe80::c052:c6b9:41f8:e5ae%3]) with mapi id 15.20.5612.014; Thu, 8 Sep 2022
- 18:33:37 +0000
-Message-ID: <53c625e9-5dc0-5fc6-c30c-7483bcc468a7@fb.com>
-Date:   Thu, 8 Sep 2022 11:33:34 -0700
+ 18:38:55 +0000
+Message-ID: <517ab3b8-da36-41b9-a635-d328e506a377@fb.com>
+Date:   Thu, 8 Sep 2022 11:38:53 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.13.0
-Subject: Re: [PATCH v2 07/12] btrfs: make prepare_pages nowait compatible
+Subject: Re: [PATCH v2 08/12] btrfs: make lock_and_cleanup_extent_if_need
+ nowait compatible
 Content-Language: en-US
 To:     Filipe Manana <fdmanana@kernel.org>
 Cc:     kernel-team@fb.com, io-uring@vger.kernel.org,
         linux-btrfs@vger.kernel.org, axboe@kernel.dk, josef@toxicpanda.com
 References: <20220908002616.3189675-1-shr@fb.com>
- <20220908002616.3189675-8-shr@fb.com>
- <CAL3q7H77thY5_1zMiwVZ8oBk3b4KwFUsff=DojUSgJdAMP-2DQ@mail.gmail.com>
+ <20220908002616.3189675-9-shr@fb.com>
+ <CAL3q7H5QnvPNtNq-uvXBsFNT=URXU4pKDaUqZGrf3MPt7VgBSA@mail.gmail.com>
 From:   Stefan Roesch <shr@fb.com>
-In-Reply-To: <CAL3q7H77thY5_1zMiwVZ8oBk3b4KwFUsff=DojUSgJdAMP-2DQ@mail.gmail.com>
-X-ClientProxiedBy: BYAPR08CA0023.namprd08.prod.outlook.com
- (2603:10b6:a03:100::36) To DM6PR15MB2316.namprd15.prod.outlook.com
+In-Reply-To: <CAL3q7H5QnvPNtNq-uvXBsFNT=URXU4pKDaUqZGrf3MPt7VgBSA@mail.gmail.com>
+X-ClientProxiedBy: SJ0PR13CA0239.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c1::34) To DM6PR15MB2316.namprd15.prod.outlook.com
  (2603:10b6:5:8d::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR15MB2316:EE_|SN6PR1501MB1984:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7546d956-9b60-4fd9-66d3-08da91c8a49a
+X-MS-TrafficTypeDiagnostic: DM6PR15MB2316:EE_|BLAPR15MB4018:EE_
+X-MS-Office365-Filtering-Correlation-Id: bee54079-5a1e-4f5f-02d6-08da91c9627f
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JW8Kr9Ds4iSXTAXnnEybmdLPOM6FMawVpzGNpnkri1Br/OdenViE8l0zVcRMAtqYmTvaVB9VGg5uX2R3lWex3pkBq58PIrujGz6Jw8kBDXOVWnLBI6mImywIY+WqShF2GS1vHzU+zFAW+/KQ0Yk527I+I3ghJBFZd3TbifRYA7TR1gSQWGkWOap/oz55egnXBBCGRjmH0Lfo0g+lPlLY3XCxtaW4JxhQSOZ3v5FlqA1nd7bxCn47pcjzicCsJIZVJ1ojIFunj4zM6dSf04t7m72985LHonRhBzuBHomDNClxzzXAu+d/zJceR4HrE791us9bAId/sKykT+STdnPVaTnjccebAawkCY4Bj9PYysg+rr4d1wd6lZyl9Gxa8hPf/ipvpBdCDVs0N0hDHatCkdbw7wHZHXzrj2wE9h5icgbrHp5E9Qt57nQgjIxv3OyrZilZejtisrluUu/aN717mbIODTRdlP5FWl2ToJvAkoCNwnyAAZ3OCZiIjtGzWqtZclNfPk1b+wamYZtt1M5f4ewVHOFY/ENeQ4gu4jGHCmL4kxWdkfz/yq5zZMQ6PhJ+gUAIHP8iybriIZYjXSQKVYub1P81PdZ9MGQkvgqHLS5XhOeClEAnEYifyo+Z1EN94msOMwfFAggrSE/xr0B0lDqA1CtrLzk31rl9jUNJ911jiSjtZxY/zL5S1LDNrfYUTkmz+bOJ/+sGooWLKf8kQ6BAWpwCArtUxmZrrT4P1oFFc1WrX+hQRRzqirmdU2WQVG02ThozrpdsprtoncGpFpLBvVVm5ez39OZSknjseD4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB2316.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(39860400002)(346002)(376002)(136003)(396003)(38100700002)(86362001)(6666004)(478600001)(4326008)(66556008)(66946007)(8676002)(66476007)(8936002)(5660300002)(41300700001)(31696002)(6916009)(316002)(186003)(83380400001)(53546011)(6512007)(2906002)(2616005)(6506007)(31686004)(6486002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: VlP5p2RpobHnry6OIa15F4ATUUFYxeoCqdyHTGd50tcCdaD7hdH9VSHEqNDnlXYSD68YL0LW4EogdnqmGb3ujzeeEoweZV/9Zo+eNE/eG3Q9hmL6XohAmTKwwkQibsPQLSqD47KS6KqUph7Sd3iNgHrIZc5QKCXpzOEJaAHTyj2UCTfEs5HnNfV41VTFAl8Qg/YeSeXEEim5P6X8YoRpgbvDiZlxo/jM4KDtiAjz95siXw0SifLe4qdHdtWAPATozKrLzSDUFH9BHH1B/RSlUBiDph4cDdV7OOe4jgl9pAHz7AQUNDdq4e9ugbbDG4HI/yy3wRHpIDP/5hQV1IWR8ffAEarRogApySxz7FYQf7RvfuWFLW53M2X167x9Dgm4eDmgCe0qQSuQ1nqL1XkL9pUk07W/S1HKrEi8TegwVGhlSZwjnrLi1weh7c2Fyw5DPTsZD+Swc82eTjBhK4qUMbKddjxHZY//YPKpLJvmERk5sDQQiz88krF9BqikLRWiERYhuT9dgv2TmNJecj0pcLw0r0KjIFA305MSrEKPbhtjCUmuimvkimxIPMfXcuoqklQw44mbZoalF7oU+2sw8YGRxQoLOsVqQVWer7zb4dLjkkUX1ZdGN/rPC3YropuX02GQI29kgKKOkquvnYJm3gptYYhoqD6sDjfNPpDYbEoJMe6Jo1c0INie9C7v+3a6icz0hcUdOz0yTE0KA+ZNGgP+zu6ZkxJOUPglV+H2q+7j4+mjnA1D5RUNIxeAB2kTyZ9rn8PCeTz0AQDTxGaFarBlf6e5LCQtfCi1r5Dz5FM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB2316.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(346002)(136003)(396003)(366004)(39860400002)(66946007)(66476007)(8676002)(478600001)(41300700001)(4326008)(6486002)(5660300002)(8936002)(2906002)(66556008)(6512007)(31696002)(6506007)(53546011)(38100700002)(2616005)(86362001)(83380400001)(31686004)(186003)(36756003)(316002)(6916009)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WFpOcG5IelNzK1Q2MGdzUmRkNFgxa1hxaWZacmkxQlAvdVFKLzF5L0xNMkhm?=
- =?utf-8?B?cjdKT2ttV0Q1eTd2QWJNakRod3d3Y2pjaWdyNjlXa1pJcWRSaE5zOGNVdld6?=
- =?utf-8?B?UWgrWW5mcDhIM0tKZjU0SlR0TlIrZnJlMlpFeStFM05ON2JnV0F3dHI1dVo5?=
- =?utf-8?B?em9jTVc2b2FIaFF3YlA3THFRRWd5MEJpc1B0dmQxU3YzOTBTUWZrZFRHeTNv?=
- =?utf-8?B?SENPVHJiNG5mRm84c2JlVDZ4TXhkZHMzRTNMRExNQ2ZLckt1TWNNQkloREx2?=
- =?utf-8?B?SkFWVjVwZExocU1jOEVFOUlGQ2NTWlBZVXlaWTZUZG5wYjZKMUNrZXc4UklF?=
- =?utf-8?B?cWM3K3ZEaUZnSVRDM3Q1akpWTWdBMElTZmJsajJCZWEydE81TWZqS0tqL3Nw?=
- =?utf-8?B?dnc3OHpESjMvQjluUzZwM2dCQ3hscWx6b0g0bXA2eWhFZzE0emdnMmxVTElZ?=
- =?utf-8?B?WFRHRWdmd01lTnVPOVNvaHNaMWVYT1YwZ1ZyQWV2dCs3TUt0WTJLYWlaZS90?=
- =?utf-8?B?OGFHMmN3WXRoUVVhTDJrTFM5OFZ4MjNzZTJkcUMyV0o2ZE00UCs3Sm5ybUNh?=
- =?utf-8?B?TzNpdXhpNzZqUVhCMmFIMm02WnNZR1VaNGphMUw3WmVPYjhNaC9BMGhEWExF?=
- =?utf-8?B?UURyVWdvbUF1YzJhaExPOTVKTlZmNjNvMElJVHkzNDFmQkdYZVhGak9PVFRF?=
- =?utf-8?B?aHVhNHpKU2RWWS9la244dWVqd2gxV3BtNmFBQXFOS0hrZUN6ZnB3RjFoSUls?=
- =?utf-8?B?YXZiUmV0bEZWblBRVmNrUFRFOEd5QVRTRnVoK3FCU2NyUzFadGZhRWo2RWVh?=
- =?utf-8?B?aXBublNZRzRSTktRYXAyK1BDY2lHaEFQWkhjUEZiSHZxRDUvWFBpYUV0S1J4?=
- =?utf-8?B?NVliay9rQTRCSnp4SUJnRzI3bWs2Rkt4TWw2RHBEWGx3cFRiV1FlU3pPQkZt?=
- =?utf-8?B?SjdjbUdqZ1ZwTk80cjFQUXJKSnBOSW96Q2Fqb2xWbTdETlZCaUd4TmJhV0F1?=
- =?utf-8?B?cWJrbzNsZ1RmQjZJRUozZi9lT2E1UGFjZUF3MWJSTjd5UmtwMWVNRDVuOGpo?=
- =?utf-8?B?SllaM0diaVdmNXdodDkrUlJwK0F2aEhNMzdPUmtNbFovd0V4NlBSczBNT0xk?=
- =?utf-8?B?SWlyRVFxS0NoSTNSL25oeG4ydnJrRlBMdmlCaVkvbEE4VytGZjQ2dVRycDhC?=
- =?utf-8?B?YVN5SEVxclBHVnM3M3dpOFFlMnJOa2c0TEQ0WVN1dXp3bDBDS2FabnRnRWVR?=
- =?utf-8?B?bUxiRGhqa3FhcTVOZVFZdk9LTFUwMHFidmRXUDNwZ2NvMlhhVURpMCtpeVIx?=
- =?utf-8?B?OE9UaEJqVUVOeEpGendpdWF1ZEJ0ZmVibWp5NVFIL1NYalhxMFFVTUM0MlZ1?=
- =?utf-8?B?UXQ4QzZCM0l0cFFTci9KTllzdW5VclRRcHdPNGxUdkRFSmJyUStmTUdWQTdS?=
- =?utf-8?B?NjNLSGR3cmVKNHlNdFdLSE9ISWxPbmpYQ0I0bnpwVkVnaE9rZklBUnpKQ3po?=
- =?utf-8?B?SHRwS05zQmIyVk1WQkgxWEtGVnc1elV4UENHZHJheDhFekpRVk4vUk95QmVr?=
- =?utf-8?B?TVJUQ0JDa2JqTUJmcmZ5TnhEcXkwaGhvcGtJWjNlWmtrTURMeHB3QnpUckE4?=
- =?utf-8?B?bkdSNFppeHp3WTFsVFdxODV4Q05hblZ3eFd2UXd3Um8zNDRMa3pXTDh2ZWQr?=
- =?utf-8?B?ZU4rUW1YTDBkSjZBbVBwMUdzT3JleVcxWEY2TVFPZkRjMXYvc01EZUk5ejlS?=
- =?utf-8?B?NVdvUjhNU3UvNTZwYWtXMDFPS05ocVNUSnkwWk1uMnoxczBzTDAxN0VCNU1Q?=
- =?utf-8?B?Y2RoRlF6ZFd3SXlVbUcvUElISXdWZzBnZnl4M3FEMlVLZDNzT1VtRDhuemJh?=
- =?utf-8?B?U3NZUzRYY2l6TWN5QkRINFcvRm4xNjI4NlRRQmJub3ZFL1ZHc05oeVNoVERs?=
- =?utf-8?B?TC9IZGlhQ0RjbWZ2UVFQMzRkenJkaFpDVVFSRTJnSjFWRTBadGZpRHc1NFZa?=
- =?utf-8?B?NXJ0Z3JoQWpGYkJDL1hJR24xbTEwemRIYmFvYk1WRk00ZGdHUGxTRTU3bEVT?=
- =?utf-8?B?OUgrN0tBNUgzNkpCazFXSE1McHRMUDlFMDQxWk1BNDRZM3FWY2laZ0tNWlZ3?=
- =?utf-8?Q?dVXjZiZ0+ZkQNaUpV8AvccLw1?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bzgvS0Zia2FQT29lRnhKdnJLdHNQbkVCa3NqNkxaUmpCU2lWL3VCbmowc2k1?=
+ =?utf-8?B?MEkwWXRKSFc5cis5b3IzTHFaOFpmRytwU2dLOC9Sa0sxZFNSanZ1R0szcHdE?=
+ =?utf-8?B?R014NmR6ZS8reFp6TVlkZlRxRFA1dk13WUpXUEMyWjNvcmdkQ3N2MmpXNkZY?=
+ =?utf-8?B?K29VNmdxemYya3JTa29BYnRjeVhSdDMvM1hGSEMzM0xhVmVHak1BTUIxK1hS?=
+ =?utf-8?B?T3kzeExwQ0luQXZ4SGZFQVdYcDA3RmZnZWswNmYxZ21SbDZ2eWtmSkdtZFJH?=
+ =?utf-8?B?RllmNEFVMnJpOW9vdDV4a3ZkQ2FiN29KZHNJbDJTQmEvOThpSlJSZVBSZ3gv?=
+ =?utf-8?B?QUZsZVNVTmxKN01Gcm5JOEdiWU9UUktwZkJGVE5Hd1luYjNURnZoZ2tTS2k4?=
+ =?utf-8?B?N09URng5S21QclRzdWg4SEo1NkJtZk40OWF6OFBTczl4VnYwZWg5OUFkSTdH?=
+ =?utf-8?B?VjJpVitVdXg2Mk9HemU2aXpmRzUrZ2NqaVhLYnlFRS9oQ3RDRVZTUlhaU3E0?=
+ =?utf-8?B?SnhoOXpTQjhZekdyaUVRTUhWK0JocVZvTzVHM1JhVHBVUUQ3djBmZUxkOUxr?=
+ =?utf-8?B?YjBsM3BkSldYbCsvQnNqMXY2VE03OXprS2VFWFl3VHN6bkJKSktOTEkvZnZp?=
+ =?utf-8?B?ank5SllxZkgwNUFLeStHUEVqTkdQblpDQ3ZQUk04Y2JRbE5NZHZqcWFSL1Jl?=
+ =?utf-8?B?MEpqUGN3Sm8zSlQ3YkNKb0VVUUpXWUc4dnNteU5FZ3IwYmtDaGllTGlkQ2dq?=
+ =?utf-8?B?R1R5ajhTWmI3dXRkUWZCVWNGaTNELyt6amxwekNualdpbXdUNnllQ3BqOEFn?=
+ =?utf-8?B?YzdnM1BlVENlSDdxc0V1UjREcWo0ZTRFNGpUTE44V21WaW5UMjYzaytqZTdE?=
+ =?utf-8?B?bnFZa3BBSmwyQVdwSTUvb0ZEMm80L0JWWEw4em5sTlpqc3VCOGJ3Y0t4Y1I2?=
+ =?utf-8?B?UTdUL0NBMUU1Wks5dHR0a084YndVQndGaEFpdzhkVmhzNk50Qm80dThUbXpW?=
+ =?utf-8?B?YVNObStVbnVZZGJMek56VnJvRURtT3crTldnd1VaV01VTXF6TFRSTmxldllh?=
+ =?utf-8?B?N2l4c0ZZaHFHMXNZaTVmd21OTldjZTgxR2ZOaWx2amVVL1dxcG5JK2lHQlNa?=
+ =?utf-8?B?TkFmN0JJR3dmNk5lWkpCNlFwaEZlaFVNZ0dwdm80cWdRMzRzYzd1YXhLNlFW?=
+ =?utf-8?B?K1pTUVJmcGMrS3BmMkcwMkVLNEpWSFZMMHMzZjJabXhHTjByQnFXQnNocnh3?=
+ =?utf-8?B?WThOWk5QNE53Y0h5NnhSQ1R6YXdJcENseXFSd1B2USt2ZlRudlJxUWZXcmdV?=
+ =?utf-8?B?Ty9XTW9TRnFzd2ZpY1ZCNXNFbXIySWZ3VUE3Myt0VXpISnN3ZjBNQ0paa3Jw?=
+ =?utf-8?B?bUpoQUNNRjE5TWl6U01ldkpaSklxWVhLMmZlWTQwcEpOejNseVkyaENSVFVa?=
+ =?utf-8?B?MlQreVkvNnVuczQ1K1BIWE1IZXN3RFM5S2lURmFSdjBEOC93VjlhMFBpOGk5?=
+ =?utf-8?B?bTBBTVBDN3VoRUtob09LSVNwbFVzeXNQMWt0OU04RGNNSWZVekFneEM3bEp5?=
+ =?utf-8?B?aDBOZS9QQ2JOa2FzYnNzcjBNU1F4VnZPaXNaUS9vWmhEZldrZFBiVkJPVjNs?=
+ =?utf-8?B?dFFWcEdOT3NwdjRENFg0VkdsMU13RWc5RHVqZ0JtcUxsR0VPcHlZdk4xc0lG?=
+ =?utf-8?B?T1lBWThsR3R2SS9yUG5Vc2JUOTZaYTZmRDRTbzJWbU5obkYrWHZRelJLTXZt?=
+ =?utf-8?B?a0wwekpSUEQ4cy9UdnhjZlhxWS9Pd2l2ZE0zMW9PQnZ2UG9xYm5iMGtHK1dF?=
+ =?utf-8?B?QnBTYXRrVmwrWng5cWJkVFIzMnNXMTNYbTJqRjJ0ZUFCZVRKRUUyZFpMT3Jv?=
+ =?utf-8?B?NUxvaFdLUHRHWi9uSWRlUmhxa1ZqWFF2elBOWnpkRVp3b2g2eFhrci9vS2s4?=
+ =?utf-8?B?aDlHZm12eEVWZ2xQeXhWbDU0N1VnOXdGZkFOdnRnVjJnS0pqQ1RtUHkvL21K?=
+ =?utf-8?B?NHNNRlRxRWxNVW5OMC8wekF3YzBza25ySWpxVlFtSEhCRnAxTVYyc3BLZnBK?=
+ =?utf-8?B?bmY2OE9yOEkzZUg5SmlhTXRzMTZqMGdzYTl1KzU2QTAySndQMFNzcklUMXRr?=
+ =?utf-8?B?NldNdk1XUm1yYWlYeUxQeGlWWDc0VE9sUTVuZSttNktaN2d4Qm5qQWo0aDJT?=
+ =?utf-8?B?cVE9PQ==?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7546d956-9b60-4fd9-66d3-08da91c8a49a
+X-MS-Exchange-CrossTenant-Network-Message-Id: bee54079-5a1e-4f5f-02d6-08da91c9627f
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB2316.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2022 18:33:36.8821
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2022 18:38:55.4385
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: K/lMFDRYv8UBEjnY7NqPYbrgcv7lFI5Ds+LOtyqpXgKWAdXo6v3AfDjoH9/fs7j9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB1984
-X-Proofpoint-GUID: H2Cm_e5tMqf5RcqrWbZwSPXgmKk0bDFW
-X-Proofpoint-ORIG-GUID: H2Cm_e5tMqf5RcqrWbZwSPXgmKk0bDFW
+X-MS-Exchange-CrossTenant-UserPrincipalName: voK9i//Qwrj5k/o3D1hB8H/WjKndCcqJv1fOuNUTwRoswoRCbKIrMPiSmyEVuRV/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR15MB4018
+X-Proofpoint-ORIG-GUID: Z9w6oPfafIZSqKB30Yh_reENCMQd0dVf
+X-Proofpoint-GUID: Z9w6oPfafIZSqKB30Yh_reENCMQd0dVf
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Proofpoint-Virus-Version: vendor=baseguard
@@ -146,119 +148,77 @@ On 9/8/22 3:17 AM, Filipe Manana wrote:
 > >=20
 > On Thu, Sep 8, 2022 at 1:26 AM Stefan Roesch <shr@fb.com> wrote:
 >>
->> Add nowait parameter to the prepare_pages function. In case nowait is
->> specified for an async buffered write request, do a nowait allocation or
->> return -EAGAIN.
+>> This adds the nowait parameter to lock_and_cleanup_extent_if_need(). If
+>> the nowait parameter is specified we try to lock the extent in nowait
+>> mode.
 >>
 >> Signed-off-by: Stefan Roesch <shr@fb.com>
 >> ---
->>  fs/btrfs/file.c | 43 ++++++++++++++++++++++++++++++++++++-------
->>  1 file changed, 36 insertions(+), 7 deletions(-)
+>>  fs/btrfs/file.c | 18 +++++++++++++++---
+>>  1 file changed, 15 insertions(+), 3 deletions(-)
 >>
 >> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
->> index cf19d381ead6..a154a3cec44b 100644
+>> index a154a3cec44b..4e1745e585cb 100644
 >> --- a/fs/btrfs/file.c
 >> +++ b/fs/btrfs/file.c
->> @@ -1339,26 +1339,55 @@ static int prepare_uptodate_page(struct inode *i=
-node,
->>         return 0;
->>  }
+>> @@ -1440,7 +1440,7 @@ static noinline int
+>>  lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page =
+**pages,
+>>                                 size_t num_pages, loff_t pos,
+>>                                 size_t write_bytes,
+>> -                               u64 *lockstart, u64 *lockend,
+>> +                               u64 *lockstart, u64 *lockend, bool nowai=
+t,
+>>                                 struct extent_state **cached_state)
+>>  {
+>>         struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
+>> @@ -1455,8 +1455,20 @@ lock_and_cleanup_extent_if_need(struct btrfs_inod=
+e *inode, struct page **pages,
+>>         if (start_pos < inode->vfs_inode.i_size) {
+>>                 struct btrfs_ordered_extent *ordered;
 >>
->> +static int get_prepare_fgp_flags(bool nowait)
->> +{
->> +       int fgp_flags;
->> +
->> +       fgp_flags =3D FGP_LOCK|FGP_ACCESSED|FGP_CREAT;
+>> -               lock_extent_bits(&inode->io_tree, start_pos, last_pos,
+>> +               if (nowait) {
+>> +                       if (!try_lock_extent(&inode->io_tree, start_pos,=
+ last_pos)) {
+>> +                               for (i =3D 0; i < num_pages; i++) {
+>> +                                       unlock_page(pages[i]);
+>> +                                       put_page(pages[i]);
 >=20
-> Please follow the existing code style and add a space before and after
-> each bitwise or operator.
-> Not only does it conform to the btrfs style, it's also easier to read.
->=20
-> The assignment could also be done when declaring the variable, since
-> it's short and simple.
+> Since this is a non-local array, I'd prefer if we also set pages[i] to NU=
+LL.
+> That may help prevent hard to debug bugs in the future.
 >=20
 > Thanks.
-
-I added the space and moved the assignment to the definition.
 >=20
->> +       if (nowait)
->> +               fgp_flags |=3D FGP_NOWAIT;
+>=20
+
+I set pages[i] to null in the next version of the patch series.
+
+>> +                               }
 >> +
->> +       return fgp_flags;
->> +}
+>> +                               return -EAGAIN;
+>> +                       }
+>> +               } else {
+>> +                       lock_extent_bits(&inode->io_tree, start_pos, las=
+t_pos,
+>>                                 cached_state);
+>> +               }
 >> +
->> +static gfp_t get_prepare_gfp_flags(struct inode *inode, bool nowait)
->> +{
->> +       gfp_t gfp;
->> +
->> +       gfp =3D btrfs_alloc_write_mask(inode->i_mapping);
->> +       if (nowait) {
->> +               gfp &=3D ~__GFP_DIRECT_RECLAIM;
->> +               gfp |=3D GFP_NOWAIT;
->> +       }
->> +
->> +       return gfp;
->> +}
->> +
->>  /*
->>   * this just gets pages into the page cache and locks them down.
->>   */
->>  static noinline int prepare_pages(struct inode *inode, struct page **pa=
-ges,
->>                                   size_t num_pages, loff_t pos,
->> -                                 size_t write_bytes, bool force_uptodat=
-e)
->> +                                 size_t write_bytes, bool force_uptodat=
-e,
->> +                                 bool nowait)
->>  {
->>         int i;
->>         unsigned long index =3D pos >> PAGE_SHIFT;
->> -       gfp_t mask =3D btrfs_alloc_write_mask(inode->i_mapping);
->> +       gfp_t mask =3D get_prepare_gfp_flags(inode, nowait);
->> +       int fgp_flags =3D get_prepare_fgp_flags(nowait);
->>         int err =3D 0;
->>         int faili;
->>
->>         for (i =3D 0; i < num_pages; i++) {
->>  again:
->> -               pages[i] =3D find_or_create_page(inode->i_mapping, index=
- + i,
->> -                                              mask | __GFP_WRITE);
->> +               pages[i] =3D pagecache_get_page(inode->i_mapping, index =
-+ i,
->> +                                       fgp_flags, mask | __GFP_WRITE);
->>                 if (!pages[i]) {
->>                         faili =3D i - 1;
->> -                       err =3D -ENOMEM;
->> +                       if (nowait)
->> +                               err =3D -EAGAIN;
->> +                       else
->> +                               err =3D -ENOMEM;
->>                         goto fail;
->>                 }
->>
->> @@ -1376,7 +1405,7 @@ static noinline int prepare_pages(struct inode *in=
-ode, struct page **pages,
->>                                                     pos + write_bytes, f=
-alse);
->>                 if (err) {
->>                         put_page(pages[i]);
->> -                       if (err =3D=3D -EAGAIN) {
->> +                       if (!nowait && err =3D=3D -EAGAIN) {
->>                                 err =3D 0;
->>                                 goto again;
->>                         }
->> @@ -1716,7 +1745,7 @@ static noinline ssize_t btrfs_buffered_write(struc=
+>>                 ordered =3D btrfs_lookup_ordered_range(inode, start_pos,
+>>                                                      last_pos - start_po=
+s + 1);
+>>                 if (ordered &&
+>> @@ -1755,7 +1767,7 @@ static noinline ssize_t btrfs_buffered_write(struc=
 t kiocb *iocb,
->>                  */
->>                 ret =3D prepare_pages(inode, pages, num_pages,
->>                                     pos, write_bytes,
->> -                                   force_page_uptodate);
->> +                                   force_page_uptodate, false);
->>                 if (ret) {
->>                         btrfs_delalloc_release_extents(BTRFS_I(inode),
->>                                                        reserve_bytes);
+>>                 extents_locked =3D lock_and_cleanup_extent_if_need(
+>>                                 BTRFS_I(inode), pages,
+>>                                 num_pages, pos, write_bytes, &lockstart,
+>> -                               &lockend, &cached_state);
+>> +                               &lockend, false, &cached_state);
+>>                 if (extents_locked < 0) {
+>>                         if (extents_locked =3D=3D -EAGAIN)
+>>                                 goto again;
 >> --
 >> 2.30.2
 >>
