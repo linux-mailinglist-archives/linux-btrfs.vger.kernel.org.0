@@ -2,302 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBEE5B1BBB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Sep 2022 13:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F655B1C52
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Sep 2022 14:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbiIHLlR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Sep 2022 07:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
+        id S231551AbiIHMJc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Sep 2022 08:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbiIHLlQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Sep 2022 07:41:16 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325F611CD4A
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Sep 2022 04:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1662637267;
-        bh=ItCzICiS1yANo51PaK8/wPH3ThieSh4f61E1wxDSsVs=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=lgGknLS0Ox9tjxC7FzlOY33z2BZDDGGGf/UvjkYNUIEp8BHMMFIWliRqGP3alWOCW
-         lW9LD/ojzpY6XM+CZRUhvtqpSJlw7J5ApVP3p42uOVMQlbobBiJyuqWJUlPv+JHdOh
-         r9GzQ2t7Q81SvEWm1EwA5v1N8KW4yoSHLRbqry7Y=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJE6F-1ols9B3K8Z-00KkJ0; Thu, 08
- Sep 2022 13:41:07 +0200
-Message-ID: <d5c982b6-b89e-dae0-2aee-dbc7a4e43c1a@gmx.com>
-Date:   Thu, 8 Sep 2022 19:41:03 +0800
+        with ESMTP id S230458AbiIHMJM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Sep 2022 08:09:12 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF25E5590
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Sep 2022 05:08:53 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id b35so6017212edf.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Sep 2022 05:08:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date;
+        bh=61JNgHFLNVCOHtS3GBlVT+sTDzg02TjYElOUCZQYEf8=;
+        b=TlvWZGvy2q3E24gzGuXuCrXjIP91baX19lrAUviaJ3hMoqJLxz1+gHXIikJMH1edQy
+         11+SQewlhVG7Vn9lKmMjf1segyOAK+DwM9O8bLQ6DL1PQ7h09ExGsRBrnH+/4VBjz2jM
+         YNF1f2ATuvmF70d8DtoDb19e058w7WlC2DDqJRZf/+1kPtSMcxQ/t7J3kTJt0IcHp+1+
+         gB/ZwmEEbJfMRB+dG2kcHcIFB5jzuFu/JiyYCh9k2wrT3qUCTlF4trLXSumM5rxEEZKx
+         SJFEe17bDdrhvCJFAWvGeeqZFC/ws7jTPdcdYgD3cB1rr0g9y7VYcKDBv4m2Xbv8ou8X
+         Yjcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=61JNgHFLNVCOHtS3GBlVT+sTDzg02TjYElOUCZQYEf8=;
+        b=CoG8b83PsXX1liKxJKVQaIMzvtb5W+iXvbnNHFRkhIEomY8uwpFGmShPDTNcBnMCcN
+         hWR+TqYfl4bHudBegUuLYYJRCgqBIsfSHcksTl4K4hWjD/DWC0zb9afBDT5NcnW63IzP
+         fe1DfWBzPWcd78lj7HnKs6AfYu6tjEhP+BcTYJrOvJm0KZ8wnijKuGX+oNwgE3FsdRkj
+         g1uqOkgXXDukTfg04KHFO/lbJ3iUW6QA5SH/FUqEbJD8LVejVOr8Lq4Mccg0DNLSEVOw
+         rN5lfu7WGTiUQ8nJw51SSGbZpo5LBX5X0lt5sTZe7MFrF9uzDku0nIXfEdO2z1DoSAlX
+         2ohw==
+X-Gm-Message-State: ACgBeo2hZAlh89EqYT3EnNKmkEm7UP1YTAfDGRa6azP3HD19vnn7DjhE
+        hVOOtPJkeo6wOryGOXj/EFEQBwWOoRFTGa9/mJA=
+X-Google-Smtp-Source: AA6agR6dPrL2a0yucF7k/GpsT0Zy8AQP/JD+9gwi54DEWIaYLU4qPI8wu2I4uiZxSnqOAHtzo0f1b2JOX266ttN+ZnI=
+X-Received: by 2002:a05:6402:5202:b0:448:ab5d:3b89 with SMTP id
+ s2-20020a056402520200b00448ab5d3b89mr7081238edd.343.1662638931605; Thu, 08
+ Sep 2022 05:08:51 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Content-Language: en-US
-To:     fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-References: <bf157be545a0ad97897b33be983284a4f63a5e0f.1662618779.git.wqu@suse.com>
- <CAL3q7H5d1mkMwfR-mfT8DydHbfys7_2kMg_xxS5yyrnTPvRHyA@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v2] btrfs: don't update the block group item if used bytes
- are the same
-In-Reply-To: <CAL3q7H5d1mkMwfR-mfT8DydHbfys7_2kMg_xxS5yyrnTPvRHyA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iEzyzkyTF9+jGSONkQKZGYHyLPCMyAR5/5CZIGuuSKMq+JACLYM
- 0fR+HtbDxyFQpLW2xMvab0kcLFCNgwC2+PFQhQwKCutHqswwxilWAeTC9ZF6m8bcUXU0ayi
- dv8pim6Y55toDsraeQGAUdf/cbYqVkxKQc4mhZod6aFJk0viddqeOVqlnrPs92g7BIwlXZs
- v+e4Cckz19Cdql47Xt77Q==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6ZZ6DPj4xSI=:j3VjpXQIQ8AdseSaC1kOfm
- o98LYkumf3DwEc0vTC2brqwmly/AvVvyvEk6OvZJnezo5mj8JzSyl0ShiUG7I8mCTgARIBKrU
- 1/vfSaOwmIw/9mNfF1AFej6Q2GyeHyty6nZBnnFY4/BWy3luqZJMilXscwE2sLaDr6zSifIRF
- dh28jFOiyANNi+cUliDRsjCwaZJxEij8kfssF0AE2tv1YzuQ1TwzYs9Ehzr9Zp4burObyBD/8
- VbZf/RNoZCJDJqlb0XiwEQjNPRgEMhBkXXvInpNMv08UuS1u5YbYvNfoRYE1pc4YwCcak/Z7X
- 1rWTJ5el7au1OXnkVhsK9++gYruZZx2e54BIkbwKWCISMQ1laO7FPuBtqKDxkBCk1aOU5h0HI
- tXQzlTpi7hSjtIGf3/9KjW8Iw+EEAwgbfPi0a8P+S3LvnUJb+8/ql0PBw6zzeiRP0E1g7Bwau
- Ph6AdNQBORUDmGQBJ7PJZoSw4XLJjNCDLRitW1rX4HjyeFF5kH4DrsbGkIVPWY8hQHKOfhJWi
- 2LOXzvIEQGXx/biuqg7vJeLvqyTGFkTCM4GOdYk+M7AqvT9JwlssCt5snhxtXvvlDUBdfHBk9
- 9WOnoRq9tNtlRzmdiRmVwdBUQnzoA6L/w08P603JCaSkXgLfM1ApL4Out+z7FgkKGOvtiQ2s4
- SZRUT0GMBz86BlxQ9/T5ty49a+Oriz/FoEi8JoPbEhZ5o48p1od8X1tQDdEYW5NMbfSJbcOb6
- TnHrZuUP2luwfjCroG0FQOVTgNWRWDY206BuD6itjMetH10OGXf4lG+c8DjDW8Hy/xa607dTU
- KnoQBLoIWe/FPnVaP4NmnQUt5DiK83LKS0G8E1bnltqUFfODLaAgZHVKnhDugiS/YJ59COdI5
- Q1CBxLuICXgKa6qetCUBeVZpGEChb6bCamGo6Eq/Gq9BPvB1f0tFeeNlLc/9D4wI2z4K98/7U
- N7tj6Khb5Su4lstPyvkolQbfQxjybXsiG+3SBZAYmnihEZ3YkSMQiQVe+RoH0+CB+FpO+83A+
- 3sSgomhxnJf37CYxydanKZK9yYhoq1AtY/6DjA711faPiD5LGfuiTFLJ+JxffK5o4Mi6qXh1K
- 8mXeIh899J8ePGBeGDMw5bo7PQCL9Z/VYj0SuwXgdQGfpWi4vHDA4npHnOF9lxxAIAmuNMYpv
- dM1lyI8aQrM/coTbUPUPQx4gKQ
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a17:906:749d:b0:743:2e24:e8cd with HTTP; Thu, 8 Sep 2022
+ 05:08:50 -0700 (PDT)
+Reply-To: mrtonyelumelu98@gmail.com
+From:   "Mrs. Cristalina Georgieva" <nastyanastya88889@gmail.com>
+Date:   Thu, 8 Sep 2022 13:08:50 +0100
+Message-ID: <CADsX60Bj9Xf39JrWDf_y6K-X+DcHqyvyr40Bv3xhQ3LXd77_5Q@mail.gmail.com>
+Subject: hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/9/8 18:31, Filipe Manana wrote:
-> On Thu, Sep 8, 2022 at 7:40 AM Qu Wenruo <wqu@suse.com> wrote:
->>
->> [BACKGROUND]
->>
->> When committing a transaction, we will update block group items for all
->> dirty block groups.
->>
->> But in fact, dirty block groups don't always need to update their block
->> group items.
->> It's pretty common to have a metadata block group which experienced
->> several CoW operations, but still have the same amount of used bytes.
->>
->> In that case, we may unnecessarily CoW a tree block doing nothing.
->>
->> [ENHANCEMENT]
->>
->> This patch will introduce btrfs_block_group::commit_used member to
->> remember the last used bytes, and use that new member to skip
->> unnecessary block group item update.
->>
->> This would be more common for large fs, which metadata block group can
->> be as large as 1GiB, containing at most 64K metadata items.
->>
->> In that case, if CoW added and the deleted one metadata item near the e=
-nd
->> of the block group, then it's completely possible we don't need to touc=
-h
->> the block group item at all.
->>
->> [BENCHMARK]
->>
->> To properly benchmark how many block group items we skipped the update,
->> I added some members into btrfs_tranaction to record how many times
->> update_block_group_item() is called, and how many of them are skipped.
->>
->> Then with a single line fio to trigger the workload on a newly created
->> btrfs:
->>
->>    fio --filename=3D$mnt/file --size=3D4G --rw=3Drandrw --bs=3D32k --io=
-engine=3Dlibaio \
->>        --direct=3D1 --iodepth=3D64 --runtime=3D120 --numjobs=3D4 --name=
-=3Drandom_rw \
->>        --fallocate=3Dposix
->
-> And did this improve fio's numbers? Throughput, latency?
-> It's odd to paste a test here and not mention its results. I suppose
-> it didn't make
-> a difference, but even if not, it should be explicitly stated.
-
-Unfortunately that test is run with my extra debugging patch (to show if
-the patch works).
-Thus I didn't take the fio numbers too seriously.
-
-And if I'm going to do a real tests, I'd remove the fallocate, decrease
-the blocksize, and do more loops, and other VM tunings to get a more
-performance orient tests.
-
-Just for reference, here is the script I slightly modified:
-
-fio --filename=3D$mnt/file --size=3D2G --rw=3Drandwrite --bs=3D4k
-=2D-ioengine=3Dlibaio --iodepth=3D64 --runtime=3D300 --numjobs=3D4
-=2D-name=3Drandom_write --fallocate=3Dnone
-
-And with my VM tuned for perf tests (no heavy debug config, dedicated
-SATA SSD, none cache mode, less memory, larger file size).
-
-[BEFORE]
-   WRITE: bw=3D32.3MiB/s (33.9MB/s), 8269KiB/s-8315KiB/s
-(8468kB/s-8515kB/s), io=3D8192MiB (8590MB), run=3D252210-253603msec
-
-[AFTER]
-WRITE: bw=3D31.7MiB/s (33.3MB/s), 8124KiB/s-8184KiB/s (8319kB/s-8380kB/s),
-io=3D8192MiB (8590MB), run=3D256257-258135msec
-
-So in fact it's even worse performance, which I can not explain at all...
-
->
-> In this case, less extent tree updates can result in better
-> concurrency for the nocow checks,
-> which need to check the extent tree.
->
->>
->> Then I got 101 transaction committed during that fio command, and a
->> total of 2062 update_block_group_item() calls, in which 1241 can be
->> skipped.
->>
->> This is already a good 60% got skipped.
->>
->> The full analyse can be found here:
->> https://docs.google.com/spreadsheets/d/e/2PACX-1vTbjhqqqxoebnQM_ZJzSM1r=
-F7EY7I1IRbAzZjv19imcDHsVDA7qeA_-MzXxltFZ0kHBjxMA15s2CSH8/pubhtml
->
-> Not sure if keeping an url to an external source that is not
-> guaranteed to be available "forever" is a good practice.
-> It also doesn't seem to provide any substantial value, as you have
-> already mentioned above some numbers.
->
->>
->> Furthermore, since I have per-trans accounting, it shows that initially
->> we have a very low percentage of skipped block group item update.
->>
->> This is expected since we're inserting a lot of new file extents
->> initially, thus the metadata usage is going to increase.
->>
->> But after the initial 3 transactions, all later transactions are have a
->
-> "are have" -> "have"
->
->> very stable 40~80% skip rate, mostly proving the patch is working.
->>
->> Although such high skip rate is not always a huge win, as for
->> our later block group tree feature, we will have a much higher chance t=
-o
->> have a block group item already COWed, thus can skip some COW work.
->>
->> But still, skipping a full COW search on extent tree is always a good
->> thing, especially when the benefit almost comes from thin-air.
->
-> Agreed, it's a good thing.
->
-> Were there other benefits observed, like for example less IO due to less=
- COW?
-> Or transaction commits taking less time?
-
-I can definitely do that, but just from fio numbers, it doesn't seem to
-help at all?
-
-Thanks,
-Qu
->
-> Thanks.
->
->
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> [Josef pinned down the race and provided a fix]
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> ---
->>   fs/btrfs/block-group.c | 20 +++++++++++++++++++-
->>   fs/btrfs/block-group.h |  6 ++++++
->>   2 files changed, 25 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->> index e7b5a54c8258..0df4d98df278 100644
->> --- a/fs/btrfs/block-group.c
->> +++ b/fs/btrfs/block-group.c
->> @@ -2002,6 +2002,7 @@ static int read_one_block_group(struct btrfs_fs_i=
-nfo *info,
->>
->>          cache->length =3D key->offset;
->>          cache->used =3D btrfs_stack_block_group_used(bgi);
->> +       cache->commit_used =3D cache->used;
->>          cache->flags =3D btrfs_stack_block_group_flags(bgi);
->>          cache->global_root_id =3D btrfs_stack_block_group_chunk_object=
-id(bgi);
->>
->> @@ -2693,6 +2694,22 @@ static int update_block_group_item(struct btrfs_=
-trans_handle *trans,
->>          struct extent_buffer *leaf;
->>          struct btrfs_block_group_item bgi;
->>          struct btrfs_key key;
->> +       u64 used;
->> +
->> +       /*
->> +        * Block group items update can be triggered out of commit tran=
-saction
->> +        * critical section, thus we need a consistent view of used byt=
-es.
->> +        * We can not direct use cache->used out of the spin lock, as i=
-t
->> +        * may be changed.
->> +        */
->> +       spin_lock(&cache->lock);
->> +       used =3D cache->used;
->> +       /* No change in used bytes, can safely skip it. */
->> +       if (cache->commit_used =3D=3D used) {
->> +               spin_unlock(&cache->lock);
->> +               return 0;
->> +       }
->> +       spin_unlock(&cache->lock);
->>
->>          key.objectid =3D cache->start;
->>          key.type =3D BTRFS_BLOCK_GROUP_ITEM_KEY;
->> @@ -2707,12 +2724,13 @@ static int update_block_group_item(struct btrfs=
-_trans_handle *trans,
->>
->>          leaf =3D path->nodes[0];
->>          bi =3D btrfs_item_ptr_offset(leaf, path->slots[0]);
->> -       btrfs_set_stack_block_group_used(&bgi, cache->used);
->> +       btrfs_set_stack_block_group_used(&bgi, used);
->>          btrfs_set_stack_block_group_chunk_objectid(&bgi,
->>                                                     cache->global_root_=
-id);
->>          btrfs_set_stack_block_group_flags(&bgi, cache->flags);
->>          write_extent_buffer(leaf, &bgi, bi, sizeof(bgi));
->>          btrfs_mark_buffer_dirty(leaf);
->> +       cache->commit_used =3D used;
->>   fail:
->>          btrfs_release_path(path);
->>          return ret;
->> diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
->> index f48db81d1d56..b57718020104 100644
->> --- a/fs/btrfs/block-group.h
->> +++ b/fs/btrfs/block-group.h
->> @@ -84,6 +84,12 @@ struct btrfs_block_group {
->>          u64 cache_generation;
->>          u64 global_root_id;
->>
->> +       /*
->> +        * The last committed used bytes of this block group, if above =
-@used
->> +        * is still the same as @commit_used, we don't need to update b=
-lock
->> +        * group item of this block group.
->> +        */
->> +       u64 commit_used;
->>          /*
->>           * If the free space extent count exceeds this number, convert=
- the block
->>           * group to bitmaps.
->> --
->> 2.37.3
->>
->
->
+2LXZhtiv2YjZgiDYp9mE2YbZgtivINin2YTYr9mI2YTZiiAoSS5NLkYpDQrYtNi52KjYqSDYpdiv
+2KfYsdipINin2YTYr9mK2YjZhiDYp9mE2K/ZiNmE2YrYqSDYjA0KIyAxOTAwINiMINi02KfYsdi5
+INin2YTYsdim2YrYsw0KDQrZhdix2K3YqNmL2Kcg2KjZg9mFINmB2Yog2LnZhtmI2KfZhiDYp9mE
+2KjYsdmK2K8g2KfZhNil2YTZg9iq2LHZiNmG2Yog2KfZhNix2LPZhdmKINmE2YTZhdiv2YrYsSBJ
+Lk0uRi4g2YPYsdmK2LPYqtin2YTZitmG2Kcg2KzZiNix2KzZitmB2KcNCg0KDQrYudiy2YrYstmK
+INin2YTZhdiz2KrZgdmK2K8hDQoNCtmE2YLYryDYs9mF2K0g2YTZhtinINmI2LLZitixINin2YTY
+rtiy2KfZhtipINin2YTZhdi52YrZhiDYrdiv2YrYq9mL2Kcg2YjYp9mE2YfZitim2Kkg2KfZhNit
+2KfZg9mF2Kkg2YTZhNiz2YTYt9ipINin2YTZhtmC2K/ZitipDQrZhNmE2KPZhdmFINin2YTZhdiq
+2K3Yr9ipINio2YHYrdi1INin2YTYo9mF2YjYp9mEINin2YTYqtmKINmE2YUg2KrYqtmFINin2YTZ
+hdi32KfZhNio2Kkg2KjZh9inINmI2KfZhNiq2Yog2YTYt9in2YTZhdinINmD2KfZhtiqDQrZhdiv
+2YrZhtipINmE2K3Zg9mI2YXYqSDYp9mE2KPZhdmFINin2YTZhdiq2K3Yr9ipINiMINmE2LDZhNmD
+INiq2YUg2KfYqtmH2KfZhSDZhdin2YTZg9mK2YfYpyDYqNin2YTYp9it2KrZitin2YQuDQrYp9mE
+2YXYrdiq2KfZhNmI2YYg2KfZhNiw2YrZhiDZitiz2KrYrtiv2YXZiNmGINin2LPZhSDYp9mE2KPZ
+hdmFINin2YTZhdiq2K3Yr9ipINiMINmI2YHZgtmL2Kcg2YTYs9is2YQg2KrYrtiy2YrZhiDYp9mE
+2KjZitin2YbYp9iqDQrZhdi5INi52YbZiNin2YYg2KfZhNio2LHZitivINin2YTYpdmE2YPYqtix
+2YjZhtmKINmE2YbYuNin2YXZhtinINij2KvZhtin2KEg2KfZhNiq2K3ZgtmK2YIg2KfZhNiw2Yog
+2KPYrNix2YrZhtin2Ycg2Iwg2YHYpdmGDQrYr9mB2LnYqtmDINmF2K/Ysdis2Kkg2YHZiiDZgtin
+2KbZhdipINiq2LbZhSAxNTAg2YXYs9iq2YHZitiv2YvYpyDZgdmKINin2YTZgdim2KfYqiDYp9mE
+2KrYp9mE2YrYqTog2LXZhtiv2YjZgiDZitin2YbYtdmK2KgNCti62YrYsSDZhdmP2LPZhNmO2ZHZ
+hSAvINi12YbYr9mI2YIg2YrYp9mG2LXZitioINi62YrYsSDZhdiv2YHZiNi5IC8g2YjYsdin2KvY
+qSDZhtmC2YQg2LrZitixINmF2YPYqtmF2YTYqSAvINij2YXZiNin2YQNCtin2YTYudmC2K8uDQoN
+CtmC2KfZhSDZhdiz2KTZiNmE2Ygg2KfZhNio2YbZgyDYp9mE2YHYp9iz2K8g2Iwg2KfZhNiw2YrZ
+hiDYp9ix2KrZg9io2YjYpyDYp9mE2YHYs9in2K8g2YXZhiDYo9is2YQg2KfZhNin2K3YqtmK2KfZ
+hCDYudmE2YkNCtij2YXZiNin2YTZgyDYjCDYqNiq2KPYrtmK2LEg2K/Zgdi52YMg2KjYtNmD2YQg
+2LrZitixINmF2LnZgtmI2YQg2Iwg2YXZhdinINij2K/ZiSDYpdmE2Ykg2KrYrdmF2YTZgyDYp9mE
+2YPYq9mK2LEg2YXZhg0K2KfZhNiq2YPYp9mE2YrZgSDZiNiq2KPYrtmK2LEg2LrZitixINmF2LnZ
+gtmI2YQg2YHZiiDZgtio2YjZhCDZhdiv2YHZiNi52KfYqtmDLiDYp9iu2KrYp9ix2Kog2KfZhNij
+2YXZhSDYp9mE2YXYqtit2K/YqQ0K2YjYtdmG2K/ZiNmCINin2YTZhtmC2K8g2KfZhNiv2YjZhNmK
+IChJTUYpINiv2YHYuSDYrNmF2YrYuSDYp9mE2KrYudmI2YrYttin2Kog2YTZgCAxNTAg2YXYs9iq
+2YHZitiv2YvYpyDYqNin2LPYqtiu2K/Yp9mFDQrYqNi32KfZgtin2KogVmlzYSBBVE0g2YXZhiDY
+o9mF2LHZitmD2Kcg2KfZhNi02YXYp9mE2YrYqSDZiNij2YXYsdmK2YPYpyDYp9mE2KzZhtmI2KjZ
+itipINmI2KfZhNmI2YTYp9mK2KfYqiDYp9mE2YXYqtit2K/YqQ0K2YjYo9mI2LHZiNio2Kcg2YjY
+otiz2YrYpyDZiNit2YjZhCDYp9mE2LnYp9mE2YUg2Iwg2K3ZitirINiq2KrZiNmB2LEg2KrZgtmG
+2YrYqSDYp9mE2K/Zgdi5INin2YTYudin2YTZhdmK2Kkg2YfYsNmHDQrZhNmE2YXYs9iq2YfZhNmD
+2YrZhiDZiNin2YTYtNix2YPYp9iqINmI2KfZhNmF2KTYs9iz2KfYqiDYp9mE2YXYp9mE2YrYqS4g
+2YjZitiz2YXYrSDZhNmE2K3Zg9mI2YXYp9iqINio2KfYs9iq2K7Yr9in2YUg2KfZhNi52YXZhNin
+2KoNCtin2YTYsdmC2YXZitipINio2K/ZhNin2Ysg2YXZhiDYp9mE2YbZgtivINmI2KfZhNi02YrZ
+g9in2KouDQoNCtmE2YLYryDZgtmF2YbYpyDYqNin2YTYqtix2KrZitioINmE2LPYr9in2K8g2YXY
+r9mB2YjYudin2KrZgyDYqNin2LPYqtiu2K/Yp9mFINio2LfYp9mC2KkgVmlzYSBBVE0g2YjYs9mK
+2KrZhSDYpdi12K/Yp9ix2YfYpw0K2YTZgyDZiNil2LHYs9in2YTZh9inINmF2KjYp9i02LHYqdmL
+INil2YTZiSDYudmG2YjYp9mG2YMg2LnYqNixINij2Yog2K7Yr9mF2KfYqiDYqNix2YrYryDYs9ix
+2YrYuSDZhdiq2KfYrdipLiDYqNi52K8NCtin2YTYp9iq2LXYp9mEINio2YbYpyDYjCDYs9mK2KrZ
+hSDYqtit2YjZitmEINmF2KjZhNi6IDHYjDUwMNiMMDAwLjAwINiv2YjZhNin2LEg2KPZhdix2YrZ
+g9mKINil2YTZiSDYqNi32KfZgtipIFZpc2ENCkFUTSDYjCDZiNin2YTYqtmKINiz2KrYs9mF2K0g
+2YTZgyDYqNiz2K3YqCDYo9mF2YjYp9mE2YMg2LnZhiDYt9ix2YrZgiDYs9it2Kgg2YXYpyDZhNin
+INmK2YLZhCDYudmGIDEw2IwwMDAg2K/ZiNmE2KfYsQ0K2KPZhdix2YrZg9mKINmB2Yog2KfZhNmK
+2YjZhSDZhdmGINij2Yog2YXYp9mD2YrZhtipINi12LHYp9mBINii2YTZiiDZgdmKINio2YTYr9mD
+LiDYqNmG2KfYodmLINi52YTZiSDYt9mE2KjZgyDYjCDZitmF2YPZhtmDDQrYstmK2KfYr9ipINin
+2YTYrdivINil2YTZiSAyMNiMMDAwLjAwINiv2YjZhNin2LEg2YHZiiDYp9mE2YrZiNmFLiDZgdmK
+INmH2LDYpyDYp9mE2LXYr9ivINiMINmK2KzYqCDYudmE2YrZgw0K2KfZhNin2KrYtdin2YQg2KjY
+pdiv2KfYsdipINin2YTZhdiv2YHZiNi52KfYqiDZiNin2YTYqtit2YjZitmE2KfYqiDYp9mE2K/Z
+iNmE2YrYqSDZiNiq2YLYr9mK2YUg2KfZhNmF2LnZhNmI2YXYp9iqINin2YTZhdi32YTZiNio2KkN
+CtmF2YYg2K7ZhNin2YQ6DQoNCjEuINin2LPZhdmDINin2YTZg9in2YXZhCAuLi4uLi4uLi4uLi4u
+Lg0KMi4g2LnZhtmI2KfZhtmDINin2YTZg9in2YXZhCAuLi4NCjMuINin2YTYrNmG2LPZitipIC4u
+Li4uLi4uLi4uLi4uLi4NCjQuINiq2KfYsdmK2K4g2KfZhNmF2YrZhNin2K8gLyDYp9mE2KzZhtiz
+IC4uLi4uLi4uLg0KNS4g2KfZhNiq2K7Ytdi1IC4uLg0KNi4g2LHZgtmFINin2YTZh9in2KrZgSAu
+Li4uLi4uLi4NCjcuINi52YbZiNin2YYg2KfZhNio2LHZitivINin2YTYpdmE2YPYqtix2YjZhtmK
+INmE2LTYsdmD2KrZgyAuLi4uLi4NCjguINi52YbZiNin2YYg2KfZhNio2LHZitivINin2YTYpdmE
+2YPYqtix2YjZhtmKINin2YTYtNiu2LXZiiAuLi4uLi4NCg0KDQrZhNiq2K3Yr9mK2K8g2YfYsNin
+INin2YTYsdmF2LIgKNin2YTYsdin2KjYtzogQ0xJRU5ULTk2Ni8xNikg2Iwg2KfYs9iq2K7Yr9mF
+2Ycg2YPZhdmI2LbZiNi5INmE2YTYqNix2YrYrw0K2KfZhNil2YTZg9iq2LHZiNmG2Yog2KfZhNiu
+2KfYtSDYqNmDINmI2K3Yp9mI2YQg2KrZgtiv2YrZhSDYp9mE2YXYudmE2YjZhdin2Kog2KfZhNmF
+2LDZg9mI2LHYqSDYo9i52YTYp9mHINil2YTZiSDYp9mE2YXZiNi42YHZitmGDQrYp9mE2KrYp9mE
+2YrZitmGINmE2KXYtdiv2KfYsSDZiNiq2LPZhNmK2YUg2KjYt9in2YLYqSBWaXNhIEFUTSDYmw0K
+DQrZhtmI2LXZitmDINio2YHYqtitINi52YbZiNin2YYg2KjYsdmK2K8g2KXZhNmD2KrYsdmI2YbZ
+iiDYtNiu2LXZiiDYqNix2YLZhSDYrNiv2YrYryDZhNmE2LPZhdin2K0g2YTZiNmD2YrZhCDYp9mE
+2KjZhtmDINio2KrYqtio2LkNCtmH2LDZhyDYp9mE2YXYr9mB2YjYudin2Kog2YjYqtio2KfYr9mE
+INin2YTYsdiz2KfYptmEINmE2YXZhti5INin2YTZhdiy2YrYryDZhdmGINin2YTYqtij2K7Zitix
+INij2Ygg2KfZhNiq2YjYrNmK2Ycg2KfZhNiu2KfYt9imDQrZhNij2YXZiNin2YTZgy4g2KfYqti1
+2YQg2KjZiNmD2YrZhCDYp9mE2KjZhtmDINin2YTYpdmB2LHZitmC2Yog2KfZhNmF2KrYrdivINin
+2YTYotmGINio2KfYs9iq2K7Yr9in2YUg2YXYudmE2YjZhdin2KoNCtin2YTYp9iq2LXYp9mEINij
+2K/Zhtin2Yc6DQoNCtin2YTYtNiu2LUg2KfZhNmF2LPYpNmI2YQ6INin2YTYs9mK2K8g2KrZiNmG
+2Yog2KXZhNmI2YXZitmE2YgNCtil2K/Yp9ix2Kkg2KrYrdmI2YrZhCDYo9mF2YjYp9mEINin2YTY
+qti52YjZiti22KfYqiDYjCDYrNmH2Kkg2KfZhNin2KrYtdin2YQg2KjYp9mE2KjYsdmK2K8g2KfZ
+hNil2YTZg9iq2LHZiNmG2Yog2YTYqNmG2YMNCtil2YHYsdmK2YLZitinINin2YTZhdiq2K3Yrzog
+KG1ydG9ueWVsdW1lbHU5OEBnbWFpbC5jb20pDQoNCtmG2K3Yqtin2Kwg2KXZhNmJINix2K8g2LPY
+sdmK2Lkg2LnZhNmJINmH2LDYpyDYp9mE2KjYsdmK2K8g2KfZhNil2YTZg9iq2LHZiNmG2Yog2YTY
+qtis2YbYqCDYp9mE2YXYstmK2K8g2YXZhiDYp9mE2KrYo9iu2YrYsS4NCg0K2LXYr9mK2YLZgyDY
+p9mE2YXYrtmE2LUNCtin2YTYs9mR2YrYr9ipLiDZg9ix2YrYs9iq2KfZhNmK2YbYpyDYrNmI2LHY
+rNmK2YHYpw0K
