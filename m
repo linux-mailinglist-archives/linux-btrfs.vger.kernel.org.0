@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEF65B26B0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Sep 2022 21:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173925B2706
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Sep 2022 21:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232020AbiIHT1v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Sep 2022 15:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41544 "EHLO
+        id S229731AbiIHTnv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Sep 2022 15:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232001AbiIHT1u (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Sep 2022 15:27:50 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775908E0FB
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Sep 2022 12:27:49 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id k12so1035039qkj.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 08 Sep 2022 12:27:49 -0700 (PDT)
+        with ESMTP id S231742AbiIHTnT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Sep 2022 15:43:19 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A51E114A45
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Sep 2022 12:42:45 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id cb8so13796413qtb.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Sep 2022 12:42:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=uJuSEBAP6rRmrIWIihpoeQUrSgdohwiep3NB3gaWFo8=;
-        b=yOlyV7wO/K1OUz538EHIg5BEWLzOUoIbe/xVlYV5eND8thb58u5gUIB1TnmxVUrqr0
-         yqR3sjJwDzY/lLXtMLhy3clM7I8hz4cofsAZC3y6nJecgbVAdJ0wob/BYoKYNLnkWYSM
-         cL5wrJ/dX3IvNILBL0u9lCqw9xBVZgg+Q7KdWJFhd6K8O5tO3tJ2yCPZq8zr5xqQ1aO1
-         WwAmuZs1RoPQMEnFL0kzQqNfmog/i05rKEoBg6PwDWJkBPsbcH1cJcCtadFe3wZKdLXg
-         QpbsuW++91IGbQjOTsNXlJICtjVL0WJ6ci6S/vgxqT8hIKuFClz1PQHqZr3sUCgOYpQb
-         +NgA==
+        bh=4JTqoy5zFg2/U4/g61VXpsJ15O36VhwkskAP9knZ9Aw=;
+        b=SFUPjD1uZHspNPtLt1jPHjuKBHEKtSMqOFTBAIKz09+gP18HijDsU8DgcFKt602OGr
+         a9RE3dIj4sWBf1dvlrj13KzJ5TZc3AuMJ3ztb+kddB9jYDY/5iRJ5xtX57Jija7BM0Hr
+         b1ivktV+sJbPYmHO8RBQldlx/tp9mWbZ/bG6AKezh8XAFFg1/Z/ri5eEm4T4JJYDnkMg
+         3TO9dp9ahcz+BiJ6OsmrDhH6q378fHhoUyxd+9TJh6nBI9tkdXG7AlqeGQuWmkdraOyd
+         QCiKe48O7Y/QgPB6bEts9F1kupF6qAzCToxw0XyzVILqQlZZ1oMxEfRX3EFjm5P1db56
+         x8/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=uJuSEBAP6rRmrIWIihpoeQUrSgdohwiep3NB3gaWFo8=;
-        b=45vxnLMCuifLq1sTlvlZDtY57JNa55QpXhPD2HOZV86DCATAoqqGof7V4WTxJhl5sw
-         zg4yoXFS/2TOJf1zFlrKmUVJFR4l076O7WLkWLTp6uZYJdqfU4iPqkyfkZBWuugscIpT
-         bfX8mTOlJmdFNg+DYrNXrq3OlQ9HV6dZg7S3PvdaLd7LOqDtXi35joQmQbSm+HTE9xNS
-         cx9gokNPShmgyIGx5QBmsLRxOPrTKKvcFOvbNX/d7HjkJYrZOJmggyy0OxtBDAcMWOYd
-         sp45tzkFJzfQHCTcKxYxww51BUklrRBdH3Qj9zLe3wcadm0QrIPbA3/9ym9O/v8TCvaB
-         Kz0w==
-X-Gm-Message-State: ACgBeo2pLHZmIMV0a8Qv8ZTGaXUX/S/3Jd9OeWKybuDT6VOAmv4eXswY
-        ZnYGixCbNRzaU8SMCVAP5fBXuA==
-X-Google-Smtp-Source: AA6agR5b101O8bqi/mKgFUPKgcze67lg/xw/eC/6lXVh2fXekpAJIuULI5EMueFWazFpTkS2hHppVg==
-X-Received: by 2002:a05:620a:4394:b0:6be:6fdb:a7b2 with SMTP id a20-20020a05620a439400b006be6fdba7b2mr7252830qkp.345.1662665268491;
-        Thu, 08 Sep 2022 12:27:48 -0700 (PDT)
+        bh=4JTqoy5zFg2/U4/g61VXpsJ15O36VhwkskAP9knZ9Aw=;
+        b=ZQ2VdYbouNNWCA0DFvM/cKo19fZ3qzGXqedb9NLlLuV+pE8QFzfQahBaaYmeAHTBim
+         l2Cc5G1NoFLEd8wNFHKEjV/hEtlVI3UXwdxP1PC6I4fJ/X8SiTvEDK0zwic74OFe+HVI
+         sDaNxblKt1yKhAXZVZSVkG1DRToSh+xY10bRvdf4b6GxgvcoimFgjvRdsREILeIKuApT
+         9Vi2TCgeMq0Bq+l9VCTWrce8sWEj2WOgo1mOvG7TjpUJsUCS8qjrPaBNAKYbwrMa/lll
+         26ndSjNIXh2jS6NcRLkFyWhTIAe9A02Bppx2uzoTO/mJRHWh9vWOVlIihteI8iG8Iwz1
+         2P0Q==
+X-Gm-Message-State: ACgBeo0RVoZDsYt3pkfV9ughkJRM/y8gAvDMRLxOzn3BngwrgMhHxv0K
+        Swd7wH/pnm36+xPHSvSlLfXSyQ==
+X-Google-Smtp-Source: AA6agR5b8Jd1/86SssvvayJeaEWk0hJiGkA2gROu3cOU0Ptn1nCtnRiUG3rltIQTg1PGgdjIsChmtQ==
+X-Received: by 2002:a05:622a:14cd:b0:344:6cfa:42f9 with SMTP id u13-20020a05622a14cd00b003446cfa42f9mr9399931qtx.147.1662666163097;
+        Thu, 08 Sep 2022 12:42:43 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id m11-20020a05620a290b00b006bb87c4833asm18673091qkp.109.2022.09.08.12.27.47
+        by smtp.gmail.com with ESMTPSA id d3-20020a05620a166300b006b5c061844fsm16539412qko.49.2022.09.08.12.42.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Sep 2022 12:27:47 -0700 (PDT)
-Date:   Thu, 8 Sep 2022 15:27:46 -0400
+        Thu, 08 Sep 2022 12:42:42 -0700 (PDT)
+Date:   Thu, 8 Sep 2022 15:42:40 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
@@ -56,43 +56,54 @@ Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         Omar Sandoval <osandov@osandov.com>
-Subject: Re: [PATCH v2 10/20] btrfs: factor a fscrypt_name matching method
-Message-ID: <YxpCMuWb80TjbVgU@localhost.localdomain>
+Subject: Re: [PATCH v2 12/20] btrfs: start using fscrypt hooks.
+Message-ID: <YxpFsHExmVfH/x+W@localhost.localdomain>
 References: <cover.1662420176.git.sweettea-kernel@dorminy.me>
- <685c8abce7bdb110bc306752314b4fb0e7867290.1662420176.git.sweettea-kernel@dorminy.me>
+ <4b27b127a4048a58af965634436b562ec1217c82.1662420176.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <685c8abce7bdb110bc306752314b4fb0e7867290.1662420176.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <4b27b127a4048a58af965634436b562ec1217c82.1662420176.git.sweettea-kernel@dorminy.me>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 05, 2022 at 08:35:25PM -0400, Sweet Tea Dorminy wrote:
+On Mon, Sep 05, 2022 at 08:35:27PM -0400, Sweet Tea Dorminy wrote:
 > From: Omar Sandoval <osandov@osandov.com>
 > 
-> Now that everything in btrfs is dealing in fscrypt_names, fscrypt has a
-> useful function, fscrypt_match_name(), to check whether a fscrypt_name
-> matches a provided buffer. However, btrfs buffers are struct
-> extent_buffer rather than a raw char array, so we need to implement our
-> own imitation of fscrypt_match_name() that deals in extent_buffers,
-> falling back to a simple memcpy if fscrypt isn't compiled. We
-> can then use this matching method in btrfs_match_dir_item_name() and
-> other locations.
-> 
-> This also provides a useful occasion to introduce the new fscrypt file
-> for btrfs, handling the fscrypt-specific functions needed.
+> In order to appropriately encrypt, create, open, rename, and various symlink
+> operations must call fscrypt hooks. These determine whether the inode
+> should be encrypted and do other preparatory actions. The superblock
+> must have fscrypt operations registered, so implement the minimal set
+> also.
 > 
 > Signed-off-by: Omar Sandoval <osandov@osandov.com>
 > Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/btrfs/ctree.h   |  1 +
+>  fs/btrfs/file.c    |  3 ++
+>  fs/btrfs/fscrypt.c |  3 ++
+>  fs/btrfs/fscrypt.h |  1 +
+>  fs/btrfs/inode.c   | 91 ++++++++++++++++++++++++++++++++++++++++------
+>  fs/btrfs/super.c   |  3 ++
+>  6 files changed, 90 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 230537a007b6..2b9ba8d77861 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -3416,6 +3416,7 @@ struct btrfs_new_inode_args {
+>  	 */
+>  	struct posix_acl *default_acl;
+>  	struct posix_acl *acl;
+> +	bool encrypt;
 
-The code is fine, but I was very confused about why we do this sha256 thing.
-Perhaps point at the code for fscrypt_nokey_name and indicate that it exists to
-be interoperable with no-key actions on the file system.  Thanks,
+This doesn't appear to be used in this patch.  Thanks,
 
 Josef
