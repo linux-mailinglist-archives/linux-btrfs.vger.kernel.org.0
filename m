@@ -2,252 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1754A5B2957
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 00:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E4C5B2964
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 00:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbiIHW37 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Sep 2022 18:29:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52124 "EHLO
+        id S229464AbiIHWf0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Sep 2022 18:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbiIHW35 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Sep 2022 18:29:57 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59555399C3;
-        Thu,  8 Sep 2022 15:29:54 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0DD3E1F88C;
-        Thu,  8 Sep 2022 22:29:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1662676193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XYi+pBRvFMvFKXrZibMQyGhv2Fxedtu18zU52J+7zKo=;
-        b=twHBnF2wVKZz1IS9qZbEMJXKJ1DPXeUZvzOpj3kgfapp+yBlVl8RD0f+CbRjO89h/Ji1xX
-        yJf+3kJd8R4XTqWK3P+jWunDQ5vHupX3/p9WeWQ3kVOe/VigMOHeiBWAP00Ukd9/c7rpmI
-        oTnL3xgh5Zfa4gThb2CJAzIisZV6iR0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1662676193;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XYi+pBRvFMvFKXrZibMQyGhv2Fxedtu18zU52J+7zKo=;
-        b=cjwnsYR1mNWlOekSsTFJ9B2EEyfgw0A3y6EzirZ7inWDoQmE2PezK7XeNV2TYwm84AXq+p
-        nJ1PJdtyoSeDfOAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CDBBB1322C;
-        Thu,  8 Sep 2022 22:29:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id B442IdlsGmMhBwAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 08 Sep 2022 22:29:45 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229531AbiIHWfZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Sep 2022 18:35:25 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55389E899
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Sep 2022 15:35:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1662676520;
+        bh=wihQTQzWKqzbo1urtESqlxpk82pZWIk5C7PNeAzRTec=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=NDEOY34WUqAB1A1rCbUINLxGu8UnjB11R9PbtMM6dvDSTXvNC6Uaj0g8KqgHXODCC
+         tkI8jqIHe2pw3r3A9jSgzX/mUJa5rr6CrkbHH0dEiJ2AdghrQxlmUkxjsYNYKCdaJY
+         GRFbgsUPVKUO1N2shIr5U7ss5VfOxeJEtXrh4XsI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MTRR0-1ovbQp1F9A-00TkMq; Fri, 09
+ Sep 2022 00:35:19 +0200
+Message-ID: <91c7d385-4687-efd9-2c9a-bd02afae6141@gmx.com>
+Date:   Fri, 9 Sep 2022 06:35:15 +0800
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Jeff Layton" <jlayton@kernel.org>
-Cc:     "Trond Myklebust" <trondmy@hammerspace.com>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-In-reply-to: <f7f852c2cd7757646d9ad8e822f7fd04c467df7d.camel@kernel.org>
-References: <20220907111606.18831-1-jlayton@kernel.org>,
- <166255065346.30452.6121947305075322036@noble.neil.brown.name>,
- <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>,
- <20220907125211.GB17729@fieldses.org>,
- <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>,
- <8a71986b4fb61cd9b4adc8b4250118cbb19eec58.camel@hammerspace.com>,
- <c22baa64133a23be3aba81df23b4af866df51343.camel@kernel.org>,
- <166259764365.30452.5588074352157110414@noble.neil.brown.name>,
- <f7f852c2cd7757646d9ad8e822f7fd04c467df7d.camel@kernel.org>
-Date:   Fri, 09 Sep 2022 08:29:41 +1000
-Message-id: <166267618149.30452.1385850427092221026@noble.neil.brown.name>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH v2] btrfs: don't update the block group item if used bytes
+ are the same
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <bf157be545a0ad97897b33be983284a4f63a5e0f.1662618779.git.wqu@suse.com>
+ <YxnrXj7GqhPg7vRa@localhost.localdomain>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <YxnrXj7GqhPg7vRa@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:yqUY4UaL8rUsAznGcLTRngLaV6ukyvr/9svxbnAm9XF+DE3LVpg
+ 05sRA4QL/9+UAoo8sq53NdXBDPTaCgpcwILiJm3mCpZeIrF/dZ9H9BN9djuizwfO66AdcC9
+ er6kqWdxF6jk1sgOrmnlT49/njargOzrqMsA+K6SPhkc30nDJNA7MhGRUy0G4KVunQ5r4G2
+ x8uuD1FY3t3oaVWaY5iVQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DTGREMVkfZc=:Y6QlkR3yzCaYrgJ9mxCpri
+ 2OnaQWAVYiIUR2Z6ic9MVrMiss519PszyKAQQGTdLJRVbexMqQnm1nLOKRTKIq2VuRDrV1Eiz
+ agCuiBArlsjMOq7jY0RotFgFdLBQ88jtuqQUJNrA4Zgp7A6s5/tepBV2+DT4l31lPXPBfJsMt
+ ODZZnJStISltlee1wMEYokMyQTPhCuT+Iwm8zWVJgnqkw0o0EwYjLw67g1PPdOgN9AgbiJF9M
+ jYnEcVYJW+DHtvInECifIbNl7UDarNjyIsPGIe8n40ERNzGQ3747dpCYk2/60mJ7VhP1WNjZz
+ 0nhOt3VaYn9BFqgnBmnwg69Ty37eON6Y4xNFd/a3JH2yX4ORMeVZ723PbtHCpMFy4nzDiQ87r
+ 7/+y5ufrZn0zcgyFY9FetvRO4B/Sictu6OmGd7DxlM/WLwa+Xff3SsihCkNBt4CQOKEo85ENo
+ orayXLzwIJJS9trrMjr9oatJJBUJLrNteZ0tMb43cMxSZie3E4tddK3xMp466kdKlRd8eJLvD
+ HzIWaGR6AZL8DNrxem4oqOYOE2gji3hL7r6LIkUJ+2kam+Kiptori8UwjIQgeJHsuwVNxzkaW
+ +8RZg++kQoHcCoKbM7lq/Z4OPmd+E6uYifC0oTsSF0wPoNgdIXJ8G9gpVDzBAAxB5rxYx7taH
+ CBnR+52e8usxqkZYI7itGEyjpqnhJdJAlNqHWX8MCDdTHhTGjHGaFKQ/VPxosaQWt9jBi7LpC
+ lNjuoW8N2D1CH6ErILglnyduTJAxlaC/Drivxe98/AcKjjHb/C9ElCi0s1YRxoL2rwxXN8PkR
+ sI9t4v9W5+WYfLV+DWebdxWrlPKIiSjqxvVwDYljLmVB1l6+z4MJ0+Pwsvy7Nr2ROjWFQA1hf
+ l4I2AAr9BzPiTvkPn0d3Bkvnq55GpqiE9nrjIU71QzFWJKVfhXzfN3VSR6qcNlGC4W+7nZSHC
+ cQb0U0QrunbTD3nfnJp+Zs8GkOMbA0Ox/bHSZJUkUhtcnLVYnBg4Cx8L+WjxihVGYva0QOFK0
+ Hv48dqmw86O5D6ST9lq9ZPqqp1HC7h6PdUDMFuWJuhm2ARO07/7Xa21KVDuTuRRThsf7ZteFG
+ a/fE/jdBcPvtGOvJ/dtynZzuPCrmo1x9elfj0yEwaoJ0dqjjmXMo1PAPgoeLsAtkflO4OubjQ
+ cDoj3lNOPn4fVLAMP6TJDgkWyW
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 08 Sep 2022, Jeff Layton wrote:
-> On Thu, 2022-09-08 at 10:40 +1000, NeilBrown wrote:
-> > On Thu, 08 Sep 2022, Jeff Layton wrote:
-> > > On Wed, 2022-09-07 at 13:55 +0000, Trond Myklebust wrote:
-> > > > On Wed, 2022-09-07 at 09:12 -0400, Jeff Layton wrote:
-> > > > > On Wed, 2022-09-07 at 08:52 -0400, J. Bruce Fields wrote:
-> > > > > > On Wed, Sep 07, 2022 at 08:47:20AM -0400, Jeff Layton wrote:
-> > > > > > > On Wed, 2022-09-07 at 21:37 +1000, NeilBrown wrote:
-> > > > > > > > On Wed, 07 Sep 2022, Jeff Layton wrote:
-> > > > > > > > > +The change to \fIstatx.stx_ino_version\fP is not atomic wi=
-th
-> > > > > > > > > respect to the
-> > > > > > > > > +other changes in the inode. On a write, for instance, the
-> > > > > > > > > i_version it usually
-> > > > > > > > > +incremented before the data is copied into the pagecache.
-> > > > > > > > > Therefore it is
-> > > > > > > > > +possible to see a new i_version value while a read still
-> > > > > > > > > shows the old data.
-> > > > > > > >=20
-> > > > > > > > Doesn't that make the value useless?
-> > > > > > > >=20
-> > > > > > >=20
-> > > > > > > No, I don't think so. It's only really useful for comparing to =
-an
-> > > > > > > older
-> > > > > > > sample anyway. If you do "statx; read; statx" and the value
-> > > > > > > hasn't
-> > > > > > > changed, then you know that things are stable.=20
-> > > > > >=20
-> > > > > > I don't see how that helps.=C2=A0 It's still possible to get:
-> > > > > >=20
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0reader=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0writer
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0------=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0------
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0i_version++
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0statx
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0read
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0statx
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0update page cache
-> > > > > >=20
-> > > > > > right?
-> > > > > >=20
-> > > > >=20
-> > > > > Yeah, I suppose so -- the statx wouldn't necessitate any locking. In
-> > > > > that case, maybe this is useless then other than for testing purpos=
-es
-> > > > > and userland NFS servers.
-> > > > >=20
-> > > > > Would it be better to not consume a statx field with this if so? Wh=
-at
-> > > > > could we use as an alternate interface? ioctl? Some sort of global
-> > > > > virtual xattr? It does need to be something per-inode.
-> > > >=20
-> > > > I don't see how a non-atomic change attribute is remotely useful even
-> > > > for NFS.
-> > > >=20
-> > > > The main problem is not so much the above (although NFS clients are
-> > > > vulnerable to that too) but the behaviour w.r.t. directory changes.
-> > > >=20
-> > > > If the server can't guarantee that file/directory/... creation and
-> > > > unlink are atomically recorded with change attribute updates, then the
-> > > > client has to always assume that the server is lying, and that it has
-> > > > to revalidate all its caches anyway. Cue endless readdir/lookup/getat=
-tr
-> > > > requests after each and every directory modification in order to check
-> > > > that some other client didn't also sneak in a change of their own.
-> > > >=20
-> > >=20
-> > > We generally hold the parent dir's inode->i_rwsem exclusively over most
-> > > important directory changes, and the times/i_version are also updated
-> > > while holding it. What we don't do is serialize reads of this value vs.
-> > > the i_rwsem, so you could see new directory contents alongside an old
-> > > i_version. Maybe we should be taking it for read when we query it on a
-> > > directory?
-> >=20
-> > We do hold i_rwsem today.  I'm working on changing that.  Preserving
-> > atomic directory changeinfo will be a challenge.  The only mechanism I
-> > can think if is to pass a "u64*" to all the directory modification ops,
-> > and they fill in the version number at the point where it is incremented
-> > (inode_maybe_inc_iversion_return()).  The (nfsd) caller assumes that
-> > "before" was one less than "after".  If you don't want to internally
-> > require single increments, then you would need to pass a 'u64 [2]' to
-> > get two iversions back.
-> >=20
->=20
-> That's a major redesign of what the i_version counter is today. It may
-> very well end up being needed, but that's going to touch a lot of stuff
-> in the VFS. Are you planning to do that as a part of your locking
-> changes?
->=20
-
-"A major design"?  How?  The "one less than" might be, but allowing a
-directory morphing op to fill in a "u64 [2]" is just a new interface to
-existing data.  One that allows fine grained atomicity.
-
-This would actually be really good for NFS.  nfs_mkdir (for example)
-could easily have access to the atomic pre/post changedid provided by
-the server, and so could easily provide them to nfsd.
-
-I'm not planning to do this as part of my locking changes.  In the first
-instance only NFS changes behaviour, and it doesn't provide atomic
-changeids, so there is no loss of functionality.
-
-When some other filesystem wants to opt-in to shared-locking on
-directories - that would be the time to push through a better interface.
 
 
-> > >=20
-> > > Achieving atomicity with file writes though is another matter entirely.
-> > > I'm not sure that's even doable or how to approach it if so.
-> > > Suggestions?
-> >=20
-> > Call inode_maybe_inc_version(page->host) in __folio_mark_dirty() ??
-> >=20
->=20
-> Writes can cover multiple folios so we'd be doing several increments per
-> write. Maybe that's ok? Should we also be updating the ctime at that
-> point as well?
+On 2022/9/8 21:17, Josef Bacik wrote:
+> On Thu, Sep 08, 2022 at 02:33:48PM +0800, Qu Wenruo wrote:
+>> [BACKGROUND]
+>>
+>> When committing a transaction, we will update block group items for all
+>> dirty block groups.
+>>
+>> But in fact, dirty block groups don't always need to update their block
+>> group items.
+>> It's pretty common to have a metadata block group which experienced
+>> several CoW operations, but still have the same amount of used bytes.
+>>
+>> In that case, we may unnecessarily CoW a tree block doing nothing.
+>>
+>> [ENHANCEMENT]
+>>
+>> This patch will introduce btrfs_block_group::commit_used member to
+>> remember the last used bytes, and use that new member to skip
+>> unnecessary block group item update.
+>>
+>> This would be more common for large fs, which metadata block group can
+>> be as large as 1GiB, containing at most 64K metadata items.
+>>
+>> In that case, if CoW added and the deleted one metadata item near the e=
+nd
+>> of the block group, then it's completely possible we don't need to touc=
+h
+>> the block group item at all.
+>>
+>> [BENCHMARK]
+>>
+>> To properly benchmark how many block group items we skipped the update,
+>> I added some members into btrfs_tranaction to record how many times
+>> update_block_group_item() is called, and how many of them are skipped.
+>>
+>> Then with a single line fio to trigger the workload on a newly created
+>> btrfs:
+>>
+>>    fio --filename=3D$mnt/file --size=3D4G --rw=3Drandrw --bs=3D32k --io=
+engine=3Dlibaio \
+>>        --direct=3D1 --iodepth=3D64 --runtime=3D120 --numjobs=3D4 --name=
+=3Drandom_rw \
+>>        --fallocate=3Dposix
+>>
+>> Then I got 101 transaction committed during that fio command, and a
+>> total of 2062 update_block_group_item() calls, in which 1241 can be
+>> skipped.
+>>
+>> This is already a good 60% got skipped.
+>>
+>> The full analyse can be found here:
+>> https://docs.google.com/spreadsheets/d/e/2PACX-1vTbjhqqqxoebnQM_ZJzSM1r=
+F7EY7I1IRbAzZjv19imcDHsVDA7qeA_-MzXxltFZ0kHBjxMA15s2CSH8/pubhtml
+>>
+>> Furthermore, since I have per-trans accounting, it shows that initially
+>> we have a very low percentage of skipped block group item update.
+>>
+>> This is expected since we're inserting a lot of new file extents
+>> initially, thus the metadata usage is going to increase.
+>>
+>> But after the initial 3 transactions, all later transactions are have a
+>> very stable 40~80% skip rate, mostly proving the patch is working.
+>>
+>> Although such high skip rate is not always a huge win, as for
+>> our later block group tree feature, we will have a much higher chance t=
+o
+>> have a block group item already COWed, thus can skip some COW work.
+>>
+>> But still, skipping a full COW search on extent tree is always a good
+>> thing, especially when the benefit almost comes from thin-air.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> [Josef pinned down the race and provided a fix]
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>
+> Generally I like this change, any time we can avoid a tree search will b=
+e good.
+> I would like to see if this makes any difference timing wise.  Could you=
+ record
+> transaction commit times for this job with and without your change?
 
-You would only do several increments if something was reading the value
-concurrently, and then you really should to several increments for
-correctness.
+Sure, would add extra benchmarking the transaction commit time consumption=
+.
 
->=20
-> Fetching the i_version under the i_rwsem is probably sufficient to fix
-> this though. Most of the write_iter ops already bump the i_version while
-> holding that lock, so this wouldn't add any extra locking to the write
-> codepaths.
-
-Adding new locking doesn't seem like a good idea.  It's bound to have
-performance implications.  It may well end up serialising the directory
-op that I'm currently trying to make parallelisable.
+However previous fio performance tests show no observable change in
+performance numbers, so just in case I would also record the total and
+individual execution time for update_block_group_item() function just in
+case.
 
 Thanks,
-NeilBrown
+Qu
 
-
->=20
-> --=20
-> Jeff Layton <jlayton@kernel.org>
->=20
+> That would
+> likely show a difference.  In any case the code is fine
+>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>
+> Thanks,
+>
+> Josef
