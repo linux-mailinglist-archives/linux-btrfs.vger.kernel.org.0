@@ -2,46 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9E85B1120
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Sep 2022 02:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9EA5B1124
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Sep 2022 02:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbiIHA3r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Sep 2022 20:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
+        id S230155AbiIHA37 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Sep 2022 20:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbiIHA3q (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 20:29:46 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B2F1A83A
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 17:29:33 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 287LIijY014551
-        for <linux-btrfs@vger.kernel.org>; Wed, 7 Sep 2022 17:29:20 -0700
+        with ESMTP id S230213AbiIHA34 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Sep 2022 20:29:56 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089173D592
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Sep 2022 17:29:42 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 287HnoaP011519
+        for <linux-btrfs@vger.kernel.org>; Wed, 7 Sep 2022 17:29:24 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=is9Y7XjgKHvRGTljgTWJnvm7mK7pSl22GMfdkPrRC9w=;
- b=Zx6pCPf7KnmJhls6XsNxbW/U3vfIbE3UgvQi8t9L/awKTDsUNYaqJH6TfjOwW4tiXEHB
- ZS17iTNi9Gkwjh2BedQFNPl/v+O6f2JZS7sYtQmeIj7+gmxKnOYZ9Ve8n7QjKju3Xt0e
- EfFvaE+/Zt/fCM9MxxE/KMG2av44th9RLt4= 
+ bh=fxRna6IQg6NlU17LCHiLGS776WTlOnD8rMKox+hS7r0=;
+ b=DlwXdR5IrAGJ10FpH0ajHztEF7hJ2Og7OZoDquq4VS0JEpYllduME/YZkD2iAAIZYnE+
+ cPUqlHxzDC9BA57I2a12BB2Wc/esrDukH0QCaTJA1Dg7XY1xXLBMx46Y/a0bKzPfD3Lt
+ PCUbRCo5HCLIb5LLXe4nAzwZmwy70BRy120= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jf33nh0k6-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jegypfe07-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Sep 2022 17:29:20 -0700
-Received: from twshared13579.04.prn5.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Sep 2022 17:29:24 -0700
+Received: from twshared15978.04.prn5.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 7 Sep 2022 17:29:19 -0700
+ 15.1.2375.31; Wed, 7 Sep 2022 17:29:23 -0700
 Received: by dev1180.prn1.facebook.com (Postfix, from userid 425415)
-        id EA1711D2F048; Wed,  7 Sep 2022 17:26:19 -0700 (PDT)
+        id EF60B1D2F04B; Wed,  7 Sep 2022 17:26:19 -0700 (PDT)
 From:   Stefan Roesch <shr@fb.com>
 To:     <kernel-team@fb.com>, <io-uring@vger.kernel.org>,
         <linux-btrfs@vger.kernel.org>
 CC:     <shr@fb.com>, <axboe@kernel.dk>, <josef@toxicpanda.com>,
         <fdmanana@gmail.com>
-Subject: [PATCH v2 11/12] btrfs: add assert to search functions
-Date:   Wed, 7 Sep 2022 17:26:15 -0700
-Message-ID: <20220908002616.3189675-12-shr@fb.com>
+Subject: [PATCH v2 12/12] btrfs: enable nowait async buffered writes
+Date:   Wed, 7 Sep 2022 17:26:16 -0700
+Message-ID: <20220908002616.3189675-13-shr@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220908002616.3189675-1-shr@fb.com>
 References: <20220908002616.3189675-1-shr@fb.com>
@@ -49,67 +49,61 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: KSu3hY9IVyNTygL3OiuKp6ZTxWH7CHQB
-X-Proofpoint-ORIG-GUID: KSu3hY9IVyNTygL3OiuKp6ZTxWH7CHQB
+X-Proofpoint-ORIG-GUID: Bp2eajKw1OC4OwkYm2cz1FWQFnEXI-U2
+X-Proofpoint-GUID: Bp2eajKw1OC4OwkYm2cz1FWQFnEXI-U2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
  definitions=2022-09-07_10,2022-09-07_02,2022-06-22_01
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This adds warnings to search functions, which should not have the nowait
-flag set when called.
+Enable nowait async buffered writes in btrfs_do_write_iter() and
+btrfs_file_open().
 
 Signed-off-by: Stefan Roesch <shr@fb.com>
 ---
- fs/btrfs/ctree.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/btrfs/file.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 71b238364939..9caf0f87cbcb 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -2165,6 +2165,9 @@ int btrfs_search_old_slot(struct btrfs_root *root, =
-const struct btrfs_key *key,
- 	lowest_level =3D p->lowest_level;
- 	WARN_ON(p->nodes[0] !=3D NULL);
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index fd42ba9de7a7..887497fd524f 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2107,13 +2107,13 @@ ssize_t btrfs_do_write_iter(struct kiocb *iocb, s=
+truct iov_iter *from,
+ 	if (BTRFS_FS_ERROR(inode->root->fs_info))
+ 		return -EROFS;
 =20
-+	if (WARN_ON_ONCE(p->nowait =3D=3D 1))
-+		return -EINVAL;
-+
- 	if (p->search_commit_root) {
- 		BUG_ON(time_seq);
- 		return btrfs_search_slot(NULL, root, key, p, 0, 0);
-@@ -4465,6 +4468,9 @@ int btrfs_search_forward(struct btrfs_root *root, s=
-truct btrfs_key *min_key,
- 	int ret =3D 1;
- 	int keep_locks =3D path->keep_locks;
+-	if ((iocb->ki_flags & IOCB_NOWAIT) && !(iocb->ki_flags & IOCB_DIRECT))
+-		return -EOPNOTSUPP;
+-
+ 	if (sync)
+ 		atomic_inc(&inode->sync_writers);
 =20
-+	if (WARN_ON_ONCE(path->nowait =3D=3D 1))
-+		return -EINVAL;
+ 	if (encoded) {
++		if (iocb->ki_flags & IOCB_NOWAIT)
++			return -EOPNOTSUPP;
 +
- 	path->keep_locks =3D 1;
- again:
- 	cur =3D btrfs_read_lock_root_node(root);
-@@ -4645,6 +4651,9 @@ int btrfs_next_old_leaf(struct btrfs_root *root, st=
-ruct btrfs_path *path,
+ 		num_written =3D btrfs_encoded_write(iocb, from, encoded);
+ 		num_sync =3D encoded->len;
+ 	} else if (iocb->ki_flags & IOCB_DIRECT) {
+@@ -3755,7 +3755,7 @@ static int btrfs_file_open(struct inode *inode, str=
+uct file *filp)
+ {
  	int ret;
- 	int i;
 =20
-+	if (WARN_ON_ONCE(path->nowait =3D=3D 1))
-+		return -EINVAL;
-+
- 	nritems =3D btrfs_header_nritems(path->nodes[0]);
- 	if (nritems =3D=3D 0)
- 		return 1;
+-	filp->f_mode |=3D FMODE_NOWAIT | FMODE_BUF_RASYNC;
++	filp->f_mode |=3D FMODE_NOWAIT | FMODE_BUF_RASYNC | FMODE_BUF_WASYNC;
+=20
+ 	ret =3D fsverity_file_open(inode, filp);
+ 	if (ret)
 --=20
 2.30.2
 
