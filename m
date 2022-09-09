@@ -2,107 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FE75B3CAF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 18:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A828C5B3D1C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 18:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbiIIQJS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Sep 2022 12:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
+        id S231826AbiIIQgj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Sep 2022 12:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231991AbiIIQJL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 12:09:11 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F5312F71E
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 09:09:10 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id EF206320096D;
-        Fri,  9 Sep 2022 12:09:07 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Fri, 09 Sep 2022 12:09:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        colorremedies.com; h=cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1662739747; x=
-        1662826147; bh=05Kn5n+qCRCVjdN0oQeeSMnrXImbnmeoGKRIi3Bhv8I=; b=F
-        FT5khj5mYuRtSt+NQyoU3SteLQEz7AQ1qr60Fl/hgk+0EYvLzdQ9vmU9I6Oqlnwk
-        vhW2PRDi1GyMjqkEM6QUulvT64acE5E8VvHedCvtx5X+bsRpdLRzypbOe+aclvRt
-        FyUWspEVS1qaChwXOrhpdIBBbx9rUitijjSxy0h2+wUdkR6ho29MDB2r42xkYyhy
-        WzBeHyMnyefIS9Ys3qKBaxgMgIkrG3Tyz4sGzQ28WLYtbznLuJG+9QvlWM/GPeRR
-        jY4IQJycAI7cPh12EGNJUZR74CmLQa+i464XC+ZrHo+c8pBEsu/P/8ZQZoPVRHVV
-        6M9HwQiPzyhiiAsNOBZvA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1662739747; x=1662826147; bh=05Kn5n+qCRCVjdN0oQeeSMnrXImb
-        nmeoGKRIi3Bhv8I=; b=TZbVy7FRxHbCNdw5fHTBZ2XgCeqydqLw7yMcMsblfWbG
-        AgXNIR16CFDAmWXG5Pzmqh+0hIQz//mciimMbFdCVEt4Rn/xFDwvt2FMY5OneTYA
-        sxpHUJ+M6mrsPvskoi90LerfSLCX7GlOQ/JvblSBTK/ZzmYtD7hWLmTKBAeOoqUB
-        jqtQTkjSgOc/3H/31ax8JZc+Al0QAnx0DjWPU5d9+Q7yHTNRPqQ7eTHRTWfje4Vu
-        EXqfO06YAAIM1fOBSSj1shBjLQGsdsMnfcXk2CGpiyfQt7xGa0Hbnfu51k0b+IxW
-        9XrnDWe2J1VVBxSwRZiDnYoy2rj7V7+Gj2k9pbRLMw==
-X-ME-Sender: <xms:I2UbY8UlL3UtzgwV4AjnQ3PCtq0hVR3QdsUpaWKyLM5VdXgsrglT1w>
-    <xme:I2UbYwkvlDCBKOkKE-SPp0wcjBXnULRn-qzqedQHjHmENcH_5Q-F0xim9Eg3kNjpq
-    N49ihyUiVBIwIVQtlQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedthedgleelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdevhhhr
-    ihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
-    eqnecuggftrfgrthhtvghrnhepudehieevueetgffhkeetkeelveffueeltdejvdejveev
-    vdeggfefhfegvddugeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
-X-ME-Proxy: <xmx:I2UbYwZ1BvPe56bXgFPuN6WOv-YJq6w_JuPFf_nKxstbRsVEl3ZpzA>
-    <xmx:I2UbY7WjTqE3FLutiBae8J660EghBpiJWfD_P5f-TYpVwhMVn-8I6w>
-    <xmx:I2UbY2kWsHLVszuG4yUrbGSCFit1TbNX2BsGsmYZ833ESa482wkf7g>
-    <xmx:I2UbYwTaYR-dJLyMDitF6vW2CfyILBBRUpvdhGTOWUxEVM3Futk77A>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 25DDF1700083; Fri,  9 Sep 2022 12:09:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-927-gf4c98c8499-fm-20220826.002-gf4c98c84
-Mime-Version: 1.0
-Message-Id: <fb1a03d1-0552-4ab4-a31b-958059c5e416@www.fastmail.com>
-In-Reply-To: <c8fc0db5-dd3f-49f0-bf15-1c0232835078@www.fastmail.com>
-References: <20220909000446.zzsniu7rc6tl6sz7@regina>
- <c8fc0db5-dd3f-49f0-bf15-1c0232835078@www.fastmail.com>
-Date:   Fri, 09 Sep 2022 12:08:46 -0400
-From:   "Chris Murphy" <lists@colorremedies.com>
-To:     "development.rex" <development.rex@posteo.net>,
-        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Subject: Re: Read only because of enospc
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S231810AbiIIQgg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 12:36:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3119D13EE53;
+        Fri,  9 Sep 2022 09:36:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DB56462048;
+        Fri,  9 Sep 2022 16:36:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A88BC433D6;
+        Fri,  9 Sep 2022 16:36:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662741393;
+        bh=wu5v/zPYdVKac4kN+MxwQR8JTk1sTk072yR8Kfjjvf4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=jAqYAdwSrah1Sa8IwFYC9ATdfygzVZR07PxvjkjqmTeE6lw8Bu54cPdMbudbCaAKf
+         6usVdZgNNDb8RXRjSQkaFYKeGoLwHhupgHWVbFvKqiwCxSrExoKfV/GBd+6SnSF0Xu
+         /dH7f/AFvbQeF7iczCFMkFgWVrHkNQDSqspoANp8qOGzQBtBt3THplTrbWDKhp4ftg
+         VNHZdsaYky6wBfEzUpg62BuwERi6F1rj6Xt9MPU0CyQe9WshUsgGHlyg/9HCvmGJAp
+         3DnaZmE4Pc8cFL8W+ItuVKbVF4pw7WHgn4jRYf6mseK88msl1s4haa4YLJXO95I9t7
+         fabcJ2JNdwBQA==
+Message-ID: <125df688dbebaf06478b0911e76e228e910b04b3.camel@kernel.org>
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+From:   Jeff Layton <jlayton@kernel.org>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        NeilBrown <neilb@suse.de>, adilger.kernel@dilger.ca,
+        djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
+        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
+        chuck.lever@oracle.com, lczerner@redhat.com, brauner@kernel.org,
+        fweimer@redhat.com, linux-man@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Fri, 09 Sep 2022 12:36:29 -0400
+In-Reply-To: <20220909154506.GB5674@fieldses.org>
+References: <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
+         <20220907135153.qvgibskeuz427abw@quack3>
+         <166259786233.30452.5417306132987966849@noble.neil.brown.name>
+         <20220908083326.3xsanzk7hy3ff4qs@quack3> <YxoIjV50xXKiLdL9@mit.edu>
+         <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
+         <20220908155605.GD8951@fieldses.org>
+         <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
+         <20220908182252.GA18939@fieldses.org>
+         <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
+         <20220909154506.GB5674@fieldses.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, 2022-09-09 at 11:45 -0400, J. Bruce Fields wrote:
+> On Thu, Sep 08, 2022 at 03:07:58PM -0400, Jeff Layton wrote:
+> > On Thu, 2022-09-08 at 14:22 -0400, J. Bruce Fields wrote:
+> > > On Thu, Sep 08, 2022 at 01:40:11PM -0400, Jeff Layton wrote:
+> > > > Yeah, ok. That does make some sense. So we would mix this into the
+> > > > i_version instead of the ctime when it was available. Preferably, w=
+e'd
+> > > > mix that in when we store the i_version rather than adding it after=
+ward.
+> > > >=20
+> > > > Ted, how would we access this? Maybe we could just add a new (gener=
+ic)
+> > > > super_block field for this that ext4 (and other filesystems) could
+> > > > populate at mount time?
+> > >=20
+> > > Couldn't the filesystem just return an ino_version that already inclu=
+des
+> > > it?
+> > >=20
+> >=20
+> > Yes. That's simple if we want to just fold it in during getattr. If we
+> > want to fold that into the values stored on disk, then I'm a little les=
+s
+> > clear on how that will work.
+> >=20
+> > Maybe I need a concrete example of how that will work:
+> >=20
+> > Suppose we have an i_version value X with the previous crash counter
+> > already factored in that makes it to disk. We hand out a newer version
+> > X+1 to a client, but that value never makes it to disk.
+> >=20
+> > The machine crashes and comes back up, and we get a query for i_version
+> > and it comes back as X. Fine, it's an old version. Now there is a write=
+.
+> > What do we do to ensure that the new value doesn't collide with X+1?=
+=20
+>=20
+> I was assuming we could partition i_version's 64 bits somehow: e.g., top
+> 16 bits store the crash counter.  You increment the i_version by: 1)
+> replacing the top bits by the new crash counter, if it has changed, and
+> 2) incrementing.
+>=20
+> Do the numbers work out?  2^16 mounts after unclean shutdowns sounds
+> like a lot for one filesystem, as does 2^48 changes to a single file,
+> but people do weird things.  Maybe there's a better partitioning, or
+> some more flexible way of maintaining an i_version that still allows you
+> to identify whether a given i_version preceded a crash.
+>=20
 
+We consume one bit to keep track of the "seen" flag, so it would be a
+16+47 split. I assume that we'd also reset the version counter to 0 when
+the crash counter changes? Maybe that doesn't matter as long as we don't
+overflow into the crash counter.
 
-On Fri, Sep 9, 2022, at 8:30 AM, Chris Murphy wrote:
-> On Thu, Sep 8, 2022, at 8:07 PM, development.rex@posteo.net wrote:
->> Linux my-pc 5.17.3-arch1-1 #1 SMP
->
-> It's a recent kernel, but you might try 5.19 series. Although offhand 
-> I'm not thinking of any fixes in 5.19, the main idea is to demonstrate 
-> is still a bug. 
->
-> Once the problem happens, could you collect these and post to the list? 
-> It may give a developer some insight what's going wrong.
->
-> btrfs fi us
-> grep -r . /sys/fs/$fsuuid/allocation
+I'm not sure we can get away with 16 bits for the crash counter, as
+it'll leave us subject to the version counter wrapping after a long
+uptimes.=20
 
-Oops
-/sys/fs/btrfs/$fsuuid/allocation
+If you increment a counter every nanosecond, how long until that counter
+wraps? With 63 bits, that's 292 years (and change). With 16+47 bits,
+that's less than two days. An 8+55 split would give us ~416 days which
+seems a bit more reasonable?
 
-where $fsuuid is the UUID of the file system giving you trouble
+For NFS, we can probably live with even less bits in the crash counter.=A0
 
--- 
-Chris Murphy
+If the crash counter changes, then that means the NFS server itself has
+(likely) also crashed. The client will have to reestablish sockets,
+reclaim, etc. It should get new attributes for the inodes it cares about
+at that time.
+--=20
+Jeff Layton <jlayton@kernel.org>
