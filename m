@@ -2,78 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 163345B37C5
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 14:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512FF5B3802
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 14:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbiIIMal (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Sep 2022 08:30:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
+        id S230046AbiIIMkU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Sep 2022 08:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbiIIMai (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 08:30:38 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DF5857C9
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 05:30:37 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 4CE213200907;
-        Fri,  9 Sep 2022 08:30:34 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Fri, 09 Sep 2022 08:30:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        colorremedies.com; h=cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1662726633; x=
-        1662813033; bh=Gh0DLtxtA1OD6I+pWqKnR9ji2NIrgGpgARTtTOGPVyE=; b=e
-        g19piqJkOpJ5sQqWkZlxZzdyu5bRzlb58GP7GTuUi6FbxWR4OLeZTxsn7S9+aD0t
-        bsCfHlk1A+kfVxSNWsRpttCNiW7gON34YMak9M8iEz7M0/HYhllri1YsAbJcyKnQ
-        RQ41FYCykKhOwbnQmnk+5EJZkqB28Ssoyi80yQojLwV36JusBwNTdHg1hFHpVF3V
-        0tuzsLTnJs21EHlhFzWWqW3kYRO7aAtiMoeIgaJDGra0TDGxOZxxPIejj848hOC1
-        IiIL/31fIgZxa9WfPg0aCV5JhKTCmv0leoxA2qcdi44AGO/2eF0GZcmmn0yprNiW
-        WUwLUXz7wpaF5FCtlUCFQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1662726633; x=1662813033; bh=Gh0DLtxtA1OD6I+pWqKnR9ji2NIr
-        gGpgARTtTOGPVyE=; b=ZBlA3ZyXasbxlGoY1PCqCR9PkJIyoN7cO4XXQ1VxctGV
-        4yF2hX3tUOR+Sr/sTfbWrRhgYd9JwtRW93XiGPsNh3zZTsQad5oS90hEyhDwD7Jr
-        kToIq/uiuWD9ATOjKcHv3UML6xcYBI+eUNCuYA0xOZUJK3BOexSsOgfhRiJ9ebLk
-        xb71UvXeRhl6mahdrqbSATmzHgUTlCD6bRm8HTG1jROFf2WrF6jGFoeaodpTTjO3
-        lLjxp1NrxmIhgmFGunT5U/qZVNbd+dmHFBE7cOmUC5ZJjyENnDSjuv5n5dWnmHYW
-        iGl77a/mwIlWTNN1XauCYe8hhZBtIZTR9gA7XfW6vQ==
-X-ME-Sender: <xms:6TEbY_ln0V1-QZ46U7IZcI-ENupwmtp-TouEYMIFZFX1ceIq-VKdeA>
-    <xme:6TEbYy0XFSULhNG-_dJPIsQ7_l-zVNZOGR11Su6JxxiVt_WtkoI2PRKjb_3IwEkzE
-    Bh1AGPD48Mwwispi44>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedthedgheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdevhhhr
-    ihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
-    eqnecuggftrfgrthhtvghrnhepudehieevueetgffhkeetkeelveffueeltdejvdejveev
-    vdeggfefhfegvddugeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
-X-ME-Proxy: <xmx:6TEbY1qkqRdtef_1kuyDa8CNvUXup7LpQelMaoO-uvTAVdFLW9vIvA>
-    <xmx:6TEbY3lCv1DSAm2lXrfS_lVReQ64AgVgZd9R8wIeKpRnm-EBSSPJ3A>
-    <xmx:6TEbY93H96gmJM9STVfHI6pToszherPGUq6OOlOz8kYamszxeuUMpA>
-    <xmx:6TEbY6giYp1p57Q1J7fv1mcO1bedd8LbyEtH43iqJvC1TYrLAmBgjQ>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 903291700083; Fri,  9 Sep 2022 08:30:33 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-927-gf4c98c8499-fm-20220826.002-gf4c98c84
-Mime-Version: 1.0
-Message-Id: <c8fc0db5-dd3f-49f0-bf15-1c0232835078@www.fastmail.com>
-In-Reply-To: <20220909000446.zzsniu7rc6tl6sz7@regina>
-References: <20220909000446.zzsniu7rc6tl6sz7@regina>
-Date:   Fri, 09 Sep 2022 08:30:13 -0400
-From:   "Chris Murphy" <lists@colorremedies.com>
-To:     development.rex@posteo.net,
-        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Subject: Re: Read only because of enospc
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        with ESMTP id S229789AbiIIMkS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 08:40:18 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BCF4DF14
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 05:40:15 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3E6501F8E3;
+        Fri,  9 Sep 2022 12:40:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1662727214;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8HpSvC73hx9bm6v+pQ6AMfSUa4kW9Mp1wNXR+ewE2HQ=;
+        b=e4WM7Nhv+AdBpYUYSQYqWdeLcCRiDqBL1ZVgBuKxJYHK7NOW3PbdbAZhq+b8lGUATBdRcU
+        ghQHR3kNeluAL+GkDDz59lzP8UVFfmmhr2HhNNeaZnYzDO9Fy3LKQmW7ORvkTXauedI0R+
+        k5q26gV4yspvnGJ42aputETcdjt5elw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1662727214;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8HpSvC73hx9bm6v+pQ6AMfSUa4kW9Mp1wNXR+ewE2HQ=;
+        b=9djl5ezDH6PW5gUTa8fbf4T9Ro3fHoTAaXErPNDeys3DUnOTRjzjh5cuJG9PahNceaeshq
+        k9REJk9Yn8oXyjAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E628213A93;
+        Fri,  9 Sep 2022 12:40:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id mQj1NS00G2MQMAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 09 Sep 2022 12:40:13 +0000
+Date:   Fri, 9 Sep 2022 14:34:49 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     David Sterba <dsterba@suse.cz>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: btrfs I/O completion cleanup and single device I/O optimizations
+ v2
+Message-ID: <20220909123449.GW32411@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20220713061359.1980118-1-hch@lst.de>
+ <20220906131201.GM13489@twin.jikos.cz>
+ <20220907090826.GA31659@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220907090826.GA31659@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,17 +78,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Sep 07, 2022 at 11:08:26AM +0200, Christoph Hellwig wrote:
+> On Tue, Sep 06, 2022 at 03:12:01PM +0200, David Sterba wrote:
+> > Let me point out one example, the 5/11 "btrfs: remove
+> > bioc->stripes_pending". The subject gives a false idea what's going on.
+> > There was a member removed, yes but the whole logic regarding bios is
+> > changed, it's now using the bio chaining, as mentioned in the first
+> > paragraph at least. Other patches state in words what the code does, not
+> > explaining why.
+> 
+> Maybe I'm just too familiar with the block code to not agree with you,
+> as to me these changes are totally obvious.  But as I often point out:
+> if an experienced developers asks questions that seem obvious to me
+> my changelogs are not good enough.
 
+I think that even if you as patch author see it obvious it's a good
+thing to give some summary or hint for understanding. The changelog
+quality varies, there are some stellar examples that explain lots of
+the mechanics that probably just the patch author understands that well.
+We want that for code documentation and to spread knowledge, ideally.
 
-On Thu, Sep 8, 2022, at 8:07 PM, development.rex@posteo.net wrote:
-> Linux my-pc 5.17.3-arch1-1 #1 SMP
+Speaking about block code, as it's an interface for btrfs, in a few
+occasions I had to read some commits and got the impression that I'm not
+supposed to know.
 
-It's a recent kernel, but you might try 5.19 series. Although offhand I'm not thinking of any fixes in 5.19, the main idea is to demonstrate is still a bug. 
+> But asking for that after the series
+> has been out for a month and a half is a bit silly.  Please comment
+> on these patches in a somewhat timely fashion if you think the
+> changelogs are not good, and I will update them in a timely fashion.
 
-Once the problem happens, could you collect these and post to the list? It may give a developer some insight what's going wrong.
-
-btrfs fi us
-grep -r . /sys/fs/$fsuuid/allocation
-
--- 
-Chris Murphy
+Well, the summer development cycle is like that, I wanted to reply
+earlier but it was not the most important thing I had to do at that
+time. Some changes happen in git because that's what gets tested and
+pushed as people depend on it.  The mail can wait.
