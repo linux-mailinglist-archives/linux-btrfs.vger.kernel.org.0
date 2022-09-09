@@ -2,100 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D05505B2F2F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 08:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBE05B2F3E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 08:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbiIIGmB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Sep 2022 02:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
+        id S230436AbiIIGpu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Sep 2022 02:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbiIIGl7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 02:41:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F086C10043D;
-        Thu,  8 Sep 2022 23:41:53 -0700 (PDT)
+        with ESMTP id S229686AbiIIGpt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 02:45:49 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F6E110AAA
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Sep 2022 23:45:44 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 63F58223CF;
-        Fri,  9 Sep 2022 06:41:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1662705712; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yu9RUrvQxAp2Fwf5ytrIMONKOHocNgrjkYLX/KWmaXI=;
-        b=fnx4L3TRvm7ivccqTWoZ0YtWUYcY+D9ZxAZGDhBgo37sBA/T0aQbgG6OHbtlGec9adsq8E
-        5HzIEN6DRXftpAKhAUJNpLoKQPTW6mcV+tw35b0VOy4ilMlRbstQPo11SkefQxxUAlodRb
-        UJ/mgeNoLD9djtqe0p2bvwr0xGWzjsw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1662705712;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yu9RUrvQxAp2Fwf5ytrIMONKOHocNgrjkYLX/KWmaXI=;
-        b=o7rI0SCETDdSZb5fZLS/rndvwmAOsDGOGxBlP8QvX3nqHAyoPxX9zWeZ73w4A6jtSgij2C
-        FeUntuj8ItjuWfCA==
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 59D441F8C7;
+        Fri,  9 Sep 2022 06:45:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1662705943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=AnOyHZbqck+A80uOuVgBvh26n26m6s1gfX/UjlS3z6o=;
+        b=KjzvHPlq5WoAZQD1ZNhVxohTdcJJ/eiJcDt1QST/wruQWH7fzIiC+9sJzrWtF9pLokRbQh
+        grX/Jr56xgvzeXiYtubnZMtJkA1aCmxtr4JVAa9gI9uPwXPTdPMEPxrggC2HOlx0w1bW4P
+        vhoohQ8D9Wvey7zMEuSK7HeElTQ0qmQ=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 016AC139D5;
-        Fri,  9 Sep 2022 06:41:44 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EBA57139D5;
+        Fri,  9 Sep 2022 06:45:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id osOjKSjgGmOTHwAAMHmgww
-        (envelope-from <neilb@suse.de>); Fri, 09 Sep 2022 06:41:44 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        id JsLGKxXhGmPWIAAAMHmgww
+        (envelope-from <wqu@suse.com>); Fri, 09 Sep 2022 06:45:41 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH] btrfs: don't update the block group item if used bytes are the same
+Date:   Fri,  9 Sep 2022 14:45:22 +0800
+Message-Id: <2a76b8005eb7208eda97e62a944ae456cbe8386f.1662705863.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Trond Myklebust" <trondmy@hammerspace.com>
-Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-In-reply-to: <8d638cb3c63b0d2da8679b5288d1622fdb387f83.camel@hammerspace.com>
-References: <20220907111606.18831-1-jlayton@kernel.org>,
- <166255065346.30452.6121947305075322036@noble.neil.brown.name>,
- <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>,
- <20220907125211.GB17729@fieldses.org>,
- <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>,
- <20220907135153.qvgibskeuz427abw@quack3>,
- <166259786233.30452.5417306132987966849@noble.neil.brown.name>,
- <20220908083326.3xsanzk7hy3ff4qs@quack3>, <YxoIjV50xXKiLdL9@mit.edu>,
- <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>,
- <166267775728.30452.17640919701924887771@noble.neil.brown.name>,
- <91e31d20d66d6f47fe12c80c34b1cffdfc202b6a.camel@hammerspace.com>,
- <166268467103.30452.1687952324107257676@noble.neil.brown.name>,
- <166268566751.30452.13562507405746100242@noble.neil.brown.name>,
- <29a6c2e78284e7947ddedf71e5cb9436c9330910.camel@hammerspace.com>,
- <8d638cb3c63b0d2da8679b5288d1622fdb387f83.camel@hammerspace.com>
-Date:   Fri, 09 Sep 2022 16:41:41 +1000
-Message-id: <166270570118.30452.16939807179630112340@noble.neil.brown.name>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -106,121 +56,206 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 09 Sep 2022, Trond Myklebust wrote:
-> On Fri, 2022-09-09 at 01:10 +0000, Trond Myklebust wrote:
-> > On Fri, 2022-09-09 at 11:07 +1000, NeilBrown wrote:
-> > > On Fri, 09 Sep 2022, NeilBrown wrote:
-> > > > On Fri, 09 Sep 2022, Trond Myklebust wrote:
-> > > >=20
-> > > > >=20
-> > > > > IOW: the minimal condition needs to be that for all cases
-> > > > > below,
-> > > > > the
-> > > > > application reads 'state B' as having occurred if any data was
-> > > > > committed to disk before the crash.
-> > > > >=20
-> > > > > Application=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Filesystem
-> > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > > > > read change attr <- 'state A'
-> > > > > read data <- 'state A'
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0write data -> 'state B'
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0<crash>+<reboot>
-> > > > > read change attr <- 'state B'
-> > > >=20
-> > > > The important thing here is to not see 'state A'.=C2=A0 Seeing 'state
-> > > > C'
-> > > > should be acceptable.=C2=A0 Worst case we could merge in wall-clock
-> > > > time
-> > > > of
-> > > > system boot, but the filesystem should be able to be more helpful
-> > > > than
-> > > > that.
-> > > >=20
-> > >=20
-> > > Actually, without the crash+reboot it would still be acceptable to
-> > > see
-> > > "state A" at the end there - but preferably not for long.
-> > > From the NFS perspective, the changeid needs to update by the time
-> > > of
-> > > a
-> > > close or unlock (so it is visible to open or lock), but before that
-> > > it
-> > > is just best-effort.
-> >=20
-> > Nope. That will inevitably lead to data corruption, since the
-> > application might decide to use the data from state A instead of
-> > revalidating it.
-> >=20
->=20
-> The point is, NFS is not the only potential use case for change
-> attributes. We wouldn't be bothering to discuss statx() if it was.
+[BACKGROUND]
 
-My understanding is that it was primarily a desire to add fstests to
-exercise the i_version which motivated the statx extension.
-Obviously we should prepare for other uses though.
+When committing a transaction, we will update block group items for all
+dirty block groups.
 
->=20
-> I could be using O_DIRECT, and all the tricks in order to ensure that
-> my stock broker application (to choose one example) has access to the
-> absolute very latest prices when I'm trying to execute a trade.
-> When the filesystem then says 'the prices haven't changed since your
-> last read because the change attribute on the database file is the
-> same' in response to a statx() request with the AT_STATX_FORCE_SYNC
-> flag set, then why shouldn't my application be able to assume it can
-> serve those prices right out of memory instead of having to go to disk?
+But in fact, dirty block groups don't always need to update their block
+group items.
+It's pretty common to have a metadata block group which experienced
+several CoW operations, but still have the same amount of used bytes.
 
-I would think that such an application would be using inotify rather
-than having to poll.  But certainly we should have a clear statement of
-quality-of-service parameters in the documentation.
-If we agree that perfect atomicity is what we want to promise, and that
-the cost to the filesystem and the statx call is acceptable, then so be it.
+In that case, we may unnecessarily CoW a tree block doing nothing.
 
-My point wasn't to say that atomicity is bad.  It was that:
- - if the i_version change is visible before the change itself is
-   visible, then that is a correctness problem.
- - if the i_version change is only visible some time after the change
-   itself is visible, then that is a quality-of-service issue.
-I cannot see any room for debating the first.  I do see some room to
-debate the second.
+[ENHANCEMENT]
 
-Cached writes, directory ops, and attribute changes are, I think, easy
-enough to provide truly atomic i_version updates with the change being
-visible.
+This patch will introduce btrfs_block_group::commit_used member to
+remember the last used bytes, and use that new member to skip
+unnecessary block group item update.
 
-Changes to a shared memory-mapped files is probably the hardest to
-provide timely i_version updates for.  We might want to document an
-explicit exception for those.  Alternately each request for i_version
-would need to find all pages that are writable, remap them read-only to
-catch future writes, then update i_version if any were writable (i.e.
-->mkwrite had been called).  That is the only way I can think of to
-provide atomicity.
+This would be more common for large fs, which metadata block group can
+be as large as 1GiB, containing at most 64K metadata items.
 
-O_DIRECT writes are a little easier than mmapped files.  I suspect we
-should update the i_version once the device reports that the write is
-complete, but a parallel reader could have seem some of the write before
-that moment.  True atomicity could only be provided by taking some
-exclusive lock that blocked all O_DIRECT writes.  Jeff seems to be
-suggesting this, but I doubt the stock broker application would be
-willing to make the call in that case.  I don't think I would either.
+In that case, if CoW added and the deleted one metadata item near the end
+of the block group, then it's completely possible we don't need to touch
+the block group item at all.
 
-NeilBrown
+[BENCHMARK]
 
->=20
-> --=20
-> Trond Myklebust
-> Linux NFS client maintainer, Hammerspace
-> trond.myklebust@hammerspace.com
->=20
->=20
->=20
+The patchset itself can have quite a high chance (20~80%) to skip block
+group item updates in a lot of workload.
+
+As a result, it would result shorter time spent on
+btrfs_write_dirty_block_groups(), and overall reduce the execution time
+of the critical section of btrfs_commit_transaction().
+
+Here comes a fio command, which will do random writes in 4K block size,
+causing a very heavy metadata updates.
+
+fio --filename=$mnt/file --size=512M --rw=randwrite --direct=1 --bs=4k \
+    --ioengine=libaio --iodepth=64 --runtime=300 --numjobs=4 \
+    --name=random_write --fallocate=none --time_based --fsync_on_close=1
+
+The file size (512M) and number of threads (4) means 2GiB file size in
+total, but during the full 300s run time, my dedicated SATA SSD is able
+to write around 20~25GiB, which is over 10 times the file size.
+
+Thus after we fill the initial 2G, we should not cause much block group items
+updates.
+
+Please note, the fio numbers by itself doesn't have much change, but if
+we look deeper, there is some reduced execution time, especially
+for the critical section of btrfs_commit_transaction().
+
+I added extra trace_printk() to measure the following per-transaction
+execution time
+
+- Critical section of btrfs_commit_transaction()
+  By re-using the existing update_commit_stats() function, which
+  has already calculated the interval correctly.
+
+- The while() loop for btrfs_write_dirty_block_groups()
+  Although this includes the execution time of btrfs_run_delayed_refs(),
+  it should still be representative overall.
+
+Both result involves transid 7~30, the same amount of transaction
+committed.
+
+The result looks like this:
+
+                      |      Before       |     After      |  Diff
+----------------------+-------------------+----------------+--------
+Transaction interval  | 229247198.5       | 215016933.6    | -6.2%
+Block group interval  | 23133.33333       | 18970.83333    | -18.0%
+
+The change in block group item updates is more obvious, as skipped bg
+item updates also means less delayed refs, thus the change is more
+obvious.
+
+And the overall execution time for that bg update loop is pretty small,
+thus we can assume the extent tree is already mostly cached.
+If we can skip a uncached tree block, it would cause more obvious
+change.
+
+Unfortunately the overall reduce in commit transaction critical section
+is much smaller, as the block group item updates loop is not really the
+major part, at least for the above fio script.
+
+But still we have a observable reduction in the critical section.
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+[Josef pinned down the race and provided a fix]
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+Changelog:
+v3:
+- Further improve the benchmark
+  No code change.
+
+ * Make it time based, so we can overwrite the file several times
+ * Make it much longer
+ * Reduce the total file size to avoid ENOSPC pressure
+ * Measure both commit transaction interval and block group item
+   updates interval to get a more representative result.
+
+v2:
+- Add a new benchmark
+  I added btrfs_transaction::total_bg_updates and skipped_bg_updates
+  atomics, the total one will get increased every time
+  update_block_group_item() get called, and the skipped one will
+  get increased when we skip one update.
+
+  Then I go trace_printk() at btrfs_commit_transaction() to
+  print the two atomics.
+
+  The full benchmark is way better than I initially though, after
+  the initial increase in metadata usage, later transactions all
+  got a high percentage of skipped bg updates, between 40~80%.
+
+- Thanks Josef for pinning down and fixing a race
+  Previously, update_block_group_item() only access cache->used
+  once, thus it doesn't really need extra protection.
+
+  But now we need to access it at least 3 times (one to check if
+  we can skip, one to update the block group item, one to update
+  commit_used).
+
+  This requires a lock to prevent the cache->used changed halfway,
+  and lead to incorrect used bytes in block group item.
+---
+ fs/btrfs/block-group.c | 20 +++++++++++++++++++-
+ fs/btrfs/block-group.h |  6 ++++++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index e7b5a54c8258..0df4d98df278 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2002,6 +2002,7 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+ 
+ 	cache->length = key->offset;
+ 	cache->used = btrfs_stack_block_group_used(bgi);
++	cache->commit_used = cache->used;
+ 	cache->flags = btrfs_stack_block_group_flags(bgi);
+ 	cache->global_root_id = btrfs_stack_block_group_chunk_objectid(bgi);
+ 
+@@ -2693,6 +2694,22 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
+ 	struct extent_buffer *leaf;
+ 	struct btrfs_block_group_item bgi;
+ 	struct btrfs_key key;
++	u64 used;
++
++	/*
++	 * Block group items update can be triggered out of commit transaction
++	 * critical section, thus we need a consistent view of used bytes.
++	 * We can not direct use cache->used out of the spin lock, as it
++	 * may be changed.
++	 */
++	spin_lock(&cache->lock);
++	used = cache->used;
++	/* No change in used bytes, can safely skip it. */
++	if (cache->commit_used == used) {
++		spin_unlock(&cache->lock);
++		return 0;
++	}
++	spin_unlock(&cache->lock);
+ 
+ 	key.objectid = cache->start;
+ 	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
+@@ -2707,12 +2724,13 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
+ 
+ 	leaf = path->nodes[0];
+ 	bi = btrfs_item_ptr_offset(leaf, path->slots[0]);
+-	btrfs_set_stack_block_group_used(&bgi, cache->used);
++	btrfs_set_stack_block_group_used(&bgi, used);
+ 	btrfs_set_stack_block_group_chunk_objectid(&bgi,
+ 						   cache->global_root_id);
+ 	btrfs_set_stack_block_group_flags(&bgi, cache->flags);
+ 	write_extent_buffer(leaf, &bgi, bi, sizeof(bgi));
+ 	btrfs_mark_buffer_dirty(leaf);
++	cache->commit_used = used;
+ fail:
+ 	btrfs_release_path(path);
+ 	return ret;
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index f48db81d1d56..b57718020104 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -84,6 +84,12 @@ struct btrfs_block_group {
+ 	u64 cache_generation;
+ 	u64 global_root_id;
+ 
++	/*
++	 * The last committed used bytes of this block group, if above @used
++	 * is still the same as @commit_used, we don't need to update block
++	 * group item of this block group.
++	 */
++	u64 commit_used;
+ 	/*
+ 	 * If the free space extent count exceeds this number, convert the block
+ 	 * group to bitmaps.
+-- 
+2.37.3
+
