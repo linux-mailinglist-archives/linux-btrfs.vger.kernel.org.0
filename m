@@ -2,73 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D66865B36DA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 14:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8805B376E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 14:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbiIIMAA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Sep 2022 08:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59428 "EHLO
+        id S231688AbiIIMOv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Sep 2022 08:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbiIIL75 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 07:59:57 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1EA5B78E;
-        Fri,  9 Sep 2022 04:59:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 33C4BB824FA;
-        Fri,  9 Sep 2022 11:59:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EC32CC4314A;
-        Fri,  9 Sep 2022 11:59:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662724794;
-        bh=3/JEam4qM1jugxxc3v3EGTIsl5vydUnBietiDQKtddI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=H64aLc8nEmmeFVHjt4MiR+fJK9QOmkUxSLTdgd7oh7P6JRLcBL/4n/5HXh+jCXq8l
-         7+j+nxZt0xnBCOG7yVm7Wshwr6oxlHYmaH+BCHnKZ7rXjF+vPw/OOPzYlHWr3j/jlL
-         8nq6VQ6nDJ4+cMUOxgxZT0aAVB313D5yAd77Pe/E2Lda3jrU5Ve/PKcCERI25kzKRQ
-         ATGsuJcgbysNNwwwm+iL3on7rY3IV0iph/F1fuWA1O+R2xworeMnk6TkGp0BNeemJ3
-         13rR4pH2mKEaP7viIKrx0vDEjmkITzA93mCK70ph6DcJ4giX7qBwqoUYbESFdz7YJV
-         DJhOqv7L9//8Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D97C5C4166E;
-        Fri,  9 Sep 2022 11:59:53 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.0-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1662664764.git.dsterba@suse.com>
-References: <cover.1662664764.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1662664764.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.0-rc4-tag
-X-PR-Tracked-Commit-Id: 5da431b71d4b9be3c8cf6786eff9e2d41a5f9f65
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9b4509495418a0effe964b0aad9a522be5a3b6d5
-Message-Id: <166272479388.31182.10974639181232571511.pr-tracker-bot@kernel.org>
-Date:   Fri, 09 Sep 2022 11:59:53 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230505AbiIIMOW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 08:14:22 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEA213FA7F;
+        Fri,  9 Sep 2022 05:12:11 -0700 (PDT)
+Received: from letrec.thunk.org (guestnat-104-133-160-102.corp.google.com [104.133.160.102] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 289CB71n002170
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 9 Sep 2022 08:11:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1662725472; bh=rkVib4zKXNES9ZZ4tMSEKXn2YQ6HSV5vUTDr92XDkhU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=GUfSWT2qQ/AJie7hxQCJZt8BAL8wLB2wXXt3lpNzwVcJDfxeA3n4X9UaHMr+LKaji
+         zb8pN4awcYOraVhbePEtz4sCuIcEMxDO2V92UeCIRI87pI75/6Euq2NTZWvCPaRsmz
+         DlR2DlvtPX7EziCMExCNHJHLF80Kja7xArncG3AABgQbBA7F8u2okXCFadky2FAyPZ
+         ZEVZ5zWSVzlIFf8gSeITjbPkBF1rXnXYwy3TAT0rzEQUsrD4xD5MFcwTetP4Z+bsqn
+         5hn1WHr+o8drixmoUTatgnnzVOC8xFKnKtCU1Rq9PX4TQiWPhk9jx/EanCDjjweVSe
+         56cLzlKnr1a1Q==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id CD6C38C2B49; Fri,  9 Sep 2022 08:11:06 -0400 (EDT)
+Date:   Fri, 9 Sep 2022 08:11:06 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>, Jan Kara <jack@suse.cz>,
+        NeilBrown <neilb@suse.de>, adilger.kernel@dilger.ca,
+        djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
+        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
+        chuck.lever@oracle.com, lczerner@redhat.com, brauner@kernel.org,
+        fweimer@redhat.com, linux-man@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+Message-ID: <YxstWiu34TfJ6muW@mit.edu>
+References: <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>
+ <20220907125211.GB17729@fieldses.org>
+ <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
+ <20220907135153.qvgibskeuz427abw@quack3>
+ <166259786233.30452.5417306132987966849@noble.neil.brown.name>
+ <20220908083326.3xsanzk7hy3ff4qs@quack3>
+ <YxoIjV50xXKiLdL9@mit.edu>
+ <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
+ <20220908155605.GD8951@fieldses.org>
+ <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Fri,  9 Sep 2022 11:06:31 +0200:
+On Thu, Sep 08, 2022 at 01:40:11PM -0400, Jeff Layton wrote:
+> 
+> Ted, how would we access this? Maybe we could just add a new (generic)
+> super_block field for this that ext4 (and other filesystems) could
+> populate at mount time?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.0-rc4-tag
+Yeah, I was thinking about just adding it to struct super, with some
+value (perhaps 0 or ~0) meaning that the file system didn't support
+it.  If people were concerned about struct super bloat, we could also
+add some new function to struct super_ops that would return one or
+more values that are used rarely by most of the kernel code, and so
+doesn't need to be in the struct super data structure.  I don't have
+strong feelings one way or another.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9b4509495418a0effe964b0aad9a522be5a3b6d5
+On another note, my personal opinion is that at least as far as ext4
+is concerned, i_version on disk's only use is for NFS's convenience,
+and so I have absolutely no problem with changing how and when
+i_version gets updated modulo concerns about impacting performance.
+That's one of the reasons why being able to update i_version only
+lazily, so that if we had, say, some workload that was doing O_DIRECT
+writes followed by fdatasync(), there wouldn't be any obligation to
+flush the inode out to disk just because we had bumped i_version
+appeals to me.
 
-Thank you!
+But aside from that, I don't consider when i_version gets updated on
+disk, especially what the semantics are after a crash, and if we need
+to change things so that NFS can be more performant, I'm happy to
+accomodate.  One of the reasons why we implemented the ext4 fast
+commit feature was to improve performance for NFS workloads.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+I know some XFS developers have some concerns here, but I just wanted
+to make it be explicit that (a) I'm not aware of any users who are
+depending on the i_version on-disk semantics, and (b) if they are
+depending on something which as far as I'm concerned in an internal
+implementation detail, we've made no promises to them, and they can
+get to keep both pieces.  :-)  This is especially since up until now,
+there is no supported, portable userspace interface to make i_version
+available to userspace.
+
+Cheers,
+
+					- Ted
