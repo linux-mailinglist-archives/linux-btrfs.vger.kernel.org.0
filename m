@@ -2,236 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 556BE5B3911
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 15:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC455B39A8
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 15:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbiIINfI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Sep 2022 09:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
+        id S231545AbiIINm4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Sep 2022 09:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbiIINfH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 09:35:07 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D133D857DA
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 06:35:04 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id cr9so1225261qtb.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Sep 2022 06:35:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date;
-        bh=FBn2U9jWo2jaFJphHr+eiwdYYA5FOAGidiLl0GHP2CE=;
-        b=RkjDAVDMsoBBGkRM44/GTFoF0Ik9wm7zntGtmAu9uubv8UP3H4iTs5JUu9CmJDlwqA
-         +qz/kMX0T94quhWWVdk4Qlg4S0e5vzQQZyify1QtmDfhc/DW9zRVH82volcnm4Cgmswr
-         CmijLKw9zo6wAijwDtdNy7p3VxFuXGidV3fKMxHy9sAKpm6LA55pEoinuNxegclMoN2L
-         sR7NGy0xXvSAnrBjHm8X2y4NRKBSkQipu33iSAkIdSSP9bztwJLlldRcIE+ZmNoHyfqD
-         8C1oj+aW2F/CKM/UpU0pZcaETNwLF+5fSl7vw/qoVl9D8QGD62iukMK3Q92xE6QaWX88
-         heqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date;
-        bh=FBn2U9jWo2jaFJphHr+eiwdYYA5FOAGidiLl0GHP2CE=;
-        b=htkgAyPREwWyT6nAP8cCF+7fTbpf5koHHibZK/Oqz0V2hEiqg95icv+m/kFm2EzjHH
-         6AurfVdIyMaaihdvpvJiTRm5dZqzl4bJgzpV2UEgpN/+PCkAZXASKrLMFmMPzzshqURR
-         ROxNzpq3J0CcbG/0emWmRQAOcBKW9LtqBEEninoJ8y2tQ2DCSGF7vnMcXp57kqe4dk1H
-         EmnQtOKVJWA+yvWtHLGQNlHrS9o7x7YauSsdg9bzA8rQFSGP1v+iei7RYSc+T454Yc6T
-         fBHbZvL6Qe2hFWp1yKX75kv5BatahJ4S0nQXWyKPmLlp7a5fRGwKjFfgwkVtt6gJA8J9
-         TeBg==
-X-Gm-Message-State: ACgBeo3/XAgGvzyGTl5V1qu9fs1Ur/rOWJr8pdsVystoLs6w8pVj4eF0
-        lzPyQWICdfa7LucG+VezX3yrpAOMweXYfg==
-X-Google-Smtp-Source: AA6agR7DImDNo3IHdRLabFlg2BzjfKsGgK6/qhvH+QgdUxF4qKGKXHPDFzvh3JuvMDTrYfaMB9k7tg==
-X-Received: by 2002:ac8:5a81:0:b0:342:fad3:b79e with SMTP id c1-20020ac85a81000000b00342fad3b79emr12602209qtc.77.1662730503025;
-        Fri, 09 Sep 2022 06:35:03 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d11-20020ac847cb000000b003447c4f5aa5sm408735qtr.24.2022.09.09.06.35.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Sep 2022 06:35:02 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: introduce BTRFS_RESERVE_FLUSH_EMERGENCY
-Date:   Fri,  9 Sep 2022 09:35:01 -0400
-Message-Id: <d1da73f6ed291d53d4cc7dcab142ebfb0541f06e.1662730491.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
+        with ESMTP id S231489AbiIINmk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 09:42:40 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A60A2631;
+        Fri,  9 Sep 2022 06:42:19 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 2899AqHY016856;
+        Fri, 9 Sep 2022 06:41:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=B0kDHCrDmXhCbfFmQcZHKqbdsrpbFRvN3Sum0W+MoJk=;
+ b=RBGnTjTSKHGBZGxzItDs+po0UMxvW4v4wGa4863eimAHiYb9CsioSyDTVWemHs9jSg8H
+ xXN6V82dW1HacVkpjBgRMR3WHSB346QGENcgxnf9nAwahB+CIQZ8608R+8Rwpp4INK+b
+ 7tCPdwxRJ66o1w/LT6SwN1YteMY60ZjQGmI= 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2174.outbound.protection.outlook.com [104.47.59.174])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3jg2m5sb6r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Sep 2022 06:41:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OMOe0blZCZjvHwqkUViM9gniuCBskV2pUokBK1+kLiCKne5NojSWSVdedFX2Sgt3KU1ckkOo/W3iazJtr2zpFbj89KmMQ25QPtofrYYWBuSqLsQQE7KoYKpezudRLkzLC3B9AfmcHZ8xwta82MOJcbN/e8Oix6nAOE5299/WK0THcdNbIsbfe7qKXdYzPrws2xzr1htEwY+EFe1a738INcIv6MAwi5rbFNq6BTs/4FVSnfitK6OAKpU7wx6XM45ZI47IAK8a8knNjmE0Yg47l+OURJXo25TUcdzI9umGT/S9rHkHaNwkH8mOQtGd6e+dcjaSPa0znaPvm61aNKiaDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B0kDHCrDmXhCbfFmQcZHKqbdsrpbFRvN3Sum0W+MoJk=;
+ b=CGgySRRcZ8VVerajIU+KCQwn8lOFm3fjkFWrwpCecySOFDZtq3P8YzRxo9hZ/rXOlfGpk7YbKv0p/wjJeCHykTizkTLCmm3SKmzoaHVG0OAQc0h6DzE3WbBA7kCfku73w5ZAXQlCoxPlO3cwhgHDTid15fKRCqNyfYbgGfnHbhj2FVsUjYsmc0NsP2JOwPu5NZeGUj6xpt8xKZsi6a6xnPedIDs6F7FAueOJj9hMh2yndY6MTA/HeuUACiIN4c40g2+NuwijACcLScKqIG6bfyak5IOlW27GvFAFQGHqd+/s89zhSaPUDnxLaneS5WkqvyAwtLhZnIcO59oPd/UNyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MN2PR15MB4287.namprd15.prod.outlook.com (2603:10b6:208:1b6::13)
+ by BN6PR15MB1314.namprd15.prod.outlook.com (2603:10b6:404:e9::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.14; Fri, 9 Sep
+ 2022 13:41:47 +0000
+Received: from MN2PR15MB4287.namprd15.prod.outlook.com
+ ([fe80::700a:e1d7:b866:f3bc]) by MN2PR15MB4287.namprd15.prod.outlook.com
+ ([fe80::700a:e1d7:b866:f3bc%4]) with mapi id 15.20.5612.019; Fri, 9 Sep 2022
+ 13:41:47 +0000
+Message-ID: <99b8fc6f-9e22-a4a2-676b-3e661482f093@fb.com>
+Date:   Fri, 9 Sep 2022 09:41:42 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.2.2
+Subject: Re: [PATCH v2 10/20] btrfs: factor a fscrypt_name matching method
+Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>,
+        David Sterba <dsterba@suse.cz>
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Omar Sandoval <osandov@osandov.com>, linux-spdx@vger.kernel.org
+References: <cover.1662420176.git.sweettea-kernel@dorminy.me>
+ <685c8abce7bdb110bc306752314b4fb0e7867290.1662420176.git.sweettea-kernel@dorminy.me>
+ <20220909101521.GS32411@twin.jikos.cz> <Yxs43SlMqqJ4Fa2h@infradead.org>
+From:   Chris Mason <clm@fb.com>
+In-Reply-To: <Yxs43SlMqqJ4Fa2h@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: BL1P223CA0008.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c4::13) To MN2PR15MB4287.namprd15.prod.outlook.com
+ (2603:10b6:208:1b6::13)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR15MB4287:EE_|BN6PR15MB1314:EE_
+X-MS-Office365-Filtering-Correlation-Id: af91d445-98be-4cd9-519e-08da92690a3a
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: M6Th4k/5qU/7cWMdwoY2+DoXj0iBH9eo/Ri/D7nutuDhpY7IVppRIFpyFoe+WPo7PO7q4rfEaYuJR80kp4afvpNiPa7bw4p/FKFJAf2NkSZ3YkxAkemZr10mefTGAldwvyvxCe+3JkwWKgPpKazFp3NHnc1X+vYxeSWGzRe50P3MgAHPfMiXowyJdId7cLdC9aJSV1kOKnBfpsqKjC3eS53ya4WjzW95nV6wTfx6yJJK/yoHwzpyIT988YzskQKQJRydwZzzine0u1ozi9pRINcFY+luV0Zxr/kXAcDN+t9LE9wzVTtCAu/OCcSxPajQZMZaRJ6bmyOE/vuxkq4cuPafaTAIUbGmtRocwapDRz4dt6NdVaPx6ln6sqaPOPF+qE8GKXakAOghAa8L2S1fpv+Wqpi8tdgULtXEU+QCpYfagc3WPRUH1XnUw8iPdiuwZ1fKwCfIcdCqcP/YSei6Qr7xb6dEQUktint0sauc1g0j+pqO+mb+8POAYgD82dfpp5NpXCvutzgK3EdDnMPJ02aTfgq4uxrWnsZQjrxmpsWOBx95AXYqXr4fsnT9OqgQzroaoFOjs5ypa4iTHKaB90O2k6A0P6kT51Hu7l7xA0hTNMZyyDFuxtRgbySKq/2YGgCNCD1zgA3CARBNaUUzkIZMZz6b3toxNCNNz3eN72kBROB9II24wgTUZrZH7Yqoobju3pNRy/uLvUs+OYD+EY47wMT2fim30z19Q2zGjHiQDI8MzpF3SVDlQQraoFb3RX3kAXdnkQ5JH76VEPeJ2t8cngZdT2gV9EhdWp6YmkbwavYDu0lTUUGDMuGQvwh4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR15MB4287.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(376002)(396003)(136003)(39860400002)(366004)(8936002)(66556008)(5660300002)(66946007)(66476007)(36756003)(8676002)(110136005)(54906003)(7416002)(6512007)(4326008)(966005)(6486002)(53546011)(478600001)(6506007)(6666004)(31686004)(41300700001)(16799955002)(2616005)(2906002)(186003)(83380400001)(316002)(31696002)(86362001)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NUZwcENHeGlJb3YxcGJZZ3JjbWJFVk9wQm55akhwK3llNk1MY1dJeDFlV2c0?=
+ =?utf-8?B?OFVNUzB5WEw5UExReTRIOXZNcHRoVlBwRjlCaWpzaHhqNndjSHUwcjBBa3Rt?=
+ =?utf-8?B?MWZYdGZPSnRNK0NFMTVqeE1ZemIvcUNjdzZjYW1DQkJrelkwd3BaeDhNNlhU?=
+ =?utf-8?B?TEcxNTZiTVdyd200cERpK294UjN4RFl0aUdzcWxRTHVpODQ3N0xXY0VmSzV5?=
+ =?utf-8?B?WTFyZzluQ2RWK2NIM2l3Z2oxZkNBcHBySHBJdXZsRGxXY2x3TjFRNnJTa2xt?=
+ =?utf-8?B?bzlOM1dUYXhGK1MremZQbC9Ob2plVWJJaUlPYjQwRVJ0SlVpYjk1clBXYlJl?=
+ =?utf-8?B?ZVFhZ2FXMThkNlhjQUZNRW1BS2psbEJ2SzhldmhqdHRONmhrR1l6TmttY0RD?=
+ =?utf-8?B?SzhXUVRNWlpESUVtVEJMVHF5bXZxMFNSL2x5YlhCUWl5SVdlbEtGTUU2MmNB?=
+ =?utf-8?B?a0VxMzhoczZVSzIyWVlNbkZsT1NuQUV0RlZndXpWYUQ4bGFFaDcrTjFLK1NZ?=
+ =?utf-8?B?bmVFcnlVbkZSN0lsazZJRHR0UU1BK1BTZGgvQmh6TEsybTRUWWp1YWdxaGo2?=
+ =?utf-8?B?ZjBDeUdoY1ZqS0ZVckZ0MHIrNjhUS2JkNEFEZzRvcFNVSUdvMmEwQ2diZ1BN?=
+ =?utf-8?B?VlhtNzJ6L3ZOSFhFd0MvcFh0NjdBNzhwdjkza0NQSDc1TUFOTEpudlRIR29B?=
+ =?utf-8?B?cW1BQWpydWw0ME5yZnJlUlNCemRrZmlFNGxNTDdZQXFWUFdBVW5hSHNGa0tk?=
+ =?utf-8?B?aFFaaGhIQ0E1R0J6Wlppam1Mbk1KUVUrcWU3OTRIRDdmZWw4MUR1RnQ2NnNG?=
+ =?utf-8?B?L1dOZnZsN0Z1VEdTQW1ScGJOOTNhMi9pdWNOTEJVRnM5VjFhQ0pSZzljWnRK?=
+ =?utf-8?B?Z0VsVGp5dFZIRldQbUk0dERac3VoTDE0eTZXWXpjTGlMNThWeUFIVUFjeWF4?=
+ =?utf-8?B?MmFFeCtGUzkzVitsM3Z3TVkvZk5rNGNWQi9PWkxVVjdkUkNrRENyZjZWTHRW?=
+ =?utf-8?B?QWN2Rjg5d1FmMnNOS284NWFMQk42MGFmekQzZ2tmTVoySm9MK0t2L1Jkc0cw?=
+ =?utf-8?B?WUlsMDZoZjZoVHcyQTBsQmtWZitvTElCNjVzVEEwaElYZXczU2QyMGQzRFpW?=
+ =?utf-8?B?T2tXTnF6bEpSZmx0NitFQy9FVmd1Y1IvS2J0b2pnMnR2Ui8wSS8vUlBYUkV2?=
+ =?utf-8?B?eFRiVHRENTdzM0dyRFJOZjRGQXNIQ25uMTlJcTBCMEU5VzVTWm1kVDJnYU56?=
+ =?utf-8?B?UkZ2aHFJZWVLTWtmS3ZmelJGRkE0M1hMUkV3N29jcUpjbkZxM0xIYmlRUlRp?=
+ =?utf-8?B?K1lVVit0MURwRVd3dWJGaDg4bVJKK1pHOG5ObmRFRHBsZmlqc0RrdHFiTTht?=
+ =?utf-8?B?cWpkamk2aGkvVkVjc2VQZkN5WldJR014ZlpaWFNYSGxDaENDWFlpUXVaTm9j?=
+ =?utf-8?B?TStsUVoybFRJbTYyUE9CVEtFUXhLdEIvaHZYSEhIazBhR05oVTY4QzA4RDgw?=
+ =?utf-8?B?Z1gwTDlDc1QwWUhDWTJBUU56RU50OW5WMzVCbDBOLzVmcGVGT0NpNlFHSXFH?=
+ =?utf-8?B?aitDbERPSThUYW02NFY5VDFiejM0WjBzdlZNaTV4U2h2aGhuZmtKQlIvMFVO?=
+ =?utf-8?B?Q2wrZXBIZG0vM200aENWdjNoS0h5QnlUeHJhWTREQ2YyT3FYWXdOMHRRMVlT?=
+ =?utf-8?B?YmhJL1VFekdLZDIyUWJDemFpU1R6UjFmR01IenQrcmVSRnZtcnlKTXZRZHRC?=
+ =?utf-8?B?V0NrK0U3eCsxVkpEUW5VaUxyU3h1T1hBNUt4VGNXTEgxeHE4Z1d5TFUxVXV3?=
+ =?utf-8?B?VXJ2ckdVSXo4RG1CL0RjQWFoT1F5disxSURQVDJFVzBYakJvVkx2eGdvL2dz?=
+ =?utf-8?B?SEpkK1ZFWTV1S2FEc3R3TXZ3KzQ2czc4cVgybGFTTkwwUURDQ1F5MHliblJm?=
+ =?utf-8?B?c1FVUW9nMVVRZXVOY0RrNTQvL0JBQ0h0dmszVTcwYXdxdysvTE0wSC95ajB0?=
+ =?utf-8?B?Z3pqU3FEaXRaQ1NHbXVhME1jR245L1FqM1Jka0JpRkdJYSs0N0xnQ1pYVU5z?=
+ =?utf-8?B?SzVjcTRtRTdGdnhhRXdpbFZGdzY1bUZsdVZWckU2SnA3S3FqZ1dsd29rYVdL?=
+ =?utf-8?Q?V/7HdlD4ME1dcvBxq4Wk2DRlU?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: af91d445-98be-4cd9-519e-08da92690a3a
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR15MB4287.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2022 13:41:46.9505
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: veBCYhyvzY3MitkQZ6MRay1HFl2nnz2p4U/sVb5mgvi2Jtw6x7n3phezVrJx2BlS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1314
+X-Proofpoint-ORIG-GUID: 7uwb70qLB6q-HOmwhhpgtWHVp5_xw4Ay
+X-Proofpoint-GUID: 7uwb70qLB6q-HOmwhhpgtWHVp5_xw4Ay
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-09-09_08,2022-09-09_01,2022-06-22_01
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Inside of FB, as well as some user reports, we've had a consistent
-problem of occasional ENOSPC transaction aborts.  Inside FB we were
-seeing ~100-200 ENOSPC aborts per day in the fleet, which is a really
-low occurrence rate given the size of our fleet, but it's not nothing.
+On 9/9/22 9:00 AM, Christoph Hellwig wrote:
+> On Fri, Sep 09, 2022 at 12:15:21PM +0200, David Sterba wrote:
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/*
+>>> + * Copyright (C) 2020 Facebook
+>>> + */
+>>
+>> Please use only SPDX in new files
+>>
+>> https://btrfs.wiki.kernel.org/index.php/Developer%27s_FAQ#Copyright_notices_in_files.2C_SPDX
+> 
+> The wiki is incorrect.  The SPDX tag deals with the licensing tags
+> only.  It is not a replacement for the copyright notice in any way, and
+> having been involved with Copyright enforcement I can tell you that
+> at least in some jurisdictions Copytight notices absolutely do matter.
 
-There are two causes of this particular problem.
+I agree, SPDX != copyright, and they should probably be in different 
+paragraphs in the wiki because it's misleading as it stands.
 
-First is delayed allocation.  The reservation system for delalloc
-assumes that contiguous dirty ranges will result in 1 file extent item.
-However if there is memory pressure that results in fragmented writeout,
-or there is fragmentation in the block groups, this won't necessarily be
-true.  Consider the case where we do a single 256MiB write to a file and
-then close it.  We will have 1 reservation for the inode update, the
-reservations for the checksum updates, and 1 reservation for the file
-extent item.  At some point later we decide to write this entire range
-out, but we're so fragmented that we break this into 100 different file
-extents.  Since we've already closed the file and are no longer writing
-to it there's nothing to trigger a refill of the delalloc block rsv to
-satisfy the 99 new file extent reservations we need.  At this point we
-exhaust our delalloc reservation, and we begin to steal from the global
-reserve.  If you have enough of these cases going in parallel you can
-easily exhaust the global reserve, get an ENOSPC at
-btrfs_alloc_tree_block() time, and then abort the transaction.
+Signed-off-by is targeted at declaring that you have permission to put 
+this code into this project, which is somewhat different from copyright.
 
-The other case is the delayed refs reserve.  The delayed refs reserve
-updates its size based on outstanding delayed refs and dirty block
-groups.  However we only refill this block reserve when returning
-excess reservations and when we call btrfs_start_transaction(root, X).
-We will reserve 2*X credits at transaction start time, and fill in X
-into the delayed refs reserve to make sure it stays topped off.
-Generally this works well, but clearly has downsides.  If we do a
-particularly delayed ref heavy operation we may never catch up in our
-reservations.  Additionally running delayed refs generates more delayed
-refs, and at that point we may be committing the transaction and have no
-way to trigger a refill of our delayed refs rsv.  Then a similar thing
-occurs with the delalloc reserve.
+For Meta code, I'm happy to use the git history method.  But, I'm not 
+completely comfortable with enforcing that on other companies or 
+individuals unless it's common practice elsewhere in the kernel.
 
-Generally speaking we well over-reserve in all of our block rsvs.  If we
-reserve 1 credit we're usually reserving around 264k of space, but we'll
-often not use any of that reservation, or use a few blocks of that
-reservation.  We can be reasonably sure that as long as you were able to
-reserve space up front for your operation you'll be able to find space
-on disk for that reservation.
-
-So introduce a new flushing state, BTRFS_RESERVE_FLUSH_EMERGENCY.  This
-gets used in the case that we've exhausted our reserve and the global
-reserve.  It simply forces a reservation if we have enough actual space
-on disk to make the reservation, which is almost always the case.  This
-keeps us from hitting ENOSPC aborts in these odd occurrences where we've
-not kept up with the delayed work.
-
-Fixing this in a complete way is going to be relatively complicated and
-time consuming.  This patch is what I discussed with Filipe earlier this
-year, and what I put into our kernels inside FB.  With this patch we're
-down to 1-2 ENOSPC aborts per week, which is a significant reduction.
-This is a decent stop gap until we can work out a more wholistic
-solution to these two corner cases.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/block-rsv.c  | 12 ++++++++++++
- fs/btrfs/ctree.h      | 18 ++++++++++++++++++
- fs/btrfs/space-info.c | 27 ++++++++++++++++++++++++++-
- 3 files changed, 56 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index ec96285357e0..89e3e7d1bff6 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -552,5 +552,17 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
- 		if (!ret)
- 			return global_rsv;
- 	}
-+
-+	/*
-+	 * All hope is lost, but of course our reservations are overly
-+	 * pessimistic, so instead of possibly having an ENOSPC abort here, try
-+	 * one last time to force a reservation if there's enough actual space
-+	 * on disk to make the reservation.
-+	 */
-+	ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
-+					   BTRFS_RESERVE_FLUSH_EMERGENCY);
-+	if (!ret)
-+		return block_rsv;
-+
- 	return ERR_PTR(ret);
- }
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 0108585d838d..f221b3cb718d 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2986,6 +2986,24 @@ enum btrfs_reserve_flush_enum {
- 	 * Can be interrupted by a fatal signal.
- 	 */
- 	BTRFS_RESERVE_FLUSH_ALL_STEAL,
-+
-+	/*
-+	 * This is for btrfs_use_block_rsv only.  We have exhausted our block
-+	 * rsv and our global block rsv.  This can happen for things like
-+	 * delalloc where we are overwriting a lot of extents with a single
-+	 * extent and didn't reserve enough space.  Alternatively it can happen
-+	 * with delalloc where we reserve 1 extents worth for a large extent but
-+	 * fragmentation leads to multiple extents being created.  This will
-+	 * give us the reservation in the case of
-+	 *
-+	 * if (num_bytes < (space_info->total_bytes -
-+	 *		    btrfs_space_info_used(space_info, false))
-+	 *
-+	 * Which ignores bytes_may_use.  This is potentially dangerous, but our
-+	 * reservation system is generally pessimistic so is able to absorb this
-+	 * style of mistake.
-+	 */
-+	BTRFS_RESERVE_FLUSH_EMERGENCY,
- };
- 
- enum btrfs_flush_state {
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 2e06b7c422c7..a0abc6dd01c2 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -1583,6 +1583,16 @@ static inline bool can_steal(enum btrfs_reserve_flush_enum flush)
- 		flush == BTRFS_RESERVE_FLUSH_EVICT);
- }
- 
-+/*
-+ * NO_FLUSH and FLUSH_EMERGENCY don't want to create a ticket, they just want to
-+ * fail as quickly as possible.
-+ */
-+static inline bool can_ticket(enum btrfs_reserve_flush_enum flush)
-+{
-+	return (flush != BTRFS_RESERVE_NO_FLUSH &&
-+		flush != BTRFS_RESERVE_FLUSH_EMERGENCY);
-+}
-+
- /**
-  * Try to reserve bytes from the block_rsv's space
-  *
-@@ -1644,6 +1654,21 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 		ret = 0;
- 	}
- 
-+	/*
-+	 * Things are dire, we need to make a reservation so we don't abort.  We
-+	 * will let this reservation go through as long as we have actual space
-+	 * left to allocate for the block.
-+	 */
-+	if (ret && unlikely(flush == BTRFS_RESERVE_FLUSH_EMERGENCY)) {
-+		used = btrfs_space_info_used(space_info, false);
-+		if (used + orig_bytes <=
-+		    writable_total_bytes(fs_info, space_info)) {
-+			btrfs_space_info_update_bytes_may_use(fs_info, space_info,
-+							      orig_bytes);
-+			ret = 0;
-+		}
-+	}
-+
- 	/*
- 	 * If we couldn't make a reservation then setup our reservation ticket
- 	 * and kick the async worker if it's not already running.
-@@ -1651,7 +1676,7 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 	 * If we are a priority flusher then we just need to add our ticket to
- 	 * the list and we will do our own flushing further down.
- 	 */
--	if (ret && flush != BTRFS_RESERVE_NO_FLUSH) {
-+	if (ret && can_ticket(flush)) {
- 		ticket.bytes = orig_bytes;
- 		ticket.error = 0;
- 		space_info->reclaim_size += ticket.bytes;
--- 
-2.26.3
-
+-chris
