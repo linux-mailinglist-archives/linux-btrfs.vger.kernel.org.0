@@ -2,146 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5DC5B2AB8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 01:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818DB5B2AC5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 02:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbiIHX73 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Sep 2022 19:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
+        id S230010AbiIIAHV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Sep 2022 20:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbiIHX71 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Sep 2022 19:59:27 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2106.outbound.protection.outlook.com [40.107.244.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8FF1CA;
-        Thu,  8 Sep 2022 16:59:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JmE3arF0hFsAFJoFLQQpOYEJZDvg4+/vdhPb9PvlIqBH92DmscvFVF0Z/koVMnw6b7s2/3gSiwL2wmaCpoRsc10Pvtfd95Y9Pr7xvoh2u5PCX3MPixcfbREu+gsNRoqXnjkM1qpHFGQTjB5+qhPgPjA7waMqvbI3Y8ru4IDZpsRUY2vUP3OcOk4sseasD86HBV76P/P3SrzBYn7Gez/pTAm3oHsJ5cxInkp93+o5FhkayDG9Zx8l8RN6lwv0RGbdsNYw5Mww1f9MR/EFDlvjYy9vM522oEFWLRRLDZfQhveuy4vVUN8PuqYjrjcTdStGNFIAKBT/hGY2rEctJJWDSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SN9H2stYsIzAlHYYJozR/hSYyAKq4D5GCaX7l6nsXBs=;
- b=mcDywoWVEK1K3J2xJfri3rJTr5noAn94oAdtmlaC5ega4mCbfcRKiUEULUk2X5csCZBrqNY9TA/mI5Fm/Dc/1CymN7pvj3FQl3Rtz73qKC+ORtjLX0KR0JSfMzekOjn/x1Ut1hheNrKTvLi9orZR7mDnNNlQqsf6vuZ+olEZlSCrZbvNY0bLs4HOQv86wlMu7qZJbxOMB2gvzPT/VJSWoW9knpDFbjg8x40CQ2TGyBgIxP23tV6OwbJRfCHgmrDql/7px7mRvsggKcvm9qlTEfz229BwUw+Ndujr6xMtPeH6ZgNz0VJ7wQxfaQX27+YeuYxAuAfAuqfZbPNhB309Nw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SN9H2stYsIzAlHYYJozR/hSYyAKq4D5GCaX7l6nsXBs=;
- b=MlUHdL4Nxto9JpqIUip3Z84Ghn5D4t+2ddoWGCRRZPkgCNHrGBBxpckNrRqSqBWPxL98k1pt5AcZpl8bRcwrkTfvAUPxoNWUlA03EjhXKZBuCrAeQ8awFTHdv69AJfylsMYLpIVZwX2bV1z2IcoWKqfOjfFs4CWNkkFpKXsVUvs=
-Received: from CH0PR13MB5084.namprd13.prod.outlook.com (2603:10b6:610:111::7)
- by SJ0PR13MB5368.namprd13.prod.outlook.com (2603:10b6:a03:3d2::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.10; Thu, 8 Sep
- 2022 23:59:18 +0000
-Received: from CH0PR13MB5084.namprd13.prod.outlook.com
- ([fe80::f1c7:62d0:a63d:f5ca]) by CH0PR13MB5084.namprd13.prod.outlook.com
- ([fe80::f1c7:62d0:a63d:f5ca%3]) with mapi id 15.20.5612.012; Thu, 8 Sep 2022
- 23:59:18 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "jlayton@kernel.org" <jlayton@kernel.org>,
-        "neilb@suse.de" <neilb@suse.de>
-CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-Thread-Topic: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-Thread-Index: AQHYwqs/evAHvn9kzUKFB4lWpvCB0q3T1xmAgAATgACAAAFbgIAABbEAgAAK/YCAALZNAIAAgw4AgAByGoCAAAZagIAAeIiAgAARsIA=
-Date:   Thu, 8 Sep 2022 23:59:18 +0000
-Message-ID: <91e31d20d66d6f47fe12c80c34b1cffdfc202b6a.camel@hammerspace.com>
-References: <20220907111606.18831-1-jlayton@kernel.org> ,
- <166255065346.30452.6121947305075322036@noble.neil.brown.name> ,
- <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>    ,
- <20220907125211.GB17729@fieldses.org>  ,
- <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>    ,
- <20220907135153.qvgibskeuz427abw@quack3>       ,
- <166259786233.30452.5417306132987966849@noble.neil.brown.name> ,
- <20220908083326.3xsanzk7hy3ff4qs@quack3>, <YxoIjV50xXKiLdL9@mit.edu>   ,
- <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
-         <166267775728.30452.17640919701924887771@noble.neil.brown.name>
-In-Reply-To: <166267775728.30452.17640919701924887771@noble.neil.brown.name>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=hammerspace.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH0PR13MB5084:EE_|SJ0PR13MB5368:EE_
-x-ms-office365-filtering-correlation-id: f4854b8e-9e52-40a1-485d-08da91f6244b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: M7JHdg58Mbvc3Jrr34ftkMTGL6DAvh9evFCsysd6gTyS1L49MLR8Vvng8Yjms9HicDKNZnJVTsy4svec1ZZ6PAXxow/KU/63vYMDnWgX7cEQXZIGx5dh8LCQK+r0twh1y+1mjGswyYtQP3gK7f9RAyFqwZ3Vmc5eeCBnIeMFyd5ZTTtnr2c8x1LMcBxgFDZ3DfA4hrlLzD8EfPIpiApIvmSWK70ob7eNTw8hMOBc7cGnBPrlh1KOGjEaj8IH0Xge7yD0gunoZWowGsQWMvauprcWi+vRHhzDC5SZRS+fsRTYP9db5M6SfHJtYZfq38cCfviq1ejtJaUocn2YVtNR4uVNxQBCicpQTNETFp86hI6cV/OaGsin29QuXW+b9pVEq23tWNdA+16FgGpr/jmImGncub8/ZEyBo0SqA17GHvee+p3Tixo0ytJSLH0XZMrzYH2tQhg242+HoU094pBJ542C9bBBAshzAFSzfcQWfrCiaR0YfSv8BDHaoSXFspvEo8hTQL8lvGhWrkaDLPUrLIbomaD+ose+lyfWUSUYfMwfTCO98zWw/GQkTYDuxElDvlifZ5Jw/DaIVBi6YAVh6CJ4RCQKRwr7tkD4P2ou7y3SU2LIynghsWfRf6zS59T06AWZmnfqLgBYhOHWNmF2ZW/lPdrLR4rnXdGJpYvgdZBMrnj8RwgRZRuDWrTPgIb8CZXx+K3uJM5oie1Td/9U4HAMTFI5qaaHLzk5hnyDuWw0bT0Yvdj5S0WTy1QP3j+JcdxvO79OWjgIHWkT3BVaFy0ektz0YvsqaYqcVzJL7cP2oCr4UYDTShDAyyMFqGGB
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR13MB5084.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(376002)(396003)(136003)(346002)(39850400004)(366004)(5660300002)(38100700002)(8676002)(186003)(6506007)(8936002)(54906003)(36756003)(7416002)(110136005)(6486002)(41300700001)(71200400001)(478600001)(2616005)(4326008)(83380400001)(26005)(66476007)(64756008)(66946007)(6512007)(2906002)(316002)(66446008)(38070700005)(86362001)(122000001)(66556008)(76116006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MmcxT3FJSzRTVmZkckQ4VXY1cUd2U3Jpd3l3dG1KUU5qYmEzWVQ4YmlDZ2l5?=
- =?utf-8?B?c1EwRUtPbzhTRGpTU0pwdXp4SWdYb0RKeGU4dW5kNXZXZy9PZFl0VDBtRzVq?=
- =?utf-8?B?bE9TZzF0Qm9DMzhaK2s0ZGFybFlrNzdEMWQ2SXdZUXBqNGhlSkc5cUJwWEZo?=
- =?utf-8?B?UzJpMnVKZXNPTFFGM3AxZFpWN3BNV3loU2haU2tVZFdvSTRlNjNhRGlVL09t?=
- =?utf-8?B?UWFBUENjK0ZjZEhwSTB4Qzl0cVF0S1hyVzVMTm92Wk5Ta0J2OUtjWG1hWE1N?=
- =?utf-8?B?Nm1jN0VkUzhBbnRWZ3ArTWdvOU5LdXgwVTdrM2gxSDFjYUgzR1MrR0lOYjlw?=
- =?utf-8?B?a05yRHNNVk1mTEticWxGdzNodVZTdXFiT2EwOUlaT0dYOXhDR3hyUHJwM2t1?=
- =?utf-8?B?c2ZSaGlLRnRrYTdndE9nTkIzbEpqYVdlM01DcTZvMGJydDhTSU5BYnFqbFgz?=
- =?utf-8?B?UGRMREFrdDJaTjhFYVZwdUQ2MFBPdzI5MllYS1ZzazMrb0pXRUpZN0JSa2Vz?=
- =?utf-8?B?bWJOanBFYzFyalN1TVBTZ21CQ2xtZll1dGNDc1VPdUZkOTlKd1hrb0I5R1lj?=
- =?utf-8?B?d0hzbFJXWHBjU0xSaVI4aSt1TGdTZ2FqWnlxNTNDTk5kbUVtclQ2ckQ0SEgy?=
- =?utf-8?B?cENlR05FaEVCUXlMVFp0TU9qbWJpeXB2ekgxSnpFNzFqZ09OaHNUYjcvaXVn?=
- =?utf-8?B?VkI1WWliajdTWVA2SWZKcnFRdGlJdUMzbWpjL2N1RGlncW0xR2pGZEQ2R3By?=
- =?utf-8?B?cjZhNzhDS3VIcVFsWjZxbTloOHMwNEE2ZHJObWJzR0tUckJ4M0h2Z29XSTdy?=
- =?utf-8?B?RmlUMWJSQm9FWmx6bHFVdTJDODBOS1MxVTJNNHRMOVVBMy8zbGluM1g3QmFN?=
- =?utf-8?B?MzB3MGFJOHEzcE5KbDkxanA2ZWk1bDc3eWVaNnpOZ2tDYnhNYUNlTGxubWYy?=
- =?utf-8?B?ekFiNlV1T3A2a28zSWlmUkVHQ3NLR2ZYVllUNmxzSVV6NndSc0VSTzBlWlZq?=
- =?utf-8?B?b0RoMG9hWW1QSzNIS0hNT0RVUGtpQ2x3MXpscmREMHVDckRBUzFQY2MzSVhO?=
- =?utf-8?B?cWR4R1hicEt4TXRxRDFubjlxUlNIbWFiVGZOMVVLd2FHSStKVHJVTVNON1pL?=
- =?utf-8?B?TlZ6TnNUalFiMjZSRTNZMWRSc2t6SXNObkZpaEN2NFl4aGhiSzdPN0YvdStI?=
- =?utf-8?B?ZWE4ekQzYkVRMS9TMFZMRGZEQ1daVzNIZ29WdElIOS9zT014SmpSV1dTODdR?=
- =?utf-8?B?L3oxaVM3L3c4b1l3RFdSWVpzUXFwbU9vbFhxdnhwSWp1aFUzdXU3TWdsSEph?=
- =?utf-8?B?ejBRU3l6eEM4ZWFqNllKN3ZjSUFaNHB5b0NkUWdYRHJwN1NaNzB1Umw4cU9v?=
- =?utf-8?B?UlRPQnlBMWdDUk5qMm9oaWpiYXpsZlFmam9BZ0ZKc0tremtsNHhiYUJrdm1x?=
- =?utf-8?B?S2Z2S3pURnpMYUFHbmU4cDMxSFZDVnoyOU1NVFNEVnJDc3Z0aGNwL0ZDbC9R?=
- =?utf-8?B?TWd4VGhDd3daK2ZFcS9TQzNtM1hSZmZWU082OVdsMU1tOG9idm90WUNaRGQ2?=
- =?utf-8?B?SFJWL2RtQlk1ZzljNkdmVWdnUzJLeDkzTTFkWEh6QjZBN1lodkV3ODd6RzRv?=
- =?utf-8?B?RzQrWHdwMm0zYzlGVFBwRkUyYkRFQW9MZlVUM3R3QzZZZ1RhcFRqaEhSekFU?=
- =?utf-8?B?ZXlYNy85MTNwOC9yKytydGFLSTFDM29JeUlLeWtSbmlEajg3MnVmOWNyVGpQ?=
- =?utf-8?B?T0E5Z0h2bEsrMWtjalFYTndMdkNpUFdhN2QwOThqQS81cjRCdHdHNDE3Z3J3?=
- =?utf-8?B?OTkxeDVXZVpDNWNpVFZIUGpCUEpYWUtKNCsycjNSa3NHVzljQzF1dFprbjhk?=
- =?utf-8?B?cDl4eDM1QnZJcjY0SjVQMVNZM3dCa2pzejJWc051aDFVczUyTUhzTGlkU2Nw?=
- =?utf-8?B?LzcrUFVnRkl2UDJWbk11U3VPMFRLbUxzZEVtZ2p0ZHhydVBNR3MxcnF2Qkcv?=
- =?utf-8?B?a2FBSEdnaE1qaEdlL3JHK2MzZFdxT2IrdnpPZGY5VnFTSFkwcit0czJDdXRm?=
- =?utf-8?B?eFM4RzhPb2QrcHJOS3RwQlRqRkxoMTB0d09pbWNXWFl0TFZ0UmhwZDVVelYy?=
- =?utf-8?B?ZGloSENoNUVoaHd3R2tTRytzcFQxMmVNTEc1a016R09xUmJOMG5OdnJlV3Q3?=
- =?utf-8?B?SHc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E77D25241F370C428ADA6A1B37351C63@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S229978AbiIIAHS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Sep 2022 20:07:18 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F76810F8EA
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Sep 2022 17:07:13 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 681FB240103
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 02:07:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1662682032; bh=jzFvfVgsNTvWhpjIDy8EOYqRp0UWNGBjSxVB1EmBk74=;
+        h=Date:From:To:Subject:From;
+        b=RbsgChKwecCjgoahr73eY7VEsKsv3ZD/LUsYVDIXRd5ZVJdLYHcYjtYKPhRLj38i4
+         efhxA94sr89fm8hIFEPiodFMW2WFlaOMH2o5hAkBuTlj9alVdupC8PPWSBWdrp8vvi
+         fGF9dbuP11jWymh0LxMmEjukU1eGZRSJHFjEThbys/aRJQ1cH7PiBoKDWP+UiFdsmJ
+         xSnhYlSHPZxZOfgnNs4QDbwSpBUPBHb3GJEGHYwKyEdVYOy/p/Aul4ZtLzMZAdErVI
+         2lXEvRGzl7DOGTY/O1EVTIqn09Q1Aqv1fcs8acujSS69S7LuMQ/1jEupquf2qjg6U6
+         VxkOdwnBQQ5Vw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4MNxBR5bvsz9rxF;
+        Fri,  9 Sep 2022 02:07:11 +0200 (CEST)
+Date:   Fri,  9 Sep 2022 00:07:11 +0000
+From:   development.rex@posteo.net
+To:     linux-btrfs@vger.kernel.org
+Subject: Read only because of enospc
+Message-ID: <20220909000446.zzsniu7rc6tl6sz7@regina>
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR13MB5368
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -149,121 +48,174 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gRnJpLCAyMDIyLTA5LTA5IGF0IDA4OjU1ICsxMDAwLCBOZWlsQnJvd24gd3JvdGU6DQo+IE9u
-IEZyaSwgMDkgU2VwIDIwMjIsIEplZmYgTGF5dG9uIHdyb3RlOg0KPiA+IE9uIFRodSwgMjAyMi0w
-OS0wOCBhdCAxMToyMSAtMDQwMCwgVGhlb2RvcmUgVHMnbyB3cm90ZToNCj4gPiA+IE9uIFRodSwg
-U2VwIDA4LCAyMDIyIGF0IDEwOjMzOjI2QU0gKzAyMDAsIEphbiBLYXJhIHdyb3RlOg0KPiA+ID4g
-PiBJdCBib2lscyBkb3duIHRvIHRoZSBmYWN0IHRoYXQgd2UgZG9uJ3Qgd2FudCB0byBjYWxsDQo+
-ID4gPiA+IG1hcmtfaW5vZGVfZGlydHkoKQ0KPiA+ID4gPiBmcm9tIElPQ0JfTk9XQUlUIHBhdGgg
-YmVjYXVzZSBmb3IgbG90cyBvZiBmaWxlc3lzdGVtcyB0aGF0DQo+ID4gPiA+IG1lYW5zIGpvdXJu
-YWwNCj4gPiA+ID4gb3BlcmF0aW9uIGFuZCB0aGVyZSBhcmUgaGlnaCBjaGFuY2VzIHRoYXQgbWF5
-IGJsb2NrLg0KPiA+ID4gPiANCj4gPiA+ID4gUHJlc3VtYWJseSB3ZSBjb3VsZCB0cmVhdCBpbm9k
-ZSBkaXJ0eWluZyBhZnRlciBpX3ZlcnNpb24gY2hhbmdlDQo+ID4gPiA+IHNpbWlsYXJseQ0KPiA+
-ID4gPiB0byBob3cgd2UgaGFuZGxlIHRpbWVzdGFtcCB1cGRhdGVzIHdpdGggbGF6eXRpbWUgbW91
-bnQgb3B0aW9uDQo+ID4gPiA+IChpLmUuLCBub3QNCj4gPiA+ID4gZGlydHkgdGhlIGlub2RlIGlt
-bWVkaWF0ZWx5IGJ1dCBvbmx5IHdpdGggYSBkZWxheSkgYnV0IHRoZW4gdGhlDQo+ID4gPiA+IHRp
-bWUgd2luZG93DQo+ID4gPiA+IGZvciBpX3ZlcnNpb24gaW5jb25zaXN0ZW5jaWVzIGR1ZSB0byBh
-IGNyYXNoIHdvdWxkIGJlIG11Y2gNCj4gPiA+ID4gbGFyZ2VyLg0KPiA+ID4gDQo+ID4gPiBQZXJo
-YXBzIHRoaXMgaXMgYSByYWRpY2FsIHN1Z2dlc3Rpb24sIGJ1dCB0aGVyZSBzZWVtcyB0byBiZSBh
-IGxvdA0KPiA+ID4gb2YNCj4gPiA+IHRoZSBwcm9ibGVtcyB3aGljaCBhcmUgZHVlIHRvIHRoZSBj
-b25jZXJuICJ3aGF0IGlmIHRoZSBmaWxlDQo+ID4gPiBzeXN0ZW0NCj4gPiA+IGNyYXNoZXMiIChh
-bmQgc28gd2UgbmVlZCB0byB3b3JyeSBhYm91dCBtYWtpbmcgc3VyZSB0aGF0IGFueQ0KPiA+ID4g
-aW5jcmVtZW50cyB0byBpX3ZlcnNpb24gTVVTVCBiZSBwZXJzaXN0ZWQgYWZ0ZXIgaXQgaXMNCj4g
-PiA+IGluY3JlbWVudGVkKS4NCj4gPiA+IA0KPiA+ID4gV2VsbCwgaWYgd2UgYXNzdW1lIHRoYXQg
-dW5jbGVhbiBzaHV0ZG93bnMgYXJlIHJhcmUsIHRoZW4gcGVyaGFwcw0KPiA+ID4gd2UNCj4gPiA+
-IHNob3VsZG4ndCBiZSBvcHRpbWl6aW5nIGZvciB0aGF0IGNhc2UuwqAgU28uLi4uIHdoYXQgaWYg
-YSBmaWxlDQo+ID4gPiBzeXN0ZW0NCj4gPiA+IGhhZCBhIGNvdW50ZXIgd2hpY2ggZ290IGluY3Jl
-bWVudGVkIGVhY2ggdGltZSBpdHMgam91cm5hbCBpcw0KPiA+ID4gcmVwbGF5ZWQNCj4gPiA+IHJl
-cHJlc2VudGluZyBhbiB1bmNsZWFuIHNodXRkb3duLsKgIFRoYXQgc2hvdWxkbid0IGhhcHBlbiBv
-ZnRlbiwNCj4gPiA+IGJ1dCBpZg0KPiA+ID4gaXQgZG9lcywgdGhlcmUgbWlnaHQgYmUgYW55IG51
-bWJlciBvZiBpX3ZlcnNpb24gdXBkYXRlcyB0aGF0IG1heQ0KPiA+ID4gaGF2ZQ0KPiA+ID4gZ290
-dGVuIGxvc3QuwqAgU28gaW4gdGhhdCBjYXNlLCB0aGUgTkZTIGNsaWVudCBzaG91bGQgaW52YWxp
-ZGF0ZQ0KPiA+ID4gYWxsIG9mDQo+ID4gPiBpdHMgY2FjaGVzLg0KPiA+ID4gDQo+ID4gPiBJZiB0
-aGUgaV92ZXJzaW9uIGZpZWxkIHdhcyBsYXJnZSBlbm91Z2gsIHdlIGNvdWxkIGp1c3QgcHJlZml4
-IHRoZQ0KPiA+ID4gInVuY2xlYW4gc2h1dGRvd24gY291bnRlciIgd2l0aCB0aGUgZXhpc3Rpbmcg
-aV92ZXJzaW9uIG51bWJlcg0KPiA+ID4gd2hlbiBpdA0KPiA+ID4gaXMgc2VudCBvdmVyIHRoZSBO
-RlMgcHJvdG9jb2wgdG8gdGhlIGNsaWVudC7CoCBCdXQgaWYgdGhhdCBmaWVsZA0KPiA+ID4gaXMg
-dG9vDQo+ID4gPiBzbWFsbCwgYW5kIGlmIChhcyBJIHVuZGVyc3RhbmQgdGhpbmdzKSBORlMganVz
-dCBuZWVkcyB0byBrbm93DQo+ID4gPiB3aGVuDQo+ID4gPiBpX3ZlcnNpb24gaXMgZGlmZmVyZW50
-LCB3ZSBjb3VsZCBqdXN0IHNpbXBseSBoYXNoIHRoZSAidW5jbGVhbg0KPiA+ID4gc2h0dWRvd24g
-Y291bnRlciIgd2l0aCB0aGUgaW5vZGUncyAiaV92ZXJzaW9uIGNvdW50ZXIiLCBhbmQgbGV0DQo+
-ID4gPiB0aGF0DQo+ID4gPiBiZSB0aGUgdmVyc2lvbiB3aGljaCBpcyBzZW50IGZyb20gdGhlIE5G
-UyBjbGllbnQgdG8gdGhlIHNlcnZlci4NCj4gPiA+IA0KPiA+ID4gSWYgd2UgY291bGQgZG8gdGhh
-dCwgdGhlbiBpdCBkb2Vzbid0IGJlY29tZSBjcml0aWNhbCB0aGF0IGV2ZXJ5DQo+ID4gPiBzaW5n
-bGUNCj4gPiA+IGlfdmVyc2lvbiBidW1wIGhhcyB0byBiZSBwZXJzaXN0ZWQgdG8gZGlzaywgYW5k
-IHdlIGNvdWxkIHRyZWF0IGl0DQo+ID4gPiBsaWtlDQo+ID4gPiBhIGxhenl0aW1lIHVwZGF0ZTsg
-aXQncyBndWFyYW50ZWVkIHRvIHVwZGF0ZWQgd2hlbiB3ZSBkbyBhbiBjbGVhbg0KPiA+ID4gdW5t
-b3VudCBvZiB0aGUgZmlsZSBzeXN0ZW0gKGFuZCB3aGVuIHRoZSBmaWxlIHN5c3RlbSBpcyBmcm96
-ZW4pLA0KPiA+ID4gYnV0DQo+ID4gPiBvbiBhIGNyYXNoLCB0aGVyZSBpcyBubyBndWFyYW50ZWVl
-IHRoYXQgYWxsIGlfdmVyc2lvbiBidW1wcyB3aWxsDQo+ID4gPiBiZQ0KPiA+ID4gcGVyc2lzdGVk
-LCBidXQgd2UgZG8gaGF2ZSB0aGlzICJ1bmNsZWFuIHNodXRkb3duIiBjb3VudGVyIHRvIGRlYWwN
-Cj4gPiA+IHdpdGgNCj4gPiA+IHRoYXQgY2FzZS4NCj4gPiA+IA0KPiA+ID4gV291bGQgdGhpcyBt
-YWtlIGxpZmUgZWFzaWVyIGZvciBmb2xrcz8NCj4gPiA+IA0KPiA+ID4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLSBUZWQNCj4gPiANCj4gPiBUaGFua3MgZm9yIGNoaW1p
-bmcgaW4sIFRlZC4gVGhhdCdzIHBhcnQgb2YgdGhlIHByb2JsZW0sIGJ1dCB3ZSdyZQ0KPiA+IGFj
-dHVhbGx5IG5vdCB0b28gd29ycmllZCBhYm91dCB0aGF0IGNhc2U6DQo+ID4gDQo+ID4gbmZzZCBt
-aXhlcyB0aGUgY3RpbWUgaW4gd2l0aCBpX3ZlcnNpb24sIHNvIHlvdSdkIGhhdmUgdG8NCj4gPiBj
-cmFzaCtjbG9jaw0KPiA+IGp1bXAgYmFja3dhcmQgYnkganV1dXVzdCBlbm91Z2ggdG8gYWxsb3cg
-eW91IHRvIGdldCB0aGUgaV92ZXJzaW9uDQo+ID4gYW5kDQo+ID4gY3RpbWUgaW50byBhIHN0YXRl
-IGl0IHdhcyBiZWZvcmUgdGhlIGNyYXNoLCBidXQgd2l0aCBkaWZmZXJlbnQNCj4gPiBkYXRhLg0K
-PiA+IFdlJ3JlIGFzc3VtaW5nIHRoYXQgdGhhdCBpcyBkaWZmaWN1bHQgdG8gYWNoaWV2ZSBpbiBw
-cmFjdGljZS4NCj4gPiANCj4gPiBUaGUgaXNzdWUgd2l0aCBhIHJlYm9vdCBjb3VudGVyIChvciBz
-aW1pbGFyKSBpcyB0aGF0IG9uIGFuIHVuY2xlYW4NCj4gPiBjcmFzaA0KPiA+IHRoZSBORlMgY2xp
-ZW50IHdvdWxkIGVuZCB1cCBpbnZhbGlkYXRpbmcgZXZlcnkgaW5vZGUgaW4gdGhlIGNhY2hlLA0K
-PiA+IGFzDQo+ID4gYWxsIG9mIHRoZSBpX3ZlcnNpb25zIHdvdWxkIGNoYW5nZS4gVGhhdCdzIHBy
-b2JhYmx5IGV4Y2Vzc2l2ZS4NCj4gPiANCj4gPiBUaGUgYmlnZ2VyIGlzc3VlIChhdCB0aGUgbW9t
-ZW50KSBpcyBhdG9taWNpdHk6IHdoZW4gd2UgZmV0Y2ggYW4NCj4gPiBpX3ZlcnNpb24sIHRoZSBu
-YXR1cmFsIGluY2xpbmF0aW9uIGlzIHRvIGFzc29jaWF0ZSB0aGF0IHdpdGggdGhlDQo+ID4gc3Rh
-dGUNCj4gPiBvZiB0aGUgaW5vZGUgYXQgc29tZSBwb2ludCBpbiB0aW1lLCBzbyB3ZSBuZWVkIHRo
-aXMgdG8gYmUgdXBkYXRlZA0KPiA+IGF0b21pY2FsbHkgd2l0aCBjZXJ0YWluIG90aGVyIGF0dHJp
-YnV0ZXMgb2YgdGhlIGlub2RlLiBUaGF0J3MgdGhlDQo+ID4gcGFydA0KPiA+IEknbSB0cnlpbmcg
-dG8gc29ydCB0aHJvdWdoIGF0IHRoZSBtb21lbnQuDQo+IA0KPiBJIGRvbid0IHRoaW5rIGF0b21p
-Y2l0eSBtYXR0ZXJzIG5lYXJseSBhcyBtdWNoIGFzIG9yZGVyaW5nLg0KPg0KPiBUaGUgaV92ZXJz
-aW9uIG11c3Qgbm90IGJlIHZpc2libGUgYmVmb3JlIHRoZSBjaGFuZ2UgdGhhdCBpdCByZWZsZWN0
-cy4NCj4gSXQgaXMgT0sgZm9yIGl0IHRvIGJlIGFmdGVyLsKgIEV2ZW4gc2Vjb25kcyBhZnRlciB3
-aXRob3V0IGdyZWF0IGNvc3QuwqANCj4gSXQNCj4gaXMgYmFkIGZvciBpdCB0byBiZSBlYXJsaWVy
-LsKgIEFueSB1bmxvY2tlZCBnYXAgYWZ0ZXIgdGhlIGlfdmVyc2lvbg0KPiB1cGRhdGUgYW5kIGJl
-Zm9yZSB0aGUgY2hhbmdlIGlzIHZpc2libGUgY2FuIHJlc3VsdCBpbiBhIHJhY2UgYW5kDQo+IGlu
-Y29ycmVjdCBjYWNoaW5nLg0KPiANCj4gRXZlbiBmb3IgZGlyZWN0b3J5IHVwZGF0ZXMgd2hlcmUg
-TkZTdjQgd2FudHMgYXRvbWljIGJlZm9yZS9hZnRlcg0KPiB2ZXJzaW9uDQo+IG51bWJlcnMsIHRo
-ZXkgZG9uJ3QgbmVlZCB0byBiZSBhdG9taWMgdy5yLnQuIHRoZSBjaGFuZ2UgYmVpbmcNCj4gdmlz
-aWJsZS4NCj4gDQo+IElmIHRocmVlIGNvbmN1cnJlbnQgZmlsZSBjcmVhdGVzIGNhdXNlIHRoZSB2
-ZXJzaW9uIG51bWJlciB0byBnbyBmcm9tDQo+IDQNCj4gdG8gNywgdGhlbiBpdCBpcyBpbXBvcnRh
-bnQgdGhhdCBvbmUgb3Agc2VlcyAiNCw1Iiwgb25lIHNlZXMgIjUsNiIgYW5kDQo+IG9uZSBzZWVz
-ICI2LDciLCBidXQgaXQgZG9lc24ndCBtYXR0ZXIgaWYgY29uY3VycmVudCBsb29rdXBzIG9ubHkg
-c2VlDQo+IHZlcnNpb24gNCBldmVuIHdoaWxlIHRoZXkgY2FuIHNlZSB0aGUgbmV3bHkgY3JlYXRl
-ZCBuYW1lcy4NCj4gDQo+IEEgbG9uZ2VyIGdhcCBpbmNyZWFzZXMgdGhlIHJpc2sgb2YgYW4gdW5u
-ZWNlc3NhcnkgY2FjaGUgZmx1c2gsIGJ1dCBpdA0KPiBkb2Vzbid0IGxlYWQgdG8gaW5jb3JyZWN0
-bmVzcy4NCj4gDQoNCkknbSBub3QgcmVhbGx5IHN1cmUgd2hhdCB5b3UgbWVhbiB3aGVuIHlvdSBz
-YXkgdGhhdCBhICdsb25nZXIgZ2FwDQppbmNyZWFzZXMgdGhlIHJpc2sgb2YgYW4gdW5uZWNlc3Nh
-cnkgY2FjaGUgZmx1c2gnLiBFaXRoZXIgdGhlIGNoYW5nZQ0KYXR0cmlidXRlIHVwZGF0ZSBpcyBh
-dG9taWMgd2l0aCB0aGUgb3BlcmF0aW9uIGl0IGlzIHJlY29yZGluZywgb3IgaXQgaXMNCm5vdC4g
-SWYgdGhhdCB1cGRhdGUgaXMgcmVjb3JkZWQgaW4gdGhlIE5GUyByZXBseSBhcyBub3QgYmVpbmcg
-YXRvbWljLA0KdGhlbiB0aGUgY2xpZW50IHdpbGwgZXZpY3QgYWxsIGNhY2hlZCBkYXRhIHRoYXQg
-aXMgYXNzb2NpYXRlZCB3aXRoIHRoYXQNCmNoYW5nZSBhdHRyaWJ1dGUgYXQgc29tZSBwb2ludC4N
-Cg0KPiBTbyBJIHRoaW5rIHdlIHNob3VsZCBwdXQgdGhlIHZlcnNpb24gdXBkYXRlICphZnRlciog
-dGhlIGNoYW5nZSBpcw0KPiB2aXNpYmxlLCBhbmQgbm90IHJlcXVpcmUgbG9ja2luZyAoYmV5b25k
-IGEgbWVtb3J5IGJhcnJpZXIpIHdoZW4NCj4gcmVhZGluZw0KPiB0aGUgdmVyc2lvbi4gSXQgc2hv
-dWxkIGJlIGFzIHNvb24gYWZ0ZXIgYXMgcHJhY3RpY2FsLCBiaXQgbm8gc29vbmVyLg0KPiANCg0K
-T3JkZXJpbmcgaXMgbm90IGEgc3VmZmljaWVudCBjb25kaXRpb24uIFRoZSBndWFyYW50ZWUgbmVl
-ZHMgdG8gYmUgdGhhdA0KYW55IGFwcGxpY2F0aW9uIHRoYXQgcmVhZHMgdGhlIGNoYW5nZSBhdHRy
-aWJ1dGUsIHRoZW4gcmVhZHMgZmlsZSBkYXRhDQphbmQgdGhlbiByZWFkcyB0aGUgY2hhbmdlIGF0
-dHJpYnV0ZSBhZ2FpbiB3aWxsIHNlZSB0aGUgMiBjaGFuZ2UNCmF0dHJpYnV0ZSB2YWx1ZXMgYXMg
-YmVpbmcgdGhlIHNhbWUgKmlmIGFuZCBvbmx5IGlmKiB0aGVyZSB3ZXJlIG5vDQpjaGFuZ2VzIHRv
-IHRoZSBmaWxlIGRhdGEgbWFkZSBhZnRlciB0aGUgcmVhZCBhbmQgYmVmb3JlIHRoZSByZWFkIG9m
-IHRoZQ0KY2hhbmdlIGF0dHJpYnV0ZS4NClRoYXQgaW5jbHVkZXMgdGhlIGNhc2Ugd2hlcmUgZGF0
-YSB3YXMgd3JpdHRlbiBhZnRlciB0aGUgcmVhZCwgYW5kIGENCmNyYXNoIG9jY3VycmVkIGFmdGVy
-IGl0IHdhcyBjb21taXR0ZWQgdG8gc3RhYmxlIHN0b3JhZ2UuIElmIHlvdSBvbmx5DQp1cGRhdGUg
-dGhlIHZlcnNpb24gYWZ0ZXIgdGhlIHdyaXR0ZW4gZGF0YSBpcyB2aXNpYmxlLCB0aGVuIHRoZXJl
-IGlzIGENCnBvc3NpYmlsaXR5IHRoYXQgdGhlIGNyYXNoIGNvdWxkIG9jY3VyIGJlZm9yZSBhbnkg
-Y2hhbmdlIGF0dHJpYnV0ZQ0KdXBkYXRlIGlzIGNvbW1pdHRlZCB0byBkaXNrLg0KDQpJT1c6IHRo
-ZSBtaW5pbWFsIGNvbmRpdGlvbiBuZWVkcyB0byBiZSB0aGF0IGZvciBhbGwgY2FzZXMgYmVsb3cs
-IHRoZQ0KYXBwbGljYXRpb24gcmVhZHMgJ3N0YXRlIEInIGFzIGhhdmluZyBvY2N1cnJlZCBpZiBh
-bnkgZGF0YSB3YXMNCmNvbW1pdHRlZCB0byBkaXNrIGJlZm9yZSB0aGUgY3Jhc2guDQoNCkFwcGxp
-Y2F0aW9uCQkJCUZpbGVzeXN0ZW0NCj09PT09PT09PT09CQkJCT09PT09PT09PT0NCnJlYWQgY2hh
-bmdlIGF0dHIgPC0gJ3N0YXRlIEEnDQpyZWFkIGRhdGEgPC0gJ3N0YXRlIEEnDQoJCQkJCXdyaXRl
-IGRhdGEgLT4gJ3N0YXRlIEInDQoJCQkJCTxjcmFzaD4rPHJlYm9vdD4NCnJlYWQgY2hhbmdlIGF0
-dHIgPC0gJ3N0YXRlIEInDQoNCg0KLS0gDQpUcm9uZCBNeWtsZWJ1c3QNCkxpbnV4IE5GUyBjbGll
-bnQgbWFpbnRhaW5lciwgSGFtbWVyc3BhY2UNCnRyb25kLm15a2xlYnVzdEBoYW1tZXJzcGFjZS5j
-b20NCg0KDQo=
+Dear BTRFS team,
+
+I ran out of space on a 10 disk btrfs cluster with raid5 for data and
+raid1c4 for meta.
+The people in the irc channel were wery kind and helpful
+but unfortunately it didn't work.
+Even after >50 attempts of cancelling the balance the device gets thrown ba=
+ck to ro.
+The balance in progress, if not skipped,
+will also throw the fs to ro before any commits can be made.
+Adding a device also fails because of the fallback to ro.
+Is there a way to get the cluster back to stable rw so I can make deletions=
+ or run
+a conversion of the metadata to raid1?
+
+I'm looking forward to an answer and hope you can help me.
+
+rex
+
+uname -a:
+Linux my-pc 5.17.3-arch1-1 #1 SMP PREEMPT Thu, 14 Apr 2022 01:18:36 +0000 x=
+86_64 GNU/Linux
+
+btrfs --version:
+btrfs-progs v5.16.2=20
+
+btrfs fi show:
+Label: 'label'  uuid: UUID
+        Total devices 10 FS bytes used 32.37TiB
+        devid    1 size 3.64TiB used 3.64TiB path /dev/mapper/disk01_crypt
+        devid    2 size 3.64TiB used 3.64TiB path /dev/mapper/disk02_crypt=
+=20
+        devid    3 size 3.64TiB used 3.64TiB path /dev/mapper/disk03_crypt
+        devid    4 size 3.64TiB used 3.64TiB path /dev/mapper/disk04_crypt
+        devid    5 size 3.64TiB used 3.64TiB path /dev/mapper/disk05_crypt
+        devid    6 size 3.64TiB used 3.64TiB path /dev/mapper/disk06_crypt
+        devid    7 size 3.64TiB used 3.64TiB path /dev/mapper/disk07_crypt
+        devid    8 size 3.64TiB used 3.64TiB path /dev/mapper/disk08_crypt
+        devid    9 size 3.64TiB used 3.64TiB path /dev/mapper/disk09_crypt
+        devid   10 size 3.64TiB used 3.61TiB path /dev/mapper/disk10_crypt
+
+btrfs fi df:
+Data, RAID5: total=3D32.46TiB, used=3D32.30TiB
+System, RAID1C4: total=3D20.00MiB, used=3D1.48MiB
+Metadata, RAID1C4: total=3D74.27GiB, used=3D74.07GiB
+GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+
+relevant output of dmesg after running mount && balance cancel
+
+[12167570.541743] BTRFS info (device dm-7): enabling free space tree
+[12167570.541746] BTRFS info (device dm-7): disabling free space tree
+[12167570.541748] BTRFS info (device dm-7): has skinny extents
+[12167572.455439] BTRFS info (device dm-7): bdev /dev/mapper/disc errs: wr =
+396469, rd 388982, flush 0, corrupt 3, gen 0
+[12167600.020777] BTRFS error (device dm-7): open_ctree failed
+[12167616.652264] BTRFS info (device dm-7): flagging fs with big metadata f=
+eature
+[12167616.652271] BTRFS info (device dm-7): use no compression
+[12167616.652274] BTRFS info (device dm-7): enabling free space tree
+[12167616.652277] BTRFS info (device dm-7): disabling free space tree
+[12167616.652279] BTRFS info (device dm-7): has skinny extents
+[12167618.556790] BTRFS info (device dm-7): bdev /dev/mapper/disc errs: wr =
+396469, rd 388982, flush 0, corrupt 3, gen 0
+[12167650.088560] BTRFS info (device dm-7): balance: resume skipped
+[12167650.088567] BTRFS info (device dm-7): checking UUID tree
+[12167709.861453] ------------[ cut here ]------------
+[12167709.861457] BTRFS: Transaction aborted (error -28)
+[12167709.861488] WARNING: CPU: 1 PID: 3460041 at fs/btrfs/extent-tree.c:30=
+79 __btrfs_free_extent+0x469/0xa30 [btrfs]
+[12167709.861532] Modules linked in: loop udf crc_itu_t ext4 crc16 mbcache =
+jbd2 tun cfg80211 nf_log_syslog nft_log nft_limit nft_ct nf_conntrack nf_de=
+frag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink nct6775 hwmon_vid uvcvideo vid=
+eobuf2_vmalloc snd_usb_audio videobuf2_memops videobuf2_v4l2 videobuf2_comm=
+on snd_usbmidi_lib snd_rawmidi videodev snd_seq_device mc mousedev joydev s=
+nd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio=
+ intel_rapl_msr intel_rapl_common eeepc_wmi snd_hda_intel snd_intel_dspcfg =
+asus_wmi x86_pkg_temp_thermal sparse_keymap snd_intel_sdw_acpi intel_powerc=
+lamp snd_hda_codec coretemp platform_profile snd_hda_core rfkill snd_hwdep =
+r8169 kvm_intel at24 iTCO_wdt kvm snd_pcm intel_pmc_bxt irqbypass snd_timer=
+ realtek iTCO_vendor_support rapl wmi_bmof mei_pxp intel_cstate intel_uncor=
+e mei_hdcp i2c_i801 mdio_devres pcspkr i2c_smbus lpc_ich snd libphy mei_me =
+soundcore mac_hid mei wmi fuse ip_tables x_tables xxhash_generic dm_crypt c=
+bc encrypted_keys trusted
+[12167709.861578]  asn1_encoder tee tpm rng_core btrfs blake2b_generic libc=
+rc32c crc32c_generic xor raid6_pq ses enclosure uas usbhid usb_storage dm_m=
+od crct10dif_pclmul crc32_pclmul crc32c_intel mpt3sas ghash_clmulni_intel a=
+esni_intel xhci_pci crypto_simd sr_mod raid_class cryptd cdrom xhci_pci_ren=
+esas scsi_transport_sas i915 intel_gtt video ttm
+[12167709.861597] CPU: 1 PID: 3460041 Comm: btrfs Tainted: G        W      =
+   5.17.3-arch1-1 #1 7a55d2374d124bfa80e113bab2e4c0e86120013b
+[12167709.861600] Hardware name: System manufacturer System Product Name/P8=
+H77-M LE, BIOS 1501 06/20/2014
+[12167709.861601] RIP: 0010:__btrfs_free_extent+0x469/0xa30 [btrfs]
+[12167709.861631] Code: ff ff 48 8b 44 24 10 48 89 6c 24 57 c6 44 24 5f a8 =
+48 89 44 24 60 e9 3f fe ff ff 44 89 e6 48 c7 c7 38 b5 75 c0 e8 67 9d 48 f3 =
+<0f> 0b 48 8b 7c 24 08 44 89 e1 ba 07 0c 00 00 48 c7 c6 40 f4 74 c0
+[12167709.861632] RSP: 0018:ffffb15c0165f968 EFLAGS: 00010286
+[12167709.861634] RAX: 0000000000000000 RBX: ffff8b49493e1b60 RCX: 00000000=
+00000027
+[12167709.861636] RDX: ffff8b4a57aa16e8 RSI: 0000000000000001 RDI: ffff8b4a=
+57aa16e0
+[12167709.861637] RBP: 0000811aaeed4000 R08: 0000000000000000 R09: ffffb15c=
+0165f798
+[12167709.861638] R10: ffffb15c0165f790 R11: ffffffffb4cc6528 R12: 00000000=
+ffffffe4
+[12167709.861639] R13: 0000000000000000 R14: 0000000000000002 R15: 00000000=
+00000000
+[12167709.861641] FS:  00007fc3c1e118c0(0000) GS:ffff8b4a57a80000(0000) knl=
+GS:0000000000000000
+[12167709.861642] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[12167709.861644] CR2: 0000314afabdc000 CR3: 000000012e268001 CR4: 00000000=
+000606e0
+[12167709.861645] Call Trace:
+[12167709.861649]  <TASK>
+[12167709.861652]  __btrfs_run_delayed_refs+0x25d/0x1180 [btrfs ad10df01d55=
+9cebe24c88b962fa60b578838368d]
+[12167709.861684]  btrfs_run_delayed_refs+0x73/0x1f0 [btrfs ad10df01d559ceb=
+e24c88b962fa60b578838368d]
+[12167709.861714]  btrfs_commit_transaction+0x558/0xbd0 [btrfs ad10df01d559=
+cebe24c88b962fa60b578838368d]
+[12167709.861746]  ? do_wait_intr_irq+0xa0/0xa0
+[12167709.861750]  ? kmem_cache_free+0x3c9/0x420
+[12167709.861753]  reset_balance_state+0x142/0x1a0 [btrfs ad10df01d559cebe2=
+4c88b962fa60b578838368d]
+[12167709.861791]  btrfs_cancel_balance+0x175/0x1a0 [btrfs ad10df01d559cebe=
+24c88b962fa60b578838368d]
+[12167709.861827]  btrfs_ioctl+0x1653/0x3040 [btrfs ad10df01d559cebe24c88b9=
+62fa60b578838368d]
+[12167709.861865]  ? __alloc_pages+0xe6/0x230
+[12167709.861868]  ? __mod_memcg_lruvec_state+0x41/0x80
+[12167709.861871]  ? __mod_lruvec_page_state+0x7d/0xc0
+[12167709.861874]  ? set_pte+0x5/0x10
+[12167709.861876]  ? __handle_mm_fault+0x124e/0x1530
+[12167709.861879]  ? __x64_sys_ioctl+0x82/0xb0
+[12167709.861882]  __x64_sys_ioctl+0x82/0xb0
+[12167709.861885]  do_syscall_64+0x5c/0x80
+[12167709.861890]  ? handle_mm_fault+0xb2/0x280
+[12167709.861893]  ? do_user_addr_fault+0x1d7/0x690
+[12167709.861896]  ? exc_page_fault+0x72/0x170
+[12167709.861899]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[12167709.861902] RIP: 0033:0x7fc3c1f5fe6f
+[12167709.861904] Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 =
+00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 =
+<41> 89 c0 3d 00 f0 ff ff 77 1f 48 8b 44 24 18 64 48 2b 04 25 28 00
+[12167709.861906] RSP: 002b:00007fff8c15f480 EFLAGS: 00000246 ORIG_RAX: 000=
+0000000000010
+[12167709.861908] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fc3=
+c1f5fe6f
+[12167709.861909] RDX: 0000000000000002 RSI: 0000000040049421 RDI: 00000000=
+00000003
+[12167709.861910] RBP: 0000000000000003 R08: 0000000000000003 R09: 00007fc3=
+c2052b00
+[12167709.861911] R10: 0000000000000076 R11: 0000000000000246 R12: 00005555=
+deaf45c0
+[12167709.861913] R13: 00007fff8c15fd8b R14: 00005555deace5a0 R15: 00007fff=
+8c15f680
+[12167709.861915]  </TASK>
+[12167709.861915] ---[ end trace 0000000000000000 ]---
+[12167709.861917] BTRFS: error (device dm-7) in __btrfs_free_extent:3079: e=
+rrno=3D-28 No space left
+[12167709.861920] BTRFS info (device dm-7): forced readonly
+[12167709.861922] BTRFS: error (device dm-7) in btrfs_run_delayed_refs:2159=
+: errno=3D-28 No space left
+[12167709.861924] BTRFS warning (device dm-7): Skipping commit of aborted t=
+ransaction.
+[12167709.861925] BTRFS: error (device dm-7) in cleanup_transaction:1974: e=
+rrno=3D-28 No space left
+[12167709.889246] BTRFS: error (device dm-7) in reset_balance_state:3604: e=
+rrno=3D-28 No space left
+[12167709.889271] BTRFS info (device dm-7): balance: canceled
+
