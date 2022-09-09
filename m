@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8CB5B41B8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 23:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 340B85B41B9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 23:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbiIIVyC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Sep 2022 17:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
+        id S231791AbiIIVyF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Sep 2022 17:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbiIIVyB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 17:54:01 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C76F651D
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 14:54:00 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id r6so2344396qtx.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Sep 2022 14:54:00 -0700 (PDT)
+        with ESMTP id S231755AbiIIVyD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 17:54:03 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAB310300F
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 14:54:02 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id 3so1822255qka.5
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Sep 2022 14:54:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=uPVd2o0gf3rx81vKXT46VZaevTKGQr8nLf5qget5uVE=;
-        b=I8CAiCVl6PhcgG3JtyfFMfUBNsZbLTFJzz+qL1tTuxJYyUWbXYwjcT6p2cy/pE5qtv
-         mfR6+mJpgQ2wIBweOzXwXVuTKBAqqBQqIjYDQtkAvA8yg3lZYa+rNH/4GglB7l3W0euf
-         vsKk2dgnD6ao3QKx4EZygH4A0H0HQxzV4OW78n2C7ZBawTW2JRo/uaK6oTBDLSdM6tVO
-         2zegXn4MAchT4u6f1hr0XL39JXbC0jGSfYnbG3o9lfPOEHVe5OswRVhxYV2MDipL2+4c
-         s8eCFpfQZX/0zWTZaYvEkohbTzJ9J/nuYvOUM/PY8w6cyaPOMWuglgJZLAfQ+U4X0bUC
-         /QzA==
+        bh=pP3dhZ+ZmPQsVzNojbnTAghRS+VVB3ge1tStzWbVoNU=;
+        b=03oWBACHNozXHNsspaWwOsvSfbINB5jVFL1Nf4stxFGozIk4cg6bmaO4vheKS0RQ/s
+         3VmHHIQCj1PntcF7pPek2IX3IDviiZk5mAfzKquB+MSEM6gdBQZDp+EHOHoFXw+xM4k5
+         2zXncNe0vJGA7kBddQq7lwJrNI9+jG+Prtc9ePz0Ezv5zYuQkZt6Jb/49eOcpVPfxM6r
+         Qdl8eSev6LwxRpT1Jg2dtG/x+E5FIyAuswkRanozbTARLjZxJlZHD3krN63oRCALXDk+
+         APqrIWHAaFiRLXt3wdEloMKYmRncmUEAObIic7yuoDdRk4vaMDWzyZvQOEerax3wy7/w
+         KX2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=uPVd2o0gf3rx81vKXT46VZaevTKGQr8nLf5qget5uVE=;
-        b=MjzlExZBTmfY6a52iRo8IvHwBZ/VWe+P79L3b98FnpRFRcokqq/hN5hEKtjZpio83H
-         rU9LtSZFhinEk55mGAQRaemuMMHTlmPxPrNSsNPPQJzrxGPonilUeMAHoob99PAbkbWM
-         o3yVCIv9/OXyq9aEUwmjKFS5WJZGLz2thsdkUjt64XRLfxjWVr2mJD+H01ISFxW9noW5
-         UAD6qV4vaRBQX0W2h5c5EFQUDBZE+GFGy7Sfz3e1znojznZSwYX6LOooB8SWL99TgVbP
-         dFrBROBlb0lEtUHi/WuS2V2yuWhlOODWuTnMMZF8ihNpirVIkC3PACqCxlWoON7nklz1
-         IDXQ==
-X-Gm-Message-State: ACgBeo2ROZ63tfasJn1yTK1I22HIBQ5LBw/x1gKxrIIl49tc/TJOmpHT
-        pRBUb0LDImUI2PETVtXVnjaot/WSOpkYGA==
-X-Google-Smtp-Source: AA6agR7KQ+b7AM5Gm2dF92LllSD7QHtOtf+YadYEsMRYdikp9CywaNUk9Hm9XuYj++JEQmLUKOWl/g==
-X-Received: by 2002:ac8:5ac5:0:b0:343:6d5a:43d9 with SMTP id d5-20020ac85ac5000000b003436d5a43d9mr14494796qtd.10.1662760440016;
-        Fri, 09 Sep 2022 14:54:00 -0700 (PDT)
+        bh=pP3dhZ+ZmPQsVzNojbnTAghRS+VVB3ge1tStzWbVoNU=;
+        b=C+tI6J1zN5uYOrQNb68xPGLj2pnlgLBfxF1kRAtE6mYW01I/zyOhWDXKh4z+4x9g9G
+         33/SnB2LfjPIFpb7p+mZdDIIVfr28wxu3/IMlBh5+O27Qp9WbfU62IWtJACeFQEVs6Ib
+         rrvQNql6M2B6CTmK0Yn7wFCr5JbYdxg9SHwWgKVvVMw9Efp9NL0dgu8/VRohhZzEagQZ
+         9t8KdqD8vkpcZ6B72B4JoEs1cDXui5m1/jNhxcE6hb7fWy/DHwvzwHd+pm7c0rtAU0Hm
+         iOcE9Mre44OT7sS9Ao2cR7rUTgvdpF2nv1nqeYLaauw25JBFTsiKIIFhqqYfQcVluxXa
+         pOXA==
+X-Gm-Message-State: ACgBeo2ghmOpsDsP7UXiucTTqP3xMq8wNYM1G60adW90NW4iH25D0QCH
+        vsO85uhsx/or+1FpMy1xwNIopNefz9bYKQ==
+X-Google-Smtp-Source: AA6agR74Q+uc6mKMHfTPvwV2XNh93wtfFPkJQwq6Bq6L7CqxCHAHSLip5wGBeoHtWMhYL2tELX70BQ==
+X-Received: by 2002:a05:620a:122c:b0:6c9:cefa:f6d2 with SMTP id v12-20020a05620a122c00b006c9cefaf6d2mr11600107qkj.313.1662760441440;
+        Fri, 09 Sep 2022 14:54:01 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id l18-20020ac848d2000000b00344f936bfc0sm1169934qtr.33.2022.09.09.14.53.59
+        by smtp.gmail.com with ESMTPSA id 4-20020ac85744000000b00342f8984348sm1295926qtx.87.2022.09.09.14.54.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Sep 2022 14:53:59 -0700 (PDT)
+        Fri, 09 Sep 2022 14:54:00 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 06/36] btrfs: separate out the eb and extent state leak helpers
-Date:   Fri,  9 Sep 2022 17:53:19 -0400
-Message-Id: <7b6a38c92a390bf480e5718666608e4338e50ee9.1662760286.git.josef@toxicpanda.com>
+Subject: [PATCH v2 07/36] btrfs: temporarily export alloc_extent_state helpers
+Date:   Fri,  9 Sep 2022 17:53:20 -0400
+Message-Id: <0a21adef99bb0f2bb90d0c7032c007fdcba2bd77.1662760286.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1662760286.git.josef@toxicpanda.com>
 References: <cover.1662760286.git.josef@toxicpanda.com>
@@ -67,135 +67,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently we have the add/del functions generic so that we can use them
-for both extent buffers and extent states.  We want to separate this
-code however, so separate these helpers into per-object helpers in
-anticipation of the split.
+We're going to move this code in stages, but while we're doing that we
+need to export these helpers so we can more easily move the code into
+the new file.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c | 58 +++++++++++++++++++++++++++++---------------
- 1 file changed, 38 insertions(+), 20 deletions(-)
+ fs/btrfs/extent-io-tree.h | 3 +++
+ fs/btrfs/extent_io.c      | 5 ++---
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
+diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+index 6c2016db304b..8e7a548b88e9 100644
+--- a/fs/btrfs/extent-io-tree.h
++++ b/fs/btrfs/extent-io-tree.h
+@@ -250,4 +250,7 @@ void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start,
+ int btrfs_clean_io_failure(struct btrfs_inode *inode, u64 start,
+ 			   struct page *page, unsigned int pg_offset);
+ 
++struct extent_state *alloc_extent_state_atomic(struct extent_state *prealloc);
++struct extent_state *alloc_extent_state(gfp_t mask);
++
+ #endif /* BTRFS_EXTENT_IO_TREE_H */
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 34b03bd2352e..35811d40e2f1 100644
+index 35811d40e2f1..412dabccb1f4 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -43,25 +43,42 @@ static inline bool extent_state_in_tree(const struct extent_state *state)
- static LIST_HEAD(states);
- static DEFINE_SPINLOCK(leak_lock);
+@@ -339,7 +339,7 @@ void extent_io_tree_release(struct extent_io_tree *tree)
+ 	spin_unlock(&tree->lock);
+ }
  
--static inline void btrfs_leak_debug_add(spinlock_t *lock,
--					struct list_head *new,
--					struct list_head *head)
-+static inline void btrfs_leak_debug_add_eb(struct extent_buffer *eb)
-+{
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&fs_info->eb_leak_lock, flags);
-+	list_add(&eb->leak_list, &fs_info->allocated_ebs);
-+	spin_unlock_irqrestore(&fs_info->eb_leak_lock, flags);
-+}
-+
-+static inline void btrfs_leak_debug_add_state(struct extent_state *state)
+-static struct extent_state *alloc_extent_state(gfp_t mask)
++struct extent_state *alloc_extent_state(gfp_t mask)
  {
- 	unsigned long flags;
+ 	struct extent_state *state;
  
--	spin_lock_irqsave(lock, flags);
--	list_add(new, head);
--	spin_unlock_irqrestore(lock, flags);
-+	spin_lock_irqsave(&leak_lock, flags);
-+	list_add(&state->leak_list, &states);
-+	spin_unlock_irqrestore(&leak_lock, flags);
-+}
-+
-+static inline void btrfs_leak_debug_del_eb(struct extent_buffer *eb)
-+{
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&fs_info->eb_leak_lock, flags);
-+	list_del(&eb->leak_list);
-+	spin_unlock_irqrestore(&fs_info->eb_leak_lock, flags);
+@@ -710,8 +710,7 @@ static struct extent_state *clear_state_bit(struct extent_io_tree *tree,
+ 	return next;
  }
  
--static inline void btrfs_leak_debug_del(spinlock_t *lock,
--					struct list_head *entry)
-+static inline void btrfs_leak_debug_del_state(struct extent_state *state)
+-static struct extent_state *
+-alloc_extent_state_atomic(struct extent_state *prealloc)
++struct extent_state *alloc_extent_state_atomic(struct extent_state *prealloc)
  {
- 	unsigned long flags;
- 
--	spin_lock_irqsave(lock, flags);
--	list_del(entry);
--	spin_unlock_irqrestore(lock, flags);
-+	spin_lock_irqsave(&leak_lock, flags);
-+	list_del(&state->leak_list);
-+	spin_unlock_irqrestore(&leak_lock, flags);
- }
- 
- void btrfs_extent_buffer_leak_debug_check(struct btrfs_fs_info *fs_info)
-@@ -125,9 +142,11 @@ static inline void __btrfs_debug_check_extent_io_range(const char *caller,
- 	}
- }
- #else
--#define btrfs_leak_debug_add(lock, new, head)	do {} while (0)
--#define btrfs_leak_debug_del(lock, entry)	do {} while (0)
--#define btrfs_extent_state_leak_debug_check()	do {} while (0)
-+#define btrfs_leak_debug_add_eb(eb)			do {} while (0)
-+#define btrfs_leak_debug_add_state(state)		do {} while (0)
-+#define btrfs_leak_debug_del_eb(eb)			do {} while (0)
-+#define btrfs_leak_debug_del_state(state)		do {} while (0)
-+#define btrfs_extent_state_leak_debug_check()		do {} while (0)
- #define btrfs_debug_check_extent_io_range(c, s, e)	do {} while (0)
- #endif
- 
-@@ -334,7 +353,7 @@ static struct extent_state *alloc_extent_state(gfp_t mask)
- 		return state;
- 	state->state = 0;
- 	RB_CLEAR_NODE(&state->rb_node);
--	btrfs_leak_debug_add(&leak_lock, &state->leak_list, &states);
-+	btrfs_leak_debug_add_state(state);
- 	refcount_set(&state->refs, 1);
- 	init_waitqueue_head(&state->wq);
- 	trace_alloc_extent_state(state, mask, _RET_IP_);
-@@ -347,7 +366,7 @@ void free_extent_state(struct extent_state *state)
- 		return;
- 	if (refcount_dec_and_test(&state->refs)) {
- 		WARN_ON(extent_state_in_tree(state));
--		btrfs_leak_debug_del(&leak_lock, &state->leak_list);
-+		btrfs_leak_debug_del_state(state);
- 		trace_free_extent_state(state, _RET_IP_);
- 		kmem_cache_free(extent_state_cache, state);
- 	}
-@@ -5993,7 +6012,7 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
- static inline void btrfs_release_extent_buffer(struct extent_buffer *eb)
- {
- 	btrfs_release_extent_buffer_pages(eb);
--	btrfs_leak_debug_del(&eb->fs_info->eb_leak_lock, &eb->leak_list);
-+	btrfs_leak_debug_del_eb(eb);
- 	__free_extent_buffer(eb);
- }
- 
-@@ -6010,8 +6029,7 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
- 	eb->bflags = 0;
- 	init_rwsem(&eb->lock);
- 
--	btrfs_leak_debug_add(&fs_info->eb_leak_lock, &eb->leak_list,
--			     &fs_info->allocated_ebs);
-+	btrfs_leak_debug_add_eb(eb);
- 	INIT_LIST_HEAD(&eb->release_list);
- 
- 	spin_lock_init(&eb->refs_lock);
-@@ -6479,7 +6497,7 @@ static int release_extent_buffer(struct extent_buffer *eb)
- 			spin_unlock(&eb->refs_lock);
- 		}
- 
--		btrfs_leak_debug_del(&eb->fs_info->eb_leak_lock, &eb->leak_list);
-+		btrfs_leak_debug_del_eb(eb);
- 		/* Should be safe to release our pages at this point */
- 		btrfs_release_extent_buffer_pages(eb);
- #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ 	if (!prealloc)
+ 		prealloc = alloc_extent_state(GFP_ATOMIC);
 -- 
 2.26.3
 
