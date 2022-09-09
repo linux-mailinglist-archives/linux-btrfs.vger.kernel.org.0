@@ -2,113 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8805B376E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 14:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163345B37C5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 14:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbiIIMOv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Sep 2022 08:14:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
+        id S230348AbiIIMal (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Sep 2022 08:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbiIIMOW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 08:14:22 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEA213FA7F;
-        Fri,  9 Sep 2022 05:12:11 -0700 (PDT)
-Received: from letrec.thunk.org (guestnat-104-133-160-102.corp.google.com [104.133.160.102] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 289CB71n002170
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 9 Sep 2022 08:11:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1662725472; bh=rkVib4zKXNES9ZZ4tMSEKXn2YQ6HSV5vUTDr92XDkhU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=GUfSWT2qQ/AJie7hxQCJZt8BAL8wLB2wXXt3lpNzwVcJDfxeA3n4X9UaHMr+LKaji
-         zb8pN4awcYOraVhbePEtz4sCuIcEMxDO2V92UeCIRI87pI75/6Euq2NTZWvCPaRsmz
-         DlR2DlvtPX7EziCMExCNHJHLF80Kja7xArncG3AABgQbBA7F8u2okXCFadky2FAyPZ
-         ZEVZ5zWSVzlIFf8gSeITjbPkBF1rXnXYwy3TAT0rzEQUsrD4xD5MFcwTetP4Z+bsqn
-         5hn1WHr+o8drixmoUTatgnnzVOC8xFKnKtCU1Rq9PX4TQiWPhk9jx/EanCDjjweVSe
-         56cLzlKnr1a1Q==
-Received: by letrec.thunk.org (Postfix, from userid 15806)
-        id CD6C38C2B49; Fri,  9 Sep 2022 08:11:06 -0400 (EDT)
-Date:   Fri, 9 Sep 2022 08:11:06 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.de>, adilger.kernel@dilger.ca,
-        djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, brauner@kernel.org,
-        fweimer@redhat.com, linux-man@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-Message-ID: <YxstWiu34TfJ6muW@mit.edu>
-References: <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>
- <20220907125211.GB17729@fieldses.org>
- <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
- <20220907135153.qvgibskeuz427abw@quack3>
- <166259786233.30452.5417306132987966849@noble.neil.brown.name>
- <20220908083326.3xsanzk7hy3ff4qs@quack3>
- <YxoIjV50xXKiLdL9@mit.edu>
- <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
- <20220908155605.GD8951@fieldses.org>
- <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229589AbiIIMai (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 08:30:38 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DF5857C9
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 05:30:37 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 4CE213200907;
+        Fri,  9 Sep 2022 08:30:34 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute3.internal (MEProxy); Fri, 09 Sep 2022 08:30:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        colorremedies.com; h=cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1662726633; x=
+        1662813033; bh=Gh0DLtxtA1OD6I+pWqKnR9ji2NIrgGpgARTtTOGPVyE=; b=e
+        g19piqJkOpJ5sQqWkZlxZzdyu5bRzlb58GP7GTuUi6FbxWR4OLeZTxsn7S9+aD0t
+        bsCfHlk1A+kfVxSNWsRpttCNiW7gON34YMak9M8iEz7M0/HYhllri1YsAbJcyKnQ
+        RQ41FYCykKhOwbnQmnk+5EJZkqB28Ssoyi80yQojLwV36JusBwNTdHg1hFHpVF3V
+        0tuzsLTnJs21EHlhFzWWqW3kYRO7aAtiMoeIgaJDGra0TDGxOZxxPIejj848hOC1
+        IiIL/31fIgZxa9WfPg0aCV5JhKTCmv0leoxA2qcdi44AGO/2eF0GZcmmn0yprNiW
+        WUwLUXz7wpaF5FCtlUCFQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; t=1662726633; x=1662813033; bh=Gh0DLtxtA1OD6I+pWqKnR9ji2NIr
+        gGpgARTtTOGPVyE=; b=ZBlA3ZyXasbxlGoY1PCqCR9PkJIyoN7cO4XXQ1VxctGV
+        4yF2hX3tUOR+Sr/sTfbWrRhgYd9JwtRW93XiGPsNh3zZTsQad5oS90hEyhDwD7Jr
+        kToIq/uiuWD9ATOjKcHv3UML6xcYBI+eUNCuYA0xOZUJK3BOexSsOgfhRiJ9ebLk
+        xb71UvXeRhl6mahdrqbSATmzHgUTlCD6bRm8HTG1jROFf2WrF6jGFoeaodpTTjO3
+        lLjxp1NrxmIhgmFGunT5U/qZVNbd+dmHFBE7cOmUC5ZJjyENnDSjuv5n5dWnmHYW
+        iGl77a/mwIlWTNN1XauCYe8hhZBtIZTR9gA7XfW6vQ==
+X-ME-Sender: <xms:6TEbY_ln0V1-QZ46U7IZcI-ENupwmtp-TouEYMIFZFX1ceIq-VKdeA>
+    <xme:6TEbYy0XFSULhNG-_dJPIsQ7_l-zVNZOGR11Su6JxxiVt_WtkoI2PRKjb_3IwEkzE
+    Bh1AGPD48Mwwispi44>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedthedgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdevhhhr
+    ihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
+    eqnecuggftrfgrthhtvghrnhepudehieevueetgffhkeetkeelveffueeltdejvdejveev
+    vdeggfefhfegvddugeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
+X-ME-Proxy: <xmx:6TEbY1qkqRdtef_1kuyDa8CNvUXup7LpQelMaoO-uvTAVdFLW9vIvA>
+    <xmx:6TEbY3lCv1DSAm2lXrfS_lVReQ64AgVgZd9R8wIeKpRnm-EBSSPJ3A>
+    <xmx:6TEbY93H96gmJM9STVfHI6pToszherPGUq6OOlOz8kYamszxeuUMpA>
+    <xmx:6TEbY6giYp1p57Q1J7fv1mcO1bedd8LbyEtH43iqJvC1TYrLAmBgjQ>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 903291700083; Fri,  9 Sep 2022 08:30:33 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-927-gf4c98c8499-fm-20220826.002-gf4c98c84
+Mime-Version: 1.0
+Message-Id: <c8fc0db5-dd3f-49f0-bf15-1c0232835078@www.fastmail.com>
+In-Reply-To: <20220909000446.zzsniu7rc6tl6sz7@regina>
+References: <20220909000446.zzsniu7rc6tl6sz7@regina>
+Date:   Fri, 09 Sep 2022 08:30:13 -0400
+From:   "Chris Murphy" <lists@colorremedies.com>
+To:     development.rex@posteo.net,
+        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Subject: Re: Read only because of enospc
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 08, 2022 at 01:40:11PM -0400, Jeff Layton wrote:
-> 
-> Ted, how would we access this? Maybe we could just add a new (generic)
-> super_block field for this that ext4 (and other filesystems) could
-> populate at mount time?
 
-Yeah, I was thinking about just adding it to struct super, with some
-value (perhaps 0 or ~0) meaning that the file system didn't support
-it.  If people were concerned about struct super bloat, we could also
-add some new function to struct super_ops that would return one or
-more values that are used rarely by most of the kernel code, and so
-doesn't need to be in the struct super data structure.  I don't have
-strong feelings one way or another.
 
-On another note, my personal opinion is that at least as far as ext4
-is concerned, i_version on disk's only use is for NFS's convenience,
-and so I have absolutely no problem with changing how and when
-i_version gets updated modulo concerns about impacting performance.
-That's one of the reasons why being able to update i_version only
-lazily, so that if we had, say, some workload that was doing O_DIRECT
-writes followed by fdatasync(), there wouldn't be any obligation to
-flush the inode out to disk just because we had bumped i_version
-appeals to me.
+On Thu, Sep 8, 2022, at 8:07 PM, development.rex@posteo.net wrote:
+> Linux my-pc 5.17.3-arch1-1 #1 SMP
 
-But aside from that, I don't consider when i_version gets updated on
-disk, especially what the semantics are after a crash, and if we need
-to change things so that NFS can be more performant, I'm happy to
-accomodate.  One of the reasons why we implemented the ext4 fast
-commit feature was to improve performance for NFS workloads.
+It's a recent kernel, but you might try 5.19 series. Although offhand I'm not thinking of any fixes in 5.19, the main idea is to demonstrate is still a bug. 
 
-I know some XFS developers have some concerns here, but I just wanted
-to make it be explicit that (a) I'm not aware of any users who are
-depending on the i_version on-disk semantics, and (b) if they are
-depending on something which as far as I'm concerned in an internal
-implementation detail, we've made no promises to them, and they can
-get to keep both pieces.  :-)  This is especially since up until now,
-there is no supported, portable userspace interface to make i_version
-available to userspace.
+Once the problem happens, could you collect these and post to the list? It may give a developer some insight what's going wrong.
 
-Cheers,
+btrfs fi us
+grep -r . /sys/fs/$fsuuid/allocation
 
-					- Ted
+-- 
+Chris Murphy
