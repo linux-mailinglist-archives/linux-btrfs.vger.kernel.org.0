@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 337835B41CE
+	by mail.lfdr.de (Postfix) with ESMTP id C3C125B41D0
 	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 23:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231866AbiIIVyW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Sep 2022 17:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
+        id S231868AbiIIVyX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Sep 2022 17:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbiIIVyU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 17:54:20 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4450F113C5E
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 14:54:19 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id r6so2344797qtx.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Sep 2022 14:54:19 -0700 (PDT)
+        with ESMTP id S231859AbiIIVyV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 17:54:21 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39151079C8
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 14:54:20 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id s22so2223103qkj.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Sep 2022 14:54:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=qUFMHuXycz7rmHA0hI3ZRo8x5SOXZYVbmwk1Z+HWHWk=;
-        b=okqdrzNxeKXDSUZMiTISY3yxpdtNV+gV8f/qpw2+d64sG36oCqTQj4CeNgcXyDLIVg
-         5FXNvxdhTjXWAA3Kg7L5CIqbinp9hO19NR+vqsiCJ4Pj/nlcmxAP0Sd9qgAkZeK9Z5pz
-         l6QZPOfe4QYSxPGMo5HC1Usw8Y6AsAb1GGgM6iwp5ZGdGbouUOQxBmpUg+maYa4ITCLe
-         b0Poy7fRw7gG7NAOK+7h9CQBCne8NXauCtkdNHsFcGCJPsob+iAWigdtpSAUtQ/BVhuE
-         tzi3E3xdmMjNXUPBmVE6FEZ62fptDcYv0uEkSPgNjdNEeUr+GLllFOIss6GFVr3QoPwJ
-         Kjkg==
+        bh=AK3479ESINHUUJLmgSIWNutZHl95zZZl3FXkX49uOvQ=;
+        b=cZZK6lDBnjJpylNTMN3PvjatxG6lIO7PxGsqa/TQb49c5OYRCkuPnR26KFVIlqmTE7
+         wGP98mHSJnrlX3SJxwqFG5DjOs6ZIjBJyP3/Ze6owfO/PySu4XDY3PtSV9oSFsVmbslJ
+         9Vdl4RTurwhZMzrR1JHuCUdsMQq2yfSB9heB7hdkXwEPQ7yuPOwWThYfeiP5dFh2TEu4
+         G/uDX+LDyqZVr3jm0d1HGuuiLaY6OGPYNCTFJiqiLVe0b0c4WCn+wRpnaC0Dp8xGOafv
+         VRMRbpjQp1dAkMgWTqZ0URy0pPiHEg3JQbXDfVeESB7k8TSrLKftzJ6mTaPrAZTyAzwb
+         VWog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=qUFMHuXycz7rmHA0hI3ZRo8x5SOXZYVbmwk1Z+HWHWk=;
-        b=D3hHuGz6nrQSkv1B0CbAtK1dqyWBWjT+BZbrmPKF8gpJIk95zJBYm1q/aXw/2nVVIs
-         KEMlQxbHw4NCjlENi8o7aed/OQB70P1nUrDcJ4fG2n70SUGUY9scgypzVGSFu21PXPyc
-         V1rV4rVcDxkkVT3rU8e0s/lcO4H87jDvBFM3ESylqPUNVyYc8c0o9ndpDwxfHFV2gTN5
-         shdElS2njQXpbOClKl+/h4mhkxAHNV1m/o46BgGmNqZ5QvS/vGsFfNOSdwMR6KnL3pzv
-         35ksbPJPOU8zqU9gC1ECQGmKo1fQ16kGEkVszpEyCigw4d206NRdXoyj5LB5nSpwK8Cd
-         oY0w==
-X-Gm-Message-State: ACgBeo2JDS8fggsn/eFZ2ak8uIsfO47slChpijOyXkOztY3qZ552O5aD
-        0RWNqYioovYuAkgtiQcNs2gTYTxMfvQr8Q==
-X-Google-Smtp-Source: AA6agR4AtzNg2UeKBAa9PtrQkBmV8F1Q8wyHqmsepcYOnFopW5YXzzrytwEDlc7C5nRJgSP9yU5GJQ==
-X-Received: by 2002:ac8:7f03:0:b0:344:6f5c:6aee with SMTP id f3-20020ac87f03000000b003446f5c6aeemr14661672qtk.558.1662760458623;
-        Fri, 09 Sep 2022 14:54:18 -0700 (PDT)
+        bh=AK3479ESINHUUJLmgSIWNutZHl95zZZl3FXkX49uOvQ=;
+        b=w1kFgJb+ErV8EToYCV7fhoJS+yl1UPk0uBy+d8tGdetE9wTqAdB2Efs0jNah/HXEk6
+         GpedaujneweEaIMTeJyMVUREk2QxbwGaEe4+6zJ+kEpCnLRmxEU8YiGs9pyMvRHOz93I
+         N9WhFxRkFTKLykLj4mIrdfMzTSJqJz1PdkjofcQ7OvorfcHM5eNOCtfgF/rVOoVHFk1O
+         +/bH7lTbpJ9oUNzyFoLlmyoGngFuefGEU2brMO8Vlk4wGu2ibShRQ8fjZSo4T/dGO6OS
+         zXVcK8Mu2dpMPjIEkFavVVRu+WmNopajCezEynCAPXv7KExsdRTl5L1Ci5zJMcRgvqQD
+         tV+Q==
+X-Gm-Message-State: ACgBeo3GC4n5QMmq2vmH9L2mu80V8rXZUGwMZl9xggd2JRmlKNT628fI
+        r1NGs7eLBmxcWFkHY0NIeuVdcpozMzGKXQ==
+X-Google-Smtp-Source: AA6agR7VNf8z2HYdndNqifM69Vw3L0+YJwms8bPX+vto17vbPnsCpWJ153uY/i7dKjXy7Um2UPt6Eg==
+X-Received: by 2002:a05:620a:8001:b0:6ba:be07:7187 with SMTP id ee1-20020a05620a800100b006babe077187mr11884429qkb.153.1662760460177;
+        Fri, 09 Sep 2022 14:54:20 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id l3-20020a37f903000000b006af0ce13499sm1321029qkj.115.2022.09.09.14.54.18
+        by smtp.gmail.com with ESMTPSA id 126-20020a370684000000b006be8713f742sm1422630qkg.38.2022.09.09.14.54.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Sep 2022 14:54:18 -0700 (PDT)
+        Fri, 09 Sep 2022 14:54:19 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 19/36] btrfs: remove struct tree_entry
-Date:   Fri,  9 Sep 2022 17:53:32 -0400
-Message-Id: <fb921dc9fe2ece16fc7b1d423c458b856c6d8a07.1662760286.git.josef@toxicpanda.com>
+Subject: [PATCH v2 20/36] btrfs: use next_state instead of rb_next where we can
+Date:   Fri,  9 Sep 2022 17:53:33 -0400
+Message-Id: <f44ff9e82c87a7999c4d03b734f56b0e6d0622fd.1662760286.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1662760286.git.josef@toxicpanda.com>
 References: <cover.1662760286.git.josef@toxicpanda.com>
@@ -60,113 +60,186 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This existed when we overloaded the tree manipulation functions for both
-the extent_io_tree and the extent buffer tree.  However the extent
-buffers are now stored in a radix tree, so we no longer need this
-abstraction.  Remove struct tree_entry and use extent_state directly
-instead.
+We can simplify a lot of these functions where we have to cycle through
+extent_state's by simply using next_state() instead of rb_next().  In
+many spots this allows us to do things like
+
+while (state) {
+	/* whatever */
+	state = next_state(state);
+}
+
+instead of
+
+while (1) {
+	state = rb_entry(n, struct extent_state, rb_node);
+	n = rb_next(n);
+	if (!n)
+		break;
+}
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-io-tree.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ fs/btrfs/extent-io-tree.c | 57 +++++++++++++++++----------------------
+ 1 file changed, 24 insertions(+), 33 deletions(-)
 
 diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-index e462b81a8d3e..4855fa5ab29e 100644
+index 4855fa5ab29e..f3034524acdf 100644
 --- a/fs/btrfs/extent-io-tree.c
 +++ b/fs/btrfs/extent-io-tree.c
-@@ -228,11 +228,11 @@ static inline struct rb_node *tree_search_for_insert(struct extent_io_tree *tree
- 	struct rb_root *root = &tree->state;
- 	struct rb_node **node = &root->rb_node;
- 	struct rb_node *prev = NULL;
--	struct tree_entry *entry;
-+	struct extent_state *entry;
+@@ -752,12 +752,10 @@ void wait_extent_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bits)
+ 		 * our range starts
+ 		 */
+ 		node = tree_search(tree, start);
+-process_node:
+ 		if (!node)
+ 			break;
+-
+ 		state = rb_entry(node, struct extent_state, rb_node);
+-
++process_node:
+ 		if (state->start > end)
+ 			goto out;
  
- 	while (*node) {
- 		prev = *node;
--		entry = rb_entry(prev, struct tree_entry, rb_node);
-+		entry = rb_entry(prev, struct extent_state, rb_node);
+@@ -774,7 +772,7 @@ void wait_extent_bit(struct extent_io_tree *tree, u64 start, u64 end, u32 bits)
+ 			break;
  
- 		if (offset < entry->start)
- 			node = &(*node)->rb_left;
-@@ -250,7 +250,7 @@ static inline struct rb_node *tree_search_for_insert(struct extent_io_tree *tree
- 	/* Search neighbors until we find the first one past the end */
- 	while (prev && offset > entry->end) {
- 		prev = rb_next(prev);
--		entry = rb_entry(prev, struct tree_entry, rb_node);
-+		entry = rb_entry(prev, struct extent_state, rb_node);
+ 		if (!cond_resched_lock(&tree->lock)) {
+-			node = rb_next(node);
++			state = next_state(state);
+ 			goto process_node;
+ 		}
+ 	}
+@@ -818,15 +816,13 @@ find_first_extent_bit_state(struct extent_io_tree *tree, u64 start, u32 bits)
+ 	node = tree_search(tree, start);
+ 	if (!node)
+ 		goto out;
++	state = rb_entry(node, struct extent_state, rb_node);
+ 
+-	while (1) {
+-		state = rb_entry(node, struct extent_state, rb_node);
++	while (state) {
+ 		if (state->end >= start && (state->state & bits))
+ 			return state;
+ 
+-		node = rb_next(node);
+-		if (!node)
+-			break;
++		state = next_state(state);
+ 	}
+ out:
+ 	return NULL;
+@@ -942,8 +938,8 @@ bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
+ 		goto out;
  	}
  
- 	return prev;
-@@ -277,14 +277,14 @@ static inline struct rb_node *tree_search_prev_next(struct extent_io_tree *tree,
- 	struct rb_node **node = &root->rb_node;
- 	struct rb_node *prev = NULL;
- 	struct rb_node *orig_prev = NULL;
--	struct tree_entry *entry;
-+	struct extent_state *entry;
- 
- 	ASSERT(prev_ret);
- 	ASSERT(next_ret);
- 
- 	while (*node) {
- 		prev = *node;
--		entry = rb_entry(prev, struct tree_entry, rb_node);
-+		entry = rb_entry(prev, struct extent_state, rb_node);
- 
- 		if (offset < entry->start)
- 			node = &(*node)->rb_left;
-@@ -297,15 +297,15 @@ static inline struct rb_node *tree_search_prev_next(struct extent_io_tree *tree,
- 	orig_prev = prev;
- 	while (prev && offset > entry->end) {
- 		prev = rb_next(prev);
--		entry = rb_entry(prev, struct tree_entry, rb_node);
-+		entry = rb_entry(prev, struct extent_state, rb_node);
+-	while (1) {
+-		state = rb_entry(node, struct extent_state, rb_node);
++	state = rb_entry(node, struct extent_state, rb_node);
++	while (state) {
+ 		if (found && (state->start != cur_start ||
+ 			      (state->state & EXTENT_BOUNDARY))) {
+ 			goto out;
+@@ -961,12 +957,10 @@ bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
+ 		found = true;
+ 		*end = state->end;
+ 		cur_start = state->end + 1;
+-		node = rb_next(node);
+ 		total_bytes += state->end - state->start + 1;
+ 		if (total_bytes >= max_bytes)
+ 			break;
+-		if (!node)
+-			break;
++		state = next_state(state);
  	}
- 	*next_ret = prev;
- 	prev = orig_prev;
- 
--	entry = rb_entry(prev, struct tree_entry, rb_node);
-+	entry = rb_entry(prev, struct extent_state, rb_node);
- 	while (prev && offset < entry->start) {
- 		prev = rb_prev(prev);
--		entry = rb_entry(prev, struct tree_entry, rb_node);
-+		entry = rb_entry(prev, struct extent_state, rb_node);
+ out:
+ 	spin_unlock(&tree->lock);
+@@ -1519,18 +1513,15 @@ void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
+ 	 * Find the longest stretch from start until an entry which has the
+ 	 * bits set
+ 	 */
+-	while (1) {
+-		state = rb_entry(node, struct extent_state, rb_node);
++	state = rb_entry(node, struct extent_state, rb_node);
++	while (state) {
+ 		if (state->end >= start && !(state->state & bits)) {
+ 			*end_ret = state->end;
+ 		} else {
+ 			*end_ret = state->start - 1;
+ 			break;
+ 		}
+-
+-		node = rb_next(node);
+-		if (!node)
+-			break;
++		state = next_state(state);
  	}
- 	*prev_ret = prev;
+ out:
+ 	spin_unlock(&tree->lock);
+@@ -1568,8 +1559,8 @@ u64 count_range_bits(struct extent_io_tree *tree,
+ 	if (!node)
+ 		goto out;
  
-@@ -416,10 +416,10 @@ static int insert_state(struct extent_io_tree *tree,
+-	while (1) {
+-		state = rb_entry(node, struct extent_state, rb_node);
++	state = rb_entry(node, struct extent_state, rb_node);
++	while (state) {
+ 		if (state->start > search_end)
+ 			break;
+ 		if (contig && found && state->start > last + 1)
+@@ -1587,9 +1578,7 @@ u64 count_range_bits(struct extent_io_tree *tree,
+ 		} else if (contig && found) {
+ 			break;
+ 		}
+-		node = rb_next(node);
+-		if (!node)
+-			break;
++		state = next_state(state);
+ 	}
+ out:
+ 	spin_unlock(&tree->lock);
+@@ -1615,9 +1604,11 @@ int test_range_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 		node = &cached->rb_node;
+ 	else
+ 		node = tree_search(tree, start);
+-	while (node && start <= end) {
+-		state = rb_entry(node, struct extent_state, rb_node);
++	if (!node)
++		goto out;
  
- 	node = &tree->state.rb_node;
- 	while (*node) {
--		struct tree_entry *entry;
-+		struct extent_state *entry;
- 
- 		parent = *node;
--		entry = rb_entry(parent, struct tree_entry, rb_node);
-+		entry = rb_entry(parent, struct extent_state, rb_node);
- 
- 		if (end < entry->start) {
- 			node = &(*node)->rb_left;
-@@ -485,10 +485,10 @@ static int split_state(struct extent_io_tree *tree, struct extent_state *orig,
- 	parent = &orig->rb_node;
- 	node = &parent;
- 	while (*node) {
--		struct tree_entry *entry;
-+		struct extent_state *entry;
- 
- 		parent = *node;
--		entry = rb_entry(parent, struct tree_entry, rb_node);
-+		entry = rb_entry(parent, struct extent_state, rb_node);
- 
- 		if (prealloc->end < entry->start) {
- 			node = &(*node)->rb_left;
++	state = rb_entry(node, struct extent_state, rb_node);
++	while (state && start <= end) {
+ 		if (filled && state->start > start) {
+ 			bitset = 0;
+ 			break;
+@@ -1641,13 +1632,13 @@ int test_range_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 		start = state->end + 1;
+ 		if (start > end)
+ 			break;
+-		node = rb_next(node);
+-		if (!node) {
+-			if (filled)
+-				bitset = 0;
+-			break;
+-		}
++		state = next_state(state);
+ 	}
++
++	/* We ran out of states and were still inside of our range. */
++	if (filled && !state)
++		bitset = 0;
++out:
+ 	spin_unlock(&tree->lock);
+ 	return bitset;
+ }
 -- 
 2.26.3
 
