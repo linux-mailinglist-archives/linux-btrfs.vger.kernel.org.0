@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A27165B41D9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 23:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416345B41E1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 23:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbiIIVyv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Sep 2022 17:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
+        id S231950AbiIIVyw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Sep 2022 17:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231935AbiIIVyn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 17:54:43 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED79564D9
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 14:54:42 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id r20so1646086qtn.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Sep 2022 14:54:42 -0700 (PDT)
+        with ESMTP id S231942AbiIIVyq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 17:54:46 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376892655C
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 14:54:45 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id b2so2199763qkh.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Sep 2022 14:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=R6sSghnkFEtwnvrI7PXxc4RCmgEq1lnqxgHI5XM24Zk=;
-        b=wrgw1oEowKgJdOsqUBlL/YGqan0tO/yxepaHisWxfcoF6AhDPqlTsBPSJalmIvze3r
-         1Q1Tz5o5VD6CEID4U7J38jAC6wjCUEizltb7syO8RBzSGlsSW4oC/4D4yJ+JIiApCdG2
-         t10kRcRTtPKkiLHmyjv1QHRKE+ImCSPOrZfjlfOIizv5Jt939mIGiIgjr5oi0fwg3SZM
-         y3jcisBWec5JtqGiwdDSwSsVAnaK+RCAZd9L5qpimX2yL8amck7a8fX8g9XUDsFP2TXC
-         FNEvQ/3LFXeuuTTYBbdGDB3hj8oTTZsSBJb+HQCmliroWEvZJyRfpBd+VymPhVOJACRF
-         IZzg==
+        bh=6OwoWh+JnOQuT26jqTAkgxqtvtXcwjDBgHhYvJ6LX9E=;
+        b=Kwb50TdzC5lIxSqqA1qiGRhYZ6t/Br8q3Z577h4rt3OURdE3IFfTqF/kX5z3oxeom6
+         cf0rEY+6lIvipBd2ZJ0SleaOZIY0Ks3JkeHy2Kcs7nLRiEE3RiYq/Wf4I/b4XtK68D/4
+         eueYApCQ3eX7m7zDVzt/6qYORexnmmnE7PCZontxd8GmnRNWfPZaJixLq/80G/u5c92Z
+         3TYMWvat74O994i+KxVQ/MQfhei85PBZOxJcjNHAOXF8uscYV8Lx69F3tWC+1+hlQ0zb
+         QlALdPVUvhM7VQIBZNvlLU4K3XuNBwDUOBDxLMh2fL/b8MM71MMaUXjaPdWfDJGRdLm0
+         gXMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=R6sSghnkFEtwnvrI7PXxc4RCmgEq1lnqxgHI5XM24Zk=;
-        b=xjfsUdRMGrAEJSELL1QzC59MiSJ9bGjgjwsT5E5KbSwMpFtBjQiafCEitvITNA/DUq
-         wfsZrb6VR70PXYnkpdNXmXGTrajjnMs0Hgb1jsmQ/Winr7so68y/ZrhtjBwBodA6ErLs
-         YCGj7THo4J0/nBNuGEAgp9fRkhTlm0vqezumUV7m74ZG99fC3uhgfDiYmfstQI9wMcMD
-         drKzGD4p9U2MALrmkssBKNskDUKlYPsXhU2idn1bdaMHuFadhLMYDro384wVMZ9b6mjO
-         H8PFAFcZh7jLqaEjnZW9010nDcRsI6DW/t84gMH4MCUEhUdQjzlnzpxRBYJ/fTv3i/h5
-         uJEw==
-X-Gm-Message-State: ACgBeo01YW5dTKpZSdk58hBToQsR3AOUTcvbCOBvBWtLNH8zE434bjgt
-        WDRGcoNLbyKL1D4wIuEthJ9TSAM59OOSLQ==
-X-Google-Smtp-Source: AA6agR5AHnPnwKJm1lr7ZaDSO5Jzmp+/DuqpGBizlqrRodyELTNULcOzAI45SifgOWZSbXParsJFqg==
-X-Received: by 2002:ac8:5a11:0:b0:35b:a2ec:2b73 with SMTP id n17-20020ac85a11000000b0035ba2ec2b73mr3539979qta.364.1662760482298;
-        Fri, 09 Sep 2022 14:54:42 -0700 (PDT)
+        bh=6OwoWh+JnOQuT26jqTAkgxqtvtXcwjDBgHhYvJ6LX9E=;
+        b=R1E53hd4UEuVUM/86TcAKu5Y+uYwifpKjV98tM0UA9ZDlm9cZIkirdXaX/5I6aR6hm
+         AOirvMIgChhWoZtBlOsAG8JoXRAGTGh9KQAwBqX/25444aVU1rqxVuPdD4AtHDaA0ShX
+         HIb+7DrkmuBc/ECK2/7/Qd8WewOxtzwxmhXyQt0qBVHgT1bYTf8pso0dQdv/a8aPW3Rh
+         xSeItlab9mfLJRsd75gxYMQXH5vwrI4qlEy3y8Ocq8wEV0okRQXRaQk+Xw+wslTQAQYe
+         y7ewjuRNMt/A31NHk5xIzRJt13PZVzjcsnaiVmE7sOXvr9znVuz5PD9OgVJyugV8tio5
+         JeKQ==
+X-Gm-Message-State: ACgBeo2rtRWctkaQ85XztOFE+OQJx2KiL98D5V7SwDAUGpwEJMAxFbXC
+        0beQtHFv9m7zvMYM3ElkPkBnavWKJ7Lyyg==
+X-Google-Smtp-Source: AA6agR7cTV+7zAGkjybf7fALFVyLKbjlo2QXgsFY4xLixvemCIrEsOY5ygqjaiLJJmmEpnyxnCe4+Q==
+X-Received: by 2002:a05:620a:2408:b0:6c5:df5a:124 with SMTP id d8-20020a05620a240800b006c5df5a0124mr11862374qkn.753.1662760483992;
+        Fri, 09 Sep 2022 14:54:43 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id r4-20020a05620a298400b006b5e50057basm1502671qkp.95.2022.09.09.14.54.41
+        by smtp.gmail.com with ESMTPSA id y12-20020a05620a44cc00b006b942f4ffe3sm1482215qkp.18.2022.09.09.14.54.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Sep 2022 14:54:41 -0700 (PDT)
+        Fri, 09 Sep 2022 14:54:43 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 35/36] btrfs: don't init io tree with private data for non inodes
-Date:   Fri,  9 Sep 2022 17:53:48 -0400
-Message-Id: <f4f1e82ca38975398ba348fbab6eb50a9597aa34.1662760286.git.josef@toxicpanda.com>
+Subject: [PATCH v2 36/36] btrfs: remove is_data_inode() checks in extent-io-tree.c
+Date:   Fri,  9 Sep 2022 17:53:49 -0400
+Message-Id: <ceca562bdf21779fa078899e62b903e0e5ee4b04.1662760286.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1662760286.git.josef@toxicpanda.com>
 References: <cover.1662760286.git.josef@toxicpanda.com>
@@ -67,55 +67,72 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We only use this for normal inodes, so don't set it if we're not a
-normal inode.
+We're only init'ing extent_io_tree's with a private data if we're a
+normal inode, so we don't need this extra check.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c     | 2 +-
- fs/btrfs/inode.c       | 2 +-
- fs/btrfs/transaction.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ fs/btrfs/extent-io-tree.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index eedb39d89be5..db8212cc1d2e 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2231,7 +2231,7 @@ static void btrfs_init_btree_inode(struct btrfs_fs_info *fs_info)
+diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
+index 482b6acc76a8..500ee1f12db6 100644
+--- a/fs/btrfs/extent-io-tree.c
++++ b/fs/btrfs/extent-io-tree.c
+@@ -60,7 +60,7 @@ static inline void __btrfs_debug_check_extent_io_range(const char *caller,
+ 	struct inode *inode = tree->private_data;
+ 	u64 isize;
  
- 	RB_CLEAR_NODE(&BTRFS_I(inode)->rb_node);
- 	extent_io_tree_init(fs_info, &BTRFS_I(inode)->io_tree,
--			    IO_TREE_BTREE_INODE_IO, inode);
-+			    IO_TREE_BTREE_INODE_IO, NULL);
- 	extent_map_tree_init(&BTRFS_I(inode)->extent_tree);
+-	if (!inode || !is_data_inode(inode))
++	if (!inode)
+ 		return;
  
- 	BTRFS_I(inode)->root = btrfs_grab_root(fs_info->tree_root);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 39f00b68b3a8..6fde13f62c1d 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8800,7 +8800,7 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
- 	extent_map_tree_init(&ei->extent_tree);
- 	extent_io_tree_init(fs_info, &ei->io_tree, IO_TREE_INODE_IO, inode);
- 	extent_io_tree_init(fs_info, &ei->file_extent_tree,
--			    IO_TREE_INODE_FILE_EXTENT, inode);
-+			    IO_TREE_INODE_FILE_EXTENT, NULL);
- 	ei->io_failure_tree = RB_ROOT;
- 	atomic_set(&ei->sync_writers, 0);
- 	mutex_init(&ei->log_mutex);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index d9d770a9b1a3..d1f1da6820fb 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -365,7 +365,7 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
- 	spin_lock_init(&cur_trans->releasing_ebs_lock);
- 	list_add_tail(&cur_trans->list, &fs_info->trans_list);
- 	extent_io_tree_init(fs_info, &cur_trans->dirty_pages,
--			IO_TREE_TRANS_DIRTY_PAGES, fs_info->btree_inode);
-+			IO_TREE_TRANS_DIRTY_PAGES, NULL);
- 	extent_io_tree_init(fs_info, &cur_trans->pinned_extents,
- 			IO_TREE_FS_PINNED_EXTENTS, NULL);
- 	fs_info->generation++;
+ 	isize = i_size_read(inode);
+@@ -344,7 +344,7 @@ static void merge_state(struct extent_io_tree *tree, struct extent_state *state)
+ 	other = prev_state(state);
+ 	if (other && other->end == state->start - 1 &&
+ 	    other->state == state->state) {
+-		if (tree->private_data && is_data_inode(tree->private_data))
++		if (tree->private_data)
+ 			btrfs_merge_delalloc_extent(tree->private_data,
+ 						    state, other);
+ 		state->start = other->start;
+@@ -355,7 +355,7 @@ static void merge_state(struct extent_io_tree *tree, struct extent_state *state)
+ 	other = next_state(state);
+ 	if (other && other->start == state->end + 1 &&
+ 	    other->state == state->state) {
+-		if (tree->private_data && is_data_inode(tree->private_data))
++		if (tree->private_data)
+ 			btrfs_merge_delalloc_extent(tree->private_data, state,
+ 						    other);
+ 		state->end = other->end;
+@@ -372,7 +372,7 @@ static void set_state_bits(struct extent_io_tree *tree,
+ 	u32 bits_to_set = bits & ~EXTENT_CTLBITS;
+ 	int ret;
+ 
+-	if (tree->private_data && is_data_inode(tree->private_data))
++	if (tree->private_data)
+ 		btrfs_set_delalloc_extent(tree->private_data, state, bits);
+ 
+ 	ret = add_extent_changeset(state, bits_to_set, changeset, 1);
+@@ -460,7 +460,7 @@ static int split_state(struct extent_io_tree *tree, struct extent_state *orig,
+ 	struct rb_node *parent = NULL;
+ 	struct rb_node **node;
+ 
+-	if (tree->private_data && is_data_inode(tree->private_data))
++	if (tree->private_data)
+ 		btrfs_split_delalloc_extent(tree->private_data, orig, split);
+ 
+ 	prealloc->start = orig->start;
+@@ -509,7 +509,7 @@ static struct extent_state *clear_state_bit(struct extent_io_tree *tree,
+ 	u32 bits_to_clear = bits & ~EXTENT_CTLBITS;
+ 	int ret;
+ 
+-	if (tree->private_data && is_data_inode(tree->private_data))
++	if (tree->private_data)
+ 		btrfs_clear_delalloc_extent(tree->private_data, state, bits);
+ 
+ 	ret = add_extent_changeset(state, bits_to_clear, changeset, 0);
 -- 
 2.26.3
 
