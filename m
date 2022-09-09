@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CCA5B41E3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 23:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9ED5B41CF
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 23:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbiIIVyg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Sep 2022 17:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58842 "EHLO
+        id S231881AbiIIVye (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Sep 2022 17:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231752AbiIIVy3 (ORCPT
+        with ESMTP id S231874AbiIIVy3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 17:54:29 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B198BF56
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 14:54:25 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id h22so2359442qtu.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Sep 2022 14:54:25 -0700 (PDT)
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AB310B6
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 14:54:26 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id r20so1645724qtn.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Sep 2022 14:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=EzXzUC4fBt366+YXHHUv28uiXyNRdIg1O9Ebkxa9GoY=;
-        b=TIW5n1/Gf60natV+xQq19bj/9HW72CFZ5p4je1T+khf+uQGG7BAHP4CEOUE96DknNq
-         qYlauZF09qTOrfNPnK87YshlE4I0vJKdsbKV7nJujCBvSVZ7BqIZNaLUW0AQlGhGAViz
-         f6SFeS4Tfctt2DGC9Fz90iLsXiRc9UADbZypwacMw5/wmfmxO5QToh0CmwtohRQJU90E
-         0nZs4kkPszOqdWDAXgV99AgB0C1CfDgjGXWOcFYB+IepvEYKMy70xn2B7K2vwVFDvni3
-         +3nkVjuVytDIZIfWY4ttUEhAQm0xzcaWgoz+K0Dhx7spIQ8f8KKDXNpG/pQoRimvlB5k
-         4RSg==
+        bh=E70UErGZdqyya/L8rohJV8oRz61o/sXy0aqwgAvzpFw=;
+        b=YdUhTTlPa+8b5CtsJB2Mlf0PubsdYF6FpYIcApyUjZWptjsMAw/k+G6Fy+36UOk9T+
+         Jr4T3eRGW9x4lzlOZF2+mY1ASVlxQ6K7z9lmGTK4w16CNkKTCYBZ76LNHHGh3QYbUXaF
+         cI0LbaccwaVjbgvaCgkHb/FoteIbmTzIfv8kJiYajMBOKKnDxFLTspF+MYcJHB+9yf5p
+         0o2A4hl7iP4yd4y9uEGXXG3xyu+WmFh7XfpCuF+LyMaK4xJOi9D+WLnEbX/ILuiiRhuN
+         p0VEFWnyDsqM8rz0hQZbcnHFQa63l29GxkVwYLvJpJ+9TfGfMJU7SE/KTQgIFQ0U3jjG
+         /uQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=EzXzUC4fBt366+YXHHUv28uiXyNRdIg1O9Ebkxa9GoY=;
-        b=kJBZ0y6+XrEMjxXX9zTQYjVJb9jHzUO4VR1v+hXsnITaYrbiQx8jrfzGykP/VtxaMK
-         7/DrdhIK6ixuUmJsu/v2Zf7pizRoiz21XoSr7tnPoRShKzJoTM0wmocthIFw02SEgsP1
-         B4pyXPbooCC2R5BErKeiVB2KCxlFnv0XyEnTu0zZ/3XQ/pAtc/GMjq3VnJ98hGe+QNsZ
-         1RDEqwEPIjtNH5kkiotI0jd9KgHc26BlbVVluqr6UnsqbroZaB/1rrsgxVGsmkkx9ljD
-         D8d2EUoJpJsFVHU5DCfF+epBHEdFMbKEBF+3SfRttW5qsPDn6k2etrymB8gmT546N2Kw
-         M52Q==
-X-Gm-Message-State: ACgBeo16glbOUEXNQpr66Rb80zqI7rnpaZsE4U3/A7/G+JYY7UbLN5cc
-        GpFXFF7bRIjgdRQe/5z6sRKehhKEAx9w8A==
-X-Google-Smtp-Source: AA6agR4D4VfUikuvoupVa38wKpgXFYaDPMZXTLMzmuVz+Uvx2fPkaO687YABdWXEyOOmpWNGyPKh1Q==
-X-Received: by 2002:ac8:7dc4:0:b0:343:622d:5fda with SMTP id c4-20020ac87dc4000000b00343622d5fdamr13941343qte.197.1662760464496;
-        Fri, 09 Sep 2022 14:54:24 -0700 (PDT)
+        bh=E70UErGZdqyya/L8rohJV8oRz61o/sXy0aqwgAvzpFw=;
+        b=4oDmlY+MTgGpNYDnyvtBSfVPVufXpMlJt8YDZbMjm25PkK0Mtayq1+N6/GMT1bMdD5
+         wypLXluBlXTsoDNVK1WHUQj2p0X8okb0i9UNrjxCnA8t0phVGULqlBNllIDNLsv51RVe
+         7GP9QR15Y6EI+u5n9I/savOVoFm/jwPC29iakOL9LysO8kz9AUrHzfaNqG0zoPwqczjv
+         eo4Dtae5JbRj/+uJ0AdtHoCHjRox1fqASgVeMEwKN8K7d/j9t89S6Y2DPsrIRg2w5D83
+         u+NyQlNGE9WVf0pH/FyDnFuEdhbl7pzC99FdTafT5spuxQtn8THXl1QwyXyHr3k6a1cr
+         hiRw==
+X-Gm-Message-State: ACgBeo3Qz500PCA1u08G/0KS70dIpdTTOQXnci/1a9L/iIjL0dveOQ8i
+        SLkqXdDdZie8A62szg9CEaiDYHwIBA5Qiw==
+X-Google-Smtp-Source: AA6agR47gzBV9pTIFQSd/hvrqVwN6A4IHaWJIZwT0Qgtoa2s4pCw7qXUOuVCxRxDXrnfd8T37PqNZQ==
+X-Received: by 2002:ac8:5987:0:b0:35a:703a:9bb9 with SMTP id e7-20020ac85987000000b0035a703a9bb9mr7423432qte.213.1662760465909;
+        Fri, 09 Sep 2022 14:54:25 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y29-20020a37f61d000000b006cbd60c14c9sm1254012qkj.35.2022.09.09.14.54.23
+        by smtp.gmail.com with ESMTPSA id d23-20020ac85357000000b00343057845f7sm1135256qto.20.2022.09.09.14.54.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Sep 2022 14:54:24 -0700 (PDT)
+        Fri, 09 Sep 2022 14:54:25 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 23/36] btrfs: make tree_search_prev_next return extent_state's
-Date:   Fri,  9 Sep 2022 17:53:36 -0400
-Message-Id: <a84241f2143d380d74b8a199f1dc04b21a2c807d.1662760286.git.josef@toxicpanda.com>
+Subject: [PATCH v2 24/36] btrfs: use next_state/prev_state in merge_state
+Date:   Fri,  9 Sep 2022 17:53:37 -0400
+Message-Id: <a25a586d4965e428658beb29a68305cd44395691.1662760286.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1662760286.git.josef@toxicpanda.com>
 References: <cover.1662760286.git.josef@toxicpanda.com>
@@ -67,173 +67,80 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Instead of doing the rb_entry again once we return from this function,
-simply return the actual states themselves, and then clean up the only
-user of this helper to handle states instead of nodes.
+We use rb_next/rb_prev and then get the entry for the adjacent items in
+an extent io tree.  We have helpers for this, so convert merge_state to
+use next_state/prev_state and simplify the code.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-io-tree.c | 80 +++++++++++++++++++--------------------
- 1 file changed, 38 insertions(+), 42 deletions(-)
+ fs/btrfs/extent-io-tree.c | 49 ++++++++++++++++-----------------------
+ 1 file changed, 20 insertions(+), 29 deletions(-)
 
 diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-index a1cfd690db18..9b3380c353e7 100644
+index 9b3380c353e7..6c734b6871f8 100644
 --- a/fs/btrfs/extent-io-tree.c
 +++ b/fs/btrfs/extent-io-tree.c
-@@ -203,6 +203,15 @@ static inline struct extent_state *next_state(struct extent_state *state)
- 		return NULL;
+@@ -338,40 +338,31 @@ static void extent_io_tree_panic(struct extent_io_tree *tree, int err)
+ static void merge_state(struct extent_io_tree *tree, struct extent_state *state)
+ {
+ 	struct extent_state *other;
+-	struct rb_node *other_node;
+ 
+ 	if (state->state & (EXTENT_LOCKED | EXTENT_BOUNDARY))
+ 		return;
+ 
+-	other_node = rb_prev(&state->rb_node);
+-	if (other_node) {
+-		other = rb_entry(other_node, struct extent_state, rb_node);
+-		if (other->end == state->start - 1 &&
+-		    other->state == state->state) {
+-			if (tree->private_data &&
+-			    is_data_inode(tree->private_data))
+-				btrfs_merge_delalloc_extent(tree->private_data,
+-							    state, other);
+-			state->start = other->start;
+-			rb_erase(&other->rb_node, &tree->state);
+-			RB_CLEAR_NODE(&other->rb_node);
+-			free_extent_state(other);
+-		}
++	other = prev_state(state);
++	if (other && other->end == state->start - 1 &&
++	    other->state == state->state) {
++		if (tree->private_data && is_data_inode(tree->private_data))
++			btrfs_merge_delalloc_extent(tree->private_data,
++						    state, other);
++		state->start = other->start;
++		rb_erase(&other->rb_node, &tree->state);
++		RB_CLEAR_NODE(&other->rb_node);
++		free_extent_state(other);
+ 	}
+-	other_node = rb_next(&state->rb_node);
+-	if (other_node) {
+-		other = rb_entry(other_node, struct extent_state, rb_node);
+-		if (other->start == state->end + 1 &&
+-		    other->state == state->state) {
+-			if (tree->private_data &&
+-			    is_data_inode(tree->private_data))
+-				btrfs_merge_delalloc_extent(tree->private_data,
+-							    state, other);
+-			state->end = other->end;
+-			rb_erase(&other->rb_node, &tree->state);
+-			RB_CLEAR_NODE(&other->rb_node);
+-			free_extent_state(other);
+-		}
++	other = next_state(state);
++	if (other && other->start == state->end + 1 &&
++	    other->state == state->state) {
++		if (tree->private_data && is_data_inode(tree->private_data))
++			btrfs_merge_delalloc_extent(tree->private_data, state,
++						    other);
++		state->end = other->end;
++		rb_erase(&other->rb_node, &tree->state);
++		RB_CLEAR_NODE(&other->rb_node);
++		free_extent_state(other);
+ 	}
  }
  
-+static inline struct extent_state *prev_state(struct extent_state *state)
-+{
-+	struct rb_node *next = rb_prev(&state->rb_node);
-+	if (next)
-+		return rb_entry(next, struct extent_state, rb_node);
-+	else
-+		return NULL;
-+}
-+
- /**
-  * Search @tree for an entry that contains @offset. Such entry would have
-  * entry->start <= offset && entry->end >= offset.
-@@ -266,46 +275,39 @@ static inline struct extent_state *tree_search_for_insert(struct extent_io_tree
-  * such entry exists, then return NULL and fill @prev_ret and @next_ret.
-  * Otherwise return the found entry and other pointers are left untouched.
-  */
--static inline struct rb_node *tree_search_prev_next(struct extent_io_tree *tree,
--						    u64 offset,
--						    struct rb_node **prev_ret,
--						    struct rb_node **next_ret)
-+static struct extent_state *tree_search_prev_next(struct extent_io_tree *tree,
-+						  u64 offset,
-+						  struct extent_state **prev_ret,
-+						  struct extent_state **next_ret)
- {
- 	struct rb_root *root = &tree->state;
- 	struct rb_node **node = &root->rb_node;
--	struct rb_node *prev = NULL;
--	struct rb_node *orig_prev = NULL;
--	struct extent_state *entry;
-+	struct extent_state *orig_prev;
-+	struct extent_state *entry = NULL;
- 
- 	ASSERT(prev_ret);
- 	ASSERT(next_ret);
- 
- 	while (*node) {
--		prev = *node;
--		entry = rb_entry(prev, struct extent_state, rb_node);
-+		entry = rb_entry(*node, struct extent_state, rb_node);
- 
- 		if (offset < entry->start)
- 			node = &(*node)->rb_left;
- 		else if (offset > entry->end)
- 			node = &(*node)->rb_right;
- 		else
--			return *node;
-+			return entry;
- 	}
- 
--	orig_prev = prev;
--	while (prev && offset > entry->end) {
--		prev = rb_next(prev);
--		entry = rb_entry(prev, struct extent_state, rb_node);
--	}
--	*next_ret = prev;
--	prev = orig_prev;
-+	orig_prev = entry;
-+	while (entry && offset > entry->end)
-+		entry = next_state(entry);
-+	*next_ret = entry;
-+	entry = orig_prev;
- 
--	entry = rb_entry(prev, struct extent_state, rb_node);
--	while (prev && offset < entry->start) {
--		prev = rb_prev(prev);
--		entry = rb_entry(prev, struct extent_state, rb_node);
--	}
--	*prev_ret = prev;
-+	while (entry && offset < entry->start)
-+		entry = prev_state(entry);
-+	*prev_ret = entry;
- 
- 	return NULL;
- }
-@@ -1409,14 +1411,14 @@ void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
- 				 u64 *start_ret, u64 *end_ret, u32 bits)
- {
- 	struct extent_state *state;
--	struct rb_node *node, *prev = NULL, *next;
-+	struct extent_state *prev = NULL, *next;
- 
- 	spin_lock(&tree->lock);
- 
- 	/* Find first extent with bits cleared */
- 	while (1) {
--		node = tree_search_prev_next(tree, start, &prev, &next);
--		if (!node && !next && !prev) {
-+		state = tree_search_prev_next(tree, start, &prev, &next);
-+		if (!state && !next && !prev) {
- 			/*
- 			 * Tree is completely empty, send full range and let
- 			 * caller deal with it
-@@ -1424,24 +1426,22 @@ void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
- 			*start_ret = 0;
- 			*end_ret = -1;
- 			goto out;
--		} else if (!node && !next) {
-+		} else if (!state && !next) {
- 			/*
- 			 * We are past the last allocated chunk, set start at
- 			 * the end of the last extent.
- 			 */
--			state = rb_entry(prev, struct extent_state, rb_node);
--			*start_ret = state->end + 1;
-+			*start_ret = prev->end + 1;
- 			*end_ret = -1;
- 			goto out;
--		} else if (!node) {
--			node = next;
-+		} else if (!state) {
-+			state = next;
- 		}
-+
- 		/*
--		 * At this point 'node' either contains 'start' or start is
--		 * before 'node'
-+		 * At this point 'state' either contains 'start' or start is
-+		 * before 'state'
- 		 */
--		state = rb_entry(node, struct extent_state, rb_node);
--
- 		if (in_range(start, state->start, state->end - state->start + 1)) {
- 			if (state->state & bits) {
- 				/*
-@@ -1475,13 +1475,10 @@ void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
- 			 * 0   |
- 			 *    start
- 			 */
--			if (prev) {
--				state = rb_entry(prev, struct extent_state,
--						 rb_node);
--				*start_ret = state->end + 1;
--			} else {
-+			if (prev)
-+				*start_ret = prev->end + 1;
-+			else
- 				*start_ret = 0;
--			}
- 			break;
- 		}
- 	}
-@@ -1490,7 +1487,6 @@ void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
- 	 * Find the longest stretch from start until an entry which has the
- 	 * bits set
- 	 */
--	state = rb_entry(node, struct extent_state, rb_node);
- 	while (state) {
- 		if (state->end >= start && !(state->state & bits)) {
- 			*end_ret = state->end;
 -- 
 2.26.3
 
