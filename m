@@ -2,106 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2398A5B3C4F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 17:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775C65B3C89
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Sep 2022 18:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbiIIPpL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Sep 2022 11:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46298 "EHLO
+        id S231576AbiIIQBh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Sep 2022 12:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230108AbiIIPpJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 11:45:09 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048067391B;
-        Fri,  9 Sep 2022 08:45:07 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 090513EFA; Fri,  9 Sep 2022 11:45:07 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 090513EFA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1662738307;
-        bh=V/DLdRPq1zvs/q2asuE3/COTboZaddvEjKL48nZq+Ag=;
-        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
-        b=nst+nwaO6YbS4rXF/b6lFwOretBhbDsuXZPoezitk+nlqiztyBadpNSM4FUr7jnwg
-         8MJVasi6mMG6bgkD27Rw1rr7K/yhOcWkv0PLxFUO25Jk7I2jBCLUizMlSPpqpB05Pm
-         j19t4ySKDY3IIRE1n2ES5Fq9mNY9GKx9BLcF0ZUY=
-Date:   Fri, 9 Sep 2022 11:45:06 -0400
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.de>, adilger.kernel@dilger.ca,
-        djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, brauner@kernel.org,
-        fweimer@redhat.com, linux-man@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-Message-ID: <20220909154506.GB5674@fieldses.org>
-References: <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
- <20220907135153.qvgibskeuz427abw@quack3>
- <166259786233.30452.5417306132987966849@noble.neil.brown.name>
- <20220908083326.3xsanzk7hy3ff4qs@quack3>
- <YxoIjV50xXKiLdL9@mit.edu>
- <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
- <20220908155605.GD8951@fieldses.org>
- <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
- <20220908182252.GA18939@fieldses.org>
- <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
+        with ESMTP id S230058AbiIIQBg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Sep 2022 12:01:36 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B854EE6B9F
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Sep 2022 09:01:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 60B30225B2;
+        Fri,  9 Sep 2022 16:01:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1662739292;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AZg94j1LIJLNQR/znkr5Mojqvxcynk2ZxqZjnHlvOcI=;
+        b=k+xr45i9YXf7cSHjCDCq34GvWXJlvtv8rhIMjC8UMKTgqNWwADPsxUCHt3ARgQamV43DyX
+        pc55vC0VrWKfvJfulJrAdUwiaGyitnjpZ76X6taFZABXJg0SOCoEP9fNBaAh74TAxTHNkI
+        yr8LkNAvC6tMNVvzIjy6OaxirwRr3CU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1662739292;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AZg94j1LIJLNQR/znkr5Mojqvxcynk2ZxqZjnHlvOcI=;
+        b=1M9WP4ek325zke36OAp8M8KvbG28bJXE+56YOKTywU5Ve4VgWwJTgRxikU6ZB4habPdE/6
+        SfoQY/p5dsc1eRAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3C99813A93;
+        Fri,  9 Sep 2022 16:01:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id sUHcDVxjG2M4fAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 09 Sep 2022 16:01:32 +0000
+Date:   Fri, 9 Sep 2022 17:56:07 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs-progs: receive: fix a segfault that free() an
+ err value
+Message-ID: <20220909155607.GE32411@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20220901083554.40166-1-wangyugui@e16-tech.com>
+ <20220902161327.45283-1-wangyugui@e16-tech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220902161327.45283-1-wangyugui@e16-tech.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 08, 2022 at 03:07:58PM -0400, Jeff Layton wrote:
-> On Thu, 2022-09-08 at 14:22 -0400, J. Bruce Fields wrote:
-> > On Thu, Sep 08, 2022 at 01:40:11PM -0400, Jeff Layton wrote:
-> > > Yeah, ok. That does make some sense. So we would mix this into the
-> > > i_version instead of the ctime when it was available. Preferably, we'd
-> > > mix that in when we store the i_version rather than adding it afterward.
-> > > 
-> > > Ted, how would we access this? Maybe we could just add a new (generic)
-> > > super_block field for this that ext4 (and other filesystems) could
-> > > populate at mount time?
-> > 
-> > Couldn't the filesystem just return an ino_version that already includes
-> > it?
-> > 
+On Sat, Sep 03, 2022 at 12:13:27AM +0800, Wang Yugui wrote:
+> I noticed a segfault of 'btrfs receive'.
+> $ gdb
+>  #0  process_clone (path=0x23829d0 "after.s1.txt", offset=0, len=2097152, clone_uuid=<optimized out>,
+>     clone_ctransid=<optimized out>, clone_path=0x2382920 "after.s1.txt", clone_offset=0, user=0x7ffe21985ba0)
+>     at cmds/receive.c:793
+> 793                     free(si->path);
+> (gdb) p si
+> $1 = (struct subvol_info *) 0xfffffffffffffffe
 > 
-> Yes. That's simple if we want to just fold it in during getattr. If we
-> want to fold that into the values stored on disk, then I'm a little less
-> clear on how that will work.
+> 'si' was an ERR value. so add the check of '!IS_ERR_OR_NULL()' before 'free()'
+> just similar to process_snapshot().
 > 
-> Maybe I need a concrete example of how that will work:
-> 
-> Suppose we have an i_version value X with the previous crash counter
-> already factored in that makes it to disk. We hand out a newer version
-> X+1 to a client, but that value never makes it to disk.
-> 
-> The machine crashes and comes back up, and we get a query for i_version
-> and it comes back as X. Fine, it's an old version. Now there is a write.
-> What do we do to ensure that the new value doesn't collide with X+1? 
+> Signed-off-by: Wang Yugui <wangyugui@e16-tech.com>
 
-I was assuming we could partition i_version's 64 bits somehow: e.g., top
-16 bits store the crash counter.  You increment the i_version by: 1)
-replacing the top bits by the new crash counter, if it has changed, and
-2) incrementing.
-
-Do the numbers work out?  2^16 mounts after unclean shutdowns sounds
-like a lot for one filesystem, as does 2^48 changes to a single file,
-but people do weird things.  Maybe there's a better partitioning, or
-some more flexible way of maintaining an i_version that still allows you
-to identify whether a given i_version preceded a crash.
-
---b.
+Added to devel, thanks.
