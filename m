@@ -2,34 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A49EE5B44CF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Sep 2022 08:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026015B4610
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Sep 2022 13:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbiIJGvh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 10 Sep 2022 02:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
+        id S229619AbiIJLcg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 10 Sep 2022 07:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbiIJGva (ORCPT
+        with ESMTP id S229585AbiIJLce (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 10 Sep 2022 02:51:30 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC06D760FA;
-        Fri,  9 Sep 2022 23:51:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=Bj6Wxth2LNlOrb9ptrXcpFWJGYrnuyA2Icp7ZXfeW/o=; b=K2RnBhW7QUIkDosGrl4GPsn3WL
-        puVVLQPIHR+oiYIc0dCiAWg+BoaPF8fvXmI4e2zGOB0616LPS5EAr/7le5HmA7pYGWsCs5nftgX/M
-        2hkMrWbjbXBoEZ479tAk2Vo+2eP6ql/aFbRT/g5HHwiGsclbr/+8TZzCo2c78a9DVQWiXf62EGI/c
-        achcb3IFQdWr2jdFOKpg/Yi7UDa3pHtmwSLvTJmAsfwkCPyr5BdhV7dmrIvtZL4aEQHUAVVIVRAS2
-        bYBTfNySyorNvWtavgLy5TTGayzG7SaZUQo1VrHGyISynz0lpOmzunL//qKfUZN3qe1lO5DVavmbc
-        5CYi4Y4g==;
-Received: from [2001:4bb8:198:38af:e8dc:dbbd:a9d:5c54] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oWuKl-006pbo-MI; Sat, 10 Sep 2022 06:51:20 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
+        Sat, 10 Sep 2022 07:32:34 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F715302B
+        for <linux-btrfs@vger.kernel.org>; Sat, 10 Sep 2022 04:32:28 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id q21so6160000edc.9
+        for <linux-btrfs@vger.kernel.org>; Sat, 10 Sep 2022 04:32:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=oO2f6puxNv2WM0203jHJ9dATLxOnB/EAhNK0gKh1Fco=;
+        b=ZH5YuCofNtiX91aOQ8okF8wGG31vLQnBuGTbsJIxq6skqZDH7RvK+S6Wg/jL8kGMG0
+         wxALhNndMloVN1pmlZYgbSnkA4WugVPm6xPyUnDyPXtNQrabmBlb3doY3JHFHpEwdDOn
+         UCMlcq27n8LGY/fiI8rrezsaIzsFdm7yeal6QiEIrx2i6u5RSvNr3NejNRbuoylCf6VT
+         1NmPWSzvA4lzXHfElWpQVZrWn1GOb5l1rdycwSX1lGO4Q9iha+7RREdHfUFuABmzTqNy
+         MS6wyNdM+htzk0aYqzebY8yDNHwmUT2SYl/24SW+F1b30ss1/TkgEA7qVOS7cSXPX2Wb
+         gdkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=oO2f6puxNv2WM0203jHJ9dATLxOnB/EAhNK0gKh1Fco=;
+        b=zurn+MOOBNpmRSXRxe3jzYJXp+m4PxLvzKiwI+YY+N/JuuDzZjOPTeBNSDAtjqtRoj
+         D4G30s62Mdxlnz5f54JlCKofBJjv64ZG2eyzqbdF0sAwzyfaPYYBC6hYNr02Bnreys73
+         uwxTQs8KTWhrFpUB3v9gFrIPL1iYsL32oEtarNfUPSdkyTQwnfJzknEdg0z2X0B+I5oG
+         FybLDQzcpWp60RAqdLrzc3Xo9T4D4Xb/+NfPWuiSUabRm5zuxuFiS06J/zK+jxY0Mhgk
+         VsElp3o/yjK4MQ1cNEMuPdmRnPfFUrQNwhX8j6vEN11QHz/wO76sRRFB/zfYKfd9wAFz
+         lHLQ==
+X-Gm-Message-State: ACgBeo1zspUFP63SatHsdf9C98hjtEsjErXXWqHTth9ol3rTXE9SVGgh
+        Li6NDc51K3MuDPivsrLo6hVMN6nMS50RriXN
+X-Google-Smtp-Source: AA6agR7ABzhvw0hLX7UM5YEGmj7ooKpj1BWh9U8hMic6ls9gEZTIgOqBBSoD7neml/f66zDsZ4trLA==
+X-Received: by 2002:a05:6402:280f:b0:44e:ee5c:da6b with SMTP id h15-20020a056402280f00b0044eee5cda6bmr15219418ede.256.1662809547250;
+        Sat, 10 Sep 2022 04:32:27 -0700 (PDT)
+Received: from [10.41.110.194] ([77.241.232.28])
+        by smtp.gmail.com with ESMTPSA id g2-20020a17090604c200b00731582babcasm1625186eja.71.2022.09.10.04.32.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Sep 2022 04:32:26 -0700 (PDT)
+Message-ID: <c76b45ad-c4ef-5166-fec3-a05e2febcce3@kernel.dk>
+Date:   Sat, 10 Sep 2022 05:32:25 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.1
+Subject: Re: improve pagecache PSI annotations
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Suren Baghdasaryan <surenb@google.com>,
         Andrew Morton <akpm@linux-foundation.org>
@@ -38,129 +67,46 @@ Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         Chao Yu <chao@kernel.org>, linux-block@vger.kernel.org,
         linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-erofs@lists.ozlabs.org, linux-mm@kvack.org
-Subject: [PATCH 5/5] block: remove PSI accounting from the bio layer
-Date:   Sat, 10 Sep 2022 08:50:58 +0200
-Message-Id: <20220910065058.3303831-6-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220910065058.3303831-1-hch@lst.de>
 References: <20220910065058.3303831-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20220910065058.3303831-1-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-PSI accounting is now done by the VM code, where it should have been
-since the beginning.
+On 9/10/22 12:50 AM, Christoph Hellwig wrote:
+> Hi all,
+> 
+> currently the VM tries to abuse the block layer submission path for
+> the page cache PSI annotations.  This series instead annotates the
+> ->read_folio and ->readahead calls in the core VM code, and then
+> only deals with the odd direct add_to_page_cache_lru calls manually.
+> 
+> Diffstat:
+>  block/bio.c               |    8 --------
+>  block/blk-core.c          |   17 -----------------
+>  fs/btrfs/compression.c    |   14 ++++++++++++--
+>  fs/direct-io.c            |    2 --
+>  fs/erofs/zdata.c          |   13 ++++++++++++-
+>  include/linux/blk_types.h |    1 -
+>  include/linux/pagemap.h   |    2 ++
+>  kernel/sched/psi.c        |    2 ++
+>  mm/filemap.c              |    7 +++++++
+>  mm/readahead.c            |   22 ++++++++++++++++++----
+>  10 files changed, 53 insertions(+), 35 deletions(-)
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- block/bio.c               |  8 --------
- block/blk-core.c          | 17 -----------------
- fs/direct-io.c            |  2 --
- include/linux/blk_types.h |  1 -
- 4 files changed, 28 deletions(-)
+Nice! It's always bothered me that we have this weird layering
+here.
 
-diff --git a/block/bio.c b/block/bio.c
-index 3d3a2678fea25..d10c4e888cdcf 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -1065,9 +1065,6 @@ void __bio_add_page(struct bio *bio, struct page *page,
- 
- 	bio->bi_iter.bi_size += len;
- 	bio->bi_vcnt++;
--
--	if (!bio_flagged(bio, BIO_WORKINGSET) && unlikely(PageWorkingset(page)))
--		bio_set_flag(bio, BIO_WORKINGSET);
- }
- EXPORT_SYMBOL_GPL(__bio_add_page);
- 
-@@ -1276,9 +1273,6 @@ static int __bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
-  * fit into the bio, or are requested in @iter, whatever is smaller. If
-  * MM encounters an error pinning the requested pages, it stops. Error
-  * is returned only if 0 pages could be pinned.
-- *
-- * It's intended for direct IO, so doesn't do PSI tracking, the caller is
-- * responsible for setting BIO_WORKINGSET if necessary.
-  */
- int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
- {
-@@ -1294,8 +1288,6 @@ int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
- 		ret = __bio_iov_iter_get_pages(bio, iter);
- 	} while (!ret && iov_iter_count(iter) && !bio_full(bio, 0));
- 
--	/* don't account direct I/O as memory stall */
--	bio_clear_flag(bio, BIO_WORKINGSET);
- 	return bio->bi_vcnt ? 0 : ret;
- }
- EXPORT_SYMBOL_GPL(bio_iov_iter_get_pages);
-diff --git a/block/blk-core.c b/block/blk-core.c
-index a0d1104c5590c..9e19195af6f5b 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -37,7 +37,6 @@
- #include <linux/t10-pi.h>
- #include <linux/debugfs.h>
- #include <linux/bpf.h>
--#include <linux/psi.h>
- #include <linux/part_stat.h>
- #include <linux/sched/sysctl.h>
- #include <linux/blk-crypto.h>
-@@ -829,22 +828,6 @@ void submit_bio(struct bio *bio)
- 		count_vm_events(PGPGOUT, bio_sectors(bio));
- 	}
- 
--	/*
--	 * If we're reading data that is part of the userspace workingset, count
--	 * submission time as memory stall.  When the device is congested, or
--	 * the submitting cgroup IO-throttled, submission can be a significant
--	 * part of overall IO time.
--	 */
--	if (unlikely(bio_op(bio) == REQ_OP_READ &&
--	    bio_flagged(bio, BIO_WORKINGSET))) {
--		unsigned long pflags;
--
--		psi_memstall_enter(&pflags);
--		submit_bio_noacct(bio);
--		psi_memstall_leave(&pflags);
--		return;
--	}
--
- 	submit_bio_noacct(bio);
- }
- EXPORT_SYMBOL(submit_bio);
-diff --git a/fs/direct-io.c b/fs/direct-io.c
-index f669163d5860f..03d381377ae10 100644
---- a/fs/direct-io.c
-+++ b/fs/direct-io.c
-@@ -421,8 +421,6 @@ static inline void dio_bio_submit(struct dio *dio, struct dio_submit *sdio)
- 	unsigned long flags;
- 
- 	bio->bi_private = dio;
--	/* don't account direct I/O as memory stall */
--	bio_clear_flag(bio, BIO_WORKINGSET);
- 
- 	spin_lock_irqsave(&dio->bio_lock, flags);
- 	dio->refcount++;
-diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-index 1ef99790f6ed3..8b1858df21752 100644
---- a/include/linux/blk_types.h
-+++ b/include/linux/blk_types.h
-@@ -321,7 +321,6 @@ enum {
- 	BIO_NO_PAGE_REF,	/* don't put release vec pages */
- 	BIO_CLONED,		/* doesn't own data */
- 	BIO_BOUNCED,		/* bio is a bounce bio */
--	BIO_WORKINGSET,		/* contains userspace workingset pages */
- 	BIO_QUIET,		/* Make BIO Quiet */
- 	BIO_CHAIN,		/* chained bio, ->bi_remaining in effect */
- 	BIO_REFFED,		/* bio has elevated ->bi_cnt */
 -- 
-2.30.2
+Jens Axboe
+
 
