@@ -2,114 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A91F45B52B0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 04:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920775B52B8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 04:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229479AbiILCpm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 11 Sep 2022 22:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        id S229514AbiILCzP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 11 Sep 2022 22:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiILCpl (ORCPT
+        with ESMTP id S229517AbiILCzN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 11 Sep 2022 22:45:41 -0400
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CED51A805
-        for <linux-btrfs@vger.kernel.org>; Sun, 11 Sep 2022 19:45:38 -0700 (PDT)
-Received: from [192.168.1.10] ([188.153.36.212])
-        by smtp-18.iol.local with ESMTPA
-        id XZS2oXdYDo7VeXZS2oJRfi; Mon, 12 Sep 2022 04:45:34 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1662950734; bh=7/gl2Ljx8QupIC2vX0ptLtcor5zeRV4x5W+fgeSRbdM=;
-        h=From;
-        b=bojkYOqIT+YIJk71Q1ia7JfoC+iTu3AC9sq/SFa2SAb1BHOGJOLAHj/dA4jFQV82w
-         S6NML95k2JZ5hKKCVTusy3TKOvDCwV4W2aioOe9rH2ZQH2yxe/byHcZ9eZhRLfjfcr
-         M6Tqkj16Kf1PF97Ag+fG99Ici4YvUeCup5AvHoP6ayYK/xep7iKZhuqubComBq9OGm
-         SOyCfnQQpdSLB59Aw+khrimuymuwqz5bgoqn481qknDy+935C1KiZyao15cFNz8deS
-         KrEtgNETZwX2RwJZUdYyhTL7L07Z1Df7ryW3nCzfrUOGjGtaicsEo9+lg5H8GuQI7Q
-         VB4Di6viCpOhw==
-X-CNFS-Analysis: v=2.4 cv=ZtEol/3G c=1 sm=1 tr=0 ts=631e9d4e cx=a_exe
- a=UwMeCiiNZBIOh9ObVSnZqg==:117 a=UwMeCiiNZBIOh9ObVSnZqg==:17
- a=IkcTkHD0fZMA:10 a=VwQbUJbxAAAA:8 a=Uq0mbvy6AAAA:8 a=NEAV23lmAAAA:8
- a=kUrw6oTPAtKufaeiCcwA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=9nAYT2xhiIK_ZOnRzmc7:22
-Message-ID: <75ad4f12-dfce-5e9f-4361-5c8c28ea5c1d@inwind.it>
-Date:   Mon, 12 Sep 2022 04:45:34 +0200
+        Sun, 11 Sep 2022 22:55:13 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226DE12D37
+        for <linux-btrfs@vger.kernel.org>; Sun, 11 Sep 2022 19:55:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1662951309;
+        bh=Fdv809z2Ea/srFXBy8a7hcON9/hYRWj9UvXsuY5pi50=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=KIcMNBE6B+alWwdc/mFTADdxWFUX2AmhIBnObzXF4RKdz2agIKbHzE7W3fT8QLlbj
+         SX+NYloPXSjums4Wzb6cv2LS24Oac+QV8yRnp1cZNEFstLHdpAgOM/EM2CX7uF607V
+         pZvJdW4SY42wCgCza7ps25s8qrNNAC/4RtrXSniA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mv2xO-1pOIiC1QDw-00qw4W; Mon, 12
+ Sep 2022 04:55:09 +0200
+Message-ID: <e37fc471-7020-931d-4ba3-9e4834875332@gmx.com>
+Date:   Mon, 12 Sep 2022 10:55:05 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.1
+ Thunderbird/102.2.0
 Subject: Re: core dump in btrfs receive (while handling a clone command?)
 Content-Language: en-US
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+To:     Antonio Muci <a.mux@inwind.it>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
 References: <f3eee248-fd90-4048-8ae0-536997b4c273@inwind.it>
  <c4ebb761-f60b-de1c-3e21-d4a1718f40e2@suse.com>
-From:   Antonio Muci <a.mux@inwind.it>
-In-Reply-To: <c4ebb761-f60b-de1c-3e21-d4a1718f40e2@suse.com>
+ <75ad4f12-dfce-5e9f-4361-5c8c28ea5c1d@inwind.it>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <75ad4f12-dfce-5e9f-4361-5c8c28ea5c1d@inwind.it>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfCk1AGhWp/8CeU116SYJqK8xUEha1d+K7/kcIBeitNZd9IRUV0prt4ipJLorFRCbJZ60UL54aqofoRYjfNpLzrQZQ0Cz4vK72AGgGvQ76Ge+GtJs5ctY
- BEeopqfST5Go4JKuYB3yNPQ4GGGfAfbTnve4kTDUNG7rXfPYeVZoVCYXIv62RJ//Vc/x4fUy5HApjzR9Ok532HQEsCZmDGF6vs5aopj/8Vjy6EiNxCXoqfxX
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VgZLPAcbSCuu5hv3QYxXoo5EGoe3I1nJv4MEHXjQhuhHE8F/WEI
+ tBG7KjqBia1kdNOtMiLIJp7ccRX3+VFY5OjBSfmOb/vymcF2VMk4Twwmyq7D559pW/6akEL
+ 5RiV9Iu8RMiDOr33+jRSUXe/HLLt8X0cqPLC2Sx6gJm/gBb5yZ5vB0yboiwBd601WZxxVts
+ +r3fcWTMBw8jQkUXmfVWg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MPej9ypL3U0=:bCFZ9nDgnGPbJ5Dx90GAXV
+ B4XT7ElLexCJxhD6yXNeSYp/qFs+rc1+hWWLZ7jFg2/XHfmSYUrMQgR8QH9q3w1AngvbFbvDJ
+ 3maSXaC+xxeoUXO1oZXlHCFsIQwWQdQKBTzR9z2VATOGzWMiH6rhTfH0u4pwyPEInntS/8rnt
+ GcPnMZ2jwHz2I1ELA3U3ZhyYK7raqvZR7/XNKsIFlb+bhIhKC82ji2MRk2RSOgKY46xS9l0G7
+ 8N41lHyijyfVCR5FJ3hRfGnDxn2i6Z+dACxEXf+PdUSKPt6XQ9/wuWDoisStwQvyq2OgAKuvf
+ SxKXdUhgExHzw3Cf1hSk4TGuzO/EFDe/YCMnjAHdSZATv56bFZP4cQQ6DtQXKqT+g5ojXjmnk
+ Dxh/VVXBgZTxFwznR/Y6qdswzovibTjhgBLHwih+7/7Utk5Z70bI4y5q+MxjVrr/8DkcTvMGH
+ gH6D4/wa1A3gx/2mpswz/xPkoD49WXa/tNczF7WXGcq9cQi0q/D5gZGNgCEBwAVGFs3Sj1WF3
+ ZFYY5gJVy56G62b8/sItseZaqNHdYCr/XvX8+qKMgx/Pdp/hhliZf8iMTgWBA93//PAStl6ev
+ qNw27ri9BTlUW+GMMNU8ShVcM2OIFmQC/d7dC93KwA0VbtQNcZcjNbGhBMtCjy4QyTmvmMfrN
+ SlKSklwBSUIv0LQ8AJnQ5sKUe5tzdMvFVdXIsW0zozs5Ptb+CP1t3SPwo0z+nkYsveNotsBLa
+ KF2nFRyQZp1WCasIp+juFIVs3wyVI39hs/7W5qhjZ2O+3Y0O+KIYLYmG7CTdgxN9vrxChUTFY
+ fUcLubeFHR/rOBY3+Y245b5h3094eecI/MoBk3RWz8hlbYeQINMv8niFn9lnU/s+ZQB9FP54i
+ 2aBU7hQZQNfjus3C6ZdWR52UiMzwLyexID062PsbroRDb7SPiOBy0oG5nRV8v2M5YHmvoTrTf
+ Ma1ZmhrZL27qpjNOX9TFxJro9lCIszmSDshI0F7b0U4x4CUAoTFpY3xfzgCAgr9jQQ38DOjV2
+ c7Wvh1gCEfCk3bAxhbp40Ed1mh/9FkOVuyeUmGyKADe+YA5iEVBgpN+uBCf0lBk9IFuRoaZjt
+ iP1KlNvyjizAZRZ7nCVa/HgShw0GMnRz85dTnmEmLtRn+yKNTsLdFaYWH+YOtKnaa5TT+sG+o
+ PcCK3cXCQKLJ9Syl4lUk86Nbxb
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/09/22 03:52, Qu Wenruo wrote:
-> 
-> 
-> On 2022/9/12 09:43, Antonio Muci wrote:
+
+
+On 2022/9/12 10:45, Antonio Muci wrote:
+> On 12/09/22 03:52, Qu Wenruo wrote:
 >>
->> # gdb btrfs core.btrfs.0.2799d9eb6dbd423aa57676cad3e64ee7.3152.1662942112000000
->> GNU gdb (GDB) Fedora 12.1-1.fc36
->> [...]
->> Core was generated by `btrfs --verbose receive --max-errors 0 /main'.
->> Program terminated with signal SIGSEGV, Segmentation fault.
->> #0  process_clone (path=0x560c9bd24a80 "db.sqlite3", offset=1045131264, len=10760192, clone_uuid=<optimized out>, clone_ctransid=440,
->>      clone_path=0x560c9bd24b40 "db.sqlite3", clone_offset=1045131264, user=0x7ffdd23aa3f0) at cmds/receive.c:793
->> 793                     free(si->path);
->> (gdb) bt
->> #0  process_clone (path=0x560c9bd24a80 "db.sqlite3", offset=1045131264, len=10760192, clone_uuid=<optimized out>, clone_ctransid=440,
->>      clone_path=0x560c9bd24b40 "db.sqlite3", clone_offset=1045131264, user=0x7ffdd23aa3f0) at cmds/receive.c:793
-> 
-> This looks like a bug recently fixed by this patch:
-> 
-> https://patchwork.kernel.org/project/linux-btrfs/patch/20220902161327.45283-1-wangyugui@e16-tech.com/
-> 
-> Mind to test the latest devel branch which should already have it merged?
-> 
-> Thanks,
-> Qu
-> 
+>>
+>> On 2022/9/12 09:43, Antonio Muci wrote:
+>>>
+>>> # gdb btrfs
+>>> core.btrfs.0.2799d9eb6dbd423aa57676cad3e64ee7.3152.1662942112000000
+>>> GNU gdb (GDB) Fedora 12.1-1.fc36
+>>> [...]
+>>> Core was generated by `btrfs --verbose receive --max-errors 0 /main'.
+>>> Program terminated with signal SIGSEGV, Segmentation fault.
+>>> #0=C2=A0 process_clone (path=3D0x560c9bd24a80 "db.sqlite3",
+>>> offset=3D1045131264, len=3D10760192, clone_uuid=3D<optimized out>,
+>>> clone_ctransid=3D440,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 clone_path=3D0x560c9bd24b40 "db.sqlite3", clo=
+ne_offset=3D1045131264,
+>>> user=3D0x7ffdd23aa3f0) at cmds/receive.c:793
+>>> 793=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(si->path);
+>>> (gdb) bt
+>>> #0=C2=A0 process_clone (path=3D0x560c9bd24a80 "db.sqlite3",
+>>> offset=3D1045131264, len=3D10760192, clone_uuid=3D<optimized out>,
+>>> clone_ctransid=3D440,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 clone_path=3D0x560c9bd24b40 "db.sqlite3", clo=
+ne_offset=3D1045131264,
+>>> user=3D0x7ffdd23aa3f0) at cmds/receive.c:793
+>>
+>> This looks like a bug recently fixed by this patch:
+>>
+>> https://patchwork.kernel.org/project/linux-btrfs/patch/20220902161327.4=
+5283-1-wangyugui@e16-tech.com/
+>>
+>> Mind to test the latest devel branch which should already have it merge=
+d?
+>>
+>> Thanks,
+>> Qu
+>>
+>
+> Thanks, I tried the latest devel branch (as of today,
+> (https://github.com/kdave/btrfs-progs/tree/efd6cfb74bb6a7218c12eaa27e455=
+be453082c81)
+> and I was able to get my data back!
+>
+> The crashes now became error messages from the receiving process, like
+> this:
+>
+>  =C2=A0=C2=A0 write db.sqlite3 - offset=3D1041842176 length=3D4096
+>  =C2=A0=C2=A0 ERROR: clone: did not find source subvol
+>  =C2=A0=C2=A0 write db.sqlite3 - offset=3D1055891456 length=3D4096
+>  =C2=A0=C2=A0 ERROR: clone: did not find source subvol
 
-Thanks, I tried the latest devel branch (as of today,
-(https://github.com/kdave/btrfs-progs/tree/efd6cfb74bb6a7218c12eaa27e455be453082c81)
-and I was able to get my data back!
+That's a case where the reflink source subvolume is not found.
 
-The crashes now became error messages from the receiving process, like
-this:
+IIRC it can be that, if you have received a subvolume, then change it to
+RW (not really need to modify, just change it from RO to RW), then the
+source subvolume is no longer considered the same (UUID changed), thus
+reflinking from that subvolume can no longer be done correct.
 
-    write db.sqlite3 - offset=1041842176 length=4096
-    ERROR: clone: did not find source subvol
-    write db.sqlite3 - offset=1055891456 length=4096
-    ERROR: clone: did not find source subvol
+>
+> I have verified that the two files have the same sha256sum, so no data
+> was lost.
+>
+> However that error message is a bit unsettiling: the subvolume
+> reconstruction is only progressing because receive is running with
+> --max-errors 0, i.e. ignoring errors and continuing.
+>
+> Is that error message just a too alarmist wording, or might it be
+> something more serious lingering around?
 
-I have verified that the two files have the same sha256sum, so no data
-was lost.
+No need to worry at all, mostly a RO->RW subvolume change preventing
+reflinking from that subvolume.
 
-However that error message is a bit unsettiling: the subvolume
-reconstruction is only progressing because receive is running with
---max-errors 0, i.e. ignoring errors and continuing.
+Thanks,
+Qu
 
-Is that error message just a too alarmist wording, or might it be
-something more serious lingering around?
-
-Thanks again everyone for the prompt response: you saved my data in no
-time!
-
-Antonio
-
+>
+> Thanks again everyone for the prompt response: you saved my data in no
+> time!
+>
+> Antonio
+>
