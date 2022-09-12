@@ -2,128 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CDC5B5B05
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 15:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502855B5B37
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 15:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbiILNVB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Sep 2022 09:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        id S229892AbiILN3y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Sep 2022 09:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbiILNU6 (ORCPT
+        with ESMTP id S229854AbiILN3x (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Sep 2022 09:20:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC7E220E6
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 06:20:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1662988857;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QcJ4hYnOykjT5bKhT2L+jboPTMLweg9s7FN9sWH8lgs=;
-        b=fJZ2I/cvBbPLiNhDDIZN1OfWbu10c2xXQb6Fe8ZW7vJ2Wzj9Fsb8cs0EAkuT4YVXQy9ptp
-        N8kR6BFOdOy2v+rctNa5xAmPDp9YO3vi2uO4gFbbYJXxv9wwMWBCbQ3dSAANd5nExqoU6a
-        APvBiRfZ7eRuXq+iOH0Zk5UI1WND+yU=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-668-L4qFUPMqPwu7x2MEi03oxQ-1; Mon, 12 Sep 2022 09:20:54 -0400
-X-MC-Unique: L4qFUPMqPwu7x2MEi03oxQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 62D7529ABA1F;
-        Mon, 12 Sep 2022 13:20:53 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.193.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7BE4249BB60;
-        Mon, 12 Sep 2022 13:20:48 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.de>, adilger.kernel@dilger.ca,
-        djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, brauner@kernel.org,
-        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-References: <166259786233.30452.5417306132987966849@noble.neil.brown.name>
-        <20220908083326.3xsanzk7hy3ff4qs@quack3> <YxoIjV50xXKiLdL9@mit.edu>
-        <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
-        <20220908155605.GD8951@fieldses.org>
-        <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
-        <20220908182252.GA18939@fieldses.org>
-        <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
-        <20220909154506.GB5674@fieldses.org>
-        <125df688dbebaf06478b0911e76e228e910b04b3.camel@kernel.org>
-        <20220910145600.GA347@fieldses.org>
-        <9eaed9a47d1aef11fee95f0079e302bc776bc7ff.camel@kernel.org>
-        <87a67423la.fsf@oldenburg.str.redhat.com>
-        <7c71050e139a479e08ab7cf95e9e47da19a30687.camel@kernel.org>
-Date:   Mon, 12 Sep 2022 15:20:46 +0200
-In-Reply-To: <7c71050e139a479e08ab7cf95e9e47da19a30687.camel@kernel.org> (Jeff
-        Layton's message of "Mon, 12 Sep 2022 08:55:04 -0400")
-Message-ID: <875yhs20gh.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Mon, 12 Sep 2022 09:29:53 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E5411175
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 06:29:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1662989391; x=1694525391;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=oWw1Jvy8VuXDDjM7vQ/8siXTWidX3cL3SXaBcXmoQSdwOBc6wba1Sm1q
+   T3GfhCG1xaMcTB+LDc13tHxwkd/oUpo3YqTS8VENBQMuX9GagMHbf1abJ
+   2mYK8uqYMgIOxF7NltMyYMYCasT1fou4l70b2dMRxg9bHI+4kWVJhgh7r
+   rkcsZJLbrGLxflTIeJJ3T4tEo7cIytJeqgwQEc+YGce69xaNn9DaUsZR6
+   2qn+akjb7ATlmlAH3KJRo/KKzpIoLVio1IUSse7B6SRKPeXsv9Rf/EpwZ
+   QIney2YL833wvwzJHfC7+rw5m/zKCHQmMFH0cf+tsRnRQe5/kAyF4MKgO
+   g==;
+X-IronPort-AV: E=Sophos;i="5.93,310,1654531200"; 
+   d="scan'208";a="315409626"
+Received: from mail-bn1nam07lp2046.outbound.protection.outlook.com (HELO NAM02-BN1-obe.outbound.protection.outlook.com) ([104.47.51.46])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Sep 2022 21:29:50 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VLsjvX7AbL6RylMyn4iGzz9rAaQsBIZ8i8JNIFZ3rrKoqqx7Jzn6W/4GmR1fcfpNFc018w2teUY7HaafJ8GVtNqJ5k7BLajmImZQwTGn8FfMtYVUmf/CsNiOrwONrOBMpeFfvDGz7hSvHXidyIDY7ajYDbQplvm3j9zJZHoydVVnXFF3HhFHgz1LpYioD8icEfKtJO02NyclhCqdBl1FlHSGdaT8Wnn44OjHzUITpvPe1ni+dVBo4LPPZ2dmlVj6jkXnWffTYCLzQBgMJoJY36Qf0D/c4nw97Nu7dbl1nccapcdE0sPRK4L+lBfmAWr1YNhR8hbQsu4B0DzU2yHQBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=GjEkwkUvdPS/HtJ64T26cbPeucTZCRxQRHWZwhp1khG5a/LEef8R/ymVUd4pI+j2Zg9gRlFCJnixS56TATn5SejmLm/sB7lfd4SakGIU5NSVN3EM27NCbjL3LRXLDkj80yG88Xb/r2WcwmNb9yl0Uq+m1ERDwtKI+wZR5rtvmvJ7KChcI/aaika8aXzhUEzwTRFELfAarcqE9pd7VY+bGNXC9UmXLz8EfCLtQMNe6DZiaDKvWWIsJhgsXb2ROFOcFNNce8VdC3l7V3HPoPqtlFzPbh9gUHcQmG/XXZbeA5Nxvj3n9Si10+F045hxh92lU4w5YLCOjiv2zo1S1Oe3gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=BiwDkBlSy6v2X3R6/++VSqoqT2kK5pmWsInTQ8ydHzzp+aItyyLpBiOcjIrW1CG5iE6hP+8k/WuL3cxWi8kN7/IJob46N7fNkhH84nyBIB2FsU4t8xM0Z98USo/OnIQZ04iu95yr/9BAzK/IDMvET7STbOtkOpsrqkleHFgcmos=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by CY4PR04MB0567.namprd04.prod.outlook.com (2603:10b6:903:b1::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.22; Mon, 12 Sep
+ 2022 13:29:48 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::bc05:f34a:403b:745c]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::bc05:f34a:403b:745c%8]) with mapi id 15.20.5612.022; Mon, 12 Sep 2022
+ 13:29:48 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH v2 01/36] btrfs: rename clean_io_failure and remove
+ extraneous args
+Thread-Topic: [PATCH v2 01/36] btrfs: rename clean_io_failure and remove
+ extraneous args
+Thread-Index: AQHYxJbetYXM63yf3keSNLFD1QkoHw==
+Date:   Mon, 12 Sep 2022 13:29:48 +0000
+Message-ID: <PH0PR04MB741671C745D1AB22BFC068769B449@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <cover.1662760286.git.josef@toxicpanda.com>
+ <f09c896c9cf29af6c9aab11a760fec372f77551e.1662760286.git.josef@toxicpanda.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|CY4PR04MB0567:EE_
+x-ms-office365-filtering-correlation-id: 2994e2e6-f76b-4e8e-6af1-08da94c2dd69
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1Y6ljZNK1b+jgNIQt3ALGR7WVRWAA6/LULMGdde3NrdEC7oD5erCjPrgIToqBN3ob+eN47bm5dFagy95oHakqJn8FCrdJfC5cSZoIwsx3dx82YDk6bBCO8BPBdZ77z7bNbw/hgELn/345/NeA6xHmANVwaD/u/li1CCCkN44Di7d9m5bfhLBVc4n7mdYqoCRLdGig/MNUvC/4ZzIt+omqxaTKHOHs8VkZW0PvHnA1MNz0rAZoVGugQmataA4icJwFftEhoIfaEnQCoiMI+yfrsV0i+4a5TwmAdWokHyAZq8CSx9aKFmxDduyl478L8i70qq22e3kQUDuiQ43lnca0of53YaVVpWV5fxorRZu6a5hu3uaBtp03soZDoXiVpRfWPJm0ZmRVxQTS9RorGlD21/IH6x7ThKXnepXU6Nidg+2W44AxbtkOByxxBXtHq61e1dIQISydoRpnpt/GPqsg3tH1R2109NGU61dBxj0ZwPMrbPY2WaruoLCqM6pjpnz9QhICLWwhdzaDbEYfEtVBFXXSGsF6dzxXLTJmHbuV6at6mrgz4JaIEuBFCzhi+CDF9bUoynD+y38ROhna2Cm6g7IyeJNeiM4xoORYXG/KlylAwkc6zfj92YO/3diIum8AYxwOKS5tGZbez1E+h8jK/euoRTZB8wNoX02pC3icIGiAkm0BtoovLMWlsYWVUpeRDIdQNQF++3whlxS7EZa7CJuub0dAVd+MwYX1fJIzadwHLFGSyw2EyRPcOgCyiut/L0n5Z9qvB9dpEpeuAo1Ew==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(136003)(376002)(346002)(39860400002)(366004)(66946007)(64756008)(76116006)(66446008)(5660300002)(66476007)(52536014)(8936002)(41300700001)(8676002)(91956017)(66556008)(19618925003)(478600001)(9686003)(2906002)(4270600006)(186003)(110136005)(71200400001)(316002)(55016003)(33656002)(38070700005)(558084003)(122000001)(6506007)(7696005)(86362001)(82960400001)(38100700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?U3fomlHptaBmJ1KETVFPcfJsB8RK0/ezpjf+rIIE8uLqYzpCoZzq2d3+OeXH?=
+ =?us-ascii?Q?Q1OfpUaWMCOTvHYfDFn6BtP8W+ITUZSLhw31aPm9fGhD7brXzUj20f8GWDAj?=
+ =?us-ascii?Q?Gtf6t1nnUyUOuY+pevWELGr93CIW8JPE/jylmdCHD8BNnTdoqkX00Xh9x/2F?=
+ =?us-ascii?Q?1kALQktDgQ/yQVTwwD8wT/F1fV3dZz/UHcF2NqFAdY0Ar1oxw5eRDqJAIBYn?=
+ =?us-ascii?Q?0gIWingXJ6BPOa6epxID4JupR/xBjJfVS8LV952ZSkNnTq9O06oy0gKwep8H?=
+ =?us-ascii?Q?CxlF2X08DlZXX4B8/Mloi/f7bPkMdITKp243AHs/9Huo1fwY/ocK2YXiI9Ye?=
+ =?us-ascii?Q?YxhEjNO7DME2Aw3wD92UDr1jRGBNvjbM/qrsyKkGMgRxfQATozSyWOFqrQsr?=
+ =?us-ascii?Q?Gbt5wWFGMb+DntNov9yzx74MfP8voo2nTKmBtd1opcyWdPSaUDZrG5MNXVBs?=
+ =?us-ascii?Q?+eAgOzcshGsnc7xx0Yz0fAcfZDLd/SAJaW+tb7BwWqhazLMFlCToqFAiO1m4?=
+ =?us-ascii?Q?L2/tdie2EaxRN8//flPVdyMk46Y1XVLqP170zeo6LvHfgFFP7IL5ywBNGUnB?=
+ =?us-ascii?Q?rKpPTEUaUID4PBmocFDlkfC4Rwz6K6TeZ98Hj8oqIHpMvb9lV+BTbgFsqE8B?=
+ =?us-ascii?Q?rqHoQKuhT+D+00Nj3c2GeFU7DWVv4eXDGvZHr5DPiNpUFnkuLjY508k1qzQt?=
+ =?us-ascii?Q?f78UQKmNY8/kvQXWnG59zSxFKNuzcPH/fmZEs/kM5EeLN1AJNM6K8tO3FYhV?=
+ =?us-ascii?Q?L7QeLYaQnws+5H8KDJ+4BzzkmS2SdUZPFVF/r2OqwB4GKzexFfO933zwwGgs?=
+ =?us-ascii?Q?39NgVu3O6qndMtydrUovnmdl8PRn+JtjmT1dOw+GE+TbBL2zXTeGIZerGBuc?=
+ =?us-ascii?Q?lADaQ+jWveIUa2t2Mb7nn5wDB3wWk0Pbv3Cnf1RfhD0WQIkG528NWTgrpzw8?=
+ =?us-ascii?Q?yQdA/Or50KZYxTn7WhgOMCAgNtcDhw2A5whpsUDayff9ABJKALA/QOhQn5Vi?=
+ =?us-ascii?Q?NYC7x1izAGvRWJhQNusTAkxwGvEXfBj0wQ3AXh0SxY2wLT9t2B95mR0m6X1a?=
+ =?us-ascii?Q?YnQexlxO6mgnB6bbuigu+Cxg8bo7WnL2P868KBFo39FoZujdzGFvN1FEZdmY?=
+ =?us-ascii?Q?a3Rk2BWK6ifR5pNFsj5qg0RGb183RKr+zXEO6wd3rFV1Vr9WfA6m9CpRAo2E?=
+ =?us-ascii?Q?QawJshr5pEVaRWgZZ5mnFcpHhcvgq3VgFeuSEct/H9nb5C2ZbqyZfYM4cb0I?=
+ =?us-ascii?Q?fl/vvqRx1+qjN020moSBtvsVpoTJ9o9O5qWM8hmyyn5v63iOD6Wm8dRjU3lO?=
+ =?us-ascii?Q?djmhoYKDHnAv7YWumyI99nen0QXoJ4jz+Km8UlhNeA4EcKtqI+YiF/W23uYt?=
+ =?us-ascii?Q?ViR2FS+uubWGMOicmCFD8zlt6so8Pd/RUAlxAjKEmSH26H3Yy3pEiTPwveYJ?=
+ =?us-ascii?Q?zuAhHyW07G2twM/XFGkeNXDHs0WKrjQMHlr+3OSUcnW0sVWSlRW0laIb7hxF?=
+ =?us-ascii?Q?LaM8EFlilHAZSKsIU6xeAIdpbNyQKYgUTWcwTNpe2cuXrfS0ZGSRs8GWpmI8?=
+ =?us-ascii?Q?UkXE4TygQNUt7reREz5oEl7/OgzWG8E5HJssuAKiXCU0mEes4cAm93h+G0Sz?=
+ =?us-ascii?Q?Nma0jd+KrnoQ8TqVDhk1CQ0qlMPAlIFvTJ03lxQ5v8sG8riwTEOAJudIuFf3?=
+ =?us-ascii?Q?1UQ/4u68GUnZoVUQD6rj+w9lZXU=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2994e2e6-f76b-4e8e-6af1-08da94c2dd69
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2022 13:29:48.5117
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: r43sLBm8uGjjlBZZq3uAiCOBpCw0MGrOiD0YNlBN5YGExo635/G3iOrGv/kClMvme/UV2Ybu7qvLPQeNvhIm0Lq7lvT0jf1OMsXm53wm+Sk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB0567
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-* Jeff Layton:
-
-> On Mon, 2022-09-12 at 14:13 +0200, Florian Weimer wrote:
->> * Jeff Layton:
->>=20
->> > To do this we'd need 2 64-bit fields in the on-disk and in-memory=20
->> > superblocks for ext4, xfs and btrfs. On the first mount after a crash,
->> > the filesystem would need to bump s_version_max by the significant
->> > increment (2^40 bits or whatever). On a "clean" mount, it wouldn't need
->> > to do that.
->> >=20
->> > Would there be a way to ensure that the new s_version_max value has ma=
-de
->> > it to disk? Bumping it by a large value and hoping for the best might =
-be
->> > ok for most cases, but there are always outliers, so it might be
->> > worthwhile to make an i_version increment wait on that if necessary.=20
->>=20
->> How common are unclean shutdowns in practice?  Do ex64/XFS/btrfs keep
->> counters in the superblocks for journal replays that can be read easily?
->>=20
->> Several useful i_version applications could be negatively impacted by
->> frequent i_version invalidation.
->>=20
->
-> One would hope "not very often", but Oopses _are_ something that happens
-> occasionally, even in very stable environments, and it would be best if
-> what we're building can cope with them.
-
-I was wondering if such unclean shutdown events are associated with SSD
-=E2=80=9Cunsafe shutdowns=E2=80=9D, as identified by the SMART counter.  I =
-think those
-aren't necessarily restricted to oopses or various forms of powerless
-(maybe depending on file system/devicemapper configuration)?
-
-I admit it's possible that the file system is shut down cleanly before
-the kernel requests the power-off state from the firmware, but the
-underlying SSD is not.
-
-Thanks,
-Florian
-
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
