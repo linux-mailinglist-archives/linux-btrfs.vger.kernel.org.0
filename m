@@ -2,104 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC805B5A47
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 14:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500225B5A99
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 14:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbiILMkB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Sep 2022 08:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
+        id S229924AbiILMyp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Sep 2022 08:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbiILMkA (ORCPT
+        with ESMTP id S229873AbiILMyb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Sep 2022 08:40:00 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBB0CE35
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 05:39:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8EBAC33752;
-        Mon, 12 Sep 2022 12:39:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1662986398;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jdvZX7WOthJdY/axijyIJZXikkLXVBYT9KWX88/ZtPI=;
-        b=D6JyPrkm5+oAbJyoiaxmLofq7bKESiQvb3f5wk+J1+iyFni3Oql4xBHN8CzvpEwWbHF17G
-        zPjYOFZ9Jbqo1HQpBog0+Iq8PHb1OpW8Zz02rWAlDHPWlGT63jlbZM+aFIgJRDEjWIZS6+
-        k/nXW1sQqAEXTaifadI9WCN19l6jtfc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1662986398;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jdvZX7WOthJdY/axijyIJZXikkLXVBYT9KWX88/ZtPI=;
-        b=wFgdZaCKfTTgj4GHe4FcvzdafinIeLkDrxiJEmnWxJGoOyU4jcK0mBH5LbwFjQGVwryEKN
-        C1jj91Gh9fmpw8Bw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 637D3139C8;
-        Mon, 12 Sep 2022 12:39:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id r3U6F54oH2OwGAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 12 Sep 2022 12:39:58 +0000
-Date:   Mon, 12 Sep 2022 14:34:32 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Wang Yugui <wangyugui@e16-tech.com>
-Cc:     linux-btrfs@vger.kernel.org, Sidong Yang <realwakka@gmail.com>
-Subject: Re: [PATCH] btrfs-progs: fi resize: fix return value
- check_resize_args()
-Message-ID: <20220912123432.GF32411@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20220811152239.2845-1-realwakka@gmail.com>
- <20220912155843.F86F.409509F4@e16-tech.com>
+        Mon, 12 Sep 2022 08:54:31 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64378293;
+        Mon, 12 Sep 2022 05:54:26 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 85BBA1C5A; Mon, 12 Sep 2022 08:54:25 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 85BBA1C5A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1662987265;
+        bh=+dP3CR0pJn+xvcRB32nVYSOBikrkL0fn9mnZyLj/yc0=;
+        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
+        b=hizOueM/RZjFn7wviO3QMF+H+5/tUroul/3qkSgJtfDWZ/gLtRrlb1lbMAac/IMTN
+         rqt1OH17KGAuARU8FNY6cCqBGD2s6LBJRuqXcfipxarMAu5N5xlQ2aVfFz/lJbD2lM
+         n31oWdToPxRhD+7ks53TSa4bF7zorfGDC9jm1K9o=
+Date:   Mon, 12 Sep 2022 08:54:25 -0400
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        NeilBrown <neilb@suse.de>, adilger.kernel@dilger.ca,
+        djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
+        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
+        chuck.lever@oracle.com, lczerner@redhat.com, brauner@kernel.org,
+        fweimer@redhat.com, linux-man@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+Message-ID: <20220912125425.GA9304@fieldses.org>
+References: <YxoIjV50xXKiLdL9@mit.edu>
+ <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
+ <20220908155605.GD8951@fieldses.org>
+ <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
+ <20220908182252.GA18939@fieldses.org>
+ <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
+ <20220909154506.GB5674@fieldses.org>
+ <125df688dbebaf06478b0911e76e228e910b04b3.camel@kernel.org>
+ <20220910145600.GA347@fieldses.org>
+ <9eaed9a47d1aef11fee95f0079e302bc776bc7ff.camel@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220912155843.F86F.409509F4@e16-tech.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <9eaed9a47d1aef11fee95f0079e302bc776bc7ff.camel@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+From:   bfields@fieldses.org (J. Bruce Fields)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 12, 2022 at 03:58:47PM +0800, Wang Yugui wrote:
-> Hi,
+On Mon, Sep 12, 2022 at 07:42:16AM -0400, Jeff Layton wrote:
+> A scheme like that could work. It might be hard to do it without a
+> spinlock or something, but maybe that's ok. Thinking more about how we'd
+> implement this in the underlying filesystems:
 > 
-> > check_resize_args() function checks user argument amount and should
-> > returns it's validity. But now the code returns only zero. This patch
-> > make it correct to return ret.
-> > 
-> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> > ---
-> >  cmds/filesystem.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-> > index 7cd08fcd..9eff5680 100644
-> > --- a/cmds/filesystem.c
-> > +++ b/cmds/filesystem.c
-> > @@ -1203,7 +1203,7 @@ static int check_resize_args(const char *amount, const char *path) {
-> >  
-> >  out:
-> >  	free(di_args);
-> > -	return 0;
-> > +	return ret;
-> >  }
-> >  
-> >  static int cmd_filesystem_resize(const struct cmd_struct *cmd,
+> To do this we'd need 2 64-bit fields in the on-disk and in-memory 
+> superblocks for ext4, xfs and btrfs. On the first mount after a crash,
+> the filesystem would need to bump s_version_max by the significant
+> increment (2^40 bits or whatever). On a "clean" mount, it wouldn't need
+> to do that.
 > 
-> This patch will make 'btrfs filesystem resize' always fail, and then break
-> fstests btrfs/177.
+> Would there be a way to ensure that the new s_version_max value has made
+> it to disk? Bumping it by a large value and hoping for the best might be
+> ok for most cases, but there are always outliers, so it might be
+> worthwhile to make an i_version increment wait on that if necessary. 
 
-I noticed that too when doing the progs release so the patch will be
-dropped.
+I was imagining that when you recognize you're getting close, you kick
+off something which writes s_version_max+2^40 to disk, and then updates
+s_version_max to that new value on success of the write.
+
+The code that increments i_version checks to make sure it wouldn't
+exceed s_version_max.  If it would, something has gone wrong--a write
+has failed or taken a long time--so it waits or errors out or something,
+depending on desired filesystem behavior in that case.
+
+No locking required in the normal case?
+
+--b.
