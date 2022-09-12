@@ -2,99 +2,471 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4975B589A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 12:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824505B58F1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 13:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbiILKnZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Sep 2022 06:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        id S229904AbiILLCh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Sep 2022 07:02:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbiILKnY (ORCPT
+        with ESMTP id S229533AbiILLCf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Sep 2022 06:43:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E672BF66;
-        Mon, 12 Sep 2022 03:43:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 129DA61185;
-        Mon, 12 Sep 2022 10:43:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44202C433D6;
-        Mon, 12 Sep 2022 10:43:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662979399;
-        bh=HFbxptHJbeklKZuBBOedjhhiYS8C1dAxfzpGwX+ybSk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=GX5cscunz3ZzTiwTAjcScG3yJHb8NYzqhsjWgk94imXnA38dLl47l9mHxlNRWXMYO
-         wqV9nY9DGHy3fvOW+cqtR+ml5LLq1/z8Hs6Jzodkk74AN1MIo0kcrCOl/+ODfv7Ib+
-         9EiubChBy/rQKqgkFgyvPp+2q9tXTQTXhHaFZJ0efGIErTvlqx5g4xjorZ1Ue/YyF2
-         grGGctcTD7co/myRa0zlHcDjfM+yEH0jgju9G+zJhl9fDQ7eCC4krnLzd3BN9G7ZRE
-         AaX7p3FIESdIztsC7rzgoirgNMbZ7RlI91qch7rHRHv9t4wc0Vywim5iBnhICbSBRO
-         b7RLygT77iPFw==
-Message-ID: <c1c9f537e67f2d46404a4a3983e9542de49e28bc.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        adilger.kernel@dilger.ca, djwong@kernel.org, david@fromorbit.com,
-        trondmy@hammerspace.com, viro@zeniv.linux.org.uk,
-        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
-        lczerner@redhat.com, brauner@kernel.org, fweimer@redhat.com,
-        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Date:   Mon, 12 Sep 2022 06:43:15 -0400
-In-Reply-To: <166284799157.30452.4308111193560234334@noble.neil.brown.name>
-References: <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>
-        , <20220907125211.GB17729@fieldses.org>
-        , <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
-        , <20220907135153.qvgibskeuz427abw@quack3>
-        , <166259786233.30452.5417306132987966849@noble.neil.brown.name>
-        , <20220908083326.3xsanzk7hy3ff4qs@quack3>, <YxoIjV50xXKiLdL9@mit.edu>
-        , <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
-        , <20220908155605.GD8951@fieldses.org>
-        , <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
-        , <20220908182252.GA18939@fieldses.org>
-        , <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
-         <166284799157.30452.4308111193560234334@noble.neil.brown.name>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        Mon, 12 Sep 2022 07:02:35 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738E3220CC
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 04:02:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1662980543;
+        bh=jtgiDiIo+h7p6wvc9ZAqIp2VthOFFLba+ioosjE+/E4=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=cHMYSC+wz116xZUgdX8e2W3SF0HaQP66XwEgq3b0gvoMk0yP/4nP2yI+nTfhLw7W9
+         zCvYVbQ0igL4ye309YxV9uD5GTGiK3cXWVA/h0oMGZF+ojoUmNYHl4kcXEmG06G+ZE
+         ux3fyaUe4XlTEGmsU7j1LC+SwaxOBnn97/7EPA9w=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4Jqb-1oXQ5f02Wv-000KrY; Mon, 12
+ Sep 2022 13:02:22 +0200
+Message-ID: <c2a2b438-531f-5e56-24e4-f383eb9f53ac@gmx.com>
+Date:   Mon, 12 Sep 2022 19:02:18 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH] btrfs: introduce BTRFS_RESERVE_FLUSH_EMERGENCY
+Content-Language: en-US
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <d1da73f6ed291d53d4cc7dcab142ebfb0541f06e.1662730491.git.josef@toxicpanda.com>
+ <20220912095907.GA269395@falcondesktop>
+ <0a2ffcd7-148b-e64b-5c9c-dc901c968e10@gmx.com>
+ <CAL3q7H4kq28Y5TK+jJ-OE7L3vSQej5iBgSfS62Xk=gySg-BXmg@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CAL3q7H4kq28Y5TK+jJ-OE7L3vSQej5iBgSfS62Xk=gySg-BXmg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9KHM1d6XRfUyrYMepsN63dHUhynf8bfSamu8x/5zxqO2BUXbhoN
+ P73TyY9hWiW4Hphb2sZGaddhFSmPK7hnO141Ef0erIJTBQedDfZvLJCYEiEroaXZdAg87e8
+ Z+PS48GbxWVc5FpQXY+rp93DL1KWelDV+ZqE27hkjdPPFBjZ+tF4imfwnrLl6j5Jmsnm7d+
+ 57vo22b7XAwhOPvizJv8A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bZ/16TJKMvk=:/16UIBmWdh44TRXU/7rPSQ
+ rFSXYHy1si6mP8cLWE6J7OdfX5ObLkDtGSsMTXUtKaGlxLZfoTzSopWzxaZxPRq4HWV4AkvfQ
+ 5836RBde6kkNOeQL3rhWXvqx7RVA+9ywkZVk27hlR8ZzJRazFcHVfcwqyt65pw7FyA67UTnpE
+ +1k0w0f33i/IDLazYadKk0tmoQ7zxX/Wf9wtS0gkMwQF0jNMlH1+9Mj7lfm0bBJmv2ei/aYQt
+ npfwu6mgcLWCCEG/S37VgkHa6XMuK7Q+IxuiITazePGJEx6NakeYTxBj9NvjoPoj3xDQw8KLj
+ Wk3DIDGQS7wRjPSkDDp4uNrlNdP6YyguabQVMUcxPU7Qv+opL/kx8/KRaT3VSbzr6l7s/orgp
+ l7lsqGb/BEmdJpO7jlPytCWC91TbPF/vu8V49QCx1AVvAsveC2o67xB6y48620Rehk/EfUnqP
+ QX8iZNOaGy9lPnLMlR8Q/HsqXcfVv66qNQVQ9L4tBY3NlSCg6miNSyL/kiV7P6lo/Hj038M23
+ 3c0NrO4CRY2r7v3+4d+b0BvWlSj+JUNkdIkTbGnOzPb1X46TV2uQSRWNL31hW3CDtlKouxtoE
+ nr9/lt/j8EXS8WUBzIw+w85P/oiHaJw2yxfp3tLJ2GblkkR63e/yuhu/zjJIDbOGfnwmuoXRs
+ /mVJ3/ZufMDa5+qHmD3Re5HlyWnpfGuGGykfSOWUs2M+wQIYb9U2yyzu32elBAhT70b01k5Kk
+ d0zGtntWxf7WB4bEvlE85i6FHQWTD9vcMk3JG/XiQnGmCo/wMQv+v4kji4TctLmFQYG4cBXVe
+ 5Wee225uTEBiIuOg4r/7YHgnBcSsFwLuTPjaMNlO4bYiQrg1KZ2TSscjSZFD8O61uiNLrkQCI
+ dWzgKLGBIQjgg1KfVf2pweAP9pC+IB9Xm/8JP3nIA7cBTia+bEMFxmAY5fmeFZJWpxIuxJKp9
+ gjFZCksV6ADSvRlwmYceSwDVXRLRTJyahA+xjl3krVnIky+my+7kkQFY18Zp8nJdqcflEGCal
+ F61KBorPn38QfL7IlkRUdqFPsNm92ocsK8LUSOjPUA+WuehaapIkpYLiy+oaWd9VvbuOYVRBc
+ 97tVBrH4Xa2TShUQw8hx6bVKnQ9EexO2DkWlBj+IYz8VxXrCt7dEurjb3u9t7851/UV6cxacj
+ oMfXFLmE4Xtwr87itLzSxTEcgc
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, 2022-09-11 at 08:13 +1000, NeilBrown wrote:
-> On Fri, 09 Sep 2022, Jeff Layton wrote:
-> >=20
-> > The machine crashes and comes back up, and we get a query for i_version
-> > and it comes back as X. Fine, it's an old version. Now there is a write=
-.
-> > What do we do to ensure that the new value doesn't collide with X+1?=
-=20
->=20
-> (I missed this bit in my earlier reply..)
->=20
-> How is it "Fine" to see an old version?
-> The file could have changed without the version changing.
-> And I thought one of the goals of the crash-count was to be able to
-> provide a monotonic change id.
->=20
 
-"Fine" in the sense that we expect that to happen in this situation.
-It's not fine for the clients obviously, which is why we're discussing
-mitigation techniques.
---=20
-Jeff Layton <jlayton@kernel.org>
+
+On 2022/9/12 18:42, Filipe Manana wrote:
+> On Mon, Sep 12, 2022 at 11:26 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
+e:
+>>
+>>
+>>
+>> On 2022/9/12 17:59, Filipe Manana wrote:
+>>> On Fri, Sep 09, 2022 at 09:35:01AM -0400, Josef Bacik wrote:
+>>>> Inside of FB, as well as some user reports, we've had a consistent
+>>>> problem of occasional ENOSPC transaction aborts.  Inside FB we were
+>>>> seeing ~100-200 ENOSPC aborts per day in the fleet, which is a really
+>>>> low occurrence rate given the size of our fleet, but it's not nothing=
+.
+>>>>
+>>>> There are two causes of this particular problem.
+>>>>
+>>>> First is delayed allocation.  The reservation system for delalloc
+>>>> assumes that contiguous dirty ranges will result in 1 file extent ite=
+m.
+>>>> However if there is memory pressure that results in fragmented writeo=
+ut,
+>>>> or there is fragmentation in the block groups, this won't necessarily=
+ be
+>>>> true.  Consider the case where we do a single 256MiB write to a file =
+and
+>>>> then close it.  We will have 1 reservation for the inode update, the
+>>>> reservations for the checksum updates, and 1 reservation for the file
+>>>> extent item.  At some point later we decide to write this entire rang=
+e
+>>>> out, but we're so fragmented that we break this into 100 different fi=
+le
+>>>> extents.  Since we've already closed the file and are no longer writi=
+ng
+>>>> to it there's nothing to trigger a refill of the delalloc block rsv t=
+o
+>>>> satisfy the 99 new file extent reservations we need.  At this point w=
+e
+>>>> exhaust our delalloc reservation, and we begin to steal from the glob=
+al
+>>>> reserve.  If you have enough of these cases going in parallel you can
+>>>> easily exhaust the global reserve, get an ENOSPC at
+>>>> btrfs_alloc_tree_block() time, and then abort the transaction.
+>>>
+>>> There's also another problem I pointed out in the past regarding delal=
+loc
+>>> reservations. The thing is that we assume for each ordered extent, the=
+ new
+>>> file extent item will require changing only 1 leaf in the subvolume tr=
+ee.
+>>>
+>>> If our new extent has a size of 128M and currently for that range we
+>>> have 32768 extents each with a size of 4K, then we need to touch 157
+>>> leaves in order to drop those file extent items before inserting the n=
+ew
+>>> one at ordered extent completion. And our reservation that happened at
+>>> buffered write time only accounted for 1 leaf/path for file extent ite=
+ms
+>>> (plus 1 for the inode item). This is assuming the default leaf size of=
+ 16K,
+>>> where we can have at most 208 file extent items per leaf.
+>>>
+>>> If we have just a single ordered extent triggering this case we probab=
+ly
+>>> won't reach -ENOSPC and a transaction abort, as we end up consuming fr=
+om
+>>> the global reserve and that may be able to satisfy our space needs.
+>>> However with multiple ordered extents hitting such cases of insufficie=
+nt
+>>> reserved space, and other tasks doing other things and consuming from =
+the
+>>> global reserve, then the chances of hitting -ENOSPC at btrfs_finish_or=
+dered_io()
+>>> become very high, leading to a transaction abort there.
+>>
+>> In fact, I'm also considering these problems, and for the highly
+>> fragmented free space case (and other cases like delayed refs generated
+>> delayed refs case), can we let btrfs itself to learn from last (several=
+)
+>> delalloc (delayed refs) runs to generate an overall idea on how
+>> fragmented the free space is.
+>
+> That won't help for the case I described, because it has nothing to do w=
+ith
+> fragmentation.
+
+Isn't it?
+
+We have a 128MiB range dirtied, and we only reserve enough metadata for
+one ordered extent since at write/dirty time they are continous.
+
+But then we only have a bunch of 4K fragmented free extents, every time
+btrfs_reserve_extent() can only return a 4K extent for data.
+
+Aren't the two cases the same?
+
+Thanks,
+Qu
+
+>
+> There's also other case where more than 1 ordered extent is created, but
+> at reservation time we think it's only 1 ordered extent - compression,
+> it will split
+> into many 128K ordered extents. Again, this one has nothing do with
+> fragmentation.
+>
+>>
+>> Then round (down) that value for write/dirty time delalloc reservation?
+>>
+>> The same can go to delayed refs reservation too.
+>>
+>> If by somehow, the delayed refs are generating more than expected
+>> delayed refs, we increase the pre-reserved space accordingly.
+>>
+>>
+>>
+>> Another less dynamic method (but still the same idea) is to introduce a
+>> doomsday mode.
+>>
+>> In that mode, every time we need to reserve space for delalloc, we
+>> consider the extent can only be at most 4K, double the pre-reserve for
+>> delayed refs etc.
+>>
+>> But I'm afraid this can only reduce, but not really eliminate the ENOSP=
+C
+>> at critical path.
+>>
+>>>
+>>>>
+>>>> The other case is the delayed refs reserve.  The delayed refs reserve
+>>>> updates its size based on outstanding delayed refs and dirty block
+>>>> groups.  However we only refill this block reserve when returning
+>>>> excess reservations and when we call btrfs_start_transaction(root, X)=
+.
+>>>> We will reserve 2*X credits at transaction start time, and fill in X
+>>>> into the delayed refs reserve to make sure it stays topped off.
+>>>> Generally this works well, but clearly has downsides.  If we do a
+>>>> particularly delayed ref heavy operation we may never catch up in our
+>>>> reservations.  Additionally running delayed refs generates more delay=
+ed
+>>>> refs, and at that point we may be committing the transaction and have=
+ no
+>>>> way to trigger a refill of our delayed refs rsv.  Then a similar thin=
+g
+>>>> occurs with the delalloc reserve.
+>>>>
+>>>> Generally speaking we well over-reserve in all of our block rsvs.  If=
+ we
+>>>> reserve 1 credit we're usually reserving around 264k of space, but we=
+'ll
+>>>> often not use any of that reservation, or use a few blocks of that
+>>>> reservation.  We can be reasonably sure that as long as you were able=
+ to
+>>>> reserve space up front for your operation you'll be able to find spac=
+e
+>>>> on disk for that reservation.
+>>>
+>>> That's another elephant in the room. We assume that if a task reserves
+>>> space, it will be able to allocate that space later.
+>>>
+>>> There are several things that can happen which will result in not bein=
+g
+>>> able to allocate space we reserved before:
+>>>
+>>> 1) Discard/fitrim - it removes a free space entry, does the discard, a=
+nd
+>>>      after that it adds back the free space entry. If all the availabl=
+e space
+>>>      is in such an entry being discarded, the task fails to allocate s=
+pace;
+>>>
+>>> 2) fsync - it joins a transaction, doesn't reserve space and starts al=
+locating
+>>>      space for tree blocks, without ever reserving space (because we w=
+ant it
+>>>      to be fast and for most cases we don't know in advance, or can es=
+timate,
+>>>      how many tree blocks we will need to allocate). So it can steal s=
+pace that
+>>>      was reserved by some other task;
+>>>
+>>> 3) Scrub - scrub temporarily turns a block group into RO mode - if all=
+ the
+>>>      available space was in that block group, than when the task tries=
+ to
+>>>      allocate it will fail because the block group is now RO;
+>>
+>> Yes, that's one concern of the existing per-dev scrub.
+>> If we have 10 devices, all single profiles, then we may mark 10 block
+>> groups RO at once, hugely increase the chance of ENOSPC.
+>>
+>>>
+>>> 4) During space reservation we only check if free space counters. Ther=
+e
+>>>      may be block groups with plenty of free space but their profile i=
+s not
+>>>      compatible, so when trying to allocate an extent we are forced to=
+ allocate
+>>>      a new block group with the necessary profile, which will fail if =
+there's
+>>>      not enough unallocated space.
+>>>      This mostly affects degraded mode only (hopefully).
+>>
+>> This is still pretty common, for RAID1 usage especially one device is
+>> just slightly (like 10MiB) larger than the other.
+>>
+>> The metadata over-reserve still believe we can allocate new metadata bg=
+,
+>> but nope, and hit a ENOSPC at critical path.
+>>
+>> IIRC I had some very old patches for the problem, but haven't updated
+>> for a long time.
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>> I documented these at btrfs_chunk_alloc() sometime ago, but there are =
+a few
+>>> more similar cases.
+>>>
+>>>>
+>>>> So introduce a new flushing state, BTRFS_RESERVE_FLUSH_EMERGENCY.  Th=
+is
+>>>> gets used in the case that we've exhausted our reserve and the global
+>>>> reserve.  It simply forces a reservation if we have enough actual spa=
+ce
+>>>> on disk to make the reservation, which is almost always the case.  Th=
+is
+>>>> keeps us from hitting ENOSPC aborts in these odd occurrences where we=
+'ve
+>>>> not kept up with the delayed work.
+>>>>
+>>>> Fixing this in a complete way is going to be relatively complicated a=
+nd
+>>>> time consuming.  This patch is what I discussed with Filipe earlier t=
+his
+>>>> year, and what I put into our kernels inside FB.  With this patch we'=
+re
+>>>> down to 1-2 ENOSPC aborts per week, which is a significant reduction.
+>>>> This is a decent stop gap until we can work out a more wholistic
+>>>> solution to these two corner cases.
+>>>
+>>> Well, it's a lot more than 2 corner cases :)
+>>>
+>>> The change looks fine to me, it's simple and it should help reduce the
+>>> frequency of several ENOSPC cases. So,
+>>>
+>>> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+>>>
+>>> Thanks.
+>>>
+>>>>
+>>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>>>> ---
+>>>>    fs/btrfs/block-rsv.c  | 12 ++++++++++++
+>>>>    fs/btrfs/ctree.h      | 18 ++++++++++++++++++
+>>>>    fs/btrfs/space-info.c | 27 ++++++++++++++++++++++++++-
+>>>>    3 files changed, 56 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+>>>> index ec96285357e0..89e3e7d1bff6 100644
+>>>> --- a/fs/btrfs/block-rsv.c
+>>>> +++ b/fs/btrfs/block-rsv.c
+>>>> @@ -552,5 +552,17 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(stru=
+ct btrfs_trans_handle *trans,
+>>>>               if (!ret)
+>>>>                       return global_rsv;
+>>>>       }
+>>>> +
+>>>> +    /*
+>>>> +     * All hope is lost, but of course our reservations are overly
+>>>> +     * pessimistic, so instead of possibly having an ENOSPC abort he=
+re, try
+>>>> +     * one last time to force a reservation if there's enough actual=
+ space
+>>>> +     * on disk to make the reservation.
+>>>> +     */
+>>>> +    ret =3D btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksi=
+ze,
+>>>> +                                       BTRFS_RESERVE_FLUSH_EMERGENCY=
+);
+>>>> +    if (!ret)
+>>>> +            return block_rsv;
+>>>> +
+>>>>       return ERR_PTR(ret);
+>>>>    }
+>>>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>>>> index 0108585d838d..f221b3cb718d 100644
+>>>> --- a/fs/btrfs/ctree.h
+>>>> +++ b/fs/btrfs/ctree.h
+>>>> @@ -2986,6 +2986,24 @@ enum btrfs_reserve_flush_enum {
+>>>>        * Can be interrupted by a fatal signal.
+>>>>        */
+>>>>       BTRFS_RESERVE_FLUSH_ALL_STEAL,
+>>>> +
+>>>> +    /*
+>>>> +     * This is for btrfs_use_block_rsv only.  We have exhausted our =
+block
+>>>> +     * rsv and our global block rsv.  This can happen for things lik=
+e
+>>>> +     * delalloc where we are overwriting a lot of extents with a sin=
+gle
+>>>> +     * extent and didn't reserve enough space.  Alternatively it can=
+ happen
+>>>> +     * with delalloc where we reserve 1 extents worth for a large ex=
+tent but
+>>>> +     * fragmentation leads to multiple extents being created.  This =
+will
+>>>> +     * give us the reservation in the case of
+>>>> +     *
+>>>> +     * if (num_bytes < (space_info->total_bytes -
+>>>> +     *                  btrfs_space_info_used(space_info, false))
+>>>> +     *
+>>>> +     * Which ignores bytes_may_use.  This is potentially dangerous, =
+but our
+>>>> +     * reservation system is generally pessimistic so is able to abs=
+orb this
+>>>> +     * style of mistake.
+>>>> +     */
+>>>> +    BTRFS_RESERVE_FLUSH_EMERGENCY,
+>>>>    };
+>>>>
+>>>>    enum btrfs_flush_state {
+>>>> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+>>>> index 2e06b7c422c7..a0abc6dd01c2 100644
+>>>> --- a/fs/btrfs/space-info.c
+>>>> +++ b/fs/btrfs/space-info.c
+>>>> @@ -1583,6 +1583,16 @@ static inline bool can_steal(enum btrfs_reserv=
+e_flush_enum flush)
+>>>>               flush =3D=3D BTRFS_RESERVE_FLUSH_EVICT);
+>>>>    }
+>>>>
+>>>> +/*
+>>>> + * NO_FLUSH and FLUSH_EMERGENCY don't want to create a ticket, they =
+just want to
+>>>> + * fail as quickly as possible.
+>>>> + */
+>>>> +static inline bool can_ticket(enum btrfs_reserve_flush_enum flush)
+>>>> +{
+>>>> +    return (flush !=3D BTRFS_RESERVE_NO_FLUSH &&
+>>>> +            flush !=3D BTRFS_RESERVE_FLUSH_EMERGENCY);
+>>>> +}
+>>>> +
+>>>>    /**
+>>>>     * Try to reserve bytes from the block_rsv's space
+>>>>     *
+>>>> @@ -1644,6 +1654,21 @@ static int __reserve_bytes(struct btrfs_fs_inf=
+o *fs_info,
+>>>>               ret =3D 0;
+>>>>       }
+>>>>
+>>>> +    /*
+>>>> +     * Things are dire, we need to make a reservation so we don't ab=
+ort.  We
+>>>> +     * will let this reservation go through as long as we have actua=
+l space
+>>>> +     * left to allocate for the block.
+>>>> +     */
+>>>> +    if (ret && unlikely(flush =3D=3D BTRFS_RESERVE_FLUSH_EMERGENCY))=
+ {
+>>>
+>>> Does the unlikely() really makes any difference in this context?
+>>>
+>>>> +            used =3D btrfs_space_info_used(space_info, false);
+>>>> +            if (used + orig_bytes <=3D
+>>>> +                writable_total_bytes(fs_info, space_info)) {
+>>>> +                    btrfs_space_info_update_bytes_may_use(fs_info, s=
+pace_info,
+>>>> +                                                          orig_bytes=
+);
+>>>> +                    ret =3D 0;
+>>>> +            }
+>>>> +    }
+>>>> +
+>>>>       /*
+>>>>        * If we couldn't make a reservation then setup our reservation=
+ ticket
+>>>>        * and kick the async worker if it's not already running.
+>>>> @@ -1651,7 +1676,7 @@ static int __reserve_bytes(struct btrfs_fs_info=
+ *fs_info,
+>>>>        * If we are a priority flusher then we just need to add our ti=
+cket to
+>>>>        * the list and we will do our own flushing further down.
+>>>>        */
+>>>> -    if (ret && flush !=3D BTRFS_RESERVE_NO_FLUSH) {
+>>>> +    if (ret && can_ticket(flush)) {
+>>>>               ticket.bytes =3D orig_bytes;
+>>>>               ticket.error =3D 0;
+>>>>               space_info->reclaim_size +=3D ticket.bytes;
+>>>> --
+>>>> 2.26.3
+>>>>
