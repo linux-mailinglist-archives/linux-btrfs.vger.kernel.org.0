@@ -2,174 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1BF5B6013
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 20:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D74055B601D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 20:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbiILSS7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Sep 2022 14:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
+        id S230115AbiILSZY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Sep 2022 14:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbiILSS4 (ORCPT
+        with ESMTP id S229801AbiILSZW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Sep 2022 14:18:56 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFA142AD4
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 11:18:55 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id d17so5895406qko.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 11:18:55 -0700 (PDT)
+        Mon, 12 Sep 2022 14:25:22 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B0A1276E;
+        Mon, 12 Sep 2022 11:25:21 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id q9-20020a17090a178900b0020265d92ae3so13181603pja.5;
+        Mon, 12 Sep 2022 11:25:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=SJ3k3T/6SJCNdl7ZEkURWBuHbIxklLyE8QPYsx60RAA=;
-        b=lWhA3P8aqbvXhfE6oIU/M/li5da3J8m6FP6E36iPMyTrYz2i8m4WaI5GWPn+95J+Nk
-         pqnf7+2krMhxEtxgOQc8rl89wve+VKsy12qCZWjGbt2ThJn95VHYD2tnoymNUy7boDT5
-         aevoOjFMqF0tDg9Y201oQx/hdnegznlQs7cTuOmN7mb39aHN9zASEkZq8jaipkTZinvW
-         o5L8QfBpwuaHPLzgHLa8W+QA/a3Z//WTGmOEfgslGam1aRntv55dymBrMz5zQ0Z2/DBZ
-         FYCICwEcP47iT8LNpIlOJrPY6X41fRN/jhJZFVOwaow4XrP1kHSV3DObQEcbjhpJVtmw
-         lNOQ==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=jinrTf2dRXCM8P7beDGhcdymXhWilSgCNRAiFQeNJHI=;
+        b=mLMtjbzG1Kl+0NHJzKAxbllsuBufduMNF2LO9iIaeSIwdabQAHzY6k1ExlrHjBbQ3b
+         5Ek8x+gOY9qsai4wca5CayyELpfftgvEGk6LfP6oka3EzZll/EmV533QU3P7IFXouFCf
+         cJeJKlEzBYjyYGcPOEHfG0y3Jv1EYtZx06IidZtpY/PqdJm61eR+KtWvr0pNEQezNvEu
+         pFzkoOMvpUyHjk+sBH0Tjhr2kErcS9rXwIAF4/QuotmYMkJOC+XpiPqyqRRB177xZq4d
+         caSw8M6mKHirkEV6wHnYvUKeI8Qc2RnoK7f9RHWvkM+Feqcfmz5JThhG20mxA0JX18zd
+         681Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=SJ3k3T/6SJCNdl7ZEkURWBuHbIxklLyE8QPYsx60RAA=;
-        b=ZVjzgKdrg9cyDhM5ggClNy+8XGcCwM2UvFtJFZU3Au/DBG4ssuL96k0b+rPrIUmXIg
-         KKq0TupwRaGrWjvrx/GAj+zVZMHl5r8rpkg6732WjIe2ICNR9ViG5jj/kJ8GbZKQVG05
-         l+dksMVj7QSTDepqCHTdb7B0MHkeh73di+c45wGvyl3ubxmMYCHlFOPe4IvpOldh02e1
-         L24eoejEayzV8+rxz+RtnIiYstPtbQNZiQqTk1FcHPmGMzdk3Nl/zxB5hBzn14LPVSFI
-         hXbNPVOE7MgoyeHtzqPKDGYRV398ZNbkd+YlBX6Ch8dmWmxHL73uOZStisOTzzfhKraa
-         /H6w==
-X-Gm-Message-State: ACgBeo0j1s/ghfQGtAJNJVQVUGzfsuvvhX17UXJVsZKLgMVzlDMcxglJ
-        xx4qKnkDGSSHmmPeXwUN23+SxFWEYZji3g==
-X-Google-Smtp-Source: AA6agR6T0EVcEXW9NXpp+PzQUi5+bn5yc46CbJ26wN9zOnqG9gLtgehzfIdVIjYnka+mbyT7mafKbg==
-X-Received: by 2002:a05:620a:198e:b0:6bb:7651:fc7 with SMTP id bm14-20020a05620a198e00b006bb76510fc7mr19428242qkb.376.1663006734244;
-        Mon, 12 Sep 2022 11:18:54 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id w14-20020a05620a0e8e00b006b5c061844fsm7553265qkm.49.2022.09.12.11.18.53
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=jinrTf2dRXCM8P7beDGhcdymXhWilSgCNRAiFQeNJHI=;
+        b=A4v3HuxOD3Z+JXbTX2pG4oWFlR/L2rYFmU1tpfhA96/DQCi+inUGnLEI2uBSM5QaWV
+         G2wnNv8C87mh8bYgtR6+3tHgidTAMZrW9tA1HNWKFp+sHZWRPCLO/Sc38J+marm4dKAF
+         3COF/32LflCEX+YDi+o0y+SygMa3nA23JlW5qhLHVP9IojeJhANfSm67YAdwT3E+LOWd
+         5D6Vnpsxyud1/noej1n5mx8vYvh7/FyIyCSO1BEPxbmmV1mKq8AwbWj31A5X+mE452mq
+         gXQ7KlAlpPqKeQie/cfCjAzXvpKsILBi2nG/8lS3LuH9zsKIT+9QtaJEj5jrlsVMn3fk
+         EcKA==
+X-Gm-Message-State: ACgBeo2a69zEp+6r3Ju6NMk1Qr7VfBXbNHTAv1NIoK8S8MoiMsgOwRQe
+        5M8W6ZoV+Qk8amDsxqBtURpWK2AJLSlyvg==
+X-Google-Smtp-Source: AA6agR7TErEeniLb8NygdX/YotrQEVmapgtPdEtpEWF/iOvuOSsfvdyhlVfrcnUmKBhBkPJIGioMFA==
+X-Received: by 2002:a17:90b:180e:b0:202:a0c3:6da with SMTP id lw14-20020a17090b180e00b00202a0c306damr14093608pjb.94.1663007120382;
+        Mon, 12 Sep 2022 11:25:20 -0700 (PDT)
+Received: from vmfolio.. (c-73-189-111-8.hsd1.ca.comcast.net. [73.189.111.8])
+        by smtp.googlemail.com with ESMTPSA id x127-20020a626385000000b0053b2681b0e0sm5916894pfb.39.2022.09.12.11.25.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Sep 2022 11:18:53 -0700 (PDT)
-Date:   Mon, 12 Sep 2022 14:18:52 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: introduce BTRFS_RESERVE_FLUSH_EMERGENCY
-Message-ID: <Yx94DA75iNdsZUGX@localhost.localdomain>
-References: <d1da73f6ed291d53d4cc7dcab142ebfb0541f06e.1662730491.git.josef@toxicpanda.com>
- <20220912095907.GA269395@falcondesktop>
+        Mon, 12 Sep 2022 11:25:19 -0700 (PDT)
+From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, linux-mm@kvack.org,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Subject: [PATCH v2 00/23] Convert to filemap_get_folios_tag()
+Date:   Mon, 12 Sep 2022 11:22:01 -0700
+Message-Id: <20220912182224.514561-1-vishal.moola@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220912095907.GA269395@falcondesktop>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 12, 2022 at 10:59:07AM +0100, Filipe Manana wrote:
-> On Fri, Sep 09, 2022 at 09:35:01AM -0400, Josef Bacik wrote:
-> > Inside of FB, as well as some user reports, we've had a consistent
-> > problem of occasional ENOSPC transaction aborts.  Inside FB we were
-> > seeing ~100-200 ENOSPC aborts per day in the fleet, which is a really
-> > low occurrence rate given the size of our fleet, but it's not nothing.
-> > 
-> > There are two causes of this particular problem.
-> > 
-> > First is delayed allocation.  The reservation system for delalloc
-> > assumes that contiguous dirty ranges will result in 1 file extent item.
-> > However if there is memory pressure that results in fragmented writeout,
-> > or there is fragmentation in the block groups, this won't necessarily be
-> > true.  Consider the case where we do a single 256MiB write to a file and
-> > then close it.  We will have 1 reservation for the inode update, the
-> > reservations for the checksum updates, and 1 reservation for the file
-> > extent item.  At some point later we decide to write this entire range
-> > out, but we're so fragmented that we break this into 100 different file
-> > extents.  Since we've already closed the file and are no longer writing
-> > to it there's nothing to trigger a refill of the delalloc block rsv to
-> > satisfy the 99 new file extent reservations we need.  At this point we
-> > exhaust our delalloc reservation, and we begin to steal from the global
-> > reserve.  If you have enough of these cases going in parallel you can
-> > easily exhaust the global reserve, get an ENOSPC at
-> > btrfs_alloc_tree_block() time, and then abort the transaction.
-> 
-> There's also another problem I pointed out in the past regarding delalloc
-> reservations. The thing is that we assume for each ordered extent, the new
-> file extent item will require changing only 1 leaf in the subvolume tree.
-> 
-> If our new extent has a size of 128M and currently for that range we
-> have 32768 extents each with a size of 4K, then we need to touch 157
-> leaves in order to drop those file extent items before inserting the new
-> one at ordered extent completion. And our reservation that happened at
-> buffered write time only accounted for 1 leaf/path for file extent items
-> (plus 1 for the inode item). This is assuming the default leaf size of 16K,
-> where we can have at most 208 file extent items per leaf.
-> 
+This patch series replaces find_get_pages_range_tag() with
+filemap_get_folios_tag(). This also allows the removal of multiple
+calls to compound_head() throughout.
+It also makes a good chunk of the straightforward conversions to folios,
+and takes the opportunity to introduce a function that grabs a folio
+from the pagecache.
 
-Yeah I should have been less absolute in my descriptions, as you point out
-there's a few other situations.  This one is another good one, and is even more
-annoying because there isn't even the "oh we're going to allocate another file
-extent at some point in the future" buffer, it happens right as you're
-completing that ordered extent.
+F2fs and Ceph have quite alot of work to be done regarding folios, so
+for now those patches only have the changes necessary for the removal of
+find_get_pages_range_tag(), and only support folios of size 1 (which is
+all they use right now anyways).
 
-> 
-> That's another elephant in the room. We assume that if a task reserves
-> space, it will be able to allocate that space later.
-> 
-> There are several things that can happen which will result in not being
-> able to allocate space we reserved before:
-> 
-> 1) Discard/fitrim - it removes a free space entry, does the discard, and
->    after that it adds back the free space entry. If all the available space
->    is in such an entry being discarded, the task fails to allocate space;
-> 
+I've run xfstests on btrfs, ext4, f2fs, and nilfs2, but more testing may be
+beneficial. The page-writeback and filemap changes implicitly work. Testing
+and review of the other changes (afs, ceph, cifs, gfs2) would be appreciated.
+---
+v2:
+  Got Acked-By tags for nilfs and btrfs changes
+  Fixed an error arising in f2fs
+  - Reported-by: kernel test robot <lkp@intel.com>
+   
+Vishal Moola (Oracle) (23):
+  pagemap: Add filemap_grab_folio()
+  filemap: Added filemap_get_folios_tag()
+  filemap: Convert __filemap_fdatawait_range() to use
+    filemap_get_folios_tag()
+  page-writeback: Convert write_cache_pages() to use
+    filemap_get_folios_tag()
+  afs: Convert afs_writepages_region() to use filemap_get_folios_tag()
+  btrfs: Convert btree_write_cache_pages() to use
+    filemap_get_folio_tag()
+  btrfs: Convert extent_write_cache_pages() to use
+    filemap_get_folios_tag()
+  ceph: Convert ceph_writepages_start() to use filemap_get_folios_tag()
+  cifs: Convert wdata_alloc_and_fillpages() to use
+    filemap_get_folios_tag()
+  ext4: Convert mpage_prepare_extent_to_map() to use
+    filemap_get_folios_tag()
+  f2fs: Convert f2fs_fsync_node_pages() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_flush_inline_data() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_sync_node_pages() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_write_cache_pages() to use filemap_get_folios_tag()
+  f2fs: Convert last_fsync_dnode() to use filemap_get_folios_tag()
+  f2fs: Convert f2fs_sync_meta_pages() to use filemap_get_folios_tag()
+  gfs2: Convert gfs2_write_cache_jdata() to use filemap_get_folios_tag()
+  nilfs2: Convert nilfs_lookup_dirty_data_buffers() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_lookup_dirty_node_buffers() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_btree_lookup_dirty_buffers() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_copy_dirty_pages() to use
+    filemap_get_folios_tag()
+  nilfs2: Convert nilfs_clear_dirty_pages() to use
+    filemap_get_folios_tag()
+  filemap: Remove find_get_pages_range_tag()
 
-Yup I've worried this was happening before, however when I tracked down the
-actual problem this wasn't actually the issue we were seeing, so I set aside
-fixing it.  For this I want to have another pass through the allocator that
-waits for all discards to finish and doesn't allow new ones to start so we know
-we can actually make our allocation.
+ fs/afs/write.c          | 114 +++++++++++++++++----------------
+ fs/btrfs/extent_io.c    |  57 +++++++++--------
+ fs/ceph/addr.c          | 138 ++++++++++++++++++++--------------------
+ fs/cifs/file.c          |  33 +++++++++-
+ fs/ext4/inode.c         |  55 ++++++++--------
+ fs/f2fs/checkpoint.c    |  49 +++++++-------
+ fs/f2fs/compress.c      |  13 ++--
+ fs/f2fs/data.c          |  69 ++++++++++----------
+ fs/f2fs/f2fs.h          |   5 +-
+ fs/f2fs/node.c          |  72 +++++++++++----------
+ fs/gfs2/aops.c          |  64 ++++++++++---------
+ fs/nilfs2/btree.c       |  14 ++--
+ fs/nilfs2/page.c        |  59 ++++++++---------
+ fs/nilfs2/segment.c     |  44 +++++++------
+ include/linux/pagemap.h |  32 +++++++---
+ include/linux/pagevec.h |   8 ---
+ mm/filemap.c            |  87 ++++++++++++-------------
+ mm/page-writeback.c     |  44 +++++++------
+ mm/swap.c               |  10 ---
+ 19 files changed, 507 insertions(+), 460 deletions(-)
 
-> 2) fsync - it joins a transaction, doesn't reserve space and starts allocating
->    space for tree blocks, without ever reserving space (because we want it
->    to be fast and for most cases we don't know in advance, or can estimate,
->    how many tree blocks we will need to allocate). So it can steal space that
->    was reserved by some other task;
+-- 
+2.36.1
 
-I'm far less worried about this than I used to be.  Before we had all these
-hueristics about when we would commit the tranaction for ENOSPC flushing.  Now
-we unconditionally commit it and thus free all this space.  We may need to add
-another "wait for the tree log freeing code to finish running" wait, but this
-should be straightforward to address.
-
-> 
-> 3) Scrub - scrub temporarily turns a block group into RO mode - if all the
->    available space was in that block group, than when the task tries to
->    allocate it will fail because the block group is now RO;
-> 
-
-Another thing we could add to the ENOSPC flushing thing, probably as a last
-ditch "stop scrub, we're really in trouble here".  It could even go in the
-allocator loop like discard where we definitely have the space, it's just
-temporarily tied up.
-
-> 4) During space reservation we only check if free space counters. There
->    may be block groups with plenty of free space but their profile is not
->    compatible, so when trying to allocate an extent we are forced to allocate
->    a new block group with the necessary profile, which will fail if there's
->    not enough unallocated space.
->    This mostly affects degraded mode only (hopefully).
-
-Yeah this really shouldn't happen, everything should be the same profile.  Which
-is to say all discrete types should be on the same profile, if we had some on
-dupe metadata but some on single metadata mixed into the same space_info we're
-going to have a bad time.  We could probalby address this by making the
-space_info's completely tied to their profile and their data/metadata type, but
-that might be hairy.
-
-Degraded is special, but I'm happy slapping a "try not to use degraded mode
-heavily in production" warning label on it.  Thanks,
-
-Josef
