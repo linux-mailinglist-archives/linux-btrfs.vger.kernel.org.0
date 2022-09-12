@@ -2,47 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3315B57B1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 11:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9555D5B583B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 12:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbiILJ7P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Sep 2022 05:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
+        id S230164AbiILKZU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Sep 2022 06:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbiILJ7O (ORCPT
+        with ESMTP id S229597AbiILKZN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Sep 2022 05:59:14 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD1319285
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 02:59:13 -0700 (PDT)
+        Mon, 12 Sep 2022 06:25:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE36140D8;
+        Mon, 12 Sep 2022 03:25:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 06F1FB80CB4
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 09:59:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57B38C433C1;
-        Mon, 12 Sep 2022 09:59:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 04B1860B5B;
+        Mon, 12 Sep 2022 10:25:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 384FAC433C1;
+        Mon, 12 Sep 2022 10:25:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662976750;
-        bh=emyXmH0yb5qCQ5ozUwsZoaeF+T4risYE8Zs3tKHaYx8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WuATmhzc8M6zUrdQmzzjCX0/PevrxLB7nssrzfCtlFzHEoGwa15icwcamJfjw5dii
-         oA5BrKdFh5W8+FkoaJgsZDQhwN+i6HiiE5Vce4c0nYe0lfoaXIBTVuPztePwt9/rs2
-         uOhtA47qRTJpQpWE3NBCqJeV8SdbbTSJz82dtI6wkZowvZ5nhsstqxA2puLRTpXkD+
-         hsCRA/+LfWhP55+VcZhgjNcLTyg+x1wt1SUQPLElIg/HJpUEzVWRyf2iTbhlvaa73E
-         fnfIEk+uXJggOyqeKPeOK3o3szX3r8sUWdzgECunk0QxJZMR+RggatSCTB8lfJ6gRt
-         P+jdiKtWDXYnA==
-Date:   Mon, 12 Sep 2022 10:59:07 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: introduce BTRFS_RESERVE_FLUSH_EMERGENCY
-Message-ID: <20220912095907.GA269395@falcondesktop>
-References: <d1da73f6ed291d53d4cc7dcab142ebfb0541f06e.1662730491.git.josef@toxicpanda.com>
+        s=k20201202; t=1662978309;
+        bh=Nc6NvzK4IdJKxqHeiYVfYjahVjvOl9aOdvbdMxXIRTo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=VJIAFm8XMzHfTfPWhDINtCC8oTAYTh+m8CL1z3R7uDr06ESwWjDow3ZJQUfBgjExq
+         0DRCS3ZU5JUTwSQQLt7iFfwx5HTBihV6ewrFSTWqFZGKi5YZFvJd+C4g5ro4V2ucNP
+         DRemZoNj8t1iCAzf6pTutFNyaJ0j0S2vwbqjvhk3e355VKSnZ9n52kbnGdjmB1BdIZ
+         2XyCTAvVCkRG/RyopZ5zm/tjpZBuiebaY8Yp87aG3VUAdPkjPt6tGpNCxh1RXPg+Tp
+         3Xb/uv8H8e3yBEThVUjm8aB/pTOUdgUdbDR+fTDNWZQde8MZuprDwMrngCnCVkbd/A
+         M8jQn2g/crGHg==
+Message-ID: <2e34a7d4e1a3474d80ee0402ed3bc0f18792443a.camel@kernel.org>
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+From:   Jeff Layton <jlayton@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "xiubli@redhat.com" <xiubli@redhat.com>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bfields@fieldses.org" <bfields@fieldses.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "lczerner@redhat.com" <lczerner@redhat.com>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
+Date:   Mon, 12 Sep 2022 06:25:04 -0400
+In-Reply-To: <166285038617.30452.11636397081493278357@noble.neil.brown.name>
+References: <20220907111606.18831-1-jlayton@kernel.org>
+        , <166255065346.30452.6121947305075322036@noble.neil.brown.name>
+        , <79aaf122743a295ddab9525d9847ac767a3942aa.camel@kernel.org>
+        , <20220907125211.GB17729@fieldses.org>
+        , <771650a814ab1ff4dc5473d679936b747d9b6cf5.camel@kernel.org>
+        , <20220907135153.qvgibskeuz427abw@quack3>
+        , <166259786233.30452.5417306132987966849@noble.neil.brown.name>
+        , <20220908083326.3xsanzk7hy3ff4qs@quack3>, <YxoIjV50xXKiLdL9@mit.edu>
+        , <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
+        , <166267775728.30452.17640919701924887771@noble.neil.brown.name>
+        , <91e31d20d66d6f47fe12c80c34b1cffdfc202b6a.camel@hammerspace.com>
+        , <166268467103.30452.1687952324107257676@noble.neil.brown.name>
+        , <166268566751.30452.13562507405746100242@noble.neil.brown.name>
+        , <29a6c2e78284e7947ddedf71e5cb9436c9330910.camel@hammerspace.com>
+        , <8d638cb3c63b0d2da8679b5288d1622fdb387f83.camel@hammerspace.com>
+        , <166270570118.30452.16939807179630112340@noble.neil.brown.name>
+        , <33d058be862ccc0ccaf959f2841a7e506e51fd1f.camel@kernel.org>
+         <166285038617.30452.11636397081493278357@noble.neil.brown.name>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d1da73f6ed291d53d4cc7dcab142ebfb0541f06e.1662730491.git.josef@toxicpanda.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,240 +94,282 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 09, 2022 at 09:35:01AM -0400, Josef Bacik wrote:
-> Inside of FB, as well as some user reports, we've had a consistent
-> problem of occasional ENOSPC transaction aborts.  Inside FB we were
-> seeing ~100-200 ENOSPC aborts per day in the fleet, which is a really
-> low occurrence rate given the size of our fleet, but it's not nothing.
-> 
-> There are two causes of this particular problem.
-> 
-> First is delayed allocation.  The reservation system for delalloc
-> assumes that contiguous dirty ranges will result in 1 file extent item.
-> However if there is memory pressure that results in fragmented writeout,
-> or there is fragmentation in the block groups, this won't necessarily be
-> true.  Consider the case where we do a single 256MiB write to a file and
-> then close it.  We will have 1 reservation for the inode update, the
-> reservations for the checksum updates, and 1 reservation for the file
-> extent item.  At some point later we decide to write this entire range
-> out, but we're so fragmented that we break this into 100 different file
-> extents.  Since we've already closed the file and are no longer writing
-> to it there's nothing to trigger a refill of the delalloc block rsv to
-> satisfy the 99 new file extent reservations we need.  At this point we
-> exhaust our delalloc reservation, and we begin to steal from the global
-> reserve.  If you have enough of these cases going in parallel you can
-> easily exhaust the global reserve, get an ENOSPC at
-> btrfs_alloc_tree_block() time, and then abort the transaction.
+On Sun, 2022-09-11 at 08:53 +1000, NeilBrown wrote:
+> On Sat, 10 Sep 2022, Jeff Layton wrote:
+> > On Fri, 2022-09-09 at 16:41 +1000, NeilBrown wrote:
+> > > > On Fri, 09 Sep 2022, Trond Myklebust wrote:
+> > > > > > On Fri, 2022-09-09 at 01:10 +0000, Trond Myklebust wrote:
+> > > > > > > > On Fri, 2022-09-09 at 11:07 +1000, NeilBrown wrote:
+> > > > > > > > > > On Fri, 09 Sep 2022, NeilBrown wrote:
+> > > > > > > > > > > > On Fri, 09 Sep 2022, Trond Myklebust wrote:
+> > > > > > > > > > > >=20
+> > > > > > > > > > > > > >=20
+> > > > > > > > > > > > > > IOW: the minimal condition needs to be that for=
+ all cases
+> > > > > > > > > > > > > > below,
+> > > > > > > > > > > > > > the
+> > > > > > > > > > > > > > application reads 'state B' as having occurred =
+if any data was
+> > > > > > > > > > > > > > committed to disk before the crash.
+> > > > > > > > > > > > > >=20
+> > > > > > > > > > > > > > Application=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0Filesystem
+> > > > > > > > > > > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > > > > > > > > > > read change attr <- 'state A'
+> > > > > > > > > > > > > > read data <- 'state A'
+> > > > > > > > > > > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+write data -> 'state B'
+> > > > > > > > > > > > > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+<crash>+<reboot>
+> > > > > > > > > > > > > > read change attr <- 'state B'
+> > > > > > > > > > > >=20
+> > > > > > > > > > > > The important thing here is to not see 'state A'.=
+=A0 Seeing 'state
+> > > > > > > > > > > > C'
+> > > > > > > > > > > > should be acceptable.=A0 Worst case we could merge =
+in wall-clock
+> > > > > > > > > > > > time
+> > > > > > > > > > > > of
+> > > > > > > > > > > > system boot, but the filesystem should be able to b=
+e more helpful
+> > > > > > > > > > > > than
+> > > > > > > > > > > > that.
+> > > > > > > > > > > >=20
+> > > > > > > > > >=20
+> > > > > > > > > > Actually, without the crash+reboot it would still be ac=
+ceptable to
+> > > > > > > > > > see
+> > > > > > > > > > "state A" at the end there - but preferably not for lon=
+g.
+> > > > > > > > > > From the NFS perspective, the changeid needs to update =
+by the time
+> > > > > > > > > > of
+> > > > > > > > > > a
+> > > > > > > > > > close or unlock (so it is visible to open or lock), but=
+ before that
+> > > > > > > > > > it
+> > > > > > > > > > is just best-effort.
+> > > > > > > >=20
+> > > > > > > > Nope. That will inevitably lead to data corruption, since t=
+he
+> > > > > > > > application might decide to use the data from state A inste=
+ad of
+> > > > > > > > revalidating it.
+> > > > > > > >=20
+> > > > > >=20
+> > > > > > The point is, NFS is not the only potential use case for change
+> > > > > > attributes. We wouldn't be bothering to discuss statx() if it w=
+as.
+> > > >=20
+> > > > My understanding is that it was primarily a desire to add fstests t=
+o
+> > > > exercise the i_version which motivated the statx extension.
+> > > > Obviously we should prepare for other uses though.
+> > > >=20
+> >=20
+> > Mainly. Also, userland nfs servers might also like this for obvious
+> > reasons. For now though, in the v5 set, I've backed off on trying to
+> > expose this to userland in favor of trying to just clean up the interna=
+l
+> > implementation.
+> >=20
+> > I'd still like to expose this via statx if possible, but I don't want t=
+o
+> > get too bogged down in interface design just now as we have Real Bugs t=
+o
+> > fix. That patchset should make it simple to expose it later though.
+> >=20
+> > > > > >=20
+> > > > > > I could be using O_DIRECT, and all the tricks in order to ensur=
+e
+> > > > > > that
+> > > > > > my stock broker application (to choose one example) has access
+> > > > > > to the
+> > > > > > absolute very latest prices when I'm trying to execute a trade.
+> > > > > > When the filesystem then says 'the prices haven't changed since
+> > > > > > your
+> > > > > > last read because the change attribute on the database file is
+> > > > > > the
+> > > > > > same' in response to a statx() request with the
+> > > > > > AT_STATX_FORCE_SYNC
+> > > > > > flag set, then why shouldn't my application be able to assume i=
+t
+> > > > > > can
+> > > > > > serve those prices right out of memory instead of having to go
+> > > > > > to disk?
+> > > >=20
+> > > > I would think that such an application would be using inotify rathe=
+r
+> > > > than having to poll.  But certainly we should have a clear statemen=
+t
+> > > > of
+> > > > quality-of-service parameters in the documentation.
+> > > > If we agree that perfect atomicity is what we want to promise, and
+> > > > that
+> > > > the cost to the filesystem and the statx call is acceptable, then s=
+o
+> > > > be it.
+> > > >=20
+> > > > My point wasn't to say that atomicity is bad.  It was that:
+> > > > =A0- if the i_version change is visible before the change itself is
+> > > > =A0=A0=A0visible, then that is a correctness problem.
+> > > > =A0- if the i_version change is only visible some time after the
+> > > > change
+> > > > =A0=A0=A0itself is visible, then that is a quality-of-service issue=
+.
+> > > > I cannot see any room for debating the first.  I do see some room t=
+o
+> > > > debate the second.
+> > > >=20
+> > > > Cached writes, directory ops, and attribute changes are, I think,
+> > > > easy
+> > > > enough to provide truly atomic i_version updates with the change
+> > > > being
+> > > > visible.
+> > > >=20
+> > > > Changes to a shared memory-mapped files is probably the hardest to
+> > > > provide timely i_version updates for.  We might want to document an
+> > > > explicit exception for those.  Alternately each request for
+> > > > i_version
+> > > > would need to find all pages that are writable, remap them read-onl=
+y
+> > > > to
+> > > > catch future writes, then update i_version if any were writable
+> > > > (i.e.
+> > > > ->mkwrite had been called).  That is the only way I can think of to
+> > > > provide atomicity.
+> > > >=20
+> >=20
+> > I don't think we really want to make i_version bumps that expensive.
+> > Documenting that you can't expect perfect consistency vs. mmap with NFS
+> > seems like the best thing to do. We do our best, but that sort of
+> > synchronization requires real locking.
+> >=20
+> > > > O_DIRECT writes are a little easier than mmapped files.  I suspect =
+we
+> > > > should update the i_version once the device reports that the write =
+is
+> > > > complete, but a parallel reader could have seem some of the write b=
+efore
+> > > > that moment.  True atomicity could only be provided by taking some
+> > > > exclusive lock that blocked all O_DIRECT writes.  Jeff seems to be
+> > > > suggesting this, but I doubt the stock broker application would be
+> > > > willing to make the call in that case.  I don't think I would eithe=
+r.
+> >=20
+> > Well, only blocked for long enough to run the getattr. Granted, with a
+> > slow underlying filesystem that can take a while.
+>=20
+> Maybe I misunderstand, but this doesn't seem to make much sense.
+>=20
+> If you want i_version updates to appear to be atomic w.r.t O_DIRECT
+> writes, then you need to prevent accessing the i_version while any write
+> is on-going. At that time there is no meaningful value for i_version.
+> So you need a lock (At least shared) around the actual write, and you
+> need an exclusive lock around the get_i_version().
+> So accessing the i_version would have to wait for all pending O_DIRECT
+> writes to complete, and would block any new O_DIRECT writes from
+> starting.
+>=20
+> This could be expensive.
+>=20
+> There is not currently any locking around O_DIRECT writes.  You cannot
+> synchronise with them.
+>=20
 
-There's also another problem I pointed out in the past regarding delalloc
-reservations. The thing is that we assume for each ordered extent, the new
-file extent item will require changing only 1 leaf in the subvolume tree.
+AFAICT, DIO write() implementations in btrfs, ext4, and xfs all hold
+inode_lock_shared across the I/O. That was why patch #8 takes the
+inode_lock (exclusive) across the getattr.
 
-If our new extent has a size of 128M and currently for that range we
-have 32768 extents each with a size of 4K, then we need to touch 157
-leaves in order to drop those file extent items before inserting the new
-one at ordered extent completion. And our reservation that happened at
-buffered write time only accounted for 1 leaf/path for file extent items
-(plus 1 for the inode item). This is assuming the default leaf size of 16K,
-where we can have at most 208 file extent items per leaf.
+> The best you can do is update the i_version immediately after all the
+> O_DIRECT writes in a single request complete.
+>=20
+> >=20
+> > To summarize, there are two main uses for the change attr in NFSv4:
+> >=20
+> > 1/ to provide change_info4 for directory morphing operations (CREATE,
+> > LINK, OPEN, REMOVE, and RENAME). It turns out that this is already
+> > atomic in the current nfsd code (AFAICT) by virtue of the fact that we
+> > hold the i_rwsem exclusively over these operations. The change attr is
+> > also queried pre and post while the lock is held, so that should ensure
+> > that we get true atomicity for this.
+>=20
+> Yes, directory ops are relatively easy.
+>=20
+> >=20
+> > 2/ as an adjunct for the ctime when fetching attributes to validate
+> > caches. We don't expect perfect consistency between read (and readlike)
+> > operations and GETATTR, even when they're in the same compound.
+> >=20
+> > IOW, a READ+GETATTR compound can legally give you a short (or zero-
+> > length) read, and then the getattr indicates a size that is larger than
+> > where the READ data stops, due to a write or truncate racing in after
+> > the read.
+>=20
+> I agree that atomicity is neither necessary nor practical.  Ordering is
+> important though.  I don't think a truncate(0) racing with a READ can
+> credibly result in a non-zero size AFTER a zero-length read.  A truncate
+> that extends the size could have that effect though.
+>=20
+> >=20
+> > Ideally, the attributes in the GETATTR reply should be consistent
+> > between themselves though. IOW, all of the attrs should accurately
+> > represent the state of the file at a single point in time.
+> > change+size+times+etc. should all be consistent with one another.
+> >=20
+> > I think we get all of this by taking the inode_lock around the
+> > vfs_getattr call in nfsd4_encode_fattr. It may not be the most elegant
+> > solution, but it should give us the atomicity we need, and it doesn't
+> > require adding extra operations or locking to the write codepaths.
+>=20
+> Explicit attribute changes (chown/chmod/utimes/truncate etc) are always
+> done under the inode lock.  Implicit changes via inode_update_time() are
+> not (though xfs does take the lock, ext4 doesn't, haven't checked
+> others).  So taking the inode lock won't ensure those are internally
+> consistent.
+>=20
+> I think using inode_lock_shared() is acceptable.  It doesn't promise
+> perfect atomicity, but it is probably good enough.
+>=20
+> We'd need a good reason to want perfect atomicity to go further, and I
+> cannot think of one.
+>=20
+>=20
 
-If we have just a single ordered extent triggering this case we probably
-won't reach -ENOSPC and a transaction abort, as we end up consuming from
-the global reserve and that may be able to satisfy our space needs.
-However with multiple ordered extents hitting such cases of insufficient
-reserved space, and other tasks doing other things and consuming from the
-global reserve, then the chances of hitting -ENOSPC at btrfs_finish_ordered_io()
-become very high, leading to a transaction abort there.
+Taking inode_lock_shared is sufficient to block out buffered and DAX
+writes. DIO writes sometimes only take the shared lock (e.g. when the
+data is already properly aligned). If we want to ensure the getattr
+doesn't run while _any_ writes are running, we'd need the exclusive
+lock.
 
-> 
-> The other case is the delayed refs reserve.  The delayed refs reserve
-> updates its size based on outstanding delayed refs and dirty block
-> groups.  However we only refill this block reserve when returning
-> excess reservations and when we call btrfs_start_transaction(root, X).
-> We will reserve 2*X credits at transaction start time, and fill in X
-> into the delayed refs reserve to make sure it stays topped off.
-> Generally this works well, but clearly has downsides.  If we do a
-> particularly delayed ref heavy operation we may never catch up in our
-> reservations.  Additionally running delayed refs generates more delayed
-> refs, and at that point we may be committing the transaction and have no
-> way to trigger a refill of our delayed refs rsv.  Then a similar thing
-> occurs with the delalloc reserve.
-> 
-> Generally speaking we well over-reserve in all of our block rsvs.  If we
-> reserve 1 credit we're usually reserving around 264k of space, but we'll
-> often not use any of that reservation, or use a few blocks of that
-> reservation.  We can be reasonably sure that as long as you were able to
-> reserve space up front for your operation you'll be able to find space
-> on disk for that reservation.
+Maybe that's overkill, though it seems like we could have a race like
+this without taking inode_lock across the getattr:
 
-That's another elephant in the room. We assume that if a task reserves
-space, it will be able to allocate that space later.
+reader				writer
+-----------------------------------------------------------------
+				i_version++
+getattr
+read
+				DIO write to backing store
 
-There are several things that can happen which will result in not being
-able to allocate space we reserved before:
 
-1) Discard/fitrim - it removes a free space entry, does the discard, and
-   after that it adds back the free space entry. If all the available space
-   is in such an entry being discarded, the task fails to allocate space;
+Given that we can't fully exclude mmap writes, maybe we can just
+document that mixing DIO or mmap writes on the server + NFS may not be
+fully cache coherent.
 
-2) fsync - it joins a transaction, doesn't reserve space and starts allocating
-   space for tree blocks, without ever reserving space (because we want it
-   to be fast and for most cases we don't know in advance, or can estimate,
-   how many tree blocks we will need to allocate). So it can steal space that
-   was reserved by some other task;
+>=20
+> >=20
+> > We could also consider less invasive ways to achieve this (maybe some
+> > sort of seqretry loop around the vfs_getattr call?), but I'd rather not
+> > do extra work in the write codepaths if we can get away with it.
+> > --=20
+> > Jeff Layton <jlayton@kernel.org>
+> >=20
+> >=20
 
-3) Scrub - scrub temporarily turns a block group into RO mode - if all the
-   available space was in that block group, than when the task tries to
-   allocate it will fail because the block group is now RO;
-
-4) During space reservation we only check if free space counters. There
-   may be block groups with plenty of free space but their profile is not
-   compatible, so when trying to allocate an extent we are forced to allocate
-   a new block group with the necessary profile, which will fail if there's
-   not enough unallocated space.
-   This mostly affects degraded mode only (hopefully).
-
-I documented these at btrfs_chunk_alloc() sometime ago, but there are a few
-more similar cases.
-
-> 
-> So introduce a new flushing state, BTRFS_RESERVE_FLUSH_EMERGENCY.  This
-> gets used in the case that we've exhausted our reserve and the global
-> reserve.  It simply forces a reservation if we have enough actual space
-> on disk to make the reservation, which is almost always the case.  This
-> keeps us from hitting ENOSPC aborts in these odd occurrences where we've
-> not kept up with the delayed work.
-> 
-> Fixing this in a complete way is going to be relatively complicated and
-> time consuming.  This patch is what I discussed with Filipe earlier this
-> year, and what I put into our kernels inside FB.  With this patch we're
-> down to 1-2 ENOSPC aborts per week, which is a significant reduction.
-> This is a decent stop gap until we can work out a more wholistic
-> solution to these two corner cases.
-
-Well, it's a lot more than 2 corner cases :)
-
-The change looks fine to me, it's simple and it should help reduce the
-frequency of several ENOSPC cases. So,
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/block-rsv.c  | 12 ++++++++++++
->  fs/btrfs/ctree.h      | 18 ++++++++++++++++++
->  fs/btrfs/space-info.c | 27 ++++++++++++++++++++++++++-
->  3 files changed, 56 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-> index ec96285357e0..89e3e7d1bff6 100644
-> --- a/fs/btrfs/block-rsv.c
-> +++ b/fs/btrfs/block-rsv.c
-> @@ -552,5 +552,17 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
->  		if (!ret)
->  			return global_rsv;
->  	}
-> +
-> +	/*
-> +	 * All hope is lost, but of course our reservations are overly
-> +	 * pessimistic, so instead of possibly having an ENOSPC abort here, try
-> +	 * one last time to force a reservation if there's enough actual space
-> +	 * on disk to make the reservation.
-> +	 */
-> +	ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, blocksize,
-> +					   BTRFS_RESERVE_FLUSH_EMERGENCY);
-> +	if (!ret)
-> +		return block_rsv;
-> +
->  	return ERR_PTR(ret);
->  }
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 0108585d838d..f221b3cb718d 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -2986,6 +2986,24 @@ enum btrfs_reserve_flush_enum {
->  	 * Can be interrupted by a fatal signal.
->  	 */
->  	BTRFS_RESERVE_FLUSH_ALL_STEAL,
-> +
-> +	/*
-> +	 * This is for btrfs_use_block_rsv only.  We have exhausted our block
-> +	 * rsv and our global block rsv.  This can happen for things like
-> +	 * delalloc where we are overwriting a lot of extents with a single
-> +	 * extent and didn't reserve enough space.  Alternatively it can happen
-> +	 * with delalloc where we reserve 1 extents worth for a large extent but
-> +	 * fragmentation leads to multiple extents being created.  This will
-> +	 * give us the reservation in the case of
-> +	 *
-> +	 * if (num_bytes < (space_info->total_bytes -
-> +	 *		    btrfs_space_info_used(space_info, false))
-> +	 *
-> +	 * Which ignores bytes_may_use.  This is potentially dangerous, but our
-> +	 * reservation system is generally pessimistic so is able to absorb this
-> +	 * style of mistake.
-> +	 */
-> +	BTRFS_RESERVE_FLUSH_EMERGENCY,
->  };
->  
->  enum btrfs_flush_state {
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 2e06b7c422c7..a0abc6dd01c2 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -1583,6 +1583,16 @@ static inline bool can_steal(enum btrfs_reserve_flush_enum flush)
->  		flush == BTRFS_RESERVE_FLUSH_EVICT);
->  }
->  
-> +/*
-> + * NO_FLUSH and FLUSH_EMERGENCY don't want to create a ticket, they just want to
-> + * fail as quickly as possible.
-> + */
-> +static inline bool can_ticket(enum btrfs_reserve_flush_enum flush)
-> +{
-> +	return (flush != BTRFS_RESERVE_NO_FLUSH &&
-> +		flush != BTRFS_RESERVE_FLUSH_EMERGENCY);
-> +}
-> +
->  /**
->   * Try to reserve bytes from the block_rsv's space
->   *
-> @@ -1644,6 +1654,21 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
->  		ret = 0;
->  	}
->  
-> +	/*
-> +	 * Things are dire, we need to make a reservation so we don't abort.  We
-> +	 * will let this reservation go through as long as we have actual space
-> +	 * left to allocate for the block.
-> +	 */
-> +	if (ret && unlikely(flush == BTRFS_RESERVE_FLUSH_EMERGENCY)) {
-
-Does the unlikely() really makes any difference in this context?
-
-> +		used = btrfs_space_info_used(space_info, false);
-> +		if (used + orig_bytes <=
-> +		    writable_total_bytes(fs_info, space_info)) {
-> +			btrfs_space_info_update_bytes_may_use(fs_info, space_info,
-> +							      orig_bytes);
-> +			ret = 0;
-> +		}
-> +	}
-> +
->  	/*
->  	 * If we couldn't make a reservation then setup our reservation ticket
->  	 * and kick the async worker if it's not already running.
-> @@ -1651,7 +1676,7 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
->  	 * If we are a priority flusher then we just need to add our ticket to
->  	 * the list and we will do our own flushing further down.
->  	 */
-> -	if (ret && flush != BTRFS_RESERVE_NO_FLUSH) {
-> +	if (ret && can_ticket(flush)) {
->  		ticket.bytes = orig_bytes;
->  		ticket.error = 0;
->  		space_info->reclaim_size += ticket.bytes;
-> -- 
-> 2.26.3
-> 
+--=20
+Jeff Layton <jlayton@kernel.org>
