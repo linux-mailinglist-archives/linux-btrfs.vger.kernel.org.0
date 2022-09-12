@@ -2,104 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CCC5B5A01
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 14:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC805B5A47
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 14:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbiILMNY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Sep 2022 08:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
+        id S229616AbiILMkB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Sep 2022 08:40:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbiILMNW (ORCPT
+        with ESMTP id S229463AbiILMkA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Sep 2022 08:13:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE15433A0C
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 05:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1662984798;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mrkO2o7NLCcYAn3dzHQJOYSP8ki543AiPRGrSsHduoY=;
-        b=XSEnU1qZsv3D0DwtCDA0BurA/dpM5xKoPfaNLexXfmNBnOuUwXnf0zP4nCapzfY7T9tA9U
-        n3lTDwVzPu5jFw6zowvvAzgRVJ5SRxj5waji86GtXLJO6fChJUl+SDuIJ0xmECGEtky08q
-        G5Ot+TPgPEuZ7cdLfLDeaEI8Ga0LguA=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-146-fPG4ltTxOjK_xKdfMFGHXQ-1; Mon, 12 Sep 2022 08:13:13 -0400
-X-MC-Unique: fPG4ltTxOjK_xKdfMFGHXQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 12 Sep 2022 08:40:00 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBB0CE35
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 05:39:59 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8D7F43C0D848;
-        Mon, 12 Sep 2022 12:13:12 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.193.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 21BFE2166B26;
-        Mon, 12 Sep 2022 12:13:06 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.de>, adilger.kernel@dilger.ca,
-        djwong@kernel.org, david@fromorbit.com, trondmy@hammerspace.com,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, brauner@kernel.org,
-        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-References: <166259786233.30452.5417306132987966849@noble.neil.brown.name>
-        <20220908083326.3xsanzk7hy3ff4qs@quack3> <YxoIjV50xXKiLdL9@mit.edu>
-        <02928a8c5718590bea5739b13d6b6ebe66cac577.camel@kernel.org>
-        <20220908155605.GD8951@fieldses.org>
-        <9e06c506fd6b3e3118da0ec24276e85ea3ee45a1.camel@kernel.org>
-        <20220908182252.GA18939@fieldses.org>
-        <44efe219dbf511492b21a653905448d43d0f3363.camel@kernel.org>
-        <20220909154506.GB5674@fieldses.org>
-        <125df688dbebaf06478b0911e76e228e910b04b3.camel@kernel.org>
-        <20220910145600.GA347@fieldses.org>
-        <9eaed9a47d1aef11fee95f0079e302bc776bc7ff.camel@kernel.org>
-Date:   Mon, 12 Sep 2022 14:13:05 +0200
-In-Reply-To: <9eaed9a47d1aef11fee95f0079e302bc776bc7ff.camel@kernel.org> (Jeff
-        Layton's message of "Mon, 12 Sep 2022 07:42:16 -0400")
-Message-ID: <87a67423la.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8EBAC33752;
+        Mon, 12 Sep 2022 12:39:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1662986398;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jdvZX7WOthJdY/axijyIJZXikkLXVBYT9KWX88/ZtPI=;
+        b=D6JyPrkm5+oAbJyoiaxmLofq7bKESiQvb3f5wk+J1+iyFni3Oql4xBHN8CzvpEwWbHF17G
+        zPjYOFZ9Jbqo1HQpBog0+Iq8PHb1OpW8Zz02rWAlDHPWlGT63jlbZM+aFIgJRDEjWIZS6+
+        k/nXW1sQqAEXTaifadI9WCN19l6jtfc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1662986398;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jdvZX7WOthJdY/axijyIJZXikkLXVBYT9KWX88/ZtPI=;
+        b=wFgdZaCKfTTgj4GHe4FcvzdafinIeLkDrxiJEmnWxJGoOyU4jcK0mBH5LbwFjQGVwryEKN
+        C1jj91Gh9fmpw8Bw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 637D3139C8;
+        Mon, 12 Sep 2022 12:39:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id r3U6F54oH2OwGAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 12 Sep 2022 12:39:58 +0000
+Date:   Mon, 12 Sep 2022 14:34:32 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     linux-btrfs@vger.kernel.org, Sidong Yang <realwakka@gmail.com>
+Subject: Re: [PATCH] btrfs-progs: fi resize: fix return value
+ check_resize_args()
+Message-ID: <20220912123432.GF32411@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20220811152239.2845-1-realwakka@gmail.com>
+ <20220912155843.F86F.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220912155843.F86F.409509F4@e16-tech.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-* Jeff Layton:
+On Mon, Sep 12, 2022 at 03:58:47PM +0800, Wang Yugui wrote:
+> Hi,
+> 
+> > check_resize_args() function checks user argument amount and should
+> > returns it's validity. But now the code returns only zero. This patch
+> > make it correct to return ret.
+> > 
+> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> > ---
+> >  cmds/filesystem.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/cmds/filesystem.c b/cmds/filesystem.c
+> > index 7cd08fcd..9eff5680 100644
+> > --- a/cmds/filesystem.c
+> > +++ b/cmds/filesystem.c
+> > @@ -1203,7 +1203,7 @@ static int check_resize_args(const char *amount, const char *path) {
+> >  
+> >  out:
+> >  	free(di_args);
+> > -	return 0;
+> > +	return ret;
+> >  }
+> >  
+> >  static int cmd_filesystem_resize(const struct cmd_struct *cmd,
+> 
+> This patch will make 'btrfs filesystem resize' always fail, and then break
+> fstests btrfs/177.
 
-> To do this we'd need 2 64-bit fields in the on-disk and in-memory 
-> superblocks for ext4, xfs and btrfs. On the first mount after a crash,
-> the filesystem would need to bump s_version_max by the significant
-> increment (2^40 bits or whatever). On a "clean" mount, it wouldn't need
-> to do that.
->
-> Would there be a way to ensure that the new s_version_max value has made
-> it to disk? Bumping it by a large value and hoping for the best might be
-> ok for most cases, but there are always outliers, so it might be
-> worthwhile to make an i_version increment wait on that if necessary. 
-
-How common are unclean shutdowns in practice?  Do ex64/XFS/btrfs keep
-counters in the superblocks for journal replays that can be read easily?
-
-Several useful i_version applications could be negatively impacted by
-frequent i_version invalidation.
-
-Thanks,
-Florian
-
+I noticed that too when doing the progs release so the patch will be
+dropped.
