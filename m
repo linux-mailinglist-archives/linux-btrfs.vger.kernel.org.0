@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F33B5B61C2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 21:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A215B61BC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Sep 2022 21:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbiILT2k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Sep 2022 15:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
+        id S229771AbiILT2a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Sep 2022 15:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbiILT2d (ORCPT
+        with ESMTP id S229924AbiILT22 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Sep 2022 15:28:33 -0400
+        Mon, 12 Sep 2022 15:28:28 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C9546622
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 12:28:32 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28CFLE9w012169
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 12:28:32 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D778946D80
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 12:28:24 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28CHvInB002614
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 12:28:24 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=HgZUbO7apXTpfUq7KyjEgw2oorrYQGuiLIcFfxgsjkY=;
- b=GKze7BczTFInz/J2jfOcLFZWzLd3s4IqvoJKZyh/JIdTv7eZRq5HRoNXrLZGGHz0nPoV
- G+9Rafv4dTQ/veBNSflYJk7ySdlFadYEdN2dM32RaCZIsHxEuvePUVRgXNMEEgSkrGzG
- c5cSxRkzfVMVs4w5CgNX4rCjNFCy2su2Pxk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jgpmmw0ak-1
+ bh=ChjfSENQchEUBM4cPfbpSt1QO05k//yXuIWwWjuVJaY=;
+ b=pakKpLO8FmSLNVjyONwmzsdGLp6w8Oudhf6n+b+BgYnfg8b90pWxLv3VfkmjBcFKxQ+B
+ qMGy566NT/Qco6I7r5FApmAPpc+uU+pblE+sjHP64Bi9VDaWoZLuvbDsEQ71cZCFn9GG
+ Jz89GMOfT1CUkdhjSiYSVKlp99qgoUJKddw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jgqpv4n85-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 12:28:31 -0700
-Received: from twshared20183.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Sep 2022 12:28:23 -0700
+Received: from twshared13579.04.prn5.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 12 Sep 2022 12:28:27 -0700
+ 15.1.2375.31; Mon, 12 Sep 2022 12:28:22 -0700
 Received: by dev1180.prn1.facebook.com (Postfix, from userid 425415)
-        id 2BB8B208523C; Mon, 12 Sep 2022 12:27:54 -0700 (PDT)
+        id 311CF208523E; Mon, 12 Sep 2022 12:27:54 -0700 (PDT)
 From:   Stefan Roesch <shr@fb.com>
 To:     <kernel-team@fb.com>, <io-uring@vger.kernel.org>,
         <linux-btrfs@vger.kernel.org>, <linux-mm@kvack.org>
 CC:     <shr@fb.com>, <axboe@kernel.dk>, <josef@toxicpanda.com>,
         <fdmanana@gmail.com>
-Subject: [PATCH v3 11/12] btrfs: assert nowait mode is not used for some btree search functions
-Date:   Mon, 12 Sep 2022 12:27:51 -0700
-Message-ID: <20220912192752.3785061-12-shr@fb.com>
+Subject: [PATCH v3 12/12] btrfs: enable nowait async buffered writes
+Date:   Mon, 12 Sep 2022 12:27:52 -0700
+Message-ID: <20220912192752.3785061-13-shr@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220912192752.3785061-1-shr@fb.com>
 References: <20220912192752.3785061-1-shr@fb.com>
@@ -50,11 +50,11 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: DlA0jjmY-hRwjlFSAooD-r4IVhKJkiIa
-X-Proofpoint-ORIG-GUID: DlA0jjmY-hRwjlFSAooD-r4IVhKJkiIa
+X-Proofpoint-GUID: BRYNWxxd1WwI1xFe8deestPnORjBsgY4
+X-Proofpoint-ORIG-GUID: BRYNWxxd1WwI1xFe8deestPnORjBsgY4
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-12_13,2022-09-12_02,2022-06-22_01
+ definitions=2022-09-12_12,2022-09-12_02,2022-06-22_01
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -66,46 +66,93 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This adds nowait asserts to btree search functions which are not used
-by buffered IO and direct IO paths.
+Enable nowait async buffered writes in btrfs_do_write_iter() and
+btrfs_file_open().
+
+In this version encoded buffered writes have the optimization not
+enabled. Encoded writes are enabled by using an ioctl. io-uring
+currently do not support ioctl's. This might be enabled in the future.
+
+Performance results:
+  For fio the following results have been obtained with a queue depth of
+  1 and 4k block size (runtime 600 secs):
+
+                 sequential writes:
+                 without patch           with patch      libaio     psync
+  iops:              55k                    134k          117K       148K
+  bw:               221MB/s                 538MB/s       469MB/s    592M=
+B/s
+  clat:           15286ns                    82ns         994ns     6340n=
+s
+
+For an io depth of 1, the new patch improves throughput by over two times
+(compared to the exiting behavior, where buffered writes are processed by=
+ an
+io-worker process) and also the latency is considerably reduced. To achie=
+ve the
+same or better performance with the exisiting code an io depth of 4 is re=
+quired.
+Increasing the iodepth further does not lead to improvements.
+
+The tests have been run like this:
+./fio --name=3Dseq-writers --ioengine=3Dpsync --iodepth=3D1 --rw=3Dwrite =
+\
+  --bs=3D4k --direct=3D0 --size=3D100000m --time_based --runtime=3D600   =
+\
+  --numjobs=3D1 --filename=3D...
+./fio --name=3Dseq-writers --ioengine=3Dio_uring --iodepth=3D1 --rw=3Dwri=
+te \
+  --bs=3D4k --direct=3D0 --size=3D100000m --time_based --runtime=3D600   =
+\
+  --numjobs=3D1 --filename=3D...
+./fio --name=3Dseq-writers --ioengine=3Dlibaio --iodepth=3D1 --rw=3Dwrite=
+ \
+  --bs=3D4k --direct=3D0 --size=3D100000m --time_based --runtime=3D600   =
+\
+  --numjobs=3D1 --filename=3D...
+
+Testing:
+  This patch has been tested with xfstests, fsx, fio. xfstests shows no n=
+ew
+  diffs compared to running without the patch series.
 
 Signed-off-by: Stefan Roesch <shr@fb.com>
 ---
- fs/btrfs/ctree.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/btrfs/file.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 71b238364939..d973d6702cd0 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -2164,6 +2164,7 @@ int btrfs_search_old_slot(struct btrfs_root *root, =
-const struct btrfs_key *key,
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 4dc6484ff229..16052903fa82 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2107,13 +2107,13 @@ ssize_t btrfs_do_write_iter(struct kiocb *iocb, s=
+truct iov_iter *from,
+ 	if (BTRFS_FS_ERROR(inode->root->fs_info))
+ 		return -EROFS;
 =20
- 	lowest_level =3D p->lowest_level;
- 	WARN_ON(p->nodes[0] !=3D NULL);
-+	ASSERT(!p->nowait);
+-	if ((iocb->ki_flags & IOCB_NOWAIT) && !(iocb->ki_flags & IOCB_DIRECT))
+-		return -EOPNOTSUPP;
+-
+ 	if (sync)
+ 		atomic_inc(&inode->sync_writers);
 =20
- 	if (p->search_commit_root) {
- 		BUG_ON(time_seq);
-@@ -4465,6 +4466,7 @@ int btrfs_search_forward(struct btrfs_root *root, s=
-truct btrfs_key *min_key,
- 	int ret =3D 1;
- 	int keep_locks =3D path->keep_locks;
-=20
-+	ASSERT(!path->nowait);
- 	path->keep_locks =3D 1;
- again:
- 	cur =3D btrfs_read_lock_root_node(root);
-@@ -4645,6 +4647,8 @@ int btrfs_next_old_leaf(struct btrfs_root *root, st=
-ruct btrfs_path *path,
- 	int ret;
- 	int i;
-=20
-+	ASSERT(!path->nowait);
+ 	if (encoded) {
++		if (iocb->ki_flags & IOCB_NOWAIT)
++			return -EOPNOTSUPP;
 +
- 	nritems =3D btrfs_header_nritems(path->nodes[0]);
- 	if (nritems =3D=3D 0)
- 		return 1;
+ 		num_written =3D btrfs_encoded_write(iocb, from, encoded);
+ 		num_sync =3D encoded->len;
+ 	} else if (iocb->ki_flags & IOCB_DIRECT) {
+@@ -3755,7 +3755,7 @@ static int btrfs_file_open(struct inode *inode, str=
+uct file *filp)
+ {
+ 	int ret;
+=20
+-	filp->f_mode |=3D FMODE_NOWAIT | FMODE_BUF_RASYNC;
++	filp->f_mode |=3D FMODE_NOWAIT | FMODE_BUF_RASYNC | FMODE_BUF_WASYNC;
+=20
+ 	ret =3D fsverity_file_open(inode, filp);
+ 	if (ret)
 --=20
 2.30.2
 
