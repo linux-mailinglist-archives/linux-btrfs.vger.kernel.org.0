@@ -2,58 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2035B8B49
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 17:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022855B8B4A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 17:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbiINPG6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Sep 2022 11:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
+        id S229550AbiINPG7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Sep 2022 11:06:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbiINPGr (ORCPT
+        with ESMTP id S230087AbiINPGr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 14 Sep 2022 11:06:47 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B577756A
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:44 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id u28so8133438qku.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:44 -0700 (PDT)
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B1776460
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:45 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id b23so6460794qtr.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date;
-        bh=rrY7fTDNuzgo2WskhU4SLkRpff8eSQTLzW3ZCc/6XyQ=;
-        b=3L05OCx87ZjZ38rtiQHZU3/fQOPsryFE+v1mzHfKQbR2PxUAGfgqcImqgMnVAiul0W
-         A7yVmWGKabKro24QiMJMfM02Zjr6U3Gzq+jFnKawXrPAaGpQ5JwnzQbBE/f7oIyJYNXT
-         Y1VO9AfytVfCyARsIOcxkaNu/BGcxEatHiM//c9wU/EVmtB8K642PNrzT7diTFR607Ty
-         m7FIpeMO0uU33OPkJKTqqoqRbP1PswcYPpkjNKle9bAh/I56+wlRyxzmv3Js9XrWPavY
-         H2gdQaODok86xEL/5vAt+T01QH1vZpNYRA490R0X/oE9MV+bTAoQ9tmRHQwszv+nJRCy
-         y1Jw==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date;
+        bh=Ph4kscEWnOgHmomTRnjQCm6MKqqe5qRplQf1YaR6vPA=;
+        b=pbOmxjuceCGcRy5w2QDU6VH2T2OYecIrG0ADYbcsKusg0dmvYvWBgvc2CsINcoS6Vr
+         MOZ1lIeNt3TpcUZdTQcK1wbW/ErMeBI0NObvbdnw4o+ifsxkkyZt/XezgdmFu2EizVpC
+         tA0weDt2AATGOrBFNKgRZ6+qdDNo+tQ53eW0LuAh5Y8sPnhlRV3+7APecJcpgnRXOp07
+         5FUOv+p6Xl1s8ujLLITqYiWqk0GCicW5cDCIa1czBlohqSzU09R62Pmjdb+/1Hx0DW16
+         HvezKVvLSse3TaPDmqSEigj8Spy4a58FOeaIk0lA658LQKju4MQZWm2bKxTq+ouEtEz5
+         6upQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date;
-        bh=rrY7fTDNuzgo2WskhU4SLkRpff8eSQTLzW3ZCc/6XyQ=;
-        b=KMIm5zoPOydReRQrJ+kHwGiJsQtXa9MrUEPkhetk0PhJRu8AZQWeKNXEx6Q2md3EAL
-         StLIYkFwUbzx/kV+GRceD0IUupFtXAiev0DJaFr3iAm4JZx/mCnQnnzPVID6CtL/I7tE
-         +IqrAeSurI+k0xYs+TBSqDAMc+uZqd4CnrQTLiVqfyj6mMskZVvQFg9JFPy8RzdbDAom
-         O9sugydYMT6odD+KcH/FAnBjuDdRSnzFQxtsVs7xRj0PWsLtEyGIHNf89deGEuCcSwmQ
-         LCu5t0dm1AexH1fAOH5RzViZve38IGogjEmgi1GEh+tbbopf3nmB/Lj5xv0MRAIJkGco
-         Lcag==
-X-Gm-Message-State: ACgBeo3SpW6Co6lrz9V7rHpbHJ8ywWp+YmoM43FNdl7tRAeEXXjLToCY
-        whBUtFc/da2VjTRWNAfZlzdaNOPUWnZKFw==
-X-Google-Smtp-Source: AA6agR4OOGgXk3YZTFjPg9EeiLsKNZDfJrqNIRo3aiJA12T4v6fIRxepIByKLNcc/2q36cytKe9IQA==
-X-Received: by 2002:a05:620a:c51:b0:6bb:11fc:7c58 with SMTP id u17-20020a05620a0c5100b006bb11fc7c58mr25594543qki.274.1663168003064;
-        Wed, 14 Sep 2022 08:06:43 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=Ph4kscEWnOgHmomTRnjQCm6MKqqe5qRplQf1YaR6vPA=;
+        b=1FrDZ2Ws24lvx9YutTPahRh7MU3UAqGKx1qrW7QKG4DG90QcUiOvImpWexCICxj7YZ
+         13oliFkEidpGtqTpKOpBbiOTFCo7WlvO23gNF3/HpxBbDdUSu6Hu/yrci4opfAZLVftH
+         AqQqirzvbQ8a0LtCvXVr229LHUVIdD5SaOtxET9RqRMvD6WGKbSZoHCSdg3raQRDkTW6
+         ThBw/mvGwZ5m7c+ABTNS2R0hHrXrhN7cbLHkImAUm+2oOA7Egi0MihEVYIxCS5NHq7yI
+         KEj6UmvdFFuADfKbO5UHQBOdJkuJSTnKwpI1KB0D3XBWFKY8etszbB6mvy/BYfI4iQV9
+         s8Rw==
+X-Gm-Message-State: ACgBeo3UkAf77voXpknWoWWm0TjdPabcSUmIT+aqc+mOo0JRiVxvlphK
+        mtHYPPF7iGG9v3ObIEZSaaHw0NfVgYk56g==
+X-Google-Smtp-Source: AA6agR7XZylg9NCHXxzgDFrCYdI/7rQX5BIWe8I0QaeeY4sn+jOdqQ2gDBhQbAY5sS++n+xGBuHo4A==
+X-Received: by 2002:a05:622a:492:b0:35c:be5e:74a1 with SMTP id p18-20020a05622a049200b0035cbe5e74a1mr1459263qtx.677.1663168004521;
+        Wed, 14 Sep 2022 08:06:44 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 62-20020a370741000000b006b9ab3364ffsm1856369qkh.11.2022.09.14.08.06.42
+        by smtp.gmail.com with ESMTPSA id w22-20020a05620a0e9600b006ce76811a07sm1890768qkm.75.2022.09.14.08.06.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Sep 2022 08:06:42 -0700 (PDT)
+        Wed, 14 Sep 2022 08:06:44 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 00/17] btrfs: initial ctree.h cleanups, simple stuff
-Date:   Wed, 14 Sep 2022 11:06:24 -0400
-Message-Id: <cover.1663167823.git.josef@toxicpanda.com>
+Subject: [PATCH 01/17] btrfs: remove set/clear_pending_info helpers
+Date:   Wed, 14 Sep 2022 11:06:25 -0400
+Message-Id: <1925067c136aec3e1a01af78dbee66b6b0ebcc26.1663167823.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1663167823.git.josef@toxicpanda.com>
+References: <cover.1663167823.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -65,62 +68,52 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+The last users of these helpers were removed in
 
-This is the first part in what will probably be very many parts in my work to
-cleanup ctree.h.  These are the smaller changes, mostly removing code that's not
-used anymore, moving some stuff that's local to C files that don't need to be in
-the header at all, and moving the rest of the on-disk definition stuff to
-btrfs_tree.h.  There's a lot of patche here, but they're all relatively small,
-the largest being the patch to move the on-disk definitions to btrfs_tree.h,
-which is not very large compared to patches in the next several series.  This
-has been built and tested, it's relatively low risk.  Thanks,
+5297199a8bca ("btrfs: remove inode number cache feature")
 
-Josef
+so delete these helpers.
 
-Josef Bacik (17):
-  btrfs: remove set/clear_pending_info helpers
-  btrfs: remove BTRFS_TOTAL_BYTES_PINNED_BATCH
-  btrfs: remove BTRFS_IOPRIO_READA
-  btrfs: move btrfs on disk definitions out of ctree.h
-  btrfs: move btrfs_get_block_group helper out of disk-io.h
-  btrfs: move maximum limits to btrfs_tree.h
-  btrfs: move BTRFS_MAX_MIRRORS into scrub.c
-  btrfs: move discard stat defs to free-space-cache.h
-  btrfs: move btrfs_chunk_item_size out of ctree.h
-  btrfs: move btrfs_should_fragment_free_space into block-group.c
-  btrfs: move flush related definitions to space-info.h
-  btrfs: move btrfs_print_data_csum_error into inode.c
-  btrfs: move trans_handle_cachep out of ctree.h
-  btrfs: move btrfs_path_cachep out of ctree.h
-  btrfs: move free space cachep's out of ctree.h
-  btrfs: move btrfs_next_old_item into ctree.c
-  btrfs: move the btrfs_verity_descriptor_item defs up in ctree.h
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/ctree.h | 24 ------------------------
+ 1 file changed, 24 deletions(-)
 
- fs/btrfs/block-group.c          |  12 +
- fs/btrfs/block-group.h          |  11 +-
- fs/btrfs/btrfs_inode.h          |  26 ---
- fs/btrfs/ctree.c                |  26 +++
- fs/btrfs/ctree.h                | 388 ++------------------------------
- fs/btrfs/delayed-inode.c        |   1 +
- fs/btrfs/disk-io.c              |   7 +
- fs/btrfs/disk-io.h              |   8 +-
- fs/btrfs/free-space-cache.c     |  28 +++
- fs/btrfs/free-space-cache.h     |  11 +
- fs/btrfs/inode-item.c           |   1 +
- fs/btrfs/inode.c                |  57 ++---
- fs/btrfs/props.c                |   1 +
- fs/btrfs/relocation.c           |   1 +
- fs/btrfs/scrub.c                |  11 +
- fs/btrfs/space-info.h           |  59 +++++
- fs/btrfs/super.c                |  24 +-
- fs/btrfs/transaction.c          |  17 ++
- fs/btrfs/transaction.h          |   2 +
- fs/btrfs/volumes.c              |   7 +
- fs/btrfs/volumes.h              |   2 +-
- include/uapi/linux/btrfs_tree.h | 226 +++++++++++++++++++
- 22 files changed, 476 insertions(+), 450 deletions(-)
-
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 8b7b7a212da0..0003ba925d93 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1644,30 +1644,6 @@ do {									\
+ #define btrfs_clear_pending(info, opt)	\
+ 	clear_bit(BTRFS_PENDING_##opt, &(info)->pending_changes)
+ 
+-/*
+- * Helpers for setting pending mount option changes.
+- *
+- * Expects corresponding macros
+- * BTRFS_PENDING_SET_ and CLEAR_ + short mount option name
+- */
+-#define btrfs_set_pending_and_info(info, opt, fmt, args...)            \
+-do {                                                                   \
+-       if (!btrfs_raw_test_opt((info)->mount_opt, opt)) {              \
+-               btrfs_info((info), fmt, ##args);                        \
+-               btrfs_set_pending((info), SET_##opt);                   \
+-               btrfs_clear_pending((info), CLEAR_##opt);               \
+-       }                                                               \
+-} while(0)
+-
+-#define btrfs_clear_pending_and_info(info, opt, fmt, args...)          \
+-do {                                                                   \
+-       if (btrfs_raw_test_opt((info)->mount_opt, opt)) {               \
+-               btrfs_info((info), fmt, ##args);                        \
+-               btrfs_set_pending((info), CLEAR_##opt);                 \
+-               btrfs_clear_pending((info), SET_##opt);                 \
+-       }                                                               \
+-} while(0)
+-
+ /*
+  * Inode flags
+  */
 -- 
 2.26.3
 
