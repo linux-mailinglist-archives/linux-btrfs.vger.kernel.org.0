@@ -2,70 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 134FC5B82E8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 10:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A985B875C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 13:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbiINI2s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Sep 2022 04:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54622 "EHLO
+        id S229869AbiINLlq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Sep 2022 07:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbiINI2r (ORCPT
+        with ESMTP id S229670AbiINLlp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Sep 2022 04:28:47 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699376555F
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 01:28:45 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id j13so2582271ljh.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 01:28:45 -0700 (PDT)
+        Wed, 14 Sep 2022 07:41:45 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9138E7B2BF
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 04:41:43 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id n40-20020a05600c3ba800b003b49aefc35fso2074318wms.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 04:41:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=YvDhMlTShC8ws7tffJOmzuTsobim/Yph/Xv8npXkKII=;
-        b=DkdoCre1ANybR/sysnCRY362lrKRv+KQk6OlQnvFt66CDc7KYeevzl1Dgtv1ApbrQP
-         7xxzxEJm54f1bVsfZPesjc9XaLPVKWTImcbvWPUaImUZcUrRtut5fbkeoI6HSi7gg9e/
-         JlMyZ4LF6n4zp84m0q/n0gH/SdJRX8L8Bt2wIb9H1td/B//rVbMEgnIG6prHsVukD/34
-         J7nheOVCVY02lS06elDiw4lo2L2Oj3/p+d2pOfubQgpwp2RfIGis5YnTiUO7ORH8Bz5h
-         raTBzsOPaZqVeUxf+o0OjuxchUPJPB5u8cC8XCChNaa/nNTrODPzPU6IlwYVIG5d5jcI
-         vAIg==
+        bh=UQ6ki4yX5kQtVY1QftaIadGFPpTJFOi0It8Nz6sT1sA=;
+        b=q/oyayVc8gtEqunNB1xJ3/FfxrAeboEzVVJSS32eCQHH7YkWiqGgc4DvqOkB0BmKB4
+         EGBb59YfleXrHU3uhnARoWo1nkO+5gVkRg434+fP58rkbQ+KyzSzFEdZMFr+gIQUNJxq
+         vNaGHKI6gzmX6l03osdo1ByMaXvFnCpGisqVbAa62a/tMQq7SKC2J88arzMPMDjYF36K
+         5xDreZXRw+mz8OAlu6KXnu1yjwXtnaapCWAG0NQxDQmrAHbEmFBM9EVDoD7eLf/StPtW
+         PVPtrMfMkfxUHkfJjD5j7HiSoRmkXQ3yJjff0qqwea5vgyNr/Dz+Fg3Y5dDOdpUikG5Q
+         wIcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=YvDhMlTShC8ws7tffJOmzuTsobim/Yph/Xv8npXkKII=;
-        b=elk3Ic2WkjBTHjzFG7ed5w6wkS8MFjWQRNBIapB0DcLFV8ZA3l/I0ZAmkJ+96POu3f
-         evpD4yTpz7b1Tjc2H466BjqhA6pz5TMAYi5zHLSybyXGEdRo1cY/LMkfh9ECkES6Dg8r
-         GeAWf7Vjc2lAMFlSf7ShDEUB2MXDe4wosmSJQX6gxElmoTqJNDdwcbBSiOT6c20n9BLG
-         Tbxm1CgIFNy9FWc71SpKGNv7MVzZCmNf7ZkNSaWFgJ6pzfyTL0J/hqGvKKhQ3MPGhaYZ
-         ds5J8Ojxmms/T/mWzep6NDvjn/+CJsODE+wGgTrPAO8VThQd/Q/+r5bAfUVnRy5zCmod
-         15aA==
-X-Gm-Message-State: ACgBeo1VbJwOvy2wgBZHdbhyZ7nyPv/3lYURwvtZU+XsHSSA9clMEUxx
-        Rb6R5Kz9jhnOlwwdte8wheensIM98jA=
-X-Google-Smtp-Source: AA6agR6pPhMjcENcmrTFLkAMMI3lafIm+mVMmGlHeKUFOm4hngMpKPiUG3dZ0AYfM5+AIcKyCkb1EA==
-X-Received: by 2002:a05:651c:88b:b0:261:ba8e:717a with SMTP id d11-20020a05651c088b00b00261ba8e717amr10186975ljq.401.1663144123677;
-        Wed, 14 Sep 2022 01:28:43 -0700 (PDT)
-Received: from localhost (87-49-146-244-mobile.dk.customer.tdc.net. [87.49.146.244])
-        by smtp.gmail.com with ESMTPSA id c37-20020a05651223a500b0048b3926351bsm2275169lfv.56.2022.09.14.01.28.41
+        bh=UQ6ki4yX5kQtVY1QftaIadGFPpTJFOi0It8Nz6sT1sA=;
+        b=E7EyhLcAnCmnHpByz9yV3dPDcOWDmpLUfPsegCC303OkcgaA6X63jqANlRgxREhTel
+         771x/jGVnl52g6iYSWDySKPYgVF+i63UQ0XO69PfQp8RqBaV3a3UcsRb+fZNFZOR1heI
+         llSBwxIw7513RpEEI+9/5BEnia0cNWtE8k0DahSfD5p55dkE0IngmqN9K8Ss4m0sQIYw
+         XQU7jEkWIj3xeajgs4v60845k2j1UFgGCX21ylyxbhxcR5I2QMIByE9KdTNODVepJOct
+         Dhd97Y4MZs7quSin5C7d+iv8TWg85BQoAgr/Vpk1TfAaRsRFFQcajLQvuHGVZf51xu9Q
+         iGtg==
+X-Gm-Message-State: ACgBeo3JPzH4l4ZY+BF21kDlPJOAmkbf8qrPJVZ0hQMA4JZ6NAjdVrFi
+        3J/53wHG+o3tZ9X8XiWr59sIYw==
+X-Google-Smtp-Source: AA6agR5iucBxgT+lWuCgOcqjgv1Qz0MJiMgw6JKNQ8nsLCUf51/5QiLnwph6LP3BZLcxpH7lhwgthg==
+X-Received: by 2002:a7b:c457:0:b0:3b4:689d:b408 with SMTP id l23-20020a7bc457000000b003b4689db408mr2835029wmi.22.1663155702145;
+        Wed, 14 Sep 2022 04:41:42 -0700 (PDT)
+Received: from localhost ([185.122.133.20])
+        by smtp.gmail.com with ESMTPSA id e17-20020a5d5951000000b00228dc37ce2asm13229870wri.57.2022.09.14.04.41.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Sep 2022 01:28:42 -0700 (PDT)
-Date:   Wed, 14 Sep 2022 10:28:40 +0200
-From:   Pankaj Raghav <pankydev8@gmail.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     dsterba@suse.com, johannes.thumshirn@wdc.com, naohiro.aota@wdc.com,
-        linux-btrfs@vger.kernel.org, damien.lemoal@wdc.com,
-        p.raghav@samsung.com
-Subject: Re: [PATCH 1/2] btrfs-progs: mkfs: fix error message for minimum
- zoned filesystem size
-Message-ID: <20220914082840.ix2x35fdvrlycggw@quentin>
-References: <20220909214810.761928-1-mcgrof@kernel.org>
- <20220909214810.761928-2-mcgrof@kernel.org>
+        Wed, 14 Sep 2022 04:41:41 -0700 (PDT)
+Date:   Wed, 14 Sep 2022 12:41:40 +0100
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/5] mm: add PSI accounting around ->read_folio and
+ ->readahead calls
+Message-ID: <YyG99D196Hj0/GgZ@cmpxchg.org>
+References: <20220910065058.3303831-1-hch@lst.de>
+ <20220910065058.3303831-2-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220909214810.761928-2-mcgrof@kernel.org>
+In-Reply-To: <20220910065058.3303831-2-hch@lst.de>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,30 +77,26 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> With this now the user sees:
+On Sat, Sep 10, 2022 at 08:50:54AM +0200, Christoph Hellwig wrote:
+> PSI tries to account for the cost of bringing back in pages discarded by
+> the MM LRU management.  Currently the prime place for that is hooked into
+> the bio submission path, which is a rather bad place:
 > 
-> ERROR: Size 512.00MiB is too small to make a usable filesystem.
-> ERROR: The minimum size for a zoned btrfs filesystem requires
-> ERROR: 5 dedicated zones. This device's zone size is 128.00MiB so
-> ERROR: the minimum size for a btrfs filesystem for this zoned
-> ERROR: storage device (/dev/nvme5n1) is 640.00MiB
+>  - it does not actually account I/O for non-block file systems, of which
+>    we have many
+>  - it adds overhead and a layering violation to the block layer
 > 
-> The following fstests fail because of this issue, and at first glance
-> it was not clear why:
+> Add the accounting into the two places in the core MM code that read
+> pages into an address space by calling into ->read_folio and ->readahead
+> so that the entire file system operations are covered, to broaden
+> the coverage and allow removing the accounting in the block layer going
+> forward.
 > 
->   * brfs/132
->   * generic/226
->   * generic/416
->   * generic/650
+> As psi_memstall_enter can deal with nested calls this will not lead to
+> double accounting even while the bio annotations are still present.
 > 
-> Now it's clear what the issue is and what needs to get done to
-> fix those respective tests. But note, that if working on a sequential
-> zone then parallel writes are expected to fail, so tests which require
-> that and use parallel writes must also check for sequential zones
-> and bail if one is to be used. Each of these tests needs to be adapted
-> a bit for zoned devices to work properly.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
-Looks good,
-Reviewed-by: Pankaj Raghav <p.raghav@samsung.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+This is much cleaner. With the fixlet Willy pointed out:
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
