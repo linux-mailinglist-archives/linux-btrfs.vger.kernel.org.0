@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C70D5B90DE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 01:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB455B90D7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 01:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbiINXID (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Sep 2022 19:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
+        id S229832AbiINXIC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Sep 2022 19:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbiINXIA (ORCPT
+        with ESMTP id S229812AbiINXIB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Sep 2022 19:08:00 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A38F88DF1
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 16:07:56 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id q11so9016252qkc.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 16:07:56 -0700 (PDT)
+        Wed, 14 Sep 2022 19:08:01 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E64F88DF6
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 16:07:58 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id w2so8747139qtv.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 16:07:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=4eGczGLZTkmdb3LjA+84lArlPiAPZprT358D2WG+w18=;
-        b=ftFp/I76kIXjwxj2Dtg+oZ6rpPWBaedqdB6uqd3I5yMVPxEM1XN4I7M15k5k9+T+o9
-         j9sONFSmKGP5NxFddRqY+9s4tZDNafGcmrXIxyWtJokHgAGdh4twxZ03ZSmCLePUIK3n
-         6IFgwwNaq26zZkHGjnEnJW2wsIK+kTD1a9pGPG+3HpWSes7NkeTU3OaADy+O7rcFaLOe
-         hJ9eFZQw2mUdflDrGVPS6dk45LHQfrgYpe7Gh2naEk2mLaRF4yeWe0rtkGNvroAMNOOR
-         civJNp9LEJl479XgmcRvgdDiAYqMJPv/+pXCob8iZM5/hD1swPY0j82H3wOmoGLS2rSi
-         20mg==
+        bh=6JrsQeBhWMZTS5cFS5BZe+GUQzsKrqLxavip0LbAT3E=;
+        b=ujrQfnmRMUKH7nGqSjdS+QUXsQxGibTyRW+cuTBGLZn2+QVUS8wpWS5yinCxrEuGKH
+         Ybp5LRdsSpMVyg2FLIvSQnojC1uVJpSRgRVXIKJordKj8rlzoAWCbi9oQlMdRfhGtxMM
+         kXKuxg+6qHkF6qNIaoC64usuGKYD63RkLdVqXLmVanazmx8989KtO7sw7yjjmF6rqLGa
+         6SrwaI/hVF5EdSvG0Ym+vIEDpJ/f6UkJwb/Uk5ZCk3t2CkJV9myOj78JLOkh1nZ7Ibnk
+         sVWjWNqcnYC2TgaGyNY5BgjCZzMVX6/vbGAhIaSEPXnQYWpXaKlWb/WfHBqk15CMD6in
+         RwOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=4eGczGLZTkmdb3LjA+84lArlPiAPZprT358D2WG+w18=;
-        b=EmlYPCbAuw/yJzBeV2q0S7WsbMR2YY1RNuc+on52nHyRkl1lq9WH82khn/vAGI8/Gx
-         fcyHx6v+3FoeomSapacUD/opoltjZ47pg/d/6+lp2JO7tkOFNKKE2lvD5LP1jibpxy2a
-         hPwNuRO6ez5rkfALsMgKB4MqtyS+wR7r6520EOK90jD5/Qfpdx9rtaRoZ9XgFsu2e0n6
-         W5zK3GnT/EC6Po/9qc44GYMcF3DocFnwWZ3KSK0ivQBkBCK7Z3SGqWUhrO09GBXWFq1P
-         7Bs5MftPjP6ssSEZbUlcN4b7SBIba52Yi8nlxgjqqmJM2q1bZskUef1bz0BajaGuUQF5
-         5DRw==
-X-Gm-Message-State: ACgBeo2mhGBTZH8a5qqnW1IRZPUlLO6zArhh0Y9Q0yb8Fnb0RwFRN1Sb
-        OBzQPGWXn2dTHMVeHxx/wLT4iajxWE74Ug==
-X-Google-Smtp-Source: AA6agR7AuGcq0mIF/v1GNjOcaYgtSogfvoL/rVHMPTrD0LTDIGFUm0bm2rHap3JPLwh3NyysPmvEZg==
-X-Received: by 2002:a05:620a:43a2:b0:6c7:f2f5:4a1c with SMTP id a34-20020a05620a43a200b006c7f2f54a1cmr28562063qkp.439.1663196875622;
-        Wed, 14 Sep 2022 16:07:55 -0700 (PDT)
+        bh=6JrsQeBhWMZTS5cFS5BZe+GUQzsKrqLxavip0LbAT3E=;
+        b=lIoNFGiyVEw4sHI3rJoeoN2ylrZYsLaJHtCSH8wdTPMJLA2AaSvgHs9MlVwi09nr2m
+         QXD68MMLFx018i5QedpJgwq8cLsJ8q/pENrPwkzsux9IEWQQice3tp9uRuPlYKuPx4+n
+         kbBKxSY2hFChdFT22HXN225xM8hYds/k/UWvyUr1X2xOtXk6eDigvXj/MfPpia0TtETb
+         jjombz5ASqf/BGQEm0Yu9TRZBAdo2jCi4okhRXRHUx4ezSLQXpE5YxZ0kSQGDxitfHrD
+         8c9+iNIXphRaUKb/huO7w8E+eFsGIDW2A9bKmbyOcIWwRItudzfq4Y8F+4HoHh7Q870I
+         Wjrg==
+X-Gm-Message-State: ACgBeo0ogRPBjGBzOyeUOLfGkWCP/SkrU0+A4uDxch2wMjIbzt2UIEha
+        nM7WhITHmbsOntNs09PXH3lzvOKaADo1bA==
+X-Google-Smtp-Source: AA6agR4LQKpNU9I5cVQswXdHlZTbz+CEAdk9B3XLWO4uhLHfEmHU0DNNB4eK9xEWiVeMzXUyoqslGQ==
+X-Received: by 2002:ac8:5ac7:0:b0:35b:b658:4b6c with SMTP id d7-20020ac85ac7000000b0035bb6584b6cmr13969978qtd.207.1663196876940;
+        Wed, 14 Sep 2022 16:07:56 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id m12-20020ac866cc000000b0035bbc29b3c9sm2414815qtp.60.2022.09.14.16.07.55
+        by smtp.gmail.com with ESMTPSA id fw8-20020a05622a4a8800b00338ae1f5421sm2425078qtb.0.2022.09.14.16.07.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Sep 2022 16:07:55 -0700 (PDT)
+        Wed, 14 Sep 2022 16:07:56 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 03/10] btrfs: move btrfs_can_zone_reset into extent-tree.c
-Date:   Wed, 14 Sep 2022 19:07:43 -0400
-Message-Id: <ee8a825f6de91a3b8ee7d4594cc62e8c4e71057c.1663196746.git.josef@toxicpanda.com>
+Subject: [PATCH 04/10] btrfs: move btrfs_check_super_location into scrub.c
+Date:   Wed, 14 Sep 2022 19:07:44 -0400
+Message-Id: <32978def2ae6a480ad5734ce4d1c5661db0206c0.1663196746.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1663196746.git.josef@toxicpanda.com>
 References: <cover.1663196746.git.josef@toxicpanda.com>
@@ -68,62 +68,50 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This helper is only used in extent-tree.c to decide if we need to zone
-reset for a discard.  Move it out of zoned.h locally to extent-tree.c.
+This helper is only used in scrub.c, move it out of zoned.h locally to
+scrub.c to avoid using code that isn't defined in zoned.h.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-tree.c | 15 +++++++++++++++
- fs/btrfs/zoned.h       | 15 ---------------
- 2 files changed, 15 insertions(+), 15 deletions(-)
+ fs/btrfs/scrub.c | 9 +++++++++
+ fs/btrfs/zoned.h | 9 ---------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 7cf7844c9dba..0785c1491313 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1271,6 +1271,21 @@ static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index d5c23faceb8e..927431217131 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -4140,6 +4140,15 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
  	return ret;
  }
  
-+static inline bool btrfs_can_zone_reset(struct btrfs_device *device,
-+					u64 physical, u64 length)
++static inline bool btrfs_check_super_location(struct btrfs_device *device, u64 pos)
 +{
-+	u64 zone_size;
-+
-+	if (!btrfs_dev_is_sequential(device, physical))
-+		return false;
-+
-+	zone_size = device->zone_info->zone_size;
-+	if (!IS_ALIGNED(physical, zone_size) || !IS_ALIGNED(length, zone_size))
-+		return false;
-+
-+	return true;
++	/*
++	 * On a non-zoned device, any address is OK. On a zoned device,
++	 * non-SEQUENTIAL WRITE REQUIRED zones are capable.
++	 */
++	return device->zone_info == NULL || !btrfs_dev_is_sequential(device, pos);
 +}
 +
- static int do_discard_extent(struct btrfs_discard_stripe *stripe, u64 *bytes)
+ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
+ 					   struct btrfs_device *scrub_dev)
  {
- 	struct btrfs_device *dev = stripe->dev;
 diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index 20d7f35406d4..aabdd364e889 100644
+index aabdd364e889..0a1298afa049 100644
 --- a/fs/btrfs/zoned.h
 +++ b/fs/btrfs/zoned.h
-@@ -320,21 +320,6 @@ static inline bool btrfs_check_super_location(struct btrfs_device *device, u64 p
- 	return device->zone_info == NULL || !btrfs_dev_is_sequential(device, pos);
+@@ -311,15 +311,6 @@ static inline void btrfs_dev_clear_zone_empty(struct btrfs_device *device, u64 p
+ 	btrfs_dev_set_empty_zone_bit(device, pos, false);
  }
  
--static inline bool btrfs_can_zone_reset(struct btrfs_device *device,
--					u64 physical, u64 length)
+-static inline bool btrfs_check_super_location(struct btrfs_device *device, u64 pos)
 -{
--	u64 zone_size;
--
--	if (!btrfs_dev_is_sequential(device, physical))
--		return false;
--
--	zone_size = device->zone_info->zone_size;
--	if (!IS_ALIGNED(physical, zone_size) || !IS_ALIGNED(length, zone_size))
--		return false;
--
--	return true;
+-	/*
+-	 * On a non-zoned device, any address is OK. On a zoned device,
+-	 * non-SEQUENTIAL WRITE REQUIRED zones are capable.
+-	 */
+-	return device->zone_info == NULL || !btrfs_dev_is_sequential(device, pos);
 -}
 -
  static inline void btrfs_zoned_meta_io_lock(struct btrfs_fs_info *fs_info)
