@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D6A5B8B54
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 17:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7070D5B8B57
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 17:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbiINPHJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Sep 2022 11:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
+        id S230131AbiINPHK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Sep 2022 11:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbiINPG4 (ORCPT
+        with ESMTP id S230135AbiINPG5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Sep 2022 11:06:56 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F1276966
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:54 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id a20so8726838qtw.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:54 -0700 (PDT)
+        Wed, 14 Sep 2022 11:06:57 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8627677C
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:56 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id z18so11374418qts.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=hFAXnhRYrEK3GoxP0LVzN97K3kdl/elyCNFT+DHpGAw=;
-        b=ZsOEjCosT4slGZSYqN8gJbJZE1FXzYHcjWUqH+SzKIxiblUQhGNCPJIN+QGDtAICCe
-         JYUfw24ZBjCMO4uMXvgH75xhO20MHoqqcHuNadDUZgzdj8yyeyaukV9xiBFYkqw9v8cE
-         JJshYjF5+BP2BA+UGE1QfxGc0ZM9zTuBvQFB3IRZEplkjJNR6Kad/CoK1ciHhqJpwDat
-         ItLsTQ7PHLOpel0UfPlW0Yhq7rSzYhDVWc/4ZofaNxUnvmH2syvNKLhb/89yOzeE9jmN
-         dimuqjh1rtCklo5pp3PrrtIwYIqYFwm5MyjJ7a02ShFdfwPa/RlzSDGvAvzmcsLfIQr+
-         G4kg==
+        bh=5TCbmG9uld2V08UpcqmfC7D6SWwgupMLOva/r65mgSY=;
+        b=FmYSl14yMY/KqA0OOMVBd3V89i5mzH9S+Ti20zoVs3fI/UnqbPN3Ei5sHu4jA121eR
+         zZ1x9HKVph+ghlxED77dVnhT9sTZOWIW17rlTHvS1Ys5od31DUJjNUiIw0MP6vTmLnfg
+         quTEj4SLc8radLpsMIq5+mys80Uzc8Hb+hJCQabKGzbhf59OSnO/eKrQl6/j4ixt/UVD
+         7lI+kIk7g3Et+QI7Jn3hEyDs3p0/wrGDZByqqiVsl9elN8U+8tJqxkqj6km2YBFaETdp
+         3aJPq9mlVtEMaG61z/nmZ30Z4r0/s8tJaY9rf1+pGp1XPU3OfMw0dpFhSR0RTL1XqnVP
+         +NTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=hFAXnhRYrEK3GoxP0LVzN97K3kdl/elyCNFT+DHpGAw=;
-        b=n3T+LmQsZCaQNUJ3qR2KGb5svEWZ1AYvkjVIvfIZoUdLMYRcD0tBjcyhF1V2T8mmMh
-         dT/ol7elRmMb6k/7UUd5yZmKy1A+gfEMF8LpLB3Gjhr6ObBg6XQ2MsGmZcdJQbxe6izh
-         F7u6Jsd9ZSBIwcNeSeL2JgjhGIm0a/JUpUD0IXTzlJMvUi4skM0xjZoPmgkHPQroZsV6
-         XQquUga2x0wb+YNrmQuikelSvQ+Hf0ynR9qxMXUiZZtnmsatzfzNqClVFkYHZUH5mvp/
-         wbfROrpHCZHNhnOttMjTq3LmAz7HoKWzD8QcCTDO6Bot9A5O3ZpNGgqpRt4TDAV8Mxgb
-         I1ow==
-X-Gm-Message-State: ACgBeo3NtfyL8fV+k8bimvu272Ndakwn6JIcftL7/pVSYbMDKxebppbd
-        NxiifLkUCl/jt2817oO7ZqF0cStyU3QgkQ==
-X-Google-Smtp-Source: AA6agR5pdzJq3naYNy/Ij4QqkFdsFrUsqzeUVdG4otXZlQS2Djfn7fasKlDFpSZBn8jEBtB9PAxe2g==
-X-Received: by 2002:a05:622a:550:b0:344:90ec:50f5 with SMTP id m16-20020a05622a055000b0034490ec50f5mr34105055qtx.466.1663168013393;
-        Wed, 14 Sep 2022 08:06:53 -0700 (PDT)
+        bh=5TCbmG9uld2V08UpcqmfC7D6SWwgupMLOva/r65mgSY=;
+        b=Ef7RyWOa4+a5fBIOjdGf+TKF0LpsmNcnj8Q8FydDhd9GDlB5HwY6u/hu0MCpi/a5s5
+         ngsXfbBvF4+qscZKMY3egfkjAlwFQ/Nrzvn5Znt5F9oxqtcdTMFycRfZK6k0kUOd3IT7
+         WaVjeVHt5k/FOj/2enQfvA3nG1GKubuw6pLkP3URteSS13lWwe7RMqxqEgdbYq+9IjFx
+         MKyt4rjQw7ZbjpYSIwvBxCve1d07LZcLfYPW3/SMxldEc4POfrBzkRB4kAY4m7vywA9P
+         v+TfYX6oezkE55hHbSWwhRujxhWkGCf7XtKU2PKDrGoAbf1HJZlF3wmAUhgXjoOXkjUc
+         aUOw==
+X-Gm-Message-State: ACgBeo2sFcPBXlVCAzigk61UsVG5tqD2KrijC+weoHH4FSIN+EjT2L84
+        Hr/4dA6pJYV3levsJxcOhyH5fLyTtLbDMg==
+X-Google-Smtp-Source: AA6agR5QfvTwyo9ZSNJI1reE5UF7fjHPoy10asprc2hGvQhd2Ueqj/Xlh5nVpT+BIWhafas68SrckA==
+X-Received: by 2002:a05:622a:4c6:b0:343:71e9:d661 with SMTP id q6-20020a05622a04c600b0034371e9d661mr33577368qtx.626.1663168014925;
+        Wed, 14 Sep 2022 08:06:54 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id i10-20020a05620a404a00b006b98315c6fbsm2122146qko.1.2022.09.14.08.06.52
+        by smtp.gmail.com with ESMTPSA id i10-20020a05620a404a00b006b98315c6fbsm2122192qko.1.2022.09.14.08.06.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Sep 2022 08:06:52 -0700 (PDT)
+        Wed, 14 Sep 2022 08:06:54 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 07/17] btrfs: move BTRFS_MAX_MIRRORS into scrub.c
-Date:   Wed, 14 Sep 2022 11:06:31 -0400
-Message-Id: <37fa62e6907f1eff71e2c77b9dadb324a408d9a2.1663167823.git.josef@toxicpanda.com>
+Subject: [PATCH 08/17] btrfs: move discard stat defs to free-space-cache.h
+Date:   Wed, 14 Sep 2022 11:06:32 -0400
+Message-Id: <5e7f34e068513a3a82b3bc810bc92a0eb0254863.1663167823.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1663167823.git.josef@toxicpanda.com>
 References: <cover.1663167823.git.josef@toxicpanda.com>
@@ -68,59 +68,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is only used locally in scrub.c, move it out of ctree.h into
-scrub.c.
+These definitions are used for discard statistics, move them out of
+ctree.h and put them in free-space-cache.h.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h | 11 -----------
- fs/btrfs/scrub.c | 11 +++++++++++
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ fs/btrfs/ctree.h            | 9 ---------
+ fs/btrfs/free-space-cache.h | 9 +++++++++
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 5e6b025c0870..e1ec047deff6 100644
+index e1ec047deff6..2e6a947a48de 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -50,17 +50,6 @@ struct btrfs_ref;
- struct btrfs_bio;
- struct btrfs_ioctl_encoded_io_args;
+@@ -58,15 +58,6 @@ struct btrfs_ioctl_encoded_io_args;
+ 
+ #define BTRFS_MAX_EXTENT_SIZE SZ_128M
  
 -/*
-- * Maximum number of mirrors that can be available for all profiles counting
-- * the target device of dev-replace as one. During an active device replace
-- * procedure, the target device of the copy operation is a mirror for the
-- * filesystem data as well that can be used to read data in order to repair
-- * read errors on other disks.
-- *
-- * Current value is derived from RAID1C4 with 4 copies.
+- * Deltas are an effective way to populate global statistics.  Give macro names
+- * to make it clear what we're doing.  An example is discard_extents in
+- * btrfs_free_space_ctl.
 - */
--#define BTRFS_MAX_MIRRORS (4 + 1)
+-#define BTRFS_STAT_NR_ENTRIES	2
+-#define BTRFS_STAT_CURR		0
+-#define BTRFS_STAT_PREV		1
 -
- #define BTRFS_OLDEST_GENERATION	0ULL
- 
- #define BTRFS_EMPTY_DIR_SIZE 0
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 9b6a0adccc7b..35fca65f0f2a 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -56,6 +56,17 @@ struct scrub_ctx;
- 
- #define SCRUB_MAX_PAGES			(DIV_ROUND_UP(BTRFS_MAX_METADATA_BLOCKSIZE, PAGE_SIZE))
+ static inline unsigned long btrfs_chunk_item_size(int num_stripes)
+ {
+ 	BUG_ON(num_stripes == 0);
+diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
+index 6d419ba53e95..eaf30f6444dd 100644
+--- a/fs/btrfs/free-space-cache.h
++++ b/fs/btrfs/free-space-cache.h
+@@ -43,6 +43,15 @@ static inline bool btrfs_free_space_trimming_bitmap(
+ 	return (info->trim_state == BTRFS_TRIM_STATE_TRIMMING);
+ }
  
 +/*
-+ * Maximum number of mirrors that can be available for all profiles counting
-+ * the target device of dev-replace as one. During an active device replace
-+ * procedure, the target device of the copy operation is a mirror for the
-+ * filesystem data as well that can be used to read data in order to repair
-+ * read errors on other disks.
-+ *
-+ * Current value is derived from RAID1C4 with 4 copies.
++ * Deltas are an effective way to populate global statistics.  Give macro names
++ * to make it clear what we're doing.  An example is discard_extents in
++ * btrfs_free_space_ctl.
 + */
-+#define BTRFS_MAX_MIRRORS (4 + 1)
++#define BTRFS_STAT_NR_ENTRIES	2
++#define BTRFS_STAT_CURR		0
++#define BTRFS_STAT_PREV		1
 +
- struct scrub_recover {
- 	refcount_t		refs;
- 	struct btrfs_io_context	*bioc;
+ struct btrfs_free_space_ctl {
+ 	spinlock_t tree_lock;
+ 	struct rb_root free_space_offset;
 -- 
 2.26.3
 
