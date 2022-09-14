@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F09F85B90CF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 01:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931F45B90D1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 01:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbiINXFV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Sep 2022 19:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49192 "EHLO
+        id S229921AbiINXFX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Sep 2022 19:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbiINXFO (ORCPT
+        with ESMTP id S229907AbiINXFQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Sep 2022 19:05:14 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85925A819
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 16:05:13 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id s13so12907244qvq.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 16:05:13 -0700 (PDT)
+        Wed, 14 Sep 2022 19:05:16 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7601D5019C
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 16:05:15 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id y2so12377224qtv.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 16:05:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=YkYpwOZ3ipijD5TV2M7lqztPnS1fiH1tauIgb8biVpQ=;
-        b=j+w7r+/sncW5MKWNRf4ANBc5DEoB/wVZ0oy0pnavHNztMxI8o6a+pNdlXPAvMZ5+bw
-         VPugZ0jtaCw3i+dUzbTJFb9fRQmB5cziniXtD4+gX1rc2WZesjpS0exT8y2DLaGBWhY6
-         f2jzeYL8510EjBGogdcWzW97mZFOKBnEJ0HPhiunU9VbVtVM00hoA9pdLgMOSE/MV6gE
-         hro7nXzibC+ulAaHySxaJGYBe8UYPR361rHRtUBL5JxN9euRks69svizitzrv0BdpRoQ
-         6Uyn9LI1fUd6w4osyRsSeUm65DJnrsN2j8SWJWLXi/2CfTX8EHkDQrgq4L8SB7nzcm0H
-         dXAQ==
+        bh=obqgsjuuQyDcinAsjpgqKHw8Na5YVFKdP9e3Fam5DnM=;
+        b=hBuTHVDur/oRx33hLdraEytECL/JTN2bZhv9xhOuYJjbOsueTKp04ZkBe2Mh/XmI+W
+         HGX7PHBHk19aw84W/kcsaUf8yRLR1pO8TEErWdPVCJQy/lEfQuCeEZPwMQA6qFatFn8J
+         5tcarE49cQ5nPQHZJ7rWvifk9cBjBk3oDQDivRCHxrRVlCTJBgEhvLjb6FdwzHDKmKWM
+         f2BnZW/MXaPJNDpXrLINpnEgpmOQytrptAO6Og3aawdyQDjQ/XRM1xurisIOYEVp6vJH
+         8DA3BXBdoy7p50re/o6ua3/I4r2Oeo+XIqsU+GoL6Tc6TfxgKiilcU8q2aoKr9jNDjJP
+         OL5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=YkYpwOZ3ipijD5TV2M7lqztPnS1fiH1tauIgb8biVpQ=;
-        b=p/5B4K4Cy7bBAtnJkAsVpC07y8vFrV3EAeullxH3avhs/5dcFvQMWHdUASnIa3RcZM
-         IVffQMbWCKoyoR97HpLwbLzUnkFA01ORvOLa7hm3xANa+qTSGRtOLpoCPJo/qFJQVmz/
-         2qYpu7Dd99lxfV2aoSiO5THy2oGCjuK2nYz/6ycAI0N7t/q+U4ZQYT55JZIBR7z5H40s
-         /Ja7PT0axFwLUA/yhukCA3dCa0rXOZXQKGJzUOgYYpFkiRgCG/tx2WIGOok9ZIghSRxy
-         ZsS6Y0YuAE9JETJ2uCGeZlPOJ7xKpt/LMQ8eT3JSLLS50dRaHVcoJfjXYOVZoo9RA+PJ
-         dbGA==
-X-Gm-Message-State: ACgBeo0LzlpZXb2FY2ie29R5mT7yDkreJAEKHZ95eO/bJzMP41C2MKBC
-        0xOMgFpP+l9w84jxdhY9PbGsoDiC0Z4ckg==
-X-Google-Smtp-Source: AA6agR6J8ujVQXfZM/6t3KVP3GpS4BRxU9L2LLDMMBNlA5M8vfLckynlcJhsx63bTDSi/UxDSCSxSg==
-X-Received: by 2002:a05:6214:20e3:b0:4a7:618d:44d8 with SMTP id 3-20020a05621420e300b004a7618d44d8mr33820963qvk.47.1663196713028;
-        Wed, 14 Sep 2022 16:05:13 -0700 (PDT)
+        bh=obqgsjuuQyDcinAsjpgqKHw8Na5YVFKdP9e3Fam5DnM=;
+        b=7GDuJqF9eh/6A5NQMRQOGvuBoI9fJWpwIKafQXM+U8rNFp1fmmIUxPFsH4o99xMLo9
+         6wVteny2S6cFBScWhWHfi6NUTq0m2m3aW5+hDMPg0unkiGJYvkMSSRjf7D0vs1gaK+Ov
+         dbOmgmMn7wFuaNhpo4mj4si4L0HzxO1TgZNbh7TUo1c7zdpzJ7EdlVEVm6UuNJeM4/LO
+         8riFqDm5+z74DA8CY9oB8UB9/BbrUsN3Zow8GMHdRmcDqFLKQW/fRMtVLT940Ukn3GuU
+         qpFxmmfiEPwjzKrTqxTBPeQuvkgAd0kLKHs1XEn91nf4Fb6bsOUMJy6P6vl0mndbM96N
+         RrOw==
+X-Gm-Message-State: ACgBeo0fhnFy6cCHjUe5+OO58gaPPqjiDnKsBuIMdjqmqzWwDttmeohi
+        G6hMB2oK36LStMpgaDRk+lBp6slfP1ijkg==
+X-Google-Smtp-Source: AA6agR7VY46TZ24JV7/26Q2LtmiLkIb2Aa4gPPsXLgIHaMJO5QENLHObwNRsjC7u/vRbvy94ugeIsw==
+X-Received: by 2002:ac8:7d90:0:b0:35b:afd3:20aa with SMTP id c16-20020ac87d90000000b0035bafd320aamr17537694qtd.252.1663196714635;
+        Wed, 14 Sep 2022 16:05:14 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d21-20020ac86695000000b0035bbb0fe90bsm2360895qtp.47.2022.09.14.16.05.12
+        by smtp.gmail.com with ESMTPSA id h1-20020a05620a244100b006cbcdc6efedsm2846755qkn.41.2022.09.14.16.05.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Sep 2022 16:05:12 -0700 (PDT)
+        Wed, 14 Sep 2022 16:05:14 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 14/15] btrfs: use a runtime flag to indicate an inode is a free space inode
-Date:   Wed, 14 Sep 2022 19:04:50 -0400
-Message-Id: <d8e32fa383bfa555cf49c9b184c45699bdc84ea3.1663196541.git.josef@toxicpanda.com>
+Subject: [PATCH 15/15] btrfs: add struct declarations in dev-replace.h
+Date:   Wed, 14 Sep 2022 19:04:51 -0400
+Message-Id: <aea129f8e5420561d3f5fbeaa0de297b7122e815.1663196541.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1663196541.git.josef@toxicpanda.com>
 References: <cover.1663196541.git.josef@toxicpanda.com>
@@ -68,64 +68,32 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We always check the root of an inode as well as it's inode number to
-determine if it's a free space inode.  This is problematic as the helper
-is in a header file where it doesn't have the fs_info definition.  To
-avoid this and make the check a little cleaner simply add a flag to the
-runtime_flags to indicate that the inode is a free space inode, set that
-when we create the inode, and then change the helper to check for this
-flag.
+dev-replace.h just has function prototypes for device replace, however
+if you happen to include it in the wrong order you'll get compile errors
+because of different structures not being defined.  Since these are just
+pointer args to functions we can declare them at the top in order to
+reduce the pain of using the header.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/btrfs_inode.h | 10 +++-------
- fs/btrfs/inode.c       |  5 +++++
- 2 files changed, 8 insertions(+), 7 deletions(-)
+ fs/btrfs/dev-replace.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 44edc6a3db6b..530a0ebfab3f 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -65,6 +65,8 @@ enum {
- 	 * on the same file.
- 	 */
- 	BTRFS_INODE_VERITY_IN_PROGRESS,
-+	/* Set when this inode is a free space inode. */
-+	BTRFS_INODE_FREE_SPACE_INODE,
- };
+diff --git a/fs/btrfs/dev-replace.h b/fs/btrfs/dev-replace.h
+index 3911049a5f23..6084b313056a 100644
+--- a/fs/btrfs/dev-replace.h
++++ b/fs/btrfs/dev-replace.h
+@@ -7,6 +7,10 @@
+ #define BTRFS_DEV_REPLACE_H
  
- /* in memory btrfs inode */
-@@ -301,13 +303,7 @@ static inline void btrfs_i_size_write(struct btrfs_inode *inode, u64 size)
+ struct btrfs_ioctl_dev_replace_args;
++struct btrfs_fs_info;
++struct btrfs_trans_handle;
++struct btrfs_dev_replace;
++struct btrfs_block_group;
  
- static inline bool btrfs_is_free_space_inode(struct btrfs_inode *inode)
- {
--	struct btrfs_root *root = inode->root;
--
--	if (root == root->fs_info->tree_root &&
--	    btrfs_ino(inode) != BTRFS_BTREE_INODE_OBJECTID)
--		return true;
--
--	return false;
-+	return test_bit(BTRFS_INODE_FREE_SPACE_INODE, &inode->runtime_flags);
- }
- 
- static inline bool is_data_inode(struct inode *inode)
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 62dc3dcf835b..1f38d9b98132 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5731,6 +5731,11 @@ static int btrfs_init_locked_inode(struct inode *inode, void *p)
- 	BTRFS_I(inode)->location.offset = 0;
- 	BTRFS_I(inode)->root = btrfs_grab_root(args->root);
- 	BUG_ON(args->root && !BTRFS_I(inode)->root);
-+
-+	if (args->root && args->root == args->root->fs_info->tree_root &&
-+	    args->ino != BTRFS_BTREE_INODE_OBJECTID)
-+		set_bit(BTRFS_INODE_FREE_SPACE_INODE,
-+			&BTRFS_I(inode)->runtime_flags);
- 	return 0;
- }
- 
+ int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info);
+ int btrfs_run_dev_replace(struct btrfs_trans_handle *trans);
 -- 
 2.26.3
 
