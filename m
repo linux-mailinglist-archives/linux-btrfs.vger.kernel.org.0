@@ -2,119 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5015B8783
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 13:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34DB05B8892
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 14:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbiINLvX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Sep 2022 07:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
+        id S229626AbiINMry (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Sep 2022 08:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbiINLvW (ORCPT
+        with ESMTP id S230131AbiINMr1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Sep 2022 07:51:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4941377540;
-        Wed, 14 Sep 2022 04:51:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D859B61C1E;
-        Wed, 14 Sep 2022 11:51:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A191C433D7;
-        Wed, 14 Sep 2022 11:51:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663156280;
-        bh=X6kiqA3vAvyzSls3/AgVE2v/FEsxYi7tj84qKsyADRM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=uJa0v9qeHwb8WVGx+Pmyq1IzVgQKGgEg/HVaKyYqi96uBhi47IDhEKa1x4Ul1y0mH
-         /w90TOMFwH8kX9giXvz3W7flfTWbaM/Q/B5u1FqNrs4/7m5vC5BEULUm6DShkSly67
-         R4FDaE8yKtWgRjMSHxFLOtV0ClClIS3Za4N0HVNMlYGwsaCBuyHg+x7bZb6huOD/AZ
-         +tCl7Au0A3qvfkB7e2I85bZG1RfS02XFGZrPXuvukiTg61tOt/3PRMn8l3KuDmd0yW
-         6EJnF4409xTaQzTOH2UpI4g9rYBZ9RZnaoTzMRSsuBl8UEr5bjmRE/e9vXQhQoG0+U
-         8NgmKnbtCRvmw==
-Message-ID: <f8a41b55efd1c59bc63950e8c1b734626d970a90.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Date:   Wed, 14 Sep 2022 07:51:16 -0400
-In-Reply-To: <166311144203.20483.1888757883086697314@noble.neil.brown.name>
-References: <91e31d20d66d6f47fe12c80c34b1cffdfc202b6a.camel@hammerspace.com>
-        , <166268467103.30452.1687952324107257676@noble.neil.brown.name>
-        , <166268566751.30452.13562507405746100242@noble.neil.brown.name>
-        , <29a6c2e78284e7947ddedf71e5cb9436c9330910.camel@hammerspace.com>
-        , <8d638cb3c63b0d2da8679b5288d1622fdb387f83.camel@hammerspace.com>
-        , <166270570118.30452.16939807179630112340@noble.neil.brown.name>
-        , <33d058be862ccc0ccaf959f2841a7e506e51fd1f.camel@kernel.org>
-        , <166285038617.30452.11636397081493278357@noble.neil.brown.name>
-        , <2e34a7d4e1a3474d80ee0402ed3bc0f18792443a.camel@kernel.org>
-        , <166302538820.30452.7783524836504548113@noble.neil.brown.name>
-        , <20220913011518.GE3600936@dread.disaster.area>
-        , <b67fe8b26977dc1213deb5ec815a53a26d31fbc0.camel@kernel.org>
-         <166311144203.20483.1888757883086697314@noble.neil.brown.name>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        Wed, 14 Sep 2022 08:47:27 -0400
+Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1136279EEA;
+        Wed, 14 Sep 2022 05:47:22 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VPogkmb_1663159636;
+Received: from B-P7TQMD6M-0146.lan(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VPogkmb_1663159636)
+          by smtp.aliyun-inc.com;
+          Wed, 14 Sep 2022 20:47:18 +0800
+Date:   Wed, 14 Sep 2022 20:47:16 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-block@vger.kernel.org, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 4/5] erofs: add manual PSI accounting for the compressed
+ address space
+Message-ID: <YyHNVG5tHFt7E5ZY@B-P7TQMD6M-0146.lan>
+Mail-Followup-To: Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Josef Bacik <josef@toxicpanda.com>, linux-block@vger.kernel.org,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-btrfs@vger.kernel.org
+References: <20220910065058.3303831-1-hch@lst.de>
+ <20220910065058.3303831-5-hch@lst.de>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220910065058.3303831-5-hch@lst.de>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 2022-09-14 at 09:24 +1000, NeilBrown wrote:
-> On Wed, 14 Sep 2022, Jeff Layton wrote:
-> >=20
-> > At that point, bumping i_version both before and after makes a bit more
-> > sense, since it better ensures that a change will be noticed, whether
-> > the related read op comes before or after the statx.
->=20
-> How does bumping it before make any sense at all?  Maybe it wouldn't
-> hurt much, but how does it help anyone at all?
->=20
+On Sat, Sep 10, 2022 at 08:50:57AM +0200, Christoph Hellwig wrote:
+> erofs uses an additional address space for compressed data read from disk
+> in addition to the one directly associated with the inode.  Reading into
+> the lower address space is open coded using add_to_page_cache_lru instead
+> of using the filemap.c helper for page allocation micro-optimizations,
+> which means it is not covered by the MM PSI annotations for ->read_folio
+> and ->readahead, so add manual ones instead.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-My assumption (maybe wrong) was that timestamp updates were done before
-the actual write by design. Does doing it before the write make increase
-the chances that the inode metadata writeout will get done in the same
-physical I/O as the data write? IDK, just speculating here.
+Thanks, Looks good to me (Although I don't have chance to seek more time
+digging into PSI internal...)
 
-If there's no benefit to doing it before then we should just move it
-afterward.
+Acked-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-
->   i_version must appear to change no sooner than the change it reflects
->   becomes visible and no later than the request which initiated that
->   change is acknowledged as complete.
->=20
-> Why would that definition ever not be satisfactory?
-
-It's fine with me.
---=20
-Jeff Layton <jlayton@kernel.org>
+Thanks,
+Gao Xiang,
