@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 022855B8B4A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 17:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02925B8B52
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 17:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbiINPG7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Sep 2022 11:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
+        id S229949AbiINPHA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Sep 2022 11:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbiINPGr (ORCPT
+        with ESMTP id S229569AbiINPGs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Sep 2022 11:06:47 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B1776460
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:45 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id b23so6460794qtr.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:45 -0700 (PDT)
+        Wed, 14 Sep 2022 11:06:48 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411AD5C948
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:47 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id m9so11956429qvv.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=Ph4kscEWnOgHmomTRnjQCm6MKqqe5qRplQf1YaR6vPA=;
-        b=pbOmxjuceCGcRy5w2QDU6VH2T2OYecIrG0ADYbcsKusg0dmvYvWBgvc2CsINcoS6Vr
-         MOZ1lIeNt3TpcUZdTQcK1wbW/ErMeBI0NObvbdnw4o+ifsxkkyZt/XezgdmFu2EizVpC
-         tA0weDt2AATGOrBFNKgRZ6+qdDNo+tQ53eW0LuAh5Y8sPnhlRV3+7APecJcpgnRXOp07
-         5FUOv+p6Xl1s8ujLLITqYiWqk0GCicW5cDCIa1czBlohqSzU09R62Pmjdb+/1Hx0DW16
-         HvezKVvLSse3TaPDmqSEigj8Spy4a58FOeaIk0lA658LQKju4MQZWm2bKxTq+ouEtEz5
-         6upQ==
+        bh=gaUer8CEwSkw6jck6MmuJ2inzW3s41u45ndN6q3Dfjs=;
+        b=ojyLi+vYcgeLc10oJTDHzKy1dzYXZjDc+ZmU72etVPoNo9vClgDGOFYUHqBMid041r
+         SA8J15GTdikCNnRhN9ZgcTwUBgH9AKlZp6GtjU7kZMQRJt9cpL1+bl4VP4pGkOk9co7L
+         nMiLPqjZiBLfOEdK/deC4cNYhTkJBcd1OrgXPuDpdNyCL/lYig6Ci/vZJR7+1kyKZen2
+         pRJaz+tyYK5L3LjwDY5qciFK8AnS+ocC1SraR30j/Dg5OMSXCyJgxHOP4MAMQ1nNtOm/
+         Y1XfbgtZJcTqsOKdMLVjAdimtltBedVxv6F1yqxIAhq4S4gd/a8wCVQSU5D5fcK476qf
+         +odg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=Ph4kscEWnOgHmomTRnjQCm6MKqqe5qRplQf1YaR6vPA=;
-        b=1FrDZ2Ws24lvx9YutTPahRh7MU3UAqGKx1qrW7QKG4DG90QcUiOvImpWexCICxj7YZ
-         13oliFkEidpGtqTpKOpBbiOTFCo7WlvO23gNF3/HpxBbDdUSu6Hu/yrci4opfAZLVftH
-         AqQqirzvbQ8a0LtCvXVr229LHUVIdD5SaOtxET9RqRMvD6WGKbSZoHCSdg3raQRDkTW6
-         ThBw/mvGwZ5m7c+ABTNS2R0hHrXrhN7cbLHkImAUm+2oOA7Egi0MihEVYIxCS5NHq7yI
-         KEj6UmvdFFuADfKbO5UHQBOdJkuJSTnKwpI1KB0D3XBWFKY8etszbB6mvy/BYfI4iQV9
-         s8Rw==
-X-Gm-Message-State: ACgBeo3UkAf77voXpknWoWWm0TjdPabcSUmIT+aqc+mOo0JRiVxvlphK
-        mtHYPPF7iGG9v3ObIEZSaaHw0NfVgYk56g==
-X-Google-Smtp-Source: AA6agR7XZylg9NCHXxzgDFrCYdI/7rQX5BIWe8I0QaeeY4sn+jOdqQ2gDBhQbAY5sS++n+xGBuHo4A==
-X-Received: by 2002:a05:622a:492:b0:35c:be5e:74a1 with SMTP id p18-20020a05622a049200b0035cbe5e74a1mr1459263qtx.677.1663168004521;
-        Wed, 14 Sep 2022 08:06:44 -0700 (PDT)
+        bh=gaUer8CEwSkw6jck6MmuJ2inzW3s41u45ndN6q3Dfjs=;
+        b=0Jk6ynhbKsNVI7vBlFf8sD3YAnvnSykBepkOFelZ2y+wtVzMRn2kFzGolpcYD7JxKD
+         T8gQXqkq99GPuJsP3+T/45aP6wxqgLuZIi6NrW4vbG40zSgaX7i83Gf8lxz9s9PuxnGN
+         gWwF49Pg/gMIwdVsH0o+7z+pbp1rfrG815jeJBy+LGl2XYReX2ziDw4SwBEna2+urRqT
+         eX5/pzvlqXa1CgIucCtSV2TvtAE3UI7B6Ps682wZ+53KB9hGUG8FGEylTlLI9x6uAzYS
+         v8+Y05e6ngIXmZwgDLUyHkjzZDpmPD3Ua/J8vAXE5r9Ypy6zZ7CY3dS94gh08X9mgFMu
+         xJnA==
+X-Gm-Message-State: ACgBeo0A6w8K9vSHMUqSHbSyQInJ5sjdkPZGTb08Ylkde3Ffu6bRJkbV
+        MNi7Pm6AlWpSdKZwofIhjpxVDR+4UEaRHA==
+X-Google-Smtp-Source: AA6agR7Qk7vAjMIQ18ZTw9pIkU5epnLrzf6skCRp/e1OHaUS38qIaNRh4+uU9pl88g0jL0vVJS5HBA==
+X-Received: by 2002:a0c:914e:0:b0:479:58a9:d4c1 with SMTP id q72-20020a0c914e000000b0047958a9d4c1mr33188681qvq.86.1663168005922;
+        Wed, 14 Sep 2022 08:06:45 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id w22-20020a05620a0e9600b006ce76811a07sm1890768qkm.75.2022.09.14.08.06.43
+        by smtp.gmail.com with ESMTPSA id ck12-20020a05622a230c00b0031eddc83560sm1671052qtb.90.2022.09.14.08.06.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Sep 2022 08:06:44 -0700 (PDT)
+        Wed, 14 Sep 2022 08:06:45 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 01/17] btrfs: remove set/clear_pending_info helpers
-Date:   Wed, 14 Sep 2022 11:06:25 -0400
-Message-Id: <1925067c136aec3e1a01af78dbee66b6b0ebcc26.1663167823.git.josef@toxicpanda.com>
+Subject: [PATCH 02/17] btrfs: remove BTRFS_TOTAL_BYTES_PINNED_BATCH
+Date:   Wed, 14 Sep 2022 11:06:26 -0400
+Message-Id: <e17fc6ac382df50bdc88a688274ac98dccd3144e.1663167823.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1663167823.git.josef@toxicpanda.com>
 References: <cover.1663167823.git.josef@toxicpanda.com>
@@ -68,52 +68,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The last users of these helpers were removed in
+This hasn't been used since
 
-5297199a8bca ("btrfs: remove inode number cache feature")
+138a12d86574 ("btrfs: rip out btrfs_space_info::total_bytes_pinned")
 
-so delete these helpers.
+so it is safe to remove.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h | 24 ------------------------
- 1 file changed, 24 deletions(-)
+ fs/btrfs/ctree.h | 8 --------
+ 1 file changed, 8 deletions(-)
 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 8b7b7a212da0..0003ba925d93 100644
+index 0003ba925d93..3936bb95331d 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -1644,30 +1644,6 @@ do {									\
- #define btrfs_clear_pending(info, opt)	\
- 	clear_bit(BTRFS_PENDING_##opt, &(info)->pending_changes)
+@@ -87,14 +87,6 @@ struct btrfs_ioctl_encoded_io_args;
+ 
+ #define BTRFS_DIRTY_METADATA_THRESH	SZ_32M
  
 -/*
-- * Helpers for setting pending mount option changes.
-- *
-- * Expects corresponding macros
-- * BTRFS_PENDING_SET_ and CLEAR_ + short mount option name
+- * Use large batch size to reduce overhead of metadata updates.  On the reader
+- * side, we only read it when we are close to ENOSPC and the read overhead is
+- * mostly related to the number of CPUs, so it is OK to use arbitrary large
+- * value here.
 - */
--#define btrfs_set_pending_and_info(info, opt, fmt, args...)            \
--do {                                                                   \
--       if (!btrfs_raw_test_opt((info)->mount_opt, opt)) {              \
--               btrfs_info((info), fmt, ##args);                        \
--               btrfs_set_pending((info), SET_##opt);                   \
--               btrfs_clear_pending((info), CLEAR_##opt);               \
--       }                                                               \
--} while(0)
+-#define BTRFS_TOTAL_BYTES_PINNED_BATCH	SZ_128M
 -
--#define btrfs_clear_pending_and_info(info, opt, fmt, args...)          \
--do {                                                                   \
--       if (btrfs_raw_test_opt((info)->mount_opt, opt)) {               \
--               btrfs_info((info), fmt, ##args);                        \
--               btrfs_set_pending((info), CLEAR_##opt);                 \
--               btrfs_clear_pending((info), SET_##opt);                 \
--       }                                                               \
--} while(0)
--
+ #define BTRFS_MAX_EXTENT_SIZE SZ_128M
+ 
  /*
-  * Inode flags
-  */
 -- 
 2.26.3
 
