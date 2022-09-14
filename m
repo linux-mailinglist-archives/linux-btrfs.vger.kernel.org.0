@@ -2,188 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D25C65B9050
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 23:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3B65B907F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 00:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbiINVy7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Sep 2022 17:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59526 "EHLO
+        id S229554AbiINWXX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Sep 2022 18:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbiINVy4 (ORCPT
+        with ESMTP id S229487AbiINWXU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Sep 2022 17:54:56 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493CF1BEA4
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 14:54:55 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-12b542cb1d3so34999514fac.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 14:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
-         :date;
-        bh=E94LtXjr5Gt/LA85Q3GvntdQ3/H7WaZAnIpnnFipIaE=;
-        b=D1RvHnmgJYn+JYJPaO2Lpj9CE5j7GynQqjgnpHkF+LJLaRrObYMA5cCD41M7L1kLoV
-         cBQmoYwVlYGkeEZLmghtwhxws5ZzaBdrcxabNo91qeYarhFT8VDAV5cVHDAIdo44K5+x
-         sShA8ST784o2IhVPutpudGSWBIG9BmxkE5KTr4Aj7aOY1DawRgrqSsyh6uil5YVFDKH5
-         dA/sI8bhM7x70j9fJn/rm5cjJcDgBpS+Bnd7xgYDu8y18PnlI0osPYvJ10z++SiUdzk3
-         uLuQQcMJKZ8vNXR/NUeWbofbIbqlbAkCZ/1DH+e52N24XGqKHLyoqhESCbGvI0Tqmhn6
-         5HmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date;
-        bh=E94LtXjr5Gt/LA85Q3GvntdQ3/H7WaZAnIpnnFipIaE=;
-        b=g0JQehQ/pveCvN1JdBEww4Fu9b8nx/XT9ZRgyKv7RKo6WA0SDb39nInTr0DDi0dzy4
-         Pt9bt1A/IiPyh9as2IihLLTmO24L5QuxdrgAPK8YII6akWhqC0iWMAmxQz50/sCknoq5
-         tj4jYI+UUhM9DIqt+Sf4MfRYhVsK2KdGTrhopYCkX+FVE4hbyWPormX67HdItT21LfQ8
-         mzbMd4nUiXsV+UjbcuJa440ApiNcPbVwcaUzC1M7Dq5OP3qoBg/dEa2V2EfB82Nce5Ck
-         JeuIWlQYiu9cLFpVYoRX7q+Z8StKnrCb0i1ehtqTW6SbDCAZzraJ7ixKvvHxR9isT3NS
-         mqRA==
-X-Gm-Message-State: ACgBeo3hRiFxIEOysjU724zxfTp9oDPpoRhcWGXEaV1JvlQ7uZYwecsK
-        HIllpoaezja8CgNBq5i4zUtno7bUZXMgeFmlUbqVbP3h
-X-Google-Smtp-Source: AA6agR5e/N1OW8aJWPyqtmEc2Ni/4aK4XTBZMZZv9SXvp9dH3M6B0G5g4LuqTAGLJ+9cN30+iRyJifCdP0f44Ne1NyU=
-X-Received: by 2002:a05:6870:63a6:b0:12b:85ee:59ff with SMTP id
- t38-20020a05687063a600b0012b85ee59ffmr3679201oap.98.1663192494453; Wed, 14
- Sep 2022 14:54:54 -0700 (PDT)
+        Wed, 14 Sep 2022 18:23:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD15114B
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 15:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Puzjm8Bb70oBqrS47YXhRwL4s/NJY+aZ1vClTRRLS0Y=; b=SldHwIbqGOqbMAI6rTa7ypp2rn
+        0z1eznpDtKZFXRCGbC3rRfLkHnD2X7eDGL6mNBO8ZjlcFWklIMyaWJknfQj2iMY7D/DguKm1GHpeW
+        iG6ugqioWTVlnfXrGuIbRVpRxLDkVCR/0+oOzMM8fQUZ8Y47eS5H4dJEjUBFKuMbTCyddgmGXzD1O
+        dPjqgm0/hAyeZ2eP+RMoqGnLCfs9Dac2Cl6fGDhpyb0Ts0AxD4z8s++F19epko1gkgA84u3pRmTao
+        Y1ubOOzbAAsVDzZ6br6SUKOsvP953Uzzm4NhMzYoWiSD1nxjEcfPbjrR1ZjxDzwoqbwXmo+U5rblt
+        90LU65hQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oYamn-000YMj-Je; Wed, 14 Sep 2022 22:23:13 +0000
+Date:   Wed, 14 Sep 2022 23:23:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Is it possible to force an address_space to always allocate
+ pages in specific order?
+Message-ID: <YyJUUQjLj6z19lP0@casper.infradead.org>
+References: <1780f977-2717-8ea8-c5ec-6cf30d98d261@gmx.com>
 MIME-Version: 1.0
-References: <17e7c38b0cc6fe90c90f4b383734c06eafd2f9b5.1660806386.git.wqu@suse.com>
-In-Reply-To: <17e7c38b0cc6fe90c90f4b383734c06eafd2f9b5.1660806386.git.wqu@suse.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 14 Sep 2022 22:54:17 +0100
-Message-ID: <CAL3q7H4=KkPc8HD6KuOR7KafaqcsBtKtgL08ub7fMM2pP-Vgbw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix the max chunk size and stripe length calculation
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Wang Yugui <wangyugui@e16-tech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1780f977-2717-8ea8-c5ec-6cf30d98d261@gmx.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 8:22 AM Qu Wenruo <wqu@suse.com> wrote:
->
-> [BEHAVIOR CHANGE]
-> Since commit f6fca3917b4d ("btrfs: store chunk size in space-info
-> struct"), btrfs no longer can create larger data chunks than 1G:
->
->   mkfs.btrfs -f -m raid1 -d raid0 $dev1 $dev2 $dev3 $dev4
->   mount $dev1 $mnt
->
->   btrfs balance start --full $mnt
->   btrfs balance start --full $mnt
->   umount $mnt
->
->   btrfs ins dump-tree -t chunk $dev1 | grep "DATA|RAID0" -C 2
->
-> Before that offending commit, what we got is a 4G data chunk:
->
->         item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491=
- itemsize 176
->                 length 4294967296 owner 2 stripe_len 65536 type DATA|RAID=
-0
->                 io_align 65536 io_width 65536 sector_size 4096
->                 num_stripes 4 sub_stripes 1
->
-> Now what we got is only 1G data chunk:
->
->         item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 6271533056) itemoff 15491=
- itemsize 176
->                 length 1073741824 owner 2 stripe_len 65536 type DATA|RAID=
-0
->                 io_align 65536 io_width 65536 sector_size 4096
->                 num_stripes 4 sub_stripes 1
->
-> This will increase the number of data chunks by the number of devices,
-> not only increase system chunk usage, but also greatly increase mount
-> time.
->
-> Without a properly reason, we should not change the max chunk size.
->
-> [CAUSE]
-> Previously, we set max data chunk size to 10G, while max data stripe
-> length to 1G.
->
-> Commit f6fca3917b4d ("btrfs: store chunk size in space-info struct")
-> completely ignored the 10G limit, but use 1G max stripe limit instead,
-> causing above shrink in max data chunk size.
->
-> [FIX]
-> Fix the max data chunk size to 10G, and in decide_stripe_size_regular()
-> we limit stripe_size to 1G manually.
->
-> This should only affect data chunks, as for metadata chunks we always
-> set the max stripe size the same as max chunk size (256M or 1G
-> depending on fs size).
->
-> Now the same script result the same old result:
->
->         item 6 key (FIRST_CHUNK_TREE CHUNK_ITEM 9492758528) itemoff 15491=
- itemsize 176
->                 length 4294967296 owner 2 stripe_len 65536 type DATA|RAID=
-0
->                 io_align 65536 io_width 65536 sector_size 4096
->                 num_stripes 4 sub_stripes 1
->
-> Reported-by: Wang Yugui <wangyugui@e16-tech.com>
-> Fixes: f6fca3917b4d ("btrfs: store chunk size in space-info struct")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Wed, Sep 14, 2022 at 02:17:24PM +0800, Qu Wenruo wrote:
+> With recent folio MM changes, I'm wondering if it's possible to force an
+> address space to always allocate a folio in certain order?
 
-Btw, btrfs/253 now fails.
-Probably needs to be updated after this patch.
+You're the second person to ask me about this today.  Well, actually,
+the first because the other person asked me in-person after you sent
+this email.
 
-Thanks.
+We have most of the infrastructure in place to do this now.  There
+are some places still missing, such as allocating-pages-on-buffered-write.
+I don't think any of them will be _hard_, we just need to do the work.
 
-> ---
->  fs/btrfs/space-info.c | 2 +-
->  fs/btrfs/volumes.c    | 3 +++
->  2 files changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 477e57ace48d..b74bc31e9a8e 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -199,7 +199,7 @@ static u64 calc_chunk_size(const struct btrfs_fs_info=
- *fs_info, u64 flags)
->         ASSERT(flags & BTRFS_BLOCK_GROUP_TYPE_MASK);
->
->         if (flags & BTRFS_BLOCK_GROUP_DATA)
-> -               return SZ_1G;
-> +               return BTRFS_MAX_DATA_CHUNK_SIZE;
->         else if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
->                 return SZ_32M;
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 8c64dda69404..e0fd1aecf447 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -5264,6 +5264,9 @@ static int decide_stripe_size_regular(struct alloc_=
-chunk_ctl *ctl,
->                                        ctl->stripe_size);
->         }
->
-> +       /* Stripe size should never go beyond 1G. */
-> +       ctl->stripe_size =3D min_t(u64, ctl->stripe_size, SZ_1G);
-> +
->         /* Align to BTRFS_STRIPE_LEN */
->         ctl->stripe_size =3D round_down(ctl->stripe_size, BTRFS_STRIPE_LE=
-N);
->         ctl->chunk_size =3D ctl->stripe_size * data_stripes;
-> --
-> 2.37.1
->
+> E.g. For certain inode, we always allocate pages (folios) in the order
+> of 2 for its page cache.
+> 
+> I'm asking this seemingly weird question for the following reasons:
+> 
+> - Support multi-page blocksize of various filesystems
+>   Currently most file systems only go support sub-page, not multi-page
+>   blocksize.
+> 
+>   Thus if there is forced order for all the address space, it would be
+>   much easier to implement multi-page blocksize support.
+>   (Although I strongly doubt if we need such multi-page blocksize
+>    support for most fses)
 
+It makes the MM people nervous when we *have* to do high-order
+allocations.  For XFS, Dave Chinner has/had a patch set that uses base
+page size to cache smaller pieces of larger blocks.  That approach works
+for fs blocksize > page size, but doesn't work for storage LBA size >
+page size.
 
---=20
-Filipe David Manana,
+It's definitely going to be easier to use large folios to solve your
+use case, and since the page cache is usually a large part of the
+memory consumption of a system, maybe it won't be as bad as the MM
+people believe.
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+I have the beginnings of support for this (allowing the fs to set both a
+minimum and maximum folio allocation order).  It's not tested, incomplete,
+and as I mention above, it doesn't do the write-into-a-cache-miss
+allocation.  Maybe there would also be other places that need to be
+fixed too.  Would this API work for you?
+
+(as you can see, i've been sitting on it for a while)
+
+From 1aeee696f4d322af5f34544e39fc00006c399fb8 Mon Sep 17 00:00:00 2001
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Date: Tue, 15 Dec 2020 10:57:34 -0500
+Subject: [PATCH] fs: Allow fine-grained control of folio sizes
+
+Some filesystems want to be able to limit the maximum size of folios,
+and some want to be able to ensure that folios are at least a certain
+size.  Add mapping_set_folio_orders() to allow this level of control
+(although it is not yet honoured).
+
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ include/linux/pagemap.h | 41 +++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 37 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index cad81db32e61..9cbb8bdbaee7 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -198,9 +198,15 @@ enum mapping_flags {
+ 	AS_EXITING	= 4, 	/* final truncate in progress */
+ 	/* writeback related tags are not used */
+ 	AS_NO_WRITEBACK_TAGS = 5,
+-	AS_LARGE_FOLIO_SUPPORT = 6,
++	AS_FOLIO_ORDER_MIN = 8,
++	AS_FOLIO_ORDER_MAX = 13,
++	/* 8-17 are used for FOLIO_ORDER */
+ };
+ 
++#define AS_FOLIO_ORDER_MIN_MASK	0x00001f00
++#define AS_FOLIO_ORDER_MAX_MASK 0x0002e000
++#define AS_FOLIO_ORDER_MASK (AS_FOLIO_ORDER_MIN_MASK | AS_FOLIO_ORDER_MAX_MASK)
++
+ /**
+  * mapping_set_error - record a writeback error in the address_space
+  * @mapping: the mapping in which an error should be set
+@@ -290,6 +296,29 @@ static inline void mapping_set_gfp_mask(struct address_space *m, gfp_t mask)
+ 	m->gfp_mask = mask;
+ }
+ 
++/**
++ * mapping_set_folio_orders() - Set the range of folio sizes supported.
++ * @mapping: The file.
++ * @min: Minimum folio order (between 0-31 inclusive).
++ * @max: Maximum folio order (between 0-31 inclusive).
++ *
++ * The filesystem should call this function in its inode constructor to
++ * indicate which sizes of folio the VFS can use to cache the contents
++ * of the file.  This should only be used if the filesystem needs special
++ * handling of folio sizes (ie there is something the core cannot know).
++ * Do not tune it based on, eg, i_size.
++ * 
++ * Context: This should not be called while the inode is active as it
++ * is non-atomic.
++ */
++static inline void mapping_set_folio_orders(struct address_space *mapping,
++		unsigned int min, unsigned int max)
++{
++	mapping->flags = (mapping->flags & ~AS_FOLIO_ORDER_MASK) |
++			(min << AS_FOLIO_ORDER_MIN) |
++			(max << AS_FOLIO_ORDER_MAX);
++}
++
+ /**
+  * mapping_set_large_folios() - Indicate the file supports large folios.
+  * @mapping: The file.
+@@ -303,7 +332,12 @@ static inline void mapping_set_gfp_mask(struct address_space *m, gfp_t mask)
+  */
+ static inline void mapping_set_large_folios(struct address_space *mapping)
+ {
+-	__set_bit(AS_LARGE_FOLIO_SUPPORT, &mapping->flags);
++	mapping_set_folio_orders(mapping, 0, 31);
++}
++
++static inline unsigned mapping_max_folio_order(struct address_space *mapping)
++{
++	return (mapping->flags & AS_FOLIO_ORDER_MAX_MASK) >> AS_FOLIO_ORDER_MAX;
+ }
+ 
+ /*
+@@ -312,8 +346,7 @@ static inline void mapping_set_large_folios(struct address_space *mapping)
+  */
+ static inline bool mapping_large_folio_support(struct address_space *mapping)
+ {
+-	return IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+-		test_bit(AS_LARGE_FOLIO_SUPPORT, &mapping->flags);
++	return mapping_max_folio_order(mapping) > 0;
+ }
+ 
+ static inline int filemap_nr_thps(struct address_space *mapping)
+-- 
+2.35.1
+
