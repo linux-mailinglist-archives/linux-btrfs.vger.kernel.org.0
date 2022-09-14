@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9A75B8B58
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 17:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DA35B8B59
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 17:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbiINPHM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Sep 2022 11:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
+        id S229704AbiINPHN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Sep 2022 11:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbiINPG7 (ORCPT
+        with ESMTP id S229436AbiINPHA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Sep 2022 11:06:59 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB2F74DF6
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:57 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id h28so11108543qka.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:57 -0700 (PDT)
+        Wed, 14 Sep 2022 11:07:00 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2422E76970
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:59 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id z9so482999qvn.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:06:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=3P/AekNJYsZWxa6S5TDggSXC0raPMXg5TWjb1YBQtds=;
-        b=IJoN/Y3JeHArxWOT/HEnHiiReEvLEVrPIv4b48gd8B3LAiKldYsOyW+tuToZFIb6U5
-         T39lfxrpaTB1EqgS4b+7cppOcnddRxkrlcuKLi/CH3Fwv2weklCdXeyulE6Io7h+aFmm
-         OBbLj8Sv3pLxJRsGlHXhBguHbNtlgRA5R5lKBIZX4tABQ1a0RHmU183qi4BoTrUZagAH
-         MVdzkpy9cSTMhtXY9p5RfWgvkLzAsgyLXpoYxuiL3RHOJmmQhBshrXfE1iXOQiDcDaKU
-         OFrtPy99k0wLFQq4B2VVLvOM3MtD53lydzuMYKDsYmFlMfzJ1BXu2WnLQofSelM+sA9E
-         zyCQ==
+        bh=YJGd43YBCsJcN2dMM+DJC3daD+h0HkWsEG+Qle5OZJg=;
+        b=uSgsDPvesF6iIMIVvaFlAAGe4AkGk2jxUHEOxx5xy8BxA7iW3n7w3TdLI6Nk6C1Nls
+         9ZowDPjeH2tx7X7BmOiGOYKAMVgfQLsxyO8HsRwXYdEE5ibxTq59GG9ZF2jt+bq/dEt8
+         Iv5G53QE/GhQUIZAtJyPoTruEBHc9Cg2CpgG8PWQ9G3ESlnJysEu7sbVFmc6hIByzUnV
+         04+5Jo+ePZgF9B4qCuHyeaDSwlLJhLzVlr0LJvIu6/9KBueM6/HKkP7534W3igmNn4QU
+         1uphQ+1eW8hO+CfTbPcpgURZFm6sqdb1QKLwDDNs8ZUrH5Aa6bk8iaJYiszxptdINQ+4
+         fdOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=3P/AekNJYsZWxa6S5TDggSXC0raPMXg5TWjb1YBQtds=;
-        b=mcHMKbHDe8Pj29OJa18bOfw14cLR86ilntSgQnobDcBEwptIbo3hXXBrWrTcb7grXo
-         JjUOh69Scgkf+8QIDteiVbq2LiadgnKfWRtkwwsRnpU7egLve5z8/85F2Ejqz637qny2
-         8mcxFbYCGFXN1EHslXe4hRkMrOKiAfxx9gEgWbJMskIlpRNpIUlZhT09S4wMHqLDTcgY
-         1VhIonUCZ2NKiOB5raRTt5XWsYpxCSAuREzvoH6oSlJ5l2CRwjmLYe4/m3QGcXcO8RSS
-         TINzBK1tPZoR+QLuY2BPJki9B8FnbUqZoTnUTlINQBihHJdHLpr+8x/Ui+2aFYicKNRA
-         SnSA==
-X-Gm-Message-State: ACgBeo16lD8s/DfjQLuLTCRI1APvQDbrDT+GeaNHdDw/FaE+MGhmTso0
-        MvFQA5jsV39LIbAYtFG/+x8i4B7hM/LEnA==
-X-Google-Smtp-Source: AA6agR5cDCemf4IEd33LV+IBvCnWLUr0QP+ayLlP/ksb81oJ99wIbx6t/E+c4kQ2ACkE4SPcsoLAHA==
-X-Received: by 2002:a05:620a:29c9:b0:6ce:7681:19e9 with SMTP id s9-20020a05620a29c900b006ce768119e9mr5221039qkp.297.1663168016344;
-        Wed, 14 Sep 2022 08:06:56 -0700 (PDT)
+        bh=YJGd43YBCsJcN2dMM+DJC3daD+h0HkWsEG+Qle5OZJg=;
+        b=34zigGPKZRUELr/U7oORSBYz3E5eD0AGMvggkt8y0JllCM7UTcbRrhGwxkJMBeNUma
+         oHEQgT4KkXK7WtvkR58xWU+29k43SSi7hW+DtU7l2f/TLA3d2QuN8gVJUssWcZqw2m35
+         bdxJIz2A9McZpHFwIhalu2utJDmKJMi2/GYciLVezfC3TUNJ+psd2h2gDTFO8UkX6xm6
+         nAg61L9EpHaaCDcZzyLX8eANcmaapDJ6XD8griKVF3Yom6PvQsfQqZz3uFPl5DCgdNVg
+         b+mCnU8STJCmvEvl+Dn38tfQdznMeyFpvDNmW7mVe8C0eKyNxpXcvt+3jOLoerLg2JlQ
+         Buwg==
+X-Gm-Message-State: ACgBeo0SkrVCPy4fWzX3u5G2G2oBtSdO3TFoC0vTpVNy3Ts1/8Ty2S5H
+        HuQxFf5rgTRNtJkEIyqiyVbJwx++p+KRFQ==
+X-Google-Smtp-Source: AA6agR5FR9dgNHNIa/Md/hl9JoTEvV5TccXPvblDTmp9X34OonS8JeMlpbA166HAh6i8OTh2StmMUA==
+X-Received: by 2002:a05:6214:c29:b0:4aa:b050:5ed7 with SMTP id a9-20020a0562140c2900b004aab0505ed7mr31380519qvd.15.1663168017804;
+        Wed, 14 Sep 2022 08:06:57 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id bk34-20020a05620a1a2200b006baef6daa45sm2005708qkb.119.2022.09.14.08.06.55
+        by smtp.gmail.com with ESMTPSA id l11-20020ac8148b000000b0035a691cec8esm1602042qtj.29.2022.09.14.08.06.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Sep 2022 08:06:55 -0700 (PDT)
+        Wed, 14 Sep 2022 08:06:57 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 09/17] btrfs: move btrfs_chunk_item_size out of ctree.h
-Date:   Wed, 14 Sep 2022 11:06:33 -0400
-Message-Id: <3744e0ae6f8087daa9608174aeee00c53732f8bb.1663167823.git.josef@toxicpanda.com>
+Subject: [PATCH 10/17] btrfs: move btrfs_should_fragment_free_space into block-group.c
+Date:   Wed, 14 Sep 2022 11:06:34 -0400
+Message-Id: <50ba0e87399977ef84a5d3787666fc6ce6c5cf3a.1663167823.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1663167823.git.josef@toxicpanda.com>
 References: <cover.1663167823.git.josef@toxicpanda.com>
@@ -68,64 +68,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is more of a volumes related helper, additionally it has a BUG_ON()
-which isn't defined in the related header.  Move the code to volumes.c,
-change the BUG_ON() to an ASSERT(), and move the prototype to volumes.h.
+This function uses functions that are not defined in block-group.h, move
+it into block-group.c in order to keep the header clean.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h   | 7 -------
- fs/btrfs/volumes.c | 7 +++++++
- fs/btrfs/volumes.h | 2 +-
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ fs/btrfs/block-group.c | 12 ++++++++++++
+ fs/btrfs/block-group.h | 11 +----------
+ 2 files changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 2e6a947a48de..60f8817f5b7c 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -58,13 +58,6 @@ struct btrfs_ioctl_encoded_io_args;
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index c52b6e245b9a..c91f47a45b06 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -18,6 +18,18 @@
+ #include "raid56.h"
+ #include "zoned.h"
  
- #define BTRFS_MAX_EXTENT_SIZE SZ_128M
- 
--static inline unsigned long btrfs_chunk_item_size(int num_stripes)
--{
--	BUG_ON(num_stripes == 0);
--	return sizeof(struct btrfs_chunk) +
--		sizeof(struct btrfs_stripe) * (num_stripes - 1);
--}
--
- /*
-  * Runtime (in-memory) states of filesystem
-  */
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 94ba46d57920..b4de4d5ed69f 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -160,6 +160,13 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
- 	},
- };
- 
-+unsigned long btrfs_chunk_item_size(int num_stripes)
++#ifdef CONFIG_BTRFS_DEBUG
++int btrfs_should_fragment_free_space(struct btrfs_block_group *block_group)
 +{
-+	ASSERT(num_stripes);
-+	return sizeof(struct btrfs_chunk) +
-+		sizeof(struct btrfs_stripe) * (num_stripes - 1);
++	struct btrfs_fs_info *fs_info = block_group->fs_info;
++
++	return (btrfs_test_opt(fs_info, FRAGMENT_METADATA) &&
++		block_group->flags & BTRFS_BLOCK_GROUP_METADATA) ||
++	       (btrfs_test_opt(fs_info, FRAGMENT_DATA) &&
++		block_group->flags &  BTRFS_BLOCK_GROUP_DATA);
 +}
++#endif
 +
  /*
-  * Convert block group flags (BTRFS_BLOCK_GROUP_*) to btrfs_raid_types, which
-  * can be used as index to access btrfs_raid_array[].
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index f19a1cd1bfcf..96a7b437ff20 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -730,5 +730,5 @@ int btrfs_bg_type_to_factor(u64 flags);
- const char *btrfs_bg_type_to_raid_name(u64 flags);
- int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info);
- bool btrfs_repair_one_zone(struct btrfs_fs_info *fs_info, u64 logical);
+  * Return target flags in extended format or 0 if restripe for this chunk_type
+  * is not in progress
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index 4d4d2e1f137b..e34cb80ffb25 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -242,16 +242,7 @@ static inline bool btrfs_is_block_group_data_only(
+ }
+ 
+ #ifdef CONFIG_BTRFS_DEBUG
+-static inline int btrfs_should_fragment_free_space(
+-		struct btrfs_block_group *block_group)
+-{
+-	struct btrfs_fs_info *fs_info = block_group->fs_info;
 -
-+unsigned long btrfs_chunk_item_size(int num_stripes);
+-	return (btrfs_test_opt(fs_info, FRAGMENT_METADATA) &&
+-		block_group->flags & BTRFS_BLOCK_GROUP_METADATA) ||
+-	       (btrfs_test_opt(fs_info, FRAGMENT_DATA) &&
+-		block_group->flags &  BTRFS_BLOCK_GROUP_DATA);
+-}
++int btrfs_should_fragment_free_space(struct btrfs_block_group *block_group);
  #endif
+ 
+ struct btrfs_block_group *btrfs_lookup_first_block_group(
 -- 
 2.26.3
 
