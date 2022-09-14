@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6375B8B5B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 17:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306825B8B61
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Sep 2022 17:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbiINPHQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Sep 2022 11:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
+        id S229978AbiINPHT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Sep 2022 11:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbiINPHF (ORCPT
+        with ESMTP id S229990AbiINPHH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Sep 2022 11:07:05 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E613E77EB0
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:07:03 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id y2so11382553qtv.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:07:03 -0700 (PDT)
+        Wed, 14 Sep 2022 11:07:07 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE5978218
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:07:05 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id l14so3500987qvq.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 08:07:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=yChKzDuGkSJeaB68JMiVPP35OWAvh8MC5ifwtbkDGEE=;
-        b=q/dJXf1kl0HxAiJ/dH3dVECqGxdAretzZj2gS4oezVwbk86rteqzhqS9nnNs0F8dw9
-         8Q0Iz1GPupbQd+zfAt61iMH1Y+fAl+XhcdtDuWitxhZuyZ+bxZTzz1eq9xVafPayo8PH
-         5K5a+OWSEi+1kZYkRn69whrB76v1FO6vPONLKKpZiaes+UnyzN6uZE/pWSerSD67+Bul
-         LuLDj1JcIEjQyyuRZzF9HxYT/yQsx00t2mGB7Xx5Mctodv2VuvCdkhsWUxkDR3NwBxsS
-         SB9vsAxKx96+TFelAeeOfUAIRTom1vv8HXKa6oNyWiRr+fVDRZj6Msaa3dYYpuez0w4S
-         SApQ==
+        bh=vw2Fm/9gAI44uV/t8/cp6x8gY3GrT4SwYS1ONv7XFi0=;
+        b=laYly4OjFheN/8OrN8ujTDW4UnLbuKccl5/TPCtPE6cZnCie1XhHunwPvdXz6txb9O
+         wTAI4/1G+JRNys+sxrGk+cMVbmldlTQhEVTZg22dWxRadndYYLGNCG+rxS/uI9Vd5MvF
+         DX+vKq4uQFvaAVFpsmdGY6q8Ouna0Yanq57/xzt5SEO0kB+LZoKD6mKmyuSaNLS8H6ED
+         9Vq3jV1WcEXGoGeXRtm7buA/io5B9RDuq+IAH9w9UJ0kRefF81+lXQFcAhRvrN24zUto
+         S9Mj8mbWWGfUs4b65ENaLz/irZWzXDBr9/s7YuRAugXL5SOzYJ42RI8peNxZ5oCHyZXc
+         1MDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=yChKzDuGkSJeaB68JMiVPP35OWAvh8MC5ifwtbkDGEE=;
-        b=3nGohGDx5nf7vWbNhERrLM+28zTBK42QNbbPCZvT+DOm9qeDnLSqz3LXVeUu0Vi3Vu
-         2cTr2nx1KhZwTH7fpUEISzXbP4nw0Wa6OgtGu67uz0IJzA2mSbULVq+39n8+z+ZW4yYa
-         9RNRAru8lt6PhTzeo/eGa/M0REeONHUjUzsK/x6HqB3ko3V7o/mDYlgmDys0QdYAeD54
-         t2VXzCilCk3nlpy3FlUWChRVH3ooKd0ZD28pm7JqESfeVNFsWDD9h3ec+AeO++QCr9Ie
-         a+QjIJg/Fn1i+/65qsHB3a/f3Kjv0Or1R5ZgGLo+O3kVkZDNjRvSuEbvT4gMD/EUDei6
-         cPzA==
-X-Gm-Message-State: ACgBeo1Evz4/5loW49Vz21QGwulJZ61/TkqkvC1qsHrIEFHrFYla3+hA
-        cSDXcaNxK2Z9utV9yeveUTO3csbUfRYTjw==
-X-Google-Smtp-Source: AA6agR5q3EZPFzygkEpz+X1v9HfO1zkxPF+WMQezPCwiKyCqfOBvOC+EWgE/vO+n3ll/UWEsz+2JKw==
-X-Received: by 2002:ac8:5885:0:b0:343:74df:9b26 with SMTP id t5-20020ac85885000000b0034374df9b26mr33924346qta.406.1663168022627;
-        Wed, 14 Sep 2022 08:07:02 -0700 (PDT)
+        bh=vw2Fm/9gAI44uV/t8/cp6x8gY3GrT4SwYS1ONv7XFi0=;
+        b=RkQxIUmkAp3se8NjKDZG8gaCFGxpJjd2bnJvroz2fHdRJce4J/rl1Jk/+K6YBUCgkR
+         /eZVe1RaO/9OFfRVP2IxU1aeUN4N/GhsxKSCc+cV974BjkwFHrY8FTPJyYnn/6k3F28v
+         MFTS5aerW523BiXtg33eea9VjK5AJfyhPmswsxc5D3IIOi91IBdEc72jbDLgNOZvVGxq
+         cieopkeEIVicopHXidff6jIV6x2/r5r2V7WzYoJ7boTBgWLx7w5PpRH+B54Xuto82Tpo
+         8tBX/UpxJ0km3+B1cWHzWb155Z35tl+uAQbjZHOjU2zvmWGXyz1Zk9FDm8tBAz4Etwen
+         PBNg==
+X-Gm-Message-State: ACgBeo0ZCEiOJRTt++PqQ4pCga1xWVLUAmVZVzmZ7qO3u5nJqpaWc/YF
+        778YUOTpAKWinIIm0Xvz9O1NUgs1i1g4wg==
+X-Google-Smtp-Source: AA6agR78pi4XxidTkujwHB1DzX9niEvyBAVFPipJA6zM+hOOyQZfHxgePXTCLg+BqPf3FLou5RC/fg==
+X-Received: by 2002:a05:6214:c83:b0:4ac:acbd:7efd with SMTP id r3-20020a0562140c8300b004acacbd7efdmr15355321qvr.29.1663168024378;
+        Wed, 14 Sep 2022 08:07:04 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d21-20020a05620a205500b006b942f4ffe3sm1770741qka.18.2022.09.14.08.07.02
+        by smtp.gmail.com with ESMTPSA id s9-20020ac87589000000b0035cb93ba803sm1519589qtq.45.2022.09.14.08.07.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Sep 2022 08:07:02 -0700 (PDT)
+        Wed, 14 Sep 2022 08:07:03 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 13/17] btrfs: move trans_handle_cachep out of ctree.h
-Date:   Wed, 14 Sep 2022 11:06:37 -0400
-Message-Id: <68e9b87432b738ef6547294d9e5d307cfbdaf13d.1663167823.git.josef@toxicpanda.com>
+Subject: [PATCH 14/17] btrfs: move btrfs_path_cachep out of ctree.h
+Date:   Wed, 14 Sep 2022 11:06:38 -0400
+Message-Id: <c52053467e423a650b9fd0edbf789d62fb7df87a.1663167823.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1663167823.git.josef@toxicpanda.com>
 References: <cover.1663167823.git.josef@toxicpanda.com>
@@ -68,144 +68,141 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is local to the transaction code, remove it from ctree.h and
-inode.c, create new helpers in the transaction to handle the init work
-and move the cachep locally to transaction.c.
+This is local to the ctree code, remove it from ctree.h and inode.c,
+create new init/exit functions for the cachep, and move it locally to
+ctree.c.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h       |  1 -
- fs/btrfs/inode.c       |  8 --------
- fs/btrfs/super.c       |  9 ++++++++-
- fs/btrfs/transaction.c | 17 +++++++++++++++++
- fs/btrfs/transaction.h |  2 ++
- 5 files changed, 27 insertions(+), 10 deletions(-)
+ fs/btrfs/ctree.c | 17 +++++++++++++++++
+ fs/btrfs/ctree.h |  3 ++-
+ fs/btrfs/inode.c |  8 --------
+ fs/btrfs/super.c |  9 ++++++++-
+ 4 files changed, 27 insertions(+), 10 deletions(-)
 
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index ebfa35fe1c38..1f0355c74fe6 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -18,6 +18,8 @@
+ #include "tree-mod-log.h"
+ #include "tree-checker.h"
+ 
++static struct kmem_cache *btrfs_path_cachep;
++
+ static int split_node(struct btrfs_trans_handle *trans, struct btrfs_root
+ 		      *root, struct btrfs_path *path, int level);
+ static int split_leaf(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+@@ -4856,3 +4858,18 @@ int btrfs_previous_extent_item(struct btrfs_root *root,
+ 	}
+ 	return 1;
+ }
++
++int __init btrfs_ctree_init(void)
++{
++	btrfs_path_cachep = kmem_cache_create("btrfs_path",
++			sizeof(struct btrfs_path), 0,
++			SLAB_MEM_SPREAD, NULL);
++	if (!btrfs_path_cachep)
++		return -ENOMEM;
++	return 0;
++}
++
++void __cold btrfs_ctree_exit(void)
++{
++	kmem_cache_destroy(btrfs_path_cachep);
++}
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index d99720cf4835..439b205f4207 100644
+index 439b205f4207..3a61f5c0ab5f 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
 @@ -41,7 +41,6 @@ struct btrfs_pending_snapshot;
  struct btrfs_delayed_ref_root;
  struct btrfs_space_info;
  struct btrfs_block_group;
--extern struct kmem_cache *btrfs_trans_handle_cachep;
- extern struct kmem_cache *btrfs_path_cachep;
+-extern struct kmem_cache *btrfs_path_cachep;
  extern struct kmem_cache *btrfs_free_space_cachep;
  extern struct kmem_cache *btrfs_free_space_bitmap_cachep;
+ struct btrfs_ordered_sum;
+@@ -2677,6 +2676,8 @@ void btrfs_end_write_no_snapshotting(struct btrfs_root *root);
+ void btrfs_wait_for_snapshot_creation(struct btrfs_root *root);
+ 
+ /* ctree.c */
++int __init btrfs_ctree_init(void);
++void __cold btrfs_ctree_exit(void);
+ int btrfs_bin_search(struct extent_buffer *eb, const struct btrfs_key *key,
+ 		     int *slot);
+ int __pure btrfs_comp_cpu_keys(const struct btrfs_key *k1, const struct btrfs_key *k2);
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 998d1c7134ff..78e7f5397d58 100644
+index 78e7f5397d58..1401e2da9284 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
 @@ -107,7 +107,6 @@ static const struct address_space_operations btrfs_aops;
  static const struct file_operations btrfs_dir_file_operations;
  
  static struct kmem_cache *btrfs_inode_cachep;
--struct kmem_cache *btrfs_trans_handle_cachep;
- struct kmem_cache *btrfs_path_cachep;
+-struct kmem_cache *btrfs_path_cachep;
  struct kmem_cache *btrfs_free_space_cachep;
  struct kmem_cache *btrfs_free_space_bitmap_cachep;
-@@ -8938,7 +8937,6 @@ void __cold btrfs_destroy_cachep(void)
+ 
+@@ -8937,7 +8936,6 @@ void __cold btrfs_destroy_cachep(void)
  	rcu_barrier();
  	bioset_exit(&btrfs_dio_bioset);
  	kmem_cache_destroy(btrfs_inode_cachep);
--	kmem_cache_destroy(btrfs_trans_handle_cachep);
- 	kmem_cache_destroy(btrfs_path_cachep);
+-	kmem_cache_destroy(btrfs_path_cachep);
  	kmem_cache_destroy(btrfs_free_space_cachep);
  	kmem_cache_destroy(btrfs_free_space_bitmap_cachep);
-@@ -8953,12 +8951,6 @@ int __init btrfs_init_cachep(void)
+ }
+@@ -8951,12 +8949,6 @@ int __init btrfs_init_cachep(void)
  	if (!btrfs_inode_cachep)
  		goto fail;
  
--	btrfs_trans_handle_cachep = kmem_cache_create("btrfs_trans_handle",
--			sizeof(struct btrfs_trans_handle), 0,
--			SLAB_TEMPORARY | SLAB_MEM_SPREAD, NULL);
--	if (!btrfs_trans_handle_cachep)
+-	btrfs_path_cachep = kmem_cache_create("btrfs_path",
+-			sizeof(struct btrfs_path), 0,
+-			SLAB_MEM_SPREAD, NULL);
+-	if (!btrfs_path_cachep)
 -		goto fail;
 -
- 	btrfs_path_cachep = kmem_cache_create("btrfs_path",
- 			sizeof(struct btrfs_path), 0,
+ 	btrfs_free_space_cachep = kmem_cache_create("btrfs_free_space",
+ 			sizeof(struct btrfs_free_space), 0,
  			SLAB_MEM_SPREAD, NULL);
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 2add5b23c476..9f7fc1c71148 100644
+index 9f7fc1c71148..acd590bed579 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -2737,10 +2737,14 @@ static int __init init_btrfs_fs(void)
- 	if (err)
- 		goto free_compress;
- 
--	err = extent_state_init_cachep();
-+	err = btrfs_transaction_init();
+@@ -2741,10 +2741,14 @@ static int __init init_btrfs_fs(void)
  	if (err)
  		goto free_cachep;
  
+-	err = extent_state_init_cachep();
++	err = btrfs_ctree_init();
+ 	if (err)
+ 		goto free_transaction;
+ 
 +	err = extent_state_init_cachep();
 +	if (err)
-+		goto free_transaction;
++		goto free_ctree;
 +
  	err = extent_buffer_init_cachep();
  	if (err)
  		goto free_extent_cachep;
-@@ -2809,6 +2813,8 @@ static int __init init_btrfs_fs(void)
+@@ -2813,6 +2817,8 @@ static int __init init_btrfs_fs(void)
  	extent_buffer_free_cachep();
  free_extent_cachep:
  	extent_state_free_cachep();
-+free_transaction:
-+	btrfs_transaction_exit();
++free_ctree:
++	btrfs_ctree_exit();
+ free_transaction:
+ 	btrfs_transaction_exit();
  free_cachep:
- 	btrfs_destroy_cachep();
- free_compress:
-@@ -2820,6 +2826,7 @@ static int __init init_btrfs_fs(void)
+@@ -2826,6 +2832,7 @@ static int __init init_btrfs_fs(void)
  
  static void __exit exit_btrfs_fs(void)
  {
-+	btrfs_transaction_exit();
++	btrfs_ctree_exit();
+ 	btrfs_transaction_exit();
  	btrfs_destroy_cachep();
  	btrfs_delayed_ref_exit();
- 	btrfs_auto_defrag_exit();
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index d1f1da6820fb..ae7d4aca771d 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -24,6 +24,8 @@
- #include "space-info.h"
- #include "zoned.h"
- 
-+static struct kmem_cache *btrfs_trans_handle_cachep;
-+
- #define BTRFS_ROOT_TRANS_TAG 0
- 
- /*
-@@ -2600,3 +2602,18 @@ void btrfs_apply_pending_changes(struct btrfs_fs_info *fs_info)
- 		btrfs_warn(fs_info,
- 			"unknown pending changes left 0x%lx, ignoring", prev);
- }
-+
-+int __init btrfs_transaction_init(void)
-+{
-+	btrfs_trans_handle_cachep = kmem_cache_create("btrfs_trans_handle",
-+			sizeof(struct btrfs_trans_handle), 0,
-+			SLAB_TEMPORARY | SLAB_MEM_SPREAD, NULL);
-+	if (!btrfs_trans_handle_cachep)
-+		return -ENOMEM;
-+	return 0;
-+}
-+
-+void __cold btrfs_transaction_exit(void)
-+{
-+	kmem_cache_destroy(btrfs_trans_handle_cachep);
-+}
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 970ff316069d..b5651c372946 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -236,4 +236,6 @@ void btrfs_add_dropped_root(struct btrfs_trans_handle *trans,
- 			    struct btrfs_root *root);
- void btrfs_trans_release_chunk_metadata(struct btrfs_trans_handle *trans);
- 
-+int __init btrfs_transaction_init(void);
-+void __cold btrfs_transaction_exit(void);
- #endif
 -- 
 2.26.3
 
