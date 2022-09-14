@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 340E15B90CD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 01:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457095B90CA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 01:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbiINXFL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Sep 2022 19:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48652 "EHLO
+        id S229904AbiINXFN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Sep 2022 19:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbiINXFF (ORCPT
+        with ESMTP id S229890AbiINXFG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Sep 2022 19:05:05 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6021233A1B
+        Wed, 14 Sep 2022 19:05:06 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4012F64F
         for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 16:05:04 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id s13so12906975qvq.10
+Received: by mail-qt1-x82d.google.com with SMTP id ay9so1655960qtb.0
         for <linux-btrfs@vger.kernel.org>; Wed, 14 Sep 2022 16:05:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=Rcw64DFDCoMCM3XgBo2XyHZt4i3K7pFq0lg53ulW630=;
-        b=3taJUPa6OGRlFd4ryl8/oXZkLWmpu2KmyBjJVbQgVjS16noJTih++bbUGo4QYwkZ7b
-         WkMC/ahN3dKKym0mMWNRxAGCAUaqHM/08R1LKEzmYD1kGVmJh9fc0rgAGqNYf8xwzSUK
-         v1oEjXXAl/1y6V/rFdITKCUB249fWOFlDhm2hxohmif9n/hNfz7rzBp1E+hpWV6mkrPI
-         Abk/BMvoKcKXWZ0totRtp08AKjBdZhFvDgMf6bIHhZn3kroTGrR+SJyU+5UJO5mXCRbk
-         kBerJ1ggPXzNDH8CRY2P4hJxWiAYGauXkfeq7vSiz574mxLp4vNICrptQ5Sj4LoIszE1
-         j3gQ==
+        bh=hZBQPQVAYJOitHUk4v87PNBF/5fF24yOlf/HPSTLkPw=;
+        b=0lF2ick5HUvgcFC13yNSzo0Y+bM6bNJ1Gdgw7gOuGF9Iz7g3l+TAEKk3mwQ7EoXpFF
+         /8LSFvS9ccPLXunFh4vojMeJvlfB9bJ0k0TBD1ubTbtD01FOmIjtxzkpj2nSZ6XmcN3D
+         yJW/flmGa9YHzSYPEtDTaTdOrwL4dwJ3cG14NGb/xz7UP4s4nk6nuLSGElFCxPChAke3
+         An4cBiZflRB3OCc4fYir/1BcBc9DO9dHwWkrVLA/M3c0OfbUxxQCKhAn60blQXLbTFlZ
+         3WMCsHd4Ypn8YkrbYqxKpqNPFbnVhWOaQB9JF78/AA7DxahZB7CbacafS8cVAoB20gXK
+         tL7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=Rcw64DFDCoMCM3XgBo2XyHZt4i3K7pFq0lg53ulW630=;
-        b=0ESzP46O/BsjKKgagcE1X42gJlxv8ebdDJX1SmfYVloREQlAe3dkjq7gy20+fbZvcA
-         UBjnn0tf/xRHSclpln68NrWdsE5mwjabcShQ1bDhiUaSCREE4EkTAcoCKyQsSNZIhOjk
-         xMPNj91Ot3/3BkMS9UktniTcgbvrpAxfvhhFDv+YS4fYHvtehmL34CdjitKUZU7NECPO
-         hEg4FTobQ6qj6D78sjR7ZvEgH7KeEQc1+sM4YD32kKf3/s+koU80dI8Bm5WzolJ8Hd8B
-         5ht99YGHqV4gdewTe7rRWMes+F3uyU4HuoM1ZwLf+TLOi2DyBd6E9maYRQ+MFXKHbzQt
-         CPiA==
-X-Gm-Message-State: ACgBeo0r8RDpbauwWd9PwWARBkT2QsEWfrr/7gJkEi7+F5p1nBmRP5kN
-        OHxoUXzgBzkBS+TOn73xhkDkt09AohRbRg==
-X-Google-Smtp-Source: AA6agR6ygBCbO7iJ9HlwilzF8muq4vBxkAfs3bU3ioyBIeKmVwETTTbE4JoRI9HtZw0WNCsL4nfVVg==
-X-Received: by 2002:a05:6214:23cc:b0:496:fa7b:2503 with SMTP id hr12-20020a05621423cc00b00496fa7b2503mr32980780qvb.38.1663196702939;
-        Wed, 14 Sep 2022 16:05:02 -0700 (PDT)
+        bh=hZBQPQVAYJOitHUk4v87PNBF/5fF24yOlf/HPSTLkPw=;
+        b=ap383N87bomiW6m1NK396SF+mnookwy0cD/qj2KGOAj7AyE6sXtklKjhAmGyFqdSwO
+         3F+2IPtnRLrETrtAFiFkGjAIJRQ/5Sehyy81E3NlM+sFNOAMAiORlW3c2mleOW0kNr02
+         /mBwRy/mq67GtG5MKUxFTLUjB1bON9S4x7hFjiNXwnb7MF3cm52XoC89Q30TGTi0XHDM
+         3wczG3XMaAeL/joOaJbLF09K0un29KHwXYzMTNg0aqqDeBJRg0miDC3L4DSaDc9LXiQi
+         yMkdPXOoNG4rjoj8Xf15Eir9KvjV5SOat1Ixc+vVT05Veqx8fjDVhw7ojQLQRE2O+i3X
+         dXgw==
+X-Gm-Message-State: ACgBeo1pZOUZ5RVX2SBhNcu7ECB3WaSdZ/ucMzGRmA1+d+DktLfF3ZwL
+        +b6Gsg4Rn/mTXJ/CNRo1DG9sPun58y9amA==
+X-Google-Smtp-Source: AA6agR6N5Yth1CAM50J0TL0lWpcdZn1FKupgcPiG9XXYki7nysnD/XWnw849N3P+kKYXR9oZrxKMlg==
+X-Received: by 2002:a05:622a:58f:b0:35b:6813:75e9 with SMTP id c15-20020a05622a058f00b0035b681375e9mr25195084qtb.650.1663196704186;
+        Wed, 14 Sep 2022 16:05:04 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u13-20020a05620a430d00b006b953a7929csm2886241qko.73.2022.09.14.16.05.02
+        by smtp.gmail.com with ESMTPSA id x4-20020a05620a12a400b006ce40fbb8f6sm2686309qki.21.2022.09.14.16.05.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Sep 2022 16:05:02 -0700 (PDT)
+        Wed, 14 Sep 2022 16:05:03 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 07/15] btrfs: move btrfs_swapfile_pin into volumes.h
-Date:   Wed, 14 Sep 2022 19:04:43 -0400
-Message-Id: <be6105cf39b5ff328622fb4b7003beac385f4f28.1663196541.git.josef@toxicpanda.com>
+Subject: [PATCH 08/15] btrfs: move fs_info struct declarations to the top of ctree.h
+Date:   Wed, 14 Sep 2022 19:04:44 -0400
+Message-Id: <9506fef3a36ca9a740283dbf1df1f2d884cb732a.1663196541.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1663196541.git.josef@toxicpanda.com>
 References: <cover.1663196541.git.josef@toxicpanda.com>
@@ -68,89 +68,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This isn't a great spot for this, but one of the swapfile helper
-functions is in volumes.c, so move the struct to volumes.h.  In the
-future when we have better separation of code there will be a more
-natural spot for this.
+In order to make it more straightforward to move the fs_info struct and
+it's related structures, move the struct declarations to the top of
+ctree.h.  This will make it easier to clean up after the fact.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h   | 25 -------------------------
- fs/btrfs/volumes.h | 25 +++++++++++++++++++++++++
- 2 files changed, 25 insertions(+), 25 deletions(-)
+ fs/btrfs/ctree.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 3cb4e0aca058..b9e848a22290 100644
+index b9e848a22290..05eb0e994e68 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -215,31 +215,6 @@ struct btrfs_fs_devices;
- struct btrfs_balance_control;
- struct btrfs_delayed_root;
+@@ -46,6 +46,13 @@ struct btrfs_ref;
+ struct btrfs_bio;
+ struct btrfs_ioctl_encoded_io_args;
  
--/*
-- * Block group or device which contains an active swapfile. Used for preventing
-- * unsafe operations while a swapfile is active.
-- *
-- * These are sorted on (ptr, inode) (note that a block group or device can
-- * contain more than one swapfile). We compare the pointer values because we
-- * don't actually care what the object is, we just need a quick check whether
-- * the object exists in the rbtree.
-- */
--struct btrfs_swapfile_pin {
--	struct rb_node node;
--	void *ptr;
--	struct inode *inode;
--	/*
--	 * If true, ptr points to a struct btrfs_block_group. Otherwise, ptr
--	 * points to a struct btrfs_device.
--	 */
--	bool is_block_group;
--	/*
--	 * Only used when 'is_block_group' is true and it is the number of
--	 * extents used by a swapfile for this block group ('ptr' field).
--	 */
--	int bg_extent_count;
--};
++/* fs_info */
++struct reloc_control;
++struct btrfs_device;
++struct btrfs_fs_devices;
++struct btrfs_balance_control;
++struct btrfs_delayed_root;
++
+ #define BTRFS_OLDEST_GENERATION	0ULL
+ 
+ #define BTRFS_EMPTY_DIR_SIZE 0
+@@ -208,13 +215,6 @@ struct btrfs_discard_ctl {
+ 	atomic64_t discard_bytes_saved;
+ };
+ 
+-/* fs_info */
+-struct reloc_control;
+-struct btrfs_device;
+-struct btrfs_fs_devices;
+-struct btrfs_balance_control;
+-struct btrfs_delayed_root;
 -
  /*
   * Exclusive operations (device replace, resize, device add/remove, balance)
   */
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index db4cf51134fd..2bf7dbe739fd 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -180,6 +180,31 @@ struct btrfs_device {
- 	u64 scrub_speed_max;
- };
- 
-+/*
-+ * Block group or device which contains an active swapfile. Used for preventing
-+ * unsafe operations while a swapfile is active.
-+ *
-+ * These are sorted on (ptr, inode) (note that a block group or device can
-+ * contain more than one swapfile). We compare the pointer values because we
-+ * don't actually care what the object is, we just need a quick check whether
-+ * the object exists in the rbtree.
-+ */
-+struct btrfs_swapfile_pin {
-+	struct rb_node node;
-+	void *ptr;
-+	struct inode *inode;
-+	/*
-+	 * If true, ptr points to a struct btrfs_block_group. Otherwise, ptr
-+	 * points to a struct btrfs_device.
-+	 */
-+	bool is_block_group;
-+	/*
-+	 * Only used when 'is_block_group' is true and it is the number of
-+	 * extents used by a swapfile for this block group ('ptr' field).
-+	 */
-+	int bg_extent_count;
-+};
-+
- /*
-  * If we read those variants at the context of their own lock, we needn't
-  * use the following helpers, reading them directly is safe.
 -- 
 2.26.3
 
