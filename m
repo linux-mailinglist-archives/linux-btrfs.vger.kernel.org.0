@@ -2,119 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 089045B970D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 11:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3145B971A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 11:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbiIOJLE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Sep 2022 05:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
+        id S229877AbiIOJM1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Sep 2022 05:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbiIOJLC (ORCPT
+        with ESMTP id S229893AbiIOJMU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Sep 2022 05:11:02 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2055.outbound.protection.outlook.com [40.107.20.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1ED85F115
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Sep 2022 02:10:58 -0700 (PDT)
+        Thu, 15 Sep 2022 05:12:20 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05lp2111.outbound.protection.outlook.com [104.47.18.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136E298CA4
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Sep 2022 02:12:08 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vh2JdL86VSTkvOWY2JWwW2yT6XiMzCZozrrIzVEoZW2U0qLR++Nj2Pg+WGHOuAcEczc/bLNn7IRfTuIjgC2d6OhCeeY43yJTmlVI6k78wbCkxTnuZmu99vaK49HQB06Zjdf988o713XZFaGtOdWzHON7ea9g0d+lDz++ttJY20ozcJtPD4vSmD3fwqVVVfC1xZVaGemC59vTY9up6Gy3uelr3cYrxVB/Q7yWEykuW1x6gGb1qsczZxxDNX4CPoMo7yjF/f5yT/5R6zAX8BCBscHOUI+t7dVCCoV4zSV0of84HSBBtqn08QmgtTLPDhUuwpZvCuW01a0AwgLKuQUgXg==
+ b=hj6CNSg5m3ILSuwhgOILBN5266Yi65fdQr52x3XZ6gXX2/y8ebyxbCrH6EY8Sn/XhOCq6+41TkBmf59RyRB44oVVCVK9O0C8R71WKnp2GWPdWN8+93tcAamp4QpYzk/vbcvUnRQkp3TY33CA+1YNHQ7GYno0fjt/hfbuLwBghMwCe8U0Ix710gXvXA2An2Ly2F1RSgUYajPi6AO1fK33IwqUm3xX8iGOtKUyIrsGLtqt1TpdMEJQSHq/B4EHEg5IHdQdLEzqWbHVn06EDAYvwAgE70xzH3RMoQap0ItFxVBxzkek/yMPooVE/T0YOVgbAvZ2WihW3j3vwx2GpGbCdw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bmThLNPg2qrPiPJtflwuoWnUXrHv+aEWuzIw1vu58bE=;
- b=XhlXUqJTsb8h2OP7xWcY59PmsuPisJKIdybyylr+HxD3rGtn1R7D6okaP5wpaK2qyTVFpXtsQ+QIJqUtRxSjFUj6LIFBVVf/yzsJMc9v6LXGB7Wz0fgBNwMAFKtxkImQ+3xqVq1HUm3u18uF7SH+BAdhY5w+SULQKhSGf0hIRSgc1DXYQXJIW1zLiDVrmxKCyAKtHF4meNiveXi/NT5IPvToZxv5EtxExEBbN8xxc4lHDUYKAxXmNKlPwsnxtTHw35NbeFBWlAcE/BkQ/9sQwlsLNTf5fXGt5Rniju0y8eMWOa2JvlTjj6QvudObBjfo3AZDIsnOT23S3Bz1KeTngA==
+ bh=zg+AMoFdsUOctqnP9jCNf1+rHyCNZPI5O97LJf4V4Us=;
+ b=iyaiiEuu67+HlVW1f4UmPtKdJz/1+5GLPqDjq8s8heSde3zpZZ7x+AbieE7qUDHMENO2FwvcDFXgekxPbebS9R7rhUpDMnZF1dHlvHrVznxPuOUKu00Wz7BRTZeUxqmJzcTOhhRqWcaEa+ChwkARGJ2wMAd2NJBJ5lcLT1LyDIegqLPy+KuSWxMnc+BbWuBaBZRZ9U9A6C2ftN37N/Qk4yp6a3UUdTFkHZs2W4h43LNYzPvzXsyJEmMT/0TDeJXM8a3KgFItpiRIyYHyTVxVQBxpLikILQtY5pUcQ1lk9lrcIfto5I9kIdKN/oe+HY3q4dDj8cD0T/AG9PB1QVhThA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bmThLNPg2qrPiPJtflwuoWnUXrHv+aEWuzIw1vu58bE=;
- b=mONtinDlel/h7FWEzmDGJJBKXAXzJ9G02YDKqbmhp3R0mH2gDjT6yoriEG470kw08+YaSzdBt1ldXSr6+1EqNbJBqrtGv8KKtXsgkS5F9Fl0qMEB1a0ZDYvv19yd20Sb3FmqvY+BBSh8q7jGTmYezavb1HEXjBryTA2uyXcIbafSl7Ir6jUCEaJS/at2vuVd70uFY5G7+hPQvgtd3AVVSwHG7OHqEAK0K5v0/TYe6tYapm+VXbOa854zWrjlYzYxUR1UHNCHaVBC+7RvW7E6WIqbcrG7MT3qzGlOlivZWaPOS2vDu4L3xw+oA8ackB7a4qdowmNe5jfWovH2kTN//g==
+ bh=zg+AMoFdsUOctqnP9jCNf1+rHyCNZPI5O97LJf4V4Us=;
+ b=yvZLDGDF3Hx9yUz5dbWFvJWugwe1/xjvO5Fk1k8Dh1a0qbAt3l13dmjv6hSjUoAlgeNthNhRB83TbE3Kr7Bn65rY5PEhyiTCuarA5DBulrtNvX/4HhY9RpTyFE4RD90Gzpliqh5i75w01pE6vMuQp2Hi/3ugJKYqw1jGR2DHqPKZLpVL7JTidsavC8tr5Lku01hJ0qum0ZdvBnzCEfJ9G3L8fvJ9odwzy8iA3WZvIr7tSZx3dtqogu3jFi+S6fQdi53uDRfXFA126dBOVgn4pjtW8UyqIVI0Ok4yRd+cpw1Rk9KaNwOF+pVewWZXvXaY495Zo3BMpCtTtVzGj6uRWw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by DU2PR04MB8662.eurprd04.prod.outlook.com (2603:10a6:10:2dd::5) with
+ by VI1PR04MB6846.eurprd04.prod.outlook.com (2603:10a6:803:12f::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.22; Thu, 15 Sep
- 2022 09:10:56 +0000
+ 2022 09:12:04 +0000
 Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
  ([fe80::3a32:8047:8c8a:85d9]) by AS8PR04MB8465.eurprd04.prod.outlook.com
  ([fe80::3a32:8047:8c8a:85d9%5]) with mapi id 15.20.5632.015; Thu, 15 Sep 2022
- 09:10:53 +0000
-Message-ID: <56b893d8-aaef-a556-af16-7a323e9f51a1@suse.com>
-Date:   Thu, 15 Sep 2022 17:10:43 +0800
+ 09:12:04 +0000
+Message-ID: <732e8497-5de4-b29a-e625-161e04538e2a@suse.com>
+Date:   Thu, 15 Sep 2022 17:11:55 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.0
-Subject: Re: [PATCH 06/17] btrfs: move maximum limits to btrfs_tree.h
+Subject: Re: [PATCH 07/17] btrfs: move BTRFS_MAX_MIRRORS into scrub.c
 Content-Language: en-US
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1663167823.git.josef@toxicpanda.com>
- <e0640b40762be99c72f7bfbb295431d405624f1d.1663167823.git.josef@toxicpanda.com>
+ <37fa62e6907f1eff71e2c77b9dadb324a408d9a2.1663167823.git.josef@toxicpanda.com>
 From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <e0640b40762be99c72f7bfbb295431d405624f1d.1663167823.git.josef@toxicpanda.com>
+In-Reply-To: <37fa62e6907f1eff71e2c77b9dadb324a408d9a2.1663167823.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PH0PR07CA0092.namprd07.prod.outlook.com
- (2603:10b6:510:4::7) To AS8PR04MB8465.eurprd04.prod.outlook.com
+X-ClientProxiedBy: SJ0PR03CA0120.namprd03.prod.outlook.com
+ (2603:10b6:a03:333::35) To AS8PR04MB8465.eurprd04.prod.outlook.com
  (2603:10a6:20b:348::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DU2PR04MB8662:EE_
-X-MS-Office365-Filtering-Correlation-Id: 93a75e8d-cee9-4100-0011-08da96fa30b9
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|VI1PR04MB6846:EE_
+X-MS-Office365-Filtering-Correlation-Id: df11259f-044a-48bb-6d84-08da96fa5b24
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IKvAuDdY9VfmttJDlnukDbUCdDRSyosxWdBTscqBNJIMdDLloVG2YGWB5wiMV3T39vJHU19z6wLnoMKZxeCJm9i5NwazYirwJcRM+DpI8zca2ePyCYS6kSGx0JmeKVUJt1i8aEJWyiLsuBiHF5ylR7lquMgQ73+/rhZlxIWv9ZLuHRTNPfYeL99SRmKYqpxbQUPhJxE0HRtohtaWhpRKwBGI39Jw01qYdvM/P4l6BDaUwbYXU8pPMneWUBx2fP/yjOwFuc2iw1Ggs87bIrhsvLYL+lohyweJ56fPh+iK3Sc3lxI/9XYwxTxNyraQSxszJ/24rQqQgpvP+hqefVQH6Kdi5HyOccFQEDunMLg8FISoNmEYg9uCivqtz11o2NUrUN9PfampaNO+EuAv49R/0fkbubwjs8Cod3gOmpSdStwUhYK8fnqoEgxtqeDXkeC1Xlqo3nKQuhIf9M0ymEzWFTuwW96J/nlwO2ISG9L088xWKliz9hffAhPf5iINR+AJgKKLQtFUAoedi9tAjpgQythwX4scsvqdPJKjrfIYAuksOqyvGOZ4jCn2+6trbFRsIA+aQP16vD9fOGTUeUEbQg8PM2ZckZ8o60BkkWQxYYe0tGASmRuE3aLP/VGq5yptOwcrAoiDo7t0pxJ0vLLU2YbLq+Rf/l3uEqykxsNyD0q8Yy3NrPjrW6+uCWzDjQ5aAOAN42GJMcr+eT/MFHo/af7CmGtSHpKHRd/ZwG1ASNONsZLdKnFjv2Vc1eBWmllWNP9HVItA5GwHmZNbFgbmdjyjES8Zct2f/uVI+ohVxKg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(396003)(366004)(39860400002)(376002)(346002)(451199015)(66946007)(6506007)(31696002)(53546011)(66476007)(86362001)(66556008)(6666004)(5660300002)(41300700001)(31686004)(36756003)(2906002)(6512007)(38100700002)(478600001)(316002)(8936002)(83380400001)(6486002)(8676002)(2616005)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: tjtvPaND2cQXp5lPUDGUnPjho5GBBPdWOHIPMMlBIFsSRUDK14VbuZXEn1YHJ/4X72nG2nZg8p3ABH9VhWqkXgO0l0wYqqQ6I7Kx91TCPuSJWXiNdmB6kCzGtlfCJwhLsbYH77GHs18TH8dUFVKx2XndL6OtSzrJLimgf5BD9UOdCtSlTNut6tKds9X8mlyAn1q7v8OnJ9dGefvgcizxvA9IYhz6NRNMGx+/t3w4uGLVPHEskowj+tCy4mzf7iiWvQiBaOC+WLtjwCg/C49Hj2ajX3F8Y1sobFNw6bbRK7Aj/hPfyrZGBLIQzya/6Uc0uzPipsxQnmKKPhqys6hFDZcWW57v5L2lQNmtGeEU3nf+RJbcf9CW2fgEshTaNisHxexyWtSPy/8/fc9Q34PUBzs8tn46jp8yc0w5RVpiZVVc3oNakTNh/wLA3gTaOvy8LNgleEB2zrBgAFFofA/JPr7TjdE55lfJg6vFq96lh8hIGiSaf774dcglADuCWaqfMnLMjnTcp59t/iL3vEE3ScTD4g2Rcc8AIbHlimvHf1ETpdVkAoPl+wd9kq2hiFHyjtXrJkmFQjvMHatsskvaQqmQreoq2iYd1unLPatJDJkuS4NEErvbDriGubcn/B9hAzco4L/KgSAnnVXLg3fGF7MU3U47QqT6dGD4fpvnKZMjtKGLPF+YxUq8N87SzRwwTFM0P9gcWLe72JICtUAlH5gJty5HCTuTBhOz5kCNSs6onNtReDBGY95+IOZ/KZlvz0H/odjil16fKEjEScm4He+l2tVcQjxyk19LvQfy39A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(376002)(39860400002)(396003)(136003)(346002)(451199015)(66476007)(6486002)(2616005)(6506007)(8676002)(31686004)(31696002)(36756003)(53546011)(2906002)(6512007)(186003)(83380400001)(86362001)(38100700002)(5660300002)(6666004)(8936002)(66556008)(316002)(66946007)(478600001)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QWQwWjI5aEEyRTdMcDFkTTNIcW5BQ3dWRjhjdkVwU2U4RzBTS0VZUmswdGdM?=
- =?utf-8?B?Z1ZnemVxWW5sc3E2djh2YTN4OUE5L21QRitwRHljYklSNFh5NVVwcUs0Mkg5?=
- =?utf-8?B?VUVRR2VMdUZJVmhheUt6KytPNHZ6eWNrSmdyVWQ2ZFJ2dGVURDY0MlFEWml6?=
- =?utf-8?B?WkhHKytPUi83bWlHSFMvYXludzEwcVo1TlYwVkhZUDZtRlNEU0RUbzQrS2Fu?=
- =?utf-8?B?bW8wTEpDM3o2NkgwQ0pCK1MwaXgyM0RTYjFzSG1sdUtsZUU3UlVpUC96L3o4?=
- =?utf-8?B?R2U0N0xYQTFBK05pZndnYkhsREM1K1E2SXo2TmFTWTdZNHp6TDBFbE1uQVpy?=
- =?utf-8?B?UW1hYXZIaTdscFB5Y292ckVZdlNpSTByYXJiQlBxa0RkV3BnUjNpVkcyNHhX?=
- =?utf-8?B?NFdyUDVUTlBzc1Y4Ym1wRWIwTGg5MkgrYU9Sb21GamRseTVIYlVDNTNjRHZO?=
- =?utf-8?B?TitnenFwZFQrbTlmK20wZENnd3kyTFhqMldxNVFRMTExRUZFNFNldm9JR1JP?=
- =?utf-8?B?V0FNMmw3Tm9ab1NUWkVvVDJHaW05SzF5bUVRbU10YTU3dmtSSS9aMmFnRU5L?=
- =?utf-8?B?YXhjclVDcnNSVXJnbXJpZXNsQ09UdlJpY1hYV0V1bUJIenI2c0ZqVU1WOWhy?=
- =?utf-8?B?Y0dERTZLREdySjhtSmYyaE0rMWR6V09TVXpKRlV3VG4wZVBUTFpNM0hpSUY5?=
- =?utf-8?B?eFBYZjR4WUk4NGZkS1ErY2dlWUdlYUppWlp6eGh6VTlkUGoyRlBZRVd1UlZM?=
- =?utf-8?B?OTVEVUZicnpOak14cmt3d0xRSzVEQWtORU1lL0lER08zQ0tnVnJheTRESHBx?=
- =?utf-8?B?UHBzRm9ScXFLS25LL1llNjVQVTJ5SnRsWElJT1ZjZVZkaEtJcWZaTlIxWFBH?=
- =?utf-8?B?WnViUHRjS2xHVzE2cXVLMmNEenc1aUNrVnM0TldmQm5idmRmYmJNT3kvWU5G?=
- =?utf-8?B?ZjZyb09RWWw3YytUa0ZsUWZJTjFZMmt1eGpvYVk1Uk1lN0pzejRMUnVVdnJT?=
- =?utf-8?B?KzAwTUM0OWhHTU5nanN6SXVvbjY4TmJ3RjNWT0pLNmNQUmlQaktaWnJYaHQ2?=
- =?utf-8?B?ckV1V25ORnBqcWZFeFpZb3U2ZGc1K1NOUVlsbGw2Z1VFUlBJZjIzOXQvYXRm?=
- =?utf-8?B?bHRmRE0vdklZTWFNbXdIZTU5VThPRndmRGNqVDYrMTI4WnVhQUFVMEdSODhu?=
- =?utf-8?B?N0c5MjJzUC82QnlzRzgzL3YyMVhGY3dEc0NQblZsSUJraGF0U3E3QXlTWjBa?=
- =?utf-8?B?dnJCeFNSYVpZSmYxbVQxczFaVmo0MW5UT1NBQ1NlaWVTanVRejMyQmNOR0lM?=
- =?utf-8?B?eDNaQ2JaTkN6U0ViSVhFLzdCMmxxeVlyWVlLb2Y2cGREQmVDdWZPSHdvbTQw?=
- =?utf-8?B?QjcvMHZPdE5PWjU3akprUXloQ0hYaFJibk1XYlNXVTRuUDhPajFwMi9EZ3d1?=
- =?utf-8?B?NUtLc1YycWlNU1lyaXNpOEhmYkE2S1hDeTJ5M1VRWWtiUVdZaHhDYVhldTV0?=
- =?utf-8?B?bVUwNnN6bUtUUlNJM1pVZXNQM0poUk81a2tMTmZqZjVxcnZMSXJVeXgvcFhv?=
- =?utf-8?B?NFYwa2NtNVBEUEhZWFc3cUpzQ0dqSTZKZGpBNkNGaFA4TlhHTFE0REVuM2xH?=
- =?utf-8?B?UzY4cWo2YTd4bjk3WkRpRDhhait0elE0K2dZNTFxL0JKajhiYU83Q2g0a3Rw?=
- =?utf-8?B?dkFSVjVrWEZWRlNybnk5QUM3ekxwTlpvZVZzaWMxdEdwbzFIUVZZTVl5YlhI?=
- =?utf-8?B?UWswZUNVUHdXbVJRd1FwZWFBeXhGSnMrYlhCQUNPOFB2cjJHM3MrVldrTW5G?=
- =?utf-8?B?dktVaVZYQWhqdnRFUlZnM1VjOWg1dlBESlhST3RQOE4wNVErWGJvZHQ3VmFL?=
- =?utf-8?B?VlNRa1drM2g4aG9XdzVoSzBTTU1IcG4ya2p0d1p4SzRmNmV4WjgzRUFZUzRP?=
- =?utf-8?B?U0s5R21uM1VrRCs1YTRDT1B2M05XNmJyWWtKOGNoZzloQjVxNVptUmNQMjZy?=
- =?utf-8?B?MGtmWTdaK3NlR2Fpd1lqNTk5UzZGMGJFZWs3VVVzRHBlN01UK1NTMHJXL1Ns?=
- =?utf-8?B?alB4ODhteDBNekFYcnZVT2dNaWsvNW9Id2hRQ2pWdFEvQnJpRkh2TmZXQ0E2?=
- =?utf-8?B?UzlyT0xIeUNwVCtsMXpLRXh0UDdGVGdjZkx3YjRVcFhJclUrM1RMMVUzRFM0?=
- =?utf-8?Q?JfaiDZeh5MZjG3q7kI1HauY=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YlVoNC9Xd1VhMFcveEZjUldTNVN4N0lkSzdyYjhDa3orcUJDUFlaaG42bjBp?=
+ =?utf-8?B?cEFlMGZyMFM5SGNSaFpzNWdHRFA0Zk43QU91dURRSkpxK0V3OXJ3SWg4UHl2?=
+ =?utf-8?B?eEN0SFFwOWoxaG9DanpjZ1E2ZWt3dWNIcUl5Y0VGQ093c0VYSVZ3TVhlYlNn?=
+ =?utf-8?B?RUg0L2lXeWZvcExqZGdXUFA2NkJDZldTUzdMaWRWOXdKTmhRM0xCR2FpRE9t?=
+ =?utf-8?B?QnZGZTdyN1EwRTVsNFRrdnYxOThzeGQ4ampmU0p4SENmbUpPajdLLzRWSlFL?=
+ =?utf-8?B?T0lpL1RSQjBwYnpBdzFFSm1LenFyR3oyREhXVlg2RC9QanVuT25QWkZ4T2RM?=
+ =?utf-8?B?MVgyS0EzNVNIb0lGMHVvQXUya2w3KytGYTdNUnl1c1RqbUEwMkgrSUVsSkRP?=
+ =?utf-8?B?RHZWMUpyUFZOaTAweUlOYldYYmRSOGlMK003bWVYVHZVOHF4QU5Va1dDOGlu?=
+ =?utf-8?B?K1M2T0dBUDdHVTZxdHhxdkZMVXNLbVFBcVFGZG5DbFdvQ1haM0RVYjBKa2pU?=
+ =?utf-8?B?TEl2azdnT1p4UUZ2c3VFVFJvcGxuTHlzV2ZWV2RTOVNjZ3ZMYlFSaEFCakxx?=
+ =?utf-8?B?SzZmMnRmeW0rVkU0ZGRsblN3MmlFeHNsT1VHLytMajl0aHBDS3k1NUkwS2d6?=
+ =?utf-8?B?UElZOFhMeXIwMjlaU01ZY2VsaVJPclNpMStuMDV5ZVFKTmRLR3dndzQwSDFu?=
+ =?utf-8?B?d0VlWGVMV2dZb20rMFgrekxiYWVSZ3dTQUkxbDNySmtEbHZ0eVdqTnJNQXVs?=
+ =?utf-8?B?OXlySXdvOWdFaXUzTjc4ckFaanNyeFdxdGJaYmFucWs0VEhTelQ1V1NwY1ZL?=
+ =?utf-8?B?K3dIUWIrbHBMZmlXMGE4aUhXWFZ3dkNIQ1BCTHRaRkZmcDZkZTNld1NQdllh?=
+ =?utf-8?B?SzltYjF1dHl4YXFiUlhtWGZOWFNtenVMc0l2UEpvZURqYmV2bFUyeEdIK2Vi?=
+ =?utf-8?B?elpwTVNGYVM4eUhyZXRKWGJPSGc2bFNVak5PTnpQaWtxTlYwTHYrd2RCdjc5?=
+ =?utf-8?B?VDVoVFRGT1EvVWdtNWZCTWduNGpNWk5ZaDZTN1hCVG9zb3diRWNwK0ZVTFNH?=
+ =?utf-8?B?bmJUejY4MVVIWi9qMWJNNGNIaWVVVjVudUVWZ1doOCsxYWJ5UG5RVThBOWM0?=
+ =?utf-8?B?RlhjMjVCczV3MlhYUW9EOWZUbWFqM1RQTzNhTmhiRDBhU0VocGhKbkc2M2NZ?=
+ =?utf-8?B?enN3VGNmVHVydGxrdUJacmVlSk8wb0xUSG5WSG1hdUtVb1ZvdWk3ZHdJMEJi?=
+ =?utf-8?B?NzRaYnpoS2c4bkpncC9OS3Z4YVB0bE9jajNKcDdhN2NFb1Foc1JGK0NtREN3?=
+ =?utf-8?B?UWhuMFhPTG94Qll2b0hROHpYcTliZi9DcVp4TzlDMVE1QlFsTmVNaTQ3TkNi?=
+ =?utf-8?B?bFVZSU1QdXpwQ2VGMGY0ZVMvdzVEKzhGQnk5SWY3Y3Y5NTc3YUkxMVpTYXRX?=
+ =?utf-8?B?djk0ZmJJOG9hMlUzY1ZGb09uLzY5V3k0dVpRQkw4NDQ2MUF6WFRyWDFZS3c5?=
+ =?utf-8?B?emIzREIzUHExYW1CeFI5cGREUjZFbTh1TnNJcWhBRWpqYnExU21OVzNUL3p4?=
+ =?utf-8?B?UVFyTDRMZ1RnNlNRUWxWUG50b3Frd0JHNVJMTWJnTmk5YlNCeHZtYUR3VVdh?=
+ =?utf-8?B?KzdEcW1LNzcxY3BsSTQxS0MxWW9rRnVUOHhQdkdKYkdVTWs3SXRSajc3L2dC?=
+ =?utf-8?B?Z3ZIOTc5a1ExeFFhYU1RVVl3UXNTa2E4TCt4cEpSbTVEcWlUVHRmZ1VsUExR?=
+ =?utf-8?B?bmtwdWowaWlJZndZYUhSbXgrbkp5c2lQN1cra0VXbytCMnAxdmhWdzcxeXhK?=
+ =?utf-8?B?ZnB2clpsUlVubUxBZGtEc015dERUd3JDdVQzOVNsYzdjUld6dTVrNldCcEtM?=
+ =?utf-8?B?bUIxbnJjVW55R1hzcHNhVGdZUXJwYlgwQVRQcEEyaWNSbFFHalJNMTgzSERt?=
+ =?utf-8?B?MGJvZitEOFdPMm0yU0U1WDRVOEkxSVp1MHZ6cGpaQ3VXMU9YMnYvQmU0ejcy?=
+ =?utf-8?B?UHcxcWFoU0wyOHBLcE52Q1gyYTBMdlBTM0NJRExFT1B3b0R0U3pGN0pDQnVl?=
+ =?utf-8?B?eW5ONzhITkJXUlN3dDNWcXNTODk2MkJSaDJiWWthQmNuS09BWXMzZ2VXcytP?=
+ =?utf-8?B?c3dDSHR2cmo2SWMxTEh6L3o1aXNIZll6bnpIOUNTeVVhZWtSeUM2bllJNzU2?=
+ =?utf-8?Q?F/KYcAVGjkXc/arMUpvqT8c=3D?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 93a75e8d-cee9-4100-0011-08da96fa30b9
+X-MS-Exchange-CrossTenant-Network-Message-Id: df11259f-044a-48bb-6d84-08da96fa5b24
 X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2022 09:10:53.3048
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2022 09:12:04.5970
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +cHBP7tAlGNgAJMHcuxqGPEZSNutBmXirQQq74rmMLYuJLLQ1ZBQaCpUb2USrebb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8662
+X-MS-Exchange-CrossTenant-UserPrincipalName: e0blv+msM4ariQbr5Mqb+5mI0AYUJWf2PnmYKzcSp0Gb83uRnBB9EtmRLXQR15xU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6846
 X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
@@ -128,8 +128,8 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2022/9/14 23:06, Josef Bacik wrote:
-> We have maximum link and name length limits, move these to btrfs_tree.h
-> as they're on disk limitations.
+> This is only used locally in scrub.c, move it out of ctree.h into
+> scrub.c.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
@@ -137,57 +137,52 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
 > ---
->   fs/btrfs/ctree.h                | 13 -------------
->   include/uapi/linux/btrfs_tree.h | 13 +++++++++++++
->   2 files changed, 13 insertions(+), 13 deletions(-)
+>   fs/btrfs/ctree.h | 11 -----------
+>   fs/btrfs/scrub.c | 11 +++++++++++
+>   2 files changed, 11 insertions(+), 11 deletions(-)
 > 
 > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index c3a8440d3223..5e6b025c0870 100644
+> index 5e6b025c0870..e1ec047deff6 100644
 > --- a/fs/btrfs/ctree.h
 > +++ b/fs/btrfs/ctree.h
-> @@ -63,19 +63,6 @@ struct btrfs_ioctl_encoded_io_args;
+> @@ -50,17 +50,6 @@ struct btrfs_ref;
+>   struct btrfs_bio;
+>   struct btrfs_ioctl_encoded_io_args;
 >   
+> -/*
+> - * Maximum number of mirrors that can be available for all profiles counting
+> - * the target device of dev-replace as one. During an active device replace
+> - * procedure, the target device of the copy operation is a mirror for the
+> - * filesystem data as well that can be used to read data in order to repair
+> - * read errors on other disks.
+> - *
+> - * Current value is derived from RAID1C4 with 4 copies.
+> - */
+> -#define BTRFS_MAX_MIRRORS (4 + 1)
+> -
 >   #define BTRFS_OLDEST_GENERATION	0ULL
 >   
-> -/*
-> - * we can actually store much bigger names, but lets not confuse the rest
-> - * of linux
-> - */
-> -#define BTRFS_NAME_LEN 255
-> -
-> -/*
-> - * Theoretical limit is larger, but we keep this down to a sane
-> - * value. That should limit greatly the possibility of collisions on
-> - * inode ref items.
-> - */
-> -#define BTRFS_LINK_MAX 65535U
-> -
 >   #define BTRFS_EMPTY_DIR_SIZE 0
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index 9b6a0adccc7b..35fca65f0f2a 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -56,6 +56,17 @@ struct scrub_ctx;
 >   
->   #define BTRFS_DIRTY_METADATA_THRESH	SZ_32M
-> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> index e6bf902b9c92..c85e8c44ab92 100644
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -14,6 +14,19 @@
->   
->   #define BTRFS_MAX_LEVEL 8
+>   #define SCRUB_MAX_PAGES			(DIV_ROUND_UP(BTRFS_MAX_METADATA_BLOCKSIZE, PAGE_SIZE))
 >   
 > +/*
-> + * we can actually store much bigger names, but lets not confuse the rest
-> + * of linux
+> + * Maximum number of mirrors that can be available for all profiles counting
+> + * the target device of dev-replace as one. During an active device replace
+> + * procedure, the target device of the copy operation is a mirror for the
+> + * filesystem data as well that can be used to read data in order to repair
+> + * read errors on other disks.
+> + *
+> + * Current value is derived from RAID1C4 with 4 copies.
 > + */
-> +#define BTRFS_NAME_LEN 255
+> +#define BTRFS_MAX_MIRRORS (4 + 1)
 > +
-> +/*
-> + * Theoretical limit is larger, but we keep this down to a sane
-> + * value. That should limit greatly the possibility of collisions on
-> + * inode ref items.
-> + */
-> +#define BTRFS_LINK_MAX 65535U
-> +
->   /*
->    * This header contains the structure definitions and constants used
->    * by file system objects that can be retrieved using
+>   struct scrub_recover {
+>   	refcount_t		refs;
+>   	struct btrfs_io_context	*bioc;
