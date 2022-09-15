@@ -2,163 +2,293 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E665B9995
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 13:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6555A5B99C1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 13:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbiIOL3T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Sep 2022 07:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        id S229686AbiIOLjQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Sep 2022 07:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbiIOL3Q (ORCPT
+        with ESMTP id S229463AbiIOLjO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Sep 2022 07:29:16 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1B78A7F6
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Sep 2022 04:29:15 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28FB1r5Z009352;
-        Thu, 15 Sep 2022 11:29:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2022-7-12;
- bh=S/vQOMOVv/z+LAlMHrCYFJakkB21xeQZUu6b1KRZt+4=;
- b=hQND83v1ebZ32hRDrKiaKalOnge8bMNv261Nb3J5dhLydi9tedJWvckkn+DVdU2E3YG8
- 31v5hnSaLmeFDS+WIg8YyuwKHpq8h2y6vIYwnhkxEWECLcStk+G3H3TmhGy/b2BqJY9a
- oa2r4Ehaw4CP5vKj8QNTwyXIuKP60+cvHn7ReYhbIkRwMhBIPwxkPHmjlNFkw/YsD243
- nJXzmiF4NHuXv5TAYlHSzzl/Pm2VU7EMIqNUqMybFq5+dM908Np+4QGGVHe7XAXGWloD
- 3lwWhAN/Sujqo8UciG2gMQ2+xgxqdzhOuWCpLn6cCYkgamQAWzB6KV42cWrWwnQ4YWNG bg== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3jjxydvy1u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Sep 2022 11:29:13 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 28FB30DO001175;
-        Thu, 15 Sep 2022 11:29:13 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2177.outbound.protection.outlook.com [104.47.59.177])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3jjy2cbptm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Sep 2022 11:29:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dly4GAPjepotbWJ7yj9jeZgEpqUnNt6C24kaespbo71KtAwt/l7humhbs1mwPPwnHDWBtS8VE3koun3+VGdp5w3uMw/h/ZQ3Cv9kXJCWCx9/Nf8GVvYLF8OOwYgyutjXsZxKvLvGvePhQIYQPJUFQwKOmHVxjv1hW5mqkTcMefuyVBT6bjAzr4+JQQz00rOKKQrroeLMvVLRVbWTTEO07kjhMp22MJ0qdsubAoCLnUjo+kgPLIoh5uNO4ySPVb/HL0iZJI/LRywUdRD2ZwE2o8MX0Y3UECI2VUIqPSdEcvNk89/p0crm58f7XAniPgDns11Om8lDqucA7bPQ4mFIiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=S/vQOMOVv/z+LAlMHrCYFJakkB21xeQZUu6b1KRZt+4=;
- b=m7NranTaw+U597gFmYhw6HtRwaoLQL7nlf+Q/AFKYBR3WJKA7VnjSR/ke7CpHSj5ILi04WUS1ezoyGur19BZpdU3lokqVYEX2nWH/lvHUnvxMn1F+k24lX5h00qWUz6HKdR4NU10iD8x0g96YP81yTYcZfJbe2qC5yb3uVHdKci648HVP0LLpN943eFQqTMsl6qZ+Rm0yWIHtSgH52TvWyuJdDUM6Ug6d01NvKziSp1fyfP4hizMt0NMFNCAeKxnVhNq1Syf/+K3w3/dMxOe9yTEMLhrc8onOBsm6ImN4gFPdK7K+49U8nD1uqmDYhM7Tu+6pG7uXNVzCMLqFUrudA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S/vQOMOVv/z+LAlMHrCYFJakkB21xeQZUu6b1KRZt+4=;
- b=GfT/aARmvIMGpW3F6yI5bCnNMK3oB8rndkr7BrUhr5Ksuy12qndcjrIXSN0vtSge37kxxwKHlW8dn41JViYxhrSNLl6fjtuPBJjjZnwI/v5pCdNvcjvnN8n1dZ8Ho8l2BEv+WK0kNSTa7k20457qv08VDn4oX7x3fyujJ50RhnU=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by PH7PR10MB6625.namprd10.prod.outlook.com (2603:10b6:510:208::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.15; Thu, 15 Sep
- 2022 11:29:10 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::74b2:acd4:6739:716f]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::74b2:acd4:6739:716f%5]) with mapi id 15.20.5612.022; Thu, 15 Sep 2022
- 11:29:10 +0000
-Message-ID: <aa819abc-4e81-6ac5-e5cb-c8fabf15178e@oracle.com>
-Date:   Thu, 15 Sep 2022 19:29:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [PATCH 11/15] btrfs: move btrfs_ordered_sum_size into file-item.c
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1663196541.git.josef@toxicpanda.com>
- <7d20c1fad6d774c24413fd43af0c204b53adb814.1663196541.git.josef@toxicpanda.com>
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <7d20c1fad6d774c24413fd43af0c204b53adb814.1663196541.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR06CA0013.apcprd06.prod.outlook.com
- (2603:1096:4:186::18) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        Thu, 15 Sep 2022 07:39:14 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EDE97ED8
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Sep 2022 04:39:13 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CF8A51F88D;
+        Thu, 15 Sep 2022 11:39:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1663241951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=PoNeRt4wS/Vkgu/LrOf1ZQoWG0LcAriNdYNmBdfu5wE=;
+        b=SII5DdF2+gWMYSC9Xm7LOCxkJdrME8w1CKiqKcquaqF6MjzIaeTTqMtzwyTvlkstU6OsLs
+        NcAH08dJwNdKlrNeQlZ/PJ9gdldF0n4G1vp1cr9achJTZkl133DxnX4kzjoyJ5+8/HNcm+
+        Ey4f3lvA1xc5aHeJYgVaacIEy1YPDAg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F20F13A49;
+        Thu, 15 Sep 2022 11:39:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id kNjrGN4OI2PLLQAAMHmgww
+        (envelope-from <wqu@suse.com>); Thu, 15 Sep 2022 11:39:10 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
+Subject: [PATCH v4] btrfs: skip update of block group item if used bytes are the same
+Date:   Thu, 15 Sep 2022 19:38:52 +0800
+Message-Id: <f68664759229da440226ebc28114108470b761b6.1663241717.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB6625:EE_
-X-MS-Office365-Filtering-Correlation-Id: e4f7574d-cc59-405f-bfc6-08da970d81ef
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gCCavbGLqh7Ns0P0eapOfsegK38RmiHuQuFI6MWVLJ+FY1HBtMMpIC6Mykcz4yp1rC1ajNbo/hkEJD44El7IBR3p0lkeDV75Bj2hFmXIaI9rzDjyyTHlx+HLRqNl2keGWQqzEQonfzZBUnPGver2Y8xWbqiOrUxexGVvB9YOD5cK7y1sNqGORPLNYXQnr2dKgU2H369JqMzoIjNeMMCRTCqyjVMmMokfKAT73hFsdupGdLUBcbTdXuSUY88IbGWF0wFAgoAk6L7AbtkEfGsBcgsAWZMF5fc+NdTbNfWyujIuiVIeUBZ7gnH6InLTo086nrmPKV3ShXVjPL0TtTd+RFCa4KiZuedgCgt/K+OGtbTVg+EYEIvUo6CULey6TQooM5Z+2uXeWE2+aO6UBrneQP5BXhQPqiRVOQ5qkbCVjgZcRF2Pz17g94AEOUkpymewXbKx4XEe+gAkVnl7mlu/CXuYqoKRassM8mGy3FmsdIFffIl7eOVNLtYt+MgCm6rMdRs3VklWTgU7Tmj9pxYYKI/gsNfCIwZJPK8ntfTENokbH9fUg2SQkgpe6fTTCJQbQalIzQ7VIwFn4MsHw4au5nll4XofEy8bdmmsyvDyVNDjzdqj5MYPULF128eC9wHQneVUS7ZvmwYJ6+9+Hh96Mu/IF+e0cZToi8wjx91Nc5rVK52Rio/5G3FpoX6pow2S/OxRkULwa6Vwu7Xc9gUAf2WS5RWD9Jn7s3mCdHpwrZ27MNp2H1X6amIgYOA2+OT4Kjgl2CPGJakZoArY3znSSY8vm+buzD0E9IRfztRO5B4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(396003)(136003)(376002)(366004)(39860400002)(451199015)(8676002)(2616005)(86362001)(186003)(44832011)(6486002)(5660300002)(83380400001)(6506007)(38100700002)(53546011)(8936002)(6512007)(66556008)(31696002)(26005)(66946007)(558084003)(66476007)(41300700001)(6666004)(478600001)(36756003)(316002)(2906002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TU5PcURvV1NXRTJROHRSNStCT0M0cGFidExIUkZURDFtdHhqZWlBT1daa2N3?=
- =?utf-8?B?Qy92VUVhck5OVldiUTJId0s5Z3N4ZHowbVBheEY5V056NURabXlZWEVwTW1q?=
- =?utf-8?B?T0gvd3E2R3A4NDBRME5NbWVPL1NCeEh6d3RlYmJqTlZRTHdpSzlCU29pUTlm?=
- =?utf-8?B?eUxLNWVxU1QxQ3JTb0I4K1J2ZjZpa0llalJiZHdwa0ljSld2bUVGbTFSdVFt?=
- =?utf-8?B?a2htY25KWm9WeHV0aTVSUCtBZG5QNlhWbUkvYk1JbFUyZ1ZLNEJGVmtzbGov?=
- =?utf-8?B?T0pLYnJiVlVZM203T04rakYvVklJaWlhNDdZU1ZHS1M4T0tKT04vYWRxbksz?=
- =?utf-8?B?cmhwSEJRc3hQWEtCWjZSS3VXQzhJT1pJcjMzb1BBa05qTzJFTGoyS3oyLy9y?=
- =?utf-8?B?Z3k0VGJmdThyTDhXYlBNUTJTcjNSaXJwcFZraFFCRGJnaGdXZ1JrNUgyNkNq?=
- =?utf-8?B?aFI0Z29lRDUyOXZrMGNXRm4rZjk3U1QzdmYrbXZyWjdhK216VGdGWTB2YnB2?=
- =?utf-8?B?R3pFUHZQOWVheU9rTFZKckhlbVlVdERTQU55Zld4MEx2ckg4NTRlZGoya1Zh?=
- =?utf-8?B?M21JYkZOL1JWRlhpclVNV3pKN0lzSE5rZVV4WE1UNm9qaTFPR21ZU0dEaGw2?=
- =?utf-8?B?Qzd2Q3BaNXkvaHVyQmMyV0VIdmw4UWZqbVhPWDc2WHk5aCtSeGIwKzdidlZh?=
- =?utf-8?B?WkM1d0F0c2pMTDZIZFZvQndOWXpvMlllaEwySHRMS3NnL2lEcVFUMWxhbGRk?=
- =?utf-8?B?Z0FiNzlWOUJGR3BRM1VyOE52bFptNlhwc3lZa3RQZzhhL1ZvTHZUSUwwdEFE?=
- =?utf-8?B?OVR3azFUK0ZnVGdueEtvYTdKYXhmZDJyTS9yWDZtUnFrYmc3UHVaQ08ycjNB?=
- =?utf-8?B?U0ZhN2t0bnFkbnVWMnExQjFaTUs0c2ZvR2pCakI2OUgxaHIybHFQZHdOMCty?=
- =?utf-8?B?dlpsWlNyODhhejRLbktTWXI1T1FTdFZZSlBLRVVoMnRlK0U0UjBLWlBQejYr?=
- =?utf-8?B?S0pjc294OU51SGJEQ0JqSFFhRXdEb1Z3WGNCdytNWTVNS2VaMk9PcVhjRGN4?=
- =?utf-8?B?QmI0dUpMUktGQjNIaE5GYVBDZDFuaGNKR3NpWHNKZWNPZ3VMak9sYjhrV215?=
- =?utf-8?B?Z3FUd3BNVHVZUEZ2UUZqRUNZM3oyUmhiS1NnTWlTZjNGNVRBTkNzcHUxcHIw?=
- =?utf-8?B?ait1bzRrM3g2azI4T1lXTGI1TTFpNmZOekxPZVltMVNvQ1dGRnc5L3M4a1V3?=
- =?utf-8?B?ZEhrZHlUQXFEWDQzQzY0WHgvYmZtUjlhV2M3blNmaFhxMkpRTWZrRDRHNjZM?=
- =?utf-8?B?aEszSzNxYk5UTW16REZPN1d1Y2Z0OTlvcWgvWStpM1FrQVNrUXF1WEduMlhT?=
- =?utf-8?B?ZEY3blZyR1lNcitzeXNKazBzRkFGSUtyQlN6bkdSZTVCOWRSaFQ5TGdXNVdu?=
- =?utf-8?B?b0dLN3dZUk5TQmRBYTdxVHZFM2hiZUhGY3FIOUJ6RDNvaysvaW1VckJidWVU?=
- =?utf-8?B?OXlMSkFDeExpekhGc2VrUHZCTkN4UUtIY3J0a05pVjdWUjlJQzdIM3hvMGZa?=
- =?utf-8?B?UlY4VDhHVE5UQnd5YUVOMTQvWU9ZN1NqM1ArZ3RldGd0NTlzRjkrVHMzdFF2?=
- =?utf-8?B?SEgvS1FReVU1aEh2aHE4bTN5Z2cwWHdFMlJrc0RGcUpSWFo1YTdMbm95aEd1?=
- =?utf-8?B?eEdsQUpUQVE5bjFCQU14bGZWMVNvWlBNRHduZ2ZGZkRUY3ZLVWhjU2tmWU9i?=
- =?utf-8?B?c3NrMjlKUU1zRjBnV2dBc3RJS1Y1NGQ3M25vTEtnVzhKamRwK3VFZWJYRU1D?=
- =?utf-8?B?RmZEYkx0Q09EMzVENmhJVVVlajc5NUZqU3UxR0F5bzRFSEdBVmRETFU1N3Vi?=
- =?utf-8?B?cUNpUDB6cDA3cENtbmtYOUdMVzE0aTVoL0xGVHVFMzBWYitXVmtvN3pSUDVx?=
- =?utf-8?B?MFdXa0Z5ZURlcWt5ZUhnNVZoaEE3MGdBcmI3c2xlYTY1SEVtd3FJak1oMXVZ?=
- =?utf-8?B?NkRlNEV6NGhtdmVpMDB1Z1hYMXdVVkhmQk11YnRRajdidTVmNm5BWWtIeWdG?=
- =?utf-8?B?Y1ZRSXBSSjR3S21LUTVkWFVIZ2laN2FrNVUvS1pmMEE1emNUbHRYRjB3aWRH?=
- =?utf-8?B?aU5oMWc3eG5hN2cyVWFCcS81UmNOc0NXV3JBNDgrSjlNSEdRRXNGTGZSOHdB?=
- =?utf-8?B?Znc9PQ==?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4f7574d-cc59-405f-bfc6-08da970d81ef
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2022 11:29:09.9812
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iVE1uh2FLThmTkAIU6J+lfej/k/oi7zZchBpZhpvR6eDtrfXTKO0eWGhpL3ixq5nlwK2kDwJZEG0fuomD+Ixsw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6625
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-15_06,2022-09-14_04,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- malwarescore=0 spamscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2208220000 definitions=main-2209150064
-X-Proofpoint-ORIG-GUID: VwzRcduw3NSChcG88W-ZbSBbg_SRl96I
-X-Proofpoint-GUID: VwzRcduw3NSChcG88W-ZbSBbg_SRl96I
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 15/09/2022 07:04, Josef Bacik wrote:
-> This is defined in ordered-data.h, but is only used in file-item.c.
-> Move this to file-item.c as it doesn't need to be global.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+[BACKGROUND]
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+When committing a transaction, we will update block group items for all
+dirty block groups.
+
+But in fact, dirty block groups don't always need to update their block
+group items.
+It's pretty common to have a metadata block group which experienced
+several COW operations, but still have the same amount of used bytes.
+
+In that case, we may unnecessarily COW a tree block doing nothing.
+
+[ENHANCEMENT]
+
+This patch will introduce btrfs_block_group::commit_used member to
+remember the last used bytes, and use that new member to skip
+unnecessary block group item update.
+
+This would be more common for large filesystems, where metadata block
+group can be as large as 1GiB, containing at most 64K metadata items.
+
+In that case, if COW added and then deleted one metadata item near the
+end of the block group, then it's completely possible we don't need to
+touch the block group item at all.
+
+[BENCHMARK]
+
+The change itself can have quite a high chance (20~80%) to skip block
+group item updates in lot of workloads.
+
+As a result, it would result shorter time spent on
+btrfs_write_dirty_block_groups(), and overall reduce the execution time
+of the critical section of btrfs_commit_transaction().
+
+Here comes a fio command, which will do random writes in 4K block size,
+causing a very heavy metadata updates.
+
+fio --filename=$mnt/file --size=512M --rw=randwrite --direct=1 --bs=4k \
+    --ioengine=libaio --iodepth=64 --runtime=300 --numjobs=4 \
+    --name=random_write --fallocate=none --time_based --fsync_on_close=1
+
+The file size (512M) and number of threads (4) means 2GiB file size in
+total, but during the full 300s run time, my dedicated SATA SSD is able
+to write around 20~25GiB, which is over 10 times the file size.
+
+Thus after we fill the initial 2G, we should not cause much block group
+item updates.
+
+Please note, the fio numbers by themselves don't have much change, but
+if we look deeper, there is some reduced execution time, especially for
+the critical section of btrfs_commit_transaction().
+
+I added extra trace_printk() to measure the following per-transaction
+execution time:
+
+- Critical section of btrfs_commit_transaction()
+  By re-using the existing update_commit_stats() function, which
+  has already calculated the interval correctly.
+
+- The while() loop for btrfs_write_dirty_block_groups()
+  Although this includes the execution time of btrfs_run_delayed_refs(),
+  it should still be representative overall.
+
+Both result involves transid 7~30, the same amount of transaction
+committed.
+
+The result looks like this:
+
+                      |      Before       |     After      |  Diff
+----------------------+-------------------+----------------+--------
+Transaction interval  | 229247198.5       | 215016933.6    | -6.2%
+Block group interval  | 23133.33333       | 18970.83333    | -18.0%
+
+The change in block group item updates is more obvious, as skipped block
+group item updates also mean less delayed refs.
+
+And the overall execution time for that block group update loop is
+pretty small, thus we can assume the extent tree is already mostly
+cached.  If we can skip an uncached tree block, it would cause more
+obvious change.
+
+Unfortunately the overall reduction in commit transaction critical
+section is much smaller, as the block group item updates loop is not
+really the major part, at least not for the above fio script.
+
+But still we have a observable reduction in the critical section.
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+Changelog:
+v4:
+- Race fix again
+  Even with v3 fix, there seems to be a race window, but I'm not 100% sure.
+
+  `cache->commit_used` is not updated with spinlock protection, thus
+  no proper multi-core barrier to sync the new value to other cores.
+
+  Thus it's possible that, on core A we have cache->commit_used updated,
+  but on another core, cache->commit_used may still be the old value.
+  And incorrectly skip the update for the block group.
+
+  Anyway we should handle btrfs_block_group members with spinlock,
+  especially there are two members involved now.
+
+  This time I hope to get more testing, thus please don't include this
+  patch for late -rc. Better only targeting v6.2.
+
+- Add proper rollback support
+  Since we have to update commit_used inside spinlock, if we hit error
+  we have to roll it back at error path.
+
+v3:
+- Further improve the benchmark
+  No code change.
+
+ * Make it time based, so we can overwrite the file several times
+ * Make it much longer
+ * Reduce the total file size to avoid ENOSPC pressure
+ * Measure both commit transaction interval and block group item
+   updates interval to get a more representative result.
+
+v2:
+- Add a new benchmark
+  I added btrfs_transaction::total_bg_updates and skipped_bg_updates
+  atomics, the total one will get increased every time
+  update_block_group_item() get called, and the skipped one will
+  get increased when we skip one update.
+
+  Then I go trace_printk() at btrfs_commit_transaction() to
+  print the two atomics.
+
+  The full benchmark is way better than I initially though, after
+  the initial increase in metadata usage, later transactions all
+  got a high percentage of skipped bg updates, between 40~80%.
+
+- Thanks Josef for pinning down and fixing a race
+  Previously, update_block_group_item() only access cache->used
+  once, thus it doesn't really need extra protection.
+
+  But now we need to access it at least 3 times (one to check if
+  we can skip, one to update the block group item, one to update
+  commit_used).
+
+  This requires a lock to prevent the cache->used changed halfway,
+  and lead to incorrect used bytes in block group item.
+---
+---
+ fs/btrfs/block-group.c | 31 ++++++++++++++++++++++++++++++-
+ fs/btrfs/block-group.h |  6 ++++++
+ 2 files changed, 36 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index e7b5a54c8258..097c8ee21551 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2002,6 +2002,7 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+ 
+ 	cache->length = key->offset;
+ 	cache->used = btrfs_stack_block_group_used(bgi);
++	cache->commit_used = cache->used;
+ 	cache->flags = btrfs_stack_block_group_flags(bgi);
+ 	cache->global_root_id = btrfs_stack_block_group_chunk_objectid(bgi);
+ 
+@@ -2693,6 +2694,25 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
+ 	struct extent_buffer *leaf;
+ 	struct btrfs_block_group_item bgi;
+ 	struct btrfs_key key;
++	u64 old_commit_used;
++	u64 used;
++
++	/*
++	 * Block group items update can be triggered out of commit transaction
++	 * critical section, thus we need a consistent view of used bytes.
++	 * We cannot use cache->used directly outside of the spin lock, as it
++	 * may be changed.
++	 */
++	spin_lock(&cache->lock);
++	old_commit_used = cache->commit_used;
++	used = cache->used;
++	/* No change in used bytes, can safely skip it. */
++	if (cache->commit_used == used) {
++		spin_unlock(&cache->lock);
++		return 0;
++	}
++	cache->commit_used = used;
++	spin_unlock(&cache->lock);
+ 
+ 	key.objectid = cache->start;
+ 	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
+@@ -2707,7 +2727,7 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
+ 
+ 	leaf = path->nodes[0];
+ 	bi = btrfs_item_ptr_offset(leaf, path->slots[0]);
+-	btrfs_set_stack_block_group_used(&bgi, cache->used);
++	btrfs_set_stack_block_group_used(&bgi, used);
+ 	btrfs_set_stack_block_group_chunk_objectid(&bgi,
+ 						   cache->global_root_id);
+ 	btrfs_set_stack_block_group_flags(&bgi, cache->flags);
+@@ -2715,6 +2735,15 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
+ 	btrfs_mark_buffer_dirty(leaf);
+ fail:
+ 	btrfs_release_path(path);
++	/*
++	 * We didn't update the block group item, need to revert @commit_used
++	 * value.
++	 */
++	if (ret < 0) {
++		spin_lock(&cache->lock);
++		cache->commit_used = old_commit_used;
++		spin_unlock(&cache->lock);
++	}
+ 	return ret;
+ 
+ }
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index f48db81d1d56..4d4d2e1f137b 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -84,6 +84,12 @@ struct btrfs_block_group {
+ 	u64 cache_generation;
+ 	u64 global_root_id;
+ 
++	/*
++	 * The last committed used bytes of this block group, if the above @used
++	 * is still the same as @commit_used, we don't need to update block
++	 * group item of this block group.
++	 */
++	u64 commit_used;
+ 	/*
+ 	 * If the free space extent count exceeds this number, convert the block
+ 	 * group to bitmaps.
+-- 
+2.37.3
+
