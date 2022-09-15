@@ -2,185 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 235FD5B9F06
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 17:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3043E5B9F0C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 17:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbiIOPi0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Sep 2022 11:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
+        id S229716AbiIOPlA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Sep 2022 11:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbiIOPiU (ORCPT
+        with ESMTP id S229570AbiIOPk7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Sep 2022 11:38:20 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBFA7F0B0
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Sep 2022 08:38:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DDFA733732;
-        Thu, 15 Sep 2022 15:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1663256295;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=69wcJjPahh3mgCCgtTViYIwOEl1foe3v7/Z9Q4/IUTk=;
-        b=hxm14E5badtWtKXN6FJq2Z8X93SLgSOKKYffy0NXWQJVQ+lfSkQdr5EUFtfikj2rb2DlQs
-        u+jxhBc8zw1GN0MftN779vAp+LI1mPhq0pcigji89IZXi/2I3l8+aNsZqs4wmQsX3F9kX1
-        TgOmDFcrYZ8A0rGtL7vdPESik3FnY3I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1663256295;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=69wcJjPahh3mgCCgtTViYIwOEl1foe3v7/Z9Q4/IUTk=;
-        b=s2wyryKPeN8gDZ4oBTsWpV7Pla6tG8DwvBciY0obegCB7Wlk+eD7A17bPAziqmbkU8nLHo
-        OOOumWYcDi9Lj0Cw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B397013A49;
-        Thu, 15 Sep 2022 15:38:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id e8r8KudGI2MwGQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 15 Sep 2022 15:38:15 +0000
-Date:   Thu, 15 Sep 2022 17:32:47 +0200
-From:   David Sterba <dsterba@suse.cz>
+        Thu, 15 Sep 2022 11:40:59 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BABB754BF
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Sep 2022 08:40:57 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id o7so9826747qkj.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Sep 2022 08:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=KoEQjBRa83fNF/FurfdurdKlgPlEdx3aej46pfLP4Ok=;
+        b=ZVKfxm6AfLrQTUaMly0HeJe84vK8+gPgdAUggUyFVuhXSdI/PsVFevOosqtSJk2Et8
+         sxrvQUbsioJ+7zfYA0Y8w00DiPAtfHK4ZPAgDeX/+JXktKlp8s4uB5tITpFBZt9dUZFH
+         0EqZMvQmSFyWgHuu/GIIyX74AYFBfSdEp63xBaW8by8Ym3UF/m3w7tFw/4SgLJnhK+Z8
+         hhnn78w3WFtIoGOxBY1U9cNs3pgy2sDkQ/kFv21qevnXDav5/hxt0UPX1Ubp5zB7tuvH
+         kdpH/QvYwqh5zrMFpzpUhSRyN8Df3gLjL2gZwylcQP71QPJ10THwZjOwu9EsQfJ2wOiL
+         MeJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=KoEQjBRa83fNF/FurfdurdKlgPlEdx3aej46pfLP4Ok=;
+        b=DWYcfnBlAK77TNZ8USpEuoKtXQ8NX2mOkb1HQEDm4OsmR7RfbhwCYcqFjUtmvMeOM5
+         6ht2/Go5ymM0CR4Ga7sxMcRfYKebNvG97GBYiG6tWjQe+gHTlYyWzWsy5j5Y8t0FHIyj
+         5iOLehkQ9MggFVFvUC457wqbo2iyltlQuB8Jzt+UAtjbBoSP4eq/YBOLToPYBVC2dfU0
+         CNFbIclCJ8W6JIwbJ96N6EOUPyrdytOVofJFDq2mlmW6Tkbevprv0HWhf17VwLwwUz3B
+         FD6PJsCBzlAKvNW2Coe9MCn48M/CLCAOoiz/gvfxpLAQF7jMrGk8gQNLBUpS3YUWTG8b
+         jurw==
+X-Gm-Message-State: ACrzQf2IUbMF3fo05jBREzTUIOpYruMbxNtOA/K5qfETk3NCDPYmkxDN
+        ZZxclL8/OMyyJAkqUXkq0HtcnpQLtQOydA==
+X-Google-Smtp-Source: AMsMyM7hPxd2vHXLYLNNvezscYTS6Bhb3xyMApwg9nJvMA0R1fqzHRFyGN7kKFeK1cCoS1fhXjoP/w==
+X-Received: by 2002:ae9:e207:0:b0:6cd:b864:11e5 with SMTP id c7-20020ae9e207000000b006cdb86411e5mr506811qkc.295.1663256456571;
+        Thu, 15 Sep 2022 08:40:56 -0700 (PDT)
+Received: from localhost ([2600:380:a345:f4dd:7e40:406:9902:14d7])
+        by smtp.gmail.com with ESMTPSA id i19-20020ac85e53000000b0035badb499c7sm3993233qtx.21.2022.09.15.08.40.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Sep 2022 08:40:55 -0700 (PDT)
+Date:   Thu, 15 Sep 2022 11:40:53 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
 To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH v4] btrfs: skip update of block group item if used bytes
- are the same
-Message-ID: <20220915153247.GQ32411@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <f68664759229da440226ebc28114108470b761b6.1663241717.git.wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] btrfs: refactor the inline extent read code inside
+ btrfs_get_extent()
+Message-ID: <YyNHhayadq+RyH+w@localhost.localdomain>
+References: <cover.1663229903.git.wqu@suse.com>
+ <dc726a7d458d3100602b3507cbf2a236ac47ff55.1663229903.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f68664759229da440226ebc28114108470b761b6.1663241717.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <dc726a7d458d3100602b3507cbf2a236ac47ff55.1663229903.git.wqu@suse.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 15, 2022 at 07:38:52PM +0800, Qu Wenruo wrote:
-> [BACKGROUND]
+On Thu, Sep 15, 2022 at 04:22:51PM +0800, Qu Wenruo wrote:
+> [PROBLEM]
+> In btrfs_get_extent() we can fill the inline extent directly.
 > 
-> When committing a transaction, we will update block group items for all
-> dirty block groups.
+> But there are something not that straightforward for the functionality:
 > 
-> But in fact, dirty block groups don't always need to update their block
-> group items.
-> It's pretty common to have a metadata block group which experienced
-> several COW operations, but still have the same amount of used bytes.
+> - It's behind two levels of indent
 > 
-> In that case, we may unnecessarily COW a tree block doing nothing.
+> - It has a weird reset for extent map values
+>   This includes resetting:
+>   * em->start
+> 
+>     This makes no sense, as our current tree-checker ensures that
+>     inline extent can only at file offset 0.
+> 
+>     This means not only the @extent_start (key.offset) is always 0,
+>     but also @pg_offset and @extent_offset should also be 0.
+> 
+>   * em->len
+> 
+>     In btrfs_extent_item_to_extent_map(), we already initialize em->len
+>     to "btrfs_file_extent_end() - extent_start".
+>     Since @extent_start can only be 0 for inline extents, and
+>     btrfs_file_extent_end() is already doing ALIGN() (which is rounding
+>     up).
+> 
+>     So em->len is always sector_size for inlined extent now.
+> 
+>   * em->orig_block_len/orig_start
+> 
+>     They doesn't make much sense for inlined extent anyway.
+> 
+> - Extra complex calculation for inline extent read
+> 
+>   This is mostly caused by the fact it's still assuming we can have
+>   inline file extents at non-zero file offset.
+> 
+>   Such offset calculation is now a dead code which we will never reach,
+>   just damaging the readability.
+> 
+> - We have an extra bool for btrfs_extent_item_to_extent_map()
+> 
+>   Which is making no difference for now.
 > 
 > [ENHANCEMENT]
+> This patch will enhance the behavior by:
 > 
-> This patch will introduce btrfs_block_group::commit_used member to
-> remember the last used bytes, and use that new member to skip
-> unnecessary block group item update.
+> - Extract the read code into a new helper, read_inline_extent()
 > 
-> This would be more common for large filesystems, where metadata block
-> group can be as large as 1GiB, containing at most 64K metadata items.
+> - Much simpler calculation for inline extent read
 > 
-> In that case, if COW added and then deleted one metadata item near the
-> end of the block group, then it's completely possible we don't need to
-> touch the block group item at all.
+> - Don't touch extent map when reading inline extents
 > 
-> [BENCHMARK]
+> - Remove the bool argument from btrfs_extent_item_to_extent_map()
 > 
-> The change itself can have quite a high chance (20~80%) to skip block
-> group item updates in lot of workloads.
+> - New ASSERT()s to ensure inline extents only start at file offset 0
 > 
-> As a result, it would result shorter time spent on
-> btrfs_write_dirty_block_groups(), and overall reduce the execution time
-> of the critical section of btrfs_commit_transaction().
-> 
-> Here comes a fio command, which will do random writes in 4K block size,
-> causing a very heavy metadata updates.
-> 
-> fio --filename=$mnt/file --size=512M --rw=randwrite --direct=1 --bs=4k \
->     --ioengine=libaio --iodepth=64 --runtime=300 --numjobs=4 \
->     --name=random_write --fallocate=none --time_based --fsync_on_close=1
-> 
-> The file size (512M) and number of threads (4) means 2GiB file size in
-> total, but during the full 300s run time, my dedicated SATA SSD is able
-> to write around 20~25GiB, which is over 10 times the file size.
-> 
-> Thus after we fill the initial 2G, we should not cause much block group
-> item updates.
-> 
-> Please note, the fio numbers by themselves don't have much change, but
-> if we look deeper, there is some reduced execution time, especially for
-> the critical section of btrfs_commit_transaction().
-> 
-> I added extra trace_printk() to measure the following per-transaction
-> execution time:
-> 
-> - Critical section of btrfs_commit_transaction()
->   By re-using the existing update_commit_stats() function, which
->   has already calculated the interval correctly.
-> 
-> - The while() loop for btrfs_write_dirty_block_groups()
->   Although this includes the execution time of btrfs_run_delayed_refs(),
->   it should still be representative overall.
-> 
-> Both result involves transid 7~30, the same amount of transaction
-> committed.
-> 
-> The result looks like this:
-> 
->                       |      Before       |     After      |  Diff
-> ----------------------+-------------------+----------------+--------
-> Transaction interval  | 229247198.5       | 215016933.6    | -6.2%
-> Block group interval  | 23133.33333       | 18970.83333    | -18.0%
-> 
-> The change in block group item updates is more obvious, as skipped block
-> group item updates also mean less delayed refs.
-> 
-> And the overall execution time for that block group update loop is
-> pretty small, thus we can assume the extent tree is already mostly
-> cached.  If we can skip an uncached tree block, it would cause more
-> obvious change.
-> 
-> Unfortunately the overall reduction in commit transaction critical
-> section is much smaller, as the block group item updates loop is not
-> really the major part, at least not for the above fio script.
-> 
-> But still we have a observable reduction in the critical section.
-> 
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
 > ---
-> Changelog:
-> v4:
-> - Race fix again
->   Even with v3 fix, there seems to be a race window, but I'm not 100% sure.
+>  fs/btrfs/ctree.h     |  1 -
+>  fs/btrfs/file-item.c |  6 +--
+>  fs/btrfs/inode.c     | 93 +++++++++++++++++++++++++-------------------
+>  fs/btrfs/ioctl.c     |  2 +-
+>  4 files changed, 57 insertions(+), 45 deletions(-)
 > 
->   `cache->commit_used` is not updated with spinlock protection, thus
->   no proper multi-core barrier to sync the new value to other cores.
-> 
->   Thus it's possible that, on core A we have cache->commit_used updated,
->   but on another core, cache->commit_used may still be the old value.
->   And incorrectly skip the update for the block group.
-> 
->   Anyway we should handle btrfs_block_group members with spinlock,
->   especially there are two members involved now.
-> 
->   This time I hope to get more testing, thus please don't include this
->   patch for late -rc. Better only targeting v6.2.
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 05df502c3c9d..e8ce86516ec8 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -3356,7 +3356,6 @@ int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
+>  void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
+>  				     const struct btrfs_path *path,
+>  				     struct btrfs_file_extent_item *fi,
+> -				     const bool new_inline,
+>  				     struct extent_map *em);
+>  int btrfs_inode_clear_file_extent_range(struct btrfs_inode *inode, u64 start,
+>  					u64 len);
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index 29999686d234..d9c3b58b63bf 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -1196,7 +1196,6 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
+>  void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
+>  				     const struct btrfs_path *path,
+>  				     struct btrfs_file_extent_item *fi,
+> -				     const bool new_inline,
+>  				     struct extent_map *em)
+>  {
+>  	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> @@ -1248,10 +1247,9 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
+>  		 */
+>  		em->orig_start = EXTENT_MAP_HOLE;
+>  		em->block_len = (u64)-1;
+> -		if (!new_inline && compress_type != BTRFS_COMPRESS_NONE) {
+> +		em->compress_type = compress_type;
+> +		if (em->compress_type != BTRFS_COMPRESS_NONE)
+>  			set_bit(EXTENT_FLAG_COMPRESSED, &em->flags);
+> -			em->compress_type = compress_type;
+> -		}
 
-Yeah 6.2 is the safe option for now, I'll add it to for-next after rc1
-so we don't hit other errors potentially caused by this patch.
+I spent most of my time reviewing this patch trying to decide if this mattered
+or not, why it was introduced in the first place, and if it was ok to change.
+Additionally it's not related to the bulk of the change which is making the
+btrfs_get_extent thing cleaner.
+
+So break this out into it's own patch, with a detailed explanation of why this
+particular change is ok.  In fact I'd prefer if you made all changes to how we
+mess with the em their own changes, since bugs here can be super subtle, I'd
+rather have more discreete areas to bisect to.  Thanks,
+
+Josef
