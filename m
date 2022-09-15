@@ -2,119 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E565B9743
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 11:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86265B9747
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 11:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbiIOJQW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Sep 2022 05:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
+        id S229521AbiIOJRA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Sep 2022 05:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbiIOJQA (ORCPT
+        with ESMTP id S229510AbiIOJQ7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Sep 2022 05:16:00 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2054.outbound.protection.outlook.com [40.107.20.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3BA459B5
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Sep 2022 02:15:01 -0700 (PDT)
+        Thu, 15 Sep 2022 05:16:59 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2075.outbound.protection.outlook.com [40.107.22.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227A8B16
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Sep 2022 02:16:58 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I95TW37mngSGr78hjIsRIl64eetB7ae0SSGQ45ng9f3gyGQ+Nxwi8MsCeqizVLZpUyByqf3OnmImt+JDC3gIqvqoMGcXV7AfigS8WxNmeF1MLkt2bXYnuEPSwcvojfPNmn9uHhn6yLRym3N4GtbIVGr5n0Aoc9q8hEFhRNI6NQOifLIGjy6oh+rP5/zMtpq11kJmjolwMGHeeqwxyZlOm83MwrrFYuDqeIV45htxliF9WgY9abvCmkf+/2bOeqUbz/dOAO08MTwR8dzn/gxofj7sk/wNZVsq15NkLrY9g9tvnsWvWX9hIgvAkk9mu5Enw+BHPl10Posaucl7ltsKPQ==
+ b=Xp1hWGGJLixc2EDM6RrjQ+d4cz42zLYNGdo/y9yQhKbKiqhaiD2V8s2iIR5avoXU1T1PgQNEd2H1NXfwYBzn7+zHkxV1o8TKXOiKvEtZxQlRj6TWaZhza+Kz3rjhQyUpYjgUSFmGMTPK20X4iRc1inFSoeEc1kbz+C8RNjGARbQaMUjAEwiJ0qd8HBPGIMr8AYeL/YWbhUgZXre79Tt2jrRStVR5BNqcrqgBABEHLo5HCDqBOex+AiWkzvt7bnQl/kwoc7ky83dcnox/63O8Ir0XawPKw0HFmObPTd9qXOWiT8oFmZT2qt5Nkvw0MlHFZAi249zg58dft7RFT4BnMA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=n97VAOko1R+4TU6Gof8aGdg89SM43ys1/mKFPk8q/EU=;
- b=Uj5Hk2WhLY7aY0v2NcmWPRdz/m8khx4ULrmz8LlWZNXS/F8shmkSpOnJyT+ptIKxjhHHcstEDPyWYyqxMPaWx+G3U9fuBdJmD2JxQaGv+BUf6OCDCPjJzAtvw6MkHauwkLP1HkZEqBKM+Cuf0iigM5ElOlMlaZ1mjZGPmNZlBvQoNh9wrOcRrJi0EK+rxCSO279pRw7OZ+Ql3D1UfIpAK41DyFGnKGB2+1XXnoN1CzqTrJqMwMPbybyMK7N2Lx9FWvDw/NcgmlB5FhH1VdSzJlLe5QOYVlWCoN3Euhgkk7r1mR6hFiF92lAP81POY/ntqVnOXVDvEbdTqcPAKS3UrQ==
+ bh=hW/zg/PjDx16BhKrInGdpPs63U09zpLoLZrmG7EPDjQ=;
+ b=jVnJAyTP8dEczWcyZTVs9c+JUyPVb2Ff5PgpH0yTuTyOJKSng6M8sSfhSU//c/Y5SQDI49Dq5grtr1G8jK+m843nSI8tUWX39CsbzzQOKYgJCn5TetJ7KJVgHTAOE/5GavsAmu/UzHyORrwDDe/sUE6cpS350MxgF2TFdZF8MJKeBGmUW1yeJneJt23zWA5e+YIOf1yTg25XBPmHa2I1IkRAO6L2lvPrRVQ57Gp3sF3ibsZOobqsv2ugQH5XJT2+dYJ3Gtsa26oSY5cTbP5IUuCUbQw79L0idFb1aFXOmsAyFdzzK7uAW7VUYBuQ/RFbdyPt1Bj6aOXuKUZvCfSu1Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n97VAOko1R+4TU6Gof8aGdg89SM43ys1/mKFPk8q/EU=;
- b=Fg975nDIA3y3LuiIEYQ4njlkTJOA8Y/cF33CHCbCmshh6nsMzseee4DIB0MKEtj5EwQxgnOu7xpGAOK9cXrk7nro6zSF3SW0PlppH/pogcZEvoHEEQKD8fCfozxfydrQNKIcSzey1mn8KhUy/uzVkglx4ivPP/GfkNfT0KIFQjQfF8cpidjhtyriEbYhEiAI6MVhKS4ed4FUdzA7JKk0SuxpHpcfNZwSQwHOjMClgtK1NDBpyN29WzV9sFfRoC188GpOlDBQzEy9hvR8fWKXfuaooOZuGTTAyS8ZvUXcGEeTBqGh24nJSYC98ubVEvhuwvrRLEhGcme7OQdnwOimEw==
+ bh=hW/zg/PjDx16BhKrInGdpPs63U09zpLoLZrmG7EPDjQ=;
+ b=dEggy+dYHSh+lbyw4sFX9tCdARBBOrDBlEzdbWYHT4xNogrOIYz/fbuzFgXs7a9mp4z04WCOmyPE+pWU5xhUe2ThuKD8shqhc1xqx1lXO58hkzx3NYOejlAk7rMseHLXM82RjRp6iYoFulsL6fIvrcTLO2tfTFSUzoD+nwDMNVQYuLadl631Bmj3Zhjp6jEfaJHJUDIJpoYaxF2TlAORenIvtyiXs0cYq/I8aJdSRizJeffQgJfLPRFTWuIXu/OKltGh8QSZzncqjtvDDBpJhu184bZmxuoQtvK/e/C2A0bd16GpQcq6EClI9GPtM5K7yoTpD0f9DaUmXgRsvSVsYw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by DU2PR04MB8662.eurprd04.prod.outlook.com (2603:10a6:10:2dd::5) with
+ by AS8PR04MB8198.eurprd04.prod.outlook.com (2603:10a6:20b:3b0::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.22; Thu, 15 Sep
- 2022 09:14:26 +0000
+ 2022 09:16:55 +0000
 Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
  ([fe80::3a32:8047:8c8a:85d9]) by AS8PR04MB8465.eurprd04.prod.outlook.com
  ([fe80::3a32:8047:8c8a:85d9%5]) with mapi id 15.20.5632.015; Thu, 15 Sep 2022
- 09:14:26 +0000
-Message-ID: <57b9689a-0b5a-e819-305b-4f41feaa6985@suse.com>
-Date:   Thu, 15 Sep 2022 17:14:14 +0800
+ 09:16:55 +0000
+Message-ID: <8d8ea30d-67f2-46cb-62d0-82ad12ab6413@suse.com>
+Date:   Thu, 15 Sep 2022 17:16:45 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.0
-Subject: Re: [PATCH 09/17] btrfs: move btrfs_chunk_item_size out of ctree.h
+Subject: Re: [PATCH 10/17] btrfs: move btrfs_should_fragment_free_space into
+ block-group.c
 Content-Language: en-US
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1663167823.git.josef@toxicpanda.com>
- <3744e0ae6f8087daa9608174aeee00c53732f8bb.1663167823.git.josef@toxicpanda.com>
+ <50ba0e87399977ef84a5d3787666fc6ce6c5cf3a.1663167823.git.josef@toxicpanda.com>
 From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <3744e0ae6f8087daa9608174aeee00c53732f8bb.1663167823.git.josef@toxicpanda.com>
+In-Reply-To: <50ba0e87399977ef84a5d3787666fc6ce6c5cf3a.1663167823.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0134.namprd13.prod.outlook.com
- (2603:10b6:a03:2c6::19) To AS8PR04MB8465.eurprd04.prod.outlook.com
+X-ClientProxiedBy: SJ0P220CA0002.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:a03:41b::10) To AS8PR04MB8465.eurprd04.prod.outlook.com
  (2603:10a6:20b:348::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DU2PR04MB8662:EE_
-X-MS-Office365-Filtering-Correlation-Id: ef392c6a-d0c2-4a5f-5acb-08da96faafd4
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|AS8PR04MB8198:EE_
+X-MS-Office365-Filtering-Correlation-Id: c0550468-7fd1-4b6a-10a6-08da96fb0897
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Pdqfgk2AEtVi1vMEZ3dvoD2scZh5k0GlWfkDyEt1mGxd1NB+6CW99Umt+GRl4p13MF4Cs78VSA7Ipt7btjlJ5vyr9jLIzL0fm+FrdEYivkM/MOXQbgzUQFSMj+caEG1qixsWdnwV/dmrdmWauWQ09QHn9hQzbUxEOnAGQcep+81AcovnuK5lwB3oSxNmPKCN4MI32WhAFENIvE3PK9eV6/Fh1j1WaGsbiyPJ/bHcvbZOw9oXI/UwxrjF7KV2Zg1qcwNGvtOPIZfqDw1nOKyFSE4fA6kJprgau/4Vz6lYYIVaJxcIrjUSn1hoO1C7nBgAL6VDTBIcUMVs/8hc75hdcQm8f8etybyZleWTtcofyuzIpyISYh3eYBC/GjBBe8/PXI/0+k3BPrr+jJ1thuYqD7SI/HUxOfficNuK5vwCCiPdHOUzkuI6Iui0N4rYrQ1pBue6hnw3NnoVqg7XtLiugQogbV9GL9MGNloJW85ivGy2KO+EF1GRugYWUahVLKe/VTd481sv2MtOO2xCAl7xMIeLPgam0vEBy3wSiMi8Ncfc1gj7KYKJNurJKh2aLN5ib3Y56PVuL7GTRdtva5Mq2oCPA3y3GgwNoOSR9cmB+yTfX79eVaZVnAyTw9kwZ8vrt9bB8m+C9oyF0uK2tygfx3/ZkQGsLdWMjETzeKA+z+RYvb4clszh9SQsrjxRS8v1ZRloSBbMJuAOHV2rMVNqOtLa2xlLCw9Ojaz8yyavROUw5kRIpM8mm9UOPf4cKiGVjSc+i4h9PEUaaNIo4M6SjVvfWxT1o2/p0EnuLGMJ09I=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(396003)(366004)(39860400002)(376002)(346002)(451199015)(66946007)(6506007)(31696002)(53546011)(66476007)(86362001)(66556008)(6666004)(5660300002)(41300700001)(31686004)(36756003)(2906002)(6512007)(38100700002)(478600001)(316002)(8936002)(83380400001)(6486002)(8676002)(2616005)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: JmZskvgkKeYedOMKaNw2n3BBEJPK+0w3ecxER7Ra+0x0op0lRi6o20vxH0J2WCHU1KIfc2HIJ2qb0k6ncbpXgb1t7SfOFIuSXlU2ucjXNwPlMhHB8xE7oLkU3m07yqpSGrmgoo44VpsRn2iRuv8hutU1wN85zGsw+2pQsmS8A8Ck17yIrxjl6RDPFo5fjEdMlHjQLnPO9VplCM5Hd510EddOVRqnc1n7ZVYJkB6DLJyErx9CtxljyOvrTJHoMOFV5qhjYz6+SuB/U7MxC58w0Xi00jeFo7xZDOwLX8ugKaCnpzZ2XoxbKYxqiGeSCNUPqkxRylhgCT/yElUkh18J3fnywKunDZAzKpL0r8XSVzWsgbpqzFc31apoxPcqxXNWgFTymAQWelq7uQZE2kLyRmtQqgBHgJk+AsvKEoP72G7PVlSe5PljTduKTDqgmvahzkgs7WbPjLJtwA12Ch5RFkN7C18yQeWrWzMCih1ALg4APxD2LASkcwKD18VwRD16S+mqJZuqjxom3V5cdGNWfTwCC/pWzpJoJPX8Hb7HSHEttxrGIz9JXHecPLJoEIlRbdf507lVa7vjD6pDpof7AdQUGIMBI455gm7W/BqvBAaiO6aRV1k+nWU/4DxC0Foyr4sFwHH6P7d/6Mo+S8MszisVoaMrmoPbLOBudo6gnn9yIcIYyyKGTOQlIW+SaB/zQfrOr1YZzOwDvCdJ2LfLp6feyHYogW7U4VhNmKicGNPr76yaIkgarQq1UWtZVM7vdQ3gz7wK39p3ZRHEL1/2HqX2GHxfT9otoCKU2TrsWuE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(376002)(39860400002)(346002)(396003)(366004)(451199015)(66946007)(36756003)(38100700002)(83380400001)(53546011)(6486002)(31686004)(66556008)(5660300002)(6666004)(41300700001)(66476007)(8676002)(186003)(86362001)(31696002)(316002)(478600001)(8936002)(2906002)(6512007)(2616005)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VEl5ajJ1SlVTSnNrekNFSTI2ckdVT3plbXpEQ3RhYlRrOEptbXRsVG5qQ2RL?=
- =?utf-8?B?NVhPQXQ1WCtwTEU1MDZOWlRYQzl4YWRlSnBRRURXRjdzck9rSkV1MDNYSlQx?=
- =?utf-8?B?STVVOUNwZlRDSWlMWnNwckxNQVhuUnJ6bDlkcUVURlBlUDhtQTNMUTUwL3VJ?=
- =?utf-8?B?bCtnVmVSWUVXbFBWUUNHSnNFM1IrUnE1eVZMN2hQOExpbWJxa3o4aXptRlZl?=
- =?utf-8?B?MVFwdTBLUm9TMnZ2TEU5REVXcm0vQ1NrL3BKYnJVeFVXaFNoWU53NXV1ZDIx?=
- =?utf-8?B?RGRDdzRrTVNVNmk3cHNneVRjMmVxMlVBWWRkSWpVVjBDMTZQNHoxTDExK0tG?=
- =?utf-8?B?U3ZMZVZML2dGcVJaOXpiNU1CR01hWmtIZllWSVV3cnF2dnlRekNWeXZJZVNW?=
- =?utf-8?B?VE90d05jcmNwMWlwbk1ob0h6TlVsc3kyLzhsVnlGQ0F3ano2MDloazJ5Ukhx?=
- =?utf-8?B?WGVrTFQ1dE9aalFndHNkcGRNeWJiZmRMQVkwa1R3ejcwWTNWVGRnNkhjM1dm?=
- =?utf-8?B?clFGUFdrL2JjVVkrSXhyMGNWYytPMlBMV2dFWU8zMkhnUVdxNEt2aVl2K1dy?=
- =?utf-8?B?Wk4vOERhckhFcjM5c29CKzRud3g5NXZ4VWFvUFVhVXJCMmRwNzYweENyd1Ru?=
- =?utf-8?B?Yi9HamVlaHpJU3huK01uRHhTc1N2dTgvRmFXYlZWTEd5blNZQU0xYlErcDV4?=
- =?utf-8?B?ajFMeFowejFkL3BWU3dkOXpyWGNkZzQ0Y0VUcUhXcThvUEZRMDUzMUVLVFZv?=
- =?utf-8?B?VzNtNkFCNnFOeERxbXk2QW9kdTExY2tzVUpxZWlQRWdPYW1FNXkrZDUrTTdV?=
- =?utf-8?B?ajNrTUdteDE1ODQwUU0xekcrKzZydEFwUWVNcU5uanJkR3F1R0N1eHJZY1Uv?=
- =?utf-8?B?UGgyZGM0b1VvZGNKdkRWcXlabGN1MDlYajlPVmIvZHIvU2RPTm83eHR3QS9X?=
- =?utf-8?B?VWVic2dXRmZmZGhTRUdncWpGOTd3Q1dCOUtyb3pOd1N5emRUVUVGemVXNSt6?=
- =?utf-8?B?SGdZV3ZCdkdBU0Vzak5NRW1vNXB2a1ZGMGF1UGJyclljNWlWYU1Dc2poWjdX?=
- =?utf-8?B?a2FxYUxBMTR2Q2hlUGUyTUt0SEVwL2pibHhBMlJKV2pJNEwyejNOS2lOdHAz?=
- =?utf-8?B?OFVUUjQ3bGpORXYxUGNxT2drNFRQeXMxaEh5bG5ZdS94enhHbFdEWmVnZ3Nw?=
- =?utf-8?B?TW5tQ0UxTFN4S3lsL05uWDhFYlZKNEpaUkl4QkR2VG9walJOeTVEQUNmTEtE?=
- =?utf-8?B?eTdCR0xYNWNqWGJHaVFmS3BFdCthc1FDUXdLQ2FpamxNc2UwRHk3aGJaM1V0?=
- =?utf-8?B?RnpaUEpYaEh2RFZpTm53Z1Jpa0ZvNVNGNU9aSElCN0ZRWGZIWWUyVFluSEdk?=
- =?utf-8?B?K3VSQTQ5UVJMSGorNWdyU0lZeklqWk5vMzNXWWpYc0FnRjB1eE1rRlMzanY1?=
- =?utf-8?B?YjF5YWc3UjlKRVovN01pUFBwVFNZQWRyOXVnU2JiTjNZQ1JkUmJvTy90T3ha?=
- =?utf-8?B?amoyc3dlZmU2aE9uZzZxamRESXJHOWRkZ2ZUdlRZRm1vanQ1Sk1PTjBFNGdR?=
- =?utf-8?B?cUVzbnNuRGUvUDRlZGJzMFl4bHpHTVdBSnA1Wjh3VWxWZ1VGbmFsMVlCbXRS?=
- =?utf-8?B?RFpkNmlJSnk1aFVGNnJES2xqbVlZSjZtdWw2UmJ6bjVxdWYzODdVZzNqYVJN?=
- =?utf-8?B?ajdkdUNkTmhGcXpvTnVuQ1NnaXY3NWlTa21abGRrOW13VFdDT0huWEVybEQ3?=
- =?utf-8?B?Z29JRTBuOGtiYWVDKy9HZlNGUEErQXA1R1h0bWpwN0ZNMjhvbUlRR0l0Z0h1?=
- =?utf-8?B?TmlLVkJoTy96eU5oelhCMU1wdlp6d05nMWgwSEVRcHJUTmR0NkJ2Y1JuakJJ?=
- =?utf-8?B?TlIzajRBMkp0Y3haMTUwWkxHbllrbjB3VTJIZ2JocHdPaE9vNXFEYTFQMk5k?=
- =?utf-8?B?ZCsrZjNvVGdldW9hS0oxMGV5bnFnTlVkaE5JcVpKRmg3VW9SY2tzejIwVFlS?=
- =?utf-8?B?TktUcVR3cUd1OXRGY3o3dFp1RmE1Q2xVS29MeFFjQjZXUnM1Nkg1RHZzQ2pQ?=
- =?utf-8?B?R0FSUUxPY2RSQTFJeXNwRTFrU3ZPMzVZZ3VGay9FVXVSSzRpakE4TndHaU93?=
- =?utf-8?B?dHFIT2VzblEwL1h0NmMyMVd5ZjdZM04yQmIzaU9EMUw5NDc4elJoS1FuMWo4?=
- =?utf-8?Q?T8thDqshAAMR7N+la2je2OU=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dkFNeFdEcXRSVm54OHhoQmNhQWRpSzZQZmtaRzlGRUZUWGYxUWRoTEdGdkY4?=
+ =?utf-8?B?WFpxZjZ0dHpwUGF5aUJOY24yK29ZZHlla2NlMlc0ZUVTSWlzbEh5OTdVaHhW?=
+ =?utf-8?B?ZVRkTVJ3SWF6RzBjUlZlSjlKdWZNU3AvVWRPZWpheG9OQlEyekFwVXBOaUw1?=
+ =?utf-8?B?K2lrL3NkYjBsQmVSYTRtL0k2MTk5TCtSZzZrSUpGRzFQSkFCLzJ3T280aDdY?=
+ =?utf-8?B?Q3EreW8vZC80ZzBTL3Z1UmtrczhsMllBUTdudWdHVjRmcG1ZT3ZSNHhnbEdE?=
+ =?utf-8?B?OTZPY0pQS0piWno0cHpZWUZFRGs4KzRwVlU5R1VPcHhYdWdZRUVjZ1VCc3FS?=
+ =?utf-8?B?VHZMQS95VnVWaTNLREptdHVNR01sNzY4ZkI3NzBPQXBxS2FNWUl2cUdsT2ll?=
+ =?utf-8?B?RU5VY1JnRW95b0t6WEQwQnBqVzV5R0psL2cxdmhsNDE1VGhaVk5haXdBT3B1?=
+ =?utf-8?B?anRJc3l4M1YxYUNmbnBNYVZxWG9LQVRlWjYrRlBtbmM3Q25EVlE2MTVFbkhZ?=
+ =?utf-8?B?S0VXZXpTWG5xMnNrVXB0T0lWZDZDeG56WlVHR3VWcnpEd0N6QTZYdXdvdTJt?=
+ =?utf-8?B?Y2lJcmF4YkJVZ1MyNndacmgwM0dvRnd0QkRwenhiWU54M0tYQWE1ZnFmTmpS?=
+ =?utf-8?B?d3BEaTU5VUNvb0tFY01TUEtIQXZOZ3grbmUvZUJRbDBJUmhlelRFOHlKZkll?=
+ =?utf-8?B?WnpEM0JFay9XaWRhSmVTcXNBbmtsUG1aSDl3bWgrV0swKzhWZ3Urb3hnVi9V?=
+ =?utf-8?B?UWk2YjkvdWFUYnQ4aG1XWktNL0NNRzdwNHBHUDkvKy9ZbnRKUnh2clJZWm51?=
+ =?utf-8?B?WE5pM3hLWEYrMk0xS2JVeHhKNUhlNzBIcnlXakZCalJXUWQzWUtOOGF3bGp5?=
+ =?utf-8?B?RHhiVCtQNFl3b1BzT0hTSUZ1ZGp1bE1qaHAydDQ5OFBZajNkS0lLU1FYdlM1?=
+ =?utf-8?B?R3RNL21JSUtBL3Axd2RBU3BFc2dJQWRTa2d6bjh2dkRXalhkS1U4clJ4b0Y3?=
+ =?utf-8?B?c1V6MDBYWE5CWXFwenNRSG16OGtCVXo4MS9TT1pTV0gxdUJkNWdCRURhc1lW?=
+ =?utf-8?B?MUdZZ3VGQzE5aTV5TWRITkM3NFpUUWhnOTNHcThvUnYxYTd1KzNBY3F3WUJm?=
+ =?utf-8?B?NEh0N1NGeGtLY2ZYY2grcXVLZk9BeGJJQUhzQUlEZkp6TXh0SWljd1JidGNT?=
+ =?utf-8?B?L2VxZTdJOXFOb01RaHN2d1d2cC9QckdsekdmYkVPTTRkOVBCdXI1V3R2RHZU?=
+ =?utf-8?B?Vm9Zbno4Vmt0Z042WWlHcTVFdVpZVncwZ0tLRkhQK3ZyL3lwTFFEaE1MSWhm?=
+ =?utf-8?B?Nms4Y2hFTjRmUjgwZUVsNTgyS2hpemxLWlpXblovMUlHbkFoSmtnTzk5MGx6?=
+ =?utf-8?B?QVVJbGx3Y3N2TjMybXNrb2NjdEpWaG5yQnpZT1NzSUh5a2YycjcxbXZUUUZL?=
+ =?utf-8?B?L1ZIS1NxdUR4dm9Tb1E5T1dLL2NZQlBGZ3BDMXJFRXdpQ2EwSjdSWGhzSVRR?=
+ =?utf-8?B?Qm9Zc3JlNUwrZUtlT2NNSUM0TVJ3YmVvOEsweXZEbXFRN3BLNHNYZ1E4UTZM?=
+ =?utf-8?B?VThWNDlYTmpEanRNZlhLaUVNM3I3Z091QTJ4TzA1SjhuZ1NnWlNnZnVTdnVu?=
+ =?utf-8?B?c1A3Qk5WK1NLZmc0MVhaRDFoaVlOdGJCdVJidE1YQzVrci9xVWI5cTFYZXpo?=
+ =?utf-8?B?bmRSdXdHRVltRlIyNm95U0RQb1pyRkEvZVhNTEVsVjFvT3l4Y2hoV1crSmZN?=
+ =?utf-8?B?dk80cVoxUHZtUVV2K1lBRkVUWGN6Wk82YjU5dEhLRktrL2d3U21ZYnF0VTRa?=
+ =?utf-8?B?cy9KY2Y0UUVaRnpiRkNtVzN5bXppOWxLUm1HaWgxS0UxWmVoRy9Id0srWHJ6?=
+ =?utf-8?B?WXFPQzZPaUlMNTUzb2JSeVF0TUhteTRaQzNVM2lpV1gzUk43L3NTeHJuaFhE?=
+ =?utf-8?B?aU12b1d6K2V2VzVMWEdDOTdGMURQTkFVL05yRUVsZFlxSGwxRGNtdmtLcEZo?=
+ =?utf-8?B?MjRScFFXTmgvNFY3VGpUeS9JdW9BSG5OV2UySEdvNEsvYWlBWGdFYlVzMzhp?=
+ =?utf-8?B?WGV2TEt2b1F2NDdkU0Q4aGVaVlkralh4UmJSa1VnK1dpWlRpMlFOTS9BZnN5?=
+ =?utf-8?B?Y2Rlb1FGYUVnYU9aOXpmUWNUSjZUV01Gc1dtWmdzK1ZqTisrNzhxdHphQTJB?=
+ =?utf-8?Q?tGCL3k9mBaDybYe/0lbXwM8=3D?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef392c6a-d0c2-4a5f-5acb-08da96faafd4
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0550468-7fd1-4b6a-10a6-08da96fb0897
 X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2022 09:14:26.3373
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2022 09:16:55.2359
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OGCqT9h4dFFdbXoDV2hiz1mi2tgmCRobtM6RGalAXxE7tR6OKl61CZxLovqxKi29
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8662
+X-MS-Exchange-CrossTenant-UserPrincipalName: JhZv8t4+5PHB74fX6eVSUBV07fMLb+CJrVSeurzAn0JTUpiVdLCax+1U7BKexPnf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8198
 X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
@@ -128,66 +129,64 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2022/9/14 23:06, Josef Bacik wrote:
-> This is more of a volumes related helper, additionally it has a BUG_ON()
-> which isn't defined in the related header.  Move the code to volumes.c,
-> change the BUG_ON() to an ASSERT(), and move the prototype to volumes.h.
+> This function uses functions that are not defined in block-group.h, move
+> it into block-group.c in order to keep the header clean.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Again a very small function, can it be inlined instead?
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
 > ---
->   fs/btrfs/ctree.h   | 7 -------
->   fs/btrfs/volumes.c | 7 +++++++
->   fs/btrfs/volumes.h | 2 +-
->   3 files changed, 8 insertions(+), 8 deletions(-)
+>   fs/btrfs/block-group.c | 12 ++++++++++++
+>   fs/btrfs/block-group.h | 11 +----------
+>   2 files changed, 13 insertions(+), 10 deletions(-)
 > 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 2e6a947a48de..60f8817f5b7c 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -58,13 +58,6 @@ struct btrfs_ioctl_encoded_io_args;
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index c52b6e245b9a..c91f47a45b06 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -18,6 +18,18 @@
+>   #include "raid56.h"
+>   #include "zoned.h"
 >   
->   #define BTRFS_MAX_EXTENT_SIZE SZ_128M
->   
-> -static inline unsigned long btrfs_chunk_item_size(int num_stripes)
-> -{
-> -	BUG_ON(num_stripes == 0);
-> -	return sizeof(struct btrfs_chunk) +
-> -		sizeof(struct btrfs_stripe) * (num_stripes - 1);
-> -}
-> -
->   /*
->    * Runtime (in-memory) states of filesystem
->    */
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 94ba46d57920..b4de4d5ed69f 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -160,6 +160,13 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
->   	},
->   };
->   
-> +unsigned long btrfs_chunk_item_size(int num_stripes)
+> +#ifdef CONFIG_BTRFS_DEBUG
+> +int btrfs_should_fragment_free_space(struct btrfs_block_group *block_group)
 > +{
-> +	ASSERT(num_stripes);
-> +	return sizeof(struct btrfs_chunk) +
-> +		sizeof(struct btrfs_stripe) * (num_stripes - 1);
+> +	struct btrfs_fs_info *fs_info = block_group->fs_info;
+> +
+> +	return (btrfs_test_opt(fs_info, FRAGMENT_METADATA) &&
+> +		block_group->flags & BTRFS_BLOCK_GROUP_METADATA) ||
+> +	       (btrfs_test_opt(fs_info, FRAGMENT_DATA) &&
+> +		block_group->flags &  BTRFS_BLOCK_GROUP_DATA);
 > +}
+> +#endif
 > +
 >   /*
->    * Convert block group flags (BTRFS_BLOCK_GROUP_*) to btrfs_raid_types, which
->    * can be used as index to access btrfs_raid_array[].
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index f19a1cd1bfcf..96a7b437ff20 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -730,5 +730,5 @@ int btrfs_bg_type_to_factor(u64 flags);
->   const char *btrfs_bg_type_to_raid_name(u64 flags);
->   int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info);
->   bool btrfs_repair_one_zone(struct btrfs_fs_info *fs_info, u64 logical);
+>    * Return target flags in extended format or 0 if restripe for this chunk_type
+>    * is not in progress
+> diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+> index 4d4d2e1f137b..e34cb80ffb25 100644
+> --- a/fs/btrfs/block-group.h
+> +++ b/fs/btrfs/block-group.h
+> @@ -242,16 +242,7 @@ static inline bool btrfs_is_block_group_data_only(
+>   }
+>   
+>   #ifdef CONFIG_BTRFS_DEBUG
+> -static inline int btrfs_should_fragment_free_space(
+> -		struct btrfs_block_group *block_group)
+> -{
+> -	struct btrfs_fs_info *fs_info = block_group->fs_info;
 > -
-> +unsigned long btrfs_chunk_item_size(int num_stripes);
+> -	return (btrfs_test_opt(fs_info, FRAGMENT_METADATA) &&
+> -		block_group->flags & BTRFS_BLOCK_GROUP_METADATA) ||
+> -	       (btrfs_test_opt(fs_info, FRAGMENT_DATA) &&
+> -		block_group->flags &  BTRFS_BLOCK_GROUP_DATA);
+> -}
+> +int btrfs_should_fragment_free_space(struct btrfs_block_group *block_group);
 >   #endif
+>   
+>   struct btrfs_block_group *btrfs_lookup_first_block_group(
