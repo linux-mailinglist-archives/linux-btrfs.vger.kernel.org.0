@@ -2,188 +2,287 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C845B956C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 09:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBCB5B95D0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Sep 2022 09:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbiIOHaI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Sep 2022 03:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51368 "EHLO
+        id S229709AbiIOH7E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Sep 2022 03:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbiIOH3j (ORCPT
+        with ESMTP id S229895AbiIOH7C (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Sep 2022 03:29:39 -0400
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C578467461
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Sep 2022 00:29:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1663226952; x=1694762952;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=f4qc9ntCUr06faH0Z9bZqO9ozpL0U0ek+yWSM/8ZneM=;
-  b=d/Ltpfzy5/d/s+wW6wUqimLVj8pu9eFHiUtiYFHDZkWUTLHSYGyQWQ3d
-   L9uyPuyIkhSwFhqv/cs/1H6uh4JYsmzw9SVv+OrC4cgLyNtrholCGYlbw
-   8mKorelvLEHiRMwcyY/YBXj+pAv8CEKME0K46ZIHNQsULch8DI7wmjJic
-   Ns3MgdQx2gnCpanypvk8UL6dHNonRx6m0Py/03dbKM8GGVJvqoudXu1d7
-   sChswUsNl/3FDMjEoLvU31cXtjnOEnZNOLz09TqNdWFPBWufWiu0gj820
-   zlJ5vBZqtgz7VeNqTY/GSe4HHtocqOH9CK1LwIv4bjNmUfNXb4nShPupa
-   w==;
-X-IronPort-AV: E=Sophos;i="5.93,317,1654531200"; 
-   d="scan'208";a="323514322"
-Received: from mail-dm6nam11lp2170.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.170])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Sep 2022 15:29:11 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VhgrTsHypShSYYcfDRDGNmR00HFD36wk+Nlnj5omMEnpDTYN+ywjiTF5gzE5kVyGn9Mpy0xy9e+HyahFd8kOkWRZ70am1NsiGhR8sqyVi6OSvvOqHWj5vWxO8gvq1j/h/SBuXef+0O2mTiFGY/9PZnl1Ntfk0qbrKdcndXWEOUHKbiYdRpkKRl3iPGg6q3q3LUXGKhmshXS92GJBYeJFPoubTsmc8KqZ4LXCYsUdC5p6+uqnQNt6T1RCeuY8Db3e5MZCsQ7L6onSPoALpUXbn1sbBR9SibOIhpJ6oen3UeXEXryvTkj7mTvtlIllFWRTtJ6sjkoriF6uzWnef59FKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C/MrIDutP9k9Ci4yq8glRwg67SN9moSkVeTlrh+ZhEs=;
- b=PuzrhoMoPnqBWgAXqbgOhCJp65PNqQXNB2YL1KDIj8eV5LqR0byqCAEovCWkhF+4hk0uwO8OAWGWD0k/JjqQW91KskXbK8E/ti3RdUKdvtATyBitOE3gNlaUmZEJNYJbIXtzA0LeppZKwGxevwIx9uD2FvQahU1gQHwUordktEXmnD3Y1rzlYh15cYfh3MbBIATDKsHEbpj7Ie+D8Bt6/bTR8GXs3PcXSvEZoKlwzfSmjs3gcxjvEqQKCUGAz7ClgD2f4i7Q61JkpK28IGZtzbK3mjmb6HSP9xHVBC2sRxtAE+JerVXzH0sxg2EzrX8QLIv26PY5/Y6ouF8jFBcdVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C/MrIDutP9k9Ci4yq8glRwg67SN9moSkVeTlrh+ZhEs=;
- b=Xnp0hLGReCmuQcmKgIwAQ2dVj768fbqX4dq81CjnrhT/Xl/T8lnx49vZxelpPrvBMCTC4RZjV5JOQn2Q3VPQu7/mPTbNJBrbSaV9o5vzN/PS+IKoVFAXOajcB27OkYXNWS2FNQ83X0OgaVH9zQhfYWFNgv5ffPvUDQwTQ/JPp8U=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by DM6PR04MB5212.namprd04.prod.outlook.com (2603:10b6:5:10b::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.22; Thu, 15 Sep
- 2022 07:29:09 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::7412:af67:635c:c0a9]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::7412:af67:635c:c0a9%7]) with mapi id 15.20.5612.022; Thu, 15 Sep 2022
- 07:29:09 +0000
-From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: Re: [PATCH 10/10] btrfs: delete btrfs_check_super_location helper
-Thread-Topic: [PATCH 10/10] btrfs: delete btrfs_check_super_location helper
-Thread-Index: AQHYyI7fBxOt7iZvR0+wCIts7H1qRa3gGJEA
-Date:   Thu, 15 Sep 2022 07:29:08 +0000
-Message-ID: <20220915072908.uekh4xn2fxzrcwtf@naota-xeon>
-References: <cover.1663196746.git.josef@toxicpanda.com>
- <b3b607429c224b37bf77571a3759a0c5b15c71bc.1663196746.git.josef@toxicpanda.com>
-In-Reply-To: <b3b607429c224b37bf77571a3759a0c5b15c71bc.1663196746.git.josef@toxicpanda.com>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|DM6PR04MB5212:EE_
-x-ms-office365-filtering-correlation-id: f34ad7ad-9b5d-4b01-774e-08da96ebfa7e
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pIkDEbPigh5Sk5qC0QNk68IS1LsES6EuMlHhmVkU66Pgk3XyQ+Py+RvPzDfOIQtSpNUcLrGHKDAXcrIGSD+JhDSsK9jLNMFIpXANwWxjmRlkG8louQHcnEu9Sh/v1hp3mJd+PMJYO29Kfv0rWUXg9TExtbM62aLmih+dC/7o/+PDuia7e7ENrNd03YuKg99Nl09HMhpXn3Z4AQza2rRcplmJc77T+mPiKMqqFJfWs8ET0r2foLWZUsnXk/MD2lDhtAwEZUElXHnON4N+CtIIg6D4lNKCHx9eLX6BWTmneNR9buaAMB7m0WVSd3WGCVAxMf6aQsQh5vXIwh/p8twkGiraVRiGPcOOCOJ7z6vdkX98SGWA72kxAiBvL9oNa7m9JnD26S4GGBaY3VFQpA3XuOHvi6CxeusVmAqZ0Jt2rNn83Hq1vSzKvEoDp6sHR4tc7fAJEbwESwnpSCtX9fIq74QPCteU5XA3ns5QiNFsfxrCr7sByzFY3TuuLWiAWSaWz4zc4Y9JRKQh9mikTV53GYWGZyT7X7Q8IsP9ePWpc4GdehgcgxpodhAZftMs/nN6BnAp85E506EI/YWT2k7o4cVLF1jjb8aCIdlKMsfsOv+KcTfTHkKUs8jGw5GLU92YQyFC5HZUbN5oZmT65xBuLJr5WCoZuQCkkUXuCj86d9wgvluU1/RKOd9PkliKx/Q9VSt2EHVVgSClfqdZ4/P59rgPdGoI+bHWgUVnECGFKxp61xQxPIE/MSyOq0zdHq0swFH+Eoq+1hwkWh4MtsY8wQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(7916004)(4636009)(366004)(39860400002)(346002)(396003)(136003)(376002)(451199015)(316002)(6486002)(66476007)(71200400001)(91956017)(478600001)(66446008)(66556008)(76116006)(66946007)(64756008)(4326008)(41300700001)(38070700005)(6506007)(8676002)(86362001)(5660300002)(8936002)(186003)(1076003)(54906003)(82960400001)(38100700002)(122000001)(26005)(9686003)(33716001)(6512007)(83380400001)(6916009)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?6W6PjHfaktLoHvWrgUM/w9TunPHm6JJ/vfnrke8hPeny+5stqCpDh6PBBisd?=
- =?us-ascii?Q?77NNgWhvGZpPudu6/XJARchCPEge02KAMoNdwpBBr193QyKt1dOdEzjSXxmC?=
- =?us-ascii?Q?KHPKykMbvYq/PkIuudHKV0r/fjbT2+Va4emsLxC2BzencvVZeuQ3unmoSiE9?=
- =?us-ascii?Q?JRstfem7nBb3R6WQ7LR9sGj+WVipvLyoPYQNLmZp+l8fBnzb6bA3fSHPvLF9?=
- =?us-ascii?Q?3O3W4ZqruVF9jnIlymfkCa/X3KtS5mc5PInnYNc8KCHULNT5Jju3lgyuTjnn?=
- =?us-ascii?Q?GUiwBiRCyhVM3z3bzXuKgCA0non/eSr8v8KRc92LBc2hRTy0AX9QKpzKP9+/?=
- =?us-ascii?Q?FgbAEYpV3g5CoAXhjngZBanO5VmxhsS5gaUhP8K8eJlI1CtJtMk0qRRrMAKD?=
- =?us-ascii?Q?W1QMVcxB2YTBvy8anl2pFNtHHfspTVk0wXuBpD5qFGk74YJXwfino5a7XkYQ?=
- =?us-ascii?Q?I/ZDqqJcYiBLWJIqIuw+Q4hDabGlnbku1Pb/cY4FbxRnFDnxaCFyh2sN3o2H?=
- =?us-ascii?Q?egDYfQh+9zzZoQ9KQF7QDXwz4HZhOHxdu8UQfSkj0KnBKueQkwpadOOgJ+sb?=
- =?us-ascii?Q?Afnpb/XgxIuu3InwsCkUArm4ln67uJiMQEul69GSsWNkOb+82NcXjAXiUTp6?=
- =?us-ascii?Q?v4B9U1/3sw2YLstlTMsaSqYxPdgi3zKHz+nYy9qeb3xbKerd5w/WfULz0yyt?=
- =?us-ascii?Q?8N5Ljn4hHC9ssQuoKvzKp1LGsglr9DxCQr/+aYZRyZga96/UKrWed1my8ILQ?=
- =?us-ascii?Q?Owkj+yfCrLr58gzBqzhxHKAsvfja90yK3EnBugiQTf236YR+XuTxgPCAY47w?=
- =?us-ascii?Q?l7RlOwXiY6dGCnWS39S3fvVaXQ9zjB4p3OvBomC1HDTuO0R0R2DC44VfQ/wM?=
- =?us-ascii?Q?hVEl2pEAB8RSHThipvKCQYGM6X1u3+GxRQqu9qAp+yKIqz55i1BLfGdUvSE9?=
- =?us-ascii?Q?Y0o3bMvYmUwCQYS/ilTzu4hVwvrRCGN2b9ErL1PZNWa3AGIwaaI/3+P0OEv9?=
- =?us-ascii?Q?KVlz3Ucga98mZTtmSXmvg6UQT2k9K3Fp7dpWzqIAgEIM2wtHMmJJ7MQTs+du?=
- =?us-ascii?Q?Tu9MZqxQbm12yPGd2w/iZNagW+lOp83ur6at61WD+NTTLNwODTkjdfwd7ge4?=
- =?us-ascii?Q?5aGFWe0FTh/7rGdYrXres2bzDJxsR+cQ1Daqfc1LNB2id08imZ3PgqHRCcF5?=
- =?us-ascii?Q?THN/2ygxRi0pyFyecVjJVKZN5WInm8lFEBvX1QOPexpRThjhkISpGCDY1r8R?=
- =?us-ascii?Q?99BazJus6hMC3/MoVev2iBsp835/Bn72tsOPuaNHAF2mv8gJvYJ/M5VgiLEH?=
- =?us-ascii?Q?L+qngHo2LL66Vnu0+y1nHpEoL1LtXwDl2bEIWy7Guy/Zev7LcEl+MoLKvsMv?=
- =?us-ascii?Q?Ys6Q3+DptUpg6VpG/lwqKmFUbbJ1RWl4zXQjOngmWK9qJGqC4DV2fyM4EuFA?=
- =?us-ascii?Q?XjbBx2MnZvtvb09mj7vhEAwdX+PayVNejFZ2IKhmQ06flMI8Vf4GkESM2x5L?=
- =?us-ascii?Q?PJkWrNho9mkSkaseR+n/P+JfqBDbtH1yLuolqeNr02cZIam0HoXPKKJbaA4B?=
- =?us-ascii?Q?XBoZGyUfgeT3ADu6RD4M+yFekaUxmvQYBscJEdrMzztIh3kX0kQRMnw5Blin?=
- =?us-ascii?Q?fw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4831208ED52C0B47A380FF95DD5A2416@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Thu, 15 Sep 2022 03:59:02 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 15 Sep 2022 00:58:53 PDT
+Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730A5979C0
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Sep 2022 00:58:52 -0700 (PDT)
+Received: (wp-smtpd smtp.tlen.pl 18550 invoked from network); 15 Sep 2022 09:52:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
+          t=1663228330; bh=UE1TXKbVnlOlNw9RurhVnfbxUXnHQPfMDqkaZE2lF2k=;
+          h=To:From:Subject;
+          b=CiuuD3OslKh80Q1jdrOQmQIFoY+2dlS+MarM83lQQYc978cPft4VoQ4V1hYXdcoZr
+           24UyDvQNC4rnmEI6kfS6wPRr07jhJ3HyhnX8Lc0pTB7QGBX2HyH5138v47c7zhNpmB
+           LS+K/h88kui+VoPCO5HHgU0eo1w4ONtr7z28A/zs=
+Received: from unknown (HELO [192.168.1.108]) (olgierd86@o2.pl@[89.151.37.169])
+          (envelope-sender <olgierd86@o2.pl>)
+          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <linux-btrfs@vger.kernel.org>; 15 Sep 2022 09:52:10 +0200
+Message-ID: <0c0ea8d6-b6ed-e942-6380-d720068668f0@o2.pl>
+Date:   Thu, 15 Sep 2022 09:52:08 +0200
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f34ad7ad-9b5d-4b01-774e-08da96ebfa7e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2022 07:29:09.0107
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0AJHZLu2wOQsYPdV+vujtt18Cm2dNtNeZgTQs3xsHMOuzspwikM6e7pvs4nQnS+/fURw1A6E3NOP3LJ7M5Neyg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5212
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Content-Language: en-US
+To:     linux-btrfs@vger.kernel.org
+From:   Olgierd Jarosz <olgierd86@o2.pl>
+Subject: Page allocation failures when running md5sum
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-WP-MailID: 70d1dce073576bcc7010a7661c3d8329
+X-WP-AV: skaner antywirusowy Poczty o2
+X-WP-SPAM: NO 0000001 [AQK0]                               
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 14, 2022 at 07:07:50PM -0400, Josef Bacik wrote:
-> This checks if device->zone_info =3D=3D NULL or if the bytenr falls in a
-> sequential range, however btrfs_dev_is_sequential already does the NULL
-> zone_info check, so we can replace this helper with just
-> !btrfs_dev_is_sequential.
->=20
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/scrub.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
->=20
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 66f09202ba96..9d130e13c6b9 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -4140,16 +4140,6 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
->  	return ret;
->  }
-> =20
-> -static inline bool btrfs_check_super_location(struct btrfs_device *devic=
-e, u64 pos)
-> -{
-> -	/*
-> -	 * On a non-zoned device, any address is OK. On a zoned device,
-> -	 * non-SEQUENTIAL WRITE REQUIRED zones are capable.
-> -	 */
-> -	return device->zone_info =3D=3D NULL ||
-> -		!btrfs_dev_is_sequential(device->zone_info, pos);
-> -}
-> -
->  static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
->  					   struct btrfs_device *scrub_dev)
->  {
-> @@ -4173,7 +4163,7 @@ static noinline_for_stack int scrub_supers(struct s=
-crub_ctx *sctx,
->  		if (bytenr + BTRFS_SUPER_INFO_SIZE >
->  		    scrub_dev->commit_total_bytes)
->  			break;
-> -		if (!btrfs_check_super_location(scrub_dev, bytenr))
-> +		if (!btrfs_dev_is_sequential(scrub_dev->zone_info, bytenr))
+Hi,
 
-This condition is inverted. We need to skip a sequential zone as we cannot
-overwrite superblock in the zone anyway.
+I ran into a couple of page allocation failures like the following on a
+fresh system. All I need to do is run md5sum on my data to trigger this.
+Is this something I should be worried about?
+The only thing running there is an idle NFS server, SSH and the md5sum.
+The log below is literally from a fresh boot followed by md5sum on the
+data, but these also happen later, usually after copying over another
+couple dozen gigabytes and running md5sum again.
 
->  			continue;
-> =20
->  		ret =3D scrub_sectors(sctx, bytenr, BTRFS_SUPER_INFO_SIZE, bytenr,
-> --=20
-> 2.26.3
-> =
+
+Thanks,
+Olgierd
+
+
+[ 1186.232273] md5sum: page allocation failure: order:4, mode:0x40c40(GFP_NOFS|__GFP_COMP), nodemask=(null),cpuset=/,mems_allowed=0
+[ 1186.232287] CPU: 3 PID: 1108 Comm: md5sum Not tainted 5.19.0-1-amd64 #1  Debian 5.19.6-1
+[ 1186.232291] Hardware name: Gigabyte Technology Co., Ltd. B560 HD3/B560 HD3, BIOS F5 04/16/2021
+[ 1186.232293] Call Trace:
+[ 1186.232296]  <TASK>
+[ 1186.232299]  dump_stack_lvl+0x45/0x5e
+[ 1186.232308]  warn_alloc+0x138/0x160
+[ 1186.232313]  ? __alloc_pages_direct_compact+0x222/0x2f0
+[ 1186.232318]  __alloc_pages_slowpath.constprop.0+0xc7b/0xd10
+[ 1186.232324]  ? bio_add_page+0x39/0x90
+[ 1186.232330]  __alloc_pages+0x308/0x330
+[ 1186.232335]  kmalloc_order+0x29/0xa0
+[ 1186.232340]  kmalloc_order_trace+0x19/0x90
+[ 1186.232347]  btrfs_lookup_bio_sums+0x542/0x580 [btrfs]
+[ 1186.232403]  btrfs_submit_data_bio+0x159/0x210 [btrfs]
+[ 1186.232451]  extent_readahead+0x40d/0x440 [btrfs]
+[ 1186.232511]  read_pages+0x69/0x2d0
+[ 1186.232516]  ? folio_add_lru+0x67/0xa0
+[ 1186.232521]  page_cache_ra_unbounded+0x125/0x170
+[ 1186.232526]  filemap_get_pages+0x4df/0x630
+[ 1186.232532]  ? pagevec_move_tail_fn+0x390/0x390
+[ 1186.232538]  filemap_read+0xb9/0x3c0
+[ 1186.232545]  new_sync_read+0x100/0x180
+[ 1186.232551]  vfs_read+0x13c/0x190
+[ 1186.232557]  ksys_read+0x5f/0xe0
+[ 1186.232561]  do_syscall_64+0x38/0xc0
+[ 1186.232567]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[ 1186.232572] RIP: 0033:0x7f6e623e6a7e
+[ 1186.232576] Code: c0 e9 b6 fe ff ff 50 48 8d 3d be ec 0b 00 e8 d9 f1 01 00 66 0f 1f 84 00 00 00 00 00 64 8b 04 25 18 00 00 00 85 c0 75 14
+  0f 05 <48> 3d 00 f0 ff ff 77 5a c3 66 0f 1f 84 00 00 00 00 00 48 83 ec 28
+[ 1186.232578] RSP: 002b:00007ffc756ba568 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+[ 1186.232582] RAX: ffffffffffffffda RBX: 0000563f530d56b0 RCX: 00007f6e623e6a7e
+[ 1186.232584] RDX: 0000000000008000 RSI: 0000563f530d8750 RDI: 0000000000000004
+[ 1186.232586] RBP: 00007f6e624dc5e0 R08: 0000000000000004 R09: 00000000a2fd2ca0
+[ 1186.232588] R10: 00000000bf353c63 R11: 0000000000000246 R12: 0000563f530d8750
+[ 1186.232590] R13: 0000000000000d68 R14: 00007f6e624db9e0 R15: 0000000000008000
+[ 1186.232594]  </TASK>
+[ 1186.232608] Mem-Info:
+[ 1186.232610] active_anon:149 inactive_anon:8055 isolated_anon:0
+                 active_file:879220 inactive_file:3045388 isolated_file:0
+                 unevictable:0 dirty:0 writeback:0
+                 slab_reclaimable:21227 slab_unreclaimable:23113
+                 mapped:9203 shmem:256 pagetables:380 bounce:0
+                 kernel_misc_reclaimable:0
+                 free:50919 free_pcp:0 free_cma:0
+[ 1186.232617] Node 0 active_anon:596kB inactive_anon:32220kB active_file:3516880kB inactive_file:12181552kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:36812kB dirty:0kB writeback:0kB shmem:1024kB shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 2048kB writeback_tmp:0kB kernel_stack:3056kB pagetables:1520kB all_unreclaimable? no
+[ 1186.232623] Node 0 DMA free:13312kB boost:0kB min:64kB low:80kB high:96kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[ 1186.232629] lowmem_reserve[]: 0 833 15809 15809 15809
+[ 1186.232635] Node 0 DMA32 free:63492kB boost:0kB min:3556kB low:4444kB high:5332kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:103308kB inactive_file:727636kB unevictable:0kB writepending:0kB present:964268kB managed:898436kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[ 1186.232641] lowmem_reserve[]: 0 0 14975 14975 14975
+[ 1186.232646] Node 0 Normal free:126872kB boost:0kB min:63960kB low:79948kB high:95936kB reserved_highatomic:0KB active_anon:596kB inactive_anon:32220kB active_file:3413572kB inactive_file:11453916kB unevictable:0kB writepending:0kB present:15663104kB managed:15343300kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[ 1186.232652] lowmem_reserve[]: 0 0 0 0 0
+[ 1186.232657] Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 2*2048kB (UM) 2*4096kB (M) = 13312kB
+[ 1186.232672] Node 0 DMA32: 1*4kB (U) 2*8kB (UE) 3*16kB (UE) 4*32kB (UME) 5*64kB (UE) 6*128kB (UME) 3*256kB (UM) 2*512kB (ME) 3*1024kB (UME) 2*2048kB (U) 13*4096kB (M) = 63492kB
+[ 1186.232691] Node 0 Normal: 10995*4kB (UME) 3433*8kB (UME) 3233*16kB (UME) 124*32kB (UME) 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 127140kB
+[ 1186.232706] Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=1048576kB
+[ 1186.232708] Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+[ 1186.232710] 3924882 total pagecache pages
+[ 1186.232711] 0 pages in swap cache
+[ 1186.232712] Swap cache stats: add 4, delete 4, find 0/0
+[ 1186.232713] Free swap  = 23437052kB
+[ 1186.232714] Total swap = 23437308kB
+[ 1186.232715] 4160841 pages RAM
+[ 1186.232716] 0 pages HighMem/MovableOnly
+[ 1186.232716] 96567 pages reserved
+[ 1186.232717] 0 pages hwpoisoned
+[ 1197.288649] warn_alloc: 6 callbacks suppressed
+[ 1197.288651] md5sum: page allocation failure: order:4, mode:0x40c40(GFP_NOFS|__GFP_COMP), nodemask=(null),cpuset=/,mems_allowed=0
+[ 1197.288657] CPU: 1 PID: 1108 Comm: md5sum Not tainted 5.19.0-1-amd64 #1  Debian 5.19.6-1
+[ 1197.288660] Hardware name: Gigabyte Technology Co., Ltd. B560 HD3/B560 HD3, BIOS F5 04/16/2021
+[ 1197.288660] Call Trace:
+[ 1197.288662]  <TASK>
+[ 1197.288663]  dump_stack_lvl+0x45/0x5e
+[ 1197.288668]  warn_alloc+0x138/0x160
+[ 1197.288670]  ? __alloc_pages_direct_compact+0x222/0x2f0
+[ 1197.288673]  __alloc_pages_slowpath.constprop.0+0xc7b/0xd10
+[ 1197.288676]  __alloc_pages+0x308/0x330
+[ 1197.288677]  kmalloc_order+0x29/0xa0
+[ 1197.288680]  kmalloc_order_trace+0x19/0x90
+[ 1197.288683]  btrfs_lookup_bio_sums+0x542/0x580 [btrfs]
+[ 1197.288709]  btrfs_submit_data_bio+0x159/0x210 [btrfs]
+[ 1197.288729]  submit_extent_page+0x179/0x4c0 [btrfs]
+[ 1197.288752]  ? btrfs_repair_one_sector+0x370/0x370 [btrfs]
+[ 1197.288775]  ? _raw_spin_unlock+0x15/0x30
+[ 1197.288777]  ? set_extent_bit+0x4fb/0x690 [btrfs]
+[ 1197.288799]  btrfs_do_readpage+0x2fb/0x810 [btrfs]
+[ 1197.288821]  ? btrfs_repair_one_sector+0x370/0x370 [btrfs]
+[ 1197.288844]  extent_readahead+0x30c/0x440 [btrfs]
+[ 1197.288867]  read_pages+0x69/0x2d0
+[ 1197.288870]  page_cache_ra_unbounded+0x125/0x170
+[ 1197.288872]  filemap_get_pages+0x4df/0x630
+[ 1197.288875]  ? pagevec_move_tail_fn+0x390/0x390
+[ 1197.288877]  filemap_read+0xb9/0x3c0
+[ 1197.288880]  ? tcp_done+0x110/0x110
+[ 1197.288882]  new_sync_read+0x100/0x180
+[ 1197.288885]  vfs_read+0x13c/0x190
+[ 1197.288888]  ksys_read+0x5f/0xe0
+[ 1197.288890]  do_syscall_64+0x38/0xc0
+[ 1197.288892]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[ 1197.288894] RIP: 0033:0x7f6e623e6a7e
+[ 1197.288896] Code: c0 e9 b6 fe ff ff 50 48 8d 3d be ec 0b 00 e8 d9 f1 01 00 66 0f 1f 84 00 00 00 00 00 64 8b 04 25 18 00 00 00 85 c0 75 14 0f 05 <48> 3d 00 f0 ff ff 77 5a c3 66 0f 1f 84 00 00 00 00 00 48 83 ec 28
+[ 1197.288897] RSP: 002b:00007ffc756ba568 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+[ 1197.288899] RAX: ffffffffffffffda RBX: 0000563f530d56b0 RCX: 00007f6e623e6a7e
+[ 1197.288900] RDX: 0000000000008000 RSI: 0000563f530d8750 RDI: 0000000000000004
+[ 1197.288901] RBP: 00007f6e624dc5e0 R08: 0000000000000004 R09: 0000000092d6da6b
+[ 1197.288902] R10: 00000000ed6a4f24 R11: 0000000000000246 R12: 0000563f530d8750
+[ 1197.288903] R13: 0000000000000d68 R14: 00007f6e624db9e0 R15: 0000000000008000
+[ 1197.288904]  </TASK>
+[ 1197.288905] Mem-Info:
+[ 1197.288906] active_anon:149 inactive_anon:8055 isolated_anon:0
+                 active_file:955343 inactive_file:2943697 isolated_file:0
+                 unevictable:0 dirty:0 writeback:0
+                 slab_reclaimable:22627 slab_unreclaimable:24723
+                 mapped:9331 shmem:256 pagetables:380 bounce:0
+                 kernel_misc_reclaimable:0
+                 free:73132 free_pcp:165 free_cma:0
+[ 1197.288908] Node 0 active_anon:596kB inactive_anon:32220kB active_file:3821372kB inactive_file:11774788kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:37324kB dirty:0kB writeback:0kB shmem:1024kB shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 2048kB writeback_tmp:0kB kernel_stack:3056kB pagetables:1520kB all_unreclaimable? no
+[ 1197.288911] Node 0 DMA free:13312kB boost:0kB min:64kB low:80kB high:96kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[ 1197.288914] lowmem_reserve[]: 0 833 15809 15809 15809
+[ 1197.288916] Node 0 DMA32 free:63456kB boost:0kB min:3556kB low:4444kB high:5332kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:103308kB inactive_file:727668kB unevictable:0kB writepending:0kB present:964268kB managed:898436kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[ 1197.288918] lowmem_reserve[]: 0 0 14975 14975 14975
+[ 1197.288920] Node 0 Normal free:215760kB boost:129024kB min:192984kB low:208972kB high:224960kB reserved_highatomic:0KB active_anon:596kB inactive_anon:32220kB active_file:3717980kB inactive_file:11046992kB unevictable:0kB writepending:0kB present:15663104kB managed:15343300kB mlocked:0kB bounce:0kB free_pcp:788kB local_pcp:0kB free_cma:0kB
+[ 1197.288923] lowmem_reserve[]: 0 0 0 0 0
+[ 1197.288925] Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 2*2048kB (UM) 2*4096kB (M) = 13312kB
+[ 1197.288931] Node 0 DMA32: 2*4kB (U) 1*8kB (E) 3*16kB (UE) 3*32kB (UE) 5*64kB (UE) 6*128kB (UME) 3*256kB (UM) 2*512kB (ME) 3*1024kB (UME) 2*2048kB (U) 13*4096kB (M) = 63456kB
+[ 1197.288940] Node 0 Normal: 15508*4kB (UME) 8405*8kB (UME) 5268*16kB (UME) 101*32kB (UME) 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 216792kB
+[ 1197.288946] Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=1048576kB
+[ 1197.288947] Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+[ 1197.288948] 3899227 total pagecache pages
+[ 1197.288949] 0 pages in swap cache
+[ 1197.288949] Swap cache stats: add 4, delete 4, find 0/0
+[ 1197.288950] Free swap  = 23437052kB
+[ 1197.288950] Total swap = 23437308kB
+[ 1197.288951] 4160841 pages RAM
+[ 1197.288951] 0 pages HighMem/MovableOnly
+[ 1197.288952] 96567 pages reserved
+[ 1197.288952] 0 pages hwpoisoned
+
+
+free -h
+                total        used        free      shared  buff/cache   available
+Mem:            15Gi       293Mi       176Mi       0.0Ki        15Gi        14Gi
+Swap:           22Gi       1.0Mi        22Gi
+
+
+uname -a
+Linux wormhole 5.19.0-1-amd64 #1 SMP PREEMPT_DYNAMIC Debian 5.19.6-1 (2022-09-01) x86_64 GNU/Linux
+
+
+btrfs --version
+btrfs-progs v5.19
+
+
+btrfs fi show
+Label: none  uuid: e96c2616-f40e-42c1-b2fe-895b6aad0fcf
+     Total devices 1 FS bytes used 1.53GiB
+     devid    1 size 279.40GiB used 8.02GiB path /dev/nvme0n1p2
+
+Label: 'data_pool'  uuid: e1c40719-5aac-45bd-8178-cb1eee9780a4
+     Total devices 6 FS bytes used 384.15GiB
+     devid    1 size 3.64TiB used 193.00GiB path /dev/sda
+     devid    2 size 3.64TiB used 193.00GiB path /dev/sdb
+     devid    3 size 3.64TiB used 193.00GiB path /dev/sdd
+     devid    4 size 3.64TiB used 192.01GiB path /dev/sdc
+     devid    5 size 3.64TiB used 192.01GiB path /dev/sde
+     devid    6 size 3.64TiB used 192.01GiB path /dev/sdf
+
+
+btrfs fi usage /srv/data
+Overall:
+     Device size:          21.83TiB
+     Device allocated:          1.13TiB
+     Device unallocated:       20.70TiB
+     Device missing:          0.00B
+     Used:              1.12TiB
+     Free (estimated):          6.90TiB  (min: 6.90TiB)
+     Free (statfs, df):         6.90TiB
+     Data ratio:               3.00
+     Metadata ratio:           3.00
+     Global reserve:      512.00MiB  (used: 0.00B)
+     Multiple profiles:              no
+
+Data,RAID1C3: Size:381.00GiB, Used:380.88GiB (99.97%)
+    /dev/sda  190.00GiB
+    /dev/sdb  190.00GiB
+    /dev/sdd  190.00GiB
+    /dev/sdc  191.00GiB
+    /dev/sde  191.00GiB
+    /dev/sdf  191.00GiB
+
+Metadata,RAID1C3: Size:4.00GiB, Used:3.27GiB (81.75%)
+    /dev/sda    3.00GiB
+    /dev/sdb    3.00GiB
+    /dev/sdd    3.00GiB
+    /dev/sdc    1.00GiB
+    /dev/sde    1.00GiB
+    /dev/sdf    1.00GiB
+
+System,RAID1C3: Size:8.00MiB, Used:96.00KiB (1.17%)
+    /dev/sdc    8.00MiB
+    /dev/sde    8.00MiB
+    /dev/sdf    8.00MiB
+
+Unallocated:
+    /dev/sda    3.45TiB
+    /dev/sdb    3.45TiB
+    /dev/sdd    3.45TiB
+    /dev/sdc    3.45TiB
+    /dev/sde    3.45TiB
+    /dev/sdf    3.45TiB
+
+
+md5sum --version
+md5sum (GNU coreutils) 8.32
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by Ulrich Drepper, Scott Miller, and David Madore.
