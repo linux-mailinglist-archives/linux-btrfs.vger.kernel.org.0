@@ -2,151 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F00BD5BAC88
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Sep 2022 13:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A685BAD2E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Sep 2022 14:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbiIPLg0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Sep 2022 07:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
+        id S231491AbiIPMOX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Sep 2022 08:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbiIPLgZ (ORCPT
+        with ESMTP id S231557AbiIPMOK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Sep 2022 07:36:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F203ECF2;
-        Fri, 16 Sep 2022 04:36:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0173362B08;
-        Fri, 16 Sep 2022 11:36:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C602C433D6;
-        Fri, 16 Sep 2022 11:36:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663328183;
-        bh=ja/9EJVsKPTgFZeYyJH2ug/aulAQTiLYqdvlooelnH8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=oihM0Kd14upZF19siU0+t7a01Rxpt2MJyV0MERiYdu4qdQzVqisOIUAdF4bX0ugfp
-         F5VFxtpSqMnIlSOvG4jr+6UeIfn98qcwj+pttgxeTwgAHaNG3tcQoqxrRsm4ehXz43
-         sWqkT3Qh+jhg+aNB+eW5ONz3qA8zT6AdHKKJnrZaZm9mX/e56rC/Bi3Xvu76rmK+p6
-         grIpwi75+faH6ARSabDtLgPg+j175jvDdSPdmY3Bj++pZaaKDDxx2yr6zYmEarA6CU
-         1sSUtmQ8X0PaVwDeQum5iKC+E5KtimDtRWva9eHGQvtkAuF2FOFFCyP44AILVG4Wk2
-         n//jhCUxUe6wQ==
-Message-ID: <7027d1c2923053fe763e9218d10ce8634b56e81d.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>, NeilBrown <neilb@suse.de>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Date:   Fri, 16 Sep 2022 07:36:19 -0400
-In-Reply-To: <YyQdmLpiAMvl5EkU@mit.edu>
-References: <20220912134208.GB9304@fieldses.org>
-         <166302447257.30452.6751169887085269140@noble.neil.brown.name>
-         <20220915140644.GA15754@fieldses.org>
-         <577b6d8a7243aeee37eaa4bbb00c90799586bc48.camel@hammerspace.com>
-         <1a968b8e87f054e360877c9ab8cdfc4cfdfc8740.camel@kernel.org>
-         <0646410b6d2a5d19d3315f339b2928dfa9f2d922.camel@hammerspace.com>
-         <34e91540c92ad6980256f6b44115cf993695d5e1.camel@kernel.org>
-         <871f9c5153ddfe760854ca31ee36b84655959b83.camel@hammerspace.com>
-         <e8922bc821a40f5a3f0a1301583288ed19b6891b.camel@kernel.org>
-         <166328063547.15759.12797959071252871549@noble.neil.brown.name>
-         <YyQdmLpiAMvl5EkU@mit.edu>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        Fri, 16 Sep 2022 08:14:10 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8178AB1BAB
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Sep 2022 05:13:51 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28G8oHOi014472;
+        Fri, 16 Sep 2022 12:13:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=TMXCeD4wEbdaDinPGiKVkgXzi9wFtPP1C8ogGjepnhU=;
+ b=utYl/N+aL+fsRmXMN0Inc/wVF/ojwT+6/VfY6KqtK4zZFAcpgSXrOIw/6mpZ2OD5Xlo0
+ uWOF28p+oGqTHIu3W2p0+hRX2RFwmcfM3/WeiDGmx4SdZwxCozBL3XbQy1v9jMEv3gji
+ et5/B7SLJOjYcallgoJaqHRq63DrPeJDWd8G6TrekZZ9Yk1qO3h6tlub4M0IqT5BmjT4
+ 9ajTchd0dSucGpR8BcWZvgTI2Rr0OZcFRjsMu3Fs4YZgGFNLN9Pl27DvAgt+ZMP7NkdE
+ mrkoBBcX+ofaJb3iGUc+7oQbxcIAxpGX6L5TivSuADRHc7O6FHzkCJyGMe6DoXHh9fUG 6A== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3jm8xbadeb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Sep 2022 12:13:25 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 28GBhuqi016023;
+        Fri, 16 Sep 2022 12:13:25 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3jm8x966ps-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Sep 2022 12:13:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MKK6fYfgHqWfT8WF6YIZoIt2p4jBcjIlJaYVRC0xnE73WRDGM4L1LkGDR2SKAzGVACErcQh7rYtk1MDDwjugiYO27nKtb6GqEtVYhdJUzSpnWvhsE8T58xR/vo272aoBHMPzQt0P5/7SMWi8tHjhpTZIoOiTTAWtfNNguIvPguUpmIaDolc4tRLEZYbvqqeKAZBRNA1oJXQcJdmeE8StSYTLjTGh7P9TGnP2nUbBRspb95c48uFHhMPDDasztKn02cEUosMMvpave+n+v3bRMmGesBh4mlip+qkUy+hqqcBHo+MlJbL1Y2t9vMA+qQBW+021dwJeackYgd+oZN7p1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TMXCeD4wEbdaDinPGiKVkgXzi9wFtPP1C8ogGjepnhU=;
+ b=GdcK+Df39/X3mKFCeMlEr6jqQeDV2ncgdUEdR7QDeN7Zcyuk4x7DZi+f55NQwCYD6zMNwufhl2N/1vwOK5ng3Du+kgwD1YVxFjEJkuoRyFdHylyDbV94IduNCYccZfdKoIUob+BtKkr112pR+tmm3vZf0YQVxy3h0ak+I7l74vqLAwsCJ7nJMEBSzlLFzCm394gTV69hk2XKA9nRETb2kkYN2I3DM5sYb1Ae0miQ981mvKEma1761ie6r7DQ1J0pKnYVy3fWAH/rj2jmqBkGg+RwImcgJZ5GyY4ULHsgV4X6b8vqQAgEu3HKR0YTx7SVyyWgqUUJscO54h7NFFVofg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TMXCeD4wEbdaDinPGiKVkgXzi9wFtPP1C8ogGjepnhU=;
+ b=F1tBVtbBCtDNpCGvgI2/ilmdeXwqJW3RWp3C0leCKEl3ShwFXZ6oylCLs8EflbsnsoxIondEHnnoiByb87qkwFnMcFkyRv8iUWFkM0WHnrhi4u7clWb0vX4KcTa2GnTsezVt073iYfzuxQMrKCfz/bYmaNHmC+anquA9Vb9YetE=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by CH0PR10MB5291.namprd10.prod.outlook.com (2603:10b6:610:df::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.16; Fri, 16 Sep
+ 2022 12:13:23 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::74b2:acd4:6739:716f]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::74b2:acd4:6739:716f%5]) with mapi id 15.20.5612.022; Fri, 16 Sep 2022
+ 12:13:23 +0000
+Message-ID: <2ba154b7-2ed8-d62c-8ef9-0a23eebc6fa0@oracle.com>
+Date:   Fri, 16 Sep 2022 20:13:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH 03/16] btrfs: move the printk helpers out of ctree.h
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1663175597.git.josef@toxicpanda.com>
+ <c7b5fc75e003087c09502050ab59d542a08e7da7.1663175597.git.josef@toxicpanda.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <c7b5fc75e003087c09502050ab59d542a08e7da7.1663175597.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR01CA0120.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:40::24) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CH0PR10MB5291:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9d15257e-41c3-4988-74b8-08da97dcd9ce
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sEKIV15MXiSokT+1ahsWro0PraTgGfOAX4+EsmbfK3QZY0HLmurZX7KFhStMKSMLifcWh0mFtaDiu2oxYVQmp0XbM2TODxc3vcED2PgVWPp0YY6jgbLKdoE/J3/bSj4IUrwrnPdO+4Ay+ojSVkv8X1iTz6HVEB0Ad1z9DP3iMzNCt6FFg9H8J6O5PyoLzQNLZfabxx0e0B1Pn4Cte9dw+1k3BzbphqYF+tnH7TyLHCMRBxDFkoW2PyUjcocLXVyzT49nwUV/h06H6cJaeAcHcfJvjiFKE8SamieP1h/AnQdUcPDU2Ga02vPQLXw22C0E1pN9cvqwitfKxzavMUF+ajqAn1yicTXXd9a86aVDcmurrDdn/isk3+LtZjs7rNx+fHX3FA0muJHsSUyPwF2Gaqs0UDHfyOuwzIOFYVyg1N8JPFI/vb5FGt849c9GYttD/E1ysxIZRqhRnGIR+NJGCoAZd/1ALX++4wRr/Uv6c1SO6rUJ6XKtr2tlvrfETEi+HApukSTPgwyXKA3k1Z+G+35SDvz444UgfbPGw4NAoNXok5hMN8S2DRlm9PNP+tlql+X29msqTVKWUlQh4Dj9nmBtIsR2ec5Uc5962AItgQD+L1ATEj/p/LHzqPySc456t8ikXQfZZh7mm+3v+BO69eB7dvjUQUua9loUC/au6ZW+tp6e2DZyDgHwMqpc0mqMM6W3dk+r93RYAcwiUkL3f0ZduSvusdrqFYFVoqYoM/yP01PnqiybdD0wuSUvWDEDARY65Nbhubfjw3PkuWbQvpxbD6qntN+5n/RHD6Ao2BE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(346002)(366004)(376002)(39860400002)(396003)(451199015)(8676002)(316002)(8936002)(5660300002)(66476007)(86362001)(66556008)(31696002)(66946007)(38100700002)(41300700001)(53546011)(6666004)(6486002)(6506007)(478600001)(26005)(2616005)(186003)(6512007)(31686004)(36756003)(44832011)(4744005)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Uzc1dFJGU3VwbFc5SVIyOVhlb2ZHOEt1VmVwRUhyRDcvUUFVdEMrWXZ1anRN?=
+ =?utf-8?B?VUdVU0J3RGFvN2o4dUFPKzI0ZUdUTk05a2h1ZFEyOVc2SmI2Uk54MnBocGdG?=
+ =?utf-8?B?RDczZDg1NkQ4ZXdTUHBzWG0xY0F3Lzc1S1paOUpqc24vTUliY2paeXRKamVD?=
+ =?utf-8?B?anliYkpZUkE3Vnp4VU5EZWxROStYZ21pMkk1ZlBXa0pNNWp5YUdPVVdFSXRm?=
+ =?utf-8?B?RUg3dG9sa3VLMmlDKzhvWVBWL21MWmpDWGNpWkRVZVZoYXdJS1hoRFdtT1pk?=
+ =?utf-8?B?UW5EL1lkdDlOTjAxK2VsSW1HMTdsVXNNM3YwRVJMZ0pwV0VkZkk3OCtYemhp?=
+ =?utf-8?B?Nk1obHY5emxjZGlEcTNleTQrQjd5ZFdiOEFOUW95ZUw2SVBNWmV3NVljQUVU?=
+ =?utf-8?B?NEdRWTNDdjlPZnZyZjlFVW5NYTVpZW83N2FVWGdHaG5rTWU1b0VBQjZiQWIw?=
+ =?utf-8?B?cXE3Rkc3MGVzY0VtVHJ6bHY2dTQvdWcyMnZIOE1PZkI0UUxVLytIYkhFemFh?=
+ =?utf-8?B?L1dNaWl1S2tGTUZtRHY4dGxBbExvd1pmay9SZGRKeTBFaHhHNTBCVDRLQ2pE?=
+ =?utf-8?B?SDk0M1ZXZHF6RUZpeGxLdGZrZ3lSTzR0Q3NZOTc0bElzSHUyVHA5ek5QRkJv?=
+ =?utf-8?B?Mlp4UjRiNS9ISFYvMGxTM3d1QzNBUFFyZTVabEl5VkdPdG14cmhUeG1QbXFO?=
+ =?utf-8?B?amdPeWsvVjZKZzh0cVZlVVZEc0RMd01Ic0V3YXVuWTROdHh4ZTZNdklEcnN3?=
+ =?utf-8?B?NWtRRVJPWVFFZEFqa1IrdTRuR0NUWmp6V2lnaVpYYlZWQ1ZoaEVablNlUDN6?=
+ =?utf-8?B?UTFESUZjbU4rU1BLdFdIVm1xdWYwNVJ0NzYrdDBqb2lVUytyUUlST2YvYzNS?=
+ =?utf-8?B?ZEFLc2lwZDJJUXBnQ0xITFdZNFNRd1R0YUJTcGcreFFYZDJiU1dVTFdFQjI0?=
+ =?utf-8?B?QXhvNDF6Qnp3azB0OHdHZDJRbWlHRHc1T1ZDTHNOSlRkWWRlYURmejdQNjY1?=
+ =?utf-8?B?RUcwem5sUHptVUVHU0V1MjVISTA0SHBCbkxBeUdXT3EwQ1VQVTNNdGF5NTdk?=
+ =?utf-8?B?eUh1SmVyTmhqQzlYWGt5VFV3dWxjWUlBQzdkT1lCdHFuNnR3K2pFVFYzVlhD?=
+ =?utf-8?B?enk1eS9iVDRFdnpZUlpESXVhWUJPaUIveTlGcnhkaUZoN0FKUEkyT3VpU2ZR?=
+ =?utf-8?B?QS80RWRrbCtVSjdKOEJZQVU5TWRjamNuVVd5S2gyMFhJeVlvUDZtSXVzRGt0?=
+ =?utf-8?B?S0R2WUkrMTd0UjhxUEltZzBmZ3pkSmxjMW1jWTRsZ3dmSUdER3UvNTVIbmJy?=
+ =?utf-8?B?L2hjOGFYb0ljYW1uY0hxQ1VkUEFqUTVSRVUwVndlbEtYcHFKTHcyQVUyYXpX?=
+ =?utf-8?B?OFFzWXUxL2Q0c3hVOGN1MUlDUC9KenFzZFJoa2YxOCt1V1ZTZ1FnV1cvWTlW?=
+ =?utf-8?B?enBxZERLcEl0dUpTQm5TU1U2RkY3UGxjcE1nblpWUXVrYVMvalByM2YwZmo4?=
+ =?utf-8?B?c3JJM3NhVzYwVG1DQWdubW5JdDZGZDAvSXhBaDk4Qm5lM25yS3o0K2xFYjVG?=
+ =?utf-8?B?YStlQUo2ZFdpSDNFbnU1MWN0WnVVd1ZmMHhkcldKU2VHSENCQUF1bzgxdVZo?=
+ =?utf-8?B?MWxMSW5RYyszTERQVUFqdzltWjJuTmRwK2V0Q3hMMmtDc2xPbFF2R1I0ZG5o?=
+ =?utf-8?B?WFlNbElkaGJTV1o5NEtQVXh3TEJQdDY0RFIwWVRKSkFPVDFjVHZjd1E0ZFZX?=
+ =?utf-8?B?QnBOdGUvOG44U3d2ZkhwNmR5V3V3K0crRGttSzkwQ2Jzcy8zaFA0eklPT3pn?=
+ =?utf-8?B?VzJrczRPeVhWa3FML1FFTEdDM09lZHh6WS9ZelIvL29SVGZmeHJ1NUdES3ZJ?=
+ =?utf-8?B?SWJSWDhKejVJZ2VVNDNNRS9LeVJLUmVoRG4xSndMRFhFRDIyakQ5N1U4UTY0?=
+ =?utf-8?B?N1lBUVBnbjg5ODU0cWIyOTMwcHE3Wm5nZ0Qvc1ZaL1N1blRGNEhTeGExY3d4?=
+ =?utf-8?B?d2Z0SmhNeFdkYW1FbktzdmJnNm1adjZ0M1ZtazBGbElPSlcwWlB4SHhiNUU2?=
+ =?utf-8?B?c3Y4RGxocWcyK0E5SFRzR0lrT2JEdDJsQVgwZFdMT0tjOUxUNkUzYVZKc214?=
+ =?utf-8?Q?wORhZXsytYfrz2MwtXAKMCW71?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d15257e-41c3-4988-74b8-08da97dcd9ce
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2022 12:13:23.3349
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ID07/gzA0HY5iHA8Qtff40dFRzEa1jFiCjk3OVVYEI9AA4J8B1UW33kgeAn8E83/Ten+cbZeKP7CEz41udvoGQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5291
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-09-16_06,2022-09-16_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2209130000 definitions=main-2209160090
+X-Proofpoint-ORIG-GUID: uR976AGb2x5Bgc3R_UPXqCyGC-zsXmnJ
+X-Proofpoint-GUID: uR976AGb2x5Bgc3R_UPXqCyGC-zsXmnJ
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 2022-09-16 at 02:54 -0400, Theodore Ts'o wrote:
-> On Fri, Sep 16, 2022 at 08:23:55AM +1000, NeilBrown wrote:
-> > > > If the answer is that 'all values change', then why store the crash
-> > > > counter in the inode at all? Why not just add it as an offset when
-> > > > you're generating the user-visible change attribute?
-> > > >=20
-> > > > i.e. statx.change_attr =3D inode->i_version + (crash counter * offs=
-et)
->=20
-> I had suggested just hashing the crash counter with the file system's
-> on-disk i_version number, which is essentially what you are suggested.
->=20
-> > > Yes, if we plan to ensure that all the change attrs change after a
-> > > crash, we can do that.
-> > >=20
-> > > So what would make sense for an offset? Maybe 2**12? One would hope t=
-hat
-> > > there wouldn't be more than 4k increments before one of them made it =
-to
-> > > disk. OTOH, maybe that can happen with teeny-tiny writes.
-> >=20
-> > Leave it up the to filesystem to decide.  The VFS and/or NFSD should
-> > have not have part in calculating the i_version.  It should be entirely
-> > in the filesystem - though support code could be provided if common
-> > patterns exist across filesystems.
->=20
-> Oh, *heck* no.  This parameter is for the NFS implementation to
-> decide, because it's NFS's caching algorithms which are at stake here.
->=20
-> As a the file system maintainer, I had offered to make an on-disk
-> "crash counter" which would get updated when the journal had gotten
-> replayed, in addition to the on-disk i_version number.  This will be
-> available for the Linux implementation of NFSD to use, but that's up
-> to *you* to decide how you want to use them.
->=20
-> I was perfectly happy with hashing the crash counter and the i_version
-> because I had assumed that not *that* much stuff was going to be
-> cached, and so invalidating all of the caches in the unusual case
-> where there was a crash was acceptable.  After all it's a !@#?!@
-> cache.  Caches sometimmes get invalidated.  "That is the order of
-> things." (as Ramata'Klan once said in "Rocks and Shoals")
->=20
-> But if people expect that multiple TB's of data is going to be stored;
-> that cache invalidation is unacceptable; and that a itsy-weeny chance
-> of false negative failures which might cause data corruption might be
-> acceptable tradeoff, hey, that's for the system which is providing
-> caching semantics to determine.
->=20
-> PLEASE don't put this tradeoff on the file system authors; I would
-> much prefer to leave this tradeoff in the hands of the system which is
-> trying to do the caching.
->=20
+On 15/09/2022 01:18, Josef Bacik wrote:
+> We have a bunch of printk helpers that are in ctree.h.  These have
+> nothing to do with ctree.c, so move them into their own header.
+> Subsequent patches will cleanup the printk helpers.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Yeah, if we were designing this from scratch, I might agree with leaving
-more up to the filesystem, but the existing users all have pretty much
-the same needs. I'm going to plan to try to keep most of this in the
-common infrastructure defined in iversion.h.
-
-Ted, for the ext4 crash counter, what wordsize were you thinking? I
-doubt we'll be able to use much more than 32 bits so a larger integer is
-probably not worthwhile. There are several holes in struct super_block
-(at least on x86_64), so adding this field to the generic structure
-needn't grow it.
---=20
-Jeff Layton <jlayton@kernel.org>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
