@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4528B5BA77D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Sep 2022 09:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5935BA779
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Sep 2022 09:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbiIPH3D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Sep 2022 03:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
+        id S230034AbiIPH3E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Sep 2022 03:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbiIPH3B (ORCPT
+        with ESMTP id S229935AbiIPH3C (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Sep 2022 03:29:01 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F12C1E1
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Sep 2022 00:29:00 -0700 (PDT)
+        Fri, 16 Sep 2022 03:29:02 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF3CE8E
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Sep 2022 00:29:01 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id F3D182000B
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Sep 2022 07:28:58 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 29968338D4
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Sep 2022 07:29:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1663313339; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1663313340; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Qg6S+dolf+rzcor8fK8uvg1oSMjd5adQ64oXBpZc/gY=;
-        b=gTZlXnZrS1+9wzC/bS9nbwmwY83MmSAVV7lt4amLhXDMrzr3CdvS6FQvAr9S33nYzOdN1m
-        od+UmWtDWS9Gfq/88AeTs6fqJSzVSAkQqxUA/hil3bJeMnxjMkl2uwijPUpfSeBEsiam7A
-        Aku6wgb2ddgHDPCXhcBkiRox1N8/jx4=
+        bh=FBGvKL7p1SfWoIEMtTBqTR17V1fKeAUIzmutqemM5d8=;
+        b=QzELixqvmqwvykJ6IMcyucUSjgwefw/j3i75+ClX3WbRSKXZJryF8CD+Vu5EkNATmd2P/h
+        yeXFl4XpDdbXCPmBsdWJt0J9qny2gAYeCiTGGfTY+Fn9nYM7Myp4vP9Xz06pS6yl1FwqPz
+        8Vsf/PK3dEl/kAaGYu3u2ZRdh7HbohM=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43D7F1332E
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Sep 2022 07:28:58 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6DB151332E
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Sep 2022 07:28:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id mBuLArolJGMMKQAAMHmgww
+        id sGTUDLslJGMMKQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Sep 2022 07:28:58 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Sep 2022 07:28:59 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 1/5] btrfs: selftests: remove impossible inline extent at non-zero file offset
-Date:   Fri, 16 Sep 2022 15:28:35 +0800
-Message-Id: <b09b1b8693db8b4f49ed7ba7e6b8d620081389be.1663312786.git.wqu@suse.com>
+Subject: [PATCH v2 2/5] btrfs: make inline extent read calculation much simpler
+Date:   Fri, 16 Sep 2022 15:28:36 +0800
+Message-Id: <67735671d36a3fe83873b2ee2f0baf467a52f7a0.1663312786.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1663312786.git.wqu@suse.com>
 References: <cover.1663312786.git.wqu@suse.com>
@@ -60,137 +60,105 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In our inode-tests.c, we create an inline offset at file offset 5, which
-is no longer possible since the introduction of tree-checker.
+Currently we calculate inline extent read in a way that inline extent
+can start at non-zero offset.
 
-Thus I don't think we should spend time maintaining some corner cases
-which are already ruled out by tree-checker.
+This is consistent with the inode selftest, which puts an inline extent
+at file offset 5.
 
-So this patch will:
+Meanwhile the inline extent creation code will only create inline extent
+at file offset 0.
 
-- Change the inline extent to start at file offset 0
+Furthermore with the introduction of tree-checker on file extents, we are
+actively rejecting inline extent which starts at non-zero file offset.
+And so far we haven't yet seen any report of rejected inline extents at
+non-zero file offset.
 
-  Also change its length to 6 to cover the original length
+This all means, the extra calculation to support inline extents at
+non-zero file offset is mostly paper weight, and damaging the
+readability of the code.
 
-- Add an extra ASSERT() for btrfs_add_extent_mapping()
+Thus this patch will:
 
-  This is to make sure tree-checker is working correctly.
+- Add extra ASSERT()s to make sure involved file offset are all 0
 
-- Update the inode selftest
+- Remove @extent_offset calculation
+
+- Simplify the involved code
+  As several variables are now single-use, no need to declare them as
+  a variable anymore.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_map.c        |  7 +++++
- fs/btrfs/tests/inode-tests.c | 56 ++++++++++++------------------------
- 2 files changed, 25 insertions(+), 38 deletions(-)
+ fs/btrfs/inode.c | 38 ++++++++++++++++++++------------------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index d5640e695e6b..d1847d9f4841 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -610,6 +610,13 @@ int btrfs_add_extent_mapping(struct btrfs_fs_info *fs_info,
- 	int ret;
- 	struct extent_map *em = *em_in;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 6fde13f62c1d..5df5b0714d40 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -6983,41 +6983,43 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 	    extent_type == BTRFS_FILE_EXTENT_PREALLOC) {
+ 		goto insert;
+ 	} else if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
+-		unsigned long ptr;
+ 		char *map;
+-		size_t size;
+-		size_t extent_offset;
+ 		size_t copy_size;
  
-+	/*
-+	 * Tree-checker should have rejected any inline extent with non-zero
-+	 * file offset. Here just do a sanity check.
-+	 */
-+	if (em->block_start == EXTENT_MAP_INLINE)
+ 		if (!page)
+ 			goto out;
+ 
+-		size = btrfs_file_extent_ram_bytes(leaf, item);
+-		extent_offset = page_offset(page) + pg_offset - extent_start;
+-		copy_size = min_t(u64, PAGE_SIZE - pg_offset,
+-				  size - extent_offset);
+-		em->start = extent_start + extent_offset;
++		/*
++		 * Inline extent can only exist at file offset 0. This is
++		 * ensured by tree-checker and inline extent creation path.
++		 * Thus all members representing file offsets should be zero.
++		 */
++		ASSERT(page_offset(page) == 0);
++		ASSERT(pg_offset == 0);
++		ASSERT(extent_start == 0);
 +		ASSERT(em->start == 0);
 +
- 	ret = add_extent_mapping(em_tree, em, 0);
- 	/* it is possible that someone inserted the extent into the tree
- 	 * while we had the lock dropped.  It is also possible that
-diff --git a/fs/btrfs/tests/inode-tests.c b/fs/btrfs/tests/inode-tests.c
-index b1c88dd187cb..87b5ee9d853b 100644
---- a/fs/btrfs/tests/inode-tests.c
-+++ b/fs/btrfs/tests/inode-tests.c
-@@ -72,8 +72,8 @@ static void insert_inode_item_key(struct btrfs_root *root)
-  * diagram of how the extents will look though this may not be possible we still
-  * want to make sure everything acts normally (the last number is not inclusive)
-  *
-- * [0 - 5][5 -  6][     6 - 4096     ][ 4096 - 4100][4100 - 8195][8195 - 12291]
-- * [hole ][inline][hole but no extent][  hole   ][   regular ][regular1 split]
-+ * [0  - 6][     6 - 4096     ][ 4096 - 4100][4100 - 8195][8195  -  12291]
-+ * [inline][hole but no extent][    hole    ][   regular ][regular1 split]
-  *
-  * [12291 - 16387][16387 - 24579][24579 - 28675][ 28675 - 32771][32771 - 36867 ]
-  * [    hole    ][regular1 split][   prealloc ][   prealloc1  ][prealloc1 written]
-@@ -90,19 +90,12 @@ static void setup_file_extents(struct btrfs_root *root, u32 sectorsize)
- 	u64 disk_bytenr = SZ_1M;
- 	u64 offset = 0;
++		copy_size = min_t(u64, PAGE_SIZE,
++				  btrfs_file_extent_ram_bytes(leaf, item));
++		em->start = extent_start;
+ 		em->len = ALIGN(copy_size, fs_info->sectorsize);
+ 		em->orig_block_len = em->len;
+ 		em->orig_start = em->start;
+-		ptr = btrfs_file_extent_inline_start(item) + extent_offset;
  
--	/* First we want a hole */
--	insert_extent(root, offset, 5, 5, 0, 0, 0, BTRFS_FILE_EXTENT_REG, 0,
--		      slot);
--	slot++;
--	offset += 5;
--
- 	/*
--	 * Now we want an inline extent, I don't think this is possible but hey
--	 * why not?  Also keep in mind if we have an inline extent it counts as
--	 * the whole first page.  If we were to expand it we would have to cow
--	 * and we wouldn't have an inline extent anymore.
-+	 * Tree-checker has strict limits on inline extents that they can only
-+	 * exist at file offset 0, thus we can only have one inline file extent
-+	 * at most.
- 	 */
--	insert_extent(root, offset, 1, 1, 0, 0, 0, BTRFS_FILE_EXTENT_INLINE, 0,
-+	insert_extent(root, offset, 6, 6, 0, 0, 0, BTRFS_FILE_EXTENT_INLINE, 0,
- 		      slot);
- 	slot++;
- 	offset = sectorsize;
-@@ -281,37 +274,24 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 		test_err("got an error when we shouldn't have");
- 		goto out;
- 	}
--	if (em->block_start != EXTENT_MAP_HOLE) {
--		test_err("expected a hole, got %llu", em->block_start);
--		goto out;
--	}
--	if (em->start != 0 || em->len != 5) {
--		test_err(
--		"unexpected extent wanted start 0 len 5, got start %llu len %llu",
--			em->start, em->len);
--		goto out;
--	}
--	if (em->flags != 0) {
--		test_err("unexpected flags set, want 0 have %lu", em->flags);
--		goto out;
--	}
--	offset = em->start + em->len;
--	free_extent_map(em);
--
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
--	if (IS_ERR(em)) {
--		test_err("got an error when we shouldn't have");
--		goto out;
--	}
- 	if (em->block_start != EXTENT_MAP_INLINE) {
- 		test_err("expected an inline, got %llu", em->block_start);
- 		goto out;
- 	}
- 
--	if (em->start != offset || em->len != (sectorsize - 5)) {
-+	/*
-+	 * For inline extent, we always round up the em to sectorsize, as
-+	 * they are either:
-+	 * a) a hidden hole
-+	 *    The range will be zeroed at inline extent read time.
-+	 *
-+	 * b) a file extent with unaligned bytenr
-+	 *    Tree checker will reject it.
-+	 */
-+	if (em->start != 0 || em->len != sectorsize) {
- 		test_err(
--	"unexpected extent wanted start %llu len 1, got start %llu len %llu",
--			offset, em->start, em->len);
-+	"unexpected extent wanted start 0 len %u, got start %llu len %llu",
-+			sectorsize, em->start, em->len);
- 		goto out;
- 	}
- 	if (em->flags != 0) {
+ 		if (!PageUptodate(page)) {
+ 			if (btrfs_file_extent_compression(leaf, item) !=
+ 			    BTRFS_COMPRESS_NONE) {
+-				ret = uncompress_inline(path, page, pg_offset,
+-							extent_offset, item);
++				ret = uncompress_inline(path, page, 0, 0, item);
+ 				if (ret)
+ 					goto out;
+ 			} else {
+ 				map = kmap_local_page(page);
+-				read_extent_buffer(leaf, map + pg_offset, ptr,
+-						   copy_size);
+-				if (pg_offset + copy_size < PAGE_SIZE) {
+-					memset(map + pg_offset + copy_size, 0,
+-					       PAGE_SIZE - pg_offset -
+-					       copy_size);
+-				}
++				read_extent_buffer(leaf, map,
++					btrfs_file_extent_inline_start(item),
++					copy_size);
++				if (copy_size < PAGE_SIZE)
++					memset(map + copy_size, 0,
++					       PAGE_SIZE - copy_size);
+ 				kunmap_local(map);
+ 			}
+ 			flush_dcache_page(page);
 -- 
 2.37.3
 
