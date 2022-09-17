@@ -1,33 +1,61 @@
 Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEE15BB93F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Sep 2022 18:00:32 +0200 (CEST)
+Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id D1E975BBAB5
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Sep 2022 23:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbiIQQA3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 17 Sep 2022 12:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
+        id S229518AbiIQVcm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 17 Sep 2022 17:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbiIQQA1 (ORCPT
+        with ESMTP id S229454AbiIQVcl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 17 Sep 2022 12:00:27 -0400
-Received: from rin.romanrm.net (rin.romanrm.net [51.158.148.128])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA5015FFF
-        for <linux-btrfs@vger.kernel.org>; Sat, 17 Sep 2022 09:00:25 -0700 (PDT)
-Received: from nvm (nvm2.home.romanrm.net [IPv6:fd39::4a:3cff:fe57:d6b5])
-        by rin.romanrm.net (Postfix) with SMTP id 233105B0
-        for <linux-btrfs@vger.kernel.org>; Sat, 17 Sep 2022 16:00:22 +0000 (UTC)
-Date:   Sat, 17 Sep 2022 21:00:21 +0500
-From:   Roman Mamedov <rm@romanrm.net>
-To:     linux-btrfs@vger.kernel.org
-Subject: Converting from single to raid0 creates a ton of unused data chunks
-Message-ID: <20220917210021.5a84dc82@nvm>
+        Sat, 17 Sep 2022 17:32:41 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B96BDEA5
+        for <linux-btrfs@vger.kernel.org>; Sat, 17 Sep 2022 14:32:41 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id p69so30777921yba.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 17 Sep 2022 14:32:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date;
+        bh=o2fzgTmCIyAnW7Cv/6QWbu8owpSLER1tvQfuJI2Tz7Q=;
+        b=f18wxRIEMo0qE4oIhrwHV4TsULXuIJoOuHTFy5OuWWkP01YZGyU0dMG/YCWgNx/nan
+         YcZxvfjRRJQhzA9k1TaXcddyfpnOxguYUlrofnGPrpmt/C8Ozix0cP5MqTv6VHME8avL
+         Nr3KylhA+S/NrQSArbXNhr/xBNsV5rI77kyxxOic0602LjZ3TVn5023mwzZalFahLpRx
+         l6Gef8yq/+IjqzoUI+5TaSmXvfmF8gmJR5faJ3LqzBjoAk1rm9Xkp/mjSkDU6Y/y/s+a
+         6PbgWxVw1QwugLV4UCmwE0KFmxSmHjcc024rdfQfsFyqok78eqLFrmio4ObO1Azrs59O
+         mj3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=o2fzgTmCIyAnW7Cv/6QWbu8owpSLER1tvQfuJI2Tz7Q=;
+        b=aakFvpuEZGMTXqUk2ywCoVlOXd44HOUUcjSaM+XXHDnIyG/z30yEGuTX/tvsDyN3j5
+         eFzS+ovwBNXRVhxbNn4uEWCo+ckCuL/9x3a+7DStjgM+KEUvi6ipThNvcm0Y3Gk1HuOr
+         VhGTLWELFXwCXZkTjJHKuoDDr7duWcKocLAn84Bzeerj4ncRhnuMVvblI77kHBB5Grbn
+         qZskdthYRvH239+VnYrpDTrL6BQjPpjj4x2TqFOhJLgAm627ncFlQ2aZ6TREqjvNJNY6
+         bE5/9mw5KIfh/qpBWV+r0wvUo4CCqdpeaEWfJnuZO+3kW+97NzhR6EuaO0U2jNiDc/RZ
+         DIxA==
+X-Gm-Message-State: ACrzQf1NjF1Y7w5KgNp+aQqJeeJhWWDq1pDRzZ7RMi/WsnusKHtI2a0K
+        4iQ3VvcxiGYERqfOFC3IVKDe9yf4S4m2xRTyRXkzaM3pzrY=
+X-Google-Smtp-Source: AMsMyM61tZYKaz0rGsdklDylW5JrPci/B7BVDaWLkWMD6MRUqzy0gtqTPnh/T1VZAxtU11AcFN8udMDdwDv8B/Uy/cM=
+X-Received: by 2002:a25:2055:0:b0:67c:28e7:702c with SMTP id
+ g82-20020a252055000000b0067c28e7702cmr9074527ybg.625.1663450360087; Sat, 17
+ Sep 2022 14:32:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Brian Clark <bsclark75@gmail.com>
+Date:   Sat, 17 Sep 2022 17:32:30 -0400
+Message-ID: <CADQkWYDMLfAi+XVNrXJYjUV1iS7Uj8zLs5L2XNGiQBSTYM0K2Q@mail.gmail.com>
+Subject: Help w/ Parent transid verify failed
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -36,49 +64,21 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Hello,
 
-Just finished converting the remaining "single" data chunks on my FS to
-"raid0", with btrfs-progs v5.10.1, kernel 5.10.140.
+I have a Fedora 36 Workstation running as a VirtualBox.  This evening
+I started it up to the error above and is now sitting at an emergency
+boot prompt.  I am going to have to type some of the needed
+information because the trouble system is not booted far enough to
+allow copy/paste.
 
-Before:
+Linux Fedora 5.17.5-300.fc36.x86_64  ...
+btrfs-progs v5.16.2
+Label: 'fedora-LIVE' uuid:  ...
+     Total device 1 FS size 5.1 GB
+    devid 1 39GB used 6.52 GB path /dev/sda2
+     unable to mount device to get output
 
-  Data, RAID0: total=200.00GiB, used=193.06GiB
-  Data, single: total=107.00GiB, used=105.12GiB
-  System, RAID1: total=32.00MiB, used=48.00KiB
-  Metadata, RAID1: total=2.00GiB, used=488.64MiB
-  GlobalReserve, single: total=353.98MiB, used=0.00B
-  WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
-  WARNING:   Data: single, raid0
+Any help would be appreciated to recover the data.
 
-Converting:
+Thanks in advance,
 
-  # btrfs fi balance start -dprofiles=single -dconvert=raid0,soft /mnt/ssdm/
-  Done, had to relocate 110 out of 209 chunks
-
-After:
-
-  Data, RAID0: total=412.00GiB, used=297.21GiB
-  System, RAID1: total=32.00MiB, used=48.00KiB
-  Metadata, RAID1: total=2.00GiB, used=466.83MiB
-  GlobalReserve, single: total=332.31MiB, used=0.00B
-
-As you can see it created a ton of "slack" in the RAID0 Data allocation.
-
-Sure, I can collapse it down with:
-
-  # btrfs fi balance start -dusage=50 /mnt/ssdm/
-  Done, had to relocate 56 out of 209 chunks
-
-And the result will be:
-
-  Data, RAID0: total=302.00GiB, used=297.21GiB
-  System, RAID1: total=32.00MiB, used=48.00KiB
-  Metadata, RAID1: total=2.00GiB, used=466.83MiB
-  GlobalReserve, single: total=332.19MiB, used=0.00B
-
-But is this expected? I wonder what if this somewhat runaway chunk creation
-would face no more free space to allocate for these, would the balance fail
-with ENOSPC then?
-
--- 
-With respect,
-Roman
+Brian S. Clark
