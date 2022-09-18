@@ -2,107 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 203255BBAF4
-	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Sep 2022 01:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E875BBC4F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Sep 2022 09:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229458AbiIQXJw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 17 Sep 2022 19:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43944 "EHLO
+        id S229524AbiIRHfT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 18 Sep 2022 03:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbiIQXJu (ORCPT
+        with ESMTP id S229514AbiIRHfS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 17 Sep 2022 19:09:50 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D38B13EBD
-        for <linux-btrfs@vger.kernel.org>; Sat, 17 Sep 2022 16:09:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1663456184;
-        bh=MY5qgnbzSXu5w6mercQK36b0ceHLvFXkqHCzLWnoxCE=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=cG2aRFuaQDQevT5m3jkcfv3YYpj04Iw4TH5f9meNehQTC9zqAGg1V76lV1LXcXKWR
-         +bcN9k7Bm7jlKcS4e+RrXzh7o/72EU88fNVWOJuXZ4DPbfQOfBcWkr4KlEEYdJXD5b
-         2AyJBVvjK3oFhT47UwHTrfMtgkyDJWlK08l7RrhA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MkHMP-1p2k9h02uH-00kdm2; Sun, 18
- Sep 2022 01:09:44 +0200
-Message-ID: <2c2fae28-c96a-c80d-f014-ba975c43057a@gmx.com>
-Date:   Sun, 18 Sep 2022 07:09:41 +0800
+        Sun, 18 Sep 2022 03:35:18 -0400
+X-Greylist: delayed 533 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 18 Sep 2022 00:35:04 PDT
+Received: from mail4.tencent.com (mail12.tencent.com [61.241.47.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E44612AC2
+        for <linux-btrfs@vger.kernel.org>; Sun, 18 Sep 2022 00:35:03 -0700 (PDT)
+Received: from EX-SZ023.tencent.com (unknown [10.28.6.89])
+        by mail4.tencent.com (Postfix) with ESMTP id C385764975;
+        Sun, 18 Sep 2022 15:26:07 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tencent.com;
+        s=s202002; t=1663485967;
+        bh=3+EFfKUw6FFDJYtVNQ2Q3dHNFaNrOjYQRaUm9MccsM4=;
+        h=From:To:CC:Subject:Date;
+        b=j2cyDbQ4ZfsdUzmNQ5vOa+HJ/Z8LgdNYN1ER5y6DPo109pmf+4VvWNy6WW+JyS7jc
+         uu3hWHpkus+xNsZwrOGlbssoBcFq6aPtlpIbgVEvH0BBp+NyWYm8JqqzOn/WjyYwJw
+         olZY3dev55+9CWE53jRBL6S3ggixiCwabY0/rSLw=
+Received: from EX-SZ051.tencent.com (10.28.6.106) by EX-SZ023.tencent.com
+ (10.28.6.89) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sun, 18 Sep
+ 2022 15:26:07 +0800
+Received: from EX-SZ049.tencent.com (10.28.6.102) by EX-SZ051.tencent.com
+ (10.28.6.106) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sun, 18 Sep
+ 2022 15:26:07 +0800
+Received: from EX-SZ049.tencent.com ([fe80::e0be:89c3:ec1:bef7]) by
+ EX-SZ049.tencent.com ([fe80::e0be:89c3:ec1:bef7%8]) with mapi id
+ 15.01.2242.008; Sun, 18 Sep 2022 15:26:07 +0800
+From:   =?utf-8?B?Zmx5aW5ncGVuZyjlva3mtakp?= <flyingpeng@tencent.com>
+To:     "clm@fb.com" <clm@fb.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "dsterba@suse.com" <dsterba@suse.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: [PATCH]  btrfs: remove redundant code
+Thread-Topic: [PATCH]  btrfs: remove redundant code
+Thread-Index: AQHYyy/q5hfXSYJgGUqdpf9fOxBvgA==
+Date:   Sun, 18 Sep 2022 07:26:07 +0000
+Message-ID: <FBF470E1-D893-4AC1-B7E7-4F1CC33020A9@tencent.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [9.218.225.12]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1117A9F088F79B4C8E7A0187B2B94C17@tencent.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: Help w/ Parent transid verify failed
-To:     Brian Clark <bsclark75@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CADQkWYDMLfAi+XVNrXJYjUV1iS7Uj8zLs5L2XNGiQBSTYM0K2Q@mail.gmail.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CADQkWYDMLfAi+XVNrXJYjUV1iS7Uj8zLs5L2XNGiQBSTYM0K2Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hheOWSxeV+ej8nXsO3tAL/zz1bBZof/38k8qzGn7vFmCk+ugFtO
- 6c5R1obRt+t4zjq4HCAM2y4yxnE96ATxMGsxpcTLRV504/1j/65qadJmsWeYDCy+TjtYzQi
- NwcYHaHWGV059nqDH1adfxb/i96Vq3sSXYM2eR4j8lSleQogjv/JTCTNXdhBEiBx3c0Fgwc
- IXfH2BsH3Lls48tuXBEVw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6lkNRHzGBfo=:oDXn6nnax/hz4M+qg30dE1
- 9vN15YaWHsZe6V0+8jiNpP0/Fl4x4m+ZffjYq5y2iN5nNGEmn7l77vHhcBbqgE2c+hDvkEveG
- AptlpNnxGOi+2mIMAVYQL7ScJRPYh/XBUai9ZzWdr5nAbzr6BBy9IE77NOl4vJ+xzn0W0zyDT
- rhFKVcHX2SMm5zAyOB07XIWeFfWUyomAH1WcYn/0uSb1izTWxOyWMLX9touNZ6nclpir0lAbh
- pVlu78+EhKj0GKPg80g9caCT0PEh8XttMJAT1qNXed1uatuS1KL5x1PW1dIZILNoJvfOheUgl
- h0ObRytKxQUnsdovEzvFq90U/F6E99ICfVnwIEpl6CBxtRktNPbor6F8KIl/Jk1igUrhNho8r
- y8E329xBAUEHHc8HE+dvqfYS1IkZ/RPCeOqkJggEmTFBkXEotb5d6YrpogqTB09kTqwE2jqWm
- hUZsHYQk8znUn0X1L+bSEaPDaRjLze95DJ+FkTTB5+HiFaT1zg1o7NqNdcBGW+vG53vxg+Cgu
- sb7BnNGAWWO/n2gJ6n5vjlfVUxqts3UtYvdWPtvn8xHacf3axVkr6eXq57ReLR2r/CH/JsNDj
- gq58KTh4PgjYOYzhSZuT0wqqKS+WsFidd9M+4Mjimt/Y7oZ6nNYLw/jFT6Cj12tHOkVLGDu0R
- LuBJtDQJwxF29FXESrLILqmzyxrfnuaCcdeZayVGk7tKOoQOxMu1V4ndl0PQKXc89NoxiET2q
- XamiU9KMJ+k2gLwWz+evkiKkHd2kW7Z7TEwA7MUd0qlGMeyH2Wqoyw7qPDravIMVopZcufj8Y
- sHyFzFqAAnPOJwyuGn4jZuTRqmSI2jD5bKuHfWLmoulY+diwmZ3lBqsdG5Kx5Q3MMCWFn8woy
- P8L4Rzb1A0BaVIjBzDx7rI2INc0b/5BGXNiPnncAHRLZAkLWstHNICzL3GxklgCMX0CgCMMPb
- /eX1Lw9jRDB6fwsusXT5SRyi+nFJkb6xvRWsVVfaNizIzEU8GPLYHTvKghklmCA4B+F2KVfYe
- 8R+TfK+6SXICX5x6+azOjZm/BUguM5C3Y8pTpeSXbkNY2e0HFlVJmvzkjsGOfGIbgQAWrhrIF
- UCpGdZq5hZvQw5wNTEncW6F4g7dZrW/3zg1MLjwfLI2fv8gzASQHtX/LPYnUWMAcFpPxhdcQs
- 3l4cESP0kaSnYKl3RxtXFegEQ1
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_PASS,T_SPF_HELO_TEMPERROR
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/9/18 05:32, Brian Clark wrote:
-> Hello,
->
-> I have a Fedora 36 Workstation running as a VirtualBox.  This evening
-> I started it up to the error above and is now sitting at an emergency
-> boot prompt.  I am going to have to type some of the needed
-> information because the trouble system is not booted far enough to
-> allow copy/paste.
-
-LiveCD and btrfs check please.
-
->
-> Linux Fedora 5.17.5-300.fc36.x86_64  ...
-> btrfs-progs v5.16.2
-> Label: 'fedora-LIVE' uuid:  ...
->       Total device 1 FS size 5.1 GB
->      devid 1 39GB used 6.52 GB path /dev/sda2
->       unable to mount device to get output
->
-> Any help would be appreciated to recover the data.
-
-Normally you'd want to try "mount -o rescue=3Dall,ro" then backup data.
-
-But I'm more interested in how we got into this situation.
-Any history on the VM and host?
-
-Thanks,
-Qu
-
->
-> Thanks in advance,
->
-> Brian S. Clark
+U2luY2UgbGVhZiBpcyBhbHJlYWR5IE5VTEwsIGFuZCBubyBvdGhlciBicmFuY2ggd2lsbCBnbyBm
+YWlsX3VubG9jaywNCnRoZSBmYWlsX3VubG9jayBicmFuY2ggaXMgdXNlbGVzcy4NCg0KU2lnbmVk
+LW9mZi1ieTogUGVuZyBIYW8gPGZseWluZ3BlbmdAdGVuY2VudC5jb20+DQotLS0NCiBmcy9idHJm
+cy9kaXNrLWlvLmMgfCA1ICstLS0tDQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCA0
+IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZnMvYnRyZnMvZGlzay1pby5jIGIvZnMvYnRy
+ZnMvZGlzay1pby5jDQppbmRleCA0YzMxNjZmM2M3MjUuLmYzOTE2NWFlYzE3NSAxMDA2NDQNCi0t
+LSBhL2ZzL2J0cmZzL2Rpc2staW8uYw0KKysrIGIvZnMvYnRyZnMvZGlzay1pby5jDQpAQCAtMTI4
+NCw3ICsxMjg0LDcgQEAgc3RydWN0IGJ0cmZzX3Jvb3QgKmJ0cmZzX2NyZWF0ZV90cmVlKHN0cnVj
+dCBidHJmc190cmFuc19oYW5kbGUgKnRyYW5zLA0KICAgICAgICBpZiAoSVNfRVJSKGxlYWYpKSB7
+DQogICAgICAgICAgICAgICAgcmV0ID0gUFRSX0VSUihsZWFmKTsNCiAgICAgICAgICAgICAgICBs
+ZWFmID0gTlVMTDsNCi0gICAgICAgICAgICAgICBnb3RvIGZhaWxfdW5sb2NrOw0KKyAgICAgICAg
+ICAgICAgIGdvdG8gZmFpbDsNCiAgICAgICAgfQ0KDQogICAgICAgIHJvb3QtPm5vZGUgPSBsZWFm
+Ow0KQEAgLTEzMTksOSArMTMxOSw2IEBAIHN0cnVjdCBidHJmc19yb290ICpidHJmc19jcmVhdGVf
+dHJlZShzdHJ1Y3QgYnRyZnNfdHJhbnNfaGFuZGxlICp0cmFucywNCg0KICAgICAgICByZXR1cm4g
+cm9vdDsNCg0KLWZhaWxfdW5sb2NrOg0KLSAgICAgICBpZiAobGVhZikNCi0gICAgICAgICAgICAg
+ICBidHJmc190cmVlX3VubG9jayhsZWFmKTsNCiBmYWlsOg0KICAgICAgICBidHJmc19wdXRfcm9v
+dChyb290KTsNCg0KLS0NCjIuMjcuMA0KDQo=
