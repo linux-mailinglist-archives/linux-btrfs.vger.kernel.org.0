@@ -2,111 +2,199 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FD75BC00B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Sep 2022 23:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC175BC0AE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Sep 2022 01:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbiIRVZe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 18 Sep 2022 17:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
+        id S229713AbiIRXxx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 18 Sep 2022 19:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbiIRVZd (ORCPT
+        with ESMTP id S229519AbiIRXxw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 18 Sep 2022 17:25:33 -0400
-Received: from beige.elm.relay.mailchannels.net (beige.elm.relay.mailchannels.net [23.83.212.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FCE12AF2
-        for <linux-btrfs@vger.kernel.org>; Sun, 18 Sep 2022 14:25:31 -0700 (PDT)
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id DA270E0494
-        for <linux-btrfs@vger.kernel.org>; Sun, 18 Sep 2022 21:15:41 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
-        (Authenticated sender: instrampxe0y3a)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 0F9F2E047D
-        for <linux-btrfs@vger.kernel.org>; Sun, 18 Sep 2022 21:15:40 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1663535741; a=rsa-sha256;
-        cv=none;
-        b=lk8D6DW+M1eXCOxXfQ5qLYUjWn1l9b+FJP9UrEZRt347Cwdv4/lnhc9FdbB5b4mDj3DyTw
-        MJFPuRvjr2AkPbUUQQdvjFeRv25TWId+mONCAvQ/wDSLXxU4D7NtsF0KHWtw2avRykqot5
-        eALZo+VjGtjf8Ko36nQj6gzynfMoDMf4rKDujR/oWHHOotPUI7KTo6/KVbUpAco8SbM3j5
-        VxCnf3DWlXeCKi4cm39N8bV4mAVdCJCV2bt6FD7QtrtVeBIMTIlVgV49NbwQfdprIC+/kG
-        DvO4siS0iTVWNhPqehEy/7QBxIVFF/nspXLiQ9GTArwgfQc3nb3Jw0RtTVErgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1663535741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rfEJz0YIA8npR7HY0Pc/YGyUopuywfkzSlBNxpl5SD0=;
-        b=TQKLIV8TiEOKNfEb1238Fre6tUfB/+D9f6yw+U9KX+7A2+Fe+YogXKm1KhW8r4Iq7m2Uek
-        jdeLGvbnQNGMy/zeVRzvGUSYOG25T2KWD8flWV+ZbCZ7mdHJCe4XmRaxMhRN/W/3kBcMwu
-        Yu/hs7wTPJbUttqTpK6cvHlFok+8mhwVHruyeemy63rVxWt2PyrWQUqUuqGvmTYKqai4Dd
-        gW600apE6oszRWc6A9BgON3z4kBChkC+apvNmNTZjsFtqLmiKOAWbK4tJRlMJk1IhMGY93
-        xKDxFrTo1XU9JrzzCrF00a2hGBPjJ0vWaMP8x+pR2QkGMRjanoOWDKUTXTzeZw==
-ARC-Authentication-Results: i=1;
-        rspamd-686945db84-qgj4j;
-        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Plucky-Celery: 4a8892f45a42811a_1663535741561_426398649
-X-MC-Loop-Signature: 1663535741560:845645194
-X-MC-Ingress-Time: 1663535741560
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-        by 100.112.55.209 (trex/6.7.1);
-        Sun, 18 Sep 2022 21:15:41 +0000
-Received: from ppp-46-244-252-68.dynamic.mnet-online.de ([46.244.252.68]:53546 helo=heisenberg.fritz.box)
-        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <calestyo@scientia.org>)
-        id 1oa1dW-00080L-Pk
-        for linux-btrfs@vger.kernel.org;
-        Sun, 18 Sep 2022 21:15:39 +0000
-Message-ID: <e70c6c27d49e3625f0d06c8a90646c0248552b69.camel@scientia.org>
-Subject: btrfs-check for filesystems with many snapshots (with many files)
- gets slow
-From:   Christoph Anton Mitterer <calestyo@scientia.org>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Date:   Sun, 18 Sep 2022 23:15:34 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.0-2 
+        Sun, 18 Sep 2022 19:53:52 -0400
+Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A6D2D13CD7;
+        Sun, 18 Sep 2022 16:53:50 -0700 (PDT)
+Received: from dread.disaster.area (pa49-186-149-49.pa.vic.optusnet.com.au [49.186.149.49])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id B1B9B8A9D52;
+        Mon, 19 Sep 2022 09:53:46 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1oa46a-009Oeo-7b; Mon, 19 Sep 2022 09:53:44 +1000
+Date:   Mon, 19 Sep 2022 09:53:44 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, NeilBrown <neilb@suse.de>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        "bfields@fieldses.org" <bfields@fieldses.org>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "xiubli@redhat.com" <xiubli@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "lczerner@redhat.com" <lczerner@redhat.com>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+ STATX_INO_VERSION field
+Message-ID: <20220918235344.GH3600936@dread.disaster.area>
+References: <577b6d8a7243aeee37eaa4bbb00c90799586bc48.camel@hammerspace.com>
+ <1a968b8e87f054e360877c9ab8cdfc4cfdfc8740.camel@kernel.org>
+ <0646410b6d2a5d19d3315f339b2928dfa9f2d922.camel@hammerspace.com>
+ <34e91540c92ad6980256f6b44115cf993695d5e1.camel@kernel.org>
+ <871f9c5153ddfe760854ca31ee36b84655959b83.camel@hammerspace.com>
+ <e8922bc821a40f5a3f0a1301583288ed19b6891b.camel@kernel.org>
+ <166328063547.15759.12797959071252871549@noble.neil.brown.name>
+ <YyQdmLpiAMvl5EkU@mit.edu>
+ <7027d1c2923053fe763e9218d10ce8634b56e81d.camel@kernel.org>
+ <24005713ad25370d64ab5bd0db0b2e4fcb902c1c.camel@kernel.org>
 MIME-Version: 1.0
-X-OutGoing-Spam-Status: No, score=-1.0
-X-AuthUser: calestyo@scientia.org
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        HAS_X_OUTGOING_SPAM_STAT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24005713ad25370d64ab5bd0db0b2e4fcb902c1c.camel@kernel.org>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=6327af8e
+        a=XTRC1Ovx3SkpaCW1YxGVGA==:117 a=XTRC1Ovx3SkpaCW1YxGVGA==:17
+        a=kj9zAlcOel0A:10 a=xOM3xZuef0cA:10 a=7-415B0cAAAA:8
+        a=OM9ssF-cS7fGoRW40zoA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey.
+On Fri, Sep 16, 2022 at 11:11:34AM -0400, Jeff Layton wrote:
+> On Fri, 2022-09-16 at 07:36 -0400, Jeff Layton wrote:
+> > On Fri, 2022-09-16 at 02:54 -0400, Theodore Ts'o wrote:
+> > > On Fri, Sep 16, 2022 at 08:23:55AM +1000, NeilBrown wrote:
+> > > > > > If the answer is that 'all values change', then why store the crash
+> > > > > > counter in the inode at all? Why not just add it as an offset when
+> > > > > > you're generating the user-visible change attribute?
+> > > > > > 
+> > > > > > i.e. statx.change_attr = inode->i_version + (crash counter * offset)
+> > > 
+> > > I had suggested just hashing the crash counter with the file system's
+> > > on-disk i_version number, which is essentially what you are suggested.
+> > > 
+> > > > > Yes, if we plan to ensure that all the change attrs change after a
+> > > > > crash, we can do that.
+> > > > > 
+> > > > > So what would make sense for an offset? Maybe 2**12? One would hope that
+> > > > > there wouldn't be more than 4k increments before one of them made it to
+> > > > > disk. OTOH, maybe that can happen with teeny-tiny writes.
+> > > > 
+> > > > Leave it up the to filesystem to decide.  The VFS and/or NFSD should
+> > > > have not have part in calculating the i_version.  It should be entirely
+> > > > in the filesystem - though support code could be provided if common
+> > > > patterns exist across filesystems.
+> > > 
+> > > Oh, *heck* no.  This parameter is for the NFS implementation to
+> > > decide, because it's NFS's caching algorithms which are at stake here.
+> > > 
+> > > As a the file system maintainer, I had offered to make an on-disk
+> > > "crash counter" which would get updated when the journal had gotten
+> > > replayed, in addition to the on-disk i_version number.  This will be
+> > > available for the Linux implementation of NFSD to use, but that's up
+> > > to *you* to decide how you want to use them.
+> > > 
+> > > I was perfectly happy with hashing the crash counter and the i_version
+> > > because I had assumed that not *that* much stuff was going to be
+> > > cached, and so invalidating all of the caches in the unusual case
+> > > where there was a crash was acceptable.  After all it's a !@#?!@
+> > > cache.  Caches sometimmes get invalidated.  "That is the order of
+> > > things." (as Ramata'Klan once said in "Rocks and Shoals")
+> > > 
+> > > But if people expect that multiple TB's of data is going to be stored;
+> > > that cache invalidation is unacceptable; and that a itsy-weeny chance
+> > > of false negative failures which might cause data corruption might be
+> > > acceptable tradeoff, hey, that's for the system which is providing
+> > > caching semantics to determine.
+> > > 
+> > > PLEASE don't put this tradeoff on the file system authors; I would
+> > > much prefer to leave this tradeoff in the hands of the system which is
+> > > trying to do the caching.
+> > > 
+> > 
+> > Yeah, if we were designing this from scratch, I might agree with leaving
+> > more up to the filesystem, but the existing users all have pretty much
+> > the same needs. I'm going to plan to try to keep most of this in the
+> > common infrastructure defined in iversion.h.
+> > 
+> > Ted, for the ext4 crash counter, what wordsize were you thinking? I
+> > doubt we'll be able to use much more than 32 bits so a larger integer is
+> > probably not worthwhile. There are several holes in struct super_block
+> > (at least on x86_64), so adding this field to the generic structure
+> > needn't grow it.
+> 
+> That said, now that I've taken a swipe at implementing this, I need more
+> information than just the crash counter. We need to multiply the crash
+> counter with a reasonable estimate of the maximum number of individual
+> writes that could occur between an i_version being incremented and that
+> value making it to the backing store.
+> 
+> IOW, given a write that bumps the i_version to X, how many more write
+> calls could race in before X makes it to the platter? I took a SWAG and
+> said 4k in an earlier email, but I don't really have a way to know, and
+> that could vary wildly with different filesystems and storage.
+> 
+> What I'd like to see is this in struct super_block:
+> 
+> 	u32		s_version_offset;
 
-That's not really a priority issue, I just figured that no one might
-have thought about it before:
+	u64		s_version_salt;
 
-When having a filesystem with many files (like a million or so) and on
-the same fs, snapshots are continuously made of the "main" subvol with
-those files... then eventually btrfs-check get's super slow, even
-though there weren't really that many changes between the snapshots
-(mostly added files).
+> ...and then individual filesystems can calculate:
+> 
+> 	crash_counter * max_number_of_writes
+> 
+> and put the correct value in there at mount time.
 
-"Super slow" in the sense of 6 hours and more.
+Other filesystems might not have a crash counter but have other
+information that can be substituted, like a mount counter or a
+global change sequence number that is guaranteed to increment from
+one mount to the next. 
 
+Further, have you thought about what "max number of writes" might
+be in ten years time? e.g.  what happens if a filesysetm as "max
+number of writes" being greater than 2^32? I mean, we already have
+machines out there running Linux with 64-128TB of physical RAM, so
+it's already practical to hold > 2^32 individual writes to a single
+inode that each bump i_version in memory....
 
-I just wondered whether there's any room for speed up (without loosing
-any safety in checking) in btrfs-check to make it much faster?
+So when we consider this sort of scale, the "crash counter * max
+writes" scheme largely falls apart because "max writes" is a really
+large number to begin with. We're going to be stuck with whatever
+algorithm is decided on for the foreseeable future, so we must
+recognise that _we've already overrun 32 bit counter schemes_ in
+terms of tracking "i_version changes in memory vs what we have on
+disk".
 
-Very naively thought something like: it doesn't have to check the stuff
-it already checked on the other snapshot.
-But of course I'm aware that with refs between the snapshots and
-extents, things are much more complex in reality.
+Hence I really think that we should be leaving the implementation of
+the salt value to the individual filesysetms as different
+filesytsems are aimed at different use cases and so may not
+necessarily have to all care about the same things (like 2^32 bit
+max write overruns).  All the high level VFS code then needs to do
+is add the two together:
 
+	statx.change_attr = inode->i_version + sb->s_version_salt;
 
 Cheers,
-Chris.
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
