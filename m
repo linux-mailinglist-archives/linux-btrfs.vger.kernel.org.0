@@ -2,161 +2,346 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0335BD3CC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Sep 2022 19:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58EF75BD59F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Sep 2022 22:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbiISRe5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Sep 2022 13:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
+        id S229652AbiISUTY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Sep 2022 16:19:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230309AbiISRey (ORCPT
+        with ESMTP id S229461AbiISUTW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Sep 2022 13:34:54 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2764224BE1;
-        Mon, 19 Sep 2022 10:34:53 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id r34-20020a05683044a200b0065a12392fd7so43977otv.3;
-        Mon, 19 Sep 2022 10:34:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=kdS9QD9VodJFlDe/hzPt/fIHrfeguLlK063E4oft3xY=;
-        b=RSsN1QZHs/TmzsGp1gwypXdKb/ST8jjoxnGgjyJpGV7sq5aaYponooE63RtJDRuoFk
-         4VXjc4NPaG7MQomjEcSt+y7p4ZVGuVPclZGjlL/vQiCR0Me8vanyEOYot/zi8Qsubu9j
-         Ix69jBgynF7tCkr+xxKol7c7kNhnVS8KJgxgKk0lyolCfmfJb+3zoq8Vz25NtkyW/5RJ
-         p2+8AeVSPil9bJICaFxtsaSaqUw5Kt5tKUWnYm/Zm3aB+7O1VaahZGVySmK2tZf55QM0
-         YghzgAsvx0sqLEfTTQQuMHFJo6+U/klj2pt5kixy16lXa6EmRGn5eHCZGXkCezFh7SPi
-         kjXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=kdS9QD9VodJFlDe/hzPt/fIHrfeguLlK063E4oft3xY=;
-        b=SbguzxJyq7PJFCL1+mck1F+Cr3HG4z21EO4jQ6MNzua4D84s6vNsQ8jPCkaxg1nUPq
-         V+nA0uP5DdD7UYCozggMhtOkkbP8663qRdb1RuVLfXhtyBkgJJzGhpzMJ6wq0TLYtEIY
-         Lk8PXTmZG8uCDgzWaXT13AxAlF53Pf2j2T0AY9VQKGzY5ZCBQ0MRH0pIvfKeUgZUFnQL
-         ShY3gNpPecpmbq89zksg9BDrLshSHVVi7M/L1OUVyKht0RoaGH574ToAnq2LC4CRRENI
-         O8sVoTkzHT5ASlQ5JzhnBTt7FE/E4D8ROcae1oVn8HmJTBw2FKabkiaOJTKvC0MDDHqP
-         elPw==
-X-Gm-Message-State: ACrzQf1bcT6uPi0zdPPgs7Vkgf1VhABB8iIo5F6OqZDNC18KqqZUkDlC
-        aWxPVTwVc1msbXng6/Oowcjrj8eBZEkjFYChKa9ES6rf7p5xPQ==
-X-Google-Smtp-Source: AMsMyM5sQYgUol/jmTSw3stKiJsYQ02a9vmJcS7x25EvIWll4MwqWjrE0KfujNT4rW/qZrnmuFrh2hzLLcoYzG7yGfA=
-X-Received: by 2002:a05:6830:d8c:b0:639:6034:b3d7 with SMTP id
- bv12-20020a0568300d8c00b006396034b3d7mr8692869otb.125.1663608892048; Mon, 19
- Sep 2022 10:34:52 -0700 (PDT)
+        Mon, 19 Sep 2022 16:19:22 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5566C4A13D
+        for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 13:19:20 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D81952213F;
+        Mon, 19 Sep 2022 20:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1663618758;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F2kyWJiQZSYpLV5A9AAvLg7biezkqejTV/SY01dtK3s=;
+        b=l3iGin9Q3fz+NRwHwurmVwsoHXrjL8TphrloUYmya3xvQC9wfPjO/b17g6MgLOKsAGXbe9
+        pHHPRxoJnyG3PrYdY4J4ZFqA4M8Xqe/WcwslrPmx8kY6/ANMiSBOFlelEcMpuUBwLqY6eo
+        n/h31RFMPARzX/R14hZa1p0i6tcy4Dk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1663618758;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F2kyWJiQZSYpLV5A9AAvLg7biezkqejTV/SY01dtK3s=;
+        b=VD/ijXDbHINevUDrZAWovdRmA+1Qnf8OU6boGGlc7DmC6UPNNpQ6iFdSbwgC+ixESKikdt
+        p0puWgK85SkQxSAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A107413ABD;
+        Mon, 19 Sep 2022 20:19:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8/hHJsbOKGPuZgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 19 Sep 2022 20:19:18 +0000
+Date:   Mon, 19 Sep 2022 22:13:48 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC] btrfs: make btrfs module init/exit match their
+ sequence
+Message-ID: <20220919201348.GT32411@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <5d2d69afe8edaf99b92c07acc17a603e692a5990.1663569042.git.wqu@suse.com>
 MIME-Version: 1.0
-References: <20220912182224.514561-1-vishal.moola@gmail.com>
-In-Reply-To: <20220912182224.514561-1-vishal.moola@gmail.com>
-From:   Vishal Moola <vishal.moola@gmail.com>
-Date:   Mon, 19 Sep 2022 10:34:40 -0700
-Message-ID: <CAOzc2pznw0qp3xVm98-TdU=JBVxintYN1Q4Ci9qTQkBYRxi9QQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/23] Convert to filemap_get_folios_tag()
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nilfs@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5d2d69afe8edaf99b92c07acc17a603e692a5990.1663569042.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 12, 2022 at 11:25 AM Vishal Moola (Oracle)
-<vishal.moola@gmail.com> wrote:
->
-> This patch series replaces find_get_pages_range_tag() with
-> filemap_get_folios_tag(). This also allows the removal of multiple
-> calls to compound_head() throughout.
-> It also makes a good chunk of the straightforward conversions to folios,
-> and takes the opportunity to introduce a function that grabs a folio
-> from the pagecache.
->
-> F2fs and Ceph have quite alot of work to be done regarding folios, so
-> for now those patches only have the changes necessary for the removal of
-> find_get_pages_range_tag(), and only support folios of size 1 (which is
-> all they use right now anyways).
->
-> I've run xfstests on btrfs, ext4, f2fs, and nilfs2, but more testing may be
-> beneficial. The page-writeback and filemap changes implicitly work. Testing
-> and review of the other changes (afs, ceph, cifs, gfs2) would be appreciated.
+On Mon, Sep 19, 2022 at 02:36:44PM +0800, Qu Wenruo wrote:
+> [BACKGROUND]
+> In theory init_btrfs_fs() and exit_btrfs_fs() should match their
+> sequence, thus normally they should look like this:
+> 
+>     init_btrfs_fs()   |   exit_btrfs_fs()
+> ----------------------+------------------------
+>     init_A();         |
+>     init_B();         |
+>     init_C();         |
+>                       |   exit_C();
+>                       |   exit_B();
+>                       |   exit_A();
+> 
+> So is for the error path of init_btrfs_fs().
+> 
+> But it's not the case, some exit functions don't match their init
+> functions sequence in init_btrfs_fs().
+> 
+> Furthermore in init_btrfs_fs(), we need to have a new error tag for each
+> new init function we added.
+> This is not really expandable, especially recently we may add several
+> new functions to init_btrfs_fs().
+> 
+> [ENHANCEMENT]
+> The patch will introduce the following things to enhance the situation:
+> 
+> - struct init_sequence
+>   Just a wrapper of init and exit function pointers.
+> 
+>   The init function must use int type as return value, thus some init
+>   functions need to be updated to return 0.
+> 
+>   The exit function can be NULL, as there are some init sequence just
+>   outputting a message.
+> 
+> - struct mod_init_seq[] array
+>   This is a const array, recording all the initialization we need to do
+>   in init_btrfs_fs(), and the order follows the old init_btrfs_fs().
+> 
+>   Only one modification in the order, now we call btrfs_print_mod_info()
+>   after sanity checks.
+>   As it makes no sense to print the mod into, and fail the sanity tests.
+> 
+> - bool mod_init_result[] array
+>   This is a bool array, recording if we have initialized one entry in
+>   mod_init_seq[].
+> 
+>   The reason to split mod_init_seq[] and mod_init_result[] is to avoid
+>   section mismatch in reference.
+> 
+>   All init function are in .init.text, but if mod_init_seq[] records
+>   the @initialized member it can no longer be const, thus will be put
+>   into .data section, and cause modpost warning.
+> 
+> For init_btrfs_fs() we just call all init functions in their order in
+> mod_init_seq[] array, and after each call, setting corresponding
+> mod_init_result[] to true.
+> 
+> For exit_btrfs_fs() and error handling path of init_btrfs_fs(), we just
+> iterate mod_init_seq[] in reverse order, and skip all uninitialized
+> entry.
+> 
+> With this patch, init_btrfs_fs()/exit_btrfs_fs() will be much easier to
+> expand and will always follow the strict order.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
-> v2:
->   Got Acked-By tags for nilfs and btrfs changes
->   Fixed an error arising in f2fs
->   - Reported-by: kernel test robot <lkp@intel.com>
->
-> Vishal Moola (Oracle) (23):
->   pagemap: Add filemap_grab_folio()
->   filemap: Added filemap_get_folios_tag()
->   filemap: Convert __filemap_fdatawait_range() to use
->     filemap_get_folios_tag()
->   page-writeback: Convert write_cache_pages() to use
->     filemap_get_folios_tag()
->   afs: Convert afs_writepages_region() to use filemap_get_folios_tag()
->   btrfs: Convert btree_write_cache_pages() to use
->     filemap_get_folio_tag()
->   btrfs: Convert extent_write_cache_pages() to use
->     filemap_get_folios_tag()
->   ceph: Convert ceph_writepages_start() to use filemap_get_folios_tag()
->   cifs: Convert wdata_alloc_and_fillpages() to use
->     filemap_get_folios_tag()
->   ext4: Convert mpage_prepare_extent_to_map() to use
->     filemap_get_folios_tag()
->   f2fs: Convert f2fs_fsync_node_pages() to use filemap_get_folios_tag()
->   f2fs: Convert f2fs_flush_inline_data() to use filemap_get_folios_tag()
->   f2fs: Convert f2fs_sync_node_pages() to use filemap_get_folios_tag()
->   f2fs: Convert f2fs_write_cache_pages() to use filemap_get_folios_tag()
->   f2fs: Convert last_fsync_dnode() to use filemap_get_folios_tag()
->   f2fs: Convert f2fs_sync_meta_pages() to use filemap_get_folios_tag()
->   gfs2: Convert gfs2_write_cache_jdata() to use filemap_get_folios_tag()
->   nilfs2: Convert nilfs_lookup_dirty_data_buffers() to use
->     filemap_get_folios_tag()
->   nilfs2: Convert nilfs_lookup_dirty_node_buffers() to use
->     filemap_get_folios_tag()
->   nilfs2: Convert nilfs_btree_lookup_dirty_buffers() to use
->     filemap_get_folios_tag()
->   nilfs2: Convert nilfs_copy_dirty_pages() to use
->     filemap_get_folios_tag()
->   nilfs2: Convert nilfs_clear_dirty_pages() to use
->     filemap_get_folios_tag()
->   filemap: Remove find_get_pages_range_tag()
->
->  fs/afs/write.c          | 114 +++++++++++++++++----------------
->  fs/btrfs/extent_io.c    |  57 +++++++++--------
->  fs/ceph/addr.c          | 138 ++++++++++++++++++++--------------------
->  fs/cifs/file.c          |  33 +++++++++-
->  fs/ext4/inode.c         |  55 ++++++++--------
->  fs/f2fs/checkpoint.c    |  49 +++++++-------
->  fs/f2fs/compress.c      |  13 ++--
->  fs/f2fs/data.c          |  69 ++++++++++----------
->  fs/f2fs/f2fs.h          |   5 +-
->  fs/f2fs/node.c          |  72 +++++++++++----------
->  fs/gfs2/aops.c          |  64 ++++++++++---------
->  fs/nilfs2/btree.c       |  14 ++--
->  fs/nilfs2/page.c        |  59 ++++++++---------
->  fs/nilfs2/segment.c     |  44 +++++++------
->  include/linux/pagemap.h |  32 +++++++---
->  include/linux/pagevec.h |   8 ---
->  mm/filemap.c            |  87 ++++++++++++-------------
->  mm/page-writeback.c     |  44 +++++++------
->  mm/swap.c               |  10 ---
->  19 files changed, 507 insertions(+), 460 deletions(-)
->
-> --
-> 2.36.1
->
+> Reason for RFC:
+> 
+> Although the patch is tested with multiple load/unload and fstests runs,
+> this should cause extra memory usage, 272 bytes for the single use
+> mod_init_seq[] array and at least 17 bytes for mod_init_result[].
 
-Just following up on these patches. Many of the changes still need review.
-If anyone has time this week to look over any of the affected areas (pagecache,
-afs, ceph, ciph, ext4, f2fs, or gfs) feedback would be much appreciated.
+I think the bytes will move from code to the data section, so I would
+not consider it a big problem.
 
-Also, Thanks to David for looking at btrfs and Ryusuke for looking at
-nilfs already.
+> And it also introduced some duplicated code, as we can not call
+> exit_btrfs_fs() inside init_btrfs_fs(), or we will trigger modpost
+> warning for the section type mismatch in the reference.
+> 
+> Another solution is, to make all exit functions to handle the cleanup
+> automatically.
+> 
+> This is feasible for most cachep related init/exit, just some extra
+> "if (cachep) {" checks.
+> But some other ones may need extra work.
+> Furthermore such smart exit function can not address the sequence
+> problem, only making the error handling patch a little cleaner.
+> 
+> Thus currently I follow the array solution for this.
+> 
+> If this method is fine, maybe I can follow the same way for open_ctree().
+
+I like it, the order of the functions is clear and makes it easy to
+extend in one place. As now implemented I don't see anything oubvious
+that would need an improvement so the suggested optimizations we can
+consider separately.
+
+> ---
+>  fs/btrfs/compression.c |   3 +-
+>  fs/btrfs/compression.h |   2 +-
+>  fs/btrfs/props.c       |   3 +-
+>  fs/btrfs/props.h       |   2 +-
+>  fs/btrfs/super.c       | 211 +++++++++++++++++++++--------------------
+>  5 files changed, 112 insertions(+), 109 deletions(-)
+> 
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 54caa00a2245..8d3e3218fe37 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -1232,12 +1232,13 @@ int btrfs_decompress(int type, unsigned char *data_in, struct page *dest_page,
+>  	return ret;
+>  }
+>  
+> -void __init btrfs_init_compress(void)
+> +int __init btrfs_init_compress(void)
+>  {
+>  	btrfs_init_workspace_manager(BTRFS_COMPRESS_NONE);
+>  	btrfs_init_workspace_manager(BTRFS_COMPRESS_ZLIB);
+>  	btrfs_init_workspace_manager(BTRFS_COMPRESS_LZO);
+>  	zstd_init_workspace_manager();
+> +	return 0;
+>  }
+>  
+>  void __cold btrfs_exit_compress(void)
+> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+> index 1aa02903de69..9da2343eeff5 100644
+> --- a/fs/btrfs/compression.h
+> +++ b/fs/btrfs/compression.h
+> @@ -77,7 +77,7 @@ static inline unsigned int btrfs_compress_level(unsigned int type_level)
+>  	return ((type_level & 0xF0) >> 4);
+>  }
+>  
+> -void __init btrfs_init_compress(void);
+> +int __init btrfs_init_compress(void);
+>  void __cold btrfs_exit_compress(void);
+>  
+>  int btrfs_compress_pages(unsigned int type_level, struct address_space *mapping,
+> diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+> index 055a631276ce..abee92eb1ed6 100644
+> --- a/fs/btrfs/props.c
+> +++ b/fs/btrfs/props.c
+> @@ -453,7 +453,7 @@ int btrfs_inode_inherit_props(struct btrfs_trans_handle *trans,
+>  	return 0;
+>  }
+>  
+> -void __init btrfs_props_init(void)
+> +int __init btrfs_props_init(void)
+>  {
+>  	int i;
+>  
+> @@ -463,5 +463,6 @@ void __init btrfs_props_init(void)
+>  
+>  		hash_add(prop_handlers_ht, &p->node, h);
+>  	}
+> +	return 0;
+>  }
+>  
+> diff --git a/fs/btrfs/props.h b/fs/btrfs/props.h
+> index ca9dd3df129b..6e283196e38a 100644
+> --- a/fs/btrfs/props.h
+> +++ b/fs/btrfs/props.h
+> @@ -8,7 +8,7 @@
+>  
+>  #include "ctree.h"
+>  
+> -void __init btrfs_props_init(void);
+> +int __init btrfs_props_init(void);
+>  
+>  int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
+>  		   const char *name, const char *value, size_t value_len,
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index be7df8d1d5b8..fb30ca46c65c 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -2691,7 +2691,7 @@ static __cold void btrfs_interface_exit(void)
+>  	misc_deregister(&btrfs_misc);
+>  }
+>  
+> -static void __init btrfs_print_mod_info(void)
+> +static int __init btrfs_print_mod_info(void)
+>  {
+>  	static const char options[] = ""
+>  #ifdef CONFIG_BTRFS_DEBUG
+> @@ -2718,122 +2718,123 @@ static void __init btrfs_print_mod_info(void)
+>  #endif
+>  			;
+>  	pr_info("Btrfs loaded, crc32c=%s%s\n", crc32c_impl(), options);
+> +	return 0;
+>  }
+>  
+> -static int __init init_btrfs_fs(void)
+> +static int register_btrfs(void)
+>  {
+> -	int err;
+> -
+> -	btrfs_props_init();
+> -
+> -	err = btrfs_init_sysfs();
+> -	if (err)
+> -		return err;
+> -
+> -	btrfs_init_compress();
+> -
+> -	err = btrfs_init_cachep();
+> -	if (err)
+> -		goto free_compress;
+> -
+> -	err = extent_state_init_cachep();
+> -	if (err)
+> -		goto free_cachep;
+> -
+> -	err = extent_buffer_init_cachep();
+> -	if (err)
+> -		goto free_extent_cachep;
+> -
+> -	err = btrfs_bioset_init();
+> -	if (err)
+> -		goto free_eb_cachep;
+> -
+> -	err = extent_map_init();
+> -	if (err)
+> -		goto free_bioset;
+> -
+> -	err = ordered_data_init();
+> -	if (err)
+> -		goto free_extent_map;
+> -
+> -	err = btrfs_delayed_inode_init();
+> -	if (err)
+> -		goto free_ordered_data;
+> -
+> -	err = btrfs_auto_defrag_init();
+> -	if (err)
+> -		goto free_delayed_inode;
+> -
+> -	err = btrfs_delayed_ref_init();
+> -	if (err)
+> -		goto free_auto_defrag;
+> +	return register_filesystem(&btrfs_fs_type);
+> +}
+> +static void unregister_btrfs(void)
+> +{
+> +	unregister_filesystem(&btrfs_fs_type);
+> +}
+>  
+> -	err = btrfs_prelim_ref_init();
+> -	if (err)
+> -		goto free_delayed_ref;
+> +/* Helper structure for long init/exit functions. */
+> +struct init_sequence {
+> +	int (*init_func)(void);
+> +	void (*exit_func)(void);
+> +};
+>  
+> -	err = btrfs_interface_init();
+> -	if (err)
+> -		goto free_prelim_ref;
+> +const struct init_sequence mod_init_seq[] = {
+
+Can this be static? Also it could be marked as the __initdata section or
+it's called something like that, like the functions. It can freed some
+resources when the module is built-in.
+
+> +	{
+> +		.init_func = btrfs_props_init,
+> +		.exit_func = NULL,
+
+We can put the defintion in some macro, that would define both callbacks
+if they follow same naming eg. with _init _exit suffix bit it slightly
+obscures the function use. The full list as you've done it is fine for
+first implementation and it could stay as is.
