@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 710255BCE02
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Sep 2022 16:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DFE5BCE0A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Sep 2022 16:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbiISOG5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Sep 2022 10:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53608 "EHLO
+        id S230107AbiISOG6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Sep 2022 10:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbiISOGy (ORCPT
+        with ESMTP id S229799AbiISOGz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Sep 2022 10:06:54 -0400
+        Mon, 19 Sep 2022 10:06:55 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF32B2A96B
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 07:06:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DFD31DFD
+        for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 07:06:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 755BCB81BFB
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 14:06:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B806BC433D6
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 14:06:50 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4E9ACB81B6A
+        for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 14:06:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ABECC433B5
+        for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 14:06:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663596411;
-        bh=WJEpBJfhykFovmLVrPLj9NNfdkY+wsWDqY0EqXMeNMI=;
+        s=k20201202; t=1663596412;
+        bh=7kVVpIrCUi34lgVO9zeoGq13jz1cNkd4hNW7WQC/rdQ=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=ANzGqtumzzyqMnzvlgIZg/umGV/gluPuYpxjXmrcwqAX/4yxmdLsO5MKiCgBjyLui
-         V5wgtDp4q1VzIlsvAC3M/YEhEluApxuKNTZMwZhXzpeu4ZLplU4exOiItLyhhJ4wf+
-         CuNvqXHyRMnKauohn/sKeoESZQmFrCkAjQjVC4ZBe3CwWgFOmMU53Y02FDj95crDDX
-         ddX5FXSWfdGQznCki/9l5FFsTGwhJATplrRTHVYVxKChA7REs/paClo1R1Ha5ZgwoW
-         9Jf1LEPNiwDYUUgpigPTorFuJggHxc+8xLR5ejddHJnwMuKG8phID2KAuZFmZ3WIag
-         9f7MiH0w5rYqQ==
+        b=Czc006LWdxBboiMA2rPZ9dmrOlw3086xYJFgplmJwPu52XkkwcrU4G1FrtyVKUFrr
+         et95TWCTZmaHRShJqA+hCL/x8PtOWJTRk/Cb5FoNotDdWsn3iWyofrHF9RXPJMqcl1
+         reNsZAhQyfZR4Ar+tE2WQuifwJNkB6q+t7f+W7aX3cJOfh+XXzMXYApoEZCJ2xupdA
+         zOY/RlnppOH2EQY62+iVMOyFQhj7H0YdbyUnVxeHts06mR4D53tpDq/u9db46xu6Vy
+         uqjMo3OnkFQPZ37UmejqzJYz2jmB3Y5pnJNPXn3It5AlmeSt5dv+khUA/fhxLsqrX9
+         /jAQhixB0XF3w==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 08/13] btrfs: remove unnecessary extent map initializations
-Date:   Mon, 19 Sep 2022 15:06:35 +0100
-Message-Id: <8132be7f2f8e6d32e070f722cd162d1b4989b02f.1663594828.git.fdmanana@suse.com>
+Subject: [PATCH 09/13] btrfs: assert tree is locked when clearing extent map from logging
+Date:   Mon, 19 Sep 2022 15:06:36 +0100
+Message-Id: <f7a30feaffda0ca4480ee94c08114bcbfe9b22de.1663594828.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1663594828.git.fdmanana@suse.com>
 References: <cover.1663594828.git.fdmanana@suse.com>
@@ -53,44 +53,28 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When allocating an extent map, we use kmem_cache_zalloc() which guarantees
-the returned memory is initialized to zeroes, therefore it's pointless
-to initialize the generation and flags of the extent map to zero again.
-
-Remove those initializations, as they are pointless and slightly increase
-the object text size.
-
-Before removing them:
-
-   $ size fs/btrfs/extent_map.o
-      text	   data	    bss	    dec	    hex	filename
-      9241	    274	     24	   9539	   2543	fs/btrfs/extent_map.o
-
-After removing them:
-
-   $ size fs/btrfs/extent_map.o
-      text	   data	    bss	    dec	    hex	filename
-      9209	    274	     24	   9507	   2523	fs/btrfs/extent_map.o
+When calling clear_em_logging() we should have a write lock on the extent
+map tree, as we will try to merge the extent map with the previous and
+next ones in the tree. So assert that we have a write lock.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_map.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/btrfs/extent_map.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 2e6dc5a772f4..6b7eee92d981 100644
+index 6b7eee92d981..f1616aa8d0f5 100644
 --- a/fs/btrfs/extent_map.c
 +++ b/fs/btrfs/extent_map.c
-@@ -55,9 +55,7 @@ struct extent_map *alloc_extent_map(void)
- 	if (!em)
- 		return NULL;
- 	RB_CLEAR_NODE(&em->rb_node);
--	em->flags = 0;
- 	em->compress_type = BTRFS_COMPRESS_NONE;
--	em->generation = 0;
- 	refcount_set(&em->refs, 1);
- 	INIT_LIST_HEAD(&em->list);
- 	return em;
+@@ -334,6 +334,8 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+ 
+ void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em)
+ {
++	lockdep_assert_held_write(&tree->lock);
++
+ 	clear_bit(EXTENT_FLAG_LOGGING, &em->flags);
+ 	if (extent_map_in_tree(em))
+ 		try_merge_map(tree, em);
 -- 
 2.35.1
 
