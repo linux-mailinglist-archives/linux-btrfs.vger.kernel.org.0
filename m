@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DFE5BCE0A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Sep 2022 16:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E005BCE01
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Sep 2022 16:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbiISOG6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Sep 2022 10:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
+        id S230258AbiISOHA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Sep 2022 10:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbiISOGz (ORCPT
+        with ESMTP id S230203AbiISOGz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 19 Sep 2022 10:06:55 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DFD31DFD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDEB2E6AA
         for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 07:06:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4E9ACB81B6A
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 14:06:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ABECC433B5
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 14:06:51 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 43582B81BFA
+        for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 14:06:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C8E6C43470
+        for <linux-btrfs@vger.kernel.org>; Mon, 19 Sep 2022 14:06:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663596412;
-        bh=7kVVpIrCUi34lgVO9zeoGq13jz1cNkd4hNW7WQC/rdQ=;
+        s=k20201202; t=1663596413;
+        bh=oOMd3KmLAJ36CiE90qV3nn/xPTnzC3MC+xnhZSZHBjk=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Czc006LWdxBboiMA2rPZ9dmrOlw3086xYJFgplmJwPu52XkkwcrU4G1FrtyVKUFrr
-         et95TWCTZmaHRShJqA+hCL/x8PtOWJTRk/Cb5FoNotDdWsn3iWyofrHF9RXPJMqcl1
-         reNsZAhQyfZR4Ar+tE2WQuifwJNkB6q+t7f+W7aX3cJOfh+XXzMXYApoEZCJ2xupdA
-         zOY/RlnppOH2EQY62+iVMOyFQhj7H0YdbyUnVxeHts06mR4D53tpDq/u9db46xu6Vy
-         uqjMo3OnkFQPZ37UmejqzJYz2jmB3Y5pnJNPXn3It5AlmeSt5dv+khUA/fhxLsqrX9
-         /jAQhixB0XF3w==
+        b=bbpT7+Ohph7n53ys+5dAX6iuUHFexeIMFrll1UX3AkRL3mzkP4JrJ5BfEC9fQILaY
+         LTjYWn9vqJfZk5dOvTQ0lG1PLpEfNmu56QimsxB8seL3krOjaWwK/mJS3HQgxE0xCc
+         pAhafpQzSfgY414hoMeX9/ZdEZlPMjCrpYvZAquaBZMTAFabdazX3dKseU45TfQ0m3
+         uosPeqbH9yjf9zteHKeN1WSWWjv9ezc7G701aG0oAicHBXakqFVUF4s0/LmzsIu7au
+         KMgLucGdWUqDG0wDeX1KW+PQIsuJqvxXLkRQJtW6XtqAGi4RMEi4jLtxd7Fqc1vVON
+         ykALisRyBN9wQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 09/13] btrfs: assert tree is locked when clearing extent map from logging
-Date:   Mon, 19 Sep 2022 15:06:36 +0100
-Message-Id: <f7a30feaffda0ca4480ee94c08114bcbfe9b22de.1663594828.git.fdmanana@suse.com>
+Subject: [PATCH 10/13] btrfs: remove unnecessary NULL pointer checks when searching extent maps
+Date:   Mon, 19 Sep 2022 15:06:37 +0100
+Message-Id: <28c638167c79d62903a2bfb411f63170aa90de5f.1663594828.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1663594828.git.fdmanana@suse.com>
 References: <cover.1663594828.git.fdmanana@suse.com>
@@ -53,28 +53,56 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When calling clear_em_logging() we should have a write lock on the extent
-map tree, as we will try to merge the extent map with the previous and
-next ones in the tree. So assert that we have a write lock.
+The previous and next pointer arguments passed to __tree_search() are
+never NULL as the only caller of this function, __lookup_extent_mapping(),
+always passes the address of two on stack pointers. So remove the NULL
+checks.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_map.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/extent_map.c | 25 +++++++++++--------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
 
 diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 6b7eee92d981..f1616aa8d0f5 100644
+index f1616aa8d0f5..12538ff04525 100644
 --- a/fs/btrfs/extent_map.c
 +++ b/fs/btrfs/extent_map.c
-@@ -334,6 +334,8 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+@@ -163,24 +163,21 @@ static struct rb_node *__tree_search(struct rb_root *root, u64 offset,
+ 			return n;
+ 	}
  
- void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em)
- {
-+	lockdep_assert_held_write(&tree->lock);
+-	if (prev_ret) {
+-		orig_prev = prev;
+-		while (prev && offset >= extent_map_end(prev_entry)) {
+-			prev = rb_next(prev);
+-			prev_entry = rb_entry(prev, struct extent_map, rb_node);
+-		}
+-		*prev_ret = prev;
+-		prev = orig_prev;
++	orig_prev = prev;
++	while (prev && offset >= extent_map_end(prev_entry)) {
++		prev = rb_next(prev);
++		prev_entry = rb_entry(prev, struct extent_map, rb_node);
+ 	}
++	*prev_ret = prev;
++	prev = orig_prev;
+ 
+-	if (next_ret) {
++	prev_entry = rb_entry(prev, struct extent_map, rb_node);
++	while (prev && offset < prev_entry->start) {
++		prev = rb_prev(prev);
+ 		prev_entry = rb_entry(prev, struct extent_map, rb_node);
+-		while (prev && offset < prev_entry->start) {
+-			prev = rb_prev(prev);
+-			prev_entry = rb_entry(prev, struct extent_map, rb_node);
+-		}
+-		*next_ret = prev;
+ 	}
++	*next_ret = prev;
 +
- 	clear_bit(EXTENT_FLAG_LOGGING, &em->flags);
- 	if (extent_map_in_tree(em))
- 		try_merge_map(tree, em);
+ 	return NULL;
+ }
+ 
 -- 
 2.35.1
 
