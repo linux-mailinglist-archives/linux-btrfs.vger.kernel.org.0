@@ -2,102 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8690A5BE76F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Sep 2022 15:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B3A5BE8D0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Sep 2022 16:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbiITNo0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Sep 2022 09:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
+        id S231598AbiITOZi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Sep 2022 10:25:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbiITNoY (ORCPT
+        with ESMTP id S229713AbiITOZO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Sep 2022 09:44:24 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81C8520BE
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Sep 2022 06:44:22 -0700 (PDT)
-Received: from fsav118.sakura.ne.jp (fsav118.sakura.ne.jp [27.133.134.245])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 28KDhq9A065357;
-        Tue, 20 Sep 2022 22:43:52 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav118.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav118.sakura.ne.jp);
- Tue, 20 Sep 2022 22:43:52 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav118.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 28KDhqfs065354
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 20 Sep 2022 22:43:52 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <112cdf17-374f-fdc5-58ae-d8db3f695ac4@I-love.SAKURA.ne.jp>
-Date:   Tue, 20 Sep 2022 22:43:51 +0900
+        Tue, 20 Sep 2022 10:25:14 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E1A205F4
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Sep 2022 07:24:59 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id p3so2342652iof.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Sep 2022 07:24:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date;
+        bh=kNuOgpAqQ8sV4nxp51XLJgFTZcmbM6JC8PggK3tENzY=;
+        b=vcwZfyi/GVEQh9PLiaZBaCfb3axRxqFoa5qooqIdBsrKT1H9uQ9yA9+FfFOl1fAXhn
+         8vdYVWMazdyklD78k5EduRtORpnWn9dTaTpSB0M/bQlFPY+AdF4mSGlyz2Gl6AwxoUb0
+         x5/nWtidvAfz9hRmJu6rSpODekRwAFi0LydR69xJNy1Dgd7lygGYTLPTtGyf7KKfYBL2
+         EwoVb1n4BjLqmtGW/hi9uPhf9JOM3Gvs1zawSH4FWnfXt59kxshtETQ3XSTNM7nf9Gjw
+         yVTI6+Cy6KcAUJGUHNyL9H+vpG2//dFzrd4RRFrywUxz7wRIoMx1e5Z1UFCCg3HFI/AI
+         yO4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=kNuOgpAqQ8sV4nxp51XLJgFTZcmbM6JC8PggK3tENzY=;
+        b=bq3ipRq4CEga0KST2CWFvL09SbLZHpWj3iR31eeQ2BOkKcIiFkcmOIlbZP3FCPCNnE
+         bKGGmXik3gSdqb5kR+nEwhaKDFxFfIwAOKgWxaSLWVsFW+F1v3ujN7C5rIz8W0nsLQuI
+         1nG8P23HjVF14Wr+2rDNS/8/RptFCpR6rFG9LQJmX+geN+JasuNjsqlN5upzNC1rDt8f
+         iH0v8SBfDu5g7eDWAvfQkZX4otkxTJsvsK+4Lty8n8KHnoe6KRBN4iEEHXUo3KqKpKqP
+         gTATVVGUolQikSzcQ//kEOxVCSyq56hvga2MRPh88Cm3CuRWyA+kOVgKFbLaPEg6HKNr
+         BuOg==
+X-Gm-Message-State: ACrzQf3+lT2ggn8WzGXX19Npg2+7XDRP12ekMGmrXTGPClReP0ejNI7K
+        rfZuWScgFVxj4lWcyPZ3Mfz1uQ==
+X-Google-Smtp-Source: AMsMyM6lLDHt5Deb231d56RrjImrVmLjcuUz4TFjco6WFvGiW1CQm6r2S1RJMyCkDqcGuD09M9QKYQ==
+X-Received: by 2002:a02:c6d4:0:b0:35a:4ea3:4890 with SMTP id r20-20020a02c6d4000000b0035a4ea34890mr10491170jan.215.1663683899210;
+        Tue, 20 Sep 2022 07:24:59 -0700 (PDT)
+Received: from [127.0.0.1] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id f13-20020a02a10d000000b0035a9b0050easm5317jag.18.2022.09.20.07.24.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Sep 2022 07:24:58 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Suren Baghdasaryan <surenb@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Gao Xiang <xiang@kernel.org>, Chris Mason <clm@fb.com>,
+        linux-block@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Chao Yu <chao@kernel.org>, linux-mm@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org
+In-Reply-To: <20220915094200.139713-1-hch@lst.de>
+References: <20220915094200.139713-1-hch@lst.de>
+Subject: Re: improve pagecache PSI annotations v2
+Message-Id: <166368389821.10447.12312122039024559092.b4-ty@kernel.dk>
+Date:   Tue, 20 Sep 2022 08:24:58 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: [PATCH v2] btrfs: Call btrfs_set_header_generation() before
- btrfs_clean_tree_block()
-Content-Language: en-US
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        syzbot <syzbot+fba8e2116a12609b6c59@syzkaller.appspotmail.com>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        Alexander Potapenko <glider@google.com>
-References: <000000000000a4618905d1361d3e@google.com>
- <062d63c8-39bf-62d8-4562-625184e97b6c@I-love.SAKURA.ne.jp>
- <PH0PR04MB74161B62751B7D8EDB3965719B4C9@PH0PR04MB7416.namprd04.prod.outlook.com>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <PH0PR04MB74161B62751B7D8EDB3965719B4C9@PH0PR04MB7416.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.0-dev-355bd
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot is reporting uninit-value in btrfs_clean_tree_block() [1], for
-commit bc877d285ca3dba2 ("btrfs: Deduplicate extent_buffer init code")
-missed that btrfs_set_header_generation() in btrfs_init_new_buffer() must
-not be moved to after clean_tree_block() because clean_tree_block() is
-calling btrfs_header_generation() since commit 55c69072d6bd5be1 ("Btrfs:
-Fix extent_buffer usage when nodesize != leafsize").
+On Thu, 15 Sep 2022 10:41:55 +0100, Christoph Hellwig wrote:
+> currently the VM tries to abuse the block layer submission path for
+> the page cache PSI annotations.  This series instead annotates the
+> ->read_folio and ->readahead calls in the core VM code, and then
+> only deals with the odd direct add_to_page_cache_lru calls manually.
+> 
+> Changes since v1:
+>  - fix a logic error in ra_alloc_folio
+>  - drop a unlikely()
+>  - spell a comment in the weird way preferred by btrfs maintainers
+> 
+> [...]
 
-Since memzero_extent_buffer() will reset "struct btrfs_header" part, we
-can't move btrfs_set_header_generation() to before memzero_extent_buffer().
-Just re-add btrfs_set_header_generation() before btrfs_clean_tree_block().
+Applied, thanks!
 
-Link: https://syzkaller.appspot.com/bug?extid=fba8e2116a12609b6c59 [1]
-Reported-by: syzbot <syzbot+fba8e2116a12609b6c59@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: bc877d285ca3dba2 ("btrfs: Deduplicate extent_buffer init code")
----
-Changes in v2:
-  Don't remove btrfs_set_header_generation() after memzero_extent_buffer(),
-  pointed out by Johannes Thumshirn <Johannes.Thumshirn@wdc.com>.
+[1/5] mm: add PSI accounting around ->read_folio and ->readahead calls
+      commit: 176042404ee6a96ba7e9054e1bda6220360a26ad
+[2/5] sched/psi: export psi_memstall_{enter,leave}
+      commit: 527eb453bbfe65e5a55a90edfb1f30b477e36b8c
+[3/5] btrfs: add manual PSI accounting for compressed reads
+      commit: 4088a47e78f95a5fea683cf67e0be006b13831fd
+[4/5] erofs: add manual PSI accounting for the compressed address space
+      commit: 99486c511f686c799bb4e60b79d79808bb9440f4
+[5/5] block: remove PSI accounting from the bio layer
+      commit: 118f3663fbc658e9ad6165e129076981c7b685c5
 
- fs/btrfs/extent-tree.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 6914cd8024ba..cfbbd7dc3c46 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -4888,6 +4888,9 @@ btrfs_init_new_buffer(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 	    !test_bit(BTRFS_ROOT_RESET_LOCKDEP_CLASS, &root->state))
- 		lockdep_owner = BTRFS_FS_TREE_OBJECTID;
- 
-+	/* btrfs_clean_tree_block() accesses generation field. */
-+	btrfs_set_header_generation(buf, trans->transid);
-+
- 	/*
- 	 * This needs to stay, because we could allocate a freed block from an
- 	 * old tree into a new tree, so we need to make sure this new block is
+Best regards,
 -- 
-2.18.4
+Jens Axboe
 
 
