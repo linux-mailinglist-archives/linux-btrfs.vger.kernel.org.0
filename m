@@ -2,116 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2C45BFB25
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Sep 2022 11:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5035BFBA6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Sep 2022 11:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbiIUJjs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Sep 2022 05:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
+        id S230192AbiIUJto (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Sep 2022 05:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbiIUJjr (ORCPT
+        with ESMTP id S229563AbiIUJtS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Sep 2022 05:39:47 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3054F1159
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 02:39:44 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id s6so8229299lfo.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 02:39:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=V+OPczDdE/HaaYcY94VXHIGGTZJYLEmKyZA99aRzniE=;
-        b=qNfM5ghitxD+dCybYzuUciHbDrVPTldxBXRQAoWYC3n+MPXHTESlBxwM4vWUx8maMo
-         BhaVVwuCVjsCSAMVU5wIPIY4EiiaBBqa0esFwiZ4FcR8SdRKnNUPtd8MqVufgMK+ARIE
-         4klHaKwyUEW6nTLBYgcDM+AHiQLpuyjYTkEsSbqcMyGlXqIuuhwyWy0LM8vHbw5X79S8
-         qkrcpnJG27p5VnkRzMKJLqVI0H308amCEVkOe945g4lYyF6Bxbd7aulwyXOgHnjLs4lF
-         4KFWuSS4xdjEb/yF/E1S0OVHxwBPRkRrceSVs7615dxKDU2Jvo/MCry1MAdG1rV3ZrrK
-         RZsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=V+OPczDdE/HaaYcY94VXHIGGTZJYLEmKyZA99aRzniE=;
-        b=WzNM3HDR62E3JpYKqX1TaWCFHNZoyZMyiMKpsnLzB8g5b/EC4OvmLMw8OLbiAANqGs
-         zpEu1ckKCQGJ95QVTwzGqBmfjJX52RLG8jCiNkAxWjJ3nn0qlhH81B0HZCbDOVYnOZO+
-         CAmMrwo3BSj9r3gSVnzndUjpJgSO9EEWJLC4c3s0NTe0dV/pLLD5cqmAt2SM5ZvheY3M
-         DCKSHp9x0hUTzgp62vSdf8V1yojy6llOreMU1mK515vmXSFuioQyPfccltc21vAKSxFM
-         /3FMow12YUTAR0oYg8IU+FH94CZoYhzHplDDGRoISXTWhxfyfK/6mavKn2xahD69QHec
-         9/hA==
-X-Gm-Message-State: ACrzQf1fYI56AZV1NZhmnUkC6iCuunwrI8sZL6PLlDOAg3TfXIYik4p3
-        kRDFc8ggTyh0HPr2ULfzWvM=
-X-Google-Smtp-Source: AMsMyM4VZJI445+cIuL+X479ZvjkhG5jrwEqP2PhE41r99xEOHlerQnjU0uIq8oVZpqzsixxHDSbMw==
-X-Received: by 2002:a05:6512:3185:b0:49c:3310:6910 with SMTP id i5-20020a056512318500b0049c33106910mr11062125lfe.352.1663753182303;
-        Wed, 21 Sep 2022 02:39:42 -0700 (PDT)
-Received: from localhost (80-62-117-68-mobile.dk.customer.tdc.net. [80.62.117.68])
-        by smtp.gmail.com with ESMTPSA id q23-20020a056512211700b0048a9b197863sm350460lfr.235.2022.09.21.02.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Sep 2022 02:39:41 -0700 (PDT)
-Date:   Wed, 21 Sep 2022 11:39:40 +0200
-From:   Pankaj Raghav <pankydev8@gmail.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH 01/10] btrfs: add a helper for opening a new device to
- add to the fs
-Message-ID: <20220921093940.4fjljoyc37d5jt2z@quentin>
-References: <cover.1663196746.git.josef@toxicpanda.com>
- <280fe61f3405e88a0a4a5ac0cacff3993f9f31ff.1663196746.git.josef@toxicpanda.com>
+        Wed, 21 Sep 2022 05:49:18 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674EB93532
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 02:47:06 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 52B0221B24;
+        Wed, 21 Sep 2022 09:45:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1663753546;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hbxDVQ9a2G4B5Oi0g8Qi/vg1fI1g9YxNvSSMQf0pMZw=;
+        b=TMuwct+UMLIyOcKp1Ap+aiRXP/hm/CaDmc/ssUJ6vxz6Cs6F17xFKgAffRDlueLtpc33nL
+        IkhIABf0FS6j1CKe41LOEqFvE60A1JBXTUM5EC3u7+cXaysrrhK/FuIHJfiteSnwao6Ypg
+        3y8YfptTbxHY+OiO28UUkRGQB/3Qtno=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1663753546;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hbxDVQ9a2G4B5Oi0g8Qi/vg1fI1g9YxNvSSMQf0pMZw=;
+        b=uijnVsaCq27/iUMcvSfHVQywbE53ZagDDnjnAsLF7MFReB94WJ8P2JOK/OHZjhVm0cIIbF
+        2Mrzg+bDVEe/EOBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A87F13A00;
+        Wed, 21 Sep 2022 09:45:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5LU7BUrdKmOgTwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 21 Sep 2022 09:45:46 +0000
+Date:   Wed, 21 Sep 2022 11:40:14 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/2] btrfs: split the bio submission path into a separate
+ file
+Message-ID: <20220921094014.GB32411@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20220912141121.3744931-1-hch@lst.de>
+ <20220912141121.3744931-2-hch@lst.de>
+ <PH0PR04MB7416C3ED5D9F5732E5C4D5D09B449@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <20220913050829.GA29304@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <280fe61f3405e88a0a4a5ac0cacff3993f9f31ff.1663196746.git.josef@toxicpanda.com>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220913050829.GA29304@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
->  	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 09c1434c3cae..ea76458d7c70 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -2583,6 +2583,26 @@ static int btrfs_finish_sprout(struct btrfs_trans_handle *trans)
->  	return ret;
->  }
->  
-> +struct block_device *btrfs_open_device_for_adding(struct btrfs_fs_info *fs_info,
-> +						  const char *device_path)
-> +{
-> +	struct block_device *bdev;
-> +
-> +	bdev = blkdev_get_by_path(device_path, FMODE_WRITE | FMODE_EXCL,
-> +				  fs_info->bdev_holder);
-> +	if (IS_ERR(bdev))
-> +		return bdev;
-> +
-> +	if (!btrfs_check_device_zone_type(fs_info, bdev)) {
-> +		btrfs_err(fs_info,
-> +			  "dev-replace: zoned type of target device mismatch with filesystem");
+On Tue, Sep 13, 2022 at 07:08:29AM +0200, Christoph Hellwig wrote:
+> On Mon, Sep 12, 2022 at 03:27:10PM +0000, Johannes Thumshirn wrote:
+> > On 12.09.22 16:11, Christoph Hellwig wrote:
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * Copyright (C) 2007 Oracle.  All rights reserved.
+> > > + * Copyright (C) 2022 Christoph Hellwig.
+> > > + */
+> > 
+> > IIRC David does try to get rid of all the per-company copyright
+> > statements for new files.
+> 
+> We just had that discussion in another thread - there really is no
+> basis for getting rid of them.  In fact talking to lawyers, most
+> of them thing we should have more of them, not less.
 
-Shouldn't the `dev-replace` be removed as this helper is used from
-dev-replace.c and volumes.c?
+There seems to be no clear consensus that would satisfy lawyers (track
+complete copyright information) and practical point of view (it's in the
+git metadata). The problem not only I see taking this patch as an
+example is that your (c) name now appears in file containing changes
+from several other people whose names are not mentioned (but yes the
+original copyright is preserved).
 
-> +		blkdev_put(bdev, FMODE_EXCL);
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	return bdev;
-> +}
-> +
->  int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path)
->  {
->  	struct btrfs_root *root = fs_info->dev_root;
-> @@ -2602,16 +2622,10 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
->  	if (sb_rdonly(sb) && !fs_devices->seeding)
->  		return -EROFS;
->  
-> -	bdev = blkdev_get_by_path(device_path, FMODE_WRITE | FMODE_EXCL,
-> -				  fs_info->bdev_holder);
-> +	bdev = btrfs_open_device_for_adding(fs_info, device_path);
+I don't want to speculate what would this mean from the legal POV and I
+think we've heard each other's arguments. If there's a recommended
+practice coming "from above" as linux project, like it was with the
+SPDX, ok let everybody add their copyright notices. But until then I
+won't take such patches.
