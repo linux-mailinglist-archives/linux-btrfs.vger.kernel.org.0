@@ -2,244 +2,204 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 812F35BFC65
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Sep 2022 12:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F49F5BFCC7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Sep 2022 13:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbiIUKdg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Sep 2022 06:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
+        id S229632AbiIULLV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Sep 2022 07:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbiIUKde (ORCPT
+        with ESMTP id S229572AbiIULLU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Sep 2022 06:33:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2025F90822;
-        Wed, 21 Sep 2022 03:33:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F70861F48;
-        Wed, 21 Sep 2022 10:33:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAD53C433D6;
-        Wed, 21 Sep 2022 10:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663756412;
-        bh=o3HfJ1dfwFPEiioeca+9POwOfG33OdnpIMMLdF2SNXg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=o4RWarLQHwD3AgIDoCdx243jvK53BMwSxiGuWrlraMHFS8gEDQfTIWpRECTQjNNCA
-         IbgpwkHWl/rTTQmTv8TPytRLDSnvm7teGWEiEEE+hyPHTVeUAcxBz1VxOKgCz/BxKc
-         Am0Ym+HTEpxP1D2u2vQK08YvOqreMedpmLNCQzvqfkcSWWxsycWUfOHPD95dXSzZsB
-         Q9AmUVduI1DNK6H8fEGBNPtsFuSRoeP8q/jzCYY09qkjOSTkshgbrEfbZkSgSLs/NC
-         nbiYmuOgJ2RJQaGElU7slr5O3+UYrzdtEVwtoCeIliH/I6uYg4XhlABfoWRef1lZ9Y
-         IzjLY5PB5SSFw==
-Message-ID: <93b6d9f7cf997245bb68409eeb195f9400e55cd0.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, NeilBrown <neilb@suse.de>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Date:   Wed, 21 Sep 2022 06:33:28 -0400
-In-Reply-To: <20220921000032.GR3600936@dread.disaster.area>
-References: <871f9c5153ddfe760854ca31ee36b84655959b83.camel@hammerspace.com>
-         <e8922bc821a40f5a3f0a1301583288ed19b6891b.camel@kernel.org>
-         <166328063547.15759.12797959071252871549@noble.neil.brown.name>
-         <YyQdmLpiAMvl5EkU@mit.edu>
-         <7027d1c2923053fe763e9218d10ce8634b56e81d.camel@kernel.org>
-         <24005713ad25370d64ab5bd0db0b2e4fcb902c1c.camel@kernel.org>
-         <20220918235344.GH3600936@dread.disaster.area>
-         <87fb43b117472c0a4c688c37a925ac51738c8826.camel@kernel.org>
-         <20220920001645.GN3600936@dread.disaster.area>
-         <5832424c328ea427b5c6ecdaa6dd53f3b99c20a0.camel@kernel.org>
-         <20220921000032.GR3600936@dread.disaster.area>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        Wed, 21 Sep 2022 07:11:20 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26028B2D6
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 04:11:19 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28L8DNte000833;
+        Wed, 21 Sep 2022 11:11:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=71hTSitAesJRhsz4sp+65ImCb1zkfMDwl627XFX5Jng=;
+ b=HhJpF1Ks4cEFA6C7UtZI4OjddCaifEsqVyV588GJOv3f3jwrmqrbf9semBrQK6YF+TPJ
+ TiMqL1tl72In1TltICfHCRBUi86jmDI1gdMGRAXwlytTWBi22zTGhchWaab9rh1VRgFN
+ ksq0JAdSvvr0+fatmwzUrboxh11M4vAp0pl9Aw4Adm4uiKIWdRNCY1QZ6r3O9qW93m4g
+ VjH9lXbfSAbf1kHe/+3onGIhyWMoRCX7BsUunO6rVzmMbDxM1bw+xSfuUDVXAcCoVOK2
+ JRO3hTm8G0jGQrF4Zqgu5zC7+7gumf8R9dLCpeBt9AKCulMTGyEhMMS13+0JgVwhsw7S uQ== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3jn68rhwgq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Sep 2022 11:11:16 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 28L8o2bA027858;
+        Wed, 21 Sep 2022 11:11:15 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2105.outbound.protection.outlook.com [104.47.70.105])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3jp3cpb4ac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Sep 2022 11:11:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FK5HUJxmXfUA6VB0JfC/+GbSZoWrEUdFIe8q5FlaliaEdE1idcaShn7t8Aj9q3nrzCJ0PtoQp2WW2nn47goEM0djqcfU76KkSPRWrk+ZKfaAaa5zwINzOxAGq5divCeb1y4gIZjiXov2hNLJplXPQR/VgF9jT7Xm2dFphwnPp6PCkY1AGCPC/qgdMMD0R3HROgQqfqXKcYNJLoiKMIuqKsVFsSHbKZ+gwNiHFoXCCPQFSxXhvo3jPutJ6abku/TyywmZuBOlSbfI47HW5PLZkrQonrAvAsmoaMCfvwNACkK2dvErMjj2eIdJSn9tqVML4iJWf8zQKljLUHMGxUxy+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=71hTSitAesJRhsz4sp+65ImCb1zkfMDwl627XFX5Jng=;
+ b=LOnTFUWfVUVI1+e6c4OWsqVaF6pv5PQuYbGNd7J6cTbUy51STHX8a51B+sBi0oHs5ypL+wmB2bW5er+l+pb3lfzo99eSHDcLcgVCCjuMOcluCgBmmrcy7wnFndXlQnJghvJx2pCP//07TrA0wQE2cDMvGrIEeC0VXd2EglsDD3SLQ1cNb87K0yxUedhXYDs5fpe6+jx8epv2AKNCsZ48EWVbPcfGj7YHAz2PkUlx4GpLvKPEDfJcQBuU64iCHeBQxGKOsbDoVlsdHQ0+WpUlk0yu4RyqxyWSWZf5lEbD6tvejwwyzNP9pEkV8TQAdoZstsuUteGlRHZNGpT2bSM4VQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=71hTSitAesJRhsz4sp+65ImCb1zkfMDwl627XFX5Jng=;
+ b=c403+V++/FQrwIYMvStzoycO8r4HkXlkuQB60ClWivPUs6UvjbQb5H+MPtm0+yBL4qxU4ONOnswc+MQOYqg7P6eU3Idsd2+5D7kB8dBMu+4Jh7bBBBmrL9Nss2w7Q3YwOSud9qjtd82PJfQuL2DCxpoUIUqbFj3SoEZtNdMfM6s=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by SJ0PR10MB4446.namprd10.prod.outlook.com (2603:10b6:a03:2d9::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.21; Wed, 21 Sep
+ 2022 11:11:13 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::49d:320a:ecc9:2792]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::49d:320a:ecc9:2792%3]) with mapi id 15.20.5632.019; Wed, 21 Sep 2022
+ 11:11:13 +0000
+Message-ID: <5b9fe1ef-d78a-6604-60c5-eb5f2d1e92e4@oracle.com>
+Date:   Wed, 21 Sep 2022 19:11:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH 01/13] btrfs: fix missed extent on fsync after dropping
+ extent maps
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1663594828.git.fdmanana@suse.com>
+ <25d72acc3215f74fbb885562667bf12401c214e9.1663594828.git.fdmanana@suse.com>
+ <ab13659e-6166-7de5-986a-54f98bc74e66@oracle.com>
+ <CAL3q7H7=hSQi1gVOOXB3g860iFz9YO9n6OTdZaJtmtbduNqcdw@mail.gmail.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <CAL3q7H7=hSQi1gVOOXB3g860iFz9YO9n6OTdZaJtmtbduNqcdw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR02CA0137.apcprd02.prod.outlook.com
+ (2603:1096:4:188::17) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SJ0PR10MB4446:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7b2f107b-f84a-46a0-46a4-08da9bc1feb6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QJTPhaib/XRk0AGEVgAcq7w3pi6M2jibxYsZn4r/RZ7QQpBxud0fy8tDgz/S1ZCt54G7l12do7bn/BP11R5ixp2WJnALOUvjuZSe1ReTZwi4qYFJHaf2aWazxukhNcUCKJYxSzGjBnJ+T1FREK24UcabSlFDVs7yri3QiclMSFViwNZcO/8fyff870Aq5K1Hv9SpEfq7fD4xQhRpa2MThWm8lpXvBJAEJofT6M5IN1kvoF9UES8hjird0iAzBsJZfXf3db0FlkpC4wvElrc4duqQWJ29AC7gob2/+nJgqUWtMmn33B/NYvmEsx+JCU3gQtsDgJWoKm7zntLua0zyR9MfHZY3L99rEktEtEJ3I8BP8p0qGPwdI8Un+iPGGa4QIBMCj08PIiCDGWQamFhVlV5sHjPt9TRwjLXHHprSo2tRsK0kCLBNNB1cqV+BqlkwsJAQNF0e0ulSRzLuJpP3o8Bfg+yYJRoj47ZTulSAiHt2NkOJovHasaWwu0jDu4zylAFPBjdpODze1BvAEb30c7EIBZjxfiVegHg9KzsXP0W10ELK/RljQBNGuxOuRqzHOtiZ9jD9au0wjVPyNEnpykFe4QAyM3Xev/GHHdBY3kz140BQbH4t1PqRbOOwd7SJurAS8+H4ybwZLjKQsLlj3ve/FkeK50O3mLkYT/nKss6KqYLSaXSZbhQOMcE6z8/FU8j2hZ5IO0M64AdqFvtkCM2ybeswh3O19w5Lr7PCAMjJd0CLEsEehaDhrmbGg0LqnDrV4gYzyNl8Q4gM+Xa3bUjy/lUssYvO0u9sBrAtTa4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(396003)(39860400002)(376002)(346002)(366004)(136003)(451199015)(5660300002)(2616005)(186003)(316002)(44832011)(31686004)(6916009)(26005)(38100700002)(86362001)(6486002)(8936002)(6512007)(36756003)(4326008)(6506007)(41300700001)(66556008)(53546011)(478600001)(31696002)(83380400001)(66476007)(8676002)(2906002)(66946007)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SDVqVUtIVjZnb1p6V3Y2ZDBQU0FZQWhGR2hiY3FSaXplMlBkUHJtRlFVRE1a?=
+ =?utf-8?B?NDZLYzdUcHV0SXQ0RFdVUC93aUMxd09MNWVQeUV2S1kwbzR4WG01VzVlc1Ra?=
+ =?utf-8?B?dklDSmM2alBISUlwMElWZXhKc1lEQVNCa05OWUpoUS9QYTlWVDFnWHRaY2xo?=
+ =?utf-8?B?VWp4REd5NkwvOEVGT291OUo3RC8yQTVWR2hITnJSRTRnSnFFUURhWmZGSlNv?=
+ =?utf-8?B?eUs4WUtGNnlLUnl3bklhUWNUWjZieDBTUTRSRDBTQ1JDVjRaWWE4V0NLWG92?=
+ =?utf-8?B?U29vZ3J5dmZJRlBJTHlEQllkemhQRlFTYnYzaUFSUGQ0QUc1eEFXb3hEdWdx?=
+ =?utf-8?B?S2phWEVvTWNqdkpPSHpxK1N3UGlpTHFTeERLY2ZEd1lwZ2w3VlFWUHRwaWFF?=
+ =?utf-8?B?VzR3bkhFQ2Z1bEFGTXNxalhYRitMdGM3cGkvb095Z21aNFUwMkU5T2N4dEVy?=
+ =?utf-8?B?MXV6eDhndmxrS1UrS24rbXowUFdpT2FKNVd2V2F5amZYZmt2OE5Za3M2VktQ?=
+ =?utf-8?B?a3J3ZEVhQlBudzExenE3TXUxUzNvbGRkanZWN0VCVEt1bC93RTBXMHNScEx3?=
+ =?utf-8?B?cDVxZlhPTk93VXBtcG56WlVIa2UrRmEvSENiNFYyMTlpN2lCNzFBdHRFdjg2?=
+ =?utf-8?B?dXBlUGxBM28vNGhYWUplSERvUnJHbExhdkpSbzlqc3hsRFkzNTJpbEdiM3Yv?=
+ =?utf-8?B?Qnd1NmZEVDNkeFpDU2NET1MyMEJDK1lud24xTTVNMXdCc0N3eW14eFhndUxD?=
+ =?utf-8?B?WEpEQklNSzFnYUpJRzlUVUswRFVkUG1QVVZnMC8xWHhCdXZVUmRMVktqcENE?=
+ =?utf-8?B?VlIwdGQ5L3BhY2VUdlJFaWQ1clJjcGFNTFhieVRMMXF0aUhTVitwN0tQUmZP?=
+ =?utf-8?B?bjFBZ0hidE1la1NRTWRUS2lDZXlKTTFGTGdTODJhcmVjRW1taXpoaEJkQXdG?=
+ =?utf-8?B?ano3T25CRU9DeVpvMG5ZaTFDbEhpbUxiaFltVXZ1VnpiZzZrOUtqenpSNUxF?=
+ =?utf-8?B?aGphR1g0VmJnSklYL2o3MnFrb2xJWElZZGZxWC9DSmFoODhjTStTeXAwTHBE?=
+ =?utf-8?B?dDJ3RVlwcThYclhQaXQ5UDZyVUNKcmowZE5FR1I0ejhVaVFDcjd1aXExeDgw?=
+ =?utf-8?B?elpxNjhiQTBmRm5zNmdydlIrQXhzQmNJODc3a2s4dFdEUCtMWmtoYkVUUWNi?=
+ =?utf-8?B?QnY0b2J2YTFJRGY0OWF6ZmZHbkhaa21SYlIyeFlKR3pjc2I4ekJqMlVKNUN6?=
+ =?utf-8?B?LzgxWjZ5TUtjTHFNNUNjSnVEbytzOGtwR3ZUMldTREVCdzBhc09qWVR3SHdJ?=
+ =?utf-8?B?OGlMZlZWQWZxNmR6bVZlVHYwZHBKckR3NVdDazZSZlVRZVk4aVhzc0VDRmZM?=
+ =?utf-8?B?Ry94aWpMRFlLT2xjZnRPbld0NzR6SnJGQ21LTC9OVVhXQnRxd2hMSGZ5YU5x?=
+ =?utf-8?B?NXNyZG4xNnJLc3dXdEo1MEZlYWs5OGpxOEM1NnlIWXhibTlROStXcnVFT09q?=
+ =?utf-8?B?N3c1MFc3b3JqWjNlUWhORTlmY0tvbFFCT1ViZ01LSk1oOTNPUjJ5cnZJcmV0?=
+ =?utf-8?B?V2lQUkk4VGErSTBqQlh6aWswMFlTUXhZSXdjOG14YnNqd1drTkhxKzQ1TXVj?=
+ =?utf-8?B?am5hQkdDSlE0TThGMjUyK1o3d3Z5NWFOQys1ZFNKbXVIUU5tSUJmUDQvd0lW?=
+ =?utf-8?B?eEx4QlVQWk0rTUtQVzcvR00vbkJPSTd1bmwxS1hESGdIWWs1Z1ZRaTRuQVo3?=
+ =?utf-8?B?cFU4a2xXNWUreHd0UURYRHJNazJIY21TZGxVckp3MTVNZ2tScXlOU0thc1Vq?=
+ =?utf-8?B?OXpoNW45K0lUMGZ2Sy9aWnhYeHBpc09nNHV0eGJQMUlqdk1MUHc4dUFIaUd0?=
+ =?utf-8?B?TzVLaFFHbmQyVHphRlhRS25JWFkxdC9zSXFHekNFSVNkNkhFcS9Vcm1TdnhS?=
+ =?utf-8?B?Vi9XMG90Qk4yRzBnOEpqNFA3NzVBME93aFFJeDVGeGRTYkhRcnp3SE5vVXBy?=
+ =?utf-8?B?bExJOXNSYkZJN3Iwc2RsVFJWUDNkWXJDZ0xvbjdDL3hXTzJ2aGxtMmVRRnpz?=
+ =?utf-8?B?WlpVUTZQbFUyRlY1QVorMXExWkNER0o0aXRqYWszYm9EaWFXNTZTTGtqU2NH?=
+ =?utf-8?Q?OwpECwybjfK3omAEvoNBvUsOb?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b2f107b-f84a-46a0-46a4-08da9bc1feb6
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2022 11:11:13.3979
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 94/WdLU0utv38nen1XZ2RWaMVhRCQKMjNFhYw25+yMbXPaBfSX+gU4fF1lvQ+cwJPSiztN3mI1qisFbqfavXsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4446
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-09-21_06,2022-09-20_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ spamscore=0 adultscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2209130000 definitions=main-2209210075
+X-Proofpoint-GUID: NCkWRiAFru0matfEkVglR7f_Zg7vS3tW
+X-Proofpoint-ORIG-GUID: NCkWRiAFru0matfEkVglR7f_Zg7vS3tW
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 2022-09-21 at 10:00 +1000, Dave Chinner wrote:
-> On Tue, Sep 20, 2022 at 06:26:05AM -0400, Jeff Layton wrote:
-> > On Tue, 2022-09-20 at 10:16 +1000, Dave Chinner wrote:
-> > > IOWs, the NFS server can define it's own on-disk persistent metadata
-> > > using xattrs, and you don't need local filesystems to be modified at
-> > > all. You can add the crash epoch into the change attr that is sent
-> > > to NFS clients without having to change the VFS i_version
-> > > implementation at all.
-> > >=20
-> > > This whole problem is solvable entirely within the NFS server code,
-> > > and we don't need to change local filesystems at all. NFS can
-> > > control the persistence and format of the xattrs it uses, and it
-> > > does not need new custom on-disk format changes from every
-> > > filesystem to support this new application requirement.
-> > >=20
-> > > At this point, NFS server developers don't need to care what the
-> > > underlying filesystem format provides - the xattrs provide the crash
-> > > detection and enumeration the NFS server functionality requires.
-> > >=20
-> >=20
-> > Doesn't the filesystem already detect when it's been mounted after an
-> > unclean shutdown?
->=20
-> Not every filesystem will be able to guarantee unclean shutdown
-> detection at the next mount. That's the whole problem - NFS
-> developers are asking for something that cannot be provided as
-> generic functionality by individual filesystems, so the NFS server
-> application is going to have to work around any filesytem that
-> cannot provide the information it needs.
->=20
-> e.g. ext4 has it journal replayed by the userspace tools prior
-> to mount, so when it then gets mounted by the kernel it's seen as a
-> clean mount.
->=20
-> If we shut an XFS filesystem down due to a filesystem corruption or
-> failed IO to the journal code, the kernel might not be able to
-> replay the journal on mount (i.e. it is corrupt).  We then run
-> xfs_repair, and that fixes the corruption issue and -cleans the
-> log-. When we next mount the filesystem, it results in a _clean
-> mount_, and the kernel filesystem code can not signal to NFS that an
-> unclean mount occurred and so it should bump it's crash counter.
->=20
-> IOWs, this whole "filesystems need to tell NFS about crashes"
-> propagates all the way through *every filesystem tool chain*, not
-> just the kernel mount code. And we most certainly don't control
-> every 3rd party application that walks around in the filesystem on
-> disk format, and so there are -zero- guarantees that the kernel
-> filesystem mount code can give that an unclean shutdown occurred
-> prior to the current mount.
->=20
-> And then for niche NFS server applications (like transparent
-> fail-over between HA NFS servers) there are even more rigid
-> constraints on NFS change attributes. And you're asking local
-> filesystems to know about these application constraints and bake
-> them into their on-disk format again.
->=20
-> This whole discussion has come about because we baked certain
-> behaviour for NFS into the on-disk format many, many years ago, and
-> it's only now that it is considered inadequate for *new* NFS
-> application related functionality (e.g. fscache integration and
-> cache validity across server side mount cycles).
->=20
-> We've learnt a valuable lesson from this: don't bake application
-> specific persistent metadata requirements into the on-disk format
-> because when the application needs to change, it requires every
-> filesystem that supports taht application level functionality
-> to change their on-disk formats...
->=20
-> > I'm not sure what good we'll get out of bolting this
-> > scheme onto the NFS server, when the filesystem could just as easily
-> > give us this info.
->=20
-> The xattr scheme guarantees the correct application behaviour that the NF=
-S
-> server requires, all at the NFS application level without requiring
-> local filesystems to support the NFS requirements in their on-disk
-> format. THe NFS server controls the format and versioning of it's
-> on-disk persistent metadata (i.e. the xattrs it uses) and so any
-> changes to the application level requirements of that functionality
-> are now completely under the control of the application.
->=20
-> i.e. the application gets to manage version control, backwards and
-> forwards compatibility of it's persistent metadata, etc. What you
-> are asking is that every local filesystem takes responsibility for
-> managing the long term persistent metadata that only NFS requires.
-> It's more complex to do this at the filesystem level, and we have to
-> replicate the same work for every filesystem that is going to
-> support this on-disk functionality.
->=20
-> Using xattrs means the functionality is implemented once, it's
-> common across all local filesystems, and no exportable filesystem
-> needs to know anything about it as it's all self-contained in the
-> NFS server code. THe code is smaller, easier to maintain, consistent
-> across all systems, easy to test, etc.
->=20
-> It also can be implemented and rolled out *immediately* to all
-> existing supported NFS server implementations, without having to
-> wait months/years (or never!) for local filesystem on-disk format
-> changes to roll out to production systems.
->=20
-> Asking individual filesystems to implement application specific
-> persistent metadata is a *last resort* and should only be done if
-> correctness or performance cannot be obtained in any other way.
->=20
-> So, yeah, the only sane direction to take here is to use xattrs to
-> store this NFS application level information. It's less work for
-> everyone, and in the long term it means when the NFS application
-> requirements change again, we don't need to modify the on-disk
-> format of multiple local filesystems.
->=20
-> > In any case, the main problem at this point is not so much in detecting
-> > when there has been an unclean shutdown, but rather what to do when
-> > there is one. We need to to advance the presented change attributes
-> > beyond the largest possible one that may have been handed out prior to
-> > the crash.=20
->=20
-> Sure, but you're missing my point: by using xattrs for detection,
-> you don't need to involve anything to do with local filesystems at
-> all.
->=20
-> > How do we determine what that offset should be? Your last email
-> > suggested that there really is no limit to the number of i_version bump=
-s
-> > that can happen in memory before one of them makes it to disk. What can
-> > we do to address that?
->=20
-> <shrug>
->=20
-> I'm just pointing out problems I see when defining this as behaviour
-> for on-disk format purposes. If we define it as part of the on-disk
-> format, then we have to be concerned about how it may be used
-> outside the scope of just the NFS server application.=20
->=20
-> However, If NFS keeps this metadata and functionaly entirely
-> contained at the application level via xattrs, I really don't care
-> what algorithm NFS developers decides to use for their crash
-> sequencing. It's not my concern at this point, and that's precisely
-> why NFS should be using xattrs for this NFS specific functionality.
->=20
+On 20/09/2022 18:27, Filipe Manana wrote:
+> On Tue, Sep 20, 2022 at 11:19 AM Anand Jain <anand.jain@oracle.com> wrote:
+>>
+>> On 19/09/2022 22:06, fdmanana@kernel.org wrote:
+>>> From: Filipe Manana <fdmanana@suse.com>
+>>>
+>>> When dropping extent maps for a range, through btrfs_drop_extent_cache(),
+>>> if we find an extent map that starts before our target range and/or ends
+>>> before the target range, and we are not able to allocate extent maps for
+>>> splitting that extent map, then we don't fail and simply remove the entire
+>>> extent map from the inode's extent map tree.
+>>
+>>
+>>> +             if (testend && em->start + em->len > start + len)
+>>
+>>    %len comes from
+>>
+>>          u64 len = end - start + 1;
+>>
+>>    IMO >= was correct here; because including %start + %len is already
+>>    after the range as in the original code. No?
+> 
+> No, > is the correct thing to do. It only matters if the extent map's
+> range ends after our range.
 
-I get it: you'd rather not have to deal with what you see as an NFS
-problem, but I don't get how what you're proposing solves anything. We
-might be able to use that scheme to detect crashes, but that's only part
-of the problem (and it's a relatively simple part of the problem to
-solve, really).
+  Got it.
 
-Maybe you can clarify it for me:
+> Try the math with a simple example, with a start of 0 and a length of
+> 4096 (end offset if 4095), and you'll see.
 
-Suppose we go with what you're saying and store some information in
-xattrs that allows us to detect crashes in some fashion. The server
-crashes and comes back up and we detect that there was a crash earlier.
+Thanks.
 
-What does nfsd need to do now to ensure that it doesn't hand out a
-duplicate change attribute?=20
 
-Until we can answer that question, detecting crashes doesn't matter.
---=20
-Jeff Layton <jlayton@kernel.org>
+> Thanks.
+> 
+>>
+>>> +                     ends_after_range = true;
+>>>                flags = em->flags;
+>>>                gen = em->generation;
+>>>                if (skip_pinned && test_bit(EXTENT_FLAG_PINNED, &em->flags)) {
+>>> -                     if (testend && em->start + em->len >= start + len) {
+>>> +                     if (ends_after_range) {
+>>>                                free_extent_map(em);
+>>>                                write_unlock(&em_tree->lock);
+>>>                                break;
+
