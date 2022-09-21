@@ -2,36 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1B25E55A0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Sep 2022 23:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1228F5E5631
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 00:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbiIUVzI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Sep 2022 17:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
+        id S230353AbiIUWTo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Sep 2022 18:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbiIUVys (ORCPT
+        with ESMTP id S229929AbiIUWTm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Sep 2022 17:54:48 -0400
-Received: from out20-159.mail.aliyun.com (out20-159.mail.aliyun.com [115.124.20.159])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A20E08F
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 14:54:44 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04765089|-1;BR=01201311R701S88rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.000574772-7.00592e-05-0.999355;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.PLBdUP5_1663797282;
-Received: from T640.e16-tech.com(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.PLBdUP5_1663797282)
-          by smtp.aliyun-inc.com;
-          Thu, 22 Sep 2022 05:54:42 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Wang Yugui <wangyugui@e16-tech.com>
-Subject: [PATCH v2] btrfs-progs: balance: deprecate old syntax
-Date:   Thu, 22 Sep 2022 05:54:42 +0800
-Message-Id: <20220921215442.65360-1-wangyugui@e16-tech.com>
-X-Mailer: git-send-email 2.36.2
-In-Reply-To: <20220914055846.52008-1-wangyugui@e16-tech.com>
-References: <20220914055846.52008-1-wangyugui@e16-tech.com>
+        Wed, 21 Sep 2022 18:19:42 -0400
+Received: from mail.sconnect.com.au (mail.sconnect.com.au [103.101.168.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F106DEAB;
+        Wed, 21 Sep 2022 15:19:37 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.sconnect.com.au (Postfix) with ESMTP id 773AB295CB8E;
+        Thu, 22 Sep 2022 07:18:14 +1000 (AEST)
+Received: from mail.sconnect.com.au ([127.0.0.1])
+        by localhost (mail.sconnect.com.au [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id mGamyfgGCqMs; Thu, 22 Sep 2022 07:18:14 +1000 (AEST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.sconnect.com.au (Postfix) with ESMTP id 780CA295C737;
+        Thu, 22 Sep 2022 07:18:12 +1000 (AEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.sconnect.com.au 780CA295C737
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.sconnect.com.au; s=39ABBFB6-EEE4-11E8-B0D6-3EF6B7190DB6;
+        t=1663795092; bh=W/GvARc04ZPnD4B8eWYWtrSTF+TiaPBWKYHrLaGTP34=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=bMtdFrCgwRvDUVG9hW5rBiPxTHHhifc8D6+YExXx9uZUV2YvETfjRE+m3RbEFD45p
+         jIM+vcqE7/KuYctvQd0uK8z1kbvvJn8vM/6ouHi5/ZRjP3Zi4/Ijxhr5ZuMvy9ySrU
+         3XiMK1IVVlpEouep1GZJ8tqwTILf3OyR9sv74pP1FB8pOREQ8GvG5Nyi3ohbpCEmUn
+         TkoKUoVQCplUlCDoS+67JZX001W3RouCQNgRw3B52rLsRy5srfaSGxEPr1f1qmzng9
+         e8e/9fLy6a6ByIILPFCkbh7IUaZWXUi/rOoAoUJGFtOefolgHm9+8Edom3KSZVV8C6
+         0nZNJfQANr8Fg==
+X-Virus-Scanned: amavisd-new at mail.sconnect.com.au
+Received: from mail.sconnect.com.au ([127.0.0.1])
+        by localhost (mail.sconnect.com.au [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ZcA6EV8NPSr4; Thu, 22 Sep 2022 07:18:12 +1000 (AEST)
+Received: from [46.148.40.140] (unknown [46.148.40.140])
+        by mail.sconnect.com.au (Postfix) with ESMTPA id 3DB0F295CCE7;
+        Thu, 22 Sep 2022 07:18:04 +1000 (AEST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: PFC Loan
+To:     Recipients <Panola@mail.sconnect.com.au>
+From:   Panola@mail.sconnect.com.au, Finance@mail.sconnect.com.au,
+        dean@mail.sconnect.com.au
+Date:   Wed, 21 Sep 2022 14:17:56 -0700
+Reply-To: mbk@panolateam.com
+Message-Id: <20220921211805.3DB0F295CCE7@mail.sconnect.com.au>
+X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_ZBI,
+        SPF_HELO_PASS,SPF_PASS,T_PDS_TO_EQ_FROM_NAME autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -39,41 +63,25 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-deprecate btrfs blanace old syntax since new syntax is already introduced in
-2012.
+We offer flexible loans and funding for various projects bypassing the usua=
+l rigorous procedures without any upfront fee. This Funding program allows =
+a client to enjoy low interest payback for as low as 2% per annum for a per=
+iod of 1-30 years and a six months grace period.
+ =
 
-we will remove the old syntax completely in a few releases.
+We Offer: -
+* Project Financing
+* Business Loan
+* Personal Loan
+ =
 
-Signed-off-by: Wang Yugui <wangyugui@e16-tech.com>
----
-changes since v1:
-	fix typo(btrfs balance replace -> btrfs balance start)
+Should you be interested in any of our financial options, please do not hes=
+itate to contact us for more information. Loan processing and financing tak=
+es about 8 working days from the day you submit your loan application. Repl=
+y for more information: mail@panolafinancecompany.com
+ =
 
- cmds/balance.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/cmds/balance.c b/cmds/balance.c
-index d1e66d42..3cb6334a 100644
---- a/cmds/balance.c
-+++ b/cmds/balance.c
-@@ -37,7 +37,7 @@
- 
- static const char * const balance_cmd_group_usage[] = {
- 	"btrfs balance <command> [options] <path>",
--	"btrfs balance <path>",
-+	"btrfs balance <path>        deprecated by 'btrfs balance start'",
- 	NULL
- };
- 
-@@ -882,6 +882,8 @@ static int cmd_balance(const struct cmd_struct *cmd, int argc, char **argv)
- 		/* old 'btrfs filesystem balance <path>' syntax */
- 		struct btrfs_ioctl_balance_args args;
- 
-+		warning("deprecated by 'btrfs balance start'");
-+
- 		memset(&args, 0, sizeof(args));
- 		args.flags |= BTRFS_BALANCE_TYPE_MASK;
- 
--- 
-2.36.2
-
+With kind regards,
+Your Sales Team
+Contact Info:
+E-mail: mbk@panolateam.com
