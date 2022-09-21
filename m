@@ -2,120 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C0A5BF3A3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Sep 2022 04:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ACB45BF4E7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Sep 2022 05:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbiIUClO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Sep 2022 22:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
+        id S229716AbiIUDn2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 20 Sep 2022 23:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbiIUClG (ORCPT
+        with ESMTP id S229522AbiIUDn1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Sep 2022 22:41:06 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603D558DC3
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Sep 2022 19:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1663728059;
-        bh=ozggWSDSiFvMBNpcZXN/PqgODMTATEytIrKoVBS5QeI=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=J1R+DKRz4NhWEp3tDDBVUHv8t0jRaBRXuXUAvvxumkgUewCxpYEIX+T8bFIY9gb/p
-         unkEZb/CYK0TNvZt0bcn4fbMzpUNo3dirxhizFET0KuMDQxyjuHnIK6yzkEzm+Mxt9
-         BkaCM8EhSlhl/D7BObj5UxXewSjKZ5Pqs9ZIdWIk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MwwZd-1pTb6n0HRD-00yNrI; Wed, 21
- Sep 2022 04:40:58 +0200
-Message-ID: <6d72763c-d024-3224-be8e-0ade32540883@gmx.com>
-Date:   Wed, 21 Sep 2022 10:40:55 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
+        Tue, 20 Sep 2022 23:43:27 -0400
+Received: from beige.elm.relay.mailchannels.net (beige.elm.relay.mailchannels.net [23.83.212.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0472F4CA2E
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Sep 2022 20:43:25 -0700 (PDT)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 2BB5B3E17D0;
+        Wed, 21 Sep 2022 03:43:25 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 3312C3E1AF4;
+        Wed, 21 Sep 2022 03:43:24 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1663731804; a=rsa-sha256;
+        cv=none;
+        b=dtVcjConACv/3OBPfPzF6XEPuUX7yM+dXu14+gXkeVOT1U8IflS+SmflbCN/0m3p0bumEq
+        9NJIzthlA4vgI5fDxYWH/y2QUW2gsunCDh6ev7LaN/57EkZ/FlQCMM2j7+oWj5ylJGKwfm
+        nQ04j3/qd0ukGVd4Hn3rJtiQ9Il5bC6VEFZws4QRhzDQ/t/vGcPfyvT/nPQFWdZ0D12lsz
+        faOCTVRAmS7eSD8EtElqcAe/NepR3dPzLpbIQCrS4SuOm6XZGUNtsqJl3QoZko7p/0V6EL
+        TwhC/8weJGjzxrIh2WetiR0j0glCAyrh68g/35FJTJTnPeBfOawz7/4brxGv0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1663731804;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ttZnA2FdBH1p8KuaulLFdmfkGG7ZhQjSRhpnpgZuZHs=;
+        b=K5KPWm5d+wpFAwqaT/209AFj4HVjbCUYoRM0mx2bzeN4js736qaEs+OesbPKoIeLr1i0Jc
+        Uepjo76qUWFYVIClffigoh2D6O9WvBNtVX3G5oWI6G3+CUHVJhp9HbMknlU/q+UMid5EM2
+        HCR6GnfRx3j63U5FahVW8EtXcV5svKoQfUIBoTJKXjvFinRa7Ygx9CIa+K3glQ9ZT41IG5
+        W7LIh9BiXwW/ZPNl0dPU102Swfihc21dQ60Nnl3iS9539sQLnGj7/lRmZhlF4sh+lBhFcr
+        x0aNxGNKtmF70iTKi/h0ppsby+HhHZWdcAQde0blER/C3xmE9QlWiQAFMbOxxw==
+ARC-Authentication-Results: i=1;
+        rspamd-f776c45b8-ct74j;
+        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Invention-Cooperative: 7d3baca451b9a2a9_1663731804829_2118058625
+X-MC-Loop-Signature: 1663731804829:1676192915
+X-MC-Ingress-Time: 1663731804829
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.116.63.142 (trex/6.7.1);
+        Wed, 21 Sep 2022 03:43:24 +0000
+Received: from ppp-46-244-242-250.dynamic.mnet-online.de ([46.244.242.250]:58058 helo=heisenberg.fritz.box)
+        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <calestyo@scientia.org>)
+        id 1oaqds-0000YL-Co;
+        Wed, 21 Sep 2022 03:43:22 +0000
+Message-ID: <52bf0daaa1f88fe1069f4871e28ca18a90d1d5c1.camel@scientia.org>
 Subject: Re: call trace when btrfs-check tries to write on ro-blockdev
-Content-Language: en-US
-To:     Christoph Anton Mitterer <calestyo@scientia.org>,
-        linux-btrfs@vger.kernel.org
+From:   Christoph Anton Mitterer <calestyo@scientia.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Date:   Wed, 21 Sep 2022 05:43:16 +0200
+In-Reply-To: <6d72763c-d024-3224-be8e-0ade32540883@gmx.com>
 References: <70591e96d9dbc46cfaa44316f0eb1bcccc7017f5.camel@scientia.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <70591e96d9dbc46cfaa44316f0eb1bcccc7017f5.camel@scientia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bsRRjy8sDmOwri2c7jKjgF5PHTSHmNgqP19JJXgNZOSLGwDrHMB
- MwvrUVj72a+aNKsclz97Oah5FcMAMvu42qMlUoxL04wijPNqQAYRzthkGpKdaa0hw6FDPMO
- pbdDr85L0I7gVacjzgyeqlY0w5Tk1zblt7gZnwgU+pvm7XrYfuYZj7Im+ZnmhJ6dTSjkotF
- MMepmj6hm11D6lI/Zi6Hg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RPibz9Y2EYs=:X9fyK4WZFrAqyH/eJWc+MM
- uyQ2+4RlQNva5dmQPHt/gz7tahyKQ7w3OSXpHlHOxrG1yq/QFp/UTpWjajhOFvERdTBS70vXI
- D/NtrBGs+hPQVSH+OwzwUI28d3GGwQ37XYMWETfmkU6rfAsEr49gvM9QuZq4lk/mNvqj7viGR
- QnRkbVGX2x2iDxfRW6ur+zjx2rzPCMuY3q+be8xcti2ouPs1qDcpN/ss3mZZcgjYo8ufkISsf
- N6ZWTGN2fpfQeHWveHAbmT5mUhRGNyhVhihq45mEJUg6JHc5sNJtNc4/Xq3WXt3q5IIIapazP
- dP4VvwmOdRBEMsjonoNWM9AGXuptYYmbg/dwmhT7lWEZf/dH+KhNyJk/lHt7GtqmKNEJAdAIM
- eXDvTqBG950KLfVfXib2IZ9ZU6cyHnFwS8K/Bq5hxi+Rbb4CJnEa4oGCgB8ICmZTSSqfaX1Ci
- OOQWyvDSbXyDkn715l598Ii/t0WMaGGSzU06nuJMn08TzPCX/zNdKYRY5i1j78APwXx8+LKX8
- 6+OH9DNNXhk47TSq5l/m8yL26Ncr8FoRDNcmt6gJfm8Jc/Rmtx4uf6/v2Ka6WCui7GO9oI/uT
- jewHJLYnfn3XakVHqgrdGkAbhbdOlfOe1ZKNElneuKR7A2MT6lD75GEouXiAD+gHH3K40sC4R
- hC4erfcIZqPs12QJhf/Sc7ei05rjKS9PDLD2HW4YAgfwVjLWAlUbJJd3iDjZfMDpQVTbVPNGw
- 5B/hWFFhJX/ezFsknYWlfoOSkvIc1CVT0tIGMOao4ihkb8sGaGCL2ABiIraPFr9SDswzBLpQQ
- Lk/Ea3x2CXbFyMr+5IcQyXaXB4J5fRqSjLZ8q1GBN3oli+uQVIT/FOKk+dLp+iguwbshz3NKz
- ayKzBpLYX4xUonu7CE1tVVFxrGdTVPcqVYSM3SfOEgt861w8htB9zOK8Xfokba0C9qJintQL8
- N2osofkAOivqQj67mmg8K5T680JHJfVO/vk4YZtVBEcPTmCVN4xYiHmusS4KOqFtLM7MzcaKE
- dKQgWHIG5rETfstbGv94VYCB7tIC+iHtvNYrvVvzOqNVZzPiWC3OPzGkuys/mg7J/Dv3Qj/Ru
- DT1Ed1qqHAbB0zkhBw9cVtEkVymqbd0u56r7K7BWSqamtGRk0zKk354crPWA73jHB76yqntxj
- +P0otola/y9SmQcPNSd3GMgb5y
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+         <6d72763c-d024-3224-be8e-0ade32540883@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.0-2 
+MIME-Version: 1.0
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AuthUser: calestyo@scientia.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, 2022-09-21 at 10:40 +0800, Qu Wenruo wrote:
+> But my concern is, why this is not reported at fs open time?
+
+At first I also wanted to suggest to not even do the (possibly lengthy
+opening) if it's anyway "clear" that it would fail (because of the --
+clear-space-cache request and the blockdev being ro).
+
+However... if e.g. --clear-space-cache is used, but the device wouldn't
+have any space cache... then it could still succeed, even if it was ro,
+right?
+So maybe for that case it would make sense to try.
 
 
-On 2022/9/21 10:29, Christoph Anton Mitterer wrote:
-> Hey.
->
-> Not really a big problem but a but "ugly"...
->
-> When trying to do some write operation with btrfs check on a blockdev
-> that is set read-only, one gets a call trace like the following:
+> Let me dig deeper into the case.
 
-BUG_ON() is definitely something we should fix.
+Thanks.
 
-But my concern is, why this is not reported at fs open time?
 
-As for repair we should open the device with O_RDWR, and if that device
-is RO, we should error out at open() time.
-
-Let me dig deeper into the case.
-
-Thanks for the report,
-Qu
-
->
->
-> # btrfs check --clear-space-cache v1 /dev/mapper/data
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/data-b-1
-> UUID: 18343f60-3955-11ed-a6c8-38afd7a81270
-> Error writing to device 1
-> kernel-shared/transaction.c:156: __commit_transaction: BUG_ON `ret`
-> triggered, value 1
-> btrfs(+0x3683b)[0x55c75780483b]
-> btrfs(__commit_transaction+0xc6)[0x55c757804b32]
-> btrfs(btrfs_commit_transaction+0x130)[0x55c757804ca0]
-> btrfs(+0x61963)[0x55c75782f963]
-> btrfs(+0x6e297)[0x55c75783c297]
-> btrfs(main+0x318)[0x55c7577e6138]
-> /lib/x86_64-linux-gnu/libc.so.6(+0x2920a)[0x7f6fd6ff920a]
-> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x7c)[0x7f6fd6ff92bc]
-> btrfs(_start+0x21)[0x55c7577e6171]
-> Aborted
->
->
-> Cheers,
-> Chris.
->
-> PS: That was with progs 5.19.
+Chris.
