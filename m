@@ -2,106 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5035BFBA6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Sep 2022 11:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C540E5BFBBB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Sep 2022 11:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbiIUJto (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Sep 2022 05:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
+        id S229666AbiIUJyZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Sep 2022 05:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbiIUJtS (ORCPT
+        with ESMTP id S231811AbiIUJxT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Sep 2022 05:49:18 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674EB93532
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 02:47:06 -0700 (PDT)
+        Wed, 21 Sep 2022 05:53:19 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3BD9412E
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 02:52:04 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 52B0221B24;
-        Wed, 21 Sep 2022 09:45:46 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B5C3021B2E;
+        Wed, 21 Sep 2022 09:52:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1663753546;
+        t=1663753922;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=hbxDVQ9a2G4B5Oi0g8Qi/vg1fI1g9YxNvSSMQf0pMZw=;
-        b=TMuwct+UMLIyOcKp1Ap+aiRXP/hm/CaDmc/ssUJ6vxz6Cs6F17xFKgAffRDlueLtpc33nL
-        IkhIABf0FS6j1CKe41LOEqFvE60A1JBXTUM5EC3u7+cXaysrrhK/FuIHJfiteSnwao6Ypg
-        3y8YfptTbxHY+OiO28UUkRGQB/3Qtno=
+        bh=XKA+Xg4mzHWDsZ4xqnOVTHP8hxUdWU2uVIC8IjWOHLw=;
+        b=pMhHmnEb50DUOqWa4FHOr1QU7Ze++vtn31A12eyAYVCP5FalLbzQ1jN+X2xDNuO9sS9NFX
+        NFdoXu2GnezDURw7v+G5ADpyKPdd+ucfs9B/geS6hVeVhU0tUcc8rnOld5A3DIw8bie8I1
+        KpWOgt4uX19cUFPRA4I6s/4o42gjNyg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1663753546;
+        s=susede2_ed25519; t=1663753922;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=hbxDVQ9a2G4B5Oi0g8Qi/vg1fI1g9YxNvSSMQf0pMZw=;
-        b=uijnVsaCq27/iUMcvSfHVQywbE53ZagDDnjnAsLF7MFReB94WJ8P2JOK/OHZjhVm0cIIbF
-        2Mrzg+bDVEe/EOBg==
+        bh=XKA+Xg4mzHWDsZ4xqnOVTHP8hxUdWU2uVIC8IjWOHLw=;
+        b=8ZsHWmtnEmahXfoXWbNbaE2wj+6lvcu2HJZC6UgFXTQvFGKcVMP94qUMepF+IpLvSqtmCx
+        57T+tkA4adQsBtAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A87F13A00;
-        Wed, 21 Sep 2022 09:45:46 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 893C113A00;
+        Wed, 21 Sep 2022 09:52:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5LU7BUrdKmOgTwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 21 Sep 2022 09:45:46 +0000
-Date:   Wed, 21 Sep 2022 11:40:14 +0200
+        id 3hXBIMLeKmOZUgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 21 Sep 2022 09:52:02 +0000
+Date:   Wed, 21 Sep 2022 11:46:30 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 1/2] btrfs: split the bio submission path into a separate
- file
-Message-ID: <20220921094014.GB32411@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>
+Subject: Re: [PATCH] btrfs: loosen the block-group-tree feature dependency
+ check
+Message-ID: <20220921094630.GC32411@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20220912141121.3744931-1-hch@lst.de>
- <20220912141121.3744931-2-hch@lst.de>
- <PH0PR04MB7416C3ED5D9F5732E5C4D5D09B449@PH0PR04MB7416.namprd04.prod.outlook.com>
- <20220913050829.GA29304@lst.de>
+References: <d43e26ecf12268e8bc75986052cc6021a096db74.1662961395.git.wqu@suse.com>
+ <b56c2284-4702-2d61-4b73-f68c21b73b70@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220913050829.GA29304@lst.de>
+In-Reply-To: <b56c2284-4702-2d61-4b73-f68c21b73b70@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 13, 2022 at 07:08:29AM +0200, Christoph Hellwig wrote:
-> On Mon, Sep 12, 2022 at 03:27:10PM +0000, Johannes Thumshirn wrote:
-> > On 12.09.22 16:11, Christoph Hellwig wrote:
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + * Copyright (C) 2007 Oracle.  All rights reserved.
-> > > + * Copyright (C) 2022 Christoph Hellwig.
-> > > + */
+On Wed, Sep 21, 2022 at 07:40:19AM +0800, Qu Wenruo wrote:
+> On 2022/9/12 13:44, Qu Wenruo wrote:
+> > [BUG]
+> > When one user did a wrong try to clear block group tree, which can not
+> > be done through mount option, by using "-o clear_cache,space_cache=v2",
+> > it will cause the following error on a fs with block-group-tree feature:
 > > 
-> > IIRC David does try to get rid of all the per-company copyright
-> > statements for new files.
+> >   BTRFS info (device dm-1): force clearing of disk cache
+> >   BTRFS info (device dm-1): using free space tree
+> >   BTRFS info (device dm-1): clearing free space tree
+> >   BTRFS info (device dm-1): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
+> >   BTRFS info (device dm-1): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
+> >   BTRFS error (device dm-1): block-group-tree feature requires fres-space-tree and no-holes
+> >   BTRFS error (device dm-1): super block corruption detected before writing it to disk
+> >   BTRFS: error (device dm-1) in write_all_supers:4318: errno=-117 Filesystem corrupted (unexpected superblock corruption detected)
+> >   BTRFS warning (device dm-1: state E): Skipping commit of aborted transaction.
+> > 
+> > [CAUSE]
+> > Although the dependency for block-group-tree feature is just an
+> > artificial one (to reduce test matrix), we put the dependency check into
+> > btrfs_validate_super().
+> > 
+> > This is too strict, and during space cache clearing, we will have a
+> > window where free space tree is cleared, and we need to commit the super
+> > block.
+> > 
+> > In that window, we had block group tree without v2 cache, and triggered
+> > the artificial dependency check.
+> > 
+> > This is not necessary at all, especially for such a soft dependency.
+> > 
+> > [FIX]
+> > Introduce a new helper, btrfs_check_features(), to do all the runtime
+> > limitation checks, including:
+> > 
+> > - Unsupported incompat flags check
+> > 
+> > - Unsupported compat RO flags check
+> > 
+> > - Setting missing incompat flags
+> > 
+> > - Aritifical feature dependency checks
+> >    Currently only block group tree will rely on this.
+> > 
+> > - Subpage runtime check for v1 cache
+> > 
+> > With this helper, we can move quite some checks from
+> > open_ctree()/btrfs_remount() into it, and just call it after
+> > btrfs_parse_options().
+> > 
+> > Now "-o clear_cache,space_cache=v2" will not trigger above error
+> > anymore.
+> > 
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > 
-> We just had that discussion in another thread - there really is no
-> basis for getting rid of them.  In fact talking to lawyers, most
-> of them thing we should have more of them, not less.
+> Any feedback? I really hope this patch can be merged before we expose 
+> the kernel support for block group tree.
+> 
+> Or clear_space_cache mount option can easily flip the fs to RO.
 
-There seems to be no clear consensus that would satisfy lawyers (track
-complete copyright information) and practical point of view (it's in the
-git metadata). The problem not only I see taking this patch as an
-example is that your (c) name now appears in file containing changes
-from several other people whose names are not mentioned (but yes the
-original copyright is preserved).
-
-I don't want to speculate what would this mean from the legal POV and I
-think we've heard each other's arguments. If there's a recommended
-practice coming "from above" as linux project, like it was with the
-SPDX, ok let everybody add their copyright notices. But until then I
-won't take such patches.
+I'm aware of the patch, as it is technically a regression fix it can go
+to any rc, I was processing other patches that must be merged before the
+pull request. That was before rc6 and there will be rc7 so there's more
+time to add this still to the first batch.
