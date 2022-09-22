@@ -2,155 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 475CF5E6401
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 15:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0405E6442
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 15:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbiIVNp2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Sep 2022 09:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
+        id S231896AbiIVNwf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Sep 2022 09:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbiIVNpZ (ORCPT
+        with ESMTP id S231890AbiIVNw1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Sep 2022 09:45:25 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A475F99C
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 06:45:23 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id o7so6137936qkj.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 06:45:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date;
-        bh=lTLxj593wgb0rSkyx/kVpkcZN0XitEmW0vMjErWHotA=;
-        b=FyJaKv2cOaRg6P7yvu8zs1jVRm/8RMTbc6dfECJ+ZO5o/HmyZWXx30/9G58nVbrc5b
-         uilHyUda0dD/kYG1qtguthEwDaL9y8JeP+HPCBHfMWclRlKZoOK/NXZxzGUfoaxervvy
-         D0TcePhLr6rEHe3E5Hlf5A5QN/T9th71F+ymU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=lTLxj593wgb0rSkyx/kVpkcZN0XitEmW0vMjErWHotA=;
-        b=2d57nzZWLQ1lDrUmAmOb800J+JrFoQVchBqUQButdfCfJc18dSV0GWPyesdH6jP8ik
-         PLRYl64qSprAUGnEDSTHxXh1Bl+KNcoRzyabl92eohr+H1CWuPbPwalDg9gPQdWeI55g
-         sHbd+WAuHB3+AD00DHcL5+uaZ8TZJNr1lGX55k7ZhmzQdbM9Sms0GPGWyf/mhfLvV89L
-         f8UnWNaovgFfNm68qXcGZXTXOFwW/7QN0DcYjCZGbWNRVmo7b0/SQU3d332M48LtqLys
-         FGv5BoWRMZZPpEuqLgvSohRnfY6m6gb1ElEXpuUeLU5xA3NHhH51mcMRgoJ9b8R5lPym
-         O4eg==
-X-Gm-Message-State: ACrzQf24V/6eYpDd5vej161ekIypASd18YCMqb1G9iPzquGWWNpA1sV/
-        4ZCVqn33DU1EHjQfboiYNRKfMQ==
-X-Google-Smtp-Source: AMsMyM6DBqbYqDsHBnddfGDZuwycGpoIY7LinhBIG4+l+K0bdEu/uf1UKptO3KnL1trAn9LU6bZY/Q==
-X-Received: by 2002:a05:620a:f15:b0:6cf:2130:88e3 with SMTP id v21-20020a05620a0f1500b006cf213088e3mr2093263qkl.519.1663854322211;
-        Thu, 22 Sep 2022 06:45:22 -0700 (PDT)
-Received: from [172.22.22.4] ([98.61.227.136])
-        by smtp.googlemail.com with ESMTPSA id w7-20020ac857c7000000b0035bbb6268e2sm3902332qta.67.2022.09.22.06.45.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Sep 2022 06:45:21 -0700 (PDT)
-Message-ID: <4d75a9fd-1b94-7208-9de8-5a0102223e68@ieee.org>
-Date:   Thu, 22 Sep 2022 08:45:19 -0500
+        Thu, 22 Sep 2022 09:52:27 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D3FE48
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 06:52:12 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6E7501F904;
+        Thu, 22 Sep 2022 13:52:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1663854729;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FDh0RDFaD9keLfhVmCzHplFIN9fl2Kfi8+pdUYKA2Ck=;
+        b=MEV0aVJfadcO6kd8rIFwxLVyT8m3qOuF2NUNYF8goKhE6yZX3EFy7NnvSv+ADxMdAOiauu
+        HD5szV3e0/gvGEuq1X0mODz/egVZztlsL4AQLqNhFuGZx1NFhIaOEXdlZhPrDy9FL0fRwD
+        h8mbto/L2n+Cjh+AP1SBzUHZ7O4xsLM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1663854729;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FDh0RDFaD9keLfhVmCzHplFIN9fl2Kfi8+pdUYKA2Ck=;
+        b=ekW2WtUvVHxixT5wsjnxgHWTv+++3A7/SV0rfCgrXEbyk6/sUo9RDyN7VdMNp1qLtMDiXN
+        MI+VxH3fOxToeqDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4F03713AA5;
+        Thu, 22 Sep 2022 13:52:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8XdeEoloLGNdAwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 22 Sep 2022 13:52:09 +0000
+Date:   Thu, 22 Sep 2022 15:46:37 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: hide block group tree behind experimental
+ feature
+Message-ID: <20220922134637.GJ32411@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <0b8f20ae26661e040dfcaae90928bbc1c6fff5cd.1662952308.git.wqu@suse.com>
+ <20220921140611.GG32411@twin.jikos.cz>
+ <ecd14905-6ff1-3d26-7354-93631684fa0c@gmx.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 03/12] net: ipa: Proactively round up to kmalloc bucket
- size
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Vlastimil Babka <vbabka@suse.cz>
-Cc:     Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Marco Elver <elver@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Jacob Shin <jacob.shin@amd.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-btrfs@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, dev@openvswitch.org,
-        x86@kernel.org, linux-wireless@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-References: <20220922031013.2150682-1-keescook@chromium.org>
- <20220922031013.2150682-4-keescook@chromium.org>
-From:   Alex Elder <elder@ieee.org>
-In-Reply-To: <20220922031013.2150682-4-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ecd14905-6ff1-3d26-7354-93631684fa0c@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/21/22 10:10 PM, Kees Cook wrote:
-> Instead of discovering the kmalloc bucket size _after_ allocation, round
-> up proactively so the allocation is explicitly made for the full size,
-> allowing the compiler to correctly reason about the resulting size of
-> the buffer through the existing __alloc_size() hint.
+On Thu, Sep 22, 2022 at 06:20:25AM +0800, Qu Wenruo wrote:
 > 
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->   drivers/net/ipa/gsi_trans.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/net/ipa/gsi_trans.c b/drivers/net/ipa/gsi_trans.c
-> index 18e7e8c405be..cec968854dcf 100644
-> --- a/drivers/net/ipa/gsi_trans.c
-> +++ b/drivers/net/ipa/gsi_trans.c
-> @@ -89,6 +89,7 @@ int gsi_trans_pool_init(struct gsi_trans_pool *pool, size_t size, u32 count,
->   			u32 max_alloc)
->   {
->   	void *virt;
-> +	size_t allocate;
+> On 2022/9/21 22:06, David Sterba wrote:
+> > On Mon, Sep 12, 2022 at 11:12:01AM +0800, Qu Wenruo wrote:
+> >> The block group tree doesn't yet have full bi-directional conversion
+> >> support from btrfstune, and it seems we may want one or two release
+> >> cycles to rule out some extra bugs before really releasing the progs
+> >> support.
+> >>
+> >> This patch will hide the block group tree feature behind experimental
+> >> flag for the following tools:
+> >>
+> >> - btrfstune
+> >>    "-b" option to convert to bg tree.
+> >>
+> >> - mkfs.btrfs
+> >>    hide "block-group-tree" feature from both -O (the new default position
+> >>    for all features) and -R (the old, soon to be deprecated one).
+> >
+> > The block group tree is going to 6.1, so the progs support will be
+> > experimental in 6.0 and enabled no later than 6.1. It might be enabled
+> > earlier so we can use the normal build in testing.
+> 
+> Personally speaking, I'd hope bg tree would be hidden behind
+> experimental until the bi-directional convert is implemented.
 
-I don't care about this but the reverse Christmas tree
-convention would put the "allocate" variable definition
-above "virt".
+As with other new features we need a stabilization period, mkfs support
+is the first step and the user space tools should provide feature parity
+in the same release number at the latest.
 
-Whether you fix that or not, this patch looks good to me.
-
-Reviewed-by: Alex Elder <elder@linaro.org>
-
->   	if (!size)
->   		return -EINVAL;
-> @@ -104,13 +105,15 @@ int gsi_trans_pool_init(struct gsi_trans_pool *pool, size_t size, u32 count,
->   	 * If there aren't enough entries starting at the free index,
->   	 * we just allocate free entries from the beginning of the pool.
->   	 */
-> -	virt = kcalloc(count + max_alloc - 1, size, GFP_KERNEL);
-> +	allocate = size_mul(count + max_alloc - 1, size);
-> +	allocate = kmalloc_size_roundup(allocate);
-> +	virt = kzalloc(allocate, GFP_KERNEL);
->   	if (!virt)
->   		return -ENOMEM;
->   
->   	pool->base = virt;
->   	/* If the allocator gave us any extra memory, use it */
-> -	pool->count = ksize(pool->base) / size;
-> +	pool->count = allocate / size;
->   	pool->free = 0;
->   	pool->max_alloc = max_alloc;
->   	pool->size = size;
-
+That we have the btrfstune to do the conversions is a nice to have that
+we do want to have eventually because we know that the bg tree will
+solve slow mounts on large filesystems. So the experimental status for
+btrfstune is fine, but not for mkfs.
