@@ -2,126 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCEA5E5AA4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 07:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6ADD5E5B05
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 07:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbiIVF0d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Sep 2022 01:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
+        id S229928AbiIVFzl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Sep 2022 01:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbiIVF0b (ORCPT
+        with ESMTP id S229896AbiIVFzj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Sep 2022 01:26:31 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C99DA1A6E
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 22:26:29 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id f193so8127301pgc.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 22:26:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=1AAj0jz/3WOf/ZinmBg4e5WZyKIExnDIP+4ApRXDWXk=;
-        b=E6vw8sjIHY/i68R43dGnMLa/5LLUaNZd7XsoFQWcc3w5wUJdtXNsxsEfsPht7kxdNG
-         JJ1tXBTf3XQqnlgOex/RZ+o0XMhSMgfcjsVoIr6koV6H3KyiaZ1lUXPNyODzP4yferwZ
-         bLRSqfuB8yrx2QNr5YGtL8EgG0hPZHJq7V7xk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=1AAj0jz/3WOf/ZinmBg4e5WZyKIExnDIP+4ApRXDWXk=;
-        b=Sxd8iFe/V6llPsX9DI5yUnqIeyvCddvf8ePSU/ClrJLp5k+hPpTTUiJScrIU+HTCh2
-         rZMMQGuwFW8Qe5kii/Lh7AWCVD72TlZLoeYFF7V6BkH86YScWLcPMAKq2rvkcnP84zxt
-         zlQlWXv/1CWwAbsCOP+VxYKw6pB+J5t6UYSBZq5mXH7w7oIM+B1hpqD88wH/Vm9ZwDlF
-         DAXFOOIscodswRTRRH/W1O2ZZh7SQ63HKT1kg201tWmF6t7i9K0493Y1nC2+xJShLzlA
-         Qu4qIXbYnLfWOVTaRsGhidB9iLfychVX/gNqAdxbwAX/WohVv7H1f9CS2FWkwm7zJHeL
-         zxaw==
-X-Gm-Message-State: ACrzQf1TP0RLInvdeD5UF02lYP9B+Qk/KMA84x2B1bwUSPK+dvJA/xru
-        0LFPdre/+aXwZIn+snev94qdbw==
-X-Google-Smtp-Source: AMsMyM4a+GHcnQt0UeqKstHRefYZ2pfi5aegxBG+GRLeLtm77LwF22DDWI605QZJjTDKHxZFsdcd6w==
-X-Received: by 2002:a63:cf56:0:b0:439:41ed:78fc with SMTP id b22-20020a63cf56000000b0043941ed78fcmr1597609pgj.419.1663824388949;
-        Wed, 21 Sep 2022 22:26:28 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l10-20020a170903120a00b0016f196209c9sm3102876plh.123.2022.09.21.22.26.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Sep 2022 22:26:28 -0700 (PDT)
-Date:   Wed, 21 Sep 2022 22:26:27 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Alex Elder <elder@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Marco Elver <elver@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Jacob Shin <jacob.shin@amd.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-btrfs@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, dev@openvswitch.org,
-        x86@kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 10/12] iwlwifi: Track scan_cmd allocation size explicitly
-Message-ID: <202209212224.A2F1DB798@keescook>
-References: <20220922031013.2150682-1-keescook@chromium.org>
- <20220922031013.2150682-11-keescook@chromium.org>
- <87fsgk6nys.fsf@kernel.org>
+        Thu, 22 Sep 2022 01:55:39 -0400
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F1DB441E;
+        Wed, 21 Sep 2022 22:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1663826138; x=1695362138;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QszZM+R0h9OQZSqqeOlCUY8D078QycRJ1m1XM+0Eb1Y=;
+  b=ETu7AZzSmV8pDXmjTjgS0hlj+aMgSz47rgTv+ju+gjqnHQWraJLbHxwP
+   4Uc/hBRJjOSAHWD+DtgLTJYCLqUmFgDloq+mwKOSPbkxnDDYqiGCvzmgA
+   dL3NaKEA5XcVNzdaNdzDPdSjvSdZjC5sYyZNT+VUlybSlEkh+At6uvbDM
+   OtX+U++Mxh1fUeCryMuGvcKG01sQkyIOIUKDgambSfFEaX0lbwGoz0LR4
+   Kjps9bWnHtDjlviMsTRI2A+Rkmb1OhS/sRQ3fY0jyR497lAGuLHQO9lsy
+   MRJKnUNF6vk1mBDBSJ0Q8giw1+X2T5tWRApyypMm8bP42nnQk+lR2E+u9
+   g==;
+X-IronPort-AV: E=Sophos;i="5.93,335,1654531200"; 
+   d="scan'208";a="324089194"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Sep 2022 13:55:37 +0800
+IronPort-SDR: W7556YijtxRzNg/3uv/oAR1fR9l79+ObWnmWpAd62uGRJu1H/btXMN4GZ3cm71fImS+74tKwAF
+ tP390F5P/6niJT+0000e6L8t4EdFyb/UdK1h8erU8cnGsONO5E6cpFj8VANTVwPevSKtMat4KJ
+ dn3frrzUTenmY5CBqrHN5DXdsXGKITPVowZadeByexEpcoHYuHg5lL6RjGimi/lfiw8lrpdKao
+ vSlz2dA9Sh4l/JaPjqEh9LRxoFMNw+HOexNJgQ4zmnkDyanDF+lHDs6BMSDngzXqW8JfeyD7LO
+ QTMTo+KeTapOpVghnAcZ4EN0
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Sep 2022 22:10:11 -0700
+IronPort-SDR: K5wQlR8Q1hlrgrvxesr6qBWC/g4j8DskMnjAzIdeMAM+Fmr2Nzxi+fd20aHmiU9kdlWp8Ekji0
+ oxdeBgxt0Ke7+x/ivAjPXiWoIpaMbYCQ2s6vXvh9hdRydKwcNm4C58C1m/PV2WGLB2SLRrNgDE
+ 1ii5Xtzg52kQVvBKtVh4L4b6glPoyZf9w7K8Qdy1/0H3gm1amI8Lxfv3lJzo9GoM8Rep5coEhr
+ CuiuJjr7YU7fXGQRi3lE8uAc+1/OzuAwz2WsiRth31dfhIHiyWg+sH2BleHkvtNjzE02Zc7Mhm
+ ljI=
+WDCIronportException: Internal
+Received: from ghkxqv2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.49.86])
+  by uls-op-cesaip01.wdc.com with ESMTP; 21 Sep 2022 22:55:37 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH 0/2] btrfs: test active zone tracking
+Date:   Thu, 22 Sep 2022 14:54:57 +0900
+Message-Id: <cover.1663825728.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87fsgk6nys.fsf@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 22, 2022 at 07:18:51AM +0300, Kalle Valo wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> 
-> > In preparation for reducing the use of ksize(), explicitly track the
-> > size of scan_cmd allocations. This also allows for noticing if the scan
-> > size changes unexpectedly. Note that using ksize() was already incorrect
-> > here, in the sense that ksize() would not match the actual allocation
-> > size, which would trigger future run-time allocation bounds checking.
-> > (In other words, memset() may know how large scan_cmd was allocated for,
-> > but ksize() will return the upper bounds of the actually allocated memory,
-> > causing a run-time warning about an overflow.)
-> >
-> > Cc: Gregory Greenman <gregory.greenman@intel.com>
-> > Cc: Kalle Valo <kvalo@kernel.org>
-> > Cc: Johannes Berg <johannes.berg@intel.com>
-> > Cc: linux-wireless@vger.kernel.org
-> > Cc: netdev@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> Via which tree is this iwlwifi patch going? Normally via wireless-next
-> or something else?
+This series adds a test for checking if an active zone tracking feature of
+btrfs's zoned mode. The first patch introduces _zone_capacity() helper to
+get the zone capacity of a specified zone. It rewrites btrfs/237 with the
+helper and use the helper in a newly added test btrfs/292.
 
-This doesn't depend on the kmalloc_size_roundup() helper at all, so I
-would be happy for it to go via wireless-next if the patch seems
-reasonable.
+Naohiro Aota (2):
+  common: introduce zone_capacity() to return a zone capacity
+  btrfs: test active zone tracking
+
+ common/zbd          |  29 ++++++++++
+ tests/btrfs/237     |   8 +--
+ tests/btrfs/292     | 137 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/292.out |   2 +
+ 4 files changed, 170 insertions(+), 6 deletions(-)
+ create mode 100644 common/zbd
+ create mode 100755 tests/btrfs/292
+ create mode 100644 tests/btrfs/292.out
 
 -- 
-Kees Cook
+2.37.3
+
