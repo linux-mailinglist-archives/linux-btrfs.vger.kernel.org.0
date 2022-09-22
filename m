@@ -2,38 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 268CA5E5A17
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 06:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCEA5E5AA4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 07:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbiIVETK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Sep 2022 00:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37546 "EHLO
+        id S230147AbiIVF0d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Sep 2022 01:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbiIVETG (ORCPT
+        with ESMTP id S229635AbiIVF0b (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Sep 2022 00:19:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35995A221B;
-        Wed, 21 Sep 2022 21:19:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C0F2D62FAD;
-        Thu, 22 Sep 2022 04:19:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C3BEC433D6;
-        Thu, 22 Sep 2022 04:18:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663820344;
-        bh=8xodEWMTndBecZO1JG0sANGtdcIZJhdCKz1ZoOkxjMk=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=uW+exXsXSGrew87ZojaTnnu2Pv1UtGXzQqjjLX2b7oGph4+PQelJUJX11FgjpqatQ
-         ELoqv5pR8bSV3/7535PDpBw6BVY4bi59s4BaKlJSIYVXzNRY6aDLmLKhJLPFtzieTO
-         iB7297vU052/FKz0Dc21FYTixE1ykO1VrtaDUUK3SkYuK3biSXS0J7OKhhQjo/eWra
-         7mj2sPUPAmfSHWCc1MV6VYkGtcRnMWzr/LNBb6lPibVdaMWLqUzHsztksp0W4hjZYv
-         zIN6846mujkb0CwMdnKoomN+OWU5pYCeMqp4QWw7CJvtecSieKja+ya7GWiRyAj90B
-         2nqT/vaz2aB1w==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
+        Thu, 22 Sep 2022 01:26:31 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C99DA1A6E
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 22:26:29 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id f193so8127301pgc.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 22:26:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=1AAj0jz/3WOf/ZinmBg4e5WZyKIExnDIP+4ApRXDWXk=;
+        b=E6vw8sjIHY/i68R43dGnMLa/5LLUaNZd7XsoFQWcc3w5wUJdtXNsxsEfsPht7kxdNG
+         JJ1tXBTf3XQqnlgOex/RZ+o0XMhSMgfcjsVoIr6koV6H3KyiaZ1lUXPNyODzP4yferwZ
+         bLRSqfuB8yrx2QNr5YGtL8EgG0hPZHJq7V7xk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=1AAj0jz/3WOf/ZinmBg4e5WZyKIExnDIP+4ApRXDWXk=;
+        b=Sxd8iFe/V6llPsX9DI5yUnqIeyvCddvf8ePSU/ClrJLp5k+hPpTTUiJScrIU+HTCh2
+         rZMMQGuwFW8Qe5kii/Lh7AWCVD72TlZLoeYFF7V6BkH86YScWLcPMAKq2rvkcnP84zxt
+         zlQlWXv/1CWwAbsCOP+VxYKw6pB+J5t6UYSBZq5mXH7w7oIM+B1hpqD88wH/Vm9ZwDlF
+         DAXFOOIscodswRTRRH/W1O2ZZh7SQ63HKT1kg201tWmF6t7i9K0493Y1nC2+xJShLzlA
+         Qu4qIXbYnLfWOVTaRsGhidB9iLfychVX/gNqAdxbwAX/WohVv7H1f9CS2FWkwm7zJHeL
+         zxaw==
+X-Gm-Message-State: ACrzQf1TP0RLInvdeD5UF02lYP9B+Qk/KMA84x2B1bwUSPK+dvJA/xru
+        0LFPdre/+aXwZIn+snev94qdbw==
+X-Google-Smtp-Source: AMsMyM4a+GHcnQt0UeqKstHRefYZ2pfi5aegxBG+GRLeLtm77LwF22DDWI605QZJjTDKHxZFsdcd6w==
+X-Received: by 2002:a63:cf56:0:b0:439:41ed:78fc with SMTP id b22-20020a63cf56000000b0043941ed78fcmr1597609pgj.419.1663824388949;
+        Wed, 21 Sep 2022 22:26:28 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id l10-20020a170903120a00b0016f196209c9sm3102876plh.123.2022.09.21.22.26.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Sep 2022 22:26:28 -0700 (PDT)
+Date:   Wed, 21 Sep 2022 22:26:27 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Kalle Valo <kvalo@kernel.org>
 Cc:     Vlastimil Babka <vbabka@suse.cz>,
         Gregory Greenman <gregory.greenman@intel.com>,
         Johannes Berg <johannes.berg@intel.com>,
@@ -52,7 +66,7 @@ Cc:     Vlastimil Babka <vbabka@suse.cz>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Daniel Micay <danielmicay@gmail.com>,
         Yonghong Song <yhs@fb.com>, Marco Elver <elver@google.com>,
@@ -65,46 +79,49 @@ Cc:     Vlastimil Babka <vbabka@suse.cz>,
         x86@kernel.org, llvm@lists.linux.dev,
         linux-hardening@vger.kernel.org
 Subject: Re: [PATCH 10/12] iwlwifi: Track scan_cmd allocation size explicitly
+Message-ID: <202209212224.A2F1DB798@keescook>
 References: <20220922031013.2150682-1-keescook@chromium.org>
-        <20220922031013.2150682-11-keescook@chromium.org>
-Date:   Thu, 22 Sep 2022 07:18:51 +0300
-In-Reply-To: <20220922031013.2150682-11-keescook@chromium.org> (Kees Cook's
-        message of "Wed, 21 Sep 2022 20:10:11 -0700")
-Message-ID: <87fsgk6nys.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ <20220922031013.2150682-11-keescook@chromium.org>
+ <87fsgk6nys.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87fsgk6nys.fsf@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+On Thu, Sep 22, 2022 at 07:18:51AM +0300, Kalle Valo wrote:
+> Kees Cook <keescook@chromium.org> writes:
+> 
+> > In preparation for reducing the use of ksize(), explicitly track the
+> > size of scan_cmd allocations. This also allows for noticing if the scan
+> > size changes unexpectedly. Note that using ksize() was already incorrect
+> > here, in the sense that ksize() would not match the actual allocation
+> > size, which would trigger future run-time allocation bounds checking.
+> > (In other words, memset() may know how large scan_cmd was allocated for,
+> > but ksize() will return the upper bounds of the actually allocated memory,
+> > causing a run-time warning about an overflow.)
+> >
+> > Cc: Gregory Greenman <gregory.greenman@intel.com>
+> > Cc: Kalle Valo <kvalo@kernel.org>
+> > Cc: Johannes Berg <johannes.berg@intel.com>
+> > Cc: linux-wireless@vger.kernel.org
+> > Cc: netdev@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> Via which tree is this iwlwifi patch going? Normally via wireless-next
+> or something else?
 
-> In preparation for reducing the use of ksize(), explicitly track the
-> size of scan_cmd allocations. This also allows for noticing if the scan
-> size changes unexpectedly. Note that using ksize() was already incorrect
-> here, in the sense that ksize() would not match the actual allocation
-> size, which would trigger future run-time allocation bounds checking.
-> (In other words, memset() may know how large scan_cmd was allocated for,
-> but ksize() will return the upper bounds of the actually allocated memory,
-> causing a run-time warning about an overflow.)
->
-> Cc: Gregory Greenman <gregory.greenman@intel.com>
-> Cc: Kalle Valo <kvalo@kernel.org>
-> Cc: Johannes Berg <johannes.berg@intel.com>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Via which tree is this iwlwifi patch going? Normally via wireless-next
-or something else?
+This doesn't depend on the kmalloc_size_roundup() helper at all, so I
+would be happy for it to go via wireless-next if the patch seems
+reasonable.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Kees Cook
