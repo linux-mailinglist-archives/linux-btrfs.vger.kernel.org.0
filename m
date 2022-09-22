@@ -2,64 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 055A05E6875
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 18:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9411A5E68DF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 18:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbiIVQcY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Sep 2022 12:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
+        id S230498AbiIVQzn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Sep 2022 12:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232127AbiIVQb6 (ORCPT
+        with ESMTP id S229729AbiIVQzm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Sep 2022 12:31:58 -0400
+        Thu, 22 Sep 2022 12:55:42 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BFEE8DBA
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 09:31:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3FC7EB139
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 09:55:40 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 809081F920;
-        Thu, 22 Sep 2022 16:31:16 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 59C041F91F;
+        Thu, 22 Sep 2022 16:55:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1663864276;
+        t=1663865739;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=WtNOyWaVGOe0/INfHF+PjXsTxITXabsm/TCA9MZAey8=;
-        b=VyiI1RkoDaG/MPD+ULMmlOVCCcJnOs9Ga49ilMdCIzQbXR6U7GUVLCF+f7PSxK7QZCUIOY
-        jQCAKvpSSnbHEY1h4a2LGbUHB35Vk7CppR8FkzlYbuV7yXOiXhGvxS2rz0rChHYW5B8KeG
-        eS3yV5v5ztBgFoihw7wrf/vgS+PJe4Y=
+        bh=4NUKlsGcrlFyvYHtP9dZOsFT9dvWM1kmxOsEdvZTh1k=;
+        b=obcRT4YrJXfwfL/oeOMrt8RG1iCc9fEy0lIVYAG0t9l8NHX2rtmdsk0UmLW0Pu0hpI9JsT
+        Hn5pOncPvMv0H3XZYdFQkgJTp/wSjC9xzA7SkqRyAzyR++3V9vZ8kwFyYCL/cH7OSCirqF
+        NIW4R3gTAwFmCSZjLRzMKexr/PHPOXk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1663864276;
+        s=susede2_ed25519; t=1663865739;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=WtNOyWaVGOe0/INfHF+PjXsTxITXabsm/TCA9MZAey8=;
-        b=LJP9M6eF2z2YaCZSx5dSZ6tWff96Nt7Bj3Xm+/EHoXxyUaMI28YwiK3vDXw9HhWRvK+7F/
-        mzWdOTbWSwY1vtCA==
+        bh=4NUKlsGcrlFyvYHtP9dZOsFT9dvWM1kmxOsEdvZTh1k=;
+        b=B/vZmyKzjAUgZ8TTFOq9o4YK30AVDEM+H1e9EhzO6Rj9lcl8NbKK4HO/sivGMGFjjkb/Mv
+        HEol4/6Zf69lveAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 59F0D13AA5;
-        Thu, 22 Sep 2022 16:31:16 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1D46113AF0;
+        Thu, 22 Sep 2022 16:55:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id P1YlFdSNLGPmSQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 22 Sep 2022 16:31:16 +0000
-Date:   Thu, 22 Sep 2022 18:25:44 +0200
+        id U2Z3BYuTLGMwUwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 22 Sep 2022 16:55:39 +0000
+Date:   Thu, 22 Sep 2022 18:50:07 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 00/13] btrfs: fixes and cleanups around extent maps
-Message-ID: <20220922162543.GM32411@twin.jikos.cz>
+To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        syzbot <syzbot+fba8e2116a12609b6c59@syzkaller.appspotmail.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        Alexander Potapenko <glider@google.com>
+Subject: Re: [PATCH v2] btrfs: Call btrfs_set_header_generation() before
+ btrfs_clean_tree_block()
+Message-ID: <20220922165007.GN32411@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1663594828.git.fdmanana@suse.com>
+References: <000000000000a4618905d1361d3e@google.com>
+ <062d63c8-39bf-62d8-4562-625184e97b6c@I-love.SAKURA.ne.jp>
+ <PH0PR04MB74161B62751B7D8EDB3965719B4C9@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <112cdf17-374f-fdc5-58ae-d8db3f695ac4@I-love.SAKURA.ne.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1663594828.git.fdmanana@suse.com>
+In-Reply-To: <112cdf17-374f-fdc5-58ae-d8db3f695ac4@I-love.SAKURA.ne.jp>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -71,32 +82,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 19, 2022 at 03:06:27PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Tue, Sep 20, 2022 at 10:43:51PM +0900, Tetsuo Handa wrote:
+> syzbot is reporting uninit-value in btrfs_clean_tree_block() [1], for
+> commit bc877d285ca3dba2 ("btrfs: Deduplicate extent_buffer init code")
+> missed that btrfs_set_header_generation() in btrfs_init_new_buffer() must
+> not be moved to after clean_tree_block() because clean_tree_block() is
+> calling btrfs_header_generation() since commit 55c69072d6bd5be1 ("Btrfs:
+> Fix extent_buffer usage when nodesize != leafsize").
 > 
-> The following patchset fixes a bug related to dropping extent maps that
-> can make an fsync miss a new extent, does several cleanups and some
-> small performance improvements when dropping and searching for extent
-> maps as well as when flushing delalloc in COW mode. These came out while
-> working on some upcoming changes for fiemap, but since they are really
-> independent, I'm sending them as a separate patchset.
-> The last patch in the series has a test and results in its changelog.
+> Since memzero_extent_buffer() will reset "struct btrfs_header" part, we
+> can't move btrfs_set_header_generation() to before memzero_extent_buffer().
+> Just re-add btrfs_set_header_generation() before btrfs_clean_tree_block().
 > 
-> Filipe Manana (13):
->   btrfs: fix missed extent on fsync after dropping extent maps
->   btrfs: move btrfs_drop_extent_cache() to extent_map.c
->   btrfs: use extent_map_end() at btrfs_drop_extent_map_range()
->   btrfs: use cond_resched_rwlock_write() during inode eviction
->   btrfs: move open coded extent map tree deletion out of inode eviction
->   btrfs: add helper to replace extent map range with a new extent map
->   btrfs: remove the refcount warning/check at free_extent_map()
->   btrfs: remove unnecessary extent map initializations
->   btrfs: assert tree is locked when clearing extent map from logging
->   btrfs: remove unnecessary NULL pointer checks when searching extent maps
->   btrfs: remove unnecessary next extent map search
->   btrfs: avoid pointless extent map tree search when flushing delalloc
->   btrfs: drop extent map range more efficiently
+> Link: https://syzkaller.appspot.com/bug?extid=fba8e2116a12609b6c59 [1]
+> Reported-by: syzbot <syzbot+fba8e2116a12609b6c59@syzkaller.appspotmail.com>
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Fixes: bc877d285ca3dba2 ("btrfs: Deduplicate extent_buffer init code")
 
-Added to misc-next, namely for the first fix but the cleanups seem safe
-and the last patch with the performance improvement will be another one
-for the 6.1. Thanks.
+Added to misc-next, thanks.
