@@ -2,449 +2,177 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8545E56EB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 02:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0B75E56EC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 02:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbiIVAHF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Sep 2022 20:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        id S229815AbiIVAHH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Sep 2022 20:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbiIVAHE (ORCPT
+        with ESMTP id S229729AbiIVAHG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Sep 2022 20:07:04 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9827A2A88
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 17:07:02 -0700 (PDT)
+        Wed, 21 Sep 2022 20:07:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719DE9E8B2
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 17:07:05 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E2D171F8E5
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:07:00 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 25B7C1F8F6
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:07:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1663805220; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1663805224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hEleyZJh1pmViadQ9BLsSu8Vh9EGtsnJPg1+fXHC8tU=;
-        b=Djm1gR4vCnV7hkUpL3Po5BS0Q/8EuXAxmMXt3egres5AzTo905Jbe7vwObNBuljz+umXC/
-        PrfbrMrzbJKs3Zln7LtiArGk4guDf97XcgynfcwfFigoLK1upecF4swMBOC9bgUQVNRbjV
-        /XsYepm7WXie7cF9gc/EYvw/TA3ovek=
+        bh=6519V8MkZF/lQzAa9fG4uCE0DV/VyadgrV9Q9xOgRO8=;
+        b=uSdhG8ExnyWqigHYqtT1bHYzvGQW/1p2nggbshA2gBhGPH3OtASzgqRO6zpVoCQtatLj8t
+        crzPuwX0R79ky/qmqb/4tDF8sjbSzqIqDbGOLqgBLfWliCozL6USHzTOpISW8q2IUuAHXQ
+        QUK4K5jhOYpH/zemtjr52xGfFSacUuA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD9DE139EF
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:06:56 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6AFD2139EF
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:07:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id oHaFIiCnK2O1LwAAMHmgww
+        id aL5WCiWnK2O1LwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:06:56 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:07:01 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 01/16] btrfs: make btrfs module init/exit match their sequence
-Date:   Thu, 22 Sep 2022 08:06:18 +0800
-Message-Id: <89b4afac6540d437d17c9f616f0cf49980c30bcd.1663804335.git.wqu@suse.com>
+Subject: [PATCH 02/16] btrfs: initialize fs_info->sb at the very beginning of open_ctree()
+Date:   Thu, 22 Sep 2022 08:06:19 +0800
+Message-Id: <45a33eb2400d94376840d8330f2492fb33f3800b.1663804335.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1663804335.git.wqu@suse.com>
 References: <cover.1663804335.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BACKGROUND]
-In theory init_btrfs_fs() and exit_btrfs_fs() should match their
-sequence, thus normally they should look like this:
+Currently at open_ctree(), sb->s_fs_info is already initialized to the
+fs_info we want.
 
-    init_btrfs_fs()   |   exit_btrfs_fs()
-----------------------+------------------------
-    init_A();         |
-    init_B();         |
-    init_C();         |
-                      |   exit_C();
-                      |   exit_B();
-                      |   exit_A();
+On the other hand, fs_info->sb is not initialized until
+init_mount_fs_info().
 
-So is for the error path of init_btrfs_fs().
+This patch will initialize fs_info->sb at the very beginning of
+open_ctree(), so later code can use fs_info->sb to grab the super block.
 
-But it's not the case, some exit functions don't match their init
-functions sequence in init_btrfs_fs().
-
-Furthermore in init_btrfs_fs(), we need to have a new error tag for each
-new init function we added.
-This is not really expandable, especially recently we may add several
-new functions to init_btrfs_fs().
-
-[ENHANCEMENT]
-The patch will introduce the following things to enhance the situation:
-
-- struct init_sequence
-  Just a wrapper of init and exit function pointers.
-
-  The init function must use int type as return value, thus some init
-  functions need to be updated to return 0.
-
-  The exit function can be NULL, as there are some init sequence just
-  outputting a message.
-
-- struct mod_init_seq[] array
-  This is a const array, recording all the initialization we need to do
-  in init_btrfs_fs(), and the order follows the old init_btrfs_fs().
-
-  Only one modification in the order, now we call btrfs_print_mod_info()
-  after sanity checks.
-  As it makes no sense to print the mod into, and fail the sanity tests.
-
-- bool mod_init_result[] array
-  This is a bool array, recording if we have initialized one entry in
-  mod_init_seq[].
-
-  The reason to split mod_init_seq[] and mod_init_result[] is to avoid
-  section mismatch in reference.
-
-  All init function are in .init.text, but if mod_init_seq[] records
-  the @initialized member it can no longer be const, thus will be put
-  into .data section, and cause modpost warning.
-
-For init_btrfs_fs() we just call all init functions in their order in
-mod_init_seq[] array, and after each call, setting corresponding
-mod_init_result[] to true.
-
-For exit_btrfs_fs() and error handling path of init_btrfs_fs(), we just
-iterate mod_init_seq[] in reverse order, and skip all uninitialized
-entry.
-
-With this patch, init_btrfs_fs()/exit_btrfs_fs() will be much easier to
-expand and will always follow the strict order.
+This does not only remove the @sb parameter for init_mount_fs_info(),
+but also provides the basis for later open_ctree() refactor which
+requires everything to be accessible from a single @fs_info pointer.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
-RFC->v1:
-- Change the mod_init_seq[] array to static const
----
- fs/btrfs/compression.c |   3 +-
- fs/btrfs/compression.h |   2 +-
- fs/btrfs/props.c       |   3 +-
- fs/btrfs/props.h       |   2 +-
- fs/btrfs/super.c       | 211 +++++++++++++++++++++--------------------
- 5 files changed, 113 insertions(+), 108 deletions(-)
+ fs/btrfs/disk-io.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 54caa00a2245..8d3e3218fe37 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -1232,12 +1232,13 @@ int btrfs_decompress(int type, unsigned char *data_in, struct page *dest_page,
- 	return ret;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index a887fe67a2a0..c4a8e684ee53 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3096,13 +3096,12 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
+ 	INIT_WORK(&fs_info->reclaim_bgs_work, btrfs_reclaim_bgs_work);
  }
  
--void __init btrfs_init_compress(void)
-+int __init btrfs_init_compress(void)
+-static int init_mount_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
++static int init_mount_fs_info(struct btrfs_fs_info *fs_info)
  {
- 	btrfs_init_workspace_manager(BTRFS_COMPRESS_NONE);
- 	btrfs_init_workspace_manager(BTRFS_COMPRESS_ZLIB);
- 	btrfs_init_workspace_manager(BTRFS_COMPRESS_LZO);
- 	zstd_init_workspace_manager();
-+	return 0;
- }
+ 	int ret;
  
- void __cold btrfs_exit_compress(void)
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 1aa02903de69..9da2343eeff5 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -77,7 +77,7 @@ static inline unsigned int btrfs_compress_level(unsigned int type_level)
- 	return ((type_level & 0xF0) >> 4);
- }
+-	fs_info->sb = sb;
+-	sb->s_blocksize = BTRFS_BDEV_BLOCKSIZE;
+-	sb->s_blocksize_bits = blksize_bits(BTRFS_BDEV_BLOCKSIZE);
++	fs_info->sb->s_blocksize = BTRFS_BDEV_BLOCKSIZE;
++	fs_info->sb->s_blocksize_bits = blksize_bits(BTRFS_BDEV_BLOCKSIZE);
  
--void __init btrfs_init_compress(void);
-+int __init btrfs_init_compress(void);
- void __cold btrfs_exit_compress(void);
+ 	ret = percpu_counter_init(&fs_info->ordered_bytes, 0, GFP_KERNEL);
+ 	if (ret)
+@@ -3130,7 +3129,7 @@ static int init_mount_fs_info(struct btrfs_fs_info *fs_info, struct super_block
+ 		return -ENOMEM;
+ 	btrfs_init_delayed_root(fs_info->delayed_root);
  
- int btrfs_compress_pages(unsigned int type_level, struct address_space *mapping,
-diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
-index 055a631276ce..abee92eb1ed6 100644
---- a/fs/btrfs/props.c
-+++ b/fs/btrfs/props.c
-@@ -453,7 +453,7 @@ int btrfs_inode_inherit_props(struct btrfs_trans_handle *trans,
- 	return 0;
- }
+-	if (sb_rdonly(sb))
++	if (sb_rdonly(fs_info->sb))
+ 		set_bit(BTRFS_FS_STATE_RO, &fs_info->fs_state);
  
--void __init btrfs_props_init(void)
-+int __init btrfs_props_init(void)
- {
- 	int i;
+ 	return btrfs_alloc_stripe_hash_table(fs_info);
+@@ -3308,7 +3307,9 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	int err = -EINVAL;
+ 	int level;
  
-@@ -463,5 +463,6 @@ void __init btrfs_props_init(void)
- 
- 		hash_add(prop_handlers_ht, &p->node, h);
- 	}
-+	return 0;
- }
- 
-diff --git a/fs/btrfs/props.h b/fs/btrfs/props.h
-index ca9dd3df129b..6e283196e38a 100644
---- a/fs/btrfs/props.h
-+++ b/fs/btrfs/props.h
-@@ -8,7 +8,7 @@
- 
- #include "ctree.h"
- 
--void __init btrfs_props_init(void);
-+int __init btrfs_props_init(void);
- 
- int btrfs_set_prop(struct btrfs_trans_handle *trans, struct inode *inode,
- 		   const char *name, const char *value, size_t value_len,
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index be7df8d1d5b8..79dae3b0ff91 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2691,7 +2691,7 @@ static __cold void btrfs_interface_exit(void)
- 	misc_deregister(&btrfs_misc);
- }
- 
--static void __init btrfs_print_mod_info(void)
-+static int __init btrfs_print_mod_info(void)
- {
- 	static const char options[] = ""
- #ifdef CONFIG_BTRFS_DEBUG
-@@ -2718,122 +2718,125 @@ static void __init btrfs_print_mod_info(void)
- #endif
- 			;
- 	pr_info("Btrfs loaded, crc32c=%s%s\n", crc32c_impl(), options);
-+	return 0;
- }
- 
--static int __init init_btrfs_fs(void)
-+static int register_btrfs(void)
- {
--	int err;
--
--	btrfs_props_init();
--
--	err = btrfs_init_sysfs();
--	if (err)
--		return err;
--
--	btrfs_init_compress();
--
--	err = btrfs_init_cachep();
--	if (err)
--		goto free_compress;
--
--	err = extent_state_init_cachep();
--	if (err)
--		goto free_cachep;
--
--	err = extent_buffer_init_cachep();
--	if (err)
--		goto free_extent_cachep;
--
--	err = btrfs_bioset_init();
--	if (err)
--		goto free_eb_cachep;
--
--	err = extent_map_init();
--	if (err)
--		goto free_bioset;
--
--	err = ordered_data_init();
--	if (err)
--		goto free_extent_map;
--
--	err = btrfs_delayed_inode_init();
--	if (err)
--		goto free_ordered_data;
--
--	err = btrfs_auto_defrag_init();
--	if (err)
--		goto free_delayed_inode;
-+	return register_filesystem(&btrfs_fs_type);
-+}
-+static void unregister_btrfs(void)
-+{
-+	unregister_filesystem(&btrfs_fs_type);
-+}
- 
--	err = btrfs_delayed_ref_init();
--	if (err)
--		goto free_auto_defrag;
-+/* Helper structure for long init/exit functions. */
-+struct init_sequence {
-+	int (*init_func)(void);
- 
--	err = btrfs_prelim_ref_init();
--	if (err)
--		goto free_delayed_ref;
-+	/* Can be NULL if the init_func doesn't need cleanup. */
-+	void (*exit_func)(void);
-+};
- 
--	err = btrfs_interface_init();
--	if (err)
--		goto free_prelim_ref;
-+static const struct init_sequence mod_init_seq[] = {
-+	{
-+		.init_func = btrfs_props_init,
-+		.exit_func = NULL,
-+	}, {
-+		.init_func = btrfs_init_sysfs,
-+		.exit_func = btrfs_exit_sysfs,
-+	}, {
-+		.init_func = btrfs_init_compress,
-+		.exit_func = btrfs_exit_compress,
-+	}, {
-+		.init_func = btrfs_init_cachep,
-+		.exit_func = btrfs_destroy_cachep,
-+	}, {
-+		.init_func = extent_state_init_cachep,
-+		.exit_func = extent_state_free_cachep,
-+	}, {
-+		.init_func = extent_buffer_init_cachep,
-+		.exit_func = extent_buffer_free_cachep,
-+	}, {
-+		.init_func = btrfs_bioset_init,
-+		.exit_func = btrfs_bioset_exit,
-+	}, {
-+		.init_func = extent_map_init,
-+		.exit_func = extent_map_exit,
-+	}, {
-+		.init_func = ordered_data_init,
-+		.exit_func = ordered_data_exit,
-+	}, {
-+		.init_func = btrfs_delayed_inode_init,
-+		.exit_func = btrfs_delayed_inode_exit,
-+	}, {
-+		.init_func = btrfs_auto_defrag_init,
-+		.exit_func = btrfs_auto_defrag_exit,
-+	}, {
-+		.init_func = btrfs_delayed_ref_init,
-+		.exit_func = btrfs_delayed_ref_exit,
-+	}, {
-+		.init_func = btrfs_prelim_ref_init,
-+		.exit_func = btrfs_prelim_ref_exit,
-+	}, {
-+		.init_func = btrfs_interface_init,
-+		.exit_func = btrfs_interface_exit,
-+	}, {
-+		.init_func = btrfs_run_sanity_tests,
-+		.exit_func = NULL,
-+	}, {
-+		.init_func = btrfs_print_mod_info,
-+		.exit_func = NULL,
-+	}, {
-+		.init_func = register_btrfs,
-+		.exit_func = unregister_btrfs,
-+	}
-+};
- 
--	btrfs_print_mod_info();
-+static bool mod_init_result[ARRAY_SIZE(mod_init_seq)];
- 
--	err = btrfs_run_sanity_tests();
--	if (err)
--		goto unregister_ioctl;
-+static void __exit exit_btrfs_fs(void)
-+{
-+	int i;
- 
--	err = register_filesystem(&btrfs_fs_type);
--	if (err)
--		goto unregister_ioctl;
-+	for (i = ARRAY_SIZE(mod_init_seq) - 1; i >= 0; i--) {
-+		if (!mod_init_result[i])
-+			continue;
-+		if (mod_init_seq[i].exit_func)
-+			mod_init_seq[i].exit_func();
-+		mod_init_result[i] = false;
-+	}
-+}
- 
-+static int __init init_btrfs_fs(void)
-+{
-+	int ret;
-+	int i;
+-	ret = init_mount_fs_info(fs_info, sb);
++	fs_info->sb = sb;
 +
-+	for (i = 0; i < ARRAY_SIZE(mod_init_seq); i++) {
-+		ASSERT(!mod_init_result[i]);
-+		ret = mod_init_seq[i].init_func();
-+		if (ret < 0)
-+			goto error;
-+		mod_init_result[i] = true;
-+	}
- 	return 0;
++	ret = init_mount_fs_info(fs_info);
+ 	if (ret) {
+ 		err = ret;
+ 		goto fail;
+@@ -3326,7 +3327,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		goto fail;
+ 	}
  
--unregister_ioctl:
--	btrfs_interface_exit();
--free_prelim_ref:
--	btrfs_prelim_ref_exit();
--free_delayed_ref:
--	btrfs_delayed_ref_exit();
--free_auto_defrag:
--	btrfs_auto_defrag_exit();
--free_delayed_inode:
--	btrfs_delayed_inode_exit();
--free_ordered_data:
--	ordered_data_exit();
--free_extent_map:
--	extent_map_exit();
--free_bioset:
--	btrfs_bioset_exit();
--free_eb_cachep:
--	extent_buffer_free_cachep();
--free_extent_cachep:
--	extent_state_free_cachep();
--free_cachep:
--	btrfs_destroy_cachep();
--free_compress:
--	btrfs_exit_compress();
--	btrfs_exit_sysfs();
--
--	return err;
--}
-+error:
-+	/*
-+	 * If we call exit_btrfs_fs() it would cause section mismatch.
-+	 * As init_btrfs_fs() belongs to .init.text, while exit_btrfs_fs()
-+	 * belongs to .exit.text.
-+	 */
-+	for (i = ARRAY_SIZE(mod_init_seq) - 1; i >= 0; i--) {
-+		if (!mod_init_result[i])
-+			continue;
-+		if (mod_init_seq[i].exit_func)
-+			mod_init_seq[i].exit_func();
-+		mod_init_result[i] = false;
-+	}
-+	return ret;
+-	fs_info->btree_inode = new_inode(sb);
++	fs_info->btree_inode = new_inode(fs_info->sb);
+ 	if (!fs_info->btree_inode) {
+ 		err = -ENOMEM;
+ 		goto fail;
+@@ -3434,7 +3435,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	fs_info->csums_per_leaf = BTRFS_MAX_ITEM_SIZE(fs_info) / fs_info->csum_size;
+ 	fs_info->stripesize = stripesize;
  
--static void __exit exit_btrfs_fs(void)
--{
--	btrfs_destroy_cachep();
--	btrfs_delayed_ref_exit();
--	btrfs_auto_defrag_exit();
--	btrfs_delayed_inode_exit();
--	btrfs_prelim_ref_exit();
--	ordered_data_exit();
--	extent_map_exit();
--	btrfs_bioset_exit();
--	extent_state_free_cachep();
--	extent_buffer_free_cachep();
--	btrfs_interface_exit();
--	unregister_filesystem(&btrfs_fs_type);
--	btrfs_exit_sysfs();
--	btrfs_cleanup_fs_uuids();
--	btrfs_exit_compress();
- }
+-	ret = btrfs_parse_options(fs_info, options, sb->s_flags);
++	ret = btrfs_parse_options(fs_info, options, fs_info->sb->s_flags);
+ 	if (ret) {
+ 		err = ret;
+ 		goto fail_alloc;
+@@ -3484,7 +3485,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
  
- late_initcall(init_btrfs_fs);
+ 	features = btrfs_super_compat_ro_flags(disk_super) &
+ 		~BTRFS_FEATURE_COMPAT_RO_SUPP;
+-	if (!sb_rdonly(sb) && features) {
++	if (!sb_rdonly(fs_info->sb) && features) {
+ 		btrfs_err(fs_info,
+ 	"cannot mount read-write because of unsupported optional features (0x%llx)",
+ 		       features);
+@@ -3536,12 +3537,12 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		goto fail_sb_buffer;
+ 	}
+ 
+-	sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
+-	sb->s_bdi->ra_pages = max(sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
++	fs_info->sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
++	fs_info->sb->s_bdi->ra_pages = max(fs_info->sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
+ 
+-	sb->s_blocksize = sectorsize;
+-	sb->s_blocksize_bits = blksize_bits(sectorsize);
+-	memcpy(&sb->s_uuid, fs_info->fs_devices->fsid, BTRFS_FSID_SIZE);
++	fs_info->sb->s_blocksize = sectorsize;
++	fs_info->sb->s_blocksize_bits = blksize_bits(sectorsize);
++	memcpy(&fs_info->sb->s_uuid, fs_info->fs_devices->fsid, BTRFS_FSID_SIZE);
+ 
+ 	mutex_lock(&fs_info->chunk_mutex);
+ 	ret = btrfs_read_sys_array(fs_info);
+@@ -3738,7 +3739,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		goto fail_qgroup;
+ 	}
+ 
+-	if (sb_rdonly(sb))
++	if (sb_rdonly(fs_info->sb))
+ 		goto clear_oneshot;
+ 
+ 	ret = btrfs_start_pre_rw_mount(fs_info);
 -- 
 2.37.3
 
