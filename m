@@ -2,176 +2,265 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0175E5FAE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 12:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6535E60A2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 13:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbiIVKS2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Sep 2022 06:18:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34442 "EHLO
+        id S231423AbiIVLNB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Sep 2022 07:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbiIVKS1 (ORCPT
+        with ESMTP id S231486AbiIVLMx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Sep 2022 06:18:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70697DC127;
-        Thu, 22 Sep 2022 03:18:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CCA062B00;
-        Thu, 22 Sep 2022 10:18:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35CF4C433C1;
-        Thu, 22 Sep 2022 10:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663841905;
-        bh=unHNLjgsxiDp0S08RPmDJfG3btH8Okc+VlSD5IufLJI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=M1OQe0cNsUxh7Q+Z8ii8q5aOdDgyIr1XG8dnke5SmJWCwHFnkij36gn/docRxA4yM
-         MuSoMVc/vYqYek/J5ljXykCsW/Yt2ds9nyIixqYhufxTMhY6oJxNVFkoWFncYeK0m3
-         B/nJNnHLSEQTDexJE9j9Vb3wh8FEM9lYjwpjP2gyi9PXGutwpEZWhrE3k508Za1OgR
-         LZ40Tq/pBypLlYOgS1YZq0P5n9qlmjmKTHq0R5Mvvb+Y1DgbfstiLRyhIFCk4NhAXp
-         9g4LRA9fYfU87UeWRmcF5b0izvQ9a6mwlwm75HPt8ZDaOPLnhtBnw+emqSPML4Jk0r
-         GZZonnTYPze8Q==
-Message-ID: <e04e349170bc227b330556556d0592a53692b5b5.camel@kernel.org>
-Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
- STATX_INO_VERSION field
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, NeilBrown <neilb@suse.de>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "lczerner@redhat.com" <lczerner@redhat.com>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Date:   Thu, 22 Sep 2022 06:18:21 -0400
-In-Reply-To: <20220921214124.GS3600936@dread.disaster.area>
-References: <166328063547.15759.12797959071252871549@noble.neil.brown.name>
-         <YyQdmLpiAMvl5EkU@mit.edu>
-         <7027d1c2923053fe763e9218d10ce8634b56e81d.camel@kernel.org>
-         <24005713ad25370d64ab5bd0db0b2e4fcb902c1c.camel@kernel.org>
-         <20220918235344.GH3600936@dread.disaster.area>
-         <87fb43b117472c0a4c688c37a925ac51738c8826.camel@kernel.org>
-         <20220920001645.GN3600936@dread.disaster.area>
-         <5832424c328ea427b5c6ecdaa6dd53f3b99c20a0.camel@kernel.org>
-         <20220921000032.GR3600936@dread.disaster.area>
-         <93b6d9f7cf997245bb68409eeb195f9400e55cd0.camel@kernel.org>
-         <20220921214124.GS3600936@dread.disaster.area>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        Thu, 22 Sep 2022 07:12:53 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CB775CC3;
+        Thu, 22 Sep 2022 04:12:34 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id q15-20020a17090a304f00b002002ac83485so1804462pjl.0;
+        Thu, 22 Sep 2022 04:12:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=RZ+48UnAa8eecJxdZq6BiMyqwT/Ym9f2NYlp6Dy1smw=;
+        b=G+jaEnK2EsNrSXni7xo2A5prc1siifdzoFue4z79INVmISHoJzmEC9GR9nYFQgsDIb
+         I+dMTg2A+izoX3axTWSo/iYs6MjIzCmcdzB7dXax8chtAJiUZBX99VUNdhdppKGneXWq
+         kYGXC1GYOzs1VjWq4+vqWobAy7LlMsBZFdMkrUYk942Mo7xIHHo97tyiWe9mlgU2Ni4u
+         sX/UfkevtZ8mMh6n5HaMsQp+ivfAaex3bVTBLEN+6BskHMGics2YtdYw6Rq+h1kBbGkY
+         geXieByTrSvc7tahia6awNomWGRXvkXfKN0rMilgYg11CJ2HrHEklB8Oi0KpiF2sgY/f
+         QqoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=RZ+48UnAa8eecJxdZq6BiMyqwT/Ym9f2NYlp6Dy1smw=;
+        b=NylJybG90Qv8xOglTOtx+WPSbBNyCIXbU9gRbjBTPrUmf7AkqGHImkZSe3jryaFhh0
+         Yk7lnODz4uXMNE7xVyDO7ZdvgX7usNZaEjOJcGbceNGQCI28iHdk/Kl6R5ntPb5dGHw7
+         BL2vFkj5bMCv0btE3qtEo10Y5Jg544tYtHtJz96Ok8rOumvS953z/4AuticIGJPyN0RZ
+         WaxJ0DjnrqlzkL/01K8BSlKW69sa7aHarXZI1fN8zDO2u+RmT4dYRDhTF6Z4XwVU/foU
+         N9vr5NZlROodyKingUo+4340frmAuu944QEkW0BmjKM3v5nPUCIDrLHgyetLv8WOzKOU
+         2zLw==
+X-Gm-Message-State: ACrzQf04IIF0dgKFBM9RT7CutuW8K4zPjFkDyI5uv3JS9JePB1j5Ym8G
+        NWGWVZG+NLVwEFZSz+7fL5E=
+X-Google-Smtp-Source: AMsMyM71qTO+0u9YewSNaiOe7OR50cbfyQkUWC6xIKoR/xE2vrqrOeMi/1IfaO5sjL4VCWr3VgDTkw==
+X-Received: by 2002:a17:90a:e513:b0:200:2275:2d27 with SMTP id t19-20020a17090ae51300b0020022752d27mr3211649pjy.162.1663845152925;
+        Thu, 22 Sep 2022 04:12:32 -0700 (PDT)
+Received: from hyeyoo ([114.29.91.56])
+        by smtp.gmail.com with ESMTPSA id p189-20020a62d0c6000000b00541196bd2d9sm4098278pfg.68.2022.09.22.04.12.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Sep 2022 04:12:32 -0700 (PDT)
+Date:   Thu, 22 Sep 2022 20:12:21 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Pekka Enberg <penberg@kernel.org>,
+        Feng Tang <feng.tang@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alex Elder <elder@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Yonghong Song <yhs@fb.com>, Marco Elver <elver@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Jacob Shin <jacob.shin@amd.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, dev@openvswitch.org,
+        x86@kernel.org, linux-wireless@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 01/12] slab: Introduce kmalloc_size_roundup()
+Message-ID: <YyxDFfKmSNNkHBFi@hyeyoo>
+References: <20220922031013.2150682-1-keescook@chromium.org>
+ <20220922031013.2150682-2-keescook@chromium.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220922031013.2150682-2-keescook@chromium.org>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 2022-09-22 at 07:41 +1000, Dave Chinner wrote:
-> On Wed, Sep 21, 2022 at 06:33:28AM -0400, Jeff Layton wrote:
-> > On Wed, 2022-09-21 at 10:00 +1000, Dave Chinner wrote:
-> > > > How do we determine what that offset should be? Your last email
-> > > > suggested that there really is no limit to the number of i_version =
-bumps
-> > > > that can happen in memory before one of them makes it to disk. What=
- can
-> > > > we do to address that?
-> > >=20
-> > > <shrug>
-> > >=20
-> > > I'm just pointing out problems I see when defining this as behaviour
-> > > for on-disk format purposes. If we define it as part of the on-disk
-> > > format, then we have to be concerned about how it may be used
-> > > outside the scope of just the NFS server application.=20
-> > >=20
-> > > However, If NFS keeps this metadata and functionaly entirely
-> > > contained at the application level via xattrs, I really don't care
-> > > what algorithm NFS developers decides to use for their crash
-> > > sequencing. It's not my concern at this point, and that's precisely
-> > > why NFS should be using xattrs for this NFS specific functionality.
-> > >=20
-> >=20
-> > I get it: you'd rather not have to deal with what you see as an NFS
-> > problem, but I don't get how what you're proposing solves anything. We
-> > might be able to use that scheme to detect crashes, but that's only par=
-t
-> > of the problem (and it's a relatively simple part of the problem to
-> > solve, really).
-> >=20
-> > Maybe you can clarify it for me:
-> >=20
-> > Suppose we go with what you're saying and store some information in
-> > xattrs that allows us to detect crashes in some fashion. The server
-> > crashes and comes back up and we detect that there was a crash earlier.
-> >=20
-> > What does nfsd need to do now to ensure that it doesn't hand out a
-> > duplicate change attribute?=20
->=20
-> As I've already stated, the NFS server can hold the persistent NFS
-> crash counter value in a second xattr that it bumps whenever it
-> detects a crash and hence we take the local filesystem completely
-> out of the equation.  How the crash counter is then used by the nfsd
-> to fold it into the NFS protocol change attribute is a nfsd problem,
-> not a local filesystem problem.
->=20
+On Wed, Sep 21, 2022 at 08:10:02PM -0700, Kees Cook wrote:
+> In the effort to help the compiler reason about buffer sizes, the
+> __alloc_size attribute was added to allocators. This improves the scope
+> of the compiler's ability to apply CONFIG_UBSAN_BOUNDS and (in the near
+> future) CONFIG_FORTIFY_SOURCE. For most allocations, this works well,
+> as the vast majority of callers are not expecting to use more memory
+> than what they asked for.
+> 
+> There is, however, one common exception to this: anticipatory resizing
+> of kmalloc allocations. These cases all use ksize() to determine the
+> actual bucket size of a given allocation (e.g. 128 when 126 was asked
+> for). This comes in two styles in the kernel:
+> 
+> 1) An allocation has been determined to be too small, and needs to be
+>    resized. Instead of the caller choosing its own next best size, it
+>    wants to minimize the number of calls to krealloc(), so it just uses
+>    ksize() plus some additional bytes, forcing the realloc into the next
+>    bucket size, from which it can learn how large it is now. For example:
+> 
+> 	data = krealloc(data, ksize(data) + 1, gfp);
+> 	data_len = ksize(data);
+> 
+> 2) The minimum size of an allocation is calculated, but since it may
+>    grow in the future, just use all the space available in the chosen
+>    bucket immediately, to avoid needing to reallocate later. A good
+>    example of this is skbuff's allocators:
+> 
+> 	data = kmalloc_reserve(size, gfp_mask, node, &pfmemalloc);
+> 	...
+> 	/* kmalloc(size) might give us more room than requested.
+> 	 * Put skb_shared_info exactly at the end of allocated zone,
+> 	 * to allow max possible filling before reallocation.
+> 	 */
+> 	osize = ksize(data);
+>         size = SKB_WITH_OVERHEAD(osize);
+> 
+> In both cases, the "how large is the allocation?" question is answered
+> _after_ the allocation, where the compiler hinting is not in an easy place
+> to make the association any more. This mismatch between the compiler's
+> view of the buffer length and the code's intention about how much it is
+> going to actually use has already caused problems[1]. It is possible to
+> fix this by reordering the use of the "actual size" information.
+> 
+> We can serve the needs of users of ksize() and still have accurate buffer
+> length hinting for the compiler by doing the bucket size calculation
+> _before_ the allocation. Code can instead ask "how large an allocation
+> would I get for a given size?".
+> 
+> Introduce kmalloc_size_roundup(), to serve this function so we can start
+> replacing the "anticipatory resizing" uses of ksize().
+>
 
-Ok, assuming you mean put this in an xattr that lives at the root of the
-export? We only need this for IS_I_VERSION filesystems (btrfs, xfs, and
-ext4), and they all support xattrs so this scheme should work.
+Cc-ing Feng Tang who may welcome this series ;)
 
-> If you're worried about maximum number of writes outstanding vs
-> i_version bumps that are held in memory, then *bound the maximum
-> number of uncommitted i_version changes that the NFS server will
-> allow to build up in memory*. By moving the crash counter to being a
-> NFS server only function, the NFS server controls the entire
-> algorithm and it doesn't have to care about external 3rd party
-> considerations like local filesystems have to.
->=20
+> [1] https://github.com/ClangBuiltLinux/linux/issues/1599
+>     https://github.com/KSPP/linux/issues/183
+> 
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Pekka Enberg <penberg@kernel.org>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  include/linux/slab.h | 31 +++++++++++++++++++++++++++++++
+>  mm/slab_common.c     | 17 +++++++++++++++++
+>  2 files changed, 48 insertions(+)
+> 
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 0fefdf528e0d..4fc41e4ed4a2 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -188,7 +188,21 @@ void * __must_check krealloc(const void *objp, size_t new_size, gfp_t flags) __a
+>  void kfree(const void *objp);
+>  void kfree_sensitive(const void *objp);
+>  size_t __ksize(const void *objp);
+> +
+> +/**
+> + * ksize - Report actual allocation size of associated object
+> + *
+> + * @objp: Pointer returned from a prior kmalloc()-family allocation.
+> + *
+> + * This should not be used for writing beyond the originally requested
+> + * allocation size. Either use krealloc() or round up the allocation size
+> + * with kmalloc_size_roundup() prior to allocation. If this is used to
+> + * access beyond the originally requested allocation size, UBSAN_BOUNDS
+> + * and/or FORTIFY_SOURCE may trip, since they only know about the
+> + * originally allocated size via the __alloc_size attribute.
+> + */
+>  size_t ksize(const void *objp);
 
-Yeah, this is the bigger consideration.
+When users call ksize(), slab expects that it may access
+beyond the originally requested allocation size.
 
-> e.g. The NFS server can track the i_version values when the NFSD
-> syncs/commits a given inode. The nfsd can sample i_version it when
-> calls ->commit_metadata or flushed data on the inode, and then when
-> it peeks at i_version when gathering post-op attrs (or any other
-> getattr op) it can decide that there is too much in-memory change
-> (e.g. 10,000 counts since last sync) and sync the inode.
->=20
-> i.e. the NFS server can trivially cap the maximum number of
-> uncommitted NFS change attr bumps it allows to build up in memory.
-> At that point, the NFS server has a bound "maximum write count" that
-> can be used in conjunction with the xattr based crash counter to
-> determine how the change_attr is bumped by the crash counter.
+(i.e. KASAN unpoisons the whole object.)
+Maybe don't let KASAN unpoison to catch such users?
 
-Well, not "trivially". This is the bit where we have to grow struct
-inode (or the fs-specific inode), as we'll need to know what the latest
-on-disk value is for the inode.
+> +
+>  #ifdef CONFIG_PRINTK
+>  bool kmem_valid_obj(void *object);
+>  void kmem_dump_obj(void *object);
+> @@ -779,6 +793,23 @@ extern void kvfree(const void *addr);
+>  extern void kvfree_sensitive(const void *addr, size_t len);
+>  
+>  unsigned int kmem_cache_size(struct kmem_cache *s);
+> +
+> +/**
+> + * kmalloc_size_roundup - Report allocation bucket size for the given size
+> + *
+> + * @size: Number of bytes to round up from.
+> + *
+> + * This returns the number of bytes that would be available in a kmalloc()
+> + * allocation of @size bytes. For example, a 126 byte request would be
+> + * rounded up to the next sized kmalloc bucket, 128 bytes. (This is strictly
+> + * for the general-purpose kmalloc()-based allocations, and is not for the
+> + * pre-sized kmem_cache_alloc()-based allocations.)
+> + *
+> + * Use this to kmalloc() the full bucket size ahead of time instead of using
+> + * ksize() to query the size after an allocation.
+> + */
+> +unsigned int kmalloc_size_roundup(size_t size);
+> +
+>  void __init kmem_cache_init_late(void);
+>  
+>  #if defined(CONFIG_SMP) && defined(CONFIG_SLAB)
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 17996649cfe3..132d91a0f8c7 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -721,6 +721,23 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
+>  	return kmalloc_caches[kmalloc_type(flags)][index];
+>  }
+>  
+> +unsigned int kmalloc_size_roundup(size_t size)
+> +{
+> +	struct kmem_cache *c;
+> +
+> +	/* Short-circuit the 0 size case. */
+> +	if (size == 0)
+> +		return 0;
+> +	/* Above the smaller buckets, size is a multiple of page size. */
+> +	if (size > KMALLOC_MAX_CACHE_SIZE)
+> +		return PAGE_SIZE << get_order(size);
+> +
+> +	/* The flags don't matter since size_index is common to all. */
+> +	c = kmalloc_slab(size, GFP_KERNEL);
+> +	return c ? c->object_size : 0;
+> +}
+> +EXPORT_SYMBOL(kmalloc_size_roundup);
 
-I'm leaning toward doing this on the query side. Basically, when nfsd
-goes to query the i_version, it'll check the delta between the current
-version and the latest one on disk. If it's bigger than X then we'd just
-return NFS4ERR_DELAY to the client.
+This looks okay.
 
-If the delta is >X/2, maybe it can kick off a workqueue job or something
-that calls write_inode with WB_SYNC_ALL to try to get the thing onto the
-platter ASAP.
---=20
-Jeff Layton <jlayton@kernel.org>
+Thanks!
+
+> +
+>  #ifdef CONFIG_ZONE_DMA
+>  #define KMALLOC_DMA_NAME(sz)	.name[KMALLOC_DMA] = "dma-kmalloc-" #sz,
+>  #else
+> -- 
+> 2.34.1
+> 
+> 
+
+-- 
+Thanks,
+Hyeonggon
