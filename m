@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B06D15E56F6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 02:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD595E56F8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 02:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbiIVAHV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Sep 2022 20:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47456 "EHLO
+        id S229970AbiIVAHW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Sep 2022 20:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbiIVAHS (ORCPT
+        with ESMTP id S229923AbiIVAHT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Sep 2022 20:07:18 -0400
+        Wed, 21 Sep 2022 20:07:19 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E57A4B36
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 17:07:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1702A0604
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Sep 2022 17:07:18 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8267D1F8F6
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:07:16 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 849D31F8E5
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:07:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1663805236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1663805237; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MlksPiKKhhHo22XjsG3Ygt4xWPWo9Wij/ha52HrT1EQ=;
-        b=C+YJGOYYOcI7Equ33Bi5/9FCYWtmzcpxe01fLwC2qw4ehMg2fksvBnQKOaLoRprMWZdYxQ
-        48f5lMkpxZN+J3qq30ojcEj5PHkoC8T1BMCAtuMPEdxVBBWFlQubLgvAseYAP7uz9GF+M0
-        8SH3cNpO5Mbkb7f9+UghRJ9xL3GneS4=
+        bh=KFZK7MLIItZbiDzpLJ8Ye0STcwk+hlwxo18kCMqFLxI=;
+        b=PE80DBs0+Gs5ZBoWdWPSWVLod4YoZhrfOWceIRfZsdqWQxLlfFge+HHYKSEZemh79137Cx
+        GQpa9j1xPhTBSLCzuVlfcNrBtbkXZEygSW2T7eemqk8B2O7sLV9+Jv5PdTLt2dXWoZeQcD
+        QfS0RCJrop++0+PreSot7Qp6yULcaNM=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DF1FF139EF
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:07:15 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E1598139EF
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:07:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id MJN2KjOnK2O1LwAAMHmgww
+        id sMQKKzSnK2O1LwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:07:15 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 00:07:16 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 12/16] btrfs: extra block groups read code into its own init/exit helpers
-Date:   Thu, 22 Sep 2022 08:06:29 +0800
-Message-Id: <36da7bf9929be5b00a276ff88ca7a6b6d09ecb23.1663804335.git.wqu@suse.com>
+Subject: [PATCH 13/16] btrfs: move the fs root related code into its own init/exit helpers
+Date:   Thu, 22 Sep 2022 08:06:30 +0800
+Message-Id: <d0de9ae54fbaa3312cf1515a04cf62c816aa7986.1663804335.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1663804335.git.wqu@suse.com>
 References: <cover.1663804335.git.wqu@suse.com>
@@ -60,94 +60,89 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The only special handling is:
+The most important change in this patch is the timing change.
 
-- Need error cleanup even in open_ctree_block_group_init()
-  As btrfs_read_block_groups() can error out with some block groups
-  already inserted.
+The existing code put fs root read very late, after
+kthread/qgroup-rescan/log-replay, but put btrfs_free_fs_roots() very
+early, as kthread/qgroup/log-replacey can all populate the fs roots.
 
-  Thus here we have to do the cleanup manually, as exit helper will
-  not be called if the init helper failed.
+Thus this patch will change the timing, by reading fs root early.
+The fs root read part is not that important, but the cleanup part is.
+
+After the timing change, the fs root would be the first subvolume to be
+read, and its exit call can be ensured to cover all later possible
+subvolume loads.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c | 39 +++++++++++++++++++++++++++++----------
- 1 file changed, 29 insertions(+), 10 deletions(-)
+ fs/btrfs/disk-io.c | 33 ++++++++++++++++++++++++---------
+ 1 file changed, 24 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 8f8a5fa62d1b..c034b017c316 100644
+index c034b017c316..a152899fa21a 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -3766,6 +3766,31 @@ static void open_ctree_sysfs_exit(struct btrfs_fs_info *fs_info)
- 	btrfs_sysfs_remove_fsid(fs_info->fs_devices);
+@@ -3791,6 +3791,19 @@ static void open_ctree_block_groups_exit(struct btrfs_fs_info *fs_info)
+ 	btrfs_free_block_groups(fs_info);
  }
  
-+static int open_ctree_block_groups_init(struct btrfs_fs_info *fs_info)
++static int open_ctree_fs_root_init(struct btrfs_fs_info *fs_info)
 +{
-+	int ret;
++	fs_info->fs_root = btrfs_get_fs_root(fs_info, BTRFS_FS_TREE_OBJECTID, true);
++	if (IS_ERR(fs_info->fs_root)) {
++		int ret = PTR_ERR(fs_info->fs_root);
 +
-+	ret = btrfs_read_block_groups(fs_info);
-+
-+	/*
-+	 * Even if btrfs_read_block_groups() failed, we may still have
-+	 * inserted some block groups.
-+	 * Thus we have to do cleanup here manually for error path, as
-+	 * our exit function won't be executed for error path.
-+	 */
-+	if (ret < 0) {
-+		btrfs_put_block_group_cache(fs_info);
-+		btrfs_free_block_groups(fs_info);
++		btrfs_warn(fs_info, "failed to read fs tree: %d", ret);
++		fs_info->fs_root = NULL;
++		return ret;
 +	}
-+	return ret;
-+}
-+
-+static void open_ctree_block_groups_exit(struct btrfs_fs_info *fs_info)
-+{
-+	btrfs_put_block_group_cache(fs_info);
-+	btrfs_free_block_groups(fs_info);
++	return 0;
 +}
 +
  struct init_sequence {
  	int (*init_func)(struct btrfs_fs_info *fs_info);
  	void (*exit_func)(struct btrfs_fs_info *fs_info);
-@@ -3796,6 +3821,9 @@ static const struct init_sequence open_ctree_seq[] = {
+@@ -3824,6 +3837,17 @@ static const struct init_sequence open_ctree_seq[] = {
  	}, {
- 		.init_func = open_ctree_sysfs_init,
- 		.exit_func = open_ctree_sysfs_exit,
+ 		.init_func = open_ctree_block_groups_init,
+ 		.exit_func = open_ctree_block_groups_exit,
 +	}, {
-+		.init_func = open_ctree_block_groups_init,
-+		.exit_func = open_ctree_block_groups_exit,
++		/*
++		 * This fs roots related code should be called before anything
++		 * which may try to read a subvolume, including cleanup/commit
++		 * kthread, qgroup rescan, log replay etc.
++		 *
++		 * The main reason is for the exit function to be called for
++		 * any stage which may read some subvolume trees.
++		 */
++		.init_func = open_ctree_fs_root_init,
++		.exit_func = btrfs_free_fs_roots,
  	}
  };
  
-@@ -3821,16 +3849,10 @@ int __cold open_ctree(struct super_block *sb, char *options)
- 		open_ctree_res[i] = true;
+@@ -3884,14 +3908,6 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 		}
  	}
  
--	ret = btrfs_read_block_groups(fs_info);
--	if (ret) {
--		btrfs_err(fs_info, "failed to read block groups: %d", ret);
--		goto fail_sysfs;
+-	fs_info->fs_root = btrfs_get_fs_root(fs_info, BTRFS_FS_TREE_OBJECTID, true);
+-	if (IS_ERR(fs_info->fs_root)) {
+-		err = PTR_ERR(fs_info->fs_root);
+-		btrfs_warn(fs_info, "failed to read fs tree: %d", err);
+-		fs_info->fs_root = NULL;
+-		goto fail_qgroup;
 -	}
 -
- 	fs_info->cleaner_kthread = kthread_run(cleaner_kthread, fs_info,
- 					       "btrfs-cleaner");
- 	if (IS_ERR(fs_info->cleaner_kthread))
--		goto fail_sysfs;
-+		goto fail;
+ 	if (sb_rdonly(fs_info->sb))
+ 		goto clear_oneshot;
  
- 	fs_info->transaction_kthread = kthread_run(transaction_kthread,
- 						   fs_info->tree_root,
-@@ -3919,9 +3941,6 @@ int __cold open_ctree(struct super_block *sb, char *options)
- 	 */
- 	filemap_write_and_wait(fs_info->btree_inode->i_mapping);
+@@ -3931,7 +3947,6 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ fail_trans_kthread:
+ 	kthread_stop(fs_info->transaction_kthread);
+ 	btrfs_cleanup_transaction(fs_info);
+-	btrfs_free_fs_roots(fs_info);
+ fail_cleaner:
+ 	kthread_stop(fs_info->cleaner_kthread);
  
--fail_sysfs:
--	btrfs_put_block_group_cache(fs_info);
--	btrfs_free_block_groups(fs_info);
- fail:
- 	for (i = ARRAY_SIZE(open_ctree_seq) - 1; i >= 0; i--) {
- 		if (!open_ctree_res[i] || !open_ctree_seq[i].exit_func)
 -- 
 2.37.3
 
