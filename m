@@ -2,127 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131415E6ECB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Sep 2022 23:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9515E6FC1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Sep 2022 00:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbiIVVtQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Sep 2022 17:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51768 "EHLO
+        id S229604AbiIVWeH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Sep 2022 18:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbiIVVtN (ORCPT
+        with ESMTP id S229667AbiIVWdm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Sep 2022 17:49:13 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E885F508E
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 14:49:11 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id w20so10024539ply.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 14:49:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date;
-        bh=HR7XDnra6aPtamhjv2ZebPHNXJTov7JqNOvsimryjio=;
-        b=SzXIxv6C1tCw5E3cmrWDJ/hT6jlBfbW+dFuRj81LBsGuMMA1AsgUJRpxwVsVSvwR2s
-         HjojE3kOc43go5tDIXGrMTl5j+2eCPTyOeyLkDKEdQ6zWs58EaHgr7cs3m2ezx/7gyPH
-         QYSAs2hvSa7UX6V/rYFn8OuKvubD7Tx83ZZcc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=HR7XDnra6aPtamhjv2ZebPHNXJTov7JqNOvsimryjio=;
-        b=OkLErp2qIJhjCT/yaEtyFs3Dxw1APNFcYBnkFFDb/74ywcJZKJqZBzRK0S1iSnHBaa
-         d8co5dR9T9/l84tMk3mhAdAO9YM011whoiP7cXIcZVZVs4PHPkWgF6VYfPBOb0SqJhpY
-         fIbseIE2F3IXkAtU+00S7NNPOkGisRWG37Bz0Hc62m8pia2egMvCmsju+aqDpfYEMu1S
-         Qj10mjUt04DszkFZcpzpqJEZObFqFeSxLUtdPwngJCI1ISGVgTOj7qoCu6yUpJt7otVT
-         eb3cD3IbDsiLjGan0CuvEyMrCsMAg/SFnCDD8o8mNjQRsRz8Q4Mzr1mxNVXSKGuCKMWa
-         HX2g==
-X-Gm-Message-State: ACrzQf2vbyXKoIxsymNy8RaDR8BoyrzLBA/30N+R4XN+vtALtJ19CbgD
-        FDn0iqUqAg0HZGKcxtlfopcROQ==
-X-Google-Smtp-Source: AMsMyM7EVCvewBY8ReI9lCX0qEaIkOeoxfNJfZf95NgQUB74fHJwtUZioqBUOFwe31SWjNTGJEPjqg==
-X-Received: by 2002:a17:902:d2d2:b0:177:4940:cc0f with SMTP id n18-20020a170902d2d200b001774940cc0fmr5257349plc.4.1663883350927;
-        Thu, 22 Sep 2022 14:49:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j6-20020a170902da8600b00176acc23a73sm4597636plx.281.2022.09.22.14.49.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Sep 2022 14:49:10 -0700 (PDT)
-Date:   Thu, 22 Sep 2022 14:49:08 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Feng Tang <feng.tang@intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Alex Elder <elder@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Marco Elver <elver@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-fsdevel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        dev@openvswitch.org, x86@kernel.org,
-        linux-wireless@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Subject: Re: [PATCH 00/12] slab: Introduce kmalloc_size_roundup()
-Message-ID: <202209221446.5E90AEED@keescook>
-References: <20220922031013.2150682-1-keescook@chromium.org>
- <673e425d-1692-ef47-052b-0ff2de0d9c1d@amd.com>
- <202209220845.2F7A050@keescook>
- <cb38655c-2107-bda6-2fa8-f5e1e97eab14@suse.cz>
+        Thu, 22 Sep 2022 18:33:42 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73168F9624
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Sep 2022 15:33:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2C8CA1F8BD;
+        Thu, 22 Sep 2022 22:33:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1663886020;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8T9AJKmDs4w74L5QjQ08UbOyql79HPyGrV+0esu0tpg=;
+        b=PV+NpoyRuQ1gm/8z66I6sxhVOrtY1avJzfXSFkwT2VTnN07w+WL2qOHZjHET9rLEghsdmL
+        AlvuDr5A32ymkB6DQT39qA2ApMRTnPNI1rKeCiA2xuPrFNI2I/uk2EsJVBjMADEuA1bSKZ
+        w3RljJ6hCmWz/NbexT7v5wt3AdHlRyQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1663886020;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8T9AJKmDs4w74L5QjQ08UbOyql79HPyGrV+0esu0tpg=;
+        b=Ws78MsQ2O7+7co8xEJaDCmDVbn3UnOrpNK1iGPWwT5Rp7l2XwWnZI/8qi5Vw6t1ukB3eNk
+        H8MPP9RRX0W5xdCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B7EA13AA5;
+        Thu, 22 Sep 2022 22:33:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7ICuAcTiLGN8QgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 22 Sep 2022 22:33:40 +0000
+Date:   Fri, 23 Sep 2022 00:28:07 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Li Zhang <zhanglikernel@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH V4] btrfs-progs: Make btrfs_prepare_device parallel
+ during mkfs.btrfs
+Message-ID: <20220922222807.GO32411@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <1662279863-17114-1-git-send-email-zhanglikernel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cb38655c-2107-bda6-2fa8-f5e1e97eab14@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <1662279863-17114-1-git-send-email-zhanglikernel@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 22, 2022 at 11:05:47PM +0200, Vlastimil Babka wrote:
-> On 9/22/22 17:55, Kees Cook wrote:
-> > On Thu, Sep 22, 2022 at 09:10:56AM +0200, Christian König wrote:
-> > [...]
-> > > So when this patch set is about to clean up this use case it should probably
-> > > also take care to remove ksize() or at least limit it so that it won't be
-> > > used for this use case in the future.
-> > 
-> > Yeah, my goal would be to eliminate ksize(), and it seems possible if
-> > other cases are satisfied with tracking their allocation sizes directly.
+On Sun, Sep 04, 2022 at 04:24:23PM +0800, Li Zhang wrote:
+> [enhancement]
+> When a disk is formatted as btrfs, it calls
+> btrfs_prepare_device for each device, which takes too much time.
 > 
-> I think we could leave ksize() to determine the size without a need for
-> external tracking, but from now on forbid callers from using that hint to
-> overflow the allocation size they actually requested? Once we remove the
-> kasan/kfence hooks in ksize() that make the current kinds of usage possible,
-> we should be able to catch any offenders of the new semantics that would appear?
+> [implementation]
+> Put each btrfs_prepare_device into a thread,
+> wait for the first thread to complete to mkfs.btrfs,
+> and wait for other threads to complete before adding
+> other devices to the file system.
+> 
+> [test]
+> Using the btrfs-progs test case mkfs-tests, mkfs.btrfs works fine.
+> 
+> Use tcmu-runner emulation to simulate two devices for testing.
+> Each device is 2000G (about 19.53 TiB), the region size is 4MB,
+> Use the following parameters for targetcli
+> create name=zbc0 size=20000G cfgstring=model-HM/zsize-4/conv-100@~/zbc0.raw
+> 
+> Call difftime to calculate the running time of the function btrfs_prepare_device.
+> Calculate the time from thread creation to completion of all threads after
+> patching (time calculation is not included in patch submission)
+> The test results are as follows.
+> 
+> $ lsscsi -p
+> [10:0:1:0]   (0x14)  LIO-ORG  TCMU ZBC device  0002  /dev/sdb   -          none
+> [11:0:1:0]   (0x14)  LIO-ORG  TCMU ZBC device  0002  /dev/sdc   -          none
+> 
+> $ sudo mkfs.btrfs -d single -m single -O zoned /dev/sdc /dev/sdb -f
+> ....
+> time for prepare devices:4.000000.
+> ....
+> 
+> $ sudo mkfs.btrfs -d single -m single -O zoned /dev/sdc /dev/sdb -f
+> ...
+> time for prepare devices:2.000000.
+> ...
+> 
+> Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
+> ---
+> Issue: 496
 
-That's correct. I spent the morning working my way through the rest of
-the ksize() users I didn't clean up yesterday, and in several places I
-just swapped in __ksize(). But that wouldn't even be needed if we just
-removed the kasan unpoisoning from ksize(), etc.
+Thanks for implementing it. I did only some style fixups but the
+parallel zone reset works (and trim/discard as well as it's the same
+function).
 
-I am tempted to leave it __ksize(), though, just to reinforce that it's
-not supposed to be used "normally". What do you think?
+I've tested it with the null blk devices (128M, 4M zone, 32 zones) and
+added some more debugging to see how it works, with artificial delay
+100ms to zone reset. The overall runtime is about the same when running
+on devices:
 
--- 
-Kees Cook
+ 2 - 4s
+ 6 - 5s
+ 8 - 5s
+10 - 6s
+
+It's fast so there's some noise in the numbers but it's not linear in
+the number of devices and the threads may also wait on the printing lock
+as I've added some debugging messages.
+
+Sample run with your patch reverted and same delay:
+
+ 2 - 7s
+ 6 - 21s
+ 8 - 27s
+10 - 35s
+
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -969,6 +984,31 @@ fail:
+>  	return ret;
+>  }
+>  
+> +static void *prepare_one_dev(void *ctx)
+> +{
+> +	struct prepare_device_progress *prepare_ctx = ctx;
+> +	int fd;
+> +
+> +	fd = open(prepare_ctx->file, opt_oflags);
+> +	if (fd < 0) {
+> +		pthread_mutex_lock(&prepare_mutex);
+
+Is this lock actually needed? printf is thread safe and there are other
+messages printed from btrfs_prepare_device anyway, so using this lock
+does not help.
+
+> +		error("unable to open %s: %m", prepare_ctx->file);
+> +		pthread_mutex_unlock(&prepare_mutex);
+> +		prepare_ctx->ret = fd;
+> +		return NULL;
+> +	}
+> +	prepare_ctx->ret = btrfs_prepare_device(fd,
+> +			prepare_ctx->file,
+> +			&prepare_ctx->dev_block_count,
+> +			prepare_ctx->block_count,
+> +			(bconf.verbose ? PREP_DEVICE_VERBOSE : 0) |
+> +			(opt_zero_end ? PREP_DEVICE_ZERO_END : 0) |
+> +			(opt_discard ? PREP_DEVICE_DISCARD : 0) |
+> +			(opt_zoned ? PREP_DEVICE_ZONED : 0));
+> +	close(fd);
+> +	return NULL;
+> +}
