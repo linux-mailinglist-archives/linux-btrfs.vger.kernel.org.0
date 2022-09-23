@@ -2,91 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C195E7DC4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Sep 2022 16:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139ED5E7DDD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Sep 2022 17:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbiIWO62 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Sep 2022 10:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
+        id S231811AbiIWPFJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Sep 2022 11:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbiIWO6Z (ORCPT
+        with ESMTP id S229461AbiIWPFH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Sep 2022 10:58:25 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD514115F4F
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Sep 2022 07:58:24 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id r3-20020a05600c35c300b003b4b5f6c6bdso183768wmq.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Sep 2022 07:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date;
-        bh=Yh3OpQCaoJehRHNQj5q95C9RX+gHobzAOdyLpPk5C08=;
-        b=PpVj2fMu/pQ3DhGkT6BzIkzbz0EVNl5ejq9AKTBtThfK3E169Tf6L4SKBtgjZu5LVw
-         Kkd4VSKKBUaYqjPl7gUtpY312wYkWQToLc0cONfgRpQRcM3bg0z5yt9pq73Ecnp0w9Dl
-         Bx4tfL5yqChTjXD5pVuBsn2RtWyPZjXVjuDNNcMB4BcKCEqSnVjbdPynvHRqmSH0ZdcU
-         9vbjGNkKNKuGFJm2IjufYg265YB3j9VF0CtNSWXeJJH3C0bSCPlu8eSqpavVXkHpjbLM
-         zp1yJMoDfO8BVKQ0g7lVyFYGAc+hkrouDA5grPDd5dAQ342YF5a5NS8vY3iG3Bgnj5aQ
-         B9bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date;
-        bh=Yh3OpQCaoJehRHNQj5q95C9RX+gHobzAOdyLpPk5C08=;
-        b=AMVbQVl5xWA++YvZuxk8/NT5TMTsMcL1aJPHAptLvlpO/+DSAJjx8EJgAuMbRHD+rs
-         OZ2Oa2UCtegE69fRBifWn4Emjeiqn4i0itQhXVAa9wYd1ji6eDFnLbuCKn6sjz7BfOJC
-         WC9gLKCyh0HZWLrT8m7W4/50YPCRIF7DgBCnUNtjaO8I696aATJC6zQrOdoMpeYyEvO8
-         y65uXhTyvhrbqXshsk1I5QVpMBNv2OWwpKFPVdFM7XpxDIqiTAMi8GMQJdEyzDn8/Sdr
-         XkYN6e4eQ8Z18Jv9f3Oiuh30WUB6lLOHJjS8R4wJNdbemRUfeC633tIsTURVfaEar5bh
-         +00w==
-X-Gm-Message-State: ACrzQf35kOcX6/Duz7dmcqqxt3xFAwg21+XxpbfsDIw4Vjk6eSc32b20
-        YmLZ3+ZMmp3bcy6FSfaSPS3qgcFOo/mp4jIQS/oO3qU5IY6ZIw==
-X-Google-Smtp-Source: AMsMyM5e7NySKByMMbtrEvIiR0FtkoIZpeBQVS+vINXLTaSX33Y8YfD/ncIDCJrZdSvYd0oAsGU6/WdTXs5oKqDvgJo=
-X-Received: by 2002:a05:600c:3511:b0:3b4:bb85:f1dd with SMTP id
- h17-20020a05600c351100b003b4bb85f1ddmr6290620wmq.42.1663945103521; Fri, 23
- Sep 2022 07:58:23 -0700 (PDT)
+        Fri, 23 Sep 2022 11:05:07 -0400
+X-Greylist: delayed 327 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 23 Sep 2022 08:05:00 PDT
+Received: from mta-102a.earthlink-vadesecure.net (mta-102a.earthlink-vadesecure.net [51.81.61.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAB452FE3;
+        Fri, 23 Sep 2022 08:04:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; bh=N+Y2Asvd9JPiLkBH1FxZjhC7Kvt1Am28CEudYX
+ K+k9M=; c=relaxed/relaxed; d=earthlink.net; h=from:reply-to:subject:
+ date:to:cc:resent-date:resent-from:resent-to:resent-cc:in-reply-to:
+ references:list-id:list-help:list-unsubscribe:list-subscribe:list-post:
+ list-owner:list-archive; q=dns/txt; s=dk12062016; t=1663945138;
+ x=1664549938; b=QzIpgTeRhzk+oXAG0w2wXTk3knt7B6hPDgYBU9ZvjKI0wg8sqPEQWaq
+ gYfzosQZ/cIs1/vwH3hunDFSzEloIxot7aQ6GlAMW3axqZdwRDbcZgLWVdJHrFVwc5fXxuU
+ Pcsfdc8kPelR3ruy9zezXHbqo+aZEcZpKPDyspB1RJOfBlzMphkoI/s6yyuXpGEZUmN0HQu
+ xtqzMM2an+D6o9ulXwtv6R/ro4om2RpGMUnUA33qDOTFfeYCLUxojgy5vz8vrg8My0jkRLx
+ xUACYrUDkw91O3ZAOmZbMVrAhRXehF3V0zflpsm1oL41wD5r7q4pCMkHy/qEE4K+tId4gYL
+ H1g==
+Received: from FRANKSTHINKPAD ([76.105.143.216])
+ by smtp.earthlink-vadesecure.net ESMTP vsel1nmtao02p with ngmta
+ id 22c3a592-17178548f48eb86d; Fri, 23 Sep 2022 14:58:57 +0000
+From:   "Frank Filz" <ffilzlnx@mindspring.com>
+To:     "'Jeff Layton'" <jlayton@kernel.org>,
+        "'Trond Myklebust'" <trondmy@hammerspace.com>, <jack@suse.cz>
+Cc:     <zohar@linux.ibm.com>, <djwong@kernel.org>, <brauner@kernel.org>,
+        <linux-xfs@vger.kernel.org>, <bfields@fieldses.org>,
+        <linux-api@vger.kernel.org>, <neilb@suse.de>,
+        <david@fromorbit.com>, <fweimer@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <chuck.lever@oracle.com>,
+        <linux-man@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
+        <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <viro@zeniv.linux.org.uk>, <xiubli@redhat.com>,
+        <linux-fsdevel@vger.kernel.org>, <adilger.kernel@dilger.ca>,
+        <lczerner@redhat.com>, <ceph-devel@vger.kernel.org>,
+        <linux-btrfs@vger.kernel.org>
+References: <24005713ad25370d64ab5bd0db0b2e4fcb902c1c.camel@kernel.org>         <20220918235344.GH3600936@dread.disaster.area>         <87fb43b117472c0a4c688c37a925ac51738c8826.camel@kernel.org>         <20220920001645.GN3600936@dread.disaster.area>         <5832424c328ea427b5c6ecdaa6dd53f3b99c20a0.camel@kernel.org>         <20220921000032.GR3600936@dread.disaster.area>         <93b6d9f7cf997245bb68409eeb195f9400e55cd0.camel@kernel.org>         <20220921214124.GS3600936@dread.disaster.area>         <e04e349170bc227b330556556d0592a53692b5b5.camel@kernel.org>         <1ef261e3ff1fa7fcd0d75ed755931aacb8062de2.camel@kernel.org>         <20220923095653.5c63i2jgv52j3zqp@quack3>         <2d41c08e1fd96d55c794c3b4cd43a51a0494bfcf.camel@hammerspace.com> <baf852dfb57aaf5a670bc88236f8d62c99668fcc.camel@kernel.org>
+In-Reply-To: <baf852dfb57aaf5a670bc88236f8d62c99668fcc.camel@kernel.org>
+Subject: RE: [man-pages RFC PATCH v4] statx, inode: document the new STATX_INO_VERSION field
+Date:   Fri, 23 Sep 2022 07:58:55 -0700
+Message-ID: <01ae01d8cf5d$023474d0$069d5e70$@mindspring.com>
 MIME-Version: 1.0
-From:   Hao Peng <flyingpenghao@gmail.com>
-Date:   Fri, 23 Sep 2022 22:58:12 +0800
-Message-ID: <CAPm50aK090Ebkg4aVqzBxaN1W-=_z9ZU7KxppmURhWeczJb2Ag@mail.gmail.com>
-Subject: [PATCH] btrfs: adjust error jump position
-To:     "clm@fb.com" <clm@fb.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "dsterba@suse.com" <dsterba@suse.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQFW5LMVvccUT9xKG5h5MPweA5KIXgISgRYwAs1S4t4CKHGUMgGdhacVAWuMxX0CYnVaogHQtV08AvqrgvECS3OfOAJ2umjmAsymCyIDAUdIdq4SdV6g
+Content-Language: en-us
+Authentication-Results: earthlink-vadesecure.net;
+ auth=pass smtp.auth=ffilzlnx@mindspring.com smtp.mailfrom=ffilzlnx@mindspring.com;
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Peng Hao <flyingpeng@tencent.com>
 
-Since 'em' has been set to NULL, you can jump directly to out_err.
 
-Signed-off-by: Peng Hao <flyingpeng@tencent.com>
----
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> -----Original Message-----
+> From: Jeff Layton [mailto:jlayton@kernel.org]
+> Sent: Friday, September 23, 2022 6:50 AM
+> To: Trond Myklebust <trondmy@hammerspace.com>; jack@suse.cz
+> Cc: zohar@linux.ibm.com; djwong@kernel.org; brauner@kernel.org; linux-
+> xfs@vger.kernel.org; bfields@fieldses.org; linux-api@vger.kernel.org;
+> neilb@suse.de; david@fromorbit.com; fweimer@redhat.com; linux-
+> kernel@vger.kernel.org; chuck.lever@oracle.com; linux-man@vger.kernel.org;
+> linux-nfs@vger.kernel.org; linux-ext4@vger.kernel.org; tytso@mit.edu;
+> viro@zeniv.linux.org.uk; xiubli@redhat.com; linux-fsdevel@vger.kernel.org;
+> adilger.kernel@dilger.ca; lczerner@redhat.com; ceph-devel@vger.kernel.org;
+> linux-btrfs@vger.kernel.org
+> Subject: Re: [man-pages RFC PATCH v4] statx, inode: document the new
+> STATX_INO_VERSION field
+> 
+> On Fri, 2022-09-23 at 13:44 +0000, Trond Myklebust wrote:
+> > On Fri, 2022-09-23 at 11:56 +0200, Jan Kara wrote:
+> > > On Thu 22-09-22 16:18:02, Jeff Layton wrote:
+> > > > On Thu, 2022-09-22 at 06:18 -0400, Jeff Layton wrote:
+> > > > > On Thu, 2022-09-22 at 07:41 +1000, Dave Chinner wrote:
+> > > > > > e.g. The NFS server can track the i_version values when the
+> > > > > > NFSD syncs/commits a given inode. The nfsd can sample
+> > > > > > i_version it when calls ->commit_metadata or flushed data on
+> > > > > > the inode, and then when it peeks at i_version when gathering
+> > > > > > post-op attrs (or any other getattr op) it can decide that
+> > > > > > there is too much in-memory change (e.g. 10,000 counts since
+> > > > > > last sync) and sync the inode.
+> > > > > >
+> > > > > > i.e. the NFS server can trivially cap the maximum number of
+> > > > > > uncommitted NFS change attr bumps it allows to build up in
+> > > > > > memory.
+> > > > > > At that point, the NFS server has a bound "maximum write count"
+> > > > > > that
+> > > > > > can be used in conjunction with the xattr based crash counter
+> > > > > > to determine how the change_attr is bumped by the crash
+> > > > > > counter.
+> > > > >
+> > > > > Well, not "trivially". This is the bit where we have to grow
+> > > > > struct inode (or the fs-specific inode), as we'll need to know
+> > > > > what the latest on-disk value is for the inode.
+> > > > >
+> > > > > I'm leaning toward doing this on the query side. Basically, when
+> > > > > nfsd goes to query the i_version, it'll check the delta between
+> > > > > the current version and the latest one on disk. If it's bigger
+> > > > > than X then we'd just return NFS4ERR_DELAY to the client.
+> > > > >
+> > > > > If the delta is >X/2, maybe it can kick off a workqueue job or
+> > > > > something that calls write_inode with WB_SYNC_ALL to try to get
+> > > > > the thing onto the platter ASAP.
+> > > >
+> > > > Still looking at this bit too. Probably we can just kick off a
+> > > > WB_SYNC_NONE filemap_fdatawrite at that point and hope for the
+> > > > best?
+> > >
+> > > "Hope" is not a great assurance regarding data integrity ;) Anyway,
+> > > it depends on how you imagine the "i_version on disk" is going to be
+> > > maintained. It could be maintained by NFSD inside
+> > > commit_inode_metadata() -
+> > > fetch current i_version value before asking filesystem for the sync
+> > > and by the time commit_metadata() returns we know that value is on
+> > > disk. If we detect the current - on_disk is > X/2, we call
+> > > commit_inode_metadata() and we are done. It is not even *that*
+> > > expensive because usually filesystems optimize away unnecessary IO
+> > > when the inode didn't change since last time it got synced.
+> > >
+> >
+> > Note that these approaches requiring 3rd party help in order to track
+> > i_version integrity across filesystem crashes all make the idea of
+> > adding i_version to statx() a no-go.
+> >
+> > It is one thing for knfsd to add specialised machinery for integrity
+> > checking, but if all applications need to do so, then they are highly
+> > unlikely to want to adopt this attribute.
+> >
+> >
+> 
+> Absolutely. That is the downside of this approach, but the priority here
+has
+> always been to improve nfsd. If we don't get the ability to present this
+info via
+> statx, then so be it. Later on, I suppose we can move that handling into
+the
+> kernel in some fashion if we decide it's worthwhile.
+> 
+> That said, not having this in statx makes it more difficult to test
+i_version
+> behavior. Maybe we can add a generic ioctl for that in the interim?
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index f0c97d25b4a0..b5c408ed888a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8146,7 +8146,7 @@ static void btrfs_submit_direct(const struct
-iomap_iter *iter,
-                if (IS_ERR(em)) {
-                        status = errno_to_blk_status(PTR_ERR(em));
-                        em = NULL;
--                       goto out_err_em;
-+                       goto out_err;
-                }
-                ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(dio_bio),
-                                            logical, &geom);
---
-2.27.0
+Having i_version in statx would be really nice for nfs-ganesha. I would
+consider doing the extra integrity stuff or we may in some cases be able to
+rely on the filesystem, but in any case, i_version would be an improvement
+over using ctime or mtime for a change attribute.
+
+Frank
+
