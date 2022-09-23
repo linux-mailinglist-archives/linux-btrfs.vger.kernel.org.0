@@ -2,100 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A82235E821E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Sep 2022 20:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66A05E83E1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Sep 2022 22:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232066AbiIWSxm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 23 Sep 2022 14:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
+        id S233129AbiIWUcz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Sep 2022 16:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbiIWSxg (ORCPT
+        with ESMTP id S232629AbiIWUcb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Sep 2022 14:53:36 -0400
-Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3975412113F
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Sep 2022 11:53:34 -0700 (PDT)
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 0E6778219EA;
-        Fri, 23 Sep 2022 18:53:34 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
-        (Authenticated sender: instrampxe0y3a)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 449A98207E9;
-        Fri, 23 Sep 2022 18:53:33 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1663959213; a=rsa-sha256;
-        cv=none;
-        b=tpRyoOqOn5+G0xuUUmM3QerE51RbLAXRf9wucXTDo9mlvrqedID49nrQzbuVpCgC2Q5YCK
-        UmdHoPzIb7kUF4QtrjlhJI5ivn7wbzSkINicS6CF8aq0yQCRfnTLyHxtQxKDOga3Uv2xQe
-        9NrUw+bCPi3txy+U5QCUFgVg8xbBFUEtV/pbqefZ9HEN4mFoSYobxgPnj2fLsecHyzpZEx
-        vVAaauJGQquX1NKRVGvacVjfiJTEfi8+Lb1/h1kleph9105KbmyDAe5m+K1B7fwqKqAn4L
-        dCVfgux333qPcmD55Aukw7RzF2QsKQ9NICduUXlDUQc/2UB0RAHR3YArlQMrwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1663959213;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=loiIiRc67RlHcrWLOnsRHl9P4YjbVboyzHc3dXY0AKo=;
-        b=IswEHPX0/VBRU5gHm4mlm/1P8rSNhHORdeoN8HpW3BZ4iAbfH6qfpEZDSeRqnfisJnQgNh
-        HUzWzAmHO5OWYXDQI47Z/xjhdicqNf8muuyYb2dSc+dFN4J5Gg/LkYSTnd/xRu0aU9nCwp
-        E7NDDXn8pSqB7IxIVNmwZmOJs8EDGtx+jAjMiQVXmTD4g2snuNyeXVr4D3p8QB9AigYVQB
-        9VlNr62GeMGsIsO+guSM4iGs+Jccxbwrqf3LhBNwVQOcPSjp7SC24Oh3de+shfJp/XDoAc
-        1uDcy6k82URKNgyDDnGeJq6Bf7YWCjtx10ZaNlAbbXxk0ox1bYxwa0c8hCIrAw==
-ARC-Authentication-Results: i=1;
-        rspamd-7c485dd8cf-ng7fn;
-        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Arithmetic-Illustrious: 0456db8f5633bd89_1663959213729_1240439065
-X-MC-Loop-Signature: 1663959213729:4280716135
-X-MC-Ingress-Time: 1663959213728
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-        by 100.97.77.221 (trex/6.7.1);
-        Fri, 23 Sep 2022 18:53:33 +0000
-Received: from p54b6dffd.dip0.t-ipconnect.de ([84.182.223.253]:58514 helo=heisenberg.fritz.box)
-        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <calestyo@scientia.org>)
-        id 1obnnm-0000lD-Lh;
-        Fri, 23 Sep 2022 18:53:31 +0000
-Message-ID: <71898f735214914a06772ee838b030aef0f436ff.camel@scientia.org>
-Subject: Re: call trace when btrfs-check tries to write on ro-blockdev
-From:   Christoph Anton Mitterer <calestyo@scientia.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Date:   Fri, 23 Sep 2022 20:53:26 +0200
-In-Reply-To: <4d8f3ce4-f488-d065-ef7e-c7705ac4efee@gmx.com>
-References: <70591e96d9dbc46cfaa44316f0eb1bcccc7017f5.camel@scientia.org>
-         <6d72763c-d024-3224-be8e-0ade32540883@gmx.com>
-         <52bf0daaa1f88fe1069f4871e28ca18a90d1d5c1.camel@scientia.org>
-         <4d8f3ce4-f488-d065-ef7e-c7705ac4efee@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.0-2 
+        Fri, 23 Sep 2022 16:32:31 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C16149D10
+        for <linux-btrfs@vger.kernel.org>; Fri, 23 Sep 2022 13:28:27 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d24so1177499pls.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 23 Sep 2022 13:28:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=WK0bGuD2tAxqqCEo+J+Vcp/Ca26AMBReT0rLu9mHjWo=;
+        b=Bq646OyB58An4Ya0i1tJSWid5B14G8+Igfn3fxCST+TPDeet6KAginBjtHf1G+96pP
+         KMbRLvXh6hUd7mw6RJpRt7mflnBYm9ibc+vu8XY4rLIHczU3FqSb/xj3tEHFFGtr1oRe
+         sICyRsZLX9/FsK6U8cZvA0aX8m/YlImy46ePk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=WK0bGuD2tAxqqCEo+J+Vcp/Ca26AMBReT0rLu9mHjWo=;
+        b=f1q7CNSerb8UkwaY6CTSds/V76lKRR/mYgDbkn2xjUfKUVrbDYXYcOyiI07b1IBWKE
+         ro7j+KKvlHqjdqSOpkBBMs/x7q4B6zwOXSvd6dSD6+NvVBlS5Gw72gmFWSgG0tsUw5iE
+         Kpzk9rtcJ1+NJz6OXQaAuwWJegi9MYpQhhgwrgFquOIh0f3O2Mmt0/vSO78MMXVmbRnh
+         JJsjtCRpwR1kDRBwpbqry+2IOgFQoGv5ngkQ9kTBTWotIgZMSABU8kClDhNQeLQXbeOd
+         0Gf4PYS8VeFOJMD534HK0zHLOJ13mihX1hsK4BdRL550RkfEdSs1lO+KCP5gWnxnUxfR
+         QuRA==
+X-Gm-Message-State: ACrzQf1fY4+VRbppZG2UDyiMseU+1wQaF4ZLWSs972j4c3LoDjC93rVc
+        m3Va3Jj4SHs7f4MFJBmej6HPpw==
+X-Google-Smtp-Source: AMsMyM72+AZrvCjzG0TpHX1QWIyqlT+yIJNjqD6XgzhlX4O0lN7py3H0HnAbWO3N8SQjTT6PAgNtPQ==
+X-Received: by 2002:a17:90b:17cf:b0:202:95a2:e310 with SMTP id me15-20020a17090b17cf00b0020295a2e310mr23778042pjb.76.1663964906615;
+        Fri, 23 Sep 2022 13:28:26 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t2-20020aa79462000000b0053639773ad8sm6832080pfq.119.2022.09.23.13.28.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Sep 2022 13:28:25 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alex Elder <elder@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Yonghong Song <yhs@fb.com>, Marco Elver <elver@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-fsdevel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        dev@openvswitch.org, x86@kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2 00/16] slab: Introduce kmalloc_size_roundup()
+Date:   Fri, 23 Sep 2022 13:28:06 -0700
+Message-Id: <20220923202822.2667581-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-OutGoing-Spam-Status: No, score=-1.0
-X-AuthUser: calestyo@scientia.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3290; h=from:subject; bh=6t8CTnxnusXxlhLGNxOhRs5l2789SVRbReUcmZgsVm4=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBjLhbjKWBYYij171TDp3TdZmoZXSs7dXXkRN1eGod1 9RjCiP+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYy4W4wAKCRCJcvTf3G3AJnMrD/ 9AYEfZWXDOv2krdFVvtjQthCuAcgKZVOWzfaX/ZBtQRlYjuppFlG2ED1IEpuIhD0Ir80c5xPT0sC6o NsiMZw3mMRacDRN1JKTgZIg3s63bBHGPVJzr9Ms7LrhbLULxcInTn8Kmx1m+j/SOpIaVQbOz2eMMkZ hq15TaNyE7pBLM9SdfCtAyTs9eRAtVTuYrwZqvgSDjZ61SXuxi2k37cjMCmPHUTq/sIlGgP+BbmYVU h4TXPtyeel8GsxvMTh+ZJLwcMIm74VL8RdFIlqhUbTT1t2IHy48AtxwQQhaVX0FoQuaeRVIHGZ6W3H G8nJ1wcWlIzz3bYBH022dj7eQTsTkVCk6mdVQzd0tBA9yKVcNDoLBacX1DCakWCtJtW9hB3nI7wGSo dddWD44+KFc7CqbVkUJUBWKf0KFDD+RBxraKtYUvKQrLMx0oq545fsuTe+Wx85iePymCMknPsuIu7T RqpkKnn423yOsp7n6oWGz2jCxpOIGyTubVpWH5O/cuXKNmrDFZz8jsL8Js/2Of2DYZ5nq9YGQsiXeg 2S+DEM7sXnFtd9YfGznNOceTXn0B6askh1+E8cTpDv624NJQscze/0hYjyKnnV10f4gf0FRf/X6SzA azwQEVgyfXgzY00yn92DXcmjocb95A4MMqEAG/m2SLnjQl6aJMp6R561rcig==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 2022-09-23 at 18:39 +0800, Qu Wenruo wrote:
-> Got the reason.
+Hi,
 
-As so often:
+The main details on this series are in patch #2's commit log. It's long,
+so I won't repeat it again here for the v2. As before, I've tried to
+trim the CC list.
 
-thanks for your efforts :-)
+v2:
+- _keep_ ksize(), but remove instrumentation (makes patch series smaller)
+- reorganized skbuff logic to avoid yet more copy/paste code
+- added a WARN to a separate skbuff ksize usage
+- add new refactorings: bpf, openvswitch, devres, mempool, kasan
+- dropped "independent" patches: iwlwifi, x86/microcode/AMD (sent separately)
+v1: https://lore.kernel.org/lkml/20220922031013.2150682-1-keescook@chromium.org
+
+Notes:
+
+Originally when I was going to entirely remove ksize(), there were a
+handful for refactorings that just needed to do ksize -> __ksize. In
+the end, it was cleaner to actually leave ksize() as a real function,
+just without the kasan instrumentation. I wonder, however, if it should
+be converted into a static inline now?
+
+I dropped Jakub's Ack because I refactored that code a bunch more.
+
+The 2 patches that didn't need to call kmalloc_size_roundup() don't need
+to be part of this series. (One is already in -next, actually.)
+
+I'd like to land at least the first two patches in the coming v6.1 merge
+window so that the per-subsystem patches can be sent to their various
+subsystems directly. Vlastimil, what you think?
+
+Thanks!
+
+-Kees
 
 
-Cheers,
-Chris.
+Kees Cook (16):
+  slab: Remove __malloc attribute from realloc functions
+  slab: Introduce kmalloc_size_roundup()
+  skbuff: Proactively round up to kmalloc bucket size
+  skbuff: Phase out ksize() fallback for frag_size
+  net: ipa: Proactively round up to kmalloc bucket size
+  igb: Proactively round up to kmalloc bucket size
+  btrfs: send: Proactively round up to kmalloc bucket size
+  dma-buf: Proactively round up to kmalloc bucket size
+  coredump: Proactively round up to kmalloc bucket size
+  openvswitch: Use kmalloc_size_roundup() to match ksize() usage
+  bpf: Use kmalloc_size_roundup() to match ksize() usage
+  devres: Use kmalloc_size_roundup() to match ksize() usage
+  mempool: Use kmalloc_size_roundup() to match ksize() usage
+  kasan: Remove ksize()-related tests
+  mm: Make ksize() a reporting-only function
+  slab: Restore __alloc_size attribute to __kmalloc_track_caller
+
+ drivers/base/devres.c                     |  3 +
+ drivers/dma-buf/dma-resv.c                |  9 ++-
+ drivers/net/ethernet/intel/igb/igb_main.c |  5 +-
+ drivers/net/ipa/gsi_trans.c               |  7 +-
+ fs/btrfs/send.c                           | 11 +--
+ fs/coredump.c                             |  7 +-
+ include/linux/compiler_types.h            | 13 ++--
+ include/linux/skbuff.h                    |  5 +-
+ include/linux/slab.h                      | 46 +++++++++++--
+ kernel/bpf/verifier.c                     | 49 +++++++++-----
+ lib/test_kasan.c                          | 42 ------------
+ mm/kasan/shadow.c                         |  4 +-
+ mm/mempool.c                              |  2 +-
+ mm/slab.c                                 |  9 ++-
+ mm/slab_common.c                          | 62 ++++++++++-------
+ net/core/skbuff.c                         | 82 ++++++++++++-----------
+ net/openvswitch/flow_netlink.c            |  2 +-
+ 17 files changed, 192 insertions(+), 166 deletions(-)
+
+-- 
+2.34.1
+
