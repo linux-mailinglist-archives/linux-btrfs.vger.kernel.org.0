@@ -2,92 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6BC5E8A86
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Sep 2022 11:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D26E45E8B75
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Sep 2022 12:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233601AbiIXJLh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 24 Sep 2022 05:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        id S230148AbiIXKZ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 24 Sep 2022 06:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233586AbiIXJLf (ORCPT
+        with ESMTP id S229515AbiIXKZz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 24 Sep 2022 05:11:35 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B6210D66E
-        for <linux-btrfs@vger.kernel.org>; Sat, 24 Sep 2022 02:11:32 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id jm5so2109982plb.13
-        for <linux-btrfs@vger.kernel.org>; Sat, 24 Sep 2022 02:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=i+DbZ92rhFWH/0UDN/zG8OtvV+E4X59I6BjaPOZbEQQ=;
-        b=E5bOhboA/+6BWRDx1UWFFrMvOXvKoaBtGsWYlDmuj8X7rAkhnZpWRHTQ3LNDz7+mZj
-         DgCRrEBR3MyfN1vHwttkAVt9C+sNXNl8rbk7MHBer0lal296QvNAuoGU6ltJiVjNpwJw
-         ZbeC7n9zGD6mKw33TGHmgsxJslMQNugj0HBL4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=i+DbZ92rhFWH/0UDN/zG8OtvV+E4X59I6BjaPOZbEQQ=;
-        b=YcEn/VturLHQyz68b3LGUrUzEnYeQHIE54oiBELGYAOr70X/4USAt32KnYgIbyiNAB
-         eUzhkrS+mC8QTaQQlIjbl/C0+JAyFWhIwfO2rrPuIl6ghIsre8hlaMpkj5+HYUNbuATo
-         BN7KIHEsUfzNuW9I6pami471T4l0Ww+9+kByiVIJrwPCR3MXw31QkHJ05RSF4No7sO6I
-         TDqe3940VZnNZaSU4r3n5ulji4WDWpzhnmcrF2HYEM0wxeKvN6nlJHTuwvo24jmaP5al
-         BCJBjiQKdIVjLuluTwL8CrQWHoLFCcgm9hBnQoaULTvDaMvJ/Le+Le8QyoHSd0JiOBbB
-         XZ4g==
-X-Gm-Message-State: ACrzQf3efEFzclJyHshPGOtUp2SJTEv429VQqkOaNxQb7i4J6JgF8/XJ
-        YavfzY1qobdD2ayy/sgLEhv9/Q==
-X-Google-Smtp-Source: AMsMyM7r8bq+DxJ2Zg4nmPe+hShYURXJSZpppn8rw6aZz5OkkmasnCi/hTE7Baskd4vD2R6zimHrAA==
-X-Received: by 2002:a17:902:d4c9:b0:178:6d7b:c36f with SMTP id o9-20020a170902d4c900b001786d7bc36fmr12510856plg.19.1664010691458;
-        Sat, 24 Sep 2022 02:11:31 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b13-20020aa7950d000000b005546fe4b127sm5590232pfp.78.2022.09.24.02.11.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Sep 2022 02:11:30 -0700 (PDT)
-Date:   Sat, 24 Sep 2022 02:11:29 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Elder <elder@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Marco Elver <elver@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-btrfs@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, dev@openvswitch.org,
-        x86@kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 03/16] skbuff: Proactively round up to kmalloc bucket
- size
-Message-ID: <202209240208.84F847F3B@keescook>
-References: <20220923202822.2667581-1-keescook@chromium.org>
- <20220923202822.2667581-4-keescook@chromium.org>
+        Sat, 24 Sep 2022 06:25:55 -0400
+Received: from out20-62.mail.aliyun.com (out20-62.mail.aliyun.com [115.124.20.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDA9118DFE
+        for <linux-btrfs@vger.kernel.org>; Sat, 24 Sep 2022 03:25:52 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04438231|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0445723-0.00107509-0.954353;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.PNLgY.s_1664015149;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.PNLgY.s_1664015149)
+          by smtp.aliyun-inc.com;
+          Sat, 24 Sep 2022 18:25:50 +0800
+Date:   Sat, 24 Sep 2022 18:25:56 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Su Yue <l@damenly.org>
+Subject: Re: fstests btrfs/042 triggle 'qgroup reserved space leaked'
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+In-Reply-To: <v8pd2lch.fsf@damenly.org>
+References: <20220924144106.E3BE.409509F4@e16-tech.com> <v8pd2lch.fsf@damenly.org>
+Message-Id: <20220924182555.62D0.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220923202822.2667581-4-keescook@chromium.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,168 +40,144 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 23, 2022 at 01:28:09PM -0700, Kees Cook wrote:
-> Instead of discovering the kmalloc bucket size _after_ allocation, round
-> up proactively so the allocation is explicitly made for the full size,
-> allowing the compiler to correctly reason about the resulting size of
-> the buffer through the existing __alloc_size() hint.
+Hi,
+
 > 
-> This will allow for kernels built with CONFIG_UBSAN_BOUNDS or the
-> coming dynamic bounds checking under CONFIG_FORTIFY_SOURCE to gain
-> back the __alloc_size() hints that were temporarily reverted in commit
-> 93dd04ab0b2b ("slab: remove __alloc_size attribute from __kmalloc_track_caller")
+> On Sat 24 Sep 2022 at 14:41, Wang Yugui <wangyugui@e16-tech.com> wrote:
 > 
-> Additionally tries to normalize size variables to u32 from int. Most
-> interfaces are using "int", but notably __alloc_skb uses unsigned int.
-> 
-> Also fix some reverse Christmas tree and comments while touching nearby
-> code.
+> > Hi,
+> >
+> >>
+> >> On 2022/9/24 12:07, Wang Yugui wrote:
+> >> > Hi,
+> >> >
+> >> >> On 2022/9/24 10:11, Wang Yugui wrote:
+> >> >>> Hi,
+> >> >>>
+> >> >>>>
+> >> >>>> On 2022/9/24 07:43, Wang Yugui wrote:
+> >> >>>>> Hi,
+> >> >>>>>
+> >> >>>>> fstests btrfs/042 triggle 'qgroup reserved space leaked'
+> >> >>>>>
+> >> >>>>> kernel source: btrfs misc-next
+> >> >>>>
+> >> >>>> Which commit HEAD?
+> >> >>>>
+> >> >>>> As I can not reproduce using a somewhat older misc-next.
+> >> >>>>
+> >> >>>> The HEAD I'm on is
+> >> >>>> 2d1aef6504bf8bdd7b6ca9fa4c0c5ab32f4da2a8 ("btrfs: stop
+> >> >>>> tracking failed reads in the I/O tree").
+> >> >>>>
+> >> >>>> If it's a regression it can be much easier to pin down.
+> >> >>>>
+> >> >>>>> kernel config:
+> >> >>>>> 	memory debug: CONFIG_KASAN/CONFIG_DEBUG_KMEMLEAK/...
+> >> >>>>> 	lock debug: CONFIG_PROVE_LOCKING/...
+> >> >>>>
+> >> >>>> And any reproducibility? 16 runs no reproduce.
+> >> >>>
+> >> >>> btrfs source version: misc-next: bf940dd88f48,
+> >> >>> 	plus some minor local patch(no qgroup related)
+> >> >>> kernel: 6.0-rc6
+> >> >>>
+> >> >>> reproduce rate:
+> >> >>> 1) 100%(3/3) when local debug config **1
+> >> >>> 2)  0% (0/3) when local release config
+> >> >>>
+> >> >>> **1:local debug config, about 100x slow than release config
+> >> >>> a) memory debug
+> >> >>> 	CONFIG_KASAN/CONFIG_DEBUG_KMEMLEAK/...
+> >> >>> b) lockdep debug
+> >> >>> 	CONFIG_PROVE_LOCKING/...
+> >> >>> c) btrfs debug
+> >> >>> CONFIG_BTRFS_FS_CHECK_INTEGRITY=y
+> >> >>> CONFIG_BTRFS_FS_RUN_SANITY_TESTS=y
+> >> >>> CONFIG_BTRFS_DEBUG=y
+> >> >>> CONFIG_BTRFS_ASSERT=y
+> >> >>> CONFIG_BTRFS_FS_REF_VERIFY=y
+> >> >>
+> >> >> I always run with all btrfs features enabled.
+> >> >>
+> >> >> So is the lockdep.
+> >> >>
+> >> >> KASAN is known to be slow, thus that is only enabled when
+> >> >> there is suspision on memory corruption caused by some wild
+> >> >> pointer.
+> >> >>
+> >> >>>
+> >> >>>
+> >> >>>   From source:
+> >> >>> fs/btrfs/disk-io.c:4668
+> >> >>>       if (btrfs_check_quota_leak(fs_info)) {
+> >> >>> L4668        WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+> >> >>>           btrfs_err(fs_info, "qgroup reserved space
+> >> >>>           leaked");
+> >> >>>       }
+> >> >>>
+> >> >>> This problem will triggle fstests btrfs/042 to failure only
+> >> >>> when
+> >> >>> CONFIG_BTRFS_DEBUG=y ?
+> >> >>>
+> >> >>>
+> >> >>> maybe related issue:
+> >> >>> when lockdep debug is enabled, the following issue become
+> >> >>> very easy to
+> >> >>> reproduce too.
+> >> >>> https://lore.kernel.org/linux-nfs/3E21DFEA-8DF7-484B-8122-D578BFF7F9E0@oracle.com/
+> >> >>> so there maybe some lockdep debug related , but not btrfs
+> >> >>> related
+> >> >>> problem in kernel 6.0.
+> >> >>>
+> >> >>>
+> >> >>> more test(remove some minor local patch(no qgroup related))
+> >> >>> will be done,
+> >> >>> and then I will report the result.
+> >> >>
+> >> >> Better to provide the patches, as I just finished a 16 runs
+> >> >> of btrfs/042, no reproduce.
+> >> >>
+> >> >> Thus I'm starting to suspect the off-tree patches.
+> >> >
+> >> > This problem happen on linux 6.0-rc6+ (master a63f2e7cb110,
+> >> > without
+> >> > btrfs misc-next patch, without local off-tree patch)
+> >>
+> >> Same base, still nope.
+> >>
+> >> > so this problem is not related to the patches still in btrfs
+> >> > misc-next.
+> >> >
+> >> > reproduce rate:
+> >> > 100%(3/3) when local debug config
+> >> > and the whole config file is attached.
+> >> >
+> >>
+> >> I don't think the config makes much difference, as the main
+> >> difference
+> >> is in KASAN and KMEMLEAK, which should not impact the test
+> >> result.
+> >>
+> >> And are you running just that test, or with the full auto
+> >> group?
+> >
+> > For 6.0-rc6 with btrfs misc-next, I tried to run  full auto
+> > group.
+> > btrfs/042 failed, others(btrfs/001 ~ btrfs/157) are OK, and then
+> > I
+> > rebooted the test machine.
+> >
+> > for 6.0-rc6 without btrfs misc-next, I tested btrfs/042 and
+> > btrfs/001 on
+> > the same machine.
+> >
+> May I ask if "6.0-rc6 without btrfs misc-next" is 6.0-rc6 *without any other changes*?
+> It looks so weird cause I can't reproduce the issue either.
 
-Something in this patch is breaking things -- I've refactored it again
-to avoid overwriting the incoming size argument, and instead add a
-dedicated outgoing size variable. Here's what will be v3 ...
+Yes. *without any other changes*
 
----
- net/core/skbuff.c | 41 ++++++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 19 deletions(-)
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/09/24
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 974bbbbe7138..9b5a9fb69d9d 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -346,11 +346,12 @@ EXPORT_SYMBOL(napi_build_skb);
-  * memory is free
-  */
- static void *kmalloc_reserve(size_t size, gfp_t flags, int node,
--			     bool *pfmemalloc)
-+			     bool *pfmemalloc, size_t *alloc_size)
- {
- 	void *obj;
- 	bool ret_pfmemalloc = false;
- 
-+	size = kmalloc_size_roundup(size);
- 	/*
- 	 * Try a regular allocation, when that fails and we're not entitled
- 	 * to the reserves, fail.
-@@ -369,6 +370,7 @@ static void *kmalloc_reserve(size_t size, gfp_t flags, int node,
- 	if (pfmemalloc)
- 		*pfmemalloc = ret_pfmemalloc;
- 
-+	*alloc_size = size;
- 	return obj;
- }
- 
-@@ -400,7 +402,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
- {
- 	struct kmem_cache *cache;
- 	struct sk_buff *skb;
--	unsigned int osize;
-+	size_t alloc_size;
- 	bool pfmemalloc;
- 	u8 *data;
- 
-@@ -427,15 +429,15 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
- 	 */
- 	size = SKB_DATA_ALIGN(size);
- 	size += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
--	data = kmalloc_reserve(size, gfp_mask, node, &pfmemalloc);
--	if (unlikely(!data))
--		goto nodata;
--	/* kmalloc(size) might give us more room than requested.
-+	/* kmalloc(size) might give us more room than requested, so
-+	 * allocate the true bucket size up front.
- 	 * Put skb_shared_info exactly at the end of allocated zone,
- 	 * to allow max possible filling before reallocation.
- 	 */
--	osize = ksize(data);
--	size = SKB_WITH_OVERHEAD(osize);
-+	data = kmalloc_reserve(size, gfp_mask, node, &pfmemalloc, &alloc_size);
-+	if (unlikely(!data))
-+		goto nodata;
-+	size = SKB_WITH_OVERHEAD(alloc_size);
- 	prefetchw(data + size);
- 
- 	/*
-@@ -444,7 +446,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
- 	 * the tail pointer in struct sk_buff!
- 	 */
- 	memset(skb, 0, offsetof(struct sk_buff, tail));
--	__build_skb_around(skb, data, osize);
-+	__build_skb_around(skb, data, alloc_size);
- 	skb->pfmemalloc = pfmemalloc;
- 
- 	if (flags & SKB_ALLOC_FCLONE) {
-@@ -1709,6 +1711,7 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
- {
- 	int i, osize = skb_end_offset(skb);
- 	int size = osize + nhead + ntail;
-+	size_t alloc_size;
- 	long off;
- 	u8 *data;
- 
-@@ -1723,10 +1726,10 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
- 	if (skb_pfmemalloc(skb))
- 		gfp_mask |= __GFP_MEMALLOC;
- 	data = kmalloc_reserve(size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
--			       gfp_mask, NUMA_NO_NODE, NULL);
-+			       gfp_mask, NUMA_NO_NODE, NULL, &alloc_size);
- 	if (!data)
- 		goto nodata;
--	size = SKB_WITH_OVERHEAD(ksize(data));
-+	size = SKB_WITH_OVERHEAD(alloc_size);
- 
- 	/* Copy only real data... and, alas, header. This should be
- 	 * optimized for the cases when header is void.
-@@ -6063,19 +6066,19 @@ static int pskb_carve_inside_header(struct sk_buff *skb, const u32 off,
- 	int i;
- 	int size = skb_end_offset(skb);
- 	int new_hlen = headlen - off;
-+	size_t alloc_size;
- 	u8 *data;
- 
- 	size = SKB_DATA_ALIGN(size);
- 
- 	if (skb_pfmemalloc(skb))
- 		gfp_mask |= __GFP_MEMALLOC;
--	data = kmalloc_reserve(size +
--			       SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
--			       gfp_mask, NUMA_NO_NODE, NULL);
-+	data = kmalloc_reserve(size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
-+			       gfp_mask, NUMA_NO_NODE, NULL, &alloc_size);
- 	if (!data)
- 		return -ENOMEM;
- 
--	size = SKB_WITH_OVERHEAD(ksize(data));
-+	size = SKB_WITH_OVERHEAD(alloc_size);
- 
- 	/* Copy real data, and all frags */
- 	skb_copy_from_linear_data_offset(skb, off, data, new_hlen);
-@@ -6184,18 +6187,18 @@ static int pskb_carve_inside_nonlinear(struct sk_buff *skb, const u32 off,
- 	u8 *data;
- 	const int nfrags = skb_shinfo(skb)->nr_frags;
- 	struct skb_shared_info *shinfo;
-+	size_t alloc_size;
- 
- 	size = SKB_DATA_ALIGN(size);
- 
- 	if (skb_pfmemalloc(skb))
- 		gfp_mask |= __GFP_MEMALLOC;
--	data = kmalloc_reserve(size +
--			       SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
--			       gfp_mask, NUMA_NO_NODE, NULL);
-+	data = kmalloc_reserve(size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
-+			       gfp_mask, NUMA_NO_NODE, NULL, &alloc_size);
- 	if (!data)
- 		return -ENOMEM;
- 
--	size = SKB_WITH_OVERHEAD(ksize(data));
-+	size = SKB_WITH_OVERHEAD(alloc_size);
- 
- 	memcpy((struct skb_shared_info *)(data + size),
- 	       skb_shinfo(skb), offsetof(struct skb_shared_info, frags[0]));
--- 
-2.34.1
-
-
--- 
-Kees Cook
