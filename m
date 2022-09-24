@@ -2,37 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D555E88C7
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Sep 2022 08:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCDF5E8906
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Sep 2022 09:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbiIXGlL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 24 Sep 2022 02:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
+        id S233283AbiIXHWP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 24 Sep 2022 03:22:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbiIXGlK (ORCPT
+        with ESMTP id S232759AbiIXHWO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 24 Sep 2022 02:41:10 -0400
-Received: from out20-86.mail.aliyun.com (out20-86.mail.aliyun.com [115.124.20.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524B29AFEA
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Sep 2022 23:41:07 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04439814|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0290267-0.0108302-0.960143;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.PNF5j.A_1664001663;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.PNF5j.A_1664001663)
-          by smtp.aliyun-inc.com;
-          Sat, 24 Sep 2022 14:41:04 +0800
-Date:   Sat, 24 Sep 2022 14:41:09 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: fstests btrfs/042 triggle 'qgroup reserved space leaked'
-Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <a80263f7-9ff7-4f1b-d863-8d092cbb9a7a@gmx.com>
-References: <20220924120727.C245.409509F4@e16-tech.com> <a80263f7-9ff7-4f1b-d863-8d092cbb9a7a@gmx.com>
-Message-Id: <20220924144106.E3BE.409509F4@e16-tech.com>
+        Sat, 24 Sep 2022 03:22:14 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1316FD4303
+        for <linux-btrfs@vger.kernel.org>; Sat, 24 Sep 2022 00:22:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1664004127;
+        bh=L98H3d5kW0lrE0o2r32UHNjeeqE8jmgSZ7AZL/UV7Qk=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=IRxxlY+SaCRi4UUk9xuKX02U9RIDSKweRFDc1eJ2W93hqSksPSfIYGXtcgcwzoTer
+         K59Gbp+p1Yd4Dk5I3xfXG41acdPL4adWZ1HMkS62+4pp+Z93Sq/GkQQc18kYBBepoR
+         98Gux7X8Yqi9KWoAYOMBEwOnoD1GE32cfeRy6V40=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8XTv-1pOXnz0m4v-014T8r; Sat, 24
+ Sep 2022 09:22:06 +0200
+Message-ID: <7a51b28e-d8b9-443b-74ea-457bbfaf1f8f@gmx.com>
+Date:   Sat, 24 Sep 2022 15:22:03 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.04 [en]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Content-Language: en-US
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20220924120727.C245.409509F4@e16-tech.com>
+ <a80263f7-9ff7-4f1b-d863-8d092cbb9a7a@gmx.com>
+ <20220924144106.E3BE.409509F4@e16-tech.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: fstests btrfs/042 triggle 'qgroup reserved space leaked'
+In-Reply-To: <20220924144106.E3BE.409509F4@e16-tech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:BpH5RbemyYBn7prZzMb/aE6KXFqq6dKzQmpe0SGUYXK+5vq4U79
+ Mbu1jusRpxci6rbKbhKMVYUuT8BBJpeUXh3eFsxt4hqUJhCDq4nglukIVcYjf3JmSjdczB4
+ fWtdV+hBVBcnAOkGBCJQ/iGU6eML8oBabbGPmek5wAyur1+GPmW+gQ5IrObX+HFneYci+5p
+ 8ZgLn/yCApfPfKPv6KHEA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+i1UrYgIKws=:ptkqWnbhn5aTAoC2VzdmnM
+ m6vcC+ORjroOoQKoqb1Fjdj5CtKNtOgLdQMWKrfFHrY+R91ncREpB3L1kjWnvnC1PBUue2pqJ
+ Qtp6uw/fffIBs89K4LYlCeXF4ivF+5o4DXuFUWYICb7su2YOQV9ng43TFELVJjUeZtgEMYJcF
+ CRyYd4MaOGdADnhT6A8ic60G1bQFWyuQ5Thber2QNChg4ZAKTRJslLpeWtimc50Ly/h3CKbFp
+ lib5RDqY92Iqmi6W7dfzk/GKAhhcKJE429K5BRjX6vQsleR45UPUu4o7LDoHychrQITf9tpqD
+ EXGBl+fsYxCu6dkrzS/oSU/70cUAsWTtuOKWuGqmwe2pcZ/vKA8PffN+REelZMmL6WTu/BDvb
+ HJKvH2I7P1sS5ClG5DuEkxHU9AOLzn9rM6Hg/xGLCh5BrY2JWBdV0MxNPBUc8qOFAKfuk28t4
+ itjnIl+NO7UwVD/HsNMyC+YVjcVx9Slm4ArtT2sr4ky9XHmFvdQzaQWdT+TTGfdxwXZmQSjeE
+ HGN1E9vvrJAPkDIwsk9YkdICo3g+7JQ1QiDsRfrRYmeJ14PezW6T8jML/cNfNBzJSok9kTlr4
+ WhLh+tkDn6Gna7GgoDqOpLIk86AmRX7N3o2r+SLDRFE0AtxCNLZAF85u9HXlNt9O1F2zgP2b4
+ Xi3CCQS6pHbsTZKhwTNwh1qPP0ZY8MSaltSH6Elas5l8ayxI2BIW91BQtvx5LM8qKi8Mpvvku
+ D4PMmr+XtRG2WuEC7I3i3QNG4uJcWCtIvkA/6ZdAilAOaszDWWtI/6Wr9huBKyQTL2l/wuTLa
+ I/YkQD4u/dGM6NxRTr3BzMh/aNaJMOPo9kiYAEAdEZVgeNsAAd3a8tvqaJcASF2if5mViro06
+ mEKAao8nAXRTKdzWOOaa5HO/q3EIPnW3UuV25ifesxaP43jV6b40pvD8k6dyTw6cGO+LYH61D
+ cyvBNWgRVZA5VloCTNUKDO/vqUbOZM9iKmQsGyHp0Ix837XoSaSP2tUM4I5u+OirWgqHa1vBH
+ aRMa3K9QCpHoczCeRXk/XA9fZrq6mJZJHyYR6vnKYj3fi7sZTZFkLSCKbiTRsHXNm0xOX9Yyb
+ SD65CLH2JGQUJwM0ngPuO9yV4AYcleGKZ4iMVFvFbD9Qevu3Ahd53+bgzxXtO1SqFPVqyUovX
+ MVX3DCI7m2w8gzDg78cuJ2j8vx
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,126 +74,52 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-
-> 
-> On 2022/9/24 12:07, Wang Yugui wrote:
-> > Hi,
-> >
-> >> On 2022/9/24 10:11, Wang Yugui wrote:
-> >>> Hi,
-> >>>
-> >>>>
-> >>>> On 2022/9/24 07:43, Wang Yugui wrote:
-> >>>>> Hi,
-> >>>>>
-> >>>>> fstests btrfs/042 triggle 'qgroup reserved space leaked'
-> >>>>>
-> >>>>> kernel source: btrfs misc-next
-> >>>>
-> >>>> Which commit HEAD?
-> >>>>
-> >>>> As I can not reproduce using a somewhat older misc-next.
-> >>>>
-> >>>> The HEAD I'm on is 2d1aef6504bf8bdd7b6ca9fa4c0c5ab32f4da2a8 ("btrfs: stop tracking failed reads in the I/O tree").
-> >>>>
-> >>>> If it's a regression it can be much easier to pin down.
-> >>>>
-> >>>>> kernel config:
-> >>>>> 	memory debug: CONFIG_KASAN/CONFIG_DEBUG_KMEMLEAK/...
-> >>>>> 	lock debug: CONFIG_PROVE_LOCKING/...
-> >>>>
-> >>>> And any reproducibility? 16 runs no reproduce.
-> >>>
-> >>> btrfs source version: misc-next: bf940dd88f48,
-> >>> 	plus some minor local patch(no qgroup related)
-> >>> kernel: 6.0-rc6
-> >>>
-> >>> reproduce rate:
-> >>> 1) 100%(3/3) when local debug config **1
-> >>> 2)  0% (0/3) when local release config
-> >>>
-> >>> **1:local debug config, about 100x slow than release config
-> >>> a) memory debug
-> >>> 	CONFIG_KASAN/CONFIG_DEBUG_KMEMLEAK/...
-> >>> b) lockdep debug
-> >>> 	CONFIG_PROVE_LOCKING/...
-> >>> c) btrfs debug
-> >>> CONFIG_BTRFS_FS_CHECK_INTEGRITY=y
-> >>> CONFIG_BTRFS_FS_RUN_SANITY_TESTS=y
-> >>> CONFIG_BTRFS_DEBUG=y
-> >>> CONFIG_BTRFS_ASSERT=y
-> >>> CONFIG_BTRFS_FS_REF_VERIFY=y
-> >>
-> >> I always run with all btrfs features enabled.
-> >>
-> >> So is the lockdep.
-> >>
-> >> KASAN is known to be slow, thus that is only enabled when there is suspision on memory corruption caused by some wild pointer.
-> >>
-> >>>
-> >>>
-> >>>   From source:
-> >>> fs/btrfs/disk-io.c:4668
-> >>>       if (btrfs_check_quota_leak(fs_info)) {
-> >>> L4668        WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-> >>>           btrfs_err(fs_info, "qgroup reserved space leaked");
-> >>>       }
-> >>>
-> >>> This problem will triggle fstests btrfs/042 to failure only when
-> >>> CONFIG_BTRFS_DEBUG=y ?
-> >>>
-> >>>
-> >>> maybe related issue:
-> >>> when lockdep debug is enabled, the following issue become very easy to
-> >>> reproduce too.
-> >>> https://lore.kernel.org/linux-nfs/3E21DFEA-8DF7-484B-8122-D578BFF7F9E0@oracle.com/
-> >>> so there maybe some lockdep debug related , but not btrfs related
-> >>> problem in kernel 6.0.
-> >>>
-> >>>
-> >>> more test(remove some minor local patch(no qgroup related)) will be done,
-> >>> and then I will report the result.
-> >>
-> >> Better to provide the patches, as I just finished a 16 runs of btrfs/042, no reproduce.
-> >>
-> >> Thus I'm starting to suspect the off-tree patches.
-> >
-> > This problem happen on linux 6.0-rc6+ (master a63f2e7cb110, without
-> > btrfs misc-next patch, without local off-tree patch)
-> 
-> Same base, still nope.
-> 
-> > so this problem is not related to the patches still in btrfs misc-next.
-> >
-> > reproduce rate:
-> > 100%(3/3) when local debug config
-> > and the whole config file is attached.
-> >
-> 
-> I don't think the config makes much difference, as the main difference
-> is in KASAN and KMEMLEAK, which should not impact the test result.
-> 
-> And are you running just that test, or with the full auto group?
-
-For 6.0-rc6 with btrfs misc-next, I tried to run  full auto group.
-btrfs/042 failed, others(btrfs/001 ~ btrfs/157) are OK, and then I
-rebooted the test machine.
-
-for 6.0-rc6 without btrfs misc-next, I tested btrfs/042 and btrfs/001 on
-the same machine.
-then I tested 6.0-rc6 without btrfs misc-next on another 2 servers.
-
-reproduce rate:
-server1	3/3
-server2	2/3
-server3	3/3
-total rate: 8/9
-
-all 3 servers are in good status(ECC memory status and SSD status).
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2022/09/24
 
 
+On 2022/9/24 14:41, Wang Yugui wrote:
+[...]
+>>
+>> I don't think the config makes much difference, as the main difference
+>> is in KASAN and KMEMLEAK, which should not impact the test result.
+>>
+>> And are you running just that test, or with the full auto group?
+>
+> For 6.0-rc6 with btrfs misc-next, I tried to run  full auto group.
+> btrfs/042 failed, others(btrfs/001 ~ btrfs/157) are OK, and then I
+> rebooted the test machine.
+>
+> for 6.0-rc6 without btrfs misc-next, I tested btrfs/042 and btrfs/001 on
+> the same machine.
+> then I tested 6.0-rc6 without btrfs misc-next on another 2 servers.
+>
+> reproduce rate:
+> server1	3/3
+> server2	2/3
+> server3	3/3
+> total rate: 8/9
+>
+> all 3 servers are in good status(ECC memory status and SSD status).
+
+Considering no one can reproduce your failure so far, I strongly doubt
+if it's something else.
+
+Please provide the following info:
+
+- Full dmesg since bootup.
+   Better to reboot, then run btrfs/042, and take the dmesg.
+
+- local.config file of xfstests
+
+- result/btrfs/042* files of xfstests
+   Only need to run that exact test case, since you have a very high
+   chance to reproduce.
+
+- the full output of "./check btrfs/042"
+
+
+>
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2022/09/24
+>
+>
