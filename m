@@ -2,102 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D06265E9578
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Sep 2022 20:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551145E977D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Sep 2022 02:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbiIYSq7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 25 Sep 2022 14:46:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
+        id S233101AbiIZAjD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 25 Sep 2022 20:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbiIYSq6 (ORCPT
+        with ESMTP id S233467AbiIZAiw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 25 Sep 2022 14:46:58 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967022BB36
-        for <linux-btrfs@vger.kernel.org>; Sun, 25 Sep 2022 11:46:55 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-3454b0b1b6dso48958707b3.4
-        for <linux-btrfs@vger.kernel.org>; Sun, 25 Sep 2022 11:46:55 -0700 (PDT)
+        Sun, 25 Sep 2022 20:38:52 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CDC2A735
+        for <linux-btrfs@vger.kernel.org>; Sun, 25 Sep 2022 17:38:50 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id u69so5195175pgd.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 25 Sep 2022 17:38:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date;
-        bh=U8AEOwIZMshWexvLvI+LNmcjHx5SoRYb6Rc2IsnNYSI=;
-        b=kdJN8NIrsBgVttotEUWujO70vt6oqzpcUwlxEj6tNkVzuRAkB5BrU/iqE4G1m8aNjN
-         fH4r2A3o4EHxGqjepgjSTBPnChb5noy/PgCC9Dr/glktHZVCBKgB16HfZYDYV3rCuSnz
-         1bym67zVZvZ4SYBiQ8qAWUCN6EjE/ZvC93sEBtyz9fKO725n9C3AyJLZhL+wKV9SzvJA
-         NjX5DXBRJ08poic4EZyTTiqM4v6OzkVuOmIzdJSAbJMgsjTKasdGw4vHaGsF2RAjDJRg
-         rozuRDCgLi/KXkhJ+u1HkYTkp0RbGEjUJiD83UaIKOuCqhsAe7jtcCrI1J6eTysvlGCz
-         94Rw==
+        d=chromium.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=ZsMZDiPJ05dqPEjOyzQRRCQyAniieUtquk7D7/uc9oo=;
+        b=EloZHChUwOJ+IAK+dqPRjhd24FYS6MkmFqZpedddEJP3NPIP54FWcwg3RKRz6Ai8pZ
+         z2DviABmbm5Ne8x7+vcrgYA1N3bmoOgjdNpOgYz+yaXmcZ9y56Pdoen1P+xANPX4dHu4
+         HiKqS9DzqPcFKjopFBXMCDEaM898Bv94O7hJQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=U8AEOwIZMshWexvLvI+LNmcjHx5SoRYb6Rc2IsnNYSI=;
-        b=Z3LxqiOmu3IMKvWybMGYKlSFhjXJfcANg7a/M6wtvogt7wEnLqs2+LdYsqJSQBQcyy
-         w0flXRGBWxwQ82wwTDQf4wkk36axWeReOXv3ebtguSWQqAPYRjc5RsM1MZA0PinLCTQB
-         iUDPfUKAqJCeddIrTfUIp62YUYMGlbB+YXNtZK2iRrgEkTLhIXs8ch91e8nR6ZyQfJ52
-         h/GK5sncPgUtCPUFFWYG3szx5a7+YRQ1BpDKgHgnHmqufEswy6HLFpQtrn8EX33fJ4Zw
-         K9FxES2ouIdtFc+ui407i9AzPQSaj/llr6uMbzd4GRnS6XCwla19g1ACjMsj1a8gArv7
-         JXrw==
-X-Gm-Message-State: ACrzQf18q4SJ3MlYoi4j/f1Abb5LSzrf7fymi9UPL9ho4YEMcQYo4HFw
-        J1OMVssDjIu9Q28mxaj0GU/f3BCrDr5m2/EQFsQ=
-X-Google-Smtp-Source: AMsMyM51pFe8Ik686MwdUpWR2yuEy1xPqW4PZ66BadKF805LIytsljvRhDiU9ANRUErKzumVBAygepIKhXC0vyJ92Ps=
-X-Received: by 2002:a81:6756:0:b0:345:525e:38 with SMTP id b83-20020a816756000000b00345525e0038mr17677309ywc.47.1664131614654;
- Sun, 25 Sep 2022 11:46:54 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=ZsMZDiPJ05dqPEjOyzQRRCQyAniieUtquk7D7/uc9oo=;
+        b=zx2QoD7hhA2LdFW+s4oweBulF1FUY9e5Bjd9VxBIZlCfTdZ9BK1oFPuBnb9hTgbcnK
+         vKFaB+d/YXWLjKGxJU/FVYwS0FSNgwkztoGDqNsle3MXajDa1+IgOVK0CqxMDkuEndMA
+         I3Bgl+JBAFWNjNdGJUDImplxy5gH4vi2SfbLnmsVcuVIkKIfvYFYzixwEsSXoVgcAlpK
+         NhJIjWTK895QEpjcG8s+P0O+FMadPPfcnRyvrEZWP4Lyu5PwDo7B12BTrW16XgxkHq8h
+         vupy7WnYT3MPAyRF8fX+LwiQQ4fPa+1U3jCiBFfUjH9EgoWsLu6TNZiBHd1R86NyM2wy
+         ftAw==
+X-Gm-Message-State: ACrzQf18UW+mADXYHv+qnW2Yf0CALPu/+2upUIGq7X9eerXHkSMdrmQh
+        Yazx9IEk4bD+Ath+IbMgY3k1JA==
+X-Google-Smtp-Source: AMsMyM7j48vn8CX614C8f5vlUd1g6FcIEIYyyHHTpwyTo0bx6Hew8gRK92T2JHXk4G8JNUKlDJxOQQ==
+X-Received: by 2002:a63:4b1d:0:b0:439:e6a4:e902 with SMTP id y29-20020a634b1d000000b00439e6a4e902mr18048148pga.212.1664152730415;
+        Sun, 25 Sep 2022 17:38:50 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t11-20020a17090340cb00b00172951ddb12sm9640855pld.42.2022.09.25.17.38.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Sep 2022 17:38:49 -0700 (PDT)
+Date:   Sun, 25 Sep 2022 17:38:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alex Elder <elder@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Yonghong Song <yhs@fb.com>, Marco Elver <elver@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, dev@openvswitch.org,
+        x86@kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 14/16] kasan: Remove ksize()-related tests
+Message-ID: <202209251738.6A453BC008@keescook>
+References: <20220923202822.2667581-1-keescook@chromium.org>
+ <20220923202822.2667581-15-keescook@chromium.org>
+ <CACT4Y+bg=j9VdteQwrJTNFF_t4EE5uDTMLj07+uMJ9-NcooXGQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAGzuT_3UVJuXeDjQ4CtM77TO2C6WoBAiWyyBi59_wcv3p7znzA@mail.gmail.com>
- <20220914142738.GN32411@twin.jikos.cz>
-In-Reply-To: <20220914142738.GN32411@twin.jikos.cz>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Sun, 25 Sep 2022 14:46:18 -0400
-Message-ID: <CAEg-Je-vB+UgU2uDspdN8P+aG+JQP1h-7hx34siy6FasgJ=e3w@mail.gmail.com>
-Subject: Re: Is scrubbing md-aware in any way?
-To:     dsterba@suse.cz
-Cc:     Mariusz Mazur <mariusz.g.mazur@gmail.com>,
-        linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_05,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+bg=j9VdteQwrJTNFF_t4EE5uDTMLj07+uMJ9-NcooXGQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 14, 2022 at 10:37 AM David Sterba <dsterba@suse.cz> wrote:
->
-> On Tue, Sep 13, 2022 at 04:15:26PM +0200, Mariusz Mazur wrote:
-> > Hi, it's my understanding that when running a scrub on a btrfs raid,
-> > if data corruption is detected, the process will check copies on other
-> > devices and heal the data if possible.
+On Sat, Sep 24, 2022 at 10:15:18AM +0200, Dmitry Vyukov wrote:
+> On Fri, 23 Sept 2022 at 22:28, Kees Cook <keescook@chromium.org> wrote:
 > >
-> > Is any of that functionality available when running on top of an md
-> > raid?
->
-> No, the type of block device under btrfs is considered the same in all
-> cases, except zoned devices, so any advanced information exchange or
-> control like devices reporting bad sectors or btrfs asking to repair the
-> underlying device by its own means.
->
-> > When a scrub notices an issue, does it have any mechanism of
-> > telling md "hey, there's a problem with these sectors" and working
-> > with it to do something about that or is it all up to the admin to
-> > deal with the "file corrupted" message?
->
-> It's up to the admin. I've looked if there's some API outside of the
-> md-raid implementation, but there's none so it would have to be created
-> first in for the btrfs <-> md cooperation.
+> > In preparation for no longer unpoisoning in ksize(), remove the behavioral
+> > self-tests for ksize().
+> >
+> > [...]
+> > -/* Check that ksize() makes the whole object accessible. */
+> > -static void ksize_unpoisons_memory(struct kunit *test)
+> > -{
+> > -       char *ptr;
+> > -       size_t size = 123, real_size;
+> > -
+> > -       ptr = kmalloc(size, GFP_KERNEL);
+> > -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+> > -       real_size = ksize(ptr);
+> > -
+> > -       OPTIMIZER_HIDE_VAR(ptr);
+> > -
+> > -       /* This access shouldn't trigger a KASAN report. */
+>  > -       ptr[size] = 'x';
+> 
+> I would rather keep the tests and update to the new behavior. We had
+> bugs in ksize, we need test coverage.
+> I assume ptr[size] access must now produce an error even after ksize.
 
-IIRC, the Synology folks created such an API for their own use-case.
-Does anyone on-list know the folks at Synology to see if they'd be
-interested in working with us and the md folks to make this fully
-supported upstream?
+Good point on all these! I'll respin.
 
-
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+-- 
+Kees Cook
