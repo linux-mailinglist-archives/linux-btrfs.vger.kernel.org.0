@@ -2,127 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D56925EAF85
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Sep 2022 20:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8BC5EAFC4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Sep 2022 20:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbiIZSVI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Sep 2022 14:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
+        id S230070AbiIZS02 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Sep 2022 14:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbiIZSUx (ORCPT
+        with ESMTP id S230361AbiIZS0H (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Sep 2022 14:20:53 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D331E6C762
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Sep 2022 11:15:27 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 653755C0183;
-        Mon, 26 Sep 2022 14:15:24 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 26 Sep 2022 14:15:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:date:date:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm2; t=1664216124; x=1664302524; bh=uyJOGFq9LBeDOZzRwyZsEBwtj
-        3XGRu0dq9xMas3/QkA=; b=vLMwSmcz0IoMjHpPpoOpd4S+HusWfOXd06I9EHg3a
-        gs3SwPCGPwbhfqnibOER3EtfwAnm0HM1YpBUEr5DTCtIrS5s//6TF6raaKAegqER
-        KZUd4ycTlGpxkwzitPu/GkdWu0hyG1A+Fci94SQ72x+MNtDuM9psssfuYLBwXoDw
-        T8nkz22/sx/t+s52iVxxgvpJwvznsmfLrAx3qbzEwLOmq9h1GYO5R3DHjjtniDyI
-        yzM3NEdE71O9EWyM7dxR3IdaTJQSbbJ5wLTmTy2uws/DADNZpbHVI52HLTBbrKv5
-        dYx76j2ElLzZLBgLDFbhYhscRc2py2hzIiSIEGqNseQOQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:message-id
-        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1664216124; x=1664302524; bh=uyJOGFq9LBeDOZzRwyZsEBwtj3XGRu0dq9x
-        Mas3/QkA=; b=S715HBP67BSifVr706S5bkSb+fVJXi+3eUZJMszc5oJlpx3OqVG
-        Uety3pymqx3mo8EGZ2GDT3gueGPS7nWv9Y1QZNQ8bzI48gHWjxcUA+1On0ww5PCB
-        Gae3PWFIAd+or00kIpwNchkVVQXLx71kBMueOdOk04weCJOlN12gcLm7twic+nwP
-        KIO/PF19jlfriRtKWpdYmAmzTWAW9HRS4aCgOhuu6il9jxbnLqJje1p1FSsSc9r0
-        dx8xO9j7Q1J2CSUkolmDF5UsN9PgRwf3/tP6uOhkCE+adElI+dX1/gk4glP12i5A
-        ADkq4Y/XmTlugU7y2ef0IamL7KClfqEqBMA==
-X-ME-Sender: <xms:POwxY7gv0Rc0_wj4k71GYBS2irAIrdieGouOXB1xC-6z1lGC6pj8CQ>
-    <xme:POwxY4C9hup6JG055GE1Kr3ne9SojFixSlexYh6roVWf3OWrUAxF6aAHvd9m4lOa9
-    InJ5faahcXRcbQdZyI>
-X-ME-Received: <xmr:POwxY7EHAJONRRG45hlG-hSrbcD-qrUzq9JDb3yw4a_ML8aGkxn6VrtZ3okt-uaxfEmcTM0ByQlBHiSoiiBQyC2vBHZDXA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeegvddguddvfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
-    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:POwxY4S4-3dfj-EbSZnLpJUIoyqy-jlS7z64bWMsvY8ow-7n6RelDw>
-    <xmx:POwxY4zs5wvwGWcwcJVdV5QZPz1uYJo-cX1q3Jw5tIAz-CUIyLMlHw>
-    <xmx:POwxY-4bPGqBL0LjcI1ErgQQ_pqZZCUwytIoeDqBPTuHCeFm8glRWw>
-    <xmx:POwxY-YJqiv9hWUK_Up7OMvbkDEX6NqOUjLZs1qD42eKJSNoBI1Hew>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 26 Sep 2022 14:15:23 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: send: gate SEND_A_MAX and SEND_C_MAX V3
-Date:   Mon, 26 Sep 2022 11:15:22 -0700
-Message-Id: <6c87faf8a6ff6172019faed9988adb9fb99689b4.1664216021.git.boris@bur.io>
-X-Mailer: git-send-email 2.37.2
+        Mon, 26 Sep 2022 14:26:07 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBE34A810
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Sep 2022 11:24:40 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id s206so7317575pgs.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Sep 2022 11:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=4OBTQRXHJygCpY/2rBSvNKQlNNozBBa3mtJlOeJ/EyY=;
+        b=cSzvTXKu85TucB7q+g9CQdjC/FdnYJW7ESEBDVMDQZhpqkoHzMT6tB5vmqaaVmtq+c
+         HBo/BI5kdAn7jf+xxq5MiOLWI7cJumnHX29hS+SWLXo9wgZxYqgGZ4IjXwCG6/+UPFiS
+         mSjP6/8kEubWj+KXOsoeUGGJwGHBMRMvzL4Ek=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=4OBTQRXHJygCpY/2rBSvNKQlNNozBBa3mtJlOeJ/EyY=;
+        b=iysIVJQvLdw2bHoinjfWfsiSST58V54xeDj8SsOKKTzlvnmKHTNqldx7nrXwoOFWYZ
+         tc0LQI5Dm7dKoCFdNxpwvp8MbjKqG6/87I+E6krPP4cugfCM1AFX5bVq27wFb3GLikMc
+         sR+7jOI74cmLLYpbBEUl442BhwTHPwpL+A2Syfgj1XDfGbE0clD6Eg9RJmzZ0R6qkRV3
+         he1Z3r9ulM3bIJyTc3Givund/6E0m4ROrAcWM9Ld/jS5qfjyobHHvVta/0gfgnqXZHsP
+         s5kIJtK5JYKwcUpN2ju4vKuLTfSoEYw77mnsDo9ipEpngMlImYsB4uw2TCvFQG1QayMu
+         kx8g==
+X-Gm-Message-State: ACrzQf1ssBbCdN4Xmr1eViplwc+QxFEamQHRqoeMO6ZnvZ87ZAwV7EVD
+        QG036u9trsN24su+biRTmCJ76A==
+X-Google-Smtp-Source: AMsMyM6gzz3RlLPDBF6eEAacYBSNNxOrYYdXLeQNzcYYWROPiLY1NScn4aUnW3BZuZbnjPt9v5tgLQ==
+X-Received: by 2002:a63:4750:0:b0:43c:dac:9e4b with SMTP id w16-20020a634750000000b0043c0dac9e4bmr21137736pgk.300.1664216679159;
+        Mon, 26 Sep 2022 11:24:39 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p2-20020a170902c70200b0016f85feae65sm11305644plp.87.2022.09.26.11.24.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Sep 2022 11:24:38 -0700 (PDT)
+Date:   Mon, 26 Sep 2022 11:24:37 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alex Elder <elder@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Yonghong Song <yhs@fb.com>, Marco Elver <elver@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, dev@openvswitch.org,
+        x86@kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 13/16] mempool: Use kmalloc_size_roundup() to match
+ ksize() usage
+Message-ID: <202209261123.B2CBAE87E0@keescook>
+References: <20220923202822.2667581-1-keescook@chromium.org>
+ <20220923202822.2667581-14-keescook@chromium.org>
+ <f4fc52c4-7c18-1d76-0c7a-4058ea2486b9@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4fc52c4-7c18-1d76-0c7a-4058ea2486b9@suse.cz>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We haven't finalized send stream v3 yet, so gate setting the max command
-values behind CONFIG_BTRFS_DEBUG.
+On Mon, Sep 26, 2022 at 03:50:43PM +0200, Vlastimil Babka wrote:
+> On 9/23/22 22:28, Kees Cook wrote:
+> > Round up allocations with kmalloc_size_roundup() so that mempool's use
+> > of ksize() is always accurate and no special handling of the memory is
+> > needed by KASAN, UBSAN_BOUNDS, nor FORTIFY_SOURCE.
+> > 
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: linux-mm@kvack.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >   mm/mempool.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/mm/mempool.c b/mm/mempool.c
+> > index 96488b13a1ef..0f3107b28e6b 100644
+> > --- a/mm/mempool.c
+> > +++ b/mm/mempool.c
+> > @@ -526,7 +526,7 @@ EXPORT_SYMBOL(mempool_free_slab);
+> >    */
+> >   void *mempool_kmalloc(gfp_t gfp_mask, void *pool_data)
+> >   {
+> > -	size_t size = (size_t)pool_data;
+> > +	size_t size = kmalloc_size_roundup((size_t)pool_data);
+> 
+> Hm it is kinda wasteful to call into kmalloc_size_roundup for every
+> allocation that has the same input. We could do it just once in
+> mempool_init_node() for adjusting pool->pool_data ?
+> 
+> But looking more closely, I wonder why poison_element() and
+> kasan_unpoison_element() in mm/mempool.c even have to use ksize()/__ksize()
+> and not just operate on the requested size (again, pool->pool_data). If no
+> kmalloc mempool's users use ksize() to write beyond requested size, then we
+> don't have to unpoison/poison that area either?
 
-In my testing, and judging from the code, this is a cosmetic change;
-verity send commands are still produced (and processed by a compatible
-btrfs-progs), even with CONFIG_BTRFS_DEBUG=n set.
+Yeah, I think that's a fair point. I will adjust this.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/send.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/fs/btrfs/send.h b/fs/btrfs/send.h
-index 0a4537775e0c..23661b37ea64 100644
---- a/fs/btrfs/send.h
-+++ b/fs/btrfs/send.h
-@@ -94,9 +94,13 @@ enum btrfs_send_cmd {
- 
- 	/* Version 3 */
- 	BTRFS_SEND_C_ENABLE_VERITY	= 26,
-+#ifndef CONFIG_BTRFS_DEBUG
-+	BTRFS_SEND_C_MAX		= 25,
-+#else
- 	BTRFS_SEND_C_MAX_V3		= 26,
- 	/* End */
- 	BTRFS_SEND_C_MAX		= 26,
-+#endif
- };
- 
- /* attributes in send stream */
-@@ -168,9 +172,14 @@ enum {
- 	BTRFS_SEND_A_VERITY_BLOCK_SIZE	= 33,
- 	BTRFS_SEND_A_VERITY_SALT_DATA	= 34,
- 	BTRFS_SEND_A_VERITY_SIG_DATA	= 35,
-+
-+#ifndef CONFIG_BTRFS_DEBUG
-+	__BTRFS_SEND_A_MAX		= 31,
-+#else
- 	BTRFS_SEND_A_MAX_V3		= 35,
- 
- 	__BTRFS_SEND_A_MAX		= 35,
-+#endif
- };
- 
- long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg);
 -- 
-2.37.2
-
+Kees Cook
