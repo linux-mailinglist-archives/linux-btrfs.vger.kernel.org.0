@@ -2,123 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BFD5EC86E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Sep 2022 17:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5DB5EC8F4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Sep 2022 18:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbiI0Prn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 27 Sep 2022 11:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50634 "EHLO
+        id S233045AbiI0QEq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Sep 2022 12:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbiI0Pqz (ORCPT
+        with ESMTP id S232019AbiI0QET (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Sep 2022 11:46:55 -0400
-Received: from beige.elm.relay.mailchannels.net (beige.elm.relay.mailchannels.net [23.83.212.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2A54E611
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Sep 2022 08:45:20 -0700 (PDT)
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 325468C13E3
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Sep 2022 15:45:19 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
-        (Authenticated sender: instrampxe0y3a)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 434978C2024
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Sep 2022 15:45:18 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1664293518; a=rsa-sha256;
-        cv=none;
-        b=yvd0hsyBek9VR7JT8put4WpxfVA/PRjHyHM6gmKbiHoztUSOrYVo8yb0WN5IG8SQNqcfvX
-        HvFrzDNF05Ya7WxXCZb/QY6pv3cPJdGSj9D5OLLjqlQodJaf5NaombsFWMcstepxpfr6DF
-        gXNkh7BBnJuFfdiwwiNo+agWBvDxFbpB1geVVj7QwU0/wluioh/TqSB7ai7eaRiDiVuRjE
-        r4xvk5+6GhjokaWr2ZUXOFUs2X5rakU7gJzoEfnPDV29f8Dqv3aWNytbVD6h1Va+4Wexss
-        BvMOD+dmQ8IasalLRUADkzgI9XN1Ehw2WL8Hk6Mzji/Em30q2S/3DtvHd3XHUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1664293518;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Fh48/dwv5O26FAZ24w6k2208UvB31JX7/C2z4GqUe18=;
-        b=iufuI4gMqTpnTVjQJlsJD6Ly5y08aHAgMWOGIpn0BY6s4WHJxTlTZRUUDreIDPATDLnDMA
-        32FGF3tHmFVaFtmLRdZEFdB6ZgibSO/6tj0M8bPuoK2CYBr46oUQEE9SZdK0LKgXhC5RZI
-        uvxZifEvKFzRvG/qw1BNdS/+lohFox895CpPgWkdiNo5TyfVXD5vwY8TYlje+0lKQX04Q/
-        u3EMfA+RCgvc15Q50lPTFJvQNPSRlvwgnBbgNRxR58biX0lQ/Jky6yoYFAH3pe33rr6zRk
-        Q5CIsqFltiHFobjEeo6V6ZPiBe4NqypT0x7dA7Q7sH9uN/mTo2d7M8mtR3S2/w==
-ARC-Authentication-Results: i=1;
-        rspamd-7c485dd8cf-7tvjb;
-        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Trade-Stretch: 329bfdd6073bcfca_1664293518761_2213458746
-X-MC-Loop-Signature: 1664293518761:2198436930
-X-MC-Ingress-Time: 1664293518761
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-        by 100.97.77.221 (trex/6.7.1);
-        Tue, 27 Sep 2022 15:45:18 +0000
-Received: from p54b6dffd.dip0.t-ipconnect.de ([84.182.223.253]:55904 helo=heisenberg.fritz.box)
-        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <calestyo@scientia.org>)
-        id 1odClk-0004M4-QJ
-        for linux-btrfs@vger.kernel.org;
-        Tue, 27 Sep 2022 15:45:16 +0000
-Message-ID: <31660c315eeba4c461b6006b6d798355696d2155.camel@scientia.org>
-Subject: btrfs and hibernation to swap file on it?
-From:   Christoph Anton Mitterer <calestyo@scientia.org>
-To:     linux-btrfs@vger.kernel.org
-Date:   Tue, 27 Sep 2022 17:45:11 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.0-2 
+        Tue, 27 Sep 2022 12:04:19 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED4B1C770F
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Sep 2022 09:02:43 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 1CFDC3200684;
+        Tue, 27 Sep 2022 12:02:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 27 Sep 2022 12:02:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1664294557; x=1664380957; bh=bhRlenrwIG
+        6v5b/EmPwBixgu1KTVImJ+WpArhNpIzVY=; b=F7S5bKM2nfTjaU5QYD/1vZcELT
+        aMg+l0yjdYiVV7Uko++cqc4xzeyba1JGZu52LfLMOduTzKfV1WTE3aSgYCCZ/WtV
+        8LiOPhylhVW475yTPvZ/a2kN0Nhoz3E6bgCnUXgDCBkC1cktYUxzC4b50RwaRNg2
+        5vqvcO9oL7y12HJBmkS0fHZfoO9V3Pn0JotwreJKpKXpOtqNz/SObbesceh5t8SG
+        iU1u6dv67tpomguCZUpJtZUOUX8sv+tud+ZUr6wzCukoA0dJOSwYVGpNMNvuXFkW
+        GN1MkYPY+aQ0vOp85kE9bcM22pyF8axHPfJSffN5Wz7f1hyS7KZF9kZBH+6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; t=1664294557; x=1664380957; bh=bhRlenrwIG6v5b/EmPwBixgu1KTV
+        ImJ+WpArhNpIzVY=; b=I/u1fEGPKsaixQj12DiuriRwzUOP/EGPT8ZNuxAB3eiD
+        ydAQtRVrzL/RvhBN+kjFxvwBc7qEWdkxlYfOqlGsxDwPNM2yVPI1ii3+JiR+JYw7
+        BTMajcxplAh6uLQDKaBMZBoVkYsKG4UtN3iJUcoVMAKGpQ4eCqntHor6Nmsx/IkE
+        wd9ieCBLnwvN9+ArhRn/aLuJmO7p8qC9eyD8ywEnoYVAL5+bDO+Cn74t207uvc3y
+        Cx9djhnq7mvrwnQjnpx7ds34ODqEYk4TPtzse40VMTJrYl5TzQrPj4nAl5AGp/j2
+        TNcboVTnVE6sZqyu4d0DlsBEIAHqDVt885a6FrMdOQ==
+X-ME-Sender: <xms:nB4zY9BNdOZwfjKIz5IzykrB1c19_jUyBDYyvtYQO5va_Yy0uuIv2w>
+    <xme:nB4zY7gdJAHjVm5ljjjkZxr0uDg5n9XIudY5lfu7FCxefMJKkEEFvBblCVv4SAmXB
+    qqykIRFUGdFbkMvwzI>
+X-ME-Received: <xmr:nB4zY4lPFNxqDk3G0PMe8_bw92-crWu_7dXEiQVU8hQVfn7MlizXKcAj85i4NF88O3W96BoXA1dOkWuiL6c0I22StjibMw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeegiedgjeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:nB4zY3xfSlmmKTFOxAiU8Zcc9ZPawZu3KdjYj4T0-TBEh6CcsUODeA>
+    <xmx:nB4zYyTUB6H3B5RvOrYgqGSaBVylJgJMlu0tpLbvs8AuYvNzo7yeOQ>
+    <xmx:nB4zY6ZHBOMeTLzNiZXgY0cudi0cQXJSB1K6ncK-XMYRvulJGVMEIQ>
+    <xmx:nR4zY1JeJ6DC-cPWjeoJyApG26uk1R1akEDXoOc8ObwmS-K3vP1y2Q>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 27 Sep 2022 12:02:36 -0400 (EDT)
+Date:   Tue, 27 Sep 2022 09:02:34 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: send: gate SEND_A_MAX and SEND_C_MAX V3
+Message-ID: <YzMemuUrL/kn3CN0@zen>
+References: <6c87faf8a6ff6172019faed9988adb9fb99689b4.1664216021.git.boris@bur.io>
+ <20220927122412.GC13389@twin.jikos.cz>
 MIME-Version: 1.0
-X-OutGoing-Spam-Status: No, score=-1.0
-X-AuthUser: calestyo@scientia.org
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        HAS_X_OUTGOING_SPAM_STAT,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220927122412.GC13389@twin.jikos.cz>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey.
+On Tue, Sep 27, 2022 at 02:24:12PM +0200, David Sterba wrote:
+> On Mon, Sep 26, 2022 at 11:15:22AM -0700, Boris Burkov wrote:
+> > We haven't finalized send stream v3 yet, so gate setting the max command
+> > values behind CONFIG_BTRFS_DEBUG.
+> > 
+> > In my testing, and judging from the code, this is a cosmetic change;
+> > verity send commands are still produced (and processed by a compatible
+> > btrfs-progs), even with CONFIG_BTRFS_DEBUG=n set.
+> 
+> There must be some misunderstanding and what you implemented is not what
+> I had in mind. The debug protection should have been for
+> BTRFS_SEND_STREAM_VERSION so we have v3 available for debug builds and
+> not otherwise. The version support is not determined by the command
+> definitions but by the BTRFS_SEND_STREAM_VERSION macro exported to
+> sysfs.
 
-Maybe someone could help me with that question:
-
-I'd like to set up hibernation, using a swapfile on btrfs (which itself
-is on dm-crypt).
-
-Now I'm aware of the section on swaptfiles in btrfs(5) and their
-restrictions... and I think these should be fine for me.
-
-
-What I don't quite get is:
-
-a) Hibernate seems to want an offset parameter for the swapfile. How is
-that used respectively why is it needed.
-
-Does that mean that hibernation directly writes/reads to/from the block
-device?
-And wouldn't that be kind of fragile (if something internally moves in
-the fs... or if it's split in several extents and not one big
-contiguous space)?
-
-Guess I would be kinda scared to get some corruptions if something
-writes directly to the btrfs' block device - other than btrfs.
-
-Are there any suggestions with respect to btrfs? Like not using a
-swapfile for hibernation, or is it considered safe?
-
-
-b) Internet resources say that for btrfs one cannot use filefrag to get
-the offset.
-I found Omar's tool, but wondered whether the same had been directly
-integrated into btrfs-progs in the meantime?
-
-
-
-Thanks,
-Chris.
+This makes way more sense, thanks! Working on fixing it. I will also
+block sending verity based on the proto being >= 3. Sorry for
+misunderstanding you in the first place.
