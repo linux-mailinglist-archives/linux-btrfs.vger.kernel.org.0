@@ -2,77 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5DB5EC8F4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Sep 2022 18:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7011F5EC985
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Sep 2022 18:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbiI0QEq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Sep 2022 12:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
+        id S231938AbiI0Qb2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Sep 2022 12:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232019AbiI0QET (ORCPT
+        with ESMTP id S231778AbiI0QbD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Sep 2022 12:04:19 -0400
+        Tue, 27 Sep 2022 12:31:03 -0400
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED4B1C770F
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Sep 2022 09:02:43 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 1CFDC3200684;
-        Tue, 27 Sep 2022 12:02:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 27 Sep 2022 12:02:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1664294557; x=1664380957; bh=bhRlenrwIG
-        6v5b/EmPwBixgu1KTVImJ+WpArhNpIzVY=; b=F7S5bKM2nfTjaU5QYD/1vZcELT
-        aMg+l0yjdYiVV7Uko++cqc4xzeyba1JGZu52LfLMOduTzKfV1WTE3aSgYCCZ/WtV
-        8LiOPhylhVW475yTPvZ/a2kN0Nhoz3E6bgCnUXgDCBkC1cktYUxzC4b50RwaRNg2
-        5vqvcO9oL7y12HJBmkS0fHZfoO9V3Pn0JotwreJKpKXpOtqNz/SObbesceh5t8SG
-        iU1u6dv67tpomguCZUpJtZUOUX8sv+tud+ZUr6wzCukoA0dJOSwYVGpNMNvuXFkW
-        GN1MkYPY+aQ0vOp85kE9bcM22pyF8axHPfJSffN5Wz7f1hyS7KZF9kZBH+6A==
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E00D5CC8C4
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Sep 2022 09:30:43 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id DE9C43200708;
+        Tue, 27 Sep 2022 12:30:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 27 Sep 2022 12:30:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm2; t=1664296242; x=1664382642; bh=Y+e4551dsCWT0WIidamjkq6HH
+        tDBhLX/CxujeuIb9a4=; b=NgxPyDjRuAjtzI/IVBgP/2wbItwhGsXWWnUnxMVz4
+        Rw0LbFvy/+FEqPHvvJNMkatJVjuq/T1cn983+34GxBPmHCJcpWUYmDFq5nNKgjot
+        Y1KaonuF4reeDVn7IIdBdmNdVuoQi0NP+S+2+9XUN1UVytiw1Q+R+fXv426hnTfW
+        qNS4td6bswa4E0DP0jbA1vAdTA9DPt05+FmK3/d5rgZ0KdGZU2sPlpvvJp97GXtY
+        DphQdHq/MZR3uMx7wt4LTDp30LpwUPMek16ST0nuPsf8omu2FhMRsTTLHgINf8vw
+        GYsPEw/n3bAVt7B9i80JwrvPikyNycqurzP/L9o2gmTzQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1664294557; x=1664380957; bh=bhRlenrwIG6v5b/EmPwBixgu1KTV
-        ImJ+WpArhNpIzVY=; b=I/u1fEGPKsaixQj12DiuriRwzUOP/EGPT8ZNuxAB3eiD
-        ydAQtRVrzL/RvhBN+kjFxvwBc7qEWdkxlYfOqlGsxDwPNM2yVPI1ii3+JiR+JYw7
-        BTMajcxplAh6uLQDKaBMZBoVkYsKG4UtN3iJUcoVMAKGpQ4eCqntHor6Nmsx/IkE
-        wd9ieCBLnwvN9+ArhRn/aLuJmO7p8qC9eyD8ywEnoYVAL5+bDO+Cn74t207uvc3y
-        Cx9djhnq7mvrwnQjnpx7ds34ODqEYk4TPtzse40VMTJrYl5TzQrPj4nAl5AGp/j2
-        TNcboVTnVE6sZqyu4d0DlsBEIAHqDVt885a6FrMdOQ==
-X-ME-Sender: <xms:nB4zY9BNdOZwfjKIz5IzykrB1c19_jUyBDYyvtYQO5va_Yy0uuIv2w>
-    <xme:nB4zY7gdJAHjVm5ljjjkZxr0uDg5n9XIudY5lfu7FCxefMJKkEEFvBblCVv4SAmXB
-    qqykIRFUGdFbkMvwzI>
-X-ME-Received: <xmr:nB4zY4lPFNxqDk3G0PMe8_bw92-crWu_7dXEiQVU8hQVfn7MlizXKcAj85i4NF88O3W96BoXA1dOkWuiL6c0I22StjibMw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeegiedgjeduucetufdoteggodetrfdotf
+        messagingengine.com; h=cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1664296242; x=1664382642; bh=Y+e4551dsCWT0WIidamjkq6HHtDBhLX/Cxu
+        jeuIb9a4=; b=GfQYFJ1MFzDfJLxwBLRww1xyX1xNkJcYY6176P+ErCE2n4v/i5x
+        Hgy2ymlaYynYD/490te8mqJojQEsOTF9pfq8Tn4DL3LPG8jNKLsVQ0OL7oNiUeSP
+        v6PXbewnV71g12NTeDhllO/lVWL3rQ/DY6g34gFWmebfTRlaQsnxacTd47FYk43H
+        MoSOlJadijSdyaRlXZiErQ+NsE3en7GJsAW9PrLf5uufCJOpHtYA6ugCZJKZuuGX
+        KxEAjZNCAoYwO5hfP1qapNoSNDd0xFXsoi5fuYJUYPdU1mr4cI3yRPS/sRMWUXoG
+        Y+MCEg07CYzkxAQ8W/IBBfbGV+K/6QESSoQ==
+X-ME-Sender: <xms:MiUzY_0y8MLGRvvc207k_Sh72TB2si3qPGlJxhchOtsS1i7FLXBw6g>
+    <xme:MiUzY-EfR33ofHVthXA7_mFOzKRu2uyLETWUpEMrnE6dNxx9dtBrNISCws8d-z1IY
+    rogjV813U9aUvgvMUQ>
+X-ME-Received: <xmr:MiUzY_4QubbFNtK3z9FbhDK4erPaYWr2V6-9T7AxJs3JXK43PkDGctsYwqtDXO_sDEgOibXv7OdrFdVJVR9vdCrFWMqkQw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeegiedgjeeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:nB4zY3xfSlmmKTFOxAiU8Zcc9ZPawZu3KdjYj4T0-TBEh6CcsUODeA>
-    <xmx:nB4zYyTUB6H3B5RvOrYgqGSaBVylJgJMlu0tpLbvs8AuYvNzo7yeOQ>
-    <xmx:nB4zY6ZHBOMeTLzNiZXgY0cudi0cQXJSB1K6ncK-XMYRvulJGVMEIQ>
-    <xmx:nR4zY1JeJ6DC-cPWjeoJyApG26uk1R1akEDXoOc8ObwmS-K3vP1y2Q>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
+    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
+    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:MiUzY03cG0U7IRD-o4hAYKETVQmU0jWLPizoDCWxmYIJ8XNeuSJ72A>
+    <xmx:MiUzYyG_CY4el6cOmx217xG0I0OCpsZZkoMo9tG_bp6r_4J7S1H-xA>
+    <xmx:MiUzY1-jMI0R7H16g7U4gOoyo8CdyqfcaBn13ulmgR7-G8-FqYmMEg>
+    <xmx:MiUzY9MPbN7leo24ai9AkHVPG5qnz-urRbUOr_x-9_jwPT5dY7OHrg>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 27 Sep 2022 12:02:36 -0400 (EDT)
-Date:   Tue, 27 Sep 2022 09:02:34 -0700
+ 27 Sep 2022 12:30:41 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: send: gate SEND_A_MAX and SEND_C_MAX V3
-Message-ID: <YzMemuUrL/kn3CN0@zen>
-References: <6c87faf8a6ff6172019faed9988adb9fb99689b4.1664216021.git.boris@bur.io>
- <20220927122412.GC13389@twin.jikos.cz>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2] btrfs: send: SEND_STREAM_VERSION=3 for CONFIG_BTRFS_DEBUG
+Date:   Tue, 27 Sep 2022 09:30:39 -0700
+Message-Id: <dbf2e27f804704cdcb4c3e8d53d600938bbe1d61.1664296068.git.boris@bur.io>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220927122412.GC13389@twin.jikos.cz>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -82,22 +77,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 27, 2022 at 02:24:12PM +0200, David Sterba wrote:
-> On Mon, Sep 26, 2022 at 11:15:22AM -0700, Boris Burkov wrote:
-> > We haven't finalized send stream v3 yet, so gate setting the max command
-> > values behind CONFIG_BTRFS_DEBUG.
-> > 
-> > In my testing, and judging from the code, this is a cosmetic change;
-> > verity send commands are still produced (and processed by a compatible
-> > btrfs-progs), even with CONFIG_BTRFS_DEBUG=n set.
-> 
-> There must be some misunderstanding and what you implemented is not what
-> I had in mind. The debug protection should have been for
-> BTRFS_SEND_STREAM_VERSION so we have v3 available for debug builds and
-> not otherwise. The version support is not determined by the command
-> definitions but by the BTRFS_SEND_STREAM_VERSION macro exported to
-> sysfs.
+We haven't finalized send stream v3 yet, so gate the send stream version
+behind CONFIG_BTRFS_DEBUG.
 
-This makes way more sense, thanks! Working on fixing it. I will also
-block sending verity based on the proto being >= 3. Sorry for
-misunderstanding you in the first place.
+The original verity send did not check the proto version, so add that
+actual protection as well.
+
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+v2:
+- gate protocol version; not command/attr definitions
+- actually prevent sending verity data when version < 3
+
+ fs/btrfs/send.c | 2 +-
+ fs/btrfs/send.h | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 4ef4167072b8..178347666235 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -6469,7 +6469,7 @@ static int finish_inode_if_needed(struct send_ctx *sctx, int at_end)
+ 		if (ret < 0)
+ 			goto out;
+ 	}
+-	if (sctx->cur_inode_needs_verity) {
++	if (sctx->proto >= 3 && sctx->cur_inode_needs_verity) {
+ 		ret = process_verity(sctx);
+ 		if (ret < 0)
+ 			goto out;
+diff --git a/fs/btrfs/send.h b/fs/btrfs/send.h
+index 0a4537775e0c..d6c5b87d6705 100644
+--- a/fs/btrfs/send.h
++++ b/fs/btrfs/send.h
+@@ -10,7 +10,11 @@
+ #include <linux/types.h>
+ 
+ #define BTRFS_SEND_STREAM_MAGIC "btrfs-stream"
++#ifdef CONFIG_BTRFS_DEBUG
++#define BTRFS_SEND_STREAM_VERSION 3
++#else
+ #define BTRFS_SEND_STREAM_VERSION 2
++#endif
+ 
+ /*
+  * In send stream v1, no command is larger than 64K. In send stream v2, no limit
+-- 
+2.37.2
+
