@@ -2,154 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB4B5EE2CF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Sep 2022 19:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34AE5EE4D7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Sep 2022 21:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234548AbiI1ROK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Sep 2022 13:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
+        id S232439AbiI1TM7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Sep 2022 15:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234599AbiI1RNn (ORCPT
+        with ESMTP id S233495AbiI1TM5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Sep 2022 13:13:43 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B59AF1859
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 10:13:15 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id f23so12284028plr.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 10:13:15 -0700 (PDT)
+        Wed, 28 Sep 2022 15:12:57 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3AD9A5984
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 12:12:51 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id g20so15387057ljg.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 12:12:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date;
-        bh=d6n7vVcWWAUhY50nx1oX+SjTLgFqeY1Yq8iTalyfqd0=;
-        b=lIRHIZiWHITqRmakxRZHSG2SU2bpWinoR3Swar+fPYJBmT1qOO/MT6WnWN5yBDlhGu
-         /lQXgjvlz0O4V2+hnYy+98Yh09p4wB3YUjZ22bnBWEa9dMSwUm7gVI6Ae5kXcacwBn8L
-         BoOjiPYblWsCdJGhH6goLGXzHmU5/JoB80oyI=
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=4eSS1PMQMwoHIQyfUXnv2ELR2DtWjtxas+T5OsBz7zo=;
+        b=nsFfI9DmCGm+fDwqR4Zb2BqDCfl++fV0LsCYbLwj/1onkHofAcZhqjGPbjm8pcvjHG
+         n9YJ3H4axKM/opNaPFo0aEmrlM5pJH0H3gc3jMddYinkUGVpK57p9FEQrVlwrw7xRrea
+         F3wr9uXS5IVoJkCvYOCg3Mit++iAk+9f/AUn70ipWAZMjMuKkp8ykrtrgaDhSkVX0Oqn
+         YUx14PKu1kgFFkqWHrW0jiEwR8jDBQwGCM1poFZeJNILtg0RKFK8nSlSxr8PZ/TKG5il
+         T/Bzn21uqxUg+mxBHsoEG8wVwhw1/SKovuJdENe2KmKhE62/astHNJfZ9x0uPVa9dwLw
+         Aklw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date;
-        bh=d6n7vVcWWAUhY50nx1oX+SjTLgFqeY1Yq8iTalyfqd0=;
-        b=BD06M61a8uujW9XsB7XAgtjiPBzivIF3wbkqRQ1f6j4umymb/Ua+BL8vstPsJfz2WZ
-         aFTI7/c59etKq2QuMqj14W9/3BrA1Au/8ImS4U8duKEQbxwN01M7C78KNxTi/br0TJ4t
-         p8UsWdbrhn7/Uc1Zy/fsokE2ZzPGBRL3/5fGUMyleXVbZeswdwH20whhw/cOVSOFU+qd
-         FbtF4+tpTba9g3Xkm+20l8fI0t5t/xxCFE3ZTBvrtNwt2T38JoyInfy6ro/7PZnlOcPW
-         FnGp6fCwvEcVpHJv4CaKRygFMR4ygRnbr5z+bItBo3SAa4pTeVnK72Ir1l93hXll9D/g
-         IFTA==
-X-Gm-Message-State: ACrzQf1qiN+EMtbLNjsj9pfbrz6m6GGq5pNS7f6zI1NH+2KwrzkOXoWF
-        tFwm645XJcOD6nkEGFmLfX7RHg==
-X-Google-Smtp-Source: AMsMyM6sCBBdOCLg/ekAp2unP2+2il2GSYEdTvWU2WPyIonTKW/L3Ua/pLmu7ZGbcH4WrqStMgqaPQ==
-X-Received: by 2002:a17:902:db08:b0:176:d40e:4b57 with SMTP id m8-20020a170902db0800b00176d40e4b57mr799977plx.172.1664385194575;
-        Wed, 28 Sep 2022 10:13:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q3-20020a170902dac300b00177faf558b5sm4082449plx.250.2022.09.28.10.13.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Sep 2022 10:13:13 -0700 (PDT)
-Date:   Wed, 28 Sep 2022 10:13:12 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Marco Elver <elver@google.com>, linux-mm@kvack.org,
-        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Alex Elder <elder@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Miguel Ojeda <ojeda@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-fsdevel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        dev@openvswitch.org, x86@kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 01/16] slab: Remove __malloc attribute from realloc
- functions
-Message-ID: <202209281011.66DD717D@keescook>
-References: <20220923202822.2667581-1-keescook@chromium.org>
- <20220923202822.2667581-2-keescook@chromium.org>
- <CAMuHMdXK+UN1YVZm9DenuXAM8hZRUZJwp=SXsueP7sWiVU3a9A@mail.gmail.com>
+        bh=4eSS1PMQMwoHIQyfUXnv2ELR2DtWjtxas+T5OsBz7zo=;
+        b=6IzsX3PvTmoHYwBl1ZaokzDzMX5KfYR7ezsr9iPqP7JBX/pkRU90XLy1OxMEoJ7MyB
+         SuiaBfDnftaXt3U+wV0Og7KiZWp82NS/MbGPqlgBWbpXRlZMnjIY23AjcEy1IRgNdlEb
+         kPol4ZKrb8WbrjBK4dJ84qSYmBGtFah8B41cJRFMLCNIj06+jdccyA0pabPLrcn8Adp+
+         ig18I+gErgwVsMUmvnRzPl9OHM5FinscMgvKo/2jLdaMTWJDtkfUxvaTjxWLS4crwSCm
+         txGVkVq1ZgFMkqbgwjOJQxNcVFwgPTUNXKpXYSJqH3MExqmWyhXwZxIgBd1S74Ha10yn
+         hEdA==
+X-Gm-Message-State: ACrzQf0TeomaVruGtF0RKM64GHAyyVC3Z23Bjc3uSrBIGVuaxJ51cf0A
+        ibzOixeUqqr9wJrEFC4XnQDbKme56j0=
+X-Google-Smtp-Source: AMsMyM6n10n3Cq2sVDQHrIhJ5OBKZfPi0Z7gwg81UGegI4g5PrlrUgAXFCLBPZL2BBzfmiTJSUoDzw==
+X-Received: by 2002:a2e:a0cc:0:b0:26b:e763:27d2 with SMTP id f12-20020a2ea0cc000000b0026be76327d2mr11833973ljm.62.1664392370271;
+        Wed, 28 Sep 2022 12:12:50 -0700 (PDT)
+Received: from ?IPV6:2a00:1370:8182:c82:b5e6:8f1c:91ab:35b? ([2a00:1370:8182:c82:b5e6:8f1c:91ab:35b])
+        by smtp.gmail.com with ESMTPSA id p2-20020ac24ec2000000b0048b3926351bsm553562lfr.56.2022.09.28.12.12.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Sep 2022 12:12:49 -0700 (PDT)
+Message-ID: <ed497bfa-1f82-6761-788e-a20ef3b91cab@gmail.com>
+Date:   Wed, 28 Sep 2022 22:12:48 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdXK+UN1YVZm9DenuXAM8hZRUZJwp=SXsueP7sWiVU3a9A@mail.gmail.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: btrfs and hibernation to swap file on it?
+Content-Language: en-US
+To:     Christoph Anton Mitterer <calestyo@scientia.org>,
+        linux-btrfs@vger.kernel.org
+References: <31660c315eeba4c461b6006b6d798355696d2155.camel@scientia.org>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+In-Reply-To: <31660c315eeba4c461b6006b6d798355696d2155.camel@scientia.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 28, 2022 at 09:26:15AM +0200, Geert Uytterhoeven wrote:
-> Hi Kees,
+On 27.09.2022 18:45, Christoph Anton Mitterer wrote:
+> Hey.
 > 
-> On Fri, Sep 23, 2022 at 10:35 PM Kees Cook <keescook@chromium.org> wrote:
-> > The __malloc attribute should not be applied to "realloc" functions, as
-> > the returned pointer may alias the storage of the prior pointer. Instead
-> > of splitting __malloc from __alloc_size, which would be a huge amount of
-> > churn, just create __realloc_size for the few cases where it is needed.
-> >
-> > Additionally removes the conditional test for __alloc_size__, which is
-> > always defined now.
-> >
-> > Cc: Christoph Lameter <cl@linux.com>
-> > Cc: Pekka Enberg <penberg@kernel.org>
-> > Cc: David Rientjes <rientjes@google.com>
-> > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Vlastimil Babka <vbabka@suse.cz>
-> > Cc: Roman Gushchin <roman.gushchin@linux.dev>
-> > Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> > Cc: Marco Elver <elver@google.com>
-> > Cc: linux-mm@kvack.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> Maybe someone could help me with that question:
 > 
-> Thanks for your patch, which is now commit 63caa04ec60583b1 ("slab:
-> Remove __malloc attribute from realloc functions") in next-20220927.
+> I'd like to set up hibernation, using a swapfile on btrfs (which itself
+> is on dm-crypt).
 > 
-> Noreply@ellerman.id.au reported all gcc8-based builds to fail
-> (e.g. [1], more at [2]):
+> Now I'm aware of the section on swaptfiles in btrfs(5) and their
+> restrictions... and I think these should be fine for me.
 > 
->     In file included from <command-line>:
->     ./include/linux/percpu.h: In function ‘__alloc_reserved_percpu’:
->     ././include/linux/compiler_types.h:279:30: error: expected
-> declaration specifiers before ‘__alloc_size__’
->      #define __alloc_size(x, ...) __alloc_size__(x, ## __VA_ARGS__) __malloc
->                                   ^~~~~~~~~~~~~~
->     ./include/linux/percpu.h:120:74: note: in expansion of macro ‘__alloc_size’
->     [...]
 > 
-> It's building fine with e.g. gcc-9 (which is my usual m68k cross-compiler).
-> Reverting this commit on next-20220927 fixes the issue.
+> What I don't quite get is:
 > 
-> [1] http://kisskb.ellerman.id.au/kisskb/buildresult/14803908/
-> [2] http://kisskb.ellerman.id.au/kisskb/head/1bd8b75fe6adeaa89d02968bdd811ffe708cf839/
+> a) Hibernate seems to want an offset parameter for the swapfile. How is
+> that used respectively why is it needed.
+> 
+> Does that mean that hibernation directly writes/reads to/from the block
+> device?
 
-Eek! Thanks for letting me know. I'm confused about this --
-__alloc_size__ wasn't optional in compiler_attributes.h -- but obviously
-I broke something! I'll go figure this out.
+Correct.
 
--Kees
+> And wouldn't that be kind of fragile (if something internally moves in
+> the fs... or if it's split in several extents and not one big
+> contiguous space)?
+> 
 
--- 
-Kees Cook
+There are quite some restrictions for using swapfile on btrfs, in
+particular, it must be preallocated and btrfs will refuse relocation of
+extents in this file.
+
+kernel supports swapfile with multiple extents.
+
+> Guess I would be kinda scared to get some corruptions if something
+> writes directly to the btrfs' block device - other than btrfs.
+> 
+> Are there any suggestions with respect to btrfs? Like not using a
+> swapfile for hibernation, or is it considered safe?
+> 
+> 
+> b) Internet resources say that for btrfs one cannot use filefrag to get
+> the offset.
+> I found Omar's tool, but wondered whether the same had been directly
+> integrated into btrfs-progs in the meantime?
+> 
+> 
+> 
+> Thanks,
+> Chris.
+
