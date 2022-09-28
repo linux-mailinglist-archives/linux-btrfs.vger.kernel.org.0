@@ -2,159 +2,239 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 357D75ED452
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Sep 2022 07:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC165ED620
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Sep 2022 09:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbiI1Fr3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Sep 2022 01:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39930 "EHLO
+        id S233549AbiI1Hbg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 28 Sep 2022 03:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231976AbiI1Fr1 (ORCPT
+        with ESMTP id S233487AbiI1Hbe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Sep 2022 01:47:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E08EEEB4
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Sep 2022 22:47:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1664344046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UcB2qI4DuMPPORjctmP9Ux78GtR4/YOSaCOXY9+toX4=;
-        b=B43Y8YfjSS1XdZnF73u2nitnZjhjyGDkdz+t0jqIz0OLqCPNa+4EmLx4ptLYeVvHsRs93P
-        lUKnrOpHfy1z8rUPQr91SZDaLHcj9K1i3M/nPV3dETDOZBYWAA6PmGsUFo2ZCUuPc1mjij
-        RKBecHWmw+9Eg2zUydZrYxCLJpc/zYE=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-495-Ae8RchERN0CLX0kN7YLuwQ-1; Wed, 28 Sep 2022 01:47:21 -0400
-X-MC-Unique: Ae8RchERN0CLX0kN7YLuwQ-1
-Received: by mail-pg1-f198.google.com with SMTP id l72-20020a63914b000000b00434ac6f8214so6922813pge.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Sep 2022 22:47:21 -0700 (PDT)
+        Wed, 28 Sep 2022 03:31:34 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45883EFA5B;
+        Wed, 28 Sep 2022 00:31:13 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id a20so7436705qtw.10;
+        Wed, 28 Sep 2022 00:31:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=UcB2qI4DuMPPORjctmP9Ux78GtR4/YOSaCOXY9+toX4=;
-        b=0xX/Q0LyoxB8FmqDQYddRj11LDPGLo4R1AqlzcmRP4a3VYwKyY1Qx9+U59iQPhJRSD
-         XNdxC9QQP8E3yK6ui2midIRemcuOBpb/Q7WHWtF/s5TDgFIEE8mGHJV9kbJvnSfCKUWI
-         1ySlQam/Qs3CrixVVBfOAJnkGN1QapQfnU1HqJId67Zm2IBAMDB0B5v4YbgNseslFCFP
-         3Y60NcbEbEguiecgVxWh0zIY2AaOzKIL8Vyfg65CTt+t6MgIDWlXH2Ez5rYhEXzQCfXb
-         ku0qImnvDdV86CyZPlqnxYKkcUMHEP/XuthavNc34anmeRjCyiAINkvVWYugPWQxr8Lf
-         AZGw==
-X-Gm-Message-State: ACrzQf1OdC168+DNkiCS1mFDk0hO7YC+GXe+eCiZI3WuAM7Ni+QOcYxg
-        hzLAx8nyWzHbRmcjtGS4cJKMNcP43TTv1PCWRls/wpQCb2upjlY6D4bsG/9aBvEh4uZuxmTAVfa
-        caryVuPzTZcRDG8HdhjDTREg=
-X-Received: by 2002:a17:90b:3889:b0:200:8255:f0e5 with SMTP id mu9-20020a17090b388900b002008255f0e5mr8744431pjb.51.1664344040111;
-        Tue, 27 Sep 2022 22:47:20 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM5Z3qZ4SqdS6G6THd0M37egNcEsx/EbTy2MlWbZFALHMCqylw9cj/wRIMVdY5U4D3hbRjSn4Q==
-X-Received: by 2002:a17:90b:3889:b0:200:8255:f0e5 with SMTP id mu9-20020a17090b388900b002008255f0e5mr8744416pjb.51.1664344039801;
-        Tue, 27 Sep 2022 22:47:19 -0700 (PDT)
-Received: from zlang-mailbox ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id g20-20020aa796b4000000b0053e199aa99bsm2874819pfk.220.2022.09.27.22.47.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Sep 2022 22:47:19 -0700 (PDT)
-Date:   Wed, 28 Sep 2022 13:47:15 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 1/2] common: introduce zone_capacity() to return a zone
- capacity
-Message-ID: <20220928054715.ol6gammnf6jmrjab@zlang-mailbox>
-References: <cover.1663825728.git.naohiro.aota@wdc.com>
- <97ede9bba67f0848fc0b706d757170d7dfacb7fd.1663825728.git.naohiro.aota@wdc.com>
- <20220922154132.dpadkhaccwzysq4d@zlang-mailbox>
- <PH0PR04MB741656D7881D11281ECBBD489B519@PH0PR04MB7416.namprd04.prod.outlook.com>
- <20220923115126.s3ctf4erpepa3zy7@zlang-mailbox>
- <20220928035707.v7kv4ult46w3hjlj@naota-xeon>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=qLaRR+atoHoSJaoPeYCH+z3TJyk6r6Xbl1EdBW345pA=;
+        b=6NnEPABEVDJzwh6yCurfx1Cif5DMapO+bg1iMikzghyO38AmfDSR94isRYQCdZjRIk
+         pyZZpIknvj8ECkP8iVx5yjZC10ic9v7bNmeVzwZ9pum0Y0TRGa9SgYNq13DLkvBkN2z5
+         8CMqpnp/IyQTSxyGZ9Dv2SUWJ4CzzvvRYl3cSmk5/LKtSSbMkhtBxVtgnnUhC4nTRXq1
+         GPvaysL3BVE8WVVXEBvhEgzS1ghJ6swCy7oiCxSVlIwgztHn8DndlXSHRwcOiqPxauth
+         IXo8pdKoZz69P+7kWBAuGiDAvhvxvmrs70k/ThsZJZBsd96TGkHpEmrikmijgqml2D3u
+         U3rw==
+X-Gm-Message-State: ACrzQf3xXpKbb7hm4jsTAbm5KlnbQW8kiPjsABe0wd8k2h4dOmzHAlmy
+        6OkP9PbmtEEraX6MRFqBxqNQDtejTlb2Fw==
+X-Google-Smtp-Source: AMsMyM4+PNFxoIXXZBmtdzqe4MriABDPe51IFn1BULr+he2jCjsTHGWgMj7oO+fZnDBoWSErj88otg==
+X-Received: by 2002:ac8:5ccd:0:b0:35c:e18b:2be3 with SMTP id s13-20020ac85ccd000000b0035ce18b2be3mr25152912qta.502.1664349989011;
+        Wed, 28 Sep 2022 00:26:29 -0700 (PDT)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id n8-20020a05620a294800b006cfc1d827cbsm1140417qkp.9.2022.09.28.00.26.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Sep 2022 00:26:28 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-35393e71e1eso4939837b3.9;
+        Wed, 28 Sep 2022 00:26:27 -0700 (PDT)
+X-Received: by 2002:a81:758a:0:b0:345:450b:6668 with SMTP id
+ q132-20020a81758a000000b00345450b6668mr28433710ywc.316.1664349987412; Wed, 28
+ Sep 2022 00:26:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220928035707.v7kv4ult46w3hjlj@naota-xeon>
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20220923202822.2667581-1-keescook@chromium.org> <20220923202822.2667581-2-keescook@chromium.org>
+In-Reply-To: <20220923202822.2667581-2-keescook@chromium.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 28 Sep 2022 09:26:15 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXK+UN1YVZm9DenuXAM8hZRUZJwp=SXsueP7sWiVU3a9A@mail.gmail.com>
+Message-ID: <CAMuHMdXK+UN1YVZm9DenuXAM8hZRUZJwp=SXsueP7sWiVU3a9A@mail.gmail.com>
+Subject: Re: [PATCH v2 01/16] slab: Remove __malloc attribute from realloc functions
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Marco Elver <elver@google.com>, linux-mm@kvack.org,
+        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alex Elder <elder@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Yonghong Song <yhs@fb.com>, Miguel Ojeda <ojeda@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-fsdevel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        dev@openvswitch.org, x86@kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 28, 2022 at 03:57:08AM +0000, Naohiro Aota wrote:
-> On Fri, Sep 23, 2022 at 07:51:26PM +0800, Zorro Lang wrote:
-> > On Fri, Sep 23, 2022 at 08:02:10AM +0000, Johannes Thumshirn wrote:
-> > > On 22.09.22 17:42, Zorro Lang wrote:
-> > > >> --- /dev/null
-> > > >> +++ b/common/zbd
-> > > > I don't like this abbreviation :-P If others don't open this file and read the
-> > > > comment in it, they nearly no chance to guess what's this file for.
-> > > > 
-> > > 
-> > > zbd is a well known abbreviation for zoned block devices. I think most
-> > > people in storage and filesystems know it.
-> > 
-> > OK, but we haven't been that "a single character is worth a thousand
-> > pieces of gold", so we can use a longer name, likes common/zone,
-> > common/zoned, common/zoned_block, common/zoned_device or something likes
-> > that. Anyway, that's just my personal opinion, if most of people prefer
-> > using "common/zbd", I'm fine to have that :) 
-> 
-> Sure. I'll use "zoned" as it is more common in the kernel code.
-> 
-> > But I hope you can move all zoned block device related helpers to the new
-> > common file if you'd like to bring in this file, likes what Darrick did in:
-> > 
-> > commit 67afd5c742464607994316acb2c6e8303b8af4c5
-> > Author: Darrick J. Wong <djwong@kernel.org>
-> > Date:   Tue Aug 9 14:00:46 2022 -0700
-> > 
-> >     common/rc: move ext4-specific helpers into a separate common/ext4 file
-> 
-> Yes, that will be better to have things in common/zoned. I considered
-> moving zoned functions (_zone_type, _require_{,non_}zoned_device), but
-> _require_loop() and _require_dm_target() use _require_non_zoned_device() in
-> them. So, moving _require_non_zoned_device() will make a dependency from
-> common/rc to common/zoned, which I considered not much clean. How do you
-> think of it?
+Hi Kees,
 
-Oh, below commit [1] brought in the coupling of common/rc and zoned helpers.
-Hmm... that cause all the 3 helpers (_zone_type, _require_{,non_}zoned_device)
-have to be in common/rc or be imported in common/rc. Looks like we have to
-keep them in common/rc, except we make a bigger refactor to common/rc, or you'd
-like to make your 2 new helpers in common/rc too (likes these 3 old ones:)
+On Fri, Sep 23, 2022 at 10:35 PM Kees Cook <keescook@chromium.org> wrote:
+> The __malloc attribute should not be applied to "realloc" functions, as
+> the returned pointer may alias the storage of the prior pointer. Instead
+> of splitting __malloc from __alloc_size, which would be a huge amount of
+> churn, just create __realloc_size for the few cases where it is needed.
+>
+> Additionally removes the conditional test for __alloc_size__, which is
+> always defined now.
+>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Pekka Enberg <penberg@kernel.org>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: linux-mm@kvack.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-BTW I doubt if we might need to use more zoned related helpers in common/rc, due
-to we deal with test devices in common/rc mostly, likes dax. Someone might want
-a seperated common/dax or common/pmem file one day. The common/rc imports
-specific fs helpers according to $FSTYP (common/config: _source_specific_fs()).
-If we need to deal with different kind of device types in common/rc one day, is
-there a better idea to determine which one should be imported? Welcome any
-suggestions if anyone has :)
+Thanks for your patch, which is now commit 63caa04ec60583b1 ("slab:
+Remove __malloc attribute from realloc functions") in next-20220927.
 
-[1]
-commit 952310a57d9323ae0bb174b50be93107a8895e0c
-Author: Naohiro Aota <naohiro.aota@wdc.com>
-Date:   Mon Aug 16 20:35:08 2021 +0900
+Noreply@ellerman.id.au reported all gcc8-based builds to fail
+(e.g. [1], more at [2]):
 
-    common: add zoned block device checks
+    In file included from <command-line>:
+    ./include/linux/percpu.h: In function ‘__alloc_reserved_percpu’:
+    ././include/linux/compiler_types.h:279:30: error: expected
+declaration specifiers before ‘__alloc_size__’
+     #define __alloc_size(x, ...) __alloc_size__(x, ## __VA_ARGS__) __malloc
+                                  ^~~~~~~~~~~~~~
+    ./include/linux/percpu.h:120:74: note: in expansion of macro ‘__alloc_size’
+    [...]
 
-> 
-> Moving _filter_blkzone_report() would be fine, though.
+It's building fine with e.g. gcc-9 (which is my usual m68k cross-compiler).
+Reverting this commit on next-20220927 fixes the issue.
 
-Yeah, moving this is fine.
+[1] http://kisskb.ellerman.id.au/kisskb/buildresult/14803908/
+[2] http://kisskb.ellerman.id.au/kisskb/head/1bd8b75fe6adeaa89d02968bdd811ffe708cf839/
 
-Thanks,
-Zorro
 
-> 
-> > Thanks,
-> > Zorro
-> > 
-> > > 
-> > > 
-> > 
-> 
 
+> ---
+>  include/linux/compiler_types.h | 13 +++++--------
+>  include/linux/slab.h           | 12 ++++++------
+>  mm/slab_common.c               |  4 ++--
+>  3 files changed, 13 insertions(+), 16 deletions(-)
+>
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index 4f2a819fd60a..f141a6f6b9f6 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -271,15 +271,12 @@ struct ftrace_likely_data {
+>
+>  /*
+>   * Any place that could be marked with the "alloc_size" attribute is also
+> - * a place to be marked with the "malloc" attribute. Do this as part of the
+> - * __alloc_size macro to avoid redundant attributes and to avoid missing a
+> - * __malloc marking.
+> + * a place to be marked with the "malloc" attribute, except those that may
+> + * be performing a _reallocation_, as that may alias the existing pointer.
+> + * For these, use __realloc_size().
+>   */
+> -#ifdef __alloc_size__
+> -# define __alloc_size(x, ...)  __alloc_size__(x, ## __VA_ARGS__) __malloc
+> -#else
+> -# define __alloc_size(x, ...)  __malloc
+> -#endif
+> +#define __alloc_size(x, ...)   __alloc_size__(x, ## __VA_ARGS__) __malloc
+> +#define __realloc_size(x, ...) __alloc_size__(x, ## __VA_ARGS__)
+>
+>  #ifndef asm_volatile_goto
+>  #define asm_volatile_goto(x...) asm goto(x)
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 0fefdf528e0d..41bd036e7551 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -184,7 +184,7 @@ int kmem_cache_shrink(struct kmem_cache *s);
+>  /*
+>   * Common kmalloc functions provided by all allocators
+>   */
+> -void * __must_check krealloc(const void *objp, size_t new_size, gfp_t flags) __alloc_size(2);
+> +void * __must_check krealloc(const void *objp, size_t new_size, gfp_t flags) __realloc_size(2);
+>  void kfree(const void *objp);
+>  void kfree_sensitive(const void *objp);
+>  size_t __ksize(const void *objp);
+> @@ -647,10 +647,10 @@ static inline __alloc_size(1, 2) void *kmalloc_array(size_t n, size_t size, gfp_
+>   * @new_size: new size of a single member of the array
+>   * @flags: the type of memory to allocate (see kmalloc)
+>   */
+> -static inline __alloc_size(2, 3) void * __must_check krealloc_array(void *p,
+> -                                                                   size_t new_n,
+> -                                                                   size_t new_size,
+> -                                                                   gfp_t flags)
+> +static inline __realloc_size(2, 3) void * __must_check krealloc_array(void *p,
+> +                                                                     size_t new_n,
+> +                                                                     size_t new_size,
+> +                                                                     gfp_t flags)
+>  {
+>         size_t bytes;
+>
+> @@ -774,7 +774,7 @@ static inline __alloc_size(1, 2) void *kvcalloc(size_t n, size_t size, gfp_t fla
+>  }
+>
+>  extern void *kvrealloc(const void *p, size_t oldsize, size_t newsize, gfp_t flags)
+> -                     __alloc_size(3);
+> +                     __realloc_size(3);
+>  extern void kvfree(const void *addr);
+>  extern void kvfree_sensitive(const void *addr, size_t len);
+>
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 17996649cfe3..457671ace7eb 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1134,8 +1134,8 @@ module_init(slab_proc_init);
+>
+>  #endif /* CONFIG_SLAB || CONFIG_SLUB_DEBUG */
+>
+> -static __always_inline void *__do_krealloc(const void *p, size_t new_size,
+> -                                          gfp_t flags)
+> +static __always_inline __realloc_size(2) void *
+> +__do_krealloc(const void *p, size_t new_size, gfp_t flags)
+>  {
+>         void *ret;
+>         size_t ks;
+> --
+> 2.34.1
+>
+
+
+--
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
