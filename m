@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6555ED7E4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Sep 2022 10:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B865ED7E7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Sep 2022 10:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232660AbiI1IgT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Sep 2022 04:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49400 "EHLO
+        id S232955AbiI1IgV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Sep 2022 04:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232681AbiI1IgO (ORCPT
+        with ESMTP id S232770AbiI1IgO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 28 Sep 2022 04:36:14 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1199DDA2
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 01:36:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0AE89DD9B
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 01:36:12 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9B52E1F8B3
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 08:36:09 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BDA141F8EF
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 08:36:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1664354169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1664354170; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+VJiN2lY+uw+3pR0u2g8ww7nMg3esG0uXpOsXRo17Io=;
-        b=EEFiqd6DkJfZ2rw2o49GvJlZcGIPl5DCf0pk1XTWShfSE4PZRc8MiwODlhfaMeYykEpUlY
-        MwFc25nyAJEvJoulbFlMcd5IdOWWaFRxoNk2AkFeZbhlOd/vjtVRn3HChRb+r30XYl+WnK
-        i4HuB2BuB1tH0SUJBbEQxVuKD04s/EU=
+        bh=DEITX+Clq9+wzKhNZrWSIOpZWdf9rgT5ZyFdgozNxN0=;
+        b=upT8HV2dfntpTPZNmYA2I7yVXMNrtrphHZsaBoqb0DY6cXlvhRCVoOTknsxEUw2kkVFeYg
+        ZPYe15DrUXZ9fYW953EO1yQ5Zf+7k+9bXML2Iwvt9m7VaphxGh7NcwMWaayzBIdacBRYFn
+        a1vLfmbKfathKajfLUsavi96hxRE/Uk=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E2B5613A84
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 08:36:08 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1340F13A84
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 08:36:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id KF6MKXgHNGO2VgAAMHmgww
+        id wK2RMnkHNGO2VgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 08:36:08 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 08:36:09 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH PoC v2 03/10] btrfs: scrub: introduce a place holder helper scrub_fs_iterate_bgs()
-Date:   Wed, 28 Sep 2022 16:35:40 +0800
-Message-Id: <9a80361fc9cc1176e08a3c670ea960b9616dc00d.1664353497.git.wqu@suse.com>
+Subject: [PATCH PoC v2 04/10] btrfs: scrub: introduce place holder helper scrub_fs_block_group()
+Date:   Wed, 28 Sep 2022 16:35:41 +0800
+Message-Id: <ba1a99b5c44dd02a9ebb63cb95d8dc4080bd1949.1664353497.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1664353497.git.wqu@suse.com>
 References: <cover.1664353497.git.wqu@suse.com>
@@ -60,235 +60,297 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This new helper is mostly the same as scrub_enumerate_chunks(), but with
-some small changes:
+The main place holder helper scrub_fs_block_group() will:
 
-- No need for dev-replace branches
+- Initialize various needed members inside scrub_fs_ctx
+  This includes:
+  * Calculate the nr_copies for non-RAID56 profiles, or grab nr_stripes
+    for RAID56 profiles.
+  * Allocate memory for sectors/pages array, and csum_buf if it's data
+    bg.
+  * Initialize all sectors to type UNUSED.
 
-- No need to search dev-extent tree
-  We can directly iterate the block groups.
+  All these above memory will stay for each stripe we run, thus we only
+  need to allocate these memories once-per-bg.
 
-The new helper currently will only iterate all the bgs, but doing
-nothing for the iterated bgs.
+- Iterate stripes containing any used sector
+  This is the code to be implemented.
 
-Also one smaller helper is introduced:
+- Cleanup above memories before we finish the block group.
 
-- scrub_fs_alloc_ctx()
-  To allocate a scrub_fs_ctx, which has way less members (for now and
-  for the future) compared to scrub_ctx.
-
-  The scrub_fs_ctx will have a very defined lifespan (only inside
-  btrfs_scrub_fs(), and can only have one scrub_fs_ctx, thus not need to
-  be ref counted)
+The real work of scrubbing a stripe is not yet implemented.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 164 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 162 insertions(+), 2 deletions(-)
+ fs/btrfs/scrub.c | 234 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 232 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index d3d64f048c7b..97da8545c9ab 100644
+index 97da8545c9ab..6e6c50962ace 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -198,6 +198,24 @@ struct scrub_ctx {
+@@ -198,6 +198,45 @@ struct scrub_ctx {
  	refcount_t              refs;
  };
  
-+/* This structure should only has a lifespan inside btrfs_scrub_fs(). */
-+struct scrub_fs_ctx {
-+	struct btrfs_fs_info		*fs_info;
++#define SCRUB_FS_SECTOR_FLAG_UNUSED		(1 << 0)
++#define SCRUB_FS_SECTOR_FLAG_DATA		(1 << 1)
++#define SCRUB_FS_SECTOR_FLAG_META		(1 << 2)
++#define SCRUB_FS_SECTOR_FLAG_PARITY		(1 << 3)
 +
-+	/* Current block group we're scurbbing. */
-+	struct btrfs_block_group	*cur_bg;
++/*
++ * Represent a sector.
++ *
++ * To access the content of a sector, the caller should have the index inside
++ * the scrub_fs_ctx->sectors[] array, and use that index to calculate the page
++ * and page offset innside scrub_fs_ctx->pages[] array.
++ *
++ * To get the logical/physical bytenr of the a sector, the caller should use
++ * scrub_fs_ctx->bioc and the sector index to calclulate the logical/physical
++ * bytenr.
++ */
++struct scrub_fs_sector {
++	unsigned int flags;
++	union {
++		/*
++		 * For SCRUB_FS_SECTOR_TYPE_DATA, either it points to some byte
++		 * inside scrub_fs_ctx->csum_buf, or it's NULL for NODATACSUM
++		 * case.
++		 */
++		u8 *csum;
 +
-+	/* Current logical bytenr being scrubbed. */
-+	u64				cur_logical;
-+
-+	atomic_t			bios_under_io;
-+
-+	bool				readonly;
-+
-+	/* There will and only be one thread touching @stat. */
-+	struct btrfs_scrub_fs_progress	stat;
++		/*
++		 * For SECRUB_FS_SECTOR_TYPE_META, this records the generation
++		 * and the logical bytenr of the tree block.
++		 * (So we can grab the first sector to calculate their inline
++		 * csum).
++		 */
++		struct {
++			u64 eb_logical;
++			u64 eb_generation;
++		};
++	};
 +};
 +
+ /* This structure should only has a lifespan inside btrfs_scrub_fs(). */
+ struct scrub_fs_ctx {
+ 	struct btrfs_fs_info		*fs_info;
+@@ -214,6 +253,57 @@ struct scrub_fs_ctx {
+ 
+ 	/* There will and only be one thread touching @stat. */
+ 	struct btrfs_scrub_fs_progress	stat;
++
++	/*
++	 * How many sectors we read per stripe.
++	 *
++	 * For now, it's fixed to BTRFS_STRIPE_LEN / sectorsize.
++	 *
++	 * This can be enlarged to full stripe size / sectorsize
++	 * for later RAID0/10/5/6 code.
++	 */
++	int				sectors_per_stripe;
++	/*
++	 * For non-RAID56 profiles, we only care how many copies the block
++	 * group has.
++	 * For RAID56 profiles, we care how many stripes the block group
++	 * has (including data and parities).
++	 */
++	union {
++		int			nr_stripes;
++		int			nr_copies;
++	};
++
++	/*
++	 * The total number of sectors we scrub in one run (including
++	 * the extra mirrors/parities).
++	 *
++	 * For non-RAID56 profiles, it would be:
++	 *   nr_copie * (BTRFS_STRIPE_LEN / sectorsize).
++	 *
++	 * For RAID56 profiles, it would be:
++	 *   nr_stripes * (BTRFS_STRIPE_LEN / sectorsize).
++	 */
++	int				total_sectors;
++
++	/* Page array for above total_sectors. */
++	struct page			**pages;
++
++	/*
++	 * Sector array for above total_sectors. The page content will be
++	 * inside above pages array.
++	 *
++	 * Both array should be initialized when start to scrub a block group.
++	 */
++	struct scrub_fs_sector		*sectors;
++
++	/*
++	 * Csum buffer allocated for the stripe.
++	 *
++	 * All sectors in different mirrors for the same logical bytenr
++	 * would point to the same location inside the buffer.
++	 */
++	u8				*csum_buf;
+ };
+ 
  struct scrub_warning {
- 	struct btrfs_path	*path;
- 	u64			extent_item_size;
-@@ -4427,6 +4445,126 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	return ret;
+@@ -4466,6 +4556,147 @@ static struct scrub_fs_ctx *scrub_fs_alloc_ctx(struct btrfs_fs_info *fs_info,
+ 	return ERR_PTR(ret);
  }
  
-+static struct scrub_fs_ctx *scrub_fs_alloc_ctx(struct btrfs_fs_info *fs_info,
-+					       bool readonly)
++/*
++ * Cleanup the memory allocation, mostly after finishing a bg, or for error
++ * path.
++ */
++static void scrub_fs_cleanup_for_bg(struct scrub_fs_ctx *sfctx)
 +{
-+	struct scrub_fs_ctx *sfctx;
-+	int ret;
++	int i;
++	const int nr_pages = sfctx->nr_copies * (BTRFS_STRIPE_LEN >> PAGE_SHIFT);
 +
-+	sfctx = kzalloc(sizeof(*sfctx), GFP_KERNEL);
-+	if (!sfctx) {
-+		ret = -ENOMEM;
-+		goto error;
++	if (sfctx->pages) {
++		for (i = 0; i < nr_pages; i++) {
++			if (sfctx->pages[i]) {
++				__free_page(sfctx->pages[i]);
++				sfctx->pages[i] = NULL;
++			}
++		}
 +	}
++	kfree(sfctx->pages);
++	sfctx->pages = NULL;
 +
-+	sfctx->fs_info = fs_info;
-+	sfctx->readonly = readonly;
-+	atomic_set(&sfctx->bios_under_io, 0);
-+	return sfctx;
-+error:
-+	kfree(sfctx);
-+	return ERR_PTR(ret);
++	kfree(sfctx->sectors);
++	sfctx->sectors = NULL;
++
++	kfree(sfctx->csum_buf);
++	sfctx->csum_buf = NULL;
++
++	/* NOTE: block group will only be put inside scrub_fs_iterate_bgs(). */
++	sfctx->cur_bg = NULL;
 +}
 +
-+static int scrub_fs_iterate_bgs(struct scrub_fs_ctx *sfctx, u64 start, u64 end)
++/* Do the block group specific initialization. */
++static int scrub_fs_init_for_bg(struct scrub_fs_ctx *sfctx,
++				struct btrfs_block_group *bg)
 +{
 +	struct btrfs_fs_info *fs_info = sfctx->fs_info;
-+	u64 cur = start;
++	struct extent_map_tree *map_tree = &fs_info->mapping_tree;
++	struct extent_map *em;
++	bool is_raid56 = !!(bg->flags & BTRFS_BLOCK_GROUP_RAID56_MASK);
++	int ret = 0;
++	int nr_pages;
++	int i;
++
++	/*
++	 * One stripe should be page aligned, aka, PAGE_SIZE should not be
++	 * larger than 64K.
++	 */
++	ASSERT(IS_ALIGNED(BTRFS_STRIPE_LEN, PAGE_SIZE));
++
++	/* Last run should have cleanedup all the memories. */
++	ASSERT(!sfctx->cur_bg);
++	ASSERT(!sfctx->pages);
++	ASSERT(!sfctx->sectors);
++	ASSERT(!sfctx->csum_buf);
++
++	read_lock(&map_tree->lock);
++	em = lookup_extent_mapping(map_tree, bg->start, bg->length);
++	read_unlock(&map_tree->lock);
++
++	/*
++	 * Might have been an unused block group deleted by the cleaner
++	 * kthread or relocation.
++	 */
++	if (!em) {
++		spin_lock(&bg->lock);
++		if (!test_bit(BLOCK_GROUP_FLAG_REMOVED, &bg->runtime_flags))
++			ret = -EINVAL;
++		spin_unlock(&bg->lock);
++		return ret;
++	}
++	/*
++	 * Since we're ensured to be executed without any other
++	 * dev-replace/scrub running, the num_stripes should be the total
++	 * number of stripes, without the replace target device.
++	 */
++	if (is_raid56)
++		sfctx->nr_stripes = em->map_lookup->num_stripes;
++	free_extent_map(em);
++
++	if (!is_raid56)
++		sfctx->nr_copies = btrfs_num_copies(fs_info, bg->start,
++						    fs_info->sectorsize);
++	sfctx->sectors_per_stripe = BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits;
++	sfctx->total_sectors = sfctx->sectors_per_stripe * sfctx->nr_copies;
++
++	nr_pages = (BTRFS_STRIPE_LEN >> PAGE_SHIFT) * sfctx->nr_copies;
++
++	sfctx->pages = kcalloc(nr_pages, sizeof(struct page *), GFP_KERNEL);
++	if (!sfctx->pages)
++		goto enomem;
++
++	for (i = 0; i < nr_pages; i++) {
++		sfctx->pages[i] = alloc_page(GFP_KERNEL);
++		if (!sfctx->pages[i])
++			goto enomem;
++	}
++
++	sfctx->sectors = kcalloc(sfctx->total_sectors,
++				 sizeof(struct scrub_fs_sector), GFP_KERNEL);
++	if (!sfctx->sectors)
++		goto enomem;
++
++	for (i = 0; i < sfctx->total_sectors; i++)
++		sfctx->sectors[i].flags = SCRUB_FS_SECTOR_FLAG_UNUSED;
++
++	if (bg->flags & BTRFS_BLOCK_GROUP_DATA) {
++		sfctx->csum_buf = kzalloc(fs_info->csum_size *
++					  sfctx->sectors_per_stripe, GFP_KERNEL);
++		if (!sfctx->csum_buf)
++			goto enomem;
++	}
++	sfctx->cur_bg = bg;
++	sfctx->cur_logical = bg->start;
++	return 0;
++
++enomem:
++	sfctx->stat.nr_fatal_errors++;
++	scrub_fs_cleanup_for_bg(sfctx);
++	return -ENOMEM;
++}
++
++
++static int scrub_fs_block_group(struct scrub_fs_ctx *sfctx,
++				struct btrfs_block_group *bg)
++{
 +	int ret;
 +
-+	while (cur < end) {
-+		struct btrfs_block_group *bg;
-+		bool ro_set = false;
++	/* Not yet supported, just skip RAID56 bgs for now. */
++	if (bg->flags & BTRFS_BLOCK_GROUP_RAID56_MASK)
++		return 0;
 +
-+		bg = btrfs_lookup_first_block_group(fs_info, cur);
-+		if (!bg)
-+			break;
-+		if (bg->start + bg->length >= end) {
-+			btrfs_put_block_group(bg);
-+			break;
-+		}
-+		spin_lock(&bg->lock);
++	ret = scrub_fs_init_for_bg(sfctx, bg);
++	if (ret < 0)
++		return ret;
 +
-+		/* Already deleted bg, skip to the next one. */
-+		if (test_bit(BLOCK_GROUP_FLAG_REMOVED, &bg->runtime_flags)) {
-+			spin_unlock(&bg->lock);
-+			cur = bg->start + bg->length;
-+			btrfs_put_block_group(bg);
-+			continue;
-+		}
-+		btrfs_freeze_block_group(bg);
-+		spin_unlock(&bg->lock);
++	/* Place holder for the loop itearting the sectors. */
++	ret = 0;
 +
-+		/*
-+		 * we need call btrfs_inc_block_group_ro() with scrubs_paused,
-+		 * to avoid deadlock caused by:
-+		 * btrfs_inc_block_group_ro()
-+		 * -> btrfs_wait_for_commit()
-+		 * -> btrfs_commit_transaction()
-+		 * -> btrfs_scrub_pause()
-+		 */
-+		scrub_pause_on(fs_info);
-+
-+		/*
-+		 * Check the comments before btrfs_inc_block_group_ro() inside
-+		 * scrub_enumerate_chunks() for reasons.
-+		 */
-+		ret = btrfs_inc_block_group_ro(bg, false);
-+		if (ret == 0)
-+			ro_set = true;
-+		if (ret == -ETXTBSY) {
-+			btrfs_warn(fs_info,
-+		   "skipping scrub of block group %llu due to active swapfile",
-+				   bg->start);
-+			scrub_pause_off(fs_info);
-+			ret = 0;
-+			goto next;
-+		}
-+		if (ret < 0 && ret != -ENOSPC) {
-+			btrfs_warn(fs_info,
-+				   "failed setting block group ro: %d", ret);
-+			scrub_pause_off(fs_info);
-+			goto next;
-+		}
-+
-+		scrub_pause_off(fs_info);
-+
-+		/* Place holder for the real chunk scrubbing code. */
-+		ret = 0;
-+
-+		if (ro_set)
-+			btrfs_dec_block_group_ro(bg);
-+
-+		/*
-+		 * We might have prevented the cleaner kthread from deleting
-+		 * this block group if it was already unused because we raced
-+		 * and set it to RO mode first. So add it back to the unused
-+		 * list, otherwise it might not ever be deleted unless a manual
-+		 * balance is triggered or it becomes used and unused again.
-+		 */
-+		spin_lock(&bg->lock);
-+		if (!test_bit(BLOCK_GROUP_FLAG_REMOVED, &bg->runtime_flags) &&
-+		    !bg->ro && bg->reserved == 0 && bg->used == 0) {
-+			spin_unlock(&bg->lock);
-+			if (btrfs_test_opt(fs_info, DISCARD_ASYNC))
-+				btrfs_discard_queue_work(&fs_info->discard_ctl,
-+							 bg);
-+			else
-+				btrfs_mark_bg_unused(bg);
-+		} else {
-+			spin_unlock(&bg->lock);
-+		}
-+next:
-+		cur = bg->start + bg->length;
-+
-+		btrfs_unfreeze_block_group(bg);
-+		btrfs_put_block_group(bg);
-+		if (ret)
-+			break;
-+	}
++	scrub_fs_cleanup_for_bg(sfctx);
 +	return ret;
 +}
 +
- /*
-  * Unlike btrfs_scrub_dev(), this function works completely in logical bytenr
-  * level, and has the following advantage:
-@@ -4474,6 +4612,8 @@ int btrfs_scrub_fs(struct btrfs_fs_info *fs_info, u64 start, u64 end,
- 		   struct btrfs_scrub_fs_progress *progress,
- 		   bool readonly)
+ static int scrub_fs_iterate_bgs(struct scrub_fs_ctx *sfctx, u64 start, u64 end)
  {
-+	struct scrub_fs_ctx *sfctx;
-+	unsigned int nofs_flag;
- 	int ret;
+ 	struct btrfs_fs_info *fs_info = sfctx->fs_info;
+@@ -4529,8 +4760,7 @@ static int scrub_fs_iterate_bgs(struct scrub_fs_ctx *sfctx, u64 start, u64 end)
  
- 	if (btrfs_fs_closing(fs_info))
-@@ -4510,8 +4650,25 @@ int btrfs_scrub_fs(struct btrfs_fs_info *fs_info, u64 start, u64 end,
- 	btrfs_info(fs_info, "scrub_fs: started");
- 	mutex_unlock(&fs_info->scrub_lock);
+ 		scrub_pause_off(fs_info);
  
--	/* Place holder for real workload. */
--	ret = -EOPNOTSUPP;
-+	sfctx = scrub_fs_alloc_ctx(fs_info, readonly);
-+	if (IS_ERR(sfctx)) {
-+		ret = PTR_ERR(sfctx);
-+		sfctx = NULL;
-+		goto out;
-+	}
-+
-+	if (progress)
-+		memcpy(&sfctx->stat, progress, sizeof(*progress));
-+
-+	/*
-+	 * Check the comments before memalloc_nofs_save() in btrfs_scrub_dev()
-+	 * for reasons.
-+	 */
-+	nofs_flag = memalloc_nofs_save();
-+	ret = scrub_fs_iterate_bgs(sfctx, start, end);
-+	memalloc_nofs_restore(nofs_flag);
-+out:
-+	kfree(sfctx);
+-		/* Place holder for the real chunk scrubbing code. */
+-		ret = 0;
++		ret = scrub_fs_block_group(sfctx, bg);
  
- 	mutex_lock(&fs_info->scrub_lock);
- 	atomic_dec(&fs_info->scrubs_running);
-@@ -4520,6 +4677,9 @@ int btrfs_scrub_fs(struct btrfs_fs_info *fs_info, u64 start, u64 end,
- 	mutex_unlock(&fs_info->scrub_lock);
- 	wake_up(&fs_info->scrub_pause_wait);
- 
-+	if (progress)
-+		memcpy(progress, &sfctx->stat, sizeof(*progress));
-+
- 	return ret;
- }
- 
+ 		if (ro_set)
+ 			btrfs_dec_block_group_ro(bg);
 -- 
 2.37.3
 
