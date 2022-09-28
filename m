@@ -2,239 +2,209 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC165ED620
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Sep 2022 09:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09FF5ED7E5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Sep 2022 10:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbiI1Hbg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 28 Sep 2022 03:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
+        id S232802AbiI1IgO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Sep 2022 04:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233487AbiI1Hbe (ORCPT
+        with ESMTP id S229576AbiI1IgL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Sep 2022 03:31:34 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45883EFA5B;
-        Wed, 28 Sep 2022 00:31:13 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id a20so7436705qtw.10;
-        Wed, 28 Sep 2022 00:31:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=qLaRR+atoHoSJaoPeYCH+z3TJyk6r6Xbl1EdBW345pA=;
-        b=6NnEPABEVDJzwh6yCurfx1Cif5DMapO+bg1iMikzghyO38AmfDSR94isRYQCdZjRIk
-         pyZZpIknvj8ECkP8iVx5yjZC10ic9v7bNmeVzwZ9pum0Y0TRGa9SgYNq13DLkvBkN2z5
-         8CMqpnp/IyQTSxyGZ9Dv2SUWJ4CzzvvRYl3cSmk5/LKtSSbMkhtBxVtgnnUhC4nTRXq1
-         GPvaysL3BVE8WVVXEBvhEgzS1ghJ6swCy7oiCxSVlIwgztHn8DndlXSHRwcOiqPxauth
-         IXo8pdKoZz69P+7kWBAuGiDAvhvxvmrs70k/ThsZJZBsd96TGkHpEmrikmijgqml2D3u
-         U3rw==
-X-Gm-Message-State: ACrzQf3xXpKbb7hm4jsTAbm5KlnbQW8kiPjsABe0wd8k2h4dOmzHAlmy
-        6OkP9PbmtEEraX6MRFqBxqNQDtejTlb2Fw==
-X-Google-Smtp-Source: AMsMyM4+PNFxoIXXZBmtdzqe4MriABDPe51IFn1BULr+he2jCjsTHGWgMj7oO+fZnDBoWSErj88otg==
-X-Received: by 2002:ac8:5ccd:0:b0:35c:e18b:2be3 with SMTP id s13-20020ac85ccd000000b0035ce18b2be3mr25152912qta.502.1664349989011;
-        Wed, 28 Sep 2022 00:26:29 -0700 (PDT)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id n8-20020a05620a294800b006cfc1d827cbsm1140417qkp.9.2022.09.28.00.26.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Sep 2022 00:26:28 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-35393e71e1eso4939837b3.9;
-        Wed, 28 Sep 2022 00:26:27 -0700 (PDT)
-X-Received: by 2002:a81:758a:0:b0:345:450b:6668 with SMTP id
- q132-20020a81758a000000b00345450b6668mr28433710ywc.316.1664349987412; Wed, 28
- Sep 2022 00:26:27 -0700 (PDT)
+        Wed, 28 Sep 2022 04:36:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0695101C6
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 01:36:07 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2EBD821DB4
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 08:36:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1664354166; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=N/PYCAj4YYgPfnY15jUK2B2geyOjkjraflVCY0oiT8Q=;
+        b=Oe2ST2gE2ksQvOLyDx+kW0vBruHcXp61h4BA/WfNnB1jLZvivq4WafwjVmbZY1plZQERwI
+        yZPOUhctpADzSg1ia0Vn/XQFoWucAvPBf49FfgjOGLLRs49n7b2q5gYsw10JecM4VSDNKk
+        g6iwhVLfM844t+3HAe2mpriNNQuha1k=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7245213A84
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 08:36:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id C9HuDXUHNGO2VgAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 08:36:05 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH PoC v2 00/10] btrfs: scrub: introduce a new family of ioctl, scrub_fs
+Date:   Wed, 28 Sep 2022 16:35:37 +0800
+Message-Id: <cover.1664353497.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-References: <20220923202822.2667581-1-keescook@chromium.org> <20220923202822.2667581-2-keescook@chromium.org>
-In-Reply-To: <20220923202822.2667581-2-keescook@chromium.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 28 Sep 2022 09:26:15 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXK+UN1YVZm9DenuXAM8hZRUZJwp=SXsueP7sWiVU3a9A@mail.gmail.com>
-Message-ID: <CAMuHMdXK+UN1YVZm9DenuXAM8hZRUZJwp=SXsueP7sWiVU3a9A@mail.gmail.com>
-Subject: Re: [PATCH v2 01/16] slab: Remove __malloc attribute from realloc functions
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Marco Elver <elver@google.com>, linux-mm@kvack.org,
-        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Alex Elder <elder@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Miguel Ojeda <ojeda@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-fsdevel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        dev@openvswitch.org, x86@kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Kees,
+[CHANGELOG]
+POC v2:
+- Move the per-stripe verification to endio function
+  This is to improve the performance, since my previous testing shows
+  my Ryzen 5900X can only achieve ~2GiB/s CRC32 per-core, the old
+  verification in main thread can be a bottleneck for fast storage.
 
-On Fri, Sep 23, 2022 at 10:35 PM Kees Cook <keescook@chromium.org> wrote:
-> The __malloc attribute should not be applied to "realloc" functions, as
-> the returned pointer may alias the storage of the prior pointer. Instead
-> of splitting __malloc from __alloc_size, which would be a huge amount of
-> churn, just create __realloc_size for the few cases where it is needed.
->
-> Additionally removes the conditional test for __alloc_size__, which is
-> always defined now.
->
-> Cc: Christoph Lameter <cl@linux.com>
-> Cc: Pekka Enberg <penberg@kernel.org>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Roman Gushchin <roman.gushchin@linux.dev>
-> Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: linux-mm@kvack.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+- Add repair (writeback) support
+  Now the corrupted sectors which also have good copy in the veritical
+  stripes can be written back to repair.
 
-Thanks for your patch, which is now commit 63caa04ec60583b1 ("slab:
-Remove __malloc attribute from realloc functions") in next-20220927.
+- Change stat::data_nocsum_uncertain to stat::data_nocsum
+  The main problem here is we have no way to distinguish preallocated
+  extents with real NODATASUM extents.
+  (Without doing complex backref walk and pre-alloc checks).
 
-Noreply@ellerman.id.au reported all gcc8-based builds to fail
-(e.g. [1], more at [2]):
+  Thus comparing the NODATASUM ranges inside the same veritical stripe
+  doesn't make that much sense.
 
-    In file included from <command-line>:
-    ./include/linux/percpu.h: In function ‘__alloc_reserved_percpu’:
-    ././include/linux/compiler_types.h:279:30: error: expected
-declaration specifiers before ‘__alloc_size__’
-     #define __alloc_size(x, ...) __alloc_size__(x, ## __VA_ARGS__) __malloc
-                                  ^~~~~~~~~~~~~~
-    ./include/linux/percpu.h:120:74: note: in expansion of macro ‘__alloc_size’
-    [...]
+  So here we just report how many bytes don't have csum.
 
-It's building fine with e.g. gcc-9 (which is my usual m68k cross-compiler).
-Reverting this commit on next-20220927 fixes the issue.
+[BACKGROUND]
+Depite the write-hole problem of RAID56, scrub is neither RAID56
+friendly in the following points:
 
-[1] http://kisskb.ellerman.id.au/kisskb/buildresult/14803908/
-[2] http://kisskb.ellerman.id.au/kisskb/head/1bd8b75fe6adeaa89d02968bdd811ffe708cf839/
+- Extra IO for RAID56 scrub
+  Currently data strips of RAID56 can be read 2x (RAID5) or 3x (RAID6).
 
+  This is caused by the fact we do one-thread per-device scrub.
 
+  Dev 1    |  Data 1  | P(3 + 4) |
+  Dev 2    |  Data 2  |  Data 3  |
+  Dev 3    | P(1 + 2) |  Data 4  |
 
-> ---
->  include/linux/compiler_types.h | 13 +++++--------
->  include/linux/slab.h           | 12 ++++++------
->  mm/slab_common.c               |  4 ++--
->  3 files changed, 13 insertions(+), 16 deletions(-)
->
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index 4f2a819fd60a..f141a6f6b9f6 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -271,15 +271,12 @@ struct ftrace_likely_data {
->
->  /*
->   * Any place that could be marked with the "alloc_size" attribute is also
-> - * a place to be marked with the "malloc" attribute. Do this as part of the
-> - * __alloc_size macro to avoid redundant attributes and to avoid missing a
-> - * __malloc marking.
-> + * a place to be marked with the "malloc" attribute, except those that may
-> + * be performing a _reallocation_, as that may alias the existing pointer.
-> + * For these, use __realloc_size().
->   */
-> -#ifdef __alloc_size__
-> -# define __alloc_size(x, ...)  __alloc_size__(x, ## __VA_ARGS__) __malloc
-> -#else
-> -# define __alloc_size(x, ...)  __malloc
-> -#endif
-> +#define __alloc_size(x, ...)   __alloc_size__(x, ## __VA_ARGS__) __malloc
-> +#define __realloc_size(x, ...) __alloc_size__(x, ## __VA_ARGS__)
->
->  #ifndef asm_volatile_goto
->  #define asm_volatile_goto(x...) asm goto(x)
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index 0fefdf528e0d..41bd036e7551 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -184,7 +184,7 @@ int kmem_cache_shrink(struct kmem_cache *s);
->  /*
->   * Common kmalloc functions provided by all allocators
->   */
-> -void * __must_check krealloc(const void *objp, size_t new_size, gfp_t flags) __alloc_size(2);
-> +void * __must_check krealloc(const void *objp, size_t new_size, gfp_t flags) __realloc_size(2);
->  void kfree(const void *objp);
->  void kfree_sensitive(const void *objp);
->  size_t __ksize(const void *objp);
-> @@ -647,10 +647,10 @@ static inline __alloc_size(1, 2) void *kmalloc_array(size_t n, size_t size, gfp_
->   * @new_size: new size of a single member of the array
->   * @flags: the type of memory to allocate (see kmalloc)
->   */
-> -static inline __alloc_size(2, 3) void * __must_check krealloc_array(void *p,
-> -                                                                   size_t new_n,
-> -                                                                   size_t new_size,
-> -                                                                   gfp_t flags)
-> +static inline __realloc_size(2, 3) void * __must_check krealloc_array(void *p,
-> +                                                                     size_t new_n,
-> +                                                                     size_t new_size,
-> +                                                                     gfp_t flags)
->  {
->         size_t bytes;
->
-> @@ -774,7 +774,7 @@ static inline __alloc_size(1, 2) void *kvcalloc(size_t n, size_t size, gfp_t fla
->  }
->
->  extern void *kvrealloc(const void *p, size_t oldsize, size_t newsize, gfp_t flags)
-> -                     __alloc_size(3);
-> +                     __realloc_size(3);
->  extern void kvfree(const void *addr);
->  extern void kvfree_sensitive(const void *addr, size_t len);
->
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 17996649cfe3..457671ace7eb 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1134,8 +1134,8 @@ module_init(slab_proc_init);
->
->  #endif /* CONFIG_SLAB || CONFIG_SLUB_DEBUG */
->
-> -static __always_inline void *__do_krealloc(const void *p, size_t new_size,
-> -                                          gfp_t flags)
-> +static __always_inline __realloc_size(2) void *
-> +__do_krealloc(const void *p, size_t new_size, gfp_t flags)
->  {
->         void *ret;
->         size_t ks;
-> --
-> 2.34.1
->
+  When scrubbing Dev 1, we will read Data 1 (treated no differently than
+  SINGLE), then read Parity (3 + 4).
+  But to determine if Parity (3 + 4) is correct, we have to read Data 3
+  and Data 4.
+
+  On the other hand, Data 3 will also be read by scrubbing Dev 2,
+  and Data 4 will also be read by scrubbing Dev 3.
+
+  Thus all data stripes will be read twice, causing slow down in RAID56
+  scrubbing.
+
+- No proper progress report for P/Q stripes
+  The scrub_progress has no member for P/Q error reporting at all.
+
+  Thus even if we fixed some P/Q error, it will not be reported at all.
+
+To address the above problems, this patchset will introduce a new
+family of ioctl, scrub_fs ioctls.
+
+[CORE DESIGN]
+The new scrub_fs ioctl will go block group by block group, to scrub the
+full fs.
+
+Inside each block group, we go BTRFS_STRIPE_LEN as one scrub unit (will
+be enlarged later to improve parallel for RAID0/10).
+
+Then we read the full BTRFS_STRIPE_LEN bytes from each mirror (if there
+is an extent inside the range).
+
+The read bios will be submitted to each device at once, so we can still
+take advantage of parallel IOs.
+
+But the verification part still only happens inside the scrub thread, no
+parallel csum check.
+
+Also this ioctl family will rely on a much larger progress structure,
+it's padded to 256 bytes, with parity specific error reporting (not yet
+implemented though).
+
+[THE GOOD]
+- Every stripe will be iterated at most once
+  No double read for data stripes.
+
+- Better error reports for parity mismatch
+
+- No need for complex bio form shaping
+  Since we already submit read bios in BTRFS_STRIPE_LEN unit, and wait
+  for them to finish, there are only at most nr_copies bios at fly.
+  (For later RAID0/10 optimization, it will be nr_stripes)
+
+  This behavior will reduce the IOPS usage by nature, thus no need to
+  do any bio form shaping.
+
+  This greatly reduce the code size, just check how much code are spent
+  for bio form shaping in the old scrub code.
+
+- Less block groups marked for read-only
+  Now there is at most one block group marked read-only for scrub,
+  reducing the possibility of ENOSPC during scrub.
+
+[THE BAD]
+- Slower for SINGLE profile
+  If some one is using SINGLE profile on multiple devices, scrub_fs will
+  slower.
+
+  Dev 1:   | SINGLE BG 1 |
+  Dev 2:   | SINGLE BG 2 |
+  Dev 3:   | SINGLE BG 3 |
+
+  The existing scrub code will scrub single BG 1~3 at the same time.
+  But the new scrub_fs will scrub single BG 1 first, then 2, then 3.
+  Causing much slower scrub for such case.
+
+  Although I'd argue, for above case, the user should go RAID0 anyway.
+
+[THE UGLY]
+Since this is just a proof-of-concept patchset, it lacks the following
+functionality/optimization:
+
+- Slower RAID0/RAID10 scrub.
+  Since we only scrub BTRFS_STRIPE_LEN, it will not utilize all devices
+  from RAID0/10.
+  Although it can be easily enhanced by enlarging the scrub unit to a
+  full stripe.
+
+- No RAID56 support
+  Ironically.
+
+- Very basic btrfs-progs support
+  Really only calls the ioctl and gives an output.
+  No background scrub or scrub status file support.
+
+- No drop-in full fstests run yet
 
 
---
-Gr{oetje,eeting}s,
+Qu Wenruo (10):
+  btrfs: introduce BTRFS_IOC_SCRUB_FS family of ioctls
+  btrfs: scrub: introduce place holder for btrfs_scrub_fs()
+  btrfs: scrub: introduce a place holder helper scrub_fs_iterate_bgs()
+  btrfs: scrub: introduce place holder helper scrub_fs_block_group()
+  btrfs: scrub: add helpers to fulfill csum/extent_generation
+  btrfs: scrub: submit and wait for the read of each copy
+  btrfs: scrub: implement metadata verification code for scrub_fs
+  btrfs: scrub: implement data verification code for scrub_fs
+  btrfs: scrub: implement the later stage of verification
+  btrfs: scrub: implement the repair (writeback) functionality
 
-                        Geert
+ fs/btrfs/ctree.h           |    4 +
+ fs/btrfs/disk-io.c         |   83 ++-
+ fs/btrfs/disk-io.h         |    2 +
+ fs/btrfs/ioctl.c           |   45 ++
+ fs/btrfs/scrub.c           | 1372 ++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/btrfs.h |  174 +++++
+ 6 files changed, 1654 insertions(+), 26 deletions(-)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+-- 
+2.37.3
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
