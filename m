@@ -2,183 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C135EF11C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Sep 2022 11:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98615EF3A7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Sep 2022 12:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235452AbiI2JAz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 29 Sep 2022 05:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
+        id S233495AbiI2Knl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Sep 2022 06:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235070AbiI2JAy (ORCPT
+        with ESMTP id S233190AbiI2Knk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Sep 2022 05:00:54 -0400
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A61C126B56;
-        Thu, 29 Sep 2022 02:00:53 -0700 (PDT)
-Received: by mail-oi1-f182.google.com with SMTP id m130so948069oif.6;
-        Thu, 29 Sep 2022 02:00:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=Ir+IzupNAXvXvPBkZ1yh/qacu5xVXDJ2KC3L3ZMV+D4=;
-        b=EED+KU8eMYhPRbakg8ufk7N7udWD/ajW0taKcnMaub1VgUUEk6pJVhDivnToBjIDFI
-         Ii4QoNk4pYr3EVXDi0seakF39cCNV7UWcpTXbkVpyjE2enfVAMsTmn8Iff3bfBE3q5+G
-         4jYiOEJaPb4iENUuMm+etMhu8E4F05mWl1qUHgE9DIabskklCZuNGzsA8luMoyNv6PPn
-         6Z/AalBN6VZU8RWNIUO6wUP5mAiRuereep444i3efUrI8CVrDXgOYQ/QKFTO2dAzLW5V
-         5KYpQss9DxkuKVysmb+te+tPo4ecJsWw0rHH7Qyh7+TDyDGm+cpu1Y/x10PkExBmweTQ
-         zO3g==
-X-Gm-Message-State: ACrzQf3jeNWP+lf1eYUBdQuOBkGrMyqOPc9rTX4d6jbuwwycQa1EufVP
-        7oJ07yldNkV/XT8X9pEjfKl8QWnroUGLsQ==
-X-Google-Smtp-Source: AMsMyM5vrNCkseckAA8F+Eoio9F3dk/sAQm6yX/uZ2lAkUbFkJg4rOwOGUF0gV17QHA7TmWXxYAzaQ==
-X-Received: by 2002:a05:6808:13c9:b0:350:109d:4916 with SMTP id d9-20020a05680813c900b00350109d4916mr6110929oiw.97.1664442052395;
-        Thu, 29 Sep 2022 02:00:52 -0700 (PDT)
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com. [209.85.210.54])
-        by smtp.gmail.com with ESMTPSA id cm30-20020a056870b61e00b0012c21a64a76sm3622029oab.24.2022.09.29.02.00.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Sep 2022 02:00:52 -0700 (PDT)
-Received: by mail-ot1-f54.google.com with SMTP id f20-20020a9d7b54000000b006574e21f1b6so500473oto.5;
-        Thu, 29 Sep 2022 02:00:52 -0700 (PDT)
-X-Received: by 2002:a5b:104:0:b0:6b0:429:3fe9 with SMTP id 4-20020a5b0104000000b006b004293fe9mr2016091ybx.543.1664442041163;
- Thu, 29 Sep 2022 02:00:41 -0700 (PDT)
+        Thu, 29 Sep 2022 06:43:40 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A510F8FB1
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Sep 2022 03:43:39 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0F2B321E3D;
+        Thu, 29 Sep 2022 10:43:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1664448218;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZgM9GB9ihhQxSJ9Ua082q5BYBBQ3dP3zxjZQYysQLxg=;
+        b=zyn3MDRXQcKLxPiFeN9MBosyDgA3iphFluTYJFNVSGmoFpgqmWs378HL6wHSfizMrVcvg9
+        A77b78XlWoIhsTqlQF/fbuWzP1LjF1r+AWRxAFSYuKCaGh714kklTt4Rls5iuxu4k6AGcv
+        ZZ0dCNplYEwRwj2IcOslxOMyKcPixMg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1664448218;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZgM9GB9ihhQxSJ9Ua082q5BYBBQ3dP3zxjZQYysQLxg=;
+        b=cPICocpKZOVDtKnBzh46/eXnR2quPhtdnKrmEYfq5vaF7gY5xQxl2F7qOLmyWmoGMmJapD
+        xhHFczk5vg4ViTAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DEDC013A71;
+        Thu, 29 Sep 2022 10:43:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id pdpxNdl2NWP1WQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 29 Sep 2022 10:43:37 +0000
+Date:   Thu, 29 Sep 2022 12:38:02 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Mariusz Mazur <mariusz.g.mazur@gmail.com>
+Cc:     Neal Gompa <ngompa13@gmail.com>, linux-btrfs@vger.kernel.org
+Subject: Re: Is scrubbing md-aware in any way?
+Message-ID: <20220929103802.GF13389@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <CAGzuT_3UVJuXeDjQ4CtM77TO2C6WoBAiWyyBi59_wcv3p7znzA@mail.gmail.com>
+ <20220914142738.GN32411@twin.jikos.cz>
+ <CAEg-Je-vB+UgU2uDspdN8P+aG+JQP1h-7hx34siy6FasgJ=e3w@mail.gmail.com>
+ <CAGzuT_1_NWtqtZhC83xsW9L3NXwz02v_PdaABpuJ-OheqZ6drQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220923202822.2667581-1-keescook@chromium.org>
- <20220923202822.2667581-2-keescook@chromium.org> <CAMuHMdXK+UN1YVZm9DenuXAM8hZRUZJwp=SXsueP7sWiVU3a9A@mail.gmail.com>
- <202209281011.66DD717D@keescook> <874jwqfuh6.fsf@mpe.ellerman.id.au>
-In-Reply-To: <874jwqfuh6.fsf@mpe.ellerman.id.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 29 Sep 2022 11:00:28 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVOvs4adSV7G6ucZ8dcr+RxfZOOK=jXeO2tEAaXkv80Xg@mail.gmail.com>
-Message-ID: <CAMuHMdVOvs4adSV7G6ucZ8dcr+RxfZOOK=jXeO2tEAaXkv80Xg@mail.gmail.com>
-Subject: Re: [PATCH v2 01/16] slab: Remove __malloc attribute from realloc functions
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Marco Elver <elver@google.com>, linux-mm@kvack.org,
-        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Alex Elder <elder@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Miguel Ojeda <ojeda@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-fsdevel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        dev@openvswitch.org, x86@kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGzuT_1_NWtqtZhC83xsW9L3NXwz02v_PdaABpuJ-OheqZ6drQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Michael,
-
-On Thu, Sep 29, 2022 at 10:36 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> > On Wed, Sep 28, 2022 at 09:26:15AM +0200, Geert Uytterhoeven wrote:
-> >> On Fri, Sep 23, 2022 at 10:35 PM Kees Cook <keescook@chromium.org> wrote:
-> >> > The __malloc attribute should not be applied to "realloc" functions, as
-> >> > the returned pointer may alias the storage of the prior pointer. Instead
-> >> > of splitting __malloc from __alloc_size, which would be a huge amount of
-> >> > churn, just create __realloc_size for the few cases where it is needed.
-> >> >
-> >> > Additionally removes the conditional test for __alloc_size__, which is
-> >> > always defined now.
-> >> >
-> >> > Cc: Christoph Lameter <cl@linux.com>
-> >> > Cc: Pekka Enberg <penberg@kernel.org>
-> >> > Cc: David Rientjes <rientjes@google.com>
-> >> > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> >> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> >> > Cc: Vlastimil Babka <vbabka@suse.cz>
-> >> > Cc: Roman Gushchin <roman.gushchin@linux.dev>
-> >> > Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> >> > Cc: Marco Elver <elver@google.com>
-> >> > Cc: linux-mm@kvack.org
-> >> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> >>
-> >> Thanks for your patch, which is now commit 63caa04ec60583b1 ("slab:
-> >> Remove __malloc attribute from realloc functions") in next-20220927.
-> >>
-> >> Noreply@ellerman.id.au reported all gcc8-based builds to fail
-> >> (e.g. [1], more at [2]):
-> >>
-> >>     In file included from <command-line>:
-> >>     ./include/linux/percpu.h: In function ‘__alloc_reserved_percpu’:
-> >>     ././include/linux/compiler_types.h:279:30: error: expected
-> >> declaration specifiers before ‘__alloc_size__’
-> >>      #define __alloc_size(x, ...) __alloc_size__(x, ## __VA_ARGS__) __malloc
-> >>                                   ^~~~~~~~~~~~~~
-> >>     ./include/linux/percpu.h:120:74: note: in expansion of macro ‘__alloc_size’
-> >>     [...]
-> >>
-> >> It's building fine with e.g. gcc-9 (which is my usual m68k cross-compiler).
-> >> Reverting this commit on next-20220927 fixes the issue.
-> >>
-> >> [1] http://kisskb.ellerman.id.au/kisskb/buildresult/14803908/
-> >> [2] http://kisskb.ellerman.id.au/kisskb/head/1bd8b75fe6adeaa89d02968bdd811ffe708cf839/
+On Mon, Sep 26, 2022 at 05:36:04PM +0200, Mariusz Mazur wrote:
+> niedz., 25 wrz 2022 o 20:46 Neal Gompa <ngompa13@gmail.com> napisał(a):
 > >
-> > Eek! Thanks for letting me know. I'm confused about this --
-> > __alloc_size__ wasn't optional in compiler_attributes.h -- but obviously
-> > I broke something! I'll go figure this out.
->
-> This fixes it for me.
+> > On Wed, Sep 14, 2022 at 10:37 AM David Sterba <dsterba@suse.cz> wrote:
+> > >
+> > > On Tue, Sep 13, 2022 at 04:15:26PM +0200, Mariusz Mazur wrote:
+> > > > Hi, it's my understanding that when running a scrub on a btrfs raid,
+> > > > if data corruption is detected, the process will check copies on other
+> > > > devices and heal the data if possible.
+> > > >
+> > > > Is any of that functionality available when running on top of an md
+> > > > raid?
+> > >
+> > > No, the type of block device under btrfs is considered the same in all
+> > > cases, except zoned devices, so any advanced information exchange or
+> > > control like devices reporting bad sectors or btrfs asking to repair the
+> > > underlying device by its own means.
+> > >
+> > > > When a scrub notices an issue, does it have any mechanism of
+> > > > telling md "hey, there's a problem with these sectors" and working
+> > > > with it to do something about that or is it all up to the admin to
+> > > > deal with the "file corrupted" message?
+> > >
+> > > It's up to the admin. I've looked if there's some API outside of the
+> > > md-raid implementation, but there's none so it would have to be created
+> > > first in for the btrfs <-> md cooperation.
+> >
+> > IIRC, the Synology folks created such an API for their own use-case.
+> > Does anyone on-list know the folks at Synology to see if they'd be
+> > interested in working with us and the md folks to make this fully
+> > supported upstream?
+> 
+> Yes, wondering how synology uses btrfs on top of md raid effectively
+> is what prompted my question. I'd like to be able to use btrfs (and
+> other filesystems) in such a fashion as well.
 
-Kees submitted a similar patch 20 minutes before:
-https://lore.kernel.org/all/20220929081642.1932200-1-keescook@chromium.org
-
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -275,8 +275,13 @@ struct ftrace_likely_data {
->   * be performing a _reallocation_, as that may alias the existing pointer.
->   * For these, use __realloc_size().
->   */
-> -#define __alloc_size(x, ...)   __alloc_size__(x, ## __VA_ARGS__) __malloc
-> -#define __realloc_size(x, ...) __alloc_size__(x, ## __VA_ARGS__)
-> +#ifdef __alloc_size__
-> +# define __alloc_size(x, ...)  __alloc_size__(x, ## __VA_ARGS__) __malloc
-> +# define __realloc_size(x, ...)        __alloc_size__(x, ## __VA_ARGS__)
-> +#else
-> +# define __alloc_size(x, ...)  __malloc
-> +# define __realloc_size(x, ...)
-> +#endif
->
->  #ifndef asm_volatile_goto
->  #define asm_volatile_goto(x...) asm goto(x)
-
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+IIRC the synology kernel sources are available as some .tar or .rpm
+file, I don't know if there are the separate patches available anywhere.
+Also it's up to synology ty upstream the patches. We've got some btrfs
+patches from them that were good, but adding the MD API itself seems to
+be an extensive change and harder to get accepted upstream. I haven't
+seen the code so I can't say how much it would be intrusive to the btrfs
+code but with enough cleanups and abstractions everything is possible.
