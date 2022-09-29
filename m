@@ -2,285 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B25EE5EECB5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Sep 2022 06:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A015EED1E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Sep 2022 07:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234722AbiI2ET4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Sep 2022 00:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47646 "EHLO
+        id S234766AbiI2FO3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Sep 2022 01:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234714AbiI2ETv (ORCPT
+        with ESMTP id S234797AbiI2FOY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Sep 2022 00:19:51 -0400
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8231EC46;
-        Wed, 28 Sep 2022 21:19:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1664425187; x=1695961187;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=0JH3GMR8KnyJIr6tVnX+jJCsb34kydBxYqQxm+iuchI=;
-  b=JGIkQ3zCrgJEMfrwT2zX795byR2teUTiRr3pMvki3Dp/H2js+siVjQu1
-   GnnvKoAVIVD/dHRvDi2zdKi3+MO+XpaH/TITDfJP0gzfuA9Qcm7NS/PLe
-   NRCdCUCt5gSH/n5i4kv0dAkyXE7Jy/XWAh2dC0KwPUFf6eiZdkjOgQWVx
-   OYJ/d5Aqr6dSQ2JGk1GTU4i/OcBvEY2zskLS7OSl1L+DfvOA/1hmkW1Xh
-   sHAStgtLN/1t1Gxlft1DyKwPkWe+yvhFckzWEt50jHxyDbcwackPJyZZD
-   mNa0HGTUFsKwKcrnb3FYgIcCgvZFNjyacZbBcOe7TsZO/Z5XtRhDhhKv3
-   A==;
-X-IronPort-AV: E=Sophos;i="5.93,354,1654531200"; 
-   d="scan'208";a="210903788"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 29 Sep 2022 12:19:37 +0800
-IronPort-SDR: tuFa+qUe/q9ZN2o7vX7xevLQUwRZVdSa96mR3LEKzmDySadIHI2+U0k+vrv4xBgpPtPAcVY4p/
- BmTWKOuB8Wlw8XraO3gfaHq/dNG/XlClxwP/yMxXugnVan8zJJyRjl8G4Qtyy5FwWECvOiYz7A
- bxs0bFuP1l7ch/trWbjScc7rfT8lQYa+MQ0VU21DBLSqarrgLux/hbgb/i5YkTOr+4cwhwpaWN
- pHadypdfTJ5m4gB9Wwfko+MZ4yiwmnW8b7MHjzbSYdikuTDYT448rnDevbbuZpRdTvvcCOy2rY
- RFJlLYpG1CFTwYvOf8vX/ynO
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Sep 2022 20:39:32 -0700
-IronPort-SDR: oDq2bgrAqiObvtUpUUdCrpKKXiHiM005bSbgAv/MEMZcuTkDCIVMp5AfmifVAfpT66O90XUY14
- ruRDxMNoL672fRllzky0GYFIzsTPoeNHt+CrNKGaVYX2F33Ce642ALmOHAuANSdzeVZ+1VeMY2
- /AabjQkpPZsd1O0/M1e3xd7eqaS/0GrQojRR6yXOdzoWlz4gITa03zUgaud8vHwbxcfXMidHKr
- 2MG5CefqXQkbx9b+FLIiTTDdXLu7eNW+sISZtxC7PAGJZtMIQ9UoLex3MsVyAQgGQ2LXZesqqG
- ERI=
-WDCIronportException: Internal
-Received: from h69v0f3.ad.shared (HELO naota-xeon.wdc.com) ([10.225.51.118])
-  by uls-op-cesaip01.wdc.com with ESMTP; 28 Sep 2022 21:19:37 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v2 2/2] btrfs: test active zone tracking
-Date:   Thu, 29 Sep 2022 13:19:25 +0900
-Message-Id: <7390d3a918ce574d5349d31ab26fed0ae79952a9.1664419525.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <cover.1664419525.git.naohiro.aota@wdc.com>
-References: <cover.1664419525.git.naohiro.aota@wdc.com>
+        Thu, 29 Sep 2022 01:14:24 -0400
+Received: from sender4-pp-o98.zoho.com (sender4-pp-o98.zoho.com [136.143.188.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D946212A489;
+        Wed, 28 Sep 2022 22:14:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1664428457; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=H7xscwshorNG8/zsOq9Njs/2kaopCELNQH8r4sLjqZ86P4VoKd1rjQyi5yivPiIJCS+cb1/OgI2G6Q3wnDRULmFYtiZlkfdkp+siu2QvsfWsSExue2QLDxyayZyzwHDkrh2HM50cPx0vHPFmseU9oF2eEVZeyZqtN/eHzVhn5Lk=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1664428457; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=Ow61T+epH9mjb9+Og7p95dadDjvpbk0b5vmOLXxzXeE=; 
+        b=TivAMCuwUbe13vksNBppIBy0I4NMkUi3MQp7xjSpjnU+E/OaMINglJczsjkQlugjYFkDVYBS62rbI5IW9aHyH+wndIB35J5APoo7zFvUxEbOIMyudXPn9GF3OmT2QknopkDmAd/n8EJZdcV3cIwyP45HyZn+ZpxohDriDlpOFLM=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=zoho.com;
+        spf=pass  smtp.mailfrom=hmsjwzb@zoho.com;
+        dmarc=pass header.from=<hmsjwzb@zoho.com>
+DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; 
+  s=zapps768; d=zoho.com; 
+  h=message-id:date:mime-version:user-agent:subject:to:cc:references:from:in-reply-to:content-type; 
+  b=PuhwrlLMN/v9l80Mv3qn32uZ26+CYdkZoAuLzwq/D+rB+XVQs7/IiyGWb1KBFM9xYmiu8vOyYdYb
+    gBELADBHqJ52EAdNELf2XZRmRX5XXw11/Ove+dUNZA99bUdb/yF8  
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1664428457;
+        s=zm2022; d=zoho.com; i=hmsjwzb@zoho.com;
+        h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+        bh=Ow61T+epH9mjb9+Og7p95dadDjvpbk0b5vmOLXxzXeE=;
+        b=JekSkDzfH9GTl0HNcPUflPXSUKLmYR6RSYM1BVOmfJoopJQ/syj2hCvQy+MGt3AE
+        xkUbwFZwjuTM50CvjZhWupLr+cdWWIeZrDfLwPli6+2c6kx/dz3tx4IGbZDEtI5Bwr0
+        fhNUuIO4LKjPc0LtdoqWXpyK+kWl4YrTRkCNj3kc=
+Received: from [192.168.0.103] (58.247.201.74 [58.247.201.74]) by mx.zohomail.com
+        with SMTPS id 1664428455972627.0589330818905; Wed, 28 Sep 2022 22:14:15 -0700 (PDT)
+Message-ID: <32c9fcf2-e1b4-8d31-a1f4-b07b1d5c1dc5@zoho.com>
+Date:   Thu, 29 Sep 2022 01:14:11 -0400
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] btrfs:remove redundant index_rbio_pages in
+ raid56_rmw_stripe
+Content-Language: en-US
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     stringbox8@zoho.com, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20220929014402.2450-1-hmsjwzb@zoho.com>
+ <c4293742-06ba-8720-e2eb-d4d3bc4da044@suse.com>
+From:   hmsjwzb <hmsjwzb@zoho.com>
+In-Reply-To: <c4293742-06ba-8720-e2eb-d4d3bc4da044@suse.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A ZNS device limits the number of active zones, which is the number of
-zones can be written at the same time. To deal with the limit, btrfs's
-zoned mode tracks which zone (corresponds to a block group on the SINGLE
-profile) is active, and finish a zone if necessary.
+Hi Qu,
 
-This test checks if the active zone tracking and the finishing of zones
-works properly. First, it fills <number of max active zones> zones
-mostly. And, run some data/metadata stress workload to force btrfs to use a
-new zone.
+I test this patch with fstests runs ?
 
-This test fails on an older kernel (e.g, 5.18.2) like below.
+Four btrfs cases failed.
 
-btrfs/292
-[failed, exit status 1]- output mismatch (see /host/btrfs/292.out.bad)
-    --- tests/btrfs/292.out     2022-09-15 07:52:18.000000000 +0000
-    +++ /host/btrfs/292.out.bad 2022-09-15 07:59:14.290967793 +0000
-    @@ -1,2 +1,5 @@
-     QA output created by 292
-    -Silence is golden
-    +stress_data_bgs failed
-    +stress_data_bgs_2 failed
-    +failed: '/bin/btrfs subvolume snapshot /mnt/scratch /mnt/scratch/snap825'
-    +(see /host/btrfs/292.full for details)
-    ...
-    (Run 'diff -u /var/lib/xfstests/tests/btrfs/292.out /host/btrfs/292.out.bad'  to see the entire diff)
+	btrfs/219	btrfs/249	btrfs/253	btrfs/254
 
-The failure is fixed with a series "btrfs: zoned: fix active zone tracking
-issues" [1] (upstream commits from 65ea1b66482f ("block: add bdev_max_segments()
-helper") to 2ce543f47843 ("btrfs: zoned: wait until zone is finished when
-allocation didn't progress")).
+Thanks,
+Flint
 
-[1] https://lore.kernel.org/linux-btrfs/cover.1657321126.git.naohiro.aota@wdc.com/
-
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- common/zoned        |  11 ++++
- tests/btrfs/292     | 136 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/292.out |   2 +
- 3 files changed, 149 insertions(+)
- create mode 100755 tests/btrfs/292
- create mode 100644 tests/btrfs/292.out
-
-diff --git a/common/zoned b/common/zoned
-index d1bc60f784a1..eed0082a15cf 100644
---- a/common/zoned
-+++ b/common/zoned
-@@ -15,6 +15,17 @@ _filter_blkzone_report()
- 	sed -e 's/len/cap/2'
- }
- 
-+_require_limited_active_zones() {
-+    local dev=$1
-+    local sysfs=$(_sysfs_dev ${dev})
-+    local attr="${sysfs}/queue/max_active_zones"
-+
-+    [ -e "${attr}" ] || _notrun "cannot find queue/max_active_zones. Maybe non-zoned device?"
-+    if [ $(cat "${attr}") == 0 ]; then
-+	_notrun "this test requires limited active zones"
-+    fi
-+}
-+
- _zone_capacity() {
-     local phy=$1
-     local dev=$2
-diff --git a/tests/btrfs/292 b/tests/btrfs/292
-new file mode 100755
-index 000000000000..6cfd6b18c299
---- /dev/null
-+++ b/tests/btrfs/292
-@@ -0,0 +1,136 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 Western Digital Corporation.  All Rights Reserved.
-+#
-+# FS QA Test 292
-+#
-+# Test that an active zone is properly reclaimed to allow the further
-+# allocations, even if the active zones are mostly filled.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick snapshot zone
-+
-+# Import common functions.
-+. ./common/btrfs
-+. ./common/zoned
-+
-+# real QA test starts here
-+
-+_supported_fs btrfs
-+_require_scratch
-+_require_zoned_device "$SCRATCH_DEV"
-+_require_limited_active_zones "$SCRATCH_DEV"
-+
-+_require_command "$BLKZONE_PROG" blkzone
-+_require_btrfs_command inspect-internal dump-tree
-+
-+# This test requires specific data space usage, skip if we have compression
-+# enabled.
-+_require_no_compress
-+
-+max_active=$(cat $(_sysfs_dev ${SCRATCH_DEV})/queue/max_active_zones)
-+
-+# Fill the zones leaving the last 1MB
-+fill_active_zones() {
-+    # Asuumes we have the same capacity between zones.
-+    local capacity=$(_zone_capacity 0)
-+    local fill_size=$((capacity - 1024 * 1024))
-+
-+    for x in $(seq ${max_active}); do
-+	dd if=/dev/zero of=${SCRATCH_MNT}/fill$(printf "%02d" $x) bs=${fill_size} \
-+	   count=1 oflag=direct 2>/dev/null
-+	$BTRFS_UTIL_PROG filesystem sync ${SCRATCH_MNT}
-+
-+	local nactive=$($BLKZONE_PROG report ${SCRATCH_DEV} | grep oi | wc -l)
-+	if [[ ${nactive} == ${max_active} ]]; then
-+	    break
-+	fi
-+    done
-+
-+    echo "max active zones: ${max_active}" >> $seqres.full
-+    $BLKZONE_PROG report ${SCRATCH_DEV} | grep oi | cat -n >> $seqres.full
-+}
-+
-+workout() {
-+    local func="$1"
-+
-+    _scratch_mkfs >/dev/null 2>&1
-+    _scratch_mount
-+
-+    fill_active_zones
-+    eval "$func"
-+    local ret=$?
-+
-+    _scratch_unmount
-+    _check_btrfs_filesystem ${SCRATCH_DEV}
-+
-+    return $ret
-+}
-+
-+stress_data_bgs() {
-+    # This dd fails with ENOSPC, which should not :(
-+    dd if=/dev/zero of=${SCRATCH_MNT}/large bs=64M count=1 oflag=sync \
-+       >>$seqres.full 2>&1
-+}
-+
-+stress_data_bgs_2() {
-+    # This dd fails with ENOSPC, which should not :(
-+    dd if=/dev/zero of=${SCRATCH_MNT}/large bs=64M count=10 conv=fsync \
-+       >>$seqres.full 2>&1 &
-+    local pid1=$!
-+
-+    dd if=/dev/zero of=${SCRATCH_MNT}/large2 bs=64M count=10 conv=fsync \
-+       >>$seqres.full 2>&1 &
-+    local pid2=$!
-+
-+    wait $pid1; local ret1=$?
-+    wait $pid2; local ret2=$?
-+
-+    if [ $ret1 -ne 0 -o $ret2 -ne 0 ]; then
-+	return 1
-+    fi
-+    return 0
-+}
-+
-+get_meta_bgs() {
-+    $BTRFS_UTIL_PROG inspect-internal dump-tree -t EXTENT ${SCRATCH_DEV} |
-+        grep BLOCK_GROUP -A 1 |grep -B1 'METADATA|' |
-+        grep -oP '\(\d+ BLOCK_GROUP_ITEM \d+\)'
-+}
-+
-+# This test case does not return the result because
-+# _run_btrfs_util_prog will call _fail() in the error case anyway.
-+stress_metadata_bgs() {
-+    local metabgs=$(get_meta_bgs)
-+    local count=0
-+
-+    while : ; do
-+        _run_btrfs_util_prog subvolume snapshot ${SCRATCH_MNT} ${SCRATCH_MNT}/snap$i
-+        _run_btrfs_util_prog filesystem sync ${SCRATCH_MNT}
-+        cur_metabgs=$(get_meta_bgs)
-+        if [[ "${cur_metabgs}" != "${metabgs}" ]]; then
-+            break
-+        fi
-+        i=$((i + 1))
-+    done
-+}
-+
-+WORKS=(
-+    stress_data_bgs
-+    stress_data_bgs_2
-+    stress_metadata_bgs
-+)
-+
-+status=0
-+for work in "${WORKS[@]}"; do
-+    if ! workout "${work}"; then
-+	echo "${work} failed"
-+	status=1
-+    fi
-+done
-+
-+# success, all done
-+if [ $status -eq 0 ]; then
-+    echo "Silence is golden"
-+fi
-+exit
-diff --git a/tests/btrfs/292.out b/tests/btrfs/292.out
-new file mode 100644
-index 000000000000..627309d3fbd2
---- /dev/null
-+++ b/tests/btrfs/292.out
-@@ -0,0 +1,2 @@
-+QA output created by 292
-+Silence is golden
--- 
-2.37.3
-
+On 9/28/22 23:08, Qu Wenruo wrote:
+> 
+> 
+> On 2022/9/29 09:44, Flint.Wang wrote:
+>>    The index_rbio_pages in raid56_rmw_stripe is redundant.
+> 
+> index_rbio_pages() is to populate the rbio->bio_sectors array.
+> 
+> In raid56_rmw_stripe() we later calls sector_in_rbio(), which will check if a sector is belonging to bio_lists.
+> 
+> If not called, all sector will be returned using the sectors in rbio->bio_sectors, not using the sectors in bio lists.
+> 
+> Have you tried your patch with fstests runs?
+> 
+> IMHO it should fail a lot of very basic writes in RAID56.
+> 
+> Thanks,
+> Qu
+> 
+>>    It is invoked in finish_rmw anyway.
+>>
+>> Signed-off-by: Flint.Wang <hmsjwzb@zoho.com>
+>> ---
+>>   fs/btrfs/raid56.c | 2 --
+>>   1 file changed, 2 deletions(-)
+>>
+>> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+>> index f6395e8288d69..44266b2c5b86e 100644
+>> --- a/fs/btrfs/raid56.c
+>> +++ b/fs/btrfs/raid56.c
+>> @@ -1546,8 +1546,6 @@ static int raid56_rmw_stripe(struct btrfs_raid_bio *rbio)
+>>       if (ret)
+>>           goto cleanup;
+>>   -    index_rbio_pages(rbio);
+>> -
+>>       atomic_set(&rbio->error, 0);
+>>       /* Build a list of bios to read all the missing data sectors. */
+>>       for (total_sector_nr = 0; total_sector_nr < nr_data_sectors;
