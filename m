@@ -2,26 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E40EA5EEB0C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Sep 2022 03:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30325EEB15
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Sep 2022 03:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233913AbiI2BjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Sep 2022 21:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
+        id S233992AbiI2Bpu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Sep 2022 21:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbiI2BjW (ORCPT
+        with ESMTP id S233775AbiI2Bpt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Sep 2022 21:39:22 -0400
+        Wed, 28 Sep 2022 21:45:49 -0400
+X-Greylist: delayed 390 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 28 Sep 2022 18:45:48 PDT
 Received: from sender4-pp-o98.zoho.com (sender4-pp-o98.zoho.com [136.143.188.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D4711E0C1
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 18:39:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1664415554; cv=none; 
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E767C8416;
+        Wed, 28 Sep 2022 18:45:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1664415941; cv=none; 
         d=zohomail.com; s=zohoarc; 
-        b=e6lQRBbZKw02xaH7iR7rJvgkrfaLzCOpGZJIQzKF6rQ4upXX1pGU41Kf6FcV5BNj5XZAy7v0KbxeSXzqJpvTwvUSHHxWX0lPJ+6OeD0M7JScn1ZzUfGAAsqf24SCdHSe+6eDosXg8nxniK7ALGRZDveDXNoiLePUfoLZx1jC7vs=
+        b=FvaLE4nGk8D4go257QiGS523zlp8+oqh2oo5A7UkP8LYAWVxmSdkdF+OpZLjN6V4hjRKRqhqrJVAEk8SUUK3KpGjycJPt4DC2vABykXVF0duRQN5VUjRY8ozqMXqXZ+sVhWUzvO3Who/eTfUTbmNYInwNWOnMuKN5NjLMghOg7I=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1664415554; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        t=1664415941; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
         bh=w65lv5IW2MbTBlo+u0sGaPp2dO9vOUwB+fVpwpX60lU=; 
-        b=gTBYFSI1AtqNxb3TBNFHbwdLzKsP1cp3NuBvtic512yYeTmPpJiNaD47lB85CYCR9ix3J8h6ENWR+LcDLzk622rQJJd4IN++IZk/vt0JN3fQjWMmIRiH9MRMuGlQMS7M3uAkuK99+aR8xJ+OiI+/r4qXMbus06UQm9mOYx1Z5As=
+        b=KOkOLsgpcrX545yNLvXHJ/rP9aEQzHak7Lc1CdrtcShI9obGfpebzckmqlQWfdWB9LTU+EcqgHKEBYr9ifK2tq3KT46+u4emu3aKFLq095OFr/CspY9Fj4M+aMTJ4WoKF9oyp9D2foLtq6GM2JX1T7gMsV8o+CArVP7xf3Iatdg=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
         dkim=pass  header.i=zoho.com;
         spf=pass  smtp.mailfrom=hmsjwzb@zoho.com;
@@ -29,26 +30,26 @@ ARC-Authentication-Results: i=1; mx.zohomail.com;
 DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; 
   s=zapps768; d=zoho.com; 
   h=from:to:cc:subject:date:message-id:mime-version; 
-  b=mNFcDLdQhDJCESt1vKUQhwVd0UyFMjniS/stQoALd0pN09qJZ0bQ+JSEzurPnOm61D9s/hXYvs0g
-    LLFJg5WX+2/c/5ojnibJQlEDjHXdqBTP7yD50yp0aYsoIFvlj1Dj  
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1664415554;
+  b=vkrHvLykmZw/Hdkq5wrHIACHu37hBMm8/6gu5BQBOyP8fXGcBXZZ6htntBR0a6OZySE49gVSX4ZY
+    W84HqudfSXwuz3YOKTeea/a+SyrbKs3PRETMGa1hnIDV2/RiELsP  
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1664415941;
         s=zm2022; d=zoho.com; i=hmsjwzb@zoho.com;
         h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:MIME-Version:Content-Transfer-Encoding:Reply-To;
         bh=w65lv5IW2MbTBlo+u0sGaPp2dO9vOUwB+fVpwpX60lU=;
-        b=KDNunc1eI0SxO3i3Hj+0m4eCb95pZ+cRW/KmO3iO2lrsmO3fVcdC9VOCUapBgvwT
-        zSOovqlvvwyrknd3+Pj+Zo2gWStpCKYqXQdfAkX4ze7SOoi9VPxCxH1cIOtqImKZLq7
-        TmifIU5sejYb/YxZkY8JMM4Z5e39CU4pqr1SGsms=
+        b=DoI2EXhddcrhyTvKXry8+bx7cn+aPVY0xQ6YGl4VmuSiCvtn251NXao9A7fUXJvA
+        w8fW0nyuACIG9wlsNrYEUQRhp91eNPLa4HshcEMaUdiXSAwu/A3LSqOEHuONsTxqh7N
+        BKHXitEvX1vf2mokdHKP3p4RvweKOnQmOfcQjhEo=
 Received: from localhost.localdomain (58.247.201.74 [58.247.201.74]) by mx.zohomail.com
-        with SMTPS id 1664415553033387.3221280548281; Wed, 28 Sep 2022 18:39:13 -0700 (PDT)
+        with SMTPS id 1664415939708176.12767775060115; Wed, 28 Sep 2022 18:45:39 -0700 (PDT)
 From:   "Flint.Wang" <hmsjwzb@zoho.com>
 To:     wqu@suse.com
 Cc:     hmsjwzb@zoho.com, stringbox8@zoho.com, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] [PATCH]btrfs:remove redundant index_rbio_pages in raid56_rmw_stripe
-Date:   Thu, 29 Sep 2022 09:37:33 +0800
-Message-Id: <20220929013733.2148-1-hmsjwzb@zoho.com>
+Subject: [PATCH] btrfs:remove redundant index_rbio_pages in raid56_rmw_stripe
+Date:   Thu, 29 Sep 2022 09:44:01 +0800
+Message-Id: <20220929014402.2450-1-hmsjwzb@zoho.com>
 X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
