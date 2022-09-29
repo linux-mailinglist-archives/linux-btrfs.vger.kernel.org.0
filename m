@@ -2,120 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E98615EF3A7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Sep 2022 12:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B41B5EF4F8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Sep 2022 14:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbiI2Knl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Sep 2022 06:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
+        id S235541AbiI2MJk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Sep 2022 08:09:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233190AbiI2Knk (ORCPT
+        with ESMTP id S235198AbiI2MJj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Sep 2022 06:43:40 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A510F8FB1
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Sep 2022 03:43:39 -0700 (PDT)
+        Thu, 29 Sep 2022 08:09:39 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CE16459;
+        Thu, 29 Sep 2022 05:09:37 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0F2B321E3D;
-        Thu, 29 Sep 2022 10:43:38 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5D33621B5D;
+        Thu, 29 Sep 2022 12:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1664448218;
+        t=1664453376;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZgM9GB9ihhQxSJ9Ua082q5BYBBQ3dP3zxjZQYysQLxg=;
-        b=zyn3MDRXQcKLxPiFeN9MBosyDgA3iphFluTYJFNVSGmoFpgqmWs378HL6wHSfizMrVcvg9
-        A77b78XlWoIhsTqlQF/fbuWzP1LjF1r+AWRxAFSYuKCaGh714kklTt4Rls5iuxu4k6AGcv
-        ZZ0dCNplYEwRwj2IcOslxOMyKcPixMg=
+        bh=ea/4qVl20+XCJ10+De70avpbYiZgH7IfNIdGMrVYSik=;
+        b=xFJbI7UldYocDcZWCwpLoMLVY4j8zmk1BhO3ojg78BktUMuDXS1+QI4fyHy1TW2FLvUWwN
+        88ZfEWhF2Lh5rQYaFF0wSmXEADICTm5ZrrP518GlJq5zyBy4d9HwR47/CJTvoIIh54FlAL
+        DHofe/FcCJXe78xlU2Xc/sEI6FHG9lM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1664448218;
+        s=susede2_ed25519; t=1664453376;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZgM9GB9ihhQxSJ9Ua082q5BYBBQ3dP3zxjZQYysQLxg=;
-        b=cPICocpKZOVDtKnBzh46/eXnR2quPhtdnKrmEYfq5vaF7gY5xQxl2F7qOLmyWmoGMmJapD
-        xhHFczk5vg4ViTAA==
+        bh=ea/4qVl20+XCJ10+De70avpbYiZgH7IfNIdGMrVYSik=;
+        b=OE6/4dZOcpUymA2GsNyfwxhp62N1uRdpOj04dmGqcf5mHZE6fqxOSLxdjd+onsoEi3o/Wn
+        keiki0w/6kDFavDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DEDC013A71;
-        Thu, 29 Sep 2022 10:43:37 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2DAC913A71;
+        Thu, 29 Sep 2022 12:09:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id pdpxNdl2NWP1WQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 29 Sep 2022 10:43:37 +0000
-Date:   Thu, 29 Sep 2022 12:38:02 +0200
+        id xadJCgCLNWNgAgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 29 Sep 2022 12:09:36 +0000
+Date:   Thu, 29 Sep 2022 14:04:00 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Mariusz Mazur <mariusz.g.mazur@gmail.com>
-Cc:     Neal Gompa <ngompa13@gmail.com>, linux-btrfs@vger.kernel.org
-Subject: Re: Is scrubbing md-aware in any way?
-Message-ID: <20220929103802.GF13389@suse.cz>
+To:     Zorro Lang <zlang@redhat.com>
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] btrfs: test active zone tracking
+Message-ID: <20220929120400.GG13389@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <CAGzuT_3UVJuXeDjQ4CtM77TO2C6WoBAiWyyBi59_wcv3p7znzA@mail.gmail.com>
- <20220914142738.GN32411@twin.jikos.cz>
- <CAEg-Je-vB+UgU2uDspdN8P+aG+JQP1h-7hx34siy6FasgJ=e3w@mail.gmail.com>
- <CAGzuT_1_NWtqtZhC83xsW9L3NXwz02v_PdaABpuJ-OheqZ6drQ@mail.gmail.com>
+References: <cover.1664419525.git.naohiro.aota@wdc.com>
+ <7390d3a918ce574d5349d31ab26fed0ae79952a9.1664419525.git.naohiro.aota@wdc.com>
+ <20220929060106.dy7enioljc3hi3lt@zlang-mailbox>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGzuT_1_NWtqtZhC83xsW9L3NXwz02v_PdaABpuJ-OheqZ6drQ@mail.gmail.com>
+In-Reply-To: <20220929060106.dy7enioljc3hi3lt@zlang-mailbox>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 05:36:04PM +0200, Mariusz Mazur wrote:
-> niedz., 25 wrz 2022 o 20:46 Neal Gompa <ngompa13@gmail.com> napisał(a):
-> >
-> > On Wed, Sep 14, 2022 at 10:37 AM David Sterba <dsterba@suse.cz> wrote:
-> > >
-> > > On Tue, Sep 13, 2022 at 04:15:26PM +0200, Mariusz Mazur wrote:
-> > > > Hi, it's my understanding that when running a scrub on a btrfs raid,
-> > > > if data corruption is detected, the process will check copies on other
-> > > > devices and heal the data if possible.
-> > > >
-> > > > Is any of that functionality available when running on top of an md
-> > > > raid?
-> > >
-> > > No, the type of block device under btrfs is considered the same in all
-> > > cases, except zoned devices, so any advanced information exchange or
-> > > control like devices reporting bad sectors or btrfs asking to repair the
-> > > underlying device by its own means.
-> > >
-> > > > When a scrub notices an issue, does it have any mechanism of
-> > > > telling md "hey, there's a problem with these sectors" and working
-> > > > with it to do something about that or is it all up to the admin to
-> > > > deal with the "file corrupted" message?
-> > >
-> > > It's up to the admin. I've looked if there's some API outside of the
-> > > md-raid implementation, but there's none so it would have to be created
-> > > first in for the btrfs <-> md cooperation.
-> >
-> > IIRC, the Synology folks created such an API for their own use-case.
-> > Does anyone on-list know the folks at Synology to see if they'd be
-> > interested in working with us and the md folks to make this fully
-> > supported upstream?
+On Thu, Sep 29, 2022 at 02:01:06PM +0800, Zorro Lang wrote:
+> On Thu, Sep 29, 2022 at 01:19:25PM +0900, Naohiro Aota wrote:
+> > A ZNS device limits the number of active zones, which is the number of
+> > zones can be written at the same time. To deal with the limit, btrfs's
+> > zoned mode tracks which zone (corresponds to a block group on the SINGLE
+> > profile) is active, and finish a zone if necessary.
+> > 
+> > This test checks if the active zone tracking and the finishing of zones
+> > works properly. First, it fills <number of max active zones> zones
+> > mostly. And, run some data/metadata stress workload to force btrfs to use a
+> > new zone.
+> > 
+> > This test fails on an older kernel (e.g, 5.18.2) like below.
+> > 
+> > btrfs/292
+> > [failed, exit status 1]- output mismatch (see /host/btrfs/292.out.bad)
+> >     --- tests/btrfs/292.out     2022-09-15 07:52:18.000000000 +0000
+> >     +++ /host/btrfs/292.out.bad 2022-09-15 07:59:14.290967793 +0000
+> >     @@ -1,2 +1,5 @@
+> >      QA output created by 292
+> >     -Silence is golden
+> >     +stress_data_bgs failed
+> >     +stress_data_bgs_2 failed
+> >     +failed: '/bin/btrfs subvolume snapshot /mnt/scratch /mnt/scratch/snap825'
+> >     +(see /host/btrfs/292.full for details)
+> >     ...
+> >     (Run 'diff -u /var/lib/xfstests/tests/btrfs/292.out /host/btrfs/292.out.bad'  to see the entire diff)
+> > 
+> > The failure is fixed with a series "btrfs: zoned: fix active zone tracking
+> > issues" [1] (upstream commits from 65ea1b66482f ("block: add bdev_max_segments()
+> > helper") to 2ce543f47843 ("btrfs: zoned: wait until zone is finished when
+> > allocation didn't progress")).
 > 
-> Yes, wondering how synology uses btrfs on top of md raid effectively
-> is what prompted my question. I'd like to be able to use btrfs (and
-> other filesystems) in such a fashion as well.
+> If this's a regression test case for known fix, we'd better to use:
+> _fixed_by_kernel_commit 65ea1b66482f block: add bdev_max_segments (patchset)
 
-IIRC the synology kernel sources are available as some .tar or .rpm
-file, I don't know if there are the separate patches available anywhere.
-Also it's up to synology ty upstream the patches. We've got some btrfs
-patches from them that were good, but adding the MD API itself seems to
-be an extensive change and harder to get accepted upstream. I haven't
-seen the code so I can't say how much it would be intrusive to the btrfs
-code but with enough cleanups and abstractions everything is possible.
+This is very misleading as the commit only adds a helper that's used in
+later commits. If anything, the last commit in the series should be
+mentioned.
