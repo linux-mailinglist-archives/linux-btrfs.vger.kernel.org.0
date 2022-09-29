@@ -2,120 +2,183 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A015EED1E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Sep 2022 07:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977815EED21
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Sep 2022 07:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234766AbiI2FO3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Sep 2022 01:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
+        id S234785AbiI2FPT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Sep 2022 01:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234797AbiI2FOY (ORCPT
+        with ESMTP id S234760AbiI2FPS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Sep 2022 01:14:24 -0400
-Received: from sender4-pp-o98.zoho.com (sender4-pp-o98.zoho.com [136.143.188.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D946212A489;
-        Wed, 28 Sep 2022 22:14:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1664428457; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=H7xscwshorNG8/zsOq9Njs/2kaopCELNQH8r4sLjqZ86P4VoKd1rjQyi5yivPiIJCS+cb1/OgI2G6Q3wnDRULmFYtiZlkfdkp+siu2QvsfWsSExue2QLDxyayZyzwHDkrh2HM50cPx0vHPFmseU9oF2eEVZeyZqtN/eHzVhn5Lk=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1664428457; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=Ow61T+epH9mjb9+Og7p95dadDjvpbk0b5vmOLXxzXeE=; 
-        b=TivAMCuwUbe13vksNBppIBy0I4NMkUi3MQp7xjSpjnU+E/OaMINglJczsjkQlugjYFkDVYBS62rbI5IW9aHyH+wndIB35J5APoo7zFvUxEbOIMyudXPn9GF3OmT2QknopkDmAd/n8EJZdcV3cIwyP45HyZn+ZpxohDriDlpOFLM=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=zoho.com;
-        spf=pass  smtp.mailfrom=hmsjwzb@zoho.com;
-        dmarc=pass header.from=<hmsjwzb@zoho.com>
-DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; 
-  s=zapps768; d=zoho.com; 
-  h=message-id:date:mime-version:user-agent:subject:to:cc:references:from:in-reply-to:content-type; 
-  b=PuhwrlLMN/v9l80Mv3qn32uZ26+CYdkZoAuLzwq/D+rB+XVQs7/IiyGWb1KBFM9xYmiu8vOyYdYb
-    gBELADBHqJ52EAdNELf2XZRmRX5XXw11/Ove+dUNZA99bUdb/yF8  
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1664428457;
-        s=zm2022; d=zoho.com; i=hmsjwzb@zoho.com;
-        h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=Ow61T+epH9mjb9+Og7p95dadDjvpbk0b5vmOLXxzXeE=;
-        b=JekSkDzfH9GTl0HNcPUflPXSUKLmYR6RSYM1BVOmfJoopJQ/syj2hCvQy+MGt3AE
-        xkUbwFZwjuTM50CvjZhWupLr+cdWWIeZrDfLwPli6+2c6kx/dz3tx4IGbZDEtI5Bwr0
-        fhNUuIO4LKjPc0LtdoqWXpyK+kWl4YrTRkCNj3kc=
-Received: from [192.168.0.103] (58.247.201.74 [58.247.201.74]) by mx.zohomail.com
-        with SMTPS id 1664428455972627.0589330818905; Wed, 28 Sep 2022 22:14:15 -0700 (PDT)
-Message-ID: <32c9fcf2-e1b4-8d31-a1f4-b07b1d5c1dc5@zoho.com>
-Date:   Thu, 29 Sep 2022 01:14:11 -0400
+        Thu, 29 Sep 2022 01:15:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F84A50716
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 22:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1664428514;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7GTuWhbffLEeU8hqaqNOROd9qdekK/JDI25YrwgIquQ=;
+        b=EBA468mbN9ZwLhFGtd5pQLdIiGS72kQgG+KY85puLsUjnqHVQn0hz0807+NtxAKxHY9FjB
+        3PKBzSbsgMKG9Ao0C8odlWE4T7+SHPvvG0lwydnxPkIVLzmfZab1ND3F1cfVSEZwSjfouW
+        gTJHBQ2WdZbuiPp9aMuZjchOBICZe+E=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-393-nKpZRPQgMI6Cf48sMVdL8g-1; Thu, 29 Sep 2022 01:15:13 -0400
+X-MC-Unique: nKpZRPQgMI6Cf48sMVdL8g-1
+Received: by mail-pl1-f200.google.com with SMTP id o1-20020a170902d4c100b00177f59a9889so284934plg.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Sep 2022 22:15:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=7GTuWhbffLEeU8hqaqNOROd9qdekK/JDI25YrwgIquQ=;
+        b=ilO6VSNkXsavQs18sSELqYv7p4zEgabnxQySKLV0pEfPHBN/4DkvFV1Ep0aZaVxKVt
+         IRH5W6A7U7vs8JLLnTZhyjOjS2ukHKNZparGkbXhPGx4wLlmcx/mkpdyixN/M4Yz10gl
+         q/MyRayzskp0VzkBLkHEmZUZGoLy7dvDa40lZaK3pagHA5zuOQr46lcb0J7cOJ6zO9Ia
+         eqi781kgyXFbnufiK1hmmTI1CKADMYMen1Y3jtMeJ+rzMOaUyh6yyzfOnrIyTnOB+f7Y
+         zVBNvbbK6NmdrSslWGpfr9NRXXiKEuLuuiQN5leLbOFXkxnl8ieopmCUyqxCjI/RPSNY
+         nOAg==
+X-Gm-Message-State: ACrzQf1sLeQdwqEYpFsddTKSI9zfn62s5+cQKaSvBLoL4sMwjQOSlcNj
+        iLOg9++bOE//4YsnYYELBhE4tWtrx+f5A8swNJEs9D4uIla3h5qK2GvahvAYEHGoOeF99ijDi/g
+        8QnM1J9ql5WyuBb6VYpvrgUo=
+X-Received: by 2002:a17:90a:1617:b0:200:9da5:d0ed with SMTP id n23-20020a17090a161700b002009da5d0edmr1726919pja.90.1664428511890;
+        Wed, 28 Sep 2022 22:15:11 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM5WymMJm3RJ490QTBz0OGuToqqM9rKqU7ZRaOk4r7ofg6uhYEgWsXRz4PMJwbsSgxbu1fD9OQ==
+X-Received: by 2002:a17:90a:1617:b0:200:9da5:d0ed with SMTP id n23-20020a17090a161700b002009da5d0edmr1726883pja.90.1664428511523;
+        Wed, 28 Sep 2022 22:15:11 -0700 (PDT)
+Received: from zlang-mailbox ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id z67-20020a626546000000b00546d875a944sm5002769pfb.214.2022.09.28.22.15.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Sep 2022 22:15:11 -0700 (PDT)
+Date:   Thu, 29 Sep 2022 13:15:07 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] common: introduce zone_capacity() to return a
+ zone capacity
+Message-ID: <20220929051507.aonami57xnhnixan@zlang-mailbox>
+References: <cover.1664419525.git.naohiro.aota@wdc.com>
+ <b148b071bb11828f4a4c6600331cc8464a1895f1.1664419525.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] btrfs:remove redundant index_rbio_pages in
- raid56_rmw_stripe
-Content-Language: en-US
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     stringbox8@zoho.com, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20220929014402.2450-1-hmsjwzb@zoho.com>
- <c4293742-06ba-8720-e2eb-d4d3bc4da044@suse.com>
-From:   hmsjwzb <hmsjwzb@zoho.com>
-In-Reply-To: <c4293742-06ba-8720-e2eb-d4d3bc4da044@suse.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b148b071bb11828f4a4c6600331cc8464a1895f1.1664419525.git.naohiro.aota@wdc.com>
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
+On Thu, Sep 29, 2022 at 01:19:24PM +0900, Naohiro Aota wrote:
+> Introduce _zone_capacity() to return a zone capacity of the given address
+> in the given device (optional). Move _filter_blkzone_report() for it, and
+> rewrite btrfs/237 with it.
+> 
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>  common/filter   | 13 -------------
+>  common/zoned    | 28 ++++++++++++++++++++++++++++
+>  tests/btrfs/237 |  8 ++------
+>  3 files changed, 30 insertions(+), 19 deletions(-)
+>  create mode 100644 common/zoned
+> 
+> diff --git a/common/filter b/common/filter
+> index 28dea64662dc..ac5c93422567 100644
+> --- a/common/filter
+> +++ b/common/filter
+> @@ -651,18 +651,5 @@ _filter_bash()
+>  	sed -e "s/^bash: line 1: /bash: /"
+>  }
+>  
+> -#
+> -# blkzone report added zone capacity to be printed from v2.37.
+> -# This filter will add an extra column 'cap' with the same value of
+> -# 'len'(zone size) for blkzone version < 2.37
+> -#
+> -# Before: start: 0x000100000, len 0x040000, wptr 0x000000 ..
+> -# After: start: 0x000100000, len 0x040000, cap 0x040000, wptr 0x000000 ..
+> -_filter_blkzone_report()
+> -{
+> -	$AWK_PROG -F "," 'BEGIN{OFS=",";} $3 !~ /cap/ {$2=$2","$2;} {print;}' |\
+> -	sed -e 's/len/cap/2'
+> -}
+> -
+>  # make sure this script returns success
+>  /bin/true
+> diff --git a/common/zoned b/common/zoned
+> new file mode 100644
+> index 000000000000..d1bc60f784a1
+> --- /dev/null
+> +++ b/common/zoned
+> @@ -0,0 +1,28 @@
+> +#
+> +# Common zoned block device specific functions
+> +#
+> +
+> +#
+> +# blkzone report added zone capacity to be printed from v2.37.
+> +# This filter will add an extra column 'cap' with the same value of
+> +# 'len'(zone size) for blkzone version < 2.37
+> +#
+> +# Before: start: 0x000100000, len 0x040000, wptr 0x000000 ..
+> +# After: start: 0x000100000, len 0x040000, cap 0x040000, wptr 0x000000 ..
+> +_filter_blkzone_report()
+> +{
+> +	$AWK_PROG -F "," 'BEGIN{OFS=",";} $3 !~ /cap/ {$2=$2","$2;} {print;}' |\
+> +	sed -e 's/len/cap/2'
+> +}
+> +
+> +_zone_capacity() {
+> +    local phy=$1
+> +    local dev=$2
+> +
+> +    [ -z "$dev" ] && dev=$SCRATCH_DEV
+> +
+> +    size=$($BLKZONE_PROG report -o $phy -l 1 $dev |\
+> +	       _filter_blkzone_report |\
+> +	       grep -Po "cap 0x[[:xdigit:]]+" | cut -d ' ' -f 2)
+> +    echo $((size << 9))
+> +}
+> diff --git a/tests/btrfs/237 b/tests/btrfs/237
+> index bc6522e2200a..101094b5ce70 100755
+> --- a/tests/btrfs/237
+> +++ b/tests/btrfs/237
+> @@ -13,7 +13,7 @@
+>  _begin_fstest auto quick zone balance
+>  
+>  # Import common functions.
+> -. ./common/filter
+> +. ./common/zbd
 
-I test this patch with fstests runs ?
+I'm a little surprised this line doesn't report error :) Anyway, it should be
+common/zoned as above. Others look good to me. With this fix, you can add:
 
-Four btrfs cases failed.
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-	btrfs/219	btrfs/249	btrfs/253	btrfs/254
+>  
+>  # real QA test starts here
+>  
+> @@ -56,11 +56,7 @@ fi
+>  
+>  start_data_bg_phy=$(get_data_bg_physical)
+>  start_data_bg_phy=$((start_data_bg_phy >> 9))
+> -
+> -size=$($BLKZONE_PROG report -o $start_data_bg_phy -l 1 $SCRATCH_DEV |\
+> -	_filter_blkzone_report |\
+> -	grep -Po "cap 0x[[:xdigit:]]+" | cut -d ' ' -f 2)
+> -size=$((size << 9))
+> +size=$(_zone_capacity $start_data_bg_phy)
+>  
+>  reclaim_threshold=75
+>  echo $reclaim_threshold > /sys/fs/btrfs/"$uuid"/bg_reclaim_threshold
+> -- 
+> 2.37.3
+> 
 
-Thanks,
-Flint
-
-On 9/28/22 23:08, Qu Wenruo wrote:
-> 
-> 
-> On 2022/9/29 09:44, Flint.Wang wrote:
->>    The index_rbio_pages in raid56_rmw_stripe is redundant.
-> 
-> index_rbio_pages() is to populate the rbio->bio_sectors array.
-> 
-> In raid56_rmw_stripe() we later calls sector_in_rbio(), which will check if a sector is belonging to bio_lists.
-> 
-> If not called, all sector will be returned using the sectors in rbio->bio_sectors, not using the sectors in bio lists.
-> 
-> Have you tried your patch with fstests runs?
-> 
-> IMHO it should fail a lot of very basic writes in RAID56.
-> 
-> Thanks,
-> Qu
-> 
->>    It is invoked in finish_rmw anyway.
->>
->> Signed-off-by: Flint.Wang <hmsjwzb@zoho.com>
->> ---
->>   fs/btrfs/raid56.c | 2 --
->>   1 file changed, 2 deletions(-)
->>
->> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
->> index f6395e8288d69..44266b2c5b86e 100644
->> --- a/fs/btrfs/raid56.c
->> +++ b/fs/btrfs/raid56.c
->> @@ -1546,8 +1546,6 @@ static int raid56_rmw_stripe(struct btrfs_raid_bio *rbio)
->>       if (ret)
->>           goto cleanup;
->>   -    index_rbio_pages(rbio);
->> -
->>       atomic_set(&rbio->error, 0);
->>       /* Build a list of bios to read all the missing data sectors. */
->>       for (total_sector_nr = 0; total_sector_nr < nr_data_sectors;
