@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0260D5F1400
+	by mail.lfdr.de (Postfix) with ESMTP id A8EE35F1402
 	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Sep 2022 22:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbiI3Upu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Sep 2022 16:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
+        id S231706AbiI3Upy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Sep 2022 16:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbiI3Up0 (ORCPT
+        with ESMTP id S232262AbiI3Upb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Sep 2022 16:45:26 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB39F3FEF0
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Sep 2022 13:45:22 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id k12so3552995qkj.8
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Sep 2022 13:45:22 -0700 (PDT)
+        Fri, 30 Sep 2022 16:45:31 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A977749B42
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Sep 2022 13:45:27 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id jy22so2986933qvb.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Sep 2022 13:45:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date;
-        bh=EzFpLpAnOImKIcgB9bCxrZWgeHo2ogJaVdG2CDMrWVk=;
-        b=7i8ly+F4d0pZQ5Un39/JxHA02AJW7N8wMLbx2iUvB+0PmUvMxzogFkpLhiwXmjoUSA
-         BaUabwXGhDACheEDohAl2Nf5Y9QV0dQE2H5U/9vFXNrCbJ3eHHO/cQR+eWWuoOSo8wYw
-         SGznzvQYjlozU2RBqy0tFaaGxAb8M5zzMDYN/vXmt5i3XSwaWh4ml3aLrp5mFnuFHcn0
-         cT+5Q/+y7piZTGvXgc4ToAfzu89uPbTuZJEFhMHfxxAZ+f6MzgHWiYGwpGrx3dkC5zgo
-         B+Tsk3yKH+o6OoML3JUb2pa2cq+U/1RhGeU4QnymIzF0gKcwtEEWp1AjEYXCACjAOCuk
-         yh1g==
+        bh=7G0VBfrFSnmesaUv90Ni1HN/o+XFwj9kArRQdCGAzcw=;
+        b=nYHj7JlZRIpuqBzhEr+X4oj7Fc4TsNblbyRxelmSD3p2twaaodayjlQbFG4tkWUPJl
+         25pbbqdBBPUkAmeY4rWeOh0e/rHhnHybKpKXsa9R5KHnEQPfR/FCvy5mokt1cxe9fK5d
+         qBFDzxbyJ4ZX7I4TRWInWtmOED8X2OGIwdfFvy/H40sFFxg4QYVad8LMb1d/0WTpw/Tj
+         XHi5Gx7Gcbj2ygXv9iVam9ErtHdpRghXMy+W+Wrx1hejp2stFgg6IAm+WrHcnh7FU9Mz
+         BhjGSxc9oE5kEcNZc6rNMKetSPwdrcWb+R46oLjtf3QY54iJ6BZX26UH4yvcwhwI/Luh
+         0Qnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=EzFpLpAnOImKIcgB9bCxrZWgeHo2ogJaVdG2CDMrWVk=;
-        b=Udm0ydO4bZxsSLZt1haRdupOlwuKOkA+afD7WA0GHBhHpFcukb1kpJ7vG1+dYerRdq
-         K2KNvQKhsoC4YVU4uDgRicUSjXak3RAWmAx0P5I+wCo5VCkuJty4l3yw0s2UQyFYDbkd
-         CWg34rj/BRF7znUYE0TtB78TlfLt6Yfapqj7Qhkq8fqb9XwaqCOPOg+d1izuTJZlzmLj
-         CEq/WUZk8odXaI8tWtGMY6O23Yf9Z9sR0YksIeqXfmhFHes4KPQc4rSN7Yqc+7lNrOW2
-         JZEOe4BswFG3EGPWuzHyYf9ZIZdAzO/5lyd1ula/pcWjeCN88XaWT2ssUQ1ITFGhY16W
-         uHkw==
-X-Gm-Message-State: ACrzQf2GJ9naJ72dSHGINh2SXmJ2hmlyQXbkuY1XY+N4LegBDwZRxS3O
-        h7y+nQMqjosGx1yo4OjOqwKvT4NldyoDbg==
-X-Google-Smtp-Source: AMsMyM7Cmm5JyN92wE8R94YvFhYYl9hnwucHCTvG4X3uGbvz6/AtHcymcNp9kBcC/sotomWj2DKw5A==
-X-Received: by 2002:a05:620a:2495:b0:6ce:bbe6:5bb4 with SMTP id i21-20020a05620a249500b006cebbe65bb4mr7493861qkn.674.1664570721643;
-        Fri, 30 Sep 2022 13:45:21 -0700 (PDT)
+        bh=7G0VBfrFSnmesaUv90Ni1HN/o+XFwj9kArRQdCGAzcw=;
+        b=Yf5bw/yQ9LPYdgJ9Lyig2bAn4h90T/rQFdQRQVaVRmX9qfxTzDVsqc6GVp2CjbLYut
+         rEp9/eV0laulauP0CoaEbT3iPuap1N2GtjyyH5gdpSzgFfm122wpqrkaZGfKm+oZimtL
+         UOj/j7T26+DjY8xZ98f7kVVFtW51uIe2bQVmWPQdE1d7C5ZpJSb8TrrCCI26p4nb6rBF
+         NSeJY3pAmqfyX4LH/src407S4qXwtrMcET5aB165UPd4hltRhHxQtc4uPpxuXbzV+LZE
+         y3dAmjpyFxyRWZCUwbw9LFgCdfbhjzhUnWf0iNJHXVNz40dZ63lqAv6wnXvwUVJSJkZF
+         jXhg==
+X-Gm-Message-State: ACrzQf1mx2KbQFFsATVU8Mi8flxaeJysS5KI+0yNgSY2ymMTvWLSJbxW
+        Ta5WF4BnWJAeK+8I9mClQc7z2fVDZVXKcg==
+X-Google-Smtp-Source: AMsMyM6rqETvxMa0wwzShMKXv1nKYFyM2qXafsBLAupVxh5bE/Uts6SZ0QZvo5tGVY5kiTfG4Fg1iw==
+X-Received: by 2002:ad4:5e86:0:b0:4aa:b556:6447 with SMTP id jl6-20020ad45e86000000b004aab5566447mr8520228qvb.121.1664570726193;
+        Fri, 30 Sep 2022 13:45:26 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id ay9-20020a05620a178900b006aedb35d8a1sm4045851qkb.74.2022.09.30.13.45.20
+        by smtp.gmail.com with ESMTPSA id j3-20020a05620a410300b006b5bf5d45casm3797569qko.27.2022.09.30.13.45.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Sep 2022 13:45:20 -0700 (PDT)
+        Fri, 30 Sep 2022 13:45:22 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/6] btrfs: unlock locked extent area if we have contention
-Date:   Fri, 30 Sep 2022 16:45:08 -0400
-Message-Id: <d0fe7ff95f90909363bae56e61b89baa14eb19de.1664570261.git.josef@toxicpanda.com>
+Subject: [PATCH 2/6] btrfs: add a cached_state to try_lock_extent
+Date:   Fri, 30 Sep 2022 16:45:09 -0400
+Message-Id: <4462e764a291ae5a247ede78962c985c8163fca4.1664570261.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1664570261.git.josef@toxicpanda.com>
 References: <cover.1664570261.git.josef@toxicpanda.com>
@@ -68,72 +68,130 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In production we hit the following deadlock
-
-task 1			task 2			task 3
-------			------			------
-fiemap(file)		falloc(file)		fsync(file)
-						  write(0, 1mib)
-						  btrfs_commit_transaction()
-						    wait_on(!pending_ordered)
-			  lock(512mib, 1gib)
-			  start_transaction
-			    wait_on_transaction
-
-  lock(0, 1gib)
-    wait_extent_bit(512mib)
-
-task 4
-------
-finish_ordered_extent(0, 1mib)
-  lock(0, 1mib)
-  **DEADLOCK**
-
-This occurs because when task 1 does it's lock, it locks everything from
-0-512mib, and then waits for the 512mib chunk to unlock.  task 2 will
-never unlock because it's waiting on the transaction commit to happen,
-the transaction commit is waiting for the outstanding ordered extents,
-and then the ordered extent thread is blocked waiting on the 0-1mib
-range to unlock.
-
-To fix this we have to clear anything we've locked so far, wait for the
-extent_state that we contended on, and then try to re-lock the entire
-range again.
+With nowait becoming more pervasive throughout our codebase go ahead and
+add a cached_state to try_lock_extent().  This allows us to be faster
+about clearing the locked area if we have contention, and then gives us
+the same optimization for unlock if we are able to lock the range.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-io-tree.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ fs/btrfs/extent-io-tree.c | 7 ++++---
+ fs/btrfs/extent-io-tree.h | 3 ++-
+ fs/btrfs/extent_io.c      | 3 ++-
+ fs/btrfs/file.c           | 3 ++-
+ fs/btrfs/inode.c          | 3 ++-
+ fs/btrfs/ordered-data.c   | 2 +-
+ fs/btrfs/relocation.c     | 2 +-
+ 7 files changed, 14 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-index 618275af19c4..83cb0378096f 100644
+index 83cb0378096f..1b0a45b51f4c 100644
 --- a/fs/btrfs/extent-io-tree.c
 +++ b/fs/btrfs/extent-io-tree.c
-@@ -1641,16 +1641,17 @@ int lock_extent(struct extent_io_tree *tree, u64 start, u64 end,
+@@ -1615,17 +1615,18 @@ int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
+ 				  changeset);
+ }
+ 
+-int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end)
++int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end,
++		    struct extent_state **cached)
+ {
  	int err;
  	u64 failed_start;
  
--	while (1) {
-+	err = __set_extent_bit(tree, start, end, EXTENT_LOCKED, &failed_start,
-+			       cached_state, NULL, GFP_NOFS);
-+	while (err == -EEXIST) {
-+		if (failed_start != start)
-+			clear_extent_bit(tree, start, failed_start - 1,
-+					 EXTENT_LOCKED, cached_state);
-+
-+		wait_extent_bit(tree, failed_start, end, EXTENT_LOCKED);
- 		err = __set_extent_bit(tree, start, end, EXTENT_LOCKED,
- 				       &failed_start, cached_state, NULL,
- 				       GFP_NOFS);
--		if (err == -EEXIST) {
--			wait_extent_bit(tree, failed_start, end, EXTENT_LOCKED);
--			start = failed_start;
--		} else
--			break;
--		WARN_ON(start > end);
+ 	err = __set_extent_bit(tree, start, end, EXTENT_LOCKED, &failed_start,
+-			       NULL, NULL, GFP_NOFS);
++			       cached, NULL, GFP_NOFS);
+ 	if (err == -EEXIST) {
+ 		if (failed_start > start)
+ 			clear_extent_bit(tree, start, failed_start - 1,
+-					 EXTENT_LOCKED, NULL);
++					 EXTENT_LOCKED, cached);
+ 		return 0;
  	}
- 	return err;
- }
+ 	return 1;
+diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+index a855f40dd61d..786be8f38f0b 100644
+--- a/fs/btrfs/extent-io-tree.h
++++ b/fs/btrfs/extent-io-tree.h
+@@ -106,7 +106,8 @@ void extent_io_tree_release(struct extent_io_tree *tree);
+ int lock_extent(struct extent_io_tree *tree, u64 start, u64 end,
+ 		struct extent_state **cached);
+ 
+-int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end);
++int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end,
++		    struct extent_state **cached);
+ 
+ int __init extent_state_init_cachep(void);
+ void __cold extent_state_free_cachep(void);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 1eae68fbae21..e29e8aafc3b7 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4962,7 +4962,8 @@ static int read_extent_buffer_subpage(struct extent_buffer *eb, int wait,
+ 	io_tree = &BTRFS_I(fs_info->btree_inode)->io_tree;
+ 
+ 	if (wait == WAIT_NONE) {
+-		if (!try_lock_extent(io_tree, eb->start, eb->start + eb->len - 1))
++		if (!try_lock_extent(io_tree, eb->start, eb->start + eb->len - 1,
++				     NULL))
+ 			return -EAGAIN;
+ 	} else {
+ 		ret = lock_extent(io_tree, eb->start, eb->start + eb->len - 1, NULL);
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 176b432035ae..64bf29848723 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1302,7 +1302,8 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
+ 		struct btrfs_ordered_extent *ordered;
+ 
+ 		if (nowait) {
+-			if (!try_lock_extent(&inode->io_tree, start_pos, last_pos)) {
++			if (!try_lock_extent(&inode->io_tree, start_pos, last_pos,
++					     cached_state)) {
+ 				for (i = 0; i < num_pages; i++) {
+ 					unlock_page(pages[i]);
+ 					put_page(pages[i]);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 45ebef8d3ea8..c5630a3b8011 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7255,7 +7255,8 @@ static int lock_extent_direct(struct inode *inode, u64 lockstart, u64 lockend,
+ 
+ 	while (1) {
+ 		if (nowait) {
+-			if (!try_lock_extent(io_tree, lockstart, lockend))
++			if (!try_lock_extent(io_tree, lockstart, lockend,
++					     cached_state))
+ 				return -EAGAIN;
+ 		} else {
+ 			lock_extent(io_tree, lockstart, lockend, cached_state);
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index e54f8280031f..b648c9d4ea0f 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -1073,7 +1073,7 @@ bool btrfs_try_lock_ordered_range(struct btrfs_inode *inode, u64 start, u64 end)
+ {
+ 	struct btrfs_ordered_extent *ordered;
+ 
+-	if (!try_lock_extent(&inode->io_tree, start, end))
++	if (!try_lock_extent(&inode->io_tree, start, end, NULL))
+ 		return false;
+ 
+ 	ordered = btrfs_lookup_ordered_range(inode, start, end - start + 1);
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 666a37a0ee89..e81a21082e58 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1120,7 +1120,7 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
+ 				WARN_ON(!IS_ALIGNED(end, fs_info->sectorsize));
+ 				end--;
+ 				ret = try_lock_extent(&BTRFS_I(inode)->io_tree,
+-						      key.offset, end);
++						      key.offset, end, NULL);
+ 				if (!ret)
+ 					continue;
+ 
 -- 
 2.26.3
 
