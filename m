@@ -2,108 +2,238 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 168355F1633
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Oct 2022 00:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1885F1BB1
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Oct 2022 12:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbiI3Wcd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Sep 2022 18:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
+        id S229509AbiJAKED convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 1 Oct 2022 06:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232158AbiI3Wc3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Sep 2022 18:32:29 -0400
-Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BEE69166489;
-        Fri, 30 Sep 2022 15:32:24 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au [49.181.106.210])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 078B88AB6CD;
-        Sat,  1 Oct 2022 08:32:19 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1oeOYM-00E7kF-Mx; Sat, 01 Oct 2022 08:32:18 +1000
-Date:   Sat, 1 Oct 2022 08:32:18 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Jeff Layton <jlayton@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Neil Brown <neilb@suse.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "xiubli@redhat.com" <xiubli@redhat.com>,
-        Lukas Czerner <lczerner@redhat.com>, Jan Kara <jack@suse.cz>,
-        Bruce Fields <bfields@fieldses.org>,
-        Christian Brauner <brauner@kernel.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH v6 6/9] nfsd: use the getattr operation to fetch i_version
-Message-ID: <20220930223218.GL3600936@dread.disaster.area>
-References: <20220930111840.10695-1-jlayton@kernel.org>
- <20220930111840.10695-7-jlayton@kernel.org>
- <D7DAB33E-BB23-45A9-BE2C-DBF9B5D62EF8@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D7DAB33E-BB23-45A9-BE2C-DBF9B5D62EF8@oracle.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=63376e77
-        a=j6JUzzrSC7wlfFge/rmVbg==:117 a=j6JUzzrSC7wlfFge/rmVbg==:17
-        a=kj9zAlcOel0A:10 a=Qawa6l4ZSaYA:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
-        a=P6V2cQqVOOyE__6v1BQA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229461AbiJAKEC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Oct 2022 06:04:02 -0400
+X-Greylist: delayed 1803 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 01 Oct 2022 03:03:59 PDT
+Received: from mail.vantomas.net (mail.vantomas.net [185.14.235.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4A9106519
+        for <linux-btrfs@vger.kernel.org>; Sat,  1 Oct 2022 03:03:59 -0700 (PDT)
+X-Footer: dmFudG9tYXMubmV0
+Received: from smtpclient.apple ([10.88.62.240])
+        (authenticated user vantomas@vantomas.net)
+        by mail.vantomas.net
+        (using TLSv1/SSLv3 with cipher AES256-SHA (256 bits))
+        for linux-btrfs@vger.kernel.org;
+        Sat, 1 Oct 2022 11:33:51 +0200
+From:   =?utf-8?B?VG9tw6HFoSBIb2zDvQ==?= <vantomas@vantomas.net>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.1\))
+Subject: Poor write performance with raid5 on 4 drives
+Message-Id: <FB99D093-04BF-421D-8AE6-94BDA34728DB@vantomas.net>
+Date:   Sat, 1 Oct 2022 11:33:51 +0200
+To:     linux-btrfs@vger.kernel.org
+X-Mailer: Apple Mail (2.3696.120.41.1.1)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 30, 2022 at 02:34:51PM +0000, Chuck Lever III wrote:
-> 
-> 
-> > On Sep 30, 2022, at 7:18 AM, Jeff Layton <jlayton@kernel.org> wrote:
-> > 
-> > Now that we can call into vfs_getattr to get the i_version field, use
-> > that facility to fetch it instead of doing it in nfsd4_change_attribute.
-> > 
-> > Neil also pointed out recently that IS_I_VERSION directory operations
-> > are always logged,
-> 
-> ^logged^synchronous maybe?
+Hello,
+I’m building my personal tertiary backup box running on HP Microserver G8 with 4x 6TB hard drives and I was planning to use raid5 profile for reasonable data ratio but I ran into really poor write performance on raid5 with 4 drives. On a filesystem with -d=raid5 -m=raid1c4 on 4 drives I only get about 40MB/s of write speed, but with -d=raid5 -m=raid1c3 on 3 drives or -d=raid6 -m raid1c4 on 4 drives I get 500MB/s of write speed. 
 
-A pedantic note, but I think necessary because so many people still
-get this wrong when it comes to filesystems and IO: synchronous !=
-persistent.
+I tried to investigate it somehow, I compared the properties of the filesystem and other variables in /sys/fs/btrfs between each other, but all I found was that raid5 on 4 drives reads from hard drives while writing data and that would be whole problem with poor performance imho. But that’s where my skills end. 
 
-Ext4 and XFS both use *asynchronous journalling* - they journal
-changes first to memory buffers, and only make those recorded
-changes persistent when they hit internal checkpoint thresholds or
-something external requires persistence to be guaranteed.
+Do you know if there is a solution to this or can you point me in which direction to look?
 
-->commit_metadata is the operation filesystems provide the NFS
-server to *guarantee persistence*. This allows filesystems to use
-asynchronous journalling for most operations, right up to the point
-the NFS server requires a change to be persistent. "synchronous
-operation" is a side effect of guaranteeing persistence on some
-filesytems and storage media, whereas "synchronous operation"
-does not provide any guarantee of persistence...
 
-IOWs, please talk about persistence guarantees the NFS server
-application requires and implements, not about the operations (or
-the nature of the operations) that may be performed by the
-underlying filesystems to provide that persistence guarantee.
+Thanks, 
+Tomas
 
-Cheers,
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+
+
+[root@backupcube ~]# uname -a
+Linux backupcube 5.19.11-200.fc36.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Sep 23 15:07:44 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+[root@backupcube ~]# btrfs --version
+btrfs-progs v5.18
+
+
+### -d=raid5 -m=raid1c4 on 4 drives ###
+
+[root@backupcube ~]# mkfs.btrfs -f -d raid5 -m raid1c4 /dev/sda1 /dev/sdb1 /dev/sdd1 /dev/sde1
+btrfs-progs v5.18
+See http://btrfs.wiki.kernel.org for more information.
+
+WARNING: RAID5/6 support has known problems is strongly discouraged
+	 to be used besides testing or evaluation.
+
+NOTE: several default settings have changed in version 5.15, please make sure
+      this does not affect your deployments:
+      - DUP for metadata (-m dup)
+      - enabled no-holes (-O no-holes)
+      - enabled free-space-tree (-R free-space-tree)
+
+Label:              (null)
+UUID:               279a913f-bf4a-44ba-a5cd-26c94c954365
+Node size:          16384
+Sector size:        4096
+Filesystem size:    21.83TiB
+Block group profiles:
+  Data:             RAID5             3.00GiB
+  Metadata:         RAID1C4           1.00GiB
+  System:           RAID1C4           8.00MiB
+SSD detected:       no
+Zoned device:       no
+Incompat features:  extref, raid56, skinny-metadata, no-holes, raid1c34
+Runtime features:   free-space-tree
+Checksum:           crc32c
+Number of devices:  4
+Devices:
+   ID        SIZE  PATH
+    1     5.46TiB  /dev/sda1
+    2     5.46TiB  /dev/sdb1
+    3     5.46TiB  /dev/sdd1
+    4     5.46TiB  /dev/sde1
+
+
+[root@backupcube ~]# dd if=/dev/zero of=/mnt/sda1/tempfile bs=1M count=4096 conv=fdatasync,notrunc status=progress oflag=direct
+4270850048 bytes (4.3 GB, 4.0 GiB) copied, 106 s, 40.3 MB/s
+4096+0 records in
+4096+0 records out
+4294967296 bytes (4.3 GB, 4.0 GiB) copied, 106.619 s, 40.3 MB/s
+
+
+[root@backupcube ~]# dstat -d -D total,sda,sdb,sdd,sde
+--dsk/sda-----dsk/sdb-----dsk/sdd-----dsk/sde----dsk/total-
+ read  writ: read  writ: read  writ: read  writ: read  writ
+1215k   13M:1215k   13M:1215k   13M:1215k   13M:4858k   52M
+1216k   13M:1216k   13M:1216k   13M:1216k   13M:4864k   52M
+1216k   13M:1216k   13M:1216k   13M:1216k   13M:4864k   52M
+1280k   13M:1216k   13M:1216k   13M:1216k   13M:4928k   52M
+1152k   13M:1216k   13M:1216k   13M:1216k   13M:4800k   52M
+1216k   13M:1216k   13M:1216k   13M:1216k   13M:4864k   52M^C
+
+[root@backupcube ~]#
+
+
+
+
+
+### -d=raid6 -m=raid1c4 on 4 drives ###
+
+[root@backupcube ~]# mkfs.btrfs -f -d raid6 -m raid1c4 /dev/sda1 /dev/sdb1 /dev/sdd1 /dev/sde1
+btrfs-progs v5.18
+See http://btrfs.wiki.kernel.org for more information.
+
+WARNING: RAID5/6 support has known problems is strongly discouraged
+	 to be used besides testing or evaluation.
+
+NOTE: several default settings have changed in version 5.15, please make sure
+      this does not affect your deployments:
+      - DUP for metadata (-m dup)
+      - enabled no-holes (-O no-holes)
+      - enabled free-space-tree (-R free-space-tree)
+
+Label:              (null)
+UUID:               9e4f6691-971d-4950-a032-d3c83f2fda26
+Node size:          16384
+Sector size:        4096
+Filesystem size:    21.83TiB
+Block group profiles:
+  Data:             RAID6             2.00GiB
+  Metadata:         RAID1C4           1.00GiB
+  System:           RAID1C4           8.00MiB
+SSD detected:       no
+Zoned device:       no
+Incompat features:  extref, raid56, skinny-metadata, no-holes, raid1c34
+Runtime features:   free-space-tree
+Checksum:           crc32c
+Number of devices:  4
+Devices:
+   ID        SIZE  PATH
+    1     5.46TiB  /dev/sda1
+    2     5.46TiB  /dev/sdb1
+    3     5.46TiB  /dev/sdd1
+    4     5.46TiB  /dev/sde1
+
+
+[root@backupcube ~]# dd if=/dev/zero of=/mnt/sda1/tempfile bs=1M count=4096 conv=fdatasync,notrunc status=progress oflag=direct
+4051697664 bytes (4.1 GB, 3.8 GiB) copied, 8 s, 506 MB/s
+4096+0 records in
+4096+0 records out
+4294967296 bytes (4.3 GB, 4.0 GiB) copied, 8.58926 s, 500 MB/s
+
+[root@backupcube ~]# dstat -d -D total,sda,sdb,sdd,sde
+--dsk/sda-----dsk/sdb-----dsk/sdd-----dsk/sde----dsk/total-
+ read  writ: read  writ: read  writ: read  writ: read  writ
+   0   238M:   0   238M:   0   238M:   0   238M:   0   953M
+   0   250M:   0   250M:   0   250M:   0   250M:   0  1001M
+   0   242M:   0   242M:   0   242M:   0   242M:   0   968M
+   0   238M:   0   238M:   0   238M:   0   238M:   0   953M
+   0   242M:   0   242M:   0   243M:   0   242M:   0   970M
+   0   243M:   0   243M:   0   243M:   0   243M:   0   972M
+   0   192M:   0   192M:   0   192M:   0   192M:   0   769M
+   0     0 :   0     0 :   0     0 :   0     0 :   0  6144B^C
+
+
+
+
+
+### -d=raid5 -m=raid1c3 on 3 drives ###
+
+[root@backupcube ~]# mkfs.btrfs -f -d raid5 -m raid1c3 /dev/sda1 /dev/sdb1 /dev/sdd1
+btrfs-progs v5.18
+See http://btrfs.wiki.kernel.org for more information.
+
+WARNING: RAID5/6 support has known problems is strongly discouraged
+	 to be used besides testing or evaluation.
+
+NOTE: several default settings have changed in version 5.15, please make sure
+      this does not affect your deployments:
+      - DUP for metadata (-m dup)
+      - enabled no-holes (-O no-holes)
+      - enabled free-space-tree (-R free-space-tree)
+
+Label:              (null)
+UUID:               7f06fbb0-9655-4f8d-af4a-2d06d8dc1d80
+Node size:          16384
+Sector size:        4096
+Filesystem size:    16.37TiB
+Block group profiles:
+  Data:             RAID5             2.00GiB
+  Metadata:         RAID1C3           1.00GiB
+  System:           RAID1C3           8.00MiB
+SSD detected:       no
+Zoned device:       no
+Incompat features:  extref, raid56, skinny-metadata, no-holes, raid1c34
+Runtime features:   free-space-tree
+Checksum:           crc32c
+Number of devices:  3
+Devices:
+   ID        SIZE  PATH
+    1     5.46TiB  /dev/sda1
+    2     5.46TiB  /dev/sdb1
+    3     5.46TiB  /dev/sdd1
+
+[root@backupcube ~]# dd if=/dev/zero of=/mnt/sda1/tempfile bs=1M count=4096 conv=fdatasync,notrunc status=progress oflag=direct
+4034920448 bytes (4.0 GB, 3.8 GiB) copied, 8 s, 504 MB/s
+4096+0 records in
+4096+0 records out
+4294967296 bytes (4.3 GB, 4.0 GiB) copied, 8.61927 s, 498 MB/s
+[root@backupcube ~]#
+
+
+[root@backupcube ~]# dstat -d -D total,sda,sdb,sdd,sde
+--dsk/sda-----dsk/sdb-----dsk/sdd-----dsk/sde----dsk/total-
+ read  writ: read  writ: read  writ: read  writ: read  writ
+   0   231M:   0   231M:   0   231M:   0     0 :   0   694M
+   0   244M:   0   244M:   0   244M:   0     0 :   0   733M
+   0   250M:   0   250M:   0   250M:   0     0 :   0   751M
+   0   238M:   0   238M:   0   238M:   0     0 :   0   715M
+   0   239M:   0   239M:   0   239M:   0     0 :   0   718M
+   0   243M:   0   243M:   0   243M:   0     0 :   0   729M
+   0   243M:   0   243M:   0   243M:   0     0 :   0   728M
+   0   117M:   0   117M:   0   117M:   0     0 :   0   351M
+   0     0 :   0     0 :   0     0 :   0     0 :   0     0 ^C
