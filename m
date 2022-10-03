@@ -2,41 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE0B5F3236
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Oct 2022 16:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34975F323A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Oct 2022 16:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbiJCO5i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Oct 2022 10:57:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
+        id S229780AbiJCO6j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Oct 2022 10:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiJCO5h (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Oct 2022 10:57:37 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B182A94C
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Oct 2022 07:57:36 -0700 (PDT)
+        with ESMTP id S230061AbiJCO6c (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Oct 2022 10:58:32 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAC43C15B;
+        Mon,  3 Oct 2022 07:58:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 411E2B80766
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Oct 2022 14:57:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F26EC433D6
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Oct 2022 14:57:33 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C9917B8117A;
+        Mon,  3 Oct 2022 14:58:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A993CC433D7;
+        Mon,  3 Oct 2022 14:58:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664809053;
-        bh=S0zfw0/6HhkwLHdBDBQ+JMwqLkKwIul9sDivUSyktLA=;
-        h=From:To:Subject:Date:From;
-        b=Tk7sngY1vQrxsKMv3ZeFlh8puVWZ02PSLFKvRu1x2CWkEcCP3W0SBUusGcYzvLE3K
-         jgSMDrMwf6o4WrhZ/0rm0naaloTlQn2IRekNPhG4QtdpoIjsAcgUyuxS9WnpuTaVxI
-         yB6RdjocxjkEycsqNOEzWjRgmI699LTnf27bQZx7xQAU95sa8SpOgNM3WlG7HkLwc7
-         h7qlHlWWW554oNbtg+AYrM1NIZxgd1Y60gZvp4RlCYBez+uakqxU964nFpxaK1ZRql
-         zdnQJeBObu2sSN5vKSFpGdYRv0xJ42FfK6N3udgIiLyGS+aShpiJwMjmaOMCYUEqjY
-         xk1E+KIbGMVQw==
+        s=k20201202; t=1664809106;
+        bh=tkvcnmn0rzId1765Ob53Fa9jAy+ddPjtOc7y0am5s1s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=S41jda3kXk55XqNPD7TYFR9kXf9+Sa72o5SSmOAjdzMnCyYIE2VpJrOuIR0LPBb/F
+         /0srTe6AN1cEtQQVejKku2H6smqgiP8uhFpDan6cvzGUTcfszL3/NW2f4DGpn9Ml9u
+         zrDAaS59W3SeSnYD0fo/B+L4lrWMpVu4GxG4LV0vNZ0XYVcLeHJX4h2pEUpMjeU8hB
+         hF+aVWP9+UlhJUv2VgArhlDhB/5p7wTNSm1bWleDygziIf/JpV6oGGiy18za5gL1Ni
+         /u4TZmuJutsbSVxpVQ5e4+2ubUC0tKh/ZDKMaADOTU029k4ox9RzuGRQoSkf/jVVuV
+         fP+c/4THbOY0g==
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: add missing path cache update during fiemap
-Date:   Mon,  3 Oct 2022 15:57:30 +0100
-Message-Id: <aa8da9743ec75d4438f5de49051834337133da10.1664808830.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: test fiemap on large file with extents shared through a snapshot
+Date:   Mon,  3 Oct 2022 15:58:17 +0100
+Message-Id: <d4bf2bc47e3be1437d5693a0b728e199acb549fd.1664808949.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -50,48 +51,188 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When looking the stored result for a cached path node, if the stored
-result is valid and has a value of true, we must update all the nodes for
-all levels below it with a result of true as well. This is necessary when
-moving from one leaf in the fs tree to the next one, as well as when
-moving from a node at any level to the next node at the same level.
+Verify that fiemap correctly reports the sharedness of extents for a file
+with a very large number of extents, spanning many b+tree leaves in the fs
+tree, and when the file's subvolume was snapshoted.
 
-Currently this logic is missing as it was somehow forgotten by a recent
-patch with the subject: "btrfs: speedup checking for extent sharedness
-during fiemap".
-
-This adds the missing logic, which is the counter part to what we do
-when adding a shared node to the cache at store_backref_shared_cache().
+Currently this passes on all kernel releases and its purpose is to prevent
+and detect regressions in the future, as this actually happened during
+recent development on the btrfs' fiemap related code. With this test we
+now have better coverage for fiemap when a file is shared through a
+snapshot.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/backref.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ doc/group-names.txt |   1 +
+ tests/btrfs/276     | 123 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/276.out |  16 ++++++
+ 3 files changed, 140 insertions(+)
+ create mode 100755 tests/btrfs/276
+ create mode 100644 tests/btrfs/276.out
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index dce3a16996b9..3c0c1f626c75 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -1557,6 +1557,19 @@ static bool lookup_backref_shared_cache(struct btrfs_backref_shared_cache *cache
- 		return false;
- 
- 	*is_shared = entry->is_shared;
-+	/*
-+	 * If the node at this level is shared, than all nodes below are also
-+	 * shared. Currently some of the nodes below may be marked as not shared
-+	 * because we have just switched from one leaf to another, and switched
-+	 * also other nodes above the leaf and below the current level, so mark
-+	 * them as shared.
-+	 */
-+	if (*is_shared) {
-+		for (int i = 0; i < level; i++) {
-+			cache->entries[i].is_shared = true;
-+			cache->entries[i].gen = entry->gen;
-+		}
-+	}
- 
- 	return true;
- }
+diff --git a/doc/group-names.txt b/doc/group-names.txt
+index ef411b5e..6cc9af78 100644
+--- a/doc/group-names.txt
++++ b/doc/group-names.txt
+@@ -47,6 +47,7 @@ eio			IO error reporting
+ encrypt			encrypted file contents
+ enospc			ENOSPC error reporting
+ exportfs		file handles
++fiemap			fiemap ioctl
+ filestreams		XFS filestreams allocator
+ freeze			filesystem freeze tests
+ fsck			general fsck tests
+diff --git a/tests/btrfs/276 b/tests/btrfs/276
+new file mode 100755
+index 00000000..5946dad9
+--- /dev/null
++++ b/tests/btrfs/276
+@@ -0,0 +1,123 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 276
++#
++# Verify that fiemap correctly reports the sharedness of extents for a file with
++# a very large number of extents, spanning many b+tree leaves in the fs tree,
++# and when the file's subvolume was snapshoted.
++#
++. ./common/preamble
++_begin_fstest auto snapshot compress fiemap
++
++. ./common/filter
++
++_supported_fs btrfs
++_require_scratch
++_require_xfs_io_command "fiemap" "ranged"
++
++_scratch_mkfs >> $seqres.full 2>&1
++# We use compression because it's a very quick way to create a file with a very
++# large number of extents (compression limits the maximum extent size to 128K)
++# and while using very little disk space.
++_scratch_mount -o compress
++
++fiemap_test_file()
++{
++	local offset=$1
++	local len=$2
++
++	# Skip the first two lines of xfs_io's fiemap output (file path and
++	# header describing the output columns).
++	$XFS_IO_PROG -c "fiemap -v $offset $len" $SCRATCH_MNT/foo | tail -n +3
++}
++
++# Count the number of shared extents for the whole test file or just for a given
++# range.
++count_shared_extents()
++{
++	local offset=$1
++	local len=$2
++
++	# Column 5 (from xfs_io's "fiemap -v" command) is the flags (hex field).
++	# 0x2000 is the value for the FIEMAP_EXTENT_SHARED flag.
++	fiemap_test_file $offset $len | \
++		$AWK_PROG --source 'BEGIN { cnt = 0 }' \
++			  --source '{ if (and(strtonum($5), 0x2000)) cnt++ }' \
++			  --source 'END { print cnt }'
++}
++
++# Count the number of non shared extents for the whole test file or just for a
++# given range.
++count_not_shared_extents()
++{
++	local offset=$1
++	local len=$2
++
++	# Column 5 (from xfs_io's "fiemap -v" command) is the flags (hex field).
++	# 0x2000 is the value for the FIEMAP_EXTENT_SHARED flag.
++	fiemap_test_file $offset $len | \
++		$AWK_PROG --source 'BEGIN { cnt = 0 }' \
++			  --source '{ if (!and(strtonum($5), 0x2000)) cnt++ }' \
++			  --source 'END { print cnt }'
++}
++
++# Create a 16G file as that results in 131072 extents, all with a size of 128K
++# (due to compression), and a fs tree with a height of 3 (root node at level 2).
++# We want to verify later that fiemap correctly reports the sharedness of each
++# extent, even when it needs to switch from one leaf to the next one and from a
++# node at level 1 to the next node at level 1.
++#
++$XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MNT/foo | _filter_xfs_io
++
++# Sync to flush delalloc and commit the current transaction, so fiemap will see
++# all extents in the fs tree and extent trees and not look at delalloc.
++sync
++
++echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
++
++# Creating a snapshot.
++$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap | _filter_scratch
++
++# We have a snapshot, so now all extents should be reported as shared.
++echo "Number of shared extents in the whole file: $(count_shared_extents)"
++
++# Now COW two files ranges, of 1M each, in the snapshot's file.
++# So 16 extents should become non-shared after this.
++#
++$XFS_IO_PROG -c "pwrite -b 1M 8M 1M" \
++	     -c "pwrite -b 1M 12G 1M" \
++	     $SCRATCH_MNT/snap/foo | _filter_xfs_io
++
++# Sync to flush delalloc and commit the current transaction, so fiemap will see
++# all extents in the fs tree and extent trees and not look at delalloc.
++sync
++
++# Now we should have 16 non-shared extents and 131056 (131072 - 16) shared
++# extents.
++echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
++echo "Number of shared extents in the whole file: $(count_shared_extents)"
++
++# Check that the non-shared extents are indeed in the expected file ranges (each
++# with 8 extents).
++echo "Number of non-shared extents in range [8M, 9M): $(count_not_shared_extents 8M 1M)"
++echo "Number of non-shared extents in range [12G, 12G + 1M): $(count_not_shared_extents 12G 1M)"
++
++# Now delete the snapshot.
++$BTRFS_UTIL_PROG subvolume delete -c $SCRATCH_MNT/snap | _filter_scratch
++
++# We deleted the snapshot and committed the transaction used to delete it (-c),
++# but all its extents (both metadata and data) are actually only deleted in the
++# background, by the cleaner kthread. So remount, which wakes up the cleaner
++# kthread, with a commit interval of 1 second and sleep for 1.1 seconds - after
++# this we are guaranteed all extents of the snapshot were deleted.
++_scratch_remount commit=1
++sleep 1.1
++
++# Now all extents should be reported as not shared (131072 extents).
++echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/276.out b/tests/btrfs/276.out
+new file mode 100644
+index 00000000..3bf5a5e6
+--- /dev/null
++++ b/tests/btrfs/276.out
+@@ -0,0 +1,16 @@
++QA output created by 276
++wrote 17179869184/17179869184 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Number of non-shared extents in the whole file: 131072
++Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
++Number of shared extents in the whole file: 131072
++wrote 1048576/1048576 bytes at offset 8388608
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 1048576/1048576 bytes at offset 12884901888
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Number of non-shared extents in the whole file: 16
++Number of shared extents in the whole file: 131056
++Number of non-shared extents in range [8M, 9M): 8
++Number of non-shared extents in range [12G, 12G + 1M): 8
++Delete subvolume (commit): 'SCRATCH_MNT/snap'
++Number of non-shared extents in the whole file: 131072
 -- 
 2.35.1
 
