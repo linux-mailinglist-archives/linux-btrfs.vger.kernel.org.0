@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA135F3C62
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Oct 2022 07:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91DBC5F3C73
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Oct 2022 07:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbiJDFLr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Oct 2022 01:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        id S229513AbiJDF2y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Oct 2022 01:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbiJDFLp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Oct 2022 01:11:45 -0400
+        with ESMTP id S229445AbiJDF2x (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Oct 2022 01:28:53 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2055E14007
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Oct 2022 22:11:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C7E2AE03
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Oct 2022 22:28:50 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B3F161F8E9
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Oct 2022 05:11:41 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E102C1F8F3
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Oct 2022 05:28:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1664860301; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1664861328; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=S3PfWMec083zdycIDI4KEk4xLk7zFupgncNX5gxqers=;
-        b=l3sOLohU8QuzafytLvDZPOyXtxtmcOb+ryGuOCF41qYr41ciWoTwzUFHLbzogLWKJhfMRj
-        EJd7mDxT7hIZdQ7vf2QyzXSy8w1/lX8HvSlocVGf8dkRDi4UKy2zrXQFCZNyOKHY7SpGpL
-        M3xu7jy1y3nSi2p4rqxHJ8KtKAk5t4A=
+        bh=rDn2j1Q3NhvmM1OA2X7ngJeCCfCUpgknYlxhyN0OVYg=;
+        b=kXzP6UrlHSlEFUaNLEtGBW1TLN+yGH4Y7bp1IFZbzEcgvOp3toBROcEtXhXBkFNkPV13wT
+        duUkZBXlY9tC6jvjEeiHc1zDlGjibq3WdRNfPIWPuwW6StCizssvV02/yans1PDB3p8VWB
+        U1eu5LBYwNGFqxxWmIQiL74AZQaTLlQ=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D559513A8F
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Oct 2022 05:11:40 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E665813A8F
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Oct 2022 05:28:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id yYieJ4zAO2MAfwAAMHmgww
+        id kTMhKo/EO2MVBgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 04 Oct 2022 05:11:40 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Oct 2022 05:28:47 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: fsfeatures: properly merge -O and -R options
-Date:   Tue,  4 Oct 2022 13:11:23 +0800
-Message-Id: <abccba078453a01491f5246f5ff1329a265fbdca.1664860166.git.wqu@suse.com>
+Subject: [PATCH v2] btrfs-progs: fsfeatures: properly merge -O and -R options
+Date:   Tue,  4 Oct 2022 13:28:30 +0800
+Message-Id: <adfa0e435cd68f6d107f7fb9fad1846880fd1c97.1664861095.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -90,10 +90,13 @@ the old flags into 3 flags:
 - generic_flag
 
 The new @generic_flag will represent a unified fs feature, so we can
-return a single u64 to represent all features.
+return a single u64 to represent all features, no matter if it's a pure
+runtime one (like quota tree), or a incompat one (most features), or a
+compat RO one (like free space tree, block group tree).
 
 This also means, any caller of btrfs_parse_fs_features() should use
-BTRFS_FEATURE_GENERIC_* flags to check if one feature is enabled.
+BTRFS_FEATURE_GENERIC_* flags to check if one feature is enabled, not
+the direct BTRFS_FEATURE_INCOMPAT_* nor BTRFS_FEATURE_COMPAT_RO_* flags.
 
 Also we introduce two new helpers:
 
@@ -108,19 +111,26 @@ output the features.
 If we have experimental features enabled, we just output a unified
 "Features:" line, while keep the old separate one for non-experimental
 build.
+As btrfs_parse_runtime_features() and btrfs_parse_fs_features() can all
+handle the output correctly, for both experimental and non-experimental
+builds.
 
 Please fold this patch into the offending one.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
+Changelog:
+v2:
+- Fix convert test failure due to missing allowed features
+---
  common/fsfeatures.c | 180 ++++++++++++++++++++++++++------------------
- common/fsfeatures.h |  56 ++++++++------
+ common/fsfeatures.h |  59 +++++++++------
  convert/common.c    |  10 ++-
  convert/main.c      |  32 ++++----
  mkfs/common.c       |  41 +++++-----
  mkfs/common.h       |   9 ++-
  mkfs/main.c         |  66 +++++++++-------
- 7 files changed, 226 insertions(+), 168 deletions(-)
+ 7 files changed, 228 insertions(+), 169 deletions(-)
 
 diff --git a/common/fsfeatures.c b/common/fsfeatures.c
 index 6dc7207e9800..92373278c35b 100644
@@ -512,17 +522,36 @@ index 6dc7207e9800..92373278c35b 100644
 +	return ret;
 +}
 diff --git a/common/fsfeatures.h b/common/fsfeatures.h
-index fd7defc14031..57ae72edfa55 100644
+index fd7defc14031..44cad72c8285 100644
 --- a/common/fsfeatures.h
 +++ b/common/fsfeatures.h
-@@ -21,34 +21,41 @@
+@@ -21,34 +21,42 @@
  #include <stdio.h>
  #include "kernel-lib/sizes.h"
  
-+/*
+-#define BTRFS_MKFS_DEFAULT_NODE_SIZE SZ_16K
+-#define BTRFS_MKFS_DEFAULT_FEATURES 				\
+-		(BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF		\
+-		| BTRFS_FEATURE_INCOMPAT_NO_HOLES		\
+-		| BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA)
+-
+-#define BTRFS_MKFS_DEFAULT_RUNTIME_FEATURES			\
+-	(BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE)
+-
+ /*
+- * Avoid multi-device features (RAID56), mixed block groups, and zoned mode
 + * Since our fsfeatures can contain both incompat and compat_ro flags,
 + * there has to be a generic feature flags.
-+ */
+  */
+-#define BTRFS_CONVERT_ALLOWED_FEATURES				\
+-	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF			\
+-	| BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL			\
+-	| BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO			\
+-	| BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD			\
+-	| BTRFS_FEATURE_INCOMPAT_BIG_METADATA			\
+-	| BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF			\
+-	| BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA		\
+-	| BTRFS_FEATURE_INCOMPAT_NO_HOLES)
 +#define BTRFS_FEATURE_GENERIC_MIXED_GROUPS	(1 << 0)
 +#define BTRFS_FEATURE_GENERIC_QUOTA		(1 << 1)
 +#define BTRFS_FEATURE_GENERIC_EXTENDED_IREF	(1 << 2)
@@ -536,50 +565,33 @@ index fd7defc14031..57ae72edfa55 100644
 +#define BTRFS_FEATURE_GENERIC_EXTENT_TREE_V2	(1 << 10)
 +/* This should be the last one. */
 +#define BTRFS_FEATURE_GENERIC_LIST_ALL		(1 << 15)
-+
- #define BTRFS_MKFS_DEFAULT_NODE_SIZE SZ_16K
--#define BTRFS_MKFS_DEFAULT_FEATURES 				\
--		(BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF		\
--		| BTRFS_FEATURE_INCOMPAT_NO_HOLES		\
--		| BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA)
-+#define BTRFS_MKFS_DEFAULT_GENERIC_FEATURES 			\
-+		(BTRFS_FEATURE_GENERIC_EXTENDED_IREF		\
-+		| BTRFS_FEATURE_GENERIC_NO_HOLES		\
-+		| BTRFS_FEATURE_GENERIC_SKINNY_METADATA		\
-+		| BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE)
  
--#define BTRFS_MKFS_DEFAULT_RUNTIME_FEATURES			\
--	(BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE)
-+#define BTRFS_MKFS_DEFAULT_RUNTIME_GENERIC_FEATURES		\
-+	(BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE)
- 
- /*
-  * Avoid multi-device features (RAID56), mixed block groups, and zoned mode
-  */
--#define BTRFS_CONVERT_ALLOWED_FEATURES				\
--	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF			\
--	| BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL			\
--	| BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO			\
--	| BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD			\
--	| BTRFS_FEATURE_INCOMPAT_BIG_METADATA			\
--	| BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF			\
--	| BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA		\
--	| BTRFS_FEATURE_INCOMPAT_NO_HOLES)
--
 -#define BTRFS_FEATURE_LIST_ALL		(1ULL << 63)
--
++#define BTRFS_MKFS_DEFAULT_NODE_SIZE SZ_16K
++#define BTRFS_MKFS_DEFAULT_GENERIC_FEATURES 		\
++	(BTRFS_FEATURE_GENERIC_EXTENDED_IREF |		\
++	 BTRFS_FEATURE_GENERIC_NO_HOLES |		\
++	 BTRFS_FEATURE_GENERIC_SKINNY_METADATA |	\
++	 BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE)
+ 
 -#define BTRFS_RUNTIME_FEATURE_QUOTA		(1ULL << 0)
 -#define BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE	(1ULL << 1)
 -#define BTRFS_RUNTIME_FEATURE_BLOCK_GROUP_TREE	(1ULL << 2)
--
-+#define BTRFS_CONVERT_ALLOWED_GENERIC_FEATURES			\
-+	(BTRFS_FEATURE_GENERIC_EXTENDED_IREF			\
-+	| BTRFS_FEATURE_GENERIC_SKINNY_METADATA			\
-+	| BTRFS_FEATURE_GENERIC_NO_HOLES)
++#define BTRFS_MKFS_DEFAULT_RUNTIME_GENERIC_FEATURES	\
++	(BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE)
+ 
++/* Avoid multi-device features, mixed block groups, and zoned mode */
++#define BTRFS_CONVERT_ALLOWED_GENERIC_FEATURES		\
++       (BTRFS_FEATURE_GENERIC_QUOTA |			\
++        BTRFS_FEATURE_GENERIC_EXTENDED_IREF |		\
++        BTRFS_FEATURE_GENERIC_SKINNY_METADATA |		\
++        BTRFS_FEATURE_GENERIC_NO_HOLES |		\
++        BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE |		\
++        BTRFS_FEATURE_GENERIC_BLOCK_GROUP_TREE)
  
  void btrfs_list_all_fs_features(u64 mask_disallowed);
  void btrfs_list_all_runtime_features(u64 mask_disallowed);
-@@ -60,8 +67,11 @@ void btrfs_parse_fs_features_to_string(char *buf, u64 flags);
+@@ -60,8 +68,11 @@ void btrfs_parse_fs_features_to_string(char *buf, u64 flags);
  void btrfs_parse_runtime_features_to_string(char *buf, u64 flags);
  void print_kernel_version(FILE *stream, u32 version);
  u32 get_running_kernel_version(void);
