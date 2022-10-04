@@ -2,372 +2,1029 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C005F3A56
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Oct 2022 02:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA135F3C62
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Oct 2022 07:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbiJDAGM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Oct 2022 20:06:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
+        id S229599AbiJDFLr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Oct 2022 01:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbiJDAGK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Oct 2022 20:06:10 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDFD22BEE
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Oct 2022 17:06:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1664841956;
-        bh=WsxqamtOuQrhXPOxmJr+Epf0Df2HiuP3YW/H2KpcbJM=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=WNq+fFNtUI7fjcT1Utee+IJZFEIR4PMN9eIrd2rs0YVZxI7JlVgjJVT51Qnk0D3fG
-         /c3dX5VjcaCP7JmvDjQwRoXLVmARE7F7Opcubj7jb3eJ1Tjdcwk5ny7A8f9Maq8vw6
-         zRkBbBAoQsqA/zBEsTxmdFOYoysRxQYyeHg+TZvQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5VDE-1pGMbx300I-016wVK; Tue, 04
- Oct 2022 02:05:56 +0200
-Message-ID: <7ca45e26-1ab5-bc4c-80bf-3e22857f27c9@gmx.com>
-Date:   Tue, 4 Oct 2022 08:05:52 +0800
+        with ESMTP id S229481AbiJDFLp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Oct 2022 01:11:45 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2055E14007
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Oct 2022 22:11:43 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B3F161F8E9
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Oct 2022 05:11:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1664860301; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=S3PfWMec083zdycIDI4KEk4xLk7zFupgncNX5gxqers=;
+        b=l3sOLohU8QuzafytLvDZPOyXtxtmcOb+ryGuOCF41qYr41ciWoTwzUFHLbzogLWKJhfMRj
+        EJd7mDxT7hIZdQ7vf2QyzXSy8w1/lX8HvSlocVGf8dkRDi4UKy2zrXQFCZNyOKHY7SpGpL
+        M3xu7jy1y3nSi2p4rqxHJ8KtKAk5t4A=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D559513A8F
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Oct 2022 05:11:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yYieJ4zAO2MAfwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Oct 2022 05:11:40 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: fsfeatures: properly merge -O and -R options
+Date:   Tue,  4 Oct 2022 13:11:23 +0800
+Message-Id: <abccba078453a01491f5246f5ff1329a265fbdca.1664860166.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH v3 3/5] btrfs-progs: separate block group tree from extent
- tree v2
-Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1660024949.git.wqu@suse.com>
- <5eef4fd2d55a02dab38a6d1dec43dbcd82652508.1660024949.git.wqu@suse.com>
- <6a15fb3d-a769-1ffd-72b5-a3492b91919f@oracle.com>
- <2741b7c3-4036-50d7-26ea-aa32dd8ae466@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <2741b7c3-4036-50d7-26ea-aa32dd8ae466@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:PPGKexAt3uz2AMe7zCZoj2GDadUvsZOVm8oBdo5c4d0Y8p+LLYD
- 7rhO4KdBYyM5qS6IOV/TlzN26lkJZ7rHM/w9QvQrnoX79Juz5NvGy8sSA0p8awPwpAgVU2t
- BcixYjB9kPLHWvvft7R6lp9LnCeaqJhuLcNd3Z7XCNnEGJit06NrBBBO/r3O2AaUg8NLoXS
- EcOFzGkSS9ntmwA0KMJJw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:u+WEAKdzshc=:U8iCUNttOTDYeqTBNEZa2F
- IM7HgmPtYajqsXT04K728eG2/JnxxxEpYgNXC315ru4A7gRjO3Pg+0a0yyDuL0TenE0QSjTRK
- CpRz+DGP7NSnVfUeUn7EA7/yylV0mPhQprIFK3MF78YbRQTfivInykSLUaOF1jYMtOw36FfkB
- iP7H6CgUdnJGfhDlUbUuiQJGRiE2i+ZIJJ8SthjdETxyEoOoOU2uVi34Hh3yTL3POB5zfPB/o
- bP0CX+yOF4z6WLjB/AaHPckQXQbxw6rTK/n16mHqQQqW0A4n6SrfjzMH8Vf12jIBlrFXbfOjd
- eLfi/NNt09FPcVvBGGU3/AxRRwIxCM9AGI4J9TsNNzr6Dq0aBmjE++bPP6MMv5QnA2+fZKlxK
- uMU4HfTIhze1C+L+6VuLAvlQjTRli4LKREDWFv1U/uT2e/27vt9XGc9G3dIxS6KzsrIjcBVV/
- rxp22Qn5dHY/jLPB2UU1hWmK+ZprPF4ZdQxyTf1fdQd2FvbX0q5zl72SYK8410HFoLlSMg4R6
- 8lZ44EQ7jhHOlrMamzi0LrzY56fUsDW/AgFPNzEyDY6E9jslKBwAQ2BjCBdlXsVx+H30Rpp8R
- cCkrT34iIpNLTIjLE68aaUaNwYBQXaeJvdj3FM2nmpqkSMekXPRiF/7tPqBLRQPhl1ewb0bFa
- UWSUw3NxXhPHuADWPKYsw7VOncCMZE91H850JmwFqGhttMzo98Ot2OjbZnAswP5utSlKlM85V
- mmFS5+cfUbCu88ESfThmnevIARPouoqIgnLaxsWu5bN9Qd4ECetZiKg4WUHWrNaEkBQHdIgBf
- YtOI+Rx5U9iuDTUTMPHeVmqDDePBoddoLIK0m9DHn+Kv7Wfr0AuF2ipF78H6Sem2Jc1moK3C5
- GeH3bTvXTrxsQtZq5UY32U4ANkCJXn/64pGqbqF05HNSkg28hPItQPRFB7kZAOHllTeRfHIxw
- iO/IUNzwViDE0M5EZuK+dUaJrfxUTTz1nZVjsTc6l+gXjS1b1BXpeDpH/dhlLOHF/nbYxlv1c
- 2EvkMyY+WB6XgxYTJTzTH0UmRpBl76KBIRdcIx37LAHVPABD24a/HeRWwJhNGkEa8fSS8l94z
- Qj8lgls1/0mxhoTXzhsK1NPKqNj+xaiqgYY7ag/HzZs4Nu7qFFdAXa/sezqUHf+5JebjsPBN+
- hsh8PU2ccMPS2bkaaBB086YzRQ
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjIvMTAvNCAwNzoyOCwgUXUgV2VucnVvIHdyb3RlOg0KPiANCj4gDQo+IE9uIDIw
-MjIvMTAvMyAyMjo0OCwgQW5hbmQgSmFpbiB3cm90ZToNCj4+DQo+PiBUaGlzIHBhdGNoIGlzIGNh
-dXNpbmcgcmVncmVzc2lvbnM7IG5vdyBjYW4ndCBta2ZzIHdpdGggZXh0ZW50LXRyZWUtdjIuDQo+
-IA0KPiBJJ20gYWxyZWFkeSBsb29raW5nIGF0IGl0Lg0KDQpJdCdzIGEgbW9yZSBjb21wbGV4IHRo
-aW5nLCBub3QganVzdCBhIHNpbXBsZSByZWdyZXNzaW9uLg0KDQpGaXJzdGx5LCBjb21taXQgImJ0
-cmZzLXByb2dzOiBwcmVwYXJlIG1lcmdpbmcgY29tcGF0IGZlYXR1cmUgbGlzdHMiIA0KdHJpZXMg
-dG8gbWVyZ2UgdGhlIC1PIGFuZCAtUiBvcHRpb25zLCB3aGljaCBpcyBhIGdvb2QgaWRlYS4NCg0K
-VGhlIHByb2JsZW0gaXMsIHdlJ3JlIHN0aWxsIGp1c3QgdXNpbmcgdGhlIGluaXRpYWwgdTY0IG51
-bWJlcnMgZm9yIA0KYnRyZnNfcGFyc2VfZnNfZmVhZXR1cmVzKCksIHdoaWNoIHdlIGV4cGVjdCB0
-byBnZXQgYSBzaW1wbGUgVTY0IGJpdCBmbGFncy4NCg0KQnV0IHVuZm9ydHVuYXRlbHkgdGhpcyBt
-ZWFucyB0aGUgdTY0IHdpbGwgaGF2ZSBjb25mbGljdGluZyBiaXRzIGZvciANCmNvbXBhdF9ybyBh
-bmQgaW5jb21wYXQgZmxhZ3MuDQoNCkFuZCBmb3IgYmxvY2sgZ3JvdXAgdHJlZSBjYXNlLCBpdCdz
-IDE8PDIgaW4gY29tcGF0X3JvLCB3aGlsZSAxPDwyIGluIA0KaW5jb21wYXQgaXQncyBtaXhlZCBi
-Zy4NCg0KVGh1cyB3ZSB0cmlnZ2VyIHRoZSBwcm9ibGVtLg0KDQpJJ2xsIHJld29yayB0aGUgbWVy
-Z2UgcGF0Y2ggdG8gYXZvaWQgdGhlIHByb2JsZW0uDQoNClRoYW5rcywNClF1DQoNCj4gDQo+Pg0K
-Pj4NCj4+ICQgbWtmcy5idHJmcyAtZiAtTyBibG9jay1ncm91cC10cmVlwqAgL2Rldi9udm1lMG4x
-DQo+PiBidHJmcy1wcm9ncyB2NS4xOS4xDQo+PiBTZWUgaHR0cDovL2J0cmZzLndpa2kua2VybmVs
-Lm9yZyBmb3IgbW9yZSBpbmZvcm1hdGlvbi4NCj4+DQo+PiBFUlJPUjogc3VwZXJibG9jayBtYWdp
-YyBkb2Vzbid0IG1hdGNoDQo+PiBFUlJPUjogaWxsZWdhbCBub2Rlc2l6ZSAxNjM4NCAobm90IGVx
-dWFsIHRvIDQwOTYgZm9yIG1peGVkIGJsb2NrIGdyb3VwKQ0KPj4NCj4+DQo+Pg0KPj4gJCBta2Zz
-LmJ0cmZzIC1mIC1PIGV4dGVudC10cmVlLXYywqAgL2Rldi9udm1lMG4xDQo+PiBidHJmcy1wcm9n
-cyB2NS4xOS4xDQo+PiBTZWUgaHR0cDovL2J0cmZzLndpa2kua2VybmVsLm9yZyBmb3IgbW9yZSBp
-bmZvcm1hdGlvbi4NCj4+DQo+PiBFUlJPUjogc3VwZXJibG9jayBtYWdpYyBkb2Vzbid0IG1hdGNo
-DQo+PiBOT1RFOiBzZXZlcmFsIGRlZmF1bHQgc2V0dGluZ3MgaGF2ZSBjaGFuZ2VkIGluIHZlcnNp
-b24gNS4xNSwgcGxlYXNlIA0KPj4gbWFrZSBzdXJlDQo+PiDCoMKgwqDCoMKgwqAgdGhpcyBkb2Vz
-IG5vdCBhZmZlY3QgeW91ciBkZXBsb3ltZW50czoNCj4+IMKgwqDCoMKgwqDCoCAtIERVUCBmb3Ig
-bWV0YWRhdGEgKC1tIGR1cCkNCj4+IMKgwqDCoMKgwqDCoCAtIGVuYWJsZWQgbm8taG9sZXMgKC1P
-IG5vLWhvbGVzKQ0KPj4gwqDCoMKgwqDCoMKgIC0gZW5hYmxlZCBmcmVlLXNwYWNlLXRyZWUgKC1S
-IGZyZWUtc3BhY2UtdHJlZSkNCj4+DQo+PiBVbmFibGUgdG8gZmluZCBibG9jayBncm91cCBmb3Ig
-MA0KPj4gVW5hYmxlIHRvIGZpbmQgYmxvY2sgZ3JvdXAgZm9yIDANCj4+IFVuYWJsZSB0byBmaW5k
-IGJsb2NrIGdyb3VwIGZvciAwDQo+PiBFUlJPUjogbm8gc3BhY2UgdG8gYWxsb2NhdGUgbWV0YWRh
-dGEgY2h1bmsNCj4+IEVSUk9SOiBmYWlsZWQgdG8gY3JlYXRlIGRlZmF1bHQgYmxvY2sgZ3JvdXBz
-OiAtMjgNCj4+DQo+Pg0KPj4NCj4+DQo+PiBPbiAwOS8wOC8yMDIyIDE0OjAzLCBRdSBXZW5ydW8g
-d3JvdGU6DQo+Pj4gQmxvY2sgZ3JvdXAgdHJlZSBmZWF0dXJlIGlzIGNvbXBsZXRlbHkgYSBzdGFu
-ZGFsb25lIGZlYXR1cmUsIGFuZCBpdCBoYXMNCj4+PiBiZWVuIG92ZXIgNSB5ZWFycyBiZWZvcmUg
-dGhlIGluaXRpYWwgaW50cm9kdWN0aW9uIHRvIHNvbHZlIHRoZSBsb25nDQo+Pj4gbW91bnQgdGlt
-ZS4NCj4+Pg0KPj4+IEkgZG9uJ3QgcmVhbGx5IHdhbnQgdG8gd2FzdGUgYW5vdGhlciA1IHllYXJz
-IHdhaXRpbmcgZm9yIGEgZmVhdHVyZSB3aGljaA0KPj4+IG1heSBvciBtYXkgbm90IHdvcmssIGJ1
-dCBkZWZpbml0ZWx5IG5vdCBwcm9wZXJseSByZXZpZXdlZCBmb3IgaXRzDQo+Pj4gcHJlcGFyYXRp
-b24gcGF0Y2hlcy4NCj4+Pg0KPj4+IFNvIHRoaXMgcGF0Y2ggd2lsbCBzZXBhcmF0ZSB0aGUgYmxv
-Y2sgZ3JvdXAgdHJlZSBmZWF0dXJlIGludG8gYQ0KPj4+IHN0YW5kYWxvbmUgY29tcGF0IFJPIGZl
-YXR1cmUuDQo+Pj4NCj4+PiBUaGVyZSBpcyBhIGNhdGNoLCBpbiBta2ZzIGNyZWF0ZV9ibG9ja19n
-cm91cF90cmVlKCksIGN1cnJlbnQNCj4+PiB0cmVlLWNoZWNrZXIgb25seSBhY2NlcHRzIGJsb2Nr
-IGdyb3VwIGl0ZW0gd2l0aCB2YWxpZCBjaHVua19vYmplY3RpZCwNCj4+PiBidXQgdGhlIGV4aXN0
-aW5nIGNvZGUgZnJvbSBleHRlbnQtdHJlZS12MiBkaWRuJ3QgcHJvcGVybHkgaW5pdGlhbGl6ZSBp
-dC4NCj4+Pg0KPj4+IFRoaXMgcGF0Y2ggd2lsbCBhbHNvIGZpeCBhYm92ZSBtZW50aW9uZWQgcHJv
-YmxlbSBzbyBrZXJuZWwgY2FuIG1vdW50IGl0DQo+Pj4gY29ycmVjdGx5Lg0KPj4+DQo+Pj4gTm93
-IG1rZnMvZnNjayBzaG91bGQgYmUgYWJsZSB0byBoYW5kbGUgdGhlIGZzIHdpdGggYmxvY2sgZ3Jv
-dXAgdHJlZS4NCj4+Pg0KPj4+IFNpZ25lZC1vZmYtYnk6IFF1IFdlbnJ1byA8d3F1QHN1c2UuY29t
-Pg0KPj4+IC0tLQ0KPj4+IMKgIGNoZWNrL21haW4uY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgfMKgIDggKystLS0tLS0NCj4+PiDCoCBjb21tb24vZnNmZWF0dXJlcy5jwqDCoMKgwqDCoMKg
-wqAgfMKgIDggKysrKysrKysNCj4+PiDCoCBjb21tb24vZnNmZWF0dXJlcy5owqDCoMKgwqDCoMKg
-wqAgfMKgIDIgKysNCj4+PiDCoCBrZXJuZWwtc2hhcmVkL2N0cmVlLmjCoMKgwqDCoMKgIHzCoCA5
-ICsrKysrKysrLQ0KPj4+IMKgIGtlcm5lbC1zaGFyZWQvZGlzay1pby5jwqDCoMKgIHzCoCA0ICsr
-LS0NCj4+PiDCoCBrZXJuZWwtc2hhcmVkL2Rpc2staW8uaMKgwqDCoCB8wqAgMiArLQ0KPj4+IMKg
-IGtlcm5lbC1zaGFyZWQvcHJpbnQtdHJlZS5jIHzCoCA1ICsrLS0tDQo+Pj4gwqAgbWtmcy9jb21t
-b24uY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgMzEgKysrKysrKysrKysrKysrKysrKysr
-KysrLS0tLS0tLQ0KPj4+IMKgIG1rZnMvbWFpbi5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIHzCoCAzICsrLQ0KPj4+IMKgIDkgZmlsZXMgY2hhbmdlZCwgNTEgaW5zZXJ0aW9ucygrKSwg
-MjEgZGVsZXRpb25zKC0pDQo+Pj4NCj4+PiBkaWZmIC0tZ2l0IGEvY2hlY2svbWFpbi5jIGIvY2hl
-Y2svbWFpbi5jDQo+Pj4gaW5kZXggNGY3YWI4YjI5MzA5Li4wMmFiYmQ1Mjg5ZjkgMTAwNjQ0DQo+
-Pj4gLS0tIGEvY2hlY2svbWFpbi5jDQo+Pj4gKysrIGIvY2hlY2svbWFpbi5jDQo+Pj4gQEAgLTYy
-OTMsNyArNjI5Myw3IEBAIHN0YXRpYyBpbnQgY2hlY2tfdHlwZV93aXRoX3Jvb3QodTY0IHJvb3Rp
-ZCwgdTggDQo+Pj4ga2V5X3R5cGUpDQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ290
-byBlcnI7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOw0KPj4+IMKgwqDCoMKgwqAgY2Fz
-ZSBCVFJGU19CTE9DS19HUk9VUF9JVEVNX0tFWToNCj4+PiAtwqDCoMKgwqDCoMKgwqAgaWYgKGJ0
-cmZzX2ZzX2luY29tcGF0KGdmc19pbmZvLCBFWFRFTlRfVFJFRV9WMikpIHsNCj4+PiArwqDCoMKg
-wqDCoMKgwqAgaWYgKGJ0cmZzX2ZzX2NvbXBhdF9ybyhnZnNfaW5mbywgQkxPQ0tfR1JPVVBfVFJF
-RSkpIHsNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAocm9vdGlkICE9IEJUUkZT
-X0JMT0NLX0dST1VQX1RSRUVfT0JKRUNUSUQpDQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCBnb3RvIGVycjsNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgfSBlbHNlIGlmIChy
-b290aWQgIT0gQlRSRlNfRVhURU5UX1RSRUVfT0JKRUNUSUQpIHsNCj4+PiBAQCAtOTA3MSwxMCAr
-OTA3MSw2IEBAIGFnYWluOg0KPj4+IMKgwqDCoMKgwqAgcmV0ID0gbG9hZF9zdXBlcl9yb290KCZu
-b3JtYWxfdHJlZXMsIGdmc19pbmZvLT5jaHVua19yb290KTsNCj4+PiDCoMKgwqDCoMKgIGlmIChy
-ZXQgPCAwKQ0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBnb3RvIG91dDsNCj4+PiAtwqDCoMKgIHJl
-dCA9IGxvYWRfc3VwZXJfcm9vdCgmbm9ybWFsX3RyZWVzLCBnZnNfaW5mby0+YmxvY2tfZ3JvdXBf
-cm9vdCk7DQo+Pj4gLcKgwqDCoCBpZiAocmV0IDwgMCkNCj4+PiAtwqDCoMKgwqDCoMKgwqAgZ290
-byBvdXQ7DQo+Pj4gLQ0KPj4+IMKgwqDCoMKgwqAgcmV0ID0gcGFyc2VfdHJlZV9yb290cygmbm9y
-bWFsX3RyZWVzLCAmZHJvcHBpbmdfdHJlZXMpOw0KPj4+IMKgwqDCoMKgwqAgaWYgKHJldCA8IDAp
-DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gb3V0Ow0KPj4+IEBAIC05NTc0LDcgKzk1NzAs
-NyBAQCBhZ2FpbjoNCj4+PiDCoMKgwqDCoMKgwqAgKiBJZiB3ZSBhcmUgZXh0ZW50IHRyZWUgdjIg
-dGhlbiB3ZSBjYW4gcmVpbnQgdGhlIGJsb2NrIGdyb3VwIA0KPj4+IHJvb3QgYXMNCj4+PiDCoMKg
-wqDCoMKgwqAgKiB3ZWxsLg0KPj4+IMKgwqDCoMKgwqDCoCAqLw0KPj4+IC3CoMKgwqAgaWYgKGJ0
-cmZzX2ZzX2luY29tcGF0KGdmc19pbmZvLCBFWFRFTlRfVFJFRV9WMikpIHsNCj4+PiArwqDCoMKg
-IGlmIChidHJmc19mc19jb21wYXRfcm8oZ2ZzX2luZm8sIEJMT0NLX0dST1VQX1RSRUUpKSB7DQo+
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIHJldCA9IGJ0cmZzX2ZzY2tfcmVpbml0X3Jvb3QodHJhbnMs
-IA0KPj4+IGdmc19pbmZvLT5ibG9ja19ncm91cF9yb290KTsNCj4+PiDCoMKgwqDCoMKgwqDCoMKg
-wqAgaWYgKHJldCkgew0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGZwcmludGYoc3Rk
-ZXJyLCAiYmxvY2sgZ3JvdXAgaW5pdGlhbGl6YXRpb24gZmFpbGVkXG4iKTsNCj4+PiBkaWZmIC0t
-Z2l0IGEvY29tbW9uL2ZzZmVhdHVyZXMuYyBiL2NvbW1vbi9mc2ZlYXR1cmVzLmMNCj4+PiBpbmRl
-eCAyM2E5MmMyMWEyY2MuLjkwNzA0OTU5YjEzYiAxMDA2NDQNCj4+PiAtLS0gYS9jb21tb24vZnNm
-ZWF0dXJlcy5jDQo+Pj4gKysrIGIvY29tbW9uL2ZzZmVhdHVyZXMuYw0KPj4+IEBAIC0xNzIsNiAr
-MTcyLDE0IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYnRyZnNfZmVhdHVyZSANCj4+PiBydW50aW1l
-X2ZlYXR1cmVzW10gPSB7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIFZFUlNJT05fVE9fU1RSSU5H
-MihzYWZlLCA0LDkpLA0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBWRVJTSU9OX1RPX1NUUklORzIo
-ZGVmYXVsdCwgNSwxNSksDQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIC5kZXNjwqDCoMKgwqDCoMKg
-wqAgPSAiZnJlZSBzcGFjZSB0cmVlIChzcGFjZV9jYWNoZT12MikiDQo+Pj4gK8KgwqDCoCB9LCB7
-DQo+Pj4gK8KgwqDCoMKgwqDCoMKgIC5uYW1lwqDCoMKgwqDCoMKgwqAgPSAiYmxvY2stZ3JvdXAt
-dHJlZSIsDQo+Pj4gK8KgwqDCoMKgwqDCoMKgIC5mbGFnwqDCoMKgwqDCoMKgwqAgPSBCVFJGU19S
-VU5USU1FX0ZFQVRVUkVfQkxPQ0tfR1JPVVBfVFJFRSwNCj4+PiArwqDCoMKgwqDCoMKgwqAgLnN5
-c2ZzX25hbWUgPSAiYmxvY2tfZ3JvdXBfdHJlZSIsDQo+Pj4gK8KgwqDCoMKgwqDCoMKgIFZFUlNJ
-T05fVE9fU1RSSU5HMihjb21wYXQsIDYsMCksDQo+Pj4gK8KgwqDCoMKgwqDCoMKgIFZFUlNJT05f
-TlVMTChzYWZlKSwNCj4+PiArwqDCoMKgwqDCoMKgwqAgVkVSU0lPTl9OVUxMKGRlZmF1bHQpLA0K
-Pj4+ICvCoMKgwqDCoMKgwqDCoCAuZGVzY8KgwqDCoMKgwqDCoMKgID0gImJsb2NrIGdyb3VwIHRy
-ZWUgdG8gcmVkdWNlIG1vdW50IHRpbWUiDQo+Pj4gwqDCoMKgwqDCoCB9LA0KPj4+IMKgwqDCoMKg
-wqAgLyogS2VlcCB0aGlzIG9uZSBsYXN0ICovDQo+Pj4gwqDCoMKgwqDCoCB7DQo+Pj4gZGlmZiAt
-LWdpdCBhL2NvbW1vbi9mc2ZlYXR1cmVzLmggYi9jb21tb24vZnNmZWF0dXJlcy5oDQo+Pj4gaW5k
-ZXggOWUzOWM2NjdiOTAwLi5hOGQ3N2ZkNGRhMDUgMTAwNjQ0DQo+Pj4gLS0tIGEvY29tbW9uL2Zz
-ZmVhdHVyZXMuaA0KPj4+ICsrKyBiL2NvbW1vbi9mc2ZlYXR1cmVzLmgNCj4+PiBAQCAtNDUsNiAr
-NDUsOCBAQA0KPj4+IMKgICNkZWZpbmUgQlRSRlNfUlVOVElNRV9GRUFUVVJFX1FVT1RBwqDCoMKg
-wqDCoMKgwqAgKDFVTEwgPDwgMCkNCj4+PiDCoCAjZGVmaW5lIEJUUkZTX1JVTlRJTUVfRkVBVFVS
-RV9GUkVFX1NQQUNFX1RSRUXCoMKgwqAgKDFVTEwgPDwgMSkNCj4+PiArI2RlZmluZSBCVFJGU19S
-VU5USU1FX0ZFQVRVUkVfQkxPQ0tfR1JPVVBfVFJFRcKgwqDCoCAoMVVMTCA8PCAyKQ0KPj4+ICsN
-Cj4+PiDCoCB2b2lkIGJ0cmZzX2xpc3RfYWxsX2ZzX2ZlYXR1cmVzKHU2NCBtYXNrX2Rpc2FsbG93
-ZWQpOw0KPj4+IMKgIHZvaWQgYnRyZnNfbGlzdF9hbGxfcnVudGltZV9mZWF0dXJlcyh1NjQgbWFz
-a19kaXNhbGxvd2VkKTsNCj4+PiBkaWZmIC0tZ2l0IGEva2VybmVsLXNoYXJlZC9jdHJlZS5oIGIv
-a2VybmVsLXNoYXJlZC9jdHJlZS5oDQo+Pj4gaW5kZXggYzEyMDc2MjAyNTc3Li5kODkwOWIzZmRm
-MjAgMTAwNjQ0DQo+Pj4gLS0tIGEva2VybmVsLXNoYXJlZC9jdHJlZS5oDQo+Pj4gKysrIGIva2Vy
-bmVsLXNoYXJlZC9jdHJlZS5oDQo+Pj4gQEAgLTQ3OSw2ICs0NzksMTIgQEAgQlVJTERfQVNTRVJU
-KHNpemVvZihzdHJ1Y3QgYnRyZnNfc3VwZXJfYmxvY2spID09IA0KPj4+IEJUUkZTX1NVUEVSX0lO
-Rk9fU0laRSk7DQo+Pj4gwqDCoCAqLw0KPj4+IMKgICNkZWZpbmUgQlRSRlNfRkVBVFVSRV9DT01Q
-QVRfUk9fRlJFRV9TUEFDRV9UUkVFX1ZBTElEwqDCoMKgICgxVUxMIDw8IDEpDQo+Pj4gKy8qDQo+
-Pj4gKyAqIFNhdmUgYWxsIGJsb2NrIGdyb3VwIGl0ZW1zIGludG8gYSBkZWRpY2F0ZWQgYmxvY2sg
-Z3JvdXAgdHJlZSwgdG8gDQo+Pj4gZ3JlYXRseQ0KPj4+ICsgKiByZWR1Y2UgbW91bnQgdGltZSBm
-b3IgbGFyZ2UgZnMuDQo+Pj4gKyAqLw0KPj4+ICsjZGVmaW5lIEJUUkZTX0ZFQVRVUkVfQ09NUEFU
-X1JPX0JMT0NLX0dST1VQX1RSRUXCoMKgwqAgKDFVTEwgPDwgNSkNCj4+PiArDQo+Pj4gwqAgI2Rl
-ZmluZSBCVFJGU19GRUFUVVJFX0lOQ09NUEFUX01JWEVEX0JBQ0tSRUbCoMKgwqAgKDFVTEwgPDwg
-MCkNCj4+PiDCoCAjZGVmaW5lIEJUUkZTX0ZFQVRVUkVfSU5DT01QQVRfREVGQVVMVF9TVUJWT0zC
-oMKgwqAgKDFVTEwgPDwgMSkNCj4+PiDCoCAjZGVmaW5lIEJUUkZTX0ZFQVRVUkVfSU5DT01QQVRf
-TUlYRURfR1JPVVBTwqDCoMKgICgxVUxMIDw8IDIpDQo+Pj4gQEAgLTUwOCw3ICs1MTQsOCBAQCBC
-VUlMRF9BU1NFUlQoc2l6ZW9mKHN0cnVjdCBidHJmc19zdXBlcl9ibG9jaykgPT0gDQo+Pj4gQlRS
-RlNfU1VQRVJfSU5GT19TSVpFKTsNCj4+PiDCoMKgICovDQo+Pj4gwqAgI2RlZmluZSBCVFJGU19G
-RUFUVVJFX0NPTVBBVF9ST19TVVBQwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcDQo+Pj4gwqDCoMKg
-wqDCoCAoQlRSRlNfRkVBVFVSRV9DT01QQVRfUk9fRlJFRV9TUEFDRV9UUkVFIHzCoMKgwqAgXA0K
-Pj4+IC3CoMKgwqDCoCBCVFJGU19GRUFUVVJFX0NPTVBBVF9ST19GUkVFX1NQQUNFX1RSRUVfVkFM
-SUQpDQo+Pj4gK8KgwqDCoMKgIEJUUkZTX0ZFQVRVUkVfQ09NUEFUX1JPX0ZSRUVfU1BBQ0VfVFJF
-RV9WQUxJRHwgXA0KPj4+ICvCoMKgwqDCoCBCVFJGU19GRUFUVVJFX0NPTVBBVF9ST19CTE9DS19H
-Uk9VUF9UUkVFKQ0KPj4+IMKgICNpZiBFWFBFUklNRU5UQUwNCj4+PiDCoCAjZGVmaW5lIEJUUkZT
-X0ZFQVRVUkVfSU5DT01QQVRfU1VQUMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXA0KPj4+IGRpZmYg
-LS1naXQgYS9rZXJuZWwtc2hhcmVkL2Rpc2staW8uYyBiL2tlcm5lbC1zaGFyZWQvZGlzay1pby5j
-DQo+Pj4gaW5kZXggODBkYjU5NzZjYzNmLi42ZWViNWVjZDFkNTkgMTAwNjQ0DQo+Pj4gLS0tIGEv
-a2VybmVsLXNoYXJlZC9kaXNrLWlvLmMNCj4+PiArKysgYi9rZXJuZWwtc2hhcmVkL2Rpc2staW8u
-Yw0KPj4+IEBAIC0xMjAzLDcgKzEyMDMsNyBAQCBzdGF0aWMgaW50IGxvYWRfaW1wb3J0YW50X3Jv
-b3RzKHN0cnVjdCANCj4+PiBidHJmc19mc19pbmZvICpmc19pbmZvLA0KPj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoCBiYWNrdXAgPSBzYi0+c3VwZXJfcm9vdHMgKyBpbmRleDsNCj4+PiDCoMKgwqDCoMKg
-IH0NCj4+PiAtwqDCoMKgIGlmICghYnRyZnNfZnNfaW5jb21wYXQoZnNfaW5mbywgRVhURU5UX1RS
-RUVfVjIpKSB7DQo+Pj4gK8KgwqDCoCBpZiAoIWJ0cmZzX2ZzX2NvbXBhdF9ybyhmc19pbmZvLCBC
-TE9DS19HUk9VUF9UUkVFKSkgew0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBmcmVlKGZzX2luZm8t
-PmJsb2NrX2dyb3VwX3Jvb3QpOw0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBmc19pbmZvLT5ibG9j
-a19ncm91cF9yb290ID0gTlVMTDsNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgZ290byB0cmVlX3Jv
-b3Q7DQo+Pj4gQEAgLTEyNTYsNyArMTI1Niw3IEBAIGludCBidHJmc19zZXR1cF9hbGxfcm9vdHMo
-c3RydWN0IGJ0cmZzX2ZzX2luZm8gDQo+Pj4gKmZzX2luZm8sIHU2NCByb290X3RyZWVfYnl0ZW5y
-LA0KPj4+IMKgwqDCoMKgwqAgaWYgKHJldCkNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJu
-IHJldDsNCj4+PiAtwqDCoMKgIGlmIChidHJmc19mc19pbmNvbXBhdChmc19pbmZvLCBFWFRFTlRf
-VFJFRV9WMikpIHsNCj4+PiArwqDCoMKgIGlmIChidHJmc19mc19jb21wYXRfcm8oZnNfaW5mbywg
-QkxPQ0tfR1JPVVBfVFJFRSkpIHsNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0ID0gZmluZF9h
-bmRfc2V0dXBfcm9vdChyb290LCBmc19pbmZvLA0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgQlRSRlNfQkxPQ0tfR1JPVVBfVFJFRV9PQkpFQ1RJRCwNCj4+PiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGZzX2luZm8tPmJsb2NrX2dyb3VwX3Jvb3QpOw0K
-Pj4+IGRpZmYgLS1naXQgYS9rZXJuZWwtc2hhcmVkL2Rpc2staW8uaCBiL2tlcm5lbC1zaGFyZWQv
-ZGlzay1pby5oDQo+Pj4gaW5kZXggYmJhOTdmYzFhODE0Li42YzhlYWEyYmQxM2QgMTAwNjQ0DQo+
-Pj4gLS0tIGEva2VybmVsLXNoYXJlZC9kaXNrLWlvLmgNCj4+PiArKysgYi9rZXJuZWwtc2hhcmVk
-L2Rpc2staW8uaA0KPj4+IEBAIC0yMzIsNyArMjMyLDcgQEAgaW50IGJ0cmZzX2dsb2JhbF9yb290
-X2luc2VydChzdHJ1Y3QgYnRyZnNfZnNfaW5mbyANCj4+PiAqZnNfaW5mbywNCj4+PiDCoCBzdGF0
-aWMgaW5saW5lIHN0cnVjdCBidHJmc19yb290ICpidHJmc19ibG9ja19ncm91cF9yb290KA0KPj4+
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cnVj
-dCBidHJmc19mc19pbmZvICpmc19pbmZvKQ0KPj4+IMKgIHsNCj4+PiAtwqDCoMKgIGlmIChidHJm
-c19mc19pbmNvbXBhdChmc19pbmZvLCBFWFRFTlRfVFJFRV9WMikpDQo+Pj4gK8KgwqDCoCBpZiAo
-YnRyZnNfZnNfY29tcGF0X3JvKGZzX2luZm8sIEJMT0NLX0dST1VQX1RSRUUpKQ0KPj4+IMKgwqDC
-oMKgwqDCoMKgwqDCoCByZXR1cm4gZnNfaW5mby0+YmxvY2tfZ3JvdXBfcm9vdDsNCj4+PiDCoMKg
-wqDCoMKgIHJldHVybiBidHJmc19leHRlbnRfcm9vdChmc19pbmZvLCAwKTsNCj4+PiDCoCB9DQo+
-Pj4gZGlmZiAtLWdpdCBhL2tlcm5lbC1zaGFyZWQvcHJpbnQtdHJlZS5jIGIva2VybmVsLXNoYXJl
-ZC9wcmludC10cmVlLmMNCj4+PiBpbmRleCBiZmZlMzBiNDA1YzcuLmIyZWU3N2MyZmI3MyAxMDA2
-NDQNCj4+PiAtLS0gYS9rZXJuZWwtc2hhcmVkL3ByaW50LXRyZWUuYw0KPj4+ICsrKyBiL2tlcm5l
-bC1zaGFyZWQvcHJpbnQtdHJlZS5jDQo+Pj4gQEAgLTE2NjgsNiArMTY2OCw3IEBAIHN0cnVjdCBy
-ZWFkYWJsZV9mbGFnX2VudHJ5IHsNCj4+PiDCoCBzdGF0aWMgc3RydWN0IHJlYWRhYmxlX2ZsYWdf
-ZW50cnkgY29tcGF0X3JvX2ZsYWdzX2FycmF5W10gPSB7DQo+Pj4gwqDCoMKgwqDCoCBERUZfQ09N
-UEFUX1JPX0ZMQUdfRU5UUlkoRlJFRV9TUEFDRV9UUkVFKSwNCj4+PiDCoMKgwqDCoMKgIERFRl9D
-T01QQVRfUk9fRkxBR19FTlRSWShGUkVFX1NQQUNFX1RSRUVfVkFMSUQpLA0KPj4+ICvCoMKgwqAg
-REVGX0NPTVBBVF9ST19GTEFHX0VOVFJZKEJMT0NLX0dST1VQX1RSRUUpLA0KPj4+IMKgIH07DQo+
-Pj4gwqAgc3RhdGljIGNvbnN0IGludCBjb21wYXRfcm9fZmxhZ3NfbnVtID0gc2l6ZW9mKGNvbXBh
-dF9yb19mbGFnc19hcnJheSkgLw0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBzaXplb2Yoc3RydWN0IHJlYWRhYmxlX2ZsYWdfZW50cnkpOw0KPj4+
-IEBAIC0xNzU0LDkgKzE3NTUsNyBAQCBzdGF0aWMgdm9pZCBwcmludF9yZWFkYWJsZV9jb21wYXRf
-cm9fZmxhZyh1NjQgDQo+Pj4gZmxhZykNCj4+PiDCoMKgwqDCoMKgwqAgKi8NCj4+PiDCoMKgwqDC
-oMKgIHJldHVybiBfX3ByaW50X3JlYWRhYmxlX2ZsYWcoZmxhZywgY29tcGF0X3JvX2ZsYWdzX2Fy
-cmF5LA0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNv
-bXBhdF9yb19mbGFnc19udW0sDQo+Pj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgQlRSRlNfRkVBVFVSRV9DT01QQVRfUk9fU1VQUCB8DQo+Pj4gLcKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQlRSRlNfRkVBVFVSRV9DT01QQVRfUk9fRlJF
-RV9TUEFDRV9UUkVFIHwNCj4+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBCVFJGU19GRUFUVVJFX0NPTVBBVF9ST19GUkVFX1NQQUNFX1RSRUVfVkFMSUQpOw0KPj4+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJUUkZTX0ZFQVRVUkVf
-Q09NUEFUX1JPX1NVUFApOw0KPj4+IMKgIH0NCj4+PiDCoCBzdGF0aWMgdm9pZCBwcmludF9yZWFk
-YWJsZV9pbmNvbXBhdF9mbGFnKHU2NCBmbGFnKQ0KPj4+IGRpZmYgLS1naXQgYS9ta2ZzL2NvbW1v
-bi5jIGIvbWtmcy9jb21tb24uYw0KPj4+IGluZGV4IGI3MjMzODU1MWRmYi4uY2I2MTZmMTNlZjli
-IDEwMDY0NA0KPj4+IC0tLSBhL21rZnMvY29tbW9uLmMNCj4+PiArKysgYi9ta2ZzL2NvbW1vbi5j
-DQo+Pj4gQEAgLTc1LDYgKzc1LDggQEAgc3RhdGljIGludCBidHJmc19jcmVhdGVfdHJlZV9yb290
-KGludCBmZCwgc3RydWN0IA0KPj4+IGJ0cmZzX21rZnNfY29uZmlnICpjZmcsDQo+Pj4gwqDCoMKg
-wqDCoCBpbnQgYmxrOw0KPj4+IMKgwqDCoMKgwqAgaW50IGk7DQo+Pj4gwqDCoMKgwqDCoCB1OCB1
-dWlkW0JUUkZTX1VVSURfU0laRV07DQo+Pj4gK8KgwqDCoCBib29sIGJsb2NrX2dyb3VwX3RyZWUg
-PSAhIShjZmctPnJ1bnRpbWVfZmVhdHVyZXMgJg0KPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgQlRSRlNfUlVOVElNRV9GRUFUVVJFX0JMT0NLX0dST1VQX1RSRUUpOw0K
-Pj4+IMKgwqDCoMKgwqAgbWVtc2V0KGJ1Zi0+ZGF0YSArIHNpemVvZihzdHJ1Y3QgYnRyZnNfaGVh
-ZGVyKSwgMCwNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgY2ZnLT5ub2Rlc2l6ZSAtIHNpemVvZihz
-dHJ1Y3QgYnRyZnNfaGVhZGVyKSk7DQo+Pj4gQEAgLTEwMSw2ICsxMDMsOSBAQCBzdGF0aWMgaW50
-IGJ0cmZzX2NyZWF0ZV90cmVlX3Jvb3QoaW50IGZkLCBzdHJ1Y3QgDQo+Pj4gYnRyZnNfbWtmc19j
-b25maWcgKmNmZywNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKGJsayA9PSBNS0ZTX1JPT1Rf
-VFJFRSB8fCBibGsgPT0gTUtGU19DSFVOS19UUkVFKQ0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGNvbnRpbnVlOw0KPj4+ICvCoMKgwqDCoMKgwqDCoCBpZiAoIWJsb2NrX2dyb3VwX3Ry
-ZWUgJiYgYmxrID09IE1LRlNfQkxPQ0tfR1JPVVBfVFJFRSkNCj4+PiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBjb250aW51ZTsNCj4+PiArDQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGJ0cmZzX3Nl
-dF9yb290X2J5dGVucigmcm9vdF9pdGVtLCBjZmctPmJsb2Nrc1tibGtdKTsNCj4+PiDCoMKgwqDC
-oMKgwqDCoMKgwqAgYnRyZnNfc2V0X2Rpc2tfa2V5X29iamVjdGlkKCZkaXNrX2tleSwNCj4+PiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZWZlcmVuY2Vfcm9vdF90YWJsZVtibGtdKTsNCj4+
-PiBAQCAtMjE2LDcgKzIyMSw4IEBAIHN0YXRpYyBpbnQgY3JlYXRlX2Jsb2NrX2dyb3VwX3RyZWUo
-aW50IGZkLCBzdHJ1Y3QgDQo+Pj4gYnRyZnNfbWtmc19jb25maWcgKmNmZywNCj4+PiDCoMKgwqDC
-oMKgIG1lbXNldChidWYtPmRhdGEgKyBzaXplb2Yoc3RydWN0IGJ0cmZzX2hlYWRlciksIDAsDQo+
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGNmZy0+bm9kZXNpemUgLSBzaXplb2Yoc3RydWN0IGJ0cmZz
-X2hlYWRlcikpOw0KPj4+IC3CoMKgwqAgd3JpdGVfYmxvY2tfZ3JvdXBfaXRlbShidWYsIDAsIGJn
-X29mZnNldCwgYmdfc2l6ZSwgYmdfdXNlZCwgMCwNCj4+PiArwqDCoMKgIHdyaXRlX2Jsb2NrX2dy
-b3VwX2l0ZW0oYnVmLCAwLCBiZ19vZmZzZXQsIGJnX3NpemUsIGJnX3VzZWQsDQo+Pj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCVFJGU19GSVJTVF9DSFVOS19UUkVFX09C
-SkVDVElELA0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2Zn
-LT5sZWFmX2RhdGFfc2l6ZSAtDQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBzaXplb2Yoc3RydWN0IGJ0cmZzX2Jsb2NrX2dyb3VwX2l0ZW0pKTsNCj4+PiDCoMKg
-wqDCoMKgIGJ0cmZzX3NldF9oZWFkZXJfYnl0ZW5yKGJ1ZiwgY2ZnLT5ibG9ja3NbTUtGU19CTE9D
-S19HUk9VUF9UUkVFXSk7DQo+Pj4gQEAgLTM1Nyw2ICszNjMsNyBAQCBpbnQgbWFrZV9idHJmcyhp
-bnQgZmQsIHN0cnVjdCBidHJmc19ta2ZzX2NvbmZpZyANCj4+PiAqY2ZnKQ0KPj4+IMKgwqDCoMKg
-wqAgdTMyIGFycmF5X3NpemU7DQo+Pj4gwqDCoMKgwqDCoCB1MzIgaXRlbV9zaXplOw0KPj4+IMKg
-wqDCoMKgwqAgdTY0IHRvdGFsX3VzZWQgPSAwOw0KPj4+ICvCoMKgwqAgdTY0IHJvX2ZsYWdzID0g
-MDsNCj4+PiDCoMKgwqDCoMKgIGludCBza2lubnlfbWV0YWRhdGEgPSAhIShjZmctPmZlYXR1cmVz
-ICYNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQlRSRlNfRkVBVFVS
-RV9JTkNPTVBBVF9TS0lOTllfTUVUQURBVEEpOw0KPj4+IMKgwqDCoMKgwqAgdTY0IG51bV9ieXRl
-czsNCj4+PiBAQCAtMzY1LDYgKzM3Miw4IEBAIGludCBtYWtlX2J0cmZzKGludCBmZCwgc3RydWN0
-IGJ0cmZzX21rZnNfY29uZmlnIA0KPj4+ICpjZmcpDQo+Pj4gwqDCoMKgwqDCoCBib29sIGFkZF9i
-bG9ja19ncm91cCA9IHRydWU7DQo+Pj4gwqDCoMKgwqDCoCBib29sIGZyZWVfc3BhY2VfdHJlZSA9
-ICEhKGNmZy0+cnVudGltZV9mZWF0dXJlcyAmDQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgQlRSRlNfUlVOVElNRV9GRUFUVVJFX0ZSRUVfU1BBQ0VfVFJFRSk7DQo+
-Pj4gK8KgwqDCoCBib29sIGJsb2NrX2dyb3VwX3RyZWUgPSAhIShjZmctPnJ1bnRpbWVfZmVhdHVy
-ZXMgJg0KPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQlRSRlNfUlVO
-VElNRV9GRUFUVVJFX0JMT0NLX0dST1VQX1RSRUUpOw0KPj4+IMKgwqDCoMKgwqAgYm9vbCBleHRl
-bnRfdHJlZV92MiA9ICEhKGNmZy0+ZmVhdHVyZXMgJg0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBCVFJGU19GRUFUVVJFX0lOQ09NUEFUX0VYVEVOVF9UUkVFX1YyKTsN
-Cj4+PiBAQCAtMzcyLDggKzM4MSwxMyBAQCBpbnQgbWFrZV9idHJmcyhpbnQgZmQsIHN0cnVjdCBi
-dHJmc19ta2ZzX2NvbmZpZyANCj4+PiAqY2ZnKQ0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBzaXplb2YoZW51bSBidHJmc19ta2ZzX2Jsb2NrKSAqIA0KPj4+IEFSUkFZX1NJWkUoZGVmYXVs
-dF9ibG9ja3MpKTsNCj4+PiDCoMKgwqDCoMKgIGJsb2Nrc19uciA9IEFSUkFZX1NJWkUoZGVmYXVs
-dF9ibG9ja3MpOw0KPj4+IC3CoMKgwqAgLyogRXh0ZW50IHRyZWUgdjIgbmVlZHMgYW4gZXh0cmEg
-YmxvY2sgZm9yIGJsb2NrIGdyb3VwIHRyZWUuKi8NCj4+PiAtwqDCoMKgIGlmIChleHRlbnRfdHJl
-ZV92Mikgew0KPj4+ICvCoMKgwqAgLyoNCj4+PiArwqDCoMKgwqAgKiBBZGQgb25lIG5ldyBibG9j
-ayBmb3IgYmxvY2sgZ3JvdXAgdHJlZS4NCj4+PiArwqDCoMKgwqAgKiBBbmQgZm9yIGJsb2NrIGdy
-b3VwIHRyZWUsIHdlIGRvbid0IG5lZWQgdG8gYWRkIGJsb2NrIGdyb3VwIGl0ZW0NCj4+PiArwqDC
-oMKgwqAgKiBpbnRvIGV4dGVudCB0cmVlLCB0aGUgaXRlbSB3aWxsIGJlIGhhbmRsZWQgaW4gYmxv
-Y2sgZ3JvdXAgdHJlZQ0KPj4+ICvCoMKgwqDCoCAqIGluaXRpYWxpemF0aW9uLg0KPj4+ICvCoMKg
-wqDCoCAqLw0KPj4+ICvCoMKgwqAgaWYgKGJsb2NrX2dyb3VwX3RyZWUpIHsNCj4+PiDCoMKgwqDC
-oMKgwqDCoMKgwqAgbWtmc19ibG9ja3NfYWRkKGJsb2NrcywgJmJsb2Nrc19uciwgTUtGU19CTE9D
-S19HUk9VUF9UUkVFKTsNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgYWRkX2Jsb2NrX2dyb3VwID0g
-ZmFsc2U7DQo+Pj4gwqDCoMKgwqDCoCB9DQo+Pj4gQEAgLTQzMywxMiArNDQ3LDE1IEBAIGludCBt
-YWtlX2J0cmZzKGludCBmZCwgc3RydWN0IGJ0cmZzX21rZnNfY29uZmlnIA0KPj4+ICpjZmcpDQo+
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGJ0cmZzX3NldF9zdXBlcl9jYWNoZV9nZW5lcmF0aW9uKCZz
-dXBlciwgLTEpOw0KPj4+IMKgwqDCoMKgwqAgYnRyZnNfc2V0X3N1cGVyX2luY29tcGF0X2ZsYWdz
-KCZzdXBlciwgY2ZnLT5mZWF0dXJlcyk7DQo+Pj4gwqDCoMKgwqDCoCBpZiAoZnJlZV9zcGFjZV90
-cmVlKSB7DQo+Pj4gLcKgwqDCoMKgwqDCoMKgIHU2NCByb19mbGFncyA9IEJUUkZTX0ZFQVRVUkVf
-Q09NUEFUX1JPX0ZSRUVfU1BBQ0VfVFJFRSB8DQo+Pj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-QlRSRlNfRkVBVFVSRV9DT01QQVRfUk9fRlJFRV9TUEFDRV9UUkVFX1ZBTElEOw0KPj4+ICvCoMKg
-wqDCoMKgwqDCoCByb19mbGFncyB8PSAoQlRSRlNfRkVBVFVSRV9DT01QQVRfUk9fRlJFRV9TUEFD
-RV9UUkVFIHwNCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQlRSRlNfRkVB
-VFVSRV9DT01QQVRfUk9fRlJFRV9TUEFDRV9UUkVFX1ZBTElEKTsNCj4+PiAtwqDCoMKgwqDCoMKg
-wqAgYnRyZnNfc2V0X3N1cGVyX2NvbXBhdF9yb19mbGFncygmc3VwZXIsIHJvX2ZsYWdzKTsNCj4+
-PiDCoMKgwqDCoMKgwqDCoMKgwqAgYnRyZnNfc2V0X3N1cGVyX2NhY2hlX2dlbmVyYXRpb24oJnN1
-cGVyLCAwKTsNCj4+PiDCoMKgwqDCoMKgIH0NCj4+PiArwqDCoMKgIGlmIChibG9ja19ncm91cF90
-cmVlKQ0KPj4+ICvCoMKgwqDCoMKgwqDCoCByb19mbGFncyB8PSBCVFJGU19GRUFUVVJFX0NPTVBB
-VF9ST19CTE9DS19HUk9VUF9UUkVFOw0KPj4+ICvCoMKgwqAgYnRyZnNfc2V0X3N1cGVyX2NvbXBh
-dF9yb19mbGFncygmc3VwZXIsIHJvX2ZsYWdzKTsNCj4+PiArDQo+Pj4gwqDCoMKgwqDCoCBpZiAo
-ZXh0ZW50X3RyZWVfdjIpDQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGJ0cmZzX3NldF9zdXBlcl9u
-cl9nbG9iYWxfcm9vdHMoJnN1cGVyLCAxKTsNCj4+PiBAQCAtNjk1LDcgKzcxMiw3IEBAIGludCBt
-YWtlX2J0cmZzKGludCBmZCwgc3RydWN0IGJ0cmZzX21rZnNfY29uZmlnIA0KPj4+ICpjZmcpDQo+
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ290byBvdXQ7DQo+Pj4gwqDCoMKgwqDCoCB9
-DQo+Pj4gLcKgwqDCoCBpZiAoZXh0ZW50X3RyZWVfdjIpIHsNCj4+PiArwqDCoMKgIGlmIChibG9j
-a19ncm91cF90cmVlKSB7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIHJldCA9IGNyZWF0ZV9ibG9j
-a19ncm91cF90cmVlKGZkLCBjZmcsIGJ1ZiwNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3lzdGVtX2dyb3VwX29mZnNldCwNCj4+PiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3lz
-dGVtX2dyb3VwX3NpemUsIHRvdGFsX3VzZWQpOw0KPj4+IGRpZmYgLS1naXQgYS9ta2ZzL21haW4u
-YyBiL21rZnMvbWFpbi5jDQo+Pj4gaW5kZXggY2UwOTZkMzYyMTcxLi41MThjZTBmZDc1MjMgMTAw
-NjQ0DQo+Pj4gLS0tIGEvbWtmcy9tYWluLmMNCj4+PiArKysgYi9ta2ZzL21haW4uYw0KPj4+IEBA
-IC0yOTksNyArMjk5LDggQEAgc3RhdGljIGludCByZWNvd19yb290cyhzdHJ1Y3QgYnRyZnNfdHJh
-bnNfaGFuZGxlIA0KPj4+ICp0cmFucywNCj4+PiDCoMKgwqDCoMKgIHJldCA9IF9fcmVjb3dfcm9v
-dCh0cmFucywgaW5mby0+ZGV2X3Jvb3QpOw0KPj4+IMKgwqDCoMKgwqAgaWYgKHJldCkNCj4+PiDC
-oMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIHJldDsNCj4+PiAtwqDCoMKgwqDCoMKgwqAgaWYgKGJ0
-cmZzX2ZzX2luY29tcGF0KGluZm8sIEVYVEVOVF9UUkVFX1YyKSkgew0KPj4+ICsNCj4+PiArwqDC
-oMKgIGlmIChidHJmc19mc19jb21wYXRfcm8oaW5mbywgQkxPQ0tfR1JPVVBfVFJFRSkpIHsNCj4+
-PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0ID0gX19yZWNvd19yb290KHRyYW5zLCBpbmZvLT5ibG9j
-a19ncm91cF9yb290KTsNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKHJldCkNCj4+PiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0Ow0KPj4NCg==
+[BUG]
+Commit "btrfs-progs: prepare merging compat feature lists" tries to
+merged "-O" and "-R" options, as they don't correctly represents
+btrfs features.
+
+But that commit caused the following bug during mkfs:
+
+  $ mkfs.btrfs -f -O block-group-tree  /dev/nvme0n1
+  btrfs-progs v5.19.1
+  See http://btrfs.wiki.kernel.org for more information.
+
+  ERROR: superblock magic doesn't match
+  ERROR: illegal nodesize 16384 (not equal to 4096 for mixed block group)
+
+[CAUSE]
+Currently btrfs_parse_fs_features() will return a u64, and reuse the
+same u64 for both incompat and compat RO flags for experimental branch.
+
+This can easily leads to conflicts, as
+BTRFS_FEATURE_INCOMPAT_MIXED_BLOCK_GROUP and
+BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE both share the same bit
+(1 << 2).
+
+Thus for above case, mkfs.btrfs believe it has set MIXED_BLOCK_GROUP
+feature, but what we really want is BLOCK_GROUP_TREE.
+
+[FIX]
+Instead of incorrectly re-using the same bits in btrfs_feature, split
+the old flags into 3 flags:
+
+- incompat_flag
+- compat_ro_flag
+- generic_flag
+
+The new @generic_flag will represent a unified fs feature, so we can
+return a single u64 to represent all features.
+
+This also means, any caller of btrfs_parse_fs_features() should use
+BTRFS_FEATURE_GENERIC_* flags to check if one feature is enabled.
+
+Also we introduce two new helpers:
+
+- btrfs_generic_features_to_incompat_flags()
+- btrfs_generic_features_to_compat_ro_flags()
+
+So mkfs/convert can easily grab the needed flags.
+
+Finally, since we now have a generic features, update mkfs to properly
+output the features.
+
+If we have experimental features enabled, we just output a unified
+"Features:" line, while keep the old separate one for non-experimental
+build.
+
+Please fold this patch into the offending one.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ common/fsfeatures.c | 180 ++++++++++++++++++++++++++------------------
+ common/fsfeatures.h |  56 ++++++++------
+ convert/common.c    |  10 ++-
+ convert/main.c      |  32 ++++----
+ mkfs/common.c       |  41 +++++-----
+ mkfs/common.h       |   9 ++-
+ mkfs/main.c         |  66 +++++++++-------
+ 7 files changed, 226 insertions(+), 168 deletions(-)
+
+diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+index 6dc7207e9800..92373278c35b 100644
+--- a/common/fsfeatures.c
++++ b/common/fsfeatures.c
+@@ -51,22 +51,22 @@ enum feature_source {
+ 	RUNTIME_FEATURES,
+ };
+ 
+-enum feature_compat {
+-	/* Feature is backward compatible, read-write */
+-	FEATURE_COMPAT,
+-	/* Feature is backward compatible, read-only, filesystem can be mounted */
+-	FEATURE_COMPAT_RO,
+-	/* Feature is backward incompatible, filesystem cannot be mounted */
+-	FEATURE_INCOMPAT
+-};
+-
+ /*
+  * Feature stability status and versions: compat <= safe <= default
+  */
+ struct btrfs_feature {
+ 	const char *name;
+-	u64 flag;
+-	enum feature_compat compat;
++	/*
++	 * Normally at least one of the flag should be set for
++	 * incompat/compat_ro_flags.
++	 * Although there are exceptions like QUOTA and LIST_ALL.
++	 */
++	u64 incompat_flag;
++	u64 compat_ro_flag;
++
++	/* This is the real flag mkfs should check. */
++	u64 generic_flag;
++
+ 	const char *sysfs_name;
+ 	/*
+ 	 * Compatibility with kernel of given version. Filesystem can be
+@@ -92,8 +92,8 @@ struct btrfs_feature {
+ static const struct btrfs_feature mkfs_features[] = {
+ 	{
+ 		.name		= "mixed-bg",
+-		.flag		= BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS,
+-		.compat		= FEATURE_INCOMPAT,
++		.incompat_flag	= BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_MIXED_GROUPS,
+ 		.sysfs_name	= "mixed_groups",
+ 		VERSION_TO_STRING3(compat, 2,6,37),
+ 		VERSION_TO_STRING3(safe, 2,6,37),
+@@ -103,8 +103,7 @@ static const struct btrfs_feature mkfs_features[] = {
+ #if EXPERIMENTAL
+ 	{
+ 		.name		= "quota",
+-		.flag		= BTRFS_RUNTIME_FEATURE_QUOTA,
+-		.compat		= FEATURE_COMPAT_RO,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_QUOTA,
+ 		.sysfs_name	= NULL,
+ 		VERSION_TO_STRING2(compat, 3,4),
+ 		VERSION_NULL(safe),
+@@ -114,8 +113,8 @@ static const struct btrfs_feature mkfs_features[] = {
+ #endif
+ 	{
+ 		.name		= "extref",
+-		.flag		= BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF,
+-		.compat		= FEATURE_INCOMPAT,
++		.incompat_flag	= BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_EXTENDED_IREF,
+ 		.sysfs_name	= "extended_iref",
+ 		VERSION_TO_STRING2(compat, 3,7),
+ 		VERSION_TO_STRING2(safe, 3,12),
+@@ -123,8 +122,8 @@ static const struct btrfs_feature mkfs_features[] = {
+ 		.desc		= "increased hardlink limit per file to 65536"
+ 	}, {
+ 		.name		= "raid56",
+-		.flag		= BTRFS_FEATURE_INCOMPAT_RAID56,
+-		.compat		= FEATURE_INCOMPAT,
++		.incompat_flag	= BTRFS_FEATURE_INCOMPAT_RAID56,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_RAID56,
+ 		.sysfs_name	= "raid56",
+ 		VERSION_TO_STRING2(compat, 3,9),
+ 		VERSION_NULL(safe),
+@@ -132,8 +131,8 @@ static const struct btrfs_feature mkfs_features[] = {
+ 		.desc		= "raid56 extended format"
+ 	}, {
+ 		.name		= "skinny-metadata",
+-		.flag		= BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA,
+-		.compat		= FEATURE_INCOMPAT,
++		.incompat_flag	= BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_SKINNY_METADATA,
+ 		.sysfs_name	= "skinny_metadata",
+ 		VERSION_TO_STRING2(compat, 3,10),
+ 		VERSION_TO_STRING2(safe, 3,18),
+@@ -141,8 +140,8 @@ static const struct btrfs_feature mkfs_features[] = {
+ 		.desc		= "reduced-size metadata extent refs"
+ 	}, {
+ 		.name		= "no-holes",
+-		.flag		= BTRFS_FEATURE_INCOMPAT_NO_HOLES,
+-		.compat		= FEATURE_INCOMPAT,
++		.incompat_flag	= BTRFS_FEATURE_INCOMPAT_NO_HOLES,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_NO_HOLES,
+ 		.sysfs_name	= "no_holes",
+ 		VERSION_TO_STRING2(compat, 3,14),
+ 		VERSION_TO_STRING2(safe, 4,0),
+@@ -152,8 +151,9 @@ static const struct btrfs_feature mkfs_features[] = {
+ #if EXPERIMENTAL
+ 	{
+ 		.name		= "free-space-tree",
+-		.flag		= BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE,
+-		.compat		= FEATURE_COMPAT_RO,
++		.compat_ro_flag	= BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
++				  BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE,
+ 		.sysfs_name = "free_space_tree",
+ 		VERSION_TO_STRING2(compat, 4,5),
+ 		VERSION_TO_STRING2(safe, 4,9),
+@@ -163,8 +163,8 @@ static const struct btrfs_feature mkfs_features[] = {
+ #endif
+ 	{
+ 		.name		= "raid1c34",
+-		.flag		= BTRFS_FEATURE_INCOMPAT_RAID1C34,
+-		.compat		= FEATURE_INCOMPAT,
++		.incompat_flag	= BTRFS_FEATURE_INCOMPAT_RAID1C34,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_RAID1C34,
+ 		.sysfs_name	= "raid1c34",
+ 		VERSION_TO_STRING2(compat, 5,5),
+ 		VERSION_NULL(safe),
+@@ -174,8 +174,8 @@ static const struct btrfs_feature mkfs_features[] = {
+ #ifdef BTRFS_ZONED
+ 	{
+ 		.name		= "zoned",
+-		.flag		= BTRFS_FEATURE_INCOMPAT_ZONED,
+-		.compat		= FEATURE_INCOMPAT,
++		.incompat_flag	= BTRFS_FEATURE_INCOMPAT_ZONED,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_ZONED,
+ 		.sysfs_name	= "zoned",
+ 		VERSION_TO_STRING2(compat, 5,12),
+ 		VERSION_NULL(safe),
+@@ -186,9 +186,9 @@ static const struct btrfs_feature mkfs_features[] = {
+ #if EXPERIMENTAL
+ 	{
+ 		.name		= "block-group-tree",
+-		.flag		= BTRFS_RUNTIME_FEATURE_BLOCK_GROUP_TREE,
+-		.compat		= FEATURE_COMPAT_RO,
+-		.sysfs_name = "block_group_tree",
++		.compat_ro_flag	= BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_BLOCK_GROUP_TREE,
++		.sysfs_name	= "block_group_tree",
+ 		VERSION_TO_STRING2(compat, 6,0),
+ 		VERSION_NULL(safe),
+ 		VERSION_NULL(default),
+@@ -198,8 +198,8 @@ static const struct btrfs_feature mkfs_features[] = {
+ #if EXPERIMENTAL
+ 	{
+ 		.name		= "extent-tree-v2",
+-		.flag		= BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2,
+-		.compat		= FEATURE_INCOMPAT,
++		.incompat_flag	= BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_EXTENT_TREE_V2,
+ 		.sysfs_name	= "extent_tree_v2",
+ 		VERSION_TO_STRING2(compat, 5,15),
+ 		VERSION_NULL(safe),
+@@ -209,10 +209,9 @@ static const struct btrfs_feature mkfs_features[] = {
+ #endif
+ 	/* Keep this one last */
+ 	{
+-		.name = "list-all",
+-		.flag = BTRFS_FEATURE_LIST_ALL,
+-		.compat	= FEATURE_INCOMPAT,
+-		.sysfs_name = NULL,
++		.name		= "list-all",
++		.generic_flag	= BTRFS_FEATURE_GENERIC_LIST_ALL,
++		.sysfs_name	= NULL,
+ 		VERSION_NULL(compat),
+ 		VERSION_NULL(safe),
+ 		VERSION_NULL(default),
+@@ -223,15 +222,17 @@ static const struct btrfs_feature mkfs_features[] = {
+ static const struct btrfs_feature runtime_features[] = {
+ 	{
+ 		.name		= "quota",
+-		.flag		= BTRFS_RUNTIME_FEATURE_QUOTA,
+ 		.sysfs_name	= NULL,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_QUOTA,
+ 		VERSION_TO_STRING2(compat, 3,4),
+ 		VERSION_NULL(safe),
+ 		VERSION_NULL(default),
+ 		.desc		= "quota support (qgroups)"
+ 	}, {
+ 		.name		= "free-space-tree",
+-		.flag		= BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE,
++		.compat_ro_flag	= BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
++				  BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE,
+ 		.sysfs_name = "free_space_tree",
+ 		VERSION_TO_STRING2(compat, 4,5),
+ 		VERSION_TO_STRING2(safe, 4,9),
+@@ -241,9 +242,10 @@ static const struct btrfs_feature runtime_features[] = {
+ #if EXPERIMENTAL
+ 	{
+ 		.name		= "block-group-tree",
+-		.flag		= BTRFS_RUNTIME_FEATURE_BLOCK_GROUP_TREE,
+-		.sysfs_name	= "block_group_tree",
+-		VERSION_TO_STRING2(compat, 6,1),
++		.compat_ro_flag	= BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE,
++		.generic_flag	= BTRFS_FEATURE_GENERIC_BLOCK_GROUP_TREE,
++		.sysfs_name = "block_group_tree",
++		VERSION_TO_STRING2(compat, 6,0),
+ 		VERSION_NULL(safe),
+ 		VERSION_NULL(default),
+ 		.desc		= "block group tree to reduce mount time"
+@@ -251,10 +253,9 @@ static const struct btrfs_feature runtime_features[] = {
+ #endif
+ 	/* Keep this one last */
+ 	{
+-		.name = "list-all",
+-		.flag = BTRFS_FEATURE_LIST_ALL,
+-		.compat	= FEATURE_COMPAT_RO,
+-		.sysfs_name = NULL,
++		.name		= "list-all",
++		.generic_flag	= BTRFS_FEATURE_GENERIC_LIST_ALL,
++		.sysfs_name	= NULL,
+ 		VERSION_NULL(compat),
+ 		VERSION_NULL(safe),
+ 		VERSION_NULL(default),
+@@ -280,7 +281,7 @@ static const struct btrfs_feature *get_feature(int i, enum feature_source source
+ 	return NULL;
+ }
+ 
+-static int parse_one_fs_feature(const char *name, u64 *flags,
++static int parse_one_fs_feature(const char *name, u64 *generic_flags,
+ 				enum feature_source source)
+ {
+ 	const int array_size = get_feature_array_size(source);
+@@ -291,10 +292,10 @@ static int parse_one_fs_feature(const char *name, u64 *flags,
+ 		const struct btrfs_feature *feat = get_feature(i, source);
+ 
+ 		if (name[0] == '^' && !strcmp(feat->name, name + 1)) {
+-			*flags &= ~feat->flag;
++			*generic_flags &= ~feat->generic_flag;
+ 			found = 1;
+ 		} else if (!strcmp(feat->name, name)) {
+-			*flags |= feat->flag;
++			*generic_flags |= feat->generic_flag;
+ 			found = 1;
+ 		}
+ 	}
+@@ -302,7 +303,7 @@ static int parse_one_fs_feature(const char *name, u64 *flags,
+ 	return !found;
+ }
+ 
+-static void parse_features_to_string(char *buf, u64 flags,
++static void parse_features_to_string(char *buf, u64 generic_flags,
+ 				     enum feature_source source)
+ {
+ 	const int array_size = get_feature_array_size(source);
+@@ -313,7 +314,7 @@ static void parse_features_to_string(char *buf, u64 flags,
+ 	for (i = 0; i < array_size; i++) {
+ 		const struct btrfs_feature *feat = get_feature(i, source);
+ 
+-		if (flags & feat->flag) {
++		if (generic_flags & feat->generic_flag) {
+ 			if (*buf)
+ 				strcat(buf, ", ");
+ 			strcat(buf, feat->name);
+@@ -321,17 +322,17 @@ static void parse_features_to_string(char *buf, u64 flags,
+ 	}
+ }
+ 
+-void btrfs_parse_fs_features_to_string(char *buf, u64 flags)
++void btrfs_parse_fs_features_to_string(char *buf, u64 generic_flags)
+ {
+-	parse_features_to_string(buf, flags, FS_FEATURES);
++	parse_features_to_string(buf, generic_flags, FS_FEATURES);
+ }
+ 
+-void btrfs_parse_runtime_features_to_string(char *buf, u64 flags)
++void btrfs_parse_runtime_features_to_string(char *buf, u64 generic_flags)
+ {
+-	parse_features_to_string(buf, flags, RUNTIME_FEATURES);
++	parse_features_to_string(buf, generic_flags, RUNTIME_FEATURES);
+ }
+ 
+-static void process_features(u64 flags, enum feature_source source)
++static void process_features(u64 generic_flags, enum feature_source source)
+ {
+ 	const int array_size = get_feature_array_size(source);
+ 	int i;
+@@ -339,43 +340,45 @@ static void process_features(u64 flags, enum feature_source source)
+ 	for (i = 0; i < array_size; i++) {
+ 		const struct btrfs_feature *feat = get_feature(i, source);
+ 
+-		if (flags & feat->flag && feat->name && feat->desc) {
+-			printf("Turning ON incompat feature '%s': %s\n",
+-				feat->name, feat->desc);
++		if (generic_flags & feat->generic_flag && feat->name && feat->desc) {
++			char *type_str;
++
++			if (feat->compat_ro_flag)
++				type_str = "compat ro";
++			else if (feat->incompat_flag)
++				type_str = "incompat";
++			else
++				type_str = "runtime";
++
++			printf("Turning ON %s feature '%s': %s\n",
++				type_str, feat->name, feat->desc);
+ 		}
+ 	}
+ }
+ 
+-void btrfs_process_fs_features(u64 flags)
++void btrfs_process_fs_features(u64 generic_flags)
+ {
+-	process_features(flags, FS_FEATURES);
++	process_features(generic_flags, FS_FEATURES);
+ }
+ 
+-void btrfs_process_runtime_features(u64 flags)
++void btrfs_process_runtime_features(u64 generic_flags)
+ {
+-	process_features(flags, RUNTIME_FEATURES);
++	process_features(generic_flags, RUNTIME_FEATURES);
+ }
+ 
+ static void list_all_features(u64 mask_disallowed, enum feature_source source)
+ {
+ 	const int array_size = get_feature_array_size(source);
+ 	int i;
+-	char *prefix;
+-
+-	if (source == FS_FEATURES)
+-		prefix = "Filesystem";
+-	else if (source == RUNTIME_FEATURES)
+-		prefix = "Runtime";
+-	else
+-		prefix = "UNKNOWN";
+ 
+-	fprintf(stderr, "%s features available:\n", prefix);
++	fprintf(stderr, "features available:\n");
+ 	for (i = 0; i < array_size - 1; i++) {
+ 		const struct btrfs_feature *feat = get_feature(i, source);
+ 		const char *sep = "";
+ 
+-		if (feat->flag & mask_disallowed)
++		if (feat->generic_flag & mask_disallowed)
+ 			continue;
++
+ 		fprintf(stderr, "%-20s- %s (", feat->name, feat->desc);
+ 		if (feat->compat_ver) {
+ 			fprintf(stderr, "compat=%s", feat->compat_str);
+@@ -556,7 +559,7 @@ int btrfs_check_nodesize(u32 nodesize, u32 sectorsize, u64 features)
+ 		error("illegal nodesize %u (not aligned to %u)",
+ 			nodesize, sectorsize);
+ 		return -1;
+-	} else if (features & BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS &&
++	} else if (features & BTRFS_FEATURE_GENERIC_MIXED_GROUPS &&
+ 		   nodesize != sectorsize) {
+ 		error(
+ 		"illegal nodesize %u (not equal to %u for mixed block group)",
+@@ -603,3 +606,30 @@ int btrfs_tree_search2_ioctl_supported(int fd)
+ 	return ret;
+ }
+ 
++u64 btrfs_generic_features_to_incompat_flags(u64 generic_features)
++{
++	u64 ret = 0;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(mkfs_features); i++) {
++		const struct btrfs_feature *feature = &mkfs_features[i];
++
++		if (generic_features & feature->generic_flag)
++			ret |= feature->incompat_flag;
++	}
++	return ret;
++}
++
++u64 btrfs_generic_features_to_compat_ro_flags(u64 generic_features)
++{
++	u64 ret = 0;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(mkfs_features); i++) {
++		const struct btrfs_feature *feature = &mkfs_features[i];
++
++		if (generic_features & feature->generic_flag)
++			ret |= feature->compat_ro_flag;
++	}
++	return ret;
++}
+diff --git a/common/fsfeatures.h b/common/fsfeatures.h
+index fd7defc14031..57ae72edfa55 100644
+--- a/common/fsfeatures.h
++++ b/common/fsfeatures.h
+@@ -21,34 +21,41 @@
+ #include <stdio.h>
+ #include "kernel-lib/sizes.h"
+ 
++/*
++ * Since our fsfeatures can contain both incompat and compat_ro flags,
++ * there has to be a generic feature flags.
++ */
++#define BTRFS_FEATURE_GENERIC_MIXED_GROUPS	(1 << 0)
++#define BTRFS_FEATURE_GENERIC_QUOTA		(1 << 1)
++#define BTRFS_FEATURE_GENERIC_EXTENDED_IREF	(1 << 2)
++#define BTRFS_FEATURE_GENERIC_RAID56		(1 << 3)
++#define BTRFS_FEATURE_GENERIC_SKINNY_METADATA	(1 << 4)
++#define BTRFS_FEATURE_GENERIC_NO_HOLES		(1 << 5)
++#define BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE	(1 << 6)
++#define BTRFS_FEATURE_GENERIC_RAID1C34		(1 << 7)
++#define BTRFS_FEATURE_GENERIC_ZONED		(1 << 8)
++#define BTRFS_FEATURE_GENERIC_BLOCK_GROUP_TREE	(1 << 9)
++#define BTRFS_FEATURE_GENERIC_EXTENT_TREE_V2	(1 << 10)
++/* This should be the last one. */
++#define BTRFS_FEATURE_GENERIC_LIST_ALL		(1 << 15)
++
+ #define BTRFS_MKFS_DEFAULT_NODE_SIZE SZ_16K
+-#define BTRFS_MKFS_DEFAULT_FEATURES 				\
+-		(BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF		\
+-		| BTRFS_FEATURE_INCOMPAT_NO_HOLES		\
+-		| BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA)
++#define BTRFS_MKFS_DEFAULT_GENERIC_FEATURES 			\
++		(BTRFS_FEATURE_GENERIC_EXTENDED_IREF		\
++		| BTRFS_FEATURE_GENERIC_NO_HOLES		\
++		| BTRFS_FEATURE_GENERIC_SKINNY_METADATA		\
++		| BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE)
+ 
+-#define BTRFS_MKFS_DEFAULT_RUNTIME_FEATURES			\
+-	(BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE)
++#define BTRFS_MKFS_DEFAULT_RUNTIME_GENERIC_FEATURES		\
++	(BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE)
+ 
+ /*
+  * Avoid multi-device features (RAID56), mixed block groups, and zoned mode
+  */
+-#define BTRFS_CONVERT_ALLOWED_FEATURES				\
+-	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF			\
+-	| BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL			\
+-	| BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO			\
+-	| BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD			\
+-	| BTRFS_FEATURE_INCOMPAT_BIG_METADATA			\
+-	| BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF			\
+-	| BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA		\
+-	| BTRFS_FEATURE_INCOMPAT_NO_HOLES)
+-
+-#define BTRFS_FEATURE_LIST_ALL		(1ULL << 63)
+-
+-#define BTRFS_RUNTIME_FEATURE_QUOTA		(1ULL << 0)
+-#define BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE	(1ULL << 1)
+-#define BTRFS_RUNTIME_FEATURE_BLOCK_GROUP_TREE	(1ULL << 2)
+-
++#define BTRFS_CONVERT_ALLOWED_GENERIC_FEATURES			\
++	(BTRFS_FEATURE_GENERIC_EXTENDED_IREF			\
++	| BTRFS_FEATURE_GENERIC_SKINNY_METADATA			\
++	| BTRFS_FEATURE_GENERIC_NO_HOLES)
+ 
+ void btrfs_list_all_fs_features(u64 mask_disallowed);
+ void btrfs_list_all_runtime_features(u64 mask_disallowed);
+@@ -60,8 +67,11 @@ void btrfs_parse_fs_features_to_string(char *buf, u64 flags);
+ void btrfs_parse_runtime_features_to_string(char *buf, u64 flags);
+ void print_kernel_version(FILE *stream, u32 version);
+ u32 get_running_kernel_version(void);
+-int btrfs_check_nodesize(u32 nodesize, u32 sectorsize, u64 features);
++int btrfs_check_nodesize(u32 nodesize, u32 sectorsize, u64 generic_features);
+ int btrfs_check_sectorsize(u32 sectorsize);
+ int btrfs_tree_search2_ioctl_supported(int fd);
+ 
++u64 btrfs_generic_features_to_incompat_flags(u64 generic_features);
++u64 btrfs_generic_features_to_compat_ro_flags(u64 generic_features);
++
+ #endif
+diff --git a/convert/common.c b/convert/common.c
+index 6d5720083192..6589df6914ed 100644
+--- a/convert/common.c
++++ b/convert/common.c
+@@ -27,6 +27,7 @@
+ #include "kernel-shared/volumes.h"
+ #include "common/path-utils.h"
+ #include "common/messages.h"
++#include "common/fsfeatures.h"
+ #include "mkfs/common.h"
+ #include "convert/common.h"
+ #include "ioctl.h"
+@@ -143,7 +144,10 @@ static int setup_temp_super(int fd, struct btrfs_mkfs_config *cfg,
+ 	btrfs_set_super_csum_type(&super, cfg->csum_type);
+ 	btrfs_set_super_chunk_root(&super, chunk_bytenr);
+ 	btrfs_set_super_cache_generation(&super, -1);
+-	btrfs_set_super_incompat_flags(&super, cfg->features);
++	btrfs_set_super_incompat_flags(&super,
++			BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL |
++			btrfs_generic_features_to_incompat_flags(
++				cfg->generic_features));
+ 	if (cfg->label)
+ 		__strncpy_null(super.label, cfg->label, BTRFS_LABEL_SIZE - 1);
+ 
+@@ -582,8 +586,8 @@ static int insert_temp_extent_item(int fd, struct extent_buffer *buf,
+ 	struct btrfs_disk_key tree_info_key;
+ 	struct btrfs_tree_block_info *info;
+ 	int itemsize;
+-	int skinny_metadata = cfg->features &
+-			      BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA;
++	int skinny_metadata = cfg->generic_features &
++			      BTRFS_FEATURE_GENERIC_SKINNY_METADATA;
+ 	int ret;
+ 
+ 	if (skinny_metadata)
+diff --git a/convert/main.c b/convert/main.c
+index 471580721e80..f3ab33fecb85 100644
+--- a/convert/main.c
++++ b/convert/main.c
+@@ -1129,8 +1129,8 @@ static int convert_open_fs(const char *devname,
+ }
+ 
+ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
+-		const char *fslabel, int progress, u64 features, u16 csum_type,
+-		char fsid[BTRFS_UUID_UNPARSED_SIZE])
++		const char *fslabel, int progress, u64 generic_features,
++		u16 csum_type, char fsid[BTRFS_UUID_UNPARSED_SIZE])
+ {
+ 	int ret;
+ 	int fd = -1;
+@@ -1170,15 +1170,15 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
+ "blocksize %u is not equal to the page size %u, converted filesystem won't mount on this system",
+ 			blocksize, getpagesize());
+ 
+-	if (btrfs_check_nodesize(nodesize, blocksize, features))
++	if (btrfs_check_nodesize(nodesize, blocksize, generic_features))
+ 		goto fail;
+ 	fd = open(devname, O_RDWR);
+ 	if (fd < 0) {
+ 		error("unable to open %s: %m", devname);
+ 		goto fail;
+ 	}
+-	btrfs_parse_fs_features_to_string(features_buf, features);
+-	if (features == BTRFS_MKFS_DEFAULT_FEATURES)
++	btrfs_parse_fs_features_to_string(features_buf, generic_features);
++	if (generic_features == BTRFS_MKFS_DEFAULT_GENERIC_FEATURES)
+ 		strcat(features_buf, " (default)");
+ 
+ 	if (convert_flags & CONVERT_FLAG_COPY_FSID) {
+@@ -1226,7 +1226,7 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
+ 	mkfs_cfg.nodesize = nodesize;
+ 	mkfs_cfg.sectorsize = blocksize;
+ 	mkfs_cfg.stripesize = blocksize;
+-	mkfs_cfg.features = features;
++	mkfs_cfg.generic_features = generic_features;
+ 	mkfs_cfg.leaf_data_size = __BTRFS_LEAF_DATA_SIZE(nodesize);
+ 
+ 	printf("Create initial btrfs filesystem\n");
+@@ -1822,7 +1822,7 @@ int BOX_MAIN(convert)(int argc, char *argv[])
+ 	int progress = 1;
+ 	char *file;
+ 	char fslabel[BTRFS_LABEL_SIZE] = { 0 };
+-	u64 features = BTRFS_MKFS_DEFAULT_FEATURES;
++	u64 generic_features = BTRFS_MKFS_DEFAULT_GENERIC_FEATURES;
+ 	u16 csum_type = BTRFS_CSUM_TYPE_CRC32;
+ 	u32 copy_fsid = 0;
+ 	char fsid[BTRFS_UUID_UNPARSED_SIZE] = {0};
+@@ -1892,7 +1892,8 @@ int BOX_MAIN(convert)(int argc, char *argv[])
+ 				char *orig = strdup(optarg);
+ 				char *tmp = orig;
+ 
+-				tmp = btrfs_parse_fs_features(tmp, &features);
++				tmp = btrfs_parse_fs_features(tmp,
++						&generic_features);
+ 				if (tmp) {
+ 					error("unrecognized filesystem feature: %s",
+ 							tmp);
+@@ -1900,16 +1901,19 @@ int BOX_MAIN(convert)(int argc, char *argv[])
+ 					exit(1);
+ 				}
+ 				free(orig);
+-				if (features & BTRFS_FEATURE_LIST_ALL) {
++				if (generic_features &
++						BTRFS_FEATURE_GENERIC_LIST_ALL) {
+ 					btrfs_list_all_fs_features(
+-						~BTRFS_CONVERT_ALLOWED_FEATURES);
++						~BTRFS_CONVERT_ALLOWED_GENERIC_FEATURES);
+ 					exit(0);
+ 				}
+-				if (features & ~BTRFS_CONVERT_ALLOWED_FEATURES) {
++				if (generic_features &
++				    ~BTRFS_CONVERT_ALLOWED_GENERIC_FEATURES) {
+ 					char buf[64];
+ 
+ 					btrfs_parse_fs_features_to_string(buf,
+-						features & ~BTRFS_CONVERT_ALLOWED_FEATURES);
++						generic_features &
++						~BTRFS_CONVERT_ALLOWED_GENERIC_FEATURES);
+ 					error("features not allowed for convert: %s",
+ 						buf);
+ 					exit(1);
+@@ -1984,8 +1988,8 @@ int BOX_MAIN(convert)(int argc, char *argv[])
+ 		cf |= noxattr ? 0 : CONVERT_FLAG_XATTR;
+ 		cf |= copy_fsid;
+ 		cf |= copylabel;
+-		ret = do_convert(file, cf, nodesize, fslabel, progress, features,
+-				 csum_type, fsid);
++		ret = do_convert(file, cf, nodesize, fslabel, progress,
++				 generic_features, csum_type, fsid);
+ 	}
+ 	if (ret)
+ 		return 1;
+diff --git a/mkfs/common.c b/mkfs/common.c
+index 1e8bf4d599e3..047c67d85cdf 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -84,8 +84,8 @@ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
+ 	int blk;
+ 	int i;
+ 	u8 uuid[BTRFS_UUID_SIZE];
+-	bool block_group_tree = !!(cfg->runtime_features &
+-				   BTRFS_RUNTIME_FEATURE_BLOCK_GROUP_TREE);
++	bool block_group_tree = !!(cfg->generic_features &
++				   BTRFS_FEATURE_GENERIC_BLOCK_GROUP_TREE);
+ 
+ 	memset(buf->data + sizeof(struct btrfs_header), 0,
+ 		cfg->nodesize - sizeof(struct btrfs_header));
+@@ -372,19 +372,18 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	u32 array_size;
+ 	u32 item_size;
+ 	u64 total_used = 0;
+-	u64 ro_flags = 0;
+-	int skinny_metadata = !!(cfg->features &
+-				 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA);
++	int skinny_metadata = !!(cfg->generic_features &
++				 BTRFS_FEATURE_GENERIC_SKINNY_METADATA);
+ 	u64 num_bytes;
+ 	u64 system_group_offset = BTRFS_BLOCK_RESERVED_1M_FOR_SUPER;
+ 	u64 system_group_size = BTRFS_MKFS_SYSTEM_GROUP_SIZE;
+ 	bool add_block_group = true;
+-	bool free_space_tree = !!(cfg->runtime_features &
+-				  BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE);
+-	bool block_group_tree = !!(cfg->runtime_features &
+-				   BTRFS_RUNTIME_FEATURE_BLOCK_GROUP_TREE);
+-	bool extent_tree_v2 = !!(cfg->features &
+-				 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2);
++	bool free_space_tree = !!(cfg->generic_features &
++				  BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE);
++	bool block_group_tree = !!(cfg->generic_features &
++				   BTRFS_FEATURE_GENERIC_BLOCK_GROUP_TREE);
++	bool extent_tree_v2 = !!(cfg->generic_features &
++				 BTRFS_FEATURE_GENERIC_EXTENT_TREE_V2);
+ 
+ 	memcpy(blocks, default_blocks,
+ 	       sizeof(enum btrfs_mkfs_block) * ARRAY_SIZE(default_blocks));
+@@ -405,7 +404,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	if (!free_space_tree)
+ 		mkfs_blocks_remove(blocks, &blocks_nr, MKFS_FREE_SPACE_TREE);
+ 
+-	if ((cfg->features & BTRFS_FEATURE_INCOMPAT_ZONED)) {
++	if ((cfg->generic_features & BTRFS_FEATURE_GENERIC_ZONED)) {
+ 		system_group_offset = zoned_system_group_offset(cfg->zone_size);
+ 		system_group_size = cfg->zone_size;
+ 	}
+@@ -449,20 +448,18 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	btrfs_set_super_stripesize(&super, cfg->stripesize);
+ 	btrfs_set_super_csum_type(&super, cfg->csum_type);
+ 	btrfs_set_super_chunk_root_generation(&super, 1);
+-	if (cfg->features & BTRFS_FEATURE_INCOMPAT_ZONED)
++	if (cfg->generic_features & BTRFS_FEATURE_GENERIC_ZONED)
+ 		btrfs_set_super_cache_generation(&super, 0);
+ 	else
+ 		btrfs_set_super_cache_generation(&super, -1);
+-	btrfs_set_super_incompat_flags(&super, cfg->features);
+-	if (free_space_tree) {
+-		ro_flags |= (BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
+-			     BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID);
+-
++	btrfs_set_super_incompat_flags(&super,
++			btrfs_generic_features_to_incompat_flags(
++				cfg->generic_features));
++	if (free_space_tree)
+ 		btrfs_set_super_cache_generation(&super, 0);
+-	}
+-	if (block_group_tree)
+-		ro_flags |= BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE;
+-	btrfs_set_super_compat_ro_flags(&super, ro_flags);
++	btrfs_set_super_compat_ro_flags(&super,
++			btrfs_generic_features_to_compat_ro_flags(
++				cfg->generic_features));
+ 
+ 	if (extent_tree_v2)
+ 		btrfs_set_super_nr_global_roots(&super, 1);
+diff --git a/mkfs/common.h b/mkfs/common.h
+index fbacc25e0012..0a020e7775a7 100644
+--- a/mkfs/common.h
++++ b/mkfs/common.h
+@@ -78,10 +78,11 @@ struct btrfs_mkfs_config {
+ 	u32 sectorsize;
+ 	u32 stripesize;
+ 	u32 leaf_data_size;
+-	/* Bitfield of incompat features, BTRFS_FEATURE_INCOMPAT_* */
+-	u64 features;
+-	/* Bitfield of BTRFS_RUNTIME_FEATURE_* */
+-	u64 runtime_features;
++	/*
++	 * Bitfield of generic features, BTRFS_FEATURE_GENERIC_*.
++	 * This covers all incompat and compat_ro flags.
++	 */
++	u64 generic_features;
+ 	/* Size of the filesystem in bytes */
+ 	u64 num_bytes;
+ 	/* checksum algorithm to use */
+diff --git a/mkfs/main.c b/mkfs/main.c
+index 228c4431fd9e..e71eb4b53103 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -998,8 +998,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	u64 system_group_size;
+ 	/* Options */
+ 	bool force_overwrite = false;
+-	u64 runtime_features = BTRFS_MKFS_DEFAULT_RUNTIME_FEATURES;
+-	u64 features = BTRFS_MKFS_DEFAULT_FEATURES;
++	u64 generic_features = BTRFS_MKFS_DEFAULT_GENERIC_FEATURES;
+ 	enum btrfs_csum_type csum_type = BTRFS_CSUM_TYPE_CRC32;
+ 	char fs_uuid[BTRFS_UUID_UNPARSED_SIZE] = { 0 };
+ 	u32 nodesize = 0;
+@@ -1108,7 +1107,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 				char *orig = strdup(optarg);
+ 				char *tmp = orig;
+ 
+-				tmp = btrfs_parse_fs_features(tmp, &features);
++				tmp = btrfs_parse_fs_features(tmp,
++						&generic_features);
+ 				if (tmp) {
+ 					error("unrecognized filesystem feature '%s'",
+ 							tmp);
+@@ -1116,7 +1116,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 					goto error;
+ 				}
+ 				free(orig);
+-				if (features & BTRFS_FEATURE_LIST_ALL) {
++				if (generic_features &
++						BTRFS_FEATURE_GENERIC_LIST_ALL) {
+ 					btrfs_list_all_fs_features(0);
+ 					goto success;
+ 				}
+@@ -1125,9 +1126,10 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 			case 'R': {
+ 				char *orig = strdup(optarg);
+ 				char *tmp = orig;
++				u64 runtime_generic_features = 0;
+ 
+ 				tmp = btrfs_parse_runtime_features(tmp,
+-						&runtime_features);
++						&runtime_generic_features);
+ 				if (tmp) {
+ 					error("unrecognized runtime feature '%s'",
+ 					      tmp);
+@@ -1135,10 +1137,12 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 					goto error;
+ 				}
+ 				free(orig);
+-				if (runtime_features & BTRFS_FEATURE_LIST_ALL) {
++				if (runtime_generic_features &
++				    BTRFS_FEATURE_GENERIC_LIST_ALL) {
+ 					btrfs_list_all_runtime_features(0);
+ 					goto success;
+ 				}
++				generic_features |= runtime_generic_features;
+ 				break;
+ 				}
+ 			case 's':
+@@ -1204,7 +1208,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	if (device_count == 0)
+ 		print_usage(1);
+ 
+-	opt_zoned = !!(features & BTRFS_FEATURE_INCOMPAT_ZONED);
++	opt_zoned = !!(generic_features & BTRFS_FEATURE_GENERIC_ZONED);
+ 
+ 	if (source_dir_set && device_count > 1) {
+ 		error("the option -r is limited to a single device");
+@@ -1257,7 +1261,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	"Zoned: %s: host-managed device detected, setting zoned feature\n",
+ 			       file);
+ 		opt_zoned = true;
+-		features |= BTRFS_FEATURE_INCOMPAT_ZONED;
++		generic_features |= BTRFS_FEATURE_GENERIC_ZONED;
+ 	}
+ 
+ 	/*
+@@ -1295,27 +1299,28 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	}
+ 
+ 	/*
+-	 * FS features that can be set by other means than -O
++	 * Generic features that can be set by other means than -O
+ 	 * just set the bit here
+ 	 */
+ 	if (mixed)
+-		features |= BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS;
++		generic_features |= BTRFS_FEATURE_GENERIC_MIXED_GROUPS;
+ 
+ 	if ((data_profile | metadata_profile) & BTRFS_BLOCK_GROUP_RAID56_MASK) {
+-		features |= BTRFS_FEATURE_INCOMPAT_RAID56;
++		generic_features |= BTRFS_FEATURE_GENERIC_RAID56;
+ 		warning("RAID5/6 support has known problems is strongly discouraged\n"
+ 			"\t to be used besides testing or evaluation.\n");
+ 	}
+ 
+ 	if ((data_profile | metadata_profile) &
+ 	    (BTRFS_BLOCK_GROUP_RAID1C3 | BTRFS_BLOCK_GROUP_RAID1C4)) {
+-		features |= BTRFS_FEATURE_INCOMPAT_RAID1C34;
++		generic_features |= BTRFS_FEATURE_GENERIC_RAID1C34;
+ 	}
+ 
+ 	/* Extent tree v2 comes with a set of mandatory features. */
+-	if (features & BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2) {
+-		features |= BTRFS_FEATURE_INCOMPAT_NO_HOLES;
+-		runtime_features |= BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE;
++	if (generic_features & BTRFS_FEATURE_GENERIC_EXTENT_TREE_V2) {
++		generic_features |= BTRFS_FEATURE_GENERIC_NO_HOLES;
++		generic_features |= BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE;
++		generic_features |= BTRFS_FEATURE_GENERIC_BLOCK_GROUP_TREE;
+ 
+ 		if (!nr_global_roots) {
+ 			error("you must set a non-zero num-global-roots value");
+@@ -1324,9 +1329,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	}
+ 
+ 	/* Block group tree feature requires no-holes and free-space-tree. */
+-	if (runtime_features & BTRFS_RUNTIME_FEATURE_BLOCK_GROUP_TREE &&
+-	    (!(features & BTRFS_FEATURE_INCOMPAT_NO_HOLES) ||
+-	     !(runtime_features & BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE))) {
++	if (generic_features & BTRFS_FEATURE_GENERIC_BLOCK_GROUP_TREE &&
++	    (!(generic_features & BTRFS_FEATURE_GENERIC_NO_HOLES) ||
++	     !(generic_features & BTRFS_FEATURE_GENERIC_FREE_SPACE_TREE))) {
+ 		error("block group tree requires no-holes and free-space-tree features");
+ 		exit(1);
+ 	}
+@@ -1336,19 +1341,19 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 			exit(1);
+ 		}
+ 
+-		if (features & BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS) {
++		if (generic_features & BTRFS_FEATURE_GENERIC_MIXED_GROUPS) {
+ 			error("cannot enable mixed-bg in zoned mode");
+ 			exit(1);
+ 		}
+ 
+-		if (features & BTRFS_FEATURE_INCOMPAT_RAID56) {
++		if (generic_features & BTRFS_FEATURE_GENERIC_RAID56) {
+ 			error("cannot enable RAID5/6 in zoned mode");
+ 			exit(1);
+ 		}
+ 	}
+ 
+ 	if (btrfs_check_nodesize(nodesize, sectorsize,
+-				 features))
++				 generic_features))
+ 		goto error;
+ 
+ 	if (sectorsize < sizeof(struct btrfs_super_block)) {
+@@ -1537,8 +1542,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	mkfs_cfg.nodesize = nodesize;
+ 	mkfs_cfg.sectorsize = sectorsize;
+ 	mkfs_cfg.stripesize = stripesize;
+-	mkfs_cfg.features = features;
+-	mkfs_cfg.runtime_features = runtime_features;
++	mkfs_cfg.generic_features = generic_features;
+ 	mkfs_cfg.csum_type = csum_type;
+ 	mkfs_cfg.leaf_data_size = __BTRFS_LEAF_DATA_SIZE(nodesize);
+ 	if (opt_zoned)
+@@ -1583,7 +1587,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 		goto error;
+ 	}
+ 
+-	if (features & BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2) {
++	if (generic_features & BTRFS_FEATURE_GENERIC_EXTENT_TREE_V2) {
+ 		ret = create_global_roots(trans, nr_global_roots);
+ 		if (ret) {
+ 			error("failed to create global roots: %d", ret);
+@@ -1733,7 +1737,7 @@ raid_groups:
+ 		}
+ 	}
+ 
+-	if (runtime_features & BTRFS_RUNTIME_FEATURE_QUOTA) {
++	if (generic_features & BTRFS_FEATURE_GENERIC_QUOTA) {
+ 		ret = setup_quota_root(fs_info);
+ 		if (ret < 0) {
+ 			error("failed to initialize quota: %d (%m)", ret);
+@@ -1771,11 +1775,19 @@ raid_groups:
+ 		if (opt_zoned)
+ 			printf("  Zone size:        %s\n",
+ 			       pretty_size(fs_info->zone_size));
+-		btrfs_parse_fs_features_to_string(features_buf, features);
++		btrfs_parse_fs_features_to_string(features_buf,
++						  generic_features);
++
++#if !EXPERIMENTAL
++		printf("Features:           %s\n", features_buf);
++		btrfs_parse_runtime_features_to_string(features_buf,
++				generic_features);
++#else
+ 		printf("Incompat features:  %s\n", features_buf);
+ 		btrfs_parse_runtime_features_to_string(features_buf,
+-				runtime_features);
++				generic_features);
+ 		printf("Runtime features:   %s\n", features_buf);
++#endif
+ 		printf("Checksum:           %s",
+ 		       btrfs_super_csum_name(mkfs_cfg.csum_type));
+ 		printf("\n");
+-- 
+2.37.3
+
