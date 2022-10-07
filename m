@@ -2,310 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 419FA5F77FE
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 14:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAB45F7945
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 15:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbiJGMfi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Oct 2022 08:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
+        id S229946AbiJGNx6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Oct 2022 09:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbiJGMfh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 08:35:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF349E69D
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 05:35:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1665146134;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1OYzrwUhBlGs1dJj4ArLeeYgyvtN2keHSOt2j+uBa7Q=;
-        b=azGV10HP23bKZWSexGNge6nkwOwsy0xb3ayn3pybFUgBV73SBWbPr6w00l7NXv7m2FH7tu
-        FHpvaNqEJs+h0tsCTEd+fPPqnd2U+RJO+CgoVtmiBGWJa1X6LFy+97SXZbnxojikThVBAo
-        flAe7mI8qJkMjHQ6+qOXdVKC92689Ic=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-50-Q6G6tMI6OpmEJJDWu10E8Q-1; Fri, 07 Oct 2022 08:35:33 -0400
-X-MC-Unique: Q6G6tMI6OpmEJJDWu10E8Q-1
-Received: by mail-qk1-f199.google.com with SMTP id n13-20020a05620a294d00b006cf933c40feso3662542qkp.20
-        for <linux-btrfs@vger.kernel.org>; Fri, 07 Oct 2022 05:35:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1OYzrwUhBlGs1dJj4ArLeeYgyvtN2keHSOt2j+uBa7Q=;
-        b=rm/R6V8odO06iMhATdIgkInlECu/HdvsyHtWcvnDmKsZ2CQot74J+PtSWxX9KXeJfD
-         QOVSUldZG3tl44F4QN9CdqdncDEnIKE2NZMaj+uFzK6ZY95G915Bf1XTfzM4ETejAlCT
-         83wxaLeHvCsxRvdEsPWQqXAMOGZw+42urvlzRDy1uw1qjuep9PTNqKIlR8alNUl50Nz8
-         6iLMC87VLOl6VNXrMz/BX7quKHn3xZdPvotRSJXbkf2RtxVRwO96isf/+Ic3VkZafwXN
-         6L2Gavntc2vQANARfAdV3x88at8pVPP+qCnRURDYvK3T47n41hSsfk8vz/sZhM9X9QLw
-         SRCg==
-X-Gm-Message-State: ACrzQf34CxHjyom7m7eScbSXb+NONT1i8ZsFzp71qwi38mQyssVQhNmQ
-        dmyBh7ypABtMdwHBrjQHWPy1eWkO2qxg5Tyki73tVKp0QwwvYP6/Z5XCwok6WDcPXxYsoqEDMZ7
-        UsD7uzBB5ksNgT83mulLsr5I=
-X-Received: by 2002:a05:620a:44cd:b0:6ce:d887:d448 with SMTP id y13-20020a05620a44cd00b006ced887d448mr3411494qkp.31.1665146132455;
-        Fri, 07 Oct 2022 05:35:32 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM48mXbwg5P6K+CxS6x+o6FXQ7dCcEG2VHUFsoImr57u8XkUzxFi9rgg2rbLP5k8R8YkkRX43A==
-X-Received: by 2002:a05:620a:44cd:b0:6ce:d887:d448 with SMTP id y13-20020a05620a44cd00b006ced887d448mr3411467qkp.31.1665146132036;
-        Fri, 07 Oct 2022 05:35:32 -0700 (PDT)
-Received: from zlang-mailbox ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id dm5-20020a05620a1d4500b006bac157ec19sm1391251qkb.123.2022.10.07.05.35.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Oct 2022 05:35:31 -0700 (PDT)
-Date:   Fri, 7 Oct 2022 20:35:27 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        with ESMTP id S229754AbiJGNx5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 09:53:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F79CF1A5;
+        Fri,  7 Oct 2022 06:53:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0026C61D03;
+        Fri,  7 Oct 2022 13:53:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58144C433D6;
+        Fri,  7 Oct 2022 13:53:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665150833;
+        bh=pzDfZjSIIxMWNT2LU3cI9FVcdmfchvhzl64DIRBVnVI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=suR0olSRwixG63G7uM426lh1Cnet8nQqAXIsCV3mdYiQ3Ubr2eu6bcTXMRPV2WIyc
+         i1PSJQVDJkNH9U69SeoVVz7Dux78UaBPcF37iQrsKUtzUXD8qjDtCBQsfCJzztYqDl
+         qwZCqsil98NIzj2s3lKH8EDpozI1cta5efYoUMLs6Xyc8LQq26MzPDRWrerDC6bw6R
+         zUSchhBCB6zdpciCqv/pQ9DbXu6h0l62R1Yknds2VqcDXsKSveGjG8OkNGFQZZvLJs
+         aSgW7VlrbkoMKNMKpowgCw8UM3jUEbNFL40refR9H1pXVFsofJqdb1wY3oMIu31HZ0
+         /ZUE+MfhxG9OA==
+From:   fdmanana@kernel.org
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, zlang@redhat.com,
         Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] btrfs: test fiemap on large file with extents shared
- through a snapshot
-Message-ID: <20221007123527.a44surzn6dq6dvc4@zlang-mailbox>
-References: <d4bf2bc47e3be1437d5693a0b728e199acb549fd.1664808949.git.fdmanana@suse.com>
- <20221007045912.5ieeylkcxweiaurx@zlang-mailbox>
- <CAL3q7H6UxYf0Oo-U8K0fwWw+Pnv4BN36i+vu3LM9RHM4FUHrGg@mail.gmail.com>
+Subject: [PATCH 0/3] fstests: add a btrfs fiemap test and fiemap test group
+Date:   Fri,  7 Oct 2022 14:53:33 +0100
+Message-Id: <cover.1665150613.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H6UxYf0Oo-U8K0fwWw+Pnv4BN36i+vu3LM9RHM4FUHrGg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 07, 2022 at 08:31:53AM +0100, Filipe Manana wrote:
-> On Fri, Oct 7, 2022 at 5:59 AM Zorro Lang <zlang@redhat.com> wrote:
-> >
-> > On Mon, Oct 03, 2022 at 03:58:17PM +0100, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > Verify that fiemap correctly reports the sharedness of extents for a file
-> > > with a very large number of extents, spanning many b+tree leaves in the fs
-> > > tree, and when the file's subvolume was snapshoted.
-> > >
-> > > Currently this passes on all kernel releases and its purpose is to prevent
-> > > and detect regressions in the future, as this actually happened during
-> > > recent development on the btrfs' fiemap related code. With this test we
-> > > now have better coverage for fiemap when a file is shared through a
-> > > snapshot.
-> > >
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > ---
-> > >  doc/group-names.txt |   1 +
-> > >  tests/btrfs/276     | 123 ++++++++++++++++++++++++++++++++++++++++++++
-> > >  tests/btrfs/276.out |  16 ++++++
-> > >  3 files changed, 140 insertions(+)
-> > >  create mode 100755 tests/btrfs/276
-> > >  create mode 100644 tests/btrfs/276.out
-> > >
-> > > diff --git a/doc/group-names.txt b/doc/group-names.txt
-> > > index ef411b5e..6cc9af78 100644
-> > > --- a/doc/group-names.txt
-> > > +++ b/doc/group-names.txt
-> > > @@ -47,6 +47,7 @@ eio                 IO error reporting
-> > >  encrypt                      encrypted file contents
-> > >  enospc                       ENOSPC error reporting
-> > >  exportfs             file handles
-> > > +fiemap                       fiemap ioctl
-> >
-> > Hi,
-> >
-> > There're many fiemap related cases, if we'd like to bring in this new group,
-> > I hope we can use a separated patch to do this job completely, include adding
-> > this group name to all related cases. We can talk about it in another patch,
-> > this patch can force on its testing.
-> 
-> Sorry, it's not entirely clear to me, but are you saying that you're
-> fine with the patch as it is,
-> or you want the addition of the fiemap group done in a separate patch
-> (that would also add
-> the group to all other tests that exercise fiemap)?
-> 
-> Do you want me to make any changes to this patch?
+From: Filipe Manana <fdmanana@suse.com>
 
-Oh, sorry for my ambiguous description. I mean the tests/btrfs/276 part looks
-good to me. Just for the new group name "fiemap" part, I hope we can add that
-new group name in a seperated patch, due to there're already many fiemap related
-cases in fstests, if you'd like to bring in this group name, better to add it
-to all fiemap related cases at once.
+Add a new btrfs test case to exercise fiemap in the presence of a
+snapshot, and then add a fiemap test group, as well as some missing
+'_require_xfs_io_command "fiemap"' calls in a few tests.
 
-So I'm thinking about if you can split this patch to two patches:
-1) Keep this patch, except the "fiemap" group.
-2) A new patch (if you'd like) to bring in "fiemap" group, and add "fiemap" tag
-   to all fiemap related cases in fstests.
+Filipe Manana (3):
+  btrfs: test fiemap on large file with extents shared through a snapshot
+  fstests: add missing require of xfs_io fiemap command to some tests
+  fstests: add fiemap group
 
-Thanks,
-Zorro
+ doc/group-names.txt |   1 +
+ tests/btrfs/004     |   2 +-
+ tests/btrfs/079     |   2 +-
+ tests/btrfs/137     |   2 +-
+ tests/btrfs/140     |   2 +-
+ tests/btrfs/199     |   2 +-
+ tests/btrfs/200     |   2 +-
+ tests/btrfs/211     |   2 +-
+ tests/btrfs/257     |   3 +-
+ tests/btrfs/258     |   3 +-
+ tests/btrfs/259     |   3 +-
+ tests/btrfs/260     |   2 +-
+ tests/btrfs/263     |   2 +-
+ tests/btrfs/276     | 124 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/276.out |  16 ++++++
+ tests/ext4/001      |   2 +-
+ tests/ext4/034      |   2 +-
+ tests/ext4/308      |   2 +-
+ tests/f2fs/002      |   2 +-
+ tests/generic/009   |   2 +-
+ tests/generic/012   |   2 +-
+ tests/generic/016   |   2 +-
+ tests/generic/017   |   2 +-
+ tests/generic/021   |   2 +-
+ tests/generic/022   |   2 +-
+ tests/generic/032   |   2 +-
+ tests/generic/043   |   2 +-
+ tests/generic/044   |   2 +-
+ tests/generic/045   |   2 +-
+ tests/generic/046   |   2 +-
+ tests/generic/047   |   2 +-
+ tests/generic/048   |   2 +-
+ tests/generic/049   |   2 +-
+ tests/generic/058   |   2 +-
+ tests/generic/060   |   2 +-
+ tests/generic/061   |   2 +-
+ tests/generic/063   |   2 +-
+ tests/generic/064   |   2 +-
+ tests/generic/092   |   2 +-
+ tests/generic/094   |   2 +-
+ tests/generic/110   |   2 +-
+ tests/generic/111   |   2 +-
+ tests/generic/115   |   2 +-
+ tests/generic/177   |   2 +-
+ tests/generic/225   |   2 +-
+ tests/generic/255   |   2 +-
+ tests/generic/301   |   2 +-
+ tests/generic/302   |   2 +-
+ tests/generic/305   |   2 +-
+ tests/generic/316   |   2 +-
+ tests/generic/326   |   2 +-
+ tests/generic/327   |   2 +-
+ tests/generic/328   |   2 +-
+ tests/generic/352   |   2 +-
+ tests/generic/353   |   2 +-
+ tests/generic/372   |   2 +-
+ tests/generic/414   |   2 +-
+ tests/generic/425   |   2 +-
+ tests/generic/473   |   2 +-
+ tests/generic/483   |   2 +-
+ tests/generic/516   |   2 +-
+ tests/generic/519   |   2 +-
+ tests/generic/540   |   2 +-
+ tests/generic/541   |   2 +-
+ tests/generic/542   |   2 +-
+ tests/generic/543   |   2 +-
+ tests/generic/578   |   2 +-
+ tests/generic/654   |   2 +-
+ tests/generic/655   |   2 +-
+ tests/generic/677   |   2 +-
+ tests/generic/679   |   2 +-
+ tests/generic/695   |   2 +-
+ tests/overlay/066   |   2 +-
+ tests/shared/298    |   2 +-
+ tests/xfs/180       |   2 +-
+ tests/xfs/182       |   2 +-
+ tests/xfs/184       |   2 +-
+ tests/xfs/192       |   2 +-
+ tests/xfs/193       |   2 +-
+ tests/xfs/198       |   2 +-
+ tests/xfs/200       |   2 +-
+ tests/xfs/204       |   2 +-
+ tests/xfs/207       |   2 +-
+ tests/xfs/208       |   2 +-
+ tests/xfs/209       |   2 +-
+ tests/xfs/210       |   2 +-
+ tests/xfs/211       |   2 +-
+ tests/xfs/212       |   2 +-
+ tests/xfs/213       |   2 +-
+ tests/xfs/214       |   2 +-
+ tests/xfs/231       |   2 +-
+ tests/xfs/232       |   2 +-
+ tests/xfs/252       |   2 +-
+ tests/xfs/344       |   2 +-
+ tests/xfs/345       |   2 +-
+ tests/xfs/346       |   2 +-
+ tests/xfs/347       |   2 +-
+ tests/xfs/443       |   3 +-
+ 98 files changed, 240 insertions(+), 95 deletions(-)
+ create mode 100755 tests/btrfs/276
+ create mode 100644 tests/btrfs/276.out
 
-> 
-> Thanks.
-> 
-> >
-> > Thanks,
-> > Zorro
-> >
-> > >  filestreams          XFS filestreams allocator
-> > >  freeze                       filesystem freeze tests
-> > >  fsck                 general fsck tests
-> > > diff --git a/tests/btrfs/276 b/tests/btrfs/276
-> > > new file mode 100755
-> > > index 00000000..5946dad9
-> > > --- /dev/null
-> > > +++ b/tests/btrfs/276
-> > > @@ -0,0 +1,123 @@
-> > > +#! /bin/bash
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
-> > > +#
-> > > +# FS QA Test 276
-> > > +#
-> > > +# Verify that fiemap correctly reports the sharedness of extents for a file with
-> > > +# a very large number of extents, spanning many b+tree leaves in the fs tree,
-> > > +# and when the file's subvolume was snapshoted.
-> > > +#
-> > > +. ./common/preamble
-> > > +_begin_fstest auto snapshot compress fiemap
-> > > +
-> > > +. ./common/filter
-> > > +
-> > > +_supported_fs btrfs
-> > > +_require_scratch
-> > > +_require_xfs_io_command "fiemap" "ranged"
-> > > +
-> > > +_scratch_mkfs >> $seqres.full 2>&1
-> > > +# We use compression because it's a very quick way to create a file with a very
-> > > +# large number of extents (compression limits the maximum extent size to 128K)
-> > > +# and while using very little disk space.
-> > > +_scratch_mount -o compress
-> > > +
-> > > +fiemap_test_file()
-> > > +{
-> > > +     local offset=$1
-> > > +     local len=$2
-> > > +
-> > > +     # Skip the first two lines of xfs_io's fiemap output (file path and
-> > > +     # header describing the output columns).
-> > > +     $XFS_IO_PROG -c "fiemap -v $offset $len" $SCRATCH_MNT/foo | tail -n +3
-> > > +}
-> > > +
-> > > +# Count the number of shared extents for the whole test file or just for a given
-> > > +# range.
-> > > +count_shared_extents()
-> > > +{
-> > > +     local offset=$1
-> > > +     local len=$2
-> > > +
-> > > +     # Column 5 (from xfs_io's "fiemap -v" command) is the flags (hex field).
-> > > +     # 0x2000 is the value for the FIEMAP_EXTENT_SHARED flag.
-> > > +     fiemap_test_file $offset $len | \
-> > > +             $AWK_PROG --source 'BEGIN { cnt = 0 }' \
-> > > +                       --source '{ if (and(strtonum($5), 0x2000)) cnt++ }' \
-> > > +                       --source 'END { print cnt }'
-> > > +}
-> > > +
-> > > +# Count the number of non shared extents for the whole test file or just for a
-> > > +# given range.
-> > > +count_not_shared_extents()
-> > > +{
-> > > +     local offset=$1
-> > > +     local len=$2
-> > > +
-> > > +     # Column 5 (from xfs_io's "fiemap -v" command) is the flags (hex field).
-> > > +     # 0x2000 is the value for the FIEMAP_EXTENT_SHARED flag.
-> > > +     fiemap_test_file $offset $len | \
-> > > +             $AWK_PROG --source 'BEGIN { cnt = 0 }' \
-> > > +                       --source '{ if (!and(strtonum($5), 0x2000)) cnt++ }' \
-> > > +                       --source 'END { print cnt }'
-> > > +}
-> > > +
-> > > +# Create a 16G file as that results in 131072 extents, all with a size of 128K
-> > > +# (due to compression), and a fs tree with a height of 3 (root node at level 2).
-> > > +# We want to verify later that fiemap correctly reports the sharedness of each
-> > > +# extent, even when it needs to switch from one leaf to the next one and from a
-> > > +# node at level 1 to the next node at level 1.
-> > > +#
-> > > +$XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MNT/foo | _filter_xfs_io
-> > > +
-> > > +# Sync to flush delalloc and commit the current transaction, so fiemap will see
-> > > +# all extents in the fs tree and extent trees and not look at delalloc.
-> > > +sync
-> > > +
-> > > +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
-> > > +
-> > > +# Creating a snapshot.
-> > > +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap | _filter_scratch
-> > > +
-> > > +# We have a snapshot, so now all extents should be reported as shared.
-> > > +echo "Number of shared extents in the whole file: $(count_shared_extents)"
-> > > +
-> > > +# Now COW two files ranges, of 1M each, in the snapshot's file.
-> > > +# So 16 extents should become non-shared after this.
-> > > +#
-> > > +$XFS_IO_PROG -c "pwrite -b 1M 8M 1M" \
-> > > +          -c "pwrite -b 1M 12G 1M" \
-> > > +          $SCRATCH_MNT/snap/foo | _filter_xfs_io
-> > > +
-> > > +# Sync to flush delalloc and commit the current transaction, so fiemap will see
-> > > +# all extents in the fs tree and extent trees and not look at delalloc.
-> > > +sync
-> > > +
-> > > +# Now we should have 16 non-shared extents and 131056 (131072 - 16) shared
-> > > +# extents.
-> > > +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
-> > > +echo "Number of shared extents in the whole file: $(count_shared_extents)"
-> > > +
-> > > +# Check that the non-shared extents are indeed in the expected file ranges (each
-> > > +# with 8 extents).
-> > > +echo "Number of non-shared extents in range [8M, 9M): $(count_not_shared_extents 8M 1M)"
-> > > +echo "Number of non-shared extents in range [12G, 12G + 1M): $(count_not_shared_extents 12G 1M)"
-> > > +
-> > > +# Now delete the snapshot.
-> > > +$BTRFS_UTIL_PROG subvolume delete -c $SCRATCH_MNT/snap | _filter_scratch
-> > > +
-> > > +# We deleted the snapshot and committed the transaction used to delete it (-c),
-> > > +# but all its extents (both metadata and data) are actually only deleted in the
-> > > +# background, by the cleaner kthread. So remount, which wakes up the cleaner
-> > > +# kthread, with a commit interval of 1 second and sleep for 1.1 seconds - after
-> > > +# this we are guaranteed all extents of the snapshot were deleted.
-> > > +_scratch_remount commit=1
-> > > +sleep 1.1
-> > > +
-> > > +# Now all extents should be reported as not shared (131072 extents).
-> > > +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
-> > > +
-> > > +# success, all done
-> > > +status=0
-> > > +exit
-> > > diff --git a/tests/btrfs/276.out b/tests/btrfs/276.out
-> > > new file mode 100644
-> > > index 00000000..3bf5a5e6
-> > > --- /dev/null
-> > > +++ b/tests/btrfs/276.out
-> > > @@ -0,0 +1,16 @@
-> > > +QA output created by 276
-> > > +wrote 17179869184/17179869184 bytes at offset 0
-> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> > > +Number of non-shared extents in the whole file: 131072
-> > > +Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
-> > > +Number of shared extents in the whole file: 131072
-> > > +wrote 1048576/1048576 bytes at offset 8388608
-> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> > > +wrote 1048576/1048576 bytes at offset 12884901888
-> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> > > +Number of non-shared extents in the whole file: 16
-> > > +Number of shared extents in the whole file: 131056
-> > > +Number of non-shared extents in range [8M, 9M): 8
-> > > +Number of non-shared extents in range [12G, 12G + 1M): 8
-> > > +Delete subvolume (commit): 'SCRATCH_MNT/snap'
-> > > +Number of non-shared extents in the whole file: 131072
-> > > --
-> > > 2.35.1
-> > >
-> >
-> 
+-- 
+2.35.1
 
