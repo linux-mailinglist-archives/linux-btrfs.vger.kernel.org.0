@@ -2,276 +2,293 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 353325F74BA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 09:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BE45F755A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 10:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbiJGHcg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Oct 2022 03:32:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41248 "EHLO
+        id S229733AbiJGIeW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Oct 2022 04:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbiJGHcf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 03:32:35 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B41BBBE0C;
-        Fri,  7 Oct 2022 00:32:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1EE8BB82232;
-        Fri,  7 Oct 2022 07:32:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0C40C433D6;
-        Fri,  7 Oct 2022 07:32:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665127950;
-        bh=uQ2cFCmdA5UWx0PRz+7P5thMnOvL9dkKfx4YIQQr81o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vMDy8jV3IOLW3g5mYquWetywNZtpYGc+TGcdbeCr6Hj/TsyPNGze7eZsKfyMEVMlp
-         DLL+Pct4278IQsjVyV5iCPxQQrCsg82EzgslnmQOpdKujbkVF3/E6kcLx5Q9MMbzpb
-         F3RQsZ4xcetc0NabamXAUh81Ie39GrQDUjSpLwgIt4bZPsCGMEIQoXAg/BKhOuh0Uz
-         K4MDw3QTvs7b1n5nNdXkBaKljddD1gpmedGPJw7KwEnV/6oqJs5Bshy62ci5xdqI3/
-         K8NP0dNoL5US5BaVIRx/y7Oek8WH9Np+5wqyFhKivw1/Lpaa1Z0jEPjgbfcqDOEXVm
-         Zr4q0EGIFqA1g==
-Received: by mail-oo1-f44.google.com with SMTP id s125-20020a4a5183000000b0047fbaf2fcbcso834878ooa.11;
-        Fri, 07 Oct 2022 00:32:30 -0700 (PDT)
-X-Gm-Message-State: ACrzQf19zkHkd4aMDaNXuM1m8bM05XVN/O4YxTcSxd9oinxxEkP32wrK
-        MQPosXa17fPHb8m8kMyQtcdPFYEWbzZ0Ho0ewuA=
-X-Google-Smtp-Source: AMsMyM52OhcQiiEebNMfpUZZG/CCk86aFQLzxLk6Uj8sjft39O4FPgNiFJ2jFTSO1UsIM28Dieyoiilo7MWHFmP6YJs=
-X-Received: by 2002:a9d:6b05:0:b0:655:f30b:35b6 with SMTP id
- g5-20020a9d6b05000000b00655f30b35b6mr1572116otp.274.1665127949764; Fri, 07
- Oct 2022 00:32:29 -0700 (PDT)
+        with ESMTP id S229562AbiJGIeV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 04:34:21 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D5BB97AA
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 01:34:20 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2977CiUf031387;
+        Fri, 7 Oct 2022 08:34:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=v86WJkJh37r4+i1M9Z4dPH645pPoT22oHcB4XoD+hjc=;
+ b=AFQXnltNrHEoErnMqx13SXy9ucJKT+S14yj5SB1lNAMOVG3JLBKR1CBkVVxCqRyWHN08
+ lhKJUjVrtYTfFVToN+rS7tu+EuInvvOgzK1Zngp3q0sr9Pqyf1VyZzKP4Ci0F/+Os9rW
+ /OxEBj7u+iJimsaSANXFj1M2CvEDTsuDwfeK7DcB3Hb9GQLtOOjrRrF3ifD049NKkl9U
+ uNpMcyK70mk8I7W500DtXJT675Mi6NO0rx7kO3xM++mfDPKTpuKqRxVzQyGhLqHHljwy
+ A1hsogsVdlMlOQwTn8KxALAj+lKcfij8jeC2Aqa8gmJ0Ri4fPkXnxL3FOt7CSxvkVpJh cQ== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3jxc526tkx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 07 Oct 2022 08:34:12 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 29779vH0002632;
+        Fri, 7 Oct 2022 08:34:08 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2107.outbound.protection.outlook.com [104.47.58.107])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3jxc0cy5ee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 07 Oct 2022 08:34:08 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K4fDhNgPhocuULz2OveHN004JYp6XN8rYyEcX1Ng+OLWwHbjeKhGdR4N+zB+AVq7MWRF3RsQHgT4ubibNx3rZcmtqZgTLXoNdK+7lrldU+70CDnc3H8s4+UOegelKhanjosFVq15v3aePaDC6+NdNevMo0axZoPRFEWOCztqYd46wf9eT8Kd7gf0NbBGjx3DaK6CXpRpbN8cglyw/uUoEjLmlwdXEa6Edz8f8j4ZOCspmNxgxY3uEK3HM9qeWlDwNQBvDt401Fr0flaQLVlCbqNQhD0z6kiUGz24A4u6U6ie+qAj8hGRVoTgDpfzXSvqvzJJ7f5A07iLeKy75iq3xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=v86WJkJh37r4+i1M9Z4dPH645pPoT22oHcB4XoD+hjc=;
+ b=obd0tQL98Tuljpclw996am7KgxmpHXM1J+MqLG70ajrRijk7UC2yK6HK9c5evSM6qBb4Uk/hO0zSPbA9EHJML/6SYnrCCrxEGKPNkSuXcT976H5CYd2ECLar6CXXNhO5tw6ii4l9CZmJrRz04sOn3ewiX3O7BYbFDcv3TA3n5NBjGF22Y+wLlBOin3Yv8KlWbc9ih6ay3nNEv9DfwvIsOrVTkm7TDbj0yHWv85DxRtWX07lebxnv6ZQYSnCajNmRVjl8VRdz3cguHZY8/SE4kl2XPiBTjg8mEikJ3OU01uBTqoXEsW05DiRMF1uv5DD5EAo7V4CW8V5FVROTplPuiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v86WJkJh37r4+i1M9Z4dPH645pPoT22oHcB4XoD+hjc=;
+ b=ckQGnlJUFJGm/iogpGp6GkgFbil1MV0KIUeEuNf4AmUANi7Y41SnXm9K6NzxPcb2D7OUjpY33pNCe/qVyzQc4CB+x4mlSHV12zeA/CXFkzTgqOxgOU7jcf3pWkyhCRdoKWuKIY0BZkxSy6WRJGhUoyyH5xP+XQLSyx0OEUMSSVM=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by BLAPR10MB5025.namprd10.prod.outlook.com (2603:10b6:208:30d::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.28; Fri, 7 Oct
+ 2022 08:34:06 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2515:220f:4d94:63a7]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2515:220f:4d94:63a7%6]) with mapi id 15.20.5676.028; Fri, 7 Oct 2022
+ 08:34:06 +0000
+Message-ID: <ba25f7c1-f469-2e51-7671-a0c79303b976@oracle.com>
+Date:   Fri, 7 Oct 2022 16:34:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v4] btrfs-progs: fsfeatures: properly merge -O and -R
+ options
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <6df72bf7175552fb966a9529783febdf62bce971.1664934441.git.wqu@suse.com>
+ <20221006151811.GM13389@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20221006151811.GM13389@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR04CA0154.apcprd04.prod.outlook.com (2603:1096:4::16)
+ To PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
 MIME-Version: 1.0
-References: <d4bf2bc47e3be1437d5693a0b728e199acb549fd.1664808949.git.fdmanana@suse.com>
- <20221007045912.5ieeylkcxweiaurx@zlang-mailbox>
-In-Reply-To: <20221007045912.5ieeylkcxweiaurx@zlang-mailbox>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 7 Oct 2022 08:31:53 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6UxYf0Oo-U8K0fwWw+Pnv4BN36i+vu3LM9RHM4FUHrGg@mail.gmail.com>
-Message-ID: <CAL3q7H6UxYf0Oo-U8K0fwWw+Pnv4BN36i+vu3LM9RHM4FUHrGg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: test fiemap on large file with extents shared
- through a snapshot
-To:     Zorro Lang <zlang@redhat.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|BLAPR10MB5025:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8b225f8d-e3af-4b04-62cf-08daa83eb25f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Xk1xknIJLdM8ZCDz0+7sjzsP40RuBBSR/cWyJ4XkiWHVDDLGJK8mWB9/Y7S3ki1mNek7YvtQaRJ5jVLeAjjRvjsCkdwh46eLD3Ng/CKBVr7B69slmHICrjY0ufQqcaosRFiEHUDBMvfbME9iaV0iF/jaxYlyuJPkpZx40vLE3EcerI7cP6rJquY5SFiWR+ad75l3ZeXyeamS4+7gD3YE8x0d8RyF+mjE1KBKYgk0Lt4ZBR2bRf8qg9HQV491ANIcJDAWcCwucqGpZQs48G0eoFCvfOm8LZXq0cJI2D3TRaFQgJfLTo4v3s55xmIfeMA/2T/1rTxSfavSqBnq1+3BYwy36Tzs3Ugto1TGhjbEyZCV9pASzatqgDySyIg9qW3V75s89ZrshfMgSEMxV+7ewfL0Mg0TFR8jGerMeK6Y2My/YRDOiuo9qfV4I9r3uooSjpK5LPsihv0hgg2Vi8kuZ0QbB+RxegCGtQ1wj1waRd+zY9roboGu3G/vFEkz5YPPWqKEsCt0uRvGXNRAJvNWwWOS68TrP/eS3kd5SrtDV0gNyQPcdBFbCieJLZq0Df2sQ6PeDl4H682LW7OF8+z73mZMSFVXnwGjf3beGYUxNB+pG3Es9I1lyCW6RBzF4Ddw+lAxHwSg0eKDyWGeRMRA7FUvbC/4WzsZx++jff3Kqvj6L5Fse+dKbbZELvnTxW+SsdTufbMWPXVcc6LW2mPontEpVEEtfyjoD+x8CuxUxnUo47qc/hdCQKf6iSi8mpC5Vqtsaq97iufY7JSQnrDDfOT8coD8d7Uk/dJp7vyJ64V2bZXzX4iCIWJ2AK0f8has
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(39860400002)(346002)(396003)(136003)(376002)(451199015)(2906002)(44832011)(5660300002)(966005)(6486002)(316002)(36756003)(478600001)(38100700002)(66946007)(8676002)(6666004)(83380400001)(6506007)(66476007)(6916009)(66556008)(4326008)(86362001)(2616005)(8936002)(41300700001)(31686004)(53546011)(26005)(6512007)(186003)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MG9RN3M4Sno1cm1KcUhlbFRxVFA4WHYxTEFrME4wZmNvc3YxbHNJQys5VU1J?=
+ =?utf-8?B?VHlLZnZna0xwR2VuRkZSb2loUnhKeWV1STNYZWNwbU9qLzFWRUFFaTZWMW5F?=
+ =?utf-8?B?aDdTNTM2cnhDSXN0UjdWc3pUNEJVUFJxYTZoOHV3SnBwNXdUeElnMCtwNmxE?=
+ =?utf-8?B?L2RTbEpNMnc2UkJubjhQNUN3enBqVjQva09hZHVzSUJWRHRZelpxV1UvNXpZ?=
+ =?utf-8?B?aEVwSVBNbU5YTDlMQU40TExlYVB6ZUtuZjJySjZFTzYwQ0NEU0dhTkZieG1v?=
+ =?utf-8?B?RVpVK2o2SFYxNWRNWFRzdjA4ZldYSnl5Z2JwSlZMWm5ya2ZNWko4a2RycHFN?=
+ =?utf-8?B?MTY2SzhELy92eFNQeWhtaXVBc3RLajJHTVBIeXhOZVB0VkhxenlkQlA3VHBY?=
+ =?utf-8?B?NWl5bTNiRjlUem56aStzOVZDOVBxMXdPRUhGVWtyQzF4aUV6eTRQcE0ycnpJ?=
+ =?utf-8?B?aTV2c2kxVDFFRkFBRlVWZmRKTTgvMkNsU1Y1a0lycnpKd3ZxL1JZZ0NaUzJ4?=
+ =?utf-8?B?WStnei9Td24rczRxOVhXZG5RRUFGSHdDMUlxRXNvTG9UMExDdkd4MlJoWkZw?=
+ =?utf-8?B?Z3NnQ1ZxcktSYnZNVXNtV1YwMWFFVyttQmNITDlveHJBQ25NalFBaGhQZXRC?=
+ =?utf-8?B?dnNtYnhjSjJ0SFBCMzZqUThBd3l5MFY3RlZBN0tsbDNUNzI1Sm1JMHhyV1N6?=
+ =?utf-8?B?bERTbXh3cUFscDZIUVZSQlVNcDREdk1wN1FPL29Gb0haVVR0aGwyMmlKeGI0?=
+ =?utf-8?B?VnJzUWlHTnUvc1JPSi84VUtPQVJONHFVaVgyM01qcUptS1VpT1A5a1dwVU9i?=
+ =?utf-8?B?R2VxUWVKZjdLcjF2NWo5dStqVWk2S1I1UWtJbTVuN0tCa1pSUEduOVhPNERT?=
+ =?utf-8?B?NXVYbFBnUXk1ZjcxYzZzbktkNVVaTVR3b3RvNXZIcTZHMHJXQ2N1WU9lWGY5?=
+ =?utf-8?B?cTVjUFprL243TlF4ajdXeCtiTjcwVjhRZVVqc0c2c3AzZTJ3ZDdQTktmWWsz?=
+ =?utf-8?B?by9peWRuc3kvcjA3eVdhb01XSGYyTWduUU5BQW50VWdCV2lmbkdmWW1GK1c0?=
+ =?utf-8?B?UGYxaG1hbUI1VFFqMjBNSHdhY3VhNGFmUmpjakNyeUxhK0N4VTlIb0s4bk4r?=
+ =?utf-8?B?Rkg4cjdXYzB1MDRUb3B1ZVpSMElnd052bE5pcXdXRVNRMTh2Ukh2RkpLWXhv?=
+ =?utf-8?B?RGdVenBxeWwrcENoR3RFQlc5dGtGcmtzZ1RFd0JJMlRuZkVJa0o3TlA5djZl?=
+ =?utf-8?B?Yjk1cU9WUk5zN2ZEZ0hYU0dxWUFlYlRaaXdPUTlZTFZwaXBhMzN2a3VCQXJW?=
+ =?utf-8?B?M01BQStYcncxRHFUdXFvZTltejZoNmxybWZEblJsSU5vcW5LbHA4UmVGUXZQ?=
+ =?utf-8?B?NHJsMGNDVXVtUGJlMWloV3phR24xV0RvTzhmTXAyRGltUXVpbnkvOTNIeGpr?=
+ =?utf-8?B?Yy9WeVVwQ3VraWdsTG5IUzhXbmxmQ29NRFZzSUlUczFoYzFKc0w0ZXRxS0lT?=
+ =?utf-8?B?ZTlEYlRqMWc3VE9vcFZpTU9oRlB1aDRYM0ljVVJVazVHUGl4QVR2Y1E5SFV6?=
+ =?utf-8?B?Uzl1eW5la2Fvb2hvRU5rWkVtMnorbUxJVVc5dkcyM1U1cWlWZFFjNlRpQThl?=
+ =?utf-8?B?aHBVMzFWdm9hN1gxVStoVUNPNlF1Sy82bHdYS284a0ZiMFpsRkxseU9LT3oz?=
+ =?utf-8?B?OWd6dFlmMjdzODdSait3eGNqcnpLR2RTeTlEOHU2RGNKMUp0enNUNzd3UDlD?=
+ =?utf-8?B?dS9Ta0pHK0pJbVhFRVhxdjJPSjRwNUgrUWF6Uko5MTU3cjFXQ2pBOHJxREdR?=
+ =?utf-8?B?QU5BUGdBdldzVGMydnhTeUpNbGJuUHdlZHhXbDdoWElydG43UEJYV1duSmVu?=
+ =?utf-8?B?NWJBV3lpNnlSb1JDYVlmREZ3WjJKNlFSK0ZQK09NaXoyT0EvUlRvRUplU2Np?=
+ =?utf-8?B?a3NQV1N3UktsaFpJUDVxOGNuRUNJaTVaeHdHdFA2dU02VHA1VC9BQXNOcUZ0?=
+ =?utf-8?B?S0dJRTJmeDluMFRzUjNjcFJqZ0VqUU5KTlczS0dUREtNMkpqTytOLy9uZHNz?=
+ =?utf-8?B?NGhORUhQaGFGMEZpV2N6YTF1NTd6T0VLNFpPZjNmSzhEN2w1c0xJUGhtdkh1?=
+ =?utf-8?Q?qft/EOFDaSs9hcFoSPWV3k9Y7?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b225f8d-e3af-4b04-62cf-08daa83eb25f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2022 08:34:06.3661
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XAztvF87WrQa0NgtrVBevo1LZLGs9b9M9XtitUVpUNoPN/m3j3+OERTFuRpVs9Z6+VlB/Jeo6E085HboMa0h2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5025
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-10-06_05,2022-10-06_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2209130000
+ definitions=main-2210070051
+X-Proofpoint-GUID: 8bs9v98h1H-TMReQEou7__bM4Rqm8Hh1
+X-Proofpoint-ORIG-GUID: 8bs9v98h1H-TMReQEou7__bM4Rqm8Hh1
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 7, 2022 at 5:59 AM Zorro Lang <zlang@redhat.com> wrote:
->
-> On Mon, Oct 03, 2022 at 03:58:17PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > Verify that fiemap correctly reports the sharedness of extents for a file
-> > with a very large number of extents, spanning many b+tree leaves in the fs
-> > tree, and when the file's subvolume was snapshoted.
-> >
-> > Currently this passes on all kernel releases and its purpose is to prevent
-> > and detect regressions in the future, as this actually happened during
-> > recent development on the btrfs' fiemap related code. With this test we
-> > now have better coverage for fiemap when a file is shared through a
-> > snapshot.
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >  doc/group-names.txt |   1 +
-> >  tests/btrfs/276     | 123 ++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/btrfs/276.out |  16 ++++++
-> >  3 files changed, 140 insertions(+)
-> >  create mode 100755 tests/btrfs/276
-> >  create mode 100644 tests/btrfs/276.out
-> >
-> > diff --git a/doc/group-names.txt b/doc/group-names.txt
-> > index ef411b5e..6cc9af78 100644
-> > --- a/doc/group-names.txt
-> > +++ b/doc/group-names.txt
-> > @@ -47,6 +47,7 @@ eio                 IO error reporting
-> >  encrypt                      encrypted file contents
-> >  enospc                       ENOSPC error reporting
-> >  exportfs             file handles
-> > +fiemap                       fiemap ioctl
->
-> Hi,
->
-> There're many fiemap related cases, if we'd like to bring in this new group,
-> I hope we can use a separated patch to do this job completely, include adding
-> this group name to all related cases. We can talk about it in another patch,
-> this patch can force on its testing.
+On 06/10/2022 23:18, David Sterba wrote:
+> On Wed, Oct 05, 2022 at 09:48:07AM +0800, Qu Wenruo wrote:
+>> [BUG]
+>> Commit "btrfs-progs: prepare merging compat feature lists" tries to
+>> merged "-O" and "-R" options, as they don't correctly represents
+>> btrfs features.
+>>
+>> But that commit caused the following bug during mkfs for experimental
+>> build:
+>>
+>>    $ mkfs.btrfs -f -O block-group-tree  /dev/nvme0n1
+>>    btrfs-progs v5.19.1
+>>    See http://btrfs.wiki.kernel.org for more information.
+>>
+>>    ERROR: superblock magic doesn't match
+>>    ERROR: illegal nodesize 16384 (not equal to 4096 for mixed block group)
+>>
+>> [CAUSE]
+>> Currently btrfs_parse_fs_features() will return a u64, and reuse the
+>> same u64 for both incompat and compat RO flags for experimental branch.
+>>
+>> This can easily leads to conflicts, as
+>> BTRFS_FEATURE_INCOMPAT_MIXED_BLOCK_GROUP and
+>> BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE both share the same bit
+>> (1 << 2).
+>>
+>> Thus for above case, mkfs.btrfs believe it has set MIXED_BLOCK_GROUP
+>> feature, but what we really want is BLOCK_GROUP_TREE.
+>>
+>> [FIX]
+>> Instead of incorrectly re-using the same bits in btrfs_feature, split
+>> the old flags into 3 flags:
+>>
+>> - incompat_flag
+>> - compat_ro_flag
+>> - runtime_flag
+>>
+>> The first two flags are easy to understand, the corresponding flag of
+>> each feature.
+>> The last runtime_flag is to compensate features which doesn't have any
 
-Sorry, it's not entirely clear to me, but are you saying that you're
-fine with the patch as it is,
-or you want the addition of the fiemap group done in a separate patch
-(that would also add
-the group to all other tests that exercise fiemap)?
+  I read the commit 5ac6e02665a6 ("btrfs-progs: mkfs: add -R|--runtime-
+  features option") too. But I still can't comprehend the problem that
+  the runtime flags solved; because the -O option enables the same
+  runtime features.
 
-Do you want me to make any changes to this patch?
+>> on-disk flag set, like QUOTA and LIST_ALL.
 
-Thanks.
+  LIST_ALL is not a (kernel) feature.
 
->
-> Thanks,
-> Zorro
->
-> >  filestreams          XFS filestreams allocator
-> >  freeze                       filesystem freeze tests
-> >  fsck                 general fsck tests
-> > diff --git a/tests/btrfs/276 b/tests/btrfs/276
-> > new file mode 100755
-> > index 00000000..5946dad9
-> > --- /dev/null
-> > +++ b/tests/btrfs/276
-> > @@ -0,0 +1,123 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
-> > +#
-> > +# FS QA Test 276
-> > +#
-> > +# Verify that fiemap correctly reports the sharedness of extents for a file with
-> > +# a very large number of extents, spanning many b+tree leaves in the fs tree,
-> > +# and when the file's subvolume was snapshoted.
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto snapshot compress fiemap
-> > +
-> > +. ./common/filter
-> > +
-> > +_supported_fs btrfs
-> > +_require_scratch
-> > +_require_xfs_io_command "fiemap" "ranged"
-> > +
-> > +_scratch_mkfs >> $seqres.full 2>&1
-> > +# We use compression because it's a very quick way to create a file with a very
-> > +# large number of extents (compression limits the maximum extent size to 128K)
-> > +# and while using very little disk space.
-> > +_scratch_mount -o compress
-> > +
-> > +fiemap_test_file()
-> > +{
-> > +     local offset=$1
-> > +     local len=$2
-> > +
-> > +     # Skip the first two lines of xfs_io's fiemap output (file path and
-> > +     # header describing the output columns).
-> > +     $XFS_IO_PROG -c "fiemap -v $offset $len" $SCRATCH_MNT/foo | tail -n +3
-> > +}
-> > +
-> > +# Count the number of shared extents for the whole test file or just for a given
-> > +# range.
-> > +count_shared_extents()
-> > +{
-> > +     local offset=$1
-> > +     local len=$2
-> > +
-> > +     # Column 5 (from xfs_io's "fiemap -v" command) is the flags (hex field).
-> > +     # 0x2000 is the value for the FIEMAP_EXTENT_SHARED flag.
-> > +     fiemap_test_file $offset $len | \
-> > +             $AWK_PROG --source 'BEGIN { cnt = 0 }' \
-> > +                       --source '{ if (and(strtonum($5), 0x2000)) cnt++ }' \
-> > +                       --source 'END { print cnt }'
-> > +}
-> > +
-> > +# Count the number of non shared extents for the whole test file or just for a
-> > +# given range.
-> > +count_not_shared_extents()
-> > +{
-> > +     local offset=$1
-> > +     local len=$2
-> > +
-> > +     # Column 5 (from xfs_io's "fiemap -v" command) is the flags (hex field).
-> > +     # 0x2000 is the value for the FIEMAP_EXTENT_SHARED flag.
-> > +     fiemap_test_file $offset $len | \
-> > +             $AWK_PROG --source 'BEGIN { cnt = 0 }' \
-> > +                       --source '{ if (!and(strtonum($5), 0x2000)) cnt++ }' \
-> > +                       --source 'END { print cnt }'
-> > +}
-> > +
-> > +# Create a 16G file as that results in 131072 extents, all with a size of 128K
-> > +# (due to compression), and a fs tree with a height of 3 (root node at level 2).
-> > +# We want to verify later that fiemap correctly reports the sharedness of each
-> > +# extent, even when it needs to switch from one leaf to the next one and from a
-> > +# node at level 1 to the next node at level 1.
-> > +#
-> > +$XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MNT/foo | _filter_xfs_io
-> > +
-> > +# Sync to flush delalloc and commit the current transaction, so fiemap will see
-> > +# all extents in the fs tree and extent trees and not look at delalloc.
-> > +sync
-> > +
-> > +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
-> > +
-> > +# Creating a snapshot.
-> > +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap | _filter_scratch
-> > +
-> > +# We have a snapshot, so now all extents should be reported as shared.
-> > +echo "Number of shared extents in the whole file: $(count_shared_extents)"
-> > +
-> > +# Now COW two files ranges, of 1M each, in the snapshot's file.
-> > +# So 16 extents should become non-shared after this.
-> > +#
-> > +$XFS_IO_PROG -c "pwrite -b 1M 8M 1M" \
-> > +          -c "pwrite -b 1M 12G 1M" \
-> > +          $SCRATCH_MNT/snap/foo | _filter_xfs_io
-> > +
-> > +# Sync to flush delalloc and commit the current transaction, so fiemap will see
-> > +# all extents in the fs tree and extent trees and not look at delalloc.
-> > +sync
-> > +
-> > +# Now we should have 16 non-shared extents and 131056 (131072 - 16) shared
-> > +# extents.
-> > +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
-> > +echo "Number of shared extents in the whole file: $(count_shared_extents)"
-> > +
-> > +# Check that the non-shared extents are indeed in the expected file ranges (each
-> > +# with 8 extents).
-> > +echo "Number of non-shared extents in range [8M, 9M): $(count_not_shared_extents 8M 1M)"
-> > +echo "Number of non-shared extents in range [12G, 12G + 1M): $(count_not_shared_extents 12G 1M)"
-> > +
-> > +# Now delete the snapshot.
-> > +$BTRFS_UTIL_PROG subvolume delete -c $SCRATCH_MNT/snap | _filter_scratch
-> > +
-> > +# We deleted the snapshot and committed the transaction used to delete it (-c),
-> > +# but all its extents (both metadata and data) are actually only deleted in the
-> > +# background, by the cleaner kthread. So remount, which wakes up the cleaner
-> > +# kthread, with a commit interval of 1 second and sleep for 1.1 seconds - after
-> > +# this we are guaranteed all extents of the snapshot were deleted.
-> > +_scratch_remount commit=1
-> > +sleep 1.1
-> > +
-> > +# Now all extents should be reported as not shared (131072 extents).
-> > +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
-> > +
-> > +# success, all done
-> > +status=0
-> > +exit
-> > diff --git a/tests/btrfs/276.out b/tests/btrfs/276.out
-> > new file mode 100644
-> > index 00000000..3bf5a5e6
-> > --- /dev/null
-> > +++ b/tests/btrfs/276.out
-> > @@ -0,0 +1,16 @@
-> > +QA output created by 276
-> > +wrote 17179869184/17179869184 bytes at offset 0
-> > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> > +Number of non-shared extents in the whole file: 131072
-> > +Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
-> > +Number of shared extents in the whole file: 131072
-> > +wrote 1048576/1048576 bytes at offset 8388608
-> > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> > +wrote 1048576/1048576 bytes at offset 12884901888
-> > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> > +Number of non-shared extents in the whole file: 16
-> > +Number of shared extents in the whole file: 131056
-> > +Number of non-shared extents in range [8M, 9M): 8
-> > +Number of non-shared extents in range [12G, 12G + 1M): 8
-> > +Delete subvolume (commit): 'SCRATCH_MNT/snap'
-> > +Number of non-shared extents in the whole file: 131072
-> > --
-> > 2.35.1
-> >
->
+
+>> And since we're no longer using a single u64 as features, we have to
+>> introduce a new structure, btrfs_mkfs_features, to contain above 3
+>> flags.
+>>
+>> This also mean, things like default mkfs features must be converted to
+>> use the new structure, thus those old macros are all converted to
+>> const static structures:
+>>
+>> - BTRFS_MKFS_DEFAULT_FEATURES + BTRFS_MKFS_DEFAULT_RUNTIME_FEATURES
+>>    -> btrfs_mkfs_default_features
+>>
+>> - BTRFS_CONVERT_ALLOWED_FEATURES -> btrfs_convert_allowed_features
+>>
+>> And since we're using a structure, it's not longer as easy to implement
+>> a disallowed mask.
+>>
+>> Thus functions with @mask_disallowed are all changed to using
+>> an @allowed structure pointer (which can be NULL).
+>>
+>> Finally if we have experimental features enabled, all features can be
+>> specified by -O options, and we can output a unified feature list,
+>> instead of the old split ones.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> Changelog:
+>> v2:
+>> - Fix convert test failure due to missing allowed features
+>>
+>> v3:
+>> - Fix a bug that we can not unset free-space-tree for non-experimental
+>>    build
+>>
+>> - Fix a bug that free-space-tree compat RO flags are not properly set
+>>    for non-experimental build
+>>
+>> v4:
+>> - Address David's concern of new BTRFS_FEATURE_GENERIC_* defines
+>>    By introducing a new btrfs_mkfs_features structure, so we don't need
+>>    extra re-definitions.
+>>
+>>    The amount of code change is still the same as v3, since we have a
+>>    larger interface change.
+> 
+> Thanks, this version looks good to me and maybe even better than what I
+> intended to implement myself. The amount of changed lines is high but
+> the core changes are clear and the rest is API update. 
+
+
+> Added to devel.
+
+Still, there is something to take care of, I rebase to devel.
+
+
+$ mkfs.btrfs -f -O extent-tree-v2 /dev/nvme0n1
+
+ERROR: superblock magic doesn't match
+NOTE: several default settings have changed in version 5.15, please make 
+sure
+       this does not affect your deployments:
+       - DUP for metadata (-m dup)
+       - enabled no-holes (-O no-holes)
+       - enabled free-space-tree (-R free-space-tree)
+
+Segmentation fault (core dumped)
+
+
+
+static int cache_block_group(struct btrfs_root *root,
+                              struct btrfs_block_group *block_group)
+{
+         struct btrfs_path *path;
+         int ret;
+         struct btrfs_key key;
+         struct extent_buffer *leaf;
+         struct extent_io_tree *free_space_cache;
+         int slot;
+         u64 last;
+         u64 hole_size;
+
+         if (!block_group)
+                 return 0;
+
+         root = btrfs_extent_root(root->fs_info, 0);  <--- root is NULL.
+
+
+
+
