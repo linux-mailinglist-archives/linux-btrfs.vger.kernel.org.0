@@ -2,207 +2,276 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE065F7367
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 05:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AED5F73C8
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 06:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbiJGDkj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Oct 2022 23:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
+        id S229544AbiJGE7Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Oct 2022 00:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbiJGDkh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Oct 2022 23:40:37 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBCEA2213
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Oct 2022 20:40:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1665114019;
-        bh=zRSKYX54bGq/ZHfG6UUlZYo0vp0bfrFlbPnFIA5qTTw=;
-        h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:In-Reply-To;
-        b=LCW6NkVb0n7sTYIoURpM80cKquqpChw8fSR33++jJHlsRhG/CiFEZWzqQujYscU2M
-         F4dRJcq9Q57PpoXqy6wSK0eSi24wE1S/6q0s/DOEFSwoWyZr1H8NQomO0EQCPwppG/
-         fAo3gCZyr6w/zW+a9rZ9ddhsha7xyRWAhcFHFVrI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MEUz4-1oQhmS3eyg-00Fx03; Fri, 07
- Oct 2022 05:40:19 +0200
-Message-ID: <90343ff8-6545-4573-e563-9737c640fdfc@gmx.com>
-Date:   Fri, 7 Oct 2022 11:40:14 +0800
+        with ESMTP id S229498AbiJGE7W (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 00:59:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97ACA112AAB
+        for <linux-btrfs@vger.kernel.org>; Thu,  6 Oct 2022 21:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1665118759;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qlqmDztLmgZt8YeXBvrPBMeuvFB6cf0PgJTdrIYKJ2U=;
+        b=GUN7SzPDxQmjaE1dS5AN/kbCPxLgd/MLvfEhbtvmN8uOAJK3JIqUI2JG0uB2ahXU5OIj3a
+        cGVTl8WG6yzWZR53bVFReUyujwfwVVg+/OB0UTGP49Lb6TuPvxoyH1OQnJb57gWuXfQCJR
+        cs2Xt06OvW1c1aLr3cZ3U7y97381AA8=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-613-tFwsdA_3OEupGEhtFcXZQA-1; Fri, 07 Oct 2022 00:59:18 -0400
+X-MC-Unique: tFwsdA_3OEupGEhtFcXZQA-1
+Received: by mail-qv1-f72.google.com with SMTP id kr13-20020a0562142b8d00b004b1d5953a2cso2356959qvb.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Oct 2022 21:59:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=qlqmDztLmgZt8YeXBvrPBMeuvFB6cf0PgJTdrIYKJ2U=;
+        b=6gpJo1t/l0gEf2TFQV3D9NqLp5luKIitD1t6KhWtx+nH7Dekw5qHvBeQEk3IEvn6aH
+         3rspSj0G9734FQrxlNWie633s/iQxCp4wxzI4TOmiX3sPWd45tQ413rGjIU3aXYlw47r
+         dmnGode1mKxiTl1KptGj87n9jKlRe/5/X3mOCpsvI23mZhbMGayIYd+HisL+wWMnNX/G
+         /0w53th+rHLMpl4uDbOvmBSrEZhctAiLwZXdzmvXs6eXA5+iv8fYPl4dKP11AxTo9sUZ
+         kaABcKuWXYdd9N+NMFqMaWPrZSZ4pWAWv94ufB2lT5nZERN0ozJ0Upb8dtnKjdhWI+6C
+         kPpA==
+X-Gm-Message-State: ACrzQf3q8clP9p1TvFembpsOp29KQzQ5uwLDO7xsix1NsHJmvEbHLZVJ
+        plq8VZbpkGG54ayQHgN92Q/5tWsrkju7GKfjfsKLATBvl8RxR1gC4/BNdFNgKnoxHTZsy4yjXfb
+        NdzLO2oA1eEnsHMMzq6x8nP4=
+X-Received: by 2002:a05:622a:134a:b0:35b:b5fa:5e12 with SMTP id w10-20020a05622a134a00b0035bb5fa5e12mr3028788qtk.48.1665118758024;
+        Thu, 06 Oct 2022 21:59:18 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM6Wpt9cKpWbyai2O6SzI9n/J9ZYZklr04JGFw1pSKTB9iJUqPyHkq1iq5ND+PZAEsJZLXfubQ==
+X-Received: by 2002:a05:622a:134a:b0:35b:b5fa:5e12 with SMTP id w10-20020a05622a134a00b0035bb5fa5e12mr3028778qtk.48.1665118757679;
+        Thu, 06 Oct 2022 21:59:17 -0700 (PDT)
+Received: from zlang-mailbox ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id c24-20020a05620a269800b006b5cc25535fsm1026996qkp.99.2022.10.06.21.59.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Oct 2022 21:59:17 -0700 (PDT)
+Date:   Fri, 7 Oct 2022 12:59:12 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     fdmanana@kernel.org
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: test fiemap on large file with extents shared
+ through a snapshot
+Message-ID: <20221007045912.5ieeylkcxweiaurx@zlang-mailbox>
+References: <d4bf2bc47e3be1437d5693a0b728e199acb549fd.1664808949.git.fdmanana@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH 1/5] btrfs: 1G falloc extents
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     Wang Yugui <wangyugui@e16-tech.com>, Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Filipe Manana <fdmanana@kernel.org>
-References: <cover.1664999303.git.boris@bur.io>
- <cace4a8be466b9c4fee288c768c5384988c1fca8.1664999303.git.boris@bur.io>
- <20221007112306.F62D.409509F4@e16-tech.com>
- <d52b0916-66a9-e0a7-a299-93df7c90cc4b@gmx.com>
-In-Reply-To: <d52b0916-66a9-e0a7-a299-93df7c90cc4b@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lc5s9IJReG65jtD+Uyn33FLNUD7vIAnVAOs5JcpxuVMr03VPwtM
- mD8axixHQ/a8Ic1BG1gArmex1/c+WRTVcST8+hnL+8d2Ft2UzjL1zJpCrU2sur387c+RxbQ
- PgFHP2Y6i8V2ZwWKWhe2aepm/t2pSbbYrGyw36rEQGq/TdS5VQuP3AXiiOGEdvC1zoL4PrM
- ce9+9UT7CX3SCff0Dcg5w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WG//ojSC/MM=:k5jI7yqR4rZ4cWts3auSwP
- KFfGMTvsWLWpJBWrEiZGncesI3BAZSihf6Q1Cq5lqp4eWhjUrY2gX5dbHbZstSUlvwxaIItSg
- feayScxLtB1VnBnzWINJdO8oh0x4AA5vCJoJiPszdMDqRvFGC92YnJsq1QOFVFxQlYNPeoPLC
- bFN8FImjqxn/zj/M/4XqPxvWvkvZ9jDFSbjMSD5R2IcGjdLkn8qZkgM515D0GE0HQG0GH0gXy
- Fd3ixlhYqFu/YBGn1EbL5/19bihmggqSJ0PtPKNdykJ8PEGQVR42fS9jIrEKChdv7XcUO+dPf
- xwhrv/kTCvoRkxfxrXsFUvd1qkeqDfZQN7Xk0e8lRhMJhNniEtdRbBwj7GGm2zHUlx2PsiZyb
- 4LxlGxwzGCRlcn45yZpozqMO9zQHeavEX38S0P3Q6tP2bgIfjxpWGJ33o/44QJXWQ74Eo15sY
- B2dYk3xPnrrMat2YTZMY5dx6xOwqeiyHT7XRVnfJrGguvYzkws3JYrT6V6ZhMWlvvsqRzHyiQ
- Ktu7nwoagSkBj/eT9nnyP3qdeHqgOVXBxto2XxKVZ/oGUZN2C2QCtUtfRkNGB6AWlPDY4Am7S
- VayIP9TWdC/cLlzfpyyiH+q/pOv/YA1Y8TZ9r35YsyO+Gr8imgR/0Fp5H5PLOD1AV793lQ4+f
- wpqSHI6maUATVqWqd7xzgbCmL9kyw0nX+6YfYjfq5YM3uYXdU1lcmaTJ7J7RycQkeGfRvFbBs
- S3lg0eFFNuH98wT6uedP18BDZU8dkp5Joj2IkZJ7Zmyg5n5BrwzkayGrZ5DsZ4Gp2otgCCexO
- rLO7OSkTOlShpzDshhm9uk49DPGI8LAjDcZhlY77ktyOt4i8AIhXCPAUgqdeXeiYnPzfFFArM
- SHWLVatz7ujBOm5AVFViBTyKh3E7URUQ8l6vBCDtV+GiN+gC5DtB+RI6B4MfWmm9S7tQ8T1Gi
- HT5NJRpAGJPK1qQoY0dSwEIIiEoY/995eR5BIhC9hZAm1ayADPbX5imSa3uH2YXppsfE9Wpji
- rDgFK2E4e9ije+5m1qerj1ZGg02rxs8M4TY/FJrV46/pfslJXJS3u/NjVvE5ywt5tocOI24Xy
- +8Igv+DjzUBOrU6Fbq6D573KP9zpY+gewN0Y9tbcUtTBuTOPPEYoj1jFDOuaXjDfhVcMX1c5a
- Sjb93riKroilLslcEywXBPYE7/NNnkqKWOmztItR3cJAjeIcnzIlZclog6HLl0p+zph1V7bhn
- fnsHsMzHeIkkFjgVZ0eYvH0Nxu2iLUgU4RvCSi1RoNtUgZQauV92NO5XFCEGd1iXQnVcZNCpF
- nP7GCHhBpvy7v1Zn/Z78kNK/OtX2qgEZZLpNnscYKpmgQYikJXP9WQ3Z2DMvlETlX8cn4n96i
- w/K8T5PRE324qsbtECwE/LBcIfURXmTgdw24h0oZlKPxzOpZCcdqCHbestWXktObBmUl5aoVh
- QrIyQX956RCRiUCs1ZrMxkn3NQH3vuSB0s4wVSlr52kkAto9f6D9N+WRazpcy06y18DFZnT4k
- MR9zJ+/9HfwtyweqrEnZRaY1OYFEQTvq9BBXXMksRbdsk
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d4bf2bc47e3be1437d5693a0b728e199acb549fd.1664808949.git.fdmanana@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Oct 03, 2022 at 03:58:17PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Verify that fiemap correctly reports the sharedness of extents for a file
+> with a very large number of extents, spanning many b+tree leaves in the fs
+> tree, and when the file's subvolume was snapshoted.
+> 
+> Currently this passes on all kernel releases and its purpose is to prevent
+> and detect regressions in the future, as this actually happened during
+> recent development on the btrfs' fiemap related code. With this test we
+> now have better coverage for fiemap when a file is shared through a
+> snapshot.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  doc/group-names.txt |   1 +
+>  tests/btrfs/276     | 123 ++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/276.out |  16 ++++++
+>  3 files changed, 140 insertions(+)
+>  create mode 100755 tests/btrfs/276
+>  create mode 100644 tests/btrfs/276.out
+> 
+> diff --git a/doc/group-names.txt b/doc/group-names.txt
+> index ef411b5e..6cc9af78 100644
+> --- a/doc/group-names.txt
+> +++ b/doc/group-names.txt
+> @@ -47,6 +47,7 @@ eio			IO error reporting
+>  encrypt			encrypted file contents
+>  enospc			ENOSPC error reporting
+>  exportfs		file handles
+> +fiemap			fiemap ioctl
 
+Hi,
 
-On 2022/10/7 11:29, Qu Wenruo wrote:
->
->
-> On 2022/10/7 11:23, Wang Yugui wrote:
->> Hi,
->>
->>> When doing a large fallocate, btrfs will break it up into 256MiB
->>> extents. Our data block groups are 1GiB, so a more natural maximum siz=
-e
->>> is 1GiB, so that we tend to allocate and fully use block groups rather
->>> than fragmenting the file around.
->>>
->>> This is especially useful if large fallocates tend to be for "round"
->>> amounts, which strikes me as a reasonable assumption.
->>>
->>> While moving to size classes reduces the value of this change, it is
->>> also good to compare potential allocator algorithms against just 1G
->>> extents.
->>
->>
->> I wrote a 32G file, and the compare the result of 'xfs_io -c fiemap'.
->>
->> dd conv=3Dfsync bs=3D1024K count=3D32K if=3D/dev/zero of=3D/mnt/test/dd=
-.txt
->>
->> When write to a btrfs filesystem
->> + xfs_io -c fiemap /mnt/test/dd.txt
->> /mnt/test/dd.txt:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0: [0..262143]: 688358=
-4..7145727
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1: [262144..524287]: 6=
-367232..6629375
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2: [524288..8126463]: =
-7145728..14747903
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3: [8126464..8388607]:=
- 15272064..15534207
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4: [8388608..8650751]:=
- 14755840..15017983
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5: [8650752..16252927]=
-: 15534208..23136383
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6: [16252928..67108863=
-]: 23144448..74000383
->>
->> When write to a xfs filesystem
->> + xfs_io -c fiemap /mnt/test/dd.txt
->> /mnt/test/dd.txt:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0: [0..16465919]: 256.=
-.16466175
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1: [16465920..31821623=
-]: 16466176..31821879
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2: [31821624..41942903=
-]: 31821880..41943159
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3: [41942904..58720111=
-]: 47183872..63961079
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4: [58720112..67108863=
-]: 63961080..72349831
->
-> Don't waste your time on fiemap output. Btrfs can do merge fie result at
-> write time.
+There're many fiemap related cases, if we'd like to bring in this new group,
+I hope we can use a separated patch to do this job completely, include adding
+this group name to all related cases. We can talk about it in another patch,
+this patch can force on its testing.
 
-s/write/fiemap emit/
+Thanks,
+Zorro
 
->
-> # dd if=3D/dev/zero=C2=A0 bs=3D4k count=3D1024 oflag=3Dsync of=3D/mnt/bt=
-rfs/file
->
-> Above command should result all file extents to be 4K, and can be easily
-> verified through dump tree.
->
->  =C2=A0=C2=A0=C2=A0=C2=A0item 197 key (258 EXTENT_DATA 4186112) itemoff =
-5789 itemsize 53
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 generation 8 type 1 (regular=
-)
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent data disk byte 220119=
-04 nr 4096
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent data offset 0 nr 4096=
- ram 4096
->
-> But fiemap will only report one single extent:
->
-> # xfs_io -c "fiemap -v" /mnt/btrfs/file
-> /mnt/btrfs/file:
->  =C2=A0EXT: FILE-OFFSET=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BLOCK-RANGE=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 TOTAL FLAGS
->  =C2=A0=C2=A0 0: [0..8191]:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 34816..4=
-3007=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8192=C2=A0=C2=A0 0x1
->
->>
->> the max of xfs is about 8G, but the max of btrfs is
->> about 25G('6: [16252928..67108863]'?
->>
->> Best Regards
->> Wang Yugui (wangyugui@e16-tech.com)
->> 2022/10/07
->>
->>
->>
->>> Signed-off-by: Boris Burkov <boris@bur.io>
->>> ---
->>> =C2=A0 fs/btrfs/inode.c | 2 +-
->>> =C2=A0 1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->>> index 45ebef8d3ea8..fd66586ae2fc 100644
->>> --- a/fs/btrfs/inode.c
->>> +++ b/fs/btrfs/inode.c
->>> @@ -9884,7 +9884,7 @@ static int __btrfs_prealloc_file_range(struct
->>> inode *inode, int mode,
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (trans)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 own_trans =3D f=
-alse;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 while (num_bytes > 0) {
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cur_bytes =3D min_t(u64, n=
-um_bytes, SZ_256M);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cur_bytes =3D min_t(u64, n=
-um_bytes, SZ_1G);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cur_bytes =3D m=
-ax(cur_bytes, min_size);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If we a=
-re severely fragmented we could end up with really
->>> --
->>> 2.37.2
->>
->>
+>  filestreams		XFS filestreams allocator
+>  freeze			filesystem freeze tests
+>  fsck			general fsck tests
+> diff --git a/tests/btrfs/276 b/tests/btrfs/276
+> new file mode 100755
+> index 00000000..5946dad9
+> --- /dev/null
+> +++ b/tests/btrfs/276
+> @@ -0,0 +1,123 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 276
+> +#
+> +# Verify that fiemap correctly reports the sharedness of extents for a file with
+> +# a very large number of extents, spanning many b+tree leaves in the fs tree,
+> +# and when the file's subvolume was snapshoted.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto snapshot compress fiemap
+> +
+> +. ./common/filter
+> +
+> +_supported_fs btrfs
+> +_require_scratch
+> +_require_xfs_io_command "fiemap" "ranged"
+> +
+> +_scratch_mkfs >> $seqres.full 2>&1
+> +# We use compression because it's a very quick way to create a file with a very
+> +# large number of extents (compression limits the maximum extent size to 128K)
+> +# and while using very little disk space.
+> +_scratch_mount -o compress
+> +
+> +fiemap_test_file()
+> +{
+> +	local offset=$1
+> +	local len=$2
+> +
+> +	# Skip the first two lines of xfs_io's fiemap output (file path and
+> +	# header describing the output columns).
+> +	$XFS_IO_PROG -c "fiemap -v $offset $len" $SCRATCH_MNT/foo | tail -n +3
+> +}
+> +
+> +# Count the number of shared extents for the whole test file or just for a given
+> +# range.
+> +count_shared_extents()
+> +{
+> +	local offset=$1
+> +	local len=$2
+> +
+> +	# Column 5 (from xfs_io's "fiemap -v" command) is the flags (hex field).
+> +	# 0x2000 is the value for the FIEMAP_EXTENT_SHARED flag.
+> +	fiemap_test_file $offset $len | \
+> +		$AWK_PROG --source 'BEGIN { cnt = 0 }' \
+> +			  --source '{ if (and(strtonum($5), 0x2000)) cnt++ }' \
+> +			  --source 'END { print cnt }'
+> +}
+> +
+> +# Count the number of non shared extents for the whole test file or just for a
+> +# given range.
+> +count_not_shared_extents()
+> +{
+> +	local offset=$1
+> +	local len=$2
+> +
+> +	# Column 5 (from xfs_io's "fiemap -v" command) is the flags (hex field).
+> +	# 0x2000 is the value for the FIEMAP_EXTENT_SHARED flag.
+> +	fiemap_test_file $offset $len | \
+> +		$AWK_PROG --source 'BEGIN { cnt = 0 }' \
+> +			  --source '{ if (!and(strtonum($5), 0x2000)) cnt++ }' \
+> +			  --source 'END { print cnt }'
+> +}
+> +
+> +# Create a 16G file as that results in 131072 extents, all with a size of 128K
+> +# (due to compression), and a fs tree with a height of 3 (root node at level 2).
+> +# We want to verify later that fiemap correctly reports the sharedness of each
+> +# extent, even when it needs to switch from one leaf to the next one and from a
+> +# node at level 1 to the next node at level 1.
+> +#
+> +$XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MNT/foo | _filter_xfs_io
+> +
+> +# Sync to flush delalloc and commit the current transaction, so fiemap will see
+> +# all extents in the fs tree and extent trees and not look at delalloc.
+> +sync
+> +
+> +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
+> +
+> +# Creating a snapshot.
+> +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap | _filter_scratch
+> +
+> +# We have a snapshot, so now all extents should be reported as shared.
+> +echo "Number of shared extents in the whole file: $(count_shared_extents)"
+> +
+> +# Now COW two files ranges, of 1M each, in the snapshot's file.
+> +# So 16 extents should become non-shared after this.
+> +#
+> +$XFS_IO_PROG -c "pwrite -b 1M 8M 1M" \
+> +	     -c "pwrite -b 1M 12G 1M" \
+> +	     $SCRATCH_MNT/snap/foo | _filter_xfs_io
+> +
+> +# Sync to flush delalloc and commit the current transaction, so fiemap will see
+> +# all extents in the fs tree and extent trees and not look at delalloc.
+> +sync
+> +
+> +# Now we should have 16 non-shared extents and 131056 (131072 - 16) shared
+> +# extents.
+> +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
+> +echo "Number of shared extents in the whole file: $(count_shared_extents)"
+> +
+> +# Check that the non-shared extents are indeed in the expected file ranges (each
+> +# with 8 extents).
+> +echo "Number of non-shared extents in range [8M, 9M): $(count_not_shared_extents 8M 1M)"
+> +echo "Number of non-shared extents in range [12G, 12G + 1M): $(count_not_shared_extents 12G 1M)"
+> +
+> +# Now delete the snapshot.
+> +$BTRFS_UTIL_PROG subvolume delete -c $SCRATCH_MNT/snap | _filter_scratch
+> +
+> +# We deleted the snapshot and committed the transaction used to delete it (-c),
+> +# but all its extents (both metadata and data) are actually only deleted in the
+> +# background, by the cleaner kthread. So remount, which wakes up the cleaner
+> +# kthread, with a commit interval of 1 second and sleep for 1.1 seconds - after
+> +# this we are guaranteed all extents of the snapshot were deleted.
+> +_scratch_remount commit=1
+> +sleep 1.1
+> +
+> +# Now all extents should be reported as not shared (131072 extents).
+> +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
+> +
+> +# success, all done
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/276.out b/tests/btrfs/276.out
+> new file mode 100644
+> index 00000000..3bf5a5e6
+> --- /dev/null
+> +++ b/tests/btrfs/276.out
+> @@ -0,0 +1,16 @@
+> +QA output created by 276
+> +wrote 17179869184/17179869184 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +Number of non-shared extents in the whole file: 131072
+> +Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
+> +Number of shared extents in the whole file: 131072
+> +wrote 1048576/1048576 bytes at offset 8388608
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +wrote 1048576/1048576 bytes at offset 12884901888
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +Number of non-shared extents in the whole file: 16
+> +Number of shared extents in the whole file: 131056
+> +Number of non-shared extents in range [8M, 9M): 8
+> +Number of non-shared extents in range [12G, 12G + 1M): 8
+> +Delete subvolume (commit): 'SCRATCH_MNT/snap'
+> +Number of non-shared extents in the whole file: 131072
+> -- 
+> 2.35.1
+> 
+
