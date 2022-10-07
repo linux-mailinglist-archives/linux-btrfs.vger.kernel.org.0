@@ -2,242 +2,310 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB955F77CD
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 14:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419FA5F77FE
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 14:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbiJGMD1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Oct 2022 08:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
+        id S229508AbiJGMfi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Oct 2022 08:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbiJGMD0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 08:03:26 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C011CD57E0
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 05:03:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7D7FD1F8A3
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 12:03:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1665144202; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+        with ESMTP id S229461AbiJGMfh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 08:35:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF349E69D
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 05:35:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1665146134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/D/XjRlSbw4vRhSXdP8Rwdz4JILE3qKWYpNd8HjIqLg=;
-        b=gVBhrjnW7hP6ZyQa/QHBqj8KszigomzMB4MhO33rJ13qbBxy3W5KzkdHsUf758Ob8BNbpr
-        q/u/WFeeSd8YW/yauY6MaLHg/unY5cVujZTwmIuezZEYNHtvIyot5qEkvkCwGwCy/BP5e3
-        y0KP72U/hOEDQGF/4o8LxSrLNFE7X/M=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE34013A3D
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 12:03:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id APcOHYkVQGPeUwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 07 Oct 2022 12:03:21 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs-progs: mkfs: fix a stack over-flow when features string are too long
-Date:   Fri,  7 Oct 2022 20:03:01 +0800
-Message-Id: <d6a5f3dd13a8f2b4d0b1e2e4e20c4ff28e055346.1665143843.git.wqu@suse.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <cover.1665143843.git.wqu@suse.com>
-References: <cover.1665143843.git.wqu@suse.com>
+        bh=1OYzrwUhBlGs1dJj4ArLeeYgyvtN2keHSOt2j+uBa7Q=;
+        b=azGV10HP23bKZWSexGNge6nkwOwsy0xb3ayn3pybFUgBV73SBWbPr6w00l7NXv7m2FH7tu
+        FHpvaNqEJs+h0tsCTEd+fPPqnd2U+RJO+CgoVtmiBGWJa1X6LFy+97SXZbnxojikThVBAo
+        flAe7mI8qJkMjHQ6+qOXdVKC92689Ic=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-50-Q6G6tMI6OpmEJJDWu10E8Q-1; Fri, 07 Oct 2022 08:35:33 -0400
+X-MC-Unique: Q6G6tMI6OpmEJJDWu10E8Q-1
+Received: by mail-qk1-f199.google.com with SMTP id n13-20020a05620a294d00b006cf933c40feso3662542qkp.20
+        for <linux-btrfs@vger.kernel.org>; Fri, 07 Oct 2022 05:35:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1OYzrwUhBlGs1dJj4ArLeeYgyvtN2keHSOt2j+uBa7Q=;
+        b=rm/R6V8odO06iMhATdIgkInlECu/HdvsyHtWcvnDmKsZ2CQot74J+PtSWxX9KXeJfD
+         QOVSUldZG3tl44F4QN9CdqdncDEnIKE2NZMaj+uFzK6ZY95G915Bf1XTfzM4ETejAlCT
+         83wxaLeHvCsxRvdEsPWQqXAMOGZw+42urvlzRDy1uw1qjuep9PTNqKIlR8alNUl50Nz8
+         6iLMC87VLOl6VNXrMz/BX7quKHn3xZdPvotRSJXbkf2RtxVRwO96isf/+Ic3VkZafwXN
+         6L2Gavntc2vQANARfAdV3x88at8pVPP+qCnRURDYvK3T47n41hSsfk8vz/sZhM9X9QLw
+         SRCg==
+X-Gm-Message-State: ACrzQf34CxHjyom7m7eScbSXb+NONT1i8ZsFzp71qwi38mQyssVQhNmQ
+        dmyBh7ypABtMdwHBrjQHWPy1eWkO2qxg5Tyki73tVKp0QwwvYP6/Z5XCwok6WDcPXxYsoqEDMZ7
+        UsD7uzBB5ksNgT83mulLsr5I=
+X-Received: by 2002:a05:620a:44cd:b0:6ce:d887:d448 with SMTP id y13-20020a05620a44cd00b006ced887d448mr3411494qkp.31.1665146132455;
+        Fri, 07 Oct 2022 05:35:32 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM48mXbwg5P6K+CxS6x+o6FXQ7dCcEG2VHUFsoImr57u8XkUzxFi9rgg2rbLP5k8R8YkkRX43A==
+X-Received: by 2002:a05:620a:44cd:b0:6ce:d887:d448 with SMTP id y13-20020a05620a44cd00b006ced887d448mr3411467qkp.31.1665146132036;
+        Fri, 07 Oct 2022 05:35:32 -0700 (PDT)
+Received: from zlang-mailbox ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id dm5-20020a05620a1d4500b006bac157ec19sm1391251qkb.123.2022.10.07.05.35.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Oct 2022 05:35:31 -0700 (PDT)
+Date:   Fri, 7 Oct 2022 20:35:27 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: test fiemap on large file with extents shared
+ through a snapshot
+Message-ID: <20221007123527.a44surzn6dq6dvc4@zlang-mailbox>
+References: <d4bf2bc47e3be1437d5693a0b728e199acb549fd.1664808949.git.fdmanana@suse.com>
+ <20221007045912.5ieeylkcxweiaurx@zlang-mailbox>
+ <CAL3q7H6UxYf0Oo-U8K0fwWw+Pnv4BN36i+vu3LM9RHM4FUHrGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H6UxYf0Oo-U8K0fwWw+Pnv4BN36i+vu3LM9RHM4FUHrGg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-Even with chunk_objectid bug fixed, mkfs.btrfs can still caused stack
-overflow when enabling extent-tree-v2 feature (need experimental
-features enabled):
+On Fri, Oct 07, 2022 at 08:31:53AM +0100, Filipe Manana wrote:
+> On Fri, Oct 7, 2022 at 5:59 AM Zorro Lang <zlang@redhat.com> wrote:
+> >
+> > On Mon, Oct 03, 2022 at 03:58:17PM +0100, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > >
+> > > Verify that fiemap correctly reports the sharedness of extents for a file
+> > > with a very large number of extents, spanning many b+tree leaves in the fs
+> > > tree, and when the file's subvolume was snapshoted.
+> > >
+> > > Currently this passes on all kernel releases and its purpose is to prevent
+> > > and detect regressions in the future, as this actually happened during
+> > > recent development on the btrfs' fiemap related code. With this test we
+> > > now have better coverage for fiemap when a file is shared through a
+> > > snapshot.
+> > >
+> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > > ---
+> > >  doc/group-names.txt |   1 +
+> > >  tests/btrfs/276     | 123 ++++++++++++++++++++++++++++++++++++++++++++
+> > >  tests/btrfs/276.out |  16 ++++++
+> > >  3 files changed, 140 insertions(+)
+> > >  create mode 100755 tests/btrfs/276
+> > >  create mode 100644 tests/btrfs/276.out
+> > >
+> > > diff --git a/doc/group-names.txt b/doc/group-names.txt
+> > > index ef411b5e..6cc9af78 100644
+> > > --- a/doc/group-names.txt
+> > > +++ b/doc/group-names.txt
+> > > @@ -47,6 +47,7 @@ eio                 IO error reporting
+> > >  encrypt                      encrypted file contents
+> > >  enospc                       ENOSPC error reporting
+> > >  exportfs             file handles
+> > > +fiemap                       fiemap ioctl
+> >
+> > Hi,
+> >
+> > There're many fiemap related cases, if we'd like to bring in this new group,
+> > I hope we can use a separated patch to do this job completely, include adding
+> > this group name to all related cases. We can talk about it in another patch,
+> > this patch can force on its testing.
+> 
+> Sorry, it's not entirely clear to me, but are you saying that you're
+> fine with the patch as it is,
+> or you want the addition of the fiemap group done in a separate patch
+> (that would also add
+> the group to all other tests that exercise fiemap)?
+> 
+> Do you want me to make any changes to this patch?
 
-  # ./mkfs.btrfs  -f -O extent-tree-v2 ~/test.img
-  btrfs-progs v5.19.1
-  See http://btrfs.wiki.kernel.org for more information.
+Oh, sorry for my ambiguous description. I mean the tests/btrfs/276 part looks
+good to me. Just for the new group name "fiemap" part, I hope we can add that
+new group name in a seperated patch, due to there're already many fiemap related
+cases in fstests, if you'd like to bring in this group name, better to add it
+to all fiemap related cases at once.
 
-  ERROR: superblock magic doesn't match
-  NOTE: several default settings have changed in version 5.15, please make sure
-        this does not affect your deployments:
-        - DUP for metadata (-m dup)
-        - enabled no-holes (-O no-holes)
-        - enabled free-space-tree (-R free-space-tree)
+So I'm thinking about if you can split this patch to two patches:
+1) Keep this patch, except the "fiemap" group.
+2) A new patch (if you'd like) to bring in "fiemap" group, and add "fiemap" tag
+   to all fiemap related cases in fstests.
 
-  Label:              (null)
-  UUID:               205c61e7-f58e-4e8f-9dc2-38724f5c554b
-  Node size:          16384
-  Sector size:        4096
-  Filesystem size:    512.00MiB
-  Block group profiles:
-    Data:             single            8.00MiB
-    Metadata:         DUP              32.00MiB
-    System:           DUP               8.00MiB
-  SSD detected:       no
-  Zoned device:       no
-  =================================================================
-  [... Skip full ASAN output ...]
-  ==65655==ABORTING
+Thanks,
+Zorro
 
-[CAUSE]
-For experimental build, we have unified feature output, but the old
-buffer size is only 64 bytes, which is too small to cover the new full
-feature string:
-
-  extref, skinny-metadata, no-holes, free-space-tree, block-group-tree, extent-tree-v2
-
-Above feature string is already 84 bytes, over the 64 on-stack memory
-size.
-
-This can also be proved by the ASAN output:
-
-  ==65655==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffc4e03b1d0 at pc 0x7ff0fc05fafe bp 0x7ffc4e03ac60 sp 0x7ffc4e03a408
-  WRITE of size 17 at 0x7ffc4e03b1d0 thread T0
-      #0 0x7ff0fc05fafd in __interceptor_strcat /usr/src/debug/gcc/libsanitizer/asan/asan_interceptors.cpp:377
-      #1 0x55cdb7b06ca5 in parse_features_to_string common/fsfeatures.c:316
-      #2 0x55cdb7b06ce1 in btrfs_parse_fs_features_to_string common/fsfeatures.c:324
-      #3 0x55cdb7a37226 in main mkfs/main.c:1783
-      #4 0x7ff0fbe3c28f  (/usr/lib/libc.so.6+0x2328f)
-      #5 0x7ff0fbe3c349 in __libc_start_main (/usr/lib/libc.so.6+0x23349)
-      #6 0x55cdb7a2cb34 in _start ../sysdeps/x86_64/start.S:115
-
-[FIX]
-Introduce a new macro, BTRFS_FEATURE_STRING_BUF_SIZE, along with a new
-sanity check helper, btrfs_assert_feature_buf_size().
-
-The problem is I can not find a build time method to verify
-BTRFS_FEATURE_STRING_BUF_SIZE is large enough to contain all feature
-names, thus have to go the runtime function to do the BUG_ON() to verify
-the macro size.
-
-Now the minimal buffer size for experimental build is 138 bytes, just
-bump it to 160 for future expansion.
-
-And if further features go beyond that number, mkfs.btrfs/btrfs-convert
-will immediately crash at that BUG_ON(), so we can definitely detect it.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- common/fsfeatures.c | 26 ++++++++++++++++++++++++++
- common/fsfeatures.h |  7 +++++++
- convert/main.c      |  3 ++-
- mkfs/main.c         |  3 ++-
- 4 files changed, 37 insertions(+), 2 deletions(-)
-
-diff --git a/common/fsfeatures.c b/common/fsfeatures.c
-index dc4b346c040a..e4334e3ea6c0 100644
---- a/common/fsfeatures.c
-+++ b/common/fsfeatures.c
-@@ -251,6 +251,32 @@ static const struct btrfs_feature runtime_features[] = {
- 	}
- };
- 
-+/*
-+ * This is a sanity check to make sure BTRFS_FEATURE_STRING_BUF_SIZE is large
-+ * enough to contain all strings.
-+ *
-+ * All callers using btrfs_parse_*_features_to_string() should call this first.
-+ */
-+void btrfs_assert_feature_buf_size(void)
-+{
-+	int total_size = 0;
-+	int i;
-+
-+	/*
-+	 * This is a little over-calculated, as we include ", list-all".
-+	 * But 10 extra bytes should not be a big deal.
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(mkfs_features); i++)
-+		/* The extra 2 bytes are for the ", " prefix. */
-+		total_size += strlen(mkfs_features[i].name) + 2;
-+	BUG_ON(BTRFS_FEATURE_STRING_BUF_SIZE < total_size);
-+
-+	total_size = 0;
-+	for (i = 0; i < ARRAY_SIZE(runtime_features); i++)
-+		total_size += strlen(runtime_features[i].name) + 2;
-+	BUG_ON(BTRFS_FEATURE_STRING_BUF_SIZE < total_size);
-+}
-+
- static size_t get_feature_array_size(enum feature_source source)
- {
- 	if (source == FS_FEATURES)
-diff --git a/common/fsfeatures.h b/common/fsfeatures.h
-index 3b5a915c6012..c4ab704862cd 100644
---- a/common/fsfeatures.h
-+++ b/common/fsfeatures.h
-@@ -37,6 +37,12 @@ struct btrfs_mkfs_features {
- #define BTRFS_FEATURE_RUNTIME_QUOTA		(1ULL << 0)
- #define BTRFS_FEATURE_RUNTIME_LIST_ALL		(1ULL << 1)
- 
-+/*
-+ * Such buffer size should be able to contain all feature string, with extra
-+ * ", " for each feature.
-+ */
-+#define BTRFS_FEATURE_STRING_BUF_SIZE		(160)
-+
- static const struct btrfs_mkfs_features btrfs_mkfs_default_features = {
- 	.compat_ro_flags = BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
- 			   BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID,
-@@ -86,5 +92,6 @@ int btrfs_check_sectorsize(u32 sectorsize);
- int btrfs_check_features(const struct btrfs_mkfs_features *features,
- 			 const struct btrfs_mkfs_features *allowed);
- int btrfs_tree_search2_ioctl_supported(int fd);
-+void btrfs_assert_feature_buf_size(void);
- 
- #endif
-diff --git a/convert/main.c b/convert/main.c
-index 6bcb0f4876d0..c7be19f4e9bd 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -1147,7 +1147,7 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
- 	struct btrfs_key key;
- 	char subvol_name[SOURCE_FS_NAME_LEN + 8];
- 	struct task_ctx ctx;
--	char features_buf[64];
-+	char features_buf[BTRFS_FEATURE_STRING_BUF_SIZE];
- 	char fsid_str[BTRFS_UUID_UNPARSED_SIZE];
- 	struct btrfs_mkfs_config mkfs_cfg;
- 	bool btrfs_sb_committed = false;
-@@ -1835,6 +1835,7 @@ int BOX_MAIN(convert)(int argc, char *argv[])
- 	char fsid[BTRFS_UUID_UNPARSED_SIZE] = {0};
- 
- 	crc32c_optimization_init();
-+	btrfs_assert_feature_buf_size();
- 	printf("btrfs-convert from %s\n\n", PACKAGE_STRING);
- 
- 	while(1) {
-diff --git a/mkfs/main.c b/mkfs/main.c
-index e5c1aa669828..c4a4e1986f9b 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -1028,6 +1028,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 
- 	crc32c_optimization_init();
- 	btrfs_config_init();
-+	btrfs_assert_feature_buf_size();
- 
- 	while(1) {
- 		int c;
-@@ -1750,7 +1751,7 @@ raid_groups:
- 		}
- 	}
- 	if (bconf.verbose) {
--		char features_buf[64];
-+		char features_buf[BTRFS_FEATURE_STRING_BUF_SIZE];
- 
- 		update_chunk_allocation(fs_info, &allocation);
- 		printf("Label:              %s\n", label);
--- 
-2.37.3
+> 
+> Thanks.
+> 
+> >
+> > Thanks,
+> > Zorro
+> >
+> > >  filestreams          XFS filestreams allocator
+> > >  freeze                       filesystem freeze tests
+> > >  fsck                 general fsck tests
+> > > diff --git a/tests/btrfs/276 b/tests/btrfs/276
+> > > new file mode 100755
+> > > index 00000000..5946dad9
+> > > --- /dev/null
+> > > +++ b/tests/btrfs/276
+> > > @@ -0,0 +1,123 @@
+> > > +#! /bin/bash
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> > > +#
+> > > +# FS QA Test 276
+> > > +#
+> > > +# Verify that fiemap correctly reports the sharedness of extents for a file with
+> > > +# a very large number of extents, spanning many b+tree leaves in the fs tree,
+> > > +# and when the file's subvolume was snapshoted.
+> > > +#
+> > > +. ./common/preamble
+> > > +_begin_fstest auto snapshot compress fiemap
+> > > +
+> > > +. ./common/filter
+> > > +
+> > > +_supported_fs btrfs
+> > > +_require_scratch
+> > > +_require_xfs_io_command "fiemap" "ranged"
+> > > +
+> > > +_scratch_mkfs >> $seqres.full 2>&1
+> > > +# We use compression because it's a very quick way to create a file with a very
+> > > +# large number of extents (compression limits the maximum extent size to 128K)
+> > > +# and while using very little disk space.
+> > > +_scratch_mount -o compress
+> > > +
+> > > +fiemap_test_file()
+> > > +{
+> > > +     local offset=$1
+> > > +     local len=$2
+> > > +
+> > > +     # Skip the first two lines of xfs_io's fiemap output (file path and
+> > > +     # header describing the output columns).
+> > > +     $XFS_IO_PROG -c "fiemap -v $offset $len" $SCRATCH_MNT/foo | tail -n +3
+> > > +}
+> > > +
+> > > +# Count the number of shared extents for the whole test file or just for a given
+> > > +# range.
+> > > +count_shared_extents()
+> > > +{
+> > > +     local offset=$1
+> > > +     local len=$2
+> > > +
+> > > +     # Column 5 (from xfs_io's "fiemap -v" command) is the flags (hex field).
+> > > +     # 0x2000 is the value for the FIEMAP_EXTENT_SHARED flag.
+> > > +     fiemap_test_file $offset $len | \
+> > > +             $AWK_PROG --source 'BEGIN { cnt = 0 }' \
+> > > +                       --source '{ if (and(strtonum($5), 0x2000)) cnt++ }' \
+> > > +                       --source 'END { print cnt }'
+> > > +}
+> > > +
+> > > +# Count the number of non shared extents for the whole test file or just for a
+> > > +# given range.
+> > > +count_not_shared_extents()
+> > > +{
+> > > +     local offset=$1
+> > > +     local len=$2
+> > > +
+> > > +     # Column 5 (from xfs_io's "fiemap -v" command) is the flags (hex field).
+> > > +     # 0x2000 is the value for the FIEMAP_EXTENT_SHARED flag.
+> > > +     fiemap_test_file $offset $len | \
+> > > +             $AWK_PROG --source 'BEGIN { cnt = 0 }' \
+> > > +                       --source '{ if (!and(strtonum($5), 0x2000)) cnt++ }' \
+> > > +                       --source 'END { print cnt }'
+> > > +}
+> > > +
+> > > +# Create a 16G file as that results in 131072 extents, all with a size of 128K
+> > > +# (due to compression), and a fs tree with a height of 3 (root node at level 2).
+> > > +# We want to verify later that fiemap correctly reports the sharedness of each
+> > > +# extent, even when it needs to switch from one leaf to the next one and from a
+> > > +# node at level 1 to the next node at level 1.
+> > > +#
+> > > +$XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MNT/foo | _filter_xfs_io
+> > > +
+> > > +# Sync to flush delalloc and commit the current transaction, so fiemap will see
+> > > +# all extents in the fs tree and extent trees and not look at delalloc.
+> > > +sync
+> > > +
+> > > +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
+> > > +
+> > > +# Creating a snapshot.
+> > > +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap | _filter_scratch
+> > > +
+> > > +# We have a snapshot, so now all extents should be reported as shared.
+> > > +echo "Number of shared extents in the whole file: $(count_shared_extents)"
+> > > +
+> > > +# Now COW two files ranges, of 1M each, in the snapshot's file.
+> > > +# So 16 extents should become non-shared after this.
+> > > +#
+> > > +$XFS_IO_PROG -c "pwrite -b 1M 8M 1M" \
+> > > +          -c "pwrite -b 1M 12G 1M" \
+> > > +          $SCRATCH_MNT/snap/foo | _filter_xfs_io
+> > > +
+> > > +# Sync to flush delalloc and commit the current transaction, so fiemap will see
+> > > +# all extents in the fs tree and extent trees and not look at delalloc.
+> > > +sync
+> > > +
+> > > +# Now we should have 16 non-shared extents and 131056 (131072 - 16) shared
+> > > +# extents.
+> > > +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
+> > > +echo "Number of shared extents in the whole file: $(count_shared_extents)"
+> > > +
+> > > +# Check that the non-shared extents are indeed in the expected file ranges (each
+> > > +# with 8 extents).
+> > > +echo "Number of non-shared extents in range [8M, 9M): $(count_not_shared_extents 8M 1M)"
+> > > +echo "Number of non-shared extents in range [12G, 12G + 1M): $(count_not_shared_extents 12G 1M)"
+> > > +
+> > > +# Now delete the snapshot.
+> > > +$BTRFS_UTIL_PROG subvolume delete -c $SCRATCH_MNT/snap | _filter_scratch
+> > > +
+> > > +# We deleted the snapshot and committed the transaction used to delete it (-c),
+> > > +# but all its extents (both metadata and data) are actually only deleted in the
+> > > +# background, by the cleaner kthread. So remount, which wakes up the cleaner
+> > > +# kthread, with a commit interval of 1 second and sleep for 1.1 seconds - after
+> > > +# this we are guaranteed all extents of the snapshot were deleted.
+> > > +_scratch_remount commit=1
+> > > +sleep 1.1
+> > > +
+> > > +# Now all extents should be reported as not shared (131072 extents).
+> > > +echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
+> > > +
+> > > +# success, all done
+> > > +status=0
+> > > +exit
+> > > diff --git a/tests/btrfs/276.out b/tests/btrfs/276.out
+> > > new file mode 100644
+> > > index 00000000..3bf5a5e6
+> > > --- /dev/null
+> > > +++ b/tests/btrfs/276.out
+> > > @@ -0,0 +1,16 @@
+> > > +QA output created by 276
+> > > +wrote 17179869184/17179869184 bytes at offset 0
+> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > > +Number of non-shared extents in the whole file: 131072
+> > > +Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
+> > > +Number of shared extents in the whole file: 131072
+> > > +wrote 1048576/1048576 bytes at offset 8388608
+> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > > +wrote 1048576/1048576 bytes at offset 12884901888
+> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > > +Number of non-shared extents in the whole file: 16
+> > > +Number of shared extents in the whole file: 131056
+> > > +Number of non-shared extents in range [8M, 9M): 8
+> > > +Number of non-shared extents in range [12G, 12G + 1M): 8
+> > > +Delete subvolume (commit): 'SCRATCH_MNT/snap'
+> > > +Number of non-shared extents in the whole file: 131072
+> > > --
+> > > 2.35.1
+> > >
+> >
+> 
 
