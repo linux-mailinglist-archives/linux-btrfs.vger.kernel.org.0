@@ -2,72 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2F15F726B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 03:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92BC55F734F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 05:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbiJGBBk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Oct 2022 21:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
+        id S229598AbiJGDXY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Oct 2022 23:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbiJGBBh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Oct 2022 21:01:37 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25BE4C2CBF;
-        Thu,  6 Oct 2022 18:01:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D6FFBB821ED;
-        Fri,  7 Oct 2022 01:01:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 84D34C433C1;
-        Fri,  7 Oct 2022 01:01:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665104493;
-        bh=7INnRf4ASEnQ/tTpt1SwTQBbyNssjl/WqFI1fKUliaM=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=c4M4IDIhTcqbm7zRzS25fooPnh+7n1Lf8cbbQ7fZYcX5uFQQnsS2iqQ27b2Ji13J9
-         mzXwy7ix4I6Ay3xc53LsoIUz3z+oGgol3CxMsDU1/vy0N9MHin3AbfwlgGxTI4b1Vq
-         u1NOhaZ/3MgZo4ZD1h5R7kBFTkyk3iH00mkT45E2Zhxl+pbjnqAW4ct7iKybFj7zxD
-         EXvIQNjRKYAyfjYKc6wVAcggOnkHmsqQxThU7U8z+D5c+4QCeVb1F2U6aFCQRUO4T9
-         SolSL76mBYg6qyn+wrIcurmtCMO0T0o8jEIl7AMYa579LKqGliiF6jlJ6YSi7mdpDx
-         LphwbYk21HSXQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 71F61E2A05E;
-        Fri,  7 Oct 2022 01:01:33 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs updates for 6.1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1664798047.git.dsterba@suse.com>
-References: <cover.1664798047.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1664798047.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.1-tag
-X-PR-Tracked-Commit-Id: cbddcc4fa3443fe8cfb2ff8e210deb1f6a0eea38
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 76e45035348c247a70ed50eb29a9906657e4444f
-Message-Id: <166510449345.27686.7895050524611917105.pr-tracker-bot@kernel.org>
-Date:   Fri, 07 Oct 2022 01:01:33 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229514AbiJGDXA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Oct 2022 23:23:00 -0400
+Received: from out20-15.mail.aliyun.com (out20-15.mail.aliyun.com [115.124.20.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D645F82
+        for <linux-btrfs@vger.kernel.org>; Thu,  6 Oct 2022 20:22:58 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08613826|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0100076-0.00120093-0.988791;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047203;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.PVNuiHQ_1665112975;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.PVNuiHQ_1665112975)
+          by smtp.aliyun-inc.com;
+          Fri, 07 Oct 2022 11:22:55 +0800
+Date:   Fri, 07 Oct 2022 11:23:07 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Boris Burkov <boris@bur.io>
+Subject: Re: [PATCH 1/5] btrfs: 1G falloc extents
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Filipe Manana <fdmanana@kernel.org>
+In-Reply-To: <cace4a8be466b9c4fee288c768c5384988c1fca8.1664999303.git.boris@bur.io>
+References: <cover.1664999303.git.boris@bur.io> <cace4a8be466b9c4fee288c768c5384988c1fca8.1664999303.git.boris@bur.io>
+Message-Id: <20221007112306.F62D.409509F4@e16-tech.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Tue,  4 Oct 2022 08:31:21 +0200:
+Hi,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.1-tag
+> When doing a large fallocate, btrfs will break it up into 256MiB
+> extents. Our data block groups are 1GiB, so a more natural maximum size
+> is 1GiB, so that we tend to allocate and fully use block groups rather
+> than fragmenting the file around.
+> 
+> This is especially useful if large fallocates tend to be for "round"
+> amounts, which strikes me as a reasonable assumption.
+> 
+> While moving to size classes reduces the value of this change, it is
+> also good to compare potential allocator algorithms against just 1G
+> extents.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/76e45035348c247a70ed50eb29a9906657e4444f
 
-Thank you!
+I wrote a 32G file, and the compare the result of 'xfs_io -c fiemap'.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+dd conv=fsync bs=1024K count=32K if=/dev/zero of=/mnt/test/dd.txt
+
+When write to a btrfs filesystem
++ xfs_io -c fiemap /mnt/test/dd.txt
+/mnt/test/dd.txt:
+        0: [0..262143]: 6883584..7145727
+        1: [262144..524287]: 6367232..6629375
+        2: [524288..8126463]: 7145728..14747903
+        3: [8126464..8388607]: 15272064..15534207
+        4: [8388608..8650751]: 14755840..15017983
+        5: [8650752..16252927]: 15534208..23136383
+        6: [16252928..67108863]: 23144448..74000383
+
+When write to a xfs filesystem
++ xfs_io -c fiemap /mnt/test/dd.txt
+/mnt/test/dd.txt:
+        0: [0..16465919]: 256..16466175
+        1: [16465920..31821623]: 16466176..31821879
+        2: [31821624..41942903]: 31821880..41943159
+        3: [41942904..58720111]: 47183872..63961079
+        4: [58720112..67108863]: 63961080..72349831
+
+the max of xfs is about 8G, but the max of btrfs is 
+about 25G('6: [16252928..67108863]'?
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/10/07
+
+
+
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/inode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 45ebef8d3ea8..fd66586ae2fc 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -9884,7 +9884,7 @@ static int __btrfs_prealloc_file_range(struct inode *inode, int mode,
+>  	if (trans)
+>  		own_trans = false;
+>  	while (num_bytes > 0) {
+> -		cur_bytes = min_t(u64, num_bytes, SZ_256M);
+> +		cur_bytes = min_t(u64, num_bytes, SZ_1G);
+>  		cur_bytes = max(cur_bytes, min_size);
+>  		/*
+>  		 * If we are severely fragmented we could end up with really
+> -- 
+> 2.37.2
+
+
