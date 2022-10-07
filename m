@@ -2,67 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61ED25F7C42
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 19:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B865F7C7D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 19:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbiJGRbr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Oct 2022 13:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33588 "EHLO
+        id S229811AbiJGRvK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Oct 2022 13:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbiJGRbp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 13:31:45 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3935D18C5
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 10:31:44 -0700 (PDT)
+        with ESMTP id S229722AbiJGRvI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 13:51:08 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD90D25AE
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 10:51:06 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 58C661F7AB;
-        Fri,  7 Oct 2022 17:31:43 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E36D12197F;
+        Fri,  7 Oct 2022 17:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1665163903;
+        t=1665165064;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=F0oIPRJbwUsCsnSBHC4ti1AlRBo+ZRXOuIM8NL5XLCo=;
-        b=oeEjIeGRif9WsHLmAz2mjYLv1wjgGSZJRXHtT+SOsL0+iwskZTWVD9RHtHnkIrWeqRjeUr
-        uatwdwkJhDrpk/R+baOweeur6XzOXf/OY9jdAa175WMJjy7V+ngZZOK9Y3hLKibFnmxR0P
-        znKq8+SMh3/h3tXKtXe9AfMtzKMd0Hs=
+        bh=47rlIPCqoJoMOarIuulXh1QmiD1yUktP0wJ0IFfi8cM=;
+        b=r5q+rADhk0XLMEmV1vQXc8laDeQbLxJ9zTgMpa+CVYS4JcgJiIB3QCMa0YJnZR3fyhNUTC
+        RrhUvKc6KCPuwDwmqHG7yX6IdRmxwfdvG0k+HiTgoX1ceRqmHelCOg14hRBOWHdakFi9U0
+        1x/tzLid4TR5SH4mamoPbf3+HvSTWOo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1665163903;
+        s=susede2_ed25519; t=1665165064;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=F0oIPRJbwUsCsnSBHC4ti1AlRBo+ZRXOuIM8NL5XLCo=;
-        b=O/RzLnaymPUpF5HRe3fSsCMvSpOiLMJ6CiAVF1ntzl+j37NZbKCBnBLV7S+tsepGdo5Eky
-        J02PBZVsD6SaVkDg==
+        bh=47rlIPCqoJoMOarIuulXh1QmiD1yUktP0wJ0IFfi8cM=;
+        b=9S8kl0zHQbpbxGux3iHC3RE5Fe89wbVpbvRNlfMmjgOeEkaLV3zLj5ukhQ/mgnOInyFksv
+        V0wOR6EslDcUu1Ag==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B05813A9A;
-        Fri,  7 Oct 2022 17:31:43 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A85AA13A9A;
+        Fri,  7 Oct 2022 17:51:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ADuwAH9iQGOhWwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 07 Oct 2022 17:31:43 +0000
-Date:   Fri, 7 Oct 2022 19:31:39 +0200
+        id OxfYJwhnQGPnYQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 07 Oct 2022 17:51:04 +0000
+Date:   Fri, 7 Oct 2022 19:51:01 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-Subject: Re: [PATCH 12/17] btrfs: move btrfs_print_data_csum_error into
- inode.c
-Message-ID: <20221007173139.GB13389@twin.jikos.cz>
+Subject: Re: [PATCH 00/17] btrfs: initial ctree.h cleanups, simple stuff
+Message-ID: <20221007175101.GC13389@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1663167823.git.josef@toxicpanda.com>
- <95d99a944771363259f2de25de22dffd7867d127.1663167823.git.josef@toxicpanda.com>
- <048bd930-6634-1dc2-1551-52766d4fefeb@suse.com>
+ <1f65c1a8-8d08-6aff-1764-b2549f195183@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <048bd930-6634-1dc2-1551-52766d4fefeb@suse.com>
+In-Reply-To: <1f65c1a8-8d08-6aff-1764-b2549f195183@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
@@ -73,32 +71,57 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 15, 2022 at 05:22:48PM +0800, Qu Wenruo wrote:
+On Thu, Sep 15, 2022 at 05:47:59PM +0800, Qu Wenruo wrote:
 > 
 > 
 > On 2022/9/14 23:06, Josef Bacik wrote:
-> > This isn't used outside of inode.c, there's no reason to define it in
-> > btrfs_inode.h.
+> > Hello,
 > > 
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > This is the first part in what will probably be very many parts in my work to
+> > cleanup ctree.h.  These are the smaller changes, mostly removing code that's not
+> > used anymore, moving some stuff that's local to C files that don't need to be in
+> > the header at all, and moving the rest of the on-disk definition stuff to
+> > btrfs_tree.h.  There's a lot of patche here, but they're all relatively small,
+> > the largest being the patch to move the on-disk definitions to btrfs_tree.h,
+> > which is not very large compared to patches in the next several series.  This
+> > has been built and tested, it's relatively low risk.  Thanks,
 > 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> Looks good overall to me.
 > 
-> Just a small nitpick below.
+> Just 3 small points of concern:
 > 
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index 6fde13f62c1d..998d1c7134ff 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -125,6 +125,31 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
-> >   				       u64 ram_bytes, int compress_type,
-> >   				       int type);
-> >   
-> > +static inline void btrfs_print_data_csum_error(struct btrfs_inode *inode,
+> - About btrfs_tree.h usage.
 > 
-> IIRC for static function there is no need for explicit inline keyword.
+>    Really hope David can make it clear that, that UAPI header is for ALL
+>    on-disk format definition.
 > 
-> Under most cases the compiler should be more clever than us.
+>    I'm not buying the old reason that the UAPI header is only for tree
+>    search ioctl, and really want to move the whole super block definition
+>    into UAPI header.
 
-For error printing function we don't need inlining at all and if we'd
-want to micro optimize the function can be put to __cold section.
+I have merged the patch but am expecting problems once people start
+using the headers. I'll be addressed case by case.
+
+>    (And I also think all upstream fses should have a concentrated UAPI
+>     header too, just to make new comers easier to hack)
+> 
+> - Some tiny inline functions got unexported
+> 
+>    May not be a big thing though, just want to make sure we have no other
+>    choice but make them uninlined.
+
+This depends, trivial functions or where it's on a hot path it's better
+to keep inline.
+
+> 
+> - Extra error tags in init_btrfs_fs()
+                ^^^^
+                labels
+
+>    Just like open_ctree(), it's when but not whether to have wrong jump.
+>    Thus a new series to make those cachep related exit function
+>    conditional. (aka, we can call them unconditionally at error path)
+
+You've sent the series that converts it to the array and we're going to
+it that way. Please refresh the series as there were some minor changes
+to the init/exit functions and resend. Thanks.
