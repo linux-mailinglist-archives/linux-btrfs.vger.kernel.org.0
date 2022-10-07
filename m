@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2242E5F77CF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 14:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB955F77CD
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Oct 2022 14:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbiJGMD3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Oct 2022 08:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54382 "EHLO
+        id S229544AbiJGMD1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Oct 2022 08:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbiJGMD1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 08:03:27 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAA8D57D2
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 05:03:22 -0700 (PDT)
+        with ESMTP id S229539AbiJGMD0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 08:03:26 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C011CD57E0
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 05:03:23 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 43D2F1F896
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 12:03:21 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7D7FD1F8A3
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 12:03:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1665144201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1665144202; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hUk5Mctg9e/g1+BQIsCYAvGio14p9u8YLR4TmxDog5w=;
-        b=WhRSSX2GxAX8A/0h47W/1cQnQ+aCEUCgVAWGrmUFzUmdNja6eKrw3I5uVopk7PBO0bCSIc
-        0GdgHK+KwBQcdQJWwDP3zDDozPXNZ5RAVWbgqsLvxFcEiig366h7g3vmLhyWSTGfYqtGKh
-        S/DD8b9jFr6V9opoe6SIEdlGZGK/ebA=
+        bh=/D/XjRlSbw4vRhSXdP8Rwdz4JILE3qKWYpNd8HjIqLg=;
+        b=gVBhrjnW7hP6ZyQa/QHBqj8KszigomzMB4MhO33rJ13qbBxy3W5KzkdHsUf758Ob8BNbpr
+        q/u/WFeeSd8YW/yauY6MaLHg/unY5cVujZTwmIuezZEYNHtvIyot5qEkvkCwGwCy/BP5e3
+        y0KP72U/hOEDQGF/4o8LxSrLNFE7X/M=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89CC513A3D
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 12:03:20 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE34013A3D
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 12:03:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id gBoLFIgVQGPeUwAAMHmgww
+        id APcOHYkVQGPeUwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 07 Oct 2022 12:03:20 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 07 Oct 2022 12:03:21 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs-progs: mkfs: fix a crash when enabling extent-tree-v2
-Date:   Fri,  7 Oct 2022 20:03:00 +0800
-Message-Id: <265f9914e5f66686647a716a7a038de81bb09aec.1665143843.git.wqu@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: mkfs: fix a stack over-flow when features string are too long
+Date:   Fri,  7 Oct 2022 20:03:01 +0800
+Message-Id: <d6a5f3dd13a8f2b4d0b1e2e4e20c4ff28e055346.1665143843.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1665143843.git.wqu@suse.com>
 References: <cover.1665143843.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,8 +60,9 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 [BUG]
-When enabling extent-tree-v2 feature at mkfs time (need to enable
-experimental features), mkfs.btrfs will crash:
+Even with chunk_objectid bug fixed, mkfs.btrfs can still caused stack
+overflow when enabling extent-tree-v2 feature (need experimental
+features enabled):
 
   # ./mkfs.btrfs  -f -O extent-tree-v2 ~/test.img
   btrfs-progs v5.19.1
@@ -74,74 +75,169 @@ experimental features), mkfs.btrfs will crash:
         - enabled no-holes (-O no-holes)
         - enabled free-space-tree (-R free-space-tree)
 
-  Segmentation fault (core dumped)
+  Label:              (null)
+  UUID:               205c61e7-f58e-4e8f-9dc2-38724f5c554b
+  Node size:          16384
+  Sector size:        4096
+  Filesystem size:    512.00MiB
+  Block group profiles:
+    Data:             single            8.00MiB
+    Metadata:         DUP              32.00MiB
+    System:           DUP               8.00MiB
+  SSD detected:       no
+  Zoned device:       no
+  =================================================================
+  [... Skip full ASAN output ...]
+  ==65655==ABORTING
 
 [CAUSE]
-The block group tree looks like this after make_btrfs() call:
+For experimental build, we have unified feature output, but the old
+buffer size is only 64 bytes, which is too small to cover the new full
+feature string:
 
-  (gdb) call btrfs_print_tree(root->fs_info->block_group_root->node, 0)
-  leaf 1163264 items 1 free space 16234 generation 1 owner BLOCK_GROUP_TREE
-  leaf 1163264 flags 0x0() backref revision 1
-  checksum stored f137c1ac
-  checksum calced f137c1ac
-  fs uuid 450d4b15-4954-4574-9801-8c6d248aaec6
-  chunk uuid 4c4cc54d-f240-4aa4-b88b-bd487db43444
-	item 0 key (1048576 BLOCK_GROUP_ITEM 4194304) itemoff 16259 itemsize 24
-		block group used 131072 chunk_objectid 256 flags SYSTEM|single
-						       ^^^
+  extref, skinny-metadata, no-holes, free-space-tree, block-group-tree, extent-tree-v2
 
-This looks completely sane, but notice that chunk_objectid 256.
-That 256 value is the expected one for regular non-extent-tree-v2 btrfs,
-but for extent-tree-v2, chunk_objectid is reused as the global id of
-extent tree where the block group belongs to.
+Above feature string is already 84 bytes, over the 64 on-stack memory
+size.
 
-With the old 256 value as chunk_objectid, btrfs will not find an extent
-tree root for the block group, and return NULL for btrfs_extent_root()
-call, and trigger segfault.
+This can also be proved by the ASAN output:
 
-This is a regression caused by commit 1430b41427b5 ("btrfs-progs:
-separate block group tree from extent tree v2"), which doesn't take
-extent-tree-v2 on-disk format into consideration.
+  ==65655==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffc4e03b1d0 at pc 0x7ff0fc05fafe bp 0x7ffc4e03ac60 sp 0x7ffc4e03a408
+  WRITE of size 17 at 0x7ffc4e03b1d0 thread T0
+      #0 0x7ff0fc05fafd in __interceptor_strcat /usr/src/debug/gcc/libsanitizer/asan/asan_interceptors.cpp:377
+      #1 0x55cdb7b06ca5 in parse_features_to_string common/fsfeatures.c:316
+      #2 0x55cdb7b06ce1 in btrfs_parse_fs_features_to_string common/fsfeatures.c:324
+      #3 0x55cdb7a37226 in main mkfs/main.c:1783
+      #4 0x7ff0fbe3c28f  (/usr/lib/libc.so.6+0x2328f)
+      #5 0x7ff0fbe3c349 in __libc_start_main (/usr/lib/libc.so.6+0x23349)
+      #6 0x55cdb7a2cb34 in _start ../sysdeps/x86_64/start.S:115
 
 [FIX]
-For the initial btrfs created by make_btrfs(), all block group items
-will be in extent-tree global id 0, thus we can reset chunk_objectid to
-0, if and only if extent-tree-v2 is enabled.
+Introduce a new macro, BTRFS_FEATURE_STRING_BUF_SIZE, along with a new
+sanity check helper, btrfs_assert_feature_buf_size().
+
+The problem is I can not find a build time method to verify
+BTRFS_FEATURE_STRING_BUF_SIZE is large enough to contain all feature
+names, thus have to go the runtime function to do the BUG_ON() to verify
+the macro size.
+
+Now the minimal buffer size for experimental build is 138 bytes, just
+bump it to 160 for future expansion.
+
+And if further features go beyond that number, mkfs.btrfs/btrfs-convert
+will immediately crash at that BUG_ON(), so we can definitely detect it.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- mkfs/common.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ common/fsfeatures.c | 26 ++++++++++++++++++++++++++
+ common/fsfeatures.h |  7 +++++++
+ convert/main.c      |  3 ++-
+ mkfs/main.c         |  3 ++-
+ 4 files changed, 37 insertions(+), 2 deletions(-)
 
-diff --git a/mkfs/common.c b/mkfs/common.c
-index 3a517a503e61..d77688ba584d 100644
---- a/mkfs/common.c
-+++ b/mkfs/common.c
-@@ -227,12 +227,22 @@ static int create_block_group_tree(int fd, struct btrfs_mkfs_config *cfg,
- 				   u64 bg_offset, u64 bg_size, u64 bg_used)
- {
- 	int ret;
-+	u64 chunk_objectid = BTRFS_FIRST_CHUNK_TREE_OBJECTID;
+diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+index dc4b346c040a..e4334e3ea6c0 100644
+--- a/common/fsfeatures.c
++++ b/common/fsfeatures.c
+@@ -251,6 +251,32 @@ static const struct btrfs_feature runtime_features[] = {
+ 	}
+ };
+ 
++/*
++ * This is a sanity check to make sure BTRFS_FEATURE_STRING_BUF_SIZE is large
++ * enough to contain all strings.
++ *
++ * All callers using btrfs_parse_*_features_to_string() should call this first.
++ */
++void btrfs_assert_feature_buf_size(void)
++{
++	int total_size = 0;
++	int i;
 +
 +	/*
-+	 * For extent-tree-v2, chunk_objectid of block group item is reused
-+	 * to indicate which extent-tree the block group is in.
-+	 *
-+	 * Thus for the initial image, we should set the chunk_objectid to 0,
-+	 * as all initial bgs are in the extent tree with global id 0.
++	 * This is a little over-calculated, as we include ", list-all".
++	 * But 10 extra bytes should not be a big deal.
 +	 */
-+	if (cfg->features.incompat_flags & BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2)
-+		chunk_objectid = 0;
++	for (i = 0; i < ARRAY_SIZE(mkfs_features); i++)
++		/* The extra 2 bytes are for the ", " prefix. */
++		total_size += strlen(mkfs_features[i].name) + 2;
++	BUG_ON(BTRFS_FEATURE_STRING_BUF_SIZE < total_size);
++
++	total_size = 0;
++	for (i = 0; i < ARRAY_SIZE(runtime_features); i++)
++		total_size += strlen(runtime_features[i].name) + 2;
++	BUG_ON(BTRFS_FEATURE_STRING_BUF_SIZE < total_size);
++}
++
+ static size_t get_feature_array_size(enum feature_source source)
+ {
+ 	if (source == FS_FEATURES)
+diff --git a/common/fsfeatures.h b/common/fsfeatures.h
+index 3b5a915c6012..c4ab704862cd 100644
+--- a/common/fsfeatures.h
++++ b/common/fsfeatures.h
+@@ -37,6 +37,12 @@ struct btrfs_mkfs_features {
+ #define BTRFS_FEATURE_RUNTIME_QUOTA		(1ULL << 0)
+ #define BTRFS_FEATURE_RUNTIME_LIST_ALL		(1ULL << 1)
  
- 	memset(buf->data + sizeof(struct btrfs_header), 0,
- 		cfg->nodesize - sizeof(struct btrfs_header));
- 	write_block_group_item(buf, 0, bg_offset, bg_size, bg_used,
--			       BTRFS_FIRST_CHUNK_TREE_OBJECTID,
--			       cfg->leaf_data_size -
-+			       chunk_objectid, cfg->leaf_data_size -
- 			       sizeof(struct btrfs_block_group_item));
- 	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_BLOCK_GROUP_TREE]);
- 	btrfs_set_header_owner(buf, BTRFS_BLOCK_GROUP_TREE_OBJECTID);
++/*
++ * Such buffer size should be able to contain all feature string, with extra
++ * ", " for each feature.
++ */
++#define BTRFS_FEATURE_STRING_BUF_SIZE		(160)
++
+ static const struct btrfs_mkfs_features btrfs_mkfs_default_features = {
+ 	.compat_ro_flags = BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
+ 			   BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID,
+@@ -86,5 +92,6 @@ int btrfs_check_sectorsize(u32 sectorsize);
+ int btrfs_check_features(const struct btrfs_mkfs_features *features,
+ 			 const struct btrfs_mkfs_features *allowed);
+ int btrfs_tree_search2_ioctl_supported(int fd);
++void btrfs_assert_feature_buf_size(void);
+ 
+ #endif
+diff --git a/convert/main.c b/convert/main.c
+index 6bcb0f4876d0..c7be19f4e9bd 100644
+--- a/convert/main.c
++++ b/convert/main.c
+@@ -1147,7 +1147,7 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
+ 	struct btrfs_key key;
+ 	char subvol_name[SOURCE_FS_NAME_LEN + 8];
+ 	struct task_ctx ctx;
+-	char features_buf[64];
++	char features_buf[BTRFS_FEATURE_STRING_BUF_SIZE];
+ 	char fsid_str[BTRFS_UUID_UNPARSED_SIZE];
+ 	struct btrfs_mkfs_config mkfs_cfg;
+ 	bool btrfs_sb_committed = false;
+@@ -1835,6 +1835,7 @@ int BOX_MAIN(convert)(int argc, char *argv[])
+ 	char fsid[BTRFS_UUID_UNPARSED_SIZE] = {0};
+ 
+ 	crc32c_optimization_init();
++	btrfs_assert_feature_buf_size();
+ 	printf("btrfs-convert from %s\n\n", PACKAGE_STRING);
+ 
+ 	while(1) {
+diff --git a/mkfs/main.c b/mkfs/main.c
+index e5c1aa669828..c4a4e1986f9b 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -1028,6 +1028,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 
+ 	crc32c_optimization_init();
+ 	btrfs_config_init();
++	btrfs_assert_feature_buf_size();
+ 
+ 	while(1) {
+ 		int c;
+@@ -1750,7 +1751,7 @@ raid_groups:
+ 		}
+ 	}
+ 	if (bconf.verbose) {
+-		char features_buf[64];
++		char features_buf[BTRFS_FEATURE_STRING_BUF_SIZE];
+ 
+ 		update_chunk_allocation(fs_info, &allocation);
+ 		printf("Label:              %s\n", label);
 -- 
 2.37.3
 
