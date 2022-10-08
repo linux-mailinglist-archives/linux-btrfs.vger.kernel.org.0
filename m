@@ -2,125 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E015F815F
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Oct 2022 01:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD525F8245
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Oct 2022 04:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbiJGXvS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Oct 2022 19:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
+        id S229570AbiJHCDH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Oct 2022 22:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbiJGXvP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 19:51:15 -0400
-Received: from EUR03-VE1-obe.outbound.protection.outlook.com (mail-eopbgr50059.outbound.protection.outlook.com [40.107.5.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA2751417
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Oct 2022 16:51:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VDTZcaMJLDXcaoYPlqB000yKSD/vVmbHYIv2rahevqKm7KGh8D2uCJG5cygcrDRI2dvtkQh/mxpeRH70g7mZaNbJkkh6u+WzVExF8aSRVk+4BNJrNBnosn1zAGzuxSUupU25p0FF9ucrn0XhRon092Zm1OgiRrNhyB6stOF48gc0ot0t/RHRMogxySoEBWPWG9LXY6lv7rV3V7JiIzLTeCDiC6T1UjA649R6SNoWnQfZomy+jjaFqN73GuSNt0TKcDC5BUC4ku/eHRQL5+SLrQ+sTbnsmfLJeCFMvi2E+CBiE9wCLqUBTKkZNNwWk0Tkkpprz0284b5wim2Aoxwo9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HmnkDRD08qJFwcep+PLvw8n/dKlC93ZZvhol3lkBzDo=;
- b=fUWw+fOg6F7utgrpV3TBSC0mgS6Ayc3rgQW20sQ5bX7eAQSB5QjspJeYOPP0hUYtSN+4Haxr27H5DH0v7Z1d/J8x1leHh1i9pzD8PQgoBLfkD5YH+hnfboURtwKlmUQFuAZAE3xVvpe6PhITekHhbLRkn6YsS0w3FbSdzWQgybrNTyzWUAXnMnwepayOwKc2D8yJV8tBShLYmjsoMau2q2MF5P0TX4BLo01mgHFm2CmAG3Lj6n7d9YDiIA7vIAh7KJygVEb1kxvWqhZFy7hz13OKkmbANoaYBZYrUaRob9isxk1ZbTuvTj8C2rmRXNb78nHAxQalI2FnuVXIzKpRWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HmnkDRD08qJFwcep+PLvw8n/dKlC93ZZvhol3lkBzDo=;
- b=4L5bNHpeRSGyXKKI1omjOf3NvtNYChh0iookrKGqJUC15UifilK7ArAPb/6t+7aHiwCN4iSum1HmRjMX1PaBRFXQdKUASUcy6FHt2IU/lbpgnqtm9Kg4G33OAevAou5rEHS4XyhPwQsmUKq9lwDx8LfvYvtZeAw5JqepoAIMFxwGCClVIrF4DyfTPI+gBTJUUADvCpfT1ubj7ewZY28uu+CGvI0IZ9fsNm5yRNdbIZ5L6ULcWwbjnPVaiQZJWw6qG53AAratesnNo/O/0pU1ky8ohfXfN4eJHdbgp3gEVXhmVk0dJRHgqvd/ZkqRo0YSk3RVWabcoOZG4It6usePuA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by DU2PR04MB8806.eurprd04.prod.outlook.com (2603:10a6:10:2e1::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.34; Fri, 7 Oct
- 2022 23:51:10 +0000
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::3a32:8047:8c8a:85d9]) by AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::3a32:8047:8c8a:85d9%7]) with mapi id 15.20.5676.038; Fri, 7 Oct 2022
- 23:51:10 +0000
-Message-ID: <e1a2eca9-ea59-0826-6181-c19b446cdf79@suse.com>
-Date:   Sat, 8 Oct 2022 07:50:59 +0800
+        with ESMTP id S229459AbiJHCDG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Oct 2022 22:03:06 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D5B100BD0;
+        Fri,  7 Oct 2022 19:03:04 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id bv10so5985828wrb.4;
+        Fri, 07 Oct 2022 19:03:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:from:references:cc:to:content-language:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dVrtfBiEok2By1YIncR+5ppG0aBiojutuj10uIdb4M8=;
+        b=DtUlgsVTI94TVF+azXhBuIzMpBoVGf87QqLogKz+XIk0Xc0LKoFnflrS0tqsZhoSgw
+         CGv0bQXoJVlA01cjWnatu1JdI52M/pTctEwqYcropsFH69fSZr47681j4LpeS22G0eeO
+         R7jMWRu7qBEulLr7BCoMfkng6DVtHlYX/1NdLXivfqjTxLbuI3q3MlpVvM5AHfYLyWig
+         A584PGP1teSF6O57A/kP2Q62gQndZW1eZWG8MojONMY3GPeDJSBcRcr5t0mKvgTuK7xo
+         K7zum5jKZ468WmSgfdkIN6amLjeLfmUruSNdK6qnqd1NONlhwIGok/0GJX7b7wWEqZDN
+         8sDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:from:references:cc:to:content-language:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dVrtfBiEok2By1YIncR+5ppG0aBiojutuj10uIdb4M8=;
+        b=FvdbD8odFsn3mjDx7PVaYw59J5K77lhjr/bh/Cko9u3hNC/Gxe/ApE7peH3RZ/xHV4
+         SepMoFzrdPxyq8uiw2XMg++HCzjONsTBwdZ8y5LZel57G7+BLO6eR1xPDv8jR7qmgz3n
+         4kbuEpEuuDJMp1cFhKjr9EjFw6a66dMfBjas5alzUn+6tjU21vanDrX4LwwFYZb0urn1
+         kaQhH70qCW9d77Zrk9J1y3jQ2ZWmM9HA7Q2BcrKS8Oqa7VQddgV+oWLhXrtIwqJl7rio
+         0vCF7nmJNg1QdeqGATKH7vK6NkKh5M2GnDz+swgF5VEEreaIy3OqTQQ7H0a23AboVWv+
+         d6sA==
+X-Gm-Message-State: ACrzQf2S3+eu/greD4tfXhklfU3ai1DtglVo8LmcV7JhJtlDTtiy1SeE
+        Yw8N7AvfGXjR6vb4P3qFaVA=
+X-Google-Smtp-Source: AMsMyM6yTeWS5OLFiRyKOPBpK4qCxPMvKUXSNWN4CAUIrTxHzLZovPp/3sLYVDqR5fcypEYrhPqOog==
+X-Received: by 2002:a05:6000:1cf:b0:22e:3ef1:a268 with SMTP id t15-20020a05600001cf00b0022e3ef1a268mr4879464wrx.43.1665194583163;
+        Fri, 07 Oct 2022 19:03:03 -0700 (PDT)
+Received: from [192.168.0.160] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id bp15-20020a5d5a8f000000b0022cbf4cda62sm4326101wrb.27.2022.10.07.19.03.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Oct 2022 19:03:02 -0700 (PDT)
+Message-ID: <1099b005-4268-95cb-452c-57156f1cf7b7@gmail.com>
+Date:   Sat, 8 Oct 2022 04:03:00 +0200
+MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.2
-Subject: Re: [PATCH 04/17] btrfs: move btrfs on disk definitions out of
- ctree.h
-To:     dsterba@suse.cz
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1663167823.git.josef@toxicpanda.com>
- <058e41f7732823196f030916c04134418688cbe9.1663167823.git.josef@toxicpanda.com>
- <a67b963c-1f2a-bf68-c0b3-08dda678c629@suse.com>
- <20221007170723.GW13389@twin.jikos.cz>
+Subject: Re: [man-pages RFC PATCH v6] statx, inode: document the new
+ STATX_VERSION field
 Content-Language: en-US
-From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <20221007170723.GW13389@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR02CA0069.namprd02.prod.outlook.com
- (2603:10b6:a03:54::46) To AS8PR04MB8465.eurprd04.prod.outlook.com
- (2603:10a6:20b:348::19)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DU2PR04MB8806:EE_
-X-MS-Office365-Filtering-Correlation-Id: c7f86148-a12a-4889-5e50-08daa8bece0f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 95DtWumq7jWUp9g5ZTDhG4fF6pvOv3eLo+xt84+VuZhhsu4LCHjHGxHk+mZagEY0O4avlGiirqxK0K40hnMNomhg+VyXmdF3Rjzq/3PKPsDb2Hl8ss9jvSxLRBcSs6OCQyRvz9hhF1ZWMM9FIv+yR1c9SVzQp9l1gURejsG+3+yxyqieZw45265/vYCloffjBPgFm5RaWwNleIgFMkcL5x3q8q5CXXTQrs1UIG1i5DpclvMMbwxAtDunwGWi/Srp/3Re4ImmXCiqo4+YZJ6ZR41ynXl2K4G6JhVeaduzyZ5Cf2z3FKYFKHhd/u23SIoi3vWUeimXK76046eqJL1uKbfTL453XGnjGzuojqo2NuE3lS2zBuzr0R1dt3b9wmGVsm6ekPjeIBD0nJz8Kqz1am4XrZZ6Tzxrb+aEKDgh+GoD41QYhUVQb7xqTjthRX5nezaI7Y2oGbUb9PXQj9cwneuUAP/5qyfjJW7tzGhKTbCEBUXuftSB+jXyvHpXE3Ai4q0TM16tGDJ+3CumYNERVe7eh6IwTRHwB5ixU6uLk2NsOS8Z5UrmT3NdEg8LuC6/nr/YGReDYygcHnyAQ1NAdMVv5Deuxb83Ujx8kTw/QoS6wriDW7PKIJsDdkMo/sWSPjrWQ5E+iszqTP2NE25cXW4u4ZDft0kEVKHqVUjC3WMXdwcY2FdQMIttuCEc+uVYWe0n/Il4P++pU5pXVczFFojcygaMa8rSlHQ5E3bGetDljCCYblp/IEAk1bZPbDyvF0kcPjnAdY8PiQbnR+t9BqxxyCFSD6C3UGxBCzynKU4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(366004)(376002)(396003)(136003)(39860400002)(451199015)(6512007)(53546011)(41300700001)(66556008)(6506007)(36756003)(2906002)(6666004)(478600001)(6486002)(38100700002)(31696002)(5660300002)(8936002)(186003)(2616005)(83380400001)(86362001)(316002)(66476007)(31686004)(6916009)(66946007)(4326008)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bmVuSllNNUhEOG9aYUFVcnJ5Q2FNeWFJekRRTVp4ZFFoZXp4b1RXY1dxOFlP?=
- =?utf-8?B?L2ZPeGVpUEZwTHRpM2NOM1pUU1p1SlYxeFRXRnlaZTJ1d0x2S25mVWZQNWpD?=
- =?utf-8?B?eDY0QU4rVDExSUZOTlFSYUk0WXkrdW96b1RrVnlTdjhjM2NNb05GSGpNejBu?=
- =?utf-8?B?S29kdE5SLzNETEdYbHprZW9qSXAwMlMwaDlpK1UyYTFlQ1kydTRjcEk3elJW?=
- =?utf-8?B?eTlTN3pKT3I4WmJUSit0cjlieDVXSDhhY0crSmVFQWFsbUg1MlJ3OXg4L0Ix?=
- =?utf-8?B?UWRTU25TOGdvY2pma2NscXN6YjZOVFE2U3kyTDBHQ0FyODJGZFEzY1VDOW9Z?=
- =?utf-8?B?MHA1cW5TVkhRdWlqOTNEVk9yWFI4TzdEcVkrTnZuYW1VUnJnY21qdDdQYjF0?=
- =?utf-8?B?dTRXQ1ROTTRyODgwcjdqSmM1QkhMQmNjWDlQZGZmTUdEeXNtZC9GQ2JZTnZv?=
- =?utf-8?B?Qk92a1RkSmN3UnROZlZUSzZ6clJmWFdVMkZvNGpicTZrMWFyYm5WYUxIYlAr?=
- =?utf-8?B?eHhkK0pvYXhkcThCN1lSb2ZLZFArNi9GNy95QUR1Mk9ERzJnNzREWlhqRFpY?=
- =?utf-8?B?QWUvR3BRcXZEREtBVk80K1d6eERVODIrMGY4VGsyMkV2Um9RaXlPdEVqTHhv?=
- =?utf-8?B?K0FhZkNGa0Jrd2NDSHIyV01OZXVBdlF3QnE2aE43cGtLSFFFRjlSK2lWejlr?=
- =?utf-8?B?Y2E1M1FMdGQrbUJ6NUtTK25NdWRESHpCandtS25zUTFQZGh3VEh0ZjZZcXRM?=
- =?utf-8?B?QTB4K3N1STZweW53YWhUMnp5b3lacUNiU2dyNHoxbFUvdlgwNTNzajByb1Qy?=
- =?utf-8?B?TnNLQTNBc25DazdZZTFNSlpubFlIZkVZeWMxQ1c1d1JXZktYRHdxV2lBYVgv?=
- =?utf-8?B?TlF6OTB2V2RLbnJzSklFOUlPYkVUbjJ2dnM2VTRFQVE2dkoxWjBzd3o4Tjk5?=
- =?utf-8?B?RC9zTFFqYW9pdFNDS1NNeERZUXZsZ1hsMzJyS3dxMVYrbTVFcVVlalZ1Zm5p?=
- =?utf-8?B?TURpK3FzYnNyU1ZZUmZmeXJQTlovQ1BKa0FLL3RyOG14Vmwxc3ZiUy9lNmlq?=
- =?utf-8?B?bmNnQ3VXRi9oejdlT0RicjgwRDlUeXExNnhNR21nSFhJd25xZWJGK0RFNXN4?=
- =?utf-8?B?T1pMcHRzMUhFUkNnTEw2WjMvM0xWSUVqSnhDUjJRYkFMSVdoYWVSZCthUGZC?=
- =?utf-8?B?N0tURG9UWnpwdjNMdnllZDZiMGY3dy9uK2w1R2ZTVmxBNlN3UmhxNjltOXNh?=
- =?utf-8?B?dGFpeVhnRll1Snd6N054M2xjYXJmdUFBeXBYbWcvR1J2YzYxM0haRXphbmlI?=
- =?utf-8?B?WjBMWjFQdzBuVDZxQzJ4SXN0empnMEtBcUxLT0tpUlBaeUF0YnR1cVJza2JX?=
- =?utf-8?B?V3pTM1BwREdqUW1UY1k4TFVhTGg5TDBiS0dZNDl4bGNVZzJSQWkzQ0paejd5?=
- =?utf-8?B?Q05qWTB5N0lwWEx4RDIxeGZtbFJPbXpnUFBMcEtkM3o0alR6NXdHSnJrWFky?=
- =?utf-8?B?UXRJenNWaDVyTURkVEsxTGFndDdLYmIyTGJHSzRQSjliaXdqRk1la3B0VkFj?=
- =?utf-8?B?WEI5M1BmZ0d4SGdZQkpBTXg4RWJtOVVoZ21TUHkzTEVpbGJtYkNQVEJvNjZi?=
- =?utf-8?B?SUZhWXBPUHJUTlByVXhLNjdOcUVNd1FqRE9jVTlZdkh5NFI3TUtGbks5T2pr?=
- =?utf-8?B?K3RXYU45YUtJVVpzbjg1YVlsLzBDdjNGalBSeEZYQjluNFB5b3BRS2QwdHZO?=
- =?utf-8?B?QUgwT1NHQjZOb3B2ejA3VzhKVHE0aFltRWV1ZXJISFBMeXdjNURTMGtEZkI1?=
- =?utf-8?B?c1RkOXRsUTRCRnBJVGFQcFJXaEpoenAyaWF3TFNvZjAvdXhzaEV0TmE0ZVR2?=
- =?utf-8?B?YzkrdkN6cXhFNVhGbjliNmhKRFRhb0ZGNGdvclRLV00wcURiaXp2emdWS2ha?=
- =?utf-8?B?cUVNWnViNExUU0p4aDZZWFByY3ExM0IyQmY5RURJc2Q2eUVPTkdYdnVocG9D?=
- =?utf-8?B?VVVKTUdsclBjWkVqUmFpc0hycnljaG91VEY1ZWlqWlM5WDc0cXl4eXBWUlFL?=
- =?utf-8?B?NUc5VkZNbTgvZ29BM1ltQTVyQXZiZ3B0eXduK0hZZkM1VjBTMHd5MkY1UWRE?=
- =?utf-8?B?cW1teC8zNTBWWGxOeklFaGNsQkh0Uk9xWU1ZWTNKNUtFRVc2WU9jKzZWV1h1?=
- =?utf-8?Q?DVTXEG1Fzdldfcv4MBraM2U=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7f86148-a12a-4889-5e50-08daa8bece0f
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2022 23:51:10.5252
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3wbuxBl3xH1OVPnlwosa88CMS4K1lwr9aCt7rEUcMRAaP8kitLIaOMfp193gaeuF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8806
+To:     Jeff Layton <jlayton@kernel.org>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, djwong@kernel.org, david@fromorbit.com,
+        trondmy@hammerspace.com, neilb@suse.de, viro@zeniv.linux.org.uk,
+        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
+        lczerner@redhat.com, jack@suse.cz, bfields@fieldses.org,
+        brauner@kernel.org, fweimer@redhat.com, linux-man@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+References: <20220928134200.28741-1-jlayton@kernel.org>
+From:   Alejandro Colomar <alx.manpages@gmail.com>
+In-Reply-To: <20220928134200.28741-1-jlayton@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------IfMxZBOO7OlMGKOKWQtFmv0v"
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -128,85 +83,172 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------IfMxZBOO7OlMGKOKWQtFmv0v
+Content-Type: multipart/mixed; boundary="------------qHqb3fVMZ8DmKM0eA1TeMiZj";
+ protected-headers="v1"
+From: Alejandro Colomar <alx.manpages@gmail.com>
+To: Jeff Layton <jlayton@kernel.org>, tytso@mit.edu,
+ adilger.kernel@dilger.ca, djwong@kernel.org, david@fromorbit.com,
+ trondmy@hammerspace.com, neilb@suse.de, viro@zeniv.linux.org.uk,
+ zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
+ lczerner@redhat.com, jack@suse.cz, bfields@fieldses.org, brauner@kernel.org,
+ fweimer@redhat.com, linux-man@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-xfs@vger.kernel.org
+Message-ID: <1099b005-4268-95cb-452c-57156f1cf7b7@gmail.com>
+Subject: Re: [man-pages RFC PATCH v6] statx, inode: document the new
+ STATX_VERSION field
+References: <20220928134200.28741-1-jlayton@kernel.org>
+In-Reply-To: <20220928134200.28741-1-jlayton@kernel.org>
 
+--------------qHqb3fVMZ8DmKM0eA1TeMiZj
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-On 2022/10/8 01:07, David Sterba wrote:
-> On Thu, Sep 15, 2022 at 05:07:42PM +0800, Qu Wenruo wrote:
->>
->>
->> On 2022/9/14 23:06, Josef Bacik wrote:
->>> The bulk of our on-disk definitions exist in btrfs_tree.h, which user
->>> space can use.
->>
->> Previously I tried to move some members to btrfs_tree.h, but didn't get
->> approved, mostly due to the fact that, we have those members exposed
->> through uapi is for TREE_SEARCH ioctl.
->>
->> But I'm not buying that reason at all.
->>
->> To me, all on-disk format, no matter if it's exposed through tree-search
->> should be in btrfs_tree.h.
-> 
-> All the structures are internal and not a guaranteed public API, we may
-> want to change them any time. So if we move the definitions to UAPI then
-> with a disclaimer that it's not a stable api and any compilation
-> failures outside of kernel are up to the users to fix.
+SGkgSmVmZiwNCg0KT24gOS8yOC8yMiAxNTo0MiwgSmVmZiBMYXl0b24gd3JvdGU6DQo+IEkn
+bSBwcm9wb3NpbmcgdG8gZXhwb3NlIHRoZSBpbm9kZSBjaGFuZ2UgYXR0cmlidXRlIHZpYSBz
+dGF0eCBbMV0uIERvY3VtZW50DQo+IHdoYXQgdGhpcyB2YWx1ZSBtZWFucyBhbmQgd2hhdCBh
+biBvYnNlcnZlciBjYW4gaW5mZXIgZnJvbSBpdCBjaGFuZ2luZy4NCj4gDQo+IE5COiB0aGlz
+IHdpbGwgcHJvYmFibHkgaGF2ZSBjb25mbGljdHMgd2l0aCB0aGUgU1RBVFhfRElPQUxJR04g
+ZG9jDQo+IHBhdGNoZXMsIGJ1dCB3ZSBzaG91bGQgYmUgYWJsZSB0byByZXNvbHZlIHRob3Nl
+IGJlZm9yZSBtZXJnaW5nIGFueXRoaW5nLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogSmVmZiBM
+YXl0b24gPGpsYXl0b25Aa2VybmVsLm9yZz4NCj4gDQo+IFsxXTogaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvbGludXgtbmZzLzIwMjIwODI2MjE0NzAzLjEzNDg3MC0xLWpsYXl0b25Aa2Vy
+bmVsLm9yZy9ULyN0DQoNClRoYW5rcyEgUGxlYXNlIHNlZSBzb21lIGZvcm1hdHRpbmcgY29t
+bWVudHMgYmVsb3cuDQoNCkNoZWVycywNCg0KQWxleA0KDQo+IC0tLQ0KPiAgIG1hbjIvc3Rh
+dHguMiB8IDEzICsrKysrKysrKysrKysNCj4gICBtYW43L2lub2RlLjcgfCAzNiArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gICAyIGZpbGVzIGNoYW5nZWQsIDQ5
+IGluc2VydGlvbnMoKykNCj4gDQo+IHY2OiBpbmNvcnBvcmF0ZSBOZWlsJ3Mgc3VnZ2VzdGlv
+bnMNCj4gICAgICBjbGFyaWZ5IGhvdyB3ZWxsLWJlaGF2ZWQgZmlsZXN5c3RlbXMgc2hvdWxk
+IG9yZGVyIHRoaW5ncw0KPiANCj4gZGlmZiAtLWdpdCBhL21hbjIvc3RhdHguMiBiL21hbjIv
+c3RhdHguMg0KPiBpbmRleCAwZDFiNDU5MWY3NGMuLmVlNzAwNTMzNGEyZiAxMDA2NDQNCj4g
+LS0tIGEvbWFuMi9zdGF0eC4yDQo+ICsrKyBiL21hbjIvc3RhdHguMg0KPiBAQCAtNjIsNiAr
+NjIsNyBAQCBzdHJ1Y3Qgc3RhdHggew0KPiAgICAgICBfX3UzMiBzdHhfZGV2X21ham9yOyAg
+IC8qIE1ham9yIElEICovDQo+ICAgICAgIF9fdTMyIHN0eF9kZXZfbWlub3I7ICAgLyogTWlu
+b3IgSUQgKi8NCj4gICAgICAgX191NjQgc3R4X21udF9pZDsgICAgICAvKiBNb3VudCBJRCAq
+Lw0KPiArICAgIF9fdTY0IHN0eF92ZXJzaW9uOyAgICAgLyogSW5vZGUgY2hhbmdlIGF0dHJp
+YnV0ZSAqLw0KPiAgIH07DQo+ICAgLkVFDQo+ICAgLmluDQo+IEBAIC0yNDcsNiArMjQ4LDcg
+QEAgU1RBVFhfQlRJTUUJV2FudCBzdHhfYnRpbWUNCj4gICBTVEFUWF9BTEwJVGhlIHNhbWUg
+YXMgU1RBVFhfQkFTSUNfU1RBVFMgfCBTVEFUWF9CVElNRS4NCj4gICAJSXQgaXMgZGVwcmVj
+YXRlZCBhbmQgc2hvdWxkIG5vdCBiZSB1c2VkLg0KPiAgIFNUQVRYX01OVF9JRAlXYW50IHN0
+eF9tbnRfaWQgKHNpbmNlIExpbnV4IDUuOCkNCj4gK1NUQVRYX1ZFUlNJT04JV2FudCBzdHhf
+dmVyc2lvbiAoRFJBRlQpDQo+ICAgLlRFDQo+ICAgLmluDQo+ICAgLlBQDQo+IEBAIC00MDcs
+MTAgKzQwOSwxNiBAQCBUaGlzIGlzIHRoZSBzYW1lIG51bWJlciByZXBvcnRlZCBieQ0KPiAg
+IC5CUiBuYW1lX3RvX2hhbmRsZV9hdCAoMikNCj4gICBhbmQgY29ycmVzcG9uZHMgdG8gdGhl
+IG51bWJlciBpbiB0aGUgZmlyc3QgZmllbGQgaW4gb25lIG9mIHRoZSByZWNvcmRzIGluDQo+
+ICAgLklSIC9wcm9jL3NlbGYvbW91bnRpbmZvIC4NCj4gKy5UUA0KPiArLkkgc3R4X3ZlcnNp
+b24NCj4gK1RoZSBpbm9kZSB2ZXJzaW9uLCBhbHNvIGtub3duIGFzIHRoZSBpbm9kZSBjaGFu
+Z2UgYXR0cmlidXRlLiBTZWUNCg0KUGxlYXNlIHVzZSBzZW1hbnRpYyBuZXdsaW5lcy4NCg0K
+U2VlIG1hbi1wYWdlcyg3KToNCiAgICBVc2Ugc2VtYW50aWMgbmV3bGluZXMNCiAgICAgICAg
+SW4gdGhlIHNvdXJjZSBvZiBhIG1hbnVhbCBwYWdlLCBuZXcgc2VudGVuY2VzICBzaG91bGQg
+IGJlDQogICAgICAgIHN0YXJ0ZWQgb24gbmV3IGxpbmVzLCBsb25nIHNlbnRlbmNlcyBzaG91
+bGQgYmUgc3BsaXQgaW50bw0KICAgICAgICBsaW5lcyAgYXQgIGNsYXVzZSBicmVha3MgKGNv
+bW1hcywgc2VtaWNvbG9ucywgY29sb25zLCBhbmQNCiAgICAgICAgc28gb24pLCBhbmQgbG9u
+ZyBjbGF1c2VzIHNob3VsZCBiZSBzcGxpdCBhdCBwaHJhc2UgYm91bmTigJANCiAgICAgICAg
+YXJpZXMuICBUaGlzIGNvbnZlbnRpb24sICBzb21ldGltZXMgIGtub3duICBhcyAgInNlbWFu
+dGljDQogICAgICAgIG5ld2xpbmVzIiwgIG1ha2VzIGl0IGVhc2llciB0byBzZWUgdGhlIGVm
+ZmVjdCBvZiBwYXRjaGVzLA0KICAgICAgICB3aGljaCBvZnRlbiBvcGVyYXRlIGF0IHRoZSBs
+ZXZlbCBvZiBpbmRpdmlkdWFsIHNlbnRlbmNlcywNCiAgICAgICAgY2xhdXNlcywgb3IgcGhy
+YXNlcy4NCg0KDQo+ICsuQlIgaW5vZGUgKDcpDQo+ICtmb3IgZGV0YWlscy4NCj4gICAuUFAN
+Cj4gICBGb3IgZnVydGhlciBpbmZvcm1hdGlvbiBvbiB0aGUgYWJvdmUgZmllbGRzLCBzZWUN
+Cj4gICAuQlIgaW5vZGUgKDcpLg0KPiAgIC5cIg0KPiArLlRQDQoNCldoeT8gIC5UUCBpcyB1
+c2VkIHRvIHN0YXJ0IHRhZ2dlZCBwYXJhZ3JhcGhzLiAgQnV0IC5TUyBpcyB1c2VkIHRvIHN0
+YXJ0IA0Kc3Vic2VjdGlvbnMuDQoNCj4gICAuU1MgRmlsZSBhdHRyaWJ1dGVzDQo+ICAgVGhl
+DQo+ICAgLkkgc3R4X2F0dHJpYnV0ZXMNCj4gQEAgLTQ4OSw2ICs0OTcsMTEgQEAgd2l0aG91
+dCBhbiBleHBsaWNpdA0KPiAgIFNlZQ0KPiAgIC5CUiBtbWFwICgyKQ0KPiAgIGZvciBtb3Jl
+IGluZm9ybWF0aW9uLg0KPiArLlRQDQo+ICsuQlIgU1RBVFhfQVRUUl9WRVJTSU9OX01PTk9U
+T05JQyAiIChzaW5jZSBMaW51eCA2Lj8pIg0KPiArVGhlIHN0eF92ZXJzaW9uIHZhbHVlIG1v
+bm90b25pY2FsbHkgaW5jcmVhc2VzIG92ZXIgdGltZSBhbmQgd2lsbCBuZXZlciBhcHBlYXIN
+Cj4gK3RvIGdvIGJhY2t3YXJkLCBldmVuIGluIHRoZSBldmVudCBvZiBhIGNyYXNoLiBUaGlz
+IGNhbiBhbGxvdyBhbiBhcHBsaWNhdGlvbiB0bw0KPiArbWFrZSBhIGJldHRlciBkZXRlcm1p
+bmF0aW9uIGFib3V0IG9yZGVyaW5nIHdoZW4gdmlld2luZyBkaWZmZXJlbnQgdmVyc2lvbnMu
+DQo+ICAgLlNIIFJFVFVSTiBWQUxVRQ0KPiAgIE9uIHN1Y2Nlc3MsIHplcm8gaXMgcmV0dXJu
+ZWQuDQo+ICAgT24gZXJyb3IsIFwtMSBpcyByZXR1cm5lZCwgYW5kDQo+IGRpZmYgLS1naXQg
+YS9tYW43L2lub2RlLjcgYi9tYW43L2lub2RlLjcNCj4gaW5kZXggOWIyNTVhODkwNzIwLi5l
+OGFkYjYzYjFmNmEgMTAwNjQ0DQo+IC0tLSBhL21hbjcvaW5vZGUuNw0KPiArKysgYi9tYW43
+L2lub2RlLjcNCj4gQEAgLTE4NCw2ICsxODQsMTIgQEAgTGFzdCBzdGF0dXMgY2hhbmdlIHRp
+bWVzdGFtcCAoY3RpbWUpDQo+ICAgVGhpcyBpcyB0aGUgZmlsZSdzIGxhc3Qgc3RhdHVzIGNo
+YW5nZSB0aW1lc3RhbXAuDQo+ICAgSXQgaXMgY2hhbmdlZCBieSB3cml0aW5nIG9yIGJ5IHNl
+dHRpbmcgaW5vZGUgaW5mb3JtYXRpb24NCj4gICAoaS5lLiwgb3duZXIsIGdyb3VwLCBsaW5r
+IGNvdW50LCBtb2RlLCBldGMuKS4NCj4gKy5UUA0KPiArSW5vZGUgdmVyc2lvbiAodmVyc2lv
+bikNCj4gKyhub3QgcmV0dXJuZWQgaW4gdGhlIFxmSXN0YXRcZlAgc3RydWN0dXJlKTsgXGZJ
+c3RhdHguc3R4X3ZlcnNpb25cZlANCg0KUGxlYXNlIHVzZSAuSSBhbmQgLkIgbWFjcm9zIGlu
+c3RlYWQgb2YgaW5saW5lIGZvcm1hdHRpbmcuICBUaGUgYWJvdmUgDQpsaW5lIGNvdWxkIGJl
+IHJld3JpdHRlbiBhczoNCg0KKG5vdCByZXR1cm5lZCBpbiB0aGUNCi5JIHN0YXQNCnN0cnVj
+dHVyZSk7DQouSSBzdGF0eC5zdHhfdmVyc2lvbg0KDQoNCj4gKy5JUA0KPiArVGhpcyBpcyB0
+aGUgaW5vZGUgY2hhbmdlIGNvdW50ZXIuIFNlZSB0aGUgZGlzY3Vzc2lvbiBvZg0KPiArXGZC
+dGhlIGlub2RlIHZlcnNpb24gY291bnRlclxmUCwgYmVsb3cuDQo+ICAgLlBQDQo+ICAgVGhl
+IHRpbWVzdGFtcCBmaWVsZHMgcmVwb3J0IHRpbWUgbWVhc3VyZWQgd2l0aCBhIHplcm8gcG9p
+bnQgYXQgdGhlDQo+ICAgLklSIEVwb2NoICwNCj4gQEAgLTQyNCw2ICs0MzAsMzYgQEAgb24g
+YSBkaXJlY3RvcnkgbWVhbnMgdGhhdCBhIGZpbGUNCj4gICBpbiB0aGF0IGRpcmVjdG9yeSBj
+YW4gYmUgcmVuYW1lZCBvciBkZWxldGVkIG9ubHkgYnkgdGhlIG93bmVyDQo+ICAgb2YgdGhl
+IGZpbGUsIGJ5IHRoZSBvd25lciBvZiB0aGUgZGlyZWN0b3J5LCBhbmQgYnkgYSBwcml2aWxl
+Z2VkDQo+ICAgcHJvY2Vzcy4NCj4gKy5TUyBUaGUgaW5vZGUgdmVyc2lvbiBjb3VudGVyDQo+
+ICsuUFANCg0KLlBQIHNob3VsZCBub3QgYmUgdXNlZCBhZnRlciAuU1MuICBXZSB1c2UgaXQg
+dG8gc2VwYXJhdGUgcGFyYWdyYXBocyANCmJldHdlZW4gdGhlbXNlbHZlcywgYnV0IFtzdWJd
+c2VjdGlvbiB0aXRsZXMgYXJlIHB1dCBuZXh0IHRvIHRoZSBmaXJzdCANCnBhcmFncmFwaC4N
+Cg0KPiArVGhlIFxmSXN0YXR4LnN0eF92ZXJzaW9uXGZQIGZpZWxkIGlzIHRoZSBpbm9kZSBj
+aGFuZ2UgY291bnRlci4gQW55IG9wZXJhdGlvbg0KPiArdGhhdCBjb3VsZCByZXN1bHQgaW4g
+YSBjaGFuZ2UgdG8gXGZJc3RhdHguc3R4X2N0aW1lXGZQIG11c3QgcmVzdWx0IGluIGFuDQo+
+ICtpbmNyZWFzZSB0byB0aGlzIHZhbHVlLiBTb29uIGFmdGVyIGEgY2hhbmdlIGhhcyBiZWVu
+IG1hZGUsIGFuIHN0eF92ZXJzaW9uIHZhbHVlDQo+ICtzaG91bGQgYXBwZWFyIHRvIGJlIGxh
+cmdlciB0aGFuIHByZXZpb3VzIHJlYWRpbmdzLiBUaGlzIGlzIHRoZSBjYXNlIGV2ZW4NCj4g
+K3doZW4gYSBjdGltZSBjaGFuZ2UgaXMgbm90IGV2aWRlbnQgZHVlIHRvIGNvYXJzZSB0aW1l
+c3RhbXAgZ3JhbnVsYXJpdHkuDQo+ICsuUFANCj4gK0FuIG9ic2VydmVyIGNhbm5vdCBpbmZl
+ciBhbnl0aGluZyBmcm9tIGFtb3VudCBvZiBpbmNyZWFzZSBhYm91dCB0aGUNCj4gK25hdHVy
+ZSBvciBtYWduaXR1ZGUgb2YgdGhlIGNoYW5nZS4gSW4gZmFjdCwgYSBzaW5nbGUgaW5jcmVt
+ZW50IGNhbiByZWZsZWN0DQo+ICttdWx0aXBsZSBkaXNjcmV0ZSBjaGFuZ2VzIGlmIHRoZSB2
+YWx1ZSB3YXMgbm90IGNoZWNrZWQgd2hpbGUgdGhvc2UgY2hhbmdlcw0KPiArd2VyZSBiZWlu
+ZyBwcm9jZXNzZWQuDQo+ICsuUFANCj4gK0NoYW5nZXMgdG8gc3R4X3ZlcnNpb24gYXJlIG5v
+dCBuZWNlc3NhcmlseSBhdG9taWMgd2l0aCB0aGUgY2hhbmdlIGl0c2VsZiwgYnV0DQo+ICt3
+ZWxsLWJlaGF2ZWQgZmlsZXN5c3RlbXMgc2hvdWxkIGluY3JlbWVudCBzdHhfdmVyc2lvbiBh
+ZnRlciBhIGNoYW5nZSBoYXMgYmVlbg0KPiArbWFkZSB2aXNpYmxlIHRvIG9ic2VydmVycyBy
+YXRoZXIgdGhhbiBiZWZvcmUuIFRoaXMgaXMgZXNwZWNpYWxseSBpbXBvcnRhbnQgZm9yDQo+
+ICtyZWFkLWNhY2hpbmcgYWxnb3JpdGhtcyB3aGljaCBjb3VsZCBiZSBmb29sZWQgaW50byBh
+c3NvY2lhdGluZyBhIG5ld2VyDQo+ICtzdHhfdmVyc2lvbiB3aXRoIGFuIG9sZGVyIHZlcnNp
+b24gb2YgZGF0YS4gTm90ZSB0aGF0IHRoaXMgZG9lcyBsZWF2ZSBhIHdpbmRvdw0KPiArb2Yg
+dGltZSB3aGVyZSBhIGNoYW5nZSBtYXkgYmUgdmlzaWJsZSwgYnV0IHRoZSBvbGQgc3R4X3Zl
+cnNpb24gaXMgc3RpbGwgYmVpbmcNCj4gK3JlcG9ydGVkLg0KPiArLlBQDQo+ICtJbiB0aGUg
+ZXZlbnQgb2YgYSBzeXN0ZW0gY3Jhc2gsIHRoaXMgdmFsdWUgY2FuIGFwcGVhciB0byBnbyBi
+YWNrd2FyZCBpZiBpdCB3YXMNCj4gK3F1ZXJpZWQgYmVmb3JlIGV2ZXIgYmVpbmcgd3JpdHRl
+biB0byB0aGUgYmFja2luZyBzdG9yZS4gQXBwbGljYXRpb25zIHRoYXQNCj4gK3BlcnNpc3Qg
+c3R4X3ZlcnNpb24gdmFsdWVzIGFjcm9zcyBhIHJlYm9vdCBzaG91bGQgdGFrZSBjYXJlIHRv
+IG1pdGlnYXRlIHRoaXMuDQo+ICtJZiB0aGUgZmlsZXN5c3RlbSByZXBvcnRzIFxmSVNUQVRY
+X0FUVFJfVkVSU0lPTl9NT05PVE9OSUNcZlAgaW4NCj4gK1xmSXN0YXR4LnN0eF9hdHRyaWJ1
+dGVzXGZQLCB0aGVuIGl0IGlzIG5vdCBzdWJqZWN0IHRvIHRoaXMgcHJvYmxlbS4NCj4gKy5Q
+UA0KPiArVGhlIHN0eF92ZXJzaW9uIGlzIGEgTGludXggZXh0ZW5zaW9uIGFuZCBpcyBub3Qg
+c3VwcG9ydGVkIGJ5IGFsbCBmaWxlc3lzdGVtcy4NCj4gK1RoZSBhcHBsaWNhdGlvbiBtdXN0
+IHZlcmlmeSB0aGF0IHRoZSBcZklTVEFUWF9WRVJTSU9OXGZQIGJpdCBpcyBzZXQgaW4gdGhl
+DQo+ICtyZXR1cm5lZCBcZklzdGF0eC5zdHhfbWFza1xmUCBiZWZvcmUgcmVseWluZyBvbiB0
+aGlzIGZpZWxkLg0KPiAgIC5TSCBTVEFOREFSRFMNCj4gICBJZiB5b3UgbmVlZCB0byBvYnRh
+aW4gdGhlIGRlZmluaXRpb24gb2YgdGhlDQo+ICAgLkkgYmxrY250X3QNCg0KLS0gDQo8aHR0
+cDovL3d3dy5hbGVqYW5kcm8tY29sb21hci5lcy8+DQo=
 
-The point is, if we're changing the super block format, it's no 
-difference than changing a on-disk structure.
+--------------qHqb3fVMZ8DmKM0eA1TeMiZj--
 
-It's still the same incompat/compat_ro/compat change depending on the 
-member we change.
+--------------IfMxZBOO7OlMGKOKWQtFmv0v
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-> 
-> Which does not work in practice as easy as said and we have reverted
-> some changes. See 34c51814b2b8 ("btrfs: re-instantiate the removed
-> BTRFS_SUBVOL_CREATE_ASYNC definition").
+-----BEGIN PGP SIGNATURE-----
 
-That commit indeed teaches us something, even if we deprecated some 
-features, it still has to be kept in the UAPI.
+iQIzBAEBCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmNA2lQACgkQnowa+77/
+2zLH3Q//QRl0WDTzRO7oTBxlEU3vHvGgyE+fux97KBJBdZ7srm1XRdeY8ZCLiR7V
+c2ezn2PtAAO9eqqWEh2JuvcYCk9dUPidEuoAEi1+0MFceJ+8U4eF7doFJAxwqR8I
+3hdLqhc1fXY32nkXNWU91ch3mdESAM+ZI1xKhcM/yfK0gXU65iARWwaZfR8fhS4k
+N8C+YsLRz5iudNOlrv58lg90kRGOvCx/6yC7v/IguVPsguESQ83cKor27g1ZWLbt
+kjgPCxKXpot80lH4veYhuRxmrqDDjOvo7gDU69uXo1ShsRK6lNWgRCtMUzHOuQe5
+FWAqs0f0qDxwmuJLrkEUZZ/gPkJDiTqHCnzcMtO7GiqsdpuAiagWSzEFhnAyocRo
+6HrmAd5aZNb8gaP+Nzp1IUIm0Kx96GtSE8H8FPdxA6vD1qtvkvDDYsg3/zKt4A0N
+SZ5z6dCVcsy+0d15xdbaH1b5COU9ZidviEuIYGMpFkLor4LDwpA4yS+9LHsMyI/B
+aU6c5wpCbJcnt4RySQuEIwEit8VxtEjzCiiyqEBeQHcrZmKc4L4cKBEPJO/VPRXc
+yteeNl6n1iZ86OcL7dbOA66lt/NOMznGX4LyWjTbOsGdnlPSwhN2Sh/VugpJyxFO
+gKcZz0x7anMAuArYxrZ9FG2x28+bCAhCcEiH+7ksREd4Lu61YuQ=
+=0c3d
+-----END PGP SIGNATURE-----
 
-But that argument doesn't really affect the super block move AFAIK.
-
-Since it's not even part of an ioctl, thus I don't think user-space tool 
-would really both that.
-
-> 
->> Although I'd prefer to rename btrfs_tree.h to btrfs_ondisk_format.h.
->>
->> Thus to David:
->>
->> Can we make it clear that, btrfs_tree.h is not only for tree search
->> ioctl, but also all the on-disk format thing?
-> 
-> It is for on-disk format defitions, but that's a different problem than
-> the internal/external API.
-
-Then, what's the proper way to export btrfs on-disk format?
-
- From an ioctl point of view, all those on-disk format things don't even 
-need to be exported.
-
-TREE_SEARCH ioctl is just returning a certain TLV formatted memory.
-Yes, the basic things like btrfs_ioctl_search_header, but the content is 
-still internal, not directly user-facing.
-
-All the returned TLV members are really implementation related details, 
-and even the TREE_SEARCH ioctl itself is more like a debug tool than 
-proper interface.
-A lot of things are done using TREE_SEARCH ioctl because we don't have 
-better more defined interface.
-
-Thanks,
-Qu
-
-> 
->> Reject once that's fine, but reject twice from two different guys, I
->> think it's not correct.
->>
->>>   Keep things consistent and move the rest of the on disk
->>> definitions out of ctree.h into btrfs_tree.h.  Note I did have to update
->>> all u8's to __u8, but otherwise this is a strict copy and paste.
->>>
->>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> Reviewed-by: Qu Wenruo <wqu@suse.com>
+--------------IfMxZBOO7OlMGKOKWQtFmv0v--
