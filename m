@@ -2,96 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 455E95F8AB9
-	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Oct 2022 12:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2DB5F8AC9
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Oct 2022 13:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbiJIKpI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 9 Oct 2022 06:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59090 "EHLO
+        id S230079AbiJILDo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 9 Oct 2022 07:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbiJIKpG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Oct 2022 06:45:06 -0400
-X-Greylist: delayed 598 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 09 Oct 2022 03:45:04 PDT
-Received: from mr4.vodafonemail.de (mr4.vodafonemail.de [145.253.228.164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6DA1758C
-        for <linux-btrfs@vger.kernel.org>; Sun,  9 Oct 2022 03:45:03 -0700 (PDT)
-Received: from smtp.vodafone.de (unknown [10.0.0.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mr4.vodafonemail.de (Postfix) with ESMTPS id 4Mldj33Sdkz1xy3
-        for <linux-btrfs@vger.kernel.org>; Sun,  9 Oct 2022 10:35:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arcor.de;
-        s=vfde-mb-mr2-21dec; t=1665311703;
-        bh=ZMFXck0FiO6h9GKFi9tubxV5XVetd4bg4T1kwpyMpWc=;
-        h=Message-ID:Date:User-Agent:Content-Language:To:From:Subject:
-         Content-Type:From;
-        b=FD+anh+cdQfghRuQ+SZuQJCk8LXHPfLAb69a+OQh51tbErGoXnBLg8qKD5T6TlQSk
-         LKWdNZ5+hRt1uzH5wz2RBx0QhAyjn4M/NnD1CoCjQN96e4zuMXj+D0GKAmrb+9F2mC
-         a1FqlZzlrWQzMBZbVGqRpTha7szh8WrgXSq8q6os=
-Received: from [10.0.2.6] (p54afaf98.dip0.t-ipconnect.de [84.175.175.152])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp.vodafone.de (Postfix) with ESMTPSA id 4Mldj25ckCzKm4q
-        for <linux-btrfs@vger.kernel.org>; Sun,  9 Oct 2022 10:34:59 +0000 (UTC)
-Message-ID: <a502eed4-b164-278a-2e80-b72013bcfc4f@arcor.de>
-Date:   Sun, 9 Oct 2022 12:34:57 +0200
+        with ESMTP id S229849AbiJILDm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Oct 2022 07:03:42 -0400
+Received: from spamschutz.webhoster.de (spamschutz.webhoster.de [212.172.221.190])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C35F2528F
+        for <linux-btrfs@vger.kernel.org>; Sun,  9 Oct 2022 04:03:40 -0700 (PDT)
+Received: from mail.psa14.webhoster.ag ([195.63.61.219] helo=admiralbulli.de)
+        by spamschutz.webhoster.de with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <admiral@admiralbulli.de>)
+        id 1ohU5g-000RWl-5q
+        for linux-btrfs@vger.kernel.org; Sun, 09 Oct 2022 13:03:32 +0200
+Received: from Areion (ipbcc08fe0.dynamic.kabel-deutschland.de [188.192.143.224])
+        (Authenticated sender: admiral@admiralbulli.de)
+        by psa14.webhoster.ag (Postfix) with ESMTPSA id 5745E7027F8
+        for <linux-btrfs@vger.kernel.org>; Sun,  9 Oct 2022 13:03:34 +0200 (CEST)
+From:   <admiral@admiralbulli.de>
+To:     <linux-btrfs@vger.kernel.org>
+Subject: BTRFS w/ quotas hangs on read-write mount using all available RAM -
+ rev2
+Date:   Sun, 9 Oct 2022 13:03:34 +0200
+Message-ID: <133101d8dbce$c666a030$5333e090$@admiralbulli.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Content-Language: en-US
-To:     linux-btrfs@vger.kernel.org
-From:   Ochi <ochi@arcor.de>
-Subject: RAID5 on SSDs - looking for advice
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-size: 1389
-X-purgate-ID: 155817::1665311702-53FFE4F8-2B9F3C39/0/0
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_05,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdjbzjGOl3AzpYGpRVmjXf9GHWaJgg==
+Content-Language: de
+X-PPP-Message-ID: <166531341482.1476998.5084857419601342087@psa14.webhoster.ag>
+X-PPP-Vhost: admiralbulli.de
+X-Originating-IP: 195.63.61.219
+X-iStore-Domain: admiralbulli.de
+X-iStore-Username: 
+Authentication-Results: webhoster.de; auth=pass (plain) smtp.auth=@admiralbulli.de
+X-iStore-Outgoing-Class: ham
+X-iStore-Outgoing-Evidence: Combined (0.11)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT+10hxVIV3mK1xyOlRXz6nIPUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5ztW2DfCmdqRCMoho/8w6SaWy8Zi3U/W0AnUgWIBqewEKvp
+ k7Vp2UXVHEQMIct0liI45dkoJ1g6vFd52DfQ79G4swKQDamPN66SYe4XX4xmgHpumUehsM559QqW
+ FFoBA9ZZ82GRisxPmPRTeC38EWDVqr/s5zF19+UXUogLDrjW+VLc3H0jP45f5X3qB4WPL3ODwIE7
+ VKe+bqpcdCns72R1lS2rsvbM48KtAYuafMoHXgMOM8AjFc2Mlq2e+vr61EnBPeWxfLTyo52lpUOn
+ 40xHoOAmb0xgXrrQKITtclJwwgEWSXSs+rtFDTCy3oL7i3cDFPZI3xOxBaPpD+a4iBFJsVNNUIbs
+ Z7IUm5ep8Wy2d+f8WNLr6FgRDn86t0RtvMCO8OL3MKmWpyx7GTPK+LOWY5R6BpcvGp3jcY/qUcse
+ gwpMsSu5ym64kNjdWJnNgLKQg/grtJdXoEcgtrkTMdhrJLFZV2VsWrEXxYzPJvIeyCEnVSsgPP/M
+ gqSGMx92qX+/Ib/3gD1xdv4OjYexFN7irTewnrFbPU7PCf8oqOmnTgbaykvg0omtYBj1nosLf015
+ WoZ+lPuoe+u6j3Pohj85B5hQ6nsDvccjqgmDvD9Whxx8gXHSKRwJ0JD+dlHFPj42KirgeViAp2PJ
+ jzfDplFOay8MnlNTR6NsYlc6yMrSFDA5svc9/3FBml+NRjJSjtOcTD53rSwSTIedTYkUaByAeIvy
+ 2XI3Pq5ORLZ1gI2j55oiu8eNlY3cwoWTHujvw4mOK/4I4n8vyJdfqYgH0VN0TDHtCCknrGVMF89u
+ 6C1TQ+VWhkbOqULHLrD8UvEFkiAf+9UC6dgzRPgUcOh8WLtt3jR5NeVaJQBh0uawl0Cg8vug2b7T
+ AIvbzEx4v/6tWJnGj6GDxFqp5y6IuJSYFp1AtgffC23R81gLiCRGg3bfHxEvVIn6jMhOiUH5AcIh
+ x9cxL7hrJSk60SF3F6RYOYr2
+X-Report-Abuse-To: spam@spamschutz.webhoster.de
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+Dear btrfs team,
+thanks for all your great work!
+I have been running btrfs now for several years and really like the
+robustness and ease of use!
 
-I'm currently thinking about migrating my home NAS to SSDs only. As a 
-compromise between space efficiency and redundancy, I'm thinking about:
+Last week I experienced 99% the same thing as described here by Loren M.
+Lang:
+https://www.spinics.net/lists/linux-btrfs/msg81173.html
+only difference: This is not my / but a 40TB storage mounted to
+/media/btrfs1/
 
-- using RAID5 for data and RAID1 for metadata on a couple of SSDs (3 or 
-4 for now, with the option to expand later),
-- using compression to get the most out of the relatively expensive SSD 
-storage,
-- encrypting each drive seperately below the FS level using LUKS (with 
-discard enabled).
+quick summary what happend:
+- enabled quotas to better understand where all my space has gone
+- started balancing
+- system got completely stuck due to the meanwhile well understood reasons
+- pushed reset button
 
-The NAS is regularly backed up to another NAS with spinning disks that 
-runs a btrfs RAID1 and takes daily snapshots.
+I can mount my btrfs system perfectly read-only and access the data. As soon
+as I try to mount rw, my system will exremely slow down, memory will fill up
+until I will finally end up with a panicking kernel.
 
-I have a few questions regarding this approach which I hope someone with 
-more insight into btrfs can answer me:
+So, no problem to successfully boot with the fstab entries on ro or
+commented out.
 
-1. Are there any known issues regarding discard/TRIM in a RAID5 setup? 
-Is discard implemented on a lower level that is independent of the 
-actual RAID level used? The very, very old initial merge announcement 
-[1] stated that discard support was missing back then. Is it implemented 
-now?
+   admiral@server:/$ uname -a
+   Linux server.domain.loc 4.19.0-21-amd64 #1 SMP Debian 4.19.249-2
+(2022-06-30) x86_64 GNU/Linux
 
-2. How is the parity data calculated when compression is in use? Is it 
-calculated on the data _after_ compression? In particular, is the parity 
-data expected to have the same size as the _compressed_ data?
+   admiral@server:/$ btrfs --version
+   btrfs-progs v5.10.1
 
-3. Are there any other known issues that come to mind regarding this 
-particular setup, or do you have any other advice?
+Here the question:
+I am looking for the option to disable quota on an unmounted btrfs like
+described here:
+https://patchwork.kernel.org/project/linux-btrfs/patch/20180812013358.16431-
+1-wqu@suse.com/
 
-[1] https://lwn.net/Articles/536038/
+All my trials and checks et cetera were performed with btrfs-progs v4.20.1-2
+as debian buster's latest state:
+https://packages.debian.org/de/buster/btrfs-progs
 
-Best regards
-Ochi
+I already upgraded the btrfs-progs to debian backport v5.10.1 but do not
+find any option to offline disable quota, yet:
+https://packages.debian.org/buster-backports/btrfs-progs
+
+Can you point me some direction how to move forward to recover the btrfs?
+
+Thanks a lot,
+
+admiralbulli
+
