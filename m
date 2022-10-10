@@ -2,221 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EADA45F9CDB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Oct 2022 12:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8875F9EBB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Oct 2022 14:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbiJJKgl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Oct 2022 06:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
+        id S231794AbiJJMa0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Oct 2022 08:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231902AbiJJKgj (ORCPT
+        with ESMTP id S231513AbiJJMaZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Oct 2022 06:36:39 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9448D57BE2
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 03:36:35 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3D44B21940
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:36:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1665398194; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r5/clrjTZZfXEKWd0IO2WuWpGPGy+9O4bPpb10A5IHg=;
-        b=K9lL2WMsxwmyOC3y4KCtdIjIOHY79ceq0/45nijb4P7HVZ+vp0uh9dl7CJ5rIwWEVpAhIY
-        4iY+Y0BbtsfdeBveVaYZclmUyveuYqK7obtqpGqD0y62QnrqLQjqrImX1w6Q6l01ttZ8zn
-        W06PAz1tQEuOCZecWzJgF8DOsyaR0o8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 815C513ACA
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:36:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +B2rEbH1Q2M9LgAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:36:33 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/5] btrfs: raid56: make it more explicit that cache rbio should have all its data sectors uptodate
-Date:   Mon, 10 Oct 2022 18:36:10 +0800
-Message-Id: <8fda749e551df0f1c06c8e6a7d05b82a51170de4.1665397731.git.wqu@suse.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <cover.1665397731.git.wqu@suse.com>
-References: <cover.1665397731.git.wqu@suse.com>
+        Mon, 10 Oct 2022 08:30:25 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9861DBC2F
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 05:30:22 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id r142so4138919iod.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 05:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RvTjEYU5OebqAwptvpYpYpSVM4iGSwiD7S5moKeGXdo=;
+        b=bqV0F3ZlWh2EiOfgG3Gl1vr4Ww3LPVinE4f23Oj5/VSFDZtNWu6XrcEKzhPRkEXO2t
+         wZlhE5qd2ng3QDa4uFtTHAQhGNghDUPZHeFW0zxeVhxTzCKeRlkMCXyRQLQOEqUhIIfj
+         UrlWXmT0anyxWja6cUV9EOHyJlHXYXIfPxLijxH3iKMGqr1Wb+04z9ME+pqnFxpMxFC3
+         v+dNnowpkJnl+rIQOJSzHdIDI8QAC+TDxQS27h1IsSETMKyhSlFhXxCzUpzRwRWp9wDw
+         p23/4XybHQf3JLDUX+zRHzUvCyPNO7VSO0Vh/Pz1wOPY+iRvT/1BeAgpr+l4ViZp4WU1
+         LbCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RvTjEYU5OebqAwptvpYpYpSVM4iGSwiD7S5moKeGXdo=;
+        b=2FBGaMP0xC3PKqQ02p3k3F6oFHItoHI7vqrpqZxNoeKicCQSkk6astfAI8BMKqLgfZ
+         VmLM09mS8HPKv+kZ5Tp0Il4nn9pfZXG0RryaxrWBpvvQ22YO10Cvz3I855pQdsg1avWi
+         tHijIa2GA1KB+DGyAekpex9gShCEN5S5Z90u6SyjQLD60j9tEy/Mpika8U2q8LpI4UaQ
+         Jv3LuyyQFL7u7qoLDpnbmEV7U839eWDfNhl88aAvkZlA4IeEhbseEinvHFx+fsFz/bD9
+         OaHUos/qzmC2fvkVnsSQQ2QfXBSTxUFUs8sjlZNYpNJQwzzr46rzBs5gfllJYRU+NYKK
+         vbWw==
+X-Gm-Message-State: ACrzQf1Z5X0mZuoUP1GygyUgwEqPCBfmA8HgH88CB7EUhiuD6m4NsTLA
+        iGIlrbhMudLTiFLANmcOOBkZehDDW/WFNfZWK0M=
+X-Google-Smtp-Source: AMsMyM4gtS1tWo5eoUCHhGReMJuyXgVp9z3Ef/HJa1UnpLPSldhgx9he3t45GmZL70MTFnmJoViJNMyPjGqR1anvP2s=
+X-Received: by 2002:a05:6638:12d4:b0:363:ad96:56e2 with SMTP id
+ v20-20020a05663812d400b00363ad9656e2mr4485657jas.104.1665405021993; Mon, 10
+ Oct 2022 05:30:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Sender: ayegbekomi8@gmail.com
+Received: by 2002:a05:6e02:1b0a:0:0:0:0 with HTTP; Mon, 10 Oct 2022 05:30:21
+ -0700 (PDT)
+From:   Capt Katie <katiehiggins302@gmail.com>
+Date:   Mon, 10 Oct 2022 12:30:21 +0000
+X-Google-Sender-Auth: dqWwEit4apUcxuLNtO6eMvB-qSo
+Message-ID: <CACWbVsqmD2M=MkirJ0P_fS4JZgxm_yj+KgxfgJb0bUgG1EeN2A@mail.gmail.com>
+Subject: RE: HELLO DEAR
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For Btrfs RAID56, we have a caching system for btrfs raid bios (rbio).
+Witam,
 
-We call cache_rbio_pages() to mark a qualified rbio ready for cache.
+Otrzyma=C5=82e=C5=9B moj=C4=85 poprzedni=C4=85 wiadomo=C5=9B=C4=87? Kontakt=
+owa=C5=82em si=C4=99 z tob=C4=85
+wcze=C5=9Bniej, ale wiadomo=C5=9B=C4=87 nie dotar=C5=82a, wi=C4=99c postano=
+wi=C5=82em napisa=C4=87
+ponownie. Potwierd=C5=BA, czy to otrzymasz, abym m=C3=B3g=C5=82 kontynuowa=
+=C4=87,
 
-The timing happens at:
+czekam na Twoj=C4=85 odpowied=C5=BA.
 
-- finish_rmw()
-
-  At this timing, we have already read all necessary sectors, along with
-  the rbio sectors, we have covered all data stripes.
-
-- __raid_recover_end_io()
-
-  At this timing, we have rebuild the rbio, thus all data sectors
-  involved (either from stripe or bio list) are uptodate now.
-
-Thus at the timing of cache_rbio_pages(), we should have all data
-sectors uptodate.
-
-This patch will make it explicit that all data sectors are uptodate at
-cache_rbio_pages() timing, mostly to prepare for the incoming
-verification at RMW time.
-
-This patch will add:
-
-- Extra ASSERT()s in cache_rbio_pages()
-  This is to make sure all data sectors, which are not covered by bio,
-  are already uptodate.
-
-- Extra ASSERT()s in steal_rbio()
-  Since only cached rbio can be stolen, thus every data sector should
-  already be uptodate in the source rbio.
-
-- Update __raid_recover_end_io() to update recovered sector->uptodate
-  Previously __raid_recover_end_io() will only mark failed sectors
-  uptodate if it's doing an RMW.
-
-  But this can trigger new ASSERT()s, as for recovery case, a recovered
-  failed sector will not be marked uptodate, and trigger ASSERT() in
-  later cache_rbio_pages() call.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/raid56.c | 70 ++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 51 insertions(+), 19 deletions(-)
-
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 4ec211a58f15..c009c0a2081e 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -176,8 +176,16 @@ static void cache_rbio_pages(struct btrfs_raid_bio *rbio)
- 
- 	for (i = 0; i < rbio->nr_sectors; i++) {
- 		/* Some range not covered by bio (partial write), skip it */
--		if (!rbio->bio_sectors[i].page)
-+		if (!rbio->bio_sectors[i].page) {
-+			/*
-+			 * Even if the sector is not covered by bio, if it is
-+			 * a data sector it should still be uptodate as it is
-+			 * read from disk.
-+			 */
-+			if (i < rbio->nr_data * rbio->stripe_nsectors)
-+				ASSERT(rbio->stripe_sectors[i].uptodate);
- 			continue;
-+		}
- 
- 		ASSERT(rbio->stripe_sectors[i].page);
- 		memcpy_page(rbio->stripe_sectors[i].page,
-@@ -264,6 +272,21 @@ static void steal_rbio_page(struct btrfs_raid_bio *src,
- 		dest->stripe_sectors[i].uptodate = true;
- }
- 
-+static bool is_data_stripe_page(struct btrfs_raid_bio *rbio, int page_nr)
-+{
-+	const int sector_nr = (page_nr << PAGE_SHIFT) >>
-+			      rbio->bioc->fs_info->sectorsize_bits;
-+
-+	/*
-+	 * We have ensured PAGE_SIZE is aligned with sectorsize, thus
-+	 * we won't have a page which is half data half parity.
-+	 *
-+	 * Thus if the first sector of the page belongs to data stripes, then
-+	 * the full page belongs to data stripes.
-+	 */
-+	return (sector_nr < rbio->nr_data * rbio->stripe_nsectors);
-+}
-+
- /*
-  * Stealing an rbio means taking all the uptodate pages from the stripe array
-  * in the source rbio and putting them into the destination rbio.
-@@ -274,16 +297,26 @@ static void steal_rbio_page(struct btrfs_raid_bio *src,
- static void steal_rbio(struct btrfs_raid_bio *src, struct btrfs_raid_bio *dest)
- {
- 	int i;
--	struct page *s;
- 
- 	if (!test_bit(RBIO_CACHE_READY_BIT, &src->flags))
- 		return;
- 
- 	for (i = 0; i < dest->nr_pages; i++) {
--		s = src->stripe_pages[i];
--		if (!s || !full_page_sectors_uptodate(src, i))
-+		struct page *p = src->stripe_pages[i];
-+
-+		/*
-+		 * We don't need to steal P/Q pages as they will always be
-+		 * regenerated for RMW or full write anyway.
-+		 */
-+		if (!is_data_stripe_page(src, i))
- 			continue;
- 
-+		/*
-+		 * If @src already has RBIO_CACHE_READY_BIT, it should have
-+		 * all data stripe pages present and uptodate.
-+		 */
-+		ASSERT(p);
-+		ASSERT(full_page_sectors_uptodate(src, i));
- 		steal_rbio_page(src, dest, i);
- 	}
- 	index_stripe_sectors(dest);
-@@ -2003,22 +2036,21 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
- 			/* xor in the rest */
- 			run_xor(pointers, rbio->nr_data - 1, sectorsize);
- 		}
--		/* if we're doing this rebuild as part of an rmw, go through
--		 * and set all of our private rbio pages in the
--		 * failed stripes as uptodate.  This way finish_rmw will
--		 * know they can be trusted.  If this was a read reconstruction,
--		 * other endio functions will fiddle the uptodate bits
-+
-+		/*
-+		 * No matter if this is a RMW or recovery, we should have all
-+		 * failed sectors repaired, thus they are now uptodate.
-+		 * Especially if we determine to cache the rbio, we need to
-+		 * have at least all data sectors uptodate.
- 		 */
--		if (rbio->operation == BTRFS_RBIO_WRITE) {
--			for (i = 0;  i < rbio->stripe_nsectors; i++) {
--				if (faila != -1) {
--					sector = rbio_stripe_sector(rbio, faila, i);
--					sector->uptodate = 1;
--				}
--				if (failb != -1) {
--					sector = rbio_stripe_sector(rbio, failb, i);
--					sector->uptodate = 1;
--				}
-+		for (i = 0;  i < rbio->stripe_nsectors; i++) {
-+			if (faila != -1) {
-+				sector = rbio_stripe_sector(rbio, faila, i);
-+				sector->uptodate = 1;
-+			}
-+			if (failb != -1) {
-+				sector = rbio_stripe_sector(rbio, failb, i);
-+				sector->uptodate = 1;
- 			}
- 		}
- 		for (stripe = rbio->real_stripes - 1; stripe >= 0; stripe--)
--- 
-2.37.3
-
+Pozdrowienia,
+Kapitan Katie
