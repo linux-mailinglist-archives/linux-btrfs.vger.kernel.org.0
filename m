@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F2B5F9CA4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Oct 2022 12:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B7A5F9CA6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Oct 2022 12:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbiJJKWj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Oct 2022 06:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
+        id S231555AbiJJKWl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Oct 2022 06:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231660AbiJJKWe (ORCPT
+        with ESMTP id S231656AbiJJKWe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 10 Oct 2022 06:22:34 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2395A816
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 03:22:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8DA6B159
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 03:22:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0575C60ECC
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D76FC60ECE
         for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:22:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E85CCC433B5
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:22:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE4C8C433C1
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:22:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665397345;
-        bh=p3sy30wSeX3U4FetLvIOeJ55UoZ8vhRvWAubvcXN8pc=;
+        s=k20201202; t=1665397346;
+        bh=XEHhBU03Mz+hEp5lxPdN8/D4vUQeaLBenLlnWZU9ya4=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=O3rlgtxr+eY2CJMdFpntIuD3knJfb4jR0w/2BaAlmhDxRNO0Nugwx8htJW7Y66SUC
-         0blk60FZ7shf9kCMBNlblUlTP8du+UEmhUH5nqus+I2MGBwSZoo1DWcJiDotNyUUOM
-         y2/W5BDXcvq5hi2KJmR9NXnO+Lt5KY3ZGERsoettLyxGMnHLlQMP0FwsXpM6rlQ71i
-         yBwAmOPbV+O+d8TFnbzikWxuFltSFebSFSZjjtqNr6lVasJPL0f0Nchd841mLOMftN
-         QyGFHeZgvXaV3FtQeXBGqYfRpQat6LovQA3bTIIe7xRY2vzbAtvJ79sQhjGXBzlJHo
-         IlfRHc9Ls27aw==
+        b=orIfnMFPBGNv0ART9CKmJz+qxLLKk7bPysh7hYceqfNXnCpBTnfbiw4EJ1oOMuRP6
+         k8An3j15mxNtsQ2w3ft7s0gmnPsJVgN+isgLFwitRUWlErKIAiaG0JXAfEWX3kV2KU
+         B4qvyMDpWw9sk69x8txthY7tvd9SbPU0ELvJWK0Qp9ZFoOYeBrBPRL5mBMlyTqwgmi
+         gh/bZiGSz1zENXH294GRPsTRkSDSTHIP+oWrTebgqrZseObEmwyIyWXHZQflVyl+QV
+         4LoMf3FuyGrKr1/2AIzZWWDLbGMfpAgTBfdTsw/1s/UP5BPm7S0buBeH9wKntcraIl
+         JWUTN8K2TgnTw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 02/18] btrfs: ignore fiemap path cache if we have multiple leaves for a data extent
-Date:   Mon, 10 Oct 2022 11:22:04 +0100
-Message-Id: <db4370a7809b3aeb8083ea8b7bafc1f6ffe6e0c8.1665396437.git.fdmanana@suse.com>
+Subject: [PATCH 03/18] btrfs: get the next extent map during fiemap/lseek more efficiently
+Date:   Mon, 10 Oct 2022 11:22:05 +0100
+Message-Id: <2ec5bdb13c1bb6a2d1fb883000f695037cb0f3ac.1665396437.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1665396437.git.fdmanana@suse.com>
 References: <cover.1665396437.git.fdmanana@suse.com>
@@ -53,139 +53,157 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The path cache used during fiemap used to determine the sharedness of
-extent buffers in a path from a leaf containing a file extent item
-pointing to our data extent up to the root node of the tree, is meant to
-be used for a single path. Having a single path is by far the most common
-case, and therefore worth to optimize for, but it's possible to actually
-have multiple paths because we have 2 or more leaves.
+At find_delalloc_subrange(), when we need to get the next extent map, we
+do a full search on the extent map tree (a red black tree). This is fine
+but it's a lot more efficient to simply use rb_next(), which typically
+requires iterating over less nodes of the tree and never needs to compare
+the ranges of nodes with the one we are looking for.
 
-If we have multiple leaves, the 'level' variable keeps getting incremented
-in each iteration of the while loop at btrfs_is_data_extent_shared(),
-which means we will treat the second leaf in the 'tmp' ulist as a level 1
-node, and so forth. In the worst case this can lead to getting a level
-greater than or equals to BTRFS_MAX_LEVEL (8), which will trigger a
-WARN_ON_ONCE() in the functions to lookup from or store in the path cache
-(lookup_backref_shared_cache() and store_backref_shared_cache()). If the
-current level never goes beyond 8, due to shared nodes in the paths and
-a fs tree height smaller than 8, it can still result in incorrectly
-marking one leaf as shared because some other leaf is shared and is stored
-one level below that other leaf, as when storing a true sharedness value
-in the cache results in updating the sharedness to true of all entries in
-the cache below the current level.
+So add a public helper to extent_map.{h,c} to get the extent map that
+immediately follows another extent map, using rb_next(), and use that
+helper at find_delalloc_subrange().
 
-Having multiple leaves happens in a case like the following:
-
-  - We have a file extent item point to data extent at bytenr X, for
-    a file range [0, 1M[ for example;
-
-  - At this moment we have an extent data ref for the extent, with
-    an offset of 0 and a count of 1;
-
-  - A write into the middle of the extent happens, file range [64K, 128K)
-    so the file extent item is split into two (at btrfs_drop_extents()):
-
-    1) One for file range [0, 64K), with a length (num_bytes field) of
-       64K and an extent offset of 0;
-
-    2) Another one for file range [128K, 1M), with a length of 896K
-       (1M - 128K) and an extent offset of 128K.
-
-  - At this moment the two file extent items are located in the same
-    leaf;
-
-  - A new file extent item for the range [64K, 128K), pointing to a new
-    data extent, is inserted in the leaf. This results in a leaf split
-    and now those two file extent items pointing to data extent X end
-    up located in different leaves;
-
-  - Once delayed refs are run, we still have a single extent data ref
-    item for our data extent at bytenr X, for offset 0, but now with a
-    count of 2 instead of 1;
-
-  - So during fiemap, at btrfs_is_data_extent_shared(), after we call
-    find_parent_nodes() for the data extent, we get two leaves, since
-    we have two file extent items point to data extent at bytenr X that
-    are located in two different leaves.
-
-So skip the use of the path cache when we get more than one leaf.
-
-Fixes: 12a824dc67a61e ("btrfs: speedup checking for extent sharedness during fiemap")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/backref.c | 25 +++++++++++++++++++++++++
- fs/btrfs/backref.h |  1 +
- 2 files changed, 26 insertions(+)
+ fs/btrfs/extent_map.c | 31 +++++++++++++++++++++++++++++-
+ fs/btrfs/extent_map.h |  2 ++
+ fs/btrfs/file.c       | 44 ++++++++++++++++++++++++++-----------------
+ 3 files changed, 59 insertions(+), 18 deletions(-)
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 41a5e650e901..ac07a6587719 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -1523,6 +1523,9 @@ static bool lookup_backref_shared_cache(struct btrfs_backref_shared_cache *cache
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index 6092a4eedc92..715979807ae1 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -523,7 +523,7 @@ void replace_extent_mapping(struct extent_map_tree *tree,
+ 	setup_extent_mapping(tree, new, modified);
+ }
+ 
+-static struct extent_map *next_extent_map(struct extent_map *em)
++static struct extent_map *next_extent_map(const struct extent_map *em)
  {
- 	struct btrfs_backref_shared_cache_entry *entry;
+ 	struct rb_node *next;
  
-+	if (!cache->use_cache)
-+		return false;
+@@ -533,6 +533,35 @@ static struct extent_map *next_extent_map(struct extent_map *em)
+ 	return container_of(next, struct extent_map, rb_node);
+ }
+ 
++/*
++ * Get the extent map that immediately follows another one.
++ *
++ * @tree:       The extent map tree that the extent map belong to.
++ *              Holding read or write access on the tree's lock is required.
++ * @em:         An extent map from the given tree. The caller must ensure that
++ *              between getting @em and between calling this function, the
++ *              extent map @em is not removed from the tree - for example, by
++ *              holding the tree's lock for the duration of those 2 operations.
++ *
++ * Returns the extent map that immediately follows @em, or NULL if @em is the
++ * last extent map in the tree.
++ */
++struct extent_map *btrfs_next_extent_map(const struct extent_map_tree *tree,
++					 const struct extent_map *em)
++{
++	struct extent_map *next;
 +
- 	if (WARN_ON_ONCE(level >= BTRFS_MAX_LEVEL))
- 		return false;
- 
-@@ -1587,6 +1590,9 @@ static void store_backref_shared_cache(struct btrfs_backref_shared_cache *cache,
- 	struct btrfs_backref_shared_cache_entry *entry;
- 	u64 gen;
- 
-+	if (!cache->use_cache)
-+		return;
++	/* The lock must be acquired either in read mode or write mode. */
++	lockdep_assert_held(&tree->lock);
++	ASSERT(extent_map_in_tree(em));
 +
- 	if (WARN_ON_ONCE(level >= BTRFS_MAX_LEVEL))
- 		return;
- 
-@@ -1683,6 +1689,7 @@ int btrfs_is_data_extent_shared(struct btrfs_root *root, u64 inum, u64 bytenr,
- 	/* -1 means we are in the bytenr of the data extent. */
- 	level = -1;
- 	ULIST_ITER_INIT(&uiter);
-+	cache->use_cache = true;
- 	while (1) {
- 		bool is_shared;
- 		bool cached;
-@@ -1712,6 +1719,24 @@ int btrfs_is_data_extent_shared(struct btrfs_root *root, u64 inum, u64 bytenr,
- 		    extent_gen > btrfs_root_last_snapshot(&root->root_item))
- 			break;
- 
-+		/*
-+		 * If our data extent was not directly shared (without multiple
-+		 * reference items), than it might have a single reference item
-+		 * with a count > 1 for the same offset, which means there are 2
-+		 * (or more) file extent items that point to the data extent -
-+		 * this happens when a file extent item needs to be split and
-+		 * then one item gets moved to another leaf due to a b+tree leaf
-+		 * split when inserting some item. In this case the file extent
-+		 * items may be located in different leaves and therefore some
-+		 * of the leaves may be referenced through shared subtrees while
-+		 * others are not. Since our extent buffer cache only works for
-+		 * a single path (by far the most common case and simpler to
-+		 * deal with), we can not use it if we have multiple leaves
-+		 * (which implies multiple paths).
-+		 */
-+		if (level == -1 && tmp->nnodes > 1)
-+			cache->use_cache = false;
++	next = next_extent_map(em);
++	if (next)
++		refcount_inc(&next->refs);
 +
- 		if (level >= 0)
- 			store_backref_shared_cache(cache, root, bytenr,
- 						   level, false);
-diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index 52ae6957b414..8e69584d538d 100644
---- a/fs/btrfs/backref.h
-+++ b/fs/btrfs/backref.h
-@@ -29,6 +29,7 @@ struct btrfs_backref_shared_cache {
- 	 * a given data extent should never exceed the maximum b+tree height.
++	return next;
++}
++
+ static struct extent_map *prev_extent_map(struct extent_map *em)
+ {
+ 	struct rb_node *prev;
+diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+index ad311864272a..68d3f2c9ea1d 100644
+--- a/fs/btrfs/extent_map.h
++++ b/fs/btrfs/extent_map.h
+@@ -87,6 +87,8 @@ static inline u64 extent_map_block_end(struct extent_map *em)
+ void extent_map_tree_init(struct extent_map_tree *tree);
+ struct extent_map *lookup_extent_mapping(struct extent_map_tree *tree,
+ 					 u64 start, u64 len);
++struct extent_map *btrfs_next_extent_map(const struct extent_map_tree *tree,
++					 const struct extent_map *em);
+ int add_extent_mapping(struct extent_map_tree *tree,
+ 		       struct extent_map *em, int modified);
+ void remove_extent_mapping(struct extent_map_tree *tree, struct extent_map *em);
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 176b432035ae..4a9a2e660b42 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3550,40 +3550,50 @@ static bool find_delalloc_subrange(struct btrfs_inode *inode, u64 start, u64 end
  	 */
- 	struct btrfs_backref_shared_cache_entry entries[BTRFS_MAX_LEVEL];
-+	bool use_cache;
- };
+ 	read_lock(&em_tree->lock);
+ 	em = lookup_extent_mapping(em_tree, start, len);
+-	read_unlock(&em_tree->lock);
++	if (!em) {
++		read_unlock(&em_tree->lock);
++		return (delalloc_len > 0);
++	}
  
- typedef int (iterate_extent_inodes_t)(u64 inum, u64 offset, u64 root,
+ 	/* extent_map_end() returns a non-inclusive end offset. */
+-	em_end = em ? extent_map_end(em) : 0;
++	em_end = extent_map_end(em);
+ 
+ 	/*
+ 	 * If we have a hole/prealloc extent map, check the next one if this one
+ 	 * ends before our range's end.
+ 	 */
+-	if (em && (em->block_start == EXTENT_MAP_HOLE ||
+-		   test_bit(EXTENT_FLAG_PREALLOC, &em->flags)) && em_end < end) {
++	if ((em->block_start == EXTENT_MAP_HOLE ||
++	     test_bit(EXTENT_FLAG_PREALLOC, &em->flags)) && em_end < end) {
+ 		struct extent_map *next_em;
+ 
+-		read_lock(&em_tree->lock);
+-		next_em = lookup_extent_mapping(em_tree, em_end, len - em_end);
+-		read_unlock(&em_tree->lock);
+-
++		next_em = btrfs_next_extent_map(em_tree, em);
+ 		free_extent_map(em);
+-		em_end = next_em ? extent_map_end(next_em) : 0;
++
++		/*
++		 * There's no next extent map or the next one starts beyond our
++		 * range, return the range found in the io tree (if any).
++		 */
++		if (!next_em || next_em->start > end) {
++			read_unlock(&em_tree->lock);
++			free_extent_map(next_em);
++			return (delalloc_len > 0);
++		}
++
++		em_end = extent_map_end(next_em);
+ 		em = next_em;
+ 	}
+ 
+-	if (em && (em->block_start == EXTENT_MAP_HOLE ||
+-		   test_bit(EXTENT_FLAG_PREALLOC, &em->flags))) {
+-		free_extent_map(em);
+-		em = NULL;
+-	}
++	read_unlock(&em_tree->lock);
+ 
+ 	/*
+-	 * No extent map or one for a hole or prealloc extent. Use the delalloc
+-	 * range we found in the io tree if we have one.
++	 * We have a hole or prealloc extent that ends at or beyond our range's
++	 * end, return the range found in the io tree (if any).
+ 	 */
+-	if (!em)
++	if (em->block_start == EXTENT_MAP_HOLE ||
++	    test_bit(EXTENT_FLAG_PREALLOC, &em->flags)) {
++		free_extent_map(em);
+ 		return (delalloc_len > 0);
++	}
+ 
+ 	/*
+ 	 * We don't have any range as EXTENT_DELALLOC in the io tree, so the
 -- 
 2.35.1
 
