@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 451715F9CDA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Oct 2022 12:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADA45F9CDB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Oct 2022 12:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbiJJKgj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Oct 2022 06:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
+        id S231861AbiJJKgl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Oct 2022 06:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231861AbiJJKgf (ORCPT
+        with ESMTP id S231902AbiJJKgj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Oct 2022 06:36:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7579657BF6
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 03:36:34 -0700 (PDT)
+        Mon, 10 Oct 2022 06:36:39 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9448D57BE2
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 03:36:35 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 15FDC1F8AC
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:36:33 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3D44B21940
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:36:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1665398193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1665398194; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6FN53+vuNaglNa1weSXGDUxOI4HokZqQDNXJlz8gsvs=;
-        b=rBsNPuI5GSubdznYQTiZKfIP0Nt7sS3rxMjjufTWD2w8WtWKmlQoJCVOANDQuvRlZMh04M
-        juelUBXbobe5R8tUulCQZbuCLaXq4o/Vh2XN5XrdIFNG07JQAkx70WjLi3wQfPNjnIVoQf
-        IGbpHSVqMTDRs1+LsftT1ztIzkjpPxI=
+        bh=r5/clrjTZZfXEKWd0IO2WuWpGPGy+9O4bPpb10A5IHg=;
+        b=K9lL2WMsxwmyOC3y4KCtdIjIOHY79ceq0/45nijb4P7HVZ+vp0uh9dl7CJ5rIwWEVpAhIY
+        4iY+Y0BbtsfdeBveVaYZclmUyveuYqK7obtqpGqD0y62QnrqLQjqrImX1w6Q6l01ttZ8zn
+        W06PAz1tQEuOCZecWzJgF8DOsyaR0o8=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5820513ACA
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:36:32 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 815C513ACA
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:36:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id cEizB7D1Q2M9LgAAMHmgww
+        id +B2rEbH1Q2M9LgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:36:32 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:36:33 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/5] btrfs: raid56: allocate memory separately for rbio pointers
-Date:   Mon, 10 Oct 2022 18:36:09 +0800
-Message-Id: <bb8c75c82e82b44fa33698b42de91b805bbdd033.1665397731.git.wqu@suse.com>
+Subject: [PATCH 5/5] btrfs: raid56: make it more explicit that cache rbio should have all its data sectors uptodate
+Date:   Mon, 10 Oct 2022 18:36:10 +0800
+Message-Id: <8fda749e551df0f1c06c8e6a7d05b82a51170de4.1665397731.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1665397731.git.wqu@suse.com>
 References: <cover.1665397731.git.wqu@suse.com>
@@ -60,121 +60,163 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently inside alloc_rbio(), we allocate a larger memory to contain
-the following members:
+For Btrfs RAID56, we have a caching system for btrfs raid bios (rbio).
 
-- struct btrfs_raid_rbio itself
-- stripe_pages array
-- bio_sectors array
-- stripe_sectors array
-- finish_pointers array
+We call cache_rbio_pages() to mark a qualified rbio ready for cache.
 
-Then update rbio pointers to point the extra space after the rbio
-structure itself.
+The timing happens at:
 
-Thus it introduced a complex CONSUME_ALLOC() macro to help the thing.
+- finish_rmw()
 
-This is too hacky, and is going to make later pointers expansion harder.
+  At this timing, we have already read all necessary sectors, along with
+  the rbio sectors, we have covered all data stripes.
 
-This patch will change it to use regular kcalloc() for each pointer
-inside btrfs_raid_bio, making the later expansion much easier.
+- __raid_recover_end_io()
 
-And introduce a helper free_raid_bio_pointers() to free up all the
-pointer members in btrfs_raid_bio, which will be used in both
-free_raid_bio() and error path of alloc_rbio().
+  At this timing, we have rebuild the rbio, thus all data sectors
+  involved (either from stripe or bio list) are uptodate now.
+
+Thus at the timing of cache_rbio_pages(), we should have all data
+sectors uptodate.
+
+This patch will make it explicit that all data sectors are uptodate at
+cache_rbio_pages() timing, mostly to prepare for the incoming
+verification at RMW time.
+
+This patch will add:
+
+- Extra ASSERT()s in cache_rbio_pages()
+  This is to make sure all data sectors, which are not covered by bio,
+  are already uptodate.
+
+- Extra ASSERT()s in steal_rbio()
+  Since only cached rbio can be stolen, thus every data sector should
+  already be uptodate in the source rbio.
+
+- Update __raid_recover_end_io() to update recovered sector->uptodate
+  Previously __raid_recover_end_io() will only mark failed sectors
+  uptodate if it's doing an RMW.
+
+  But this can trigger new ASSERT()s, as for recovery case, a recovered
+  failed sector will not be marked uptodate, and trigger ASSERT() in
+  later cache_rbio_pages() call.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/raid56.c | 46 ++++++++++++++++++++++++----------------------
- 1 file changed, 24 insertions(+), 22 deletions(-)
+ fs/btrfs/raid56.c | 70 ++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 51 insertions(+), 19 deletions(-)
 
 diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 371b2a182544..4ec211a58f15 100644
+index 4ec211a58f15..c009c0a2081e 100644
 --- a/fs/btrfs/raid56.c
 +++ b/fs/btrfs/raid56.c
-@@ -76,6 +76,14 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
- 					 int need_check);
- static void scrub_parity_work(struct work_struct *work);
+@@ -176,8 +176,16 @@ static void cache_rbio_pages(struct btrfs_raid_bio *rbio)
  
-+static void free_raid_bio_pointers(struct btrfs_raid_bio *rbio)
-+{
-+	kfree(rbio->stripe_pages);
-+	kfree(rbio->bio_sectors);
-+	kfree(rbio->stripe_sectors);
-+	kfree(rbio->finish_pointers);
-+}
-+
- static void free_raid_bio(struct btrfs_raid_bio *rbio)
- {
- 	int i;
-@@ -95,6 +103,7 @@ static void free_raid_bio(struct btrfs_raid_bio *rbio)
- 	}
+ 	for (i = 0; i < rbio->nr_sectors; i++) {
+ 		/* Some range not covered by bio (partial write), skip it */
+-		if (!rbio->bio_sectors[i].page)
++		if (!rbio->bio_sectors[i].page) {
++			/*
++			 * Even if the sector is not covered by bio, if it is
++			 * a data sector it should still be uptodate as it is
++			 * read from disk.
++			 */
++			if (i < rbio->nr_data * rbio->stripe_nsectors)
++				ASSERT(rbio->stripe_sectors[i].uptodate);
+ 			continue;
++		}
  
- 	btrfs_put_bioc(rbio->bioc);
-+	free_raid_bio_pointers(rbio);
- 	kfree(rbio);
+ 		ASSERT(rbio->stripe_sectors[i].page);
+ 		memcpy_page(rbio->stripe_sectors[i].page,
+@@ -264,6 +272,21 @@ static void steal_rbio_page(struct btrfs_raid_bio *src,
+ 		dest->stripe_sectors[i].uptodate = true;
  }
  
-@@ -918,7 +927,6 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
- 		BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits;
- 	const unsigned int num_sectors = stripe_nsectors * real_stripes;
- 	struct btrfs_raid_bio *rbio;
--	void *p;
- 
- 	/* PAGE_SIZE must also be aligned to sectorsize for subpage support */
- 	ASSERT(IS_ALIGNED(PAGE_SIZE, fs_info->sectorsize));
-@@ -928,14 +936,23 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
- 	 */
- 	ASSERT(stripe_nsectors <= BITS_PER_LONG);
- 
--	rbio = kzalloc(sizeof(*rbio) +
--		       sizeof(*rbio->stripe_pages) * num_pages +
--		       sizeof(*rbio->bio_sectors) * num_sectors +
--		       sizeof(*rbio->stripe_sectors) * num_sectors +
--		       sizeof(*rbio->finish_pointers) * real_stripes,
--		       GFP_NOFS);
-+	rbio = kzalloc(sizeof(*rbio), GFP_NOFS);
- 	if (!rbio)
- 		return ERR_PTR(-ENOMEM);
-+	rbio->stripe_pages = kcalloc(num_pages, sizeof(struct page *),
-+				     GFP_NOFS);
-+	rbio->bio_sectors = kcalloc(num_sectors, sizeof(struct sector_ptr),
-+				    GFP_NOFS);
-+	rbio->stripe_sectors = kcalloc(num_sectors, sizeof(struct sector_ptr),
-+				       GFP_NOFS);
-+	rbio->finish_pointers = kcalloc(real_stripes, sizeof(void *), GFP_NOFS);
++static bool is_data_stripe_page(struct btrfs_raid_bio *rbio, int page_nr)
++{
++	const int sector_nr = (page_nr << PAGE_SHIFT) >>
++			      rbio->bioc->fs_info->sectorsize_bits;
 +
-+	if (!rbio->stripe_pages || !rbio->bio_sectors || !rbio->stripe_sectors ||
-+	    !rbio->finish_pointers) {
-+		free_raid_bio_pointers(rbio);
-+		kfree(rbio);
-+		return ERR_PTR(-ENOMEM);
-+	}
++	/*
++	 * We have ensured PAGE_SIZE is aligned with sectorsize, thus
++	 * we won't have a page which is half data half parity.
++	 *
++	 * Thus if the first sector of the page belongs to data stripes, then
++	 * the full page belongs to data stripes.
++	 */
++	return (sector_nr < rbio->nr_data * rbio->stripe_nsectors);
++}
++
+ /*
+  * Stealing an rbio means taking all the uptodate pages from the stripe array
+  * in the source rbio and putting them into the destination rbio.
+@@ -274,16 +297,26 @@ static void steal_rbio_page(struct btrfs_raid_bio *src,
+ static void steal_rbio(struct btrfs_raid_bio *src, struct btrfs_raid_bio *dest)
+ {
+ 	int i;
+-	struct page *s;
  
- 	bio_list_init(&rbio->bio_list);
- 	INIT_LIST_HEAD(&rbio->plug_list);
-@@ -955,21 +972,6 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
- 	atomic_set(&rbio->error, 0);
- 	atomic_set(&rbio->stripes_pending, 0);
+ 	if (!test_bit(RBIO_CACHE_READY_BIT, &src->flags))
+ 		return;
  
--	/*
--	 * The stripe_pages, bio_sectors, etc arrays point to the extra memory
--	 * we allocated past the end of the rbio.
--	 */
--	p = rbio + 1;
--#define CONSUME_ALLOC(ptr, count)	do {				\
--		ptr = p;						\
--		p = (unsigned char *)p + sizeof(*(ptr)) * (count);	\
--	} while (0)
--	CONSUME_ALLOC(rbio->stripe_pages, num_pages);
--	CONSUME_ALLOC(rbio->bio_sectors, num_sectors);
--	CONSUME_ALLOC(rbio->stripe_sectors, num_sectors);
--	CONSUME_ALLOC(rbio->finish_pointers, real_stripes);
--#undef  CONSUME_ALLOC
--
- 	ASSERT(btrfs_nr_parity_stripes(bioc->map_type));
- 	rbio->nr_data = real_stripes - btrfs_nr_parity_stripes(bioc->map_type);
+ 	for (i = 0; i < dest->nr_pages; i++) {
+-		s = src->stripe_pages[i];
+-		if (!s || !full_page_sectors_uptodate(src, i))
++		struct page *p = src->stripe_pages[i];
++
++		/*
++		 * We don't need to steal P/Q pages as they will always be
++		 * regenerated for RMW or full write anyway.
++		 */
++		if (!is_data_stripe_page(src, i))
+ 			continue;
  
++		/*
++		 * If @src already has RBIO_CACHE_READY_BIT, it should have
++		 * all data stripe pages present and uptodate.
++		 */
++		ASSERT(p);
++		ASSERT(full_page_sectors_uptodate(src, i));
+ 		steal_rbio_page(src, dest, i);
+ 	}
+ 	index_stripe_sectors(dest);
+@@ -2003,22 +2036,21 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
+ 			/* xor in the rest */
+ 			run_xor(pointers, rbio->nr_data - 1, sectorsize);
+ 		}
+-		/* if we're doing this rebuild as part of an rmw, go through
+-		 * and set all of our private rbio pages in the
+-		 * failed stripes as uptodate.  This way finish_rmw will
+-		 * know they can be trusted.  If this was a read reconstruction,
+-		 * other endio functions will fiddle the uptodate bits
++
++		/*
++		 * No matter if this is a RMW or recovery, we should have all
++		 * failed sectors repaired, thus they are now uptodate.
++		 * Especially if we determine to cache the rbio, we need to
++		 * have at least all data sectors uptodate.
+ 		 */
+-		if (rbio->operation == BTRFS_RBIO_WRITE) {
+-			for (i = 0;  i < rbio->stripe_nsectors; i++) {
+-				if (faila != -1) {
+-					sector = rbio_stripe_sector(rbio, faila, i);
+-					sector->uptodate = 1;
+-				}
+-				if (failb != -1) {
+-					sector = rbio_stripe_sector(rbio, failb, i);
+-					sector->uptodate = 1;
+-				}
++		for (i = 0;  i < rbio->stripe_nsectors; i++) {
++			if (faila != -1) {
++				sector = rbio_stripe_sector(rbio, faila, i);
++				sector->uptodate = 1;
++			}
++			if (failb != -1) {
++				sector = rbio_stripe_sector(rbio, failb, i);
++				sector->uptodate = 1;
+ 			}
+ 		}
+ 		for (stripe = rbio->real_stripes - 1; stripe >= 0; stripe--)
 -- 
 2.37.3
 
