@@ -2,126 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4515FA39F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Oct 2022 20:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C665FA62E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Oct 2022 22:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbiJJSuE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Oct 2022 14:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
+        id S229896AbiJJU3h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Oct 2022 16:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbiJJSuC (ORCPT
+        with ESMTP id S229931AbiJJU3S (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Oct 2022 14:50:02 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92AD252B5
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 11:49:56 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 21DCA32008FB;
-        Mon, 10 Oct 2022 14:49:54 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 10 Oct 2022 14:49:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:date:date:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm3; t=1665427793; x=1665514193; bh=YxJVV0pr/JihuCEucNkdgTxLy
-        epNNA6fpZ1VIJhVkno=; b=dR13pYy4DLHbCMuWyotPgOK2sLjID5QIhSuWPnUe0
-        crlbsYskDPW8/je65uunxYirmsTshKwznimIVza5WY+4SyGc1yACD3BiK9Xet+8A
-        e2XxgD93lyK+pPkSIdjQtZ60oaG1TNbcdcJg1kaz5XN3YkG/R7VjNAg96Ga/Rlwx
-        MpAt0U1J1Eo/IGlOdOiKj7vBupW4hxALe/QvYPlF1xvzDCCZ0bngHQMAH6EXZpZA
-        BrFEsCT4hGJ97rVWfTu4kddzf5GOfPWN38lfCZDi/NFKo1XKweNWvbh//n88qEly
-        tfZdrTxGDCjhseFV2XrcIr2oizZuUaRuiE5PlVoFSIHiQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:message-id
-        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1665427793; x=1665514193; bh=YxJVV0pr/JihuCEucNkdgTxLyepNNA6fpZ1
-        VIJhVkno=; b=Xgv6ICyWgyLWMi52YmUvvl/dBzsZvOTkErwRRwv8nPzfu3BQ80R
-        Fa9ba60mJcpxWoFQPohQTGE+r2fTgw3ymgAMh0vl989rvH6fomU94emYnEPTs2+q
-        Uz9c9SvisS0NMmZ7JkF8Q2xQruTzlF8nZ9pKDlj5LZwmHVamRm4FvoSIl/r+gXxz
-        kaE8JNeQjX4SYROsn47kawkJ3Zb9KAmA8gn8Muq8g2TM7Uw+GZdLMnJPmd0oljfH
-        GFWf4tX+ILY29PCkl5FBLSv+KHBwQDyfoR+dEg3mVqCp9Yb0ekx9p4SVItOyu5PV
-        Z5SDxwv9TgF7dggwuRo+J2ythcDlK/reyLg==
-X-ME-Sender: <xms:UWlEY7iOkBFjL7WoxSk9RCcugD1awX5VDh0sRkz43fkOZbBqhflYcg>
-    <xme:UWlEY4AwXMRuMgmj4EyvEgpoSZzyojglMcWYyA9D1xRfqgiDdFEDrBeqz1kwgNeDG
-    GGZ0CABmsC2tNFqQWQ>
-X-ME-Received: <xmr:UWlEY7H-MxxhcTDcQGp1egsW6MJ84aOb-p8bKLbxdfVFdRZT03IBH8u3Am0G-6HEorEEBtHYY2LNvD_GNer5KZ3iPjoRlA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeejgedguddvfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
-    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:UWlEY4TjBUeJyp_xdzIcJ6iO3ng2WWxmAiLWmrWtJGFUa1qCv0YylA>
-    <xmx:UWlEY4w73vkVRWGFSjS6znaQ72L-6ezSOOVY_o4s7roY0MJKycBJdQ>
-    <xmx:UWlEY-6-FdsZR5hM9oDRKjAsA7wERUoEmr4GBRnn4VNXgxIJjs4giQ>
-    <xmx:UWlEY-bgxdTZDCdOkNoe23mWwl-lo3nUBIPmn5A_W1wCgOP6RrTPYw>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 10 Oct 2022 14:49:53 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: skip reclaim if block_group is empty
-Date:   Mon, 10 Oct 2022 11:49:51 -0700
-Message-Id: <8f825fce9d2968034da43e09a4ebc38ec19a2e49.1665427766.git.boris@bur.io>
-X-Mailer: git-send-email 2.37.2
+        Mon, 10 Oct 2022 16:29:18 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97477F0B0
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 13:27:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0209F22B29;
+        Mon, 10 Oct 2022 20:19:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1665433156;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HyiJ2jv/6VZiHJ68C+wsoIDgeJLCrZxBFPEI6glNgpQ=;
+        b=QTlyXsmmZnqQLn9UzV6moLCSN6gzud/bBcw4h4NYzZvMD6Na43KdiH7ymlDxidee21NB/P
+        g+SACW/bbH9pYLamRIzzOM7xM+wd48eOLxGI0XDWrRVetfjKS8VY4m74sASXBZO+h5Ddum
+        sTbUMKVDOV/ciJ04xmJK2XpAiaeofjc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1665433156;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HyiJ2jv/6VZiHJ68C+wsoIDgeJLCrZxBFPEI6glNgpQ=;
+        b=VM4Wywn/JmKqObRaMPpH00bshU8t3ZulpqUNfi2G8F5icy8n+5xY/Z+DyOgZtSaVNBAcm/
+        FZuX8tHwos0StNBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BFD4313ACA;
+        Mon, 10 Oct 2022 20:19:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id FZrNLUN+RGPjJgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 10 Oct 2022 20:19:15 +0000
+Date:   Mon, 10 Oct 2022 22:19:10 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: add extent-tree-v2 support to dump-super
+Message-ID: <20221010201910.GH13389@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <78ebe492ca09e716ca5ca2b6fabec0934aaa0370.1665219233.git.anand.jain@oracle.com>
+ <764d5754-62bf-232a-a6c2-67724111a72b@gmx.com>
+ <af541998-3980-85c3-e3c3-dd0cf09f52cf@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <af541998-3980-85c3-e3c3-dd0cf09f52cf@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-As we delete extents from a block group, at some deletion we cross below
-the reclaim threshold. It is possible we are still in the middle of
-deleting more extents and might soon hit 0. If that occurs, we would
-leave the block group on the reclaim list, not in the care of unused
-deletion or async discard.
+On Mon, Oct 10, 2022 at 03:43:51PM +0800, Anand Jain wrote:
+> On 10/9/22 07:13, Qu Wenruo wrote:
+> > On 2022/10/8 17:02, Anand Jain wrote:
+> >> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> >> ---
+> >>   kernel-shared/print-tree.c | 3 +++
+> >>   1 file changed, 3 insertions(+)
+> >>
+> >> diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
+> >> index 5c3d14298b58..6b5fd37ab2bc 100644
+> >> --- a/kernel-shared/print-tree.c
+> >> +++ b/kernel-shared/print-tree.c
+> >> @@ -1689,6 +1689,9 @@ static struct readable_flag_entry 
+> >> incompat_flags_array[] = {
+> >>       DEF_INCOMPAT_FLAG_ENTRY(METADATA_UUID),
+> >>       DEF_INCOMPAT_FLAG_ENTRY(RAID1C34),
+> >>       DEF_INCOMPAT_FLAG_ENTRY(ZONED),
+> >> +#if EXPERIMENTAL
+> >> +    DEF_INCOMPAT_FLAG_ENTRY(EXTENT_TREE_V2),
+> >> +#endif
+> > 
+> > That's in fact one solution I want to go.
+> > 
+> > But later I found that, we can enhance __print_readable_flag() to
+> > iterate the incompat_flags_array[] with extra check on @supported_flags,
+> > so we can skip the EXPERIMENTAL macro inside the array.
+> > 
+> > By that, we can reduce the number of EXPERIMENTAL macros, which I
+> > believe is already causing burdens for testing.
+> 
+> Yeah, possible. However, it is a cleanup; I wouldn't mix that in the bug 
+> fix, here.
 
-It is pointless and wasteful to relocate empty block groups, so if we do
-notice that case (we might not if the reclaim worker runs *before* we
-finish emptying it), don't bother with relocating the block group.
-
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/block-group.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 11fd52657b76..c3ea627d2457 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1608,6 +1608,25 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 			up_write(&space_info->groups_sem);
- 			goto next;
- 		}
-+		if (bg->used == 0) {
-+			/*
-+			 * It is possible that we trigger relocation on a block
-+			 * group as its extents are deleted and it first goes
-+			 * below the threshold, then shortly goes empty. In that
-+			 * case, we will do relocation, even though we could
-+			 * more cheaply just delete the unused block group. Try
-+			 * to catch that case here, though of course it is
-+			 * possible there is a delete still coming the future,
-+			 * so we can't avoid needless relocation of this sort
-+			 * altogether. We can at least avoid relocating empty
-+			 * block groups.
-+			 */
-+			if (!btrfs_test_opt(fs_info, DISCARD_ASYNC))
-+				btrfs_mark_bg_unused(bg);
-+			spin_unlock(&bg->lock);
-+			up_write(&space_info->groups_sem);
-+			goto next;
-+		}
- 		spin_unlock(&bg->lock);
- 
- 		/* Get out fast, in case we're unmounting the filesystem */
--- 
-2.37.2
-
+I'll apply your patch as it's a hotfix, what Qu suggests can be done as
+consolidation later, though I agree that the number of EXPERIMENTAL
+ifdefs should be kept reasonable.
