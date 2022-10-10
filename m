@@ -2,47 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAFF5F9C25
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Oct 2022 11:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965FC5F9CA2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Oct 2022 12:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbiJJJmZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Oct 2022 05:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59628 "EHLO
+        id S231641AbiJJKWh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Oct 2022 06:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbiJJJmY (ORCPT
+        with ESMTP id S231637AbiJJKWd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Oct 2022 05:42:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707F869F6E
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 02:42:22 -0700 (PDT)
+        Mon, 10 Oct 2022 06:22:33 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BD76B148
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 03:22:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AF64560EA9
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 09:42:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCCC4C433D6;
-        Mon, 10 Oct 2022 09:42:20 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E0835B80E7B
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:22:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29EC7C433C1
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 10:22:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665394941;
-        bh=x9tkJmID/y9itlleFumg+spjTwxgIm3haRg7vfJRAPo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r9fPcX7fsWMADtb6HR6mzOu4ks4MOtKXjAfw1L7sTbYFr5E/ohkgKeyD7bkwqNRRs
-         wcI/QwhS2sBMvhmPW8nEfJdTLZy1Sai5fERIUkB8BXlXsBnJYf3R5LkPVuAW0Z7tCT
-         uCoj4jJ1Nu4riXJUlSBt7n5Hlm558akQSgN91aEKBEISL4zES5I0LR4hZ14WotJqat
-         tpbQOiChdpWL90XlXTjoGUmdb5RxpJY+btk4Mw6F+jIe5o2TriQE8FJ++zPh7A/S/V
-         iS2E0FytAc84PzMsLrXVK6dpXJpnfLOUx6boOHlUXXGEj4qftjTrKsaV3D/ZFg9c0i
-         mC1Q1HegLTmGA==
-Date:   Mon, 10 Oct 2022 10:42:18 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Glenn Washburn <development@efficientek.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: btrfs send/receive not always sharing extents
-Message-ID: <20221010094218.GA2141122@falcondesktop>
-References: <20221008005704.795b44b0@crass-HP-ZBook-15-G2>
+        s=k20201202; t=1665397343;
+        bh=bQ5BXv4b1YeupI82D3uR7H08CtSrS7TaFiKPSygsme8=;
+        h=From:To:Subject:Date:From;
+        b=KKmtKpwceUnr2ZPaUaGBkewiN2HaG/sWLQq2GYk2CdZ+LcrS9Q4o20Ad0g0z+EXKG
+         fimg5Y3/t6omgjfS4sVQJ7LFEO8oFzd5akBkgHywt42D0z1eFBBHuPSHWjMOGymTPJ
+         uVBiVlk742sYjJHlJ00NJ6oKZQqLRB5AL8Jm5W2/upKH9i5wyXEN5q4QbDp5VYl83U
+         tFoTsRBXFq3GzVYt02gTj2RAUnQqJgVNSHQcJZZYIX957lmqjvL9yEnMZFL+WHx82J
+         8ztLEdg0t/dGCI+ZUsOar/bmDBgXxQ9FVi+ZS7DGeSkOGpIHBSZiUs1mrnspuTuU5e
+         8+G3PRxbmmzhA==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/18] btrfs: fixes, cleanups and optimizations around fiemap
+Date:   Mon, 10 Oct 2022 11:22:02 +0100
+Message-Id: <cover.1665396437.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221008005704.795b44b0@crass-HP-ZBook-15-G2>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -52,60 +49,45 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Oct 08, 2022 at 12:57:04AM -0500, Glenn Washburn wrote:
-> I've got two reflinked files in a subvol that I'm sending/receiving to
-> a different btrfs filesystem and they are not sharing extents on the
-> receiving side. Other reflinked files in the same subvol are being
-> reflinked on the receive side. The send side has a fairly old creation
-> date if that matters. Attached is the receive log and a diff of
-> filefrag's output for the files on the source volume to show that the
-> two files (IMG_20200402_143055.dng and IMG_20200402_143055.dng.ref) are
-> refinked on the source volume. This is a somewhat minimal example of
-> what's happening on a big send that I'm doing that is failing because
-> the receive side it too small to hold data when the reflinks are
-> broken. Is this a bug? or what can I do to get send to see these files
-> are reflinked?
+From: Filipe Manana <fdmanana@suse.com>
 
-send/receive only guarantees that the destination ends up with the same
-data as the source.
+The first two patches are bug fixes, the first one fixing a bug in backref
+walking that has been around for 5 years, while the second one fixes a bug
+introduced in this merge window.
 
-It doesn't guarantee extents are always shared as in the source filesystem,
-that the extent layout is the same, or holes are preserved for example.
+The remaining are performance optimizations in the fiemap code path, as
+well as some cleanups and refactorings to support them. Results and tests
+are found in the changelogs of individual patches (05/18, 15/18, 17/18
+and 18/18).
 
-There are two main reasons why extents don't often get cloned during
-send/receive:
+Filipe Manana (18):
+  btrfs: fix processing of delayed tree block refs during backref walking
+  btrfs: ignore fiemap path cache if we have multiple leaves for a data extent
+  btrfs: get the next extent map during fiemap/lseek more efficiently
+  btrfs: skip unnecessary extent map searches during fiemap and lseek
+  btrfs: skip unnecessary delalloc search during fiemap and lseek
+  btrfs: drop pointless memset when cloning extent buffer
+  btrfs: drop redundant bflags initialization when allocating extent buffer
+  btrfs: remove checks for a root with id 0 during backref walking
+  btrfs: remove checks for a 0 inode number during backref walking
+  btrfs: directly pass the inode to btrfs_is_data_extent_shared()
+  btrfs: turn the backref sharedness check cache into a context object
+  btrfs: move ulists to data extent sharedness check context
+  btrfs: remove roots ulist when checking data extent sharedness
+  btrfs: remove useless logic when finding parent nodes
+  btrfs: cache sharedness of the last few data extents during fiemap
+  btrfs: move up backref sharedness cache store and lookup functions
+  btrfs: avoid duplicated resolution of indirect backrefs during fiemap
+  btrfs: avoid unnecessary resolution of indirect backrefs during fiemap
 
-1) The extent is shared more than 64 times in the source filesystem.
-   We have this limitation because figuring out all inodes/roots that
-   share an extent can be expensive, and therefore massively slowdown
-   send operations.
+ fs/btrfs/backref.c    | 462 ++++++++++++++++++++++++++++--------------
+ fs/btrfs/backref.h    |  55 ++++-
+ fs/btrfs/extent_io.c  |  68 +++----
+ fs/btrfs/extent_map.c |  31 ++-
+ fs/btrfs/extent_map.h |   2 +
+ fs/btrfs/file.c       |  69 +++++--
+ 6 files changed, 462 insertions(+), 225 deletions(-)
 
-2) Even when an extent is shared less than 64 times in the source
-   filesystem, we often don't clone the entirety of an extent and end up
-   issuing write operations for the remaining part(s). This is due to
-   algorithmic complexity as well, as identifying the best source for
-   cloning an extent can be expensive and considerably slowdown send
-   operations.
-
-I have some work in progress and ideas to speedup send in some cases,
-but I'm afraid we'll always have some limitations - in the best case
-we can improve on them, but not eliminate them completely.
-
-You can run a dedupe tool on the destination filesystem to get the
-extents shared.
-
-> 
-> Glenn
-
-> --- /dev/fd/63	2022-10-08 00:31:46.783138591 -0500
-> +++ /dev/fd/62	2022-10-08 00:31:46.787138126 -0500
-> @@ -1,5 +1,5 @@
->  Filesystem type is: 9123683e
-> -File size of /media/test-btrfs/test/1.ro/IMG_20200402_143055.dng is 24674116 (6024 blocks of 4096 bytes)
-> +File size of /media/test-btrfs/test/1.ro/IMG_20200402_143055.dng.ref is 24674116 (6024 blocks of 4096 bytes)
->   ext:     logical_offset:        physical_offset: length:   expected: flags:
->     0:        0..    6023: 1131665768..1131671791:   6024:             last,shared,eof
-> -/media/test-btrfs/test/1.ro/IMG_20200402_143055.dng: 1 extent found
-> +/media/test-btrfs/test/1.ro/IMG_20200402_143055.dng.ref: 1 extent found
-
+-- 
+2.35.1
 
