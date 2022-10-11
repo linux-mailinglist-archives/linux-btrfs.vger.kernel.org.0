@@ -2,53 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B24B5FB717
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 17:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668415FB7BC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 17:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbiJKP2Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 11:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
+        id S230113AbiJKPvv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 11:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbiJKP1R (ORCPT
+        with ESMTP id S230097AbiJKPvc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 11:27:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D60CDF09;
-        Tue, 11 Oct 2022 08:18:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D79C4611D7;
-        Tue, 11 Oct 2022 14:53:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68AC8C433D7;
-        Tue, 11 Oct 2022 14:53:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665500034;
-        bh=rCB0Xv+xi/SjS1Z1j3Vilkp/16M2refyx39jmGCCBTE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jEgK2W8ZNUJCgoJPYilyNzKlFxJud5xmJvr9dUm2EXnx71WRellrXvcIxt9IJnTB/
-         Fyie5fwmrVIGmX//ADnNTq8cnj50Nnplb/3cJmmxJZGjvGRuLXxwXzY8y9FbtMR57s
-         /TYdEwsbiLdfm7k0/Bxj16/W/C6WSzknjVB+FGMj+rES/o1008xAjtMIcb1XBAgQPz
-         v3v5E1BHBjx8B4wzXBqW8Nm++OCbsSn+gapb2UZ731hy54Vl0hC4p6ScCGEbu5kHC3
-         siqxEW1wyeKoLz1Pk6YxseuialHkyL8y6JRztv38ukcKZI0tfqhxmT1aviv1g71Z6+
-         BF9iRaRKuTZtA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, clm@fb.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 11/13] btrfs: scrub: try to fix super block errors
-Date:   Tue, 11 Oct 2022 10:53:36 -0400
-Message-Id: <20221011145338.1624591-11-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221011145338.1624591-1-sashal@kernel.org>
-References: <20221011145338.1624591-1-sashal@kernel.org>
+        Tue, 11 Oct 2022 11:51:32 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1D92A2
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 08:47:46 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id o65so11164844iof.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 08:47:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eg7NZ/gvF36cOS9+OajFvVi8wwVoxnQgu+EK7dzNVOc=;
+        b=f87qOrGhU0qVZayOTG0AVB6wo4cH38tdD0T1DPAOyhQh+XGygouQEgyFye8nL71C3Z
+         GeaJL0qCHje7gLmnX9aRGQKwKx8SVJTywHK1PytEVyskDm6ya8I0r7i299Fa+noDw99N
+         FYUUsylKPt3DZ3Ub8JLxKAhTD4ur8vLaClhhM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eg7NZ/gvF36cOS9+OajFvVi8wwVoxnQgu+EK7dzNVOc=;
+        b=Gh9bzDhN1T1Zwwyo3n/M6IpouC2sX2GA7HiV0CJ0W28ro8lj2Ctv+yfrnthvHPkegK
+         JqOssbOvribXEc6G8OjyXGB5KMmkFLkNAdItne7BrdXlS4763hGNPhhBAKOcH6brq8jE
+         mYy4wPN2KY4Rr+VmjNfdtbyfkFokVnZt5S4xSLqS8dpfu4hcv4Eodz7Ze23T6/wco9Y5
+         oYH0pLRT873/UdjMylbA9Gp09umeVGgkDPYI0rOZ3Ad3bLt8hZIY1+29P6sXD78PPjxs
+         ClGMgaIgVn0Np75qH2JvYiU9nI83IWseFjYx4nD3ApneH+BWMO9bBcvPqvY2RC2GX7i5
+         l8nQ==
+X-Gm-Message-State: ACrzQf0Sjxe9dFeWuBuG6gctliBTXERCFaM0sfWpW0Nib0D2iL8/TWqE
+        5AAu/NrSv8De7/XL3QmpqU6lcw==
+X-Google-Smtp-Source: AMsMyM6KAFSMVdq1HEUo+Ua9Le3UYuS8JkiiBH3iaOwbivmWIIzpArnmNC4BY8CcMzJ3R6z2aua/Bg==
+X-Received: by 2002:a05:6638:3492:b0:363:b821:3831 with SMTP id t18-20020a056638349200b00363b8213831mr6038497jal.157.1665503266342;
+        Tue, 11 Oct 2022 08:47:46 -0700 (PDT)
+Received: from sjg1.roam.corp.google.com (c-67-190-102-125.hsd1.co.comcast.net. [67.190.102.125])
+        by smtp.gmail.com with ESMTPSA id r12-20020a922a0c000000b002f9b55e7e92sm4988680ile.0.2022.10.11.08.47.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Oct 2022 08:47:45 -0700 (PDT)
+From:   Simon Glass <sjg@chromium.org>
+To:     U-Boot Mailing List <u-boot@lists.denx.de>
+Cc:     Simon Glass <sjg@chromium.org>,
+        Artem Lapkin <email2tema@gmail.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Jerry Van Baren <vanbaren@cideas.com>,
+        John Keeping <john@metanate.com>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Marek Vasut <marex@denx.de>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        Pavel Herrmann <morpheus.ibis@gmail.com>,
+        Philippe Reynes <philippe.reynes@softathome.com>,
+        Qu Wenruo <wqu@suse.com>, Ramon Fried <rfried.dev@gmail.com>,
+        Stefan Roese <sr@denx.de>, linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 00/14] vbe: Support device tree fixups for OS requests
+Date:   Tue, 11 Oct 2022 09:47:06 -0600
+Message-Id: <20221011154720.550320-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,145 +77,77 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+VBE provides the ability for an OS to request that information be passed
+to it when it is booted. This is added into the /chosen node, in addition
+to things like the bootargs for Linux, for example.
 
-[ Upstream commit f9eab5f0bba76742af654f33d517bf62a0db8f12 ]
+VBE's OS requests are intended to replace the need for the EFI 'boot-time
+services'. This works via a 'stub' which runs before Linux, collects the
+information from U-Boot, writes it to the device tree (mostly) and then
+jumps to Linux with the updated device tree.
 
-[BUG]
-The following script shows that, although scrub can detect super block
-errors, it never tries to fix it:
+Rather than just jumping into Linux and waiting for it to request things
+from U-Boot, we can look at the requests in the FIT and process them
+before jumping to Linux. This is simpler and easier to test. It is also
+more deterministic, since we can tell whether we might lack something
+needed by Linux, before jumping to it.
 
-	mkfs.btrfs -f -d raid1 -m raid1 $dev1 $dev2
-	xfs_io -c "pwrite 67108864 4k" $dev2
+This series adds initial support for OS requests, with just a few simple
+ones provided. Further work will expand these out.
 
-	mount $dev1 $mnt
-	btrfs scrub start -B $dev2
-	btrfs scrub start -Br $dev2
-	umount $mnt
+Changes in v2:
+- Add new patch to update docs about oftree_from_fdt()
 
-The first scrub reports the super error correctly:
+Simon Glass (14):
+  bootm: Change incorrect 'unsupported' error
+  bootm: Avoid returning error codes from command
+  bootm: Drop #ifdef from do_bootm()
+  boot: Correct handling of addresses in boot_relocate_fdt()
+  fs: Quieten down the filesystems more
+  fdt: Show a message when the working FDT changes
+  bootstd: Move VBE setup into a shared function
+  sandbox: Support FDT fixups
+  boot: Pass the correct FDT to the EVT_FT_FIXUP event
+  boot: Tidy up logging and naming in vbe_simple
+  test: Move common FIT code into a separate fit_util file
+  vbe: Add fixups for a basic set of OS requests
+  dm: core: Update docs about oftree_from_fdt()
+  vbe: Add a test for VBE device tree fixups
 
-  scrub done for f3289218-abd3-41ac-a630-202f766c0859
-  Scrub started:    Tue Aug  2 14:44:11 2022
-  Status:           finished
-  Duration:         0:00:00
-  Total to scrub:   1.26GiB
-  Rate:             0.00B/s
-  Error summary:    super=1
-    Corrected:      0
-    Uncorrectable:  0
-    Unverified:     0
+ arch/sandbox/lib/bootm.c              |  17 ++
+ boot/Makefile                         |   2 +-
+ boot/bootm.c                          |   2 +-
+ boot/image-fdt.c                      |  37 ++--
+ boot/vbe_fixup.c                      | 233 ++++++++++++++++++++++++++
+ boot/vbe_simple.c                     |  16 +-
+ cmd/bootm.c                           |  25 +--
+ cmd/fdt.c                             |   1 +
+ configs/sandbox_flattree_defconfig    |   2 +-
+ disk/part_efi.c                       |  15 +-
+ doc/develop/driver-model/livetree.rst |   2 +-
+ doc/develop/vbe.rst                   |   3 +-
+ doc/usage/cmd/fdt.rst                 |   1 +
+ fs/btrfs/disk-io.c                    |   7 +-
+ fs/ext4/ext4_common.c                 |   2 +-
+ fs/fs_internal.c                      |   3 +-
+ include/dm/ofnode.h                   |   3 +
+ test/boot/Makefile                    |   1 +
+ test/boot/bootflow.c                  |   2 +
+ test/boot/bootstd_common.c            |  49 ++++++
+ test/boot/bootstd_common.h            |  16 ++
+ test/boot/vbe_fixup.c                 |  59 +++++++
+ test/boot/vbe_simple.c                |  34 +---
+ test/cmd/fdt.c                        |  11 +-
+ test/py/tests/fit_util.py             |  93 ++++++++++
+ test/py/tests/test_event_dump.py      |   1 +
+ test/py/tests/test_fit.py             |  79 +--------
+ test/py/tests/test_vbe.py             | 123 ++++++++++++++
+ 28 files changed, 684 insertions(+), 155 deletions(-)
+ create mode 100644 boot/vbe_fixup.c
+ create mode 100644 test/boot/vbe_fixup.c
+ create mode 100644 test/py/tests/fit_util.py
+ create mode 100644 test/py/tests/test_vbe.py
 
-But the second read-only scrub still reports the same super error:
-
-  Scrub started:    Tue Aug  2 14:44:11 2022
-  Status:           finished
-  Duration:         0:00:00
-  Total to scrub:   1.26GiB
-  Rate:             0.00B/s
-  Error summary:    super=1
-    Corrected:      0
-    Uncorrectable:  0
-    Unverified:     0
-
-[CAUSE]
-The comments already shows that super block can be easily fixed by
-committing a transaction:
-
-	/*
-	 * If we find an error in a super block, we just report it.
-	 * They will get written with the next transaction commit
-	 * anyway
-	 */
-
-But the truth is, such assumption is not always true, and since scrub
-should try to repair every error it found (except for read-only scrub),
-we should really actively commit a transaction to fix this.
-
-[FIX]
-Just commit a transaction if we found any super block errors, after
-everything else is done.
-
-We cannot do this just after scrub_supers(), as
-btrfs_commit_transaction() will try to pause and wait for the running
-scrub, thus we can not call it with scrub_lock hold.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/scrub.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index e5db948daa12..45809f75692e 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3849,6 +3849,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	int ret;
- 	struct btrfs_device *dev;
- 	unsigned int nofs_flag;
-+	bool need_commit = false;
- 
- 	if (btrfs_fs_closing(fs_info))
- 		return -EAGAIN;
-@@ -3961,6 +3962,12 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	 */
- 	nofs_flag = memalloc_nofs_save();
- 	if (!is_dev_replace) {
-+		u64 old_super_errors;
-+
-+		spin_lock(&sctx->stat_lock);
-+		old_super_errors = sctx->stat.super_errors;
-+		spin_unlock(&sctx->stat_lock);
-+
- 		btrfs_info(fs_info, "scrub: started on devid %llu", devid);
- 		/*
- 		 * by holding device list mutex, we can
-@@ -3969,6 +3976,16 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 		mutex_lock(&fs_info->fs_devices->device_list_mutex);
- 		ret = scrub_supers(sctx, dev);
- 		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
-+
-+		spin_lock(&sctx->stat_lock);
-+		/*
-+		 * Super block errors found, but we can not commit transaction
-+		 * at current context, since btrfs_commit_transaction() needs
-+		 * to pause the current running scrub (hold by ourselves).
-+		 */
-+		if (sctx->stat.super_errors > old_super_errors && !sctx->readonly)
-+			need_commit = true;
-+		spin_unlock(&sctx->stat_lock);
- 	}
- 
- 	if (!ret)
-@@ -3995,6 +4012,25 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	scrub_workers_put(fs_info);
- 	scrub_put_ctx(sctx);
- 
-+	/*
-+	 * We found some super block errors before, now try to force a
-+	 * transaction commit, as scrub has finished.
-+	 */
-+	if (need_commit) {
-+		struct btrfs_trans_handle *trans;
-+
-+		trans = btrfs_start_transaction(fs_info->tree_root, 0);
-+		if (IS_ERR(trans)) {
-+			ret = PTR_ERR(trans);
-+			btrfs_err(fs_info,
-+	"scrub: failed to start transaction to fix super block errors: %d", ret);
-+			return ret;
-+		}
-+		ret = btrfs_commit_transaction(trans);
-+		if (ret < 0)
-+			btrfs_err(fs_info,
-+	"scrub: failed to commit transaction to fix super block errors: %d", ret);
-+	}
- 	return ret;
- out:
- 	scrub_workers_put(fs_info);
 -- 
-2.35.1
+2.38.0.rc1.362.ged0d419d3c-goog
 
