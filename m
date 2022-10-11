@@ -2,70 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 294CF5FBDF0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 00:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50425FBE7E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 01:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbiJKWtQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 18:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
+        id S229655AbiJKXq7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 19:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbiJKWtO (ORCPT
+        with ESMTP id S229475AbiJKXq4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 18:49:14 -0400
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7BC8F96F
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 15:49:13 -0700 (PDT)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1364357a691so11168876fac.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 15:49:13 -0700 (PDT)
+        Tue, 11 Oct 2022 19:46:56 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766FB459B3
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 16:46:53 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id r18so14076030pgr.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 16:46:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Br1aOdu+0HvIKGR71tLPfM2hoANr+BgT3DPpmcCrU0=;
-        b=QJenybZKtzWXRYI7zhSXlqbKHYaFpIo3Ip7jklH2D7OU6phpfAPRNV7sMlgQHnLMWT
-         7Fth5BsJnV0dezNYthINb3VWqV7Inc1OFa0neLlJec+Phvcjs/HL2jJT9gsJ8ceJrRA4
-         usze5nCYoBA0RYcpzcejAuUZKz0RXSSEbTgUY=
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NXIZJTtVhqCpmyGjXMWK48RPmdnN8LgdLSZxMWzlW54=;
+        b=VUROlRoYgzR70sQJFbpLvMSbh8bjmCg+iVdR7RSAsmc2GNvFxI/h4ESUYMGaloqv4Q
+         O2zBYNVG+uyT7271G7zQNxrozKHUA+Tx6kZUdGKtLcddxNVFpHMIrU4ZQZLlv1LNzmXJ
+         kGS4/EsrZ1wV18wXVjE3xThqiLKPUiPWTwBk5lbdzhfwrLp1Cs+L/gaRUtVL0cueFs/F
+         ZX4sTamhLXAzfmNYbWFgQljACZ7/mn/+E5hysHFGLgE0NM7CpdXVZlOLl8SnZTZ8FuRT
+         BghgxbWTKUJLUFAh2DEQqD1nJFvkll5hBCQ/nAYgV5yY+U+N87OhniNTIovWLG766DP3
+         7Ubw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9Br1aOdu+0HvIKGR71tLPfM2hoANr+BgT3DPpmcCrU0=;
-        b=N0JpjmHkkrSP8NPXHwqBRpslIxO3QSECwiIZL31LO7zJvk/Dl5xhY/5Iqyjat0BuyK
-         8WIIMAtfaCF8/b2SRN4CKBxSZbeOj+gqTqMAs0KLUtNzMsJCQ4tn3b5HdxRMInSFws3h
-         qif+1I9KDvPZ2TUlCJe0FlqgquxDYGEE6Be5C7ceFxLyhmlhgDgPspnPt5DNd7hvl1DM
-         19Al8EPVJyUIE7JcONHpTv4ibTYakBvm3bWGp6pqeFIVUKxxjQQA7l6RCdpjTCZCso95
-         zVo0WAbLJs4+qH6HDi7rTiDeqXF+Ip4LK2UtEKZisieMdyfx3N4aSeSPUxVrSqyfRmDJ
-         WbWQ==
-X-Gm-Message-State: ACrzQf2G7Pa1gcGB23lk7V2zhRslw8gMnqd6z09iNb6QGLqUiU62SyD/
-        YzLdulDpQ+ENdnHebjOi2zK4Q3HWQw0quA==
-X-Google-Smtp-Source: AMsMyM5xhVF+m+CgWccNW47UMQ4Aj329/C78Y12bOu4POS5aVzPQmEg61CScTW75CHReZlVVALy4JA==
-X-Received: by 2002:a05:6870:d349:b0:136:9a09:572f with SMTP id h9-20020a056870d34900b001369a09572fmr883638oag.262.1665528552677;
-        Tue, 11 Oct 2022 15:49:12 -0700 (PDT)
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com. [209.85.161.49])
-        by smtp.gmail.com with ESMTPSA id y63-20020acae142000000b003357568e39fsm5965514oig.57.2022.10.11.15.49.11
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Oct 2022 15:49:11 -0700 (PDT)
-Received: by mail-oo1-f49.google.com with SMTP id m11-20020a4aab8b000000b00476743c0743so11059022oon.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 15:49:11 -0700 (PDT)
-X-Received: by 2002:a4a:4e41:0:b0:480:8a3c:a797 with SMTP id
- r62-20020a4a4e41000000b004808a3ca797mr1313796ooa.71.1665528551551; Tue, 11
- Oct 2022 15:49:11 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NXIZJTtVhqCpmyGjXMWK48RPmdnN8LgdLSZxMWzlW54=;
+        b=Wu0EhIz9+Cco3clvx7HxGSd5zvsFceaHPH7PvGWESGiRdyrJgf3bR2DndtidJR5LKP
+         g2U93pkrb9W1u9RaUZzwsR5AUi/YSN9tDXfdWg2oVfhIQ5h9rBw59imJ6UzOAEVa2mlQ
+         0/YejZiNrE29aCuZxLkVnpuTN0TjLqpjzsvYxcrSToBXwp5Xro8mTthVuHpwU2v0Gsq3
+         ldQ3ahnsvnRusCL8urZaXg8LlRmyY5DSyuHhfQwVACOZOyMJTsbAnJ33EoTAFJH264P3
+         3oKkBp5xwONoLECa+ADe4aqIr7kobVSGoLYdlGtZXHCeAIMoSfm7cVJCvhYfmhlpMlnt
+         y2rQ==
+X-Gm-Message-State: ACrzQf2CkANhHqNsYRZk0oecT1uH6YB4Q+sE0XQr1pQQCNgNYP6n2nJ2
+        qGUfiNJ7VM/1VLcO7DFwOsR4lA==
+X-Google-Smtp-Source: AMsMyM5Ch+o6zNkMhMyXMxtlm7R5W1U/84gENt06G22RZbktX34GcbWPf0GyyDfHQ3unvKWyC4NbRw==
+X-Received: by 2002:a65:6b8e:0:b0:44f:ec0f:f684 with SMTP id d14-20020a656b8e000000b0044fec0ff684mr22336295pgw.25.1665532012852;
+        Tue, 11 Oct 2022 16:46:52 -0700 (PDT)
+Received: from relinquished.localdomain ([2600:380:8047:f466:3e42:98bc:71a6:f1b7])
+        by smtp.gmail.com with ESMTPSA id r27-20020aa7963b000000b005636d8aa98dsm4543908pfg.141.2022.10.11.16.46.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Oct 2022 16:46:52 -0700 (PDT)
+Date:   Tue, 11 Oct 2022 16:46:49 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Omar Sandoval <osandov@fb.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>, clm@fb.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.0 33/46] btrfs: get rid of block group caching
+ progress logic
+Message-ID: <Y0YAaXPzuSmSKwiG@relinquished.localdomain>
+References: <20221011145015.1622882-1-sashal@kernel.org>
+ <20221011145015.1622882-33-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20221011132256.333-1-dsterba@suse.com>
-In-Reply-To: <20221011132256.333-1-dsterba@suse.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 11 Oct 2022 15:48:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiB9sHzsNcCRRkgeyXLu09hV-FgRLwvFHoA_uCpZRJJwA@mail.gmail.com>
-Message-ID: <CAHk-=wiB9sHzsNcCRRkgeyXLu09hV-FgRLwvFHoA_uCpZRJJwA@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: update btrfs website links and files
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221011145015.1622882-33-sashal@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,28 +75,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 6:23 AM David Sterba <dsterba@suse.com> wrote:
->
-> We have the new documentation hosted on Read The Docs and content is
-> migrated there from the wiki. Also update http to https and add the
-> tracepoint definition header.
+On Tue, Oct 11, 2022 at 10:50:01AM -0400, Sasha Levin wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> [ Upstream commit 48ff70830bec1ccc714f4e31059df737f17ec909 ]
+> 
+> struct btrfs_caching_ctl::progress and struct
+> btrfs_block_group::last_byte_to_unpin were previously needed to ensure
+> that unpin_extent_range() didn't return a range to the free space cache
+> before the caching thread had a chance to cache that range. However, the
+> commit "btrfs: fix space cache corruption and potential double
+> allocations" made it so that we always synchronously cache the block
+> group at the time that we pin the extent, so this machinery is no longer
+> necessary.
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  fs/btrfs/block-group.c     | 13 ------------
+>  fs/btrfs/block-group.h     |  2 --
+>  fs/btrfs/extent-tree.c     |  9 ++-------
+>  fs/btrfs/free-space-tree.c |  8 --------
+>  fs/btrfs/transaction.c     | 41 --------------------------------------
+>  fs/btrfs/zoned.c           |  1 -
+>  6 files changed, 2 insertions(+), 72 deletions(-)
 
-Hmm. Did you intend for me to apply this as a patch?
+Hi, Sasha,
 
-Since you normally just send pull requests, I'm a bit confused.
+This commit is a cleanup. Please drop it from 6.0 and 5.19.
 
-Is this a "it's outside the btrfs subdirectory, so I'm sending this as
-a patch"? Except I've seen you send stuff that has changes to mm/ for
-new exports etc, and in fact to MAINTAINERS too.
-
-Or is this just an informational "let Linus know about this patch" email?
-
-Anyway, if you actually want me to apply a patch directly because of
-some "I'm not going to send this as a pull request because there is
-nothing else pending" kind of issue or other reason, please do state
-that explicitly in the email.
-
-Because as it is now, as explained above, I'm not sure why this patch
-was sent to me.
-
-               Linus
+Thanks,
+Omar
