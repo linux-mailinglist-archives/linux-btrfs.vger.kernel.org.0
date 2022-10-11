@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F165FB23B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 14:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F385FB236
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 14:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbiJKMRa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 08:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41474 "EHLO
+        id S229741AbiJKMRb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 08:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbiJKMRX (ORCPT
+        with ESMTP id S229656AbiJKMRZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 08:17:23 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C214B0D6
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:17:22 -0700 (PDT)
+        Tue, 11 Oct 2022 08:17:25 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FF15755F
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:17:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E9CB7B815AE
+        by sin.source.kernel.org (Postfix) with ESMTPS id 51BCFCE16C5
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A099C433D7
         for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 467CAC433D6
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665490640;
-        bh=xF9/R7YVjtghfkYXEeRbo+TbuqPX3iNh3BFvcCajNc0=;
+        s=k20201202; t=1665490641;
+        bh=6zdh+oXTjm2mZHvnq1SUvQWAIouArWQfCqPI9wvwWto=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=utiJ1hCbfJQaFYzyi0ToHlyHrPPqNuqIXV5vgsufTJNgWYGPgnad2kXvNRyszTYzt
-         /1NfcOM4qz3kZxEEtexs6nFtTjjfhH9KlDnLdDmbvoAiHHqgnlW/qBjTk6V28jMB2l
-         fMA22P6dSju+kCgJAiZRa2q3vuFuBe0E/A+oJd7E3xYqN5zP9W8mWwl9y15VfTQv60
-         tk0IQ05MQeQZfIhIWyw5IlHjR4OHs2uV0cLI37TYWqDxFrBzBXhWxrf5XB7NHj4bbp
-         50YaW/khmmr9KLENdz8j4PGc5bHV7mUH5n2FfihqeWgd1a6poB7XfB69JfwciAAoM6
-         CZtgdO/eB/rPg==
+        b=gKkGDgz2wXqpFUcKEPOMp2DqWRii+rfnHaWU1lgboqwjhYdCcCAi6Jx0WeWjubGjR
+         UAGajmH5zYyH3R/+ehEUn2Z3+AX7WL9FXzVEKZ+VGvO8gSJi2i8NkbtHq7nYqnJaEo
+         oYqyXZJdfBEsRDR+Pv369F0Ew6QHZjmkvQN2enxpiWLQVi2TpWGRD45Cosmrs9LCqF
+         mChQcRMi50hjD/EphH2i8kBJ5cW7EiUUn02KWq5re763wFWia7FBSto0qltqAsCWOB
+         V7MnHMdDtxxKGLk3bljKZ4uaYUAOGPa937rtdiI5WjCsC1wrd2vmixvd7LRNnEX128
+         LNIVcFMLRoXQg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 09/19] btrfs: remove checks for a root with id 0 during backref walking
-Date:   Tue, 11 Oct 2022 13:16:59 +0100
-Message-Id: <f5496a81ec0a5d9590fd7de1730f0dd9a46777c6.1665490018.git.fdmanana@suse.com>
+Subject: [PATCH v2 10/19] btrfs: remove checks for a 0 inode number during backref walking
+Date:   Tue, 11 Oct 2022 13:17:00 +0100
+Message-Id: <9747bdb0d51eb0b2c28b823154ee17f2ebf77963.1665490018.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1665490018.git.fdmanana@suse.com>
 References: <cover.1665490018.git.fdmanana@suse.com>
@@ -54,40 +54,39 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 From: Filipe Manana <fdmanana@suse.com>
 
 When doing backref walking to determine if an extent is shared, we are
-testing the root_objectid of the given share_check struct is 0, but that
-is an impossible case, since btrfs_is_data_extent_shared() always
-initializes the root_objectid field with the id of the given root, and
-no root can have an objectid of 0. So remove those checks.
+testing if the inode number, stored in the 'inum' field of struct
+share_check, is 0. However that can never be case, since the all instances
+of the structure are created at btrfs_is_data_extent_shared(), which
+always initializes it with the inode number from a fs tree (and the number
+for any inode from any tree can never be 0). So remove the checks.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/backref.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/btrfs/backref.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 4ec18ceb2f21..4757f9af948a 100644
+index 4757f9af948a..f4010ce66e21 100644
 --- a/fs/btrfs/backref.c
 +++ b/fs/btrfs/backref.c
-@@ -705,8 +705,7 @@ static int resolve_indirect_refs(struct btrfs_fs_info *fs_info,
- 			continue;
- 		}
+@@ -1033,7 +1033,7 @@ static int add_inline_refs(const struct btrfs_fs_info *fs_info,
+ 			key.type = BTRFS_EXTENT_DATA_KEY;
+ 			key.offset = btrfs_extent_data_ref_offset(leaf, dref);
  
--		if (sc && sc->root_objectid &&
--		    ref->root_id != sc->root_objectid) {
-+		if (sc && ref->root_id != sc->root_objectid) {
- 			free_pref(ref);
- 			ret = BACKREF_FOUND_SHARED;
- 			goto out;
-@@ -1330,8 +1329,7 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
- 		 * and would retain their original ref->count < 0.
- 		 */
- 		if (roots && ref->count && ref->root_id && ref->parent == 0) {
--			if (sc && sc->root_objectid &&
--			    ref->root_id != sc->root_objectid) {
-+			if (sc && ref->root_id != sc->root_objectid) {
+-			if (sc && sc->inum && key.objectid != sc->inum &&
++			if (sc && key.objectid != sc->inum &&
+ 			    !sc->have_delayed_delete_refs) {
  				ret = BACKREF_FOUND_SHARED;
- 				goto out;
- 			}
+ 				break;
+@@ -1134,7 +1134,7 @@ static int add_keyed_refs(struct btrfs_root *extent_root,
+ 			key.type = BTRFS_EXTENT_DATA_KEY;
+ 			key.offset = btrfs_extent_data_ref_offset(leaf, dref);
+ 
+-			if (sc && sc->inum && key.objectid != sc->inum &&
++			if (sc && key.objectid != sc->inum &&
+ 			    !sc->have_delayed_delete_refs) {
+ 				ret = BACKREF_FOUND_SHARED;
+ 				break;
 -- 
 2.35.1
 
