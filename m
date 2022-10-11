@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C21585FB231
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 14:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41AFA5FB234
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 14:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbiJKMRU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 08:17:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41366 "EHLO
+        id S229736AbiJKMRW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 08:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbiJKMRS (ORCPT
+        with ESMTP id S229703AbiJKMRT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 08:17:18 -0400
+        Tue, 11 Oct 2022 08:17:19 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1915F422FC
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:17:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A9350193
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:17:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C25F4B815AA
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19D63C433C1
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:13 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C2988B815AE
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0664C433D7
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665490634;
-        bh=dk1FioyxHBkJHR/G9w6DQHP2SKaAyeO29NijLYU+7W8=;
+        s=k20201202; t=1665490635;
+        bh=j/fo/HYhv5LzyER1NEKyL/rwFT7JSUblpuAfunWaKEs=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=iw8Ir4h/ki4nWaFDd+VtGk+YM0Un1azm0qFdER0sg/bkkY/hbP2WzrkdINkJi6KTp
-         J/3ujadRZVi0qfkJJhXc/R3D7PyfbXtelw5FaJRADnv3HcazXb5vwNtHekrb1isrlC
-         DSmW/n44TVKMRnHqifhCZm47BO2vCfmOQs7DUxqhTtT4qxaqdfbB/UYKaqb7wuOrOX
-         S+xZ+kkOAlP/gbdV9cNdpwxSgvcsbh5Z6I58oW8pQ7Ql7DOH7lyWkgNtB8nYZEyuDz
-         r8NfXFsssCe5gCuJQIDJDTfRZV6fnjDKpKNGjy5oXv4RcPUirpVpIAU4TBYfgsr0x0
-         bqSuTfq8XyfSQ==
+        b=A8RpU267W6+V1JVWpROrmtHBy702JrZYzqiBEHdkjKemmmCdIa3stwSSggk/jaLGN
+         VurzLblLCXgEJXV7F8S8v1bQTdyf3byLdwLuXLBCNvV4Z889rTE5bchsmDOyj99e85
+         af/Uv1/YkP7+3uPyxCipIfq3kQ0Jq+Wqrkrk25za/DmcwWy9LtGTpCOehcpLdPmR2t
+         43enhm2RaRBDFPem0+nLYSX1IRvikVs8JO6AI2vhj0FdFDKoADxw1D4euYLmy502MS
+         KIwZBpPnWcUiIKXM3FFbK0h20V9p7yWAJTTUEeh0PljzN+BZI+pD8V3ideBSS72q00
+         RwnQ5xHotQRPw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 02/19] btrfs: fix processing of delayed tree block refs during backref walking
-Date:   Tue, 11 Oct 2022 13:16:52 +0100
-Message-Id: <c22f07365c5f8a1872823a770a7888ac0b3e2bc7.1665490018.git.fdmanana@suse.com>
+Subject: [PATCH v2 03/19] btrfs: ignore fiemap path cache if we have multiple leaves for a data extent
+Date:   Tue, 11 Oct 2022 13:16:53 +0100
+Message-Id: <71399b6945941e364f2bd63ebe2f41d9e2275993.1665490018.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1665490018.git.fdmanana@suse.com>
 References: <cover.1665490018.git.fdmanana@suse.com>
@@ -53,195 +53,139 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-During backref walking, when processing a delayed reference with a type of
-BTRFS_TREE_BLOCK_REF_KEY, we have two bugs there:
+The path cache used during fiemap used to determine the sharedness of
+extent buffers in a path from a leaf containing a file extent item
+pointing to our data extent up to the root node of the tree, is meant to
+be used for a single path. Having a single path is by far the most common
+case, and therefore worth to optimize for, but it's possible to actually
+have multiple paths because we have 2 or more leaves.
 
-1) We are accessing the delayed references extent_op, and its key, without
-   the protection of the delayed ref head's lock;
+If we have multiple leaves, the 'level' variable keeps getting incremented
+in each iteration of the while loop at btrfs_is_data_extent_shared(),
+which means we will treat the second leaf in the 'tmp' ulist as a level 1
+node, and so forth. In the worst case this can lead to getting a level
+greater than or equals to BTRFS_MAX_LEVEL (8), which will trigger a
+WARN_ON_ONCE() in the functions to lookup from or store in the path cache
+(lookup_backref_shared_cache() and store_backref_shared_cache()). If the
+current level never goes beyond 8, due to shared nodes in the paths and
+a fs tree height smaller than 8, it can still result in incorrectly
+marking one leaf as shared because some other leaf is shared and is stored
+one level below that other leaf, as when storing a true sharedness value
+in the cache results in updating the sharedness to true of all entries in
+the cache below the current level.
 
-2) If there's no extent op for the delayed ref head, we end up with an
-   uninitialized key in the stack, variable 'tmp_op_key', and then pass
-   it to add_indirect_ref(), which adds the reference to the indirect
-   refs rb tree.
+Having multiple leaves happens in a case like the following:
 
-   This is wrong, because indirect references should have a NULL key
-   when we don't have access to the key, and in that case they should be
-   added to the indirect_missing_keys rb tree and not to the indirect rb
-   tree.
+  - We have a file extent item point to data extent at bytenr X, for
+    a file range [0, 1M[ for example;
 
-   This means that if have BTRFS_TREE_BLOCK_REF_KEY delayed ref resulting
-   from freeing an extent buffer, therefore with a count of -1, it will
-   not cancel out the corresponding reference we have in the extent tree
-   (with a count of 1), since both references end up in different rb
-   trees.
+  - At this moment we have an extent data ref for the extent, with
+    an offset of 0 and a count of 1;
 
-   When using fiemap, where we often need to check if extents are shared
-   through shared subtrees resulting from snapshots, it means we can
-   incorrectly report an extent as shared when it's no longer shared.
-   However this is temporary because after the transaction is committed
-   the extent is no longer reported as shared, as running the delayed
-   reference results in deleting the tree block reference from the extent
-   tree.
+  - A write into the middle of the extent happens, file range [64K, 128K)
+    so the file extent item is split into two (at btrfs_drop_extents()):
 
-   Outside the fiemap context, the result is unpredictable, as the key was
-   not initialized but it's used when navigating the rb trees to insert
-   and search for references (prelim_ref_compare()), and we expect all
-   references in the indirect rb tree to have valid keys.
+    1) One for file range [0, 64K), with a length (num_bytes field) of
+       64K and an extent offset of 0;
 
-The following reproducer triggers the second bug:
+    2) Another one for file range [128K, 1M), with a length of 896K
+       (1M - 128K) and an extent offset of 128K.
 
-   $ cat test.sh
-   #!/bin/bash
+  - At this moment the two file extent items are located in the same
+    leaf;
 
-   DEV=/dev/sdj
-   MNT=/mnt/sdj
+  - A new file extent item for the range [64K, 128K), pointing to a new
+    data extent, is inserted in the leaf. This results in a leaf split
+    and now those two file extent items pointing to data extent X end
+    up located in different leaves;
 
-   mkfs.btrfs -f $DEV
-   mount -o compress $DEV $MNT
+  - Once delayed refs are run, we still have a single extent data ref
+    item for our data extent at bytenr X, for offset 0, but now with a
+    count of 2 instead of 1;
 
-   # With a compressed 128M file we get a tree height of 2 (level 1 root).
-   xfs_io -f -c "pwrite -b 1M 0 128M" $MNT/foo
+  - So during fiemap, at btrfs_is_data_extent_shared(), after we call
+    find_parent_nodes() for the data extent, we get two leaves, since
+    we have two file extent items point to data extent at bytenr X that
+    are located in two different leaves.
 
-   btrfs subvolume snapshot $MNT $MNT/snap
+So skip the use of the path cache when we get more than one leaf.
 
-   # Fiemap should output 0x2008 in the flags column.
-   # 0x2000 means shared extent
-   # 0x8 means encoded extent (because it's compressed)
-   echo
-   echo "fiemap after snapshot, range [120M, 120M + 128K):"
-   xfs_io -c "fiemap -v 120M 128K" $MNT/foo
-   echo
-
-   # Overwrite one extent and fsync to flush delalloc and COW a new path
-   # in the snapshot's tree.
-   #
-   # After this we have a BTRFS_DROP_DELAYED_REF delayed ref of type
-   # BTRFS_TREE_BLOCK_REF_KEY with a count of -1 for every COWed extent
-   # buffer in the path.
-   #
-   # In the extent tree we have inline references of type
-   # BTRFS_TREE_BLOCK_REF_KEY, with a count of 1, for the same extent
-   # buffers, so they should cancel each other, and the extent buffers in
-   # the fs tree should no longer be considered as shared.
-   #
-   echo "Overwriting file range [120M, 120M + 128K)..."
-   xfs_io -c "pwrite -b 128K 120M 128K" $MNT/snap/foo
-   xfs_io -c "fsync" $MNT/snap/foo
-
-   # Fiemap should output 0x8 in the flags column. The extent in the range
-   # [120M, 120M + 128K) is no longer shared, it's now exclusive to the fs
-   # tree.
-   echo
-   echo "fiemap after overwrite range [120M, 120M + 128K):"
-   xfs_io -c "fiemap -v 120M 128K" $MNT/foo
-   echo
-
-   umount $MNT
-
-Running it before this patch:
-
-   $ ./test.sh
-   (...)
-   wrote 134217728/134217728 bytes at offset 0
-   128 MiB, 128 ops; 0.1152 sec (1.085 GiB/sec and 1110.5809 ops/sec)
-   Create a snapshot of '/mnt/sdj' in '/mnt/sdj/snap'
-
-   fiemap after snapshot, range [120M, 120M + 128K):
-   /mnt/sdj/foo:
-    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-      0: [245760..246015]: 34304..34559       256 0x2008
-
-   Overwriting file range [120M, 120M + 128K)...
-   wrote 131072/131072 bytes at offset 125829120
-   128 KiB, 1 ops; 0.0001 sec (683.060 MiB/sec and 5464.4809 ops/sec)
-
-   fiemap after overwrite range [120M, 120M + 128K):
-   /mnt/sdj/foo:
-    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-      0: [245760..246015]: 34304..34559       256 0x2008
-
-The extent in the range [120M, 120M + 128K) is still reported as shared
-(0x2000 bit set) after overwriting that range and flushing delalloc, which
-is not correct - an entire path was COWed in the snapshot's tree and the
-extent is now only referenced by the original fs tree.
-
-Running it after this patch:
-
-   $ ./test.sh
-   (...)
-   wrote 134217728/134217728 bytes at offset 0
-   128 MiB, 128 ops; 0.1198 sec (1.043 GiB/sec and 1068.2067 ops/sec)
-   Create a snapshot of '/mnt/sdj' in '/mnt/sdj/snap'
-
-   fiemap after snapshot, range [120M, 120M + 128K):
-   /mnt/sdj/foo:
-    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-      0: [245760..246015]: 34304..34559       256 0x2008
-
-   Overwriting file range [120M, 120M + 128K)...
-   wrote 131072/131072 bytes at offset 125829120
-   128 KiB, 1 ops; 0.0001 sec (694.444 MiB/sec and 5555.5556 ops/sec)
-
-   fiemap after overwrite range [120M, 120M + 128K):
-   /mnt/sdj/foo:
-    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-      0: [245760..246015]: 34304..34559       256   0x8
-
-Now the extent is not reported as shared anymore.
-
-So fix this by passing a NULL key pointer to add_indirect_ref() when
-processing a delayed reference for a tree block if there's no extent op
-for our delayed ref head with a defined key. Also access the extent op
-only after locking the delayed ref head's lock.
-
-The reproducer will be converted later to a test case for fstests.
-
-Fixes: 86d5f994425252 ("btrfs: convert prelimary reference tracking to use rbtrees")
-Fixes: a6dbceafb915e8 ("btrfs: Remove unused op_key var from add_delayed_refs")
+Fixes: 12a824dc67a61e ("btrfs: speedup checking for extent sharedness during fiemap")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/backref.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ fs/btrfs/backref.c | 25 +++++++++++++++++++++++++
+ fs/btrfs/backref.h |  1 +
+ 2 files changed, 26 insertions(+)
 
 diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index cf47dabb786f..4e29ccb234c0 100644
+index 4e29ccb234c0..4ec18ceb2f21 100644
 --- a/fs/btrfs/backref.c
 +++ b/fs/btrfs/backref.c
-@@ -821,16 +821,11 @@ static int add_delayed_refs(const struct btrfs_fs_info *fs_info,
- 			    struct preftrees *preftrees, struct share_check *sc)
+@@ -1536,6 +1536,9 @@ static bool lookup_backref_shared_cache(struct btrfs_backref_shared_cache *cache
  {
- 	struct btrfs_delayed_ref_node *node;
--	struct btrfs_delayed_extent_op *extent_op = head->extent_op;
- 	struct btrfs_key key;
--	struct btrfs_key tmp_op_key;
- 	struct rb_node *n;
- 	int count;
- 	int ret = 0;
+ 	struct btrfs_backref_shared_cache_entry *entry;
  
--	if (extent_op && extent_op->update_key)
--		btrfs_disk_key_to_cpu(&tmp_op_key, &extent_op->key);
--
- 	spin_lock(&head->lock);
- 	for (n = rb_first_cached(&head->ref_tree); n; n = rb_next(n)) {
- 		node = rb_entry(n, struct btrfs_delayed_ref_node,
-@@ -856,10 +851,16 @@ static int add_delayed_refs(const struct btrfs_fs_info *fs_info,
- 		case BTRFS_TREE_BLOCK_REF_KEY: {
- 			/* NORMAL INDIRECT METADATA backref */
- 			struct btrfs_delayed_tree_ref *ref;
-+			struct btrfs_key *key_ptr = NULL;
++	if (!cache->use_cache)
++		return false;
 +
-+			if (head->extent_op && head->extent_op->update_key) {
-+				btrfs_disk_key_to_cpu(&key, &head->extent_op->key);
-+				key_ptr = &key;
-+			}
+ 	if (WARN_ON_ONCE(level >= BTRFS_MAX_LEVEL))
+ 		return false;
  
- 			ref = btrfs_delayed_node_to_tree_ref(node);
- 			ret = add_indirect_ref(fs_info, preftrees, ref->root,
--					       &tmp_op_key, ref->level + 1,
-+					       key_ptr, ref->level + 1,
- 					       node->bytenr, count, sc,
- 					       GFP_ATOMIC);
+@@ -1600,6 +1603,9 @@ static void store_backref_shared_cache(struct btrfs_backref_shared_cache *cache,
+ 	struct btrfs_backref_shared_cache_entry *entry;
+ 	u64 gen;
+ 
++	if (!cache->use_cache)
++		return;
++
+ 	if (WARN_ON_ONCE(level >= BTRFS_MAX_LEVEL))
+ 		return;
+ 
+@@ -1697,6 +1703,7 @@ int btrfs_is_data_extent_shared(struct btrfs_root *root, u64 inum, u64 bytenr,
+ 	/* -1 means we are in the bytenr of the data extent. */
+ 	level = -1;
+ 	ULIST_ITER_INIT(&uiter);
++	cache->use_cache = true;
+ 	while (1) {
+ 		bool is_shared;
+ 		bool cached;
+@@ -1726,6 +1733,24 @@ int btrfs_is_data_extent_shared(struct btrfs_root *root, u64 inum, u64 bytenr,
+ 		    extent_gen > btrfs_root_last_snapshot(&root->root_item))
  			break;
+ 
++		/*
++		 * If our data extent was not directly shared (without multiple
++		 * reference items), than it might have a single reference item
++		 * with a count > 1 for the same offset, which means there are 2
++		 * (or more) file extent items that point to the data extent -
++		 * this happens when a file extent item needs to be split and
++		 * then one item gets moved to another leaf due to a b+tree leaf
++		 * split when inserting some item. In this case the file extent
++		 * items may be located in different leaves and therefore some
++		 * of the leaves may be referenced through shared subtrees while
++		 * others are not. Since our extent buffer cache only works for
++		 * a single path (by far the most common case and simpler to
++		 * deal with), we can not use it if we have multiple leaves
++		 * (which implies multiple paths).
++		 */
++		if (level == -1 && tmp->nnodes > 1)
++			cache->use_cache = false;
++
+ 		if (level >= 0)
+ 			store_backref_shared_cache(cache, root, bytenr,
+ 						   level, false);
+diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+index 52ae6957b414..8e69584d538d 100644
+--- a/fs/btrfs/backref.h
++++ b/fs/btrfs/backref.h
+@@ -29,6 +29,7 @@ struct btrfs_backref_shared_cache {
+ 	 * a given data extent should never exceed the maximum b+tree height.
+ 	 */
+ 	struct btrfs_backref_shared_cache_entry entries[BTRFS_MAX_LEVEL];
++	bool use_cache;
+ };
+ 
+ typedef int (iterate_extent_inodes_t)(u64 inum, u64 offset, u64 root,
 -- 
 2.35.1
 
