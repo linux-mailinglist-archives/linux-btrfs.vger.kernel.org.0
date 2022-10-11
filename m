@@ -2,98 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 038C45FAF93
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 11:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9389A5FAFBE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 11:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbiJKJqc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 05:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
+        id S229744AbiJKJzm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 05:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbiJKJqb (ORCPT
+        with ESMTP id S229794AbiJKJzd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 05:46:31 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850EE74CCF
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 02:46:30 -0700 (PDT)
+        Tue, 11 Oct 2022 05:55:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEBC1581E
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 02:55:31 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0FC18222DD;
-        Tue, 11 Oct 2022 09:46:29 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C16FF1F8BA;
+        Tue, 11 Oct 2022 09:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1665481589;
+        t=1665482129;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7U3ut+4sGWn3YYUyhxO6dw50PW4TqPaD+ihlovJ3vCI=;
-        b=UKcTvMtNZgoD2G2uBjtSbjIeE5RRDqmubNwgfw1XuPRmX+IMN7cC1UCjkSDkodpA1VsgDD
-        NddoSaxsPzk9hMbt5LIidU2dEu6O3NK+qdvQEcDk3fcUHMV4bYIMgzUyr8AM0RCaQRkVDv
-        GyHY9GlVm/hwIPbdFkvdg4TUUpZWc3g=
+        bh=KeANXOf59WTaR0dH3VD0jzBQ2N6z5HBlv5bEwpWra/Q=;
+        b=zU93NZ8Ya28G0NDwVjh2awUTOF73S8zmIjKtilkKxTZqgCdIH2svh5THQdn3zK5h8gfsER
+        9R5SSN0DFxujEwrUTcOt9jNMigv6wfpzashVjfpVRGF68+7jtLpdE6o0kdxx3E6Q+W20cj
+        k94VT7SAfI1qas72TMHyK/wcFH6Ol/s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1665481589;
+        s=susede2_ed25519; t=1665482129;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7U3ut+4sGWn3YYUyhxO6dw50PW4TqPaD+ihlovJ3vCI=;
-        b=boow1x0BVLcGKTOMRS445+mnUdF2yz5cc3gX57FU/s1q/sOtHu4xuS4BMOBg2ZeJ2pvAff
-        xzPbalCsFeLvCzAw==
+        bh=KeANXOf59WTaR0dH3VD0jzBQ2N6z5HBlv5bEwpWra/Q=;
+        b=ukLca4PD1WI37xgLpCvxuvtQBNjiDIbp3eR6sabR/i/B6SEXGUxQQnszhQOnupFxyOOq7C
+        4D0uS6IvczoYR8BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CF9EA139ED;
-        Tue, 11 Oct 2022 09:46:28 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8F360139ED;
+        Tue, 11 Oct 2022 09:55:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 47+rMXQ7RWMiAgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 11 Oct 2022 09:46:28 +0000
-Date:   Tue, 11 Oct 2022 11:46:23 +0200
+        id 6Un2IZE9RWN9BgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 11 Oct 2022 09:55:29 +0000
+Date:   Tue, 11 Oct 2022 11:55:24 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 02/16] btrfs: move larger compat flag helpers to their
- own c file
-Message-ID: <20221011094623.GJ13389@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 04/16] btrfs: push extra checks into
+ __btrfs_abort_transaction
+Message-ID: <20221011095524.GK13389@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1663175597.git.josef@toxicpanda.com>
- <92a20e2cd0cbf74630be86dfe0998aa3e711529c.1663175597.git.josef@toxicpanda.com>
- <2ccd2670-56ba-da73-9261-a0ed1b685ddb@oracle.com>
+ <6a4275319be8321bf3d87c2259a427ebdfa6d7cf.1663175597.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2ccd2670-56ba-da73-9261-a0ed1b685ddb@oracle.com>
+In-Reply-To: <6a4275319be8321bf3d87c2259a427ebdfa6d7cf.1663175597.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 16, 2022 at 07:11:03PM +0800, Anand Jain wrote:
+On Wed, Sep 14, 2022 at 01:18:09PM -0400, Josef Bacik wrote:
+> The btrfs_abort_transaction() macro uses quite a bit of flags and such
+> that aren't local to btrfs-printk.h.  Push this code down into
+> __btrfs_abort_transaction to allow for a cleaner header file.
 > 
-> > +void __btrfs_set_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
-> > +			      const char *name);
-> > +void __btrfs_set_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
-> > +			      const char *name);
-> 
->   There is an extra definition here.
->   I think David can take care of it while merging.
-> 
->   While here, I would prefer to have functions arranged.
->   Like, first, set-function and then its related clear-function;
->   it improves readability.
-> 
-> >   
-> >   #define btrfs_set_fs_incompat(__fs_info, opt) \
-> >   	__btrfs_set_fs_incompat((__fs_info), BTRFS_FEATURE_INCOMPAT_##opt, \
-> >   				#opt)
-> 
->   Further, the #defines are in the middle of the function definitions.
->   I suggest they be at the bottom of the file.
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> -#define btrfs_abort_transaction(trans, errno)		\
+> -do {								\
+> -	bool first = false;					\
+> -	/* Report first abort since mount */			\
+> -	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
+> -			&((trans)->fs_info->fs_state))) {	\
+> -		first = true;					\
+> -		if ((errno) != -EIO && (errno) != -EROFS) {		\
+> -			WARN(1, KERN_DEBUG				\
+> -			"BTRFS: Transaction aborted (error %d)\n",	\
+> -			(errno));					\
 
-I've moved the defines before the function prototypes.
+The point of this was to print the stack trace from the function where
+it happens and not with btrfs_abort_transaction at the top. IIRC this
+was confusing when people were reporting transaction abort and all the
+reports were hard to distinguish because all were "warning in
+__btrfs_transaction_abort:line".
+
+1a9a8a71ed1d457d "btrfs: report exact callsite where transaction abort occurs"
+
+> -		} else {						\
+> -			btrfs_debug((trans)->fs_info,			\
+> -				    "Transaction aborted (error %d)", \
+> -				  (errno));			\
+> -		}						\
+> -	}							\
+> -	__btrfs_abort_transaction((trans), __func__,		\
+> -				  __LINE__, (errno), first);	\
+> -} while (0)
