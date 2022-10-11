@@ -2,138 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98DD15FA727
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Oct 2022 23:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1465FA951
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 02:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbiJJVzT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Oct 2022 17:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
+        id S229653AbiJKAbC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Oct 2022 20:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbiJJVzR (ORCPT
+        with ESMTP id S229628AbiJKAa4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Oct 2022 17:55:17 -0400
-Received: from spamschutz.webhoster.de (spamschutz.webhoster.de [212.172.221.190])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F55D33437
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 14:55:14 -0700 (PDT)
-Received: from mail.psa14.webhoster.ag ([195.63.61.219] helo=admiralbulli.de)
-        by spamschutz.webhoster.de with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <admiral@admiralbulli.de>)
-        id 1oi0jk-000PJr-Bo; Mon, 10 Oct 2022 23:55:04 +0200
-Received: from psa14.webhoster.ag (psa14.webhoster.ag [IPv6:::1])
-        (Authenticated sender: admiral@admiralbulli.de)
-        by psa14.webhoster.ag (Postfix) with ESMTPSA id 4CA347020CE;
-        Mon, 10 Oct 2022 23:55:06 +0200 (CEST)
-Received: from ipbcc08fe0.dynamic.kabel-deutschland.de
- (ipbcc08fe0.dynamic.kabel-deutschland.de [188.192.143.224]) by
- webmail.admiralbulli.de (Horde Framework) with HTTP; Mon, 10 Oct 2022
- 21:55:05 +0000
-Date:   Mon, 10 Oct 2022 21:55:05 +0000
-Message-ID: <20221010215505.Horde.RZkIzcYk-4PFibw1N4xzHqt@webmail.admiralbulli.de>
-From:   admiral@admiralbulli.de
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: BTRFS w/ quotas hangs on read-write mount using all available
- RAM - rev2
-References: <133101d8dbce$c666a030$5333e090$@admiralbulli.de>
- <9167e4a5-252c-0192-6814-da91e3692b88@gmx.com>
- <c57e3674-255d-ab3c-a386-479b84c19eee@gmx.com>
-In-Reply-To: <c57e3674-255d-ab3c-a386-479b84c19eee@gmx.com>
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset="utf-8"; format="flowed"; delsp="Yes"
+        Mon, 10 Oct 2022 20:30:56 -0400
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01on2060f.outbound.protection.outlook.com [IPv6:2a01:111:f403:7005::60f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF1C61D7B
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Oct 2022 17:30:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nx/DtHyXNy9MfFDmRFO0hLzo9VsUPQyT7dtMprOWk1gm6fqOG/+WltOAeiUv7udIZ/d5aeDFAiWud0cEpwj3tnYkL1QEdih4c6kwtYYOozwpjGsnGl0d3dA+UkRMQ0B5rc5EQXBmRTkYwWH5eDm5cXY6TBiSFberw3V3rtLSTUvZrk133ANS9EiWVZ2vKF8f3dzKaR9WkGOb8zciPz2ptAT3P1giH1ICUytI+fd2TeDBfLJ9Ehor/55y8+JkPENu37AdlVDeg1arcxnQntxGfqHnNODJQc7Yy4xhVQRmICWwJ0wk9EPwXXfJ2GaWwhQCMSZiOIrZyMDIkpc/gD6org==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KW3qvaj4TXRkJkCVzEZcwhx1R9Xh4/pGEdFNlN0erU4=;
+ b=H99pUaHi89unHIfZdmnV40HuoroJGz0C5fgJuWinzV9XnuKc/drd5mbYqBv/PQXeLUqdiSHF9Wt93ufK75lYMza5mKH85uUbbY67i4dbVOzzTCmbqcoWrzQbV1is0tww6YpQsgRBmwtYfZZb0Jzp808WsjcQoukh56mhcVTd0Zx0Sl08LMKVFXayrGgoCgufonR8RQjI6obYL7A20mwXs5nmfAnamADHTLrcSHY32xompnaXLzEDiagkT2/bp4qQ7HIxgnk6XDSv4BMKlcvQKXMlTuOUKhfzG2z2YahuTuQjhZJOgC9/xxW1PLU/ElmLRhsCdHbbxMK8wK/OmFrHdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
+ header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oakvillepondscapes.onmicrosoft.com;
+ s=selector2-oakvillepondscapes-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KW3qvaj4TXRkJkCVzEZcwhx1R9Xh4/pGEdFNlN0erU4=;
+ b=WTABSZoYqbfIOV1bdVoDtdxY519RaxRfqM4UOKFXZYO1UtzuF4nY8YpOU0c2G6EzcgOBYZIghXidDIA7gFeluZ67FyIUIfp7+9VwaeA6heIgB0Pr1wpQMMqD/NOEsDhNnU21uZ7NHDKb6NmLvB9N9qiq+nd5/p8ZSmLUoIuub54=
+Received: from SYCPR01MB4685.ausprd01.prod.outlook.com (2603:10c6:10:4a::22)
+ by SY3PR01MB0828.ausprd01.prod.outlook.com (2603:10c6:0:2::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5709.15; Tue, 11 Oct 2022 00:30:43 +0000
+Received: from SYCPR01MB4685.ausprd01.prod.outlook.com
+ ([fe80::f4cc:d42a:dac2:ecb]) by SYCPR01MB4685.ausprd01.prod.outlook.com
+ ([fe80::f4cc:d42a:dac2:ecb%7]) with mapi id 15.20.5676.040; Tue, 11 Oct 2022
+ 00:30:43 +0000
+From:   Paul Jones <paul@pauljones.id.au>
+To:     Filipe Manana <fdmanana@kernel.org>,
+        Glenn Washburn <development@efficientek.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: RE: btrfs send/receive not always sharing extents
+Thread-Topic: btrfs send/receive not always sharing extents
+Thread-Index: AQHY2ttAcp72/RZC/Uy+gD+isVcRH64HY3UAgAD3lrA=
+Date:   Tue, 11 Oct 2022 00:30:43 +0000
+Message-ID: <SYCPR01MB46853527E05CE137D9525B1F9E239@SYCPR01MB4685.ausprd01.prod.outlook.com>
+References: <20221008005704.795b44b0@crass-HP-ZBook-15-G2>
+ <20221010094218.GA2141122@falcondesktop>
+In-Reply-To: <20221010094218.GA2141122@falcondesktop>
+Accept-Language: en-AU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=pauljones.id.au;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SYCPR01MB4685:EE_|SY3PR01MB0828:EE_
+x-ms-office365-filtering-correlation-id: cef3a093-6eb0-4343-8c63-08daab1fd518
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WDSokYtXk8R+I8Y/BGBwOs3rc0bn9fJa5gkc2Qp3DFvACdhCpORPZmbERd+V5Zp6QbqoNCxoJ+fyRESbKwCttD3au5gWJxVpDNXwctwOTbG5KieqiuPt5+xSZ9O73bHxWW7DTuP3JsmdNIcrVatOSdTe8LzyeHPEu0vk239dxq24EPIwua40e1FC9ilkUV0ZRwvoVP0LFnhceFRVas2r6lb74m9JWS0vYEwjUihg7nx/+hDnqqLBa+VYOx+XvVCbuiGDW24YyQAaj8xxWA9OjAu5n+1kT9D1nAP2aob3qRLDl2XGeas//uGjPx25PL/2suP4HHnznHl/eDBnXr2GZsBfb4B4qp01G4wVc06cUdlTXmCxIkbgk+slQZ+G+QIGNoJxBqf3HuXE/mTNSpLCeptwV/MImoiAdF1esVrTeyzj6ommv4Wm3QjGuEWgpc5fNrqhv2XowL7yys+nCbiEiyu+ZHcOSeTYEGL7w30JcKvMgj1gOeTubVQhL9s9YI2O6ImgA9bLmuWRFzYrtulB5kTjtkh4yNsZrZ2XV5GWVtNcd2FPgTxrys0B0z/iUohVsbLHxmcJzbJIu/2DfHubdMpccpP8i/CVkkZEh5F39UM+UdZDGefWyvVxr6Prt5hOOUhgn2yeAjmp/3X4mITnahhxzTIMQPXNvKNzjUWul/oxgMFHK2tChlDrtaDg7Cmc
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SYCPR01MB4685.ausprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(396003)(136003)(346002)(366004)(376002)(39830400003)(451199015)(52536014)(66946007)(64756008)(4326008)(8676002)(66446008)(66476007)(38100700002)(41300700001)(38070700005)(8936002)(316002)(76116006)(5660300002)(4744005)(110136005)(478600001)(71200400001)(66556008)(33656002)(2906002)(9686003)(86362001)(186003)(55016003)(122000001)(83380400001)(7696005)(26005)(6506007)(53546011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: p+dke9tYpx7Qwrjo8IrqctzXD28DhefV6PnGjlCVKlPF+CYnIc18fAUoSF0g3QVKrLvgB69POM7ezONcZ8AkC45yrcxehrrr1NV1wzNAbit5f0uPz76PdLIvyahlQBZFyaa7cbbu/KXJBRxQ9aY36DIwrIUzIWJX/RJHyMHDVY4K6CY5VlTTLCas8LCY/4fWSq3zblp4P818Frz5P8X3YqKeVWrxH7dLNZj/1EsfnZiGzF5fryh0tGGDkXQmhjCV9fQj7ICgwuLkiM4JVHFUZckmnNkmEefgFLSFk1T6C62fd9odG0+yj9alkQO+NlxFoOEqueBhcnhn++Ph6iHA3yMI9V/X/rAHYa7bch6Qw9fBqT2Nb9IyiAW941h0t8UW5sEa4rfDJpDthuAb3D0ULZWy8BlgKdmrfe2MK6a5xRc=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: base64
-X-PPP-Message-ID: <166543890684.749238.5721446470576252178@psa14.webhoster.ag>
-X-PPP-Vhost: admiralbulli.de
-X-Originating-IP: 195.63.61.219
-X-iStore-Domain: admiralbulli.de
-X-iStore-Username: 
-Authentication-Results: webhoster.de; auth=pass (plain) smtp.auth=@admiralbulli.de
-X-iStore-Outgoing-Class: ham
-X-iStore-Outgoing-Evidence: Combined (0.09)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT+/AseVP+wIRI0RRIxu5Ms+PUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5zZqREl0R85+rGYi6DSby0R5mMdBd5jwLAmlEhPONBBSOoB
- TcI6wNOKq/VipP56WpUPmOPCcmrlxrVn4hBIRExVAXDkcXwqI3EzqRI7b1h6dsFEkT3rajKVwq+u
- Wp7fr2I4PWJM2zMugzmIRtzFHL4aEcvkXRZGBwNJkmmwWhkNpadBHcSOUYQH8hrKwbRu5U4e7VM2
- alTUNsoANW4ONNcxzFnVeeHz+MrXcGtqhB1bW9blgCJ3mX3WksJLEYYwhcM0pUaEGovDWIr6wzKm
- 7U5w+g3Zi4XyO7xiooIY8oApwPZsEhnzWgZmn4n0yUjDMDiKwjRI55s4yThxC7fDUF/RKWA/Z0hB
- oECwUV7RHo4b88hDqF0K58xL38EJqny9AYf6dVXPU1ZVV1D/5DkRwOPLi2+ZrpvcQF0mktyij7U2
- V1mYqffhoXnZj6JC/A974b1RNsZiKnQLqUyI6hW5+I7Cls2BUBoMzqGyQdYmDrI+sHnWbzQvBXuX
- n6n3jQ1TJMLDx9dgYfO2muGH2bNdOKfOzon1aL1KuwjoHteKIt8tLa0jiD6XqsJZtjQxlyCdsex6
- Qx+tcm8Tg4DIAqFbXzDYyf73B+f05JKKIC2LE+nDZly34B25702/TpvEfLHLL8oVU0yVdaPrEJ98
- clUaxFq61zmVHmTyQ7MVValWHnLHXBEVniihuDwEGDcmr6e3OPQqMrfeXUr5nN6bzXP1KYdKClRJ
- 1RiGtaChbAgJHb4fLEKEyPYHmQWKISclMej0r1GP4OjaT7iF/DA036EFxGo2ZuM7jUXIESohoO51
- xWmU8YTTKQ4CnjarNh6FVn5HN7gpX5T81Xftpdt9Y5g7pAWHKMJSNuQddpTqHo9TGN7JvIW68pc7
- 2DW2JzSJc7wCkr4kZAlCUhfn9Dl8Ig6ZDL1pNKVGhBqLw1iK+sMypu1OcKFPCCifbr4YUU4qurgv
- MWX6cP7qTZmrAoJkb1Awzvwt0LRMfD3Nycs7jZ0nH6Yd6A==
-X-Report-Abuse-To: spam@spamschutz.webhoster.de
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: pauljones.id.au
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SYCPR01MB4685.ausprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cef3a093-6eb0-4343-8c63-08daab1fd518
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Oct 2022 00:30:43.3369
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0tPbgtq0x1R8lcimLVmk+RQe/gNJCXCA7O2lFtMUCH9UUFDBW8tml3Y0KjJupI60Izu9QDErXzcc73Ic7FoCOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY3PR01MB0828
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-RGVhciBRdSwNCnRoYW5rIHlvdSBzbyBtdWNoIGZvciB5b3VyIHF1aWNrIGFuZCB3ZWxsIGRpcmVj
-dGVkIGZlZWRiYWNrLg0KSSByZWFsbHkgYXBwcmVjaWF0ZSB0aGlzIQ0KVGhhbmtzLA0KYWRtaXJh
-bGJ1bGxpDQoNClAuUy46DQpGb3IgdGhlIHNha2Ugb2Ygc2ltcGxpY2l0eSwgSSBib290ZWQgaW50
-byBhbiBVYnVudHUgMjIuMDQgKGtlcm5lbCAgDQo1LjE1KSBsaXZlIHN5c3RlbS4NCk1vdW50aW5n
-IHRoZSBidHJmcyBydyB3b3JrZWQgbGlrZSBhIGNoYXJtLg0KDQpkaXNhYmxlZCBxdW90YToNCiAg
-YnRyZnMgcXVvdGEgZGlzYWJsZSAvbXltb3VudA0KDQpkaWQgc29tZSBjbGVhbnVwOg0KICBidHJm
-cyBiYWxhbmNlIHN0YXJ0IC1kdXNhZ2U9NSAvbXltb3VudA0KICBidHJmcyBiYWxhbmNlIHN0YXJ0
-IC1tdXNhZ2U9MjAgL215bW91bnQNCiAgYnRyZnMgc2NydWIgc3RhcnQgLUJkUiAvbXltb3VudA0K
-DQpSZWJvb3RlZCBpbnRvIHRoZSBvbGQgZGViaWFuIHN5c3RlbS4NCkFibGUgdG8gbW91bnQgZXZl
-eXRoaW5nIGFnYWluIHJ3Lg0KDQpUSEFOS1MgQUdBSU4hDQoNCk9uIDIwMjIvMTAvOSAxOTozNywg
-UXUgV2VucnVvIHdyb3RlOg0KDQo+IE9uIDIwMjIvMTAvOSAxOToxMywgUXUgV2VucnVvIHdyb3Rl
-Og0KPj4NCj4+DQo+PiBPbiAyMDIyLzEwLzkgMTk6MDMsIGFkbWlyYWxAYWRtaXJhbGJ1bGxpLmRl
-IHdyb3RlOg0KPj4+IERlYXIgYnRyZnMgdGVhbSwNCj4+PiB0aGFua3MgZm9yIGFsbCB5b3VyIGdy
-ZWF0IHdvcmshDQo+Pj4gSSBoYXZlIGJlZW4gcnVubmluZyBidHJmcyBub3cgZm9yIHNldmVyYWwg
-eWVhcnMgYW5kIHJlYWxseSBsaWtlIHRoZQ0KPj4+IHJvYnVzdG5lc3MgYW5kIGVhc2Ugb2YgdXNl
-IQ0KPj4+DQo+Pj4gTGFzdCB3ZWVrIEkgZXhwZXJpZW5jZWQgOTklIHRoZSBzYW1lIHRoaW5nIGFz
-IGRlc2NyaWJlZCBoZXJlIGJ5IExvcmVuIE0uDQo+Pj4gTGFuZzoNCj4+PiBodHRwczovL3d3dy5z
-cGluaWNzLm5ldC9saXN0cy9saW51eC1idHJmcy9tc2c4MTE3My5odG1sDQo+Pj4gb25seSBkaWZm
-ZXJlbmNlOiBUaGlzIGlzIG5vdCBteSAvIGJ1dCBhIDQwVEIgc3RvcmFnZSBtb3VudGVkIHRvDQo+
-Pj4gL21lZGlhL2J0cmZzMS8NCj4+Pg0KPj4+IHF1aWNrIHN1bW1hcnkgd2hhdCBoYXBwZW5kOg0K
-Pj4+IC0gZW5hYmxlZCBxdW90YXMgdG8gYmV0dGVyIHVuZGVyc3RhbmQgd2hlcmUgYWxsIG15IHNw
-YWNlIGhhcyBnb25lDQo+Pj4gLSBzdGFydGVkIGJhbGFuY2luZw0KPj4+IC0gc3lzdGVtIGdvdCBj
-b21wbGV0ZWx5IHN0dWNrIGR1ZSB0byB0aGUgbWVhbndoaWxlIHdlbGwgdW5kZXJzdG9vZA0KPj4+
-IHJlYXNvbnMNCj4+PiAtIHB1c2hlZCByZXNldCBidXR0b24NCj4+Pg0KPj4+IEkgY2FuIG1vdW50
-IG15IGJ0cmZzIHN5c3RlbSBwZXJmZWN0bHkgcmVhZC1vbmx5IGFuZCBhY2Nlc3MgdGhlIGRhdGEu
-DQo+Pj4gQXMgc29vbg0KPj4+IGFzIEkgdHJ5IHRvIG1vdW50IHJ3LCBteSBzeXN0ZW0gd2lsbCBl
-eHJlbWVseSBzbG93IGRvd24sIG1lbW9yeSB3aWxsDQo+Pj4gZmlsbCB1cA0KPj4+IHVudGlsIEkg
-d2lsbCBmaW5hbGx5IGVuZCB1cCB3aXRoIGEgcGFuaWNraW5nIGtlcm5lbC4NCj4+Pg0KPj4+IFNv
-LCBubyBwcm9ibGVtIHRvIHN1Y2Nlc3NmdWxseSBib290IHdpdGggdGhlIGZzdGFiIGVudHJpZXMg
-b24gcm8gb3INCj4+PiBjb21tZW50ZWQgb3V0Lg0KPj4+DQo+Pj4gwqDCoMKgIGFkbWlyYWxAc2Vy
-dmVyOi8kIHVuYW1lIC1hDQo+Pj4gwqDCoMKgIExpbnV4IHNlcnZlci5kb21haW4ubG9jIDQuMTku
-MC0yMS1hbWQ2NCAjMSBTTVAgRGViaWFuIDQuMTkuMjQ5LTINCj4+PiAoMjAyMi0wNi0zMCkgeDg2
-XzY0IEdOVS9MaW51eA0KPj4NCj4+IFlvdXIga2VybmVsIGlzIGp1c3Qgb25lIHZlcnNpb24gdG9v
-IG9sZC4uLg0KPg0KPiBNeSBiYWQsIHR3byB2ZXJzaW9ucyB0b28gb2xkLg0KPg0KPj4NCj4+IElu
-IGZhY3QsIHY1LjAga2VybmVsIHdlIGhhdmUgaW50cm9kdWNlZCBhIGxvdCBvZiBxZ3JvdXAgb3B0
-aW1pemF0aW9uIHRvDQo+DQo+IEdpdCBkZXNjcmliZXMgLS1jb250YWlucyBzaG93cyBpdCdzIHY1
-LjEgZm9yIHRoZSBvcHRpbWl6YXRpb24uDQo+DQo+PiBhZGRyZXNzIHRoZSBzbG93IHBlcmZvcm1h
-bmNlIChpbmNsdWRpbmcgaGFuZywgaHVnZSBtZW1vcnkgdXNhZ2UpIG9mDQo+PiBiYWxhbmNlIHdp
-dGggcWdyb3VwIGVuYWJsZWQuDQo+Pg0KPj4gQWx0aG91Z2ggdGhhdCBvcHRpbWl6YXRpb24gYWxz
-byBpbnRyb2R1Y2VkIHNvbWUgcmVncmVzc2lvbiwgYWxsIHRoZQ0KPj4ga25vd24gcmVncmVzc2lv
-biBzaG91bGQgaGF2ZSBiZWVuIGZpeGVkIGFuZCBiYWNrcG9ydGVkLg0KPj4NCj4+IEJ1dCBmb3Ig
-b2xkZXIga2VybmVscywgbGlrZSB5b3VyIDQueCBrZXJuZWxzLCB3ZSBkb24ndCBoYXZlIHRoZQ0K
-Pj4gb3B0aW1pemF0aW9uIGF0IGFsbC4NCj4+DQo+PiBUaHVzIGluIHlvdXIgY2FzZSwgeW91IG1h
-eSB3YW50IHRvIHVzZSB0aGUgbGF0ZXN0IExUUyBrZXJuZWwgYXQgbGVhc3QNCj4+ICh2NS4xNS54
-KS4NCj4+DQo+PiBUaGFua3MsDQo+PiBRdQ0KPj4NCj4+Pg0KPj4+IMKgwqDCoCBhZG1pcmFsQHNl
-cnZlcjovJCBidHJmcyAtLXZlcnNpb24NCj4+PiDCoMKgwqAgYnRyZnMtcHJvZ3MgdjUuMTAuMQ0K
-Pj4+DQo+Pj4gSGVyZSB0aGUgcXVlc3Rpb246DQo+Pj4gSSBhbSBsb29raW5nIGZvciB0aGUgb3B0
-aW9uIHRvIGRpc2FibGUgcXVvdGEgb24gYW4gdW5tb3VudGVkIGJ0cmZzIGxpa2UNCj4+PiBkZXNj
-cmliZWQgaGVyZToNCj4+PiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbGlu
-dXgtYnRyZnMvcGF0Y2gvMjAxODA4MTIwMTMzNTguMTY0MzEtDQo+Pj4gMS13cXVAc3VzZS5jb20v
-DQo+Pj4NCj4+PiBBbGwgbXkgdHJpYWxzIGFuZCBjaGVja3MgZXQgY2V0ZXJhIHdlcmUgcGVyZm9y
-bWVkIHdpdGggYnRyZnMtcHJvZ3MNCj4+PiB2NC4yMC4xLTINCj4+PiBhcyBkZWJpYW4gYnVzdGVy
-J3MgbGF0ZXN0IHN0YXRlOg0KPj4+IGh0dHBzOi8vcGFja2FnZXMuZGViaWFuLm9yZy9kZS9idXN0
-ZXIvYnRyZnMtcHJvZ3MNCj4+Pg0KPj4+IEkgYWxyZWFkeSB1cGdyYWRlZCB0aGUgYnRyZnMtcHJv
-Z3MgdG8gZGViaWFuIGJhY2twb3J0IHY1LjEwLjEgYnV0IGRvIG5vdA0KPj4+IGZpbmQgYW55IG9w
-dGlvbiB0byBvZmZsaW5lIGRpc2FibGUgcXVvdGEsIHlldDoNCj4+PiBodHRwczovL3BhY2thZ2Vz
-LmRlYmlhbi5vcmcvYnVzdGVyLWJhY2twb3J0cy9idHJmcy1wcm9ncw0KPj4+DQo+Pj4gQ2FuIHlv
-dSBwb2ludCBtZSBzb21lIGRpcmVjdGlvbiBob3cgdG8gbW92ZSBmb3J3YXJkIHRvIHJlY292ZXIg
-dGhlIGJ0cmZzPw0KPj4+DQo+Pj4gVGhhbmtzIGEgbG90LA0KPj4+DQo+Pj4gYWRtaXJhbGJ1bGxp
-DQo+Pj4NCg0KDQoNCg==
+> -----Original Message-----
+> From: Filipe Manana <fdmanana@kernel.org>
+> Sent: Monday, 10 October 2022 8:42 PM
+> To: Glenn Washburn <development@efficientek.com>
+> Cc: linux-btrfs@vger.kernel.org
+> Subject: Re: btrfs send/receive not always sharing extents
+>=20
+....=20
+> I have some work in progress and ideas to speedup send in some cases, but
+> I'm afraid we'll always have some limitations - in the best case we can
+> improve on them, but not eliminate them completely.
+>=20
+> You can run a dedupe tool on the destination filesystem to get the extent=
+s
+> shared.
+
+Is that possible? To use a dedupe tool the subvolume has to be RW, but chan=
+ging it from RO will break any future send operations I thought?
+
+
+Paul.
