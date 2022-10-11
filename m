@@ -2,97 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06EC5FB2DB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 15:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1259C5FB35B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 15:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbiJKNGo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 09:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52520 "EHLO
+        id S229538AbiJKNX7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 09:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbiJKNGn (ORCPT
+        with ESMTP id S229548AbiJKNX0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 09:06:43 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7C17FFAB
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 06:06:42 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5EBC822901;
-        Tue, 11 Oct 2022 13:06:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1665493601;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xA/m1GliuK3FB5jliTkWgvmJ98lDZ6J2dhTtnynaMZs=;
-        b=LsmREe9+f0zAwuaS7JCEHw+G+l+3bF6R/G3lh//C8H8K7Wc1ZO7jMcIMkh14KUaik4aMxI
-        AEr68jvIBm+EMs5acA2ApsBHCZrXS6MZyfxNzQKE8saBkQjNF/pMgxZ44NYte3hfxxDEyh
-        OV4ih6kmaJWsKWbeJPruGTp7fdtLwQQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1665493601;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xA/m1GliuK3FB5jliTkWgvmJ98lDZ6J2dhTtnynaMZs=;
-        b=ULfJ5PZATtb5y01TMTY/VaMG8SIwp8kEv3feBJTF7dwnWHvdTpePDhTf5ALmgLMMLEHo6o
-        p2AGG90qQSKU+EAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 29ED613AAC;
-        Tue, 11 Oct 2022 13:06:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id kSM3CWFqRWOqYgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 11 Oct 2022 13:06:41 +0000
-Date:   Tue, 11 Oct 2022 15:06:35 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 0/5] btrfs: data block group size classes
-Message-ID: <20221011130635.GT13389@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1664999303.git.boris@bur.io>
+        Tue, 11 Oct 2022 09:23:26 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9458A1FC;
+        Tue, 11 Oct 2022 06:23:06 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id EFE791F923;
+        Tue, 11 Oct 2022 13:23:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1665494584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=WEuTqwKGnR6JzojLJtw4CopPwGWNSDkvEdTVJG+8hvk=;
+        b=MHIgnCOtE9soyeJ5NzGxfGnOfAe2+s+CibreCjkkPe7iSJ9DwDrG0UxKAj4Y0Leq0ZpbAg
+        lCHLU/804Vh0TcDzdr0xDjVeN4iQD4+5YAdc59YVnT8DQ3EQC7gYQe3mXfYgLNITh6FdDW
+        iLeRLVq4+z32PVK14ZnU6dpLnET+1p4=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id E6EB92C141;
+        Tue, 11 Oct 2022 13:23:04 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3473ADA79D; Tue, 11 Oct 2022 15:22:59 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH] MAINTAINERS: update btrfs website links and files
+Date:   Tue, 11 Oct 2022 15:22:56 +0200
+Message-Id: <20221011132256.333-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1664999303.git.boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 05, 2022 at 12:49:17PM -0700, Boris Burkov wrote:
-> This patch set introduces the notion of size classes to the block group
-> allocator for data block groups. This is specifically useful because the
-> first fit allocator tends to perform poorly when large extents free up
-> in older block groups and small writes suddenly shift there. Generally,
-> it should lead to slightly more predictable allocator behavior as the
-> gaps left by frees will be used by allocations of a similar size.
-> 
-> Details about the changes and performance testing are in the individual
-> commit messages.
-> 
-> The last two patches constitute the business of the change. One adds the
-> size classes and the other handles the fact that we don't want to
-> persist the size class, so we don't know it when we first load a block
-> group.
-> 
-> Boris Burkov (5):
->   btrfs: 1G falloc extents
->   btrfs: use ffe_ctl in btrfs allocator tracepoints
->   btrfs: add more ffe tracepoints
->   btrfs: introduce size class to block group allocator
->   btrfs: load block group size class when caching
+We have the new documentation hosted on Read The Docs and content is
+migrated there from the wiki. Also update http to https and add the
+tracepoint definition header.
 
-I'll merge patches 2 and 3 extending the tracepoints as it's
-independent, I think you wanted to benchmark again the patchset as the
-first patch gets dropped.
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ MAINTAINERS | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f5ca4aefd184..5ec615e817be 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4428,13 +4428,15 @@ M:	Josef Bacik <josef@toxicpanda.com>
+ M:	David Sterba <dsterba@suse.com>
+ L:	linux-btrfs@vger.kernel.org
+ S:	Maintained
+-W:	http://btrfs.wiki.kernel.org/
+-Q:	http://patchwork.kernel.org/project/linux-btrfs/list/
++W:	https://btrfs.readthedocs.io
++W:	https://btrfs.wiki.kernel.org/
++Q:	https://patchwork.kernel.org/project/linux-btrfs/list/
+ C:	irc://irc.libera.chat/btrfs
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
+ F:	Documentation/filesystems/btrfs.rst
+ F:	fs/btrfs/
+ F:	include/linux/btrfs*
++F:	include/trace/events/btrfs.h
+ F:	include/uapi/linux/btrfs*
+ 
+ BTTV VIDEO4LINUX DRIVER
+-- 
+2.37.3
+
