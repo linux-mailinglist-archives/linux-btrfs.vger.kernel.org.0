@@ -2,48 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A35A15FB74B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 17:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B24B5FB717
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 17:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbiJKPc0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 11:32:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
+        id S229994AbiJKP2Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 11:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231717AbiJKPbv (ORCPT
+        with ESMTP id S229971AbiJKP1R (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 11:31:51 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D1E257577;
-        Tue, 11 Oct 2022 08:21:45 -0700 (PDT)
+        Tue, 11 Oct 2022 11:27:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D60CDF09;
+        Tue, 11 Oct 2022 08:18:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 10542B815A6;
-        Tue, 11 Oct 2022 14:53:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7C4DC433C1;
-        Tue, 11 Oct 2022 14:53:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D79C4611D7;
+        Tue, 11 Oct 2022 14:53:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68AC8C433D7;
+        Tue, 11 Oct 2022 14:53:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665500014;
-        bh=uNDzEpxfy3uU7SrFVub/uj51UG9eOuUtWypz40IRB5E=;
+        s=k20201202; t=1665500034;
+        bh=rCB0Xv+xi/SjS1Z1j3Vilkp/16M2refyx39jmGCCBTE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MpB3Ocoesm5jm0KuUyI9PTplJKNt3Ysj8YKd8Ih8hD6AE59Pkh0s+cb6mxjZIsNIm
-         Fg5gF10RIjr3reSHwcgFbVGnQHNAobIoZrG87u6nx1zgasKBFu99xCHcvqcmgi9Sj/
-         LFaDLSFzdXdzdAXtaB4XaJp465L5sAUCbIeDD5N+24SQF7o1thkvictZC/wzbW6CBd
-         NiOxGrAi0vGGDwbQ2sZ+bE9XU/P7LBsSdpoqS/VIid9Lh3/FOAYeABf1V9pHSIJ3pm
-         p6ritlOPg5+lf1xGqzjht8X+RcZjBRc0hMQ+/CqhO9+WNG1kC9g0vNfsmFzIyZaGhH
-         hVi1PhL3Y8LuA==
+        b=jEgK2W8ZNUJCgoJPYilyNzKlFxJud5xmJvr9dUm2EXnx71WRellrXvcIxt9IJnTB/
+         Fyie5fwmrVIGmX//ADnNTq8cnj50Nnplb/3cJmmxJZGjvGRuLXxwXzY8y9FbtMR57s
+         /TYdEwsbiLdfm7k0/Bxj16/W/C6WSzknjVB+FGMj+rES/o1008xAjtMIcb1XBAgQPz
+         v3v5E1BHBjx8B4wzXBqW8Nm++OCbsSn+gapb2UZ731hy54Vl0hC4p6ScCGEbu5kHC3
+         siqxEW1wyeKoLz1Pk6YxseuialHkyL8y6JRztv38ukcKZI0tfqhxmT1aviv1g71Z6+
+         BF9iRaRKuTZtA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 15/17] btrfs: add KCSAN annotations for unlocked access to block_rsv->full
-Date:   Tue, 11 Oct 2022 10:53:10 -0400
-Message-Id: <20221011145312.1624341-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 11/13] btrfs: scrub: try to fix super block errors
+Date:   Tue, 11 Oct 2022 10:53:36 -0400
+Message-Id: <20221011145338.1624591-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221011145312.1624341-1-sashal@kernel.org>
-References: <20221011145312.1624341-1-sashal@kernel.org>
+In-Reply-To: <20221011145338.1624591-1-sashal@kernel.org>
+References: <20221011145338.1624591-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -57,88 +56,145 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit 748f553c3c4c4f175c6c834358632aff802d72cf ]
+[ Upstream commit f9eab5f0bba76742af654f33d517bf62a0db8f12 ]
 
-KCSAN reports that there's unlocked access mixed with locked access,
-which is technically correct but is not a bug.  To avoid false alerts at
-least from KCSAN, add annotation and use a wrapper whenever ->full is
-accessed for read outside of lock.
+[BUG]
+The following script shows that, although scrub can detect super block
+errors, it never tries to fix it:
 
-It is used as a fast check and only advisory.  In the worst case the
-block reserve is found !full and becomes full in the meantime, but
-properly handled.
+	mkfs.btrfs -f -d raid1 -m raid1 $dev1 $dev2
+	xfs_io -c "pwrite 67108864 4k" $dev2
 
-Depending on the value of ->full, btrfs_block_rsv_release decides
-where to return the reservation, and block_rsv_release_bytes handles a
-NULL pointer for block_rsv and if it's not NULL then it double checks
-the full status under a lock.
+	mount $dev1 $mnt
+	btrfs scrub start -B $dev2
+	btrfs scrub start -Br $dev2
+	umount $mnt
 
-Link: https://lore.kernel.org/linux-btrfs/CAAwBoOJDjei5Hnem155N_cJwiEkVwJYvgN-tQrwWbZQGhFU=cA@mail.gmail.com/
-Link: https://lore.kernel.org/linux-btrfs/YvHU/vsXd7uz5V6j@hungrycats.org
-Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+The first scrub reports the super error correctly:
+
+  scrub done for f3289218-abd3-41ac-a630-202f766c0859
+  Scrub started:    Tue Aug  2 14:44:11 2022
+  Status:           finished
+  Duration:         0:00:00
+  Total to scrub:   1.26GiB
+  Rate:             0.00B/s
+  Error summary:    super=1
+    Corrected:      0
+    Uncorrectable:  0
+    Unverified:     0
+
+But the second read-only scrub still reports the same super error:
+
+  Scrub started:    Tue Aug  2 14:44:11 2022
+  Status:           finished
+  Duration:         0:00:00
+  Total to scrub:   1.26GiB
+  Rate:             0.00B/s
+  Error summary:    super=1
+    Corrected:      0
+    Uncorrectable:  0
+    Unverified:     0
+
+[CAUSE]
+The comments already shows that super block can be easily fixed by
+committing a transaction:
+
+	/*
+	 * If we find an error in a super block, we just report it.
+	 * They will get written with the next transaction commit
+	 * anyway
+	 */
+
+But the truth is, such assumption is not always true, and since scrub
+should try to repair every error it found (except for read-only scrub),
+we should really actively commit a transaction to fix this.
+
+[FIX]
+Just commit a transaction if we found any super block errors, after
+everything else is done.
+
+We cannot do this just after scrub_supers(), as
+btrfs_commit_transaction() will try to pause and wait for the running
+scrub, thus we can not call it with scrub_lock hold.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/block-rsv.c   | 2 +-
- fs/btrfs/block-rsv.h   | 9 +++++++++
- fs/btrfs/transaction.c | 4 ++--
- 3 files changed, 12 insertions(+), 3 deletions(-)
+ fs/btrfs/scrub.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index bc920afe23bf..692a1739bef6 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -285,7 +285,7 @@ u64 btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index e5db948daa12..45809f75692e 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3849,6 +3849,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 	int ret;
+ 	struct btrfs_device *dev;
+ 	unsigned int nofs_flag;
++	bool need_commit = false;
+ 
+ 	if (btrfs_fs_closing(fs_info))
+ 		return -EAGAIN;
+@@ -3961,6 +3962,12 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
  	 */
- 	if (block_rsv == delayed_rsv)
- 		target = global_rsv;
--	else if (block_rsv != global_rsv && !delayed_rsv->full)
-+	else if (block_rsv != global_rsv && !btrfs_block_rsv_full(delayed_rsv))
- 		target = delayed_rsv;
- 
- 	if (target && block_rsv->space_info != target->space_info)
-diff --git a/fs/btrfs/block-rsv.h b/fs/btrfs/block-rsv.h
-index 0b6ae5302837..f0431547acf2 100644
---- a/fs/btrfs/block-rsv.h
-+++ b/fs/btrfs/block-rsv.h
-@@ -90,4 +90,13 @@ static inline void btrfs_unuse_block_rsv(struct btrfs_fs_info *fs_info,
- 	btrfs_block_rsv_release(fs_info, block_rsv, 0, NULL);
- }
- 
-+/*
-+ * Fast path to check if the reserve is full, may be carefully used outside of
-+ * locks.
-+ */
-+static inline bool btrfs_block_rsv_full(const struct btrfs_block_rsv *rsv)
-+{
-+	return data_race(rsv->full);
-+}
+ 	nofs_flag = memalloc_nofs_save();
+ 	if (!is_dev_replace) {
++		u64 old_super_errors;
 +
- #endif /* BTRFS_BLOCK_RSV_H */
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 8daa9e4eb1d2..3cfa7cce266e 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -608,7 +608,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 		 */
- 		num_bytes = btrfs_calc_insert_metadata_size(fs_info, num_items);
- 		if (flush == BTRFS_RESERVE_FLUSH_ALL &&
--		    delayed_refs_rsv->full == 0) {
-+		    btrfs_block_rsv_full(delayed_refs_rsv) == 0) {
- 			delayed_refs_bytes = num_bytes;
- 			num_bytes <<= 1;
- 		}
-@@ -633,7 +633,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 		if (rsv->space_info->force_alloc)
- 			do_chunk_alloc = true;
- 	} else if (num_items == 0 && flush == BTRFS_RESERVE_FLUSH_ALL &&
--		   !delayed_refs_rsv->full) {
-+		   !btrfs_block_rsv_full(delayed_refs_rsv)) {
++		spin_lock(&sctx->stat_lock);
++		old_super_errors = sctx->stat.super_errors;
++		spin_unlock(&sctx->stat_lock);
++
+ 		btrfs_info(fs_info, "scrub: started on devid %llu", devid);
  		/*
- 		 * Some people call with btrfs_start_transaction(root, 0)
- 		 * because they can be throttled, but have some other mechanism
+ 		 * by holding device list mutex, we can
+@@ -3969,6 +3976,16 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 		mutex_lock(&fs_info->fs_devices->device_list_mutex);
+ 		ret = scrub_supers(sctx, dev);
+ 		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
++
++		spin_lock(&sctx->stat_lock);
++		/*
++		 * Super block errors found, but we can not commit transaction
++		 * at current context, since btrfs_commit_transaction() needs
++		 * to pause the current running scrub (hold by ourselves).
++		 */
++		if (sctx->stat.super_errors > old_super_errors && !sctx->readonly)
++			need_commit = true;
++		spin_unlock(&sctx->stat_lock);
+ 	}
+ 
+ 	if (!ret)
+@@ -3995,6 +4012,25 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 	scrub_workers_put(fs_info);
+ 	scrub_put_ctx(sctx);
+ 
++	/*
++	 * We found some super block errors before, now try to force a
++	 * transaction commit, as scrub has finished.
++	 */
++	if (need_commit) {
++		struct btrfs_trans_handle *trans;
++
++		trans = btrfs_start_transaction(fs_info->tree_root, 0);
++		if (IS_ERR(trans)) {
++			ret = PTR_ERR(trans);
++			btrfs_err(fs_info,
++	"scrub: failed to start transaction to fix super block errors: %d", ret);
++			return ret;
++		}
++		ret = btrfs_commit_transaction(trans);
++		if (ret < 0)
++			btrfs_err(fs_info,
++	"scrub: failed to commit transaction to fix super block errors: %d", ret);
++	}
+ 	return ret;
+ out:
+ 	scrub_workers_put(fs_info);
 -- 
 2.35.1
 
