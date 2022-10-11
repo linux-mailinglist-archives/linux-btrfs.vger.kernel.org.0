@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2565A5FB23D
+	by mail.lfdr.de (Postfix) with ESMTP id 7A27F5FB23E
 	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 14:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbiJKMR3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 08:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41408 "EHLO
+        id S229747AbiJKMR0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 08:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbiJKMRW (ORCPT
+        with ESMTP id S229726AbiJKMRV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 08:17:22 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869B642E50
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:17:21 -0700 (PDT)
+        Tue, 11 Oct 2022 08:17:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D779650193
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:17:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 417B1B815B3
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7322A60AF5
         for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 814D6C433C1
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 640AAC43470
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1665490639;
-        bh=KZB5HiCiAzQDv4MD+fbkXTqvjvIwuYOQUoXd8iAgIfA=;
+        bh=Ydd7XrNtQanncJc+agHB/7DLxRHL6YAvBmgB+GRihYM=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=XSFgQraLmbC9iibQdc8kbcAL0rJMaOeM94ah4fc36NIjXlIzB1kNzA6RbtNQMztIK
-         Br38yIQo0gktYBpk0gQQpT7N0R5urb0um1cnBdwJ00Eg6yHiVYaE28LacXdhE8HDQ3
-         JNsSaRR9hewHFqdl1P2pR/uowDWlPCkYxUc1iJDh7rH/85L8694q0L0QdwBxtLl0oq
-         +fRW98SGqsNcJ4qsDLkpX7sH0iSXHE3o1ukEB4670OG0XR0irLTnqCa3UtiZA/jAw/
-         IKkbqX13/5uRZ69/RQJb03TUqH3c+dEYH0BiAlxS5bWKOPQYjrwLrN03m0zyQdNDAp
-         uWvHsm0g5GqwA==
+        b=uRmSDlGFzIz0J+/4JU7X0CZG4dUfPvNT8kxWtuyqlaY3XafkxlLXS0QgHvTtN1P+V
+         yw5PNyRUDLRaiuQEIPLYTUCcwqPzYCqw9nIJhSf0kq8L6aijJVfXU9jjE8GElSCEj/
+         AQZ9DfjT89/sbHAnMvg7/eYX230VBLkkFxWMzHULfK7IefRyvQVjTa0OgIoD8uJLRM
+         h5GW+UcHlav6TD9BI1PRZ9hNu+D1V3hGeRIjw3nhxclNHbTtuw57zXPTJtSgnV9Xph
+         rUnsISbKdHpzg/jM9T7sdNGhv4jXMo8tx4HHO7huFUg5f/4XA9ZCu12kGMbCmOwMLK
+         JDKijxfjxyO+A==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 07/19] btrfs: drop pointless memset when cloning extent buffer
-Date:   Tue, 11 Oct 2022 13:16:57 +0100
-Message-Id: <624ea4cace0e7dc7ec9fd3983159121a8311d8fc.1665490018.git.fdmanana@suse.com>
+Subject: [PATCH v2 08/19] btrfs: drop redundant bflags initialization when allocating extent buffer
+Date:   Tue, 11 Oct 2022 13:16:58 +0100
+Message-Id: <a5ead132db92d437f5a18a7d8e8c855a18f3e012.1665490018.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1665490018.git.fdmanana@suse.com>
 References: <cover.1665490018.git.fdmanana@suse.com>
@@ -53,30 +53,12 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At btrfs_clone_extent_buffer(), before allocating the pages array for the
-new extent buffer we are calling memset() to zero out the pages array of
-the extent buffer. This is pointless however, because the extent buffer
-already has every element in its pages array pointing to NULL, as it was
-allocated with kmem_cache_zalloc(). The memset() was introduced with
-commit dd137dd1f2d719 ("btrfs: factor out allocating an array of pages"),
-but even before that commit we already depended on the pages array being
-initialized to NULL for the error paths that need to call
-btrfs_release_extent_buffer().
+When allocating an extent buffer, at __alloc_extent_buffer(), there's no
+point in explicitly assigning zero to the bflags field of the new extent
+buffer because we allocated it with kmem_cache_zalloc().
 
-So remove the memset(), it's useless and slightly increases the object
-text size.
-
-Before this change:
-
-   $ size fs/btrfs/extent_io.o
-      text	   data	    bss	    dec	    hex	filename
-     70580	   5469	     40	  76089	  12939	fs/btrfs/extent_io.o
-
-After this change:
-
-   $ size fs/btrfs/extent_io.o
-      text	   data	    bss	    dec	    hex	filename
-     70564	   5469	     40	  76073	  12929	fs/btrfs/extent_io.o
+So just remove the redundant initialization, it saves one mov instruction
+in the generated assembly code for x86_64 ("movq $0x0,0x10(%rax)").
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
@@ -84,17 +66,17 @@ Signed-off-by: Filipe Manana <fdmanana@suse.com>
  1 file changed, 1 deletion(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 1eae68fbae21..c9a9f784d21c 100644
+index c9a9f784d21c..ca67f041e43e 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -4302,7 +4302,6 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
- 	 */
- 	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
+@@ -4269,7 +4269,6 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
+ 	eb->start = start;
+ 	eb->len = len;
+ 	eb->fs_info = fs_info;
+-	eb->bflags = 0;
+ 	init_rwsem(&eb->lock);
  
--	memset(new->pages, 0, sizeof(*new->pages) * num_pages);
- 	ret = btrfs_alloc_page_array(num_pages, new->pages);
- 	if (ret) {
- 		btrfs_release_extent_buffer(new);
+ 	btrfs_leak_debug_add_eb(eb);
 -- 
 2.35.1
 
