@@ -2,80 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0270E5FB21E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 14:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F465FB230
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 14:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbiJKMKG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 08:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
+        id S229453AbiJKMRQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 08:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbiJKMKB (ORCPT
+        with ESMTP id S229472AbiJKMRP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 08:10:01 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E012C15810
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:09:59 -0700 (PDT)
-Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1oiE50-0002YD-LE; Tue, 11 Oct 2022 14:09:50 +0200
-Message-ID: <8be1e839-2eb8-43d0-9ecb-6ff8c3aa3f2d@leemhuis.info>
-Date:   Tue, 11 Oct 2022 14:09:50 +0200
+        Tue, 11 Oct 2022 08:17:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8302422FC
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:17:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6497F60AF5
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54ADBC433C1
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665490632;
+        bh=D6vHve3xncaAwhLjL7/FdoJ3tP07QLUwXKvAxYfEg0Q=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=Wq9JmYFu0XzwV8+pdAtMMxaQ8L7NjHT7BSKGh9+yT4mbyBnXQKgeEIsrTa19T4qwK
+         HR78i3Rfcxr/4rOoJMuM/HKHBZWuHOCuDJkxZ5DMKAbfFwFm9kNPyj2iCq8PiYN3fr
+         2d+VSPSfYujU3nDmgxyDvzvJ89Q2gAH5sXIoE1DY4d70bfAm1czvbQtPKr4dPdmZpy
+         KIZtPMqyWNZUxNsBsw0aGLS5p6x+cfAL9AjK3wwYQHCoB+WPvETBu1xoj7PRg4J7L0
+         kSIuxdNcO7YwUB34oDDZPpHmmxXIwGnHLllN5rHOy8XdE3xzv/wiO3UHTAxwHUqO43
+         j6LwhpNUZn6BQ==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 00/19] btrfs: fixes, cleanups and optimizations around fiemap
+Date:   Tue, 11 Oct 2022 13:16:50 +0100
+Message-Id: <cover.1665490018.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1665396437.git.fdmanana@suse.com>
+References: <cover.1665396437.git.fdmanana@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Content-Language: en-US, de-DE
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-        Viktor Kuzmin <kvaster@gmail.com>
-To:     David Sterba <dsterba@suse.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Bug 216559 - btrfs crash root mount RAID0 caused by ac0677348f3c2
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1665490199;f369ea59;
-X-HE-SMSGID: 1oiE50-0002YD-LE
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi, this is your Linux kernel regression tracker speaking.
+From: Filipe Manana <fdmanana@suse.com>
 
-David, I noticed a regression report in bugzilla.kernel.org apparently
-caused by a changed of yours. As many (most?) kernel developer don't
-keep an eye on the bug-tracker, I decided to forward the report by mail.
-Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=216559 :
+The first 3 patches are bug fixes, the first two fixing bugs in backref
+walking that have been around since 2013 and 2017, respectively, while the
+third one fixes a bug introduced in this merge window.
 
-> [reply] [−] Description Viktor Kuzmin 2022-10-08 20:41:32 UTC
-> 
-> In linux 6.0.0 there was change in block-group.c file in function btrfs_rmap_block:
-> [...]
+The remaining are performance optimizations in the fiemap code path, as
+well as some cleanups and refactorings to support them. Results and tests
+are found in the changelogs of individual patches (06/19, 16/19, 18/19
+and 19/19).
 
-FWIW, the reporter (CCed) here meant change ac0677348f3c2 ("btrfs: merge
-calculations for simple striped profiles in btrfs_rmap_block").
-Reverting it fixes the problem.
+V2: Add one more patch to fix a long standing bug (since 2013) regarding
+    delayed data references during backref walking. Made it first patch
+    in the series since later patches touched the surrounding code and
+    it should backported to stable releases.
 
-> After this change I have a crash with DIVIDE by ZERO error. It seems that map->sub_stripes can be zero.
-> 
-> My setup is 2x 1TB nvme with space_cache=v2 and discard=async btrfs raid0.
+Filipe Manana (19):
+  btrfs: fix processing of delayed data refs during backref walking
+  btrfs: fix processing of delayed tree block refs during backref walking
+  btrfs: ignore fiemap path cache if we have multiple leaves for a data extent
+  btrfs: get the next extent map during fiemap/lseek more efficiently
+  btrfs: skip unnecessary extent map searches during fiemap and lseek
+  btrfs: skip unnecessary delalloc search during fiemap and lseek
+  btrfs: drop pointless memset when cloning extent buffer
+  btrfs: drop redundant bflags initialization when allocating extent buffer
+  btrfs: remove checks for a root with id 0 during backref walking
+  btrfs: remove checks for a 0 inode number during backref walking
+  btrfs: directly pass the inode to btrfs_is_data_extent_shared()
+  btrfs: turn the backref sharedness check cache into a context object
+  btrfs: move ulists to data extent sharedness check context
+  btrfs: remove roots ulist when checking data extent sharedness
+  btrfs: remove useless logic when finding parent nodes
+  btrfs: cache sharedness of the last few data extents during fiemap
+  btrfs: move up backref sharedness cache store and lookup functions
+  btrfs: avoid duplicated resolution of indirect backrefs during fiemap
+  btrfs: avoid unnecessary resolution of indirect backrefs during fiemap
 
-See the ticket for more details and screenshots from the crash.
+ fs/btrfs/backref.c    | 489 ++++++++++++++++++++++++++++--------------
+ fs/btrfs/backref.h    |  55 ++++-
+ fs/btrfs/extent_io.c  |  68 +++---
+ fs/btrfs/extent_map.c |  31 ++-
+ fs/btrfs/extent_map.h |   2 +
+ fs/btrfs/file.c       |  69 ++++--
+ 6 files changed, 483 insertions(+), 231 deletions(-)
 
-BTW, let me use this mail to also add the report to the list of tracked
-regressions to ensure it's doesn't fall through the cracks:
+-- 
+2.35.1
 
-#regzbot introduced: ac0677348f3c2
-https://bugzilla.kernel.org/show_bug.cgi?id=216559
-#regzbot ignore-activity
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-
-P.S.: As the Linux kernel's regression tracker I deal with a lot of
-reports and sometimes miss something important when writing mails like
-this. If that's the case here, don't hesitate to tell me in a public
-reply, it's in everyone's interest to set the public record straight.
