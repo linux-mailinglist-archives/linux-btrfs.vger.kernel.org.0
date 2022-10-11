@@ -2,182 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F3F5FBA19
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 20:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E5B5FBC62
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 22:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbiJKSFo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 14:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
+        id S229534AbiJKUuF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 16:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbiJKSFY (ORCPT
+        with ESMTP id S229507AbiJKUuE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 14:05:24 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFDF6D9E5
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 11:05:21 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 8EA173200984;
-        Tue, 11 Oct 2022 14:05:18 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 11 Oct 2022 14:05:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1665511518; x=1665597918; bh=uqSnRJjEG1
-        pFvxikbl0bnGHNBHxYwC4ZlAncRqiTI+I=; b=OjBH2iOizJUxmAuBkKAXAbofzj
-        lA7hDX5nCQ1lsrHylYqxKQk6KH/5NHlpzg0+rmNOh/PqbipNKGTfBOoVpVVhIOkz
-        RtVqNWi5TrqGv/ucsTBkJMZdwEdv9p9Ys0tiWS+p9UXwjloMVa5HFtJWf8Hjcx8E
-        bKy7avwodz2kNCuhcHwRidO563ebBzb0kiIvB0HBRLn09Si+kriZ7gwfhVTnALUp
-        N4aE1rxrNT2ABX0Sa4bdsXSAUbY1yCOh4ioMJDMm0Dxvy4843RoCr8iq4DZlU0Gd
-        ZiTu3ZGTgUtKAOOog17/Eo16y5g4bUvJHz1DIVzW5/yoSdYXDzwhWnWHYIcw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1665511518; x=1665597918; bh=uqSnRJjEG1pFvxikbl0bnGHNBHxY
-        wC4ZlAncRqiTI+I=; b=VegQV/PA62ATb+MB4QZSu5CeaJdxZoepHumR5OXwFvGH
-        ayqtrIdKAzO5ldvqmH7RGew8gw3SuujX+1OvBwkWdlvoBniKZOEGz/sAPOpFSJqu
-        b3CvkbKu80DMXdIEbZKCsRUNQ2aiEdacdj5sIwwuhHO0h8d4E+OPuKtLclzPEYH5
-        ciz9CHUYaqepvVPibYN/CpAz5jMNjguNX+s/Fb7OTZBXFGSvvv+0UTgP6IA1jH9P
-        wk6o5gz8pwFWjjtlxB074vmcG4oVg1Vf5rMZMrhEi5k7YjbHOV4pZMo+n03CpFuN
-        +BiTJR5O3fJ+k1AnJHONMNXcl0V5nGbSL7Wo6GPMBg==
-X-ME-Sender: <xms:XbBFY5UPg1Gel4fpzrJ_EvMllXxYjzxqne2d8lBeJPanLZcxX5bnvw>
-    <xme:XbBFY5mcH1ANXtABEoyZfsEypEJ_XvQO8KxoN4PIz5GXtxHQbSYEXUoaevUXxmlle
-    nB3FDDLV75el4UYKcc>
-X-ME-Received: <xmr:XbBFY1Z7k4bIbO4BR2XZZT6yqhbBuohIOA7ZsAGlVkBL4qoAAdyvLBeL3GmoAPqg9TQ1ui9SZtE99zBzIdn9Qt9yBhqLhg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeejiedgudduiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
-    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
-    epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
-    essghurhdrihho
-X-ME-Proxy: <xmx:XbBFY8Uzxlm8R_VBrXo2cqi4krB0gOYFPxIyHmsmhwuo3rLr5OzogQ>
-    <xmx:XbBFYznNxhfU3lZOptW75JSE2F0xungFk5Eodr5XiTqg3aDoGsRaZg>
-    <xmx:XbBFY5czedvy2Zy6THUu_xaeZccUHSMJzLFVW7nATgIqNFtTnm2irw>
-    <xmx:XrBFY7sShJ5sAbEuexZYB5wq0X8ltQfcSukPMPbsH_q_EGlaIHyjgQ>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 11 Oct 2022 14:05:17 -0400 (EDT)
-Date:   Tue, 11 Oct 2022 11:05:15 -0700
-From:   Boris Burkov <boris@bur.io>
+        Tue, 11 Oct 2022 16:50:04 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725E812D02
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 13:50:01 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id k6so13452202vsp.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 13:50:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=efficientek-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rqa5+eDk3DvzL2+A4UcDlrv3uuMJxgPB4c7xvWc7qsM=;
+        b=X4Sgf++XRnHNNTxo4762O4mNxhP1mEEgQIxpWQ5tEmafl8g4MduvBj0PXZUEmENJ9/
+         7O+UVLXbYES5DzM2zeg7Vk7AcguBoT45qhTvToPnOU2Phens8pTN/KIg4bCWI1UHSLNI
+         M2Og5W6bSU2tGYX5tvReMKNeW+gdtehyiAfMCdQP5RD85qKGaK7tiZEB/lM3bcyKn3xg
+         YhyWqWjBhXscVjq+2wPETU4Nlq8Tq2JNOZ/DW/0Uhj0yyLPnhqX/K3HzMf+rAZYh7uKw
+         32rdUW0k21IJmayFgtFBO5FO3BltVF5QkUyAfjYbBU0c0K1cSSyFh834zOxuFlTIpaPC
+         Hz5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rqa5+eDk3DvzL2+A4UcDlrv3uuMJxgPB4c7xvWc7qsM=;
+        b=3syQsts8Q0yc7p/tdAipx6asIA4jod/sro05W2cOWM5LC62zYt6Tj19vdSdSqb7VbN
+         IKAtATp/dIe4f8biWR1m/US4ibhjr28xq3XIY7kHybmvUi8tSwxdq00ugCSv4TcBQNXG
+         ynqJ6q6nnwfch1XKqo3t2j2b2Qb+CYi+DNhLlOy56BuKExeocXLDHrmAG96eX6pFg/yR
+         jk0+TIi/ODrd/sAFp5ufyg8aE/WabXJxj+CxV2Hx6hb8kmKCSYG53eEXNiT9VyunxG+Y
+         xgz98ZrQQqBteoL9l42FO9CJwH2elLXkVA8TuI5+9SosBS63W2JOB54ppbtcACTVPub/
+         Ty0Q==
+X-Gm-Message-State: ACrzQf18Mr95C4DDTj+UR2+3rdbJnnB4X8TUxN6WSwvUcRH9ZY0O4plJ
+        a/JHviD48eD8mk/8wIvs9BF+c1L+SiV9bw==
+X-Google-Smtp-Source: AMsMyM7p0tRMzTfyxTE7VywPNXegMGtURYjpCWqu0wdyFtyJ9L8DTl8hX4GylN+sNS8IO7uGndLXKw==
+X-Received: by 2002:a67:fd18:0:b0:3a6:fc4f:13c9 with SMTP id f24-20020a67fd18000000b003a6fc4f13c9mr13387781vsr.84.1665521400505;
+        Tue, 11 Oct 2022 13:50:00 -0700 (PDT)
+Received: from crass-HP-ZBook-15-G2 ([37.218.244.251])
+        by smtp.gmail.com with ESMTPSA id d14-20020a1fb40e000000b00377b00cdf6esm3093270vkf.41.2022.10.11.13.49.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Oct 2022 13:50:00 -0700 (PDT)
+Date:   Tue, 11 Oct 2022 15:49:55 -0500
+From:   Glenn Washburn <development@efficientek.com>
 To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: skip reclaim if block_group is empty
-Message-ID: <Y0WwW21CPYUeidwQ@zen>
-References: <8f825fce9d2968034da43e09a4ebc38ec19a2e49.1665427766.git.boris@bur.io>
- <CAL3q7H4L6ST88RpTojMmb-nQ82Y7ZYY-80Z+GSyLkMJ7zzVkDg@mail.gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: btrfs send/receive not always sharing extents
+Message-ID: <20221011154955.45aacef8@crass-HP-ZBook-15-G2>
+In-Reply-To: <20221010094218.GA2141122@falcondesktop>
+References: <20221008005704.795b44b0@crass-HP-ZBook-15-G2>
+        <20221010094218.GA2141122@falcondesktop>
+Reply-To: development@efficientek.com
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H4L6ST88RpTojMmb-nQ82Y7ZYY-80Z+GSyLkMJ7zzVkDg@mail.gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 10:43:33AM +0100, Filipe Manana wrote:
-> On Mon, Oct 10, 2022 at 8:25 PM Boris Burkov <boris@bur.io> wrote:
-> >
-> > As we delete extents from a block group, at some deletion we cross below
-> > the reclaim threshold. It is possible we are still in the middle of
-> > deleting more extents and might soon hit 0. If that occurs, we would
-> > leave the block group on the reclaim list, not in the care of unused
-> > deletion or async discard.
-> >
-> > It is pointless and wasteful to relocate empty block groups, so if we do
-> 
-> Hum? Why pointless and wasteful?
-> Relocating an empty block group results in deleting it.
-> 
-> In fact, before we tracked unused block groups and had the cleaner
-> kthread remove them, that was the only
-> way to delete unused block groups - trigger relocation from user space.
-> 
-> btrfs_relocate_chunk() explicitly calls btrfs_remove_chunk() at the
-> end, and the relocation itself
-> will do nothing except:
-> 
-> 1) commit the current transaction when it starts
-> 2) search the extent tree for extents in this block group - here it
-> will not find anything, and therefore do nothing.
-> 3) commit another transaction
-> 
-> So I don't quite understand what this patch is trying to accomplish.
-> 
-> At the very least the changelog needs to be more detailed.
-> 
-> As it is, it gives the wrong idea that the relocation will leave the
-> block group around.
-> If your goal is to avoid the 2 transaction commits and the search on
-> the extent tree, then please be explicit in
-> the changelog.
-> 
-> Thanks.
+On Mon, 10 Oct 2022 10:42:18 +0100
+Filipe Manana <fdmanana@kernel.org> wrote:
 
-Apologies for the exuberant and unclear language. I'm happy to tone it
-down and make it more precise. Thanks for the feedback.
+> On Sat, Oct 08, 2022 at 12:57:04AM -0500, Glenn Washburn wrote:
+> > I've got two reflinked files in a subvol that I'm sending/receiving to
+> > a different btrfs filesystem and they are not sharing extents on the
+> > receiving side. Other reflinked files in the same subvol are being
+> > reflinked on the receive side. The send side has a fairly old creation
+> > date if that matters. Attached is the receive log and a diff of
+> > filefrag's output for the files on the source volume to show that the
+> > two files (IMG_20200402_143055.dng and IMG_20200402_143055.dng.ref) are
+> > refinked on the source volume. This is a somewhat minimal example of
+> > what's happening on a big send that I'm doing that is failing because
+> > the receive side it too small to hold data when the reflinks are
+> > broken. Is this a bug? or what can I do to get send to see these files
+> > are reflinked?
+> 
+> send/receive only guarantees that the destination ends up with the same
+> data as the source.
+> 
+> It doesn't guarantee extents are always shared as in the source filesystem,
+> that the extent layout is the same, or holes are preserved for example.
+> 
+> There are two main reasons why extents don't often get cloned during
+> send/receive:
+> 
+> 1) The extent is shared more than 64 times in the source filesystem.
+>    We have this limitation because figuring out all inodes/roots that
+>    share an extent can be expensive, and therefore massively slowdown
+>    send operations.
+> 
+> 2) Even when an extent is shared less than 64 times in the source
+>    filesystem, we often don't clone the entirety of an extent and end up
+>    issuing write operations for the remaining part(s). This is due to
+>    algorithmic complexity as well, as identifying the best source for
+>    cloning an extent can be expensive and considerably slowdown send
+>    operations.
 
-We see a lot of these empty reclaims in practice and I thought this
-could be a helpful little cleanup, nothing major.
-
-My aim was essentially what you said. In my mind, delete unused is less
-complicated and has less overhead than an empty relocation. I agree
-that the empty relocation does accomplish the task of getting rid of the
-bg, but I figure if we have a more direct way of accomplishing it
-already, we should go with that. To be completely clear, I was also 
-thinking about creating the relocation inode as un-needed overhead.
-For what it's worth, I have not benchmarked btrfs_delete_unused_bgs
-against relocating empty bgs.
-
-Thanks,
-Boris
+So my example falls into this category. I have a limited understanding
+of BTRFS internals, can backrefs be used here to decrease the
+algorithmic complexity and duration? Naively, it would seem that having
+a backref to inodes that use the extent would be enough to keep track
+of where clones should be put in the send stream.
 
 > 
-> > notice that case (we might not if the reclaim worker runs *before* we
-> > finish emptying it), don't bother with relocating the block group.
-> >
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >  fs/btrfs/block-group.c | 19 +++++++++++++++++++
-> >  1 file changed, 19 insertions(+)
-> >
-> > diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> > index 11fd52657b76..c3ea627d2457 100644
-> > --- a/fs/btrfs/block-group.c
-> > +++ b/fs/btrfs/block-group.c
-> > @@ -1608,6 +1608,25 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
-> >                         up_write(&space_info->groups_sem);
-> >                         goto next;
-> >                 }
-> > +               if (bg->used == 0) {
-> > +                       /*
-> > +                        * It is possible that we trigger relocation on a block
-> > +                        * group as its extents are deleted and it first goes
-> > +                        * below the threshold, then shortly goes empty. In that
-> > +                        * case, we will do relocation, even though we could
-> > +                        * more cheaply just delete the unused block group. Try
-> > +                        * to catch that case here, though of course it is
-> > +                        * possible there is a delete still coming the future,
-> > +                        * so we can't avoid needless relocation of this sort
-> > +                        * altogether. We can at least avoid relocating empty
-> > +                        * block groups.
-> > +                        */
-> > +                       if (!btrfs_test_opt(fs_info, DISCARD_ASYNC))
-> > +                               btrfs_mark_bg_unused(bg);
-> > +                       spin_unlock(&bg->lock);
-> > +                       up_write(&space_info->groups_sem);
-> > +                       goto next;
-> > +               }
-> >                 spin_unlock(&bg->lock);
-> >
-> >                 /* Get out fast, in case we're unmounting the filesystem */
-> > --
-> > 2.37.2
-> >
+> I have some work in progress and ideas to speedup send in some cases,
+> but I'm afraid we'll always have some limitations - in the best case
+> we can improve on them, but not eliminate them completely.
+> 
+> You can run a dedupe tool on the destination filesystem to get the
+> extents shared.
+
+Thanks for the explanation. The problem with using a dedupe tool is
+(1) that potentially a lot of unnecessary writes are involved, and more
+importantly (2) the send will potentially cause more disk space to be
+used than is used by the source and thus potentially more than the
+target when the target is the same size as the source. Since we don't
+know beforehand if send will clone shared extents, the user must assume
+that it will clone none and receive on a filesystem with at least enough
+free space as the size of the total references data. This may not be an
+option for the user (me).
+
+I believe this theoretically could be mitigated if there were a dedupe
+tool that would watch the filesystem for writes and do dedup as soon as
+a write happened. I don't think any of the current tools do though.
+Separately, perhaps there could be a tool that reads the send stream on
+the receive side and inserts extent clones.
+
+The easiest way forward seems to me to add options for send to try harder to find
+extent clones (at the expense of time and resources).
+
+> 
+> > --- /dev/fd/63	2022-10-08 00:31:46.783138591 -0500
+> > +++ /dev/fd/62	2022-10-08 00:31:46.787138126 -0500
+> > @@ -1,5 +1,5 @@
+> >  Filesystem type is: 9123683e
+> > -File size of /media/test-btrfs/test/1.ro/IMG_20200402_143055.dng is 24674116 (6024 blocks of 4096 bytes)
+> > +File size of /media/test-btrfs/test/1.ro/IMG_20200402_143055.dng.ref is 24674116 (6024 blocks of 4096 bytes)
+> >   ext:     logical_offset:        physical_offset: length:   expected: flags:
+> >     0:        0..    6023: 1131665768..1131671791:   6024:             last,shared,eof
+> > -/media/test-btrfs/test/1.ro/IMG_20200402_143055.dng: 1 extent found
+> > +/media/test-btrfs/test/1.ro/IMG_20200402_143055.dng.ref: 1 extent found
+> 
+> 
