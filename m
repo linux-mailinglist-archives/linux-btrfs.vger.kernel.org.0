@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3AC5FB5EF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 17:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539715FB5F8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 17:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbiJKPAN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 11:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54232 "EHLO
+        id S230484AbiJKPAS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 11:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbiJKO5p (ORCPT
+        with ESMTP id S231285AbiJKO6p (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 10:57:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFBA9E0EC;
-        Tue, 11 Oct 2022 07:52:32 -0700 (PDT)
+        Tue, 11 Oct 2022 10:58:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2A09E6BD;
+        Tue, 11 Oct 2022 07:52:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 71DAE611B0;
-        Tue, 11 Oct 2022 14:52:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 150D6C433C1;
-        Tue, 11 Oct 2022 14:52:22 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6425B611D6;
+        Tue, 11 Oct 2022 14:52:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAE65C433D7;
+        Tue, 11 Oct 2022 14:52:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665499943;
-        bh=4LhC9zq3zDMaODgDhiQ/4p2sylaYphCDE8Wo5YR73ZM=;
+        s=k20201202; t=1665499977;
+        bh=BZEIFEUmeeXSxmDXckwWq4R0JJOlPtiqcyBKnTZUr8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FUKn4/pUG7eDiZJCgvbuR0ykeS1Jj8tKJAC5XCzrziTSxckzXavLLz+7RmrVQl2b8
-         t5x98zJz/ZAGDKDfbhtitTONiXhe7dmUBBVIWjWxTugKKAbhT/Wy5T0zt9k3t3WH8a
-         TXn/PN94/ITNZ90CDgKshUfboax2OQdstt0lVlKXtAJgLS84i4Ej+8v9ZCSkkvHy78
-         DMWmbEGk/TweaxjfaB+kT2k3B6oq+ejaA6pSI0ajkm6hY1lGnY/lp4F1AOLoem4k9e
-         JEV/tFB/a6izC+1sawHFIQgNxYD9s0i1VIT8aPHIB3S4po7tvijmgVy7CeMNKT8il0
-         3oh44M8OdVsww==
+        b=VihmzIkEI4m4NdfrPZ+2idxubCnlvPEdlSz+2GhoHc4088VEYd4wZfY4hex3DW2iG
+         ARy4W29OTGogdHKeSmAzFwnEHIAVLif1zsyLCphyIv8bvK7mt0NcgFDTDzcE/wlECh
+         5beWBXTXjXB90rTsIzpLg7rGio0XhF5gZz7FlzNW3dSTOjBnFyE5zzZK/c7s3cos8T
+         7mm+Db3rOZfOD536pvd+BRUdJXLUCVZSKXhL+alMIQhPBYqgx7NgcOcxNt/XFySpQ4
+         ZRGb/eQquvDKWJ6ngM32Y5sZjYwLbTMhBPeR8XfqtLVhgO1MvaV99koJjqo+FfSANc
+         8KE9DssdWVq1Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>,
+Cc:     Qu Wenruo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 35/40] btrfs: separate out the eb and extent state leak helpers
-Date:   Tue, 11 Oct 2022 10:51:24 -0400
-Message-Id: <20221011145129.1623487-35-sashal@kernel.org>
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 16/26] btrfs: dump extra info if one free space cache has more bitmaps than it should
+Date:   Tue, 11 Oct 2022 10:52:23 -0400
+Message-Id: <20221011145233.1624013-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221011145129.1623487-1-sashal@kernel.org>
-References: <20221011145129.1623487-1-sashal@kernel.org>
+In-Reply-To: <20221011145233.1624013-1-sashal@kernel.org>
+References: <20221011145233.1624013-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -57,142 +57,63 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit a40246e8afc0af3ffdee21854fb755c9364b8346 ]
+[ Upstream commit 62cd9d4474282a1eb84f945955c56cbfc42e1ffe ]
 
-Currently we have the add/del functions generic so that we can use them
-for both extent buffers and extent states.  We want to separate this
-code however, so separate these helpers into per-object helpers in
-anticipation of the split.
+There is an internal report on hitting the following ASSERT() in
+recalculate_thresholds():
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+ 	ASSERT(ctl->total_bitmaps <= max_bitmaps);
+
+Above @max_bitmaps is calculated using the following variables:
+
+- bytes_per_bg
+  8 * 4096 * 4096 (128M) for x86_64/x86.
+
+- block_group->length
+  The length of the block group.
+
+@max_bitmaps is the rounded up value of block_group->length / 128M.
+
+Normally one free space cache should not have more bitmaps than above
+value, but when it happens the ASSERT() can be triggered if
+CONFIG_BTRFS_ASSERT is also enabled.
+
+But the ASSERT() itself won't provide enough info to know which is going
+wrong.
+Is the bg too small thus it only allows one bitmap?
+Or is there something else wrong?
+
+So although I haven't found extra reports or crash dump to do further
+investigation, add the extra info to make it more helpful to debug.
+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent_io.c | 58 +++++++++++++++++++++++++++++---------------
- 1 file changed, 38 insertions(+), 20 deletions(-)
+ fs/btrfs/free-space-cache.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 5785ed241f6f..8c83d00fcb8c 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -44,25 +44,42 @@ static inline bool extent_state_in_tree(const struct extent_state *state)
- static LIST_HEAD(states);
- static DEFINE_SPINLOCK(leak_lock);
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index da0eee7c9e5f..529907ea3825 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -672,6 +672,12 @@ static void recalculate_thresholds(struct btrfs_free_space_ctl *ctl)
  
--static inline void btrfs_leak_debug_add(spinlock_t *lock,
--					struct list_head *new,
--					struct list_head *head)
-+static inline void btrfs_leak_debug_add_eb(struct extent_buffer *eb)
-+{
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&fs_info->eb_leak_lock, flags);
-+	list_add(&eb->leak_list, &fs_info->allocated_ebs);
-+	spin_unlock_irqrestore(&fs_info->eb_leak_lock, flags);
-+}
-+
-+static inline void btrfs_leak_debug_add_state(struct extent_state *state)
- {
- 	unsigned long flags;
+ 	max_bitmaps = max_t(u64, max_bitmaps, 1);
  
--	spin_lock_irqsave(lock, flags);
--	list_add(new, head);
--	spin_unlock_irqrestore(lock, flags);
-+	spin_lock_irqsave(&leak_lock, flags);
-+	list_add(&state->leak_list, &states);
-+	spin_unlock_irqrestore(&leak_lock, flags);
-+}
-+
-+static inline void btrfs_leak_debug_del_eb(struct extent_buffer *eb)
-+{
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&fs_info->eb_leak_lock, flags);
-+	list_del(&eb->leak_list);
-+	spin_unlock_irqrestore(&fs_info->eb_leak_lock, flags);
- }
++	if (ctl->total_bitmaps > max_bitmaps)
++		btrfs_err(block_group->fs_info,
++"invalid free space control: bg start=%llu len=%llu total_bitmaps=%u unit=%u max_bitmaps=%llu bytes_per_bg=%llu",
++			  block_group->start, block_group->length,
++			  ctl->total_bitmaps, ctl->unit, max_bitmaps,
++			  bytes_per_bg);
+ 	ASSERT(ctl->total_bitmaps <= max_bitmaps);
  
--static inline void btrfs_leak_debug_del(spinlock_t *lock,
--					struct list_head *entry)
-+static inline void btrfs_leak_debug_del_state(struct extent_state *state)
- {
- 	unsigned long flags;
- 
--	spin_lock_irqsave(lock, flags);
--	list_del(entry);
--	spin_unlock_irqrestore(lock, flags);
-+	spin_lock_irqsave(&leak_lock, flags);
-+	list_del(&state->leak_list);
-+	spin_unlock_irqrestore(&leak_lock, flags);
- }
- 
- void btrfs_extent_buffer_leak_debug_check(struct btrfs_fs_info *fs_info)
-@@ -126,9 +143,11 @@ static inline void __btrfs_debug_check_extent_io_range(const char *caller,
- 	}
- }
- #else
--#define btrfs_leak_debug_add(lock, new, head)	do {} while (0)
--#define btrfs_leak_debug_del(lock, entry)	do {} while (0)
--#define btrfs_extent_state_leak_debug_check()	do {} while (0)
-+#define btrfs_leak_debug_add_eb(eb)			do {} while (0)
-+#define btrfs_leak_debug_add_state(state)		do {} while (0)
-+#define btrfs_leak_debug_del_eb(eb)			do {} while (0)
-+#define btrfs_leak_debug_del_state(state)		do {} while (0)
-+#define btrfs_extent_state_leak_debug_check()		do {} while (0)
- #define btrfs_debug_check_extent_io_range(c, s, e)	do {} while (0)
- #endif
- 
-@@ -357,7 +376,7 @@ static struct extent_state *alloc_extent_state(gfp_t mask)
- 	state->state = 0;
- 	state->failrec = NULL;
- 	RB_CLEAR_NODE(&state->rb_node);
--	btrfs_leak_debug_add(&leak_lock, &state->leak_list, &states);
-+	btrfs_leak_debug_add_state(state);
- 	refcount_set(&state->refs, 1);
- 	init_waitqueue_head(&state->wq);
- 	trace_alloc_extent_state(state, mask, _RET_IP_);
-@@ -370,7 +389,7 @@ void free_extent_state(struct extent_state *state)
- 		return;
- 	if (refcount_dec_and_test(&state->refs)) {
- 		WARN_ON(extent_state_in_tree(state));
--		btrfs_leak_debug_del(&leak_lock, &state->leak_list);
-+		btrfs_leak_debug_del_state(state);
- 		trace_free_extent_state(state, _RET_IP_);
- 		kmem_cache_free(extent_state_cache, state);
- 	}
-@@ -5919,7 +5938,7 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
- static inline void btrfs_release_extent_buffer(struct extent_buffer *eb)
- {
- 	btrfs_release_extent_buffer_pages(eb);
--	btrfs_leak_debug_del(&eb->fs_info->eb_leak_lock, &eb->leak_list);
-+	btrfs_leak_debug_del_eb(eb);
- 	__free_extent_buffer(eb);
- }
- 
-@@ -5936,8 +5955,7 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
- 	eb->bflags = 0;
- 	init_rwsem(&eb->lock);
- 
--	btrfs_leak_debug_add(&fs_info->eb_leak_lock, &eb->leak_list,
--			     &fs_info->allocated_ebs);
-+	btrfs_leak_debug_add_eb(eb);
- 	INIT_LIST_HEAD(&eb->release_list);
- 
- 	spin_lock_init(&eb->refs_lock);
-@@ -6405,7 +6423,7 @@ static int release_extent_buffer(struct extent_buffer *eb)
- 			spin_unlock(&eb->refs_lock);
- 		}
- 
--		btrfs_leak_debug_del(&eb->fs_info->eb_leak_lock, &eb->leak_list);
-+		btrfs_leak_debug_del_eb(eb);
- 		/* Should be safe to release our pages at this point */
- 		btrfs_release_extent_buffer_pages(eb);
- #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ 	/*
 -- 
 2.35.1
 
