@@ -2,56 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B090E5FAF60
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 11:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F21645FAF8F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 11:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbiJKJbp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 05:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
+        id S229517AbiJKJoP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 05:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbiJKJbn (ORCPT
+        with ESMTP id S229541AbiJKJoN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 05:31:43 -0400
+        Tue, 11 Oct 2022 05:44:13 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648271155
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 02:31:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F0D2AC75
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 02:44:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A1FA6115A
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 09:31:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 672E1C433D7
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 09:31:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A82606115A
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 09:44:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 163DFC43470
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 09:44:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665480701;
-        bh=PlRgVWG0bmBcqpwVt0uWVeTWGzXDnkRjNy2fNw6goOY=;
+        s=k20201202; t=1665481450;
+        bh=6+ivgBOlD/0LavD8vok7XRI77/wFJMR4wz7DxA+B4fw=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=F+kwOjEGqXAIdMCpJrWuwBYuULjTbLA7a3pKz/5Ffvy5KDLUPzJpcpRkcAnYfZ/Gw
-         5x8gExhqihUZKlDs4vJAkp53D4inE0kpbFo17QxHcuj0cXmxFKHI2TgCjChaVDIHCx
-         iaaNtvzR20d5oUnGujEM+aAg2RCN6b0oqw8HZ9ySIR/45DPAtw3h+SW8+BVnHN5kST
-         MQVl94t3JEDOIu3LxH0b6VWqrt/iMWmtX29L7TEr1lDq8GsjHENYGUajuFqpOx5bqe
-         48IpexQ8s+orwEnz3e+yoTkx2BkIRtazaRkW7b0sPW6NjFly2Ghce3vXP5PItb2amt
-         f+NhyTBDnlDCg==
-Received: by mail-oo1-f46.google.com with SMTP id r15-20020a4abf0f000000b004761c7e6be1so9626008oop.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 02:31:41 -0700 (PDT)
-X-Gm-Message-State: ACrzQf2CgMwXb6hP3PYdQjGvwAccqZybfjY6AabI9rSENyccLszRW29W
-        XfgEwbH+YNJLsw0HwclqqOoO88tjVVR3NuHfWyM=
-X-Google-Smtp-Source: AMsMyM5Yj/ZEoL0wXvjEng9q8d+UgMS04nvXIJ8RIWxe0ag0b5IRiRfTIUBdQP18xET+e3iUMKMNPHm4iaUaUqqy/p4=
-X-Received: by 2002:a05:6830:651c:b0:659:185a:10d7 with SMTP id
- cm28-20020a056830651c00b00659185a10d7mr10225079otb.363.1665480700554; Tue, 11
- Oct 2022 02:31:40 -0700 (PDT)
+        b=Bq9BJET86qGyjjn1/JFFrXdOm5/+Q+bfYEi3603vdyHJ3Jyx5V+uOynbTxLdExeGk
+         S8Q8mbJDQaK9opygZwwjVqHRo4ZzL/S23aZpeGswM27/1fLqIeR82+kHDdt0RF89vW
+         S26pg7M0PG5kKCD2KuODHt0QdwpCUtaCAk2nWGb20gEkODaLjOjpOz9MHQGimL/rKD
+         Q9U9x/uKPL64mWOHyX/wKtV4lLPQiXKGXOdAvpGVM8E2yAgPU73sg2iAunaNFibY+E
+         cHIFiYcsM39RRYVscParjMAhXAX9nsV548zWgCA/81pbLemdftlKUl0H+EdtnOsLJn
+         XYYSmcDR3tk1A==
+Received: by mail-oi1-f171.google.com with SMTP id g130so15256462oia.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 02:44:10 -0700 (PDT)
+X-Gm-Message-State: ACrzQf1Sxq/w2W09+OnpAGc8rZx7iqWyouupwLpU7iFH1HpfmItbhRNW
+        qtskwkNb5cXyBgWQrjpXiIoMeww2+R87ttC1wR4=
+X-Google-Smtp-Source: AMsMyM5mkWwQpJLBDiSM2fXdPDGO0v99HvCnmTSFuix5QeHq6SPTDuKbx2BHbPuzlc0rS4PgqhPCMQijMUP6O9/6nD4=
+X-Received: by 2002:a05:6808:1691:b0:351:48da:62e0 with SMTP id
+ bb17-20020a056808169100b0035148da62e0mr11757700oib.98.1665481449125; Tue, 11
+ Oct 2022 02:44:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221008005704.795b44b0@crass-HP-ZBook-15-G2> <20221010094218.GA2141122@falcondesktop>
- <SYCPR01MB46853527E05CE137D9525B1F9E239@SYCPR01MB4685.ausprd01.prod.outlook.com>
-In-Reply-To: <SYCPR01MB46853527E05CE137D9525B1F9E239@SYCPR01MB4685.ausprd01.prod.outlook.com>
+References: <8f825fce9d2968034da43e09a4ebc38ec19a2e49.1665427766.git.boris@bur.io>
+In-Reply-To: <8f825fce9d2968034da43e09a4ebc38ec19a2e49.1665427766.git.boris@bur.io>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 11 Oct 2022 10:31:04 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7VXjo1Zg=G_GmNh+BQYMuE7=F7fvK3nujJQzUwbwTtFg@mail.gmail.com>
-Message-ID: <CAL3q7H7VXjo1Zg=G_GmNh+BQYMuE7=F7fvK3nujJQzUwbwTtFg@mail.gmail.com>
-Subject: Re: btrfs send/receive not always sharing extents
-To:     Paul Jones <paul@pauljones.id.au>
-Cc:     Glenn Washburn <development@efficientek.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Date:   Tue, 11 Oct 2022 10:43:33 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4L6ST88RpTojMmb-nQ82Y7ZYY-80Z+GSyLkMJ7zzVkDg@mail.gmail.com>
+Message-ID: <CAL3q7H4L6ST88RpTojMmb-nQ82Y7ZYY-80Z+GSyLkMJ7zzVkDg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: skip reclaim if block_group is empty
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -62,39 +60,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 1:30 AM Paul Jones <paul@pauljones.id.au> wrote:
+On Mon, Oct 10, 2022 at 8:25 PM Boris Burkov <boris@bur.io> wrote:
 >
-> > -----Original Message-----
-> > From: Filipe Manana <fdmanana@kernel.org>
-> > Sent: Monday, 10 October 2022 8:42 PM
-> > To: Glenn Washburn <development@efficientek.com>
-> > Cc: linux-btrfs@vger.kernel.org
-> > Subject: Re: btrfs send/receive not always sharing extents
-> >
-> ....
-> > I have some work in progress and ideas to speedup send in some cases, but
-> > I'm afraid we'll always have some limitations - in the best case we can
-> > improve on them, but not eliminate them completely.
-> >
-> > You can run a dedupe tool on the destination filesystem to get the extents
-> > shared.
+> As we delete extents from a block group, at some deletion we cross below
+> the reclaim threshold. It is possible we are still in the middle of
+> deleting more extents and might soon hit 0. If that occurs, we would
+> leave the block group on the reclaim list, not in the care of unused
+> deletion or async discard.
 >
-> Is that possible? To use a dedupe tool the subvolume has to be RW, but changing it from RO will break any future send operations I thought?
+> It is pointless and wasteful to relocate empty block groups, so if we do
 
-Yes, it's possible.
+Hum? Why pointless and wasteful?
+Relocating an empty block group results in deleting it.
 
-The deduplication ioctl works on read-only subvolumes/snapshots.
-So a dedupe tool just has to open the files in read-only mode and call
-the ioctl with the respective file descriptors.
-In other words, there's no need to set the snapshot to RW, dedupe and
-then set it back to RO.
+In fact, before we tracked unused block groups and had the cleaner
+kthread remove them, that was the only
+way to delete unused block groups - trigger relocation from user space.
 
-The only limitation, which I hope to remove soon, is that you can not
-run send on a snapshot that is currently the source or destination of
-a dedupe operation,
-and you can't also run dedupe on a snapshot while it's being used by a
-send operation (they are exclusive operations).
+btrfs_relocate_chunk() explicitly calls btrfs_remove_chunk() at the
+end, and the relocation itself
+will do nothing except:
 
+1) commit the current transaction when it starts
+2) search the extent tree for extents in this block group - here it
+will not find anything, and therefore do nothing.
+3) commit another transaction
+
+So I don't quite understand what this patch is trying to accomplish.
+
+At the very least the changelog needs to be more detailed.
+
+As it is, it gives the wrong idea that the relocation will leave the
+block group around.
+If your goal is to avoid the 2 transaction commits and the search on
+the extent tree, then please be explicit in
+the changelog.
+
+Thanks.
+
+> notice that case (we might not if the reclaim worker runs *before* we
+> finish emptying it), don't bother with relocating the block group.
 >
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/block-group.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
 >
-> Paul.
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 11fd52657b76..c3ea627d2457 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1608,6 +1608,25 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+>                         up_write(&space_info->groups_sem);
+>                         goto next;
+>                 }
+> +               if (bg->used == 0) {
+> +                       /*
+> +                        * It is possible that we trigger relocation on a block
+> +                        * group as its extents are deleted and it first goes
+> +                        * below the threshold, then shortly goes empty. In that
+> +                        * case, we will do relocation, even though we could
+> +                        * more cheaply just delete the unused block group. Try
+> +                        * to catch that case here, though of course it is
+> +                        * possible there is a delete still coming the future,
+> +                        * so we can't avoid needless relocation of this sort
+> +                        * altogether. We can at least avoid relocating empty
+> +                        * block groups.
+> +                        */
+> +                       if (!btrfs_test_opt(fs_info, DISCARD_ASYNC))
+> +                               btrfs_mark_bg_unused(bg);
+> +                       spin_unlock(&bg->lock);
+> +                       up_write(&space_info->groups_sem);
+> +                       goto next;
+> +               }
+>                 spin_unlock(&bg->lock);
+>
+>                 /* Get out fast, in case we're unmounting the filesystem */
+> --
+> 2.37.2
+>
