@@ -2,48 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 326B65FB791
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 17:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D5A5FB5FE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 17:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbiJKPnP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 11:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38968 "EHLO
+        id S231126AbiJKPAU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 11:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbiJKPmi (ORCPT
+        with ESMTP id S231377AbiJKO65 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 11:42:38 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C6FABD55;
-        Tue, 11 Oct 2022 08:32:16 -0700 (PDT)
+        Tue, 11 Oct 2022 10:58:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E52D9F768;
+        Tue, 11 Oct 2022 07:53:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6025FB81627;
-        Tue, 11 Oct 2022 14:53:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63F4AC4347C;
-        Tue, 11 Oct 2022 14:53:06 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4086D611C3;
+        Tue, 11 Oct 2022 14:53:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C15B8C433D6;
+        Tue, 11 Oct 2022 14:53:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665499987;
-        bh=1pVX9rksVRwtq2NovXP4JcEYv/3m4lpwbJLpsdXjXAc=;
+        s=k20201202; t=1665500011;
+        bh=DldUW7Lm57Tuv67v64bf+Aur5Zpyj3o2v/3TEU1dk1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f5LXIUzyKkVfBEiPfdYMeVxCOMJHNnQZH0TUyCYzwnf2CJV9QYu5Gl6pgrhJiud1E
-         wUFsIThfP+qI1BGK0863VNrFUXh0gZuxzp5elMmXUViX2omgfv/v4YRxyM1WLnjgQJ
-         wAIbIwrJAUqKjHF1RaxC9fXiqkdmBsYuQAaRFcBLLbrUWt7vz2IVLlfKrGd2hOHA45
-         y9pg/w/5MZBNXbPTPldIvRYqyZP4TaVu9V1OlvyKbgR4V8mVH9N4ShDihbYvbLVsKb
-         Cjrj8zc90rCrusv89ayHywt/sDzLywpocLkV6+Wyh8EA8nRpEjPdSxP+Lxld1gnJ/h
-         ivco3v9O7zCNQ==
+        b=IvlQCMTkRGU/ECK0Mo/FL/XBOZECPuD1/Caeaphm25V4s9uaWhIVXqskasCvMP9ro
+         w4rRjUhK+DpLB8JnwlhDHil58hy9HB7bNXBL0fTw8N/dj+3pYdklTSae/EgALX2qjD
+         M7kx3IdlV5ibq1JaggtfFBo+qSZqZbskriYesyr4qQMDKE1Jf2x7h3YcLbiZ320IBq
+         4x1GFGxeHLwCUS7Z5Qequk9M8jZeB1pDb52NeCjidv1fYjS0djDMC/c/hgkg11Q3vu
+         5vVFSD25Mp0vgQl3ankzXIzgIr5ZEngOSIJlGZSgA3uIx8L4IdsMKrhcoWteB/0g7p
+         NUA7+P3PSdrKw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 23/26] btrfs: separate out the eb and extent state leak helpers
-Date:   Tue, 11 Oct 2022 10:52:30 -0400
-Message-Id: <20221011145233.1624013-23-sashal@kernel.org>
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 13/17] btrfs: scrub: try to fix super block errors
+Date:   Tue, 11 Oct 2022 10:53:08 -0400
+Message-Id: <20221011145312.1624341-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221011145233.1624013-1-sashal@kernel.org>
-References: <20221011145233.1624013-1-sashal@kernel.org>
+In-Reply-To: <20221011145312.1624341-1-sashal@kernel.org>
+References: <20221011145312.1624341-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -57,142 +56,145 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit a40246e8afc0af3ffdee21854fb755c9364b8346 ]
+[ Upstream commit f9eab5f0bba76742af654f33d517bf62a0db8f12 ]
 
-Currently we have the add/del functions generic so that we can use them
-for both extent buffers and extent states.  We want to separate this
-code however, so separate these helpers into per-object helpers in
-anticipation of the split.
+[BUG]
+The following script shows that, although scrub can detect super block
+errors, it never tries to fix it:
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+	mkfs.btrfs -f -d raid1 -m raid1 $dev1 $dev2
+	xfs_io -c "pwrite 67108864 4k" $dev2
+
+	mount $dev1 $mnt
+	btrfs scrub start -B $dev2
+	btrfs scrub start -Br $dev2
+	umount $mnt
+
+The first scrub reports the super error correctly:
+
+  scrub done for f3289218-abd3-41ac-a630-202f766c0859
+  Scrub started:    Tue Aug  2 14:44:11 2022
+  Status:           finished
+  Duration:         0:00:00
+  Total to scrub:   1.26GiB
+  Rate:             0.00B/s
+  Error summary:    super=1
+    Corrected:      0
+    Uncorrectable:  0
+    Unverified:     0
+
+But the second read-only scrub still reports the same super error:
+
+  Scrub started:    Tue Aug  2 14:44:11 2022
+  Status:           finished
+  Duration:         0:00:00
+  Total to scrub:   1.26GiB
+  Rate:             0.00B/s
+  Error summary:    super=1
+    Corrected:      0
+    Uncorrectable:  0
+    Unverified:     0
+
+[CAUSE]
+The comments already shows that super block can be easily fixed by
+committing a transaction:
+
+	/*
+	 * If we find an error in a super block, we just report it.
+	 * They will get written with the next transaction commit
+	 * anyway
+	 */
+
+But the truth is, such assumption is not always true, and since scrub
+should try to repair every error it found (except for read-only scrub),
+we should really actively commit a transaction to fix this.
+
+[FIX]
+Just commit a transaction if we found any super block errors, after
+everything else is done.
+
+We cannot do this just after scrub_supers(), as
+btrfs_commit_transaction() will try to pause and wait for the running
+scrub, thus we can not call it with scrub_lock hold.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent_io.c | 58 +++++++++++++++++++++++++++++---------------
- 1 file changed, 38 insertions(+), 20 deletions(-)
+ fs/btrfs/scrub.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 7bd704779a99..eef6e38915ab 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -43,25 +43,42 @@ static inline bool extent_state_in_tree(const struct extent_state *state)
- static LIST_HEAD(states);
- static DEFINE_SPINLOCK(leak_lock);
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 0392c556af60..88b9a5394561 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3811,6 +3811,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 	int ret;
+ 	struct btrfs_device *dev;
+ 	unsigned int nofs_flag;
++	bool need_commit = false;
  
--static inline void btrfs_leak_debug_add(spinlock_t *lock,
--					struct list_head *new,
--					struct list_head *head)
-+static inline void btrfs_leak_debug_add_eb(struct extent_buffer *eb)
-+{
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	unsigned long flags;
+ 	if (btrfs_fs_closing(fs_info))
+ 		return -EAGAIN;
+@@ -3924,6 +3925,12 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 	 */
+ 	nofs_flag = memalloc_nofs_save();
+ 	if (!is_dev_replace) {
++		u64 old_super_errors;
 +
-+	spin_lock_irqsave(&fs_info->eb_leak_lock, flags);
-+	list_add(&eb->leak_list, &fs_info->allocated_ebs);
-+	spin_unlock_irqrestore(&fs_info->eb_leak_lock, flags);
-+}
++		spin_lock(&sctx->stat_lock);
++		old_super_errors = sctx->stat.super_errors;
++		spin_unlock(&sctx->stat_lock);
 +
-+static inline void btrfs_leak_debug_add_state(struct extent_state *state)
- {
- 	unsigned long flags;
- 
--	spin_lock_irqsave(lock, flags);
--	list_add(new, head);
--	spin_unlock_irqrestore(lock, flags);
-+	spin_lock_irqsave(&leak_lock, flags);
-+	list_add(&state->leak_list, &states);
-+	spin_unlock_irqrestore(&leak_lock, flags);
-+}
+ 		btrfs_info(fs_info, "scrub: started on devid %llu", devid);
+ 		/*
+ 		 * by holding device list mutex, we can
+@@ -3932,6 +3939,16 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 		mutex_lock(&fs_info->fs_devices->device_list_mutex);
+ 		ret = scrub_supers(sctx, dev);
+ 		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
 +
-+static inline void btrfs_leak_debug_del_eb(struct extent_buffer *eb)
-+{
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&fs_info->eb_leak_lock, flags);
-+	list_del(&eb->leak_list);
-+	spin_unlock_irqrestore(&fs_info->eb_leak_lock, flags);
- }
- 
--static inline void btrfs_leak_debug_del(spinlock_t *lock,
--					struct list_head *entry)
-+static inline void btrfs_leak_debug_del_state(struct extent_state *state)
- {
- 	unsigned long flags;
- 
--	spin_lock_irqsave(lock, flags);
--	list_del(entry);
--	spin_unlock_irqrestore(lock, flags);
-+	spin_lock_irqsave(&leak_lock, flags);
-+	list_del(&state->leak_list);
-+	spin_unlock_irqrestore(&leak_lock, flags);
- }
- 
- void btrfs_extent_buffer_leak_debug_check(struct btrfs_fs_info *fs_info)
-@@ -124,9 +141,11 @@ static inline void __btrfs_debug_check_extent_io_range(const char *caller,
++		spin_lock(&sctx->stat_lock);
++		/*
++		 * Super block errors found, but we can not commit transaction
++		 * at current context, since btrfs_commit_transaction() needs
++		 * to pause the current running scrub (hold by ourselves).
++		 */
++		if (sctx->stat.super_errors > old_super_errors && !sctx->readonly)
++			need_commit = true;
++		spin_unlock(&sctx->stat_lock);
  	}
- }
- #else
--#define btrfs_leak_debug_add(lock, new, head)	do {} while (0)
--#define btrfs_leak_debug_del(lock, entry)	do {} while (0)
--#define btrfs_extent_state_leak_debug_check()	do {} while (0)
-+#define btrfs_leak_debug_add_eb(eb)			do {} while (0)
-+#define btrfs_leak_debug_add_state(state)		do {} while (0)
-+#define btrfs_leak_debug_del_eb(eb)			do {} while (0)
-+#define btrfs_leak_debug_del_state(state)		do {} while (0)
-+#define btrfs_extent_state_leak_debug_check()		do {} while (0)
- #define btrfs_debug_check_extent_io_range(c, s, e)	do {} while (0)
- #endif
  
-@@ -343,7 +362,7 @@ static struct extent_state *alloc_extent_state(gfp_t mask)
- 	state->state = 0;
- 	state->failrec = NULL;
- 	RB_CLEAR_NODE(&state->rb_node);
--	btrfs_leak_debug_add(&leak_lock, &state->leak_list, &states);
-+	btrfs_leak_debug_add_state(state);
- 	refcount_set(&state->refs, 1);
- 	init_waitqueue_head(&state->wq);
- 	trace_alloc_extent_state(state, mask, _RET_IP_);
-@@ -356,7 +375,7 @@ void free_extent_state(struct extent_state *state)
- 		return;
- 	if (refcount_dec_and_test(&state->refs)) {
- 		WARN_ON(extent_state_in_tree(state));
--		btrfs_leak_debug_del(&leak_lock, &state->leak_list);
-+		btrfs_leak_debug_del_state(state);
- 		trace_free_extent_state(state, _RET_IP_);
- 		kmem_cache_free(extent_state_cache, state);
- 	}
-@@ -5830,7 +5849,7 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
- static inline void btrfs_release_extent_buffer(struct extent_buffer *eb)
- {
- 	btrfs_release_extent_buffer_pages(eb);
--	btrfs_leak_debug_del(&eb->fs_info->eb_leak_lock, &eb->leak_list);
-+	btrfs_leak_debug_del_eb(eb);
- 	__free_extent_buffer(eb);
- }
+ 	if (!ret)
+@@ -3958,6 +3975,25 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 	scrub_workers_put(fs_info);
+ 	scrub_put_ctx(sctx);
  
-@@ -5847,8 +5866,7 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
- 	eb->bflags = 0;
- 	init_rwsem(&eb->lock);
- 
--	btrfs_leak_debug_add(&fs_info->eb_leak_lock, &eb->leak_list,
--			     &fs_info->allocated_ebs);
-+	btrfs_leak_debug_add_eb(eb);
- 	INIT_LIST_HEAD(&eb->release_list);
- 
- 	spin_lock_init(&eb->refs_lock);
-@@ -6294,7 +6312,7 @@ static int release_extent_buffer(struct extent_buffer *eb)
- 			spin_unlock(&eb->refs_lock);
- 		}
- 
--		btrfs_leak_debug_del(&eb->fs_info->eb_leak_lock, &eb->leak_list);
-+		btrfs_leak_debug_del_eb(eb);
- 		/* Should be safe to release our pages at this point */
- 		btrfs_release_extent_buffer_pages(eb);
- #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
++	/*
++	 * We found some super block errors before, now try to force a
++	 * transaction commit, as scrub has finished.
++	 */
++	if (need_commit) {
++		struct btrfs_trans_handle *trans;
++
++		trans = btrfs_start_transaction(fs_info->tree_root, 0);
++		if (IS_ERR(trans)) {
++			ret = PTR_ERR(trans);
++			btrfs_err(fs_info,
++	"scrub: failed to start transaction to fix super block errors: %d", ret);
++			return ret;
++		}
++		ret = btrfs_commit_transaction(trans);
++		if (ret < 0)
++			btrfs_err(fs_info,
++	"scrub: failed to commit transaction to fix super block errors: %d", ret);
++	}
+ 	return ret;
+ out:
+ 	scrub_workers_put(fs_info);
 -- 
 2.35.1
 
