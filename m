@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 389F95FB237
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 14:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9B15FB23A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 14:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229436AbiJKMRd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 08:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
+        id S229748AbiJKMRe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 08:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbiJKMR0 (ORCPT
+        with ESMTP id S229763AbiJKMR2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 08:17:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231C76290B
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:17:26 -0700 (PDT)
+        Tue, 11 Oct 2022 08:17:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC7C54CA1
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:17:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B42286117D
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 964D461042
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C655C433D6
         for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8EF7C433C1
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 12:17:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665490645;
-        bh=5/BzR60oSR5FP+f04LOHWQEBaPY79xvXwdV8jl+GhDM=;
+        s=k20201202; t=1665490646;
+        bh=o7wb94f6ZXtKPRzAarIW+PwdVJ7CAxiIJrewu6H/5pQ=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=pOT3OlLl3teIeiG1MWeQcbBMfaw6mw21HcHhAPvsEyXKasVKZPvDKwZBIyLWKSlxq
-         Xq+hMS/0m9GkarTyPLkErk86Ym6nYJPNxWVtJjDqOiduGz3NTbZDTtBVloy3zbKXbJ
-         FATzff1s7fxFK4a65X7JmqxknlbUgGR5tO4ltAI1LStgdRsQiCUTrj5UwYAZ89mNAm
-         89sr3+3VlVXpMt1ao6VqdQ05HWDQ/xuqRHmrT7WV8Uffv6bsID898UCkwooNV8V5aC
-         np5Y0JV2jM8FULWRB6aAaE6UWR3tw4SHWsho6v/6BR6HUtuVBJT42eIkcFxi5+pIyI
-         BZylzifc+ikLw==
+        b=qwS5KfylC0uHX/C2xRj+9jHfwNHEQ3fgddjQOFoKPrLh92kEz+5VK9bdyc5Og+dW4
+         Xb29uprFYHiELml0DWhalgssEttq19hPONGok1JLUuQtK6AVYoedbCR0VjA5YBe/9y
+         YuZRYsS685Flxc4hmI43/1CdL41siNXgZPVgJPb+WyucP5t1XVRuF3V/5YLQ6PQoC1
+         4j/r7ziglpIDu1k3T5BjtVKvSOAF6gnG4iXsCWmUyf+zqhixAz5RZ7TCqcHGIA/Vot
+         CFhB7nUMqwMMryeiCy0d5r8TdpV7v8J3+OHZnVXe8mcqEWFV2sqQ/DcmFHCowJvgTX
+         g/tmSE2BSjUNA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 14/19] btrfs: remove roots ulist when checking data extent sharedness
-Date:   Tue, 11 Oct 2022 13:17:04 +0100
-Message-Id: <3da686b7a18b07aab7f3278320871d17a6a4bb9c.1665490018.git.fdmanana@suse.com>
+Subject: [PATCH v2 15/19] btrfs: remove useless logic when finding parent nodes
+Date:   Tue, 11 Oct 2022 13:17:05 +0100
+Message-Id: <02cd85d68a3e52c6edacbb263856e2af42820b13.1665490018.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1665490018.git.fdmanana@suse.com>
 References: <cover.1665490018.git.fdmanana@suse.com>
@@ -53,80 +53,104 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Currently btrfs_is_data_extent_shared() is passing a ulist for the roots
-argument of find_parent_nodes(), however it does not use that ulist for
-anything and for this context that list always ends up with at most one
-element.
+At find_parent_nodes(), at its last step, when iterating over all direct
+references, we are checking if we have a share context and if we have
+a reference with a different root from the one in the share context.
+However that logic is pointless because of two reasons:
 
-Since find_parent_nodes() is able to deal with a NULL ulist for its roots
-argument, make btrfs_is_data_extent_shared() pass it NULL and avoid the
-burden of allocating memory for the unnused roots ulist, initializing it,
-releasing it and allocating one struct ulist_node for it during the call
-to find_parent_nodes().
+1) After the previous patch in the series (subject "btrfs: remove roots
+   ulist when checking data extent sharedness"), the roots argument is
+   always NULL when using a share check context (struct share_check), so
+   this code is never triggered;
+
+2) Even before that previous patch, we could not hit this code because
+   if we had a reference with a root different from the one in our share
+   context, then we would have exited earlier when doing either of the
+   following:
+
+      - Adding a second direct ref to the direct refs red black tree
+        resulted in extent_is_shared() returning true when called from
+        add_direct_ref() -> add_prelim_ref(), after processing delayed
+        references or while processing references in the extent tree;
+
+      - When adding a second reference to the indirect refs red black
+        tree (same as above, extent_is_shared() returns true);
+
+      - If we only have one indirect reference and no direct references,
+        then when resolving it at resolve_indirect_refs() we immediately
+        return that the target extent is shared, therefore never reaching
+        that loop that iterates over all direct references at
+        find_parent_nodes();
+
+      - If we have 1 indirect reference and 1 direct reference, then we
+        also exit early because extent_is_shared() ends up returning true
+        when called through add_prelim_ref() (by add_direct_ref() or
+        add_indirect_ref()) or add_delayed_refs(). Same applies as when
+        having a combination of direct, indirect and indirect with missing
+        key references.
+
+   This logic had been obsoleted since commit 3ec4d3238ab165 ("btrfs:
+   allow backref search checks for shared extents"), which introduced the
+   early exits in case an extent is shared.
+
+So just remove that logic, and assert at find_parent_nodes() that when we
+have a share context we don't have a roots ulist and that we haven't found
+the extent to be directly shared after processing delayed references and
+all references from the extent tree.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/backref.c | 6 +-----
- fs/btrfs/backref.h | 1 -
- 2 files changed, 1 insertion(+), 6 deletions(-)
+ fs/btrfs/backref.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 80a21783fc1e..e5c2f40333f5 100644
+index e5c2f40333f5..080d5f36106e 100644
 --- a/fs/btrfs/backref.c
 +++ b/fs/btrfs/backref.c
-@@ -1650,7 +1650,6 @@ struct btrfs_backref_share_check_ctx *btrfs_alloc_backref_share_check_ctx(void)
- 		return NULL;
- 
- 	ulist_init(&ctx->refs);
--	ulist_init(&ctx->roots);
- 
- 	return ctx;
- }
-@@ -1661,7 +1660,6 @@ void btrfs_free_backref_share_ctx(struct btrfs_backref_share_check_ctx *ctx)
- 		return;
- 
- 	ulist_release(&ctx->refs);
--	ulist_release(&ctx->roots);
- 	kfree(ctx);
- }
- 
-@@ -1704,7 +1702,6 @@ int btrfs_is_data_extent_shared(struct btrfs_inode *inode, u64 bytenr,
+@@ -1201,6 +1201,10 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
+ 		.indirect_missing_keys = PREFTREE_INIT
  	};
- 	int level;
  
--	ulist_init(&ctx->roots);
- 	ulist_init(&ctx->refs);
- 
- 	trans = btrfs_join_transaction_nostart(root);
-@@ -1728,7 +1725,7 @@ int btrfs_is_data_extent_shared(struct btrfs_inode *inode, u64 bytenr,
- 		bool cached;
- 
- 		ret = find_parent_nodes(trans, fs_info, bytenr, elem.seq, &ctx->refs,
--					&ctx->roots, NULL, &shared, false);
-+					NULL, NULL, &shared, false);
- 		if (ret == BACKREF_FOUND_SHARED) {
- 			/* this is the only condition under which we return 1 */
- 			ret = 1;
-@@ -1796,7 +1793,6 @@ int btrfs_is_data_extent_shared(struct btrfs_inode *inode, u64 bytenr,
- 		up_read(&fs_info->commit_root_sem);
++	/* Roots ulist is not needed when using a sharedness check context. */
++	if (sc)
++		ASSERT(roots == NULL);
++
+ 	key.objectid = bytenr;
+ 	key.offset = (u64)-1;
+ 	if (btrfs_fs_incompat(fs_info, SKINNY_METADATA))
+@@ -1292,6 +1296,20 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
+ 		}
  	}
- out:
--	ulist_release(&ctx->roots);
- 	ulist_release(&ctx->refs);
- 	return ret;
- }
-diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index 8da0ba6b94a4..5f468f0defda 100644
---- a/fs/btrfs/backref.h
-+++ b/fs/btrfs/backref.h
-@@ -26,7 +26,6 @@ struct btrfs_backref_shared_cache_entry {
- struct btrfs_backref_share_check_ctx {
- 	/* Ulists used during backref walking. */
- 	struct ulist refs;
--	struct ulist roots;
- 	/*
- 	 * A path from a root to a leaf that has a file extent item pointing to
- 	 * a given data extent should never exceed the maximum b+tree height.
+ 
++	/*
++	 * If we have a share context and we reached here, it means the extent
++	 * is not directly shared (no multiple reference items for it),
++	 * otherwise we would have exited earlier with a return value of
++	 * BACKREF_FOUND_SHARED after processing delayed references or while
++	 * processing inline or keyed references from the extent tree.
++	 * The extent may however be indirectly shared through shared subtrees
++	 * as a result from creating snapshots, so we determine below what is
++	 * its parent node, in case we are dealing with a metadata extent, or
++	 * what's the leaf (or leaves), from a fs tree, that has a file extent
++	 * item pointing to it in case we are dealing with a data extent.
++	 */
++	ASSERT(extent_is_shared(sc) == 0);
++
+ 	btrfs_release_path(path);
+ 
+ 	ret = add_missing_keys(fs_info, &preftrees, path->skip_locking == 0);
+@@ -1329,11 +1347,6 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
+ 		 * and would retain their original ref->count < 0.
+ 		 */
+ 		if (roots && ref->count && ref->root_id && ref->parent == 0) {
+-			if (sc && ref->root_id != sc->root_objectid) {
+-				ret = BACKREF_FOUND_SHARED;
+-				goto out;
+-			}
+-
+ 			/* no parent == root of tree */
+ 			ret = ulist_add(roots, ref->root_id, 0, GFP_NOFS);
+ 			if (ret < 0)
 -- 
 2.35.1
 
