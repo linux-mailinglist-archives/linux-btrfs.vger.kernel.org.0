@@ -2,118 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9777B5FB1EC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 14:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0270E5FB21E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Oct 2022 14:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbiJKMCF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Oct 2022 08:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
+        id S229748AbiJKMKG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Oct 2022 08:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbiJKMCD (ORCPT
+        with ESMTP id S229715AbiJKMKB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Oct 2022 08:02:03 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933C1895CC
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:02:02 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3EBA71FA41;
-        Tue, 11 Oct 2022 12:02:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1665489721;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pslrI2AHBT/sT4riEIWqzL/Qr7z20mVpSdKBix4yM1I=;
-        b=VU9oU3o59VuDr4e8aUOUNM1+teoDLUXHf+2qoL5E30LZJZTTiHexUj+hgJzP5SDz3ZCAJ3
-        3gfrCvVYtsHhLv36tBoOv62hyaiN4dXbCsCKXrLsuOkm/MJLkB5ifiyWymCabYbPa3mJfE
-        bDOnnj9j4r3o3OExcQfyWA6ffoTNSDw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1665489721;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pslrI2AHBT/sT4riEIWqzL/Qr7z20mVpSdKBix4yM1I=;
-        b=FjVygYdOCgHV6vn8ikYIfbj+ksDPFaRszf1DnVW0pamWJq6hmFaWkEopR4xlc7JmRnYPE1
-        4Qd+KDV+dP0oI5Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DC305139ED;
-        Tue, 11 Oct 2022 12:02:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id RHZUNDhbRWMTRAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 11 Oct 2022 12:02:00 +0000
-Date:   Tue, 11 Oct 2022 14:01:50 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 08/16] btrfs: move incompat and compat flag helpers to
- fs.c
-Message-ID: <20221011120150.GQ13389@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1663175597.git.josef@toxicpanda.com>
- <3aeef7d866611a84296b74ff0ee7938351c58d88.1663175597.git.josef@toxicpanda.com>
- <20221011103327.GM13389@twin.jikos.cz>
+        Tue, 11 Oct 2022 08:10:01 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E012C15810
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Oct 2022 05:09:59 -0700 (PDT)
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1oiE50-0002YD-LE; Tue, 11 Oct 2022 14:09:50 +0200
+Message-ID: <8be1e839-2eb8-43d0-9ecb-6ff8c3aa3f2d@leemhuis.info>
+Date:   Tue, 11 Oct 2022 14:09:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221011103327.GM13389@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Content-Language: en-US, de-DE
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        Viktor Kuzmin <kvaster@gmail.com>
+To:     David Sterba <dsterba@suse.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Bug 216559 - btrfs crash root mount RAID0 caused by ac0677348f3c2
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1665490199;f369ea59;
+X-HE-SMSGID: 1oiE50-0002YD-LE
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 12:33:27PM +0200, David Sterba wrote:
-> On Wed, Sep 14, 2022 at 01:18:13PM -0400, Josef Bacik wrote:
-> > These helpers use functions not defined in fs.h, move them to fs.c to
-> > keep the header clean.
-> 
-> This is one of the examples where functions are switched from inline to
-> out-of-line, so I'll reply for all of them.
-> 
-> > +bool __btrfs_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag)
-> > +{
-> > +	struct btrfs_super_block *disk_super;
-> > +	disk_super = fs_info->super_copy;
-> > +	return !!(btrfs_super_incompat_flags(disk_super) & flag);
-> > +}
-> 
-> This needs a separate function and unlike for the inline it needs a
-> call which has some impact on the instruction flow. This should be
-> evaluated if the un-inlined function is on a hot path or not.
-> 
-> In this case I think the incompat bits should be inline as it's in many
-> places part of switching access to some structures or lookup.
-> 
-> At minimum some numbers and assembly examination should be done before
-> ding that. The header cleanup part is nice but if the changes have
-> performance implications it's suddenly not so easy.
-> 
-> I'll do some analysis to get an idea how bad/good it is.
+Hi, this is your Linux kernel regression tracker speaking.
 
-Not that good. When inlined it's basically
+David, I noticed a regression report in bugzilla.kernel.org apparently
+caused by a changed of yours. As many (most?) kernel developer don't
+keep an eye on the bug-tracker, I decided to forward the report by mail.
+Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=216559 :
 
-	mov memory, rax
-	mov memory(rax), rax
-	test 0x1, rax
+> [reply] [−] Description Viktor Kuzmin 2022-10-08 20:41:32 UTC
+> 
+> In linux 6.0.0 there was change in block-group.c file in function btrfs_rmap_block:
+> [...]
 
-while uninlined it's
+FWIW, the reporter (CCed) here meant change ac0677348f3c2 ("btrfs: merge
+calculations for simple striped profiles in btrfs_rmap_block").
+Reverting it fixes the problem.
 
-	mov memory, rdi
-	mov memory, rsi
-	call
-	test rax, rax
+> After this change I have a crash with DIVIDE by ZERO error. It seems that map->sub_stripes can be zero.
+> 
+> My setup is 2x 1TB nvme with space_cache=v2 and discard=async btrfs raid0.
 
-the function itself is 4 instructions but with some additional ones
-compared to the inlined version (2).
+See the ticket for more details and screenshots from the crash.
+
+BTW, let me use this mail to also add the report to the list of tracked
+regressions to ensure it's doesn't fall through the cracks:
+
+#regzbot introduced: ac0677348f3c2
+https://bugzilla.kernel.org/show_bug.cgi?id=216559
+#regzbot ignore-activity
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+
+P.S.: As the Linux kernel's regression tracker I deal with a lot of
+reports and sometimes miss something important when writing mails like
+this. If that's the case here, don't hesitate to tell me in a public
+reply, it's in everyone's interest to set the public record straight.
