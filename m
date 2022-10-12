@@ -2,71 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6ED5FC48B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 13:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF135FC5AE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 14:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbiJLLy3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Oct 2022 07:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
+        id S229600AbiJLM5B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Oct 2022 08:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbiJLLy2 (ORCPT
+        with ESMTP id S229543AbiJLM46 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Oct 2022 07:54:28 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36EFB277B;
-        Wed, 12 Oct 2022 04:54:26 -0700 (PDT)
+        Wed, 12 Oct 2022 08:56:58 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED49101C8;
+        Wed, 12 Oct 2022 05:56:56 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7754B21C2B;
-        Wed, 12 Oct 2022 11:54:25 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 821171F38D;
+        Wed, 12 Oct 2022 12:56:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1665575665;
+        t=1665579414;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=3zSpgWBUTLEADiWqyI4QhLUqGwSaF+lXEnhQbQY0U8U=;
-        b=A5bcXFgEFjvk6f598N+eoADmwbueIEgZ0Pghde9GtseBeW0+OrnQAIHM7FOkGmhDlsjwOQ
-        WL9C53wWyo/9t3RTbk94HMNnd45r4nNTTidD+TK1mnYRYrld6mgKaYjpCM0OAWjBeTP9SK
-        w1zf5FNtJhcISMpntoAa2vyDE/PKouk=
+        bh=qrA2CI8dDGDHD2Tp/B22Ukl2G8QcxU9FnPA/bcB+ldQ=;
+        b=KkPas0QhlyfQvs3HBwNgpgxNyh4dCX6gqiG1t+JoNUKMnT/yoeWNkNnTdoWJbYziNJAMtN
+        bkwrk/TB/wHfon1sRXyEeFKvjqHinPHvBgsLVMR4hyaE00olDEJgLEYoqK0T0tON3+w0q3
+        daBBUd8dtPhEU0pSNdW2jjRBr3Fv5ao=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1665575665;
+        s=susede2_ed25519; t=1665579414;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=3zSpgWBUTLEADiWqyI4QhLUqGwSaF+lXEnhQbQY0U8U=;
-        b=EUlk8H5n56NSFO3OVh8L62EUH2UMFWOizQMG+1CzCH7gnM8wzy8H6csM4R3owf/NnEY8FQ
-        PePWXNQefNsvzWAA==
+        bh=qrA2CI8dDGDHD2Tp/B22Ukl2G8QcxU9FnPA/bcB+ldQ=;
+        b=MiRd3Q0pPRx8b4tENbtbE8We1HgTmOCqaASy2Yee3Hw4FygwkGNUc5q4MXwGzW0Lz6cWHY
+        5aJ+TaIYVz+KtcDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 00D7113A5C;
-        Wed, 12 Oct 2022 11:54:24 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3AC3E13ACD;
+        Wed, 12 Oct 2022 12:56:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id +tkfOvCqRmOoQgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 12 Oct 2022 11:54:24 +0000
-Date:   Wed, 12 Oct 2022 13:54:18 +0200
+        id mOP4DJa5RmM4agAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 12 Oct 2022 12:56:54 +0000
+Date:   Wed, 12 Oct 2022 14:56:48 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Sasha Levin <sashal@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        zhang songyi <zhang.songyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>,
-        Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>, clm@fb.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.0 37/46] btrfs: remove the unnecessary result
- variables
-Message-ID: <20221012115418.GW13389@suse.cz>
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.0 38/46] btrfs: introduce
+ BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN
+Message-ID: <20221012125648.GX13389@suse.cz>
 Reply-To: dsterba@suse.cz
 References: <20221011145015.1622882-1-sashal@kernel.org>
- <20221011145015.1622882-37-sashal@kernel.org>
+ <20221011145015.1622882-38-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221011145015.1622882-37-sashal@kernel.org>
+In-Reply-To: <20221011145015.1622882-38-sashal@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
@@ -77,38 +74,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 10:50:05AM -0400, Sasha Levin wrote:
-> From: zhang songyi <zhang.songyi@zte.com.cn>
+On Tue, Oct 11, 2022 at 10:50:06AM -0400, Sasha Levin wrote:
+> From: Qu Wenruo <wqu@suse.com>
 > 
-> [ Upstream commit bd64f6221a98fb1857485c63fd3d8da8d47406c6 ]
+> [ Upstream commit e562a8bdf652b010ce2525bcf15d145c9d3932bf ]
 > 
-> Return the sysfs_emit() and iterate_object_props() directly instead of
-> using unnecessary variables.
+> Introduce a new runtime flag, BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN,
+> which will inform qgroup rescan to cancel its work asynchronously.
 > 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Reviewed-by: Anand Jain <anand.jain@oracle.com>
-> Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  fs/btrfs/props.c |  5 +----
->  fs/btrfs/sysfs.c | 10 ++--------
->  2 files changed, 3 insertions(+), 12 deletions(-)
+> This is to address the window when an operation makes qgroup numbers
+> inconsistent (like qgroup inheriting) while a qgroup rescan is running.
 > 
-> diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
-> index a2ec8ecae8de..055a631276ce 100644
-> --- a/fs/btrfs/props.c
-> +++ b/fs/btrfs/props.c
-> @@ -270,11 +270,8 @@ int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path)
->  {
->  	struct btrfs_root *root = BTRFS_I(inode)->root;
->  	u64 ino = btrfs_ino(BTRFS_I(inode));
-> -	int ret;
-> -
-> -	ret = iterate_object_props(root, path, ino, inode_prop_iterator, inode);
->  
-> -	return ret;
-> +	return iterate_object_props(root, path, ino, inode_prop_iterator, inode);
+> In that case, qgroup inconsistent flag will be cleared when qgroup
+> rescan finishes.
+> But we changed the ownership of some extents, which means the rescan is
+> already meaningless, and the qgroup inconsistent flag should not be
+> cleared.
+> 
+> With the new flag, each time we set INCONSISTENT flag, we also set this
+> new flag to inform any running qgroup rescan to exit immediately, and
+> leaving the INCONSISTENT flag there.
+> 
+> The new runtime flag can only be cleared when a new rescan is started.
 
-Please drop the patch from stable queues, it's an obvious cleanup.
+Qu, does this patch make sense for stable on itself? It was part of a
+series adding some new flags and the sysfs knob.  As I read it there's a
+case where it can affect how the rescan is done and that it can be
+cancelled but still am not sure if it's worth the backport.
