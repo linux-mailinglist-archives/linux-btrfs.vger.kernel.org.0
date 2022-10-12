@@ -2,139 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AEEF5FC5CB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 15:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA695FCEC3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Oct 2022 01:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbiJLNBz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Oct 2022 09:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
+        id S229607AbiJLXMb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Oct 2022 19:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbiJLNBy (ORCPT
+        with ESMTP id S229511AbiJLXM3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Oct 2022 09:01:54 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECCC42700;
-        Wed, 12 Oct 2022 06:01:52 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 96FD221E5F;
-        Wed, 12 Oct 2022 13:01:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1665579711;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ow3cw4JlyoLITqPKZ7rmGOf5DZypBIDDz4xaPhgVi6M=;
-        b=u503n1p2Ark1GuEffAyqjUwCRw4E6OFa+hDwqF1OzqyN551pnEhvt5Z86gnTut02yOq+vK
-        8+mXw+IE0uIyFs7Ey6M+vZT9K7fxHSbEQVUMs7DeszOZCpwx729X87EWrfwJFUxUaCcjLT
-        c3yGwRsaBzvV73xKIRUyFc1+SpUviOE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1665579711;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ow3cw4JlyoLITqPKZ7rmGOf5DZypBIDDz4xaPhgVi6M=;
-        b=SrYY1712Av/PpT11639oBzmcGrL56eQ3plaqiaeqO6NvF8pR5h6XiAVcoxRNCoaw2zCX9t
-        kzyIFG6V8bZotvAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B32313ACD;
-        Wed, 12 Oct 2022 13:01:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id okVlEb+6RmMnbQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 12 Oct 2022 13:01:51 +0000
-Date:   Wed, 12 Oct 2022 15:01:45 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sasha Levin <sashal@kernel.org>
+        Wed, 12 Oct 2022 19:12:29 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38AA125733;
+        Wed, 12 Oct 2022 16:12:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1665616336;
+        bh=sifrAf5cUTittzOP73JKNs4SgXwLTDYTy7aQJdjlO7k=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=U2R2jE0Wu1sPBYYjAiuxnaBR8cRA6HDpbjB5QJo/yLZTVQA+guSBa1xVJyf5AqosT
+         BQp9vzTe5y7yRcTet/GW6Iv1jP1O9MNN+hfG2IR5AWwl3oRe2CYytVzx9kSS+Ia4xa
+         u1LJrHasV7pz4cLjPcF8JWku2e6wTGaxDsmLiP00=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiJZO-1pKrbV3Lt8-00fQxe; Thu, 13
+ Oct 2022 01:12:16 +0200
+Message-ID: <7cf55e21-4d68-8371-a4a5-08cd8278bcf9@gmx.com>
+Date:   Thu, 13 Oct 2022 07:12:10 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [PATCH AUTOSEL 6.0 38/46] btrfs: introduce
+ BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN
+To:     dsterba@suse.cz, Sasha Levin <sashal@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
         Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.0 41/46] btrfs: relax block-group-tree feature
- dependency checks
-Message-ID: <20221012130145.GY13389@suse.cz>
-Reply-To: dsterba@suse.cz
 References: <20221011145015.1622882-1-sashal@kernel.org>
- <20221011145015.1622882-41-sashal@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221011145015.1622882-41-sashal@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+ <20221011145015.1622882-38-sashal@kernel.org>
+ <20221012125648.GX13389@suse.cz>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20221012125648.GX13389@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5qNb5fYWOeTTU35hLmoqcrQ2Sw3VOKKVjWIRnHrVadcZIXSUkK3
+ r2bEvBknAw+V4+I5RgHyQ8BTOLO+RMsKIAMxTCWn0fpne5yHh6/swT3N0qcq+/82Kt5S0oh
+ m2vl9xpxBBuINPM1Xj8W0L+2Wlkrw/llmTNuhTsRacQcUP1JyQNMNT8hp2SWYAoeSLN6VXI
+ aArHA8W7NRUuMorUzDt6Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LS6b9Jc9Ycs=:hBWAE98ja1CB+TynM9T6WG
+ J1oDhG02pwQvEJFaOfv/rfe5bJBGpBTwEetFO4au/FYm0i1gl0ZayBX58rYwMeWWa58eYP494
+ yBLgSLHstGNEFdoE0bwLOd7ISkD54BTcCXZkK8+QDNBFwr5DUV7uP6LW1XyrtfDwJdfvTfDPd
+ Yho28fPwIi0KC7kWdxHEpBLOSzkHkkzyEpB2E+8lJE0sx+nBapR9JLvxrM44905YGmKlmG57e
+ FCQrexFioRh9cdGPME4G/GiolKpwmp58VdgmShmwwytLqAdmvLDaxVYgSD7Ht1//2G5jDtO8r
+ 8tib+VycZUVDNsFKsb6g4mCHNAk+dHOP53fIWEc3RpETyyyQ4iIXpqhc4GetTjbF5FrGnKmHR
+ mn+oZZ1RiSMHz+HsJBDV0vO1Iyh4gYOxfqqu3WCTgquVjA6XCsC6YlZ3V9sSORguWtY0MAMvm
+ VmIBdyz6f/VGAbQAavxbppZOHqRZyWN2ExRVlJxhPgpAKOMOt7JttURh4onB5JL16+mkdn2QA
+ L/LgDWbwmOZdMNXx/xzI6R2lDpRmjnejCkr3knoRTIpIGCTseXy0jolKjtobk6iDN89kWLblv
+ mW/Vg6j+BX+WC5e59Q8Sr8jAFxtgHprU5cnlseGdE94hzoNVVen2gW6WyKAyRaAn9xppycvvo
+ F6IAyp3XWTNNzVIj+cXbcHmrGK+v0ZFApUAAlzT9rBKbzN0liz8on/h2ud21A7SL58N3nM55d
+ h4CGVBttGiEGqRzcYHpxWBwbgd4ugmNyyXTLeEL+nFD7My6dXrw1RRSZE11vta2PiPNLFgJ5W
+ LSaCvOmTMXG4/eItZXK6Lmn3I5q0400V0U5K/0OxRC8oXOBJIs9FJ2+taa3Q6CIKTLMnIhHbD
+ v14Biy9SreRFisOepq9aRojGkapM6LGV/hPyR2+xXqlMd2GPWC3biD+6VzZdTKjKSBzsx7zy2
+ oahNpNTEEvjtudt4T+qR3mr5YtOnqZLuB2lQ0ihWSHyz8tKUgx8j4IIHVfyvGtRgOQ34udStv
+ cv6jjPuL3D2pWIbyyAjgsatlb/lrzceLwEDuzCc3KP6QgQlrujxwPQfSO6GcOKr9oYTce9iNq
+ ke6oz4gN5zV3Yf8qGDks2TMKPSBaF2cE2I57PWq5T1S8W/+maVmWENJMycS7WiUcwExrAsBke
+ qigUoYoREJpwj1hD49HUAlXg4VzGuzJkx0AxP8aGKiubAjGQUY/FEQJjuG84MQoigvC0qiNs5
+ 7MFWpcpxDy8S6xNvuuu9Krq1aC6ct28NXZRMozkfKpabbYxCVXQZpNG1NKUKmHxZGFaOK0Jy5
+ 3uUSfQJVywKLNfG5vPpFJ5X0Ca9xMpgWxDXRFAyVTZucOP8UKYrC8bk6cQ5HBjpJASK8e/q/Z
+ TfVy8qywsglOYxhCr2kIKBl/Wb1UUZHHtwhvQBNdlRRvL9rkinfO6nNUdWHqMUMw6CA+/olJ8
+ vsZ1IMOTLMKGxNfnwF06s8OBPMAAIPxvexPx2R6icVE+/jv2H8OXZm6SxEXqRP78LW8IyOzi4
+ 3aGWI63TjO6rf/I2NKoS8E8Uvk+XLpvpY76MlxSUTOWTU
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 10:50:09AM -0400, Sasha Levin wrote:
-> From: Qu Wenruo <wqu@suse.com>
-> 
-> [ Upstream commit d7f67ac9a928fa158a95573406eac0a887bbc28c ]
-> 
-> [BUG]
-> When one user did a wrong attempt to clear block group tree, which can
-> not be done through mount option, by using "-o clear_cache,space_cache=v2",
-> it will cause the following error on a fs with block-group-tree feature:
-> 
->   BTRFS info (device dm-1): force clearing of disk cache
->   BTRFS info (device dm-1): using free space tree
->   BTRFS info (device dm-1): clearing free space tree
->   BTRFS info (device dm-1): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
->   BTRFS info (device dm-1): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
->   BTRFS error (device dm-1): block-group-tree feature requires fres-space-tree and no-holes
->   BTRFS error (device dm-1): super block corruption detected before writing it to disk
->   BTRFS: error (device dm-1) in write_all_supers:4318: errno=-117 Filesystem corrupted (unexpected superblock corruption detected)
->   BTRFS warning (device dm-1: state E): Skipping commit of aborted transaction.
-> 
-> [CAUSE]
-> Although the dependency for block-group-tree feature is just an
-> artificial one (to reduce test matrix), we put the dependency check into
-> btrfs_validate_super().
-> 
-> This is too strict, and during space cache clearing, we will have a
-> window where free space tree is cleared, and we need to commit the super
-> block.
-> 
-> In that window, we had block group tree without v2 cache, and triggered
-> the artificial dependency check.
-> 
-> This is not necessary at all, especially for such a soft dependency.
-> 
-> [FIX]
-> Introduce a new helper, btrfs_check_features(), to do all the runtime
-> limitation checks, including:
-> 
-> - Unsupported incompat flags check
-> 
-> - Unsupported compat RO flags check
-> 
-> - Setting missing incompat flags
-> 
-> - Artificial feature dependency checks
->   Currently only block group tree will rely on this.
-> 
-> - Subpage runtime check for v1 cache
-> 
-> With this helper, we can move quite some checks from
-> open_ctree()/btrfs_remount() into it, and just call it after
-> btrfs_parse_options().
-> 
-> Now "-o clear_cache,space_cache=v2" will not trigger the above error
-> anymore.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> [ edit messages ]
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Please drop this from the stable queue, it's for an unreleased feature
-(ETA 6.1).
+
+On 2022/10/12 20:56, David Sterba wrote:
+> On Tue, Oct 11, 2022 at 10:50:06AM -0400, Sasha Levin wrote:
+>> From: Qu Wenruo <wqu@suse.com>
+>>
+>> [ Upstream commit e562a8bdf652b010ce2525bcf15d145c9d3932bf ]
+>>
+>> Introduce a new runtime flag, BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN,
+>> which will inform qgroup rescan to cancel its work asynchronously.
+>>
+>> This is to address the window when an operation makes qgroup numbers
+>> inconsistent (like qgroup inheriting) while a qgroup rescan is running.
+>>
+>> In that case, qgroup inconsistent flag will be cleared when qgroup
+>> rescan finishes.
+>> But we changed the ownership of some extents, which means the rescan is
+>> already meaningless, and the qgroup inconsistent flag should not be
+>> cleared.
+>>
+>> With the new flag, each time we set INCONSISTENT flag, we also set this
+>> new flag to inform any running qgroup rescan to exit immediately, and
+>> leaving the INCONSISTENT flag there.
+>>
+>> The new runtime flag can only be cleared when a new rescan is started.
+>
+> Qu, does this patch make sense for stable on itself? It was part of a
+> series adding some new flags and the sysfs knob.  As I read it there's a
+> case where it can affect how the rescan is done and that it can be
+> cancelled but still am not sure if it's worth the backport.
+
+Considering the qgroup still lacks a way to handle large subvolume drop,
+and a lot of things can mark qgroup inconsistent halfway, I think
+backporting this patch itself is not that bad.
+
+The problem is, why only backporting this one?
+
+To me, it would make more sense to backport either all or none.
+
+Sure, if we can cancel rescan it's an improvement, but rescan itself is
+already relatively cheap compared to other qgroup operations.
+Thus I prefer to backport all the qgroup patches.
+
+Thanks,
+Qu
+
