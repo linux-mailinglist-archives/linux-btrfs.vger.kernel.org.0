@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3405FC2C2
+	by mail.lfdr.de (Postfix) with ESMTP id 038BB5FC2C1
 	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 11:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbiJLJNl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Oct 2022 05:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56042 "EHLO
+        id S229883AbiJLJNo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Oct 2022 05:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbiJLJNf (ORCPT
+        with ESMTP id S229821AbiJLJNh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Oct 2022 05:13:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C679BBF3E
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 02:13:34 -0700 (PDT)
+        Wed, 12 Oct 2022 05:13:37 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9202BBC443
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 02:13:35 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3B4621F388
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:32 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 38F8A1F381
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1665566012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1665566013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ehV/T0XkvQbBvPPgvh26s35H1r7mal/ZfLsDvG18ycA=;
-        b=JYFBgD8vngDMVXa0CQXCj59pWQFgg8i17RCoidRqvZQD3+sptrYQqhAbpOZcA1nqK+4WIf
-        2nUCnHhJBy+qeoKpeS1Y1bx/s4qr/3AWzhrzmlzVvE+qHoB1jIrm1vBWjFzcOHHmy2/5GC
-        elBkfocbunvEMSwDtVKwLDlYmzGuO7s=
+        bh=9YTdFL2kSG8TVvcylE1fLRk1bFNOZTF8kTi5aZAbcDs=;
+        b=OVcQ8cD9irisSmGVzTseA342D2YO54EsBYC6H0EZ2UdQqVC1mL1TO84Icgy3B2JlJyt/MV
+        BJoS4GCSmduwMleGTjzYUpGJ+T1baKcPMesDfKqts5Mb0TzcB+7tSwR59vHdN9qqKD/Lgr
+        eFgsrC5A6tP+5MBb5C22CMGqyTvsylQ=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 817CE13A5C
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:31 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89C9913A5C
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id IDyLEzuFRmPKcQAAMHmgww
+        id AFBFFTyFRmPKcQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:31 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:32 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 03/15] btrfs: extract btree inode init code into its own init/exit helpers
-Date:   Wed, 12 Oct 2022 17:12:59 +0800
-Message-Id: <a9bde9d3fc82d4a96cac022d4a02bc50c04103b3.1665565866.git.wqu@suse.com>
+Subject: [PATCH v2 04/15] btrfs: extract super block read code into its own init helper
+Date:   Wed, 12 Oct 2022 17:13:00 +0800
+Message-Id: <621c78b7f72cca81688bd0bb367972a31741f153.1665565866.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1665565866.git.wqu@suse.com>
 References: <cover.1665565866.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,98 +60,208 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just like how we handle init_btrfs_fs(), here we also use an array to
-handle the open_ctree() sequence.
+This patch will extract the super block read and cached members
+(sectorsize/nodesize/etc) initialization into a helper,
+open_ctree_super_init().
 
-This patch will do the first step by introducing the arrays, and put
-btree_inode init/exit code into two helpers:
+This extraction also did the following non-functional change:
 
-- open_ctree_btree_inode_init
-- open_ctree_btree_inode_exit
+- Add an error message for super_root == 0 case
+  Previously we just goto fail_alloc, with ret == 0.
+  This can be very confusing and would cause problems since we didn't
+  finish the mount at all.
 
-[EXPOSED LABEL MISMATCH]
-- Bad btrfs_mapping_tree_free() call
-  Currently in fail_alloc tag, we call not only iput() on btree_inode, but
-  also free the fs_info->mapping_tree, which is not correct.
-
-  As the first time we touch mapping_tree is at btrfs_read_sys_array(),
-  thus the btrfs_mapping_tree_free() call is already a label mismatch.
-
-  This will be addressed when we refactor the chunk tree init code.
-
-- Bad invalidate_inode_pages2() call
-  After initiliazing the btree inode, we should invalidate all the page
-  cache for metadata before we put the btree inode.
-
-  But the old code is calling invalidate_inode_pages2() before stopping
-  all workers.
-
-  This is addressed by this patch as we're really the last exit function
-  to be executed, thus we're safe to call invalidate_inode_pages2() then
-  iput().
-
-[SPECIAL HANDLING]
-After init_mount_fs_info() if we hit some error, we don't need to undo
-the work of init_mount_fs_info(), as caller will call btrfs_free_fs_info()
-to free it anyway.
+- Move sb->s_blocksize and sb->s_bdi initialization into the new helper
+  Since at this stage we already have valid super block and its
+  sectorsize, we can directly initialize them here.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c | 111 +++++++++++++++++++++++++++++++--------------
- 1 file changed, 77 insertions(+), 34 deletions(-)
+ fs/btrfs/disk-io.c | 185 +++++++++++++++++++++++----------------------
+ 1 file changed, 93 insertions(+), 92 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index ba9fe0041e6f..1c1c767f2bf1 100644
+index 1c1c767f2bf1..f8be0a74d07a 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -3402,6 +3402,64 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, struct super_block *sb)
- 	return 0;
+@@ -3448,55 +3448,18 @@ static void open_ctree_btree_inode_exit(struct btrfs_fs_info *fs_info)
+ 	fs_info->chunk_root = NULL;
  }
  
-+static int open_ctree_btree_inode_init(struct btrfs_fs_info *fs_info)
-+{
-+	int ret;
+-struct init_sequence {
+-	int (*init_func)(struct btrfs_fs_info *fs_info);
+-	void (*exit_func)(struct btrfs_fs_info *fs_info);
+-};
+-
+-static const struct init_sequence open_ctree_seq[] = {
+-	{
+-		.init_func = open_ctree_btree_inode_init,
+-		.exit_func = open_ctree_btree_inode_exit,
+-	}
+-};
+-
+-int __cold open_ctree(struct super_block *sb, char *options)
++static int open_ctree_super_init(struct btrfs_fs_info *fs_info)
+ {
+-	u32 sectorsize;
++	struct btrfs_super_block *disk_super;
+ 	u32 nodesize;
+-	u32 stripesize;
+-	u64 generation;
+-	u64 features;
++	u32 sectorsize;
+ 	u16 csum_type;
+-	bool open_ctree_res[ARRAY_SIZE(open_ctree_seq)] = {0};
+-	struct btrfs_super_block *disk_super;
+-	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+-	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+ 	int ret;
+-	int err = -EINVAL;
+-	int level;
+-	int i;
+ 
+-	fs_info->sb = sb;
+-
+-	/* Caller should have already initialized fs_info->fs_devices. */
+-	ASSERT(fs_info->fs_devices);
+-
+-	for (i = 0; i < ARRAY_SIZE(open_ctree_seq); i++) {
+-		ret = open_ctree_seq[i].init_func(fs_info);
+-		if (ret < 0)
+-			goto fail;
+-		open_ctree_res[i] = true;
+-	}
+-
+-	/*
+-	 * Read super block and check the signature bytes only
+-	 */
+-	disk_super = btrfs_read_dev_super(fs_devices->latest_dev->bdev);
+-	if (IS_ERR(disk_super)) {
+-		err = PTR_ERR(disk_super);
+-		goto fail_alloc;
+-	}
++	/* Read super block and check the signature bytes only */
++	disk_super = btrfs_read_dev_super(fs_info->fs_devices->latest_dev->bdev);
++	if (IS_ERR(disk_super))
++		return PTR_ERR(disk_super);
+ 
+ 	/*
+ 	 * Verify the type first, if that or the checksum value are
+@@ -3506,19 +3469,15 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 	if (!btrfs_supported_super_csum(csum_type)) {
+ 		btrfs_err(fs_info, "unsupported checksum algorithm: %u",
+ 			  csum_type);
+-		err = -EINVAL;
+-		btrfs_release_disk_super(disk_super);
+-		goto fail_alloc;
++		ret = -EINVAL;
++		goto error;
+ 	}
+ 
+ 	fs_info->csum_size = btrfs_super_csum_size(disk_super);
+ 
+ 	ret = btrfs_init_csum_hash(fs_info, csum_type);
+-	if (ret) {
+-		err = ret;
+-		btrfs_release_disk_super(disk_super);
+-		goto fail_alloc;
+-	}
++	if (ret)
++		goto error;
+ 
+ 	/*
+ 	 * We want to check superblock checksum, the type is stored inside.
+@@ -3526,9 +3485,8 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 	 */
+ 	if (btrfs_check_super_csum(fs_info, (u8 *)disk_super)) {
+ 		btrfs_err(fs_info, "superblock checksum mismatch");
+-		err = -EINVAL;
+-		btrfs_release_disk_super(disk_super);
+-		goto fail_alloc;
++		ret = -EINVAL;
++		goto error;
+ 	}
+ 
+ 	/*
+@@ -3536,33 +3494,30 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 	 * following bytes up to INFO_SIZE, the checksum is calculated from
+ 	 * the whole block of INFO_SIZE
+ 	 */
+-	memcpy(fs_info->super_copy, disk_super, sizeof(*fs_info->super_copy));
++	memcpy(fs_info->super_copy, disk_super, BTRFS_SUPER_INFO_SIZE);
+ 	btrfs_release_disk_super(disk_super);
+ 
+-	disk_super = fs_info->super_copy;
+-
+-
+-	features = btrfs_super_flags(disk_super);
+-	if (features & BTRFS_SUPER_FLAG_CHANGING_FSID_V2) {
+-		features &= ~BTRFS_SUPER_FLAG_CHANGING_FSID_V2;
+-		btrfs_set_super_flags(disk_super, features);
++	if (btrfs_super_flags(fs_info->super_copy) &
++	    BTRFS_SUPER_FLAG_CHANGING_FSID_V2) {
++		btrfs_set_super_flags(fs_info->super_copy,
++				btrfs_super_flags(fs_info->super_copy) &
++				~BTRFS_SUPER_FLAG_CHANGING_FSID_V2);
+ 		btrfs_info(fs_info,
+ 			"found metadata UUID change in progress flag, clearing");
+ 	}
+-
+ 	memcpy(fs_info->super_for_commit, fs_info->super_copy,
+-	       sizeof(*fs_info->super_for_commit));
+-
++	       BTRFS_SUPER_INFO_SIZE);
+ 	ret = btrfs_validate_mount_super(fs_info);
+-	if (ret) {
++	if (ret < 0) {
+ 		btrfs_err(fs_info, "superblock contains fatal errors");
+-		err = -EINVAL;
+-		goto fail_alloc;
++		return -EINVAL;
+ 	}
+ 
+-	if (!btrfs_super_root(disk_super))
+-		goto fail_alloc;
+-
++	if (!btrfs_super_root(fs_info->super_copy)) {
++		btrfs_err(fs_info,
++		"invalid super root bytenr, should have non-zero bytenr");
++		return -EINVAL;
++	}
+ 	/* check FS state, whether FS is broken. */
+ 	if (btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_ERROR)
+ 		set_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state);
+@@ -3573,11 +3528,9 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 	 */
+ 	fs_info->compress_type = BTRFS_COMPRESS_ZLIB;
+ 
+-
+ 	/* Set up fs_info before parsing mount options */
+ 	nodesize = btrfs_super_nodesize(disk_super);
+ 	sectorsize = btrfs_super_sectorsize(disk_super);
+-	stripesize = sectorsize;
+ 	fs_info->dirty_metadata_batch = nodesize * (1 + ilog2(nr_cpu_ids));
+ 	fs_info->delalloc_batch = sectorsize * 512 * (1 + ilog2(nr_cpu_ids));
+ 
+@@ -3585,7 +3538,60 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 	fs_info->sectorsize = sectorsize;
+ 	fs_info->sectorsize_bits = ilog2(sectorsize);
+ 	fs_info->csums_per_leaf = BTRFS_MAX_ITEM_SIZE(fs_info) / fs_info->csum_size;
+-	fs_info->stripesize = stripesize;
++	fs_info->stripesize = sectorsize;
 +
-+	/*
-+	 * The members initialized inside init_mount_fs_info() will be
-+	 * handled in btrfs_free_fs_info() by the caller.
-+	 * Thus we don't need to handle its error here.
-+	 */
-+	ret = init_mount_fs_info(fs_info);
-+	if (ret < 0)
-+		return ret;
++	fs_info->sb->s_bdi->ra_pages *= btrfs_super_num_devices(fs_info->super_copy);
++	fs_info->sb->s_bdi->ra_pages = max(fs_info->sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
 +
-+	/* These need to be init'ed before we start creating inodes and such. */
-+	fs_info->tree_root = btrfs_alloc_root(fs_info, BTRFS_ROOT_TREE_OBJECTID,
-+					      GFP_KERNEL);
-+	fs_info->chunk_root = btrfs_alloc_root(fs_info, BTRFS_CHUNK_TREE_OBJECTID,
-+					       GFP_KERNEL);
-+	if (!fs_info->tree_root || !fs_info->chunk_root)
-+		goto enomem;
-+	fs_info->btree_inode = new_inode(fs_info->sb);
-+	if (!fs_info->btree_inode)
-+		goto enomem;
++	fs_info->sb->s_blocksize = sectorsize;
++	fs_info->sb->s_blocksize_bits = blksize_bits(sectorsize);
++	memcpy(&fs_info->sb->s_uuid, fs_info->fs_devices->fsid, BTRFS_FSID_SIZE);
 +
-+	mapping_set_gfp_mask(fs_info->btree_inode->i_mapping, GFP_NOFS);
-+	btrfs_init_btree_inode(fs_info);
-+	invalidate_bdev(fs_info->fs_devices->latest_dev->bdev);
 +	return 0;
-+enomem:
-+	btrfs_put_root(fs_info->tree_root);
-+	btrfs_put_root(fs_info->chunk_root);
-+	fs_info->tree_root = NULL;
-+	fs_info->chunk_root = NULL;
-+	return -ENOMEM;
-+}
 +
-+static void open_ctree_btree_inode_exit(struct btrfs_fs_info *fs_info)
-+{
-+	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
-+	iput(fs_info->btree_inode);
-+	btrfs_put_root(fs_info->tree_root);
-+	btrfs_put_root(fs_info->chunk_root);
-+	fs_info->tree_root = NULL;
-+	fs_info->chunk_root = NULL;
++error:
++	btrfs_release_disk_super(disk_super);
++	return ret;
 +}
 +
 +struct init_sequence {
@@ -163,120 +273,123 @@ index ba9fe0041e6f..1c1c767f2bf1 100644
 +	{
 +		.init_func = open_ctree_btree_inode_init,
 +		.exit_func = open_ctree_btree_inode_exit,
++	}, {
++		.init_func = open_ctree_super_init,
++		.exit_func = NULL,
 +	}
 +};
 +
- int __cold open_ctree(struct super_block *sb, char *options)
- {
- 	u32 sectorsize;
-@@ -3410,47 +3468,26 @@ int __cold open_ctree(struct super_block *sb, char *options)
- 	u64 generation;
- 	u64 features;
- 	u16 csum_type;
++
++int __cold open_ctree(struct super_block *sb, char *options)
++{
++	u64 generation;
 +	bool open_ctree_res[ARRAY_SIZE(open_ctree_seq)] = {0};
- 	struct btrfs_super_block *disk_super;
- 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
--	struct btrfs_root *tree_root;
--	struct btrfs_root *chunk_root;
- 	int ret;
- 	int err = -EINVAL;
- 	int level;
++	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
++	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
++	int ret;
++	int err = -EINVAL;
++	int level;
 +	int i;
- 
- 	fs_info->sb = sb;
- 
- 	/* Caller should have already initialized fs_info->fs_devices. */
- 	ASSERT(fs_info->fs_devices);
- 
--	ret = init_mount_fs_info(fs_info);
--	if (ret) {
--		err = ret;
--		goto fail;
--	}
--
--	/* These need to be init'ed before we start creating inodes and such. */
--	tree_root = btrfs_alloc_root(fs_info, BTRFS_ROOT_TREE_OBJECTID,
--				     GFP_KERNEL);
--	fs_info->tree_root = tree_root;
--	chunk_root = btrfs_alloc_root(fs_info, BTRFS_CHUNK_TREE_OBJECTID,
--				      GFP_KERNEL);
--	fs_info->chunk_root = chunk_root;
--	if (!tree_root || !chunk_root) {
--		err = -ENOMEM;
--		goto fail;
--	}
--
--	fs_info->btree_inode = new_inode(fs_info->sb);
--	if (!fs_info->btree_inode) {
--		err = -ENOMEM;
--		goto fail;
++
++	fs_info->sb = sb;
++
++	/* Caller should have already initialized fs_info->fs_devices. */
++	ASSERT(fs_info->fs_devices);
++
 +	for (i = 0; i < ARRAY_SIZE(open_ctree_seq); i++) {
 +		ret = open_ctree_seq[i].init_func(fs_info);
 +		if (ret < 0)
 +			goto fail;
 +		open_ctree_res[i] = true;
++	}
+ 
+ 	ret = btrfs_parse_options(fs_info, options, fs_info->sb->s_flags);
+ 	if (ret) {
+@@ -3599,7 +3605,7 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 		goto fail_alloc;
  	}
--	mapping_set_gfp_mask(fs_info->btree_inode->i_mapping, GFP_NOFS);
--	btrfs_init_btree_inode(fs_info);
+ 
+-	if (sectorsize < PAGE_SIZE) {
++	if (fs_info->sectorsize < PAGE_SIZE) {
+ 		struct btrfs_subpage_info *subpage_info;
+ 
+ 		/*
+@@ -3611,15 +3617,15 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 		btrfs_clear_opt(fs_info->mount_opt, SPACE_CACHE);
+ 		btrfs_set_and_info(fs_info, FREE_SPACE_TREE,
+ 			"forcing free space tree for sector size %u with page size %lu",
+-			sectorsize, PAGE_SIZE);
++			fs_info->sectorsize, PAGE_SIZE);
+ 
+ 		btrfs_warn(fs_info,
+ 		"read-write for sector size %u with page size %lu is experimental",
+-			   sectorsize, PAGE_SIZE);
++			   fs_info->sectorsize, PAGE_SIZE);
+ 		subpage_info = kzalloc(sizeof(*subpage_info), GFP_KERNEL);
+ 		if (!subpage_info)
+ 			goto fail_alloc;
+-		btrfs_init_subpage_info(subpage_info, sectorsize);
++		btrfs_init_subpage_info(subpage_info, fs_info->sectorsize);
+ 		fs_info->subpage_info = subpage_info;
+ 	}
+ 
+@@ -3629,13 +3635,6 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 		goto fail_sb_buffer;
+ 	}
+ 
+-	fs_info->sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
+-	fs_info->sb->s_bdi->ra_pages = max(fs_info->sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
 -
--	invalidate_bdev(fs_devices->latest_dev->bdev);
+-	fs_info->sb->s_blocksize = sectorsize;
+-	fs_info->sb->s_blocksize_bits = blksize_bits(sectorsize);
+-	memcpy(&fs_info->sb->s_uuid, fs_info->fs_devices->fsid, BTRFS_FSID_SIZE);
+-
+ 	mutex_lock(&fs_info->chunk_mutex);
+ 	ret = btrfs_read_sys_array(fs_info);
+ 	mutex_unlock(&fs_info->chunk_mutex);
+@@ -3644,10 +3643,10 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 		goto fail_sb_buffer;
+ 	}
  
- 	/*
- 	 * Read super block and check the signature bytes only
-@@ -3609,14 +3646,15 @@ int __cold open_ctree(struct super_block *sb, char *options)
- 
- 	generation = btrfs_super_chunk_root_generation(disk_super);
- 	level = btrfs_super_chunk_root_level(disk_super);
--	ret = load_super_root(chunk_root, btrfs_super_chunk_root(disk_super),
-+	ret = load_super_root(fs_info->chunk_root,
-+			      btrfs_super_chunk_root(disk_super),
+-	generation = btrfs_super_chunk_root_generation(disk_super);
+-	level = btrfs_super_chunk_root_level(disk_super);
++	generation = btrfs_super_chunk_root_generation(fs_info->super_copy);
++	level = btrfs_super_chunk_root_level(fs_info->super_copy);
+ 	ret = load_super_root(fs_info->chunk_root,
+-			      btrfs_super_chunk_root(disk_super),
++			      btrfs_super_chunk_root(fs_info->super_copy),
  			      generation, level);
  	if (ret) {
  		btrfs_err(fs_info, "failed to read chunk root");
- 		goto fail_tree_roots;
- 	}
+@@ -3703,7 +3702,8 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 	 * even though it was perfectly fine.
+ 	 */
+ 	if (fs_info->uuid_root && !btrfs_test_opt(fs_info, RESCAN_UUID_TREE) &&
+-	    fs_info->generation == btrfs_super_uuid_tree_generation(disk_super))
++	    fs_info->generation ==
++	    btrfs_super_uuid_tree_generation(fs_info->super_copy))
+ 		set_bit(BTRFS_FS_UPDATE_UUID_TREE_GEN, &fs_info->flags);
  
--	read_extent_buffer(chunk_root->node, fs_info->chunk_tree_uuid,
-+	read_extent_buffer(fs_info->chunk_root->node, fs_info->chunk_tree_uuid,
- 			   offsetof(struct btrfs_header, chunk_tree_uuid),
- 			   BTRFS_UUID_SIZE);
+ 	ret = btrfs_verify_dev_extents(fs_info);
+@@ -3814,7 +3814,7 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 		btrfs_err(fs_info, "couldn't build ref tree");
  
-@@ -3740,7 +3778,7 @@ int __cold open_ctree(struct super_block *sb, char *options)
- 		goto fail_sysfs;
+ 	/* do not make disk changes in broken FS or nologreplay is given */
+-	if (btrfs_super_log_root(disk_super) != 0 &&
++	if (btrfs_super_log_root(fs_info->super_copy) != 0 &&
+ 	    !btrfs_test_opt(fs_info, NOLOGREPLAY)) {
+ 		btrfs_info(fs_info, "start tree-log replay");
+ 		ret = btrfs_replay_log(fs_info, fs_devices);
+@@ -3844,7 +3844,8 @@ int __cold open_ctree(struct super_block *sb, char *options)
  
- 	fs_info->transaction_kthread = kthread_run(transaction_kthread,
--						   tree_root,
-+						   fs_info->tree_root,
- 						   "btrfs-transaction");
- 	if (IS_ERR(fs_info->transaction_kthread))
- 		goto fail_cleaner;
-@@ -3855,17 +3893,22 @@ int __cold open_ctree(struct super_block *sb, char *options)
- 	if (fs_info->data_reloc_root)
- 		btrfs_drop_and_free_fs_root(fs_info, fs_info->data_reloc_root);
- 	free_root_pointers(fs_info, true);
--	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
- 
- fail_sb_buffer:
- 	btrfs_stop_all_workers(fs_info);
- 	btrfs_free_block_groups(fs_info);
- fail_alloc:
- 	btrfs_mapping_tree_free(&fs_info->mapping_tree);
--
--	iput(fs_info->btree_inode);
- fail:
-+	for (i = ARRAY_SIZE(open_ctree_seq) - 1; i >= 0; i--) {
-+		if (!open_ctree_res[i] || !open_ctree_seq[i].exit_func)
-+			continue;
-+		open_ctree_seq[i].exit_func(fs_info);
-+		open_ctree_res[i] = false;
-+	}
- 	btrfs_close_devices(fs_info->fs_devices);
-+	if (ret < 0)
-+		err = ret;
- 	return err;
- }
- ALLOW_ERROR_INJECTION(open_ctree, ERRNO);
+ 	if (fs_info->uuid_root &&
+ 	    (btrfs_test_opt(fs_info, RESCAN_UUID_TREE) ||
+-	     fs_info->generation != btrfs_super_uuid_tree_generation(disk_super))) {
++	     fs_info->generation !=
++	     btrfs_super_uuid_tree_generation(fs_info->super_copy))) {
+ 		btrfs_info(fs_info, "checking UUID tree");
+ 		ret = btrfs_check_uuid_tree(fs_info);
+ 		if (ret) {
 -- 
 2.37.3
 
