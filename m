@@ -2,105 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A175FC3BE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 12:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6ED5FC48B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 13:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbiJLK31 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Oct 2022 06:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57898 "EHLO
+        id S229533AbiJLLy3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Oct 2022 07:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbiJLK30 (ORCPT
+        with ESMTP id S229468AbiJLLy2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Oct 2022 06:29:26 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBA0A98E6;
-        Wed, 12 Oct 2022 03:29:24 -0700 (PDT)
+        Wed, 12 Oct 2022 07:54:28 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36EFB277B;
+        Wed, 12 Oct 2022 04:54:26 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8D918219F4;
-        Wed, 12 Oct 2022 10:29:23 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7754B21C2B;
+        Wed, 12 Oct 2022 11:54:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1665570563;
+        t=1665575665;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qmipS7Jh1P8DxSYrMl4SBOWkdPREbcp1+Y21jMWS2K0=;
-        b=ESRQn9ZoYJfBi3ursDEtPPM6TpP+SG5yRL/FcjdaUxKvYSFXrPni85ZaauH6y08pt04CKa
-        WnDCdeKp8HvZQKkUlpRvDTK9A/I/jUwlizt1wpiTzMk200TKJy+XWD8s2kj4Ra+75InlFA
-        stvCa4CnA3I2kSwIqDxgZgjC7McP3k4=
+        bh=3zSpgWBUTLEADiWqyI4QhLUqGwSaF+lXEnhQbQY0U8U=;
+        b=A5bcXFgEFjvk6f598N+eoADmwbueIEgZ0Pghde9GtseBeW0+OrnQAIHM7FOkGmhDlsjwOQ
+        WL9C53wWyo/9t3RTbk94HMNnd45r4nNTTidD+TK1mnYRYrld6mgKaYjpCM0OAWjBeTP9SK
+        w1zf5FNtJhcISMpntoAa2vyDE/PKouk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1665570563;
+        s=susede2_ed25519; t=1665575665;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qmipS7Jh1P8DxSYrMl4SBOWkdPREbcp1+Y21jMWS2K0=;
-        b=IvWmEP8uOIxqWd++iavXwYx1dagcXFanLqof7ODe7SU0J8MdF/Z+Fxd1ozYv5pEbjDz/sD
-        lwChGh8NVB8IrDCg==
+        bh=3zSpgWBUTLEADiWqyI4QhLUqGwSaF+lXEnhQbQY0U8U=;
+        b=EUlk8H5n56NSFO3OVh8L62EUH2UMFWOizQMG+1CzCH7gnM8wzy8H6csM4R3owf/NnEY8FQ
+        PePWXNQefNsvzWAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5549C13ACD;
-        Wed, 12 Oct 2022 10:29:23 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 00D7113A5C;
+        Wed, 12 Oct 2022 11:54:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id F8fhEwOXRmNKFwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 12 Oct 2022 10:29:23 +0000
-Date:   Wed, 12 Oct 2022 12:29:17 +0200
+        id +tkfOvCqRmOoQgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 12 Oct 2022 11:54:24 +0000
+Date:   Wed, 12 Oct 2022 13:54:18 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: update btrfs website links and files
-Message-ID: <20221012102917.GV13389@suse.cz>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        zhang songyi <zhang.songyi@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>,
+        Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>, clm@fb.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.0 37/46] btrfs: remove the unnecessary result
+ variables
+Message-ID: <20221012115418.GW13389@suse.cz>
 Reply-To: dsterba@suse.cz
-References: <20221011132256.333-1-dsterba@suse.com>
- <CAHk-=wiB9sHzsNcCRRkgeyXLu09hV-FgRLwvFHoA_uCpZRJJwA@mail.gmail.com>
+References: <20221011145015.1622882-1-sashal@kernel.org>
+ <20221011145015.1622882-37-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiB9sHzsNcCRRkgeyXLu09hV-FgRLwvFHoA_uCpZRJJwA@mail.gmail.com>
+In-Reply-To: <20221011145015.1622882-37-sashal@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 03:48:55PM -0700, Linus Torvalds wrote:
-> On Tue, Oct 11, 2022 at 6:23 AM David Sterba <dsterba@suse.com> wrote:
-> >
-> > We have the new documentation hosted on Read The Docs and content is
-> > migrated there from the wiki. Also update http to https and add the
-> > tracepoint definition header.
+On Tue, Oct 11, 2022 at 10:50:05AM -0400, Sasha Levin wrote:
+> From: zhang songyi <zhang.songyi@zte.com.cn>
 > 
-> Hmm. Did you intend for me to apply this as a patch?
+> [ Upstream commit bd64f6221a98fb1857485c63fd3d8da8d47406c6 ]
 > 
-> Since you normally just send pull requests, I'm a bit confused.
+> Return the sysfs_emit() and iterate_object_props() directly instead of
+> using unnecessary variables.
 > 
-> Is this a "it's outside the btrfs subdirectory, so I'm sending this as
-> a patch"? Except I've seen you send stuff that has changes to mm/ for
-> new exports etc, and in fact to MAINTAINERS too.
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  fs/btrfs/props.c |  5 +----
+>  fs/btrfs/sysfs.c | 10 ++--------
+>  2 files changed, 3 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+> index a2ec8ecae8de..055a631276ce 100644
+> --- a/fs/btrfs/props.c
+> +++ b/fs/btrfs/props.c
+> @@ -270,11 +270,8 @@ int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path)
+>  {
+>  	struct btrfs_root *root = BTRFS_I(inode)->root;
+>  	u64 ino = btrfs_ino(BTRFS_I(inode));
+> -	int ret;
+> -
+> -	ret = iterate_object_props(root, path, ino, inode_prop_iterator, inode);
+>  
+> -	return ret;
+> +	return iterate_object_props(root, path, ino, inode_prop_iterator, inode);
 
-Yeah the reason was because it's out of my directory, the exports to mm/
-or fs/ were necessary for code to work but the maintainers file is
-plain text, I thought there was a different workflow.
-
-> Or is this just an informational "let Linus know about this patch" email?
-> 
-> Anyway, if you actually want me to apply a patch directly because of
-> some "I'm not going to send this as a pull request because there is
-> nothing else pending" kind of issue or other reason, please do state
-> that explicitly in the email.
-> 
-> Because as it is now, as explained above, I'm not sure why this patch
-> was sent to me.
-
-Sorry for confusion, you can ignore the patch. I'll add it to the pulled
-branch, like last time which was not that long ago (mid 2021, commit
-503d1acb01826b42e) but I forgot about that.
+Please drop the patch from stable queues, it's an obvious cleanup.
