@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A08C35FC2C6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 11:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13ABD5FC2CD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 11:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbiJLJNw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Oct 2022 05:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56216 "EHLO
+        id S229867AbiJLJNz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Oct 2022 05:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229862AbiJLJNl (ORCPT
+        with ESMTP id S229872AbiJLJNm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Oct 2022 05:13:41 -0400
+        Wed, 12 Oct 2022 05:13:42 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE20140F0
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 02:13:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E56BC46A
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 02:13:41 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5772621DB9
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:38 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6831221DC1
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1665566018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1665566019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LYvOeAag2/SEuwSpPAI1LcmqOGjjaZNlyC4Luw8Rmlw=;
-        b=DYr99lMOIh1rcKAXIt9Qkb+Q1b4A2jzme0k5AnQxQlxy5ePzh5DtvZesbUdMh7neSgJihn
-        R/91OIhcefQ2+OEVw1r1Nh9ksDhw5XivA79vqDG9EjeU+XlnZVlpw/jCONHHzPl+4P4SjW
-        0e4jvA4uCFxgZwBQuvJhTyRcjLTCdoY=
+        bh=/mG14Pa6PXhEW68Evv4zavRmqke1CGP/QdKzBzSmRCg=;
+        b=SpfYqhdgsEr+0EOKhBViZEPOaLpwalnHz17d/U4r1s9X9cAzgHRAyVT/FDmjZMgCtzKviq
+        SpAm6mM5Y9GsDnzuFr3K9WREKJRUr7zrOiD8X+V7/5D3LpHqp7QMrwkEsUqVGFRAZ4R/jb
+        IGmhWsn8sEo9UaTp0RZKyvCwVBttCVs=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AFB6D13A5C
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:37 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B535113A5C
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id mOR9HkGFRmPKcQAAMHmgww
+        id kPwMIEKFRmPKcQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:37 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:38 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 09/15] btrfs: extract mount time checks and items load code into its init helper
-Date:   Wed, 12 Oct 2022 17:13:05 +0800
-Message-Id: <0d5a59495b60dfcc65e0d476e298b5ad2b9dfc89.1665565866.git.wqu@suse.com>
+Subject: [PATCH v2 10/15] btrfs: extract sysfs init into its own helper
+Date:   Wed, 12 Oct 2022 17:13:06 +0800
+Message-Id: <416ecd948025ae64ba0de588f94b5c87cfd2a5a9.1665565866.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1665565866.git.wqu@suse.com>
 References: <cover.1665565866.git.wqu@suse.com>
@@ -60,131 +60,115 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-One thing to notice is, since we're also initializing zoned mode, also
-move later btrfs_free_zone_cache() call into the helper to concentrace
-the zoned code.
+The three functions, btrfs_sysfs_add_fsid(), btrfs_sysfs_add_mounted()
+and btrfs_init_space_info() are all doing sysfs related code.
 
-As later I found it pretty hard to find any logical connection around
-that btrfs_free_zone_cache() call.
+The last one can only be called after fsid sysfs entry created, thus
+they are all put into the same helper.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c | 81 +++++++++++++++++++++++++++-------------------
- 1 file changed, 47 insertions(+), 34 deletions(-)
+ fs/btrfs/disk-io.c | 66 ++++++++++++++++++++++++++++------------------
+ 1 file changed, 41 insertions(+), 25 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index cfed53675359..bee6204d357d 100644
+index bee6204d357d..3fa618c25e60 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -3733,6 +3733,50 @@ static void open_ctree_tree_roots_exit(struct btrfs_fs_info *fs_info)
- 	free_root_pointers(fs_info, true);
+@@ -3777,6 +3777,44 @@ static int open_ctree_load_items_init(struct btrfs_fs_info *fs_info)
+ 	return 0;
  }
  
-+/* Load various items for balance/replace, and do various mount time check. */
-+static int open_ctree_load_items_init(struct btrfs_fs_info *fs_info)
++static int open_ctree_sysfs_init(struct btrfs_fs_info *fs_info)
 +{
 +	int ret;
 +
-+	/*
-+	 * Dev extents can only be verified after both dev tree and chunk tree
-+	 * being initialized.
-+	 */
-+	ret = btrfs_verify_dev_extents(fs_info);
++	ret = btrfs_sysfs_add_fsid(fs_info->fs_devices);
 +	if (ret) {
-+		btrfs_err(fs_info,
-+			  "failed to verify dev extents against chunks: %d",
-+			  ret);
-+		return ret;
-+	}
-+	ret = btrfs_recover_balance(fs_info);
-+	if (ret) {
-+		btrfs_err(fs_info, "failed to recover balance: %d", ret);
++		btrfs_err(fs_info, "failed to init sysfs fsid interface: %d",
++				ret);
 +		return ret;
 +	}
 +
-+	ret = btrfs_init_dev_stats(fs_info);
++	ret = btrfs_sysfs_add_mounted(fs_info);
 +	if (ret) {
-+		btrfs_err(fs_info, "failed to init dev_stats: %d", ret);
-+		return ret;
++		btrfs_err(fs_info, "failed to init sysfs interface: %d", ret);
++		goto free_fsid;
 +	}
 +
-+	ret = btrfs_init_dev_replace(fs_info);
++	/* This can only be called after the fsid entry being added. */
++	ret = btrfs_init_space_info(fs_info);
 +	if (ret) {
-+		btrfs_err(fs_info, "failed to init dev_replace: %d", ret);
-+		return ret;
++		btrfs_err(fs_info, "failed to initialize space info: %d", ret);
++		goto free_mounted;
 +	}
-+
-+	ret = btrfs_check_zoned_mode(fs_info);
-+	if (ret) {
-+		btrfs_err(fs_info, "failed to initialize zoned mode: %d", ret);
-+		return ret;
-+	}
-+	btrfs_free_zone_cache(fs_info);
-+
 +	return 0;
++
++free_mounted:
++	btrfs_sysfs_remove_mounted(fs_info);
++free_fsid:
++	btrfs_sysfs_remove_fsid(fs_info->fs_devices);
++	return ret;
++}
++
++static void open_ctree_sysfs_exit(struct btrfs_fs_info *fs_info)
++{
++	btrfs_sysfs_remove_mounted(fs_info);
++	btrfs_sysfs_remove_fsid(fs_info->fs_devices);
 +}
 +
  struct init_sequence {
  	int (*init_func)(struct btrfs_fs_info *fs_info);
  	void (*exit_func)(struct btrfs_fs_info *fs_info);
-@@ -3757,6 +3801,9 @@ static const struct init_sequence open_ctree_seq[] = {
+@@ -3804,6 +3842,9 @@ static const struct init_sequence open_ctree_seq[] = {
  	}, {
- 		.init_func = open_ctree_tree_roots_init,
- 		.exit_func = open_ctree_tree_roots_exit,
+ 		.init_func = open_ctree_load_items_init,
+ 		.exit_func = NULL,
 +	}, {
-+		.init_func = open_ctree_load_items_init,
-+		.exit_func = NULL,
++		.init_func = open_ctree_sysfs_init,
++		.exit_func = open_ctree_sysfs_exit,
  	}
  };
  
-@@ -3782,38 +3829,6 @@ int __cold open_ctree(struct super_block *sb, char *options)
+@@ -3829,25 +3870,6 @@ int __cold open_ctree(struct super_block *sb, char *options)
  		open_ctree_res[i] = true;
  	}
  
--	ret = btrfs_verify_dev_extents(fs_info);
+-	ret = btrfs_sysfs_add_fsid(fs_devices);
 -	if (ret) {
--		btrfs_err(fs_info,
--			  "failed to verify dev extents against chunks: %d",
--			  ret);
--		goto fail_block_groups;
--	}
--	ret = btrfs_recover_balance(fs_info);
--	if (ret) {
--		btrfs_err(fs_info, "failed to recover balance: %d", ret);
+-		btrfs_err(fs_info, "failed to init sysfs fsid interface: %d",
+-				ret);
 -		goto fail_block_groups;
 -	}
 -
--	ret = btrfs_init_dev_stats(fs_info);
+-	ret = btrfs_sysfs_add_mounted(fs_info);
 -	if (ret) {
--		btrfs_err(fs_info, "failed to init dev_stats: %d", ret);
--		goto fail_block_groups;
+-		btrfs_err(fs_info, "failed to init sysfs interface: %d", ret);
+-		goto fail_fsdev_sysfs;
 -	}
 -
--	ret = btrfs_init_dev_replace(fs_info);
+-	ret = btrfs_init_space_info(fs_info);
 -	if (ret) {
--		btrfs_err(fs_info, "failed to init dev_replace: %d", ret);
--		goto fail_block_groups;
+-		btrfs_err(fs_info, "failed to initialize space info: %d", ret);
+-		goto fail_sysfs;
 -	}
 -
--	ret = btrfs_check_zoned_mode(fs_info);
--	if (ret) {
--		btrfs_err(fs_info, "failed to initialize zoned mode: %d",
--			  ret);
--		goto fail_block_groups;
--	}
--
- 	ret = btrfs_sysfs_add_fsid(fs_devices);
+ 	ret = btrfs_read_block_groups(fs_info);
  	if (ret) {
- 		btrfs_err(fs_info, "failed to init sysfs fsid interface: %d",
-@@ -3839,8 +3854,6 @@ int __cold open_ctree(struct super_block *sb, char *options)
- 		goto fail_sysfs;
- 	}
+ 		btrfs_err(fs_info, "failed to read block groups: %d", ret);
+@@ -3947,12 +3969,6 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 	filemap_write_and_wait(fs_info->btree_inode->i_mapping);
  
--	btrfs_free_zone_cache(fs_info);
+ fail_sysfs:
+-	btrfs_sysfs_remove_mounted(fs_info);
 -
- 	fs_info->cleaner_kthread = kthread_run(cleaner_kthread, fs_info,
- 					       "btrfs-cleaner");
- 	if (IS_ERR(fs_info->cleaner_kthread))
+-fail_fsdev_sysfs:
+-	btrfs_sysfs_remove_fsid(fs_info->fs_devices);
+-
+-fail_block_groups:
+ 	btrfs_put_block_group_cache(fs_info);
+ 	btrfs_free_block_groups(fs_info);
+ fail:
 -- 
 2.37.3
 
