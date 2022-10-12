@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A48295FC34B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 11:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3985FC360
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 12:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbiJLJvy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Oct 2022 05:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50514 "EHLO
+        id S229513AbiJLKEG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Oct 2022 06:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbiJLJvw (ORCPT
+        with ESMTP id S229600AbiJLKEE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Oct 2022 05:51:52 -0400
+        Wed, 12 Oct 2022 06:04:04 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCBD3B72E
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 02:51:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AAEB5171
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 03:04:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DDBE261461
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:51:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E90FAC433C1;
-        Wed, 12 Oct 2022 09:51:49 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A1DAB61468
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 10:04:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD43FC433D6;
+        Wed, 12 Oct 2022 10:04:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665568310;
-        bh=3al8esyx8SNWO9KyTP6XF1xNHacTKJrl9UbgtJyRlNU=;
+        s=k20201202; t=1665569042;
+        bh=NhYnBeJSdGQomzSAhi6txKzdgkm8rkw5UnyMSL3dCDI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Prdj99LXYEwohaaV0dN3VnjNsAc0AUChdZ2jEFWSxyWYQR/9PQvCIuU5kDRRVTFGO
-         kwwPYnORvJ1ulaxzHoS4Z/alLs0gSLc+0HIPLldI3q/o3W8SAcj8xP5/gDLWUEFD/q
-         keCWN3Ikk4aRIkktqGLdcAFQL4yQWG1wSaeOrfcsGQ9nLNLPLPnyJE62OJOPpTpEv2
-         aGZr2uY+o/n8mPWWUuKQZqAryRP/q6j8/F/qNT1K2/zA6LG0EhBaLiYwaudeJvIXa1
-         Dj6QUPtJt0f0K01/jeQWjMsDcR3Sian3mmMvZ3cSiR+TXMDkyEa5I8Uuvm/11c9S4a
-         RCxaWkTz9gpgw==
-Date:   Wed, 12 Oct 2022 10:51:47 +0100
+        b=Gdt1XNwps+JVhqgPvyjma7IY3Fbkpm/1bwk8ECtAMOLRp2YTS2BJ+EBxUuCoLlrwE
+         lYt46Pu7I+xzcQZORvR8LLwG5QEVsVRAA/81tXOCaSwczwj8NdlI8ceUXfT978610j
+         umhAkbJk+rUk/cdsZLcvaoblQud4iQgV7sQq0XGbIIU7dBAAJCOJIyP4fzYrni4RIX
+         wT7WGDd9bNxcfnA5H3vq3vyObPEXUhqb6/MrNfgM8DFDNXMLlD9EtR1XkHvZ5DKmfh
+         6TxXXpQqdSHG+5NmCJ6Rwn4YT/Id8EzbHnjhZrlt537LbKcb6IGHAhxYnR57SjBPji
+         9nvDRtJffudIw==
+Date:   Wed, 12 Oct 2022 11:03:59 +0100
 From:   Filipe Manana <fdmanana@kernel.org>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: skip reclaim if block_group is empty
-Message-ID: <20221012095147.GA2290976@falcondesktop>
-References: <8f825fce9d2968034da43e09a4ebc38ec19a2e49.1665427766.git.boris@bur.io>
- <CAL3q7H4L6ST88RpTojMmb-nQ82Y7ZYY-80Z+GSyLkMJ7zzVkDg@mail.gmail.com>
- <Y0WwW21CPYUeidwQ@zen>
+To:     Glenn Washburn <development@efficientek.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: btrfs send/receive not always sharing extents
+Message-ID: <20221012100359.GB2290976@falcondesktop>
+References: <20221008005704.795b44b0@crass-HP-ZBook-15-G2>
+ <20221010094218.GA2141122@falcondesktop>
+ <20221011154955.45aacef8@crass-HP-ZBook-15-G2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y0WwW21CPYUeidwQ@zen>
+In-Reply-To: <20221011154955.45aacef8@crass-HP-ZBook-15-G2>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,122 +54,110 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 11:05:15AM -0700, Boris Burkov wrote:
-> On Tue, Oct 11, 2022 at 10:43:33AM +0100, Filipe Manana wrote:
-> > On Mon, Oct 10, 2022 at 8:25 PM Boris Burkov <boris@bur.io> wrote:
-> > >
-> > > As we delete extents from a block group, at some deletion we cross below
-> > > the reclaim threshold. It is possible we are still in the middle of
-> > > deleting more extents and might soon hit 0. If that occurs, we would
-> > > leave the block group on the reclaim list, not in the care of unused
-> > > deletion or async discard.
-> > >
-> > > It is pointless and wasteful to relocate empty block groups, so if we do
-> > 
-> > Hum? Why pointless and wasteful?
-> > Relocating an empty block group results in deleting it.
-> > 
-> > In fact, before we tracked unused block groups and had the cleaner
-> > kthread remove them, that was the only
-> > way to delete unused block groups - trigger relocation from user space.
-> > 
-> > btrfs_relocate_chunk() explicitly calls btrfs_remove_chunk() at the
-> > end, and the relocation itself
-> > will do nothing except:
-> > 
-> > 1) commit the current transaction when it starts
-> > 2) search the extent tree for extents in this block group - here it
-> > will not find anything, and therefore do nothing.
-> > 3) commit another transaction
-> > 
-> > So I don't quite understand what this patch is trying to accomplish.
-> > 
-> > At the very least the changelog needs to be more detailed.
-> > 
-> > As it is, it gives the wrong idea that the relocation will leave the
-> > block group around.
-> > If your goal is to avoid the 2 transaction commits and the search on
-> > the extent tree, then please be explicit in
-> > the changelog.
-> > 
-> > Thanks.
+On Tue, Oct 11, 2022 at 03:49:55PM -0500, Glenn Washburn wrote:
+> On Mon, 10 Oct 2022 10:42:18 +0100
+> Filipe Manana <fdmanana@kernel.org> wrote:
 > 
-> Apologies for the exuberant and unclear language. I'm happy to tone it
-> down and make it more precise. Thanks for the feedback.
+> > On Sat, Oct 08, 2022 at 12:57:04AM -0500, Glenn Washburn wrote:
+> > > I've got two reflinked files in a subvol that I'm sending/receiving to
+> > > a different btrfs filesystem and they are not sharing extents on the
+> > > receiving side. Other reflinked files in the same subvol are being
+> > > reflinked on the receive side. The send side has a fairly old creation
+> > > date if that matters. Attached is the receive log and a diff of
+> > > filefrag's output for the files on the source volume to show that the
+> > > two files (IMG_20200402_143055.dng and IMG_20200402_143055.dng.ref) are
+> > > refinked on the source volume. This is a somewhat minimal example of
+> > > what's happening on a big send that I'm doing that is failing because
+> > > the receive side it too small to hold data when the reflinks are
+> > > broken. Is this a bug? or what can I do to get send to see these files
+> > > are reflinked?
+> > 
+> > send/receive only guarantees that the destination ends up with the same
+> > data as the source.
+> > 
+> > It doesn't guarantee extents are always shared as in the source filesystem,
+> > that the extent layout is the same, or holes are preserved for example.
+> > 
+> > There are two main reasons why extents don't often get cloned during
+> > send/receive:
+> > 
+> > 1) The extent is shared more than 64 times in the source filesystem.
+> >    We have this limitation because figuring out all inodes/roots that
+> >    share an extent can be expensive, and therefore massively slowdown
+> >    send operations.
+> > 
+> > 2) Even when an extent is shared less than 64 times in the source
+> >    filesystem, we often don't clone the entirety of an extent and end up
+> >    issuing write operations for the remaining part(s). This is due to
+> >    algorithmic complexity as well, as identifying the best source for
+> >    cloning an extent can be expensive and considerably slowdown send
+> >    operations.
 > 
-> We see a lot of these empty reclaims in practice and I thought this
-> could be a helpful little cleanup, nothing major.
-> 
-> My aim was essentially what you said. In my mind, delete unused is less
-> complicated and has less overhead than an empty relocation. I agree
-> that the empty relocation does accomplish the task of getting rid of the
-> bg, but I figure if we have a more direct way of accomplishing it
-> already, we should go with that. To be completely clear, I was also 
-> thinking about creating the relocation inode as un-needed overhead.
-> For what it's worth, I have not benchmarked btrfs_delete_unused_bgs
-> against relocating empty bgs.
+> So my example falls into this category. I have a limited understanding
+> of BTRFS internals, can backrefs be used here to decrease the
+> algorithmic complexity and duration? Naively, it would seem that having
+> a backref to inodes that use the extent would be enough to keep track
+> of where clones should be put in the send stream.
 
-Ok. It was not clear to me if you were experiencing empty block groups not
-being deleted and/or some significant performance problem.
+We use backrefs to determine which inodes/roots share a given extent.
+It's just that it doesn't scale well when an extent is shared many times,
+especially if indirectly through snapshots/shared subtrees. And this is
+common code used by several places besides send.
 
-The idea looks fine to me.
-
-I only think we should have the changelog more explicit and detailed.
-
-I.e., mention that although the block group gets deleted by relecation,
-it's less efficient due to those transaction commits, extent tree search
-(plus anything else I may have missed).
-
-Plus that through the cleaner kthread (btrfs_delete_unused_bgs()) we also
-do other important things like dealing with trim/discard and zone finishing,
-and that's why we defer the task to the cleaner instead of calling
-btrfs_remove_chunk() directly from the block group reclaim worker.
-
-Thanks.
+Admittedly, the way it's currently done is not optimal for the context of
+send. And that's what I want to improve, so that it skips unnecessary work
+for the send case and scale better.
 
 > 
-> Thanks,
-> Boris
+> > 
+> > I have some work in progress and ideas to speedup send in some cases,
+> > but I'm afraid we'll always have some limitations - in the best case
+> > we can improve on them, but not eliminate them completely.
+> > 
+> > You can run a dedupe tool on the destination filesystem to get the
+> > extents shared.
+> 
+> Thanks for the explanation. The problem with using a dedupe tool is
+> (1) that potentially a lot of unnecessary writes are involved, and more
+> importantly (2) the send will potentially cause more disk space to be
+> used than is used by the source and thus potentially more than the
+> target when the target is the same size as the source. Since we don't
+> know beforehand if send will clone shared extents, the user must assume
+> that it will clone none and receive on a filesystem with at least enough
+> free space as the size of the total references data. This may not be an
+> option for the user (me).
+> 
+> I believe this theoretically could be mitigated if there were a dedupe
+> tool that would watch the filesystem for writes and do dedup as soon as
+> a write happened. I don't think any of the current tools do though.
+> Separately, perhaps there could be a tool that reads the send stream on
+> the receive side and inserts extent clones.
+> 
+> The easiest way forward seems to me to add options for send to try harder to find
+> extent clones (at the expense of time and resources).
+
+I think this can be improved without sacrificing performance/scalability
+and without the need of a special option/flag, maybe not to a perfect
+level (get exactly the same amount of sharing as in the source filesystem),
+but at least significantly better than what we have today. 
+
+You are not the first one reporting that and it comes as a surprise to many
+other users as well.
+
+I'll work on those two improvements in the next weeks and see if I can have
+them ready for a 6.2 kernel.
+
 > 
 > > 
-> > > notice that case (we might not if the reclaim worker runs *before* we
-> > > finish emptying it), don't bother with relocating the block group.
-> > >
-> > > Signed-off-by: Boris Burkov <boris@bur.io>
-> > > ---
-> > >  fs/btrfs/block-group.c | 19 +++++++++++++++++++
-> > >  1 file changed, 19 insertions(+)
-> > >
-> > > diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> > > index 11fd52657b76..c3ea627d2457 100644
-> > > --- a/fs/btrfs/block-group.c
-> > > +++ b/fs/btrfs/block-group.c
-> > > @@ -1608,6 +1608,25 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
-> > >                         up_write(&space_info->groups_sem);
-> > >                         goto next;
-> > >                 }
-> > > +               if (bg->used == 0) {
-> > > +                       /*
-> > > +                        * It is possible that we trigger relocation on a block
-> > > +                        * group as its extents are deleted and it first goes
-> > > +                        * below the threshold, then shortly goes empty. In that
-> > > +                        * case, we will do relocation, even though we could
-> > > +                        * more cheaply just delete the unused block group. Try
-> > > +                        * to catch that case here, though of course it is
-> > > +                        * possible there is a delete still coming the future,
-> > > +                        * so we can't avoid needless relocation of this sort
-> > > +                        * altogether. We can at least avoid relocating empty
-> > > +                        * block groups.
-> > > +                        */
-> > > +                       if (!btrfs_test_opt(fs_info, DISCARD_ASYNC))
-> > > +                               btrfs_mark_bg_unused(bg);
-> > > +                       spin_unlock(&bg->lock);
-> > > +                       up_write(&space_info->groups_sem);
-> > > +                       goto next;
-> > > +               }
-> > >                 spin_unlock(&bg->lock);
-> > >
-> > >                 /* Get out fast, in case we're unmounting the filesystem */
-> > > --
-> > > 2.37.2
-> > >
+> > > --- /dev/fd/63	2022-10-08 00:31:46.783138591 -0500
+> > > +++ /dev/fd/62	2022-10-08 00:31:46.787138126 -0500
+> > > @@ -1,5 +1,5 @@
+> > >  Filesystem type is: 9123683e
+> > > -File size of /media/test-btrfs/test/1.ro/IMG_20200402_143055.dng is 24674116 (6024 blocks of 4096 bytes)
+> > > +File size of /media/test-btrfs/test/1.ro/IMG_20200402_143055.dng.ref is 24674116 (6024 blocks of 4096 bytes)
+> > >   ext:     logical_offset:        physical_offset: length:   expected: flags:
+> > >     0:        0..    6023: 1131665768..1131671791:   6024:             last,shared,eof
+> > > -/media/test-btrfs/test/1.ro/IMG_20200402_143055.dng: 1 extent found
+> > > +/media/test-btrfs/test/1.ro/IMG_20200402_143055.dng.ref: 1 extent found
+> > 
+> > 
