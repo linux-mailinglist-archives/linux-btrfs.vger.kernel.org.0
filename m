@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1355FC2CC
+	by mail.lfdr.de (Postfix) with ESMTP id 66A2B5FC2CB
 	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Oct 2022 11:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbiJLJN5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Oct 2022 05:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56320 "EHLO
+        id S229895AbiJLJN7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Oct 2022 05:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbiJLJNo (ORCPT
+        with ESMTP id S229846AbiJLJNo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 12 Oct 2022 05:13:44 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6604BBF1A
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 02:13:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8275ABBF01
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 02:13:43 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 69EEB21CEE
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:41 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3F2C421CEF
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1665566021; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1665566022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rr0OLtaLKwhUNoI9GHJ0G48MSJ6o7wXBe8GwQ8YTPjA=;
-        b=BqABRkD60UrJEVKqBgbN2Qxzeq+FxqVBfa3FmPX7YUhWpiD8/Y+w/rnIIKZacDpCxpHaIo
-        h0VytbtzSiIB16l0HRnKSZdL+5MNEQsowgggKKTfVnuoqsRHxNnp3cdAxzAr1fiCYzMrLu
-        +VkCmunxiSIDgvCTo7X1Ij+PPgOvGdQ=
+        bh=8Tb8gYBGa3ls3wpRxosXfh30Rhp+0RzKh9Geq46Pu1g=;
+        b=gC2qdmi+6IW7Ub8lwv2riYuL/o/yooIP30REiuDedesAiZ/ZpD8SUI4p+E0b6bBySp9zn7
+        RXkapVPrkj+S4Qcf9NUJ/tuSNsbnDNujumRBmEsgOhoKk6bkim2S6uPjdceG8WLQVx3qBA
+        DjtPXtnQ8E5el5E70Hi/SSOb4eXd1Os=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C129713A5C
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:40 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C4D0C13A5C
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id SIDnIkSFRmPKcQAAMHmgww
+        id EAQTJEWFRmPKcQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:40 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Oct 2022 09:13:41 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 12/15] btrfs: move the fs root related code into its own init/exit helpers
-Date:   Wed, 12 Oct 2022 17:13:08 +0800
-Message-Id: <2a5c29444da704203087cd31942156b8abe603a5.1665565866.git.wqu@suse.com>
+Subject: [PATCH v2 13/15] btrfs: extract kthread code into its own init/exit helpers
+Date:   Wed, 12 Oct 2022 17:13:09 +0800
+Message-Id: <90ec1e748fca5b07dde97f5c0df877d16632cd61.1665565866.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1665565866.git.wqu@suse.com>
 References: <cover.1665565866.git.wqu@suse.com>
@@ -60,89 +60,140 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The most important change in this patch is the timing change.
+There are several changes involved:
 
-The existing code put fs root read very late, after
-kthread/qgroup-rescan/log-replay, but put btrfs_free_fs_roots() very
-early, as kthread/qgroup/log-replacey can all populate the fs roots.
+- Change the timing of btrfs_cleanup_transaction()
+  That call is to address any unfinished transaction mostly caused by
+  the cleaner/commit kthread.
 
-Thus this patch will change the timing, by reading fs root early.
-The fs root read part is not that important, but the cleanup part is.
+  Thus at exit function and error handling path, we should stop all
+  kthread, then cleanup the unfinished transaction.
 
-After the timing change, the fs root would be the first subvolume to be
-read, and its exit call can be ensured to cover all later possible
-subvolume loads.
+  Not calling it before stopping cleaner thread.
+
+- Remove the filemap_write_and_wait() call
+  Now we have open_ctree_btree_inode_exit() call, which will invalidate
+  all dirty pages of btree inode.
+  Thus there is no need to writeback those dirtied tree blocks anymore.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
+ fs/btrfs/disk-io.c | 79 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 50 insertions(+), 29 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 33700753f915..71a9572b45f9 100644
+index 71a9572b45f9..2d1f178cdecd 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -3840,6 +3840,19 @@ static void open_ctree_block_groups_exit(struct btrfs_fs_info *fs_info)
- 	btrfs_free_block_groups(fs_info);
+@@ -3853,6 +3853,52 @@ static int open_ctree_fs_root_init(struct btrfs_fs_info *fs_info)
+ 	return 0;
  }
  
-+static int open_ctree_fs_root_init(struct btrfs_fs_info *fs_info)
++static int open_ctree_kthread_init(struct btrfs_fs_info *fs_info)
 +{
-+	fs_info->fs_root = btrfs_get_fs_root(fs_info, BTRFS_FS_TREE_OBJECTID, true);
-+	if (IS_ERR(fs_info->fs_root)) {
-+		int ret = PTR_ERR(fs_info->fs_root);
++	int ret;
 +
-+		btrfs_warn(fs_info, "failed to read fs tree: %d", ret);
-+		fs_info->fs_root = NULL;
++	fs_info->cleaner_kthread = kthread_run(cleaner_kthread, fs_info,
++					       "btrfs-cleaner");
++	if (IS_ERR(fs_info->cleaner_kthread)) {
++		ret = PTR_ERR(fs_info->cleaner_kthread);
 +		return ret;
 +	}
++
++	fs_info->transaction_kthread = kthread_run(transaction_kthread,
++						   fs_info->tree_root,
++						   "btrfs-transaction");
++	if (IS_ERR(fs_info->transaction_kthread)) {
++		kthread_stop(fs_info->cleaner_kthread);
++
++		/*
++		 * Cleanup thread may have already started a trans.
++		 * The dirtied tree blocks will be invalidated at
++		 * open_ctree_btree_inode_exit() thus we don't need to bother.
++		 */
++		btrfs_cleanup_transaction(fs_info);
++
++		ret = PTR_ERR(fs_info->cleaner_kthread);
++		return ret;
++	}
++	/*
++	 * Mount does not set all options immediately, we can do it now and do
++	 * not have to wait for transaction commit
++	 */
++	btrfs_apply_pending_changes(fs_info);
 +	return 0;
++}
++
++static void open_ctree_kthread_exit(struct btrfs_fs_info *fs_info)
++{
++	kthread_stop(fs_info->transaction_kthread);
++	kthread_stop(fs_info->cleaner_kthread);
++	/*
++	 * Cleanup any unfinished transaction started by transaction/cleaner
++	 * kthread.
++	 */
++	btrfs_cleanup_transaction(fs_info);
 +}
 +
  struct init_sequence {
  	int (*init_func)(struct btrfs_fs_info *fs_info);
  	void (*exit_func)(struct btrfs_fs_info *fs_info);
-@@ -3873,6 +3886,17 @@ static const struct init_sequence open_ctree_seq[] = {
- 	}, {
- 		.init_func = open_ctree_block_groups_init,
- 		.exit_func = open_ctree_block_groups_exit,
+@@ -3897,6 +3943,9 @@ static const struct init_sequence open_ctree_seq[] = {
+ 		 */
+ 		.init_func = open_ctree_fs_root_init,
+ 		.exit_func = btrfs_free_fs_roots,
 +	}, {
-+		/*
-+		 * This fs roots related code should be called before anything
-+		 * which may try to read a subvolume, including cleanup/commit
-+		 * kthread, qgroup rescan, log replay etc.
-+		 *
-+		 * The main reason is for the exit function to be called for
-+		 * any stage which may read some subvolume trees.
-+		 */
-+		.init_func = open_ctree_fs_root_init,
-+		.exit_func = btrfs_free_fs_roots,
++		.init_func = open_ctree_kthread_init,
++		.exit_func = open_ctree_kthread_exit,
  	}
  };
  
-@@ -3933,14 +3957,6 @@ int __cold open_ctree(struct super_block *sb, char *options)
- 		}
+@@ -3922,26 +3971,9 @@ int __cold open_ctree(struct super_block *sb, char *options)
+ 		open_ctree_res[i] = true;
  	}
  
--	fs_info->fs_root = btrfs_get_fs_root(fs_info, BTRFS_FS_TREE_OBJECTID, true);
--	if (IS_ERR(fs_info->fs_root)) {
--		err = PTR_ERR(fs_info->fs_root);
--		btrfs_warn(fs_info, "failed to read fs tree: %d", err);
--		fs_info->fs_root = NULL;
--		goto fail_qgroup;
--	}
+-	fs_info->cleaner_kthread = kthread_run(cleaner_kthread, fs_info,
+-					       "btrfs-cleaner");
+-	if (IS_ERR(fs_info->cleaner_kthread))
+-		goto fail;
 -
- 	if (sb_rdonly(fs_info->sb))
- 		goto clear_oneshot;
+-	fs_info->transaction_kthread = kthread_run(transaction_kthread,
+-						   fs_info->tree_root,
+-						   "btrfs-transaction");
+-	if (IS_ERR(fs_info->transaction_kthread))
+-		goto fail_cleaner;
+-
+-	/*
+-	 * Mount does not set all options immediately, we can do it now and do
+-	 * not have to wait for transaction commit
+-	 */
+-	btrfs_apply_pending_changes(fs_info);
+-
+ 	ret = btrfs_read_qgroup_config(fs_info);
+ 	if (ret)
+-		goto fail_trans_kthread;
++		goto fail;
  
-@@ -3980,7 +3996,6 @@ int __cold open_ctree(struct super_block *sb, char *options)
- fail_trans_kthread:
- 	kthread_stop(fs_info->transaction_kthread);
- 	btrfs_cleanup_transaction(fs_info);
--	btrfs_free_fs_roots(fs_info);
- fail_cleaner:
- 	kthread_stop(fs_info->cleaner_kthread);
+ 	if (btrfs_build_ref_tree(fs_info))
+ 		btrfs_err(fs_info, "couldn't build ref tree");
+@@ -3993,17 +4025,6 @@ int __cold open_ctree(struct super_block *sb, char *options)
  
+ fail_qgroup:
+ 	btrfs_free_qgroup_config(fs_info);
+-fail_trans_kthread:
+-	kthread_stop(fs_info->transaction_kthread);
+-	btrfs_cleanup_transaction(fs_info);
+-fail_cleaner:
+-	kthread_stop(fs_info->cleaner_kthread);
+-
+-	/*
+-	 * make sure we're done with the btree inode before we stop our
+-	 * kthreads
+-	 */
+-	filemap_write_and_wait(fs_info->btree_inode->i_mapping);
+ 
+ fail:
+ 	for (i = ARRAY_SIZE(open_ctree_seq) - 1; i >= 0; i--) {
 -- 
 2.37.3
 
