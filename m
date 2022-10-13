@@ -2,110 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F20F35FE096
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Oct 2022 20:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82895FE595
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 00:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbiJMSLv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Oct 2022 14:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34316 "EHLO
+        id S229700AbiJMWwU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Oct 2022 18:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231488AbiJMSLP (ORCPT
+        with ESMTP id S229613AbiJMWwS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Oct 2022 14:11:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12546152C4D;
-        Thu, 13 Oct 2022 11:08:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 30948618CF;
-        Thu, 13 Oct 2022 17:56:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CC1AC433D7;
-        Thu, 13 Oct 2022 17:56:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665683797;
-        bh=3BQqcau0mTJ2WJ8I+0RhdaTW9TR9ahxBYKkS/ywxSgE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e60sYZxotFftMrl0lGwyZqUrma4ZcaZ7Da3q+ZuQJkwrPNR1vSDmHJowHhpeXiWsw
-         p/psL85p3HjyhpXaV2SIUPHAgL4of/Z1egpTe3Ky1ufRM1A+hy22972zOgny3OBkpn
-         HrQstIfKQCh631cbGyHMzPvIWse5I/tpbXb2GCu1tgNiQezK2efwe0xnE9zjGndVF4
-         q4bugui5ZeK6VurFAjDvSU+JQ9manSHb4jx69p2+N47EP4hV6vQPgxKHC2T9iZ+2vq
-         aYm7t/Yg69tOsecRwKM8OKgC7r1TmXzY/kVjT7t1fifjdwDq0cpf4vFJT8XBDqabwn
-         RmNxE8FFByL5A==
-Date:   Thu, 13 Oct 2022 13:56:36 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>, clm@fb.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.0 38/46] btrfs: introduce
- BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN
-Message-ID: <Y0hRVO+l3oSPlJd6@sashalap>
-References: <20221011145015.1622882-1-sashal@kernel.org>
- <20221011145015.1622882-38-sashal@kernel.org>
- <20221012125648.GX13389@suse.cz>
- <7cf55e21-4d68-8371-a4a5-08cd8278bcf9@gmx.com>
+        Thu, 13 Oct 2022 18:52:18 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3042157F65
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Oct 2022 15:52:16 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 78491320083A;
+        Thu, 13 Oct 2022 18:52:12 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 13 Oct 2022 18:52:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm3; t=1665701532; x=1665787932; bh=uPWafh4XkUDe2OVOAlFyg0JsZ
+        IVhDlCpaD5BiX+I4+M=; b=KNtyouGgQ+x8GZ5nL+dlpu1uAKCw6xAwJop+J4Bl5
+        WRAPAVyxYi9MNy+WkVj5xOoJY9SMbuu0Zj6aS9OZHlPg6oVxaw/sBv5tA6BT6iw2
+        3ztfRhgrjkNLRgwNXYjuixVflqbHifc/+QobV3B342l1JO/ogpuAWDx1eNOdYBDL
+        WTKjSOx0gQo+zZcYgG1pT5br5JYHFooG9WgoR64c2uCMiB6HQ7Cn75N1opEkZYq5
+        WjKrgY2PCusXCYOhd8CJA2dgrzmo4mMZE4Wu+RmeHzHzFmVm8mgYCpYlGv11X250
+        wuIoNSP2gzQjD5BearCbCi8MVbwrvNtnja2i8JEsfYtXw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1665701532; x=1665787932; bh=uPWafh4XkUDe2OVOAlFyg0JsZIVhDlCpaD5
+        BiX+I4+M=; b=sivzVzUA4tx9ud9gHE5ed4aRQVegKnPj+zKzeXn4VY2AGLyl+DT
+        IzsOk2EJ/BfMsbeL6u54sjBBs7P9FN8FrhwhL4ZSLsJV5Drei+yIMXYxIG8803zW
+        mOrNeO5wayPAqqEKb9F6FrDJMAN6O0ecIBvbpiOsp8tM/XzzdIzcjfkF9SZSK9UO
+        Sl4H2KrMvqkA7Hvv0TqZWPlIZ4SwhHFOT3Wr6aHIo7s5MqnAdmp3hPQCb1JmxhQp
+        OzdgyUT6nPUNozoNFYkWTR4QUckX9Ga/cs5e1K3px3eNac3bJapeXFJmn1MuaB21
+        KoTlMAUQxjO6+SfJzqsRUy6C9IPQev4ETUA==
+X-ME-Sender: <xms:m5ZIY7X2ijP-OUGiumJOTfABpgCmgNENXuNgRrlwj1UtaZOo36Hweg>
+    <xme:m5ZIYznFo3h-tTqdGffX33OEyrvvqZGZuYQfhbaemOywOdJ6DDgZNlvTgO9bZtEQJ
+    N0dRqiuYPzbAPzRG8E>
+X-ME-Received: <xmr:m5ZIY3aH2LY-I8P4dh-popf6JJ3gu_r_MoomsNGCDxhGBBefwC7VOROB5CQDvtPqZ5vQtj_MWm4eyzVKetsp2RQiozDbVA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeekuddgudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhsuceu
+    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepudeitd
+    elueeijeefleffveelieefgfejjeeigeekudduteefkefffeethfdvjeevnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
+    drihho
+X-ME-Proxy: <xmx:m5ZIY2Udkd3B7khDjpO0vFcAs41_QxIf1zvziHSgSyONck-Ha8Toqg>
+    <xmx:m5ZIY1kGkqJabq3I1weKmjKijpHFN5T7gS7HeW2Gu1mfmv05Lvd6Zg>
+    <xmx:m5ZIYzdG0_JbEyVhciX6re_9FcM2RMojhLqMOyTAgUucgpYJQvPoZg>
+    <xmx:nJZIY1uQ5sbmEwc7VI8jaeeXzLAFPWaLo7Fd98P_FvCM-HsXVpUemg>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 13 Oct 2022 18:52:11 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        'Filipe Manana ' <fdmanana@kernel.org>
+Subject: [PATCH v2 0/2] btrfs: minor reclaim tuning
+Date:   Thu, 13 Oct 2022 15:52:08 -0700
+Message-Id: <cover.1665701210.git.boris@bur.io>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <7cf55e21-4d68-8371-a4a5-08cd8278bcf9@gmx.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 07:12:10AM +0800, Qu Wenruo wrote:
->
->
->On 2022/10/12 20:56, David Sterba wrote:
->>On Tue, Oct 11, 2022 at 10:50:06AM -0400, Sasha Levin wrote:
->>>From: Qu Wenruo <wqu@suse.com>
->>>
->>>[ Upstream commit e562a8bdf652b010ce2525bcf15d145c9d3932bf ]
->>>
->>>Introduce a new runtime flag, BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN,
->>>which will inform qgroup rescan to cancel its work asynchronously.
->>>
->>>This is to address the window when an operation makes qgroup numbers
->>>inconsistent (like qgroup inheriting) while a qgroup rescan is running.
->>>
->>>In that case, qgroup inconsistent flag will be cleared when qgroup
->>>rescan finishes.
->>>But we changed the ownership of some extents, which means the rescan is
->>>already meaningless, and the qgroup inconsistent flag should not be
->>>cleared.
->>>
->>>With the new flag, each time we set INCONSISTENT flag, we also set this
->>>new flag to inform any running qgroup rescan to exit immediately, and
->>>leaving the INCONSISTENT flag there.
->>>
->>>The new runtime flag can only be cleared when a new rescan is started.
->>
->>Qu, does this patch make sense for stable on itself? It was part of a
->>series adding some new flags and the sysfs knob.  As I read it there's a
->>case where it can affect how the rescan is done and that it can be
->>cancelled but still am not sure if it's worth the backport.
->
->Considering the qgroup still lacks a way to handle large subvolume drop,
->and a lot of things can mark qgroup inconsistent halfway, I think
->backporting this patch itself is not that bad.
->
->The problem is, why only backporting this one?
->
->To me, it would make more sense to backport either all or none.
->
->Sure, if we can cancel rescan it's an improvement, but rescan itself is
->already relatively cheap compared to other qgroup operations.
->Thus I prefer to backport all the qgroup patches.
+Two minor reclaim fixes that reduce relocations when they aren't quite
+necessary. These are a basic first step in a broader effort to reduce
+the alarmingly high rate of relocation we have observed in production
+at Meta.
 
-I'll drop this one and happily take a series if you want to send one
-out.
+The first patch skips empty relocation.
+
+The second patch skips relocation that no longer passes the reclaim
+threshold check at reclaim time.
+
+Changes in v2:
+- added the re-check patch
+- improved commit message and comment in the skip-empty patch.
+
+Boris Burkov (2):
+  btrfs: skip reclaim if block_group is empty
+  btrfs: re-check reclaim condition in reclaim worker
+
+ fs/btrfs/block-group.c | 83 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 58 insertions(+), 25 deletions(-)
 
 -- 
-Thanks,
-Sasha
+2.38.0
+
