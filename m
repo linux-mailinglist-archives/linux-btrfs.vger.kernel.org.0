@@ -2,55 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8111D5FDFCD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Oct 2022 19:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D345FE0B8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Oct 2022 20:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbiJMR6Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Oct 2022 13:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53554 "EHLO
+        id S231661AbiJMSNc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Oct 2022 14:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbiJMR5p (ORCPT
+        with ESMTP id S231653AbiJMSMn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Oct 2022 13:57:45 -0400
+        Thu, 13 Oct 2022 14:12:43 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E81B5FED;
-        Thu, 13 Oct 2022 10:57:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4672170DDB;
+        Thu, 13 Oct 2022 11:09:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 927D4B82023;
-        Thu, 13 Oct 2022 17:56:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C115C433D6;
-        Thu, 13 Oct 2022 17:56:55 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 84550B82036;
+        Thu, 13 Oct 2022 17:55:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12C5FC433C1;
+        Thu, 13 Oct 2022 17:55:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665683815;
-        bh=y+nUBGq5tB1wZxetm97uvPW+VajTy591xqNbeojGCUI=;
+        s=k20201202; t=1665683749;
+        bh=3FTYuGT7nw9NB56TvQ4if0y5cqaa0gEFg/Ln0VSlmD4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=THRWMPZj1u71R105pw6mVhDwikvx7jgGOnyNJNAnA3Zr+5pfkVeNWLBpsPriyG3X+
-         b5otynQ6faVOyuFlTq7g20RrfFiYXeCvupv29SkwvSgO66rlt8k3gIDB3XkbEOypOR
-         petA2n6sNCk4ChfeRUizJmjynhR08hEhSTE4pkgtxjtdU5Bd81q36Iox5UZ1QowSAT
-         sTC+5ajISnzlRyryrbrrEQ0zJnOJLUrxwrQlE5NKEbelOT+1MXN4xPolI7pG3H0vTK
-         b6HoNuviF4tR/MYLicfdWo4EYnV8L5CfB94D0UcMLz+g3Hgb53KWYh+CURkVN9oMtJ
-         JcBL2foHCXdmw==
-Date:   Thu, 13 Oct 2022 13:56:54 -0400
+        b=F2zpTStwDhSQFnCPBMdL5w6vdNT5dL/nZAsg5+Djyl6xtjOS/4v0f4zoMfL9cNoAV
+         HuPp7hB0fTCB7m0j25kwF3N0oUyQaqRNVv/P+eJmA/sZ73fYFIz8N+T1dm1fW5nCzS
+         LMa6Jo5PEAbRumCHCuDVdO0DdzZT64DVg2WPff5jrQrteY5kqX5a/Oc5+97i27m9Jq
+         kZ6NQbkq7l2bkGfu7D+TntU9tLb088wMsUw0RGyIBtdaQHUDUF/5kVwrk+ePpBpJkX
+         fFMZX94ubP4ocpDrXfwM06xaZYQvnrvHX5jmetT4Zr5rK2CxIQ5yHIcd5EC5mKjnu6
+         e8kHTlX91AQzw==
+Date:   Thu, 13 Oct 2022 13:55:48 -0400
 From:   Sasha Levin <sashal@kernel.org>
-To:     David Sterba <dsterba@suse.cz>
+To:     Omar Sandoval <osandov@osandov.com>
 Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        zhang songyi <zhang.songyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>,
-        Anand Jain <anand.jain@oracle.com>,
+        Omar Sandoval <osandov@fb.com>,
+        Filipe Manana <fdmanana@suse.com>,
         David Sterba <dsterba@suse.com>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.0 37/46] btrfs: remove the unnecessary result
- variables
-Message-ID: <Y0hRZss8cOHw2vqa@sashalap>
+Subject: Re: [PATCH AUTOSEL 6.0 33/46] btrfs: get rid of block group caching
+ progress logic
+Message-ID: <Y0hRJNrAwSxXvoqV@sashalap>
 References: <20221011145015.1622882-1-sashal@kernel.org>
- <20221011145015.1622882-37-sashal@kernel.org>
- <20221012115418.GW13389@suse.cz>
+ <20221011145015.1622882-33-sashal@kernel.org>
+ <Y0YAaXPzuSmSKwiG@relinquished.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20221012115418.GW13389@suse.cz>
+In-Reply-To: <Y0YAaXPzuSmSKwiG@relinquished.localdomain>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -60,44 +59,39 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 12, 2022 at 01:54:18PM +0200, David Sterba wrote:
->On Tue, Oct 11, 2022 at 10:50:05AM -0400, Sasha Levin wrote:
->> From: zhang songyi <zhang.songyi@zte.com.cn>
+On Tue, Oct 11, 2022 at 04:46:49PM -0700, Omar Sandoval wrote:
+>On Tue, Oct 11, 2022 at 10:50:01AM -0400, Sasha Levin wrote:
+>> From: Omar Sandoval <osandov@fb.com>
 >>
->> [ Upstream commit bd64f6221a98fb1857485c63fd3d8da8d47406c6 ]
+>> [ Upstream commit 48ff70830bec1ccc714f4e31059df737f17ec909 ]
 >>
->> Return the sysfs_emit() and iterate_object_props() directly instead of
->> using unnecessary variables.
+>> struct btrfs_caching_ctl::progress and struct
+>> btrfs_block_group::last_byte_to_unpin were previously needed to ensure
+>> that unpin_extent_range() didn't return a range to the free space cache
+>> before the caching thread had a chance to cache that range. However, the
+>> commit "btrfs: fix space cache corruption and potential double
+>> allocations" made it so that we always synchronously cache the block
+>> group at the time that we pin the extent, so this machinery is no longer
+>> necessary.
 >>
->> Reported-by: Zeal Robot <zealci@zte.com.cn>
->> Reviewed-by: Anand Jain <anand.jain@oracle.com>
->> Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
->> Reviewed-by: David Sterba <dsterba@suse.com>
+>> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+>> Signed-off-by: Omar Sandoval <osandov@fb.com>
 >> Signed-off-by: David Sterba <dsterba@suse.com>
 >> Signed-off-by: Sasha Levin <sashal@kernel.org>
 >> ---
->>  fs/btrfs/props.c |  5 +----
->>  fs/btrfs/sysfs.c | 10 ++--------
->>  2 files changed, 3 insertions(+), 12 deletions(-)
->>
->> diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
->> index a2ec8ecae8de..055a631276ce 100644
->> --- a/fs/btrfs/props.c
->> +++ b/fs/btrfs/props.c
->> @@ -270,11 +270,8 @@ int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path)
->>  {
->>  	struct btrfs_root *root = BTRFS_I(inode)->root;
->>  	u64 ino = btrfs_ino(BTRFS_I(inode));
->> -	int ret;
->> -
->> -	ret = iterate_object_props(root, path, ino, inode_prop_iterator, inode);
->>
->> -	return ret;
->> +	return iterate_object_props(root, path, ino, inode_prop_iterator, inode);
+>>  fs/btrfs/block-group.c     | 13 ------------
+>>  fs/btrfs/block-group.h     |  2 --
+>>  fs/btrfs/extent-tree.c     |  9 ++-------
+>>  fs/btrfs/free-space-tree.c |  8 --------
+>>  fs/btrfs/transaction.c     | 41 --------------------------------------
+>>  fs/btrfs/zoned.c           |  1 -
+>>  6 files changed, 2 insertions(+), 72 deletions(-)
 >
->Please drop the patch from stable queues, it's an obvious cleanup.
+>Hi, Sasha,
+>
+>This commit is a cleanup. Please drop it from 6.0 and 5.19.
 
-Ack, I'll drop this and the other btrfs commits you've pointed out.
+Ack, thanks!
 
 -- 
 Thanks,
