@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF60B5FE95A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 09:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D4C5FE95B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 09:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbiJNHRl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Oct 2022 03:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
+        id S229823AbiJNHRn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Oct 2022 03:17:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbiJNHRh (ORCPT
+        with ESMTP id S229696AbiJNHRi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Oct 2022 03:17:37 -0400
+        Fri, 14 Oct 2022 03:17:38 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398A4C6955
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 00:17:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BAB715CB10
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 00:17:37 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EEC9A2201F
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:34 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 27D9022021
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1665731854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1665731856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Dp8NxvPfeb2cmoIUSOHSQxUCClGPz6Jekny4F3iSyJk=;
-        b=Tbbz1EpsBQyc9oiTtBlVFiukhtmVGcLaH4l1tKdZBjHrIIKK19qxOV/o7wqJBJ10BuuK3e
-        3UGzNTS1xy4fSSCUn6kNkP9QFleLH9uiiMv8ebKRt8gETSYRszWe1w/8JQdARDF5EDjJH2
-        Wn4pfTyLWLPcZ0w5CNohZbHlzqCZ9VA=
+        bh=NMNIMioz+hOVToNE2NXwuGAikME210tXdlLTvTjBbeI=;
+        b=h9k10p0/utwuS34RczbyqX/+NMT4sy0Dllm7OO34OFdftISLwsl+q2S0x8DGUDgJJ4J/BW
+        GkOZWkfUpwGxfdeQcSMpG1zmHkpPkWcKZsV1++9n2FaIyzMmYVDMk9UL35K4cSfejb7kee
+        Le99S6ucIGm3fvW91svczE09UZ0oKhA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3B7DF13451
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:34 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 68EC813451
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2Iw2AA4NSWOsUwAAMHmgww
+        id WAZ9Cw8NSWOsUwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:34 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:35 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 3/5] btrfs: introduce a bitmap based csum range search function
-Date:   Fri, 14 Oct 2022 15:17:11 +0800
-Message-Id: <0c4cd30d323b4e25937849652985391dd666d32e.1665730948.git.wqu@suse.com>
+Subject: [PATCH RFC 4/5] btrfs: raid56: prepare data checksums for later sub-stripe verification
+Date:   Fri, 14 Oct 2022 15:17:12 +0800
+Message-Id: <1e3f5e809daa4e819e140b260e47755357b4a3dd.1665730948.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1665730948.git.wqu@suse.com>
 References: <cover.1665730948.git.wqu@suse.com>
@@ -60,291 +60,147 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Although we have an existing function, btrfs_lookup_csums_range(), to
-find all data checksum for a range, it's based on a btrfs_ordered_sum
-list.
+This is for later data verification at RMW time.
 
-For the incoming RAID56 data checksum verification at RMW time, we don't
-want to waste time memory allocating the temporary memory.
+This patch will try to allocate the needed memory for a locked rbio if
+the rbio is for data exclusively (we don't want to handle mixed bg yet).
 
-So this patch will introduce a new helper, btrfs_lookup_csums_bitmap().
-
-The new helper will use bitmap based result, which will be a perfect fit
-for later RAID56 usage.
+And the memory will be released when the rbio is unlocked.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ctree.h      |   8 ++-
- fs/btrfs/file-item.c  | 127 +++++++++++++++++++++++++++++++++++++++++-
- fs/btrfs/inode.c      |   6 +-
- fs/btrfs/relocation.c |   4 +-
- fs/btrfs/scrub.c      |   8 +--
- fs/btrfs/tree-log.c   |  16 +++---
- 6 files changed, 146 insertions(+), 23 deletions(-)
+ fs/btrfs/raid56.c | 72 ++++++++++++++++++++++++++++++++++++++++++++++-
+ fs/btrfs/raid56.h | 12 ++++++++
+ 2 files changed, 83 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index a8b629a166be..7cf011b28c71 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2990,9 +2990,11 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
- 			   struct btrfs_ordered_sum *sums);
- blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
- 				u64 offset, bool one_ordered);
--int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
--			     struct list_head *list, int search_commit,
--			     bool nowait);
-+int btrfs_lookup_csums_list(struct btrfs_root *root, u64 start, u64 end,
-+			    struct list_head *list, int search_commit,
-+			    bool nowait);
-+int btrfs_lookup_csums_bitmap(struct btrfs_root *root, u64 start, u64 end,
-+			      u8 *csum_buf, unsigned long *csum_bitmap);
- void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
- 				     const struct btrfs_path *path,
- 				     struct btrfs_file_extent_item *fi,
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 8d9c4488d86a..b52f13a1bb20 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -523,9 +523,9 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio, u8 *dst
- 	return ret;
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index 1b2899173ae1..8f7e25001a2b 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -19,6 +19,7 @@
+ #include "volumes.h"
+ #include "raid56.h"
+ #include "async-thread.h"
++#include "ordered-data.h"
+ 
+ /* set when additional merges to this rbio are not allowed */
+ #define RBIO_RMW_LOCKED_BIT	1
+@@ -854,6 +855,16 @@ static void rbio_orig_end_io(struct btrfs_raid_bio *rbio, blk_status_t err)
+ 	struct bio *cur = bio_list_get(&rbio->bio_list);
+ 	struct bio *extra;
+ 
++	/*
++	 * Also freeup the rbio->csum_*.
++	 * Every sub-stripe write should allocate their own csum buffer and
++	 * bitmap by their own, no cached result.
++	 */
++	kfree(rbio->csum_buf);
++	bitmap_free(rbio->csum_bitmap);
++	rbio->csum_buf = NULL;
++	rbio->csum_bitmap = NULL;
++
+ 	/*
+ 	 * Clear the data bitmap, as the rbio may be cached for later usage.
+ 	 * do this before before unlock_stripe() so there will be no new bio
+@@ -1675,6 +1686,63 @@ static int full_stripe_write(struct btrfs_raid_bio *rbio)
+ 	return 0;
  }
  
--int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
--			     struct list_head *list, int search_commit,
--			     bool nowait)
-+int btrfs_lookup_csums_list(struct btrfs_root *root, u64 start, u64 end,
-+			    struct list_head *list, int search_commit,
-+			    bool nowait)
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_key key;
-@@ -657,6 +657,127 @@ int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
- 	return ret;
- }
- 
-+/*
-+ * Do the same work as btrfs_lookup_csums_list(), the different is in how
-+ * we return the result.
-+ *
-+ * This version will set the corresponding bits in @csum_bitmap to represent
-+ * there is a csum found.
-+ * Each bit represents a sector. Thus caller should ensure @csum_buf passed
-+ * in is large enough to contain all csums.
-+ */
-+int btrfs_lookup_csums_bitmap(struct btrfs_root *root, u64 start, u64 end,
-+			      u8 *csum_buf, unsigned long *csum_bitmap)
++static void fill_data_csums(struct btrfs_raid_bio *rbio)
 +{
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	struct btrfs_key key;
-+	struct btrfs_path *path;
-+	struct extent_buffer *leaf;
-+	struct btrfs_csum_item *item;
-+	const u64 orig_start = start;
++	struct btrfs_fs_info *fs_info = rbio->bioc->fs_info;
++	struct btrfs_root *csum_root = btrfs_csum_root(fs_info,
++						       rbio->bioc->raid_map[0]);
++	const u64 start = rbio->bioc->raid_map[0];
++	const u32 len = (rbio->nr_data * rbio->stripe_nsectors) <<
++			fs_info->sectorsize_bits;
 +	int ret;
 +
-+	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
-+	       IS_ALIGNED(end + 1, fs_info->sectorsize));
++	/* The rbio should not has its csum buffer initialized. */
++	ASSERT(!rbio->csum_buf && !rbio->csum_bitmap);
 +
-+	path = btrfs_alloc_path();
-+	if (!path)
-+		return -ENOMEM;
++	/*
++	 * Skip the csum search if:
++	 *
++	 * - The rbio doesn't belongs to data block groups
++	 *   Then we are doing IO for tree blocks, no need to
++	 *   search csums.
++	 *
++	 * - The rbio belongs to mixed block groups
++	 *   This is to avoid deadlock, as we're already holding
++	 *   the full stripe lock, if we trigger a metadata read, and
++	 *   it needs to do raid56 recovery, we will deadlock.
++	 */
++	if (!(rbio->bioc->map_type & BTRFS_BLOCK_GROUP_DATA) ||
++	    rbio->bioc->map_type & BTRFS_BLOCK_GROUP_METADATA)
++		return;
 +
-+	key.objectid = BTRFS_EXTENT_CSUM_OBJECTID;
-+	key.offset = start;
-+	key.type = BTRFS_EXTENT_CSUM_KEY;
++	rbio->csum_buf = kzalloc(rbio->nr_data * rbio->stripe_nsectors *
++				 fs_info->csum_size, GFP_NOFS);
++	rbio->csum_bitmap = bitmap_zalloc(rbio->nr_data * rbio->stripe_nsectors,
++				 GFP_NOFS);
++	if (!rbio->csum_buf || !rbio->csum_bitmap)
++		goto enomem;
 +
-+	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
++	ret = btrfs_lookup_csums_bitmap(csum_root, start, start + len - 1,
++					rbio->csum_buf, rbio->csum_bitmap);
 +	if (ret < 0)
-+		goto fail;
-+	if (ret > 0 && path->slots[0] > 0) {
-+		leaf = path->nodes[0];
-+		btrfs_item_key_to_cpu(leaf, &key, path->slots[0] - 1);
++		goto enomem;
++	return;
 +
-+		/*
-+		 * There are two cases we can hit here for the previous
-+		 * csum item.
-+		 *
-+		 *		|<- search range ->|
-+		 *	|<- csum item ->|
-+		 *
-+		 * Or
-+		 *				|<- search range ->|
-+		 *	|<- csum item ->|
-+		 *
-+		 * Check if the previous csum item covers the leading part
-+		 * of the search range.
-+		 * If so we have to start from previous csum item.
-+		 */
-+		if (key.objectid == BTRFS_EXTENT_CSUM_OBJECTID &&
-+		    key.type == BTRFS_EXTENT_CSUM_KEY) {
-+			if (bytes_to_csum_size(fs_info, start - key.offset) <
-+			    btrfs_item_size(leaf, path->slots[0] - 1))
-+				path->slots[0]--;
-+		}
-+	}
-+
-+	while (start <= end) {
-+		u64 csum_end;
-+
-+		leaf = path->nodes[0];
-+		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
-+			ret = btrfs_next_leaf(root, path);
-+			if (ret < 0)
-+				goto fail;
-+			if (ret > 0)
-+				break;
-+			leaf = path->nodes[0];
-+		}
-+
-+		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-+		if (key.objectid != BTRFS_EXTENT_CSUM_OBJECTID ||
-+		    key.type != BTRFS_EXTENT_CSUM_KEY ||
-+		    key.offset > end)
-+			break;
-+
-+		if (key.offset > start)
-+			start = key.offset;
-+
-+		csum_end = key.offset + csum_size_to_bytes(fs_info,
-+					btrfs_item_size(leaf, path->slots[0]));
-+		if (csum_end <= start) {
-+			path->slots[0]++;
-+			continue;
-+		}
-+
-+		csum_end = min(csum_end, end + 1);
-+		item = btrfs_item_ptr(path->nodes[0], path->slots[0],
-+				      struct btrfs_csum_item);
-+		while (start < csum_end) {
-+			unsigned long offset;
-+			size_t size;
-+			u8 *csum_dest = csum_buf + bytes_to_csum_size(fs_info,
-+						start - orig_start);
-+
-+			size = min_t(size_t, csum_end - start, end + 1 - start);
-+
-+			offset = bytes_to_csum_size(fs_info, start - key.offset);
-+
-+			read_extent_buffer(path->nodes[0], csum_dest,
-+					   ((unsigned long)item) + offset,
-+					   bytes_to_csum_size(fs_info, size));
-+
-+			bitmap_set(csum_bitmap,
-+				(start - orig_start) >> fs_info->sectorsize_bits,
-+				size >> fs_info->sectorsize_bits);
-+
-+			start += size;
-+		}
-+		path->slots[0]++;
-+	}
-+	ret = 0;
-+fail:
-+	btrfs_free_path(path);
-+	return ret;
++enomem:
++	/*
++	 * We failed to allocated memory for rbio csum verification,
++	 * but it's not the end of day, we can still continue.
++	 * But better to warn users that RMW is no longer safe.
++	 */
++	btrfs_warn_rl(fs_info,
++"failed to allocated memory, sub-stripe write for full stripe %llu is not safe",
++			rbio->bioc->raid_map[0]);
++	kfree(rbio->csum_buf);
++	bitmap_free(rbio->csum_bitmap);
++	rbio->csum_buf = NULL;
++	rbio->csum_bitmap = NULL;
 +}
 +
- /**
-  * Calculate checksums of the data contained inside a bio
-  *
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index d347362a87d3..69ea6bbda293 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1695,9 +1695,9 @@ static noinline int csum_exist_in_range(struct btrfs_fs_info *fs_info,
+ /*
+  * partial stripe writes get handed over to async helpers.
+  * We're really hoping to merge a few more writes into this
+@@ -1685,8 +1753,10 @@ static int partial_stripe_write(struct btrfs_raid_bio *rbio)
  	int ret;
- 	LIST_HEAD(list);
  
--	ret = btrfs_lookup_csums_range(csum_root, bytenr,
--				       bytenr + num_bytes - 1, &list, 0,
--				       nowait);
-+	ret = btrfs_lookup_csums_list(csum_root, bytenr,
-+				      bytenr + num_bytes - 1, &list, 0,
-+				      nowait);
- 	if (ret == 0 && list_empty(&list))
- 		return 0;
+ 	ret = lock_stripe_add(rbio);
+-	if (ret == 0)
++	if (ret == 0) {
++		fill_data_csums(rbio);
+ 		start_async_work(rbio, rmw_work);
++	}
+ 	return 0;
+ }
  
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 216a4485d914..3cbcf7f010be 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -4343,8 +4343,8 @@ int btrfs_reloc_clone_csums(struct btrfs_inode *inode, u64 file_pos, u64 len)
+diff --git a/fs/btrfs/raid56.h b/fs/btrfs/raid56.h
+index 91d5c0adad15..fa82ca158899 100644
+--- a/fs/btrfs/raid56.h
++++ b/fs/btrfs/raid56.h
+@@ -126,6 +126,18 @@ struct btrfs_raid_bio {
  
- 	disk_bytenr = file_pos + inode->index_cnt;
- 	csum_root = btrfs_csum_root(fs_info, disk_bytenr);
--	ret = btrfs_lookup_csums_range(csum_root, disk_bytenr,
--				       disk_bytenr + len - 1, &list, 0, false);
-+	ret = btrfs_lookup_csums_list(csum_root, disk_bytenr,
-+				      disk_bytenr + len - 1, &list, 0, false);
- 	if (ret)
- 		goto out;
+ 	/* Allocated with real_stripes-many pointers for finish_*() calls */
+ 	void **finish_pointers;
++
++	/*
++	 * Checksum buffer if the rbio is for data.
++	 * The buffer should cover all data sectors (exlcuding P/Q sectors).
++	 */
++	u8 *csum_buf;
++
++	/*
++	 * Each bit represents if the corresponding sector has data csum found.
++	 * Should only cover data sectors (excluding P/Q sectors).
++	 */
++	unsigned long *csum_bitmap;
+ };
  
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 9e3b2e60e571..ac59493977a9 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3238,9 +3238,9 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
- 		extent_dev = bioc->stripes[0].dev;
- 		btrfs_put_bioc(bioc);
- 
--		ret = btrfs_lookup_csums_range(csum_root, extent_start,
--					       extent_start + extent_size - 1,
--					       &sctx->csum_list, 1, false);
-+		ret = btrfs_lookup_csums_list(csum_root, extent_start,
-+					      extent_start + extent_size - 1,
-+					      &sctx->csum_list, 1, false);
- 		if (ret) {
- 			scrub_parity_mark_sectors_error(sparity, extent_start,
- 							extent_size);
-@@ -3464,7 +3464,7 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
- 			    cur_logical;
- 
- 		if (extent_flags & BTRFS_EXTENT_FLAG_DATA) {
--			ret = btrfs_lookup_csums_range(csum_root, cur_logical,
-+			ret = btrfs_lookup_csums_list(csum_root, cur_logical,
- 					cur_logical + scrub_len - 1,
- 					&sctx->csum_list, 1, false);
- 			if (ret)
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 813986e38258..faf783a3c00b 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -799,7 +799,7 @@ static noinline int replay_one_extent(struct btrfs_trans_handle *trans,
- 					btrfs_file_extent_num_bytes(eb, item);
- 			}
- 
--			ret = btrfs_lookup_csums_range(root->log_root,
-+			ret = btrfs_lookup_csums_list(root->log_root,
- 						csum_start, csum_end - 1,
- 						&ordered_sums, 0, false);
- 			if (ret)
-@@ -4400,9 +4400,9 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
- 
- 		csum_root = btrfs_csum_root(trans->fs_info, disk_bytenr);
- 		disk_bytenr += extent_offset;
--		ret = btrfs_lookup_csums_range(csum_root, disk_bytenr,
--					       disk_bytenr + extent_num_bytes - 1,
--					       &ordered_sums, 0, false);
-+		ret = btrfs_lookup_csums_list(csum_root, disk_bytenr,
-+					      disk_bytenr + extent_num_bytes - 1,
-+					      &ordered_sums, 0, false);
- 		if (ret)
- 			goto out;
- 
-@@ -4595,10 +4595,10 @@ static int log_extent_csums(struct btrfs_trans_handle *trans,
- 
- 	/* block start is already adjusted for the file extent offset. */
- 	csum_root = btrfs_csum_root(trans->fs_info, em->block_start);
--	ret = btrfs_lookup_csums_range(csum_root,
--				       em->block_start + csum_offset,
--				       em->block_start + csum_offset +
--				       csum_len - 1, &ordered_sums, 0, false);
-+	ret = btrfs_lookup_csums_list(csum_root,
-+				      em->block_start + csum_offset,
-+				      em->block_start + csum_offset +
-+				      csum_len - 1, &ordered_sums, 0, false);
- 	if (ret)
- 		return ret;
- 
+ /*
 -- 
 2.37.3
 
