@@ -2,94 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C69D5FECE6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 13:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF17B5FEDD2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 14:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbiJNLHW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Oct 2022 07:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
+        id S229657AbiJNMIl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Oct 2022 08:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbiJNLHS (ORCPT
+        with ESMTP id S229554AbiJNMIk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Oct 2022 07:07:18 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049BB1C3E5C;
-        Fri, 14 Oct 2022 04:07:16 -0700 (PDT)
+        Fri, 14 Oct 2022 08:08:40 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCF51BF204
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 05:08:39 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8DF90219DD;
-        Fri, 14 Oct 2022 11:07:15 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 699EC1F385;
+        Fri, 14 Oct 2022 12:08:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1665745635;
+        t=1665749318;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7FcU2S9uqEm0CF6BB/SeeVZUQ8dYpwJbuPliwF+3+u4=;
-        b=SYcIgs4skApYS0e5EN6rInsFGICWVwqoNK+ghYA5Ty6cldmzTNNLJSQaTJ3ZkEso912ev/
-        MDpGENX6+WjMe6Ck6N0I1PNPlB1GEnPKR5HGpPoN6ggiuTAX3lAyohkAgqWofwVDFudy6c
-        KxfrSgRfyNa9h4Ijf/cPr0QREvetgVU=
+        bh=wWsXC5MfxUjSsSczFpdR37Q1Uiu0fCnLJjqff4aWOGI=;
+        b=gDZdzFV0gJNWLwFLaNi2UKhdIQUmORYZ8VBOBP1F+x58ede/8v8XVZeTCUjqGO5G4hmeZb
+        w0P9Zu47yYuEMxefb8GKV90PkjEGP0OvoEUMyICM04W2NvAWuWOAqpzZLGAZsAxW6IRij1
+        u9D2efLICvxzhb2ZZVzpOSHTXFHxRBw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1665745635;
+        s=susede2_ed25519; t=1665749318;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7FcU2S9uqEm0CF6BB/SeeVZUQ8dYpwJbuPliwF+3+u4=;
-        b=kSyioArW0Ot6k3tzUeWahYwFpst7csAxWJt74L6cj8Rbf0E71wb5ojBbvoanUlPjw4MupU
-        UaD4MqA/P6tFZ3CQ==
+        bh=wWsXC5MfxUjSsSczFpdR37Q1Uiu0fCnLJjqff4aWOGI=;
+        b=Xx3BtwvMHmBuJGEdBsY+7md1i1LtZKGDz1k2x9WI+sX8MBk8BVSZw+IM4nKGBYelODfwIe
+        6q5zDymReNdd8tAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5738713451;
-        Fri, 14 Oct 2022 11:07:15 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 46AED13A4A;
+        Fri, 14 Oct 2022 12:08:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id SN8xFONCSWODWAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 14 Oct 2022 11:07:15 +0000
-Date:   Fri, 14 Oct 2022 13:07:08 +0200
+        id XrNVEEZRSWMPfAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 14 Oct 2022 12:08:38 +0000
+Date:   Fri, 14 Oct 2022 14:08:31 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-        Viktor Kuzmin <kvaster@gmail.com>
-Subject: Re: Bug 216559 - btrfs crash root mount RAID0 caused by ac0677348f3c2
-Message-ID: <20221014110708.GE13389@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: make btrfs module init/exit match their
+ sequence
+Message-ID: <20221014120831.GF13389@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <8be1e839-2eb8-43d0-9ecb-6ff8c3aa3f2d@leemhuis.info>
+References: <679d22de5f137a32e97ffa5e7d5f5961f7a2b782.1665566176.git.wqu@suse.com>
+ <63038e02-81fc-92b7-4e33-0a2c6c356698@oracle.com>
+ <a2633456-dd2f-534c-6505-fa4c8121f3e5@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <8be1e839-2eb8-43d0-9ecb-6ff8c3aa3f2d@leemhuis.info>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a2633456-dd2f-534c-6505-fa4c8121f3e5@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 02:09:50PM +0200, Thorsten Leemhuis wrote:
-> Hi, this is your Linux kernel regression tracker speaking.
+On Thu, Oct 13, 2022 at 02:44:49PM +0800, Qu Wenruo wrote:
 > 
-> David, I noticed a regression report in bugzilla.kernel.org apparently
-> caused by a changed of yours. As many (most?) kernel developer don't
-> keep an eye on the bug-tracker, I decided to forward the report by mail.
-> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=216559 :
+> 
+> On 2022/10/13 14:03, Anand Jain wrote:
+> >
+> >> With this patch, init_btrfs_fs()/exit_btrfs_fs() will be much easier to
+> >> expand and will always follow the strict order.
+> >>
+> >
+> > Nice idea.
+> >
+> >
+> >> -    btrfs_print_mod_info();
+> > ::
+> >> -    err = btrfs_run_sanity_tests();
+> >
+> > ::
+> >
+> >> +    }, {
+> >> +        .init_func = btrfs_run_sanity_tests,
+> >> +        .exit_func = NULL,
+> >> +    }, {
+> >> +        .init_func = btrfs_print_mod_info,
+> >> +        .exit_func = NULL,
+> >> +    }, {
+> >
+> >
+> >   Is there any special reason to switch the order of calling for
+> > sanity_tests() and mod_info()?
+> 
+> Mentioned in the commit message:
+> 
+> 
+>    Only one modification in the order, now we call btrfs_print_mod_info()
+>    after sanity checks.
+>    As it makes no sense to print the mod into, and fail the sanity tests.
 
-Thanks, you don't need to forward the mails as I'm on CC of all bugzilla
-updates where the btrfs virtual assignee is also present. But feel free
-to ping regarding any regressions you're tracking and would like an
-update.
-
-Inspired by the LPC talk about bugzilla I went through all 650+ btrfs
-bugs and closed what looked either fixed or not relevant anymore. The
-rest are recent reports or bugs that may need to be moved elsewhere.
-As kernel.org bugzilla is recommended for reports in our community
-documentation I monitor new bugs but with variable reaction time.
+I find the order 1. mod info, 2. tests, OK. Once the subsystem
+initialization finishes without problems the modinfo is printed and then
+the self tests start rolling. It's probably a cosmetic change but unless
+there's a clear reason to change it I'd rather keep it as is.
