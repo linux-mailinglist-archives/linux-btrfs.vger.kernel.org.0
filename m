@@ -2,92 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED84A5FEFD8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 16:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED975FF19A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 17:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbiJNOJO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Oct 2022 10:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
+        id S229875AbiJNPoU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Oct 2022 11:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbiJNOJM (ORCPT
+        with ESMTP id S229471AbiJNPoS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Oct 2022 10:09:12 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441691D3447
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:09:11 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Fri, 14 Oct 2022 11:44:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6A027B16;
+        Fri, 14 Oct 2022 08:44:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0478A1F383;
-        Fri, 14 Oct 2022 14:09:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1665756550;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=98QH/2inju+VgBTDsnGLY5wPQNAQ4P/nDL871FxvPVo=;
-        b=EtC38kSMgtitiaxJssmP0M1SxBwilAACchd03MDocyYak7WKGjS4Wfz2UA75ECQuTS/uM2
-        sDXyQL+63RPPuBjh8HZXfvQF6QlvtfHs869iGrBBCLmbjERNxwj1qxj+Evr5El1hJZwt4i
-        +GVEd5VH4k4c4sTEROwENSwqVpDRzWo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1665756550;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=98QH/2inju+VgBTDsnGLY5wPQNAQ4P/nDL871FxvPVo=;
-        b=OtliOifu3tZecV1ptO3swtZ4R0u3Isp6RnPWAizruwU+DtSrMQCgM9Ad31USuebdAVUII6
-        A4QkPmItwazQFjBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D6AF213451;
-        Fri, 14 Oct 2022 14:09:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id NEyMM4VtSWP+QwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 14 Oct 2022 14:09:09 +0000
-Date:   Fri, 14 Oct 2022 16:09:02 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        'Filipe Manana ' <fdmanana@kernel.org>
-Subject: Re: [PATCH v2 0/2] btrfs: minor reclaim tuning
-Message-ID: <20221014140902.GK13389@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1665701210.git.boris@bur.io>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B52C61BB3;
+        Fri, 14 Oct 2022 15:44:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91F66C433D6;
+        Fri, 14 Oct 2022 15:44:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665762256;
+        bh=a5ohXX2HljiK2lNNucw1xbywST/b4xYjzGhuCnryDTo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BojrB6HSrEMn1FhOgfcP/WBFDRf35mrgRpMiajKBb27i/tgA0yefz/nT4qQzAhWud
+         I2BIVssXLeiYN1j+rCLBf8YukEVGRs/Yo7TcK41ggGHF1t8gNqn7JmlWjM9nbQTpay
+         Bo6K8LKowNqInWjustkMtzWpwqYUb3dK79HqY6jzscgi+4qSDsEd54sSQ98ZxN9SSg
+         WbN6PEb8FHoe6zPwitBWhHa8UGo/t58coOzis1+FRAp3U8lEIgrB9QvPSd9PYSHaIC
+         +IEzfryV+tWCKGx95u9xR0HrB9NwDP3GqRC4BFQFgbqBZlGnfqVyboxmulVghVWA3B
+         Xo1doKeBNsfuQ==
+Date:   Fri, 14 Oct 2022 08:44:16 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Hrutvik Kanabar <hrkanabar@gmail.com>
+Cc:     Hrutvik Kanabar <hrutvik@google.com>,
+        Marco Elver <elver@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        kasan-dev@googlegroups.com,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        linux-ntfs-dev@lists.sourceforge.net
+Subject: Re: [PATCH RFC 5/7] fs/xfs: support `DISABLE_FS_CSUM_VERIFICATION`
+ config option
+Message-ID: <Y0mD0LcNvu+QTlQ9@magnolia>
+References: <20221014084837.1787196-1-hrkanabar@gmail.com>
+ <20221014084837.1787196-6-hrkanabar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1665701210.git.boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221014084837.1787196-6-hrkanabar@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 03:52:08PM -0700, Boris Burkov wrote:
-> Two minor reclaim fixes that reduce relocations when they aren't quite
-> necessary. These are a basic first step in a broader effort to reduce
-> the alarmingly high rate of relocation we have observed in production
-> at Meta.
+On Fri, Oct 14, 2022 at 08:48:35AM +0000, Hrutvik Kanabar wrote:
+> From: Hrutvik Kanabar <hrutvik@google.com>
 > 
-> The first patch skips empty relocation.
+> When `DISABLE_FS_CSUM_VERIFICATION` is enabled, return truthy value for
+> `xfs_verify_cksum`, which is the key function implementing checksum
+> verification for XFS.
 > 
-> The second patch skips relocation that no longer passes the reclaim
-> threshold check at reclaim time.
-> 
-> Changes in v2:
-> - added the re-check patch
-> - improved commit message and comment in the skip-empty patch.
-> 
-> Boris Burkov (2):
->   btrfs: skip reclaim if block_group is empty
->   btrfs: re-check reclaim condition in reclaim worker
+> Signed-off-by: Hrutvik Kanabar <hrutvik@google.com>
 
-Added to misc-next, thanks.
+NAK, we're not going to break XFS for the sake of automated fuzz tools.
+
+You'll have to adapt your fuzzing tools to rewrite the block header
+checksums, like the existing xfs fuzz testing framework does.  See
+the xfs_db 'fuzz -d' command and the relevant fstests.
+
+--D
+
+> ---
+>  fs/xfs/libxfs/xfs_cksum.h | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/xfs/libxfs/xfs_cksum.h b/fs/xfs/libxfs/xfs_cksum.h
+> index 999a290cfd72..ba55b1afa382 100644
+> --- a/fs/xfs/libxfs/xfs_cksum.h
+> +++ b/fs/xfs/libxfs/xfs_cksum.h
+> @@ -76,7 +76,10 @@ xfs_verify_cksum(char *buffer, size_t length, unsigned long cksum_offset)
+>  {
+>  	uint32_t crc = xfs_start_cksum_safe(buffer, length, cksum_offset);
+>  
+> -	return *(__le32 *)(buffer + cksum_offset) == xfs_end_cksum(crc);
+> +	if (IS_ENABLED(CONFIG_DISABLE_FS_CSUM_VERIFICATION))
+> +		return 1;
+> +	else
+> +		return *(__le32 *)(buffer + cksum_offset) == xfs_end_cksum(crc);
+>  }
+>  
+>  #endif /* _XFS_CKSUM_H */
+> -- 
+> 2.38.0.413.g74048e4d9e-goog
+> 
