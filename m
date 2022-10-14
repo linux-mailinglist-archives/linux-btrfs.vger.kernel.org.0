@@ -2,92 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6736B5FEDEE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 14:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5CE95FEE15
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 14:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbiJNMWo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Oct 2022 08:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
+        id S229682AbiJNMn2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Oct 2022 08:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbiJNMWl (ORCPT
+        with ESMTP id S229582AbiJNMn1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Oct 2022 08:22:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1F31CBAB6
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 05:22:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BF6BA1F383;
-        Fri, 14 Oct 2022 12:22:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1665750159;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gRsp5L6XVrMjOFY82+UmAGmSuPyj1As8ri0BV+dofTQ=;
-        b=zFhIkHxB8ZXWND1abc5dhqzBW506iUww/u8aURC6Y2b9CI3FtmlV1kvXKMSTNdQOHA5IBm
-        aUHqSLC6ylXHtq6wu3XGdZxajydNu9qYJqi7aHD2Awt1zafdgG2VZw2r6W+bYmhV2caUs9
-        wRoyYV4rkmjm4FYgg2LIYP/OEo0HIzY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1665750159;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gRsp5L6XVrMjOFY82+UmAGmSuPyj1As8ri0BV+dofTQ=;
-        b=x5UpyiJFu/OJreGaEvvUg3jiEyEetJzzSv60+jg32ppziPRH7RVouEBtS/jYQrlju7gdoG
-        30t3uOyyce6+0ICA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A05BF13A4A;
-        Fri, 14 Oct 2022 12:22:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id vu5kJo9USWN6BQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 14 Oct 2022 12:22:39 +0000
-Date:   Fri, 14 Oct 2022 14:22:32 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 2/5] btrfs: use ffe_ctl in btrfs allocator tracepoints
-Message-ID: <20221014122232.GG13389@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1664999303.git.boris@bur.io>
- <22c0c12d9fb7750d21fe2e7ad566bcc49856bf5a.1664999303.git.boris@bur.io>
- <20221011130335.GS13389@twin.jikos.cz>
+        Fri, 14 Oct 2022 08:43:27 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF98A1C7112
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 05:43:26 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id h24so3201472qta.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 05:43:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fezNainiYgVOelk+pTs2yNAqiPadUJTgf0XECk65J7k=;
+        b=EYUHWjDCl9p4KhNocCe/eLP1CrumiBk07rysp9vJF4Xt6wBnrzoZyyZ/dm5/oph+8W
+         3YawuAMHcdi+l91ZZ8l1O/TwzzAerGNoINvSDTO6DIc1eEaQn7Du5/jGQagqD1KDxRmk
+         2zDdJn8iPwFl4w8za/X+9r5zV8dc55ZvPZioEhf36lrGwRKwcr5GWY4To+OFiQqM817A
+         bEN2zgEKfJsTlhAOIb4Qlt34XIZOZASLKIiqPcS0SQbk2csi19GXeRpp3PMRHETQA5SG
+         l0RymkEpR4XhQHq6qQJLD4McT7PL+vNpO2IGh5ZYb/QAUT6IapqopwlmFUP0k6+eT627
+         H7pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fezNainiYgVOelk+pTs2yNAqiPadUJTgf0XECk65J7k=;
+        b=LQZFF0thvnz5VqkknI33P7mSTOTXy846zSVdSOkXPxUwaaSUMJRkQc51w/mKFZer3v
+         JBk5/5d9rWX1srNS4wqWeiI7imI0NGqCTL8YtRIFOnS6cAHJ9FHN25K8l71lSWap0QCG
+         NuG3UvMEIIwtI2jf1ymmxL+XLJwWH299snOlKnS9iVGeOcWlTAfVya3eJmIo9VBdTNfh
+         MqRu4fmreuAajgiK1uroAunCY5pBlFXTNhf+ShvmbLJGlPVrrkBxjXO8cchkkw6P6v2W
+         v3o+KeCPgrOClGuqn5o721p3QA5QNLJbRk2RyQi20BrUz5tBV6OItbgaY4gJHVrUGmtA
+         wXsQ==
+X-Gm-Message-State: ACrzQf2sgl6p1tH1nO4w5GprE01Nma3Wey/gbTudSa8unqmrf5zXq+4S
+        2UQAU0gaxMh8EBQt8motqkHKR/4snGpH6A==
+X-Google-Smtp-Source: AMsMyM5yhqtqRArD9OaY2L+8H1hlMCtreXbT9YKN/CeueQCk5MKWzmSaY0F2r0nrLudWwkZyQpTS0Q==
+X-Received: by 2002:a05:622a:356:b0:35d:55ae:43ab with SMTP id r22-20020a05622a035600b0035d55ae43abmr3939464qtw.430.1665751405955;
+        Fri, 14 Oct 2022 05:43:25 -0700 (PDT)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id w7-20020ac86b07000000b00342f8d4d0basm1968013qts.43.2022.10.14.05.43.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Oct 2022 05:43:25 -0700 (PDT)
+Date:   Fri, 14 Oct 2022 08:43:24 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 15/15] btrfs: introduce a debug mount option to do
+ error injection for each stage of open_ctree()
+Message-ID: <Y0lZbFnapZ6Z3Xcv@localhost.localdomain>
+References: <cover.1665565866.git.wqu@suse.com>
+ <cb7312a3d6c88100df88dc61c911e6d5e8455070.1665565866.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221011130335.GS13389@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <cb7312a3d6c88100df88dc61c911e6d5e8455070.1665565866.git.wqu@suse.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 03:03:35PM +0200, David Sterba wrote:
-> On Wed, Oct 05, 2022 at 12:49:19PM -0700, Boris Burkov wrote:
-> > --- /dev/null
-> > +++ b/fs/btrfs/extent-tree.h
-> > @@ -0,0 +1,80 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +
-> > +#ifndef BTRFS_EXTENT_TREE_H
-> > +#define BTRFS_EXTENT_TREE_H
-> > +
-> > +#include "ctree.h"
+On Wed, Oct 12, 2022 at 05:13:11PM +0800, Qu Wenruo wrote:
+> With the new open_ctree_seq[] array, we can afford a debug mount option
+> to do all the error inject at different stages to have a much better
+> coverage for the error path.
 > 
-> Pulling ctree.h into this header is going the opposite way, we're trying
-> to logically separate the APIs.
+> The new "fail_mount=%u" mount option will be hidden behind
+> CONFIG_BTRFS_DEBUG option, and when enabled it will cause mount failure
+> just after the init function of specified stage.
+> 
+> This can be verified by the following script:
+> 
+>  mkfs.btrfs -f $dev
+>  for (( i=0;; i++ )) do
+> 	mount -o fail_mount=$i $dev $mnt
+> 	ret=$?
+> 	if [ $ret -eq 0 ]; then
+> 		umount $mnt
+> 		exit
+> 	fi
+>  done
+>  umount $mnt
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Fixing that results in many cascaded changes in other headers that
-depend on "ctree.h pulls everything", so this should be fixed
-separately, it was not a one-liner as I hoped for.
+Death to all mount options, especially for this.  I'd rather see something like
+this inserted in the main loop
+
+bool btrfs_mail_fail_init(struct btrfs_fs_info *fs_info, int seq)
+{
+	return false;
+}
+ALLOW_ERROR_INJECTION(btrfs_may_fail_init);
+
+and then we can error inject that way.  Alternatively you could just use
+ALLOW_ERROR_INJECTION for every one of the init/exit functions and acheive the
+same thing.  Thanks,
+
+Josef
