@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF66F5FE954
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 09:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE825FE956
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 09:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbiJNHRi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Oct 2022 03:17:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
+        id S229746AbiJNHRk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Oct 2022 03:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbiJNHRf (ORCPT
+        with ESMTP id S229629AbiJNHRg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Oct 2022 03:17:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3985EC6955
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 00:17:33 -0700 (PDT)
+        Fri, 14 Oct 2022 03:17:36 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250EC32D94
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 00:17:35 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 922461F385
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:32 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BFF7A22013
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1665731852; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1665731853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hug+dIeeUptzXKXWLSCXA+hEhBZuU+xQN6yNLCsNJKM=;
-        b=Q6SLxZ/ojHiGPh1YbLVj9ie/N6WnuNYwlFtVj0D+VsbFOyAY9DXiM/7G7U+KWAVQ8g8wt+
-        riSN41a9hMluU6wN+1xsdctHZ1PmRE4D5uVG1Q6fsE5MewrQ2cw2dR/yMYrwK2I69Nl7UE
-        IVch8+1L3jyQAYJU3+LbyIpNdxWdOSQ=
+        bh=uHrwGkYk1/BCWBJQu4asFmmiFCGKJPGcRT1pcYmErFA=;
+        b=lpwAm7cs+R+j3nyOWvCidXUa5+YIgR4KDXBKxHEvZAY1LsYI9ILUdnlNmhNi3tWCiakJE5
+        6Edb+KlQjfFsWT71lzSu2FWWqBURDxp+2Xb/rScmZ2cu3vbfMs2dda6g/7bTJG1nEKAn0U
+        hrVkTkB5FqsfRdhyxIs7rXJ2d9jNQiA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D4A2B13451
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:31 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D19413451
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id uD7PJQsNSWOsUwAAMHmgww
+        id qD+wMAwNSWOsUwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:31 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:32 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 1/5] btrfs: refactor btrfs_lookup_csums_range()
-Date:   Fri, 14 Oct 2022 15:17:09 +0800
-Message-Id: <a4da5db6aecaae841cfb498676d517f8df56bdab.1665730948.git.wqu@suse.com>
+Subject: [PATCH RFC 2/5] btrfs: raid56: refactor __raid_recover_end_io()
+Date:   Fri, 14 Oct 2022 15:17:10 +0800
+Message-Id: <6cbdf72be1c531f62dba95803c4ed7c32018506d.1665730948.git.wqu@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1665730948.git.wqu@suse.com>
 References: <cover.1665730948.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,182 +60,372 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The refactor involves the following parts:
+This refactor includes the following behavior change first:
 
-- Introduce bytes_to_csum_size() and csum_size_to_bytes() helpers
-  As we have quite some open-coded calculation, some of them are even
-  split into two assignments just to fit 80 chars limit.
+- Don't error out if only P/Q is corrupted
 
-- Remove the @csum_size parameter from max_ordered_sum_bytes()
-  Csum size can be fetched from @fs_info.
-  And we will use the csum_size_to_bytes() helper anyway.
+  The old code will directly error out if only P/Q is corrupted.
+  Although it is an logical error if we go into rebuild path with
+  only P/Q corrupted, there is no need to error out.
 
-- Add a comment explaining how we had the first search result
+  Just skip the rebuild and return the already good data.
 
-- Use newly introduced helpers to cleanup btrfs_lookup_csums_range()
+Then comes the following refactor which shouldn't cause behavior
+changes:
 
-- Move variables declaration to the minimal scope
+- Introduce a helper to do vertical stripe recovery
 
-- Never mix number of sectors with bytes
-  There are several locations doing things like:
+  This not only reduce one indent level, but also paves the road for
+  later data checksum verification in RMW cycles.
 
- 			size = min_t(size_t, csum_end - start,
-				     max_ordered_sum_bytes(fs_info));
-			...
-			size >>= fs_info->sectorsize_bits
+- Sort rbio->faila/b before recovery
 
-  Or
+  So we don't need to do the same swap every vertical stripe
 
-			offset = (start - key.offset) >> fs_info->sectorsize_bits;
-			offset *= csum_size;
+- Replace a BUG_ON() with ASSERT()
 
-  Make sure those variables can only represent BYTES inside the
-  function, by using the above bytes_to_csum_size() helpers.
+  Or checkpatch won't let me pass.
+
+- Mark recovered sectors uptodate after the recover loop
+
+- Do the cleanup for pointers unconditionally
+
+  We only need to initialize @pointers and @unmap_array to NULL, so
+  we can safely free them unconditionally.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/file-item.c | 69 ++++++++++++++++++++++++++++++--------------
- 1 file changed, 48 insertions(+), 21 deletions(-)
+ fs/btrfs/raid56.c | 277 ++++++++++++++++++++++++----------------------
+ 1 file changed, 146 insertions(+), 131 deletions(-)
 
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 6bb9fa961a6a..8d9c4488d86a 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -121,12 +121,26 @@ int btrfs_inode_clear_file_extent_range(struct btrfs_inode *inode, u64 start,
- 				start + len - 1, EXTENT_DIRTY, NULL);
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index c009c0a2081e..1b2899173ae1 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -1885,6 +1885,127 @@ void raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc)
+ 	bio_endio(bio);
  }
  
--static inline u32 max_ordered_sum_bytes(struct btrfs_fs_info *fs_info,
--					u16 csum_size)
-+static size_t bytes_to_csum_size(struct btrfs_fs_info *fs_info, u32 bytes)
- {
--	u32 ncsums = (PAGE_SIZE - sizeof(struct btrfs_ordered_sum)) / csum_size;
-+	ASSERT(IS_ALIGNED(bytes, fs_info->sectorsize));
- 
--	return ncsums * fs_info->sectorsize;
-+	return (bytes >> fs_info->sectorsize_bits) * fs_info->csum_size;
-+}
-+
-+static size_t csum_size_to_bytes(struct btrfs_fs_info *fs_info, u32 csum_size)
++/*
++ * Recover a vertical stripe specified by @sector_nr.
++ * @*pointers are the pre-allocated pointers by the caller, so we don't
++ * need to allocate/free the pointers again and again.
++ */
++static void recover_vertical(struct btrfs_raid_bio *rbio, int sector_nr,
++			     void **pointers, void **unmap_array)
 +{
-+	ASSERT(IS_ALIGNED(csum_size, fs_info->csum_size));
++	struct btrfs_fs_info *fs_info = rbio->bioc->fs_info;
++	struct sector_ptr *sector;
++	const u32 sectorsize = fs_info->sectorsize;
++	const int faila = rbio->faila;
++	const int failb = rbio->failb;
++	int stripe_nr;
 +
-+	return (csum_size / fs_info->csum_size) << fs_info->sectorsize_bits;
-+}
++	/*
++	 * Now we just use bitmap to mark the horizontal stripes in
++	 * which we have data when doing parity scrub.
++	 */
++	if (rbio->operation == BTRFS_RBIO_PARITY_SCRUB &&
++	    !test_bit(sector_nr, &rbio->dbitmap))
++		return;
 +
-+static inline u32 max_ordered_sum_bytes(struct btrfs_fs_info *fs_info)
-+{
-+	int max_csum_size = round_down(PAGE_SIZE - sizeof(struct btrfs_ordered_sum),
-+				       fs_info->csum_size);
++	/*
++	 * Setup our array of pointers with sectors from each stripe
++	 *
++	 * NOTE: store a duplicate array of pointers to preserve the
++	 * pointer order.
++	 */
++	for (stripe_nr = 0; stripe_nr < rbio->real_stripes; stripe_nr++) {
++		/*
++		 * If we're rebuilding a read, we have to use
++		 * pages from the bio list
++		 */
++		if ((rbio->operation == BTRFS_RBIO_READ_REBUILD ||
++		     rbio->operation == BTRFS_RBIO_REBUILD_MISSING) &&
++		    (stripe_nr == faila || stripe_nr == failb)) {
++			sector = sector_in_rbio(rbio, stripe_nr, sector_nr, 0);
++		} else {
++			sector = rbio_stripe_sector(rbio, stripe_nr, sector_nr);
++		}
++		ASSERT(sector->page);
++		pointers[stripe_nr] = kmap_local_page(sector->page) +
++				   sector->pgoff;
++		unmap_array[stripe_nr] = pointers[stripe_nr];
++	}
 +
-+	return csum_size_to_bytes(fs_info, max_csum_size);
- }
- 
- /*
-@@ -135,9 +149,8 @@ static inline u32 max_ordered_sum_bytes(struct btrfs_fs_info *fs_info,
-  */
- static int btrfs_ordered_sum_size(struct btrfs_fs_info *fs_info, unsigned long bytes)
- {
--	int num_sectors = (int)DIV_ROUND_UP(bytes, fs_info->sectorsize);
--
--	return sizeof(struct btrfs_ordered_sum) + num_sectors * fs_info->csum_size;
-+	return sizeof(struct btrfs_ordered_sum) +
-+	       bytes_to_csum_size(fs_info, bytes);
- }
- 
- int btrfs_insert_hole_extent(struct btrfs_trans_handle *trans,
-@@ -521,11 +534,7 @@ int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
- 	struct btrfs_ordered_sum *sums;
- 	struct btrfs_csum_item *item;
- 	LIST_HEAD(tmplist);
--	unsigned long offset;
- 	int ret;
--	size_t size;
--	u64 csum_end;
--	const u32 csum_size = fs_info->csum_size;
- 
- 	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
- 	       IS_ALIGNED(end + 1, fs_info->sectorsize));
-@@ -551,16 +560,33 @@ int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
- 	if (ret > 0 && path->slots[0] > 0) {
- 		leaf = path->nodes[0];
- 		btrfs_item_key_to_cpu(leaf, &key, path->slots[0] - 1);
++	/* All raid6 handling here */
++	if (rbio->bioc->map_type & BTRFS_BLOCK_GROUP_RAID6) {
++		/* Single failure, rebuild from parity raid5 style */
++		if (failb < 0) {
++			if (faila == rbio->nr_data)
++				/*
++				 * Just the P stripe has failed, without
++				 * a bad data or Q stripe.
++				 * We have nothing to do, just skip the
++				 * recovery for this stripe.
++				 */
++				goto cleanup;
++			/*
++			 * a single failure in raid6 is rebuilt
++			 * in the pstripe code below
++			 */
++			goto pstripe;
++		}
 +
 +		/*
-+		 * There are two cases we can hit here for the previous
-+		 * csum item.
-+		 *
-+		 *		|<- search range ->|
-+		 *	|<- csum item ->|
-+		 *
-+		 * Or
-+		 *				|<- search range ->|
-+		 *	|<- csum item ->|
-+		 *
-+		 * Check if the previous csum item covers the leading part
-+		 * of the search range.
-+		 * If so we have to start from previous csum item.
++		 * If the q stripe is failed, do a pstripe reconstruction from
++		 * the xors.
++		 * If both the q stripe and the P stripe are failed, we're
++		 * here due to a crc mismatch and we can't give them the
++		 * data they want.
 +		 */
- 		if (key.objectid == BTRFS_EXTENT_CSUM_OBJECTID &&
- 		    key.type == BTRFS_EXTENT_CSUM_KEY) {
--			offset = (start - key.offset) >> fs_info->sectorsize_bits;
--			if (offset * csum_size <
-+			if (bytes_to_csum_size(fs_info, start - key.offset) <
- 			    btrfs_item_size(leaf, path->slots[0] - 1))
- 				path->slots[0]--;
- 		}
++		if (rbio->bioc->raid_map[failb] == RAID6_Q_STRIPE) {
++			if (rbio->bioc->raid_map[faila] ==
++			    RAID5_P_STRIPE)
++				/*
++				 * Only P and Q are corrupted.
++				 * We only care about data stripes recovery,
++				 * can skip this vertical stripe.
++				 */
++				goto cleanup;
++			/*
++			 * Otherwise we have one bad data stripe and
++			 * a good P stripe.  raid5!
++			 */
++			goto pstripe;
++		}
++
++		if (rbio->bioc->raid_map[failb] == RAID5_P_STRIPE) {
++			raid6_datap_recov(rbio->real_stripes, sectorsize,
++					  faila, pointers);
++		} else {
++			raid6_2data_recov(rbio->real_stripes, sectorsize,
++					  faila, failb, pointers);
++		}
++	} else {
++		void *p;
++
++		/* Rebuild from P stripe here (raid5 or raid6). */
++		ASSERT(failb == -1);
++pstripe:
++		/* Copy parity block into failed block to start with */
++		memcpy(pointers[faila], pointers[rbio->nr_data], sectorsize);
++
++		/* Rearrange the pointer array */
++		p = pointers[faila];
++		for (stripe_nr = faila; stripe_nr < rbio->nr_data - 1;
++		     stripe_nr++)
++			pointers[stripe_nr] = pointers[stripe_nr + 1];
++		pointers[rbio->nr_data - 1] = p;
++
++		/* Xor in the rest */
++		run_xor(pointers, rbio->nr_data - 1, sectorsize);
++	}
++
++cleanup:
++	for (stripe_nr = rbio->real_stripes - 1; stripe_nr >= 0; stripe_nr--)
++		kunmap_local(unmap_array[stripe_nr]);
++}
++
+ /*
+  * all parity reconstruction happens here.  We've read in everything
+  * we can find from the drives and this does the heavy lifting of
+@@ -1892,11 +2013,9 @@ void raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc)
+  */
+ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
+ {
+-	const u32 sectorsize = rbio->bioc->fs_info->sectorsize;
+-	int sectornr, stripe;
+-	void **pointers;
+-	void **unmap_array;
+-	int faila = -1, failb = -1;
++	int sectornr;
++	void **pointers = NULL;
++	void **unmap_array = NULL;
+ 	blk_status_t err;
+ 	int i;
+ 
+@@ -1907,7 +2026,7 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
+ 	pointers = kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
+ 	if (!pointers) {
+ 		err = BLK_STS_RESOURCE;
+-		goto cleanup_io;
++		goto cleanup;
  	}
  
- 	while (start <= end) {
-+		u64 csum_end;
-+
- 		leaf = path->nodes[0];
- 		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
- 			ret = btrfs_next_leaf(root, path);
-@@ -580,8 +606,8 @@ int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
- 		if (key.offset > start)
- 			start = key.offset;
+ 	/*
+@@ -1917,11 +2036,12 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
+ 	unmap_array = kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
+ 	if (!unmap_array) {
+ 		err = BLK_STS_RESOURCE;
+-		goto cleanup_pointers;
++		goto cleanup;
+ 	}
  
--		size = btrfs_item_size(leaf, path->slots[0]);
--		csum_end = key.offset + (size / csum_size) * fs_info->sectorsize;
-+		csum_end = key.offset + csum_size_to_bytes(fs_info,
-+					btrfs_item_size(leaf, path->slots[0]));
- 		if (csum_end <= start) {
- 			path->slots[0]++;
- 			continue;
-@@ -591,8 +617,11 @@ int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
- 		item = btrfs_item_ptr(path->nodes[0], path->slots[0],
- 				      struct btrfs_csum_item);
- 		while (start < csum_end) {
-+			unsigned long offset;
-+			size_t size;
-+
- 			size = min_t(size_t, csum_end - start,
--				     max_ordered_sum_bytes(fs_info, csum_size));
-+				     max_ordered_sum_bytes(fs_info));
- 			sums = kzalloc(btrfs_ordered_sum_size(fs_info, size),
- 				       GFP_NOFS);
- 			if (!sums) {
-@@ -603,16 +632,14 @@ int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
- 			sums->bytenr = start;
- 			sums->len = (int)size;
+-	faila = rbio->faila;
+-	failb = rbio->failb;
++	/* Make sure faila and fail b are in order. */
++	if (rbio->faila >= 0 && rbio->failb >= 0 && rbio->faila > rbio->failb)
++		swap(rbio->faila, rbio->failb);
  
--			offset = (start - key.offset) >> fs_info->sectorsize_bits;
--			offset *= csum_size;
--			size >>= fs_info->sectorsize_bits;
-+			offset = bytes_to_csum_size(fs_info, start - key.offset);
+ 	if (rbio->operation == BTRFS_RBIO_READ_REBUILD ||
+ 	    rbio->operation == BTRFS_RBIO_REBUILD_MISSING) {
+@@ -1932,138 +2052,33 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
  
- 			read_extent_buffer(path->nodes[0],
- 					   sums->sums,
- 					   ((unsigned long)item) + offset,
--					   csum_size * size);
-+					   bytes_to_csum_size(fs_info, size));
+ 	index_rbio_pages(rbio);
  
--			start += fs_info->sectorsize * size;
-+			start += size;
- 			list_add_tail(&sums->list, &tmplist);
+-	for (sectornr = 0; sectornr < rbio->stripe_nsectors; sectornr++) {
+-		struct sector_ptr *sector;
+-
+-		/*
+-		 * Now we just use bitmap to mark the horizontal stripes in
+-		 * which we have data when doing parity scrub.
+-		 */
+-		if (rbio->operation == BTRFS_RBIO_PARITY_SCRUB &&
+-		    !test_bit(sectornr, &rbio->dbitmap))
+-			continue;
+-
+-		/*
+-		 * Setup our array of pointers with sectors from each stripe
+-		 *
+-		 * NOTE: store a duplicate array of pointers to preserve the
+-		 * pointer order
+-		 */
+-		for (stripe = 0; stripe < rbio->real_stripes; stripe++) {
+-			/*
+-			 * If we're rebuilding a read, we have to use
+-			 * pages from the bio list
+-			 */
+-			if ((rbio->operation == BTRFS_RBIO_READ_REBUILD ||
+-			     rbio->operation == BTRFS_RBIO_REBUILD_MISSING) &&
+-			    (stripe == faila || stripe == failb)) {
+-				sector = sector_in_rbio(rbio, stripe, sectornr, 0);
+-			} else {
+-				sector = rbio_stripe_sector(rbio, stripe, sectornr);
+-			}
+-			ASSERT(sector->page);
+-			pointers[stripe] = kmap_local_page(sector->page) +
+-					   sector->pgoff;
+-			unmap_array[stripe] = pointers[stripe];
+-		}
+-
+-		/* All raid6 handling here */
+-		if (rbio->bioc->map_type & BTRFS_BLOCK_GROUP_RAID6) {
+-			/* Single failure, rebuild from parity raid5 style */
+-			if (failb < 0) {
+-				if (faila == rbio->nr_data) {
+-					/*
+-					 * Just the P stripe has failed, without
+-					 * a bad data or Q stripe.
+-					 * TODO, we should redo the xor here.
+-					 */
+-					err = BLK_STS_IOERR;
+-					goto cleanup;
+-				}
+-				/*
+-				 * a single failure in raid6 is rebuilt
+-				 * in the pstripe code below
+-				 */
+-				goto pstripe;
+-			}
+-
+-			/* make sure our ps and qs are in order */
+-			if (faila > failb)
+-				swap(faila, failb);
++	for (sectornr = 0; sectornr < rbio->stripe_nsectors; sectornr++)
++		recover_vertical(rbio, sectornr, pointers, unmap_array);
+ 
+-			/* if the q stripe is failed, do a pstripe reconstruction
+-			 * from the xors.
+-			 * If both the q stripe and the P stripe are failed, we're
+-			 * here due to a crc mismatch and we can't give them the
+-			 * data they want
+-			 */
+-			if (rbio->bioc->raid_map[failb] == RAID6_Q_STRIPE) {
+-				if (rbio->bioc->raid_map[faila] ==
+-				    RAID5_P_STRIPE) {
+-					err = BLK_STS_IOERR;
+-					goto cleanup;
+-				}
+-				/*
+-				 * otherwise we have one bad data stripe and
+-				 * a good P stripe.  raid5!
+-				 */
+-				goto pstripe;
+-			}
+-
+-			if (rbio->bioc->raid_map[failb] == RAID5_P_STRIPE) {
+-				raid6_datap_recov(rbio->real_stripes,
+-						  sectorsize, faila, pointers);
+-			} else {
+-				raid6_2data_recov(rbio->real_stripes,
+-						  sectorsize, faila, failb,
+-						  pointers);
+-			}
+-		} else {
+-			void *p;
+-
+-			/* rebuild from P stripe here (raid5 or raid6) */
+-			BUG_ON(failb != -1);
+-pstripe:
+-			/* Copy parity block into failed block to start with */
+-			memcpy(pointers[faila], pointers[rbio->nr_data], sectorsize);
+-
+-			/* rearrange the pointer array */
+-			p = pointers[faila];
+-			for (stripe = faila; stripe < rbio->nr_data - 1; stripe++)
+-				pointers[stripe] = pointers[stripe + 1];
+-			pointers[rbio->nr_data - 1] = p;
++	/*
++	 * No matter if this is a RMW or recovery, we should have all
++	 * failed sectors repaired, thus they are now uptodate.
++	 * Especially if we determine to cache the rbio, we need to
++	 * have at least all data sectors uptodate.
++	 */
++	for (i = 0;  i < rbio->stripe_nsectors; i++) {
++		struct sector_ptr *sector;
+ 
+-			/* xor in the rest */
+-			run_xor(pointers, rbio->nr_data - 1, sectorsize);
++		if (rbio->faila != -1) {
++			sector = rbio_stripe_sector(rbio, rbio->faila, i);
++			sector->uptodate = 1;
  		}
- 		path->slots[0]++;
+-
+-		/*
+-		 * No matter if this is a RMW or recovery, we should have all
+-		 * failed sectors repaired, thus they are now uptodate.
+-		 * Especially if we determine to cache the rbio, we need to
+-		 * have at least all data sectors uptodate.
+-		 */
+-		for (i = 0;  i < rbio->stripe_nsectors; i++) {
+-			if (faila != -1) {
+-				sector = rbio_stripe_sector(rbio, faila, i);
+-				sector->uptodate = 1;
+-			}
+-			if (failb != -1) {
+-				sector = rbio_stripe_sector(rbio, failb, i);
+-				sector->uptodate = 1;
+-			}
++		if (rbio->failb != -1) {
++			sector = rbio_stripe_sector(rbio, rbio->failb, i);
++			sector->uptodate = 1;
+ 		}
+-		for (stripe = rbio->real_stripes - 1; stripe >= 0; stripe--)
+-			kunmap_local(unmap_array[stripe]);
+ 	}
+-
+ 	err = BLK_STS_OK;
++
+ cleanup:
+ 	kfree(unmap_array);
+-cleanup_pointers:
+ 	kfree(pointers);
+ 
+-cleanup_io:
+ 	/*
+ 	 * Similar to READ_REBUILD, REBUILD_MISSING at this point also has a
+ 	 * valid rbio which is consistent with ondisk content, thus such a
 -- 
 2.37.3
 
