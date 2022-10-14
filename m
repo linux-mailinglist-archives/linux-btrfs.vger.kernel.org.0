@@ -2,95 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3948F5FEEF0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 15:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AAD5FEFB8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 16:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbiJNNsQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Oct 2022 09:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
+        id S230432AbiJNOFQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Oct 2022 10:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbiJNNsN (ORCPT
+        with ESMTP id S230445AbiJNOE5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Oct 2022 09:48:13 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63DA1CFF25
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 06:48:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 14 Oct 2022 10:04:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B39F67068
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1665756180;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k8qQltuyjmygy+O43yanVxeFaxBvrjiQoX3IXlPZtGE=;
+        b=RKHBQA/A4GlnxFkvwLNIpONxGhyNEOoKxzT/Ei36YkDnL+VAzlv3bscrVdg1uB565Zn0wN
+        e/Fvg0sj6dh7zV1RUi+wGHP76038mbA2w9LCAhFCtWWVnmQQGifGavsIwhIhy+tz3wGnAl
+        QHUBtd+tWXuW+oAphqRgaDMVjTvnq0E=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-244-0ngC2H1gONipQ71LSLOWqQ-1; Fri, 14 Oct 2022 09:59:38 -0400
+X-MC-Unique: 0ngC2H1gONipQ71LSLOWqQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 09F37B820BD
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 13:48:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C77CDC433C1
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 13:48:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665755289;
-        bh=wH1txcPRAvSEhe/cU05LZcjYAmBF5BDA+aQ289v7UW4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UgHskDp7u71Hgunil3PN4K/tbSlg+GChsB9vZlPCnEnmglQh8lqS+NP/aFu4Tybla
-         O46d3OxfYntBlwWKtLihLMy+5f1kG0/5UHVbpMLHEsRraWYHZIqL0hicOhG41ShqFv
-         zEFNmflwSzBcF2qDNuRllWF2l1w+bYFYyMZecnt/drYXutMYIT/xrga4vv9ZywqOEP
-         yBvtlxv9XqjUAjqPdLHxp+IsXYE2gEZ1zULQf6sM/yqYbouz8siz7TNdhhA/yv/xCs
-         8t0F3iBXH39uEvGvWjmzEapYkkcPsMJ11JizH/IfKjMXrj7CtYdY3fTrzk18yXRhTB
-         uxKUzJem2cl5A==
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1370acb6588so5878302fac.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 06:48:09 -0700 (PDT)
-X-Gm-Message-State: ACrzQf2i85RLWITimulKXdSlIJCw/aCHIgvwZY2Hx8fl3uGCgEpsFisG
-        AujuOcBV/EXv8ev92Kk3n8D7vIRYkZVRhtyY2TM=
-X-Google-Smtp-Source: AMsMyM4WdlKOPYWD283scK7rtVrjcquAxjpsMHrex0rQ3pYEkUZiw1EBrEmV/uKeuSga7p5RizugrtrpOb3eRv6ScX0=
-X-Received: by 2002:a05:6870:2052:b0:132:7b2:2fe6 with SMTP id
- l18-20020a056870205200b0013207b22fe6mr2821027oad.98.1665755288932; Fri, 14
- Oct 2022 06:48:08 -0700 (PDT)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C2DFA3C10687;
+        Fri, 14 Oct 2022 13:59:37 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 456D84030DF;
+        Fri, 14 Oct 2022 13:59:36 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20220901220138.182896-6-vishal.moola@gmail.com>
+References: <20220901220138.182896-6-vishal.moola@gmail.com> <20220901220138.182896-1-vishal.moola@gmail.com>
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 05/23] afs: Convert afs_writepages_region() to use filemap_get_folios_tag()
 MIME-Version: 1.0
-References: <cover.1665656353.git.fdmanana@suse.com> <903be4beb2a83dcfaa278329c59f055f5a15c42e.1665656353.git.fdmanana@suse.com>
- <20221014133011.GH13389@twin.jikos.cz>
-In-Reply-To: <20221014133011.GH13389@twin.jikos.cz>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 14 Oct 2022 14:47:32 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4MWu6UuhcAbko51PuuV5ta6XP6V4Q_FBQuJybLM1vE7w@mail.gmail.com>
-Message-ID: <CAL3q7H4MWu6UuhcAbko51PuuV5ta6XP6V4Q_FBQuJybLM1vE7w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btrfs: remove gfp_t flag from btrfs_tree_mod_log_insert_key()
-To:     dsterba@suse.cz
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1569539.1665755974.1@warthog.procyon.org.uk>
+Date:   Fri, 14 Oct 2022 14:59:34 +0100
+Message-ID: <1569540.1665755974@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 2:30 PM David Sterba <dsterba@suse.cz> wrote:
->
-> On Thu, Oct 13, 2022 at 11:36:26AM +0100, fdmanana@kernel.org wrote:
-> >index 8a3a14686d3e..6606534fc36a 100644
-> > --- a/fs/btrfs/tree-mod-log.c
-> > +++ b/fs/btrfs/tree-mod-log.c
-> > @@ -220,7 +220,7 @@ static struct tree_mod_elem *alloc_tree_mod_elem(struct extent_buffer *eb,
-> >  }
-> >
-> >  int btrfs_tree_mod_log_insert_key(struct extent_buffer *eb, int slot,
-> > -                               enum btrfs_mod_log_op op, gfp_t flags)
-> > +                               enum btrfs_mod_log_op op)
-> >  {
-> >       struct tree_mod_elem *tm;
-> >       int ret;
-> > @@ -228,7 +228,7 @@ int btrfs_tree_mod_log_insert_key(struct extent_buffer *eb, int slot,
-> >       if (!tree_mod_need_log(eb->fs_info, eb))
-> >               return 0;
-> >
-> > -     tm = alloc_tree_mod_elem(eb, slot, op, flags);
-> > +     tm = alloc_tree_mod_elem(eb, slot, op, GFP_NOFS);
->
-> And after that alloc_tree_mod_elem is also called only with GFP_NOFS.
+Vishal Moola (Oracle) <vishal.moola@gmail.com> wrote:
 
-Indeed.
-Just sent a v2 with that change as well.
+> Convert to use folios throughout. This function is in preparation to
+> remove find_get_pages_range_tag().
+> 
+> Also modified this function to write the whole batch one at a time,
+> rather than calling for a new set every single write.
+> 
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
-Thanks.
+Tested-by: David Howells <dhowells@redhat.com>
 
->
-> >       if (!tm)
-> >               return -ENOMEM;
-> >
