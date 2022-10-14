@@ -2,136 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1A25FE61A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 02:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32BA5FE953
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Oct 2022 09:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbiJNARl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Oct 2022 20:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
+        id S229621AbiJNHRf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Oct 2022 03:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbiJNARg (ORCPT
+        with ESMTP id S229534AbiJNHRd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Oct 2022 20:17:36 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D86183E37
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Oct 2022 17:17:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1665706649;
-        bh=Qx4P1r7gGWyOg7aIOoWK1xO9k6Oo74oBZhoZNrMgB7M=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=H0cSTVppGQA15KbPS9Ryw1kZAUPDh4ckiOkAma0u+/kZiyKoSOdqazhYDSgw4h4TH
-         jwj3juG768wyiie2eSsnK8HwS2mAKbXIXSXGn9moFjchz93XjPBRttz/SESq2xB3ZQ
-         +JE+U+JbOWS/BFKnA9HHPlUi+Izt9iE/ibF1Tp1s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5mGB-1pCSgN2wPL-017Ee1; Fri, 14
- Oct 2022 02:17:29 +0200
-Message-ID: <edd170a6-69ee-f454-8db2-b0647a4929c0@gmx.com>
-Date:   Fri, 14 Oct 2022 08:17:23 +0800
+        Fri, 14 Oct 2022 03:17:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57DF32D94
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 00:17:32 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 660081F383
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1665731851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=wng2OOsY7Tc0AtLoMCoPZRZjddAaOh6SkVp76Yi74Bc=;
+        b=IyKwymtmQBs4SKMXd+6juTDL3CBR37Itw07MB0yzrc5DWyyzbRtigAleCGqdvXsE1rc4AV
+        SeAkprYRftpPcLQDEcLWyWpEZ/JH7AexESFygR823h05bIm/GNg+LhkVoygP+DrpPmzfWv
+        xLcJXiCFWagQb44GH/t1yFJGzg7TOfQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A73A313451
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id VZumGgoNSWOsUwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 07:17:30 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC 0/5] btrfs: raid56: do full stripe data checksum verification and recovery at RMW time
+Date:   Fri, 14 Oct 2022 15:17:08 +0800
+Message-Id: <cover.1665730948.git.wqu@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH v2] btrfs: make btrfs module init/exit match their
- sequence
-Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <679d22de5f137a32e97ffa5e7d5f5961f7a2b782.1665566176.git.wqu@suse.com>
- <63038e02-81fc-92b7-4e33-0a2c6c356698@oracle.com>
- <a2633456-dd2f-534c-6505-fa4c8121f3e5@gmx.com>
- <65b15910-fe1a-b6d7-2431-4badcfa0b134@oracle.com>
- <96de6625-fb23-b44b-b4ab-9aae52ab70c3@gmx.com>
- <b135361d-58ae-7bf9-fa3b-d11d5d5faaf9@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <b135361d-58ae-7bf9-fa3b-d11d5d5faaf9@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Wr+/DItTg8c6VqM5ZG9g3C4pClNxZ4oshYVu9ksos+fUxOIRqKG
- Kxo0vi960GLG+nxEQaO1Z9LtLLKxqSUQhtYW+7dnLMb22RZUbYso/gD5adg9iX2BReYYMGH
- joGoumRLmxsv/qDduE2lIvx4eSXJNpIZ7NHbnLpdmwYPayCni/gbv308cMncN+37Gao+KJs
- TnuM7ta4QfrUzKbzJBcbw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bjFPDRSU7no=:PZzJhcjfqSBzi2GruC5wwm
- gJm6IsGS8KY5WEFwpJ2ntmCd9BP7JhujfI58EBWzGP2zo7e0SoN6RjTCtkpXxkPjk19YRvKBN
- lCVcGMCbJMMLIJrhl2yuRF6Dy3TulqsYEBzahdAFjbZty+GxfuCbNCAudzGQy3B7nj62XRnyW
- VAa+/OSmieiCP9yLcdRoMeP0Vyo5BpH0kj0lX3J6/B8W+4vOpnoqYhK17/DJanA4EwSHe+HoF
- 0yzVfNAwZkzWehInbBZkv9uaC3l4/30uxSiNKbt/NjD79DNMVT/EdFENt4qMNICxGTLd8dwEh
- mSoqoB7bdFz+fD83KrWJcsx2jYpKBrFD4JgJ/Yf8JFuTEDEXaiKnJLg+6TWHa4g2R6vbHe0mA
- Fs66P0pfzxhB6nXArEJ5yDQ6UghyZKRNwTDy+A0s3HL1ZbifgI6oX2sS/PwDmxSYPoLCWeYV0
- c0o/tk58HWd+cO/YsZFhQgJ1nTbwtHIS6jCOdEmcBEAVRzXPcExsJunmh2hEFMIQI+GMn7y9T
- lIBdqdxRFhPEVsZqM5bXdmY1TzJ87Y5dKXxHNGd2Xk40EQvjed+0r/rbWmQZVSx1CyODNxyhi
- FG/y0anZWpvFMa/sa6Ydcl7FoDGIipb97Slqu0uN1p3KR3C8mc4KrszwIytPMRgoxKw+GrLdr
- sSV0AGosINyk5K6iOJF/Hvw6EnptrGWytrh9yg65nv0al+1FAwNUuQ9Ecm8o4ufImxYa5MtWd
- uqrlTOa1Q1BaRf98K2w1XjHaLTGCYdsAeDKf0KCswnI+m5zyJkQ3RYD1QoNvuLiRRXoC7sqiZ
- OiT3hZPEBgRoDSjmp0nlXyX35skgf3dQqFOEFVk1gp2MFKbZMjpbGYtzHIG8qL+18mlS3RZNZ
- RUzKj8Sz8GNHL18gWkRx12lC9etNc7yklK8dRRXsd7ho+P7RcX1OKbtLmkn/IhIamOFcJNJ+k
- aDZz7oEh79MvtmKsEsomy7fmpmd/OFHCpJ5b2O7wfEzDeQrIUK/ak0eOymDZpQHeOWx04iKS+
- XyvQtIekWV2qqpx6ITgznqQrq8KSVDXu9DaH8GToJv5S4QcGlSDyjtU3vxap3+JKctOkvHI0x
- nt9Ifm2oyExQl4sHW4UFoV4iSt3Cz4i2Kp+PHOkz1Ga9UmMRH05QvtP56zKXoUWnQ0v/mVl9q
- mmO1dDGhaUYL+jZ5OKQEsTMwkH5VBML2ier9yHXiI+EhuLE+S9tnLy+8fCBWW9q6FNdypGAu1
- jzfB1Qanedj5lvKou0BJ+ADL+i4FR089umbl9xic6nnTOg3+/PQqjHkTwaMVHt1xoxAeObxhj
- iseNomQ2e907r2N8ZTQ8lnMVRUf4Sy7H9EmApL3k5588e87B2RszoxAVy/hZtYAVRdImW3KvJ
- VEW+W/vRAX+ZsJfT1JqzDc2sYJNIH+aDvMp8N0/X/0IOJ0LZ4AHfqiY+SLE6tvhwg5/gJXPUR
- Wd5HlEUJDhNVyHWOhGk/OWCVQTkw9tmtAB2aVd0xExA+s6IqZ/nF2/1kHCsmfGeJ17XTrT0Ru
- 8eiWCnymi8Ex8sAaZSDJVIthRaA7LOCrJlmUGJRGTD/eV
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+There is a long existing problem for all RAID56 (not only btrfs RAID56),
+that if we have corrupted data on-disk, and we do a RMW using that
+corrupted data, we lose the chance of recovery.
+
+Since new parity is calculated using the corrupted sector, we will never
+be able to recovery the old data.
+
+However btrfs has data checksum to save the day here, if we do a full
+scrub level verification at RMW time, we can detect the corrupted data
+before we do any write.
+
+Then do the proper recovery, data checksum recheck, and recovery the old
+data and call it a day.
+
+This series is going to add such ability, currently there are the
+following limitations:
+
+- Only works for full stripes without a missing device
+  The code base is already here for a missing device + a corrupted
+  sector case of RAID6.
+
+  But for now, I don't really want to test RAID6 yet.
+
+- We only handles data checksum verification
+  Metadata verification will be much more complex, and in the long run
+  we will only recommend metadata RAID1C3/C4 profiles to compensate
+  RAID56 data profiles.
+
+  Thus we may never support metadata verification for RAID56.
+
+- If we found corrupted sectors which can not be repaired, we fail
+  the whole bios for the full stripe
+  This is to avoid further data corruption, but in the future we may
+  just continue with corrupte data.
+
+  This will need extra work to rollback to the original corrupte data
+  (as the recovery process will change the content).
+
+- Way more overhead for substripe write RMW cycle
+  Now we need to:
+
+  * Fetch the datacsum for the full stripe
+  * Verify the datacsum
+  * Do RAID56 recovery (if needed)
+  * Verify the recovered data (if needed)
+
+  Thankfully this only affects uncached sub-stripe writes.
+  The successfully recovered data can be cached for later usage.
+
+- Will not writeback the recovered data during RMW
+  Thus we still need to go back to recovery path to recovery.
+
+  This can be later enhanced to let RMW to write the full stripe if
+  we did some recovery during RMW.
 
 
-On 2022/10/14 08:10, Anand Jain wrote:
->
->>>>>> +static bool mod_init_result[ARRAY_SIZE(mod_init_seq)];
->>>>>
->>>>> =C2=A0=C2=A0Why not move bool mod_init_result into the (non-const) s=
-truct
->>>>> init_sequence?
->>>
->>> Any comment on this suggestion?
->>
->> Why you want to change the init_sequence array into non-const then?
->
->  =C2=A0 We can remove an isolated array mod_init_result to contain the r=
-esult.
->  =C2=A0 Instead struct init_sequence can have results as a member.
+- May need further refactor to change how we handle RAID56 workflow
+  Currently we use quite some workqueues to handle RAID56, and all
+  work are delayed.
 
-Have you ever considered that which section the array will belong to?
+  This doesn't look sane to me, especially hard to read (too many jumps
+  just for a full RMW cycle).
 
-Have you ever considered that one can modify the array now?
+  May be a good idea to make it into a submit-and-wait workflow.
 
->
->
->>>>>> +=C2=A0=C2=A0=C2=A0 /*
->>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * If we call exit_btrfs_fs() it would cau=
-se section mismatch.
->>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * As init_btrfs_fs() belongs to .init.tex=
-t, while
->>>>>> exit_btrfs_fs()
->>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * belongs to .exit.text.
->>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>>> =C2=A0=C2=A0Why not move it into a helper that can be called at both=
- exit and
->>>>> init?
->>>>
->>>> IIRC the last time I went the helper path, it caused section mismatch
->>>> again, as all __init/__exit functions can only call functions inside
->>>> .init/.exit.text.
->>>>
->>>> Thus the helper way won't solve it.
->>>
->>> Really? Maybe it was something else because, I see it as working.
->>> As below.
->>
->> You removed __exit, which removed the section type check.
->
->  =C2=A0Yeah. We don't need __exit return type in the helper function. It=
- does
-> not make sense in the helper function.
+[REASON for RFC]
+Although the patchset does not only passed RAID56 test groups, but also
+passed my local destructive RMW test cases, some of the above limitations
+need to be addressed.
 
-No, you removed the __exit type from the exit function!
+And whther the trade-off is worthy may still need to be discussed.
+
+Qu Wenruo (5):
+  btrfs: refactor btrfs_lookup_csums_range()
+  btrfs: raid56: refactor __raid_recover_end_io()
+  btrfs: introduce a bitmap based csum range search function
+  btrfs: raid56: prepare data checksums for later sub-stripe
+    verification
+  btrfs: raid56: do full stripe data checksum verification before RMW
+
+ fs/btrfs/ctree.h      |   8 +-
+ fs/btrfs/file-item.c  | 196 ++++++++++++--
+ fs/btrfs/inode.c      |   6 +-
+ fs/btrfs/raid56.c     | 608 +++++++++++++++++++++++++++++++-----------
+ fs/btrfs/raid56.h     |  12 +
+ fs/btrfs/relocation.c |   4 +-
+ fs/btrfs/scrub.c      |   8 +-
+ fs/btrfs/tree-log.c   |  16 +-
+ 8 files changed, 664 insertions(+), 194 deletions(-)
+
+-- 
+2.37.3
+
