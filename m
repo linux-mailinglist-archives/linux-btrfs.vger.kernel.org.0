@@ -2,66 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C135FF8A0
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Oct 2022 07:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4DE15FFA09
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Oct 2022 14:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbiJOFhh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 15 Oct 2022 01:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
+        id S229698AbiJOMez (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 15 Oct 2022 08:34:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbiJOFhg (ORCPT
+        with ESMTP id S229614AbiJOMew (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 15 Oct 2022 01:37:36 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0606A6D9EB
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 22:37:35 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-3573ed7cc15so64301917b3.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 22:37:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZnRXmL6Mwh0ThyXrVvoa1cb3cJyVI4f1V9p3sh3CDys=;
-        b=T2DJJLq7rlkEecNgjSC0ATCYP8TAx/iuCzU8D/Ky6Z/ImlivfX3eJ2Dpaz0QSyUOkI
-         P/6WJvetTdlpYMLInMNLvCaDZVXrCKp4vx6pRu01Ghgmkd9Te9TCg6kGqAidR4JO45ug
-         wJVpcAjBGO++PEAfr/2cxMOvFRqRJOic0gCV+2/osadzr85zjW46JvldUSd6yEir/E9j
-         YznvcTu89YVhCcPJHqOEQMOrD/BJ3omW1XK4YAcqWqyFBqfnUITOZrh8dVCBBfS/NeLt
-         NG91uQrxSUpD0e04RsarQXahtGVrwNjHhCdJDGZ3gtYQZkCg1BLOXKb/8PeNH/xQ7yad
-         XvCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZnRXmL6Mwh0ThyXrVvoa1cb3cJyVI4f1V9p3sh3CDys=;
-        b=EEtWEOuPxt4SiwFcrmZcI+FXgN9sGzgSNh1AzaCMrvrsusTnyirgrKPM3YcnuYwylg
-         hp912ClJVUN8Da1zEvFNru0hl/hZxz+eqLS7HbYcnoWIlF8CNIxJYDs1oPGXLlMV7YDK
-         C7NUeVZcj1isKLD6zMQrY9UU9QgH2xL6Yi/4dDUmKT1h/OPGKSvG3eQsazc0ZeQ+S/X1
-         ngCmgdt3PlJ4IKeOLoWnYrvC3ZI0/SuQuEzbIuGIBHFrB0RM4ScMrkSjVNKV3BVVh+pS
-         zGyN3vze9WdMMdQtrengCE50G4R6qaQ4nAL4sSbhFTubVyc7g6g3bkHbqDcwpYJL5ojq
-         ApJw==
-X-Gm-Message-State: ACrzQf308cwrt/SFeKANoYxvZnTBKXQQUghsfsmZ8kQyJ9qbJvVlZVjN
-        WV4d0FDhiwJWUHk3sM61jxkZ4ZrCNTMW1/CKEMiOIndprBMPUA==
-X-Google-Smtp-Source: AMsMyM406pOkeZUjTm6fw4f5dUzAm+jkFgNTdvGACYiHOsN7yA+TynmNoDajFG0d5Rlqa3iinhTG1AVK+WEH7A5nD18=
-X-Received: by 2002:a81:2544:0:b0:360:c270:15a1 with SMTP id
- l65-20020a812544000000b00360c27015a1mr1018546ywl.67.1665812254195; Fri, 14
- Oct 2022 22:37:34 -0700 (PDT)
+        Sat, 15 Oct 2022 08:34:52 -0400
+Received: from out20-145.mail.aliyun.com (out20-145.mail.aliyun.com [115.124.20.145])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7E52E9DC
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Oct 2022 05:34:49 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0748137|-1;BR=01201311R111S57rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0062712-0.000166358-0.993562;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.Pd86w4h_1665837286;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Pd86w4h_1665837286)
+          by smtp.aliyun-inc.com;
+          Sat, 15 Oct 2022 20:34:46 +0800
+Date:   Sat, 15 Oct 2022 20:35:01 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: question about the performance of 'btrfs send'
+Message-Id: <20221015203501.E1ED.409509F4@e16-tech.com>
 MIME-Version: 1.0
-References: <CAAQmekd_X=XSZWq+JN0vq+vyYJTxdvsZJBCuCeqEDkz=RVW0NQ@mail.gmail.com>
- <d345acda-9095-318f-9de6-b3eb83dc6921@gmail.com>
-In-Reply-To: <d345acda-9095-318f-9de6-b3eb83dc6921@gmail.com>
-From:   Nikolaos Chatzikonstantinou <nchatz314@gmail.com>
-Date:   Sat, 15 Oct 2022 01:37:23 -0400
-Message-ID: <CAAQmekdjMKAT_VRErYKmJ+aHjakWhvE_NgcQyCZ_jNF5ePUpVQ@mail.gmail.com>
-Subject: Re: documentation of swapfile and nodatacow
-To:     Andrei Borzenkov <arvidjaar@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,85 +37,37 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 3:21 PM Andrei Borzenkov <arvidjaar@gmail.com> wrot=
-e:
->
-> On 14.10.2022 21:04, Nikolaos Chatzikonstantinou wrote:
-> > Hello list,
-> >
-> > This question popped up during the writing of a swapfile
-> > guide. Following
-> > <https://btrfs.readthedocs.io/en/latest/Swapfile.html>, I chose to put
-> > the swapfile on a separate subvolume which does not get
-> > snapshotted. The steps I have:
-> >
-> >    btrfs subvolume create swap
-> >    chattr +C swap
-> >    chmod 0700 swap
-> >    fallocate -l 1G swap/swapfile
-> >    chmod 0600 swap/swapfile
-> >    mkswap swap/swapfile
-> >
-> > I'm uncertain about the chattr step. In
-> > <https://btrfs.readthedocs.io/en/latest/btrfs-man5.html#mount-options>
-> > I find the note
-> >
-> >    "This means that (for example) you can=E2=80=99t set per-subvolume
-> >    nodatacow, nodatasum, or compress using mount options."
-> >
-> > which applies for mount options. On btrfs(5) I find under FILE
-> > ATTRIBUTES
-> >
-> >    C      no copy-on-write, file data modifications are done in-place
-> >
-> >           When set on a directory, all newly created files will inherit
-> >           this attribute.
-> >
-> >           NOTE:
-> >              Due to implementation limitations, this flag can be
-> >              set/unset only on empty files.
-> >
-> > This says that the +C attribute can only be set on files, not
-> > directories, although it explains (in theory?) what should happen if a
-> > directory has that attribute.
-> >
-> > To summarize, I'd like to ask:
-> >
-> > 1) Can `chattr +C` be used on a subvolume? Is it different from mount
-> >     option nodatacow?
-> >
->
-> chattr +C is not used "on a subvolume". It applies to top level
-> subvolume directory and then is inherited as per documentation.
+Hi,
 
-Correction: Can +C be used in a directory and is it different from
-nodatacow in a subvolume?
+a question about the performance of 'btrfs send'.
 
-> > 2) Should the man page be reworded 'only on files that are empty'?
-> >
->
-> Which man page? Man page you quoted (btrfs(5)) already says it.
+The output speed of 'btrfs send' is about 700MiB/s in the 3 cases.
+1) kernel 5.15.73 + 'btrfs send --proto 1'
+2) kernel: 6.0.1(with btrfs-devel misc-6.1) +  'btrfs send --proto 1'
+3) kernel: 6.0.1(with btrfs-devel misc-6.1) +  'btrfs send --proto 2'
+btrfs-progs: 6.0
 
-The meaning is different; my proposition clarifies that the "only"
-rule applies to files. Otherwise, I explained above that it is
-contradictory: it implies +C cannot be used in directories, although
-it explains what its purpose would be there. Alternatively, a
-different rewording: it can be reworded to say "only on empty files or
-directories", if that is true.
+the outut of 'perf report':
+Overhead  Command  Shared Object      Symbol
+*1  40.63%  btrfs    [kernel.kallsyms]  [k] __crc32c_le
+*2   9.97%  btrfs    [kernel.kallsyms]  [k] memcpy_erms
+*3   9.25%  btrfs    [kernel.kallsyms]  [k] send_extent_data
+*4   5.40%  btrfs    [kernel.kallsyms]  [k] asm_exc_nmi
+*5   2.73%  btrfs    [kernel.kallsyms]  [k] __alloc_pages
+   1.14%  btrfs    [kernel.kallsyms]  [k] __rmqueue_pcplist
+   0.92%  btrfs    [kernel.kallsyms]  [k] bad_range
+   0.88%  btrfs    [kernel.kallsyms]  [k] get_page_from_freelist
 
-> > 3) Should the readthedocs page be changed to include the subvolume
-> >     creation step and remove the `truncate -s 0` step?
-> >
->
-> Why should it enforce any particular layout? It is up to each user to
-> decide where swap file is located. The commands in documentation work
-> also when file already exists.
+What I expected:
+the above *1) __crc32c_le take >60%, and the outut speed > 1GiB/s.
+The *1) __crc32c_le is necessary operation, and the speed
+seems OK.  2GB/s * 40% = 800MiB/s, it is close to 700MiB/s.
 
-The page has "To create and activate a swapfile run the following
-commands:", which means the swapfile is created, it doesn't exist.
-There is no reason to force the layout. What do you think of creating
-the subvolume to indicate the inability to take snapshots? Wouldn't
-most users want a dedicated swap subvolume?
+Question:
+The above *3) is difficult to understand. Any advice?
 
-Regards,
-Nikolaos Chatzikonstantinou
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2022/10/15
+
+
