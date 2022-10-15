@@ -2,143 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 321F35FF695
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Oct 2022 01:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C135FF8A0
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Oct 2022 07:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbiJNXEh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Oct 2022 19:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56638 "EHLO
+        id S229692AbiJOFhh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 15 Oct 2022 01:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbiJNXEg (ORCPT
+        with ESMTP id S229618AbiJOFhg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Oct 2022 19:04:36 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D0A32A99
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 16:04:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1665788671;
-        bh=J3978gCthlPSc9L5uJ0lhPt3GAWZEw36iqP03hOgVAk=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=VsWQkGi+X0O16aAPhS1S6QlgXbXASoGyW1xxo1wZ/l2BOcpQPEe2N1rPkE4B51dt8
-         /oRCgWnW9VG0r+oD3aNyRWnoMYbfSLvzhTuM6m6jmBPZQNcM8r96zg2612YanXeaOo
-         g/RsUJzY9dJzkiNwrPimj5IoyePR3j0AtOfyrvy4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAwbp-1oplFH1ykT-00BIys; Sat, 15
- Oct 2022 01:04:31 +0200
-Message-ID: <794674a0-a58b-2e8f-acba-d779537e71d3@gmx.com>
-Date:   Sat, 15 Oct 2022 07:04:27 +0800
+        Sat, 15 Oct 2022 01:37:36 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0606A6D9EB
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 22:37:35 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-3573ed7cc15so64301917b3.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Oct 2022 22:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZnRXmL6Mwh0ThyXrVvoa1cb3cJyVI4f1V9p3sh3CDys=;
+        b=T2DJJLq7rlkEecNgjSC0ATCYP8TAx/iuCzU8D/Ky6Z/ImlivfX3eJ2Dpaz0QSyUOkI
+         P/6WJvetTdlpYMLInMNLvCaDZVXrCKp4vx6pRu01Ghgmkd9Te9TCg6kGqAidR4JO45ug
+         wJVpcAjBGO++PEAfr/2cxMOvFRqRJOic0gCV+2/osadzr85zjW46JvldUSd6yEir/E9j
+         YznvcTu89YVhCcPJHqOEQMOrD/BJ3omW1XK4YAcqWqyFBqfnUITOZrh8dVCBBfS/NeLt
+         NG91uQrxSUpD0e04RsarQXahtGVrwNjHhCdJDGZ3gtYQZkCg1BLOXKb/8PeNH/xQ7yad
+         XvCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZnRXmL6Mwh0ThyXrVvoa1cb3cJyVI4f1V9p3sh3CDys=;
+        b=EEtWEOuPxt4SiwFcrmZcI+FXgN9sGzgSNh1AzaCMrvrsusTnyirgrKPM3YcnuYwylg
+         hp912ClJVUN8Da1zEvFNru0hl/hZxz+eqLS7HbYcnoWIlF8CNIxJYDs1oPGXLlMV7YDK
+         C7NUeVZcj1isKLD6zMQrY9UU9QgH2xL6Yi/4dDUmKT1h/OPGKSvG3eQsazc0ZeQ+S/X1
+         ngCmgdt3PlJ4IKeOLoWnYrvC3ZI0/SuQuEzbIuGIBHFrB0RM4ScMrkSjVNKV3BVVh+pS
+         zGyN3vze9WdMMdQtrengCE50G4R6qaQ4nAL4sSbhFTubVyc7g6g3bkHbqDcwpYJL5ojq
+         ApJw==
+X-Gm-Message-State: ACrzQf308cwrt/SFeKANoYxvZnTBKXQQUghsfsmZ8kQyJ9qbJvVlZVjN
+        WV4d0FDhiwJWUHk3sM61jxkZ4ZrCNTMW1/CKEMiOIndprBMPUA==
+X-Google-Smtp-Source: AMsMyM406pOkeZUjTm6fw4f5dUzAm+jkFgNTdvGACYiHOsN7yA+TynmNoDajFG0d5Rlqa3iinhTG1AVK+WEH7A5nD18=
+X-Received: by 2002:a81:2544:0:b0:360:c270:15a1 with SMTP id
+ l65-20020a812544000000b00360c27015a1mr1018546ywl.67.1665812254195; Fri, 14
+ Oct 2022 22:37:34 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH v2 15/15] btrfs: introduce a debug mount option to do
- error injection for each stage of open_ctree()
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
+References: <CAAQmekd_X=XSZWq+JN0vq+vyYJTxdvsZJBCuCeqEDkz=RVW0NQ@mail.gmail.com>
+ <d345acda-9095-318f-9de6-b3eb83dc6921@gmail.com>
+In-Reply-To: <d345acda-9095-318f-9de6-b3eb83dc6921@gmail.com>
+From:   Nikolaos Chatzikonstantinou <nchatz314@gmail.com>
+Date:   Sat, 15 Oct 2022 01:37:23 -0400
+Message-ID: <CAAQmekdjMKAT_VRErYKmJ+aHjakWhvE_NgcQyCZ_jNF5ePUpVQ@mail.gmail.com>
+Subject: Re: documentation of swapfile and nodatacow
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
 Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1665565866.git.wqu@suse.com>
- <cb7312a3d6c88100df88dc61c911e6d5e8455070.1665565866.git.wqu@suse.com>
- <Y0lZbFnapZ6Z3Xcv@localhost.localdomain>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <Y0lZbFnapZ6Z3Xcv@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:y7fpmQgxAmoS2JPpke6imOcPaEqmetaulSASNaX55mCNb/L0ESw
- rDZutBWHyVdkwepl7KaIzaxEKIvlW4pmL8sivKNRy8KsB/pqL8aw9qbd1l4aQEKSY9xadP6
- lo2kDy9HUMWEKwR3zAnxLDoRQX3AHoy+9rCTZJc3kPdvYVPe4mNR9lcOSvyoCZzxXA5/dfo
- e5g1VA1tHaiguhc5vrDtw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:E0wU0tFExag=:HrxqKyNmgsbFqm7BgNerKm
- N099MLDlEii6W0VyN+O0bFWNNyIzc5Nl0QfoV2wlsxD+LBKcDDLO7mKH8mABgC/PyyU17u83i
- ltX7d2MydnZuTb9OYUXEd5WLgNkbtgQx2LlmnYU+CyiItqAMCe0W+sCp5y7jSPiq/Ilz2VJq3
- 90lv8SGqymWcgR9jpunPg5NUnVs7plLOWKMl/RvDOW07CH5aq36T9NCGATwbesp4LpV00FFNG
- UKnoVQxzWLsyP0MKBDZNhn3L1qTolWVs5mhCvMUXK2pJt1X5jnvUptfup5W3lNaljRW2KZcto
- 9fcwd6vMzT5WXWtBu3WNzJAMHGoqDDZB9JchmLmq2zJDXcgV646rVtV5PuoK9T1nJesIcA165
- 68lKw+6KBzH209bBHrZXK6KvtiZtCpJATc0w5YMKYRfOyr8aGDhVKTpa+MlbJr4K6r3aWPQeP
- GmTkbXafZztjDLGC4RrTRbtsbAur32t2Vz01CVHSAYDxf77HE0YDtYhdoOgootP+lUJbXdIBl
- 8dnIIS0fEevRy3DLuao4+k6lAeFBxi836ntFk7G7CkQM5CbpLfideBM3qM99sLeGhdbvLJiek
- N7Vd1j0tMu2LjJyu7mJtKIGLAY2iFmMa2rcvwp8hlF1csk4pkknWCZP9x09oNI/Dxk/QZWWZe
- t/7ZSo3X7mGPFTs+zJCq3etBOYlTnoxb1GC3I79SHb23JLItTgyiJo97G4WEdBmUM5/5IIpmc
- spr7deYoUg+019O8tTF45jxnTJ2wVckjPIfCh+djetLj68e2avwuS65fKzgyUSZE+vpqtEl/D
- r7ooqiXnsq80xpt7qCAdmH+m7Up5tTgrg868ZvdX3+/ZltCyS+Gg0XcGIgwvmHlUd6hNm3zAJ
- ojzEfVVAyL6O8kDG6IthMQt+Zy6Id2XC/WGE8m6UuzhV3HBEd5ewQi/3vDjgI/fnmBilVwh8S
- 5mXmox3ypGBY0UQCgq14sj+oGAHe1bDiqQ72X30hXAkO/HcSkewwPlbHiUcEe2UjmcVWgbJg3
- k5aTHw7aSh6gDNywpatKZlvrtlH9us9TIT2l+Jqol1k1OIEDjc/9PdXO72iP7f0O3LRw2uivJ
- urHyKuI7gl4oHxLKttmJlCWq7N4GqsqFaBFUsp4up+r3mxvp1x9XRqHXDa7pOnEG5PWadtnad
- MDI1K3AbE7iUZ8ECMqkY6ROnO0NZtQrpqdu7BYfOiXzeitJJqaGW4TgR5k1OYN3crTx1rS4Du
- PpyCVkYJtr9C2Fw8n3f7Bqpq7mjDlnzbY3nmewpINPQs8FwO/wRL1uCIMq38pkCc3DJj6FzIK
- UP0k6wwi80G6yox/hRvLFgtjTIAZcnXmpJ9k0mhO/B/ZtNb1VJcJt/8FxpoiUXr/YaaYQO8gl
- p2HH6DfOTpJFqscp5tMOnf3SoFifNm7nk8nkRoO5zXIbb4U2iaHz6MDgvvi5UeheKxdQ+pDyZ
- nHRHyMZXdRPxKFY4Z7+SoOm8lUAYJHmEcAeH9pjdPFBMliHKZc09Fvt/2o0T6Fvq0gNo4gNI0
- yRDyrlJ1KpZdqqr//HDUigkjz+kXtkFu6LNyzuBVLa/yk
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/10/14 20:43, Josef Bacik wrote:
-> On Wed, Oct 12, 2022 at 05:13:11PM +0800, Qu Wenruo wrote:
->> With the new open_ctree_seq[] array, we can afford a debug mount option
->> to do all the error inject at different stages to have a much better
->> coverage for the error path.
->>
->> The new "fail_mount=3D%u" mount option will be hidden behind
->> CONFIG_BTRFS_DEBUG option, and when enabled it will cause mount failure
->> just after the init function of specified stage.
->>
->> This can be verified by the following script:
->>
->>   mkfs.btrfs -f $dev
->>   for (( i=3D0;; i++ )) do
->> 	mount -o fail_mount=3D$i $dev $mnt
->> 	ret=3D$?
->> 	if [ $ret -eq 0 ]; then
->> 		umount $mnt
->> 		exit
->> 	fi
->>   done
->>   umount $mnt
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Fri, Oct 14, 2022 at 3:21 PM Andrei Borzenkov <arvidjaar@gmail.com> wrot=
+e:
 >
-> Death to all mount options, especially for this.  I'd rather see somethi=
-ng like
-> this inserted in the main loop
+> On 14.10.2022 21:04, Nikolaos Chatzikonstantinou wrote:
+> > Hello list,
+> >
+> > This question popped up during the writing of a swapfile
+> > guide. Following
+> > <https://btrfs.readthedocs.io/en/latest/Swapfile.html>, I chose to put
+> > the swapfile on a separate subvolume which does not get
+> > snapshotted. The steps I have:
+> >
+> >    btrfs subvolume create swap
+> >    chattr +C swap
+> >    chmod 0700 swap
+> >    fallocate -l 1G swap/swapfile
+> >    chmod 0600 swap/swapfile
+> >    mkswap swap/swapfile
+> >
+> > I'm uncertain about the chattr step. In
+> > <https://btrfs.readthedocs.io/en/latest/btrfs-man5.html#mount-options>
+> > I find the note
+> >
+> >    "This means that (for example) you can=E2=80=99t set per-subvolume
+> >    nodatacow, nodatasum, or compress using mount options."
+> >
+> > which applies for mount options. On btrfs(5) I find under FILE
+> > ATTRIBUTES
+> >
+> >    C      no copy-on-write, file data modifications are done in-place
+> >
+> >           When set on a directory, all newly created files will inherit
+> >           this attribute.
+> >
+> >           NOTE:
+> >              Due to implementation limitations, this flag can be
+> >              set/unset only on empty files.
+> >
+> > This says that the +C attribute can only be set on files, not
+> > directories, although it explains (in theory?) what should happen if a
+> > directory has that attribute.
+> >
+> > To summarize, I'd like to ask:
+> >
+> > 1) Can `chattr +C` be used on a subvolume? Is it different from mount
+> >     option nodatacow?
+> >
 >
-> bool btrfs_mail_fail_init(struct btrfs_fs_info *fs_info, int seq)
-> {
-> 	return false;
-> }
-> ALLOW_ERROR_INJECTION(btrfs_may_fail_init);
+> chattr +C is not used "on a subvolume". It applies to top level
+> subvolume directory and then is inherited as per documentation.
 
-IIRC the error injection system can not do a proper conditional
-injection according to the @seq parameter.
+Correction: Can +C be used in a directory and is it different from
+nodatacow in a subvolume?
 
+> > 2) Should the man page be reworded 'only on files that are empty'?
+> >
 >
-> and then we can error inject that way.  Alternatively you could just use
-> ALLOW_ERROR_INJECTION for every one of the init/exit functions and achei=
-ve the
-> same thing.  Thanks,
+> Which man page? Man page you quoted (btrfs(5)) already says it.
 
-That is even worse.
+The meaning is different; my proposition clarifies that the "only"
+rule applies to files. Otherwise, I explained above that it is
+contradictory: it implies +C cannot be used in directories, although
+it explains what its purpose would be there. Alternatively, a
+different rewording: it can be reworded to say "only on empty files or
+directories", if that is true.
 
-The problem of injecting error directly into init functions is
-
-- No exit will be called if init failed
-   As we all expect the init function to cleanup itself if something
-   wrong happened
-
-Another problem is, it's much harder to test, we need to inject errors
-to different functions, while a debug only mount option can easily test
-the whole thing just with different fail stage number.
-
-Thanks,
-Qu
-
+> > 3) Should the readthedocs page be changed to include the subvolume
+> >     creation step and remove the `truncate -s 0` step?
+> >
 >
-> Josef
+> Why should it enforce any particular layout? It is up to each user to
+> decide where swap file is located. The commands in documentation work
+> also when file already exists.
+
+The page has "To create and activate a swapfile run the following
+commands:", which means the swapfile is created, it doesn't exist.
+There is no reason to force the layout. What do you think of creating
+the subvolume to indicate the inability to take snapshots? Wouldn't
+most users want a dedicated swap subvolume?
+
+Regards,
+Nikolaos Chatzikonstantinou
