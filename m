@@ -2,91 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC13600E6D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Oct 2022 14:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374D5600E82
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Oct 2022 14:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbiJQMAy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Oct 2022 08:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54258 "EHLO
+        id S229816AbiJQMDU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Oct 2022 08:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbiJQMAp (ORCPT
+        with ESMTP id S229762AbiJQMDS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Oct 2022 08:00:45 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BDB5C9F4;
-        Mon, 17 Oct 2022 05:00:35 -0700 (PDT)
-Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1okOnG-0006e3-Kz; Mon, 17 Oct 2022 14:00:30 +0200
-Message-ID: <13418d37-ebba-82d2-4e1b-4e48201342c7@leemhuis.info>
-Date:   Mon, 17 Oct 2022 14:00:30 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Subject: Re: Bug 216559 - btrfs crash root mount RAID0 caused by ac0677348f3c2
-Content-Language: en-US, de-DE
-To:     dsterba@suse.cz
-Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Mon, 17 Oct 2022 08:03:18 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799405D739;
+        Mon, 17 Oct 2022 05:03:06 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 22E24205DF;
+        Mon, 17 Oct 2022 12:03:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1666008185;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H9rmmj8x9/pRGSP0rhWzAN2XdXyBU8aire6+hcOWaqg=;
+        b=EinRM8cmED2AkAp5rHQ9Q/lhD8djKWOsD88oc+NtD13fI7XxVo1WUUyzmKt/GVSI6gbzAB
+        avLzqrApgtjFLBBG/xJ+AFWnU8r7YZVrpEWdvAM7p60Y5lEedj8arNYOaEbKzaLwxt/Hc/
+        U1NJTeEZ2sDSl3Q+1AEau/ybC7ZtAR8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1666008185;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H9rmmj8x9/pRGSP0rhWzAN2XdXyBU8aire6+hcOWaqg=;
+        b=+HpnUQkgMm3dqcglnnoPcbVqtG7gqDj2H/lOtRIyBB+kZhaON0Kk1MTD50LMU/hFLdJhAr
+        f8WVAuBtfTzw7QAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9608D13398;
+        Mon, 17 Oct 2022 12:03:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ovthI3hETWM0JQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 17 Oct 2022 12:03:04 +0000
+Date:   Mon, 17 Oct 2022 14:02:55 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     dsterba@suse.cz, Hrutvik Kanabar <hrkanabar@gmail.com>,
+        Hrutvik Kanabar <hrutvik@google.com>,
+        Marco Elver <elver@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        kasan-dev@googlegroups.com,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-        Viktor Kuzmin <kvaster@gmail.com>
-References: <8be1e839-2eb8-43d0-9ecb-6ff8c3aa3f2d@leemhuis.info>
- <20221014110708.GE13389@suse.cz>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <20221014110708.GE13389@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1666008035;50f22087;
-X-HE-SMSGID: 1okOnG-0006e3-Kz
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        linux-ntfs-dev@lists.sourceforge.net
+Subject: Re: [PATCH RFC 0/7] fs: Debug config option to disable filesystem
+ checksum verification for fuzzing
+Message-ID: <20221017120255.GM13389@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20221014084837.1787196-1-hrkanabar@gmail.com>
+ <20221014091503.GA13389@twin.jikos.cz>
+ <CACT4Y+as3SA6C_QFLSeb5JYY30O1oGAh-FVMLCS2NrNahycSoQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+as3SA6C_QFLSeb5JYY30O1oGAh-FVMLCS2NrNahycSoQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 14.10.22 13:07, David Sterba wrote:
-> On Tue, Oct 11, 2022 at 02:09:50PM +0200, Thorsten Leemhuis wrote:
->> Hi, this is your Linux kernel regression tracker speaking.
->>
->> David, I noticed a regression report in bugzilla.kernel.org apparently
->> caused by a changed of yours. As many (most?) kernel developer don't
->> keep an eye on the bug-tracker, I decided to forward the report by mail.
->> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=216559 :
+On Mon, Oct 17, 2022 at 10:31:03AM +0200, Dmitry Vyukov wrote:
+> On Fri, 14 Oct 2022 at 11:15, David Sterba <dsterba@suse.cz> wrote:
+> > On Fri, Oct 14, 2022 at 08:48:30AM +0000, Hrutvik Kanabar wrote:
+> > > From: Hrutvik Kanabar <hrutvik@google.com>
+> > I think the build-time option inflexible, but I see the point when
+> > you're testing several filesystems that it's one place to set up the
+> > environment. Alternatively I suggest to add sysfs knob available in
+> > debuging builds to enable/disable checksum verification per filesystem.
 > 
-> Thanks, you don't need to forward the mails as I'm on CC of all bugzilla
-> updates where the btrfs virtual assignee is also present.
+> What usage scenarios do you have in mind for runtime changing of this option?
+> I see this option intended only for very narrow use cases which
+> require a specially built kernel in a number of other ways (lots of
+> which are not tunable at runtime, e.g. debugging configs).
 
-Hmmm. Do you want to make my life easier or want to get less mail? I
-thought about this for a while. Unless you strongly object, I would like
-to continue forwarding them for the following reasons:
-
-* you might be on vacation or AFK for other reasons; your Comaintainers
-that were CCed would know and likely then help out
-* CCing the list makes other people notice the issue and gives them a
-chance to help (Qu Wenruo replied in bugzilla shortly after I sent the
-mail you quoted, which might or might not be due to my mail).
-* regression tracking is hard already; it would make it a lot harder if
-I'm forced to make and maintain notes how each and every maintainer
-would like me to handle situations like this
-* right now I need to send one mail anyway to add a regression to the
-tracking
-
-> But feel free
-> to ping regarding any regressions you're tracking and would like an
-> update.
-
-Great, thx!
-
-> Inspired by the LPC talk about bugzilla I went through all 650+ btrfs
-> bugs and closed what looked either fixed or not relevant anymore. The
-> rest are recent reports or bugs that may need to be moved elsewhere.
-> As kernel.org bugzilla is recommended for reports in our community
-> documentation I monitor new bugs but with variable reaction time.
-
-Thx for your work and good to know that you are referring to it.
-
-Ciao, Thorsten
+For my own development and testing usecase I'd like to build the kernel
+from the same config all the time, then start a VM and run random tests
+that do not skip the checksum verification. Then as the last also run
+fuzzing with checksums skipped. The debugging (lockdep, various sanity
+checks, ...) config options are enabled. We both have a narrow usecase,
+what I'm suggesting is a common way to enable them.
