@@ -2,188 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 375C2600E49
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Oct 2022 13:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC13600E6D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Oct 2022 14:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbiJQLzv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Oct 2022 07:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
+        id S230009AbiJQMAy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Oct 2022 08:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbiJQLzo (ORCPT
+        with ESMTP id S229978AbiJQMAp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Oct 2022 07:55:44 -0400
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF1957E1D
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Oct 2022 04:55:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1666007742; x=1697543742;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=pDnieQdzQiAlgtdJ8yro6VF2VEXcovI8CAs8SLqFkig=;
-  b=nJm+zivID0KGLu3j3jJIaLHgE+xKV+t//pbboYTFSgGpTC1z7baYOUfo
-   FfFCGMR5SFfQOE4QSNi0vuoetjiqBGD2VcFGp+7tn1JF6jOBjGWHPMbR7
-   +I+1VphCX1HvJS/bXMzWypiyVFrphcn1D5p5C2x1CBSzjcKsYFY/l5QmJ
-   S8lZIFrKNuWOdvKJ678i4OZmQx3j2Lkk8+c9UgB7wfCYZq+kFH7iGyGzn
-   IJGtz/e60808kDghsWbLypwH8wcSVa+3XPllQMCoZfo/Sr6jYu+IVVcHE
-   HeO0Zgn8vNkpLrt4mKQzBZ0SwvLaMPc2jFLkSGKrF57aNRyOlAGBZTSOo
-   A==;
-X-IronPort-AV: E=Sophos;i="5.95,191,1661788800"; 
-   d="scan'208";a="212337173"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Oct 2022 19:55:42 +0800
-IronPort-SDR: NCRJ+86HFbjd/31TzId74TNsCxYU7dGJJkUHnEtNNJ4vlNrHMZqtQmJGo/Jn+uiDqRPxmJ3Az/
- HXg+MwHs3hIHjI9Xy/pwKhMwZcnWcQVg/VEi4bniKH5QzFuwp+jF8+BLJhM2jAxZxqwwdsQALF
- IdXYBNwkj/fr7D9Pii2hpw6eQWLLqL/wCz6uabXm+81wPpOTq01AKKFxdSdrVWfVQuCmEEw3FB
- prRFyXbYQkIDs7rLPXUSz+Ecbq5V76H9bMRPdXdfrxhtxE2wFmtGQiWT56urMZ2zhMM/YOofw3
- hrTbRuMg2QK8kVTq42mWz/sX
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 17 Oct 2022 04:15:15 -0700
-IronPort-SDR: FFzCy0PQ95x3x54P3ZxRvZ3Hx2rq1zLe5n14kE2/+z1rCOgM2l7zVweEbgroweV+ehDUhTQlKj
- NoXnb1iqjpr1yK8PuRGy2zTBnM/cFXA2VJE4v71AxR5FjcLQtlfE8D41T2oWvV3RqRY9UCutNG
- iRah0DhreRrqJoVaRJAZu0jdnlX822mKidg994QMwsvv0QtR1NZ/zPqqEM5FR4D5sBTMFo0eYx
- ggTMnBZHsrVLiZCHBsTaTkmEnN573+PuX+2t6yMU9T/pv432xl/dCIUCcFSpVDdxlyeZR05eGI
- zTg=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip02.wdc.com with ESMTP; 17 Oct 2022 04:55:42 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [RFC v3 11/11] btrfs: add tracepoints for ordered stripes
-Date:   Mon, 17 Oct 2022 04:55:29 -0700
-Message-Id: <f90279e15449e36f822db47d9759817fa9e72e56.1666007330.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <cover.1666007330.git.johannes.thumshirn@wdc.com>
-References: <cover.1666007330.git.johannes.thumshirn@wdc.com>
+        Mon, 17 Oct 2022 08:00:45 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BDB5C9F4;
+        Mon, 17 Oct 2022 05:00:35 -0700 (PDT)
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1okOnG-0006e3-Kz; Mon, 17 Oct 2022 14:00:30 +0200
+Message-ID: <13418d37-ebba-82d2-4e1b-4e48201342c7@leemhuis.info>
+Date:   Mon, 17 Oct 2022 14:00:30 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Subject: Re: Bug 216559 - btrfs crash root mount RAID0 caused by ac0677348f3c2
+Content-Language: en-US, de-DE
+To:     dsterba@suse.cz
+Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        Viktor Kuzmin <kvaster@gmail.com>
+References: <8be1e839-2eb8-43d0-9ecb-6ff8c3aa3f2d@leemhuis.info>
+ <20221014110708.GE13389@suse.cz>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <20221014110708.GE13389@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1666008035;50f22087;
+X-HE-SMSGID: 1okOnG-0006e3-Kz
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add tracepoints to check the lifetime of btrfs_ordered_stripe entries.
+On 14.10.22 13:07, David Sterba wrote:
+> On Tue, Oct 11, 2022 at 02:09:50PM +0200, Thorsten Leemhuis wrote:
+>> Hi, this is your Linux kernel regression tracker speaking.
+>>
+>> David, I noticed a regression report in bugzilla.kernel.org apparently
+>> caused by a changed of yours. As many (most?) kernel developer don't
+>> keep an eye on the bug-tracker, I decided to forward the report by mail.
+>> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=216559 :
+> 
+> Thanks, you don't need to forward the mails as I'm on CC of all bugzilla
+> updates where the btrfs virtual assignee is also present.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/raid-stripe-tree.c  |  3 +++
- fs/btrfs/super.c             |  1 +
- include/trace/events/btrfs.h | 50 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 54 insertions(+)
+Hmmm. Do you want to make my life easier or want to get less mail? I
+thought about this for a while. Unless you strongly object, I would like
+to continue forwarding them for the following reasons:
 
-diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-index 9a913c4cd44e..0d27b236445d 100644
---- a/fs/btrfs/raid-stripe-tree.c
-+++ b/fs/btrfs/raid-stripe-tree.c
-@@ -99,6 +99,7 @@ int btrfs_add_ordered_stripe(struct btrfs_io_context *bioc)
- 		return -EINVAL;
- 	}
- 
-+	trace_btrfs_ordered_stripe_add(fs_info, stripe);
- 	return 0;
- }
- 
-@@ -114,6 +115,7 @@ struct btrfs_ordered_stripe *btrfs_lookup_ordered_stripe(struct btrfs_fs_info *f
- 	if (node) {
- 		stripe = rb_entry(node, struct btrfs_ordered_stripe, rb_node);
- 		refcount_inc(&stripe->ref);
-+		trace_btrfs_ordered_stripe_lookup(fs_info, stripe);
- 	}
- 	mutex_unlock(&fs_info->stripe_update_lock);
- 
-@@ -124,6 +126,7 @@ void btrfs_put_ordered_stripe(struct btrfs_fs_info *fs_info,
- 				 struct btrfs_ordered_stripe *stripe)
- {
- 	mutex_lock(&fs_info->stripe_update_lock);
-+	trace_btrfs_ordered_stripe_put(fs_info, stripe);
- 	if (refcount_dec_and_test(&stripe->ref)) {
- 		struct rb_node *node = &stripe->rb_node;
- 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index eb0ae7e396ef..e071245ef0b4 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -49,6 +49,7 @@
- #include "discard.h"
- #include "qgroup.h"
- #include "raid56.h"
-+#include "raid-stripe-tree.h"
- #define CREATE_TRACE_POINTS
- #include <trace/events/btrfs.h>
- 
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index ed50e81174bf..49510c687977 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -32,6 +32,7 @@ struct prelim_ref;
- struct btrfs_space_info;
- struct btrfs_raid_bio;
- struct raid56_bio_trace_info;
-+struct btrfs_ordered_stripe;
- 
- #define show_ref_type(type)						\
- 	__print_symbolic(type,						\
-@@ -2414,6 +2415,55 @@ DEFINE_EVENT(btrfs_raid56_bio, raid56_scrub_read_recover,
- 	TP_ARGS(rbio, bio, trace_info)
- );
- 
-+DECLARE_EVENT_CLASS(btrfs__ordered_stripe,
-+
-+	TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		 const struct btrfs_ordered_stripe *stripe),
-+
-+	TP_ARGS(fs_info, stripe),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	logical		)
-+		__field(	u64,	num_bytes	)
-+		__field(	int,	num_stripes	)
-+		__field(	int,	ref		)
-+	),
-+
-+	TP_fast_assign_btrfs(fs_info,
-+		__entry->logical	= stripe->logical;
-+		__entry->num_bytes	= stripe->num_bytes;
-+		__entry->num_stripes	= stripe->num_stripes;
-+		__entry->ref		= refcount_read(&stripe->ref);
-+	),
-+
-+	TP_printk_btrfs("logical=%llu, num_bytes=%llu, num_stripes=%d, ref=%d",
-+			__entry->logical, __entry->num_bytes,
-+			__entry->num_stripes, __entry->ref)
-+);
-+
-+DEFINE_EVENT(btrfs__ordered_stripe, btrfs_ordered_stripe_add,
-+
-+	     TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		      const struct btrfs_ordered_stripe *stripe),
-+
-+	     TP_ARGS(fs_info, stripe)
-+);
-+
-+DEFINE_EVENT(btrfs__ordered_stripe, btrfs_ordered_stripe_lookup,
-+
-+	     TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		      const struct btrfs_ordered_stripe *stripe),
-+
-+	     TP_ARGS(fs_info, stripe)
-+);
-+
-+DEFINE_EVENT(btrfs__ordered_stripe, btrfs_ordered_stripe_put,
-+
-+	     TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		      const struct btrfs_ordered_stripe *stripe),
-+
-+	     TP_ARGS(fs_info, stripe)
-+);
- #endif /* _TRACE_BTRFS_H */
- 
- /* This part must be outside protection */
--- 
-2.37.3
+* you might be on vacation or AFK for other reasons; your Comaintainers
+that were CCed would know and likely then help out
+* CCing the list makes other people notice the issue and gives them a
+chance to help (Qu Wenruo replied in bugzilla shortly after I sent the
+mail you quoted, which might or might not be due to my mail).
+* regression tracking is hard already; it would make it a lot harder if
+I'm forced to make and maintain notes how each and every maintainer
+would like me to handle situations like this
+* right now I need to send one mail anyway to add a regression to the
+tracking
 
+> But feel free
+> to ping regarding any regressions you're tracking and would like an
+> update.
+
+Great, thx!
+
+> Inspired by the LPC talk about bugzilla I went through all 650+ btrfs
+> bugs and closed what looked either fixed or not relevant anymore. The
+> rest are recent reports or bugs that may need to be moved elsewhere.
+> As kernel.org bugzilla is recommended for reports in our community
+> documentation I monitor new bugs but with variable reaction time.
+
+Thx for your work and good to know that you are referring to it.
+
+Ciao, Thorsten
