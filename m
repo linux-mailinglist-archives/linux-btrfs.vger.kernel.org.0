@@ -2,96 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4B6602DDD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Oct 2022 16:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C87602DE7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Oct 2022 16:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbiJROEy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Oct 2022 10:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
+        id S229665AbiJROGn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Oct 2022 10:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbiJROEX (ORCPT
+        with ESMTP id S229957AbiJROGl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Oct 2022 10:04:23 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73065F85
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Oct 2022 07:04:21 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4232D207EF;
-        Tue, 18 Oct 2022 14:04:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666101860;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rNjupSfSkbDFLegIi9H1gE6xRh2cCeHpJfLtFa6piVc=;
-        b=0Ll62nUM7LXq74vnar1gRpFFxuundIkpBQ8dpelquK4BZ1o0OWvKSkRGfO0auoUjhKy48u
-        MywXD244SA5TgSlzSeMXD67eqL2ikjWnJ8SLc8c+QX1GXRFNJtxmpT9dmpDHD8DIMwukLQ
-        jViPLnKw93H0henYlY+QS6hTzg1dq9g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666101860;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rNjupSfSkbDFLegIi9H1gE6xRh2cCeHpJfLtFa6piVc=;
-        b=xtYDz8GS345T/Q2LrJyF4XIR2IDtlFe0t4UArI+aeTuTW4EUNp7gEzDVliLbA0wT9zYYuT
-        rdx7ao7+kBkYI5CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 19C8313480;
-        Tue, 18 Oct 2022 14:04:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 61coBWSyTmPCMQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 18 Oct 2022 14:04:20 +0000
-Date:   Tue, 18 Oct 2022 16:04:10 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: print-tree: follow the supported flags when
- printing flags
-Message-ID: <20221018140410.GZ13389@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <37ed8ecbbc23d66955faf5b944be153db38e1dd7.1665487509.git.wqu@suse.com>
+        Tue, 18 Oct 2022 10:06:41 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7404AD38D9;
+        Tue, 18 Oct 2022 07:06:30 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5995333985;
+        Tue, 18 Oct 2022 14:06:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1666101964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=XTUoLbaIxNZRTNB0cLoZ8ZhWB6ge7EAJaS+BezrKBR0=;
+        b=TZVwT+QG/fICiilrITbzriZizOtWvwEB7GLVQJgGa9eVbWUj47mSNAmch5waij2ebSTe0L
+        QkGesECY2Jegd+hdWj0sC4Gze9PtBpjPFUE3E4S9LDduuJAokqyI/3ioRUw+T+CxdPvpfe
+        ljli4lQmVLU8eYNV0XB8OUt2L17xJlc=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 4B6632C141;
+        Tue, 18 Oct 2022 14:06:04 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C90F3DA79B; Tue, 18 Oct 2022 16:05:55 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>, stable@vger.kernel.org
+Subject: [PATCH] btrfs: fix type of parameter generation in btrfs_get_dentry
+Date:   Tue, 18 Oct 2022 16:05:52 +0200
+Message-Id: <20221018140552.3768-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37ed8ecbbc23d66955faf5b944be153db38e1dd7.1665487509.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 07:25:12PM +0800, Qu Wenruo wrote:
-> Currently we put EXTENT_TREE_V2 incompat flag entry under EXPERIMENTAL
-> features, thus at compile time, incompat_flags_array[] is determined at
-> compile time.
-> 
-> But the truth is, we have @supported_flags for __print_readable_flag(),
-> which is already defined based on EXPERIMENTAL flag.
-> 
-> Thus for __print_readable_flag(), we can always include the entry for
-> EXTENT_TREE_V2, and only print the flag if it's in the @supported_flags
-> 
-> By this, we can remove one EXPERIMENTAL macro usage.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+The type of parameter generation has been u32 since the beginning,
+however all callers pass a u64 generation, so unify the types to prevent
+potential loss.
 
-Added to devel, thanks.
-> @@ -1731,7 +1729,7 @@ static void __print_readable_flag(u64 flag, struct readable_flag_entry *array,
->  	printf("\t\t\t( ");
->  	for (i = 0; i < array_size; i++) {
->  		entry = array + i;
-> -		if (flag & entry->bit) {
-> +		if (flag & supported_flags && flag & entry->bit) {
+CC: stable@vger.kernel.org # 4.9+
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/export.c | 2 +-
+ fs/btrfs/export.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-		if ((flag & supported_flags) && (flag & entry->bit)) {
+diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
+index 1d4c2397d0d6..fab7eb76e53b 100644
+--- a/fs/btrfs/export.c
++++ b/fs/btrfs/export.c
+@@ -58,7 +58,7 @@ static int btrfs_encode_fh(struct inode *inode, u32 *fh, int *max_len,
+ }
+ 
+ struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
+-				u64 root_objectid, u32 generation,
++				u64 root_objectid, u64 generation,
+ 				int check_generation)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+diff --git a/fs/btrfs/export.h b/fs/btrfs/export.h
+index f32f4113c976..5afb7ca42828 100644
+--- a/fs/btrfs/export.h
++++ b/fs/btrfs/export.h
+@@ -19,7 +19,7 @@ struct btrfs_fid {
+ } __attribute__ ((packed));
+ 
+ struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
+-				u64 root_objectid, u32 generation,
++				u64 root_objectid, u64 generation,
+ 				int check_generation);
+ struct dentry *btrfs_get_parent(struct dentry *child);
+ 
+-- 
+2.37.3
+
