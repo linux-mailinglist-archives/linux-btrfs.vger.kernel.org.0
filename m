@@ -2,73 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B3A603306
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Oct 2022 21:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B1160348E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Oct 2022 23:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbiJRTG7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Oct 2022 15:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
+        id S230210AbiJRVCj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Oct 2022 17:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbiJRTGt (ORCPT
+        with ESMTP id S230121AbiJRVCi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Oct 2022 15:06:49 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5019E7171C;
-        Tue, 18 Oct 2022 12:06:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id ECED3B82034;
-        Tue, 18 Oct 2022 19:06:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B7594C433D6;
-        Tue, 18 Oct 2022 19:06:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666120006;
-        bh=UzvyzZB4z8zaJHUvDySCub2q8BzcoaN315wpyazuXZI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=CbhW/tgxxBCXnctDKghPRNChHGPoCLMPaw5FEbHMRbyH1mCj29MklzPkyok+tNBcx
-         XsaNEre06WNlkoh+w+qzrEp+GHIZYRtuNkNCJE98mC3UY5VGkp93S1AsvWJhQIzE6t
-         wGBqc3A0NL4WHNn9576XxFyTjM4/i5//EvotjPnODamesBN+ZletFleunpzMcTTsan
-         TriuK7C0l2ncR5jEII23F2l2RnmKG2fFgqi6n711nylYREH8PAk8eGsFr4FH8cZAv2
-         wuTskOGE/oK4UsJr1oFHcXOMTEhqlTN/5aWTtLttAxLL/xxm4gsq4eNjqiURNSFgrw
-         X0dU//o5/CPeg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A361FE29F37;
-        Tue, 18 Oct 2022 19:06:46 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.1-rc2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1666091548.git.dsterba@suse.com>
-References: <cover.1666091548.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1666091548.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.1-rc1-tag
-X-PR-Tracked-Commit-Id: 4efb365a3f04d0bee7833f168b0b00a15edefeac
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: aae703b02f92bde9264366c545e87cec451de471
-Message-Id: <166612000665.5469.12770260882529116064.pr-tracker-bot@kernel.org>
-Date:   Tue, 18 Oct 2022 19:06:46 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 18 Oct 2022 17:02:38 -0400
+Received: from mail104.syd.optusnet.com.au (mail104.syd.optusnet.com.au [211.29.132.246])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4B7F622288;
+        Tue, 18 Oct 2022 14:02:27 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au [49.181.106.210])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 967678AE0CC;
+        Wed, 19 Oct 2022 08:01:53 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1oktii-003bE7-4J; Wed, 19 Oct 2022 08:01:52 +1100
+Date:   Wed, 19 Oct 2022 08:01:52 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 04/23] page-writeback: Convert write_cache_pages() to use
+ filemap_get_folios_tag()
+Message-ID: <20221018210152.GH2703033@dread.disaster.area>
+References: <20220901220138.182896-1-vishal.moola@gmail.com>
+ <20220901220138.182896-5-vishal.moola@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220901220138.182896-5-vishal.moola@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=634f1443
+        a=j6JUzzrSC7wlfFge/rmVbg==:117 a=j6JUzzrSC7wlfFge/rmVbg==:17
+        a=kj9zAlcOel0A:10 a=Qawa6l4ZSaYA:10 a=pGLkceISAAAA:8 a=7-415B0cAAAA:8
+        a=K-JhRxFi-CGouRt9WdAA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Tue, 18 Oct 2022 13:43:44 +0200:
+On Thu, Sep 01, 2022 at 03:01:19PM -0700, Vishal Moola (Oracle) wrote:
+> Converted function to use folios throughout. This is in preparation for
+> the removal of find_get_pages_range_tag().
+> 
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> ---
+>  mm/page-writeback.c | 44 +++++++++++++++++++++++---------------------
+>  1 file changed, 23 insertions(+), 21 deletions(-)
+> 
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index 032a7bf8d259..087165357a5a 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2285,15 +2285,15 @@ int write_cache_pages(struct address_space *mapping,
+>  	int ret = 0;
+>  	int done = 0;
+>  	int error;
+> -	struct pagevec pvec;
+> -	int nr_pages;
+> +	struct folio_batch fbatch;
+> +	int nr_folios;
+>  	pgoff_t index;
+>  	pgoff_t end;		/* Inclusive */
+>  	pgoff_t done_index;
+>  	int range_whole = 0;
+>  	xa_mark_t tag;
+>  
+> -	pagevec_init(&pvec);
+> +	folio_batch_init(&fbatch);
+>  	if (wbc->range_cyclic) {
+>  		index = mapping->writeback_index; /* prev offset */
+>  		end = -1;
+> @@ -2313,17 +2313,18 @@ int write_cache_pages(struct address_space *mapping,
+>  	while (!done && (index <= end)) {
+>  		int i;
+>  
+> -		nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end,
+> -				tag);
+> -		if (nr_pages == 0)
+> +		nr_folios = filemap_get_folios_tag(mapping, &index, end,
+> +				tag, &fbatch);
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.1-rc1-tag
+This can find and return dirty multi-page folios if the filesystem
+enables them in the mapping at instantiation time, right?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/aae703b02f92bde9264366c545e87cec451de471
+> +
+> +		if (nr_folios == 0)
+>  			break;
+>  
+> -		for (i = 0; i < nr_pages; i++) {
+> -			struct page *page = pvec.pages[i];
+> +		for (i = 0; i < nr_folios; i++) {
+> +			struct folio *folio = fbatch.folios[i];
+>  
+> -			done_index = page->index;
+> +			done_index = folio->index;
+>  
+> -			lock_page(page);
+> +			folio_lock(folio);
+>  
+>  			/*
+>  			 * Page truncated or invalidated. We can freely skip it
+> @@ -2333,30 +2334,30 @@ int write_cache_pages(struct address_space *mapping,
+>  			 * even if there is now a new, dirty page at the same
+>  			 * pagecache address.
+>  			 */
+> -			if (unlikely(page->mapping != mapping)) {
+> +			if (unlikely(folio->mapping != mapping)) {
+>  continue_unlock:
+> -				unlock_page(page);
+> +				folio_unlock(folio);
+>  				continue;
+>  			}
+>  
+> -			if (!PageDirty(page)) {
+> +			if (!folio_test_dirty(folio)) {
+>  				/* someone wrote it for us */
+>  				goto continue_unlock;
+>  			}
+>  
+> -			if (PageWriteback(page)) {
+> +			if (folio_test_writeback(folio)) {
+>  				if (wbc->sync_mode != WB_SYNC_NONE)
+> -					wait_on_page_writeback(page);
+> +					folio_wait_writeback(folio);
+>  				else
+>  					goto continue_unlock;
+>  			}
+>  
+> -			BUG_ON(PageWriteback(page));
+> -			if (!clear_page_dirty_for_io(page))
+> +			BUG_ON(folio_test_writeback(folio));
+> +			if (!folio_clear_dirty_for_io(folio))
+>  				goto continue_unlock;
+>  
+>  			trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
+> -			error = (*writepage)(page, wbc, data);
+> +			error = writepage(&folio->page, wbc, data);
 
-Thank you!
+Yet, IIUC, this treats all folios as if they are single page folios.
+i.e. it passes the head page of a multi-page folio to a callback
+that will treat it as a single PAGE_SIZE page, because that's all
+the writepage callbacks are currently expected to be passed...
 
+So won't this break writeback of dirty multipage folios?
+
+-Dave.
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Dave Chinner
+david@fromorbit.com
