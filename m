@@ -2,154 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0115602DEB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Oct 2022 16:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FDB9602E49
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Oct 2022 16:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbiJROH1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Oct 2022 10:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46072 "EHLO
+        id S231509AbiJROV5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Oct 2022 10:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbiJROHX (ORCPT
+        with ESMTP id S231321AbiJROVg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Oct 2022 10:07:23 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AD0D25BA
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Oct 2022 07:06:49 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5C8D2201B2;
-        Tue, 18 Oct 2022 14:06:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1666102007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=PCn1ksw4r5nM34t1QTVMhjzkbyVL3p0wPr4q5irIfUY=;
-        b=scGu/nDb0eQSZzZVRw9QNuSivgQFMQrUnD9JJBSehAMOCgcl1jW/geBEhcniwwjWfBJSwC
-        HXbnt+6QxgRJoY1Ha2ZcMOovN+rSYa+rdEKuKsrC51Rm4OZKida9IOHX/2aVwujy6s1AJ3
-        Ka1gG2rmtJX6TmTy/TuFuBwzzmkpoDs=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 51D862C141;
-        Tue, 18 Oct 2022 14:06:47 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E77AEDA79B; Tue, 18 Oct 2022 16:06:38 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH] btrfs: simplify generation check in btrfs_get_dentry
-Date:   Tue, 18 Oct 2022 16:06:38 +0200
-Message-Id: <20221018140638.4164-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.37.3
+        Tue, 18 Oct 2022 10:21:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED51F9C2EE;
+        Tue, 18 Oct 2022 07:21:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 88413615AE;
+        Tue, 18 Oct 2022 14:21:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2B23C433D6;
+        Tue, 18 Oct 2022 14:21:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666102872;
+        bh=55bQHB+WjSBUXWHhVZsz39JliyTH3ce5NbGUN3TOoiM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=tr45N7iF0mc2KUeRnM9/A9JhZd7/U22GyrFHvEUutjRjJCh5j0QCmmGK88a6JcXsN
+         nbMNqjvE54H5AijupL1GbiE+fXuIo/OL+lWmzdR0WdIX0HPTw89uf7uUSP6dj3Cd3u
+         bunQ1S5EVPlBqX1d7pyW6bkWTc5+N1xqieGOiwyAlv/gSZ+7s3ICZzwV52Mnx6xw5i
+         QlMUsCeQdO8sEYkRgNDAulTaRiEDnqM17XTMA9HxnFOcKuVCdi3+fbiVvShLN0tVjY
+         YCbtm+/blYEIoQnoZCxModsrkU1bSheNwrkkJGYnP5Wlqev2DkJQ5i80qdKjoHLPvv
+         p/ee7Equqs9Dw==
+Message-ID: <28a3d6b9978cf0280961385e28ae52f278d65d92.camel@kernel.org>
+Subject: Re: [RFC PATCH v7 9/9] vfs: expose STATX_VERSION to userland
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Dave Chinner <david@fromorbit.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, djwong@kernel.org,
+        trondmy@hammerspace.com, neilb@suse.de, viro@zeniv.linux.org.uk,
+        zohar@linux.ibm.com, xiubli@redhat.com, chuck.lever@oracle.com,
+        lczerner@redhat.com, bfields@fieldses.org, brauner@kernel.org,
+        fweimer@redhat.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Tue, 18 Oct 2022 10:21:08 -0400
+In-Reply-To: <20221018134910.v4jim6jyjllykcaf@quack3>
+References: <20221017105709.10830-1-jlayton@kernel.org>
+         <20221017105709.10830-10-jlayton@kernel.org>
+         <20221017221433.GT3600936@dread.disaster.area>
+         <1e01f88bcde1b7963e504e0fd9cfb27495eb03ca.camel@kernel.org>
+         <20221018134910.v4jim6jyjllykcaf@quack3>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Callers that pass non-zero generation always want to perform the
-generation check, we can simply encode that in one parameter and drop
-check_generation. Add function documentation.
+On Tue, 2022-10-18 at 15:49 +0200, Jan Kara wrote:
+> On Tue 18-10-22 06:35:14, Jeff Layton wrote:
+> > On Tue, 2022-10-18 at 09:14 +1100, Dave Chinner wrote:
+> > > On Mon, Oct 17, 2022 at 06:57:09AM -0400, Jeff Layton wrote:
+> > > > Trond is of the opinion that monotonicity is a hard requirement, an=
+d
+> > > > that we should not allow filesystems that can't provide that qualit=
+y to
+> > > > report STATX_VERSION at all.  His rationale is that one of the main=
+ uses
+> > > > for this is for backup applications, and for those a counter that c=
+ould
+> > > > go backward is worse than useless.
+> > >=20
+> > > From the perspective of a backup program doing incremental backups,
+> > > an inode with a change counter that has a different value to the
+> > > current backup inventory means the file contains different
+> > > information than what the current backup inventory holds. Again,
+> > > snapshots, rollbacks, etc.
+> > >=20
+> > > Therefore, regardless of whether the change counter has gone
+> > > forwards or backwards, the backup program needs to back up this
+> > > current version of the file in this backup because it is different
+> > > to the inventory copy.  Hence if the backup program fails to back it
+> > > up, it will not be creating an exact backup of the user's data at
+> > > the point in time the backup is run...
+> > >=20
+> > > Hence I don't see that MONOTONIC is a requirement for backup
+> > > programs - they really do have to be able to handle filesystems that
+> > > have modifications that move backwards in time as well as forwards...
+> >=20
+> > Rolling backward is not a problem in and of itself. The big issue is
+> > that after a crash, we can end up with a change attr seen before the
+> > crash that is now associated with a completely different inode state.
+> >=20
+> > The scenario is something like:
+> >=20
+> > - Change attr for an empty file starts at 1
+> >=20
+> > - Write "A" to file, change attr goes to 2
+> >=20
+> > - Read and statx happens (client sees "A" with change attr 2)
+> >=20
+> > - Crash (before last change is logged to disk)
+> >=20
+> > - Machine reboots, inode is empty, change attr back to 1
+> >=20
+> > - Write "B" to file, change attr goes to 2
+> >=20
+> > - Client stat's file, sees change attr 2 and assumes its cache is
+> > correct when it isn't (should be "B" not "A" now).
+> >=20
+> > The real danger comes not from the thing going backward, but the fact
+> > that it can march forward again after going backward, and then the
+> > client can see two different inode states associated with the same
+> > change attr value. Jumping all the change attributes forward by a
+> > significant amount after a crash should avoid this issue.
+>=20
+> As Dave pointed out, the problem with change attr having the same value f=
+or
+> a different inode state (after going backwards) holds not only for the
+> crashes but also for restore from backups, fs snapshots, device snapshots
+> etc. So relying on change attr only looks a bit fragile. It works for the
+> common case but the edge cases are awkward and there's no easy way to
+> detect you are in the edge case.
+>=20
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/export.c | 23 +++++++++++++++++------
- fs/btrfs/export.h |  3 +--
- fs/btrfs/ioctl.c  |  2 +-
- 3 files changed, 19 insertions(+), 9 deletions(-)
+This is true. In fact in the snapshot case you can't even rely on doing
+anything at reboot since you won't necessarily need to reboot to make it
+roll backward.
 
-diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
-index fab7eb76e53b..a51a5dfa737c 100644
---- a/fs/btrfs/export.c
-+++ b/fs/btrfs/export.c
-@@ -57,9 +57,20 @@ static int btrfs_encode_fh(struct inode *inode, u32 *fh, int *max_len,
- 	return type;
- }
- 
-+/*
-+ * Read dentry of inode with @objectid from filesystem root @root_objectid.
-+ *
-+ * @sb:             the filesystem super block
-+ * @objectid:       inode objectid
-+ * @root_objectid:  object id of the subvolume root where to look up the inode
-+ * @generation:     optional, if not zero, verify that the found inode
-+ *                  generation matches
-+ *
-+ * Return dentry alias for the inode, otherwise an error. In case the
-+ * generation does not match return ESTALE.
-+ */
- struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
--				u64 root_objectid, u64 generation,
--				int check_generation)
-+				u64 root_objectid, u64 generation)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
- 	struct btrfs_root *root;
-@@ -77,7 +88,7 @@ struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
- 	if (IS_ERR(inode))
- 		return ERR_CAST(inode);
- 
--	if (check_generation && generation != inode->i_generation) {
-+	if (generation != 0 && generation != inode->i_generation) {
- 		iput(inode);
- 		return ERR_PTR(-ESTALE);
- 	}
-@@ -106,7 +117,7 @@ static struct dentry *btrfs_fh_to_parent(struct super_block *sb, struct fid *fh,
- 	objectid = fid->parent_objectid;
- 	generation = fid->parent_gen;
- 
--	return btrfs_get_dentry(sb, objectid, root_objectid, generation, 1);
-+	return btrfs_get_dentry(sb, objectid, root_objectid, generation);
- }
- 
- static struct dentry *btrfs_fh_to_dentry(struct super_block *sb, struct fid *fh,
-@@ -128,7 +139,7 @@ static struct dentry *btrfs_fh_to_dentry(struct super_block *sb, struct fid *fh,
- 	root_objectid = fid->root_objectid;
- 	generation = fid->gen;
- 
--	return btrfs_get_dentry(sb, objectid, root_objectid, generation, 1);
-+	return btrfs_get_dentry(sb, objectid, root_objectid, generation);
- }
- 
- struct dentry *btrfs_get_parent(struct dentry *child)
-@@ -188,7 +199,7 @@ struct dentry *btrfs_get_parent(struct dentry *child)
- 
- 	if (found_key.type == BTRFS_ROOT_BACKREF_KEY) {
- 		return btrfs_get_dentry(fs_info->sb, key.objectid,
--					found_key.offset, 0, 0);
-+					found_key.offset, 0);
- 	}
- 
- 	return d_obtain_alias(btrfs_iget(fs_info->sb, key.objectid, root));
-diff --git a/fs/btrfs/export.h b/fs/btrfs/export.h
-index 5afb7ca42828..eba6bc4f5a61 100644
---- a/fs/btrfs/export.h
-+++ b/fs/btrfs/export.h
-@@ -19,8 +19,7 @@ struct btrfs_fid {
- } __attribute__ ((packed));
- 
- struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
--				u64 root_objectid, u64 generation,
--				int check_generation);
-+				u64 root_objectid, u64 generation);
- struct dentry *btrfs_get_parent(struct dentry *child);
- 
- #endif
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index d5dd8bed1488..41a2f499bb97 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3271,7 +3271,7 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
- 
- 			dentry = btrfs_get_dentry(fs_info->sb,
- 					BTRFS_FIRST_FREE_OBJECTID,
--					vol_args2->subvolid, 0, 0);
-+					vol_args2->subvolid, 0);
- 			if (IS_ERR(dentry)) {
- 				err = PTR_ERR(dentry);
- 				goto out_drop_write;
--- 
-2.37.3
+Whether that obviates the use of this value altogether, I'm not sure.
 
+> So I think any implementation caring about data integrity would have to
+> include something like ctime into the picture anyway. Or we could just
+> completely give up any idea of monotonicity and on each mount select rand=
+om
+> prime P < 2^64 and instead of doing inc when advancing the change
+> attribute, we'd advance it by P. That makes collisions after restore /
+> crash fairly unlikely.
+
+Part of the goal (at least for NFS) is to avoid unnecessary cache
+invalidations.
+
+If we just increment it by a particular offset on every reboot, then
+every time the server reboots, the clients will invalidate all of their
+cached inodes, and proceed to hammer the server with READ calls just as
+it's having to populate its own caches from disk.
+
+IOW, that will not be good for performance. Doing that after a crash is
+also less than ideal, but crashes should (hopefully) be rare enough that
+it's not a major issue.
+
+In any case, we need to decide whether and what to present to userland.
+There is a lot of disagreement here, and we need to come to a consensus.
+I think we have to answer 2 questions:
+
+1/ Is this counter useful enough on its own, without any baked-in
+rollback=A0resilience to justify exposing it via statx()?
+
+2/ if the answer above is "yes", then is there any value to the
+MONOTONIC flag, given that we can't really do anything about snapshot
+rollbacks and the like?
+
+I tend to be in the camp of "let's make the raw counter available and
+leave it up to userland to deal with the potential issues". After all,
+the c/mtime are still widely used today to detect changes and they have
+many of the same problems.
+
+Trying to do anything more elaborate than that will lead to a lot of
+extra complexity in the kernel, and make it a lot more difficult for any
+filesystem to report this at all.
+--=20
+Jeff Layton <jlayton@kernel.org>
