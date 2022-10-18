@@ -2,68 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5557602BF0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Oct 2022 14:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C0F602C2A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Oct 2022 14:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbiJRMmo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Oct 2022 08:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53074 "EHLO
+        id S230201AbiJRMwp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Oct 2022 08:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbiJRMmn (ORCPT
+        with ESMTP id S230199AbiJRMwn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Oct 2022 08:42:43 -0400
+        Tue, 18 Oct 2022 08:52:43 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44A4C34DD
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Oct 2022 05:42:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4436C4C12
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Oct 2022 05:52:42 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 50D62207BD;
-        Tue, 18 Oct 2022 12:42:39 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8125920805;
+        Tue, 18 Oct 2022 12:52:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666096959;
+        t=1666097561;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=VgdljcyI4IVMb3JIH7kENbbE0ONcb7P3Q+j/uiwVNlI=;
-        b=iyyk6OZA7S2Ou7FtwSGdebExOaWUQHueSeucqArnysw7No5z1QZL/KLRmUZqJXNSQYAr4T
-        rrcXF3C+Sly8Q51PxHlKElKsPxm72NCm2cts4U7+29UgiXHdXmaXt7rw3aLMgcduBE+OHT
-        jF02vq7BS5TL5iihKKrdvKigQKTS3QI=
+        bh=hg2CCtCGqsCBDBTJ7EkeQ/vLqyNyi4AeBUZIJ6ldl3E=;
+        b=mDzrW6NTIQ0Z7UgoskkuRr+n0ZbkUixZ4IcmN7sF0dcLVH5OE8evGLK/MAWEEP4meLeF6b
+        3V6A96tM9ExIM9q6W61jzuhnNj2hxGwv7v38Z9RW+4j4fUj5MM7VzBauaSZ600DPZl0V/6
+        7FN87AZnlNnKp/uep159+FGee8Y3OfA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666096959;
+        s=susede2_ed25519; t=1666097561;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=VgdljcyI4IVMb3JIH7kENbbE0ONcb7P3Q+j/uiwVNlI=;
-        b=BLGMi79xQw65nNAQIpBUWNhDLfRykfFjdO4CQxJxJ3lzJN6SookXxlDn0xpYZQ3cpvMD1P
-        uyFaVQfzZUiO8LDw==
+        bh=hg2CCtCGqsCBDBTJ7EkeQ/vLqyNyi4AeBUZIJ6ldl3E=;
+        b=ACXa58MTn6ryKifvCA82TIAIzkCBTjyyIdxfgHlRBPzchNuD47OQj8cMlo1AR02RHnyarU
+        iwga6cc11OB0F8AQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 26849139D2;
-        Tue, 18 Oct 2022 12:42:39 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5A757139D2;
+        Tue, 18 Oct 2022 12:52:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ngdtCD+fTmMtewAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 18 Oct 2022 12:42:39 +0000
-Date:   Tue, 18 Oct 2022 14:42:29 +0200
+        id p0szFZmhTmMdAgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 18 Oct 2022 12:52:41 +0000
+Date:   Tue, 18 Oct 2022 14:52:31 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 0/3] btrfs: avoid GFP_ATOMIC allocation failures during
- endio
-Message-ID: <20221018124229.GT13389@twin.jikos.cz>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 3/3] btrfs: do not panic if we can't allocate a prealloc
+ extent state
+Message-ID: <20221018125231.GU13389@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1665755095.git.josef@toxicpanda.com>
- <20221017142516.GQ13389@twin.jikos.cz>
- <Y02aAoQDtAoit8xL@localhost.localdomain>
+ <97fb0828deb341efe99ef2bc35cda0eccc5963de.1665755095.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y02aAoQDtAoit8xL@localhost.localdomain>
+In-Reply-To: <97fb0828deb341efe99ef2bc35cda0eccc5963de.1665755095.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -74,36 +72,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 17, 2022 at 02:08:02PM -0400, Josef Bacik wrote:
-> On Mon, Oct 17, 2022 at 04:25:16PM +0200, David Sterba wrote:
-> > > 
-> > > This is perfectly safe, we'll drop the tree lock and loop around any time we
-> > > have to re-search the tree after modifying part of our range, we don't need to
-> > > hold the lock for our entire operation.
-> > > 
-> > > The only drawback here is that we could infinite loop if we can't make our
-> > > allocation.  This is why a mempool would be the proper solution, as we can't
-> > > fail these allocations without brining the box down, which is what we currently
-> > > do anyway.
-> > 
-> > Aren't the mempools shifting the possibly infinite loop one layer down
-> > only? With some added bonus of creating indirect dependencies of the
-> > allocating and freeing threads.
+On Fri, Oct 14, 2022 at 10:00:41AM -0400, Josef Bacik wrote:
+> We sometimes have to allocate new extent states when clearing or setting
+> new bits in an extent io tree.  Generally we preallocate this before
+> taking the tree spin lock, but we can use this preallocated extent state
+> sometimes and then need to try to do a GFP_ATOMIC allocation under the
+> lock.
 > 
-> bio's use mempools for the same reason, the emergency reserve exists so that we
-> always are able to make our allocations.  Clearly we could still end up in a bad
-> situation if we exhaust the emergency reserve, but the extent states in this
-> particular case don't get allocated a bunch.  Thanks,
+> Unfortunately sometimes this fails, and then we hit the BUG_ON() and
+> bring the box down.  This happens roughly 20 times a week in our fleet.
+> 
+> However the vast majority of callers use GFP_NOFS, which means that if
+> this GFP_ATOMIC allocation fails, we could simply drop the spin lock, go
+> back and allocate a new extent state with our given gfp mask, and begin
+> again from where we left off.
+> 
+> For the remaining callers that do not use GFP_NOFS, they are generally
+> using GFP_NOWAIT, which still allows for some reclaim.  So allow these
+> allocations to attempt to happen outside of the spin lock so we don't
+> need to rely on GFP_ATOMIC allocations.
+> 
+> This in essence creates an infinite loop for anything that isn't
+> GFP_NOFS.  To address this we will want to migrate to using mempools for
+> extent states so that we will always have emergency reserves in order to
+> make our allocations.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/extent-io-tree.c | 22 ++++++++++++++--------
+>  1 file changed, 14 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
+> index 618275af19c4..6ad09ba28aae 100644
+> --- a/fs/btrfs/extent-io-tree.c
+> +++ b/fs/btrfs/extent-io-tree.c
+> @@ -572,7 +572,7 @@ int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+>  	if (bits & (EXTENT_LOCKED | EXTENT_BOUNDARY))
+>  		clear = 1;
+>  again:
+> -	if (!prealloc && gfpflags_allow_blocking(mask)) {
 
-I think that bios are the only thing that works with mempools reliably
-because it satisfies the guaranteed forward progress. Otherwise the
-indirect dependenices lead to lockups in the allocation, which is
-equivalent to the potentially infinite looping. The emergency reserve is
-another finite resource so it can get exhausted eventually, and it's
-not scaled to the number of potential requests that could hit the same
-code path and competing for the memory. It's true we'd be dealing with a
-system in a bad state and depending on another subsystems make it less
-predictable. The simplest options are wait or exit with error.
+There's another call to gfpflags_allow_blocking(mask) at the end of the
+loop before cond_resched(), if we pass only GFP_NOFS and GFP_NOWAIT we
+can assume blocking is always right? Eventually we can put an assert.
 
-Anyway, the mempools might work in this case but I'm skeptical so I'd be
-very interested in some kind of proof that we understand the edge cases.
+And on top of that the mask argument can be refined to 'bool wait' and
+we can drop passing GFP_NOFS everywhere in the set_extent_bit* helpers.
+It's for a separate patch but I think we should continue with cleanups
+here as this patchset enabled a few more.
