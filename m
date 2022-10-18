@@ -2,50 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0917D602E6E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Oct 2022 16:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F23602E6D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Oct 2022 16:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbiJRO1v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Oct 2022 10:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39206 "EHLO
+        id S231418AbiJRO1u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Oct 2022 10:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbiJRO1s (ORCPT
+        with ESMTP id S231367AbiJRO1s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 18 Oct 2022 10:27:48 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98757C098A
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Oct 2022 07:27:47 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 379DA2072A;
-        Tue, 18 Oct 2022 14:27:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1666103266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TzpKuf8eHbqy1xMBoR1NUCvs1QFJO3V3rUl9QUTsSd4=;
-        b=VXSMLhn+8X8dvNaeG90m+zQO7zT41aCA/N7XReB4UswONYGlTDYX7FNVmZDQ+6k03PVwB8
-        OczmOgVwpd+Yt7/MIHc6UJs48kl7xTDgjtW8T8su2ANn966LWJMRowl1loWMncca5QWw7h
-        MBgJwsgczg5Pc3ysHDSvjjsCluOrjCk=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 2ED982C141;
-        Tue, 18 Oct 2022 14:27:46 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CDF81DA79B; Tue, 18 Oct 2022 16:27:37 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 4/4] btrfs: sink gfp_t parameter to alloc_scrub_sector
-Date:   Tue, 18 Oct 2022 16:27:37 +0200
-Message-Id: <a33272553ef02334c55eb6fea1c286bef8c7c871.1666103172.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <cover.1666103172.git.dsterba@suse.com>
-References: <cover.1666103172.git.dsterba@suse.com>
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1FDC0981
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Oct 2022 07:27:46 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id t25so8719544qkm.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Oct 2022 07:27:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LdNQEqJlTgCNX/thLCc2I4lCuFk0cwSwMo4N+YBcHrU=;
+        b=Jw3yp01Fx8maduVqaLh4vDmteS407yLFl5ZE7frNlvZ8zooT3+k1jSjE8D2Iirs70S
+         TqHh3PG2+dbCgfu9vTyGKgdkv3ctt7NTcfvONwjOG/ii9t1Zuvuz+sMKJT8Bo2OVW63o
+         1jye23159xYwKO04xSM5rUCQwSaQYwr4g++x2gyB+SUAijFzb8ce+quxduSCuzedwuS3
+         QtE03ulcNuD67t7NavKOr2fiCO7djW9nm2lOc2wB+OXbPmAod5bLgkBFi1MRTJUkOoRw
+         djY2t4Dezpyg1Dg90vsnBOGH7hPnz90ov0LsznXE2docTJGEYn5CEwOF30c8Xz3gTVMM
+         gP1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LdNQEqJlTgCNX/thLCc2I4lCuFk0cwSwMo4N+YBcHrU=;
+        b=u0TwOlbQ69weBzJNPF0oefUnTYszYkwKbM3ocOcF7ByulFFJXnN+8upOnxmAXhL/d2
+         ge72fh3m8h3Cl/t3MGl951NE1KdZXEwrNKnIVm1oMwgsy8HafE0bhNKG1ftcLEuJYK4p
+         7i+7o2mUEAhwbbfdjmasUqJyoQYoMSvuvxmyhQE4O2MhSH05Q00A3k0i9fmsKOAzjhDj
+         WQd+jR+cYLypmvMD+UHFgie7UNaQf7uhT2c4uXr4IWF3Vrh64xH+OmxkCFkpS3B0iEQS
+         kkeUypU2Yb3tn4FbayUVuuMTepV79t+ePH/y01x9y9SVSwOkF5VJz3qDa++6a1FWcp9E
+         qKgw==
+X-Gm-Message-State: ACrzQf12Tqa2NZUd1KIcLl+srdrJL3vKiA7AIpZ5X4pBaQof8d1M1IAA
+        1niv/xrbr3eXIljSydLkNCv9EdpWoSUgxA==
+X-Google-Smtp-Source: AMsMyM59n58wTRcLL76oWw8s1tDFcQgHc5h5+3OEuGapoJftavQMiHJOzwrYFsC2ZqUa2jLzbISG4A==
+X-Received: by 2002:a05:620a:2601:b0:6bc:70bb:c56b with SMTP id z1-20020a05620a260100b006bc70bbc56bmr2052523qko.416.1666103265809;
+        Tue, 18 Oct 2022 07:27:45 -0700 (PDT)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id k11-20020a05620a0b8b00b006ed99931456sm2419348qkh.88.2022.10.18.07.27.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Oct 2022 07:27:45 -0700 (PDT)
+Date:   Tue, 18 Oct 2022 10:27:44 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH v2 02/16] btrfs: move larger compat flag helpers to their
+ own c file
+Message-ID: <Y0634IUR2qH2vK/4@localhost.localdomain>
+References: <cover.1666033501.git.josef@toxicpanda.com>
+ <bd00bf180e1f4437d887fb7b893bd37d5103c25c.1666033501.git.josef@toxicpanda.com>
+ <761748f6-ae18-5467-548e-256d56ce5f92@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <761748f6-ae18-5467-548e-256d56ce5f92@wdc.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,72 +73,18 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-All callers pas GFP_KERNEL as parameter so we can use it directly in
-alloc_scrub_sector.
+On Tue, Oct 18, 2022 at 07:42:52AM +0000, Johannes Thumshirn wrote:
+> On 17.10.22 21:09, Josef Bacik wrote:
+> > These helpers use a lot of different functions that would be defined
+> > elsewhere.  Push them into a C file so we don't end up with weird header
+> > file dependencies.
+> 
+> Can't this be merged into patch 1? I find it a bit wired, that these functions
+> are moved twice.
+> 
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/scrub.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Yeah you're right, sorry about that, some of this stuff is a "hey this should go
+here", and then I tackled a different part later and then moved it again.  I'll
+clean this up and re-send.  Thanks,
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 2fc70a2cc7fe..79d0ef534d5f 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -295,7 +295,7 @@ static struct scrub_block *alloc_scrub_block(struct scrub_ctx *sctx,
-  * Will also allocate new pages for @sblock if needed.
-  */
- static struct scrub_sector *alloc_scrub_sector(struct scrub_block *sblock,
--					       u64 logical, gfp_t gfp)
-+					       u64 logical)
- {
- 	const pgoff_t page_index = (logical - sblock->logical) >> PAGE_SHIFT;
- 	struct scrub_sector *ssector;
-@@ -303,7 +303,7 @@ static struct scrub_sector *alloc_scrub_sector(struct scrub_block *sblock,
- 	/* We must never have scrub_block exceed U32_MAX in size. */
- 	ASSERT(logical - sblock->logical < U32_MAX);
- 
--	ssector = kzalloc(sizeof(*ssector), gfp);
-+	ssector = kzalloc(sizeof(*ssector), GFP_KERNEL);
- 	if (!ssector)
- 		return NULL;
- 
-@@ -311,7 +311,7 @@ static struct scrub_sector *alloc_scrub_sector(struct scrub_block *sblock,
- 	if (!sblock->pages[page_index]) {
- 		int ret;
- 
--		sblock->pages[page_index] = alloc_page(gfp);
-+		sblock->pages[page_index] = alloc_page(GFP_KERNEL);
- 		if (!sblock->pages[page_index]) {
- 			kfree(ssector);
- 			return NULL;
-@@ -1514,7 +1514,7 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
- 			sblock = sblocks_for_recheck[mirror_index];
- 			sblock->sctx = sctx;
- 
--			sector = alloc_scrub_sector(sblock, logical, GFP_KERNEL);
-+			sector = alloc_scrub_sector(sblock, logical);
- 			if (!sector) {
- 				spin_lock(&sctx->stat_lock);
- 				sctx->stat.malloc_errors++;
-@@ -2436,7 +2436,7 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
- 		 */
- 		u32 l = min(sectorsize, len);
- 
--		sector = alloc_scrub_sector(sblock, logical, GFP_KERNEL);
-+		sector = alloc_scrub_sector(sblock, logical);
- 		if (!sector) {
- 			spin_lock(&sctx->stat_lock);
- 			sctx->stat.malloc_errors++;
-@@ -2773,7 +2773,7 @@ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
- 	for (index = 0; len > 0; index++) {
- 		struct scrub_sector *sector;
- 
--		sector = alloc_scrub_sector(sblock, logical, GFP_KERNEL);
-+		sector = alloc_scrub_sector(sblock, logical);
- 		if (!sector) {
- 			spin_lock(&sctx->stat_lock);
- 			sctx->stat.malloc_errors++;
--- 
-2.37.3
-
+Josef
