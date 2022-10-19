@@ -2,199 +2,219 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 365AF604A23
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Oct 2022 16:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B40604A30
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Oct 2022 16:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbiJSO6U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Oct 2022 10:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
+        id S231474AbiJSO63 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Oct 2022 10:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231753AbiJSO5k (ORCPT
+        with ESMTP id S231835AbiJSO5k (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 19 Oct 2022 10:57:40 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2EBE733F3
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Oct 2022 07:51:17 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id hh9so11781419qtb.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Oct 2022 07:51:17 -0700 (PDT)
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6622962E7
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Oct 2022 07:51:19 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id h24so11455803qta.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Oct 2022 07:51:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7wL/x9FbReLlMgY+J+Pzc5NYJWZaHAKHXdkey1oXXW8=;
-        b=1BA8YXx2bKP8r336uCBImcd8/4h4qhgPRKe2RvyFu/D7bFQisD4xaCiWp5K/h4/nB/
-         ehqcnjw2wrHqpE5Wofph8ZZ6cLgb1SyRsIRhgqcrqM/tNDo4lVEfbTx6Fj/28MZ0xbtt
-         veBXvMFZPf4+6XwlipxeqKFRFtGW/LHFTn+10Hbv0svRMM1JGyW6ejRJ/2JR4xjjMrKj
-         6RFGmBBq6fcsW/HiE6ofambfP4alBUxdxR9poKEep+D0JoSuclYyXCTAqrZmD94XOEal
-         dVGToqnW8n14zlzbp3FW55tVEnN2KhBr5zhbwX9m2DrlP+fUF2e7lHqj4kUvGCpvMLAc
-         MWBQ==
+        bh=UHKx4XGltpJDGpi25Usx/nl0oNx8nnVwldyJ6+AakUg=;
+        b=iBWYNtkuNWBvXF8ZuS85SZ5hmCu5UosrBr9yqnczExi9/mVJD3BYTMiGnwMJzw6oNi
+         LWNcVTyBrjueqglIuFcGT7clbw7FeL0HIKokoZRiXX0QxNEvjC10OAdoZkvJQ7AknomL
+         CzoeuwcZXUmvWo/2broqrivdO2Ty0EDH5ZsbFJOoKsuvtRcpLfyUC2/0TSGIjFT+Tkae
+         TV4/asw2sHRkcOjLF0LYKYDI1Ir092jX5FId3b0ckPdpTdVSMRIkNqi4VjHu5IuyAgop
+         06TyQvet6/2vQAzpJW8b8kLIx35k2YiS8DuFJ00PXRxxlJwRtw/vGIE8B9Yh1r9WP+KT
+         ZoYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7wL/x9FbReLlMgY+J+Pzc5NYJWZaHAKHXdkey1oXXW8=;
-        b=LSMJc3S6gKi4vxvd6ucfPeKXwySHlJObpcHyS9H029Xdkv6OT8+Mg+5VIZXicBQcSJ
-         JU1p7anVRqQysPAfHYAUD54rbBjupz8tak/cxu1ZcpzsRljLk1tzyIjvt9SDeShbHoNN
-         DqX72cU9pbyRegRwmE0fOxLtUtIdyDrQfMFjEFKZW6p8AiTVMg1PMg1Xhkp6BsxNn5AQ
-         J1FGzqv57U4g7CDsD/geWCk6Qm4slRJUKH7KyHvHHlUQIvbC10AIRe86VcOwcpecSerB
-         xpHTxql6qPTK2xOXObA8sUcDjlLn+zcMCUKyitlFiFAvUxBAW5FEvVbIKar5HxyaR0Lo
-         5BSA==
-X-Gm-Message-State: ACrzQf2BrdX2bVTK4eA2bmqsZOExyUNE/k7S/hQIeU4j/qzq5m2vGzvR
-        HS2eR0jIiYFPg6bxjbJvxJpNbQYHnQZYlg==
-X-Google-Smtp-Source: AMsMyM7Rl9KmMSY8UEkCDVbjYUGfVeigUOdgfSL6mNiZ2ASQ7dfEm2HIii1nq79sXYvUhZFAp6VtJQ==
-X-Received: by 2002:ac8:578b:0:b0:39c:f006:3563 with SMTP id v11-20020ac8578b000000b0039cf0063563mr6602999qta.636.1666191076729;
-        Wed, 19 Oct 2022 07:51:16 -0700 (PDT)
+        bh=UHKx4XGltpJDGpi25Usx/nl0oNx8nnVwldyJ6+AakUg=;
+        b=vmSj7/J8x2fSQ/YExNR7aC05Mc4FFxGZgOTjndn50faBYntXmIIZmJZLX69+Fp9zAH
+         LeInMaA4dsFU0d26Zbqb8J6nIfM9G9HHFZZIxM6Ng8xl7URgz83xO0A3JaTgjZQppOsv
+         oCWnRGwmhtzHyKOWlcOpkFrPFxAWcKRjrvkpgVEBOFDmH8V12UomORkLC2c7y2/6PeWo
+         y+JbUboIYYsDFsiDNvVRWu17Kj6T8urZaeIfSzAG4zBxCQ+zxnrUJ2mUsJ7UPGYiCRiZ
+         EYrxwJMBEzDuy+ipaDC2MCPeE4h61eX8QJiNb28jucFwP4FN9sNFMLnUDTh7Z8HOC8OK
+         L8Yg==
+X-Gm-Message-State: ACrzQf3ln/ndhJXQB+JB5I0p9Xng8NJ6wQthUk1WJbf1+tkp5usAFWoU
+        2IoZm20xNhzQ1O03VNcvROrI/0TmofyMAg==
+X-Google-Smtp-Source: AMsMyM6HDFm/LoHHG6z4ZdEcBppzh5ZT/9/aS5F5BN36IIgYZ/aynTB3fNRiFzNyNCaQuTTu2Nof1A==
+X-Received: by 2002:a05:622a:15d5:b0:39a:e3c6:6f0f with SMTP id d21-20020a05622a15d500b0039ae3c66f0fmr6583161qty.514.1666191078222;
+        Wed, 19 Oct 2022 07:51:18 -0700 (PDT)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id l12-20020a37f90c000000b006cbc6e1478csm5035291qkj.57.2022.10.19.07.51.16
+        by smtp.gmail.com with ESMTPSA id s7-20020a05620a254700b006af0ce13499sm5087130qko.115.2022.10.19.07.51.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Oct 2022 07:51:16 -0700 (PDT)
+        Wed, 19 Oct 2022 07:51:17 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v3 10/15] btrfs: remove fs_info::pending_changes and related code
-Date:   Wed, 19 Oct 2022 10:50:56 -0400
-Message-Id: <dd2d57bb9c440c765be0b7f34622351283edefdc.1666190849.git.josef@toxicpanda.com>
+Subject: [PATCH v3 11/15] btrfs: move the compat/incompat flag masks to fs.h
+Date:   Wed, 19 Oct 2022 10:50:57 -0400
+Message-Id: <ef3372e9715ddc0aef3f20bab2129cd7b0bdfd80.1666190849.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1666190849.git.josef@toxicpanda.com>
 References: <cover.1666190849.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,UPPERCASE_50_75
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that we're not using this code anywhere we can remove it as well as
-the member from fs_info.
+This is fs wide information, move it out of ctree.h into fs.h.
 
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h       | 23 +----------------------
- fs/btrfs/disk-io.c     |  6 ------
- fs/btrfs/transaction.c | 25 -------------------------
- fs/btrfs/transaction.h |  1 -
- 4 files changed, 1 insertion(+), 54 deletions(-)
+ fs/btrfs/ctree.h | 57 ------------------------------------------------
+ fs/btrfs/fs.h    | 57 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 57 insertions(+), 57 deletions(-)
 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 99c51bc29b8a..988a4c176288 100644
+index 988a4c176288..2570116aac88 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -365,11 +365,7 @@ struct btrfs_fs_info {
- 	 */
- 	u64 last_trans_log_full_commit;
- 	unsigned long mount_opt;
--	/*
--	 * Track requests for actions that need to be done during transaction
--	 * commit (like for some mount options).
--	 */
--	unsigned long pending_changes;
-+
- 	unsigned long compress_type:4;
- 	unsigned int compress_level;
- 	u32 commit_interval;
-@@ -1252,23 +1248,6 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
- 	return BTRFS_MAX_ITEM_SIZE(info) - sizeof(struct btrfs_dir_item);
- }
+@@ -70,63 +70,6 @@ static_assert(sizeof(struct btrfs_super_block) == BTRFS_SUPER_INFO_SIZE);
+  */
+ #define BTRFS_DEVICE_RANGE_RESERVED			(SZ_1M)
  
 -/*
-- * Requests for changes that need to be done during transaction commit.
-- *
-- * Internal mount options that are used for special handling of the real
-- * mount options (eg. cannot be set during remount and have to be set during
-- * transaction commit)
+- * Compat flags that we support.  If any incompat flags are set other than the
+- * ones specified below then we will fail to mount
 - */
+-#define BTRFS_FEATURE_COMPAT_SUPP		0ULL
+-#define BTRFS_FEATURE_COMPAT_SAFE_SET		0ULL
+-#define BTRFS_FEATURE_COMPAT_SAFE_CLEAR		0ULL
 -
--#define BTRFS_PENDING_COMMIT			(0)
+-#define BTRFS_FEATURE_COMPAT_RO_SUPP			\
+-	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
+-	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID | \
+-	 BTRFS_FEATURE_COMPAT_RO_VERITY |		\
+-	 BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE)
 -
--#define btrfs_test_pending(info, opt)	\
--	test_bit(BTRFS_PENDING_##opt, &(info)->pending_changes)
--#define btrfs_set_pending(info, opt)	\
--	set_bit(BTRFS_PENDING_##opt, &(info)->pending_changes)
--#define btrfs_clear_pending(info, opt)	\
--	clear_bit(BTRFS_PENDING_##opt, &(info)->pending_changes)
+-#define BTRFS_FEATURE_COMPAT_RO_SAFE_SET	0ULL
+-#define BTRFS_FEATURE_COMPAT_RO_SAFE_CLEAR	0ULL
 -
- struct btrfs_map_token {
- 	struct extent_buffer *eb;
- 	char *kaddr;
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index fb437d1246e0..e22ce4cbc59c 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3750,12 +3750,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		btrfs_set_and_info(fs_info, SSD, "enabling ssd optimizations");
- 	}
+-#ifdef CONFIG_BTRFS_DEBUG
+-/*
+- * Extent tree v2 supported only with CONFIG_BTRFS_DEBUG
+- */
+-#define BTRFS_FEATURE_INCOMPAT_SUPP			\
+-	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
+-	 BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL |	\
+-	 BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS |		\
+-	 BTRFS_FEATURE_INCOMPAT_BIG_METADATA |		\
+-	 BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO |		\
+-	 BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD |		\
+-	 BTRFS_FEATURE_INCOMPAT_RAID56 |		\
+-	 BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |		\
+-	 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |	\
+-	 BTRFS_FEATURE_INCOMPAT_NO_HOLES	|	\
+-	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
+-	 BTRFS_FEATURE_INCOMPAT_RAID1C34	|	\
+-	 BTRFS_FEATURE_INCOMPAT_ZONED		|	\
+-	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2)
+-#else
+-#define BTRFS_FEATURE_INCOMPAT_SUPP			\
+-	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
+-	 BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL |	\
+-	 BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS |		\
+-	 BTRFS_FEATURE_INCOMPAT_BIG_METADATA |		\
+-	 BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO |		\
+-	 BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD |		\
+-	 BTRFS_FEATURE_INCOMPAT_RAID56 |		\
+-	 BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |		\
+-	 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |	\
+-	 BTRFS_FEATURE_INCOMPAT_NO_HOLES	|	\
+-	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
+-	 BTRFS_FEATURE_INCOMPAT_RAID1C34	|	\
+-	 BTRFS_FEATURE_INCOMPAT_ZONED)
+-#endif
+-
+-#define BTRFS_FEATURE_INCOMPAT_SAFE_SET			\
+-	(BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF)
+-#define BTRFS_FEATURE_INCOMPAT_SAFE_CLEAR		0ULL
+-
+ /* Read ahead values for struct btrfs_path.reada */
+ enum {
+ 	READA_NONE,
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 7b221d37ad0e..ac223da28576 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -139,6 +139,63 @@ enum {
+ 	BTRFS_MOUNT_IGNOREDATACSUMS		= (1UL << 30),
+ };
  
--	/*
--	 * Mount does not set all options immediately, we can do it now and do
--	 * not have to wait for transaction commit
--	 */
--	btrfs_apply_pending_changes(fs_info);
--
- #ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
- 	if (btrfs_test_opt(fs_info, CHECK_INTEGRITY)) {
- 		ret = btrfsic_mount(fs_info, fs_devices,
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 7b6b68ab089a..37d0baaa41d8 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -2359,12 +2359,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	if (ret)
- 		goto unlock_reloc;
++/*
++ * Compat flags that we support.  If any incompat flags are set other than the
++ * ones specified below then we will fail to mount
++ */
++#define BTRFS_FEATURE_COMPAT_SUPP		0ULL
++#define BTRFS_FEATURE_COMPAT_SAFE_SET		0ULL
++#define BTRFS_FEATURE_COMPAT_SAFE_CLEAR		0ULL
++
++#define BTRFS_FEATURE_COMPAT_RO_SUPP			\
++	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
++	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID | \
++	 BTRFS_FEATURE_COMPAT_RO_VERITY |		\
++	 BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE)
++
++#define BTRFS_FEATURE_COMPAT_RO_SAFE_SET	0ULL
++#define BTRFS_FEATURE_COMPAT_RO_SAFE_CLEAR	0ULL
++
++#ifdef CONFIG_BTRFS_DEBUG
++/*
++ * Extent tree v2 supported only with CONFIG_BTRFS_DEBUG
++ */
++#define BTRFS_FEATURE_INCOMPAT_SUPP			\
++	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
++	 BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL |	\
++	 BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS |		\
++	 BTRFS_FEATURE_INCOMPAT_BIG_METADATA |		\
++	 BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO |		\
++	 BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD |		\
++	 BTRFS_FEATURE_INCOMPAT_RAID56 |		\
++	 BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |		\
++	 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |	\
++	 BTRFS_FEATURE_INCOMPAT_NO_HOLES	|	\
++	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
++	 BTRFS_FEATURE_INCOMPAT_RAID1C34	|	\
++	 BTRFS_FEATURE_INCOMPAT_ZONED		|	\
++	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2)
++#else
++#define BTRFS_FEATURE_INCOMPAT_SUPP			\
++	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
++	 BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL |	\
++	 BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS |		\
++	 BTRFS_FEATURE_INCOMPAT_BIG_METADATA |		\
++	 BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO |		\
++	 BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD |		\
++	 BTRFS_FEATURE_INCOMPAT_RAID56 |		\
++	 BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |		\
++	 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |	\
++	 BTRFS_FEATURE_INCOMPAT_NO_HOLES	|	\
++	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
++	 BTRFS_FEATURE_INCOMPAT_RAID1C34	|	\
++	 BTRFS_FEATURE_INCOMPAT_ZONED)
++#endif
++
++#define BTRFS_FEATURE_INCOMPAT_SAFE_SET			\
++	(BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF)
++#define BTRFS_FEATURE_INCOMPAT_SAFE_CLEAR		0ULL
++
+ #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
+ #define BTRFS_DEFAULT_MAX_INLINE	(2048)
  
--	/*
--	 * Since the transaction is done, we can apply the pending changes
--	 * before the next transaction.
--	 */
--	btrfs_apply_pending_changes(fs_info);
--
- 	/* commit_fs_roots gets rid of all the tree log roots, it is now
- 	 * safe to free the root of tree log roots
- 	 */
-@@ -2587,25 +2581,6 @@ int btrfs_clean_one_deleted_snapshot(struct btrfs_fs_info *fs_info)
- 	return (ret < 0) ? 0 : 1;
- }
- 
--void btrfs_apply_pending_changes(struct btrfs_fs_info *fs_info)
--{
--	unsigned long prev;
--	unsigned long bit;
--
--	prev = xchg(&fs_info->pending_changes, 0);
--	if (!prev)
--		return;
--
--	bit = 1 << BTRFS_PENDING_COMMIT;
--	if (prev & bit)
--		btrfs_debug(fs_info, "pending commit done");
--	prev &= ~bit;
--
--	if (prev)
--		btrfs_warn(fs_info,
--			"unknown pending changes left 0x%lx, ignoring", prev);
--}
--
- int __init btrfs_transaction_init(void)
- {
- 	btrfs_trans_handle_cachep = kmem_cache_create("btrfs_trans_handle",
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index b5651c372946..cf3356cb797b 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -231,7 +231,6 @@ int btrfs_wait_tree_log_extents(struct btrfs_root *root, int mark);
- int btrfs_transaction_blocked(struct btrfs_fs_info *info);
- int btrfs_transaction_in_commit(struct btrfs_fs_info *info);
- void btrfs_put_transaction(struct btrfs_transaction *transaction);
--void btrfs_apply_pending_changes(struct btrfs_fs_info *fs_info);
- void btrfs_add_dropped_root(struct btrfs_trans_handle *trans,
- 			    struct btrfs_root *root);
- void btrfs_trans_release_chunk_metadata(struct btrfs_trans_handle *trans);
 -- 
 2.26.3
 
