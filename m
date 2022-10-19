@@ -2,94 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAAE604A32
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Oct 2022 16:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB3D604B31
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Oct 2022 17:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbiJSO6Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Oct 2022 10:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50836 "EHLO
+        id S232455AbiJSPXo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Oct 2022 11:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbiJSO5l (ORCPT
+        with ESMTP id S232176AbiJSPX1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Oct 2022 10:57:41 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E4BC6962
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Oct 2022 07:51:25 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id a24so11780196qto.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Oct 2022 07:51:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AKQta0HBGWzfonEHtISYSlTd/0kvcw3vIJGc0uHX9/M=;
-        b=ljFzzzbN/vLscVM5jyQgub6XMUhRlVe0bBYEb8OWlBbAFmtBVJmQAQutSbPUMBwSAH
-         +CQ66sRtkrswwq99mv+P6YADejIJ8kg6MgNlqQztA9MoKlRb+NjOyozeg5vpngJSqiqf
-         vCR7a3FrhBzF/3oZHp5e9V4WTLro4o0Buhxgn/F83EJTPoX3UQyB9WOn5Bf5RYWuue2B
-         AvXNtgk0ya15sYJsiHLfaD2odW8wZtH4yNPVvqXVX9M76SkMRIGsKsssgyFblGHTSL6A
-         qvd+AbOIPXKMTgjEDMvydooEJC7IIzDTCF+nvLTLN/yYVH7IJHwxWAfyVif3buWeeKV2
-         KXgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AKQta0HBGWzfonEHtISYSlTd/0kvcw3vIJGc0uHX9/M=;
-        b=R96+VW/+5iZ1detv5RArVQeLwXjqyRJE9y9r6b5GF5c56iqXd7q6/e2F7Mjbolptw2
-         70otvHkY55Syb9aZaIG5oarb9XDv18ZkGzVe+YZ6Pv7GHPDUYNZNESQQvNL5SB7Myzn/
-         QlS8vGRDhdpFlSUDHxxhHuUYMfLpdZcA7cRGIYjCqp7qHNLfCZ32e+nayl8MU9crA2Ej
-         X9tDF9fznpeB/UyAi+Zp/mVQO89bznNCNk92IqBYKPzMYgX4Umz3XYABEYFH+xsLpBVx
-         c6DZQLtln1fWL/eg3Y3m0dIYSuKDmwunGZ/68/JSK6IBuHF6Fk9I8MJC2GYNHGvdUFuT
-         UylQ==
-X-Gm-Message-State: ACrzQf3zWPxqrHZeF5agK29nE5a8d5AJYthkLR+uwQXUpkne50rcgoGr
-        AJC2OVoDiuWLAl6forGmPqf/FGZJmD4JqQ==
-X-Google-Smtp-Source: AMsMyM6HSWD4msepOv7ky2p1vihqfzDKsVtZbL4Fd+vMW/r2hW+70J3TBS0FaXFwEEEn+0tjs4yVqA==
-X-Received: by 2002:ac8:5b90:0:b0:39c:e9b9:c002 with SMTP id a16-20020ac85b90000000b0039ce9b9c002mr6731448qta.3.1666191084211;
-        Wed, 19 Oct 2022 07:51:24 -0700 (PDT)
-Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id he7-20020a05622a600700b003972790deb9sm4096556qtb.84.2022.10.19.07.51.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Oct 2022 07:51:23 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 15/15] btrfs: remove temporary btrfs_map_token declaration in ctree.h
-Date:   Wed, 19 Oct 2022 10:51:01 -0400
-Message-Id: <5cfd74155b651c5a4305511e59c3aa1f20090293.1666190850.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1666190849.git.josef@toxicpanda.com>
-References: <cover.1666190849.git.josef@toxicpanda.com>
+        Wed, 19 Oct 2022 11:23:27 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B72F190E50
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Oct 2022 08:16:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E8E03200B7;
+        Wed, 19 Oct 2022 15:16:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1666192576;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yI/Yqx049ChVZjbkQi3zj4m/G+6Hb3gvJsWBVHASC9I=;
+        b=IlKTsHe5eV7dSF6ROLzQmHwCu4R76Jwf4ioO3TWeKpqqLQfuGuNFW8IoGU7aAzWAp82dhL
+        pmS8/LD1Z7VzaJtcvvyT9pZooAdKckDl3bhKg/lxdppIVsFxi1DfKfx8FZC7lcZ2sBnsxS
+        MxfrehO8ZjcpTK/Kp0j7OJqG/qxYE+E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1666192576;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yI/Yqx049ChVZjbkQi3zj4m/G+6Hb3gvJsWBVHASC9I=;
+        b=G/1QXTjuR7rYm9/L3gz0Pec1F9WjizN2UrErmZOhY03nufLikF0vD8us4dS1I7OR0DQN3F
+        Lt97qHHIFw3AGkAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BFE1413345;
+        Wed, 19 Oct 2022 15:16:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JLvQLcAUUGONSQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 19 Oct 2022 15:16:16 +0000
+Date:   Wed, 19 Oct 2022 17:16:06 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 0/4] Parameter cleanup
+Message-ID: <20221019151606.GC13389@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1666103172.git.dsterba@suse.com>
+ <4be6c68f-efe7-5dfa-e4cc-054e3f6badcb@wdc.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <4be6c68f-efe7-5dfa-e4cc-054e3f6badcb@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This was added while I was moving this code to its new home, it can be
-removed now.
+On Wed, Oct 19, 2022 at 10:28:53AM +0000, Johannes Thumshirn wrote:
+> On 18.10.22 16:27, David Sterba wrote:
+> > A few more cases where value passed by parameter can be used directly.
+> > 
+> > David Sterba (4):
+> >   btrfs: sink gfp_t parameter to btrfs_backref_iter_alloc
+> >   btrfs: sink gfp_t parameter to btrfs_qgroup_trace_extent
+> >   btrfs: switch GFP_NOFS to GFP_KERNEL in scrub_setup_recheck_block
+> >   btrfs: sink gfp_t parameter to alloc_scrub_sector
+> > 
+> >  fs/btrfs/backref.c    |  5 ++---
+> >  fs/btrfs/backref.h    |  3 +--
+> >  fs/btrfs/qgroup.c     | 17 +++++++----------
+> >  fs/btrfs/qgroup.h     |  2 +-
+> >  fs/btrfs/relocation.c |  2 +-
+> >  fs/btrfs/scrub.c      | 14 +++++++-------
+> >  fs/btrfs/tree-log.c   |  3 +--
+> >  7 files changed, 20 insertions(+), 26 deletions(-)
+> > 
+> 
+> What base is this on?
+> 
+> I got the following when applying it for review:
+> 
+> [johannes@redsun91:linux (review)]$ b4 am -o - cover.1666103172.git.dsterba@suse.com | git am
+> Looking up https://lore.kernel.org/r/cover.1666103172.git.dsterba%40suse.com
+> Grabbing thread from lore.kernel.org/all/cover.1666103172.git.dsterba%40suse.com/t.mbox.gz
+> Analyzing 5 messages in the thread
+> Checking attestation on all messages, may take a moment...
+> ---
+>   ✓ [PATCH 1/4] btrfs: sink gfp_t parameter to btrfs_backref_iter_alloc
+>   ✓ [PATCH 2/4] btrfs: sink gfp_t parameter to btrfs_qgroup_trace_extent
+>   ✓ [PATCH 3/4] btrfs: switch GFP_NOFS to GFP_KERNEL in scrub_setup_recheck_block
+>   ✓ [PATCH 4/4] btrfs: sink gfp_t parameter to alloc_scrub_sector
+>   ---
+>   ✓ Signed: DKIM/suse.com
+> ---
+> Total patches: 4
+> ---
+>  Link: https://lore.kernel.org/r/cover.1666103172.git.dsterba@suse.com
+>  Base: not specified
+> Applying: btrfs: sink gfp_t parameter to btrfs_backref_iter_alloc
+> 
+> Error in reading or end of file.
+> fs/btrfs/relocation.c: In function ‘build_backref_tree’:
+> fs/btrfs/relocation.c:474:16: error: too many arguments to function ‘btrfs_backref_iter_alloc’
+>   474 |         iter = btrfs_backref_iter_alloc(rc->extent_root->fs_info, GFP_NOFS);
+>       |                ^~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from fs/btrfs/relocation.c:25:
+> fs/btrfs/backref.h:158:28: note: declared here
+>   158 | struct btrfs_backref_iter *btrfs_backref_iter_alloc(struct btrfs_fs_info *fs_info);
+>       |                            ^~~~~~~~~~~~~~~~~~~~~~~~
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/ctree.h | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index fcf809ca5842..1da8f1579e4f 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -51,8 +51,6 @@ struct btrfs_balance_control;
- struct btrfs_delayed_root;
- struct reloc_control;
- 
--struct btrfs_map_token;
--
- #define BTRFS_OLDEST_GENERATION	0ULL
- 
- #define BTRFS_EMPTY_DIR_SIZE 0
--- 
-2.26.3
-
+I have it in a branch on top of some misc-next snapshot, the date is
+from 3 days ago and rebase to current misc-next is clean and builds.
