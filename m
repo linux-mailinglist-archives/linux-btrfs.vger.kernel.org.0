@@ -2,161 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C0B603645
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Oct 2022 01:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7C660393D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Oct 2022 07:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229543AbiJRXCM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Oct 2022 19:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        id S229828AbiJSFaE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Oct 2022 01:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbiJRXCL (ORCPT
+        with ESMTP id S229826AbiJSFaD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Oct 2022 19:02:11 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2DECBCBB0
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Oct 2022 16:02:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1666134126;
-        bh=O4jDiOhBf+MILLBXmc05CY3j/vVDao6ToPJEKrsZEiM=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=k9zelrJy59UzTLBGTpmcFHth3zIbSItZ8tCRpXkgjEMbPyDg7uAxb35k8NyeeErN5
-         mtKYLnJ+L+6vjAdIjQG6xHSHP/kgBc0Gii3l7k0zWUoOzpGnaDlh5A0BfaeURm2/5q
-         tW6243eyt/2PnxqFuZQ+klWGecOq9+2+0bI2Vro8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmlXK-1pRNwh2o7y-00jo4S; Wed, 19
- Oct 2022 01:02:06 +0200
-Message-ID: <526d3122-3e1a-cfa7-9a1e-da0fd552fa84@gmx.com>
-Date:   Wed, 19 Oct 2022 07:02:02 +0800
+        Wed, 19 Oct 2022 01:30:03 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C76140E23;
+        Tue, 18 Oct 2022 22:30:00 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5AD2033872;
+        Wed, 19 Oct 2022 05:29:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1666157399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=YjAslUF5MUs7WNiZuNiHgSlcETcvP+nt0+mVaySQbDo=;
+        b=rEho6/Wo/1GdQ1wauL7sA6sdiFIoOhRPD6uwf78yGtdtO8cFd+EsajOXYTZr04zZ5eKRsv
+        pDg6VFifrnchd0Cjxzt+WL1YG/YaAmcduib30/kHiPMkZGY2ac+J7dJKJdc+1u9QgTo4jg
+        khkJHG4BY7vZXvW437FXm/qXRbpoDU0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7364713A36;
+        Wed, 19 Oct 2022 05:29:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GS3yDlaLT2PsCwAAMHmgww
+        (envelope-from <wqu@suse.com>); Wed, 19 Oct 2022 05:29:58 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] generic: check if one fs can detect damage at/after fs thaw
+Date:   Wed, 19 Oct 2022 13:29:55 +0800
+Message-Id: <20221019052955.30484-1-wqu@suse.com>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.3
-Subject: Re: [PATCH] btrfs: make thawn time super block check to also verify
- checksum
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <b5eb3e1c071c9bd79dab0bb9883ad86843e00051.1666058154.git.wqu@suse.com>
- <20221018132810.GV13389@twin.jikos.cz>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20221018132810.GV13389@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ghWKCFvZppL/aTH6lpCG7glApZ9/vQjwHrDC0X47jBEKoyr9Fg4
- TH6hbrbQ8yCLFYPMAbxL89XNYCvhXwAUj90ECbH6bwUttQDyCxzlat0Wi7Apbkzwc5NHogp
- Pt7uMOsddZthLWv0RT6yOSzLQ/tOmePvShf4qy+TMc5Ic86JcBTN7QsGgKuiF50v8eiQ033
- UF+WG9oPb4L9bZhkLthPQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Osrt/Y+bQyQ=:VXLbZuFD6kvxuEH496U2YL
- 3BbgfsUkjHDnMfXNW+jXGLzdMXwzu/Df0tL5jOlVccDAIPJwzifTb0a7xMecyldtfXqscq5lD
- TWlqwVtE3ZCDBbr3RA2PNFySYJclH4pEo2wGSepRiBhWU/enNujlLX3Em1J+Z6fn+tNS3JElI
- /vX7VtQQ6soFybTJK4UXxjfAN7PNWFmA+AJeFC9Pto1voL5TrEVeWrapURCNxfU7S01JsYVMU
- ISQ+nsxMKhpDVkn6iYVaW+ReaGr8n3PgdrT9AzoBgr54T19y0wLvttdamwMuQ+VT5RBRaJkuE
- 6vSY/KHfn2RkyXtP2PTamiRrZx50bXipbt9jN5bKsiGoI+V27n/MlE3vWmwzPSSbahACnQuDb
- HEWQvRl8TxTUiJ6KeaeJvvkzhkSSNAPnl9qsOzAbf5Jo3rUnjM+m+7h0B7wENl4P0SFlBLe6t
- IDPqzqWU/jWsdGJAz+YMy0ATEQhLU7ESsZFlyo7ghZQeHfb7pEHwvd/w2DJz+aLlqCgJxAudD
- c5SqOeZQJ+TUEzBx3CLcI+NNRLblk0xGSufpRQ8eKtj+bcmiAfjU4Dki+jAjTmcnrm+61pAW5
- TIV+VLq2UeydX9YDi+AQ3QumskkKqEHE6u2yRGinpydVJAWCzIYN7bmXjp0TNj/zXMWJAcGCe
- 9UvbD+PIlDJv6O039/BuaW5GqVIoVVbJgFXUx6z4hNUdhRw2ocAr0bCUaDEKwy2Qff0/puM4k
- lY+47CWQKPPzZAhZUonjx0gED0g5Yjjhr2pTEDl/3aqODYS4G9+LjKKx+lozzDzToU9np6cWR
- UCgCR9csASuvNcZcPgScT3LXxUSDhmktgXEwh0Mnx23llA1GlZ5ER36N13paQiK5c12upuOVj
- gVcXNOwCPSTz2BaMuSVlzCNf63eXfgFNvKIjLEJpICKxbonflFcggoS+oLPK+7x+CVn6LIpcr
- Vo0JNWLsCQsOr+8UwXLY/NdjegXPHDXVn5gF615XVP4M0/fpuJnqfbxTK5DJQjjilf4GfUaQC
- +i2p40DbioYJZgltLOGhW7VygM43dFcMQWTAj8MW5sgy3rkv8+IFxkejdCkFGYFsXHQr8eg9D
- K/IOI9D8SHQUwqIUKbSjaBaRvltKV/ErQs8yQpwun8hSjC4uZ44xrNOwYGVuwUdD1Q4yWsDAP
- wwyUjSgxVDnSq02dwEgTQAoRArWHYCMBxQkgIqUjldi5qqhhCp7t0+Huc6v4YSTtvwjf1sHYm
- cjUtHOA0oeExLyJsUcBVp2OGJsYsmAPMcYHL2ePd0Cj9UNO3r1P//p/vtUU4nGCmcUS0H2p/Y
- Jb8b5rvd20UEd21Wy7jGhPo0F1lvYUXDK6WypwCD56Yy6srUYR864bU8DcOVSGziFs2QtyAPb
- r9PIPLTDBzGzTILX0Irbu0v9lHlZsrkWZiKtgT+QcGtigQ+7+WzdmzFdKHnwJhpcAo33AjpfL
- c1tyw6UmeNonzJLtATJL8Dk1nFLzW7OC1Np3PyvRPiHLl37D0bfJiWaf/Bhq3KtDtDcK7+lf1
- n2vQFSHQJNH/AqNodEufjVqcu7S/QWaYcIO+my4In9fIN
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BACKGROUND]
+There is bug report from btrfs mailing list that, hiberation can allow
+one to modify the frozen filesystem unexpectedly (using another OS).
+(https://lore.kernel.org/linux-btrfs/83bf3b4b-7f4c-387a-b286-9251e3991e34@bluemole.com/)
 
+Later btrfs adds the check to make sure the fs is not changed
+unexpectedly, to prevent corruption from happening.
 
-On 2022/10/18 21:28, David Sterba wrote:
-> On Tue, Oct 18, 2022 at 09:56:38AM +0800, Qu Wenruo wrote:
->> Previous commit a05d3c915314 ("btrfs: check superblock to ensure the fs
->> was not modified at thaw time") only checks the content of the super
->> block, but it doesn't really check if the on-disk super block has a
->> matching checksum.
->>
->> This patch will add the checksum verification to thawn time superblock
->> verification.
->>
->> This involves the following extra changes:
->>
->> - Export btrfs_check_super_csum()
->>    As we need to call it in super.c.
->>
->> - Change the argument list of btrfs_check_super_csum()
->>    Instead of passing a char *, directly pass struct btrfs_super_block =
-*
->>    pointer.
->>
->> - Verify that our csum type didn't change before checking the csum
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->
-> Added to misc-next, thanks. Can you please also send a test case?
+[TESTCASE]
+Here the new test case will create a basic filesystem, fill it with
+something by using fsstress, then sync the fs, and finally freeze the fs.
 
-The test case is a little complex.
+Then corrupt the whole fs by overwriting the block device with 0xcd
+(default seed from xfs_io pwrite command).
 
-Freeze an fs is easy, but there aren't so many easy ways to modify the
-super block like modifying it when it's still mounted.
+Finally we thaw the fs, and try if we can create a new file.
 
-We can do something like wiping the superblock, but it's much harder to
-cover all the error paths.
+for EXT4, it will detect the corruption at touch time, causing -EUCLEAN.
 
-Thanks,
-Qu
->
->> ---
->>   fs/btrfs/disk-io.c | 10 ++++------
->>   fs/btrfs/disk-io.h |  2 ++
->>   fs/btrfs/super.c   | 16 ++++++++++++++++
->>   3 files changed, 22 insertions(+), 6 deletions(-)
->>
->> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->> index 9f526841c68b..5bf373f606e0 100644
->> --- a/fs/btrfs/disk-io.c
->> +++ b/fs/btrfs/disk-io.c
->> @@ -166,11 +166,9 @@ static bool btrfs_supported_super_csum(u16 csum_ty=
-pe)
->>    * Return 0 if the superblock checksum type matches the checksum valu=
-e of that
->>    * algorithm. Pass the raw disk superblock data.
->>    */
->> -static int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
->> -				  char *raw_disk_sb)
->> +int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
->> +			   struct btrfs_super_block *disk_sb)
->
-> 			   const
->
->>   {
->> -	struct btrfs_super_block *disk_sb =3D
->> -		(struct btrfs_super_block *)raw_disk_sb;
->>   	char result[BTRFS_CSUM_SIZE];
->>   	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
->>
->> @@ -181,7 +179,7 @@ static int btrfs_check_super_csum(struct btrfs_fs_i=
-nfo *fs_info,
->>   	 * BTRFS_SUPER_INFO_SIZE range, we expect that the unused space is
->>   	 * filled with zeros and is included in the checksum.
->>   	 */
->> -	crypto_shash_digest(shash, raw_disk_sb + BTRFS_CSUM_SIZE,
->> +	crypto_shash_digest(shash, (u8 *)disk_sb + BTRFS_CSUM_SIZE,
->
-> 				   (const u8 *)
->
->>   			    BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE, result);
->>
->>   	if (memcmp(disk_sb->csum, result, fs_info->csum_size))
+For Btrfs, it will detect the corruption at thaw time, marking the
+fs RO immediately, and later touch will return -EROFS.
+
+For XFS, it will detect the corruption at touch time, return -EUCLEAN.
+(Without the cache drop, XFS seems to be very happy using the cache info
+to do the work without any error though.)
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tests/generic/702     | 61 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/702.out |  2 ++
+ 2 files changed, 63 insertions(+)
+ create mode 100755 tests/generic/702
+ create mode 100644 tests/generic/702.out
+
+diff --git a/tests/generic/702 b/tests/generic/702
+new file mode 100755
+index 00000000..fc3624e1
+--- /dev/null
++++ b/tests/generic/702
+@@ -0,0 +1,61 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 702
++#
++# Test if the filesystem can detect the underlying disk has changed at
++# thaw time.
++#
++. ./common/preamble
++. ./common/filter
++_begin_fstest freeze quick
++
++# real QA test starts here
++
++_supported_fs generic
++_fixed_by_kernel_commit a05d3c915314 \
++	"btrfs: check superblock to ensure the fs was not modified at thaw time"
++
++# We will corrupt the device completely, thus should not check it after the test.
++_require_scratch_nocheck
++_require_freeze
++
++# Limit the fs to 512M so we won't waste too much time screwing it up later.
++_scratch_mkfs_sized $((512 * 1024 * 1024)) >> $seqres.full 2>&1
++_scratch_mount
++
++# Populate the fs with something.
++$FSSTRESS_PROG -n 500 -d $SCRATCH_MNT >> $seqres.full
++
++# Sync to make sure no dirty journal
++sync
++
++# Drop all cache, so later write will need to read from disk, increasing
++# the chance of detecting the corruption.
++echo 3 > /proc/sys/vm/drop_caches
++
++$XFS_IO_PROG -x -c "freeze" $SCRATCH_MNT
++
++# Now screw up the block device
++$XFS_IO_PROG -f -c "pwrite 0 512M" -c sync $SCRATCH_DEV >> $seqres.full
++
++# Thaw the fs, it may or may not report error, we will check it manually later.
++$XFS_IO_PROG -x -c "thaw" $SCRATCH_MNT
++
++# If the fs detects something wrong, it should trigger error now.
++# We don't use the error message as golden output, as btrfs and ext4 use
++# different error number for different reasons.
++# (btrfs detects the change immediately at thaw time and mark the fs RO, thus
++#  touch returns -EROFS, while ext4 detects the change at journal write time,
++#  returning -EUCLEAN).
++touch $SCRATCH_MNT/foobar >>$seqres.full 2>&1
++if [ $? -eq 0 ]; then
++	echo "Failed to detect corrupted fs"
++else
++	echo "Detected corrupted fs (expected)"
++fi
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/702.out b/tests/generic/702.out
+new file mode 100644
+index 00000000..c29311ff
+--- /dev/null
++++ b/tests/generic/702.out
+@@ -0,0 +1,2 @@
++QA output created by 702
++Detected corrupted fs (expected)
+-- 
+2.38.0
+
