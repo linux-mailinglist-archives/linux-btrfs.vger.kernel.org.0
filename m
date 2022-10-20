@@ -2,188 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 638536063B7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Oct 2022 17:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA33606434
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Oct 2022 17:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbiJTPA3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Oct 2022 11:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
+        id S229779AbiJTPVr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Oct 2022 11:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbiJTPA0 (ORCPT
+        with ESMTP id S230272AbiJTPVM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Oct 2022 11:00:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F25FB156267;
-        Thu, 20 Oct 2022 08:00:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8E05561BB3;
-        Thu, 20 Oct 2022 15:00:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 744A5C433C1;
-        Thu, 20 Oct 2022 15:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666278025;
-        bh=FWuRBOv4CEW/SgOmhsI6/Vwus8qotrUPHbt4tJDazg0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tz6tNFwiShnrSbBBs8lPDXvZ3u90IpIija6FoiY7KSBFJtChVt+vucoQTWbG4Lzcn
-         vgHqmAsP0WeJrMezTZD0+YfpkY5ygI+wo30RK/bXfLiRwr32wqlIza7Zc+2MkwnVnj
-         fNuXB6H/pbcpDhuiPSsbmjEJfpqD7GkBUoQXxSCHt1zjzcWtJ48cCBMEQ2h2SldQ4h
-         zpg3B3RANJVQhseHQIluzzrlnAGKpVEFBert4Fx53l1+35zssisvxhqHveHuFoHJgf
-         LwW5L2jABqh4uk65mksu1H6Oo5s9WnRN1CZyOXmD42Cgb3iXwF2K1hhWewXQjyY2NT
-         qn68oP9Z7FflQ==
-Date:   Thu, 20 Oct 2022 23:00:19 +0800
-From:   Zorro Lang <zlang@kernel.org>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH] generic: check if one fs can detect damage at/after fs
- thaw
-Message-ID: <20221020150019.jp65m3kejbhds6mf@zlang-mailbox>
-References: <20221019052955.30484-1-wqu@suse.com>
+        Thu, 20 Oct 2022 11:21:12 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 939362F387
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Oct 2022 08:21:10 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id z30so63853qkz.13
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Oct 2022 08:21:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zzf6EKndYNPyp3/AHMjDli7i/Flk7hDbvcS5/Tbyrsk=;
+        b=GJJdrfemsuCJsw0XYmyVdnVRq7DuBeE+6zB8OA6uf/8AZRhWk4fjeGRww8bilziy7g
+         txNuWjqAYNQVmKh4SwLYTkoATx5jl6HthIYHrLdTjnsoCH7JLlcoGCz+OicLceYgWHzS
+         EEZ97jfrAX+Lea+WQOHraGQbvfs6M+FK3UVSZxbih5gxnb+i0HOVQOXviw4/yOLvW0R3
+         lylfqkA8lkSO9jYeV1h4cgjbc1tEXto2fbPu9mDoIEwH/xhtEZIyf0zGt7KIW+eSJ8nx
+         PWGpkmAnefAzJg0qXwWX9l6ddPWkn8k5QIZ4M9Ar8fLTz4ACDKlxnRI7IZwvAi+vITy2
+         W54A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zzf6EKndYNPyp3/AHMjDli7i/Flk7hDbvcS5/Tbyrsk=;
+        b=m08FGlYXIwJZPgawFKmgyDtDoSHxtm8QPwhPmfb0fh5Fw/zbGYO/kzNuR6rErBSAK8
+         QB58pgeTYjAzKrN8GXLGQh/XOVpaznjzctM1yPXRm+OWw+AJBju3D9h5v9yjcrqxI/4k
+         1Cr1Ze6ZW2TyQlIdlY348luC6XHPSdDlju6P2zUzkdAjcZXAJy/xWKf6qPlCoLOJkix2
+         w+1qG7B8KUwX1tqLtgFt4086jzhG/UYXSQz4MBOvLHDjI/d45MzvmxPKB75nU+rTy2TP
+         v+EGhsFM5irLdxo6R0GEOZ6pczqu8b8U0HPJ0a7i0kSPh40xnDAr0isAhWb6y3Hlri6O
+         oQWw==
+X-Gm-Message-State: ACrzQf2Ix5a2wb4Osabe2QGZ/L/f40AYsyPndNdP4s9xXUtBSsbyDsoF
+        sGL4Xoz4v3Mjgz4tech6138PdlUYelXx5A==
+X-Google-Smtp-Source: AMsMyM7Q89SpwSvHFMNeMMpQj/ldNRNSCgNWrOrcu84+94AD/cWyTYfIJCp3yx0rzqyaj3Hv640kkQ==
+X-Received: by 2002:a05:620a:1505:b0:6e9:168f:76a5 with SMTP id i5-20020a05620a150500b006e9168f76a5mr9652651qkk.142.1666279269073;
+        Thu, 20 Oct 2022 08:21:09 -0700 (PDT)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id bk41-20020a05620a1a2900b006eeaf9160d6sm7274081qkb.24.2022.10.20.08.21.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Oct 2022 08:21:08 -0700 (PDT)
+Date:   Thu, 20 Oct 2022 11:21:07 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [RFC v3 01/11] btrfs: add raid stripe tree definitions
+Message-ID: <Y1FnY2PAe14ClUNm@localhost.localdomain>
+References: <cover.1666007330.git.johannes.thumshirn@wdc.com>
+ <6ca9b49af62a15f7a3482aca3f2566cc10ce8330.1666007330.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221019052955.30484-1-wqu@suse.com>
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <6ca9b49af62a15f7a3482aca3f2566cc10ce8330.1666007330.git.johannes.thumshirn@wdc.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 01:29:55PM +0800, Qu Wenruo wrote:
-> [BACKGROUND]
-> There is bug report from btrfs mailing list that, hiberation can allow
-> one to modify the frozen filesystem unexpectedly (using another OS).
-> (https://lore.kernel.org/linux-btrfs/83bf3b4b-7f4c-387a-b286-9251e3991e34@bluemole.com/)
+On Mon, Oct 17, 2022 at 04:55:19AM -0700, Johannes Thumshirn wrote:
+> Add definitions for the raid stripe tree. This tree will hold information
+> about the on-disk layout of the stripes in a RAID set.
 > 
-> Later btrfs adds the check to make sure the fs is not changed
-> unexpectedly, to prevent corruption from happening.
+> Each stripe extent has a 1:1 relationship with an on-disk extent item and
+> is doing the logical to per-drive physical address translation for the
+> extent item in question.
 > 
-> [TESTCASE]
-> Here the new test case will create a basic filesystem, fill it with
-> something by using fsstress, then sync the fs, and finally freeze the fs.
-> 
-> Then corrupt the whole fs by overwriting the block device with 0xcd
-> (default seed from xfs_io pwrite command).
-> 
-> Finally we thaw the fs, and try if we can create a new file.
-> 
-> for EXT4, it will detect the corruption at touch time, causing -EUCLEAN.
-> 
-> For Btrfs, it will detect the corruption at thaw time, marking the
-> fs RO immediately, and later touch will return -EROFS.
-> 
-> For XFS, it will detect the corruption at touch time, return -EUCLEAN.
-> (Without the cache drop, XFS seems to be very happy using the cache info
-> to do the work without any error though.)
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->  tests/generic/702     | 61 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/702.out |  2 ++
->  2 files changed, 63 insertions(+)
->  create mode 100755 tests/generic/702
->  create mode 100644 tests/generic/702.out
+>  fs/btrfs/ctree.h                | 29 +++++++++++++++++++++++++++++
+>  include/uapi/linux/btrfs_tree.h | 20 ++++++++++++++++++--
+>  2 files changed, 47 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tests/generic/702 b/tests/generic/702
-> new file mode 100755
-> index 00000000..fc3624e1
-> --- /dev/null
-> +++ b/tests/generic/702
-> @@ -0,0 +1,61 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 702
-> +#
-> +# Test if the filesystem can detect the underlying disk has changed at
-> +# thaw time.
-> +#
-> +. ./common/preamble
-> +. ./common/filter
-> +_begin_fstest freeze quick
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 87bb4218276b..80ead27299dc 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -1992,6 +1992,35 @@ BTRFS_SETGET_FUNCS(timespec_nsec, struct btrfs_timespec, nsec, 32);
+>  BTRFS_SETGET_STACK_FUNCS(stack_timespec_sec, struct btrfs_timespec, sec, 64);
+>  BTRFS_SETGET_STACK_FUNCS(stack_timespec_nsec, struct btrfs_timespec, nsec, 32);
+>  
+> +BTRFS_SETGET_FUNCS(stripe_extent_devid, struct btrfs_stripe_extent, devid, 64);
+> +BTRFS_SETGET_FUNCS(stripe_extent_physical, struct btrfs_stripe_extent, physical, 64);
+> +BTRFS_SETGET_STACK_FUNCS(stack_stripe_extent_devid, struct btrfs_stripe_extent, devid, 64);
+> +BTRFS_SETGET_STACK_FUNCS(stack_stripe_extent_physical, struct btrfs_stripe_extent, physical, 64);
 > +
-> +# real QA test starts here
+> +static inline struct btrfs_stripe_extent *btrfs_stripe_extent_nr(
+> +					 struct btrfs_dp_stripe *dps, int nr)
+> +{
+> +	unsigned long offset = (unsigned long)dps;
 > +
-> +_supported_fs generic
-> +_fixed_by_kernel_commit a05d3c915314 \
-> +	"btrfs: check superblock to ensure the fs was not modified at thaw time"
+> +	offset += offsetof(struct btrfs_dp_stripe, extents);
+> +	offset += nr * sizeof(struct btrfs_stripe_extent);
+> +	return (struct btrfs_stripe_extent *)offset;
+> +}
 > +
-> +# We will corrupt the device completely, thus should not check it after the test.
-> +_require_scratch_nocheck
-> +_require_freeze
+> +static inline u64 btrfs_stripe_extent_devid_nr(const struct extent_buffer *eb,
+> +					       struct btrfs_dp_stripe *dps,
+> +					       int nr)
+> +{
+> +	return btrfs_stripe_extent_devid(eb, btrfs_stripe_extent_nr(dps, nr));
+> +}
 > +
-> +# Limit the fs to 512M so we won't waste too much time screwing it up later.
-> +_scratch_mkfs_sized $((512 * 1024 * 1024)) >> $seqres.full 2>&1
-> +_scratch_mount
+> +static inline u64 btrfs_stripe_extent_physical_nr(const struct extent_buffer *eb,
+> +						  struct btrfs_dp_stripe *dps,
+> +						  int nr)
+> +{
+> +	return btrfs_stripe_extent_physical(eb, btrfs_stripe_extent_nr(dps, nr));
+> +}
 > +
-> +# Populate the fs with something.
-> +$FSSTRESS_PROG -n 500 -d $SCRATCH_MNT >> $seqres.full
-> +
-> +# Sync to make sure no dirty journal
-> +sync
-> +
-> +# Drop all cache, so later write will need to read from disk, increasing
-> +# the chance of detecting the corruption.
-> +echo 3 > /proc/sys/vm/drop_caches
-> +
-> +$XFS_IO_PROG -x -c "freeze" $SCRATCH_MNT
-> +
-> +# Now screw up the block device
-> +$XFS_IO_PROG -f -c "pwrite 0 512M" -c sync $SCRATCH_DEV >> $seqres.full
-> +
-> +# Thaw the fs, it may or may not report error, we will check it manually later.
-> +$XFS_IO_PROG -x -c "thaw" $SCRATCH_MNT
-> +
-> +# If the fs detects something wrong, it should trigger error now.
-> +# We don't use the error message as golden output, as btrfs and ext4 use
-> +# different error number for different reasons.
-> +# (btrfs detects the change immediately at thaw time and mark the fs RO, thus
-> +#  touch returns -EROFS, while ext4 detects the change at journal write time,
-> +#  returning -EUCLEAN).
-> +touch $SCRATCH_MNT/foobar >>$seqres.full 2>&1
-> +if [ $? -eq 0 ]; then
-> +	echo "Failed to detect corrupted fs"
-> +else
-> +	echo "Detected corrupted fs (expected)"
-> +fi
-
-Thanks for all help to review!
-
-That `_require_freeze` will skip exfat and others which not support freeze.
-
-And `_require_block_device $SCRATCH_DEV` helps you to avoid this test run/fail on
-overlayfs, nfs, tmpfs, etc. Due to you try to write the $SCRATCH_DEV directly.
-
-And you can use `_supported_fs ^f2fs` to skip this test from some specified fs
-if they're not suit for this test.
-
-But I'm wondering if the last test step will fail on every fs soon? Except
-you're trying to test how fast a fs can find itself is corrupted. Or how
-about give some fs more chance/time to detect errors? Likes do more operations
-which enough to trigger errors on most fs?
-
-Thanks,
-Zorro
-
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/generic/702.out b/tests/generic/702.out
-> new file mode 100644
-> index 00000000..c29311ff
-> --- /dev/null
-> +++ b/tests/generic/702.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 702
-> +Detected corrupted fs (expected)
-> -- 
-> 2.38.0
+>  /* struct btrfs_dev_extent */
+>  BTRFS_SETGET_FUNCS(dev_extent_chunk_tree, struct btrfs_dev_extent,
+>  		   chunk_tree, 64);
+> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+> index 5f32a2a495dc..047e1d0b2ff6 100644
+> --- a/include/uapi/linux/btrfs_tree.h
+> +++ b/include/uapi/linux/btrfs_tree.h
+> @@ -4,9 +4,8 @@
+>  
+>  #include <linux/btrfs.h>
+>  #include <linux/types.h>
+> -#ifdef __KERNEL__
+>  #include <linux/stddef.h>
+> -#else
+> +#ifndef __KERNEL__
+>  #include <stddef.h>
+>  #endif
 > 
+
+Gotta act like I did something, this is unrelated and should probably be it's
+own thing separate from the raid stripe tree.  Thanks,
+
+Josef
