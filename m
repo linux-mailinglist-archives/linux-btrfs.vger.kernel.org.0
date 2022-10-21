@@ -2,200 +2,355 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A306079E7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Oct 2022 16:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF8A608006
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Oct 2022 22:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbiJUOtO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Oct 2022 10:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
+        id S229826AbiJUUnE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Oct 2022 16:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbiJUOsv (ORCPT
+        with ESMTP id S230132AbiJUUm0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Oct 2022 10:48:51 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B091628080C
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Oct 2022 07:48:50 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d24so2570625pls.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Oct 2022 07:48:50 -0700 (PDT)
+        Fri, 21 Oct 2022 16:42:26 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23C8263F01
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Oct 2022 13:42:03 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id a24so2412765qto.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Oct 2022 13:42:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qWV3P+UkbZ0hL1qOKpomHYL94vdESMOjwFqzbaWSAm4=;
-        b=U1e20G2MhVy069dLBwkAC/c6dow+1t0iCq8OxkHZYTDXaJhH5obDKyvyl4frq6XOaR
-         HebGqLHOgY1DAU/sJdgIW+J9NneDN5r8JieBrnAxQzDqZ1nauHsvoyzu+AXOjKCQvaqb
-         Xq7oNm0dsHq3DVjOAt92XvHxUKDBco8UvBjCusnipDaEhv3FDdhuYzkNCKIxube6B+Jd
-         WFAS0TjsJ/kiIWD6fndsLJV8g31vzz1mUX7pngs83zJrDKph2JRGOuY7Do49diyn5LZ6
-         jQLGVvbHHGyOT10B3TuH0j0U6DTg6W8eyvZJec0hFJN3guQQYsOH/YLjvOyD8UZsQbr3
-         H+cg==
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fbiK3bqCuAHt9aRaUIDjozx1MWhytKTxkAd6fGi00zE=;
+        b=v3IJ6AJFcyhDhuZnFHpX8QzGdzDY8ZnNlWHqVUoc9gxx8mIOG3Xad6/tGapsaryN+1
+         4n3UZlPB5Wi7bQgy6MdVXgOxn1oqjyPairjO5eaDFEk+NBSTJUnr0eadqwy5O2a48aGP
+         C2UrsWFMSmrna1Uf5jG0B+p18G+EX3Oa2Q/n1oArWBibrKCz+Xw63Cwzfdt92Fs7uSns
+         QBJ13o5guTd+PfQ+DRxwTQi6FPpuNCNz+mDQli5VxgTPt98xTFX/tfmAp/fqRVKCSsjS
+         sw8gfXd96+1L+el61YtfeBfQB7A4MzRt5INFpU8y9nWCF7CIWOeyBf/W5PN8un8GrQF2
+         FQUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qWV3P+UkbZ0hL1qOKpomHYL94vdESMOjwFqzbaWSAm4=;
-        b=ndtsfAY6qAQaaFZmNiA9aMxig3s2nUw8ZZkAZLTH4JrhcAQF3xnSpIJPSTpDTuAY7c
-         Io3oLV6TSDWq9X4A0VC4inOzOE3iTZG5ZUbc5124IBUVnW4oUJ89uIkvpccD+e0D0fuo
-         KVr0tc+jq8rmv/xI7hISK1ktewnffmaDxKXML63uCUs6dWiMb6UV78+nbU9bgK3UDsdU
-         DET5B3EmBMuljHYaFA56qpyqFbRelnvUmVKIjAe8R3byvsojvzYcDkFktavzcrXv//9i
-         mT3xUQg1iBbbrQbE9+CCQ+2GfLSDZ6i3HAeDRTzIzdE+Iix8WCPSDuKUYwCL1j4JC/SC
-         QOIA==
-X-Gm-Message-State: ACrzQf1qg3ICOQ6bdOsnvdnRUIZLrtCBs/g9fHVnS6bKjkUnnkS0PDM+
-        lFRTpjX6i8PFksEXnpej6hJe/nM2lUV46/95iCDEFjY07IM=
-X-Google-Smtp-Source: AMsMyM72dojxFh17Es41UBHDRdeJnl5gTVogXb14TkV9vHAjrPdUF6WF+hNrEr5MlZ9X3ygDTwHLwxEcG6JnteYbVdI=
-X-Received: by 2002:a17:903:240d:b0:183:9bab:9c3 with SMTP id
- e13-20020a170903240d00b001839bab09c3mr19813439plo.48.1666363730161; Fri, 21
- Oct 2022 07:48:50 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fbiK3bqCuAHt9aRaUIDjozx1MWhytKTxkAd6fGi00zE=;
+        b=NCd8sqiywFMKIbKevBRwqgSi8OrXGCBbfznLy66Qe0pKDyd6Z1oAdmOUxKrWfgYfXg
+         0A4QE0q4ADBGppU1zwTnj09duKMWY4JU1hkUHTNCFpbpknwvzd6MDtBnd/zAsjvWlLv6
+         TUO7hs8vHKxAfd8QwXfU+E0Ok6sOeLFpjhoqXwsPHpr+WLxafP3BFbAI5eWmBIHyiyZY
+         Wa24q6dpduN5XRS6GsTv1ay5/MRd2/QyvEPzdsaePrpWTfZxIws9ZfgWVg1wI5w7UaiT
+         shiQRpNO6q6d+NloOdpWBILgxw5BpivGQx0ennwjeePBa0CphBDFGsrmVeoupGNAFloo
+         m7GQ==
+X-Gm-Message-State: ACrzQf1arj2lG/Ped6farXIp5eprW81of8Xy2s4ijKImp8MI+al+u9dM
+        uXjvCyELBQKn6Vgbjz8tnKj35g==
+X-Google-Smtp-Source: AMsMyM7knd/ms0kNL+pfqC4GcEYq5GqQpgrJ69wAEP4yxfX0Z7UlJnEoiDf02i9vUk5Kq7P8sKAjug==
+X-Received: by 2002:a05:622a:1aa0:b0:39c:ce01:8764 with SMTP id s32-20020a05622a1aa000b0039cce018764mr18777389qtc.401.1666384922264;
+        Fri, 21 Oct 2022 13:42:02 -0700 (PDT)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id br32-20020a05620a462000b006e9b3096482sm10133697qkb.64.2022.10.21.13.42.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Oct 2022 13:42:01 -0700 (PDT)
+Date:   Fri, 21 Oct 2022 16:42:00 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v3 08/22] btrfs: use struct fscrypt_str instead of struct
+ qstr
+Message-ID: <Y1MEGPa6/YgVfiDy@localhost.localdomain>
+References: <cover.1666281276.git.sweettea-kernel@dorminy.me>
+ <8c708f4e52ddcf6a361706265f5fcfa64cce912a.1666281277.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-From:   Marko 123 <mailmeornot75@gmail.com>
-Date:   Fri, 21 Oct 2022 16:48:39 +0200
-Message-ID: <CAGpX_xKaL6RPNrSUJXkPNyERDyBNmW_f2AMa1dMHLRR+mvDeZA@mail.gmail.com>
-Subject: Problem with mounting btrfs partition after free space ended
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c708f4e52ddcf6a361706265f5fcfa64cce912a.1666281277.git.sweettea-kernel@dorminy.me>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Thu, Oct 20, 2022 at 12:58:27PM -0400, Sweet Tea Dorminy wrote:
+> While struct qstr is more natural without fscrypt, since it's provided
+> by dentries, struct fscrypt_str is provided by the fscrypt handlers
+> processing dentries, and is thus more natural in the fscrypt world.
+> Replace all of the struct qstr uses with struct fscrypt_str.
+> 
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/btrfs/ctree.h       | 19 +++++----
+>  fs/btrfs/dir-item.c    | 10 ++---
+>  fs/btrfs/inode-item.c  | 14 +++----
+>  fs/btrfs/inode-item.h  | 10 ++---
+>  fs/btrfs/inode.c       | 90 +++++++++++++++++-------------------------
+>  fs/btrfs/ioctl.c       |  4 +-
+>  fs/btrfs/root-tree.c   |  4 +-
+>  fs/btrfs/send.c        |  4 +-
+>  fs/btrfs/super.c       |  2 +-
+>  fs/btrfs/transaction.c | 13 +++---
+>  fs/btrfs/tree-log.c    | 42 ++++++++++----------
+>  fs/btrfs/tree-log.h    |  4 +-
+>  12 files changed, 98 insertions(+), 118 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 695fd6cf8918..9d1186a16912 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -2898,10 +2898,10 @@ static inline void btrfs_clear_sb_rdonly(struct super_block *sb)
+>  /* root-item.c */
+>  int btrfs_add_root_ref(struct btrfs_trans_handle *trans, u64 root_id,
+>  		       u64 ref_id, u64 dirid, u64 sequence,
+> -		       const struct qstr *name);
+> +		       const struct fscrypt_str *name);
+>  int btrfs_del_root_ref(struct btrfs_trans_handle *trans, u64 root_id,
+>  		       u64 ref_id, u64 dirid, u64 *sequence,
+> -		       const struct qstr *name);
+> +		       const struct fscrypt_str *name);
+>  int btrfs_del_root(struct btrfs_trans_handle *trans,
+>  		   const struct btrfs_key *key);
+>  int btrfs_insert_root(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+> @@ -2930,23 +2930,23 @@ int btrfs_uuid_tree_iterate(struct btrfs_fs_info *fs_info);
+>  
+>  /* dir-item.c */
+>  int btrfs_check_dir_item_collision(struct btrfs_root *root, u64 dir,
+> -			  const struct qstr *name);
+> +			  const struct fscrypt_str *name);
+>  int btrfs_insert_dir_item(struct btrfs_trans_handle *trans,
+> -			  const struct qstr *name, struct btrfs_inode *dir,
+> +			  const struct fscrypt_str *name, struct btrfs_inode *dir,
+>  			  struct btrfs_key *location, u8 type, u64 index);
+>  struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
+>  					     struct btrfs_root *root,
+>  					     struct btrfs_path *path, u64 dir,
+> -					     const struct qstr *name, int mod);
+> +					     const struct fscrypt_str *name, int mod);
+>  struct btrfs_dir_item *
+>  btrfs_lookup_dir_index_item(struct btrfs_trans_handle *trans,
+>  			    struct btrfs_root *root,
+>  			    struct btrfs_path *path, u64 dir,
+> -			    u64 index, const struct qstr *name, int mod);
+> +			    u64 index, const struct fscrypt_str *name, int mod);
+>  struct btrfs_dir_item *
+>  btrfs_search_dir_index_item(struct btrfs_root *root,
+>  			    struct btrfs_path *path, u64 dirid,
+> -			    const struct qstr *name);
+> +			    const struct fscrypt_str *name);
+>  int btrfs_delete_one_dir_name(struct btrfs_trans_handle *trans,
+>  			      struct btrfs_root *root,
+>  			      struct btrfs_path *path,
+> @@ -3027,10 +3027,10 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry);
+>  int btrfs_set_inode_index(struct btrfs_inode *dir, u64 *index);
+>  int btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+>  		       struct btrfs_inode *dir, struct btrfs_inode *inode,
+> -		       const struct qstr *name);
+> +		       const struct fscrypt_str *name);
+>  int btrfs_add_link(struct btrfs_trans_handle *trans,
+>  		   struct btrfs_inode *parent_inode, struct btrfs_inode *inode,
+> -		   const struct qstr *name, int add_backref, u64 index);
+> +		   const struct fscrypt_str *name, int add_backref, u64 index);
+>  int btrfs_delete_subvolume(struct inode *dir, struct dentry *dentry);
+>  int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
+>  			 int front);
+> @@ -3056,7 +3056,6 @@ struct btrfs_new_inode_args {
+>  	struct posix_acl *default_acl;
+>  	struct posix_acl *acl;
+>  	struct fscrypt_name fname;
+> -	struct qstr name;
+>  };
+>  int btrfs_new_inode_prepare(struct btrfs_new_inode_args *args,
+>  			    unsigned int *trans_num_items);
+> diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
+> index 8c60f37eb13f..fdab48c1abb8 100644
+> --- a/fs/btrfs/dir-item.c
+> +++ b/fs/btrfs/dir-item.c
+> @@ -104,7 +104,7 @@ int btrfs_insert_xattr_item(struct btrfs_trans_handle *trans,
+>   * Will return 0 or -ENOMEM
+>   */
+>  int btrfs_insert_dir_item(struct btrfs_trans_handle *trans,
+> -			  const struct qstr *name, struct btrfs_inode *dir,
+> +			  const struct fscrypt_str *name, struct btrfs_inode *dir,
+>  			  struct btrfs_key *location, u8 type, u64 index)
+>  {
+>  	int ret = 0;
+> @@ -206,7 +206,7 @@ static struct btrfs_dir_item *btrfs_lookup_match_dir(
+>  struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
+>  					     struct btrfs_root *root,
+>  					     struct btrfs_path *path, u64 dir,
+> -					     const struct qstr *name,
+> +					     const struct fscrypt_str *name,
+>  					     int mod)
+>  {
+>  	struct btrfs_key key;
+> @@ -225,7 +225,7 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
+>  }
+>  
+>  int btrfs_check_dir_item_collision(struct btrfs_root *root, u64 dir,
+> -				   const struct qstr *name)
+> +				   const struct fscrypt_str *name)
+>  {
+>  	int ret;
+>  	struct btrfs_key key;
+> @@ -302,7 +302,7 @@ struct btrfs_dir_item *
+>  btrfs_lookup_dir_index_item(struct btrfs_trans_handle *trans,
+>  			    struct btrfs_root *root,
+>  			    struct btrfs_path *path, u64 dir,
+> -			    u64 index, const struct qstr *name, int mod)
+> +			    u64 index, const struct fscrypt_str *name, int mod)
+>  {
+>  	struct btrfs_dir_item *di;
+>  	struct btrfs_key key;
+> @@ -321,7 +321,7 @@ btrfs_lookup_dir_index_item(struct btrfs_trans_handle *trans,
+>  
+>  struct btrfs_dir_item *
+>  btrfs_search_dir_index_item(struct btrfs_root *root, struct btrfs_path *path,
+> -			    u64 dirid, const struct qstr *name)
+> +			    u64 dirid, const struct fscrypt_str *name)
+>  {
+>  	struct btrfs_dir_item *di;
+>  	struct btrfs_key key;
+> diff --git a/fs/btrfs/inode-item.c b/fs/btrfs/inode-item.c
+> index 643b0c555064..ce5c51ffdc0d 100644
+> --- a/fs/btrfs/inode-item.c
+> +++ b/fs/btrfs/inode-item.c
+> @@ -12,7 +12,7 @@
+>  
+>  struct btrfs_inode_ref *btrfs_find_name_in_backref(struct extent_buffer *leaf,
+>  						   int slot,
+> -						   const struct qstr *name)
+> +						   const struct fscrypt_str *name)
+>  {
+>  	struct btrfs_inode_ref *ref;
+>  	unsigned long ptr;
+> @@ -39,7 +39,7 @@ struct btrfs_inode_ref *btrfs_find_name_in_backref(struct extent_buffer *leaf,
+>  
+>  struct btrfs_inode_extref *btrfs_find_name_in_ext_backref(
+>  		struct extent_buffer *leaf, int slot, u64 ref_objectid,
+> -		const struct qstr *name)
+> +		const struct fscrypt_str *name)
+>  {
+>  	struct btrfs_inode_extref *extref;
+>  	unsigned long ptr;
+> @@ -78,7 +78,7 @@ struct btrfs_inode_extref *
+>  btrfs_lookup_inode_extref(struct btrfs_trans_handle *trans,
+>  			  struct btrfs_root *root,
+>  			  struct btrfs_path *path,
+> -			  const struct qstr *name,
+> +			  const struct fscrypt_str *name,
+>  			  u64 inode_objectid, u64 ref_objectid, int ins_len,
+>  			  int cow)
+>  {
+> @@ -101,7 +101,7 @@ btrfs_lookup_inode_extref(struct btrfs_trans_handle *trans,
+>  
+>  static int btrfs_del_inode_extref(struct btrfs_trans_handle *trans,
+>  				  struct btrfs_root *root,
+> -				  const struct qstr *name,
+> +				  const struct fscrypt_str *name,
+>  				  u64 inode_objectid, u64 ref_objectid,
+>  				  u64 *index)
+>  {
+> @@ -171,7 +171,7 @@ static int btrfs_del_inode_extref(struct btrfs_trans_handle *trans,
+>  }
+>  
+>  int btrfs_del_inode_ref(struct btrfs_trans_handle *trans,
+> -			struct btrfs_root *root, const struct qstr *name,
+> +			struct btrfs_root *root, const struct fscrypt_str *name,
+>  			u64 inode_objectid, u64 ref_objectid, u64 *index)
+>  {
+>  	struct btrfs_path *path;
+> @@ -248,7 +248,7 @@ int btrfs_del_inode_ref(struct btrfs_trans_handle *trans,
+>   */
+>  static int btrfs_insert_inode_extref(struct btrfs_trans_handle *trans,
+>  				     struct btrfs_root *root,
+> -				     const struct qstr *name,
+> +				     const struct fscrypt_str *name,
+>  				     u64 inode_objectid, u64 ref_objectid,
+>  				     u64 index)
+>  {
+> @@ -303,7 +303,7 @@ static int btrfs_insert_inode_extref(struct btrfs_trans_handle *trans,
+>  
+>  /* Will return 0, -ENOMEM, -EMLINK, or -EEXIST or anything from the CoW path */
+>  int btrfs_insert_inode_ref(struct btrfs_trans_handle *trans,
+> -			   struct btrfs_root *root, const struct qstr *name,
+> +			   struct btrfs_root *root, const struct fscrypt_str *name,
+>  			   u64 inode_objectid, u64 ref_objectid, u64 index)
+>  {
+>  	struct btrfs_fs_info *fs_info = root->fs_info;
+> diff --git a/fs/btrfs/inode-item.h b/fs/btrfs/inode-item.h
+> index 3c657c670cfd..b80aeb715701 100644
+> --- a/fs/btrfs/inode-item.h
+> +++ b/fs/btrfs/inode-item.h
+> @@ -64,10 +64,10 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
+>  			       struct btrfs_root *root,
+>  			       struct btrfs_truncate_control *control);
+>  int btrfs_insert_inode_ref(struct btrfs_trans_handle *trans,
+> -			   struct btrfs_root *root, const struct qstr *name,
+> +			   struct btrfs_root *root, const struct fscrypt_str *name,
+>  			   u64 inode_objectid, u64 ref_objectid, u64 index);
+>  int btrfs_del_inode_ref(struct btrfs_trans_handle *trans,
+> -			struct btrfs_root *root, const struct qstr *name,
+> +			struct btrfs_root *root, const struct fscrypt_str *name,
+>  			u64 inode_objectid, u64 ref_objectid, u64 *index);
+>  int btrfs_insert_empty_inode(struct btrfs_trans_handle *trans,
+>  			     struct btrfs_root *root,
+> @@ -80,15 +80,15 @@ struct btrfs_inode_extref *btrfs_lookup_inode_extref(
+>  			  struct btrfs_trans_handle *trans,
+>  			  struct btrfs_root *root,
+>  			  struct btrfs_path *path,
+> -			  const struct qstr *name,
+> +			  const struct fscrypt_str *name,
+>  			  u64 inode_objectid, u64 ref_objectid, int ins_len,
+>  			  int cow);
+>  
+>  struct btrfs_inode_ref *btrfs_find_name_in_backref(struct extent_buffer *leaf,
+>  						   int slot,
+> -						   const struct qstr *name);
+> +						   const struct fscrypt_str *name);
+>  struct btrfs_inode_extref *btrfs_find_name_in_ext_backref(
+>  		struct extent_buffer *leaf, int slot, u64 ref_objectid,
+> -		const struct qstr *name);
+> +		const struct fscrypt_str *name);
+>  
+>  #endif
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 4c5b2e2d8b5e..b36e1bfdadd5 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -4284,7 +4284,7 @@ int btrfs_update_inode_fallback(struct btrfs_trans_handle *trans,
+>  static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+>  				struct btrfs_inode *dir,
+>  				struct btrfs_inode *inode,
+> -				const struct qstr *name,
+> +				const struct fscrypt_str *name,
+>  				struct btrfs_rename_ctx *rename_ctx)
+>  {
+>  	struct btrfs_root *root = dir->root;
+> @@ -4387,7 +4387,7 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+>  
+>  int btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+>  		       struct btrfs_inode *dir, struct btrfs_inode *inode,
+> -		       const struct qstr *name)
+> +		       const struct fscrypt_str *name)
+>  {
+>  	int ret;
+>  	ret = __btrfs_unlink_inode(trans, dir, inode, name, NULL);
+> @@ -4427,13 +4427,11 @@ static int btrfs_unlink(struct inode *dir, struct dentry *dentry)
+>  	struct inode *inode = d_inode(dentry);
+>  	int ret;
+>  	struct fscrypt_name fname;
+> -	struct qstr name;
+>  
+>  	ret = fscrypt_setup_filename(dir, &dentry->d_name, 1, &fname);
+>  	if (ret)
+>  		return ret;
+> -	name = (struct qstr)FSTR_TO_QSTR(&fname.disk_name);
+> -
+> +	
 
-After the space was ended and system restart I have a problem with
-mounting partition.
+Whitespace.  Thanks,
 
-I want add the device /dev/sdb1 into the /dev/sda2 but I don't know
-how to that without mount the /dev/sda2 and the mount  command is
-frozen
-
-# mount /dev/sda2 /mnt/btrfs
-
-Log from dmsqg
-[  735.192697] BTRFS error (device sda2): qgroup generation mismatch,
-marked as inconsistent
-[  767.661342] general protection fault: 0000 [#1] SMP PTI
-[  767.666253] Modules linked in: ipt_MASQUERADE
-nf_nat_masquerade_ipv4 xt_CHECKSUM iptable_mangle xt_multiport xt_nat
-iptable_nat nf_nat_ipv4 nf_nat xt_limit xt_recent xt_comment
-ipt_REJECT nf_reject_ipv4 xt_tcpudp nf_conntrack_ipv4 nf_defrag_ipv4
-xt_conntrack nf_conntrack iptable_filter kvm_intel kvm irqbypass
-input_leds joydev serio_raw sch_fq_codel ib_iser rdma_cm iw_cm ib_cm
-ib_core iscsi_tcp libiscsi_tcp libiscsi scsi_transport_iscsi ip_tables
-x_tables autofs4 btrfs zstd_compress raid10 raid456 async_raid6_recov
-async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1
-raid0 multipath linear hid_generic usbhid hid crct10dif_pclmul
-crc32_pclmul ghash_clmulni_intel pcbc aesni_intel aes_x86_64
-crypto_simd glue_helper cryptd psmouse virtio_scsi virtio_net floppy
-[  767.681767] CPU: 0 PID: 3175 Comm: btrfs-transacti Not tainted
-4.15.0-123-generic #126-Ubuntu
-[  767.683792] Hardware name: OpenStack Foundation OpenStack Nova,
-BIOS 2:1.10.2-58953eb7 04/01/2014
-[  767.685932] RIP: 0010:resolve_indirect_refs+0x290/0x8b0 [btrfs]
-[  767.687378] RSP: 0018:ffffba76c1587b18 EFLAGS: 00010246
-[  767.688675] RAX: c568872eb19d43a6 RBX: ffff92a5da8e0428 RCX: 0000000000000000
-[  767.690383] RDX: ffff92a4c0000000 RSI: 0000000000007cab RDI: ffff92a5da8e0078
-[  767.692096] RBP: ffffba76c1587bf0 R08: ffff92a69318b918 R09: ffff92a5fa332800
-[  767.693912] R10: 0000000000000040 R11: 0000000000000000 R12: ffff92a602b27460
-[  767.695723] R13: ffff92a5d2fcc4d0 R14: ffffba76c1587cc0 R15: 0000000000000002
-[  767.697544] FS:  0000000000000000(0000) GS:ffff92a6b5400000(0000)
-knlGS:0000000000000000
-[  767.699693] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  767.701205] CR2: 000000c000230000 CR3: 0000000166a0a001 CR4: 00000000001606f0
-[  767.703022] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  767.704857] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  767.706670] Call Trace:
-[  767.707470]  find_parent_nodes+0x8c8/0xf90 [btrfs]
-[  767.708784]  ? __slab_free+0x153/0x2d0
-[  767.709857]  btrfs_find_all_roots_safe+0xb0/0x130 [btrfs]
-[  767.711310]  ? btrfs_find_all_roots_safe+0xb0/0x130 [btrfs]
-[  767.712799]  btrfs_find_all_roots+0x1c/0x80 [btrfs]
-[  767.714119]  ? kfree+0x168/0x180
-[  767.715061]  ? kfree+0x168/0x180
-[  767.716033]  btrfs_qgroup_account_extents+0x87/0x1e0 [btrfs]
-[  767.717538]  btrfs_commit_transaction+0x46f/0x910 [btrfs]
-[  767.718965]  ? wait_woken+0x80/0x80
-[  767.719987]  transaction_kthread+0x18d/0x1b0 [btrfs]
-[  767.721329]  kthread+0x121/0x140
-[  767.722277]  ? btrfs_cleanup_transaction+0x570/0x570 [btrfs]
-[  767.723762]  ? kthread_create_worker_on_cpu+0x70/0x70
-[  767.725123]  ret_from_fork+0x35/0x40
-[  767.726132] Code: 00 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3
-48 83 bd 70 ff ff ff ff 75 5d 48 8b 85 68 ff ff ff 48 8b 15 cb 94 6b
-e2 48 8b 00 <48> 8b 80 98 00 00 00 48 2b 05 aa 94 6b e2 48 c1 f8 06 48
-c1 e0
-[  767.730822] RIP: resolve_indirect_refs+0x290/0x8b0 [btrfs] RSP:
-ffffba76c1587b18
-[  767.732821] ---[ end trace 10e975e8f58b0b44 ]---
-
-
-# uname -a
-Linux hs13 4.15.0-123-generic #126-Ubuntu SMP Wed Oct 21 09:40:11 UTC
-2020 x86_64 x86_64 x86_64 GNU/Linux
-
-# btrfs --version
-btrfs-progs v4.15.1
-
-# btrfs fi show
-
-Label: 'btrfs'  uuid: 690ee84e-69fd-4b9c-9941-9dbfba717949
-Total devices 2 FS bytes used 56.99GiB
-devid    1 size 40.00GiB used 40.00GiB path /dev/sda2
-devid    2 size 20.00GiB used 20.00GiB path /dev/sdc1
-
-Label: 'hs13.btrfs.2'  uuid: 3783b87d-2095-44b6-a40e-c2a2dd051c21
-Total devices 1 FS bytes used 112.00KiB
-devid    1 size 10.00GiB used 1.02GiB path /dev/sdb1
-
-Label: 'trial'  uuid: d8e3aee5-7bfa-4b6a-8da7-5e59e281d4eb
-Total devices 1 FS bytes used 7.54GiB
-devid    1 size 50.00GiB used 10.02GiB path /dev/sdd1
-
-# btrfs check /dev/sda2
-
-Checking filesystem on /dev/sda2
-UUID: 690ee84e-69fd-4b9c-9941-9dbfba717949
-checking extents
-checking free space cache
-checking fs roots
-warning line 3392
-checking csums
-checking root refs
-checking quota groups
-Qgroup are marked as inconsistent.
-found 61188112384 bytes used, no error found
-total csum bytes: 58175296
-total tree bytes: 1616543744
-total fs tree bytes: 1480048640
-total extent tree bytes: 66174976
-btree space waste bytes: 346388377
-file data blocks allocated: 144686911488
-referenced 139457302528
-
-# btrfs check /dev/sdc1
-Checking filesystem on /dev/sdc1
-UUID: 690ee84e-69fd-4b9c-9941-9dbfba717949
-checking extents
-checking free space cache
-checking fs roots
-warning line 3392
-checking csums
-checking root refs
-checking quota groups
-Qgroup are marked as inconsistent.
-found 61188112384 bytes used, no error found
-total csum bytes: 58175296
-total tree bytes: 1616543744
-total fs tree bytes: 1480048640
-total extent tree bytes: 66174976
-btree space waste bytes: 346388377
-file data blocks allocated: 144686911488
-referenced 139457302528
-
-Could you help, give some advice ?
-
---
-Best reagards
-Marek
+Josef
