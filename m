@@ -2,166 +2,205 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EADF6071E9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Oct 2022 10:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65239607222
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Oct 2022 10:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbiJUIRv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Oct 2022 04:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
+        id S230031AbiJUI1Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Oct 2022 04:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbiJUIRu (ORCPT
+        with ESMTP id S229574AbiJUI1N (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Oct 2022 04:17:50 -0400
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998671A4033
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Oct 2022 01:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1666340269; x=1697876269;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=2AayGmTwgforuq/IA29AAcmnYgQBxiexn41kDpCMioI=;
-  b=MFB+5jXkzcYc41qE4pjC4trXfmPIxRRdo+vq5FaDySMFjcT+mDdNPc58
-   Mxv//H2dc99VVsVViOR7A3p1e20WCoKHRTxBvQcDbPc9zhg5Bvs7hhDPw
-   55JTORc1G1eOGFvq7L8T+VsC3NUnzl8xMLZ3DrdoMwIeaQLIkBMDQ89ox
-   cjhhTcVlRM9OgOi5KT5+zajgEsLNtxXbJ1ZnsGySRR0Wcz5B/l7596HOA
-   PQgF5JSuxeywMiYgw8Cw4NfICbsJOCvzX74fP6QLIGULBofunWSuRu6Qa
-   tUs+2anWfSajZKI36TC34pDAmxeawJLYo8pUM60KdMNJCJy8x+YqXt/os
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.95,200,1661788800"; 
-   d="scan'208";a="212729526"
-Received: from mail-co1nam11lp2170.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.170])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Oct 2022 16:17:48 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EFFCWN/frgDvy7HVZnxA/oTPRhxz0CLqvE/x2X/qIcvXGzfOwbF5yCd7Yt3YC/z0w4KPjVE9iquZ7wUX7L9E3k/UfOPOfsvySz4BJHB+cFrdTI6fEArR3K1tdQqIEEUlkdJEqLQybZgH1TlptWaG4IctWInvtAmto5l+74uwxDu7dV7p5a3/mMTK3WLJYE/SdksnyjHOFYIUe2lsvoGIpWuX+61p2+DvxjwdopbENn5cJR8+LoWjN2JraK6cOQk24oX75DmAnKzuvOM/sze4nk9v4eJLF5aMfXmWbE0KVaUBVfhwsFco5zBD78r4n+3YOHoLVUC0CI5rtx5Q73eZFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2AayGmTwgforuq/IA29AAcmnYgQBxiexn41kDpCMioI=;
- b=MEryWPAEdnPYsF0OYzjaxJC1nv5Tx8tZoZ60GEfHN/GBZIS+udePKeTLmwBKfl8w+YA/bT/FK+1FXzHNM+XRBiWZps5K0uO9NQTvm7HrGDBedAnvT7pHKp47wRnDBf7EcAaG3+OWQLTLO5o//BHFOvBrPqCUjIjNjDqDkh/q5qeT9fReFmQ/8G0EFGJ6u7adpK2Ln3VFJ0/KAi5bUDTrlQZHAGo5avyFoALKeyrUW2Wr1gsmTtTl0CaTST4Kzd70OXNyCJ3Dfw5sbJjXSbDF4oRBlWKJY9S1sycDTsNa7uDG2KKOrWHpwvkSK4gxe0VaNJfvKco3onpl/Q3fADWyoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2AayGmTwgforuq/IA29AAcmnYgQBxiexn41kDpCMioI=;
- b=FpuseSt2KGFGvOfhWcu+cAlm9PFhuxqgzKXLFhs7ZZntPwlJm8lXldOIn2Ki1ah78iaZ+oZtoheamuMvQl802k6xqLBBjGeYI+Qi4znBLkQRn6gH86BV14Wavuqthou6AtdDvti4ohcdPTS4hAgUsaeohl0L0RfmKWF8tgz/RNo=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by MN2PR04MB6270.namprd04.prod.outlook.com (2603:10b6:208:e5::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.34; Fri, 21 Oct
- 2022 08:17:45 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::34a2:dabd:a115:edff]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::34a2:dabd:a115:edff%5]) with mapi id 15.20.5723.035; Fri, 21 Oct 2022
- 08:17:45 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [RFC v3 10/11] btrfs: check for leaks of ordered stripes on
- umount
-Thread-Topic: [RFC v3 10/11] btrfs: check for leaks of ordered stripes on
- umount
-Thread-Index: AQHY4h9j3s776gFp3E+xkGV1NcI+/64Xb42AgAEXZAA=
-Date:   Fri, 21 Oct 2022 08:17:45 +0000
-Message-ID: <db6f07c8-c5d0-b99b-e9e7-20f2228676fe@wdc.com>
-References: <cover.1666007330.git.johannes.thumshirn@wdc.com>
- <c939c2fdd361800a4361707bf9d5cc68e30e7907.1666007330.git.johannes.thumshirn@wdc.com>
- <Y1FrSaKIMNI3bWDm@localhost.localdomain>
-In-Reply-To: <Y1FrSaKIMNI3bWDm@localhost.localdomain>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.3.3
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|MN2PR04MB6270:EE_
-x-ms-office365-filtering-correlation-id: 2d0dcb20-7273-4bfc-deb2-08dab33cbba2
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +qFNvGKZwhdtn7wrkXpUcbkvBgtKiSqaCn0MKdp70GS3Cnow7PgB+BU+MxMjihRNfBQ4AYlzdUh3OYGibW0LxXr2K3bYAoLUfl6NBLN5uWSyUHlJBi0g2a5GBZSEbOBSpsb4inJi6iw9QNjVFEgF/o26soDAidBFbnOswj3y9rriA1/Dz/Derv+5Y2EdysGHnLSGXYxL27j8RrBQQrzRYu+YLxrrzY8WJzOOrPu+I3SBsA0bg24VaTwkqDn5KNI5QO7vuD+BwjC4PlzK8oN3wpjVUjKgR+n/nhJStTSaH0lZL6fIaeNuetsqBrzzQnW6Q/63hIkZtrnK/0BRLxSsb81m4YSSYoS0UNcZlyoOsvHFKuyjBrGIPsSmDwzxuT5dgySPA28/PNZzFhWTYnS7yecdpeaBajTi6mkHrY6zEGUv0sswwJcmRw18Uk43bYd95TIJjZYB4Env3f8ojs5QznLOQIxlBOTsSMfq7ERNG5etPaBqE/89fH/M0XS7aZ2c8vRaXz8p4H8x7IfG/B5CnBGq7judwr9wICZRP87zWvnJpb3KH88PxDPnYI/gQJKiEgv0VV5XTQimfGX9vwj6H+kuKIvFpw19owkHNVldmAPb1sVGKtP70BtFD6PQrvl5d3bljyb1YSazBNvCaaXjD3j/fG9eRSDabcZDqLeifhPM6oEsIToyBi95Hu8fHO+YfyV8tfUc88WF0PSUf9yMOY1cbKP8GCLX5VUPutW22uaABuoS2ygrjS2JiBXSdRFIWdUxPoguPSLI+3ue2MqjpZod5BmjQIKWny41rQ4MmgQZBayqwbxOilZ4qqqCHMPiLY1i8TWkqUhW/3yY5LDajA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(39860400002)(396003)(346002)(136003)(366004)(451199015)(31686004)(2616005)(76116006)(6916009)(6512007)(6506007)(53546011)(8936002)(66946007)(82960400001)(4326008)(66446008)(64756008)(186003)(91956017)(8676002)(41300700001)(122000001)(2906002)(66556008)(316002)(38070700005)(66476007)(4744005)(38100700002)(5660300002)(83380400001)(71200400001)(478600001)(6486002)(31696002)(86362001)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MWsxRlNoNFhkRlQzT3VRUG1ndE1UV0tlaGVnS2ZyUktYWVgvTC82U0lFc0Rw?=
- =?utf-8?B?OFRrbldRK0c5a01ta25QRTZNVVMrNklxVWlOVENQN1hvRjlJbUtMbS9EVEdD?=
- =?utf-8?B?M3ByZjhwMko2MFdGdFB4RmlqSnlCc0tWSzFYTjdkUXgxY3hoMzk2RVByYVpI?=
- =?utf-8?B?WWdIRWNLWUJpeVJwZEg4OHRXa3dJZkRnZDhDZW9uNllKbUJTNjI1bGJRZjdH?=
- =?utf-8?B?cnMxQmlOcGZEaGltcUxnbGo4TXRmRGRwRENpb05iaUUxMnJ6ZkJCUW1Hc2U1?=
- =?utf-8?B?bklwZkU0dDZDb1lvKy9VLy9pRUpiYzcvNjZ5dGlMWkR1UTZ1Zk5vQVRML1BM?=
- =?utf-8?B?MUhJQWY3SFZsZEVVY3dYd0pqd1RITU02TmRPQmtIZjRoamc4cXFYWFgzRkZm?=
- =?utf-8?B?Qk5MQzVKZGJSYVRpZERhVTBLNzhHR0IxQlBiSHhaNlN4MDNNZTQwMmlobUU1?=
- =?utf-8?B?YTYrdnM5SHlNcHdYYTVjNjhweWwxcUp6cVhkOTN1dm1oVmk3SUF2R2psYkRy?=
- =?utf-8?B?QUdKQThzT3JuMitwNVVERlphR2YyNWdoTHFHaXhqenVEVCtnVml2ZWpxNlg5?=
- =?utf-8?B?Y2dNa0RMWFh4aVpqV1J1OEIxSzVyQlNXK21oTzFXeWd6c2lNb1ArU0lpVG5F?=
- =?utf-8?B?ZVcreWdwUy9ldnlZVStaZXM5UUpIb0JPQTEydjVmYk1XVFE1b3J1VktNUzc3?=
- =?utf-8?B?L2tBL1RMUkRRVFoxMldsL2dwSFBKRHUzWWxQR0ptckJUSkJya2pxakFVeGJp?=
- =?utf-8?B?SGZiNkQ1NWYwcTg5a2E0Z2l2QlpKbmJFUGFGc1FiQTJXRFpSVUUyajJlcVZU?=
- =?utf-8?B?cmxUWVhiMUYranp1b0llWnpCTnBIQ1Jzd3ZDck1tbFBqWVpKdUEzd2ZraGNL?=
- =?utf-8?B?K29pNE9VekhINnNyeHNWZ01WN2ZSNnd1djVwV0ZPQ1RaZUhxaHNYK0xIay9r?=
- =?utf-8?B?SCsrTnlJRVByYkJ4WXRoeFBpenBYVFJNSkFKOU9sb0dydUFuVFFQYXRhM0s0?=
- =?utf-8?B?ZzFCcWJ5UVE0SGxNTW9FUThCaTU5NU16TUx6ZDlrbWxwRCt4dUtyVERHYmlK?=
- =?utf-8?B?UTl5blovN0hBLzlsYjR6MUVLRVBuM0kycEFlWmRWeFptaitxYUNtRFh2U0ZM?=
- =?utf-8?B?THNSNkVUeUlVek5qc3hGRWo0c3M0Y3BvTHJhNnA1V3Roemxqck4rR1BsNDlI?=
- =?utf-8?B?QVhQMk04TGRLc3kreG0zTzY3SnRyVjUvZmttUDdOMXZUc3VqZWFoOGdyOEgw?=
- =?utf-8?B?Y05HeVFSSDN5K3U4T1VOeFptRlB5ck5nQXVNWjBob2VBOENGTVhnT2NVQXZn?=
- =?utf-8?B?NVFaRVd5aXVjNFNvNFprS1V6NnFaMzhmQW5veWNDaE0xZEpNMU9LSXppQnJL?=
- =?utf-8?B?Vi9IMU9Kd05zSTlpUnhGc2I3RnVoZmJidFRkeE40SmZObXFzZi9EcGlESHlW?=
- =?utf-8?B?YzIxRDVHK2ZNZlVwTStFbHdWMGxLbG40cTJWMXpTOEtUc3Q4UkRldk5kL3Jw?=
- =?utf-8?B?NlRNMmdVRFdPZkNtMkZVcVUwMy9xQndVbWVDNTFEelBGT08zSjd2MVBsMUdH?=
- =?utf-8?B?STNiU2FaSVBxQld6UlBxdFN3MlduRUo4bFU0cDRiWDZQTUwyM01qVE9vTTg5?=
- =?utf-8?B?T29xcGhhZU5EUTVSUXZ3YXdqRnNtVEdaRHh6Zkp4M0ozZUsrT0x3MmhVMU1p?=
- =?utf-8?B?M0VKeU1jM2l3RVBFV3BCNHpjWWxEMU9VdklIQXJWVWUyOFJvSlFaRThNZzhE?=
- =?utf-8?B?MWV4eU1qWFBvdDJHd2ppU09rQkFsaHpXL2MxU3N3cWNoNHNHV0lVelVleUVU?=
- =?utf-8?B?WVovWlpFTEFIaFMyR2t6NVVWdEZ2aWp2ak5XMXUreU8ySW5OVCtVWUZqMTlh?=
- =?utf-8?B?c241RzZQaUlGU3RNUG5wVHIrbUpaK0pzNytaREtlWXludXVRMEoxRWxRalhK?=
- =?utf-8?B?R1o5UWRiMmhDbVNncWUxeWdHYlRqS1h4cktqRjVhL2NqaDA4RCtYU2pOaXk5?=
- =?utf-8?B?UE5Qak9tUVhLUmtZNUFSSXpnOU9KUnEyM3AyT3ZhZ29wZXcxb3FqTk80Y2x2?=
- =?utf-8?B?ODllNG16SWFrSDk4aEIvYVdpNGlDSkVXM0JjQUJaNjAzN0RwQ3JzblRySTVt?=
- =?utf-8?B?QnJqUHdqSnZOVHhGWlh2N1NuMTB1dnJtWEthWlhpSjJJM2J1aVJ3aHZDeE1Y?=
- =?utf-8?B?bEZvYlM5VFdkUDVtVFhwSFFLdWpMNFh5ZE9Ub3dQWjJXRHVobUJZdG0rUGg5?=
- =?utf-8?Q?G1r2+w6gi8n0Iyn0FLkADCFnlO9R35UEHkJGPXW7Mw=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <43B67DA2699DB64A9935671CBD1EA4FD@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Fri, 21 Oct 2022 04:27:13 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837891FAE77
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Oct 2022 01:27:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1666340794;
+        bh=Uh6G9iMpH0lsvTo2kxEZvAM0tKff/WIz73rT+S8Zcpo=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=H+iV3yeY7Whg/Y1iXaXzQ628yi31BrZXekEGkpt0mq1JQoC9LwA/cV+rjiSVhaOA8
+         rBY6wsSXiSg2Y9TUMMCmM8F9ZskUcMl2gMzjZrRt01m9F+mf0ql0bNeEbgRo7RCgHW
+         25/fU7BVMn975mfbrlHG2rPyzb3OUaCrveLrWaTA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MzhnH-1ozJrl07iD-00vdGP; Fri, 21
+ Oct 2022 10:26:33 +0200
+Message-ID: <796812df-c849-ca04-a0e3-846478563f9e@gmx.com>
+Date:   Fri, 21 Oct 2022 16:26:24 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d0dcb20-7273-4bfc-deb2-08dab33cbba2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2022 08:17:45.3300
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6mXMI5ySEw+zIXVY6Z2FXhRDQnqETyVEipu2TM+I8FRmOPewvQB4ryzV5u9DCKg69NLfRvdhC/WTgddCUX9d4hIihOJIvn/xuvsenMUzxLU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6270
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.3
+Subject: Re: [PATCH] btrfs: btrfs: don't trust sub_stripes from disk
+To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Viktor Kuzmin <kvaster@gmail.com>
+References: <20221021004403.eAzonZxNBMdAJAaPolyLYWT1R8ItQyLpUcdyy7uAquQ@z>
+ <7550a460-a620-24e4-0e14-24078bf5eb63@oracle.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <7550a460-a620-24e4-0e14-24078bf5eb63@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:KGVYzTOg5qHMIA9e5IeuXh7/4V6fCa3edOwdfBCVj6NWsdEHKtu
+ km/3TWfLPik9YwsBLImcsV98U2uR68SE+q2zwCGX7yUU51+/8jWqFQBTJdFVi+YKXwtzuzc
+ CTyrUKelizsq6+GoEwjG1tN35uoryUYp+xJMzHXfYJX8WlHT0/RDAbBfztrqIL9cscCV5sx
+ 6ws0aCcW84rQW6PCzXp2w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2fmMlcEMaCM=:siZ8/rAHZnpduIAewPp7Nw
+ umbY/JMAriEoNI2dAQgfAw7JX517fD5c1ZM2f4d+9EdJFfTFHbJ8aMBAuacpuN1UYAAVFRRp4
+ z3zSNvXwpTlJZUBOK4VjdL7PoQ7XW/Pl+VS8xmzjd2Qoxk8+Zn9Y2vhx0etpjj3cp607xs5As
+ X8m6mgkegyX2HLRPgc6ioKOnzMcmPQ9vwwAVwiIxrobU6gsmTuZ2eubHOINCRZYglEn6zUro6
+ iqlpOMb32F664PD3RuJOY15wJySY2DQuK2IctBYsN2OHimeAZMo2hh+Yk2ChhFxs3D/l8KfOf
+ nWJVReXkMgI2S58yCzwZqH3IcPoD42FJC+r7PAQvceZTvRHacd2BuTR9lLfHoX2VjTob9a36P
+ IAwY4pCqkrUzqRWiiYjmDU6p08iUOvm5VzouWVXRJKXnWMlU1x3AGIaqH0rtXkNJUNRI4mUGT
+ Tv9gFlne3psFk7Qxmn7DmKQ4OgA5VanhujOX8RjBBMj4DYmkKUMC0abdqL3qSQv2oRatS5KmL
+ TtlW88QU0YTaI5Yugp68kl/ukP2zNnqlHgbVrYoJvoaIa7isw2E/ZTtfv53MWkoLZjE7ToKs2
+ 5I7wARhbKFGu4kHCS9/3RuQWDDoD3WiG3vLNVx7kLXyeImyw8ZNYXsRP5yVjcVIGxZwOU6FQv
+ lI2kxM1FP93aqfoAEY3FzuBSqlKVvdjKdBGs0O1O048dAb3TXsbj+R4DXKMHRrcuBA4hrTuL/
+ C3urYjLPIB3WTOc6m06hAVoVgQw9LkqGWkEJvr5SsrCLIbFlpD4e6cLfsS+lyQ6EcIQ6nKflk
+ QkhXHfacIbsU9QGtQXX/0scBTWMi09OsIA8jpGHiOgi6oiMubRur/LRNqLPG6Kh0UCQ1i0fOw
+ Q1fc+hTJfzkIO1KUWEsjkJXEuDPN54buVRZjPDnHzjCH6hu0fyiyRTLkX1K0LRO9ldnmRD3qo
+ l2+CMIyeKs86upnd3+fhxtmJbndHnelcEqIH85kN2K9+NEHwEKvgc4h4BjGbVUAynxl4U2wlF
+ Ze334tn+gnSg2Ov4j6v9WmehCQn0U+lSUwDJabT3o8NWsvTpPyXTHEthnIGzozujRxczVutZ4
+ 67klXnlceEl+urM6GutE2lT7oV7uUmGOePj7xhlKnKtBICQ1BbYjt7qvs252ds0249YmXO2jn
+ 9kQDz0KOkIKnR1LVMXp9HFwaI7Safcf1KFc/eA/U0ECPvVbvV7JcszXE+zfT9T1z6CN2nam8c
+ z5OfETWZLoV/HNrObhEacSY2tQS3fkravP7fDg3jMm2BAP+puXIUUOMiEXg9A/iv9LVX1XUDW
+ gIHdLhg1zeiBuH20CCxT1wR3qzSCvPWjT0DfB8iVtV7YV+H6jO1lE+o7xxPm2lryAC15kILer
+ aKLJXRfDv6XsteYFOYpkY+htnUL/a7jM5ul1EAEteEctlacv9ACzbnigfOCJcKw5tpAor+X20
+ WFglJrBhmmR9gfsjeTWO8/qFxY8NH4aStg6iKVHL60z+3O3cTtmUe4aO717X4hbbSnTdK0fLp
+ oxnBNvx0EHnBoe2asAzMcuSB5maVG9TjKYVm5XuYcHoe1
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gMjAuMTAuMjIgMTc6MzcsIEpvc2VmIEJhY2lrIHdyb3RlOg0KK3ZvaWQgYnRyZnNfY2hlY2tf
-b3JkZXJlZF9zdHJpcGVfbGVhayhzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbykNCj4+ICt7
-DQo+PiArI2lmZGVmIENPTkZJR19CVFJGU19ERUJVRw0KPj4gKwlzdHJ1Y3QgcmJfbm9kZSAqbm9k
-ZTsNCj4+ICsNCj4+ICsJaWYgKCFmc19pbmZvLT5zdHJpcGVfcm9vdCB8fA0KPj4gKwkgICAgUkJf
-RU1QVFlfUk9PVCgmZnNfaW5mby0+c3RyaXBlX3VwZGF0ZV90cmVlKSkNCj4+ICsJCXJldHVybjsN
-Cj4+ICsNCj4+ICsJbXV0ZXhfbG9jaygmZnNfaW5mby0+c3RyaXBlX3VwZGF0ZV9sb2NrKTsNCj4+
-ICsJd2hpbGUgKChub2RlID0gcmJfZmlyc3RfcG9zdG9yZGVyKCZmc19pbmZvLT5zdHJpcGVfdXBk
-YXRlX3RyZWUpKQ0KPj4gKwkgICAgICAgIT0gTlVMTCkgew0KPj4gKwkJc3RydWN0IGJ0cmZzX29y
-ZGVyZWRfc3RyaXBlICpzdHJpcGUgPQ0KPj4gKwkJCXJiX2VudHJ5KG5vZGUsIHN0cnVjdCBidHJm
-c19vcmRlcmVkX3N0cmlwZSwgcmJfbm9kZSk7DQo+PiArDQo+IA0KPiBDYW4gd2UgZ2V0IGEgV0FS
-Tl9PTl9PTkNFKCkgaW4gaGVyZT8gIFRoYXQgd2F5IHhmc3Rlc3RzIGZhaWx1cmVzIHdpbGwgZ2V0
-DQo+IG5vdGljZWQgYXMgd2UnbGwgZ2V0IHRoZSBkbWVzZyBmYWlsdXJlcy4gIFRoYW5rcywNCg0K
-U3VyZS4NCg0K
+
+
+On 2022/10/21 16:12, Anand Jain wrote:
+> On 21/10/2022 08:44, Qu Wenruo wrote:
+>> [BUG]
+>> There are two reports (the earliest one from LKP, a more recent one fro=
+m
+>> kernel bugzilla) that we can have some chunks with 0 as sub_stripes.
+>>
+>> This will cause divide-by-zero errors at btrfs_rmap_block, which is
+>> introduced by a recent kernel patch ac0677348f3c ("btrfs: merge
+>> calculations for simple striped profiles in btrfs_rmap_block"):
+>>
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (map->type & (BTRFS_BLOCK=
+_GROUP_RAID0 |
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_BLOCK_GROUP_RAID10)) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 stri=
+pe_nr =3D stripe_nr * map->num_stripes + i;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 stri=
+pe_nr =3D div_u64(stripe_nr, map->sub_stripes); <<<
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>
+>> [CAUSE]
+>> =C2=A0From the more recent report, it has been proven that we have some=
+ chunks
+>> with 0 as sub_stripes, mostly caused by older mkfs.
+>>
+>> It turns out that the mkfs.btrfs fix is only introduced in 6718ab4d33aa
+>> ("btrfs-progs: Initialize sub_stripes to 1 in btrfs_alloc_data_chunk")
+>> which is included in v5.4 btrfs-progs release.
+>>
+>> So there would be quite some old fses with such 0 sub_stripes.
+>>
+>> [FIX]
+>> Just don't trust the sub_stripes values from disk.
+>>
+>> We have a trusted btrfs_raid_array[] to fetch the correct sub_stripes
+>> numbers for each profile.
+>>
+>> By this, we can keep the compatibility with older fses while still avoi=
+d
+>> divide-by-zero bugs.
+>>
+>> Fixes: ac0677348f3c ("btrfs: merge calculations for simple striped
+>> profiles in btrfs_rmap_block")
+>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>> Reported-by: Viktor Kuzmin <kvaster@gmail.com>
+>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D216559
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> =C2=A0 fs/btrfs/volumes.c | 11 ++++++++++-
+>> =C2=A0 1 file changed, 10 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 94ba46d57920..39588cb9a7b6 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -7142,6 +7142,7 @@ static int read_one_chunk(struct btrfs_key *key,
+>> struct extent_buffer *leaf,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 devid;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 type;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 uuid[BTRFS_UUID_SIZE];
+>> +=C2=A0=C2=A0=C2=A0 int index;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int num_stripes;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int i;
+>> @@ -7149,6 +7150,7 @@ static int read_one_chunk(struct btrfs_key *key,
+>> struct extent_buffer *leaf,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 logical =3D key->offset;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length =3D btrfs_chunk_length(leaf, chun=
+k);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 type =3D btrfs_chunk_type(leaf, chunk);
+>> +=C2=A0=C2=A0=C2=A0 index =3D btrfs_bg_flags_to_raid_index(type);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes =3D btrfs_chunk_num_stripes(=
+leaf, chunk);
+>> =C2=A0 #if BITS_PER_LONG =3D=3D 32
+>> @@ -7202,7 +7204,14 @@ static int read_one_chunk(struct btrfs_key
+>> *key, struct extent_buffer *leaf,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 map->io_align =3D btrfs_chunk_io_align(l=
+eaf, chunk);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 map->stripe_len =3D btrfs_chunk_stripe_l=
+en(leaf, chunk);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 map->type =3D type;
+>
+>
+>> -=C2=A0=C2=A0=C2=A0 map->sub_stripes =3D btrfs_chunk_sub_stripes(leaf, =
+chunk);
+>> +=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Don't trust the sub_stripes value, as for p=
+rofiles other
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * than RAID10, they may have 0 as sub_stripes=
+ for older mkfs.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * In that case, it can cause divide-by-zero e=
+rrors later.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Since currently sub_stripes is fixed for ea=
+ch profile, let's
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * use the trusted value instead.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0 map->sub_stripes =3D btrfs_raid_array[index].sub_st=
+ripes;
+>
+> It is a potential security threat, we have to fix this in the kernel.
+> However, the code is doing correct to read from the disk instead of
+> setting it to the expected value. So if the read sub_stripes is
+> incorrect, why not return EUCLEAN so that the user will upgrade the
+> btrfs-progs to fix the mkfs instead.
+
+Or we will reject all older fses and cause compatibility problems.
+
+And you're asking users to mkfs to "fix" some fses which can be safely
+mounted just by older kernels?
+
+That's not a fix, but a completely data wipe.
+>
+> IMO.
+>
+>
+>
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 map->verified_stripes =3D 0;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 em->orig_block_len =3D btrfs_calc_stripe=
+_length(em);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < num_stripes; i++) {
+>
