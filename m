@@ -2,198 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA8E606C83
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Oct 2022 02:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610F9606C95
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Oct 2022 02:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbiJUAhY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Oct 2022 20:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
+        id S229635AbiJUAnw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Oct 2022 20:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiJUAhX (ORCPT
+        with ESMTP id S229602AbiJUAnv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Oct 2022 20:37:23 -0400
-X-Greylist: delayed 27502 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 20 Oct 2022 17:37:22 PDT
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8657B22E8E9
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Oct 2022 17:37:22 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        Thu, 20 Oct 2022 20:43:51 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61308230821
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Oct 2022 17:43:50 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 354538039E;
-        Thu, 20 Oct 2022 20:37:21 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1666312642; bh=j5BXOiQIbwIfI9Jw6Br6rF08dnC0LvlJ3Hhed/oBaVU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=X3Hx9efi16Rsxv1QheJn8O9gc/WwnZmynJSzAkD6Jn+fNVE/QeUCIScfr4oV2dfin
-         Bd8xsIa9GNrZbeJemv1KCe+LUZSi5ll6/i9uAvVQePMyA6YeFFUV4NU6ZrK7jT7w6c
-         kFL+4FjakWO6FLeyO6SEx8wreeQi2e5UjDEYjv4b1QgC+6SHLds7juHPkXxhsa3WAl
-         MOYK5syIbtHOksFwXgsswNx7cfXPW1Nkt1pRXRtXiQHNxh9VCP074A29/0TGx6bU8N
-         C+RaUVdF+MOTWHQBBqh7v0orwE4UnQGHrJEQ2BP8UXZXxRw0DZUD3SZnyZ1816eB9i
-         7sq19e5erBnyA==
-Message-ID: <46703087-632a-5b0e-d3c6-6e8cb4669e83@dorminy.me>
-Date:   Thu, 20 Oct 2022 20:37:20 -0400
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8DF7D33685;
+        Fri, 21 Oct 2022 00:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1666313028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Lfe1vlv6+3YnEyOpLWyrVDYT/IH9nKBxpdl0GTDDfEM=;
+        b=P4CyPRfrm/C7qAcqp+xNP79s95ALWCwpP6yHyNNL/Kks7luGGmgM615fTMRpFmuTY+jbOx
+        hqDgQy/zlI4ckUPAHhKxyYAIGO/mOSLtlufOOLG8zI+lTd63+uBrg+2vryeKWpPRmdxeS8
+        tWr5Grn7Il88zsLi3dZYrgt6azc63UI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9090413494;
+        Fri, 21 Oct 2022 00:43:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 6Y/UF0PrUWNGfgAAMHmgww
+        (envelope-from <wqu@suse.com>); Fri, 21 Oct 2022 00:43:47 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Viktor Kuzmin <kvaster@gmail.com>
+Subject: [PATCH] btrfs: btrfs: don't trust sub_stripes from disk
+Date:   Fri, 21 Oct 2022 08:43:45 +0800
+Message-Id: <90e84962486d7ab5a8bca92e329fe3ee6864680f.1666312963.git.wqu@suse.com>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 04/22] fscrypt: add extent-based encryption
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@meta.com
-References: <cover.1666281276.git.sweettea-kernel@dorminy.me>
- <d7246959ee0b8d2eeb7d6eb8cf40240374c6035c.1666281277.git.sweettea-kernel@dorminy.me>
- <Y1HBkva6fzSMpm+P@sol.localdomain>
- <43955182-7158-0ce9-aeff-7dfa51559624@dorminy.me>
- <Y1HgL+2e/r6H0D45@sol.localdomain>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <Y1HgL+2e/r6H0D45@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+There are two reports (the earliest one from LKP, a more recent one from
+kernel bugzilla) that we can have some chunks with 0 as sub_stripes.
 
+This will cause divide-by-zero errors at btrfs_rmap_block, which is
+introduced by a recent kernel patch ac0677348f3c ("btrfs: merge
+calculations for simple striped profiles in btrfs_rmap_block"):
 
-On 10/20/22 19:56, Eric Biggers wrote:
-> On Thu, Oct 20, 2022 at 06:55:04PM -0400, Sweet Tea Dorminy wrote:
->>
->>
->> On 10/20/22 17:45, Eric Biggers wrote:
->>> On Thu, Oct 20, 2022 at 12:58:23PM -0400, Sweet Tea Dorminy wrote:
->>>> Some filesystems need to encrypt data based on extents, rather than on
->>>> inodes, due to features incompatible with inode-based encryption. For
->>>> instance, btrfs can have multiple inodes referencing a single block of
->>>> data, and moves logical data blocks to different physical locations on
->>>> disk in the background; these two features mean traditional inode-based
->>>> file contents encryption will not work for btrfs.
->>>>
->>>> This change introduces fscrypt_extent_context objects, in analogy to
->>>> existing context objects based on inodes. For a filesystem which opts to
->>>> use extent-based encryption, a new hook provides a new
->>>> fscrypt_extent_context, generated in close analogy to the IVs generated
->>>> with existing policies. During file content encryption/decryption, the
->>>> existing fscrypt_context object provides key information, while the new
->>>> fscrypt_extent_context provides IV information. For filename encryption,
->>>> the existing IV generation methods are still used, since filenames are
->>>> not stored in extents.
->>>>
->>>> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
->>>> ---
->>>>    fs/crypto/crypto.c          | 20 ++++++++--
->>>>    fs/crypto/fscrypt_private.h | 25 +++++++++++-
->>>>    fs/crypto/inline_crypt.c    | 28 ++++++++++---
->>>>    fs/crypto/policy.c          | 79 +++++++++++++++++++++++++++++++++++++
->>>>    include/linux/fscrypt.h     | 47 ++++++++++++++++++++++
->>>>    5 files changed, 189 insertions(+), 10 deletions(-)
->>>>
->>>> diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
->>>> index 7fe5979fbea2..08b495dc5c0c 100644
->>>> --- a/fs/crypto/crypto.c
->>>> +++ b/fs/crypto/crypto.c
->>>> @@ -81,8 +81,22 @@ void fscrypt_generate_iv(union fscrypt_iv *iv, u64 lblk_num,
->>>>    			 const struct fscrypt_info *ci)
->>>>    {
->>>>    	u8 flags = fscrypt_policy_flags(&ci->ci_policy);
->>>> +	struct inode *inode = ci->ci_inode;
->>>> +	const struct fscrypt_operations *s_cop = inode->i_sb->s_cop;
->>>> -	memset(iv, 0, ci->ci_mode->ivsize);
->>>> +	memset(iv, 0, sizeof(*iv));
->>>> +	if (s_cop->get_extent_context && lblk_num != U64_MAX) {
->>>> +		size_t extent_offset;
->>>> +		union fscrypt_extent_context ctx;
->>>> +		int ret;
->>>> +
->>>> +		ret = fscrypt_get_extent_context(inode, lblk_num, &ctx,
->>>> +						 &extent_offset, NULL);
->>>> +		WARN_ON_ONCE(ret);
->>>> +		memcpy(iv->raw, ctx.v1.iv.raw, sizeof(*iv));
->>>> +		iv->lblk_num += cpu_to_le64(extent_offset);
->>>> +		return;
->>>> +	}
->>>
->>> Please read through my review comment
->>> https://lore.kernel.org/linux-fscrypt/Yx6MnaUqUTdjCmX+@quark/ again, as it
->>> doesn't seem that you've addressed it.
->>>
->>> - Eric
->>
->> I probably didn't understand it correctly. I think there were three points
->> in it:
->>
->> 1) reconsider per-extent keys
->> 2) make IV generation work for non-directkey policies as similarly as
->> possible to how they work in inode-based filesystems
->> 3) never use 'file-based' except in contrast to dm-crypt and other
->> block-layer encryption.
->>
->> For point 2, I changed the initial extent context generation to match up
->> with fscrypt_generate_iv() (and probably didn't call that out enough in the
->> description). (Looking at it again, I could literally call
->> fscrypt_generate_iv() to generate the initial extent context; I didn't
->> realize that before).
->>
->> Then adding lblk_num to the existing lblk_num in the iv from the start of
->> the extent should be the same as the iv->lblk_num setting in the inode-based
->> case: for lblk 12, for instance, the same IV should result from inode-based
->> with lblk 12, as with extent-based with an initial lblk_num of 9 and an
->> extent_offset of 3. For shared extents, they'll be different, but for
->> singly-referenced extents, the IVs should be exactly the same in theory.
->>
->> I'm not sure whether I misunderstood the points or didn't address them
->> fully, I apologize. Would you be up for elaborating where I missed, either
->> by email or by videochat whenever works for you?
-> 
-> It seems you misunderstood point (2).  See what I said below:
-> 
-> 	So if you do want to implement the DIRECT_KEY method, the natural thing
-> 	to do would be to store a 16-byte nonce along with each extent, and use
-> 	the DIRECT_KEY IV generation method as-is.  It seems that you've done it
-> 	a bit differently; you store a 32-byte nonce and generate the IV as
-> 	'nonce + lblk_num', instead of 'nonce || lblk_num'.  I think that's a
-> 	mistake -- it should be exactly the same.
-> 
-> 	If the issue is that the 'nonce || lblk_num' method doesn't allow for
-> 	AES-XTS support, we could extend DIRECT_KEY to do 'nonce + lblk_num'
-> 	*if* the algorithm has a 16-byte IV size and thus has to tolerate some
-> 	chance of IV reuse.  Note that this change would be unrelated to
-> 	extent-based encryption, and could be applied regardless of it.
-> 
-> So:
-> 
-> 1.) Provided that you've decided against per-extent keys, and are not trying to
->      support UFS and eMMC inline encryption hardware, then you should *only*
->      support DIRECT_KEY -- not other settings that don't make sense.
-> 
-> 2.) There should be a preparatory patch that makes DIRECT_KEY be allowed when
->      the IV length is 16 bytes, using the method 'nonce + lblk_num' -- assuming
->      that you need AES-XTS support and aren't planning on supporting Adiantum or
->      AES-HCTR2 only.  (The small chance for IV reuse that it results in is not
->      ideal, but it's probably tolerable.  Maybe the nonce should also be hashed
->      with a secret key, like what IV_INO_LBLK_32 does with the inode number; I'll
->      have to think about it.)  If you plan to just support AES-HCTR2 instead of
->      AES-XTS, then you'd need a patch to allow AES-HCTR2 for contents encryption,
->      as currently it is only allowed for filenames.
-> 
-> 3.) Each extent context should contain a 16-byte random nonce, that is newly
->      generated just for that extent -- not copied from anywhere.
-> 
-> 4.) IVs should be generated using the DIRECT_KEY method.  That is,
->      'nonce || lblk_num' if the IV length allows it, otherwise 'nonce + lblk_num'
->      as mentioned in (2).  For inode-based encryption, nonce means the inode's
->      nonce, and lblk_num means the index of the block in the inode.  For
->      extent-based encryption, nonce will mean the extent's nonce, and lblk_num
->      will mean the index of the block in the extent.
-> 
-> - Eric
+		if (map->type & (BTRFS_BLOCK_GROUP_RAID0 |
+				 BTRFS_BLOCK_GROUP_RAID10)) {
+			stripe_nr = stripe_nr * map->num_stripes + i;
+			stripe_nr = div_u64(stripe_nr, map->sub_stripes); <<<
+		}
 
-Awesome, thank you for the elaboration. I'll give it a shot tonight and 
-will send out v4 as soon as it's ready.
+[CAUSE]
+From the more recent report, it has been proven that we have some chunks
+with 0 as sub_stripes, mostly caused by older mkfs.
 
--Sweet Tea	
+It turns out that the mkfs.btrfs fix is only introduced in 6718ab4d33aa
+("btrfs-progs: Initialize sub_stripes to 1 in btrfs_alloc_data_chunk")
+which is included in v5.4 btrfs-progs release.
+
+So there would be quite some old fses with such 0 sub_stripes.
+
+[FIX]
+Just don't trust the sub_stripes values from disk.
+
+We have a trusted btrfs_raid_array[] to fetch the correct sub_stripes
+numbers for each profile.
+
+By this, we can keep the compatibility with older fses while still avoid
+divide-by-zero bugs.
+
+Fixes: ac0677348f3c ("btrfs: merge calculations for simple striped profiles in btrfs_rmap_block")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Reported-by: Viktor Kuzmin <kvaster@gmail.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216559
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/volumes.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 94ba46d57920..39588cb9a7b6 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -7142,6 +7142,7 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
+ 	u64 devid;
+ 	u64 type;
+ 	u8 uuid[BTRFS_UUID_SIZE];
++	int index;
+ 	int num_stripes;
+ 	int ret;
+ 	int i;
+@@ -7149,6 +7150,7 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
+ 	logical = key->offset;
+ 	length = btrfs_chunk_length(leaf, chunk);
+ 	type = btrfs_chunk_type(leaf, chunk);
++	index = btrfs_bg_flags_to_raid_index(type);
+ 	num_stripes = btrfs_chunk_num_stripes(leaf, chunk);
+ 
+ #if BITS_PER_LONG == 32
+@@ -7202,7 +7204,14 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
+ 	map->io_align = btrfs_chunk_io_align(leaf, chunk);
+ 	map->stripe_len = btrfs_chunk_stripe_len(leaf, chunk);
+ 	map->type = type;
+-	map->sub_stripes = btrfs_chunk_sub_stripes(leaf, chunk);
++	/*
++	 * Don't trust the sub_stripes value, as for profiles other
++	 * than RAID10, they may have 0 as sub_stripes for older mkfs.
++	 * In that case, it can cause divide-by-zero errors later.
++	 * Since currently sub_stripes is fixed for each profile, let's
++	 * use the trusted value instead.
++	 */
++	map->sub_stripes = btrfs_raid_array[index].sub_stripes;
+ 	map->verified_stripes = 0;
+ 	em->orig_block_len = btrfs_calc_stripe_length(em);
+ 	for (i = 0; i < num_stripes; i++) {
+-- 
+2.38.0
+
