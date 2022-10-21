@@ -2,431 +2,203 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13269606D08
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Oct 2022 03:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D607606DD0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Oct 2022 04:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbiJUBcd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Oct 2022 21:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
+        id S229910AbiJUCe3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Oct 2022 22:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbiJUBcc (ORCPT
+        with ESMTP id S229895AbiJUCe1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Oct 2022 21:32:32 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686BA213459;
-        Thu, 20 Oct 2022 18:32:28 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id z11-20020a05683020cb00b00661a95cf920so957892otq.5;
-        Thu, 20 Oct 2022 18:32:28 -0700 (PDT)
+        Thu, 20 Oct 2022 22:34:27 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21C4115B
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Oct 2022 19:34:22 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29L0F8P2006607;
+        Fri, 21 Oct 2022 02:34:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=Dri++owzfYmt+pi1AYzb3TOys66/kmT+DRr8Ri+AwIE=;
+ b=PFRJ47dhtR5abXQzXN2zdy9ZZdxLxzbBBhSZobh3SQ524StP2k1W4SeAeIKPIjlewg9a
+ AhVqTyeMuO2DJ+cfIUqGX/9G+yDhid/q/BlJCfj6V8QGxH8NHCo2hSj1vo9CJuKhVg/H
+ 9jDCkDF7KKTzWlywnCsg+EfU3kJRhC3IbKx+81npNJ78LkHdWe2LIasIuGHU2ZuRnt+R
+ uHmTLAZwTk1O3hXG93pP/F0osN0JhOGT0cJRNmGjM9McRSRJGDcZUgD2VXXcV8WVDxeq
+ ao+LCBx9HGP29S5HDFpMBRDgqwdsltZmrfQstm4M60m65dfI6BWF+/RH4hC8T9E4T1w2 lw== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3k99ntk7p8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Oct 2022 02:34:16 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 29L1BgVw007211;
+        Fri, 21 Oct 2022 02:34:15 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3k8hrddd51-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Oct 2022 02:34:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Qvh6nm0rhuNo/KegGOfdl86v6W4wMDtkmbDxJNhHMDKhHXJuN67DRwTr+sJmWwkZHu5eJDJGFBMcteBYHKxQZOP4So9RlFcjpfmZU1xjT85sZ9ZZdKpHd4etld7RYAd1PHWNHCTBVceIyv6VnfUzX2rxDq6siTe+fQXL00+hKcP77h218wmlE9c6BZN4OAJ9TBMuqX/u6ua+2O6fS05xrVhN5r+kgRcdAE2b9MAu4va5Abwn9XccOSVsZKkf0nZcbQPQm9cQP9z3WTla3aa9wRyfq26saoE1xabzXG9Gbf20eUPbqChKsQLcoQbV39oTnZvH1hNGbgVRr52+YxLs5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Dri++owzfYmt+pi1AYzb3TOys66/kmT+DRr8Ri+AwIE=;
+ b=NnEfIzVy0ATGkAzXfGqAqaC+uowiFOAeT1ZoZOhaADZteHe22S4OK2LUBaVf4lKpXiArUirNnIfRz3a4dWTGRWlMwI6GImXFE8b8wHZ0aIYIYwYiEKvThJ3FqoHvdaZXKYMlV0KIar88bHgxxP66pTC6MHTdofgnO1FkTUhdl5JV1f4sVbaGm5ohvjiO6nFW3xZIntgifeSTR+1J8xI9csO3k4f0OWZdEfg8pDm97DoUX3X5w+X+ukuddmszkVT51O3p45ah0Gk3V07gE6+233fMH6aeTEo8RGlSdPfZkVqpFJE22rwDpLOsGSb6yQpsQ2GfbPmW0YJJ+gsJ3yI3NQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GnMndz08Z4hOCMwgrEsJod/SJaOcaM+AJrqhTVSpnZI=;
-        b=I7pkvlsq8uPVQfsPvAfY8PafspUhSNVQn5g3L94iCDQoxvYJtyTFMcS9/luO9bD3PA
-         7AZMJjVe9WZTAudLJHh6MsY2fNlH2H6XGHq3+CVYKG9/noOr/KE+oNgPBJ/IpS4XySQT
-         NzSucRGzX3j6d2JrQjjYzNdDyrFIBkajP6f8FP3VOinxuQgZpSQqDO0kUZ+WgLsWvXbz
-         u1FkuhvLWNsIwcU59UjACAQcl9AAeH43E/uCxzJvhZMC6EBZYFaYCG8DUHA66gBLTJDg
-         8f441M6GGxHQwWEPv+eCtUuFiaUXnzMJzEKw1brvkLaaUllTObNvkcKqGyajrT1KCX3g
-         PZrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GnMndz08Z4hOCMwgrEsJod/SJaOcaM+AJrqhTVSpnZI=;
-        b=cwUWk6Z29LMrNyBEdckEPc3KIRECU1knC6KEpVpJB/R552yiqZYNXhz9qPeSnXG6hP
-         S7bpFXBSnRRL7N8bUDYaMQrgM7SH08Ap5ajrU1P9eyLttoXpUNUOqQ9Za/doPRTiKTNj
-         j5FWWZ5CT2XSG5jLQYXckqtROSuX29NAEmJ27ck4O9/r2yLxlbjE9YULY/ScOl40S0hX
-         3PkqVqj1bQTp0ZrY2VSeHJ61ajgBQrJr8sfj0Ju9Kvc3VUnzy54f6aMifhjlu5eJ3L0a
-         TFK800x+EKWcW1nKawSXah3LaCojEHvYZYRIiJBmEerBsSE9Y329NM/X0tbwj3l7bY9q
-         7T1Q==
-X-Gm-Message-State: ACrzQf1DQOdwZUpGXHChKzk871CT4ilAwvcZznzBd3pCd65WwlILKDXX
-        KDgvcF1xNugm5m9JcdNXqBKEgPL6Dc++KEPd08s=
-X-Google-Smtp-Source: AMsMyM5kNSFiXhIA/bjCXQke6GknQP6Yj6cxIFKkEx0iysSqTxLoq5BKAYk9gmbArBNPfAXJmlSRoTrAX0MjhHEXASw=
-X-Received: by 2002:a05:6830:4487:b0:661:dba8:cc61 with SMTP id
- r7-20020a056830448700b00661dba8cc61mr8422043otv.256.1666315947414; Thu, 20
- Oct 2022 18:32:27 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Dri++owzfYmt+pi1AYzb3TOys66/kmT+DRr8Ri+AwIE=;
+ b=L5Af0XUCI+cYJXlAXSPrQE/vNTAv/mnrtQx9DgxeAeMvnaQePgp9/6jLCvDjKd154TPvZIDC4S538bTRp2xq5xeHYNPvn5CxVpG04c84jAUF0xC5s40W6G7TT/HsXPXzpN5tHGVm3VIxiaxdEziH4i0IpZO9/PMAtGeHLpqb+V4=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by SN7PR10MB6644.namprd10.prod.outlook.com (2603:10b6:806:2af::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.35; Fri, 21 Oct
+ 2022 02:34:13 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::c899:b523:4dc1:8f6a]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::c899:b523:4dc1:8f6a%6]) with mapi id 15.20.5723.034; Fri, 21 Oct 2022
+ 02:34:13 +0000
+Message-ID: <ccd4f8c7-8897-838c-1bb3-9837567d2d57@oracle.com>
+Date:   Fri, 21 Oct 2022 10:34:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH 3/4] btrfs: switch GFP_NOFS to GFP_KERNEL in
+ scrub_setup_recheck_block
+To:     dsterba@suse.cz
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1666103172.git.dsterba@suse.com>
+ <aed6063361919c409c72b208d361be0a5d094b3a.1666103172.git.dsterba@suse.com>
+ <d21439a6-1adf-50ff-c409-b87ef87f54c8@oracle.com>
+ <20221020163511.GM13389@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20221020163511.GM13389@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR01CA0051.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:193::6) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-References: <20221014164600.2626-1-bingjingc@synology.com> <CAL3q7H6rOyeDf3pHBeDkq8VKgLQccwzo8KKu4-ybcp-Pb2DpJg@mail.gmail.com>
-In-Reply-To: <CAL3q7H6rOyeDf3pHBeDkq8VKgLQccwzo8KKu4-ybcp-Pb2DpJg@mail.gmail.com>
-From:   bingjing chang <bxxxjxxg@gmail.com>
-Date:   Fri, 21 Oct 2022 09:32:16 +0800
-Message-ID: <CAMmgxWH=35_Pr=Z87p_5CdshNDmik7h8rT0nPnmah5FpqE2CHA@mail.gmail.com>
-Subject: Re: [PATCH] fstests: btrfs: test incremental send for orphan inodes
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     bingjingc <bingjingc@synology.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SN7PR10MB6644:EE_
+X-MS-Office365-Filtering-Correlation-Id: fd7bc128-138f-4baf-8d12-08dab30cbdca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8EJK6Vr8NFvRfa1nOOLocrcl9rkAs0R3+6xtovyu93Hh53fu/d36FvA53p3OHM/ZAIHd3OaAe0svhWf7vRfGWQTaTOKEA8yqHLZdiwbzEz/LoVooLZAasTPqJGiXZkIp16s6k0rA6zhvSsOsJOzTt68EJ4P4tYoPbxQkBtfTSiiMPWYhL1ehXKDHJlOz9BZDIKKsiDedLbmwyb5PCnJOrO7TI/+A1wulayUhnKwRgXAjjADf4rZvQJlglwGhsF9zAccZNajw4JeT54GR6kE8Btb0ONAKbm5d2vzYf21gBCga0zrQ9oBkoY8jE+sne73ncoUhkYeg+PsTIfmAK6ghFX2f/x+Pe1ortc+BCdJ2hMrN3d54i3vuOAnYVOyhowKyCbamLiZMisxqdyo7w5EXSUdD75tw7s4Aaj3zJtNH23ocPgIq1xnqh2E8uujQSVvbSRs0LhsMhXU99rvcr+QGy2vbpLwEHyq2bvjyOhYMts0p2dcCjxKeH/VRd3/BKG2RhlQ09S/i1qMJ1onMyx1j7ag12ZE/7BCTfWiKvYwPcHU+N+b7+W+cBczYNhtYWB4pbuG1NSByqep/VaUQKFa/LM5mGHFgfqgwGKTY+irjreqn7gXRVUV80dAmElW18fIIHqV39UjCpEGL2YyaFuhuuc1m4HeBJ6B6cCTfmlOhfUVggP58s6X3bTAO3V9HLzIBo8gyAzM8bLjG9tZQLFzUaMuYBXWlkt9NhJIgyfiUxkgJqkrjE65/I7faypfBIFL4p1gWAyGMaILuRK58P9uRHGL4xrAmYFR+8st2wjxoFF4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(376002)(396003)(39860400002)(366004)(346002)(451199015)(38100700002)(36756003)(86362001)(6666004)(2906002)(31696002)(44832011)(66476007)(478600001)(8936002)(41300700001)(316002)(66556008)(66946007)(4326008)(8676002)(6916009)(5660300002)(83380400001)(6512007)(6486002)(26005)(6506007)(53546011)(2616005)(186003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YnRhMlF5SGtnUlE5QjB6b0ZZb1d4NnI4bHdiMDJJU09maE5ycWZGVUNQUG1q?=
+ =?utf-8?B?M1YrM1o5YWpQdUtpZFVxc0ViQlo4Rk54UDBRZlJqSjE5ZmI5UXBXdlNrbDJ6?=
+ =?utf-8?B?dFZ3L2JXL3F0ZTZBTXIxR2VpN0svNGNWczVSalNpZHdna0hJUU1YY2FuZXZ3?=
+ =?utf-8?B?d3NHNnB3V3B5QTh3bXhlSkRGdFM1YlJpK0NFTHBBYXUrLzFRcVBaQTMrRnlL?=
+ =?utf-8?B?QnYxdDNSTG5mU2h6dTZNekVMaHJXTGlNelRSWWcvUmpvSzFNUnAzUmxhejRW?=
+ =?utf-8?B?ZlhFQ1pBSGZ1UUxxSkpCNzNJVmQxdkw5dWtmSml2WmIzcnJoVGFET0g0RDRZ?=
+ =?utf-8?B?THlpTDJxUSs1WkF1VG5WdlRTWHhPdjRtMjdiOWFQc2hhTFFDRUFKa3FDM085?=
+ =?utf-8?B?RVdhS2JYY01NbXhRZFRVcmVZaDEyY0pldEoyUnAwRmZ3bStCdlR0UG9pSXpH?=
+ =?utf-8?B?eGJkbm9IN2Zhd0hSWldud3lSaHlFM05YazBIandReXNrcy9VVHVjSU9ZRXBY?=
+ =?utf-8?B?cjNCZzI5alpmbFJjd2pOc1BzZVFQQmhWYjVlVHBIcCtmdmd1QUxVSk0wV0g4?=
+ =?utf-8?B?SWk0bXRieSs5VlFQNDd4UUZmeHlZVUxCNXBUNkhDWmgrYk9XYmFwTjh4WFAx?=
+ =?utf-8?B?ZjBFZW9Ud0xMWmQxb3ViSlFkMWRpNHdML1lHWnNtSnJlcVEzQmp1RzN2QWdG?=
+ =?utf-8?B?dytHb1Rqbng2b1AwZFFHcjVUKy9FdzhBTWFoZk4reFZObDF3OUd4akxpdjNU?=
+ =?utf-8?B?WVRON3NqVFFTMWlPY1hTYlRnOVRjdjY1aHgyRWUrREdka2Jkdm1yd25jNFJk?=
+ =?utf-8?B?R1loeFFrMUhSd1VCYWlJNldpTWNCM3RBTkN5K2ZVYzJhd2ZadjdOZXhPS3J3?=
+ =?utf-8?B?NmtMMkNhUDhTcHdFWXFEZE4vZXRGbkdZRGxqcjJOS2FibVB5eStqNWJaRm81?=
+ =?utf-8?B?Sk11YTJ5OFo2RHdPaTJKeHdHdFZ0OVpJS0VRWjFWcWttVVA3VmpzODlYZklI?=
+ =?utf-8?B?WktXakpwYmVlUWx2d2pneHg0MGF1RE9sejNOaFBlcjZmMzNCRDFKS0k0VkdM?=
+ =?utf-8?B?MHVVY2ZzN00yVW9qYW1TUUdvNW5uTGcxeGpiRnpUci91R296aVdJdS8vSXV6?=
+ =?utf-8?B?SUxuNWEvVExUQzZZTTRqd2ZVK2xNMnBpRTZFUnlGaUFzSnVKemt5aXJsV0pH?=
+ =?utf-8?B?bStkRDJocm52RktSTzdabXNCZDFBOFZBcEVURFJ2SmVlU3d1WXZ1bC9WWk43?=
+ =?utf-8?B?clRRbmZ4MU1neHFNLzYxdEFuRmtwN0xPcUZiQWs3UWgrU3FCMWlxWVFjOUpx?=
+ =?utf-8?B?eDN3WHN4dnVlN0UySVF6ZVlQOEtJSWRMZTl3WnBvR25sdVZxOTlkLzdLRG5x?=
+ =?utf-8?B?KzB0RjZibUcyL1A0Yzd4K09QOGdhNldyZTErMnpneTkxOTFwR1VEYkxqcVRk?=
+ =?utf-8?B?cVBYYzVZV0xha1lrZkxjbStQUFkrRkYwWWdrZFpTNDFZSlNhZnlMUmtCbkxF?=
+ =?utf-8?B?RGNxNUJ6WnRCUlNheDhlN1dpMGt5akptYVE5K3RtK01SMXBMZG9mNzFubm4z?=
+ =?utf-8?B?eGQ5UHYrVGxMbEhxWnAxdExYVExmMXN4UDE5SDV1bFVhTVlmREZ2U3IrcTJp?=
+ =?utf-8?B?UlRXWEpRL0NtbGdQSnA1azJpQVJzUnpEaGthUkdkQzRpYlVKVVd1VHFFdUhs?=
+ =?utf-8?B?N2JrUHRWbDRZUEJKWHlZNkJSR3p4S1duemlJc3lpVW5RNHl1TFVKT1JoaTli?=
+ =?utf-8?B?S3BhQXVTa2tMMWFaazZPVUVHQmFxb2NDdytVQUlTTFF0d01qWmNMSkMxUlYy?=
+ =?utf-8?B?RGU1S2g4QVJld29zRFFYSWlsVCszRDZSd1FtQUxqdGxnZWoyem5mVnhnL2JD?=
+ =?utf-8?B?ZTlzRFJtTWF4RDZSSTRzbVg0YnhsS1hnYkJSbHo5OWNyczhSb2Fpd0VNTDJQ?=
+ =?utf-8?B?WkZVaHhuOE5keWwyOXdkQzRRNGJXS2lJSnlCUDMyNkJHa1JqTHFEMlM4MmF4?=
+ =?utf-8?B?WkxUWkZnSG5raExOL3dWYTFPREcvYkRRKzNMMUNqa2V5SEs2VmZLKytLOUJr?=
+ =?utf-8?B?aUVRemlaZ2FkdjRPM1pzcjRyNWpHOVRucGp5U2VoYWVmZUJtbTh0WkJpZVdO?=
+ =?utf-8?Q?122hcV0OqYOXXkDpbNZb9A8oP?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd7bc128-138f-4baf-8d12-08dab30cbdca
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2022 02:34:13.5868
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QCq2v0YYMoKU1167RNnPKpbyR4Zf2RLGiMhuYNf3f+8n2VnaKw5/KajYHoOnJMk7PxQWLd1XMv2WfgOqusvveg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB6644
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-20_13,2022-10-20_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 bulkscore=0
+ mlxscore=0 phishscore=0 suspectscore=0 adultscore=0 mlxlogscore=883
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2209130000
+ definitions=main-2210210012
+X-Proofpoint-ORIG-GUID: 84Aju7sAFKaO4l1fAM0Aj8iV8da4jJqH
+X-Proofpoint-GUID: 84Aju7sAFKaO4l1fAM0Aj8iV8da4jJqH
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Filipe Manana <fdmanana@kernel.org> =E6=96=BC 2022=E5=B9=B410=E6=9C=8817=E6=
-=97=A5 =E9=80=B1=E4=B8=80 =E6=99=9A=E4=B8=8A7:19=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Fri, Oct 14, 2022 at 5:46 PM bingjingc <bingjingc@synology.com> wrote:
-> >
-> > From: BingJing Chang <bingjingc@synology.com>
-> >
-> > Test that an incremental send operation can handle orphan files or
-> > directories in or not in the parent snapshot and the send snapshot.
-> >
-> > This issue is fixed by a kernel patch with the commit 9ed0a72e5b355d
-> > ("btrfs: send: fix failures when processing inodes with no links")
-> >
-> > Signed-off-by: BingJing Chang <bingjingc@synology.com>
-> > ---
-> >  tests/btrfs/278     | 218 ++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/btrfs/278.out |   3 +
-> >  2 files changed, 221 insertions(+)
-> >  create mode 100755 tests/btrfs/278
-> >  create mode 100644 tests/btrfs/278.out
-> >
-> > diff --git a/tests/btrfs/278 b/tests/btrfs/278
-> > new file mode 100755
-> > index 00000000..82da29e0
-> > --- /dev/null
-> > +++ b/tests/btrfs/278
-> > @@ -0,0 +1,218 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (c) 2022 BingJing Chang.
-> > +#
-> > +# FS QA Test No. btrfs/278
-> > +#
-> > +# Regression test for btrfs incremental send issue when processing ino=
-des
-> > +# with no links
-> > +#
-> > +# This issue is fixed by the following linux kernel btrfs patch:
-> > +#
-> > +#   commit 9ed0a72e5b355d ("btrfs: send: fix failures when processing
-> > +#   inodes with no links")
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto quick send
-> > +
-> > +# real QA test starts here
-> > +_supported_fs btrfs
-> > +_fixed_by_kernel_commit 9ed0a72e5b355d \
-> > +       "btrfs: send: fix failures when processing inodes with no links=
-"
-> > +_require_test
-> > +_require_scratch
-> > +_require_btrfs_command "property"
-> > +_require_fssum
-> > +
-> > +send_files_dir=3D$TEST_DIR/btrfs-test-$seq
-> > +
-> > +rm -fr $send_files_dir
-> > +mkdir $send_files_dir
-> > +
-> > +_scratch_mkfs >>$seqres.full 2>&1
-> > +_scratch_mount
-> > +_run_btrfs_util_prog subvolume create $SCRATCH_MNT/vol
-> > +
-> > +# Creating the first snapshot looks like:
-> > +#
-> > +# .                                                                  (=
-ino 256)
-> > +# |--- deleted.file                                                  (=
-ino 257)
-> > +# |--- deleted.dir/                                                  (=
-ino 258)
-> > +# |--- changed_subcase1.file                                         (=
-ino 259)
-> > +# |--- changed_subcase2.file                                         (=
-ino 260)
-> > +# |--- changed_subcase1.dir/                                         (=
-ino 261)
-> > +# |    |---- foo                                                     (=
-ino 262)
-> > +# |--- changed_subcase2.dir/                                         (=
-ino 263)
-> > +# |    |---- foo                                                     (=
-ino 264)
-> > +#
-> > +touch $SCRATCH_MNT/vol/deleted.file
-> > +mkdir $SCRATCH_MNT/vol/deleted.dir
-> > +touch $SCRATCH_MNT/vol/changed_subcase1.file
-> > +touch $SCRATCH_MNT/vol/changed_subcase2.file
-> > +mkdir $SCRATCH_MNT/vol/changed_subcase1.dir
-> > +touch $SCRATCH_MNT/vol/changed_subcase1.dir/foo
-> > +mkdir $SCRATCH_MNT/vol/changed_subcase2.dir
-> > +touch $SCRATCH_MNT/vol/changed_subcase2.dir/foo
-> > +_run_btrfs_util_prog subvolume snapshot -r $SCRATCH_MNT/vol $SCRATCH_M=
-NT/snap1
-> > +
-> > +# Delete the deleted.*, create a new file and a new directory, and the=
-n
-> > +# take the second snapshot looks like:
-> > +#
-> > +# .                                                                  (=
-ino 256)
-> > +# |--- changed_subcase1.file                                         (=
-ino 259)
-> > +# |--- changed_subcase2.file                                         (=
-ino 260)
-> > +# |--- changed_subcase1.dir/                                         (=
-ino 261)
-> > +# |    |---- foo                                                     (=
-ino 262)
-> > +# |--- changed_subcase2.dir/                                         (=
-ino 263)
-> > +# |    |---- foo                                                     (=
-ino 264)
-> > +# |--- new.file                                                      (=
-ino 265)
-> > +# |--- new.dir/                                                      (=
-ino 266)
-> > +#
-> > +unlink $SCRATCH_MNT/vol/deleted.file
-> > +rmdir $SCRATCH_MNT/vol/deleted.dir
-> > +touch $SCRATCH_MNT/vol/new.file
-> > +mkdir $SCRATCH_MNT/vol/new.dir
-> > +_run_btrfs_util_prog subvolume snapshot -r $SCRATCH_MNT/vol $SCRATCH_M=
-NT/snap2
-> > +
-> > +# Set the subvolume back to read-write mode to make orphans of the fir=
-st
-> > +# snapshot to look like:
->
-> This confused me. You mention setting the subvolume to RW, but what
-> happens is we are
-> setting the snapshot "snap1" to RW. So, something like:
->
-> "Set the snapshot "snap1" to read-write mode and turn several inodes
-> to orphans, so
-> that the snapshot will look like this:"
->
-> > +#
-> > +# .                                                                  (=
-ino 256)
-> > +# |--- (orphan) deleted.file                                         (=
-ino 257)
-> > +# |--- (orphan) deleted.dir/                                         (=
-ino 258)
-> > +# |--- (orphan) changed_subcase1.file                                (=
-ino 259)
-> > +# |--- changed_subcase2.file                                         (=
-ino 260)
-> > +# |--- (orphan) changed_subcase1.dir/                                (=
-ino 261)
-> > +# |--- changed_subcase2.dir/                                         (=
-ino 263)
-> > +# |    |---- foo                                                     (=
-ino 264)
-> > +#
-> > +# Note: To make an easy illustration, I just put a tag "(orphan)" in f=
-ront of
-> > +# their original names to indicate that they're deleted, but their ino=
-des can
-> > +# not be removed because of open file descriptors on them. Mention tha=
-t orphan
-> > +# inodes don't have names(paths).
-> > +#
-> > +$BTRFS_UTIL_PROG property set $SCRATCH_MNT/snap1 ro false
-> > +exec 71<$SCRATCH_MNT/snap1/deleted.file
-> > +exec 72<$SCRATCH_MNT/snap1/deleted.dir
-> > +exec 73<$SCRATCH_MNT/snap1/changed_subcase1.file
-> > +exec 74<$SCRATCH_MNT/snap1/changed_subcase1.dir
-> > +unlink $SCRATCH_MNT/snap1/deleted.file
-> > +rmdir $SCRATCH_MNT/snap1/deleted.dir
-> > +unlink $SCRATCH_MNT/snap1/changed_subcase1.file
-> > +unlink $SCRATCH_MNT/snap1/changed_subcase1.dir/foo
-> > +rmdir $SCRATCH_MNT/snap1/changed_subcase1.dir
-> > +
-> > +# Turn the subvolume back to read-only mode as snapshots
->
-> Same here, and the sentence also seems unfinished. So:
->
-> "Turn the snapshot "snap1" back to read-only mode."
->
-> > +$BTRFS_UTIL_PROG property set $SCRATCH_MNT/snap1 ro true
-> > +
-> > +# Set the subvolume back to read-write mode to make orphans of the sec=
-ond
-> > +# snapshot to look like:
->
-> Same here, it's the snapshot "snap2" and not the subvolume.
->
-> "Set the snapshot "snap2" to read-write mode and turn several inodes
-> to orphans, so
-> that the snapshot will look like this:"
->
-> > +#
-> > +# .                                                                  (=
-ino 256)
-> > +# |--- (orphan) changed_subcase1.file                                (=
-ino 259)
-> > +# |--- (orphan) changed_subcase2.file                                (=
-ino 260)
-> > +# |--- (orphan) changed_subcase1.dir/                                (=
-ino 261)
-> > +# |--- (orphan) changed_subcase2.dir/                                (=
-ino 263)
-> > +# |--- (orphan) new.file                                             (=
-ino 265)
-> > +# |--- (orphan) new.dir/                                             (=
-ino 266)
-> > +#
-> > +# Note: Same notice as above. Mention that orphan inodes don't have
-> > +# names(paths).
-> > +#
-> > +$BTRFS_UTIL_PROG property set $SCRATCH_MNT/snap2 ro false
-> > +exec 81<$SCRATCH_MNT/snap2/changed_subcase1.file
-> > +exec 82<$SCRATCH_MNT/snap2/changed_subcase1.dir
-> > +exec 83<$SCRATCH_MNT/snap2/changed_subcase2.file
-> > +exec 84<$SCRATCH_MNT/snap2/changed_subcase2.dir
-> > +exec 85<$SCRATCH_MNT/snap2/new.file
-> > +exec 86<$SCRATCH_MNT/snap2/new.dir
-> > +unlink $SCRATCH_MNT/snap2/changed_subcase1.file
-> > +unlink $SCRATCH_MNT/snap2/changed_subcase1.dir/foo
-> > +rmdir $SCRATCH_MNT/snap2/changed_subcase1.dir
-> > +unlink $SCRATCH_MNT/snap2/changed_subcase2.file
-> > +unlink $SCRATCH_MNT/snap2/changed_subcase2.dir/foo
-> > +rmdir $SCRATCH_MNT/snap2/changed_subcase2.dir
-> > +unlink $SCRATCH_MNT/snap2/new.file
-> > +rmdir $SCRATCH_MNT/snap2/new.dir
-> > +
-> > +# Turn the subvolume back to read-only mode as snapshots
->
-> Same here, it's snapshot "snap2" and not the subvolume.
-> The sentence also seems unfinished.
->
-> "Turn the snapshot "snap2" back to read-only mode."
->
-> > +$BTRFS_UTIL_PROG property set $SCRATCH_MNT/snap2 ro true
-> > +
-> > +# Test that a full send operation can handle orphans with no paths
-> > +_run_btrfs_util_prog send -f $send_files_dir/1.snap $SCRATCH_MNT/snap1
-> > +
-> > +# Test that an incremental send operation can handle orphans.
-> > +#
-> > +# Here're descriptions for the details:
-> > +#
-> > +# Case 1: new.file and new.dir (BTRFS_COMPARE_TREE_NEW)
-> > +#        |  send snapshot  | action
-> > +#  --------------------------------
-> > +#  nlink |        0        | ignore
-> > +#
-> > +# They're new inodes in the send snapshots, while they don't have path=
-s.
->
-> snapshots -> snapshot
->
-> "They are new inodes in the send snapshot ("snap2"), but they don't
-> have paths because they have no links".
->
-> > +# Test that the send operation can ignore them in order not to generat=
-e
-> > +# the creation commands for them. Or it will fail in retrieving their
-> > +# current paths.
->
-> Mentioning the error would be useful:
->
->  "... Or it will fail, with -ENOENT, when trying to generate paths for th=
-em."
->
-> Other than those minor things, it looks good to me.
-> Test passes on a patched kernel and fails on an unpatched kernel.
->
-> Thanks so much for doing this!
->
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
->
 
-Thank you for the review. I revised the confusing sentences in patch v2.
 
->
-> > +#
-> > +#
-> > +# Case 2: deleted.file and deleted.dir (BTRFS_COMPARE_TREE_DELETED)
-> > +#       | parent snapshot | action
-> > +# ----------------------------------
-> > +# nlink |        0        | as usual
-> > +#
-> > +# They're deleted in the parent snapshots but become orphans with no
-> > +# paths. Test that no deletion commands will be generated as usual.
-> > +# This case didn't fail before.
-> > +#
-> > +#
-> > +# Case 3: changed_*.file and changed_*.dir (BTRFS_COMPARE_TREE_CHANGED=
-)
-> > +#           |       | parent snapshot | send snapshot | action
-> > +# --------------------------------------------------------------------=
----
-> > +# subcase 1 | nlink |        0        |       0       | ignore
-> > +# subcase 2 | nlink |       >0        |       0       | new_gen(deleti=
-on)
-> > +#
-> > +# In subcase 1, test that the send operation can ignore them without t=
-rying
-> > +# to generate any commands.
-> > +#
-> > +# In subcase 2, test that the send operation can generate an unlink co=
-mmand
-> > +# for that file and test that it can generate a rename command for the
-> > +# non-empty directory first and a rmdir command to remove it finally. =
-Or
-> > +# the receive operation will fail with a wrong unlink on a non-empty
-> > +# directory.
-> > +#
-> > +_run_btrfs_util_prog send -p $SCRATCH_MNT/snap1 -f $send_files_dir/2.s=
-nap \
-> > +                    $SCRATCH_MNT/snap2
-> > +
-> > +$FSSUM_PROG -A -f -w $send_files_dir/1.fssum $SCRATCH_MNT/snap1
-> > +$FSSUM_PROG -A -f -w $send_files_dir/2.fssum \
-> > +       -x $SCRATCH_MNT/snap2/snap1 $SCRATCH_MNT/snap2
-> > +
-> > +# Recreate the filesystem by receiving both send streams and verify we=
- get
-> > +# the same content that the original filesystem had.
-> > +exec 71>&-
-> > +exec 72>&-
-> > +exec 73>&-
-> > +exec 74>&-
-> > +exec 81>&-
-> > +exec 82>&-
-> > +exec 83>&-
-> > +exec 84>&-
-> > +exec 85>&-
-> > +exec 86>&-
-> > +_scratch_unmount
-> > +_scratch_mkfs >>$seqres.full 2>&1
-> > +_scratch_mount
-> > +
-> > +# Add the first snapshot to the new filesystem by applying the first s=
-end
-> > +# stream.
-> > +_run_btrfs_util_prog receive -f $send_files_dir/1.snap $SCRATCH_MNT
-> > +
-> > +# Test the incremental send stream
-> > +_run_btrfs_util_prog receive -f $send_files_dir/2.snap $SCRATCH_MNT
-> > +
-> > +$FSSUM_PROG -r $send_files_dir/1.fssum $SCRATCH_MNT/snap1
-> > +$FSSUM_PROG -r $send_files_dir/2.fssum $SCRATCH_MNT/snap2
-> > +
-> > +status=3D0
-> > +exit
-> > diff --git a/tests/btrfs/278.out b/tests/btrfs/278.out
-> > new file mode 100644
-> > index 00000000..82b93b4e
-> > --- /dev/null
-> > +++ b/tests/btrfs/278.out
-> > @@ -0,0 +1,3 @@
-> > +QA output created by 278
-> > +OK
-> > +OK
-> > --
-> > 2.37.1
-> >
+On 21/10/2022 00:35, David Sterba wrote:
+> On Thu, Oct 20, 2022 at 03:27:31PM +0800, Anand Jain wrote:
+>> On 18/10/2022 22:27, David Sterba wrote:
+>>> There's only one caller that calls scrub_setup_recheck_block in the
+>>> memalloc_nofs_save/_restore protection so it's effectively already
+>>> GFP_NOFS and it's safe to use GFP_KERNEL.
+>>>
+>>> Signed-off-by: David Sterba <dsterba@suse.com>
+>>> ---
+>>>    fs/btrfs/scrub.c | 4 ++--
+>>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+>>> index 9e3b2e60e571..2fc70a2cc7fe 100644
+>>> --- a/fs/btrfs/scrub.c
+>>> +++ b/fs/btrfs/scrub.c
+>>> @@ -1491,7 +1491,7 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+>>>    			return -EIO;
+>>>    		}
+>>>    
+>>> -		recover = kzalloc(sizeof(struct scrub_recover), GFP_NOFS);
+>>> +		recover = kzalloc(sizeof(struct scrub_recover), GFP_KERNEL);
+>>
+>>
+>> I didn't get why GFP_KERNEL is better here, or would it make any
+>> difference, given that we are already (and rightly) in the
+>> memalloc_nofs_save() scope.
+> 
+> You said what's the reason, so I can only repeat the patterns:
+> 
+> 1) plain GFP_NOFS, with notice that it does not work with kvalloc
+> 2) memalloc_nofs_save/k.alloc(GFP_KERNEL)/memalloc_nofs_restore
+> 
+> I.e. GFP_NOFS in the memalloc_nofs_ protection is redundant because we
+> get th NOFS protection and can safely use GFP_KERNEL. 
+
+
+
+> Because we want to
+> minimize use of GFP_NOFS or completely switch to scoped nofs, but this
+> requires other changes and we do that incrementally.
+
+  Ok. Got it.
