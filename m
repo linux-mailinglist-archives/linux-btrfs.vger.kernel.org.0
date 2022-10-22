@@ -2,260 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB1860806C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Oct 2022 22:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C8F608FAB
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Oct 2022 23:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbiJUU6g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Oct 2022 16:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
+        id S229783AbiJVVNL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 22 Oct 2022 17:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbiJUU6e (ORCPT
+        with ESMTP id S229744AbiJVVNJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Oct 2022 16:58:34 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2FC2A3881
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Oct 2022 13:58:32 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id s17so2817289qkj.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Oct 2022 13:58:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7+L3FGsQz5DlkZcXpDRveYfFBNXOZg8MRlHgTwPz7kY=;
-        b=BovOz8Ppv7IQoe5z14TN5shX7nyQpTPLYt0kWCMAXrlyuH2L0vRCkHI3eSVXkxH+EN
-         WHlwn8kUUpjES6gcNu2+gL+U6ET/ktZwvOtSuWabifIssuaR9/jfQxR/XP4hMTHC44Vy
-         bPCRlUgMV+thmRUqMf+TZQxcHyHJGwd9CQvD7elTMZpiWhfBnyzTavRGxa6pwTYCNsGR
-         Dc3H/wlEC7KQZ8SYIday+oGSuWzSN/6MVUvqyawMZxHa2gg/eRrDFiJqPnsF/VBvGvFu
-         mC/Bmq5uXtIJSWHU0ZgGiajWJ5I9fl5p6cUUOthaLlY6gRIMRi5XUfM6iTeYmA18vq2W
-         AiPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7+L3FGsQz5DlkZcXpDRveYfFBNXOZg8MRlHgTwPz7kY=;
-        b=FXhnYSZN/pr6YHX1FhA/fBGcoHISrSXsEb0nvbgVhpb4uylD0eiQOKraebqKCbCBRC
-         0CcDwbXQIUBHZHc6QyZubzo5ig7glFAUsWaH5Q8l5GGbqactwXPugwJtNouzjhZdu4Hw
-         Zg7F2Inpo8Di/Ll3vdY1/WpwabssoYiWSK/o1FOUaOQ0mi5MlaRaUbUGYVdtyaNFxwiV
-         eGP2wIHEwwRYcEhNhsm5TqJXY/RJZs6CAZZdOobyh3YGPw/MJv/VVIuR7gwBgGspvpyK
-         CHKkdh3adGoh0xdSRo/pCYDJq/cBgVEM6lN/tfun+i5SytDSvIc66z/AI01/uoqvU0lK
-         bVqg==
-X-Gm-Message-State: ACrzQf2mWue3eHr0ujcXaxaqbgWdLVraS++D9IpBooIBS1RmJ/tJgeq0
-        Se93yNiAOfhRhEBUDfRQp4YTkw==
-X-Google-Smtp-Source: AMsMyM4h1cqyFUqJoVguSb4/PwijZJ9E7mnuKHWih9OQvkoKgPYS/+oKtsUG0jpgqBrs2RCzgS7PVQ==
-X-Received: by 2002:a05:620a:b10:b0:6ec:1601:bc75 with SMTP id t16-20020a05620a0b1000b006ec1601bc75mr16052349qkg.730.1666385911516;
-        Fri, 21 Oct 2022 13:58:31 -0700 (PDT)
-Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id g8-20020ac87f48000000b0035cf31005e2sm8904797qtk.73.2022.10.21.13.58.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Oct 2022 13:58:30 -0700 (PDT)
-Date:   Fri, 21 Oct 2022 16:58:29 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
-        Omar Sandoval <osandov@osandov.com>
-Subject: Re: [PATCH v3 15/22] btrfs: encrypt normal file extent data if
- appropriate
-Message-ID: <Y1MH9VopVhJWWufS@localhost.localdomain>
-References: <cover.1666281276.git.sweettea-kernel@dorminy.me>
- <cfb16a33dd7f56c9f2d13a5645e670de8df93d96.1666281277.git.sweettea-kernel@dorminy.me>
+        Sat, 22 Oct 2022 17:13:09 -0400
+Received: from fallback19.mail.ru (fallback19.mail.ru [185.5.136.251])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0487580533
+        for <linux-btrfs@vger.kernel.org>; Sat, 22 Oct 2022 14:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail4;
+        h=Content-Transfer-Encoding:Content-Type:Subject:From:To:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=Bbo2+0ZGQxonbvzcgiYfSQNuMP17/fcdVM+IA4OQ2qI=;
+        t=1666473187;x=1666563187; 
+        b=EaVyv8Tn+T89zKx6dzK9cm0uaDWrlAfMmUgKdx8ElkIOAKfqm9EzGZNKV2TOPTYauAAmAcsn4JbZJdFQ5All7/3zSYAwh/OeSzajs3x625EW5tni07+UDFnyFOd9IEjZ2wLdeudVxbvVj1OkDAKpOYl8ZHs9UNTR9jDdYGXEbmAbqiw2YXyq+a15/wy1Jzg3j1CDw4IS6c7XqSN0ebbIl6q2/GBVwHFMRdW3FTjQ+m+3XyM03upnjlE8nNXfe2jEIF1guhCXu02K3X6WziBrfE8b+UdgmqZ11t0WIF5pePlRg2GKvtxCJAFwA+x7oGGOFvFk5s3LZbWicC8p/G7gVg==;
+Received: from [10.12.4.3] (port=50496 helo=smtp17.i.mail.ru)
+        by fallback19.m.smailru.net with esmtp (envelope-from <Nemcev_Aleksey@inbox.ru>)
+        id 1omLnk-0003bZ-6b
+        for linux-btrfs@vger.kernel.org; Sun, 23 Oct 2022 00:13:04 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail4;
+        h=Content-Transfer-Encoding:Content-Type:Subject:From:To:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=Bbo2+0ZGQxonbvzcgiYfSQNuMP17/fcdVM+IA4OQ2qI=;
+        t=1666473184;x=1666563184; 
+        b=dPvoh5C1sUH4+8HD/Db98u9MDB4uabMdXvWn/0XIZHVYjqTGM/lkxqARqNL9jGPojIIp3tyNvDydJXar17Wjzw8iqZ2CZu0M4645Nl6bD2iz/hRp161ncOgxiq61f8W6RscOtbbm7YPNjtIQ6g/FpbwnRsNknDUZULlV3wdK1IzgIGtDU3/vQlvkU/6fljyliwPLZ9ciYRmo7LwTHURayhaKrJv2Gy9ry5AvxeOsMCKWARI85z2UFUv/ZEIa/l2Rs2o6nydeI+Cds6LWpIMVQAfVshZsk7D5//kATJ+H76iWDmFPyCgK5z4+3DHxrzwv3HpXvmF5DqhIi7AMwkrHrA==;
+Received: by smtp17.i.mail.ru with esmtpa (envelope-from <Nemcev_Aleksey@inbox.ru>)
+        id 1omLng-003dUq-Sp
+        for linux-btrfs@vger.kernel.org; Sun, 23 Oct 2022 00:13:01 +0300
+Message-ID: <d87ce800-670e-9ca2-b524-8b20678abd9b@inbox.ru>
+Date:   Sun, 23 Oct 2022 00:13:00 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cfb16a33dd7f56c9f2d13a5645e670de8df93d96.1666281277.git.sweettea-kernel@dorminy.me>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.3
+To:     linux-btrfs@vger.kernel.org
+Content-Language: en-US
+From:   Nemcev Aleksey <Nemcev_Aleksey@inbox.ru>
+Subject: Is it safe to use snapshot without data as 'btrfs send' parent?
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Mailru-Src: smtp
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD97F9382DBE4976309FB4D10F4215E2EB8F6C6D2D174E2F270182A05F538085040D186DB467FE8989CD65EB2834C09777972EE2E40B75D9137A6B7DB274917A0AF
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7624C4D757C4F5837EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006372E9841F416E2DCCD8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8B42DCB8819C5B23DD0B12B822D3317F26F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE791DAD9F922AA71188941B15DA834481FA18204E546F3947C24A072987C00FFB1F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F79006375D86F985788DC295389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F7900637B0942928F7682249D81D268191BDAD3DBD4B6F7A4D31EC0BEA7A3FFF5B025636D81D268191BDAD3D78DA827A17800CE7BDBD0A22A478E224EC76A7562686271ED91E3A1F190DE8FD2E808ACE2090B5E14AD6D5ED66289B5278DA827A17800CE7A03E8F3C2D3812562EB15956EA79C166A417C69337E82CC275ECD9A6C639B01B78DA827A17800CE7B47F2F09EE599CE4731C566533BA786AA5CC5B56E945C8DA
+X-C1DE0DAB: 0D63561A33F958A551149B8BB913E28E9827C385D16387CA57FC6A4C50A67F224EAF44D9B582CE87C8A4C02DF684249CC203C45FEA855C8F
+X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D34BD150993ED26DDF4B6C3480E7CF50FE7526AAC188A8502F97BABEB0CFBC89A216364268D203DADBD1D7E09C32AA3244C07C583430564B383D96DEC8CC64C87648894E9C85370243E3EB3F6AD6EA9203E
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojbL9S8ysBdXj+kBvrhfAFRAxRrL8W8WSZ
+X-Mailru-Sender: 00097D31F91C944B825D48F09EF66297A550E3F91C704A7785CFF5C52E5E943BF2ED597058F721A134915EAF49CC4078BE96CC90913223B28141B1B0B1FAE8F2B1D210AF280BDE3A90E1A63FA06EF59E02DB81B281332CC10D4ABDE8C577C2ED
+X-Mras: Ok
+X-7564579A: B8F34718100C35BD
+X-77F55803: 6242723A09DB00B41D0D107CA78B22788DADC62E504B0F5DE3F438ACE65591D9049FFFDB7839CE9E1EDFD276309BA9D8DCC3E35181D40CE9C1ECF37CDA78C78BC5E0E87FBB1FBE14
+X-7FA49CB5: 0D63561A33F958A55E4D039497780E7C7591B3EFE6170725DCCD59224EA3BDE3CACD7DF95DA8FC8BD5E8D9A59859A8B64071617579528AACCC7F00164DA146DAFE8445B8C89999728AA50765F7900637AF8DFA94C5B6F7D6389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC81CF6DFABFD638A7DF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C0085B890FD2717DA302FCEF25BFAB3454AD6D5ED66289B52698AB9A7B718F8C442539A7722CA490CD5E8D9A59859A8B656ADF5DA62E5A3E1089D37D7C0E48F6C5571747095F342E88FB05168BE4CE3AF
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojsTZ3C30vYKqrEE2+7gPztQ==
+X-Mailru-MI: 800
+X-Mras: Ok
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 20, 2022 at 12:58:34PM -0400, Sweet Tea Dorminy wrote:
-> From: Omar Sandoval <osandov@osandov.com>
-> 
-> Add in the necessary calls to encrypt and decrypt data to achieve
-> encryption of normal data.
-> 
-> Since these are all page cache pages being encrypted, we can't encrypt
-> them in place and must encrypt/decrypt into a new page. fscrypt provides a pool
-> of pages for this purpose, which it calls bounce pages. For IO of
-> encrypted data, we use a bounce page for the actual IO, and
-> encrypt/decrypt from/to the actual page cache page on either side of the
-> IO.
-> 
-> Signed-off-by: Omar Sandoval <osandov@osandov.com>
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
->  fs/btrfs/extent_io.c    | 56 ++++++++++++++++++++++++++++++++++++-----
->  fs/btrfs/file-item.c    |  9 +++++--
->  fs/btrfs/fscrypt.c      | 32 ++++++++++++++++++++++-
->  fs/btrfs/tree-checker.c | 11 +++++---
->  4 files changed, 96 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 4e4f28387ace..94d0636aafd0 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -113,6 +113,7 @@ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
->  {
->  	struct bio *bio;
->  	struct bio_vec *bv;
-> +	struct page *first_page;
->  	struct inode *inode;
->  	int mirror_num;
->  
-> @@ -121,13 +122,17 @@ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
->  
->  	bio = bio_ctrl->bio;
->  	bv = bio_first_bvec_all(bio);
-> -	inode = bv->bv_page->mapping->host;
-> +	first_page = bio_first_page_all(bio);
-> +	if (fscrypt_is_bounce_page(first_page))
-> +		inode = fscrypt_pagecache_page(first_page)->mapping->host;
-> +	else
-> +		inode = first_page->mapping->host;
->  	mirror_num = bio_ctrl->mirror_num;
->  
->  	/* Caller should ensure the bio has at least some range added */
->  	ASSERT(bio->bi_iter.bi_size);
->  
-> -	btrfs_bio(bio)->file_offset = page_offset(bv->bv_page) + bv->bv_offset;
-> +	btrfs_bio(bio)->file_offset = page_offset(first_page) + bv->bv_offset;
->  
->  	if (!is_data_inode(inode))
->  		btrfs_submit_metadata_bio(inode, bio, mirror_num);
-> @@ -1014,9 +1019,19 @@ static void end_bio_extent_writepage(struct btrfs_bio *bbio)
->  	ASSERT(!bio_flagged(bio, BIO_CLONED));
->  	bio_for_each_segment_all(bvec, bio, iter_all) {
->  		struct page *page = bvec->bv_page;
-> -		struct inode *inode = page->mapping->host;
-> -		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-> -		const u32 sectorsize = fs_info->sectorsize;
-> +		struct inode *inode;
-> +		struct btrfs_fs_info *fs_info;
-> +		u32 sectorsize;
-> +		struct page *bounce_page = NULL;
-> +
-> +		if (fscrypt_is_bounce_page(page)) {
-> +			bounce_page = page;
-> +			page = fscrypt_pagecache_page(bounce_page);
-> +		}
-> +
-> +		inode = page->mapping->host;
-> +		fs_info = btrfs_sb(inode->i_sb);
-> +		sectorsize = fs_info->sectorsize;
->  
->  		/* Our read/write should always be sector aligned. */
->  		if (!IS_ALIGNED(bvec->bv_offset, sectorsize))
-> @@ -1037,7 +1052,7 @@ static void end_bio_extent_writepage(struct btrfs_bio *bbio)
->  		}
->  
->  		end_extent_writepage(page, error, start, end);
-> -
-> +		fscrypt_free_bounce_page(bounce_page);
->  		btrfs_page_clear_writeback(fs_info, page, start, bvec->bv_len);
->  	}
->  
-> @@ -1229,6 +1244,17 @@ static void end_bio_extent_readpage(struct btrfs_bio *bbio)
->  			}
->  		}
->  
-> +		if (likely(uptodate)) {
-> +			if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
-> +				int ret = fscrypt_decrypt_pagecache_blocks(page,
-> +									   bvec->bv_len,
-> +									   bvec->bv_offset);
-> +				if (ret) {
-> +					error_bitmap = (unsigned int) -1;
-> +					uptodate = false;
-> +					}
+Hello Btrfs developers.
 
-Messed up indenting.
+Thank you for your great product, Btrfs!
 
-> +			}
-> +		}
->  		if (likely(uptodate)) {
->  			loff_t i_size = i_size_read(inode);
->  			pgoff_t end_index = i_size >> PAGE_SHIFT;
-> @@ -1563,11 +1589,29 @@ static int submit_extent_page(blk_opf_t opf,
->  			      bool force_bio_submit)
->  {
->  	int ret = 0;
-> +	struct page *bounce_page = NULL;
->  	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
->  	unsigned int cur = pg_offset;
->  
->  	ASSERT(bio_ctrl);
->  
-> +	if ((opf & REQ_OP_MASK) == REQ_OP_WRITE &&
-> +	    fscrypt_inode_uses_fs_layer_crypto(&inode->vfs_inode)) {
-> +		gfp_t gfp_flags = GFP_NOFS;
-> +
-> +		if (bio_ctrl->bio)
-> +			gfp_flags = GFP_NOWAIT | __GFP_NOWARN;
-> +		else
-> +			gfp_flags = GFP_NOFS;
-> +		bounce_page = fscrypt_encrypt_pagecache_blocks(page, size,
-> +							       pg_offset,
-> +							       gfp_flags);
-> +		if (IS_ERR(bounce_page))
-> +			return PTR_ERR(bounce_page);
-> +		page = bounce_page;
-> +		pg_offset = 0;
-> +	}
-> +
->  	ASSERT(pg_offset < PAGE_SIZE && size <= PAGE_SIZE &&
->  	       pg_offset + size <= PAGE_SIZE);
->  
-> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> index 598dff14078f..e4ec6a97a85c 100644
-> --- a/fs/btrfs/file-item.c
-> +++ b/fs/btrfs/file-item.c
-> @@ -676,8 +676,13 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
->  	shash->tfm = fs_info->csum_shash;
->  
->  	bio_for_each_segment(bvec, bio, iter) {
-> -		if (use_page_offsets)
-> -			offset = page_offset(bvec.bv_page) + bvec.bv_offset;
-> +		if (use_page_offsets) {
-> +			struct page *page = bvec.bv_page;
-> +
-> +			if (fscrypt_is_bounce_page(page))
-> +				page = fscrypt_pagecache_page(page);
-> +			offset = page_offset(page) + bvec.bv_offset;
-> +		}
->  
->  		if (!ordered) {
->  			ordered = btrfs_lookup_ordered_extent(inode, offset);
-> diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-> index 717a9c244306..324436cba989 100644
-> --- a/fs/btrfs/fscrypt.c
-> +++ b/fs/btrfs/fscrypt.c
-> @@ -175,7 +175,37 @@ static int btrfs_fscrypt_get_extent_context(const struct inode *inode,
->  					    size_t *extent_offset,
->  					    size_t *extent_length)
->  {
-> -	return len;
-> +	u64 offset = lblk_num << inode->i_blkbits;
-> +	struct extent_map *em;
-> +
-> +	/* Since IO must be in progress on this extent, this must succeed */
-> +	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, PAGE_SIZE);
+I want to use Btrfs snapshots and 'btrfs send | btrfs receive' features 
+to incremental backup my PC to an external drive.
+I can do this using commands:
+btrfs subvolume snapshot -r subvolume snapshot; btrfs send snapshot -p 
+previous_snapshot | btrfs receive backup_drive
 
-If the bulk of the code is in the normal case, you need to invert the condition.
-So instead
+But Btrfs snapshots on my PC consume space even for deleted files.
+So I can't just remove unused files to free space on my PC if I keep 
+parent snapshots for incremental backups on this PC).
+I need to do another backup, then remove snapshot left from previous 
+backup from my PC to free up space.
 
-if (!em)
-	return -EINVAL
+I want to use metadata-only snapshots to overcome this issue.
 
-// the rest of hte code at a normal indentation.
+Can I safely use the following chain of commands to keep metadata-only 
+snapshot on my PC and keep full snapshots on the
+backup drive?
 
-Thanks,
+# Initial full backup:
+# Create temporary snapshot
+btrfs subvolume snapshot -r source/@ source/@_backup
+# Send temporary snapshot to the backup drive
+btrfs send source/@_backup | btrfs receive backup_drive
+# Delete temporary snapshot
+btrfs subvolume delete source/@_backup
+# Move received on backup drive snapshot to its final name
+mv backup_drive/@_backup backup_drive/@_backup1
+# Send back metadata-only snapshot to source FS
+btrfs send --no-data backup_drive/@_backup1 | btrfs receive 
+source/skinny_snapshots
 
-Josef
+# Incremental backups:
+# Create temporary snapshot
+btrfs subvolume snapshot -r source/@ source/@_backup
+# Send temporary snapshot to the backup drive using metadata-only 
+snapshot as parent
+btrfs send source/@_backup -p source/skinny_snapshots/@_backup1 | btrfs 
+receive backup_drive
+# Delete temporary snapshot
+btrfs subvolume delete source/@_backup
+# Move received on backup drive snapshot to its final name
+mv backup_drive/@_backup backup_drive/@_backup2
+# Send back metadata-only snapshot to source FS
+btrfs send --no-data backup_drive/@_backup2 -p backup_drive/@_backup1 | 
+btrfs receive source/skinny_snapshots
+
+I tested this sequence, and it seems to work fine on small test filesystems.
+Backups seem to be correct and seem to have all files they should have 
+with correct checksums after all.
+Source FS frees up space after deleting files while having metadata-only 
+snapshots on it.
+It's possible to use such "skinny" snapshots as parent for btrfs send 
+command.
+
+But I'd like to get confirmation from Btrfs developers:
+Is this approach safe?
+Can I use it daily and be sure my backups will be consistent?
+
+Thank you.
