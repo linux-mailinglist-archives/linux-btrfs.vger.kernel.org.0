@@ -2,76 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D98609677
-	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Oct 2022 23:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3792560967F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Oct 2022 23:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbiJWVTf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 23 Oct 2022 17:19:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
+        id S229587AbiJWV0J convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 23 Oct 2022 17:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbiJWVTd (ORCPT
+        with ESMTP id S229449AbiJWV0I (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 Oct 2022 17:19:33 -0400
+        Sun, 23 Oct 2022 17:26:08 -0400
 Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F682196
-        for <linux-btrfs@vger.kernel.org>; Sun, 23 Oct 2022 14:19:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C754C53022
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Oct 2022 14:26:07 -0700 (PDT)
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 1CA408C0BDC;
-        Sun, 23 Oct 2022 21:19:27 +0000 (UTC)
+        by relay.mailchannels.net (Postfix) with ESMTP id 02AA86C0D5B;
+        Sun, 23 Oct 2022 21:26:07 +0000 (UTC)
 Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
         (Authenticated sender: instrampxe0y3a)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 389578C1AF5;
-        Sun, 23 Oct 2022 21:19:26 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1666559966; a=rsa-sha256;
+        by relay.mailchannels.net (Postfix) with ESMTPA id 0891E6C0686;
+        Sun, 23 Oct 2022 21:26:05 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1666560366; a=rsa-sha256;
         cv=none;
-        b=HMSM1mNuP7GnmjPLXrMAN+78rgNPRL/nQO/HAtElJMJQP8GcYPZ10PZBcAL6casuEo+MfG
-        9IRHD95JeOmjJpPeQZd+bnW8VFYgS4gXCEkXzB3j43oW9eC7fkTE7L62GRW8fd8cKtFrXP
-        9g8LLwnaIVIsDnnSESNmWskX+lhQN1rJN+t4dZ/9v3hXYmvmI7NRiyIXC7hig8TRMdH4kg
-        m65Wp8hTwY3ieq1Z46G4kDugJWAt0iuXl/P7RoRpUdLZg3h7sLrwXaFw3jVba0Yms5JhTX
-        l/bjBqGXe9tV0vYuvTI1XaoFjmfI7XxoB60LIcbg4GLH5Lh8QTPpdqFrbgn4KQ==
+        b=hU+PErFhQwZakJhHy1dgy6k+YGYBWn8lAja9IfiJ9HXcL1slhIiz7jkA1dyB6187DVh+fo
+        DlY2gwkfpcf4TmaC1PdeUCN0wQ9HeQEBJhHApKtQJBfq5agwsUknda/SGhNJmaLT4ZaHAr
+        niGQFDCcI9fhBS5EsKb2zM1P55pPpgxHrhjJySzdlk7XzpbkXB0fIxptYLgotk2mlLBb5W
+        9cyusfsMQSdYy/bkADWFGw4d2++q8cGxgSvhVTcWgbO+FWMTIRDawYXo9ojXq8Tr2zQXSL
+        Siysc4CMNEf7BHxX2RVslBsNoIz1w3BQPxsE+/FvV7QP51owRrctTT6uCLO6Fw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
  d=mailchannels.net;
-        s=arc-2022; t=1666559966;
+        s=arc-2022; t=1666560366;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aN9YdQKH4H+DPn8RJwEvFlWeZ963b9gPkXah2/1yc/M=;
-        b=tFQlHQD0cNu8tXk7zYg17Upj3HWMhtX01bQA9Dz9YmcG1QynaxqwJNzkA39h6ZyArxsJ1G
-        dGPmtHNg2PPlEYa45S0UeiV4JCf/r/SwQhVRs9vPzmWJe0zPr1yN5AmT7S+ZBNBnnfEPuE
-        csZRSiLSARP6vXL8T1Shy6lFElA703AIKytycc6Or3F7LjcVO/YqUliQoMzql3oXTHJwmB
-        yHxUphT98pmg+A7oxnXq4OYAhdyu99rgae67+28rMENDzy1UKmKeXRIWa0ZnJyxbntHU1X
-        gsChJv1CMPKlSMNMBqyC87yQ1WVoPCup/6nI8hQnVoCFPxyRxTMme5c4mOoYiw==
+        bh=D1BU60qorZmt+Hig06YzSEZRK1KxsEa/YEDesO08vk4=;
+        b=I0IPsC3foH9ORWe48AtEzh5wGK9UUJL0ynDArAIYauFmkniiKVl9AAzQbD0GlnSVV3cyln
+        ABBI2dKfCyuO/5YqEhDxG1iPGo+nZWN43nEjeAtWn8HF03htpkFagWaPOoB269LxlEXZWz
+        KEuZSIoOAGHKF/TAIieSm1iFXka0aIIZgvS02qyVQFuZT98fpIxbm3fhCYsgacR5Dw8Y56
+        X9cha+vJZSGg4Wil9YNTqFP3s25r5cPPhkQvztVt/DrFoMUeYghgd3CP6QXsb/E3QuNuOr
+        A0li3oMhFoAz02tPGPMk0fHHV0QXqOArNKnobYX75s1lfR42fTJWgsX8eSn/4g==
 ARC-Authentication-Results: i=1;
-        rspamd-6955c7cd5b-8s48h;
+        rspamd-7fb88f4dd5-zsbr9;
         auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MC-Relay: Neutral
 X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MailChannels-Auth-Id: instrampxe0y3a
-X-Stupid-Robust: 78f911e925a9d398_1666559966849_2514320503
-X-MC-Loop-Signature: 1666559966849:677789934
-X-MC-Ingress-Time: 1666559966849
+X-Macabre-Spill: 7516cfa403f8b5bd_1666560366655_3241905338
+X-MC-Loop-Signature: 1666560366655:2447057646
+X-MC-Ingress-Time: 1666560366654
 Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
  [3.69.87.180])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-        by 100.120.183.105 (trex/6.7.1);
-        Sun, 23 Oct 2022 21:19:26 +0000
-Received: from ppp-88-217-43-50.dynamic.mnet-online.de ([88.217.43.50]:34988 helo=heisenberg.fritz.box)
+        by 100.106.246.144 (trex/6.7.1);
+        Sun, 23 Oct 2022 21:26:06 +0000
+Received: from ppp-88-217-43-50.dynamic.mnet-online.de ([88.217.43.50]:49706 helo=heisenberg.fritz.box)
         by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.95)
         (envelope-from <calestyo@scientia.org>)
-        id 1omiNM-0001Ot-51;
-        Sun, 23 Oct 2022 21:19:24 +0000
-Message-ID: <fed9bf82ebef6fcf9c40c2803c9c1503fe505e99.camel@scientia.org>
+        id 1omiTn-0002T7-U6;
+        Sun, 23 Oct 2022 21:26:04 +0000
+Message-ID: <4c841441c733161bcca5c2d81e60f2421118fb40.camel@scientia.org>
 Subject: Re: btrfs and hibernation to swap file on it?
 From:   Christoph Anton Mitterer <calestyo@scientia.org>
-To:     Andrei Borzenkov <arvidjaar@gmail.com>, linux-btrfs@vger.kernel.org
-Date:   Sun, 23 Oct 2022 23:19:18 +0200
-In-Reply-To: <ed497bfa-1f82-6761-788e-a20ef3b91cab@gmail.com>
+To:     Forza <forza@tnonline.net>, linux-btrfs@vger.kernel.org
+Date:   Sun, 23 Oct 2022 23:25:58 +0200
+In-Reply-To: <093db874-03f3-7504-8fd8-488d5ce8ef10@tnonline.net>
 References: <31660c315eeba4c461b6006b6d798355696d2155.camel@scientia.org>
-         <ed497bfa-1f82-6761-788e-a20ef3b91cab@gmail.com>
+         <093db874-03f3-7504-8fd8-488d5ce8ef10@tnonline.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 User-Agent: Evolution 3.46.1-1 
@@ -87,35 +87,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey Andrei.
+Hey Forza.
 
-Thanks for your replies and sorry for my late answer but first I had
-been on some diving trip and then had a cold until few days ago.
+On Fri, 2022-09-30 at 14:12 +0200, Forza wrote:
+> Btrfs will not move the swap-file once it is created, so it is ok.
 
-
-On Wed, 2022-09-28 at 22:12 +0300, Andrei Borzenkov wrote:
-> There are quite some restrictions for using swapfile on btrfs, in
-> particular, it must be preallocated and btrfs will refuse relocation
-> of
-> extents in this file.
-
-I assume it only does so (refuse relocation) while it's actually an
-active swap area (how would it know otherwise that the file is a swap
-file)?
+Well, at least as long every current (and future) part of btrfs
+remembers that ;-)
 
 
-> kernel supports swapfile with multiple extents.
 
-Ah, I see.
+>  This brings the limitations as you already mentionee; no 
+> snapshots, no datacow, no compression and also no DUP/RAID profile.
 
-
-So, with the btrfsprogs, is there a way to get the offset?
-
-The whole interface with specifying an offset seems to be quite unhandy
-anyway (would be better for users IMO, if one could specify a pathname
-and the kernel would find out the offset by itself)... but having to
-download/compile a "3rd party" tool makes it even more cumbersome.
+But effectively one can make a separate subvolume and just have the
+restrictions there? Well at least no snapshots, nodatacow and
+nocompression.
 
 
-Cheers,
+> For those reasons I usually prefer to have a separate swap partition
+> so 
+> that I am free to use snapshots and other Btrfs features.
+
+I'm also kinda inclined to to that, but less because of the feature
+limitations and more because I'm a bit wary on how stable or fragile
+the concept of the kernel bypassing the fs and directly writing to the
+block device is.
+
+OTOH, not having to "waste" considerable amount of storage just for the
+hibernation file, would be quite nice.
+
+
+> If you use 
+> dm-crypt you can setup another lv or another partition for swap.
+
+Sure, but again I'd have preferred not to add another DM layer.
+
+And didn't some users recently report some issues with dm-
+crypt+lvm+btrfs here?!
+But maybe I mix something up and that was something else.
+
+
+
+Thanks,
 Chris.
