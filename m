@@ -2,101 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3909860BBA6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Oct 2022 23:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B2760BA6F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Oct 2022 22:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbiJXVIL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Oct 2022 17:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56770 "EHLO
+        id S234371AbiJXUhU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Oct 2022 16:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232900AbiJXVHp (ORCPT
+        with ESMTP id S234379AbiJXUge (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Oct 2022 17:07:45 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5F3BA27E
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Oct 2022 12:15:02 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BFC9321C5F;
-        Mon, 24 Oct 2022 14:16:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666621002;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Vne9N0yVSV3rTsID8uImOt/OPW1aDWy5adjrgYmntI=;
-        b=Sjg3VY+Hrf/85OrTPDE3jvSV4WwqtgeVVtCtWjCe6+CpEBi8f5krTup42+5UoFbv7DUsPM
-        Ao9njFgJwmAad8Q6exrFvVHn3hytAq+5lEqXtmoifon8TFbKO3k3ytTE4FhxVgqd0pURij
-        8KSvzzZH+z2a+3UZ0KFKfH2GEIlMyLE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666621002;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Vne9N0yVSV3rTsID8uImOt/OPW1aDWy5adjrgYmntI=;
-        b=UA/RJTb27LtRc+++ieDZfis7CHVwA5EB0DQzIxXLo2j1ECeg9BXc7xNx0wsYwDQcCp6vxN
-        unqPO4/nVuKDNjCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9219E13A79;
-        Mon, 24 Oct 2022 14:16:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id enxyIkqeVmP7GQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 24 Oct 2022 14:16:42 +0000
-Date:   Mon, 24 Oct 2022 16:16:29 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Roman Mamedov <rm@romanrm.net>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: WARN_ON in __writeback_inodes_sb_nr when btrfs mounted with
- flushoncommit
-Message-ID: <20221024141629.GD5824@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20221024041713.76aeff42@nvm>
- <20221024123746.7a9d9bfd@nvm>
+        Mon, 24 Oct 2022 16:36:34 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A391C1413AD
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Oct 2022 11:48:15 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id a18so6681534qko.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Oct 2022 11:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q/MbRxPeOJAxRICBCzPyw5SwEOXMMs2vpYHoZD9Ef3I=;
+        b=IbeNiXuabi+VB4jgJyZpSKbKOkOILHruw2hXKqiTomLjS7Z1dq+zju7n69uShepSmR
+         QE2KXysK63OfrArvCfz63gTOtwoO0dt80tKg/9pAFmdeRXtLKnALIHlmq5GPRP/+9dwn
+         QZiRi2AaqxYr4sbdVLEB96fwWWkUi2F9aD1SfNNig7Tgj79hHxDN+CsLIPwelb2SOea9
+         yEi1Lu+nV36r8QnxU5+X2aOgH7UnmL968l2WiUZDGC4VRUJt4V7gQl/BudvBkqCHs537
+         rYTnAWev6mCSa6t3a3endC82UgckS0ZZ1LxNWxwhC/EHAztA7LIeY60gPkOeSb97Xywq
+         9P4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q/MbRxPeOJAxRICBCzPyw5SwEOXMMs2vpYHoZD9Ef3I=;
+        b=7JDmVDazsoIQPM+oX6rvayzCs8B3ZpTXT4Ojav2fWSR3txz6pA+j0VpqZxxmamYf9r
+         P4Xl0kYMeuo2LP6zuPjBPJifAAzvoLkos3AbiLSNsUCDDU8eIORISWCqjprSbOJdRvV7
+         oqJX9oevbMgC9vILdwzICzKWViuFsXoyfYrDITgHXX69tfrzBKOtu8gJWRMNQvaNRAgu
+         fDpVq8QXF8oYrN7Xa+FNm/RQj5QxEjl6p+hZYxjwBLJyzSNTg9+4mvH5L/UydlJ/tyNw
+         Q2u9At6eIsRv+5Irq7eh/JNJCOJ4c1Uu3UWRwXiWodQRYLSLxDsGv4sDEa/vKEfDIiQU
+         i8/w==
+X-Gm-Message-State: ACrzQf3iqaft0iVbi5QHsQ2ORJHH8+0QC4Bu5jAtlGyYsJa7IWhS4CVF
+        0/syo5/K37IHyfoEKBwFeF7BTcLPufymLQ==
+X-Google-Smtp-Source: AMsMyM7a1yqR1squPdCGrX0kksgGV0smQ8z/fXtQbkA5ybbs3JOlogx4evURQCPMK28FAAHZ3PLcZg==
+X-Received: by 2002:a05:620a:458d:b0:6ee:e940:4a6a with SMTP id bp13-20020a05620a458d00b006eee9404a6amr24085148qkb.235.1666637222685;
+        Mon, 24 Oct 2022 11:47:02 -0700 (PDT)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id k7-20020a05620a414700b006be8713f742sm484346qko.38.2022.10.24.11.47.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Oct 2022 11:47:01 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/9] btrfs: move btrfs_fs_info and some prototypes
+Date:   Mon, 24 Oct 2022 14:46:51 -0400
+Message-Id: <cover.1666637013.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221024123746.7a9d9bfd@nvm>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 24, 2022 at 12:37:46PM +0500, Roman Mamedov wrote:
-> On Mon, 24 Oct 2022 04:17:13 +0500
-> Roman Mamedov <rm@romanrm.net> wrote:
-> 
-> > Hello,
-> > 
-> > Just wanted to report that I still get the same warning with flushoncommit as
-> > someone posted[1][2] back in 2017, also today on kernel 5.10.149. Was that
-> > supposed to be fixed? Or maybe fixed in 6.0+?
-> > 
-> > Thanks
-> > 
-> > [1] https://www.spinics.net/lists/linux-btrfs/msg72483.html
-> > [2] https://marc.info/?l=linux-btrfs&m=151315564008773
-> 
-> I found that this might have been fixed:
-> https://lore.kernel.org/linux-btrfs/20220208224129.GI12643@twin.jikos.cz/
+Hello,
 
-It's mentioned at https://btrfs.readthedocs.io/en/latest/Feature-by-version.html
+This is the next batch of ctree.h cleanups, and likely the last one for a little
+bit.  The remaining prototypes in ctree.h are going to be touched by a lot of
+work that's currently happening, and I don't want to mess with peoples work now
+that we're getting into the development cycle a little bit.
 
-and "Also backported to 5.15.27 and 5.16.13".
+The big thing I've done is moved btrfs_fs_info into fs.h.  This is relatively
+painless at this poing since I've organized everything up to now so I can just
+copy and paste the big chunk of it out of ctree.h into fs.h.
 
-> But not backported to stable series, why not? Seems to be a small and simple
-> fix.
+Then I've gone through and cleaned up a lot of randomm little things, and then
+moved some prototypes into their own headers.
 
-5.10 may still be a reasonable target for backport. It does not apply
-cleanly and the 5.10 version tries to do some flushing of subvolume
-trees, which was removed later on, there may be some dependencies too.
+I stopped where we got to the name stuff, as I know the fscrypt stuff is going
+to touch all of that.  I don't want to make that harder to merge, so I've
+stopped here so that code can go in when it's ready, and then we can pick back
+up cleaning up the rest of ctree.h.
+
+The entirety of these changes are just code moving, there's been no functional
+changing.  Thanks,
+
+Josef
+
+Josef Bacik (9):
+  btrfs: move btrfs_fs_info declarations into fs.h
+  btrfs: move the lockdep helpers into locking.h
+  btrfs: minor whitespace in ctree.h
+  btrfs: remove extra space info prototypes in ctree.h
+  btrfs: move btrfs_account_ro_block_groups_free_space into space-info.c
+  btrfs: move extent-tree helpers into their own header file
+  btrfs: move delalloc space related prototypes to delalloc-space.h
+  btrfs: delete unused function prototypes in ctree.h
+  btrfs: move root tree prototypes to their own header
+
+ fs/btrfs/backref.c         |   1 +
+ fs/btrfs/block-group.c     |   1 +
+ fs/btrfs/ctree.c           |   1 +
+ fs/btrfs/ctree.h           | 854 +------------------------------------
+ fs/btrfs/delalloc-space.h  |   3 +
+ fs/btrfs/disk-io.c         |   2 +
+ fs/btrfs/extent-tree.c     |  36 +-
+ fs/btrfs/extent-tree.h     |  76 ++++
+ fs/btrfs/file.c            |   1 +
+ fs/btrfs/free-space-tree.c |   2 +
+ fs/btrfs/fs.h              | 657 ++++++++++++++++++++++++++++
+ fs/btrfs/inode-item.c      |   1 +
+ fs/btrfs/inode.c           |   2 +
+ fs/btrfs/ioctl.c           |   2 +
+ fs/btrfs/locking.h         |  76 ++++
+ fs/btrfs/qgroup.c          |   2 +
+ fs/btrfs/relocation.c      |   2 +
+ fs/btrfs/root-tree.c       |   1 +
+ fs/btrfs/root-tree.h       |  36 ++
+ fs/btrfs/space-info.c      |  35 ++
+ fs/btrfs/space-info.h      |   1 +
+ fs/btrfs/transaction.c     |   2 +
+ fs/btrfs/tree-log.c        |   2 +
+ 23 files changed, 909 insertions(+), 887 deletions(-)
+ create mode 100644 fs/btrfs/extent-tree.h
+ create mode 100644 fs/btrfs/root-tree.h
+
+-- 
+2.26.3
+
