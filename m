@@ -2,94 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 304BB609B77
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Oct 2022 09:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5E2609C27
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Oct 2022 10:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbiJXHiJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Oct 2022 03:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
+        id S229993AbiJXIMh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Oct 2022 04:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbiJXHiH (ORCPT
+        with ESMTP id S229851AbiJXIMe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Oct 2022 03:38:07 -0400
-Received: from len.romanrm.net (len.romanrm.net [IPv6:2001:41d0:1:8b3b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361896112B
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Oct 2022 00:37:53 -0700 (PDT)
-Received: from nvm (nvm2.home.romanrm.net [IPv6:fd39::4a:3cff:fe57:d6b5])
-        by len.romanrm.net (Postfix) with SMTP id 04EB5400E1
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Oct 2022 07:37:48 +0000 (UTC)
-Date:   Mon, 24 Oct 2022 12:37:46 +0500
-From:   Roman Mamedov <rm@romanrm.net>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: WARN_ON in __writeback_inodes_sb_nr when btrfs mounted with
- flushoncommit
-Message-ID: <20221024123746.7a9d9bfd@nvm>
-In-Reply-To: <20221024041713.76aeff42@nvm>
-References: <20221024041713.76aeff42@nvm>
+        Mon, 24 Oct 2022 04:12:34 -0400
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2AD3D596;
+        Mon, 24 Oct 2022 01:12:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1666599153; x=1698135153;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=mnrUcCTlXFQOTBphbM7uzgjEgZvswdf1qz1O51iiFN0=;
+  b=EQqzpxJHhOHsAG/D6oeHAQCseyJCs9fP8KXsZGUpOq+dQ+D251nnxCum
+   vDKPMygcCHTcxGPCubSpJ3Q7V+afSaqqYTpK231n3ElOwUhEv+b3tt/VF
+   7EzvB/NKw/YyfGPcxG7NVaU6+bMFGB9SHv/PkoI9QXvCslObL5a4dT+8b
+   pSvfwnnjQ932AfBBUPBY7RPPO7DOQXVcZyj/JxM80caQwdYOkHoxQK2nz
+   8+fBLBb7bM/0IA+AkBqP3iySBiblYR+KB9lcdfZfP3PV9OLfHRd2Bf0Hl
+   RxXWqdrzon4n7J+VBLBz+M3u2tssNpCKMfZ6wAMqPMPRwuNvbGW1GCHsb
+   g==;
+X-IronPort-AV: E=Sophos;i="5.95,207,1661788800"; 
+   d="scan'208";a="214951588"
+Received: from mail-dm6nam10lp2108.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.108])
+  by ob1.hgst.iphmx.com with ESMTP; 24 Oct 2022 16:12:31 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L/vi7f8E/9NVSyufo1QeKoj+gkeVBuDDimsQRyta4eAPdT011ZygsXAehmyGzKNUw7Usq5pLkImX5u22TroeCVmcEAQ12h1khgSixmFUL8W4m7EAK606dIjF99Ar7YGpM5tA3gZD/S7z2Hv039QLH1KA243g/pqNEmDnwydmCKqwOCvpGTzjQEwVdMD1wd8oOhUZ63y1uOdGscd3d6x0qMRy+ilMl3wwmnRDun+QkFKkM6zk46rDzNJ0Azm6ptT0hjMGMQRB6tS+Ep9Os6PmziYZoFpFjvsxCz/YnqBn0wVTM/K+YYJYD61ANI3Hs6KCcZloklfIW0595/oET/kiHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mnrUcCTlXFQOTBphbM7uzgjEgZvswdf1qz1O51iiFN0=;
+ b=SeJ3V3UlKqc+p/JroHc0aXcexSiVKNhfYs3MlXXQNgoOrCTEwvcvfQzS6k5K8o5tK8O3p92IMPhNrNSRBKAArx4/rzHgx1qa91/OJgoX+PgCjNIQxJz98Q5cfJJKSdelBGrYc7BKlM/hy4Ta/Pq58WYlw00HLvQbivzD9usWI69Hty8oJBsGQA3iAMDWXOprXeX5XcFprX06NjJ+A0CPOtDi6JJDyzEJ5akXEqWPdMNVjE6y0+cENn6qQ1WU4o74v+ek9B52BkTIkQZTJqwm+2MMReG2uECX/ySGEcjoEdHyZZH4mvAh7Hbao0U2xA/WjvpsXIEBZr+bAzdl6yOMog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mnrUcCTlXFQOTBphbM7uzgjEgZvswdf1qz1O51iiFN0=;
+ b=Jmaa/muP0HuG4nPDGVMKZnbhXsNx9ZCx2ZitVgZl5I74d2+NBQRKPXppPvUZEXJUhBF8kysxIvrUUZUP+/mhhHGYel4Omc5t8TPS2xT68CVOgWI9jLKU6xq22csBsW9PXwFdiceHOdZlI3aqsHX/asvTPysHZLbZqmqbSIBE4ZI=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by CH2PR04MB7080.namprd04.prod.outlook.com (2603:10b6:610:9f::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.23; Mon, 24 Oct
+ 2022 08:12:29 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::88ea:acd8:d928:b496]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::88ea:acd8:d928:b496%5]) with mapi id 15.20.5723.038; Mon, 24 Oct 2022
+ 08:12:29 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+CC:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: consolidate btrfs checksumming, repair and bio splitting
+Thread-Topic: consolidate btrfs checksumming, repair and bio splitting
+Thread-Index: AQHYvdZkzfjbXHDoM0mHBIw1hzgYgK4dhQkA
+Date:   Mon, 24 Oct 2022 08:12:29 +0000
+Message-ID: <347dc0b3-0388-54ee-6dcb-0c1d0ca08d05@wdc.com>
+References: <20220901074216.1849941-1-hch@lst.de>
+In-Reply-To: <20220901074216.1849941-1-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|CH2PR04MB7080:EE_
+x-ms-office365-filtering-correlation-id: 2e1c8104-3762-43d2-b6e6-08dab5977e5c
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ndLMQQC1/bA6D/27rQPCvu+KWGUEFgHamnbK0MJVHt+vDo9EVfSFwY3jyaH3FrTA08F1mOUjFpKWhW4eXRiOeJi4E3qPFiOlnfivyBYxC+FhJ/UMiJ3qDgW9ZBWF5TA5HxIlHrxG5yE4+z2giJiy9IrPKbVMqGZHGCOZVO+ovLiDfakYqBFGB6awRlkvAJq3YLlDhS8rzGQAKZJVeCfeiHS1zBbo/rCGweMqEpd+lLOoTplADVLoOu3w1XHobv0l/1uSY7da3ejZvXGpwZIbUz3zu7Uyi8YjYolrMxD+i/wpbSX5410JT4BUd/Zi57ePrSFCgP9FV/pN8pyCu2ddt4OyLxjDBWl63XMc8ZctTOH5C7mWTJnnIt+0+LqgKrAO9ElkMOY8GV0YuvBJcpQEjPuKKRwKAy8z15w7HBL516OGOpdVkygPYo/ubwRvlopPM+kN1bIXb8J/GbFLCSaaLiJvmzNIjwNFBVEZ3+2d8lUWH88RnrRXr2A8xMeCAWJyS9MraWbwVK2btpx5VnpvNAKubK5mRQxd1BQmYFVrkoOgPuZktPZ20N8e0dgfTAqWyXgfysmUb2yRe92YzepRx2tbPJjDDlPzpT+sdODy7+zdMBctp1OrXPo+LmABPglr9lKrQC9urGvQKWHAqJvP3XZ/rC8LWhYRhfE4jWYbmfZLuwaIL2hUAB5XjtL7Ey500CP83+DtsE0eS9YwF6/W9L/jV1Ih08Xzz2VT58nE997neU+juqG1gduKe8q87INFaecRopFF6htY8sCZyaoPzEViYpDk0Cj69Y3mzXTCNd5YWP3piegCekhYO+dsfxkPwzq3KRzRtvg80KldXasUCQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(396003)(366004)(39860400002)(136003)(346002)(451199015)(2616005)(31686004)(38070700005)(186003)(4270600006)(38100700002)(6512007)(82960400001)(6506007)(41300700001)(31696002)(316002)(86362001)(19618925003)(122000001)(8936002)(5660300002)(2906002)(7416002)(76116006)(71200400001)(36756003)(110136005)(54906003)(4326008)(478600001)(6486002)(558084003)(66476007)(91956017)(66946007)(8676002)(64756008)(66556008)(66446008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VFJpYjBKZUhoRzI2R3dySmtRcjJveFhybWZuNFVSYUVwMXBWY1FJRTRlMGxl?=
+ =?utf-8?B?VDFOb2M3ajZvbkVabzM0ZjV1TEVwUUFUN0t5NkhyalFNTk5RcHNRdHExdVhl?=
+ =?utf-8?B?UWF0TGZMdEJEdkUwWmNBbUM2MjhmVnlnaHJsMmRhQWQ0WmRVRzlFalVMRm9S?=
+ =?utf-8?B?WXFHdnZiSEU0NDJrd2hqYWV4dE1TS1o2TjMzRU4ybWh6Skg5VFdPdVNiUlFk?=
+ =?utf-8?B?MUxvbE9aT29jM21vMkxTNHRWTDdwdnhQZ2FnaGYwR3VWQU12a3drNkhMMks0?=
+ =?utf-8?B?OWtUNmcycHJ0Vy9HMFhZMjA3QUFETmQxRlcyY0VUSUZQVVJvM0YrRjk0VHJh?=
+ =?utf-8?B?c2doY1gxK09IaTdrKzRTeVFIN1FJRDJHbXRaZ1lVcC9tQW9KVUdtakxqbmlP?=
+ =?utf-8?B?eFhaTEd4RnJ0OWNOejVwWlQ1a3RKSXpQWDdCV2tQZDhJYktYd2N5bi9RZjdN?=
+ =?utf-8?B?UndBdnZSS2lwWTV4Zm1tOVNVR1lseC9Bc3duS0N3bTdKbFA4K3B4MGF6V1RK?=
+ =?utf-8?B?Y0sySExkU3kwQVNYQy9lVElMMnBHNlU1cHRQRU1QYVpSKytlNGFUK3Z2L29w?=
+ =?utf-8?B?RTBPT3lSdk5ZUVd6MnZQWUQwbkFnTG04ZEhlNk9tRDNYTVhPbmVHaEgzRVJl?=
+ =?utf-8?B?MmZyc1NLRjd2V0dEUkNKb09TNC9ydGlyNWlCY3VSMXl0aitra0VSbDR0MlFR?=
+ =?utf-8?B?MWZXSEtPZUcrRTNmTUt4T3A2ajFxMTVmQUFYMjVMcFVTbFBVWncvVXRjUytQ?=
+ =?utf-8?B?WWZhUFliVG9FU01GNXNNa0MrS01sb00vWkhIYVdCVTIyYWdkaHhHN3VDSUVk?=
+ =?utf-8?B?L2wxelowU3RjNVk2d2hwcWxOOUd3MnhRUFdHR0VnQ2hNM3QxRWoxbVFmUnhE?=
+ =?utf-8?B?VHZOd2w3STY1eUNnbVZtRjI1MjArVjBRZXdVUjhMRUYycTRoOHFQeFE2dVhV?=
+ =?utf-8?B?S2VTMEdGL1B6QjlIWXJYa3krMlRubFh3L3VVLzFpSkNwbTBBM0YzUWozTkhi?=
+ =?utf-8?B?MGZ2WlRQemNHQ3ZFbS9OZjBVZS93ZGErQmpmeUVmUmFaVm5zSDlFN1l2OFcx?=
+ =?utf-8?B?NnJ2RFhVNEhXOHhIRURSZy9BeEhpWm9YTEZPazlwK3pVOGxFb0dsMlMwbEZ6?=
+ =?utf-8?B?Tlgwc0pOdUhCbmtkbVU0bUtIL0liOUJldDNkcWVYa2s0RW10Mko0T3hhbWdD?=
+ =?utf-8?B?WjFvMmcxUTY5YjZMOEU5eGpuOXdUUUc5Qk5MYU5pVnJPalFtOWpGaGdrZjZH?=
+ =?utf-8?B?TUtZWDVjNlF0VTEvbUc4aDhrQXBsbFF2TGsyY1ZJVlkyWi9pV1k1cHBOand2?=
+ =?utf-8?B?dDhGWkZvejJQdDJEcVIrYXhUbHBydFpIb0hwZ1R0cm1MaS9HWis5OW1ibUZu?=
+ =?utf-8?B?OTAxSTZLcFA4UEpndDAya1Voam9vLzFvRjlMYjJtWSt3THp4UW1oT09vMnRk?=
+ =?utf-8?B?d3JVazhRNWRBaW5sZUhYSk8vQ1pDeDdEQ2plb2hWT3oycGQycS9sajJBTzBz?=
+ =?utf-8?B?REpiM204Z21LMXJ0R1QvRFc4cUVLeUxZVmhsK0RTUG11U0J1VzliWWljUWc3?=
+ =?utf-8?B?M3hrODBSWURaWEFuRE1LcFhlT3JCVmowalZFSWdnWWZQOEdYSmlpNTBhWVFE?=
+ =?utf-8?B?RHlkdUNtQU1DQlVrQlgvdjNDd1dsOEVZMjdoTkRBN1FEeUp4N2xibGNBeGRO?=
+ =?utf-8?B?MUlseTdMMzhQdVd1QWZjbVVXY2s4RjcyY2RPU1NHT2JML1Y3aXJKRVBsOHpB?=
+ =?utf-8?B?aVdINVRBQUxUWDJzbS8yZlRrdWF6NWRvOXNvTDAxTXc2UnRmd202Y1M0YjFS?=
+ =?utf-8?B?TEF4OFNTRDB1UmVoRUUzbUNwVzZWakRoUWlFUVVtSmFOM3dMOWRrU3lING9U?=
+ =?utf-8?B?RjR3ZkhiK2FjSEJ4aUMrQllKTzRMcjc2S21IbEpPM3lHeEh5UlRLS2pkSXVE?=
+ =?utf-8?B?TWdNUitCc3hHWVBTNmNURzczcGRLQUNlWjZJd2FFM016RGxYWjllMWlWUFVB?=
+ =?utf-8?B?czVrL293enhza0k5bzJFTmdDNDh4ZXFhMnlHdmFEdXB6UC92Nk1rclVyekFO?=
+ =?utf-8?B?d3FkTDFMUDdDNEQvVk1hVCtCMUN3NEw2S2hPNEtkMDJWeVZQWkZUNjZPclVs?=
+ =?utf-8?B?enJOdUpFWVFNUXgvRUhLc0phcU1wam1jaGRVYnRnTXNIRzZwRnNQTFpxbzFa?=
+ =?utf-8?B?anJTVnNubFY4cGtmZHFmQWp5b1JpeWdJeWE2WXhFd0p2UXZDbDV4NXg5cTJy?=
+ =?utf-8?Q?OelKEkWPPxXE6iFNvlxBSb/gUGxS3XTjQS3P3u/L00=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <69C0F58BD6F88B498F825DC5759E5C70@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e1c8104-3762-43d2-b6e6-08dab5977e5c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2022 08:12:29.0416
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2spsvQctSeydH6X5UbBN/b5orrArTZdKeoSDA+5ssirpfF/gcjvQAnP89vtGZjk5do+NHXCv3x+EIEWaZkRrlT9blJPOD/OU8pLZgDkbqFg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB7080
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, 24 Oct 2022 04:17:13 +0500
-Roman Mamedov <rm@romanrm.net> wrote:
-
-> Hello,
-> 
-> Just wanted to report that I still get the same warning with flushoncommit as
-> someone posted[1][2] back in 2017, also today on kernel 5.10.149. Was that
-> supposed to be fixed? Or maybe fixed in 6.0+?
-> 
-> Thanks
-> 
-> [1] https://www.spinics.net/lists/linux-btrfs/msg72483.html
-> [2] https://marc.info/?l=linux-btrfs&m=151315564008773
-
-I found that this might have been fixed:
-https://lore.kernel.org/linux-btrfs/20220208224129.GI12643@twin.jikos.cz/
-
-But not backported to stable series, why not? Seems to be a small and simple
-fix.
-
-> [Mon Oct 24 03:49:18 2022] WARNING: CPU: 9 PID: 8883 at fs/fs-writeback.c:2456 __writeback_inodes_sb_nr+0xba/0xd0
-> [Mon Oct 24 03:49:18 2022] Modules linked in: dm_snapshot(E) nls_ascii(E) nls_cp437(E) vfat(E) fat(E) uas(E) usb_storage(E) xt_set(E) ip_set_hash_net(E) ip_set(E) nfnetlink(E) veth(E) vhost_net(E) vhost(E) vhost_iotlb(E) tap(E) tun(E) i2c_dev(E) sit(E) tunnel4(E) ip_tunnel(E) xt_comment(E) xt_multiport(E) xt_limit(E) xt_length(E) xt_CT(E) xt_tcpudp(E) xt_state(E) xt_conntrack(E) ip6t_rpfilter(E) ipt_rpfilter(E) ip6table_nat(E) ip6table_raw(E) ip6table_mangle(E) iptable_nat(E) nf_nat(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E) iptable_raw(E) iptable_mangle(E) ip6table_filter(E) ip6_tables(E) iptable_filter(E) ip_tables(E) x_tables(E) cpufreq_userspace(E) cpufreq_conservative(E) cpufreq_ondemand(E) cpufreq_powersave(E) fuse(E) nbd(E) 8021q(E) garp(E) mrp(E) bridge(E) stp(E) llc(E) tcp_bbr(E) xfs(E) dm_thin_pool(E) crc32_generic(E) loop(E) radeon(E) edac_mce_amd(E) kvm_amd(E) ttm(E) drm_kms_helper(E) kvm(E) cec(E) drm(E) snd_pcsp(E) i2c_algo_bit(E) irqbypass(E) snd_pcm(E) e
- vd
->  ev(E) cp210x(E)
-> [Mon Oct 24 03:49:18 2022]  rapl(E) joydev(E) snd_timer(E) usbserial(E) snd(E) sg(E) wmi_bmof(E) soundcore(E) sp5100_tco(E) ccp(E) watchdog(E) rng_core(E) k10temp(E) acpi_cpufreq(E) button(E) ext4(E) crc16(E) mbcache(E) jbd2(E) btrfs(E) blake2b_generic(E) dm_crypt(E) raid10(E) raid456(E) async_raid6_recov(E) async_memcpy(E) async_pq(E) async_xor(E) async_tx(E) xor(E) raid6_pq(E) raid0(E) multipath(E) linear(E) dm_cache_smq(E) dm_cache(E) dm_persistent_data(E) dm_bio_prison(E) dm_bufio(E) dm_mod(E) libcrc32c(E) crc32c_generic(E) sd_mod(E) hid_generic(E) usbhid(E) hid(E) raid1(E) r8169(E) ahci(E) crc32_pclmul(E) realtek(E) libahci(E) crc32c_intel(E) md_mod(E) ghash_clmulni_intel(E) xhci_pci(E) aesni_intel(E) libaes(E) crypto_simd(E) cryptd(E) glue_helper(E) mdio_devres(E) nvme(E) libata(E) i2c_piix4(E) xhci_hcd(E) libphy(E) nvme_core(E) t10_pi(E) scsi_mod(E) usbcore(E) crc_t10dif(E) usb_common(E) crct10dif_generic(E) crct10dif_pclmul(E) crct10dif_common(E) wmi(E) gpio_amdpt(E) gpio_g
- en
->  eric(E)
-> [Mon Oct 24 03:49:18 2022] CPU: 9 PID: 8883 Comm: btrfs-transacti Tainted: G        W   E     5.10.149-rm1+ #308
-> [Mon Oct 24 03:49:18 2022] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./B550 PG Velocita, BIOS P2.10 08/04/2021
-> [Mon Oct 24 03:49:18 2022] RIP: 0010:__writeback_inodes_sb_nr+0xba/0xd0
-> [Mon Oct 24 03:49:18 2022] Code: c7 0f b6 d1 e8 47 fc ff ff 48 89 e7 e8 bf fb ff ff 48 8b 44 24 48 65 48 33 04 25 28 00 00 00 75 11 48 83 c4 50 c3 cc cc cc cc <0f> 0b 0f 1f 40 00 eb c7 e8 e9 7e 59 00 66 0f 1f 84 00 00 00 00 00
-> [Mon Oct 24 03:49:18 2022] RSP: 0018:ffffba9303a3be00 EFLAGS: 00010246
-> [Mon Oct 24 03:49:18 2022] RAX: ffff95c0e044dc00 RBX: ffff95bc04f4f340 RCX: 0000000000000000
-> [Mon Oct 24 03:49:18 2022] RDX: 0000000000000000 RSI: 0000000000088d13 RDI: ffff95bd2556b000
-> [Mon Oct 24 03:49:18 2022] RBP: ffff95bd011e0000 R08: ffff95c0e044df58 R09: 000000000000001f
-> [Mon Oct 24 03:49:18 2022] R10: 000000000000003c R11: 0000000000000000 R12: ffff95c022220e00
-> [Mon Oct 24 03:49:18 2022] R13: ffff95bd011e0460 R14: ffff95bd011e0488 R15: ffff95bd2556c000
-> [Mon Oct 24 03:49:18 2022] FS:  0000000000000000(0000) GS:ffff95cbfec40000(0000) knlGS:0000000000000000
-> [Mon Oct 24 03:49:18 2022] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [Mon Oct 24 03:49:18 2022] CR2: fffffa8000048000 CR3: 000000035f8ba000 CR4: 0000000000750ee0
-> [Mon Oct 24 03:49:18 2022] PKRU: 55555554
-> [Mon Oct 24 03:49:18 2022] Call Trace:
-> [Mon Oct 24 03:49:18 2022]  btrfs_commit_transaction+0x39c/0xb80 [btrfs]
-> [Mon Oct 24 03:49:18 2022]  ? start_transaction+0xe8/0x5b0 [btrfs]
-> [Mon Oct 24 03:49:18 2022]  transaction_kthread+0x163/0x180 [btrfs]
-> [Mon Oct 24 03:49:18 2022]  ? btrfs_cleanup_transaction+0x580/0x580 [btrfs]
-> [Mon Oct 24 03:49:18 2022]  kthread+0x117/0x130
-> [Mon Oct 24 03:49:18 2022]  ? __kthread_cancel_work+0x50/0x50
-> [Mon Oct 24 03:49:18 2022]  ret_from_fork+0x22/0x30
-> [Mon Oct 24 03:49:18 2022] ---[ end trace 88a48b38d299109e ]---
-> 
-
-
--- 
-With respect,
-Roman
+RGF2aWQsIHdoYXQncyB5b3VyIHBsYW4gdG8gcHJvZ3Jlc3Mgd2l0aCB0aGlzIHNlcmllcz8NCg0K
