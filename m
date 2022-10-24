@@ -2,54 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC14609AD0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Oct 2022 08:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304BB609B77
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Oct 2022 09:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbiJXGzL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Oct 2022 02:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53458 "EHLO
+        id S229782AbiJXHiJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Oct 2022 03:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbiJXGzH (ORCPT
+        with ESMTP id S229864AbiJXHiH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Oct 2022 02:55:07 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FA8DFC6;
-        Sun, 23 Oct 2022 23:54:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 972F11F85D;
-        Mon, 24 Oct 2022 06:54:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1666594498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=EeVMspqcUvVpkozag6OV7bIDRUjBjNWV0jqoU11EAWs=;
-        b=QcBzReTPFSOifjMH92U8GB7uWOuOUm1kG1qrS/gO6P2+cGTY7kN97tHotUbeHcOBnTO+YO
-        Wk3zwPfXlPqYR8cQWi/At/tE/T5LxQacc5c6Me24PEiKAFcFr3vm9KW4rX29D2XTDNUtsc
-        zOZu0yHai6Y9ZcjXUu/qsQyARTIdVM0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 49EF413357;
-        Mon, 24 Oct 2022 06:54:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id KQLSBME2VmNJHwAAMHmgww
-        (envelope-from <wqu@suse.com>); Mon, 24 Oct 2022 06:54:57 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     stable@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH STABLE 5.15] btrfs: enhance unsupported compat RO flags handling
-Date:   Mon, 24 Oct 2022 14:54:54 +0800
-Message-Id: <12f048b72ae2e2a465a519cf6402f0e6cf19321d.1666594445.git.wqu@suse.com>
-X-Mailer: git-send-email 2.38.1
+        Mon, 24 Oct 2022 03:38:07 -0400
+Received: from len.romanrm.net (len.romanrm.net [IPv6:2001:41d0:1:8b3b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361896112B
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Oct 2022 00:37:53 -0700 (PDT)
+Received: from nvm (nvm2.home.romanrm.net [IPv6:fd39::4a:3cff:fe57:d6b5])
+        by len.romanrm.net (Postfix) with SMTP id 04EB5400E1
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Oct 2022 07:37:48 +0000 (UTC)
+Date:   Mon, 24 Oct 2022 12:37:46 +0500
+From:   Roman Mamedov <rm@romanrm.net>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: WARN_ON in __writeback_inodes_sb_nr when btrfs mounted with
+ flushoncommit
+Message-ID: <20221024123746.7a9d9bfd@nvm>
+In-Reply-To: <20221024041713.76aeff42@nvm>
+References: <20221024041713.76aeff42@nvm>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,88 +37,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-commit 81d5d61454c365718655cfc87d8200c84e25d596 upstream.
+On Mon, 24 Oct 2022 04:17:13 +0500
+Roman Mamedov <rm@romanrm.net> wrote:
 
-Currently there are two corner cases not handling compat RO flags
-correctly:
+> Hello,
+> 
+> Just wanted to report that I still get the same warning with flushoncommit as
+> someone posted[1][2] back in 2017, also today on kernel 5.10.149. Was that
+> supposed to be fixed? Or maybe fixed in 6.0+?
+> 
+> Thanks
+> 
+> [1] https://www.spinics.net/lists/linux-btrfs/msg72483.html
+> [2] https://marc.info/?l=linux-btrfs&m=151315564008773
 
-- Remount
-  We can still mount the fs RO with compat RO flags, then remount it RW.
-  We should not allow any write into a fs with unsupported RO flags.
+I found that this might have been fixed:
+https://lore.kernel.org/linux-btrfs/20220208224129.GI12643@twin.jikos.cz/
 
-- Still try to search block group items
-  In fact, behavior/on-disk format change to extent tree should not
-  need a full incompat flag.
+But not backported to stable series, why not? Seems to be a small and simple
+fix.
 
-  And since we can ensure fs with unsupported RO flags never got any
-  writes (with above case fixed), then we can even skip block group
-  items search at mount time.
+> [Mon Oct 24 03:49:18 2022] WARNING: CPU: 9 PID: 8883 at fs/fs-writeback.c:2456 __writeback_inodes_sb_nr+0xba/0xd0
+> [Mon Oct 24 03:49:18 2022] Modules linked in: dm_snapshot(E) nls_ascii(E) nls_cp437(E) vfat(E) fat(E) uas(E) usb_storage(E) xt_set(E) ip_set_hash_net(E) ip_set(E) nfnetlink(E) veth(E) vhost_net(E) vhost(E) vhost_iotlb(E) tap(E) tun(E) i2c_dev(E) sit(E) tunnel4(E) ip_tunnel(E) xt_comment(E) xt_multiport(E) xt_limit(E) xt_length(E) xt_CT(E) xt_tcpudp(E) xt_state(E) xt_conntrack(E) ip6t_rpfilter(E) ipt_rpfilter(E) ip6table_nat(E) ip6table_raw(E) ip6table_mangle(E) iptable_nat(E) nf_nat(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E) iptable_raw(E) iptable_mangle(E) ip6table_filter(E) ip6_tables(E) iptable_filter(E) ip_tables(E) x_tables(E) cpufreq_userspace(E) cpufreq_conservative(E) cpufreq_ondemand(E) cpufreq_powersave(E) fuse(E) nbd(E) 8021q(E) garp(E) mrp(E) bridge(E) stp(E) llc(E) tcp_bbr(E) xfs(E) dm_thin_pool(E) crc32_generic(E) loop(E) radeon(E) edac_mce_amd(E) kvm_amd(E) ttm(E) drm_kms_helper(E) kvm(E) cec(E) drm(E) snd_pcsp(E) i2c_algo_bit(E) irqbypass(E) snd_pcm(E) e
+ vd
+>  ev(E) cp210x(E)
+> [Mon Oct 24 03:49:18 2022]  rapl(E) joydev(E) snd_timer(E) usbserial(E) snd(E) sg(E) wmi_bmof(E) soundcore(E) sp5100_tco(E) ccp(E) watchdog(E) rng_core(E) k10temp(E) acpi_cpufreq(E) button(E) ext4(E) crc16(E) mbcache(E) jbd2(E) btrfs(E) blake2b_generic(E) dm_crypt(E) raid10(E) raid456(E) async_raid6_recov(E) async_memcpy(E) async_pq(E) async_xor(E) async_tx(E) xor(E) raid6_pq(E) raid0(E) multipath(E) linear(E) dm_cache_smq(E) dm_cache(E) dm_persistent_data(E) dm_bio_prison(E) dm_bufio(E) dm_mod(E) libcrc32c(E) crc32c_generic(E) sd_mod(E) hid_generic(E) usbhid(E) hid(E) raid1(E) r8169(E) ahci(E) crc32_pclmul(E) realtek(E) libahci(E) crc32c_intel(E) md_mod(E) ghash_clmulni_intel(E) xhci_pci(E) aesni_intel(E) libaes(E) crypto_simd(E) cryptd(E) glue_helper(E) mdio_devres(E) nvme(E) libata(E) i2c_piix4(E) xhci_hcd(E) libphy(E) nvme_core(E) t10_pi(E) scsi_mod(E) usbcore(E) crc_t10dif(E) usb_common(E) crct10dif_generic(E) crct10dif_pclmul(E) crct10dif_common(E) wmi(E) gpio_amdpt(E) gpio_g
+ en
+>  eric(E)
+> [Mon Oct 24 03:49:18 2022] CPU: 9 PID: 8883 Comm: btrfs-transacti Tainted: G        W   E     5.10.149-rm1+ #308
+> [Mon Oct 24 03:49:18 2022] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./B550 PG Velocita, BIOS P2.10 08/04/2021
+> [Mon Oct 24 03:49:18 2022] RIP: 0010:__writeback_inodes_sb_nr+0xba/0xd0
+> [Mon Oct 24 03:49:18 2022] Code: c7 0f b6 d1 e8 47 fc ff ff 48 89 e7 e8 bf fb ff ff 48 8b 44 24 48 65 48 33 04 25 28 00 00 00 75 11 48 83 c4 50 c3 cc cc cc cc <0f> 0b 0f 1f 40 00 eb c7 e8 e9 7e 59 00 66 0f 1f 84 00 00 00 00 00
+> [Mon Oct 24 03:49:18 2022] RSP: 0018:ffffba9303a3be00 EFLAGS: 00010246
+> [Mon Oct 24 03:49:18 2022] RAX: ffff95c0e044dc00 RBX: ffff95bc04f4f340 RCX: 0000000000000000
+> [Mon Oct 24 03:49:18 2022] RDX: 0000000000000000 RSI: 0000000000088d13 RDI: ffff95bd2556b000
+> [Mon Oct 24 03:49:18 2022] RBP: ffff95bd011e0000 R08: ffff95c0e044df58 R09: 000000000000001f
+> [Mon Oct 24 03:49:18 2022] R10: 000000000000003c R11: 0000000000000000 R12: ffff95c022220e00
+> [Mon Oct 24 03:49:18 2022] R13: ffff95bd011e0460 R14: ffff95bd011e0488 R15: ffff95bd2556c000
+> [Mon Oct 24 03:49:18 2022] FS:  0000000000000000(0000) GS:ffff95cbfec40000(0000) knlGS:0000000000000000
+> [Mon Oct 24 03:49:18 2022] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [Mon Oct 24 03:49:18 2022] CR2: fffffa8000048000 CR3: 000000035f8ba000 CR4: 0000000000750ee0
+> [Mon Oct 24 03:49:18 2022] PKRU: 55555554
+> [Mon Oct 24 03:49:18 2022] Call Trace:
+> [Mon Oct 24 03:49:18 2022]  btrfs_commit_transaction+0x39c/0xb80 [btrfs]
+> [Mon Oct 24 03:49:18 2022]  ? start_transaction+0xe8/0x5b0 [btrfs]
+> [Mon Oct 24 03:49:18 2022]  transaction_kthread+0x163/0x180 [btrfs]
+> [Mon Oct 24 03:49:18 2022]  ? btrfs_cleanup_transaction+0x580/0x580 [btrfs]
+> [Mon Oct 24 03:49:18 2022]  kthread+0x117/0x130
+> [Mon Oct 24 03:49:18 2022]  ? __kthread_cancel_work+0x50/0x50
+> [Mon Oct 24 03:49:18 2022]  ret_from_fork+0x22/0x30
+> [Mon Oct 24 03:49:18 2022] ---[ end trace 88a48b38d299109e ]---
+> 
 
-This patch will enhance the unsupported RO compat flags by:
 
-- Reject read-write remount if there are unsupported RO compat flags
-
-- Go dummy block group items directly for unsupported RO compat flags
-  In fact, only changes to chunk/subvolume/root/csum trees should go
-  incompat flags.
-
-The latter part should allow future change to extent tree to be compat
-RO flags.
-
-Thus this patch also needs to be backported to all stable trees.
-
-CC: stable@vger.kernel.org # 5.15
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/block-group.c | 11 ++++++++++-
- fs/btrfs/super.c       |  9 +++++++++
- 2 files changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 474dcc0540a8..5eea56789ccc 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2139,7 +2139,16 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
- 	int need_clear = 0;
- 	u64 cache_gen;
- 
--	if (!info->extent_root)
-+	/*
-+	 * Either no extent root (with ibadroots rescue option) or we have
-+	 * unsupported RO options. The fs can never be mounted read-write, so no
-+	 * need to waste time searching block group items.
-+	 *
-+	 * This also allows new extent tree related changes to be RO compat,
-+	 * no need for a full incompat flag.
-+	 */
-+	if (!info->extent_root || (btrfs_super_compat_ro_flags(info->super_copy) &
-+		      ~BTRFS_FEATURE_COMPAT_RO_SUPP))
- 		return fill_dummy_bgs(info);
- 
- 	key.objectid = 0;
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 969bf0724fdf..1bf2ded0be93 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2045,6 +2045,15 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 			ret = -EINVAL;
- 			goto restore;
- 		}
-+		if (btrfs_super_compat_ro_flags(fs_info->super_copy) &
-+		    ~BTRFS_FEATURE_COMPAT_RO_SUPP) {
-+			btrfs_err(fs_info,
-+		"can not remount read-write due to unsupported optional flags 0x%llx",
-+				btrfs_super_compat_ro_flags(fs_info->super_copy) &
-+				~BTRFS_FEATURE_COMPAT_RO_SUPP);
-+			ret = -EINVAL;
-+			goto restore;
-+		}
- 		if (fs_info->fs_devices->rw_devices == 0) {
- 			ret = -EACCES;
- 			goto restore;
 -- 
-2.38.1
-
+With respect,
+Roman
