@@ -2,73 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B3460D7E8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Oct 2022 01:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A5460D7EF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Oct 2022 01:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbiJYXaW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Oct 2022 19:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
+        id S231374AbiJYXbt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Oct 2022 19:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232619AbiJYXaR (ORCPT
+        with ESMTP id S229875AbiJYXbs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Oct 2022 19:30:17 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D3C20F44
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Oct 2022 16:30:14 -0700 (PDT)
+        Tue, 25 Oct 2022 19:31:48 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF14E9853
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Oct 2022 16:31:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1666740609;
-        bh=fifh+qMEwpd+y9efpuXTx3wUyTbkHfGQcly86coLWCs=;
+        s=badeba3b8450; t=1666740702;
+        bh=EdGUShqoVgFXVYV3RIpxKBOOIVIdTp2KNIIbJfvX3ao=;
         h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=U7bnsDtLsjlyrqFQ5GwpJ3CINGXggLVLYTFqDfOnpEte/yRitAIXBUn7ekpDD2vXL
-         iI7DBWtPyZGHzyFQiS/N3d2mwLYfuzFMS5u4MSLYoSVnPbT07uh84t4LN7sDj579RE
-         Af0SI5ibfCRxUww82x9Sp+M5NbXzU4BzUpN40iKE=
+        b=RVBWVuT7vpDb7n7BqsaOVb+V+Y7nVFJ+Cu50We+E/9PhI3u33dz4naUHr1/c7Xf+2
+         J5H6VP0yTjEkuazKp9AmZtcAw7zeN9N8NLVebl0P2hxqELrZ5akZyCDI9B4HZTi1TL
+         hqKIewckugIyo4oDhKvUfcBPyI3Dqzthxzo8tZQ8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2V4J-1pDe0d0yb9-013vtE; Wed, 26
- Oct 2022 01:30:08 +0200
-Message-ID: <a9310323-f19e-258a-5dac-88a40e50ce06@gmx.com>
-Date:   Wed, 26 Oct 2022 07:30:04 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MjjCF-1pUCwQ2gfb-00lA37; Wed, 26
+ Oct 2022 01:31:42 +0200
+Message-ID: <21b3a262-7e66-179c-dbc1-b7fab5477734@gmx.com>
+Date:   Wed, 26 Oct 2022 07:31:38 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.0
-Subject: Re: [PATCH RFC 0/5] btrfs: raid56: do full stripe data checksum
- verification and recovery at RMW time
+Subject: Re: [PATCH RFC 5/5] btrfs: raid56: do full stripe data checksum
+ verification before RMW
+Content-Language: en-US
 To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
 References: <cover.1665730948.git.wqu@suse.com>
- <20221025134824.GK5824@twin.jikos.cz>
-Content-Language: en-US
+ <9389bb7901990ef7c0d0c58dc4c1168fd4240d27.1665730948.git.wqu@suse.com>
+ <20221025142140.GN5824@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20221025134824.GK5824@twin.jikos.cz>
+In-Reply-To: <20221025142140.GN5824@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wrlxG9oaV3q0ZMkv8IW7mIJCI8TkK+RYrsLXUSmlL9ZGcItCgsu
- w+Z6G3ahiw6ydgR4g/TAw8dlbyRpneqk6mq7hkX4B2repcDJGwjHVsRprnFtHn1Fa0j8P+l
- qh2b7PB+7TWWIswibZcfozsz/3WVAMDcFjjqK9axNona5woz9zlyJBAJAXDMNiqx2jwaLGE
- QExWFqUXlUsUYEedYrunA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:SlGGi0P1VrA=:1EWfGxd4OryTcof7h8ru22
- cfcTg/XenEP5VwEHXZ+uiaZIjAHuWDUdsq1h4RtBaQ8A4jtydaXLT+6NDnDfZk3r/kNOUHtmS
- PcypiKkpyRCpE441f5nG5C2a2RMxb27y9hZiNeMIEp+35NZFxtIyrEXqT5VM0wftuQiPUBNRz
- PL2mqVpcz9HYWGBe0QyN7j8+pIYn0bOjv8FT3RFko7cYzwFIUJrWr3oKeAYtUPQnibw3MIezQ
- pYfAF0utxT7uG4yl2wiK2hzCH568io+YxNn6JNqe4O3KklxPGz5Ab7kzFuo1qMbgtXRx87zs1
- jHg+FWXkHGdfPbdT64G9f3ttu+oXBLs8tObrp6y3J3bzVK+YeDxS9pVU7Hn/RMFzkHm0AJcHt
- bnP3YbuvjFuHTDQjJSs1AGnXqTb0eqI7wHgkS5yTg8MnokeUNm66ZHYgelE+uLhIN10AgFZLt
- qnpgvjr2cFRaEsmnvmHVMb9GoQ9Z12LRB8Wdt0FkGVA00nDrXMeB0+EgFAc2lI7MJVQrgzMI9
- CglEpNZOEjMexKGYGJLQSxfh/Y3d0geidE0xgU1oZ4BK4z3SFJDWDonfeuRyZVNduRLiBpFwB
- gQL+VxJ6cCWkK1POEhhsjEkR77kD0ERM1IwUlbDi6NWuQ5rD/wlkVnG3Y1TBxCXFycybd9XIl
- FnXsLnFgb2aw6CVVeuvDoYrUx/iN+t9EwiK26dCrShs+FMkd2Fl9FlSsO8T4ZpRVta6g0Ftvv
- 4UA+oOwJGkjLgkumLB+SeTsvE8B5+PjORUxa3LnSYBwlxCEEN0W6bq/79b6nHLZMZ1Om0fN58
- xVsBkOmHfB/DbKPbYwGFJNRNoblZuMQUVFYbAHrwsB9dFaDnX8Q57lZv3E+HXyCyCWU9gVvPb
- jleAnAx0AglHIXYXCsfGH2bPAgQoWb99t87+1eAyCcWbkpM+gd5qbWUDiXBRTB06H7HL96QjY
- B3NaQCKEm3/nzAXuyyztAYy0BbDIViqwtS0M5ab7UsH7MK4Hs3AWnMFFn6oOMydFdAZ5NfHLP
- lcHLKdqfYfx2YhYBsJjbUSzp161ulzT90SYVMs36G3UVchT3p/Uq8PB1yo+0JeL4yGxhVddss
- 2s5DucQ0ffCKZZMRq82iQyv6/RvIgVurG9sedZCYpD05kCX8L1HveOO1YUX8snjZ5iRY2wn8y
- hfqmrpnL6iI9uqCJw0c7zlP3rExMAHFrXcDZtU95mL0bNNK1pMvskRizIa5lRJOd6O/RZF0oa
- OMplLf6wk1oZbDsoPXuQdjtYDvkR59TR5KFAahsKIDItMvAz7pTzxE8BIiIRZmAb0D8fPnpZt
- +DeiD5tffKZ6y6/tekvQf7UGXSJcxysEH1yS7TJqQEG1ejAmK6Ij326/03fwmx0n+nbx4j8Fa
- O41ttn8pA+canePDKemaadqAlBj6WJm0zxTsQd4LQN81rnlnDvHMInqOT+0hnCBxZRFyjAmxN
- 0kBDtZoxJv67shjjNvGJvYVxb2ayLJ08wpohzBNzIXKTVQXp3a8nJK2t8j1QvlsT/x1v8oxen
- l9bpdqw8ShTth0fI7ugWgDieAQXLLOBQRspaOXFwm+ZgW
+X-Provags-ID: V03:K1:rxe+SZAib82FQUQbeSy5v0B/GorM3FU6zLyjIfCdgseYg//r9VQ
+ dcIXu4znO4xdA7zkb8d1Rt4Z7BKF5EK7YSRO01PF/Yxo9U1R0pr9kq4kNc8ih87Ie57ugTA
+ Mc3oyJV7IyxHGybAgXoOSh1iRkO+oqWN+kTPnfJ41EaWwYPhFEd9hTNXvw4Xg50HumdkItZ
+ AWgjTnCD0gad5EwgxJJrg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:OpWcmFTeslY=:tMuU1kMglY3vETF1VppxJr
+ MFaIRTthSYvxLLSIq79tOYGieBs1hDOwQm5441bhaFWwon7lsawh3D0qqX77rwyqcQiwEy56N
+ lYSz0ghn6zKQfidZSPPGjAiEIHbkZQrGoioFt0T7JEugxzN5S/L/O0lV2fH59U2d9vg1eHZjE
+ CGvIlfNC11nbFhO5p/Y2qbpWjQBHLggoJr/5rDZDHI/LcfYcz0jCeJxf6jtU3Hu58IsHtdFbe
+ gtNG+hjfdGCUxaaehRZmGp7P5ycpUD2/N4VhtSXHxAphxswnEVekXyNTptY5p2JBeu6T5vmVK
+ XWkmPLyo1lSNx6kNc0kig7Bv1ISnCBaShJKpDfN4kxnAp2v0wUd96N9y8skQXbL/X8iaTom4e
+ uDpmPNerNuilMkR0c4t9zwTkbbuYHHqtts7yozSEQpXP5QAj56Z8T3wGm40U4VJXO2djgWNzz
+ aGFJL23G2YnS4iSLg0cYrbhMv6/8Nol2RnLetOQwNbhAa86rDXS5tqbtbhn2JgfRPx7l8siN4
+ u77zJClmw0BEYVB9tdBS7QFcuHho9wZLY8El7JjpnH6bhVcrC03S9WkhXhoxewU4uwCVmLXQe
+ K+T52EJohHrMhLalJv7XUYTaJwQdCoRSzrI6FCOrOomZeKPzBDzUh3784ZbDC46Kn7qGIzxtz
+ bjd5Q/cOSfBHXGFggNltSySfoS9enzCT2dVDSUbFdrLicYPvkI6sht1MKM8/juPsnJNUAcLgZ
+ dWSMQJQa2KAzIXPqdyIqIMJZwysHCxe+FO2U3+ZXa30kVfBvtPdjfEvBrLFdAlcSJzo8Gf6/r
+ 7AgNNdILwa+tWUweFKF/2JzbIZj3QhDYIz0uK6oUpw9cT4orrTBe4fcSf4DO9ZDALs5s0keDY
+ 5wpLo1t1btqD0j1RWi7iRlSR1LR8pJ9CvJR1iPNUgfcUKJmGjImV8i4rwE3D6zvHpN+YnvHXN
+ XRuyu0+Iy3fmD3CRwysIbwLh0ZQNxIcki3fJqplLyx0fACJvjkI3QzpbkkNNTF953r1y1p6JT
+ Y1aVl7Opyk6667l+e9Uqg1qie3X12U6vH4+BRvdU+nPEV1TlKfQP8pG3KGPQmjR2dmk4wMBbe
+ fBIAZsucM0uKDkjB13zhlwQZsWj3s4lyO7og3P2w6qTJISHKoGM63bq02JTYG5A3XsfXFca6o
+ pMxoaCPL3RLtbMZG89QBo0QBeWCaARCPGd0wsB4poOoUs4ubBHnQQfHeZXVJQTvpJZLqli9N1
+ 9/W3Xc4g/0NItMKw2Il+NwckoyWE4FKK+bwCPchHklUug5NiE8pyuq+DDB+6deHQQ5fwrXiWq
+ y3oc4jHYU+zES5mtR5K3WyeMYcCta3G52yw2cbIX8QKJIKj+6BgqWBD5a19ucai1upvA2NEmP
+ eaJuYfwekWuLCgRCfF5xgb2ehlT0ZKp6G6VI63a00QSWYN9vyzuh+PBQAAZ8T6V2riWxdAA8v
+ NUiDRrGKhcktC011HyhIEX1jqD+QrN9wFfknpKBV257tBGge2DuOs7WFAzAOYBVkS7zc+p0g0
+ 54C3rfaczSyBi+qsdaL7X9+ER8WERIGFq/EqogAlNSGgV
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -81,114 +82,245 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/10/25 21:48, David Sterba wrote:
-> On Fri, Oct 14, 2022 at 03:17:08PM +0800, Qu Wenruo wrote:
->> There is a long existing problem for all RAID56 (not only btrfs RAID56)=
-,
->> that if we have corrupted data on-disk, and we do a RMW using that
->> corrupted data, we lose the chance of recovery.
+On 2022/10/25 22:21, David Sterba wrote:
+> On Fri, Oct 14, 2022 at 03:17:13PM +0800, Qu Wenruo wrote:
+>> [BUG]
+>> For the following small script, btrfs will be unable to recover the
+>> content of file1:
 >>
->> Since new parity is calculated using the corrupted sector, we will neve=
+>>    mkfs.btrfs -f -m raid1 -d raid5 -b 1G $dev1 $dev2 $dev3
+>>
+>>    mount $dev1 $mnt
+>>    xfs_io -f -c "pwrite -S 0xff 0 64k" -c sync $mnt/file1
+>>    md5sum $mnt/file1
+>>    umount $mnt
+>>
+>>    # Corrupt the above 64K data stripe.
+>>    xfs_io -f -c "pwrite -S 0x00 323026944 64K" -c sync $dev3
+>>    mount $dev1 $mnt
+>>
+>>    # Write a new 64K, which should be in the other data stripe
+>>    # And this is a sub-stripe write, which will cause RMW
+>>    xfs_io -f -c "pwrite 0 64k" -c sync $mnt/file2
+>>    md5sum $mnt/file1
+>>    umount $mnt
+>>
+>> Above md5sum would fail.
+>>
+>> [CAUSE]
+>> There is a long existing problem for raid56 (not limited to btrfs
+>> raid56) that, if we already have some corrupted on-disk data, and then
+>> trigger a sub-stripe write (which needs RMW cycle), it can cause furthe=
 r
->> be able to recovery the old data.
+>> damage into P/Q stripe.
 >>
->> However btrfs has data checksum to save the day here, if we do a full
->> scrub level verification at RMW time, we can detect the corrupted data
->> before we do any write.
+>>    Disk 1: data 1 |0x000000000000| <- Corrupted
+>>    Disk 2: data 2 |0x000000000000|
+>>    Disk 2: parity |0xffffffffffff|
 >>
->> Then do the proper recovery, data checksum recheck, and recovery the ol=
-d
->> data and call it a day.
+>> In above case, data 1 is already corrupted, the original data should be
+>> 64KiB of 0xff.
 >>
->> This series is going to add such ability, currently there are the
->> following limitations:
+>> At this stage, if we read data 1, and it has data checksum, we can stil=
+l
+>> recover going the regular RAID56 recovery path.
 >>
->> - Only works for full stripes without a missing device
->>    The code base is already here for a missing device + a corrupted
->>    sector case of RAID6.
+>> But if now we decide to write some data into data 2, then we need to go
+>> RMW.
+>> Just say we want to write 64KiB of '0x00' into data 2, then we read the
+>> on-disk data of data 1, calculate the new parity, resulting the
+>> following layout:
 >>
->>    But for now, I don't really want to test RAID6 yet.
+>>    Disk 1: data 1 |0x000000000000| <- Corrupted
+>>    Disk 2: data 2 |0x000000000000| <- New '0x00' writes
+>>    Disk 2: parity |0x000000000000| <- New Parity.
 >>
->> - We only handles data checksum verification
->>    Metadata verification will be much more complex, and in the long run
->>    we will only recommend metadata RAID1C3/C4 profiles to compensate
->>    RAID56 data profiles.
+>> But the new parity is calculated using the *corrupted* data 1, we can
+>> no longer recover the correct data of data1.
+>> Thus the corruption is forever there.
 >>
->>    Thus we may never support metadata verification for RAID56.
+>> [FIX]
+>> To solve above problem, this patch will do a full stripe data checksum
+>> verification at RMW time.
 >>
->> - If we found corrupted sectors which can not be repaired, we fail
->>    the whole bios for the full stripe
->>    This is to avoid further data corruption, but in the future we may
->>    just continue with corrupte data.
+>> This involves the following changes:
 >>
->>    This will need extra work to rollback to the original corrupte data
->>    (as the recovery process will change the content).
+>> - For raid56_rmw_stripe() we need to read the full stripe
+>>    Unlike the old behavior, which will only read out the missing part,
+>>    now we have to read out the full stripe (including data and P/Q), so
+>>    we can do recovery later.
 >>
->> - Way more overhead for substripe write RMW cycle
->>    Now we need to:
+>>    All the read will directly go into the rbio stripe sectors.
 >>
->>    * Fetch the datacsum for the full stripe
->>    * Verify the datacsum
->>    * Do RAID56 recovery (if needed)
->>    * Verify the recovered data (if needed)
+>>    This will not affect cached case, as cached rbio will always has all
+>>    its data sectors cached. And since cached sectors are already
+>>    after a RMW (which implies the same data csum check), they should be
+>>    always correct.
 >>
->>    Thankfully this only affects uncached sub-stripe writes.
->>    The successfully recovered data can be cached for later usage.
+>> - Do data checksum verification for the full stripe
+>>    The target is only the rbio stripe sectors.
 >>
->> - Will not writeback the recovered data during RMW
->>    Thus we still need to go back to recovery path to recovery.
+>>    The checksum is already filled before we reach finish_rmw().
+>>    Currently we only do the verification if there is no missing device.
 >>
->>    This can be later enhanced to let RMW to write the full stripe if
->>    we did some recovery during RMW.
+>>    The checksum verification will do the following work:
 >>
+>>    * Verify the data checksums for sectors which has data checksum of
+>>      a vertical stripe.
 >>
->> - May need further refactor to change how we handle RAID56 workflow
->>    Currently we use quite some workqueues to handle RAID56, and all
->>    work are delayed.
+>>      For sectors which doesn't has csum, they will be considered fine.
 >>
->>    This doesn't look sane to me, especially hard to read (too many jump=
-s
->>    just for a full RMW cycle).
+>>    * Check if we need to repair the vertical stripe
 >>
->>    May be a good idea to make it into a submit-and-wait workflow.
+>>      If no checksum mismatch, we can continue to the next vertical
+>>      stripe.
+>>      If too many corrupted sectors than the tolerance, we error out,
+>>      marking all the bios failed, to avoid further corruption.
 >>
->> [REASON for RFC]
->> Although the patchset does not only passed RAID56 test groups, but also
->> passed my local destructive RMW test cases, some of the above limitatio=
-ns
->> need to be addressed.
+>>    * Repair the vertical stripe
 >>
->> And whther the trade-off is worthy may still need to be discussed.
+>>    * Recheck the content of the failed sectors
+>>
+>>      If repaired sectors can not pass the checksum verification, we
+>>      error out
+>>
+>> This is a much strict workflow, meaning now we will not write a full
+>> stripe if it can not pass full stripe data verification.
+>>
+>> Obviously this will have a performance impact, as we are doing more
+>> works during RMW cycle:
+>>
+>> - Fetch the data checksum
+>> - Do checksum verification for all data stripes
+>> - Do recovery if needed
+>> - Do checksum verification again
+>>
+>> But for full stripe write we won't do it at all, thus for fully
+>> optimized RAID56 workload (always full stripe write), there should be n=
+o
+>> extra overhead.
+>>
+>> To me, the extra overhead looks reasonable, as data consistency is way
+>> more important than performance.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/raid56.c | 279 +++++++++++++++++++++++++++++++++++++++++----=
+-
+>>   1 file changed, 251 insertions(+), 28 deletions(-)
+>>
+>> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+>> index 8f7e25001a2b..e51c07bd4c7b 100644
+>> --- a/fs/btrfs/raid56.c
+>> +++ b/fs/btrfs/raid56.c
+>> @@ -1203,6 +1203,150 @@ static void bio_get_trace_info(struct btrfs_rai=
+d_bio *rbio, struct bio *bio,
+>>   	trace_info->stripe_nr =3D -1;
+>>   }
+>>
+>> +static void assign_one_failed(int failed, int *faila, int *failb)
+>> +{
+>> +	if (*faila < 0)
+>> +		*faila =3D failed;
+>> +	else if (*failb < 0)
+>> +		*failb =3D failed;
+>> +}
+>> +
+>> +static int recover_vertical(struct btrfs_raid_bio *rbio, int sector_nr=
+,
+>> +			    int extra_faila, int extra_failb,
+>> +			    void **pointers, void **unmap_array);
+>> +
+>> +static int rmw_validate_data_csums(struct btrfs_raid_bio *rbio)
+>> +{
+>> +	struct btrfs_fs_info *fs_info =3D rbio->bioc->fs_info;
+>> +	int sector_nr;
+>> +	int tolerance;
+>> +	void **pointers =3D NULL;
+>> +	void **unmap_array =3D NULL;
+>> +	int ret =3D 0;
+>> +
+>> +	/* No checksum, no need to check. */
+>> +	if (!rbio->csum_buf || !rbio->csum_bitmap)
+>> +		return 0;
+>> +
+>> +	/* No datacsum in the range. */
+>> +	if (bitmap_empty(rbio->csum_bitmap,
+>> +			 rbio->nr_data * rbio->stripe_nsectors))
+>> +		return 0;
+>> +
+>> +	pointers =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
+>> +	unmap_array =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS)=
+;
+>> +	if (!pointers || !unmap_array) {
+>> +		ret =3D -ENOMEM;
+>> +		goto out;
+>> +	}
+>> +
+>> +	if (rbio->bioc->map_type & BTRFS_BLOCK_GROUP_RAID5)
+>> +		tolerance =3D 1;
+>> +	else
+>> +		tolerance =3D 2;
 >
-> So this improves reliability at the cost of a full RMW cycle, do you
-> have any numbers to compare?
+> Please avoid the "if (...map & TYPE)" checks for values that we have
+> have in the raid attribute table, in this case it's tolerated_failures.
 
-That's the problem, I don't have enough physical disks to do a real
-world test.
+In fact, we already have one, it's rbio->bioc->max_error.
 
-But some basic analyze shows that, for a typical 5 disks RAID5, a full
-stripe is 256K, if using the default CRC32 the csum would be at most 256
-bytes.
-
-Thus a csum search would at most read two leaves.
-
-The cost should not be that huge AFAIK.
-
-> The affected workload is a cold write in
-> the middle of a stripe, following writes would likely hit the cached
-> stripe. For linear writes the cost should be amortized, for random
-> rewrites it's been always problematic regarding performance but I don't
-> know if the raid5 (or any striped profile) performance was not better in
-> some sense.
-
-Just to mention another thing you may want to take into consideration,
-I'm doing a refactor on the RAID56 write path, to make the whole
-sub-stripe/full-stripe write path fit into a single function, and go
-submit-and-wait path.
-
-My current plan is to get the refactor merged (mostly done, doing the
-tests now), then get the DRMW fix (would be much smaller and simpler to
-merge after the refactor).
+I'll go that way instead.
 
 Thanks,
 Qu
+>
+>> +
+>> +	for (sector_nr =3D 0; sector_nr < rbio->stripe_nsectors; sector_nr++)=
+ {
+>> +		int stripe_nr;
+>> +		int found_error =3D 0;
+>>   	     total_sector_nr++) {
+>>   		sector =3D rbio_stripe_sector(rbio, stripe, sectornr);
+>> +		 */
+>> +		sector =3D rbio_stripe_sector(rbio, stripe, sectornr);
+>>   	bio_endio(bio);
+>
+>> +static int recover_vertical(struct btrfs_raid_bio *rbio, int sector_nr=
+,
+>> +			    int extra_faila, int extra_failb,
+>> +			    void **pointers, void **unmap_array)
+>>   {
+>>   	struct btrfs_fs_info *fs_info =3D rbio->bioc->fs_info;
+>>   	struct sector_ptr *sector;
+>>   	const u32 sectorsize =3D fs_info->sectorsize;
+>> -	const int faila =3D rbio->faila;
+>> -	const int failb =3D rbio->failb;
+>> +	int faila =3D -1;
+>> +	int failb =3D -1;
+>> +	int failed =3D 0;
+>> +	int tolerance;
+>>   	int stripe_nr;
+>>
+>> +	if (rbio->bioc->map_type & BTRFS_BLOCK_GROUP_RAID5)
+>> +		tolerance =3D 1;
+>> +	else
+>> +		tolerance =3D 2;
+>
+> And here.
+>
+>> +
+>> +	failed =3D calculate_failab(rbio, extra_faila, extra_failb, &faila, &=
+failb);
+>> +
+>> +	if (failed > tolerance)
+>> +		return -EIO;
+>> +
+>>   	/*
+>>   	 * Now we just use bitmap to mark the horizontal stripes in
+>>   	 * which we have data when doing parity scrub.
+>>   	 */
+>>   	if (rbio->operation =3D=3D BTRFS_RBIO_PARITY_SCRUB &&
+>>   	    !test_bit(sector_nr, &rbio->dbitmap))
+>> -		return;
+>> +		return 0;
+>>
+>>   	/*
+>>   	 * Setup our array of pointers with sectors from each stripe
