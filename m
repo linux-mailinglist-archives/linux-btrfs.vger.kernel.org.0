@@ -2,153 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CBD60CDDA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Oct 2022 15:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7F860CE7D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Oct 2022 16:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbiJYNsn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Oct 2022 09:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
+        id S232986AbiJYOLB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Oct 2022 10:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbiJYNsm (ORCPT
+        with ESMTP id S233008AbiJYOKd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Oct 2022 09:48:42 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C465188101
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Oct 2022 06:48:40 -0700 (PDT)
+        Tue, 25 Oct 2022 10:10:33 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6221827150
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Oct 2022 07:09:06 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D771F1F38C;
-        Tue, 25 Oct 2022 13:48:38 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1C4B421A13;
+        Tue, 25 Oct 2022 14:09:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666705718;
+        t=1666706945;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=r75QtccPqL258FOXdSmb8y4zg16NrcU5nzPaPzHsOiY=;
-        b=dTxIAgjt2vYvjukMH3NfdTG1n5j+fyIV53yEPBoTxk7+FnvDgmGpB78ASz1w0NNezqrmih
-        XL5PUp9mKlYf1c6yc/6ITzxM49+C4kyXURCzldInREWbSKhyR8RgT/TF+a5p/K7TzffKx2
-        WdsJQncrE5KM2zDBZwl1SNkWqVSww5U=
+        bh=7sJeapyjNw5q7DT9heTgiEU/IJ9HQ6/ej/0LUxOWWrI=;
+        b=PABzCNcybSSuYX54N7m2DIDTyb+zi+5FF8ZKmVKtMrfgDVuHZ7kV2H+/KzYJxI+ZBeDdsv
+        +KHJy6UzQaFG/8HqHebUVmlB35jTC4EPsIz7vMzGtO3BnHnmlL4QXHFLj6IZ+ofn0Mty8G
+        w9Hfli9UhwR25gRWhJGDtYlnLd98MMI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666705718;
+        s=susede2_ed25519; t=1666706945;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=r75QtccPqL258FOXdSmb8y4zg16NrcU5nzPaPzHsOiY=;
-        b=A6gs+5U7f44Yd6nfiL/FaEHc3NnaZXkon1fc3n9VEYOTvzj70GBd4zAfRGP/K3+Qb2jU0R
-        Z8kpTSoh6A9Cc/Dw==
+        bh=7sJeapyjNw5q7DT9heTgiEU/IJ9HQ6/ej/0LUxOWWrI=;
+        b=hoxEmZD62xq75F32e/wlUpolumYQVIgOR3wNQ6fFMBVUCs5yZcwBO+Z6fYU0sAc+SQQSDx
+        BNHmvhmIDN5jjFCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A33B4134CA;
-        Tue, 25 Oct 2022 13:48:38 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE9FF134CA;
+        Tue, 25 Oct 2022 14:09:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id PcA/JjbpV2MCSAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 25 Oct 2022 13:48:38 +0000
-Date:   Tue, 25 Oct 2022 15:48:24 +0200
+        id N6pYOQDuV2M6UwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 25 Oct 2022 14:09:04 +0000
+Date:   Tue, 25 Oct 2022 16:08:51 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC 0/5] btrfs: raid56: do full stripe data checksum
- verification and recovery at RMW time
-Message-ID: <20221025134824.GK5824@twin.jikos.cz>
+Subject: Re: [PATCH v2 0/5] btrfs: btrfs_get_extent() cleanup for inline
+ extents
+Message-ID: <20221025140851.GL5824@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1665730948.git.wqu@suse.com>
+References: <cover.1663312786.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1665730948.git.wqu@suse.com>
+In-Reply-To: <cover.1663312786.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 03:17:08PM +0800, Qu Wenruo wrote:
-> There is a long existing problem for all RAID56 (not only btrfs RAID56),
-> that if we have corrupted data on-disk, and we do a RMW using that
-> corrupted data, we lose the chance of recovery.
+On Fri, Sep 16, 2022 at 03:28:34PM +0800, Qu Wenruo wrote:
+> Currently we have some very confusing (and harder to explain) code
+> inside btrfs_get_extent() for inline extents.
 > 
-> Since new parity is calculated using the corrupted sector, we will never
-> be able to recovery the old data.
+> The TL;DR is, those mess is to support inline extents at non-zero file
+> offset.
 > 
-> However btrfs has data checksum to save the day here, if we do a full
-> scrub level verification at RMW time, we can detect the corrupted data
-> before we do any write.
-> 
-> Then do the proper recovery, data checksum recheck, and recovery the old
-> data and call it a day.
-> 
-> This series is going to add such ability, currently there are the
-> following limitations:
-> 
-> - Only works for full stripes without a missing device
->   The code base is already here for a missing device + a corrupted
->   sector case of RAID6.
-> 
->   But for now, I don't really want to test RAID6 yet.
-> 
-> - We only handles data checksum verification
->   Metadata verification will be much more complex, and in the long run
->   we will only recommend metadata RAID1C3/C4 profiles to compensate
->   RAID56 data profiles.
-> 
->   Thus we may never support metadata verification for RAID56.
-> 
-> - If we found corrupted sectors which can not be repaired, we fail
->   the whole bios for the full stripe
->   This is to avoid further data corruption, but in the future we may
->   just continue with corrupte data.
-> 
->   This will need extra work to rollback to the original corrupte data
->   (as the recovery process will change the content).
-> 
-> - Way more overhead for substripe write RMW cycle
->   Now we need to:
-> 
->   * Fetch the datacsum for the full stripe
->   * Verify the datacsum
->   * Do RAID56 recovery (if needed)
->   * Verify the recovered data (if needed)
-> 
->   Thankfully this only affects uncached sub-stripe writes.
->   The successfully recovered data can be cached for later usage.
-> 
-> - Will not writeback the recovered data during RMW
->   Thus we still need to go back to recovery path to recovery.
-> 
->   This can be later enhanced to let RMW to write the full stripe if
->   we did some recovery during RMW.
-> 
-> 
-> - May need further refactor to change how we handle RAID56 workflow
->   Currently we use quite some workqueues to handle RAID56, and all
->   work are delayed.
-> 
->   This doesn't look sane to me, especially hard to read (too many jumps
->   just for a full RMW cycle).
-> 
->   May be a good idea to make it into a submit-and-wait workflow.
-> 
-> [REASON for RFC]
-> Although the patchset does not only passed RAID56 test groups, but also
-> passed my local destructive RMW test cases, some of the above limitations
-> need to be addressed.
-> 
-> And whther the trade-off is worthy may still need to be discussed.
+> This is completely impossible now, as tree-checker will reject any
+> inline file extents at non-zero offset.
 
-So this improves reliability at the cost of a full RMW cycle, do you
-have any numbers to compare? The affected workload is a cold write in
-the middle of a stripe, following writes would likely hit the cached
-stripe. For linear writes the cost should be amortized, for random
-rewrites it's been always problematic regarding performance but I don't
-know if the raid5 (or any striped profile) performance was not better in
-some sense.
+The extent item check has been in place since 2017, but I don't remember
+if it was ever possible the create inline uncompressed extent other than
+at offset 0. I know there is the inconsistency with compressed extent
+but for plain uncompressed it should not be normally possible.
+
+> So this series will:
+> 
+> - Update the selftest to get rid of the impossible case
+> 
+> - Simplify the inline extent read
+> 
+>   Since we no longer need to support inline extents at non-zero file
+>   offset, some variables can be removed.
+> 
+> - Don't reset the inline extent map members
+> 
+>   Those resets are either doing nothing (setting the member to the same
+>   value), or making no difference (the member is not utilized anyway)
+> 
+> - Remove @new_inline argument for btrfs_extent_item_to_extent_map()
+> 
+>   That argument makes btrfs_get_extent() to skip certain member update.
+>   Previously it makes a difference only for fiemap.
+> 
+>   But now since fiemap no longer relies on extent_map, the remaining
+>   use cases won't bother those members anyway.
+> 
+>   Thus we can remove the bool argument and make
+>   btrfs_extent_item_to_extent_map() to have a consistent behavior.
+> 
+> - Introduce a helper to do inline extents read
+> 
+>   Now the function is so simple that, extracting the helper can only
+>   reduce indents.
+> 
+> [CHANGELOG]
+> v2:
+> - Do better patch split for bisection with better reason
+> 
+> - Put the selftest to the first to help bisection
+>   Or we may hit ASSERT() during selftest.
+> 
+> Qu Wenruo (5):
+>   btrfs: selftests: remove impossible inline extent at non-zero file
+>     offset
+>   btrfs: make inline extent read calculation much simpler
+>   btrfs: do not reset extent map members for inline extents read
+>   btrfs: remove the @new_inline argument from
+>     btrfs_extent_item_to_extent_map()
+>   btrfs: extract the inline extent read code into its own function
+
+I did a quick review, code looks ok for inclusion to for-next.
