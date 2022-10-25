@@ -2,66 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BD860CE80
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Oct 2022 16:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4A160CED8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Oct 2022 16:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbiJYOMR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Oct 2022 10:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59684 "EHLO
+        id S233016AbiJYOWJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Oct 2022 10:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbiJYOMA (ORCPT
+        with ESMTP id S232983AbiJYOWF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Oct 2022 10:12:00 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C7118B20
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Oct 2022 07:11:59 -0700 (PDT)
+        Tue, 25 Oct 2022 10:22:05 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81D228E01
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Oct 2022 07:21:55 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BFD7F22048;
-        Tue, 25 Oct 2022 14:11:57 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 633161F88E;
+        Tue, 25 Oct 2022 14:21:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1666707117;
+        t=1666707714;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5RmS/OcPqypFlk3gCamRroBO4J9nr0pp5WlV0MCh4AM=;
-        b=Spt8u+sl6qQQK7cchwFYQbSj1DE8QhYOEcSWmPeKOKdswFaQ1OEoNw/zlMpqRM+qCjyjzQ
-        ORJEFn+J3TZ6Z5Xblc/9jigO/bXfiH0e9JKwBUuRVRL2s5StHaTeSSeROydsylKJbQpZp+
-        vJFTmQHkMaNv4Kc/Pb1zPo/lK9WOEN8=
+        bh=//iq6U1OSj9JkiCXKe9dQWQFXHbP7C5/mkomw462cpM=;
+        b=TbMk1m0z24rD0OYJoXIyje8yDQzqhgUuYl6M04WIO6YesWGMDlNhTnHcKJi/uoCiHvuCgY
+        6nyxQUIACHQ3IiQjs2cDzfvR6XV75dhK//oLjwKNdxBo3gzoBVnC+PzmlYAvlsy/bTGQkZ
+        0h4KGISR9qG7QGq5WvxSy6IjGtbBDa8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1666707117;
+        s=susede2_ed25519; t=1666707714;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5RmS/OcPqypFlk3gCamRroBO4J9nr0pp5WlV0MCh4AM=;
-        b=sNomtfDZyO47SKmNmVXAxDAVSTqapiq2gHBWfuWwAimRgTfw1i84NeRnlYEeLO7giUk38u
-        SFQ20yxkMzgXSMDw==
+        bh=//iq6U1OSj9JkiCXKe9dQWQFXHbP7C5/mkomw462cpM=;
+        b=cpFQi1n4YXqrLNTyZjreGdhKWQr4KMdSaWR8w6KS28NsS6BOzDom2vIyfj8VJXD+CZNZzR
+        e2w5pJgfimfjZgBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9CF70134CA;
-        Tue, 25 Oct 2022 14:11:57 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 330AA13A64;
+        Tue, 25 Oct 2022 14:21:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id SDdoJa3uV2OYVAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 25 Oct 2022 14:11:57 +0000
-Date:   Tue, 25 Oct 2022 16:11:43 +0200
+        id /q9kCwLxV2PNWQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 25 Oct 2022 14:21:54 +0000
+Date:   Tue, 25 Oct 2022 16:21:40 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] btrfs: extract the inline extent read code into
- its own function
-Message-ID: <20221025141143.GM5824@twin.jikos.cz>
+Subject: Re: [PATCH RFC 5/5] btrfs: raid56: do full stripe data checksum
+ verification before RMW
+Message-ID: <20221025142140.GN5824@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1663312786.git.wqu@suse.com>
- <839ee8ec62cdf576b2db923d5ff63226ac493c6d.1663312787.git.wqu@suse.com>
+References: <cover.1665730948.git.wqu@suse.com>
+ <9389bb7901990ef7c0d0c58dc4c1168fd4240d27.1665730948.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <839ee8ec62cdf576b2db923d5ff63226ac493c6d.1663312787.git.wqu@suse.com>
+In-Reply-To: <9389bb7901990ef7c0d0c58dc4c1168fd4240d27.1665730948.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
@@ -73,58 +73,227 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 16, 2022 at 03:28:39PM +0800, Qu Wenruo wrote:
-> Currently we have inline extent read code behind two levels of indent,
-> just extract them into a new function, read_inline_extent(), to make it
-> a little easier to read.
+On Fri, Oct 14, 2022 at 03:17:13PM +0800, Qu Wenruo wrote:
+> [BUG]
+> For the following small script, btrfs will be unable to recover the
+> content of file1:
 > 
-> Since we're here, also remove @extent_offset and @pg_offset arguments
-> from uncompress_inline() function, as it's not possible to have inline
-> extents at non-inline file offset.
+>   mkfs.btrfs -f -m raid1 -d raid5 -b 1G $dev1 $dev2 $dev3
+> 
+>   mount $dev1 $mnt
+>   xfs_io -f -c "pwrite -S 0xff 0 64k" -c sync $mnt/file1
+>   md5sum $mnt/file1
+>   umount $mnt
+> 
+>   # Corrupt the above 64K data stripe.
+>   xfs_io -f -c "pwrite -S 0x00 323026944 64K" -c sync $dev3
+>   mount $dev1 $mnt
+> 
+>   # Write a new 64K, which should be in the other data stripe
+>   # And this is a sub-stripe write, which will cause RMW
+>   xfs_io -f -c "pwrite 0 64k" -c sync $mnt/file2
+>   md5sum $mnt/file1
+>   umount $mnt
+> 
+> Above md5sum would fail.
+> 
+> [CAUSE]
+> There is a long existing problem for raid56 (not limited to btrfs
+> raid56) that, if we already have some corrupted on-disk data, and then
+> trigger a sub-stripe write (which needs RMW cycle), it can cause further
+> damage into P/Q stripe.
+> 
+>   Disk 1: data 1 |0x000000000000| <- Corrupted
+>   Disk 2: data 2 |0x000000000000|
+>   Disk 2: parity |0xffffffffffff|
+> 
+> In above case, data 1 is already corrupted, the original data should be
+> 64KiB of 0xff.
+> 
+> At this stage, if we read data 1, and it has data checksum, we can still
+> recover going the regular RAID56 recovery path.
+> 
+> But if now we decide to write some data into data 2, then we need to go
+> RMW.
+> Just say we want to write 64KiB of '0x00' into data 2, then we read the
+> on-disk data of data 1, calculate the new parity, resulting the
+> following layout:
+> 
+>   Disk 1: data 1 |0x000000000000| <- Corrupted
+>   Disk 2: data 2 |0x000000000000| <- New '0x00' writes
+>   Disk 2: parity |0x000000000000| <- New Parity.
+> 
+> But the new parity is calculated using the *corrupted* data 1, we can
+> no longer recover the correct data of data1.
+> Thus the corruption is forever there.
+> 
+> [FIX]
+> To solve above problem, this patch will do a full stripe data checksum
+> verification at RMW time.
+> 
+> This involves the following changes:
+> 
+> - For raid56_rmw_stripe() we need to read the full stripe
+>   Unlike the old behavior, which will only read out the missing part,
+>   now we have to read out the full stripe (including data and P/Q), so
+>   we can do recovery later.
+> 
+>   All the read will directly go into the rbio stripe sectors.
+> 
+>   This will not affect cached case, as cached rbio will always has all
+>   its data sectors cached. And since cached sectors are already
+>   after a RMW (which implies the same data csum check), they should be
+>   always correct.
+> 
+> - Do data checksum verification for the full stripe
+>   The target is only the rbio stripe sectors.
+> 
+>   The checksum is already filled before we reach finish_rmw().
+>   Currently we only do the verification if there is no missing device.
+> 
+>   The checksum verification will do the following work:
+> 
+>   * Verify the data checksums for sectors which has data checksum of
+>     a vertical stripe.
+> 
+>     For sectors which doesn't has csum, they will be considered fine.
+> 
+>   * Check if we need to repair the vertical stripe
+> 
+>     If no checksum mismatch, we can continue to the next vertical
+>     stripe.
+>     If too many corrupted sectors than the tolerance, we error out,
+>     marking all the bios failed, to avoid further corruption.
+> 
+>   * Repair the vertical stripe
+> 
+>   * Recheck the content of the failed sectors
+> 
+>     If repaired sectors can not pass the checksum verification, we
+>     error out
+> 
+> This is a much strict workflow, meaning now we will not write a full
+> stripe if it can not pass full stripe data verification.
+> 
+> Obviously this will have a performance impact, as we are doing more
+> works during RMW cycle:
+> 
+> - Fetch the data checksum
+> - Do checksum verification for all data stripes
+> - Do recovery if needed
+> - Do checksum verification again
+> 
+> But for full stripe write we won't do it at all, thus for fully
+> optimized RAID56 workload (always full stripe write), there should be no
+> extra overhead.
+> 
+> To me, the extra overhead looks reasonable, as data consistency is way
+> more important than performance.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/inode.c | 73 +++++++++++++++++++++++++-----------------------
->  1 file changed, 38 insertions(+), 35 deletions(-)
+>  fs/btrfs/raid56.c | 279 +++++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 251 insertions(+), 28 deletions(-)
 > 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 27fe46ef5e86..871c65f72822 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> +static int read_inline_extent(struct btrfs_inode *inode,
-> +			      struct btrfs_path *path,
-> +			      struct page *page)
+> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+> index 8f7e25001a2b..e51c07bd4c7b 100644
+> --- a/fs/btrfs/raid56.c
+> +++ b/fs/btrfs/raid56.c
+> @@ -1203,6 +1203,150 @@ static void bio_get_trace_info(struct btrfs_raid_bio *rbio, struct bio *bio,
+>  	trace_info->stripe_nr = -1;
+>  }
+>  
+> +static void assign_one_failed(int failed, int *faila, int *failb)
 > +{
-> +	struct btrfs_file_extent_item *fi;
-> +	void *kaddr;
-> +	size_t copy_size;
-> +
-> +	if (!page || PageUptodate(page))
-> +		return 0;
-> +
-> +	ASSERT(page_offset(page) == 0);
-> +
-> +	fi = btrfs_item_ptr(path->nodes[0], path->slots[0],
-> +			    struct btrfs_file_extent_item);
-> +	if (btrfs_file_extent_compression(path->nodes[0], fi) !=
-> +	    BTRFS_COMPRESS_NONE)
-> +		return uncompress_inline(path, page, fi);
-> +
-> +	copy_size = min_t(u64, PAGE_SIZE,
-> +			  btrfs_file_extent_ram_bytes(path->nodes[0], fi));
-> +	kaddr = kmap_local_page(page);
-> +	read_extent_buffer(path->nodes[0], kaddr,
-> +			   btrfs_file_extent_inline_start(fi), copy_size);
-> +	kunmap_local(kaddr);
-> +	if (copy_size < PAGE_SIZE)
-> +		memzero_page(page, copy_size, PAGE_SIZE - copy_size);
-> +	flush_dcache_page(page);
-
-memzero_page already does flush_dcache_page so it's not needed.
-
-> +	return 0;
+> +	if (*faila < 0)
+> +		*faila = failed;
+> +	else if (*failb < 0)
+> +		*failb = failed;
 > +}
 > +
->  /**
->   * btrfs_get_extent - Lookup the first extent overlapping a range in a file.
->   * @inode:	file to search in
+> +static int recover_vertical(struct btrfs_raid_bio *rbio, int sector_nr,
+> +			    int extra_faila, int extra_failb,
+> +			    void **pointers, void **unmap_array);
+> +
+> +static int rmw_validate_data_csums(struct btrfs_raid_bio *rbio)
+> +{
+> +	struct btrfs_fs_info *fs_info = rbio->bioc->fs_info;
+> +	int sector_nr;
+> +	int tolerance;
+> +	void **pointers = NULL;
+> +	void **unmap_array = NULL;
+> +	int ret = 0;
+> +
+> +	/* No checksum, no need to check. */
+> +	if (!rbio->csum_buf || !rbio->csum_bitmap)
+> +		return 0;
+> +
+> +	/* No datacsum in the range. */
+> +	if (bitmap_empty(rbio->csum_bitmap,
+> +			 rbio->nr_data * rbio->stripe_nsectors))
+> +		return 0;
+> +
+> +	pointers = kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
+> +	unmap_array = kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
+> +	if (!pointers || !unmap_array) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	if (rbio->bioc->map_type & BTRFS_BLOCK_GROUP_RAID5)
+> +		tolerance = 1;
+> +	else
+> +		tolerance = 2;
+
+Please avoid the "if (...map & TYPE)" checks for values that we have
+have in the raid attribute table, in this case it's tolerated_failures.
+
+> +
+> +	for (sector_nr = 0; sector_nr < rbio->stripe_nsectors; sector_nr++) {
+> +		int stripe_nr;
+> +		int found_error = 0;
+>  	     total_sector_nr++) {
+>  		sector = rbio_stripe_sector(rbio, stripe, sectornr);
+> +		 */
+> +		sector = rbio_stripe_sector(rbio, stripe, sectornr);
+>  	bio_endio(bio);
+
+> +static int recover_vertical(struct btrfs_raid_bio *rbio, int sector_nr,
+> +			    int extra_faila, int extra_failb,
+> +			    void **pointers, void **unmap_array)
+>  {
+>  	struct btrfs_fs_info *fs_info = rbio->bioc->fs_info;
+>  	struct sector_ptr *sector;
+>  	const u32 sectorsize = fs_info->sectorsize;
+> -	const int faila = rbio->faila;
+> -	const int failb = rbio->failb;
+> +	int faila = -1;
+> +	int failb = -1;
+> +	int failed = 0;
+> +	int tolerance;
+>  	int stripe_nr;
+>  
+> +	if (rbio->bioc->map_type & BTRFS_BLOCK_GROUP_RAID5)
+> +		tolerance = 1;
+> +	else
+> +		tolerance = 2;
+
+And here.
+
+> +
+> +	failed = calculate_failab(rbio, extra_faila, extra_failb, &faila, &failb);
+> +
+> +	if (failed > tolerance)
+> +		return -EIO;
+> +
+>  	/*
+>  	 * Now we just use bitmap to mark the horizontal stripes in
+>  	 * which we have data when doing parity scrub.
+>  	 */
+>  	if (rbio->operation == BTRFS_RBIO_PARITY_SCRUB &&
+>  	    !test_bit(sector_nr, &rbio->dbitmap))
+> -		return;
+> +		return 0;
+>  
+>  	/*
+>  	 * Setup our array of pointers with sectors from each stripe
