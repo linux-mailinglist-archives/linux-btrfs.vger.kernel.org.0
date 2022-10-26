@@ -2,60 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E86760E8B6
+	by mail.lfdr.de (Postfix) with ESMTP id 29C2960E8B5
 	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Oct 2022 21:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235024AbiJZTLj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Oct 2022 15:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43318 "EHLO
+        id S234824AbiJZTLk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Oct 2022 15:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235028AbiJZTLT (ORCPT
+        with ESMTP id S235030AbiJZTLW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Oct 2022 15:11:19 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3BA139C18
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:08:46 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id cr19so10745579qtb.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:08:46 -0700 (PDT)
+        Wed, 26 Oct 2022 15:11:22 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A769139C36
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:08:47 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id x15so12427892qvp.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:08:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wPGamWvxIV//rvxE9Igwg+6E1rzOeRNd2q8LtG5EXFg=;
-        b=qkqksgP8I4cbvpQg4YeKhX5MSrLrHD5OYcZmRu2xenclBWGXUiyQsXVk9fgHD0nsbk
-         +g4tz7cxuCgvP1/dqY5J/0MDQC9xEF2hRYq7syZ6fT+sCqVxQ6V/2UM9usSzX9FWLs7H
-         Oo3zGKgshwCLuKHpu/XRzpyKOC5lrot7k9b6WMt5Gd1yhtFpVGDdufZSYWFPBwdXnWgF
-         tEqwtD1zB4o2p7eJ/S22B8f2OsRIA7Nryzc/qovtjj9gZTWYQj20lSOjN2A4uSJGBFrD
-         9roANR1zgynh9W9gydTQjdJtYAFVnMUHNScpZCX6PEAuMOovA9rG+hHXtZMe6xjaJejt
-         F9zA==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vf3ffJ58wUc2bms0jVC3HwCsde5e0ztsxNQcD6JJZTE=;
+        b=bIHKBzTkHZAjgaHAwX8HwRQqmUmSLHheh1FWjgZv8l7X8KfqvI+OsMU2Hby3ePcOVx
+         d5J51Q/xVcGYaBycRu5jKfkcvpHOAB9xNrhDJoL7XLQSF3ZX8gjiQDsUQ+vG7RdgPcyG
+         1Q1+WmNGf4wk81eZVl6kgdoTrOOuzxBRbWBe/iGFyM//Z3HPGj65ISi56OVzguX8SZaZ
+         a6azDouuwgxoGKiPbu+rQy1v3+JbvU26hb6udLXN5LFNHjp/PaQigHsYFykc0DL5OV8+
+         4pSQfiAIxnwTeylCRaG5n6bUMfdCOz59kMdOpsFba6CEcagDriBSgwdWObJY7N3bkmGl
+         iN2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wPGamWvxIV//rvxE9Igwg+6E1rzOeRNd2q8LtG5EXFg=;
-        b=6P0tRH7q1G112vfnGf6tO/kjy4gs9m9Bg9NRb/aU5eRhkaoQWvu/e5Gm/hS1CcdfUd
-         q+q2LNziAZouGqCjLkVGF9pcOA26sJ5BmJl7w25uqLkyS6g9DC/XeK/eYfBhSssrU3DN
-         hx0CYFn15dibGX54U3y9I4yAtwEDvzo/6CIm+ADDU2f0oheWU01pZcw43jy5Ss9+i9+D
-         GQVHID9UAkNClfHmFGrdEBvgrhhldV4M8Dj7UYSoOLyacDqtu89AbXX/9KVPZoqtn5y8
-         ezV/UrkrPKc8XNg0LYQMkgRtLXJPCd5BbiKPmS1EN/oP+wthyI5W08aEiG/ccwCyJtq0
-         SrZw==
-X-Gm-Message-State: ACrzQf38HW8cX9XiK6W9LLeNSNGQPOOpuvYr3/KerxANoNEjjswyKLm+
-        OraktaGKhY3X/rofLWPEJzDVHLI0WnF5mw==
-X-Google-Smtp-Source: AMsMyM4jxN+YTrywXSoKf3lSCbll8dyZuD9RfoS8pjykWyKho6C41/G+Yp8VmXIM1JuCGnHxmEl40A==
-X-Received: by 2002:a05:622a:489:b0:3a4:b9dd:7af6 with SMTP id p9-20020a05622a048900b003a4b9dd7af6mr7188248qtx.511.1666811324965;
-        Wed, 26 Oct 2022 12:08:44 -0700 (PDT)
+        bh=vf3ffJ58wUc2bms0jVC3HwCsde5e0ztsxNQcD6JJZTE=;
+        b=nhCj9LlM0XibQoP07UpPIIQKdaC++6qssq4C+CRY5kIvsw2W3+KfqqNxPCwjtwRBdF
+         XXfDwZbwOY9eMTXjdwRKCnOzi+L1LKeePACWJYuMehYbKmpp57BFExN6oN3A8xxV+RT3
+         ZMN4SM0sTzXLOjZJh4gUVIOFtHyKxln4Flh96iheq7ztI2GmF67k8VnyQypptaCy6+RA
+         7rzg8rUjxGfMxIs9i6Nb1uG1jL1PJdx/9Rijj9WWmZmJvbUbHhWABdU8dwPQH1AYEWyz
+         qxOlguuPyxMZzSg7fpeuk1HjhDlvWlk6YBVOxI2n16kPCPhxCgbx6djQlZsf9/fZ8yKW
+         pnUw==
+X-Gm-Message-State: ACrzQf1I9wlro9Yuezbov7ElzCRYl4siQZ1ThsWp5cwbyzFJAfXuugAd
+        /aS7t5Gxsl1vZInEYWu1rJkwhmWIC3eyYQ==
+X-Google-Smtp-Source: AMsMyM7OYK94QEn/w+DfcP5k7Q32UR+Ix95/kLqbynaijqsJoULBveATdGml5EE0fMWmP2g/J0sR3A==
+X-Received: by 2002:ad4:5f8d:0:b0:4bb:6d57:cfea with SMTP id jp13-20020ad45f8d000000b004bb6d57cfeamr15271610qvb.98.1666811326350;
+        Wed, 26 Oct 2022 12:08:46 -0700 (PDT)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id u4-20020a05620a454400b006ce2c3c48ebsm4353697qkp.77.2022.10.26.12.08.44
+        by smtp.gmail.com with ESMTPSA id o18-20020a05620a111200b006ec9f5e3396sm4297066qkk.72.2022.10.26.12.08.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Oct 2022 12:08:44 -0700 (PDT)
+        Wed, 26 Oct 2022 12:08:45 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 01/26] btrfs: convert discard stat defs to enum
-Date:   Wed, 26 Oct 2022 15:08:16 -0400
-Message-Id: <57bb11b786f8b8d28a91b031eae0d755e7a1ace6.1666811038.git.josef@toxicpanda.com>
+Subject: [PATCH 02/26] btrfs: move btrfs_chunk_item_size out of ctree.h
+Date:   Wed, 26 Oct 2022 15:08:17 -0400
+Message-Id: <e1ec74ccbcedc5c9dc9cb8d82b3ffba387075afa.1666811038.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1666811038.git.josef@toxicpanda.com>
 References: <cover.1666811038.git.josef@toxicpanda.com>
@@ -70,33 +69,66 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Do away with the defines and use an enum as it's cleaner.
+This is used by the volumes code and the tree checker code.  We want to
+maintain inline however, so simply move it to volumes.h.
 
-Suggested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/free-space-cache.h | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ fs/btrfs/ctree.h   | 7 -------
+ fs/btrfs/volumes.h | 9 +++++++++
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
-index cab954a9d97b..a855e0483e03 100644
---- a/fs/btrfs/free-space-cache.h
-+++ b/fs/btrfs/free-space-cache.h
-@@ -48,9 +48,11 @@ static inline bool btrfs_free_space_trimming_bitmap(
-  * to make it clear what we're doing.  An example is discard_extents in
-  * btrfs_free_space_ctl.
-  */
--#define BTRFS_STAT_NR_ENTRIES	2
--#define BTRFS_STAT_CURR		0
--#define BTRFS_STAT_PREV		1
-+enum {
-+	BTRFS_STAT_CURR,
-+	BTRFS_STAT_PREV,
-+	BTRFS_STAT_NR_ENTRIES,
-+};
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index ee79a9e20ef9..0afd3b2dca0f 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -54,13 +54,6 @@ struct btrfs_balance_control;
+ struct btrfs_delayed_root;
+ struct reloc_control;
  
- struct btrfs_free_space_ctl {
- 	spinlock_t tree_lock;
+-static inline unsigned long btrfs_chunk_item_size(int num_stripes)
+-{
+-	BUG_ON(num_stripes == 0);
+-	return sizeof(struct btrfs_chunk) +
+-		sizeof(struct btrfs_stripe) * (num_stripes - 1);
+-}
+-
+ /* Read ahead values for struct btrfs_path.reada */
+ enum {
+ 	READA_NONE,
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index d7f72b0a227c..cab1ba8f6252 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -10,6 +10,7 @@
+ #include <linux/sort.h>
+ #include <linux/btrfs.h>
+ #include "async-thread.h"
++#include "messages.h"
+ 
+ #define BTRFS_MAX_DATA_CHUNK_SIZE	(10ULL * SZ_1G)
+ 
+@@ -605,6 +606,13 @@ static inline enum btrfs_map_op btrfs_op(struct bio *bio)
+ 	}
+ }
+ 
++static inline unsigned long btrfs_chunk_item_size(int num_stripes)
++{
++	ASSERT(num_stripes);
++	return sizeof(struct btrfs_chunk) +
++		sizeof(struct btrfs_stripe) * (num_stripes - 1);
++}
++
+ void btrfs_get_bioc(struct btrfs_io_context *bioc);
+ void btrfs_put_bioc(struct btrfs_io_context *bioc);
+ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+@@ -759,5 +767,6 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info);
+ bool btrfs_repair_one_zone(struct btrfs_fs_info *fs_info, u64 logical);
+ 
+ bool btrfs_pinned_by_swapfile(struct btrfs_fs_info *fs_info, void *ptr);
++unsigned long btrfs_chunk_item_size(int num_stripes);
+ 
+ #endif
 -- 
 2.26.3
 
