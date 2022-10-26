@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7853A60E8C6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Oct 2022 21:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D2F60E8D0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Oct 2022 21:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235031AbiJZTMC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Oct 2022 15:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34806 "EHLO
+        id S235023AbiJZTMI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Oct 2022 15:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233898AbiJZTLi (ORCPT
+        with ESMTP id S235020AbiJZTLi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 26 Oct 2022 15:11:38 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28853FD38
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:09:10 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id a24so10687806qto.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:09:10 -0700 (PDT)
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F30B12607
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:09:11 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id bb5so10683173qtb.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:09:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tYBbXbK70OGGIRrFHuuc26mJLZm2GL/jLIYaVt7pyFA=;
-        b=nHt+JjpHGOeBEC0QCQkqOJMtaL+qo+l/IGHHoCj66v0gdUZU96mKk7mybPo9Qmnnir
-         G9pcXX70bLiJtZJiAgXN6wZcU06vXwP7VgB/atT0mAVQ6RHK1CzdTZwyv51HHFbZyyCw
-         YwuE7zAtJaOoEhdCI1T1sqWndsOuj+9tNDEQR/yhxVvhmrlbJ2sWwcW4bQyl8yh2+YvW
-         xSF1/I5ZWI24UYt7akujED3D7nm0GxR/CwUKVVvK+MG8BBvpoB+wHXz3G2b1t9f5chY+
-         lVEhT7cGG9LtCwaK8mPLx10muLnIjP9/99eXe9P2D7fhLCd/pixBczQ0kCVX8Dv3WAZy
-         xslQ==
+        bh=1lk3G87kUPkIoaLDfkRgqJAhQxdV7wIpzunw6nyqadM=;
+        b=0FO9COB5tcCm80XP21mNHXfzCteuvnfki0EDuDRzLszhJV3DveSdOJ8s1jl9MzyfHB
+         XQ2Dg/r2tgWlrx+wJ5G5AEUqXVg1KWP448VkDz8nFaPLjRDwYmzKso0r4gVJXw6aAWPR
+         uoPRCA7s1WPd9CmTAKhtHMFO7dk+LoiVRpkXk37Uc7aswZSCGOpp5zbSprQPIAihrXBg
+         s1xmoY19PS/ytM0H9Vva2g41q8UHRi2l3nTxt4dBElxOTIKVScpu70OXEFXEJs2P48kC
+         B4a65wfIr08h+qRtbbiM3tu/trkzJqsQTehn1rCSGRVHVqqNoaHfcNgN7udLUyDuVxqU
+         wQBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tYBbXbK70OGGIRrFHuuc26mJLZm2GL/jLIYaVt7pyFA=;
-        b=o5JqE8s22MwW7LyaEHoRzWKnsiubpzX+0JuCpxdWdn+SPPVZz8T6+tc+3eHKLtJo5m
-         uxjjr5cDS8yUMtz6iCDrOZSKm6i/iCkCc421zAiEHqruQHgaXB/8Z66RHdsCV1CHLHAV
-         L6Atb6dRKw6YlQ1DQu2pla0nsagYvcZPzaB2df6m6H5j4p4DVoWHrmjVn6E+8+jMez2G
-         AIPOhk5N2eTNfO7XFCDX70tAV4/DFr3D7mIgMPdQDUrLU9DFvtoxK4xva95mlyVFSyBg
-         NlitqujVFPmJzKvRRdk1l7EZh3gyQjOKtIQGSjsaVJIUO3QC+NjKwgKnrDPrCwfbXuWh
-         uOiA==
-X-Gm-Message-State: ACrzQf3mvvK9ZuEYnL0eW0KGiItWhgl+G7lbhpnjbR+lf4sJxmZVEf2G
-        T96W5lKNL0mk2jsyBHYfXJhLiooDPszzqg==
-X-Google-Smtp-Source: AMsMyM7tFdPO7mxr2dPSr9uNvcSr6V4Z24BxN4Wq6iEiaXV541T/TeUUxcHxccvSAU09TJz1uQoxhA==
-X-Received: by 2002:a05:622a:2c2:b0:39c:fa23:5cef with SMTP id a2-20020a05622a02c200b0039cfa235cefmr35505083qtx.522.1666811348979;
-        Wed, 26 Oct 2022 12:09:08 -0700 (PDT)
+        bh=1lk3G87kUPkIoaLDfkRgqJAhQxdV7wIpzunw6nyqadM=;
+        b=entXid04lRskfrZjy68duKVodAlnZVLYROETj4JePgrjhbBDp2XGUTXNpzqTq06eut
+         AMYs2SD3qwCqSf/TuMe6FXPdT0w/uLXiSwFubeJym6wNup9E+oWRrviYwp7ttQwfdG8d
+         Vmz/+MTTXkCYZIrVBqox/eVWqz6NAj/N9Wwq9YCZvqzGZE2UVoyIWPBFQcJlBe8jY1XN
+         3Bp1uf2a/FI7aMFMAssAcXMD1aL1otjcNcfA+kxufi99lD1WU57cJhx56XAkHe1Y/tNL
+         pnGDXsSxwH4UUmAd9o82mPNTC51eNEULyRe7mTAXTwyOG9p8SlqMnLmOrb9bfSW/dcNJ
+         VtPQ==
+X-Gm-Message-State: ACrzQf1b0sR0lQBoG7BI7jPCyDnAiy/MWIvvav7zIajoDszCNMHyJAD+
+        gQOupKGvCsuPwRhXcCu6UkmxvkEqxD3eDA==
+X-Google-Smtp-Source: AMsMyM7CMLrNWs/90Y2/EpvD4N0GXZeccezsjkOHsqpBgN3loqSBqfYeMpi8jFdlqWQQPkrtFTKINg==
+X-Received: by 2002:a05:622a:446:b0:39c:d995:4548 with SMTP id o6-20020a05622a044600b0039cd9954548mr36989164qtx.59.1666811350388;
+        Wed, 26 Oct 2022 12:09:10 -0700 (PDT)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id s15-20020ac85ccf000000b0039cc22a2c49sm3584035qta.47.2022.10.26.12.09.08
+        by smtp.gmail.com with ESMTPSA id bj22-20020a05620a191600b006f956766f76sm1184515qkb.1.2022.10.26.12.09.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Oct 2022 12:09:08 -0700 (PDT)
+        Wed, 26 Oct 2022 12:09:10 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 18/26] btrfs: move acl prototypes into acl.h
-Date:   Wed, 26 Oct 2022 15:08:33 -0400
-Message-Id: <dd1f77b68f21366e0898e4415588e7a97a12112e.1666811039.git.josef@toxicpanda.com>
+Subject: [PATCH 19/26] btrfs: move relocation prototypes into relocation.h
+Date:   Wed, 26 Oct 2022 15:08:34 -0400
+Message-Id: <9fad37625a4062c100ecfc78fe27bfac1aa1515e.1666811039.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1666811038.git.josef@toxicpanda.com>
 References: <cover.1666811038.git.josef@toxicpanda.com>
@@ -69,99 +69,169 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Move these out of ctree.h into acl.h to cut down on code in ctree.h.
+Move these out of ctree.h into relocation.h to cut down on code in
+ctree.h
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/acl.c   |  1 +
- fs/btrfs/acl.h   | 23 +++++++++++++++++++++++
- fs/btrfs/ctree.h | 18 ------------------
- fs/btrfs/inode.c |  1 +
- 4 files changed, 25 insertions(+), 18 deletions(-)
- create mode 100644 fs/btrfs/acl.h
+ fs/btrfs/backref.c     |  1 +
+ fs/btrfs/ctree.c       |  1 +
+ fs/btrfs/ctree.h       | 20 --------------------
+ fs/btrfs/disk-io.c     |  1 +
+ fs/btrfs/inode.c       |  1 +
+ fs/btrfs/relocation.c  |  1 +
+ fs/btrfs/relocation.h  | 25 +++++++++++++++++++++++++
+ fs/btrfs/transaction.c |  1 +
+ fs/btrfs/volumes.c     |  1 +
+ 9 files changed, 32 insertions(+), 20 deletions(-)
+ create mode 100644 fs/btrfs/relocation.h
 
-diff --git a/fs/btrfs/acl.c b/fs/btrfs/acl.c
-index 548d6a5477b4..fe01e97f5e77 100644
---- a/fs/btrfs/acl.c
-+++ b/fs/btrfs/acl.c
-@@ -15,6 +15,7 @@
- #include "ctree.h"
- #include "btrfs_inode.h"
- #include "xattr.h"
-+#include "acl.h"
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index a53fa2dad01f..013c2c085229 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -18,6 +18,7 @@
+ #include "fs.h"
+ #include "accessors.h"
+ #include "extent-tree.h"
++#include "relocation.h"
  
- struct posix_acl *btrfs_get_acl(struct inode *inode, int type, bool rcu)
- {
-diff --git a/fs/btrfs/acl.h b/fs/btrfs/acl.h
-new file mode 100644
-index 000000000000..b1ce80f2626a
---- /dev/null
-+++ b/fs/btrfs/acl.h
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#ifndef BTRFS_ACL_H
-+#define BTRFS_ACL_H
-+
-+#ifdef CONFIG_BTRFS_FS_POSIX_ACL
-+struct posix_acl *btrfs_get_acl(struct inode *inode, int type, bool rcu);
-+int btrfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
-+		  struct posix_acl *acl, int type);
-+int __btrfs_set_acl(struct btrfs_trans_handle *trans, struct inode *inode,
-+		    struct posix_acl *acl, int type);
-+#else
-+#define btrfs_get_acl NULL
-+#define btrfs_set_acl NULL
-+static inline int __btrfs_set_acl(struct btrfs_trans_handle *trans,
-+				  struct inode *inode, struct posix_acl *acl,
-+				  int type)
-+{
-+	return -EOPNOTSUPP;
-+}
-+#endif
-+
-+#endif /* BTRFS_ACL_H */
+ /* Just arbitrary numbers so we can be sure one of these happened. */
+ #define BACKREF_FOUND_SHARED     6
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 140257f22c69..05c5ac54fe52 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -21,6 +21,7 @@
+ #include "fs.h"
+ #include "accessors.h"
+ #include "extent-tree.h"
++#include "relocation.h"
+ 
+ static struct kmem_cache *btrfs_path_cachep;
+ 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index dcbfb1b9d269..040b640b0222 100644
+index 040b640b0222..b1b6de508e20 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -732,24 +732,6 @@ static inline unsigned long get_eb_page_index(unsigned long offset)
+@@ -732,26 +732,6 @@ static inline unsigned long get_eb_page_index(unsigned long offset)
  #define EXPORT_FOR_TESTS
  #endif
  
--/* acl.c */
--#ifdef CONFIG_BTRFS_FS_POSIX_ACL
--struct posix_acl *btrfs_get_acl(struct inode *inode, int type, bool rcu);
--int btrfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
--		  struct posix_acl *acl, int type);
--int __btrfs_set_acl(struct btrfs_trans_handle *trans, struct inode *inode,
--		    struct posix_acl *acl, int type);
--#else
--#define btrfs_get_acl NULL
--#define btrfs_set_acl NULL
--static inline int __btrfs_set_acl(struct btrfs_trans_handle *trans,
--				  struct inode *inode, struct posix_acl *acl,
--				  int type)
--{
--	return -EOPNOTSUPP;
--}
--#endif
+-/* relocation.c */
+-int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start);
+-int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
+-			  struct btrfs_root *root);
+-int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
+-			    struct btrfs_root *root);
+-int btrfs_recover_relocation(struct btrfs_fs_info *fs_info);
+-int btrfs_reloc_clone_csums(struct btrfs_inode *inode, u64 file_pos, u64 len);
+-int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
+-			  struct btrfs_root *root, struct extent_buffer *buf,
+-			  struct extent_buffer *cow);
+-void btrfs_reloc_pre_snapshot(struct btrfs_pending_snapshot *pending,
+-			      u64 *bytes_to_reserve);
+-int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
+-			      struct btrfs_pending_snapshot *pending);
+-int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info);
+-struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info,
+-				   u64 bytenr);
+-int btrfs_should_ignore_reloc_root(struct btrfs_root *root);
 -
- /* relocation.c */
- int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start);
- int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
+ /* scrub.c */
+ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 		    u64 end, struct btrfs_scrub_progress *progress,
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index c5ff0b12cd5b..215f95b90cc7 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -49,6 +49,7 @@
+ #include "root-tree.h"
+ #include "defrag.h"
+ #include "uuid-tree.h"
++#include "relocation.h"
+ 
+ #define BTRFS_SUPER_FLAG_SUPP	(BTRFS_HEADER_FLAG_WRITTEN |\
+ 				 BTRFS_HEADER_FLAG_RELOC |\
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 19d4f1f16723..e5443d44610c 100644
+index e5443d44610c..fd733fc3c583 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -65,6 +65,7 @@
- #include "uuid-tree.h"
+@@ -66,6 +66,7 @@
  #include "ioctl.h"
  #include "file.h"
-+#include "acl.h"
+ #include "acl.h"
++#include "relocation.h"
  
  struct btrfs_iget_args {
  	u64 ino;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index e86364bdac8e..f31a97d4f9ad 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -33,6 +33,7 @@
+ #include "extent-tree.h"
+ #include "root-tree.h"
+ #include "file-item.h"
++#include "relocation.h"
+ 
+ /*
+  * Relocation overview
+diff --git a/fs/btrfs/relocation.h b/fs/btrfs/relocation.h
+new file mode 100644
+index 000000000000..1a3cac9197ff
+--- /dev/null
++++ b/fs/btrfs/relocation.h
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#ifndef BTRFS_RELOCATION_H
++#define BTRFS_RELOCATION_H
++
++int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start);
++int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
++			  struct btrfs_root *root);
++int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
++			    struct btrfs_root *root);
++int btrfs_recover_relocation(struct btrfs_fs_info *fs_info);
++int btrfs_reloc_clone_csums(struct btrfs_inode *inode, u64 file_pos, u64 len);
++int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
++			  struct btrfs_root *root, struct extent_buffer *buf,
++			  struct extent_buffer *cow);
++void btrfs_reloc_pre_snapshot(struct btrfs_pending_snapshot *pending,
++			      u64 *bytes_to_reserve);
++int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
++			      struct btrfs_pending_snapshot *pending);
++int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info);
++struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info,
++				   u64 bytenr);
++int btrfs_should_ignore_reloc_root(struct btrfs_root *root);
++
++#endif /* BTRFS_RELOCATION_H */
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index e491fbcd404f..f7a1af84ae33 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -32,6 +32,7 @@
+ #include "dir-item.h"
+ #include "uuid-tree.h"
+ #include "ioctl.h"
++#include "relocation.h"
+ 
+ static struct kmem_cache *btrfs_trans_handle_cachep;
+ 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 4b70cfab02ab..af58abf34462 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -37,6 +37,7 @@
+ #include "accessors.h"
+ #include "uuid-tree.h"
+ #include "ioctl.h"
++#include "relocation.h"
+ 
+ static struct bio_set btrfs_bioset;
+ 
 -- 
 2.26.3
 
