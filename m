@@ -2,55 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FB060DFE7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Oct 2022 13:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCD760E1A0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Oct 2022 15:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbiJZLok (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Oct 2022 07:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
+        id S233226AbiJZNKi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Oct 2022 09:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233121AbiJZLoQ (ORCPT
+        with ESMTP id S231476AbiJZNKh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Oct 2022 07:44:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D729DFC00;
-        Wed, 26 Oct 2022 04:41:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CA11BB821AB;
-        Wed, 26 Oct 2022 11:41:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D782FC433C1;
-        Wed, 26 Oct 2022 11:41:32 +0000 (UTC)
-Date:   Wed, 26 Oct 2022 07:41:45 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     "dsterba@suse.cz" <dsterba@suse.cz>, Chris Mason <clm@meta.com>,
-        Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: consolidate btrfs checksumming, repair and bio splitting
-Message-ID: <20221026074145.2be5ca09@gandalf.local.home>
-In-Reply-To: <9f443843-4145-155b-2fd0-50613a9f7913@wdc.com>
-References: <20220901074216.1849941-1-hch@lst.de>
-        <347dc0b3-0388-54ee-6dcb-0c1d0ca08d05@wdc.com>
-        <20221024144411.GA25172@lst.de>
-        <773539e2-b5f1-8386-aa2a-96086f198bf8@meta.com>
-        <20221024171042.GF5824@suse.cz>
-        <9f443843-4145-155b-2fd0-50613a9f7913@wdc.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 26 Oct 2022 09:10:37 -0400
+X-Greylist: delayed 1527 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 26 Oct 2022 06:10:35 PDT
+Received: from hz.preining.info (hz.preining.info [IPv6:2a01:4f9:2a:1a08::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594CF2FFFF;
+        Wed, 26 Oct 2022 06:10:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=preining.info; s=201909; h=Content-Type:MIME-Version:Message-ID:Subject:To:
+        From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=0La9xePEka4s3dK4EFGiM4QoypNG8UN+HmXZKdb7kCA=; b=iD+0Q10MfbKIiKO0rg1t2AynId
+        bJM/S+Lmse1dcjOxPPMJHCfeWDgIyqq5todb/szevvYniRfZ9CnrWoBK0MvHV9Vi1cEEuGZqbu/9W
+        qEoOpOj1HPlvfFjWifOdf2MnQNw1W2Rg7ilVrDJ56FY80PnM/NjBDvv9kdUZGBac+XZEkZFkvVoJk
+        ipaQc0oZC9LZEscYBPMxDoavzT8vd6So7C4AeyAl6qroApzrSiKpt8um1g/mCJt1Hf0PYYaVmKwLM
+        agzjQVWVhD83Cpvo7xtNNJvSlKcLxXpEvzyi10T10j2UtF/FKWmq23GOACszkU0KCvO1fkboyqKEp
+        aAq2UzNA==;
+Received: from tvk215040.tvk.ne.jp ([180.94.215.40] helo=bulldog.preining.info)
+        by hz.preining.info with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <norbert@preining.info>)
+        id 1onfmL-004sbp-LG; Wed, 26 Oct 2022 12:45:05 +0000
+Received: by bulldog.preining.info (Postfix, from userid 1000)
+        id 46942DE9448; Wed, 26 Oct 2022 21:45:01 +0900 (JST)
+Date:   Wed, 26 Oct 2022 21:45:01 +0900
+From:   Norbert Preining <norbert@preining.info>
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Lenovo X1 - kernel 6.0.N - complete freeze btrfs or i915 related
+Message-ID: <Y1krzbq3zdYOSQYG@bulldog>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,72 +53,56 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 26 Oct 2022 07:36:45 +0000
-Johannes Thumshirn <Johannes.Thumshirn@wdc.com> wrote:
+Hi all,
 
-> [+Cc Steven ]
-> 
-> Steven, you're on the TAB, can you help with this issue?
-> Or bring it up with other TAB members?
-> 
+(please Cc)
 
-Well, Chris Mason was recently the TAB chair.
+I got a new laptop Lenovo X1 Gen 10 Alder Lake, and installed Arch on
+it. In contrast to my desktop that runs the same kernel and software,
 
-> Thanks :)
-> 
-> Full quote below for reference:
-> 
-> On 24.10.22 19:11, David Sterba wrote:
-> > On Mon, Oct 24, 2022 at 11:25:04AM -0400, Chris Mason wrote:  
-> >> On 10/24/22 10:44 AM, Christoph Hellwig wrote:  
-> >>> On Mon, Oct 24, 2022 at 08:12:29AM +0000, Johannes Thumshirn wrote:  
-> >>>> David, what's your plan to progress with this series?  
-> >>>
-> >>> FYI, I object to merging any of my code into btrfs without a proper
-> >>> copyright notice, and I also need to find some time to remove my
-> >>> previous significant changes given that the btrfs maintainer
-> >>> refuses to take the proper and legally required copyright notice.
-> >>>
-> >>> So don't waste any of your time on this.  
-> >>
-> >> Christoph's request is well within the norms for the kernel, given that 
-> >> he's making substantial changes to these files.  I talked this over with 
-> >> GregKH, who pointed me at:
-> >>
-> >> https://www.linuxfoundation.org/blog/blog/copyright-notices-in-open-source-software-projects
-> >>
-> >> Even if we'd taken up some of the other policies suggested by this doc, 
-> >> I'd still defer to preferences of developers who have made significant 
-> >> changes.  
-> > 
-> > I've asked for recommendations or best practice similar to the SPDX
-> > process. Something that TAB can acknowledge and that is perhaps also
-> > consulted with lawyers. And understood within the linux project,
-> > not just that some dudes have an argument because it's all clear as mud
-> > and people are used to do things differently.
-> > 
-> > The link from linux foundation blog is nice but unless this is codified
-> > into the process it's just somebody's blog post. Also there's a paragraph
-> > about "Why not list every copyright holder?" that covers several points
-> > why I don't want to do that.
-> > 
-> > But, if TAB says so I will do, perhaps spending hours of unproductive
-> > time looking up the whole history of contributors and adding year, name,
-> > company whatever to files.
+kernel 6.0.N (latest stable), with or without -zen changes
+Arch linux uptodate
+Hardware name: LENOVO 21CBCTO1WW/21CBCTO1WW, BIOS N3AET67W (1.32 ) 09/27/2022
 
-There's no requirement to list every copyright holder, as most developers do
-not require it for acceptance. The issue I see here is that there's someone
-that does require it for you to accept their code.
+The laptop is freezing like hell. At the moment it hangs reproducible
+on every boot after a few seconds (around 20?).
 
-The policy is simple. If someone requires a copyright notice for their
-code, you simply add it, or do not take their code. You can be specific
-about what that code is that is copyrighted. Perhaps just around the code in
-question or a description at the top.
+I captured a call trace on photo:
 
-Looking over the thread, I'm still confused at what the issue is. Is it
-that if you add one copyright notice you must do it for everyone else? Is
-everyone else asking for it? If not, just add the one and be done with it.
+btrfs_release_delayed_item.part
+btrfs_delete_delayed_dir_index
+...
 
--- Steve
+(more on request, I can type it in)
 
 
+Intel i915 also has loads of warnings. I tried with 
+	i915.enable_psr=0
+otherwise screen flickering and tearing is bad, and bad pixels show up.
+Adding the enable_psr=0 did fix that.
+
+Other things are that the GUI (Plasma via X11 - not wayland) is often
+freezing completely. But I guess that is a consequence of the btrfs
+error above, since starting new shell does not work, anything that wants
+to read from disk is hanging.
+
+I captured a recent boot log:
+	https://www.preining.info/boot.log
+which shows in detail hardware etc.
+
+I am more than happy to:
+- compile kernel with patches
+- provide detailed information as far as I can gather them
+
+Thanks for any comment/help
+
+(Please Cc)
+
+Best regards
+
+Norbert
+
+--
+PREINING Norbert                              https://www.preining.info
+Mercari Inc.     +     IFMGA Guide     +     TU Wien     +     TeX Live
+GPG: 0x860CDC13   fp: F7D8 A928 26E3 16A1 9FA0 ACF0 6CAC A448 860C DC13
