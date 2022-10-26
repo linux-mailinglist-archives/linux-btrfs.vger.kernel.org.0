@@ -2,146 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3521C60E89D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Oct 2022 21:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0C760E8B3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Oct 2022 21:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbiJZTJq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Oct 2022 15:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
+        id S235019AbiJZTLh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Oct 2022 15:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234991AbiJZTJI (ORCPT
+        with ESMTP id S235027AbiJZTLT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Oct 2022 15:09:08 -0400
-Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77085B98
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:07:28 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 280B42B059E0;
-        Wed, 26 Oct 2022 15:07:26 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Wed, 26 Oct 2022 15:07:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        colorremedies.com; h=cc:content-transfer-encoding:content-type
-        :date:date:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to;
-         s=fm1; t=1666811245; x=1666818445; bh=cKu5uWfwQDc9Ovj+CCZ/q6ZiI
-        EY8JarB6V2fvQCPsnU=; b=c6KXFL0SdKao+qhRNynh+hpQ2mhSL8GzchNhMffKO
-        83ioMvJT+pJvPzpbEQ4dchqiDHNGFTxXjWq/9qBB5J/uKyXY72XavZ0EKrQUI8AS
-        GCXYf4I7+2tkbNRjCNHp9UL2fUSw5K80tfiEDftbI6fXgps4kBJRRy8zCJQjaXrT
-        GuyY0SELL14i/t5Qn2RMEQKTBIDi1633KuhZXPLSC0XBGablflqPTGsdTQ5fqwLE
-        YG58SS/kWrYCbcqC1eG/J5vYyUYTL+yxMJviwFmTI3m/Kc0eDhYsP0eP1LfXC1ya
-        iJy8g+YDXb700QK6k4zM+TOu5i1lgouI5lctiJcOVkHiw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:date:feedback-id:feedback-id:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; t=1666811245; x=1666818445; bh=c
-        Ku5uWfwQDc9Ovj+CCZ/q6ZiIEY8JarB6V2fvQCPsnU=; b=H0xLuajte4SCCx3g9
-        mqnEFqpsVbX2Pi0JDvQAHgdBugcCQD7R/KCK1Yy6cmkzqAWFvJuxzPN9EFlQ4Nus
-        1PZ8RpXEyE6FGbL2Zr3tU/evownp2R/y1o+6JBU+f0bPcT3ExOQ6s4XAAULlqx0b
-        1mzpiGtjsg9MlozIuUrBHjnF60nPQQGu0+Brl/arGAT/DkMR8wLZ9yMIgpvp/BOi
-        zZ+8nhI7KbGrz44baSEJ3noqP9BAJNxZutxNvJ1fbNW+1ei2UVO2ysH83zdoXxdR
-        2uWd9nm7ROhATlfCkVh/HACT1ZkNGNCOWe4JXfcVLu8/CvhXme/dkFxmEfoD2/Cc
-        z1N2Q==
-X-ME-Sender: <xms:bIVZYzn7Tc5lm0t490HLxbuGAvjx-WkAaaG7FcEPwIHQVr67sNvBWQ>
-    <xme:bIVZY21JazVe6-R1Xo1Xgk2-A9TRQuhrkjHewVChr8GBAjoYa0mbd0j4VfsLa0imH
-    aol6nVbJ7HXbfxNR-c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrtddvgddufeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedfvehh
-    rhhishcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtoh
-    hmqeenucggtffrrghtthgvrhhnpeehvdeiteejhfehgedtleffffehleetffeikefhfeeh
-    keejhfetueehkeevueeuueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhm
-X-ME-Proxy: <xmx:bYVZY5qJglAbMA2Kr6e2YOxcXyxdIJZX2gGSHc-Q6n1ENDQWXhaxVw>
-    <xmx:bYVZY7leEDrKwUeBzWuG_pR8t77ZFKBYtXAjjJR6OIuJTFRRPLwpew>
-    <xmx:bYVZYx1P4mpMbTcf2MCxxxwCUgQ3j7a_ZIP5pxRDYKDFfsxioCUvsg>
-    <xmx:bYVZY-hc9ESh9qi6VRU-395wzu10Elhn_8CTu9-pv3VfcbZwS9lARpdMqVU>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 9CA9D1700083; Wed, 26 Oct 2022 15:07:24 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1087-g968661d8e1-fm-20221021.001-g968661d8
-Mime-Version: 1.0
-Message-Id: <eee8a8e1-8e54-4170-af44-a94c524c37ad@app.fastmail.com>
-In-Reply-To: <3c352b84-c52a-9e01-1ace-6e984e167753@inbox.ru>
-References: <3c352b84-c52a-9e01-1ace-6e984e167753@inbox.ru>
-Date:   Wed, 26 Oct 2022 15:07:02 -0400
-From:   "Chris Murphy" <lists@colorremedies.com>
-To:     "Nemcev Aleksey" <Nemcev_Aleksey@inbox.ru>,
-        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Subject: Re: compsize reports that filesystem uses zlib compression, while I set zstd
- compression everywhere
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 26 Oct 2022 15:11:19 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C488B139C09
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:08:44 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id b25so11370972qkk.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:08:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KYBsXI1dsGNMxcHmA37mFjfUHzDFkTjbgwsr1ICZDgk=;
+        b=soVv5X/mpWiPN6ssdHsS1xJWM3KYbiKSOcYzNQtm55aYmJhHcQqiwzc7H9laBTEOwl
+         C0AhEUhD5g8+jUPX+JmSUxHeNfQrq3+fz7P5Q0Q3tOtujyqZkzrMq7L4x6gAu+2vAoy5
+         8QFB7nQdEo0i0KwxBH1o3hbm2dMLg4pcQDV2mXh7sD4rI+tDIYuAlDEfSoN8kJaN40We
+         a+oDzVX3nX74b55Kx+gs2I++ctkf7aloDeyT9CtsJn7Mk1oOZfhPJmUxGBKjUqOCYvwu
+         XjciWATvwmCczNSMhXx/quRiLarvNhfSr5DjrLyvjuOrl6jCQvUzJxfXEqWPXRwHJ6Ke
+         rRhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KYBsXI1dsGNMxcHmA37mFjfUHzDFkTjbgwsr1ICZDgk=;
+        b=XBJhdkax7u7joZp8CHoMwo+x2x8heund18+WnJhNd9QMUfu1Gl7h/nHDyw+HUuGMOx
+         H45n9GSF+fL6DSyoQF+XFSfOrYjjiQPqp1AAfykxzXP+fedqejF71Vmzi34MKrp3edmV
+         PtUmZH/mNfEpdRjknonFKswR6/JUifmaWj3JR3yZUAO1LlrS2l7jH4qdpJsOC8eRoOI4
+         aiF3W/hZXDvB+eXGyhn7si3E8vXCuET9KQBmh+1Oxmj4v7Rxvf4oM2AWU8wOr3j90cQB
+         rZuTrwug1dnU2WsCuc/+EpuDywlzqAEd5feiZxE6KGDttiu8NLNe7fUjt0fPN5d2YS+m
+         4Qdg==
+X-Gm-Message-State: ACrzQf0sM4djsLBXZptgoAmf+laznpwPCW6mTAjSr8WrB99z0nPAmKAl
+        se1aAufDGdRHs+FFsQx2kpnFFHXheDnqOQ==
+X-Google-Smtp-Source: AMsMyM6sDe3hBpHZTw9YYPeIpjnvEck9vxkcsqx6mTEw0A8uHetMaERaMy7v7UmGd8PMHUVeV7uCYA==
+X-Received: by 2002:a37:a49:0:b0:6ee:6816:41e9 with SMTP id 70-20020a370a49000000b006ee681641e9mr31472394qkk.173.1666811323483;
+        Wed, 26 Oct 2022 12:08:43 -0700 (PDT)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id u6-20020a37ab06000000b006bb2cd2f6d1sm4241876qke.127.2022.10.26.12.08.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Oct 2022 12:08:43 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 00/26] btrfs: final ctree.h cleanups
+Date:   Wed, 26 Oct 2022 15:08:15 -0400
+Message-Id: <cover.1666811038.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
 
+This is the last bit to cleanup ctree.h.  There bulk of this is moving the
+prototypes into their own headers, so yes this explodes out the number of files
+we have.  I've also moved messages stuff into messages.c, as when I started the
+work to sync stuff to btrfs-progs I realized it's kind of annoying having that
+code bundled up with other things, so having it separate will make it easier to
+deal with that stuff on it's own.
 
-On Wed, Oct 26, 2022, at 6:21 AM, Nemcev Aleksey wrote:
-> Hello.
->
-> Recently I decided to compress the existing Btrfs volume with zstd.
->
-> To do this, I set property `compression=3Dzstd` for all subvolumes to=20
-> compress new files with the default zstd:3 compression level.
->
-> Then I run `btrfs filesystem defragment -c zstd:12 -v -r` on all=20
-> subvolumes to compress existing files using zstd:12 compression level=20
-> (to spend more time now and save more space later, but don't want to=20
-> keep slow zstd:12 level all the time).
->
-> After defragment, I run `btrfs filesystem balance` on all subvolumes t=
-o=20
-> make Btrfs happy.
->
-> And after all, I run `compsize` on the root subvolume to check the=20
-> compression ratio, and compsize shows me the following:
-> Processed 1100578 files, 1393995 regular extents (1649430 refs), 66631=
-2=20
-> inline.
-> Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Perc=C2=A0=C2=A0=C2=A0 Disk Usage=C2=
-=A0 Uncompressed Referenced
-> TOTAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 77%=C2=A0=C2=A0=C2=A0=C2=A0 169G=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 217G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 226G
-> none=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-99G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 99G=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 100G
-> zlib=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 52%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 54G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 102G=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 109G
-> zstd=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 19%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 12M=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 65M=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 66M
-> prealloc=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 15G=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 15G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 16G
->
-> I'm very confused why almost all compressed data is compressed with zl=
-ib=20
-> while I haven't used zlib at any step.
-> Why do compsize reports this?
-> Should I worry about this? It seems zstd offers a much faster=20
-> decompression speed than zlib.
-> Thank you.
+I've also left btrfs_root in ctree.h.  I really, really want to cleanup
+disk-io.c, and so I'm holding off moving btrfs_root until I do the disk-io.c
+cleanup, hopefully there will be a logical place to move that struct once I've
+done that cleanup.
 
+This is the last batch of cleanups for this cycle hopefully.  I may have some
+smaller things as I start trying to sync btrfs-progs, but this is the last big
+terrible splitting for now.  Thanks,
 
-If you use chattr +c anywhere, it uses the btrfs default compression alg=
-o which is zlib. There is a way to set a compression algo property, but =
-I'm uncertain if the kernel honors it.
+Josef
 
-So you'll want to recursively remove the compression file attribute. I'm=
- not sure it's worth recompressing but you can use defrag -z for that.
+Josef Bacik (26):
+  btrfs: convert discard stat defs to enum
+  btrfs: move btrfs_chunk_item_size out of ctree.h
+  btrfs: add dependencies to fs.h and block-rsv.h
+  btrfs: add blk_types.h include to compression.h
+  btrfs: move the printk and assert helpers to messages.c
+  btrfs: move inode prototypes to btrfs_inode.h
+  btrfs: rename tree-defrag.c to defrag.c
+  btrfs: move the auto defrag code to defrag.c
+  btrfs: move the file defrag code into defrag.c
+  btrfs: move defrag related prototypes to their own header
+  btrfs: move dir-item prototypes into dir-item.h
+  btrfs: move file-item prototypes into their own header
+  btrfs: move uuid tree prototypes to uuid-tree.h
+  btrfs: move ioctl prototypes into ioctl.h
+  btrfs: move file prototypes to file.h
+  btrfs: move the 32bit warn defines into messages.h
+  btrfs: move the snapshot drop related prototypes to extent-tree.h
+  btrfs: move acl prototypes into acl.h
+  btrfs: move relocation prototypes into relocation.h
+  btrfs: move scrub prototypes into scrub.h
+  btrfs: move dev-replace prototypes into dev-replace.h
+  btrfs: move verity prototypes into verity.h
+  btrfs: move CONFIG_BTRFS_FS_RUN_SANITY_TESTS checks to fs.h
+  btrfs: move super prototypes into super.h
+  btrfs: move super_block specific helpers into super.h
+  btrfs: move orphan prototypes into orphan.h
 
---=20
-Chris Murphy
+ fs/btrfs/Makefile           |    4 +-
+ fs/btrfs/acl.c              |    1 +
+ fs/btrfs/acl.h              |   23 +
+ fs/btrfs/backref.c          |    1 +
+ fs/btrfs/block-rsv.h        |    1 +
+ fs/btrfs/btrfs_inode.h      |  137 ++++
+ fs/btrfs/compression.c      |    2 +
+ fs/btrfs/compression.h      |    1 +
+ fs/btrfs/ctree.c            |    1 +
+ fs/btrfs/ctree.h            |  402 ----------
+ fs/btrfs/defrag.c           | 1381 +++++++++++++++++++++++++++++++++++
+ fs/btrfs/defrag.h           |   23 +
+ fs/btrfs/delayed-inode.c    |    1 +
+ fs/btrfs/dev-replace.c      |    1 +
+ fs/btrfs/dev-replace.h      |    8 +
+ fs/btrfs/dir-item.c         |    1 +
+ fs/btrfs/dir-item.h         |   43 ++
+ fs/btrfs/disk-io.c          |    5 +
+ fs/btrfs/export.c           |    1 +
+ fs/btrfs/extent-tree.c      |    2 +
+ fs/btrfs/extent-tree.h      |    6 +
+ fs/btrfs/extent_io.c        |    4 +
+ fs/btrfs/file-item.c        |    2 +
+ fs/btrfs/file-item.h        |   35 +
+ fs/btrfs/file.c             |  344 +--------
+ fs/btrfs/file.h             |   31 +
+ fs/btrfs/free-space-cache.c |    3 +
+ fs/btrfs/free-space-cache.h |    8 +-
+ fs/btrfs/fs.h               |   35 +-
+ fs/btrfs/inode-item.c       |    1 +
+ fs/btrfs/inode.c            |   11 +
+ fs/btrfs/ioctl.c            |  909 +----------------------
+ fs/btrfs/ioctl.h            |   17 +
+ fs/btrfs/lzo.c              |    1 +
+ fs/btrfs/messages.c         |  353 +++++++++
+ fs/btrfs/messages.h         |   13 +
+ fs/btrfs/ordered-data.c     |    2 +
+ fs/btrfs/orphan.h           |   11 +
+ fs/btrfs/props.c            |    1 +
+ fs/btrfs/reflink.c          |    3 +
+ fs/btrfs/relocation.c       |    3 +
+ fs/btrfs/relocation.h       |   25 +
+ fs/btrfs/root-tree.c        |    1 +
+ fs/btrfs/scrub.c            |    2 +
+ fs/btrfs/scrub.h            |   16 +
+ fs/btrfs/send.c             |    4 +
+ fs/btrfs/super.c            |  352 +--------
+ fs/btrfs/super.h            |   29 +
+ fs/btrfs/transaction.c      |    6 +
+ fs/btrfs/tree-defrag.c      |  133 ----
+ fs/btrfs/tree-log.c         |    4 +
+ fs/btrfs/uuid-tree.c        |    1 +
+ fs/btrfs/uuid-tree.h        |   12 +
+ fs/btrfs/verity.c           |    3 +
+ fs/btrfs/verity.h           |   27 +
+ fs/btrfs/volumes.c          |    5 +
+ fs/btrfs/volumes.h          |    9 +
+ fs/btrfs/xattr.c            |    1 +
+ 58 files changed, 2316 insertions(+), 2146 deletions(-)
+ create mode 100644 fs/btrfs/acl.h
+ create mode 100644 fs/btrfs/defrag.c
+ create mode 100644 fs/btrfs/defrag.h
+ create mode 100644 fs/btrfs/dir-item.h
+ create mode 100644 fs/btrfs/file-item.h
+ create mode 100644 fs/btrfs/file.h
+ create mode 100644 fs/btrfs/ioctl.h
+ create mode 100644 fs/btrfs/messages.c
+ create mode 100644 fs/btrfs/orphan.h
+ create mode 100644 fs/btrfs/relocation.h
+ create mode 100644 fs/btrfs/scrub.h
+ create mode 100644 fs/btrfs/super.h
+ delete mode 100644 fs/btrfs/tree-defrag.c
+ create mode 100644 fs/btrfs/uuid-tree.h
+ create mode 100644 fs/btrfs/verity.h
+
+-- 
+2.26.3
+
