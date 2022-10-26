@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D2F60E8D0
+	by mail.lfdr.de (Postfix) with ESMTP id 3139060E8CF
 	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Oct 2022 21:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235023AbiJZTMI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Oct 2022 15:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43478 "EHLO
+        id S235027AbiJZTMK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Oct 2022 15:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235020AbiJZTLi (ORCPT
+        with ESMTP id S233913AbiJZTLj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Oct 2022 15:11:38 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F30B12607
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:09:11 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id bb5so10683173qtb.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:09:11 -0700 (PDT)
+        Wed, 26 Oct 2022 15:11:39 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B266F9704
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:09:12 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id a24so10687918qto.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 12:09:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1lk3G87kUPkIoaLDfkRgqJAhQxdV7wIpzunw6nyqadM=;
-        b=0FO9COB5tcCm80XP21mNHXfzCteuvnfki0EDuDRzLszhJV3DveSdOJ8s1jl9MzyfHB
-         XQ2Dg/r2tgWlrx+wJ5G5AEUqXVg1KWP448VkDz8nFaPLjRDwYmzKso0r4gVJXw6aAWPR
-         uoPRCA7s1WPd9CmTAKhtHMFO7dk+LoiVRpkXk37Uc7aswZSCGOpp5zbSprQPIAihrXBg
-         s1xmoY19PS/ytM0H9Vva2g41q8UHRi2l3nTxt4dBElxOTIKVScpu70OXEFXEJs2P48kC
-         B4a65wfIr08h+qRtbbiM3tu/trkzJqsQTehn1rCSGRVHVqqNoaHfcNgN7udLUyDuVxqU
-         wQBQ==
+        bh=plYBOVgyJmba5LGC9zNt+lPBeB+11BDVf3tSRo/8otI=;
+        b=WmIgXCMSc1KBjthzc50fRpjGgTX09hByWEm6QGoAKiNkuU7scCMuz58fUTT6CubSPe
+         wOen/la9sIBX8IaBdVZOUZrZrpO/klEEA00xNaTJjEmJl5qKhb8lPmMF5ESv67MbIDfd
+         uu4iEwP/MbPVr/ntkCaj0iNDZ23pyCBq0ZvKiAtXs1dIiPQYyQ2om7Tj4E7VmixI1S94
+         YeRoffLQaHgh2MbG+KhbygAmLn0ib9XQ41i/31MSJNXpgZBZ1J3Q50BiKJEZIbDhsS95
+         g33H7X/be7ItFVRg/C/A4Ew/A4axHEzL2IEBsBvFFNYfDVNL8D00oW2MwwJxSjHAM1rN
+         R8yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1lk3G87kUPkIoaLDfkRgqJAhQxdV7wIpzunw6nyqadM=;
-        b=entXid04lRskfrZjy68duKVodAlnZVLYROETj4JePgrjhbBDp2XGUTXNpzqTq06eut
-         AMYs2SD3qwCqSf/TuMe6FXPdT0w/uLXiSwFubeJym6wNup9E+oWRrviYwp7ttQwfdG8d
-         Vmz/+MTTXkCYZIrVBqox/eVWqz6NAj/N9Wwq9YCZvqzGZE2UVoyIWPBFQcJlBe8jY1XN
-         3Bp1uf2a/FI7aMFMAssAcXMD1aL1otjcNcfA+kxufi99lD1WU57cJhx56XAkHe1Y/tNL
-         pnGDXsSxwH4UUmAd9o82mPNTC51eNEULyRe7mTAXTwyOG9p8SlqMnLmOrb9bfSW/dcNJ
-         VtPQ==
-X-Gm-Message-State: ACrzQf1b0sR0lQBoG7BI7jPCyDnAiy/MWIvvav7zIajoDszCNMHyJAD+
-        gQOupKGvCsuPwRhXcCu6UkmxvkEqxD3eDA==
-X-Google-Smtp-Source: AMsMyM7CMLrNWs/90Y2/EpvD4N0GXZeccezsjkOHsqpBgN3loqSBqfYeMpi8jFdlqWQQPkrtFTKINg==
-X-Received: by 2002:a05:622a:446:b0:39c:d995:4548 with SMTP id o6-20020a05622a044600b0039cd9954548mr36989164qtx.59.1666811350388;
-        Wed, 26 Oct 2022 12:09:10 -0700 (PDT)
+        bh=plYBOVgyJmba5LGC9zNt+lPBeB+11BDVf3tSRo/8otI=;
+        b=IPYr1LuQ8890//8tChxcdulho2592cHNxiESosJqVeRTqOox97l+6cJGG+diN7QF8b
+         CWhvTjvtbuJetp2lRmcf+dWnFq+stizK5Vzdag2YwKfUP5pjQKFfB0vJX/YnBw/QZVTk
+         jQOYwSd7q9Aq95K7iTPVNl0ccoCxBcwiKSrqu2mB8gEoLufu0N1YcnG5M8Gfj2PoSZWG
+         e5Ddfn68i9MheOENOLiOi/D1FpdooPjNsdoMhoXGnZJositH9FpUWTFd50/Z6q8Kp82t
+         A087COBDihtVlgsQu5eqrC0iDvQM8FRezyRGamqHvIZmahoxJEqHcu2zSOdlrltpiCiL
+         /caQ==
+X-Gm-Message-State: ACrzQf1h44y+dO79BucORUMt5bu8eIS0bQ8uctwOaElKvHd7sgAqOzac
+        dgc6BzuyI/TXWyuw6It2T5aItC0JalXIAA==
+X-Google-Smtp-Source: AMsMyM7IKTFBOAcPS8dCcWA5QlIYokTc+MQmd2IzP9xGTlVLw96AlY5w0mvFn818XYCF6jXNZ76D0Q==
+X-Received: by 2002:a05:622a:1011:b0:3a4:ee8d:db13 with SMTP id d17-20020a05622a101100b003a4ee8ddb13mr4121298qte.85.1666811351770;
+        Wed, 26 Oct 2022 12:09:11 -0700 (PDT)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id bj22-20020a05620a191600b006f956766f76sm1184515qkb.1.2022.10.26.12.09.09
+        by smtp.gmail.com with ESMTPSA id fp9-20020a05622a508900b0039a08c0a594sm3554196qtb.82.2022.10.26.12.09.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Oct 2022 12:09:10 -0700 (PDT)
+        Wed, 26 Oct 2022 12:09:11 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 19/26] btrfs: move relocation prototypes into relocation.h
-Date:   Wed, 26 Oct 2022 15:08:34 -0400
-Message-Id: <9fad37625a4062c100ecfc78fe27bfac1aa1515e.1666811039.git.josef@toxicpanda.com>
+Subject: [PATCH 20/26] btrfs: move scrub prototypes into scrub.h
+Date:   Wed, 26 Oct 2022 15:08:35 -0400
+Message-Id: <8a09d9153dcdcddf52e3145cc9463354246e8663.1666811039.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1666811038.git.josef@toxicpanda.com>
 References: <cover.1666811038.git.josef@toxicpanda.com>
@@ -69,166 +69,147 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Move these out of ctree.h into relocation.h to cut down on code in
-ctree.h
+Move these out of ctree.h into scrub.h to cut down on code in ctree.h.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/backref.c     |  1 +
- fs/btrfs/ctree.c       |  1 +
- fs/btrfs/ctree.h       | 20 --------------------
+ fs/btrfs/ctree.h       | 11 -----------
+ fs/btrfs/dev-replace.c |  1 +
  fs/btrfs/disk-io.c     |  1 +
- fs/btrfs/inode.c       |  1 +
- fs/btrfs/relocation.c  |  1 +
- fs/btrfs/relocation.h  | 25 +++++++++++++++++++++++++
+ fs/btrfs/ioctl.c       |  1 +
+ fs/btrfs/scrub.c       |  1 +
+ fs/btrfs/scrub.h       | 16 ++++++++++++++++
+ fs/btrfs/super.c       |  1 +
  fs/btrfs/transaction.c |  1 +
  fs/btrfs/volumes.c     |  1 +
- 9 files changed, 32 insertions(+), 20 deletions(-)
- create mode 100644 fs/btrfs/relocation.h
+ 9 files changed, 23 insertions(+), 11 deletions(-)
+ create mode 100644 fs/btrfs/scrub.h
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index a53fa2dad01f..013c2c085229 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -18,6 +18,7 @@
- #include "fs.h"
- #include "accessors.h"
- #include "extent-tree.h"
-+#include "relocation.h"
- 
- /* Just arbitrary numbers so we can be sure one of these happened. */
- #define BACKREF_FOUND_SHARED     6
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 140257f22c69..05c5ac54fe52 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -21,6 +21,7 @@
- #include "fs.h"
- #include "accessors.h"
- #include "extent-tree.h"
-+#include "relocation.h"
- 
- static struct kmem_cache *btrfs_path_cachep;
- 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 040b640b0222..b1b6de508e20 100644
+index b1b6de508e20..f3facc10646c 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -732,26 +732,6 @@ static inline unsigned long get_eb_page_index(unsigned long offset)
+@@ -732,17 +732,6 @@ static inline unsigned long get_eb_page_index(unsigned long offset)
  #define EXPORT_FOR_TESTS
  #endif
  
--/* relocation.c */
--int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start);
--int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
--			  struct btrfs_root *root);
--int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
--			    struct btrfs_root *root);
--int btrfs_recover_relocation(struct btrfs_fs_info *fs_info);
--int btrfs_reloc_clone_csums(struct btrfs_inode *inode, u64 file_pos, u64 len);
--int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
--			  struct btrfs_root *root, struct extent_buffer *buf,
--			  struct extent_buffer *cow);
--void btrfs_reloc_pre_snapshot(struct btrfs_pending_snapshot *pending,
--			      u64 *bytes_to_reserve);
--int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
--			      struct btrfs_pending_snapshot *pending);
--int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info);
--struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info,
--				   u64 bytenr);
--int btrfs_should_ignore_reloc_root(struct btrfs_root *root);
+-/* scrub.c */
+-int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+-		    u64 end, struct btrfs_scrub_progress *progress,
+-		    int readonly, int is_dev_replace);
+-void btrfs_scrub_pause(struct btrfs_fs_info *fs_info);
+-void btrfs_scrub_continue(struct btrfs_fs_info *fs_info);
+-int btrfs_scrub_cancel(struct btrfs_fs_info *info);
+-int btrfs_scrub_cancel_dev(struct btrfs_device *dev);
+-int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
+-			 struct btrfs_scrub_progress *progress);
 -
- /* scrub.c */
- int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 		    u64 end, struct btrfs_scrub_progress *progress,
+ /* dev-replace.c */
+ void btrfs_bio_counter_inc_blocked(struct btrfs_fs_info *fs_info);
+ void btrfs_bio_counter_sub(struct btrfs_fs_info *fs_info, s64 amount);
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index 94f8975034ce..84af2010fae2 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -25,6 +25,7 @@
+ #include "block-group.h"
+ #include "fs.h"
+ #include "accessors.h"
++#include "scrub.h"
+ 
+ /*
+  * Device replace overview
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index c5ff0b12cd5b..215f95b90cc7 100644
+index 215f95b90cc7..917594ff1786 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -49,6 +49,7 @@
- #include "root-tree.h"
+@@ -50,6 +50,7 @@
  #include "defrag.h"
  #include "uuid-tree.h"
-+#include "relocation.h"
+ #include "relocation.h"
++#include "scrub.h"
  
  #define BTRFS_SUPER_FLAG_SUPP	(BTRFS_HEADER_FLAG_WRITTEN |\
  				 BTRFS_HEADER_FLAG_RELOC |\
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index e5443d44610c..fd733fc3c583 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -66,6 +66,7 @@
- #include "ioctl.h"
- #include "file.h"
- #include "acl.h"
-+#include "relocation.h"
- 
- struct btrfs_iget_args {
- 	u64 ino;
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index e86364bdac8e..f31a97d4f9ad 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -33,6 +33,7 @@
- #include "extent-tree.h"
- #include "root-tree.h"
- #include "file-item.h"
-+#include "relocation.h"
- 
- /*
-  * Relocation overview
-diff --git a/fs/btrfs/relocation.h b/fs/btrfs/relocation.h
-new file mode 100644
-index 000000000000..1a3cac9197ff
---- /dev/null
-+++ b/fs/btrfs/relocation.h
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#ifndef BTRFS_RELOCATION_H
-+#define BTRFS_RELOCATION_H
-+
-+int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start);
-+int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
-+			  struct btrfs_root *root);
-+int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
-+			    struct btrfs_root *root);
-+int btrfs_recover_relocation(struct btrfs_fs_info *fs_info);
-+int btrfs_reloc_clone_csums(struct btrfs_inode *inode, u64 file_pos, u64 len);
-+int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
-+			  struct btrfs_root *root, struct extent_buffer *buf,
-+			  struct extent_buffer *cow);
-+void btrfs_reloc_pre_snapshot(struct btrfs_pending_snapshot *pending,
-+			      u64 *bytes_to_reserve);
-+int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
-+			      struct btrfs_pending_snapshot *pending);
-+int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info);
-+struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info,
-+				   u64 bytenr);
-+int btrfs_should_ignore_reloc_root(struct btrfs_root *root);
-+
-+#endif /* BTRFS_RELOCATION_H */
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index e491fbcd404f..f7a1af84ae33 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -32,6 +32,7 @@
- #include "dir-item.h"
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index dfbb0e328bb2..a254207f98d5 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -59,6 +59,7 @@
  #include "uuid-tree.h"
  #include "ioctl.h"
-+#include "relocation.h"
+ #include "file.h"
++#include "scrub.h"
+ 
+ #ifdef CONFIG_64BIT
+ /* If we have a 32-bit userspace and 64-bit kernel, then the UAPI
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index e6f9916501f6..2c7053d20c14 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -24,6 +24,7 @@
+ #include "fs.h"
+ #include "accessors.h"
+ #include "file-item.h"
++#include "scrub.h"
+ 
+ /*
+  * This is only the first step towards a full-features scrub. It reads all
+diff --git a/fs/btrfs/scrub.h b/fs/btrfs/scrub.h
+new file mode 100644
+index 000000000000..52e39619e27c
+--- /dev/null
++++ b/fs/btrfs/scrub.h
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#ifndef BTRFS_SCRUB_H
++#define BTRFS_SCRUB_H
++
++int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
++		    u64 end, struct btrfs_scrub_progress *progress,
++		    int readonly, int is_dev_replace);
++void btrfs_scrub_pause(struct btrfs_fs_info *fs_info);
++void btrfs_scrub_continue(struct btrfs_fs_info *fs_info);
++int btrfs_scrub_cancel(struct btrfs_fs_info *info);
++int btrfs_scrub_cancel_dev(struct btrfs_device *dev);
++int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
++			 struct btrfs_scrub_progress *progress);
++
++#endif /* BTRFS_SCRUB_H */
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 2cd05246bcd3..4bfda9be4556 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -55,6 +55,7 @@
+ #include "defrag.h"
+ #include "dir-item.h"
+ #include "ioctl.h"
++#include "scrub.h"
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/btrfs.h>
+ 
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index f7a1af84ae33..bc4b48d9787e 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -33,6 +33,7 @@
+ #include "uuid-tree.h"
+ #include "ioctl.h"
+ #include "relocation.h"
++#include "scrub.h"
  
  static struct kmem_cache *btrfs_trans_handle_cachep;
  
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 4b70cfab02ab..af58abf34462 100644
+index af58abf34462..7f4005d1c822 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -37,6 +37,7 @@
- #include "accessors.h"
+@@ -38,6 +38,7 @@
  #include "uuid-tree.h"
  #include "ioctl.h"
-+#include "relocation.h"
+ #include "relocation.h"
++#include "scrub.h"
  
  static struct bio_set btrfs_bioset;
  
