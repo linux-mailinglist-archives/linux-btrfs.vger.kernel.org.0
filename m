@@ -2,99 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA88B60ED3F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Oct 2022 03:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D377860EF6B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Oct 2022 07:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233449AbiJ0BJ0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Oct 2022 21:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59724 "EHLO
+        id S233705AbiJ0FQD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Oct 2022 01:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbiJ0BJY (ORCPT
+        with ESMTP id S233187AbiJ0FQB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Oct 2022 21:09:24 -0400
-Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0B10AFFFB8
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 18:09:21 -0700 (PDT)
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id BC1475BB4F1; Wed, 26 Oct 2022 21:03:47 -0400 (EDT)
-Date:   Wed, 26 Oct 2022 21:03:20 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Nemcev Aleksey <Nemcev_Aleksey@inbox.ru>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: compsize reports that filesystem uses zlib compression, while I
- set zstd compression everywhere
-Message-ID: <Y1nY2FJGYS+iWMcS@hungrycats.org>
-References: <3c352b84-c52a-9e01-1ace-6e984e167753@inbox.ru>
- <eee8a8e1-8e54-4170-af44-a94c524c37ad@app.fastmail.com>
- <fa62c9cb-0fe9-b838-3f69-477dc61dbd45@inbox.ru>
+        Thu, 27 Oct 2022 01:16:01 -0400
+Received: from hz.preining.info (hz.preining.info [IPv6:2a01:4f9:2a:1a08::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43CAD18E0
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 22:15:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=preining.info; s=201909; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=1mEsh8jZ4/nbQ/zMUp4SaLGBqBruz32cLuruZpb1nx4=; b=hSgVrClfgbMEeBQ1sTZk/2Zguu
+        leFp7VhXIv+6vZOPtVjAPRpCap5sKtU/C+3XpaW6uhtpxHO2LcutQ/x9pUJH2BPM9rLBMrENnBhwD
+        qp/51TOhJUS2zqKRpIyH2tCtjr9CEV/wkCvyFdHfaAQbF8vCP6q7Yf4CcfOqCX4ALTeZVP5mj54ox
+        C1I49pxBWKWkFzs0Tr7sV2CZgsmJWHwa9Xn2BL4mfBJUOI/iXwZ07c7yW5Sc/uaMsRrBgYec3sIej
+        pnRNVCyqc6qgAf6hk7TwWevO27vmMLE01oUv5Yflm/mzWp9pymvxdanMwKeuuuW43/kn9PqJg4NDz
+        iUWMTEAQ==;
+Received: from tvk215040.tvk.ne.jp ([180.94.215.40] helo=bulldog.preining.info)
+        by hz.preining.info with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <norbert@preining.info>)
+        id 1onvFF-005QSd-EX; Thu, 27 Oct 2022 05:15:57 +0000
+Received: by bulldog.preining.info (Postfix, from userid 1000)
+        id 0BF6BDFA069; Thu, 27 Oct 2022 14:15:53 +0900 (JST)
+Date:   Thu, 27 Oct 2022 14:15:52 +0900
+From:   Norbert Preining <norbert@preining.info>
+To:     Christoph Anton Mitterer <calestyo@scientia.org>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: Lenovo X1 - kernel 6.0.N - complete freeze btrfs or i915 related
+Message-ID: <Y1oUCLPC8xqrm1j1@bulldog>
+References: <Y1krzbq3zdYOSQYG@bulldog>
+ <5d59652451decb86786ff2dff9e4ffe3843f143b.camel@scientia.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fa62c9cb-0fe9-b838-3f69-477dc61dbd45@inbox.ru>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <5d59652451decb86786ff2dff9e4ffe3843f143b.camel@scientia.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 27, 2022 at 01:29:35AM +0300, Nemcev Aleksey wrote:
-> 26.10.2022 22:07, Chris Murphy пишет:
-> > 
-> > On Wed, Oct 26, 2022, at 6:21 AM, Nemcev Aleksey wrote:
-> > > Hello.
-> > > 
-> > > Recently I decided to compress the existing Btrfs volume with zstd.
-> > > 
-> > > To do this, I set property `compression=zstd` for all subvolumes to
-> > > compress new files with the default zstd:3 compression level.
-> > > 
-> > > Then I run `btrfs filesystem defragment -c zstd:12 -v -r` on all
-> > > subvolumes to compress existing files using zstd:12 compression level
-> > > (to spend more time now and save more space later, but don't want to
-> > > keep slow zstd:12 level all the time).
-> > > 
-> > > After defragment, I run `btrfs filesystem balance` on all subvolumes to
-> > > make Btrfs happy.
-> > > 
-> > > And after all, I run `compsize` on the root subvolume to check the
-> > > compression ratio, and compsize shows me the following:
-> > > Processed 1100578 files, 1393995 regular extents (1649430 refs), 666312
-> > > inline.
-> > > Type      Perc    Disk Usage  Uncompressed Referenced
-> > > TOTAL      77%     169G        217G        226G
-> > > none      100%      99G         99G        100G
-> > > zlib       52%      54G        102G        109G
-> > > zstd       19%      12M         65M         66M
-> > > prealloc  100%      15G         15G         16G
-> > > 
-> > > I'm very confused why almost all compressed data is compressed with zlib
-> > > while I haven't used zlib at any step.
-> > > Why do compsize reports this?
-> > > Should I worry about this? It seems zstd offers a much faster
-> > > decompression speed than zlib.
-> > > Thank you.
-> > 
-> > If you use chattr +c anywhere, it uses the btrfs default compression algo which is zlib. There is a way to set a compression algo property, but I'm uncertain if the kernel honors it.
-> > 
-> > So you'll want to recursively remove the compression file attribute. I'm not sure it's worth recompressing but you can use defrag -z for that.
-> > 
-> Thank you for the idea, I understood where I failed.
-> 
-> `btrfs filesystem defragment -c zstd -r /` is not correct command, but
-> `btrfs filesystem defragment -czstd -r /` is correct one (note the space).
-> 
-> And the first command will try to defragment the file named zstd using
-> default compression (zlib), not the compression from the `compression`
-> subvolume property.
-> 
-> And also it's not possible to specify compression level in defragment - so,
-> I'll change the level in subvolume properties, defragment with -czstd, and
-> change the level back.
+Hi
 
-It's not possible to set the level in subvol properties either.  Only the
-compress= mount option can set the level.
+(please cc)
+
+> https://bugs.archlinux.org/task/76266
+
+After booting an emergency system, running btrfsck with csum verification,
+and mounting with clear_cache,space_cache=v2 I still had problems with the
+kernel 6.0.3.
+
+After compiling 6.0.5 on a different system and installing it via the
+rescue system, it *seems* now that everything is back to normal.
+
+Thanks, much appreciated
+
+Norbert
+
+--
+PREINING Norbert                              https://www.preining.info
+Mercari Inc.     +     IFMGA Guide     +     TU Wien     +     TeX Live
+GPG: 0x860CDC13   fp: F7D8 A928 26E3 16A1 9FA0 ACF0 6CAC A448 860C DC13
