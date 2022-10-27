@@ -2,77 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D377860EF6B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Oct 2022 07:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A3C60EF98
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Oct 2022 07:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233705AbiJ0FQD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Oct 2022 01:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
+        id S233801AbiJ0Fnv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Oct 2022 01:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233187AbiJ0FQB (ORCPT
+        with ESMTP id S233403AbiJ0Fnu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Oct 2022 01:16:01 -0400
-Received: from hz.preining.info (hz.preining.info [IPv6:2a01:4f9:2a:1a08::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43CAD18E0
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Oct 2022 22:15:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=preining.info; s=201909; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=1mEsh8jZ4/nbQ/zMUp4SaLGBqBruz32cLuruZpb1nx4=; b=hSgVrClfgbMEeBQ1sTZk/2Zguu
-        leFp7VhXIv+6vZOPtVjAPRpCap5sKtU/C+3XpaW6uhtpxHO2LcutQ/x9pUJH2BPM9rLBMrENnBhwD
-        qp/51TOhJUS2zqKRpIyH2tCtjr9CEV/wkCvyFdHfaAQbF8vCP6q7Yf4CcfOqCX4ALTeZVP5mj54ox
-        C1I49pxBWKWkFzs0Tr7sV2CZgsmJWHwa9Xn2BL4mfBJUOI/iXwZ07c7yW5Sc/uaMsRrBgYec3sIej
-        pnRNVCyqc6qgAf6hk7TwWevO27vmMLE01oUv5Yflm/mzWp9pymvxdanMwKeuuuW43/kn9PqJg4NDz
-        iUWMTEAQ==;
-Received: from tvk215040.tvk.ne.jp ([180.94.215.40] helo=bulldog.preining.info)
-        by hz.preining.info with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <norbert@preining.info>)
-        id 1onvFF-005QSd-EX; Thu, 27 Oct 2022 05:15:57 +0000
-Received: by bulldog.preining.info (Postfix, from userid 1000)
-        id 0BF6BDFA069; Thu, 27 Oct 2022 14:15:53 +0900 (JST)
-Date:   Thu, 27 Oct 2022 14:15:52 +0900
-From:   Norbert Preining <norbert@preining.info>
-To:     Christoph Anton Mitterer <calestyo@scientia.org>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Lenovo X1 - kernel 6.0.N - complete freeze btrfs or i915 related
-Message-ID: <Y1oUCLPC8xqrm1j1@bulldog>
-References: <Y1krzbq3zdYOSQYG@bulldog>
- <5d59652451decb86786ff2dff9e4ffe3843f143b.camel@scientia.org>
+        Thu, 27 Oct 2022 01:43:50 -0400
+Received: from out199-8.us.a.mail.aliyun.com (out199-8.us.a.mail.aliyun.com [47.90.199.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B0D13C1DA;
+        Wed, 26 Oct 2022 22:43:49 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VTA2O3E_1666849424;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VTA2O3E_1666849424)
+          by smtp.aliyun-inc.com;
+          Thu, 27 Oct 2022 13:43:46 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next 1/3] btrfs: Remove duplicated include in root-tree.c
+Date:   Thu, 27 Oct 2022 13:43:41 +0800
+Message-Id: <20221027054343.9709-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d59652451decb86786ff2dff9e4ffe3843f143b.camel@scientia.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi
+./fs/btrfs/root-tree.c: fs.h is included more than once.
 
-(please cc)
+Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=2600
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/btrfs/root-tree.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> https://bugs.archlinux.org/task/76266
+diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+index 09175ffc143a..42f046e5e25f 100644
+--- a/fs/btrfs/root-tree.c
++++ b/fs/btrfs/root-tree.c
+@@ -13,7 +13,6 @@
+ #include "print-tree.h"
+ #include "qgroup.h"
+ #include "space-info.h"
+-#include "fs.h"
+ #include "accessors.h"
+ #include "root-tree.h"
+ 
+-- 
+2.20.1.7.g153144c
 
-After booting an emergency system, running btrfsck with csum verification,
-and mounting with clear_cache,space_cache=v2 I still had problems with the
-kernel 6.0.3.
-
-After compiling 6.0.5 on a different system and installing it via the
-rescue system, it *seems* now that everything is back to normal.
-
-Thanks, much appreciated
-
-Norbert
-
---
-PREINING Norbert                              https://www.preining.info
-Mercari Inc.     +     IFMGA Guide     +     TU Wien     +     TeX Live
-GPG: 0x860CDC13   fp: F7D8 A928 26E3 16A1 9FA0 ACF0 6CAC A448 860C DC13
