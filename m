@@ -2,84 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1350360F8EE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Oct 2022 15:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F34060F961
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Oct 2022 15:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbiJ0NWS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Oct 2022 09:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
+        id S236261AbiJ0Nke (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Oct 2022 09:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236011AbiJ0NWQ (ORCPT
+        with ESMTP id S236266AbiJ0Nkb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Oct 2022 09:22:16 -0400
-Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E68176B90
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Oct 2022 06:22:15 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 4E6B92B064C1;
-        Thu, 27 Oct 2022 09:22:14 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Thu, 27 Oct 2022 09:22:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        colorremedies.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1666876933; x=
-        1666884133; bh=mmOJA1iSZhi2wjuraZShkU156wEc3NJ3HcP85KDoyS0=; b=q
-        W15g+twMILNqkDifUm52dl49uz/vuA1qzrO5XKS3uUJ7Bjmzb59+vbZyHY0rjsIy
-        dKjxzraixytg1FLcIuNmjbzPjN++BNOVf0WUNPQ0O4RWRJJ6vWwYTt1iT2N8XQ5c
-        EWErNoEDC5fLB5J1CXdTqxG9Fw+Osbj8kR26zJTppOrKv+jU/MWn3tdhQNTJcOa6
-        7OlMgF01E5N0uHuFyebPRl5IkXD3YaQF8uAYYvv9GM6nnsL9rUzFtuthwv7BJuVB
-        ThJp1y3I+T05iJl9+fISce0Wqp5Z9ZfEyD+kUJFVvz2vnq4prt2fF1stGya/ehOG
-        oZRgeUdVS23DncV34CNmQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1666876933; x=1666884133; bh=mmOJA1iSZhi2wjuraZShkU156wEc
-        3NJ3HcP85KDoyS0=; b=bj+bOqLAzSXwWmm0vWMcfBSxTKV6nEGwlegsreAErsnk
-        xpRpZxulHnd3XFkW8EXDd8I8am2M+5exDkJqjjez6S9/TX4mAiqNBajRAE6YlMgj
-        FpQKCywzVemc0MVHyvsF9rDXDZwp1IbG2W3sF6YUowkUZ/UsGc6iYxXtU65f64T+
-        Si1EU4h8qB53acvBRe3SSUN6osP00jB/svyIP1KqhmRPThVtNTBcwyysbVLUrrtA
-        nKkMJmSuWdu1DzArEMgcZH6VkXSKsd9SSN6oHug+imrmSqgWjikEcDhiyo9AaB0W
-        zkzlgI4voRkxzsrThZNqEaWqEYLJMcEKny3c4DYbxQ==
-X-ME-Sender: <xms:BYZaY0k4up3A2Ab8lC8dQnYTLEEIXgcgbtsV_6Ao2qY7fOVrSGXQ_w>
-    <xme:BYZaYz2pHfCetmWf_-JAkMQyC3i5pbgUBNjtgtRI_HNVMFIRm7qTJ-pF8TZbdaeW1
-    ZTH-3GuiOhybYw7xfM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrtdeggdeivdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdevhhhr
-    ihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
-    eqnecuggftrfgrthhtvghrnhepgfdvueektdefgfefgfdtleffvdeileetgfefuddtffel
-    ueeiveeiveekhedtheeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
-X-ME-Proxy: <xmx:BYZaYyo1SsRqGN5-VinG0jzXN1vvXygZrfYfjPrnS5LF9Qv6JW5ojQ>
-    <xmx:BYZaYwnL9_K1nkEJkDWUZ2EBpnoar_FYMDajC3qIuwQEshLvBQL0hQ>
-    <xmx:BYZaYy1Ne0rj50f6zXdyutMcsun6pUcbp3v1Rp0SOQj_ZU21U1mZAw>
-    <xmx:BYZaY38N9VHwCBSiBF9M5cHrAy4qBdDWBILmYOx7EUs0zsmPv3Q21joFB1I>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 68C6B1700083; Thu, 27 Oct 2022 09:22:13 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1087-g968661d8e1-fm-20221021.001-g968661d8
-Mime-Version: 1.0
-Message-Id: <0f6f1ecb-84d4-4fac-9fcc-5932d5b4f73d@app.fastmail.com>
-In-Reply-To: <Y1nY2FJGYS+iWMcS@hungrycats.org>
-References: <3c352b84-c52a-9e01-1ace-6e984e167753@inbox.ru>
- <eee8a8e1-8e54-4170-af44-a94c524c37ad@app.fastmail.com>
- <fa62c9cb-0fe9-b838-3f69-477dc61dbd45@inbox.ru>
- <Y1nY2FJGYS+iWMcS@hungrycats.org>
-Date:   Thu, 27 Oct 2022 09:21:53 -0400
-From:   "Chris Murphy" <lists@colorremedies.com>
-To:     "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>,
-        "Nemcev Aleksey" <Nemcev_Aleksey@inbox.ru>
-Cc:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Subject: Re: compsize reports that filesystem uses zlib compression, while I set zstd
- compression everywhere
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        Thu, 27 Oct 2022 09:40:31 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9F757E06
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Oct 2022 06:40:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E46DA21BB5;
+        Thu, 27 Oct 2022 13:40:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1666878026;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ro7fA1vrhZ6oVNcnUOVthKbTl5JWIW4eeZaGtK28d2s=;
+        b=oqfhcPQyN+9rRq5jgaSZ3R1zaGRzsds4pkJCqQ2VrNgG1F5WDK5GqrjhGigukcMYx6S9/W
+        753lCy1YrhWIWah8X50NHkXZmhmBbUOvR8i9dZnCiIx3pmrwJHv/owsuBu00Anda6KXQOI
+        BvjZK8Q0vzWwTByaV9Q7Cb7i5H4MHgM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1666878026;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ro7fA1vrhZ6oVNcnUOVthKbTl5JWIW4eeZaGtK28d2s=;
+        b=Z7jdQ+WQlAdPGunSfTev9lPYVRn3dvzuQxOkkSZ26HWXWN+OKa4dphE0H+ult3zTbrFeN0
+        16ImxAW/TZA5RjCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B04BB13357;
+        Thu, 27 Oct 2022 13:40:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id hoLJKUqKWmPhcwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 27 Oct 2022 13:40:26 +0000
+Date:   Thu, 27 Oct 2022 15:40:11 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH 02/26] btrfs: move btrfs_chunk_item_size out of ctree.h
+Message-ID: <20221027134011.GU5824@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1666811038.git.josef@toxicpanda.com>
+ <e1ec74ccbcedc5c9dc9cb8d82b3ffba387075afa.1666811038.git.josef@toxicpanda.com>
+ <70564ebd-96ed-c8d1-d1d7-e133a7a60dc0@wdc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70564ebd-96ed-c8d1-d1d7-e133a7a60dc0@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,25 +74,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Oct 27, 2022 at 06:43:42AM +0000, Johannes Thumshirn wrote:
+> On 26.10.22 21:11, Josef Bacik wrote:
+> > diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> > index d7f72b0a227c..cab1ba8f6252 100644
+> > --- a/fs/btrfs/volumes.h
+> > +++ b/fs/btrfs/volumes.h
+> > @@ -10,6 +10,7 @@
+> >  #include <linux/sort.h>
+> >  #include <linux/btrfs.h>
+> >  #include "async-thread.h"
+> > +#include "messages.h"
+> >  
+> >  #define BTRFS_MAX_DATA_CHUNK_SIZE	(10ULL * SZ_1G)
+> >  
+> > @@ -605,6 +606,13 @@ static inline enum btrfs_map_op btrfs_op(struct bio *bio)
+> >  	}
+> >  }
+> >  
+> > +static inline unsigned long btrfs_chunk_item_size(int num_stripes)
+> > +{
+> > +	ASSERT(num_stripes);
+> > +	return sizeof(struct btrfs_chunk) +
+> > +		sizeof(struct btrfs_stripe) * (num_stripes - 1);
+> > +}
+> > +
+> >  void btrfs_get_bioc(struct btrfs_io_context *bioc);
+> >  void btrfs_put_bioc(struct btrfs_io_context *bioc);
+> >  int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+> > @@ -759,5 +767,6 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info);
+> >  bool btrfs_repair_one_zone(struct btrfs_fs_info *fs_info, u64 logical);
+> >  
+> >  bool btrfs_pinned_by_swapfile(struct btrfs_fs_info *fs_info, void *ptr);
+> > +unsigned long btrfs_chunk_item_size(int num_stripes);
+> 
+> Maybe I don't have enough coffee yet, but that change I don't get. Why are you
+> creating both a 'static inline unsigned long btrfs_chunk_item_size()' and
+> 'unsigned long btrfs_chunk_item_size()' in volumes.h?
 
-
-On Wed, Oct 26, 2022, at 9:03 PM, Zygo Blaxell wrote:
-
->> And also it's not possible to specify compression level in defragment - so,
->> I'll change the level in subvolume properties, defragment with -czstd, and
->> change the level back.
->
-> It's not possible to set the level in subvol properties either.  Only the
-> compress= mount option can set the level.
-
-$ sudo btrfs property set test compression zstd:1
-$ sudo btrfs property get test
-compression=zstd:1
-$ sudo btrfs property set test compression zstd:f
-$ sudo btrfs property get test
-compression=zstd:f
-
-It's allowing the arbitrary setting of compression values. This is with btrfs-progs 6.0. Progs is being too permissive, it shouldn't silently set invalid values. But then even with valid values, I'm pretty sure right now the kernel ignores the compression properties.
-
--- 
-Chris Murphy
+That's maybe just a typo, the non-static can be removed if there's the
+static inline.
