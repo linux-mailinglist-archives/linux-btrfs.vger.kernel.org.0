@@ -2,57 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C87C7612982
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Oct 2022 10:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CC2612B98
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Oct 2022 17:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbiJ3Jhk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 30 Oct 2022 05:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
+        id S229663AbiJ3QWz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 30 Oct 2022 12:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbiJ3Jhj (ORCPT
+        with ESMTP id S229629AbiJ3QWy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 30 Oct 2022 05:37:39 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DC4C4C;
-        Sun, 30 Oct 2022 02:37:38 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id z97so13636201ede.8;
-        Sun, 30 Oct 2022 02:37:38 -0700 (PDT)
+        Sun, 30 Oct 2022 12:22:54 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FF5A462;
+        Sun, 30 Oct 2022 09:22:53 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id t10-20020a17090a4e4a00b0020af4bcae10so8424228pjl.3;
+        Sun, 30 Oct 2022 09:22:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/hwiuCOoze5MBJHlgoRKvMktr+mDhmLrvDk3mUFONdU=;
-        b=ckCiSQ1eGLiGsH2cUKYiXaXygupPq846v3jcOSm3g2/A0PtMr4T9hGIeywUK2z5WV9
-         d/lYMTigKKRSIX/8Yh1oQt9qNvk2+HIryuVu5dKxp5BHF5ttdVKqUOFM3lZzQrmcQYxl
-         MIsP9zKESg2+hST9ZWvMG/3tGca8Mu/SHEMYnABXd6qB2Q+uBnSWJCcQNU1y5ZqBCjfy
-         8ErKa8swl6NtHL0GvsOSCGEQFnA4lE9A1ZRXr4zL47o/geOg1/Ol7NsUH3z3+LeDlsYt
-         qrRbNJgMOhTq+G25t09bVcPK5whthi25a+lN5hlwQV5xgGTWPXGUPp2zuQk6sio1Xkmq
-         pcIQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BQn3ZUpbdgmJP28m8KFPs8Ve0nMUfYmCJ+MhZVJSwXU=;
+        b=WbOxiS5OS/PT1ygZRFlxBeA9ehxYmudDAnwUyppNGaFZx1br+xbMU0222rwjR/201U
+         DEJ+9MM1HrgLyT7cwDRIN/8nKU04AYQgLGqrYy3nd1OSR++6uB6PUTW83B8rOu2DK9wC
+         T+JG67U5jGxwgL11N/aVRXUqeccZjXtGJY3iCw/+QpIHDVIUC1JRMWoJX/wWYx6JcVs8
+         1ahKneGHbSqfIcNXr1VnPUashePEsr97Eq9kITkGRXjTDGuABHisNfyYuBYkHcpwXxu/
+         9uaHiFVlr9vz8XdwL/eexORIWynKISXxXByHErHqpzhNidPhzQXukDMiiW7MxcK8ILHb
+         F3Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/hwiuCOoze5MBJHlgoRKvMktr+mDhmLrvDk3mUFONdU=;
-        b=FYKwREn6df+N+R+6P4alHTfNWj22ZjTWOdNWKqY0U4vVShVJY7i2LW89Y3uXdMqfwR
-         gGtxgLttRykeOwV4g30jSMBxP0srKnW0OLwaTk5w8zReEJWN5LqbErLlAfTKwkEvYkSg
-         M7xU8z/ANVCYw22yGzIHcnSyNxpHBppe61XU8Febp/SGI7yhEo1KiUd8DkOckRhEXBd2
-         MXz8gIm9ZlZzQSOAhLbTm2VoCWrpjUyZfI9OnLNV9YrNYMzNpCh7Mz6btSYC87bqb4jC
-         YbkVNLJKsa6hgBaaFULeSilwiSFwMg+4CplD8aco1XEazT9cvRipLhr+Pc9Ir4t9jFV3
-         gTjg==
-X-Gm-Message-State: ACrzQf3Pwg2Ut45UwiNTvymaYVUc51kPoe4OzHu79raRNwAWkN43dKu+
-        5VPMdEkVE0AhKSM/HlJrgq5fu/XjaNifAwh46gjwaqlwgS3Tpg==
-X-Google-Smtp-Source: AMsMyM6KQmew4Cp5SnTJblk3Kus7S2IviuQiJl0RhIXggqulfKXCt7q0cr/UtDrvA6QKKq40vjgF4XOJY1leIzl6lqQ=
-X-Received: by 2002:aa7:c14b:0:b0:461:c47d:48cf with SMTP id
- r11-20020aa7c14b000000b00461c47d48cfmr7752270edp.83.1667122656803; Sun, 30
- Oct 2022 02:37:36 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BQn3ZUpbdgmJP28m8KFPs8Ve0nMUfYmCJ+MhZVJSwXU=;
+        b=Y1Hchf+WFeIfPJbVyKsZ7HNcS54NQ1dU84jZVgMhaKQhKCkPl4P7Aq8N7VtEdx1CDT
+         c/owYW/NVJ7NFFZt5bGGqW3MthIIlaxZpdOF+CWaxmnNbXVYTGDPDOJZ58euJ0LEWa5H
+         PGwAD2DyModORwpF5kLAsj/oq69HukV4D6JlfWDGCBPi/MXWskLArSMxPsTBDSKzpV72
+         GU9ayqBNN2gkUAmGJHZG8XsIFWgq8LRKyB7T4HzG7Q6ryIq/jq5Lw4CsKSjPjhIEgOW7
+         zFOlQIXKMelmBDDaW9XvGiXXXSBtiv6NvNanItYrKGdOy+Fs2Npr+uL7dKxf4q3pgEY5
+         GsxA==
+X-Gm-Message-State: ACrzQf2EVFe2Jwi/Hx3r/CvYbyKNhVUli5eymvPRRi0q1tjPKb/N6Te+
+        96JPKcG5nUNUbshOTbm8pto=
+X-Google-Smtp-Source: AMsMyM5Y6JirfSHIVaga90wK49q1LDWrq7sLydks8turZETasEqJZcUfjHZeq0VfyXniS62wF6RM4g==
+X-Received: by 2002:a17:90a:5517:b0:213:b122:41b3 with SMTP id b23-20020a17090a551700b00213b12241b3mr8070540pji.121.1667146972473;
+        Sun, 30 Oct 2022 09:22:52 -0700 (PDT)
+Received: from localhost ([183.242.254.175])
+        by smtp.gmail.com with ESMTPSA id c2-20020a631c02000000b0045ff216a0casm2576491pgc.3.2022.10.30.09.22.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Oct 2022 09:22:51 -0700 (PDT)
+From:   Hawkins Jiawei <yin31149@gmail.com>
+To:     yin31149@gmail.com, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     18801353760@163.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        nathan@kernel.org, ndesaulniers@google.com,
+        syzbot+dde7e853812ed57835ea@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Subject: [PATCH] btrfs: update bytes_may_use in btrfs_free_reserved_bytes()
+Date:   Mon, 31 Oct 2022 00:22:24 +0800
+Message-Id: <20221030162223.25970-1-yin31149@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   Wei Chen <harperchen1110@gmail.com>
-Date:   Sun, 30 Oct 2022 17:37:00 +0800
-Message-ID: <CAO4mrfcorHn-uTvjLUWyfMB6XhMBa6X=M3h-eCexRo0Lw8SLSQ@mail.gmail.com>
-Subject: possible deadlock in btrfs_chunk_alloc
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -63,149 +74,87 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Linux Developer,
-
-Recently when using our tool to fuzz kernel, the following crash was triggered:
-
-HEAD commit: 64570fbc14f8 Linux 5.15-rc5
-git tree: upstream
-compiler: gcc 8.0.1
-console output:
-https://drive.google.com/file/d/16S-XGN2bCukp9yV3RX3yA4HSLMhaRXn0/view?usp=share_link
-kernel config: https://drive.google.com/file/d/1uDOeEYgJDcLiSOrx9W8v2bqZ6uOA_55t/view?usp=share_link
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: Wei Chen <harperchen1110@gmail.com>
-
-loop0: detected capacity change from 0 to 264192
-======================================================
-WARNING: possible circular locking dependency detected
-5.15.0-rc5 #1 Not tainted
-------------------------------------------------------
-syz-executor.0/3767 is trying to acquire lock:
-ffff8880171388c8 (&fs_info->chunk_mutex){+.+.}-{3:3}, at:
-btrfs_chunk_alloc+0x1d1/0x8c0
-
-but task is already holding lock:
-ffff888013a947b8 (btrfs-chunk-00){++++}-{3:3}, at: __btrfs_tree_lock+0x2e/0x210
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (btrfs-chunk-00){++++}-{3:3}:
-       down_read_nested+0x3e/0x150
-       __btrfs_tree_read_lock+0x2e/0x210
-       btrfs_read_lock_root_node+0x4f/0x230
-       btrfs_search_slot+0xb0c/0x1310
-       btrfs_update_device+0x7a/0x1f0
-       btrfs_chunk_alloc_add_chunk_item+0x14e/0x520
-       btrfs_chunk_alloc+0x4ff/0x8c0
-       find_free_extent+0x1a67/0x25a0
-       btrfs_reserve_extent+0xe2/0x280
-       btrfs_alloc_tree_block+0x103/0x700
-       __btrfs_cow_block+0x1bc/0x900
-       btrfs_cow_block+0x159/0x3d0
-       btrfs_search_slot+0x93b/0x1310
-       btrfs_insert_empty_items+0x8a/0x110
-       btrfs_insert_empty_inode+0x61/0x90
-       create_reloc_inode.isra.34+0x1d3/0x590
-       btrfs_relocate_block_group+0x1af/0x520
-       btrfs_relocate_chunk+0x46/0x190
-       btrfs_balance+0x12d3/0x1f40
-       btrfs_ioctl_balance+0x41a/0x530
-       btrfs_ioctl+0x1230/0x4520
-       __x64_sys_ioctl+0xe8/0x140
-       do_syscall_64+0x34/0xb0
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (&fs_info->chunk_mutex){+.+.}-{3:3}:
-       __lock_acquire+0x126a/0x1d60
-       lock_acquire+0xd7/0x330
-       __mutex_lock+0x96/0x9a0
-       btrfs_chunk_alloc+0x1d1/0x8c0
-       find_free_extent+0x1a67/0x25a0
-       btrfs_reserve_extent+0xe2/0x280
-       btrfs_alloc_tree_block+0x103/0x700
-       __btrfs_cow_block+0x1bc/0x900
-       btrfs_cow_block+0x159/0x3d0
-       btrfs_search_slot+0x93b/0x1310
-       relocate_tree_blocks+0x7e6/0xad0
-       relocate_block_group+0x223/0x620
-       btrfs_relocate_block_group+0x289/0x520
-       btrfs_relocate_chunk+0x46/0x190
-       btrfs_balance+0x12d3/0x1f40
-       btrfs_ioctl_balance+0x41a/0x530
-       btrfs_ioctl+0x1230/0x4520
-       __x64_sys_ioctl+0xe8/0x140
-       do_syscall_64+0x34/0xb0
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(btrfs-chunk-00);
-                               lock(&fs_info->chunk_mutex);
-                               lock(btrfs-chunk-00);
-  lock(&fs_info->chunk_mutex);
-
- *** DEADLOCK ***
-
-5 locks held by syz-executor.0/3767:
- #0: ffff888013cf7460 (sb_writers#18){.+.+}-{0:0}, at:
-btrfs_ioctl_balance+0x57/0x530
- #1: ffff88801713a098 (&fs_info->reclaim_bgs_lock){+.+.}-{3:3}, at:
-btrfs_balance+0xd85/0x1f40
- #2: ffff888017138838 (&fs_info->cleaner_mutex){+.+.}-{3:3}, at:
-btrfs_relocate_block_group+0x281/0x520
- #3: ffff888013cf7650 (sb_internal#2){.+.+}-{0:0}, at:
-relocate_block_group+0xd0/0x620
- #4: ffff888013a947b8 (btrfs-chunk-00){++++}-{3:3}, at:
-__btrfs_tree_lock+0x2e/0x210
-
-stack backtrace:
-CPU: 0 PID: 3767 Comm: syz-executor.0 Not tainted 5.15.0-rc5 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
+Syzkaller reports warning as follows:
+=====================================
+WARNING: CPU: 0 PID: 3612 at fs/btrfs/space-info.h:122
+  btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:154 [inline]
+WARNING: CPU: 0 PID: 3612 at fs/btrfs/space-info.h:122
+  block_rsv_release_bytes fs/btrfs/block-rsv.c:151 [inline]
+WARNING: CPU: 0 PID: 3612 at fs/btrfs/space-info.h:122
+  btrfs_block_rsv_release+0x5d1/0x730 fs/btrfs/block-rsv.c:295
+Modules linked in:
+[...]
+RIP: 0010:btrfs_space_info_update_bytes_may_use
+  fs/btrfs/space-info.h:122 [inline]
+RIP: 0010:btrfs_space_info_free_bytes_may_use
+  fs/btrfs/space-info.h:154 [inline]
+RIP: 0010:block_rsv_release_bytes
+  fs/btrfs/block-rsv.c:151 [inline]
+RIP: 0010:btrfs_block_rsv_release+0x5d1/0x730
+  fs/btrfs/block-rsv.c:295
+[...]
 Call Trace:
- dump_stack_lvl+0xcd/0x134
- check_noncircular+0xfe/0x110
- __lock_acquire+0x126a/0x1d60
- lock_acquire+0xd7/0x330
- __mutex_lock+0x96/0x9a0
- btrfs_chunk_alloc+0x1d1/0x8c0
- find_free_extent+0x1a67/0x25a0
- btrfs_reserve_extent+0xe2/0x280
- btrfs_alloc_tree_block+0x103/0x700
- __btrfs_cow_block+0x1bc/0x900
- btrfs_cow_block+0x159/0x3d0
- btrfs_search_slot+0x93b/0x1310
- relocate_tree_blocks+0x7e6/0xad0
- relocate_block_group+0x223/0x620
- btrfs_relocate_block_group+0x289/0x520
- btrfs_relocate_chunk+0x46/0x190
- btrfs_balance+0x12d3/0x1f40
- btrfs_ioctl_balance+0x41a/0x530
- btrfs_ioctl+0x1230/0x4520
- __x64_sys_ioctl+0xe8/0x140
- do_syscall_64+0x34/0xb0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4692c9
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fde662c7c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004692c9
-RDX: 0000000000000000 RSI: 00000000c4009420 RDI: 0000000000000005
-RBP: 000000000119bfb0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bfac
-R13: 0000000000000000 R14: 000000000119bfa0 R15: 00007ffe41266cf0
+ <TASK>
+ btrfs_release_global_block_rsv+0x2f/0x250 fs/btrfs/block-rsv.c:463
+ btrfs_free_block_groups+0xb67/0xfd0 fs/btrfs/block-group.c:4053
+ close_ctree+0x6c5/0xbde fs/btrfs/disk-io.c:4710
+ generic_shutdown_super+0x130/0x310 fs/super.c:491
+ kill_anon_super+0x36/0x60 fs/super.c:1085
+ btrfs_kill_super+0x3d/0x50 fs/btrfs/super.c:2441
+ deactivate_locked_super+0xa7/0xf0 fs/super.c:331
+ cleanup_mnt+0x4ce/0x560 fs/namespace.c:1186
+ task_work_run+0x146/0x1c0 kernel/task_work.c:177
+ ptrace_notify+0x29a/0x340 kernel/signal.c:2354
+ ptrace_report_syscall include/linux/ptrace.h:420 [inline]
+ ptrace_report_syscall_exit include/linux/ptrace.h:482 [inline]
+ syscall_exit_work+0x8c/0xe0 kernel/entry/common.c:249
+ syscall_exit_to_user_mode_prepare+0x63/0xc0 kernel/entry/common.c:276
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:281 [inline]
+ syscall_exit_to_user_mode+0xa/0x60 kernel/entry/common.c:294
+ do_syscall_64+0x49/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+ [...]
+ </TASK>
+=====================================
 
-Best,
-Wei
+In btrfs_new_extent_direct(), kernel will reserves space for extent
+by btrfs_reserve_extent(), and frees those space by
+btrfs_free_reserved_extent() if btrfs_create_dio_extent() fails.
+
+Yet the problem is that, it may not update the space
+info correctly. To be more specific, kernel will
+converts space from ->bytes_may_use to ->bytes_reserved, in
+btrfs_add_reserved_bytes() when reserving space.
+But when freeing those space in btrfs_free_reserved_bytes(),
+kernel does not convert space from ->bytes_reserved back to
+->bytes_may_use, which triggers the above warning.
+
+This patch solves it by converting space from ->bytes_reserved
+back to ->bytes_may_use in btrfs_free_reserved_bytes().
+
+Link: https://lore.kernel.org/all/0000000000002a909705eb841dda@google.com
+Reported-by: syzbot+dde7e853812ed57835ea@syzkaller.appspotmail.com
+Tested-by: syzbot+dde7e853812ed57835ea@syzkaller.appspotmail.com
+Signed-off-by: Hawkins Jiawei <yin31149@gmail.com>
+---
+ fs/btrfs/block-group.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index deebc8ddbd93..1b573ab5514b 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -3414,6 +3414,10 @@ void btrfs_free_reserved_bytes(struct btrfs_block_group *cache,
+ 	cache->reserved -= num_bytes;
+ 	space_info->bytes_reserved -= num_bytes;
+ 	space_info->max_extent_size = 0;
++	trace_btrfs_space_reservation(cache->fs_info, "space_info",
++				      space_info->flags, -num_bytes, 1);
++	btrfs_space_info_update_bytes_may_use(cache->fs_info,
++					      space_info, num_bytes);
+ 
+ 	if (delalloc)
+ 		cache->delalloc_bytes -= num_bytes;
+-- 
+2.25.1
+
