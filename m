@@ -2,239 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7C1613BBB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Oct 2022 17:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AD7613C1F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Oct 2022 18:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbiJaQvt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Oct 2022 12:51:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43730 "EHLO
+        id S231758AbiJaR0H convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 31 Oct 2022 13:26:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbiJaQvs (ORCPT
+        with ESMTP id S231552AbiJaR0G (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Oct 2022 12:51:48 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC03812AA1;
-        Mon, 31 Oct 2022 09:51:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 2E847CE1780;
-        Mon, 31 Oct 2022 16:51:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF03C433C1;
-        Mon, 31 Oct 2022 16:51:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667235103;
-        bh=3GEdvBk0AoTISmvBtsLWqOKKssIPgPm/pU5xepT7ZeE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tEIt+zfwr54ZvCtUp+R5u6joftlqteuf9ZQACdJ8CqXJOjHWc6lkOQ0TSkOtjUeW0
-         0AwUenSzhcAIEnLERXgZWNy4JoYBmUmmOkJ71kKva+ihNzZPtQ25PnEgkFiEVYkbho
-         JeFWjLIkMe2YrdghzeGXHxGu0fXgiE8myj8J+JgT4qyp9E05He9e2uUeZss5kKHr26
-         uXK5eNy/MftmNfq8nu5dDsLPnVo1zxcXTaV7ABzA16lmvFbPgnYOGX37Uh1ZqGA+9P
-         BbHmP/YxEZoLHQbezWmA9TDBseo/xurGMYRYnQah93RR6Shxra/qVkrqpRPrL/VYv8
-         J5DjU11tRCG0Q==
-Received: by mail-oi1-f170.google.com with SMTP id t62so2549517oib.12;
-        Mon, 31 Oct 2022 09:51:43 -0700 (PDT)
-X-Gm-Message-State: ACrzQf2xNT3S3JBjZ1Ko7dx2/LgUywglvbwuSiuYu8NuyWKZ0F//CltH
-        gII3XA5jqZ1T/iE/YuvJp80YJRbCKs+MEJbP1zc=
-X-Google-Smtp-Source: AMsMyM6WRUAxw2qoJdmm0838ghelsApnnBSIHtnzpcNRGT+QgQ5w/y2y+flJHl83DdEOQg1XHHPVBxHQfEF1HpWeB2w=
-X-Received: by 2002:a05:6808:1691:b0:351:48da:62e0 with SMTP id
- bb17-20020a056808169100b0035148da62e0mr7246893oib.98.1667235102475; Mon, 31
- Oct 2022 09:51:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1667214081.git.fdmanana@suse.com> <27a0c4ab551b7a7410f4062f5235f20c88e77cfc.1667214081.git.fdmanana@suse.com>
- <20221031164128.z4cujrkrcxe6ujqr@zlang-mailbox>
-In-Reply-To: <20221031164128.z4cujrkrcxe6ujqr@zlang-mailbox>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 31 Oct 2022 16:51:06 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H73zCMQgJ9VTneZ7rX9Z8qVTFojsuEVU5OhZw37StU_Ww@mail.gmail.com>
-Message-ID: <CAL3q7H73zCMQgJ9VTneZ7rX9Z8qVTFojsuEVU5OhZw37StU_Ww@mail.gmail.com>
-Subject: Re: [PATCH 2/3] btrfs: test that fiemap reports extent as not shared
- after deleting file
-To:     Zorro Lang <zlang@redhat.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
+        Mon, 31 Oct 2022 13:26:06 -0400
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A7613CD4
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 10:26:01 -0700 (PDT)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id CA0ED201F74
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 17:20:41 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 01966201EE7
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 17:20:40 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1667236841; a=rsa-sha256;
+        cv=none;
+        b=qTQ/7hoqwH+aZ/hlJ3KemhIAuJ5RiS/ljLSfvqCojZRSFhSUt+K6N9j3kq296DVf+/aWto
+        LKi7dkEOep2/A7GmDr9IreTCCHjYY4EVlV4TaRxRbSPx5pyvYk8aqIdPgKTcEBeRI6ZCDs
+        V1gx3K06uhCA3x7CTCLnJTmLsNGfCNrN/D0JYbYdUTJstS/kfOBdA+vTS9WJ6F2JRWS3D4
+        S0jXajYmfusE0k8mku/RKoIGnudW/fg+hN0kg7Bop9aDy7ymWEBBEsnD2g3016NIuRtaWa
+        Vl4iXJ0rl7omHgFnEzbdS0G6OlrJvw/jj5eXpOmAIpGNNT4D7H5fKGP0yFpvmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1667236841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1Gdb63BiNvoQ3DacQusoj71ZVEZDPOBg7bKMAzemYGs=;
+        b=35YiHG2AteEDoS4eogZH5HzSl8KtROo44cDSHErW6ncrhC4T1AcOuInQ5XTc1bDqoVWFZj
+        kqwvXxalejLS4NcFWSWUFmY4eSIjj6909WbMUxGVP8Wp4w7rsQf1hHa+Jz2eOPu8CW1GqK
+        3UsxSpC3sRrYVtZCVD6+69UavJEYRaUIiefV1Rgep4jlqkIobM4toR42i4/KnBIxjD5vKP
+        8gfkZEY8F5yZKSmE3ZoNOIeLi2UtEf8baHpHRBtdkDQaAlvaef3Jnw4Yc4VR2ZNOHKVi/K
+        MKGgjbDp8WZZP4TQmAxk0dCp4gufLt2q7k0Kogi+e3MvT0s5GgUz3Faqvlh3uw==
+ARC-Authentication-Results: i=1;
+        rspamd-7b8dfb6d4c-m262b;
+        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Chief-Left: 437d1da944ceb213_1667236841493_442022083
+X-MC-Loop-Signature: 1667236841493:346416808
+X-MC-Ingress-Time: 1667236841493
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.104.101.135 (trex/6.7.1);
+        Mon, 31 Oct 2022 17:20:41 +0000
+Received: from ppp-46-244-255-15.dynamic.mnet-online.de ([46.244.255.15]:50836 helo=heisenberg.fritz.box)
+        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <calestyo@scientia.org>)
+        id 1opYSh-0004Px-3A
+        for linux-btrfs@vger.kernel.org;
+        Mon, 31 Oct 2022 17:20:39 +0000
+Message-ID: <f3a163c460b436ba4da1991540e49f39036830d5.camel@scientia.org>
+Subject: progs: differing "found N bytes used" for original/lowmem mode
+From:   Christoph Anton Mitterer <calestyo@scientia.org>
+To:     linux-btrfs@vger.kernel.org
+Date:   Mon, 31 Oct 2022 18:20:34 +0100
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.1-1 
+MIME-Version: 1.0
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AuthUser: calestyo@scientia.org
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        HAS_X_OUTGOING_SPAM_STAT,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 31, 2022 at 4:41 PM Zorro Lang <zlang@redhat.com> wrote:
->
-> On Mon, Oct 31, 2022 at 11:11:20AM +0000, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > Test that if we have two files with shared extents, after removing one of
-> > the files, if we do a fiemap against the other file, it does not report
-> > extents as shared anymore.
-> >
-> > This exercises the processing of delayed references for data extents in
-> > the backref walking code, used by fiemap to determine if an extent is
-> > shared.
-> >
-> > This used to fail until very recently and was fixed by the following
-> > kernel commit that landed in 6.1-rc2:
-> >
-> >   4fc7b5722824 (""btrfs: fix processing of delayed data refs during backref walking")
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
->
-> Looks good to me. As this's not a genericcase, I'm not sure if you need
-> _require_congruent_file_oplen helper.
+Hey.
 
-Hum? Why would it be needed?
-That helper was introduced because of xfs's realtime config.
-On btrfs reflinking always works for any multiple of the sector size.
+This is with kernel 6.0.5 and progs 6.0.
 
->
-> Thanks,
-> Zorro
->
-> >  tests/btrfs/279     | 82 +++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/btrfs/279.out | 39 +++++++++++++++++++++
-> >  2 files changed, 121 insertions(+)
-> >  create mode 100755 tests/btrfs/279
-> >  create mode 100644 tests/btrfs/279.out
-> >
-> > diff --git a/tests/btrfs/279 b/tests/btrfs/279
-> > new file mode 100755
-> > index 00000000..5b5824fd
-> > --- /dev/null
-> > +++ b/tests/btrfs/279
-> > @@ -0,0 +1,82 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
-> > +#
-> > +# FS QA Test 279
-> > +#
-> > +# Test that if we have two files with shared extents, after removing one of the
-> > +# files, if we do a fiemap against the other file, it does not report extents as
-> > +# shared anymore.
-> > +#
-> > +# This exercises the processing of delayed references for data extents in the
-> > +# backref walking code, used by fiemap to determine if an extent is shared.
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto quick subvol fiemap clone
-> > +
-> > +. ./common/filter
-> > +. ./common/reflink
-> > +. ./common/punch # for _filter_fiemap_flags
-> > +
-> > +_supported_fs btrfs
-> > +_require_scratch_reflink
-> > +_require_cp_reflink
-> > +_require_xfs_io_command "fiemap"
-> > +
-> > +_fixed_by_kernel_commit 4fc7b5722824 \
-> > +     "btrfs: fix processing of delayed data refs during backref walking"
-> > +
-> > +run_test()
-> > +{
-> > +     local file_path_1=$1
-> > +     local file_path_2=$2
-> > +     local do_sync=$3
-> > +
-> > +     $XFS_IO_PROG -f -c "pwrite 0 64K" $file_path_1 | _filter_xfs_io
-> > +     _cp_reflink $file_path_1 $file_path_2
-> > +
-> > +     if [ $do_sync -eq 1 ]; then
-> > +             sync
-> > +     fi
-> > +
-> > +     echo "Fiemap of $file_path_1 before deleting $file_path_2:" | \
-> > +             _filter_scratch
-> > +     $XFS_IO_PROG -c "fiemap -v" $file_path_1 | _filter_fiemap_flags
-> > +
-> > +     rm -f $file_path_2
-> > +
-> > +     echo "Fiemap of $file_path_1 after deleting $file_path_2:" | \
-> > +             _filter_scratch
-> > +     $XFS_IO_PROG -c "fiemap -v" $file_path_1 | _filter_fiemap_flags
-> > +}
-> > +
-> > +_scratch_mkfs >> $seqres.full 2>&1
-> > +_scratch_mount
-> > +
-> > +# Create two test subvolumes, we'll reflink files between them.
-> > +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subv1 | _filter_scratch
-> > +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subv2 | _filter_scratch
-> > +
-> > +echo
-> > +echo "Testing with same subvolume and without transaction commit"
-> > +echo
-> > +run_test "$SCRATCH_MNT/subv1/f1" "$SCRATCH_MNT/subv1/f2" 0
-> > +
-> > +echo
-> > +echo "Testing with same subvolume and with transaction commit"
-> > +echo
-> > +run_test "$SCRATCH_MNT/subv1/f3" "$SCRATCH_MNT/subv1/f4" 1
-> > +
-> > +echo
-> > +echo "Testing with different subvolumes and without transaction commit"
-> > +echo
-> > +run_test "$SCRATCH_MNT/subv1/f5" "$SCRATCH_MNT/subv2/f6" 0
-> > +
-> > +echo
-> > +echo "Testing with different subvolumes and with transaction commit"
-> > +echo
-> > +run_test "$SCRATCH_MNT/subv1/f7" "$SCRATCH_MNT/subv2/f8" 1
-> > +
-> > +# success, all done
-> > +status=0
-> > +exit
-> > diff --git a/tests/btrfs/279.out b/tests/btrfs/279.out
-> > new file mode 100644
-> > index 00000000..a959a86d
-> > --- /dev/null
-> > +++ b/tests/btrfs/279.out
-> > @@ -0,0 +1,39 @@
-> > +QA output created by 279
-> > +Create subvolume 'SCRATCH_MNT/subv1'
-> > +Create subvolume 'SCRATCH_MNT/subv2'
-> > +
-> > +Testing with same subvolume and without transaction commit
-> > +
-> > +wrote 65536/65536 bytes at offset 0
-> > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> > +Fiemap of SCRATCH_MNT/subv1/f1 before deleting SCRATCH_MNT/subv1/f2:
-> > +0: [0..127]: shared|last
-> > +Fiemap of SCRATCH_MNT/subv1/f1 after deleting SCRATCH_MNT/subv1/f2:
-> > +0: [0..127]: last
-> > +
-> > +Testing with same subvolume and with transaction commit
-> > +
-> > +wrote 65536/65536 bytes at offset 0
-> > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> > +Fiemap of SCRATCH_MNT/subv1/f3 before deleting SCRATCH_MNT/subv1/f4:
-> > +0: [0..127]: shared|last
-> > +Fiemap of SCRATCH_MNT/subv1/f3 after deleting SCRATCH_MNT/subv1/f4:
-> > +0: [0..127]: last
-> > +
-> > +Testing with different subvolumes and without transaction commit
-> > +
-> > +wrote 65536/65536 bytes at offset 0
-> > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> > +Fiemap of SCRATCH_MNT/subv1/f5 before deleting SCRATCH_MNT/subv2/f6:
-> > +0: [0..127]: shared|last
-> > +Fiemap of SCRATCH_MNT/subv1/f5 after deleting SCRATCH_MNT/subv2/f6:
-> > +0: [0..127]: last
-> > +
-> > +Testing with different subvolumes and with transaction commit
-> > +
-> > +wrote 65536/65536 bytes at offset 0
-> > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> > +Fiemap of SCRATCH_MNT/subv1/f7 before deleting SCRATCH_MNT/subv2/f8:
-> > +0: [0..127]: shared|last
-> > +Fiemap of SCRATCH_MNT/subv1/f7 after deleting SCRATCH_MNT/subv2/f8:
-> > +0: [0..127]: last
-> > --
-> > 2.35.1
-> >
->
+When btrfs-checking the same fs (without it being mounted in between)
+with --mode=original and lowmem, I get differing values for the "found
+N bytes used, no error found" line.
+
+The fs in question was created with the same kernel/progs and filled
+with some 600GB.
+
+
+I vaguely remember that this used to be the case in the past but was
+resolved eventually as a bug(?).
+
+
+# btrfs check --mode lowmem /dev/mapper/newfujitsu ; echo $?
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/newfujitsu
+UUID: 3c1b32b6-5940-11ed-b447-53dfc28b8b9e
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space tree
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs done with fs roots in lowmem mode, skipping
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 581442859008 bytes used, no error found
+total csum bytes: 566096284
+total tree bytes: 1760264192
+total fs tree bytes: 1012596736
+total extent tree bytes: 71417856
+btree space waste bytes: 253635124
+file data blocks allocated: 629161189376
+ referenced 600678027264
+0
+
+# btrfs check /dev/mapper/newfujitsu ; echo $?
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/newfujitsu
+UUID: 3c1b32b6-5940-11ed-b447-53dfc28b8b9e
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space tree
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 581442187264 bytes used, no error found
+total csum bytes: 566096284
+total tree bytes: 1760264192
+total fs tree bytes: 1012596736
+total extent tree bytes: 71417856
+btree space waste bytes: 253635124
+file data blocks allocated: 629161189376
+ referenced 600678027264
+0
+
+
+Just in case someone is interested in having a look at this.
+
+Thanks,
+Chris.
