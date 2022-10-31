@@ -2,73 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1F6613E82
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Oct 2022 20:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D96D96141A7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 00:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbiJaTn6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Oct 2022 15:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55096 "EHLO
+        id S229681AbiJaXZo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Oct 2022 19:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbiJaTnx (ORCPT
+        with ESMTP id S229469AbiJaXZm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Oct 2022 15:43:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E80D13F3F;
-        Mon, 31 Oct 2022 12:43:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DA84561451;
-        Mon, 31 Oct 2022 19:43:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4BF42C433D7;
-        Mon, 31 Oct 2022 19:43:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667245431;
-        bh=aW4DABoCaJJzBN+Vzrru9ThjdxNP2EIYYsCHkhC4vxs=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=CnW72KrWblwTLBKbjOxMi3MuqOPBGdLGt/NEUhAmLeGhr8fhTImILkcuN2e3mYGwu
-         jDMXB7yXxcgNqbJm+S8dI1zvKqupmktXO9Rmc77als4fx0UbCNvXog3ywFt82P4Asj
-         w4OnzN4Y4xCeWJuuX9/K3zINoTiNqpHhxy/gVBcm8CdboPjohIQ0bwhJuy1a79dQY8
-         hGAJmZ1gDI7QVC9bUB/DpIEm6wf8IB/4MGTJRjeTsQgR3cauqHRQ492T5LU1RNGUhX
-         PCHuduAR6f5pnPqD+asTkv+XivzknX/QOcbr+Z4L7lU4Zv8sm/J8MZpxnuXYZA1A+V
-         j/UK7spHHZGVQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 382CCC41621;
-        Mon, 31 Oct 2022 19:43:51 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.1-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1667223120.git.dsterba@suse.com>
-References: <cover.1667223120.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1667223120.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.1-rc3-tag
-X-PR-Tracked-Commit-Id: 76a66ba101329316a5d7f4275070be22eb85fdf2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5aaef24b5c6d4246b2cac1be949869fa36577737
-Message-Id: <166724543122.6677.4957962711371870169.pr-tracker-bot@kernel.org>
-Date:   Mon, 31 Oct 2022 19:43:51 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 31 Oct 2022 19:25:42 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEAB1116F
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 16:25:41 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0XD2-1pCnkD0mTE-00wTne; Tue, 01
+ Nov 2022 00:25:38 +0100
+Message-ID: <2ad00181-bb2e-b99d-896b-bc95374b6493@gmx.com>
+Date:   Tue, 1 Nov 2022 07:25:34 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH 8/8] btrfs: raid56: switch to the new run_one_write_rbio()
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1666760699.git.wqu@suse.com>
+ <7dca624de976e872abb869885b009713eddca061.1666760699.git.wqu@suse.com>
+ <19e98ab7-949d-3c19-15c3-7b83ac428967@suse.com>
+ <20221031164837.GE5824@twin.jikos.cz>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20221031164837.GE5824@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:tCAQO9ft3sTVngl8QET9vEGAkPyewmQ2uo0hVOM80mtD90mR7l3
+ 2GDZWvA3UYlHXMdjhYMXzmFBJ9LhUtDdCcEV2qrSYkY2kjB6m5UAYgLPT89qNOqfCwH4LxN
+ PSbmC456ljLag6c/iVNt/Um2NvloIuqz9A6Pr3muCuyI/ShF4Eu+k3FIET/QrQq6ucQTiKC
+ OFEovECYiV9aMSlOcgRJw==
+UI-OutboundReport: notjunk:1;M01:P0:XfXZfzIfx8M=;JpRfmHdC6DVCOyli2NSx068GHjo
+ qmsZt4JPqlHL3zSGqWPHLlxNqdMsC2NpqZuB66LCwWSnbevoeqYhr5QjMYE8MkpHsxe106NfD
+ aIkTsKZ1eqIwyD1D6VUwkYdXFZ7ZSVekB5HA7Q/1dUUSCbd6GKsH6R8rbTFxBYnsaqBMZYCBt
+ p9XE9tNxmiTdY0DOS/TdwHixPA8TqrybJ9UW2IcvB6WznO0PBd8TR97QyuT/ILcE/g5oTQyrc
+ tvNU0nZ8UV+UKDR2mCXOefqFDZ/HdRQo31D2BfnyhE3Yg14ggXS9W0Ec8NGgJKFEO4dcgDagc
+ V9L7lypEOPMz5rAThqF8emywevrBSVfGR43DWewTj21aXub790wF8r9ZnwutocfvfsNTxzJKd
+ znABtbJ45Lz9S6HmoiofaADJ765FtBNMQcVkfMNnJJeB2/T9mfqARwVflP4rXvHrO54H+3rwu
+ gkF+E9/BzpXPKSY0f4bRFsmUDdrVHkE+pVMztJQ4jas1Qt05Ffy7VVO9dPXsR10V22jAxdl2P
+ KmDWwTA/pNNBxPD+xnzSHP8DI45N8AhUCo9yynA3/9Ti/djarwcG+xSuzibQcEqd8OY0H7kNI
+ yz2D/MQl2u6BRxP0lBAMWpd+jC346v/6mQDL9UZXeo03dRBKggmXdM+AsT4P7B1ngDh13uxuz
+ GlucVJbkuRZN9KRPatlK1Xl25qot5hnOt8SB6Tx5TwR3y7Eg1RADw6N/IZrYR2XRX3pX++Y+6
+ zFNgF94k9q2CIigffTzWGBF8ae1kOn52TMh1K/fkJfwWIkPi44GlpZn4cG9pt2gQ86pZzJbdu
+ blpvCIdwFd5XrQpRJ8bHP2rHD7zbFZf8CqHUahKzccEK2B+A4ixSOMaXBK7Uzc0eRtymk7Ep0
+ a0brbbp8UqEwimBZr8H3OGO1jwR02MPDC6gnsNAgVRPNy04S3SlYz93yonUzTR09EwN3exd9B
+ z+r1Smc+016EYNZoAs1XZrKdI9o=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Mon, 31 Oct 2022 15:00:06 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.1-rc3-tag
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5aaef24b5c6d4246b2cac1be949869fa36577737
+On 2022/11/1 00:48, David Sterba wrote:
+> On Mon, Oct 31, 2022 at 09:07:03AM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2022/10/26 13:06, Qu Wenruo wrote:
+>>> This includes:
+>>>
+>>> - Remove the functions only utilized by the old interface
+>>>
+>>> - Make unlock_stripe() to queue run_one_write_rbio_work_lock()
+>>>     As at unlock_stripe(), the next rbio is the one holding the full
+>>>     stripe lock, thus it can not use the existing
+>>>     run_one_write_rbio_work(), or the rbio may not be executed forever.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>>    fs/btrfs/raid56.c | 351 ++++------------------------------------------
+>>>    fs/btrfs/raid56.h |   1 -
+>>>    2 files changed, 27 insertions(+), 325 deletions(-)
+>>>
+>> [...]
+>>> @@ -3284,16 +2987,16 @@ static void raid_unplug(struct blk_plug_cb *cb, bool from_schedule)
+>>>    				free_raid_bio(cur);
+>>>    				continue;
+>>>    			}
+>>> -			queue_write_rbio(cur);
+>>> +			queue_write_rbio(last);
+>>>    		}
+>>>    		last = cur;
+>>>    	}
+>>>    	if (last)
+>>> -		queue_write_rbio(cur);
+>>> +		queue_write_rbio(last);
+>>>    	kfree(plug);
+>>>    }
+>>
+>> This part is in fact a bug fix which should go into previous patch, or
+>> it can break bisection.
+>>
+>> This is already fix in my github repo, will update the series with some
+>> extra polish, like remove the raid56_parity_write_v2() definition, and
+>> make recovery path to follow the same idea.
+> 
+> Ok, I'll use the github branch for for-next if needed.
 
-Thank you!
+Please don't, the github branch is going to under big changes to cover 
+recovery and scrub.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Especially for recovery, it turns out it would be much easier if we 
+start the convert for recovery first, as the code is shared between both 
+recovery and degraded mount.
+
+I'll send out a v2 to cover all raid56 entrance soon.
+
+Thanks,
+Qu
