@@ -2,81 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AF06134EF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Oct 2022 12:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE626135D0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Oct 2022 13:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbiJaLv2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Oct 2022 07:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
+        id S231277AbiJaMTs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Oct 2022 08:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbiJaLvZ (ORCPT
+        with ESMTP id S231294AbiJaMTo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Oct 2022 07:51:25 -0400
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF18EE18
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 04:51:24 -0700 (PDT)
-Received: by mail-io1-f71.google.com with SMTP id bf14-20020a056602368e00b006ce86e80414so1625273iob.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 04:51:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=haYtoHZzLu1c3fU5UhA6SNsl7G50nkj72w4dRbQTGJY=;
-        b=GxOMexQ5mFtOa8SH7wieSjIENYBljjyPsTqBrd6LHmqgT+/wC7V7O0FIUmPClAnuDG
-         moF5D9IXSabB5VkF/GIBMYOOjq+Mr/pWxbOd7DwXd6iwYM7elBLHIV8fRfTurdhN+Ya6
-         qpDGd1vRJPkcWfdEN1NVe2+xdX7cCVMoci0B99atATGOPAa2DrTGGlK8k7wwi6UOUnZ0
-         YhkG3Irz705kJcwYnVj5SZJmGnBBxkqXa8ew1bc9iNATbewW0TDqGI86/Bhm6ffd979s
-         OjGHLbtbulTF9K47Td952z8I8/A42tbMC4t226Uy5kzITTJNrD9xJCSR6/wjkBQJRvqK
-         e+kw==
-X-Gm-Message-State: ACrzQf0DSSLzNl27hP18XOgJsVNYfQ5cb5i8hXcrm3KdUdveGM/hx1+n
-        /I1CFAn2s+Ph3nBHjyJh5I8kiFJ02bPmgU+6vpIFy47oHvZ6
-X-Google-Smtp-Source: AMsMyM6ex36MV4sCm64SwH7pDQSoXkZTsQsQ1ixuzILeIZAl4lj0NDEDqIUdlAAG/TDwVsD2JfpNn8LNJ6qJiJmywvHWPelKBE/p
+        Mon, 31 Oct 2022 08:19:44 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22BFF58E;
+        Mon, 31 Oct 2022 05:19:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 74D4D1F94D;
+        Mon, 31 Oct 2022 12:19:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1667218770;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r0NmLcuK0RtLWfxsYewoTZqt5GInuYF2VLW7qII+j/0=;
+        b=Z6xIAltqg5yCEsY1t1qCKAaQsFCmib9lDkTeek5bj3g67xwB6fw6AADs0QV/DZPQTpeu3G
+        SN9TbkfmvPkhHyjahr2DVj9+BN66G5ZyYtRZDdBkDsEomZikZrgtFr1jHEk0tYpWhBup0N
+        E/jOWXllREehCR0gaYXUOetqs1cGKWc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1667218770;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r0NmLcuK0RtLWfxsYewoTZqt5GInuYF2VLW7qII+j/0=;
+        b=5O7W2TMvqcDLcpbfQsY5xVaG7C8PA0rGGfr8r9XtZDhNtXfReYUVgeqrLoVqEAI6XHqHby
+        JJR+Iy/X589dSIDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 126D613451;
+        Mon, 31 Oct 2022 12:19:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id /2qUA1K9X2M9NwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 31 Oct 2022 12:19:30 +0000
+Date:   Mon, 31 Oct 2022 13:19:12 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "dsterba@suse.cz" <dsterba@suse.cz>, Chris Mason <clm@meta.com>,
+        Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: consolidate btrfs checksumming, repair and bio splitting
+Message-ID: <20221031121912.GY5824@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20220901074216.1849941-1-hch@lst.de>
+ <347dc0b3-0388-54ee-6dcb-0c1d0ca08d05@wdc.com>
+ <20221024144411.GA25172@lst.de>
+ <773539e2-b5f1-8386-aa2a-96086f198bf8@meta.com>
+ <20221024171042.GF5824@suse.cz>
+ <9f443843-4145-155b-2fd0-50613a9f7913@wdc.com>
+ <20221026074145.2be5ca09@gandalf.local.home>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:388c:b0:370:cb35:edfd with SMTP id
- b12-20020a056638388c00b00370cb35edfdmr7330870jav.181.1667217082694; Mon, 31
- Oct 2022 04:51:22 -0700 (PDT)
-Date:   Mon, 31 Oct 2022 04:51:22 -0700
-In-Reply-To: <0000000000000d9d6f05ec498263@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fa42c105ec5339ec@google.com>
-Subject: Re: [syzbot] WARNING in btrfs_space_info_update_bytes_may_use
-From:   syzbot <syzbot+8edfa01e46fd9fe3fbfb@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com,
-        hch@lst.de, josef@toxicpanda.com, linmiaohe@huawei.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-        willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221026074145.2be5ca09@gandalf.local.home>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Wed, Oct 26, 2022 at 07:41:45AM -0400, Steven Rostedt wrote:
+> On Wed, 26 Oct 2022 07:36:45 +0000
+> Johannes Thumshirn <Johannes.Thumshirn@wdc.com> wrote:
+> > On 24.10.22 19:11, David Sterba wrote:
+> > > On Mon, Oct 24, 2022 at 11:25:04AM -0400, Chris Mason wrote:  
+> > >> On 10/24/22 10:44 AM, Christoph Hellwig wrote:  
+> > >>> On Mon, Oct 24, 2022 at 08:12:29AM +0000, Johannes Thumshirn wrote:  
+> > >>>> David, what's your plan to progress with this series?  
+> > >>>
+> > >>> FYI, I object to merging any of my code into btrfs without a proper
+> > >>> copyright notice, and I also need to find some time to remove my
+> > >>> previous significant changes given that the btrfs maintainer
+> > >>> refuses to take the proper and legally required copyright notice.
+> > >>>
+> > >>> So don't waste any of your time on this.  
+> > >>
+> > >> Christoph's request is well within the norms for the kernel, given that 
+> > >> he's making substantial changes to these files.  I talked this over with 
+> > >> GregKH, who pointed me at:
+> > >>
+> > >> https://www.linuxfoundation.org/blog/blog/copyright-notices-in-open-source-software-projects
+> > >>
+> > >> Even if we'd taken up some of the other policies suggested by this doc, 
+> > >> I'd still defer to preferences of developers who have made significant 
+> > >> changes.  
+> > > 
+> > > I've asked for recommendations or best practice similar to the SPDX
+> > > process. Something that TAB can acknowledge and that is perhaps also
+> > > consulted with lawyers. And understood within the linux project,
+> > > not just that some dudes have an argument because it's all clear as mud
+> > > and people are used to do things differently.
+> > > 
+> > > The link from linux foundation blog is nice but unless this is codified
+> > > into the process it's just somebody's blog post. Also there's a paragraph
+> > > about "Why not list every copyright holder?" that covers several points
+> > > why I don't want to do that.
+> > > 
+> > > But, if TAB says so I will do, perhaps spending hours of unproductive
+> > > time looking up the whole history of contributors and adding year, name,
+> > > company whatever to files.
+> 
+> There's no requirement to list every copyright holder, as most developers do
+> not require it for acceptance. The issue I see here is that there's someone
+> that does require it for you to accept their code.
 
-commit 0c7c575df56b957390206deb018c41acbb412159
-Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-Date:   Wed Feb 24 20:01:52 2021 +0000
+That this time it is a hard requirement is a first occurrence for me
+acting as maintainer. In past years we had new code and I asked if the
+notice needs to be there and asked for resend without it. The reason is
+that we have git and complete change history, but that is apparently not
+sufficient for everybody.
 
-    mm/filemap: remove dynamically allocated array from filemap_read
+> The policy is simple. If someone requires a copyright notice for their
+> code, you simply add it, or do not take their code. You can be specific
+> about what that code is that is copyrighted. Perhaps just around the code in
+> question or a description at the top.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=119e21b6880000
-start commit:   b229b6ca5abb Merge tag 'perf-tools-fixes-for-v6.1-2022-10-..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=139e21b6880000
-console output: https://syzkaller.appspot.com/x/log.txt?x=159e21b6880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a66c6c673fb555e8
-dashboard link: https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17db9ab1880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124e21b6880000
+Let's say it's OK for substantial amount of code. What if somebody
+moves existing code that he did not write to a new file and adds a
+copyright notice? We got stuck there, both sides have different answer.
+I see it at minimum as unfair to the original code authors if not
+completely wrong because it could appear as "stealing" ownership.
 
-Reported-by: syzbot+8edfa01e46fd9fe3fbfb@syzkaller.appspotmail.com
-Fixes: 0c7c575df56b ("mm/filemap: remove dynamically allocated array from filemap_read")
+> Looking over the thread, I'm still confused at what the issue is. Is it
+> that if you add one copyright notice you must do it for everyone else? Is
+> everyone else asking for it? If not, just add the one and be done with it.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+My motivation is to be fair to all contributors and stick to the project
+standards (ideally defined in process). Adding a copyright notice after
+several years of not taking them would rightfully raise questions from
+past and current contributors what would deserve to be mentioned as
+copyright holders.
+
+This leaves me with 'all or nothing', where 'all' means to add the
+notices where applicable and we can continue perhaps with more
+contributions in the future. But that'll cost time and inventing how to
+do it so everybody is satisfied with the result.
+
+You may have missed the start of the discussions, https://lore.kernel.org/all/20220909101521.GS32411@twin.jikos.cz/ ,
+Bradley Kuhn's reply https://lore.kernel.org/all/YyfNMcUM+OHn5qi8@ebb.org/ ,
+the documented position on the notices https://btrfs.wiki.kernel.org/index.php/Developer%27s_FAQ#Copyright_notices_in_files.2C_SPDX .
