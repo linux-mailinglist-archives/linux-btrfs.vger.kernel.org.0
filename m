@@ -2,91 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BAD6134C6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Oct 2022 12:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AF06134EF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Oct 2022 12:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbiJaLos (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Oct 2022 07:44:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42174 "EHLO
+        id S231161AbiJaLv2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Oct 2022 07:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231182AbiJaLoK (ORCPT
+        with ESMTP id S231128AbiJaLvZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Oct 2022 07:44:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19577EE10
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 04:44:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B6BEFB815F8
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 11:44:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF670C433B5
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 11:44:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667216641;
-        bh=/O2Ch7BDKKWkxkIpvY7qmaBlrSPlePt8vDVdnOFxXfI=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=A5UrnLv/2zNbjBHDmnAevrhSRdJ/wvujbbxp/t/Ab++PGi5XeAT0wOYpQ2Ab05fRq
-         wmkyEm6lrScKPkchdSg4x1DlhOznVDL7VFOzqVgf3PdxSuqgrtz+vI9/5Ca/WheN26
-         bXyNpdaFZ4hTfXSXjB4rNEF4mnA6QUAn8Jlmn56Y4bRrwg6aXcAPCWTTyP0CoK840g
-         WDKKgyYtvlNiiGS1Rn2KNwL6L6yshsbi4QVi65R84VVQd+WaXSlKCYizEONXMBWG9F
-         FHjHvGfQFMesaw6ccIg0JEefrLV3BbrrqvxKB7Rg907V/Q8zOVTYno0M21c9kdDVqi
-         ol/pjlEfOkhuw==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: update stale comment for nowait direct IO writes
-Date:   Mon, 31 Oct 2022 11:43:56 +0000
-Message-Id: <bdd6a08c72a041d0515582322586dec25d76b042.1667215075.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1667215075.git.fdmanana@suse.com>
-References: <cover.1667215075.git.fdmanana@suse.com>
+        Mon, 31 Oct 2022 07:51:25 -0400
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF18EE18
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 04:51:24 -0700 (PDT)
+Received: by mail-io1-f71.google.com with SMTP id bf14-20020a056602368e00b006ce86e80414so1625273iob.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 04:51:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=haYtoHZzLu1c3fU5UhA6SNsl7G50nkj72w4dRbQTGJY=;
+        b=GxOMexQ5mFtOa8SH7wieSjIENYBljjyPsTqBrd6LHmqgT+/wC7V7O0FIUmPClAnuDG
+         moF5D9IXSabB5VkF/GIBMYOOjq+Mr/pWxbOd7DwXd6iwYM7elBLHIV8fRfTurdhN+Ya6
+         qpDGd1vRJPkcWfdEN1NVe2+xdX7cCVMoci0B99atATGOPAa2DrTGGlK8k7wwi6UOUnZ0
+         YhkG3Irz705kJcwYnVj5SZJmGnBBxkqXa8ew1bc9iNATbewW0TDqGI86/Bhm6ffd979s
+         OjGHLbtbulTF9K47Td952z8I8/A42tbMC4t226Uy5kzITTJNrD9xJCSR6/wjkBQJRvqK
+         e+kw==
+X-Gm-Message-State: ACrzQf0DSSLzNl27hP18XOgJsVNYfQ5cb5i8hXcrm3KdUdveGM/hx1+n
+        /I1CFAn2s+Ph3nBHjyJh5I8kiFJ02bPmgU+6vpIFy47oHvZ6
+X-Google-Smtp-Source: AMsMyM6ex36MV4sCm64SwH7pDQSoXkZTsQsQ1ixuzILeIZAl4lj0NDEDqIUdlAAG/TDwVsD2JfpNn8LNJ6qJiJmywvHWPelKBE/p
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6638:388c:b0:370:cb35:edfd with SMTP id
+ b12-20020a056638388c00b00370cb35edfdmr7330870jav.181.1667217082694; Mon, 31
+ Oct 2022 04:51:22 -0700 (PDT)
+Date:   Mon, 31 Oct 2022 04:51:22 -0700
+In-Reply-To: <0000000000000d9d6f05ec498263@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fa42c105ec5339ec@google.com>
+Subject: Re: [syzbot] WARNING in btrfs_space_info_update_bytes_may_use
+From:   syzbot <syzbot+8edfa01e46fd9fe3fbfb@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com,
+        hch@lst.de, josef@toxicpanda.com, linmiaohe@huawei.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
+        willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+syzbot has bisected this issue to:
 
-If when doing a direct IO write we need to fallback to buffered IO, we
-this comment at btrfs_direct_write() that says we can't directly fallback
-to buffered IO if we have a NOWAIT iocb, because we have no support for
-NOWAIT buffered writes. That is not true anymore, as support for NOWAIT
-buffered writes was added recently in commit 926078b21db9 ("btrfs: enable
-nowait async buffered writes").
+commit 0c7c575df56b957390206deb018c41acbb412159
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Wed Feb 24 20:01:52 2021 +0000
 
-However we still can't fallback to a buffered write in case we have a
-NOWAIT iocb, because we'll need to flush delalloc and wait for it to
-complete after doing the buffered write, and that can block for several
-reasons, the main reason being waiting for IO to complete.
+    mm/filemap: remove dynamically allocated array from filemap_read
 
-So update the comment to mention all that.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=119e21b6880000
+start commit:   b229b6ca5abb Merge tag 'perf-tools-fixes-for-v6.1-2022-10-..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=139e21b6880000
+console output: https://syzkaller.appspot.com/x/log.txt?x=159e21b6880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a66c6c673fb555e8
+dashboard link: https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17db9ab1880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124e21b6880000
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/file.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reported-by: syzbot+8edfa01e46fd9fe3fbfb@syzkaller.appspotmail.com
+Fixes: 0c7c575df56b ("mm/filemap: remove dynamically allocated array from filemap_read")
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 6e2889bc73d8..b7855f794ba6 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1570,8 +1570,8 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 	/*
- 	 * If we are in a NOWAIT context, then return -EAGAIN to signal the caller
- 	 * it must retry the operation in a context where blocking is acceptable,
--	 * since we currently don't have NOWAIT semantics support for buffered IO
--	 * and may block there for many reasons (reserving space for example).
-+	 * because even if we end up not blocking during the buffered IO attempt
-+	 * below, we will block when flushing and waiting for the IO.
- 	 */
- 	if (iocb->ki_flags & IOCB_NOWAIT) {
- 		err = -EAGAIN;
--- 
-2.35.1
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
