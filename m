@@ -2,121 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00761613150
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Oct 2022 08:40:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1406A613161
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Oct 2022 08:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbiJaHkQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Oct 2022 03:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
+        id S229717AbiJaHvR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Oct 2022 03:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbiJaHkG (ORCPT
+        with ESMTP id S229597AbiJaHvP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Oct 2022 03:40:06 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-eopbgr80049.outbound.protection.outlook.com [40.107.8.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4695224
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 00:40:04 -0700 (PDT)
+        Mon, 31 Oct 2022 03:51:15 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEA4764F
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 00:51:14 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29V3d8V7018117;
+        Mon, 31 Oct 2022 07:51:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=eMQvOJe6/nbRf78h3/Z5XPnTsYcO9nWijeM6i1/D4pw=;
+ b=z7c5EpiLrXXLGOQHDc1V51PYrsoJEHU0wsQsB2O9F+r+fj59wHI0RuVu0BrPopZ0B3Bq
+ JQ/uoWWV8T0XeKV+NINvpHQd/b/GSTQi/Ql71wDyYXJ/e4mUNQang1BFTVPzQL26K1S/
+ htG2USzcR3hkjaVbIK2RHbaitYpAB8CVK2fc8QCG2DI2e4Wf/mc3vSSZpFjhnKfKcs8G
+ vaWE5sNeQdHDnuW7Hfh9aWwKWThQyybN9AA3qGquPxYUKjsgn1O9ATZ18RNFe+Z/X/+d
+ 94IGkA970lJIVl6DgpmqrkQcDOEVpsS8n25WBSU+XWWRZIJuVNIXlutNQcDBWVXglAj9 uQ== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3kgty2tt46-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Oct 2022 07:51:10 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 29V5FMFu023884;
+        Mon, 31 Oct 2022 07:51:09 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2172.outbound.protection.outlook.com [104.47.73.172])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3kgtm31e85-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Oct 2022 07:51:09 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Drn0iCz6WjN4SNWWu2A4Xgc4XuVhllPF4bmVbYtj9GxfMtuVKQWBBLnKK5X4naopdo7/zWK4N4eJto5w+x41KQGuwMFk1aLi45TugWhttVPvodpyYg9rvdTMpcDQnQn773HQKuNrW4DGpr5Hq+H8laVZ6kLcDJSDLQiEclJ1mjOk081GTXCAVcMI9InoUVyjUmqT5CMx7VRfXr5+2vyfzG6vO8VOxFnuOKOrV3Zk9jB/aQS6kBDJa0hFJrBwlFvk2vB1a6obg9sH2WvnNyAJNs1HBeT7rgFmaRz93Myi8FAPXmHEMSdNr2CM8AQaISY6q6eVikxQXuM+9bXQqp1EZg==
+ b=W56uDfmzEkYRfe1JHmt0UvNH6dVPasrhJammLFoe61nWePqFXxWSs3OfXG6EK8zJ7upgRWPO1H9GbSgaCsrKVz+o0YLfBlAgvzRyu+fwozdaqjjvFn0rrJwylzFxSaurhhi/tllGAMLfejYl/68hL4lbdGDAt9Sbe3BPZKiPgOIPWFlWvpJGeLRWsQZmqeeWoiT4lBMSZCsSfB2T50P85y/H5zj27emQmGLd3cS7MgmZg/sbZGKJxr2BW7KbZ5XhQxdw7xD4VwfQAm446J4kbATojTF8nqpwA/4/uTbVg8ZOyz+Mmb6BzNm5kALJQk5YTG6saYU19hqdNM4G5Ha6ow==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+rok6qCczH5IBDuZ+Rmj3h2ivaS8GLntWUtWklCD7J4=;
- b=DRw3nuds73I8Ymm+HN+DXbDKvhdSzJSLRmEy9B/H5SQ6cbnSufm4bbjW8kFo4giDGZ231bvQKoRjUQ5DuJmUTOuH+PgKskeMplsHjg89dkr3PyWkTy0ljjqPuAQZ38Xtadj3E7+maV2v7WqedbrwfXIfnu30H6xZ/8qGGBseqQr7nnN+mHNo2NdLMPOAfYxK54XjJFvrXeQ8nP7L2fi84aWNwu1amg7MidGjjN++mV9ChunDOLCaWRIpEQOmr2tRnUgWDY0j9XYAxtWg2z98zy985XSESL9VDhbtXUtM4X5sQ30mbhrutAAIajyuZ4ZBPlgxNSGt22rH4RSuxGJWDg==
+ bh=eMQvOJe6/nbRf78h3/Z5XPnTsYcO9nWijeM6i1/D4pw=;
+ b=ZJFIvtJRRo8HNYv1q/2044ygOSl+Zlf3Q+a5q0rrpk9zfgiBzlAcm+8SxCfib8wx71iud7WId0+EkueeIK14lOOO5KHvXvp5C4QM6ieGFSgn+udzVBG4afZuvKxV2gdDGinVhk3RiKDUfQfUsoaxlprBiymFu86OE90g1LpkkjqnRBChh68Xj6GXn8BdKBLzOyqGMQRCC1LRU5MKT+g/amWieXJ1qCwSmjek9iAfdOYhoBRjB7Q3bQGDsUGX4GDxHsVwimNIh5l7UfDef6e+BYBUq75E8grc/Q/OYktoLJAVzBgH1Vn84E0fllLgdFKDbKyypmWfj8uzsYe2bDAmCQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+rok6qCczH5IBDuZ+Rmj3h2ivaS8GLntWUtWklCD7J4=;
- b=DO9h4uOqqmrl9iE97ZygeiR8Iptpb7Nva/Gt75K5iujy4YTEtyT6/raWJT4UkdCtKOtPENcoCvjPb9NRZuuvtGBKjrVilXDcBtd+hxYwE7RERR1sGOMrK0fphDowqx8KUWue2AJ7DCV2u2FL8jZiZ/b0Ti4wUBw1U2OV3sq6c+jZHTVcG0Se6LefN74rqTyrzNUpwPH6xLW+aRWnx2mtmNfvEm18mDfeD6tpGJTfBTHTvh7TBUqasrSw/lUWSEMTnxOnnuqd6IWs95NWrwS0fkjx/2sOb+YlLZmsgUbDZBQZ10z9OW+gS5Ncg1tIZpS8M8qyfCu2p0vWhEk3ywbJWw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by DB9PR04MB8298.eurprd04.prod.outlook.com (2603:10a6:10:248::14) with
+ bh=eMQvOJe6/nbRf78h3/Z5XPnTsYcO9nWijeM6i1/D4pw=;
+ b=Ut7vACjv8CyLb2R9aqvddR/GpMTJ4zZFpq4xBUo1oAAmLUUhZ4oGXp95u/X0+jEDQbct1JyrWCf+oPGhijfIibFPNXpLbErL9Ui74xHKpQOAkmOpcMtrAtwVLEeJWrnP8RIA2H/UMtyjvCoPP/Cgq8KVeIh+lrSlKrQSVtxe70o=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by DS7PR10MB5358.namprd10.prod.outlook.com (2603:10b6:5:3a3::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.18; Mon, 31 Oct
- 2022 07:40:02 +0000
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::411e:e463:2c22:e220]) by AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::411e:e463:2c22:e220%5]) with mapi id 15.20.5769.019; Mon, 31 Oct 2022
- 07:40:02 +0000
-Message-ID: <8408a2f8-fc33-7465-49de-bb2c6b26fdb7@suse.com>
-Date:   Mon, 31 Oct 2022 15:39:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH 0/8] btrfs: raid56: use submit-and-wait method to handle
- raid56 writes
-Content-Language: en-US
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-References: <cover.1666760699.git.wqu@suse.com>
-In-Reply-To: <cover.1666760699.git.wqu@suse.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.19; Mon, 31 Oct
+ 2022 07:51:07 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::e2f8:caf3:7f80:8b5b]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::e2f8:caf3:7f80:8b5b%4]) with mapi id 15.20.5769.015; Mon, 31 Oct 2022
+ 07:51:07 +0000
+Message-ID: <75374514-30c6-b75f-fbfc-b72b6475842e@oracle.com>
+Date:   Mon, 31 Oct 2022 15:51:00 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0)
+ Gecko/20100101 Thunderbird/95.0
+Subject: Re: [PATCH 05/26] btrfs: move the printk and assert helpers to
+ messages.c
+To:     dsterba@suse.cz
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1666811038.git.josef@toxicpanda.com>
+ <051b9887171d14d8d5eb30d3274a946427ed3c69.1666811038.git.josef@toxicpanda.com>
+ <974d0f7b-1272-1c7f-cf34-88104642e7ca@oracle.com>
+ <20221028193717.GX5824@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20221028193717.GX5824@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0081.namprd13.prod.outlook.com
- (2603:10b6:a03:2c4::26) To AS8PR04MB8465.eurprd04.prod.outlook.com
- (2603:10a6:20b:348::19)
+X-ClientProxiedBy: SI1PR02CA0013.apcprd02.prod.outlook.com
+ (2603:1096:4:1f7::7) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DB9PR04MB8298:EE_
-X-MS-Office365-Filtering-Correlation-Id: d8cbaf67-cebb-4e93-499c-08dabb131e90
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DS7PR10MB5358:EE_
+X-MS-Office365-Filtering-Correlation-Id: 626b29b1-89f1-45c1-d0f0-08dabb14ab23
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: THqElkgauFJXQgrxbp8mCsMM6Z/+OPlIQPkFOvJB2ppOl/as7ZeBFP7OQ0j9AWgSliYfqI5f/SDgrdcxmBuS5te1QITxBfbfapGquE8RfiayqoY4ChY9+2itOkdvUV5x+C53V1K2qdKyV9acDM0/vacyQuKc3M6bh3OY4GQh7yHid8IWaCC4efTzmMErYuu8eNyFWgfQ7zEJmoXk3+ZEaIrfMFuq4fFQSz1nR4ouIYQ1YI8PYzbdLsdLyauyS+r33MGelu/ybLR9pZlAZtqqkFXOxU7s/Pw64ZZf0Hg09tuRjSSScSEA5dw/LNsup2dhbNDUsELBiE9DG4OaaD8ga14H6eTLVvuBbewE+y0AETbzRQDfurBV4zK0msYf0u/4AgQFDQT6jfjTpbiO2b+O7V9kT1r60HngdrmiDpiOqOeXUxjgNTtLSer79Y+iokk63xXhmdQUjZ2BoEtttqNWovd1Yk+FMVOAT0bVUYXdtZfINvS76IMvAzKO6VAUD+f+llobFzNb1wenc4uw5ZRohZrabVqCi+1HmElOm1dgz4vqueE1QcXfp3vu2qaTCqCYsIEP0MSgDDm7zKXm3wRz+c5xjG6161eMPhONIKQ0tBq8wdcCNBdGG/zrsU6IGaH70K2HxKlXXtNQQwQ5SrqbX1d9Kpx9UPfOFT+2lQrC+bykhyZUBTYMpc98pBXisP2N/K8Tti58kezLkgYCEQauPXvhqk7WzY9PoO1F587EehddbdQ4pgzEATj6BrXkDpb+IHsREMHEmB6a4V09jBQPsOGwQj5FXVYyzgOpvUg84xo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(396003)(346002)(39860400002)(376002)(136003)(366004)(451199015)(6916009)(316002)(53546011)(6506007)(6666004)(2616005)(6512007)(478600001)(6486002)(36756003)(8936002)(41300700001)(8676002)(66556008)(66476007)(66946007)(2906002)(5660300002)(38100700002)(31696002)(86362001)(31686004)(83380400001)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: aAQCsSaW9275sLd+CtqlaMHbm9Q4OFJey90o5dqa8yy4OnofmwPcOUN+HKJvqNRqt7O8XYclQ7ORiiDOA8GiORcxqMCSphsnEaeKxUOpKHfkTSzK15by2vpIOtcbX6nldE9jP8t0XesA6by8P6e3wzlqNur1vdCTBQwSB0tzNoM4JUgWB+1UJH1om6H452AfHM5PD+5riFz1jmM3z3CQDFi98qgOM7sLKuy7CGfvONm1m/p1DjE+xVrOlLDkhAPx7mxuQ30oYNwQhLQOsM7F7F6d76ZkDEK9JuG8CxQhajZX4fLPSa6y92hEsku71tJEGqex0lqrZ4NxVqjOjFN4xawUlrvYZ1rXnjX9gdW6756cXrNg/5gxJ1LchXVqNyRyrzz8U/BRFalhb7/HCWoKghgTYcvh3p+pH+RUMMgRjICv566F9rKyv9kGPCWt3CQ7Ak718h4802oiO9nzNFCDOa1xV3F9GeSSSSom55GnPZUww4evFrpuyEdhgpyO1OC7PDxfjq2RpntKjKCpnnrxj5U7XQo6T/kT3FOv/hkZe7S97hbChkQfnuf7HN1YFE4Tw1MaQ4jQGiuFuHDxbdDBbbvXPLwRcLuRuPrQf9nuWt20Elhq7P/E9BmzL3h1AtKail08R0MFOQDZto17xXrH+aGrvbV26CTwitFmWfVB/6F78CzcP+hT84N6E9cRpr4g8tt417wE/HqvEB4H/8GJmrt2wQKbUuhRLuJSr19SvqSBb8+Hn80jnYo1gAPx/AQxSXCMn6R0OiA/bnhLhMomAuJhBZwil1nFOm7bpyvpaGM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(136003)(366004)(396003)(39860400002)(376002)(451199015)(83380400001)(31686004)(6666004)(15650500001)(6486002)(2906002)(44832011)(36756003)(31696002)(86362001)(38100700002)(53546011)(6512007)(26005)(186003)(2616005)(8936002)(316002)(66476007)(66556008)(8676002)(66946007)(478600001)(4326008)(41300700001)(6506007)(6916009)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?akg4d0lhTVY0YVJLRHRCZ1ZHZkNXRlExaXNqY2RHd3d2cUFhT2g5K21yWTBG?=
- =?utf-8?B?Y0FBYmVDRW53akJOa2tsUDF3V0dMWEtqVUlPRVBJTFBrVlJBdEFrOXhKYkhS?=
- =?utf-8?B?aityakgwZ1ZoWlpOTGZIRE9PYmlzMXNrZXpvWlRMeUxUQ00xcExzODVGRHI3?=
- =?utf-8?B?SlBZWUQ5QzVyZm1hbU1nOXBKS3dvWW1aSEhLNjVWa1R4TUEzbHB5Uzk4UFlw?=
- =?utf-8?B?R1RISkFhYWIrWkYra2F3Q052dkZaNE4vZUMzTHlxbUlPZjZjYWVyZG5RUUFj?=
- =?utf-8?B?WjhnbTJyS09BQzVwZzNJZCtFSDgzRFI0aFROVCtQenBNZmFxM21tMFFRb2M3?=
- =?utf-8?B?SkFjNXV0eHQzMHZVWVlkNVhiSmhpVzRndndmQlJxSlZyVWVYQTNINlhlRGVZ?=
- =?utf-8?B?NUExZjJTVDd2V3M3T3dxZEZHRTdZTnZFVGdmR1pjYyt2cUJhd1pLcy83cFBG?=
- =?utf-8?B?eDZmdzAvT0hSMWhNMHlDbm1WNFZiSUVOeU1sLzJ5SnB6ejA5RWRuM1M1QnBK?=
- =?utf-8?B?cnpQV081WjlYSjk5dngvMVRrQVFZTUdDcUxjcTlPczVjRmo4VnV2TjFFK1Q5?=
- =?utf-8?B?RVhLREZaU1pKdm1PQlVQdndZdHRTTzNkdWhmQWd0UnFjQi94bVdtMXFGeTNJ?=
- =?utf-8?B?VzlOSzBMR202Z0tZVGlabjZXMkFwQWxxZkhtTG9HZERFcGhvUUhldElYajhJ?=
- =?utf-8?B?UXZUOGJXajhDeTNST2E4eDdvSk1QSGNHYU1CVUFsSnR6TWp4VjhoL1E0cXdp?=
- =?utf-8?B?bTVsREs0bG00SU9GaFN2ei9HZDVIWENnR05SSXJFN0xqZ0JmYnNkZ1lZcWpm?=
- =?utf-8?B?R1JGeE1RQTJDZnZtL2I3SHdjRzlwVXE4QWl6QnZLbEloaktCa09CemFIaEVp?=
- =?utf-8?B?QUliTjM2OVpWeDNLN2FWa01Xdk9aTW14UEJ5TnlIdjU3amR3dHZvV2tEQ1pN?=
- =?utf-8?B?akJkZ0k2M3BqUXlGSDlXV1pxV1d3WUw2Z1lxN1MvTXZwazZEZVJwVE4zN3Zw?=
- =?utf-8?B?R0g3VFl6azNBVEtKRDhqQ0dxRTFCb0MvakROTU55WE4rMkxVNFR3NU96djVl?=
- =?utf-8?B?WTA2MWZweDFjK1diU0xPczVaN3ZJMFNXQ3ZEQkQ3UnBWeXBOVWF0b0F0eEw2?=
- =?utf-8?B?RHA1cE1tSWlUVDl1bTBUR25uQ1NNREFiVnI3aTBPNWNRNmFLSklxRENoQVBk?=
- =?utf-8?B?T2xpeTVuUlVoMk9MWXlaeFFXeE5GM3FhZzhlaDhGcDlZaEZPVFhxZnEreE96?=
- =?utf-8?B?QzIyaDRRMjkwbU5OY1MvTzFTMWcwVVFyN2ZTcXFjRkI2ZjNiYy9OWE9odVVR?=
- =?utf-8?B?YzUyUkdHY1Y2ZmkrVFBXNjdIeml1RkRSeVVkNjZwVEtaSlFxOHZEaGlydTFo?=
- =?utf-8?B?M1ZtN25CZjFPdGh2V3Z3OUZlMkJORFNTYkJ6b3h6Qll3SldVVVNGVVIvdllZ?=
- =?utf-8?B?K0NuVE8vMXlaeTZtOXpWSE4yOXhaM1RSWnRPT2I5cUdNZzJObE5NeEdtdlc1?=
- =?utf-8?B?dFF1RVVJYUNoRlVqTC9rZlZTV2M0NWIrYXhNczJXd0JMc2hxZUdOUlYwV0d1?=
- =?utf-8?B?VmIrWURjbEhpR0llTDUyVlhZMTZGbzM3NzNRcjBVQ284MnM2MGtLeHN4VEpi?=
- =?utf-8?B?cnBpU0JHRzdSYjlpWlNaWktDWVExdmVzQUJmTEd4V29aL2FFVzdUNEpaVitH?=
- =?utf-8?B?dGVEYmJGMyt2K0FlOGQ0Y2NHL2hpbGNHQlNhYmc0SWczSUkwTUlpR2xJOFFI?=
- =?utf-8?B?dFZEY3FrOHNmaGVIdURiYm9WWnJRa0dXNEkwaXZiNVpvL0YyTVI4eGJKSjNx?=
- =?utf-8?B?QUVFYm55a2NscVNNMVVlM0lnZFY4V29Gcnp0cnQrUURCK1lzRnpiTjlBVWpx?=
- =?utf-8?B?UkI2RUlOZ1dTRkUxUWVNSDhmalNLYURTSExUblZTTGlocGhqdjBuZS9iSW5k?=
- =?utf-8?B?R0ZqajdjZnJLLzYvMlYxeWlEVkZVeUFNNkR1cVp0MHlTTjUwVDA0ckZLTlRI?=
- =?utf-8?B?QlorRUdhVGM4YlFMdVc0YkxCblBLMVczMzFDVi9uOEE3YkdPMUZiMUFBMXY4?=
- =?utf-8?B?WnNvVjR3c0p4eXZGeWc3SHBVOWg4Y3lFUXcxU2Q3TkVPR0dFWmFsZGRKdkgr?=
- =?utf-8?B?TDNxYnF6c1VhU1oyUnE1WXlnd3owYncwT0JvdjRWd0l3T1ArTUUrY25RRnhB?=
- =?utf-8?Q?juNO91NqgXHY5pE8pMLqzo8=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8cbaf67-cebb-4e93-499c-08dabb131e90
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RXdHQU4xaDhKSGNpWkhYZGltdnNzTXAwRzlMQmRFckNRT3VJeTB2bUI3eGJF?=
+ =?utf-8?B?SHBPd3ZwL3ZNMlhSQWV5eHhWRGtQekpTRExYanF0L00ydnowK2tRb0NYcWM5?=
+ =?utf-8?B?TjhQOVZPb014bjdORFJvdTJXMnNjYmxQTjlTdWhWZlZZeW5FeXpuSkJoQW1h?=
+ =?utf-8?B?MkxSYUdFdnQ2MG1zT0hFbWVOcEhLUlRaMVdZbUlEaUVpRzZiYU82VDJra1gy?=
+ =?utf-8?B?cDBhblhzZHpQNWhPVVltNnJiSTZyMUdkZjVsdEtMbE1Ta0I1MmZNWDVZWVpi?=
+ =?utf-8?B?cTFIb3daYWpoVjBUM0dmbExJQWR1R1BRT3lSZnF4YzdmSGVjUDYvRUdva2pu?=
+ =?utf-8?B?YzZmY0dqa2lpTWhCaFI5cStLOUxhZWdjc1ZJRXJvUTl3Wlpna1ZpODBqQ0VQ?=
+ =?utf-8?B?dTd4NDY3WGhKNGh4UXNMeU9mODJRQmFEUlFLMDBvdkZ2eGFrc3VNVWdJWWxq?=
+ =?utf-8?B?cmVXOWdxOHNwcmFWM2h0YnE3N0RzM1BkWkU5eXd1RHpRT2p3TXVLb3o0R1Fx?=
+ =?utf-8?B?cXUzWXNCNTVLZElDc3NYbHRSSnJEMnVESW5XSGdFaFMySnpxNjdxNkpuMXQ1?=
+ =?utf-8?B?TGw3c0ZJczRCTFVGbkJ5NHZuV3lvRlhORGVBdldqV3NnWGNXd056bEluOGFi?=
+ =?utf-8?B?Y2R5VkUzc3pSdEFKQ1pyOEVKQkJYZnVGT2VtTjlyeHpGVmVhVG9uOVhqL0hX?=
+ =?utf-8?B?cUlCNlp0a3pPaExOREpiZlpHTTA3a3pnaDNBYWgwTkgzanE1UE9JbGdQRzM0?=
+ =?utf-8?B?dW9ndStXNmdBL2FNeUNUUjUyeHNBa2tOSWoyNjRzeUs1QVJLdHU5ZjdJMkhC?=
+ =?utf-8?B?dnQwSE5ERW1SbDRZMUtHVkRCQ2dKYzZxR29tTzFnSGQ0SFBrSENsU1lDUUl4?=
+ =?utf-8?B?R1NVWlc4TmhSRnB2WFQwT3IyU3ZiNmZlbmhzZi9oNEJET3NWYjQyZ3ZwejhY?=
+ =?utf-8?B?TUo1eGNiYnEwVDNBMzZKRzBzRk5LcHlQRmdIUlk3S08rMlIyQnc1SUYxb0ll?=
+ =?utf-8?B?b2RobFNySUxwL3NmbFF6Z1FmY0tqYUdKQUo2ZXVQcGwzbTdWbEcrejdtbFRu?=
+ =?utf-8?B?ZlcrUTN4ZEREMjd6VDN0eXlhZy9pTENBY005OHRmRG9makYvWUxSSFlSSFlv?=
+ =?utf-8?B?azc2WkdlbllsWGZtZm84ZUhtOEIzNmk0dGhBeElUeUIzd2F3RmZjU1FVWGU4?=
+ =?utf-8?B?cyt1cVZES1pDWFIrYWNpSG1HZHMrREZkSFpSb0tQTWJrcFQxaXNqRnVqQnVy?=
+ =?utf-8?B?M3dQVkUvaGptZXM0eTBPWjR3T04vY2lQU25LcWZUdjZvRlBub093RU9teEdE?=
+ =?utf-8?B?b3hSZjJGT0FNY0FVaS9rSWJPMXYrenRVMFRobHZZaTBVaG54WUVLdEpzRWpG?=
+ =?utf-8?B?Z2hyM1FiNmZWajlNdnJJbEFHa2lBMTlJT2grY2NiZ0svRjNZdlhKNDIzZ3h6?=
+ =?utf-8?B?MjVyWXV2aG93dFVVWE9Wazl3b3NON2tEb0RSb2lDY1ZsL0YwVnp3K3ozcEMw?=
+ =?utf-8?B?VVNUV3RhQnlJTWl0THpjRGZjUzhRcGk5YVJrM2FHYmlFbGtmc3QrbmdrUzdR?=
+ =?utf-8?B?ZDVqdDN3TU1Pb2ZmWDVkUTZnaWY0dldhOXZKRkZrUXNPWTlQNlpJc0dQOGJX?=
+ =?utf-8?B?VmRGbEM0Y3pNaGhUSCs1NFJpS3UxVlcrQXNXLzhsdnhveGUrenkwdWVHVTRo?=
+ =?utf-8?B?RUtnMWkyYm12WDZNVUpDak9ZdGJHZUVzMzdZTllRbjFuL0Z0V0t2WWc0bmJj?=
+ =?utf-8?B?VHlSOWFkMnY1b05Ud0NSTkRYeWNZQVZGMzRNVnkzY3lWeFYwTFFXNUU0VWdx?=
+ =?utf-8?B?NTN1YmdPMEdaWlNVcWcxS2dRWW1mdnptMlMweHQ3d3NHc3hldkt2WjgyRDJK?=
+ =?utf-8?B?UmpYMTM4N0phV2hCd0RGdnRQWWRjbWpIZDhNZkI0NkU2NjBHd3BWZ2lEOUJK?=
+ =?utf-8?B?eEZBQWRodDRVQW8zaVBMTzVMeGV4dGhUZS9iOCtNbENzOXQwUkpLY21Ibm5z?=
+ =?utf-8?B?cEsxWXRsSG9pd2cxcnVKWUI0OW1TcHFGY1hmTHlHY1BBTWZCNHl5QVpjRFM2?=
+ =?utf-8?B?OUdJVnFyV2ZlM2U5WGthMkpZeTIxVGkzWUNyQXVqZnBJdGJNbm4wamUyYkFs?=
+ =?utf-8?Q?rf+n6S+syMok5CMEoIbtrHluG?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 626b29b1-89f1-45c1-d0f0-08dabb14ab23
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2022 07:40:02.0249
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2022 07:51:07.3993
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BKfpD05i8BzmkqOfc1c9xq/ycaQ0yW3lXvcPdsSN9wcx6U4hgXcVAnnTBr9pHZ25
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8298
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-MS-Exchange-CrossTenant-UserPrincipalName: OJFPFE+4QiV0O94DOBlXh9OuoT758nsTiImODaDYgidRmbVaXQi/PJwaxWLvS4VogHx3v6m86ndWcq68NFZn7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5358
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-31_05,2022-10-27_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
+ definitions=main-2210310050
+X-Proofpoint-ORIG-GUID: 5ErVaby9zJWFf_NYyG7j8SJ9eN7ZycR3
+X-Proofpoint-GUID: 5ErVaby9zJWFf_NYyG7j8SJ9eN7ZycR3
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -126,89 +160,46 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/10/26 13:06, Qu Wenruo wrote:
-> Currently btrfs raid56 is have many and very chaotic function entrances:
+On 10/29/22 03:37, David Sterba wrote:
+> On Fri, Oct 28, 2022 at 01:22:54PM +0800, Anand Jain wrote:
+>> On 27/10/2022 03:08, Josef Bacik wrote:
+>>> These helpers are core to btrfs, and in order to more easily sync
+>>> various parts of the btrfs kernel code into btrfs-progs we need to be
+>>> able to carry these helpers with us.  However we want to have our own
+>>> implementation for the helpers themselves, currently they're implemented
+>>> in different files that we want to sync inside of btrfs-progs itself.
+>>> Move these into their own C file, this will allow us to contain our
+>>> overrides in btrfs-progs in it's own file without messing with the rest
+>>> of the codebase.
+>>>
+>>> In copying things over I fixed up a few whitespace errors that already
+>>> existed.
+>>>
+>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>>
+>> LGTM
+>> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+>>
+>>
+>> a nit below:
+>>
+>>> diff --git a/fs/btrfs/messages.c b/fs/btrfs/messages.c
+>>> new file mode 100644
+>>> index 000000000000..a94a213da02e
+>>> --- /dev/null
+>>> +++ b/fs/btrfs/messages.c
+>>> @@ -0,0 +1,352 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +
+>>> +#include "fs.h"
+>>
+>>> +#include "messages.h"
+>>
+>> messages.h is not required to include.
 > 
-> - full_stripe_write()
->    For full stripe write, will try to lock the full stripe and then do
->    the write.
-> 
-> - finish_rmw()
->    For rbio which holds the full stripe lock, only do the writes, for
->    either full stripe write, or sub-stripe write with cached rbio.
-> 
-> - raid56_rmw_stripe()
->    For sub-stripe write which owns the full stripe lock.
-> 
-> Furthermore we are using endio functions to go the next stage of the
-> work, it's really hard to properly follow the workflow.
+> There's btrfs_crit, so it's needed.
 
-The patchset can be used for testing, but there will be some updates 
-mostly related to cosmetic changes (function names, comments) and 
-further expansion to cover recovery and scrub.
+Ah. That's indeed correct. Strangely, compile is through without 
+messages.h include.
 
-Thus please don't merge it as is for now.
-
-Thanks,
-Qu
-
-> 
-> 
-> The truth is, full-stripe is just a subset of a full RMW cycle, there
-> really not that much difference to treat full-stripe that differently
-> (except skip the plug).
-> 
-> 
-> This patchset will rework the raid56 write path (recover and scrub path
-> is not touched yet) by:
-> 
-> - Introduce a main function for raid56 writes
->    The main function will be called run_one_write_rbio(), and it always
->    executed in rmw_worker workqueue.
-> 
-> - Unified handling for all writes (full/sub-stripe, cached/non-cached,
->    degraded or not)
->    For full stripe write, it skips the read, and go into write part
->    directly.
-> 
->    For sub-stripe write, we will try to read the missing sectors first,
->    and wait for it (we may not read anything if it's cached).
-> 
->    Then check if we have some missing devices for the above read.
->    If so, do recovery first.
-> 
->    Finally we have everything needed, can submit the write bios, and wait
->    for the write to finish.
-> 
-> - No more need for end_io_work
->    Since we don't rely on endio functions to jump to the next step.
-> 
->    Unfortunately rbio::end_io_work can only be removed when recovery
->    and scrub path are also migrated to the new single main thread way.
-> 
-> By this, we have unified entrance for all raid56 writes, and no extra
-> jumping/workqueue mess to interrupt the workflow.
-> 
-> This would make later destructive RMW fix much easier to add, as the
-> timing of each step in RMW cycle should be very easy to grasp.
-> 
-> Thus I hope this series can be merged before the previous RFC series of
-> destructive RMW fix.
-> 
-> 
-> Qu Wenruo (8):
->    btrfs: raid56: extract the vertical stripe recovery code into
->      recover_vertical()
->    btrfs: raid56: extract the pq generation code into a helper
->    btrfs: raid56: introduce a new framework for RAID56 writes
->    btrfs: raid56: implement the read part for run_one_write_rbio()
->    btrfs: raid56: implement the degraded write for run_one_write_rbio()
->    btrfs: raid56: implement the write submission part for
->      run_one_write_bio()
->    btrfs: raid56: implement raid56_parity_write_v2()
->    btrfs: raid56: switch to the new run_one_write_rbio()
-> 
->   fs/btrfs/raid56.c | 1199 +++++++++++++++++++++++++++------------------
->   fs/btrfs/raid56.h |    4 +
->   2 files changed, 727 insertions(+), 476 deletions(-)
-> 
+Thanks.
