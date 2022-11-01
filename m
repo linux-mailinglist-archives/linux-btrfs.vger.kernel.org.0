@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE533614F07
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB64614F05
 	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 17:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbiKAQQU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Nov 2022 12:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
+        id S230452AbiKAQQR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Nov 2022 12:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbiKAQQP (ORCPT
+        with ESMTP id S230416AbiKAQQP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 12:16:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCDE1C92F
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 09:16:14 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761A51C93C
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 09:16:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D343FB81E25
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D2F9C433B5
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 05B23611DA
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6EA0C43470
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667319371;
-        bh=H+BsPAqv3KDCz5W1k+HIjPia0EjPq3Y9u6nC6xSaVE8=;
+        s=k20201202; t=1667319372;
+        bh=6epLISEFfyI08/+Qeoi+bykpHG6wNUweJJcKWNKrMV8=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=ueQwz8UgvQDvug9yhN+UVXEpFOzMd91PiOHX9xdLG9t4CZ11j17ercoOH0XGBRtvD
-         loAmsYc66hYpZaC46YT1VXPHiM1Hz4jA4GMfP9XIya0w3T98Ed8b1p2MtdXIyeBiKw
-         F5BF2Kn+ZYT5IjlIV1BQh8wvP4uZ0W4W/17JewXVlHO1wxyYr7qyhYsSJJf7oRAsKb
-         Bih8eEc0me/DnQd3Y5Zwx2+jxXD1YkkyHPBZ9L+C7VTTU1w25SkAyLaf8UwEAYEN1O
-         JW6VprYIu3y3mxzLcVX7Iyj8zd5U2ZOJOdIi8Djy4shYga170XI+TjT3QUDBZp7gYv
-         yJUXggXcjKhkQ==
+        b=Aq6XvGB7eki/Gi1YyXrxaAKg2293RoZl91ZLylvSgn2miqP0MCc+knnEkCYGUmnAN
+         gid6x7MA20OcjNZ7XqIYh8LWmfYZ6gjC35Tffq3G4nYvzcBOQls/AEn42AnomyRsJS
+         xkzyEL2mwe1qH6IVqpQoUu+6iH5+IBdVcalz4CzlhHT/qY3MsDPjVSd41kT8d/pBTQ
+         3PoSudwNTuKfbdf6WFzKsr2W3sgGSPWQZIPEdzsHJjDMpMh/SzLU1fBxizdp6Axh7C
+         5i6O2WY/5ebXwoMMFBr2IGG/xBgr/9D+jz4w+xJBs5F/bFBPtyjdyr6+ia8hQ/JsmI
+         RaMLCCZo5FVxg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 15/18] btrfs: send: skip unnecessary backref iterations
-Date:   Tue,  1 Nov 2022 16:15:51 +0000
-Message-Id: <9bb6ab50fe0cd7c0f7c5837c386dbedee54ff3a8.1667315100.git.fdmanana@suse.com>
+Subject: [PATCH 16/18] btrfs: send: avoid double extent tree search when finding clone source
+Date:   Tue,  1 Nov 2022 16:15:52 +0000
+Message-Id: <62dff1edae3e169e7f7095a65a3af87bb6c4099c.1667315100.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1667315100.git.fdmanana@suse.com>
 References: <cover.1667315100.git.fdmanana@suse.com>
@@ -52,41 +52,48 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When looking for a clone source for an extent, we are iterating over all
-the backreferences for an extent. This is often a waste of time, because
-once we find a good clone source we could stop immediately instead of
-continuing backref walking, which is expensive.
+At find_extent_clone() we search twice for the extent item corresponding
+to the data extent that the current file extent items points to:
 
-Basically what happens currently is this:
+1) Once with a call to extent_from_logical();
 
-1) Call iterate_extent_inodes() to iterate over all the backreferences;
+2) Once again during backref walking, through iterate_extent_inodes()
+   which eventually leads to find_parent_nodes() where we will search
+   again the extent tree for the same extent item.
 
-2) It calls btrfs_find_all_leafs() which in turn calls the main function
-   to walk over backrefs and collect them - find_parent_nodes();
+The extent tree can be huge, so doing this one extra search for every
+extent we want to send adds up and it's expensive.
 
-3) Then we collect all the references for our target data extent from the
-   extent tree (and delayed refs if any), add them to the rb trees,
-   resolve all the indirect backreferences and search for all the file
-   extent items in fs trees, building a list of inodes for each one of
-   them (struct extent_inode_elem);
+The first call is there since the send code was introduced and it
+accomplishes two things:
 
-4) Then back at iterate_extent_inodes() we find all the roots associated
-   to each found leaf, and call the callback __iterate_backrefs defined
-   at send.c for each inode in the inode list associated to each leaf.
+1) Check that the extent is flagged as a data extent in the extent tree.
+   But it can not be anything else, otherwise we wouldn't have a file
+   extent item in the send root pointing to it.
+   This was probably added to catch bugs in the early days where send was
+   yet too young and the interaction with everything else was far from
+   perfect;
 
-Some times one the first backreferences we find in a fs tree is optimal
-to satisfy the clone operation that send wants to perform, and in that
-case we could stop immediately and avoid resolving all the remaining
-indirect backreferences (search fs trees for the respective file extent
-items, etc). This possibly if when we find a fs tree leaf with a file
-extent item we are able to know what are all the roots that can lead to
-the leaf - this is now possible after the previous patch in the series
-that adds a cache that maps leaves to a list of roots. So we can now
-shortcircuit backref walking during send, by having the callback we
-pass to iterate_extent_inodes() to be called when we find a file extent
-item for an indirect backreference, and have it return a special value
-when it found a suitable backreference and it does not need to look for
-more backreferences. This change does that.
+2) Check how many direct references there are on the extent, and if
+   there's too many (more than SEND_MAX_EXTENT_REFS), avoid doing the
+   backred walking as it may take too long and slowdown send.
+
+So improve on this by having a callback in the backref walking code that
+is called when it finds the extent item in the extent tree, and have those
+checks done in the callback. When the callback returns anything different
+from 0, it stops the backref walking code. This way we do a single search
+on the extent tree for the extent item of our data extent.
+
+Also, before this change we were only checking the number of references on
+the data extent against SEND_MAX_EXTENT_REFS, but after starting backref
+walking we will end up resolving backrefs for extent buffers in the path
+from a leaf having a file extent item pointing to our data extent, up to
+roots of trees from which the extent buffer is accessible from, due to
+shared subtrees resulting from snapshoting. We were therefore allowing for
+the possibility for send taking too long due to some node in the path from
+the leaf to a root node being shared too many times. After this change we
+check for reference counts being greater than SEND_MAX_EXTENT_REFS for
+both data extents and metadata extents.
 
 This change is part of a patchset comprised of the following patches:
 
@@ -112,439 +119,299 @@ Performance test results are in the changelog of patch 17/17.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/backref.c | 73 ++++++++++++++++++++++++++++-------------
- fs/btrfs/backref.h | 44 +++++++++++++++++++++----
- fs/btrfs/send.c    | 81 +++++++++++++++++++++++-----------------------
- 3 files changed, 128 insertions(+), 70 deletions(-)
+ fs/btrfs/backref.c |  31 ++++++++------
+ fs/btrfs/backref.h |   9 +++-
+ fs/btrfs/send.c    | 103 +++++++++++++++++++++------------------------
+ 3 files changed, 73 insertions(+), 70 deletions(-)
 
 diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 9dacf487017d..bb59ba68d7ee 100644
+index bb59ba68d7ee..33056c4c0528 100644
 --- a/fs/btrfs/backref.c
 +++ b/fs/btrfs/backref.c
-@@ -31,15 +31,18 @@ struct extent_inode_elem {
- 	struct extent_inode_elem *next;
- };
- 
--static int check_extent_in_eb(const struct btrfs_key *key,
-+static int check_extent_in_eb(struct btrfs_backref_walk_ctx *ctx,
-+			      const struct btrfs_key *key,
- 			      const struct extent_buffer *eb,
- 			      const struct btrfs_file_extent_item *fi,
--			      u64 extent_item_pos,
- 			      struct extent_inode_elem **eie)
+@@ -1003,8 +1003,8 @@ static int add_delayed_refs(const struct btrfs_fs_info *fs_info,
+  *
+  * Returns 0 on success, <0 on error, or BACKREF_FOUND_SHARED.
+  */
+-static int add_inline_refs(const struct btrfs_fs_info *fs_info,
+-			   struct btrfs_path *path, u64 bytenr,
++static int add_inline_refs(struct btrfs_backref_walk_ctx *ctx,
++			   struct btrfs_path *path,
+ 			   int *info_level, struct preftrees *preftrees,
+ 			   struct share_check *sc)
  {
- 	const u64 data_len = btrfs_file_extent_num_bytes(eb, fi);
--	u64 offset = 0;
-+	u64 offset = key->offset;
- 	struct extent_inode_elem *e;
-+	const u64 *root_ids;
-+	int root_count;
-+	bool cached;
+@@ -1029,6 +1029,13 @@ static int add_inline_refs(const struct btrfs_fs_info *fs_info,
+ 	BUG_ON(item_size < sizeof(*ei));
  
- 	if (!btrfs_file_extent_compression(eb, fi) &&
- 	    !btrfs_file_extent_encryption(eb, fi) &&
-@@ -48,19 +51,38 @@ static int check_extent_in_eb(const struct btrfs_key *key,
- 
- 		data_offset = btrfs_file_extent_offset(eb, fi);
- 
--		if (extent_item_pos < data_offset ||
--		    extent_item_pos >= data_offset + data_len)
-+		if (ctx->extent_item_pos < data_offset ||
-+		    ctx->extent_item_pos >= data_offset + data_len)
- 			return 1;
--		offset = extent_item_pos - data_offset;
-+		offset += ctx->extent_item_pos - data_offset;
-+	}
+ 	ei = btrfs_item_ptr(leaf, slot, struct btrfs_extent_item);
 +
-+	if (!ctx->indirect_ref_iterator || !ctx->cache_lookup)
-+		goto add_inode_elem;
-+
-+	cached = ctx->cache_lookup(eb->start, ctx->user_ctx, &root_ids,
-+				   &root_count);
-+	if (!cached)
-+		goto add_inode_elem;
-+
-+	for (int i = 0; i < root_count; i++) {
-+		int ret;
-+
-+		ret = ctx->indirect_ref_iterator(key->objectid, offset,
-+						 data_len, root_ids[i],
-+						 ctx->user_ctx);
++	if (ctx->check_extent_item) {
++		ret = ctx->check_extent_item(ctx->bytenr, ei, leaf, ctx->user_ctx);
 +		if (ret)
 +			return ret;
- 	}
- 
-+add_inode_elem:
- 	e = kmalloc(sizeof(*e), GFP_NOFS);
- 	if (!e)
- 		return -ENOMEM;
- 
- 	e->next = *eie;
- 	e->inum = key->objectid;
--	e->offset = key->offset + offset;
-+	e->offset = offset;
- 	e->num_bytes = data_len;
- 	*eie = e;
- 
-@@ -77,8 +99,8 @@ static void free_inode_elem_list(struct extent_inode_elem *eie)
- 	}
- }
- 
--static int find_extent_in_eb(const struct extent_buffer *eb,
--			     u64 wanted_disk_byte, u64 extent_item_pos,
-+static int find_extent_in_eb(struct btrfs_backref_walk_ctx *ctx,
-+			     const struct extent_buffer *eb,
- 			     struct extent_inode_elem **eie)
- {
- 	u64 disk_byte;
-@@ -105,11 +127,11 @@ static int find_extent_in_eb(const struct extent_buffer *eb,
- 			continue;
- 		/* don't skip BTRFS_FILE_EXTENT_PREALLOC, we can handle that */
- 		disk_byte = btrfs_file_extent_disk_bytenr(eb, fi);
--		if (disk_byte != wanted_disk_byte)
-+		if (disk_byte != ctx->bytenr)
- 			continue;
- 
--		ret = check_extent_in_eb(&key, eb, fi, extent_item_pos, eie);
--		if (ret < 0)
-+		ret = check_extent_in_eb(ctx, &key, eb, fi, eie);
-+		if (ret == BTRFS_ITERATE_EXTENT_INODES_STOP || ret < 0)
- 			return ret;
- 	}
- 
-@@ -526,9 +548,9 @@ static int add_all_parents(struct btrfs_backref_walk_ctx *ctx,
- 			else
- 				goto next;
- 			if (!ctx->ignore_extent_item_pos) {
--				ret = check_extent_in_eb(&key, eb, fi,
--							 ctx->extent_item_pos, &eie);
--				if (ret < 0)
-+				ret = check_extent_in_eb(ctx, &key, eb, fi, &eie);
-+				if (ret == BTRFS_ITERATE_EXTENT_INODES_STOP ||
-+				    ret < 0)
- 					break;
- 			}
- 			if (ret > 0)
-@@ -551,10 +573,11 @@ static int add_all_parents(struct btrfs_backref_walk_ctx *ctx,
- 			ret = btrfs_next_old_item(root, path, ctx->time_seq);
- 	}
- 
--	if (ret > 0)
--		ret = 0;
--	else if (ret < 0)
-+	if (ret == BTRFS_ITERATE_EXTENT_INODES_STOP || ret < 0)
- 		free_inode_elem_list(eie);
-+	else if (ret > 0)
-+		ret = 0;
++	}
 +
- 	return ret;
- }
+ 	flags = btrfs_extent_flags(leaf, ei);
+ 	btrfs_item_key_to_cpu(leaf, &found_key, slot);
  
-@@ -1570,12 +1593,12 @@ static int find_parent_nodes(struct btrfs_backref_walk_ctx *ctx,
+@@ -1064,9 +1071,9 @@ static int add_inline_refs(const struct btrfs_fs_info *fs_info,
  
- 				if (!path->skip_locking)
- 					btrfs_tree_read_lock(eb);
--				ret = find_extent_in_eb(eb, ctx->bytenr,
--							ctx->extent_item_pos, &eie);
-+				ret = find_extent_in_eb(ctx, eb, &eie);
- 				if (!path->skip_locking)
- 					btrfs_tree_read_unlock(eb);
- 				free_extent_buffer(eb);
--				if (ret < 0)
-+				if (ret == BTRFS_ITERATE_EXTENT_INODES_STOP ||
-+				    ret < 0)
- 					goto out;
- 				ref->inode_list = eie;
- 				/*
-@@ -1628,7 +1651,7 @@ static int find_parent_nodes(struct btrfs_backref_walk_ctx *ctx,
- 	prelim_release(&preftrees.indirect);
- 	prelim_release(&preftrees.indirect_missing_keys);
+ 		switch (type) {
+ 		case BTRFS_SHARED_BLOCK_REF_KEY:
+-			ret = add_direct_ref(fs_info, preftrees,
++			ret = add_direct_ref(ctx->fs_info, preftrees,
+ 					     *info_level + 1, offset,
+-					     bytenr, 1, NULL, GFP_NOFS);
++					     ctx->bytenr, 1, NULL, GFP_NOFS);
+ 			break;
+ 		case BTRFS_SHARED_DATA_REF_KEY: {
+ 			struct btrfs_shared_data_ref *sdref;
+@@ -1075,14 +1082,14 @@ static int add_inline_refs(const struct btrfs_fs_info *fs_info,
+ 			sdref = (struct btrfs_shared_data_ref *)(iref + 1);
+ 			count = btrfs_shared_data_ref_count(leaf, sdref);
  
--	if (ret < 0)
-+	if (ret == BTRFS_ITERATE_EXTENT_INODES_STOP || ret < 0)
- 		free_inode_elem_list(eie);
- 	return ret;
- }
-@@ -1654,7 +1677,8 @@ int btrfs_find_all_leafs(struct btrfs_backref_walk_ctx *ctx)
- 		return -ENOMEM;
+-			ret = add_direct_ref(fs_info, preftrees, 0, offset,
+-					     bytenr, count, sc, GFP_NOFS);
++			ret = add_direct_ref(ctx->fs_info, preftrees, 0, offset,
++					     ctx->bytenr, count, sc, GFP_NOFS);
+ 			break;
+ 		}
+ 		case BTRFS_TREE_BLOCK_REF_KEY:
+-			ret = add_indirect_ref(fs_info, preftrees, offset,
++			ret = add_indirect_ref(ctx->fs_info, preftrees, offset,
+ 					       NULL, *info_level + 1,
+-					       bytenr, 1, NULL, GFP_NOFS);
++					       ctx->bytenr, 1, NULL, GFP_NOFS);
+ 			break;
+ 		case BTRFS_EXTENT_DATA_REF_KEY: {
+ 			struct btrfs_extent_data_ref *dref;
+@@ -1104,8 +1111,8 @@ static int add_inline_refs(const struct btrfs_fs_info *fs_info,
  
- 	ret = find_parent_nodes(ctx, NULL);
--	if (ret < 0 && ret != -ENOENT) {
-+	if (ret == BTRFS_ITERATE_EXTENT_INODES_STOP ||
-+	    (ret < 0 && ret != -ENOENT)) {
- 		free_leaf_list(ctx->refs);
- 		ctx->refs = NULL;
- 		return ret;
-@@ -2402,6 +2426,9 @@ int iterate_extent_inodes(struct btrfs_backref_walk_ctx *ctx,
- 	ulist_free(ctx->roots);
- 	ctx->roots = NULL;
+ 			root = btrfs_extent_data_ref_root(leaf, dref);
  
-+	if (ret == BTRFS_ITERATE_EXTENT_INODES_STOP)
-+		ret = 0;
-+
- 	return ret;
- }
+-			ret = add_indirect_ref(fs_info, preftrees, root,
+-					       &key, 0, bytenr, count,
++			ret = add_indirect_ref(ctx->fs_info, preftrees, root,
++					       &key, 0, ctx->bytenr, count,
+ 					       sc, GFP_NOFS);
  
+ 			break;
+@@ -1455,8 +1462,8 @@ static int find_parent_nodes(struct btrfs_backref_walk_ctx *ctx,
+ 		if (key.objectid == ctx->bytenr &&
+ 		    (key.type == BTRFS_EXTENT_ITEM_KEY ||
+ 		     key.type == BTRFS_METADATA_ITEM_KEY)) {
+-			ret = add_inline_refs(ctx->fs_info, path, ctx->bytenr,
+-					      &info_level, &preftrees, sc);
++			ret = add_inline_refs(ctx, path, &info_level,
++					      &preftrees, sc);
+ 			if (ret)
+ 				goto out;
+ 			ret = add_keyed_refs(root, path, ctx->bytenr, info_level,
 diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index 5005f579f235..a80d1e8be718 100644
+index a80d1e8be718..1bd5a15c7f9e 100644
 --- a/fs/btrfs/backref.h
 +++ b/fs/btrfs/backref.h
-@@ -12,6 +12,25 @@
- #include "disk-io.h"
- #include "extent_io.h"
- 
-+/*
-+ * Used by implementations of iterate_extent_inodes_t (see definition below) to
-+ * signal that backref iteration can stop immediately and no error happened.
-+ * The value must be non-negative and must not be 0, 1 (which is a common return
-+ * value from things like btrfs_search_slot() and used internally in the backref
-+ * walking code) and different from BACKREF_FOUND_SHARED and
-+ * BACKREF_FOUND_NOT_SHARED
-+ */
-+#define BTRFS_ITERATE_EXTENT_INODES_STOP 5
-+
-+/*
-+ * Should return 0 if no errors happened and iteration of backrefs should
-+ * continue. Can return BTRFS_ITERATE_EXTENT_INODES_STOP or any other non-zero
-+ * value to immediately stop iteration and possibly signal an error back to
-+ * the caller.
-+ */
-+typedef int (iterate_extent_inodes_t)(u64 inum, u64 offset, u64 num_bytes,
-+				      u64 root, void *ctx);
-+
- /*
-  * Context and arguments for backref walking functions. Some of the fields are
-  * to be filled by the caller of such functions while other are filled by the
-@@ -70,15 +89,29 @@ struct btrfs_backref_walk_ctx {
+@@ -109,9 +109,14 @@ struct btrfs_backref_walk_ctx {
  	 */
- 	struct ulist *roots;
+ 	iterate_extent_inodes_t *indirect_ref_iterator;
  	/*
--	 * Used by iterate_extent_inodes(). Lookup and store functions for an
--	 * optional cache which maps the logical address (bytenr) of leaves
--	 * to an array of root IDs.
-+	 * Used by iterate_extent_inodes() and the main backref walk code
-+	 * (find_parent_nodes()). Lookup and store functions for an optional
-+	 * cache which maps the logical address (bytenr) of leaves to an array
-+	 * of root IDs.
+-	 * Context object to pass to the @cache_lookup, @cache_store and
+-	 * @indirect_ref_iterator callbacks.
++	 * If this is not NULL, then the backref walking code will call this for
++	 * each extent item it's meant to process before it actually starts
++	 * processing it. If this returns anything other than 0, then it stops
++	 * the backref walking code immediately.
  	 */
- 	bool (*cache_lookup)(u64 leaf_bytenr, void *user_ctx,
- 			     const u64 **root_ids_ret, int *root_count_ret);
- 	void (*cache_store)(u64 leaf_bytenr, const struct ulist *root_ids,
- 			    void *user_ctx);
--	/* Context object to pass to @cache_lookup and @cache_store. */
-+	/*
-+	 * If this is not NULL, then the backref walking code will call this
-+	 * for each indirect data extent reference as soon as it finds one,
-+	 * before collecting all the remaining backrefs and before resolving
-+	 * indirect backrefs. This allows for the caller to terminate backref
-+	 * walking as soon as it finds one backref that matches some specific
-+	 * criteria. The @cache_lookup and @cache_store callbacks should not
-+	 * be NULL in order to use this callback.
-+	 */
-+	iterate_extent_inodes_t *indirect_ref_iterator;
-+	/*
-+	 * Context object to pass to the @cache_lookup, @cache_store and
-+	 * @indirect_ref_iterator callbacks.
-+	 */
++	int (*check_extent_item)(u64 bytenr, const struct btrfs_extent_item *ei,
++				 const struct extent_buffer *leaf, void *user_ctx);
++	/* Context object to pass to the callbacks defined above. */
  	void *user_ctx;
  };
  
-@@ -145,9 +178,6 @@ struct btrfs_backref_share_check_ctx {
- 	int prev_extents_cache_slot;
- };
- 
--typedef int (iterate_extent_inodes_t)(u64 inum, u64 offset, u64 num_bytes,
--				      u64 root, void *ctx);
--
- struct btrfs_backref_share_check_ctx *btrfs_alloc_backref_share_check_ctx(void);
- void btrfs_free_backref_share_ctx(struct btrfs_backref_share_check_ctx *ctx);
- 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 4b79d52d74a4..67f82793315c 100644
+index 67f82793315c..f91cc95a0a3b 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -77,7 +77,7 @@ struct clone_root {
- 	u64 ino;
- 	u64 offset;
- 	u64 num_bytes;
--	u64 found_refs;
-+	bool found_ref;
- };
- 
- #define SEND_CTX_MAX_NAME_CACHE_SIZE 128
-@@ -1281,9 +1281,6 @@ struct backref_ctx {
+@@ -1281,6 +1281,9 @@ struct backref_ctx {
  
  	/* may be truncated in case it's the last extent in a file */
  	u64 extent_len;
--
--	/* Just to check for bugs in backref resolving */
--	int found_itself;
++
++	/* The bytenr the file extent item we are processing refers to. */
++	u64 bytenr;
  };
  
  static int __clone_root_cmp_bsearch(const void *key, const void *elt)
-@@ -1312,33 +1309,33 @@ static int __clone_root_cmp_sort(const void *e1, const void *e2)
+@@ -1518,6 +1521,43 @@ static void store_backref_cache(u64 leaf_bytenr, const struct ulist *root_ids,
+ 	sctx->backref_cache.size++;
+ }
  
- /*
-  * Called for every backref that is found for the current extent.
-- * Results are collected in sctx->clone_roots->ino/offset/found_refs
-+ * Results are collected in sctx->clone_roots->ino/offset.
-  */
--static int __iterate_backrefs(u64 ino, u64 offset, u64 num_bytes, u64 root,
--			      void *ctx_)
-+static int iterate_backrefs(u64 ino, u64 offset, u64 num_bytes, u64 root_id,
-+			    void *ctx_)
- {
- 	struct backref_ctx *bctx = ctx_;
--	struct clone_root *found;
-+	struct clone_root *clone_root;
- 
- 	/* First check if the root is in the list of accepted clone sources */
--	found = bsearch((void *)(uintptr_t)root, bctx->sctx->clone_roots,
--			bctx->sctx->clone_roots_cnt,
--			sizeof(struct clone_root),
--			__clone_root_cmp_bsearch);
--	if (!found)
-+	clone_root = bsearch((void *)(uintptr_t)root_id, bctx->sctx->clone_roots,
-+			     bctx->sctx->clone_roots_cnt,
-+			     sizeof(struct clone_root),
-+			     __clone_root_cmp_bsearch);
-+	if (!clone_root)
- 		return 0;
- 
--	if (found->root == bctx->sctx->send_root &&
-+	/* This is our own reference, bail out as we can't clone from it. */
-+	if (clone_root->root == bctx->sctx->send_root &&
- 	    ino == bctx->cur_objectid &&
--	    offset == bctx->cur_offset) {
--		bctx->found_itself = 1;
--	}
-+	    offset == bctx->cur_offset)
-+		return 0;
- 
- 	/*
- 	 * Make sure we don't consider clones from send_root that are
- 	 * behind the current inode/offset.
- 	 */
--	if (found->root == bctx->sctx->send_root) {
-+	if (clone_root->root == bctx->sctx->send_root) {
- 		/*
- 		 * If the source inode was not yet processed we can't issue a
- 		 * clone operation, as the source extent does not exist yet at
-@@ -1359,7 +1356,7 @@ static int __iterate_backrefs(u64 ino, u64 offset, u64 num_bytes, u64 root,
- 	}
- 
- 	bctx->found++;
--	found->found_refs++;
-+	clone_root->found_ref = true;
- 
- 	/*
- 	 * If the given backref refers to a file extent item with a larger
-@@ -1367,10 +1364,17 @@ static int __iterate_backrefs(u64 ino, u64 offset, u64 num_bytes, u64 root,
- 	 * we clone more optimally and end up doing less writes and getting
- 	 * less exclusive, non-shared extents at the destination.
- 	 */
--	if (num_bytes > found->num_bytes) {
--		found->ino = ino;
--		found->offset = offset;
--		found->num_bytes = num_bytes;
-+	if (num_bytes > clone_root->num_bytes) {
-+		clone_root->ino = ino;
-+		clone_root->offset = offset;
-+		clone_root->num_bytes = num_bytes;
++static int check_extent_item(u64 bytenr, const struct btrfs_extent_item *ei,
++			     const struct extent_buffer *leaf, void *ctx)
++{
++	const u64 refs = btrfs_extent_refs(leaf, ei);
++	const struct backref_ctx *bctx = ctx;
++	const struct send_ctx *sctx = bctx->sctx;
++
++	if (bytenr == bctx->bytenr) {
++		const u64 flags = btrfs_extent_flags(leaf, ei);
++
++		if (WARN_ON(flags & BTRFS_EXTENT_FLAG_TREE_BLOCK))
++			return -EUCLEAN;
 +
 +		/*
-+		 * Found a perfect candidate, so there's no need to continue
-+		 * backref walking.
++		 * If we have only one reference and only the send root as a
++		 * clone source - meaning no clone roots were given in the
++		 * struct btrfs_ioctl_send_args passed to the send ioctl - then
++		 * it's our reference and there's no point in doing backref
++		 * walking which is expensive, so exit early.
 +		 */
-+		if (num_bytes >= bctx->extent_len)
-+			return BTRFS_ITERATE_EXTENT_INODES_STOP;
- 	}
++		if (refs == 1 && sctx->clone_roots_cnt == 1)
++			return -ENOENT;
++	}
++
++	/*
++	 * Backreference walking (iterate_extent_inodes() below) is currently
++	 * too expensive when an extent has a large number of references, both
++	 * in time spent and used memory. So for now just fallback to write
++	 * operations instead of clone operations when an extent has more than
++	 * a certain amount of references.
++	 */
++	if (refs > SEND_MAX_EXTENT_REFS)
++		return -ENOENT;
++
++	return 0;
++}
++
+ /*
+  * Given an inode, offset and extent item, it finds a good clone for a clone
+  * instruction. Returns -ENOENT when none could be found. The function makes
+@@ -1539,16 +1579,11 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	u64 logical;
+ 	u64 disk_byte;
+ 	u64 num_bytes;
+-	u64 extent_refs;
+-	u64 flags = 0;
+ 	struct btrfs_file_extent_item *fi;
+ 	struct extent_buffer *eb = path->nodes[0];
+ 	struct backref_ctx backref_ctx = { 0 };
+ 	struct btrfs_backref_walk_ctx backref_walk_ctx = { 0 };
+ 	struct clone_root *cur_clone_root;
+-	struct btrfs_key found_key;
+-	struct btrfs_path *tmp_path;
+-	struct btrfs_extent_item *ei;
+ 	int compressed;
+ 	u32 i;
  
- 	return 0;
-@@ -1392,7 +1396,8 @@ static void empty_backref_cache(struct send_ctx *sctx)
- static bool lookup_backref_cache(u64 leaf_bytenr, void *ctx,
- 				 const u64 **root_ids_ret, int *root_count_ret)
- {
--	struct send_ctx *sctx = ctx;
-+	struct backref_ctx *bctx = ctx;
-+	struct send_ctx *sctx = bctx->sctx;
- 	struct btrfs_fs_info *fs_info = sctx->send_root->fs_info;
- 	const u64 key = leaf_bytenr >> fs_info->sectorsize_bits;
- 	struct backref_cache_entry *entry;
-@@ -1430,7 +1435,8 @@ static bool lookup_backref_cache(u64 leaf_bytenr, void *ctx,
- static void store_backref_cache(u64 leaf_bytenr, const struct ulist *root_ids,
- 				void *ctx)
- {
--	struct send_ctx *sctx = ctx;
-+	struct backref_ctx *bctx = ctx;
-+	struct send_ctx *sctx = bctx->sctx;
- 	struct btrfs_fs_info *fs_info = sctx->send_root->fs_info;
- 	struct backref_cache_entry *new_entry;
- 	struct ulist_iterator uiter;
-@@ -1618,7 +1624,7 @@ static int find_extent_clone(struct send_ctx *sctx,
- 		cur_clone_root->ino = (u64)-1;
- 		cur_clone_root->offset = 0;
- 		cur_clone_root->num_bytes = 0;
--		cur_clone_root->found_refs = 0;
-+		cur_clone_root->found_ref = false;
- 	}
+@@ -1574,48 +1609,6 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	num_bytes = btrfs_file_extent_num_bytes(eb, fi);
+ 	logical = disk_byte + btrfs_file_extent_offset(eb, fi);
  
- 	backref_ctx.sctx = sctx;
-@@ -1628,7 +1634,7 @@ static int find_extent_clone(struct send_ctx *sctx,
- 	/*
- 	 * The last extent of a file may be too large due to page alignment.
- 	 * We need to adjust extent_len in this case so that the checks in
--	 * __iterate_backrefs work.
-+	 * iterate_backrefs() work.
- 	 */
- 	if (data_offset + num_bytes >= ino_size)
- 		backref_ctx.extent_len = ino_size - data_offset;
-@@ -1644,9 +1650,10 @@ static int find_extent_clone(struct send_ctx *sctx,
- 	backref_walk_ctx.fs_info = fs_info;
- 	backref_walk_ctx.cache_lookup = lookup_backref_cache;
- 	backref_walk_ctx.cache_store = store_backref_cache;
--	backref_walk_ctx.user_ctx = sctx;
-+	backref_walk_ctx.indirect_ref_iterator = iterate_backrefs;
-+	backref_walk_ctx.user_ctx = &backref_ctx;
- 
--	ret = iterate_extent_inodes(&backref_walk_ctx, true, __iterate_backrefs,
-+	ret = iterate_extent_inodes(&backref_walk_ctx, true, iterate_backrefs,
- 				    &backref_ctx);
- 	if (ret < 0)
- 		goto out;
-@@ -1671,27 +1678,21 @@ static int find_extent_clone(struct send_ctx *sctx,
- 	}
- 	up_read(&fs_info->commit_root_sem);
- 
--	if (!backref_ctx.found_itself) {
--		/* found a bug in backref code? */
+-	tmp_path = alloc_path_for_send();
+-	if (!tmp_path)
+-		return -ENOMEM;
+-
+-	/* We only use this path under the commit sem */
+-	tmp_path->need_commit_sem = 0;
+-
+-	down_read(&fs_info->commit_root_sem);
+-	ret = extent_from_logical(fs_info, disk_byte, tmp_path,
+-				  &found_key, &flags);
+-	up_read(&fs_info->commit_root_sem);
+-
+-	if (ret < 0)
+-		goto out;
+-	if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
 -		ret = -EIO;
--		btrfs_err(fs_info,
--			  "did not find backref in send_root. inode=%llu, offset=%llu, disk_byte=%llu found extent=%llu",
--			  ino, data_offset, disk_byte, found_key.objectid);
 -		goto out;
 -	}
 -
- 	btrfs_debug(fs_info,
- 		    "find_extent_clone: data_offset=%llu, ino=%llu, num_bytes=%llu, logical=%llu",
- 		    data_offset, ino, num_bytes, logical);
+-	ei = btrfs_item_ptr(tmp_path->nodes[0], tmp_path->slots[0],
+-			    struct btrfs_extent_item);
+-	extent_refs = btrfs_extent_refs(tmp_path->nodes[0], ei);
+-	/*
+-	 * Backreference walking (iterate_extent_inodes() below) is currently
+-	 * too expensive when an extent has a large number of references, both
+-	 * in time spent and used memory. So for now just fallback to write
+-	 * operations instead of clone operations when an extent has more than
+-	 * a certain amount of references.
+-	 *
+-	 * Also, if we have only one reference and only the send root as a clone
+-	 * source - meaning no clone roots were given in the struct
+-	 * btrfs_ioctl_send_args passed to the send ioctl - then it's our
+-	 * reference and there's no point in doing backref walking which is
+-	 * expensive, so exit early.
+-	 */
+-	if ((extent_refs == 1 && sctx->clone_roots_cnt == 1) ||
+-	    extent_refs > SEND_MAX_EXTENT_REFS) {
+-		ret = -ENOENT;
+-		goto out;
+-	}
+-	btrfs_release_path(tmp_path);
+-
+ 	/*
+ 	 * Setup the clone roots.
+ 	 */
+@@ -1630,6 +1623,7 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	backref_ctx.sctx = sctx;
+ 	backref_ctx.cur_objectid = ino;
+ 	backref_ctx.cur_offset = data_offset;
++	backref_ctx.bytenr = disk_byte;
  
--	if (!backref_ctx.found)
-+	if (!backref_ctx.found) {
+ 	/*
+ 	 * The last extent of a file may be too large due to page alignment.
+@@ -1644,19 +1638,20 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	/*
+ 	 * Now collect all backrefs.
+ 	 */
+-	backref_walk_ctx.bytenr = found_key.objectid;
++	backref_walk_ctx.bytenr = disk_byte;
+ 	if (compressed == BTRFS_COMPRESS_NONE)
+-		backref_walk_ctx.extent_item_pos = logical - found_key.objectid;
++		backref_walk_ctx.extent_item_pos = btrfs_file_extent_offset(eb, fi);
+ 	backref_walk_ctx.fs_info = fs_info;
+ 	backref_walk_ctx.cache_lookup = lookup_backref_cache;
+ 	backref_walk_ctx.cache_store = store_backref_cache;
+ 	backref_walk_ctx.indirect_ref_iterator = iterate_backrefs;
++	backref_walk_ctx.check_extent_item = check_extent_item;
+ 	backref_walk_ctx.user_ctx = &backref_ctx;
+ 
+ 	ret = iterate_extent_inodes(&backref_walk_ctx, true, iterate_backrefs,
+ 				    &backref_ctx);
+ 	if (ret < 0)
+-		goto out;
++		return ret;
+ 
+ 	down_read(&fs_info->commit_root_sem);
+ 	if (fs_info->last_reloc_trans > sctx->last_reloc_trans) {
+@@ -1673,8 +1668,7 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 		 * was already reallocated after the relocation.
+ 		 */
+ 		up_read(&fs_info->commit_root_sem);
+-		ret = -ENOENT;
+-		goto out;
++		return -ENOENT;
+ 	}
+ 	up_read(&fs_info->commit_root_sem);
+ 
+@@ -1684,8 +1678,7 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 
+ 	if (!backref_ctx.found) {
  		btrfs_debug(fs_info, "no clones found");
-+		ret = -ENOENT;
-+		goto out;
-+	}
+-		ret = -ENOENT;
+-		goto out;
++		return -ENOENT;
+ 	}
  
  	cur_clone_root = NULL;
- 	for (i = 0; i < sctx->clone_roots_cnt; i++) {
- 		struct clone_root *clone_root = &sctx->clone_roots[i];
+@@ -1720,8 +1713,6 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 		ret = -ENOENT;
+ 	}
  
--		if (clone_root->found_refs == 0)
-+		if (!clone_root->found_ref)
- 			continue;
+-out:
+-	btrfs_free_path(tmp_path);
+ 	return ret;
+ }
  
- 		/*
 -- 
 2.35.1
 
