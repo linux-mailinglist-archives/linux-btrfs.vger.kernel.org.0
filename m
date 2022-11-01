@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D846152D5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 21:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE3D6152D6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 21:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbiKAUM0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Nov 2022 16:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
+        id S230041AbiKAUM2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Nov 2022 16:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbiKAUMZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 16:12:25 -0400
+        with ESMTP id S230026AbiKAUM1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 16:12:27 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC4C1D0F3
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 13:12:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17981DF34
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 13:12:26 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2F1591F38A;
-        Tue,  1 Nov 2022 20:12:23 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5ECA21F8BA;
+        Tue,  1 Nov 2022 20:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1667333543; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1667333545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uPSprNBqKPYGuobEPK51FCDs/0ufdIX9uZd0X47QqIo=;
-        b=WKc9/CVGkW7p6d6fKt3/e1Y+fVyy5kVazGi0AQQGc8H/T3xC04kotE2Zr9T7hvCjonyXxM
-        9FaMVBW2IrdUdhMbKSB87QfzZnaCg+v8l7/etpLx6lJguY1hZSSoYU3DZnKVjvjN4+7B90
-        Fi/TyMTbZuvnlPr7aLfa9FvgwGhAmFk=
+        bh=IiYPq20jDH0W5hmkWYlKEZ7h2NUX2oyYY6Xtdlbkz18=;
+        b=B3a06rCtJgzzGbCiKAYns8CnAPkpQvnj94mh/OE9D0+q/zvFxJ9bBSOWEsItvj2/jXnbN1
+        nefPxiltO6Fn+hAZP8EU8bry1MntfSgiq8FVr7k0PdR7xQsZs0EPo+INEtuY40ZK3MLhVi
+        +fh7a7aZm5HcjR/wHXVwDiB7OXojwKA=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 282A62C141;
-        Tue,  1 Nov 2022 20:12:23 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 585A82C141;
+        Tue,  1 Nov 2022 20:12:25 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 78388DA79D; Tue,  1 Nov 2022 21:12:06 +0100 (CET)
+        id A0A28DA79D; Tue,  1 Nov 2022 21:12:08 +0100 (CET)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 12/40] btrfs: pass btrfs_inode to btrfs_submit_dio_repair_bio
-Date:   Tue,  1 Nov 2022 21:12:06 +0100
-Message-Id: <03a642d47fc5546547f6b6e0774a4f752789e620.1667331828.git.dsterba@suse.com>
+Subject: [PATCH 13/40] btrfs: pass btrfs_inode to submit_one_bio
+Date:   Tue,  1 Nov 2022 21:12:08 +0100
+Message-Id: <b78b3b92f78439fdbe191ec2062ad3f813c1c968.1667331828.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667331828.git.dsterba@suse.com>
 References: <cover.1667331828.git.dsterba@suse.com>
@@ -57,60 +57,48 @@ btrfs_inode.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/btrfs_inode.h | 2 +-
- fs/btrfs/extent_io.c   | 3 ++-
- fs/btrfs/inode.c       | 5 ++---
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ fs/btrfs/extent_io.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 5406a2f817b2..9fe1a11a2eb3 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -414,7 +414,7 @@ static inline void btrfs_inode_split_flags(u64 inode_item_flags,
- void btrfs_submit_data_write_bio(struct btrfs_inode *inode, struct bio *bio, int mirror_num);
- void btrfs_submit_data_read_bio(struct btrfs_inode *inode, struct bio *bio,
- 			int mirror_num, enum btrfs_compression_type compress_type);
--void btrfs_submit_dio_repair_bio(struct inode *inode, struct bio *bio, int mirror_num);
-+void btrfs_submit_dio_repair_bio(struct btrfs_inode *inode, struct bio *bio, int mirror_num);
- blk_status_t btrfs_submit_bio_start(struct btrfs_inode *inode, struct bio *bio);
- blk_status_t btrfs_submit_bio_start_direct_io(struct btrfs_inode *inode,
- 					      struct bio *bio,
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index ac69e5f1605c..bddda397e438 100644
+index bddda397e438..192f604ac7ea 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -864,7 +864,8 @@ int btrfs_repair_one_sector(struct inode *inode, struct btrfs_bio *failed_bbio,
- 		btrfs_submit_data_read_bio(BTRFS_I(inode), repair_bio,
- 					   failrec->this_mirror, 0);
- 	else
--		btrfs_submit_dio_repair_bio(inode, repair_bio, failrec->this_mirror);
-+		btrfs_submit_dio_repair_bio(BTRFS_I(inode), repair_bio,
-+					    failrec->this_mirror);
- 
- 	return BLK_STS_OK;
- }
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 06ae712be423..477d4db2d14e 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7919,15 +7919,14 @@ static void btrfs_dio_private_put(struct btrfs_dio_private *dip)
- 	bio_endio(&dip->bio);
- }
- 
--void btrfs_submit_dio_repair_bio(struct inode *inode, struct bio *bio, int mirror_num)
-+void btrfs_submit_dio_repair_bio(struct btrfs_inode *inode, struct bio *bio, int mirror_num)
+@@ -117,7 +117,7 @@ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
  {
- 	struct btrfs_dio_private *dip = btrfs_bio(bio)->private;
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct bio *bio;
+ 	struct bio_vec *bv;
+-	struct inode *inode;
++	struct btrfs_inode *inode;
+ 	int mirror_num;
  
- 	BUG_ON(bio_op(bio) == REQ_OP_WRITE);
+ 	if (!bio_ctrl->bio)
+@@ -125,7 +125,7 @@ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
  
- 	refcount_inc(&dip->refs);
--	btrfs_submit_bio(fs_info, bio, mirror_num);
-+	btrfs_submit_bio(inode->root->fs_info, bio, mirror_num);
- }
+ 	bio = bio_ctrl->bio;
+ 	bv = bio_first_bvec_all(bio);
+-	inode = bv->bv_page->mapping->host;
++	inode = BTRFS_I(bv->bv_page->mapping->host);
+ 	mirror_num = bio_ctrl->mirror_num;
  
- static blk_status_t btrfs_check_read_dio_bio(struct btrfs_dio_private *dip,
+ 	/* Caller should ensure the bio has at least some range added */
+@@ -133,12 +133,12 @@ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
+ 
+ 	btrfs_bio(bio)->file_offset = page_offset(bv->bv_page) + bv->bv_offset;
+ 
+-	if (!is_data_inode(inode))
+-		btrfs_submit_metadata_bio(BTRFS_I(inode), bio, mirror_num);
++	if (!is_data_inode(&inode->vfs_inode))
++		btrfs_submit_metadata_bio(inode, bio, mirror_num);
+ 	else if (btrfs_op(bio) == BTRFS_MAP_WRITE)
+-		btrfs_submit_data_write_bio(BTRFS_I(inode), bio, mirror_num);
++		btrfs_submit_data_write_bio(inode, bio, mirror_num);
+ 	else
+-		btrfs_submit_data_read_bio(BTRFS_I(inode), bio, mirror_num,
++		btrfs_submit_data_read_bio(inode, bio, mirror_num,
+ 					   bio_ctrl->compress_type);
+ 
+ 	/* The bio is owned by the end_io handler now */
 -- 
 2.37.3
 
