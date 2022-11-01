@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B29614EFA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 17:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E839614EFB
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 17:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbiKAQQK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Nov 2022 12:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
+        id S230291AbiKAQQI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Nov 2022 12:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbiKAQQH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 12:16:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4478C1C90D
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 09:16:04 -0700 (PDT)
+        with ESMTP id S230357AbiKAQQF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 12:16:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBD61C43C
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 09:16:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D56A06118E
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C0DB761668
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B163AC433B5
         for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC322C433C1
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667319363;
-        bh=Qtx23bpKTz2je904upFct8NcI+N14XP9/xcmRzw/M08=;
+        s=k20201202; t=1667319364;
+        bh=3K3P9e8w5JnraVT1Fw84V2xWefAooN0iMB8CHdOJDYw=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Tf/1mNqftqIHbxJ6R4ac+LV10hhrlZdJoYbJMUPJJG5yAbQXem+ds37gY+3dLnS5x
-         dMufFZ/VMDw8cKD0Zb+8HoI0da/J+kpSM5TTKvoMC72EKJBFgT5XpDwG0QEqL34gEb
-         J5xV+JiXYuAFEqlQPDd00q9HJB4+nUaxmNYmxUfZnrRfpxSorJwvQwF53Z1w/I6ZOm
-         GTvyBAjzUMa+uBA8CxvT/eTF3etpMkxiCZ2MCj/NGq8va1r/xsw1/s5JbsO0DgjVXA
-         Bmiz6K2ZxaYOQOaLsMiB5d/A16l/GQHL1XphWYaNglDVEp/pJJqdWRnhqAXeIkAvdK
-         8qmlLnKu2iPhw==
+        b=uTjggoyS60PUZ5NjtCrZ2lAvWjBs5/sI98JX5QHOGaKNWGi2Ko+IswYQABF6rodCb
+         WT3nfG8Y36k5ZCT+fFGcBJBtLC93LJHNW5vtgHvq3+wWgR0pv5llfQ0h4huZc+zOc9
+         7t7lIkRSQEgMtkdiSypuB4qiEHSgZw2S51pjFfE6YqdILhEU/mQccw81MpUGSN+k62
+         Pgh67Bt1HUUefO7kd2x3blcQ3QwbdZuNwSXmPWg0eFalDBbi3oCPxhQD8x3NKsXxdy
+         6DsTMRcai3ITOUGmcMOAwSQ1nB9YvKVH+Yjbwh/L94SlHWah3EzmkfFALN8IvukVQm
+         fIXEg/fq4cbCA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 06/18] btrfs: send: update comment at find_extent_clone()
-Date:   Tue,  1 Nov 2022 16:15:42 +0000
-Message-Id: <b8e7144cc32eb5547ba9a394430f3edd4357c761.1667315100.git.fdmanana@suse.com>
+Subject: [PATCH 07/18] btrfs: send: drop unnecessary backref context field initializations
+Date:   Tue,  1 Nov 2022 16:15:43 +0000
+Message-Id: <1f57dc1e48aa4b4fe4701e72963353d1ac4e4d52.1667315100.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1667315100.git.fdmanana@suse.com>
 References: <cover.1667315100.git.fdmanana@suse.com>
@@ -52,48 +52,58 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We have this unclear comment at find_extent_clone() about extents starting
-at a file offset greater than or equals to the i_size of the inode. It's
-not really informative and it's misleading, since it mentions the author
-found such extents with snapshots and large files.
+At find_extent_clone() we are initializing to zero the 'found_itself' and
+'found' fields of the backref context before we use it but we have already
+initialized the structure to zeroes when we declared it on stack, so it's
+pointless to initialize those fields and they are unnecessarily increasing
+the object text size with two "mov" instructions (x86_64).
 
-Such extents are a result of fallocate with FALLOC_FL_KEEP_SIZE and there
-is no relation to snapshots or large files (all write paths update the
-i_size before inserting a new file extent item). So update the comment to
-be precise about it and why we don't bother looking for clone sources in
-that case.
+Similarly make the 'extent_len' initialization more clear by using an if-
+-then-else instead of a double assignment to it in case the extent's end
+crosses the i_size boundary.
+
+Before this change:
+
+   $ size fs/btrfs/send.o
+      text	   data	    bss	    dec	    hex	filename
+     68694	   4252	     16	  72962	  11d02	fs/btrfs/send.o
+
+After this change:
+
+   $ size fs/btrfs/send.o
+      text	   data	    bss	    dec	    hex	filename
+     68678	   4252	     16	  72946	  11cf2	fs/btrfs/send.o
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ fs/btrfs/send.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 2226296ca691..63f2ac33e85b 100644
+index 63f2ac33e85b..61496d3e1355 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -1365,14 +1365,14 @@ static int find_extent_clone(struct send_ctx *sctx,
- 	int compressed;
- 	u32 i;
+@@ -1432,11 +1432,8 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	}
  
--	if (data_offset >= ino_size) {
--		/*
--		 * There may be extents that lie behind the file's size.
--		 * I at least had this in combination with snapshotting while
--		 * writing large files.
--		 */
-+	/*
-+	 * With fallocate we can get prealloc extents beyond the inode's i_size,
-+	 * so we don't do anything here because clone operations can not clone
-+	 * to a range beyond i_size without increasing the i_size of the
-+	 * destination inode.
-+	 */
-+	if (data_offset >= ino_size)
- 		return 0;
--	}
+ 	backref_ctx.sctx = sctx;
+-	backref_ctx.found = 0;
+ 	backref_ctx.cur_objectid = ino;
+ 	backref_ctx.cur_offset = data_offset;
+-	backref_ctx.found_itself = 0;
+-	backref_ctx.extent_len = num_bytes;
  
- 	fi = btrfs_item_ptr(eb, path->slots[0], struct btrfs_file_extent_item);
- 	extent_type = btrfs_file_extent_type(eb, fi);
+ 	/*
+ 	 * The last extent of a file may be too large due to page alignment.
+@@ -1445,6 +1442,8 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	 */
+ 	if (data_offset + num_bytes >= ino_size)
+ 		backref_ctx.extent_len = ino_size - data_offset;
++	else
++		backref_ctx.extent_len = num_bytes;
+ 
+ 	/*
+ 	 * Now collect all backrefs.
 -- 
 2.35.1
 
