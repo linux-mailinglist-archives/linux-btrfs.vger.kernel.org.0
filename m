@@ -2,57 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99393614543
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 08:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B411614584
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 09:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbiKAHyP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Nov 2022 03:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
+        id S229674AbiKAIP6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Nov 2022 04:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbiKAHyN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 03:54:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0720FF0
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 00:54:12 -0700 (PDT)
+        with ESMTP id S229556AbiKAIP5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 04:15:57 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06578EE0D
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 01:15:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3EA2A61551
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 07:54:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CE2CC433C1
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 07:54:11 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9185EB81BED
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 08:15:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E399FC433C1;
+        Tue,  1 Nov 2022 08:15:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667289251;
-        bh=dEl0lBfBNgIja9aUXm/JKNpmzRQFL7JM/SCTKpQRyQE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dhJWSO345YOyBGphLgIPMMQPCs+o15iet8v1nmkQ/SgnN81USDeuIDQJO4bizBUCs
-         Oh41oA/bx1e1NnMt6yr1rSP+wdvW0xMriet1KV6M7njyPCE2RgItoEGPwhUvN7EZOo
-         tlYoBPTEqYX2OQXvR4c2psYSioNFT292fWYIK2ixEmNnwj6Y17e194hD5418Gvf/ce
-         NW0LZzg7BV0G2XIWhS0Xy4j3qrPAe5SnJ+CyYhkQzlBpKRSWsdieVcJ/+ipk/lDZUd
-         6BCodZaum0VxTpBXvWEtOgvXqfrU8lte34vlzhq9TSH0dzbt8mtRfMBq82Uc0Pds0+
-         xk5Czqei2YJdw==
-Received: by mail-oi1-f172.google.com with SMTP id r76so8628162oie.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 01 Nov 2022 00:54:11 -0700 (PDT)
-X-Gm-Message-State: ACrzQf0mxLm8XZfgBMTRHkre4P8VTygjn/qt9VTU/6wfUJ4mPIsZeTet
-        Vw/3HzfB/pPhoCwvnoVNsOOmekDNdYJGvMR08Ug=
-X-Google-Smtp-Source: AMsMyM4TbJFQYmgkiyqe2Tj6E2gDi3Qq4r51zuN3ZF6aHwrPmq1bkVOCwyMVO5iqVBTJDN3xiY4JUkZ/xrVuW9cwqes=
-X-Received: by 2002:a05:6808:1691:b0:351:48da:62e0 with SMTP id
- bb17-20020a056808169100b0035148da62e0mr9320921oib.98.1667289250695; Tue, 01
- Nov 2022 00:54:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <84cb2eb28538c98cbde50e83a770de476528a4f1.1667215075.git.fdmanana@suse.com>
- <20221101084953.50DF.409509F4@e16-tech.com> <20221101090450.50E3.409509F4@e16-tech.com>
-In-Reply-To: <20221101090450.50E3.409509F4@e16-tech.com>
+        s=k20201202; t=1667290553;
+        bh=3MeC3C26/0oUdO/2KnwfimEkW2nF08x3dve2Cw/PgGk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fYpwVXmNCqs4sh4YaIB0CtLDbhNuvAnn7MtI7kT9RPdfKhx8MnOGn/H3Q59YghojF
+         MnuNyPwR9GWDLsqAQG+NgVZ3nYjvB8vWoDwaGc10Zbi2z1CWHhi9Fr4Kg+R07ajQgu
+         nfdjmAeTmZm2nX1HtlXauYn23N+VaYj43zdX1q6NnZFjvKi1DCmpN/Y3/dWSm+uGeg
+         3Ukoe8YIZmfHTbswwFmhkP2tqdrAJloiPomcBAuVP3kKxSQKqSDeynnO1/8SqgV0p3
+         O1vb8ZJbT3H5SD2+iACc3An6SY5oZiRrHM2M5Q/Y8l4v4xAAU6N5m0FFLX14VXXdXG
+         NuQ/RUC+Q8VPQ==
+Date:   Tue, 1 Nov 2022 08:15:50 +0000
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 1 Nov 2022 07:53:34 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7xZCB3B7kYgXtUTQa0mhFB7i=m_O6tJ425qxyYN_U7aQ@mail.gmail.com>
-Message-ID: <CAL3q7H7xZCB3B7kYgXtUTQa0mhFB7i=m_O6tJ425qxyYN_U7aQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] btrfs: fix lost file sync on direct IO write with
- nowait and dsync iocb
-To:     Wang Yugui <wangyugui@e16-tech.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To:     Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com
+Subject: Re: [PATCH 3/3] btrfs: Fix ulist memory leak in test_multiple_refs()
+Message-ID: <20221101081550.GA3418818@falcondesktop>
+References: <20221101025356.1643836-1-zhangxiaoxu5@huawei.com>
+ <20221101025356.1643836-4-zhangxiaoxu5@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221101025356.1643836-4-zhangxiaoxu5@huawei.com>
 X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,249 +53,219 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 1, 2022 at 1:31 AM Wang Yugui <wangyugui@e16-tech.com> wrote:
->
-> Hi,
->
-> > Hi,
-> >
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > When doing a direct IO write using a iocb with nowait and dsync set, =
-we
-> > > end up not syncing the file once the write completes.
-> > >
-> > > This is because we tell iomap to not call generic_write_sync(), which
-> > > would result in calling btrfs_sync_file(), in order to avoid a deadlo=
-ck
-> > > since iomap can call it while we are holding the inode's lock and
-> > > btrfs_sync_file() needs to acquire the inode's lock. The deadlock hap=
-pens
-> > > only if the write happens synchronously, when iomap_dio_rw() calls
-> > > iomap_dio_complete() before it returns. Instead we do the sync oursel=
-ves
-> > > at btrfs_do_write_iter().
-> > >
-> > > For a nowait write however we can end up not doing the sync ourselves=
- at
-> > > at btrfs_do_write_iter() because the write could have been queued, an=
-d
-> > > therefore we get -EIOCBQUEUED returned from iomap in such case. That =
-makes
-> > > us skip the sync call at btrfs_do_write_iter(), as we don't do it for
-> > > any error returned from btrfs_direct_write(). We can't simply do the =
-call
-> > > even if -EIOCBQUEUED is returned, since that would block the task wai=
-ting
-> > > for IO, both for the data since there are bios still in progress as w=
-ell
-> > > as potentially blocking when joining a log transaction and when synci=
-ng
-> > > the log (writing log trees, super blocks, etc).
-> > >
-> > > So let iomap do the sync call itself and in order to avoid deadlocks =
-for
-> > > the case of synchronous writes (without nowait), use __iomap_dio_rw()=
- and
-> > > have ourselves call iomap_dio_complete() after unlocking the inode.
-> > >
-> > > A test case will later be sent for fstests, after this is fixed in Li=
-nus'
-> > > tree.
-> > >
-> > > Fixes: 51bd9563b678 ("btrfs: fix deadlock due to page faults during d=
-irect IO reads and writes")
-> > > Reported-by: =D0=9C=D0=B0=D1=80=D0=BA =D0=9A=D0=BE=D1=80=D0=B5=D0=BD=
-=D0=B1=D0=B5=D1=80=D0=B3 <socketpair@gmail.com>
-> > > Link: https://lore.kernel.org/linux-btrfs/CAEmTpZGRKbzc16fWPvxbr6AfFs=
-QoLmz-Lcg-7OgJOZDboJ+SGQ@mail.gmail.com/
-> > > CC: stable@vger.kernel.org # 6.0+
-> >
-> > The test script provided by =D0=9C=D0=B0=D1=80=D0=BA =D0=9A=D0=BE=D1=80=
-=D0=B5=D0=BD=D0=B1=D0=B5=D1=80=D0=B3 <socketpair@gmail.com>
-> > show a normal result on 6.1.0-rc3+ with this patch.
-> >
-> > but the test script provided by =D0=9C=D0=B0=D1=80=D0=BA =D0=9A=D0=BE=
-=D1=80=D0=B5=D0=BD=D0=B1=D0=B5=D1=80=D0=B3 show that
-> > there is a problem in 5.15.y too. we need a different fix for 5.15.y?
->
-> a dirty fix will let the test script provided by =D0=9C=D0=B0=D1=80=D0=BA=
- =D0=9A=D0=BE=D1=80=D0=B5=D0=BD=D0=B1=D0=B5
-> show a normal result on 5.15.y. but I don't know whether this dirty fix
-> is right.
->
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index bd05a8f..42b2d20 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -2109,7 +2109,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *=
-iocb,
->
->         btrfs_set_inode_last_sub_trans(inode);
->
-> -       if (num_written > 0)
-> +       if (num_written > 0 || sync)
->                 num_written =3D generic_write_sync(iocb, num_written);
+On Tue, Nov 01, 2022 at 10:53:56AM +0800, Zhang Xiaoxu wrote:
+> There are some meory leak report when do sanity tests:
+> 
+>   unreferenced object 0xffff888296ab40c0 (size 32):
+>     comm "insmod", pid 76176, jiffies 4307414230 (age 309.541s)
+>     hex dump (first 32 bytes):
+>       01 00 00 00 00 00 00 00 90 8a b1 30 81 88 ff ff  ...........0....
+>       90 8a b1 30 81 88 ff ff a0 8a b1 30 81 88 ff ff  ...0.......0....
+>     backtrace:
+>       [<00000000e59989d0>] kmalloc_trace+0x27/0xa0
+>       [<00000000836cc910>] ulist_alloc+0x55/0xe0 [btrfs]
+>       [<00000000eb3781d2>] btrfs_find_all_roots_safe+0x9d/0x1c0 [btrfs]
+>       [<00000000c7fe3cc7>] test_no_shared_qgroup.constprop.0+0x1f2/0x350 [btrfs]
+>       [<00000000f6a6b761>] btrfs_test_qgroups+0x2c8/0x300 [btrfs]
+>       [<0000000047d4f295>] btrfs_run_sanity_tests.cold+0x5c/0xd5 [btrfs]
+>       [<00000000b09fac49>] init_btrfs_fs+0xec/0x154 [btrfs]
+>       [<000000002925cdf3>] do_one_initcall+0x87/0x2a0
+>       [<00000000c5ed267e>] do_init_module+0xdf/0x320
+>       [<000000005f972694>] load_module+0x3006/0x3390
+>       [<0000000070c88d9a>] __do_sys_finit_module+0x113/0x1b0
+>       [<00000000e7029c2b>] do_syscall_64+0x35/0x80
+>       [<000000008ffc1dab>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
+>   unreferenced object 0xffff888130b18a80 (size 64):
+>     comm "insmod", pid 76176, jiffies 4307414230 (age 309.542s)
+>     hex dump (first 32 bytes):
+>       05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>       c8 40 ab 96 82 88 ff ff c8 40 ab 96 82 88 ff ff  .@.......@......
+>     backtrace:
+>       [<00000000e59989d0>] kmalloc_trace+0x27/0xa0
+>       [<00000000de27bc34>] ulist_add_merge.part.0+0x67/0x1f0 [btrfs]
+>       [<00000000fbdf3c21>] find_parent_nodes+0xd49/0x2880 [btrfs]
+>       [<00000000ba4d2155>] btrfs_find_all_roots_safe+0x120/0x1c0 [btrfs]
+>       [<00000000c7fe3cc7>] test_no_shared_qgroup.constprop.0+0x1f2/0x350 [btrfs]
+>       [<00000000f6a6b761>] btrfs_test_qgroups+0x2c8/0x300 [btrfs]
+>       [<0000000047d4f295>] btrfs_run_sanity_tests.cold+0x5c/0xd5 [btrfs]
+>       [<00000000b09fac49>] init_btrfs_fs+0xec/0x154 [btrfs]
+>       [<000000002925cdf3>] do_one_initcall+0x87/0x2a0
+>       [<00000000c5ed267e>] do_init_module+0xdf/0x320
+>       [<000000005f972694>] load_module+0x3006/0x3390
+>       [<0000000070c88d9a>] __do_sys_finit_module+0x113/0x1b0
+>       [<00000000e7029c2b>] do_syscall_64+0x35/0x80
+>       [<000000008ffc1dab>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
+>   unreferenced object 0xffff88812ae83100 (size 32):
+>     comm "insmod", pid 77664, jiffies 4307625383 (age 98.396s)
+>     hex dump (first 32 bytes):
+>       01 00 00 00 00 00 00 00 10 f7 7e 23 81 88 ff ff  ..........~#....
+>       10 f7 7e 23 81 88 ff ff 20 f7 7e 23 81 88 ff ff  ..~#.... .~#....
+>     backtrace:
+>       [<00000000e59989d0>] kmalloc_trace+0x27/0xa0
+>       [<00000000836cc910>] ulist_alloc+0x55/0xe0 [btrfs]
+>       [<00000000eb3781d2>] btrfs_find_all_roots_safe+0x9d/0x1c0 [btrfs]
+>       [<00000000cacfcca2>] test_multiple_refs.constprop.0+0x1e0/0x470 [btrfs]
+>       [<000000008613167f>] btrfs_test_qgroups+0x2da/0x300 [btrfs]
+>       [<0000000047d4f295>] btrfs_run_sanity_tests.cold+0x5c/0xd5 [btrfs]
+>       [<00000000b09fac49>] init_btrfs_fs+0xec/0x154 [btrfs]
+>       [<000000002925cdf3>] do_one_initcall+0x87/0x2a0
+>       [<00000000c5ed267e>] do_init_module+0xdf/0x320
+>       [<000000005f972694>] load_module+0x3006/0x3390
+>       [<0000000070c88d9a>] __do_sys_finit_module+0x113/0x1b0
+>       [<00000000e7029c2b>] do_syscall_64+0x35/0x80
+>       [<000000008ffc1dab>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
+> 
+> Let's free the ulist memory when the no shared qgroup tests finish.
+> 
+> Fixes: 442244c96332 ("btrfs: qgroup: Switch self test to extent-oriented qgroup mechanism.")
+> Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-Nop. If it were that simple, I would have done similar for 6.0, 6.1
-and misc-next.
+There's still one ulist leak missing.
+I actually had a similar patch here that is part of a much larger patchset
+but I hadn't sent it yet. So find the difference:
 
-If we are in a nowait context we shouldn't block, and
-generic_write_sync() will trigger fsync which can
-block for many reasons - one of them is blocking for IO to complete.
+From: Filipe Manana <fdmanana@suse.com>
+Date: Fri, 14 Oct 2022 16:37:10 +0100
+Subject: [PATCH 03/18] btrfs: fix ulist leaks in error paths of qgroup self
+ tests
 
-The call to generic_write_sync() must happen when the bios complete in
-case of async IO.
+In the test_no_shared_qgroup() and test_multiple_refs() qgroup self tests,
+if we fail to add the tree ref, remove the extent item or remove the
+extent ref, we are returning from the test function without freeing the
+"old_roots" ulist that was allocated by the previous calls to
+btrfs_find_all_roots(). Fix that by calling ulist_free() before returning.
 
-What you did will work, since fsync will wait for the ordered extent
-to complete, but it is wrong
-because when we are in nowait context we shouldn't block.
+Fixes: 442244c96332 ("btrfs: qgroup: Switch self test to extent-oriented qgroup mechanism.")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/tests/qgroup-tests.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-Thanks.
+diff --git a/fs/btrfs/tests/qgroup-tests.c b/fs/btrfs/tests/qgroup-tests.c
+index 94b04f10f61c..96a70ce36f79 100644
+--- a/fs/btrfs/tests/qgroup-tests.c
++++ b/fs/btrfs/tests/qgroup-tests.c
+@@ -234,8 +234,10 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
+ 
+ 	ret = insert_normal_tree_ref(root, nodesize, nodesize, 0,
+ 				BTRFS_FS_TREE_OBJECTID);
+-	if (ret)
++	if (ret) {
++		ulist_free(old_roots);
+ 		return ret;
++	}
+ 
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+@@ -268,8 +270,10 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
+ 	}
+ 
+ 	ret = remove_extent_item(root, nodesize, nodesize);
+-	if (ret)
++	if (ret) {
++		ulist_free(old_roots);
+ 		return -EINVAL;
++	}
+ 
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+@@ -331,8 +335,10 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 
+ 	ret = insert_normal_tree_ref(root, nodesize, nodesize, 0,
+ 				BTRFS_FS_TREE_OBJECTID);
+-	if (ret)
++	if (ret) {
++		ulist_free(old_roots);
+ 		return ret;
++	}
+ 
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+@@ -364,8 +370,10 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 
+ 	ret = add_tree_ref(root, nodesize, nodesize, 0,
+ 			BTRFS_FIRST_FREE_OBJECTID);
+-	if (ret)
++	if (ret) {
++		ulist_free(old_roots);
+ 		return ret;
++	}
+ 
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+@@ -403,8 +411,10 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 
+ 	ret = remove_extent_ref(root, nodesize, nodesize, 0,
+ 				BTRFS_FIRST_FREE_OBJECTID);
+-	if (ret)
++	if (ret) {
++		ulist_free(old_roots);
+ 		return ret;
++	}
+ 
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+-- 
+2.35.1
 
->
->         if (sync)
->
-> Best Regards
-> Wang Yugui (wangyugui@e16-tech.com)
-> 2022/11/01
->
-> >
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > ---
-> > >  fs/btrfs/btrfs_inode.h |  5 ++++-
-> > >  fs/btrfs/file.c        | 22 ++++++++++++++++------
-> > >  fs/btrfs/inode.c       | 14 +++++++++++---
-> > >  3 files changed, 31 insertions(+), 10 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-> > > index 79a9f06c2434..d21c30bf7053 100644
-> > > --- a/fs/btrfs/btrfs_inode.h
-> > > +++ b/fs/btrfs/btrfs_inode.h
-> > > @@ -526,7 +526,10 @@ ssize_t btrfs_encoded_read(struct kiocb *iocb, s=
-truct iov_iter *iter,
-> > >  ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *=
-from,
-> > >                            const struct btrfs_ioctl_encoded_io_args *=
-encoded);
-> > >
-> > > -ssize_t btrfs_dio_rw(struct kiocb *iocb, struct iov_iter *iter, size=
-_t done_before);
-> > > +ssize_t btrfs_dio_read(struct kiocb *iocb, struct iov_iter *iter,
-> > > +                  size_t done_before);
-> > > +struct iomap_dio *btrfs_dio_write(struct kiocb *iocb, struct iov_ite=
-r *iter,
-> > > +                             size_t done_before);
-> > >
-> > >  extern const struct dentry_operations btrfs_dentry_operations;
-> > >
-> > > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> > > index 838b3c0ea329..6e2889bc73d8 100644
-> > > --- a/fs/btrfs/file.c
-> > > +++ b/fs/btrfs/file.c
-> > > @@ -1453,6 +1453,7 @@ static ssize_t btrfs_direct_write(struct kiocb =
-*iocb, struct iov_iter *from)
-> > >     loff_t endbyte;
-> > >     ssize_t err;
-> > >     unsigned int ilock_flags =3D 0;
-> > > +   struct iomap_dio *dio;
-> > >
-> > >     if (iocb->ki_flags & IOCB_NOWAIT)
-> > >             ilock_flags |=3D BTRFS_ILOCK_TRY;
-> > > @@ -1513,11 +1514,22 @@ static ssize_t btrfs_direct_write(struct kioc=
-b *iocb, struct iov_iter *from)
-> > >      * So here we disable page faults in the iov_iter and then retry =
-if we
-> > >      * got -EFAULT, faulting in the pages before the retry.
-> > >      */
-> > > -again:
-> > >     from->nofault =3D true;
-> > > -   err =3D btrfs_dio_rw(iocb, from, written);
-> > > +   dio =3D btrfs_dio_write(iocb, from, written);
-> > >     from->nofault =3D false;
-> > >
-> > > +   /*
-> > > +    * iomap_dio_complete() will call btrfs_sync_file() if we have a =
-dsync
-> > > +    * iocb, and that needs to lock the inode. So unlock it before ca=
-lling
-> > > +    * iomap_dio_complete() to avoid a deadlock.
-> > > +    */
-> > > +   btrfs_inode_unlock(inode, ilock_flags);
-> > > +
-> > > +   if (IS_ERR_OR_NULL(dio))
-> > > +           err =3D PTR_ERR_OR_ZERO(dio);
-> > > +   else
-> > > +           err =3D iomap_dio_complete(dio);
-> > > +
-> > >     /* No increment (+=3D) because iomap returns a cumulative value. =
-*/
-> > >     if (err > 0)
-> > >             written =3D err;
-> > > @@ -1543,12 +1555,10 @@ static ssize_t btrfs_direct_write(struct kioc=
-b *iocb, struct iov_iter *from)
-> > >             } else {
-> > >                     fault_in_iov_iter_readable(from, left);
-> > >                     prev_left =3D left;
-> > > -                   goto again;
-> > > +                   goto relock;
-> > >             }
-> > >     }
-> > >
-> > > -   btrfs_inode_unlock(inode, ilock_flags);
-> > > -
-> > >     /*
-> > >      * If 'err' is -ENOTBLK or we have not written all data, then it =
-means
-> > >      * we must fallback to buffered IO.
-> > > @@ -3752,7 +3762,7 @@ static ssize_t btrfs_direct_read(struct kiocb *=
-iocb, struct iov_iter *to)
-> > >      */
-> > >     pagefault_disable();
-> > >     to->nofault =3D true;
-> > > -   ret =3D btrfs_dio_rw(iocb, to, read);
-> > > +   ret =3D btrfs_dio_read(iocb, to, read);
-> > >     to->nofault =3D false;
-> > >     pagefault_enable();
-> > >
-> > > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > > index fd26282edace..b1e7bfd5f525 100644
-> > > --- a/fs/btrfs/inode.c
-> > > +++ b/fs/btrfs/inode.c
-> > > @@ -8176,13 +8176,21 @@ static const struct iomap_dio_ops btrfs_dio_o=
-ps =3D {
-> > >     .bio_set                =3D &btrfs_dio_bioset,
-> > >  };
-> > >
-> > > -ssize_t btrfs_dio_rw(struct kiocb *iocb, struct iov_iter *iter, size=
-_t done_before)
-> > > +ssize_t btrfs_dio_read(struct kiocb *iocb, struct iov_iter *iter, si=
-ze_t done_before)
-> > >  {
-> > >     struct btrfs_dio_data data;
-> > >
-> > >     return iomap_dio_rw(iocb, iter, &btrfs_dio_iomap_ops, &btrfs_dio_=
-ops,
-> > > -                       IOMAP_DIO_PARTIAL | IOMAP_DIO_NOSYNC,
-> > > -                       &data, done_before);
-> > > +                       IOMAP_DIO_PARTIAL, &data, done_before);
-> > > +}
-> > > +
-> > > +struct iomap_dio *btrfs_dio_write(struct kiocb *iocb, struct iov_ite=
-r *iter,
-> > > +                             size_t done_before)
-> > > +{
-> > > +   struct btrfs_dio_data data;
-> > > +
-> > > +   return __iomap_dio_rw(iocb, iter, &btrfs_dio_iomap_ops, &btrfs_di=
-o_ops,
-> > > +                       IOMAP_DIO_PARTIAL, &data, done_before);
-> > >  }
-> > >
-> > >  static int btrfs_fiemap(struct inode *inode, struct fiemap_extent_in=
-fo *fieinfo,
-> > > --
-> > > 2.35.1
-> >
->
->
+
+
+> ---
+>  fs/btrfs/tests/qgroup-tests.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/tests/qgroup-tests.c b/fs/btrfs/tests/qgroup-tests.c
+> index 4172bef5b4a1..043b139cfb8c 100644
+> --- a/fs/btrfs/tests/qgroup-tests.c
+> +++ b/fs/btrfs/tests/qgroup-tests.c
+> @@ -266,8 +266,10 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
+>  	}
+>  
+>  	ret = remove_extent_item(root, nodesize, nodesize);
+> -	if (ret)
+> +	if (ret) {
+> +		ulist_free(old_roots);
+>  		return -EINVAL;
+> +	}
+>  
+>  	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+>  	if (ret) {
+> @@ -329,8 +331,10 @@ static int test_multiple_refs(struct btrfs_root *root,
+>  
+>  	ret = insert_normal_tree_ref(root, nodesize, nodesize, 0,
+>  				BTRFS_FS_TREE_OBJECTID);
+> -	if (ret)
+> +	if (ret) {
+> +		ulist_free(old_roots);
+>  		return ret;
+> +	}
+>  
+>  	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+>  	if (ret) {
+> @@ -365,8 +369,10 @@ static int test_multiple_refs(struct btrfs_root *root,
+>  
+>  	ret = add_tree_ref(root, nodesize, nodesize, 0,
+>  			BTRFS_FIRST_FREE_OBJECTID);
+> -	if (ret)
+> +	if (ret) {
+> +		ulist_free(old_roots);
+>  		return ret;
+> +	}
+>  
+>  	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+>  	if (ret) {
+> @@ -407,8 +413,10 @@ static int test_multiple_refs(struct btrfs_root *root,
+>  
+>  	ret = remove_extent_ref(root, nodesize, nodesize, 0,
+>  				BTRFS_FIRST_FREE_OBJECTID);
+> -	if (ret)
+> +	if (ret) {
+> +		ulist_free(old_roots);
+>  		return ret;
+> +	}
+>  
+>  	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+>  	if (ret) {
+> -- 
+> 2.31.1
+> 
