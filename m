@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B376152DC
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 21:12:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D39D6152E0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 21:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbiKAUMk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Nov 2022 16:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
+        id S230063AbiKAUMn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Nov 2022 16:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbiKAUMe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 16:12:34 -0400
+        with ESMTP id S229767AbiKAUMg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 16:12:36 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CDD1D667
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 13:12:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A4F1CB09
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 13:12:35 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C85551F8BA;
-        Tue,  1 Nov 2022 20:12:31 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id E82DB1F8C2;
+        Tue,  1 Nov 2022 20:12:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1667333551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1667333553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7AU94Dru1WtanFkrgjk9BPj4OLQ6Jao7C3qN7QOtL8k=;
-        b=U1lMAyXFxUD/t+k74cVp6SHv55hO+JqbhV/FTNFIKb5JQ9uJZns6mpRxBYZUKbksc/zace
-        bZrwO7x+O+FnegoW+F70EaXhuUJZv3usvgDvRWfq2MkCP7HXNLem9RM/4Ty/WquxYA85jC
-        yfkLom5iyz0Tpp0e0BvMQQLRHf94DoI=
+        bh=THprjREbCPirP4Q8sHT1VynKMkVwc4tL7bZhzaE6DLA=;
+        b=ahc6vgrlmsRrWIlgcCts3sbKUxhQtSjUeToKvgOjTe89DJhNFa4qU/zuzKxjTKojjkBf4J
+        zkmR5PJ9CeVN+76ezyejg3Y9XZn+MPIhSZf8uy1Zp+eJFhit0CAvJaboq+0/FxRV/fF9Dt
+        hXEVeqxRszQyJQAEjCj98H5nHxF/Jvk=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id C217D2C141;
-        Tue,  1 Nov 2022 20:12:31 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id E13812C141;
+        Tue,  1 Nov 2022 20:12:33 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 13A55DA79D; Tue,  1 Nov 2022 21:12:15 +0100 (CET)
+        id 3BF62DA79D; Tue,  1 Nov 2022 21:12:17 +0100 (CET)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 16/40] btrfs: pass btrfs_inode to btrfs_submit_dio_bio
-Date:   Tue,  1 Nov 2022 21:12:15 +0100
-Message-Id: <3090019ccac6b91244281756ab5d58ca183ada17.1667331828.git.dsterba@suse.com>
+Subject: [PATCH 17/40] btrfs: pass btrfs_inode to btrfs_truncate
+Date:   Tue,  1 Nov 2022 21:12:17 +0100
+Message-Id: <9d803e20f54e884249f546a3b1037d77d25263fd.1667331828.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667331828.git.dsterba@suse.com>
 References: <cover.1667331828.git.dsterba@suse.com>
@@ -57,61 +57,140 @@ btrfs_inode.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/inode.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ fs/btrfs/inode.c | 41 ++++++++++++++++++++---------------------
+ 1 file changed, 20 insertions(+), 21 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 652335c0c930..dbe55974eb82 100644
+index dbe55974eb82..b5601d280ef9 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -7994,10 +7994,10 @@ static void btrfs_end_dio_bio(struct btrfs_bio *bbio)
- 	btrfs_dio_private_put(dip);
+@@ -124,7 +124,7 @@ static const struct file_operations btrfs_dir_file_operations;
+ static struct kmem_cache *btrfs_inode_cachep;
+ 
+ static int btrfs_setsize(struct inode *inode, struct iattr *attr);
+-static int btrfs_truncate(struct inode *inode, bool skip_writeback);
++static int btrfs_truncate(struct btrfs_inode *inode, bool skip_writeback);
+ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 				   struct page *locked_page,
+ 				   u64 start, u64 end, int *page_started,
+@@ -5269,7 +5269,7 @@ static int btrfs_setsize(struct inode *inode, struct iattr *attr)
+ 
+ 		inode_dio_wait(inode);
+ 
+-		ret = btrfs_truncate(inode, newsize == oldsize);
++		ret = btrfs_truncate(BTRFS_I(inode), newsize == oldsize);
+ 		if (ret && inode->i_nlink) {
+ 			int err;
+ 
+@@ -8631,16 +8631,16 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 	return ret;
  }
  
--static void btrfs_submit_dio_bio(struct bio *bio, struct inode *inode,
-+static void btrfs_submit_dio_bio(struct bio *bio, struct btrfs_inode *inode,
- 				 u64 file_offset, int async_submit)
+-static int btrfs_truncate(struct inode *inode, bool skip_writeback)
++static int btrfs_truncate(struct btrfs_inode *inode, bool skip_writeback)
  {
+ 	struct btrfs_truncate_control control = {
+-		.inode = BTRFS_I(inode),
+-		.ino = btrfs_ino(BTRFS_I(inode)),
++		.inode = inode,
++		.ino = btrfs_ino(inode),
+ 		.min_type = BTRFS_EXTENT_DATA_KEY,
+ 		.clear_extent_range = true,
+ 	};
 -	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_dio_private *dip = btrfs_bio(bio)->private;
- 	blk_status_t ret;
+-	struct btrfs_root *root = BTRFS_I(inode)->root;
++	struct btrfs_root *root = inode->root;
++	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct btrfs_block_rsv *rsv;
+ 	int ret;
+ 	struct btrfs_trans_handle *trans;
+@@ -8648,7 +8648,8 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
+ 	u64 min_size = btrfs_calc_metadata_size(fs_info, 1);
  
-@@ -8005,13 +8005,13 @@ static void btrfs_submit_dio_bio(struct bio *bio, struct inode *inode,
- 	if (btrfs_op(bio) == BTRFS_MAP_READ)
- 		btrfs_bio(bio)->iter = bio->bi_iter;
+ 	if (!skip_writeback) {
+-		ret = btrfs_wait_ordered_range(inode, inode->i_size & (~mask),
++		ret = btrfs_wait_ordered_range(&inode->vfs_inode,
++					       inode->vfs_inode.i_size & (~mask),
+ 					       (u64)-1);
+ 		if (ret)
+ 			return ret;
+@@ -8707,34 +8708,32 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
  
--	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
-+	if (inode->flags & BTRFS_INODE_NODATASUM)
- 		goto map;
+ 	while (1) {
+ 		struct extent_state *cached_state = NULL;
+-		const u64 new_size = inode->i_size;
++		const u64 new_size = inode->vfs_inode.i_size;
+ 		const u64 lock_start = ALIGN_DOWN(new_size, fs_info->sectorsize);
  
- 	if (btrfs_op(bio) == BTRFS_MAP_WRITE) {
- 		/* Check btrfs_submit_data_write_bio() for async submit rules */
--		if (async_submit && !atomic_read(&BTRFS_I(inode)->sync_writers) &&
--		    btrfs_wq_submit_bio(BTRFS_I(inode), bio, 0, file_offset,
-+		if (async_submit && !atomic_read(&inode->sync_writers) &&
-+		    btrfs_wq_submit_bio(inode, bio, 0, file_offset,
- 					WQ_SUBMIT_DATA_DIO))
- 			return;
- 
-@@ -8019,7 +8019,7 @@ static void btrfs_submit_dio_bio(struct bio *bio, struct inode *inode,
- 		 * If we aren't doing async submit, calculate the csum of the
- 		 * bio now.
+ 		control.new_size = new_size;
+-		lock_extent(&BTRFS_I(inode)->io_tree, lock_start, (u64)-1,
+-				 &cached_state);
++		lock_extent(&inode->io_tree, lock_start, (u64)-1, &cached_state);
+ 		/*
+ 		 * We want to drop from the next block forward in case this new
+ 		 * size is not block aligned since we will be keeping the last
+ 		 * block of the extent just the way it is.
  		 */
--		ret = btrfs_csum_one_bio(BTRFS_I(inode), bio, file_offset, false);
-+		ret = btrfs_csum_one_bio(inode, bio, file_offset, false);
- 		if (ret) {
- 			btrfs_bio_end_io(btrfs_bio(bio), ret);
- 			return;
-@@ -8141,7 +8141,7 @@ static void btrfs_submit_direct(const struct iomap_iter *iter,
- 				async_submit = 1;
+-		btrfs_drop_extent_map_range(BTRFS_I(inode),
++		btrfs_drop_extent_map_range(inode,
+ 					    ALIGN(new_size, fs_info->sectorsize),
+ 					    (u64)-1, false);
+ 
+ 		ret = btrfs_truncate_inode_items(trans, root, &control);
+ 
+-		inode_sub_bytes(inode, control.sub_bytes);
+-		btrfs_inode_safe_disk_i_size_write(BTRFS_I(inode), control.last_size);
++		inode_sub_bytes(&inode->vfs_inode, control.sub_bytes);
++		btrfs_inode_safe_disk_i_size_write(inode, control.last_size);
+ 
+-		unlock_extent(&BTRFS_I(inode)->io_tree, lock_start, (u64)-1,
+-			      &cached_state);
++		unlock_extent(&inode->io_tree, lock_start, (u64)-1, &cached_state);
+ 
+ 		trans->block_rsv = &fs_info->trans_block_rsv;
+ 		if (ret != -ENOSPC && ret != -EAGAIN)
+ 			break;
+ 
+-		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
++		ret = btrfs_update_inode(trans, root, inode);
+ 		if (ret)
+ 			break;
+ 
+@@ -8765,7 +8764,7 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
+ 		btrfs_end_transaction(trans);
+ 		btrfs_btree_balance_dirty(fs_info);
+ 
+-		ret = btrfs_truncate_block(BTRFS_I(inode), inode->i_size, 0, 0);
++		ret = btrfs_truncate_block(inode, inode->vfs_inode.i_size, 0, 0);
+ 		if (ret)
+ 			goto out;
+ 		trans = btrfs_start_transaction(root, 1);
+@@ -8773,14 +8772,14 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
+ 			ret = PTR_ERR(trans);
+ 			goto out;
  		}
+-		btrfs_inode_safe_disk_i_size_write(BTRFS_I(inode), 0);
++		btrfs_inode_safe_disk_i_size_write(inode, 0);
+ 	}
  
--		btrfs_submit_dio_bio(bio, inode, file_offset, async_submit);
-+		btrfs_submit_dio_bio(bio, BTRFS_I(inode), file_offset, async_submit);
+ 	if (trans) {
+ 		int ret2;
  
- 		dio_data->submitted += clone_len;
- 		clone_offset += clone_len;
+ 		trans->block_rsv = &fs_info->trans_block_rsv;
+-		ret2 = btrfs_update_inode(trans, root, BTRFS_I(inode));
++		ret2 = btrfs_update_inode(trans, root, inode);
+ 		if (ret2 && !ret)
+ 			ret = ret2;
+ 
+@@ -8806,7 +8805,7 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
+ 	 * extents beyond i_size to drop.
+ 	 */
+ 	if (control.extents_found > 0)
+-		btrfs_set_inode_full_sync(BTRFS_I(inode));
++		btrfs_set_inode_full_sync(inode);
+ 
+ 	return ret;
+ }
 -- 
 2.37.3
 
