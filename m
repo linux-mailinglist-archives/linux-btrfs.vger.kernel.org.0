@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B06C614EF8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 17:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B33EE614F00
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 17:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbiKAQQG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Nov 2022 12:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        id S230393AbiKAQQJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Nov 2022 12:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbiKAQQD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 12:16:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D001C43C
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 09:16:02 -0700 (PDT)
+        with ESMTP id S230364AbiKAQQH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 12:16:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E4E1C90E
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 09:16:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E6B36118E
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F28E3611DA
         for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D89AC433B5
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6D33C4347C
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667319361;
-        bh=XVNtSnZhdJyYdAQWZZa0Oaxass+PiA9YX0acKMDKj7U=;
+        s=k20201202; t=1667319362;
+        bh=5ood/zz0uWAJhNxB/ehvZP6xcqECuC8Jj+qtE+otfaU=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=AfiV6OLFKsktuiADrAsYVizM54DEMjXpnK63sKSKa9/bSvGg4dONsqHGjPqG+cW97
-         sWMQMefCe7+M8oQUxQS7Sy6tZfa8OCwlYQgZSXD12dXlBI8RiwhtbakGZGSfHNkFn+
-         CmlMD+K4KsY7nD9Rc04v7/uGEq12jf0bsBKxztwIR5TYl0IBjxHZizq1MeR4BOonzI
-         /PB8hatmczEl1S7iMo81IJZHDk2yH90u1Y7m34eHMQu6Jbb9TSsnMc3IigJMJiKxi8
-         B5jHjn7qoL74S2Uf7S5kUgSFQCoFIwogFDGDt5CwFSe2l0UFWpOsyMBv6XxaXAnqL/
-         YldgJldpoRQbg==
+        b=O9OxuyxuYj14+vH2raAKOdy1BwnRmIKfUlT3HMISTaHhJl9v20H51H7RdfTq+XS5/
+         6Az9GgjNX1a0mNaHUe4rG3iox48IjYIhEHRx6acsZnGm6y4j70YCCsu+cI08NzrzeL
+         XnMIYrAwsBnsEXhYjl/xXtdDQreLjOzGWr4oWZ1bxfhmk9cnIy/d2E6JDDQ0vfTp44
+         60d7cqNFEqkWiwXPE/sQBQireP8VvCx7Xb79Q7lMLC/SS2moTq0IRo981BZrnuqs+u
+         WOHg4a4sXT4jq/zxzNlSuZAkocOw6Bn9S/6GIMyWLK7Xt9Mrc8f+/LUHqUqXSULDqG
+         1wL5s0IsGAEyw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 04/18] btrfs: remove pointless and double ulist frees in error paths of qgroup tests
-Date:   Tue,  1 Nov 2022 16:15:40 +0000
-Message-Id: <7ceae212eaf5e9076153ae79914ab11d495164ad.1667315100.git.fdmanana@suse.com>
+Subject: [PATCH 05/18] btrfs: send: avoid unnecessary path allocations when finding extent clone
+Date:   Tue,  1 Nov 2022 16:15:41 +0000
+Message-Id: <8a45ac7ffef6caedbbee1a22bdbe1c7049091caa.1667315100.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1667315100.git.fdmanana@suse.com>
 References: <cover.1667315100.git.fdmanana@suse.com>
@@ -52,124 +52,78 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Several places in the qgroup self tests follow the pattern of freeing the
-ulist pointer they passed to btrfs_find_all_roots() if the call to that
-function returned an error. That is pointless because that function always
-frees the ulist in case it returns an error.
-
-Also In some places like at test_multiple_refs(), after a call to
-btrfs_qgroup_account_extent() we also leave "old_roots" and "new_roots"
-pointing to ulists that were freed, because btrfs_qgroup_account_extent()
-has freed those ulists, and if after that the next call to
-btrfs_find_all_roots() fails, we call ulist_free() on the "old_roots"
-ulist again, resulting in a double free.
-
-So remove those calls to reduce the code size and avoid double ulist
-free in case of an error.
+When looking for an extent clone, at find_extent_clone(), we start by
+allocating a path and then check for cases where we can't have clones
+and exit immediately in those cases. It's a waste of time to allocate
+the path before those cases, so reorder the logic so that we check for
+those cases before allocating the path.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tests/qgroup-tests.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ fs/btrfs/send.c | 37 ++++++++++++++++---------------------
+ 1 file changed, 16 insertions(+), 21 deletions(-)
 
-diff --git a/fs/btrfs/tests/qgroup-tests.c b/fs/btrfs/tests/qgroup-tests.c
-index 96a70ce36f79..65b65d55d1f6 100644
---- a/fs/btrfs/tests/qgroup-tests.c
-+++ b/fs/btrfs/tests/qgroup-tests.c
-@@ -227,7 +227,6 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
- 	 */
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
- 	if (ret) {
--		ulist_free(old_roots);
- 		test_err("couldn't find old roots: %d", ret);
- 		return ret;
- 	}
-@@ -242,7 +241,6 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
- 	if (ret) {
- 		ulist_free(old_roots);
--		ulist_free(new_roots);
- 		test_err("couldn't find old roots: %d", ret);
- 		return ret;
- 	}
-@@ -254,17 +252,18 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
- 		return ret;
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 50063ac83830..2226296ca691 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -1365,40 +1365,35 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	int compressed;
+ 	u32 i;
+ 
+-	tmp_path = alloc_path_for_send();
+-	if (!tmp_path)
+-		return -ENOMEM;
+-
+-	/* We only use this path under the commit sem */
+-	tmp_path->need_commit_sem = 0;
+-
+ 	if (data_offset >= ino_size) {
+ 		/*
+ 		 * There may be extents that lie behind the file's size.
+ 		 * I at least had this in combination with snapshotting while
+ 		 * writing large files.
+ 		 */
+-		ret = 0;
+-		goto out;
++		return 0;
  	}
  
-+	/* btrfs_qgroup_account_extent() always frees the ulists passed to it. */
-+	old_roots = NULL;
-+	new_roots = NULL;
+-	fi = btrfs_item_ptr(eb, path->slots[0],
+-			struct btrfs_file_extent_item);
++	fi = btrfs_item_ptr(eb, path->slots[0], struct btrfs_file_extent_item);
+ 	extent_type = btrfs_file_extent_type(eb, fi);
+-	if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
+-		ret = -ENOENT;
+-		goto out;
+-	}
+-	compressed = btrfs_file_extent_compression(eb, fi);
++	if (extent_type == BTRFS_FILE_EXTENT_INLINE)
++		return -ENOENT;
+ 
+-	num_bytes = btrfs_file_extent_num_bytes(eb, fi);
+ 	disk_byte = btrfs_file_extent_disk_bytenr(eb, fi);
+-	if (disk_byte == 0) {
+-		ret = -ENOENT;
+-		goto out;
+-	}
++	if (disk_byte == 0)
++		return -ENOENT;
 +
- 	if (btrfs_verify_qgroup_counts(fs_info, BTRFS_FS_TREE_OBJECTID,
- 				nodesize, nodesize)) {
- 		test_err("qgroup counts didn't match expected values");
- 		return -EINVAL;
- 	}
--	old_roots = NULL;
--	new_roots = NULL;
++	compressed = btrfs_file_extent_compression(eb, fi);
++	num_bytes = btrfs_file_extent_num_bytes(eb, fi);
+ 	logical = disk_byte + btrfs_file_extent_offset(eb, fi);
  
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
- 	if (ret) {
--		ulist_free(old_roots);
- 		test_err("couldn't find old roots: %d", ret);
- 		return ret;
- 	}
-@@ -278,7 +277,6 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
- 	if (ret) {
- 		ulist_free(old_roots);
--		ulist_free(new_roots);
- 		test_err("couldn't find old roots: %d", ret);
- 		return ret;
- 	}
-@@ -328,7 +326,6 @@ static int test_multiple_refs(struct btrfs_root *root,
- 
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
- 	if (ret) {
--		ulist_free(old_roots);
- 		test_err("couldn't find old roots: %d", ret);
- 		return ret;
- 	}
-@@ -343,7 +340,6 @@ static int test_multiple_refs(struct btrfs_root *root,
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
- 	if (ret) {
- 		ulist_free(old_roots);
--		ulist_free(new_roots);
- 		test_err("couldn't find old roots: %d", ret);
- 		return ret;
- 	}
-@@ -363,7 +359,6 @@ static int test_multiple_refs(struct btrfs_root *root,
- 
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
- 	if (ret) {
--		ulist_free(old_roots);
- 		test_err("couldn't find old roots: %d", ret);
- 		return ret;
- 	}
-@@ -378,7 +373,6 @@ static int test_multiple_refs(struct btrfs_root *root,
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
- 	if (ret) {
- 		ulist_free(old_roots);
--		ulist_free(new_roots);
- 		test_err("couldn't find old roots: %d", ret);
- 		return ret;
- 	}
-@@ -404,7 +398,6 @@ static int test_multiple_refs(struct btrfs_root *root,
- 
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
- 	if (ret) {
--		ulist_free(old_roots);
- 		test_err("couldn't find old roots: %d", ret);
- 		return ret;
- 	}
-@@ -419,7 +412,6 @@ static int test_multiple_refs(struct btrfs_root *root,
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
- 	if (ret) {
- 		ulist_free(old_roots);
--		ulist_free(new_roots);
- 		test_err("couldn't find old roots: %d", ret);
- 		return ret;
- 	}
++	tmp_path = alloc_path_for_send();
++	if (!tmp_path)
++		return -ENOMEM;
++
++	/* We only use this path under the commit sem */
++	tmp_path->need_commit_sem = 0;
++
+ 	down_read(&fs_info->commit_root_sem);
+ 	ret = extent_from_logical(fs_info, disk_byte, tmp_path,
+ 				  &found_key, &flags);
 -- 
 2.35.1
 
