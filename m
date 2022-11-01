@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 619076152D9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 21:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B376152DC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 21:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbiKAUMi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Nov 2022 16:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52386 "EHLO
+        id S229475AbiKAUMk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Nov 2022 16:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbiKAUMe (ORCPT
+        with ESMTP id S230048AbiKAUMe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 16:12:34 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDA41E72A
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 13:12:30 -0700 (PDT)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CDD1D667
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 13:12:33 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 9D4821F38A;
-        Tue,  1 Nov 2022 20:12:29 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id C85551F8BA;
+        Tue,  1 Nov 2022 20:12:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1667333549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1667333551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5cKYeRdlda9hMzZq+Td6k7w2QBTpZuYSpc/jqW/MxI0=;
-        b=A+IklsXGxbE0mWAO4Zx79np7yUt3m5OxV/FOqqosbZpWiaPo3DHFG7MKXijYsQz31FOnlz
-        Ze5wJkrm0b9FLWaIuSKxB5IdqSlvbGjJngu4qQRX9U4ybbYX4PV4eokktmhcfZSFvpzj5z
-        cyPcRDiKgkk1nARfo/fVFHv3AROFIX0=
+        bh=7AU94Dru1WtanFkrgjk9BPj4OLQ6Jao7C3qN7QOtL8k=;
+        b=U1lMAyXFxUD/t+k74cVp6SHv55hO+JqbhV/FTNFIKb5JQ9uJZns6mpRxBYZUKbksc/zace
+        bZrwO7x+O+FnegoW+F70EaXhuUJZv3usvgDvRWfq2MkCP7HXNLem9RM/4Ty/WquxYA85jC
+        yfkLom5iyz0Tpp0e0BvMQQLRHf94DoI=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 96D632C141;
-        Tue,  1 Nov 2022 20:12:29 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id C217D2C141;
+        Tue,  1 Nov 2022 20:12:31 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E761FDA79D; Tue,  1 Nov 2022 21:12:12 +0100 (CET)
+        id 13A55DA79D; Tue,  1 Nov 2022 21:12:15 +0100 (CET)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 15/40] btrfs: switch btrfs_dio_private::inode to btrfs_inode
-Date:   Tue,  1 Nov 2022 21:12:12 +0100
-Message-Id: <9f1388053464c8739ab4e4455ce0e745e6db5b22.1667331828.git.dsterba@suse.com>
+Subject: [PATCH 16/40] btrfs: pass btrfs_inode to btrfs_submit_dio_bio
+Date:   Tue,  1 Nov 2022 21:12:15 +0100
+Message-Id: <3090019ccac6b91244281756ab5d58ca183ada17.1667331828.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <cover.1667331828.git.dsterba@suse.com>
 References: <cover.1667331828.git.dsterba@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,80 +52,66 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The btrfs_dio_private structure is for internal interfaces so we should
-use the btrfs_inode.
+The function is for internal interfaces so we should use the
+btrfs_inode.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/inode.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ fs/btrfs/inode.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 594fade31002..652335c0c930 100644
+index 652335c0c930..dbe55974eb82 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -84,7 +84,7 @@ struct btrfs_dio_data {
- };
- 
- struct btrfs_dio_private {
--	struct inode *inode;
-+	struct btrfs_inode *inode;
- 
- 	/*
- 	 * Since DIO can use anonymous page, we cannot use page_offset() to
-@@ -7906,11 +7906,11 @@ static void btrfs_dio_private_put(struct btrfs_dio_private *dip)
- 		return;
- 
- 	if (btrfs_op(&dip->bio) == BTRFS_MAP_WRITE) {
--		btrfs_mark_ordered_io_finished(BTRFS_I(dip->inode), NULL,
-+		btrfs_mark_ordered_io_finished(dip->inode, NULL,
- 					       dip->file_offset, dip->bytes,
- 					       !dip->bio.bi_status);
- 	} else {
--		unlock_extent(&BTRFS_I(dip->inode)->io_tree,
-+		unlock_extent(&dip->inode->io_tree,
- 			      dip->file_offset,
- 			      dip->file_offset + dip->bytes - 1, NULL);
- 	}
-@@ -7933,7 +7933,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct btrfs_dio_private *dip,
- 					     struct btrfs_bio *bbio,
- 					     const bool uptodate)
- {
--	struct inode *inode = dip->inode;
-+	struct inode *inode = &dip->inode->vfs_inode;
- 	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
- 	const bool csum = !(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM);
- 	blk_status_t err = BLK_STS_OK;
-@@ -7976,9 +7976,9 @@ static void btrfs_end_dio_bio(struct btrfs_bio *bbio)
- 	blk_status_t err = bio->bi_status;
- 
- 	if (err)
--		btrfs_warn(BTRFS_I(dip->inode)->root->fs_info,
-+		btrfs_warn(dip->inode->root->fs_info,
- 			   "direct IO failed ino %llu rw %d,%u sector %#Lx len %u err no %d",
--			   btrfs_ino(BTRFS_I(dip->inode)), bio_op(bio),
-+			   btrfs_ino(dip->inode), bio_op(bio),
- 			   bio->bi_opf, bio->bi_iter.bi_sector,
- 			   bio->bi_iter.bi_size, err);
- 
-@@ -7988,7 +7988,7 @@ static void btrfs_end_dio_bio(struct btrfs_bio *bbio)
- 	if (err)
- 		dip->bio.bi_status = err;
- 
--	btrfs_record_physical_zoned(dip->inode, bbio->file_offset, bio);
-+	btrfs_record_physical_zoned(&dip->inode->vfs_inode, bbio->file_offset, bio);
- 
- 	bio_put(bio);
+@@ -7994,10 +7994,10 @@ static void btrfs_end_dio_bio(struct btrfs_bio *bbio)
  	btrfs_dio_private_put(dip);
-@@ -8055,7 +8055,7 @@ static void btrfs_submit_direct(const struct iomap_iter *iter,
- 	struct btrfs_dio_data *dio_data = iter->private;
- 	struct extent_map *em = NULL;
+ }
  
--	dip->inode = inode;
-+	dip->inode = BTRFS_I(inode);
- 	dip->file_offset = file_offset;
- 	dip->bytes = dio_bio->bi_iter.bi_size;
- 	refcount_set(&dip->refs, 1);
+-static void btrfs_submit_dio_bio(struct bio *bio, struct inode *inode,
++static void btrfs_submit_dio_bio(struct bio *bio, struct btrfs_inode *inode,
+ 				 u64 file_offset, int async_submit)
+ {
+-	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct btrfs_dio_private *dip = btrfs_bio(bio)->private;
+ 	blk_status_t ret;
+ 
+@@ -8005,13 +8005,13 @@ static void btrfs_submit_dio_bio(struct bio *bio, struct inode *inode,
+ 	if (btrfs_op(bio) == BTRFS_MAP_READ)
+ 		btrfs_bio(bio)->iter = bio->bi_iter;
+ 
+-	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
++	if (inode->flags & BTRFS_INODE_NODATASUM)
+ 		goto map;
+ 
+ 	if (btrfs_op(bio) == BTRFS_MAP_WRITE) {
+ 		/* Check btrfs_submit_data_write_bio() for async submit rules */
+-		if (async_submit && !atomic_read(&BTRFS_I(inode)->sync_writers) &&
+-		    btrfs_wq_submit_bio(BTRFS_I(inode), bio, 0, file_offset,
++		if (async_submit && !atomic_read(&inode->sync_writers) &&
++		    btrfs_wq_submit_bio(inode, bio, 0, file_offset,
+ 					WQ_SUBMIT_DATA_DIO))
+ 			return;
+ 
+@@ -8019,7 +8019,7 @@ static void btrfs_submit_dio_bio(struct bio *bio, struct inode *inode,
+ 		 * If we aren't doing async submit, calculate the csum of the
+ 		 * bio now.
+ 		 */
+-		ret = btrfs_csum_one_bio(BTRFS_I(inode), bio, file_offset, false);
++		ret = btrfs_csum_one_bio(inode, bio, file_offset, false);
+ 		if (ret) {
+ 			btrfs_bio_end_io(btrfs_bio(bio), ret);
+ 			return;
+@@ -8141,7 +8141,7 @@ static void btrfs_submit_direct(const struct iomap_iter *iter,
+ 				async_submit = 1;
+ 		}
+ 
+-		btrfs_submit_dio_bio(bio, inode, file_offset, async_submit);
++		btrfs_submit_dio_bio(bio, BTRFS_I(inode), file_offset, async_submit);
+ 
+ 		dio_data->submitted += clone_len;
+ 		clone_offset += clone_len;
 -- 
 2.37.3
 
