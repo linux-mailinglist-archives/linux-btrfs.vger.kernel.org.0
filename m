@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E839614EFB
+	by mail.lfdr.de (Postfix) with ESMTP id 69649614EFC
 	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 17:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbiKAQQI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Nov 2022 12:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53542 "EHLO
+        id S230394AbiKAQQK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Nov 2022 12:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbiKAQQF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 12:16:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBD61C43C
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 09:16:05 -0700 (PDT)
+        with ESMTP id S230384AbiKAQQI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 12:16:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C68F1C919
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 09:16:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C0DB761668
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A51C96166F
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97567C433C1
         for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B163AC433B5
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667319364;
-        bh=3K3P9e8w5JnraVT1Fw84V2xWefAooN0iMB8CHdOJDYw=;
+        s=k20201202; t=1667319365;
+        bh=kxHUVuPlHxXy2xDMayvGUUmQn57kpjF4kaPqZJaQrjc=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=uTjggoyS60PUZ5NjtCrZ2lAvWjBs5/sI98JX5QHOGaKNWGi2Ko+IswYQABF6rodCb
-         WT3nfG8Y36k5ZCT+fFGcBJBtLC93LJHNW5vtgHvq3+wWgR0pv5llfQ0h4huZc+zOc9
-         7t7lIkRSQEgMtkdiSypuB4qiEHSgZw2S51pjFfE6YqdILhEU/mQccw81MpUGSN+k62
-         Pgh67Bt1HUUefO7kd2x3blcQ3QwbdZuNwSXmPWg0eFalDBbi3oCPxhQD8x3NKsXxdy
-         6DsTMRcai3ITOUGmcMOAwSQ1nB9YvKVH+Yjbwh/L94SlHWah3EzmkfFALN8IvukVQm
-         fIXEg/fq4cbCA==
+        b=Zbi4CH3eLFxxR+MPkjYnkegwc+GGVn/f0eZ0J31npOhvtJESFMJWencCV0kC77mC5
+         V3YZoIJj1Jm9XZRg1IUSkcdUcO1KKRlGalNmRTL9O7n9QXkx8f+wkoSZI2CK4fUsQj
+         y+toPmFkkbJJI/OVWHG9xnQLeq9gdOM6Yg5a1MCHcUdsVOk/JNha26Ks997M5+Rlgi
+         h2H0ML0753mOss8Y2StnbTULw6l0Y3SFRYvvPy7GaOXOEwdLa3v6kOuZVrxLoRzudr
+         ebhWSYGNv77FRlu1kbYM+5fWk1d5bZkkv7GkMWLz+9fskrRpuQCKRmSA+mBSFkK1QR
+         jQ0+OzTm+QIgw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 07/18] btrfs: send: drop unnecessary backref context field initializations
-Date:   Tue,  1 Nov 2022 16:15:43 +0000
-Message-Id: <1f57dc1e48aa4b4fe4701e72963353d1ac4e4d52.1667315100.git.fdmanana@suse.com>
+Subject: [PATCH 08/18] btrfs: send: avoid unnecessary backref lookups when finding clone source
+Date:   Tue,  1 Nov 2022 16:15:44 +0000
+Message-Id: <e64e975d5ab361b43b7888d5ada6826aa13a983b.1667315100.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1667315100.git.fdmanana@suse.com>
 References: <cover.1667315100.git.fdmanana@suse.com>
@@ -52,58 +52,97 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At find_extent_clone() we are initializing to zero the 'found_itself' and
-'found' fields of the backref context before we use it but we have already
-initialized the structure to zeroes when we declared it on stack, so it's
-pointless to initialize those fields and they are unnecessarily increasing
-the object text size with two "mov" instructions (x86_64).
+At find_extent_clone(), unless we are given an inline extent, a file
+extent item that represents hole or an extent that starts beyond the
+i_size, we always do backref walking to look for clone sources, unless
+if we have more than SEND_MAX_EXTENT_REFS (64) known references on the
+extent.
 
-Similarly make the 'extent_len' initialization more clear by using an if-
--then-else instead of a double assignment to it in case the extent's end
-crosses the i_size boundary.
+However if we know we only have one reference in the extent item and only
+one clone source (the send root), then it's pointless to do the backref
+walking to search for clone sources, as we can't clone from any other
+root. So skip the backref walking in that case.
+
+The following test was run on a non-debug kernel (Debian's default kernel
+config):
+
+   $ cat test.sh
+   #!/bin/bash
+
+   DEV=/dev/sdi
+   MNT=/mnt/sdi
+
+   mkfs.btrfs -f $DEV
+   mount $DEV $MNT
+
+   # Create an extent tree that's not too small and none of the
+   # extents is shared.
+   for ((i = 1; i <= 50000; i++)); do
+      xfs_io -f -c "pwrite 0 4K" $MNT/file_$i > /dev/null
+      echo -ne "\r$i files created..."
+   done
+   echo
+
+   btrfs subvolume snapshot -r $MNT $MNT/snap
+
+   start=$(date +%s%N)
+   btrfs send $MNT/snap > /dev/null
+   end=$(date +%s%N)
+
+   dur=$(( (end - start) / 1000000 ))
+   echo -e "\nsend took $dur milliseconds"
+
+   umount $MNT
 
 Before this change:
 
-   $ size fs/btrfs/send.o
-      text	   data	    bss	    dec	    hex	filename
-     68694	   4252	     16	  72962	  11d02	fs/btrfs/send.o
+   send took 5389 milliseconds
 
 After this change:
 
-   $ size fs/btrfs/send.o
-      text	   data	    bss	    dec	    hex	filename
-     68678	   4252	     16	  72946	  11cf2	fs/btrfs/send.o
+   send took 4519 milliseconds  (-16.1%)
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/btrfs/send.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 63f2ac33e85b..61496d3e1355 100644
+index 61496d3e1355..35c12fc7a864 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -1432,11 +1432,8 @@ static int find_extent_clone(struct send_ctx *sctx,
- 	}
+@@ -1354,6 +1354,7 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	u64 disk_byte;
+ 	u64 num_bytes;
+ 	u64 extent_item_pos;
++	u64 extent_refs;
+ 	u64 flags = 0;
+ 	struct btrfs_file_extent_item *fi;
+ 	struct extent_buffer *eb = path->nodes[0];
+@@ -1408,14 +1409,22 @@ static int find_extent_clone(struct send_ctx *sctx,
  
- 	backref_ctx.sctx = sctx;
--	backref_ctx.found = 0;
- 	backref_ctx.cur_objectid = ino;
- 	backref_ctx.cur_offset = data_offset;
--	backref_ctx.found_itself = 0;
--	backref_ctx.extent_len = num_bytes;
- 
+ 	ei = btrfs_item_ptr(tmp_path->nodes[0], tmp_path->slots[0],
+ 			    struct btrfs_extent_item);
++	extent_refs = btrfs_extent_refs(tmp_path->nodes[0], ei);
  	/*
- 	 * The last extent of a file may be too large due to page alignment.
-@@ -1445,6 +1442,8 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	 * Backreference walking (iterate_extent_inodes() below) is currently
+ 	 * too expensive when an extent has a large number of references, both
+ 	 * in time spent and used memory. So for now just fallback to write
+ 	 * operations instead of clone operations when an extent has more than
+ 	 * a certain amount of references.
++	 *
++	 * Also, if we have only one reference and only the send root as a clone
++	 * source - meaning no clone roots were given in the struct
++	 * btrfs_ioctl_send_args passed to the send ioctl - then it's our
++	 * reference and there's no point in doing backref walking which is
++	 * expensive, so exit early.
  	 */
- 	if (data_offset + num_bytes >= ino_size)
- 		backref_ctx.extent_len = ino_size - data_offset;
-+	else
-+		backref_ctx.extent_len = num_bytes;
- 
- 	/*
- 	 * Now collect all backrefs.
+-	if (btrfs_extent_refs(tmp_path->nodes[0], ei) > SEND_MAX_EXTENT_REFS) {
++	if ((extent_refs == 1 && sctx->clone_roots_cnt == 1) ||
++	    extent_refs > SEND_MAX_EXTENT_REFS) {
+ 		ret = -ENOENT;
+ 		goto out;
+ 	}
 -- 
 2.35.1
 
