@@ -2,148 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D036143D5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 05:11:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC6E61441A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 06:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbiKAELC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Nov 2022 00:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
+        id S229565AbiKAFLF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Nov 2022 01:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbiKAELB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 00:11:01 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330811581A
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 21:11:00 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A13Fxws021573;
-        Tue, 1 Nov 2022 04:10:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2022-7-12;
- bh=5W1JM6zZkNwqyC3mgAMtDUvZLTSN/0vZD3W2xH+b5Nw=;
- b=xWxnAq2Jgclym6MrtlMzZUnW40XpUvRfDBA8zUI0NoS25QjRP0xk42kUF3IWGAeFZLZq
- u+BswW+198n+Kk6GvzetHwADlM71TBS9vK2ue6OYmCrre0jGMYaZyJi6unb3Ln8lsazn
- QUsk5RVu2Zd66WacfpnYYNdhEU4ZbJ2CPMlYxb9oh2cHDRzk6D8HVrk7Kli6+vPmx27B
- fVR0nO28/Acw9bcqmJCsolFt4s6ZUV+4+wkTCMMDWtKpSlJyHK1taUgGZcQC9KWZ8ad4
- QdkP/MXqgyD5tkpB6QoXRzym3k6hYeQ6GKdHE8pgFiprOITNpwRuFAiFwc8W8+5C/yN/ RQ== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3kgty2wmaw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Nov 2022 04:10:54 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 2A13oiag037268;
-        Tue, 1 Nov 2022 04:10:53 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3kgtm3yt8y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Nov 2022 04:10:53 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H2WKkBiJT5HdH0zzpIyJTy8jQcST6+QlPqCktGe2UWuvgcziih7Ob0HvL9iy5+AfYw04ki2OyTgolrUhkW6HiCOF26jUvllZNrbjKgLeSI1KC5lJdoSQrUcth+gojS/H2VN50ZN2M9SZ+UpW44wM1LWX2+pA7yJ59cN6E0+06dX5zCQeyUAZhCKefqnmewGYCWyfnqM9Z/vP82SNlWzcRczAngbfK8bDdNpDr2GU2um5T+4TVUo+Y9LqzEwXhVC0QtQvjrLKQHdY3RigHyPK1/w6rwGO0hdxHwaYOHOFf42P1twFlA51hXPQoN2Fzrrc5YGX3cexZSPymoWOy4Kwbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5W1JM6zZkNwqyC3mgAMtDUvZLTSN/0vZD3W2xH+b5Nw=;
- b=HaUMC3G2jl+I6Asfd0rzb/LdMVIEKMY+q2BhpsEmkXZMHHfvCyeucqB7EF+WY7lFNlagMh0bF3iZk7rENmNYQbebqeTwRk5KMNSNssVcxxV7WpbOGIlP7nINKEdPlbiy/fBM7KrNndJMlbYz1H6TCNSyoRqNIFWdeZl4Wxz73DYadBL+FA/YV+fUvFypvkxNVIuYRoQNMNiNYDjVCZZs/LHIV+kjnM/NtBpBP0RLrW/LitqcyLl0u71SP2Juz5iXjyivfIeqOi6M5CJ6TH8Ax1vQjdkhn1Xk6qQgveTtJinY6DNsyesZh6BngYbSpSKBusX0kb5RxXcXuckeE750ow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5W1JM6zZkNwqyC3mgAMtDUvZLTSN/0vZD3W2xH+b5Nw=;
- b=0Fjy4PbezHA/+kisQ47IxHeF77B+GHM5JwjQw3Cqm4MQrM9Z3uRfLGux8vKZyqUFmRs9sgciATn1p6t92RSU8O8xsaLXcmCU5ZzoBjLj44kWfoYO+fQeW8vSTsByGQ2uAkejPT4GMSxqehou/GzKH3R+Qc59NJxlvMR/Uot/VQk=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by SJ0PR10MB4413.namprd10.prod.outlook.com (2603:10b6:a03:2d9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.19; Tue, 1 Nov
- 2022 04:10:52 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::e2f8:caf3:7f80:8b5b]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::e2f8:caf3:7f80:8b5b%4]) with mapi id 15.20.5769.015; Tue, 1 Nov 2022
- 04:10:51 +0000
-Message-ID: <93a2df66-a60b-47a7-11af-24861fb22d86@oracle.com>
-Date:   Tue, 1 Nov 2022 12:10:43 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0)
- Gecko/20100101 Thunderbird/95.0
-Subject: Re: [PATCH 1/3] btrfs: Fix wrong check in btrfs_free_dummy_root()
-To:     Zhang Xiaoxu <zhangxiaoxu5@huawei.com>, linux-btrfs@vger.kernel.org
-References: <20221101025356.1643836-1-zhangxiaoxu5@huawei.com>
- <20221101025356.1643836-2-zhangxiaoxu5@huawei.com>
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20221101025356.1643836-2-zhangxiaoxu5@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0035.apcprd02.prod.outlook.com
- (2603:1096:3:18::23) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        with ESMTP id S229452AbiKAFLD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 01:11:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BC42BF0
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 22:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1667279411;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8BIEernCcUEUHxoRDrcTv/IwlIxa7IWjUn0SfzmFL7U=;
+        b=MgYVvQh33pSswGCkyDe16zjL8K5lF8dyHfadpMqkWlg4yGVJ6mecrBiApcbeXsMdhfcvIF
+        ZrPSO7chLHvz68AjAkfC15iXPdD5kqN+c1SwaKvVCPa6z4+Xn2R+FgsKvt0ct0h9h1v1ER
+        IHK+C0pRqZOJwhnIth6oAOyz8ozieYg=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-313-tlD4yhf_MlqsaafF21hk9g-1; Tue, 01 Nov 2022 01:10:10 -0400
+X-MC-Unique: tlD4yhf_MlqsaafF21hk9g-1
+Received: by mail-pg1-f199.google.com with SMTP id a33-20020a630b61000000b00429d91cc649so7183951pgl.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Oct 2022 22:10:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8BIEernCcUEUHxoRDrcTv/IwlIxa7IWjUn0SfzmFL7U=;
+        b=VUYgGDV6a5iL+gqIRuEwkDFysA3vWCERdyqbYYBbGz7tZIBWtWv9IF3+ZJOKzgtbke
+         pdyDgf8MvQ5wNg+ojLItVLVjExum+WWWxq6mmEeK0jF9nD9dhnKjx0dxwYqCOMxiSGF9
+         4jpliw4q+5vHk7XkO5vKh0xaC+6t0fd+4J8Ql4mlWjfn+5z6211/+x814xooEI/8XNDU
+         h/XYie+gYaOPnuME2pciHT+Ny88xQCdIpVC2VUxAMyJICz3nMnBf/qIjFiKf7zVhuzdE
+         3bJdsxvfOio7LMAHFp4idQDpUhhOwwCl/Px4XwNd11CXqSynIxyqCBJ7n+HhY5M8SLBr
+         Rlqw==
+X-Gm-Message-State: ACrzQf3oXRSCfLXYzVdNO9sZGHpqxcMD5P0rv1n1F9Sval0cf3q6+o2z
+        RdbwWr4KNXJoPW7Z9hyVNNSA4WdLJ6KdYt3UKJscpRkgKBGqj5TcEeimCA45XiGXUb/iDXmhVkr
+        qH+4eGdFCrAHSu85D3rZuCpA=
+X-Received: by 2002:a05:6a00:cc6:b0:56d:3028:23ea with SMTP id b6-20020a056a000cc600b0056d302823eamr14308255pfv.19.1667279409292;
+        Mon, 31 Oct 2022 22:10:09 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM63Vb4HN/mWSwTqzSx++rM6d4YezYnOVjIezkCbIeSTIbxrx6dCPnYVoFTvCBxqcUqSTQSZBw==
+X-Received: by 2002:a05:6a00:cc6:b0:56d:3028:23ea with SMTP id b6-20020a056a000cc600b0056d302823eamr14308228pfv.19.1667279408906;
+        Mon, 31 Oct 2022 22:10:08 -0700 (PDT)
+Received: from zlang-mailbox ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id g17-20020aa79f11000000b0056b8e788acesm2212909pfr.82.2022.10.31.22.10.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Oct 2022 22:10:08 -0700 (PDT)
+Date:   Tue, 1 Nov 2022 13:10:03 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH 2/3] btrfs: test that fiemap reports extent as not shared
+ after deleting file
+Message-ID: <20221101051003.wl37x6jxiuiphkr5@zlang-mailbox>
+References: <cover.1667214081.git.fdmanana@suse.com>
+ <27a0c4ab551b7a7410f4062f5235f20c88e77cfc.1667214081.git.fdmanana@suse.com>
+ <20221031164128.z4cujrkrcxe6ujqr@zlang-mailbox>
+ <CAL3q7H73zCMQgJ9VTneZ7rX9Z8qVTFojsuEVU5OhZw37StU_Ww@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SJ0PR10MB4413:EE_
-X-MS-Office365-Filtering-Correlation-Id: f2fac86a-28a2-475c-f5d4-08dabbbf106a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pW5CEh8krVjqGHH/mHkqB2yC7Umj1MEMHmkeqUL85kBj5FS6Y2WiYyUXbTWyO1UF7RnI+XJ4VDPGdBtgwVAAkgQZtrNPrIO86n5u/P5kNrpm+nCGfkmw6TRiOoAEKa/ru2wwJnsi8O+uMgTbOg1sOQceCnXpa1IoDox0IrJRXggugjGvsNvaHda+ESn3M49njw/STNyzUuMFWiqyWQdtOQiNANrWLo14tqqBx+O2Jzq1SdtpeUN6hE4+M90i7c+Ey8yuf7o2Qk+9w7cwgLHO4HpnQhqpw8o7BBYP/7QuB59IgsxVH2jMV6mnNtEri4r06K/X6uSI6C9luB+DdOjbCTLXkrfYX5abAfg0CgxpigYKNCl6HieSMRi0X+eQH87G6v7RgGp//mhFL/jKrE4Jbk4hczM/2VkYc2q4ys43xhDCoirGubJMpI7BzfMnCXFWLWKgRp9jYV+hqQKdT5dICAcnWdWlAQu6Clbgt/eRhRvdSz07SkemEj3yWg4y8zYmsDS64g1NVVe0RFwulKMoXlOWHeq3IF8xZp48ncY3IzNUxI+IzvqVdBjEODJAvEIAp+AuFguQsqUQzo1KVVwl7tAsHFgNzN1r8VFuj98d3Xhvex7I4x6krwyckCcM/WBAoT2R6cVGxusSczakPrnFhGFchoB/oNvGivWmzw3MApu8zIjLXECGKSfByLFB9R/Z64hhnTygTnadtRAWa9cFAp3RBV59BcCONXRrB4R6sHt6a6J/5GDJ+8HHzKWIByXLDAIrdKOzLRXFACq3uN/OYrZXCwPPtVi+sOGs1N3QAXs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(39860400002)(396003)(136003)(346002)(376002)(451199015)(6486002)(36756003)(2906002)(41300700001)(66556008)(31696002)(86362001)(316002)(66946007)(66476007)(8676002)(2616005)(26005)(186003)(6512007)(478600001)(38100700002)(6506007)(53546011)(6666004)(31686004)(5660300002)(44832011)(83380400001)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WGRwK09NV0tNM3FKUVhtVjRha0t3bEF1dFZrSHIwcFhMZlJNekM5WlZ2UDR1?=
- =?utf-8?B?RnFxZ3B2VFRIbVVTQVAvZDU3L1htS2VrUGFQM3hNYVlTMFBpVkwxWjJ3Nnh2?=
- =?utf-8?B?ZFdsYmZQTkVpazhvbERUNjJYdjBoNXRGanFoNTFBSmxvcVBrSHNsWjhiTE9s?=
- =?utf-8?B?bmpjaEZvMS8vWjNTUW1UbmY3YnhrcE55UjRuK2hVSnlINlZrL2lScHdXZUhy?=
- =?utf-8?B?UUdZcFMyMUJxa1U4VnlIL2g0MTJRMU15VGhJZ3VyZ2ZrRzRYRjhMMnZUU3JO?=
- =?utf-8?B?djlyS0hBWGh3ZmZmQmhDQlB3YTZQRm01UUFGQThFR0U1Q3JUTWJVM1lVSXR3?=
- =?utf-8?B?SVM2dG5BdjVBVjkxYjUyL1pFczE3cVVCeXROUFRWYnJ4b0ZlN3QwMlNvL1VK?=
- =?utf-8?B?V1I3ZFJkU2gxaEVpdUNxNlA5OTZNKzVUaEwrUlp1SzBjbW9DdittOVptazRF?=
- =?utf-8?B?YjhjcFpweGNScWRlL25iSGRNOTV6UFdkankwR1pKZDhyZUl1Y2JKbkRPTmJy?=
- =?utf-8?B?blhaa29PMnB5YTNWTkRZdUVNcXVKZzY3b3NwY3J5NXZOekI4M3dlTm5mVlY0?=
- =?utf-8?B?K0hmc05ZNHExaFpsUzBrNDhTdEh1SnlnYjNjRkhianhmZG9Ra0xNVFVCYTNI?=
- =?utf-8?B?WnJJSms3WWowb2dZVWNZVklHcm1qQ1NVc3V4ckc4d2dHQTM5OW9IWXE2K2s4?=
- =?utf-8?B?TnFrTmt6MTd0SDdsZGcxMFN5Z0ZTNXRhdncrZ0prcWY1Q3Z2ckp4bVpXSXRF?=
- =?utf-8?B?NHVoTDV2WmFnVEZaWWNzb3ErNEZ2Z1N2Q2ppaXpIbGlMeGpNdW9RTVU2VmNE?=
- =?utf-8?B?K0s3K2I4TVhRREFXVDU3SjR3UklJUWFaNnRTRlNZb3NsYndobzNVbllvVS8v?=
- =?utf-8?B?MUxpc2dGQmFPRnN3eTJPeS94N2NVWlJ3YncxMHBzWEZLK29HRFNrVVMxbk1I?=
- =?utf-8?B?WGNRODBvSU84U0oza29TdHdxYkJtc2VPVEhQQnV6QTBneVFqcE1RRFFZaW1U?=
- =?utf-8?B?TVF5dFlhbzZsVUdUNmJsb2JFK0Mzc1BrMmdONFBGbnZCbFlKU2lqdWZ5R3ZN?=
- =?utf-8?B?NmFiM0pGVWQwUzJQY3dKZksvOXllcTh0T2hqZlFMUjB1ZHRJY1B4M1JDV08x?=
- =?utf-8?B?S2ZIYngvNXpzZ1BFWkZGejlZOEdhZ1lvNTJZTDBwVTdqUGlFUW9RZU94ODk3?=
- =?utf-8?B?aTJBeUFCOUpVcXJRNEVzL1lIaXJpRGpEWmI5TUNWRml1THdXN2ZWQmFpQXpE?=
- =?utf-8?B?NmFDazJsR2xuRU0vck1ubHFBSzN6ZWl1eTlxN0IxaTRPbVhkSjRMMU1DM1F3?=
- =?utf-8?B?bGR4aDhGemJBbWZCaVVpdnZmSDIvRHo1YmU1cnVyNTl4T09IT3d2SVgyOFh6?=
- =?utf-8?B?R1VKb3NqOW84VlgvNjRob0VGQitLU3RobkpFclE1ZjZ6K3dZWWJoall0ZVF0?=
- =?utf-8?B?MURia3o3L0xETXBvaklFcFFXOWhuMHovQVhtSXpWc244VjcyVkMrVVk1cGxi?=
- =?utf-8?B?MzlMVG4rREdDVmRQNUY2Y3Zudmp0bWUyNldiQ1c3ZlZZOHQrcWdlaHhYZk1k?=
- =?utf-8?B?Mk9JTVFza0tkOE53T2pXMWQ4V1d3MDlhVkZyMnJpejhyT1NpLzhBSWdidXhi?=
- =?utf-8?B?UzhkQ1JLeGM0eXg2QTEzcFpmdkxEYW9aMXNVZVk5WjVySGE0Y2dhMG04VXcz?=
- =?utf-8?B?NGtzeWZ0a3dvdmdxN2E0Vm1uWE82ZERkbSs0VXdVdlhvb2Q1d1ZSeXBrcHFG?=
- =?utf-8?B?THM4NGRkOU5DazNXWklTRFAyRStyV0p5MzFRUjl1dmtERDFhRU5uTEJvbUZJ?=
- =?utf-8?B?bThBSjNmSU1FNWpHL0kzRVRwOVUwbG9wMEJKNTdRbFlBOFEyKy9sV0Fnckw1?=
- =?utf-8?B?aTBXdnN3OFI4dlQ2ekpMNUpWVjc4eWxtcjY5bnFwaXdwNFc5SERQVmFyOThN?=
- =?utf-8?B?UFZYWGZWMDZFamtRd1Zuc0puVkNjZm5aQi9Cd2NHT3ZQSHNXZExLRWlPUElk?=
- =?utf-8?B?dTQ4clRmWUFGcWFLNEdlaXUrQWE1ZmZvQmo3bVFPRUVxd3dPMTFubDV2bm9k?=
- =?utf-8?B?ZnB0ZEl3c0ZxaGFxZFNIMmtrUmZHNUJDMlV4OXJ6V0pRZGVTb280UG5Zangz?=
- =?utf-8?Q?CGtcNl8N0ei5fyu9QmvH5SOIp?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2fac86a-28a2-475c-f5d4-08dabbbf106a
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2022 04:10:51.8844
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RynvWjg19b5+3quZJd2l3O1z862BX0syxn/SZfDcgO/596FmXO9Lnbze6SihcL1IUoFj6TTl5zsSBlEjkYCDog==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4413
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-01_01,2022-10-31_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
- definitions=main-2211010031
-X-Proofpoint-ORIG-GUID: Svx5eGPAINuTSNri0yjstoQeM4HWA1n1
-X-Proofpoint-GUID: Svx5eGPAINuTSNri0yjstoQeM4HWA1n1
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H73zCMQgJ9VTneZ7rX9Z8qVTFojsuEVU5OhZw37StU_Ww@mail.gmail.com>
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -152,53 +80,191 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/1/22 10:53, Zhang Xiaoxu wrote:
-> The btrfs_alloc_dummy_root() use ERR_PTR as the error return value
-> rather than NULL, if error happened, there will be a null-ptr-deref
-> when free the dummy root:
+On Mon, Oct 31, 2022 at 04:51:06PM +0000, Filipe Manana wrote:
+> On Mon, Oct 31, 2022 at 4:41 PM Zorro Lang <zlang@redhat.com> wrote:
+> >
+> > On Mon, Oct 31, 2022 at 11:11:20AM +0000, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > >
+> > > Test that if we have two files with shared extents, after removing one of
+> > > the files, if we do a fiemap against the other file, it does not report
+> > > extents as shared anymore.
+> > >
+> > > This exercises the processing of delayed references for data extents in
+> > > the backref walking code, used by fiemap to determine if an extent is
+> > > shared.
+> > >
+> > > This used to fail until very recently and was fixed by the following
+> > > kernel commit that landed in 6.1-rc2:
+> > >
+> > >   4fc7b5722824 (""btrfs: fix processing of delayed data refs during backref walking")
+> > >
+> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > > ---
+> >
+> > Looks good to me. As this's not a genericcase, I'm not sure if you need
+> > _require_congruent_file_oplen helper.
 > 
->    BUG: KASAN: null-ptr-deref in btrfs_free_dummy_root+0x21/0x50 [btrfs]
->    Read of size 8 at addr 000000000000002c by task insmod/258926
-> 
->    CPU: 2 PID: 258926 Comm: insmod Tainted: G        W          6.1.0-rc2+ #5
->    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1.fc33 04/01/2014
->    Call Trace:
->     <TASK>
->     dump_stack_lvl+0x34/0x44
->     kasan_report+0xb7/0x140
->     kasan_check_range+0x145/0x1a0
->     btrfs_free_dummy_root+0x21/0x50 [btrfs]
->     btrfs_test_free_space_cache+0x1a8c/0x1add [btrfs]
->     btrfs_run_sanity_tests+0x65/0x80 [btrfs]
->     init_btrfs_fs+0xec/0x154 [btrfs]
->     do_one_initcall+0x87/0x2a0
->     do_init_module+0xdf/0x320
->     load_module+0x3006/0x3390
->     __do_sys_finit_module+0x113/0x1b0
->     do_syscall_64+0x35/0x80
->   entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> 
-> Fixes: aaedb55bc08f ("Btrfs: add tests for btrfs_get_extent")
-> Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+> Hum? Why would it be needed?
+> That helper was introduced because of xfs's realtime config.
+> On btrfs reflinking always works for any multiple of the sector size.
 
+Sure, I was not asking you to use that, as it's not a generic case, so I just
+tried to double check with you, to make sure btrfs doesn't need it. Thanks
+for you confirm that, this patchset looks good to me.
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-> ---
->   fs/btrfs/tests/btrfs-tests.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Zorro
+
 > 
-> diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
-> index 9c478fa256f6..d43cb5242fec 100644
-> --- a/fs/btrfs/tests/btrfs-tests.c
-> +++ b/fs/btrfs/tests/btrfs-tests.c
-> @@ -200,7 +200,7 @@ void btrfs_free_dummy_fs_info(struct btrfs_fs_info *fs_info)
->   
->   void btrfs_free_dummy_root(struct btrfs_root *root)
->   {
-> -	if (!root)
-> +	if (IS_ERR_OR_NULL(root))
->   		return;
->   	/* Will be freed by btrfs_free_fs_roots */
->   	if (WARN_ON(test_bit(BTRFS_ROOT_IN_RADIX, &root->state)))
+> >
+> > Thanks,
+> > Zorro
+> >
+> > >  tests/btrfs/279     | 82 +++++++++++++++++++++++++++++++++++++++++++++
+> > >  tests/btrfs/279.out | 39 +++++++++++++++++++++
+> > >  2 files changed, 121 insertions(+)
+> > >  create mode 100755 tests/btrfs/279
+> > >  create mode 100644 tests/btrfs/279.out
+> > >
+> > > diff --git a/tests/btrfs/279 b/tests/btrfs/279
+> > > new file mode 100755
+> > > index 00000000..5b5824fd
+> > > --- /dev/null
+> > > +++ b/tests/btrfs/279
+> > > @@ -0,0 +1,82 @@
+> > > +#! /bin/bash
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> > > +#
+> > > +# FS QA Test 279
+> > > +#
+> > > +# Test that if we have two files with shared extents, after removing one of the
+> > > +# files, if we do a fiemap against the other file, it does not report extents as
+> > > +# shared anymore.
+> > > +#
+> > > +# This exercises the processing of delayed references for data extents in the
+> > > +# backref walking code, used by fiemap to determine if an extent is shared.
+> > > +#
+> > > +. ./common/preamble
+> > > +_begin_fstest auto quick subvol fiemap clone
+> > > +
+> > > +. ./common/filter
+> > > +. ./common/reflink
+> > > +. ./common/punch # for _filter_fiemap_flags
+> > > +
+> > > +_supported_fs btrfs
+> > > +_require_scratch_reflink
+> > > +_require_cp_reflink
+> > > +_require_xfs_io_command "fiemap"
+> > > +
+> > > +_fixed_by_kernel_commit 4fc7b5722824 \
+> > > +     "btrfs: fix processing of delayed data refs during backref walking"
+> > > +
+> > > +run_test()
+> > > +{
+> > > +     local file_path_1=$1
+> > > +     local file_path_2=$2
+> > > +     local do_sync=$3
+> > > +
+> > > +     $XFS_IO_PROG -f -c "pwrite 0 64K" $file_path_1 | _filter_xfs_io
+> > > +     _cp_reflink $file_path_1 $file_path_2
+> > > +
+> > > +     if [ $do_sync -eq 1 ]; then
+> > > +             sync
+> > > +     fi
+> > > +
+> > > +     echo "Fiemap of $file_path_1 before deleting $file_path_2:" | \
+> > > +             _filter_scratch
+> > > +     $XFS_IO_PROG -c "fiemap -v" $file_path_1 | _filter_fiemap_flags
+> > > +
+> > > +     rm -f $file_path_2
+> > > +
+> > > +     echo "Fiemap of $file_path_1 after deleting $file_path_2:" | \
+> > > +             _filter_scratch
+> > > +     $XFS_IO_PROG -c "fiemap -v" $file_path_1 | _filter_fiemap_flags
+> > > +}
+> > > +
+> > > +_scratch_mkfs >> $seqres.full 2>&1
+> > > +_scratch_mount
+> > > +
+> > > +# Create two test subvolumes, we'll reflink files between them.
+> > > +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subv1 | _filter_scratch
+> > > +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subv2 | _filter_scratch
+> > > +
+> > > +echo
+> > > +echo "Testing with same subvolume and without transaction commit"
+> > > +echo
+> > > +run_test "$SCRATCH_MNT/subv1/f1" "$SCRATCH_MNT/subv1/f2" 0
+> > > +
+> > > +echo
+> > > +echo "Testing with same subvolume and with transaction commit"
+> > > +echo
+> > > +run_test "$SCRATCH_MNT/subv1/f3" "$SCRATCH_MNT/subv1/f4" 1
+> > > +
+> > > +echo
+> > > +echo "Testing with different subvolumes and without transaction commit"
+> > > +echo
+> > > +run_test "$SCRATCH_MNT/subv1/f5" "$SCRATCH_MNT/subv2/f6" 0
+> > > +
+> > > +echo
+> > > +echo "Testing with different subvolumes and with transaction commit"
+> > > +echo
+> > > +run_test "$SCRATCH_MNT/subv1/f7" "$SCRATCH_MNT/subv2/f8" 1
+> > > +
+> > > +# success, all done
+> > > +status=0
+> > > +exit
+> > > diff --git a/tests/btrfs/279.out b/tests/btrfs/279.out
+> > > new file mode 100644
+> > > index 00000000..a959a86d
+> > > --- /dev/null
+> > > +++ b/tests/btrfs/279.out
+> > > @@ -0,0 +1,39 @@
+> > > +QA output created by 279
+> > > +Create subvolume 'SCRATCH_MNT/subv1'
+> > > +Create subvolume 'SCRATCH_MNT/subv2'
+> > > +
+> > > +Testing with same subvolume and without transaction commit
+> > > +
+> > > +wrote 65536/65536 bytes at offset 0
+> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > > +Fiemap of SCRATCH_MNT/subv1/f1 before deleting SCRATCH_MNT/subv1/f2:
+> > > +0: [0..127]: shared|last
+> > > +Fiemap of SCRATCH_MNT/subv1/f1 after deleting SCRATCH_MNT/subv1/f2:
+> > > +0: [0..127]: last
+> > > +
+> > > +Testing with same subvolume and with transaction commit
+> > > +
+> > > +wrote 65536/65536 bytes at offset 0
+> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > > +Fiemap of SCRATCH_MNT/subv1/f3 before deleting SCRATCH_MNT/subv1/f4:
+> > > +0: [0..127]: shared|last
+> > > +Fiemap of SCRATCH_MNT/subv1/f3 after deleting SCRATCH_MNT/subv1/f4:
+> > > +0: [0..127]: last
+> > > +
+> > > +Testing with different subvolumes and without transaction commit
+> > > +
+> > > +wrote 65536/65536 bytes at offset 0
+> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > > +Fiemap of SCRATCH_MNT/subv1/f5 before deleting SCRATCH_MNT/subv2/f6:
+> > > +0: [0..127]: shared|last
+> > > +Fiemap of SCRATCH_MNT/subv1/f5 after deleting SCRATCH_MNT/subv2/f6:
+> > > +0: [0..127]: last
+> > > +
+> > > +Testing with different subvolumes and with transaction commit
+> > > +
+> > > +wrote 65536/65536 bytes at offset 0
+> > > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > > +Fiemap of SCRATCH_MNT/subv1/f7 before deleting SCRATCH_MNT/subv2/f8:
+> > > +0: [0..127]: shared|last
+> > > +Fiemap of SCRATCH_MNT/subv1/f7 after deleting SCRATCH_MNT/subv2/f8:
+> > > +0: [0..127]: last
+> > > --
+> > > 2.35.1
+> > >
+> >
+> 
 
