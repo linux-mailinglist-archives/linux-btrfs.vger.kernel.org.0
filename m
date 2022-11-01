@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C27614EF7
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 17:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B06C614EF8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Nov 2022 17:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbiKAQQH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Nov 2022 12:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
+        id S230361AbiKAQQG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Nov 2022 12:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbiKAQQF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 12:16:05 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D851C903
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 09:16:03 -0700 (PDT)
+        with ESMTP id S230351AbiKAQQD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Nov 2022 12:16:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D001C43C
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 09:16:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F18C0B81D9F
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27F77C43470
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:15:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E6B36118E
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D89AC433B5
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Nov 2022 16:16:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667319360;
-        bh=sy8AWqXshzSDW/g0k8y2ZkyclJ8C551aRGLu3Z4hfYo=;
+        s=k20201202; t=1667319361;
+        bh=XVNtSnZhdJyYdAQWZZa0Oaxass+PiA9YX0acKMDKj7U=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=f6+ZXZbCwM3Gs7d10CC/P5j4wowmK31tBClG7bzcjtYT9MG1tX4Z0pJWtFNmKGNja
-         fyaQfVUcBh67SfhfSOeqIm2r3cfS6qliCqblieGBjfkNQklkfruACSO/AHnPCoMyGc
-         sB6IpTPrwg6rggSeQP2sLNiuNgg1/OSecmDL5u2Komfnnhve+dJSLltuI4q4oRcBGu
-         dTr9Y0CuqJp3LnuK2gHgYEyjDPFPMh2gbfkMJpv/WdgOx7U039SIRjDCxyNdi57WGx
-         synyuzLyMplXMk83tTBmwEAzIWkdFDfUFmuIpGLjmU7EfBk3KWOHYxcgk/IMK9QVn+
-         uSzxD/R12slrA==
+        b=AfiV6OLFKsktuiADrAsYVizM54DEMjXpnK63sKSKa9/bSvGg4dONsqHGjPqG+cW97
+         sWMQMefCe7+M8oQUxQS7Sy6tZfa8OCwlYQgZSXD12dXlBI8RiwhtbakGZGSfHNkFn+
+         CmlMD+K4KsY7nD9Rc04v7/uGEq12jf0bsBKxztwIR5TYl0IBjxHZizq1MeR4BOonzI
+         /PB8hatmczEl1S7iMo81IJZHDk2yH90u1Y7m34eHMQu6Jbb9TSsnMc3IigJMJiKxi8
+         B5jHjn7qoL74S2Uf7S5kUgSFQCoFIwogFDGDt5CwFSe2l0UFWpOsyMBv6XxaXAnqL/
+         YldgJldpoRQbg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 03/18] btrfs: fix ulist leaks in error paths of qgroup self tests
-Date:   Tue,  1 Nov 2022 16:15:39 +0000
-Message-Id: <7716b3fb040152c7dcd4531a0ddc8c1abae31ac0.1667315100.git.fdmanana@suse.com>
+Subject: [PATCH 04/18] btrfs: remove pointless and double ulist frees in error paths of qgroup tests
+Date:   Tue,  1 Nov 2022 16:15:40 +0000
+Message-Id: <7ceae212eaf5e9076153ae79914ab11d495164ad.1667315100.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1667315100.git.fdmanana@suse.com>
 References: <cover.1667315100.git.fdmanana@suse.com>
@@ -52,82 +52,124 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-In the test_no_shared_qgroup() and test_multiple_refs() qgroup self tests,
-if we fail to add the tree ref, remove the extent item or remove the
-extent ref, we are returning from the test function without freeing the
-"old_roots" ulist that was allocated by the previous calls to
-btrfs_find_all_roots(). Fix that by calling ulist_free() before returning.
+Several places in the qgroup self tests follow the pattern of freeing the
+ulist pointer they passed to btrfs_find_all_roots() if the call to that
+function returned an error. That is pointless because that function always
+frees the ulist in case it returns an error.
 
-Fixes: 442244c96332 ("btrfs: qgroup: Switch self test to extent-oriented qgroup mechanism.")
+Also In some places like at test_multiple_refs(), after a call to
+btrfs_qgroup_account_extent() we also leave "old_roots" and "new_roots"
+pointing to ulists that were freed, because btrfs_qgroup_account_extent()
+has freed those ulists, and if after that the next call to
+btrfs_find_all_roots() fails, we call ulist_free() on the "old_roots"
+ulist again, resulting in a double free.
+
+So remove those calls to reduce the code size and avoid double ulist
+free in case of an error.
+
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tests/qgroup-tests.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ fs/btrfs/tests/qgroup-tests.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
 diff --git a/fs/btrfs/tests/qgroup-tests.c b/fs/btrfs/tests/qgroup-tests.c
-index 94b04f10f61c..96a70ce36f79 100644
+index 96a70ce36f79..65b65d55d1f6 100644
 --- a/fs/btrfs/tests/qgroup-tests.c
 +++ b/fs/btrfs/tests/qgroup-tests.c
-@@ -234,8 +234,10 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
- 
- 	ret = insert_normal_tree_ref(root, nodesize, nodesize, 0,
- 				BTRFS_FS_TREE_OBJECTID);
--	if (ret)
-+	if (ret) {
-+		ulist_free(old_roots);
+@@ -227,7 +227,6 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
+ 	 */
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
+ 	if (ret) {
+-		ulist_free(old_roots);
+ 		test_err("couldn't find old roots: %d", ret);
  		return ret;
-+	}
- 
+ 	}
+@@ -242,7 +241,6 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
  	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
  	if (ret) {
-@@ -268,8 +270,10 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
+ 		ulist_free(old_roots);
+-		ulist_free(new_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -254,17 +252,18 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
+ 		return ret;
  	}
  
- 	ret = remove_extent_item(root, nodesize, nodesize);
--	if (ret)
-+	if (ret) {
-+		ulist_free(old_roots);
++	/* btrfs_qgroup_account_extent() always frees the ulists passed to it. */
++	old_roots = NULL;
++	new_roots = NULL;
++
+ 	if (btrfs_verify_qgroup_counts(fs_info, BTRFS_FS_TREE_OBJECTID,
+ 				nodesize, nodesize)) {
+ 		test_err("qgroup counts didn't match expected values");
  		return -EINVAL;
-+	}
+ 	}
+-	old_roots = NULL;
+-	new_roots = NULL;
  
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
  	if (ret) {
-@@ -331,8 +335,10 @@ static int test_multiple_refs(struct btrfs_root *root,
- 
- 	ret = insert_normal_tree_ref(root, nodesize, nodesize, 0,
- 				BTRFS_FS_TREE_OBJECTID);
--	if (ret)
-+	if (ret) {
-+		ulist_free(old_roots);
+-		ulist_free(old_roots);
+ 		test_err("couldn't find old roots: %d", ret);
  		return ret;
-+	}
- 
+ 	}
+@@ -278,7 +277,6 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
  	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
  	if (ret) {
-@@ -364,8 +370,10 @@ static int test_multiple_refs(struct btrfs_root *root,
- 
- 	ret = add_tree_ref(root, nodesize, nodesize, 0,
- 			BTRFS_FIRST_FREE_OBJECTID);
--	if (ret)
-+	if (ret) {
-+		ulist_free(old_roots);
+ 		ulist_free(old_roots);
+-		ulist_free(new_roots);
+ 		test_err("couldn't find old roots: %d", ret);
  		return ret;
-+	}
+ 	}
+@@ -328,7 +326,6 @@ static int test_multiple_refs(struct btrfs_root *root,
  
- 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
  	if (ret) {
-@@ -403,8 +411,10 @@ static int test_multiple_refs(struct btrfs_root *root,
- 
- 	ret = remove_extent_ref(root, nodesize, nodesize, 0,
- 				BTRFS_FIRST_FREE_OBJECTID);
--	if (ret)
-+	if (ret) {
-+		ulist_free(old_roots);
+-		ulist_free(old_roots);
+ 		test_err("couldn't find old roots: %d", ret);
  		return ret;
-+	}
- 
+ 	}
+@@ -343,7 +340,6 @@ static int test_multiple_refs(struct btrfs_root *root,
  	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
  	if (ret) {
+ 		ulist_free(old_roots);
+-		ulist_free(new_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -363,7 +359,6 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
+ 	if (ret) {
+-		ulist_free(old_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -378,7 +373,6 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+ 		ulist_free(old_roots);
+-		ulist_free(new_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -404,7 +398,6 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
+ 	if (ret) {
+-		ulist_free(old_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -419,7 +412,6 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+ 		ulist_free(old_roots);
+-		ulist_free(new_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
 -- 
 2.35.1
 
