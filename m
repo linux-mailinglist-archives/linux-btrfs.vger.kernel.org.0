@@ -2,222 +2,255 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E016167F6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Nov 2022 17:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EFEB6168B3
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Nov 2022 17:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbiKBQNQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Nov 2022 12:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
+        id S231539AbiKBQZK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Nov 2022 12:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbiKBQMI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Nov 2022 12:12:08 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6282D1EB;
-        Wed,  2 Nov 2022 09:11:42 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id v28so16646178pfi.12;
-        Wed, 02 Nov 2022 09:11:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0kIQ32jgESZghl2JsFuRf0mmCK8FvEn1HKHvqp4B/UI=;
-        b=dfQedKuymKKcgaBkhG/S6LPnJ2O+4EvsNOgODJ6HJIVIONp85PHUPikgR1OK0QEXN5
-         yllHZOH3ybASQiMP5BnKEWHTPiCoHka0zDja58Ru610nhX2hFD55wJ8Gd376sGcaf689
-         bZrfvpTt8G5QxybOH/Q6elDPBkfe6Fc3kWWsMNhs/R9vrbLsrZ8uD+rka72YKKWWWGgG
-         dWU5w6rAAJp2LD2+bLNGgBA0LMOcxmf8XyqrkCvTB+U0KRHPVRqOWqltLY33KWJ08EtL
-         x4VuHCxKqbKwgsffO/TRtj8XIVLeukEUR03vIqJL55yVembQK6w940oX9YlEtm9O5Cyv
-         atIA==
+        with ESMTP id S231759AbiKBQYf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Nov 2022 12:24:35 -0400
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699F7624B
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Nov 2022 09:19:49 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id o10-20020a056e02102a00b003006328df7bso17691046ilj.17
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Nov 2022 09:19:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0kIQ32jgESZghl2JsFuRf0mmCK8FvEn1HKHvqp4B/UI=;
-        b=6V02c71ba8T+nKh7BAlS7W2AqHWrezXEd4LxWsbGLZ1bzT0PZeZDx8v7CfllOB/7i9
-         0owbRQcrwU1nZEngObNKxPn6xOKCAy7ZcmmuAp2HzZ5zpKF3OLhtv6qxrjG9cZFCe8Jy
-         E8/yk0SbdkQH1S4RM7ZsDsp3kJrOrIr2Dzqdad1r8DFmGKq60xjeIKki9L8NERBVIDMu
-         Z5XhX07zvyMEKyLqhBemyZxjjjCI1UPZn0VOLGK3fiNpfoNaI5z1tXLZqtzD41bXDKsp
-         EKs2s/qggp/13SsVnmjfaH63qn7omzqrCQ3aVsi4Y2ImQZ+VA0O3Z1BWs8QZs/qSrDqc
-         flxw==
-X-Gm-Message-State: ACrzQf0yZl7dMe7mSsF1f0BlRUhM1iSe1xSNTvNZWINFXf1azRmW53d8
-        rGAo4kGpcWO+egK2FsLHTUUmX4Uz6ewviw==
-X-Google-Smtp-Source: AMsMyM6M+HYXpiH0U+VfyXFrJ89SEz8gDigaYYVWPndroJTYZEBXjmxNBwyGQzQ73aNi+YK3GqHHhQ==
-X-Received: by 2002:a63:5a1b:0:b0:461:9934:6f62 with SMTP id o27-20020a635a1b000000b0046199346f62mr22432948pgb.266.1667405501408;
-        Wed, 02 Nov 2022 09:11:41 -0700 (PDT)
-Received: from fedora.hsd1.ca.comcast.net ([2601:644:8002:1c20::8080])
-        by smtp.googlemail.com with ESMTPSA id ms4-20020a17090b234400b00210c84b8ae5sm1632101pjb.35.2022.11.02.09.11.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Nov 2022 09:11:41 -0700 (PDT)
-From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nilfs@vger.kernel.org, linux-mm@kvack.org,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: [PATCH v4 23/23] filemap: Remove find_get_pages_range_tag()
-Date:   Wed,  2 Nov 2022 09:10:31 -0700
-Message-Id: <20221102161031.5820-24-vishal.moola@gmail.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221102161031.5820-1-vishal.moola@gmail.com>
-References: <20221102161031.5820-1-vishal.moola@gmail.com>
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7Pv570SEvnmFF3irGKaCn8miqYpUbWAxcs7BzkE51DA=;
+        b=CI/3xTwPPYVAWTww2SfsEuWQnOOqdH3arqE915QjwuhRXdZU4AuZNCtgJc+0WDCqQF
+         Q0waBb5M+6M41hEGE6fr9eI7S+lP0pHF9wpZAOOLA1bNyv0PmlivPgU3i5KJG2JASfO1
+         vRZ55jaPVwOmc2wXN/0S3MU0w695AyKZADNSJHPNUd4w8fBxgFu3+OHMtzqKSBupD5zP
+         TSnEaRjIHsP18moVF46lZ/7/A8aY7Q/Un3ibzbugWVHWXMWsqoxJUFNbPY+eMrm0MpG5
+         3zbjOsLYG13tqfdbDsvCfQe/4iIa2beHtJwbGEmNAQzzKXH/mSXwqhDY6yUJg0e5QLBd
+         Q7tQ==
+X-Gm-Message-State: ACrzQf2rNFxOB3CrkmhPIc0LkUSTY9vzRpKBDa3Wpiw57QjLUWPNw+2B
+        +EEQwNtzzFzY6VLfg49OqB7+v4Rs6HSmDrOfnyoJUt61xpaK
+X-Google-Smtp-Source: AMsMyM4sFq040U2C8tvm3d3YRBUdzdH1I4h7UiuQIjP4qkaYcpMkOF1TrdPykSmFLqxUVkVuakMltVWoS1/gw1tqo+bFiq+6yAGk
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a92:c70f:0:b0:300:9aa6:a0d2 with SMTP id
+ a15-20020a92c70f000000b003009aa6a0d2mr13737762ilp.317.1667405988797; Wed, 02
+ Nov 2022 09:19:48 -0700 (PDT)
+Date:   Wed, 02 Nov 2022 09:19:48 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a8a5cc05ec7f35fd@google.com>
+Subject: [syzbot] possible deadlock in btrfs_lock_root_node
+From:   syzbot <syzbot+a033efd03287efd49df1@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-All callers to find_get_pages_range_tag(), find_get_pages_tag(),
-pagevec_lookup_range_tag(), and pagevec_lookup_tag() have been removed.
+Hello,
 
-Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    bbed346d5a96 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=10bc7961880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3a4a45d2d827c1e
+dashboard link: https://syzkaller.appspot.com/bug?extid=a033efd03287efd49df1
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e8e91bc79312/disk-bbed346d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c1cb3fb3b77e/vmlinux-bbed346d.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a033efd03287efd49df1@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.0.0-rc7-syzkaller-18095-gbbed346d5a96 #0 Not tainted
+------------------------------------------------------
+syz-executor.3/1107 is trying to acquire lock:
+ffff000112e0b598 (&mm->mmap_lock){++++}-{3:3}, at: __might_fault+0x54/0xb4 mm/memory.c:5576
+
+but task is already holding lock:
+ffff00011a821388 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
+ffff00011a821388 (btrfs-root-00){++++}-{3:3}, at: btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
+ffff00011a821388 (btrfs-root-00){++++}-{3:3}, at: btrfs_read_lock_root_node+0x13c/0x1c0 fs/btrfs/locking.c:279
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (btrfs-root-00){++++}-{3:3}:
+       down_write_nested+0x64/0xd8 kernel/locking/rwsem.c:1662
+       __btrfs_tree_lock fs/btrfs/locking.c:196 [inline]
+       btrfs_tree_lock fs/btrfs/locking.c:203 [inline]
+       btrfs_lock_root_node+0x140/0x1d0 fs/btrfs/locking.c:256
+       commit_cowonly_roots+0x64/0x3b8 fs/btrfs/transaction.c:1284
+       btrfs_commit_transaction+0x948/0x12d8 fs/btrfs/transaction.c:2366
+       btrfs_commit_super+0x84/0xa0 fs/btrfs/disk-io.c:4426
+       close_ctree+0x1dc/0x60c fs/btrfs/disk-io.c:4580
+       btrfs_put_super+0x20/0x30 fs/btrfs/super.c:392
+       generic_shutdown_super+0x8c/0x190 fs/super.c:491
+       kill_anon_super+0x24/0x44 fs/super.c:1085
+       btrfs_kill_super+0x24/0x3c fs/btrfs/super.c:2440
+       deactivate_locked_super+0x70/0xe8 fs/super.c:332
+       deactivate_super+0xd0/0xd4 fs/super.c:363
+       cleanup_mnt+0x1f8/0x234 fs/namespace.c:1186
+       __cleanup_mnt+0x20/0x30 fs/namespace.c:1193
+       task_work_run+0xc4/0x14c kernel/task_work.c:177
+       resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+       do_notify_resume+0x174/0x1f0 arch/arm64/kernel/signal.c:1127
+       prepare_exit_to_user_mode arch/arm64/kernel/entry-common.c:137 [inline]
+       exit_to_user_mode arch/arm64/kernel/entry-common.c:142 [inline]
+       el0_svc+0x9c/0x150 arch/arm64/kernel/entry-common.c:637
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
+       el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+
+-> #2 (&fs_info->reloc_mutex){+.+.}-{3:3}:
+       __mutex_lock_common+0xd4/0xca8 kernel/locking/mutex.c:603
+       __mutex_lock kernel/locking/mutex.c:747 [inline]
+       mutex_lock_nested+0x38/0x44 kernel/locking/mutex.c:799
+       btrfs_commit_transaction+0x824/0x12d8 fs/btrfs/transaction.c:2306
+       btrfs_commit_super+0x84/0xa0 fs/btrfs/disk-io.c:4426
+       close_ctree+0x1dc/0x60c fs/btrfs/disk-io.c:4580
+       btrfs_put_super+0x20/0x30 fs/btrfs/super.c:392
+       generic_shutdown_super+0x8c/0x190 fs/super.c:491
+       kill_anon_super+0x24/0x44 fs/super.c:1085
+       btrfs_kill_super+0x24/0x3c fs/btrfs/super.c:2440
+       deactivate_locked_super+0x70/0xe8 fs/super.c:332
+       deactivate_super+0xd0/0xd4 fs/super.c:363
+       cleanup_mnt+0x1f8/0x234 fs/namespace.c:1186
+       __cleanup_mnt+0x20/0x30 fs/namespace.c:1193
+       task_work_run+0xc4/0x14c kernel/task_work.c:177
+       resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+       do_notify_resume+0x174/0x1f0 arch/arm64/kernel/signal.c:1127
+       prepare_exit_to_user_mode arch/arm64/kernel/entry-common.c:137 [inline]
+       exit_to_user_mode arch/arm64/kernel/entry-common.c:142 [inline]
+       el0_svc+0x9c/0x150 arch/arm64/kernel/entry-common.c:637
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
+       el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+
+-> #1 (sb_internal#2){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1826 [inline]
+       sb_start_intwrite include/linux/fs.h:1948 [inline]
+       start_transaction+0x360/0x944 fs/btrfs/transaction.c:683
+       btrfs_join_transaction+0x30/0x40 fs/btrfs/transaction.c:795
+       btrfs_dirty_inode+0x50/0x140 fs/btrfs/inode.c:6103
+       btrfs_update_time+0x1c0/0x1e8 fs/btrfs/inode.c:6145
+       inode_update_time fs/inode.c:1872 [inline]
+       touch_atime+0x1f0/0x4a8 fs/inode.c:1945
+       file_accessed include/linux/fs.h:2516 [inline]
+       btrfs_file_mmap+0x50/0x88 fs/btrfs/file.c:2407
+       call_mmap include/linux/fs.h:2192 [inline]
+       mmap_region+0x7fc/0xc14 mm/mmap.c:1752
+       do_mmap+0x644/0x97c mm/mmap.c:1540
+       vm_mmap_pgoff+0xe8/0x1d0 mm/util.c:552
+       ksys_mmap_pgoff+0x1cc/0x278 mm/mmap.c:1586
+       __do_sys_mmap arch/arm64/kernel/sys.c:28 [inline]
+       __se_sys_mmap arch/arm64/kernel/sys.c:21 [inline]
+       __arm64_sys_mmap+0x58/0x6c arch/arm64/kernel/sys.c:21
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
+       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
+       el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+
+-> #0 (&mm->mmap_lock){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3095 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+       validate_chain kernel/locking/lockdep.c:3829 [inline]
+       __lock_acquire+0x1530/0x30a4 kernel/locking/lockdep.c:5053
+       lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5666
+       __might_fault+0x7c/0xb4 mm/memory.c:5577
+       _copy_to_user include/linux/uaccess.h:134 [inline]
+       copy_to_user include/linux/uaccess.h:160 [inline]
+       btrfs_ioctl_get_subvol_rootref+0x3a8/0x4bc fs/btrfs/ioctl.c:3203
+       btrfs_ioctl+0xa08/0xa64 fs/btrfs/ioctl.c:5556
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:870 [inline]
+       __se_sys_ioctl fs/ioctl.c:856 [inline]
+       __arm64_sys_ioctl+0xd0/0x140 fs/ioctl.c:856
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
+       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
+       el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+
+other info that might help us debug this:
+
+Chain exists of:
+  &mm->mmap_lock --> &fs_info->reloc_mutex --> btrfs-root-00
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(btrfs-root-00);
+                               lock(&fs_info->reloc_mutex);
+                               lock(btrfs-root-00);
+  lock(&mm->mmap_lock);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.3/1107:
+ #0: ffff00011a821388 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
+ #0: ffff00011a821388 (btrfs-root-00){++++}-{3:3}, at: btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
+ #0: ffff00011a821388 (btrfs-root-00){++++}-{3:3}, at: btrfs_read_lock_root_node+0x13c/0x1c0 fs/btrfs/locking.c:279
+
+stack backtrace:
+CPU: 1 PID: 1107 Comm: syz-executor.3 Not tainted 6.0.0-rc7-syzkaller-18095-gbbed346d5a96 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/30/2022
+Call trace:
+ dump_backtrace+0x1c4/0x1f0 arch/arm64/kernel/stacktrace.c:156
+ show_stack+0x2c/0x54 arch/arm64/kernel/stacktrace.c:163
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x104/0x16c lib/dump_stack.c:106
+ dump_stack+0x1c/0x58 lib/dump_stack.c:113
+ print_circular_bug+0x2c4/0x2c8 kernel/locking/lockdep.c:2053
+ check_noncircular+0x14c/0x154 kernel/locking/lockdep.c:2175
+ check_prev_add kernel/locking/lockdep.c:3095 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+ validate_chain kernel/locking/lockdep.c:3829 [inline]
+ __lock_acquire+0x1530/0x30a4 kernel/locking/lockdep.c:5053
+ lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5666
+ __might_fault+0x7c/0xb4 mm/memory.c:5577
+ _copy_to_user include/linux/uaccess.h:134 [inline]
+ copy_to_user include/linux/uaccess.h:160 [inline]
+ btrfs_ioctl_get_subvol_rootref+0x3a8/0x4bc fs/btrfs/ioctl.c:3203
+ btrfs_ioctl+0xa08/0xa64 fs/btrfs/ioctl.c:5556
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __arm64_sys_ioctl+0xd0/0x140 fs/ioctl.c:856
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+ el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
+ el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
+ el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
+ el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+
+
 ---
- include/linux/pagemap.h | 10 -------
- include/linux/pagevec.h |  8 ------
- mm/filemap.c            | 60 -----------------------------------------
- mm/swap.c               | 10 -------
- 4 files changed, 88 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 28275eecb949..c83dfcbc19b3 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -742,16 +742,6 @@ unsigned filemap_get_folios_contig(struct address_space *mapping,
- 		pgoff_t *start, pgoff_t end, struct folio_batch *fbatch);
- unsigned filemap_get_folios_tag(struct address_space *mapping, pgoff_t *start,
- 		pgoff_t end, xa_mark_t tag, struct folio_batch *fbatch);
--unsigned find_get_pages_range_tag(struct address_space *mapping, pgoff_t *index,
--			pgoff_t end, xa_mark_t tag, unsigned int nr_pages,
--			struct page **pages);
--static inline unsigned find_get_pages_tag(struct address_space *mapping,
--			pgoff_t *index, xa_mark_t tag, unsigned int nr_pages,
--			struct page **pages)
--{
--	return find_get_pages_range_tag(mapping, index, (pgoff_t)-1, tag,
--					nr_pages, pages);
--}
- 
- struct page *grab_cache_page_write_begin(struct address_space *mapping,
- 			pgoff_t index);
-diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
-index 215eb6c3bdc9..a520632297ac 100644
---- a/include/linux/pagevec.h
-+++ b/include/linux/pagevec.h
-@@ -26,14 +26,6 @@ struct pagevec {
- };
- 
- void __pagevec_release(struct pagevec *pvec);
--unsigned pagevec_lookup_range_tag(struct pagevec *pvec,
--		struct address_space *mapping, pgoff_t *index, pgoff_t end,
--		xa_mark_t tag);
--static inline unsigned pagevec_lookup_tag(struct pagevec *pvec,
--		struct address_space *mapping, pgoff_t *index, xa_mark_t tag)
--{
--	return pagevec_lookup_range_tag(pvec, mapping, index, (pgoff_t)-1, tag);
--}
- 
- static inline void pagevec_init(struct pagevec *pvec)
- {
-diff --git a/mm/filemap.c b/mm/filemap.c
-index cc4be51eae5b..8ad45c2e22cd 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2318,66 +2318,6 @@ unsigned filemap_get_folios_tag(struct address_space *mapping, pgoff_t *start,
- }
- EXPORT_SYMBOL(filemap_get_folios_tag);
- 
--/**
-- * find_get_pages_range_tag - Find and return head pages matching @tag.
-- * @mapping:	the address_space to search
-- * @index:	the starting page index
-- * @end:	The final page index (inclusive)
-- * @tag:	the tag index
-- * @nr_pages:	the maximum number of pages
-- * @pages:	where the resulting pages are placed
-- *
-- * Like find_get_pages_range(), except we only return head pages which are
-- * tagged with @tag.  @index is updated to the index immediately after the
-- * last page we return, ready for the next iteration.
-- *
-- * Return: the number of pages which were found.
-- */
--unsigned find_get_pages_range_tag(struct address_space *mapping, pgoff_t *index,
--			pgoff_t end, xa_mark_t tag, unsigned int nr_pages,
--			struct page **pages)
--{
--	XA_STATE(xas, &mapping->i_pages, *index);
--	struct folio *folio;
--	unsigned ret = 0;
--
--	if (unlikely(!nr_pages))
--		return 0;
--
--	rcu_read_lock();
--	while ((folio = find_get_entry(&xas, end, tag))) {
--		/*
--		 * Shadow entries should never be tagged, but this iteration
--		 * is lockless so there is a window for page reclaim to evict
--		 * a page we saw tagged.  Skip over it.
--		 */
--		if (xa_is_value(folio))
--			continue;
--
--		pages[ret] = &folio->page;
--		if (++ret == nr_pages) {
--			*index = folio->index + folio_nr_pages(folio);
--			goto out;
--		}
--	}
--
--	/*
--	 * We come here when we got to @end. We take care to not overflow the
--	 * index @index as it confuses some of the callers. This breaks the
--	 * iteration when there is a page at index -1 but that is already
--	 * broken anyway.
--	 */
--	if (end == (pgoff_t)-1)
--		*index = (pgoff_t)-1;
--	else
--		*index = end + 1;
--out:
--	rcu_read_unlock();
--
--	return ret;
--}
--EXPORT_SYMBOL(find_get_pages_range_tag);
--
- /*
-  * CD/DVDs are error prone. When a medium error occurs, the driver may fail
-  * a _large_ part of the i/o request. Imagine the worst scenario:
-diff --git a/mm/swap.c b/mm/swap.c
-index 955930f41d20..89351b6dd149 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -1098,16 +1098,6 @@ void folio_batch_remove_exceptionals(struct folio_batch *fbatch)
- 	fbatch->nr = j;
- }
- 
--unsigned pagevec_lookup_range_tag(struct pagevec *pvec,
--		struct address_space *mapping, pgoff_t *index, pgoff_t end,
--		xa_mark_t tag)
--{
--	pvec->nr = find_get_pages_range_tag(mapping, index, end, tag,
--					PAGEVEC_SIZE, pvec->pages);
--	return pagevec_count(pvec);
--}
--EXPORT_SYMBOL(pagevec_lookup_range_tag);
--
- /*
-  * Perform any setup for the swap system
-  */
--- 
-2.38.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
