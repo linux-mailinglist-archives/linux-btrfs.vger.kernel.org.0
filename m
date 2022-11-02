@@ -2,51 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D35C1616B8E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Nov 2022 19:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6F4616E79
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Nov 2022 21:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbiKBSGw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Nov 2022 14:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
+        id S230454AbiKBUUe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Nov 2022 16:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbiKBSGn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Nov 2022 14:06:43 -0400
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B942EF64
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Nov 2022 11:06:43 -0700 (PDT)
-Received: by mail-il1-f199.google.com with SMTP id s15-20020a056e02216f00b00300d14ba82bso1785752ilv.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Nov 2022 11:06:42 -0700 (PDT)
+        with ESMTP id S230423AbiKBUUc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Nov 2022 16:20:32 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC289261A
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Nov 2022 13:20:29 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id q1so17181433pgl.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Nov 2022 13:20:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=57kILIoSz8yRVD1E0E9JJTujx9qW1Ms0Hk8p86fG9R0=;
+        b=UTtGi7kH0ogYeP8fOIa/6JV1UaS8nmG0fYlTYXrH0o/nTpIddNvCBygQ/RmxLrZM83
+         +BJvLRJSyC0nmbKpHKw7AbsPSbwheSZuLvvZiYK1mAbA6rDq2JMSSjpgrRHjZ0gqqAUl
+         1kfcY1nXvVnpasriMeR2xRkq8GvbnQSpMNHq3zCcIVWbi95s8+ftsLZjyyO2W1kUGrqG
+         Lklh6jBnMeCTle/gcZ8WOhvFVldAfqS+IMoGIYfeX4Bd20wkUkDp2Fc2gVpEly8NdOI8
+         PcuOTd3x1p4cOUp4l1BPzSD4LiTYUwUkc4OhcpIQXZqx4WW9+GB0HaZtOZR3PxCuQTBa
+         UtcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=q9DM+dSTltJpPeB5NG0nQSIBurTpKE/AraTlYTnn+p4=;
-        b=lIO9G2mqFzSvRZNS0CFcpDSZWYL6UmELem8tUmafMDn6ngCBWn3p6Oyv+nrKDpF24I
-         RLe3dVTqDbzI9rrq77CyHp8iGv+CjO+hc2ofcgW+cn6q+VpZ2fmHHAr2j44RUbe2msbH
-         +HCpW1/iadQlAqBNiJHXgx1u+tnBwaMTpX4JhjCoSf8WWYP4kHYZXodqdeEnlFX1DVEk
-         bwxrfJvdbfigkOq04eIKTUkurt0VJJ1sdDnJF0xWkL+LRsIoJOB+wCYAlW2ZFCv4vSVt
-         8tFfJg2n7unAeZ1WEdgIprvJFjvBAn4tEVcBorjGlcUga/LZY8NmQA8WgzeoGAiuf/wt
-         Uf+Q==
-X-Gm-Message-State: ACrzQf2pmAmxsrqKYhc1E4n92a5MV1CQRk2ZzP9ouHbKdiqzGN3f3ke2
-        i6Shi56UpYnsSYamIcOzuJWHVru2m/0WXQmXUagK0CrTMisu
-X-Google-Smtp-Source: AMsMyM6cac5Pzrl8neaFAD4OUwhD3WW+pfKknek5X1+KAiHTUuHkumAlpeEgmVpRhCe83NT+X4hz4V/xUc+o8wdTn47Zqxm3W63O
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:16ca:b0:2ff:7c9b:3ab5 with SMTP id
- 10-20020a056e0216ca00b002ff7c9b3ab5mr15335279ilx.9.1667412402327; Wed, 02 Nov
- 2022 11:06:42 -0700 (PDT)
-Date:   Wed, 02 Nov 2022 11:06:42 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ef589805ec80b371@google.com>
-Subject: [syzbot] kernel BUG in dev_args_match_device
-From:   syzbot <syzbot+031687116258450f9853@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=no
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=57kILIoSz8yRVD1E0E9JJTujx9qW1Ms0Hk8p86fG9R0=;
+        b=zd0xx92X5weGAQZ/B+jMQYCcWfFRJquwGGGlzqH+l0/xRBdio9PJjPId/GkC3g9cNB
+         qdSCF+v3N4f6PU3bJrl0oY4Pb7jfBxo6XABrrI5pSivLcyXpQZxUmMG1TMUgNCmplcVM
+         isnViefqE4T7BhvFrE3JURp7PbiJHwnCYkWtxv/znddRvEG5V6zjuHW5Wvaa7bq9pV3D
+         a/azVFFHsxV4hwkB8nrgIvSFKeJyJ2iExyOrYjCWbkwvVP809emwczetbXlYlBLLC9rU
+         why1dYv4IrzUv0DCBW8JgehNCPwSERG5922XcfGK5ktj8Qd8AMq3QMQS3bYMErlG++oB
+         SryA==
+X-Gm-Message-State: ACrzQf3y43bMJ5waE4MEeMuDhNloaTcd8J9i3vKifKrGKPBkTZzROXYa
+        Q7EUnj8EGbW+ECrH68D5T8SbMw==
+X-Google-Smtp-Source: AMsMyM4ttZ/QS0h6QM0NA77+hhpBabXVgMapZB5cRBsmelv2LbqoJWwnk4zHIZj7U6GkTt9Y1GnbRw==
+X-Received: by 2002:a05:6a00:b89:b0:56d:2a21:a6b3 with SMTP id g9-20020a056a000b8900b0056d2a21a6b3mr23147252pfj.56.1667420429319;
+        Wed, 02 Nov 2022 13:20:29 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id w14-20020a170902e88e00b00176ae5c0f38sm8514395plg.178.2022.11.02.13.20.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Nov 2022 13:20:28 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <8AAF3B43-BCD3-43B4-BC78-2E9E8E702792@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_205DE4FA-04DF-4681-96DA-4BD0D9C91C0F";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: consolidate btrfs checksumming, repair and bio splitting
+Date:   Wed, 2 Nov 2022 14:20:24 -0600
+In-Reply-To: <20221102062907.GA8619@lst.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        David Sterba <dsterba@suse.cz>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Chris Mason <clm@meta.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+References: <20220901074216.1849941-1-hch@lst.de>
+ <347dc0b3-0388-54ee-6dcb-0c1d0ca08d05@wdc.com>
+ <20221024144411.GA25172@lst.de>
+ <773539e2-b5f1-8386-aa2a-96086f198bf8@meta.com>
+ <20221024171042.GF5824@suse.cz>
+ <9f443843-4145-155b-2fd0-50613a9f7913@wdc.com>
+ <20221026074145.2be5ca09@gandalf.local.home>
+ <20221031121912.GY5824@twin.jikos.cz>
+ <20221102000022.36df0cc1@rorschach.local.home> <20221102062907.GA8619@lst.de>
+X-Mailer: Apple Mail (2.3273)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,86 +89,71 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--Apple-Mail=_205DE4FA-04DF-4681-96DA-4BD0D9C91C0F
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-HEAD commit:    b229b6ca5abb Merge tag 'perf-tools-fixes-for-v6.1-2022-10-..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1744c1fc880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1d3548a4365ba17d
-dashboard link: https://syzkaller.appspot.com/bug?extid=031687116258450f9853
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+On Nov 2, 2022, at 12:29 AM, Christoph Hellwig <hch@lst.de> wrote:
+> 
+> On Wed, Nov 02, 2022 at 12:00:22AM -0400, Steven Rostedt wrote:
+>> It really comes down to how badly do you want Christoph's code?
+> 
+> Well, Dave has made it clear implicily that he doesn't seem to care about
+> it at all through all this.  The painful part is that I need to come up
+> with a series to revert all the code that he refused to add the notice
+> for, which is quite involved and includes various bug fixes.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+This may be an unpopular opinion for some, but since all of these previous
+contributions to the kernel are under GPL, there is no "taking back the
+older commits" from the btrfs code.  There is also no basis to prevent the
+use/merge/rework or other modifications to GPL code, whether it is part of
+btrfs or anywhere else in the kernel.  That is one of the strengths of the
+GPL, is that you can't "take it back" after code has been released.  I don't
+think anything David has done has violated the terms of the GPL itself.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/24728b72a896/disk-b229b6ca.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/10a3c40c60e1/vmlinux-b229b6ca.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/69f963b02b7e/bzImage-b229b6ca.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+031687116258450f9853@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/ctree.h:3710!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 2686 Comm: syz-executor.5 Not tainted 6.1.0-rc2-syzkaller-00105-gb229b6ca5abb #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/11/2022
-RIP: 0010:assertfail+0x1a/0x1c fs/btrfs/ctree.h:3710
-Code: 00 00 e8 7e 9c 55 f7 eb e3 e8 77 9c 55 f7 eb dc 89 f1 48 89 fe 48 c7 c7 60 c8 db 8a 48 c7 c2 40 ed db 8a 31 c0 e8 27 86 ff ff <0f> 0b e8 54 9c 55 f7 48 c7 c7 60 f9 82 91 e9 e8 f9 e7 f9 89 f1 48
-RSP: 0018:ffffc90003a4fd80 EFLAGS: 00010246
-RAX: 0000000000000057 RBX: 0000000000000000 RCX: 88ff9485f0ebf200
-RDX: ffffc90004609000 RSI: 0000000000003f0f RDI: 0000000000003f10
-RBP: ffffc90003a4fe70 R08: ffffffff816b8dfd R09: fffff52000749f69
-R10: fffff52000749f69 R11: 1ffff92000749f68 R12: ffffc90003a4fe60
-R13: dffffc0000000000 R14: ffff88807f3e4000 R15: ffffc90003a4fe60
-FS:  00007f0048a6c700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555e09b0b000 CR3: 000000003ba9d000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- dev_args_match_device+0x1e6/0x220 fs/btrfs/volumes.c:6921
- btrfs_find_device+0xbb/0x250 fs/btrfs/volumes.c:6950
- btrfs_ioctl_dev_info+0x3f0/0xb20 fs/btrfs/ioctl.c:3740
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f0047c8b5a9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f0048a6c168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f0047dac050 RCX: 00007f0047c8b5a9
-RDX: 0000000020000980 RSI: 00000000d000941e RDI: 0000000000000003
-RBP: 00007f0047ce67b0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffc080c58df R14: 00007f0048a6c300 R15: 0000000000022000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:assertfail+0x1a/0x1c fs/btrfs/ctree.h:3710
-Code: 00 00 e8 7e 9c 55 f7 eb e3 e8 77 9c 55 f7 eb dc 89 f1 48 89 fe 48 c7 c7 60 c8 db 8a 48 c7 c2 40 ed db 8a 31 c0 e8 27 86 ff ff <0f> 0b e8 54 9c 55 f7 48 c7 c7 60 f9 82 91 e9 e8 f9 e7 f9 89 f1 48
-RSP: 0018:ffffc90003a4fd80 EFLAGS: 00010246
-RAX: 0000000000000057 RBX: 0000000000000000 RCX: 88ff9485f0ebf200
-RDX: ffffc90004609000 RSI: 0000000000003f0f RDI: 0000000000003f10
-RBP: ffffc90003a4fe70 R08: ffffffff816b8dfd R09: fffff52000749f69
-R10: fffff52000749f69 R11: 1ffff92000749f68 R12: ffffc90003a4fe60
-R13: dffffc0000000000 R14: ffff88807f3e4000 R15: ffffc90003a4fe60
-FS:  00007f0048a6c700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000980 CR3: 000000003ba9d000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+David, as btrfs maintainer, doesn't even *have* to accept the patches to
+revert changes to the btrfs code branch.  The only real option for Christoph
+would be to chose not to contribute new fixes to btrfs in the future.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+That said, it doesn't make sense to get into a pissing fight about this.
+The best solution here is for Christoph and David to come to an amicable
+agreement on what copyright notices that David might accept into the btrfs
+code.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_205DE4FA-04DF-4681-96DA-4BD0D9C91C0F
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmNi0QgACgkQcqXauRfM
+H+CkOBAAvDj60VKg+NfYQyaMaxR2l+tTHmx8rrC9OYh/XtXEYbVQJqG0eJ8i0M/b
+WAkJA98JU+HatoWaXIvEkn4Tlec+YIEurQ+swtfuQcomUcEBYASLkL5PvHyIOAFc
+naLeoFZ0aWjPwJco9or3CnxXrUCEsAHK21GiG05dga//xK0zD/89iiLVSM54fOOu
+fKS8LW3vAOrqSiwHbxmnP4lGCvLT4mSbtSQXUlb8MsxYWtdj9CurzdKWhQ2P33X2
+e7hexB/cs6dO9C9peXcq5oe8DfQArv2qWwiRNnBqrhtUMTdpdBYo1mtW8zRvciwt
+4Q5gDHhScFS86CTqcDapzGfl6FAmHcOAyMvfcMckewGVniBpPzSuF2o81yzJppO+
+OIiXn4BUHexjSCJUoE98Pfkh3ynxNsth90Mb54czuNzVYZk4LelJ7B+fp0bG/Oju
+YBsDzLkIPcpfgnCQlE9dC+yRvpUSBZ9z0BQCy9VQl1TW87oJuZMDmnCy/IdjhpzV
+vnx30N9hYJMwqZk4J/+BkIq6BgIjDx0q7cAPOw9sEo2CPpRnPS6iyJYJBGyis8MA
+ozNInSrq2KLphmpr0S2RgRfN5USssQSSFh36q1mJHz7g1gTGpWTZUkfkXr4SaMVv
+asQVM8j7SQYJOc2k+xkzn8hjztFVs6d6LRXO0Y/poSHsc38B0xg=
+=8yPT
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_205DE4FA-04DF-4681-96DA-4BD0D9C91C0F--
