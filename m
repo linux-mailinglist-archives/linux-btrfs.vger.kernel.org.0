@@ -2,51 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B57616B29
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Nov 2022 18:47:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D35C1616B8E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Nov 2022 19:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbiKBRqz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Nov 2022 13:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46076 "EHLO
+        id S230421AbiKBSGw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Nov 2022 14:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbiKBRqy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Nov 2022 13:46:54 -0400
+        with ESMTP id S230489AbiKBSGn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Nov 2022 14:06:43 -0400
 Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07F612ACD
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Nov 2022 10:46:53 -0700 (PDT)
-Received: by mail-il1-f199.google.com with SMTP id k6-20020a92c246000000b00300a1de59baso10798393ilo.23
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Nov 2022 10:46:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B942EF64
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Nov 2022 11:06:43 -0700 (PDT)
+Received: by mail-il1-f199.google.com with SMTP id s15-20020a056e02216f00b00300d14ba82bso1785752ilv.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Nov 2022 11:06:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fu2Jh4mtVJYh4m6XIh04CrENtI12FDONZF290zEmHHA=;
-        b=yRw6Zvzf1kUXEdyJ+ZEjmdBiXibEtifbxFdYV4zrUKWNSLNI0uNtYUePIl28qqbNVY
-         UxPsxHb1Qpv2QEtc9YpiuryGvU8qPIA4HMvVHhWRNCiJauex3rA62GTbAHRJHRQqZ3kK
-         fQKXtKFwKfc4FhxBmTBTOgOg/4hva6EG4RL9M31l1LWGhP4IdKv9jRqyncI/WxgMFrgE
-         XTq0pm+ePBg5RUG9O1n2n2CWncb6Su4T1kXc6fzKtJL9MOh+HC47zurRD+rbGo/6CHCK
-         TnEqNJ115+NkanbA1ft86JGIx0hrewamf9GZJLygwX/LObt5d2ftgx/betxCdVfJ2xRG
-         zg3g==
-X-Gm-Message-State: ACrzQf22/aZGHaKibCOkqLIA1fEHbwp2tIYz/Qu54Tn5ET5rSYHvAbGU
-        C6NOHoL1bCjtCxAtEVwo/A7uAUKh7Pjlv8gi6qJh+uN/U3sz
-X-Google-Smtp-Source: AMsMyM7X/DQrD0nktD6nvPbDSJURuMPQQuwt9AapXbFXj4H0UDTMmKKbah7SXCKKHJaeOxtJr5dl2KFSyOoboq13dEo6LjT9ampP
+        bh=q9DM+dSTltJpPeB5NG0nQSIBurTpKE/AraTlYTnn+p4=;
+        b=lIO9G2mqFzSvRZNS0CFcpDSZWYL6UmELem8tUmafMDn6ngCBWn3p6Oyv+nrKDpF24I
+         RLe3dVTqDbzI9rrq77CyHp8iGv+CjO+hc2ofcgW+cn6q+VpZ2fmHHAr2j44RUbe2msbH
+         +HCpW1/iadQlAqBNiJHXgx1u+tnBwaMTpX4JhjCoSf8WWYP4kHYZXodqdeEnlFX1DVEk
+         bwxrfJvdbfigkOq04eIKTUkurt0VJJ1sdDnJF0xWkL+LRsIoJOB+wCYAlW2ZFCv4vSVt
+         8tFfJg2n7unAeZ1WEdgIprvJFjvBAn4tEVcBorjGlcUga/LZY8NmQA8WgzeoGAiuf/wt
+         Uf+Q==
+X-Gm-Message-State: ACrzQf2pmAmxsrqKYhc1E4n92a5MV1CQRk2ZzP9ouHbKdiqzGN3f3ke2
+        i6Shi56UpYnsSYamIcOzuJWHVru2m/0WXQmXUagK0CrTMisu
+X-Google-Smtp-Source: AMsMyM6cac5Pzrl8neaFAD4OUwhD3WW+pfKknek5X1+KAiHTUuHkumAlpeEgmVpRhCe83NT+X4hz4V/xUc+o8wdTn47Zqxm3W63O
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:31c2:b0:35a:c5b1:b567 with SMTP id
- n2-20020a05663831c200b0035ac5b1b567mr15556454jav.58.1667411213038; Wed, 02
- Nov 2022 10:46:53 -0700 (PDT)
-Date:   Wed, 02 Nov 2022 10:46:53 -0700
+X-Received: by 2002:a05:6e02:16ca:b0:2ff:7c9b:3ab5 with SMTP id
+ 10-20020a056e0216ca00b002ff7c9b3ab5mr15335279ilx.9.1667412402327; Wed, 02 Nov
+ 2022 11:06:42 -0700 (PDT)
+Date:   Wed, 02 Nov 2022 11:06:42 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000c379205ec806d6e@google.com>
-Subject: [syzbot] WARNING in btrfs_commit_transaction
-From:   syzbot <syzbot+9c37714c07194d816417@syzkaller.appspotmail.com>
+Message-ID: <000000000000ef589805ec80b371@google.com>
+Subject: [syzbot] kernel BUG in dev_args_match_device
+From:   syzbot <syzbot+031687116258450f9853@syzkaller.appspotmail.com>
 To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
         syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -59,71 +60,74 @@ syzbot found the following issue on:
 
 HEAD commit:    b229b6ca5abb Merge tag 'perf-tools-fixes-for-v6.1-2022-10-..
 git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=12db9c7e880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a66c6c673fb555e8
-dashboard link: https://syzkaller.appspot.com/bug?extid=9c37714c07194d816417
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17401632880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13176716880000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1744c1fc880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1d3548a4365ba17d
+dashboard link: https://syzkaller.appspot.com/bug?extid=031687116258450f9853
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ba5b49fa77de/disk-b229b6ca.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7c061f2ae4dc/vmlinux-b229b6ca.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/bc45c1300e9b/bzImage-b229b6ca.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/62077524a72d/mount_0.gz
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e432a6880000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16e432a6880000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12e432a6880000
+disk image: https://storage.googleapis.com/syzbot-assets/24728b72a896/disk-b229b6ca.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/10a3c40c60e1/vmlinux-b229b6ca.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/69f963b02b7e/bzImage-b229b6ca.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9c37714c07194d816417@syzkaller.appspotmail.com
+Reported-by: syzbot+031687116258450f9853@syzkaller.appspotmail.com
 
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
-BTRFS info (device loop0): checking UUID tree
-BTRFS warning (device loop0): Skipping commit of aborted transaction.
 ------------[ cut here ]------------
-BTRFS: Transaction aborted (error -12)
-WARNING: CPU: 0 PID: 3608 at fs/btrfs/transaction.c:1958 cleanup_transaction fs/btrfs/transaction.c:1958 [inline]
-WARNING: CPU: 0 PID: 3608 at fs/btrfs/transaction.c:1958 btrfs_commit_transaction.cold+0x356/0xae3 fs/btrfs/transaction.c:2531
-Modules linked in:
-CPU: 0 PID: 3608 Comm: syz-executor286 Not tainted 6.1.0-rc2-syzkaller-00105-gb229b6ca5abb #0
+kernel BUG at fs/btrfs/ctree.h:3710!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 2686 Comm: syz-executor.5 Not tainted 6.1.0-rc2-syzkaller-00105-gb229b6ca5abb #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/11/2022
-RIP: 0010:cleanup_transaction fs/btrfs/transaction.c:1958 [inline]
-RIP: 0010:btrfs_commit_transaction.cold+0x356/0xae3 fs/btrfs/transaction.c:2531
-Code: fe ff ff e8 fa 28 27 f8 0f 0b e9 3f fe ff ff 31 db e9 d9 fe ff ff e8 e7 28 27 f8 44 89 ee 48 c7 c7 60 a5 37 8a e8 44 4a f4 ff <0f> 0b bb 01 00 00 00 e9 b9 fe ff ff e8 c7 28 27 f8 48 8b 95 00 ff
-RSP: 0018:ffffc9000402fc70 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff888077eb4000 RCX: 0000000000000000
-RDX: ffff88807c599d40 RSI: ffffffff81621b98 RDI: fffff52000805f80
-RBP: ffffc9000402fdf0 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000046525442 R12: 0000000000000000
-R13: 00000000fffffff4 R14: ffff8880704d60a8 R15: ffff888077eb4000
-FS:  0000555556f2b300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+RIP: 0010:assertfail+0x1a/0x1c fs/btrfs/ctree.h:3710
+Code: 00 00 e8 7e 9c 55 f7 eb e3 e8 77 9c 55 f7 eb dc 89 f1 48 89 fe 48 c7 c7 60 c8 db 8a 48 c7 c2 40 ed db 8a 31 c0 e8 27 86 ff ff <0f> 0b e8 54 9c 55 f7 48 c7 c7 60 f9 82 91 e9 e8 f9 e7 f9 89 f1 48
+RSP: 0018:ffffc90003a4fd80 EFLAGS: 00010246
+RAX: 0000000000000057 RBX: 0000000000000000 RCX: 88ff9485f0ebf200
+RDX: ffffc90004609000 RSI: 0000000000003f0f RDI: 0000000000003f10
+RBP: ffffc90003a4fe70 R08: ffffffff816b8dfd R09: fffff52000749f69
+R10: fffff52000749f69 R11: 1ffff92000749f68 R12: ffffc90003a4fe60
+R13: dffffc0000000000 R14: ffff88807f3e4000 R15: ffffc90003a4fe60
+FS:  00007f0048a6c700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe136c1ee0 CR3: 000000006fa8b000 CR4: 0000000000350ef0
+CR2: 0000555e09b0b000 CR3: 000000003ba9d000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- btrfs_sync_fs+0x169/0x810 fs/btrfs/super.c:1527
- sync_fs_one_sb fs/sync.c:84 [inline]
- sync_fs_one_sb+0x107/0x140 fs/sync.c:80
- iterate_supers+0x13c/0x290 fs/super.c:723
- ksys_sync+0xa8/0x150 fs/sync.c:104
- __do_sys_sync+0xa/0x10 fs/sync.c:113
+ dev_args_match_device+0x1e6/0x220 fs/btrfs/volumes.c:6921
+ btrfs_find_device+0xbb/0x250 fs/btrfs/volumes.c:6950
+ btrfs_ioctl_dev_info+0x3f0/0xb20 fs/btrfs/ioctl.c:3740
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7ff58bb49179
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffeb9ddd228 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007ff58bb49179
-RDX: 0000000000000230 RSI: 000000000000c0c2 RDI: 00007ffeb9ddd230
-RBP: 00007ffeb9ddd230 R08: 0000000000000001 R09: 00007ff58bbb0035
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-R13: 0000000000000000 R14: 0000100000000000 R15: 0000000000000000
+RIP: 0033:0x7f0047c8b5a9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0048a6c168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f0047dac050 RCX: 00007f0047c8b5a9
+RDX: 0000000020000980 RSI: 00000000d000941e RDI: 0000000000000003
+RBP: 00007f0047ce67b0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffc080c58df R14: 00007f0048a6c300 R15: 0000000000022000
  </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:assertfail+0x1a/0x1c fs/btrfs/ctree.h:3710
+Code: 00 00 e8 7e 9c 55 f7 eb e3 e8 77 9c 55 f7 eb dc 89 f1 48 89 fe 48 c7 c7 60 c8 db 8a 48 c7 c2 40 ed db 8a 31 c0 e8 27 86 ff ff <0f> 0b e8 54 9c 55 f7 48 c7 c7 60 f9 82 91 e9 e8 f9 e7 f9 89 f1 48
+RSP: 0018:ffffc90003a4fd80 EFLAGS: 00010246
+RAX: 0000000000000057 RBX: 0000000000000000 RCX: 88ff9485f0ebf200
+RDX: ffffc90004609000 RSI: 0000000000003f0f RDI: 0000000000003f10
+RBP: ffffc90003a4fe70 R08: ffffffff816b8dfd R09: fffff52000749f69
+R10: fffff52000749f69 R11: 1ffff92000749f68 R12: ffffc90003a4fe60
+R13: dffffc0000000000 R14: ffff88807f3e4000 R15: ffffc90003a4fe60
+FS:  00007f0048a6c700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000980 CR3: 000000003ba9d000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -133,6 +137,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
