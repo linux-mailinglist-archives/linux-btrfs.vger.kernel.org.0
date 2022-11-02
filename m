@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A37A6162F5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Nov 2022 13:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959956162F7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Nov 2022 13:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbiKBMqp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Nov 2022 08:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
+        id S230290AbiKBMqr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Nov 2022 08:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbiKBMqm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Nov 2022 08:46:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2386F2A409
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Nov 2022 05:46:42 -0700 (PDT)
+        with ESMTP id S230188AbiKBMqq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Nov 2022 08:46:46 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451652A40A
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Nov 2022 05:46:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B696F61940
+        by sin.source.kernel.org (Postfix) with ESMTPS id A2D5ACE214B
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Nov 2022 12:46:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83828C4347C
         for <linux-btrfs@vger.kernel.org>; Wed,  2 Nov 2022 12:46:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E4A4C433B5
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Nov 2022 12:46:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667393201;
-        bh=eUlRg65Zj+a3o09SpmUJW1yhWDPLRY7GxHov8GzHG8Y=;
+        s=k20201202; t=1667393202;
+        bh=+iPqfyuV0YPCxcPwEGWPW1uV8LBmcDlLZ7FIEaQ/FiE=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=MqdNOIDGxsQl3lWBlAdBmPvMVs7UDKhuRZw3A2hfw4kCaPCiYI8ONL98Jw6nsyPw/
-         8Q6x/r5NELSYm3fALYy5Uc+igVBGdRVZWyLjbkJCmHLhftRrp8xUiUIEE4nvUVzCPW
-         Q+73fGoMitsmkyWA0RT8HLf6+L1L0JEExmRKpZeVEoP+hO06orGtSLKSBA99JUPR5u
-         5b9HdFzxy1HBlXK640MV4ukh3HQXcn2UP0pZci1XmXynm7eJDD81M4I7wiVuBhJKnB
-         OjN/LOHWm3K4KagaJO+fAqlOiSA2JmatO7+MbndBdp7wZC2NhryPI6W07Jxk+xzbN9
-         RoOh2Abdv0JfQ==
+        b=IeQqcSu4eMeARWNRbsa/40K+5lM9j/RVQY5fxbTF+rDqrKSkMuityOqnU2uB/+s7k
+         wWT7Bq3FdDcDjPBl7wlz4e7gQYvG4EMadEJqNr0grfDwmhr2Lbc5WuNHZo+VUWrzUC
+         9vX4Lb9j1b8jXYIym3cOVbjchLv1LiMZkkCJQLoYdAxQmBeNT70IE2stfPvceBV5FP
+         EaqT2n6VlSP/uabEMRuwLI6f0/y/cLIlk4ObDlCZUbvI9jpOplWtg8IXvu5bTMAY0W
+         PLco9qOzfU0fLDiu/JbobKUiRdB7VBZhK3PAcddZVPEcOLrPBYW3vL+Fhh5hvvOASL
+         qKW2T73GDh9MQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: fix nowait buffered write returning -ENOSPC
-Date:   Wed,  2 Nov 2022 12:46:35 +0000
-Message-Id: <4a8c46c2152ba9ab49e8002b66441354611c7c39.1667392727.git.fdmanana@suse.com>
+Subject: [PATCH 2/2] btrfs: fix inode reserve space leak due to nowait buffered write
+Date:   Wed,  2 Nov 2022 12:46:36 +0000
+Message-Id: <4611e4d00d202f24c7c9d3581194b2d68a67c986.1667392727.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1667392727.git.fdmanana@suse.com>
 References: <cover.1667392727.git.fdmanana@suse.com>
@@ -52,63 +52,37 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-If we are doing a buffered write in NOWAIT context and we can't reserve
-metadata space due to -ENOSPC, then we should return -EAGAIN so that we
-retry the write in a context allowed to block and do metadata reservation
-with flushing, which might succeed this time due to the allowed flushing.
+During a nowait buffered write, if we fail to balance dirty pages we exit
+btrfs_buffered_write() without releasing the delalloc space reserved for
+an extent, resulting in leaking space from the inode's block reserve.
 
-Returning -ENOSPC while in NOWAIT context simply makes some writes fail
-with -ENOSPC when they would likely succeed after switching from NOWAIT
-context to blocking context. That is unexpected behaviour and even fio
-complains about it with a warning like this:
+So fix that by releasing the delalloc space for the extent when balancing
+dirty pages fails.
 
-  fio: io_u error on file /mnt/sdi/task_0.0.0: No space left on device: write offset=1535705088, buflen=65536
-  fio: pid=592630, err=28/file:io_u.c:1846, func=io_u error, error=No space left on device
-
-The fio's job config is this:
-
-   [global]
-   bs=64K
-   ioengine=io_uring
-   iodepth=1
-   size=2236962133
-   nr_files=1
-   filesize=2236962133
-   direct=0
-   runtime=10
-   fallocate=posix
-   io_size=2236962133
-   group_reporting
-   time_based
-
-   [task_0]
-   rw=randwrite
-   directory=/mnt/sdi
-   numjobs=4
-
-So fix this by returning -EAGAIN if we are in NOWAIT context and the
-metadata reservation failed with -ENOSPC.
-
-Fixes: 304e45acdb8f ("btrfs: plumb NOWAIT through the write path")
+Reported-by: kernel test robot <yujie.liu@intel.com>
+Link: https://lore.kernel.org/all/202210111304.d369bc32-yujie.liu@intel.com
+Fixes: 965f47aeb5de ("btrfs: make btrfs_buffered_write nowait compatible")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/file.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/btrfs/file.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index b7855f794ba6..75d4d0bc9d8f 100644
+index 75d4d0bc9d8f..f8be9d629e75 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -1286,6 +1286,9 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 						write_bytes);
- 			else
- 				btrfs_check_nocow_unlock(BTRFS_I(inode));
-+
-+			if (nowait && ret == -ENOSPC)
-+				ret = -EAGAIN;
+@@ -1295,8 +1295,10 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 		release_bytes = reserve_bytes;
+ again:
+ 		ret = balance_dirty_pages_ratelimited_flags(inode->i_mapping, bdp_flags);
+-		if (ret)
++		if (ret) {
++			btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes);
  			break;
- 		}
++		}
  
+ 		/*
+ 		 * This is going to setup the pages array with the number of
 -- 
 2.35.1
 
