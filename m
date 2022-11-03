@@ -2,41 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42629618559
+	by mail.lfdr.de (Postfix) with ESMTP id 6969361855A
 	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Nov 2022 17:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbiKCQxh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S231700AbiKCQxh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Thu, 3 Nov 2022 12:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53096 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbiKCQxe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Nov 2022 12:53:34 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4D51144
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Nov 2022 09:53:33 -0700 (PDT)
+        with ESMTP id S231646AbiKCQxf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Nov 2022 12:53:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84657B7EE
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Nov 2022 09:53:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 526E5B82924
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Nov 2022 16:53:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C403C433D6
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Nov 2022 16:53:30 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 23B45B8295E
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Nov 2022 16:53:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51B2AC433D7
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Nov 2022 16:53:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667494410;
-        bh=GjmDC+hg+6lwBOxBli3wksUgKEvdSH16cUlFBc5wlJE=;
-        h=From:To:Subject:Date:From;
-        b=XFIFbWR9yhmSbDYlUX+SCAo/wU58+exEUScYL0ya46ScRu9NirtRl2YAxfEj2IQ6H
-         9jwenJBIAwGWVGaXSLiOkRu99n59loQf+wlVXsO/6FnMDxWeMQ/2Aat3aDTttqCYn3
-         ewJSBne6dxsWCsXimtB6GG2AhMx7eURb+VSwR+NVMvPsrtP5aDbpBFxAiNtcBop+dQ
-         LDWlf9jZwBjOL0SAhIWSf5yxymsR+hLRWl0kzqjbmc7hiF9Uqrfoy584mT9pANoD7I
-         hUCihNnx8BDsUK+MTTL/AkWSW1K7VG5EhIHUtmEwBG3ngxPcBUxLQTexAmd/Zz5XQL
-         sgL/cofVExO6w==
+        s=k20201202; t=1667494411;
+        bh=yatMWFl39r/OE7UTTbcPbvyoAW1RGdrPnOb1sMiIcZA=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=GA+PH8WKNcaLu9HkF/SZQ1AWOgFI58pYCrBtt19V40+8COzY8SRUaxCUmuc7qJX7h
+         1NmD6PJzMNUuKAJh/fS2V5ul4Gcm8zJ7cRzVWT/FcPxzn0V7V/4dn5h4CEIpEXhJku
+         XIrhLD7cbKl+iQidBBV4tr0fh670u0VnQ1vFgjWYuUMHMEWJ1oz5E1EnQD9ZxQT1es
+         2lyHfxTZczfuxWApHYi1O5pTGWxFG+FXHkA98xvd6OhJROMe5Yma1cwV4qL/Hu5h9n
+         G637qrGHgi9WhOL3Bsdtb4aBzHzl5N+seP+AjIweQYlW593PHRqteiqBkVEbIgcxkD
+         OFT29OvfHLwKg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/2] btrfs-progs: receive: address setattr failures
-Date:   Thu,  3 Nov 2022 16:53:25 +0000
-Message-Id: <cover.1667494221.git.fdmanana@suse.com>
+Subject: [PATCH 1/2] btrfs-progs: receive: fix parsing of attributes field from the fileattr command
+Date:   Thu,  3 Nov 2022 16:53:26 +0000
+Message-Id: <d6c43dfa29a3ab6015e82a030b8f869470d3fd76.1667494221.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1667494221.git.fdmanana@suse.com>
+References: <cover.1667494221.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -50,27 +52,35 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-I was writing a test case for fstests with fsstress and send v2 streams
-and it turns out that receive will always fail if we have a fileattr
-command in the stream. It fails for two different reasons, described in
-the changelog.
+We're trying to get a U32 for the attributes, but the kernel sends a U64
+(which is correct as we store attributes in a u64 flags field of the
+inode). This makes anyone trying to receive a v2 send stream to fail with:
 
-We actually had a report today of a receiver failing on a send stream v2
-because of the reason addressed in the first patch. However fixing that
-alone, will still cause the receiver to fail, just for a different reason
-(patch 2).
+    ERROR: invalid size for attribute, expected = 4, got = 8
 
-For now I'll hold the test case for fstests since it fails very frequently
-(almost always actually).
+We actually recently got such a report of someone using send stream v2 and
+getting such failure. See the Link tag below.
 
-Filipe Manana (2):
-  btrfs-progs: receive: fix parsing of attributes field from the fileattr command
-  btrfs-progs: receive: work around failure of fileattr commands
+Link: https://lore.kernel.org/linux-btrfs/6cb11fa5-c60d-e65b-0295-301a694e66ad@inbox.ru/
+Fixes: 7a6fb356dc65 ("btrfs-progs: receive: process setflags ioctl commands")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ common/send-stream.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- cmds/receive.c       | 44 ++++++++++++++++++++++++++------------------
- common/send-stream.c |  2 +-
- 2 files changed, 27 insertions(+), 19 deletions(-)
-
+diff --git a/common/send-stream.c b/common/send-stream.c
+index 72a25729..e9f565e6 100644
+--- a/common/send-stream.c
++++ b/common/send-stream.c
+@@ -570,7 +570,7 @@ static int read_and_process_cmd(struct btrfs_send_stream *sctx)
+ 		break;
+ 	case BTRFS_SEND_C_FILEATTR:
+ 		TLV_GET_STRING(sctx, BTRFS_SEND_A_PATH, &path);
+-		TLV_GET_U32(sctx, BTRFS_SEND_A_FILEATTR, &fileattr);
++		TLV_GET_U64(sctx, BTRFS_SEND_A_FILEATTR, &fileattr);
+ 		ret = sctx->ops->fileattr(path, fileattr, sctx->user);
+ 		break;
+ 	}
 -- 
 2.35.1
 
