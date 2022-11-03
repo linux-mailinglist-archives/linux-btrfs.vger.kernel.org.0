@@ -2,104 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 543D46177E3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Nov 2022 08:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E84461790C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Nov 2022 09:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbiKCHpH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Nov 2022 03:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41396 "EHLO
+        id S231128AbiKCItT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Nov 2022 04:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbiKCHpG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Nov 2022 03:45:06 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A038F2661;
-        Thu,  3 Nov 2022 00:45:04 -0700 (PDT)
-Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N2wgz1CnSzJnRq;
-        Thu,  3 Nov 2022 15:42:07 +0800 (CST)
-Received: from dggpemm100009.china.huawei.com (7.185.36.113) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 3 Nov 2022 15:44:48 +0800
-Received: from huawei.com (10.175.113.32) by dggpemm100009.china.huawei.com
- (7.185.36.113) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Thu, 3 Nov
- 2022 15:44:48 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH] btrfs: fix match incorrectly in dev_args_match_device
-Date:   Thu, 3 Nov 2022 16:33:01 +0800
-Message-ID: <20221103083301.626561-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S231221AbiKCItO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Nov 2022 04:49:14 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FD2271C;
+        Thu,  3 Nov 2022 01:49:14 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E521368AA6; Thu,  3 Nov 2022 09:49:09 +0100 (CET)
+Date:   Thu, 3 Nov 2022 09:49:09 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Chris Mason <clm@meta.com>
+Cc:     Andreas Dilger <adilger@dilger.ca>, Christoph Hellwig <hch@lst.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Sterba <dsterba@suse.cz>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: consolidate btrfs checksumming, repair and bio splitting
+Message-ID: <20221103084909.GA6448@lst.de>
+References: <20221024144411.GA25172@lst.de> <773539e2-b5f1-8386-aa2a-96086f198bf8@meta.com> <20221024171042.GF5824@suse.cz> <9f443843-4145-155b-2fd0-50613a9f7913@wdc.com> <20221026074145.2be5ca09@gandalf.local.home> <20221031121912.GY5824@twin.jikos.cz> <20221102000022.36df0cc1@rorschach.local.home> <20221102062907.GA8619@lst.de> <8AAF3B43-BCD3-43B4-BC78-2E9E8E702792@dilger.ca> <5f742ea1-b1c2-5a61-53a7-5f144ca169f7@meta.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm100009.china.huawei.com (7.185.36.113)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f742ea1-b1c2-5a61-53a7-5f144ca169f7@meta.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzkaller found an assert failed:
+On Wed, Nov 02, 2022 at 06:07:27PM -0400, Chris Mason wrote:
+> We talked about this at the btrfs meeting today and I'm sure it'll get
+> resolved soon.
 
- assertion failed: (args->devid != (u64)-1) || args->missing, in fs/btrfs/volumes.c:6921
-
-This can be trigger when we set devid to (u64)-1) by ioctl. In this case,
-the match of devid will be skipped and the match of device may be succeed
-incorrectly.
-
-Patch 562d7b1512f7 introduced this function which is used to match device.
-This function contaions two matching scenarios, we can distinguish them by
-checking the value of args->missing rather than check whether args->devid
-and args->uuid is default value.
-
-Reported-by: syzbot+031687116258450f9853@syzkaller.appspotmail.com
-Fixes: 562d7b1512f7 ("btrfs: handle device lookup with btrfs_dev_lookup_args")
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- fs/btrfs/volumes.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 94ba46d57920..bf2d886cfb4b 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6918,18 +6918,18 @@ static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_args *args,
- static bool dev_args_match_device(const struct btrfs_dev_lookup_args *args,
- 				  const struct btrfs_device *device)
- {
--	ASSERT((args->devid != (u64)-1) || args->missing);
-+	if (args->missing) {
-+		if (test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state) &&
-+		    !device->bdev)
-+			return true;
-+		return false;
-+	}
- 
--	if ((args->devid != (u64)-1) && device->devid != args->devid)
-+	if (device->devid != args->devid)
- 		return false;
- 	if (args->uuid && memcmp(device->uuid, args->uuid, BTRFS_UUID_SIZE) != 0)
- 		return false;
--	if (!args->missing)
--		return true;
--	if (test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state) &&
--	    !device->bdev)
--		return true;
--	return false;
-+	return true;
- }
- 
- /*
--- 
-2.25.1
-
+Thanks.  That wasn't my impression so far, but I'm glad I was wrong.
