@@ -2,69 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3628E617CD0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Nov 2022 13:40:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3491E617DAB
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Nov 2022 14:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbiKCMkl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Nov 2022 08:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
+        id S231221AbiKCNQr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Nov 2022 09:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbiKCMkk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Nov 2022 08:40:40 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14C210BE;
-        Thu,  3 Nov 2022 05:40:35 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id F40E868AA6; Thu,  3 Nov 2022 13:40:30 +0100 (CET)
-Date:   Thu, 3 Nov 2022 13:40:30 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-mm@kvack.org,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-Subject: Re: [REGESSION] systemd-oomd overreacting due to PSI changes for
- Btrfs (was: Re: [PATCH 3/5] btrfs: add manual PSI accounting for
- compressed reads)
-Message-ID: <20221103124030.GA29839@lst.de>
-References: <20220915094200.139713-1-hch@lst.de> <20220915094200.139713-4-hch@lst.de> <d20a0a85-e415-cf78-27f9-77dd7a94bc8d@leemhuis.info>
+        with ESMTP id S229598AbiKCNQq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Nov 2022 09:16:46 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFD9282
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Nov 2022 06:16:45 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 513471F88F;
+        Thu,  3 Nov 2022 13:16:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1667481404;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EUhDTCZY8oJAoZFRgg4MDVomJoYLfLwP2hXXyVa5pHM=;
+        b=wbosH/Zx6kXTkjqVK5e1MYrgbUv3um8XcwGC3HQoADTqrzK/8ALsSW8y2CezT6cFKAe5+H
+        uuJED6uBbjIMcXXR4QXTqINGCwEkIBNgUYRcae292iU4ZTwjG/5zveEtXBiX4YwKFBTRSs
+        hLfx99THd/uK4bqOv9nJVbZlPwLiVCo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1667481404;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EUhDTCZY8oJAoZFRgg4MDVomJoYLfLwP2hXXyVa5pHM=;
+        b=tkSmLurwZOvWt+kf7aA7l32ygs8YuMs8AWKtYY+kRmtamqAzlrWxafjca9hVTPp09k3o5G
+        ggfY/Rf4gXVGDhCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2E7EA13480;
+        Thu,  3 Nov 2022 13:16:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bqM3Cjy/Y2NqVwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 03 Nov 2022 13:16:44 +0000
+Date:   Thu, 3 Nov 2022 14:16:25 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/4] Minor cleanups
+Message-ID: <20221103131625.GM5824@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1667244567.git.dsterba@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d20a0a85-e415-cf78-27f9-77dd7a94bc8d@leemhuis.info>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <cover.1667244567.git.dsterba@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 03, 2022 at 11:46:52AM +0100, Thorsten Leemhuis wrote:
-> It seems this patch makes systemd-oomd overreact on my day-to-day
-> machine and aggressively kill applications. I'm not the only one that
-> noticed such a behavior with 6.1 pre-releases:
-> https://bugzilla.redhat.com/show_bug.cgi?id=2133829
-> https://bugzilla.redhat.com/show_bug.cgi?id=2134971
+On Mon, Oct 31, 2022 at 08:33:37PM +0100, David Sterba wrote:
+> A few random cleanups or fixups.
 > 
-> I think I have a pretty reliable way to trigger the issue that involves
-> starting the apps that I normally use and a VM that I occasionally use,
-> which up to now never resulted in such a behaviour.
-> 
-> On master as of today (8e5423e991e8) I can trigger the problem within a
-> minute or two. But I fail to trigger it with v6.0.6 or when I revert
-> 4088a47e78f9 ("btrfs: add manual PSI accounting for compressed reads").
-> And yes, I use btrfs with compression for / and /home/.
+> David Sterba (4):
+>   btrfs: zlib: use copy_page for full page copy
+>   btrfs: zoned: use helper to check a power of two zone size
+>   btrfs: convert btrfs_block_group::needs_free_space to runtime flag
+>   btrfs: convert btrfs_block_group::seq_zone to runtime flag
 
-So, I did in fact not want to include this patch because it is a little
-iffy and includes PSI accounting for reads where btrfs just does
-aggresive readaround for compression, but Johannes asked for it to be
-added.  I'd be perfectly fine with just reverting it.
+Added to msic-next.
