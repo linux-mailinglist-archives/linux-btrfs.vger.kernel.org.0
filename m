@@ -2,89 +2,256 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F150F617ADD
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Nov 2022 11:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07195617B09
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Nov 2022 11:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbiKCKeG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Nov 2022 06:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
+        id S230045AbiKCKrJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Nov 2022 06:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbiKCKeE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Nov 2022 06:34:04 -0400
-X-Greylist: delayed 3685 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Nov 2022 03:34:01 PDT
-Received: from smtp41.i.mail.ru (smtp41.i.mail.ru [94.100.177.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3303101FC
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Nov 2022 03:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail4;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:To:From:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=FnD5Sgd1eP8QskTgGDc4xZRvia4jb9IqPEdjFUxAvwU=;
-        t=1667471641;x=1667561641; 
-        b=LEYP2eUP4g8RHoCBAhb7dVviymQPBg+F2UC0F5u3ng2lbRH5H1Tp9oMu2GUYihS1GMneOpQxLlm/leZAKdYfGH02qFQMw/36UPKOTkr1rPu36PxoBSlW4neU31r7D2w+LPvGVO/IaEKg/3KILmPAIKEqrdbMSEd2NAnaRN6/T/5iQNW06O5BS/6O8TcPjwc4ov2LlPfWlZ+7HFruBs2yaBGfzoDtH2sKqWsvmcWegl8JC8IMplAe2+o9nnWQXPoOAnViaRoz+jZljnij0qzY+jfG8OX5imgG4cReqRjxh7ssLvyg0FQMhlbB4KopKK/Vg7ZhpqUtenTWfzNzalv/AA==;
-Received: by smtp41.i.mail.ru with esmtpa (envelope-from <Nemcev_Aleksey@inbox.ru>)
-        id 1oqXXq-0007wN-4n
-        for linux-btrfs@vger.kernel.org; Thu, 03 Nov 2022 13:33:59 +0300
-Message-ID: <e252c2c3-408e-f19d-9423-1d9d92f5e2f2@inbox.ru>
-Date:   Thu, 3 Nov 2022 13:33:54 +0300
+        with ESMTP id S229985AbiKCKrF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Nov 2022 06:47:05 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B862E0C2;
+        Thu,  3 Nov 2022 03:47:02 -0700 (PDT)
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1oqXkL-0003lj-L2; Thu, 03 Nov 2022 11:46:53 +0100
+Message-ID: <d20a0a85-e415-cf78-27f9-77dd7a94bc8d@leemhuis.info>
+Date:   Thu, 3 Nov 2022 11:46:52 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-Subject: Re: ERROR: invalid size for attribute, expected = 4, got = 8 on
- subvolume send
-From:   Nemcev Aleksey <Nemcev_Aleksey@inbox.ru>
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <6cb11fa5-c60d-e65b-0295-301a694e66ad@inbox.ru>
-Content-Language: en-US
-In-Reply-To: <6cb11fa5-c60d-e65b-0295-301a694e66ad@inbox.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp41.i.mail.ru; auth=pass smtp.auth=Nemcev_Aleksey@inbox.ru smtp.mailfrom=Nemcev_Aleksey@inbox.ru
-X-Mailru-Src: smtp
-X-7564579A: B8F34718100C35BD
-X-77F55803: 4F1203BC0FB41BD967121363E257EE6D5A169EEB5D12808189D3C2153EF712E700894C459B0CD1B9D4C166A0FB081550B3A93398749D150A5FD696C865C337140B379AF87BB1B6F5
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7922D113DFDC6D5A3EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006378A9F193E39E334918638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D83E3B83C8269644C7C1FAE7771CC88B996F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE7CCEADDFEB1F9DC069FA2833FD35BB23D9E625A9149C048EE1E561CDFBCA1751F2CC0D3CB04F14752D2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8B85F16315563D62F5A471835C12D1D977C4224003CC836476EB9C4185024447017B076A6E789B0E975F5C1EE8F4F765FC8838AAAD75ACD35E3AA81AA40904B5D9CF19DD082D7633A078D18283394535A93AA81AA40904B5D98AA50765F7900637EDDE4FD3F6DF783AD81D268191BDAD3D3666184CF4C3C14F3FC91FA280E0CE3D1A620F70A64A45A98AA50765F79006372E808ACE2090B5E1725E5C173C3A84C3C5EA940A35A165FF2DBA43225CD8A89F8361DED9BCED162D35872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D34A246DFF68F0EE19E6F3308A1ED3E261F688FFBC1301D2F92FCCAA30F0EAE8E9AC8E574E72D9957531D7E09C32AA3244CAB345AAEF69B6A4B739C05D710EC17584DBEAD0ED6C55A803EB3F6AD6EA9203E
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojYfCECMrgGhT8yZpJOsodOw==
-X-Mailru-Sender: 6F30CE3AAFA23F85D1B9D8D23F7101C4F881B1F90B9F83FD043578EDD59227C7722023C4CA3CDBAEB5D628A7EF4494575C5F6E3C72ABB53BB0D9B300F142F0238EAA47040EB6BC244E4EA347F45ED768B49EAA7E57EF395FB4A721A3011E896F
-X-Mras: Ok
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+ Thunderbird/102.4.0
+Subject: [REGESSION] systemd-oomd overreacting due to PSI changes for Btrfs
+ (was: Re: [PATCH 3/5] btrfs: add manual PSI accounting for compressed reads)
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-mm@kvack.org,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+References: <20220915094200.139713-1-hch@lst.de>
+ <20220915094200.139713-4-hch@lst.de>
+Content-Language: en-US, de-DE
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+In-Reply-To: <20220915094200.139713-4-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1667472422;8a47145f;
+X-HE-SMSGID: 1oqXkL-0003lj-L2
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-03.11.2022 12:32, Nemcev Aleksey пишет:
-> Hello.
->
->  I'm using Btrfs with zstd compression (subvolume property 
-> compression=zstd) on the PC and on the backup drive and running as a 
-> daemon the `bees` (on-demand deduplication tool) on the PC.
->
->  I'm using btrfs send | btrfs receive to send incremental snapshots of 
-> PC subvolumes and receive them to the backup drive.
->  Sometimes receive fails with ERROR: invalid size for attribute, 
-> expected = 4, got = 8 or ERROR: invalid size for attribute, expected = 
-> 8, got = 4
->
->  Why does this error happen?
->  How can I debug this error? At least how to get the problem file name?
->  Is that attribute an internal Btrfs-specific thing or something 
-> generic like xattr attribute or file attribute (lsattr/chattr)?
->  Is it possible to resolve this error without removing the subvolume 
-> and snapshot on the backup drive and resending the complete subvolume 
-> again?
->
->  Thank you.
+Hi Christoph!
 
-UPD:
+On 15.09.22 11:41, Christoph Hellwig wrote:
+> btrfs compressed reads try to always read the entire compressed chunk,
+> even if only a subset is requested.  Currently this is covered by the
+> magic PSI accounting underneath submit_bio, but that is about to go
+> away. Instead add manual psi_memstall_{enter,leave} annotations.
+> 
+> Note that for readahead this really should be using readahead_expand,
+> but the additionals reads are also done for plain ->read_folio where
+> readahead_expand can't work, so this overall logic is left as-is for
+> now.
 
-It seems that the --compressed-data option on btrfs-send was the issue, 
-when I removed it, and now btrfs-receive works fine on the same PC and 
-backup drive.
-This is not an issue for me, as I'm using bash pipe to connect 
-btrfs-send and btrfs-receive (but this wastes CPU time for decompression 
-and recompression data during send/receive).
-But this can be an issue for anyone with a slow channel between send and 
-receive sides.
+It seems this patch makes systemd-oomd overreact on my day-to-day
+machine and aggressively kill applications. I'm not the only one that
+noticed such a behavior with 6.1 pre-releases:
+https://bugzilla.redhat.com/show_bug.cgi?id=2133829
+https://bugzilla.redhat.com/show_bug.cgi?id=2134971
+
+I think I have a pretty reliable way to trigger the issue that involves
+starting the apps that I normally use and a VM that I occasionally use,
+which up to now never resulted in such a behaviour.
+
+On master as of today (8e5423e991e8) I can trigger the problem within a
+minute or two. But I fail to trigger it with v6.0.6 or when I revert
+4088a47e78f9 ("btrfs: add manual PSI accounting for compressed reads").
+And yes, I use btrfs with compression for / and /home/.
+
+See [1] for a log msg from systemd-oomd.
+
+Note, I had some trouble with bisecting[2]. This series looked
+suspicious, so I removed it completely ontop of master and the problem
+went away. Then I tried reverting only 4088a47e78f9 which helped, too.
+Let me know if you want me to try another combination or need more data.
+
+Ciao, Thorsten
+
+
+[1] just one example:
+```
+> 10:52:29 t14s systemd-oomd[1261]: Considered 60 cgroups for killing, top candidates were:
+> 10:52:29 t14s systemd-oomd[1261]:         Path: /system.slice/packagekit.service
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Pressure Limit: 0.00%
+> 10:52:29 t14s systemd-oomd[1261]:                 Pressure: Avg10: 93.66 Avg60: 38.22 Avg300: 9.48 Total: 29s
+> 10:52:29 t14s systemd-oomd[1261]:                 Current Memory Usage: 276.9M
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Min: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Low: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Pgscan: 181098
+> 10:52:29 t14s systemd-oomd[1261]:                 Last Pgscan: 178926
+> 10:52:29 t14s systemd-oomd[1261]:         Path: /system.slice/firewalld.service
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Pressure Limit: 0.00%
+> 10:52:29 t14s systemd-oomd[1261]:                 Pressure: Avg10: 0.00 Avg60: 0.00 Avg300: 0.00 Total: 0
+> 10:52:29 t14s systemd-oomd[1261]:                 Current Memory Usage: 34.6M
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Min: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Low: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Pgscan: 13035
+> 10:52:29 t14s systemd-oomd[1261]:                 Last Pgscan: 12854
+> 10:52:29 t14s systemd-oomd[1261]:         Path: /system.slice/sssd-kcm.service
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Pressure Limit: 0.00%
+> 10:52:29 t14s systemd-oomd[1261]:                 Pressure: Avg10: 0.00 Avg60: 0.00 Avg300: 0.00 Total: 184us
+> 10:52:29 t14s systemd-oomd[1261]:                 Current Memory Usage: 32.9M
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Min: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Low: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Pgscan: 7667
+> 10:52:29 t14s systemd-oomd[1261]:                 Last Pgscan: 7501
+> 10:52:29 t14s systemd-oomd[1261]:         Path: /system.slice/systemd-journald.service
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Pressure Limit: 0.00%
+> 10:52:29 t14s systemd-oomd[1261]:                 Pressure: Avg10: 0.00 Avg60: 0.00 Avg300: 0.00 Total: 8ms
+> 10:52:29 t14s systemd-oomd[1261]:                 Current Memory Usage: 14.5M
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Min: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Low: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Pgscan: 13020
+> 10:52:29 t14s systemd-oomd[1261]:                 Last Pgscan: 12914
+> 10:52:29 t14s systemd-oomd[1261]:         Path: /system.slice/libvirtd.service
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Pressure Limit: 0.00%
+> 10:52:29 t14s systemd-oomd[1261]:                 Pressure: Avg10: 0.00 Avg60: 0.00 Avg300: 0.00 Total: 0
+> 10:52:29 t14s systemd-oomd[1261]:                 Current Memory Usage: 18.9M
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Min: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Low: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Pgscan: 12983
+> 10:52:29 t14s systemd-oomd[1261]:                 Last Pgscan: 12896
+> 10:52:29 t14s systemd-oomd[1261]:         Path: /system.slice/geoclue.service
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Pressure Limit: 0.00%
+> 10:52:29 t14s systemd-oomd[1261]:                 Pressure: Avg10: 0.00 Avg60: 0.00 Avg300: 0.00 Total: 0
+> 10:52:29 t14s systemd-oomd[1261]:                 Current Memory Usage: 18.0M
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Min: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Low: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Pgscan: 3625
+> 10:52:29 t14s systemd-oomd[1261]:                 Last Pgscan: 3550
+> 10:52:29 t14s systemd-oomd[1261]:         Path: /system.slice/polkit.service
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Pressure Limit: 0.00%
+> 10:52:29 t14s systemd-oomd[1261]:                 Pressure: Avg10: 0.00 Avg60: 0.00 Avg300: 0.00 Total: 2ms
+> 10:52:29 t14s systemd-oomd[1261]:                 Current Memory Usage: 15.9M
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Min: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Low: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Pgscan: 10664
+> 10:52:29 t14s systemd-oomd[1261]:                 Last Pgscan: 10596
+> 10:52:29 t14s systemd-oomd[1261]:         Path: /system.slice/NetworkManager.service
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Pressure Limit: 0.00%
+> 10:52:29 t14s systemd-oomd[1261]:                 Pressure: Avg10: 0.00 Avg60: 0.00 Avg300: 0.00 Total: 3ms
+> 10:52:29 t14s systemd-oomd[1261]:                 Current Memory Usage: 6.6M
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Min: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Low: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Pgscan: 2515
+> 10:52:29 t14s systemd-oomd[1261]:                 Last Pgscan: 2492
+> 10:52:29 t14s systemd-oomd[1261]:         Path: /system.slice/abrt-xorg.service
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Pressure Limit: 0.00%
+> 10:52:29 t14s systemd-oomd[1261]:                 Pressure: Avg10: 0.00 Avg60: 0.00 Avg300: 0.00 Total: 0
+> 10:52:29 t14s systemd-oomd[1261]:                 Current Memory Usage: 5.2M
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Min: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Low: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Pgscan: 35154
+> 10:52:29 t14s systemd-oomd[1261]:                 Last Pgscan: 35131
+> 10:52:29 t14s systemd-oomd[1261]:         Path: /system.slice/dbus-broker.service
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Pressure Limit: 0.00%
+> 10:52:29 t14s systemd-oomd[1261]:                 Pressure: Avg10: 0.00 Avg60: 0.00 Avg300: 0.00 Total: 0
+> 10:52:29 t14s systemd-oomd[1261]:                 Current Memory Usage: 7.5M
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Min: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Memory Low: 0B
+> 10:52:29 t14s systemd-oomd[1261]:                 Pgscan: 1183
+> 10:52:29 t14s systemd-oomd[1261]:                 Last Pgscan: 1161
+> 10:52:29 t14s systemd-oomd[1261]: Killed /system.slice/packagekit.service due to memory pressure for /system.slice being 91.73% > 50.00% for > 20s with reclaim activity
+```
+
+[2]
+
+I have no idea what went wrong. 0a78a376ef3c (the last merge before the
+one with this series) was fine, but c6ea70604249 (which afaics basically
+is the next commit if I understand things right) was not. I tried
+reverting it, which should give me the merge base (v6.0-rc2), but it was
+broken, too. I guess I must have done something wrong, but I have no
+idea what, but I tried again and got the same result. :-/
+
+/me must be missing something and/or not understand git properly...
+
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: David Sterba <dsterba@suse.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> ---
+>  fs/btrfs/compression.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index e84d22c5c6a83..370788b9b1249 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/string.h>
+>  #include <linux/backing-dev.h>
+>  #include <linux/writeback.h>
+> +#include <linux/psi.h>
+>  #include <linux/slab.h>
+>  #include <linux/sched/mm.h>
+>  #include <linux/log2.h>
+> @@ -519,7 +520,8 @@ static u64 bio_end_offset(struct bio *bio)
+>   */
+>  static noinline int add_ra_bio_pages(struct inode *inode,
+>  				     u64 compressed_end,
+> -				     struct compressed_bio *cb)
+> +				     struct compressed_bio *cb,
+> +				     unsigned long *pflags)
+>  {
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+>  	unsigned long end_index;
+> @@ -588,6 +590,9 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+>  			continue;
+>  		}
+>  
+> +		if (PageWorkingset(page))
+> +			psi_memstall_enter(pflags);
+> +
+>  		ret = set_page_extent_mapped(page);
+>  		if (ret < 0) {
+>  			unlock_page(page);
+> @@ -674,6 +679,8 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  	u64 em_len;
+>  	u64 em_start;
+>  	struct extent_map *em;
+> +	/* Initialize to 1 to make skip psi_memstall_leave unless needed */
+> +	unsigned long pflags = 1;
+>  	blk_status_t ret;
+>  	int ret2;
+>  	int i;
+> @@ -729,7 +736,7 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  		goto fail;
+>  	}
+>  
+> -	add_ra_bio_pages(inode, em_start + em_len, cb);
+> +	add_ra_bio_pages(inode, em_start + em_len, cb, &pflags);
+>  
+>  	/* include any pages we added in add_ra-bio_pages */
+>  	cb->len = bio->bi_iter.bi_size;
+> @@ -810,6 +817,9 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  		}
+>  	}
+>  
+> +	if (!pflags)
+> +		psi_memstall_leave(&pflags);
+> +
+>  	if (refcount_dec_and_test(&cb->pending_ios))
+>  		finish_compressed_bio_read(cb);
+>  	return;
