@@ -2,63 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B30618AB8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Nov 2022 22:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF837618AEF
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Nov 2022 23:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbiKCVjT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Nov 2022 17:39:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
+        id S231305AbiKCWAA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Nov 2022 18:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbiKCVjS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Nov 2022 17:39:18 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE82C1B9DE
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Nov 2022 14:39:17 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id 130so2832175pfu.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Nov 2022 14:39:17 -0700 (PDT)
+        with ESMTP id S229445AbiKCV76 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Nov 2022 17:59:58 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387D6BE3;
+        Thu,  3 Nov 2022 14:59:58 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id u8-20020a17090a5e4800b002106dcdd4a0so6573398pji.1;
+        Thu, 03 Nov 2022 14:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4fSaPBM2WbQHD62OGBqtVD15O1ebfKWbx/yFp2XlV+Y=;
-        b=ljSNeGSYwnwuQXRV5bT6ZOaWTsAhYhXQzlAON8NCvyhj5pelTf3FDJoCQZ+8s5+26l
-         mHq/dy0GszdzrSkYMUphmoIDzaoR1bnXTlskYB1J5U6wBECxBWZlmlHsw4KCTu4Fj9o/
-         d8MpGfZv7xPpLcBd9cnX0eh60rlOB+bXjuz8v9CPXDgPtErwI5MgtPQ1EQfF8O2k+hZK
-         1xTIz4tmsE11R93ysWclnU38HyE2qzMgA8ZhwFKv4o2Wj608TxAd9KSn5NaoHVmsFaaq
-         NvkmV/EJQ4EbcvQX6Z8Mv6dp7bj8fsmt/1McMFRiPky4QT4Irg60QsloOWloh2FECaOb
-         h2Gw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BXMtoJhRlFWaQLcxjEM+qd1+6PF53F0Hz+I5xM4y+wc=;
+        b=LSzE9TH+osvipk73Jg9gpor1ZQe37FTuPrWQ5VUxQIsLQ//7XAFuJQM1KyFIXYAxqx
+         BE4yzuk+xifeQgNpMYonk3DPgvpHS7XYbgoNdLomm2aKEkQCHaH0Bc7mrZFzL+9j5ZSy
+         b9DDF8m1+3bfZ9iV0lucJ1MqhbByVhp5MZXMvkd4dpduipcwth1ZiKn90EGRhJ8R9r+m
+         EJ4boWxUG+nQ4ooKm3DZioH6mkJd/Le4V3cgspEcIdaCLQDHg98SssmSluKeW2l4jPay
+         g1Az1Lvo9oZjC2k1yTkOvtryQxynTaEzmqQoj8oo4NJhMXBQYq056FnhoGgEMPlBjEct
+         OTAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4fSaPBM2WbQHD62OGBqtVD15O1ebfKWbx/yFp2XlV+Y=;
-        b=hdwKkcfLRMBqelIvaRAXC3uvYKDWD6VrhxL4U13Y0pQtytdSgfHlQliL1oBljIzaSs
-         dl2ESL2bsay6K8E4NrXi/iQCIOza4u6+QQFOn+nY0J6CEQB5fXccaryPukg8L6yE7s64
-         5uZeCHjpRsBuLhqBbRWSuqQfEYYuoaCXIwHsFpKUCGy0/7GFn7DjcQePq4s2kAffHunU
-         PZtBwdchf7BWzzoMHRI8mzXX28gzoDoHhXwkzlMt8dquXmEnD7pRVuKkn1NfeoA1MJgT
-         FZbBJbt8cm9Bx8kXZKypllYu0vBcyoG0klUPgYWgCyMIsP85svHBiYTDin6D5lwDNM3v
-         0dEQ==
-X-Gm-Message-State: ACrzQf12DcbPB1ZHfcfB7a83goKe3asJsc5XLby1I8cwYc14/uFlzDul
-        LQB+PgNOZhH+qog1xRHXicOptSu2SC0=
-X-Google-Smtp-Source: AMsMyM659tVlKqCouXyFYQ+CV+NxH4hoazjBQ0dthva3k0tWEdOetHjTIKPfPL+4jcuwzlIGOzxlyQ==
-X-Received: by 2002:a63:ea08:0:b0:46e:9bac:6d9e with SMTP id c8-20020a63ea08000000b0046e9bac6d9emr27614592pgi.334.1667511556685;
-        Thu, 03 Nov 2022 14:39:16 -0700 (PDT)
-Received: from ryzen3950 (c-208-82-98-189.rev.sailinternet.net. [208.82.98.189])
-        by smtp.gmail.com with ESMTPSA id f132-20020a62388a000000b0056da8c41bbasm1197403pfa.161.2022.11.03.14.39.15
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BXMtoJhRlFWaQLcxjEM+qd1+6PF53F0Hz+I5xM4y+wc=;
+        b=RKrv3DUJM7CfY2BHprOVwKEPqfFmroYGAnnHdVdqOY8dWVMmcB6og8yg8k8ROql3Re
+         Fqwdh5/RScMKafwbAcekhjZb6fW54CLqKd5in6I/+VCrk7Ndzgyk/4SrUwYBCJd08oHZ
+         fOE2BIJHTt+jLslJ8ZBF8IxdQikGfL1b2We2IziTZqbdvDlId8/NJr0JI+zZ4lKVcXhY
+         bKgh7asDtYfNDQQCmK2k7GHmqvw0nmVM2Lzvy8HfRR6dedwkH6PV2dUX7pXjfIWgTdb0
+         2VwNvImMjCwLTsOBLIwsTon/MgYFRQOByNn+ZVjLcjfEN4f5TNwAnBA+HBk6nXNr2qyg
+         V3Cw==
+X-Gm-Message-State: ACrzQf0bap+seG7CJipX4qovZDHkwJseGjTNzfZ5m93pxErfYxt2bI8O
+        kfVXF4K0FZGqWSwgNo/L4P0=
+X-Google-Smtp-Source: AMsMyM7bULDdaNCNh0UvTT4e4bGiz6aC/rB81Sbmms9IVmh3til4gq09VVgLdxxc7KpN8RZNvnj8Zw==
+X-Received: by 2002:a17:90b:1c10:b0:213:1bb8:feb with SMTP id oc16-20020a17090b1c1000b002131bb80febmr49947295pjb.214.1667512797631;
+        Thu, 03 Nov 2022 14:59:57 -0700 (PDT)
+Received: from fedora ([2601:644:8002:1c20::8080])
+        by smtp.gmail.com with ESMTPSA id 123-20020a621781000000b00562784609fbsm1184991pfx.209.2022.11.03.14.59.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 14:39:16 -0700 (PDT)
-From:   Matt Huszagh <huszaghmatt@gmail.com>
-To:     Roman Mamedov <rm@romanrm.net>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: How to replace a failing device
-In-Reply-To: <20221103171848.540a9056@nvm>
-References: <87v8nyh4jg.fsf@gmail.com> <20221102003232.097748e7@nvm>
- <87v8nw3dcg.fsf@gmail.com> <20221103171848.540a9056@nvm>
-Date:   Thu, 03 Nov 2022 14:39:14 -0700
-Message-ID: <87sfiz3egt.fsf@gmail.com>
+        Thu, 03 Nov 2022 14:59:57 -0700 (PDT)
+Date:   Thu, 3 Nov 2022 14:59:54 -0700
+From:   Vishal Moola <vishal.moola@gmail.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
+        linux-mm@kvack.org, David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH 00/23] Convert to filemap_get_folios_tag()
+Message-ID: <Y2Q52uQGoqGM4o9m@fedora>
+References: <20220901220138.182896-1-vishal.moola@gmail.com>
+ <20221018214544.GI2703033@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221018214544.GI2703033@dread.disaster.area>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -69,40 +75,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Roman Mamedov <rm@romanrm.net> writes:
+On Wed, Oct 19, 2022 at 08:45:44AM +1100, Dave Chinner wrote:
+> On Thu, Sep 01, 2022 at 03:01:15PM -0700, Vishal Moola (Oracle) wrote:
+> > This patch series replaces find_get_pages_range_tag() with
+> > filemap_get_folios_tag(). This also allows the removal of multiple
+> > calls to compound_head() throughout.
+> > It also makes a good chunk of the straightforward conversions to folios,
+> > and takes the opportunity to introduce a function that grabs a folio
+> > from the pagecache.
+> > 
+> > F2fs and Ceph have quite alot of work to be done regarding folios, so
+> > for now those patches only have the changes necessary for the removal of
+> > find_get_pages_range_tag(), and only support folios of size 1 (which is
+> > all they use right now anyways).
+> > 
+> > I've run xfstests on btrfs, ext4, f2fs, and nilfs2, but more testing may be
+> > beneficial.
+> 
+> Well, that answers my question about how filesystems that enable
+> multi-page folios were tested: they weren't. 
+> 
+> I'd suggest that anyone working on further extending the
+> filemap/folio infrastructure really needs to be testing XFS as a
+> first priority, and then other filesystems as a secondary concern.
+> 
+> That's because XFS (via the fs/iomap infrastructure) is one of only
+> 3 filesystems in the kernel (AFS and tmpfs are the others) that
+> interact with the page cache and page cache "pages" solely via folio
+> interfaces. As such they are able to support multi-page folios in
+> the page cache. All of the tested filesystems still use the fixed
+> PAGE_SIZE page interfaces to interact with the page cache, so they
+> don't actually exercise interactions with multi-page folios at all.
+> 
 
-> If your backup is incremental and only copies modified files, you can ensure
-> all other files are also readable by recursively reading them:
->
->   find -type f -print0 | xargs -0 cat > /dev/null
->
-> ...for a kind of manual scrub. Unless you had nocow/nodatasum files in there,
-> any damaged ones will return a read error thanks to Btrfs checksums.
->
-> Or maybe you could check if Btrfs scrub has also stopped hanging, given there
-> are no disk-level unreadable sectors anymore. (And after you have also
-> upgraded the kernel).
+Thanks for the explanation! That makes perfect sense. I wholeheartedly
+agree, and I'll be sure to test any future changes on XFS to try to
+ensure multi-page folio functionality. 
 
-I was able to run btrfs scrub successfully with the problematic drive
-removed. Logs show that the following file has a checksum error:
-
-BTRFS warning (device dm-0): checksum error at logical 10087829524480 on dev /dev/dm-4, physical 1883324207104, root 28842, inode 27543115, offset 74526720, length 4096, links 1 (path: matt/.recoll/library/xapiandb/docdata.glass)
-
-What can I do to get BTRFS to no longer report a checksum error? Do I
-need to delete this along with all snapshots that contain it?
-
-> Btrfs currently does not seem to be famous for smooth disk replacements
-> unfortunately, even if you would use RAID.
->
-> I would suggest keeping up with the good backup schedule, and then rather than
-> using the Btrfs "single" profile stretched across devices, switch to MergerFS.
-> That way any disaster on a particular disk leaves other disks and their
-> independent filesystems completely unaffected.
-
-Ok, thanks for the input. But in theory, BTRFS with a redundant data
-RAID (such as RAID1 or RAID10) should allow scrub to preserve all data
-if a single drive fails, no?
-
-I'll spend some time looking at mergerfs.
-
-Matt
+I know David ran tests on AFS, so hopefully those hit multipage folios
+well enough. But I'm not sure whether it was just for the AFS patch or
+with the whole series applied. Regardless I'll run my own set of tests
+on XFS and see if I run into any issues as well.
