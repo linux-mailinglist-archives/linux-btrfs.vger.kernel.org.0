@@ -2,93 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEE0619B8D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Nov 2022 16:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0566061A11C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Nov 2022 20:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbiKDP12 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Nov 2022 11:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
+        id S229691AbiKDThW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Nov 2022 15:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232408AbiKDP1P (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Nov 2022 11:27:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E532716E;
-        Fri,  4 Nov 2022 08:27:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NRigLoVbg9iNMuo2V8dujDupHLGv4656kHqtcy7GZD8=; b=cC/8pOU9guMXpHbLROmQ2jJkPP
-        fLIJJBoVaFImQSaJFL0EWP8TTGFmm1Fq/sTBJJzHOEsig/P1SI1UBIbnctYsc4kfBpEtbkTVb2mcZ
-        Ox1PTbpiMUHAhUcDFiGqO5ffa8RLcaU4htW4J7D1+QIRrp5YcZ701l+dtCKa0/v+wq867Rzs2qjn5
-        m+hDXZshw76/eeJ25GEvs/oa2Dpn7Gb7+4FfiG7RrZMv4cn4ae/Eyjl07Dbl+O73y7VDkBQtEk8h0
-        f9z379l8811dl922VVtAq9pc8KIqwTp7lj2fnWcgj+lzkCFo5nZGbwWtuSpe8hnrjhN+krL6P+YDR
-        WpFHYXzg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oqybA-007SeM-OG; Fri, 04 Nov 2022 15:27:12 +0000
-Date:   Fri, 4 Nov 2022 15:27:12 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 04/23] page-writeback: Convert write_cache_pages() to use
- filemap_get_folios_tag()
-Message-ID: <Y2UvUOn6hmnqbrA7@casper.infradead.org>
-References: <20220901220138.182896-1-vishal.moola@gmail.com>
- <20220901220138.182896-5-vishal.moola@gmail.com>
- <20221018210152.GH2703033@dread.disaster.area>
+        with ESMTP id S229523AbiKDThV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Nov 2022 15:37:21 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4EB45083
+        for <linux-btrfs@vger.kernel.org>; Fri,  4 Nov 2022 12:37:20 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5653621907
+        for <linux-btrfs@vger.kernel.org>; Fri,  4 Nov 2022 19:37:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1667590639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=/8SL2uhxqD0ICsGbJgF2zWC3Fn8m6H46T1h+1moxU6Y=;
+        b=Gibc537sBqWLwiQQQ7QgSU/4wuQ9DOwYDi89xArqPypULfFiacPJuVQjMjXnKU7IJJiOu1
+        2qmyvTIKy26SQpeIrXvPLLXc9j4eGQQDjDNvOXV3EQSWch/4YwNcYKxwpK18t/B0ihIsH6
+        eqOY9EGEYUgQuuq/XkiiwCQLLnRuJHc=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 4CED72C141
+        for <linux-btrfs@vger.kernel.org>; Fri,  4 Nov 2022 19:37:19 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1567EDA70D; Fri,  4 Nov 2022 20:36:59 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Btrfs progs release 6.0.1
+Date:   Fri,  4 Nov 2022 20:36:59 +0100
+Message-Id: <20221104193659.10924-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221018210152.GH2703033@dread.disaster.area>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 08:01:52AM +1100, Dave Chinner wrote:
-> On Thu, Sep 01, 2022 at 03:01:19PM -0700, Vishal Moola (Oracle) wrote:
-> > @@ -2313,17 +2313,18 @@ int write_cache_pages(struct address_space *mapping,
-> >  	while (!done && (index <= end)) {
-> >  		int i;
-> >  
-> > -		nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end,
-> > -				tag);
-> > -		if (nr_pages == 0)
-> > +		nr_folios = filemap_get_folios_tag(mapping, &index, end,
-> > +				tag, &fbatch);
-> 
-> This can find and return dirty multi-page folios if the filesystem
-> enables them in the mapping at instantiation time, right?
+Hi,
 
-Correct.  Just like before the patch.  pagevec_lookup_range_tag() has
-only ever returned head pages, never tail pages.  This is probably
-because shmem (which was our only fs that supported compound pages)
-never supported writeback, so never looked up pages by tag.
+btrfs-progs version 6.0.1 have been released. This is a bugfix release.
 
-> >  			trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
-> > -			error = (*writepage)(page, wbc, data);
-> > +			error = writepage(&folio->page, wbc, data);
-> 
-> Yet, IIUC, this treats all folios as if they are single page folios.
-> i.e. it passes the head page of a multi-page folio to a callback
-> that will treat it as a single PAGE_SIZE page, because that's all
-> the writepage callbacks are currently expected to be passed...
-> 
-> So won't this break writeback of dirty multipage folios?
+Changelog:
+  * send: minor speed up for v2 due to increased buffer size
+  * resize: invalid command line options fail with error code
+  * quota rescan:
+    * add long options --status and --wait
+    * new option to wait but don't start rescan
+  * qgroup show: print path by default, updated format
+  * qgroup: new subcommand clear-stale, remove qgroups without their subvolumes
+  * experimental:
+    * add warnings to commands that have it enabled (mkfs, image, btrfstune)
+  * other:
+    * documentation, help text, error message updates
 
-No.  A filesystem only sets the flag to create multipage folios once its
-writeback callback handles multipage folios correctly (amongst many other
-things that have to be fixed and tested).  I haven't written down all
-the things that a filesystem maintainer needs to check at least partly
-because I don't know how representative XFS/iomap are of all filesystems.
+Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+
+Shortlog:
+
+David Sterba (23):
+      btrfs-progs: docs: add 6.0 development statistics
+      btrfs-progs: docs: fix version when send v2 was introduced
+      btrfs-progs: btrfstune: move -b option to experimental build
+      btrfs-progs: mkfs: fix compat version of block-group-tree
+      btrfs-progs: add warning helper for experimental build
+      btrfs-progs: btrfstune: add warning when experimental functionality is used
+      btrfs-progs: warn when an experimental functionality is used
+      btrfs-progs: subvol delete: update EPERM error message
+      btrfs-progs: quota rescan: add long options for status and wait
+      btrfs-progs: unify naming of subvolume command definitions
+      btrfs-progs: qgroup show: print subvolume path by default
+      btrfs-progs: qgroup show: adjust printed path format
+      btrfs-progs: qgroup show: print pretty names of columns
+      btrfs-progs: qgroup show: adjust column widths and names
+      btrfs-progs: qgroup: new command to delete stale qgroups
+      btrfs-progs: tests: add case for clearing stale qgroups
+      btrfs-progs: unify naming of qgroup subvolid helpers
+      btrfs-progs: replace strerror(errno) with %m in printf formats
+      btrfs-progs: qgroups: update help texts
+      btrfs-progs: subvol: fix help text reference to subvolume
+      btrfs-progs: tests: update stream version checks in misc/058
+      btrfs-progs: update CHANGES for 6.0.1
+      Btrfs progs v6.0.1
+
+Jeff Mahoney (2):
+      btrfs-progs: quota: add -W option to rescan to wait without starting rescan
+      btrfs-progs: qgroup: add path to show output
+
+Josef Bacik (1):
+      btrfs-progs: properly test for send_stream_version
+
+Nikolaos Chatzikonstantinou (1):
+      btrfs-progs: docs: also mention no compression for swapfile
+
+Qu Wenruo (1):
+      btrfs-progs: print-tree: follow the supported flags when printing flags
+
+Sidong Yang (1):
+      btrfs-progs: resize: return error value from check_resize_args()
+
+Tamara Schmitz (1):
+      btrfs-progs: docs: fix option name misspelling
+
+Wang Yugui (1):
+      btrfs-progs: send: sync splice buf size with kernel when proto 2
 
