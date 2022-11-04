@@ -2,256 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E12661964E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Nov 2022 13:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB70D6196C8
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Nov 2022 14:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbiKDMgZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Nov 2022 08:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
+        id S230443AbiKDNCl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Nov 2022 09:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbiKDMgX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Nov 2022 08:36:23 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6111BEB0
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Nov 2022 05:36:21 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id x13so3074365qvn.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 04 Nov 2022 05:36:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cVKzsOjD+sfLgtcPLOe8okSlSe7+hnLyI1SXbQlGr1s=;
-        b=Xl+hI6yV80ad83IdDSuB/aAZDXDDtn9hvd1CvQ5JEBTksIXBr1kZXmSNNb7ySwqtI7
-         kvMbnp37uOS5VKMbxbtkmYJb7K/sUSrwgu3y2xx3bnhWuhwSBTB9YLvzBjJRLzkgKtss
-         Ntea5LBo9G+0s4G+Atso9Ic9O4yFGutuvMxIPPtaCrhqrzvw8n1+u/g4UGyIW3H05HVE
-         hPTEeIpjbnwXFzlfYqY7Og/1pSVaIDW+TF5c34O+8s/rpfUIuYn9mfeCWXw40mRXEN5T
-         Ub5FdredG/krZh1kJ8tevx4gvJi0SYth9FbNKWmNqXfG+0/czSiW9KkMSJcalWuINBcT
-         i4MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cVKzsOjD+sfLgtcPLOe8okSlSe7+hnLyI1SXbQlGr1s=;
-        b=FQrS0ZfK4cKhskg3nW0r//XftDGeMf4L9ws8hcT87mn5MtpAH4pBsHpIEN2qc68HpC
-         OlgKsjHWXwTJNL9849g060R0arwhpn0jcfrkTn7hSShTlzzyb8pMEOgtFL8ylxdonwaU
-         fMBaEa9eZlqTN3UHicSLS8YscrR5j93wOFsrt3p5GuhnnTfnOJp1kh2Bxnz93LIp3se4
-         E418vapydwapfNmtdwfG79TK5M+weejlIwllOMgHOKCz9NkOQ5+7TeXkdhzJ7NZ4nUFo
-         ywyba888bmwr0sL11+khYFPPBpRGNOxU1JRAAPZYO43y8MgI5B0BmICE0yqM9rrJlnfd
-         30xA==
-X-Gm-Message-State: ACrzQf3HZ5CJJ7IwKR1RmUDoopHy5v7h0IxJlM6eDhqAQHulJ79OfEuN
-        kK72JkXJIVKJk9EXMX5864++Qw==
-X-Google-Smtp-Source: AMsMyM7orsCm+qY2qjv712AQbMjBnLx3DSr7IJ18oQAMH2tDtnuRQlxFQq8bAy47Si3WY93+jqxrYA==
-X-Received: by 2002:a05:6214:2601:b0:4bb:f5ef:998a with SMTP id gu1-20020a056214260100b004bbf5ef998amr24936059qvb.69.1667565380190;
-        Fri, 04 Nov 2022 05:36:20 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::25f1])
-        by smtp.gmail.com with ESMTPSA id m4-20020ac866c4000000b0039cc7ebf46bsm2302141qtp.93.2022.11.04.05.36.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Nov 2022 05:36:19 -0700 (PDT)
-Date:   Fri, 4 Nov 2022 08:36:22 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Thorsten Leemhuis <linux@leemhuis.info>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-mm@kvack.org,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-Subject: Re: [REGESSION] systemd-oomd overreacting due to PSI changes for
- Btrfs (was: Re: [PATCH 3/5] btrfs: add manual PSI accounting for compressed
- reads)
-Message-ID: <Y2UHRqthNUwuIQGS@cmpxchg.org>
-References: <20220915094200.139713-1-hch@lst.de>
- <20220915094200.139713-4-hch@lst.de>
- <d20a0a85-e415-cf78-27f9-77dd7a94bc8d@leemhuis.info>
- <Y2Q+y8t9PV5nrjud@cmpxchg.org>
- <5f7bac77-c088-6fb7-ccb5-bef9267f7186@leemhuis.info>
+        with ESMTP id S229875AbiKDNCj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Nov 2022 09:02:39 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8C42E9C1
+        for <linux-btrfs@vger.kernel.org>; Fri,  4 Nov 2022 06:02:38 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5BF10219CA;
+        Fri,  4 Nov 2022 13:02:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1667566957;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iCDfIRTmzLkEzjt/wG9qM16e5QlNVjr5+ozz5P+hhHQ=;
+        b=v0TgA8YwvpYy+Vm9QNxeyfKVDFl1AzQRAfB690bMwDZDkL+LI0A9vmTZ6NYgA9jxGS9oFf
+        YawEqusPH8QRYD3zGNfnvjNRbPC/yROeLvxUyDN+6pv9ph1CZ9CTzFlQay2qsgd15xRYT9
+        DaDJhGJlzzfW6BsXf0gX41mxirqnfdc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1667566957;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iCDfIRTmzLkEzjt/wG9qM16e5QlNVjr5+ozz5P+hhHQ=;
+        b=XMcLXmOc8pNDHiD4CzU/hInwprFHlBSbmVVbqwKq+NfJWKSIB1VdjqhpPacxFfXZxMhTFX
+        bN5SRRcTQa6z4nCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3E7B913216;
+        Fri,  4 Nov 2022 13:02:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AN1PDm0NZWN2egAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 04 Nov 2022 13:02:37 +0000
+Date:   Fri, 4 Nov 2022 14:02:17 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Roman Mamedov <rm@romanrm.net>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: WARN_ON in __writeback_inodes_sb_nr when btrfs mounted with
+ flushoncommit
+Message-ID: <20221104130217.GQ5824@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20221024041713.76aeff42@nvm>
+ <20221024123746.7a9d9bfd@nvm>
+ <20221024141629.GD5824@twin.jikos.cz>
+ <20221025022343.4d979cb3@nvm>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5f7bac77-c088-6fb7-ccb5-bef9267f7186@leemhuis.info>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221025022343.4d979cb3@nvm>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 08:32:22AM +0100, Thorsten Leemhuis wrote:
-> On 03.11.22 23:20, Johannes Weiner wrote:
-> > Can you try this patch?
+On Tue, Oct 25, 2022 at 02:23:43AM +0500, Roman Mamedov wrote:
+> On Mon, 24 Oct 2022 16:16:29 +0200
+> David Sterba <dsterba@suse.cz> wrote:
 > 
-> It apparently does the trick -- at least my test setup that usually
-> triggers the bug within a minute or two survived for nearly an hour now, so:
+> > > But not backported to stable series, why not? Seems to be a small and simple
+> > > fix.
+> > 
+> > 5.10 may still be a reasonable target for backport. It does not apply
+> > cleanly and the 5.10 version tries to do some flushing of subvolume
+> > trees, which was removed later on, there may be some dependencies too.
 > 
-> Tested-by: Thorsten Leemhuis <linux@leemhuis.info>
+> Sorry I meant the longterm series. The issue was reported starting with
+> 4.15-rc1, so of these also 4.19 and 5.4 will be affected. Sure, those may or
+> may not be as important or feasible for a backport, but at least 5.10
+> hopefully is, as it is the current long-longterm supported until 2026 per the
+> Releases page on kernel.org, 3 years further than 5.15.
 
-Great, thanks Thorsten.
-
-> Can you please also add this tag to help future archeologists, as
-> explained by the kernel docs (for details see
-> Documentation/process/submitting-patches.rst and
-> Documentation/process/5.Posting.rst):
-> 
-> Link:
-> https://lore.kernel.org/r/d20a0a85-e415-cf78-27f9-77dd7a94bc8d@leemhuis.info/
-> 
-> It also will make my regression tracking bot see further postings of
-> this patch and mark the issue as resolved once the patch lands in mainline.
-
-Done.
-
-Looks like erofs has the same issue, I included a fix for that.
-
-Andrew would you mind picking this up and sending it Linusward? Jens
-routed the series originally, but I believe he is out today.
-
-Thanks
-
-From b668b261ed18105e91745f3d7676b6bca968476d Mon Sep 17 00:00:00 2001
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Thu, 3 Nov 2022 17:34:31 -0400
-Subject: [PATCH] fs: fix leaked psi pressure state
-
-When psi annotations were added to to btrfs compression reads, the psi
-state tracking over add_ra_bio_pages and btrfs_submit_compressed_read
-was faulty. A pressure state, once entered, is never left. This
-results in incorrectly elevated pressure, which triggers OOM kills.
-
-pflags record the *previous* memstall state when we enter a new
-one. The code tried to initialize pflags to 1, and then optimize the
-leave call when we either didn't enter a memstall, or were already
-inside a nested stall. However, there can be multiple PageWorkingset
-pages in the bio, at which point it's that path itself that enters
-repeatedly and overwrites pflags. This causes us to miss the exit.
-
-Enter the stall only once if needed, then unwind correctly.
-
-erofs has the same problem, fix that up too. And move the memstall
-exit past submit_bio() to restore submit accounting originally added
-by b8e24a9300b0 ("block: annotate refault stalls from IO submission").
-
-Fixes: 4088a47e78f9 ("btrfs: add manual PSI accounting for compressed reads")
-Fixes: 99486c511f68 ("erofs: add manual PSI accounting for the compressed address space")
-Fixes: 118f3663fbc6 ("block: remove PSI accounting from the bio layer")
-Link: https://lore.kernel.org/r/d20a0a85-e415-cf78-27f9-77dd7a94bc8d@leemhuis.info/
-Reported-by: Thorsten Leemhuis <linux@leemhuis.info>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-Tested-by: Thorsten Leemhuis <linux@leemhuis.info>
----
- fs/btrfs/compression.c | 14 ++++++++------
- fs/erofs/zdata.c       | 18 +++++++++++-------
- 2 files changed, 19 insertions(+), 13 deletions(-)
-
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index f1f051ad3147..e6635fe70067 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -512,7 +512,7 @@ static u64 bio_end_offset(struct bio *bio)
- static noinline int add_ra_bio_pages(struct inode *inode,
- 				     u64 compressed_end,
- 				     struct compressed_bio *cb,
--				     unsigned long *pflags)
-+				     int *memstall, unsigned long *pflags)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	unsigned long end_index;
-@@ -581,8 +581,10 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 			continue;
- 		}
- 
--		if (PageWorkingset(page))
-+		if (!*memstall && PageWorkingset(page)) {
- 			psi_memstall_enter(pflags);
-+			*memstall = 1;
-+		}
- 
- 		ret = set_page_extent_mapped(page);
- 		if (ret < 0) {
-@@ -670,8 +672,8 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 	u64 em_len;
- 	u64 em_start;
- 	struct extent_map *em;
--	/* Initialize to 1 to make skip psi_memstall_leave unless needed */
--	unsigned long pflags = 1;
-+	unsigned long pflags;
-+	int memstall = 0;
- 	blk_status_t ret;
- 	int ret2;
- 	int i;
-@@ -727,7 +729,7 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 		goto fail;
- 	}
- 
--	add_ra_bio_pages(inode, em_start + em_len, cb, &pflags);
-+	add_ra_bio_pages(inode, em_start + em_len, cb, &memstall, &pflags);
- 
- 	/* include any pages we added in add_ra-bio_pages */
- 	cb->len = bio->bi_iter.bi_size;
-@@ -807,7 +809,7 @@ void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 		}
- 	}
- 
--	if (!pflags)
-+	if (memstall)
- 		psi_memstall_leave(&pflags);
- 
- 	if (refcount_dec_and_test(&cb->pending_ios))
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index c7f24fc7efd5..064a166324a7 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -1412,8 +1412,8 @@ static void z_erofs_submit_queue(struct z_erofs_decompress_frontend *f,
- 	struct block_device *last_bdev;
- 	unsigned int nr_bios = 0;
- 	struct bio *bio = NULL;
--	/* initialize to 1 to make skip psi_memstall_leave unless needed */
--	unsigned long pflags = 1;
-+	unsigned long pflags;
-+	int memstall = 0;
- 
- 	bi_private = jobqueueset_init(sb, q, fgq, force_fg);
- 	qtail[JQ_BYPASS] = &q[JQ_BYPASS]->head;
-@@ -1463,14 +1463,18 @@ static void z_erofs_submit_queue(struct z_erofs_decompress_frontend *f,
- 			if (bio && (cur != last_index + 1 ||
- 				    last_bdev != mdev.m_bdev)) {
- submit_bio_retry:
--				if (!pflags)
--					psi_memstall_leave(&pflags);
- 				submit_bio(bio);
-+				if (memstall) {
-+					psi_memstall_leave(&pflags);
-+					memstall = 0;
-+				}
- 				bio = NULL;
- 			}
- 
--			if (unlikely(PageWorkingset(page)))
-+			if (unlikely(PageWorkingset(page)) && !memstall) {
- 				psi_memstall_enter(&pflags);
-+				memstall = 1;
-+			}
- 
- 			if (!bio) {
- 				bio = bio_alloc(mdev.m_bdev, BIO_MAX_VECS,
-@@ -1500,9 +1504,9 @@ static void z_erofs_submit_queue(struct z_erofs_decompress_frontend *f,
- 	} while (owned_head != Z_EROFS_PCLUSTER_TAIL);
- 
- 	if (bio) {
--		if (!pflags)
--			psi_memstall_leave(&pflags);
- 		submit_bio(bio);
-+		if (memstall)
-+			psi_memstall_leave(&pflags);
- 	}
- 
- 	/*
--- 
-2.38.1
-
+Checking changes related to btrfs_start_delalloc_flush, 5.10 is doable,
+there are correctness fixes that landed in 5.7 and there are like 2-3
+patches that would have to be backported.
