@@ -2,145 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD01618F26
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Nov 2022 04:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D01B36190A6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Nov 2022 07:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbiKDDhq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Nov 2022 23:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
+        id S230035AbiKDGEc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Nov 2022 02:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbiKDDhS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Nov 2022 23:37:18 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C434F5FF7
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Nov 2022 20:37:03 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id q71so3347120pgq.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Nov 2022 20:37:03 -0700 (PDT)
+        with ESMTP id S229493AbiKDGEa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Nov 2022 02:04:30 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD2F10CC
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Nov 2022 23:04:29 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id hh9so2515175qtb.13
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Nov 2022 23:04:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kCztCif6DGnUVPea69d1j6HBte1tInJ//NGbT2adCtA=;
-        b=uj2thbHtG/d+GBBCufhO7rN+QkuEm7zsR1utnZpf1jQ6jQI6apkQTpUS2wcEmA9aNC
-         VnDMe2rmlwjjtPUJR6RVdf+UJIK/YCtwiDAFrNIV7Nt++fXhl9nREiFkHf0RyMEPfvfO
-         onGWmNN1ovJwkvkYC6fzzHZz7zyvVev9H3OguSEusghpv0YPPtdfeKpV8TCgCnMYqtfc
-         Ksic71C8032fBMagPD7RLDMZgSbzkcCWA6HBFsZEVIK8PskhHmcNukEVkFYsBkmvmeoC
-         g/qCQdT1fcwEOyEG1ZYfH8GugnyK0CKLKk6hzKwIFkwwhNd+ojc6bS3gdGaV6YzySSoe
-         prLQ==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=c8XA1N0uaxkLO/wKHErNWHaSuu64k5Pjb5u9dmcZrOc=;
+        b=j5b9GJzBtekkE7yFtXxrwfdSnFiLUyeBirWgEHrY1DwsCmMNln0raTzRxoGjxR0vEG
+         /uxcYigPDNuHCnpdjlCMIgM2n48VEgd9f1vOvLP7QtlQ6TZ60bKdG45TIRdnGWFrYvNx
+         Cp55Gth/vM30nQcwiFTGNz/rn848q3Eb4Q4zOcHHfzU4yUla/g4Ad3fhG08vEfC5/R3h
+         PPkXOTLacmBas/4TqbxS2EbsHUBC7HUkqW24VFIAAc/oUNQgb1e6AqTct7oO2A3z5CF9
+         SDfCYWufECI8AAEV1C876JYV0w0fzKUncqX3+GY4OEtVI/MgHr71Oynl7CVhbajN2Mle
+         apoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kCztCif6DGnUVPea69d1j6HBte1tInJ//NGbT2adCtA=;
-        b=UNyutzR4U1k4ElDB/VcGM+tS2RMJlt4L87nO63Af96aeCNw+JPZ/0D4oikiSmW+jZ1
-         gNv7tTqgd+jnzaNFmeMsm6PrHZeFSnb2tSBJY2J83SH3rnZkmcDjXbXTycnfOsOQQOa/
-         5mBxhvLTJXn6UP9UKaqEphKz4+q4lRMXV6ibwo8UcMOQA7C+/mSUgq8eGnVbIlNUjMQr
-         kCNjXN91nv30zohFnHgSmX/rgYrPibgC9drGT3Q3+hwG8nPERn/CFpgs5HWU/b9dNBcH
-         7HdL2ma+hhvFSVbsCbn9UKa16cBzia6FpNt2wk1dTVoHiRXdzhAUkhC4NExtcQrkOPOx
-         QKyg==
-X-Gm-Message-State: ACrzQf2+SLTfuMPzFBLlxvDo4Yrygf29bMD2i7t9W+XxTelKYo+hI65g
-        /dWMUoBOySd0/1jgcn1lvRk1xhBeU097Tg==
-X-Google-Smtp-Source: AMsMyM7NwhgMGw/Ejg/10+QrYuOi1WfTIe60hww1ZNfzsfJwCZnIyT2jB8JwYZIzMahLdSnJ6wzgKQ==
-X-Received: by 2002:a05:6a00:2396:b0:56c:b770:eda6 with SMTP id f22-20020a056a00239600b0056cb770eda6mr33239633pfc.38.1667533023291;
-        Thu, 03 Nov 2022 20:37:03 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au. [49.181.106.210])
-        by smtp.gmail.com with ESMTPSA id x13-20020a170902a38d00b001830ed575c3sm1430190pla.117.2022.11.03.20.37.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 20:37:02 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1oqnVr-00A1XB-Bm; Fri, 04 Nov 2022 14:36:59 +1100
-Date:   Fri, 4 Nov 2022 14:36:59 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Vishal Moola <vishal.moola@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
-        linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 04/23] page-writeback: Convert write_cache_pages() to use
- filemap_get_folios_tag()
-Message-ID: <20221104033659.GA2703033@dread.disaster.area>
-References: <20220901220138.182896-1-vishal.moola@gmail.com>
- <20220901220138.182896-5-vishal.moola@gmail.com>
- <20221018210152.GH2703033@dread.disaster.area>
- <Y2RAdUtJrOJmYU4L@fedora>
- <20221104003235.GZ2703033@dread.disaster.area>
- <Y2R8rRr0ZdrlT32m@magnolia>
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c8XA1N0uaxkLO/wKHErNWHaSuu64k5Pjb5u9dmcZrOc=;
+        b=QAA5K/IHAEGi/6YDg/nZRzuRkNFz9HfaPvo6Rvn8baLoY0NVR1iK2n6jAc8U85S3Pa
+         ThE0kOVXmHvvYPl38kQcMagvi4nD+B4aUfo90sJPcdMFhcpCEHHaqm2MbLyWMzxCBXcB
+         XXpZSX5OiGiC9VAttdPL5vQclKfrZgGPXV7ixmGAsS/nMe7nGh3pv3i+ElFt4acQKYMX
+         VqGjrih2pIhDqwE8Q0RQnpoHoOmZJb/LiP3pq7hsg+lf6vsNGr8fq/R5B1i2Xc25X1HD
+         C0IUb6Rl6SG1GLBME1sEpM3JNe5PIPaTMTVc6iccDLCXrGS4to8jFY+ltdEfre1k2T50
+         qrDg==
+X-Gm-Message-State: ACrzQf1FMEaTRa2xhxCCd0VlzJF4nF5Rd4bvM5OUtcjTUVLxg5UL61yk
+        5kU+JzzYpPy95mDUtnsizQ3GVejBW8jkACLhOd0=
+X-Google-Smtp-Source: AMsMyM4d+3oHqwtyFW+7gNpseL+BTezKOejCwfVqbuHSnc4TnvWkrB9jZZGIql1DLTGZWP/QM8LeEdkETfs5XT/OIxU=
+X-Received: by 2002:a05:622a:1194:b0:3a5:40c8:99a1 with SMTP id
+ m20-20020a05622a119400b003a540c899a1mr13628866qtk.267.1667541868111; Thu, 03
+ Nov 2022 23:04:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y2R8rRr0ZdrlT32m@magnolia>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Received: by 2002:a05:6200:5e0e:b0:49f:24a7:f1f7 with HTTP; Thu, 3 Nov 2022
+ 23:04:27 -0700 (PDT)
+Reply-To: stefanopessia755@hotmail.com
+From:   Stefano Pessina <nancyowuor33@gmail.com>
+Date:   Fri, 4 Nov 2022 09:04:27 +0300
+Message-ID: <CAN=GBp2sxHb16UOJrQWGG8HwWgM-xtD6Svz2cw0rojg4Fwu48Q@mail.gmail.com>
+Subject: Geldspende
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:82a listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5014]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [nancyowuor33[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [stefanopessia755[at]hotmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [nancyowuor33[at]gmail.com]
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 03, 2022 at 07:45:01PM -0700, Darrick J. Wong wrote:
-> On Fri, Nov 04, 2022 at 11:32:35AM +1100, Dave Chinner wrote:
-> > On Thu, Nov 03, 2022 at 03:28:05PM -0700, Vishal Moola wrote:
-> > > On Wed, Oct 19, 2022 at 08:01:52AM +1100, Dave Chinner wrote:
-> > > > On Thu, Sep 01, 2022 at 03:01:19PM -0700, Vishal Moola (Oracle) wrote:
-> > > > > -			BUG_ON(PageWriteback(page));
-> > > > > -			if (!clear_page_dirty_for_io(page))
-> > > > > +			BUG_ON(folio_test_writeback(folio));
-> > > > > +			if (!folio_clear_dirty_for_io(folio))
-> > > > >  				goto continue_unlock;
-> > > > >  
-> > > > >  			trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
-> > > > > -			error = (*writepage)(page, wbc, data);
-> > > > > +			error = writepage(&folio->page, wbc, data);
-> > > > 
-> > > > Yet, IIUC, this treats all folios as if they are single page folios.
-> > > > i.e. it passes the head page of a multi-page folio to a callback
-> > > > that will treat it as a single PAGE_SIZE page, because that's all
-> > > > the writepage callbacks are currently expected to be passed...
-> > > > 
-> > > > So won't this break writeback of dirty multipage folios?
-> > > 
-> > > Yes, it appears it would. But it wouldn't because its already 'broken'.
-> > 
-> > It is? Then why isn't XFS broken on existing kernels? Oh, we don't
-> > know because it hasn't been tested?
-> > 
-> > Seriously - if this really is broken, and this patchset further
-> > propagating the brokeness, then somebody needs to explain to me why
-> > this is not corrupting data in XFS.
-> 
-> It looks like iomap_do_writepage finds the folio size correctly
-> 
-> 	end_pos = folio_pos(folio) + folio_size(folio);
-> 
-> and iomap_writpage_map will map out the correct number of blocks
-> 
-> 	unsigned nblocks = i_blocks_per_folio(inode, folio);
-> 
-> 	for (i = 0; i < nblocks && pos < end_pos; i++, pos += len) {
-> 
-> right?
-
-Yup, that's how I read it, too.
-
-But my recent experience with folios involved being repeatedly
-burnt by edge case corruptions due to multipage folios showing up
-when and where I least expected them.
-
-Hence doing a 1:1 conversion of page based code to folio based code
-and just assuming large folios will work without any testing seems
-akin to playing russian roulette with loose cannons that have been
-doused with napalm and then set on fire by an air-dropped barrel
-bomb...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+--=20
+Die Summe von 500.000,00 =E2=82=AC wurde Ihnen von STEFANO PESSINA gespende=
+t.
+Bitte kontaktieren Sie uns f=C3=BCr weitere Informationen =C3=BCber
+stefanopessia755@hotmail.com
