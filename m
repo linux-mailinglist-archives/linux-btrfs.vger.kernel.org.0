@@ -2,124 +2,306 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA8E61E4CC
-	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Nov 2022 18:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7732161E723
+	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Nov 2022 23:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbiKFRVo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Nov 2022 12:21:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36624 "EHLO
+        id S230174AbiKFW5M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Nov 2022 17:57:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbiKFRVX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Nov 2022 12:21:23 -0500
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893A5248F6
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Nov 2022 09:13:48 -0800 (PST)
-Received: by mail-io1-f71.google.com with SMTP id v18-20020a5d9412000000b006bfdf74fa3bso5876623ion.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 06 Nov 2022 09:13:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tntjbVIwEnUx/49ns5I6z84/2ydQTBLdsYbGbJMJCpQ=;
-        b=eDWuiRSUi7w/xnkPHo/bP66UmfOGypiZRXGK4D03x5Sv+QrXSc9OHXXnk3HE0FtZ7H
-         CB+dICW+TTV+Kj6Orkiev6kZOn+7HCWpjEIbTDnHPCqedlIqZfFwkW9+3fHhDFFgMsvW
-         ykDl5hiJWVg9ce1lEgVa9/66vRoLgwsDTzrneyqqW1QfANAC2ql6RKfFUxbD2tebZy79
-         QiXMHdws0hvn2Q69KMLM0Ib29dUCBuFtEkBAJ6J39tjkZIQfIbR1DDcu8LCA1mNmiVyg
-         0U7MLB0LNvEOSTz9bUsZIFq09al9p/RVUirci+oJQHr2dnI9WnG+sNupBl6JqISQVCad
-         2jdw==
-X-Gm-Message-State: ACrzQf2hBm04zAeqWEjWxeAUV+bRT5Lj00KTmWcDqxmIGY9t2aDpt3Hd
-        3craoGWFDYN6AxOAz+F2abRYcJc13j408icK5qJfDwtOLicb
-X-Google-Smtp-Source: AMsMyM5VKrPycUSdOb59R+bOeJjI8zf+bDoOUzp/DAJ9/FySDSlbXCpISl4QixGDm7RkRqs48uXrytApZLsrPKoMlZ/SOwyrHkOm
+        with ESMTP id S229932AbiKFW5L (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Nov 2022 17:57:11 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F346153
+        for <linux-btrfs@vger.kernel.org>; Sun,  6 Nov 2022 14:57:07 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYeR1-1oWefb0DY3-00ViWf; Sun, 06
+ Nov 2022 23:57:04 +0100
+Message-ID: <b748d106-4a20-0c33-8e87-dfa6de0b281a@gmx.com>
+Date:   Mon, 7 Nov 2022 06:57:01 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4094:b0:375:8dbb:ef89 with SMTP id
- m20-20020a056638409400b003758dbbef89mr11067967jam.93.1667754827881; Sun, 06
- Nov 2022 09:13:47 -0800 (PST)
-Date:   Sun, 06 Nov 2022 09:13:47 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000016a4a905ecd06e88@google.com>
-Subject: [syzbot] WARNING in btrfs_create_new_inode
-From:   syzbot <syzbot+56e0adfbcf0bafbf4f53@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH] btrfs: scrub: fix failed to detect checksum error
+Content-Language: en-US
+To:     Li Zhang <zhanglikernel@gmail.com>, linux-btrfs@vger.kernel.org
+References: <1667745304-11470-1-git-send-email-zhanglikernel@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <1667745304-11470-1-git-send-email-zhanglikernel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:JQCAssXG8dNolAF0wbjRmc+YeRviO7yqjerRNcWHrJoGo6n63sd
+ 37Fgpu8YHaASYvqulOwm3ECx1P34Q+co6+azC3VPZo4vxRErkJ29Kj5pp2NNvTRRpPHc7vm
+ e4YLeXkLK1y1CPYSZfU+itB9ucvqHlTLStGrE6u63cbexe1UdHO7nr48uG2aBhpAp14MQ+H
+ CPWFnLX5tnHOTa+Eh3yUA==
+UI-OutboundReport: notjunk:1;M01:P0:RMT0TtAJ2W0=;0UEgPZ9rDOLTg9jXkDhIVVLAUYX
+ wMggKvcOg15ZEMZMBD+RvwtoHOruxQpXYtxrKaio2SkEfrh1AfzIyFEK2oYoY4omhz0H6XVOK
+ a9F2Ma0SdGDA/n+ddWe4n4UXZwCJZ54qux90/tx6NURmQwNEuTltTSJ1549LKJqKBTECRfjpD
+ AEXCbZnokrWf690siri/KYFbJ7yI1LrfE4AWCLi4XAUVhGDVcJSvAPWdYPfGZ0geMvRVb7I3N
+ J9SRyoBJZ1ARNZMX5tYdzkjo1I6Sae0drjvb8UYhnRs/TtBtAxbNdeVGi0mTh+bd/C/GfNJ/H
+ bvu7oS6pwW1BgSsNoybEc0Akz61ENlI93N9y3hWY0lYPwR8cL48MUWveP/q/qh0YupysogQT+
+ t9/x1UJoII4if9P/pWygWbZVFs2CLpLY258FyREBpcuRlqObH0A/WIzU2txXcsELfKyZrrsWi
+ 5UaqxsjBBk2A2LAEMw1YCc/gF4azTTiT8HPS5xS7xT4zeU17ASBW1fgbNKTTJF10tEDZeIePo
+ iUqzHaV0pcaYb5XkjbNMlCbZ0bZ803a5zMyl0gcuGGjddsz2SXA+niS/08BK1Jo/69mfr+M2A
+ +gHH+D0tCwQokwuyFWMalioqamR1zCN4CtVJ2TA28ACHFeIXdiUdO9Sm4FXc99Hoy/X7rY9+l
+ 9DXr8SM2c/a8SscIRlyDktWyNkEfXtx3JneKGAEDGHolNgrBLP36tuNT+HJVAhYuE+3LoXEka
+ IoUtlWlNIiNV4gIEJr4CnowKtZKWyKTAyKDeaiHSfyURWkIusD38qAdHdFwbAHhjoZil2Ncq6
+ Jwa4Y9R8aJOsKSaVhLlwgz+vxXiyeX3JAzpZKvB85RIrQoSOZaMkmkYyONGlrpnyx6aeZntUE
+ K+ZB4z6RCxTcdtNayk3/kU2Rh4OkgSqKtavfeJsGfaBDzFA64pFT3R0CMXzkRX8LbCnZqmh1c
+ dUeNgw==
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    b208b9fbbcba Merge tag 'arm64-fixes' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=152c0676880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f7e100ed8aaa828e
-dashboard link: https://syzkaller.appspot.com/bug?extid=56e0adfbcf0bafbf4f53
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/92fde6d92d82/disk-b208b9fb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ae3dbdb3faf8/vmlinux-b208b9fb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/bbf4da09683c/bzImage-b208b9fb.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+56e0adfbcf0bafbf4f53@syzkaller.appspotmail.com
-
-BTRFS info (device loop5): using free space tree
-BTRFS info (device loop5): enabling ssd optimizations
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 27384 at fs/btrfs/inode.c:6412 btrfs_create_new_inode+0x1aa3/0x2270 fs/btrfs/inode.c:6412
-Modules linked in:
-CPU: 1 PID: 27384 Comm: syz-executor.5 Not tainted 6.1.0-rc3-syzkaller-00288-gb208b9fbbcba #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-RIP: 0010:btrfs_create_new_inode+0x1aa3/0x2270 fs/btrfs/inode.c:6412
-Code: d5 85 a7 06 4c 8b 6c 24 20 49 bf 00 00 00 00 00 fc ff df eb 17 e8 1d 3b fd fd 48 c7 c7 80 00 db 8a 89 de 31 c0 e8 2d d9 c4 fd <0f> 0b b0 01 44 0f b6 c0 48 8b 7c 24 18 48 c7 c6 60 07 db 8a ba 0c
-RSP: 0018:ffffc90003abfa20 EFLAGS: 00010246
-RAX: 3679467aa46b8200 RBX: 00000000fffffff4 RCX: 0000000000040000
-RDX: ffffc9000d634000 RSI: 0000000000006e63 RDI: 0000000000006e64
-RBP: ffffc90003abfc70 R08: ffffffff816b9e3d R09: ffffed1017364f13
-R10: ffffed1017364f13 R11: 1ffff11017364f12 R12: ffff88803d12e590
-R13: 1ffff92000757f60 R14: 1ffff11007a25cb2 R15: dffffc0000000000
-FS:  00007f64f0355700(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000201e6000 CR3: 000000003a0d2000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_create_common+0x2eb/0x420 fs/btrfs/inode.c:6639
- vfs_mkdir+0x3b3/0x590 fs/namei.c:4035
- do_mkdirat+0x279/0x550 fs/namei.c:4060
- __do_sys_mkdirat fs/namei.c:4075 [inline]
- __se_sys_mkdirat fs/namei.c:4073 [inline]
- __x64_sys_mkdirat+0x85/0x90 fs/namei.c:4073
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f64ef68b5a9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f64f0355168 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
-RAX: ffffffffffffffda RBX: 00007f64ef7abf80 RCX: 00007f64ef68b5a9
-RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000004
-RBP: 00007f64f03551d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-R13: 00007ffd23a451ef R14: 00007f64f0355300 R15: 0000000000022000
- </TASK>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 2022/11/6 22:35, Li Zhang wrote:
+> [bug]
+> Scrub fails to detect checksum errors
+> To reproduce the problem:
+> 
+> $ truncate -s 250M loop_dev1
+> $ truncate -s 250M loop_dev2
+> $ losetup /dev/loop1 loop_dev1
+> $ losetup /dev/loop2 loop_dev2
+> $ mkfs.btrfs -mraid1 -draid1 /dev/loop1 /dev/loop2 -f
+> $ mount /dev/loop1 /mnt/
+> $ cp ~/btrfs/btrfs-progs/mkfs/main.c /mnt/
+> 
+> $ vim -b loop_dev1
+> 
+> ....
+>           free(label);
+>           free(source_dir);
+>           exit(1);
+> success:
+>           exit(0);
+> }zhangli
+> 
+> ....
+> 
+> $ sudo btrfs scrub start /mnt/
+> fsid:b66aa912-ae76-4b4b-881b-6a6840f06870 sock_path:/var/lib/btrfs/scrub.progress.b66aa912-ae76-4b4b-881b-6a6840f06870.
+> scrub started on /mnt/, fsid b66aa912-ae76-4b4b-881b-6a6840f06870 (pid=9894)
+> 
+> $ sudo btrfs scrub status /mnt/
+> UUID:             b66aa912-ae76-4b4b-881b-6a6840f06870
+> Scrub started:    Sun Nov  6 21:51:50 2022
+> Status:           finished
+> Duration:         0:00:00
+> Total to scrub:   392.00KiB
+> Rate:             0.00B/s
+> Error summary:    no errors found
+> 
+> [reason]
+> Because scrub only checks the first sector (scrub_sector) of
+> the sblock (scrub_block), it does not check other sectors.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+That's caused by commit 786672e9e1a3 ("btrfs: scrub: use larger block 
+size for data extent scrub"), which enlarged data scrub extent size 
+(previously always sectorsize, thus there will only be one sector per 
+scrub_block, thus it always works before that commit).
+
+I'd prefer a revert before we have better fix.
+
+> 
+> [implementation]
+> 1. Move the set sector (scrub_sector) csum from scrub_extent
+> to scrub_sectors, since each sector has an independent checksum.
+> 2. In the scrub_checksum_data function, check all
+> sectors in the sblock.
+> 3. In the scrub_setup_recheck_block function,
+> use sector_index to set the sector csum.
+> 
+> [test]
+> The test method is the same as the problem reproduction.
+> Can detect checksum errors and fix checksum errors
+> Below is the scrub output.
+> 
+> $ sudo btrfs scrub start /mnt/
+> fsid:b66aa912-ae76-4b4b-881b-6a6840f06870 sock_path:/var/lib/btrfs/scrub.progress.b66aa912-ae76-4b4b-881b-6a6840f06870.
+> scrub started on /mnt/, fsid b66aa912-ae76-4b4b-881b-6a6840f06870 (pid=11089)
+> $ sudo btrfs scrub status /mnt/WARNING: errors detected during scrubbing, corrected
+> 
+> UUID:             b66aa912-ae76-4b4b-881b-6a6840f06870
+> Scrub started:    Sun Nov  6 22:15:02 2022
+> Status:           finished
+> Duration:         0:00:00
+> Total to scrub:   392.00KiB
+> Rate:             0.00B/s
+> Error summary:    csum=1
+>    Corrected:      1
+>    Uncorrectable:  0
+>    Unverified:     0
+> 
+> Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
+> ---
+> Issue: 537
+> 
+>   fs/btrfs/scrub.c | 58 ++++++++++++++++++++++++++++----------------------------
+>   1 file changed, 29 insertions(+), 29 deletions(-)
+> 
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index f260c53..56ee600 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -404,7 +404,7 @@ static int scrub_write_sector_to_dev_replace(struct scrub_block *sblock,
+>   static void scrub_parity_put(struct scrub_parity *sparity);
+>   static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+>   			 u64 physical, struct btrfs_device *dev, u64 flags,
+> -			 u64 gen, int mirror_num, u8 *csum,
+> +			 u64 gen, int mirror_num,
+>   			 u64 physical_for_dev_replace);
+>   static void scrub_bio_end_io(struct bio *bio);
+>   static void scrub_bio_end_io_worker(struct work_struct *work);
+> @@ -420,6 +420,8 @@ static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
+>   static void scrub_wr_bio_end_io(struct bio *bio);
+>   static void scrub_wr_bio_end_io_worker(struct work_struct *work);
+>   static void scrub_put_ctx(struct scrub_ctx *sctx);
+> +static int scrub_find_csum(struct scrub_ctx *sctx, u64 logical, u8 *csum);
+> +
+
+I don't think this is the way to go, since we can have a extent up to 
+STRIPE_LEN, going csum search again and again is not the proper way to go.
+
+We need a function to grab a batch of csum in just one go.
+
+>   
+>   static inline int scrub_is_page_on_raid56(struct scrub_sector *sector)
+>   {
+> @@ -1516,7 +1518,7 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+>   			sector->have_csum = have_csum;
+>   			if (have_csum)
+>   				memcpy(sector->csum,
+> -				       original_sblock->sectors[0]->csum,
+> +				       original_sblock->sectors[sector_index]->csum,
+>   				       sctx->fs_info->csum_size);
+>   
+>   			scrub_stripe_index_and_offset(logical,
+> @@ -1984,21 +1986,22 @@ static int scrub_checksum_data(struct scrub_block *sblock)
+>   	u8 csum[BTRFS_CSUM_SIZE];
+>   	struct scrub_sector *sector;
+>   	char *kaddr;
+> +	int i;
+>   
+>   	BUG_ON(sblock->sector_count < 1);
+> -	sector = sblock->sectors[0];
+> -	if (!sector->have_csum)
+> -		return 0;
+> -
+> -	kaddr = scrub_sector_get_kaddr(sector);
+>   
+>   	shash->tfm = fs_info->csum_shash;
+>   	crypto_shash_init(shash);
+> +	for (i = 0; i < sblock->sector_count; i++) {
+> +		sector = sblock->sectors[i];
+> +		if (!sector->have_csum)
+> +			continue;
+>   
+> -	crypto_shash_digest(shash, kaddr, fs_info->sectorsize, csum);
+> -
+> -	if (memcmp(csum, sector->csum, fs_info->csum_size))
+> -		sblock->checksum_error = 1;
+> +		kaddr = scrub_sector_get_kaddr(sector);
+> +		crypto_shash_digest(shash, kaddr, fs_info->sectorsize, csum);
+> +		if (memcmp(csum, sector->csum, fs_info->csum_size))
+> +			sblock->checksum_error = 1;
+
+That would only increase checksum error by 1, but we may have multiple 
+corruptions in that extent.
+
+This hotfix is going to screw up scrub error reporting.
+
+Thanks,
+Qu
+> +	}
+>   	return sblock->checksum_error;
+>   }
+>   
+> @@ -2400,12 +2403,14 @@ static void scrub_missing_raid56_pages(struct scrub_block *sblock)
+>   
+>   static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+>   		       u64 physical, struct btrfs_device *dev, u64 flags,
+> -		       u64 gen, int mirror_num, u8 *csum,
+> +		       u64 gen, int mirror_num,
+>   		       u64 physical_for_dev_replace)
+>   {
+>   	struct scrub_block *sblock;
+>   	const u32 sectorsize = sctx->fs_info->sectorsize;
+>   	int index;
+> +	u8 csum[BTRFS_CSUM_SIZE];
+> +	int have_csum;
+>   
+>   	sblock = alloc_scrub_block(sctx, dev, logical, physical,
+>   				   physical_for_dev_replace, mirror_num);
+> @@ -2424,7 +2429,6 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+>   		 * more memory for PAGE_SIZE > sectorsize case.
+>   		 */
+>   		u32 l = min(sectorsize, len);
+> -
+>   		sector = alloc_scrub_sector(sblock, logical, GFP_KERNEL);
+>   		if (!sector) {
+>   			spin_lock(&sctx->stat_lock);
+> @@ -2435,11 +2439,16 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+>   		}
+>   		sector->flags = flags;
+>   		sector->generation = gen;
+> -		if (csum) {
+> -			sector->have_csum = 1;
+> -			memcpy(sector->csum, csum, sctx->fs_info->csum_size);
+> -		} else {
+> -			sector->have_csum = 0;
+> +		if (flags & BTRFS_EXTENT_FLAG_DATA) {
+> +			/* push csums to sbio */
+> +			have_csum = scrub_find_csum(sctx, logical, csum);
+> +			if (have_csum == 0) {
+> +				++sctx->stat.no_csum;
+> +				sector->have_csum = 0;
+> +			} else {
+> +				sector->have_csum = 1;
+> +				memcpy(sector->csum, csum, sctx->fs_info->csum_size);
+> +			}
+>   		}
+>   		len -= l;
+>   		logical += l;
+> @@ -2669,7 +2678,6 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+>   	u64 src_physical = physical;
+>   	int src_mirror = mirror_num;
+>   	int ret;
+> -	u8 csum[BTRFS_CSUM_SIZE];
+>   	u32 blocksize;
+>   
+>   	/*
+> @@ -2715,17 +2723,9 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+>   				     &src_dev, &src_mirror);
+>   	while (len) {
+>   		u32 l = min(len, blocksize);
+> -		int have_csum = 0;
+> -
+> -		if (flags & BTRFS_EXTENT_FLAG_DATA) {
+> -			/* push csums to sbio */
+> -			have_csum = scrub_find_csum(sctx, logical, csum);
+> -			if (have_csum == 0)
+> -				++sctx->stat.no_csum;
+> -		}
+>   		ret = scrub_sectors(sctx, logical, l, src_physical, src_dev,
+>   				    flags, gen, src_mirror,
+> -				    have_csum ? csum : NULL, physical);
+> +				    physical);
+>   		if (ret)
+>   			return ret;
+>   		len -= l;
+> @@ -4155,7 +4155,7 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
+>   
+>   		ret = scrub_sectors(sctx, bytenr, BTRFS_SUPER_INFO_SIZE, bytenr,
+>   				    scrub_dev, BTRFS_EXTENT_FLAG_SUPER, gen, i,
+> -				    NULL, bytenr);
+> +				    bytenr);
+>   		if (ret)
+>   			return ret;
+>   	}
