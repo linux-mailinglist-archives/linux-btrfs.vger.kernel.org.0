@@ -2,53 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA35461ED02
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 09:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC6561ED1D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 09:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbiKGIhD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Nov 2022 03:37:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
+        id S230475AbiKGIm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Nov 2022 03:42:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbiKGIhC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Nov 2022 03:37:02 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2921119
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Nov 2022 00:37:00 -0800 (PST)
+        with ESMTP id S230521AbiKGIm6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Nov 2022 03:42:58 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458E615718;
+        Mon,  7 Nov 2022 00:42:55 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 09616B80E35
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Nov 2022 08:36:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92BBEC433D6
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Nov 2022 08:36:57 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CB71B60F3C;
+        Mon,  7 Nov 2022 08:42:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 410E0C433C1;
+        Mon,  7 Nov 2022 08:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667810217;
-        bh=v8SaiqEDZ61XCp6UKXP8ZuHV0+drNNeIpW5bNERuqd4=;
+        s=k20201202; t=1667810574;
+        bh=YgMQqbAMZgofF1VeQpbBgOGUwi0ouvRpEbUg5UqfH/M=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nzI9zd80ulCeWMrtFHX2nu3CmRj3rCC1Poct2fXd+Dv1I25cwvLXJLXo0PeTuFtZZ
-         05EbQ7qs+KNDCZjgzhrgeiOG3QRdyoqmtNyTDf0dXBQ2rJAU4yLX3xoGOi9XN+O6BI
-         vrhgk/tV3mlESdpb+ZfrHrERNi9Vy+SpnG1wI4GebLq24fWNkQw0zfgT/1VJD/AvC2
-         GA43YwvVFklGDTTkuSo4VATrUm5s8sP9fAR+wteGlJf3+7ngnS76VnVI482UA5DLi5
-         sr3X+0yGmwbtPIrgeT46d5ugY8hRm5lFbvs7Grruoy3O11K98ySTSfFzIVVnw2h6Bb
-         DDGghwRtiDSGA==
-Received: by mail-ot1-f41.google.com with SMTP id f4-20020a056830264400b0066c8e56828aso4413403otu.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Nov 2022 00:36:57 -0800 (PST)
-X-Gm-Message-State: ACrzQf1VMeRDG59z91FC7lO+M0wskO6xhcgtXtBY0BPIDdSNV6GfKNJM
-        ny2dYCw+y2e5y7Oi9XkEv12YS/xk17RCXhUYEVw=
-X-Google-Smtp-Source: AMsMyM4t9eU8lnMTg/E1nMOPu3clvZGUmSC+gpJiKOqw9u8Ufzx4vzP8nlrD7UNcdmIukdcJVMlG09zlYJkrfd9mpxk=
-X-Received: by 2002:a05:6830:18c9:b0:66c:5c0e:35e9 with SMTP id
- v9-20020a05683018c900b0066c5c0e35e9mr17994051ote.345.1667810216641; Mon, 07
- Nov 2022 00:36:56 -0800 (PST)
+        b=qqLD5BLhNzn2Hzhe0ft1mfsU/s6heIBxr6ktMQzKXz9mPRYAWT1VD7rJXr+R6ij45
+         o/IPZ3Nv+0fxKW9kewn3Rp9qBmGSQ5OWrM+xuOah/Jlo5A6KURkAO9WrEZYFTHUij6
+         CQGz1MMPVvBo7IjPLuZCEFfsDAzlorZZRznNRjCuvzuKpimEuvLZBJ5+1Qv4aunXlb
+         e5XqYRflUlxxWHPw+27aR4QRF/G3HOebYnpZF2PIfWTtCrlEfXcc6O3BxRd8bK5xtD
+         mjuOua4i2HS+nBsxU/yNlwQUyxc0SpZVoFmTqgZnzIwbZMk0g0L6KtW1lN1r1ZNwTy
+         YcKDDdUpzb+bg==
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-13b6c1c89bdso11864277fac.13;
+        Mon, 07 Nov 2022 00:42:54 -0800 (PST)
+X-Gm-Message-State: ACrzQf1rKy6baYZb8ryaLDC6IjCcmREasv3w50eYzsWHmBUMxk0m4Nu8
+        8jqVld7yaTQCARdIvz+3T9gBe+Mly1EpWbuo05A=
+X-Google-Smtp-Source: AMsMyM6CqImD7vn53rhmFhfpqYgJHnVlaWeJgG9h3oAijA8M3gAvm4hCFL+a06zlQQKEZfDGuAWOJHfmbiqs6XfhrFM=
+X-Received: by 2002:a05:6870:2052:b0:132:7b2:2fe6 with SMTP id
+ l18-20020a056870205200b0013207b22fe6mr29425733oad.98.1667810573397; Mon, 07
+ Nov 2022 00:42:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20221106073028.71F9.409509F4@e16-tech.com>
-In-Reply-To: <20221106073028.71F9.409509F4@e16-tech.com>
+References: <20221106235348.9732-1-wqu@suse.com> <20221107032500.lfzr3h3lqqomu26c@zlang-mailbox>
+In-Reply-To: <20221107032500.lfzr3h3lqqomu26c@zlang-mailbox>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 7 Nov 2022 08:36:20 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5Yv9TFTxDHBaUtsPyTgC__gPrwHtn0PPjomUDnQ--GUA@mail.gmail.com>
-Message-ID: <CAL3q7H5Yv9TFTxDHBaUtsPyTgC__gPrwHtn0PPjomUDnQ--GUA@mail.gmail.com>
-Subject: Re: newer /bin/cp have worse btrfs fiemap performance.
-To:     Wang Yugui <wangyugui@e16-tech.com>
-Cc:     linux-btrfs@vger.kernel.org
+Date:   Mon, 7 Nov 2022 08:42:17 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6TfL9eReF_SWAJ6V0QTZK83LH=3RVtuT4GR7ht2JxfUA@mail.gmail.com>
+Message-ID: <CAL3q7H6TfL9eReF_SWAJ6V0QTZK83LH=3RVtuT4GR7ht2JxfUA@mail.gmail.com>
+Subject: Re: [PATCH] fstests: btrfs: add a regression test case to make sure
+ scrub can detect errors
+To:     Zorro Lang <zlang@redhat.com>
+Cc:     "Darrick J . Wong" <djwong@kernel.org>,
+        linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -59,114 +62,167 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Nov 6, 2022 at 12:18 AM Wang Yugui <wangyugui@e16-tech.com> wrote:
+On Mon, Nov 7, 2022 at 3:36 AM Zorro Lang <zlang@redhat.com> wrote:
 >
-> Hi,
+> On Mon, Nov 07, 2022 at 07:53:48AM +0800, Qu Wenruo wrote:
+> > There is a regression in v6.1-rc kernel, which will prevent btrfs scrub
+> > from detecting corruption (thus no repair either).
+> >
+> > The regression is caused by commit 786672e9e1a3 ("btrfs: scrub: use
+> > larger block size for data extent scrub").
+> >
+> > The new test case will:
+> >
+> > - Create a data extent with 2 sectors
+> > - Corrupt the second sector of above data extent
+> > - Scrub to make sure we detect the corruption
+> >
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > ---
+> >  tests/btrfs/278     | 66 +++++++++++++++++++++++++++++++++++++++++++++
+> >  tests/btrfs/278.out |  2 ++
+> >  2 files changed, 68 insertions(+)
+> >  create mode 100755 tests/btrfs/278
+> >  create mode 100644 tests/btrfs/278.out
+> >
+> > diff --git a/tests/btrfs/278 b/tests/btrfs/278
+> > new file mode 100755
+> > index 00000000..ebbf207a
+> > --- /dev/null
+> > +++ b/tests/btrfs/278
+> > @@ -0,0 +1,66 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> > +#
+> > +# FS QA Test 278
+> > +#
+> > +# A regression test for offending commit 786672e9e1a3 ("btrfs: scrub: use
+> > +# larger block size for data extent scrub"), which makes btrfs scrub unable
+> > +# to detect corruption if it's not the first sector of an data extent.
+> > +#
+> > +. ./common/preamble
+> > +_begin_fstest auto quick scrub
+> > +
+> > +# Import common functions.
+> > +. ./common/filter
+> > +. ./common/btrfs
+> > +
+> > +# real QA test starts here
+> > +
+> > +# Modify as appropriate.
+> > +_supported_fs btrfs
+> > +
+> > +# Need to use 4K as sector size
+> > +_require_btrfs_support_sectorsize 4096
+> > +_require_scratch
 >
-> newer /bin/cp have worse btrfs fiemap performance.
-
-New versions of coreutils (9.0 and 9.1) have worse cp performance, but
-it has nothing to do with fiemap.
-
-This was pointed out in another thread ([1]) sometime ago, that
-starting with coreutils 9.0, cp no longer uses fiemap.
-That happened in coreutils' commit:
-
-https://github.com/coreutils/coreutils/commit/26eccf6c98696c50f4416ba2967edc8676870716
-
-You can also confirm that by checking that strace no longer shows any
-lines with:
-
-ioctl(3, FS_IOC_FIEMAP, (...)
-
+> Hi Darrick,
 >
-> btrfs version: misc-next 750de989d367(the lastest of 2022/11/05)
-> /bin/cp versions(run them on the same server)
->     8.22 copy from centos/7.9
->     8.30 rocklinux/9.0
->     9.1 local build, https://kojipkgs.fedoraproject.org/packages/coreutils/9.1/8.eln121/
+> I noticed that you created some scrub helpers in common/fuzzy:
+>   # Do we have an online scrub program?
+>   _require_scrub() {
+>         case "${FSTYP}" in
+>         "xfs")
+>                 test -x "$XFS_SCRUB_PROG" || _notrun "xfs_scrub not found"
+>                 ;;
+>         *)
+>                 _notrun "No online scrub program for ${FSTYP}."
+>                 ;;
+>         esac
+>   }
 >
-> test case:
->     /bin/cp /mnt/test/file1 /dev/null
->     /mnt/test/file1 is created by https://lore.kernel.org/linux-btrfs/YuwUw2JLKtIa9X+S@localhost.localdomain/T/#T
->     and /mnt/test/file1 is 256M.
+>   # Scrub the scratch filesystem metadata (online)
+>   _scratch_scrub() {
+>         case "${FSTYP}" in
+>         "xfs")
+>                 $XFS_SCRUB_PROG -d -T -v "$@" $SCRATCH_MNT
+>                 ;;
+>         *)
+>                 _fail "No online scrub program for ${FSTYP}."
+>                 ;;
+>         esac
+>   }
 >
->     file is not cached: 'echo 3 >/proc/sys/vm/drop_caches'
->     file is cached: run '/bin/cp /mnt/test/file1 /dev/null' again.
+> and common/xfs:
+>   _supports_xfs_scrub()
 >
-> performance result(/bin/cp /mnt/test/file1 /dev/null):
-> /bin/cp 9.1
->     file is not cached: 94.85(1:34.85)
->     file is cached: 1982.43(33:02.43)
-> /bin/cp 8.30
->     file is not cached: 1.48(0:01.48)
->     file is cached:14.07(0:14.07)
-> /bin/cp 8.22
->     file is not cached: 0.53(0:00.53)
->     file is cached: 0.10(0:00.10)
+> (PS: How about change _require_scrub to _require_scrub_command, and then calls
+> _supports_xfs_scrub in _require_scrub to check kernel part? Or combine kernel
+> and userspace checking all into _require_scrub? )
 >
-> as a compare, we test it on xfs too.
-> 1) /bin/cp 8.22/8.30/9.1 have almost same performance.
-> 2) the case(the file is cached) is faster than the case(the file is not
-> cached).
+> From the code logic, they're only support xfs now. But we can see btrfs support
+> scrub too. Did you plan to make them to be common helpers, or just for xfs fuzzy
+> test inside?
 >
-> strace show that the logical of /bin/cp 8.30 and 9.1 are different.
+> Hi btrfs folks, do you think if btrfs need _require_scrub and _scratch_scrub?
 
-Yes, as pointed out before.
+I don't think that provides any value for btrfs.
 
-Before coreutils 9.0, cp used fiemap to determine where holes and
-extents are in a file.
-However starting with 9.0 it uses SEEK_DATA/SEEK_HOLE from lseek to do
-that, completely
-dropping fiemap usage.
+The scrub feature has existed for well over a decade, and I don't
+think anyone is running fstests with kernels and btrfs-progs versions
+that don't have scrub.
+Even SLE11-SP2+ kernels (first SUSE enterprise distros supporting
+btrfs) have scrub...
 
-> /bin/cp 8.30
->     lseek(3, 198737920, SEEK_SET)           = 198737920
->     write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->     read(3, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->     write(4, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->     lseek(3, 198746112, SEEK_SET)           = 198746112
->     write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->     read(3, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->     write(4, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->
-> /bin/cp 9.1
->     lseek(3, 880640, SEEK_DATA)             = 884736
->     lseek(3, 884736, SEEK_HOLE)             = 888832
->     lseek(3, 884736, SEEK_SET)              = 884736
->     write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->     read(3, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->     write(4, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->     lseek(3, 888832, SEEK_DATA)             = 892928
->     lseek(3, 892928, SEEK_HOLE)             = 897024
->     lseek(3, 892928, SEEK_SET)              = 892928
->     write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->     read(3, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->     write(4, "a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 4096) = 4096
->
-> Do we need some job in btrfs to support /bin/cp 9.1 well,
-> or /bin/cp 9.1 is just wrong?
-
-There's nothing wrong with cp using lseek's SEEK_DATA/HOLE features.
-It's just that the data/hole seek calls are where cp is spending most
-time, so the way to go is
-to improve the efficiency of those calls in btrfs. I'll do some work
-to make it better.
-
-Keep in mind that the case being tested is pretty much the worst
-possible scenario. It's an extremely
-sparse file, where each extent has a hole before it and another hole
-after it. More often than not,
-there are significantly more extents than holes in a typical file.
-
-Thanks.
-
-[1] https://lore.kernel.org/linux-btrfs/CAL3q7H5NSVicm7nYBJ7x8fFkDpno8z3PYt5aPU43Bajc1H0h1Q@mail.gmail.com/
+Plus I don't recall ever anyone complaining that fstests failed
+because the underlying kernel or btrfs-progs had no support for scrub.
 
 
 >
-> Best Regards
-> Wang Yugui (wangyugui@e16-tech.com)
-> 2022/11/06
+> Thanks,
+> Zorro
 >
+> > +
+> > +_scratch_mkfs >> $seqres.full
+> > +_scratch_mount
+> > +
+> > +# Create a data extent with 2 sectors
+> > +$XFS_IO_PROG -fc "pwrite -S 0xff 0 8k" $SCRATCH_MNT/foobar >> $seqres.full
+> > +sync
+> > +
+> > +first_logical=$(_btrfs_get_first_logical $SCRATCH_MNT/foobar)
+> > +echo "logical of the first sector: $first_logical" >> $seqres.full
+> > +
+> > +second_logical=$(( $first_logical + 4096 ))
+> > +echo "logical of the second sector: $second_logical" >> $seqres.full
+> > +
+> > +second_physical=$(_btrfs_get_physical $second_logical 1)
+> > +echo "physical of the second sector: $second_physical" >> $seqres.full
+> > +
+> > +second_dev=$(_btrfs_get_device_path $second_logical 1)
+> > +echo "device of the second sector: $second_dev" >> $seqres.full
+> > +
+> > +_scratch_unmount
+> > +
+> > +# Corrupt the second sector of the data extent.
+> > +$XFS_IO_PROG -c "pwrite -S 0x00 $second_physical 4k" $second_dev >> $seqres.full
+> > +_scratch_mount
+> > +
+> > +# Redirect stderr and stdout, as if btrfs detected the unrepairable corruption,
+> > +# it will output an error message.
+> > +$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT &> $tmp.output
+> > +cat $tmp.output >> $seqres.full
+> > +_scratch_unmount
+> > +
+> > +if ! grep -q "csum=1" $tmp.output; then
+> > +     echo "Scrub failed to detect corruption"
+> > +fi
+> > +
+> > +echo "Silence is golden"
+> > +
+> > +# success, all done
+> > +status=0
+> > +exit
+> > diff --git a/tests/btrfs/278.out b/tests/btrfs/278.out
+> > new file mode 100644
+> > index 00000000..b4c4a95d
+> > --- /dev/null
+> > +++ b/tests/btrfs/278.out
+> > @@ -0,0 +1,2 @@
+> > +QA output created by 278
+> > +Silence is golden
+> > --
+> > 2.38.0
+> >
 >
