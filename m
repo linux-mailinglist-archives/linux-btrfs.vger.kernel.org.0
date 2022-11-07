@@ -2,65 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9184461E8BE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 03:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB01E61E996
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 04:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbiKGC7q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Nov 2022 21:59:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
+        id S230331AbiKGD0L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Nov 2022 22:26:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbiKGC7p (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Nov 2022 21:59:45 -0500
+        with ESMTP id S230254AbiKGD0J (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Nov 2022 22:26:09 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A463ED138
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Nov 2022 18:58:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772A6A473
+        for <linux-btrfs@vger.kernel.org>; Sun,  6 Nov 2022 19:25:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1667789930;
+        s=mimecast20190719; t=1667791507;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=EKJrfDY/FVOwKHBJtUghZ3gVu1KL5Y2ufPtLDXvrsG4=;
-        b=cVG8GvKUWqQDkIUKthHyV4mBKUidLYZM+ozMsyADi8GNEQEAWUzBcYI2nzroz9UWpufsVV
-        Pw26EcXR0aUayO9c4vkkxuaXOXUXJag4cxXZo8fGkNHAHRY2P3Ev0V6GQgDTHLzYC0CKvD
-        /uBjEZFqCFFpUxGw/E581GHPNMEKO8g=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=BcR8BZ978GOcUY42RVk0m9oe4YfNexSEpQ+SsmOuPdQ=;
+        b=jB0u0vl3SyfYzzfzvIsFlbi9TMpD8VNTfqwzxlXo4FkMu2LWMMCdxMo2QkFXan4t3opElO
+        6flx1PAq2Y9fWJCRY2GRG32t037UqvFXeRsLRmG4EgdAznmiFD34uGBw8AVB2jOV40Hk0S
+        8KwN1uzy1+3Jy/JvihBwIXpF1/YBw64=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-263-Hsk1-GtqMQazYemNmsJC-w-1; Sun, 06 Nov 2022 21:58:49 -0500
-X-MC-Unique: Hsk1-GtqMQazYemNmsJC-w-1
-Received: by mail-qt1-f198.google.com with SMTP id s14-20020a05622a1a8e00b00397eacd9c1aso7420420qtc.21
-        for <linux-btrfs@vger.kernel.org>; Sun, 06 Nov 2022 18:58:49 -0800 (PST)
+ us-mta-447--YrPjItwP1O7m_RX-dI3LQ-1; Sun, 06 Nov 2022 22:25:06 -0500
+X-MC-Unique: -YrPjItwP1O7m_RX-dI3LQ-1
+Received: by mail-qt1-f200.google.com with SMTP id cd6-20020a05622a418600b003a54cb17ad9so7390358qtb.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 06 Nov 2022 19:25:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EKJrfDY/FVOwKHBJtUghZ3gVu1KL5Y2ufPtLDXvrsG4=;
-        b=v8/Q/2FSOnM89JVsSgRnmEYm+vfjhvFLQLo9V5meeQy4fqxG2QUA7Ilk6N5H/V7GlD
-         hCsXSMOnxRgjsgOZzxuc5I05GYLFu7St7ax+y6GdfR4LmXpdyz5YI6hgUEVjIDF0NN5X
-         bziPw7IdG5eHySesoP2GqVDMH4V4XZmTema5rGk1i2GPp+f6xj8hKByPUiwxoqaFFZme
-         ZruZdbQKfxhL8bVuLZCBZPDwx7l3PxZgpN8WfS/cxPeG6ovALRDp5UtWlKNkz4iPdf4C
-         LUP78bVd9Dg83vmHugr/O1qHrZ8XqakDfFH7Lj+/q3VJq/uI9cpjvHrgCC3xAJUXTcOV
-         9fxA==
-X-Gm-Message-State: ACrzQf35GZAYfo64Pv7iEH0UKc1UirRyFG90+OcUqJbKqqKqdU8dkIWD
-        /fFJh+Jp3DjYKgzsb5gUZEM6wcU1ftVCLth5/N41PxXBbhKtoVeA0OiNDIuFzx+4NC97KY8Nwa/
-        UOmdj2pgoSnfFA9d4iCRkN4A=
-X-Received: by 2002:a05:620a:4882:b0:6fa:31c7:cabd with SMTP id ea2-20020a05620a488200b006fa31c7cabdmr27247480qkb.1.1667789928927;
-        Sun, 06 Nov 2022 18:58:48 -0800 (PST)
-X-Google-Smtp-Source: AMsMyM7rV5mfBhWqOWnCPWbZ4aydBGvwkVLDYyqnOmzkk35zT6eav71UrkOAzGHsawq4MDxo+3vhpQ==
-X-Received: by 2002:a05:620a:4882:b0:6fa:31c7:cabd with SMTP id ea2-20020a05620a488200b006fa31c7cabdmr27247472qkb.1.1667789928647;
-        Sun, 06 Nov 2022 18:58:48 -0800 (PST)
+        bh=BcR8BZ978GOcUY42RVk0m9oe4YfNexSEpQ+SsmOuPdQ=;
+        b=X+guxXETIni/ozoUCLVg1kDl5F0iD19+mvweytBFl+e4DP+5KbMqdqBZgKg6TowUTs
+         yYkAQmi6IR5fuT72clMfo0JMy/+fW1Vp8aOSJXoiL5X6OiR+HWm8aDhpOcDxsvkCqPbV
+         s7+3Sp5/QSmS/9GrYUnQ4YpLj3E3ql+BRrmpG6XQJQmF1HJR/1hnqdF1xG39Terh4Lxr
+         K20OaqIodrSVdhxLxQ/3yH9VnLN4wkILVacNjBi4Qd00pf9P35972vKk2UVQ1KpmptOY
+         bb2B+EcXqwn273Ock/R46nrJ9AdqG3Nyvc7joqpO69+tYkaxlXOJy7hUupXwrFkWaPzD
+         slNQ==
+X-Gm-Message-State: ACrzQf2h64k7oMEqSDDIPAXURb0m1Jdf10z1lGC8xtOoilBlYvBjtNeY
+        lKke3c+SeT05ci1hxyQ+IAPyIYSv9rXdVV5ozzIJK1hjeGWT3pFXOBZpvwy2hmucuwWQh4jgKiC
+        ypBq+ausydkSVJoD7jHB875Q=
+X-Received: by 2002:ac8:57c5:0:b0:39a:6512:6e3e with SMTP id w5-20020ac857c5000000b0039a65126e3emr38355672qta.334.1667791505781;
+        Sun, 06 Nov 2022 19:25:05 -0800 (PST)
+X-Google-Smtp-Source: AMsMyM4Gqd7/UygXKKtGRHrkrRmR7Z3lgzC10lN/9UQpffFe3vrMJJPoZsJLtSIvzkqF4X1rtKV3CQ==
+X-Received: by 2002:ac8:57c5:0:b0:39a:6512:6e3e with SMTP id w5-20020ac857c5000000b0039a65126e3emr38355666qta.334.1667791505514;
+        Sun, 06 Nov 2022 19:25:05 -0800 (PST)
 Received: from zlang-mailbox ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id i6-20020a05620a248600b006ecfb2c86d3sm5875177qkn.130.2022.11.06.18.58.46
+        by smtp.gmail.com with ESMTPSA id bm35-20020a05620a19a300b006eed75805a2sm5769409qkb.126.2022.11.06.19.25.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Nov 2022 18:58:48 -0800 (PST)
-Date:   Mon, 7 Nov 2022 10:58:43 +0800
+        Sun, 06 Nov 2022 19:25:04 -0800 (PST)
+Date:   Mon, 7 Nov 2022 11:25:00 +0800
 From:   Zorro Lang <zlang@redhat.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+To:     "Darrick J . Wong" <djwong@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>
 Subject: Re: [PATCH] fstests: btrfs: add a regression test case to make sure
  scrub can detect errors
-Message-ID: <20221107025843.osxx3alzzkkoxnl6@zlang-mailbox>
+Message-ID: <20221107032500.lfzr3h3lqqomu26c@zlang-mailbox>
 References: <20221106235348.9732-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -68,7 +69,7 @@ Content-Disposition: inline
 In-Reply-To: <20221106235348.9732-1-wqu@suse.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,12 +94,6 @@ On Mon, Nov 07, 2022 at 07:53:48AM +0800, Qu Wenruo wrote:
 > ---
 >  tests/btrfs/278     | 66 +++++++++++++++++++++++++++++++++++++++++++++
 >  tests/btrfs/278.out |  2 ++
-
-Hi,
-
-btrfs/278 has been taken, please rebase on the latest for-next branch, or
-use a big enough number.
-
 >  2 files changed, 68 insertions(+)
 >  create mode 100755 tests/btrfs/278
 >  create mode 100644 tests/btrfs/278.out
@@ -118,10 +113,6 @@ use a big enough number.
 > +# A regression test for offending commit 786672e9e1a3 ("btrfs: scrub: use
 > +# larger block size for data extent scrub"), which makes btrfs scrub unable
 > +# to detect corruption if it's not the first sector of an data extent.
-
-So 786672e9e1a3 is the commit which brought in this regression issue? Is there
-a fix patch or commit by reviewed?
-
 > +#
 > +. ./common/preamble
 > +_begin_fstest auto quick scrub
@@ -129,32 +120,61 @@ a fix patch or commit by reviewed?
 > +# Import common functions.
 > +. ./common/filter
 > +. ./common/btrfs
-
-The common/btrfs is imported automatically, so don't need to import it at here.
-And I think this case doesn't use any filter, if so, the common/filter isn't
-needed either.
-
 > +
 > +# real QA test starts here
 > +
 > +# Modify as appropriate.
-
-This comment can be removed.
-
 > +_supported_fs btrfs
 > +
 > +# Need to use 4K as sector size
 > +_require_btrfs_support_sectorsize 4096
 > +_require_scratch
-> +
-> +_scratch_mkfs >> $seqres.full
 
-Just check with you, do you need "-s 4k" so make sure sector size is 4k (even
-if 4k is supported)?
+Hi Darrick,
+
+I noticed that you created some scrub helpers in common/fuzzy:
+  # Do we have an online scrub program?
+  _require_scrub() {
+        case "${FSTYP}" in
+        "xfs")
+                test -x "$XFS_SCRUB_PROG" || _notrun "xfs_scrub not found"
+                ;;
+        *)
+                _notrun "No online scrub program for ${FSTYP}."
+                ;;
+        esac
+  }
+
+  # Scrub the scratch filesystem metadata (online)
+  _scratch_scrub() {
+        case "${FSTYP}" in
+        "xfs")
+                $XFS_SCRUB_PROG -d -T -v "$@" $SCRATCH_MNT
+                ;;
+        *)
+                _fail "No online scrub program for ${FSTYP}."
+                ;;
+        esac
+  }
+
+and common/xfs:
+  _supports_xfs_scrub()
+
+(PS: How about change _require_scrub to _require_scrub_command, and then calls
+_supports_xfs_scrub in _require_scrub to check kernel part? Or combine kernel
+and userspace checking all into _require_scrub? )
+
+From the code logic, they're only support xfs now. But we can see btrfs support
+scrub too. Did you plan to make them to be common helpers, or just for xfs fuzzy
+test inside?
+
+Hi btrfs folks, do you think if btrfs need _require_scrub and _scratch_scrub?
 
 Thanks,
 Zorro
 
+> +
+> +_scratch_mkfs >> $seqres.full
 > +_scratch_mount
 > +
 > +# Create a data extent with 2 sectors
