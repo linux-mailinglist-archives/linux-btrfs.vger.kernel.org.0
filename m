@@ -2,213 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0140C61EF77
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 10:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB7961F07C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 11:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbiKGJqO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Nov 2022 04:46:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39932 "EHLO
+        id S232032AbiKGKYd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Nov 2022 05:24:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231861AbiKGJqL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Nov 2022 04:46:11 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC7518375;
-        Mon,  7 Nov 2022 01:46:09 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4401A60FA2;
-        Mon,  7 Nov 2022 09:46:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB8EDC43142;
-        Mon,  7 Nov 2022 09:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667814368;
-        bh=wFvcsLMFbhzjBuDFLZXeBaOLJuL2mPqVmFxuTKWPh+M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZkqZA5NRPmUxPNxr9e2s8B8xHMIY9fe6l61zZoUofLTneZhcYieimM4yE5cp4ikQP
-         airFjLIFbxXhBRM4qRZadSZ/Q6ki3CNcfwtweIQOJ+e78XT0bhVXrsncEuK0CHi3XZ
-         wV2ScnoK+q62um2WB2+2iq/CQSZ8Qspn8fS0KWyxp07GfdGLGdT3aith3aCywlbnPq
-         GUuBvSDrBnpqvMKxPgDF1WaB8Hf8HYo5oALCMDXajY/R6w9ooofdkbc4xS9M6jPT4P
-         BoIoG5WBcBVv4m5NdkrD5qrI7vz1WTXT2j7kWvpAC61qgChrzXhNKYt9qBEZlSLxPa
-         YUPsajAqQinrw==
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-13ae8117023so12020552fac.9;
-        Mon, 07 Nov 2022 01:46:08 -0800 (PST)
-X-Gm-Message-State: ACrzQf272UeBnYh8aLRC4+yurGLG+40FvQmNzgJzBYpxtLtmT4cqnQP4
-        6KLvsTQryx4aANZNGVQ2zbd5/7+9L5JiRR4iJoc=
-X-Google-Smtp-Source: AMsMyM77akpsaW5PlYw7dmyRvnDxpBHl9EO1ad5w+3EPEF3yMakUzFJWCtcPURl2TLpKia0b+TpzqdWu3uFR+GEArtM=
-X-Received: by 2002:a05:6870:2052:b0:132:7b2:2fe6 with SMTP id
- l18-20020a056870205200b0013207b22fe6mr29541489oad.98.1667814367860; Mon, 07
- Nov 2022 01:46:07 -0800 (PST)
+        with ESMTP id S231807AbiKGKYT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Nov 2022 05:24:19 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F061918E3D
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Nov 2022 02:24:03 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id p4so10074771vsa.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Nov 2022 02:24:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=AOmtRIzmF5dcnWrT0j3skK83MYTC+QvduwZ6ndeN2Ks=;
+        b=Zv++OJ/ncK2pWuUWAQT+z52+cIoHK/WVJU4bVze52hunD5wDL4D5XJdl5mW2VbRjhi
+         PKA0tQ/z42/ONfUnPJoBfdYRGEG2gwiyoDRW7hecaxcg+/0t0u3g44ISFlpe+B9l1fvu
+         TmkNgtKOyak6WThRMAIvY+g5IgPZxvnz63e21BpajeaX9653GP4qpHUHyfV7BL4cSNb4
+         pCU1fNGxZBn7NlKzWZCMHMxM9LSs8sKofgpQ0FSoeb/qTDQ+CPP+tvlBe/vGQ8T8hOyn
+         vdUZr48/zTuwVxtBDF6IrOR7pT19nf73qD9i1Q8QUWEzM8dVJjwmGS+xVbVCXqFaE09J
+         SKzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AOmtRIzmF5dcnWrT0j3skK83MYTC+QvduwZ6ndeN2Ks=;
+        b=Le6Mr4Zin66+G7xuvMSP8FVFwG6hAxwrsFepF0Qo4vZP3a+uHTEv6MKAdDrE+sdOvI
+         TeCugvNO+TjJzqQMdk7gaypwRfonEHqwTPSyOkNyK6NDGYZIB5wNqEDASVVH/oIcCyKa
+         W+4tHZPqRCXPgSh02PjhLgbyRgYlBueZQFpCYrmem6oeJehePM6eXp7+OVR6GdzF2XIG
+         bVCPEwREaN7subO4XPMZtZRjR+/c7uJgB/LjrHYAPWGnkTZZo/MaEcVWqUPq5Eoa9pg0
+         dLa/ycra7HkyZBPrkYfogoCooZT9wg6TpULyj6KmRdTQ/CgOmOO2OhKaTxYnpHulvaqC
+         Ab+Q==
+X-Gm-Message-State: ACrzQf1KA/rhskQQ9ABcCfaW7xy5VxAdv1ovAr/OFcMxjw6MYy9hdPcE
+        YwH0R1D4HocoshKzQalAnbECljlDGmX04lsIZrKWLWApiZo=
+X-Google-Smtp-Source: AMsMyM7DPjaK7bSeUBIcMTkNZUaqK+NSwCEUfp88ZZDLY5TXShnQ2+B86xH3ryBKqTyGQWW3ozA/96x60VupsK8qo34=
+X-Received: by 2002:a17:902:8a90:b0:186:b145:f5ec with SMTP id
+ p16-20020a1709028a9000b00186b145f5ecmr50774476plo.103.1667816632274; Mon, 07
+ Nov 2022 02:23:52 -0800 (PST)
 MIME-Version: 1.0
-References: <fbbab438744d69d4882dbe6a2125a32affa20cd9.1667813872.git.fdmanana@suse.com>
-In-Reply-To: <fbbab438744d69d4882dbe6a2125a32affa20cd9.1667813872.git.fdmanana@suse.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 7 Nov 2022 09:45:31 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7UqVJtYpG51q7QnEL8g3kZBB_ELyx9xCU5=2KLvS29zg@mail.gmail.com>
-Message-ID: <CAL3q7H7UqVJtYpG51q7QnEL8g3kZBB_ELyx9xCU5=2KLvS29zg@mail.gmail.com>
-Subject: Re: [PATCH] generic: check direct IO writes with io_uring and O_DSYNC
- are durable
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Received: by 2002:a05:6a06:925:b0:587:19e0:c567 with HTTP; Mon, 7 Nov 2022
+ 02:23:51 -0800 (PST)
+Reply-To: contact@ammico.it
+From:   =?UTF-8?Q?Mrs=2E_Monika_Everenov=C3=A1?= <977638ib@gmail.com>
+Date:   Mon, 7 Nov 2022 11:23:51 +0100
+Message-ID: <CAHAXD+bPNCns8Ez=7iXmPLADMtJgZj3-mFTk3NMhWC-Ca1b9rw@mail.gmail.com>
+Subject: Re:
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=5.8 required=5.0 tests=ADVANCE_FEE_2_NEW_MONEY,
+        BAYES_40,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_FROM,FROM_STARTS_WITH_NUMS,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,UNDISC_MONEY autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:e41 listed in]
+        [list.dnswl.org]
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.2190]
+        *  0.7 FROM_STARTS_WITH_NUMS From: starts with several numbers
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [977638ib[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  3.3 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  2.0 ADVANCE_FEE_2_NEW_MONEY Advance Fee fraud and lots of money
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 7, 2022 at 9:44 AM <fdmanana@kernel.org> wrote:
->
-> From: Filipe Manana <fdmanana@suse.com>
->
-> Test that direct IO writes with io_uring and O_DSYNC are durable if a power
-> failure happens after they complete.
->
-> This is motivated by a regression on btrfs, affecting 5.15 stable kernels
-> and kernels up to 6.0, where often the writes were not persisted (same
-> behaviour as if O_DSYNC was not provided). This was recently fixed by the
-> following commit:
->
-> 51bd9563b678 ("btrfs: fix deadlock due to page faults during direct IO reads and writes")
-
-Wrong copy-paste, this was meant to be:
-
-8184620ae212 ("btrfs: fix lost file sync on direct IO write with
-nowait and dsync iocb")
-
-Thanks.
-
-
->
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  tests/generic/703     | 104 ++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/703.out |   2 +
->  2 files changed, 106 insertions(+)
->  create mode 100755 tests/generic/703
->  create mode 100644 tests/generic/703.out
->
-> diff --git a/tests/generic/703 b/tests/generic/703
-> new file mode 100755
-> index 00000000..39ae3773
-> --- /dev/null
-> +++ b/tests/generic/703
-> @@ -0,0 +1,104 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 703
-> +#
-> +# Test that direct IO writes with io_uring and O_DSYNC are durable if a power
-> +# failure happens after they complete.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick log prealloc io_uring
-> +
-> +_cleanup()
-> +{
-> +       _cleanup_flakey
-> +       cd /
-> +       rm -r -f $tmp.*
-> +}
-> +
-> +. ./common/filter
-> +. ./common/dmflakey
-> +
-> +fio_config=$tmp.fio
-> +fio_out=$tmp.fio.out
-> +test_file="${SCRATCH_MNT}/foo"
-> +
-> +[ $FSTYP == "btrfs" ] &&
-> +       _fixed_by_kernel_commit 8184620ae212 \
-> +       "btrfs: fix lost file sync on direct IO write with nowait and dsync iocb"
-> +
-> +_supported_fs generic
-> +# We allocate 256M of data for the test file, so require a higher size of 512M
-> +# which gives a margin of safety for a COW filesystem like btrfs (where metadata
-> +# is always COWed).
-> +_require_scratch_size $((512 * 1024))
-> +_require_odirect
-> +_require_io_uring
-> +_require_dm_target flakey
-> +_require_xfs_io_command "falloc"
-> +
-> +cat >$fio_config <<EOF
-> +[test_io_uring_dio_dsync]
-> +ioengine=io_uring
-> +direct=1
-> +bs=64K
-> +sync=1
-> +filename=$test_file
-> +rw=randwrite
-> +time_based
-> +runtime=10
-> +EOF
-> +
-> +_require_fio $fio_config
-> +
-> +_scratch_mkfs >>$seqres.full 2>&1
-> +_require_metadata_journaling $SCRATCH_DEV
-> +_init_flakey
-> +_mount_flakey
-> +
-> +# We do 64K writes in the fio job.
-> +_require_congruent_file_oplen $SCRATCH_MNT $((64 * 1024))
-> +
-> +touch $test_file
-> +
-> +# On btrfs IOCB_NOWAIT writes can only be done on NOCOW files, so enable
-> +# nodatacow on the file if we are running on btrfs.
-> +if [ $FSTYP == "btrfs" ]; then
-> +       _require_chattr C
-> +       $CHATTR_PROG +C $test_file
-> +fi
-> +
-> +$XFS_IO_PROG -c "falloc 0 256M" $test_file
-> +
-> +# Persist everything, make sure the file exists after power failure.
-> +sync
-> +
-> +echo -e "Running fio with config:\n" >> $seqres.full
-> +cat $fio_config >> $seqres.full
-> +
-> +$FIO_PROG $fio_config --output=$fio_out
-> +
-> +echo -e "\nOutput from fio:\n" >> $seqres.full
-> +cat $fio_out >> $seqres.full
-> +
-> +digest_before=$(_md5_checksum $test_file)
-> +
-> +# Simulate a power failure and mount the filesystem to check that all the data
-> +# previously written are available.
-> +_flakey_drop_and_remount
-> +
-> +digest_after=$(_md5_checksum $test_file)
-> +
-> +if [ "$digest_after" != "$digest_before" ]; then
-> +       echo "Error: not all file data got persisted."
-> +       echo "Digest before power failure: $digest_before"
-> +       echo "Digest after power failure:  $digest_after"
-> +fi
-> +
-> +_unmount_flakey
-> +
-> +# success, all done
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> diff --git a/tests/generic/703.out b/tests/generic/703.out
-> new file mode 100644
-> index 00000000..fba62571
-> --- /dev/null
-> +++ b/tests/generic/703.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 703
-> +Silence is golden
-> --
-> 2.35.1
->
+Hei ja miten voit?
+Nimeni on rouva Evereen, l=C3=A4het=C3=A4n t=C3=A4m=C3=A4n viestin suurella=
+ toivolla
+v=C3=A4lit=C3=B6n vastaus, koska minun on teht=C3=A4v=C3=A4 uusi syd=C3=A4n=
+leikkaus
+t=C3=A4ll=C3=A4 hetkell=C3=A4 huonokuntoinen ja v=C3=A4h=C3=A4iset mahdolli=
+suudet selviyty=C3=A4.
+Mutta ennen kuin min=C3=A4
+Tee toinen vaarallinen operaatio, annan sen sinulle
+Minulla on 6 550 000 dollaria yhdysvaltalaisella pankkitilill=C3=A4
+sijoittamista, hallinnointia ja k=C3=A4ytt=C3=B6=C3=A4 varten
+voittoa hyv=C3=A4ntekev=C3=A4isyysprojektin toteuttamiseen. Tarkoitan saira=
+iden auttamista
+ja k=C3=B6yh=C3=A4t ovat viimeinen haluni maan p=C3=A4=C3=A4ll=C3=A4, sill=
+=C3=A4 minulla ei ole niit=C3=A4
+kenelt=C3=A4 perii rahaa.
+Vastaa minulle nopeasti
+terveisi=C3=A4
+Rouva Monika Evereen
+Florida, Amerikan Yhdysvallat
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+Hi and how are you?
+My name is Mrs. Evereen, I am sending this message with great hope for
+an immediate response, as I have to undergo heart reoperation in my
+current poor health with little chance of survival. But before I
+undertake the second dangerous operation, I will give you the
+$6,550,000 I have in my US bank account to invest well, manage and use
+the profits to run a charity project for me. I count helping the sick
+and the poor as my last wish on earth, because I have no one to
+inherit money from.
+Please give me a quick reply
+regards
+Mrs. Monika Evereen
+Florida, United States of America
