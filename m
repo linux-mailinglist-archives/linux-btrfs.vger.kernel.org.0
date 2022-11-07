@@ -2,243 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E214E61E7CE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 01:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9184461E8BE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 03:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbiKGAEq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Nov 2022 19:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50774 "EHLO
+        id S230303AbiKGC7q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Nov 2022 21:59:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbiKGAEp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Nov 2022 19:04:45 -0500
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62822BE3B
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Nov 2022 16:04:44 -0800 (PST)
-Received: by mail-il1-f197.google.com with SMTP id h6-20020a92c266000000b00300624bf414so7695598ild.14
-        for <linux-btrfs@vger.kernel.org>; Sun, 06 Nov 2022 16:04:44 -0800 (PST)
+        with ESMTP id S229995AbiKGC7p (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Nov 2022 21:59:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A463ED138
+        for <linux-btrfs@vger.kernel.org>; Sun,  6 Nov 2022 18:58:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1667789930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EKJrfDY/FVOwKHBJtUghZ3gVu1KL5Y2ufPtLDXvrsG4=;
+        b=cVG8GvKUWqQDkIUKthHyV4mBKUidLYZM+ozMsyADi8GNEQEAWUzBcYI2nzroz9UWpufsVV
+        Pw26EcXR0aUayO9c4vkkxuaXOXUXJag4cxXZo8fGkNHAHRY2P3Ev0V6GQgDTHLzYC0CKvD
+        /uBjEZFqCFFpUxGw/E581GHPNMEKO8g=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-263-Hsk1-GtqMQazYemNmsJC-w-1; Sun, 06 Nov 2022 21:58:49 -0500
+X-MC-Unique: Hsk1-GtqMQazYemNmsJC-w-1
+Received: by mail-qt1-f198.google.com with SMTP id s14-20020a05622a1a8e00b00397eacd9c1aso7420420qtc.21
+        for <linux-btrfs@vger.kernel.org>; Sun, 06 Nov 2022 18:58:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HcE7kLihBa6CEUaoqLpOeyRK6SUL8ybmiCmMzV2rmlQ=;
-        b=68CO+CvOMc607rUolL5XXMqYgzkZbwJ/iiOnJsWt1+aGAuN6aRwnxj653hruBsAngS
-         tVg4oOvHAWAE023teFWtzi53jfuimPeFp/ShD/6G8HZWw6CCbI+BL8At0nknqh6tfoxm
-         6OR3A1tcY5fHSO6Ejpt0JV60IoQUmAO5ErLCUye060RLiToqoa0Vxs7aqcMoUg9r613D
-         Ko92gNlwslC7z+nBZFvuJxCjk7QDTvUxrv3Xn5tNoRFBu6QsSwxp9SQV9lkCF0IHuRxW
-         qd6dOtk9Rtf0xsl5E3FTHOb0DRDnVtLmPY9CMRSKBWNF5uP6EOEV8twd2LV/bvUtHjLr
-         RZKA==
-X-Gm-Message-State: ANoB5pmF9dxm5vJEd3dzpzinQDs7R9lH8r+G7XQUCos49+nCetikAySK
-        Po451H0AsZM/qeD4d0DMYzBBbyNcW8WJO7wdGXQyyEFWzQ/B
-X-Google-Smtp-Source: AA0mqf69tKoz3EWC77737bO3FK/DAf75zEWVyuPI5frhi3QDguvEE2ls4K9l4wsga6Ka+zamTSFgsSE42LLcauJ2Ei/RHPK6y6bz
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EKJrfDY/FVOwKHBJtUghZ3gVu1KL5Y2ufPtLDXvrsG4=;
+        b=v8/Q/2FSOnM89JVsSgRnmEYm+vfjhvFLQLo9V5meeQy4fqxG2QUA7Ilk6N5H/V7GlD
+         hCsXSMOnxRgjsgOZzxuc5I05GYLFu7St7ax+y6GdfR4LmXpdyz5YI6hgUEVjIDF0NN5X
+         bziPw7IdG5eHySesoP2GqVDMH4V4XZmTema5rGk1i2GPp+f6xj8hKByPUiwxoqaFFZme
+         ZruZdbQKfxhL8bVuLZCBZPDwx7l3PxZgpN8WfS/cxPeG6ovALRDp5UtWlKNkz4iPdf4C
+         LUP78bVd9Dg83vmHugr/O1qHrZ8XqakDfFH7Lj+/q3VJq/uI9cpjvHrgCC3xAJUXTcOV
+         9fxA==
+X-Gm-Message-State: ACrzQf35GZAYfo64Pv7iEH0UKc1UirRyFG90+OcUqJbKqqKqdU8dkIWD
+        /fFJh+Jp3DjYKgzsb5gUZEM6wcU1ftVCLth5/N41PxXBbhKtoVeA0OiNDIuFzx+4NC97KY8Nwa/
+        UOmdj2pgoSnfFA9d4iCRkN4A=
+X-Received: by 2002:a05:620a:4882:b0:6fa:31c7:cabd with SMTP id ea2-20020a05620a488200b006fa31c7cabdmr27247480qkb.1.1667789928927;
+        Sun, 06 Nov 2022 18:58:48 -0800 (PST)
+X-Google-Smtp-Source: AMsMyM7rV5mfBhWqOWnCPWbZ4aydBGvwkVLDYyqnOmzkk35zT6eav71UrkOAzGHsawq4MDxo+3vhpQ==
+X-Received: by 2002:a05:620a:4882:b0:6fa:31c7:cabd with SMTP id ea2-20020a05620a488200b006fa31c7cabdmr27247472qkb.1.1667789928647;
+        Sun, 06 Nov 2022 18:58:48 -0800 (PST)
+Received: from zlang-mailbox ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id i6-20020a05620a248600b006ecfb2c86d3sm5875177qkn.130.2022.11.06.18.58.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Nov 2022 18:58:48 -0800 (PST)
+Date:   Mon, 7 Nov 2022 10:58:43 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: Re: [PATCH] fstests: btrfs: add a regression test case to make sure
+ scrub can detect errors
+Message-ID: <20221107025843.osxx3alzzkkoxnl6@zlang-mailbox>
+References: <20221106235348.9732-1-wqu@suse.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aab:b0:302:770:3997 with SMTP id
- l11-20020a056e021aab00b0030207703997mr4386567ilv.34.1667779483760; Sun, 06
- Nov 2022 16:04:43 -0800 (PST)
-Date:   Sun, 06 Nov 2022 16:04:43 -0800
-In-Reply-To: <0000000000009abbbf05ecd5f687@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b1832205ecd62ba5@google.com>
-Subject: Re: [syzbot] possible deadlock in btrfs_search_slot_get_root
-From:   syzbot <syzbot+4ef9e52e464c6ff47d9d@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221106235348.9732-1-wqu@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Mon, Nov 07, 2022 at 07:53:48AM +0800, Qu Wenruo wrote:
+> There is a regression in v6.1-rc kernel, which will prevent btrfs scrub
+> from detecting corruption (thus no repair either).
+> 
+> The regression is caused by commit 786672e9e1a3 ("btrfs: scrub: use
+> larger block size for data extent scrub").
+> 
+> The new test case will:
+> 
+> - Create a data extent with 2 sectors
+> - Corrupt the second sector of above data extent
+> - Scrub to make sure we detect the corruption
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  tests/btrfs/278     | 66 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/278.out |  2 ++
 
-HEAD commit:    bbed346d5a96 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=15a085a9880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3a4a45d2d827c1e
-dashboard link: https://syzkaller.appspot.com/bug?extid=4ef9e52e464c6ff47d9d
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154649a9880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=115dc1a9880000
+Hi,
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e8e91bc79312/disk-bbed346d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c1cb3fb3b77e/vmlinux-bbed346d.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/e4f681f3b5be/mount_0.gz
+btrfs/278 has been taken, please rebase on the latest for-next branch, or
+use a big enough number.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4ef9e52e464c6ff47d9d@syzkaller.appspotmail.com
+>  2 files changed, 68 insertions(+)
+>  create mode 100755 tests/btrfs/278
+>  create mode 100644 tests/btrfs/278.out
+> 
+> diff --git a/tests/btrfs/278 b/tests/btrfs/278
+> new file mode 100755
+> index 00000000..ebbf207a
+> --- /dev/null
+> +++ b/tests/btrfs/278
+> @@ -0,0 +1,66 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2022 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 278
+> +#
+> +# A regression test for offending commit 786672e9e1a3 ("btrfs: scrub: use
+> +# larger block size for data extent scrub"), which makes btrfs scrub unable
+> +# to detect corruption if it's not the first sector of an data extent.
 
-BTRFS info (device loop0): using xxhash64 (xxhash64-generic) checksum algorithm
-BTRFS info (device loop0): using free space tree
-BTRFS info (device loop0): enabling ssd optimizations
-======================================================
-WARNING: possible circular locking dependency detected
-6.0.0-rc7-syzkaller-18095-gbbed346d5a96 #0 Not tainted
-------------------------------------------------------
-syz-executor307/3029 is trying to acquire lock:
-ffff0000c02525d8 (&mm->mmap_lock){++++}-{3:3}, at: __might_fault+0x54/0xb4 mm/memory.c:5576
+So 786672e9e1a3 is the commit which brought in this regression issue? Is there
+a fix patch or commit by reviewed?
 
-but task is already holding lock:
-ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
-ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
-ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: btrfs_read_lock_root_node+0x13c/0x1c0 fs/btrfs/locking.c:279
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick scrub
+> +
+> +# Import common functions.
+> +. ./common/filter
+> +. ./common/btrfs
 
-which lock already depends on the new lock.
+The common/btrfs is imported automatically, so don't need to import it at here.
+And I think this case doesn't use any filter, if so, the common/filter isn't
+needed either.
 
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
 
-the existing dependency chain (in reverse order) is:
+This comment can be removed.
 
--> #3 (btrfs-root-00){++++}-{3:3}:
-       down_read_nested+0x64/0x84 kernel/locking/rwsem.c:1624
-       __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
-       btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
-       btrfs_read_lock_root_node+0x13c/0x1c0 fs/btrfs/locking.c:279
-       btrfs_search_slot_get_root+0x74/0x338 fs/btrfs/ctree.c:1637
-       btrfs_search_slot+0x1b0/0xfd8 fs/btrfs/ctree.c:1944
-       btrfs_update_root+0x6c/0x5a0 fs/btrfs/root-tree.c:132
-       commit_fs_roots+0x1f0/0x33c fs/btrfs/transaction.c:1459
-       btrfs_commit_transaction+0x89c/0x12d8 fs/btrfs/transaction.c:2343
-       flush_space+0x66c/0x738 fs/btrfs/space-info.c:786
-       btrfs_async_reclaim_metadata_space+0x43c/0x4e0 fs/btrfs/space-info.c:1059
-       process_one_work+0x2d8/0x504 kernel/workqueue.c:2289
-       worker_thread+0x340/0x610 kernel/workqueue.c:2436
-       kthread+0x12c/0x158 kernel/kthread.c:376
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
+> +_supported_fs btrfs
+> +
+> +# Need to use 4K as sector size
+> +_require_btrfs_support_sectorsize 4096
+> +_require_scratch
+> +
+> +_scratch_mkfs >> $seqres.full
 
--> #2 (&fs_info->reloc_mutex){+.+.}-{3:3}:
-       __mutex_lock_common+0xd4/0xca8 kernel/locking/mutex.c:603
-       __mutex_lock kernel/locking/mutex.c:747 [inline]
-       mutex_lock_nested+0x38/0x44 kernel/locking/mutex.c:799
-       btrfs_record_root_in_trans fs/btrfs/transaction.c:516 [inline]
-       start_transaction+0x248/0x944 fs/btrfs/transaction.c:752
-       btrfs_start_transaction+0x34/0x44 fs/btrfs/transaction.c:781
-       btrfs_create_common+0xf0/0x1b4 fs/btrfs/inode.c:6651
-       btrfs_create+0x8c/0xb0 fs/btrfs/inode.c:6697
-       lookup_open fs/namei.c:3413 [inline]
-       open_last_lookups fs/namei.c:3481 [inline]
-       path_openat+0x804/0x11c4 fs/namei.c:3688
-       do_filp_open+0xdc/0x1b8 fs/namei.c:3718
-       do_sys_openat2+0xb8/0x22c fs/open.c:1313
-       do_sys_open fs/open.c:1329 [inline]
-       __do_sys_openat fs/open.c:1345 [inline]
-       __se_sys_openat fs/open.c:1340 [inline]
-       __arm64_sys_openat+0xb0/0xe0 fs/open.c:1340
-       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
-       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
-       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
-       do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
-       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
-       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
-       el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+Just check with you, do you need "-s 4k" so make sure sector size is 4k (even
+if 4k is supported)?
 
--> #1 (sb_internal#2){.+.+}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1826 [inline]
-       sb_start_intwrite include/linux/fs.h:1948 [inline]
-       start_transaction+0x360/0x944 fs/btrfs/transaction.c:683
-       btrfs_join_transaction+0x30/0x40 fs/btrfs/transaction.c:795
-       btrfs_dirty_inode+0x50/0x140 fs/btrfs/inode.c:6103
-       btrfs_update_time+0x1c0/0x1e8 fs/btrfs/inode.c:6145
-       inode_update_time fs/inode.c:1872 [inline]
-       touch_atime+0x1f0/0x4a8 fs/inode.c:1945
-       file_accessed include/linux/fs.h:2516 [inline]
-       btrfs_file_mmap+0x50/0x88 fs/btrfs/file.c:2407
-       call_mmap include/linux/fs.h:2192 [inline]
-       mmap_region+0x7fc/0xc14 mm/mmap.c:1752
-       do_mmap+0x644/0x97c mm/mmap.c:1540
-       vm_mmap_pgoff+0xe8/0x1d0 mm/util.c:552
-       ksys_mmap_pgoff+0x1cc/0x278 mm/mmap.c:1586
-       __do_sys_mmap arch/arm64/kernel/sys.c:28 [inline]
-       __se_sys_mmap arch/arm64/kernel/sys.c:21 [inline]
-       __arm64_sys_mmap+0x58/0x6c arch/arm64/kernel/sys.c:21
-       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
-       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
-       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
-       do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
-       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
-       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
-       el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+Thanks,
+Zorro
 
--> #0 (&mm->mmap_lock){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3095 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
-       validate_chain kernel/locking/lockdep.c:3829 [inline]
-       __lock_acquire+0x1530/0x30a4 kernel/locking/lockdep.c:5053
-       lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5666
-       __might_fault+0x7c/0xb4 mm/memory.c:5577
-       _copy_to_user include/linux/uaccess.h:134 [inline]
-       copy_to_user include/linux/uaccess.h:160 [inline]
-       btrfs_ioctl_get_subvol_rootref+0x3a8/0x4bc fs/btrfs/ioctl.c:3203
-       btrfs_ioctl+0xa08/0xa64 fs/btrfs/ioctl.c:5556
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:870 [inline]
-       __se_sys_ioctl fs/ioctl.c:856 [inline]
-       __arm64_sys_ioctl+0xd0/0x140 fs/ioctl.c:856
-       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
-       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
-       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
-       do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
-       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
-       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
-       el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
-
-other info that might help us debug this:
-
-Chain exists of:
-  &mm->mmap_lock --> &fs_info->reloc_mutex --> btrfs-root-00
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(btrfs-root-00);
-                               lock(&fs_info->reloc_mutex);
-                               lock(btrfs-root-00);
-  lock(&mm->mmap_lock);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor307/3029:
- #0: ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
- #0: ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
- #0: ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: btrfs_read_lock_root_node+0x13c/0x1c0 fs/btrfs/locking.c:279
-
-stack backtrace:
-CPU: 0 PID: 3029 Comm: syz-executor307 Not tainted 6.0.0-rc7-syzkaller-18095-gbbed346d5a96 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/30/2022
-Call trace:
- dump_backtrace+0x1c4/0x1f0 arch/arm64/kernel/stacktrace.c:156
- show_stack+0x2c/0x54 arch/arm64/kernel/stacktrace.c:163
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x104/0x16c lib/dump_stack.c:106
- dump_stack+0x1c/0x58 lib/dump_stack.c:113
- print_circular_bug+0x2c4/0x2c8 kernel/locking/lockdep.c:2053
- check_noncircular+0x14c/0x154 kernel/locking/lockdep.c:2175
- check_prev_add kernel/locking/lockdep.c:3095 [inline]
- check_prevs_add kernel/locking/lockdep.c:3214 [inline]
- validate_chain kernel/locking/lockdep.c:3829 [inline]
- __lock_acquire+0x1530/0x30a4 kernel/locking/lockdep.c:5053
- lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5666
- __might_fault+0x7c/0xb4 mm/memory.c:5577
- _copy_to_user include/linux/uaccess.h:134 [inline]
- copy_to_user include/linux/uaccess.h:160 [inline]
- btrfs_ioctl_get_subvol_rootref+0x3a8/0x4bc fs/btrfs/ioctl.c:3203
- btrfs_ioctl+0xa08/0xa64 fs/btrfs/ioctl.c:5556
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __arm64_sys_ioctl+0xd0/0x140 fs/ioctl.c:856
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
- el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
- el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
- el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
- el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+> +_scratch_mount
+> +
+> +# Create a data extent with 2 sectors
+> +$XFS_IO_PROG -fc "pwrite -S 0xff 0 8k" $SCRATCH_MNT/foobar >> $seqres.full
+> +sync
+> +
+> +first_logical=$(_btrfs_get_first_logical $SCRATCH_MNT/foobar)
+> +echo "logical of the first sector: $first_logical" >> $seqres.full
+> +
+> +second_logical=$(( $first_logical + 4096 ))
+> +echo "logical of the second sector: $second_logical" >> $seqres.full
+> +
+> +second_physical=$(_btrfs_get_physical $second_logical 1)
+> +echo "physical of the second sector: $second_physical" >> $seqres.full
+> +
+> +second_dev=$(_btrfs_get_device_path $second_logical 1)
+> +echo "device of the second sector: $second_dev" >> $seqres.full
+> +
+> +_scratch_unmount
+> +
+> +# Corrupt the second sector of the data extent.
+> +$XFS_IO_PROG -c "pwrite -S 0x00 $second_physical 4k" $second_dev >> $seqres.full
+> +_scratch_mount
+> +
+> +# Redirect stderr and stdout, as if btrfs detected the unrepairable corruption,
+> +# it will output an error message.
+> +$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT &> $tmp.output
+> +cat $tmp.output >> $seqres.full
+> +_scratch_unmount
+> +
+> +if ! grep -q "csum=1" $tmp.output; then
+> +	echo "Scrub failed to detect corruption"
+> +fi
+> +
+> +echo "Silence is golden"
+> +
+> +# success, all done
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/278.out b/tests/btrfs/278.out
+> new file mode 100644
+> index 00000000..b4c4a95d
+> --- /dev/null
+> +++ b/tests/btrfs/278.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 278
+> +Silence is golden
+> -- 
+> 2.38.0
+> 
 
