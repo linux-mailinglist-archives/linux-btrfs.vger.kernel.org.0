@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF68861FAC0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 18:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5532461FAC7
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 18:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231918AbiKGREJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Nov 2022 12:04:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
+        id S232241AbiKGRFW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Nov 2022 12:05:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231302AbiKGREH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Nov 2022 12:04:07 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A4A11817
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Nov 2022 09:04:05 -0800 (PST)
+        with ESMTP id S231302AbiKGRFW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Nov 2022 12:05:22 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2016A12D21
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Nov 2022 09:05:20 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3FFAF1F889;
-        Mon,  7 Nov 2022 17:04:04 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D043F22587;
+        Mon,  7 Nov 2022 17:05:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1667840644;
+        t=1667840718;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0UxmbGLf6luaDEyVFG81Pk6cZ+NDrIgWXVqc5CBiZjU=;
-        b=zMRGwL1U7PhaXElcU835otfM1fJZME4UxWg5Alq6PCJmjoNMAtXF9A2GhDs1nkt+LCqn5A
-        sWlIQ9fW1Wi2QS0JJaJVvVfO5W73BtnoSHJVnv/VeIA5nmQP9UQUhkpYSf3U/j5XFSxlvR
-        Ec926Y1JjswgHl+eiPXoPPCB8sPI96A=
+        bh=P6u73g3FNKFIJ/AVAqMoG/iueYq5paQYSNy/prxonyM=;
+        b=koJWV7rgCkJxFasChx5kYHFtTk7FmFQLe56gU2X31s0K3iUFCtmHvQYj1iZdch/qpwzyKz
+        kRvVnDmkoSiCJgLE0ez1KjhWA8q8XL6Y+EjrF307Mk7AwiyU3XoCC35eHNMZAWi/tqNnrh
+        Hy0OkBhydW4b+6ess+ctwXeLPjukw1o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1667840644;
+        s=susede2_ed25519; t=1667840718;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0UxmbGLf6luaDEyVFG81Pk6cZ+NDrIgWXVqc5CBiZjU=;
-        b=g+xdun4EXeJjAUsljfy2Xm8uDaB3qWs5cCVRl0dnOJTUYefr0I0LFzjS7nk2EX2/Vk4z/N
-        zRgFyyFDne4yBjAA==
+        bh=P6u73g3FNKFIJ/AVAqMoG/iueYq5paQYSNy/prxonyM=;
+        b=5Xn2mwT7rKhMZkpwNn8Sb6n72mnO9ihp98toANnrYLvH3pzfJL+rhKWVqK6A+To5/G/FQM
+        zS1l3hFLunoiDlCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 169B513AC7;
-        Mon,  7 Nov 2022 17:04:04 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC51E13AC7;
+        Mon,  7 Nov 2022 17:05:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id UdaJBIQ6aWP/egAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 07 Nov 2022 17:04:04 +0000
-Date:   Mon, 7 Nov 2022 18:03:42 +0100
+        id ZdkbKc46aWMmfgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 07 Nov 2022 17:05:18 +0000
+Date:   Mon, 7 Nov 2022 18:04:57 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/3] btrfs: raid56: introduce btrfs_raid_bio::error_bitmap
-Message-ID: <20221107170342.GU5824@twin.jikos.cz>
+Subject: Re: [PATCH 0/3] btrfs: raid56: make raid56 to use more accurate
+ error bitmap for error detection
+Message-ID: <20221107170457.GV5824@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1667805755.git.wqu@suse.com>
- <aa54be41e66db516ddeb0ab3cc21e185b0b5aff3.1667805755.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aa54be41e66db516ddeb0ab3cc21e185b0b5aff3.1667805755.git.wqu@suse.com>
+In-Reply-To: <cover.1667805755.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -70,50 +70,52 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 07, 2022 at 03:32:29PM +0800, Qu Wenruo wrote:
-> +
-> +		sector = &rbio->stripe_sectors[i];
-> +		if (sector->page == bv->bv_page &&
-> +		    sector->pgoff == bv->bv_offset)
-> +			break;
-> +		sector = &rbio->bio_sectors[i];
-> +		if (sector->page == bv->bv_page &&
-> +		    sector->pgoff == bv->bv_offset)
-> +			break;
-> +	}
-> +	ASSERT(i < rbio->nr_sectors);
-> +	return i;
-> +}
-> +
-> +static void rbio_update_error_bitmap(struct btrfs_raid_bio *rbio,
-> +				     struct bio *bio)
-> +{
-> +	int total_sector_nr = get_bio_sector_nr(rbio, bio);
-> +	int bio_size = 0;
+On Mon, Nov 07, 2022 at 03:32:28PM +0800, Qu Wenruo wrote:
+> Currently btrfs raid56 uses stripe based error detection.
+> 
+> This means, any error (which vary from single sector csum mismatch, to a
+> missing device) will mark the whole horizontal stripe as error.
+> 
+> This can lead to some unexpected behavior, for example:
+> 
+> 
+>              0        32K       64K
+>      Data 1  |XXXXXXXX|         |
+>      Data 2  |        |XXXXXXXXX|
+>      Parity  |        |         |
+> 
+> When reading data 1 [0, 32K), we got csum mismatch and go RAID56
+> recovery path.
+> 
+> If going the old path, we will mark the whole data 1 [0, 64K) all as
+> error, and recover using data 2 and parity.
+> 
+> But since data 2 [32K, 64K) is also corrupted, the recovered data will
+> also be corrupted.
+> 
+> Thankfully such problem will be mostly avoided after commit f6065f8edeb2
+> ("btrfs: raid56: don't trust any cached sector in
+> __raid56_parity_recover()"), as when we read the sectors in data 2 [32K,
+> 64K), we will recover discarding all the cached result.
+> 
+> 
+> This patchset will change the behavior by introducing an error bitmap,
+> recording corrupted sector one by one, so for above case, at least we
+> won't try to recover data 1 [32K, 64K) using incorrect data.
+> 
+> The true solution to this destructive RMW problem will be read time csum
+> verification, but this patchset introduces the basis to handle extra
+> csum mismatch error better (csum mismatch will also be marked as error,
+> but only for the offending sectors).
+> 
+> This patchset itself doesn't improve the raid56 destructive RMW
+> situation by itself, but would make later destructive RMW fix much
+> easier to implement.
+> 
+> Qu Wenruo (3):
+>   btrfs: raid56: introduce btrfs_raid_bio::error_bitmap
+>   btrfs: raid56: migrate recovery and scrub recovery path to use
+>     error_bitmap
+>   btrfs: raid56: remove the old error tracing system
 
-bio_size is better a u32 as it's the bv_len type and there's a shift
-done later.
-
-> +	struct bio_vec *bvec;
-> +	struct bvec_iter_all iter_all;
-> +
-> +	bio_for_each_segment_all(bvec, bio, iter_all)
-> +		bio_size += bvec->bv_len;
-> +
-> +	bitmap_set(rbio->error_bitmap, total_sector_nr,
-> +		   bio_size >> rbio->bioc->fs_info->sectorsize_bits);
-> +}
-> +
->  static void raid_wait_read_end_io(struct bio *bio)
->  {
->  	struct btrfs_raid_bio *rbio = bio->bi_private;
->  
-> -	if (bio->bi_status)
-> +	if (bio->bi_status) {
->  		fail_bio_stripe(rbio, bio);
-> -	else
-> +		rbio_update_error_bitmap(rbio, bio);
-> +	} else
->  		set_bio_pages_uptodate(rbio, bio);
-
-The else branch needs { }
+With minor fixups added to misc-next, thanks.
