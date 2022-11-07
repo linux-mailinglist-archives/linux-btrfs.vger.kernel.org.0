@@ -2,136 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 591AE61F2D8
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 13:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C52961F414
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 14:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbiKGMWN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Nov 2022 07:22:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49126 "EHLO
+        id S232032AbiKGNOL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Nov 2022 08:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbiKGMWM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Nov 2022 07:22:12 -0500
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF498D62;
-        Mon,  7 Nov 2022 04:22:11 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 11E815C0185;
-        Mon,  7 Nov 2022 07:22:11 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 07 Nov 2022 07:22:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1667823731; x=
-        1667910131; bh=XvW4y+OvD3m2wCaNiof4U12PyYREji7eszG/mpI1LJg=; b=d
-        XvlOoXdkOt9jxdzFm/kSPsHuEJuybuMgQW6wLPlscY6S5UrS/kYnkx1c6ayyTBXs
-        /DPh6uP2/Sha6g/j3EsZpJ91X+Dy/T1PrLzLIbZ47mk4kSVQhLwZapUxiZQjBWKN
-        ywNnsXwRBw7VbeuaOmkiz4k6RBEn8tkSvWGFrJ5qVqortCg/tvbWzVTxbg3rs8/h
-        PoOl5Pk6XHK5Ii/LHSbMYm4b7kesM7GaNhHqDwZWST3sJ26DMyweNfjVln27Wuoc
-        iIxauQttHip5yxyV0PCTScnfjs+bQ8BdKwYF0nDGUaZEX6I2blugluLjk+yfpcJI
-        tmg43KmDVrYpCbjDbVSrg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1667823731; x=
-        1667910131; bh=XvW4y+OvD3m2wCaNiof4U12PyYREji7eszG/mpI1LJg=; b=w
-        meYzvu4h+miaHQgps7+s+bM5+JX9pnBCo32ruyLkrUlfm4LWbs4Cd76V0Qc4+l3i
-        eELSgmiwtfaKYOtD2NcHVCG6Txxs3Vvbk9ppOSQV9ANAtHoax76mMbpq95VT/8ET
-        onY7Jv2qXHiWzMagw7Pxt20azD8pTVbX36rcpzff4rSv4rJDtUn2S4K5nP1Qze9B
-        Bg00/nvOamcgqcFGTveFmr3DHIfIS3bz20Rk/Tt1JYyg5HVouzKy9YsGKSuv3JJT
-        Dky9mxtztmtqQr8nQX5gLXfyFEHMZXWQ5t4VGG5T7SdXg1rhPRfmGCSBsdreUx6q
-        g6c6MsXrp3k4vDVgKPZLQ==
-X-ME-Sender: <xms:cvhoY07i2M1xQ9o1Dl9j1nJ5Fkr4olQmZQQ8mdwtDKFmZVHZF5LfGw>
-    <xme:cvhoY16LiAyR8eJ3ZaUZ6HUe2hKrS2F2jNVVQZzGskDq4I4gIDRsxrAKS8WVMAz_E
-    iK5w9NCXjzWvg>
-X-ME-Received: <xmr:cvhoYzcjYvmvLvvgZuOnBlujXoXPGtwjUFYSFunJq-k0wcr16yBq8vr6d-Tw9IwtiuY01pnOT-mLu4w9RcUbAVTdLdEqywkh>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrvdekgdefkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepleekhe
-    ejjeeiheejvdetheejveekudegueeigfefudefgfffhfefteeuieekudefnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:cvhoY5LUA8jU37n3O_TXdPulu42ZXniMtom4TE69TVhZF8EH0QgJ1Q>
-    <xmx:cvhoY4JyeGltXpyD1DCAMIN9JvfxZzj88GoEXV0W6IMRfMPnPQLf1Q>
-    <xmx:cvhoY6wp6OtnGLChppzrMeyrAur7h5j11wVM5etQ8P5qKgF4hmN8IQ>
-    <xmx:c_hoY1CpyOvhlV82Kv7SD0pvO-aTFTlMxrIdUmOBLFxucdm5KhU7vQ>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 7 Nov 2022 07:22:10 -0500 (EST)
-Date:   Mon, 7 Nov 2022 13:22:07 +0100
-From:   Greg KH <greg@kroah.com>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>,
-        =?utf-8?B?0JzQsNGA0Log0JrQvtGA0LXQvdCx0LXRgNCz?= 
-        <socketpair@gmail.com>, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH for 5.15.x] btrfs: fix lost file sync on direct IO write
- with nowait and dsync iocb
-Message-ID: <Y2j4bx15xkJx42Kh@kroah.com>
-References: <3046b907b319071aef61d0a1b3dfaf0f71f2c9aa.1667582440.git.fdmanana@suse.com>
+        with ESMTP id S232197AbiKGNOJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Nov 2022 08:14:09 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF92D74
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Nov 2022 05:14:08 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B05431F891;
+        Mon,  7 Nov 2022 13:14:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1667826847;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XPGrK2RTqTFtH4xXy/g81dgwgSPonQBXxlR6l5KpCCM=;
+        b=wH9g8cuE1Fmdm1uK4S29aw9g45lzZuI9Toc9LfJEpzAD+nXMTwFJgtAHGrWT7hRCAXiNPQ
+        dYKG0KtkT1t7DsVzlhKu5XxeSbsERx+oS5QFWvlBEu0b3LQdSWNPlr4k7+fDt1BPC+ZQz/
+        1MP4DK5AUKtftbL1Gl+KsTr0VuKmgag=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1667826847;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XPGrK2RTqTFtH4xXy/g81dgwgSPonQBXxlR6l5KpCCM=;
+        b=ql1ippYBTRLq+apJgKYFOhcoWRAK3ZDGb1CBNTpSEYjpWXUfIRLwgtQAAgMDs78OMcdDsj
+        WK6ciVlLTPoYoMAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94B8113494;
+        Mon,  7 Nov 2022 13:14:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id RvlyI58EaWOeUgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 07 Nov 2022 13:14:07 +0000
+Date:   Mon, 7 Nov 2022 14:13:46 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] Revert "btrfs: scrub: use larger block size for data
+ extent scrub"
+Message-ID: <20221107131346.GS5824@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <97622c5c2e2dbb2316901c6ebd9792cbf58385fd.1667776994.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3046b907b319071aef61d0a1b3dfaf0f71f2c9aa.1667582440.git.fdmanana@suse.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <97622c5c2e2dbb2316901c6ebd9792cbf58385fd.1667776994.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 07, 2022 at 09:41:35AM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Mon, Nov 07, 2022 at 07:23:26AM +0800, Qu Wenruo wrote:
+> This reverts commit 786672e9e1a39a231806313e3c445c236588ceef.
 > 
-> commit 8184620ae21213d51eaf2e0bd4186baacb928172 upstream.
+> [BUG]
+> Since commit 786672e9e1a3 ("btrfs: scrub: use larger block size for data
+> extent scrub"), btrfs scrub no longer reports errors if the corruption
+> is not in the first sector of a STRIPE_LEN.
 > 
-> When doing a direct IO write using a iocb with nowait and dsync set, we
-> end up not syncing the file once the write completes.
+> The following script can expose the problem:
 > 
-> This is because we tell iomap to not call generic_write_sync(), which
-> would result in calling btrfs_sync_file(), in order to avoid a deadlock
-> since iomap can call it while we are holding the inode's lock and
-> btrfs_sync_file() needs to acquire the inode's lock. The deadlock happens
-> only if the write happens synchronously, when iomap_dio_rw() calls
-> iomap_dio_complete() before it returns. Instead we do the sync ourselves
-> at btrfs_do_write_iter().
+>  mkfs.btrfs -f $dev
+>  mount $dev $mnt
+>  xfs_io -f -c "pwrite -S 0xff 0 8k" $mnt/foobar
+>  umount $mnt
 > 
-> For a nowait write however we can end up not doing the sync ourselves at
-> at btrfs_do_write_iter() because the write could have been queued, and
-> therefore we get -EIOCBQUEUED returned from iomap in such case. That makes
-> us skip the sync call at btrfs_do_write_iter(), as we don't do it for
-> any error returned from btrfs_direct_write(). We can't simply do the call
-> even if -EIOCBQUEUED is returned, since that would block the task waiting
-> for IO, both for the data since there are bios still in progress as well
-> as potentially blocking when joining a log transaction and when syncing
-> the log (writing log trees, super blocks, etc).
+>  # 13631488 is the logical bytenr of above 8K extent
+>  btrfs-map-logical -l 13631488 -b 4096 $dev
+>  mirror 1 logical 13631488 physical 13631488 device /dev/test/scratch1
 > 
-> So let iomap do the sync call itself and in order to avoid deadlocks for
-> the case of synchronous writes (without nowait), use __iomap_dio_rw() and
-> have ourselves call iomap_dio_complete() after unlocking the inode.
+>  # Corrupt the 2nd sector of that extent
+>  xfs_io -f -c "pwrite -S 0x00 13635584 4k" $dev
 > 
-> A test case will later be sent for fstests, after this is fixed in Linus'
-> tree.
+>  mount $dev $mnt
+>  btrfs scrub start -B $mnt
+>  scrub done for 54e63f9f-0c30-4c84-a33b-5c56014629b7
+>  Scrub started:    Mon Nov  7 07:18:27 2022
+>  Status:           finished
+>  Duration:         0:00:00
+>  Total to scrub:   536.00MiB
+>  Rate:             0.00B/s
+>  Error summary:    no errors found <<<
 > 
-> Fixes: 51bd9563b678 ("btrfs: fix deadlock due to page faults during direct IO reads and writes")
-> Reported-by: Марк Коренберг <socketpair@gmail.com>
-> Link: https://lore.kernel.org/linux-btrfs/CAEmTpZGRKbzc16fWPvxbr6AfFsQoLmz-Lcg-7OgJOZDboJ+SGQ@mail.gmail.com/
-> CC: stable@vger.kernel.org # 6.0+
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
+> [CAUSE]
+> That offending commit enlarge the data extent scrub size from sector
+> size to BTRFS_STRIPE_LEN, to avoid extra scrub_block to be allocated.
 > 
-> The commit in the Fixes tag was backported to 5.15 stable releases, so
-> this patch is meant for 5.15.x and was tested on top of 5.15.77.
+> But unfortunately the data extent scrub is still heavily relying on the
+> fact that there is only one scrub_sector per scrub_block.
+> 
+> Thus it will only check the first sector, and ignoring the remaining
+> sectors.
+> 
+> Furthermore the error reporting is not able to handle multiple sectors
+> either.
+> 
+> [FIX]
+> For now just revert the offending commit.
+> 
+> The consequence is just extra memory usage during scrub.
+> We will need a proper change to make the remaining data scrub path to
+> handle multiple sectors before we enlarging the data scrub size.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Now queued up, thanks.
-
-greg k-h
+Added to misc-next, thanks.
