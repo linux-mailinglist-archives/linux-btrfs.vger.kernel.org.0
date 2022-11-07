@@ -2,209 +2,243 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C15AB61E7BC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 00:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E214E61E7CE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Nov 2022 01:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbiKFX4h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Nov 2022 18:56:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
+        id S230211AbiKGAEq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Nov 2022 19:04:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbiKFX4f (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Nov 2022 18:56:35 -0500
-Received: from EUR02-VE1-obe.outbound.protection.outlook.com (mail-eopbgr20082.outbound.protection.outlook.com [40.107.2.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1935BB850
-        for <linux-btrfs@vger.kernel.org>; Sun,  6 Nov 2022 15:56:34 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hFM65ATqjcqdItsSKgjDA9BNIa4KFi7QLm09m++QFeRKSnhNWcORd7WZUu9PP6sRHz6SdL9HdMOBtdOJeeEQQXeFqil67TFWNMro3kLdSKOi85jUgaEV/o6U+R6tuWelPqR9L1jwdcb5AfliyuLtjOJhxCiQMjcIhkw/c6AOYl/WxjED0oUCq378TqRgcdiUi4hRBWl79km0rvhgUWbSffLsK02gknVc42yLQ901xPvRtLDDyikVBXQ4IKcf26HYUaDhWiwBl6JrF92T//aLaoD6507GsZiFYzn7Av9XsSaj/q7DCbWLCXLox7ULc4KHXcBEFWbqglxNXe8LuVeh1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9yMujZ+eUUTBk5QAaIWm1I/FNsvRf53cnGnLkX6jteA=;
- b=K2E/F65y4AAhcTVY1S5IKHi67I6VPhdXj8iZ+2hPgLlMfQajYFqvLk5KCmrJJZvu/xLj6HdOCt6DtiZvyZmupnEtPDwvGuNixJgiyKI1jIEPh100xea2jUeuMZJ0gum60ZmBYiLIalHO+ND0XwK8g1vHZ7kN6aFK2RNW9zL3hxJw1+8xOS+okUOHtuTyoF5ceI5SX4I/DKs5T9LZQUreZ5lo6vqTafjoD6s6PO2tVGbGReeYosiqiYpICC/BuAgZVJj2ek4tuQ04S9baByLgZXp+HCt3V6sJTaUCdi+Q4CDJntQFQLqqxRamwVrV8lUrr7aMhSRByail+NSlZRj2Kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9yMujZ+eUUTBk5QAaIWm1I/FNsvRf53cnGnLkX6jteA=;
- b=ICnB3pr+/yLEk4AA4ujUo9C38Hepp+vQrAvcW0ySRlgSejya9McPj4jDDCnBkdTbmqjldMy48HaAHFQGDWFZTMQUPkLpnVmwEPSAeaBP9e9rsmIKLV4ZvL0sIzt350rqhrSTlWKWfcdCvvu/3Mm0AtUSYhIw+jUxdnM6lc6XC4WGFIDDSqgLYGvumzVvdjQJQRCkcRByjtOual67O4r49LqaOcdiCAZkQJG9jBf6dOqHRHhZMGMab1wcmsLwEe7GK6dxFk/SugWWtNqmlOXsrsu33Wv7PCCYKT7e2ophHoXRCUQ4TQrj/S+A84AgXf9Z1l7chWLz46v76cRD50s47w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by PA4PR04MB7917.eurprd04.prod.outlook.com (2603:10a6:102:cd::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.20; Sun, 6 Nov
- 2022 23:56:30 +0000
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::411e:e463:2c22:e220]) by AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::411e:e463:2c22:e220%7]) with mapi id 15.20.5791.026; Sun, 6 Nov 2022
- 23:56:30 +0000
-Message-ID: <5cb4957f-6eaa-535b-501e-1a43060b0013@suse.com>
-Date:   Mon, 7 Nov 2022 07:56:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH] Revert "btrfs: scrub: use larger block size for data
- extent scrub"
-Content-Language: en-US
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org, Li Zhang <zhanglikernel@gmail.com>
-References: <97622c5c2e2dbb2316901c6ebd9792cbf58385fd.1667776994.git.wqu@suse.com>
-In-Reply-To: <97622c5c2e2dbb2316901c6ebd9792cbf58385fd.1667776994.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0104.namprd13.prod.outlook.com
- (2603:10b6:a03:2c5::19) To AS8PR04MB8465.eurprd04.prod.outlook.com
- (2603:10a6:20b:348::19)
+        with ESMTP id S230150AbiKGAEp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 6 Nov 2022 19:04:45 -0500
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62822BE3B
+        for <linux-btrfs@vger.kernel.org>; Sun,  6 Nov 2022 16:04:44 -0800 (PST)
+Received: by mail-il1-f197.google.com with SMTP id h6-20020a92c266000000b00300624bf414so7695598ild.14
+        for <linux-btrfs@vger.kernel.org>; Sun, 06 Nov 2022 16:04:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HcE7kLihBa6CEUaoqLpOeyRK6SUL8ybmiCmMzV2rmlQ=;
+        b=68CO+CvOMc607rUolL5XXMqYgzkZbwJ/iiOnJsWt1+aGAuN6aRwnxj653hruBsAngS
+         tVg4oOvHAWAE023teFWtzi53jfuimPeFp/ShD/6G8HZWw6CCbI+BL8At0nknqh6tfoxm
+         6OR3A1tcY5fHSO6Ejpt0JV60IoQUmAO5ErLCUye060RLiToqoa0Vxs7aqcMoUg9r613D
+         Ko92gNlwslC7z+nBZFvuJxCjk7QDTvUxrv3Xn5tNoRFBu6QsSwxp9SQV9lkCF0IHuRxW
+         qd6dOtk9Rtf0xsl5E3FTHOb0DRDnVtLmPY9CMRSKBWNF5uP6EOEV8twd2LV/bvUtHjLr
+         RZKA==
+X-Gm-Message-State: ANoB5pmF9dxm5vJEd3dzpzinQDs7R9lH8r+G7XQUCos49+nCetikAySK
+        Po451H0AsZM/qeD4d0DMYzBBbyNcW8WJO7wdGXQyyEFWzQ/B
+X-Google-Smtp-Source: AA0mqf69tKoz3EWC77737bO3FK/DAf75zEWVyuPI5frhi3QDguvEE2ls4K9l4wsga6Ka+zamTSFgsSE42LLcauJ2Ei/RHPK6y6bz
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|PA4PR04MB7917:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9872ca63-b2dc-42c3-702e-08dac05286a5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /bv1KinCCAGLE3QNbjKkUqx39Z9P2FotbLZgrOfMx+7XnAI3PYnQzBf9S6X4Ah5Tq1kLq3KW76bq62SIkwkHYJRtbbcrstbqVLcNh9YSea9qq9Pk8LTNuG15PRfAbjI4j/FSFfw9IpQYdrKtBxmSFz5JtWU5ooO319jDoqVhBTgTPzSKye74CKGx6K1kaP94tmtuEpom9Ue0py2/o7bt2osljFhlFyzg2XCKJk3MMAQl+OUDt8ch+fZtYYUKWzlUFzfidWHUaRTHBrtVxX1O5+wfwbMxjO8qFy7wmqxJrZeg+Ynmq2X2CiP+mvwjyw2KisWaMvydf9vk+zUpquOA6wII6dv7KeuIqjMfoo7JZiV8reLRjcEB7dhG4ohG8lEJJ0aaQV/7R5wkXsdAincyJVUah8YB3GSqfDFdCADHDOJs0pIS6hjHleYVJ3OtfzpJPm7sQyQBASml5PYQoqaokrzdAwcdPoxYaFEpdQxhJ4czXLC97ZOqgRB2i7rNWYwjRpVVupYy8kz6Ose7rrNngmgw3E4pXfqG6N4iuu9Ytwtd3egYQ563Sybl8O7O9jUyiLlN0uQLn0WwBV+zFz9l0ElJrW36xpQP7P+Y10opwFJu5/y8VYRIukvBnGwFeobmzrV+uq36dAHSmXdEEhWVcBgLGneIUj4u7o5q2m0N02b5lIiDeoJ7H97+YAGrrwElyABIGi9vDu6Y5b3czf5P41VYQsN4ySte1UfFCAa87B31Q5ZZeXyG3MeqUMp9uEjAL+Rc7Us/G2DFQf1WjnTL3y+UCe3pnRlURxA+oVvd6fs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(39860400002)(396003)(376002)(346002)(136003)(451199015)(8936002)(5660300002)(31686004)(38100700002)(41300700001)(83380400001)(6666004)(6506007)(53546011)(66946007)(66556008)(66476007)(2906002)(8676002)(6916009)(6512007)(316002)(36756003)(86362001)(6486002)(31696002)(478600001)(2616005)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SDBWdVovaDNlTlR6OXpKbWRtOVpMbnJteXRITE1nRFpCZ3N3QkZqSmRmanYy?=
- =?utf-8?B?T2I0d0VCVjgzSm41aFVXekgzNHl2NTN1RWhhc0t6UGNOV2p0SEhKS1pOaDIv?=
- =?utf-8?B?dTFHUURMUHR4VUx6VXRSblQ1R2FNenFkQWNzYzJmZW5TU1hJZjZudWxpcVkv?=
- =?utf-8?B?THU4N1U5eU1ZZmhPck9hOFF1SnlqVmk2c1BmVlZ0U0NQQ2ZGdWYxdEw4aFNp?=
- =?utf-8?B?dmdpMnRhVERsY1BYYWQyWUNaZlVKTnZhZk9MTzFOdmJNY3U2akcrK1FOOGt3?=
- =?utf-8?B?MmE5VTFOc3ltRC9YbkF3Vmh2ZkxVTlZ0cHBFUTZQWEJKaTNvY0ljQXFLcXJs?=
- =?utf-8?B?MWdaQldkMWtvajBoU1kvb3Btc0ZpL3BVWGhoVFl2NnJDcW1kbzBvSWwrdG9i?=
- =?utf-8?B?TXQ5N3cyYk9wRWlIaDVvbHRyQ29KUGhMUEs2dUtDd3UyRmgrSFhVdVRsL1dT?=
- =?utf-8?B?L0dnWDBJM01LcmpVZ3pSd29WNnpQeVpBeGt2dVJxTm5QZ3dnZHV6NjVYTWd1?=
- =?utf-8?B?S2JBMUk0NzFpTXJQNi95UmltaEpyVDdBcWlNcjd5WjFKYVoxR3ZtNzZNNmtx?=
- =?utf-8?B?Z2pGWnA1czRWRE1wTEVRT3E3S3JNR2dXeWdoQk5halpFTFc2TENPb0VLWWQx?=
- =?utf-8?B?L2tSM0I4ZG1jVkd0QTY3UG5TL0VDc3cxVmVwb08xaWNpL1lydjJIVDQwOUpo?=
- =?utf-8?B?T1JodVhDTVp0UEd0RjdlbHNub21GNHF2dlo2TW9PdnI4RFpRd0VsU1ZsZjFB?=
- =?utf-8?B?dWU1MkxhL2dqN2J3MkYzNXZqQk1zZkJ3MERpWW5yV1NLUW55UDhKbFgwR1lZ?=
- =?utf-8?B?aWdrSXdWaVhpT2FYL2c0OVZwRWh1aTVIWnNtR253WjdOTGp3UTEvNzhadEVV?=
- =?utf-8?B?MXFOd0duZ09LSU5ndHJkK2hTQmpBWGQ5c21lQ0N4V2FMMk9kbjJ1OGlVRlQ5?=
- =?utf-8?B?SEVuVFY3eFlxQXNicElvVjBqTHZueENpN1JSYTNLV04rUDdmRm5NN1l5ZERq?=
- =?utf-8?B?RTRYZEZNN3FST3B6WEp6ZTFPTGpaL2lyUFllZFA1NWlMeGVLWWhNM2RvOTNy?=
- =?utf-8?B?VWdSdUc3S3FQOVRIYktDeXZQeFpNdWUvRVRKWFBaTldZeVpyKzd6eFo2L1BU?=
- =?utf-8?B?bVlNTnlScjU4a2ZYSHIxM3NVNXN0R05GYmQyOTR5MitZM0prMUt4NzlIQjFa?=
- =?utf-8?B?SEIyMUNMWWNVTjhERE8yUWFrajM0a2ZLOHVveTJSdkhlc0JsWEowaG9OYXNq?=
- =?utf-8?B?cmUvbFlPc2l0Y01KT01pQkVjbTNOcDFLOXlHNEd4b1ZtczJxK1VHNDhrZXRP?=
- =?utf-8?B?TlZtV1A0Z0l1NzRBcEhNci9NaWhvQ1VDOUZwMXRjRkZPcFYzQi9tNllBWVpD?=
- =?utf-8?B?c3QwSVFsUEw5SXc1UXVubHN5eDdSNFpJMkxJSXJyUjRxbFZLeTdnSDZnRS94?=
- =?utf-8?B?bytjNzgySlErQW5OOG8xZFI3amdESlBPQzVWbjhUSlJoOWdNV0ZDTzFqSS9u?=
- =?utf-8?B?WDd6SzNtNlZ6YkN1bW1CS3d0M2pESzZyV1Z4R2NCSzIzOUhZcHBQcTB5dEFM?=
- =?utf-8?B?eEVOTXhxOGtlZlk4NlNBMXZpOVFMblI0NFErMVRaSGdUbjBGYXFUYXgrZFpz?=
- =?utf-8?B?STVaMmM4RHZUMEdVbU50V053UURTRkl5YTA3ZkNWV3dSbmxVbnpoSDM2WW40?=
- =?utf-8?B?c3BVK3pFbnVYWnhBcnFKUFJoMlQ4UkxzaldwRjkyT2FsTHRJcmwwZ2Z4NWhy?=
- =?utf-8?B?YWphckJiSUdwaE5KQzhnUTk5cytqdmdEMFJraEptZVJaZnhsYVdFTHFOSHN1?=
- =?utf-8?B?aFRodnNSRklPd3JJZWVlUFdJL3pEenJKdlpYenRxSWJZOTJDcXliUXU5eWZF?=
- =?utf-8?B?TDByQ29hV3REc1NNd0dHcSs3cU5OcldKVWxnM1NHdzF5QitnMS83TGlMa3cv?=
- =?utf-8?B?ek1GTk1OU1hhTEZJaVdlSFpZVTlzUjhhQW15YVphdEw4ZytXQTU0Uy9hSzgv?=
- =?utf-8?B?MzRuS0thVEFYVWpBR1UySDVra0hOQTFwVEN1VEF1V3lXSnRJNk51d1pqVXJM?=
- =?utf-8?B?dzk3UlQzY3BCZUZQUTNHZTBsVkk4Q1AyN2M2dzE3TS82Mm5RbWNRNmFqem5p?=
- =?utf-8?B?Qm5NYWZvQ0RiWEw0VHp3Zng1SCt3MUFYd2liTzgxT2RDcE0xQmo0Ym80c3RP?=
- =?utf-8?Q?tRE2rC3vSPK88gV5M+8bNKo=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9872ca63-b2dc-42c3-702e-08dac05286a5
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2022 23:56:30.6280
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t+0/9iMz09mMXGBfKmMEtqSrtWF4MnAUFecmg2LTuq28GSkgysUdSq8+FXgtVcKX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7917
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:1aab:b0:302:770:3997 with SMTP id
+ l11-20020a056e021aab00b0030207703997mr4386567ilv.34.1667779483760; Sun, 06
+ Nov 2022 16:04:43 -0800 (PST)
+Date:   Sun, 06 Nov 2022 16:04:43 -0800
+In-Reply-To: <0000000000009abbbf05ecd5f687@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b1832205ecd62ba5@google.com>
+Subject: Re: [syzbot] possible deadlock in btrfs_search_slot_get_root
+From:   syzbot <syzbot+4ef9e52e464c6ff47d9d@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    bbed346d5a96 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=15a085a9880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3a4a45d2d827c1e
+dashboard link: https://syzkaller.appspot.com/bug?extid=4ef9e52e464c6ff47d9d
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154649a9880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=115dc1a9880000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e8e91bc79312/disk-bbed346d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c1cb3fb3b77e/vmlinux-bbed346d.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/e4f681f3b5be/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4ef9e52e464c6ff47d9d@syzkaller.appspotmail.com
+
+BTRFS info (device loop0): using xxhash64 (xxhash64-generic) checksum algorithm
+BTRFS info (device loop0): using free space tree
+BTRFS info (device loop0): enabling ssd optimizations
+======================================================
+WARNING: possible circular locking dependency detected
+6.0.0-rc7-syzkaller-18095-gbbed346d5a96 #0 Not tainted
+------------------------------------------------------
+syz-executor307/3029 is trying to acquire lock:
+ffff0000c02525d8 (&mm->mmap_lock){++++}-{3:3}, at: __might_fault+0x54/0xb4 mm/memory.c:5576
+
+but task is already holding lock:
+ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
+ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
+ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: btrfs_read_lock_root_node+0x13c/0x1c0 fs/btrfs/locking.c:279
+
+which lock already depends on the new lock.
 
 
-On 2022/11/7 07:23, Qu Wenruo wrote:
-> This reverts commit 786672e9e1a39a231806313e3c445c236588ceef.
-> 
-> [BUG]
-> Since commit 786672e9e1a3 ("btrfs: scrub: use larger block size for data
-> extent scrub"), btrfs scrub no longer reports errors if the corruption
-> is not in the first sector of a STRIPE_LEN.
-> 
-> The following script can expose the problem:
-> 
->   mkfs.btrfs -f $dev
->   mount $dev $mnt
->   xfs_io -f -c "pwrite -S 0xff 0 8k" $mnt/foobar
->   umount $mnt
-> 
->   # 13631488 is the logical bytenr of above 8K extent
->   btrfs-map-logical -l 13631488 -b 4096 $dev
->   mirror 1 logical 13631488 physical 13631488 device /dev/test/scratch1
-> 
->   # Corrupt the 2nd sector of that extent
->   xfs_io -f -c "pwrite -S 0x00 13635584 4k" $dev
-> 
->   mount $dev $mnt
->   btrfs scrub start -B $mnt
->   scrub done for 54e63f9f-0c30-4c84-a33b-5c56014629b7
->   Scrub started:    Mon Nov  7 07:18:27 2022
->   Status:           finished
->   Duration:         0:00:00
->   Total to scrub:   536.00MiB
->   Rate:             0.00B/s
->   Error summary:    no errors found <<<
-> 
-> [CAUSE]
-> That offending commit enlarge the data extent scrub size from sector
-> size to BTRFS_STRIPE_LEN, to avoid extra scrub_block to be allocated.
-> 
-> But unfortunately the data extent scrub is still heavily relying on the
-> fact that there is only one scrub_sector per scrub_block.
-> 
-> Thus it will only check the first sector, and ignoring the remaining
-> sectors.
-> 
-> Furthermore the error reporting is not able to handle multiple sectors
-> either.
-> 
-> [FIX]
-> For now just revert the offending commit.
-> 
-> The consequence is just extra memory usage during scrub.
-> We will need a proper change to make the remaining data scrub path to
-> handle multiple sectors before we enlarging the data scrub size.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+the existing dependency chain (in reverse order) is:
 
-Reported-by: Li Zhang <zhanglikernel@gmail.com>
+-> #3 (btrfs-root-00){++++}-{3:3}:
+       down_read_nested+0x64/0x84 kernel/locking/rwsem.c:1624
+       __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
+       btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
+       btrfs_read_lock_root_node+0x13c/0x1c0 fs/btrfs/locking.c:279
+       btrfs_search_slot_get_root+0x74/0x338 fs/btrfs/ctree.c:1637
+       btrfs_search_slot+0x1b0/0xfd8 fs/btrfs/ctree.c:1944
+       btrfs_update_root+0x6c/0x5a0 fs/btrfs/root-tree.c:132
+       commit_fs_roots+0x1f0/0x33c fs/btrfs/transaction.c:1459
+       btrfs_commit_transaction+0x89c/0x12d8 fs/btrfs/transaction.c:2343
+       flush_space+0x66c/0x738 fs/btrfs/space-info.c:786
+       btrfs_async_reclaim_metadata_space+0x43c/0x4e0 fs/btrfs/space-info.c:1059
+       process_one_work+0x2d8/0x504 kernel/workqueue.c:2289
+       worker_thread+0x340/0x610 kernel/workqueue.c:2436
+       kthread+0x12c/0x158 kernel/kthread.c:376
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
 
-> ---
->   fs/btrfs/scrub.c | 8 +-------
->   1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 06c6626eae3d..e5dbf875f6d9 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -2691,17 +2691,11 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
->   	u8 csum[BTRFS_CSUM_SIZE];
->   	u32 blocksize;
->   
-> -	/*
-> -	 * Block size determines how many scrub_block will be allocated.  Here
-> -	 * we use BTRFS_STRIPE_LEN (64KiB) as default limit, so we won't
-> -	 * allocate too many scrub_block, while still won't cause too large
-> -	 * bios for large extents.
-> -	 */
->   	if (flags & BTRFS_EXTENT_FLAG_DATA) {
->   		if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
->   			blocksize = map->stripe_len;
->   		else
-> -			blocksize = BTRFS_STRIPE_LEN;
-> +			blocksize = sctx->fs_info->sectorsize;
->   		spin_lock(&sctx->stat_lock);
->   		sctx->stat.data_extents_scrubbed++;
->   		sctx->stat.data_bytes_scrubbed += len;
+-> #2 (&fs_info->reloc_mutex){+.+.}-{3:3}:
+       __mutex_lock_common+0xd4/0xca8 kernel/locking/mutex.c:603
+       __mutex_lock kernel/locking/mutex.c:747 [inline]
+       mutex_lock_nested+0x38/0x44 kernel/locking/mutex.c:799
+       btrfs_record_root_in_trans fs/btrfs/transaction.c:516 [inline]
+       start_transaction+0x248/0x944 fs/btrfs/transaction.c:752
+       btrfs_start_transaction+0x34/0x44 fs/btrfs/transaction.c:781
+       btrfs_create_common+0xf0/0x1b4 fs/btrfs/inode.c:6651
+       btrfs_create+0x8c/0xb0 fs/btrfs/inode.c:6697
+       lookup_open fs/namei.c:3413 [inline]
+       open_last_lookups fs/namei.c:3481 [inline]
+       path_openat+0x804/0x11c4 fs/namei.c:3688
+       do_filp_open+0xdc/0x1b8 fs/namei.c:3718
+       do_sys_openat2+0xb8/0x22c fs/open.c:1313
+       do_sys_open fs/open.c:1329 [inline]
+       __do_sys_openat fs/open.c:1345 [inline]
+       __se_sys_openat fs/open.c:1340 [inline]
+       __arm64_sys_openat+0xb0/0xe0 fs/open.c:1340
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
+       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
+       el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+
+-> #1 (sb_internal#2){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1826 [inline]
+       sb_start_intwrite include/linux/fs.h:1948 [inline]
+       start_transaction+0x360/0x944 fs/btrfs/transaction.c:683
+       btrfs_join_transaction+0x30/0x40 fs/btrfs/transaction.c:795
+       btrfs_dirty_inode+0x50/0x140 fs/btrfs/inode.c:6103
+       btrfs_update_time+0x1c0/0x1e8 fs/btrfs/inode.c:6145
+       inode_update_time fs/inode.c:1872 [inline]
+       touch_atime+0x1f0/0x4a8 fs/inode.c:1945
+       file_accessed include/linux/fs.h:2516 [inline]
+       btrfs_file_mmap+0x50/0x88 fs/btrfs/file.c:2407
+       call_mmap include/linux/fs.h:2192 [inline]
+       mmap_region+0x7fc/0xc14 mm/mmap.c:1752
+       do_mmap+0x644/0x97c mm/mmap.c:1540
+       vm_mmap_pgoff+0xe8/0x1d0 mm/util.c:552
+       ksys_mmap_pgoff+0x1cc/0x278 mm/mmap.c:1586
+       __do_sys_mmap arch/arm64/kernel/sys.c:28 [inline]
+       __se_sys_mmap arch/arm64/kernel/sys.c:21 [inline]
+       __arm64_sys_mmap+0x58/0x6c arch/arm64/kernel/sys.c:21
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
+       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
+       el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+
+-> #0 (&mm->mmap_lock){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3095 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+       validate_chain kernel/locking/lockdep.c:3829 [inline]
+       __lock_acquire+0x1530/0x30a4 kernel/locking/lockdep.c:5053
+       lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5666
+       __might_fault+0x7c/0xb4 mm/memory.c:5577
+       _copy_to_user include/linux/uaccess.h:134 [inline]
+       copy_to_user include/linux/uaccess.h:160 [inline]
+       btrfs_ioctl_get_subvol_rootref+0x3a8/0x4bc fs/btrfs/ioctl.c:3203
+       btrfs_ioctl+0xa08/0xa64 fs/btrfs/ioctl.c:5556
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:870 [inline]
+       __se_sys_ioctl fs/ioctl.c:856 [inline]
+       __arm64_sys_ioctl+0xd0/0x140 fs/ioctl.c:856
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+       el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
+       el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
+       el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
+       el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+
+other info that might help us debug this:
+
+Chain exists of:
+  &mm->mmap_lock --> &fs_info->reloc_mutex --> btrfs-root-00
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(btrfs-root-00);
+                               lock(&fs_info->reloc_mutex);
+                               lock(btrfs-root-00);
+  lock(&mm->mmap_lock);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor307/3029:
+ #0: ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
+ #0: ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
+ #0: ffff0000c958a608 (btrfs-root-00){++++}-{3:3}, at: btrfs_read_lock_root_node+0x13c/0x1c0 fs/btrfs/locking.c:279
+
+stack backtrace:
+CPU: 0 PID: 3029 Comm: syz-executor307 Not tainted 6.0.0-rc7-syzkaller-18095-gbbed346d5a96 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/30/2022
+Call trace:
+ dump_backtrace+0x1c4/0x1f0 arch/arm64/kernel/stacktrace.c:156
+ show_stack+0x2c/0x54 arch/arm64/kernel/stacktrace.c:163
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x104/0x16c lib/dump_stack.c:106
+ dump_stack+0x1c/0x58 lib/dump_stack.c:113
+ print_circular_bug+0x2c4/0x2c8 kernel/locking/lockdep.c:2053
+ check_noncircular+0x14c/0x154 kernel/locking/lockdep.c:2175
+ check_prev_add kernel/locking/lockdep.c:3095 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+ validate_chain kernel/locking/lockdep.c:3829 [inline]
+ __lock_acquire+0x1530/0x30a4 kernel/locking/lockdep.c:5053
+ lock_acquire+0x100/0x1f8 kernel/locking/lockdep.c:5666
+ __might_fault+0x7c/0xb4 mm/memory.c:5577
+ _copy_to_user include/linux/uaccess.h:134 [inline]
+ copy_to_user include/linux/uaccess.h:160 [inline]
+ btrfs_ioctl_get_subvol_rootref+0x3a8/0x4bc fs/btrfs/ioctl.c:3203
+ btrfs_ioctl+0xa08/0xa64 fs/btrfs/ioctl.c:5556
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __arm64_sys_ioctl+0xd0/0x140 fs/ioctl.c:856
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
+ el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
+ el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:636
+ el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:654
+ el0t_64_sync+0x18c/0x190 arch/arm64/kernel/entry.S:581
+
