@@ -2,71 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 863AE622F24
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Nov 2022 16:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0930622F77
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Nov 2022 16:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbiKIPj0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Nov 2022 10:39:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
+        id S231234AbiKIP4Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Nov 2022 10:56:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbiKIPjY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Nov 2022 10:39:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE425C4E
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Nov 2022 07:38:26 -0800 (PST)
+        with ESMTP id S231226AbiKIP4N (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Nov 2022 10:56:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4680193CD
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Nov 2022 07:55:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668008295;
+        s=mimecast20190719; t=1668009314;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=i1movnRqeUiSUaPBdyR4UD6IKNUM5EsJmslMyB9trwo=;
-        b=BaIWQBYiW6krp/A5C7uCABArDNvQIeDZjKIgxS/72H9sX+iJ4DKh/tsf15MYSw1XY6+tzY
-        3rqyLAQECCPDAHm0j/yMNdQtifutOwm+vVjD+WmkJGch1lQ/2dbuGippSZWXxhZwuu958z
-        sqEwWhCfyQcZ34ne2csNJub45YzeTt8=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=28Ccszi1P3T+ZnzNRGtbuUBqePx/ieU7H+4uG5/z258=;
+        b=JZW8Isyaudx/ZLxpBiuD8shGTwpZoHRwLhXvRMW8D7664aS9k05ihrGP2PVNWLaXp5ydJe
+        Gd/uWoErYYy27aBOGiD9I2ULr5c2c9Yg2EMd1KArsHuNaFqCAXIrPqYunZM7Rofobu0MPD
+        Xiwj3QedfutLCy/wpm93NfxJJogMTRk=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-454-v6psduXYNKC4xqC_KuhxqQ-1; Wed, 09 Nov 2022 10:37:56 -0500
-X-MC-Unique: v6psduXYNKC4xqC_KuhxqQ-1
-Received: by mail-pf1-f197.google.com with SMTP id m6-20020aa79006000000b0056bc283f477so9057507pfo.19
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Nov 2022 07:37:56 -0800 (PST)
+ us-mta-625-MLabrBaMNjGc1tM0cQXsvw-1; Wed, 09 Nov 2022 10:55:11 -0500
+X-MC-Unique: MLabrBaMNjGc1tM0cQXsvw-1
+Received: by mail-pf1-f200.google.com with SMTP id k11-20020aa792cb000000b00558674e8e7fso9011974pfa.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Nov 2022 07:55:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i1movnRqeUiSUaPBdyR4UD6IKNUM5EsJmslMyB9trwo=;
-        b=Z5iCz2ZCg9B0WUXTE6L1zvK7vLtl8ROOwJXEZI7Gt/2Witpw+F2APiQZHP/R3R8R/n
-         xlDAqGiTHvs4Yzto7LN76joWiNQ40tN0b/NyRgqtmtI8xjDQNB4rCss90XmDVoeULQ82
-         oIOEMIq3B8ZD+HcRHR92NRFxK+V7ZPlbO2jlZGy8vSr76MDQ/cx9qfTR3LZ/xEuAci1B
-         ZoLaf7pQ3DI5IfwaCCDe36S+E5JG+7aLcU4LN/pFphuItcMWj61VqPGVbHZz/RrGnr4y
-         Er68u6RdN9U3fu8iAQCc21NerkzdDl5c+RvIQPcLrllMZywZOI71jdWMrAMOsvJMp6oN
-         /s8A==
-X-Gm-Message-State: ACrzQf0XfUbvVLXvIL4T0hx+VGb4GDJuu0e9y+/jOF1iIRO54o83b7fP
-        a2mQ2bHhLeN7HHxuQJWymCTm9oyklMUrqzH69ZO7dZ2H9v4Rtgky2wwvwQmuM/h4UT5Lgn/yLx9
-        9S+DvMPjcjzBRX+0gTRqw3g4=
-X-Received: by 2002:a05:6a00:1582:b0:56d:4bc6:68c7 with SMTP id u2-20020a056a00158200b0056d4bc668c7mr54749658pfk.31.1668008275558;
-        Wed, 09 Nov 2022 07:37:55 -0800 (PST)
-X-Google-Smtp-Source: AMsMyM74zuHNNzMlLuEzXK3S5MxIvdQKQhUOwOYeYamK2jixRTgK4yA60CSXXkV1W6v9qorHlj1F1Q==
-X-Received: by 2002:a05:6a00:1582:b0:56d:4bc6:68c7 with SMTP id u2-20020a056a00158200b0056d4bc668c7mr54749637pfk.31.1668008275244;
-        Wed, 09 Nov 2022 07:37:55 -0800 (PST)
+        bh=28Ccszi1P3T+ZnzNRGtbuUBqePx/ieU7H+4uG5/z258=;
+        b=WfiLB6ZjTiHmO0VUpkiDm+fJ2S55t4dHTSzzoF4/qhPBHtx0nNQ3kIwehYns9JSij5
+         ps7tpnhIyZHU/cSxpvMeJWm2tcuA6jzZXyDhPH+mn5thk08GQAZdAlk86Gl7rPcMDbTA
+         Gs44We6c2imC5VI2s5H+Y2jx6gK7N/E1gTinYAv78gQU3PPOjV69zLacDKlQV0UJevwb
+         YbIKdWsZkQePsAVWvgDSidU/V124Qn22Tgs+LNUWqOALsp1/jef5JUsbkFC8hmVuiOeA
+         ZYcjstBDGlen667jWCqJkPWfTHJiLrWZfWsjCAj6v6AjJKqCNIqQIAPHpVtCyMUk41mi
+         kGSA==
+X-Gm-Message-State: ACrzQf0V3wO6pzjDE3cTSmmf4ZfN5/eq8O6+ba6+XmeLwYw7HdkdISU9
+        6kQVv7aa6F88IzkxkQXv32fuu3sg4OnvCpoxKn2HjN08f4udSO6czpsCbcZZdReRNuwWr9p0gLk
+        ZQ7jfw28ulKmLdg1Q7Z9w2T0=
+X-Received: by 2002:a17:90a:e593:b0:212:f0e8:46ca with SMTP id g19-20020a17090ae59300b00212f0e846camr79970464pjz.144.1668009310516;
+        Wed, 09 Nov 2022 07:55:10 -0800 (PST)
+X-Google-Smtp-Source: AMsMyM5JDa2W97WzCL9+HYj081LXkyOo8bMu+bLtxofTCA9SZ2GG3DFor+tz0J4k30ndtuPSd6uPyw==
+X-Received: by 2002:a17:90a:e593:b0:212:f0e8:46ca with SMTP id g19-20020a17090ae59300b00212f0e846camr79970451pjz.144.1668009310223;
+        Wed, 09 Nov 2022 07:55:10 -0800 (PST)
 Received: from zlang-mailbox ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id iw17-20020a170903045100b00186a6b63525sm9203068plb.120.2022.11.09.07.37.52
+        by smtp.gmail.com with ESMTPSA id p7-20020a17090a428700b001fe39bda429sm1375608pjg.38.2022.11.09.07.55.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Nov 2022 07:37:54 -0800 (PST)
-Date:   Wed, 9 Nov 2022 23:37:50 +0800
+        Wed, 09 Nov 2022 07:55:09 -0800 (PST)
+Date:   Wed, 9 Nov 2022 23:55:05 +0800
 From:   Zorro Lang <zlang@redhat.com>
 To:     fdmanana@kernel.org
 Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH 1/3] btrfs/003: fix failure on new btrfs-progs versions
-Message-ID: <20221109153750.p6jgtm5a2zc4id7f@zlang-mailbox>
+Subject: Re: [PATCH 2/3] btrfs/053: fix test failure when running with
+ btrfs-progs v6.0+
+Message-ID: <20221109155505.yki6xwqk4p4mhky6@zlang-mailbox>
 References: <cover.1667993961.git.fdmanana@suse.com>
- <62ef22111c9cb654e6e5e50f7337105b9ef804d7.1667993961.git.fdmanana@suse.com>
+ <a97dca4502e29bdd56f711060416a5992dcaea73.1667993961.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <62ef22111c9cb654e6e5e50f7337105b9ef804d7.1667993961.git.fdmanana@suse.com>
+In-Reply-To: <a97dca4502e29bdd56f711060416a5992dcaea73.1667993961.git.fdmanana@suse.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
@@ -77,58 +78,66 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 09, 2022 at 11:43:34AM +0000, fdmanana@kernel.org wrote:
+On Wed, Nov 09, 2022 at 11:43:35AM +0000, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> Starting with btrfs-progs version 5.19, the output of 'filesystem show'
-> command changed when we have a missing device. The old output was like the
-> following:
+> In btrfs-progs v6.0 the --leafsize (-l) command line option was removed,
+> so btrfs/053 always fails with v6.0+.
 > 
->     Label: none  uuid: 139ef309-021f-4b98-a3a8-ce230a83b1e2
->             Total devices 2 FS bytes used 128.00KiB
->             devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
->             *** Some devices missing
+> The change was introduced by the following btrfs-progs commit:
 > 
-> While the new output (btrfs-progs 5.19+) is like the following:
+>   f7a768d62498 ("btrfs-progs: mkfs: remove support for option --leafsize")
 > 
->     Label: none  uuid: 4a85a40b-9b79-4bde-8e52-c65a550a176b
->             Total devices 2 FS bytes used 128.00KiB
->             devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
->             devid    2 size 0 used 0 path /dev/loop1 MISSING
-> 
-> More specifically it happened in the following btrfs-progs commit:
-> 
->     957a79c9b016 ("btrfs-progs: fi show: print missing device for a mounted file system")
-> 
-> This is making btrfs/003 fail with btrfs-progs 5.19+. Update the grep
-> filter in btrfs/003 so that it works with both output formats.
+> Change the test to use --nodesize (-n) instead, since it exists in both
+> old and new btrfs-progs versions.
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 > ---
-
-OK, make sense,
-
-Reviewed-by: Zorro Lang <zlang@redhat.com>
-
->  tests/btrfs/003 | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  tests/btrfs/053 | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tests/btrfs/003 b/tests/btrfs/003
-> index cf605730..fae6d9d1 100755
-> --- a/tests/btrfs/003
-> +++ b/tests/btrfs/003
-> @@ -141,8 +141,9 @@ _test_replace()
->  	_devmgt_remove ${removed_dev_htl} $ds
->  	dev_removed=1
+> diff --git a/tests/btrfs/053 b/tests/btrfs/053
+> index fbd2e7d9..c0446257 100755
+> --- a/tests/btrfs/053
+> +++ b/tests/btrfs/053
+> @@ -44,7 +44,7 @@ send_files_dir=$TEST_DIR/btrfs-test-$seq
+>  rm -fr $send_files_dir
+>  mkdir $send_files_dir
 >  
-> -	$BTRFS_UTIL_PROG filesystem show $SCRATCH_DEV | grep "Some devices missing" >> $seqres.full || _fail \
-> -							"btrfs did not report device missing"
-> +	$BTRFS_UTIL_PROG filesystem show $SCRATCH_DEV | \
-> +		grep -ie '\bmissing\b' >> $seqres.full || \
-> +		_fail "btrfs did not report device missing"
+> -_scratch_mkfs "-l $leaf_size" >/dev/null 2>&1
+> +_scratch_mkfs "--nodesize $leaf_size" >/dev/null 2>&1
+
+We you said this case starts to fail on btrfs-progs v6.0, I'm wondering how it
+fail (I don't doubt it fails), at least not fails at here right?
+
+Actually I recommend mkfs output to .full file at here, especially when you use
+specified mkfs options to _scratch_mkfs helper. That really might fail, and
+the case might keep running (with old fs on SCRATCH_DEV), and we hard to notice
+that if no message output and no return value checking.
+
+The _scratch_mkfs doesn't _fail if it fails, it just return nonzero and output
+error message. So generally I recommend writting likes this (or other proper way
+which can detect mkfs failure):
+
+  _scratch_mkfs "--nodesize $leaf_size" >>$seqres.full 2>&1 || _fail "mkfs failed"
+
+especially if there's specified mkfs options.
+
+Thanks,
+Zorro
+
+>  _scratch_mount
 >  
->  	# add a new disk to btrfs
->  	ds=${devs[@]:$(($n)):1}
+>  echo "hello world" > $SCRATCH_MNT/foobar
+> @@ -72,7 +72,7 @@ _run_btrfs_util_prog send -p $SCRATCH_MNT/mysnap1 -f $send_files_dir/2.snap \
+>  _scratch_unmount
+>  _check_scratch_fs
+>  
+> -_scratch_mkfs "-l $leaf_size" >/dev/null 2>&1
+> +_scratch_mkfs "--nodesize $leaf_size" >/dev/null 2>&1
+>  _scratch_mount
+>  
+>  _run_btrfs_util_prog receive -f $send_files_dir/1.snap $SCRATCH_MNT
 > -- 
 > 2.35.1
 > 
