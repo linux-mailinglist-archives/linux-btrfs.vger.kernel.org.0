@@ -2,94 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F3E62439F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Nov 2022 14:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8496243C0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Nov 2022 14:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbiKJNvL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Nov 2022 08:51:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
+        id S231283AbiKJN7R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Nov 2022 08:59:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231206AbiKJNvH (ORCPT
+        with ESMTP id S231308AbiKJN7O (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Nov 2022 08:51:07 -0500
-Received: from zmcc-3-mx.zmailcloud.com (zmcc-3-mx.zmailcloud.com [34.200.143.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0F718B18
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Nov 2022 05:51:05 -0800 (PST)
-Received: from zmcc-3.zmailcloud.com (183.87.154.104.bc.googleusercontent.com [104.154.87.183])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by zmcc-3-mx.zmailcloud.com (Postfix) with ESMTPS id C30BC405D4
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Nov 2022 07:54:54 -0600 (CST)
-Received: from zmcc-3.zmailcloud.com (localhost [127.0.0.1])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPS id CA4518037774
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Nov 2022 07:51:04 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTP id BAE42803778C
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Nov 2022 07:51:04 -0600 (CST)
-Received: from zmcc-3.zmailcloud.com ([127.0.0.1])
-        by localhost (zmcc-3-mta-1.zmailcloud.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id j5pO3B6K4GlG for <linux-btrfs@vger.kernel.org>;
-        Thu, 10 Nov 2022 07:51:04 -0600 (CST)
-Received: from [10.4.2.11] (unknown [37.19.198.182])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPSA id 6C1488037774
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Nov 2022 07:51:03 -0600 (CST)
-Date:   Thu, 10 Nov 2022 08:50:57 -0500
-From:   Eric Levy <contact@ericlevy.name>
-Subject: Re: option to mount read-only subvolume with read-write access
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-Id: <X4X4LR.21Q66E3SQOHF@ericlevy.name>
-In-Reply-To: <20221110121249.GE5824@twin.jikos.cz>
-References: <G1N4LR.84UPK81F80SK3@ericlevy.name>
-        <20221110121249.GE5824@twin.jikos.cz>
-X-Mailer: geary/40.0
+        Thu, 10 Nov 2022 08:59:14 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C3F19C19;
+        Thu, 10 Nov 2022 05:59:13 -0800 (PST)
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N7Njc2LD6zRnvL;
+        Thu, 10 Nov 2022 21:59:00 +0800 (CST)
+Received: from kwepemm600015.china.huawei.com (7.193.23.52) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 10 Nov 2022 21:59:11 +0800
+Received: from huawei.com (10.175.101.6) by kwepemm600015.china.huawei.com
+ (7.193.23.52) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Thu, 10 Nov
+ 2022 21:59:10 +0800
+From:   ChenXiaoSong <chenxiaosong2@huawei.com>
+To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>
+CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chenxiaosong2@huawei.com>, <yi.zhang@huawei.com>,
+        <zhangxiaoxu5@huawei.com>
+Subject: [PATCH] btrfs: qgroup: fix sleep from invalid context bug in update_qgroup_limit_item()
+Date:   Thu, 10 Nov 2022 22:13:42 +0800
+Message-ID: <20221110141342.2129475-1-chenxiaosong2@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_20,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600015.china.huawei.com (7.193.23.52)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Syzkaller reported BUG as follows:
 
+  BUG: sleeping function called from invalid context at
+       include/linux/sched/mm.h:274
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0xcd/0x134
+   __might_resched.cold+0x222/0x26b
+   kmem_cache_alloc+0x2e7/0x3c0
+   update_qgroup_limit_item+0xe1/0x390
+   btrfs_qgroup_inherit+0x147b/0x1ee0
+   create_subvol+0x4eb/0x1710
+   btrfs_mksubvol+0xfe5/0x13f0
+   __btrfs_ioctl_snap_create+0x2b0/0x430
+   btrfs_ioctl_snap_create_v2+0x25a/0x520
+   btrfs_ioctl+0x2a1c/0x5ce0
+   __x64_sys_ioctl+0x193/0x200
+   do_syscall_64+0x35/0x80
 
-> So that would be a silent change in the subvolume and not detectable 
-> by
-> eg. checking the generation. That would break incremental send at 
-> least
-> and goes against the point of read-only subvolume.
+Fix this by introducing __update_qgroup_limit_item() helper, allocate
+memory outside of the spin lock.
 
-> Yeah but the other mount points would see the old data, depending on 
-> the
-> cached status of the blocks.
+Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
+---
+ fs/btrfs/qgroup.c | 35 ++++++++++++++++++++++++++---------
+ 1 file changed, 26 insertions(+), 9 deletions(-)
 
-Perhaps a different feature would be needed, then, of a new property 
-that makes a subvolume appear as read-only, at least from the 
-standpoint of the VFS, when accessed through a mount point higher on 
-the file tree, but not when mounted directly.
-
->> I think it does not have a well defined semantics, what you ask 
->> seems to
-> be some kind of multi headed subvolume that could appear different
-> depending on the way it's accessed from the VFS mount point which is 
-> out
-> of reach in many cases.
-
-I'm not sure whether this means the same as I just wrote, or not.
-
-> I'd probably need to understand what you mean in the first sentence 
-> "At
-> times it is helpful", I don't have an idea where it would be helpful.
-
-In some scenarios, upcoming changes to a file tree, intended to become 
-the default mounts in future boot sessions, will be staged in a closed 
-environment, which may include use of "chroot". It is helpful for the 
-subvolume to be read-write in the environment created by temporary 
-mount points, but still protected from accidental modification through 
-its physical location on the root tree.
-
-
-
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 9334c3157c22..99a61cc04b68 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -768,11 +768,11 @@ static int del_qgroup_item(struct btrfs_trans_handle *trans, u64 qgroupid)
+ 	return ret;
+ }
+ 
+-static int update_qgroup_limit_item(struct btrfs_trans_handle *trans,
+-				    struct btrfs_qgroup *qgroup)
++static int __update_qgroup_limit_item(struct btrfs_trans_handle *trans,
++				      struct btrfs_qgroup *qgroup,
++				      struct btrfs_path *path)
+ {
+ 	struct btrfs_root *quota_root = trans->fs_info->quota_root;
+-	struct btrfs_path *path;
+ 	struct btrfs_key key;
+ 	struct extent_buffer *l;
+ 	struct btrfs_qgroup_limit_item *qgroup_limit;
+@@ -783,10 +783,6 @@ static int update_qgroup_limit_item(struct btrfs_trans_handle *trans,
+ 	key.type = BTRFS_QGROUP_LIMIT_KEY;
+ 	key.offset = qgroup->qgroupid;
+ 
+-	path = btrfs_alloc_path();
+-	if (!path)
+-		return -ENOMEM;
+-
+ 	ret = btrfs_search_slot(trans, quota_root, &key, path, 0, 1);
+ 	if (ret > 0)
+ 		ret = -ENOENT;
+@@ -806,6 +802,21 @@ static int update_qgroup_limit_item(struct btrfs_trans_handle *trans,
+ 	btrfs_mark_buffer_dirty(l);
+ 
+ out:
++	return ret;
++}
++
++static int update_qgroup_limit_item(struct btrfs_trans_handle *trans,
++				    struct btrfs_qgroup *qgroup)
++{
++	struct btrfs_path *path;
++	int ret;
++
++	path = btrfs_alloc_path();
++	if (!path)
++		return -ENOMEM;
++
++	ret = __update_qgroup_limit_item(trans, qgroup, path);
++
+ 	btrfs_free_path(path);
+ 	return ret;
+ }
+@@ -2860,6 +2871,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 	bool need_rescan = false;
+ 	u32 level_size = 0;
+ 	u64 nums;
++	struct btrfs_path *path;
+ 
+ 	/*
+ 	 * There are only two callers of this function.
+@@ -2935,6 +2947,11 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 		ret = 0;
+ 	}
+ 
++	path = btrfs_alloc_path();
++	if (!path) {
++		ret = -ENOMEM;
++		goto out;
++	}
+ 
+ 	spin_lock(&fs_info->qgroup_lock);
+ 
+@@ -2950,8 +2967,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 		dstgroup->max_excl = inherit->lim.max_excl;
+ 		dstgroup->rsv_rfer = inherit->lim.rsv_rfer;
+ 		dstgroup->rsv_excl = inherit->lim.rsv_excl;
+-
+-		ret = update_qgroup_limit_item(trans, dstgroup);
++		ret = __update_qgroup_limit_item(trans, dstgroup, path);
+ 		if (ret) {
+ 			qgroup_mark_inconsistent(fs_info);
+ 			btrfs_info(fs_info,
+@@ -3053,6 +3069,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 
+ unlock:
+ 	spin_unlock(&fs_info->qgroup_lock);
++	btrfs_free_path(path);
+ 	if (!ret)
+ 		ret = btrfs_sysfs_add_one_qgroup(fs_info, dstgroup);
+ out:
+-- 
+2.31.1
 
