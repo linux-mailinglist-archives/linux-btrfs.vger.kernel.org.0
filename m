@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EED936250C5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Nov 2022 03:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 124516250E1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Nov 2022 03:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233119AbiKKChv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Nov 2022 21:37:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
+        id S232982AbiKKCiT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Nov 2022 21:38:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232944AbiKKCgw (ORCPT
+        with ESMTP id S232981AbiKKCg6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Nov 2022 21:36:52 -0500
+        Thu, 10 Nov 2022 21:36:58 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB62C67F58;
-        Thu, 10 Nov 2022 18:35:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B449C67F75;
+        Thu, 10 Nov 2022 18:35:56 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 866CCB823D9;
-        Fri, 11 Nov 2022 02:35:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64C58C43143;
-        Fri, 11 Nov 2022 02:35:42 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5DCC8B823DF;
+        Fri, 11 Nov 2022 02:35:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BBFCC43145;
+        Fri, 11 Nov 2022 02:35:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668134143;
-        bh=5VpwdOdU0b/2Mu3ntPXomZw28chU8p/t0990u0eACV8=;
+        s=k20201202; t=1668134154;
+        bh=1ZwCO+2Oj1jvQQG1GHJmaT54Zm9jyZ/y6K6lXu3529s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P4AL+Fl5CK9u3323cXOTmiRJiZDb+ugIXExCYiTcVKtHRERNoDBLkkyKXbpmEaBrV
-         gylHlaFhsgnjiMg7nsreoqG4yxn3DUWF6OEOZUaTKq1LZDDH2PKqznbik513UY9ZdJ
-         pqQg/skAz9MyS3ihz7PrD9Ukxx/n4vZucQl0QOdryTmLYAhFZoexg4GHhaeXC8iFE2
-         V1BqHudJaKFjbAh7xf6UIpbgSJrZfSJfNIMgT8zJariBvBGu2K2jC8mAhVjxtAnfdG
-         yv9c/yO6VgjH83tGHiE2516HmxS88q6owkvOlovNqQ49vuVqKnOqx3fvwSDXEC7G0b
-         G79RJBaH095BA==
+        b=Z+p9AawbtOgO/OhzROScyw82VbUmPsA7EAigELLJ6bCPqmxEMxePvZmyUDwppYxou
+         GYjj4oA5SskFIzKQJ+jldyjQF01PpMW/ZJ4LKxEE1gE1dAZMc3HiehBGvIGaZ/PMPi
+         8Jm4NcVqr7luj4nHslbkSGrjuqS+HoTU90GDdv2BoKhcKu2CrqaudAjeZfQfphOEdc
+         T+WovKYj1uhzB62BB8rzMolIhtS35e9Z2BcTRHaD7pF4sSzQZfABex42mUDgXaVtKf
+         OmIsN7A5h4ijhCbYl524QBAPupWsMLooUnD/aCzHWC0ICMlpirWPOLseExVxOhh/qj
+         kHFYNsKtbxpbg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 5/6] btrfs: remove pointless and double ulist frees in error paths of qgroup tests
-Date:   Thu, 10 Nov 2022 21:35:31 -0500
-Message-Id: <20221111023532.227959-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 4/5] btrfs: remove pointless and double ulist frees in error paths of qgroup tests
+Date:   Thu, 10 Nov 2022 21:35:44 -0500
+Message-Id: <20221111023545.228051-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221111023532.227959-1-sashal@kernel.org>
-References: <20221111023532.227959-1-sashal@kernel.org>
+In-Reply-To: <20221111023545.228051-1-sashal@kernel.org>
+References: <20221111023545.228051-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -83,7 +83,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 12 deletions(-)
 
 diff --git a/fs/btrfs/tests/qgroup-tests.c b/fs/btrfs/tests/qgroup-tests.c
-index ce1ca8e73c2d..2acf65f0bb50 100644
+index ac035a6fa003..1923e966ae4f 100644
 --- a/fs/btrfs/tests/qgroup-tests.c
 +++ b/fs/btrfs/tests/qgroup-tests.c
 @@ -230,7 +230,6 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
