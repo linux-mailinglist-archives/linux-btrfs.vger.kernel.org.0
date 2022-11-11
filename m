@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E406263A1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Nov 2022 22:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEA062639E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Nov 2022 22:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233940AbiKKVaZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Nov 2022 16:30:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
+        id S233804AbiKKVa0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Nov 2022 16:30:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233804AbiKKVaX (ORCPT
+        with ESMTP id S233907AbiKKVaZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Nov 2022 16:30:23 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F0FDEA2
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 13:30:22 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id x13so4120888qvn.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 13:30:22 -0800 (PST)
+        Fri, 11 Nov 2022 16:30:25 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151A6E02A
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 13:30:24 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id a27so3398692qtw.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 13:30:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Ap0U0t2a02rBzC/AI3ISx1NCYFTi/tCv/+++Vvg9PaY=;
-        b=6KZ/H5466WAzVvEHOmG71bYhsZEweMCDoBcnm9SC2eFkL5VZutJ0/aU9hh1O5VaiLf
-         QuZeUheNCGxXlQOm3vSkEm8cZlBStPBVzm+0qoQvelhCSmDVr+oXKglvzpiDgvpzDSrX
-         IBpDhiapyyhfPVEICCJpG+ZBPbqYGIQ0sFeOBsbjbawstzaf0u8qpoeUgL14NgcrVEc2
-         e4fmXDhCeKdzx0bI2q5eNjsymwLu32aoAzUQ41ELtQYA1NH6r+RjUCN7JDHbK8LXHnEE
-         xGLNZ4cA2bJWy6LmdiCvypKwQqnROwXRe7iY2UIxdQK2e1vwfST0jHgxqZs+8c3/lXzQ
-         Q8rA==
+        bh=FfHKo9+wzg94hafVtLbprq1BBpsW0tQpOtW2wH6SmV4=;
+        b=JT2+4ZCjsBVEKjf9Hh79tWY9kpPPwQb6fzMXbo6URBZ5s3DXVJhFumwkXD6rf+CMeO
+         WHRkWPojY4CVR3wdnfmL5c1kqv2EozL9UciXLywFyrPKbV9A0FPUcsCbLszzNriggUxa
+         b0c1u/EkgZrffMYeqzFRpdHtcsTFMhgW7GV6XdK1oQdBY7lezrkc++ocWvAgqEWeHX8J
+         PM5ROjL/e2C/QGHVhsfvCukB7hIzPxKZQHFUnRVVwy1Kf/SsftxvPRmve7L+Zhc67mEE
+         3Kp17sTy2VvCEBQ9AWU29ErWDNRo6NvJ9Xj6bsSgopFVMgUveb9tP5qq2GnhZ5040InM
+         Ap9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ap0U0t2a02rBzC/AI3ISx1NCYFTi/tCv/+++Vvg9PaY=;
-        b=T4PgHFNj7wIp9UdZ3JZMxH3Cl0r+NXSYvZHi4c/1xzEjgArCoaD8mclVCOVkJkM+Li
-         p5IY6K3wKEoJDcKIEi79CybzRrWwB6rqyaqLj3M/RZrA0gdP/pEL99fkHDn/d8/wVzn9
-         g+VEqkW2nMwjcpLYzV8nBqHAKLVX4QgykdKqqJuHue08HjlHzOCS5kPuX7/UjzFCSVi+
-         eKTXjyCy8I/XNRjLAssNWkx5ILCLBmdiTMC+Bcpf6bF2KBVY+TP6PgG1oyWFdW9A1qlk
-         vi/YlcRAn0atworBV91MYLHEOKAzGCJy9vufPeG/TKK4bzmgBECGpChgXc0sWt0FlhNF
-         ALqQ==
-X-Gm-Message-State: ANoB5pkf66f9FhQP3OPtNgEXUYs1he9D0lJivVH5U/NMstWijBqI6tCW
-        zwuZhUEgjk+QRyYKie2zlQN1j6ZMCQt4cA==
-X-Google-Smtp-Source: AA0mqf5tMXt7wsMolDoq/0Uyw5Bbx/taxNZSAzAkOiTwjDoIT95gfg7D2wxzb4KkX353uEnDeLKIUA==
-X-Received: by 2002:ad4:5a42:0:b0:4b8:5bce:14c3 with SMTP id ej2-20020ad45a42000000b004b85bce14c3mr3726875qvb.123.1668202221694;
-        Fri, 11 Nov 2022 13:30:21 -0800 (PST)
+        bh=FfHKo9+wzg94hafVtLbprq1BBpsW0tQpOtW2wH6SmV4=;
+        b=NOcHTBkc/KzkRHH8EvXl7PsHvHyYgk3kkGtDK2lRfns/oRtHxNqfj/9MzIOEXGpUf6
+         7bT42XpFv1ECx5VLqA5DnXcwoDNRS6GaeO/sP3lE/tv5J5l7NNT/qYzHTU9iQEYZM/l2
+         Us3ay5wHOvG0pJdLEnu595FYMPskOGHIlyVmhe1ZZYdfaswIklanDswzjhh1OOz5hQts
+         XyxiP70vo5r5ejpBg4kMq/Wzib1+ZwSbO87Ie9ZkprelT8na+vSKf+SjTXCL4siM3liA
+         KSKi86GvwDSR/8NTRqGK6/z3O/xhjK+OA0yV1r3IoKXc7kBcMkAoWBSRVpHI+96IfH8A
+         pqiQ==
+X-Gm-Message-State: ANoB5pmYFf/8akCRu/sShYPBpSQSrGRrokcPRiDyGA9hVUtf22Bj2sY+
+        zHRxM7P03C3azIhaKeeqCJzMthOgJDufLA==
+X-Google-Smtp-Source: AA0mqf5Zq2lFUuhrCDw8dr5kfRUol1N01ADbGUjz7iErLsG10v8Mz/cqzUG2/kF6ceKMg9bhtMwhNQ==
+X-Received: by 2002:ac8:43d1:0:b0:3a5:280d:31ff with SMTP id w17-20020ac843d1000000b003a5280d31ffmr3106036qtn.646.1668202222913;
+        Fri, 11 Nov 2022 13:30:22 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id h11-20020a05620a400b00b006eeb3165565sm2100661qko.80.2022.11.11.13.30.21
+        by smtp.gmail.com with ESMTPSA id l19-20020a05620a28d300b006cfaee39ccesm2081521qkp.114.2022.11.11.13.30.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Nov 2022 13:30:21 -0800 (PST)
+        Fri, 11 Nov 2022 13:30:22 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 03/14] btrfs-progs: use -std=gnu11
-Date:   Fri, 11 Nov 2022 16:30:04 -0500
-Message-Id: <b53b7358ad72a3640461a9ff110d85940ff2eb6b.1668201935.git.josef@toxicpanda.com>
+Subject: [PATCH 04/14] btrfs-progs: move btrfs_err_str into common/utils.h
+Date:   Fri, 11 Nov 2022 16:30:05 -0500
+Message-Id: <ee95d8e6dacb6f58befe5d1b2af730d9a51f2499.1668201935.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1668201935.git.josef@toxicpanda.com>
 References: <cover.1668201935.git.josef@toxicpanda.com>
@@ -69,27 +69,100 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The kernel switched to this recently, switch btrfs-progs to this as well
-to avoid issues with syncing the kernel code.
+This doesn't really belong with the ioctl definitions, and when we sync
+the ioctl definitions with the kernel this helper will go away, so
+adjust this now.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ common/utils.h | 32 ++++++++++++++++++++++++++++++++
+ ioctl.h        | 32 --------------------------------
+ 2 files changed, 32 insertions(+), 32 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 1777a22e..f25042f3 100644
---- a/Makefile
-+++ b/Makefile
-@@ -401,7 +401,7 @@ ifdef C
- 			grep -v __SIZE_TYPE__ > $(check_defs))
- 	check = $(CHECKER)
- 	check_echo = echo
--	CSTD = -std=gnu89
-+	CSTD = -std=gnu11
- else
- 	check = true
- 	check_echo = true
+diff --git a/common/utils.h b/common/utils.h
+index 5189e352..87dceef5 100644
+--- a/common/utils.h
++++ b/common/utils.h
+@@ -117,4 +117,36 @@ int sysfs_open_fsid_file(int fd, const char *filename);
+ int sysfs_read_file(int fd, char *buf, size_t size);
+ int sysfs_open_fsid_dir(int fd, const char *dirname);
+ 
++/* An error code to error string mapping for the kernel
++*  error codes
++*/
++static inline char *btrfs_err_str(enum btrfs_err_code err_code)
++{
++	switch (err_code) {
++		case BTRFS_ERROR_DEV_RAID1_MIN_NOT_MET:
++			return "unable to go below two devices on raid1";
++		case BTRFS_ERROR_DEV_RAID1C3_MIN_NOT_MET:
++			return "unable to go below three devices on raid1c3";
++		case BTRFS_ERROR_DEV_RAID1C4_MIN_NOT_MET:
++			return "unable to go below four devices on raid1c4";
++		case BTRFS_ERROR_DEV_RAID10_MIN_NOT_MET:
++			return "unable to go below four/two devices on raid10";
++		case BTRFS_ERROR_DEV_RAID5_MIN_NOT_MET:
++			return "unable to go below two devices on raid5";
++		case BTRFS_ERROR_DEV_RAID6_MIN_NOT_MET:
++			return "unable to go below three devices on raid6";
++		case BTRFS_ERROR_DEV_TGT_REPLACE:
++			return "unable to remove the dev_replace target dev";
++		case BTRFS_ERROR_DEV_MISSING_NOT_FOUND:
++			return "no missing devices found to remove";
++		case BTRFS_ERROR_DEV_ONLY_WRITABLE:
++			return "unable to remove the only writeable device";
++		case BTRFS_ERROR_DEV_EXCL_RUN_IN_PROGRESS:
++			return "add/delete/balance/replace/resize operation "
++				"in progress";
++		default:
++			return NULL;
++	}
++}
++
+ #endif
+diff --git a/ioctl.h b/ioctl.h
+index f19695e3..0615054b 100644
+--- a/ioctl.h
++++ b/ioctl.h
+@@ -935,38 +935,6 @@ enum btrfs_err_code {
+ 	BTRFS_ERROR_DEV_RAID1C4_MIN_NOT_MET,
+ };
+ 
+-/* An error code to error string mapping for the kernel
+-*  error codes
+-*/
+-static inline char *btrfs_err_str(enum btrfs_err_code err_code)
+-{
+-	switch (err_code) {
+-		case BTRFS_ERROR_DEV_RAID1_MIN_NOT_MET:
+-			return "unable to go below two devices on raid1";
+-		case BTRFS_ERROR_DEV_RAID1C3_MIN_NOT_MET:
+-			return "unable to go below three devices on raid1c3";
+-		case BTRFS_ERROR_DEV_RAID1C4_MIN_NOT_MET:
+-			return "unable to go below four devices on raid1c4";
+-		case BTRFS_ERROR_DEV_RAID10_MIN_NOT_MET:
+-			return "unable to go below four/two devices on raid10";
+-		case BTRFS_ERROR_DEV_RAID5_MIN_NOT_MET:
+-			return "unable to go below two devices on raid5";
+-		case BTRFS_ERROR_DEV_RAID6_MIN_NOT_MET:
+-			return "unable to go below three devices on raid6";
+-		case BTRFS_ERROR_DEV_TGT_REPLACE:
+-			return "unable to remove the dev_replace target dev";
+-		case BTRFS_ERROR_DEV_MISSING_NOT_FOUND:
+-			return "no missing devices found to remove";
+-		case BTRFS_ERROR_DEV_ONLY_WRITABLE:
+-			return "unable to remove the only writeable device";
+-		case BTRFS_ERROR_DEV_EXCL_RUN_IN_PROGRESS:
+-			return "add/delete/balance/replace/resize operation "
+-				"in progress";
+-		default:
+-			return NULL;
+-	}
+-}
+-
+ #define BTRFS_IOC_SNAP_CREATE _IOW(BTRFS_IOCTL_MAGIC, 1, \
+ 				   struct btrfs_ioctl_vol_args)
+ #define BTRFS_IOC_DEFRAG _IOW(BTRFS_IOCTL_MAGIC, 2, \
 -- 
 2.26.3
 
