@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D15CB6259D3
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC9A6259D2
 	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Nov 2022 12:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233445AbiKKLuu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S233446AbiKKLuu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Fri, 11 Nov 2022 06:50:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233419AbiKKLuq (ORCPT
+        with ESMTP id S233426AbiKKLus (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Nov 2022 06:50:46 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EAD28E2F
+        Fri, 11 Nov 2022 06:50:48 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B8F27910
         for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 03:50:46 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BC624B825D3
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 11:50:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7515C433C1
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 11:50:42 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8CFC4B825D2
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 11:50:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA552C433D6
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 11:50:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668167443;
-        bh=3Eyo43gep3ia/fK0YlO/Psb2SHw4e89BF9edrDc546E=;
+        s=k20201202; t=1668167444;
+        bh=SLaN3flFkRefdXdkhA2P2UmXgAW4s+Hy7QIBAM2yyCU=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=RNLlMuAI2OzI2vgfoN1ViClvNH7aMOBUUIoxVS6TG8roixzU/yC+c6gpVUFScbjJp
-         4tyzhHgzdNo7hb1AZPBO8XozjAydJfNmWHsC+LzIzTh1KaA7oHKqwfzgD4UG9kIqFK
-         XPE0Yuo+Xxg7kTzTK32LTgs+3NwTGF8JVLqBBZhTuWIrAKn76AVZiKSMWtPBzXq1MQ
-         +l+FN0+PUZ7IdYQovCGyROVpgkhCi8Ju/Yh1+KHgHXykkCufCZd4yGfx+at8qhJ0K6
-         BAWLVMiBLWAaTrs93B8TYFiLGida/ek6+18kAAtpt9fUNgJ49gmuHn/+KwI29uRZES
-         jvGJXU12A6VeA==
+        b=ft17+chNWUaiNbZy9GXhSU8Lf8qUybip+5G1I+BDUkqPmwChNGMQfcUSR3ocY6Xxl
+         TBGOzLsovO77heYrtvQuVitktTknaghRuh2tVD4p4xSPvTg9wFR80SVDhJmVw43GF7
+         X/pSwyQCUKpfRQVQhwC1JLVJhYavmPeDsdeq7BWDUIh3dG7tl+pBegYi+Y8SG5gwz2
+         6IM+EVdE2quTMqIX8iw7b08LFKu7ZJeLE0neATbd7ko8rh9LZPASqncDizfH7Fzm69
+         mUrxsUTHxTVI8ba7SRzhhZb507dxfghRIGYfvgrNdZqWha2WFzqNNNQq90MvnCeYy8
+         OHPrayopYwPXw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/9] btrfs: remove no longer used btrfs_next_extent_map()
-Date:   Fri, 11 Nov 2022 11:50:31 +0000
-Message-Id: <4f391eb6008e716ecda0dc0c64924e86cfd1944a.1668166764.git.fdmanana@suse.com>
+Subject: [PATCH 6/9] btrfs: allow passing a cached state record to count_range_bits()
+Date:   Fri, 11 Nov 2022 11:50:32 +0000
+Message-Id: <76708fd3ce546fb710ddc6f8792cc85f8d592620.1668166764.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1668166764.git.fdmanana@suse.com>
 References: <cover.1668166764.git.fdmanana@suse.com>
@@ -53,9 +53,18 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-There are no more users of btrfs_next_extent_map(), the previous patch
-in the series ("btrfs: search for delalloc more efficiently during
-lseek/fiemap") removed the last usage of the function, so delete it.
+An inode's io_tree can be quite large and there are cases where due to
+delalloc it can have thousands of extent state records, which makes the
+red black tree have a depth of 10 or more, making the operation of
+count_range_bits() slow if we repeatedly call it for a range that starts
+where, or after, the previous one we called it for. Such use cases are
+when searching for delalloc in a file range that corresponds to a hole or
+a prealloc extent, which is done during lseek SEEK_HOLE/DATA and fiemap.
+
+So introduce a cached state parameter to count_range_bits() which we use
+to store the last extent state record we visited, and then allow the
+caller to pass it again on its next call to count_range_bits(). The next
+patches in the series will make fiemap and lseek use the new parameter.
 
 This change is part of a patchset that has the goal to make performance
 better for applications that use lseek's SEEK_HOLE and SEEK_DATA modes to
@@ -79,63 +88,131 @@ Link: https://lore.kernel.org/linux-btrfs/20221106073028.71F9.409509F4@e16-tech.
 Link: https://lore.kernel.org/linux-btrfs/CAL3q7H5NSVicm7nYBJ7x8fFkDpno8z3PYt5aPU43Bajc1H0h1Q@mail.gmail.com/
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_map.c | 29 -----------------------------
- fs/btrfs/extent_map.h |  2 --
- 2 files changed, 31 deletions(-)
+ fs/btrfs/extent-io-tree.c | 47 ++++++++++++++++++++++++++++++++++++---
+ fs/btrfs/extent-io-tree.h |  3 ++-
+ fs/btrfs/file.c           |  3 ++-
+ fs/btrfs/inode.c          |  2 +-
+ 4 files changed, 49 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 4a4362f5cc52..be94030e1dfb 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -529,35 +529,6 @@ static struct extent_map *next_extent_map(const struct extent_map *em)
- 	return container_of(next, struct extent_map, rb_node);
+diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
+index 285b0ff6e953..6b0d78df7eee 100644
+--- a/fs/btrfs/extent-io-tree.c
++++ b/fs/btrfs/extent-io-tree.c
+@@ -1521,9 +1521,11 @@ void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
+  */
+ u64 count_range_bits(struct extent_io_tree *tree,
+ 		     u64 *start, u64 search_end, u64 max_bytes,
+-		     u32 bits, int contig)
++		     u32 bits, int contig,
++		     struct extent_state **cached_state)
+ {
+-	struct extent_state *state;
++	struct extent_state *state = NULL;
++	struct extent_state *cached;
+ 	u64 cur_start = *start;
+ 	u64 total_bytes = 0;
+ 	u64 last = 0;
+@@ -1534,11 +1536,41 @@ u64 count_range_bits(struct extent_io_tree *tree,
+ 
+ 	spin_lock(&tree->lock);
+ 
++	if (!cached_state || !*cached_state)
++		goto search;
++
++	cached = *cached_state;
++
++	if (!extent_state_in_tree(cached))
++		goto search;
++
++	if (cached->start <= cur_start && cur_start <= cached->end) {
++		state = cached;
++	} else if (cached->start > cur_start) {
++		struct extent_state *prev;
++
++		/*
++		 * The cached state starts after our search range's start. Check
++		 * if the previous state record starts at or before the range we
++		 * are looking for, and if so, use it - this is a common case
++		 * when there are holes between records in the tree. If there is
++		 * no previous state record, we can start from our cached state.
++		 */
++		prev = prev_state(cached);
++		if (!prev)
++			state = cached;
++		else if (prev->start <= cur_start && cur_start <= prev->end)
++			state = prev;
++	}
++
+ 	/*
+ 	 * This search will find all the extents that end after our range
+ 	 * starts.
+ 	 */
+-	state = tree_search(tree, cur_start);
++search:
++	if (!state)
++		state = tree_search(tree, cur_start);
++
+ 	while (state) {
+ 		if (state->start > search_end)
+ 			break;
+@@ -1559,7 +1591,16 @@ u64 count_range_bits(struct extent_io_tree *tree,
+ 		}
+ 		state = next_state(state);
+ 	}
++
++	if (cached_state) {
++		free_extent_state(*cached_state);
++		*cached_state = state;
++		if (state)
++			refcount_inc(&state->refs);
++	}
++
+ 	spin_unlock(&tree->lock);
++
+ 	return total_bytes;
  }
  
--/*
-- * Get the extent map that immediately follows another one.
-- *
-- * @tree:       The extent map tree that the extent map belong to.
-- *              Holding read or write access on the tree's lock is required.
-- * @em:         An extent map from the given tree. The caller must ensure that
-- *              between getting @em and between calling this function, the
-- *              extent map @em is not removed from the tree - for example, by
-- *              holding the tree's lock for the duration of those 2 operations.
-- *
-- * Returns the extent map that immediately follows @em, or NULL if @em is the
-- * last extent map in the tree.
-- */
--struct extent_map *btrfs_next_extent_map(const struct extent_map_tree *tree,
--					 const struct extent_map *em)
--{
--	struct extent_map *next;
--
--	/* The lock must be acquired either in read mode or write mode. */
--	lockdep_assert_held(&tree->lock);
--	ASSERT(extent_map_in_tree(em));
--
--	next = next_extent_map(em);
--	if (next)
--		refcount_inc(&next->refs);
--
--	return next;
--}
--
- static struct extent_map *prev_extent_map(struct extent_map *em)
- {
- 	struct rb_node *prev;
-diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-index 68d3f2c9ea1d..ad311864272a 100644
---- a/fs/btrfs/extent_map.h
-+++ b/fs/btrfs/extent_map.h
-@@ -87,8 +87,6 @@ static inline u64 extent_map_block_end(struct extent_map *em)
- void extent_map_tree_init(struct extent_map_tree *tree);
- struct extent_map *lookup_extent_mapping(struct extent_map_tree *tree,
- 					 u64 start, u64 len);
--struct extent_map *btrfs_next_extent_map(const struct extent_map_tree *tree,
--					 const struct extent_map *em);
- int add_extent_mapping(struct extent_map_tree *tree,
- 		       struct extent_map *em, int modified);
- void remove_extent_mapping(struct extent_map_tree *tree, struct extent_map *em);
+diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+index 18ab82f62611..e3eeec380844 100644
+--- a/fs/btrfs/extent-io-tree.h
++++ b/fs/btrfs/extent-io-tree.h
+@@ -119,7 +119,8 @@ void __cold extent_state_free_cachep(void);
+ 
+ u64 count_range_bits(struct extent_io_tree *tree,
+ 		     u64 *start, u64 search_end,
+-		     u64 max_bytes, u32 bits, int contig);
++		     u64 max_bytes, u32 bits, int contig,
++		     struct extent_state **cached_state);
+ 
+ void free_extent_state(struct extent_state *state);
+ int test_range_bit(struct extent_io_tree *tree, u64 start, u64 end,
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 6bc2397e324c..dc8399610ca3 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3235,7 +3235,8 @@ static bool find_delalloc_subrange(struct btrfs_inode *inode, u64 start, u64 end
+ 			*delalloc_start_ret = start;
+ 			delalloc_len = count_range_bits(&inode->io_tree,
+ 							delalloc_start_ret, end,
+-							len, EXTENT_DELALLOC, 1);
++							len, EXTENT_DELALLOC, 1,
++							NULL);
+ 		} else {
+ 			spin_unlock(&inode->lock);
+ 		}
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index aec1b232a71c..83898bca39d5 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1769,7 +1769,7 @@ static int fallback_to_cow(struct btrfs_inode *inode, struct page *locked_page,
+ 	 * when starting writeback.
+ 	 */
+ 	count = count_range_bits(io_tree, &range_start, end, range_bytes,
+-				 EXTENT_NORESERVE, 0);
++				 EXTENT_NORESERVE, 0, NULL);
+ 	if (count > 0 || is_space_ino || is_reloc_ino) {
+ 		u64 bytes = count;
+ 		struct btrfs_fs_info *fs_info = inode->root->fs_info;
 -- 
 2.35.1
 
