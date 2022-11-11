@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA1D6263A5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Nov 2022 22:30:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAF16263AB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Nov 2022 22:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234189AbiKKVae (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Nov 2022 16:30:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
+        id S234250AbiKKVal (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Nov 2022 16:30:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbiKKVa2 (ORCPT
+        with ESMTP id S234115AbiKKVa3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Nov 2022 16:30:28 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F8A1146A
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 13:30:26 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id z1so3748874qkl.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 13:30:26 -0800 (PST)
+        Fri, 11 Nov 2022 16:30:29 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C54AE02A
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 13:30:28 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id z1so3748935qkl.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 13:30:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ueASbopPFfXAz3NJ89OVKptQExuQ/f1SUrA5i0OS5fQ=;
-        b=4IMJ+ahJztnuysxTkx6LunCiysJc1eFk/pV0+op77cQ9rg7NIA4MyZwfZFm4xjkK55
-         66wX8O8lBgzMx/NK8CzzSca3gOUihezhmXGM7fVm+vp2RVaf/vwpug7aWsbOiIyiytyS
-         3BUw5wA8nOhnEu+fE2do8yddVtoEZftlKt3cI2EJfducd7P9rurPWzpul09an4S5//kD
-         1vVPN/93ljyQC1uRmON8iAvJi2JOjO+orqRsrJs4aWipVRr/87PWSx5883ka8yd23e6Y
-         uhv8cwmyk482tx0Y2ZIRuXQmfTqxaEhcTM4wK0cveLmSbt3tKfTBVXNBhqBDlf7hEREB
-         XIIw==
+        bh=lEzT4z3jmt1nwFr/0QrNIzrkbNngQ1VNHZYJqlsVF6E=;
+        b=pCaXby5y03BIJyblb3OQUAKKHmvViiHRO93Go/hk9wsjmBwUISchfzR8xQ8GoItQ0n
+         PnX5RR3YBoDfSWDSA/X/fGefk8ma8TkbeaUYJdLlp8ixKyKh/yBIVIAs4xutK9AyfQO+
+         Ty+zAC2b16Q2qCUpZ8IKVZnqjeys9uA+H5GBHaWMcKixY+NigHcmvpBGnJLig66GvaPr
+         441pXygmCjLlvTYj8A9cOrMpa1G4EuEGngmqHGMdTjLcf6VRPkTDKExg3ymcIwXR5vzy
+         Vd3AlTv/EaVhWOMMc0hHJ72R6NAfkTEysRWLLRVsgkj7MXKV2CYff0IOs3+Nr46ga0Nj
+         ooEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ueASbopPFfXAz3NJ89OVKptQExuQ/f1SUrA5i0OS5fQ=;
-        b=nqd7lK8UZz0d1uDOSZxR3PhxJnq+ly1uZCpmG3L2wYE7bsw4QspDfiER0RGdvfu7BB
-         3mszfFSnJmou1lw6f23IBPqBjsm6BlhV3X52tFpIqfvE8U5mJQhTYOHAA8+4h0adCAKd
-         kL6beFatD+N0H8ZADWHSwJDvBt39oFY5N1R8PhdvcC0exBdIGBecoun8FSi2OpPqErFc
-         HEGjFSdcQ906D5kR8HHinSE3sqZ9uY2geyDHAn6Vui1XuWp8f7OKcUYBD7VjZTyRIG+M
-         P/6swXwHJqaxRdkmQc5Q6Mspm68xsTtr0T5yLuyUheT6XMjiJMe0QRxHANUtdf4C82Kj
-         ZSiQ==
-X-Gm-Message-State: ANoB5pkJVfjuanmJKiykTKtDj79V24yI9w9OpF2Z0mrn0jrXKY/Yx4MB
-        9b77Kgu6gXxhvgtMLlP4xGz//vzU2qPC+w==
-X-Google-Smtp-Source: AA0mqf4RjAyd+ENUl0jNlUJ6BLtD4g4lAniMbMmbwYJd9ZUlvAfjOyEdcIiAKOKg795Wjk9BhS3CPQ==
-X-Received: by 2002:a05:620a:8c1:b0:6fa:26fe:ddeb with SMTP id z1-20020a05620a08c100b006fa26feddebmr2849744qkz.493.1668202225629;
-        Fri, 11 Nov 2022 13:30:25 -0800 (PST)
+        bh=lEzT4z3jmt1nwFr/0QrNIzrkbNngQ1VNHZYJqlsVF6E=;
+        b=QSA/Z5v6rUGGDGS6v7ow1R03yo2LLHCDWyYlgO7j3+yiNZPUVnYbLcK5Yzb8sbBqVs
+         bnmjUslRwSgM5q8gnDOqlfWnFBd3GBNfg4s9rXRO0L4t9+L46j5eMG/B/VaxG8MtGsUL
+         NQ4hYTCGWy2aD7t81pj82roFDYbToa9sIqC75Ig+lvGF2XnDBzqWSlmuTU/GZf3AJEYc
+         RrtVJiJfbxVy2HJexJA6mVoSo6OSMLLxjksMVG1EF6L4Sjedlr5JiWzZ156vUvG5rs90
+         aJPjaC7/zcxvpWRuuJDL/Z7eqQcwTDSSj0IdlZdsTuy4b0Tk4GCtQ3RbzZ0+5xhwmRUC
+         bsCA==
+X-Gm-Message-State: ANoB5plnPIYgzZKCKnwd+L3da3fwvmjiYUQlbEokz22Xu/i9AoFLM6oQ
+        o4k9xnaxjPK6dODnYL68JNvDIvtH0CYLYQ==
+X-Google-Smtp-Source: AA0mqf7s9henKzxAQTCGye8MFB6d35R1YIsgmbZuBTulDoJHYjjqQ1rjUAiPZkz1fYt11Z1T02IL4w==
+X-Received: by 2002:a37:aa54:0:b0:6f4:be21:ee27 with SMTP id t81-20020a37aa54000000b006f4be21ee27mr2881544qke.700.1668202227162;
+        Fri, 11 Nov 2022 13:30:27 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id t8-20020a37ea08000000b006fa313bf185sm2130674qkj.8.2022.11.11.13.30.25
+        by smtp.gmail.com with ESMTPSA id g19-20020ac84b73000000b003a50c9993e1sm1818468qts.16.2022.11.11.13.30.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Nov 2022 13:30:25 -0800 (PST)
+        Fri, 11 Nov 2022 13:30:26 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 06/14] btrfs-progs: make btrfs_qgroup_level helper match the kernel
-Date:   Fri, 11 Nov 2022 16:30:07 -0500
-Message-Id: <e3af9ba94c7959d229437e6567547b4463050ccf.1668201935.git.josef@toxicpanda.com>
+Subject: [PATCH 07/14] btrfs-progs: move NO_RESULT definition into replace.c
+Date:   Fri, 11 Nov 2022 16:30:08 -0500
+Message-Id: <908de6d5455a88ca8760b9162efd158efb809cc0.1668201935.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1668201935.git.josef@toxicpanda.com>
 References: <cover.1668201935.git.josef@toxicpanda.com>
@@ -69,189 +69,42 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We return __u16 in the kernel, as this is actually the size of
-btrfs_qgroup_level.  Adjust the existing helpers and update all the
-callers to deal with the new size appropriately.  This will make syncing
-the kernel code cleaner.
+BTRFS_IOCTL_DEV_REPLACE_RESULT_NO_RESULT is defined to make sure we
+differentiate internal errors from actual error codes that come back
+from the device replace ioctl.  Take this out of ioctl.c and move it
+into replace.c.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/qgroup-verify.c      |  6 +++---
- cmds/qgroup.c              | 16 ++++++++--------
- kernel-shared/ctree.h      |  2 +-
- kernel-shared/print-tree.c |  4 ++--
- libbtrfs/ctree.h           |  2 +-
- libbtrfsutil/btrfs_tree.h  |  2 +-
- 6 files changed, 16 insertions(+), 16 deletions(-)
+ cmds/replace.c | 2 ++
+ ioctl.h        | 1 -
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/check/qgroup-verify.c b/check/qgroup-verify.c
-index 906fabcb..d79f947f 100644
---- a/check/qgroup-verify.c
-+++ b/check/qgroup-verify.c
-@@ -1290,7 +1290,7 @@ static int report_qgroup_difference(struct qgroup_count *count, int verbose)
- 	is_different = excl_diff || ref_diff;
+diff --git a/cmds/replace.c b/cmds/replace.c
+index 28e70b04..bdb74dff 100644
+--- a/cmds/replace.c
++++ b/cmds/replace.c
+@@ -45,6 +45,8 @@ static int print_replace_status(int fd, const char *path, int once);
+ static char *time2string(char *buf, size_t s, __u64 t);
+ static char *progress2string(char *buf, size_t s, int progress_1000);
  
- 	if (verbose || (is_different && qgroup_printable(count))) {
--		printf("Counts for qgroup id: %llu/%llu %s\n",
-+		printf("Counts for qgroup id: %u/%llu %s\n",
- 		       btrfs_qgroup_level(count->qgroupid),
- 		       btrfs_qgroup_subvid(count->qgroupid),
- 		       is_different ? "are different" : "");
-@@ -1564,7 +1564,7 @@ static int repair_qgroup_info(struct btrfs_fs_info *info,
- 	struct btrfs_key key;
++/* Used to separate internal errors from actual dev replace ioctl results. */
++#define BTRFS_IOCTL_DEV_REPLACE_RESULT_NO_RESULT		-1
  
- 	if (!silent)
--		printf("Repair qgroup %llu/%llu\n",
-+		printf("Repair qgroup %u/%llu\n",
- 			btrfs_qgroup_level(count->qgroupid),
- 			btrfs_qgroup_subvid(count->qgroupid));
- 
-@@ -1578,7 +1578,7 @@ static int repair_qgroup_info(struct btrfs_fs_info *info,
- 	key.offset = count->qgroupid;
- 	ret = btrfs_search_slot(trans, root, &key, &path, 0, 1);
- 	if (ret) {
--		error("could not find disk item for qgroup %llu/%llu",
-+		error("could not find disk item for qgroup %u/%llu",
- 		      btrfs_qgroup_level(count->qgroupid),
- 		      btrfs_qgroup_subvid(count->qgroupid));
- 		if (ret > 0)
-diff --git a/cmds/qgroup.c b/cmds/qgroup.c
-index 1d794427..c6c15da5 100644
---- a/cmds/qgroup.c
-+++ b/cmds/qgroup.c
-@@ -233,7 +233,7 @@ static int print_parent_column(struct btrfs_qgroup *qgroup)
- 	int len = 0;
- 
- 	list_for_each_entry(list, &qgroup->qgroups, next_qgroup) {
--		len += printf("%llu/%llu",
-+		len += printf("%u/%llu",
- 			      btrfs_qgroup_level(list->qgroup->qgroupid),
- 			      btrfs_qgroup_subvid(list->qgroup->qgroupid));
- 		if (!list_is_last(&list->next_qgroup, &qgroup->qgroups))
-@@ -251,7 +251,7 @@ static int print_child_column(struct btrfs_qgroup *qgroup)
- 	int len = 0;
- 
- 	list_for_each_entry(list, &qgroup->members, next_member) {
--		len += printf("%llu/%llu",
-+		len += printf("%u/%llu",
- 			      btrfs_qgroup_level(list->member->qgroupid),
- 			      btrfs_qgroup_subvid(list->member->qgroupid));
- 		if (!list_is_last(&list->next_member, &qgroup->members))
-@@ -288,7 +288,7 @@ static void print_qgroup_column(struct btrfs_qgroup *qgroup,
- 	switch (column) {
- 
- 	case BTRFS_QGROUP_QGROUPID:
--		len = printf("%llu/%llu",
-+		len = printf("%u/%llu",
- 			     btrfs_qgroup_level(qgroup->qgroupid),
- 			     btrfs_qgroup_subvid(qgroup->qgroupid));
- 		print_qgroup_column_add_blank(BTRFS_QGROUP_QGROUPID, len);
-@@ -732,7 +732,7 @@ static int update_qgroup_relation(struct qgroup_lookup *qgroup_lookup,
- 
- 	child = qgroup_tree_search(qgroup_lookup, child_id);
- 	if (!child) {
--		error("cannot find the qgroup %llu/%llu",
-+		error("cannot find the qgroup %u/%llu",
- 		      btrfs_qgroup_level(child_id),
- 		      btrfs_qgroup_subvid(child_id));
- 		return -ENOENT;
-@@ -740,7 +740,7 @@ static int update_qgroup_relation(struct qgroup_lookup *qgroup_lookup,
- 
- 	parent = qgroup_tree_search(qgroup_lookup, parent_id);
- 	if (!parent) {
--		error("cannot find the qgroup %llu/%llu",
-+		error("cannot find the qgroup %u/%llu",
- 		      btrfs_qgroup_level(parent_id),
- 		      btrfs_qgroup_subvid(parent_id));
- 		return -ENOENT;
-@@ -1001,7 +1001,7 @@ static void __update_columns_max_len(struct btrfs_qgroup *bq,
- 	switch (column) {
- 
- 	case BTRFS_QGROUP_QGROUPID:
--		sprintf(tmp, "%llu/%llu",
-+		sprintf(tmp, "%u/%llu",
- 			btrfs_qgroup_level(bq->qgroupid),
- 			btrfs_qgroup_subvid(bq->qgroupid));
- 		len = strlen(tmp);
-@@ -1033,7 +1033,7 @@ static void __update_columns_max_len(struct btrfs_qgroup *bq,
- 	case BTRFS_QGROUP_PARENT:
- 		len = 0;
- 		list_for_each_entry(list, &bq->qgroups, next_qgroup) {
--			len += sprintf(tmp, "%llu/%llu",
-+			len += sprintf(tmp, "%u/%llu",
- 				btrfs_qgroup_level(list->qgroup->qgroupid),
- 				btrfs_qgroup_subvid(list->qgroup->qgroupid));
- 			if (!list_is_last(&list->next_qgroup, &bq->qgroups))
-@@ -1045,7 +1045,7 @@ static void __update_columns_max_len(struct btrfs_qgroup *bq,
- 	case BTRFS_QGROUP_CHILD:
- 		len = 0;
- 		list_for_each_entry(list, &bq->members, next_member) {
--			len += sprintf(tmp, "%llu/%llu",
-+			len += sprintf(tmp, "%u/%llu",
- 				btrfs_qgroup_level(list->member->qgroupid),
- 				btrfs_qgroup_subvid(list->member->qgroupid));
- 			if (!list_is_last(&list->next_member, &bq->members))
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index dfa8ab7e..68e5a08f 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -1071,7 +1071,7 @@ enum btrfs_raid_types {
- 
- #define BTRFS_QGROUP_LEVEL_SHIFT		48
- 
--static inline u64 btrfs_qgroup_level(u64 qgroupid)
-+static inline __u16 btrfs_qgroup_level(u64 qgroupid)
+ static const char *replace_dev_result2string(__u64 result)
  {
- 	return qgroupid >> BTRFS_QGROUP_LEVEL_SHIFT;
- }
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index 3b6e334a..8ad68b2a 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -706,7 +706,7 @@ void print_objectid(FILE *stream, u64 objectid, u8 type)
- 		fprintf(stream, "%llu", (unsigned long long)objectid);
- 		return;
- 	case BTRFS_QGROUP_RELATION_KEY:
--		fprintf(stream, "%llu/%llu", btrfs_qgroup_level(objectid),
-+		fprintf(stream, "%u/%llu", btrfs_qgroup_level(objectid),
- 		       btrfs_qgroup_subvid(objectid));
- 		return;
- 	case BTRFS_UUID_KEY_SUBVOL:
-@@ -815,7 +815,7 @@ void btrfs_print_key(struct btrfs_disk_key *disk_key)
- 	case BTRFS_QGROUP_RELATION_KEY:
- 	case BTRFS_QGROUP_INFO_KEY:
- 	case BTRFS_QGROUP_LIMIT_KEY:
--		printf(" %llu/%llu)", btrfs_qgroup_level(offset),
-+		printf(" %u/%llu)", btrfs_qgroup_level(offset),
- 		       btrfs_qgroup_subvid(offset));
- 		break;
- 	case BTRFS_UUID_KEY_SUBVOL:
-diff --git a/libbtrfs/ctree.h b/libbtrfs/ctree.h
-index 69903f67..ed774ffa 100644
---- a/libbtrfs/ctree.h
-+++ b/libbtrfs/ctree.h
-@@ -1104,7 +1104,7 @@ enum btrfs_raid_types {
- 
- #define BTRFS_QGROUP_LEVEL_SHIFT		48
- 
--static inline u64 btrfs_qgroup_level(u64 qgroupid)
-+static inline __u16 btrfs_qgroup_level(u64 qgroupid)
- {
- 	return qgroupid >> BTRFS_QGROUP_LEVEL_SHIFT;
- }
-diff --git a/libbtrfsutil/btrfs_tree.h b/libbtrfsutil/btrfs_tree.h
-index 1df9efd6..5e1609e0 100644
---- a/libbtrfsutil/btrfs_tree.h
-+++ b/libbtrfsutil/btrfs_tree.h
-@@ -908,7 +908,7 @@ struct btrfs_free_space_info {
- #define BTRFS_FREE_SPACE_USING_BITMAPS (1ULL << 0)
- 
- #define BTRFS_QGROUP_LEVEL_SHIFT		48
--static __inline__ __u64 btrfs_qgroup_level(__u64 qgroupid)
-+static __inline__ __u16 btrfs_qgroup_level(__u64 qgroupid)
- {
- 	return qgroupid >> BTRFS_QGROUP_LEVEL_SHIFT;
- }
+diff --git a/ioctl.h b/ioctl.h
+index 21aaedde..686c1035 100644
+--- a/ioctl.h
++++ b/ioctl.h
+@@ -192,7 +192,6 @@ BUILD_ASSERT(sizeof(struct btrfs_ioctl_dev_replace_status_params) == 48);
+ #define BTRFS_IOCTL_DEV_REPLACE_CMD_START			0
+ #define BTRFS_IOCTL_DEV_REPLACE_CMD_STATUS			1
+ #define BTRFS_IOCTL_DEV_REPLACE_CMD_CANCEL			2
+-#define BTRFS_IOCTL_DEV_REPLACE_RESULT_NO_RESULT		-1
+ #define BTRFS_IOCTL_DEV_REPLACE_RESULT_NO_ERROR			0
+ #define BTRFS_IOCTL_DEV_REPLACE_RESULT_NOT_STARTED		1
+ #define BTRFS_IOCTL_DEV_REPLACE_RESULT_ALREADY_STARTED		2
 -- 
 2.26.3
 
