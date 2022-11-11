@@ -2,44 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA54562509C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Nov 2022 03:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CC56250BA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Nov 2022 03:37:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbiKKChL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Nov 2022 21:37:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47142 "EHLO
+        id S233042AbiKKChR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Nov 2022 21:37:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbiKKCgl (ORCPT
+        with ESMTP id S232588AbiKKCgn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Nov 2022 21:36:41 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018CFCE23;
-        Thu, 10 Nov 2022 18:35:18 -0800 (PST)
+        Thu, 10 Nov 2022 21:36:43 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA16DD2E6;
+        Thu, 10 Nov 2022 18:35:29 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B7D1AB823E2;
-        Fri, 11 Nov 2022 02:35:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A44EFC433D6;
-        Fri, 11 Nov 2022 02:35:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 75EA760B43;
+        Fri, 11 Nov 2022 02:35:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C2F1C433B5;
+        Fri, 11 Nov 2022 02:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668134115;
-        bh=QxUeB5WV+GSnRxYS4vTC0gkrV3wabEgLbnL4EVSYrEk=;
+        s=k20201202; t=1668134128;
+        bh=zCthhkU5SADcUteJDp+FGV49vpqJr2OIUfCZdgF72dY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gl2zGEQL95LolZIexQ9U83wl5NJ39JrviZJSG77y5ePvrcqFuaSUS1REvUz//1fF5
-         vYQcByZxfvhUxT3ncpqYQvwG0gwMlEBNm5m6pHvQWXCp1iqb8EzTPd/hbth7E1arUZ
-         WdqwyDCBrREvizjtX5hEJrL9vdTMoy4jyVn3oqtrZ8BqbLru2ykZT6NF0oLXHFnv9p
-         VtsNFLSI+6NurKyZkYgh6yDDHCd9VZSggvaTspf3YTxhUVhMsTXwK5P5keW0D2hs+N
-         NFvFKUarXbaf8b+c4RCx/RmSlxsoAyoaF9ROMGQyIc1kQZlqyptnEDIMfSV4zneefZ
-         4jT2SABcplV7Q==
+        b=DdHsI8OSwtmsgjJOP8ewoN3jhSUqKlzliFLJjDEc+HUKQFV5Sdu51yvKWfbBq/Mxr
+         kgH8IaU70/tvF+RsjBirFRZ3nyoLkrKtWPyBlSabDEySd+Wtv3K6d116rL4SQ19nLx
+         jU+ZM4FDXtZC0dSQ0IhjSpWc8eS+OBWAv2szjX89eamzCLNsKrrrJC8AAOX94kPh15
+         ku2W8vdZWiWnO48piQuczgHhKy6KEXjLvMuj8Ysp3mjavmoyGnZuTGnQTkKFCLNzs7
+         5FF8TWZfsWWyJNA5TK6z8ucwupMBmVnmhP3wLx56BMjo21HuMEzt73eKsCRVOQKxWV
+         SMrt24j2fEKfQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 02/11] btrfs: raid56: properly handle the error when unable to find the missing stripe
-Date:   Thu, 10 Nov 2022 21:35:02 -0500
-Message-Id: <20221111023511.227800-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 09/11] btrfs: remove pointless and double ulist frees in error paths of qgroup tests
+Date:   Thu, 10 Nov 2022 21:35:09 -0500
+Message-Id: <20221111023511.227800-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221111023511.227800-1-sashal@kernel.org>
 References: <20221111023511.227800-1-sashal@kernel.org>
@@ -56,48 +56,130 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit f15fb2cd979a07fbfc666e2f04b8b30ec9233b2a ]
+[ Upstream commit d0ea17aec12ea0f7b9d2ed727d8ef8169d1e7699 ]
 
-In raid56_alloc_missing_rbio(), if we can not determine where the
-missing device is inside the full stripe, we just BUG_ON().
+Several places in the qgroup self tests follow the pattern of freeing the
+ulist pointer they passed to btrfs_find_all_roots() if the call to that
+function returned an error. That is pointless because that function always
+frees the ulist in case it returns an error.
 
-This is not necessary especially the only caller inside scrub.c is
-already properly checking the return value, and will treat it as a
-memory allocation failure.
+Also In some places like at test_multiple_refs(), after a call to
+btrfs_qgroup_account_extent() we also leave "old_roots" and "new_roots"
+pointing to ulists that were freed, because btrfs_qgroup_account_extent()
+has freed those ulists, and if after that the next call to
+btrfs_find_all_roots() fails, we call ulist_free() on the "old_roots"
+ulist again, resulting in a double free.
 
-Fix the error handling by:
+So remove those calls to reduce the code size and avoid double ulist
+free in case of an error.
 
-- Add an extra warning for the reason
-  Although personally speaking it may be better to be an ASSERT().
-
-- Properly free the allocated rbio
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/raid56.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/btrfs/tests/qgroup-tests.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 3157a26ddf7e..5b27c289139a 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -2728,8 +2728,10 @@ raid56_alloc_missing_rbio(struct btrfs_fs_info *fs_info, struct bio *bio,
- 
- 	rbio->faila = find_logical_bio_stripe(rbio, bio);
- 	if (rbio->faila == -1) {
--		BUG();
--		kfree(rbio);
-+		btrfs_warn_rl(fs_info,
-+	"can not determine the failed stripe number for full stripe %llu",
-+			      bioc->raid_map[0]);
-+		__free_raid_bio(rbio);
- 		return NULL;
+diff --git a/fs/btrfs/tests/qgroup-tests.c b/fs/btrfs/tests/qgroup-tests.c
+index 19ba7d5b7d8f..a8c6637fe337 100644
+--- a/fs/btrfs/tests/qgroup-tests.c
++++ b/fs/btrfs/tests/qgroup-tests.c
+@@ -225,7 +225,6 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
+ 	 */
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
+ 	if (ret) {
+-		ulist_free(old_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -238,7 +237,6 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+ 		ulist_free(old_roots);
+-		ulist_free(new_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -250,17 +248,18 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
+ 		return ret;
  	}
  
++	/* btrfs_qgroup_account_extent() always frees the ulists passed to it. */
++	old_roots = NULL;
++	new_roots = NULL;
++
+ 	if (btrfs_verify_qgroup_counts(fs_info, BTRFS_FS_TREE_OBJECTID,
+ 				nodesize, nodesize)) {
+ 		test_err("qgroup counts didn't match expected values");
+ 		return -EINVAL;
+ 	}
+-	old_roots = NULL;
+-	new_roots = NULL;
+ 
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
+ 	if (ret) {
+-		ulist_free(old_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -272,7 +271,6 @@ static int test_no_shared_qgroup(struct btrfs_root *root,
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+ 		ulist_free(old_roots);
+-		ulist_free(new_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -322,7 +320,6 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
+ 	if (ret) {
+-		ulist_free(old_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -335,7 +332,6 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+ 		ulist_free(old_roots);
+-		ulist_free(new_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -355,7 +351,6 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
+ 	if (ret) {
+-		ulist_free(old_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -368,7 +363,6 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+ 		ulist_free(old_roots);
+-		ulist_free(new_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -394,7 +388,6 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &old_roots, false);
+ 	if (ret) {
+-		ulist_free(old_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
+@@ -407,7 +400,6 @@ static int test_multiple_refs(struct btrfs_root *root,
+ 	ret = btrfs_find_all_roots(&trans, fs_info, nodesize, 0, &new_roots, false);
+ 	if (ret) {
+ 		ulist_free(old_roots);
+-		ulist_free(new_roots);
+ 		test_err("couldn't find old roots: %d", ret);
+ 		return ret;
+ 	}
 -- 
 2.35.1
 
