@@ -2,98 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 352E7626638
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Nov 2022 02:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47CBE6266B3
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Nov 2022 04:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233911AbiKLBov (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Nov 2022 20:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
+        id S234373AbiKLDtX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Nov 2022 22:49:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbiKLBou (ORCPT
+        with ESMTP id S234518AbiKLDtW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Nov 2022 20:44:50 -0500
-Received: from out20-75.mail.aliyun.com (out20-75.mail.aliyun.com [115.124.20.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772FA5B58D
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 17:44:49 -0800 (PST)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1719749|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0507037-0.000873666-0.948423;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.Q5NVl5X_1668217486;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Q5NVl5X_1668217486)
-          by smtp.aliyun-inc.com;
-          Sat, 12 Nov 2022 09:44:47 +0800
-Date:   Sat, 12 Nov 2022 09:44:50 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     fdmanana@kernel.org
-Subject: Re: [PATCH 0/9] btrfs: more optimizations for lseek and fiemap
-Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <cover.1668166764.git.fdmanana@suse.com>
-References: <cover.1668166764.git.fdmanana@suse.com>
-Message-Id: <20221112094449.D462.409509F4@e16-tech.com>
+        Fri, 11 Nov 2022 22:49:22 -0500
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 834D72CE12
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 19:49:21 -0800 (PST)
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id 134F05F6554; Fri, 11 Nov 2022 22:49:17 -0500 (EST)
+Date:   Fri, 11 Nov 2022 22:49:17 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: infinite looping in logical_ino ioctl
+Message-ID: <Y28XvZmK0bAS4Ht/@hungrycats.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.04 [en]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+I've been chasing an infinite loop in the logical_ino ioctl that appears
+when dedupe and logical_ino are used together on the same filesystem.
+An easy way to do that is to run bees on a CPU with a double-digit
+number of cores, but I've also knocked down servers several times in
+the last year by running accidentally allowing 'btdu' and 'duperemove'
+to run at the same time.
 
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Here follows a few more optimizations for lseek and fiemap. Starting with
-> coreutils 9.0, cp no longer uses fiemap to determine where holes are in a
-> file, instead it uses lseek's SEEK_HOLE and SEEK_DATA modes of operation.
-> For very sparse files, or files with lot of delalloc, this can be very
-> slow (when compared to ext4 or xfs). This aims to improve that.
-> 
-> The cp pattern is not specific to cp, it's common to iterate over all
-> allocated regions of a file sequentially with SEEK_HOLE and SEEK_DATA,
-> for either the whole file or just a section. Another popular program that
-> does the same is tar, when using its --sparse / -S command line option
-> (I use it like that for doing vm backups for example).
+The bug has been highly resistant to analysis.  Even in the best cases,
+it takes up to 70 hours of heavy dedupe+logical_ino on every core to
+trigger.  bpftrace relies on RCU, but the RCU grace period doesn't happen
+on the core running the infinite loop, so bpftraces simply stop when
+the bug occurs.  Almost any change to the code in fs/btrfs/backref.c,
+even incrementing a static variable counter in some other function,
+causes the problem to become much harder to repro, and another similar
+change makes it come back.  Once the infinite loop is started, it's
+fairly robust--nothing but a reboot gets it out of the loop.
 
-The case reported in *1 is huge improved. Thanks a lot.
-*1 
-https://lore.kernel.org/linux-btrfs/20221106073028.71F9.409509F4@e16-tech.com/
+Yesterday I was been able to capture the bug in kgdb on an
+unmodified 5.19.16 kernel after 60 hours, and the infinite loop is in
+add_all_parents:
 
-and btrfs misc-next with these patches passed fstests too.
+    462         while (!ret && count < ref->count) {
+...
+    486                 fi = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
+    487                 disk_byte = btrfs_file_extent_disk_bytenr(eb, fi);
+    488                 data_offset = btrfs_file_extent_offset(eb, fi);
+    489 
+    490                 if (disk_byte == wanted_disk_byte) {
+...
+    517 next:
+    518                 if (time_seq == BTRFS_SEQ_LAST)
+    519                         ret = btrfs_next_item(root, path);
+    520                 else
+    521                         ret = btrfs_next_old_item(root, path, time_seq);
+    522         }
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2022/11/12
+In the infinite looping case, time_seq is a 4-digit number, ret and
+count are always 0, ref->count is 1, and disk_byte != wanted_disk_byte.
+Those conditions never change, so we can't get out of this loop.
 
-> The details are in the changelogs of each patch, and results are on the
-> changelog of the last patch in the series. There's still much more room
-> for further improvement, but that won't happen too soon as it will require
-> broader changes outside the lseek and fiemap code.
-> 
-> Filipe Manana (9):
->   btrfs: remove leftover setting of EXTENT_UPTODATE state in an inode's io_tree
->   btrfs: add an early exit when searching for delalloc range for lseek/fiemap
->   btrfs: skip unnecessary delalloc searches during lseek/fiemap
->   btrfs: search for delalloc more efficiently during lseek/fiemap
->   btrfs: remove no longer used btrfs_next_extent_map()
->   btrfs: allow passing a cached state record to count_range_bits()
->   btrfs: update stale comment for count_range_bits()
->   btrfs: use cached state when looking for delalloc ranges with fiemap
->   btrfs: use cached state when looking for delalloc ranges with lseek
-> 
->  fs/btrfs/ctree.h          |   1 +
->  fs/btrfs/extent-io-tree.c |  73 +++++++++++--
->  fs/btrfs/extent-io-tree.h |  10 +-
->  fs/btrfs/extent_io.c      |  30 +++---
->  fs/btrfs/extent_map.c     |  29 -----
->  fs/btrfs/extent_map.h     |   2 -
->  fs/btrfs/file.c           | 221 ++++++++++++++++++--------------------
->  fs/btrfs/file.h           |   1 +
->  fs/btrfs/inode.c          |   2 +-
->  9 files changed, 190 insertions(+), 179 deletions(-)
-> 
-> -- 
-> 2.35.1
+When I tried to probe more deeply what btrfs_next_old_item was doing,
+I found that the code is somehow executing btrfs_next_item on line 519,
+despite time_seq having the value 3722 at the time.  Iteration over the
+items in views at two different points in time sounds like it could
+result in infinite looping, but I wasn't able to confirm that before
+the gdb session died.  I'm now waiting for my test VM to repro again.
 
+Maybe this bug isn't in the _code_ after all...?  I wasn't expecting
+to get here, so I'm not sure what to try next.
 
+Kernel built on Debian with gcc (Debian 12.2.0-7) 12.2.0.
+
+Old references:
+
+User report of bees lockup:
+[1] https://lore.kernel.org/linux-btrfs/c9f1640177563f545ef70eb6ec1560faa1bb1bd7.camel@bcom.cz/
+
+My previous attempt to bisect the bug or use bpftrace on it:
+[2] https://lore.kernel.org/linux-btrfs/20211210183456.GP17148@hungrycats.org/
