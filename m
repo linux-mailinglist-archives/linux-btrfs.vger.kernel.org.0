@@ -2,31 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CBE6266B3
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Nov 2022 04:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6F7626831
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Nov 2022 09:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234373AbiKLDtX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Nov 2022 22:49:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        id S231240AbiKLIsi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Nov 2022 03:48:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234518AbiKLDtW (ORCPT
+        with ESMTP id S230257AbiKLIsh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Nov 2022 22:49:22 -0500
-Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 834D72CE12
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Nov 2022 19:49:21 -0800 (PST)
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 134F05F6554; Fri, 11 Nov 2022 22:49:17 -0500 (EST)
-Date:   Fri, 11 Nov 2022 22:49:17 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: infinite looping in logical_ino ioctl
-Message-ID: <Y28XvZmK0bAS4Ht/@hungrycats.org>
+        Sat, 12 Nov 2022 03:48:37 -0500
+X-Greylist: delayed 60 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 12 Nov 2022 00:48:33 PST
+Received: from libero.it (smtp-17.italiaonline.it [213.209.10.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C27C55BE
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Nov 2022 00:48:31 -0800 (PST)
+Received: from [192.168.1.27] ([84.220.130.49])
+        by smtp-17.iol.local with ESMTPA
+        id tmAhokCNCYULYtmAhoTIKU; Sat, 12 Nov 2022 09:47:27 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1668242847; bh=mULBhmO4EbSPhS4vIbglTTUwaHSgHEr6X3Kba1RM5oM=;
+        h=From;
+        b=CNNWXCyLtP7HVXSvUiCVSg/veLwj/L6IKqdrf9tDFIpX4vdqsKrbwj2N+Jtkoev02
+         Z1q7MDRPHmJW84jDCO8J/PlMxENkhNdNY2GPgVkroyvyttHqCPOmxKGNleG132sA8b
+         UFZ5sku49t6oJwCYBoGZfqulDh900glpyXbCnXm8DzYZnNKQn75w9gk9kvEo1OZwXh
+         5sszW1O3EOeYp/99aEPxOP9voWcAAPBgKBW2NFLEv4+5s2Gp3b4JmrKyHJ2JgvQLOo
+         inuKfCL+EGmQBxdlH7hLjWW9BTmxk5oDngmgGxZVMuwBF8xnx3jVPQ28KDotS9n8Bg
+         Q9MqIVxr6Ay/w==
+X-CNFS-Analysis: v=2.4 cv=DbfSFthW c=1 sm=1 tr=0 ts=636f5d9f cx=a_exe
+ a=SdbLdwgxGF07xCE66nLfvA==:117 a=SdbLdwgxGF07xCE66nLfvA==:17
+ a=IkcTkHD0fZMA:10 a=Ds2bGRqI_9CkinKiL-gA:9 a=QEXdDO2ut3YA:10
+Message-ID: <21e6a2cc-707d-f66f-d75f-2835f88b9313@libero.it>
+Date:   Sat, 12 Nov 2022 09:47:27 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH] btrfs-progs: btrfstune: add -B option to convert back to
+ extent tree
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+        Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <18c52a4ae1bb038beb16ad6d011d6dbe10321922.1663917740.git.wqu@suse.com>
+ <20220923103945.GQ32411@twin.jikos.cz>
+ <5f23506e-a505-0a37-5ceb-c55a02b114ed@gmx.com>
+Content-Language: en-US
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <5f23506e-a505-0a37-5ceb-c55a02b114ed@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfN9IlLd49lKrd6TEvR+kdOqCWwbCcyaFD7wSjamqf9Z0PcCfiihKt9F3n0jRFEbpl190AHS+uBlmKVqsHnUqxb0ttDxVesgvODXY+LL8V6/rZtGsVmJP
+ 6iQiwQe9g/vToreF27lTBbeMNZsO7RrSJIBXVwTYIvEWzWvp1oelTy2wMqLw7dgqK56K4bEx8OR7FovqeBbMEBtSdknoF8ymMgqAPtcz4rjT9RlC/0rUOh56
+ dciHDf6KRmwzutm3iwn59nWXQg+9jIywcseGYuFeUkg=
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -34,62 +64,32 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I've been chasing an infinite loop in the logical_ino ioctl that appears
-when dedupe and logical_ino are used together on the same filesystem.
-An easy way to do that is to run bees on a CPU with a double-digit
-number of cores, but I've also knocked down servers several times in
-the last year by running accidentally allowing 'btdu' and 'duperemove'
-to run at the same time.
+On 23/09/2022 13.56, Qu Wenruo wrote:
+> Thus what about "btrfs tune/convert feature 1/0"?
 
-The bug has been highly resistant to analysis.  Even in the best cases,
-it takes up to 70 hours of heavy dedupe+logical_ino on every core to
-trigger.  bpftrace relies on RCU, but the RCU grace period doesn't happen
-on the core running the infinite loop, so bpftraces simply stop when
-the bug occurs.  Almost any change to the code in fs/btrfs/backref.c,
-even incrementing a static variable counter in some other function,
-causes the problem to become much harder to repro, and another similar
-change makes it come back.  Once the infinite loop is started, it's
-fairly robust--nothing but a reboot gets it out of the loop.
+My 2¢ to the brainstorming:
 
-Yesterday I was been able to capture the bug in kgdb on an
-unmodified 5.19.16 kernel after 60 hours, and the infinite loop is in
-add_all_parents:
+reasonable to replace the old "btrfstune" with a link to btrfs. Then when btrfs is called as btrfstune, it should behave as btrfstune as far as possible, i.e. it should have the same switch.
 
-    462         while (!ret && count < ref->count) {
-...
-    486                 fi = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
-    487                 disk_byte = btrfs_file_extent_disk_bytenr(eb, fi);
-    488                 data_offset = btrfs_file_extent_offset(eb, fi);
-    489 
-    490                 if (disk_byte == wanted_disk_byte) {
-...
-    517 next:
-    518                 if (time_seq == BTRFS_SEQ_LAST)
-    519                         ret = btrfs_next_item(root, path);
-    520                 else
-    521                         ret = btrfs_next_old_item(root, path, time_seq);
-    522         }
+Otherwise we can spread the btrfstune options to different btrfs sub-commands, and then we can use different switch.
 
-In the infinite looping case, time_seq is a 4-digit number, ret and
-count are always 0, ref->count is 1, and disk_byte != wanted_disk_byte.
-Those conditions never change, so we can't get out of this loop.
+In this case I would like to differentiate filesystem/online actions from device/offline actions; some thing like
 
-When I tried to probe more deeply what btrfs_next_old_item was doing,
-I found that the code is somehow executing btrfs_next_item on line 519,
-despite time_seq having the value 3722 at the time.  Iteration over the
-items in views at two different points in time sounds like it could
-result in infinite looping, but I wasn't able to confirm that before
-the gdb session died.  I'm now waiting for my test VM to repro again.
+  - btrfs filesystem update  <xxxx>  -> something that can act to an online filesystem
 
-Maybe this bug isn't in the _code_ after all...?  I wasn't expecting
-to get here, so I'm not sure what to try next.
+- btrfs dev update <xxxx> -> something that can act to an offline filesystem
 
-Kernel built on Debian with gcc (Debian 12.2.0-7) 12.2.0.
 
-Old references:
+In any case I consider a value the consistency:  if we want to use "btrfs tune" as replacement of btrfstune, this should be done in a way that it is
 
-User report of bees lockup:
-[1] https://lore.kernel.org/linux-btrfs/c9f1640177563f545ef70eb6ec1560faa1bb1bd7.camel@bcom.cz/
+I would avoid  creating a "btrfs tune" subcommand with different switches from "btrfstune". This would create confusion. The same for btrfsconvert/btrfs convert.
 
-My previous attempt to bisect the bug or use bpftrace on it:
-[2] https://lore.kernel.org/linux-btrfs/20211210183456.GP17148@hungrycats.org/
+
+BR
+
+G.Baroncelli
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
