@@ -2,48 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CB2626D52
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Nov 2022 02:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7C6626D60
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Nov 2022 02:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234293AbiKMBcb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Nov 2022 20:32:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
+        id S234838AbiKMBxq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Nov 2022 20:53:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbiKMBc3 (ORCPT
+        with ESMTP id S233054AbiKMBxo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Nov 2022 20:32:29 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DB7B85C
-        for <linux-btrfs@vger.kernel.org>; Sat, 12 Nov 2022 17:32:26 -0800 (PST)
+        Sat, 12 Nov 2022 20:53:44 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD142DED;
+        Sat, 12 Nov 2022 17:53:43 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7921921FEA
-        for <linux-btrfs@vger.kernel.org>; Sun, 13 Nov 2022 01:32:25 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B17581FF53;
+        Sun, 13 Nov 2022 01:53:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1668303145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1668304421; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=AI4nL7P9NBpGgUkd1qN9xcjLDNmLLUJS1grlPIDC2cg=;
-        b=RyP+zdDwHD+Y0OvjsURHI59ItAI238P/oe2sU9RnwEfCNQa7Gv01yMEww5fEZb15qXNQrh
-        rZSLVog0AkSePmuZ+C+bfKzBkdvIha2i6Cz5NCYXdf3yOuSI2TsjXTAkOdGCcBvpfwc0es
-        N++lr4WCLG6EmSbhW60/OmlXJiPYR7I=
+        bh=X3V9FT7m9Rof6wc2BITb0PiK6GaGh93rAHOyAdpEwrY=;
+        b=jFTN5wxDrO67FvwLWmrhNanuZ038IHHNWIQU85/RYFCvG6m5kCzlfwNlO5nz1EjMzKlAWg
+        69L29WUNJGsqIxFOq9ZAI8+JI70RIjWv/3RSHKjyG3SJRoQ6tSfF7rIzte8EWR1t4qafXw
+        HgjSbpbjJcX2DWo51VJnQv660S7dbm8=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C8ECE13A08
-        for <linux-btrfs@vger.kernel.org>; Sun, 13 Nov 2022 01:32:24 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CF6EA13A08;
+        Sun, 13 Nov 2022 01:53:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id qOoEJShJcGPsUQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sun, 13 Nov 2022 01:32:24 +0000
+        id fJgaJiROcGOAWgAAMHmgww
+        (envelope-from <wqu@suse.com>); Sun, 13 Nov 2022 01:53:40 +0000
 From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: use btrfs_dev_name() helper to handle missing devices better
-Date:   Sun, 13 Nov 2022 09:32:07 +0800
-Message-Id: <071d7f1c5f10d185146b83dd665a68ae5a4c9303.1668303064.git.wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] fstests: btrfs/053: use "-n" to replace the deprecated "-l" mkfs option
+Date:   Sun, 13 Nov 2022 09:53:23 +0800
+Message-Id: <20221113015323.38789-1-wqu@suse.com>
 X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,389 +56,66 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 [BUG]
-If dev-replace failed to re-construct its data/metadata, the kernel
-message would be incorrect for the missing device:
+Test case btrfs/053 will fail if using newer btrfs-progs with the extra
+error output:
 
- BTRFS info (device dm-1): dev_replace from <missing disk> (devid 2) to /dev/mapper/test-scratch2 started
- BTRFS error (device dm-1): failed to rebuild valid logical 38862848 for dev (efault)
-
-Note the above "dev (efault)" of the second line.
-While the first line is properly reporting "<missing disk>".
+    mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
+           dmesg(1) may have more information after failed mount system call.
+    mount /dev/mapper/test-scratch1 /mnt/scratch failed
 
 [CAUSE]
-Although dev-replace is using btrfs_dev_name(), the heavy lifting work
-is still done by scrub (scrub is reused by both dev-replace and regular
-scrub).
+The option "-l"/"--leafsize" is already marked deprecated since
+btrfs-progs v4.0, and finally in btrfs-progs v6.0 we removes the support
+for such deprecated option completely.
 
-Unfortunately scrub code never uses btrfs_dev_name() helper, as it's
-only declared locally inside dev-replace.c.
+But unfortunately the test case is still using the old option.
 
 [FIX]
-Fix the output by:
+Fix and improve the test case by:
 
-- Move the btrfs_dev_name() helper to volumes.h
+- Use "-n" to replace the "-l" option
 
-- Use btrfs_dev_name() to replace open-coded rcu_str_defref() calls
-  Only zoned code is not touched, as I'm not familiar with degraded
-  zoned code.
+- Rename "leaf_size" variable to "node_size"
 
-Now the output looks pretty sane:
-
- BTRFS info (device dm-1): dev_replace from <missing disk> (devid 2) to /dev/mapper/test-scratch2 started
- BTRFS error (device dm-1): failed to rebuild valid logical 38862848 for dev <missing disk>
+- Save the output of _scratch_mkfs to $seqres.full
+  This would save quite some time if it later failed due to some other
+  reasons in mkfs.btrfs.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/check-integrity.c |  2 +-
- fs/btrfs/dev-replace.c     | 15 +++------------
- fs/btrfs/disk-io.c         |  2 +-
- fs/btrfs/extent-tree.c     |  2 +-
- fs/btrfs/extent_io.c       |  3 +--
- fs/btrfs/ioctl.c           |  4 ++--
- fs/btrfs/scrub.c           | 20 +++++++++-----------
- fs/btrfs/super.c           |  2 +-
- fs/btrfs/volumes.c         | 16 ++++++++--------
- fs/btrfs/volumes.h         |  9 +++++++++
- 10 files changed, 36 insertions(+), 39 deletions(-)
+ tests/btrfs/053 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-index 7ff0703ef3e4..82e49d985019 100644
---- a/fs/btrfs/check-integrity.c
-+++ b/fs/btrfs/check-integrity.c
-@@ -757,7 +757,7 @@ static int btrfsic_process_superblock_dev_mirror(
- 			btrfs_info_in_rcu(fs_info,
- 			"new initial S-block (bdev %p, %s) @%llu (%pg/%llu/%d)",
- 				     superblock_bdev,
--				     rcu_str_deref(device->name), dev_bytenr,
-+				     btrfs_dev_name(device), dev_bytenr,
- 				     dev_state->bdev, dev_bytenr,
- 				     superblock_mirror_num);
- 		list_add(&superblock_tmp->all_blocks_node,
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 9c4a8649a0f4..78696d331639 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -18,7 +18,6 @@
- #include "volumes.h"
- #include "async-thread.h"
- #include "check-integrity.h"
--#include "rcu-string.h"
- #include "dev-replace.h"
- #include "sysfs.h"
- #include "zoned.h"
-@@ -451,14 +450,6 @@ int btrfs_run_dev_replace(struct btrfs_trans_handle *trans)
- 	return ret;
- }
+diff --git a/tests/btrfs/053 b/tests/btrfs/053
+index fbd2e7d9..006ea0e6 100755
+--- a/tests/btrfs/053
++++ b/tests/btrfs/053
+@@ -37,14 +37,14 @@ _require_attrs
+ # max(16384, PAGE_SIZE) is the default leaf/node size on btrfs-progs v3.12+.
+ # Older versions just use max(4096, PAGE_SIZE).
+ # mkfs.btrfs can't create an fs with a leaf/node size smaller than PAGE_SIZE.
+-leaf_size=$(echo -e "16384\n`getconf PAGE_SIZE`" | sort -nr | head -1)
++node_size=$(echo -e "16384\n`getconf PAGE_SIZE`" | sort -nr | head -1)
  
--static char* btrfs_dev_name(struct btrfs_device *device)
--{
--	if (!device || test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
--		return "<missing disk>";
--	else
--		return rcu_str_deref(device->name);
--}
--
- static int mark_block_group_to_copy(struct btrfs_fs_info *fs_info,
- 				    struct btrfs_device *src_dev)
- {
-@@ -674,7 +665,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
- 		      "dev_replace from %s (devid %llu) to %s started",
- 		      btrfs_dev_name(src_device),
- 		      src_device->devid,
--		      rcu_str_deref(tgt_device->name));
-+		      btrfs_dev_name(tgt_device));
+ send_files_dir=$TEST_DIR/btrfs-test-$seq
  
- 	/*
- 	 * from now on, the writes to the srcdev are all duplicated to
-@@ -933,7 +924,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
- 				 "btrfs_scrub_dev(%s, %llu, %s) failed %d",
- 				 btrfs_dev_name(src_device),
- 				 src_device->devid,
--				 rcu_str_deref(tgt_device->name), scrub_ret);
-+				 btrfs_dev_name(tgt_device), scrub_ret);
- error:
- 		up_write(&dev_replace->rwsem);
- 		mutex_unlock(&fs_info->chunk_mutex);
-@@ -951,7 +942,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
- 			  "dev_replace from %s (devid %llu) to %s finished",
- 			  btrfs_dev_name(src_device),
- 			  src_device->devid,
--			  rcu_str_deref(tgt_device->name));
-+			  btrfs_dev_name(tgt_device));
- 	clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &tgt_device->dev_state);
- 	tgt_device->devid = src_device->devid;
- 	src_device->devid = BTRFS_DEV_REPLACE_DEVID;
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 559e7f3d727e..91a088210e5a 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3944,7 +3944,7 @@ static void btrfs_end_super_write(struct bio *bio)
- 		if (bio->bi_status) {
- 			btrfs_warn_rl_in_rcu(device->fs_info,
- 				"lost page write due to IO error on %s (%d)",
--				rcu_str_deref(device->name),
-+				btrfs_dev_name(device),
- 				blk_status_to_errno(bio->bi_status));
- 			ClearPageUptodate(page);
- 			SetPageError(page);
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 10cc757a602b..17f599027c3d 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -6048,7 +6048,7 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
- 			btrfs_warn_in_rcu(fs_info,
- "ignoring attempt to trim beyond device size: offset %llu length %llu device %s device size %llu",
- 					  start, end - start + 1,
--					  rcu_str_deref(device->name),
-+					  btrfs_dev_name(device),
- 					  device->total_bytes);
- 			mutex_unlock(&fs_info->chunk_mutex);
- 			ret = 0;
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 704ae7c08867..65ba5c3658cf 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -611,8 +611,7 @@ static int repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ rm -fr $send_files_dir
+ mkdir $send_files_dir
  
- 	btrfs_info_rl_in_rcu(fs_info,
- 		"read error corrected: ino %llu off %llu (dev %s sector %llu)",
--				  ino, start,
--				  rcu_str_deref(dev->name), sector);
-+			     ino, start, btrfs_dev_name(dev), sector);
- 	ret = 0;
+-_scratch_mkfs "-l $leaf_size" >/dev/null 2>&1
++_scratch_mkfs "-n $node_size" >> $seqres.full 2>&1
+ _scratch_mount
  
- out_bio_uninit:
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 7a9e697d9931..bed74a3ff574 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1228,7 +1228,7 @@ static noinline int btrfs_ioctl_resize(struct file *file,
- 	if (ret == 0 && new_size != old_size)
- 		btrfs_info_in_rcu(fs_info,
- 			"resize device %s (devid %llu) from %llu to %llu",
--			rcu_str_deref(device->name), device->devid,
-+			btrfs_dev_name(device), device->devid,
- 			old_size, new_size);
- out_finish:
- 	btrfs_exclop_finish(fs_info);
-@@ -2860,7 +2860,7 @@ static long btrfs_ioctl_dev_info(struct btrfs_fs_info *fs_info,
- 	di_args->total_bytes = btrfs_device_get_total_bytes(dev);
- 	memcpy(di_args->uuid, dev->uuid, sizeof(di_args->uuid));
- 	if (dev->name) {
--		strncpy(di_args->path, rcu_str_deref(dev->name),
-+		strncpy(di_args->path, btrfs_dev_name(dev),
- 				sizeof(di_args->path) - 1);
- 		di_args->path[sizeof(di_args->path) - 1] = 0;
- 	} else {
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index cb5eeaeafc1d..52b346795f66 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -17,7 +17,6 @@
- #include "extent_io.h"
- #include "dev-replace.h"
- #include "check-integrity.h"
--#include "rcu-string.h"
- #include "raid56.h"
- #include "block-group.h"
- #include "zoned.h"
-@@ -877,7 +876,7 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
- 		btrfs_warn_in_rcu(fs_info,
- "%s at logical %llu on dev %s, physical %llu, root %llu, inode %llu, offset %llu, length %u, links %u (path: %s)",
- 				  swarn->errstr, swarn->logical,
--				  rcu_str_deref(swarn->dev->name),
-+				  btrfs_dev_name(swarn->dev),
- 				  swarn->physical,
- 				  root, inum, offset,
- 				  fs_info->sectorsize, nlink,
-@@ -891,7 +890,7 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
- 	btrfs_warn_in_rcu(fs_info,
- 			  "%s at logical %llu on dev %s, physical %llu, root %llu, inode %llu, offset %llu: path resolving failed with ret=%d",
- 			  swarn->errstr, swarn->logical,
--			  rcu_str_deref(swarn->dev->name),
-+			  btrfs_dev_name(swarn->dev),
- 			  swarn->physical,
- 			  root, inum, offset, ret);
+ echo "hello world" > $SCRATCH_MNT/foobar
+@@ -72,7 +72,7 @@ _run_btrfs_util_prog send -p $SCRATCH_MNT/mysnap1 -f $send_files_dir/2.snap \
+ _scratch_unmount
+ _check_scratch_fs
  
-@@ -922,8 +921,7 @@ static void scrub_print_warning(const char *errstr, struct scrub_block *sblock)
- 	/* Super block error, no need to search extent tree. */
- 	if (sblock->sectors[0]->flags & BTRFS_EXTENT_FLAG_SUPER) {
- 		btrfs_warn_in_rcu(fs_info, "%s on device %s, physical %llu",
--			errstr, rcu_str_deref(dev->name),
--			sblock->physical);
-+			errstr, btrfs_dev_name(dev), sblock->physical);
- 		return;
- 	}
- 	path = btrfs_alloc_path();
-@@ -954,7 +952,7 @@ static void scrub_print_warning(const char *errstr, struct scrub_block *sblock)
- 			btrfs_warn_in_rcu(fs_info,
- "%s at logical %llu on dev %s, physical %llu: metadata %s (level %d) in tree %llu",
- 				errstr, swarn.logical,
--				rcu_str_deref(dev->name),
-+				btrfs_dev_name(dev),
- 				swarn.physical,
- 				ref_level ? "node" : "leaf",
- 				ret < 0 ? -1 : ref_level,
-@@ -1377,7 +1375,7 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
- 			spin_unlock(&sctx->stat_lock);
- 			btrfs_err_rl_in_rcu(fs_info,
- 				"fixed up error at logical %llu on dev %s",
--				logical, rcu_str_deref(dev->name));
-+				logical, btrfs_dev_name(dev));
- 		}
- 	} else {
- did_not_correct_error:
-@@ -1386,7 +1384,7 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
- 		spin_unlock(&sctx->stat_lock);
- 		btrfs_err_rl_in_rcu(fs_info,
- 			"unable to fixup (regular) error at logical %llu on dev %s",
--			logical, rcu_str_deref(dev->name));
-+			logical, btrfs_dev_name(dev));
- 	}
+-_scratch_mkfs "-l $leaf_size" >/dev/null 2>&1
++_scratch_mkfs "-n $node_size" >> $seqres.full 2>&1
+ _scratch_mount
  
- out:
-@@ -2332,14 +2330,14 @@ static void scrub_missing_raid56_worker(struct work_struct *work)
- 		spin_unlock(&sctx->stat_lock);
- 		btrfs_err_rl_in_rcu(fs_info,
- 			"IO error rebuilding logical %llu for dev %s",
--			logical, rcu_str_deref(dev->name));
-+			logical, btrfs_dev_name(dev));
- 	} else if (sblock->header_error || sblock->checksum_error) {
- 		spin_lock(&sctx->stat_lock);
- 		sctx->stat.uncorrectable_errors++;
- 		spin_unlock(&sctx->stat_lock);
- 		btrfs_err_rl_in_rcu(fs_info,
- 			"failed to rebuild valid logical %llu for dev %s",
--			logical, rcu_str_deref(dev->name));
-+			logical, btrfs_dev_name(dev));
- 	} else {
- 		scrub_write_block_to_dev_replace(sblock);
- 	}
-@@ -4303,7 +4301,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
- 		btrfs_err_in_rcu(fs_info,
- 			"scrub on devid %llu: filesystem on %s is not writable",
--				 devid, rcu_str_deref(dev->name));
-+				 devid, btrfs_dev_name(dev));
- 		ret = -EROFS;
- 		goto out;
- 	}
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index d54bfec8e506..ea83dd9f735a 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2336,7 +2336,7 @@ static int btrfs_show_devname(struct seq_file *m, struct dentry *root)
- 	 * the end of RCU grace period.
- 	 */
- 	rcu_read_lock();
--	seq_escape(m, rcu_str_deref(fs_info->fs_devices->latest_dev->name), " \t\n\\");
-+	seq_escape(m, btrfs_dev_name(fs_info->fs_devices->latest_dev), " \t\n\\");
- 	rcu_read_unlock();
- 
- 	return 0;
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 49d6e79d4343..2d0950a17f48 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -941,7 +941,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
- 			}
- 			btrfs_info_in_rcu(NULL,
- 	"devid %llu device path %s changed to %s scanned by %s (%d)",
--					  devid, rcu_str_deref(device->name),
-+					  devid, btrfs_dev_name(device),
- 					  path, current->comm,
- 					  task_pid_nr(current));
- 		}
-@@ -2101,7 +2101,7 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info,
- 	if (btrfs_pinned_by_swapfile(fs_info, device)) {
- 		btrfs_warn_in_rcu(fs_info,
- 		  "cannot remove device %s (devid %llu) due to active swapfile",
--				  rcu_str_deref(device->name), device->devid);
-+				  btrfs_dev_name(device), device->devid);
- 		return -ETXTBSY;
- 	}
- 
-@@ -6827,7 +6827,7 @@ static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
- 	btrfs_debug_in_rcu(dev->fs_info,
- 	"%s: rw %d 0x%x, sector=%llu, dev=%lu (%s id %llu), size=%u",
- 		__func__, bio_op(bio), bio->bi_opf, bio->bi_iter.bi_sector,
--		(unsigned long)dev->bdev->bd_dev, rcu_str_deref(dev->name),
-+		(unsigned long)dev->bdev->bd_dev, btrfs_dev_name(dev),
- 		dev->devid, bio->bi_iter.bi_size);
- 
- 	btrfsic_check_bio(bio);
-@@ -7908,7 +7908,7 @@ static int update_dev_stat_item(struct btrfs_trans_handle *trans,
- 	if (ret < 0) {
- 		btrfs_warn_in_rcu(fs_info,
- 			"error %d while searching for dev_stats item for device %s",
--			      ret, rcu_str_deref(device->name));
-+				  ret, btrfs_dev_name(device));
- 		goto out;
- 	}
- 
-@@ -7919,7 +7919,7 @@ static int update_dev_stat_item(struct btrfs_trans_handle *trans,
- 		if (ret != 0) {
- 			btrfs_warn_in_rcu(fs_info,
- 				"delete too small dev_stats item for device %s failed %d",
--				      rcu_str_deref(device->name), ret);
-+					  btrfs_dev_name(device), ret);
- 			goto out;
- 		}
- 		ret = 1;
-@@ -7933,7 +7933,7 @@ static int update_dev_stat_item(struct btrfs_trans_handle *trans,
- 		if (ret < 0) {
- 			btrfs_warn_in_rcu(fs_info,
- 				"insert dev_stats item for device %s failed %d",
--				rcu_str_deref(device->name), ret);
-+				btrfs_dev_name(device), ret);
- 			goto out;
- 		}
- 	}
-@@ -7998,7 +7998,7 @@ void btrfs_dev_stat_inc_and_print(struct btrfs_device *dev, int index)
- 		return;
- 	btrfs_err_rl_in_rcu(dev->fs_info,
- 		"bdev %s errs: wr %u, rd %u, flush %u, corrupt %u, gen %u",
--			   rcu_str_deref(dev->name),
-+			   btrfs_dev_name(dev),
- 			   btrfs_dev_stat_read(dev, BTRFS_DEV_STAT_WRITE_ERRS),
- 			   btrfs_dev_stat_read(dev, BTRFS_DEV_STAT_READ_ERRS),
- 			   btrfs_dev_stat_read(dev, BTRFS_DEV_STAT_FLUSH_ERRS),
-@@ -8018,7 +8018,7 @@ static void btrfs_dev_stat_print_on_load(struct btrfs_device *dev)
- 
- 	btrfs_info_in_rcu(dev->fs_info,
- 		"bdev %s errs: wr %u, rd %u, flush %u, corrupt %u, gen %u",
--	       rcu_str_deref(dev->name),
-+	       btrfs_dev_name(dev),
- 	       btrfs_dev_stat_read(dev, BTRFS_DEV_STAT_WRITE_ERRS),
- 	       btrfs_dev_stat_read(dev, BTRFS_DEV_STAT_READ_ERRS),
- 	       btrfs_dev_stat_read(dev, BTRFS_DEV_STAT_FLUSH_ERRS),
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index efa6a3d48cd8..db6b69c96c0d 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -12,6 +12,7 @@
- #include "async-thread.h"
- #include "messages.h"
- #include "disk-io.h"
-+#include "rcu-string.h"
- 
- #define BTRFS_MAX_DATA_CHUNK_SIZE	(10ULL * SZ_1G)
- 
-@@ -770,6 +771,14 @@ static inline void btrfs_dev_stat_set(struct btrfs_device *dev,
- 	atomic_inc(&dev->dev_stats_ccnt);
- }
- 
-+static inline char* btrfs_dev_name(struct btrfs_device *device)
-+{
-+	if (!device || test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
-+		return "<missing disk>";
-+	else
-+		return rcu_str_deref(device->name);
-+}
-+
- void btrfs_commit_device_sizes(struct btrfs_transaction *trans);
- 
- struct list_head * __attribute_const__ btrfs_get_fs_uuids(void);
+ _run_btrfs_util_prog receive -f $send_files_dir/1.snap $SCRATCH_MNT
 -- 
-2.38.1
+2.38.0
 
