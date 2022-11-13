@@ -2,166 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 795EF62731C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Nov 2022 23:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3127962739C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Nov 2022 00:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235274AbiKMW60 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Nov 2022 17:58:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
+        id S231972AbiKMXwc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Nov 2022 18:52:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234264AbiKMW60 (ORCPT
+        with ESMTP id S229692AbiKMXwb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 13 Nov 2022 17:58:26 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7BDB1DE
-        for <linux-btrfs@vger.kernel.org>; Sun, 13 Nov 2022 14:58:23 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mnaof-1pLfwG0SDF-00jWeK; Sun, 13
- Nov 2022 23:58:21 +0100
-Message-ID: <f5cceda5-e887-0807-7331-12382b45ea29@gmx.com>
-Date:   Mon, 14 Nov 2022 06:58:18 +0800
+        Sun, 13 Nov 2022 18:52:31 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1945B1E2
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Nov 2022 15:52:29 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id f27so24655366eje.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Nov 2022 15:52:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NAzZT3La/4um2A9mq1qkmpc1VAed/+adyd3P61nvrQI=;
+        b=D0V6VATbyuCwCfDHDMs/j4NwjprBISheaSNa0F8DqBFf1GqcKn3H+H9Fnj0D6irVlk
+         98cz/oDxY6J1WBdI/XIQifHV9p0uDE9AMYjr1kHrpA8Rs1GQz5z4xlJh2RbSSiFpFwnc
+         c/NWHqNlt5bo6rTjBTptR76kmZ3gWvD+F32XTU2hACy8EZ/Mk2TyN4bmmWqQUxqqFFSy
+         nThHBMwUAdXuUd+RVmDh2qxiGwKAI+sl9iPO3T/D84IQweupquZVb7xPC6zulswugZsp
+         kXM30UHDazeZZ4g1UyEqxCehRvKxeUUSVZ3TPV9TqH8NvXedbl58v2YD8nxi5tEhbfLa
+         oS6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NAzZT3La/4um2A9mq1qkmpc1VAed/+adyd3P61nvrQI=;
+        b=RMqMrlaJ5efevnMUf28qCfX9bE0TbM1G7NN+TiFZF/MEPz76hedx0qzzNealB6S/Nt
+         iQAxWCWIZa0rBPZHoMda+1hgr2S3OtDCwpNFOfEuw+aboFEjCT+nKfFABHssuxHVPY/H
+         VFPEo9jegX+qlVrVyyZ4o2ZZTVxGaCQWpPFdkUIGyVIFskvnfR5WqNTrKSVp77mg28DD
+         dtoorf3+GvsiYY77tPMLkf9lhwR3yMYAOlJkgL7kXs4EGoeEhMC1mj1dXZOl0aAcNvIL
+         OxhW8k0Q/2koy17oMKqGybt6CBpMUlj66BhKYHUChfDU7zlPIZohM/eEj/5PUzsQyEBL
+         lVcQ==
+X-Gm-Message-State: ANoB5pl2NWMN1GFlVjK6J1Ip7/Ve8bWnukbm0E5tEwKkVFk7uY/PlMCA
+        bGg3Gslhj1lMP9DLk0VxFVTt0ihL75PMqfbWdvcokxxYRQRKcA==
+X-Google-Smtp-Source: AA0mqf7CUUP0RBMG+PsiXMqRJcQrAAMnkGZNkB3nSV9+msigPSeBOr7At065wRn1gjO0PaixZ4+0zQeTfUdSJAe0iuQ=
+X-Received: by 2002:a17:906:4d95:b0:783:7020:53a7 with SMTP id
+ s21-20020a1709064d9500b00783702053a7mr8332542eju.736.1668383547563; Sun, 13
+ Nov 2022 15:52:27 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Content-Language: en-US
-To:     Li Zhang <zhanglikernel@gmail.com>, linux-btrfs@vger.kernel.org
-References: <1668353728-22636-1-git-send-email-zhanglikernel@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH] btrfs: scrub: expand scrub block size for data range
- scrub
-In-Reply-To: <1668353728-22636-1-git-send-email-zhanglikernel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:GO1TdsvbEhWwBy8KrBj1zhtpEFT5rC5Bwh39dkjl6RSpxB76wOq
- X17ntjWKmYTMR9axIPOGxY2Eq4R2T3um1p4tUIELYAH1e/SIITMj98EhPev6gdQsrBFYSni
- kf/WgFC7Po0hfIeu2NtPzGca6pKw3J5Zte6QY5kFIHurDpRQrtrQOGnNg4QRPSFm5NdyNzg
- KuUPCqRmBqM8FZvF1AoYA==
-UI-OutboundReport: notjunk:1;M01:P0:fUIYteWfMU4=;z8opRK2GJaXOnU4ApmZ3ae1B43n
- YV7ToA1vvvoZ0Z1DzieM+IYIgGeY9viiFkr6/kORouDva8B4Cjy6PdQQe2kipA8PnwGsefgg7
- k14+w4wTNbeZQePyS18LGtgI17PISxR9wieReSVc85pn/lDuuF9ax4C6KXPpkNVbHTiGXmeG/
- 1j5LKYL+bw2oq694Z7kaCtu9q8QUZayPagFSdmDqvBlHm6IUePUHvRXdpoTMQrl4YDvP2sCDz
- XWuEfF8ud6ARTg1mRH6qzHTYtQOZTJQ+UjS4/B+oOtde/QpAiq6JmmTa91h2t3D0zz6XJWCw0
- s9djfl3O1trU/1WPJ/BlkYCXYtnGHfzdqtgtDHTTz+MTVDaAXkn9lIZzEN90jwFPilxmmNmy+
- 38bNk10489KVUx55+szjE54LrdXEcuGcE6OIzzXs72gg7OFJEtom8N1wi/cH8FTdffR7jWSsJ
- +/WTATPCwuW3xd0inW3kDL+2FGIYFIU4nRLdMEoi9eDQ/HnAStmA4sv2iezJ9Sn4zWlY8kC2f
- paezLkDvXa/Lm5pWZ8PuBeM7vGjWj6a7NvktYbX9CiV1irqnfKmzTPB+osbGbsRpj+f273XPa
- MWY3mLPsyW1StQfWxt3ZD1BwLPHm91fgl2zzmGMQvDdnxxUW93Sgu+plEKaCxjX9ImIefSye0
- FZQ8pbFJaBbQXTmGonICANLHu1qEBJdU5O0fpZtNqIf9ErJy9bYJ+Wx7x7zhfDtXusaFhDiix
- nkGcqsP8aHfCAga6j2q6OclSORwo0n+pf87Iuq38TsSELsGoPY/EQot8lGIdP4ZmAaa/IhN4a
- TdBMy6yGYbK9IDPcE+kQIpfGDpok53gEF/iaQeL7pVAlnURi7SBC3mAThGGJ9lxUXR0sozdVC
- uJj1JmTG4fbaXpF2leTKJXkzjJ4DptBXvaLgpjTWMpgB7FiGBEOHgY+0uuWlc386q98ARB9qa
- tb7GZSIZRgtbM/DHyaNd4glO+Ws=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Sun, 13 Nov 2022 18:51:51 -0500
+Message-ID: <CAEg-Je87KMSRWREjRYin_ZUbp0W7vk0OnATxZbLYckoVrPZP_g@mail.gmail.com>
+Subject: Buttery Shufflecake (or is a Btrfs-style Shufflecake possible?)
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     Omar Sandoval <osandov@osandov.com>,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Chris Mason <clm@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_40,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hey all,
 
+Today, I read about this interesting project from Kudelski Security
+called Shufflecake[1].
 
-On 2022/11/13 23:35, Li Zhang wrote:
+The interesting thing about it is that it enables plausibly invisible
+encrypted volumes, which can be very useful in specific circumstances.
+The implementation that Kudelski Security created works by creating a
+new device-mapper module (which is unfortunately GPLv3+[2]) and
+pairing it with user space software to manage the DM targets.
 
-A small description here on the problem would help on the context.
+While of course we can just live on top of DM for this, I was
+wondering how difficult it would be to incorporate something similar
+directly into Btrfs' subvolume management capability, especially once
+we get native encryption[3].
 
-> [implement]
-> 1. Add the member checksum_error to the scrub_sector,
-> which indicates the checksum error of the sector
-> 
-> 2. Use scrub_find_btrfs_ordered_sum to find the desired
+Thanks in advance and best regards,
+Neal
 
-Please don't put "_btrfs_" in the middle.
+[1]: https://research.kudelskisecurity.com/2022/11/10/introducing-shuffleca=
+ke-plausible-deniability-for-multiple-hidden-filesystems-on-linux/
+[2]: https://codeberg.org/shufflecake/dm-sflc/issues/12
+[3]: https://lore.kernel.org/linux-btrfs/cover.1667389115.git.sweettea-kern=
+el@dorminy.me/
 
-Just "scrub_find_ordered_sum()" is good enough.
-
-> btrfs_ordered_sum containing address logic, in
-> scrub_sectors_for_parity and scrub_sectors, call
-> Scrub_find_btrfs_ordered_sum finds the
-> btrfs_ordered_sum containing the current logical address, and
-> Calculate the exact checksum later.
-> 
-> 3. In the scrub_checksum_data function,
-> we should check all sectors in the scrub_block.
-> 
-> 4. The job of the scrub_handle_errored_block
-> function is to count the number of error and
-> repair sectors if they can be repaired.
-
-The idea is good.
-
-And I hope it can also unify the error accounting of data and metadata.
-
-Currently for metadata csum mismatch, we only report one csum error even 
-if the metadata is 4 sectors.
-While for data, we always report the number of corrupted sectors.
-
-> 
-> The function enters the wrong scrub_block, and
-> the overall process is as follows
-> 
-> 1) Check the scrub_block again, check again if the error is gone.
-> 
-> 2) Check the corresponding mirror scrub_block, if there is no error,
-> Fix bad sblocks with mirror scrub_block.
-> 
-> 3) If no error-free scrub_block is found, repair it sector by sector.
-> 
-> One difficulty with this function is rechecking the scrub_block.
-> 
-> Imagine this situation, if a sector is checked the first time
-> without errors, butthe recheck returns an error.
-
-If you mean the interleaved corrupted sectors like the following:
-             0 1 2 3
-  Mirror 1: |X| |X| |
-  Mirror 2: | |X| |X|
-
-Then it's pretty simple, when doing re-check, we should only bother the 
-one with errors.
-You do not always treat the scrub_block all together.
-
-Thus if you're handling mirror 1, then you should only need to fix 
-sector 0 and sector 2, not bothering fixing the good sectors (1 and 3).
-
-
-> What should
-> we do, this patch only fixes the bug that the sector first
-> appeared (As in the case where the scrub_block
-> contains only one scrub_sector).
-> 
-> Another reason to only handle the first error is,
-> If the device goes bad, the recheck function will report more and
-> more errors,if we want to deal with the errors in the recheck,
-> you need to recheck again and again, which may lead to
-> Stuck in scrub_handle_errored_block for a long time.
-
-Taking longer time is not a problem, compared to corrupted data.
-
-Although I totally understand that the existing scrub is complex in its 
-design, that's exactly why I'm trying to implement a better scrub_fs 
-interface:
-
-https://lwn.net/Articles/907058/
-
-RAID56 has a similiar problem until recent big refactor, changing it to 
-a more streamlined flow.
-
-But the per-sector repair is still there, you can not avoid that, no 
-matter if scrub_block contains single or multiple sectors.
-(Although single sector scrub_block make is much easier)
-
-[...]
-> @@ -1054,7 +1056,8 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
->   		if (ret == -ENOMEM)
->   			sctx->stat.malloc_errors++;
->   		sctx->stat.read_errors++;
-> -		sctx->stat.uncorrectable_errors++;
-> +		sctx->stat.uncorrectable_errors += scrub_get_sblock_checksum_error(sblock_to_check);
-> +		sctx->stat.uncorrectable_errors += sblock_to_check->header_error;
-
-Do we double accout the header_error for metadata?
-
-Thanks,
-Qu
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
