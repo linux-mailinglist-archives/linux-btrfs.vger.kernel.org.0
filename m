@@ -2,60 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B4A626F52
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Nov 2022 12:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5301627036
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Nov 2022 16:36:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235284AbiKMLjM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Nov 2022 06:39:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
+        id S233522AbiKMPgX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Nov 2022 10:36:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbiKMLjL (ORCPT
+        with ESMTP id S232884AbiKMPgW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 13 Nov 2022 06:39:11 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602B811C34;
-        Sun, 13 Nov 2022 03:39:10 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id 13so22186643ejn.3;
-        Sun, 13 Nov 2022 03:39:10 -0800 (PST)
+        Sun, 13 Nov 2022 10:36:22 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E86DEF8
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Nov 2022 07:36:18 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id io19so8006524plb.8
+        for <linux-btrfs@vger.kernel.org>; Sun, 13 Nov 2022 07:36:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=nLs2TAH/QuzR93RizayFXReGTRS2ZHOOTjuVGeiE3ZU=;
-        b=b0lgGV+stDy1Yn3DUjR+TeGQQslgWTBJK4v19ISg2hQMH4eadmYztCqZLDknM8hwKw
-         3wzWBvOaAEiX9Q7ZUOTPUz21Wr1TG0MCM4dJXdwXKl/jzG2Ra89v1FR1jYFtnu3AefLa
-         YNtCycDjHnYJbxWleV+s2QmNEBbkAmaP/PORXevExjT0bVxTAAyKDuQLHsvRnUVOTLGH
-         4i9zie9VX1aNZZ3cVLu8YG30ALVwIkuWN4khpEkoigccki3T4PRSKqkjyJatcxwf5F4w
-         QyNiDufA4rmD/f7+I3IpVVh1Kaea1c22prrp0ngU/Pkqej45pkDkL1ND+eZyHRTAmjgF
-         txmw==
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pVeqkDU6Pe0V44g82b4S8789DkU8hG1cPGob5Q67YzE=;
+        b=DT24bJGsgjqQBHM1cvC8mLd/SULp/XMc9HSL3YVCiXmP62+WGpyQvb4qtBtwH45bK0
+         90d9C8tw7UD7SaTkA29nSYPpstm52OTey3k0VbBqjBAy0Yo2XjTjZPEJ00Rm604ZBcoH
+         P0lRwvYzkIEBLPabNHgkI86polOotAahsRRmUskHkvU/U5lwxISGwI0l22nlJcYunvxR
+         k42e05dXZkLvd6eMsO3OpQwpLvqkcN6UUJ91GaLySUGSQYMU8xrWWT+hQl4I+k+mFp1c
+         prBOvKn1Z57kEnWbWyPARhUsjfQAF1ttGarpjzpILBQYrNAX1EDfksakWt4nuF0Y7cZk
+         Cvlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nLs2TAH/QuzR93RizayFXReGTRS2ZHOOTjuVGeiE3ZU=;
-        b=IGLeIKSjMvmWwHkuB/rViOEXcLFTYm9GNppoMmRxFCcnn6JHbSFOfb9tuhep0R96gl
-         7UJ8pNKnLP8+EMbaASBEPMmUz20aC7Y5ruBelhDr37dLYlH3AHUJEQp5zP+miC3Cq7Kd
-         TvUynuZYjZ8nzzeow8wvodaZFjIh7DnFjZR86EfEb+0/7PXFY6LceJn0MD4tBtOC3S4E
-         KejSiuzlApFi94K72Ccjpt+jGMEKi9LGi2iv9xyotAKi00krQyNHV3n6CSJBcjomf0Rt
-         YW5vrruNNQQQWDw8O0jUfW1FI2Q+CoBMeJxDAJmcEvUrNJsohzfQW7eON8WrjcTlPp9S
-         c7FQ==
-X-Gm-Message-State: ANoB5pnOM1PHv9493ILPpG+kVIaBGqhpdAxL9Znt8meCseBqz1Zru1FU
-        Os4wgy2tx9DA0rwq2Ty5QcXPfcV6vxHJ/xGz5hkBtQjNb4Q=
-X-Google-Smtp-Source: AA0mqf4GBN5NiBSCinefezWHA2mnLOACbi/xZR2eSfEitPrAjEjgC6YhnTLLZmM5GvmeO40zBHorUx/W1P9VImpNzaM=
-X-Received: by 2002:a17:906:9453:b0:78d:88c7:c1bf with SMTP id
- z19-20020a170906945300b0078d88c7c1bfmr7352645ejx.299.1668339548669; Sun, 13
- Nov 2022 03:39:08 -0800 (PST)
-MIME-Version: 1.0
-From:   Wei Chen <harperchen1110@gmail.com>
-Date:   Sun, 13 Nov 2022 19:38:32 +0800
-Message-ID: <CAO4mrfdLsMZT1ytmTCK4m0xXezxskTUbQjqZoGobMVhnZgdfmw@mail.gmail.com>
-Subject: WARNING in _btrfs_ioctl_set_received_subvol
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pVeqkDU6Pe0V44g82b4S8789DkU8hG1cPGob5Q67YzE=;
+        b=bTQCmPtrcfwNqt/OPrNDCY84VV7TnTIJz4/7t9BFudJl/ZLAI6rdRfII5w7uGraeLE
+         6HUYovDvFAGCVSXLnyk/+cAcM3HSxTeQBDrMG+h5Gg+NLWz3bEtd/11c8D/xM+l8jhKy
+         eQAm+jY5kpbkbxRp3mLGBoIB2eh1Oan4nvqsmmhfUYlF1Se8Tu3SWvLreO696Vp7XbVp
+         x7uD0jXnF2yCwGesqPm0hCEc47TDOKojX0QZ9rJkRj+8X0b17/08LaHqlzKaNQ0gYkRw
+         MSKi3coaO2pGq95+UtEm5kqS8xxwrD1YgiMUrKiVci/C6IPW8sEEzZA8+HeTDMcZJL98
+         Vnvg==
+X-Gm-Message-State: ANoB5pnR29dMAiyLV73BQMKynFrDjrDk9+l54QEDDxCq+ZvHDNYqFSgJ
+        gK+kkYF3NwUm1VsJqf8btS0U9tJpXZM+gg==
+X-Google-Smtp-Source: AA0mqf7eQyQrLqqUUPans7Y7cEkQ55QUm/pBDXKFZQ9sgYT+hMV11BTYgrGJpMPd0A/U0MZ1v42fSA==
+X-Received: by 2002:a17:90b:795:b0:212:c877:e948 with SMTP id l21-20020a17090b079500b00212c877e948mr10576357pjz.39.1668353777835;
+        Sun, 13 Nov 2022 07:36:17 -0800 (PST)
+Received: from zlke.localdomain ([113.65.205.42])
+        by smtp.gmail.com with ESMTPSA id a4-20020a170902ecc400b001869f2120a5sm5355660plh.34.2022.11.13.07.36.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 13 Nov 2022 07:36:17 -0800 (PST)
+From:   Li Zhang <zhanglikernel@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Li Zhang <zhanglikernel@gmail.com>
+Subject: [PATCH] btrfs: scrub: expand scrub block size for data range scrub
+Date:   Sun, 13 Nov 2022 23:35:28 +0800
+Message-Id: <1668353728-22636-1-git-send-email-zhanglikernel@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,69 +65,779 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Linux Developer,
+[implement]
+1. Add the member checksum_error to the scrub_sector,
+which indicates the checksum error of the sector
 
-Recently when using our tool to fuzz kernel, the following crash was
-triggered. The bug persists in Linux 6.0.
+2. Use scrub_find_btrfs_ordered_sum to find the desired
+btrfs_ordered_sum containing address logic, in
+scrub_sectors_for_parity and scrub_sectors, call
+Scrub_find_btrfs_ordered_sum finds the
+btrfs_ordered_sum containing the current logical address, and
+Calculate the exact checksum later.
 
-HEAD commit:  4f5365f77018  Linux 5.15.76
-git tree: stable
-compiler: gcc 7.5.0
-console output:
-https://drive.google.com/file/d/1wkzu8jz6edriSP6TpsCGYD5AzkLajIEv/view?usp=share_link
-kernel config: https://drive.google.com/file/d/1flhc33savDkmYN6PRU5C2vXDX0LAKMvM/view?usp=share_link
-C reproducer: https://drive.google.com/file/d/1zKWsWAOcaHfPKewTG6P3pnnVfwH_WXa9/view?usp=share_link
-Syz reproducer:
-https://drive.google.com/file/d/1jUR8_6Re4xpJhyLdXqPiiV72WT-Tk8A-/view?usp=share_link
+3. In the scrub_checksum_data function,
+we should check all sectors in the scrub_block.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: Wei Chen <harperchen1110@gmail.com>
+4. The job of the scrub_handle_errored_block
+function is to count the number of error and
+repair sectors if they can be repaired.
 
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000007
-R13: 0000000000000000 R14: 000000000077bf80 R15: 00007ffd3c817900
- </TASK>
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 29222 at fs/btrfs/ioctl.c:4521
-_btrfs_ioctl_set_received_subvol+0x221/0x430 fs/btrfs/ioctl.c:4521
-Modules linked in:
-CPU: 1 PID: 29222 Comm: syz-executor.0 Not tainted 5.15.76 #5
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
-RIP: 0010:_btrfs_ioctl_set_received_subvol+0x221/0x430 fs/btrfs/ioctl.c:4521
-Code: e8 74 34 44 ff 83 fb fb 0f 84 de 01 00 00 83 fb e2 0f 84 d5 01
-00 00 e8 5d 34 44 ff 89 de 48 c7 c7 c0 f8 39 85 e8 9f dc 2e ff <0f> 0b
-e8 48 34 44 ff 89 d9 ba a9 11 00 00 e9 45 01 00 00 49 8b 4f
-RSP: 0018:ffffc9000aecfd40 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: fffffffffffffff4 RCX: ffffc900013ed000
-RDX: 0000000000040000 RSI: ffffffff812d935c RDI: 00000000ffffffff
-RBP: ffffc9000aecfda0 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffc9000aecfbe0 R11: 0000000000000003 R12: ffff888014210400
-R13: ffff8880208d2000 R14: ffff88810c4f21c0 R15: ffff88810f37b600
-FS:  00007f41ffc27700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fab915f7008 CR3: 000000002096e000 CR4: 00000000003526e0
-Call Trace:
- <TASK>
- btrfs_ioctl_set_received_subvol_32 fs/btrfs/ioctl.c:4584 [inline]
- btrfs_ioctl+0x2154/0x3d50 fs/btrfs/ioctl.c:5007
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:874 [inline]
- __se_sys_ioctl fs/ioctl.c:860 [inline]
- __x64_sys_ioctl+0xb6/0x100 fs/ioctl.c:860
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x61/0xcb
-RIP: 0033:0x4697f9
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f41ffc26c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000077bf80 RCX: 00000000004697f9
-RDX: 0000000020072c40 RSI: 00000000c0c09425 RDI: 0000000000000005
-RBP: 00007f41ffc26c80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000007
-R13: 0000000000000000 R14: 000000000077bf80 R15: 00007ffd3c817900
- </TASK>
+The function enters the wrong scrub_block, and
+the overall process is as follows
 
-Best,
-Wei
+1) Check the scrub_block again, check again if the error is gone.
+
+2) Check the corresponding mirror scrub_block, if there is no error,
+Fix bad sblocks with mirror scrub_block.
+
+3) If no error-free scrub_block is found, repair it sector by sector.
+
+One difficulty with this function is rechecking the scrub_block.
+
+Imagine this situation, if a sector is checked the first time
+without errors, butthe recheck returns an error. What should
+we do, this patch only fixes the bug that the sector first
+appeared (As in the case where the scrub_block
+contains only one scrub_sector).
+
+Another reason to only handle the first error is,
+If the device goes bad, the recheck function will report more and
+more errors,if we want to deal with the errors in the recheck,
+you need to recheck again and again, which may lead to
+Stuck in scrub_handle_errored_block for a long time.
+
+So rechecked bug reports will only be corrected in the
+next scrub.
+
+[test]
+I designed two test scripts based on the fstest project,
+the output is the same as the case where the scrub_block
+contains only one scrub sector,
+
+1. There are two situations in raid1,
+raid1c3 and raid1c4. If an error occurs in
+different sectors of the sblock, the error can be corrected.
+
+An error is uncorrectable if all errors occur in the same
+scrub_sector in the scrub_block.
+
+2. For raid6, if more than 2 stripts are damaged and the error
+cannot be repaired, a batch read error will also be reported.
+
+Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
+---
+ fs/btrfs/scrub.c | 385 ++++++++++++++++++++++++++++++-------------------------
+ 1 file changed, 210 insertions(+), 175 deletions(-)
+
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 196c4c6..5ca9f43 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -72,6 +72,7 @@ struct scrub_sector {
+ 	atomic_t		refs;
+ 	unsigned int		have_csum:1;
+ 	unsigned int		io_error:1;
++	unsigned int		checksum_error:1;
+ 	u8			csum[BTRFS_CSUM_SIZE];
+ 
+ 	struct scrub_recover	*recover;
+@@ -252,6 +253,7 @@ static void detach_scrub_page_private(struct page *page)
+ #endif
+ }
+ 
++
+ static struct scrub_block *alloc_scrub_block(struct scrub_ctx *sctx,
+ 					     struct btrfs_device *dev,
+ 					     u64 logical, u64 physical,
+@@ -404,7 +406,7 @@ static int scrub_write_sector_to_dev_replace(struct scrub_block *sblock,
+ static void scrub_parity_put(struct scrub_parity *sparity);
+ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 			 u64 physical, struct btrfs_device *dev, u64 flags,
+-			 u64 gen, int mirror_num, u8 *csum,
++			 u64 gen, int mirror_num,
+ 			 u64 physical_for_dev_replace);
+ static void scrub_bio_end_io(struct bio *bio);
+ static void scrub_bio_end_io_worker(struct work_struct *work);
+@@ -420,6 +422,10 @@ static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
+ static void scrub_wr_bio_end_io(struct bio *bio);
+ static void scrub_wr_bio_end_io_worker(struct work_struct *work);
+ static void scrub_put_ctx(struct scrub_ctx *sctx);
++static int scrub_find_btrfs_ordered_sum(struct scrub_ctx *sctx, u64 logical,
++					struct btrfs_ordered_sum **order_sum);
++static int scrub_get_sblock_checksum_error(struct scrub_block *sblock);
++
+ 
+ static inline int scrub_is_page_on_raid56(struct scrub_sector *sector)
+ {
+@@ -991,19 +997,18 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 	struct btrfs_fs_info *fs_info;
+ 	u64 logical;
+ 	unsigned int failed_mirror_index;
+-	unsigned int is_metadata;
+-	unsigned int have_csum;
+ 	/* One scrub_block for each mirror */
+ 	struct scrub_block *sblocks_for_recheck[BTRFS_MAX_MIRRORS] = { 0 };
+ 	struct scrub_block *sblock_bad;
+ 	int ret;
+ 	int mirror_index;
+ 	int sector_num;
+-	int success;
+ 	bool full_stripe_locked;
+ 	unsigned int nofs_flag;
+ 	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
+ 				      DEFAULT_RATELIMIT_BURST);
++	int correct_error = 0;
++	int uncorrect_error = 0;
+ 
+ 	BUG_ON(sblock_to_check->sector_count < 1);
+ 	fs_info = sctx->fs_info;
+@@ -1023,9 +1028,6 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 	logical = sblock_to_check->logical;
+ 	ASSERT(sblock_to_check->mirror_num);
+ 	failed_mirror_index = sblock_to_check->mirror_num - 1;
+-	is_metadata = !(sblock_to_check->sectors[0]->flags &
+-			BTRFS_EXTENT_FLAG_DATA);
+-	have_csum = sblock_to_check->sectors[0]->have_csum;
+ 
+ 	if (!sctx->is_dev_replace && btrfs_repair_one_zone(fs_info, logical))
+ 		return 0;
+@@ -1054,7 +1056,8 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 		if (ret == -ENOMEM)
+ 			sctx->stat.malloc_errors++;
+ 		sctx->stat.read_errors++;
+-		sctx->stat.uncorrectable_errors++;
++		sctx->stat.uncorrectable_errors += scrub_get_sblock_checksum_error(sblock_to_check);
++		sctx->stat.uncorrectable_errors += sblock_to_check->header_error;
+ 		spin_unlock(&sctx->stat_lock);
+ 		return ret;
+ 	}
+@@ -1104,7 +1107,10 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 			spin_lock(&sctx->stat_lock);
+ 			sctx->stat.malloc_errors++;
+ 			sctx->stat.read_errors++;
+-			sctx->stat.uncorrectable_errors++;
++			sctx->stat.uncorrectable_errors +=
++				scrub_get_sblock_checksum_error(sblock_to_check);
++			sctx->stat.uncorrectable_errors +=
++				sblock_to_check->header_error;
+ 			spin_unlock(&sctx->stat_lock);
+ 			btrfs_dev_stat_inc_and_print(dev, BTRFS_DEV_STAT_READ_ERRS);
+ 			goto out;
+@@ -1116,7 +1122,8 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 	if (ret) {
+ 		spin_lock(&sctx->stat_lock);
+ 		sctx->stat.read_errors++;
+-		sctx->stat.uncorrectable_errors++;
++		sctx->stat.uncorrectable_errors += scrub_get_sblock_checksum_error(sblock_to_check);
++		sctx->stat.uncorrectable_errors += sblock_to_check->header_error;
+ 		spin_unlock(&sctx->stat_lock);
+ 		btrfs_dev_stat_inc_and_print(dev, BTRFS_DEV_STAT_READ_ERRS);
+ 		goto out;
+@@ -1138,7 +1145,8 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 		 * the cause)
+ 		 */
+ 		spin_lock(&sctx->stat_lock);
+-		sctx->stat.unverified_errors++;
++		sctx->stat.unverified_errors += scrub_get_sblock_checksum_error(sblock_to_check);
++		sctx->stat.unverified_errors += sblock_to_check->header_error;
+ 		sblock_to_check->data_corrected = 1;
+ 		spin_unlock(&sctx->stat_lock);
+ 
+@@ -1147,22 +1155,7 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 		goto out;
+ 	}
+ 
+-	if (!sblock_bad->no_io_error_seen) {
+-		spin_lock(&sctx->stat_lock);
+-		sctx->stat.read_errors++;
+-		spin_unlock(&sctx->stat_lock);
+-		if (__ratelimit(&rs))
+-			scrub_print_warning("i/o error", sblock_to_check);
+-		btrfs_dev_stat_inc_and_print(dev, BTRFS_DEV_STAT_READ_ERRS);
+-	} else if (sblock_bad->checksum_error) {
+-		spin_lock(&sctx->stat_lock);
+-		sctx->stat.csum_errors++;
+-		spin_unlock(&sctx->stat_lock);
+-		if (__ratelimit(&rs))
+-			scrub_print_warning("checksum error", sblock_to_check);
+-		btrfs_dev_stat_inc_and_print(dev,
+-					     BTRFS_DEV_STAT_CORRUPTION_ERRS);
+-	} else if (sblock_bad->header_error) {
++	if (sblock_to_check->header_error && sblock_bad->header_error) {
+ 		spin_lock(&sctx->stat_lock);
+ 		sctx->stat.verify_errors++;
+ 		spin_unlock(&sctx->stat_lock);
+@@ -1175,8 +1168,48 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 		else
+ 			btrfs_dev_stat_inc_and_print(dev,
+ 				BTRFS_DEV_STAT_CORRUPTION_ERRS);
++	} else if (sblock_to_check->header_error && !sblock_bad->header_error) {
++		spin_lock(&sctx->stat_lock);
++		sctx->stat.unverified_errors++;
++		spin_unlock(&sctx->stat_lock);
++	} else if (!sblock_to_check->header_error && sblock_bad->header_error) {
++		sblock_bad->header_error = 0;
++	} else {
++		for (sector_num = 0; sector_num < sblock_bad->sector_count; sector_num++) {
++			struct scrub_sector *bad_sector = sblock_bad->sectors[sector_num];
++			struct scrub_sector *check_sector = sblock_to_check->sectors[sector_num];
++
++			if (bad_sector->io_error || check_sector->io_error) {
++				spin_lock(&sctx->stat_lock);
++				sctx->stat.read_errors++;
++				spin_unlock(&sctx->stat_lock);
++				if (__ratelimit(&rs))
++					scrub_print_warning("i/o error", sblock_to_check);
++				btrfs_dev_stat_inc_and_print(dev, BTRFS_DEV_STAT_READ_ERRS);
++			} else if (check_sector->checksum_error && bad_sector->checksum_error) {
++				spin_lock(&sctx->stat_lock);
++				sctx->stat.csum_errors++;
++				spin_unlock(&sctx->stat_lock);
++				if (__ratelimit(&rs))
++					scrub_print_warning("checksum error", sblock_to_check);
++				btrfs_dev_stat_inc_and_print(dev,
++							BTRFS_DEV_STAT_CORRUPTION_ERRS);
++
++			} else if (check_sector->checksum_error && !bad_sector->checksum_error) {
++				spin_lock(&sctx->stat_lock);
++				sctx->stat.unverified_errors++;
++				spin_unlock(&sctx->stat_lock);
++			} else if (!check_sector->checksum_error && bad_sector->checksum_error) {
++				struct scrub_sector *temp_sector = sblock_bad->sectors[sector_num];
++
++				sblock_bad->sectors[sector_num]
++					= sblock_to_check->sectors[sector_num];
++				sblock_to_check->sectors[sector_num] = temp_sector;
++			}
++		}
+ 	}
+ 
++
+ 	if (sctx->readonly) {
+ 		ASSERT(!sctx->is_dev_replace);
+ 		goto out;
+@@ -1233,18 +1266,23 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 		    sblock_other->no_io_error_seen) {
+ 			if (sctx->is_dev_replace) {
+ 				scrub_write_block_to_dev_replace(sblock_other);
+-				goto corrected_error;
++				correct_error += scrub_get_sblock_checksum_error(sblock_bad);
++				correct_error += sblock_bad->header_error;
++				goto error_summary;
+ 			} else {
+ 				ret = scrub_repair_block_from_good_copy(
+ 						sblock_bad, sblock_other);
+-				if (!ret)
+-					goto corrected_error;
++				if (!ret) {
++					correct_error +=
++						scrub_get_sblock_checksum_error(sblock_bad);
++					correct_error += sblock_bad->header_error;
++					goto error_summary;
++				}
+ 			}
+ 		}
+ 	}
+ 
+-	if (sblock_bad->no_io_error_seen && !sctx->is_dev_replace)
+-		goto did_not_correct_error;
++
+ 
+ 	/*
+ 	 * In case of I/O errors in the area that is supposed to be
+@@ -1270,17 +1308,16 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 	 * mirror, even if other 512 byte sectors in the same sectorsize
+ 	 * area are unreadable.
+ 	 */
+-	success = 1;
+ 	for (sector_num = 0; sector_num < sblock_bad->sector_count;
+ 	     sector_num++) {
+ 		struct scrub_sector *sector_bad = sblock_bad->sectors[sector_num];
+ 		struct scrub_block *sblock_other = NULL;
+ 
+ 		/* Skip no-io-error sectors in scrub */
+-		if (!sector_bad->io_error && !sctx->is_dev_replace)
++		if (!(sector_bad->io_error || sector_bad->checksum_error) && !sctx->is_dev_replace)
+ 			continue;
+ 
+-		if (scrub_is_page_on_raid56(sblock_bad->sectors[0])) {
++		if (scrub_is_page_on_raid56(sector_bad)) {
+ 			/*
+ 			 * In case of dev replace, if raid56 rebuild process
+ 			 * didn't work out correct data, then copy the content
+@@ -1289,6 +1326,7 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 			 * sblock_for_recheck array to target device.
+ 			 */
+ 			sblock_other = NULL;
++			uncorrect_error++;
+ 		} else if (sector_bad->io_error) {
+ 			/* Try to find no-io-error sector in mirrors */
+ 			for (mirror_index = 0;
+@@ -1302,7 +1340,21 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 				}
+ 			}
+ 			if (!sblock_other)
+-				success = 0;
++				uncorrect_error++;
++		} else if (sector_bad->checksum_error) {
++			for (mirror_index = 0;
++			     mirror_index < BTRFS_MAX_MIRRORS &&
++			     sblocks_for_recheck[mirror_index]->sector_count > 0;
++			     mirror_index++) {
++				if (!sblocks_for_recheck[mirror_index]->sectors[sector_num]->io_error &&
++					!sblocks_for_recheck[mirror_index]->sectors[sector_num]->checksum_error) {
++					sblock_other = sblocks_for_recheck[mirror_index];
++					break;
++				}
++			}
++			if (!sblock_other) {
++				uncorrect_error++;
++			}
+ 		}
+ 
+ 		if (sctx->is_dev_replace) {
+@@ -1319,56 +1371,28 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 							      sector_num) != 0) {
+ 				atomic64_inc(
+ 					&fs_info->dev_replace.num_write_errors);
+-				success = 0;
+ 			}
+ 		} else if (sblock_other) {
+ 			ret = scrub_repair_sector_from_good_copy(sblock_bad,
+ 								 sblock_other,
+ 								 sector_num, 0);
+-			if (0 == ret)
++			if (0 == ret && sector_bad->io_error) {
++				correct_error++;
+ 				sector_bad->io_error = 0;
+-			else
+-				success = 0;
++			} else if (0 == ret && sector_bad->checksum_error) {
++				correct_error++;
++				sector_bad->checksum_error = 0;
++			} else {
++				uncorrect_error++;
++			}
+ 		}
+ 	}
+ 
+-	if (success && !sctx->is_dev_replace) {
+-		if (is_metadata || have_csum) {
+-			/*
+-			 * need to verify the checksum now that all
+-			 * sectors on disk are repaired (the write
+-			 * request for data to be repaired is on its way).
+-			 * Just be lazy and use scrub_recheck_block()
+-			 * which re-reads the data before the checksum
+-			 * is verified, but most likely the data comes out
+-			 * of the page cache.
+-			 */
+-			scrub_recheck_block(fs_info, sblock_bad, 1);
+-			if (!sblock_bad->header_error &&
+-			    !sblock_bad->checksum_error &&
+-			    sblock_bad->no_io_error_seen)
+-				goto corrected_error;
+-			else
+-				goto did_not_correct_error;
+-		} else {
+-corrected_error:
+-			spin_lock(&sctx->stat_lock);
+-			sctx->stat.corrected_errors++;
+-			sblock_to_check->data_corrected = 1;
+-			spin_unlock(&sctx->stat_lock);
+-			btrfs_err_rl_in_rcu(fs_info,
+-				"fixed up error at logical %llu on dev %s",
+-				logical, rcu_str_deref(dev->name));
+-		}
+-	} else {
+-did_not_correct_error:
+-		spin_lock(&sctx->stat_lock);
+-		sctx->stat.uncorrectable_errors++;
+-		spin_unlock(&sctx->stat_lock);
+-		btrfs_err_rl_in_rcu(fs_info,
+-			"unable to fixup (regular) error at logical %llu on dev %s",
+-			logical, rcu_str_deref(dev->name));
+-	}
++error_summary:
++	spin_lock(&sctx->stat_lock);
++	sctx->stat.uncorrectable_errors += uncorrect_error;
++	sctx->stat.corrected_errors += correct_error;
++	spin_unlock(&sctx->stat_lock);
+ 
+ out:
+ 	for (mirror_index = 0; mirror_index < BTRFS_MAX_MIRRORS; mirror_index++) {
+@@ -1513,10 +1537,10 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+ 			}
+ 			sector->flags = flags;
+ 			sector->generation = generation;
+-			sector->have_csum = have_csum;
++			sector->have_csum = original_sblock->sectors[sector_index]->have_csum;
+ 			if (have_csum)
+ 				memcpy(sector->csum,
+-				       original_sblock->sectors[0]->csum,
++				       original_sblock->sectors[sector_index]->csum,
+ 				       sctx->fs_info->csum_size);
+ 
+ 			scrub_stripe_index_and_offset(logical,
+@@ -1688,11 +1712,15 @@ static int scrub_repair_block_from_good_copy(struct scrub_block *sblock_bad,
+ 
+ 	for (i = 0; i < sblock_bad->sector_count; i++) {
+ 		int ret_sub;
+-
+-		ret_sub = scrub_repair_sector_from_good_copy(sblock_bad,
++		if (sblock_bad->sectors[i]->checksum_error == 1
++			&& sblock_good->sectors[i]->checksum_error == 0){
++			ret_sub = scrub_repair_sector_from_good_copy(sblock_bad,
+ 							     sblock_good, i, 1);
+-		if (ret_sub)
+-			ret = ret_sub;
++			if (ret_sub)
++				ret = ret_sub;
++		} else if (sblock_bad->sectors[i]->checksum_error == 1) {
++			ret = 1;
++		}
+ 	}
+ 
+ 	return ret;
+@@ -1984,22 +2012,46 @@ static int scrub_checksum_data(struct scrub_block *sblock)
+ 	u8 csum[BTRFS_CSUM_SIZE];
+ 	struct scrub_sector *sector;
+ 	char *kaddr;
++	int i;
++	int io_error = 0;
+ 
+ 	BUG_ON(sblock->sector_count < 1);
+-	sector = sblock->sectors[0];
+-	if (!sector->have_csum)
+-		return 0;
+-
+-	kaddr = scrub_sector_get_kaddr(sector);
+ 
+ 	shash->tfm = fs_info->csum_shash;
+ 	crypto_shash_init(shash);
++	for (i = 0; i < sblock->sector_count; i++) {
++		sector = sblock->sectors[i];
++		if (sector->io_error == 1) {
++			io_error = 1;
++			continue;
++		}
++		if (!sector->have_csum)
++			continue;
+ 
+-	crypto_shash_digest(shash, kaddr, fs_info->sectorsize, csum);
++		kaddr = scrub_sector_get_kaddr(sector);
++		crypto_shash_digest(shash, kaddr, fs_info->sectorsize, csum);
++		if (memcmp(csum, sector->csum, fs_info->csum_size)) {
++			sector->checksum_error = 1;
++			sblock->checksum_error = 1;
++		} else {
++			sector->checksum_error = 0;
++		}
++	}
++	return sblock->checksum_error | io_error;
++}
+ 
+-	if (memcmp(csum, sector->csum, fs_info->csum_size))
+-		sblock->checksum_error = 1;
+-	return sblock->checksum_error;
++static int scrub_get_sblock_checksum_error(struct scrub_block *sblock)
++{
++	int count = 0;
++	int i;
++
++	if (sblock == NULL)
++		return count;
++	for (i = 0; i < sblock->sector_count; i++) {
++		if (sblock->sectors[i]->checksum_error == 1)
++			count++;
++	}
++	return count;
+ }
+ 
+ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+@@ -2062,8 +2114,12 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+ 	}
+ 
+ 	crypto_shash_final(shash, calculated_csum);
+-	if (memcmp(calculated_csum, on_disk_csum, sctx->fs_info->csum_size))
++	if (memcmp(calculated_csum, on_disk_csum, sctx->fs_info->csum_size)) {
++		sblock->sectors[0]->checksum_error = 1;
+ 		sblock->checksum_error = 1;
++	} else {
++		sblock->sectors[0]->checksum_error = 0;
++	}
+ 
+ 	return sblock->header_error || sblock->checksum_error;
+ }
+@@ -2400,12 +2456,14 @@ static void scrub_missing_raid56_pages(struct scrub_block *sblock)
+ 
+ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 		       u64 physical, struct btrfs_device *dev, u64 flags,
+-		       u64 gen, int mirror_num, u8 *csum,
++		       u64 gen, int mirror_num,
+ 		       u64 physical_for_dev_replace)
+ {
+ 	struct scrub_block *sblock;
+ 	const u32 sectorsize = sctx->fs_info->sectorsize;
+ 	int index;
++	int have_csum;
++	struct btrfs_ordered_sum *order_sum = NULL;
+ 
+ 	sblock = alloc_scrub_block(sctx, dev, logical, physical,
+ 				   physical_for_dev_replace, mirror_num);
+@@ -2415,7 +2473,6 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 		spin_unlock(&sctx->stat_lock);
+ 		return -ENOMEM;
+ 	}
+-
+ 	for (index = 0; len > 0; index++) {
+ 		struct scrub_sector *sector;
+ 		/*
+@@ -2424,7 +2481,6 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 		 * more memory for PAGE_SIZE > sectorsize case.
+ 		 */
+ 		u32 l = min(sectorsize, len);
+-
+ 		sector = alloc_scrub_sector(sblock, logical, GFP_KERNEL);
+ 		if (!sector) {
+ 			spin_lock(&sctx->stat_lock);
+@@ -2435,11 +2491,25 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 		}
+ 		sector->flags = flags;
+ 		sector->generation = gen;
+-		if (csum) {
+-			sector->have_csum = 1;
+-			memcpy(sector->csum, csum, sctx->fs_info->csum_size);
+-		} else {
+-			sector->have_csum = 0;
++		if (flags & BTRFS_EXTENT_FLAG_DATA) {
++			if (order_sum == NULL ||
++				(order_sum->bytenr + order_sum->len <= logical)) {
++				order_sum = NULL;
++				have_csum = scrub_find_btrfs_ordered_sum(sctx, logical, &order_sum);
++			}
++			if (have_csum == 0) {
++				++sctx->stat.no_csum;
++				sector->have_csum = 0;
++			} else {
++				int order_csum_index;
++
++				sector->have_csum = 1;
++				order_csum_index = (logical-order_sum->bytenr)
++					>> sctx->fs_info->sectorsize_bits;
++				memcpy(sector->csum,
++					order_sum->sums + order_csum_index * sctx->fs_info->csum_size,
++					sctx->fs_info->csum_size);
++			}
+ 		}
+ 		len -= l;
+ 		logical += l;
+@@ -2571,7 +2641,8 @@ static void scrub_block_complete(struct scrub_block *sblock)
+ {
+ 	int corrupted = 0;
+ 
+-	if (!sblock->no_io_error_seen) {
++	if (!sblock->no_io_error_seen && !(sblock->sector_count > 0
++		&& (sblock->sectors[0]->flags & BTRFS_EXTENT_FLAG_DATA))) {
+ 		corrupted = 1;
+ 		scrub_handle_errored_block(sblock);
+ 	} else {
+@@ -2597,61 +2668,30 @@ static void scrub_block_complete(struct scrub_block *sblock)
+ 	}
+ }
+ 
+-static void drop_csum_range(struct scrub_ctx *sctx, struct btrfs_ordered_sum *sum)
+-{
+-	sctx->stat.csum_discards += sum->len >> sctx->fs_info->sectorsize_bits;
+-	list_del(&sum->list);
+-	kfree(sum);
+-}
+-
+ /*
+- * Find the desired csum for range [logical, logical + sectorsize), and store
+- * the csum into @csum.
++ * Find the desired btrfs_ordered_sum contain address logical, and store
++ * the result into @order_sum.
+  *
+  * The search source is sctx->csum_list, which is a pre-populated list
+- * storing bytenr ordered csum ranges.  We're responsible to cleanup any range
+- * that is before @logical.
++ * storing bytenr ordered csum ranges.
+  *
+- * Return 0 if there is no csum for the range.
+- * Return 1 if there is csum for the range and copied to @csum.
++ * Return 0 if there is no btrfs_ordered_sum contain the address logical.
++ * Return 1 if there is btrfs_order_sum contain the address logincal and copied to @order_sum.
+  */
+-static int scrub_find_csum(struct scrub_ctx *sctx, u64 logical, u8 *csum)
++static int scrub_find_btrfs_ordered_sum(struct scrub_ctx *sctx, u64 logical,
++					struct btrfs_ordered_sum **order_sum)
+ {
+ 	bool found = false;
++	struct btrfs_ordered_sum *sum;
+ 
+-	while (!list_empty(&sctx->csum_list)) {
+-		struct btrfs_ordered_sum *sum = NULL;
+-		unsigned long index;
+-		unsigned long num_sectors;
+-
+-		sum = list_first_entry(&sctx->csum_list,
+-				       struct btrfs_ordered_sum, list);
+-		/* The current csum range is beyond our range, no csum found */
++	list_for_each_entry(sum, &sctx->csum_list, list) {
++		/* no btrfs_ordered_sum found */
+ 		if (sum->bytenr > logical)
+ 			break;
+-
+-		/*
+-		 * The current sum is before our bytenr, since scrub is always
+-		 * done in bytenr order, the csum will never be used anymore,
+-		 * clean it up so that later calls won't bother with the range,
+-		 * and continue search the next range.
+-		 */
+-		if (sum->bytenr + sum->len <= logical) {
+-			drop_csum_range(sctx, sum);
++		if (sum->bytenr + sum->len <= logical)
+ 			continue;
+-		}
+-
+-		/* Now the csum range covers our bytenr, copy the csum */
+ 		found = true;
+-		index = (logical - sum->bytenr) >> sctx->fs_info->sectorsize_bits;
+-		num_sectors = sum->len >> sctx->fs_info->sectorsize_bits;
+-
+-		memcpy(csum, sum->sums + index * sctx->fs_info->csum_size,
+-		       sctx->fs_info->csum_size);
+-
+-		/* Cleanup the range if we're at the end of the csum range */
+-		if (index == num_sectors - 1)
+-			drop_csum_range(sctx, sum);
++		*order_sum = sum;
+ 		break;
+ 	}
+ 	if (!found)
+@@ -2669,7 +2709,6 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+ 	u64 src_physical = physical;
+ 	int src_mirror = mirror_num;
+ 	int ret;
+-	u8 csum[BTRFS_CSUM_SIZE];
+ 	u32 blocksize;
+ 
+ 	if (flags & BTRFS_EXTENT_FLAG_DATA) {
+@@ -2685,7 +2724,7 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+ 		if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
+ 			blocksize = map->stripe_len;
+ 		else
+-			blocksize = sctx->fs_info->nodesize;
++			blocksize = BTRFS_STRIPE_LEN;
+ 		spin_lock(&sctx->stat_lock);
+ 		sctx->stat.tree_extents_scrubbed++;
+ 		sctx->stat.tree_bytes_scrubbed += len;
+@@ -2709,17 +2748,9 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+ 				     &src_dev, &src_mirror);
+ 	while (len) {
+ 		u32 l = min(len, blocksize);
+-		int have_csum = 0;
+-
+-		if (flags & BTRFS_EXTENT_FLAG_DATA) {
+-			/* push csums to sbio */
+-			have_csum = scrub_find_csum(sctx, logical, csum);
+-			if (have_csum == 0)
+-				++sctx->stat.no_csum;
+-		}
+ 		ret = scrub_sectors(sctx, logical, l, src_physical, src_dev,
+ 				    flags, gen, src_mirror,
+-				    have_csum ? csum : NULL, physical);
++				    physical);
+ 		if (ret)
+ 			return ret;
+ 		len -= l;
+@@ -2733,12 +2764,14 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
+ 				  u64 logical, u32 len,
+ 				  u64 physical, struct btrfs_device *dev,
+-				  u64 flags, u64 gen, int mirror_num, u8 *csum)
++				  u64 flags, u64 gen, int mirror_num)
+ {
+ 	struct scrub_ctx *sctx = sparity->sctx;
+ 	struct scrub_block *sblock;
+ 	const u32 sectorsize = sctx->fs_info->sectorsize;
+ 	int index;
++	struct btrfs_ordered_sum *order_sum = NULL;
++	int have_csum;
+ 
+ 	ASSERT(IS_ALIGNED(len, sectorsize));
+ 
+@@ -2770,11 +2803,24 @@ static int scrub_sectors_for_parity(struct scrub_parity *sparity,
+ 		list_add_tail(&sector->list, &sparity->sectors_list);
+ 		sector->flags = flags;
+ 		sector->generation = gen;
+-		if (csum) {
+-			sector->have_csum = 1;
+-			memcpy(sector->csum, csum, sctx->fs_info->csum_size);
+-		} else {
+-			sector->have_csum = 0;
++		if (flags & BTRFS_EXTENT_FLAG_DATA) {
++			if (order_sum == NULL
++				|| (order_sum->bytenr + order_sum->len <= logical)) {
++				order_sum = NULL;
++				have_csum = scrub_find_btrfs_ordered_sum(sctx, logical, &order_sum);
++			}
++			if (have_csum == 0) {
++				sector->have_csum = 0;
++			} else {
++				int order_csum_index;
++
++				sector->have_csum = 1;
++				order_csum_index = (logical-order_sum->bytenr)
++					>> sctx->fs_info->sectorsize_bits;
++				memcpy(sector->csum,
++					order_sum->sums + order_csum_index * sctx->fs_info->csum_size,
++					sctx->fs_info->csum_size);
++			}
+ 		}
+ 
+ 		/* Iterate over the stripe range in sectorsize steps */
+@@ -2807,7 +2853,6 @@ static int scrub_extent_for_parity(struct scrub_parity *sparity,
+ {
+ 	struct scrub_ctx *sctx = sparity->sctx;
+ 	int ret;
+-	u8 csum[BTRFS_CSUM_SIZE];
+ 	u32 blocksize;
+ 
+ 	if (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state)) {
+@@ -2826,20 +2871,10 @@ static int scrub_extent_for_parity(struct scrub_parity *sparity,
+ 
+ 	while (len) {
+ 		u32 l = min(len, blocksize);
+-		int have_csum = 0;
+-
+-		if (flags & BTRFS_EXTENT_FLAG_DATA) {
+-			/* push csums to sbio */
+-			have_csum = scrub_find_csum(sctx, logical, csum);
+-			if (have_csum == 0)
+-				goto skip;
+-		}
+ 		ret = scrub_sectors_for_parity(sparity, logical, l, physical, dev,
+-					     flags, gen, mirror_num,
+-					     have_csum ? csum : NULL);
++					     flags, gen, mirror_num);
+ 		if (ret)
+ 			return ret;
+-skip:
+ 		len -= l;
+ 		logical += l;
+ 		physical += l;
+@@ -4148,7 +4183,7 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
+ 
+ 		ret = scrub_sectors(sctx, bytenr, BTRFS_SUPER_INFO_SIZE, bytenr,
+ 				    scrub_dev, BTRFS_EXTENT_FLAG_SUPER, gen, i,
+-				    NULL, bytenr);
++				    bytenr);
+ 		if (ret)
+ 			return ret;
+ 	}
+-- 
+1.8.3.1
+
