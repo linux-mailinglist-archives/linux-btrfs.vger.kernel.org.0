@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CBF627BCC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Nov 2022 12:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62687627BD5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Nov 2022 12:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236600AbiKNLMw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Nov 2022 06:12:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
+        id S236684AbiKNLOi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Nov 2022 06:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236619AbiKNLM1 (ORCPT
+        with ESMTP id S236415AbiKNLOK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Nov 2022 06:12:27 -0500
+        Mon, 14 Nov 2022 06:14:10 -0500
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5114C25C58;
-        Mon, 14 Nov 2022 03:09:03 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MlNp7-1pOclR2l8H-00ll4G; Mon, 14
- Nov 2022 12:08:57 +0100
-Message-ID: <4bb1fde6-5853-8a4f-bf9d-1488d6e92283@gmx.com>
-Date:   Mon, 14 Nov 2022 19:08:53 +0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89BD227B36;
+        Mon, 14 Nov 2022 03:09:47 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MK3Rm-1oflso0AoA-00LYnB; Mon, 14
+ Nov 2022 12:09:40 +0100
+Message-ID: <8df079ab-d0a6-abf8-4c87-c820c148d134@gmx.com>
+Date:   Mon, 14 Nov 2022 19:09:36 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.0
-Subject: Re: [PATCH v2 2/3] btrfs/053: fix test failure when running with
+Subject: Re: [PATCH v2 3/3] btrfs: fix failure of tests that use defrag on
  btrfs-progs v6.0+
 Content-Language: en-US
 To:     fdmanana@kernel.org, fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <cover.1668011940.git.fdmanana@suse.com>
- <793a063833727ea80a1d0c6f13f531cff9581a1a.1668011940.git.fdmanana@suse.com>
+References: <cover.1668011769.git.fdmanana@suse.com>
+ <e393451cb53b6b81804eaa41c6461b07a910eb62.1668011769.git.fdmanana@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <793a063833727ea80a1d0c6f13f531cff9581a1a.1668011940.git.fdmanana@suse.com>
+In-Reply-To: <e393451cb53b6b81804eaa41c6461b07a910eb62.1668011769.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:VX7s9hHmHQjEo7sjOh1hWMAw3jRAzaVOJ/YSD8a8U1rYmqxyNP8
- PB+OIOCWtF7DksuT33L31YpmwPYIRDht/HH2h8U2Tv5/laRpnbb9agnezlVnG1VSEJpXcTU
- aClt5swgZP1QfJ/FvtaI9EhHnUreoOyM/D21c7HRhECh9H6V2VfHiLR2iw55E6NdbbSOLVv
- TLPIZxqFx1QNxFpL4FoKg==
-UI-OutboundReport: notjunk:1;M01:P0:VAIM9Of5FCI=;BinJvHbyM1462vZBBifVm/T1SA4
- UmJYB9OSP0/r8+oXBtgBJMYpOSIQANLWYF2MifV8quxsE5I9rrbC/AYZuwvDQXNCmSBuuSl2U
- XKLHVYXlPbSXhqRrMzT6mgB/01+Bh23UrmLQdQiyCb/oE9cSkILWdHCBY2lmiu9WdYLjK6IEM
- nYozV/Y/quUjHPB9B3Z4J1gD6sRQz6p6Pl8SVObND8eJ6a+zGEVesfc/yNipNHHWfnLKCDwiN
- I7nK2ayzWnC6BRJ3DBMiBWej/f3cYFYnqgAlhJolsBMCSe0SSXJLAtP+NdfC50oiNiVTBKNzn
- B0riUrWYTzAj0FJ+bGOxnuqLljWNAGxn/c4HAN4DcL1tg+HAE6ZWHuTxYCSOb6k3+BfhSj4qE
- zC4HA420fU6BPx2LhgiIWTqZazBuZcVRKyOkYxGALTKCPhwvXyDvhrjpBD0Ec2PwVy5KNtvYD
- B+tj+CUQdAvIiUU+SAo3iBusk8QyckWpP+ztdhc5CwpFUfHtTUTrb7MpsAf7MreYyuC12koWe
- N6qbGRWmeQxSvpcTLb6ouKhh+19E3u2o/1wQOzmgAPXrOgrickch9MLrOJzjnvOHh+dnovdU3
- DILYTbt8C/TrAFwU9j8mW1yd2SFhqj+y7mdoqP/y3Qc1uEgzY5vphN4lpCTLs0809Cq117vXu
- wYGsGwgr7bFmoMn++s2tqJ0H7eKHl6wEstJbvgBSa9Ghb7fF17V3KyDw5KE5LU3QV+vWrGs2r
- 1E25i7+lNECdsWG67z43LfOosKv4h+U8pWR2iRFmBz1ljpbR6N7H/Fyg0/uSlBua6buFVXrzq
- sGop/CCmDfRSuPZHGzrKsQtNCjc+zMP1R18BlnAgZPt6ePHdx+5aNA/IuERap8KWTx2dIbTwF
- qxg5MYvMxn8tqKS6wsZQySqpc2qx3edjme5kUgt7N/46T8L74udRRhn4j/pl3JI2TuFjQdRrp
- mlQ9r+a1s1umC57KOKRJF3oT+7U=
+X-Provags-ID: V03:K1:udFBzhd/liTTnkfRqQAKRctjk0xXxOqTuUU/TQtJ8wGQnn1BHJ+
+ htWQFQViXleupU77Ar0D9esOlhyZgR33soy6v56uUGu5Y5Fqjzl8dYBDjBwHJzZmW4OUe16
+ BXXck9InJ4oj8pvLvprLWZPYzz37N1tvlciF22LZ/rRFGeJpGFFqUYmVZbtL+EGSJ6o6H9M
+ GxlrzYG6gq7u5cRiXstxg==
+UI-OutboundReport: notjunk:1;M01:P0:LS8KAlstc3o=;TQAwZ/HWhJNL7FBmWptKwW0bML7
+ kQcqN9t7Lg5GfNhSfx4PiGY9olO47OMtab01ejgMx2hZw0mjb0/yo+59uktDLjfnLFCkX+eOZ
+ y5VjqHLXg2n6dHSG8qqXG6y2vZNmZvx2PZKFoef/TqBTCbXUX4Sj4suox4FhK9YhZ7TdF3rZs
+ rqaLvdjyLbRs6rLN8AQm8gbEMmNd5kMLsQbx35KAtVT8FRWWtbV5i9P7C4k5RiR/w04MybrwL
+ MP4q5h/qlRj5tBewUl2q+U+ltSkZAHugQhXX3kIVAOw4SlDMWp8dsQTWEu3auo3AVPCVq20iI
+ xVfcghgg512uCScEpZFiirJGFPX4g3yvOfWs4z3KMcD8LJJS8ZeMWB4kXkJU2FWyfJ3lGKa1I
+ Ji2AcFTtunQ3p3+U+VXG+O9CAbTRoP3LWkiK3/V8g9Fnw7AsK0woXeRgkEvw3X5GZbIMyqbPC
+ fkG3iXYjfWN7QcbN5rkoXW2Oij0gweVLM+sTAfJG4vth0AIvVKs26aUXA+4w/a1TUNKVRQ43W
+ AVgo1jnhTnCG0+6gpFQqG8BDiS3DNj10AcF16B5zOT/XxWDZDHritcu49alqksnVP9XUJvB1R
+ gcPthd+7Z1ucXUbO+syxMY/A9jTGT+nSAyJ5scfY+6Y8HYXwlRgyJpFVqorKwkTVa1Z7+kpAo
+ mf/C4Q/8Baw/D9G7EJGJeTZjo+3Lker8B9Dv/Q0p9KfMlTIdufZYqR9EbcQxeBJhn1op56Oqd
+ gS1ww0zLeuyl5F0AkKtAeZ+nmnS/Z4tRvT1WpJooBxHeqUOHzK+0sgeNt42bd43nz1Sc6iILq
+ DmYIyZLajfaTEq3m/hr2RBv09hc3w2upTAAc4j3ObNtYq/75F1ln1TggloSzfvvD5Epr7SMIY
+ IcwTyH33428Vq2zex7KUhXR/cJP9wchhSYxCMmVUMn1xLNrVLS3xa3evDG6uzoCyunRQ5YiNw
+ d2ImkF/DqifnLe8MYD/qq990gII=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -67,18 +67,16 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 2022/11/10 00:44, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> In btrfs-progs v6.0 the --leafsize (-l) command line option was removed
-> from mkfs.btrfs, so btrfs/053 can fail with v6.0+ in case the scratch
-> device does not have a btrfs filesystem created before running the test,
-> in which case mounting the scratch device fails.
+> Starting with btrfs-progs v6.0, the defrag command now prints to stdout
+> the full path of the files it processes. This makes test cases btrfs/021
+> and btrfs/256 fail because they don't expect any output from the defrag
+> command.
 > 
-> The change was introduced by the following btrfs-progs commit:
+> The change happened with the following commit in btrfs-progs:
 > 
->    f7a768d62498 ("btrfs-progs: mkfs: remove support for option --leafsize")
+>    dd724f21803d ("btrfs-progs: add logic to handle LOG_DEFAULT messages")
 > 
-> Change the test to use --nodesize (-n) instead, since it exists in both
-> old and new btrfs-progs versions. Also redirect mkfs output to the test's
-> log file and fail explicitly if mkfs failed.
+> So update the tests to ignore the stdout of the defrag command.
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -87,28 +85,38 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   tests/btrfs/053 | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>   tests/btrfs/021 | 4 +++-
+>   tests/btrfs/256 | 4 +++-
+>   2 files changed, 6 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tests/btrfs/053 b/tests/btrfs/053
-> index fbd2e7d9..67239f10 100755
-> --- a/tests/btrfs/053
-> +++ b/tests/btrfs/053
-> @@ -44,7 +44,7 @@ send_files_dir=$TEST_DIR/btrfs-test-$seq
->   rm -fr $send_files_dir
->   mkdir $send_files_dir
+> diff --git a/tests/btrfs/021 b/tests/btrfs/021
+> index 5943da2f..1b55834a 100755
+> --- a/tests/btrfs/021
+> +++ b/tests/btrfs/021
+> @@ -22,8 +22,10 @@ run_test()
 >   
-> -_scratch_mkfs "-l $leaf_size" >/dev/null 2>&1
-> +_scratch_mkfs "--nodesize $leaf_size" >> $seqres.full 2>&1 || _fail "mkfs failed"
->   _scratch_mount
+>   	sleep 0.5
 >   
->   echo "hello world" > $SCRATCH_MNT/foobar
-> @@ -72,7 +72,7 @@ _run_btrfs_util_prog send -p $SCRATCH_MNT/mysnap1 -f $send_files_dir/2.snap \
->   _scratch_unmount
->   _check_scratch_fs
+> +	# In new versions of btrfs-progs (6.0+), the defrag command outputs to
+> +	# stdout the path of the files it operates on. So ignore that.
+>   	find $SCRATCH_MNT -type f -print0 | xargs -0 \
+> -	$BTRFS_UTIL_PROG filesystem defrag -f
+> +		$BTRFS_UTIL_PROG filesystem defrag -f > /dev/null
 >   
-> -_scratch_mkfs "-l $leaf_size" >/dev/null 2>&1
-> +_scratch_mkfs "--nodesize $leaf_size" >> $seqres.full 2>&1 || _fail "mkfs failed"
->   _scratch_mount
+>   	sync
+>   	wait
+> diff --git a/tests/btrfs/256 b/tests/btrfs/256
+> index 1360c2c2..acbbc6fa 100755
+> --- a/tests/btrfs/256
+> +++ b/tests/btrfs/256
+> @@ -50,7 +50,9 @@ $FSSUM_PROG -A -f -w "$checksums_file" "$SCRATCH_MNT"
+>   # Now defrag each file.
+>   for sz in ${file_sizes[@]}; do
+>   	echo "Defragging file with $sz bytes..." >> $seqres.full
+> -	$BTRFS_UTIL_PROG filesystem defragment "$SCRATCH_MNT/f_$sz"
+> +	# In new versions of btrfs-progs (6.0+), the defrag command outputs to
+> +	# stdout the path of the files it operates on. So ignore that.
+> +	$BTRFS_UTIL_PROG filesystem defragment "$SCRATCH_MNT/f_$sz" > /dev/null
+>   done
 >   
->   _run_btrfs_util_prog receive -f $send_files_dir/1.snap $SCRATCH_MNT
+>   # Verify the checksums after the defrag operations.
