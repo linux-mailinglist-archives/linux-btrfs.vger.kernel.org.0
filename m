@@ -2,62 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD8062AE9F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 23:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAAF62AEB3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 23:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbiKOWuw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 17:50:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47756 "EHLO
+        id S231634AbiKOW5W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 17:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbiKOWuv (ORCPT
+        with ESMTP id S229797AbiKOW5U (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 17:50:51 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F40BCB;
-        Tue, 15 Nov 2022 14:50:50 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MORAU-1oamU70bWA-00PyO4; Tue, 15
- Nov 2022 23:50:29 +0100
-Message-ID: <8845454d-9942-8216-2f00-2bb12bad0e41@gmx.com>
-Date:   Wed, 16 Nov 2022 06:50:22 +0800
-MIME-Version: 1.0
+        Tue, 15 Nov 2022 17:57:20 -0500
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-eopbgr70045.outbound.protection.outlook.com [40.107.7.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801B62B606
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 14:57:17 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KrlAFcsVWmnMSqDRurZcjAavO5e/C6TgvHwLVfCQuWDY4+9XrHHLIxZGvbdHW/7Q0QF1T1s1Il0WOvDA2SW4t88l9C05G1RQzWUbKEN1oDvhbiek9FelNd7AowoTP5wZyKa8wE5kP84QBC0x8mGrT829yRz193TfdQpnIEOJm3ekY/nNx3dRfPT7sepGXFPiVJzeHr41l5dXRxfiJ4I33ujW3ff5dy1MoF4JNyJwSpaexftqbxDjHyUbxsoVNWAaWTz22K1rcVhYo669U8gMaE9fFEhD+1+KlGEQYNBYps19ZTnszD/B2hmopr4Ia0y1EQxM+iVMe7EZnEYU8t14PA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0jJggQM6L9Uf8t/dE73pkZn06Lm6J16Lqh+1Lg38p0o=;
+ b=OjlwoxetBCHM4r/8fP53TR7XWHZw2MlfZKnst+Lw22wWcmIkRTg7B8KRjmvArvdhspK94Td2zGN/FvHgkk0s7pIj2+hWBHMHjdFKLuSbv+Sp5wpc0St/WxEcv4kLIm8TgoQoHvCgUXmU6bmNL+RoWnkMk2ob5yDzrEMsxqxXX3x4LuWGkfxvYayoNL9pK2euWOE6WeXOxMKeY5Nw1sYHE0Ju4UkIlIAtoX0a008vmGimCYNSU06CZHnDihMy1yk31yPof99pYpEFh8edtdeLdKB8SEnGGiWOQUNl53UupM/Quap7BODvzkyN/SrNSSbDwDvO0irlBxpaR/BBrNy1CQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0jJggQM6L9Uf8t/dE73pkZn06Lm6J16Lqh+1Lg38p0o=;
+ b=H6ySxHUdWLpH/gFF9UGekQQ8116L/rTKInFxz6q6RuYDlne/hRc9q2kC6c+aCLT5qz4WS7amjJ8pOUm4KDbMm3VNULghOA1bCTfi7AQ577yueDtunIPUpaSkWaQV4oB+AcGYWnmJR75/pu3B9uNlJpRmLH1DCDmssO+2S5kzy5RYQWpXoTShNMGHEEzaVjQnlEzISC6StH2hgO8HWN3Rv7yiPLZyZVGWs7MRDkf89Mtxhkp7aiv0wos7C07oQYdTHDSj2HWOklOM0VjNkEfSpe36PWOasAYnFtMvcrDWz0HzylbwMvtPaC/0aWoCRn4LB8d0JUa/rCgBq1o8qDgIGw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
+ by AM9PR04MB8588.eurprd04.prod.outlook.com (2603:10a6:20b:43b::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.13; Tue, 15 Nov
+ 2022 22:57:15 +0000
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::b69e:7eea:21cc:54ab]) by AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::b69e:7eea:21cc:54ab%7]) with mapi id 15.20.5813.018; Tue, 15 Nov 2022
+ 22:57:15 +0000
+Message-ID: <77b0da75-8ef8-42d5-c8c5-bfd63bf7c4f0@suse.com>
+Date:   Wed, 16 Nov 2022 06:57:04 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.0
-Subject: Re: [PATCH v4 3/3] btrfs: qgroup: fix sleep from invalid context bug
- in update_qgroup_limit_item()
 Content-Language: en-US
-To:     ChenXiaoSong <chenxiaosong2@huawei.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhangxiaoxu5@huawei.com, yanaijie@huawei.com, wqu@suse.com
-References: <20221115171709.3774614-1-chenxiaosong2@huawei.com>
- <20221115171709.3774614-4-chenxiaosong2@huawei.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20221115171709.3774614-4-chenxiaosong2@huawei.com>
+To:     li zhang <zhanglikernel@gmail.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <1668353728-22636-1-git-send-email-zhanglikernel@gmail.com>
+ <f5cceda5-e887-0807-7331-12382b45ea29@gmx.com>
+ <CAAa-AGmQpL34eG8yx3bg8FYcbbOOjb3o8fb5YEocRbRPH1=NBw@mail.gmail.com>
+ <11a71790-de79-3c2f-97f3-b97305b99378@gmx.com>
+ <a4ebbed4-f75f-16d3-34d0-838d73d031f9@gmx.com>
+ <CAAa-AGmqmnKyQ_LgxB-oVnP+8tP9QChSq2M_SPhtgPQBxd3Skw@mail.gmail.com>
+From:   Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH] btrfs: scrub: expand scrub block size for data range
+ scrub
+In-Reply-To: <CAAa-AGmqmnKyQ_LgxB-oVnP+8tP9QChSq2M_SPhtgPQBxd3Skw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:qf4UcSkypubV65Z6pVPtMUkjo4L+Q7azP7Z8uLzXO8IYUD1jxMe
- 1qZwDgiKLUrnevm7tjsbzauTaB/07Gnr1EI9nzqmdOOfEjQ5EESP46Dl8hjkoutRpDdzXcv
- TGsvUv/J5E3SbX8AF7vUdPh0ngCREK2mwwrE3gDtQpN7Jqd+IMWG3ZB7qPYIlHGWT2xUJWD
- ra5CwJK+MTA62JGPoIwWg==
-UI-OutboundReport: notjunk:1;M01:P0:QrughL3YMH0=;KGDkQr7lOw5M29GsaFewPxfwPou
- wvWylbZp4VU6Sgef8yEUQDBYu97Xdez2rINtAfqsVeOumF4t2YuyWS1iuu+p3G7qvvuAJnFIA
- E8Ad0Dn77QSWXVFwNL3kUzWk8uxtxw7Sw0BUb75ivHX1hD7EVq9C41KuTjJbTAfH7EcGvhagl
- jYgwV2VZCaLbQPFoiUMiAT49QqCA5HtkapUjd+r376ZybFSyK4gbmk6vHxk8N4MI9AW6JAYgC
- IQaWXLNFAEzUeG0ElzyAnOqp2LaNQ1/kYmzpWNxY4cIgB565wFFZSzx9M4sZd6V48CF6t90Wi
- p0FUVLd2n8nkaVH28uWwpxx+JJGJ7dP86juOwtbfok/i7D5THrL0Qk4YlvyUAJIRfdGjk1U3j
- tzf6zHTQwCvn1qb4VI+ZFeL+1Fz5GLpfIRAVo4Ea52OSjZ6dAH1UolzJ0GRYp88hp+w9bvd8q
- YQRId1wZUrgZaBGsCIya9RP8oa6Sa2hgYfrJ2CtKsJXkcGV90j0Kt/dF0B76/03ZaLwAqWXvE
- IdTEXnCYkEfUq6UAUN2x2ab8thRki4QgfOd31r2GWyOoNc8TzPwr0GHP0+xcn7ZvQxkhyMP7Y
- BwmAP/eCwexTXYD0Qp1B4bpOn4mCgxm2Gu7Wl8qx7F+gMGL5eGpleAASjsLlKj5fk7dmzPfLG
- 8oyqtFXeqnRnJE9mxy4Js+ueWDjS+Wq8fDP91+TWtA+SCZsomKQ6du+ogbXA245TlF+FqADh7
- h58PcYCWX7xBKYM7R8oOPChORLy8sVeRlxIDNrqnLvj2GAtm0rW3P/HqgLtXFnB7+9wO/qr8o
- RhUzAeuIyMeKFW9koipoyW509qMkVjrZceTPiSfaOyoFUTQ8y7UDEft/KcaG58H8eIwSo1N0e
- hgday+Aw5zC77WWY8A6wAb6YCwpv0bdUB9vNX36EPL1VIh9mrlNnQe3qUCnhIhaKHIShOwsr/
- l979FJFl6Ef+Qv3M8jVvgCRCmtc=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BY3PR04CA0030.namprd04.prod.outlook.com
+ (2603:10b6:a03:217::35) To AS8PR04MB8465.eurprd04.prod.outlook.com
+ (2603:10a6:20b:348::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|AM9PR04MB8588:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6c25ed24-01c7-4b7d-8601-08dac75cbbee
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rt0fYDpYXUNwvWsrC95xp/5RU9pK8E4EPrrBqyQzEhxY/L9ZqvY3Zkan7dm50FdnPMB2VrVS+3AmvssjVyO8DpfVzyQqiXDgfSzL5lRMRsLkvTSVBjvOrLxBD7X22+GL1V2Mg9Rabqc7ds9zZeXAiNKtQFoUNNjO7VTGYHH5qoMA+UQUMnCAVct3tLnLD2imf4jzD8SSNzYB3EE8mEP5Iz1cLsU+TmWRhtaohwJDYdlsCQz9Y1wO5mvGZKFTOAuHBQG5dL9Nei9EBx5QalEkK1z1QR0z7sxJtgXeZwa/XupCQe4su42CiM9uVdUEjBOZwG+ky3DfcWPMiWg5QAJVp84F1wF1PLiHJaogyNgGYZgy39K+HUg4vK/pdeLkPc7VYDoqbJ0w3t56wqHit5FbSbsluRsVEflfzIKho9S3jKq2PhbZBbIFiWx+wbu03qrJkDhJ+vrj4gn4wcyo2Nzvzsc2tgIC2Yi7e7QsvLYYSS1e1irZUBSXX8mXk5tOOWWcAeXn5WOOXNYkFHw2OBYn8v3N9wkPdfTwKD36YfO3mZwQ8SasDTtnI/UDSPEM4ZdDUdnxiAaW2gtiFpB65lOW6DHuGP08ykAeLp+4yrNs7aTQQ1WJE6afbmwRPTM5j8ZK1s0wdZbJWuNdNiPVm6S7KsOeQBrfYnOKUTccQcKp2KaVk6zUjTrqmODneAx0V9D/Y0mjU7FYbKI53UmNvdZJHhua9epQ7tANbakVQBEcLy6c9qfRZj206zhkOUXpJ6MVEmZX0V1R4KQ22eFp/VRd5CV/NoPTK5aNltXPpVx9T06k5wfvHK01eKjzb9KMxTuV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(136003)(39860400002)(366004)(396003)(376002)(451199015)(41300700001)(36756003)(83380400001)(2906002)(110136005)(6506007)(316002)(6666004)(53546011)(86362001)(38100700002)(66476007)(66946007)(31696002)(8676002)(186003)(6512007)(5660300002)(66556008)(2616005)(31686004)(6486002)(8936002)(478600001)(518174003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVdNT1hIeENEZklXS2R5STRjTjdoWVlMdmczdHVCOTBJbEdHN2VRN3RBVGFm?=
+ =?utf-8?B?UVNZQ0dGQi85RENlU05VOVpraTZQVWZrTmx2Q2dNR3hlVE5vVmpTZGxKNHN5?=
+ =?utf-8?B?emgzTExRbThwam5Ec2pBY0Jla3dZeFZISmRuMkNJeUFhRXA2L1U2a1JQTys3?=
+ =?utf-8?B?VnI1NEgzNGE3MjFsMEowZ0o3VHBUdjBVUkRLM3Rja0Rya01OZCtSemF5Qkhi?=
+ =?utf-8?B?a05Yd3ZyelAvMGJ5SjdPNGdYSVBwRDF5Z2JjYXBkekF0Tk8vbHBWOE9kazJv?=
+ =?utf-8?B?MGJ6SzBYRkJXRi9BRWwzWFJTc003M0Q0R1UyaW41V0FZR2NMWWxNM1Jsd29q?=
+ =?utf-8?B?R0ZncGc3S2paK2VVYm9zcCtuSXRiNXExcWZkQjFMKzVsTEMzSC8zS0JUcEpk?=
+ =?utf-8?B?MjdpZGJ2ZTlJRjYxTDdnN1czN3NhbjZCZ1VsMDJHSWJiUDJYcFBvdnlaTTdz?=
+ =?utf-8?B?YkVtWHBGb2J0QlZHRzFJSUpJZUdlTklhNHFkL2VsSUhMZTErbHF5OCs2UUZW?=
+ =?utf-8?B?eDlMU3N4bE8rSGpTRnpQVHFoRVdGWDlFNDJJUm55NjNrTWprU0hhdzgvZUJK?=
+ =?utf-8?B?OUtEclRKSlBnUGJNZnU3UG9ZRUkvemVLMzhKczA4N0pUSzBySFdGdXJNVitr?=
+ =?utf-8?B?dWMzOWVPOG9SSC8yQ2VjSDRSNHRRTXU2a3RWbE9lZEI2QU5DUVRjTjNnZWdS?=
+ =?utf-8?B?ZE1RMzk1UTh1TXM0SGxsK2ZMUTZkQWpvMEVxUnV0dTQ5M2UrSW56aURpaSsx?=
+ =?utf-8?B?Y3UwQ2F1ZVFVVnhRRjZza2l5UEVvZTBSNUtubXZMbGNrVnptM0tHWTZxczVY?=
+ =?utf-8?B?QVNMajlkZGVoaUtPcE1Kb1hIWDF3cHUrR1JseFBybDVNdlRQRGVoR1g3clp6?=
+ =?utf-8?B?RTBucWFXUmttNU92TDhZb05UcW43Y2JibmFwVU5LVGFrZHBDY3hpa1JPTlQy?=
+ =?utf-8?B?dWxueGpwcnhlNU5GZnI4WTN2L3hQN3lRQXY5WlAwUjM5QnV1OVovTzYvS29u?=
+ =?utf-8?B?TlYrR0EyWG5Ib0VUQzhvMFRGalJxVmU0eUMyY2E0cGtYazdrUGFua2srRi9o?=
+ =?utf-8?B?eGpUUjEyYzY2aVVjUHplMTVPTEFPNjA1VGQxdGlZV05mZEs1RU5sNm5HTkFO?=
+ =?utf-8?B?cW5yVVVxM1pLbzRGL2xKMkUvSkxkSXBKUkNQcGdSeVNCREhSdW90MWVLMXZp?=
+ =?utf-8?B?TEtRQlBCaDgzcHF2SWplZitTS3BEL0g5bWJrNktmYXdTdHdudWlZR2lhZm4r?=
+ =?utf-8?B?bTBjOXFoNEFIZWRuM0dQd0wxcFp4NHJFM3pzN25TMStaaVc1NnErck1oR1lp?=
+ =?utf-8?B?TTdSVng0alRiOUxtRHdmeEp6dStzbVdudll1UDgvOFZsYjBKSU51WVY3Tktw?=
+ =?utf-8?B?d3FYSHkraWJFSGo4RU4zRm1YTUIyTmZCb1lVQlU5R2xJck5MRjQ0NmUvK2Q4?=
+ =?utf-8?B?cFhxOXFjNlBDY1hzdmdqM2xIa1MxeGFYZ0cyMUxoQjZXd3ZLN2IrWDRLTHhh?=
+ =?utf-8?B?MVR5OEZyWW9XTmRKWDIxSU9LZC9pdmdLNENrMGl2eG5JcGFQWTVsUmc3OXhV?=
+ =?utf-8?B?YWtzL2d6NDBESWlHWVlwQUw4UDNscjB6ZklGR1JrQzNaalpkMFRYYlBzbk8v?=
+ =?utf-8?B?czczZlpMRGdTR2QvTElZQkNIQmhBYVRQTGEwRWQ2TEVoRlNzY2xXTHZFY3VO?=
+ =?utf-8?B?dVZlT3MvNiszQ01jM1BrUUZIRi9zcjZoN0lwZ2RJQWd5U2FTZENaUlZFRUY3?=
+ =?utf-8?B?aE5peVo3YWYyTDBteHBtMjBaVkIzVTMreTZvWXZJbUp3U2h1MXZqUWlFV3Ba?=
+ =?utf-8?B?NnBkYytMQlhXMzNnRHVKT0w1N1lVN3NBMEVON2UvTWVKU3MrL3RPamRqci85?=
+ =?utf-8?B?ZnptdGk0TTYxRUJLK3dCdUpWbzN4dGtIZ0FjSWcxMU5ISjBmNzYyc09JMjRV?=
+ =?utf-8?B?M29VNTY3aHJoWUZtMzZTTjB2ZG56Z216Sm5EZkhER1VPalE4Y1VBUHcyNjhT?=
+ =?utf-8?B?MDQrbjk2NllPQndyb0MzNTE4eVB4Unp0NnpkNGRILzFnV2k0ZG9ySy9tUjk2?=
+ =?utf-8?B?SDNJK2t1cVEwZGtqYklsSXlkNHFWYnBhL3lPcTFyd2duTFNOVkxuWFRUU1lU?=
+ =?utf-8?B?cFJkZGxGYmxtczJzVklOMGE0VHEzTHZDWFdDVWVoYzlYK3ZYdE84UkFoaS91?=
+ =?utf-8?Q?IBPtzIN5LbvcitEynPtHmrQ=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c25ed24-01c7-4b7d-8601-08dac75cbbee
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2022 22:57:15.0560
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fhGw059o1CQu7iTqBjgOVRfM2dYqC9wko8m9K5r5NSRRBY5J8m0DebJRsQdgg4Lp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8588
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -66,80 +132,50 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/11/16 01:17, ChenXiaoSong wrote:
-> Syzkaller reported BUG as follows:
+On 2022/11/16 02:29, li zhang wrote:
+> Qu Wenruo <quwenruo.btrfs@gmx.com> 于2022年11月15日周二 18:37写道：
+>>
+>> [Adding the mailing list, as the reply is to the first mail I got, which
+>> lacks the ML]
+>>
+>> On 2022/11/15 06:39, Qu Wenruo wrote:
+>> [...]
 > 
->    BUG: sleeping function called from invalid context at
->         include/linux/sched/mm.h:274
->    Call Trace:
->     <TASK>
->     dump_stack_lvl+0xcd/0x134
->     __might_resched.cold+0x222/0x26b
->     kmem_cache_alloc+0x2e7/0x3c0
->     update_qgroup_limit_item+0xe1/0x390
->     btrfs_qgroup_inherit+0x147b/0x1ee0
->     create_subvol+0x4eb/0x1710
->     btrfs_mksubvol+0xfe5/0x13f0
->     __btrfs_ioctl_snap_create+0x2b0/0x430
->     btrfs_ioctl_snap_create_v2+0x25a/0x520
->     btrfs_ioctl+0x2a1c/0x5ce0
->     __x64_sys_ioctl+0x193/0x200
->     do_syscall_64+0x35/0x80
+>> I'll try to craft a PoC patchset to a stripe by stripe verification (to
+>> get rid of the complex bio form shaping code), and a proper bitmap based
+>> verification and repair (to only repair the corrupted sectors).
+>>
+>> But as I mentioned above, the bad csum error reporting can not be easily
+>> fixed without a behavior change on btrfs_scrub_progress results.
+>>
 > 
-> Fix this by delaying the limit item updates until unlock the spin lock.
-> 
-> Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
-> ---
->   fs/btrfs/qgroup.c | 13 +++++++++----
->   1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index ca609a70d067..f84507ca3b99 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -2867,6 +2867,8 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->   	bool need_rescan = false;
->   	u32 level_size = 0;
->   	u64 nums;
-> +	bool update_limit = false;
-> +	int err;
->   
->   	/*
->   	 * There are only two callers of this function.
-> @@ -2957,10 +2959,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->   		dstgroup->max_excl = inherit->lim.max_excl;
->   		dstgroup->rsv_rfer = inherit->lim.rsv_rfer;
->   		dstgroup->rsv_excl = inherit->lim.rsv_excl;
-> -
-> -		ret = btrfs_update_quoto_limit(trans, dstgroup, fs_info);
-> -		if (ret)
-> -			goto unlock;
-> +		update_limit = true;
+> Actually, I also considered refactoring the functions
+> scrub_recheck_block and scrub_recheck_block_checksum to import a
+> bitmap to represent bad sectors, but this seems too complicated and
+> may affect many things,
 
-Nope, just call qgroup_dirty() for @dstgroup.
+Another thing I don't like is the various jumps using different end_io 
+functions.
+
+I'm a super big fan of submit-and-wait, and already converted RAID56 to 
+this way.
+Thus I believe I can also handle the situation in scrub, and hopefully 
+get it easier to read.
+
+> so I choose
+> Handle newly discovered errors by recheck in
+> scrub_handle_errored_block, ignoring recheck errors by exchanging the
+> result of the first check and the result of the recheck, as follows:
+> else if (!check_sector->checksum_error && bad_sector->checksum_error) {
+>   struct scrub_sector *temp_sector = sblock_bad->sectors[sector_num];
+> 
+>   sblock_bad->sectors[sector_num]
+>   = sblock_to_check->sectors[sector_num];
+> sblock_to_check->sectors[sector_num] = temp_sector;
+> 
+> Anyway, I'll take a hard look at your scrub_fs idea
+
+Feel free to do any comments, I'm pretty eager to get some feedback on it.
 
 Thanks,
 Qu
->   	}
->   
->   	if (srcid) {
-> @@ -2987,6 +2986,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->   		dstgroup->max_excl = srcgroup->max_excl;
->   		dstgroup->rsv_rfer = srcgroup->rsv_rfer;
->   		dstgroup->rsv_excl = srcgroup->rsv_excl;
-> +		update_limit = false;
->   
->   		qgroup_dirty(fs_info, dstgroup);
->   		qgroup_dirty(fs_info, srcgroup);
-> @@ -3055,6 +3055,11 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->   
->   unlock:
->   	spin_unlock(&fs_info->qgroup_lock);
-> +	if (update_limit) {
-> +		err = btrfs_update_quoto_limit(trans, dstgroup, fs_info);
-> +		if (err)
-> +			ret = err;
-> +	}
->   	if (!ret)
->   		ret = btrfs_sysfs_add_one_qgroup(fs_info, dstgroup);
->   out:
