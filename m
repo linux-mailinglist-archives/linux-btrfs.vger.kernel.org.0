@@ -2,58 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41088629EA2
+	by mail.lfdr.de (Postfix) with ESMTP id 96F68629EA3
 	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 17:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238454AbiKOQQ0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 11:16:26 -0500
+        id S238463AbiKOQQ2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 11:16:28 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238028AbiKOQQZ (ORCPT
+        with ESMTP id S229624AbiKOQQ0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 11:16:25 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714EB29804
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:16:24 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id w10so10096622qvr.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:16:24 -0800 (PST)
+        Tue, 15 Nov 2022 11:16:26 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AF821269
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:16:25 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id e15so9019163qts.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:16:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xJNf8w/rMB3B3mjqeX4p/xYGKvLvKUIcYyjTYXY9EY8=;
-        b=6yi/SJ7tqAefxyN8bl0IfBwyvzC8ygdqCV/Wt6u5O06wFl4oeBhOZYs5ydQT8I36fP
-         bqwf8y95K2H/3W45Zt/QeorEOpnVxmw3Gq+lxzYCax/2qArYwSshQkKFnDB/v0sBmxfh
-         40GUNWB4Yb4DMO7l8FMDKL/HnFwsSNUWjzgZKRzqw/yfo1/UvNI+lDiWQn3S7qyRyyIq
-         ppCP8H4+F4ESMfMzsZ9eL7PTKUAltmh0iBby0RmOLQanhbHSJLrViVf3/julkgq6lGvd
-         T2Ac2Ki/Ao2OkDeYbvNkskya6tOTP8iXBbu0gmDx0tUuUpTveHfzWkLHdS3PThkQzLek
-         4vjg==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CLLHDLWtHTidzc0MuDneCL+O1YoJg/8zvgEK+mOLUac=;
+        b=yoyLROZOURGGOh1cKWlZ6qrp2JGg8rql9rxDPMSpxpf7JyE0eWSmZ1vbJinH+BERIi
+         1xgvW0vrqZkRCCD+saB3/NzGANy8hQnMaU1bNsTWhsxEP7M21uPJtu6Aj3hSx69hD4hZ
+         TG8gEZAHk8e44urAyNsTB9vsNPYpmUWHUaLWFkvfpGJhB/NL2WsTZ+vbMfj6rMpjEJgB
+         uhAEDCpMe6r8BvpZKgRuiiUiK4NbQhc4lyAzv69uqm/pDFjZXel7k9XxWAhUPNeA4zvY
+         7NSHj34FvlQkeXg+Xre8trUq4PWRIr+R5ckTa20GqD8UhhPSryHeGK0jq+V2SS5cpRW4
+         +esQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xJNf8w/rMB3B3mjqeX4p/xYGKvLvKUIcYyjTYXY9EY8=;
-        b=znDS2QpQdcvriTgqyZ5s3qXYlrUgZwglu6JfxWHhzgshcdwdmuT804hbG71ElWy07Z
-         ofr/9RzbBVqvkFtQHtJ0kK0xNOgg7y4bSeJHOiGokjxPwK1omFXCPPLQBhrOQRF+0Fx7
-         JWlo3YdQ1V/diKdkUwOyH2UqdyxwwhTQLlYmMlWMkbIwwGLoq4gBEfi8+CyKLEJyUfcn
-         YNo2FVn5Dek2xqseC15AJ/ND7IMXCHEX+CMYtOq+fC+FpeGNInWxDhOOhnsxJHC/2mfp
-         pRSIk5Q2QurvL0S+I3p37wJNUmkBJL14Rb9Gazr+6PR2SBtB6XLH0xDrPz4UMTVaWw/J
-         Ge3w==
-X-Gm-Message-State: ANoB5pkXTY1kpECLvu1b6JXQcco581iDQUyMtRWQxukHwDGxBLXmSMUS
-        QJnf8QYilLzvdMt30D2fmF9c3gn4aWeFgw==
-X-Google-Smtp-Source: AA0mqf49p4BxMdjuYwnLXIwJrPB5Cq3eGbn6f5gME9ifp2m/fNhZLromQt/2jJynpe0UGV1Xp0K4sw==
-X-Received: by 2002:a05:6214:3d8f:b0:4b7:5b6f:2b7a with SMTP id om15-20020a0562143d8f00b004b75b6f2b7amr15586845qvb.26.1668528983167;
-        Tue, 15 Nov 2022 08:16:23 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CLLHDLWtHTidzc0MuDneCL+O1YoJg/8zvgEK+mOLUac=;
+        b=YVxrlt0LzOfhHR6/R/tMYcvDL2SxEG0dbjVgmISCaz4xDlMQ7ReLcphaJLLJDemxYu
+         k7tuvGTc/2CG9UJDD2AdLcfgOaCG57rAtPHFrPua2vmH0QyTCatNHBU1OLQQnZnA3ynU
+         IsaOREbNRG4L7RlZ8csNu3dMAJCGdwKobdWZ2eY8kX+Rv5raliEJm8gfaOtKNMHEyEZE
+         4nMjqnBBtOeCjvwbZFIDgp9ivWsyV042ns1rSDAufrQlZVJFuBLUv7hoyk/EKD2PdVlh
+         fReMQyYorNmUoTx6retWJjF7CzX1xtvmAyR05f6LDk17Gf5E2+sy/3JSySq5oduS33hB
+         qhFA==
+X-Gm-Message-State: ANoB5pkAvzcjxqM30GNdXMwG89VBLEiYtLWfilIN6sPnTrvVl/IRHN9U
+        vEddb9ttjPKxPpskbnI1SkaU7fCNC8GoUA==
+X-Google-Smtp-Source: AA0mqf60mpJP3wiS31ukok1TQAjbDTUi7Z/dY5g8hnH6n+aS50TZEtzoTt1+7rEYu5jTgUYWgSCuaA==
+X-Received: by 2002:ac8:5405:0:b0:35b:b52b:bd01 with SMTP id b5-20020ac85405000000b0035bb52bbd01mr17424762qtq.466.1668528984565;
+        Tue, 15 Nov 2022 08:16:24 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id bp44-20020a05620a45ac00b006f956766f76sm8380412qkb.1.2022.11.15.08.16.21
+        by smtp.gmail.com with ESMTPSA id u12-20020a05620a454c00b006f8665f483fsm8587824qkp.85.2022.11.15.08.16.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 08:16:22 -0800 (PST)
+        Tue, 15 Nov 2022 08:16:24 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 00/11] btrfs: a variety of header file cleanups
-Date:   Tue, 15 Nov 2022 11:16:09 -0500
-Message-Id: <cover.1668526429.git.josef@toxicpanda.com>
+Subject: [PATCH 01/11] btrfs: move root helpers back into ctree.h
+Date:   Tue, 15 Nov 2022 11:16:10 -0500
+Message-Id: <d74e17f38f37b4cdfb54e373b98a2ed399cd0f38.1668526429.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1668526429.git.josef@toxicpanda.com>
+References: <cover.1668526429.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -65,54 +69,72 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+These accidentally got brought into accessors.h, but belong with the
+btrfs_root definitions which are currently in ctree.h.  Move these to
+make it easier to sync accessors.[ch] into btrfs-progs.
 
-While syncing accessors.[ch] I ran into a variety of oddities between what we do
-in the kernel vs what we do in btrfs-progs.  Some of these things are just
-differently named helpers, some are helpers we need in progs but don't have in
-the kernel, and some of these are extent tree v2 stuff that was done in
-btrfs-progs but not yet merged into the kernel. I kept the v2 stuff very simple,
-it's mostly just updating helpers to take an extent_buffer.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/accessors.h | 17 -----------------
+ fs/btrfs/ctree.h     | 17 +++++++++++++++++
+ 2 files changed, 17 insertions(+), 17 deletions(-)
 
-Additionally I cleaned up how we do leaf manipulation, because those helpers are
-a little wonky and you have to understand how the leaves are laid out.  I'm not
-in love with what I came up with, but it makes the code a little cleaner, and
-then it made the cleanups easier as there are only 4 sites that needed to be
-updated instead of 32.
-
-I made these changes in tandem with the btrfs-progs sync of accessors.[ch], and
-then sync'ed the copy based on these changes.  I can obviously update them both
-if there are changes required, but this is why the accessors.h looks different
-in my btrfs-progs patchset, because it's actually a copy of that file with these
-changes applied.  Thanks,
-
-Josef
-
-Josef Bacik (11):
-  btrfs: move root helpers back into ctree.h
-  btrfs: move leaf_data_end into ctree.c
-  btrfs: move file_extent_item helpers into file-item.h
-  btrfs: move eb offset helpers into extent_io.h
-  btrfs: move the csum helpers into ctree.h
-  btrfs: pass the extent buffer for the btrfs_item_nr helpers
-  btrfs: add eb to btrfs_node_key_ptr_offset
-  btrfs: add helpers for manipulating leaf items and data
-  btrfs: remove BTRFS_LEAF_DATA_OFFSET
-  btrfs: add nr_global_roots to the super block definition
-  btrfs: add stack helpers for a few btrfs items
-
- fs/btrfs/accessors.c            |   2 +-
- fs/btrfs/accessors.h            | 124 ++++++++----------
- fs/btrfs/ctree.c                | 218 ++++++++++++++++++++------------
- fs/btrfs/ctree.h                |  63 ++++-----
- fs/btrfs/extent_io.c            |  10 +-
- fs/btrfs/extent_io.h            |  33 +++++
- fs/btrfs/file-item.h            |  34 +++++
- fs/btrfs/tree-checker.c         |   5 +-
- fs/btrfs/tree-mod-log.c         |   4 +-
- include/uapi/linux/btrfs_tree.h |   3 +-
- 10 files changed, 295 insertions(+), 201 deletions(-)
-
+diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
+index cb59b69d2af1..57ba6894a5f4 100644
+--- a/fs/btrfs/accessors.h
++++ b/fs/btrfs/accessors.h
+@@ -712,23 +712,6 @@ BTRFS_SETGET_STACK_FUNCS(root_otransid, struct btrfs_root_item, otransid, 64);
+ BTRFS_SETGET_STACK_FUNCS(root_stransid, struct btrfs_root_item, stransid, 64);
+ BTRFS_SETGET_STACK_FUNCS(root_rtransid, struct btrfs_root_item, rtransid, 64);
+ 
+-static inline bool btrfs_root_readonly(const struct btrfs_root *root)
+-{
+-	/* Byte-swap the constant at compile time, root_item::flags is LE */
+-	return (root->root_item.flags & cpu_to_le64(BTRFS_ROOT_SUBVOL_RDONLY)) != 0;
+-}
+-
+-static inline bool btrfs_root_dead(const struct btrfs_root *root)
+-{
+-	/* Byte-swap the constant at compile time, root_item::flags is LE */
+-	return (root->root_item.flags & cpu_to_le64(BTRFS_ROOT_SUBVOL_DEAD)) != 0;
+-}
+-
+-static inline u64 btrfs_root_id(const struct btrfs_root *root)
+-{
+-	return root->root_key.objectid;
+-}
+-
+ /* struct btrfs_root_backup */
+ BTRFS_SETGET_STACK_FUNCS(backup_tree_root, struct btrfs_root_backup,
+ 		   tree_root, 64);
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 5649f8907984..1d045febe1cc 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -335,6 +335,23 @@ struct btrfs_root {
+ #endif
+ };
+ 
++static inline bool btrfs_root_readonly(const struct btrfs_root *root)
++{
++	/* Byte-swap the constant at compile time, root_item::flags is LE */
++	return (root->root_item.flags & cpu_to_le64(BTRFS_ROOT_SUBVOL_RDONLY)) != 0;
++}
++
++static inline bool btrfs_root_dead(const struct btrfs_root *root)
++{
++	/* Byte-swap the constant at compile time, root_item::flags is LE */
++	return (root->root_item.flags & cpu_to_le64(BTRFS_ROOT_SUBVOL_DEAD)) != 0;
++}
++
++static inline u64 btrfs_root_id(const struct btrfs_root *root)
++{
++	return root->root_key.objectid;
++}
++
+ /*
+  * Structure that conveys information about an extent that is going to replace
+  * all the extents in a file range.
 -- 
 2.26.3
 
