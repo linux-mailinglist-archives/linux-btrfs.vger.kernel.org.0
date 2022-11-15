@@ -2,56 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0094062A0ED
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 19:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A98062A0FB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 19:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbiKOSBf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 13:01:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
+        id S238244AbiKOSBl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 13:01:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238244AbiKOSBH (ORCPT
+        with ESMTP id S238029AbiKOSBH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 15 Nov 2022 13:01:07 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DCE1EAE5
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 10:00:39 -0800 (PST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B076B11C2A
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 10:00:41 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 009BA33688
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 18:00:38 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 350ED1F8E0;
+        Tue, 15 Nov 2022 18:00:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1668535238; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=tYhbJPqxgATr+a9X6mj3raA6uYa8UhskZW+9aWHPt7E=;
-        b=kZwO9/LOTKVHo+/XPVEOocmVVwpiZGhdnhc/BLC7B4MkF1ZZ/01eGDgHCctqLtzvKGS0YZ
-        qJF5709RxPXcb1Exhn923Wz4Y2+waRazD1OCpH/ZAxKJLqUKNCAHHxCVHm7QGSSfNzdJNd
-        xk1HysHdGnSrUOeCKdaQ/tbx7Btsrfo=
+        t=1668535240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K/+4uL317yjTCA01hYB5sabZtn+knk1BAX2rFaUsm0I=;
+        b=sVZCLc+LHog25/d78xJy9SCKBiUu48dO4MGrFTrwn3/od+8guLdNK0n3bt9k6bbUJbW8RE
+        24MiBHeZn8w1NaOOG2Nzs4gAmGMIdJVPYtYMBQIK2mGANBfcEK4F0c9Q7c+0wTOFKHLu/s
+        E/g3cVDFh8DiJESCuED30cq01RV9GEc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1668535238;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=tYhbJPqxgATr+a9X6mj3raA6uYa8UhskZW+9aWHPt7E=;
-        b=g+Qx0fxXO49NgwMQmCBRkRRgVPplcxZUrzxNZ1QByBVJzbPot2QbbLNFP9WhoDdpS0Pg4f
-        LF6Z6AxfIV0w6dDg==
+        s=susede2_ed25519; t=1668535240;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K/+4uL317yjTCA01hYB5sabZtn+knk1BAX2rFaUsm0I=;
+        b=tkJNCkjAwnpteAoEtBo06+RZU0nRPWT0k+IaL8F6US4ZTwMqlavkKJD/qV/90mFn7mQP5r
+        S4c66PZS0Ch3dsAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ACA7013A91
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 18:00:37 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E1D1413A91;
+        Tue, 15 Nov 2022 18:00:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5PMlIsXTc2OBZAAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 18:00:37 +0000
+        id xosSL8fTc2OEZAAAMHmgww
+        (envelope-from <rgoldwyn@suse.de>); Tue, 15 Nov 2022 18:00:39 +0000
 From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 00/16] Lock extents before pages
-Date:   Tue, 15 Nov 2022 12:00:18 -0600
-Message-Id: <20221115180034.8206-1-rgoldwyn@suse.de>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: [PATCH 01/16] btrfs: check for range correctness while locking or setting extent bits
+Date:   Tue, 15 Nov 2022 12:00:19 -0600
+Message-Id: <07534e31d822b5c08609c72e5a2e8054604765d9.1668530684.git.rgoldwyn@suse.com>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <cover.1668530684.git.rgoldwyn@suse.com>
+References: <cover.1668530684.git.rgoldwyn@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -63,50 +70,53 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The main idea is that instead of handling extent locks per page, lock
-the extents before handling the pages. This will help in calling iomap
-functions from within extent locks, so all page/folio handling is
-performed by iomap code.
+Since we will be working at the mercy of userspace, check if the range
+is valid and proceed to lock or set bits only if start < end.
 
-I want to know if there is any sequence which should be locked but isn't,
-or vice versa.
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+---
+ fs/btrfs/extent-io-tree.c | 6 ++++++
+ fs/btrfs/ordered-data.c   | 3 +++
+ 2 files changed, 9 insertions(+)
 
-It survived xfstests/btrfs tests for a single device.
-
-Goldwyn Rodrigues (16):
-  btrfs: check for range correctness while locking or setting extent
-    bits
-  btrfs: qgroup flush responsibility of the caller
-  btrfs: wait ordered range before locking during truncate
-  btrfs: lock extents while truncating
-  btrfs: No need to lock extent while performing invalidate_folio()
-  btrfs: Lock extents before pages in writepages
-  btrfs: Lock extents before folio for read()s
-  btrfs: Lock extents before pages for buffered write()
-  btrfs: lock/unlock extents while creation/end of async_chunk
-  btrfs: decide early if range should be async
-  btrfs: lock extents before pages - defrag
-  btrfs: Perform memory faults under locked extent
-  btrfs: writepage fixup lock rearrangement
-  btrfs: lock extent before pages for encoded read ioctls
-  btrfs: lock extent before pages in encoded write
-  btrfs: btree_writepages lock extents before pages
-
- fs/btrfs/block-group.c    |   2 +-
- fs/btrfs/compression.c    |   9 +-
- fs/btrfs/defrag.c         |  48 ++-----
- fs/btrfs/delalloc-space.c |  17 +--
- fs/btrfs/delalloc-space.h |   5 +-
- fs/btrfs/disk-io.c        |  28 +++-
- fs/btrfs/extent-io-tree.c |   6 +
- fs/btrfs/extent_io.c      |  73 +----------
- fs/btrfs/extent_io.h      |   2 -
- fs/btrfs/file.c           | 136 ++++++++++----------
- fs/btrfs/inode.c          | 264 ++++++++++++++++++++------------------
- fs/btrfs/ordered-data.c   |   3 +
- fs/btrfs/qgroup.c         |  27 +---
- fs/btrfs/qgroup.h         |  16 +--
- fs/btrfs/relocation.c     |   3 +-
- fs/btrfs/root-tree.c      |   3 +-
- 16 files changed, 277 insertions(+), 365 deletions(-)
+diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
+index 21fa15123af8..80657c820df4 100644
+--- a/fs/btrfs/extent-io-tree.c
++++ b/fs/btrfs/extent-io-tree.c
+@@ -557,6 +557,9 @@ int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 	int wake;
+ 	int delete = (bits & EXTENT_CLEAR_ALL_BITS);
+ 
++	if (unlikely(start > end))
++		return 0;
++
+ 	btrfs_debug_check_extent_io_range(tree, start, end);
+ 	trace_btrfs_clear_extent_bit(tree, start, end - start + 1, bits);
+ 
+@@ -979,6 +982,9 @@ static int __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 	u64 last_end;
+ 	u32 exclusive_bits = (bits & EXTENT_LOCKED);
+ 
++	if (unlikely(start > end))
++		return 0;
++
+ 	btrfs_debug_check_extent_io_range(tree, start, end);
+ 	trace_btrfs_set_extent_bit(tree, start, end - start + 1, bits);
+ 
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index 4bed0839b640..0a5512ed9a21 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -1043,6 +1043,9 @@ void btrfs_lock_and_flush_ordered_range(struct btrfs_inode *inode, u64 start,
+ 	struct extent_state *cache = NULL;
+ 	struct extent_state **cachedp = &cache;
+ 
++	if (unlikely(start > end))
++		return;
++
+ 	if (cached_state)
+ 		cachedp = cached_state;
+ 
+-- 
+2.35.3
 
