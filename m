@@ -2,128 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAAF62AEB3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 23:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3C262AF52
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Nov 2022 00:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbiKOW5W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 17:57:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50824 "EHLO
+        id S231421AbiKOXQS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 18:16:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbiKOW5U (ORCPT
+        with ESMTP id S238613AbiKOXQE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 17:57:20 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-eopbgr70045.outbound.protection.outlook.com [40.107.7.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801B62B606
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 14:57:17 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KrlAFcsVWmnMSqDRurZcjAavO5e/C6TgvHwLVfCQuWDY4+9XrHHLIxZGvbdHW/7Q0QF1T1s1Il0WOvDA2SW4t88l9C05G1RQzWUbKEN1oDvhbiek9FelNd7AowoTP5wZyKa8wE5kP84QBC0x8mGrT829yRz193TfdQpnIEOJm3ekY/nNx3dRfPT7sepGXFPiVJzeHr41l5dXRxfiJ4I33ujW3ff5dy1MoF4JNyJwSpaexftqbxDjHyUbxsoVNWAaWTz22K1rcVhYo669U8gMaE9fFEhD+1+KlGEQYNBYps19ZTnszD/B2hmopr4Ia0y1EQxM+iVMe7EZnEYU8t14PA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0jJggQM6L9Uf8t/dE73pkZn06Lm6J16Lqh+1Lg38p0o=;
- b=OjlwoxetBCHM4r/8fP53TR7XWHZw2MlfZKnst+Lw22wWcmIkRTg7B8KRjmvArvdhspK94Td2zGN/FvHgkk0s7pIj2+hWBHMHjdFKLuSbv+Sp5wpc0St/WxEcv4kLIm8TgoQoHvCgUXmU6bmNL+RoWnkMk2ob5yDzrEMsxqxXX3x4LuWGkfxvYayoNL9pK2euWOE6WeXOxMKeY5Nw1sYHE0Ju4UkIlIAtoX0a008vmGimCYNSU06CZHnDihMy1yk31yPof99pYpEFh8edtdeLdKB8SEnGGiWOQUNl53UupM/Quap7BODvzkyN/SrNSSbDwDvO0irlBxpaR/BBrNy1CQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0jJggQM6L9Uf8t/dE73pkZn06Lm6J16Lqh+1Lg38p0o=;
- b=H6ySxHUdWLpH/gFF9UGekQQ8116L/rTKInFxz6q6RuYDlne/hRc9q2kC6c+aCLT5qz4WS7amjJ8pOUm4KDbMm3VNULghOA1bCTfi7AQ577yueDtunIPUpaSkWaQV4oB+AcGYWnmJR75/pu3B9uNlJpRmLH1DCDmssO+2S5kzy5RYQWpXoTShNMGHEEzaVjQnlEzISC6StH2hgO8HWN3Rv7yiPLZyZVGWs7MRDkf89Mtxhkp7aiv0wos7C07oQYdTHDSj2HWOklOM0VjNkEfSpe36PWOasAYnFtMvcrDWz0HzylbwMvtPaC/0aWoCRn4LB8d0JUa/rCgBq1o8qDgIGw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by AM9PR04MB8588.eurprd04.prod.outlook.com (2603:10a6:20b:43b::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.13; Tue, 15 Nov
- 2022 22:57:15 +0000
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::b69e:7eea:21cc:54ab]) by AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::b69e:7eea:21cc:54ab%7]) with mapi id 15.20.5813.018; Tue, 15 Nov 2022
- 22:57:15 +0000
-Message-ID: <77b0da75-8ef8-42d5-c8c5-bfd63bf7c4f0@suse.com>
-Date:   Wed, 16 Nov 2022 06:57:04 +0800
+        Tue, 15 Nov 2022 18:16:04 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB6864E8
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 15:16:03 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMXUN-1odH3a3phf-00JdmO; Wed, 16
+ Nov 2022 00:15:58 +0100
+Message-ID: <ff2940de-babf-d83c-b9d0-1fe8d18909a9@gmx.com>
+Date:   Wed, 16 Nov 2022 07:15:55 +0800
+MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.0
+Subject: Re: block group x has wrong amount of free space
 Content-Language: en-US
-To:     li zhang <zhanglikernel@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <1668353728-22636-1-git-send-email-zhanglikernel@gmail.com>
- <f5cceda5-e887-0807-7331-12382b45ea29@gmx.com>
- <CAAa-AGmQpL34eG8yx3bg8FYcbbOOjb3o8fb5YEocRbRPH1=NBw@mail.gmail.com>
- <11a71790-de79-3c2f-97f3-b97305b99378@gmx.com>
- <a4ebbed4-f75f-16d3-34d0-838d73d031f9@gmx.com>
- <CAAa-AGmqmnKyQ_LgxB-oVnP+8tP9QChSq2M_SPhtgPQBxd3Skw@mail.gmail.com>
-From:   Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH] btrfs: scrub: expand scrub block size for data range
- scrub
-In-Reply-To: <CAAa-AGmqmnKyQ_LgxB-oVnP+8tP9QChSq2M_SPhtgPQBxd3Skw@mail.gmail.com>
+To:     Hendrik Friedel <hendrik@friedels.name>,
+        linux-btrfs@vger.kernel.org
+References: <em9da2c7f3-31bb-426b-89a3-51fd1dea8968@7b52163e.com>
+ <em7df90458-9cac-4818-8a43-0d59e69a14fc@7b52163e.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <em7df90458-9cac-4818-8a43-0d59e69a14fc@7b52163e.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BY3PR04CA0030.namprd04.prod.outlook.com
- (2603:10b6:a03:217::35) To AS8PR04MB8465.eurprd04.prod.outlook.com
- (2603:10a6:20b:348::19)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|AM9PR04MB8588:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6c25ed24-01c7-4b7d-8601-08dac75cbbee
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rt0fYDpYXUNwvWsrC95xp/5RU9pK8E4EPrrBqyQzEhxY/L9ZqvY3Zkan7dm50FdnPMB2VrVS+3AmvssjVyO8DpfVzyQqiXDgfSzL5lRMRsLkvTSVBjvOrLxBD7X22+GL1V2Mg9Rabqc7ds9zZeXAiNKtQFoUNNjO7VTGYHH5qoMA+UQUMnCAVct3tLnLD2imf4jzD8SSNzYB3EE8mEP5Iz1cLsU+TmWRhtaohwJDYdlsCQz9Y1wO5mvGZKFTOAuHBQG5dL9Nei9EBx5QalEkK1z1QR0z7sxJtgXeZwa/XupCQe4su42CiM9uVdUEjBOZwG+ky3DfcWPMiWg5QAJVp84F1wF1PLiHJaogyNgGYZgy39K+HUg4vK/pdeLkPc7VYDoqbJ0w3t56wqHit5FbSbsluRsVEflfzIKho9S3jKq2PhbZBbIFiWx+wbu03qrJkDhJ+vrj4gn4wcyo2Nzvzsc2tgIC2Yi7e7QsvLYYSS1e1irZUBSXX8mXk5tOOWWcAeXn5WOOXNYkFHw2OBYn8v3N9wkPdfTwKD36YfO3mZwQ8SasDTtnI/UDSPEM4ZdDUdnxiAaW2gtiFpB65lOW6DHuGP08ykAeLp+4yrNs7aTQQ1WJE6afbmwRPTM5j8ZK1s0wdZbJWuNdNiPVm6S7KsOeQBrfYnOKUTccQcKp2KaVk6zUjTrqmODneAx0V9D/Y0mjU7FYbKI53UmNvdZJHhua9epQ7tANbakVQBEcLy6c9qfRZj206zhkOUXpJ6MVEmZX0V1R4KQ22eFp/VRd5CV/NoPTK5aNltXPpVx9T06k5wfvHK01eKjzb9KMxTuV
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(136003)(39860400002)(366004)(396003)(376002)(451199015)(41300700001)(36756003)(83380400001)(2906002)(110136005)(6506007)(316002)(6666004)(53546011)(86362001)(38100700002)(66476007)(66946007)(31696002)(8676002)(186003)(6512007)(5660300002)(66556008)(2616005)(31686004)(6486002)(8936002)(478600001)(518174003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVdNT1hIeENEZklXS2R5STRjTjdoWVlMdmczdHVCOTBJbEdHN2VRN3RBVGFm?=
- =?utf-8?B?UVNZQ0dGQi85RENlU05VOVpraTZQVWZrTmx2Q2dNR3hlVE5vVmpTZGxKNHN5?=
- =?utf-8?B?emgzTExRbThwam5Ec2pBY0Jla3dZeFZISmRuMkNJeUFhRXA2L1U2a1JQTys3?=
- =?utf-8?B?VnI1NEgzNGE3MjFsMEowZ0o3VHBUdjBVUkRLM3Rja0Rya01OZCtSemF5Qkhi?=
- =?utf-8?B?a05Yd3ZyelAvMGJ5SjdPNGdYSVBwRDF5Z2JjYXBkekF0Tk8vbHBWOE9kazJv?=
- =?utf-8?B?MGJ6SzBYRkJXRi9BRWwzWFJTc003M0Q0R1UyaW41V0FZR2NMWWxNM1Jsd29q?=
- =?utf-8?B?R0ZncGc3S2paK2VVYm9zcCtuSXRiNXExcWZkQjFMKzVsTEMzSC8zS0JUcEpk?=
- =?utf-8?B?MjdpZGJ2ZTlJRjYxTDdnN1czN3NhbjZCZ1VsMDJHSWJiUDJYcFBvdnlaTTdz?=
- =?utf-8?B?YkVtWHBGb2J0QlZHRzFJSUpJZUdlTklhNHFkL2VsSUhMZTErbHF5OCs2UUZW?=
- =?utf-8?B?eDlMU3N4bE8rSGpTRnpQVHFoRVdGWDlFNDJJUm55NjNrTWprU0hhdzgvZUJK?=
- =?utf-8?B?OUtEclRKSlBnUGJNZnU3UG9ZRUkvemVLMzhKczA4N0pUSzBySFdGdXJNVitr?=
- =?utf-8?B?dWMzOWVPOG9SSC8yQ2VjSDRSNHRRTXU2a3RWbE9lZEI2QU5DUVRjTjNnZWdS?=
- =?utf-8?B?ZE1RMzk1UTh1TXM0SGxsK2ZMUTZkQWpvMEVxUnV0dTQ5M2UrSW56aURpaSsx?=
- =?utf-8?B?Y3UwQ2F1ZVFVVnhRRjZza2l5UEVvZTBSNUtubXZMbGNrVnptM0tHWTZxczVY?=
- =?utf-8?B?QVNMajlkZGVoaUtPcE1Kb1hIWDF3cHUrR1JseFBybDVNdlRQRGVoR1g3clp6?=
- =?utf-8?B?RTBucWFXUmttNU92TDhZb05UcW43Y2JibmFwVU5LVGFrZHBDY3hpa1JPTlQy?=
- =?utf-8?B?dWxueGpwcnhlNU5GZnI4WTN2L3hQN3lRQXY5WlAwUjM5QnV1OVovTzYvS29u?=
- =?utf-8?B?TlYrR0EyWG5Ib0VUQzhvMFRGalJxVmU0eUMyY2E0cGtYazdrUGFua2srRi9o?=
- =?utf-8?B?eGpUUjEyYzY2aVVjUHplMTVPTEFPNjA1VGQxdGlZV05mZEs1RU5sNm5HTkFO?=
- =?utf-8?B?cW5yVVVxM1pLbzRGL2xKMkUvSkxkSXBKUkNQcGdSeVNCREhSdW90MWVLMXZp?=
- =?utf-8?B?TEtRQlBCaDgzcHF2SWplZitTS3BEL0g5bWJrNktmYXdTdHdudWlZR2lhZm4r?=
- =?utf-8?B?bTBjOXFoNEFIZWRuM0dQd0wxcFp4NHJFM3pzN25TMStaaVc1NnErck1oR1lp?=
- =?utf-8?B?TTdSVng0alRiOUxtRHdmeEp6dStzbVdudll1UDgvOFZsYjBKSU51WVY3Tktw?=
- =?utf-8?B?d3FYSHkraWJFSGo4RU4zRm1YTUIyTmZCb1lVQlU5R2xJck5MRjQ0NmUvK2Q4?=
- =?utf-8?B?cFhxOXFjNlBDY1hzdmdqM2xIa1MxeGFYZ0cyMUxoQjZXd3ZLN2IrWDRLTHhh?=
- =?utf-8?B?MVR5OEZyWW9XTmRKWDIxSU9LZC9pdmdLNENrMGl2eG5JcGFQWTVsUmc3OXhV?=
- =?utf-8?B?YWtzL2d6NDBESWlHWVlwQUw4UDNscjB6ZklGR1JrQzNaalpkMFRYYlBzbk8v?=
- =?utf-8?B?czczZlpMRGdTR2QvTElZQkNIQmhBYVRQTGEwRWQ2TEVoRlNzY2xXTHZFY3VO?=
- =?utf-8?B?dVZlT3MvNiszQ01jM1BrUUZIRi9zcjZoN0lwZ2RJQWd5U2FTZENaUlZFRUY3?=
- =?utf-8?B?aE5peVo3YWYyTDBteHBtMjBaVkIzVTMreTZvWXZJbUp3U2h1MXZqUWlFV3Ba?=
- =?utf-8?B?NnBkYytMQlhXMzNnRHVKT0w1N1lVN3NBMEVON2UvTWVKU3MrL3RPamRqci85?=
- =?utf-8?B?ZnptdGk0TTYxRUJLK3dCdUpWbzN4dGtIZ0FjSWcxMU5ISjBmNzYyc09JMjRV?=
- =?utf-8?B?M29VNTY3aHJoWUZtMzZTTjB2ZG56Z216Sm5EZkhER1VPalE4Y1VBUHcyNjhT?=
- =?utf-8?B?MDQrbjk2NllPQndyb0MzNTE4eVB4Unp0NnpkNGRILzFnV2k0ZG9ySy9tUjk2?=
- =?utf-8?B?SDNJK2t1cVEwZGtqYklsSXlkNHFWYnBhL3lPcTFyd2duTFNOVkxuWFRUU1lU?=
- =?utf-8?B?cFJkZGxGYmxtczJzVklOMGE0VHEzTHZDWFdDVWVoYzlYK3ZYdE84UkFoaS91?=
- =?utf-8?Q?IBPtzIN5LbvcitEynPtHmrQ=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c25ed24-01c7-4b7d-8601-08dac75cbbee
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2022 22:57:15.0560
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fhGw059o1CQu7iTqBjgOVRfM2dYqC9wko8m9K5r5NSRRBY5J8m0DebJRsQdgg4Lp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8588
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Provags-ID: V03:K1:qLri93RergaFz4qrdoJgkqn68+Tm6ByOp4N22pacvEL6sIDieC2
+ QZ4bqwfD706KUrYfyIBxS/hrsX8N9i0BHebO5D/Z10H7gV6waLEf79eQUCixRBEfrlIxdfN
+ vAtBHrtJRUxZV6dGga68LPyF61X2IW0vLqPSC07X7fwi77ozjg9BMkpObapbnPZR4WiLJkV
+ jSxS+XnkAX8OpWUPi60+A==
+UI-OutboundReport: notjunk:1;M01:P0:4xJhzqXnazo=;UeAANFhP+eaeOr5aHwkyld4GCke
+ ZOrNr9BjCIPK7OYUgjkYqps1lySGgcOJqutu1iFVBFPLOI8nGMCDg41pC34OwER4Ny1/wKW22
+ Hk0wxQY0sxCovv6xwcQyhQQDI/DQLcUEsoFcr+DSRG88v36jJBcgcDSCj+ldtyyMu0gxV6h1Q
+ nFMWETIWo3W6LFrvxou4mmMOizQQl8fG7c/BA8gH1eflAYveb7l+5F3yQkq8Y0o59ku0qMrht
+ h+JwABzZyHfpu7DM92UWnSkCwudHD8+ZBNsSSYkPM5+Xwyeh10UPz5RYcrbEjS9meZZCXjZGR
+ UkY1anrQqgYDxTF/8jNAwWzBT+jC4aKaME107Fz3vT5X9Xkz9XQNkGLFxq30MMKh+ZhVPbRwf
+ 31QbChf0ZUnx3GvB3HYIclcva8fQHKZRqe2twKoR6N2QL5qDkqgrlxTwdLc29dMqE7zMsxcyP
+ T+P19nE/4uj7akUeg0X/SsrucTTqKkCJaLoTNU2SJQ4R97/wElT+GgYqVLYqkhpHAgkzQuqUc
+ kEqGjTwzKjQaIDh7XMytL50Xfl/h9qDSDJ2oepUTLK+u+ZV9ttXG8bUumXf7CCQqKyADyqfj8
+ zuIywSGqHm8ZNBdq3c6QHEjm+aUIh+IqUIwWaGiwQ6bb5LQqYtneHNSOjQtnOeBWgyvlvmoLj
+ J/1Cj+nLPt5Z6fDdzLY71ZmxnguE4eXGgSMuA8cWiuZgVgJXi1SoonchT52njGgqSIAmkOW0s
+ VYoIcPR/OQJZjirBO41n+IBKzL20Tx9rJCedTFDtCfqoY/P8X/zCDG7BWOrn0OLo+AFirxsu9
+ YR99dwtWGaBQ+BMPipmAvmwZCw/cmom/LZ5G5TOcm1voFwg5uy7eUoOqSo5M2gIeUl25KHChX
+ 1gDwjDuq36QwCbCHk13lPXy5pV5YqUD7GpmipizVFq2nr9AjzVf/1vU5CmdzeEfUNegqdNqAL
+ VkDHApvkUaXBcRHeC9YEEfrfw30=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -132,50 +63,187 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/11/16 02:29, li zhang wrote:
-> Qu Wenruo <quwenruo.btrfs@gmx.com> 于2022年11月15日周二 18:37写道：
->>
->> [Adding the mailing list, as the reply is to the first mail I got, which
->> lacks the ML]
->>
->> On 2022/11/15 06:39, Qu Wenruo wrote:
->> [...]
+On 2022/11/16 06:05, Hendrik Friedel wrote:
+> Hello,
 > 
->> I'll try to craft a PoC patchset to a stripe by stripe verification (to
->> get rid of the complex bio form shaping code), and a proper bitmap based
->> verification and repair (to only repair the corrupted sectors).
->>
->> But as I mentioned above, the bad csum error reporting can not be easily
->> fixed without a behavior change on btrfs_scrub_progress results.
->>
-> 
-> Actually, I also considered refactoring the functions
-> scrub_recheck_block and scrub_recheck_block_checksum to import a
-> bitmap to represent bad sectors, but this seems too complicated and
-> may affect many things,
+> I now ran btrfs check --clear-space-cache v1 /dev/sdb1
+> Opening filesystem to check...
+> dsChecking filesystem on /dev/sdb1
+> UUID: c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
+> Failed to find [16500433649664, 168, 16384]
 
-Another thing I don't like is the various jumps using different end_io 
-functions.
+Unfortunately, this line and the kernel dmesg both shows that, your 
+extent tree seems corrupted.
 
-I'm a super big fan of submit-and-wait, and already converted RAID56 to 
-this way.
-Thus I believe I can also handle the situation in scrub, and hopefully 
-get it easier to read.
+Thus a "btrfs check --readonly" run on that device would verify if the 
+extent tree is really corrupted.
 
-> so I choose
-> Handle newly discovered errors by recheck in
-> scrub_handle_errored_block, ignoring recheck errors by exchanging the
-> result of the first check and the result of the recheck, as follows:
-> else if (!check_sector->checksum_error && bad_sector->checksum_error) {
->   struct scrub_sector *temp_sector = sblock_bad->sectors[sector_num];
-> 
->   sblock_bad->sectors[sector_num]
->   = sblock_to_check->sectors[sector_num];
-> sblock_to_check->sectors[sector_num] = temp_sector;
-> 
-> Anyway, I'll take a hard look at your scrub_fs idea
-
-Feel free to do any comments, I'm pretty eager to get some feedback on it.
+And after that, we can discuss how to continue.
 
 Thanks,
 Qu
+> btrfs unable to find ref byte nr 16500433666048 parent 0 root 2  owner 0 
+> offset 0
+> transaction.c:195: btrfs_commit_transaction: BUG_ON `ret` triggered, 
+> value -5
+> btrfs(+0x456a7)[0x562c84e456a7]
+> btrfs(btrfs_commit_transaction+0x26b)[0x562c84e45cf6]
+> btrfs(btrfs_clear_free_space_cache+0xa4)[0x562c84e38f0b]
+> btrfs(+0x5974c)[0x562c84e5974c]
+> btrfs(cmd_check+0x8ca)[0x562c84e66743]
+> btrfs(main+0x89)[0x562c84e13703]
+> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f6dc5402d0a]
+> btrfs(_start+0x2a)[0x562c84e1338a]
+> Aborted.
+> 
+> I then ran mount /dev/sdb1 -o clear_cache /mnt/
+> It ran without issue, but in the kernel log, I still see errors like:
+> [Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state A) in 
+> __btrfs_free_extent:3063: errno=-2 No such entry
+> [Di Nov 15 22:42:18 2022] BTRFS info (device sdc1: state EA): forced 
+> readonly
+> [Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state EA) in 
+> btrfs_run_delayed_refs:2141: errno=-2 No such entry
+> [Di Nov 15 22:42:27 2022] BTRFS warning (device sdc1: state EA): 
+> Skipping commit of aborted transaction.
+> [Di Nov 15 22:42:27 2022] BTRFS: error (device sdc1: state EA) in 
+> cleanup_transaction:1983: errno=-2 No such entry
+> [Di Nov 15 22:47:33 2022] BTRFS info (device sdc1): using crc32c 
+> (crc32c-intel) checksum algorithm
+> [Di Nov 15 22:47:33 2022] BTRFS info (device sdc1): force clearing of 
+> disk cache
+> [Di Nov 15 22:47:33 2022] BTRFS info (device sdc1): disk space caching 
+> is enabled
+> [Di Nov 15 22:48:28 2022] BTRFS error (device sdc1): qgroup generation 
+> mismatch, marked as inconsistent
+> [Di Nov 15 22:48:28 2022] BTRFS info (device sdc1): checking UUID tree
+> [Di Nov 15 22:52:28 2022] INFO: task btrfs-transacti:1434591 blocked for 
+> more than 120 seconds.
+> 
+> 
+> [Di Nov 15 22:42:18 2022] CPU: 0 PID: 1408097 Comm: btrfs-transacti 
+> Tainted: G            E      6.0.8 #1
+> [Di Nov 15 22:42:18 2022] RIP: 0010:__btrfs_free_extent+0x6ba/0xa50 [btrfs]
+> [Di Nov 15 22:42:18 2022]  ? btrfs_merge_delayed_refs+0x168/0x1a0 [btrfs]
+> [Di Nov 15 22:42:18 2022]  __btrfs_run_delayed_refs+0x271/0x1070 [btrfs]
+> [Di Nov 15 22:42:18 2022]  btrfs_run_delayed_refs+0x73/0x1f0 [btrfs]
+> [Di Nov 15 22:42:18 2022]  btrfs_write_dirty_block_groups+0x184/0x3e0 
+> [btrfs]
+> [Di Nov 15 22:42:18 2022]  ? btrfs_run_delayed_refs+0x167/0x1f0 [btrfs]
+> [Di Nov 15 22:42:18 2022]  commit_cowonly_roots+0x1e6/0x250 [btrfs]
+> [Di Nov 15 22:42:18 2022]  btrfs_commit_transaction+0x548/0xcf0 [btrfs]
+> [Di Nov 15 22:42:18 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
+> [Di Nov 15 22:42:18 2022]  ? 
+> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
+> [Di Nov 15 22:42:18 2022] WARNING: CPU: 0 PID: 1408097 at 
+> fs/btrfs/extent-tree.c:3063 __btrfs_free_extent+0x716/0xa50 [btrfs]
+> 
+> 
+> [Di Nov 15 22:42:18 2022] CPU: 0 PID: 1408097 Comm: btrfs-transacti 
+> Tainted: G        W   E      6.0.8 #1
+> [Di Nov 15 22:42:18 2022] RIP: 0010:__btrfs_free_extent+0x716/0xa50 [btrfs]
+> [Di Nov 15 22:42:18 2022]  ? btrfs_merge_delayed_refs+0x168/0x1a0 [btrfs]
+> [Di Nov 15 22:42:18 2022]  __btrfs_run_delayed_refs+0x271/0x1070 [btrfs]
+> [Di Nov 15 22:42:18 2022]  btrfs_run_delayed_refs+0x73/0x1f0 [btrfs]
+> [Di Nov 15 22:42:18 2022]  btrfs_write_dirty_block_groups+0x184/0x3e0 
+> [btrfs]
+> [Di Nov 15 22:42:18 2022]  ? btrfs_run_delayed_refs+0x167/0x1f0 [btrfs]
+> [Di Nov 15 22:42:18 2022]  commit_cowonly_roots+0x1e6/0x250 [btrfs]
+> [Di Nov 15 22:42:18 2022]  btrfs_commit_transaction+0x548/0xcf0 [btrfs]
+> [Di Nov 15 22:42:18 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
+> [Di Nov 15 22:42:18 2022]  ? 
+> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
+> [Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state A) in 
+> __btrfs_free_extent:3063: errno=-2 No such entry
+> [Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state EA) in 
+> btrfs_run_delayed_refs:2141: errno=-2 No such entry
+> [Di Nov 15 22:52:28 2022] INFO: task btrfs-transacti:1434591 blocked for 
+> more than 120 seconds.
+> [Di Nov 15 22:52:28 2022] task:btrfs-transacti state:D stack:    0 
+> pid:1434591 ppid:     2 flags:0x00004000
+> [Di Nov 15 22:52:28 2022]  btrfs_commit_transaction+0xb13/0xcf0 [btrfs]
+> [Di Nov 15 22:52:28 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
+> [Di Nov 15 22:52:28 2022]  ? 
+> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
+> [Di Nov 15 22:54:29 2022] INFO: task btrfs-transacti:1434591 blocked for 
+> more than 241 seconds.
+> [Di Nov 15 22:54:29 2022] task:btrfs-transacti state:D stack:    0 
+> pid:1434591 ppid:     2 flags:0x00004000
+> [Di Nov 15 22:54:29 2022]  btrfs_commit_transaction+0xb13/0xcf0 [btrfs]
+> [Di Nov 15 22:54:29 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
+> [Di Nov 15 22:54:29 2022]  ? 
+> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
+> [Di Nov 15 22:56:30 2022] INFO: task btrfs-transacti:1434591 blocked for 
+> more than 362 seconds.
+> [Di Nov 15 22:56:30 2022] task:btrfs-transacti state:D stack:    0 
+> pid:1434591 ppid:     2 flags:0x00004000
+> [Di Nov 15 22:56:30 2022]  btrfs_commit_transaction+0xb13/0xcf0 [btrfs]
+> [Di Nov 15 22:56:30 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
+> [Di Nov 15 22:56:30 2022]  ? 
+> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
+> [Di Nov 15 22:58:30 2022] INFO: task btrfs-transacti:1434591 blocked for 
+> more than 483 seconds.
+> [Di Nov 15 22:58:30 2022] task:btrfs-transacti state:D stack:    0 
+> pid:1434591 ppid:     2 flags:0x00004000
+> [Di Nov 15 22:58:30 2022]  btrfs_commit_transaction+0xb13/0xcf0 [btrfs]
+> [Di Nov 15 22:58:30 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
+> [Di Nov 15 22:58:30 2022]  ? 
+> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
+> 
+> 
+> Best regards,
+> Hendrik
+> 
+> 
+> ------ Originalnachricht ------
+> Von "Hendrik Friedel" <hendrik@friedels.name>
+> An linux-btrfs@vger.kernel.org
+> Datum 14.11.2022 23:41:40
+> Betreff block group x has wrong amount of free space
+> 
+>> Hello,
+>>
+>> I noticed very high load on my system (not CPU utilization, but load). 
+>> I was able to trace it down to a slow reaction of my btrfs filesystem, 
+>> whilst iotop showed very low r/w activity.
+>>
+>> Thus, I startet btrfs check (ro).
+>> It found:
+>> block group 30060743819264 has wrong amount of free space, free space 
+>> cache has 45056 block group has 49152
+>> failed to load free space cache for block group 30060743819264
+>>
+>> Now, I found sources telling me to clear the space cache. Some suggest 
+>> to use the mount option, others to use btrfs check --clear-space-cache 
+>> [v1 or v2].
+>>
+>> Can you please advice me, what the best way forward is - and how to 
+>> prevent this to happen again?
+>>
+>> Below you find further information on my system. btrfs df cannot run 
+>> currently, as btrfs check is running. I had to zip the dmesg.log that 
+>> is requested in the wiki.
+>> When the issue occured, I was still running linux-5.19.2 (I did not 
+>> yet notice when updating the kernel).
+>>
+>> Best regards and thanks for your help in advance,
+>> Hendrik
+>>
+>>
+>> root@homeserver:/home/henfri#   uname -a
+>> Linux homeserver 6.0.8 #1 SMP PREEMPT_DYNAMIC Sat Nov 12 14:18:32 CET 
+>> 2022 x86_64 GNU/Linux
+>> root@homeserver:/home/henfri#   btrfs --version
+>> btrfs-progs v4.20.2
+>> root@homeserver:/home/henfri#   btrfs fi show
+>> Label: none  uuid: c1534c07-d669-4f55-ae50-b87669ecb259
+>>         Total devices 1 FS bytes used 162.58GiB
+>>         devid    1 size 198.45GiB used 198.45GiB path /dev/sda3
+>>
+>> Label: 'DataPool1'  uuid: c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
+>>         Total devices 2 FS bytes used 9.87TiB
+>>         devid    1 size 10.91TiB used 9.89TiB path /dev/sdc1
+>>         devid    2 size 10.91TiB used 9.89TiB path /dev/sdb1
+>>
+>>
+> 
