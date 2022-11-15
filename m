@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D791629EAA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 17:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2518A629EAD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 17:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238531AbiKOQQo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 11:16:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
+        id S238535AbiKOQQq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 11:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238456AbiKOQQh (ORCPT
+        with ESMTP id S238500AbiKOQQi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 11:16:37 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33262AC55
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:16:36 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id jr19so8992040qtb.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:16:36 -0800 (PST)
+        Tue, 15 Nov 2022 11:16:38 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F5E2AE05
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:16:38 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id x15so10101041qvp.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:16:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=UX1EYB41D8APecB/waBAKXx+tKOcjtQ0ZJkcg8QM5l4=;
-        b=e+VGk/0NaKfnjZbeTN306vJmmO+MynOqUCUBz3gYr0kkECAYn+2tYpQFbD+qRKrs9F
-         2QNKmygaany8pC2Kst/Cp+N4PagmxKLHj0TmDuK0YAXEW2CRZ4Jc7THZFf4IuisfMVsD
-         RcarAd8+Y1RT+KTqsdqX27jdIrIk/xd0l2qJsRVIOoLamVjQJj8iPPjqOusTsJpltr2j
-         S7ZPmexH5jw6JfzXOeuSY0SuQEPQ/YQy4bulMsIvGYu+PMGKILq3ai/9EJ6QlPpzJlYa
-         QirisbnPZUSvE+fZE1uFISKI5ztUFEeESrSiWZSvpJ0fQJsEYD5G93EkRGTz3SLRKiBq
-         lPMQ==
+        bh=IY8/3x1FQl3Y/WCX8GpVgDewJMRRUaPyKX+UfV5V2io=;
+        b=WLB2g2dp0/TxpW6wvYw4OoUebNuZPIFP5jpEm4/yqlyYyIP2c3/Uvc+Sul4FeQkK93
+         KfrEHMiN6QvFnA/ttmNpp9tQQCRB7ENqyeHPYJjxXNsY62xntW9WoTwt/EYOS+AXFkXc
+         m6a6lsZTtxAUmaYtQJlHboxypfeHoO/ZJe9wFWCWECJMaOiDjg2plwe46CLOxlrsy4at
+         I3g0ukzaCJooOCDNPKLIvFohcgqKm1/yA9wK2zGYERMjCfYGiAwYq+TfQ7XgBEo+n4Wh
+         c9t3nmIgNVSWBb6iSjYo2ssrfHoZWWLyziq6y8c5/EEYDIbbVIJCcRmOsU9T06vhcIKG
+         /IBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UX1EYB41D8APecB/waBAKXx+tKOcjtQ0ZJkcg8QM5l4=;
-        b=VaSUGuhWC/dVqAIq2IBf1nJuzxv0BH4bQp1kG3CS0yJDAb+ICJgMhJYXsNqIl97eKb
-         p0nEZBInPVfxqlntT3FWKR/lWQ6heJndw1wg+3Zhz8dFWmc7JzSaXxs3bC8Jg9m36Qc3
-         pBcMWsxDImBYJiNGKi9MqiK8aPMmF63h6FuUt61sCLmu5uQYSbPMvZN4nwJno60xEsY5
-         11/Ipm1DKzeqZxcnW5CQ9MBkASwtYkOxYk1JWlIYjrSO+iumEH2lWDbaAD3h9sRfd3Dy
-         aGB3DtI/PAbeKyyC907VNUzWV27rigefTjDK5Z7ssIJYMnwp5XoMZ+90xrmmZE7L5Lsg
-         2F/A==
-X-Gm-Message-State: ANoB5plK73fM0L+GHD6LAohD7g/5N08vXPIdQMq2ImKz7Mu2o0CGSj3R
-        zULuin0WVlCG0ZgYZRdfW1f6JUEgjGX9mQ==
-X-Google-Smtp-Source: AA0mqf7Cj8FkT9pF7ReAKdJrLu9ZZbFEg++MTCjMtLtyspae8sDNTISvs45kXe2vHOENvuc/lIHWag==
-X-Received: by 2002:ac8:5a42:0:b0:399:83a8:c28b with SMTP id o2-20020ac85a42000000b0039983a8c28bmr16674724qta.447.1668528995575;
-        Tue, 15 Nov 2022 08:16:35 -0800 (PST)
+        bh=IY8/3x1FQl3Y/WCX8GpVgDewJMRRUaPyKX+UfV5V2io=;
+        b=VnNXiMRqP1hzzxFtJaVdz8lPtzl3Q4GqEC44NKY4akE+gbaELQPHCi05U5p32sT9gO
+         D7nFauFQYJIMirpdqYQnaME3t7RLnC1M1v0NOGRtXYUCHUgqozZXBnmspGFfmA2XUwQl
+         Fd9XnderoZKE4Sf9w4drdY3/hhUv6dkYGliBZUaOUR5ipk+tfmuOxJArnXaQlHnCVvcQ
+         99GK/SxJdLoKtJlNI+9dzJXXd9McKYC5zg/trirRLC3mnT6lKoUhKJrqCS3yp5PcJdD5
+         e2oqgc0cMcY8DzqX4FX6o9FDVxdOPYUKjF7C8gReLoxPcGwcfK//6EXrfi4SP53AVewG
+         QwTQ==
+X-Gm-Message-State: ANoB5pl2GQ8iNwiv+nTlEVMd3YLwqyRo9nCh0zgzkfu/XnCzFWY6oQZD
+        NIPtTjL79cIg7GwViP+ItNWKhK74ExGYFQ==
+X-Google-Smtp-Source: AA0mqf5ffifEgN1AH2P4UYeT0ufdpgo9dKSqluFzEKxyloLax9c0r9RIptPdvXwuEoauTmZhf07lsQ==
+X-Received: by 2002:ad4:4147:0:b0:4bc:26a6:b710 with SMTP id z7-20020ad44147000000b004bc26a6b710mr17441311qvp.92.1668528996899;
+        Tue, 15 Nov 2022 08:16:36 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id f2-20020ac87f02000000b003a4c3c4d2d4sm7450506qtk.49.2022.11.15.08.16.35
+        by smtp.gmail.com with ESMTPSA id br7-20020a05620a460700b006eeca296c00sm8467540qkb.104.2022.11.15.08.16.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 08:16:35 -0800 (PST)
+        Tue, 15 Nov 2022 08:16:36 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 09/11] btrfs: remove BTRFS_LEAF_DATA_OFFSET
-Date:   Tue, 15 Nov 2022 11:16:18 -0500
-Message-Id: <fd379376c26b49b6d36826cfd60bcc8909d767da.1668526429.git.josef@toxicpanda.com>
+Subject: [PATCH 10/11] btrfs: add nr_global_roots to the super block definition
+Date:   Tue, 15 Nov 2022 11:16:19 -0500
+Message-Id: <d0b325fd5265eac54b47e8e99a36e39aff6703ec.1668526429.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1668526429.git.josef@toxicpanda.com>
 References: <cover.1668526429.git.josef@toxicpanda.com>
@@ -69,80 +69,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is simply the same thing as btrfs_item_nr_offset(leaf, 0), so
-remove this helper and replace it's usage with the above statement.
+We already have this defined in btrfs-progs, add it to the kernel to
+make it easier to sync these files into btrfs-progs.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/accessors.h | 6 ++----
- fs/btrfs/ctree.c     | 8 ++++----
- fs/btrfs/extent_io.c | 2 +-
- 3 files changed, 7 insertions(+), 9 deletions(-)
+ fs/btrfs/accessors.h            | 2 ++
+ include/uapi/linux/btrfs_tree.h | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-index 88eea44fdd7f..e6228ff73c81 100644
+index e6228ff73c81..75c181b579eb 100644
 --- a/fs/btrfs/accessors.h
 +++ b/fs/btrfs/accessors.h
-@@ -9,8 +9,6 @@ struct btrfs_map_token {
- 	unsigned long offset;
- };
+@@ -889,6 +889,8 @@ BTRFS_SETGET_STACK_FUNCS(super_cache_generation, struct btrfs_super_block,
+ BTRFS_SETGET_STACK_FUNCS(super_magic, struct btrfs_super_block, magic, 64);
+ BTRFS_SETGET_STACK_FUNCS(super_uuid_tree_generation, struct btrfs_super_block,
+ 			 uuid_tree_generation, 64);
++BTRFS_SETGET_STACK_FUNCS(super_nr_global_roots, struct btrfs_super_block,
++			 nr_global_roots, 64);
  
--#define BTRFS_LEAF_DATA_OFFSET		offsetof(struct btrfs_leaf, items)
--
- void btrfs_init_map_token(struct btrfs_map_token *token, struct extent_buffer *eb);
+ /* struct btrfs_file_extent_item */
+ BTRFS_SETGET_STACK_FUNCS(stack_file_extent_type, struct btrfs_file_extent_item,
+diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+index 29895ffa470d..ab38d0f411fa 100644
+--- a/include/uapi/linux/btrfs_tree.h
++++ b/include/uapi/linux/btrfs_tree.h
+@@ -688,8 +688,9 @@ struct btrfs_super_block {
+ 	/* The UUID written into btree blocks */
+ 	__u8 metadata_uuid[BTRFS_FSID_SIZE];
  
- /*
-@@ -1028,9 +1026,9 @@ BTRFS_SETGET_STACK_FUNCS(stack_verity_descriptor_size,
- 
- /* Cast into the data area of the leaf. */
- #define btrfs_item_ptr(leaf, slot, type)				\
--	((type *)(BTRFS_LEAF_DATA_OFFSET + btrfs_item_offset(leaf, slot)))
-+	((type *)(btrfs_item_nr_offset(leaf, 0) + btrfs_item_offset(leaf, slot)))
- 
- #define btrfs_item_ptr_offset(leaf, slot)				\
--	((unsigned long)(BTRFS_LEAF_DATA_OFFSET + btrfs_item_offset(leaf, slot)))
-+	((unsigned long)(btrfs_item_nr_offset(leaf, 0) + btrfs_item_offset(leaf, slot)))
- 
- #endif
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index ac8b76e90b1c..7e756b44771b 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -82,8 +82,8 @@ static inline void memmove_leaf_data(const struct extent_buffer *leaf,
- 				     unsigned long src_offset,
- 				     unsigned long len)
- {
--	memmove_extent_buffer(leaf, BTRFS_LEAF_DATA_OFFSET + dst_offset,
--			      BTRFS_LEAF_DATA_OFFSET + src_offset, len);
-+	memmove_extent_buffer(leaf, btrfs_item_nr_offset(leaf, 0) + dst_offset,
-+			      btrfs_item_nr_offset(leaf, 0) + src_offset, len);
- }
- 
- /*
-@@ -104,8 +104,8 @@ static inline void copy_leaf_data(const struct extent_buffer *dst,
- 				  unsigned long dst_offset,
- 				  unsigned long src_offset, unsigned long len)
- {
--	copy_extent_buffer(dst, src, BTRFS_LEAF_DATA_OFFSET + dst_offset,
--			   BTRFS_LEAF_DATA_OFFSET + src_offset, len);
-+	copy_extent_buffer(dst, src, btrfs_item_nr_offset(dst, 0) + dst_offset,
-+			   btrfs_item_nr_offset(src, 0) + src_offset, len);
- }
- 
- /*
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 56dbe58818e1..c87be46e0663 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2664,7 +2664,7 @@ static void prepare_eb_write(struct extent_buffer *eb)
- 		 * header 0 1 2 .. N ... data_N .. data_2 data_1 data_0
- 		 */
- 		start = btrfs_item_nr_offset(eb, nritems);
--		end = BTRFS_LEAF_DATA_OFFSET;
-+		end = btrfs_item_nr_offset(eb, 0);
- 		if (nritems == 0)
- 			end += BTRFS_LEAF_DATA_SIZE(eb->fs_info);
- 		else
++	__u64 nr_global_roots;
++
+ 	/* Future expansion */
+-	__u8 reserved8[8];
+ 	__le64 reserved[27];
+ 	__u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
+ 	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
 -- 
 2.26.3
 
