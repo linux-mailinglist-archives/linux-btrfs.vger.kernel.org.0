@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9646962A0F9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 19:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A7662A0EE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 19:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238401AbiKOSBt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 13:01:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
+        id S238294AbiKOSBu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 13:01:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238294AbiKOSBM (ORCPT
+        with ESMTP id S238299AbiKOSBM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 15 Nov 2022 13:01:12 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834B6C03
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 10:00:54 -0800 (PST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A914CD8
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 10:00:56 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 415361F8E0;
-        Tue, 15 Nov 2022 18:00:53 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 59BFE336CD;
+        Tue, 15 Nov 2022 18:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1668535253; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1668535255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vGarr4DN5B7hiz14x15U9Lw/fKq3vgsceZuvf/ubqqo=;
-        b=rjU+I9AlU6au1709xR2/ePM57vUpvMQRBLSm6LBJvlSdoKg1wb5RxTqZKV8aZJYRptrBqk
-        kWF4P8tzmbrGZdOG31dw3zN6hcqkX+nrYFQp3EU0IRE+bl9F7o8xSIN/y6Q/DNcH31P319
-        Ejdbg9D9zg4f3p941i6Y6bt5rB4hxdQ=
+        bh=YlvVevUyxLJUPaEGndY91b0zfj8IZJxwb8yZRJLnu0Q=;
+        b=il/WWpO2JTofiCWruz7+HErZM/LEm613Zo50L1ghJrHWvozWCiVonjfvxOMVZ1wZw7Z8D5
+        fviG5oeLBwq46ASUBBcrFV5BYH3oaHj2q26DGf8N1otgYrNsgFf+2HR95THuJe4C2ltypN
+        M37n514E8d7RIjt176/jTHtfsuCm8mw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1668535253;
+        s=susede2_ed25519; t=1668535255;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vGarr4DN5B7hiz14x15U9Lw/fKq3vgsceZuvf/ubqqo=;
-        b=0Mn9ySS1DLn6t5/ZnGjby3CDTqGmetkFAVhFJTUV4gOdDiC2quqvf8cpg0TPAGvSvucfgo
-        mdtF2hjQzwfBgvCw==
+        bh=YlvVevUyxLJUPaEGndY91b0zfj8IZJxwb8yZRJLnu0Q=;
+        b=HlMnX3CZ0U6YiHkhc/oBS067uTkpsi99zzP+6PffFGD75P4LvaWouGIWIrPEUchQUpp+HN
+        tNWdkGijV75TN0CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D4C8913A91;
-        Tue, 15 Nov 2022 18:00:52 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E0FA13A91;
+        Tue, 15 Nov 2022 18:00:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id /MYsKtTTc2OhZAAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>); Tue, 15 Nov 2022 18:00:52 +0000
+        id 4hoCN9bTc2OjZAAAMHmgww
+        (envelope-from <rgoldwyn@suse.de>); Tue, 15 Nov 2022 18:00:54 +0000
 From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
         Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 07/16] btrfs: Lock extents before folio for read()s
-Date:   Tue, 15 Nov 2022 12:00:25 -0600
-Message-Id: <5c7c77d0735c18cea82c347eef2ce2eb169681e6.1668530684.git.rgoldwyn@suse.com>
+Subject: [PATCH 08/16] btrfs: Lock extents before pages for buffered write()
+Date:   Tue, 15 Nov 2022 12:00:26 -0600
+Message-Id: <387d15a567d7c56ceb2408783ebe31e431cb537f.1668530684.git.rgoldwyn@suse.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <cover.1668530684.git.rgoldwyn@suse.com>
 References: <cover.1668530684.git.rgoldwyn@suse.com>
@@ -70,221 +70,172 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Perform extent locking around buffered reads as opposed to while
-performing folio reads.
+While performing writes, lock the extents before locking the pages.
+
+Ideally, this should be done before  space reservations. However,
+This is performed after check for space because qgroup initiates
+writeback which may cause deadlocks.
 
 Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 ---
- fs/btrfs/compression.c |  5 -----
- fs/btrfs/extent_io.c   | 36 +-----------------------------------
- fs/btrfs/file.c        | 17 ++++++++++++++---
- 3 files changed, 15 insertions(+), 43 deletions(-)
+ fs/btrfs/file.c | 78 ++++++++++++-------------------------------------
+ 1 file changed, 19 insertions(+), 59 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 30adf430241e..7f6452c4234e 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -526,11 +526,9 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 	struct extent_map *em;
- 	struct address_space *mapping = inode->i_mapping;
- 	struct extent_map_tree *em_tree;
--	struct extent_io_tree *tree;
- 	int sectors_missed = 0;
- 
- 	em_tree = &BTRFS_I(inode)->extent_tree;
--	tree = &BTRFS_I(inode)->io_tree;
- 
- 	if (isize == 0)
- 		return 0;
-@@ -597,7 +595,6 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 		}
- 
- 		page_end = (pg_index << PAGE_SHIFT) + PAGE_SIZE - 1;
--		lock_extent(tree, cur, page_end, NULL);
- 		read_lock(&em_tree->lock);
- 		em = lookup_extent_mapping(em_tree, cur, page_end + 1 - cur);
- 		read_unlock(&em_tree->lock);
-@@ -611,7 +608,6 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 		    (cur + fs_info->sectorsize > extent_map_end(em)) ||
- 		    (em->block_start >> 9) != cb->orig_bio->bi_iter.bi_sector) {
- 			free_extent_map(em);
--			unlock_extent(tree, cur, page_end, NULL);
- 			unlock_page(page);
- 			put_page(page);
- 			break;
-@@ -631,7 +627,6 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 		add_size = min(em->start + em->len, page_end + 1) - cur;
- 		ret = bio_add_page(cb->orig_bio, page, add_size, offset_in_page(cur));
- 		if (ret != add_size) {
--			unlock_extent(tree, cur, page_end, NULL);
- 			unlock_page(page);
- 			put_page(page);
- 			break;
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 42bae149f923..c5430cabad62 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -891,15 +891,6 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
- 		btrfs_subpage_end_reader(fs_info, page, start, len);
- }
- 
--static void end_sector_io(struct page *page, u64 offset, bool uptodate)
--{
--	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
--	const u32 sectorsize = inode->root->fs_info->sectorsize;
--
--	end_page_read(page, uptodate, offset, sectorsize);
--	unlock_extent(&inode->io_tree, offset, offset + sectorsize - 1, NULL);
--}
--
- static void submit_data_read_repair(struct inode *inode,
- 				    struct btrfs_bio *failed_bbio,
- 				    u32 bio_offset, const struct bio_vec *bvec,
-@@ -960,7 +951,7 @@ static void submit_data_read_repair(struct inode *inode,
- 		 * will not be properly unlocked.
- 		 */
- next:
--		end_sector_io(page, start + offset, uptodate);
-+		end_page_read(page, uptodate, start + offset, sectorsize);
- 	}
- }
- 
-@@ -1072,9 +1063,6 @@ static void endio_readpage_release_extent(struct processed_extent *processed,
- 			      struct btrfs_inode *inode, u64 start, u64 end,
- 			      bool uptodate)
- {
--	struct extent_state *cached = NULL;
--	struct extent_io_tree *tree;
--
- 	/* The first extent, initialize @processed */
- 	if (!processed->inode)
- 		goto update;
-@@ -1096,13 +1084,6 @@ static void endio_readpage_release_extent(struct processed_extent *processed,
- 		return;
- 	}
- 
--	tree = &processed->inode->io_tree;
--	/*
--	 * Now we don't have range contiguous to the processed range, release
--	 * the processed range now.
--	 */
--	unlock_extent(tree, processed->start, processed->end, &cached);
--
- update:
- 	/* Update processed to current range */
- 	processed->inode = inode;
-@@ -1743,11 +1724,9 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 	size_t pg_offset = 0;
- 	size_t iosize;
- 	size_t blocksize = inode->i_sb->s_blocksize;
--	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
- 
- 	ret = set_page_extent_mapped(page);
- 	if (ret < 0) {
--		unlock_extent(tree, start, end, NULL);
- 		btrfs_page_set_error(fs_info, page, start, PAGE_SIZE);
- 		unlock_page(page);
- 		goto out;
-@@ -1772,14 +1751,12 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 		if (cur >= last_byte) {
- 			iosize = PAGE_SIZE - pg_offset;
- 			memzero_page(page, pg_offset, iosize);
--			unlock_extent(tree, cur, cur + iosize - 1, NULL);
- 			end_page_read(page, true, cur, iosize);
- 			break;
- 		}
- 		em = __get_extent_map(inode, page, pg_offset, cur,
- 				      end - cur + 1, em_cached);
- 		if (IS_ERR(em)) {
--			unlock_extent(tree, cur, end, NULL);
- 			end_page_read(page, false, cur, end + 1 - cur);
- 			ret = PTR_ERR(em);
- 			break;
-@@ -1849,8 +1826,6 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 		/* we've found a hole, just zero and go on */
- 		if (block_start == EXTENT_MAP_HOLE) {
- 			memzero_page(page, pg_offset, iosize);
--
--			unlock_extent(tree, cur, cur + iosize - 1, NULL);
- 			end_page_read(page, true, cur, iosize);
- 			cur = cur + iosize;
- 			pg_offset += iosize;
-@@ -1858,7 +1833,6 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 		}
- 		/* the get_extent function already copied into the page */
- 		if (block_start == EXTENT_MAP_INLINE) {
--			unlock_extent(tree, cur, cur + iosize - 1, NULL);
- 			end_page_read(page, true, cur, iosize);
- 			cur = cur + iosize;
- 			pg_offset += iosize;
-@@ -1874,7 +1848,6 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 			 * We have to unlock the remaining range, or the page
- 			 * will never be unlocked.
- 			 */
--			unlock_extent(tree, cur, end, NULL);
- 			end_page_read(page, false, cur, end + 1 - cur);
- 			goto out;
- 		}
-@@ -1888,13 +1861,9 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- int btrfs_read_folio(struct file *file, struct folio *folio)
- {
- 	struct page *page = &folio->page;
--	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
--	u64 start = page_offset(page);
--	u64 end = start + PAGE_SIZE - 1;
- 	struct btrfs_bio_ctrl bio_ctrl = { 0 };
- 	int ret;
- 
--	btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
- 
- 	ret = btrfs_do_readpage(page, NULL, &bio_ctrl, 0, NULL);
- 	/*
-@@ -1911,11 +1880,8 @@ static inline void contiguous_readpages(struct page *pages[], int nr_pages,
- 					struct btrfs_bio_ctrl *bio_ctrl,
- 					u64 *prev_em_start)
- {
--	struct btrfs_inode *inode = BTRFS_I(pages[0]->mapping->host);
- 	int index;
- 
--	btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
--
- 	for (index = 0; index < nr_pages; index++) {
- 		btrfs_do_readpage(pages[index], em_cached, bio_ctrl,
- 				  REQ_RAHEAD, prev_em_start);
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 473a0743270b..9266ee6c1a61 100644
+index 9266ee6c1a61..559214ded4eb 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -3806,15 +3806,26 @@ static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
- static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
- 	ssize_t ret = 0;
-+	struct inode *inode = file_inode(iocb->ki_filp);
-+	loff_t len = iov_iter_count(to);
-+	u64 start = round_down(iocb->ki_pos, PAGE_SIZE);
-+	u64 end = round_up(iocb->ki_pos + len, PAGE_SIZE) - 1;
-+	struct extent_state *cached = NULL;
+@@ -967,8 +967,8 @@ static noinline int prepare_pages(struct inode *inode, struct page **pages,
+  * the other < 0 number - Something wrong happens
+  */
+ static noinline int
+-lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
+-				size_t num_pages, loff_t pos,
++lock_and_cleanup_extent_if_need(struct btrfs_inode *inode,
++				loff_t pos,
+ 				size_t write_bytes,
+ 				u64 *lockstart, u64 *lockend, bool nowait,
+ 				struct extent_state **cached_state)
+@@ -976,7 +976,6 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	u64 start_pos;
+ 	u64 last_pos;
+-	int i;
+ 	int ret = 0;
  
- 	if (iocb->ki_flags & IOCB_DIRECT) {
- 		ret = btrfs_direct_read(iocb, to);
--		if (ret < 0 || !iov_iter_count(to) ||
--		    iocb->ki_pos >= i_size_read(file_inode(iocb->ki_filp)))
-+		if (ret < 0 || !len ||
-+		    iocb->ki_pos >= i_size_read(inode))
- 			return ret;
+ 	start_pos = round_down(pos, fs_info->sectorsize);
+@@ -987,15 +986,8 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
+ 
+ 		if (nowait) {
+ 			if (!try_lock_extent(&inode->io_tree, start_pos, last_pos,
+-					     cached_state)) {
+-				for (i = 0; i < num_pages; i++) {
+-					unlock_page(pages[i]);
+-					put_page(pages[i]);
+-					pages[i] = NULL;
+-				}
+-
++					     cached_state))
+ 				return -EAGAIN;
+-			}
+ 		} else {
+ 			lock_extent(&inode->io_tree, start_pos, last_pos, cached_state);
+ 		}
+@@ -1007,10 +999,6 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
+ 		    ordered->file_offset <= last_pos) {
+ 			unlock_extent(&inode->io_tree, start_pos, last_pos,
+ 				      cached_state);
+-			for (i = 0; i < num_pages; i++) {
+-				unlock_page(pages[i]);
+-				put_page(pages[i]);
+-			}
+ 			btrfs_start_ordered_extent(ordered, 1);
+ 			btrfs_put_ordered_extent(ordered);
+ 			return -EAGAIN;
+@@ -1023,13 +1011,6 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
+ 		ret = 1;
  	}
  
--	return filemap_read(iocb, to, ret);
-+	btrfs_lock_and_flush_ordered_range(BTRFS_I(inode), start,
-+			end, &cached);
-+
-+	ret = filemap_read(iocb, to, ret);
-+
-+	unlock_extent(&BTRFS_I(inode)->io_tree, start, end, &cached);
-+	return ret;
+-	/*
+-	 * We should be called after prepare_pages() which should have locked
+-	 * all pages in the range.
+-	 */
+-	for (i = 0; i < num_pages; i++)
+-		WARN_ON(!PageLocked(pages[i]));
+-
+ 	return ret;
  }
  
- const struct file_operations btrfs_file_operations = {
+@@ -1306,13 +1287,22 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 		}
+ 
+ 		release_bytes = reserve_bytes;
+-again:
+ 		ret = balance_dirty_pages_ratelimited_flags(inode->i_mapping, bdp_flags);
+ 		if (ret) {
+ 			btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes);
+ 			break;
+ 		}
+ 
++		extents_locked = lock_and_cleanup_extent_if_need(BTRFS_I(inode),
++				pos, write_bytes, &lockstart, &lockend,
++				nowait, &cached_state);
++		if (extents_locked < 0) {
++			ret = extents_locked;
++			btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes);
++			break;
++		}
++
++
+ 		/*
+ 		 * This is going to setup the pages array with the number of
+ 		 * pages we want, so we don't really need to worry about the
+@@ -1320,25 +1310,9 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 		 */
+ 		ret = prepare_pages(inode, pages, num_pages,
+ 				    pos, write_bytes, force_page_uptodate, false);
+-		if (ret) {
+-			btrfs_delalloc_release_extents(BTRFS_I(inode),
+-						       reserve_bytes);
+-			break;
+-		}
+-
+-		extents_locked = lock_and_cleanup_extent_if_need(
+-				BTRFS_I(inode), pages,
+-				num_pages, pos, write_bytes, &lockstart,
+-				&lockend, nowait, &cached_state);
+-		if (extents_locked < 0) {
+-			if (!nowait && extents_locked == -EAGAIN)
+-				goto again;
+-
++		if (ret)
+ 			btrfs_delalloc_release_extents(BTRFS_I(inode),
+ 						       reserve_bytes);
+-			ret = extents_locked;
+-			break;
+-		}
+ 
+ 		copied = btrfs_copy_from_user(pos, write_bytes, pages, i);
+ 
+@@ -1387,33 +1361,19 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 
+ 		ret = btrfs_dirty_pages(BTRFS_I(inode), pages,
+ 					dirty_pages, pos, copied,
+-					&cached_state, only_release_metadata);
+-
+-		/*
+-		 * If we have not locked the extent range, because the range's
+-		 * start offset is >= i_size, we might still have a non-NULL
+-		 * cached extent state, acquired while marking the extent range
+-		 * as delalloc through btrfs_dirty_pages(). Therefore free any
+-		 * possible cached extent state to avoid a memory leak.
+-		 */
+-		if (extents_locked)
+-			unlock_extent(&BTRFS_I(inode)->io_tree, lockstart,
+-				      lockend, &cached_state);
+-		else
+-			free_extent_state(cached_state);
++					NULL, only_release_metadata);
+ 
+ 		btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes);
+-		if (ret) {
+-			btrfs_drop_pages(fs_info, pages, num_pages, pos, copied);
++		btrfs_drop_pages(fs_info, pages, num_pages, pos, copied);
++		if (extents_locked)
++			unlock_extent(&BTRFS_I(inode)->io_tree, lockstart, lockend, &cached_state);
++		if (ret)
+ 			break;
+-		}
+ 
+ 		release_bytes = 0;
+ 		if (only_release_metadata)
+ 			btrfs_check_nocow_unlock(BTRFS_I(inode));
+ 
+-		btrfs_drop_pages(fs_info, pages, num_pages, pos, copied);
+-
+ 		cond_resched();
+ 
+ 		pos += copied;
 -- 
 2.35.3
 
