@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABC262A0F2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 19:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD68962A0FD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 19:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238374AbiKOSBr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 13:01:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
+        id S238393AbiKOSBs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 13:01:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238255AbiKOSBJ (ORCPT
+        with ESMTP id S238278AbiKOSBL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 13:01:09 -0500
+        Tue, 15 Nov 2022 13:01:11 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08E22AD
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 10:00:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0693E1157
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 10:00:52 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AB58D336D2;
-        Tue, 15 Nov 2022 18:00:48 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B293D33688;
+        Tue, 15 Nov 2022 18:00:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1668535248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1668535250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mkPDwZwoqHgEKeNvYJ9df9I0XhzJmdZcYflX9P2sc+I=;
-        b=qYNvLFYV2q4Nx6cT2l/oaEE+3Tty/sMli9A+QBQAmny0hviB8uleTEjZC1wXPBMG2YL/+G
-        djqk0P/SIo6jJt9mgwKPcU1xoRYUPsKZbuviPi4OCihH7LWIMr351O8Enm0BuBoAFfKfa+
-        mMmfxOjkjMK1YrcjtSmTJixM9LA/9Eo=
+        bh=GijL5/Y3oGaK8CJh9+F4rjmFJZqDl2bmnRrf+LTx3i4=;
+        b=MFCjQgdupdyCO/of3Kn2kLZebnIN1CL0sab2wlK5DQ4GZ4HXjVNxKvcuZIHUmRk1ChhJjh
+        HJhuSAbquRocLxCKh3TQu0rTY8kemdtM3IAKVn9GaCtTpg/KSh5cOT4xCuplcpVKFwU9l5
+        pwWcW9M6dtCIYsI/YalWqRD9ND+H+yQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1668535248;
+        s=susede2_ed25519; t=1668535250;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mkPDwZwoqHgEKeNvYJ9df9I0XhzJmdZcYflX9P2sc+I=;
-        b=ngebfW6h8EQSkFWsurCYihRD8Ir4XUeIZjN5+XCdgGlFzeh4e2578kApQf2DaloJIhFsjM
-        sLLEHqRvMlfPx4Cg==
+        bh=GijL5/Y3oGaK8CJh9+F4rjmFJZqDl2bmnRrf+LTx3i4=;
+        b=YEwfNA5t5QGyeFfgcbAKTs9gna35qVmFcXvsPzAOCRVAIji/bU9jQ7S/9jYObvvAZSPQ/e
+        fTi0trFsi10MBFAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5B34013A91;
-        Tue, 15 Nov 2022 18:00:48 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 635DA13A91;
+        Tue, 15 Nov 2022 18:00:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id JMtSDtDTc2OcZAAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>); Tue, 15 Nov 2022 18:00:48 +0000
+        id oIxIENLTc2OfZAAAMHmgww
+        (envelope-from <rgoldwyn@suse.de>); Tue, 15 Nov 2022 18:00:50 +0000
 From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
         Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 05/16] btrfs: No need to lock extent while performing invalidate_folio()
-Date:   Tue, 15 Nov 2022 12:00:23 -0600
-Message-Id: <259239dfcb4ab26250036c6429c47ff6214ac8ef.1668530684.git.rgoldwyn@suse.com>
+Subject: [PATCH 06/16] btrfs: Lock extents before pages in writepages
+Date:   Tue, 15 Nov 2022 12:00:24 -0600
+Message-Id: <28cb7dbc0216d2a5f55efd296113f9f9576dda41.1668530684.git.rgoldwyn@suse.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <cover.1668530684.git.rgoldwyn@suse.com>
 References: <cover.1668530684.git.rgoldwyn@suse.com>
@@ -70,90 +70,169 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Don't lock extents while performing invalidate_folio because this is
-performed by the calling function higher up the call chain.
+writepages() locks the extents in find_lock_delalloc_range() and unlocks
+using clear_bit EXTENT_LOCKED operations is cow/delalloc operations.
 
-With this change, extent_invalidate_folio() calls only
-folio_wait_writeback(). Remove and cleanup this function.
+Call extent locking/unlocking around writepages() sequence as opposed to
+while performing delayed allocation.
 
 Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 ---
- fs/btrfs/disk-io.c   |  4 +---
- fs/btrfs/extent_io.c | 32 --------------------------------
- fs/btrfs/extent_io.h |  2 --
- 3 files changed, 1 insertion(+), 37 deletions(-)
+ fs/btrfs/extent_io.c |  5 -----
+ fs/btrfs/inode.c     | 43 +++++++++++++++++++++++++++++++------------
+ 2 files changed, 31 insertions(+), 17 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 91a088210e5a..8ac9612f8f27 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -888,9 +888,7 @@ static bool btree_release_folio(struct folio *folio, gfp_t gfp_flags)
- static void btree_invalidate_folio(struct folio *folio, size_t offset,
- 				 size_t length)
- {
--	struct extent_io_tree *tree;
--	tree = &BTRFS_I(folio->mapping->host)->io_tree;
--	extent_invalidate_folio(tree, folio, offset);
-+	folio_wait_writeback(folio);
- 	btree_release_folio(folio, GFP_NOFS);
- 	if (folio_get_private(folio)) {
- 		btrfs_warn(BTRFS_I(folio->mapping->host)->root->fs_info,
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 65ba5c3658cf..92068e4ff9c3 100644
+index 92068e4ff9c3..42bae149f923 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -3324,38 +3324,6 @@ void extent_readahead(struct readahead_control *rac)
- 	submit_one_bio(&bio_ctrl);
+@@ -464,15 +464,10 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+ 		}
+ 	}
+ 
+-	/* step three, lock the state bits for the whole range */
+-	lock_extent(tree, delalloc_start, delalloc_end, &cached_state);
+-
+ 	/* then test to make sure it is all still delalloc */
+ 	ret = test_range_bit(tree, delalloc_start, delalloc_end,
+ 			     EXTENT_DELALLOC, 1, cached_state);
+ 	if (!ret) {
+-		unlock_extent(tree, delalloc_start, delalloc_end,
+-			      &cached_state);
+ 		__unlock_for_delalloc(inode, locked_page,
+ 			      delalloc_start, delalloc_end);
+ 		cond_resched();
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 4bfa51871ddc..92726831dd5d 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -992,7 +992,6 @@ static int submit_one_async_extent(struct btrfs_inode *inode,
+ 				   struct async_extent *async_extent,
+ 				   u64 *alloc_hint)
+ {
+-	struct extent_io_tree *io_tree = &inode->io_tree;
+ 	struct btrfs_root *root = inode->root;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct btrfs_key ins;
+@@ -1013,7 +1012,6 @@ static int submit_one_async_extent(struct btrfs_inode *inode,
+ 		if (!(start >= locked_page_end || end <= locked_page_start))
+ 			locked_page = async_chunk->locked_page;
+ 	}
+-	lock_extent(io_tree, start, end, NULL);
+ 
+ 	/* We have fall back to uncompressed write */
+ 	if (!async_extent->pages)
+@@ -1067,7 +1065,7 @@ static int submit_one_async_extent(struct btrfs_inode *inode,
+ 
+ 	/* Clear dirty, set writeback and unlock the pages. */
+ 	extent_clear_unlock_delalloc(inode, start, end,
+-			NULL, EXTENT_LOCKED | EXTENT_DELALLOC,
++			NULL, EXTENT_DELALLOC,
+ 			PAGE_UNLOCK | PAGE_START_WRITEBACK);
+ 	if (btrfs_submit_compressed_write(inode, start,	/* file_offset */
+ 			    async_extent->ram_size,	/* num_bytes */
+@@ -1095,7 +1093,7 @@ static int submit_one_async_extent(struct btrfs_inode *inode,
+ 	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 1);
+ out_free:
+ 	extent_clear_unlock_delalloc(inode, start, end,
+-				     NULL, EXTENT_LOCKED | EXTENT_DELALLOC |
++				     NULL, EXTENT_DELALLOC |
+ 				     EXTENT_DELALLOC_NEW |
+ 				     EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING,
+ 				     PAGE_UNLOCK | PAGE_START_WRITEBACK |
+@@ -1263,7 +1261,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 			 */
+ 			extent_clear_unlock_delalloc(inode, start, end,
+ 				     locked_page,
+-				     EXTENT_LOCKED | EXTENT_DELALLOC |
++				     EXTENT_DELALLOC |
+ 				     EXTENT_DELALLOC_NEW | EXTENT_DEFRAG |
+ 				     EXTENT_DO_ACCOUNTING, PAGE_UNLOCK |
+ 				     PAGE_START_WRITEBACK | PAGE_END_WRITEBACK);
+@@ -1374,7 +1372,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 
+ 		extent_clear_unlock_delalloc(inode, start, start + ram_size - 1,
+ 					     locked_page,
+-					     EXTENT_LOCKED | EXTENT_DELALLOC,
++					     EXTENT_DELALLOC,
+ 					     page_ops);
+ 		if (num_bytes < cur_alloc_size)
+ 			num_bytes = 0;
+@@ -1425,7 +1423,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 	 * We process each region below.
+ 	 */
+ 
+-	clear_bits = EXTENT_LOCKED | EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
++	clear_bits = EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
+ 		EXTENT_DEFRAG | EXTENT_CLEAR_META_RESV;
+ 	page_ops = PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK;
+ 
+@@ -1575,7 +1573,7 @@ static int cow_file_range_async(struct btrfs_inode *inode,
+ 	memalloc_nofs_restore(nofs_flag);
+ 
+ 	if (!ctx) {
+-		unsigned clear_bits = EXTENT_LOCKED | EXTENT_DELALLOC |
++		unsigned clear_bits = EXTENT_DELALLOC |
+ 			EXTENT_DELALLOC_NEW | EXTENT_DEFRAG |
+ 			EXTENT_DO_ACCOUNTING;
+ 		unsigned long page_ops = PAGE_UNLOCK | PAGE_START_WRITEBACK |
+@@ -1955,7 +1953,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 	path = btrfs_alloc_path();
+ 	if (!path) {
+ 		extent_clear_unlock_delalloc(inode, start, end, locked_page,
+-					     EXTENT_LOCKED | EXTENT_DELALLOC |
++					     EXTENT_DELALLOC |
+ 					     EXTENT_DO_ACCOUNTING |
+ 					     EXTENT_DEFRAG, PAGE_UNLOCK |
+ 					     PAGE_START_WRITEBACK |
+@@ -2169,7 +2167,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 						      nocow_args.num_bytes);
+ 
+ 		extent_clear_unlock_delalloc(inode, cur_offset, nocow_end,
+-					     locked_page, EXTENT_LOCKED |
++					     locked_page,
+ 					     EXTENT_DELALLOC |
+ 					     EXTENT_CLEAR_DATA_RESV,
+ 					     PAGE_UNLOCK | PAGE_SET_ORDERED);
+@@ -2205,7 +2203,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 
+ 	if (ret && cur_offset < end)
+ 		extent_clear_unlock_delalloc(inode, cur_offset, end,
+-					     locked_page, EXTENT_LOCKED |
++					     locked_page,
+ 					     EXTENT_DELALLOC | EXTENT_DEFRAG |
+ 					     EXTENT_DO_ACCOUNTING, PAGE_UNLOCK |
+ 					     PAGE_START_WRITEBACK |
+@@ -8223,7 +8221,28 @@ static int btrfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ static int btrfs_writepages(struct address_space *mapping,
+ 			    struct writeback_control *wbc)
+ {
+-	return extent_writepages(mapping, wbc);
++	u64 start, end;
++	struct inode *inode = mapping->host;
++	struct extent_state *cached = NULL;
++	int ret;
++	u64 isize = round_up(i_size_read(inode), PAGE_SIZE) - 1;
++
++	if (wbc->range_cyclic) {
++		start = mapping->writeback_index << PAGE_SHIFT;
++		end = isize;
++	} else {
++		start = round_down(wbc->range_start, PAGE_SIZE);
++		end = round_up(wbc->range_end, PAGE_SIZE) - 1;
++		end = min(isize, end);
++	}
++
++	if (start >= end)
++		return 0;
++
++	lock_extent(&BTRFS_I(inode)->io_tree, start, end, &cached);
++	ret = extent_writepages(mapping, wbc);
++	unlock_extent(&BTRFS_I(inode)->io_tree, start, end, &cached);
++	return ret;
  }
  
--/*
-- * basic invalidate_folio code, this waits on any locked or writeback
-- * ranges corresponding to the folio, and then deletes any extent state
-- * records from the tree
-- */
--int extent_invalidate_folio(struct extent_io_tree *tree,
--			  struct folio *folio, size_t offset)
--{
--	struct extent_state *cached_state = NULL;
--	u64 start = folio_pos(folio);
--	u64 end = start + folio_size(folio) - 1;
--	size_t blocksize = folio->mapping->host->i_sb->s_blocksize;
--
--	/* This function is only called for the btree inode */
--	ASSERT(tree->owner == IO_TREE_BTREE_INODE_IO);
--
--	start += ALIGN(offset, blocksize);
--	if (start > end)
--		return 0;
--
--	lock_extent(tree, start, end, &cached_state);
--	folio_wait_writeback(folio);
--
--	/*
--	 * Currently for btree io tree, only EXTENT_LOCKED is utilized,
--	 * so here we only need to unlock the extent range to free any
--	 * existing extent state.
--	 */
--	unlock_extent(tree, start, end, &cached_state);
--	return 0;
--}
--
- /*
-  * a helper for release_folio, this tests for areas of the page that
-  * are locked or under IO and drops the related state bits if it is safe
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index a0bafc7f6c07..3adb22a034a0 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -239,8 +239,6 @@ void extent_range_redirty_for_io(struct inode *inode, u64 start, u64 end);
- void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
- 				  struct page *locked_page,
- 				  u32 bits_to_clear, unsigned long page_ops);
--int extent_invalidate_folio(struct extent_io_tree *tree,
--			    struct folio *folio, size_t offset);
- 
- int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array);
- 
+ static void btrfs_readahead(struct readahead_control *rac)
 -- 
 2.35.3
 
