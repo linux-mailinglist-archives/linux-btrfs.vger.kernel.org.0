@@ -2,125 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8555B629B91
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 15:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF1E629C38
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 15:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbiKOOI6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 09:08:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
+        id S229716AbiKOOir (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 09:38:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbiKOOIy (ORCPT
+        with ESMTP id S229554AbiKOOiq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 09:08:54 -0500
-Received: from avasout-peh-004.plus.net (avasout-peh-004.plus.net [212.159.14.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8476F10541
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 06:08:50 -0800 (PST)
-Received: from selket.spencercollyer.plus.com ([80.189.102.133])
-        by smtp with ESMTP
-        id uwcJoGacMAajauwcKoN4Tn; Tue, 15 Nov 2022 14:08:48
- +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plus.com; s=042019;
-        t=1668521328; bh=HkbYAobndFgRN/ZTf20tmQFE+l1iUcTL8Ie1az9ceIY=;
-        h=Date:From:Cc:Subject:In-Reply-To:References;
-        b=iwqBF/V8c/fTke/EwWrUiuDPIBCNKpjl62PrwAZyEpiVCPZnx3JxncGWrkqpgrg8T
-         hhFA0w7STbzre2pDwwDoZYrs5WaYl8q87d6ug1g4ebvFUJTvVSoDevxtykNraQfuAR
-         51mS06ybGR1AcLKNl5/REUIyJO7g0Hh8J4ssBk9e1UW31lIJv277fNIp6Vl5W9FZq1
-         4B+DTF/JRthQpLnWF2r09JUsXdXY5uQv0+zbvdjnk8uWexnRxM3Ga03zkC2UmzIZOh
-         Hc6KQ3ByheffMb70lxfAEy7zo1jjPfduGGvbBVl5fW7HFXhw+JJceGM7QYfKLi/2cW
-         jo50MwEMJZJYw==
-X-Clacks-Overhead: "GNU Terry Pratchett"
-X-CM-Score: 0.00
-X-CNFS-Analysis: v=2.4 cv=eI8AMVl1 c=1 sm=1 tr=0 ts=63739d70
- a=t3eprasJVEmiovQRZ0k/8A==:117 a=t3eprasJVEmiovQRZ0k/8A==:17
- a=9cW_t1CCXrUA:10 a=kj9zAlcOel0A:10 a=9xFQ1JgjjksA:10
- a=qXLSlRtegvdWgeqI6aIA:9 a=CjuIK1q_8ugA:10
-Received: from selket (localhost.localdomain [127.0.0.1])
-        by selket.spencercollyer.plus.com (Postfix) with ESMTP id 934EE80062
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 14:08:47 +0000 (GMT)
-Date:   Tue, 15 Nov 2022 14:08:47 +0000
-From:   Spencer Collyer <spencer@spencercollyer.plus.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Change BTRFS filesystem back to R/W from R/O
-Message-ID: <20221115140847.12fa1902@selket>
-In-Reply-To: <7be0584d-5596-189a-353a-63e4b21c3b5e@gmx.com>
-References: <20221115122702.4ca83887@selket>
-        <7be0584d-5596-189a-353a-63e4b21c3b5e@gmx.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-pc-linux-gnu)
+        Tue, 15 Nov 2022 09:38:46 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B4719C13
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 06:38:45 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id cg5so8778229qtb.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 06:38:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=R+SinHn4vnB6av3+sr2VUp4hcDCA4rcKGZ4qy5Lxifo=;
+        b=qVfWIcQcowSxfI8ngA8CakjlfMeSvmBe5tI6IFtJagf0V+OeUxeBs5Km3AZkk5P5o8
+         YD7xLbcVRAnEWvjYnnImlnoS4W4eEJf7I9VELO8E0fsCw5V5q2cKG09RmnLpUttAwO5s
+         07fijjbNykZcspUQf2e7T1jqojmBYhTuyO1GML9t9BfI85n3OTqWJeztCfDcYeBJdOdB
+         lM7U715BPX0MPmYccoI73TJ4QKbBljLbrd20rgYMgUUuFYI0nR+YY9bT4NzG9E70xOhD
+         ZeR+3p07BVmFz9EJfi/6l6XpULVso2gA1VOWc+vQZZR0CeLhzioe1mKG975xuzsTYvU6
+         2rDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R+SinHn4vnB6av3+sr2VUp4hcDCA4rcKGZ4qy5Lxifo=;
+        b=oRmsYZN/j9gGEHBzEA6ARm2B2RJJQ+AtW8+AZo3kB6H+1pBe7xWCk8jyR8waltpqho
+         6tku4VP7+g9zpfHNZSuYKHKS2BHri2b8hXnQ3ffcj2OBE+WiF8v8kn1kvoRAFjnHWmJb
+         cGkct8wmrOkxD6ssuUlxw3+VFn5VMNyH5U2RmEau9u9u4Hr/+VIItGHKLXzGVgz4Or7c
+         nriCwu9V54cxzh0UnGhWvNWkdX/hzR5pRFpLXnMSqBndbxI1gUQP2PfQUxlw40AcBvk3
+         /va8yqEx5qBYAVXL02Oin6fNN8OavfBhF1mfyEHCXXmZLlLNkuro5nw54un0FvCQXiK9
+         j8xg==
+X-Gm-Message-State: ANoB5pmWyP/AokbFlD5WrQ49Ad+Dunt43CCJT7po2TVbHhGRUaKL+kFs
+        0E50k/kZ4jH2FGyaq58pHmXhyQ==
+X-Google-Smtp-Source: AA0mqf4aEPQp4P82zZUj7vS2YieUHjLSHzgW8J/FeVXlAuadxc5mEpWGAkPdjYkzm2BVit7BJL0R1A==
+X-Received: by 2002:ac8:544b:0:b0:3a5:6961:e1b5 with SMTP id d11-20020ac8544b000000b003a56961e1b5mr16892892qtq.598.1668523124048;
+        Tue, 15 Nov 2022 06:38:44 -0800 (PST)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id k21-20020ac84795000000b003a569a0afcasm7146036qtq.66.2022.11.15.06.38.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Nov 2022 06:38:43 -0800 (PST)
+Date:   Tue, 15 Nov 2022 09:38:41 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Qu Wenruo <wqu@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] btrfs: move struct btrfs_tree_parent_check out of
+ disk-io.h
+Message-ID: <Y3OkcUhOMSXjTISF@localhost.localdomain>
+References: <20221115094407.1626250-1-hch@lst.de>
+ <20221115094407.1626250-2-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfPQjdvIcZe1wGDK/5dNkFak1TLS09BgSJJN00NfTIrXHulNI8sh4jwNZt6Vm10XIrtg6xbb9EguhbvKbZDxUaVUTAfdayZDy3l9DyEo87U5Y0XROBqPp
- H4MqCnqfs+5sQRNO8pHJLFPZ/AU+RBOUuNHqXcpfv5Pn7H2l7p0VVOPUjbadiG8Chp6PoQK0bAEKoMH2t7tLj2yuI9KrRvO6qcn3uVLWdZD0Rem5fsbdCdUL
- f0E3ohm0OWtlsnfgoRHC8A==
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,MISSING_HEADERS,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221115094407.1626250-2-hch@lst.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-(Resending to the list as I accidentally sent it just to Qu.)
-
-On Tue, 15 Nov 2022 20:41:54 +0800, Qu Wenruo wrote:
-
-> Considering you have some metadata space left, I believe you can free 
-> enough space by deleting files (aka, moving it to other filesystems)
+On Tue, Nov 15, 2022 at 10:44:04AM +0100, Christoph Hellwig wrote:
+> Move struct btrfs_tree_parent_check out of disk-io.h so that volumes.h
+> an various .c files don't have to include disk-io.h just for it.
 > 
-> Thanks,
-> Qu  
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Hi Qu,
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Thanks for that. You say I should move some files to other filesystems, but that's really the nub of my problem - the filesystem is marked as read-only. Am I Ok to do what I mentioned previously:
+Thanks,
 
-> 1) Unmount the filesystem.
-> 2) Remount it as R/W
-> 3) Move data to the external disk  
-
-If that is all good, would I need to do anything else or would the BTRFS system sort itself out correctly?
-
-Thanks for your attention,
-
-Spencer
-
-PS. The output form the 'btrfs fi usage /data' command you requested is as follows (run as root to get everything):
-
-Overall:
-    Device size:		  10.92TiB
-    Device allocated:		  10.92TiB
-    Device unallocated:		   1.00MiB
-    Device missing:		     0.00B
-    Device slack:		     0.00B
-    Used:			  10.90TiB
-    Free (estimated):		  15.26GiB	(min: 15.26GiB)
-    Free (statfs, df):		  15.26GiB
-    Data ratio:			      1.00
-    Metadata ratio:		      2.00
-    Global reserve:		 512.00MiB	(used: 0.00B)
-    Multiple profiles:		       yes	(metadata, system)
-
-Data,RAID0: Size:10.87TiB, Used:10.86TiB (99.86%)
-   /dev/mapper/data1	   5.44TiB
-   /dev/mapper/data2	   5.44TiB
-
-Metadata,single: Size:8.00MiB, Used:0.00B (0.00%)
-   /dev/mapper/data1	   8.00MiB
-
-Metadata,RAID1: Size:23.00GiB, Used:21.39GiB (93.00%)
-   /dev/mapper/data1	  23.00GiB
-   /dev/mapper/data2	  23.00GiB
-
-System,single: Size:4.00MiB, Used:0.00B (0.00%)
-   /dev/mapper/data1	   4.00MiB
-
-System,RAID1: Size:8.00MiB, Used:784.00KiB (9.57%)
-   /dev/mapper/data1	   8.00MiB
-   /dev/mapper/data2	   8.00MiB
-
-Unallocated:
-   /dev/mapper/data1	     0.00B
-   /dev/mapper/data2	   1.00MiB
+Josef
