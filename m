@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E28F062A0FA
+	by mail.lfdr.de (Postfix) with ESMTP id 400E862A0F8
 	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 19:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238496AbiKOSCA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 13:02:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50532 "EHLO
+        id S238424AbiKOSBz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 13:01:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbiKOSBM (ORCPT
+        with ESMTP id S231758AbiKOSBM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 15 Nov 2022 13:01:12 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A8A1151
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 10:01:05 -0800 (PST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224861092
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 10:01:07 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D87D51F8E0;
-        Tue, 15 Nov 2022 18:01:03 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D34AD33688;
+        Tue, 15 Nov 2022 18:01:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1668535263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1668535265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=az/70XOTVDc5ZyO9DliOMVSP+U3oAe/sj3jWn6jkCUE=;
-        b=jSRFH8WThvi2MXhVtCfS9fFd+TKYqvrSHKii2f1NIsMeONIxm+Wc4d1W3ciIqrQ725y2nh
-        wfaBN10WeeM3wZq2x2Qr5us9g3n0KZe4CuN65dDUnKdcsAQhSLvaP4672vW3P5i2JMogG6
-        nCK+E9h5AOL8VA26Tye+hnLH+5/Liqk=
+        bh=Z03a08xyeEMLVwMbsWvdMMDA7ZqAQ5+EsgQ/J6+4MDM=;
+        b=odgGQwKfcWkqOynvBCNE5qh+YvzBDpnal3DZ+CezrghH5t+sp1poJMM4prXs4v1dMv4SBx
+        B6hKsN/7tloQmNLgzbKm6w57u0C/rVfyJ3A9ZG7t/8qkyaaLQAdphga6swC2jih/ovNPhb
+        QGFAg1asCYDWxiBFNJXAeRxQlC74sP0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1668535263;
+        s=susede2_ed25519; t=1668535265;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=az/70XOTVDc5ZyO9DliOMVSP+U3oAe/sj3jWn6jkCUE=;
-        b=msMgnYlXjIy1te5hsZOZRO6yFi4AVWWzCQ8T+syrbOB2Q+n0RYg9Su8GsE5glLCpru8ykm
-        oXVslnNla17kdNBQ==
+        bh=Z03a08xyeEMLVwMbsWvdMMDA7ZqAQ5+EsgQ/J6+4MDM=;
+        b=p+WceA6jxlnor3lbz9bEqhN/gK/vUkZyIS3RScnJLPaiR62KcUMIsCdcF/2OxLcigGvSfm
+        309z+IDpWfAxPgBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C5CF13A91;
-        Tue, 15 Nov 2022 18:01:03 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C20E13A91;
+        Tue, 15 Nov 2022 18:01:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id oQJXGt/Tc2O2ZAAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>); Tue, 15 Nov 2022 18:01:03 +0000
+        id INI+GuHTc2O6ZAAAMHmgww
+        (envelope-from <rgoldwyn@suse.de>); Tue, 15 Nov 2022 18:01:05 +0000
 From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
         Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 12/16] btrfs: Perform memory faults under locked extent
-Date:   Tue, 15 Nov 2022 12:00:30 -0600
-Message-Id: <68054cb6c0be33ef7c55ef8d4b5f4dda0a0d9cbf.1668530684.git.rgoldwyn@suse.com>
+Subject: [PATCH 13/16] btrfs: writepage fixup lock rearrangement
+Date:   Tue, 15 Nov 2022 12:00:31 -0600
+Message-Id: <996e43b8178ba3e5f9db220cc9e5d437c3794f06.1668530684.git.rgoldwyn@suse.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <cover.1668530684.git.rgoldwyn@suse.com>
 References: <cover.1668530684.git.rgoldwyn@suse.com>
@@ -70,96 +70,74 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-As a part of locking extents before pages, lock entire memfault region
-while servicing faults.
-
-Remove extent locking from page_mkwrite(), since it is part of the
-fault.
+Perform extent lock before pages while performing
+writepage_fixup_worker.
 
 Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 ---
- fs/btrfs/file.c  | 18 +++++++++++++++++-
- fs/btrfs/inode.c |  6 ------
- 2 files changed, 17 insertions(+), 7 deletions(-)
+ fs/btrfs/inode.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 559214ded4eb..876e0d81b191 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1980,8 +1980,24 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	goto out;
- }
- 
-+static vm_fault_t btrfs_fault(struct vm_fault *vmf)
-+{
-+	struct extent_state *cached_state = NULL;
-+	struct inode *inode = file_inode(vmf->vma->vm_file);
-+	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
-+	u64 page_start = vmf->pgoff;
-+	u64 page_end = page_start + PAGE_SIZE - 1;
-+	vm_fault_t ret;
-+
-+	lock_extent(io_tree, page_start, page_end, &cached_state);
-+	ret = filemap_fault(vmf);
-+	unlock_extent(io_tree, page_start, page_end, &cached_state);
-+
-+	return ret;
-+}
-+
- static const struct vm_operations_struct btrfs_file_vm_ops = {
--	.fault		= filemap_fault,
-+	.fault		= btrfs_fault,
- 	.map_pages	= filemap_map_pages,
- 	.page_mkwrite	= btrfs_page_mkwrite,
- };
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 070fb7071e39..b421260d52e2 100644
+index b421260d52e2..2806ef69122e 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -8530,7 +8530,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- 	struct page *page = vmf->page;
- 	struct inode *inode = file_inode(vmf->vma->vm_file);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
- 	struct btrfs_ordered_extent *ordered;
- 	struct extent_state *cached_state = NULL;
- 	struct extent_changeset *data_reserved = NULL;
-@@ -8585,11 +8584,9 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- 	}
- 	wait_on_page_writeback(page);
+@@ -2909,6 +2909,7 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+ 	u64 page_end;
+ 	int ret = 0;
+ 	bool free_delalloc_space = true;
++	bool flushed = false;
  
--	lock_extent(io_tree, page_start, page_end, &cached_state);
- 	ret2 = set_page_extent_mapped(page);
- 	if (ret2 < 0) {
- 		ret = vmf_error(ret2);
--		unlock_extent(io_tree, page_start, page_end, &cached_state);
- 		goto out_unlock;
- 	}
+ 	fixup = container_of(work, struct btrfs_writepage_fixup, work);
+ 	page = fixup->page;
+@@ -2920,9 +2921,16 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+ 	 * This is similar to page_mkwrite, we need to reserve the space before
+ 	 * we take the page lock.
+ 	 */
++reserve:
+ 	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, page_start,
+ 					   PAGE_SIZE);
++	if (ret == -EDQUOT && !flushed) {
++		btrfs_qgroup_flush(inode->root);
++		flushed = true;
++		goto reserve;
++	}
+ again:
++	lock_extent(&inode->io_tree, page_start, page_end, NULL);
+ 	lock_page(page);
  
-@@ -8600,7 +8597,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- 	ordered = btrfs_lookup_ordered_range(BTRFS_I(inode), page_start,
- 			PAGE_SIZE);
+ 	/*
+@@ -2965,19 +2973,18 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+ 	if (ret)
+ 		goto out_page;
+ 
+-	lock_extent(&inode->io_tree, page_start, page_end, &cached_state);
+-
+ 	/* already ordered? We're done */
+ 	if (PageOrdered(page))
+ 		goto out_reserved;
+ 
+ 	ordered = btrfs_lookup_ordered_range(inode, page_start, PAGE_SIZE);
  	if (ordered) {
--		unlock_extent(io_tree, page_start, page_end, &cached_state);
+-		unlock_extent(&inode->io_tree, page_start, page_end,
+-			      &cached_state);
  		unlock_page(page);
- 		up_read(&BTRFS_I(inode)->i_mmap_lock);
++		unlock_extent(&inode->io_tree, page_start, page_end,
++			      NULL);
  		btrfs_start_ordered_extent(ordered, 1);
-@@ -8633,7 +8629,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- 	ret2 = btrfs_set_extent_delalloc(BTRFS_I(inode), page_start, end, 0,
- 					&cached_state);
- 	if (ret2) {
--		unlock_extent(io_tree, page_start, page_end, &cached_state);
- 		ret = VM_FAULT_SIGBUS;
- 		goto out_unlock;
+ 		btrfs_put_ordered_extent(ordered);
++
+ 		goto again;
  	}
-@@ -8653,7 +8648,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
  
- 	btrfs_set_inode_last_sub_trans(BTRFS_I(inode));
- 
--	unlock_extent(io_tree, page_start, page_end, &cached_state);
- 	up_read(&BTRFS_I(inode)->i_mmap_lock);
- 
- 	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
+@@ -3000,7 +3007,6 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+ 	if (free_delalloc_space)
+ 		btrfs_delalloc_release_space(inode, data_reserved, page_start,
+ 					     PAGE_SIZE, true);
+-	unlock_extent(&inode->io_tree, page_start, page_end, &cached_state);
+ out_page:
+ 	if (ret) {
+ 		/*
 -- 
 2.35.3
 
