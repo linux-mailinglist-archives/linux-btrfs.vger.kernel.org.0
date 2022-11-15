@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E09E629610
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 11:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DACE6629624
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 11:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232600AbiKOKh5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 05:37:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
+        id S232523AbiKOKmQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 05:42:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232523AbiKOKhz (ORCPT
+        with ESMTP id S229745AbiKOKmP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 05:37:55 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF5FAE47
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 02:37:53 -0800 (PST)
+        Tue, 15 Nov 2022 05:42:15 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41011BCAB;
+        Tue, 15 Nov 2022 02:42:12 -0800 (PST)
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N8XU1-1oz47r377x-014VFl; Tue, 15
- Nov 2022 11:37:51 +0100
-Message-ID: <a4ebbed4-f75f-16d3-34d0-838d73d031f9@gmx.com>
-Date:   Tue, 15 Nov 2022 18:37:48 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MvK4f-1pCHkX2gfx-00rKHW; Tue, 15
+ Nov 2022 11:42:01 +0100
+Message-ID: <08a18fd6-3ce8-a063-90cf-e659004d0894@gmx.com>
+Date:   Tue, 15 Nov 2022 18:41:55 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.0
+Subject: Re: WARNING in _btrfs_ioctl_set_received_subvol
 Content-Language: en-US
+To:     Wei Chen <harperchen1110@gmail.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        osandov@fb.com, sweettea-kernel@dorminy.me,
+        syzkaller-bugs@googlegroups.com
+References: <CAO4mrfdLsMZT1ytmTCK4m0xXezxskTUbQjqZoGobMVhnZgdfmw@mail.gmail.com>
+ <CAO4mrfcYtXiuuaPtm==heNarkMqTUGoKWxnmiOC3jvhfjeOBFg@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     li zhang <zhanglikernel@gmail.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <1668353728-22636-1-git-send-email-zhanglikernel@gmail.com>
- <f5cceda5-e887-0807-7331-12382b45ea29@gmx.com>
- <CAAa-AGmQpL34eG8yx3bg8FYcbbOOjb3o8fb5YEocRbRPH1=NBw@mail.gmail.com>
- <11a71790-de79-3c2f-97f3-b97305b99378@gmx.com>
-Subject: Re: [PATCH] btrfs: scrub: expand scrub block size for data range
- scrub
-In-Reply-To: <11a71790-de79-3c2f-97f3-b97305b99378@gmx.com>
+In-Reply-To: <CAO4mrfcYtXiuuaPtm==heNarkMqTUGoKWxnmiOC3jvhfjeOBFg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:MrPo3YPSrMrwYKDNBhiYMd8fdXqPMkyf4i8IGvT+e+JOVkZOhqG
- FJJVFiZazTsVBfP2MkkIm39pFL3i0+9+VgfdJZxIGAJJY6ojSjxdLT5B49pZwH1Ifz/kRvI
- eUWjlUrhXWpe6WkM1qrBTcW6+0epEFdqPWj7XnbVqgpC0PmVK970dAuXMElrOoXghQm3ugs
- vY/G0oiE4EhEZbzkv1kAA==
-UI-OutboundReport: notjunk:1;M01:P0:dtssINt93ws=;cehY7nMaeyehZH5QeegvRu8sb94
- 52OZTFAdtIAuWRcWjIw+UvMJr0y3LXmFgIdmlqFFt/FmfFXLa48OjNm2n9mbvWjm5RhZTD6u6
- 5qGLZTWAATxQ1KEa8Gh3cma46Ootdy2a9w2O+v+LuKM8nv61ns51gXcdLWsQMzsCCSrA12AV7
- 8i24GKMbfpvnHpO9ONeUZqNegGEH3t9naghTRgG1EQ7813gjk9jHvUek1SNN9p+JX6oXMq7ZL
- lDUNqIJaqDMN3dFP+G19T+WDitiDUZ+tmL7n9L+LcxINoj0AW4dvxorxvvKOfE65SKHBe3IyF
- zQmuyfhkzfMyC003kZo3qwEYOOGWYLxXQCE8hbBvpzuoMHqn8TNt+NGX/TvYFZ8uas4l35Eap
- 7MyVlEtdrvDuwZCoKxPcP3ombINik/S0Bqd8oFuVSMaIMp2Cm5W8fKvroECBStCoXNmV73Hc4
- UPJmxS8ojlpb9HA7E4IKTQsNTTkfddtFzTJQx8KdsQW5oFpDYZauYe1k3q4XucpJzRO5HY6OR
- mX8KsAHdAcsyl24SaFoajO3kzuIUlMlqxVY8e7W6Vr9UZbFix71XduD7L9jNETe95qgK/b7ht
- 98ZUUHTHwpz/IifzvfRyhJlzhRS3IIhrS5RhBCg//XqM/ifGKC5O0JaaHxtm+22wk/6U2eVFn
- kbZ+LTK1Gc6gA7VtTHW+5G0dQfac1lQd0OdGRrCdPUhxdRjl6dibp3GQ/7WjAYDBIDu2xpEPF
- qi9RQR1AgSaC4KWX+gMaj2/wJdPoNd3CWHw9pS+LamehBJrpUazm/qROmE39uVpxEmSUiCWAa
- om2u8I94Hzd9iVCnE2dD1Tz7VPeGD5hiuufi3Ojyu3doqaSj7PTlGPMym26MCKtTpvOZlYYOa
- 6EVYmNZoaX1SX+EJHGQIgx/Xa3H7TAr1kobc0a1yDAE+RBFgMHcrTILD6T/ozGzhBlcMh6F/f
- jT4g8KxQ3irYQQ+LW2zO8ZwsY9o=
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:TUwBr+dYsbfQGGpvbC7xm3ZbDMUOc/5i9II5GMGJIQT2PmB3UVG
+ 1uSgymMszwNQBHzwtVJ+vtLkOrxCLwmVz8KQfPJNn9P8TtemamEOruXd1ISXkmbZ2HXZQUL
+ Tuk63OvdJoJR2I/Eb1eZ2CSvwHtDbNwSRfZNaajesm8wsmtgJqCA/aR9nCaKlLdw83HUSMg
+ Z7cPMPoqvUB1HkzwHm9GA==
+UI-OutboundReport: notjunk:1;M01:P0:jLQfyklhry0=;cmYkNsuvif6sq+XhsyWE6zXM2at
+ kBXNcUdjOhgeODP6QdeoBw92LTuQ8mOqORq4B8T+p4n4dOU8YfvcmETOguSlSbrJSPC6yAAjv
+ kkkp08fFHw2UCkVHlmuvSksPt+rA4NTzoWCelwr0bMRcGa5qXQ2jl+SwiNKrEYMGbQGVaf1AJ
+ rLNLI7PQpKDvVHLOl2orWkPJDmpdytYRl9tNDY88wDo/FQNDbwXjJB9/pC6JhmMpn2uBBNO/G
+ zL0feD5eJknm4RG5Hko5SriJbs7U6p+vZw98au4p74lzAG63qWWDlpVKzDgiUBTj9fZb9n52Y
+ ddmcQ6PUOGuGOjsqqnAxKd8+uXRr9SQQMpzYp0/bvrMed0MfoSaVbwJx7I/z+4HS71D190DW9
+ P9e6a3Btg6vcIrRn52rI5kAa9NR2SvVFbsioIzSHelyzm3OXMTai1fWON6be+ZRK1FAh0Snbp
+ VYi65UOTpzETi8vXiul/Pf+1WMmBNM/1ulYyLReZ/5toQt8rJd9y4rHW0UIXKCmXSba7M7a5o
+ EZfmWTCZui3pUfZUV9haGPL6dVoBE4+k+XU7sNhsh1qhxYVCX5WiGCNlVJl89CJjQaM3N/9N1
+ seNypXZx5SXFoXKqez+40Fzhhdyw370UJGqkak7BcKfQFUSMZNIIeJR2E2utVMnp/1DwpPqLj
+ gXYxnZS2hdKcEeHGWYp5MKQOotI6cjbBRjHrEdDmBw+4mr4j32ZUKZWQJzqUM/0Ey4anZTIw7
+ hBFlEDBkoQ3QqAEU9tCs9DoRrCw1IUq+Ij/IDQfcpi6P+e5EbADjJDT54TlbbRrn/lGBK3O0Q
+ DGoZnM8iLFBUzCi79aPUti3WwirEGUM6nPZIGWsDAs1hTPTte9g2lsg7615oG7AV3oY0PakEe
+ 4x4cxUdkUXkVkIlsPEhZl1vcqkquRcq47MzWYlIqLQ9ZmLf3GIvUqnjY1Yp3jPByUw9wGB13/
+ 2Vr4zEnsU1ukSnOkHJzs4UU0VJQrZlUlrGjGxID6Kofgktzuckv8kYENgC9xvZOW+eN6Og==
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -64,174 +64,94 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[Adding the mailing list, as the reply is to the first mail I got, which 
-lacks the ML]
-
-On 2022/11/15 06:39, Qu Wenruo wrote:
-[...]
->>>
->>> And I hope it can also unify the error accounting of data and metadata.
->>>
->>
->> Because only one checksum is calculated for all sectors of the
->> metadata block.
->>
->> In this case the checksum count is ambiguous if
->> checksum_error means sector error, it should count all sectors, but if
->> checksum_error indicates that the checksum does not match and can only be
->> incremented by 1.
-
-In fact, this is the problem of the existing scrub interface.
-
-The scrub_process only reports an very ambiguous csum mismatch count.
-
-If scrub reports 4 csum errors, you can not distinguish if it's 4 tree 
-blocks csum mismatch or 4 data sectors.
-
-Thus in my scrub_fs proposal, I do the error reports separately.
-Furthermore unify the error report to use bytes.
-
-That's to say, if a metadata (16K by default) has csum mismatch, it will 
-report 16K bytes has csum mismatch for metadata.
 
 
->>
->> Also, since the metadata data block is a complete block, it cannot be
->> Fix sector by sector, the patch doesn't take this case into account.
->> So the patch still has bugs.
-
-That doesn't matter. What end users really want is, how many bytes are 
-affected, which is generic between data and metadata.
-
-Not some ambiguous standard which changes according to if it's a 
-metadata or data.
-
->>
->>> Currently for metadata csum mismatch, we only report one csum error even
->>> if the metadata is 4 sectors.
->>> While for data, we always report the number of corrupted sectors.
->>>
->>>>
->>>> The function enters the wrong scrub_block, and
->>>> the overall process is as follows
->>>>
->>>> 1) Check the scrub_block again, check again if the error is gone.
->>>>
->>>> 2) Check the corresponding mirror scrub_block, if there is no error,
->>>> Fix bad sblocks with mirror scrub_block.
->>>>
->>>> 3) If no error-free scrub_block is found, repair it sector by sector.
->>>>
->>>> One difficulty with this function is rechecking the scrub_block.
->>>>
->>>> Imagine this situation, if a sector is checked the first time
->>>> without errors, butthe recheck returns an error.
->>>
->>> If you mean the interleaved corrupted sectors like the following:
->>>               0 1 2 3
->>>    Mirror 1: |X| |X| |
->>>    Mirror 2: | |X| |X|
->>>
->>> Then it's pretty simple, when doing re-check, we should only bother the
->>> one with errors.
->>> You do not always treat the scrub_block all together.
->>>
->>> Thus if you're handling mirror 1, then you should only need to fix
->>> sector 0 and sector 2, not bothering fixing the good sectors (1 and 3).
->>>
->>
->> Consider the following
->>
->> The results of the first checking are as follows:
+On 2022/11/15 18:30, Wei Chen wrote:
+> Dear Linux developers,
 > 
-> We're talking about "X" = corrupted sector right?
+> I hope the following bug report is helpful.
 > 
->>             0 1 2 3
->>    Mirror 1: |X| |X| |
->>    Mirror 2: | |X| | |
+> Best,
+> Wei
+> 
+> On Sun, 13 Nov 2022 at 19:38, Wei Chen <harperchen1110@gmail.com> wrote:
 >>
->> The result of the recheck is:
->>             0 1 2 3
->>    Mirror 1: |X| |X|X|
->>    Mirror 2: | |X| | |
->> An additional error was reported, what should we do,
->> recheck (which means it would recheck twice or more)?
->> Or just check only bad sectors during recheck.
-> 
-> Of course we should only repair the corrupted sectors.
-> Why bother the already good sectors?
-> 
-> The csum error report should on cover the initial mirror we're checking.
-> The re-check thing is only to make sure after repair, the repaired 
-> sectors are good.
-> 
-> So the csum error accounting should be the original corrupted sector 
-> number.
+>> Dear Linux Developer,
+>>
+>> Recently when using our tool to fuzz kernel, the following crash was
+>> triggered. The bug persists in Linux 6.0.
+>>
+>> HEAD commit:  4f5365f77018  Linux 5.15.76
 
-In fact, since my RAID56 work almost finished, I guess I should spend 
-more time on integrating the scrub_fs ideas into the existing scrub code.
-(Other than just introduce a new interface from scratch)
+Not related to the bug itself, but more on the report.
 
-I'll try to craft a PoC patchset to a stripe by stripe verification (to 
-get rid of the complex bio form shaping code), and a proper bitmap based 
-verification and repair (to only repair the corrupted sectors).
+I'd say, if the bug persists in the latest release, then please use the 
+latest kernel in the report.
+Not use the latest LTS as the commit.
 
-But as I mentioned above, the bad csum error reporting can not be easily 
-fixed without a behavior change on btrfs_scrub_progress results.
+You know most (if not all) linux communities are working on upstream 
+code, not some LTS branch.
 
 Thanks,
 Qu
-> 
+
+>> git tree: stable
+>> compiler: gcc 7.5.0
+>> console output:
+>> https://drive.google.com/file/d/1wkzu8jz6edriSP6TpsCGYD5AzkLajIEv/view?usp=share_link
+>> kernel config: https://drive.google.com/file/d/1flhc33savDkmYN6PRU5C2vXDX0LAKMvM/view?usp=share_link
+>> C reproducer: https://drive.google.com/file/d/1zKWsWAOcaHfPKewTG6P3pnnVfwH_WXa9/view?usp=share_link
+>> Syz reproducer:
+>> https://drive.google.com/file/d/1jUR8_6Re4xpJhyLdXqPiiV72WT-Tk8A-/view?usp=share_link
 >>
->>>
->>>> What should
->>>> we do, this patch only fixes the bug that the sector first
->>>> appeared (As in the case where the scrub_block
->>>> contains only one scrub_sector).
->>>>
->>>> Another reason to only handle the first error is,
->>>> If the device goes bad, the recheck function will report more and
->>>> more errors,if we want to deal with the errors in the recheck,
->>>> you need to recheck again and again, which may lead to
->>>> Stuck in scrub_handle_errored_block for a long time.
->>>
->>> Taking longer time is not a problem, compared to corrupted data.
->>>
->>> Although I totally understand that the existing scrub is complex in its
->>> design, that's exactly why I'm trying to implement a better scrub_fs
->>> interface:
->>>
->>> https://lwn.net/Articles/907058/
-> 
-> Again, all of the behavior I mentioned can be found in above patchset.
-> 
-> But unfortunately I don't have a good way to apply them all to the 
-> existing scrub infrastructure without such a full rework...
-> 
-> Thanks,
-> Qu
-> 
->>>
->>> RAID56 has a similiar problem until recent big refactor, changing it to
->>> a more streamlined flow.
->>>
->>> But the per-sector repair is still there, you can not avoid that, no
->>> matter if scrub_block contains single or multiple sectors.
->>> (Although single sector scrub_block make is much easier)
->>>
->>> [...]
->>>> @@ -1054,7 +1056,8 @@ static int scrub_handle_errored_block(struct 
->>>> scrub_block *sblock_to_check)
->>>>                if (ret == -ENOMEM)
->>>>                        sctx->stat.malloc_errors++;
->>>>                sctx->stat.read_errors++;
->>>> -             sctx->stat.uncorrectable_errors++;
->>>> +             sctx->stat.uncorrectable_errors += 
->>>> scrub_get_sblock_checksum_error(sblock_to_check);
->>>> +             sctx->stat.uncorrectable_errors += 
->>>> sblock_to_check->header_error;
->>>
->>> Do we double accout the header_error for metadata?
->>>
->>> Thanks,
->>> Qu
+>> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+>> Reported-by: Wei Chen <harperchen1110@gmail.com>
+>>
+>> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000007
+>> R13: 0000000000000000 R14: 000000000077bf80 R15: 00007ffd3c817900
+>>   </TASK>
+>> ------------[ cut here ]------------
+>> WARNING: CPU: 1 PID: 29222 at fs/btrfs/ioctl.c:4521
+>> _btrfs_ioctl_set_received_subvol+0x221/0x430 fs/btrfs/ioctl.c:4521
+>> Modules linked in:
+>> CPU: 1 PID: 29222 Comm: syz-executor.0 Not tainted 5.15.76 #5
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+>> rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
+>> RIP: 0010:_btrfs_ioctl_set_received_subvol+0x221/0x430 fs/btrfs/ioctl.c:4521
+>> Code: e8 74 34 44 ff 83 fb fb 0f 84 de 01 00 00 83 fb e2 0f 84 d5 01
+>> 00 00 e8 5d 34 44 ff 89 de 48 c7 c7 c0 f8 39 85 e8 9f dc 2e ff <0f> 0b
+>> e8 48 34 44 ff 89 d9 ba a9 11 00 00 e9 45 01 00 00 49 8b 4f
+>> RSP: 0018:ffffc9000aecfd40 EFLAGS: 00010286
+>> RAX: 0000000000000000 RBX: fffffffffffffff4 RCX: ffffc900013ed000
+>> RDX: 0000000000040000 RSI: ffffffff812d935c RDI: 00000000ffffffff
+>> RBP: ffffc9000aecfda0 R08: 0000000000000000 R09: 0000000000000001
+>> R10: ffffc9000aecfbe0 R11: 0000000000000003 R12: ffff888014210400
+>> R13: ffff8880208d2000 R14: ffff88810c4f21c0 R15: ffff88810f37b600
+>> FS:  00007f41ffc27700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 00007fab915f7008 CR3: 000000002096e000 CR4: 00000000003526e0
+>> Call Trace:
+>>   <TASK>
+>>   btrfs_ioctl_set_received_subvol_32 fs/btrfs/ioctl.c:4584 [inline]
+>>   btrfs_ioctl+0x2154/0x3d50 fs/btrfs/ioctl.c:5007
+>>   vfs_ioctl fs/ioctl.c:51 [inline]
+>>   __do_sys_ioctl fs/ioctl.c:874 [inline]
+>>   __se_sys_ioctl fs/ioctl.c:860 [inline]
+>>   __x64_sys_ioctl+0xb6/0x100 fs/ioctl.c:860
+>>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>>   do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+>>   entry_SYSCALL_64_after_hwframe+0x61/0xcb
+>> RIP: 0033:0x4697f9
+>> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+>> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+>> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+>> RSP: 002b:00007f41ffc26c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>> RAX: ffffffffffffffda RBX: 000000000077bf80 RCX: 00000000004697f9
+>> RDX: 0000000020072c40 RSI: 00000000c0c09425 RDI: 0000000000000005
+>> RBP: 00007f41ffc26c80 R08: 0000000000000000 R09: 0000000000000000
+>> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000007
+>> R13: 0000000000000000 R14: 000000000077bf80 R15: 00007ffd3c817900
+>>   </TASK>
+>>
+>> Best,
+>> Wei
