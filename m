@@ -2,101 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9CA628DC9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 00:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B9A628F00
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 02:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237368AbiKNXzH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Nov 2022 18:55:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
+        id S231927AbiKOBPX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Nov 2022 20:15:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237290AbiKNXzE (ORCPT
+        with ESMTP id S231865AbiKOBPV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Nov 2022 18:55:04 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D28810FDA
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Nov 2022 15:55:04 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Mon, 14 Nov 2022 20:15:21 -0500
+Received: from mxct.zte.com.cn (mxct.zte.com.cn [58.251.27.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5511F11C30;
+        Mon, 14 Nov 2022 17:15:20 -0800 (PST)
+Received: from mxde.zte.com.cn (unknown [10.35.20.121])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F1C0A336C2;
-        Mon, 14 Nov 2022 23:55:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1668470102;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bx3cA3aDWCUA4TOTjggqi/ffIc1zkauy9OBv/M8mnQo=;
-        b=rOGXDbXPB7MXU/KTQz9pSpA7SVpj9v3Hzj4EwCZY+ngYBKEOTJduvoXCRZBo5hc2Bpjyt+
-        cCH7zBovTyKGxT55fBa3v2AxCkW97XHQh7iH5ut55KvmpxAzWuNYMPDhnJ+XcjGpPtTTZg
-        IT/lqoNMfrd6EeYk9ibxVm9yg3tvppY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1668470102;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bx3cA3aDWCUA4TOTjggqi/ffIc1zkauy9OBv/M8mnQo=;
-        b=zvWiZi0wiVN8nXTH3MiK2b5AbfTOJP+NEWOG4Y94HCjN3hq06nwr4+bcD6/Gx5cysEu+/E
-        WwK5WNi7BRnlhmDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        by mxct.zte.com.cn (FangMail) with ESMTPS id 4NB7X635n1z1DDP;
+        Tue, 15 Nov 2022 09:15:18 +0800 (CST)
+Received: from mxus.zte.com.cn (unknown [10.207.168.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B4EA113276;
-        Mon, 14 Nov 2022 23:55:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id aOW2KVbVcmNHAQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 14 Nov 2022 23:55:02 +0000
-Date:   Tue, 15 Nov 2022 00:54:36 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     kreijack@inwind.it, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/5] btrfs: use btrfs_dev_name() helper to handle missing
- devices better
-Message-ID: <20221114235436.GD5824@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1668384746.git.wqu@suse.com>
- <3382bb8f7ab90e52ffa86cb39253ab5bdb78026e.1668384746.git.wqu@suse.com>
- <516619f0-2111-a259-6685-823ea48c959b@libero.it>
- <1f48d516-4016-d81a-78d9-62b34f7142c7@gmx.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1f48d516-4016-d81a-78d9-62b34f7142c7@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by mxde.zte.com.cn (FangMail) with ESMTPS id 4NB7X25synz9vSp6;
+        Tue, 15 Nov 2022 09:15:14 +0800 (CST)
+Received: from mxhk.zte.com.cn (unknown [192.168.250.137])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mxus.zte.com.cn (FangMail) with ESMTPS id 4NB7Wz3TRSz9tyD6;
+        Tue, 15 Nov 2022 09:15:11 +0800 (CST)
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4NB7Wv6x4zz8RV7J;
+        Tue, 15 Nov 2022 09:15:07 +0800 (CST)
+Received: from xaxapp01.zte.com.cn ([10.88.40.50])
+        by mse-fl2.zte.com.cn with SMTP id 2AF1Etol097501;
+        Tue, 15 Nov 2022 09:14:55 +0800 (+08)
+        (envelope-from guo.ziliang@zte.com.cn)
+Received: from mapi (xaxapp03[null])
+        by mapi (Zmail) with MAPI id mid32;
+        Tue, 15 Nov 2022 09:14:56 +0800 (CST)
+Date:   Tue, 15 Nov 2022 09:14:56 +0800 (CST)
+X-Zmail-TransId: 2afb6372e810ffffffffb7f1a3c7
+X-Mailer: Zmail v1.0
+Message-ID: <202211150914564821972@zte.com.cn>
+Mime-Version: 1.0
+From:   <guo.ziliang@zte.com.cn>
+To:     <clm@fb.com>, <josef@toxicpanda.com>
+Cc:     <dsterba@suse.com>, <linux-btrfs@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <guo.ziliang@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHRdIGJ0cmZzOiByZW1vdmUgcmVkdW5kYW50IHJldCB2YXJpYWJsZSBpbiBkZWxldGVfdjFfc3BhY2VfY2FjaGU=?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl2.zte.com.cn 2AF1Etol097501
+X-Fangmail-Gw-Spam-Type: 0
+X-FangMail-Miltered: at cgslv5.04-192.168.251.14.novalocal with ID 6372E825.001 by FangMail milter!
+X-FangMail-Envelope: 1668474918/4NB7X635n1z1DDP/6372E825.001/10.35.20.121/[10.35.20.121]/mxde.zte.com.cn/<guo.ziliang@zte.com.cn>
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 6372E825.001/4NB7X635n1z1DDP
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 06:40:30AM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2022/11/15 00:06, Goffredo Baroncelli wrote:
-> > On 14/11/2022 01.26, Qu Wenruo wrote:
-> > [...]
-> >> @@ -770,6 +771,14 @@ static inline void btrfs_dev_stat_set(struct 
-> >> btrfs_device *dev,
-> >>       atomic_inc(&dev->dev_stats_ccnt);
-> >>   }
-> >> +static inline char* btrfs_dev_name(struct btrfs_device *device)
-> > 
-> > Because we are returning a static char*, should we mark the return
-> > values as "const char*" ?
-> > 
-> > static inline const char* btrfs_dev_name(struct btrfs_device *device)
-> 
-> Right, that would be more accurate.
-> 
-> Not sure if David can fold this change during merging.
+From: guo ziliang <guo.ziliang@zte.com.cn>
+Return value from delete_block_group_cache() directly instead of taking
+this in another redundant variable.
 
-No problem, updated.
+Signed-off-by: guo ziliang <guo.ziliang@zte.com.cn>
+---
+ fs/btrfs/relocation.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 56c8afa..d7f76cf 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -3374,7 +3374,6 @@ static int delete_v1_space_cache(struct extent_buffer *leaf,
+        struct btrfs_key key;
+        bool found = false;
+        int i;
+-       int ret;
+
+        if (btrfs_header_owner(leaf) != BTRFS_ROOT_TREE_OBJECTID)
+                return 0;
+@@ -3398,9 +3397,8 @@ static int delete_v1_space_cache(struct extent_buffer *leaf,
+        }
+        if (!found)
+                return -ENOENT;
+-       ret = delete_block_group_cache(leaf->fs_info, block_group, NULL,
++       return delete_block_group_cache(leaf->fs_info, block_group, NULL,
+                                        space_cache_ino);
+-       return ret;
+ }
+
+ /*
+--
+1.8.3.1
