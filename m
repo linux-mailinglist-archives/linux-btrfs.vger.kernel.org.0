@@ -2,217 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF9A62ADAB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 23:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7A262AE89
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 23:46:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238341AbiKOWFv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 15 Nov 2022 17:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
+        id S231656AbiKOWqm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 17:46:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232418AbiKOWFu (ORCPT
+        with ESMTP id S231754AbiKOWqi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 17:05:50 -0500
-Received: from sm-r-003-dus.org-dns.com (sm-r-003-dus.org-dns.com [89.107.70.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4F52FC15
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 14:05:48 -0800 (PST)
-Received: from smarthost-dus.org-dns.com (localhost [127.0.0.1])
-        by smarthost-dus.org-dns.com (Postfix) with ESMTP id 58C31A07EF
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 23:05:47 +0100 (CET)
-Received: by smarthost-dus.org-dns.com (Postfix, from userid 1001)
-        id 4C273A0916; Tue, 15 Nov 2022 23:05:47 +0100 (CET)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
-Received: from ha01s030.org-dns.com (ha01s030.org-dns.com [62.108.32.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smarthost-dus.org-dns.com (Postfix) with ESMTPS id 57557A07EF
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 23:05:46 +0100 (CET)
-Authentication-Results: ha01s030.org-dns.com;
-        spf=pass (sender IP is 94.31.96.101) smtp.mailfrom=hendrik@friedels.name smtp.helo=[192.168.177.41]
-Received-SPF: pass (ha01s030.org-dns.com: connection is authenticated)
-From:   "Hendrik Friedel" <hendrik@friedels.name>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: block group x has wrong amount of free space
-Date:   Tue, 15 Nov 2022 22:05:44 +0000
-Message-Id: <em7df90458-9cac-4818-8a43-0d59e69a14fc@7b52163e.com>
-In-Reply-To: <em9da2c7f3-31bb-426b-89a3-51fd1dea8968@7b52163e.com>
-References: <em9da2c7f3-31bb-426b-89a3-51fd1dea8968@7b52163e.com>
-Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
+        Tue, 15 Nov 2022 17:46:38 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F288A1F2FC
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 14:46:36 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MGhyc-1oiROQ1eVO-00Dngo; Tue, 15
+ Nov 2022 23:46:29 +0100
+Message-ID: <8142d180-9a27-2c21-7c42-f6db6feeb306@gmx.com>
+Date:   Wed, 16 Nov 2022 06:46:23 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8BIT
-X-PPP-Message-ID: <166854996774.3022.1428012385378286065@ha01s030.org-dns.com>
-X-PPP-Vhost: friedels.name
-X-POWERED-BY: wint.global - AV:CLEAN SPAM:OK
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: Change BTRFS filesystem back to R/W from R/O
+To:     Spencer Collyer <spencer@spencercollyer.plus.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20221115122702.4ca83887@selket>
+ <7be0584d-5596-189a-353a-63e4b21c3b5e@gmx.com>
+ <20221115125208.02a2876d@selket>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20221115125208.02a2876d@selket>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:7DCr0l2x2rdKswW+y947lMg9s34RGGGC/vagBs0YbhExQ4jLm8I
+ iZ59bbrMGJnteoRycqQ3Q2D0NTObD/twKnBh4+C0rq5fS0BP9iUAMj8eCUuoZXD5sUR9AL3
+ M12S5vtWoj/9JaccBtbxnU0cbLYincAdPflH9kzSVomdUIphe8ZAaS4sxkxDeT2w6f3g3H6
+ IauAIdOmEcb/OgL1Q/+wQ==
+UI-OutboundReport: notjunk:1;M01:P0:Fvv/Rs+18AI=;JUjK85l8nvVG4f8oO19cw6MtQtF
+ XH+sA4znZlIwBL2m/d+B/Cl81ERQQFrsp6f8ovVUBZxThKnKxdku1s3oKSS427OL8EFWp1buJ
+ tgvWGjvhACCiRzb3G/LhzNzRe/DJMrHkuqyGmZmXmW8E44urXEmJo9NKbPkzkRkmrwZ6r9kMa
+ hs7C2XYEBxh1cxnKlDg5TiXo12/OFKW4Zl0rj0ZYeOGD4tL6DLqaCpMnhWhlW2by4b5feMsC1
+ 9zpaALOgj4oJ4XfiLVXMUt/HFWmCz7P0Y3yM8WcjSJRszDmWYZ1Cc6fJBqF0iUK+EeLvpxDQG
+ 1M+TKZaW0Hk6KHvhuPXVFMcnab71j5bBF0kLYKuWZhGEi0MwqFb/g97r2KspELWvcsZ4AKpbt
+ AGhMqnW50hI8BIEP/4AkwEqG2P424ALsjkw4GkTv9Gg1Uc3ToEznP/OAALXJEMvst8lFJ32CW
+ KaxaGid2mPI9F+RY5Z+y+B3BCdrvIqgynNuo21blD0eFKuBGNcdek4LJYyP9PdRwWYsfxPJOg
+ uOe63RjzOrZIxPKR4CzHSEMGMdbiSnoh8cK1kfZhXB31CPf0+1AV9rEOpdcWHFwRHvN/EUuDk
+ c4H8YVntkMVeqvxZmUuQfVGJimMT3RSSN7ZB557pp7JhGAYBELFOKnsVMi3iJ1FLuapofcHgK
+ EeZSq+EbF2b/2sFSNA2xMZq0P/+PhG+pCusi8I79EFz8gMfPgYnS5M3YyyIxxK47LXN3zAFL2
+ rfo3sOfKMroussIbB54IdKbS+DYpzHfgX7SeBKvB8sdasOAwFxtKbpGyWkqvooVjwhpZKMvZo
+ dfe/9mowVW0VBdW7ZUFyQkPz4I02c47NJ9OpyZXYRf96NWsPwi1j5eJJ/9tbjNXiXqWEH6SQt
+ IhVnZfgk8xU8gk8UolpGgH7l/ONEp/Mkr3dsMYJW0VNJkGSJ/YOZtkCk2oUO0Zzwy7lHOTHNV
+ CBbu0YcUdcASwnORmzN/cLVMw94=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-I now ran btrfs check --clear-space-cache v1 /dev/sdb1
-Opening filesystem to check...
-dsChecking filesystem on /dev/sdb1
-UUID: c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
-Failed to find [16500433649664, 168, 16384]
-btrfs unable to find ref byte nr 16500433666048 parent 0 root 2  owner 0 
-offset 0
-transaction.c:195: btrfs_commit_transaction: BUG_ON `ret` triggered, 
-value -5
-btrfs(+0x456a7)[0x562c84e456a7]
-btrfs(btrfs_commit_transaction+0x26b)[0x562c84e45cf6]
-btrfs(btrfs_clear_free_space_cache+0xa4)[0x562c84e38f0b]
-btrfs(+0x5974c)[0x562c84e5974c]
-btrfs(cmd_check+0x8ca)[0x562c84e66743]
-btrfs(main+0x89)[0x562c84e13703]
-/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f6dc5402d0a]
-btrfs(_start+0x2a)[0x562c84e1338a]
-Aborted.
-
-I then ran mount /dev/sdb1 -o clear_cache /mnt/
-It ran without issue, but in the kernel log, I still see errors like:
-[Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state A) in 
-__btrfs_free_extent:3063: errno=-2 No such entry
-[Di Nov 15 22:42:18 2022] BTRFS info (device sdc1: state EA): forced 
-readonly
-[Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state EA) in 
-btrfs_run_delayed_refs:2141: errno=-2 No such entry
-[Di Nov 15 22:42:27 2022] BTRFS warning (device sdc1: state EA): 
-Skipping commit of aborted transaction.
-[Di Nov 15 22:42:27 2022] BTRFS: error (device sdc1: state EA) in 
-cleanup_transaction:1983: errno=-2 No such entry
-[Di Nov 15 22:47:33 2022] BTRFS info (device sdc1): using crc32c 
-(crc32c-intel) checksum algorithm
-[Di Nov 15 22:47:33 2022] BTRFS info (device sdc1): force clearing of 
-disk cache
-[Di Nov 15 22:47:33 2022] BTRFS info (device sdc1): disk space caching 
-is enabled
-[Di Nov 15 22:48:28 2022] BTRFS error (device sdc1): qgroup generation 
-mismatch, marked as inconsistent
-[Di Nov 15 22:48:28 2022] BTRFS info (device sdc1): checking UUID tree
-[Di Nov 15 22:52:28 2022] INFO: task btrfs-transacti:1434591 blocked for 
-more than 120 seconds.
 
 
-[Di Nov 15 22:42:18 2022] CPU: 0 PID: 1408097 Comm: btrfs-transacti 
-Tainted: G            E      6.0.8 #1
-[Di Nov 15 22:42:18 2022] RIP: 0010:__btrfs_free_extent+0x6ba/0xa50 
-[btrfs]
-[Di Nov 15 22:42:18 2022]  ? btrfs_merge_delayed_refs+0x168/0x1a0 
-[btrfs]
-[Di Nov 15 22:42:18 2022]  __btrfs_run_delayed_refs+0x271/0x1070 [btrfs]
-[Di Nov 15 22:42:18 2022]  btrfs_run_delayed_refs+0x73/0x1f0 [btrfs]
-[Di Nov 15 22:42:18 2022]  btrfs_write_dirty_block_groups+0x184/0x3e0 
-[btrfs]
-[Di Nov 15 22:42:18 2022]  ? btrfs_run_delayed_refs+0x167/0x1f0 [btrfs]
-[Di Nov 15 22:42:18 2022]  commit_cowonly_roots+0x1e6/0x250 [btrfs]
-[Di Nov 15 22:42:18 2022]  btrfs_commit_transaction+0x548/0xcf0 [btrfs]
-[Di Nov 15 22:42:18 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
-[Di Nov 15 22:42:18 2022]  ? 
-btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
-[Di Nov 15 22:42:18 2022] WARNING: CPU: 0 PID: 1408097 at 
-fs/btrfs/extent-tree.c:3063 __btrfs_free_extent+0x716/0xa50 [btrfs]
+On 2022/11/15 20:52, Spencer Collyer wrote:
+> On Tue, 15 Nov 2022 20:41:54 +0800, Qu Wenruo wrote:
+> 
+>> Considering you have some metadata space left, I believe you can free
+>> enough space by deleting files (aka, moving it to other filesystems)
+>>
+>> Thanks,
+>> Qu
+> 
+> Hi Qu,
+> 
+> Thanks for that. You say I should move some files to other filesystems, but that's really the nub of my problem - the filesystem is marked as read-only. Am I Ok to do what I mentioned previously:
+> 
+>> 1) Unmount the filesystem.
+>> 2) Remount it as R/W
+>> 3) Move data to the external disk
+> 
+> If that is all good, would I need to do anything else or would the BTRFS system sort itself out correctly?
 
+With enough data removed (or maybe with balance to remove those empty 
+block groups?) btrfs should be able to handle everything.
 
-[Di Nov 15 22:42:18 2022] CPU: 0 PID: 1408097 Comm: btrfs-transacti 
-Tainted: G        W   E      6.0.8 #1
-[Di Nov 15 22:42:18 2022] RIP: 0010:__btrfs_free_extent+0x716/0xa50 
-[btrfs]
-[Di Nov 15 22:42:18 2022]  ? btrfs_merge_delayed_refs+0x168/0x1a0 
-[btrfs]
-[Di Nov 15 22:42:18 2022]  __btrfs_run_delayed_refs+0x271/0x1070 [btrfs]
-[Di Nov 15 22:42:18 2022]  btrfs_run_delayed_refs+0x73/0x1f0 [btrfs]
-[Di Nov 15 22:42:18 2022]  btrfs_write_dirty_block_groups+0x184/0x3e0 
-[btrfs]
-[Di Nov 15 22:42:18 2022]  ? btrfs_run_delayed_refs+0x167/0x1f0 [btrfs]
-[Di Nov 15 22:42:18 2022]  commit_cowonly_roots+0x1e6/0x250 [btrfs]
-[Di Nov 15 22:42:18 2022]  btrfs_commit_transaction+0x548/0xcf0 [btrfs]
-[Di Nov 15 22:42:18 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
-[Di Nov 15 22:42:18 2022]  ? 
-btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
-[Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state A) in 
-__btrfs_free_extent:3063: errno=-2 No such entry
-[Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state EA) in 
-btrfs_run_delayed_refs:2141: errno=-2 No such entry
-[Di Nov 15 22:52:28 2022] INFO: task btrfs-transacti:1434591 blocked for 
-more than 120 seconds.
-[Di Nov 15 22:52:28 2022] task:btrfs-transacti state:D stack:    0 
-pid:1434591 ppid:     2 flags:0x00004000
-[Di Nov 15 22:52:28 2022]  btrfs_commit_transaction+0xb13/0xcf0 [btrfs]
-[Di Nov 15 22:52:28 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
-[Di Nov 15 22:52:28 2022]  ? 
-btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
-[Di Nov 15 22:54:29 2022] INFO: task btrfs-transacti:1434591 blocked for 
-more than 241 seconds.
-[Di Nov 15 22:54:29 2022] task:btrfs-transacti state:D stack:    0 
-pid:1434591 ppid:     2 flags:0x00004000
-[Di Nov 15 22:54:29 2022]  btrfs_commit_transaction+0xb13/0xcf0 [btrfs]
-[Di Nov 15 22:54:29 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
-[Di Nov 15 22:54:29 2022]  ? 
-btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
-[Di Nov 15 22:56:30 2022] INFO: task btrfs-transacti:1434591 blocked for 
-more than 362 seconds.
-[Di Nov 15 22:56:30 2022] task:btrfs-transacti state:D stack:    0 
-pid:1434591 ppid:     2 flags:0x00004000
-[Di Nov 15 22:56:30 2022]  btrfs_commit_transaction+0xb13/0xcf0 [btrfs]
-[Di Nov 15 22:56:30 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
-[Di Nov 15 22:56:30 2022]  ? 
-btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
-[Di Nov 15 22:58:30 2022] INFO: task btrfs-transacti:1434591 blocked for 
-more than 483 seconds.
-[Di Nov 15 22:58:30 2022] task:btrfs-transacti state:D stack:    0 
-pid:1434591 ppid:     2 flags:0x00004000
-[Di Nov 15 22:58:30 2022]  btrfs_commit_transaction+0xb13/0xcf0 [btrfs]
-[Di Nov 15 22:58:30 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
-[Di Nov 15 22:58:30 2022]  ? 
-btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
+Just don't try to write any new data into the fs, as it will trigger 
+btrfs back to RO again due to very limited metadata space.
 
+Thanks,
+Qu
 
-Best regards,
-Hendrik
-
-
------- Originalnachricht ------
-Von "Hendrik Friedel" <hendrik@friedels.name>
-An linux-btrfs@vger.kernel.org
-Datum 14.11.2022 23:41:40
-Betreff block group x has wrong amount of free space
-
->Hello,
->
->I noticed very high load on my system (not CPU utilization, but load). I was able to trace it down to a slow reaction of my btrfs filesystem, whilst iotop showed very low r/w activity.
->
->Thus, I startet btrfs check (ro).
->It found:
->block group 30060743819264 has wrong amount of free space, free space cache has 45056 block group has 49152
->failed to load free space cache for block group 30060743819264
->
->Now, I found sources telling me to clear the space cache. Some suggest to use the mount option, others to use btrfs check --clear-space-cache [v1 or v2].
->
->Can you please advice me, what the best way forward is - and how to prevent this to happen again?
->
->Below you find further information on my system. btrfs df cannot run currently, as btrfs check is running. I had to zip the dmesg.log that is requested in the wiki.
->When the issue occured, I was still running linux-5.19.2 (I did not yet notice when updating the kernel).
->
->Best regards and thanks for your help in advance,
->Hendrik
->
->
->root@homeserver:/home/henfri#   uname -a
->Linux homeserver 6.0.8 #1 SMP PREEMPT_DYNAMIC Sat Nov 12 14:18:32 CET 2022 x86_64 GNU/Linux
->root@homeserver:/home/henfri#   btrfs --version
->btrfs-progs v4.20.2
->root@homeserver:/home/henfri#   btrfs fi show
->Label: none  uuid: c1534c07-d669-4f55-ae50-b87669ecb259
->         Total devices 1 FS bytes used 162.58GiB
->         devid    1 size 198.45GiB used 198.45GiB path /dev/sda3
->
->Label: 'DataPool1'  uuid: c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
->         Total devices 2 FS bytes used 9.87TiB
->         devid    1 size 10.91TiB used 9.89TiB path /dev/sdc1
->         devid    2 size 10.91TiB used 9.89TiB path /dev/sdb1
->
->
-
+> 
+> Thanks for your attention,
+> 
+> Spencer
+> 
+> PS. The output form the 'btrfs fi usage /data' command you requested is as follows (run as root to get everything):
+> 
+> Overall:
+>      Device size:		  10.92TiB
+>      Device allocated:		  10.92TiB
+>      Device unallocated:		   1.00MiB
+>      Device missing:		     0.00B
+>      Device slack:		     0.00B
+>      Used:			  10.90TiB
+>      Free (estimated):		  15.26GiB	(min: 15.26GiB)
+>      Free (statfs, df):		  15.26GiB
+>      Data ratio:			      1.00
+>      Metadata ratio:		      2.00
+>      Global reserve:		 512.00MiB	(used: 0.00B)
+>      Multiple profiles:		       yes	(metadata, system)
+> 
+> Data,RAID0: Size:10.87TiB, Used:10.86TiB (99.86%)
+>     /dev/mapper/data1	   5.44TiB
+>     /dev/mapper/data2	   5.44TiB
+> 
+> Metadata,single: Size:8.00MiB, Used:0.00B (0.00%)
+>     /dev/mapper/data1	   8.00MiB
+> 
+> Metadata,RAID1: Size:23.00GiB, Used:21.39GiB (93.00%)
+>     /dev/mapper/data1	  23.00GiB
+>     /dev/mapper/data2	  23.00GiB
+> 
+> System,single: Size:4.00MiB, Used:0.00B (0.00%)
+>     /dev/mapper/data1	   4.00MiB
+> 
+> System,RAID1: Size:8.00MiB, Used:784.00KiB (9.57%)
+>     /dev/mapper/data1	   8.00MiB
+>     /dev/mapper/data2	   8.00MiB
+> 
+> Unallocated:
+>     /dev/mapper/data1	     0.00B
+>     /dev/mapper/data2	   1.00MiB
