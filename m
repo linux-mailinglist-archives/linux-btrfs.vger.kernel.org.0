@@ -2,70 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF891629EE3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 17:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AF4629EF4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 17:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238553AbiKOQWa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 11:22:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
+        id S238579AbiKOQZc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 11:25:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238526AbiKOQW0 (ORCPT
+        with ESMTP id S238214AbiKOQZa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 11:22:26 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C831F9DE;
-        Tue, 15 Nov 2022 08:22:25 -0800 (PST)
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NBWfK2HTYzmVtB;
-        Wed, 16 Nov 2022 00:22:01 +0800 (CST)
-Received: from kwepemm600015.china.huawei.com (7.193.23.52) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 16 Nov 2022 00:22:22 +0800
-Received: from [10.174.176.52] (10.174.176.52) by
- kwepemm600015.china.huawei.com (7.193.23.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 16 Nov 2022 00:22:21 +0800
-Message-ID: <bf18a091-f0ae-1b74-5be4-c34644429bc7@huawei.com>
-Date:   Wed, 16 Nov 2022 00:22:20 +0800
+        Tue, 15 Nov 2022 11:25:30 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5702BCE26
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:25:30 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DF712618E5
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 16:25:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2EB2C433D6
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 16:25:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668529529;
+        bh=qzoPgMv8ySdaMygjih+9ZiHnRHlCbiktFRPD2gL625c=;
+        h=From:To:Subject:Date:From;
+        b=f8hFfWOmbrf+wtHuS8lNADkVGf0DAtI9WwNaqQLbY5VdrFahndwRjtfVP4C3Obf+J
+         J++9pINSbX6+V9dqMCYVUT+q2cf40kNCt1DzcfYlAiblbV4bs9V6xz+KPp0yeVVabf
+         4Ba5UeBjT+K12KQVaRWjvasrwD5jY7bHbYTu3Plwwo2lDCpLs4vLul6KsZ7dLMdhux
+         N6/PXjrYU9TH/mwgFIj4LhAOJgvkNFP4hvB/POYaOSUzxFO1Q3qHnRaQq3MoEUXKwI
+         nRp/ufMxCNYQrJ9q3Lr5OmjXBAHog0kFXhBi447ydl92EDV7/OOibe4ZGjO3bQyrxu
+         rSqkt7lQ4YxyQ==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/3] btrfs-progs: receive: fix a silent data loss bug with encoded writes
+Date:   Tue, 15 Nov 2022 16:25:23 +0000
+Message-Id: <cover.1668529099.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v4 3/3] btrfs: qgroup: fix sleep from invalid context bug
- in update_qgroup_limit_item()
-To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>
-CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <zhangxiaoxu5@huawei.com>, <yanaijie@huawei.com>,
-        <quwenruo.btrfs@gmx.com>, <wqu@suse.com>
-References: <20221115171709.3774614-1-chenxiaosong2@huawei.com>
- <20221115171709.3774614-4-chenxiaosong2@huawei.com>
-From:   ChenXiaoSong <chenxiaosong2@huawei.com>
-In-Reply-To: <20221115171709.3774614-4-chenxiaosong2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.52]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600015.china.huawei.com (7.193.23.52)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-在 2022/11/16 1:17, ChenXiaoSong 写道:
-> @@ -2987,6 +2986,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->   		dstgroup->max_excl = srcgroup->max_excl;
->   		dstgroup->rsv_rfer = srcgroup->rsv_rfer;
->   		dstgroup->rsv_excl = srcgroup->rsv_excl;
-> +		update_limit = false;
->   
->   		qgroup_dirty(fs_info, dstgroup);
->   		qgroup_dirty(fs_info, srcgroup);
+From: Filipe Manana <fdmanana@suse.com>
 
-No need to call update_qgroup_limit_item() when condition "if (srcid)" 
-is true according to Qu Wenruo's suggestions, btrfs_run_qgroups() will 
-update the quota tree to reflect the result after calling qgroup_dirty().
+When using a v2 stream, with encoded writes, if the receiver fails to
+perform an encoded write, it fallbacks to decompressing the data and then
+write it using regular buffered IO. However that logic is currenty buggy,
+and it can result in writing less data than expected or no data at all.
+This results in a silent data loss.
+
+Patch 3/3 fixes that bug and has all the details about how/why it happens,
+while previous patches just added debug messages to the callbacks for
+encoded writes and fallocate, which are currently missing and are very
+useful for debugging.
+
+Filipe Manana (3):
+  btrfs-progs: receive: add debug messages when processing encoded writes
+  btrfs-progs: receive: add debug messages when processing fallocate
+  btrfs-progs: receive: fix silent data loss after fall back from encoded write
+
+ cmds/receive.c | 31 ++++++++++++++++++++++++-------
+ 1 file changed, 24 insertions(+), 7 deletions(-)
+
+-- 
+2.35.1
+
