@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2518A629EAD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 17:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F2F629EAC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 17:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238535AbiKOQQq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 11:16:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
+        id S238536AbiKOQQr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 11:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238500AbiKOQQi (ORCPT
+        with ESMTP id S238516AbiKOQQj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 11:16:38 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F5E2AE05
+        Tue, 15 Nov 2022 11:16:39 -0500
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D746B2BB1C
         for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:16:38 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id x15so10101041qvp.1
+Received: by mail-qv1-xf35.google.com with SMTP id ml12so10131252qvb.0
         for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:16:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=IY8/3x1FQl3Y/WCX8GpVgDewJMRRUaPyKX+UfV5V2io=;
-        b=WLB2g2dp0/TxpW6wvYw4OoUebNuZPIFP5jpEm4/yqlyYyIP2c3/Uvc+Sul4FeQkK93
-         KfrEHMiN6QvFnA/ttmNpp9tQQCRB7ENqyeHPYJjxXNsY62xntW9WoTwt/EYOS+AXFkXc
-         m6a6lsZTtxAUmaYtQJlHboxypfeHoO/ZJe9wFWCWECJMaOiDjg2plwe46CLOxlrsy4at
-         I3g0ukzaCJooOCDNPKLIvFohcgqKm1/yA9wK2zGYERMjCfYGiAwYq+TfQ7XgBEo+n4Wh
-         c9t3nmIgNVSWBb6iSjYo2ssrfHoZWWLyziq6y8c5/EEYDIbbVIJCcRmOsU9T06vhcIKG
-         /IBw==
+        bh=J9GeUBmcwMoBfsjRHtYG2hTvKYVzivu3jkxJPGfdWpw=;
+        b=plHX9KAbC0NQp1EX8H5zefAphk+aMIcBGeswJSvBN++bUQFGBRj9bE91pBYuGwYasg
+         rySdlnOWCFgWRWbjE0CI8NftmnmuYCRXGUp5mV8Wu5Otz6DxPKohX3o8ARmEbXCz9903
+         MdPAn3zLCMr87HUHDZpZD9K8IT6T3T9+T4ChNExDFaY1ye13yhSE/Z+D5cfQkXg3+zUZ
+         iwIIID0fUkhoY1ip5d0EuAHRB32Zuz61TqWPceCpL0LenqHW467as2LJEuVJXGaR3hS/
+         y2axbKMGVSFQPDo8/XPqrrEZ7FSte83CjsFBKy6+sXouxxTiia07d+XytK0rO4bBMBtC
+         J4uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IY8/3x1FQl3Y/WCX8GpVgDewJMRRUaPyKX+UfV5V2io=;
-        b=VnNXiMRqP1hzzxFtJaVdz8lPtzl3Q4GqEC44NKY4akE+gbaELQPHCi05U5p32sT9gO
-         D7nFauFQYJIMirpdqYQnaME3t7RLnC1M1v0NOGRtXYUCHUgqozZXBnmspGFfmA2XUwQl
-         Fd9XnderoZKE4Sf9w4drdY3/hhUv6dkYGliBZUaOUR5ipk+tfmuOxJArnXaQlHnCVvcQ
-         99GK/SxJdLoKtJlNI+9dzJXXd9McKYC5zg/trirRLC3mnT6lKoUhKJrqCS3yp5PcJdD5
-         e2oqgc0cMcY8DzqX4FX6o9FDVxdOPYUKjF7C8gReLoxPcGwcfK//6EXrfi4SP53AVewG
-         QwTQ==
-X-Gm-Message-State: ANoB5pl2GQ8iNwiv+nTlEVMd3YLwqyRo9nCh0zgzkfu/XnCzFWY6oQZD
-        NIPtTjL79cIg7GwViP+ItNWKhK74ExGYFQ==
-X-Google-Smtp-Source: AA0mqf5ffifEgN1AH2P4UYeT0ufdpgo9dKSqluFzEKxyloLax9c0r9RIptPdvXwuEoauTmZhf07lsQ==
-X-Received: by 2002:ad4:4147:0:b0:4bc:26a6:b710 with SMTP id z7-20020ad44147000000b004bc26a6b710mr17441311qvp.92.1668528996899;
-        Tue, 15 Nov 2022 08:16:36 -0800 (PST)
+        bh=J9GeUBmcwMoBfsjRHtYG2hTvKYVzivu3jkxJPGfdWpw=;
+        b=xz3Ph1nTRTiH6FgGsdi8cE8qY2mPQSfLAgt4NwVCmxQ8JSkoSspYfNwtLvJFs87O1G
+         i+U+S9x8kHcVRIN0VnrV2OFVCy5yoN10SN+ZZpeVZK3KS/oKj79Pa3qL2uk0uSR23YlM
+         8pdFEvy77J6/WrSXNyZjCnELrPFFine2ksrY1BUnD4siYXNW1WfkPYUGlduHqIOFPJ28
+         4w88Tj4IhJv5VWOYSZiVzx9k9pZBXLmQ+0FgW9z2p6MjevVd3MuXxHv1TX8VZLG5sOK5
+         CCQI+Wq892V05Hn/jcsKZYCIVaQfpCKEN2GfG2wSm9RbmkCzSLMmtK6P4HYbKuWJnFl0
+         oXfw==
+X-Gm-Message-State: ANoB5pnCfcF0tTbKTtAD+ynUb3Je64e3VUhcQ++wmsudeF6EeziOvJoi
+        TcaxAaSYvhe2tA39wQs9XF2ehU9cikqPUg==
+X-Google-Smtp-Source: AA0mqf6tfhjlxd5CIL2Il+0G2i39fF4OdJpXr8qdGEptGNnbu94IWDRknUgqzgbC4jS/6D0zYh/SJA==
+X-Received: by 2002:a05:6214:428d:b0:4b3:e8bc:b06d with SMTP id og13-20020a056214428d00b004b3e8bcb06dmr17595745qvb.72.1668528998248;
+        Tue, 15 Nov 2022 08:16:38 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id br7-20020a05620a460700b006eeca296c00sm8467540qkb.104.2022.11.15.08.16.36
+        by smtp.gmail.com with ESMTPSA id s10-20020a05620a16aa00b006fa31bf2f3dsm8239422qkj.47.2022.11.15.08.16.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 08:16:36 -0800 (PST)
+        Tue, 15 Nov 2022 08:16:37 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 10/11] btrfs: add nr_global_roots to the super block definition
-Date:   Tue, 15 Nov 2022 11:16:19 -0500
-Message-Id: <d0b325fd5265eac54b47e8e99a36e39aff6703ec.1668526429.git.josef@toxicpanda.com>
+Subject: [PATCH 11/11] btrfs: add stack helpers for a few btrfs items
+Date:   Tue, 15 Nov 2022 11:16:20 -0500
+Message-Id: <bb2c59f036523df2459800906529dd3b78ef29d5.1668526429.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1668526429.git.josef@toxicpanda.com>
 References: <cover.1668526429.git.josef@toxicpanda.com>
@@ -69,43 +69,98 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We already have this defined in btrfs-progs, add it to the kernel to
-make it easier to sync these files into btrfs-progs.
+We don't have these defined in the kernel because we don't have any
+users of these helpers.  However we do use them in btrfs-progs, so
+define them to make keeping accessors.h in sync between progs and the
+kernel easier.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/accessors.h            | 2 ++
- include/uapi/linux/btrfs_tree.h | 3 ++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ fs/btrfs/accessors.h | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
 diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-index e6228ff73c81..75c181b579eb 100644
+index 75c181b579eb..ceadfc5d6c66 100644
 --- a/fs/btrfs/accessors.h
 +++ b/fs/btrfs/accessors.h
-@@ -889,6 +889,8 @@ BTRFS_SETGET_STACK_FUNCS(super_cache_generation, struct btrfs_super_block,
- BTRFS_SETGET_STACK_FUNCS(super_magic, struct btrfs_super_block, magic, 64);
- BTRFS_SETGET_STACK_FUNCS(super_uuid_tree_generation, struct btrfs_super_block,
- 			 uuid_tree_generation, 64);
-+BTRFS_SETGET_STACK_FUNCS(super_nr_global_roots, struct btrfs_super_block,
-+			 nr_global_roots, 64);
+@@ -221,12 +221,26 @@ static inline u64 btrfs_stripe_offset_nr(const struct extent_buffer *eb,
+ 	return btrfs_stripe_offset(eb, btrfs_stripe_nr(c, nr));
+ }
  
- /* struct btrfs_file_extent_item */
- BTRFS_SETGET_STACK_FUNCS(stack_file_extent_type, struct btrfs_file_extent_item,
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index 29895ffa470d..ab38d0f411fa 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -688,8 +688,9 @@ struct btrfs_super_block {
- 	/* The UUID written into btree blocks */
- 	__u8 metadata_uuid[BTRFS_FSID_SIZE];
- 
-+	__u64 nr_global_roots;
++static inline void btrfs_set_stripe_offset_nr(struct extent_buffer *eb,
++					      struct btrfs_chunk *c, int nr,
++					      u64 val)
++{
++	btrfs_set_stripe_offset(eb, btrfs_stripe_nr(c, nr), val);
++}
 +
- 	/* Future expansion */
--	__u8 reserved8[8];
- 	__le64 reserved[27];
- 	__u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
- 	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
+ static inline u64 btrfs_stripe_devid_nr(const struct extent_buffer *eb,
+ 					 struct btrfs_chunk *c, int nr)
+ {
+ 	return btrfs_stripe_devid(eb, btrfs_stripe_nr(c, nr));
+ }
+ 
++static inline void btrfs_set_stripe_devid_nr(struct extent_buffer *eb,
++					     struct btrfs_chunk *c, int nr,
++					     u64 val)
++{
++	btrfs_set_stripe_devid(eb, btrfs_stripe_nr(c, nr), val);
++}
++
+ /* struct btrfs_block_group_item */
+ BTRFS_SETGET_STACK_FUNCS(stack_block_group_used, struct btrfs_block_group_item,
+ 			 used, 64);
+@@ -248,6 +262,8 @@ BTRFS_SETGET_FUNCS(free_space_flags, struct btrfs_free_space_info, flags, 32);
+ /* struct btrfs_inode_ref */
+ BTRFS_SETGET_FUNCS(inode_ref_name_len, struct btrfs_inode_ref, name_len, 16);
+ BTRFS_SETGET_FUNCS(inode_ref_index, struct btrfs_inode_ref, index, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_inode_ref_name_len, struct btrfs_inode_ref, name_len, 16);
++BTRFS_SETGET_STACK_FUNCS(stack_inode_ref_index, struct btrfs_inode_ref, index, 64);
+ 
+ /* struct btrfs_inode_extref */
+ BTRFS_SETGET_FUNCS(inode_extref_parent, struct btrfs_inode_extref,
+@@ -297,6 +313,14 @@ BTRFS_SETGET_FUNCS(dev_extent_chunk_objectid, struct btrfs_dev_extent,
+ BTRFS_SETGET_FUNCS(dev_extent_chunk_offset, struct btrfs_dev_extent,
+ 		   chunk_offset, 64);
+ BTRFS_SETGET_FUNCS(dev_extent_length, struct btrfs_dev_extent, length, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_dev_extent_chunk_tree, struct btrfs_dev_extent,
++			 chunk_tree, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_dev_extent_chunk_objectid, struct btrfs_dev_extent,
++			 chunk_objectid, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_dev_extent_chunk_offset, struct btrfs_dev_extent,
++			 chunk_offset, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_dev_extent_length, struct btrfs_dev_extent, length, 64);
++
+ BTRFS_SETGET_FUNCS(extent_refs, struct btrfs_extent_item, refs, 64);
+ BTRFS_SETGET_FUNCS(extent_generation, struct btrfs_extent_item, generation, 64);
+ BTRFS_SETGET_FUNCS(extent_flags, struct btrfs_extent_item, flags, 64);
+@@ -479,6 +503,9 @@ BTRFS_SETGET_FUNCS(dir_log_end, struct btrfs_dir_log_item, end, 64);
+ BTRFS_SETGET_FUNCS(root_ref_dirid, struct btrfs_root_ref, dirid, 64);
+ BTRFS_SETGET_FUNCS(root_ref_sequence, struct btrfs_root_ref, sequence, 64);
+ BTRFS_SETGET_FUNCS(root_ref_name_len, struct btrfs_root_ref, name_len, 16);
++BTRFS_SETGET_STACK_FUNCS(stack_root_ref_dirid, struct btrfs_root_ref, dirid, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_root_ref_sequence, struct btrfs_root_ref, sequence, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_root_ref_name_len, struct btrfs_root_ref, name_len, 16);
+ 
+ /* struct btrfs_dir_item */
+ BTRFS_SETGET_FUNCS(dir_data_len, struct btrfs_dir_item, data_len, 16);
+@@ -972,6 +999,16 @@ BTRFS_SETGET_FUNCS(qgroup_limit_rsv_rfer, struct btrfs_qgroup_limit_item,
+ 		   rsv_rfer, 64);
+ BTRFS_SETGET_FUNCS(qgroup_limit_rsv_excl, struct btrfs_qgroup_limit_item,
+ 		   rsv_excl, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_qgroup_limit_flags,
++			 struct btrfs_qgroup_limit_item, flags, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_qgroup_limit_max_rfer,
++			 struct btrfs_qgroup_limit_item, max_rfer, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_qgroup_limit_max_excl,
++			 struct btrfs_qgroup_limit_item, max_excl, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_qgroup_limit_rsv_rfer,
++			 struct btrfs_qgroup_limit_item, rsv_rfer, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_qgroup_limit_rsv_excl,
++			 struct btrfs_qgroup_limit_item, rsv_excl, 64);
+ 
+ /* btrfs_dev_replace_item */
+ BTRFS_SETGET_FUNCS(dev_replace_src_devid,
 -- 
 2.26.3
 
