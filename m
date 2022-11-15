@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A47629EF7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 17:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D267A629EF6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 17:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238214AbiKOQZd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 11:25:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
+        id S238623AbiKOQZg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 11:25:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238601AbiKOQZc (ORCPT
+        with ESMTP id S230095AbiKOQZe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 11:25:32 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3419FCE26
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:25:31 -0800 (PST)
+        Tue, 15 Nov 2022 11:25:34 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC4AD103
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 08:25:34 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C359D618EA
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6D33BB819A1
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 16:25:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99A3CC433D6
         for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 16:25:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6715C433C1
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 16:25:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668529530;
-        bh=/oIe1HMXR30NY77gJbQmtax6Xj6w4CQoqvZD9XX2abQ=;
+        s=k20201202; t=1668529531;
+        bh=A8nMsfuYhNNK3U6AanHDdigakHFF8oqHvS1yxMlpSX8=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=QT8uXOATKXYALZCUkK4ahG34vBO1ln25wPAS9WbloeKbfIlIuMg8phCaxfkAso7yD
-         LrJgDDRXmAVs92KE8YBOZsCDQs3z/1PFie9oddtw+SKm7rBN3qG5fCzq5s/hIwWk+E
-         t6JQf2TPo0uGRqqN/mL1uPwz1qTYQ8fKEHArjgkY538y6bsrWeBz6ySS3E5aaHqjqm
-         4qCdVquqa1G53b9DS3PtK0nkGezLWDbv5kOYueo2ym96/9KA0HoEYYudX1cAQokw+H
-         TSqIpTozt59QppUMDgyFwpEbyHtZLoc5zs7cMSuyRL5ucicltaTreqF/Hdnqok/Mf4
-         mRj5DlB6LfKuw==
+        b=bzycOWrJJ2Imt4YrjxFilcvm4RBJupuGe6P7NKE4YyIZCahLqmVDSSZ404/nGSOwD
+         GOb71bxZh2H0jUhIR2BsDHLXwkw4pYuvU+GB/j0gF+axstV+3DDPO9NkhspEKoXLzP
+         H8OOOEvFUmx97jBjCnnQ0GkusVfeuCv68a3nFNrJHgADO0+NP2B0D8jAPNeb1r09qR
+         RVduFWQY9ZEBiKJyvg3o/7S2AKgAnT3o7MTKRykrywMU8L9p3bH/YOAiFHk7h1bFA/
+         f2W6U2DOyl4SLm8pwu4XoHsUvG6IfkKUnDiueNxsvlaSk/rabD1XCsX4gkPRLWUMuK
+         1uKX8kVWEM5aw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs-progs: receive: add debug messages when processing encoded writes
-Date:   Tue, 15 Nov 2022 16:25:24 +0000
-Message-Id: <90290fe5047d688d8eecdc1357e9379252ae5352.1668529099.git.fdmanana@suse.com>
+Subject: [PATCH 2/3] btrfs-progs: receive: add debug messages when processing fallocate
+Date:   Tue, 15 Nov 2022 16:25:25 +0000
+Message-Id: <7125ba99d511229e958daa14e385224e342b8a5c.1668529099.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1668529099.git.fdmanana@suse.com>
 References: <cover.1668529099.git.fdmanana@suse.com>
@@ -54,52 +54,32 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 From: Filipe Manana <fdmanana@suse.com>
 
 Unlike for commands from the v1 stream, we have no debug messages logged
-when processing encoded write commands, which makes it harder to debug
-issues.
+when processing fallocate commands, which makes it harder to debug issues.
 
-So add log messages, when the log verbosity level is >= 3, for encoded
-write commands, mentioning the value of all fields and also log when we
-fallback from an encoded write to the decompress and write approach.
-
-The log messages look like this:
-
-  encoded_write f3 - offset=33792, len=4096, unencoded_offset=33792, unencoded_file_len=31744, unencoded_len=65536, compression=1, encryption=0
-  encoded_write f3 - falling back to decompress and write due to errno 22 ("Invalid argument")
+So add log messages, when the log verbosity level is >= 3, for fallocate
+commands, mentioning the value of all fields.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- cmds/receive.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ cmds/receive.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/cmds/receive.c b/cmds/receive.c
-index 6f475544..b75a5634 100644
+index b75a5634..e6f1aeab 100644
 --- a/cmds/receive.c
 +++ b/cmds/receive.c
-@@ -1246,6 +1246,13 @@ static int process_encoded_write(const char *path, const void *data, u64 offset,
- 		.encryption = encryption,
- 	};
+@@ -1296,6 +1296,11 @@ static int process_fallocate(const char *path, int mode, u64 offset, u64 len,
+ 	struct btrfs_receive *rctx = user;
+ 	char full_path[PATH_MAX];
  
 +	if (bconf.verbose >= 3)
 +		fprintf(stderr,
-+"encoded_write %s - offset=%llu, len=%llu, unencoded_offset=%llu, unencoded_file_len=%llu, unencoded_len=%llu, compression=%u, encryption=%u\n",
-+			path, offset, len, unencoded_offset, unencoded_file_len,
-+			unencoded_len, compression, encryption);
++			"fallocate %s - offset=%llu, len=%llu, mode=%d\n",
++			path, offset, len, mode);
 +
-+
- 	if (encryption) {
- 		error("encoded_write: encryption not supported");
- 		return -EOPNOTSUPP;
-@@ -1271,6 +1278,10 @@ static int process_encoded_write(const char *path, const void *data, u64 offset,
- 			error("encoded_write: writing to %s failed: %m", path);
- 			return ret;
- 		}
-+		if (bconf.verbose >= 3)
-+			fprintf(stderr,
-+"encoded_write %s - falling back to decompress and write due to errno %d (\"%m\")\n",
-+				path, errno);
- 	}
- 
- 	return decompress_and_write(rctx, data, offset, len, unencoded_file_len,
+ 	ret = path_cat_out(full_path, rctx->full_subvol_path, path);
+ 	if (ret < 0) {
+ 		error("fallocate: path invalid: %s", path);
 -- 
 2.35.1
 
