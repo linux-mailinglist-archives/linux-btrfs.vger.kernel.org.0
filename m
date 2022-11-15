@@ -2,125 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BBB62A100
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 19:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8F262A126
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Nov 2022 19:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbiKOSCE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 13:02:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
+        id S229772AbiKOSNk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Nov 2022 13:13:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231475AbiKOSBO (ORCPT
+        with ESMTP id S229495AbiKOSNh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 13:01:14 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7AC62C7
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 10:01:13 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Tue, 15 Nov 2022 13:13:37 -0500
+Received: from zmcc-3-mx.zmailcloud.com (zmcc-3-mx.zmailcloud.com [34.200.143.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D5928E22
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 10:13:35 -0800 (PST)
+Received: from zmcc-3.zmailcloud.com (183.87.154.104.bc.googleusercontent.com [104.154.87.183])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1CE291F8E0;
-        Tue, 15 Nov 2022 18:01:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1668535272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wqci/3B1Q9K7U2AZI/lsbKOytc6jr8mWCM1rkUcjzog=;
-        b=pn1Uugat2MHvpf88oPhgR1/gkLBRO+QvRnz3K68jlLlbAIxE4NnlDNjs1N/9F7C836X0hV
-        877G01mVVlgouj0Jvb1QCQjf1Df/SOWw6U8pbl04ilzIcmdQeisWjJj0mt47luztmxcDeA
-        fGmeeHmnVcXiuPUJ7yQ6CFpddwh8hqs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1668535272;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wqci/3B1Q9K7U2AZI/lsbKOytc6jr8mWCM1rkUcjzog=;
-        b=DcYhfbhBDo9Vghc+FjBAoZJ0tAYYezxdIGi/CXSVoxACSXQuIPc7iSdu/wRs7QLamJHxca
-        GTfD/L2XoQPsUBCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C4CFE13A91;
-        Tue, 15 Nov 2022 18:01:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id p8kTKOfTc2PVZAAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>); Tue, 15 Nov 2022 18:01:11 +0000
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 16/16] btrfs: btree_writepages lock extents before pages
-Date:   Tue, 15 Nov 2022 12:00:34 -0600
-Message-Id: <994c7a74720e3c8589263095704dc7f87cfdb3e7.1668530684.git.rgoldwyn@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <cover.1668530684.git.rgoldwyn@suse.com>
-References: <cover.1668530684.git.rgoldwyn@suse.com>
+        by zmcc-3-mx.zmailcloud.com (Postfix) with ESMTPS id CDA6A4056D
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 12:17:27 -0600 (CST)
+Received: from zmcc-3.zmailcloud.com (localhost [127.0.0.1])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPS id A3B5480366A0
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 12:13:34 -0600 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTP id 94B0F80366A1
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 12:13:34 -0600 (CST)
+Received: from zmcc-3.zmailcloud.com ([127.0.0.1])
+        by localhost (zmcc-3-mta-1.zmailcloud.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ZbSpYKqGvzaQ for <linux-btrfs@vger.kernel.org>;
+        Tue, 15 Nov 2022 12:13:34 -0600 (CST)
+Received: from [10.4.2.11] (unknown [37.19.198.182])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPSA id 45F9280366A0
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 12:13:34 -0600 (CST)
+Date:   Tue, 15 Nov 2022 13:13:27 -0500
+From:   Eric Levy <contact@ericlevy.name>
+Subject: Re: property designating root subvolumes
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-Id: <FMIELR.O8OGGM9UHOZV2@ericlevy.name>
+In-Reply-To: <6e932071-ef89-0d69-550f-755abea004ba@gmail.com>
+References: <VB2DLR.FVM1D1665BSY2@ericlevy.name>
+        <6e932071-ef89-0d69-550f-755abea004ba@gmail.com>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Lock extents before pages while performing btree_writepages().
 
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
----
- fs/btrfs/disk-io.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 8ac9612f8f27..b7e7c4c9d404 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -858,8 +858,25 @@ static int btree_migrate_folio(struct address_space *mapping,
- static int btree_writepages(struct address_space *mapping,
- 			    struct writeback_control *wbc)
- {
-+	u64 start, end;
-+	struct btrfs_inode *inode = BTRFS_I(mapping->host);
-+        struct extent_state *cached = NULL;
- 	struct btrfs_fs_info *fs_info;
- 	int ret;
-+	u64 isize = round_up(i_size_read(&inode->vfs_inode), PAGE_SIZE) - 1;
-+
-+	if (wbc->range_cyclic) {
-+		start = mapping->writeback_index << PAGE_SHIFT;
-+		end = isize;
-+	} else {
-+		start = round_down(wbc->range_start, PAGE_SIZE);
-+		end = round_up(wbc->range_end, PAGE_SIZE) - 1;
-+		end = min(isize, end);
-+	}
-+
-+	if (start >= end)
-+		return 0;
-+
- 
- 	if (wbc->sync_mode == WB_SYNC_NONE) {
- 
-@@ -874,7 +891,12 @@ static int btree_writepages(struct address_space *mapping,
- 		if (ret < 0)
- 			return 0;
- 	}
--	return btree_write_cache_pages(mapping, wbc);
-+
-+	lock_extent(&inode->io_tree, start, end, &cached);
-+	ret = btree_write_cache_pages(mapping, wbc);
-+	unlock_extent(&inode->io_tree, start, end, &cached);
-+
-+	return ret;
- }
- 
- static bool btree_release_folio(struct folio *folio, gfp_t gfp_flags)
--- 
-2.35.3
+On Tue, Nov 15 2022 at 08:50:50 PM +0300, Andrei Borzenkov 
+<arvidjaar@gmail.com> wrote:
+> On 15.11.2022 02:23, Eric Levy wrote:
+>> The file system allows one subvolume per partition to be designated 
+>> as
+>> the default, and no more than one would be sensible. Generally, for
+> 
+> It is not partition, it is filesystem.
+
+I'm sorry, but I fail to understand any distinction from your comment 
+that clarifies a genuine confusion, within the present context, more 
+than a semantic nuance.
+
+
+>> So far the only usage proposed by you is to scan btrfs subvolumes to 
+>> apparently present user multiple choices during boot. Any bootloader 
+>> that understands btrfs enough to read subvolume properties can also 
+>> read information inside subvolume to achieve the same effect. You 
+>> need to prepare subvolume anyway.
+
+A bootloader may not be the best location to include logic for 
+descending into a subvolume, to resolve whether it contains a root file 
+hierarchy. Meanwhile, some subvolumes, such a snapshots, may appear 
+internally as root subvolumes, though not being desired for entries on 
+a boot menu. Presently, it is worth considering the historic precedent 
+that the default subvolume is being used to identify a location for a 
+root file hierarchy. The association often holds, but is not the basis 
+of any fully robust assumption.
+
+
+> If you suggest some other usage I am afraid I failed to understand it.
+
+I will let others express whether they understand more clearly.
+
 
