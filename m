@@ -2,184 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD99F62C8C4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Nov 2022 20:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C1962C8DE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Nov 2022 20:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234006AbiKPTJN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Nov 2022 14:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
+        id S232506AbiKPTWM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Nov 2022 14:22:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231634AbiKPTJM (ORCPT
+        with ESMTP id S230253AbiKPTWL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Nov 2022 14:09:12 -0500
-Received: from libero.it (smtp-17.italiaonline.it [213.209.10.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D803E089
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Nov 2022 11:09:09 -0800 (PST)
-Received: from [192.168.1.27] ([84.220.130.49])
-        by smtp-17.iol.local with ESMTPA
-        id vNmTotRzI5RyRvNmToeWzn; Wed, 16 Nov 2022 20:09:06 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1668625746; bh=mL9gpnpq4IZYhCNeOP4nJSBhKRwVkHEps6CWH31VB50=;
-        h=From;
-        b=cn9GJfzVK+/vn2h/lKfiCd9wNXQ4D2nqXUKynDYxrPZRCoRAakA1IbbPTWJr/2W0/
-         XirTLTuFT5zp3LmKOm0rO7wxuDv0vGWp04VxjuXBxFZJcETMqPwKDO36mMsSbwyMjt
-         F2fGPBsN8K3g8g2C1k24pPoxDGBrG/6cYtY01HMr5Vu5pxxy5dmnigRn8IxhqTMk88
-         aDNXDMANRRxrknU7soIyu+8rF7f5+4pJ8aWe0dS0NyjKLJO13lBDMeE1VauqIhtr+M
-         Ij3HUt5q5M4wyNDF4076RbcBb8wXZR+IflugBRQGF0yN3u0V1ebQPKKycqh5PzE0rv
-         48iXIOJ8kPpVg==
-X-CNFS-Analysis: v=2.4 cv=JtI0EO0C c=1 sm=1 tr=0 ts=63753552 cx=a_exe
- a=SdbLdwgxGF07xCE66nLfvA==:117 a=SdbLdwgxGF07xCE66nLfvA==:17
- a=IkcTkHD0fZMA:10 a=ITmfce3LwFxrsWqsT88A:9 a=QEXdDO2ut3YA:10
-Message-ID: <b31bfe5a-ae85-2ea0-da65-698e095cc180@libero.it>
-Date:   Wed, 16 Nov 2022 20:09:05 +0100
+        Wed, 16 Nov 2022 14:22:11 -0500
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA926F2E
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Nov 2022 11:22:09 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 515C95C00B9;
+        Wed, 16 Nov 2022 14:22:07 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 16 Nov 2022 14:22:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm1; t=1668626527; x=1668712927; bh=b109huWG7L8opDDC6Ck7SHGzE
+        azRXw9DOZKUETTLwNI=; b=sxnX4y8qJQHMbIODUHTAVFtChzKggd+pFDdKPf/9Q
+        qfz598W+qID+qWei1VRdp/ic4zNki6nAWOfZdA/NsHkDDQKdxjRDuCy4L61EZ1Fy
+        3AKOatRX1pfadF2xxOYQI6uODJzNEH2tbwkgzGqfQ6v8utCr1B5soZzCNOjtVaTg
+        ltjgK/4Ef8yabYCBpwfA2ugOoa5CTlFdgjx8qD8H1Ss6/H/HHepVuaczGAxkXA2b
+        ZDUKCWPW9XVUqUAv8AIdqo3rkToabRzQi9nhtrbw7vQwkLj/8T/QKqBk1LFE9ROE
+        6bpEsuD4KUQd0bvN2y5a0Yeivc1+sb+KuZy4l7YHN/3hA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1668626527; x=1668712927; bh=b109huWG7L8opDDC6Ck7SHGzEazRXw9DOZK
+        UETTLwNI=; b=A6XSR9b/M0ordFQLbfpkGIxCcZGc1+x8/nUaZt+U9j+nRvPMn/H
+        4DoW+sLAtxOzaOJaXDOXXQ8I2S4m4LTwYPqsESsJzlJfhkB18Le05l96pj2Vj2sF
+        zHyURDdy/scyM9F6XIQj+1mdzaPxE3Jajw+fObDsNu1GHNuHMtrDfSQeS76AoT6n
+        Q4fVRxOKeG8PYNujpDdbzUHXt58q936sFrUC49txwpnDcLxQjVLkcKYcSICG0UOC
+        UiOd/QojX3OrPrOCsIRLAEHXPSx/v1q56XDXnWJIMLqCBb5A2w0Rc2Y0/F5wMIoe
+        /D1fFyn7oUm0AI9WRLSCMK7dGHgP523hxug==
+X-ME-Sender: <xms:Xjh1YzMwZ-_6YU7Qd2UdIvTi1dafLP7noL1oiZ7tpHAdzqObSgT9DQ>
+    <xme:Xjh1Y99zN5X4OpnFiy93KtgmCp-LSsqhfc1fVjYb4PfV0hLndaDATlbjJNmMnVnig
+    PnkTXBzFlaXA37o9i8>
+X-ME-Received: <xmr:Xjh1YyQIq4XZ_9G5Jj0Dv94nUHzJQEkThagHdla1aCWaX4CGywj-jbGy>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrgeeigdduvddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
+    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
+    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:Xzh1Y3s7NpFgUVNoJJ1mZ89EmMBfiyd8exwIZ81jNAHFDAyJykTbMQ>
+    <xmx:Xzh1Y7eZL0mpCEUYNTqBTaZwahknADWLovbFO0MaGmoQkS9yx4DbFQ>
+    <xmx:Xzh1Yz15-dRKwKOJd48c01EYePP4Y7kkhkRCStD7PKnrW2Ekdk8TbA>
+    <xmx:Xzh1Y7mFmyYgCTFdN4yRKc8wdMZmQCAA6NVoxQf8NJ1DmOVemPNHQw>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Nov 2022 14:22:06 -0500 (EST)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 0/4] btrfs: data block group size classes
+Date:   Wed, 16 Nov 2022 11:22:01 -0800
+Message-Id: <cover.1668626092.git.boris@bur.io>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-Reply-To: kreijack@inwind.it
-Subject: Re: property designating root subvolumes
-Content-Language: en-US
-To:     Eric Levy <contact@ericlevy.name>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <VB2DLR.FVM1D1665BSY2@ericlevy.name>
- <ba47a0c3-ae7b-8aa9-96fd-2f1eab6e3885@libero.it>
- <N3KELR.FXYFWHCH7XYX2@ericlevy.name>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <N3KELR.FXYFWHCH7XYX2@ericlevy.name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfLM/Srvbhap0P9fW/SOi4znU+WYyrWRnQx5SSmO9e7c3y0t/IeTps6D33JSC0zOhd+IIbru9py5F2dY6Ft9YjCrIwkwjhN+N9eKN97LrLa9Boc2rRoXJ
- +zWZXpPhpdQAtQHA42IMDi0+nNc1EBGn1duhyTKBwuFy8ObWWrl6LaOMb0gH2Hs89M+FiYdHthwQYqnfs3Ykfspqny8bB8QQIKgU3fv0uptWlNR7lpBZj++S
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 15/11/2022 19.45, Eric Levy wrote:
-> 
-> On Tue, Nov 15 2022 at 07:23:21 PM +0100, Goffredo Baroncelli <kreijack@libero.it> wrote:
->> I don't know rEFInd very well, but I don't think that it is job of the bootloader to do the automatic OS discovery.
->>
->> If you want to perform an OS discovery, at first it would be enough to check the presence of "/bin/init" (or /init or ...) for linux and the equivalent for Windows and OS-X.
->> But this will not give the information like:
->>     - os name
->>     - initrd
->>     - the linux boot parameter...
->>
->> Some (most) setup have different boot entries for the same filesystem (e.g. the standard one, and the emergency one).
->>
->> I prefer the other way that it is used in the linux world: it is responsibility of the os to inform the bootloader about its existence.
->> Look at the BLS specification (even not so widespread adopted).
-> 
-> Yes, I respect the preference you have provided, but in a sense, merely affirming the preference is begging the larger question.
-> 
-> The intention of rEFInd is as a bootloader, though less advanced overall than Grub, that is more user friendly, supporting autodiscovery of resident operating systems without needing to be preconfigured by tools installed on one of those operating systems. rEFInd does support some static configuration, similar to the Grub configuration system, but it is not generally required, and supported primarily as an afterthought, for advanced use cases not currently possible through the main method of on-the-fly autodetection.
-> 
+This patch set introduces the notion of size classes to the block group
+allocator for data block groups. This is specifically useful because the
+first fit allocator tends to perform poorly when large extents free up
+in older block groups and small writes suddenly shift there. Generally,
+it should lead to slightly more predictable allocator behavior as the
+gaps left by frees will be used by allocations of a similar size.
 
-My point is that the "on fly autodetection", is more complex than find the root of the filesystem, which is indeed quite trivial (e.g. looking ad /bin/init or /init or /sbin/init); the snapshot is a bit more challenging, but due the fact that these have a pointer to the parent (PARENT_UUID) is still doable.
+Details about the changes and performance testing are in the individual
+commit messages.
 
-What is not easily doable (and definitely is not a filesystem job) is discover the boot parameter; for example in my system I have the following cmdline:
+The last two patches constitute the business of the change. One adds the
+size classes and the other handles the fact that we don't want to
+persist the size class, so we don't know it when we first load a block
+group.
+---
+v2:
+- removed 1G falloc extents patch
+- rebased tracepoints patches onto significant header file refactor
 
-$ cat /proc/cmdline
-initrd=\e84907d099904117b355a99c98378dca\6.0.8\initrd.img-6.0.8 root=UUID=d7a06504-cc14-435d-a5df-674da09c2894 ro rootflags=subvol=@rootfs btrfsrollback=@rollback boot=btrfs quiet splash loglevel=0 vt.global_cursor_default=0 systemd.machine_id=e84907d099904117b355a99c98378dca
+Boris Burkov (4):
+  btrfs: use ffe_ctl in btrfs allocator tracepoints
+  btrfs: add more ffe tracepoints
+  btrfs: introduce size class to block group allocator
+  btrfs: load block group size class when caching
 
-Also I have to point out again that some distribution have multiple pair of kernel/image for the same root filesystem (e.g. the fedora rescue images).
-
-> Grub is planned primarily with the assumption that a single operating system, of some Linux variety, is the one dominantly used on a system, and all others, whether also Linux or not, are in some sense subordinate, installed only for occasional use. At times, such an assumption may be agreeable, but not always.
-> 
-> I think there is a place in the discussion for preferences about the design of the bootloader. However, I also think the discussion should not reject the historical observation, that due to demand for the feature, the default subvolume selector is being used, in a sense incorrectly, for detecting a root file system, because no better approach has been identified.
-
-The concept of "default subvolume" doesn't mix well with "multiple os on the same filesystem"; in my setups  I prefer to pass the root subvolume in the commandline (e.g. 'rootflags=subvol=@rootfs'); recently I discovered that Debian does the same thing.
-
-
-[...]
-> 
-> However, even so, I have concerns about desired handling of snapshots, as well as about the other reasons that a subvolume may appear internally as hosting a root tree, but not being desired for showing as an item in the boot menu.
-> 
-About this point I agree more, but from a different point of view:
-- the subvolume is the unit of snapshot
-- a filesystem may be composed by different subvolumes (e.g. @boot, @log, @portables mounted over @rootfs)
-- each subvolume may have different snapshot policy
-- assuming that the place of a subvolume doesn't change over the time in the filesystem, I would like to find a filesystem layout where it is possible to mount a full filesystem or its snapshot with only a command.
-
-I am trying this layout:
-
-In the root of the btrfs filesystem there are the different subvolumes and theirs snapshots:
-
-/@rootfs
-/@rootfs-20221017
-/@rootfs-20220917
-/@rootfs-20220817
-/@home-foo
-/@home-foo-20221001
-/@home-foo-20220901
-/@home-foo-20220801
-/@boot
-/@log
-/@portable
-
-When I "assemble" the filesystem I would like to have:
-@rootfs -> /
-@boot -> /boot
-@log -> /var/log
-@portable -> /var/lib/portable
-@home-foo -> /home/foo
-
-
-But if want to look at the past I would have also:
-
-[20221017]
-@rootfs-20221017 -> /
-@boot -> /boot
-@log -> /var/log
-@portable -> /var/lib/portable
-@home-foo-20221001 -> /home/foo
-
-[20221001]
-@rootfs-20220917 -> /
-@boot -> /boot
-@log -> /var/log
-@portable -> /var/lib/portable
-@home-foo-20221001 -> /home/foo
-
-[20220901]
-@rootfs-20220817 -> /
-@boot -> /boot
-@log -> /var/log
-@portable -> /var/lib/portable
-@home-foo-20220901 -> /home/foo
-
-
-But also have the possibility to have also
-
-[snapshot of the root filesystem only 20220901]
-@rootfs-20220817 -> /
-@boot -> /boot
-@log -> /var/log
-@portable -> /var/lib/portable
-@home-foo -> /home/foo
-
-[snapshot of the home only 20220901]
-@rootfs -> /
-@boot -> /boot
-@log -> /var/log
-@portable -> /var/lib/portable
-@home-foo-20220901 -> /home/foo
-
-Of course the key would be to have a mount.btrfs command that does the mounts on the basis of a config file
-
-
-> Regardless, I suggest that the status quo deserves some inspection.
-> 
-> 
+ fs/btrfs/block-group.c       | 234 ++++++++++++++++++++++++++++++++---
+ fs/btrfs/block-group.h       |  15 ++-
+ fs/btrfs/extent-tree.c       | 166 +++++++------------------
+ fs/btrfs/extent-tree.h       |  81 ++++++++++++
+ fs/btrfs/super.c             |   1 +
+ include/trace/events/btrfs.h | 128 +++++++++++++++----
+ 6 files changed, 466 insertions(+), 159 deletions(-)
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
+2.38.1
 
