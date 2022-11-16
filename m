@@ -2,60 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A251562B1CD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Nov 2022 04:21:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C045262B37D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Nov 2022 07:50:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbiKPDVZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Nov 2022 22:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
+        id S231791AbiKPGuF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 16 Nov 2022 01:50:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbiKPDVY (ORCPT
+        with ESMTP id S231708AbiKPGuE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Nov 2022 22:21:24 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7D4C11
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 19:21:22 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhD6g-1pQbvR0TwI-00eJC9; Wed, 16
- Nov 2022 04:21:19 +0100
-Message-ID: <33e40e7c-5b9a-62e7-457c-24f85808d189@gmx.com>
-Date:   Wed, 16 Nov 2022 11:21:15 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH 0/5] btrfs: raid56: destructive RMW fix for RAID5 data
- profiles
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+        Wed, 16 Nov 2022 01:50:04 -0500
+X-Greylist: delayed 556 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Nov 2022 22:50:02 PST
+Received: from pio-pvt-msa2.bahnhof.se (pio-pvt-msa2.bahnhof.se [79.136.2.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560BE624F
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Nov 2022 22:50:02 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 0345E40525;
+        Wed, 16 Nov 2022 07:40:43 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: from pio-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 6xnXb1mIXXAi; Wed, 16 Nov 2022 07:40:41 +0100 (CET)
+Received: by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 9CCA740519;
+        Wed, 16 Nov 2022 07:40:41 +0100 (CET)
+Received: from [104.28.234.221] (port=26491 helo=[10.208.94.3])
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1ovC6B-000H9l-Ez; Wed, 16 Nov 2022 07:40:40 +0100
+Date:   Wed, 16 Nov 2022 07:40:35 +0100 (GMT+01:00)
+From:   Forza <forza@tnonline.net>
+To:     Spencer Collyer <spencer@spencercollyer.plus.com>,
+        linux-btrfs Mailinglist <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1668384746.git.wqu@suse.com>
- <20221115132452.GH5824@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20221115132452.GH5824@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:eZcFpk5D2yc33DPstyZ7hSAt6gXFyONbPKjR5mZwKXyFDaQsU3Q
- 7woSv3LqiNesdjZ4pBcvQXSDhzxZ1hFe4KGOxie3fkjOcJaQWz5d3SfVlU3xwZNsXUNKuY7
- p+TAIXApEIeyGDmhQL2OxXKkp0kLDAlNPPWMO2XohplvdWnSMxH1FGjbWiUMVxlqG7SiyeH
- H3xEZtS8phuVwnT0kINfA==
-UI-OutboundReport: notjunk:1;M01:P0:5xJlNvpHjhA=;auzlS8xq+Tr+rewDbyqF7kCOa7S
- NMl92QyTgvrrSNlAlqfv71tNrc89fyJB23ZfB5cjC9+Ri6O6ic4BYBCS7JERc7fGzh0aobjgD
- zA1Cra8CW2NKQaCy8YpmNw7neUXipB+kUrQytzBQLmtGogn6b2PrdgnAnTgbVF2sxrCr6fPzu
- hB8nupsXbU/HQti1oHZ02W93DmNpNmjCFFqFoQtd86ZD4+ml72MSuEINsVn/RaF610ydfMegs
- bnXNJ5sCpxznuZCEXTQqsAfVNkExTIa46sOMqMpYn+lmMGXHS8NFWMXx5dd0+za5aae9LoMOB
- +eC9ul/0YqqxfOU9hDARAbDsLqaOlcMSoj6tzNyjEYbJzJZSegq3uG/TXt0po/o8Ju6Dn+ptP
- mpvqHZVb9y+Bf7+h1TaLAwfAOh9r2qxLsyCfLtLVq7dUPQlXfsiqwg/Gibia2RKPY5pc/vkPk
- cWLOOLWJL3D3K+tYqqtRkHqX8o9cNcBWy8DZbk1jEqx3zu0Hgj6lKk2533mVNYkxyyPely8Uo
- 8M39IKosjiWEpq/FRj/mhpUmkvtQU8WCoEqX+i6sMQUuPk4W3UFzDQlrYH+g5Mimc4zemBllw
- 6qscCCw90si41ywA/5rBt7aeb1+PcMnd8rdotzan7m7gEQTnBcqlPvRBW0Pk46/Z+XtOcHl2i
- rMJmguvj+wUvyElQqpZnhUyPquUzd1N5q5GBws4t0nnDC8myJXyWC1zg9c4pMLQLZAsflby6D
- 2QZOIDwAHE4Fl14WbvNycjzcJr6WH/c/RTeCxnH/pWOBdMfdYTKQXx6AEBTciD+XSdAXyqEny
- D+G5BM/cRGlC16zb+gQMSWeNYLSdX57JN3UnxgroO6nyY0GyMPSYL8obtus9E0hq9fMN3x1Kd
- ATcM7vHkMegVGYu/2pss5UrOJr5FgV3ADx+Q6nl5gHQxbhJIkCMlDZeZNxZf3J5HDHLCmq9Ii
- ScmT8w==
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <b8bc96b.b07fe284.1847f2b0003@tnonline.net>
+Subject: Re: Change BTRFS filesystem back to R/W from R/O
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+X-Mailer: R2Mail2
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,75 +54,83 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/11/15 21:24, David Sterba wrote:
-> On Mon, Nov 14, 2022 at 08:26:29AM +0800, Qu Wenruo wrote:
->> [DESTRUCTIVE RMW]
->> Btrfs (and generic) RAID56 is always vulnerable against destructive RMW.
->>
->> Such destructive RMW can happen when one of the data stripe is
->> corrupted, then a sub-stripe write into other data stripes happens, like
->> the following:
->>
->>
->>    Disk 1: data 1 |0x000000000000| <- Corrupted
->>    Disk 2: data 2 |0x000000000000|
->>    Disk 2: parity |0xffffffffffff|
->>
->> In above case, if we write data into disk 2, we will got something like
->> this:
->>
->>    Disk 1: data 1 |0x000000000000| <- Corrupted
->>    Disk 2: data 2 |0x000000000000| <- New '0x00' writes
->>    Disk 2: parity |0x000000000000| <- New Parity.
->>
->> Since the new parity is calculated using the new writes and the
->> corrupted data, we lost the chance to recovery data stripe 1, and that
->> corruption will forever be there.
-> ...
->> [TODO]
->> - Iterate all RAID6 combinations
->>    Currently we don't try all combinations of RAID6 during the repair.
->>    Thus for RAID6 we treat it just like RAID5 in RMW.
->>
->>    Currently the RAID6 recovery combination is only exhausted during
->>    recovery path, relying on the caller the increase the mirror number.
->>
->>    Can be implemented later for RMW path.
->>
->> - Write back the repaired sectors
->>    Currently we don't write back the repaired sectors, thus if we read
->>    the corrupted sectors, we rely on the recover path, and since the new
->>    parity is calculated using the recovered sectors, we can get the
->>    correct data without any problem.
->>
->>    But if we write back the repaired sectors during RMW, we can save the
->>    reader some time without going into recovery path at all.
->>
->>    This is just a performance optimization, thus I believe it can be
->>    implemented later.
+---- From: Spencer Collyer <spencer@spencercollyer.plus.com> -- Sent: 2022-11-15 - 15:08 ----
+
+> (Resending to the list as I accidentally sent it just to Qu.)
 > 
-> Even with the todo and potential performance drop due to mandatory
-> stripe caching I think this is worth merging at this point, so patches
-> are in misc-next now.
+> On Tue, 15 Nov 2022 20:41:54 +0800, Qu Wenruo wrote:
 > 
-> Regarding the perf drop, I'll try to get some results besides functional
-> testing but if anybody with a decent setup for raid5 can do some
-> destructive tests it would be most welcome.
+>> Considering you have some metadata space left, I believe you can free 
+>> enough space by deleting files (aka, moving it to other filesystems)
+>> 
+>> Thanks,
+>> Qu  
 > 
-> Fallback plan is to revert the last patch if it turns out to be too
-> problematic.
+> Hi Qu,
+> 
+> Thanks for that. You say I should move some files to other filesystems, but that's really the nub of my problem - the filesystem is marked as read-only. Am I Ok to do what I mentioned previously:
+> 
+>> 1) Unmount the filesystem.
+>> 2) Remount it as R/W
+>> 3) Move data to the external disk  
+> 
+> If that is all good, would I need to do anything else or would the BTRFS system sort itself out correctly?
 
-If you're concerned about the fallback plan, I'd say we need to at least 
-drop the last two patches.
+With enough `unallocated` space, Btrfs will be OK. Read below for more details on why/how... 
 
-Sure, dropping the last one will remove the verification and the extra 
-reads, but unfortunately we will still fetch the csum for RMW cycles.
-Although the csum fetch would at most cost 2 leaves, the cost is still 
-there.
+> 
+> Thanks for your attention,
+> 
+> Spencer
+> 
+> PS. The output form the 'btrfs fi usage /data' command you requested is as follows (run as root to get everything):
+> 
+> Overall:
+>     Device size:		  10.92TiB
+>     Device allocated:		  10.92TiB
+>     Device unallocated:		   1.00MiB
+>     Device missing:		     0.00B
+>     Device slack:		     0.00B
+>     Used:			  10.90TiB
+>     Free (estimated):		  15.26GiB	(min: 15.26GiB)
+>     Free (statfs, df):		  15.26GiB
+>     Data ratio:			      1.00
+>     Metadata ratio:		      2.00
+>     Global reserve:		 512.00MiB	(used: 0.00B)
+>     Multiple profiles:		       yes	(metadata, system)
+> 
+> Data,RAID0: Size:10.87TiB, Used:10.86TiB (99.86%)
+>    /dev/mapper/data1	   5.44TiB
+>    /dev/mapper/data2	   5.44TiB
+> 
+> Metadata,single: Size:8.00MiB, Used:0.00B (0.00%)
+>    /dev/mapper/data1	   8.00MiB
+> 
+> Metadata,RAID1: Size:23.00GiB, Used:21.39GiB (93.00%)
+>    /dev/mapper/data1	  23.00GiB
+>    /dev/mapper/data2	  23.00GiB
+> 
+> System,single: Size:4.00MiB, Used:0.00B (0.00%)
+>    /dev/mapper/data1	   4.00MiB
+> 
+> System,RAID1: Size:8.00MiB, Used:784.00KiB (9.57%)
+>    /dev/mapper/data1	   8.00MiB
+>    /dev/mapper/data2	   8.00MiB
+> 
+> Unallocated:
+>    /dev/mapper/data1	     0.00B
+>    /dev/mapper/data2	   1.00MiB
 
-Thus if needed, I can do more refactoring of the series, to separate the 
-final patch.
-Although I hope we don't need to go that path.
 
-Thanks,
-Qu
+Btrfs uses a multi stage allocator. The first stage allocates large regions of space known as chunks for specific types of data, then the second stage allocates blocks like a regular (old-fashioned) filesystem within these larger regions.
+
+In your case, btrfs needed to allocate another metadata chunk, but as you see, there is no `unallocated` space available. Btrfs went read-only to protect itself from damage.
+
+Balancing means Btrfs moved data between chunks so that it can free them. It means that if there are two chunks with 50% usage, Btrfs can compact the data into one chunk and free the other, increasing the unallocated space that can be used for new allocations as needed.
+
+It might be good to schedule a limited data balance at regular intervals to ensure there are always a few unallocated gigabytes.
+
+I wrote a little about it on my wiki  https://wiki.tnonline.net/w/Btrfs/ENOSPC and https://wiki.tnonline.net/w/Btrfs/Balance
+
+Regards,
+Forza 
