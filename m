@@ -2,224 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AC562BD9B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Nov 2022 13:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3456162BDC7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Nov 2022 13:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238874AbiKPMWa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Nov 2022 07:22:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
+        id S238879AbiKPM2c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Nov 2022 07:28:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238848AbiKPMWG (ORCPT
+        with ESMTP id S232934AbiKPM2Q (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Nov 2022 07:22:06 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2EC12ACD;
-        Wed, 16 Nov 2022 04:19:08 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5VD8-1p2Fdg01Oc-016y61; Wed, 16
- Nov 2022 13:18:42 +0100
-Message-ID: <89c0d7bd-713b-dd3a-7a18-75371f967561@gmx.com>
-Date:   Wed, 16 Nov 2022 20:18:36 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH v5 2/2] btrfs: qgroup: fix sleep from invalid context bug
- in update_qgroup_limit_item()
-Content-Language: en-US
-To:     ChenXiaoSong <chenxiaosong2@huawei.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wed, 16 Nov 2022 07:28:16 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4674B6464;
+        Wed, 16 Nov 2022 04:25:08 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F171E1F917;
+        Wed, 16 Nov 2022 12:25:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1668601506;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t364W5skI1j7pC0w2AvM+QLo/wdtr/H5Ea49+U8AtMc=;
+        b=VrJh+encNcOBAIl3/cjFZK9Nocs0SXz/AOGoRvqvdmM1mWu1WK7/VOZszqpXeTNKWf2EsQ
+        zNt3gJhvrgihspuRdUuBVkUUvpiY18odfvRJdL6prEVSLjlGDcNTKpIclBiOK9O0c6GHPR
+        I+gcLso5Qbj2Eq90+rbRHXL4ZF4nM9s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1668601506;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t364W5skI1j7pC0w2AvM+QLo/wdtr/H5Ea49+U8AtMc=;
+        b=bxHtpW1dOm4kIsRe4Tr0SSD09ophd578bUhdYwWBQIPIp6nVSbTG/DGqQsyTz4rmY7CUkV
+        1xzoOU46gtgs0mCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF69213480;
+        Wed, 16 Nov 2022 12:25:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id v5LxKaLWdGOiFgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 16 Nov 2022 12:25:06 +0000
+Date:   Wed, 16 Nov 2022 13:24:40 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     ChenXiaoSong <chenxiaosong2@huawei.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
         zhangxiaoxu5@huawei.com, yanaijie@huawei.com, wqu@suse.com
-References: <20221116130716.991901-1-chenxiaosong2@huawei.com>
- <20221116130716.991901-3-chenxiaosong2@huawei.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20221116130716.991901-3-chenxiaosong2@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:0AWTmC124QyQ+RiTmfM6ZaC2tofSr+Yv2Yc80aRPZ/y6x7NwrTt
- X9wlBP4XVMaVElOe5THqaHZ1A5o7xfWFDyTF4E3HPq+r2byj0LXFE2DrMPoojQeIfWgcNEL
- bIzznedP1bTRyI7mZKsBzAg3yIvoQuTEsbJYYIOlnTvTGyHcG+9rJBziGSijQlUpEzGGaVx
- Un/lV5dtk9Vku+87gCryQ==
-UI-OutboundReport: notjunk:1;M01:P0:b3gYyPzCAFY=;vN3i3/i/DTUVD4hGlmS47usbDKC
- JFFJDNOopWIjb0PTvnn5SV2jnVZOtibEfnwMMwjf6DCBSi/zj+RzMHxgyUj/qve4MOmbQ2BY1
- lBjm8zPw6T0ixXdoLKX2r7PO0T5vONb+kqX980WPGmJWrswsKMZOXCxLuyUeILOgu9Pr3pJ8d
- Gj//RP6tcqobtNSxUjCWplIrhJMI7FXLXanbsCMhj0r/CiZgP2EuS4QmFAE0anwOzEAhbcjqd
- 8ZSmU4DO1ezxOJOAbSyfOR+SLEl/OMsctTlhQGeyL38KM3lYlZV0GA4cDbwGXRcKyhTWtj0wx
- sZQ+pBWqunJk0+2pUw8iuy6iz3qUQWSTPGfYtqEBL7qSX9b6Kp5BdnO2d1UafEEmSi6Khmd3k
- 4JWVUnNjuxpBqeyjw6VGZ9VRVEgXHqT0PQl8R3HmAOI89rDOyFpIjyhvWYBZlKnWpr2OdzCIB
- iiTN/a/6seZG/dmfuaosUkXEqTsmGWnvsSkacf1g7Hs4Kh5p8UzXhum4mpIas7PSfNcJ5ITmI
- nNlQc1vxJVf0ZyVKaOT1ri0ghPMdJ4AkeZTFz2ASnJnH3+iNtZQsNvyseiG39ndCG8/rXDKZb
- ecgaunEZyBMNhcRoqg908wRGF8WhCqG3iC22OsHzMPwaL4i5dXEhAkeqNqya6bDbNjEao2tr3
- g3MJEmOT+TYlcXYHT145EkCLnYuSrGQ8G4gfUSUlJYW/a/zyP2FN3GsyPDWeYid1f3Bknqzoc
- ztR1m4W33hfxWoHng98TfhRzq+9brYSqQcMD8UIp4ii39qQEbk2E9JYtWj4yW/icD4d/PXmDh
- OpfT+cWXArkQjFJ9GOQPiwPSBJ+exjc0KFXsFSfnhKQbaZswnTNZwToTAWebtRIxNKm1bvN6l
- xw+jqUNPbajUluXKtpDJyG971bDacnXDexRr91VnMKC3OKaBvJwBejk9iH2sMdRnz38IEd71o
- Hr4tFCBA9BFOWgzi229tgp7YZ2c=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v4 1/3] btrfs: add might_sleep() to some places in
+ update_qgroup_limit_item()
+Message-ID: <20221116122440.GN5824@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20221115171709.3774614-1-chenxiaosong2@huawei.com>
+ <20221115171709.3774614-2-chenxiaosong2@huawei.com>
+ <9b47b291-b1a0-ac0c-2049-b7de6545c26b@gmx.com>
+ <e058c1b9-7f57-11da-6ad1-6387604813c5@huawei.com>
+ <3918175e-dddd-2a55-32c4-c07de78ff4cb@gmx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3918175e-dddd-2a55-32c4-c07de78ff4cb@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2022/11/16 21:07, ChenXiaoSong wrote:
-> Syzkaller reported BUG as follows:
+On Wed, Nov 16, 2022 at 04:43:50PM +0800, Qu Wenruo wrote:
 > 
->    BUG: sleeping function called from invalid context at
->         include/linux/sched/mm.h:274
->    Call Trace:
->     <TASK>
->     dump_stack_lvl+0xcd/0x134
->     __might_resched.cold+0x222/0x26b
->     kmem_cache_alloc+0x2e7/0x3c0
->     update_qgroup_limit_item+0xe1/0x390
->     btrfs_qgroup_inherit+0x147b/0x1ee0
->     create_subvol+0x4eb/0x1710
->     btrfs_mksubvol+0xfe5/0x13f0
->     __btrfs_ioctl_snap_create+0x2b0/0x430
->     btrfs_ioctl_snap_create_v2+0x25a/0x520
->     btrfs_ioctl+0x2a1c/0x5ce0
->     __x64_sys_ioctl+0x193/0x200
->     do_syscall_64+0x35/0x80
 > 
-> Fix this by calling qgroup_dirty() on @dstqgroup, and update limit item in
-> btrfs_run_qgroups() later.
+> On 2022/11/16 16:09, ChenXiaoSong wrote:
+> > 在 2022/11/16 6:48, Qu Wenruo 写道:
+> >> Looks good.
+> >>
+> >> We may want to add more in other locations, but this is really a good 
+> >> start.
+> >>
+> >> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> >>
+> >> Thanks,
+> >> Qu
+> > 
+> > If I just add might_sleep() in btrfs_alloc_path() and 
+> > btrfs_search_slot(), is it reasonable?
 > 
-> Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
-> ---
->   fs/btrfs/qgroup.c | 29 ++++++++++++-----------------
->   1 file changed, 12 insertions(+), 17 deletions(-)
+> Adding it to btrfs_search_slot() is definitely correct.
 > 
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 9334c3157c22..8f5c52e24430 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -2860,6 +2860,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->   	bool need_rescan = false;
->   	u32 level_size = 0;
->   	u64 nums;
-> +	bool dirty_dstgrp = false;
+> But why for btrfs_alloc_path()? Wouldn't kmem_cache_zalloc() itself 
+> already do the might_sleep_if() somewhere?
+> 
+> I just looked the call chain, and indeed it is doing the check already:
+> 
+> btrfs_alloc_path()
+> |- kmem_cache_zalloc()
+>     |- kmem_cache_alloc()
+>        |- __kmem_cache_alloc_lru()
+>           |- slab_alloc()
+>              |- slab_alloc_node()
+>                 |- slab_pre_alloc_hook()
+>                    |- might_alloc()
+>                       |- might_sleep_if()
 
-I don't know why you insist on such bool (and the extra lable).
+The call chaing is unconditional so the check will always happen but the
+condition itself in might_sleep_if does not recognize GFP_NOFS:
 
-I have mentioned how qgroup_dirty() works, it can be called how ever 
-many times, and the qgroup code will handle it without problem.
+ 34 static inline bool gfpflags_allow_blocking(const gfp_t gfp_flags)
+ 35 {
+ 36         return !!(gfp_flags & __GFP_DIRECT_RECLAIM);
+ 37 }
 
-So the whole patch can be just as simple as:
+#define GFP_NOFS        (__GFP_RECLAIM | __GFP_IO)
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 05e79f7b4433..e0522c6c0d67 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -2965,14 +2965,7 @@ int btrfs_qgroup_inherit(struct 
-btrfs_trans_handle *trans, u64 srcid,
-                 dstgroup->rsv_rfer = inherit->lim.rsv_rfer;
-                 dstgroup->rsv_excl = inherit->lim.rsv_excl;
-
--               ret = update_qgroup_limit_item(trans, dstgroup);
--               if (ret) {
--                       qgroup_mark_inconsistent(fs_info);
--                       btrfs_info(fs_info,
--                                  "unable to update quota limit for %llu",
--                                  dstgroup->qgroupid);
--                       goto unlock;
--               }
-+               qgroup_dirty(fs_info, dstgroup);
-         }
-
-         if (srcid) {
-
-
->   
->   	/*
->   	 * There are only two callers of this function.
-> @@ -2941,7 +2942,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->   	dstgroup = add_qgroup_rb(fs_info, objectid);
->   	if (IS_ERR(dstgroup)) {
->   		ret = PTR_ERR(dstgroup);
-> -		goto unlock;
-> +		goto dirty;
->   	}
->   
->   	if (inherit && inherit->flags & BTRFS_QGROUP_INHERIT_SET_LIMITS) {
-> @@ -2950,21 +2951,13 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->   		dstgroup->max_excl = inherit->lim.max_excl;
->   		dstgroup->rsv_rfer = inherit->lim.rsv_rfer;
->   		dstgroup->rsv_excl = inherit->lim.rsv_excl;
-> -
-> -		ret = update_qgroup_limit_item(trans, dstgroup);
-> -		if (ret) {
-> -			qgroup_mark_inconsistent(fs_info);
-> -			btrfs_info(fs_info,
-> -				   "unable to update quota limit for %llu",
-> -				   dstgroup->qgroupid);
-> -			goto unlock;
-> -		}
-> +		dirty_dstgrp = true;
->   	}
->   
->   	if (srcid) {
->   		srcgroup = find_qgroup_rb(fs_info, srcid);
->   		if (!srcgroup)
-> -			goto unlock;
-> +			goto dirty;
->   
->   		/*
->   		 * We call inherit after we clone the root in order to make sure
-> @@ -2985,20 +2978,20 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->   		dstgroup->max_excl = srcgroup->max_excl;
->   		dstgroup->rsv_rfer = srcgroup->rsv_rfer;
->   		dstgroup->rsv_excl = srcgroup->rsv_excl;
-> +		dirty_dstgrp = true;
->   
-> -		qgroup_dirty(fs_info, dstgroup);
->   		qgroup_dirty(fs_info, srcgroup);
->   	}
->   
->   	if (!inherit)
-> -		goto unlock;
-> +		goto dirty;
->   
->   	i_qgroups = (u64 *)(inherit + 1);
->   	for (i = 0; i < inherit->num_qgroups; ++i) {
->   		if (*i_qgroups) {
->   			ret = add_relation_rb(fs_info, objectid, *i_qgroups);
->   			if (ret)
-> -				goto unlock;
-> +				goto dirty;
->   		}
->   		++i_qgroups;
->   
-> @@ -3022,7 +3015,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->   
->   		if (!src || !dst) {
->   			ret = -EINVAL;
-> -			goto unlock;
-> +			goto dirty;
->   		}
->   
->   		dst->rfer = src->rfer - level_size;
-> @@ -3043,15 +3036,17 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->   
->   		if (!src || !dst) {
->   			ret = -EINVAL;
-> -			goto unlock;
-> +			goto dirty;
->   		}
->   
->   		dst->excl = src->excl + level_size;
->   		dst->excl_cmpr = src->excl_cmpr + level_size;
->   		need_rescan = true;
->   	}
-> +dirty:
-> +	if (dirty_dstgrp)
-> +		qgroup_dirty(fs_info, dstgroup);
->   
-> -unlock:
->   	spin_unlock(&fs_info->qgroup_lock);
->   	if (!ret)
->   		ret = btrfs_sysfs_add_one_qgroup(fs_info, dstgroup);
+And I think the qgroup limit was exactly a spin lock over btrfs_path_alloc so
+it did not help. An might_sleep() inside btrfs_path_alloc() is a very minimal
+but reliable check we could add, the paths are used in many places so it would
+increase the coverage.
