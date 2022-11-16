@@ -2,64 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CEFF62CE94
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Nov 2022 00:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EB462CE9C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Nov 2022 00:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbiKPXQQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Nov 2022 18:16:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
+        id S233674AbiKPXRP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Nov 2022 18:17:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbiKPXQP (ORCPT
+        with ESMTP id S233825AbiKPXRL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Nov 2022 18:16:15 -0500
+        Wed, 16 Nov 2022 18:17:11 -0500
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17A0BC09
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Nov 2022 15:16:07 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNbox-1obrFT10cl-00P9Kx; Thu, 17
- Nov 2022 00:16:01 +0100
-Message-ID: <c91c89b4-58e6-526a-bfb8-fb332e792cc3@gmx.com>
-Date:   Thu, 17 Nov 2022 07:15:55 +0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D5712085;
+        Wed, 16 Nov 2022 15:17:08 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M9Wyy-1opxTS3gxw-005WXh; Thu, 17
+ Nov 2022 00:16:51 +0100
+Message-ID: <cb6073e5-e465-8934-05a1-42d83ac4470e@gmx.com>
+Date:   Thu, 17 Nov 2022 07:16:45 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.0
-Subject: Re: block group x has wrong amount of free space
-To:     Hendrik Friedel <hendrik@friedels.name>,
-        linux-btrfs@vger.kernel.org
-References: <em9da2c7f3-31bb-426b-89a3-51fd1dea8968@7b52163e.com>
- <em7df90458-9cac-4818-8a43-0d59e69a14fc@7b52163e.com>
- <ff2940de-babf-d83c-b9d0-1fe8d18909a9@gmx.com>
- <emca736322-38d8-49ca-9c93-083a5bbe946f@7b52163e.com>
- <bcb7a3f2-fa48-1846-e983-2e1ed771275e@gmx.com>
- <em62944e8a-0e4b-4028-ae00-383aac0608ab@7b52163e.com>
- <d7cc9778-9e97-f749-e110-d93a7045e341@gmx.com>
- <em7ed36627-a727-470e-872c-a2af32cdb18d@7b52163e.com>
- <em8aefb52c-4cdc-4cfb-ad52-1c807d8f7756@7b52163e.com>
- <emcca5c139-84cb-403b-af68-e288e31878e3@7b52163e.com>
+Subject: Re: [PATCH v6 2/2] btrfs: qgroup: fix sleep from invalid context bug
+ in update_qgroup_limit_item()
 Content-Language: en-US
+To:     ChenXiaoSong <chenxiaosong2@huawei.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangxiaoxu5@huawei.com, yanaijie@huawei.com, wqu@suse.com
+References: <20221116142354.1228954-1-chenxiaosong2@huawei.com>
+ <20221116142354.1228954-3-chenxiaosong2@huawei.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <emcca5c139-84cb-403b-af68-e288e31878e3@7b52163e.com>
+In-Reply-To: <20221116142354.1228954-3-chenxiaosong2@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:wsNNsZHO3ZMmcBb3bejc8JP6Q+JhKiz0ANsXM5FDN9vfYyO/k2v
- Ho+EEqBu4sCESVHegHJ5gvzEwNOdjUbIewttqyF+ENPb7RvxMcx69koLkTg7lg8O9QpDkzM
- qy0wGpqM+J4NaFa023nLkvdSW8VZBYkioCe7YEaCuqcHaluGcbQXhIC1xP9lQMcjbaN7zdX
- PVRm62Ii8bXapWOlQDkRw==
-UI-OutboundReport: notjunk:1;M01:P0:9M8O0TxVzQY=;39fv4QSkXbxt7CQdybG3/qnXE8u
- JR9Ha9scIy9m3V6tLRfLaZS8Bqvto4wV9DxA8tmCsmRtFi0rKk1jKIp+aJNQho7MxUofy+LV1
- muTqcXaQL5+JEoMCFXHi8xpGh/ObgCvRysZ6VaMXy5ZfgRAhOjM/ogaoqlnaPveQ5E6NFyfKR
- RL0qW7jZZfVUhtMw0ZVwMSduiu5wh0wrlWyzkN5/yXC8lAnYm9F6+4oDbOzQFoHlhgxYCqHVK
- kzxLILQWlrrrpZod1FE5VifbFr2eSILGW+yOLlBSJRIiIkrcIBfKn0ljkwrFTPteqqraEnARO
- p6YaSqCdG813syHCNiuYIsWKPKath0gFfTgT4P2Il7esG0toWM59I2a4NMoiwKWzryPjhb1CO
- Z2fjXO7v1Brv9Eg6Uwiiyu4LLbwihrZK3Z9GfKxUK2zF+Q/X8ZEH59ECZZa3vFp3l0B5fjEHp
- PdPEeid8XyUoGXZJ/0W6L7arrmJg2GXdJ6m1kWND/BbEUOv7o8jWQrcufhRsMcXZ5aXZ19lt6
- BxzhSZN1lSVIP3mArvA1IBkK/L3H1v3GHRk3KLG5w5JajYhD9uDOrE+/g2pX8Od2u5X1maTxP
- dxH08t6LpQQ9cCEiPkyic+4lvUg1yC2tYIX1miKZq9yhOBv5Ld5LKhyHWDBPr8EnA+EWOidku
- CWFPDvvxL1hdHNxoyhxm+1qN8LQvJv08L/1G4FseVMIIfZnCeQOYlG5J0/6qx9GGOGvySxdSV
- qzhD3RmeANFY7DbIyM0/Wk+KVYfiWH2J6pXShphPRSN6m0mA9Hbhgy63q+tKBWFtSs5+IG/sV
- tAo7X6Y+xmVn0RIB3sLPNbfsS8KpwYUvqFi+EQKVm3blWrmk1W6caClGqRrdJHCF0HnszAkEb
- u0YJldp6+FXk45MK7tP0iH3nbNK/iEF785ubrK6wjH56ISwjKxHxd8ysKe5W1zQGZCLWck1cz
- 2kgg8XoUXUdzmdaNZQ2uDQkfzLo=
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:4ARWBwaruX9+tgd/2+tyL08LRrkr/UgvVfCSNM0yms5829PmX8U
+ pCS8MGGV2agB/dBQ7kBfAJuYV4XGFgmaIkp1O5PJnTmXILvzSc6PwnmYxUg9RQajDqBsELY
+ SC6/VtcVogZf5ci6ZKYdwkk9yysOJ3PHx/Yr+9REeIXfkwJYxeSCB//k6/Ms+zsJNTZXgLf
+ 4DBWn/SON2j+2drlLU24w==
+UI-OutboundReport: notjunk:1;M01:P0:Q0jR8L+7en4=;TC3CsQiNZKviEyjScmTPxV7Kftk
+ tMgUGq/GOe5WDJj5+ptb/HbRgVF1Y61pxCotizL10yhYhTWLhBUT4J1Q3uOi16/B7HF5W6p7d
+ 45POMJ3js4ndTG/NoBr+RYaOB5PzOuuIQwUbEkR9izQbNQ25KZam3gpkXErfiX/LTAnEIGGQg
+ 1ylxsD97jQh02KxfAbDKD43/bGCPXiw8a5vAl72H/Yu/etCTYY/HbqCTZIZbWcS2BKsrmzpQq
+ obUqT9xzmk/7dhzKUte+zPsCz/3OmFFCSU9uGFKlUFss5mM3xdlCn4eBIJMsvMjJbzEuXb2Ue
+ +ac5/NEXwIFFSONff/mvrYHkw5F1+1JPGxLxm84JJd1yX9GKgKpI7a7DJkHjKTWwQa9B/icqY
+ GA4gx7u7x5nh3s20xSU3Kt7vq6niuW40mfgUwCtiP2CttgDFoQFtt8uZaJK3Hma5bntT2XqyF
+ q4faiVL4MmoVlYSeRxOB5zVE2tgZA6JDOO5TqejFyDJqu13OoBHYGujjbBpuvzDKvYyjXZ/3V
+ WEyKpCwWfqXoADTHu7ofU89LKxN56gJzsv6/bQRL7mUPOvfA9P1CkaTeXv/GJxABpee4/SqC0
+ lGVe6JKNyhtHU6trsRi4msNaThTV+P1dI7g0EnHSCmW9YmZHfYMnhvYpJtDufy/zpHGg0cLkf
+ wWbKO3y3nPRqYaWENxSdql3CLHX5s7Ck5tFwNumfDRAWBsAJSkCFpIpYvaFWcDRe4q6CETbpC
+ 8Ps8nBGm7JzwT7InFBUXch3ZyVqflgMm1DDPPCZXHelHtmm9TdHeWk8v35N1hg9Vi1igxzen/
+ X4QcCwN5C+sKxFNGI24dzlH7jQvWgl/r5Whz1GPwf03I++0MOk78Oe0J9+DPWvlbYsOtgfqGd
+ 6Un4GN5lxCIovPTNTHMOnQK5e38+dMoeH6vqEMxkCE6OkqjynIO2CFDn7ItSQSz+OzBnC904t
+ RS7srDkSkpsMwZkrbd7CRzabUJ8=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -71,945 +66,56 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/11/17 02:52, Hendrik Friedel wrote:
-> Hello,
+On 2022/11/16 22:23, ChenXiaoSong wrote:
+> Syzkaller reported BUG as follows:
 > 
-> hm, now I have new errors:
-> [Mi Nov 16 19:10:03 2022] Btrfs loaded, crc32c=crc32c-intel, zoned=yes, 
-> fsverity=yes
-> [Mi Nov 16 19:10:03 2022] BTRFS: device label DataPool1 devid 1 transid 
-> 1184729 /dev/sdc1 scanned by btrfs (214)
-> [Mi Nov 16 19:10:03 2022] BTRFS: device label DataPool1 devid 2 transid 
-> 1184729 /dev/sda1 scanned by btrfs (214)
-> [Mi Nov 16 19:10:06 2022] BTRFS info (device sdc1): using crc32c 
-> (crc32c-intel) checksum algorithm
-> [Mi Nov 16 19:10:06 2022] BTRFS info (device sdc1): disk space caching 
-> is enabled
-> [Mi Nov 16 19:10:29 2022] BTRFS error (device sdc1): 'BackupsWindows' is 
-> not a valid subvolume
-> [Mi Nov 16 19:20:25 2022] BTRFS warning (device sdc1): block group 
-> 18737028988928 has wrong amount of free space
+>    BUG: sleeping function called from invalid context at
+>         include/linux/sched/mm.h:274
+>    Call Trace:
+>     <TASK>
+>     dump_stack_lvl+0xcd/0x134
+>     __might_resched.cold+0x222/0x26b
+>     kmem_cache_alloc+0x2e7/0x3c0
+>     update_qgroup_limit_item+0xe1/0x390
+>     btrfs_qgroup_inherit+0x147b/0x1ee0
+>     create_subvol+0x4eb/0x1710
+>     btrfs_mksubvol+0xfe5/0x13f0
+>     __btrfs_ioctl_snap_create+0x2b0/0x430
+>     btrfs_ioctl_snap_create_v2+0x25a/0x520
+>     btrfs_ioctl+0x2a1c/0x5ce0
+>     __x64_sys_ioctl+0x193/0x200
+>     do_syscall_64+0x35/0x80
+> 
+> Fix this by calling qgroup_dirty() on @dstqgroup, and update limit item in
+> btrfs_run_qgroups() later.
+> 
+> Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
 
-So the whole situation seems to be all caused by bad free space cache.
-
-Have you cleared them?
-
-It's strongly recommended to clear v1 space cache, and migrate to v2.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
-> [Mi Nov 16 19:20:25 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18737028988928, rebuilding it now
-> [Mi Nov 16 19:20:25 2022] BTRFS warning (device sdc1): block group 
-> 18750987632640 has wrong amount of free space
-> [Mi Nov 16 19:20:25 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18750987632640, rebuilding it now
-> [Mi Nov 16 19:20:25 2022] BTRFS warning (device sdc1): block group 
-> 18756356341760 has wrong amount of free space
-> [Mi Nov 16 19:20:25 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18756356341760, rebuilding it now
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): block group 
-> 18786421112832 has wrong amount of free space
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18786421112832, rebuilding it now
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): block group 
-> 18833665753088 has wrong amount of free space
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18833665753088, rebuilding it now
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): block group 
-> 18861583040512 has wrong amount of free space
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18861583040512, rebuilding it now
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): block group 
-> 18897016520704 has wrong amount of free space
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18897016520704, rebuilding it now
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): block group 
-> 18894869037056 has wrong amount of free space
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18894869037056, rebuilding it now
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): block group 
-> 18928155033600 has wrong amount of free space
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18928155033600, rebuilding it now
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): block group 
-> 18930302517248 has wrong amount of free space
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18930302517248, rebuilding it now
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): block group 
-> 18932450000896 has wrong amount of free space
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18932450000896, rebuilding it now
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): block group 
-> 18934597484544 has wrong amount of free space
-> [Mi Nov 16 19:20:26 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18934597484544, rebuilding it now
-> [Mi Nov 16 19:20:27 2022] BTRFS warning (device sdc1): block group 
-> 18963588513792 has wrong amount of free space
-> [Mi Nov 16 19:20:27 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18963588513792, rebuilding it now
-> [Mi Nov 16 19:20:27 2022] BTRFS warning (device sdc1): block group 
-> 18982915866624 has wrong amount of free space
-> [Mi Nov 16 19:20:27 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18982915866624, rebuilding it now
-> [Mi Nov 16 19:20:27 2022] BTRFS warning (device sdc1): block group 
-> 18997948252160 has wrong amount of free space
-> [Mi Nov 16 19:20:27 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 18997948252160, rebuilding it now
-> [Mi Nov 16 19:20:31 2022] BTRFS warning (device sdc1): block group 
-> 19922439962624 has wrong amount of free space
-> [Mi Nov 16 19:20:31 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 19922439962624, rebuilding it now
-> [Mi Nov 16 19:20:31 2022] BTRFS warning (device sdc1): block group 
-> 19978274537472 has wrong amount of free space
-> [Mi Nov 16 19:20:31 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 19978274537472, rebuilding it now
-> [Mi Nov 16 19:20:39 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 41923 off 0 (dev /dev/sdc1 sector 18235428920)
-> [Mi Nov 16 19:20:39 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 41923 off 4096 (dev /dev/sdc1 sector 18235428928)
-> [Mi Nov 16 19:20:39 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 41923 off 8192 (dev /dev/sdc1 sector 18235428936)
-> [Mi Nov 16 19:20:39 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 41923 off 12288 (dev /dev/sdc1 sector 18235428944)
-> [Mi Nov 16 19:20:39 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 41923 off 16384 (dev /dev/sdc1 sector 18235428952)
-> [Mi Nov 16 19:20:39 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 41923 off 20480 (dev /dev/sdc1 sector 18235428960)
-> [Mi Nov 16 19:20:39 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 41923 off 24576 (dev /dev/sdc1 sector 18235428968)
-> [Mi Nov 16 19:20:39 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 41923 off 32768 (dev /dev/sdc1 sector 18235428984)
-> [Mi Nov 16 19:20:39 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 41923 off 28672 (dev /dev/sdc1 sector 18235428976)
-> [Mi Nov 16 19:20:39 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 41923 off 36864 (dev /dev/sdc1 sector 18235428992)
-> [Mi Nov 16 19:20:40 2022] BTRFS warning (device sdc1): block group 
-> 22599278329856 has wrong amount of free space
-> [Mi Nov 16 19:20:40 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22599278329856, rebuilding it now
-> [Mi Nov 16 19:20:42 2022] BTRFS warning (device sdc1): block group 
-> 22777519472640 has wrong amount of free space
-> [Mi Nov 16 19:20:42 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22777519472640, rebuilding it now
-> [Mi Nov 16 19:20:42 2022] BTRFS warning (device sdc1): block group 
-> 22834427789312 has wrong amount of free space
-> [Mi Nov 16 19:20:42 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22834427789312, rebuilding it now
-> [Mi Nov 16 19:20:42 2022] BTRFS warning (device sdc1): block group 
-> 22837649014784 has wrong amount of free space
-> [Mi Nov 16 19:20:42 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22837649014784, rebuilding it now
-> [Mi Nov 16 19:20:42 2022] BTRFS warning (device sdc1): block group 
-> 22840870240256 has wrong amount of free space
-> [Mi Nov 16 19:20:42 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22840870240256, rebuilding it now
-> [Mi Nov 16 19:20:42 2022] BTRFS warning (device sdc1): block group 
-> 22847312691200 has wrong amount of free space
-> [Mi Nov 16 19:20:42 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22847312691200, rebuilding it now
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): block group 
-> 22917105909760 has wrong amount of free space
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22917105909760, rebuilding it now
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): block group 
-> 22921400877056 has wrong amount of free space
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22921400877056, rebuilding it now
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): block group 
-> 22926769586176 has wrong amount of free space
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22926769586176, rebuilding it now
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): block group 
-> 22925695844352 has wrong amount of free space
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22925695844352, rebuilding it now
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): block group 
-> 22941801971712 has wrong amount of free space
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22941801971712, rebuilding it now
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): block group 
-> 22954686873600 has wrong amount of free space
-> [Mi Nov 16 19:20:43 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 22954686873600, rebuilding it now
-> [Mi Nov 16 19:20:46 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 43126 off 4096 (dev /dev/sdc1 sector 10459632808)
-> [Mi Nov 16 19:20:46 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 43126 off 12288 (dev /dev/sdc1 sector 10459632824)
-> [Mi Nov 16 19:20:46 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 43126 off 8192 (dev /dev/sdc1 sector 10459632816)
-> [Mi Nov 16 19:20:46 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 43126 off 0 (dev /dev/sdc1 sector 10459632800)
-> [Mi Nov 16 19:20:46 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 43126 off 20480 (dev /dev/sdc1 sector 10459632840)
-> [Mi Nov 16 19:20:46 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 43126 off 16384 (dev /dev/sdc1 sector 10459632832)
-> [Mi Nov 16 19:20:46 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 43126 off 24576 (dev /dev/sdc1 sector 10459632848)
-> [Mi Nov 16 19:20:46 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 43126 off 28672 (dev /dev/sdc1 sector 10459632856)
-> [Mi Nov 16 19:20:46 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 43126 off 32768 (dev /dev/sdc1 sector 10459632864)
-> [Mi Nov 16 19:20:46 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 43126 off 40960 (dev /dev/sdc1 sector 10459632880)
-> [Mi Nov 16 19:20:49 2022] BTRFS warning (device sdc1): block group 
-> 24271094349824 has wrong amount of free space
-> [Mi Nov 16 19:20:49 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 24271094349824, rebuilding it now
-> [Mi Nov 16 19:20:49 2022] BTRFS warning (device sdc1): block group 
-> 24405312077824 has wrong amount of free space
-> [Mi Nov 16 19:20:49 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 24405312077824, rebuilding it now
-> [Mi Nov 16 19:20:49 2022] BTRFS warning (device sdc1): block group 
-> 24417123237888 has wrong amount of free space
-> [Mi Nov 16 19:20:49 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 24417123237888, rebuilding it now
-> [Mi Nov 16 19:21:02 2022] BTRFS warning (device sdc1): block group 
-> 27656635875328 has wrong amount of free space
-> [Mi Nov 16 19:21:02 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 27656635875328, rebuilding it now
-> [Mi Nov 16 19:21:06 2022] BTRFS warning (device sdc1): block group 
-> 28392149024768 has wrong amount of free space
-> [Mi Nov 16 19:21:06 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 28392149024768, rebuilding it now
-> [Mi Nov 16 19:21:07 2022] BTRFS warning (device sdc1): block group 
-> 28904323874816 has wrong amount of free space
-> [Mi Nov 16 19:21:07 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 28904323874816, rebuilding it now
-> [Mi Nov 16 19:21:10 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 80458 off 4096 (dev /dev/sdc1 sector 19727228416)
-> [Mi Nov 16 19:21:10 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 80458 off 0 (dev /dev/sdc1 sector 19727228408)
-> [Mi Nov 16 19:21:10 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 80458 off 8192 (dev /dev/sdc1 sector 19727228424)
-> [Mi Nov 16 19:21:10 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 80458 off 16384 (dev /dev/sdc1 sector 19727228440)
-> [Mi Nov 16 19:21:10 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 80458 off 12288 (dev /dev/sdc1 sector 19727228432)
-> [Mi Nov 16 19:21:10 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 80458 off 20480 (dev /dev/sdc1 sector 19727228448)
-> [Mi Nov 16 19:21:10 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 80458 off 28672 (dev /dev/sdc1 sector 19727228464)
-> [Mi Nov 16 19:21:10 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 80458 off 24576 (dev /dev/sdc1 sector 19727228456)
-> [Mi Nov 16 19:21:10 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 80458 off 32768 (dev /dev/sdc1 sector 19727228472)
-> [Mi Nov 16 19:21:10 2022] BTRFS info (device sdc1): read error 
-> corrected: ino 80458 off 36864 (dev /dev/sdc1 sector 19727228480)
-> [Mi Nov 16 19:21:10 2022] BTRFS warning (device sdc1): block group 
-> 29502398070784 has wrong amount of free space
-> [Mi Nov 16 19:21:10 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 29502398070784, rebuilding it now
-> [Mi Nov 16 19:21:13 2022] BTRFS warning (device sdc1): block group 
-> 30060743819264 has wrong amount of free space
-> [Mi Nov 16 19:21:13 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 30060743819264, rebuilding it now
-> [Mi Nov 16 19:21:13 2022] BTRFS warning (device sdc1): block group 
-> 30111209684992 has wrong amount of free space
-> [Mi Nov 16 19:21:13 2022] BTRFS warning (device sdc1): failed to load 
-> free space cache for block group 30111209684992, rebuilding it now
-> [Mi Nov 16 19:24:07 2022]  wait_current_trans+0xc0/0x130 [btrfs]
-> [Mi Nov 16 19:24:07 2022]  start_transaction+0x245/0x610 [btrfs]
-> [Mi Nov 16 19:24:07 2022]  btrfs_create_common+0xb1/0x110 [btrfs]
-> [Mi Nov 16 19:28:09 2022] INFO: task btrfs-transacti:2403 blocked for 
-> more than 120 seconds.
-> [Mi Nov 16 19:28:09 2022] task:btrfs-transacti state:D stack:    0 pid: 
-> 2403 ppid:     2 flags:0x00004000
-> [Mi Nov 16 19:28:09 2022]  btrfs_commit_transaction+0xb13/0xcf0 [btrfs]
-> [Mi Nov 16 19:28:09 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
-> [Mi Nov 16 19:28:09 2022]  ? 
-> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
-> [Mi Nov 16 19:30:10 2022] INFO: task btrfs-transacti:2403 blocked for 
-> more than 241 seconds.
-> [Mi Nov 16 19:30:10 2022] task:btrfs-transacti state:D stack:    0 pid: 
-> 2403 ppid:     2 flags:0x00004000
-> [Mi Nov 16 19:30:10 2022]  btrfs_commit_transaction+0xb13/0xcf0 [btrfs]
-> [Mi Nov 16 19:30:10 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
-> [Mi Nov 16 19:30:10 2022]  ? 
-> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
+> ---
+>   fs/btrfs/qgroup.c | 9 +--------
+>   1 file changed, 1 insertion(+), 8 deletions(-)
 > 
-> All errors are on sdc. Hardware issue?
-> The smart values look ok.
-> 
-> But in dmesg I also find:
-> [Mi Nov 16 19:20:39 2022] ata3.00: exception Emask 0x10 SAct 0x10 SErr 
-> 0x850000 action 0x6 frozen
-> [Mi Nov 16 19:20:39 2022] ata3.00: irq_stat 0x08000000, interface fatal 
-> error
-> [Mi Nov 16 19:20:39 2022] ata3: SError: { PHYRdyChg CommWake LinkSeq }
-> [Mi Nov 16 19:20:39 2022] ata3.00: failed command: READ FPDMA QUEUED
-> [Mi Nov 16 19:20:39 2022] ata3.00: cmd 
-> 60/00:20:38:98:ea/02:00:3e:04:00/40 tag 4 ncq dma 262144 in
->                                     res 
-> 40/00:00:00:10:a9/00:00:f1:04:00/40 Emask 0x10 (ATA bus error)
-> [Mi Nov 16 19:20:39 2022] ata3.00: status: { DRDY }
-> [Mi Nov 16 19:20:39 2022] ata3: hard resetting link
-> [Mi Nov 16 19:20:39 2022] ata3: SATA link up 6.0 Gbps (SStatus 133 
-> SControl 300)
-> [Mi Nov 16 19:20:39 2022] ata3.00: ACPI cmd 
-> f5/00:00:00:00:00:00(SECURITY FREEZE LOCK) filtered out
-> [Mi Nov 16 19:20:39 2022] ata3.00: ACPI cmd b1/c1:00:00:00:00:00(DEVICE 
-> CONFIGURATION OVERLAY) filtered out
-> [Mi Nov 16 19:20:39 2022] ata3.00: ACPI cmd 
-> f5/00:00:00:00:00:00(SECURITY FREEZE LOCK) filtered out
-> [Mi Nov 16 19:20:39 2022] ata3.00: ACPI cmd b1/c1:00:00:00:00:00(DEVICE 
-> CONFIGURATION OVERLAY) filtered out
-> [Mi Nov 16 19:20:39 2022] ata3.00: configured for UDMA/133
-> [Mi Nov 16 19:20:39 2022] ata3: EH complete
-> 
-> 
-> Best regards,
-> Hendrik
-> 
-> ------ Originalnachricht ------
-> Von "Hendrik Friedel" <hendrik@friedels.name>
-> An "Qu Wenruo" <quwenruo.btrfs@gmx.com>; linux-btrfs@vger.kernel.org
-> Datum 16.11.2022 17:17:46
-> Betreff Re[3]: block group x has wrong amount of free space
-> 
->> Sorry, I had re-directed some output to a file:
->> Starting repair.
->> Opening filesystem to check...
->> Checking filesystem on /dev/sdc1
->> UUID: c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
->> No device size related problem found
->> cache and super generation don't match, space cache will be invalidated
->> found 10848863809537 bytes used, no error found
->> total csum bytes: 10584151620
->> total tree bytes: 14628896768
->> total fs tree bytes: 1877082112
->> total extent tree bytes: 897548288
->> btree space waste bytes: 1633585277
->> file data blocks allocated: 20692111388672
->>  referenced 13014020022272
->>
->> Greetings,
->> Hendrik
->>
->> ------ Originalnachricht ------
->> Von "Hendrik Friedel" <hendrik@friedels.name>
->> An "Qu Wenruo" <quwenruo.btrfs@gmx.com>; linux-btrfs@vger.kernel.org
->> Datum 16.11.2022 17:11:03
->> Betreff Re[2]: block group x has wrong amount of free space
->>
->>> Hello Qu,
->>>
->>> that worked:
->>> root@homeserver:~/btrfs# btrfs --version
->>> btrfs-progs v6.0.1
->>> root@homeserver:~/btrfs# btrfs check --repair /dev/sdc1 > repair_log.txt
->>> [1/7] checking root items
->>> Fixed 0 roots.
->>> [2/7] checking extents
->>> [3/7] checking free space cache
->>> [4/7] checking fs roots
->>> [5/7] checking only csums items (without verifying data)
->>> [6/7] checking root refs
->>> [7/7] checking quota groups
->>>
->>> Thanks a lot! I am wondering now, what the cause of this issue could 
->>> have been and how to prevent this?
->>>
->>> Greetings,
->>> Hendrik
->>>
->>> ------ Originalnachricht ------
->>> Von "Qu Wenruo" <quwenruo.btrfs@gmx.com>
->>> An "Hendrik Friedel" <hendrik@friedels.name>; 
->>> linux-btrfs@vger.kernel.org
->>> Datum 16.11.2022 13:57:47
->>> Betreff Re: block group x has wrong amount of free space
->>>
->>>>
->>>>
->>>> On 2022/11/16 20:54, Hendrik Friedel wrote:
->>>>> Thanks Qu,
->>>>>
->>>>> unfortunately, btrfs check --repair failed. There is lots of 
->>>>> output. I have shortened the repeats. Still it is very long, sorry.
->>>>> Any further chance?
->>>>>
->>>>> Best regards,
->>>>> Hendrik
->>>>>
->>>> [...]
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>
->>>> This is in fact a code bug.
->>>>
->>>> And I forgot to mention, your progs is a little older than expected.
->>>>
->>>> Would you be able to build/grab a newer btrfs-progs?
->>>> v6.0.1 recommended.
->>>>
->>>> Thanks,
->>>> Qu
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 16500433666048 wanted 1184699 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> parent transid verify failed on 15504896409600 wanted 1184650 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504896409600
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>>
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504894869504 wanted 1184618 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> ERROR: child eb corrupted: parent bytenr=16500421459968 item=128 
->>>>> parent level=2 child level=0
->>>>> parent transid verify failed on 15504894869504 wanted 1184618 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> ERROR: child eb corrupted: parent bytenr=16500421459968 item=128 
->>>>> parent level=2 child level=0
->>>>> parent transid verify failed on 15504894869504 wanted 1184618 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> ERROR: child eb corrupted: parent bytenr=16500421459968 item=128 
->>>>> parent level=2 child level=0
->>>>> parent transid verify failed on 15504894869504 wanted 1184618 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>>   [ repeats many times ]
->>>>> ERROR: child eb corrupted: parent bytenr=16500421459968 item=128 
->>>>> parent level=2 child level=0
->>>>> parent transid verify failed on 15504895688704 wanted 1184644 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504895688704
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504896131072 wanted 1184697 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> ERROR: child eb corrupted: parent bytenr=16500421459968 item=140 
->>>>> parent level=2 child level=0
->>>>> parent transid verify failed on 15504896131072 wanted 1184697 found 
->>>>> 1184703
->>>>> [ repeats many times ]
->>>>> ERROR: child eb corrupted: parent bytenr=16500421459968 item=140 
->>>>> parent level=2 child level=0
->>>>> parent transid verify failed on 15504896884736 wanted 1183227 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504896884736
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504896655360 wanted 1184665 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> ERROR: child eb corrupted: parent bytenr=16500421459968 item=148 
->>>>> parent level=2 child level=0
->>>>> parent transid verify failed on 15504896655360 wanted 1184665 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> [repeats many times]
->>>>> ERROR: child eb corrupted: parent bytenr=16500421459968 item=157 
->>>>> parent level=2 child level=0
->>>>> parent transid verify failed on 15504895754240 wanted 1184376 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504895754240
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504895770624 wanted 1184376 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504895770624
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504895950848 wanted 1184376 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504895950848
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504895967232 wanted 1184376 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504895967232
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504895983616 wanted 1184376 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504895983616
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504898523136 wanted 1184376 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504898523136
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504899031040 wanted 1184376 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504899031040
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504899047424 wanted 1184376 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504899047424
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504898146304 wanted 1184688 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504898146304
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504895000576 wanted 1184376 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>>
->>>>> ......
->>>>>
->>>>> parent transid verify failed on 15504898834432 wanted 1184376 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504898834432
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504897294336 wanted 1184658 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504897294336
->>>>> ctree.c:1147: btrfs_search_slot: Warning: assertion `p->nodes[0] != 
->>>>> NULL` failed, value 1
->>>>> btrfs(btrfs_search_slot+0x172)[0x5647bd817d07]
->>>>> btrfs(btrfs_write_dirty_block_groups+0xd7)[0x5647bd8221fd]
->>>>> btrfs(commit_tree_roots+0x174)[0x5647bd845925]
->>>>> btrfs(btrfs_commit_transaction+0xc6)[0x5647bd845b51]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> parent transid verify failed on 15504897179648 wanted 1184376 found 
->>>>> 1184703
->>>>> Ignoring transid failure
->>>>> leaf parent key incorrect 15504897179648
->>>>> btrfs unable to find ref byte nr 12333456637952 parent 0 root 2  
->>>>> owner 0 offset 0
->>>>> transaction.c:195: btrfs_commit_transaction: BUG_ON `ret` 
->>>>> triggered, value -5
->>>>> btrfs(+0x456a7)[0x5647bd8456a7]
->>>>> btrfs(btrfs_commit_transaction+0x26b)[0x5647bd845cf6]
->>>>> btrfs(+0x65802)[0x5647bd865802]
->>>>> btrfs(cmd_check+0x213a)[0x5647bd867fb3]
->>>>> btrfs(main+0x89)[0x5647bd813703]
->>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f4252dccd0a]
->>>>> btrfs(_start+0x2a)[0x5647bd81338a]
->>>>> Aborted
->>>>>
->>>>>
->>>>>
->>>>> ------ Originalnachricht ------
->>>>> Von "Qu Wenruo" <quwenruo.btrfs@gmx.com>
->>>>> An "Hendrik Friedel" <hendrik@friedels.name>; 
->>>>> linux-btrfs@vger.kernel.org
->>>>> Datum 16.11.2022 12:41:52
->>>>> Betreff Re: block group x has wrong amount of free space
->>>>>
->>>>>>
->>>>>>
->>>>>> On 2022/11/16 19:40, Hendrik Friedel wrote:
->>>>>>> Hello Qu,
->>>>>>>
->>>>>>> thanks for your help. That's bad news :-(
->>>>>>> I ran btrfs check now, with this output:
->>>>>>> [1/7] checking root items
->>>>>>> [2/7] checking extents
->>>>>>> ref mismatch on [16500433387520 16384] extent item 1, found 0
->>>>>>> backref 16500433387520 root 2 not referenced back 0x55a783c592d0
->>>>>>> incorrect global backref count on 16500433387520 found 1 wanted 0
->>>>>>> backpointer mismatch on [16500433387520 16384]
->>>>>>> owner ref check failed [16500433387520 16384]
->>>>>>> ref mismatch on [16500433666048 16384] extent item 0, found 1
->>>>>>> tree backref 16500433666048 parent 2 root 2 not found in extent tree
->>>>>>> backpointer mismatch on [16500433666048 16384]
->>>>>>> ERROR: errors found in extent allocation tree or chunk allocation
->>>>>>> [3/7] checking free space cache
->>>>>>> cache and super generation don't match, space cache will be 
->>>>>>> invalidated
->>>>>>> [4/7] checking fs roots
->>>>>>> [5/7] checking only csums items (without verifying data)
->>>>>>> [6/7] checking root refs
->>>>>>> [7/7] checking quota groups
->>>>>>> found 10848863825921 bytes used, error(s) found
->>>>>>> total csum bytes: 10584151620
->>>>>>> total tree bytes: 14628896768
->>>>>>> total fs tree bytes: 1877082112
->>>>>>> total extent tree bytes: 897548288
->>>>>>> btree space waste bytes: 1633585295
->>>>>>> file data blocks allocated: 20692111388672
->>>>>>>   referenced 13014020022272
->>>>>>>
->>>>>>> How bad is it?
->>>>>>
->>>>>> Not that bad, "btrfs check --repair" should be able to fix.
->>>>>>
->>>>>> After that, feel free to clear cache again and migrate to v2 cache.
->>>>>>
->>>>>> Thanks,
->>>>>> Qu
->>>>>>>
->>>>>>> Best regards,
->>>>>>> Hendrik
->>>>>>>
->>>>>>> ------ Originalnachricht ------
->>>>>>> Von "Qu Wenruo" <quwenruo.btrfs@gmx.com>
->>>>>>> An "Hendrik Friedel" <hendrik@friedels.name>; 
->>>>>>> linux-btrfs@vger.kernel.org
->>>>>>> Datum 16.11.2022 00:15:55
->>>>>>> Betreff Re: block group x has wrong amount of free space
->>>>>>>
->>>>>>>>
->>>>>>>>
->>>>>>>> On 2022/11/16 06:05, Hendrik Friedel wrote:
->>>>>>>>> Hello,
->>>>>>>>>
->>>>>>>>> I now ran btrfs check --clear-space-cache v1 /dev/sdb1
->>>>>>>>> Opening filesystem to check...
->>>>>>>>> dsChecking filesystem on /dev/sdb1
->>>>>>>>> UUID: c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
->>>>>>>>> Failed to find [16500433649664, 168, 16384]
->>>>>>>>
->>>>>>>> Unfortunately, this line and the kernel dmesg both shows that, 
->>>>>>>> your extent tree seems corrupted.
->>>>>>>>
->>>>>>>> Thus a "btrfs check --readonly" run on that device would verify 
->>>>>>>> if the extent tree is really corrupted.
->>>>>>>>
->>>>>>>> And after that, we can discuss how to continue.
->>>>>>>>
->>>>>>>> Thanks,
->>>>>>>> Qu
->>>>>>>>> btrfs unable to find ref byte nr 16500433666048 parent 0 root 
->>>>>>>>> 2  owner 0 offset 0
->>>>>>>>> transaction.c:195: btrfs_commit_transaction: BUG_ON `ret` 
->>>>>>>>> triggered, value -5
->>>>>>>>> btrfs(+0x456a7)[0x562c84e456a7]
->>>>>>>>> btrfs(btrfs_commit_transaction+0x26b)[0x562c84e45cf6]
->>>>>>>>> btrfs(btrfs_clear_free_space_cache+0xa4)[0x562c84e38f0b]
->>>>>>>>> btrfs(+0x5974c)[0x562c84e5974c]
->>>>>>>>> btrfs(cmd_check+0x8ca)[0x562c84e66743]
->>>>>>>>> btrfs(main+0x89)[0x562c84e13703]
->>>>>>>>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xea)[0x7f6dc5402d0a]
->>>>>>>>> btrfs(_start+0x2a)[0x562c84e1338a]
->>>>>>>>> Aborted.
->>>>>>>>>
->>>>>>>>> I then ran mount /dev/sdb1 -o clear_cache /mnt/
->>>>>>>>> It ran without issue, but in the kernel log, I still see errors 
->>>>>>>>> like:
->>>>>>>>> [Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state A) 
->>>>>>>>> in __btrfs_free_extent:3063: errno=-2 No such entry
->>>>>>>>> [Di Nov 15 22:42:18 2022] BTRFS info (device sdc1: state EA): 
->>>>>>>>> forced readonly
->>>>>>>>> [Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state EA) 
->>>>>>>>> in btrfs_run_delayed_refs:2141: errno=-2 No such entry
->>>>>>>>> [Di Nov 15 22:42:27 2022] BTRFS warning (device sdc1: state 
->>>>>>>>> EA): Skipping commit of aborted transaction.
->>>>>>>>> [Di Nov 15 22:42:27 2022] BTRFS: error (device sdc1: state EA) 
->>>>>>>>> in cleanup_transaction:1983: errno=-2 No such entry
->>>>>>>>> [Di Nov 15 22:47:33 2022] BTRFS info (device sdc1): using 
->>>>>>>>> crc32c (crc32c-intel) checksum algorithm
->>>>>>>>> [Di Nov 15 22:47:33 2022] BTRFS info (device sdc1): force 
->>>>>>>>> clearing of disk cache
->>>>>>>>> [Di Nov 15 22:47:33 2022] BTRFS info (device sdc1): disk space 
->>>>>>>>> caching is enabled
->>>>>>>>> [Di Nov 15 22:48:28 2022] BTRFS error (device sdc1): qgroup 
->>>>>>>>> generation mismatch, marked as inconsistent
->>>>>>>>> [Di Nov 15 22:48:28 2022] BTRFS info (device sdc1): checking 
->>>>>>>>> UUID tree
->>>>>>>>> [Di Nov 15 22:52:28 2022] INFO: task btrfs-transacti:1434591 
->>>>>>>>> blocked for more than 120 seconds.
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> [Di Nov 15 22:42:18 2022] CPU: 0 PID: 1408097 Comm: 
->>>>>>>>> btrfs-transacti Tainted: G            E      6.0.8 #1
->>>>>>>>> [Di Nov 15 22:42:18 2022] RIP: 
->>>>>>>>> 0010:__btrfs_free_extent+0x6ba/0xa50 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  ? 
->>>>>>>>> btrfs_merge_delayed_refs+0x168/0x1a0 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  
->>>>>>>>> __btrfs_run_delayed_refs+0x271/0x1070 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  btrfs_run_delayed_refs+0x73/0x1f0 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  
->>>>>>>>> btrfs_write_dirty_block_groups+0x184/0x3e0 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  ? btrfs_run_delayed_refs+0x167/0x1f0 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  commit_cowonly_roots+0x1e6/0x250 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  btrfs_commit_transaction+0x548/0xcf0 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  ? 
->>>>>>>>> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022] WARNING: CPU: 0 PID: 1408097 at 
->>>>>>>>> fs/btrfs/extent-tree.c:3063 __btrfs_free_extent+0x716/0xa50 
->>>>>>>>> [btrfs]
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> [Di Nov 15 22:42:18 2022] CPU: 0 PID: 1408097 Comm: 
->>>>>>>>> btrfs-transacti Tainted: G        W   E      6.0.8 #1
->>>>>>>>> [Di Nov 15 22:42:18 2022] RIP: 
->>>>>>>>> 0010:__btrfs_free_extent+0x716/0xa50 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  ? 
->>>>>>>>> btrfs_merge_delayed_refs+0x168/0x1a0 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  
->>>>>>>>> __btrfs_run_delayed_refs+0x271/0x1070 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  btrfs_run_delayed_refs+0x73/0x1f0 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  
->>>>>>>>> btrfs_write_dirty_block_groups+0x184/0x3e0 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  ? btrfs_run_delayed_refs+0x167/0x1f0 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  commit_cowonly_roots+0x1e6/0x250 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  btrfs_commit_transaction+0x548/0xcf0 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022]  ? 
->>>>>>>>> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
->>>>>>>>> [Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state A) 
->>>>>>>>> in __btrfs_free_extent:3063: errno=-2 No such entry
->>>>>>>>> [Di Nov 15 22:42:18 2022] BTRFS: error (device sdc1: state EA) 
->>>>>>>>> in btrfs_run_delayed_refs:2141: errno=-2 No such entry
->>>>>>>>> [Di Nov 15 22:52:28 2022] INFO: task btrfs-transacti:1434591 
->>>>>>>>> blocked for more than 120 seconds.
->>>>>>>>> [Di Nov 15 22:52:28 2022] task:btrfs-transacti state:D 
->>>>>>>>> stack:    0 pid:1434591 ppid:     2 flags:0x00004000
->>>>>>>>> [Di Nov 15 22:52:28 2022]  btrfs_commit_transaction+0xb13/0xcf0 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:52:28 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
->>>>>>>>> [Di Nov 15 22:52:28 2022]  ? 
->>>>>>>>> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
->>>>>>>>> [Di Nov 15 22:54:29 2022] INFO: task btrfs-transacti:1434591 
->>>>>>>>> blocked for more than 241 seconds.
->>>>>>>>> [Di Nov 15 22:54:29 2022] task:btrfs-transacti state:D 
->>>>>>>>> stack:    0 pid:1434591 ppid:     2 flags:0x00004000
->>>>>>>>> [Di Nov 15 22:54:29 2022]  btrfs_commit_transaction+0xb13/0xcf0 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:54:29 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
->>>>>>>>> [Di Nov 15 22:54:29 2022]  ? 
->>>>>>>>> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
->>>>>>>>> [Di Nov 15 22:56:30 2022] INFO: task btrfs-transacti:1434591 
->>>>>>>>> blocked for more than 362 seconds.
->>>>>>>>> [Di Nov 15 22:56:30 2022] task:btrfs-transacti state:D 
->>>>>>>>> stack:    0 pid:1434591 ppid:     2 flags:0x00004000
->>>>>>>>> [Di Nov 15 22:56:30 2022]  btrfs_commit_transaction+0xb13/0xcf0 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:56:30 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
->>>>>>>>> [Di Nov 15 22:56:30 2022]  ? 
->>>>>>>>> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
->>>>>>>>> [Di Nov 15 22:58:30 2022] INFO: task btrfs-transacti:1434591 
->>>>>>>>> blocked for more than 483 seconds.
->>>>>>>>> [Di Nov 15 22:58:30 2022] task:btrfs-transacti state:D 
->>>>>>>>> stack:    0 pid:1434591 ppid:     2 flags:0x00004000
->>>>>>>>> [Di Nov 15 22:58:30 2022]  btrfs_commit_transaction+0xb13/0xcf0 
->>>>>>>>> [btrfs]
->>>>>>>>> [Di Nov 15 22:58:30 2022]  transaction_kthread+0x13d/0x1b0 [btrfs]
->>>>>>>>> [Di Nov 15 22:58:30 2022]  ? 
->>>>>>>>> btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs]
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> Best regards,
->>>>>>>>> Hendrik
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> ------ Originalnachricht ------
->>>>>>>>> Von "Hendrik Friedel" <hendrik@friedels.name>
->>>>>>>>> An linux-btrfs@vger.kernel.org
->>>>>>>>> Datum 14.11.2022 23:41:40
->>>>>>>>> Betreff block group x has wrong amount of free space
->>>>>>>>>
->>>>>>>>>> Hello,
->>>>>>>>>>
->>>>>>>>>> I noticed very high load on my system (not CPU utilization, 
->>>>>>>>>> but load). I was able to trace it down to a slow reaction of 
->>>>>>>>>> my btrfs filesystem, whilst iotop showed very low r/w activity.
->>>>>>>>>>
->>>>>>>>>> Thus, I startet btrfs check (ro).
->>>>>>>>>> It found:
->>>>>>>>>> block group 30060743819264 has wrong amount of free space, 
->>>>>>>>>> free space cache has 45056 block group has 49152
->>>>>>>>>> failed to load free space cache for block group 30060743819264
->>>>>>>>>>
->>>>>>>>>> Now, I found sources telling me to clear the space cache. Some 
->>>>>>>>>> suggest to use the mount option, others to use btrfs check 
->>>>>>>>>> --clear-space-cache [v1 or v2].
->>>>>>>>>>
->>>>>>>>>> Can you please advice me, what the best way forward is - and 
->>>>>>>>>> how to prevent this to happen again?
->>>>>>>>>>
->>>>>>>>>> Below you find further information on my system. btrfs df 
->>>>>>>>>> cannot run currently, as btrfs check is running. I had to zip 
->>>>>>>>>> the dmesg.log that is requested in the wiki.
->>>>>>>>>> When the issue occured, I was still running linux-5.19.2 (I 
->>>>>>>>>> did not yet notice when updating the kernel).
->>>>>>>>>>
->>>>>>>>>> Best regards and thanks for your help in advance,
->>>>>>>>>> Hendrik
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> root@homeserver:/home/henfri#   uname -a
->>>>>>>>>> Linux homeserver 6.0.8 #1 SMP PREEMPT_DYNAMIC Sat Nov 12 
->>>>>>>>>> 14:18:32 CET 2022 x86_64 GNU/Linux
->>>>>>>>>> root@homeserver:/home/henfri#   btrfs --version
->>>>>>>>>> btrfs-progs v4.20.2
->>>>>>>>>> root@homeserver:/home/henfri#   btrfs fi show
->>>>>>>>>> Label: none  uuid: c1534c07-d669-4f55-ae50-b87669ecb259
->>>>>>>>>>         Total devices 1 FS bytes used 162.58GiB
->>>>>>>>>>         devid    1 size 198.45GiB used 198.45GiB path /dev/sda3
->>>>>>>>>>
->>>>>>>>>> Label: 'DataPool1'  uuid: c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
->>>>>>>>>>         Total devices 2 FS bytes used 9.87TiB
->>>>>>>>>>         devid    1 size 10.91TiB used 9.89TiB path /dev/sdc1
->>>>>>>>>>         devid    2 size 10.91TiB used 9.89TiB path /dev/sdb1
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>
->>>>>>>
->>>>>
-> 
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 9334c3157c22..b74105a10f16 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -2951,14 +2951,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+>   		dstgroup->rsv_rfer = inherit->lim.rsv_rfer;
+>   		dstgroup->rsv_excl = inherit->lim.rsv_excl;
+>   
+> -		ret = update_qgroup_limit_item(trans, dstgroup);
+> -		if (ret) {
+> -			qgroup_mark_inconsistent(fs_info);
+> -			btrfs_info(fs_info,
+> -				   "unable to update quota limit for %llu",
+> -				   dstgroup->qgroupid);
+> -			goto unlock;
+> -		}
+> +		qgroup_dirty(fs_info, dstgroup);
+>   	}
+>   
+>   	if (srcid) {
