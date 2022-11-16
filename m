@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C76B62BF42
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Nov 2022 14:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C86F62BF3D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Nov 2022 14:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238938AbiKPNTv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Nov 2022 08:19:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37206 "EHLO
+        id S230411AbiKPNTi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Nov 2022 08:19:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233970AbiKPNTp (ORCPT
+        with ESMTP id S232801AbiKPNTg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Nov 2022 08:19:45 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129B327FF7;
-        Wed, 16 Nov 2022 05:19:44 -0800 (PST)
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NC3Tr5T4KzJnl6;
-        Wed, 16 Nov 2022 21:16:32 +0800 (CST)
+        Wed, 16 Nov 2022 08:19:36 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC172126B;
+        Wed, 16 Nov 2022 05:19:35 -0800 (PST)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NC3Xv1Dpfz15MjQ;
+        Wed, 16 Nov 2022 21:19:11 +0800 (CST)
 Received: from kwepemm600015.china.huawei.com (7.193.23.52) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.31; Wed, 16 Nov 2022 21:19:32 +0800
 Received: from huawei.com (10.175.101.6) by kwepemm600015.china.huawei.com
@@ -31,10 +31,12 @@ To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>
 CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <chenxiaosong2@huawei.com>, <zhangxiaoxu5@huawei.com>,
         <yanaijie@huawei.com>, <quwenruo.btrfs@gmx.com>, <wqu@suse.com>
-Subject: [PATCH v6 0/2] btrfs: fix sleep from invalid context bug in update_qgroup_limit_item()
-Date:   Wed, 16 Nov 2022 22:23:52 +0800
-Message-ID: <20221116142354.1228954-1-chenxiaosong2@huawei.com>
+Subject: [PATCH v6 1/2] btrfs: add might_sleep() to some places in update_qgroup_limit_item()
+Date:   Wed, 16 Nov 2022 22:23:53 +0800
+Message-ID: <20221116142354.1228954-2-chenxiaosong2@huawei.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20221116142354.1228954-1-chenxiaosong2@huawei.com>
+References: <20221116142354.1228954-1-chenxiaosong2@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -71,20 +73,36 @@ At least 3 places might sleep in update_qgroup_limit_item(), as shown below:
                   /* disk IO, might sleep */
                   submit_one_bio
 
-Fix this by calling qgroup_dirty() on @dstqgroup, and update limit item in
-btrfs_run_qgroups() later.
+As the potential sleeping under spin lock is hard to spot, we should add
+might_sleep() to btrfs_alloc_path() and btrfs_search_slot().
 
-By the way, add might_sleep() to some places.
+Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
+---
+ fs/btrfs/ctree.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-ChenXiaoSong (2):
-  btrfs: add might_sleep() to some places in update_qgroup_limit_item()
-  btrfs: qgroup: fix sleep from invalid context bug in
-    update_qgroup_limit_item()
-
- fs/btrfs/ctree.c  | 4 ++++
- fs/btrfs/qgroup.c | 9 +--------
- 2 files changed, 5 insertions(+), 8 deletions(-)
-
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index a9543f01184c..1cd0d00ef328 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -78,6 +78,8 @@ size_t __attribute_const__ btrfs_get_num_csums(void)
+ 
+ struct btrfs_path *btrfs_alloc_path(void)
+ {
++	might_sleep();
++
+ 	return kmem_cache_zalloc(btrfs_path_cachep, GFP_NOFS);
+ }
+ 
+@@ -1934,6 +1936,8 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 	int min_write_lock_level;
+ 	int prev_cmp;
+ 
++	might_sleep();
++
+ 	lowest_level = p->lowest_level;
+ 	WARN_ON(lowest_level && ins_len > 0);
+ 	WARN_ON(p->nodes[0] != NULL);
 -- 
 2.31.1
 
