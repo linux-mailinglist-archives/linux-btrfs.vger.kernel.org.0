@@ -2,105 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D767762B9E4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Nov 2022 11:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2141D62BAD6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Nov 2022 12:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232729AbiKPKrl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Nov 2022 05:47:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
+        id S231241AbiKPLFN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Nov 2022 06:05:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238740AbiKPKqt (ORCPT
+        with ESMTP id S232256AbiKPLE3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Nov 2022 05:46:49 -0500
-Received: from mail.cardoe.co.uk (cardoe.plus.com [81.174.243.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6021429B7
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Nov 2022 02:34:23 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.cardoe.co.uk (Postfix) with ESMTP id AFBAA560A02
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Nov 2022 10:34:21 +0000 (GMT)
-Received: from mail.cardoe.co.uk ([127.0.0.1])
-        by localhost (mail.cardoe.co.uk [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id cunEGOT39GsK for <linux-btrfs@vger.kernel.org>;
-        Wed, 16 Nov 2022 10:34:20 +0000 (GMT)
-Received: from mail.cardoe.co.uk (localhost [IPv6:::1])
-        by mail.cardoe.co.uk (Postfix) with ESMTPA id 79919560A00
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Nov 2022 10:34:20 +0000 (GMT)
-Received: from 81.174.243.101
-        (SquirrelMail authenticated user peter)
-        by mail.cardoe.co.uk with HTTP;
-        Wed, 16 Nov 2022 10:34:20 -0000
-Message-ID: <119134c3dcaec15277b5850fc4ccb630.squirrel@mail.cardoe.co.uk>
-Date:   Wed, 16 Nov 2022 10:34:20 -0000
-Subject:  root item with a more recent gen
-From:   "Peter Cardoe" <peter@cardoe.co.uk>
-To:     linux-btrfs@vger.kernel.org
-User-Agent: SquirrelMail/1.4.23 [SVN]
+        Wed, 16 Nov 2022 06:04:29 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381A611A29
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Nov 2022 02:51:03 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D92A5B81CCB
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Nov 2022 10:51:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83BD1C433C1
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Nov 2022 10:51:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668595860;
+        bh=u2BvrhnhQWVyqHGMng/HI3XVVDI9vZoMt74kaeLsEsA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=S9SbHo+r94JkfCCAqk4yZXQEliNwEXtlsOrOj+uCaREEehh6MgtEMYpo3OlXBVWTB
+         vyiBxwdd7KkdC50LRoXVjdUSmwljjVi5RTiedPgFOMxwn+bY4JGUKaOwPI79xHvyBP
+         /cWLAIB6M4sSUXdhvwIAn3u52BBTv3qRf+QoH2jVuz99lPMUlpxISZtxrWvmvAs5o3
+         UW/ffD+KZF4XntRLumRiy5UDUzZn1Y3MXkBu6IuYN7VKjNgZvgIzEH18vPT5XC5U+B
+         d7OF6jJ2p97GmhPAYE4p1xveDQqnWxcC1YxhPAYP8lC+b8pNEhuPh7PWe2++5tlfvz
+         jBlUZsM0R//WQ==
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-13bd2aea61bso19642918fac.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Nov 2022 02:51:00 -0800 (PST)
+X-Gm-Message-State: ANoB5pkS/1Mzs+gyByKOZ5SknDJf5N6YFo7pp6r6lwi2aa/sBD1gR7G6
+        pmYQkTULMvumUr6nIUwpMsYZZ8YAmRjNXhQ2NBA=
+X-Google-Smtp-Source: AA0mqf7DerYkxv+Dsa40m9eTlXC6BvcKi0nxt++vz027wOYancsHu0a7IX9iDCW6eDVqVJM4x2u25dVzIjqcFjrii1c=
+X-Received: by 2002:a05:6870:9a94:b0:131:ec37:2451 with SMTP id
+ hp20-20020a0568709a9400b00131ec372451mr1347866oab.98.1668595859705; Wed, 16
+ Nov 2022 02:50:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-Priority: 3 (Normal)
-Importance: Normal
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1668529099.git.fdmanana@suse.com> <6e601151e5d290a6a6288928e9d8737aca82ed7b.camel@scientia.org>
+ <CAL3q7H5VJM6GY5GN9zjOj3qPhPxRSZhtq8smZkBd4TVJ_vy7Nw@mail.gmail.com> <f2ccd7455a18b17b72846c61581db0fda5347829.camel@scientia.org>
+In-Reply-To: <f2ccd7455a18b17b72846c61581db0fda5347829.camel@scientia.org>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Wed, 16 Nov 2022 10:50:23 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5iqfqPFwkLA+t3vFikVoZNMU-5h_F7iHmEJKqvVSp05w@mail.gmail.com>
+Message-ID: <CAL3q7H5iqfqPFwkLA+t3vFikVoZNMU-5h_F7iHmEJKqvVSp05w@mail.gmail.com>
+Subject: Re: [PATCH 0/3] btrfs-progs: receive: fix a silent data loss bug with
+ encoded writes
+To:     Christoph Anton Mitterer <calestyo@scientia.org>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-Please can someone tell me
-(1) how to display the root item in question
-(2) how to display the found root node in question
-(3) if there a utility for patching the error back to what it should be?
+On Tue, Nov 15, 2022 at 4:53 PM Christoph Anton Mitterer
+<calestyo@scientia.org> wrote:
+>
+> On Tue, 2022-11-15 at 16:47 +0000, Filipe Manana wrote:
+> > > Is one *only* affected when ones
+> > > used compression - respectively if one DID NOT do any filesystem
+> > > compression (i.e. compress mount option)... can one be sure to be
+> > > safe?
+> >
+> > If you haven't used 'btrfs send' with the --compressed-data option or
+> > you are sure you don't have any compressed files, then you're fine.
+>
+> Thanks a lot... so all good for me. :-)
+>
+> But still, as I wrote in the other mail,... other people might be
+> affected... and it would be reeeeally nice if there was some good way
+> for them to get alerted about such cases.
 
-Thanks very much,
-Peter.
----------------------------- Original Message ----------------------------
-Subject: root item with a more recent gen
-From:    "Peter Cardoe" <peter@cardoe.co.uk>
-Date:    Sun, November 13, 2022 3:59 pm
-To:      linux-btrfs@vger.kernel.org
---------------------------------------------------------------------------
+There will always be users who'll miss such alerts, many don't read
+all the emails in this list, many are not even subscribed to the
+mailing list, etc.
+Do you have examples of other projects that have an effective alert system?
 
-
-
-How can I fix the following error please:
-
-btrfs check -b --repair /dev/sdb2
-
-enabling repair mode
-
-WARNING:
-
-Do not use --repair unless you are advised to do so by a developer
-
-or an experienced user, and then only after having accepted that no
-
-fsck can successfully repair all types of filesystem corruption. Eg.
-
-some software or hardware bugs can fatally damage a volume.
-
-The operation will start in 10 seconds.
-
-Use Ctrl-C to stop it.
-
-10 9 8 7 6 5 4 3 2 1
-
-Starting repair.
-
-Opening filesystem to check...
-
-Checking filesystem on /dev/sdb2
-
-UUID: b5e07514-ad87-47ac-b4f7-3d797cb689bd
-
-[1/7] checking root items
-
-root 258 has a root item with a more recent gen (118911) compared to the
-found root node (118707)
-
-ERROR: failed to repair root items: Invalid argument
-
-
-
+>
+>
+> Thanks,
+> Chris.
