@@ -2,45 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8CA62FEFD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Nov 2022 21:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D3F62FEFF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Nov 2022 21:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbiKRUtw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Nov 2022 15:49:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
+        id S230058AbiKRUtx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Nov 2022 15:49:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbiKRUtw (ORCPT
+        with ESMTP id S229606AbiKRUtw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 18 Nov 2022 15:49:52 -0500
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6676EB70
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97626EB77
         for <linux-btrfs@vger.kernel.org>; Fri, 18 Nov 2022 12:49:50 -0800 (PST)
-Received: by mail-il1-f200.google.com with SMTP id k3-20020a92c243000000b0030201475a6bso4026419ilo.9
+Received: by mail-io1-f72.google.com with SMTP id c14-20020a5ea80e000000b006d6e9b05e58so3233907ioa.23
         for <linux-btrfs@vger.kernel.org>; Fri, 18 Nov 2022 12:49:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=7CTcOtx/2KkktfwckLDOdL8IONFaCpCN/ZEvdG15U88=;
-        b=kfmrlFPhaXFO5kIvniFoYXbaNxd4GcSGxv7eBmlN30nJmt527tq7k+Z2D+I4d3tvx3
-         mltY1yUCQjOBBRC4cwGWTtjLsBfnx4qJbFqNwzdpmxo0YJYAjgsnWLcG3H8xaDXrExjS
-         /Ed8KSD8Wf7uMHL0PSvUfTxOQVCqoq7Tr0gVAzMB0oGUaw0DvNXNdD3691oORnYOlqby
-         1sbXdt3hehWcxGGRQv+i/JeQezcks9hjox36tw8lvxpe2M5r2OzRvgywadek2Yjfr/h+
-         phY6ZxDlikmjzRQLvkhWOK71Wesmdu9C3Bqv2kDuHgm9V1/ciuHz8IXcjUT5YYn2B2TE
-         dBuw==
-X-Gm-Message-State: ANoB5pmqbXcxuAM+qA1lO+cROD/o0S5nUYalsNFDoQU6H5UvRfZ0CV5R
-        qPAwTUDgx+IamGxLJupDn4mOSc/0xkbCiwLuMZP31AlYwNZ/
-X-Google-Smtp-Source: AA0mqf7TDDgZns6JLklYSeZpmSyZ1SUNbtONSV1hTqfJYaIyMAtIBsYAbB7sFNnl/Jb632AwAat6YNNmS4K+xmp8B4XbQNavHNRN
+        bh=Vjnhenvie0zObLdwhT12BKLnuhGXTRgNA6SSOS/rCgg=;
+        b=0a5illM6jH/9i+frTq/9zpfR2WKCG9tz3xpGr+KQK8AHkvbbHRk4xlWMxBi9DMvReS
+         vTkvu8SSAPj5pS+lsQfLTPmvdy20ByxEW4srVUR0eIYuyzjM4Bdz/wqGRVDDP1nZvYfh
+         vSPMqigSD2kxAvgRRovnyT1bAqtNCs2eC5s4fHt/FisACFolfxpCAlynrMemVxhPdA/D
+         2KBQm3n+YsZA5y9y+5RHSNo0OxJOXOo6t+pOMyKGQYTqTAfuY8sJTDg4gOKa5BadhDsP
+         X26aRCLLV/czEzLDf/BZFFXRLcIQdC7BKIBbWFoAqOqF1588At7oiZCwS5LdtYyFkGYt
+         zHmg==
+X-Gm-Message-State: ANoB5plYOgO7XWy6D7NT/wTrTJtrogPxd11c7m0JXeWJXZYV5a3+4U53
+        15FOk7Em2yySU86lJiK88rym5gWbc79CJCZcV0ZEdY8d5KVY
+X-Google-Smtp-Source: AA0mqf5Try25wHQfNygf6wD0UaIhuITGgZsq57pUwpDBBEPqQdPbHPygXiXdn0tODuycfQXfn4cyf1Rmy9ybjIKwsmuexFOROqwo
 MIME-Version: 1.0
-X-Received: by 2002:a6b:f418:0:b0:6ce:8185:ad0 with SMTP id
- i24-20020a6bf418000000b006ce81850ad0mr4222344iog.213.1668804589922; Fri, 18
- Nov 2022 12:49:49 -0800 (PST)
-Date:   Fri, 18 Nov 2022 12:49:49 -0800
+X-Received: by 2002:a02:5146:0:b0:371:1431:d4f2 with SMTP id
+ s67-20020a025146000000b003711431d4f2mr4026528jaa.184.1668804590223; Fri, 18
+ Nov 2022 12:49:50 -0800 (PST)
+Date:   Fri, 18 Nov 2022 12:49:50 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c82e1305edc4d882@google.com>
-Subject: [syzbot] possible deadlock in __btrfs_tree_lock
-From:   syzbot <syzbot+39feedae0c1e29951744@syzkaller.appspotmail.com>
+Message-ID: <000000000000ccc93c05edc4d8cf@google.com>
+Subject: [syzbot] possible deadlock in __btrfs_release_delayed_node
+From:   syzbot <syzbot+9b7c21f486f5e7f8d029@syzkaller.appspotmail.com>
 To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
         syzkaller-bugs@googlegroups.com
@@ -58,159 +58,163 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    84368d882b96 Merge tag 'soc-fixes-6.1-3' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14bf6c21880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6f4e5e9899396248
-dashboard link: https://syzkaller.appspot.com/bug?extid=39feedae0c1e29951744
+HEAD commit:    15f3bff12cf6 Add linux-next specific files for 20221116
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=131d1d31880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ec2a1d4f50866178
+dashboard link: https://syzkaller.appspot.com/bug?extid=9b7c21f486f5e7f8d029
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c5385d467ad9/disk-84368d88.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9d5d70ca8a42/vmlinux-84368d88.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/da0dc29fc9f3/bzImage-84368d88.xz
+disk image: https://storage.googleapis.com/syzbot-assets/b67307c8c3c9/disk-15f3bff1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/956c7b56c5c1/vmlinux-15f3bff1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/505ae2f65529/bzImage-15f3bff1.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+39feedae0c1e29951744@syzkaller.appspotmail.com
+Reported-by: syzbot+9b7c21f486f5e7f8d029@syzkaller.appspotmail.com
 
+BTRFS info (device loop1): auto enabling async discard
 ======================================================
 WARNING: possible circular locking dependency detected
-6.1.0-rc5-syzkaller-00144-g84368d882b96 #0 Not tainted
+6.1.0-rc5-next-20221116-syzkaller #0 Not tainted
 ------------------------------------------------------
-syz-executor.2/3014 is trying to acquire lock:
-ffff888027f2a598 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_fault+0xa9/0x180 mm/memory.c:5645
+syz-executor.1/16154 is trying to acquire lock:
+ffff88807e3084a0 (&delayed_node->mutex){+.+.}-{3:3}, at: __btrfs_release_delayed_node.part.0+0xa1/0xf30 fs/btrfs/delayed-inode.c:256
 
 but task is already holding lock:
-ffff888074c05838 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x350 fs/btrfs/locking.c:134
+ffff88807df33078 (btrfs-log-00){++++}-{3:3}, at: __btrfs_tree_lock+0x32/0x3d0 fs/btrfs/locking.c:197
 
 which lock already depends on the new lock.
 
 
 the existing dependency chain (in reverse order) is:
 
--> #5 (btrfs-root-00){++++}-{3:3}:
-       down_write_nested+0x98/0x220 kernel/locking/rwsem.c:1672
-       __btrfs_tree_lock+0x32/0x3d0 fs/btrfs/locking.c:196
-       btrfs_tree_lock fs/btrfs/locking.c:203 [inline]
-       btrfs_lock_root_node+0x61/0x90 fs/btrfs/locking.c:256
-       commit_cowonly_roots+0x13c/0xa10 fs/btrfs/transaction.c:1266
-       btrfs_commit_transaction+0xb93/0x36e0 fs/btrfs/transaction.c:2376
-       btrfs_commit_super+0xc5/0x100 fs/btrfs/disk-io.c:4499
-       close_ctree+0x39c/0xdc7 fs/btrfs/disk-io.c:4653
-       generic_shutdown_super+0x158/0x410 fs/super.c:492
-       kill_anon_super+0x3a/0x60 fs/super.c:1086
-       btrfs_kill_super+0x3c/0x50 fs/btrfs/super.c:2441
-       deactivate_locked_super+0x98/0x160 fs/super.c:332
-       deactivate_super+0xb1/0xd0 fs/super.c:363
-       cleanup_mnt+0x2ae/0x3d0 fs/namespace.c:1186
-       task_work_run+0x16f/0x270 kernel/task_work.c:179
-       resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
-       exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
-       exit_to_user_mode_prepare+0x23c/0x250 kernel/entry/common.c:203
-       __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
-       syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
-       do_syscall_64+0x46/0xb0 arch/x86/entry/common.c:86
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #4 (&fs_info->reloc_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x12f/0x1360 kernel/locking/mutex.c:747
-       btrfs_record_root_in_trans+0x13d/0x1b0 fs/btrfs/transaction.c:484
-       start_transaction+0x295/0x1470 fs/btrfs/transaction.c:721
-       btrfs_create_common+0x1aa/0x260 fs/btrfs/inode.c:6633
-       btrfs_create+0x116/0x160 fs/btrfs/inode.c:6679
-       lookup_open.isra.0+0xf05/0x12a0 fs/namei.c:3413
-       open_last_lookups fs/namei.c:3481 [inline]
-       path_openat+0x996/0x2860 fs/namei.c:3710
-       do_filp_open+0x1ba/0x410 fs/namei.c:3740
-       do_sys_openat2+0x16d/0x4c0 fs/open.c:1310
-       do_sys_open fs/open.c:1326 [inline]
-       __do_sys_open fs/open.c:1334 [inline]
-       __se_sys_open fs/open.c:1330 [inline]
-       __x64_sys_open+0x11d/0x1c0 fs/open.c:1330
+-> #2 (btrfs-log-00){++++}-{3:3}:
+       down_read_nested+0x9e/0x450 kernel/locking/rwsem.c:1634
+       __btrfs_tree_read_lock+0x32/0x350 fs/btrfs/locking.c:135
+       btrfs_tree_read_lock fs/btrfs/locking.c:141 [inline]
+       btrfs_read_lock_root_node+0x82/0x3a0 fs/btrfs/locking.c:280
+       btrfs_search_slot_get_root fs/btrfs/ctree.c:1678 [inline]
+       btrfs_search_slot+0x3ca/0x2c70 fs/btrfs/ctree.c:1998
+       btrfs_lookup_csum+0x116/0x3f0 fs/btrfs/file-item.c:209
+       btrfs_csum_file_blocks+0x40e/0x1370 fs/btrfs/file-item.c:1021
+       log_csums.isra.0+0x244/0x2d0 fs/btrfs/tree-log.c:4258
+       copy_items.isra.0+0xbfb/0xed0 fs/btrfs/tree-log.c:4403
+       copy_inode_items_to_log+0x13d6/0x1d90 fs/btrfs/tree-log.c:5873
+       btrfs_log_inode+0xb19/0x4680 fs/btrfs/tree-log.c:6495
+       btrfs_log_inode_parent+0x890/0x2a20 fs/btrfs/tree-log.c:6982
+       btrfs_log_dentry_safe+0x59/0x80 fs/btrfs/tree-log.c:7083
+       btrfs_sync_file+0xa41/0x13c0 fs/btrfs/file.c:1921
+       vfs_fsync_range+0x13e/0x230 fs/sync.c:188
+       generic_write_sync include/linux/fs.h:2856 [inline]
+       iomap_dio_complete+0x73a/0x920 fs/iomap/direct-io.c:128
+       btrfs_direct_write fs/btrfs/file.c:1536 [inline]
+       btrfs_do_write_iter+0xba2/0x1470 fs/btrfs/file.c:1668
+       call_write_iter include/linux/fs.h:2160 [inline]
+       do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:735
+       do_iter_write+0x182/0x700 fs/read_write.c:861
+       vfs_iter_write+0x74/0xa0 fs/read_write.c:902
+       iter_file_splice_write+0x745/0xc90 fs/splice.c:686
+       do_splice_from fs/splice.c:764 [inline]
+       direct_splice_actor+0x114/0x180 fs/splice.c:931
+       splice_direct_to_actor+0x335/0x8a0 fs/splice.c:886
+       do_splice_direct+0x1ab/0x280 fs/splice.c:974
+       do_sendfile+0xb19/0x1270 fs/read_write.c:1255
+       __do_sys_sendfile64 fs/read_write.c:1323 [inline]
+       __se_sys_sendfile64 fs/read_write.c:1309 [inline]
+       __x64_sys_sendfile64+0x259/0x2c0 fs/read_write.c:1309
        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
        do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
        entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
--> #3 (btrfs_trans_num_extwriters){++++}-{0:0}:
-       join_transaction+0x1b3/0x10f0 fs/btrfs/transaction.c:299
-       start_transaction+0x407/0x1470 fs/btrfs/transaction.c:658
-       btrfs_commit_super+0x9d/0x100 fs/btrfs/disk-io.c:4496
-       close_ctree+0x39c/0xdc7 fs/btrfs/disk-io.c:4653
-       generic_shutdown_super+0x158/0x410 fs/super.c:492
-       kill_anon_super+0x3a/0x60 fs/super.c:1086
-       btrfs_kill_super+0x3c/0x50 fs/btrfs/super.c:2441
-       deactivate_locked_super+0x98/0x160 fs/super.c:332
-       deactivate_super+0xb1/0xd0 fs/super.c:363
-       cleanup_mnt+0x2ae/0x3d0 fs/namespace.c:1186
-       task_work_run+0x16f/0x270 kernel/task_work.c:179
-       resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
-       exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
-       exit_to_user_mode_prepare+0x23c/0x250 kernel/entry/common.c:203
-       __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
-       syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
-       do_syscall_64+0x46/0xb0 arch/x86/entry/common.c:86
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #2 (btrfs_trans_num_writers){++++}-{0:0}:
+-> #1 (btrfs-tree-00){++++}-{3:3}:
        __lock_release kernel/locking/lockdep.c:5382 [inline]
        lock_release+0x371/0x810 kernel/locking/lockdep.c:5688
-       percpu_up_read include/linux/percpu-rwsem.h:99 [inline]
-       __sb_end_write include/linux/fs.h:1821 [inline]
-       sb_end_intwrite include/linux/fs.h:1877 [inline]
-       __btrfs_end_transaction+0x5c6/0x930 fs/btrfs/transaction.c:995
-       btrfs_dirty_inode+0x174/0x250 fs/btrfs/inode.c:6099
-       btrfs_update_time+0x25a/0x2c0 fs/btrfs/inode.c:6127
-       inode_update_time fs/inode.c:1871 [inline]
-       __file_update_time fs/inode.c:2088 [inline]
-       file_update_time+0x1fb/0x270 fs/inode.c:2119
-       btrfs_page_mkwrite+0x4f1/0x1140 fs/btrfs/inode.c:8431
-       do_page_mkwrite+0x19b/0x680 mm/memory.c:2978
-       do_shared_fault mm/memory.c:4619 [inline]
-       do_fault mm/memory.c:4687 [inline]
-       handle_pte_fault mm/memory.c:4955 [inline]
-       __handle_mm_fault+0x2280/0x3a40 mm/memory.c:5097
-       handle_mm_fault+0x1cc/0x780 mm/memory.c:5218
-       do_user_addr_fault+0x475/0x1210 arch/x86/mm/fault.c:1428
-       handle_page_fault arch/x86/mm/fault.c:1519 [inline]
-       exc_page_fault+0x98/0x170 arch/x86/mm/fault.c:1575
-       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+       up_write+0x2a/0x520 kernel/locking/rwsem.c:1614
+       btrfs_tree_unlock_rw fs/btrfs/locking.h:189 [inline]
+       btrfs_unlock_up_safe+0x1e3/0x290 fs/btrfs/locking.c:238
+       search_leaf fs/btrfs/ctree.c:1832 [inline]
+       btrfs_search_slot+0x265e/0x2c70 fs/btrfs/ctree.c:2074
+       btrfs_insert_empty_items+0xbd/0x1c0 fs/btrfs/ctree.c:4133
+       btrfs_insert_delayed_item+0x826/0xfa0 fs/btrfs/delayed-inode.c:746
+       btrfs_insert_delayed_items fs/btrfs/delayed-inode.c:824 [inline]
+       __btrfs_commit_inode_delayed_items fs/btrfs/delayed-inode.c:1111 [inline]
+       __btrfs_run_delayed_items+0x280/0x590 fs/btrfs/delayed-inode.c:1153
+       flush_space+0x147/0xe90 fs/btrfs/space-info.c:728
+       btrfs_async_reclaim_metadata_space+0x541/0xc10 fs/btrfs/space-info.c:1086
+       process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
+       worker_thread+0x669/0x1090 kernel/workqueue.c:2436
+       kthread+0x2e8/0x3a0 kernel/kthread.c:376
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
 
--> #1 (sb_pagefaults#2){.+.+}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1826 [inline]
-       sb_start_pagefault include/linux/fs.h:1930 [inline]
-       btrfs_page_mkwrite+0x1b5/0x1140 fs/btrfs/inode.c:8415
-       do_page_mkwrite+0x19b/0x680 mm/memory.c:2978
-       do_shared_fault mm/memory.c:4619 [inline]
-       do_fault mm/memory.c:4687 [inline]
-       handle_pte_fault mm/memory.c:4955 [inline]
-       __handle_mm_fault+0x2280/0x3a40 mm/memory.c:5097
-       handle_mm_fault+0x1cc/0x780 mm/memory.c:5218
-       do_user_addr_fault+0x475/0x1210 arch/x86/mm/fault.c:1428
-       handle_page_fault arch/x86/mm/fault.c:1519 [inline]
-       exc_page_fault+0x98/0x170 arch/x86/mm/fault.c:1575
-       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-
--> #0 (&mm->mmap_lock#2){++++}-{3:3}:
+-> #0 (&delayed_node->mutex){+.+.}-{3:3}:
        check_prev_add kernel/locking/lockdep.c:3097 [inline]
        check_prevs_add kernel/locking/lockdep.c:3216 [inline]
        validate_chain kernel/locking/lockdep.c:3831 [inline]
        __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5055
        lock_acquire kernel/locking/lockdep.c:5668 [inline]
        lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
-       __might_fault mm/memory.c:5646 [inline]
-       __might_fault+0x10c/0x180 mm/memory.c:5639
-       _copy_to_user+0x29/0x150 lib/usercopy.c:29
-       copy_to_user include/linux/uaccess.h:169 [inline]
-       btrfs_ioctl_get_subvol_rootref+0x74e/0xad0 fs/btrfs/ioctl.c:3203
-       btrfs_ioctl+0x2de6/0x5be0 fs/btrfs/ioctl.c:5556
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:870 [inline]
-       __se_sys_ioctl fs/ioctl.c:856 [inline]
-       __x64_sys_ioctl+0x197/0x210 fs/ioctl.c:856
+       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+       __mutex_lock+0x12f/0x1360 kernel/locking/mutex.c:747
+       __btrfs_release_delayed_node.part.0+0xa1/0xf30 fs/btrfs/delayed-inode.c:256
+       __btrfs_release_delayed_node fs/btrfs/delayed-inode.c:251 [inline]
+       btrfs_release_delayed_node fs/btrfs/delayed-inode.c:281 [inline]
+       btrfs_remove_delayed_node+0x52/0x60 fs/btrfs/delayed-inode.c:1285
+       btrfs_evict_inode+0x511/0xf30 fs/btrfs/inode.c:5554
+       evict+0x2ed/0x6b0 fs/inode.c:664
+       dispose_list+0x117/0x1e0 fs/inode.c:697
+       prune_icache_sb+0xeb/0x150 fs/inode.c:896
+       super_cache_scan+0x391/0x590 fs/super.c:106
+       do_shrink_slab+0x464/0xce0 mm/vmscan.c:843
+       shrink_slab_memcg mm/vmscan.c:912 [inline]
+       shrink_slab+0x388/0x660 mm/vmscan.c:991
+       shrink_node_memcgs mm/vmscan.c:6088 [inline]
+       shrink_node+0x93d/0x1f30 mm/vmscan.c:6117
+       shrink_zones mm/vmscan.c:6355 [inline]
+       do_try_to_free_pages+0x3b4/0x17a0 mm/vmscan.c:6417
+       try_to_free_mem_cgroup_pages+0x3a4/0xa70 mm/vmscan.c:6732
+       reclaim_high.constprop.0+0x182/0x230 mm/memcontrol.c:2393
+       mem_cgroup_handle_over_high+0x190/0x520 mm/memcontrol.c:2578
+       try_charge_memcg+0xe0c/0x12f0 mm/memcontrol.c:2816
+       try_charge mm/memcontrol.c:2827 [inline]
+       charge_memcg+0x90/0x3b0 mm/memcontrol.c:6889
+       __mem_cgroup_charge+0x2b/0x90 mm/memcontrol.c:6910
+       mem_cgroup_charge include/linux/memcontrol.h:667 [inline]
+       __filemap_add_folio+0x615/0xf80 mm/filemap.c:852
+       filemap_add_folio+0xaf/0x1e0 mm/filemap.c:934
+       __filemap_get_folio+0x389/0xd80 mm/filemap.c:1976
+       pagecache_get_page+0x2e/0x280 mm/folio-compat.c:104
+       find_or_create_page include/linux/pagemap.h:612 [inline]
+       alloc_extent_buffer+0x2b9/0x1580 fs/btrfs/extent_io.c:4588
+       btrfs_init_new_buffer fs/btrfs/extent-tree.c:4869 [inline]
+       btrfs_alloc_tree_block+0x2e1/0x1320 fs/btrfs/extent-tree.c:4988
+       __btrfs_cow_block+0x3b2/0x1420 fs/btrfs/ctree.c:440
+       btrfs_cow_block+0x2fa/0x950 fs/btrfs/ctree.c:595
+       btrfs_search_slot+0x11b0/0x2c70 fs/btrfs/ctree.c:2038
+       btrfs_update_root+0xdb/0x630 fs/btrfs/root-tree.c:137
+       update_log_root fs/btrfs/tree-log.c:2841 [inline]
+       btrfs_sync_log+0xbfb/0x2870 fs/btrfs/tree-log.c:3064
+       btrfs_sync_file+0xdb9/0x13c0 fs/btrfs/file.c:1947
+       vfs_fsync_range+0x13e/0x230 fs/sync.c:188
+       generic_write_sync include/linux/fs.h:2856 [inline]
+       iomap_dio_complete+0x73a/0x920 fs/iomap/direct-io.c:128
+       btrfs_direct_write fs/btrfs/file.c:1536 [inline]
+       btrfs_do_write_iter+0xba2/0x1470 fs/btrfs/file.c:1668
+       call_write_iter include/linux/fs.h:2160 [inline]
+       do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:735
+       do_iter_write+0x182/0x700 fs/read_write.c:861
+       vfs_iter_write+0x74/0xa0 fs/read_write.c:902
+       iter_file_splice_write+0x745/0xc90 fs/splice.c:686
+       do_splice_from fs/splice.c:764 [inline]
+       direct_splice_actor+0x114/0x180 fs/splice.c:931
+       splice_direct_to_actor+0x335/0x8a0 fs/splice.c:886
+       do_splice_direct+0x1ab/0x280 fs/splice.c:974
+       do_sendfile+0xb19/0x1270 fs/read_write.c:1255
+       __do_sys_sendfile64 fs/read_write.c:1323 [inline]
+       __se_sys_sendfile64 fs/read_write.c:1309 [inline]
+       __x64_sys_sendfile64+0x259/0x2c0 fs/read_write.c:1309
        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
        do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
        entry_SYSCALL_64_after_hwframe+0x63/0xcd
@@ -218,24 +222,37 @@ the existing dependency chain (in reverse order) is:
 other info that might help us debug this:
 
 Chain exists of:
-  &mm->mmap_lock#2 --> &fs_info->reloc_mutex --> btrfs-root-00
+  &delayed_node->mutex --> btrfs-tree-00 --> btrfs-log-00
 
  Possible unsafe locking scenario:
 
        CPU0                    CPU1
        ----                    ----
-  lock(btrfs-root-00);
-                               lock(&fs_info->reloc_mutex);
-                               lock(btrfs-root-00);
-  lock(&mm->mmap_lock#2);
+  lock(btrfs-log-00);
+                               lock(btrfs-tree-00);
+                               lock(btrfs-log-00);
+  lock(&delayed_node->mutex);
 
  *** DEADLOCK ***
 
-1 lock held by syz-executor.2/3014:
- #0: ffff888074c05838 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x350 fs/btrfs/locking.c:134
+8 locks held by syz-executor.1/16154:
+ #0: ffff88801aa16460 (sb_writers#24){.+.+}-{0:0}, at: __do_sys_sendfile64 fs/read_write.c:1323 [inline]
+ #0: ffff88801aa16460 (sb_writers#24){.+.+}-{0:0}, at: __se_sys_sendfile64 fs/read_write.c:1309 [inline]
+ #0: ffff88801aa16460 (sb_writers#24){.+.+}-{0:0}, at: __x64_sys_sendfile64+0x259/0x2c0 fs/read_write.c:1309
+ #1: ffff88801aa16650 (sb_internal#2){.+.+}-{0:0}, at: btrfs_sync_file+0x9c6/0x13c0 fs/btrfs/file.c:1914
+ #2: ffff88807d792318 (btrfs_trans_num_writers){++++}-{0:0}, at: extwriter_counter_inc fs/btrfs/transaction.c:217 [inline]
+ #2: ffff88807d792318 (btrfs_trans_num_writers){++++}-{0:0}, at: join_transaction+0x3e0/0x10e0 fs/btrfs/transaction.c:286
+ #3: ffff88807d792340 (btrfs_trans_num_extwriters){++++}-{0:0}, at: extwriter_counter_inc fs/btrfs/transaction.c:217 [inline]
+ #3: ffff88807d792340 (btrfs_trans_num_extwriters){++++}-{0:0}, at: join_transaction+0x3e0/0x10e0 fs/btrfs/transaction.c:286
+ #4: ffff8880764ca3b0 (&root->log_mutex){+.+.}-{3:3}, at: btrfs_sync_log+0x9d4/0x2870 fs/btrfs/tree-log.c:3053
+ #5: ffff88807df33078 (btrfs-log-00){++++}-{3:3}, at: __btrfs_tree_lock+0x32/0x3d0 fs/btrfs/locking.c:197
+ #6: ffffffff8c88fe10 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab_memcg mm/vmscan.c:885 [inline]
+ #6: ffffffff8c88fe10 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0x2a0/0x660 mm/vmscan.c:991
+ #7: ffff88801aa160e0 (&type->s_umount_key#87){++++}-{3:3}, at: trylock_super fs/super.c:415 [inline]
+ #7: ffff88801aa160e0 (&type->s_umount_key#87){++++}-{3:3}, at: super_cache_scan+0x70/0x590 fs/super.c:79
 
 stack backtrace:
-CPU: 0 PID: 3014 Comm: syz-executor.2 Not tainted 6.1.0-rc5-syzkaller-00144-g84368d882b96 #0
+CPU: 0 PID: 16154 Comm: syz-executor.1 Not tainted 6.1.0-rc5-next-20221116-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
 Call Trace:
  <TASK>
@@ -248,28 +265,78 @@ Call Trace:
  __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5055
  lock_acquire kernel/locking/lockdep.c:5668 [inline]
  lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
- __might_fault mm/memory.c:5646 [inline]
- __might_fault+0x10c/0x180 mm/memory.c:5639
- _copy_to_user+0x29/0x150 lib/usercopy.c:29
- copy_to_user include/linux/uaccess.h:169 [inline]
- btrfs_ioctl_get_subvol_rootref+0x74e/0xad0 fs/btrfs/ioctl.c:3203
- btrfs_ioctl+0x2de6/0x5be0 fs/btrfs/ioctl.c:5556
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __x64_sys_ioctl+0x197/0x210 fs/ioctl.c:856
+ __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+ __mutex_lock+0x12f/0x1360 kernel/locking/mutex.c:747
+ __btrfs_release_delayed_node.part.0+0xa1/0xf30 fs/btrfs/delayed-inode.c:256
+ __btrfs_release_delayed_node fs/btrfs/delayed-inode.c:251 [inline]
+ btrfs_release_delayed_node fs/btrfs/delayed-inode.c:281 [inline]
+ btrfs_remove_delayed_node+0x52/0x60 fs/btrfs/delayed-inode.c:1285
+ btrfs_evict_inode+0x511/0xf30 fs/btrfs/inode.c:5554
+ evict+0x2ed/0x6b0 fs/inode.c:664
+ dispose_list+0x117/0x1e0 fs/inode.c:697
+ prune_icache_sb+0xeb/0x150 fs/inode.c:896
+ super_cache_scan+0x391/0x590 fs/super.c:106
+ do_shrink_slab+0x464/0xce0 mm/vmscan.c:843
+ shrink_slab_memcg mm/vmscan.c:912 [inline]
+ shrink_slab+0x388/0x660 mm/vmscan.c:991
+ shrink_node_memcgs mm/vmscan.c:6088 [inline]
+ shrink_node+0x93d/0x1f30 mm/vmscan.c:6117
+ shrink_zones mm/vmscan.c:6355 [inline]
+ do_try_to_free_pages+0x3b4/0x17a0 mm/vmscan.c:6417
+ try_to_free_mem_cgroup_pages+0x3a4/0xa70 mm/vmscan.c:6732
+ reclaim_high.constprop.0+0x182/0x230 mm/memcontrol.c:2393
+ mem_cgroup_handle_over_high+0x190/0x520 mm/memcontrol.c:2578
+ try_charge_memcg+0xe0c/0x12f0 mm/memcontrol.c:2816
+ try_charge mm/memcontrol.c:2827 [inline]
+ charge_memcg+0x90/0x3b0 mm/memcontrol.c:6889
+ __mem_cgroup_charge+0x2b/0x90 mm/memcontrol.c:6910
+ mem_cgroup_charge include/linux/memcontrol.h:667 [inline]
+ __filemap_add_folio+0x615/0xf80 mm/filemap.c:852
+ filemap_add_folio+0xaf/0x1e0 mm/filemap.c:934
+ __filemap_get_folio+0x389/0xd80 mm/filemap.c:1976
+ pagecache_get_page+0x2e/0x280 mm/folio-compat.c:104
+ find_or_create_page include/linux/pagemap.h:612 [inline]
+ alloc_extent_buffer+0x2b9/0x1580 fs/btrfs/extent_io.c:4588
+ btrfs_init_new_buffer fs/btrfs/extent-tree.c:4869 [inline]
+ btrfs_alloc_tree_block+0x2e1/0x1320 fs/btrfs/extent-tree.c:4988
+ __btrfs_cow_block+0x3b2/0x1420 fs/btrfs/ctree.c:440
+ btrfs_cow_block+0x2fa/0x950 fs/btrfs/ctree.c:595
+ btrfs_search_slot+0x11b0/0x2c70 fs/btrfs/ctree.c:2038
+ btrfs_update_root+0xdb/0x630 fs/btrfs/root-tree.c:137
+ update_log_root fs/btrfs/tree-log.c:2841 [inline]
+ btrfs_sync_log+0xbfb/0x2870 fs/btrfs/tree-log.c:3064
+ btrfs_sync_file+0xdb9/0x13c0 fs/btrfs/file.c:1947
+ vfs_fsync_range+0x13e/0x230 fs/sync.c:188
+ generic_write_sync include/linux/fs.h:2856 [inline]
+ iomap_dio_complete+0x73a/0x920 fs/iomap/direct-io.c:128
+ btrfs_direct_write fs/btrfs/file.c:1536 [inline]
+ btrfs_do_write_iter+0xba2/0x1470 fs/btrfs/file.c:1668
+ call_write_iter include/linux/fs.h:2160 [inline]
+ do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:735
+ do_iter_write+0x182/0x700 fs/read_write.c:861
+ vfs_iter_write+0x74/0xa0 fs/read_write.c:902
+ iter_file_splice_write+0x745/0xc90 fs/splice.c:686
+ do_splice_from fs/splice.c:764 [inline]
+ direct_splice_actor+0x114/0x180 fs/splice.c:931
+ splice_direct_to_actor+0x335/0x8a0 fs/splice.c:886
+ do_splice_direct+0x1ab/0x280 fs/splice.c:974
+ do_sendfile+0xb19/0x1270 fs/read_write.c:1255
+ __do_sys_sendfile64 fs/read_write.c:1323 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1309 [inline]
+ __x64_sys_sendfile64+0x259/0x2c0 fs/read_write.c:1309
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7ff87c68b639
+RIP: 0033:0x7f0153a8b639
 Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff87d4d8168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ff87c7abf80 RCX: 00007ff87c68b639
-RDX: 0000000020002100 RSI: 00000000d000943d RDI: 0000000000000004
-RBP: 00007ff87c6e6ae9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffc712f14ff R14: 00007ff87d4d8300 R15: 0000000000022000
+RSP: 002b:00007f0154831168 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f0153babf80 RCX: 00007f0153a8b639
+RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000004
+RBP: 00007f0153ae6ae9 R08: 0000000000000000 R09: 0000000000000000
+R10: 000080001d00c0d0 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffcd009321f R14: 00007f0154831300 R15: 0000000000022000
  </TASK>
+syz-executor.1 (16154) used greatest stack depth: 18648 bytes left
 
 
 ---
