@@ -2,70 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C89A362FCC4
+	by mail.lfdr.de (Postfix) with ESMTP id 26E6D62FCC2
 	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Nov 2022 19:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242775AbiKRS3s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Nov 2022 13:29:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
+        id S242774AbiKRS3u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Nov 2022 13:29:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242774AbiKRS3V (ORCPT
+        with ESMTP id S242776AbiKRS3V (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 18 Nov 2022 13:29:21 -0500
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89779A5DF
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Nov 2022 10:28:09 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 1E98732004CE;
-        Fri, 18 Nov 2022 13:28:09 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 18 Nov 2022 13:28:09 -0500
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448519A5E6
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Nov 2022 10:28:12 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 974C532003F4;
+        Fri, 18 Nov 2022 13:28:11 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 18 Nov 2022 13:28:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1668796088; x=1668882488; bh=xW
-        iDlbcpbtz3x0DRn/hrYEtnapPsnbPvl7Gf0p/tjA0=; b=BzM2uzUGSgzWcSWOY0
-        vKNhYi28WObrjqy4KunXflhH6HNeSmeDyoNHUo2+a2IeXGRf2EYJNYNYk0D9Hlv5
-        K4Rk/v47r8EBJNMiGOfcPTQV099GMO4qhauE+7jjpAsp+HKbao2GVTXGgcyUzJMQ
-        9x+292AAQ18VhwLNti8wgxnFnHeLfpH1itpHBxoa6sVQUpSGcB8NZV0V4Q6INqWA
-        vry/NQr3T6c7T6UQfv/bLHWa2ogHNVyBsZnZUWiSd3vn18TFgC3AN8yhzBQdmY++
-        ASkeQv3bsngvnVSrsST1P9VwExAW7vdy2ItZbxZLInudj8cdzBWvEVR8CFXoUZ30
-        k4aA==
+        :subject:subject:to:to; s=fm1; t=1668796091; x=1668882491; bh=Jm
+        NtDqwKcEUt4PcEcQPEFNxA3b05LVUkxX72YMg9uNw=; b=pRLDuroCAI7I8wRTuE
+        XY9wyNuysn239H3CKQMfIevCEmDh9PMM8wrKj1gtS+A4eFjBAv4R+W6+bnuPelzi
+        ZkawkKTxsEobsf9LTMr9BmUpQliO39x+jCeWklkOwTKdqjIW80We7EwbHfP26WCU
+        IKIly0QStzOJh9oA/kq9UDr31u/300D+99+9c9QhFXSiEktqyir29yUN/D/IOlQr
+        HTg4oOBS4HgCphvwuUzygiW+MpI/gBMvqBA88fZrYbjPImWg0PE0WMphwzmkAoL7
+        RHPHrM1eexLWW/lu6eMu6kPlRtaoQfmTnLReZadB+En3V3njXtqyq2aWoxwpg9iY
+        7WHg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1668796088; x=1668882488; bh=xWiDlbcpbtz3x
-        0DRn/hrYEtnapPsnbPvl7Gf0p/tjA0=; b=lNsr84zgkxlmt6tlneR4BRJ+8c6AB
-        N0NUvnfPEqAPS+YLZ8To4bMt/FP7cux66O1RUE+61+2IBaBj69rGNTsKTPeExD9o
-        HZpA0kXPmarAt3AyLO95z86BtrsDYyaG3PMxXdhpWLMMiUbDsM66J9h3i7oDPJsS
-        4wwEUwJosfUsAtMj8kH8gx47jn5ul9srFD+bDvYJ6G/EbN1DbC5Hupk/lx7P6zSZ
-        VH/Iql/zFcLW42eGV8BbpZT98KAYP4/6KvnN5rH3urrkeBNRIbM6e+5J2P6w7wjx
-        6cLD+QiUkA4hgSFMwyPcFjsqjBeL08IafV6oKdBZPxuPqVxHBLt8AAg7Q==
-X-ME-Sender: <xms:uM53YyFXiIrMYkDz5L1lko71WNvyc4CAk2AsdkkvJy-siyUXI9etqA>
-    <xme:uM53YzXbtrJY-iUWiN3nQwp7E3cOvKX5PjPxhhujHVUEwdsT4Qevh0PVm7f-Z2pie
-    QhWiLXOk1BOqZDkLys>
-X-ME-Received: <xmr:uM53Y8JLCWMX8ScMjyxgyLurlhUySusvtLEG1exq7vcheJVeIS1ld7k6>
+        :x-sasl-enc; s=fm1; t=1668796091; x=1668882491; bh=JmNtDqwKcEUt4
+        PcEcQPEFNxA3b05LVUkxX72YMg9uNw=; b=f0qWuPJV8jlK71j1qnSRjSwZPsRq+
+        KBYQybCEpYJn2pJoSNsb22185tc9UZU/vfZpJPNxUsFp+cBoSms5H0hJg6Rs5PSO
+        k+47fEK/4nj2VHJAuxHe/656kRNrBSQZBD8A6brmDUFzu2pHFeM0kq9Ib9rWcm6x
+        kWG8NTEjCc2FrODJsZQL4rxH1gnca3J+519p3SjIBw9O4aJoydjeN4B9vobAwA5G
+        i7L66kIb/VGMPSwEQQwbwIJbENFFGMpXSLQe1xtgnfwMgq0U2vmwGBOlI19Yjlar
+        8M3bbcRMNCe3Xt4pFdNbG4AeO3yoTebZZIlL25By7JV9cOgMa6upZuziQ==
+X-ME-Sender: <xms:u853Y_CKqWHIzNwGYRqce1THpQyCzs7dqBu_DT8sXlOlh5HmUCU2jw>
+    <xme:u853Y1jkOWUJukByBLHUxmwLGWlkuIK1u1Srtk13mHkMB48PvhPErMGffkNxXWD2v
+    QohS-8wbQ-vRoYKBm4>
+X-ME-Received: <xmr:u853Y6mhTeVQT9VfDTH8IV65kx7B5qXiQRD1PlGgn4_xkinv0mPIQovk>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrhedtgdduudegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
     dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
-    ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
-    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:uM53Y8H5wNwsjw7Q1h7V7GztdYqFj_Tj59Hvw_83O4ybjvZKF-WHTw>
-    <xmx:uM53Y4WBvTZs803G_Meq0ttITqhHPQqlzgIwyv6Dbj3JBUWNANsBZw>
-    <xmx:uM53Y_M_kM4SMLonItSOTIASclVdxov5onQVOuf72YhfV3yHBw4Xpg>
-    <xmx:uM53YxdflyNmmyqXAR8unqqKTUtR94sbVei89ZTz4_AiiJM6tY1YIQ>
+    ihhoqeenucggtffrrghtthgvrhhnpeekkeetffetfeevtdevtdduteehgfetvdejffeuue
+    ehkedvfedtleeijeejgedujeenucffohhmrghinhepghhithhhuhgsrdgtohhmpdgsuhhr
+    rdhiohenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:u853YxwX-zshb-mGzoYd0Amm561XbggemypeM-9sbWbJEtPOBRlf_Q>
+    <xmx:u853Y0TDv_LMWpg8Yq_V27HEkE-O9O9t1GT__Sqqxx83sIgXl8Vvew>
+    <xmx:u853Y0bYqyBwRDFCblqy0uNPaeyzonzXusEWqzxWkFquRjMM8y-iJw>
+    <xmx:u853Y97qI0Oi-dUFqOcltRWDHMV9Q_JivxVWUOw45lafEMYAP3s9NQ>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 18 Nov 2022 13:28:08 -0500 (EST)
+ 18 Nov 2022 13:28:10 -0500 (EST)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 2/4] btrfs: add more ffe tracepoints
-Date:   Fri, 18 Nov 2022 10:27:59 -0800
-Message-Id: <1720f8a786a41791e512c0bf58c1c6da20cd3857.1668795992.git.boris@bur.io>
+Subject: [PATCH v3 3/4] btrfs: introduce size class to block group allocator
+Date:   Fri, 18 Nov 2022 10:28:00 -0800
+Message-Id: <7984b168ce35f647c6acd43c90400e6a93b0c622.1668795992.git.boris@bur.io>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1668795992.git.boris@bur.io>
 References: <cover.1668795992.git.boris@bur.io>
@@ -80,188 +81,513 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-find_free_extent is a complicated function. It consists (at least) of:
-- a hint that jumps into the middle of a for loop macro
-- a middle loop trying every raid level
-- an outer loop ascending through ffe loop levels
-- complicated logic for skipping some of those ffe loop levels
-- multiple underlying in-bg allocators (zoned, cluster, no cluster)
+The aim of this patch is to reduce the fragmentation of block groups
+under certain unhappy workloads. It is particularly effective when the
+size of extents correlates with their lifetime, which is something we
+have observed causing fragmentation in the fleet at Meta.
 
-Which is all to say that more tracing is helpful for debugging its
-behavior. Add two new tracepoints: at the entrance to the block_groups
-loop (hit for every raid level and every ffe_ctl loop) and at the point
-we seriously consider a block_group for allocation. This way we can see
-the whole path through the algorithm, including hints, multiple loops,
-etc.
+This patch categorizes extents into size classes:
+x < 128KiB: "small"
+128KiB < x < 8MiB: "medium"
+x > 8MiB: "large"
+and as much as possible reduces allocations of extents into block groups
+that don't match the size class. This takes advantage of any (possible)
+correlation between size and lifetime and also leaves behind predictable
+re-usable gaps when extents are freed; small writes don't gum up bigger
+holes.
 
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Size classes are implemented in the following way:
+- Mark each new block group with a size class of the first allocation
+  that goes into it.
+
+- Add two new passes to ffe: "unset size class" and "wrong size class".
+  First, try only matching block groups, then try unset ones, then allow
+  allocation of new ones, and finally allow mismatched block groups.
+
+- Filtering is done just by skipping inappropriate ones, there is no
+  special size class indexing.
+
+Other solutions I considered were:
+- A best fit allocator with an rb-tree. This worked well, as small
+  writes didn't leak big holes from large freed extents, but led to
+  regressions in ffe and write performance due to lock contention on
+  the rb-tree with every allocation possibly updating it in parallel.
+  Perhaps something clever could be done to do the updates in the
+  background while being "right enough".
+
+- A fixed size "working set". This prevents freeing an extent
+  drastically changing where writes currently land, and seems like a
+  good option too. Doesn't take advantage of size in any way.
+
+- The same size class idea, but implemented with xarray marks. This
+  turned out to be slower than looping the linked list and skipping
+  wrong block groups, and is also less flexible since we must have only
+  3 size classes (max #marks). With the current approach we can have as
+  many as we like.
+
+Performance testing was done via:
+https://github.com/josefbacik/fsperf
+Of particular relevance are the new fragmentation specific tests.
+
+A brief summary of the testing results:
+- Neutral results on existing tests. There are some minor regressions
+  and improvements here and there, but nothing that truly stands out as
+  notable.
+- Improvement on new tests where size class and extent lifetime are
+  correlated. Fragmentation in these cases is completely eliminated
+  and write performance is generally a little better. There is also
+  significant improvement where extent sizes are just a bit larger than
+  the size class boundaries.
+- Regression on one new tests: where the allocations are sized
+  intentionally a hair under the borders of the size classes. Results
+  are neutral on the test that intentionally attacks this new scheme by
+  mixing extent size and lifetime.
+
+The full dump of the performance results can be found here:
+https://bur.io/fsperf/size-class-2022-11-15.txt
+(there are ansi escape codes, so best to curl and view in terminal)
+
+Here is a snippet from the full results for a new test which mixes
+buffered writes appending to a long lived set of files and large short
+lived fallocates:
+
+bufferedappendvsfallocate results
+         metric             baseline       current        stdev            diff
+======================================================================================
+avg_commit_ms                    31.13         29.20          2.67     -6.22%
+bg_count                            14         15.60             0     11.43%
+commits                          11.10         12.20          0.32      9.91%
+elapsed                          27.30         26.40          2.98     -3.30%
+end_state_mount_ns         11122551.90   10635118.90     851143.04     -4.38%
+end_state_umount_ns           1.36e+09      1.35e+09   12248056.65     -1.07%
+find_free_extent_calls       116244.30     114354.30        964.56     -1.63%
+find_free_extent_ns_max      599507.20    1047168.20     103337.08     74.67%
+find_free_extent_ns_mean       3607.19       3672.11        101.20      1.80%
+find_free_extent_ns_min            500           512          6.67      2.40%
+find_free_extent_ns_p50           2848          2876         37.65      0.98%
+find_free_extent_ns_p95           4916          5000         75.45      1.71%
+find_free_extent_ns_p99       20734.49      20920.48       1670.93      0.90%
+frag_pct_max                     61.67             0          8.05   -100.00%
+frag_pct_mean                    43.59             0          6.10   -100.00%
+frag_pct_min                     25.91             0         16.60   -100.00%
+frag_pct_p50                     42.53             0          7.25   -100.00%
+frag_pct_p95                     61.67             0          8.05   -100.00%
+frag_pct_p99                     61.67             0          8.05   -100.00%
+fragmented_bg_count               6.10             0          1.45   -100.00%
+max_commit_ms                    49.80            46          5.37     -7.63%
+sys_cpu                           2.59          2.62          0.29      1.39%
+write_bw_bytes                1.62e+08      1.68e+08   17975843.50      3.23%
+write_clat_ns_mean            57426.39      54475.95       2292.72     -5.14%
+write_clat_ns_p50             46950.40      42905.60       2101.35     -8.62%
+write_clat_ns_p99            148070.40     143769.60       2115.17     -2.90%
+write_io_kbytes                4194304       4194304             0      0.00%
+write_iops                     2476.15       2556.10        274.29      3.23%
+write_lat_ns_max            2101667.60    2251129.50     370556.59      7.11%
+write_lat_ns_mean             59374.91      55682.00       2523.09     -6.22%
+write_lat_ns_min              17353.10         16250       1646.08     -6.36%
+
+There are some mixed improvements/regressions in most metrics along with
+an elimination of fragmentation in this workload.
+
+On the balance, the drastic 1->0 improvement in the happy cases seems
+worth the mix of regressions and improvements we do observe.
+
+Some considerations for future work:
+- Experimenting with more size classes
+- More hinting/search ordering work to approximate a best-fit allocator
+
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/extent-tree.c       |  4 ++
- fs/btrfs/extent-tree.h       |  3 ++
- include/trace/events/btrfs.h | 81 +++++++++++++++++++++++++++++++++++-
- 3 files changed, 86 insertions(+), 2 deletions(-)
+ fs/btrfs/block-group.c       | 104 +++++++++++++++++++++++++++++------
+ fs/btrfs/block-group.h       |  15 ++++-
+ fs/btrfs/extent-tree.c       |  71 ++++++++++++------------
+ fs/btrfs/extent-tree.h       |   3 +
+ include/trace/events/btrfs.h |  10 +++-
+ 5 files changed, 150 insertions(+), 53 deletions(-)
 
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 708d843daa72..fa1ab56fe6b3 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
++#include "linux/sizes.h"
+ #include <linux/list_sort.h>
+ #include "misc.h"
+ #include "ctree.h"
+@@ -3379,6 +3380,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 			cache->space_info->disk_used -= num_bytes * factor;
+ 
+ 			reclaim = should_reclaim_block_group(cache, num_bytes);
++
+ 			spin_unlock(&cache->lock);
+ 			spin_unlock(&cache->space_info->lock);
+ 
+@@ -3433,32 +3435,42 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+  * reservation and return -EAGAIN, otherwise this function always succeeds.
+  */
+ int btrfs_add_reserved_bytes(struct btrfs_block_group *cache,
+-			     u64 ram_bytes, u64 num_bytes, int delalloc)
++			     u64 ram_bytes, u64 num_bytes, int delalloc,
++			     bool force_wrong_size_class)
+ {
+ 	struct btrfs_space_info *space_info = cache->space_info;
++	enum btrfs_block_group_size_class size_class;
+ 	int ret = 0;
+ 
+ 	spin_lock(&space_info->lock);
+ 	spin_lock(&cache->lock);
+ 	if (cache->ro) {
+ 		ret = -EAGAIN;
+-	} else {
+-		cache->reserved += num_bytes;
+-		space_info->bytes_reserved += num_bytes;
+-		trace_btrfs_space_reservation(cache->fs_info, "space_info",
+-					      space_info->flags, num_bytes, 1);
+-		btrfs_space_info_update_bytes_may_use(cache->fs_info,
+-						      space_info, -ram_bytes);
+-		if (delalloc)
+-			cache->delalloc_bytes += num_bytes;
++		goto out;
++	}
+ 
+-		/*
+-		 * Compression can use less space than we reserved, so wake
+-		 * tickets if that happens
+-		 */
+-		if (num_bytes < ram_bytes)
+-			btrfs_try_granting_tickets(cache->fs_info, space_info);
++	if (btrfs_is_block_group_data_only(cache)) {
++		size_class = btrfs_calc_block_group_size_class(num_bytes);
++		ret = btrfs_use_block_group_size_class(cache, size_class, force_wrong_size_class);
++		if (ret)
++			goto out;
+ 	}
++	cache->reserved += num_bytes;
++	space_info->bytes_reserved += num_bytes;
++	trace_btrfs_space_reservation(cache->fs_info, "space_info",
++				      space_info->flags, num_bytes, 1);
++	btrfs_space_info_update_bytes_may_use(cache->fs_info,
++					      space_info, -ram_bytes);
++	if (delalloc)
++		cache->delalloc_bytes += num_bytes;
++
++	/*
++	 * Compression can use less space than we reserved, so wake
++	 * tickets if that happens
++	 */
++	if (num_bytes < ram_bytes)
++		btrfs_try_granting_tickets(cache->fs_info, space_info);
++out:
+ 	spin_unlock(&cache->lock);
+ 	spin_unlock(&space_info->lock);
+ 	return ret;
+@@ -4218,3 +4230,63 @@ void btrfs_dec_block_group_swap_extents(struct btrfs_block_group *bg, int amount
+ 	bg->swap_extents -= amount;
+ 	spin_unlock(&bg->lock);
+ }
++
++enum btrfs_block_group_size_class btrfs_calc_block_group_size_class(u64 size)
++{
++	if (size <= SZ_128K)
++		return BTRFS_BG_SZ_SMALL;
++	if (size <= SZ_8M)
++		return BTRFS_BG_SZ_MEDIUM;
++	return BTRFS_BG_SZ_LARGE;
++}
++
++/*
++ * Handle a block group allocating an extent in a size class
++ *
++ * @bg:				The block group we allocated in.
++ * @size_class:			The size class of the allocation.
++ * @force_wrong_size_class:	Whether we are desperate enough to allow
++ *				mismatched size classes.
++ *
++ * Returns: 0 if the size class was valid for this block_group, -EAGAIN in the
++ * case of a race that leads to the wrong size class without
++ * force_wrong_size_class set.
++ *
++ * find_free_extent will skip block groups with a mismatched size class until
++ * it really needs to avoid ENOSPC. In that case it will set
++ * force_wrong_size_class. However, if a block group is newly allocated and
++ * doesn't yet have a size class, then it is possible for two allocations of
++ * different sizes to race and both try to use it. The loser is caught here and
++ * has to retry.
++ */
++int btrfs_use_block_group_size_class(struct btrfs_block_group *bg,
++				     enum btrfs_block_group_size_class size_class,
++				     bool force_wrong_size_class)
++{
++	ASSERT(size_class != BTRFS_BG_SZ_NONE);
++
++	/* The new allocation is in the right size class, do nothing */
++	if (bg->size_class == size_class)
++		return 0;
++	/*
++	 * The new allocation is in a mismatched size class.
++	 * This means one of two things:
++	 * 1. Two tasks in find_free_extent for different size_classes raced
++	 *    and hit the same empty block_group. Make the loser try again.
++	 * 2. A call to find_free_extent got desperate enough to set
++	 *    'force_wrong_slab'. Don't change the size_class, but allow the
++	 *    allocation.
++	 */
++	if (bg->size_class != BTRFS_BG_SZ_NONE) {
++		if (force_wrong_size_class)
++			return 0;
++		return -EAGAIN;
++	}
++	/*
++	 * The happy new block group case: the new allocation is the first
++	 * one in the block_group so we set size_class.
++	 */
++	bg->size_class = size_class;
++
++	return 0;
++}
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index a02ea76fd6cf..aaf5ca49defb 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -12,6 +12,13 @@ enum btrfs_disk_cache_state {
+ 	BTRFS_DC_SETUP,
+ };
+ 
++enum btrfs_block_group_size_class {
++	BTRFS_BG_SZ_NONE,	/* unset		*/
++	BTRFS_BG_SZ_SMALL,	/* 0 < sz <= 128K	*/
++	BTRFS_BG_SZ_MEDIUM,	/* 128K < sz <= 8M	*/
++	BTRFS_BG_SZ_LARGE,	/* 8M < sz < BG_LEN	*/
++};
++
+ /*
+  * This describes the state of the block_group for async discard.  This is due
+  * to the two pass nature of it where extent discarding is prioritized over
+@@ -233,6 +240,7 @@ struct btrfs_block_group {
+ 	struct list_head active_bg_list;
+ 	struct work_struct zone_finish_work;
+ 	struct extent_buffer *last_eb;
++	enum btrfs_block_group_size_class size_class;
+ };
+ 
+ static inline u64 btrfs_block_group_end(struct btrfs_block_group *block_group)
+@@ -302,7 +310,8 @@ int btrfs_setup_space_cache(struct btrfs_trans_handle *trans);
+ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 			     u64 bytenr, u64 num_bytes, bool alloc);
+ int btrfs_add_reserved_bytes(struct btrfs_block_group *cache,
+-			     u64 ram_bytes, u64 num_bytes, int delalloc);
++			     u64 ram_bytes, u64 num_bytes, int delalloc,
++			     bool force_wrong_size_class);
+ void btrfs_free_reserved_bytes(struct btrfs_block_group *cache,
+ 			       u64 num_bytes, int delalloc);
+ int btrfs_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags,
+@@ -346,4 +355,8 @@ void btrfs_unfreeze_block_group(struct btrfs_block_group *cache);
+ bool btrfs_inc_block_group_swap_extents(struct btrfs_block_group *bg);
+ void btrfs_dec_block_group_swap_extents(struct btrfs_block_group *bg, int amount);
+ 
++enum btrfs_block_group_size_class btrfs_calc_block_group_size_class(u64 size);
++int btrfs_use_block_group_size_class(struct btrfs_block_group *bg,
++				     enum btrfs_block_group_size_class size_class,
++				     bool force_wrong_size_class);
+ #endif /* BTRFS_BLOCK_GROUP_H */
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index a53f90677fbc..0eca8fe4604b 100644
+index 0eca8fe4604b..f3d8cc281d80 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -4258,6 +4258,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
- 							block_group->flags);
- 				btrfs_lock_block_group(block_group,
- 						       ffe_ctl->delalloc);
-+				ffe_ctl->hinted = true;
- 				goto have_block_group;
- 			}
- 		} else if (block_group) {
-@@ -4265,6 +4266,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
- 		}
+@@ -3382,7 +3382,9 @@ int btrfs_free_extent(struct btrfs_trans_handle *trans, struct btrfs_ref *ref)
+ enum btrfs_loop_type {
+ 	LOOP_CACHING_NOWAIT,
+ 	LOOP_CACHING_WAIT,
++	LOOP_UNSET_SIZE_CLASS,
+ 	LOOP_ALLOC_CHUNK,
++	LOOP_WRONG_SIZE_CLASS,
+ 	LOOP_NO_EMPTY_SIZE,
+ };
+ 
+@@ -3947,24 +3949,6 @@ static int can_allocate_chunk(struct btrfs_fs_info *fs_info,
  	}
- search:
-+	trace_find_free_extent_search_loop(root, ffe_ctl);
- 	ffe_ctl->have_caching_bg = false;
- 	if (ffe_ctl->index == btrfs_bg_flags_to_raid_index(ffe_ctl->flags) ||
- 	    ffe_ctl->index == 0)
-@@ -4274,6 +4276,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
- 			    &space_info->block_groups[ffe_ctl->index], list) {
- 		struct btrfs_block_group *bg_ret;
+ }
  
-+		ffe_ctl->hinted = false;
- 		/* If the block group is read-only, we can skip it entirely. */
- 		if (unlikely(block_group->ro)) {
- 			if (ffe_ctl->for_treelog)
-@@ -4315,6 +4318,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
- 		}
+-static int chunk_allocation_failed(struct find_free_extent_ctl *ffe_ctl)
+-{
+-	switch (ffe_ctl->policy) {
+-	case BTRFS_EXTENT_ALLOC_CLUSTERED:
+-		/*
+-		 * If we can't allocate a new chunk we've already looped through
+-		 * at least once, move on to the NO_EMPTY_SIZE case.
+-		 */
+-		ffe_ctl->loop = LOOP_NO_EMPTY_SIZE;
+-		return 0;
+-	case BTRFS_EXTENT_ALLOC_ZONED:
+-		/* Give up here */
+-		return -ENOSPC;
+-	default:
+-		BUG();
+-	}
+-}
+-
+ /*
+  * Return >0 means caller needs to re-search for free extent
+  * Return 0 means we have the needed free extent.
+@@ -3998,31 +3982,28 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
+ 	 * LOOP_CACHING_NOWAIT, search partially cached block groups, kicking
+ 	 *			caching kthreads as we move along
+ 	 * LOOP_CACHING_WAIT, search everything, and wait if our bg is caching
++	 * LOOP_UNSET_SIZE_CLASS, allow unset size class
+ 	 * LOOP_ALLOC_CHUNK, force a chunk allocation and try again
+ 	 * LOOP_NO_EMPTY_SIZE, set empty_size and empty_cluster to 0 and try
+ 	 *		       again
+ 	 */
+ 	if (ffe_ctl->loop < LOOP_NO_EMPTY_SIZE) {
+ 		ffe_ctl->index = 0;
+-		if (ffe_ctl->loop == LOOP_CACHING_NOWAIT) {
+-			/*
+-			 * We want to skip the LOOP_CACHING_WAIT step if we
+-			 * don't have any uncached bgs and we've already done a
+-			 * full search through.
+-			 */
+-			if (ffe_ctl->orig_have_caching_bg || !full_search)
+-				ffe_ctl->loop = LOOP_CACHING_WAIT;
+-			else
+-				ffe_ctl->loop = LOOP_ALLOC_CHUNK;
+-		} else {
++		/*
++		 * We want to skip the LOOP_CACHING_WAIT step if we
++		 * don't have any uncached bgs and we've already done a
++		 * full search through.
++		 */
++		if (ffe_ctl->loop == LOOP_CACHING_NOWAIT &&
++		    (!ffe_ctl->orig_have_caching_bg && full_search))
+ 			ffe_ctl->loop++;
+-		}
++		ffe_ctl->loop++;
  
- have_block_group:
-+		trace_find_free_extent_have_block_group(root, ffe_ctl, block_group);
- 		ffe_ctl->cached = btrfs_block_group_done(block_group);
- 		if (unlikely(!ffe_ctl->cached)) {
- 			ffe_ctl->have_caching_bg = true;
+ 		if (ffe_ctl->loop == LOOP_ALLOC_CHUNK) {
+ 			struct btrfs_trans_handle *trans;
+ 			int exist = 0;
+ 
+-			/*Check if allocation policy allows to create a new chunk */
++			/* Check if allocation policy allows to create a new chunk */
+ 			ret = can_allocate_chunk(fs_info, ffe_ctl);
+ 			if (ret)
+ 				return ret;
+@@ -4042,8 +4023,10 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
+ 						CHUNK_ALLOC_FORCE_FOR_EXTENT);
+ 
+ 			/* Do not bail out on ENOSPC since we can do more. */
+-			if (ret == -ENOSPC)
+-				ret = chunk_allocation_failed(ffe_ctl);
++			if (ret == -ENOSPC) {
++				ret = 0;
++				ffe_ctl->loop++;
++			}
+ 			else if (ret < 0)
+ 				btrfs_abort_transaction(trans, ret);
+ 			else
+@@ -4073,6 +4056,21 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
+ 	return -ENOSPC;
+ }
+ 
++static bool find_free_extent_check_size_class(struct find_free_extent_ctl *ffe_ctl,
++					      struct btrfs_block_group *bg)
++{
++	if (ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED)
++		return true;
++	if (!btrfs_is_block_group_data_only(bg))
++		return true;
++	if (ffe_ctl->loop >= LOOP_WRONG_SIZE_CLASS)
++		return true;
++	if (ffe_ctl->loop >= LOOP_UNSET_SIZE_CLASS &&
++	    bg->size_class == BTRFS_BG_SZ_NONE)
++		return true;
++	return ffe_ctl->size_class == bg->size_class;
++}
++
+ static int prepare_allocation_clustered(struct btrfs_fs_info *fs_info,
+ 					struct find_free_extent_ctl *ffe_ctl,
+ 					struct btrfs_space_info *space_info,
+@@ -4207,6 +4205,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
+ 	ffe_ctl->total_free_space = 0;
+ 	ffe_ctl->found_offset = 0;
+ 	ffe_ctl->policy = BTRFS_EXTENT_ALLOC_CLUSTERED;
++	ffe_ctl->size_class = btrfs_calc_block_group_size_class(ffe_ctl->num_bytes);
+ 
+ 	if (btrfs_is_zoned(fs_info))
+ 		ffe_ctl->policy = BTRFS_EXTENT_ALLOC_ZONED;
+@@ -4343,6 +4342,9 @@ static noinline int find_free_extent(struct btrfs_root *root,
+ 		if (unlikely(block_group->cached == BTRFS_CACHE_ERROR))
+ 			goto loop;
+ 
++		if (!find_free_extent_check_size_class(ffe_ctl, block_group))
++			goto loop;
++
+ 		bg_ret = NULL;
+ 		ret = do_allocation(block_group, ffe_ctl, &bg_ret);
+ 		if (ret == 0) {
+@@ -4377,7 +4379,8 @@ static noinline int find_free_extent(struct btrfs_root *root,
+ 
+ 		ret = btrfs_add_reserved_bytes(block_group, ffe_ctl->ram_bytes,
+ 					       ffe_ctl->num_bytes,
+-					       ffe_ctl->delalloc);
++					       ffe_ctl->delalloc,
++					       ffe_ctl->loop >= LOOP_WRONG_SIZE_CLASS);
+ 		if (ret == -EAGAIN) {
+ 			btrfs_add_free_space_unused(block_group,
+ 					ffe_ctl->found_offset,
 diff --git a/fs/btrfs/extent-tree.h b/fs/btrfs/extent-tree.h
-index 64fa8ad7914a..daa5e3505886 100644
+index daa5e3505886..0c958fc1b3b8 100644
 --- a/fs/btrfs/extent-tree.h
 +++ b/fs/btrfs/extent-tree.h
-@@ -76,6 +76,9 @@ struct find_free_extent_ctl {
+@@ -79,6 +79,9 @@ struct find_free_extent_ctl {
  
- 	/* Allocation policy */
- 	enum btrfs_extent_allocation_policy policy;
+ 	/* Whether or not the allocator is currently following a hint */
+ 	bool hinted;
 +
-+	/* Whether or not the allocator is currently following a hint */
-+	bool hinted;
++	/* Size class of block groups to prefer in early loops */
++	enum btrfs_block_group_size_class size_class;
  };
  
  enum btrfs_inline_ref_type {
 diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 423baed891d8..1c02614cd98c 100644
+index 1c02614cd98c..de55f713e042 100644
 --- a/include/trace/events/btrfs.h
 +++ b/include/trace/events/btrfs.h
-@@ -1268,6 +1268,79 @@ TRACE_EVENT(find_free_extent,
- 				 BTRFS_GROUP_FLAGS))
- );
- 
-+TRACE_EVENT(find_free_extent_search_loop,
-+
-+	TP_PROTO(const struct btrfs_root *root,
-+		 const struct find_free_extent_ctl *ffe_ctl),
-+
-+	TP_ARGS(root, ffe_ctl),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	root_objectid		)
-+		__field(	u64,	num_bytes		)
-+		__field(	u64,	empty_size		)
-+		__field(	u64,	flags			)
-+		__field(	u64,	loop			)
-+	),
-+
-+	TP_fast_assign_btrfs(root->fs_info,
-+		__entry->root_objectid	= root->root_key.objectid;
-+		__entry->num_bytes	= ffe_ctl->num_bytes;
-+		__entry->empty_size	= ffe_ctl->empty_size;
-+		__entry->flags		= ffe_ctl->flags;
-+		__entry->loop		= ffe_ctl->loop;
-+	),
-+
-+	TP_printk_btrfs("root=%llu(%s) len=%llu empty_size=%llu flags=%llu(%s) loop=%llu",
-+		  show_root_type(__entry->root_objectid),
-+		  __entry->num_bytes, __entry->empty_size, __entry->flags,
-+		  __print_flags((unsigned long)__entry->flags, "|",
-+				 BTRFS_GROUP_FLAGS),
-+		  __entry->loop)
-+);
-+
-+TRACE_EVENT(find_free_extent_have_block_group,
-+
-+	TP_PROTO(const struct btrfs_root *root,
-+		 const struct find_free_extent_ctl *ffe_ctl,
-+		 const struct btrfs_block_group *block_group),
-+
-+	TP_ARGS(root, ffe_ctl, block_group),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	root_objectid		)
-+		__field(	u64,	num_bytes		)
-+		__field(	u64,	empty_size		)
-+		__field(	u64,	flags			)
-+		__field(	u64,	loop			)
-+		__field(	bool,	hinted			)
-+		__field(	u64,	bg_start		)
-+		__field(	u64,	bg_flags		)
-+	),
-+
-+	TP_fast_assign_btrfs(root->fs_info,
-+		__entry->root_objectid	= root->root_key.objectid;
-+		__entry->num_bytes	= ffe_ctl->num_bytes;
-+		__entry->empty_size	= ffe_ctl->empty_size;
-+		__entry->flags		= ffe_ctl->flags;
-+		__entry->loop		= ffe_ctl->loop;
-+		__entry->hinted		= ffe_ctl->hinted;
-+		__entry->bg_start	= block_group->start;
-+		__entry->bg_flags	= block_group->flags;
-+	),
-+
-+	TP_printk_btrfs("root=%llu(%s) len=%llu empty_size=%llu flags=%llu(%s) "
-+			"loop=%llu hinted=%d block_group=%llu bg_flags=%llu(%s)",
-+		  show_root_type(__entry->root_objectid),
-+		  __entry->num_bytes, __entry->empty_size, __entry->flags,
-+		  __print_flags((unsigned long)__entry->flags, "|",
-+				 BTRFS_GROUP_FLAGS),
-+		  __entry->loop, __entry->hinted,
-+		  __entry->bg_start, __entry->bg_flags,
-+		  __print_flags((unsigned long)__entry->bg_flags, "|",
-+				 BTRFS_GROUP_FLAGS))
-+);
-+
- DECLARE_EVENT_CLASS(btrfs__reserve_extent,
- 
- 	TP_PROTO(const struct btrfs_block_group *block_group,
-@@ -1280,6 +1353,8 @@ DECLARE_EVENT_CLASS(btrfs__reserve_extent,
+@@ -1351,28 +1351,34 @@ DECLARE_EVENT_CLASS(btrfs__reserve_extent,
+ 	TP_STRUCT__entry_btrfs(
+ 		__field(	u64,	bg_objectid		)
  		__field(	u64,	flags			)
++		__field(	int,	bg_size_class		)
  		__field(	u64,	start			)
  		__field(	u64,	len			)
-+		__field(	u64,	loop			)
-+		__field(	bool,	hinted			)
+ 		__field(	u64,	loop			)
+ 		__field(	bool,	hinted			)
++		__field(	int,	size_class		)
  	),
  
  	TP_fast_assign_btrfs(block_group->fs_info,
-@@ -1287,15 +1362,17 @@ DECLARE_EVENT_CLASS(btrfs__reserve_extent,
+ 		__entry->bg_objectid	= block_group->start;
  		__entry->flags		= block_group->flags;
++		__entry->bg_size_class	= block_group->size_class;
  		__entry->start		= ffe_ctl->search_start;
  		__entry->len		= ffe_ctl->num_bytes;
-+		__entry->loop		= ffe_ctl->loop;
-+		__entry->hinted		= ffe_ctl->hinted;
+ 		__entry->loop		= ffe_ctl->loop;
+ 		__entry->hinted		= ffe_ctl->hinted;
++		__entry->size_class	= ffe_ctl->size_class;
  	),
  
  	TP_printk_btrfs("root=%llu(%s) block_group=%llu flags=%llu(%s) "
--		  "start=%llu len=%llu",
-+			"start=%llu len=%llu loop=%llu hinted=%d",
+-			"start=%llu len=%llu loop=%llu hinted=%d",
++			"bg_size_class=%d start=%llu len=%llu loop=%llu "
++			"hinted=%d size_class=%d",
  		  show_root_type(BTRFS_EXTENT_TREE_OBJECTID),
  		  __entry->bg_objectid,
  		  __entry->flags, __print_flags((unsigned long)__entry->flags,
  						"|", BTRFS_GROUP_FLAGS),
--		  __entry->start, __entry->len)
-+		  __entry->start, __entry->len, __entry->loop, __entry->hinted)
+-		  __entry->start, __entry->len, __entry->loop, __entry->hinted)
++		  __entry->bg_size_class, __entry->start, __entry->len,
++		  __entry->loop, __entry->hinted, __entry->size_class)
  );
  
  DEFINE_EVENT(btrfs__reserve_extent, btrfs_reserve_extent,
