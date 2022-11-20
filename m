@@ -2,50 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F86630D31
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Nov 2022 09:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF9E63125F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Nov 2022 04:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbiKSIOe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 19 Nov 2022 03:14:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
+        id S229517AbiKTDMO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 19 Nov 2022 22:12:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230333AbiKSIOU (ORCPT
+        with ESMTP id S229478AbiKTDMM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 19 Nov 2022 03:14:20 -0500
-Received: from gw.red-soft.ru (red-soft.ru [188.246.186.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F11CEB1EE;
-        Sat, 19 Nov 2022 00:14:17 -0800 (PST)
-Received: from localhost.biz (unknown [10.81.81.211])
-        by gw.red-soft.ru (Postfix) with ESMTPA id 6CC043E1870;
-        Sat, 19 Nov 2022 11:14:15 +0300 (MSK)
-From:   Artem Chernyshev <artem.chernyshev@red-soft.ru>
-To:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>
-Cc:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: [PATCH v2] btrfs: rcu_string: Replace strncpy() with strscpy()
-Date:   Sat, 19 Nov 2022 11:13:29 +0300
-Message-Id: <20221119081329.2213244-1-artem.chernyshev@red-soft.ru>
-X-Mailer: git-send-email 2.30.3
+        Sat, 19 Nov 2022 22:12:12 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C91888186;
+        Sat, 19 Nov 2022 19:12:10 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvbBk-1pFlzb1bXy-00sdaF; Sun, 20
+ Nov 2022 04:11:54 +0100
+Message-ID: <afa7552c-d673-b387-d516-38024f417137@gmx.com>
+Date:   Sun, 20 Nov 2022 11:11:48 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH] btrfs: fix a resource leak in btrfs_init_sysfs()
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+To:     Zhen Lei <thunder.leizhen@huawei.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20221119064348.1743-1-thunder.leizhen@huawei.com>
+ <a076e281-022f-1f49-b70d-513272ca86cf@gmx.com>
+In-Reply-To: <a076e281-022f-1f49-b70d-513272ca86cf@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 173646 [Nov 18 2022]
-X-KLMS-AntiSpam-Version: 5.9.59.0
-X-KLMS-AntiSpam-Envelope-From: artem.chernyshev@red-soft.ru
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 502 502 69dee8ef46717dd3cb3eeb129cb7cc8dab9e30f6, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;red-soft.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;localhost.biz:7.1.1
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2022/11/19 06:27:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2022/11/19 04:59:00 #20584775
-X-KLMS-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+X-Provags-ID: V03:K1:OzsYxUUl21+RCryxApEBMGbein91I8wCT8pwHTNWT3gbH2NsobF
+ g0cPHzHNNdXbGGkwXw4ydtzEqh+8McTFvvZI4Jx9Xa6xwdaoJfVRbce1Njx574h8z4x18Qm
+ Sj8LnpBHSS2gDc+mm9izCfivAlx3LrwCmoa82syacGgydjMgEsEEjkC/UQKWKWqKH1npHpe
+ XSAKI2kNlgra4V42aTsLw==
+UI-OutboundReport: notjunk:1;M01:P0:7r/f6XYEd6c=;2rKfUYHNomsPBGzs0xo/RNrnK9D
+ 5Yr0x5SbfYe8yvY2+2iIIInhLnKvjdjSZw9x1MPxaI8c4MGRMh5WFwyv8Obw+hqsBQTJ2BZAG
+ jJekXDH9ZGXBTAP2QbErSBjNIfOLbi++rjs+ClSON5rnW7qqMuezM+dHe3EbxKpta97y7JI5r
+ ujiesIih7xYTfXMxU52aNjvMT+3Gp/lZxOC4rL8Qa3zZza+UkMj3xsf+vQU8NwsoGec+SBhsR
+ Ry+5ZNnhxOiKmu9qDqBdySmXLs8tgzC0XZY7AGmK4omeC6peWCjqXhcSbRQs+isaneJWLer/P
+ KqRrhMiYmLbRISMrpKbIYsJqpefHYLLRGWztpMxjzKSk8e8DKw4E4j0Zm+o4VwnY7brjYCll/
+ Jk/7WVDx/xtecrJtHFBpgNV0ywaE6TFbm4gJnhmUu3RWFR413lAWqn+BY7kqyP5vXAcBKx/s9
+ l01QWA19ZWnn37WmO/Yfb7QNf2kqW49hnQzBsqz+rY2TW96VvrIGHqo8ipbRBzZLJHo3xZV98
+ Afo3bWYjFs++Odvg0WaltwMGQwUeo27KfqdsFj0kNDc+DWaV/iES4oyhlVXcYC/soWDn14C1e
+ RA7fDAyiSmTWtspsfX3QRBblbs/BVye2Ag4mW5qIFtAX+1mXbVgURxgXmcHJ4oZFa+S2j7Fye
+ j5tjQdSLpp1jbUGw/Fak40qPq2l146MsgGfLaH02icaCyFUisQkGLVBgq9Tvn3G6AOokhVrt1
+ H1rjHhbOAG+vk954jRqu8Sl2vMMnfo3G4n/XeQ9bsYK9eLuEsTD8REqpkR/+ocbZfbmJglW+f
+ qISgcEHoHeNZBoJUEVUSq0mRR1PmxcBgHkifw56d2459r/GuLfC1lwNnQYr+W7vRd1+iYLFeG
+ mT4yDbXMhzRc1CjhkkuZJsRjwP4e7aySSSBIG9oXP14o1JXudxI8T9mqtig6bL5AImgAX7jYq
+ qyMNeYTsfcbLe+FeNcnt//xn8i8=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,36 +63,48 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Using strncpy() on NUL-terminated strings are deprecated.
-To avoid possible forming of non-terminated string
-strscpy() could be used.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Fixes: 606686eeac45 ("Btrfs: use rcu to protect device->name")
-Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
----
-V1->V2 Fixed typo in subject
+On 2022/11/19 14:53, Qu Wenruo wrote:
+> 
+> 
+> On 2022/11/19 14:43, Zhen Lei wrote:
+>> When btrfs_debug_feature_attr_group fails to be created,
+>> btrfs_feature_attr_group is not removed.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> 
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
 
- fs/btrfs/rcu-string.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Wait for a minute, should we call sysfs_unmerge_group() first before 
+calling sysfs_remove_group()?
 
-diff --git a/fs/btrfs/rcu-string.h b/fs/btrfs/rcu-string.h
-index 5c1a617eb25d..d9894da7a05a 100644
---- a/fs/btrfs/rcu-string.h
-+++ b/fs/btrfs/rcu-string.h
-@@ -18,7 +18,10 @@ static inline struct rcu_string *rcu_string_strdup(const char *src, gfp_t mask)
- 					 (len * sizeof(char)), mask);
- 	if (!ret)
- 		return ret;
--	strncpy(ret->str, src, len);
-+	if (WARN_ON(strscpy(ret->str, src, len) < 0)) {
-+		kfree(ret);
-+		return NULL;
-+	}
- 	return ret;
- }
- 
--- 
-2.30.3
+As the sysfs_remove_group() will only remove the 
+btrfs_feature_attr_group, and kset_unregister() will only free 
+btrfs_kset, without removing the added btrfs_static_feature_attr_group.
 
+I haven't yet find a function that will remove all children attrs in 
+just one go, or did I miss something?
+
+Thanks,
+Qu
+> 
+> Thanks,
+> Qu
+>> ---
+>>   fs/btrfs/sysfs.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+>> index 699b54b3acaae0b..947125f2ceaaf96 100644
+>> --- a/fs/btrfs/sysfs.c
+>> +++ b/fs/btrfs/sysfs.c
+>> @@ -2322,7 +2322,7 @@ int __init btrfs_init_sysfs(void)
+>>   #ifdef CONFIG_BTRFS_DEBUG
+>>       ret = sysfs_create_group(&btrfs_kset->kobj, 
+>> &btrfs_debug_feature_attr_group);
+>>       if (ret)
+>> -        goto out2;
+>> +        goto out_remove_group;
+>>   #endif
+>>       return 0;
