@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A59631E33
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Nov 2022 11:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5421A631E31
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Nov 2022 11:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbiKUKXv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Nov 2022 05:23:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
+        id S231386AbiKUKXs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Nov 2022 05:23:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231403AbiKUKXl (ORCPT
+        with ESMTP id S231401AbiKUKXl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 21 Nov 2022 05:23:41 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB56920BDA
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Nov 2022 02:23:32 -0800 (PST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B844D8CFCC
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Nov 2022 02:23:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 24838B80DA0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 54EDE60FC5
         for <linux-btrfs@vger.kernel.org>; Mon, 21 Nov 2022 10:23:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F2FCC4347C
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Nov 2022 10:23:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F670C433D6
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Nov 2022 10:23:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669026209;
-        bh=dOSA949IMNkQu2YjQE+CFqlXlCEdTSMaImfi63V74Uo=;
+        s=k20201202; t=1669026210;
+        bh=5p7bWGGSjlx0ZbTYWWFINIoha/gLVT084HTVc2DE58o=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=AAnNsLFDsFPPAZc7dwnNypHIcp3euoynClXnIqaTAAPVE3y3kasQaaE9M6fTi4KVO
-         COMazAn6GbteH1/vZ+ZZiV6xdp6tHXp9hv4yLQhWv+3YjCu5fsNeS+YoTLZqjB2HxO
-         iSfbMz8iwgFfxXRDMCNA0zVaGTbf5kx7/WegCWB0haEvMOEu2d5NXpam42ZtjBwZe/
-         cXxGS82iIBNoIZff9QueIrMExgR0l5TbxdBl7DAHSWqlWyFzGaq47V9JLNiCq7sMsL
-         XF0Vj2ApKkhZnXNtIWMn+QUT/igpnenmGAz6U7p9RO2kUpiehLDcu269CA46WK1NkB
-         FON53p/gmVshQ==
+        b=NI5V5pqIkwBHAvxjKRZ07D6mrRjb9Pg6VjF1/YG/lHlkk7FNqSRSP0J7s9rDFyvsq
+         Ko15gPvQSyv/lDexlcyvtmMd3L4I943qsE94eNcacserivqlR1pssnTWjTzbv1PnI8
+         EyPfx1S3O2LBO//afBhHZdM+XWLpe0wkfliOASfbYx5IQbEKfTn5m7qUKumTBUzjgf
+         0OJk7qRLrO8OXte2pzAasf+9q3oS5LCZh4gvwo0bmOqVmFhZ3fTYwsozGZihzpFS5k
+         l+jA9s6/Wc24a7mSsjbh4LaPZt49RW3J6wGgjQ6epk3pEgucqx3k2iTjIHXcG4hk43
+         WI0ZlDNYUgUAw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] btrfs: unify overwrite_item() and do_overwrite_item()
-Date:   Mon, 21 Nov 2022 10:23:23 +0000
-Message-Id: <f0245136d1e1ab36fa6ab307b56d443f9f3cd0a3.1669025204.git.fdmanana@suse.com>
+Subject: [PATCH 3/3] btrfs: remove outdated logic from overwrite_item() and add assertion
+Date:   Mon, 21 Nov 2022 10:23:24 +0000
+Message-Id: <684c436b1e111cc58fb1677770a9270a1e5870fa.1669025204.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1669025204.git.fdmanana@suse.com>
 References: <cover.1669025204.git.fdmanana@suse.com>
@@ -53,131 +53,60 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-After commit 193df6245704 ("btrfs: search for last logged dir index if
-it's not cached in the inode"), there are no more callers of
-do_overwrite_item(), except overwrite_item().
+As of commit 193df6245704 ("btrfs: search for last logged dir index if
+it's not cached in the inode"), the overwrite_item() function is always
+called for a root that is rom a fs/subvolume tree. In other words, now
+it's only used during log replay to modify a fs/subvolume tree. Therefore
+we can remove the logic that checks if we are dealing with a log tree at
+overwrite_item().
 
-Originally both used to be the same function, but were split in
-commit 086dcbfa50d3 ("btrfs: insert items in batches when logging a
-directory when possible"), as there was the need to execute all logic
-of overwrite_item() but skip the tree search, since in the context of
-directory logging we already had a path with a leaf to copy data from.
+So remove that logic, replacing it with an assertion and document that if
+we ever need to support a log root there, we will need to clone the leaf
+from the fs/subvolume tree and then release it before modifying the log
+tree, which is needed to avoid a potential deadlock, similar to the one
+recently fixed by a patch with the subject:
 
-So unify them again as there is no more need to have them split.
+  "btrfs: do not modify log tree while holding a leaf from fs tree locked"
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 76 ++++++++++++++-------------------------------
- 1 file changed, 24 insertions(+), 52 deletions(-)
+ fs/btrfs/tree-log.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index f7b1bb9c63e4..742f26a217d7 100644
+index 742f26a217d7..00e0ec0ba002 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -359,11 +359,25 @@ static int process_one_buffer(struct btrfs_root *log,
- 	return ret;
- }
+@@ -385,11 +385,16 @@ static int overwrite_item(struct btrfs_trans_handle *trans,
+ 	int save_old_i_size = 0;
+ 	unsigned long src_ptr;
+ 	unsigned long dst_ptr;
+-	int overwrite_root = 0;
+ 	bool inode_item = key->type == BTRFS_INODE_ITEM_KEY;
  
--static int do_overwrite_item(struct btrfs_trans_handle *trans,
--			     struct btrfs_root *root,
--			     struct btrfs_path *path,
--			     struct extent_buffer *eb, int slot,
--			     struct btrfs_key *key)
-+/*
-+ * Item overwrite used by replay and tree logging.  eb, slot and key all refer
-+ * to the src data we are copying out.
-+ *
-+ * root is the tree we are copying into, and path is a scratch
-+ * path for use in this function (it should be released on entry and
-+ * will be released on exit).
-+ *
-+ * If the key is already in the destination tree the existing item is
-+ * overwritten.  If the existing item isn't big enough, it is extended.
-+ * If it is too large, it is truncated.
-+ *
-+ * If the key isn't in the destination yet, a new item is inserted.
-+ */
-+static int overwrite_item(struct btrfs_trans_handle *trans,
-+			  struct btrfs_root *root,
-+			  struct btrfs_path *path,
-+			  struct extent_buffer *eb, int slot,
-+			  struct btrfs_key *key)
- {
- 	int ret;
- 	u32 item_size;
-@@ -380,22 +394,10 @@ static int do_overwrite_item(struct btrfs_trans_handle *trans,
+-	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID)
+-		overwrite_root = 1;
++	/*
++	 * This is only used during log replay, so the root is always from a
++	 * fs/subvolume tree. In case we ever need to support a log root, then
++	 * we'll have to clone the leaf in the path, release the path and use
++	 * the leaf before writing into the log tree. See the comments at
++	 * copy_items() for more details.
++	 */
++	ASSERT(root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID);
+ 
  	item_size = btrfs_item_size(eb, slot);
  	src_ptr = btrfs_item_ptr_offset(eb, slot);
+@@ -542,8 +547,7 @@ static int overwrite_item(struct btrfs_trans_handle *trans,
+ 			goto no_copy;
+ 		}
  
--	/* Our caller must have done a search for the key for us. */
--	ASSERT(path->nodes[0] != NULL);
--
--	/*
--	 * And the slot must point to the exact key or the slot where the key
--	 * should be at (the first item with a key greater than 'key')
--	 */
--	if (path->slots[0] < btrfs_header_nritems(path->nodes[0])) {
--		struct btrfs_key found_key;
--
--		btrfs_item_key_to_cpu(path->nodes[0], &found_key, path->slots[0]);
--		ret = btrfs_comp_cpu_keys(&found_key, key);
--		ASSERT(ret >= 0);
--	} else {
--		ret = 1;
--	}
-+	/* Look for the key in the destination tree. */
-+	ret = btrfs_search_slot(NULL, root, key, path, 0, 0);
-+	if (ret < 0)
-+		return ret;
- 
- 	if (ret == 0) {
- 		char *src_copy;
-@@ -573,36 +575,6 @@ static int do_overwrite_item(struct btrfs_trans_handle *trans,
- 	return 0;
- }
- 
--/*
-- * Item overwrite used by replay and tree logging.  eb, slot and key all refer
-- * to the src data we are copying out.
-- *
-- * root is the tree we are copying into, and path is a scratch
-- * path for use in this function (it should be released on entry and
-- * will be released on exit).
-- *
-- * If the key is already in the destination tree the existing item is
-- * overwritten.  If the existing item isn't big enough, it is extended.
-- * If it is too large, it is truncated.
-- *
-- * If the key isn't in the destination yet, a new item is inserted.
-- */
--static int overwrite_item(struct btrfs_trans_handle *trans,
--			  struct btrfs_root *root,
--			  struct btrfs_path *path,
--			  struct extent_buffer *eb, int slot,
--			  struct btrfs_key *key)
--{
--	int ret;
--
--	/* Look for the key in the destination tree. */
--	ret = btrfs_search_slot(NULL, root, key, path, 0, 0);
--	if (ret < 0)
--		return ret;
--
--	return do_overwrite_item(trans, root, path, eb, slot, key);
--}
--
- static int read_alloc_one_name(struct extent_buffer *eb, void *start, int len,
- 			       struct fscrypt_str *name)
- {
-@@ -5395,7 +5367,7 @@ struct btrfs_dir_list {
-  *    has a size that doesn't match the sum of the lengths of all the logged
-  *    names - this is ok, not a problem, because at log replay time we set the
-  *    directory's i_size to the correct value (see replay_one_name() and
-- *    do_overwrite_item()).
-+ *    overwrite_item()).
-  */
- static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
- 				struct btrfs_inode *start_inode,
+-		if (overwrite_root &&
+-		    S_ISDIR(btrfs_inode_mode(eb, src_item)) &&
++		if (S_ISDIR(btrfs_inode_mode(eb, src_item)) &&
+ 		    S_ISDIR(btrfs_inode_mode(path->nodes[0], dst_item))) {
+ 			save_old_i_size = 1;
+ 			saved_i_size = btrfs_inode_size(path->nodes[0],
 -- 
 2.35.1
 
