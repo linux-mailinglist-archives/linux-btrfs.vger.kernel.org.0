@@ -2,119 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 167B4632A63
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Nov 2022 18:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95131632AEA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Nov 2022 18:27:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbiKURHb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Nov 2022 12:07:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57216 "EHLO
+        id S229760AbiKUR1A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Nov 2022 12:27:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbiKURHV (ORCPT
+        with ESMTP id S229966AbiKUR04 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Nov 2022 12:07:21 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE3FCB9FB;
-        Mon, 21 Nov 2022 09:07:20 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 21 Nov 2022 12:26:56 -0500
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E996CB9CC;
+        Mon, 21 Nov 2022 09:26:55 -0800 (PST)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AF9FCB811CF;
-        Mon, 21 Nov 2022 17:07:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70374C43147;
-        Mon, 21 Nov 2022 17:07:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669050438;
-        bh=cvbAIL8ABqguUdYNOpewAXmrRYY5b+E1vamA4+6bEfc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rRB1S4S5SxF4ImnqIXzJ3lqGi0vtoNBwxqmc4GX4ehBYFQfIbyUEzkA2GeQ9TU3mk
-         Ao5HqFem8FOe6PJajkpnIjO+5Ri8ck2ah9hCV7FLxgg4zDf4Wk3eHtO5r+bCE0gB4/
-         GXX9vCPbfE0sZUYdFtXQFaf/73KSl5HbEIbOcRR70Fg0Yx+7a2nLmoSJ/BKhpIUBvJ
-         FwvBj0x/wiUlQVIctlErQ3ABwhkYgRHdwfDXo2N+KNmKLJ+EFcV+MxrMGNEWhzRBGJ
-         p3BP5SsFp5hSINV5gxyfjg5w8qqHweuA6Wdwjq/uaDlx9nzAm3bqs0NtUgalByCsBC
-         C3KcoojzkACAA==
-Date:   Mon, 21 Nov 2022 09:07:18 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Subject: Re: [PATCH 19/19] iomap: remove IOMAP_F_ZONE_APPEND
-Message-ID: <Y3uwRr9XQSKzBp1g@magnolia>
-References: <20221120124734.18634-1-hch@lst.de>
- <20221120124734.18634-20-hch@lst.de>
+        by box.fidei.email (Postfix) with ESMTPSA id 9D827825BD;
+        Mon, 21 Nov 2022 12:26:53 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1669051614; bh=hjT9+VScwwtAvmermh5LJ21WaXYQ1R24NV6Ef++5l7w=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=sMPiEYRbUPg2zG6zaCENViYBcgQilN/jsxHDIhNDE/5zrIIOVUNzELZCCRVNbT/c4
+         QhOMtoYNMqQ+zz6GYI33ovaWCfin+ktxPdYR3h7vlVJNsmuDNpLD9aG+PmFxmQqB50
+         0eK/839ZCJFUKQEN1gkHxktmPhRtmQxHLzjBrS7mL2ngY2R0txkawkRAotnSzHxq8D
+         zIkKAdccYxz9ceH9d3xx8HXWFSxZ0CvqHz3+MAGqdYPpSWBkxkgTX4GQyTjRuJnN/j
+         PFSqKDZG392f9JyuuDpwXZ43hkNDsyXw3mZAyiMLIKkmVxfCBEOlIM7zTUw7AArorN
+         05rkhat7FO55g==
+Message-ID: <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
+Date:   Mon, 21 Nov 2022 12:26:51 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221120124734.18634-20-hch@lst.de>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To:     Paul Crowley <paulcrowley@google.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
+        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
+References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
+ <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
+ <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me>
+Content-Language: en-US
+In-Reply-To: <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Nov 20, 2022 at 01:47:34PM +0100, Christoph Hellwig wrote:
-> No users left now that btrfs takes REQ_OP_WRITE bios from iomap and
-> splits and converts them to REQ_OP_ZONE_APPEND internally.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+I appreciate the conversation happening on the doc; thank ya'll for 
+reading and commenting.
 
-I suspect the flags definition changes will collide with Dave's write
-race fix, but otherwise this looks ok,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Would it be worth having a meeting on Zoom or the like this week to 
+discuss the way forward for getting encryption for btrfs, be that one of 
+the extent-based encryption variations or AEAD?
 
---D
+Thanks!
 
-> ---
->  fs/iomap/direct-io.c  | 10 ++--------
->  include/linux/iomap.h |  1 -
->  2 files changed, 2 insertions(+), 9 deletions(-)
+Sweet Tea
+
+On 11/16/22 15:19, Sweet Tea Dorminy wrote:
 > 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 4eb559a16c9ed..9e883a9f80388 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -217,16 +217,10 @@ static inline blk_opf_t iomap_dio_bio_opflags(struct iomap_dio *dio,
->  {
->  	blk_opf_t opflags = REQ_SYNC | REQ_IDLE;
->  
-> -	if (!(dio->flags & IOMAP_DIO_WRITE)) {
-> -		WARN_ON_ONCE(iomap->flags & IOMAP_F_ZONE_APPEND);
-> +	if (!(dio->flags & IOMAP_DIO_WRITE))
->  		return REQ_OP_READ;
-> -	}
-> -
-> -	if (iomap->flags & IOMAP_F_ZONE_APPEND)
-> -		opflags |= REQ_OP_ZONE_APPEND;
-> -	else
-> -		opflags |= REQ_OP_WRITE;
->  
-> +	opflags |= REQ_OP_WRITE;
->  	if (use_fua)
->  		opflags |= REQ_FUA;
->  	else
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 238a03087e17e..ee6d511ef29dd 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -55,7 +55,6 @@ struct vm_fault;
->  #define IOMAP_F_SHARED		0x04
->  #define IOMAP_F_MERGED		0x08
->  #define IOMAP_F_BUFFER_HEAD	0x10
-> -#define IOMAP_F_ZONE_APPEND	0x20
->  
->  /*
->   * Flags set by the core iomap code during operations:
-> -- 
-> 2.30.2
 > 
+> On 11/3/22 15:22, Paul Crowley wrote:
+>> Thank you for creating this! I'm told the design document [1] no
+>> longer reflects the current proposal in these patches. If that's so I
+>> think it's worth bringing the design document up to date so we can
+>> review the cryptography. Thanks!
+>>
+>> [1] 
+>> https://docs.google.com/document/d/1iNnrqyZqJ2I5nfWKt7cd1T9xwU0iHhjhk9ALQW3XuII/edit
+> 
+> I apologize for the delay; I realized when this thread was bumped just 
+> now that my attempt to share the updated doc didn't seem to make it to 
+> the mailing list.
+> 
+> https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing is an update of the design document that hopefully is what you're requesting.
