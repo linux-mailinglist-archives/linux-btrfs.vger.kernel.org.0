@@ -2,85 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95131632AEA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Nov 2022 18:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9E9632B02
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Nov 2022 18:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbiKUR1A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Nov 2022 12:27:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
+        id S230116AbiKURan (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Nov 2022 12:30:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbiKUR04 (ORCPT
+        with ESMTP id S230235AbiKURai (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Nov 2022 12:26:56 -0500
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E996CB9CC;
-        Mon, 21 Nov 2022 09:26:55 -0800 (PST)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        Mon, 21 Nov 2022 12:30:38 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1448CFEB4;
+        Mon, 21 Nov 2022 09:30:36 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 9D827825BD;
-        Mon, 21 Nov 2022 12:26:53 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1669051614; bh=hjT9+VScwwtAvmermh5LJ21WaXYQ1R24NV6Ef++5l7w=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=sMPiEYRbUPg2zG6zaCENViYBcgQilN/jsxHDIhNDE/5zrIIOVUNzELZCCRVNbT/c4
-         QhOMtoYNMqQ+zz6GYI33ovaWCfin+ktxPdYR3h7vlVJNsmuDNpLD9aG+PmFxmQqB50
-         0eK/839ZCJFUKQEN1gkHxktmPhRtmQxHLzjBrS7mL2ngY2R0txkawkRAotnSzHxq8D
-         zIkKAdccYxz9ceH9d3xx8HXWFSxZ0CvqHz3+MAGqdYPpSWBkxkgTX4GQyTjRuJnN/j
-         PFSqKDZG392f9JyuuDpwXZ43hkNDsyXw3mZAyiMLIKkmVxfCBEOlIM7zTUw7AArorN
-         05rkhat7FO55g==
-Message-ID: <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
-Date:   Mon, 21 Nov 2022 12:26:51 -0500
-MIME-Version: 1.0
-Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To:     Paul Crowley <paulcrowley@google.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 60FF11F8B5;
+        Mon, 21 Nov 2022 17:30:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1669051835;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YC/w1ZEf/yD+TKSVm+XUDS5wiWuV45v3F3idSErZQMA=;
+        b=eZc9FKzLIkXrJrcU19DEQfSb8rSNHkirEGnbdq2370z/w68KZ1Acq/KfMSPCzUKK+gdnQt
+        Cu7QglOARinVzB13G9d6vn/YiAr2mAKFACiA/gv0iVLJ7of9BGILGI0TJ21XMW1mu2D7lr
+        RU1fd9gKNPeeIl0KqQQlycob4ldMk7U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1669051835;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YC/w1ZEf/yD+TKSVm+XUDS5wiWuV45v3F3idSErZQMA=;
+        b=o1N2cd5tBR413l9hk59J6J+bkfq/70MWFTXCOF5/uXk3W1tpIlZSZqsvEVd28yqfguqhpi
+        3JdJ8IdPFRyYXhAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 236171376E;
+        Mon, 21 Nov 2022 17:30:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id inarB7u1e2PbBAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 21 Nov 2022 17:30:35 +0000
+Date:   Mon, 21 Nov 2022 18:30:05 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fsdevel@vger.kernel.org, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
-        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
-References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
- <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
- <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me>
-Content-Language: en-US
-In-Reply-To: <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] btrfs: replace INT_LIMIT(loff_t) with OFFSET_MAX
+Message-ID: <20221121173005.GX5824@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20221121024418.1800-1-thunder.leizhen@huawei.com>
+ <20221121024418.1800-2-thunder.leizhen@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221121024418.1800-2-thunder.leizhen@huawei.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I appreciate the conversation happening on the doc; thank ya'll for 
-reading and commenting.
-
-Would it be worth having a meeting on Zoom or the like this week to 
-discuss the way forward for getting encryption for btrfs, be that one of 
-the extent-based encryption variations or AEAD?
-
-Thanks!
-
-Sweet Tea
-
-On 11/16/22 15:19, Sweet Tea Dorminy wrote:
+On Mon, Nov 21, 2022 at 10:44:17AM +0800, Zhen Lei wrote:
+> OFFSET_MAX is self-annotated and more readable.
 > 
-> 
-> On 11/3/22 15:22, Paul Crowley wrote:
->> Thank you for creating this! I'm told the design document [1] no
->> longer reflects the current proposal in these patches. If that's so I
->> think it's worth bringing the design document up to date so we can
->> review the cryptography. Thanks!
->>
->> [1] 
->> https://docs.google.com/document/d/1iNnrqyZqJ2I5nfWKt7cd1T9xwU0iHhjhk9ALQW3XuII/edit
-> 
-> I apologize for the delay; I realized when this thread was bumped just 
-> now that my attempt to share the updated doc didn't seem to make it to 
-> the mailing list.
-> 
-> https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing is an update of the design document that hopefully is what you're requesting.
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+
+Acked-by: David Sterba <dsterba@suse.com>
