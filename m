@@ -2,100 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3D3632B6D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Nov 2022 18:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7BC632BAD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Nov 2022 19:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbiKURsG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Nov 2022 12:48:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40152 "EHLO
+        id S229917AbiKUSCN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Nov 2022 13:02:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbiKURsE (ORCPT
+        with ESMTP id S229723AbiKUSCM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Nov 2022 12:48:04 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1491817E39
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Nov 2022 09:48:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=QlVIFBPiaqfkV0sxxypJAb2wvYMQwGaLkxQytb9tTAE=; b=mxvjFkt0VhWYDTPOL1h6utRjAo
-        qm9RzG9mCPcRlq6mNk+avNo2y9K/PhR7jOK3CnGT02dZOUgmq7vliw0fuZeU0o5O+FRD3V1y3R/Aq
-        P1LL2CeO8IE66GmbENBCeK4AGOuV+YCvQUwe1k0ut5My+UtpQmRL2qE9GTvNLZR4eoIOkr9rB2J/e
-        YECMfoVJZw/dJ15xQ0cWBW8nMre/8cDucyKhbmMHMTklQOvfTg7XvnpCbWwJLc/t01KykA+xy0Dcj
-        nPJDOzPSeVXramd2yaPQ1RWv+6cyvLTTqX26rjQfGR5LjzKjG36U3QUuUWy6jOXWTtUh54dONV/Od
-        tj2Yg14w==;
-Received: from [2001:4bb8:199:6d04:9a88:dc19:c657:d17f] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oxAtj-00GUMQ-8a; Mon, 21 Nov 2022 17:47:59 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: stop using write_one_page in btrfs_scratch_superblock
-Date:   Mon, 21 Nov 2022 18:47:49 +0100
-Message-Id: <20221121174749.387407-3-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221121174749.387407-1-hch@lst.de>
-References: <20221121174749.387407-1-hch@lst.de>
+        Mon, 21 Nov 2022 13:02:12 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2DF1C413
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Nov 2022 10:02:12 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B9BD3220CF;
+        Mon, 21 Nov 2022 18:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1669053730;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L4kO9FVbiwRfV69KzyqFJratRmenaDsm5fBgrA0bIlg=;
+        b=jUSr5TaT3hnJT1ECtB/E4gPpqIfHgXDXyVhnUBIQ5Hu2zLiYhIP8EvxkSjPWVCr+u6Tx7j
+        XCQbCqU3nV8HGOd4+8ItWsgJEG9hXrsM56+o8bMkSm/92zg/9lBXXBHMBr0PzakdV0hihf
+        AWs3RzTE8CwoqKppq6xwopJZkL59wzk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1669053730;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L4kO9FVbiwRfV69KzyqFJratRmenaDsm5fBgrA0bIlg=;
+        b=FsjRdmY/AVwrKmgxPYc+N7InNeTkoRkUdEJNzH4a6LNnJBPEWFcQTe3H4G9u3R8JbpLrqF
+        6iz3jkqrUoCtiHCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A06531376E;
+        Mon, 21 Nov 2022 18:02:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id VKZgJiK9e2M2FQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 21 Nov 2022 18:02:10 +0000
+Date:   Mon, 21 Nov 2022 19:01:41 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: fix uninitialized parent in insert_state
+Message-ID: <20221121180141.GZ5824@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <9292ce2f2a9cadb80337cc350716ad9fc244ac2f.1668801961.git.josef@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9292ce2f2a9cadb80337cc350716ad9fc244ac2f.1668801961.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-write_one_page is an awkward interface that expects the page locked
-and ->writepage to be implemented.  Just mark the sb dirty, put
-the page and then call the proper bdev helper to sync the range.
+On Fri, Nov 18, 2022 at 03:06:09PM -0500, Josef Bacik wrote:
+> I don't know how this isn't caught when we build this in the kernel, but
+> while sync'ing extent-io-tree.c into btrfs-progs I got an error because
+> parent could potentially be uninitialized when we link in a new node,
+> specifically when the extent_io_tree is empty.  This means we could have
+> garbage in the parent color.  I don't know what the ramifications are of
+> that, but it's probably not great, so fix this by init'ing parent to
+> NULL.  I spot checked all of our other usages in btrfs and we appear to
+> be doing the correct thing everywhere else.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/btrfs/volumes.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 2dd7d2c5b0d80..ddf172ba67972 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2009,23 +2009,22 @@ static void btrfs_scratch_superblock(struct btrfs_fs_info *fs_info,
- 				     struct block_device *bdev, int copy_num)
- {
- 	struct btrfs_super_block *disk_super;
--	struct page *page;
-+	const size_t len = sizeof(disk_super->magic);
-+	u64 bytenr = btrfs_sb_offset(copy_num);
- 	int ret;
- 
--	disk_super = btrfs_read_dev_one_super(bdev, copy_num, false);
-+	disk_super = btrfs_read_disk_super(bdev, bytenr, bytenr);
- 	if (IS_ERR(disk_super))
- 		return;
--	memset(&disk_super->magic, 0, sizeof(disk_super->magic));
--	page = virt_to_page(disk_super);
--	set_page_dirty(page);
--	lock_page(page);
--	/* write_on_page() unlocks the page */
--	ret = write_one_page(page);
-+	memset(&disk_super->magic, 0, len);
-+	set_page_dirty(virt_to_page(disk_super));
-+	btrfs_release_disk_super(disk_super);
-+
-+	ret = sync_blockdev_range(bdev, bytenr, bytenr + len - 1);
- 	if (ret)
- 		btrfs_warn(fs_info,
- 			"error clearing superblock number %d (%d)",
- 			copy_num, ret);
--	btrfs_release_disk_super(disk_super);
- }
- 
- void btrfs_scratch_superblocks(struct btrfs_fs_info *fs_info,
--- 
-2.30.2
-
+Added to misc-next, thanks. The initialization got lost during the
+conversion in c7e118cf98c7 ("btrfs: open code rbtree search in
+insert_state").
