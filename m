@@ -2,60 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64327633BF4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Nov 2022 13:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3C4633F5C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Nov 2022 15:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233080AbiKVMAV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Nov 2022 07:00:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
+        id S233259AbiKVOvz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Nov 2022 09:51:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231583AbiKVMAT (ORCPT
+        with ESMTP id S232762AbiKVOvx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Nov 2022 07:00:19 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E3F218AE;
-        Tue, 22 Nov 2022 04:00:15 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNt0C-1oZIJS1gBE-00OIfY; Tue, 22
- Nov 2022 12:59:59 +0100
-Message-ID: <351a524a-3739-e9f3-3b20-0854e8b2a1af@gmx.com>
-Date:   Tue, 22 Nov 2022 19:59:53 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH v2] btrfs: normalize the error handling branch in
- btrfs_init_sysfs()
-To:     Zhen Lei <thunder.leizhen@huawei.com>, Chris Mason <clm@fb.com>,
+        Tue, 22 Nov 2022 09:51:53 -0500
+Received: from gw.red-soft.ru (red-soft.ru [188.246.186.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D9B9663D2;
+        Tue, 22 Nov 2022 06:51:51 -0800 (PST)
+Received: from localhost.biz (unknown [10.81.81.211])
+        by gw.red-soft.ru (Postfix) with ESMTPA id 427563E1A6E;
+        Tue, 22 Nov 2022 17:51:49 +0300 (MSK)
+From:   Artem Chernyshev <artem.chernyshev@red-soft.ru>
+To:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>
+Cc:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
         Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20221122115002.1831-1-thunder.leizhen@huawei.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20221122115002.1831-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:Rv7u5fK2t4aiAyK9OInAXgLL4BGT/xivFuzt5wm/jtBRjO5DY9L
- gTfu/p2CaJQdPn2b3M1zpuF143Zg+kMQ6AcaEWhput4avG8i65bKaESvE6dpkJzC0qKQSck
- f8xAV/HfY2iSMYM5rKV80OAe183CNaYY//UCeW6ofXIVSmOaY1ILsgffqLzlNu5LgivjL4C
- 76f64K07CCgoxem3ZCUYg==
-UI-OutboundReport: notjunk:1;M01:P0:tHUVKFLNqMQ=;Nq+/Vd6hju5hh2jLnYbYmllmq1q
- kpcN3X+FbzdBAH6UFMy4ZbDpvIHCCSf2eWUutVGi4o2j+Qq2cPQQG4PRQq/wHGu7/R7NPjubY
- MBcmRe1MLsEmWOcNCVCCXNq9+zfPk7UrGph1hNlYA27MMqhvBqlmgzeGCswuRPpii71WLDEtT
- hJz+eIlnP0pE68PJmsMKY4JjdSWkXFQBIbLutkhuqEbgG+J2zHfmCkuL8T9TgqTeioNDg4paa
- IFMC84ISTVSQOsma1Om8kwoXEhYAWq/ufivYSrBkjW6hyYpb9P/sryzVG0PCpmtCmQehHPWIW
- V9P00LCO+D4gpyadxyVlrmxBHJNM/dri9rvpX/vwPgysrrFkUScSfzXIqZeDBc/EvDB6PgdAH
- CjjfI1qzahMeblm/biQQ9GlGOT0D+I9K1uzYkfm7sLRAFdpnPTKrZ70AEgEbeaAimVXn06lVb
- x4umAzLipUc9yq199KvP3IWdtOJF/QI2fp8wna8wWobsXxXABRgnp1jaQR0IIMShGA+qc0MQi
- 9VMKhTX/NRIFqkZ2fb89TjNbILdQ0BbcWbQwvauEv7bP0cWOjOuOKBfM5IzodrcBnASqulFVl
- OubbUSMY6G9ij8KM/fSK4EY6nLHFA2oWNAJK5OoxSNRo/nIMIEQUF8KLB7hta3HQyCvmrJ9MR
- WZFOs9IJjkNJOMXuuCFayDGmQOmSf9zT5ExkbRtlQliwI1VwxsS5b4IiyhxPhmO0JEQKWUwQe
- PYwMSLi4pl0k834yAYCGbZxLVgtO/eXe/IflzJQaAa4a16t4+sZOyPoBh3BgFuUU/legbq33b
- gGJJUInTOvzLtNcjrjMrpVFquQ+6+mjb3edETwTbZpolAAECwklI+BknsYxwEadJeAbrf+Y03
- Nj3EcnH/Uk8HsMtn9NBeVoBh2NBDI0Uo1j3TXxTAFrL9xYo70yJg9ZFf9IdwzQdchsLjLKwwg
- zUxj0JbWlev3A5pbP551hZcKrzU=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+Subject: [PATCH v3] btrfs: Replace strncpy() with strscpy()
+Date:   Tue, 22 Nov 2022 17:51:08 +0300
+Message-Id: <20221122145108.3710710-1-artem.chernyshev@red-soft.ru>
+X-Mailer: git-send-email 2.30.3
+In-Reply-To: <20221121185427.GB5824@twin.jikos.cz>
+References: 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 173685 [Nov 22 2022]
+X-KLMS-AntiSpam-Version: 5.9.59.0
+X-KLMS-AntiSpam-Envelope-From: artem.chernyshev@red-soft.ru
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=none
+X-KLMS-AntiSpam-Info: LuaCore: 502 502 69dee8ef46717dd3cb3eeb129cb7cc8dab9e30f6, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;red-soft.ru:7.1.1;localhost.biz:7.1.1
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2022/11/22 09:40:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2022/11/22 11:32:00 #20598255
+X-KLMS-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,43 +55,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Using strncpy() on NUL-terminated strings are deprecated.
+To avoid possible forming of non-terminated string
+strscpy() could be used.
 
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-On 2022/11/22 19:50, Zhen Lei wrote:
-> Although kset_unregister() can eventually remove all attribute files,
-> explicitly rolling back with the matching function makes the code logic
-> look clearer.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Fixes: 475f63874d73 ("btrfs: new ioctls for scrub")
+Fixes: 606686eeac45 ("Btrfs: use rcu to protect device->name")
+Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
+---
+V1->V2 Fixed typo in subject
+V2->V3 Added fix for ioctl.c
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+ fs/btrfs/ioctl.c      | 5 ++---
+ fs/btrfs/rcu-string.h | 5 ++++-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-Thanks,
-Qu
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index d5dd8bed1488..fdf62d514662 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3748,9 +3748,8 @@ static long btrfs_ioctl_dev_info(struct btrfs_fs_info *fs_info,
+ 	di_args->total_bytes = btrfs_device_get_total_bytes(dev);
+ 	memcpy(di_args->uuid, dev->uuid, sizeof(di_args->uuid));
+ 	if (dev->name) {
+-		strncpy(di_args->path, rcu_str_deref(dev->name),
+-				sizeof(di_args->path) - 1);
+-		di_args->path[sizeof(di_args->path) - 1] = 0;
++		strscpy(di_args->path, rcu_str_deref(dev->name),
++				sizeof(di_args->path));
+ 	} else {
+ 		di_args->path[0] = '\0';
+ 	}
+diff --git a/fs/btrfs/rcu-string.h b/fs/btrfs/rcu-string.h
+index 5c1a617eb25d..d9894da7a05a 100644
+--- a/fs/btrfs/rcu-string.h
++++ b/fs/btrfs/rcu-string.h
+@@ -18,7 +18,10 @@ static inline struct rcu_string *rcu_string_strdup(const char *src, gfp_t mask)
+ 					 (len * sizeof(char)), mask);
+ 	if (!ret)
+ 		return ret;
+-	strncpy(ret->str, src, len);
++	if (WARN_ON(strscpy(ret->str, src, len) < 0)) {
++		kfree(ret);
++		return NULL;
++	}
+ 	return ret;
+ }
+ 
+-- 
+2.30.3
 
-> ---
->   fs/btrfs/sysfs.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> v1 --> v2:
-> 1. Add sysfs_unmerge_group() to unmerge group first.
-> 2. Update subject and commit message, no resource leaks.
-> 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 699b54b3acaae0b..74fef1f49c358cd 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -2321,8 +2321,11 @@ int __init btrfs_init_sysfs(void)
->   
->   #ifdef CONFIG_BTRFS_DEBUG
->   	ret = sysfs_create_group(&btrfs_kset->kobj, &btrfs_debug_feature_attr_group);
-> -	if (ret)
-> -		goto out2;
-> +	if (ret) {
-> +		sysfs_unmerge_group(&btrfs_kset->kobj,
-> +				    &btrfs_static_feature_attr_group);
-> +		goto out_remove_group;
-> +	}
->   #endif
->   
->   	return 0;
