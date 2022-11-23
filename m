@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9827B636D47
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Nov 2022 23:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04852636D5C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Nov 2022 23:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbiKWWi0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Nov 2022 17:38:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
+        id S229750AbiKWWiX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Nov 2022 17:38:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbiKWWiB (ORCPT
+        with ESMTP id S229758AbiKWWiC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Nov 2022 17:38:01 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACEE101E8
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:37:59 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id d8so13461641qki.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:37:59 -0800 (PST)
+        Wed, 23 Nov 2022 17:38:02 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1075E9D1
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:38:01 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id s18so11519678qvo.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:38:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+a9t2rbSZiRUOuExHq+1TWeATRk9YCY5aTuvq80WToE=;
-        b=GYeZGT7SkEHJ4gIOmvuefVweDT/T1Agc2IEQZrnasTwQgrmN88k89W4wGz5n2KbMgM
-         urzihLU26DkRtdAfIAQ3YEE71JCnAqH0+gsCMtl4xXNMtJK2uSrADoH2u3dCenftdpaY
-         g24sceNXxDKtNzdDJZhUqmu91uqoLVfKZfRQTKtkvtn6b9n4hiZ05Vxc/MylRytF0AmN
-         RwcTQ0IvPpYvSfKX7yon5AdU3nb2xXpwBNkpLkdsWgG4Z+W1H4djYhFn0moiDxjiDTfb
-         DTMMfIFSPzULwzZcILLGT0RwNT74JoOb9O262iHDtttNQV8DSjjKIzC9M1EQAd+PneO0
-         e9Dw==
+        bh=n+6H0AtY36YGq4Isf0qYbCclZ5/pEMXkv36lJm2QyZs=;
+        b=ggv5xzIgtLR45wQ93MEvXXuAFiLKH11TsjP/A2wkWt57ZDKz0fCMs/soDpF9WlXQYD
+         bprpj2tRyfpE6UNTrtchUJZm3srit4SzNlZkLH1P/WMrLI2N+QVaOjT9gmVVX/sHkLff
+         L7Ilr41cCns2cY5pJ7QmaTcM4j/9m7FveEEw/AYlIOaRmNkpnBX4/lNPr29OdQfuhDmT
+         PXb3mMJNezpYBBMlA6M1IIdqAaN+v8z3eR/ojGomkQUFaROIxYHRYwqlJ4fUXzoRyT0g
+         l6Q8gEHpb55xECsINsprks9NehluNr9cDaOeTCp+LGX8WyzOWWk5NWlvkNSXQIyCpX4G
+         uyNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+a9t2rbSZiRUOuExHq+1TWeATRk9YCY5aTuvq80WToE=;
-        b=MBKflWOMDVTZ6jVd69/89fQg2sBEZvwU1LUm9QpnTrFPh8gR2Z3e/KlWLWKRDJApXb
-         39+FR4VuOV0Of2qq/SCclPH9utTKw89q4yj3yFXy5YrHNG/fIUEpCeb+8GVVCCu1kdRq
-         tzPfdf3CjRDWY0hfcfqaMnc1QbqcQoxzRZzGIjLfKBnuqEfHDtpcxVg0cZTAV0GoKrZF
-         LNawajiA68+newFT2GUfIlT0cd7x1hzEeAxMaLjhNU7sAySYzvsruRpePEUJ/oHVxVvP
-         8zHX28jD/LSNS7ZxCN0wXYLC+a3FClMHz23Audo72RkTJhwZr6Pkt0rq1Y/Nd+eA86Li
-         Elmw==
-X-Gm-Message-State: ANoB5pkLV/MjqQPIHlbS2ox7LnKM7pIA7517i8pBBEZ7jkGy53ZxWi3O
-        MVVfQidP7BOdYpHYBgBlmenPAlDbgzJEYw==
-X-Google-Smtp-Source: AA0mqf76XJ7c2769E+wiKeVP6sF6xDqXw2FppwpWT+obYQ43sG1d0PI1xypqn638Vg0QMckVuhwekQ==
-X-Received: by 2002:a05:620a:c95:b0:6fa:91f9:c84d with SMTP id q21-20020a05620a0c9500b006fa91f9c84dmr26672039qki.724.1669243078974;
-        Wed, 23 Nov 2022 14:37:58 -0800 (PST)
+        bh=n+6H0AtY36YGq4Isf0qYbCclZ5/pEMXkv36lJm2QyZs=;
+        b=uMY2K0AZgRtSw090kl1XvESwYbm37Q2hbZRExqxUg7+D3iZ2Hc+vPkROgjK2SyMCzo
+         +U2tVU/D8d2bqVMwkW6r0zSw4CfBvA7QHbi0GdA1+smOls4Z6c/mTR+OePABGn8rcN0X
+         2dOAgiOsCUndXgXDguVOsJpAhBnm7xvUrxuWubwka4/LIwZ4hJ3FZ7AeYKPJS39XjjRJ
+         4nwtr6J+Z6reYZFebuCJW3w1XkJPbfyExxN7ffCpPgCMtwNm2HT+Q7iPFq5tTi2Bgyly
+         FMs062DDqlLv5xPuFZOVDK52YOG72CB/8Czx4+V38RdZ6n1oCW5bH8t+3vcHwyQbsT1G
+         /c5g==
+X-Gm-Message-State: ANoB5pmZRTZqMZ8zU3yI3yFYb4Tas7Jakm+eOsrLW07wgLfvczEglXaP
+        hWIeC5Lntc9GbjnWDf7r2lphK0WVZhXOyg==
+X-Google-Smtp-Source: AA0mqf5T+S+edVodbb3zy4r2EQ5PU7PhNLgsjdZ4uMJ3fc3uOM2BatfBZIkr8bayNB6w2YqO/kTA0A==
+X-Received: by 2002:a05:6214:2f02:b0:4bc:158d:fae9 with SMTP id od2-20020a0562142f0200b004bc158dfae9mr28715667qvb.22.1669243080284;
+        Wed, 23 Nov 2022 14:38:00 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id d17-20020a05620a241100b006f87d28ea3asm12994611qkn.54.2022.11.23.14.37.58
+        by smtp.gmail.com with ESMTPSA id fd3-20020a05622a4d0300b003a586888a20sm10506476qtb.79.2022.11.23.14.37.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 14:37:58 -0800 (PST)
+        Wed, 23 Nov 2022 14:37:59 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 15/29] btrfs-progs: move dirty eb tracking to it's own io_tree
-Date:   Wed, 23 Nov 2022 17:37:23 -0500
-Message-Id: <66d6451a0c3d62cecfd2bcfc70c4b4c7f990ccc1.1669242804.git.josef@toxicpanda.com>
+Subject: [PATCH v3 16/29] btrfs-progs: do not pass io_tree into verify_parent_transid
+Date:   Wed, 23 Nov 2022 17:37:24 -0500
+Message-Id: <5d9e5ce4f0a12d98f07b3bbb062246a85091cbd2.1669242804.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1669242804.git.josef@toxicpanda.com>
 References: <cover.1669242804.git.josef@toxicpanda.com>
@@ -69,89 +69,48 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs-progs has a cache tree embedded in the extent_io_tree in order to
-track extent buffers.  We use the extent_io_tree part to track dirty,
-and the cache tree to keep the extent buffers in.  When we sync
-extent-io-tree.[ch] we'll lose this ability, so separate out the dirty
-tracking into its own extent_io_tree.  Subsequent patches will adjust
-the extent buffer lookup so it doesn't use the custom extent_io_tree
-thing.
+We do not use the io_tree, don't bother passing it into
+verify_parent_transid.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/ctree.h       | 1 +
- kernel-shared/disk-io.c     | 2 ++
- kernel-shared/extent_io.c   | 4 ++--
- kernel-shared/transaction.c | 2 +-
- 4 files changed, 6 insertions(+), 3 deletions(-)
+ kernel-shared/disk-io.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 3f674484..b9a58325 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -1218,6 +1218,7 @@ struct btrfs_fs_info {
- 	struct btrfs_root *log_root_tree;
- 
- 	struct extent_io_tree extent_cache;
-+	struct extent_io_tree dirty_buffers;
- 	struct extent_io_tree free_space_cache;
- 	struct extent_io_tree pinned_extents;
- 	struct extent_io_tree extent_ins;
 diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index ad4d0f4c..382d15f5 100644
+index 382d15f5..8c428ade 100644
 --- a/kernel-shared/disk-io.c
 +++ b/kernel-shared/disk-io.c
-@@ -867,6 +867,7 @@ struct btrfs_fs_info *btrfs_new_fs_info(int writable, u64 sb_bytenr)
- 		goto free_all;
+@@ -258,8 +258,7 @@ void readahead_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 	kfree(multi);
+ }
  
- 	extent_io_tree_init(&fs_info->extent_cache);
-+	extent_io_tree_init(&fs_info->dirty_buffers);
- 	extent_io_tree_init(&fs_info->free_space_cache);
- 	extent_io_tree_init(&fs_info->pinned_extents);
- 	extent_io_tree_init(&fs_info->extent_ins);
-@@ -1350,6 +1351,7 @@ void btrfs_cleanup_all_caches(struct btrfs_fs_info *fs_info)
- 		free_extent_buffer(eb);
- 	}
- 	free_mapping_cache_tree(&fs_info->mapping_tree.cache_tree);
-+	extent_io_tree_cleanup(&fs_info->dirty_buffers);
- 	extent_io_tree_cleanup(&fs_info->extent_cache);
- 	extent_io_tree_cleanup(&fs_info->free_space_cache);
- 	extent_io_tree_cleanup(&fs_info->pinned_extents);
-diff --git a/kernel-shared/extent_io.c b/kernel-shared/extent_io.c
-index bdfb2de6..4b6e0bee 100644
---- a/kernel-shared/extent_io.c
-+++ b/kernel-shared/extent_io.c
-@@ -1042,7 +1042,7 @@ out:
- 
- int set_extent_buffer_dirty(struct extent_buffer *eb)
+-static int verify_parent_transid(struct extent_io_tree *io_tree,
+-				 struct extent_buffer *eb, u64 parent_transid,
++static int verify_parent_transid(struct extent_buffer *eb, u64 parent_transid,
+ 				 int ignore)
  {
--	struct extent_io_tree *tree = &eb->fs_info->extent_cache;
-+	struct extent_io_tree *tree = &eb->fs_info->dirty_buffers;
- 	if (!(eb->flags & EXTENT_DIRTY)) {
- 		eb->flags |= EXTENT_DIRTY;
- 		set_extent_dirty(tree, eb->start, eb->start + eb->len - 1);
-@@ -1053,7 +1053,7 @@ int set_extent_buffer_dirty(struct extent_buffer *eb)
- 
- int clear_extent_buffer_dirty(struct extent_buffer *eb)
- {
--	struct extent_io_tree *tree = &eb->fs_info->extent_cache;
-+	struct extent_io_tree *tree = &eb->fs_info->dirty_buffers;
- 	if (eb->flags & EXTENT_DIRTY) {
- 		eb->flags &= ~EXTENT_DIRTY;
- 		clear_extent_dirty(tree, eb->start, eb->start + eb->len - 1);
-diff --git a/kernel-shared/transaction.c b/kernel-shared/transaction.c
-index c50abfca..c1364d69 100644
---- a/kernel-shared/transaction.c
-+++ b/kernel-shared/transaction.c
-@@ -136,7 +136,7 @@ int __commit_transaction(struct btrfs_trans_handle *trans,
- 	u64 end;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct extent_buffer *eb;
--	struct extent_io_tree *tree = &fs_info->extent_cache;
-+	struct extent_io_tree *tree = &fs_info->dirty_buffers;
  	int ret;
+@@ -374,8 +373,7 @@ struct extent_buffer* read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 		ret = read_whole_eb(fs_info, eb, mirror_num);
+ 		if (ret == 0 && csum_tree_block(fs_info, eb, 1) == 0 &&
+ 		    check_tree_block(fs_info, eb) == 0 &&
+-		    verify_parent_transid(&fs_info->extent_cache, eb,
+-					  parent_transid, ignore) == 0) {
++		    verify_parent_transid(eb, parent_transid, ignore) == 0) {
+ 			if (eb->flags & EXTENT_BAD_TRANSID &&
+ 			    list_empty(&eb->recow)) {
+ 				list_add_tail(&eb->recow,
+@@ -2273,8 +2271,7 @@ int btrfs_buffer_uptodate(struct extent_buffer *buf, u64 parent_transid)
+ 	if (!ret)
+ 		return ret;
  
- 	while(1) {
+-	ret = verify_parent_transid(&buf->fs_info->extent_cache, buf,
+-				    parent_transid,
++	ret = verify_parent_transid(buf, parent_transid,
+ 				    buf->fs_info->allow_transid_mismatch);
+ 	return !ret;
+ }
 -- 
 2.26.3
 
