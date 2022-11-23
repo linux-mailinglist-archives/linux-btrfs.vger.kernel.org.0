@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AC4636D53
+	by mail.lfdr.de (Postfix) with ESMTP id 10C56636D51
 	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Nov 2022 23:39:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbiKWWiT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Nov 2022 17:38:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55542 "EHLO
+        id S229816AbiKWWiV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Nov 2022 17:38:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbiKWWhy (ORCPT
+        with ESMTP id S229750AbiKWWhz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Nov 2022 17:37:54 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8123FBA3
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:37:51 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id j6so13093241qvn.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:37:51 -0800 (PST)
+        Wed, 23 Nov 2022 17:37:55 -0500
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E24D42F46
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:37:53 -0800 (PST)
+Received: by mail-qv1-xf35.google.com with SMTP id d18so9595415qvs.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:37:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FNSk3avLcnx+83jLUU0zUvRpy79WTW+kzQEUfBiacrs=;
-        b=8EFRKsv4ucTiqgNR9PeWGS2bfLp9SeOdkKAmkXq9vr9IG3IW9/fU99zhUA+qgsNyiV
-         rZkSsX8OO58Ux4zM/CIseJrmQ8XiMdM1G8kpjDohwVnM2ctU2w9x+2fQFgg2P8wjYr8n
-         8c7oHz5ZmQTS8/j7dRRUmpLjsjT+v9KzRkcv39BypDmB8q0FbIeVH3QN6tYWJoleMyJD
-         kEQ17hVAONBef3BJfEKR0SsBRfBEtb9+f15yem/jDYt7skU4ehDZikEFwYntdwIJDspK
-         /6Fl23Xsn1WC2LQXoBclNscsV/ZlAhanVNS5fruu1MBMDd0UOT+hT9N/PTKQt3LLNwnW
-         nqLQ==
+        bh=3N1E6gVteJkHBweW43ajyMRy92VMEYEPt/eL23IpKcM=;
+        b=XurG+mRlrQTYbBUkRc8ASiDsyAOF2IeArbO2DFRSUQ3lrwUhYMFt15CW1Mi0rvIyN9
+         VIo/J2dQgxY+MmFWU33DBaehDn0X0Duog5FPyGXnUbbOcsBKhdPr42f40Qlv6q+rtO0h
+         86/LvhGoy5ucsllv+F6gAJbEmKqPXJl3/1v+I3Px0sylRrF2FwHb4hzpckxiA3+io1iF
+         6gqYFfYqb8SzDS0ghwr28MQt+FdI+OJ+KsKFf/vqq9HAe1HDJgB5WEJOPIH8XiJpeCax
+         VfBLim+Hggpl1a6g1o62HSRiD2VCudNjqLQELxip6baJGXnHcG1XcMYEo+RnyMRwvemE
+         cb+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FNSk3avLcnx+83jLUU0zUvRpy79WTW+kzQEUfBiacrs=;
-        b=vpnl0SLdN32XFrEUK5FsVmszVUDCcyU9/SpKl5aTO745LzpCUl6ixOc96iOL6rmt97
-         iIJLnMXKafj/jji1m8NLuemiQ/0T+ixobxbmKscgPtfknw/8HTmtEsGDZYk5cDl72Hrp
-         gkTgNRYgejRYDs2TR9LJ0HKNBGVJUF0D4UjToPmspw8ApMaRWBKYQIoQlESAnO5c4/SE
-         vDpaUdfE1z9ZhZv/VH3YY23v9xZChwHF2yU/bLH1nV8bX6NDOAaYdWjE5ob2d7KLDA34
-         Em6pBd/YlQ8G+IMXjZVsAPJ55AKdZfof6qCyfMnEPewoo25/8gcMT5AjUm5QX4yDN4D7
-         EDcQ==
-X-Gm-Message-State: ANoB5pm/siPTP/+FJzhDeoKSiEi3/vkYLUYqAFGudShGA7/i+X9Rcy/i
-        uNDxXuIvN2fqa5qFynvmz7BrdBkGAUfWeA==
-X-Google-Smtp-Source: AA0mqf4wwHQA/FQGDPTwr88u0J43suBPdoMnaTz3O1S1BLn7ZtzngyDHhlwntQnju6HmXi1kQvcgvA==
-X-Received: by 2002:ad4:43eb:0:b0:4c6:90f0:cbe6 with SMTP id f11-20020ad443eb000000b004c690f0cbe6mr9500349qvu.116.1669243070675;
-        Wed, 23 Nov 2022 14:37:50 -0800 (PST)
+        bh=3N1E6gVteJkHBweW43ajyMRy92VMEYEPt/eL23IpKcM=;
+        b=GU+87q71O0G0WcO2tJNf5rDTJ2uvsllyK/CQPsXDXwVF0eXkoqdlfpk6dURuyX6DrV
+         Cd+9P44GftAi0hOfknzoqMvdqffujy6iUMyK+INLLOjLo8O0DQx/PPTW2R+gKvWpSEiv
+         aYdvywjAL8h3WiURykFdk/hhmeA81Z39ERJTBS2QGKSDFcWRkajZLo2oD4/55huIFNgl
+         QMK5765PMk6+IkaE6QVw4oZO+0hynSmaaot3kDcOOzibWJ/6bjiYVFnbv8wXFVmSoXdh
+         hZZEMcQAveSH06BlHYtCUTn4FK6tvupTOaK1AM2ArpQVuJnGGLl9UPjtSERguBn4fpOC
+         JXNQ==
+X-Gm-Message-State: ANoB5pl9KPix/cXhKVzIgF3JLfdH4GNXqNyqZKPlj2KWfqE7wAA3GYfL
+        Vv8hFqy7cqD3MPw7G1V/IYQl74zXkPCM3A==
+X-Google-Smtp-Source: AA0mqf6bsmsdPJ+UJpWt6TQHMwtd9d1YO75983gRLyL6vlObf/9ZLQuwfxsjAEVqAy18l1oWgAF9uQ==
+X-Received: by 2002:a0c:ff28:0:b0:4bb:798d:879c with SMTP id x8-20020a0cff28000000b004bb798d879cmr10851843qvt.7.1669243072196;
+        Wed, 23 Nov 2022 14:37:52 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id w16-20020a05620a425000b006fc2f74ad12sm1666466qko.92.2022.11.23.14.37.50
+        by smtp.gmail.com with ESMTPSA id fy11-20020a05622a5a0b00b003a4f435e381sm10585850qtb.18.2022.11.23.14.37.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 14:37:50 -0800 (PST)
+        Wed, 23 Nov 2022 14:37:51 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 09/29] btrfs-progs: rename BLOCK_* to IMAGE_BLOCK_* for metadump
-Date:   Wed, 23 Nov 2022 17:37:17 -0500
-Message-Id: <f46f685b552ab6b8c9314cab06e236d8e1eb6bef.1669242804.git.josef@toxicpanda.com>
+Subject: [PATCH v3 10/29] btrfs-progs: rename btrfs_item_end to btrfs_item_data_end
+Date:   Wed, 23 Nov 2022 17:37:18 -0500
+Message-Id: <c2fc759bfb806134b4e2bb8af3c369befabbdd21.1669242804.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1669242804.git.josef@toxicpanda.com>
 References: <cover.1669242804.git.josef@toxicpanda.com>
@@ -69,198 +69,128 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When we sync the kernel we're going to pull in the fs.h dependency,
-which defines BLOCK_SIZE/BLOCK_MASK.  Avoid this conflict by renaming
-the image definitions with the IMAGE_ prefix.
+This matches what we did in the kernel, btrfs_item_data_end is more
+inline with what the helper does, which is give us the offset of the end
+of the data portion of the item, not the offset of the end of the item
+itself.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- image/main.c     | 42 +++++++++++++++++++++---------------------
- image/metadump.h |  6 +++---
- 2 files changed, 24 insertions(+), 24 deletions(-)
+ check/main.c          | 12 ++++++------
+ kernel-shared/ctree.c | 12 ++++++------
+ kernel-shared/ctree.h |  2 +-
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/image/main.c b/image/main.c
-index b1a0714a..c7bbb05d 100644
---- a/image/main.c
-+++ b/image/main.c
-@@ -94,7 +94,7 @@ struct metadump_struct {
+diff --git a/check/main.c b/check/main.c
+index 25b13ce1..4c8e6bdf 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -4393,9 +4393,9 @@ again:
+ 	for (i = 0; i < btrfs_header_nritems(buf); i++) {
+ 		unsigned int shift = 0, offset;
  
- 	union {
- 		struct meta_cluster cluster;
--		char meta_cluster_bytes[BLOCK_SIZE];
-+		char meta_cluster_bytes[IMAGE_BLOCK_SIZE];
- 	};
- 
- 	pthread_t threads[MAX_WORKER_THREADS];
-@@ -519,7 +519,7 @@ static int metadump_init(struct metadump_struct *md, struct btrfs_root *root,
- 
- static int write_zero(FILE *out, size_t size)
- {
--	static char zero[BLOCK_SIZE];
-+	static char zero[IMAGE_BLOCK_SIZE];
- 	return fwrite(zero, size, 1, out);
- }
- 
-@@ -563,14 +563,14 @@ static int write_buffers(struct metadump_struct *md, u64 *next)
- 	}
- 	header->nritems = cpu_to_le32(nritems);
- 
--	ret = fwrite(&md->cluster, BLOCK_SIZE, 1, md->out);
-+	ret = fwrite(&md->cluster, IMAGE_BLOCK_SIZE, 1, md->out);
- 	if (ret != 1) {
- 		error("unable to write out cluster: %m");
- 		return -errno;
- 	}
- 
- 	/* write buffers */
--	bytenr += le64_to_cpu(header->bytenr) + BLOCK_SIZE;
-+	bytenr += le64_to_cpu(header->bytenr) + IMAGE_BLOCK_SIZE;
- 	while (!list_empty(&md->ordered)) {
- 		async = list_entry(md->ordered.next, struct async_work,
- 				   ordered);
-@@ -591,8 +591,8 @@ static int write_buffers(struct metadump_struct *md, u64 *next)
- 	}
- 
- 	/* zero unused space in the last block */
--	if (!err && bytenr & BLOCK_MASK) {
--		size_t size = BLOCK_SIZE - (bytenr & BLOCK_MASK);
-+	if (!err && bytenr & IMAGE_BLOCK_MASK) {
-+		size_t size = IMAGE_BLOCK_SIZE - (bytenr & IMAGE_BLOCK_MASK);
- 
- 		bytenr += size;
- 		ret = write_zero(md->out, size);
-@@ -1613,7 +1613,7 @@ static void mdrestore_destroy(struct mdrestore_struct *mdres, int num_threads)
- static int detect_version(FILE *in)
- {
- 	struct meta_cluster *cluster;
--	u8 buf[BLOCK_SIZE];
-+	u8 buf[IMAGE_BLOCK_SIZE];
- 	bool found = false;
- 	int i;
- 	int ret;
-@@ -1622,7 +1622,7 @@ static int detect_version(FILE *in)
- 		error("seek failed: %m");
- 		return -errno;
- 	}
--	ret = fread(buf, BLOCK_SIZE, 1, in);
-+	ret = fread(buf, IMAGE_BLOCK_SIZE, 1, in);
- 	if (!ret) {
- 		error("failed to read header");
- 		return -EIO;
-@@ -1757,7 +1757,7 @@ static int add_cluster(struct meta_cluster *cluster,
- 	mdres->compress_method = header->compress;
- 	pthread_mutex_unlock(&mdres->mutex);
- 
--	bytenr = le64_to_cpu(header->bytenr) + BLOCK_SIZE;
-+	bytenr = le64_to_cpu(header->bytenr) + IMAGE_BLOCK_SIZE;
- 	nritems = le32_to_cpu(header->nritems);
- 	for (i = 0; i < nritems; i++) {
- 		item = &cluster->items[i];
-@@ -1799,9 +1799,9 @@ static int add_cluster(struct meta_cluster *cluster,
- 		pthread_cond_signal(&mdres->cond);
- 		pthread_mutex_unlock(&mdres->mutex);
- 	}
--	if (bytenr & BLOCK_MASK) {
--		char buffer[BLOCK_MASK];
--		size_t size = BLOCK_SIZE - (bytenr & BLOCK_MASK);
-+	if (bytenr & IMAGE_BLOCK_MASK) {
-+		char buffer[IMAGE_BLOCK_MASK];
-+		size_t size = IMAGE_BLOCK_SIZE - (bytenr & IMAGE_BLOCK_MASK);
- 
- 		bytenr += size;
- 		ret = fread(buffer, size, 1, mdres->in);
-@@ -2011,7 +2011,7 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres)
- 	u8 *buffer, *tmp = NULL;
- 	int ret = 0;
- 
--	cluster = malloc(BLOCK_SIZE);
-+	cluster = malloc(IMAGE_BLOCK_SIZE);
- 	if (!cluster) {
- 		error_msg(ERROR_MSG_MEMORY, NULL);
- 		return -ENOMEM;
-@@ -2043,7 +2043,7 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres)
- 			goto out;
- 		}
- 
--		ret = fread(cluster, BLOCK_SIZE, 1, mdres->in);
-+		ret = fread(cluster, IMAGE_BLOCK_SIZE, 1, mdres->in);
- 		if (ret == 0) {
- 			if (feof(mdres->in))
- 				goto out;
-@@ -2071,7 +2071,7 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres)
- 		if (current_cluster > mdres->sys_chunk_end)
- 			goto out;
- 
--		bytenr += BLOCK_SIZE;
-+		bytenr += IMAGE_BLOCK_SIZE;
- 		nritems = le32_to_cpu(header->nritems);
- 
- 		/* Search items for tree blocks in sys chunks */
-@@ -2139,8 +2139,8 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres)
+-		if (i == 0 && btrfs_item_end(buf, i) !=
++		if (i == 0 && btrfs_item_data_end(buf, i) !=
+ 		    BTRFS_LEAF_DATA_SIZE(gfs_info)) {
+-			if (btrfs_item_end(buf, i) >
++			if (btrfs_item_data_end(buf, i) >
+ 			    BTRFS_LEAF_DATA_SIZE(gfs_info)) {
+ 				ret = delete_bogus_item(root, path, buf, i);
+ 				if (!ret)
+@@ -4406,10 +4406,10 @@ again:
+ 				break;
  			}
- 			bytenr += bufsize;
+ 			shift = BTRFS_LEAF_DATA_SIZE(gfs_info) -
+-				btrfs_item_end(buf, i);
+-		} else if (i > 0 && btrfs_item_end(buf, i) !=
++				btrfs_item_data_end(buf, i);
++		} else if (i > 0 && btrfs_item_data_end(buf, i) !=
+ 			   btrfs_item_offset(buf, i - 1)) {
+-			if (btrfs_item_end(buf, i) >
++			if (btrfs_item_data_end(buf, i) >
+ 			    btrfs_item_offset(buf, i - 1)) {
+ 				ret = delete_bogus_item(root, path, buf, i);
+ 				if (!ret)
+@@ -4419,7 +4419,7 @@ again:
+ 				break;
+ 			}
+ 			shift = btrfs_item_offset(buf, i - 1) -
+-				btrfs_item_end(buf, i);
++				btrfs_item_data_end(buf, i);
  		}
--		if (bytenr & BLOCK_MASK)
--			bytenr += BLOCK_SIZE - (bytenr & BLOCK_MASK);
-+		if (bytenr & IMAGE_BLOCK_MASK)
-+			bytenr += IMAGE_BLOCK_SIZE - (bytenr & IMAGE_BLOCK_MASK);
- 		current_cluster = bytenr;
- 	}
+ 		if (!shift)
+ 			continue;
+diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
+index 08c494af..d6ff0008 100644
+--- a/kernel-shared/ctree.c
++++ b/kernel-shared/ctree.c
+@@ -1938,7 +1938,7 @@ static int leaf_space_used(struct extent_buffer *l, int start, int nr)
  
-@@ -2251,7 +2251,7 @@ static int build_chunk_tree(struct mdrestore_struct *mdres,
- 	if (mdres->in == stdin)
+ 	if (!nr)
  		return 0;
+-	data_len = btrfs_item_end(l, start);
++	data_len = btrfs_item_data_end(l, start);
+ 	data_len = data_len - btrfs_item_offset(l, end);
+ 	data_len += sizeof(struct btrfs_item) * nr;
+ 	WARN_ON(data_len < 0);
+@@ -2066,7 +2066,7 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
+ 	/* push left to right */
+ 	right_nritems = btrfs_header_nritems(right);
  
--	ret = fread(cluster, BLOCK_SIZE, 1, mdres->in);
-+	ret = fread(cluster, IMAGE_BLOCK_SIZE, 1, mdres->in);
- 	if (ret <= 0) {
- 		error("unable to read cluster: %m");
- 		return -EIO;
-@@ -2265,7 +2265,7 @@ static int build_chunk_tree(struct mdrestore_struct *mdres,
- 		return -EIO;
- 	}
+-	push_space = btrfs_item_end(left, left_nritems - push_items);
++	push_space = btrfs_item_data_end(left, left_nritems - push_items);
+ 	push_space -= leaf_data_end(left);
  
--	bytenr += BLOCK_SIZE;
-+	bytenr += IMAGE_BLOCK_SIZE;
- 	mdres->compress_method = header->compress;
- 	nritems = le32_to_cpu(header->nritems);
+ 	/* make room in the right data area */
+@@ -2301,7 +2301,7 @@ static noinline int copy_for_split(struct btrfs_trans_handle *trans,
+ 
+ 	nritems = nritems - mid;
+ 	btrfs_set_header_nritems(right, nritems);
+-	data_copy_size = btrfs_item_end(l, mid) - leaf_data_end(l);
++	data_copy_size = btrfs_item_data_end(l, mid) - leaf_data_end(l);
+ 
+ 	copy_extent_buffer(right, l, btrfs_leaf_data(right),
+ 			   btrfs_item_nr_offset(l, mid),
+@@ -2313,7 +2313,7 @@ static noinline int copy_for_split(struct btrfs_trans_handle *trans,
+ 			 btrfs_leaf_data(l) + leaf_data_end(l), data_copy_size);
+ 
+ 	rt_data_off = BTRFS_LEAF_DATA_SIZE(root->fs_info) -
+-		      btrfs_item_end(l, mid);
++		      btrfs_item_data_end(l, mid);
+ 
  	for (i = 0; i < nritems; i++) {
-@@ -2807,7 +2807,7 @@ static int restore_metadump(const char *input, FILE *out, int old_restore,
- 		}
+ 		u32 ioff = btrfs_item_offset(right, i);
+@@ -2734,7 +2734,7 @@ int btrfs_extend_item(struct btrfs_root *root, struct btrfs_path *path,
+ 		BUG();
  	}
+ 	slot = path->slots[0];
+-	old_data = btrfs_item_end(leaf, slot);
++	old_data = btrfs_item_data_end(leaf, slot);
  
--	cluster = malloc(BLOCK_SIZE);
-+	cluster = malloc(IMAGE_BLOCK_SIZE);
- 	if (!cluster) {
- 		error_msg(ERROR_MSG_MEMORY, NULL);
- 		ret = -ENOMEM;
-@@ -2837,7 +2837,7 @@ static int restore_metadump(const char *input, FILE *out, int old_restore,
- 	}
+ 	BUG_ON(slot < 0);
+ 	if (slot >= nritems) {
+@@ -2823,7 +2823,7 @@ int btrfs_insert_empty_items(struct btrfs_trans_handle *trans,
+ 	BUG_ON(slot < 0);
  
- 	while (!mdrestore.error) {
--		ret = fread(cluster, BLOCK_SIZE, 1, in);
-+		ret = fread(cluster, IMAGE_BLOCK_SIZE, 1, in);
- 		if (!ret)
- 			break;
+ 	if (slot < nritems) {
+-		unsigned int old_data = btrfs_item_end(leaf, slot);
++		unsigned int old_data = btrfs_item_data_end(leaf, slot);
  
-diff --git a/image/metadump.h b/image/metadump.h
-index bcffbd47..1beab658 100644
---- a/image/metadump.h
-+++ b/image/metadump.h
-@@ -22,10 +22,10 @@
- #include "kernel-lib/list.h"
- #include "kernel-shared/ctree.h"
+ 		if (old_data < data_end) {
+ 			btrfs_print_leaf(leaf, BTRFS_PRINT_TREE_DEFAULT);
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index 61eaab55..85ecc16b 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -2022,7 +2022,7 @@ static inline void btrfs_set_item_##member(struct extent_buffer *eb,		\
+ BTRFS_ITEM_SETGET_FUNCS(size)
+ BTRFS_ITEM_SETGET_FUNCS(offset)
  
--#define BLOCK_SIZE		SZ_1K
--#define BLOCK_MASK		(BLOCK_SIZE - 1)
-+#define IMAGE_BLOCK_SIZE		SZ_1K
-+#define IMAGE_BLOCK_MASK		(IMAGE_BLOCK_SIZE - 1)
- 
--#define ITEMS_PER_CLUSTER ((BLOCK_SIZE - sizeof(struct meta_cluster)) / \
-+#define ITEMS_PER_CLUSTER ((IMAGE_BLOCK_SIZE - sizeof(struct meta_cluster)) / \
- 			   sizeof(struct meta_cluster_item))
- 
- #define COMPRESS_NONE		0
+-static inline u32 btrfs_item_end(struct extent_buffer *eb, int nr)
++static inline u32 btrfs_item_data_end(struct extent_buffer *eb, int nr)
+ {
+ 	return btrfs_item_offset(eb, nr) + btrfs_item_size(eb, nr);
+ }
 -- 
 2.26.3
 
