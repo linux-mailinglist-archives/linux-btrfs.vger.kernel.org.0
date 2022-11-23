@@ -2,81 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85417636428
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Nov 2022 16:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 238B76366D3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Nov 2022 18:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237510AbiKWPlf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Nov 2022 10:41:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
+        id S238939AbiKWRSW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Nov 2022 12:18:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237748AbiKWPlQ (ORCPT
+        with ESMTP id S238856AbiKWRSI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Nov 2022 10:41:16 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6696CC604E;
-        Wed, 23 Nov 2022 07:41:03 -0800 (PST)
+        Wed, 23 Nov 2022 12:18:08 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D72B209A4
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 09:18:06 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0FF5921CA3;
-        Wed, 23 Nov 2022 15:41:02 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C77181F890;
+        Wed, 23 Nov 2022 17:18:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1669218062;
+        t=1669223884;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2Tkv/wUeovm+g785WU68pgukgNkdG4W+ZcAq+o65074=;
-        b=dN3EJ5oO1SiF3WT2Oh5BsZnhUv13vFKpqL4nZ0NYFIWwbiQWqsfX2ca5smn+mANuHCoykQ
-        MGS0l7CoiQPYLPhSfqN75xdF4t6ir7HnL6SxSb7P0IA76g7+vAqnAjxzi27v+sU6Bh8/i2
-        u8Wyhhc0lKVaBqofPkkBWVTY53cOu8c=
+        bh=6i8ZX2Je5+uuPZ2Vaq/oDui76ls6sqf3tP2kvi+USwk=;
+        b=D1sWZ2ky1nT+u6uGXA0YyvtdMmvjQk0FAQPiz3+X6z/+lkYVmSge40K6IxZNE5VugWfruF
+        qK13MUnBIZr0ZFmKx8VUyxRiLfaLKuuXfgkn3wjHWsWGLjr4ZyVDAm8nyAcluhTnvA/5iI
+        q1OnQQGnSWbW2aNXxenTt+eacEBRvCU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1669218062;
+        s=susede2_ed25519; t=1669223884;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2Tkv/wUeovm+g785WU68pgukgNkdG4W+ZcAq+o65074=;
-        b=Gdysfd9jN51jI6epNGlV38lUKkYjOijSs0oWuGbzm45qDbx2bmJ2nDYL83RMApqBIPGZtb
-        8eU9J5t/eM85cgDA==
+        bh=6i8ZX2Je5+uuPZ2Vaq/oDui76ls6sqf3tP2kvi+USwk=;
+        b=leBoU+O1E9dli2kLjT2AoQVnDyjKGeid6DDaXawYlICcoU465vkvs1pM/DdqiJUUk57+E7
+        MYbwa7gSYG1SLxAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DE7AB13A37;
-        Wed, 23 Nov 2022 15:41:01 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E3AC13AE7;
+        Wed, 23 Nov 2022 17:18:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4hljNQ0/fmN/RQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 23 Nov 2022 15:41:01 +0000
-Date:   Wed, 23 Nov 2022 16:40:31 +0100
+        id ZMN3IcxVfmOTdwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 23 Nov 2022 17:18:04 +0000
+Date:   Wed, 23 Nov 2022 18:17:33 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     void0red <void0red@gmail.com>
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, eriri <1527030098@qq.com>
-Subject: Re: [PATCH] btrfs: avoid use-after-free when return the error code
-Message-ID: <20221123154031.GL5824@twin.jikos.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     David Sterba <dsterba@suse.cz>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] btrfs: move struct btrfs_tree_parent_check out of
+ disk-io.h
+Message-ID: <20221123171733.GM5824@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20221123143945.2666-1-void0red@gmail.com>
+References: <20221115094407.1626250-1-hch@lst.de>
+ <20221115094407.1626250-2-hch@lst.de>
+ <20221118140722.GO5824@twin.jikos.cz>
+ <20221120124114.GA7245@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221123143945.2666-1-void0red@gmail.com>
+In-Reply-To: <20221120124114.GA7245@lst.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 23, 2022 at 10:39:45PM +0800, void0red wrote:
-> free_extent_map(em) will free em->map_lookup, so it is
-> wrong to use it when return.
+On Sun, Nov 20, 2022 at 01:41:14PM +0100, Christoph Hellwig wrote:
+> On Fri, Nov 18, 2022 at 03:07:23PM +0100, David Sterba wrote:
+> > On Tue, Nov 15, 2022 at 10:44:04AM +0100, Christoph Hellwig wrote:
+> > > Move struct btrfs_tree_parent_check out of disk-io.h so that volumes.h
+> > > an various .c files don't have to include disk-io.h just for it.
+> > 
+> > Splitting that from disk-io.h makes sense but why creating a new file
+> > that has just the one structure?
 > 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216721
-> Signed-off-by: void0red <void0red@gmail.com>
-> Reported-by: eriri <1527030098@qq.com>
+> Because there is no other header where it obviously fits.
+> 
+> > We have the tree-checker.h that seems
+> > like a place for various checks so I'll move it there.
+> 
+> Despite the similar naming there's actually no overlap between the
+> functionality offered in tree-checker.h and these uses of
+> struct btrfs_tree_parent_check at all.
 
-Added to misc-next with updated changelog, thanks.
+That's not true, the overlap is quite clear. Tree checker verifies
+metadata blocks at read time from the available items in the leaves and
+links between the parent/child nodes is another extension of that.
+Functions like validate_extent_buffer are in disk-io.c but they are the
+to tree checker functionality.
