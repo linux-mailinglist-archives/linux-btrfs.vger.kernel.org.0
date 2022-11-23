@@ -2,243 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0EE636C22
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Nov 2022 22:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454E4636C88
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Nov 2022 22:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235150AbiKWVMo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Nov 2022 16:12:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
+        id S235553AbiKWVob (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Nov 2022 16:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235267AbiKWVMn (ORCPT
+        with ESMTP id S236497AbiKWVo2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Nov 2022 16:12:43 -0500
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C5CE017
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 13:12:41 -0800 (PST)
-Received: by mail-il1-f199.google.com with SMTP id x10-20020a056e021bca00b00302b6c0a683so9489422ilv.23
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 13:12:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6dPcC2y362ci0r0xewITGb2zxAQpc5oJw31st1MUisA=;
-        b=HA95g2vTBCiL5w/mePT3g9bKcDW6mkwSdxeYkCSJ7XU2gh9SqSX11JF3/YjdHLkAlU
-         psHlkUsfX5nWB+IqieklRSuLUJ3wxFF0H6n/S9adKT6YOxV6eRjzgNlzGg4T4XHf4CkV
-         1+BrrXStqdADIi1QwPWtKArQbyk7cs1SCGcnf7To5RhsfAOQpp640DYtg9vkrAV7CPlO
-         rutDtRpOhchgMuaOFFjlMORWxQjB9GkRQ6PDHVr3v2AGQeigwYhpI5Ao7kpC4tT1erFs
-         hrzSFdrrSM0CSstC62OmxeHyPGIzT+up4VhMPivJTvMkmOJf0rw78O4U+YIkPgoJUDje
-         BCJg==
-X-Gm-Message-State: ANoB5plG9OuotfsO4mvZfwsO7koGFvZLoDt8ZMov/y6g16ssYo6mieEo
-        QRinhC8gVFLM12XeB29JnBvmRJWo8oewCuN9ni5eOpPqYK/v
-X-Google-Smtp-Source: AA0mqf6QlzV/nwj3As3W09/FVAfT3D/jheAu8yKCEzraiSCnt8h7HBvWymQzD5/R3yIWAUbJWTPBA+7wK+BiSRd3VW0mHIe2uB51
+        Wed, 23 Nov 2022 16:44:28 -0500
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-eopbgr130055.outbound.protection.outlook.com [40.107.13.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E964C9A83
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 13:44:26 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ky0OZMwnBAmMscP8F1gfKt92JjwJYDSyeCO7VduwqD/XbZgS1m6F84mfAYU1rEDWNq6vAo77FH1F3FOidydfNaz7d8gmdvxmk9w9QKQzjwEpTIF12/cfq1laiH80zm153zdfabfMf34Vsb8anKTjIlPOQhvddOtOsC/OzUbGRkCawMZR41M46i6kHqkCLfVG2FX7A9GdryhWlM1NhgDudNukwmthHAstzUJqbpNbDGhxKJk4GEwS5fSXtIuKaIqK1Kar4uLQHgNYz0Xjc6NQ/c1ghPfID6RmN+6VztBDtJuP1vIcAx0iUugYORtBtYZ8JyizShOvyKpDLwe8GSoddQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0QpaN/uCpow8Nzb+YDmdnmfdqeqQAbEyRJ4AvIEoOC0=;
+ b=D25O2APBcK+Iv2SY+ETjH0Fp3Rg358b88Wkvf4UalGO52KO/cJiC8B1/isLArAPhk95e2So4C6srJGjlTQOT5ggR9zVMkAS/G2if4mIoiQpA2fNDbpKUy4ap850hpE4aq2fNWzUIhvWDo8ciGVX9uB3nn/G5buDzLxmagyGqirChBMIeuNbmOFIx2HoDiv2FgJoFhgPFqlr9eTzA3TTfc6L5wKy2CrcoFhIZB9tCKvuNVfdxm1kHlVvrh2M8yBBrh7tq4vjN4zgHJjPYcv8+5BKPpP1GUKekXHLswqtrZMprwPXRwBlVeamTn24nWHsU5O9knmgX8FbDAVNDBkIjiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0QpaN/uCpow8Nzb+YDmdnmfdqeqQAbEyRJ4AvIEoOC0=;
+ b=MJkBYTZsk838L7YWmEM4Sl3PK+Y5LdFotG3TfdEwjyKFVuBXiBQ6gwQS1NMPuDbFcF8b5wuFgQHQlNIrtZbJMLAequbiN+Wab8VASdEn7HT7xaZNHclOh1pjcHs/2LoPDivf4vIl9zcdnMLF+rWQmjfV3QpiUN4MJPyRY+nQZ28GNfEzHoS5RR6x9Odx4TzPuR9Pi6tbAu9PyYDbqoFv6tlz5jTtr9afEgn6Pc2HwPmzsrmK4+PmS41mg3/O3BQVjmzq4pOajPqicZsNq7zFHwmeQZSxPNWA2d0riUBkWy6POUvpscBhEisJBzRIfZ2cgVWqhVZtXMHI15DFBlfvTg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
+ by DB9PR04MB8140.eurprd04.prod.outlook.com (2603:10a6:10:249::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5834.11; Wed, 23 Nov
+ 2022 21:44:24 +0000
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::b69e:7eea:21cc:54ab]) by AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::b69e:7eea:21cc:54ab%9]) with mapi id 15.20.5857.019; Wed, 23 Nov 2022
+ 21:44:23 +0000
+Message-ID: <376af265-a7c4-6897-b6fe-834d225b150f@suse.com>
+Date:   Thu, 24 Nov 2022 05:44:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: Speed up mount time?
+To:     Joakim <ahoj79@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAFka4xNPJby02JcK+immNU+AL6w-=iH7tNB4ZjULoYxnwG7U+Q@mail.gmail.com>
+Content-Language: en-US
+From:   Qu Wenruo <wqu@suse.com>
+In-Reply-To: <CAFka4xNPJby02JcK+immNU+AL6w-=iH7tNB4ZjULoYxnwG7U+Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR08CA0026.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::39) To AS8PR04MB8465.eurprd04.prod.outlook.com
+ (2603:10a6:20b:348::19)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:5a5:b0:300:d831:8c90 with SMTP id
- k5-20020a056e0205a500b00300d8318c90mr6447427ils.21.1669237960493; Wed, 23 Nov
- 2022 13:12:40 -0800 (PST)
-Date:   Wed, 23 Nov 2022 13:12:40 -0800
-In-Reply-To: <000000000000fd151d05ece59b42@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ae550405ee29bffa@google.com>
-Subject: Re: [syzbot] possible deadlock in btrfs_search_slot
-From:   syzbot <syzbot+c06034aecf9f5eab1ac1@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DB9PR04MB8140:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5a996ac2-4465-4f52-1de5-08dacd9be1b7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oe8T0Y2w3SW9csNfMbirfZzwzR+8Af4PaMR/uqWwdFCVX2YvAwZ4/9m9doBXRxI0MBQgeAvUP5wz3p9SqgdL7K3ObrVbJD3lhkg0B3ANo++2dobfIx5fYc+EBBk/4ZdA9qX7e/1E/9OrUmn8RntA+Afb4lDUEFi9TWiu0g3w5bZ0QiJT4YgtBq2fOaWKJRx9W0Vyqp+JNJJvV5sr3fGQe8j6tZWDejc6jcm+Kevr05FC/nwTMrE+ZxqZYN/c3gWibxL0TOAG2WX70JMof2dFINnXebF6XlZQZ8q6QyXW0JGJ4tTbzyPJIkLcyTa2R19iVd6+y9xI1Do+EulCjKn+2+XjC5OdDspYlXDPauNItsb7u6kJ4DBqcmVAGO61xBLPShy2LceRUuMksUo1oWYURiMCveZt1T8z8UBmbbGP+vij2sy1luvPf/OuWx0ovMx9M+l6go3wl0mht4xDWboEvM4oYYP46EihVOA+4CeOzf13r9j2oIzMDnZVIuLMtr5OusLXXN4tP/7H4VHMvlqujdFKjkdjPdHiVUGeL4cCJWczcGplJxbFPEB0vcc9v+6mWPrWpzxqq2hwLKy3VN6jS92EBFzKtlE3qyuwz3ESprVYx8TrVpBYJvzFFi/n09Q44p00CXq+V1jEP+mQwc6NC/jcaYSTE8TFMgamnbCnwDRFdSZyldb2yyRycBU3DBuC5y1cnzCHhww7nA1hHuNHhJYcC/hYoAlrXahHC/cCY4k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(376002)(396003)(366004)(346002)(39860400002)(451199015)(31696002)(6506007)(2906002)(83380400001)(6486002)(86362001)(36756003)(478600001)(3480700007)(6666004)(38100700002)(186003)(6512007)(53546011)(2616005)(8936002)(41300700001)(31686004)(316002)(8676002)(5660300002)(66476007)(66556008)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TkF5b3ZFbmV2Yk9ZL2liZzZhbDNqcGthQ1NtRlQwNjAyNFp6VFFwMDdLa2VU?=
+ =?utf-8?B?S29yeEZMMG1SVERSVksxM2paeFpnMGtXV0NGU05WYmJ6WEZFNGgzNXN3T1Fp?=
+ =?utf-8?B?TUxBMVpPanpzSWRVTUpWU3pEZUg0Y05xaUYvSmdXLzRmcHo2dUQ4Z3AyNWFM?=
+ =?utf-8?B?eUJGbFptbzlaOU1idExWMUliU2RsSEdvTzBPK3IwNEFYUDd5V2RGTTNPejNW?=
+ =?utf-8?B?NmJ1ejhub2RVdGJndTJaSk1DdjBYaDIyNDI3MjNJNzBUeWdzeE0xakllWXJl?=
+ =?utf-8?B?cjR6REEvSEpyRERvVVN2UGVHVERNcXVYNWxZT1l2L3NCZU9BTTAvNk4wOG5N?=
+ =?utf-8?B?Wjl3NndaUzUrcGhsQkxoYWpLTTY3QWV0R1NaamRVdHhqc2QwTVBWRWRtbjNu?=
+ =?utf-8?B?SFkzeWhOS2NyMjJuWFIvdW9KYjNOQjZqMmo3bEZrbW1jSXYrUFVyK1kyTk5G?=
+ =?utf-8?B?N2lDMDFKQTRrTFJkcElvWmkxM3YxS0M3TTZ4WktLR2lsTzR0VFNFekM3VmhF?=
+ =?utf-8?B?VTRpR0Nic2RUWEgvSFY1RkxrWnMrOXBjZ0dseDU3OWQvRHl5cW02aHdpWGgw?=
+ =?utf-8?B?NTBLdS9uczBCbWx0Si8zOURkV0xOSjlUTWR5bTJOdUUvaXFSSEx5bjJRL0R1?=
+ =?utf-8?B?SlRRLzFEanlqbXorUUJsczI4VkxtVUtsZXBlQjhNN3dvOFlUZmQwV1RlajND?=
+ =?utf-8?B?SkliQk1kWmFQOER1a3RtNGMyZllrS29wZ3AzV3hOTHRwcUVPRTJaSStEVWVv?=
+ =?utf-8?B?enAwTFFBamprNFFBc3BzR0ZibGhsNnJGSjJDOWd3cCtqdnlnQVZ4UlNWWWdx?=
+ =?utf-8?B?Q2xZNlFRVlZ6WitZdXcxMkxEVm9yR3lHNUtQMGNpNTBkZDNqMFN0cm5YQmh5?=
+ =?utf-8?B?QjBDRWxSdWU3Sk5TT1RLSmtBNlJud2QwRnRQSnFtcTFOdFpuTm9lcGZubTBW?=
+ =?utf-8?B?cXJRZVhTSU9lWUo1UnNQY0RKOUdyNHIrMUNYWnJMWEsyY2d0TEhnZy9xc2Jn?=
+ =?utf-8?B?SC9MV1JoWVhRZ25oQzFkaTdpMmZGSytiQ1BJanRVM2JPYzIwbmUwZm5WVTA4?=
+ =?utf-8?B?djlsbS9ZcGw3c0EvVmJRWlhGc0JuWDI2SnVrOUd3eEk1ZFhZS0dmZnNndW1q?=
+ =?utf-8?B?WjZ2eTdTdURWd0IvYVB5NmtNc2VjVENnYkhaRlc5VFRwc296V2ZxUUxrU0gz?=
+ =?utf-8?B?RnNGeFJ5dlZUemN5S1c3bENwcFhDMDVIY3V4QlNTaGdwazl2MTRIdFlTang4?=
+ =?utf-8?B?dDY2SXFtTUhDWG9VRWdnR0pDd2JtLzNDTlRWempFT0lUbFhBNjlubmJWZmdw?=
+ =?utf-8?B?K3ZaWVpEYU1tSkFQelRrZ1VrMEVKNklKZTRreUtNZ3doeUs0YTVQUGR6amx5?=
+ =?utf-8?B?WXlTNUd6V2FzN3lKQzU5SURteVZiMTRIa1Fha0prWWJWY1pRdlRIOVp1YXVt?=
+ =?utf-8?B?bk9GKzhwMDZrSEdFUDIydXZ0M25DSWZLMXlHL0trTGZRUVBJV1pzdEE3bHhW?=
+ =?utf-8?B?Nzg3Sm1qOURreHp6WDVLMGdyYU5nZVVRTi9vTU1zZGVzTlB0WmxRbWlUclMz?=
+ =?utf-8?B?cVIxMlU0M3hmTmloT0U1SGpKSFpLU21SQTdPSEZ5TW01YjlwY1NRQzBVR1Az?=
+ =?utf-8?B?NVJPWjcxSDBGa21MSFdoWlU0VkdpNkwyR2FOVHhvZlNlaS9JVEEyWjN2RVZG?=
+ =?utf-8?B?ajltbzNVWmE1ZjZlR2Z3alg2UzA0NmlNQlFubUdUTXRyZGNoMlBQR1JEMDJE?=
+ =?utf-8?B?bVJKT3NjZFhIaHR0STlRZzMxWTd1anZpeHE3Ty9MdXNPMjVVM01BbFRYQURL?=
+ =?utf-8?B?c1ZCZkt6NjM2eVYyZVkyakdUMWM0bk9pbG1XUHlGZ0NLV0RzYnNGM3pOQm9v?=
+ =?utf-8?B?WStOdmdPSHNBUWtWS3l4Tko5VjRWajlkWXZqUGNTTUJ5dExHZ0pxL0JzZkxG?=
+ =?utf-8?B?ZVZyMjgxUnA0NVYwVGF2a3RIUVRGeDREM3RBQXpJZ3IxK09zY01KYU5EOGtv?=
+ =?utf-8?B?cVg4YVYyL0dWTFJnRUU2SXBNejdUOC9zdTdsL0Z6MFB2NnR0RUxNMGZsejZ6?=
+ =?utf-8?B?bDZnbjd0VXZuM0pzWjVNbmRTV1hBT05EWXZkMjdoRTRHcXFyVm1UTWozMzNJ?=
+ =?utf-8?B?Smc1MEJhR0UrYmd3MXFMMTRyV243UG82UGlKVTFUK3ZDM2F4dDlhTWZsZE5L?=
+ =?utf-8?Q?4bWNFJYxTZroVmCmbCQR1uA=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a996ac2-4465-4f52-1de5-08dacd9be1b7
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2022 21:44:23.7792
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cpOj3JmYt94u+3j8vdCTmKdG9o1Aa/iGEem6EpTmVNmas2jBn+CH2DBO4s5SCf5q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8140
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
-
-HEAD commit:    eb7081409f94 Linux 6.1-rc6
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=12afdce5880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8d01b6e3197974dd
-dashboard link: https://syzkaller.appspot.com/bug?extid=c06034aecf9f5eab1ac1
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124fc309880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=126dfde5880000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/815bacde9ae6/disk-eb708140.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ce54e3220860/vmlinux-eb708140.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/52a8ac111c19/bzImage-eb708140.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/a1ff934d6bf0/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c06034aecf9f5eab1ac1@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.1.0-rc6-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor338/3631 is trying to acquire lock:
-ffff888077fa2598 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_fault+0x8f/0x110 mm/memory.c:5645
-
-but task is already holding lock:
-ffff88807e7ba4d8 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
-ffff88807e7ba4d8 (btrfs-root-00){++++}-{3:3}, at: btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
-ffff88807e7ba4d8 (btrfs-root-00){++++}-{3:3}, at: btrfs_read_lock_root_node+0x2b4/0x400 fs/btrfs/locking.c:279
-
-which lock already depends on the new lock.
 
 
-the existing dependency chain (in reverse order) is:
+On 2022/11/23 20:33, Joakim wrote:
+> I have a couple of machines (A and B) set up where each machine has a
+> ~430 TB BTRFS subvolume, same data on both. Mounting these volumes
+> with the following flags: noatime,compress=lzo,space_cache=v2
+> 
+> Initially mount times were quite long, about 10 minutes. But after i
+> did run a defrag with -c option on machine B the mount time increased
+> to over 30 minutes. This volume has a little over 100 TB stored.
+> 
+> How come the mount time increased by this?
 
--> #4 (btrfs-root-00){++++}-{3:3}:
-       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
-       down_read_nested+0x3c/0x50 kernel/locking/rwsem.c:1634
-       __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
-       btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
-       btrfs_read_lock_root_node+0x2b4/0x400 fs/btrfs/locking.c:279
-       btrfs_search_slot_get_root fs/btrfs/ctree.c:1665 [inline]
-       btrfs_search_slot+0x495/0x2fe0 fs/btrfs/ctree.c:1985
-       btrfs_update_root+0xf0/0xc60 fs/btrfs/root-tree.c:132
-       commit_fs_roots+0x4d3/0x710 fs/btrfs/transaction.c:1441
-       btrfs_commit_transaction+0x147f/0x3760 fs/btrfs/transaction.c:2353
-       flush_space+0x97c/0xbc0 fs/btrfs/space-info.c:810
-       btrfs_async_reclaim_data_space+0x2a6/0x520 fs/btrfs/space-info.c:1315
-       process_one_work+0x877/0xdb0 kernel/workqueue.c:2289
-       worker_thread+0xb14/0x1330 kernel/workqueue.c:2436
-       kthread+0x266/0x300 kernel/kthread.c:376
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+In kernel 6.2 release, we will have block-group-tree feature, which 
+should greatly reduce the mount time.
 
--> #3 (&fs_info->reloc_mutex){+.+.}-{3:3}:
-       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
-       __mutex_lock_common+0x1bd/0x26e0 kernel/locking/mutex.c:603
-       __mutex_lock kernel/locking/mutex.c:747 [inline]
-       mutex_lock_nested+0x17/0x20 kernel/locking/mutex.c:799
-       btrfs_record_root_in_trans+0x153/0x180 fs/btrfs/transaction.c:484
-       start_transaction+0x3af/0x1180 fs/btrfs/transaction.c:721
-       btrfs_create_common+0x2c6/0x420 fs/btrfs/inode.c:6633
-       lookup_open fs/namei.c:3413 [inline]
-       open_last_lookups fs/namei.c:3481 [inline]
-       path_openat+0x12d0/0x2df0 fs/namei.c:3710
-       do_filp_open+0x264/0x4f0 fs/namei.c:3740
-       do_sys_openat2+0x124/0x4e0 fs/open.c:1310
-       do_sys_open fs/open.c:1326 [inline]
-       __do_sys_creat fs/open.c:1402 [inline]
-       __se_sys_creat fs/open.c:1396 [inline]
-       __x64_sys_creat+0x11f/0x160 fs/open.c:1396
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+And we will provide btrfs-progs tool to do an offline convert, keeping 
+the data and enable the new feature.
 
--> #2 (btrfs_trans_num_extwriters){++++}-{0:0}:
-       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
-       join_transaction+0x19f/0xe60 fs/btrfs/transaction.c:299
-       start_transaction+0x6fb/0x1180 fs/btrfs/transaction.c:658
-       btrfs_create_common+0x2c6/0x420 fs/btrfs/inode.c:6633
-       lookup_open fs/namei.c:3413 [inline]
-       open_last_lookups fs/namei.c:3481 [inline]
-       path_openat+0x12d0/0x2df0 fs/namei.c:3710
-       do_filp_open+0x264/0x4f0 fs/namei.c:3740
-       do_sys_openat2+0x124/0x4e0 fs/open.c:1310
-       do_sys_open fs/open.c:1326 [inline]
-       __do_sys_creat fs/open.c:1402 [inline]
-       __se_sys_creat fs/open.c:1396 [inline]
-       __x64_sys_creat+0x11f/0x160 fs/open.c:1396
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #1 (btrfs_trans_num_writers){++++}-{0:0}:
-       reacquire_held_locks+0x386/0x650 kernel/locking/lockdep.c:5193
-       __lock_release kernel/locking/lockdep.c:5382 [inline]
-       lock_release+0x2e2/0x820 kernel/locking/lockdep.c:5688
-       percpu_up_read include/linux/percpu-rwsem.h:99 [inline]
-       __sb_end_write include/linux/fs.h:1821 [inline]
-       sb_end_intwrite+0x1e/0x1a0 include/linux/fs.h:1877
-       __btrfs_end_transaction+0x388/0x790 fs/btrfs/transaction.c:995
-       btrfs_dirty_inode+0x177/0x1c0 fs/btrfs/inode.c:6099
-       inode_update_time fs/inode.c:1871 [inline]
-       touch_atime+0x315/0x630 fs/inode.c:1944
-       file_accessed include/linux/fs.h:2521 [inline]
-       btrfs_file_mmap+0xbb/0x120 fs/btrfs/file.c:2333
-       call_mmap include/linux/fs.h:2196 [inline]
-       mmap_region+0xfe6/0x1e20 mm/mmap.c:2625
-       do_mmap+0x8d9/0xf30 mm/mmap.c:1412
-       vm_mmap_pgoff+0x19e/0x2b0 mm/util.c:520
-       ksys_mmap_pgoff+0x48c/0x6d0 mm/mmap.c:1458
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #0 (&mm->mmap_lock#2){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3097 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3216 [inline]
-       validate_chain+0x1898/0x6ae0 kernel/locking/lockdep.c:3831
-       __lock_acquire+0x1292/0x1f60 kernel/locking/lockdep.c:5055
-       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
-       __might_fault+0xb2/0x110 mm/memory.c:5646
-       _copy_to_user+0x26/0x130 lib/usercopy.c:29
-       copy_to_user include/linux/uaccess.h:169 [inline]
-       btrfs_ioctl_get_subvol_rootref+0x8cf/0xa90 fs/btrfs/ioctl.c:3203
-       btrfs_ioctl+0xb7c/0xc10 fs/btrfs/ioctl.c:5556
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:870 [inline]
-       __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
-Chain exists of:
-  &mm->mmap_lock#2 --> &fs_info->reloc_mutex --> btrfs-root-00
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(btrfs-root-00);
-                               lock(&fs_info->reloc_mutex);
-                               lock(btrfs-root-00);
-  lock(&mm->mmap_lock#2);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor338/3631:
- #0: ffff88807e7ba4d8 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
- #0: ffff88807e7ba4d8 (btrfs-root-00){++++}-{3:3}, at: btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
- #0: ffff88807e7ba4d8 (btrfs-root-00){++++}-{3:3}, at: btrfs_read_lock_root_node+0x2b4/0x400 fs/btrfs/locking.c:279
-
-stack backtrace:
-CPU: 1 PID: 3631 Comm: syz-executor338 Not tainted 6.1.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1b1/0x28e lib/dump_stack.c:106
- check_noncircular+0x2cc/0x390 kernel/locking/lockdep.c:2177
- check_prev_add kernel/locking/lockdep.c:3097 [inline]
- check_prevs_add kernel/locking/lockdep.c:3216 [inline]
- validate_chain+0x1898/0x6ae0 kernel/locking/lockdep.c:3831
- __lock_acquire+0x1292/0x1f60 kernel/locking/lockdep.c:5055
- lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
- __might_fault+0xb2/0x110 mm/memory.c:5646
- _copy_to_user+0x26/0x130 lib/usercopy.c:29
- copy_to_user include/linux/uaccess.h:169 [inline]
- btrfs_ioctl_get_subvol_rootref+0x8cf/0xa90 fs/btrfs/ioctl.c:3203
- btrfs_ioctl+0xb7c/0xc10 fs/btrfs/ioctl.c:5556
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fedeabbefb9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd63c463b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffd63c463c8 RCX: 00007fedeabbefb9
-RDX: 000000002005de40 RSI: 00000000d000943d RDI: 0000000000000006
-RBP: 00007ffd63c463c0 R08: 00007ffd63c463c0 R09: 00007fedeab7c570
-R10: 00007ffd63c463c0 R11: 0000000000000246 R12: 000000
-
+Thanks,
+Qu
+> 
+> And is there any way to decrease the mount times? 10 minutes is long
+> but acceptable, while 30 minutes is way too long.
+> 
+> Advice would be highly appreciated. :)
+> 
+> 
+> 
+> Linux sm07b 5.4.17-2136.311.6.1.el8uek.x86_64 #2 SMP Thu Sep 22
+> 19:29:28 PDT 2022 x86_64 x86_64 x86_64 GNU/Linux
+> btrfs-progs v5.15.1
+> Label: 'Storage'  uuid: 6ecd172e-3ebd-478c-9515-68162a41590d
+>          Total devices 1 FS bytes used 105.04TiB
+>          devid    1 size 436.57TiB used 107.87TiB path /dev/sdb
+> 
+> Data, single: total=107.34TiB, used=104.82TiB
+> System, DUP: total=40.00MiB, used=11.23MiB
+> Metadata, DUP: total=269.00GiB, used=221.57GiB
+> GlobalReserve, single: total=512.00MiB, used=0.00B
+> 
+> [   51.764445] BTRFS info (device sdb): flagging fs with big metadata feature
+> [   51.764450] BTRFS info (device sdb): use lzo compression, level 0
+> [   51.764454] BTRFS info (device sdb): using free space tree
+> [   51.764455] BTRFS info (device sdb): has skinny extents
