@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95469636D56
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Nov 2022 23:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8A7636D5F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Nov 2022 23:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbiKWWib (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Nov 2022 17:38:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
+        id S229815AbiKWWih (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Nov 2022 17:38:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbiKWWiK (ORCPT
+        with ESMTP id S229471AbiKWWiO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Nov 2022 17:38:10 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2249A18B05
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:38:08 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id i12so13134860qvs.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:38:08 -0800 (PST)
+        Wed, 23 Nov 2022 17:38:14 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3527AF64
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:38:11 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id c15so128966qtw.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 14:38:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WxpJQL5JuIKuj/wv1S1YyFvElKre6MbeeF736GplbWk=;
-        b=Gq4DXvUzAKFtl1odIjOZUi8FKLbGWuvx/1i8g/tqQchlHoPHXoEyMRRY8h+Ej8MDPL
-         o8t3JuvU4xCk5cEOLhUMEARDgdhohu6i+b0o/IVQ27MOR92R9UVMv3pk2GLOpEujlRUw
-         qEuKbJ9HEO3l/rUB1eP6JURxvhPriegz+oh5LFz3GiJ2+LWsQctsODGwJy91aF/4IpUe
-         wXFF6qcDdDKtk2NidLKYdkT6JGvcWTGCBRKz+zyxd0DpqEnUC8cJUU/9LeZPGnax12jZ
-         GI7RHSMXtrP0QnUQtcZdndhwAP+PDEl+LR8ylWQDNlwfJZQHG4Rg6CQMG70RPhxDWMon
-         t1Kg==
+        bh=meLHrAu6ext4zKwrkYJB4G1K1uSAKzXi3jfxgEgdiog=;
+        b=QTJS3/ncejDrLRrlE8bLmd8z9bKlqGEZzRzO4n7cfAqEnEzsc6p/ZOsQyqs+wzGDlc
+         /8gYvDSBV2mghcC6QCzezkMLawfSO7hSRloBj5w1w7+IhzWRcQq+w6yjwSNhEdJNfAq3
+         LdGxG+ESDNoLbzj6U458+jqgOdd0LVR77WSsnsXsE7sGdeVpgN/gdS5axymo1Rfjsn8q
+         S1lOoJRMoEJdTT/WmEV3RFMa9v1/B9U5z27yq9p3jNoy2SxFq0RWlYvRzU5awofone4z
+         CWyQUrhu/EezaKGXl6UYC5ENldHW71TZ+rAjPgu3jOAKZd54MyezCDCc7ODTA8YeSyPt
+         WkaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WxpJQL5JuIKuj/wv1S1YyFvElKre6MbeeF736GplbWk=;
-        b=hF2hkxMAlWd9Qhx57EGfCWcz8zpj9Cl4Rxs8X8Ff+tGPUfUbgujIyVPuFey4nI4fvj
-         cdYbgNjCmM+A0HCkN0E4UqdQ1jMKavw5JAoWJ5MM4QTKuNNCm4spi9t8cvW4uAijW4+9
-         rXjkCdoD3FicuFIOryAHuxPGdeOcNMQAF3iGrY4UsSkNEd+rBMu4tLy8tt2Ej42sOWQ1
-         l9Kj3VP42divombkEu4Ix+CU7POjcbCSxt9+E7lFiUz4h/wbfCf1yAQ1RJgkimFNc6kD
-         YM3JVKDouwXQsDsFfmQ11CllCv3LgPBMaYW5at0h5luLq/IqFry6GDd3AC5geTv6nPBd
-         vYIg==
-X-Gm-Message-State: ANoB5plmgezkCXrL8Fjw+uip1khsAUvGSO+LvkGg7ULkA09Zt2grBf/h
-        2j4lULCSpaQgZPBTHOJDTIXr9kDSz/LoRg==
-X-Google-Smtp-Source: AA0mqf4Rqloywcp4aNcvihE/kLB88aJCXdTGsxCIikqyQqI4U9rAhl2btAbRy8jmrO98/ZVZyO7aeg==
-X-Received: by 2002:a05:6214:3484:b0:4c6:ad8b:9a10 with SMTP id mr4-20020a056214348400b004c6ad8b9a10mr12436872qvb.76.1669243086803;
-        Wed, 23 Nov 2022 14:38:06 -0800 (PST)
+        bh=meLHrAu6ext4zKwrkYJB4G1K1uSAKzXi3jfxgEgdiog=;
+        b=2CylfbQg5j8xBB1e6kI2ftktOatKj+Uu2cAEOjSMhRS4K6/gIkKB8eiC4uqCmdFCce
+         Ssx4WSh2P8y7rz11hYeNtkye8930PJVSzh93KbFMYyeLQYcMhYfQniOCuuyhcmfw67s/
+         XvSzFzt7EuyiUlJuvQvKSnEAseYXfJSDYA0KwH0co2c8WIDWUr7IlA7y28z7cWeXz9Us
+         RtOVUH6XsDoxJJRF1fuTuD/xoRoDzAeN4KvnbPPuhuzlVDd2N2VDIttIcJsa5WoQvM6P
+         rOD2N7FVOxzEPQ5MjeCDMzWyd4xtr8A3ohaBcijlRK7iE/UgKXGd9ShCnqNIog1NuUU6
+         wzuA==
+X-Gm-Message-State: ANoB5plaew4CRMNrmdybdXkKvFDkh19fT5x2giX5UKJFAbIHJ7r9eBcL
+        ikkHnq4evR/IVF7iV9YxJBWwd4Cs1jxv3Q==
+X-Google-Smtp-Source: AA0mqf7UklyruWJ/uRV+fRFnD3XMFTO+ps6vZsUo9lfYHt2PwoCBxN9ucOuDBfS7aEqlapqww05kAw==
+X-Received: by 2002:ac8:7415:0:b0:3a4:a229:b974 with SMTP id p21-20020ac87415000000b003a4a229b974mr10412267qtq.255.1669243088180;
+        Wed, 23 Nov 2022 14:38:08 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id bj38-20020a05620a192600b006cbe3be300esm13135121qkb.12.2022.11.23.14.38.06
+        by smtp.gmail.com with ESMTPSA id d7-20020ac86147000000b003a5c60686b0sm10591503qtm.22.2022.11.23.14.38.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 14:38:06 -0800 (PST)
+        Wed, 23 Nov 2022 14:38:07 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 21/29] btrfs-progs: sync compression.h from the kernel
-Date:   Wed, 23 Nov 2022 17:37:29 -0500
-Message-Id: <c32c18514c2aa6bb7401f276b632511794057bcc.1669242804.git.josef@toxicpanda.com>
+Subject: [PATCH v3 22/29] btrfs-progs: sync messages.* from the kernel
+Date:   Wed, 23 Nov 2022 17:37:30 -0500
+Message-Id: <704447b05b6d4de3ac73e31d250bf03d486b0766.1669242804.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1669242804.git.josef@toxicpanda.com>
 References: <cover.1669242804.git.josef@toxicpanda.com>
@@ -69,367 +69,1135 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch copies in compression.h from the kernel.  This is relatively
-straightforward, we just have to drop the compression types definition
-from ctree.h, and update the image to use BTRFS_NR_COMPRESS_TYPES
-instead of BTRFS_COMPRESS_LAST, and add a few things to kerncompat.h to
-make everything build smoothly.
+These are the printk helpers from the kernel.  There were a few
+modifications, the hi-lights are
+
+ - We do not have fs_info::fs_state, so that needed to be removed.
+ - We do not have discard.h sync'ed yet, so that dependency was dropped.
+ - Anything related to struct super_block was commented out.
+ - The transaction abort had to be modified to fit with the current
+   btrfs-progs code.
+
+Additionally there were kerncompat.h changes that needed to be made to
+handle the dependencies properly.  Those are easier to spot.
+
+Any function that needed to be modified has a MODIFIED tag in the
+comment section with a list of things that were changed.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/mode-common.c         |   1 +
- check/mode-lowmem.c         |   1 +
- cmds/filesystem.c           |   1 +
- cmds/restore.c              |   3 +-
- common/parse-utils.c        |   1 +
- kerncompat.h                |  21 ++++
- kernel-shared/compression.h | 184 ++++++++++++++++++++++++++++++++++++
- kernel-shared/ctree.h       |   9 --
- kernel-shared/file.c        |   1 +
- kernel-shared/print-tree.c  |   1 +
- 10 files changed, 213 insertions(+), 10 deletions(-)
- create mode 100644 kernel-shared/compression.h
+ Makefile                        |   1 +
+ btrfs-corrupt-block.c           |   1 +
+ btrfstune.c                     |   1 +
+ check/clear-cache.c             |   1 +
+ check/main.c                    |   1 +
+ check/mode-common.c             |   1 +
+ check/mode-lowmem.c             |   1 +
+ cmds/filesystem-du.c            |   1 +
+ cmds/filesystem-usage.c         |   1 +
+ cmds/qgroup.c                   |   1 +
+ cmds/replace.c                  |   1 +
+ cmds/rescue-chunk-recover.c     |   1 +
+ cmds/rescue.c                   |   1 +
+ cmds/subvolume-list.c           |   1 +
+ common/units.c                  |   1 +
+ convert/common.c                |   1 +
+ convert/main.c                  |   1 +
+ convert/source-ext2.c           |   1 +
+ image/main.c                    |   1 +
+ kerncompat.h                    |  44 ++--
+ kernel-shared/backref.c         |   1 +
+ kernel-shared/ctree.h           |   2 +
+ kernel-shared/delayed-ref.c     |   1 +
+ kernel-shared/extent_io.c       |   1 +
+ kernel-shared/free-space-tree.c |   1 +
+ kernel-shared/messages.c        | 372 ++++++++++++++++++++++++++++++++
+ kernel-shared/messages.h        | 253 ++++++++++++++++++++++
+ kernel-shared/transaction.c     |   5 -
+ kernel-shared/transaction.h     |   1 -
+ kernel-shared/ulist.c           |   1 +
+ kernel-shared/zoned.h           |   1 +
+ libbtrfs/ctree.h                |   1 +
+ mkfs/main.c                     |   1 +
+ 33 files changed, 678 insertions(+), 26 deletions(-)
+ create mode 100644 kernel-shared/messages.c
+ create mode 100644 kernel-shared/messages.h
 
+diff --git a/Makefile b/Makefile
+index f3a7ce95..3d209a20 100644
+--- a/Makefile
++++ b/Makefile
+@@ -166,6 +166,7 @@ objects = \
+ 	kernel-shared/free-space-tree.o	\
+ 	kernel-shared/inode-item.o	\
+ 	kernel-shared/inode.o	\
++	kernel-shared/messages.o	\
+ 	kernel-shared/print-tree.o	\
+ 	kernel-shared/root-tree.o	\
+ 	kernel-shared/transaction.o	\
+diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
+index 33e3f85d..29915f47 100644
+--- a/btrfs-corrupt-block.c
++++ b/btrfs-corrupt-block.c
+@@ -28,6 +28,7 @@
+ #include "kernel-shared/disk-io.h"
+ #include "kernel-shared/transaction.h"
+ #include "kernel-shared/extent_io.h"
++#include "kernel-shared/messages.h"
+ #include "common/utils.h"
+ #include "common/help.h"
+ #include "common/extent-cache.h"
+diff --git a/btrfstune.c b/btrfstune.c
+index 8dd32129..0ad7275c 100644
+--- a/btrfstune.c
++++ b/btrfstune.c
+@@ -31,6 +31,7 @@
+ #include "kernel-shared/transaction.h"
+ #include "kernel-shared/volumes.h"
+ #include "kernel-shared/extent_io.h"
++#include "kernel-shared/messages.h"
+ #include "common/defs.h"
+ #include "common/utils.h"
+ #include "common/extent-cache.h"
+diff --git a/check/clear-cache.c b/check/clear-cache.c
+index 0a3001a4..c4ee6b33 100644
+--- a/check/clear-cache.c
++++ b/check/clear-cache.c
+@@ -21,6 +21,7 @@
+ #include "kernel-shared/free-space-tree.h"
+ #include "kernel-shared/volumes.h"
+ #include "kernel-shared/transaction.h"
++#include "kernel-shared/messages.h"
+ #include "common/internal.h"
+ #include "common/messages.h"
+ #include "check/common.h"
+diff --git a/check/main.c b/check/main.c
+index 4af6cd4e..bce91451 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -41,6 +41,7 @@
+ #include "kernel-shared/free-space-tree.h"
+ #include "kernel-shared/backref.h"
+ #include "kernel-shared/ulist.h"
++#include "kernel-shared/messages.h"
+ #include "common/defs.h"
+ #include "common/extent-cache.h"
+ #include "common/internal.h"
 diff --git a/check/mode-common.c b/check/mode-common.c
-index 7a38eceb..c8ac235d 100644
+index c8ac235d..a49755da 100644
 --- a/check/mode-common.c
 +++ b/check/mode-common.c
-@@ -27,6 +27,7 @@
- #include "kernel-shared/disk-io.h"
+@@ -28,6 +28,7 @@
  #include "kernel-shared/volumes.h"
  #include "kernel-shared/backref.h"
-+#include "kernel-shared/compression.h"
+ #include "kernel-shared/compression.h"
++#include "kernel-shared/messages.h"
  #include "common/internal.h"
  #include "common/messages.h"
  #include "common/utils.h"
 diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 2cde3b63..10258d34 100644
+index 10258d34..2b91cffe 100644
 --- a/check/mode-lowmem.c
 +++ b/check/mode-lowmem.c
+@@ -30,6 +30,7 @@
+ #include "kernel-shared/backref.h"
+ #include "kernel-shared/compression.h"
+ #include "kernel-shared/volumes.h"
++#include "kernel-shared/messages.h"
+ #include "common/messages.h"
+ #include "common/internal.h"
+ #include "common/utils.h"
+diff --git a/cmds/filesystem-du.c b/cmds/filesystem-du.c
+index 98cf75eb..e22135c6 100644
+--- a/cmds/filesystem-du.c
++++ b/cmds/filesystem-du.c
+@@ -32,6 +32,7 @@
+ #include "kernel-lib/rbtree_types.h"
+ #include "kernel-lib/interval_tree_generic.h"
+ #include "kernel-shared/ctree.h"
++#include "kernel-shared/messages.h"
+ #include "common/utils.h"
+ #include "common/open-utils.h"
+ #include "common/units.h"
+diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+index 5810324f..09aa1405 100644
+--- a/cmds/filesystem-usage.c
++++ b/cmds/filesystem-usage.c
+@@ -31,6 +31,7 @@
+ #include "kernel-shared/ctree.h"
+ #include "kernel-shared/disk-io.h"
+ #include "kernel-shared/volumes.h"
++#include "kernel-shared/messages.h"
+ #include "common/utils.h"
+ #include "common/string-table.h"
+ #include "common/open-utils.h"
+diff --git a/cmds/qgroup.c b/cmds/qgroup.c
+index b3fd7e9f..77932330 100644
+--- a/cmds/qgroup.c
++++ b/cmds/qgroup.c
+@@ -39,6 +39,7 @@
+ #include "cmds/commands.h"
+ #include "cmds/qgroup.h"
+ #include "kernel-shared/uapi/btrfs.h"
++#include "kernel-shared/messages.h"
+ 
+ #define BTRFS_QGROUP_NFILTERS_INCREASE (2 * BTRFS_QGROUP_FILTER_MAX)
+ #define BTRFS_QGROUP_NCOMPS_INCREASE (2 * BTRFS_QGROUP_COMP_MAX)
+diff --git a/cmds/replace.c b/cmds/replace.c
+index 077a9d04..917874ab 100644
+--- a/cmds/replace.c
++++ b/cmds/replace.c
+@@ -40,6 +40,7 @@
+ #include "cmds/commands.h"
+ #include "mkfs/common.h"
+ #include "kernel-shared/uapi/btrfs.h"
++#include "kernel-shared/messages.h"
+ 
+ static int print_replace_status(int fd, const char *path, int once);
+ static char *time2string(char *buf, size_t s, __u64 t);
+diff --git a/cmds/rescue-chunk-recover.c b/cmds/rescue-chunk-recover.c
+index a085f108..460a7f2f 100644
+--- a/cmds/rescue-chunk-recover.c
++++ b/cmds/rescue-chunk-recover.c
+@@ -38,6 +38,7 @@
+ #include "cmds/rescue.h"
+ #include "check/common.h"
+ #include "kernel-shared/uapi/btrfs.h"
++#include "kernel-shared/messages.h"
+ 
+ struct recover_control {
+ 	int verbose;
+diff --git a/cmds/rescue.c b/cmds/rescue.c
+index 2536ca70..c23bd989 100644
+--- a/cmds/rescue.c
++++ b/cmds/rescue.c
 @@ -28,6 +28,7 @@
  #include "kernel-shared/transaction.h"
  #include "kernel-shared/disk-io.h"
- #include "kernel-shared/backref.h"
-+#include "kernel-shared/compression.h"
- #include "kernel-shared/volumes.h"
- #include "common/messages.h"
- #include "common/internal.h"
-diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-index a0906b13..5ecd7871 100644
---- a/cmds/filesystem.c
-+++ b/cmds/filesystem.c
-@@ -35,6 +35,7 @@
- #include "kernel-lib/list.h"
- #include "kernel-lib/sizes.h"
- #include "kernel-shared/ctree.h"
-+#include "kernel-shared/compression.h"
- #include "kernel-shared/volumes.h"
- #include "kernel-lib/list_sort.h"
- #include "kernel-shared/disk-io.h"
-diff --git a/cmds/restore.c b/cmds/restore.c
-index e9d3bdb8..19df6be2 100644
---- a/cmds/restore.c
-+++ b/cmds/restore.c
-@@ -43,6 +43,7 @@
- #include "kernel-shared/print-tree.h"
- #include "kernel-shared/volumes.h"
  #include "kernel-shared/extent_io.h"
-+#include "kernel-shared/compression.h"
++#include "kernel-shared/messages.h"
+ #include "common/messages.h"
  #include "common/utils.h"
  #include "common/help.h"
- #include "common/open-utils.h"
-@@ -718,7 +719,7 @@ static int copy_file(struct btrfs_root *root, int fd, struct btrfs_key *key,
- 				    struct btrfs_file_extent_item);
- 		extent_type = btrfs_file_extent_type(leaf, fi);
- 		compression = btrfs_file_extent_compression(leaf, fi);
--		if (compression >= BTRFS_COMPRESS_LAST) {
-+		if (compression >= BTRFS_NR_COMPRESS_TYPES) {
- 			warning("compression type %d not supported",
- 				compression);
- 			ret = -1;
-diff --git a/common/parse-utils.c b/common/parse-utils.c
-index 11ef2309..f16b7aac 100644
---- a/common/parse-utils.c
-+++ b/common/parse-utils.c
-@@ -25,6 +25,7 @@
- #include <strings.h>
- #include "libbtrfsutil/btrfsutil.h"
- #include "kernel-shared/volumes.h"
-+#include "kernel-shared/compression.h"
- #include "common/parse-utils.h"
- #include "common/messages.h"
+diff --git a/cmds/subvolume-list.c b/cmds/subvolume-list.c
+index 1c734f50..e4bb5898 100644
+--- a/cmds/subvolume-list.c
++++ b/cmds/subvolume-list.c
+@@ -36,6 +36,7 @@
  #include "common/utils.h"
-diff --git a/kerncompat.h b/kerncompat.h
-index 15595500..dedcf5f0 100644
---- a/kerncompat.h
-+++ b/kerncompat.h
-@@ -192,6 +192,10 @@ struct mutex {
- 	unsigned long lock;
- };
- 
-+typedef struct spinlock_struct {
-+	unsigned long lock;
-+} spinlock_t;
-+
- #define mutex_init(m)						\
- do {								\
- 	(m)->lock = 1;						\
-@@ -550,4 +554,21 @@ do {									\
- 	(x) = (val);							\
- } while (0)
- 
-+typedef struct refcount_struct {
-+	int refs;
-+} refcount_t;
-+
-+typedef u32 blk_status_t;
-+typedef u32 blk_opf_t;
-+typedef int atomic_t;
-+
-+struct work_struct {
-+};
-+
-+typedef struct wait_queue_head_s {
-+} wait_queue_head_t;
-+
-+#define __init
-+#define __cold
-+
- #endif
-diff --git a/kernel-shared/compression.h b/kernel-shared/compression.h
-new file mode 100644
-index 00000000..285f1a9d
---- /dev/null
-+++ b/kernel-shared/compression.h
-@@ -0,0 +1,184 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2008 Oracle.  All rights reserved.
-+ */
-+
-+#ifndef BTRFS_COMPRESSION_H
-+#define BTRFS_COMPRESSION_H
-+
-+#include "kerncompat.h"
-+
-+struct btrfs_inode;
-+struct address_space;
-+struct cgroup_subsys_state;
-+
-+/*
-+ * We want to make sure that amount of RAM required to uncompress an extent is
-+ * reasonable, so we limit the total size in ram of a compressed extent to
-+ * 128k.  This is a crucial number because it also controls how easily we can
-+ * spread reads across cpus for decompression.
-+ *
-+ * We also want to make sure the amount of IO required to do a random read is
-+ * reasonably small, so we limit the size of a compressed extent to 128k.
-+ */
-+
-+/* Maximum length of compressed data stored on disk */
-+#define BTRFS_MAX_COMPRESSED		(SZ_128K)
-+
-+/* Maximum size of data before compression */
-+#define BTRFS_MAX_UNCOMPRESSED		(SZ_128K)
-+
-+#define	BTRFS_ZLIB_DEFAULT_LEVEL		3
-+
-+struct compressed_bio {
-+	/* Number of outstanding bios */
-+	refcount_t pending_ios;
-+
-+	/* Number of compressed pages in the array */
-+	unsigned int nr_pages;
-+
-+	/* the pages with the compressed data on them */
-+	struct page **compressed_pages;
-+
-+	/* inode that owns this data */
-+	struct inode *inode;
-+
-+	/* starting offset in the inode for our pages */
-+	u64 start;
-+
-+	/* Number of bytes in the inode we're working on */
-+	unsigned int len;
-+
-+	/* Number of bytes on disk */
-+	unsigned int compressed_len;
-+
-+	/* The compression algorithm for this bio */
-+	u8 compress_type;
-+
-+	/* Whether this is a write for writeback. */
-+	bool writeback;
-+
-+	/* IO errors */
-+	blk_status_t status;
-+
-+	union {
-+		/* For reads, this is the bio we are copying the data into */
-+		struct bio *orig_bio;
-+		struct work_struct write_end_work;
-+	};
-+};
-+
-+static inline unsigned int btrfs_compress_type(unsigned int type_level)
-+{
-+	return (type_level & 0xF);
-+}
-+
-+static inline unsigned int btrfs_compress_level(unsigned int type_level)
-+{
-+	return ((type_level & 0xF0) >> 4);
-+}
-+
-+int __init btrfs_init_compress(void);
-+void __cold btrfs_exit_compress(void);
-+
-+int btrfs_compress_pages(unsigned int type_level, struct address_space *mapping,
-+			 u64 start, struct page **pages,
-+			 unsigned long *out_pages,
-+			 unsigned long *total_in,
-+			 unsigned long *total_out);
-+int btrfs_decompress(int type, unsigned char *data_in, struct page *dest_page,
-+		     unsigned long start_byte, size_t srclen, size_t destlen);
-+int btrfs_decompress_buf2page(const char *buf, u32 buf_len,
-+			      struct compressed_bio *cb, u32 decompressed);
-+
-+blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
-+				  unsigned int len, u64 disk_start,
-+				  unsigned int compressed_len,
-+				  struct page **compressed_pages,
-+				  unsigned int nr_pages,
-+				  blk_opf_t write_flags,
-+				  struct cgroup_subsys_state *blkcg_css,
-+				  bool writeback);
-+void btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
-+				  int mirror_num);
-+
-+unsigned int btrfs_compress_str2level(unsigned int type, const char *str);
-+
-+enum btrfs_compression_type {
-+	BTRFS_COMPRESS_NONE  = 0,
-+	BTRFS_COMPRESS_ZLIB  = 1,
-+	BTRFS_COMPRESS_LZO   = 2,
-+	BTRFS_COMPRESS_ZSTD  = 3,
-+	BTRFS_NR_COMPRESS_TYPES = 4,
-+};
-+
-+struct workspace_manager {
-+	struct list_head idle_ws;
-+	spinlock_t ws_lock;
-+	/* Number of free workspaces */
-+	int free_ws;
-+	/* Total number of allocated workspaces */
-+	atomic_t total_ws;
-+	/* Waiters for a free workspace */
-+	wait_queue_head_t ws_wait;
-+};
-+
-+struct list_head *btrfs_get_workspace(int type, unsigned int level);
-+void btrfs_put_workspace(int type, struct list_head *ws);
-+
-+struct btrfs_compress_op {
-+	struct workspace_manager *workspace_manager;
-+	/* Maximum level supported by the compression algorithm */
-+	unsigned int max_level;
-+	unsigned int default_level;
-+};
-+
-+/* The heuristic workspaces are managed via the 0th workspace manager */
-+#define BTRFS_NR_WORKSPACE_MANAGERS	BTRFS_NR_COMPRESS_TYPES
-+
-+extern const struct btrfs_compress_op btrfs_heuristic_compress;
-+extern const struct btrfs_compress_op btrfs_zlib_compress;
-+extern const struct btrfs_compress_op btrfs_lzo_compress;
-+extern const struct btrfs_compress_op btrfs_zstd_compress;
-+
-+const char* btrfs_compress_type2str(enum btrfs_compression_type type);
-+bool btrfs_compress_is_valid_type(const char *str, size_t len);
-+
-+int btrfs_compress_heuristic(struct inode *inode, u64 start, u64 end);
-+
-+int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
-+		u64 start, struct page **pages, unsigned long *out_pages,
-+		unsigned long *total_in, unsigned long *total_out);
-+int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
-+int zlib_decompress(struct list_head *ws, unsigned char *data_in,
-+		struct page *dest_page, unsigned long start_byte, size_t srclen,
-+		size_t destlen);
-+struct list_head *zlib_alloc_workspace(unsigned int level);
-+void zlib_free_workspace(struct list_head *ws);
-+struct list_head *zlib_get_workspace(unsigned int level);
-+
-+int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
-+		u64 start, struct page **pages, unsigned long *out_pages,
-+		unsigned long *total_in, unsigned long *total_out);
-+int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
-+int lzo_decompress(struct list_head *ws, unsigned char *data_in,
-+		struct page *dest_page, unsigned long start_byte, size_t srclen,
-+		size_t destlen);
-+struct list_head *lzo_alloc_workspace(unsigned int level);
-+void lzo_free_workspace(struct list_head *ws);
-+
-+int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
-+		u64 start, struct page **pages, unsigned long *out_pages,
-+		unsigned long *total_in, unsigned long *total_out);
-+int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
-+int zstd_decompress(struct list_head *ws, unsigned char *data_in,
-+		struct page *dest_page, unsigned long start_byte, size_t srclen,
-+		size_t destlen);
-+void zstd_init_workspace_manager(void);
-+void zstd_cleanup_workspace_manager(void);
-+struct list_head *zstd_alloc_workspace(unsigned int level);
-+void zstd_free_workspace(struct list_head *ws);
-+struct list_head *zstd_get_workspace(unsigned int level);
-+void zstd_put_workspace(struct list_head *ws);
-+
-+#endif
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 6dfc3fde..8e92bd4e 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -149,15 +149,6 @@ struct btrfs_path {
- 					sizeof(struct btrfs_item))
- #define BTRFS_MAX_EXTENT_SIZE		128UL * 1024 * 1024
- 
--typedef enum {
--	BTRFS_COMPRESS_NONE  = 0,
--	BTRFS_COMPRESS_ZLIB  = 1,
--	BTRFS_COMPRESS_LZO   = 2,
--	BTRFS_COMPRESS_ZSTD  = 3,
--	BTRFS_COMPRESS_TYPES = 3,
--	BTRFS_COMPRESS_LAST  = 4,
--} btrfs_compression_type;
--
- enum btrfs_tree_block_status {
- 	BTRFS_TREE_BLOCK_CLEAN,
- 	BTRFS_TREE_BLOCK_INVALID_NRITEMS,
-diff --git a/kernel-shared/file.c b/kernel-shared/file.c
-index 59d82a1d..807ba477 100644
---- a/kernel-shared/file.c
-+++ b/kernel-shared/file.c
-@@ -21,6 +21,7 @@
- #include "common/utils.h"
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/transaction.h"
-+#include "compression.h"
- #include "kerncompat.h"
+ #include "cmds/commands.h"
+ #include "kernel-shared/uapi/btrfs.h"
++#include "kernel-shared/messages.h"
  
  /*
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index e08c72df..e2f9f760 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -25,6 +25,7 @@
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/print-tree.h"
- #include "kernel-shared/volumes.h"
-+#include "kernel-shared/compression.h"
- #include "common/utils.h"
+  * Naming of options:
+diff --git a/common/units.c b/common/units.c
+index 698dc1d0..5192b6a8 100644
+--- a/common/units.c
++++ b/common/units.c
+@@ -18,6 +18,7 @@
+ #include <string.h>
+ #include "common/units.h"
+ #include "common/messages.h"
++#include "kernel-shared/messages.h"
  
- static void print_dir_item_type(struct extent_buffer *eb,
+ /*
+  * Note: this function uses a static per-thread buffer. Do not call this
+diff --git a/convert/common.c b/convert/common.c
+index 228191b8..af115d14 100644
+--- a/convert/common.c
++++ b/convert/common.c
+@@ -30,6 +30,7 @@
+ #include "mkfs/common.h"
+ #include "convert/common.h"
+ #include "kernel-shared/uapi/btrfs.h"
++#include "kernel-shared/messages.h"
+ 
+ #define BTRFS_CONVERT_META_GROUP_SIZE SZ_32M
+ 
+diff --git a/convert/main.c b/convert/main.c
+index c7be19f4..80b36697 100644
+--- a/convert/main.c
++++ b/convert/main.c
+@@ -99,6 +99,7 @@
+ #include "kernel-shared/disk-io.h"
+ #include "kernel-shared/volumes.h"
+ #include "kernel-shared/transaction.h"
++#include "kernel-shared/messages.h"
+ #include "crypto/crc32c.h"
+ #include "common/defs.h"
+ #include "common/extent-cache.h"
+diff --git a/convert/source-ext2.c b/convert/source-ext2.c
+index b0b865b9..a8b33317 100644
+--- a/convert/source-ext2.c
++++ b/convert/source-ext2.c
+@@ -27,6 +27,7 @@
+ #include <string.h>
+ #include "kernel-lib/sizes.h"
+ #include "kernel-shared/transaction.h"
++#include "kernel-shared/messages.h"
+ #include "common/extent-cache.h"
+ #include "common/messages.h"
+ #include "convert/common.h"
+diff --git a/image/main.c b/image/main.c
+index 6a1bcd42..6bdb5d66 100644
+--- a/image/main.c
++++ b/image/main.c
+@@ -39,6 +39,7 @@
+ #include "kernel-shared/transaction.h"
+ #include "kernel-shared/volumes.h"
+ #include "kernel-shared/extent_io.h"
++#include "kernel-shared/messages.h"
+ #include "crypto/crc32c.h"
+ #include "common/internal.h"
+ #include "common/messages.h"
+diff --git a/kerncompat.h b/kerncompat.h
+index dedcf5f0..59beb4f4 100644
+--- a/kerncompat.h
++++ b/kerncompat.h
+@@ -35,6 +35,8 @@
+ #include <linux/types.h>
+ #include <linux/const.h>
+ #include <stdint.h>
++#include <stdbool.h>
++#include <stdarg.h>
+ 
+ #include <features.h>
+ 
+@@ -314,6 +316,12 @@ static inline int IS_ERR_OR_NULL(const void *ptr)
+ #define printk(fmt, args...) fprintf(stderr, fmt, ##args)
+ #define	KERN_CRIT	""
+ #define KERN_ERR	""
++#define KERN_EMERG	""
++#define KERN_ALERT	""
++#define KERN_CRIT	""
++#define KERN_NOTICE	""
++#define KERN_INFO	""
++#define KERN_WARNING	""
+ 
+ /*
+  * kmalloc/kfree
+@@ -329,26 +337,6 @@ static inline int IS_ERR_OR_NULL(const void *ptr)
+ #define memalloc_nofs_save() (0)
+ #define memalloc_nofs_restore(x)	((void)(x))
+ 
+-#ifndef BTRFS_DISABLE_BACKTRACE
+-static inline void assert_trace(const char *assertion, const char *filename,
+-			      const char *func, unsigned line, long val)
+-{
+-	if (val)
+-		return;
+-	fprintf(stderr,
+-		"%s:%d: %s: Assertion `%s` failed, value %ld\n",
+-		filename, line, func, assertion, val);
+-#ifndef BTRFS_DISABLE_BACKTRACE
+-	print_trace();
+-#endif
+-	abort();
+-	exit(1);
+-}
+-#define	ASSERT(c) assert_trace(#c, __FILE__, __func__, __LINE__, (long)(c))
+-#else
+-#define ASSERT(c) assert(c)
+-#endif
+-
+ #define BUG_ON(c) bugon_trace(#c, __FILE__, __func__, __LINE__, (long)(c))
+ #define BUG()				\
+ do {					\
+@@ -568,7 +556,23 @@ struct work_struct {
+ typedef struct wait_queue_head_s {
+ } wait_queue_head_t;
+ 
++struct super_block {
++	char *s_id;
++};
++
++struct va_format {
++	const char *fmt;
++	va_list *va;
++};
++
+ #define __init
+ #define __cold
+ 
++#define __printf(a, b)                  __attribute__((__format__(printf, a, b)))
++
++static inline bool sb_rdonly(struct super_block *sb)
++{
++	return false;
++}
++
+ #endif
+diff --git a/kernel-shared/backref.c b/kernel-shared/backref.c
+index 9c5a3895..897cd089 100644
+--- a/kernel-shared/backref.c
++++ b/kernel-shared/backref.c
+@@ -23,6 +23,7 @@
+ #include "kernel-shared/ulist.h"
+ #include "kernel-shared/transaction.h"
+ #include "common/internal.h"
++#include "messages.h"
+ 
+ #define pr_debug(...) do { } while (0)
+ 
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index 8e92bd4e..ef770b4d 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -372,6 +372,8 @@ struct btrfs_fs_info {
+ 		u64 zone_size;
+ 		u64 zoned;
+ 	};
++
++	struct super_block *sb;
+ };
+ 
+ static inline bool btrfs_is_zoned(const struct btrfs_fs_info *fs_info)
+diff --git a/kernel-shared/delayed-ref.c b/kernel-shared/delayed-ref.c
+index 5b041ac6..f148b5f2 100644
+--- a/kernel-shared/delayed-ref.c
++++ b/kernel-shared/delayed-ref.c
+@@ -20,6 +20,7 @@
+ #include "kernel-shared/ctree.h"
+ #include "kernel-shared/delayed-ref.h"
+ #include "kernel-shared/transaction.h"
++#include "messages.h"
+ 
+ /*
+  * delayed back reference update tracking.  For subvolume trees
+diff --git a/kernel-shared/extent_io.c b/kernel-shared/extent_io.c
+index 99191fe2..7074b75f 100644
+--- a/kernel-shared/extent_io.c
++++ b/kernel-shared/extent_io.c
+@@ -33,6 +33,7 @@
+ #include "common/utils.h"
+ #include "common/device-utils.h"
+ #include "common/internal.h"
++#include "messages.h"
+ 
+ static void free_extent_buffer_final(struct extent_buffer *eb);
+ 
+diff --git a/kernel-shared/free-space-tree.c b/kernel-shared/free-space-tree.c
+index 656de3fa..4064b7cb 100644
+--- a/kernel-shared/free-space-tree.c
++++ b/kernel-shared/free-space-tree.c
+@@ -24,6 +24,7 @@
+ #include "kernel-shared/transaction.h"
+ #include "kernel-lib/bitops.h"
+ #include "common/internal.h"
++#include "messages.h"
+ 
+ static struct btrfs_root *btrfs_free_space_root(struct btrfs_fs_info *fs_info,
+ 						struct btrfs_block_group *block_group)
+diff --git a/kernel-shared/messages.c b/kernel-shared/messages.c
+new file mode 100644
+index 00000000..e8ba1df8
+--- /dev/null
++++ b/kernel-shared/messages.c
+@@ -0,0 +1,372 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "kerncompat.h"
++#include "kernel-lib/bitops.h"
++#include "ctree.h"
++#include "messages.h"
++#include "transaction.h"
++
++#ifdef CONFIG_PRINTK
++
++#define STATE_STRING_PREFACE	": state "
++#define STATE_STRING_BUF_LEN	(sizeof(STATE_STRING_PREFACE) + BTRFS_FS_STATE_COUNT)
++
++/*
++ * Characters to print to indicate error conditions or uncommon filesystem state.
++ * RO is not an error.
++ */
++static const char fs_state_chars[] = {
++	[BTRFS_FS_STATE_ERROR]			= 'E',
++	[BTRFS_FS_STATE_REMOUNTING]		= 'M',
++	[BTRFS_FS_STATE_RO]			= 0,
++	[BTRFS_FS_STATE_TRANS_ABORTED]		= 'A',
++	[BTRFS_FS_STATE_DEV_REPLACING]		= 'R',
++	[BTRFS_FS_STATE_DUMMY_FS_INFO]		= 0,
++	[BTRFS_FS_STATE_NO_CSUMS]		= 'C',
++	[BTRFS_FS_STATE_LOG_CLEANUP_ERROR]	= 'L',
++};
++
++static void btrfs_state_to_string(const struct btrfs_fs_info *info, char *buf)
++{
++	unsigned int bit;
++	bool states_printed = false;
++	unsigned long fs_state = READ_ONCE(info->fs_state);
++	char *curr = buf;
++
++	memcpy(curr, STATE_STRING_PREFACE, sizeof(STATE_STRING_PREFACE));
++	curr += sizeof(STATE_STRING_PREFACE) - 1;
++
++	for_each_set_bit(bit, &fs_state, sizeof(fs_state)) {
++		WARN_ON_ONCE(bit >= BTRFS_FS_STATE_COUNT);
++		if ((bit < BTRFS_FS_STATE_COUNT) && fs_state_chars[bit]) {
++			*curr++ = fs_state_chars[bit];
++			states_printed = true;
++		}
++	}
++
++	/* If no states were printed, reset the buffer */
++	if (!states_printed)
++		curr = buf;
++
++	*curr++ = 0;
++}
++#endif
++
++/*
++ * Generally the error codes correspond to their respective errors, but there
++ * are a few special cases.
++ *
++ * EUCLEAN: Any sort of corruption that we encounter.  The tree-checker for
++ *          instance will return EUCLEAN if any of the blocks are corrupted in
++ *          a way that is problematic.  We want to reserve EUCLEAN for these
++ *          sort of corruptions.
++ *
++ * EROFS: If we check BTRFS_FS_STATE_ERROR and fail out with a return error, we
++ *        need to use EROFS for this case.  We will have no idea of the
++ *        original failure, that will have been reported at the time we tripped
++ *        over the error.  Each subsequent error that doesn't have any context
++ *        of the original error should use EROFS when handling BTRFS_FS_STATE_ERROR.
++ */
++const char * __attribute_const__ btrfs_decode_error(int error)
++{
++	char *errstr = "unknown";
++
++	switch (error) {
++	case -ENOENT:		/* -2 */
++		errstr = "No such entry";
++		break;
++	case -EIO:		/* -5 */
++		errstr = "IO failure";
++		break;
++	case -ENOMEM:		/* -12*/
++		errstr = "Out of memory";
++		break;
++	case -EEXIST:		/* -17 */
++		errstr = "Object already exists";
++		break;
++	case -ENOSPC:		/* -28 */
++		errstr = "No space left";
++		break;
++	case -EROFS:		/* -30 */
++		errstr = "Readonly filesystem";
++		break;
++	case -EOPNOTSUPP:	/* -95 */
++		errstr = "Operation not supported";
++		break;
++	case -EUCLEAN:		/* -117 */
++		errstr = "Filesystem corrupted";
++		break;
++	case -EDQUOT:		/* -122 */
++		errstr = "Quota exceeded";
++		break;
++	}
++
++	return errstr;
++}
++
++/*
++ * __btrfs_handle_fs_error decodes expected errors from the caller and
++ * invokes the appropriate error response.
++ */
++__cold
++void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function,
++		       unsigned int line, int error, const char *fmt, ...)
++{
++	struct super_block *sb = fs_info->sb;
++#ifdef CONFIG_PRINTK
++	char statestr[STATE_STRING_BUF_LEN];
++	const char *errstr;
++#endif
++
++#ifdef CONFIG_PRINTK_INDEX
++	printk_index_subsys_emit(
++		"BTRFS: error (device %s%s) in %s:%d: error=%d %s", KERN_CRIT, fmt);
++#endif
++
++	/*
++	 * Special case: if the error is EROFS, and we're already under
++	 * SB_RDONLY, then it is safe here.
++	 */
++	if (error == -EROFS && sb_rdonly(sb))
++		return;
++
++#ifdef CONFIG_PRINTK
++	errstr = btrfs_decode_error(error);
++	btrfs_state_to_string(fs_info, statestr);
++	if (fmt) {
++		struct va_format vaf;
++		va_list args;
++
++		va_start(args, fmt);
++		vaf.fmt = fmt;
++		vaf.va = &args;
++
++		pr_crit("BTRFS: error (device %s%s) in %s:%d: error=%d %s (%pV)\n",
++			sb->s_id, statestr, function, line, error, errstr, &vaf);
++		va_end(args);
++	} else {
++		pr_crit("BTRFS: error (device %s%s) in %s:%d: error=%d %s\n",
++			sb->s_id, statestr, function, line, error, errstr);
++	}
++#endif
++
++	/*
++	 * We don't have fs_info::fs_state yet, and the rest of this is more
++	 * kernel related cleanup, so for now comment it out.
++	 */
++#if 0
++	/*
++	 * Today we only save the error info to memory.  Long term we'll also
++	 * send it down to the disk.
++	 */
++	set_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state);
++
++	/* Don't go through full error handling during mount. */
++	if (!(sb->s_flags & SB_BORN))
++		return;
++
++	if (sb_rdonly(sb))
++		return;
++
++	btrfs_discard_stop(fs_info);
++
++	/* Handle error by forcing the filesystem readonly. */
++	btrfs_set_sb_rdonly(sb);
++#endif
++
++	btrfs_info(fs_info, "forced readonly");
++	/*
++	 * Note that a running device replace operation is not canceled here
++	 * although there is no way to update the progress. It would add the
++	 * risk of a deadlock, therefore the canceling is omitted. The only
++	 * penalty is that some I/O remains active until the procedure
++	 * completes. The next time when the filesystem is mounted writable
++	 * again, the device replace operation continues.
++	 */
++}
++
++#ifdef CONFIG_PRINTK
++static const char * const logtypes[] = {
++	"emergency",
++	"alert",
++	"critical",
++	"error",
++	"warning",
++	"notice",
++	"info",
++	"debug",
++};
++
++/*
++ * Use one ratelimit state per log level so that a flood of less important
++ * messages doesn't cause more important ones to be dropped.
++ */
++static struct ratelimit_state printk_limits[] = {
++	RATELIMIT_STATE_INIT(printk_limits[0], DEFAULT_RATELIMIT_INTERVAL, 100),
++	RATELIMIT_STATE_INIT(printk_limits[1], DEFAULT_RATELIMIT_INTERVAL, 100),
++	RATELIMIT_STATE_INIT(printk_limits[2], DEFAULT_RATELIMIT_INTERVAL, 100),
++	RATELIMIT_STATE_INIT(printk_limits[3], DEFAULT_RATELIMIT_INTERVAL, 100),
++	RATELIMIT_STATE_INIT(printk_limits[4], DEFAULT_RATELIMIT_INTERVAL, 100),
++	RATELIMIT_STATE_INIT(printk_limits[5], DEFAULT_RATELIMIT_INTERVAL, 100),
++	RATELIMIT_STATE_INIT(printk_limits[6], DEFAULT_RATELIMIT_INTERVAL, 100),
++	RATELIMIT_STATE_INIT(printk_limits[7], DEFAULT_RATELIMIT_INTERVAL, 100),
++};
++
++void __cold _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
++{
++	char lvl[PRINTK_MAX_SINGLE_HEADER_LEN + 1] = "\0";
++	struct va_format vaf;
++	va_list args;
++	int kern_level;
++	const char *type = logtypes[4];
++	struct ratelimit_state *ratelimit = &printk_limits[4];
++
++#ifdef CONFIG_PRINTK_INDEX
++	printk_index_subsys_emit("%sBTRFS %s (device %s): ", NULL, fmt);
++#endif
++
++	va_start(args, fmt);
++
++	while ((kern_level = printk_get_level(fmt)) != 0) {
++		size_t size = printk_skip_level(fmt) - fmt;
++
++		if (kern_level >= '0' && kern_level <= '7') {
++			memcpy(lvl, fmt,  size);
++			lvl[size] = '\0';
++			type = logtypes[kern_level - '0'];
++			ratelimit = &printk_limits[kern_level - '0'];
++		}
++		fmt += size;
++	}
++
++	vaf.fmt = fmt;
++	vaf.va = &args;
++
++	if (__ratelimit(ratelimit)) {
++		if (fs_info) {
++			char statestr[STATE_STRING_BUF_LEN];
++
++			btrfs_state_to_string(fs_info, statestr);
++			_printk("%sBTRFS %s (device %s%s): %pV\n", lvl, type,
++				fs_info->sb->s_id, statestr, &vaf);
++		} else {
++			_printk("%sBTRFS %s: %pV\n", lvl, type, &vaf);
++		}
++	}
++
++	va_end(args);
++}
++#endif
++
++#ifdef CONFIG_BTRFS_ASSERT
++void __cold btrfs_assertfail(const char *expr, const char *file, int line)
++{
++	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
++	BUG();
++}
++#endif
++
++void __cold btrfs_print_v0_err(struct btrfs_fs_info *fs_info)
++{
++	btrfs_err(fs_info,
++"Unsupported V0 extent filesystem detected. Aborting. Please re-create your filesystem with a newer kernel");
++}
++
++#if BITS_PER_LONG == 32
++void __cold btrfs_warn_32bit_limit(struct btrfs_fs_info *fs_info)
++{
++	if (!test_and_set_bit(BTRFS_FS_32BIT_WARN, &fs_info->flags)) {
++		btrfs_warn(fs_info, "reaching 32bit limit for logical addresses");
++		btrfs_warn(fs_info,
++"due to page cache limit on 32bit systems, btrfs can't access metadata at or beyond %lluT",
++			   BTRFS_32BIT_MAX_FILE_SIZE >> 40);
++		btrfs_warn(fs_info,
++			   "please consider upgrading to 64bit kernel/hardware");
++	}
++}
++
++void __cold btrfs_err_32bit_limit(struct btrfs_fs_info *fs_info)
++{
++	if (!test_and_set_bit(BTRFS_FS_32BIT_ERROR, &fs_info->flags)) {
++		btrfs_err(fs_info, "reached 32bit limit for logical addresses");
++		btrfs_err(fs_info,
++"due to page cache limit on 32bit systems, metadata beyond %lluT can't be accessed",
++			  BTRFS_32BIT_MAX_FILE_SIZE >> 40);
++		btrfs_err(fs_info,
++			   "please consider upgrading to 64bit kernel/hardware");
++	}
++}
++#endif
++
++/*
++ * We only mark the transaction aborted and then set the file system read-only.
++ * This will prevent new transactions from starting or trying to join this
++ * one.
++ *
++ * This means that error recovery at the call site is limited to freeing
++ * any local memory allocations and passing the error code up without
++ * further cleanup. The transaction should complete as it normally would
++ * in the call path but will return -EIO.
++ *
++ * We'll complete the cleanup in btrfs_end_transaction and
++ * btrfs_commit_transaction.
++ *
++ * MODIFIED:
++ *  - We do not have trans->aborted, change to fs_info->transaction_aborted.
++ *  - We do not have btrfs_dump_space_info_for_trans_abort().
++ *  - We do not have transaction_wait, transaction_blocked_wait.
++ */
++__cold
++void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
++			       const char *function,
++			       unsigned int line, int error, bool first_hit)
++{
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++
++	fs_info->transaction_aborted = error;
++#if 0
++	if (first_hit && error == -ENOSPC)
++		btrfs_dump_space_info_for_trans_abort(fs_info);
++	/* Wake up anybody who may be waiting on this transaction */
++	wake_up(&fs_info->transaction_wait);
++	wake_up(&fs_info->transaction_blocked_wait);
++#endif
++	__btrfs_handle_fs_error(fs_info, function, line, error, NULL);
++}
++
++/*
++ * __btrfs_panic decodes unexpected, fatal errors from the caller, issues an
++ * alert, and either panics or BUGs, depending on mount options.
++ *
++ * MODIFIED:
++ *  - We don't have btrfs_test_opt() yet, kill that and s_id.
++ */
++__cold
++void __btrfs_panic(struct btrfs_fs_info *fs_info, const char *function,
++		   unsigned int line, int error, const char *fmt, ...)
++{
++	const char *errstr;
++	struct va_format vaf = { .fmt = fmt };
++	va_list args;
++#if 0
++	char *s_id = "<unknown>";
++
++	if (fs_info)
++		s_id = fs_info->sb->s_id;
++#endif
++
++	va_start(args, fmt);
++	vaf.va = &args;
++
++	errstr = btrfs_decode_error(error);
++#if 0
++	if (fs_info && (btrfs_test_opt(fs_info, PANIC_ON_FATAL_ERROR)))
++		panic(KERN_CRIT "BTRFS panic (device %s) in %s:%d: %pV (error=%d %s)\n",
++			s_id, function, line, &vaf, error, errstr);
++#endif
++
++	btrfs_crit(fs_info, "panic in %s:%d: %pV (error=%d %s)",
++		   function, line, &vaf, error, errstr);
++	va_end(args);
++	/* Caller calls BUG() */
++}
+diff --git a/kernel-shared/messages.h b/kernel-shared/messages.h
+new file mode 100644
+index 00000000..92fa124f
+--- /dev/null
++++ b/kernel-shared/messages.h
+@@ -0,0 +1,253 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef BTRFS_MESSAGES_H
++#define BTRFS_MESSAGES_H
++
++#include "kerncompat.h"
++#include <linux/types.h>
++
++struct btrfs_fs_info;
++struct btrfs_trans_handle;
++
++static inline __printf(2, 3) __cold
++void btrfs_no_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
++{
++}
++
++#ifdef CONFIG_PRINTK
++
++#define btrfs_printk(fs_info, fmt, args...)				\
++	_btrfs_printk(fs_info, fmt, ##args)
++
++__printf(2, 3)
++__cold
++void _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
++
++#else
++
++#define btrfs_printk(fs_info, fmt, args...) \
++	btrfs_no_printk(fs_info, fmt, ##args)
++#endif
++
++#define btrfs_emerg(fs_info, fmt, args...) \
++	btrfs_printk(fs_info, KERN_EMERG fmt, ##args)
++#define btrfs_alert(fs_info, fmt, args...) \
++	btrfs_printk(fs_info, KERN_ALERT fmt, ##args)
++#define btrfs_crit(fs_info, fmt, args...) \
++	btrfs_printk(fs_info, KERN_CRIT fmt, ##args)
++#define btrfs_err(fs_info, fmt, args...) \
++	btrfs_printk(fs_info, KERN_ERR fmt, ##args)
++#define btrfs_warn(fs_info, fmt, args...) \
++	btrfs_printk(fs_info, KERN_WARNING fmt, ##args)
++#define btrfs_notice(fs_info, fmt, args...) \
++	btrfs_printk(fs_info, KERN_NOTICE fmt, ##args)
++#define btrfs_info(fs_info, fmt, args...) \
++	btrfs_printk(fs_info, KERN_INFO fmt, ##args)
++
++/*
++ * Wrappers that use printk_in_rcu
++ */
++#define btrfs_emerg_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_in_rcu(fs_info, KERN_EMERG fmt, ##args)
++#define btrfs_alert_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_in_rcu(fs_info, KERN_ALERT fmt, ##args)
++#define btrfs_crit_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_in_rcu(fs_info, KERN_CRIT fmt, ##args)
++#define btrfs_err_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_in_rcu(fs_info, KERN_ERR fmt, ##args)
++#define btrfs_warn_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_in_rcu(fs_info, KERN_WARNING fmt, ##args)
++#define btrfs_notice_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_in_rcu(fs_info, KERN_NOTICE fmt, ##args)
++#define btrfs_info_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_in_rcu(fs_info, KERN_INFO fmt, ##args)
++
++/*
++ * Wrappers that use a ratelimited printk_in_rcu
++ */
++#define btrfs_emerg_rl_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_rl_in_rcu(fs_info, KERN_EMERG fmt, ##args)
++#define btrfs_alert_rl_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_rl_in_rcu(fs_info, KERN_ALERT fmt, ##args)
++#define btrfs_crit_rl_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_rl_in_rcu(fs_info, KERN_CRIT fmt, ##args)
++#define btrfs_err_rl_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_rl_in_rcu(fs_info, KERN_ERR fmt, ##args)
++#define btrfs_warn_rl_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_rl_in_rcu(fs_info, KERN_WARNING fmt, ##args)
++#define btrfs_notice_rl_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_rl_in_rcu(fs_info, KERN_NOTICE fmt, ##args)
++#define btrfs_info_rl_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_rl_in_rcu(fs_info, KERN_INFO fmt, ##args)
++
++/*
++ * Wrappers that use a ratelimited printk
++ */
++#define btrfs_emerg_rl(fs_info, fmt, args...) \
++	btrfs_printk_ratelimited(fs_info, KERN_EMERG fmt, ##args)
++#define btrfs_alert_rl(fs_info, fmt, args...) \
++	btrfs_printk_ratelimited(fs_info, KERN_ALERT fmt, ##args)
++#define btrfs_crit_rl(fs_info, fmt, args...) \
++	btrfs_printk_ratelimited(fs_info, KERN_CRIT fmt, ##args)
++#define btrfs_err_rl(fs_info, fmt, args...) \
++	btrfs_printk_ratelimited(fs_info, KERN_ERR fmt, ##args)
++#define btrfs_warn_rl(fs_info, fmt, args...) \
++	btrfs_printk_ratelimited(fs_info, KERN_WARNING fmt, ##args)
++#define btrfs_notice_rl(fs_info, fmt, args...) \
++	btrfs_printk_ratelimited(fs_info, KERN_NOTICE fmt, ##args)
++#define btrfs_info_rl(fs_info, fmt, args...) \
++	btrfs_printk_ratelimited(fs_info, KERN_INFO fmt, ##args)
++
++#if defined(CONFIG_DYNAMIC_DEBUG)
++#define btrfs_debug(fs_info, fmt, args...)				\
++	_dynamic_func_call_no_desc(fmt, btrfs_printk,			\
++				   fs_info, KERN_DEBUG fmt, ##args)
++#define btrfs_debug_in_rcu(fs_info, fmt, args...)			\
++	_dynamic_func_call_no_desc(fmt, btrfs_printk_in_rcu,		\
++				   fs_info, KERN_DEBUG fmt, ##args)
++#define btrfs_debug_rl_in_rcu(fs_info, fmt, args...)			\
++	_dynamic_func_call_no_desc(fmt, btrfs_printk_rl_in_rcu,		\
++				   fs_info, KERN_DEBUG fmt, ##args)
++#define btrfs_debug_rl(fs_info, fmt, args...)				\
++	_dynamic_func_call_no_desc(fmt, btrfs_printk_ratelimited,	\
++				   fs_info, KERN_DEBUG fmt, ##args)
++#elif defined(DEBUG)
++#define btrfs_debug(fs_info, fmt, args...) \
++	btrfs_printk(fs_info, KERN_DEBUG fmt, ##args)
++#define btrfs_debug_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
++#define btrfs_debug_rl_in_rcu(fs_info, fmt, args...) \
++	btrfs_printk_rl_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
++#define btrfs_debug_rl(fs_info, fmt, args...) \
++	btrfs_printk_ratelimited(fs_info, KERN_DEBUG fmt, ##args)
++#else
++#define btrfs_debug(fs_info, fmt, args...) \
++	btrfs_no_printk(fs_info, KERN_DEBUG fmt, ##args)
++#define btrfs_debug_in_rcu(fs_info, fmt, args...) \
++	btrfs_no_printk_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
++#define btrfs_debug_rl_in_rcu(fs_info, fmt, args...) \
++	btrfs_no_printk_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
++#define btrfs_debug_rl(fs_info, fmt, args...) \
++	btrfs_no_printk(fs_info, KERN_DEBUG fmt, ##args)
++#endif
++
++#define btrfs_printk_in_rcu(fs_info, fmt, args...)	\
++do {							\
++	rcu_read_lock();				\
++	btrfs_printk(fs_info, fmt, ##args);		\
++	rcu_read_unlock();				\
++} while (0)
++
++#define btrfs_no_printk_in_rcu(fs_info, fmt, args...)	\
++do {							\
++	rcu_read_lock();				\
++	btrfs_no_printk(fs_info, fmt, ##args);		\
++	rcu_read_unlock();				\
++} while (0)
++
++#define btrfs_printk_ratelimited(fs_info, fmt, args...)		\
++do {								\
++	static DEFINE_RATELIMIT_STATE(_rs,			\
++		DEFAULT_RATELIMIT_INTERVAL,			\
++		DEFAULT_RATELIMIT_BURST);			\
++	if (__ratelimit(&_rs))					\
++		btrfs_printk(fs_info, fmt, ##args);		\
++} while (0)
++
++#define btrfs_printk_rl_in_rcu(fs_info, fmt, args...)		\
++do {								\
++	rcu_read_lock();					\
++	btrfs_printk_ratelimited(fs_info, fmt, ##args);		\
++	rcu_read_unlock();					\
++} while (0)
++
++#ifdef CONFIG_BTRFS_ASSERT
++void __cold btrfs_assertfail(const char *expr, const char *file, int line);
++
++#define ASSERT(expr)						\
++	(likely(expr) ? (void)0 : btrfs_assertfail(#expr, __FILE__, __LINE__))
++#else
++#define ASSERT(expr)	(void)(expr)
++#endif
++
++void __cold btrfs_print_v0_err(struct btrfs_fs_info *fs_info);
++
++__printf(5, 6)
++__cold
++void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function,
++		     unsigned int line, int error, const char *fmt, ...);
++
++const char * __attribute_const__ btrfs_decode_error(int error);
++
++__cold
++void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
++			       const char *function,
++			       unsigned int line, int error, bool first_hit);
++
++/*
++ * Call btrfs_abort_transaction as early as possible when an error condition is
++ * detected, that way the exact line number is reported.
++ *
++ * MODIFIED:
++ *  - We do not have fs_info->fs_state.
++ *  - We do not have test_and_set_bit.
++ */
++#if 0
++#define btrfs_abort_transaction(trans, error)		\
++do {								\
++	bool first = false;					\
++	/* Report first abort since mount */			\
++	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
++			&((trans)->fs_info->fs_state))) {	\
++		first = true;					\
++		if ((error) != -EIO && (error) != -EROFS) {		\
++			WARN(1, KERN_DEBUG				\
++			"BTRFS: Transaction aborted (error %d)\n",	\
++			(error));					\
++		} else {						\
++			btrfs_debug((trans)->fs_info,			\
++				    "Transaction aborted (error %d)", \
++				  (error));			\
++		}						\
++	}							\
++	__btrfs_abort_transaction((trans), __func__,		\
++				  __LINE__, (error), first);	\
++} while (0)
++#else
++#define btrfs_abort_transaction(trans, error)				\
++	__btrfs_abort_transaction((trans), __func__, __LINE__,		\
++				  (error), false)
++#endif
++
++#define btrfs_handle_fs_error(fs_info, error, fmt, args...)		\
++	__btrfs_handle_fs_error((fs_info), __func__, __LINE__,		\
++				(error), fmt, ##args)
++
++__printf(5, 6)
++__cold
++void __btrfs_panic(struct btrfs_fs_info *fs_info, const char *function,
++		   unsigned int line, int error, const char *fmt, ...);
++/*
++ * If BTRFS_MOUNT_PANIC_ON_FATAL_ERROR is in mount_opt, __btrfs_panic
++ * will panic().  Otherwise we BUG() here.
++ */
++#define btrfs_panic(fs_info, error, fmt, args...)			\
++do {									\
++	__btrfs_panic(fs_info, __func__, __LINE__, error, fmt, ##args);	\
++	BUG();								\
++} while (0)
++
++#if BITS_PER_LONG == 32
++#define BTRFS_32BIT_MAX_FILE_SIZE (((u64)ULONG_MAX + 1) << PAGE_SHIFT)
++/*
++ * The warning threshold is 5/8th of the MAX_LFS_FILESIZE that limits the logical
++ * addresses of extents.
++ *
++ * For 4K page size it's about 10T, for 64K it's 160T.
++ */
++#define BTRFS_32BIT_EARLY_WARN_THRESHOLD (BTRFS_32BIT_MAX_FILE_SIZE * 5 / 8)
++void btrfs_warn_32bit_limit(struct btrfs_fs_info *fs_info);
++void btrfs_err_32bit_limit(struct btrfs_fs_info *fs_info);
++#endif
++
++#endif
+diff --git a/kernel-shared/transaction.c b/kernel-shared/transaction.c
+index c1364d69..a3b67d8c 100644
+--- a/kernel-shared/transaction.c
++++ b/kernel-shared/transaction.c
+@@ -277,8 +277,3 @@ error:
+ 	free(trans);
+ 	return ret;
+ }
+-
+-void btrfs_abort_transaction(struct btrfs_trans_handle *trans, int error)
+-{
+-	trans->fs_info->transaction_aborted = error;
+-}
+diff --git a/kernel-shared/transaction.h b/kernel-shared/transaction.h
+index 599cc954..27b27123 100644
+--- a/kernel-shared/transaction.h
++++ b/kernel-shared/transaction.h
+@@ -47,6 +47,5 @@ int commit_tree_roots(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_fs_info *fs_info);
+ int btrfs_commit_transaction(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_root *root);
+-void btrfs_abort_transaction(struct btrfs_trans_handle *trans, int error);
+ 
+ #endif
+diff --git a/kernel-shared/ulist.c b/kernel-shared/ulist.c
+index e193b02d..0cd4f74f 100644
+--- a/kernel-shared/ulist.c
++++ b/kernel-shared/ulist.c
+@@ -21,6 +21,7 @@
+ #include "kerncompat.h"
+ #include "ulist.h"
+ #include "kernel-shared/ctree.h"
++#include "messages.h"
+ 
+ /*
+  * ulist is a generic data structure to hold a collection of unique u64
+diff --git a/kernel-shared/zoned.h b/kernel-shared/zoned.h
+index cc0d6b6f..adbe144e 100644
+--- a/kernel-shared/zoned.h
++++ b/kernel-shared/zoned.h
+@@ -22,6 +22,7 @@
+ #include <stdbool.h>
+ #include "kernel-shared/disk-io.h"
+ #include "kernel-shared/volumes.h"
++#include "messages.h"
+ 
+ #ifdef BTRFS_ZONED
+ #include <linux/blkzoned.h>
+diff --git a/libbtrfs/ctree.h b/libbtrfs/ctree.h
+index 5ae1a07d..4d4df6d3 100644
+--- a/libbtrfs/ctree.h
++++ b/libbtrfs/ctree.h
+@@ -26,6 +26,7 @@
+ #include "kernel-lib/rbtree.h"
+ #include "kerncompat.h"
+ #include "libbtrfs/ioctl.h"
++#include "kernel-shared/messages.h"
+ #else
+ #include <btrfs/list.h>
+ #include <btrfs/rbtree.h>
+diff --git a/mkfs/main.c b/mkfs/main.c
+index df091b16..6d4ca540 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -37,6 +37,7 @@
+ #include "kernel-shared/volumes.h"
+ #include "kernel-shared/transaction.h"
+ #include "kernel-shared/zoned.h"
++#include "kernel-shared/messages.h"
+ #include "crypto/crc32c.h"
+ #include "common/defs.h"
+ #include "common/internal.h"
 -- 
 2.26.3
 
