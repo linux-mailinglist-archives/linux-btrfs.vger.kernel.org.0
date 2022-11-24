@@ -2,45 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4CB637258
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Nov 2022 07:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3266374E3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Nov 2022 10:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbiKXG2s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Nov 2022 01:28:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
+        id S229790AbiKXJNn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Nov 2022 04:13:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiKXG2r (ORCPT
+        with ESMTP id S229697AbiKXJNm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Nov 2022 01:28:47 -0500
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23656942DC
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 22:28:45 -0800 (PST)
-Received: by mail-il1-f199.google.com with SMTP id m11-20020a056e021c2b00b00302c7ea7e16so671397ilh.22
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Nov 2022 22:28:46 -0800 (PST)
+        Thu, 24 Nov 2022 04:13:42 -0500
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37EA9B3A5
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Nov 2022 01:13:41 -0800 (PST)
+Received: by mail-il1-f198.google.com with SMTP id h10-20020a056e021b8a00b00302671bb5fdso873634ili.21
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Nov 2022 01:13:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=uVFhraT0Cf3glhkVlBQ0Voc0oFhm9H40BSuFll0WGGA=;
-        b=vv/GIV7SnwNfnaVb0dszCD79EEBXuO8gsPB6mk6q3DnaD4ulacRuwrDwwg9tP7x1bk
-         mc/YA+qjuH3h6BO/5adwtKMiOjQ5xYzmutdZNyvZdbvUQz99EBvC/cKfpFVcnXf/Rv+v
-         eTQn3Z4RwEnxXSoNIVR5A1orfyQTocsk0D4PGEBqXedzd7a83gc187Poz+PdFB8yrVr4
-         m5YgVwENxKad9XCVwZeumRPrpR3WViMIYYqOn4pt5/DDUMGlg1YcyXvK+oInZiItIUZh
-         ZoX+wnf6UjrL+OT/wjpKzFBuKj5mio504igRVNDrjlCuNIJoReswApCNHnooZbP8f3tV
-         Wtzg==
-X-Gm-Message-State: ANoB5pnfvCc+UZZigrumG/w7qbcIBv2t0l7B9TGad/GI+5vbvd6z+guG
-        Ys0Di0SPNxyEI5AFiCR50sWwgwOfIU4eDvkHZFhkBA660i4k
-X-Google-Smtp-Source: AA0mqf7qrDGPX1h42NChqLiGBPuCQwYhvOxbAEtPstHIEXETI3tcRnE0OU2nQb92r1Be+1CxBFh+mUNmo+j0d0PrRYMQsMdOR0oe
+        bh=K3v76XqUN0O34ow25tfS2F7/z8dx2+wNXyI/9WKpb8w=;
+        b=qu2xghw+vvsI5rI4uWOvRHgFv7jsCF4iF/aUtO3o+/S18X4HbiMz5ijrJy5MDSHm5U
+         rxK7SPcLdoQZeLlu7DMOy7B5qDZ3PejjZjnVkTB/lFMlUzrddmi1jEjlBUM8HxkgaeNq
+         8Odnhw5T1zppu/4BXlKaE8HliAeSKFzEV8HIKdKUGzyUlLoi/O6iNOGCULqHR0bRcg60
+         TC4VZPu1UnLXwR+LZmLUNk5JqHSIpKzAjRLUZV7402OzxRhQA9u5+OEHMdm9TiVNXjG3
+         sMdQOxto+/cIEUUmo946Lz++FbEBzM6BuuAA/Ke06+kW7jtnJ5PypAYKoKQB/stLEYIl
+         +Bpw==
+X-Gm-Message-State: ANoB5plsuJRAyjAuqj+X/pqknUa9rfMMh5LMjqZVZSigQHUCSoGtDEEf
+        JUjAqW71oEnSYGGuYJAotN/hqL4ww4xdhDQkQDnE4VovjgK1
+X-Google-Smtp-Source: AA0mqf6ggOLVH6/6MwvjUEYQJfG5uxows8ComOx+XoHLnPE2UiwNUSDvqV26jTBp0RMp45cOz8G2Pv1bMtqH0t/gyOtpEotHDyMh
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e004:0:b0:6d3:c9df:bc7d with SMTP id
- z4-20020a6be004000000b006d3c9dfbc7dmr6009328iog.142.1669271326075; Wed, 23
- Nov 2022 22:28:46 -0800 (PST)
-Date:   Wed, 23 Nov 2022 22:28:46 -0800
+X-Received: by 2002:a02:8796:0:b0:378:8e28:1f8a with SMTP id
+ t22-20020a028796000000b003788e281f8amr11343421jai.283.1669281221177; Thu, 24
+ Nov 2022 01:13:41 -0800 (PST)
+Date:   Thu, 24 Nov 2022 01:13:41 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006cb13705ee3184f9@google.com>
-Subject: [syzbot] kernel BUG in create_pending_snapshot
-From:   syzbot <syzbot+d56e0d33caf7d1a02821@syzkaller.appspotmail.com>
+Message-ID: <00000000000037f84b05ee33d2b4@google.com>
+Subject: [syzbot] possible deadlock in btrfs_search_forward
+From:   syzbot <syzbot+3cf137e672e75b602171@syzkaller.appspotmail.com>
 To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
         syzkaller-bugs@googlegroups.com
@@ -58,83 +58,164 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    eb7081409f94 Linux 6.1-rc6
+HEAD commit:    4312098baf37 Merge tag 'spi-fix-v6.1-rc6' of git://git.ker..
 git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14ba30e3880000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17166e3d880000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=8d01b6e3197974dd
-dashboard link: https://syzkaller.appspot.com/bug?extid=d56e0d33caf7d1a02821
+dashboard link: https://syzkaller.appspot.com/bug?extid=3cf137e672e75b602171
 compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1562844b880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=137a668d880000
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/815bacde9ae6/disk-eb708140.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ce54e3220860/vmlinux-eb708140.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/52a8ac111c19/bzImage-eb708140.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/a9f8cb5ade27/mount_0.gz
+disk image: https://storage.googleapis.com/syzbot-assets/4b7073d20a37/disk-4312098b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/36a0367a5593/vmlinux-4312098b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/265bedb3086b/bzImage-4312098b.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d56e0d33caf7d1a02821@syzkaller.appspotmail.com
+Reported-by: syzbot+3cf137e672e75b602171@syzkaller.appspotmail.com
 
-BTRFS info (device loop0): enabling ssd optimizations
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/transaction.c:1672!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 3638 Comm: syz-executor237 Not tainted 6.1.0-rc6-syzkaller #0
+BTRFS info (device loop2): enabling ssd optimizations
+======================================================
+WARNING: possible circular locking dependency detected
+6.1.0-rc6-syzkaller-00012-g4312098baf37 #0 Not tainted
+------------------------------------------------------
+syz-executor.2/11489 is trying to acquire lock:
+ffff88801927df98 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_fault+0x8f/0x110 mm/memory.c:5645
+
+but task is already holding lock:
+ffff888024223838 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
+ffff888024223838 (btrfs-root-00){++++}-{3:3}, at: btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
+ffff888024223838 (btrfs-root-00){++++}-{3:3}, at: btrfs_read_lock_root_node+0x2b4/0x400 fs/btrfs/locking.c:279
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (btrfs-root-00){++++}-{3:3}:
+       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
+       down_read_nested+0x3c/0x50 kernel/locking/rwsem.c:1634
+       __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
+       btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
+       btrfs_read_lock_root_node+0x2b4/0x400 fs/btrfs/locking.c:279
+       btrfs_search_forward+0x10f/0xe70 fs/btrfs/ctree.c:4488
+       btrfs_uuid_scan_kthread+0x25e/0xbc0 fs/btrfs/volumes.c:4654
+       kthread+0x266/0x300 kernel/kthread.c:376
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+
+-> #2 (btrfs_trans_num_extwriters){++++}-{0:0}:
+       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
+       join_transaction+0x19f/0xe60 fs/btrfs/transaction.c:299
+       start_transaction+0x6fb/0x1180 fs/btrfs/transaction.c:658
+       btrfs_create_common+0x2c6/0x420 fs/btrfs/inode.c:6633
+       lookup_open fs/namei.c:3413 [inline]
+       open_last_lookups fs/namei.c:3481 [inline]
+       path_openat+0x12d0/0x2df0 fs/namei.c:3710
+       do_filp_open+0x264/0x4f0 fs/namei.c:3740
+       do_sys_openat2+0x124/0x4e0 fs/open.c:1310
+       do_sys_open fs/open.c:1326 [inline]
+       __do_sys_open fs/open.c:1334 [inline]
+       __se_sys_open fs/open.c:1330 [inline]
+       __x64_sys_open+0x221/0x270 fs/open.c:1330
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #1 (btrfs_trans_num_writers){++++}-{0:0}:
+       reacquire_held_locks+0x386/0x650 kernel/locking/lockdep.c:5193
+       __lock_release kernel/locking/lockdep.c:5382 [inline]
+       lock_release+0x2e2/0x820 kernel/locking/lockdep.c:5688
+       percpu_up_read include/linux/percpu-rwsem.h:99 [inline]
+       __sb_end_write include/linux/fs.h:1821 [inline]
+       sb_end_intwrite+0x1e/0x1a0 include/linux/fs.h:1877
+       __btrfs_end_transaction+0x388/0x790 fs/btrfs/transaction.c:995
+       btrfs_dirty_inode+0x177/0x1c0 fs/btrfs/inode.c:6099
+       inode_update_time fs/inode.c:1871 [inline]
+       touch_atime+0x315/0x630 fs/inode.c:1944
+       file_accessed include/linux/fs.h:2521 [inline]
+       btrfs_file_mmap+0xbb/0x120 fs/btrfs/file.c:2333
+       call_mmap include/linux/fs.h:2196 [inline]
+       mmap_region+0xfe6/0x1e20 mm/mmap.c:2625
+       do_mmap+0x8d9/0xf30 mm/mmap.c:1412
+       vm_mmap_pgoff+0x19e/0x2b0 mm/util.c:520
+       ksys_mmap_pgoff+0x48c/0x6d0 mm/mmap.c:1458
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #0 (&mm->mmap_lock#2){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3097 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3216 [inline]
+       validate_chain+0x1898/0x6ae0 kernel/locking/lockdep.c:3831
+       __lock_acquire+0x1292/0x1f60 kernel/locking/lockdep.c:5055
+       lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
+       __might_fault+0xb2/0x110 mm/memory.c:5646
+       _copy_to_user+0x26/0x130 lib/usercopy.c:29
+       copy_to_user include/linux/uaccess.h:169 [inline]
+       btrfs_ioctl_get_subvol_rootref+0x8cf/0xa90 fs/btrfs/ioctl.c:3203
+       btrfs_ioctl+0xb7c/0xc10 fs/btrfs/ioctl.c:5556
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:870 [inline]
+       __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+other info that might help us debug this:
+
+Chain exists of:
+  &mm->mmap_lock#2 --> btrfs_trans_num_extwriters --> btrfs-root-00
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(btrfs-root-00);
+                               lock(btrfs_trans_num_extwriters);
+                               lock(btrfs-root-00);
+  lock(&mm->mmap_lock#2);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.2/11489:
+ #0: ffff888024223838 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock fs/btrfs/locking.c:134 [inline]
+ #0: ffff888024223838 (btrfs-root-00){++++}-{3:3}, at: btrfs_tree_read_lock fs/btrfs/locking.c:140 [inline]
+ #0: ffff888024223838 (btrfs-root-00){++++}-{3:3}, at: btrfs_read_lock_root_node+0x2b4/0x400 fs/btrfs/locking.c:279
+
+stack backtrace:
+CPU: 0 PID: 11489 Comm: syz-executor.2 Not tainted 6.1.0-rc6-syzkaller-00012-g4312098baf37 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-RIP: 0010:create_pending_snapshot+0x250a/0x2560 fs/btrfs/transaction.c:1672
-Code: ff e8 da c7 02 fe 48 c7 c7 60 16 39 8b 44 89 ee 31 c0 e8 c9 65 ca fd 0f 0b b3 01 e9 18 fa ff ff e8 3b 63 0a 07 e8 b6 c7 02 fe <0f> 0b e8 af c7 02 fe 0f 0b e8 a8 c7 02 fe 0f 0b e8 a1 c7 02 fe 48
-RSP: 0018:ffffc90003aff6e0 EFLAGS: 00010293
-RAX: ffffffff8387d0ba RBX: 00000000fffffff4 RCX: ffff88802722ba80
-RDX: 0000000000000000 RSI: 00000000fffffff4 RDI: 0000000000000000
-RBP: ffffc90003aff970 R08: ffffffff8387b1f0 R09: fffffbfff1a42e97
-R10: fffffbfff1a42e97 R11: 1ffffffff1a42e96 R12: ffff888076ce1780
-R13: ffff8880731717d0 R14: ffff888027dea000 R15: ffff8880708b8178
-FS:  0000555555bce300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005626964b1000 CR3: 000000007955e000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- create_pending_snapshots+0x1a8/0x1e0 fs/btrfs/transaction.c:1868
- btrfs_commit_transaction+0x13f0/0x3760 fs/btrfs/transaction.c:2323
- create_snapshot+0x4aa/0x7e0 fs/btrfs/ioctl.c:833
- btrfs_mksubvol+0x62e/0x760 fs/btrfs/ioctl.c:983
- btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1029
- __btrfs_ioctl_snap_create+0x339/0x450 fs/btrfs/ioctl.c:2184
- btrfs_ioctl_snap_create+0x134/0x190 fs/btrfs/ioctl.c:2211
- btrfs_ioctl+0x15c/0xc10
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1b1/0x28e lib/dump_stack.c:106
+ check_noncircular+0x2cc/0x390 kernel/locking/lockdep.c:2177
+ check_prev_add kernel/locking/lockdep.c:3097 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3216 [inline]
+ validate_chain+0x1898/0x6ae0 kernel/locking/lockdep.c:3831
+ __lock_acquire+0x1292/0x1f60 kernel/locking/lockdep.c:5055
+ lock_acquire+0x182/0x3c0 kernel/locking/lockdep.c:5668
+ __might_fault+0xb2/0x110 mm/memory.c:5646
+ _copy_to_user+0x26/0x130 lib/usercopy.c:29
+ copy_to_user include/linux/uaccess.h:169 [inline]
+ btrfs_ioctl_get_subvol_rootref+0x8cf/0xa90 fs/btrfs/ioctl.c:3203
+ btrfs_ioctl+0xb7c/0xc10 fs/btrfs/ioctl.c:5556
  vfs_ioctl fs/ioctl.c:51 [inline]
  __do_sys_ioctl fs/ioctl.c:870 [inline]
  __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7efd25d6d2a9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe43e29638 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007efd25d6d2a9
-RDX: 00000000200000c0 RSI: 0000000050009401 RDI: 0000000000000003
-RBP: 0000000000000006 R08: 0000000000000002 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
-R13: 00007ffe43e29670 R14: 0000000000000003 R15: 00007ffe43e2966a
+RIP: 0033:0x7f1731e8c0d9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1732ba2168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f1731fabf80 RCX: 00007f1731e8c0d9
+RDX: 0000000020049dc0 RSI: 00000000d000943d RDI: 0000000000000004
+RBP: 00007f1731ee7ae9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffd2e5e53af R14: 00007f1732ba2300 R15: 0000000000022000
  </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:create_pending_snapshot+0x250a/0x2560 fs/btrfs/transaction.c:1672
-Code: ff e8 da c7 02 fe 48 c7 c7 60 16 39 8b 44 89 ee 31 c0 e8 c9 65 ca fd 0f 0b b3 01 e9 18 fa ff ff e8 3b 63 0a 07 e8 b6 c7 02 fe <0f> 0b e8 af c7 02 fe 0f 0b e8 a8 c7 02 fe 0f 0b e8 a1 c7 02 fe 48
-RSP: 0018:ffffc90003aff6e0 EFLAGS: 00010293
-RAX: ffffffff8387d0ba RBX: 00000000fffffff4 RCX: ffff88802722ba80
-RDX: 0000000000000000 RSI: 00000000fffffff4 RDI: 0000000000000000
-RBP: ffffc90003aff970 R08: ffffffff8387b1f0 R09: fffffbfff1a42e97
-R10: fffffbfff1a42e97 R11: 1ffffffff1a42e96 R12: ffff888076ce1780
-R13: ffff8880731717d0 R14: ffff888027dea000 R15: ffff8880708b8178
-FS:  0000555555bce300(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005626963c87d8 CR3: 000000007955e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -144,5 +225,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
