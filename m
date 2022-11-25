@@ -2,47 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 558886390CE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Nov 2022 21:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D4C6390EB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Nov 2022 22:00:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbiKYUru (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Nov 2022 15:47:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
+        id S229926AbiKYVAa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Nov 2022 16:00:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbiKYUrt (ORCPT
+        with ESMTP id S229495AbiKYVA2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Nov 2022 15:47:49 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2114193F6;
-        Fri, 25 Nov 2022 12:47:48 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2AB812189A;
-        Fri, 25 Nov 2022 20:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1669409267; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=YBBYrboQ9C7soWP/CxVP/nBs2GyZ7rvVNHV0wFFseXA=;
-        b=HcgQ6mk6dBhiY9v3u95XDqE1lIy3azcmPiZPxwtU+nTm2HIc2sUS+JRD6z1pGhUFnodKUH
-        sf71RqcfIzq2CNtFNtM98+GAVCgi6ZhrGi8w4fdqieEcrNLHeqVaDaJE5V0dWt9HIOPhe8
-        X6gxQWahuKoMNXN/tvzsieR0JAA91+0=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 2161D2C141;
-        Fri, 25 Nov 2022 20:47:47 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 70BD4DA822; Fri, 25 Nov 2022 21:47:16 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Fri, 25 Nov 2022 16:00:28 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDB8391C6;
+        Fri, 25 Nov 2022 13:00:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=s4UABV1ux66nah7EYyy5GKkUpPAottxYKhO0fUNPBjk=; b=WINL+1C5RFCsGAMmYeRmkGvFUH
+        CjKRYD87yhdW1z3mzkO/wvKYXVtXVi9s2FwZ3TMTHX1R3UhzXfNJyj+oHa95bXcWe7aQJeUsTvcrC
+        6SW/qHSRF2xMswuS+blR5PDDrMba6p/sKHR+K9DxLjdUtwACjcVgmk+kXEftKRQW6KuKZyBWC8WMT
+        aTnPTOpbuFPuBHCZbDBxaZWZJg8Ah+Kq/KVKlIgGaLbXz9VcJ5CUdT0u85zrRroq5Yor7t84S/0mL
+        Z45ew5LwhZtSyY8r5QTPzmcwfoHy5B1iMQcaFTEFyBpALMuPrYuP3iQJ+NfYmcQIk21hYlmGZ1p2U
+        DsObimCA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1oyfo1-006kkn-2O;
+        Fri, 25 Nov 2022 21:00:17 +0000
+Date:   Fri, 25 Nov 2022 21:00:17 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs updates for 6.1-rc7
-Date:   Fri, 25 Nov 2022 21:47:15 +0100
-Message-Id: <cover.1669400851.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.37.3
+Subject: Re: [PATCH v3 0/2] fs: clear a UBSAN shift-out-of-bounds warning
+Message-ID: <Y4Es4TIbVos5CTO9@ZenIV>
+References: <20221125091358.1963-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221125091358.1963-1-thunder.leizhen@huawei.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,68 +52,31 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, Nov 25, 2022 at 05:13:56PM +0800, Zhen Lei wrote:
+> v2 --> v3:
+> Updated the commit message of patch 2/2 based on Alexander Viro's suggestion.
 
-a few more fixes from past two weeks. Please pull, thanks.
+Not exactly what I meant...  I've tentatively applied it, with the
+following commit message:
 
-- fix a regression in nowait + buffered write
+--------------------------------
+get rid of INT_LIMIT, use type_max() instead
 
-- in zoned mode fix endianness when comparing super block generation
+INT_LIMIT() tries to do what type_max() does, except that type_max()
+doesn't rely upon undefined behaviour[*], might as well use type_max()
+instead.
 
-- locking and lockdep fixes:
-  - fix potential sleeping under spinlock when setting qgroup limit
-  - lockdep warning fixes when btrfs_path is freed after copy_to_user
-  - do not modify log tree while holding a leaf from fs tree locked
+[*] if T is an N-bit signed integer type, the maximal value in T is
+pow(2, N - 1) - 1, all right, but naive expression for that value
+ends up with a couple of wraparounds and as usual for wraparounds
+in signed types, that's an undefined behaviour.  type_max() takes
+care to avoid those...
 
-- fix freeing of sysfs files of static features on error
+Caught-by: UBSAN
+Suggested-by: Eric Biggers <ebiggers@kernel.org>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+--------------------------------
 
-- use kv.alloc for zone map allocation as a fallback to avoid warnings
-  due to high order allocation
-
-- send, avoid unaligned encoded writes when attempting to clone range
-
-----------------------------------------------------------------
-The following changes since commit c62f6bec53e63b11112e1ebce6bbaa39ce6f6706:
-
-  btrfs: zoned: fix locking imbalance on scrub (2022-11-07 14:35:25 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.1-rc6-tag
-
-for you to fetch changes up to ffdbb44f2f23f963b8f5672e35c3a26088177a62:
-
-  btrfs: sysfs: normalize the error handling branch in btrfs_init_sysfs() (2022-11-23 16:52:22 +0100)
-
-----------------------------------------------------------------
-Anand Jain (3):
-      btrfs: free btrfs_path before copying inodes to userspace
-      btrfs: free btrfs_path before copying fspath to userspace
-      btrfs: free btrfs_path before copying subvol info to userspace
-
-ChenXiaoSong (1):
-      btrfs: qgroup: fix sleep from invalid context bug in btrfs_qgroup_inherit()
-
-Christoph Hellwig (2):
-      btrfs: zoned: fix missing endianness conversion in sb_write_pointer
-      btrfs: use kvcalloc in btrfs_get_dev_zone_info
-
-Filipe Manana (3):
-      btrfs: fix assertion failure and blocking during nowait buffered write
-      btrfs: send: avoid unaligned encoded writes when attempting to clone range
-      btrfs: do not modify log tree while holding a leaf from fs tree locked
-
-Josef Bacik (1):
-      btrfs: free btrfs_path before copying root refs to userspace
-
-Zhen Lei (1):
-      btrfs: sysfs: normalize the error handling branch in btrfs_init_sysfs()
-
- fs/btrfs/ctree.c    | 36 ++++++++++++++++++++++++++------
- fs/btrfs/ioctl.c    | 23 ++++++++++++---------
- fs/btrfs/qgroup.c   |  9 +-------
- fs/btrfs/send.c     | 24 +++++++++++++++++++++-
- fs/btrfs/sysfs.c    |  7 +++++--
- fs/btrfs/tree-log.c | 59 +++++++++++++++++++++++++++++++++++++++++++++++++----
- fs/btrfs/zoned.c    |  9 ++++----
- 7 files changed, 132 insertions(+), 35 deletions(-)
+Does anybody have objections against the commit message above?
