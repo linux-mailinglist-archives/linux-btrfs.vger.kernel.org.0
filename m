@@ -2,81 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FD5638F51
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Nov 2022 18:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558886390CE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Nov 2022 21:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbiKYRtY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Nov 2022 12:49:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        id S229717AbiKYUru (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Nov 2022 15:47:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbiKYRtX (ORCPT
+        with ESMTP id S229582AbiKYUrt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Nov 2022 12:49:23 -0500
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211162649E
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Nov 2022 09:49:22 -0800 (PST)
-Received: by mail-il1-f200.google.com with SMTP id a14-20020a921a0e000000b00302a8ffa8e5so3162962ila.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Nov 2022 09:49:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T9uBU8s5VCIdHByMxtUe+OwrIeZYs1TZi9TU9WQnEtM=;
-        b=Cb3+iwu4uzonI9wl1Hzy6YvT7jmdaIe+AGGyAY8n6cXavod/rlxLtzJ5IRLMSwx0l0
-         pQiDuE/HrAxbTz5hnrgjEK645C63XVxpLyr4btEAL/hbktioo1wM369bLYESXHiJX7Jd
-         Nd/l1QZ10F/8u7n/G7A7Nk61DI9wmv15/Uc0y86bM/MglFEcO4ZBaQCxUonF0/wxy1sZ
-         7jFOPDIpvwraEgGFrHzg2kKJGzxQrP9xtMD0eFV2eGFAvHWEYUI44w/imT6TWUm4CTZk
-         qgefi1N9rofXS8e2Tdx6N6tgg43jxQnkUq17gcYa65plvEJD/uhyglOp2igWMyQz0W1x
-         phMg==
-X-Gm-Message-State: ANoB5pl5P7tD/8iAV7k5O7561giNTH/NXYHOeJhXHR5Bd92RfSdOkz0Y
-        WDz0Za1E96Omk3Gqp4n3sVl5bRJbJtLfAC6A/w66mh2xErnM
-X-Google-Smtp-Source: AA0mqf5879qp50T0kHMWEYv22lu2q7SWnZD7I/9CRQlfvrei278pacvgl2mxtV/M2hSYf76qTZpZHfEh4L/Sbgr2P9/WkQ2+cwh3
+        Fri, 25 Nov 2022 15:47:49 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2114193F6;
+        Fri, 25 Nov 2022 12:47:48 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2AB812189A;
+        Fri, 25 Nov 2022 20:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1669409267; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=YBBYrboQ9C7soWP/CxVP/nBs2GyZ7rvVNHV0wFFseXA=;
+        b=HcgQ6mk6dBhiY9v3u95XDqE1lIy3azcmPiZPxwtU+nTm2HIc2sUS+JRD6z1pGhUFnodKUH
+        sf71RqcfIzq2CNtFNtM98+GAVCgi6ZhrGi8w4fdqieEcrNLHeqVaDaJE5V0dWt9HIOPhe8
+        X6gxQWahuKoMNXN/tvzsieR0JAA91+0=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 2161D2C141;
+        Fri, 25 Nov 2022 20:47:47 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 70BD4DA822; Fri, 25 Nov 2022 21:47:16 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs updates for 6.1-rc7
+Date:   Fri, 25 Nov 2022 21:47:15 +0100
+Message-Id: <cover.1669400851.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-X-Received: by 2002:a02:7122:0:b0:375:d16a:c9e9 with SMTP id
- n34-20020a027122000000b00375d16ac9e9mr18131069jac.75.1669398561510; Fri, 25
- Nov 2022 09:49:21 -0800 (PST)
-Date:   Fri, 25 Nov 2022 09:49:21 -0800
-In-Reply-To: <000000000000a9ccd705ee4865be@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003f5a8205ee4f2429@google.com>
-Subject: Re: [syzbot] kernel BUG in clear_state_bit
-From:   syzbot <syzbot+78dbea1c214b5413bdd3@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, jdelvare@suse.com,
-        jiapeng.chong@linux.alibaba.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@roeck-us.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has bisected this issue to:
+Hi,
 
-commit 4444a06981af66a49cf0cd08fec9759e8dd0a0fc
-Author: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Date:   Thu Sep 1 02:23:32 2022 +0000
+a few more fixes from past two weeks. Please pull, thanks.
 
-    hwmon: (emc2305) Remove unused including <linux/version.h>
+- fix a regression in nowait + buffered write
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=161ba58d880000
-start commit:   c3eb11fbb826 Merge tag 'pci-v6.1-fixes-3' of git://git.ker..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=151ba58d880000
-console output: https://syzkaller.appspot.com/x/log.txt?x=111ba58d880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8d01b6e3197974dd
-dashboard link: https://syzkaller.appspot.com/bug?extid=78dbea1c214b5413bdd3
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=149d9403880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14a0d8e3880000
+- in zoned mode fix endianness when comparing super block generation
 
-Reported-by: syzbot+78dbea1c214b5413bdd3@syzkaller.appspotmail.com
-Fixes: 4444a06981af ("hwmon: (emc2305) Remove unused including <linux/version.h>")
+- locking and lockdep fixes:
+  - fix potential sleeping under spinlock when setting qgroup limit
+  - lockdep warning fixes when btrfs_path is freed after copy_to_user
+  - do not modify log tree while holding a leaf from fs tree locked
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+- fix freeing of sysfs files of static features on error
+
+- use kv.alloc for zone map allocation as a fallback to avoid warnings
+  due to high order allocation
+
+- send, avoid unaligned encoded writes when attempting to clone range
+
+----------------------------------------------------------------
+The following changes since commit c62f6bec53e63b11112e1ebce6bbaa39ce6f6706:
+
+  btrfs: zoned: fix locking imbalance on scrub (2022-11-07 14:35:25 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.1-rc6-tag
+
+for you to fetch changes up to ffdbb44f2f23f963b8f5672e35c3a26088177a62:
+
+  btrfs: sysfs: normalize the error handling branch in btrfs_init_sysfs() (2022-11-23 16:52:22 +0100)
+
+----------------------------------------------------------------
+Anand Jain (3):
+      btrfs: free btrfs_path before copying inodes to userspace
+      btrfs: free btrfs_path before copying fspath to userspace
+      btrfs: free btrfs_path before copying subvol info to userspace
+
+ChenXiaoSong (1):
+      btrfs: qgroup: fix sleep from invalid context bug in btrfs_qgroup_inherit()
+
+Christoph Hellwig (2):
+      btrfs: zoned: fix missing endianness conversion in sb_write_pointer
+      btrfs: use kvcalloc in btrfs_get_dev_zone_info
+
+Filipe Manana (3):
+      btrfs: fix assertion failure and blocking during nowait buffered write
+      btrfs: send: avoid unaligned encoded writes when attempting to clone range
+      btrfs: do not modify log tree while holding a leaf from fs tree locked
+
+Josef Bacik (1):
+      btrfs: free btrfs_path before copying root refs to userspace
+
+Zhen Lei (1):
+      btrfs: sysfs: normalize the error handling branch in btrfs_init_sysfs()
+
+ fs/btrfs/ctree.c    | 36 ++++++++++++++++++++++++++------
+ fs/btrfs/ioctl.c    | 23 ++++++++++++---------
+ fs/btrfs/qgroup.c   |  9 +-------
+ fs/btrfs/send.c     | 24 +++++++++++++++++++++-
+ fs/btrfs/sysfs.c    |  7 +++++--
+ fs/btrfs/tree-log.c | 59 +++++++++++++++++++++++++++++++++++++++++++++++++----
+ fs/btrfs/zoned.c    |  9 ++++----
+ 7 files changed, 132 insertions(+), 35 deletions(-)
