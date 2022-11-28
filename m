@@ -2,57 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3003863A5A1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 11:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BBDE63A5C0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 11:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbiK1KEd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 05:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
+        id S229731AbiK1KMU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 05:12:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbiK1KEc (ORCPT
+        with ESMTP id S229708AbiK1KMS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 05:04:32 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA601A04E
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 02:04:30 -0800 (PST)
+        Mon, 28 Nov 2022 05:12:18 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28F02BFE
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 02:12:17 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 39B6A60FE9
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 10:04:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A3EFC433D7
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 10:04:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9874061042
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 10:12:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 843BCC433C1
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 10:12:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669629869;
-        bh=I5IOQKem+XDCXm3b/qnHG0iHEVelm9EEhP+0G9mkJHw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZonsmeEZZWq0IHCts8Uv3Hk8zGlZaHhXZfu5v8eNPgbQRDRPdgAzfeIH/Tp8OpqoF
-         nqlyVjBQGK/nLqZkXJkjLWptHu4orHXGSB2tDfjoD63RKZlOQT3D1k4vWDt+oj55nZ
-         gRC2IzvsDq9npdQTPP2R1Gj86TxE9UMCUF6fj6Rr8NpzLEs/H/goBxt+uSzgSwygFP
-         uSF121G7jIUobvAuMbh2I5Z+qaNG8Ei2N8yUppfwjGJqcIr1Byr43g2pLnZaOtyo6S
-         UQI27RWIrqgCRlkt05SlSrsLmAPmJ8Z34ddSoaSiV0nl4vOeBTc7Ms5Mo7moK2QQFm
-         5sNfYGStxC4Ig==
-Received: by mail-oi1-f175.google.com with SMTP id v81so11011608oie.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 02:04:29 -0800 (PST)
-X-Gm-Message-State: ANoB5pneVKrwe/cnlpCsTUVKqNM24r//t+bAsu49H3IwUipNw1T1wrBq
-        6zbfnewfZ/1/WODbqEfUhJOuGNcOY09o9T0gaRA=
-X-Google-Smtp-Source: AA0mqf6eyqwE6VSxrFb7GOPR+yETyFjarsisKPNxeo7SzfbISc6X8ZTNkbyjQyKcZprCRmK9xbAGZpcV3bwGNdoCHNs=
-X-Received: by 2002:aca:1e02:0:b0:35b:75b:f3b9 with SMTP id
- m2-20020aca1e02000000b0035b075bf3b9mr15719219oic.98.1669629868500; Mon, 28
- Nov 2022 02:04:28 -0800 (PST)
+        s=k20201202; t=1669630337;
+        bh=93KsJAVxS6gmVW2irriy3phlkCs/DKPbzzn/Lh1EslY=;
+        h=From:To:Subject:Date:From;
+        b=YSRL1aEeUQ4oDpxM6RPgaYSvwDOQAaDDiD37I/55VRlLlji71PtK7D2hJH8W/43Xd
+         QhAbXpyhC8Aiq+22vemsVPtnvhWnzntdYpy/POzIrrVXXwG9oG8kws0HgFremv7z/W
+         u6LlBspPIJcsqAkHU+ztWg1NP8lUa63n+qGAtlQDOaEwZRyuCcPzv1toegfOaCCZCx
+         Y6GyrVcoWkIUTXeLEzwpotefCJTEk35CbJ5Wy/9kgLlQvKLKxzsHEBlHUVo5GhuzID
+         XVXQayXtg0K6RqLGGjOmNbKfsC42uZFikIxxaD+avKnUhGOSyhkWCYSCH7yd0dxmhY
+         8lR0oj6F1sB7w==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: send: initialize backref cache earlier
+Date:   Mon, 28 Nov 2022 10:12:13 +0000
+Message-Id: <25b5197a1d0b81c12acdb79ac0f6d82df287c3c7.1669630263.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <cover.1669025204.git.fdmanana@suse.com> <616a85703a25abbcc107b4e83d961d356d1c5463.1669025204.git.fdmanana@suse.com>
- <20221128135448.49F8.409509F4@e16-tech.com>
-In-Reply-To: <20221128135448.49F8.409509F4@e16-tech.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 28 Nov 2022 10:03:52 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5MPyPeWemsYCS5VyYWean_V6EpVBnA1ND_p66eg=v4Tg@mail.gmail.com>
-Message-ID: <CAL3q7H5MPyPeWemsYCS5VyYWean_V6EpVBnA1ND_p66eg=v4Tg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] btrfs: do not modify log tree while holding a leaf
- from fs tree locked
-To:     Wang Yugui <wangyugui@e16-tech.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,317 +49,52 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 6:25 AM Wang Yugui <wangyugui@e16-tech.com> wrote:
->
-> Hi,
->
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > When logging an inode in full mode, or when logging xattrs or when logging
-> > the dir index items of a directory, we are modifying the log tree while
-> > holding a read lock on a leaf from the fs/subvolume tree. This can lead to
-> > a deadlock in rare circumstances, but it is a real possibility, and it was
-> > recently reported by syzbot with the following trace from lockdep:
->
-> This patch has beed merged into linux upstream.
->
-> And this patch can not be applied to 5.15.y without some backport.
-> do we need a backport of this patch for 5.15.y?
+From: Filipe Manana <fdmanana@suse.com>
 
-The issue has been around for many years (if not ever).
-It would need a different patch for anything before 6.1, and possibly
-different patch versions for different kernels.
+If we successfully allocated the send context object but ran into an error
+after it and before initializing the backref cache, then under the 'out'
+label we'll end up calling empty_backref_cache(), which will iterate over
+a the backref cache's lru list which was not initialized, triggering
+invalid memory accesses.
 
-Are you affected by this? This should be very rare. And it only landed
-on Linus' tree on friday.
+Fix this by initializing the backref cache immediately after a successful
+allocation of the send context.
 
->
-> Best Regards
-> Wang Yugui (wangyugui@e16-tech.com)
-> 2022/11/28
->
-> >    WARNING: possible circular locking dependency detected
-> >    6.1.0-rc5-next-20221116-syzkaller #0 Not tainted
-> >    ------------------------------------------------------
-> >    syz-executor.1/16154 is trying to acquire lock:
-> >    ffff88807e3084a0 (&delayed_node->mutex){+.+.}-{3:3}, at: __btrfs_release_delayed_node.part.0+0xa1/0xf30 fs/btrfs/delayed-inode.c:256
-> >
-> >    but task is already holding lock:
-> >    ffff88807df33078 (btrfs-log-00){++++}-{3:3}, at: __btrfs_tree_lock+0x32/0x3d0 fs/btrfs/locking.c:197
-> >
-> >    which lock already depends on the new lock.
-> >
-> >    the existing dependency chain (in reverse order) is:
-> >
-> >    -> #2 (btrfs-log-00){++++}-{3:3}:
-> >           down_read_nested+0x9e/0x450 kernel/locking/rwsem.c:1634
-> >           __btrfs_tree_read_lock+0x32/0x350 fs/btrfs/locking.c:135
-> >           btrfs_tree_read_lock fs/btrfs/locking.c:141 [inline]
-> >           btrfs_read_lock_root_node+0x82/0x3a0 fs/btrfs/locking.c:280
-> >           btrfs_search_slot_get_root fs/btrfs/ctree.c:1678 [inline]
-> >           btrfs_search_slot+0x3ca/0x2c70 fs/btrfs/ctree.c:1998
-> >           btrfs_lookup_csum+0x116/0x3f0 fs/btrfs/file-item.c:209
-> >           btrfs_csum_file_blocks+0x40e/0x1370 fs/btrfs/file-item.c:1021
-> >           log_csums.isra.0+0x244/0x2d0 fs/btrfs/tree-log.c:4258
-> >           copy_items.isra.0+0xbfb/0xed0 fs/btrfs/tree-log.c:4403
-> >           copy_inode_items_to_log+0x13d6/0x1d90 fs/btrfs/tree-log.c:5873
-> >           btrfs_log_inode+0xb19/0x4680 fs/btrfs/tree-log.c:6495
-> >           btrfs_log_inode_parent+0x890/0x2a20 fs/btrfs/tree-log.c:6982
-> >           btrfs_log_dentry_safe+0x59/0x80 fs/btrfs/tree-log.c:7083
-> >           btrfs_sync_file+0xa41/0x13c0 fs/btrfs/file.c:1921
-> >           vfs_fsync_range+0x13e/0x230 fs/sync.c:188
-> >           generic_write_sync include/linux/fs.h:2856 [inline]
-> >           iomap_dio_complete+0x73a/0x920 fs/iomap/direct-io.c:128
-> >           btrfs_direct_write fs/btrfs/file.c:1536 [inline]
-> >           btrfs_do_write_iter+0xba2/0x1470 fs/btrfs/file.c:1668
-> >           call_write_iter include/linux/fs.h:2160 [inline]
-> >           do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:735
-> >           do_iter_write+0x182/0x700 fs/read_write.c:861
-> >           vfs_iter_write+0x74/0xa0 fs/read_write.c:902
-> >           iter_file_splice_write+0x745/0xc90 fs/splice.c:686
-> >           do_splice_from fs/splice.c:764 [inline]
-> >           direct_splice_actor+0x114/0x180 fs/splice.c:931
-> >           splice_direct_to_actor+0x335/0x8a0 fs/splice.c:886
-> >           do_splice_direct+0x1ab/0x280 fs/splice.c:974
-> >           do_sendfile+0xb19/0x1270 fs/read_write.c:1255
-> >           __do_sys_sendfile64 fs/read_write.c:1323 [inline]
-> >           __se_sys_sendfile64 fs/read_write.c:1309 [inline]
-> >           __x64_sys_sendfile64+0x259/0x2c0 fs/read_write.c:1309
-> >           do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >           do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-> >           entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> >
-> >    -> #1 (btrfs-tree-00){++++}-{3:3}:
-> >           __lock_release kernel/locking/lockdep.c:5382 [inline]
-> >           lock_release+0x371/0x810 kernel/locking/lockdep.c:5688
-> >           up_write+0x2a/0x520 kernel/locking/rwsem.c:1614
-> >           btrfs_tree_unlock_rw fs/btrfs/locking.h:189 [inline]
-> >           btrfs_unlock_up_safe+0x1e3/0x290 fs/btrfs/locking.c:238
-> >           search_leaf fs/btrfs/ctree.c:1832 [inline]
-> >           btrfs_search_slot+0x265e/0x2c70 fs/btrfs/ctree.c:2074
-> >           btrfs_insert_empty_items+0xbd/0x1c0 fs/btrfs/ctree.c:4133
-> >           btrfs_insert_delayed_item+0x826/0xfa0 fs/btrfs/delayed-inode.c:746
-> >           btrfs_insert_delayed_items fs/btrfs/delayed-inode.c:824 [inline]
-> >           __btrfs_commit_inode_delayed_items fs/btrfs/delayed-inode.c:1111 [inline]
-> >           __btrfs_run_delayed_items+0x280/0x590 fs/btrfs/delayed-inode.c:1153
-> >           flush_space+0x147/0xe90 fs/btrfs/space-info.c:728
-> >           btrfs_async_reclaim_metadata_space+0x541/0xc10 fs/btrfs/space-info.c:1086
-> >           process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
-> >           worker_thread+0x669/0x1090 kernel/workqueue.c:2436
-> >           kthread+0x2e8/0x3a0 kernel/kthread.c:376
-> >           ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
-> >
-> >    -> #0 (&delayed_node->mutex){+.+.}-{3:3}:
-> >           check_prev_add kernel/locking/lockdep.c:3097 [inline]
-> >           check_prevs_add kernel/locking/lockdep.c:3216 [inline]
-> >           validate_chain kernel/locking/lockdep.c:3831 [inline]
-> >           __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5055
-> >           lock_acquire kernel/locking/lockdep.c:5668 [inline]
-> >           lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
-> >           __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-> >           __mutex_lock+0x12f/0x1360 kernel/locking/mutex.c:747
-> >           __btrfs_release_delayed_node.part.0+0xa1/0xf30 fs/btrfs/delayed-inode.c:256
-> >           __btrfs_release_delayed_node fs/btrfs/delayed-inode.c:251 [inline]
-> >           btrfs_release_delayed_node fs/btrfs/delayed-inode.c:281 [inline]
-> >           btrfs_remove_delayed_node+0x52/0x60 fs/btrfs/delayed-inode.c:1285
-> >           btrfs_evict_inode+0x511/0xf30 fs/btrfs/inode.c:5554
-> >           evict+0x2ed/0x6b0 fs/inode.c:664
-> >           dispose_list+0x117/0x1e0 fs/inode.c:697
-> >           prune_icache_sb+0xeb/0x150 fs/inode.c:896
-> >           super_cache_scan+0x391/0x590 fs/super.c:106
-> >           do_shrink_slab+0x464/0xce0 mm/vmscan.c:843
-> >           shrink_slab_memcg mm/vmscan.c:912 [inline]
-> >           shrink_slab+0x388/0x660 mm/vmscan.c:991
-> >           shrink_node_memcgs mm/vmscan.c:6088 [inline]
-> >           shrink_node+0x93d/0x1f30 mm/vmscan.c:6117
-> >           shrink_zones mm/vmscan.c:6355 [inline]
-> >           do_try_to_free_pages+0x3b4/0x17a0 mm/vmscan.c:6417
-> >           try_to_free_mem_cgroup_pages+0x3a4/0xa70 mm/vmscan.c:6732
-> >           reclaim_high.constprop.0+0x182/0x230 mm/memcontrol.c:2393
-> >           mem_cgroup_handle_over_high+0x190/0x520 mm/memcontrol.c:2578
-> >           try_charge_memcg+0xe0c/0x12f0 mm/memcontrol.c:2816
-> >           try_charge mm/memcontrol.c:2827 [inline]
-> >           charge_memcg+0x90/0x3b0 mm/memcontrol.c:6889
-> >           __mem_cgroup_charge+0x2b/0x90 mm/memcontrol.c:6910
-> >           mem_cgroup_charge include/linux/memcontrol.h:667 [inline]
-> >           __filemap_add_folio+0x615/0xf80 mm/filemap.c:852
-> >           filemap_add_folio+0xaf/0x1e0 mm/filemap.c:934
-> >           __filemap_get_folio+0x389/0xd80 mm/filemap.c:1976
-> >           pagecache_get_page+0x2e/0x280 mm/folio-compat.c:104
-> >           find_or_create_page include/linux/pagemap.h:612 [inline]
-> >           alloc_extent_buffer+0x2b9/0x1580 fs/btrfs/extent_io.c:4588
-> >           btrfs_init_new_buffer fs/btrfs/extent-tree.c:4869 [inline]
-> >           btrfs_alloc_tree_block+0x2e1/0x1320 fs/btrfs/extent-tree.c:4988
-> >           __btrfs_cow_block+0x3b2/0x1420 fs/btrfs/ctree.c:440
-> >           btrfs_cow_block+0x2fa/0x950 fs/btrfs/ctree.c:595
-> >           btrfs_search_slot+0x11b0/0x2c70 fs/btrfs/ctree.c:2038
-> >           btrfs_update_root+0xdb/0x630 fs/btrfs/root-tree.c:137
-> >           update_log_root fs/btrfs/tree-log.c:2841 [inline]
-> >           btrfs_sync_log+0xbfb/0x2870 fs/btrfs/tree-log.c:3064
-> >           btrfs_sync_file+0xdb9/0x13c0 fs/btrfs/file.c:1947
-> >           vfs_fsync_range+0x13e/0x230 fs/sync.c:188
-> >           generic_write_sync include/linux/fs.h:2856 [inline]
-> >           iomap_dio_complete+0x73a/0x920 fs/iomap/direct-io.c:128
-> >           btrfs_direct_write fs/btrfs/file.c:1536 [inline]
-> >           btrfs_do_write_iter+0xba2/0x1470 fs/btrfs/file.c:1668
-> >           call_write_iter include/linux/fs.h:2160 [inline]
-> >           do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:735
-> >           do_iter_write+0x182/0x700 fs/read_write.c:861
-> >           vfs_iter_write+0x74/0xa0 fs/read_write.c:902
-> >           iter_file_splice_write+0x745/0xc90 fs/splice.c:686
-> >           do_splice_from fs/splice.c:764 [inline]
-> >           direct_splice_actor+0x114/0x180 fs/splice.c:931
-> >           splice_direct_to_actor+0x335/0x8a0 fs/splice.c:886
-> >           do_splice_direct+0x1ab/0x280 fs/splice.c:974
-> >           do_sendfile+0xb19/0x1270 fs/read_write.c:1255
-> >           __do_sys_sendfile64 fs/read_write.c:1323 [inline]
-> >           __se_sys_sendfile64 fs/read_write.c:1309 [inline]
-> >           __x64_sys_sendfile64+0x259/0x2c0 fs/read_write.c:1309
-> >           do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >           do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-> >           entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> >
-> >    other info that might help us debug this:
-> >
-> >    Chain exists of:
-> >      &delayed_node->mutex --> btrfs-tree-00 --> btrfs-log-00
-> >
-> >    Possible unsafe locking scenario:
-> >
-> >           CPU0                    CPU1
-> >           ----                    ----
-> >      lock(btrfs-log-00);
-> >                                   lock(btrfs-tree-00);
-> >                                   lock(btrfs-log-00);
-> >      lock(&delayed_node->mutex);
-> >
-> > Holding a read lock on a leaf from a fs/subvolume tree creates a nasty
-> > lock dependency when we are COWing extent buffers for the log tree and we
-> > have two tasks modifying the log tree, with each one in one of the
-> > following 2 scenarios:
-> >
-> > 1) Modifying the log tree triggers an extent buffer allocation while
-> >    holding a write lock on a parent extent buffer from the log tree.
-> >    Allocating the pages for an extent buffer, or the extent buffer
-> >    struct, can trigger inode eviction and finally the inode eviction
-> >    will trigger a release/remove of a delayed node, which requires
-> >    taking the delayed node's mutex;
-> >
-> > 2) Allocating a metadata extent for a log tree can trigger the async
-> >    reclaim thread and make us wait for it to release enough space and
-> >    unblock our reservation ticket. The reclaim thread can start flushing
-> >    delayed items, and that in turn results in the need to lock delayed
-> >    node mutexes and in the need to write lock extent buffers of a
-> >    subvolume tree - all this while holding a write lock on the parent
-> >    extent buffer in the log tree.
-> >
-> > So one task in scenario 1) running in parallel with another task in
-> > scenario 2) could lead to a deadlock, one wanting to lock a delayed node
-> > mutex while having a read lock on a leaf from the subvolume, while the
-> > other is holding the delayed node's mutex and wants to write lock the same
-> > subvolume leaf for flushing delayed items.
-> >
-> > Fix this by cloning the leaf of the fs/subvolume tree, release/unlock the
-> > fs/subvolume leaf and use the clone leaf instead.
-> >
-> > Reported-by: syzbot+9b7c21f486f5e7f8d029@syzkaller.appspotmail.com
-> > Link: https://lore.kernel.org/linux-btrfs/000000000000ccc93c05edc4d8cf@google.com/
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >  fs/btrfs/tree-log.c | 59 ++++++++++++++++++++++++++++++++++++++++++---
-> >  1 file changed, 55 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> > index 8fcfaf015a70..f7b1bb9c63e4 100644
-> > --- a/fs/btrfs/tree-log.c
-> > +++ b/fs/btrfs/tree-log.c
-> > @@ -3675,15 +3675,29 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
-> >                                 u64 *last_old_dentry_offset)
-> >  {
-> >       struct btrfs_root *log = inode->root->log_root;
-> > -     struct extent_buffer *src = path->nodes[0];
-> > -     const int nritems = btrfs_header_nritems(src);
-> > +     struct extent_buffer *src;
-> > +     const int nritems = btrfs_header_nritems(path->nodes[0]);
-> >       const u64 ino = btrfs_ino(inode);
-> >       bool last_found = false;
-> >       int batch_start = 0;
-> >       int batch_size = 0;
-> >       int i;
-> >
-> > -     for (i = path->slots[0]; i < nritems; i++) {
-> > +     /*
-> > +      * We need to clone the leaf, release the read lock on it, and use the
-> > +      * clone before modifying the log tree. See the comment at copy_items()
-> > +      * about why we need to do this.
-> > +      */
-> > +     src = btrfs_clone_extent_buffer(path->nodes[0]);
-> > +     if (!src)
-> > +             return -ENOMEM;
-> > +
-> > +     i = path->slots[0];
-> > +     btrfs_release_path(path);
-> > +     path->nodes[0] = src;
-> > +     path->slots[0] = i;
-> > +
-> > +     for (; i < nritems; i++) {
-> >               struct btrfs_dir_item *di;
-> >               struct btrfs_key key;
-> >               int ret;
-> > @@ -4284,7 +4298,7 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
-> >  {
-> >       struct btrfs_root *log = inode->root->log_root;
-> >       struct btrfs_file_extent_item *extent;
-> > -     struct extent_buffer *src = src_path->nodes[0];
-> > +     struct extent_buffer *src;
-> >       int ret = 0;
-> >       struct btrfs_key *ins_keys;
-> >       u32 *ins_sizes;
-> > @@ -4295,6 +4309,43 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
-> >       const bool skip_csum = (inode->flags & BTRFS_INODE_NODATASUM);
-> >       const u64 i_size = i_size_read(&inode->vfs_inode);
-> >
-> > +     /*
-> > +      * To keep lockdep happy and avoid deadlocks, clone the source leaf and
-> > +      * use the clone. This is because otherwise we would be changing the log
-> > +      * tree, to insert items from the subvolume tree or insert csum items,
-> > +      * while holding a read lock on a leaf from the subvolume tree, which
-> > +      * creates a nasty lock dependency when COWing log tree nodes/leaves:
-> > +      *
-> > +      * 1) Modifying the log tree triggers an extent buffer allocation while
-> > +      *    holding a write lock on a parent extent buffer from the log tree.
-> > +      *    Allocating the pages for an extent buffer, or the extent buffer
-> > +      *    struct, can trigger inode eviction and finally the inode eviction
-> > +      *    will trigger a release/remove of a delayed node, which requires
-> > +      *    taking the delayed node's mutex;
-> > +      *
-> > +      * 2) Allocating a metadata extent for a log tree can trigger the async
-> > +      *    reclaim thread and make us wait for it to release enough space and
-> > +      *    unblock our reservation ticket. The reclaim thread can start
-> > +      *    flushing delayed items, and that in turn results in the need to
-> > +      *    lock delayed node mutexes and in the need to write lock extent
-> > +      *    buffers of a subvolume tree - all this while holding a write lock
-> > +      *    on the parent extent buffer in the log tree.
-> > +      *
-> > +      * So one task in scenario 1) running in parallel with another task in
-> > +      * scenario 2) could lead to a deadlock, one wanting to lock a delayed
-> > +      * node mutex while having a read lock on a leaf from the subvolume,
-> > +      * while the other is holding the delayed node's mutex and wants to
-> > +      * write lock the same subvolume leaf for flushing delayed items.
-> > +      */
-> > +     src = btrfs_clone_extent_buffer(src_path->nodes[0]);
-> > +     if (!src)
-> > +             return -ENOMEM;
-> > +
-> > +     i = src_path->slots[0];
-> > +     btrfs_release_path(src_path);
-> > +     src_path->nodes[0] = src;
-> > +     src_path->slots[0] = i;
-> > +
-> >       ins_data = kmalloc(nr * sizeof(struct btrfs_key) +
-> >                          nr * sizeof(u32), GFP_NOFS);
-> >       if (!ins_data)
-> > --
-> > 2.35.1
->
->
+This fixes a recent patch not yet in Linus' tree, only in misc-next and
+linux-next, which has the subject:
+
+  "btrfs: send: cache leaf to roots mapping during backref walking"
+
+Reported-by: syzbot+c423003741c992ccf56b@syzkaller.appspotmail.com
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/send.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 5a00d08c8300..67f7c698ade3 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -8096,6 +8096,9 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 	INIT_RADIX_TREE(&sctx->name_cache, GFP_KERNEL);
+ 	INIT_LIST_HEAD(&sctx->name_cache_list);
+ 
++	INIT_LIST_HEAD(&sctx->backref_cache.lru_list);
++	mt_init(&sctx->backref_cache.entries);
++
+ 	sctx->flags = arg->flags;
+ 
+ 	if (arg->flags & BTRFS_SEND_FLAG_VERSION) {
+@@ -8167,9 +8170,6 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 	sctx->rbtree_new_refs = RB_ROOT;
+ 	sctx->rbtree_deleted_refs = RB_ROOT;
+ 
+-	INIT_LIST_HEAD(&sctx->backref_cache.lru_list);
+-	mt_init(&sctx->backref_cache.entries);
+-
+ 	sctx->clone_roots = kvcalloc(sizeof(*sctx->clone_roots),
+ 				     arg->clone_sources_count + 1,
+ 				     GFP_KERNEL);
+-- 
+2.35.1
+
