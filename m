@@ -2,134 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE3F63B34C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 21:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A397363B3FC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 22:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbiK1UfA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 15:35:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
+        id S234384AbiK1VLT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 16:11:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232860AbiK1Ue7 (ORCPT
+        with ESMTP id S234365AbiK1VLS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 15:34:59 -0500
-Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EE52B247
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 12:34:58 -0800 (PST)
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-142612a5454so14521293fac.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 12:34:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3kUD8/TTfav9EbeDIQ8ZZwVrosW/5Hgcdhi9BGeQU7g=;
-        b=DN5OkkPDNLCxaFN2UuIezo27EMhAgaGg71EDTG24jCFvcjJ+UEWcw9yRaV6X+xTdEV
-         /enMA14Sr9jDM4Q9owZOzFRmr4+fdIuC6gZN32yU6Fs56Omfv/xkQHlPL16vlkVyg1RM
-         jJ7/i7hx/8PkDid/qAaFWqBNbJg2n0OAwL5TS/nRSZb/YGsXcrTfpYD6MPYYHqOp3GmQ
-         g1rKlsNtb6AeHlDnEV2stYocc+V8tspFVKJpFZFuxy9lQpp6/3bsWnSPaMQO3Vcoindl
-         u8unXiepGZRYgWTNwXh10W36lqXqP0RfWOq095Yz//bUa2+g9xsAdPTZRYUyA0x2mCmu
-         HN0Q==
+        Mon, 28 Nov 2022 16:11:18 -0500
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903CF21BE
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 13:11:16 -0800 (PST)
+Received: by mail-io1-f72.google.com with SMTP id r197-20020a6b8fce000000b006c3fc33424dso6877715iod.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 13:11:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3kUD8/TTfav9EbeDIQ8ZZwVrosW/5Hgcdhi9BGeQU7g=;
-        b=EzPZOkMJt4RDoFrPl2RHv5YmKPK65cBOOL2UYzVW15KaschdE07vF1aBEHjj50GvkB
-         HnpQeef0n8F/lLlGCzIgHvDUoJtN8XqEGHeDLIEu2UPvSDIrvJkEd6Us0TC9ZMKRsumU
-         KF6FeEOEmVyXKOSJ7kpoMKXRl07+nZvAu2xTMZrKUi2XdhGMVI6SsPmda6HZKCP7qmdU
-         LWxoi+AuMILdheAudxxgIGPbmowN0VFmWpicVQ04hExhUK99nxiYQuESZU6fkOkJnUhN
-         1f2GOcfWTQvF32d2DBHsr1H+7d99mLdXEphgA8Qk3c6/xxFlruFnDzmt2RFhpGhkhdSX
-         CcMQ==
-X-Gm-Message-State: ANoB5pmxNVFLxkTpgqNlFfHtcFCzWPz5Ld1+N43xrpe5PBNCZzAVsMhO
-        eyWfyvVylDuGKEZf5Ap/T5s+CMDrcLHhEl9N4MaJoQ==
-X-Google-Smtp-Source: AA0mqf48wepdwdD988cC95590SQarOxOx/PbasQOurlJ3euIpsTj9iqEtW5r/l/Vj/yv5wdjBujhapZxq9RkOKG4VtA=
-X-Received: by 2002:a05:6870:430a:b0:13d:5167:43e3 with SMTP id
- w10-20020a056870430a00b0013d516743e3mr20549124oah.257.1669667696999; Mon, 28
- Nov 2022 12:34:56 -0800 (PST)
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+vrFvgf3kC0HHJ1u0C1MfigaITyNx2eYmkBwRJdnQic=;
+        b=56zrifjDsZ0dow4XDIAhD9ITKoUApAGxi+T9mIuh5eXyyQ5e2nPl60ZUolUv4kko3+
+         +U4/zKOIG7w1X+wIyBlU2LOPkS1E+e5T1L34cNrsvVhpC8ZhM6pzK9kOBBUhR6tj/1jo
+         NJ2GesRIvKrnNPtt965PadKXs2TEZ0/VKHxIkQep3NlCXpvm1ohjI9+9Rm95zgU0qszM
+         3kBr4Ihr8DSo2ty2Tf23p0/yldYRBNtaK9YSSMqd7KH5PSUNmQAv+uKz1Bx5NpLBI75u
+         7BJct5dct2laFL1j6VsTNuwzt7Nij8mJbgNyDL70/Rmlx3ud1H0cxgtw6didq/Z+xjLX
+         7jkA==
+X-Gm-Message-State: ANoB5pkDn8i6XzS3uzauUD9yi3sVX9g73MM9GiMM3RPRidzzJP3ujgAz
+        ORdgBflz7fxcw1H52pSh3SraNA5enfkdtVslrDzoJ4KXeLnf
+X-Google-Smtp-Source: AA0mqf7nkU1Jbpcji4kFBESpoY6kF2tL8/7c5Hh6oW8lp6EE/JxTkrQM8rCd1l6CmBzg424AY7Gr/fvtNlX33s4+k5JkdqGbr5tr
 MIME-Version: 1.0
-References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
- <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
- <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me> <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
- <4857f0df-dae0-178e-85e3-307197701d34@dorminy.me> <Y4RqbKSdxQ5owg0h@infradead.org>
-In-Reply-To: <Y4RqbKSdxQ5owg0h@infradead.org>
-From:   Paul Crowley <paulcrowley@google.com>
-Date:   Mon, 28 Nov 2022 12:34:46 -0800
-Message-ID: <CA+_SqcCFepKXXJWhF=d4pcEpMZ5XFO6j9buc+aHKpX9sP2+_KA@mail.gmail.com>
-Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
-        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
+X-Received: by 2002:a92:4a0f:0:b0:302:e9ff:dc96 with SMTP id
+ m15-20020a924a0f000000b00302e9ffdc96mr11245832ilf.236.1669669875947; Mon, 28
+ Nov 2022 13:11:15 -0800 (PST)
+Date:   Mon, 28 Nov 2022 13:11:15 -0800
+In-Reply-To: <0000000000000c379205ec806d6e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d921ab05ee8e4f48@google.com>
+Subject: Re: [syzbot] WARNING in btrfs_commit_transaction
+From:   syzbot <syzbot+9c37714c07194d816417@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, dsterba@suse.cz,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The kind of inline encryption hardware we see on Android devices tends
-to have these limitations:
+syzbot suspects this issue was fixed by commit:
 
-- as you indicate, loading keys can incur latency, so if many keys are
-in use at once it can slow things down
-- it's limited to using AES-XTS
-- on UFS devices, the IV (transmitted in the DUN) must be zero in the
-64 high bits
-- consecutive blocks in the same operation use consecutive IVs
-- there's no easy way to gather a checksum or MAC over the on-disk
-ciphertext short of re-reading after writing
+commit 8bb808c6ad91ec3d332f072ce8f8aa4b16e307e0
+Author: David Sterba <dsterba@suse.com>
+Date:   Thu Nov 3 13:39:01 2022 +0000
 
-Android works around this with IV_INO_LBLK_64 policies, but these only
-work well on the relatively small storage devices we use on Android.
-In particular the IV limitation is very serious:
+    btrfs: don't print stack trace when transaction is aborted due to ENOMEM
 
-- inode numbers must be four bytes
-- they must never change (so ext4 filesystem resizing is disabled)
-- files cannot be more than 2^32 blocks
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e020bd880000
+start commit:   b229b6ca5abb Merge tag 'perf-tools-fixes-for-v6.1-2022-10-..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a66c6c673fb555e8
+dashboard link: https://syzkaller.appspot.com/bug?extid=9c37714c07194d816417
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17401632880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13176716880000
 
-Things are worse on eMMC devices.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Even without this IV limitation, the security proofs for most AES
-modes of operation start to look shaky as you approach the "birthday
-bound" of encrypting 2^68 bytes with the same key. If your attack
-model always assumes a point-in-time attack then you only have to
-worry if you use a single key to encrypt a multi-exabyte storage
-device; btrfs is designed to scale to such devices and more. If your
-attack model includes an attacker who repeatedly gets access to the
-storage device across time, then writing multiple exabytes with the
-same key can be a problem even if some of those are overwritten. This
-leads us to prefer per-extent AES keys (derived from a root key) if
-possible. It's a shame AES doesn't have a 256-bit blocksize.
+#syz fix: btrfs: don't print stack trace when transaction is aborted due to ENOMEM
 
-The way btrfs works also gives us some opportunities to do things a
-little better. In general disk encryption has to make sacrifices to
-deal with the limitation that IVs must be reused and there's no room
-for a MAC. But because btrfs writes in whole extents, with fresh
-metadata and checksum on each write, it becomes possible to use a
-fresh IV and MAC for every new write. This opens up the possibility of
-using an AEAD mode like AES-GCM. This combination gives us the
-strongest proofs of security even against very generous attack models.
-
-Our recommendation: btrfs should first build the ideal thing first
-since it will have reasonable performance for most users, then later
-design alternatives that make a few compromises for performance where
-there is demand.
-
-
-On Sun, 27 Nov 2022 at 23:59, Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Wed, Nov 23, 2022 at 08:22:30PM -0500, Sweet Tea Dorminy wrote:
-> > The document has been updated to hopefully reflect the discussion we had;
-> > further comments are always appreciated. https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
->
-> How is this going to work with hardware encryption offload?  I think
-> the number of keys for UFS and eMMC inline encryption, but Eric may
-> correct me.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
