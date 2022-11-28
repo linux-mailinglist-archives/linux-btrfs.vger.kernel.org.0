@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B1863AF58
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 18:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AEF63AFD2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 18:46:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbiK1RlI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 12:41:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
+        id S233561AbiK1Rp7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 12:45:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233009AbiK1Rk2 (ORCPT
+        with ESMTP id S233518AbiK1RpN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 12:40:28 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8D729822;
-        Mon, 28 Nov 2022 09:39:11 -0800 (PST)
+        Mon, 28 Nov 2022 12:45:13 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 573B72CDE1;
+        Mon, 28 Nov 2022 09:41:11 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 43895B80E96;
-        Mon, 28 Nov 2022 17:39:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEF55C433D7;
-        Mon, 28 Nov 2022 17:39:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A0A5B61302;
+        Mon, 28 Nov 2022 17:41:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2283CC43148;
+        Mon, 28 Nov 2022 17:41:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669657148;
-        bh=JxZMR149k32CPh/jIPLId3L95+vHwgeJKoiJTP6aPNA=;
+        s=k20201202; t=1669657268;
+        bh=BRSr+uIkNQG6IfFNGQENyPHkDfuECgTqJg24CfpCxf4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yw5G9icFRAu2Wcpg8rdp0QRpR9aM/NQxWrRHyCZZdkEf/Qv7NrUqVaq+hcgDnkXbD
-         7gOK085Nae3Qtn5HkL56QUUY1oVh4pacKIk7e6l3juB/LPr+8luVp9M8z/5jXYEHh7
-         fFjs4zVWygRVSgm/Bbp6ZRgC0ZFW7o6svHrjRLkHAH2szMnGJX20SjO9AIr0k5B3Sd
-         7Po8QkCa1obNSmVJT4XyFF+ezSiNDOwvTyTNdfqFulVusZw3S2UuDXRoktWs1JafZH
-         znbmc/hpTQb9d1xa+ljYchCjb8IaNKMkmdszdyOQIzJaKZuxPYvnzss9uZ6/LfxAbQ
-         DHDOTQRpQ2Vsw==
+        b=EqnHmoEuRKVNPMoGEaR2l8A0odnp647fZiGDiP5TBtllQ4M2JBqzM8Eqhrn/7GTPJ
+         co9ZUlpX9MGN7tK1FBOMczP4iOjKwn8dZfcLwCu/hX0w75kxd2O5i7DItPZRzy9PKK
+         SObnQwlGpMrxd8INbYGuCxpag0u3ExnQYrDhwlGqd1T2jtODkPJTTEF+mLUX10IJI+
+         AuMTMGvFwqiRr7Ryd/ZT+WpWykmSUaYUOgAbG3F6wpgFaPhjFTuFkHV7jWYFEY/NgH
+         I699RdlyE3PD24RRtjIUqvA4KpewYJDIXNz86uwEccEXXAQ8At4m//KaLd5f8aIl8D
+         6AZYH/mvDfJ6w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, Boris Burkov <boris@bur.io>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 28/39] btrfs: send: avoid unaligned encoded writes when attempting to clone range
-Date:   Mon, 28 Nov 2022 12:36:08 -0500
-Message-Id: <20221128173642.1441232-28-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 18/24] btrfs: send: avoid unaligned encoded writes when attempting to clone range
+Date:   Mon, 28 Nov 2022 12:40:18 -0500
+Message-Id: <20221128174027.1441921-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221128173642.1441232-1-sashal@kernel.org>
-References: <20221128173642.1441232-1-sashal@kernel.org>
+In-Reply-To: <20221128174027.1441921-1-sashal@kernel.org>
+References: <20221128174027.1441921-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -160,10 +160,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 23 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index e7671afcee4f..8cc038460bed 100644
+index 4d2c6ce29fe5..9250a17731bd 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -5615,6 +5615,7 @@ static int clone_range(struct send_ctx *sctx, struct btrfs_path *dst_path,
+@@ -5398,6 +5398,7 @@ static int clone_range(struct send_ctx *sctx,
  		u64 ext_len;
  		u64 clone_len;
  		u64 clone_data_offset;
@@ -171,7 +171,7 @@ index e7671afcee4f..8cc038460bed 100644
  
  		if (slot >= btrfs_header_nritems(leaf)) {
  			ret = btrfs_next_leaf(clone_root->root, path);
-@@ -5672,8 +5673,10 @@ static int clone_range(struct send_ctx *sctx, struct btrfs_path *dst_path,
+@@ -5454,8 +5455,10 @@ static int clone_range(struct send_ctx *sctx,
  		if (key.offset >= clone_src_i_size)
  			break;
  
@@ -183,7 +183,7 @@ index e7671afcee4f..8cc038460bed 100644
  
  		clone_data_offset = btrfs_file_extent_offset(leaf, ei);
  		if (btrfs_file_extent_disk_bytenr(leaf, ei) == disk_byte) {
-@@ -5734,6 +5737,25 @@ static int clone_range(struct send_ctx *sctx, struct btrfs_path *dst_path,
+@@ -5515,6 +5518,25 @@ static int clone_range(struct send_ctx *sctx,
  				ret = send_clone(sctx, offset, clone_len,
  						 clone_root);
  			}
@@ -207,8 +207,8 @@ index e7671afcee4f..8cc038460bed 100644
 +			 */
 +			break;
  		} else {
- 			ret = send_extent_data(sctx, dst_path, offset,
- 					       clone_len);
+ 			ret = send_extent_data(sctx, offset, clone_len);
+ 		}
 -- 
 2.35.1
 
