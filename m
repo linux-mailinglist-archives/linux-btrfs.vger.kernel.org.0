@@ -2,64 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 350E063AE6D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 18:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6CE63AEBE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 18:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbiK1RHM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 12:07:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        id S232487AbiK1RUR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 12:20:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232885AbiK1RGv (ORCPT
+        with ESMTP id S232795AbiK1RUQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 12:06:51 -0500
+        Mon, 28 Nov 2022 12:20:16 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CB5275C9
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 09:06:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC578C45
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 09:20:15 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3A5E721888;
-        Mon, 28 Nov 2022 17:06:20 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 94EF621BC1;
+        Mon, 28 Nov 2022 17:20:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1669655180;
+        t=1669656014;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5Ize+itFkEQW4m0d0og2AdYvIpRLdYoZSzvkhzPYCHM=;
-        b=UaVHU5aLiuGf2i0OTWO9xWha+bHVJcX6qSwVQoPxbvMNrfD0rG7EnE4rAZaRPPGfQOeIN5
-        EQOjulp+pi4vb8ehYFfJSB/YddZep9SykdPgT+7r0DuuynX3roOYUlNrNnJxnsYnuupfuA
-        q6HNYvbUhCD4RqqHxbazDFCPhqecE8A=
+        bh=m6FY1FfCtyZIVnq36qEawJUXD47P/pW+HmW/7uIq3NI=;
+        b=o55YddGS6JTXlKTWRrKPRmVFkLUrlXJLyCer/6DOVihDMpt6fcqnqHpu6QRLMeE7dYKATB
+        zV7gjuewmLNLKidg71eI0IOmHmpzltrm76jDVkQG3IjuT3kefBx8s/iUN4h/dDLF9oQla9
+        GkrL/VMGQWx45eZ4T+uMkr6A3Rv2MmE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1669655180;
+        s=susede2_ed25519; t=1669656014;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5Ize+itFkEQW4m0d0og2AdYvIpRLdYoZSzvkhzPYCHM=;
-        b=/UmpQ/qMoW1xaVWvg0+puK4k5GDGs6qOHd1k1leiKa+lvTIy0GiWROSdzaEYKLzmtteFCL
-        GNoSZQO5cOluDKBQ==
+        bh=m6FY1FfCtyZIVnq36qEawJUXD47P/pW+HmW/7uIq3NI=;
+        b=Wyd5Wdmvf15k8LYmi7CQ836LkPAkRNii6KCl3/knaa0t3HweTxEevPZJAqWPCPFiWrFxes
+        AvIGrmGII0+4eMBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1993C1326E;
-        Mon, 28 Nov 2022 17:06:20 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7101813273;
+        Mon, 28 Nov 2022 17:20:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id qRdFBYzqhGPleQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 28 Nov 2022 17:06:20 +0000
-Date:   Mon, 28 Nov 2022 18:05:46 +0100
+        id JJKJGs7thGOvAgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 28 Nov 2022 17:20:14 +0000
+Date:   Mon, 28 Nov 2022 18:19:41 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: send: initialize backref cache earlier
-Message-ID: <20221128170546.GR5824@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v3 03/29] btrfs-progs: properly test for
+ send_stream_version
+Message-ID: <20221128171941.GS5824@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <25b5197a1d0b81c12acdb79ac0f6d82df287c3c7.1669630263.git.fdmanana@suse.com>
+References: <cover.1669242804.git.josef@toxicpanda.com>
+ <e7ca4d3f79485396cc1e2d7e8d635983a1c2e2a9.1669242804.git.josef@toxicpanda.com>
+ <9bd99a08-5821-09e8-af7a-efe0433ea997@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <25b5197a1d0b81c12acdb79ac0f6d82df287c3c7.1669630263.git.fdmanana@suse.com>
+In-Reply-To: <9bd99a08-5821-09e8-af7a-efe0433ea997@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -70,21 +74,19 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 10:12:13AM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Mon, Nov 28, 2022 at 01:04:06PM +0530, Anand Jain wrote:
+> On 11/24/22 04:07, Josef Bacik wrote:
+> > We want to notrun if this test fails, not if it succeeds.  Additionally
+> > we want -s, as -q will still print an error if it gets ENOENT from the
+> > file we're trying to grep.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > 
-> If we successfully allocated the send context object but ran into an error
-> after it and before initializing the backref cache, then under the 'out'
-> label we'll end up calling empty_backref_cache(), which will iterate over
-> a the backref cache's lru list which was not initialized, triggering
-> invalid memory accesses.
 > 
-> Fix this by initializing the backref cache immediately after a successful
-> allocation of the send context.
-> 
-> This fixes a recent patch not yet in Linus' tree, only in misc-next and
-> linux-next, which has the subject:
-> 
->   "btrfs: send: cache leaf to roots mapping during backref walking"
+> Patch:
+>      btrfs-progs: tests: update stream version checks in misc/058
+>                                                 should be 053 ^^^
+> Fixed the check for the older version.
 
-Folded to the patch, thanks.
+Right, it's in 053, however the patch has been already merged to v6.0.1
+and with a fixup.
