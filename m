@@ -2,41 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBDE63A5C0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 11:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A153063A802
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 13:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbiK1KMU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 05:12:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49098 "EHLO
+        id S229878AbiK1MRO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 07:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbiK1KMS (ORCPT
+        with ESMTP id S231442AbiK1MQa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 05:12:18 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28F02BFE
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 02:12:17 -0800 (PST)
+        Mon, 28 Nov 2022 07:16:30 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866C52A24F;
+        Mon, 28 Nov 2022 04:08:02 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9874061042
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 10:12:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 843BCC433C1
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 10:12:16 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 96F1AB80ABE;
+        Mon, 28 Nov 2022 12:07:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83F82C433C1;
+        Mon, 28 Nov 2022 12:07:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669630337;
-        bh=93KsJAVxS6gmVW2irriy3phlkCs/DKPbzzn/Lh1EslY=;
-        h=From:To:Subject:Date:From;
-        b=YSRL1aEeUQ4oDpxM6RPgaYSvwDOQAaDDiD37I/55VRlLlji71PtK7D2hJH8W/43Xd
-         QhAbXpyhC8Aiq+22vemsVPtnvhWnzntdYpy/POzIrrVXXwG9oG8kws0HgFremv7z/W
-         u6LlBspPIJcsqAkHU+ztWg1NP8lUa63n+qGAtlQDOaEwZRyuCcPzv1toegfOaCCZCx
-         Y6GyrVcoWkIUTXeLEzwpotefCJTEk35CbJ5Wy/9kgLlQvKLKxzsHEBlHUVo5GhuzID
-         XVXQayXtg0K6RqLGGjOmNbKfsC42uZFikIxxaD+avKnUhGOSyhkWCYSCH7yd0dxmhY
-         8lR0oj6F1sB7w==
+        s=k20201202; t=1669637260;
+        bh=4Lw7leUPy/1sxV9yrRek1PiVw3JFZsgbNqED3C3x7yA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=E3AOZI6zT7227dwygjjNnrH20X2usONHjkgSAvRhPoC800vkyevcP2ZCgmWhtIglW
+         J5lTpKsc/mIz+pKaVUndVL37GEvMeG4+u07HE5QpDzUIB0yBxuhINYEY44vu6bXu5N
+         dT6CnBkOx+4IyzQbROeH9Lt40NQPVYNXR4d8QGTMXdc0JF+c758hS9S19q9vA233gH
+         lJWcpTQULjXZTNigQ4+SQrR+dFW1MuGRVquEqQP2eFnBY4ydTHSZGBhLVjS8RAMUaj
+         lcRH9fdgO+opx76kOIqhfMVGDY5ZMpfyU6SFbeckRfNoOv9PBuVV24dOpaQQtRYDMl
+         w4ApLLfE+e5ZA==
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: send: initialize backref cache earlier
-Date:   Mon, 28 Nov 2022 10:12:13 +0000
-Message-Id: <25b5197a1d0b81c12acdb79ac0f6d82df287c3c7.1669630263.git.fdmanana@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH 0/4] fstests/btrfs: add a test case for send v2 and an update
+Date:   Mon, 28 Nov 2022 12:07:20 +0000
+Message-Id: <cover.1669636339.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -51,50 +52,28 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-If we successfully allocated the send context object but ran into an error
-after it and before initializing the backref cache, then under the 'out'
-label we'll end up calling empty_backref_cache(), which will iterate over
-a the backref cache's lru list which was not initialized, triggering
-invalid memory accesses.
+This adds a test case specific for send v2 with some preparatory work in
+order to allow for that. Support for v2 send streams was added in
+btrfs-progs v5.19 and the kernel support introduced with kernel 6.0.
 
-Fix this by initializing the backref cache immediately after a successful
-allocation of the send context.
+More send v2 specific tests will be added later.
 
-This fixes a recent patch not yet in Linus' tree, only in misc-next and
-linux-next, which has the subject:
+Filipe Manana (4):
+  btrfs: add a _require_btrfs_send_v2 helper
+  common: make _filter_fiemap_flags optionally print the encoded flag
+  btrfs/280: also verify that fiemap reports extents as encoded
+  btrfs: test a case with compressed send stream and a shared extent
 
-  "btrfs: send: cache leaf to roots mapping during backref walking"
+ common/btrfs        | 14 +++++++
+ common/punch        | 40 ++++++++++++++++++--
+ tests/btrfs/280     |  4 +-
+ tests/btrfs/280.out | 12 +++---
+ tests/btrfs/281     | 89 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/281.out | 17 +++++++++
+ 6 files changed, 164 insertions(+), 12 deletions(-)
+ create mode 100755 tests/btrfs/281
+ create mode 100644 tests/btrfs/281.out
 
-Reported-by: syzbot+c423003741c992ccf56b@syzkaller.appspotmail.com
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/send.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 5a00d08c8300..67f7c698ade3 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -8096,6 +8096,9 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
- 	INIT_RADIX_TREE(&sctx->name_cache, GFP_KERNEL);
- 	INIT_LIST_HEAD(&sctx->name_cache_list);
- 
-+	INIT_LIST_HEAD(&sctx->backref_cache.lru_list);
-+	mt_init(&sctx->backref_cache.entries);
-+
- 	sctx->flags = arg->flags;
- 
- 	if (arg->flags & BTRFS_SEND_FLAG_VERSION) {
-@@ -8167,9 +8170,6 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
- 	sctx->rbtree_new_refs = RB_ROOT;
- 	sctx->rbtree_deleted_refs = RB_ROOT;
- 
--	INIT_LIST_HEAD(&sctx->backref_cache.lru_list);
--	mt_init(&sctx->backref_cache.entries);
--
- 	sctx->clone_roots = kvcalloc(sizeof(*sctx->clone_roots),
- 				     arg->clone_sources_count + 1,
- 				     GFP_KERNEL);
 -- 
 2.35.1
 
