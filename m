@@ -2,106 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65EF763B18D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 19:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC1363B236
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 20:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbiK1Sov (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 13:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
+        id S232774AbiK1T0n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 14:26:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbiK1Sou (ORCPT
+        with ESMTP id S232682AbiK1T0l (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 13:44:50 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB1ED132;
-        Mon, 28 Nov 2022 10:44:49 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BCCBAB80E9E;
-        Mon, 28 Nov 2022 18:44:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 606EBC433C1;
-        Mon, 28 Nov 2022 18:44:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669661086;
-        bh=G51+0qBa8uFG2fCGIrC9eOsWrvLMH5foF69kYPIeOV4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a802eFOx4Qg7inDSdvH/fydqzvE9cWptdtPYQWrZJ2AoTsnPI/X4e4j84RWkh9hKq
-         pge/ULKBx1g4dpARd6yCtuocnCpiCJL/h755rmhclp2cL1JWo1ZUeZDIMKzv2wu7wD
-         VSqqjwe7v6XJWH59wE4iFCgeAOM1DnIIYBF5ptjQ2s/DZIdfiV0GzcuF443bG23hWl
-         G0U23zBWjnw9NANzaXOFP1hmnUtWgDo2LYsPenxY7AzwG4Io2PWOK1rG3JMwbfBgqc
-         woGIAIauM7dYoJWHYuc47NmCulVO2SqYgSTBj+EfZapR/Nw1a5Khr1oGhxbEvovg3R
-         +hX/JeCQkyCug==
-Date:   Mon, 28 Nov 2022 18:44:32 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        Paul Crowley <paulcrowley@google.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
-        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
-Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
-Message-ID: <Y4UBkNoCgLyUhyvH@gmail.com>
-References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
- <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
- <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me>
- <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
- <4857f0df-dae0-178e-85e3-307197701d34@dorminy.me>
- <Y4RqbKSdxQ5owg0h@infradead.org>
+        Mon, 28 Nov 2022 14:26:41 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4AA36350
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 11:26:40 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id k2so8075659qkk.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 11:26:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZOEABLdKR6gEaF7LpDhQvVvBBzUVg35g1G1In0LBm0A=;
+        b=m/a4wIbxmifZkCB3G9+VPA7sx3REXXDYmhxy2XdkTOxkQXy/mD2pnQrHYE0yAVBRgE
+         BJWlZEe/fKn874uwD2RxKk4zPdzi3g0GbjL8csBjWUus0R4pHguecaezqKjqM2Ef7xh8
+         UnimKtkIn9pmnJgPhEq6HCSqpsbe+uWWNxSVb0Ol8/nbh5y7VaJqsYZuniUMxyqBROs0
+         CQYS+2oJOMlrykpBOYi2f9V5uNdiJte0MqQs8frfsQwja2PR0HdHaGKR8YYqMjwB5m5f
+         QtKjEgxi6S7zuctV8J8Se+sOH1Xbz22jtsOzaIElx4Qmglo0fXsYwxlwHsZ6NxUS9cz2
+         ueDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZOEABLdKR6gEaF7LpDhQvVvBBzUVg35g1G1In0LBm0A=;
+        b=l/syJGMA2ac1kCa0GyBBVenp9q1OrL3LyRC/IIpgQnsLtV2oW14VdsScy9SoOxPbex
+         uEE/P90oe2vz68a9CnSXyH6XxwW87IdDe7laWxtaMRxqs1lmnEICplnTH1zM84/ZQvmP
+         zM4T6IyjkotXgb56aRDkBY9i2B5JMCiZruROP0JcMmT2KxC+LkCRu5dvfWN4iwCL1emp
+         kYOXBT1kV0NwI4I3WfhE7oGAOQXW9zcd1HhkNAYvxUysMOFNzdvJjc+s8EyB1Qp4z0I+
+         fiZRQD3Qr6127QT0VVv6D34e4neOKnph72mhjjvYlzKaTW5A9f31y+4/oJxKPpsVT/Vm
+         VgJA==
+X-Gm-Message-State: ANoB5pkEHaQ4PUldOaOQ9/qKvAKwtz10qQu2b52xaHfk4ueQcAHjwXUj
+        DmAt3vkD4s9AdUcIS4WS1U4i0QSCeE9bfA==
+X-Google-Smtp-Source: AA0mqf6CYTPNvv1MvGL2BGIAPcxwMXjR8cnVCzRRrxa/Oz9Hz/MmUuYXmubfjREx//jJ/CVAs2yS9Q==
+X-Received: by 2002:a05:620a:689:b0:6fa:2ffe:aab0 with SMTP id f9-20020a05620a068900b006fa2ffeaab0mr31784638qkh.567.1669663599611;
+        Mon, 28 Nov 2022 11:26:39 -0800 (PST)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id q38-20020a05620a2a6600b006b949afa980sm8995372qkp.56.2022.11.28.11.26.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Nov 2022 11:26:39 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: sync some cleanups from progs into uapi/btrfs.h
+Date:   Mon, 28 Nov 2022 14:26:38 -0500
+Message-Id: <a4476b6b3363587c1e9e3f81db9d2dc003d5724c.1669663591.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y4RqbKSdxQ5owg0h@infradead.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Nov 27, 2022 at 11:59:40PM -0800, Christoph Hellwig wrote:
-> On Wed, Nov 23, 2022 at 08:22:30PM -0500, Sweet Tea Dorminy wrote:
-> > The document has been updated to hopefully reflect the discussion we had;
-> > further comments are always appreciated. https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
-> 
-> How is this going to work with hardware encryption offload?  I think
-> the number of keys for UFS and eMMC inline encryption, but Eric may
-> correct me.
+When syncing this code into btrfs-progs Dave noticed there's some things
+we were losing in the sync that are needed.  This syncs those changes
+into the kernel, which include a few comments that weren't in the
+kernel, some whitespace changes, an attribute, and the cplusplus bit.
 
-First, traditional crypto accelerators via the crypto API will work in any case.
-I think your question is specifically about inline encryption
-(https://www.kernel.org/doc/html/latest/block/inline-encryption.html).
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ include/uapi/linux/btrfs.h | 36 ++++++++++++++++++++++++++++++------
+ 1 file changed, 30 insertions(+), 6 deletions(-)
 
-To use inline encryption hardware, consecutive blocks must use consecutive IVs,
-and the nonzero part of the IVs needs to fit within the hardware's DUN size.
-That's 64 bits for the UFS standard, and 32 bits for the eMMC standard.
+diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+index 5655e89b962b..b4f0f9531119 100644
+--- a/include/uapi/linux/btrfs.h
++++ b/include/uapi/linux/btrfs.h
+@@ -19,8 +19,14 @@
+ 
+ #ifndef _UAPI_LINUX_BTRFS_H
+ #define _UAPI_LINUX_BTRFS_H
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
+ #include <linux/types.h>
+ #include <linux/ioctl.h>
++#include <linux/fs.h>
+ 
+ #define BTRFS_IOCTL_MAGIC 0x94
+ #define BTRFS_VOL_NAME_MAX 255
+@@ -333,6 +339,12 @@ struct btrfs_ioctl_feature_flags {
+  */
+ struct btrfs_balance_args {
+ 	__u64 profiles;
++
++	/*
++	 * usage filter
++	 * BTRFS_BALANCE_ARGS_USAGE with a single value means '0..N'
++	 * BTRFS_BALANCE_ARGS_USAGE_RANGE - range syntax, min..max
++	 */
+ 	union {
+ 		__u64 usage;
+ 		struct {
+@@ -549,7 +561,7 @@ struct btrfs_ioctl_search_header {
+ 	__u64 offset;
+ 	__u32 type;
+ 	__u32 len;
+-};
++} __attribute__ ((__may_alias__));
+ 
+ #define BTRFS_SEARCH_ARGS_BUFSIZE (4096 - sizeof(struct btrfs_ioctl_search_key))
+ /*
+@@ -562,6 +574,10 @@ struct btrfs_ioctl_search_args {
+ 	char buf[BTRFS_SEARCH_ARGS_BUFSIZE];
+ };
+ 
++/*
++ * Extended version of TREE_SEARCH ioctl that can return more than 4k of bytes.
++ * The allocated size of the buffer is set in buf_size.
++ */
+ struct btrfs_ioctl_search_args_v2 {
+ 	struct btrfs_ioctl_search_key key; /* in/out - search parameters */
+ 	__u64 buf_size;		   /* in - size of buffer
+@@ -570,10 +586,11 @@ struct btrfs_ioctl_search_args_v2 {
+ 	__u64 buf[];                       /* out - found items */
+ };
+ 
++/* With a @src_length of zero, the range from @src_offset->EOF is cloned! */
+ struct btrfs_ioctl_clone_range_args {
+-  __s64 src_fd;
+-  __u64 src_offset, src_length;
+-  __u64 dest_offset;
++	__s64 src_fd;
++	__u64 src_offset, src_length;
++	__u64 dest_offset;
+ };
+ 
+ /*
+@@ -677,8 +694,11 @@ struct btrfs_ioctl_logical_ino_args {
+ 	/* struct btrfs_data_container	*inodes;	out   */
+ 	__u64				inodes;
+ };
+-/* Return every ref to the extent, not just those containing logical block.
+- * Requires logical == extent bytenr. */
++
++/*
++ * Return every ref to the extent, not just those containing logical block.
++ * Requires logical == extent bytenr.
++ */
+ #define BTRFS_LOGICAL_INO_ARGS_IGNORE_OFFSET	(1ULL << 0)
+ 
+ enum btrfs_dev_stat_values {
+@@ -1144,4 +1164,8 @@ enum btrfs_err_code {
+ #define BTRFS_IOC_ENCODED_WRITE _IOW(BTRFS_IOCTL_MAGIC, 64, \
+ 				     struct btrfs_ioctl_encoded_io_args)
+ 
++#ifdef __cplusplus
++}
++#endif
++
+ #endif /* _UAPI_LINUX_BTRFS_H */
+-- 
+2.26.3
 
-fscrypt's "default" setting of per-file keys satisfies both of those
-requirements.  That means the current proposal for btrfs does too, since it's
-the same as that "default" setting -- just with extents instead of files.
-(For eMMC, extents would have to be limited to 2^32 blocks.)
-
-The other consideration, which seems to be what you're asking about, is a
-performance one: how well this performs on hardware where switching keys is very
-expensive.  The answer is not very well.  Of course, that's the answer for
-per-file keys too.  Note that this is an issue for some inline encryption
-hardware (e.g. Qualcomm ICE), but not others (e.g. Exynos FMP, Mediatek UFS).
-
-The way this problem is "solved" in ext4 and f2fs is by also providing the (less
-than cryptographically ideal) settings IV_INO_LBLK_64 and IV_INO_LBLK_32.  Those
-squeeze the inode number *and* file offset into a 64-bit or 32-bit IV, so that
-per-file keys aren't needed.
-
-There's a natural mapping of the IV_INO_LBLK_* settings onto extent-based
-encryption.  A 32-bit extent number would just be used instead of an inode
-number.  Or, if a 32-bit extent number is infeasible, an extent nonce of any
-length hashed with a secret key could be used instead.
-
-So yes, it would be possible to provide settings that optimize for hardware like
-Qualcomm ICE, as ext4 and f2fs do with IV_INO_LBLK_*.  However, it makes sense
-to leave that for later until if/when someone actually has a use case for it.
-
-- Eric
