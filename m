@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCA463A871
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 13:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5E263A8BA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 13:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbiK1Mav (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 07:30:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42054 "EHLO
+        id S230094AbiK1MvN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 07:51:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbiK1Mab (ORCPT
+        with ESMTP id S229659AbiK1MvM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 07:30:31 -0500
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00ADF17E39;
-        Mon, 28 Nov 2022 04:29:56 -0800 (PST)
+        Mon, 28 Nov 2022 07:51:12 -0500
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6330064F9;
+        Mon, 28 Nov 2022 04:51:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1669638596; x=1701174596;
+  t=1669639871; x=1701175871;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=7sY2S5+qLikwQWi919rHRp5zUl5g+7YXqvjyZGwL4io=;
-  b=aT+m+iprFUXsBBO0Gtn7kHMTrFnyoMKjWq3kDaLrwycxRrwnLx5cW2ya
-   s0FzYZ8Out9a476/EvzcuJJUUu1run5QMqp0fHnmBWwpz52/CkUrd4rps
-   YQa8G4tqOFLPqd/0vB3GAxjVnF/FXGN22dVnrV96a89bFIuU6bAqtgXbu
-   fJHF2jEQwaQozz5I0xIK8zxd03IQUyPDzzc4EBQdAaEbIHi+USGaYQDzO
-   bLpqZIVMpgOJ2wjcjGCP9ZMMgymA8HQS0fbtF6fCE3E32AJ6RX435Q3xA
-   aGLI/BOR1Z4/4/ny1Uh0bfJeH96L5a97LFTwbp4EoaPrZ9gN3ambVNmkh
-   A==;
+  bh=nt80dKsPY1N6+jeHJ/cbVDo92m+nMSPtbDfxjdIM0kc=;
+  b=ityPpWylco1pAKtbPDs2G5N7hgKD/YG983Jn6/fMjrk/pFLS7JISuWfv
+   BjV0QCorQJEHBBB37Gh6hTQyq0uu6agNv7/8cerU+vO5VFdeIlHI+d76u
+   yFoUefXyUofFWkaO8Rb5OaXUFSW2hXXn4VMq1J2p0kpAv8hVGdR5OoMEA
+   TTaL9Yr/TA+SeQMoI48RUJqHZYoB8+sJ9v03kvVnjUn/eJuBLmSn89xSV
+   QJSN9bb7O6xzp9NAMdOlMTKahvKNM0uDqIDWI5CBzMFlqwW8hsKjp/Dph
+   Nd5i5XvPTHRbl4Dz0YkdeuB8u3toy5cpufWaJ8uRAS4u4Y+k7S+0dJp5/
+   w==;
 X-IronPort-AV: E=Sophos;i="5.96,200,1665417600"; 
-   d="scan'208";a="321693545"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Nov 2022 20:29:55 +0800
-IronPort-SDR: lJ2cKCOaT7Vw8CiJxIPFT2NtGDAHDAUWb/HpWzsgsfYp7RkBCYQeYXUDUYM80c5vNDW/KnFYp5
- 3F/imj2O2JDmrI5jJRd2xIS8WJpd0KvHNB1h+Qj1EBQOCaH3uHL0JVegdarZV5bRtAJLWdwhR7
- J3P26uVAbTd+GapUcq25Z35N7XQKgTb4+GHv8m+MQrJodz1gROU4oZkgziqcWPvXoGW7LUkHoB
- j+i1BfVdmufp9TowV/mnxmtWDqJm3Jrid476LGpZz4xV5u0XrX4u9863sEVrsjbjxBYujGiQzd
- cQU=
+   d="scan'208";a="222499504"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Nov 2022 20:51:10 +0800
+IronPort-SDR: Nb/2bkstSckHHv6NAqxTSIQ8opRVTJb9z1U0o28mlj4s19gVPRrz8z9A+V37cR7UOlSJ5YMtYQ
+ gVGkob7bxjSSds2Xs9vIBuoM3vk69SOQsfhEEJZ5/HsAX9XM/+oRGPKFN3tEZuAXkY9gKWaaA4
+ 3aUyl/AWc3DaD/dnM7V7W4YjlkR5vRWMypHGbwkvbKYUG/b4OLtLp/9Asf/6AwMrmTkeugTANN
+ fKuq+3XCEZsnXoDNfqnjBl44vdEDsZGj4CSFYDh1iu4EZoRKJjVdKp5YRIT9PbG+igvrS43JYk
+ KfU=
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Nov 2022 03:42:52 -0800
-IronPort-SDR: U3p2ci+b5mfqqzwEJ7DtJHEUhNDOjRLDxeWjh6YvLeuj2aua+TJXniCGfoTnMoJ6GkuHskBoZg
- kwbHbv4sNgdJ74CLZ2K+54Mxd6e2Bl9QxcWZqhLaHq3pbv9t7Pb39FWpJKi2UfMgyl4Lyf2Zfz
- ZG3LSV9ayN97qHmcl8VJlNi+spg8m3vUVP7SUCVamwvUiTbp62yxHZ1b9jL2ZVRytoscqcwX1p
- OgMRMMNpvAaTxUMY+qaR+D0V8apntWDcyh/f+LleEQIfAY+gb2AJpKpY00PHp+Zwy0gR1TQ/ys
- GS0=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Nov 2022 04:09:52 -0800
+IronPort-SDR: jrnmJoM7lMytfYEm/8E2eVPv9SQ6KzuICMLpALJrICzPSrKOmZnwyqVDbdEVwpoGIfBsYZH0OP
+ TxLxPxRWT2zHDRCPlCeImUt2/IjAW8V4WX2f/VQqFSeC3U257Wnkw4TtKOeZAmw50i13n4f4HG
+ hsQ7qyAoB2+oVGvEp6kq1sRGwoXwWLXZjJUJzJFwWJTMIK1ON11xg1eDgVsRQ/i5OuM2SXGFp6
+ 00J4r32lNEwi/ymtTJvsAxP+vTL3qe9sSPDLxDAjpgwkCLuxVNHSyFkbZxQJLcseaNE5IabVVg
+ dwc=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip02.wdc.com with ESMTP; 28 Nov 2022 04:29:54 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 28 Nov 2022 04:51:09 -0800
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     Zorro Lang <zlang@redhat.com>
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: [PATCH] fstests: skip btrfs/253 for zoned devices
-Date:   Mon, 28 Nov 2022 04:29:52 -0800
-Message-Id: <20221128122952.51680-1-johannes.thumshirn@wdc.com>
+Subject: [PATCH] fstests: skip btrfs/254 in case MIN_FSSIZE is more than 1G
+Date:   Mon, 28 Nov 2022 04:51:05 -0800
+Message-Id: <20221128125105.52458-1-johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,28 +66,29 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The test-case btrfs/253 tests btrfs' chunk size setting, which is not
-available on zoned btrfs, so the test will always fail.
+The test-case btrfs/254 creates a 1G device-mapper setup, but this might
+be too small for the filesystem to actually operate (i.e. in case of a
+zoned block device which needs at least 5 zones).
 
-Skip the test in case of a zoned device.
+Skip the test if MIN_FSSIZE is set to a value above 1G.
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- tests/btrfs/253 | 1 +
+ tests/btrfs/254 | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/tests/btrfs/253 b/tests/btrfs/253
-index fbbb81fae754..99eaee1e7cde 100755
---- a/tests/btrfs/253
-+++ b/tests/btrfs/253
-@@ -81,6 +81,7 @@ alloc_size() {
- _supported_fs btrfs
- _require_test
- _require_scratch
-+_require_non_zoned_device "${SCRATCH_DEV}"
+diff --git a/tests/btrfs/254 b/tests/btrfs/254
+index 5d6e33f40bb5..ae55ae8ca3a2 100755
+--- a/tests/btrfs/254
++++ b/tests/btrfs/254
+@@ -40,6 +40,7 @@ _require_dm_target linear
+ _require_btrfs_forget_or_module_loadable
+ _require_scratch_nocheck
+ _require_command "$WIPEFS_PROG" wipefs
++_check_minimal_fs_size $((1024 * 1024 * 1024))
  
- # Delete log file if it exists.
- rm -f "${seqres}.full"
+ _scratch_dev_pool_get 3
+ 
 -- 
 2.38.1
 
