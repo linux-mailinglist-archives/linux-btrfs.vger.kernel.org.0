@@ -2,93 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5E263A8BA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 13:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506AF63AB8C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 15:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbiK1MvN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 07:51:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54516 "EHLO
+        id S230321AbiK1Oru (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 09:47:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbiK1MvM (ORCPT
+        with ESMTP id S232345AbiK1Ore (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 07:51:12 -0500
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6330064F9;
-        Mon, 28 Nov 2022 04:51:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1669639871; x=1701175871;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=nt80dKsPY1N6+jeHJ/cbVDo92m+nMSPtbDfxjdIM0kc=;
-  b=ityPpWylco1pAKtbPDs2G5N7hgKD/YG983Jn6/fMjrk/pFLS7JISuWfv
-   BjV0QCorQJEHBBB37Gh6hTQyq0uu6agNv7/8cerU+vO5VFdeIlHI+d76u
-   yFoUefXyUofFWkaO8Rb5OaXUFSW2hXXn4VMq1J2p0kpAv8hVGdR5OoMEA
-   TTaL9Yr/TA+SeQMoI48RUJqHZYoB8+sJ9v03kvVnjUn/eJuBLmSn89xSV
-   QJSN9bb7O6xzp9NAMdOlMTKahvKNM0uDqIDWI5CBzMFlqwW8hsKjp/Dph
-   Nd5i5XvPTHRbl4Dz0YkdeuB8u3toy5cpufWaJ8uRAS4u4Y+k7S+0dJp5/
-   w==;
-X-IronPort-AV: E=Sophos;i="5.96,200,1665417600"; 
-   d="scan'208";a="222499504"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Nov 2022 20:51:10 +0800
-IronPort-SDR: Nb/2bkstSckHHv6NAqxTSIQ8opRVTJb9z1U0o28mlj4s19gVPRrz8z9A+V37cR7UOlSJ5YMtYQ
- gVGkob7bxjSSds2Xs9vIBuoM3vk69SOQsfhEEJZ5/HsAX9XM/+oRGPKFN3tEZuAXkY9gKWaaA4
- 3aUyl/AWc3DaD/dnM7V7W4YjlkR5vRWMypHGbwkvbKYUG/b4OLtLp/9Asf/6AwMrmTkeugTANN
- fKuq+3XCEZsnXoDNfqnjBl44vdEDsZGj4CSFYDh1iu4EZoRKJjVdKp5YRIT9PbG+igvrS43JYk
- KfU=
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Nov 2022 04:09:52 -0800
-IronPort-SDR: jrnmJoM7lMytfYEm/8E2eVPv9SQ6KzuICMLpALJrICzPSrKOmZnwyqVDbdEVwpoGIfBsYZH0OP
- TxLxPxRWT2zHDRCPlCeImUt2/IjAW8V4WX2f/VQqFSeC3U257Wnkw4TtKOeZAmw50i13n4f4HG
- hsQ7qyAoB2+oVGvEp6kq1sRGwoXwWLXZjJUJzJFwWJTMIK1ON11xg1eDgVsRQ/i5OuM2SXGFp6
- 00J4r32lNEwi/ymtTJvsAxP+vTL3qe9sSPDLxDAjpgwkCLuxVNHSyFkbZxQJLcseaNE5IabVVg
- dwc=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip02.wdc.com with ESMTP; 28 Nov 2022 04:51:09 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     Zorro Lang <zlang@redhat.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: [PATCH] fstests: skip btrfs/254 in case MIN_FSSIZE is more than 1G
-Date:   Mon, 28 Nov 2022 04:51:05 -0800
-Message-Id: <20221128125105.52458-1-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.38.1
+        Mon, 28 Nov 2022 09:47:34 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23571305
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 06:47:32 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id j196so13592064ybj.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 06:47:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yi1nwdZVcovrN/errUXXhZeN1eR0+sBJVw3FsjfBv6g=;
+        b=dShwrYRLQfv/wLYBpSc+Mx34q63Bv5QEwlgogtzbsoIUyxwzAZlFlnNKZ0a8TN/Xjs
+         SSA2Rhd7fQaje/+vx/yl38vKQ6r4JLfnaUHT/zTHdHQmeUU5rkGThTdNGXluUfiagbp0
+         N6nZxMONGT4u6tmw2w7H6Jj7iIQhIp5Fyx8ctsprCrtwRv2aAk60kb2FA3+YrirkDMlS
+         pHggDfcYBILU5Pnm+WapEhCjvYnAH06Xx6viT/N4+CA2bT6iwhZjP4CFMO6rs6qXh4i8
+         R/Iy3mmLuetGT56+YygOpw278m3l7YKPqwWLZmEq0ziWU491HkLkvmNa4UwojKpoVemM
+         l1rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Yi1nwdZVcovrN/errUXXhZeN1eR0+sBJVw3FsjfBv6g=;
+        b=SjpivIQW0fimxpyil+KBwwyZfXVIpLjcgEup1/VE/h3sI7zxI3beqrU8oG/3HGsTeQ
+         +y6sbhTydeGIhjy8Re9O9L8aoVOoaAJq/7wD52h8Kar+K7I130AYNTCcKLmE2xney0k7
+         Qjj3OymPp7ADoEw8hdSPSvjTgkjmS6VsH013fxKadHvjfJzcZKk6HK3FjvW0jKKCpwPO
+         y+VQ+M5o/oPM2oNQUB8Wtd2Nod9iYdJzsD/KXwenaWQ4zT41XQ17/fSdnAeHZjjy8oyW
+         mnejZM658+Wo/MWu4YFMS1NmzQzGGpAwEnrtchhfJD2xmwHWIWYCb7BjY1zjb29w/lCV
+         7qhQ==
+X-Gm-Message-State: ANoB5pkSgpstkqipbKyoT3i42Jq9M78+ShKBM/uKZNwwuDiMS6ACULsq
+        j+qYQ6cENGCNMX65XXpF+KLO+tOLzQJ5a2+ifmg=
+X-Google-Smtp-Source: AA0mqf5Ikqb7N4p52xf2FZD//ghhTskR8UNiChVUa6rvLbhQtyApa2p4F001LtGOEt9Zz4BPQg7gHnipfXNwd2YhmCE=
+X-Received: by 2002:a25:afc6:0:b0:6cf:c851:8ea1 with SMTP id
+ d6-20020a25afc6000000b006cfc8518ea1mr32170031ybj.213.1669646851293; Mon, 28
+ Nov 2022 06:47:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Reply-To: sgtkalamanthey@gmail.com
+Sender: angelleangelle1234567890@gmail.com
+Received: by 2002:a05:7010:a887:b0:316:1f48:e601 with HTTP; Mon, 28 Nov 2022
+ 06:47:31 -0800 (PST)
+From:   kala manthey <sgtkalamanthey@gmail.com>
+Date:   Mon, 28 Nov 2022 06:47:31 -0800
+X-Google-Sender-Auth: GTGPIPiQUZs-QxLb0q7g103TAvY
+Message-ID: <CAGT7zP1CV+BrOvtEf7Yd2WsmX54jvT1PsP_XioCJDRsK15ObMA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The test-case btrfs/254 creates a 1G device-mapper setup, but this might
-be too small for the filesystem to actually operate (i.e. in case of a
-zoned block device which needs at least 5 zones).
-
-Skip the test if MIN_FSSIZE is set to a value above 1G.
-
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- tests/btrfs/254 | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tests/btrfs/254 b/tests/btrfs/254
-index 5d6e33f40bb5..ae55ae8ca3a2 100755
---- a/tests/btrfs/254
-+++ b/tests/btrfs/254
-@@ -40,6 +40,7 @@ _require_dm_target linear
- _require_btrfs_forget_or_module_loadable
- _require_scratch_nocheck
- _require_command "$WIPEFS_PROG" wipefs
-+_check_minimal_fs_size $((1024 * 1024 * 1024))
- 
- _scratch_dev_pool_get 3
- 
--- 
-2.38.1
-
+0JfQtNGA0LDQstC10LksINC/0L7Qu9GD0YfQuCDQu9C4INGB0YrQvtCx0YnQtdC90LjRj9GC0LAg
+0LzQuD8g0LzQvtC70Y8sINC/0YDQvtCy0LXRgNC10YLQtSDQuCDQvNC4INC+0YLQs9C+0LLQvtGA
+0LXRgtC1DQo=
