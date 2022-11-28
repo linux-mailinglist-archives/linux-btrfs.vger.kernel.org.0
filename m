@@ -2,62 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC1363B236
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 20:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE3F63B34C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 21:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbiK1T0n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 14:26:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54494 "EHLO
+        id S233461AbiK1UfA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 15:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232682AbiK1T0l (ORCPT
+        with ESMTP id S232860AbiK1Ue7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 14:26:41 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4AA36350
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 11:26:40 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id k2so8075659qkk.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 11:26:40 -0800 (PST)
+        Mon, 28 Nov 2022 15:34:59 -0500
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EE52B247
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 12:34:58 -0800 (PST)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-142612a5454so14521293fac.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 12:34:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZOEABLdKR6gEaF7LpDhQvVvBBzUVg35g1G1In0LBm0A=;
-        b=m/a4wIbxmifZkCB3G9+VPA7sx3REXXDYmhxy2XdkTOxkQXy/mD2pnQrHYE0yAVBRgE
-         BJWlZEe/fKn874uwD2RxKk4zPdzi3g0GbjL8csBjWUus0R4pHguecaezqKjqM2Ef7xh8
-         UnimKtkIn9pmnJgPhEq6HCSqpsbe+uWWNxSVb0Ol8/nbh5y7VaJqsYZuniUMxyqBROs0
-         CQYS+2oJOMlrykpBOYi2f9V5uNdiJte0MqQs8frfsQwja2PR0HdHaGKR8YYqMjwB5m5f
-         QtKjEgxi6S7zuctV8J8Se+sOH1Xbz22jtsOzaIElx4Qmglo0fXsYwxlwHsZ6NxUS9cz2
-         ueDA==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3kUD8/TTfav9EbeDIQ8ZZwVrosW/5Hgcdhi9BGeQU7g=;
+        b=DN5OkkPDNLCxaFN2UuIezo27EMhAgaGg71EDTG24jCFvcjJ+UEWcw9yRaV6X+xTdEV
+         /enMA14Sr9jDM4Q9owZOzFRmr4+fdIuC6gZN32yU6Fs56Omfv/xkQHlPL16vlkVyg1RM
+         jJ7/i7hx/8PkDid/qAaFWqBNbJg2n0OAwL5TS/nRSZb/YGsXcrTfpYD6MPYYHqOp3GmQ
+         g1rKlsNtb6AeHlDnEV2stYocc+V8tspFVKJpFZFuxy9lQpp6/3bsWnSPaMQO3Vcoindl
+         u8unXiepGZRYgWTNwXh10W36lqXqP0RfWOq095Yz//bUa2+g9xsAdPTZRYUyA0x2mCmu
+         HN0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZOEABLdKR6gEaF7LpDhQvVvBBzUVg35g1G1In0LBm0A=;
-        b=l/syJGMA2ac1kCa0GyBBVenp9q1OrL3LyRC/IIpgQnsLtV2oW14VdsScy9SoOxPbex
-         uEE/P90oe2vz68a9CnSXyH6XxwW87IdDe7laWxtaMRxqs1lmnEICplnTH1zM84/ZQvmP
-         zM4T6IyjkotXgb56aRDkBY9i2B5JMCiZruROP0JcMmT2KxC+LkCRu5dvfWN4iwCL1emp
-         kYOXBT1kV0NwI4I3WfhE7oGAOQXW9zcd1HhkNAYvxUysMOFNzdvJjc+s8EyB1Qp4z0I+
-         fiZRQD3Qr6127QT0VVv6D34e4neOKnph72mhjjvYlzKaTW5A9f31y+4/oJxKPpsVT/Vm
-         VgJA==
-X-Gm-Message-State: ANoB5pkEHaQ4PUldOaOQ9/qKvAKwtz10qQu2b52xaHfk4ueQcAHjwXUj
-        DmAt3vkD4s9AdUcIS4WS1U4i0QSCeE9bfA==
-X-Google-Smtp-Source: AA0mqf6CYTPNvv1MvGL2BGIAPcxwMXjR8cnVCzRRrxa/Oz9Hz/MmUuYXmubfjREx//jJ/CVAs2yS9Q==
-X-Received: by 2002:a05:620a:689:b0:6fa:2ffe:aab0 with SMTP id f9-20020a05620a068900b006fa2ffeaab0mr31784638qkh.567.1669663599611;
-        Mon, 28 Nov 2022 11:26:39 -0800 (PST)
-Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id q38-20020a05620a2a6600b006b949afa980sm8995372qkp.56.2022.11.28.11.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Nov 2022 11:26:39 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: sync some cleanups from progs into uapi/btrfs.h
-Date:   Mon, 28 Nov 2022 14:26:38 -0500
-Message-Id: <a4476b6b3363587c1e9e3f81db9d2dc003d5724c.1669663591.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3kUD8/TTfav9EbeDIQ8ZZwVrosW/5Hgcdhi9BGeQU7g=;
+        b=EzPZOkMJt4RDoFrPl2RHv5YmKPK65cBOOL2UYzVW15KaschdE07vF1aBEHjj50GvkB
+         HnpQeef0n8F/lLlGCzIgHvDUoJtN8XqEGHeDLIEu2UPvSDIrvJkEd6Us0TC9ZMKRsumU
+         KF6FeEOEmVyXKOSJ7kpoMKXRl07+nZvAu2xTMZrKUi2XdhGMVI6SsPmda6HZKCP7qmdU
+         LWxoi+AuMILdheAudxxgIGPbmowN0VFmWpicVQ04hExhUK99nxiYQuESZU6fkOkJnUhN
+         1f2GOcfWTQvF32d2DBHsr1H+7d99mLdXEphgA8Qk3c6/xxFlruFnDzmt2RFhpGhkhdSX
+         CcMQ==
+X-Gm-Message-State: ANoB5pmxNVFLxkTpgqNlFfHtcFCzWPz5Ld1+N43xrpe5PBNCZzAVsMhO
+        eyWfyvVylDuGKEZf5Ap/T5s+CMDrcLHhEl9N4MaJoQ==
+X-Google-Smtp-Source: AA0mqf48wepdwdD988cC95590SQarOxOx/PbasQOurlJ3euIpsTj9iqEtW5r/l/Vj/yv5wdjBujhapZxq9RkOKG4VtA=
+X-Received: by 2002:a05:6870:430a:b0:13d:5167:43e3 with SMTP id
+ w10-20020a056870430a00b0013d516743e3mr20549124oah.257.1669667696999; Mon, 28
+ Nov 2022 12:34:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <cover.1667389115.git.sweettea-kernel@dorminy.me>
+ <CA+_SqcAFMXjW6V2u1NZzGwBe4na4m_FBspgP0Z6Q0oTvT+QJVQ@mail.gmail.com>
+ <81e3763c-2c02-2c9f-aece-32aa575abbca@dorminy.me> <55686ed2-b182-3478-37aa-237e306be6e1@dorminy.me>
+ <4857f0df-dae0-178e-85e3-307197701d34@dorminy.me> <Y4RqbKSdxQ5owg0h@infradead.org>
+In-Reply-To: <Y4RqbKSdxQ5owg0h@infradead.org>
+From:   Paul Crowley <paulcrowley@google.com>
+Date:   Mon, 28 Nov 2022 12:34:46 -0800
+Message-ID: <CA+_SqcCFepKXXJWhF=d4pcEpMZ5XFO6j9buc+aHKpX9sP2+_KA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/18] btrfs: add fscrypt integration
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@meta.com,
+        Omar Sandoval <osandov@osandov.com>, Chris Mason <clm@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,106 +75,61 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When syncing this code into btrfs-progs Dave noticed there's some things
-we were losing in the sync that are needed.  This syncs those changes
-into the kernel, which include a few comments that weren't in the
-kernel, some whitespace changes, an attribute, and the cplusplus bit.
+The kind of inline encryption hardware we see on Android devices tends
+to have these limitations:
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- include/uapi/linux/btrfs.h | 36 ++++++++++++++++++++++++++++++------
- 1 file changed, 30 insertions(+), 6 deletions(-)
+- as you indicate, loading keys can incur latency, so if many keys are
+in use at once it can slow things down
+- it's limited to using AES-XTS
+- on UFS devices, the IV (transmitted in the DUN) must be zero in the
+64 high bits
+- consecutive blocks in the same operation use consecutive IVs
+- there's no easy way to gather a checksum or MAC over the on-disk
+ciphertext short of re-reading after writing
 
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index 5655e89b962b..b4f0f9531119 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -19,8 +19,14 @@
- 
- #ifndef _UAPI_LINUX_BTRFS_H
- #define _UAPI_LINUX_BTRFS_H
-+
-+#ifdef __cplusplus
-+extern "C" {
-+#endif
-+
- #include <linux/types.h>
- #include <linux/ioctl.h>
-+#include <linux/fs.h>
- 
- #define BTRFS_IOCTL_MAGIC 0x94
- #define BTRFS_VOL_NAME_MAX 255
-@@ -333,6 +339,12 @@ struct btrfs_ioctl_feature_flags {
-  */
- struct btrfs_balance_args {
- 	__u64 profiles;
-+
-+	/*
-+	 * usage filter
-+	 * BTRFS_BALANCE_ARGS_USAGE with a single value means '0..N'
-+	 * BTRFS_BALANCE_ARGS_USAGE_RANGE - range syntax, min..max
-+	 */
- 	union {
- 		__u64 usage;
- 		struct {
-@@ -549,7 +561,7 @@ struct btrfs_ioctl_search_header {
- 	__u64 offset;
- 	__u32 type;
- 	__u32 len;
--};
-+} __attribute__ ((__may_alias__));
- 
- #define BTRFS_SEARCH_ARGS_BUFSIZE (4096 - sizeof(struct btrfs_ioctl_search_key))
- /*
-@@ -562,6 +574,10 @@ struct btrfs_ioctl_search_args {
- 	char buf[BTRFS_SEARCH_ARGS_BUFSIZE];
- };
- 
-+/*
-+ * Extended version of TREE_SEARCH ioctl that can return more than 4k of bytes.
-+ * The allocated size of the buffer is set in buf_size.
-+ */
- struct btrfs_ioctl_search_args_v2 {
- 	struct btrfs_ioctl_search_key key; /* in/out - search parameters */
- 	__u64 buf_size;		   /* in - size of buffer
-@@ -570,10 +586,11 @@ struct btrfs_ioctl_search_args_v2 {
- 	__u64 buf[];                       /* out - found items */
- };
- 
-+/* With a @src_length of zero, the range from @src_offset->EOF is cloned! */
- struct btrfs_ioctl_clone_range_args {
--  __s64 src_fd;
--  __u64 src_offset, src_length;
--  __u64 dest_offset;
-+	__s64 src_fd;
-+	__u64 src_offset, src_length;
-+	__u64 dest_offset;
- };
- 
- /*
-@@ -677,8 +694,11 @@ struct btrfs_ioctl_logical_ino_args {
- 	/* struct btrfs_data_container	*inodes;	out   */
- 	__u64				inodes;
- };
--/* Return every ref to the extent, not just those containing logical block.
-- * Requires logical == extent bytenr. */
-+
-+/*
-+ * Return every ref to the extent, not just those containing logical block.
-+ * Requires logical == extent bytenr.
-+ */
- #define BTRFS_LOGICAL_INO_ARGS_IGNORE_OFFSET	(1ULL << 0)
- 
- enum btrfs_dev_stat_values {
-@@ -1144,4 +1164,8 @@ enum btrfs_err_code {
- #define BTRFS_IOC_ENCODED_WRITE _IOW(BTRFS_IOCTL_MAGIC, 64, \
- 				     struct btrfs_ioctl_encoded_io_args)
- 
-+#ifdef __cplusplus
-+}
-+#endif
-+
- #endif /* _UAPI_LINUX_BTRFS_H */
--- 
-2.26.3
+Android works around this with IV_INO_LBLK_64 policies, but these only
+work well on the relatively small storage devices we use on Android.
+In particular the IV limitation is very serious:
 
+- inode numbers must be four bytes
+- they must never change (so ext4 filesystem resizing is disabled)
+- files cannot be more than 2^32 blocks
+
+Things are worse on eMMC devices.
+
+Even without this IV limitation, the security proofs for most AES
+modes of operation start to look shaky as you approach the "birthday
+bound" of encrypting 2^68 bytes with the same key. If your attack
+model always assumes a point-in-time attack then you only have to
+worry if you use a single key to encrypt a multi-exabyte storage
+device; btrfs is designed to scale to such devices and more. If your
+attack model includes an attacker who repeatedly gets access to the
+storage device across time, then writing multiple exabytes with the
+same key can be a problem even if some of those are overwritten. This
+leads us to prefer per-extent AES keys (derived from a root key) if
+possible. It's a shame AES doesn't have a 256-bit blocksize.
+
+The way btrfs works also gives us some opportunities to do things a
+little better. In general disk encryption has to make sacrifices to
+deal with the limitation that IVs must be reused and there's no room
+for a MAC. But because btrfs writes in whole extents, with fresh
+metadata and checksum on each write, it becomes possible to use a
+fresh IV and MAC for every new write. This opens up the possibility of
+using an AEAD mode like AES-GCM. This combination gives us the
+strongest proofs of security even against very generous attack models.
+
+Our recommendation: btrfs should first build the ideal thing first
+since it will have reasonable performance for most users, then later
+design alternatives that make a few compromises for performance where
+there is demand.
+
+
+On Sun, 27 Nov 2022 at 23:59, Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Wed, Nov 23, 2022 at 08:22:30PM -0500, Sweet Tea Dorminy wrote:
+> > The document has been updated to hopefully reflect the discussion we had;
+> > further comments are always appreciated. https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
+>
+> How is this going to work with hardware encryption offload?  I think
+> the number of keys for UFS and eMMC inline encryption, but Eric may
+> correct me.
