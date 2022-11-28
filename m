@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E989E63AD0E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 16:56:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D665C63AD32
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 17:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbiK1P4C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 10:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
+        id S232208AbiK1QC4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 11:02:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbiK1P4B (ORCPT
+        with ESMTP id S232545AbiK1QCx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 10:56:01 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAD822B24
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 07:56:00 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id n12so7634926qvr.11
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 07:56:00 -0800 (PST)
+        Mon, 28 Nov 2022 11:02:53 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E3AE0F8
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 08:02:52 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id e15so6976114qts.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 08:02:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LM8h6KLWWTEWMA6VgF0TXa9y2hbBVBNM4oy6ZkPgVf8=;
-        b=jPlKXtRCrWys4pFrzy55TMLqqJAlf61Z7z2CsPpUbxU9IOBYx8Q7CH9e/tvmnRZTDp
-         NqAg6obaffFIDN/FTs7SAPt32K2Eb5pGSZW2VHn//r/O9QB4REKzCbGeHnPvBQMmqJS3
-         LmmrNRMoFkioy57ahzJ1Dv80Em8HdIyjwTX5F1mDQvdhZBx/pz4vqcMGZIVSjVUPIsT5
-         g7MkGpyjVNxP28XTxkAvbB0riYaUX23V5bdgwditi/smZBZOj3gstCpEGKGlEefp5sri
-         mSgfq1ze/5JMuU/OV3xdygTjt6oNN7Q/RPl0iSC+HqHOT8zzoPrl382wtXFIwsY5P1My
-         wDUA==
+        bh=4TCb2FWrNlQYd+Z4uzmL8P45oPWnl0JeHwwWpJYaobY=;
+        b=ABm74U9SsYqTgL5b8PH0IvS/B1JUrpb2DvIF0MmIbZ9gEKqkAxZe4pHmHJeF6Iw9b4
+         fMwjm856Xcnuq3WTTELwR3zvo01U3gkXIJm9QOQDKzE+wavofqV76u1uWIihrd1l0g4O
+         goQF4bFVYE0NtK+CFXMy/zAyaLtGVJZoy/zLU1xp2T7nJRQ+HBaaDRbbZ2IJHSpQwS1a
+         18832XJRA5ji4vCI+DgDcJ2DizyN2CHmSqEkldCrHe2u9f2cgQVDjTbr8g1LqUKx0eB6
+         CvTp5Cf1MBpJuSM862Rg8KO+3LF23/YGgT6nrsdD4lKZfB+FeyYaD5oyc/O4dvvdwBeS
+         SDzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LM8h6KLWWTEWMA6VgF0TXa9y2hbBVBNM4oy6ZkPgVf8=;
-        b=YZZR2gH+TPp5PJC49UyWnvNkWI4sA3Io4wfRdPGVWO6iKFDA6EFiHOPTcsJq9uAb1H
-         88fdHkerrn/RHfXYJtt4mj9tbMtgCJH3VeHAceUx1/fhu+n6UExF/s5+vnh8P39TsP7l
-         2bWxzFsCrXL49MFOyZZzxv6osw6iwVXL70ySFAOh8tTeP/vTsI5l5SBPpwkaVYc/BZGf
-         ZvpCvnRn591JdeW4zITeEwIRCBCLIroR4pmEdo7uP1LMa3Kzm/taqknhwCTsYYwNR914
-         1kS7m27/hM/vlE9uxgmqf0kSJdWuY8pqQ1NSU1f+zRAxz63Kr5ELZbyLa9ssQlmm+gv/
-         5yqw==
-X-Gm-Message-State: ANoB5pkNyyT/Dm2HwdO43AUq3HvMQpiYCrf15+Ymh0NGxY/HLUPgbNhB
-        EvWEYr3s4MOauvAl0ZVx2mtPqUxw6j9sMw==
-X-Google-Smtp-Source: AA0mqf6sUCtef2pDA6sOHGzESRAem1KLkJT7cpSMkucjPphtmlcH2RUhPd3JBAX/fNyIW9jXiu64Jg==
-X-Received: by 2002:a05:6214:3241:b0:4bb:6c4c:6beb with SMTP id mt1-20020a056214324100b004bb6c4c6bebmr33730121qvb.40.1669650959314;
-        Mon, 28 Nov 2022 07:55:59 -0800 (PST)
+        bh=4TCb2FWrNlQYd+Z4uzmL8P45oPWnl0JeHwwWpJYaobY=;
+        b=iOmyVFBch/pZdbtGWFbajHj+WAWWxlLpXLHL+wqdXSDUmbYZbs+tFvxDLsJyaA0mJU
+         dIX373D/8UftEaZgPlYPe3jVHRK2rDcOid+PLMUiZR8T0bT8Z4hS7Jv65oTFWOFtknmW
+         T3DKlG7FuIQtd81CxSNNEm0Le2gNvul0lD+7Aq/PwEzJGUf5biRnFdepLrD7HhAL3U45
+         d8E6TGKtyeTv4faG7WJ+PpDSSY2kf5HOaMlnyy1TL/JS82jfO6DvM5cNH7w2dHAuBvMJ
+         WIJ1B7qry0qnvTtHMG32edwqmsCLriauH9CNH+Y0+W+/M2qLFWqvM4owhlXLp4X8jZBS
+         IsxA==
+X-Gm-Message-State: ANoB5pnrD4cmi2OS6hhu/NCTeOk6NcGRpjCnAk2Fwpf75lSi/KUU9tgg
+        ZtKSD/gDx2G8HeM3dslqIcT9Ew==
+X-Google-Smtp-Source: AA0mqf6XVOkcIpyKRULeoqoELu3EhmM9cvmxWOARjaQ/5E+PVX4xH3KWCHRxVUDc8/0C4+K6s3lRqQ==
+X-Received: by 2002:ac8:72d7:0:b0:3a5:2bb7:55d5 with SMTP id o23-20020ac872d7000000b003a52bb755d5mr48068775qtp.439.1669651371824;
+        Mon, 28 Nov 2022 08:02:51 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id t11-20020a37ea0b000000b006f8665f483fsm8557275qkj.85.2022.11.28.07.55.58
+        by smtp.gmail.com with ESMTPSA id w23-20020ae9e517000000b006f9f3c0c63csm8452704qkf.32.2022.11.28.08.02.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Nov 2022 07:55:58 -0800 (PST)
-Date:   Mon, 28 Nov 2022 10:55:57 -0500
+        Mon, 28 Nov 2022 08:02:51 -0800 (PST)
+Date:   Mon, 28 Nov 2022 11:02:50 -0500
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: do not BUG_ON() on ENOMEM when dropping extent
- items for a range
-Message-ID: <Y4TaDQIJqCOqWrkS@localhost.localdomain>
-References: <59ccc7b41be79e5c3b0f39ad5da6591554927af7.1669647978.git.fdmanana@suse.com>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     Zorro Lang <zlang@redhat.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org
+Subject: Re: [PATCH] fstests: skip btrfs/253 for zoned devices
+Message-ID: <Y4Tbqo7kALoStLco@localhost.localdomain>
+References: <20221128122952.51680-1-johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <59ccc7b41be79e5c3b0f39ad5da6591554927af7.1669647978.git.fdmanana@suse.com>
+In-Reply-To: <20221128122952.51680-1-johannes.thumshirn@wdc.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -70,29 +70,13 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 03:07:30PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Mon, Nov 28, 2022 at 04:29:52AM -0800, Johannes Thumshirn wrote:
+> The test-case btrfs/253 tests btrfs' chunk size setting, which is not
+> available on zoned btrfs, so the test will always fail.
 > 
-> If we get -ENOMEM while dropping file extent items in a given range, at
-> btrfs_drop_extents(), due to failure to allocate memory when attempting to
-> increment the reference count for an extent or drop the reference count,
-> we handle it with a BUG_ON(). This is excessive, instead we can simply
-> abort the transaction and return the error to the caller. In fact most
-> callers of btrfs_drop_extents(), directly or indirectly, already abort
-> the transaction if btrfs_drop_extents() returns any error.
+> Skip the test in case of a zoned device.
 > 
-> Also, we already have error paths at btrfs_drop_extents() that may return
-> -ENOMEM and in those cases we abort the transaction, like for example
-> anything that changes the b+tree may return -ENOMEM due to a failure to
-> allocate a new extent buffer when COWing an existing extent buffer, such
-> as a call to btrfs_duplicate_item() for example.
-> 
-> So replace the BUG_ON() calls with proper logic to abort the transaction
-> and return the error.
-> 
-> Reported-by: syzbot+0b1fb6b0108c27419f9f@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/linux-btrfs/00000000000089773e05ee4b9cb4@google.com/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
