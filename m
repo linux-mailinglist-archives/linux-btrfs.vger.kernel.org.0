@@ -2,65 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8782D63AE1D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 17:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 350E063AE6D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 18:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbiK1QyW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 11:54:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41958 "EHLO
+        id S231598AbiK1RHM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 12:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbiK1QyU (ORCPT
+        with ESMTP id S232885AbiK1RGv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 11:54:20 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F481CFFF
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 08:54:19 -0800 (PST)
+        Mon, 28 Nov 2022 12:06:51 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CB5275C9
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 09:06:21 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4E43B1FDCA;
-        Mon, 28 Nov 2022 16:54:18 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3A5E721888;
+        Mon, 28 Nov 2022 17:06:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1669654458;
+        t=1669655180;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=VE3SuhVspHi1pS0pVWATTUo7ozIDUUg9uaPxMkirVhg=;
-        b=J8jBPbXtKYsfRwtPxqQylSop9s4NxfKplQZRY3vIagIZInD15XZ/gKoQugOiY2lC88GoOp
-        vy9DXqyfVmm83wJtU30y0pRAJBC07Zwzhgdi67bTI5ymDYuCjdY9nXHvFve7qY/Z5NOENI
-        46qHrqmjzDsLj+Q64ji49LbfnkosLVY=
+        bh=5Ize+itFkEQW4m0d0og2AdYvIpRLdYoZSzvkhzPYCHM=;
+        b=UaVHU5aLiuGf2i0OTWO9xWha+bHVJcX6qSwVQoPxbvMNrfD0rG7EnE4rAZaRPPGfQOeIN5
+        EQOjulp+pi4vb8ehYFfJSB/YddZep9SykdPgT+7r0DuuynX3roOYUlNrNnJxnsYnuupfuA
+        q6HNYvbUhCD4RqqHxbazDFCPhqecE8A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1669654458;
+        s=susede2_ed25519; t=1669655180;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=VE3SuhVspHi1pS0pVWATTUo7ozIDUUg9uaPxMkirVhg=;
-        b=QyOW3fpe2fqLil0B/wJcX+HYscr3UmlK+hkoy/TIsrqgRuEDQTOyf6dqFgKBERE1adG2qX
-        yegzM6fwe+DdwZAw==
+        bh=5Ize+itFkEQW4m0d0og2AdYvIpRLdYoZSzvkhzPYCHM=;
+        b=/UmpQ/qMoW1xaVWvg0+puK4k5GDGs6qOHd1k1leiKa+lvTIy0GiWROSdzaEYKLzmtteFCL
+        GNoSZQO5cOluDKBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23FF91326E;
-        Mon, 28 Nov 2022 16:54:18 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1993C1326E;
+        Mon, 28 Nov 2022 17:06:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id iz7AB7rnhGOjcwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 28 Nov 2022 16:54:18 +0000
-Date:   Mon, 28 Nov 2022 17:53:44 +0100
+        id qRdFBYzqhGPleQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 28 Nov 2022 17:06:20 +0000
+Date:   Mon, 28 Nov 2022 18:05:46 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: do not BUG_ON() on ENOMEM when dropping extent
- items for a range
-Message-ID: <20221128165344.GQ5824@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: send: initialize backref cache earlier
+Message-ID: <20221128170546.GR5824@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <59ccc7b41be79e5c3b0f39ad5da6591554927af7.1669647978.git.fdmanana@suse.com>
+References: <25b5197a1d0b81c12acdb79ac0f6d82df287c3c7.1669630263.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <59ccc7b41be79e5c3b0f39ad5da6591554927af7.1669647978.git.fdmanana@suse.com>
+In-Reply-To: <25b5197a1d0b81c12acdb79ac0f6d82df287c3c7.1669630263.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -71,28 +70,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 03:07:30PM +0000, fdmanana@kernel.org wrote:
+On Mon, Nov 28, 2022 at 10:12:13AM +0000, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> If we get -ENOMEM while dropping file extent items in a given range, at
-> btrfs_drop_extents(), due to failure to allocate memory when attempting to
-> increment the reference count for an extent or drop the reference count,
-> we handle it with a BUG_ON(). This is excessive, instead we can simply
-> abort the transaction and return the error to the caller. In fact most
-> callers of btrfs_drop_extents(), directly or indirectly, already abort
-> the transaction if btrfs_drop_extents() returns any error.
+> If we successfully allocated the send context object but ran into an error
+> after it and before initializing the backref cache, then under the 'out'
+> label we'll end up calling empty_backref_cache(), which will iterate over
+> a the backref cache's lru list which was not initialized, triggering
+> invalid memory accesses.
 > 
-> Also, we already have error paths at btrfs_drop_extents() that may return
-> -ENOMEM and in those cases we abort the transaction, like for example
-> anything that changes the b+tree may return -ENOMEM due to a failure to
-> allocate a new extent buffer when COWing an existing extent buffer, such
-> as a call to btrfs_duplicate_item() for example.
+> Fix this by initializing the backref cache immediately after a successful
+> allocation of the send context.
 > 
-> So replace the BUG_ON() calls with proper logic to abort the transaction
-> and return the error.
+> This fixes a recent patch not yet in Linus' tree, only in misc-next and
+> linux-next, which has the subject:
 > 
-> Reported-by: syzbot+0b1fb6b0108c27419f9f@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/linux-btrfs/00000000000089773e05ee4b9cb4@google.com/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>   "btrfs: send: cache leaf to roots mapping during backref walking"
 
-Added to misc-next, thanks.
+Folded to the patch, thanks.
