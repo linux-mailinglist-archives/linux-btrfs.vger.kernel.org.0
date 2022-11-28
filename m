@@ -2,169 +2,177 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD68B63A3D5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 09:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F8063A563
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 10:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbiK1I6u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 03:58:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
+        id S229818AbiK1Juw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 04:50:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbiK1I5F (ORCPT
+        with ESMTP id S229811AbiK1Juv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 03:57:05 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0427B17E25
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 00:57:01 -0800 (PST)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AS6aQhD014811;
-        Mon, 28 Nov 2022 08:56:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : cc : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2022-7-12;
- bh=NuIGP3wwjLeHNeuV8EIHMbe/am0h6GpN1HouiwQfs8M=;
- b=Dos2Ek9u0sW1RklgqKVxAMYPv8hxVNpvQnPPfBscjMMav+5MhZ6zCSm35+4hAwEb3DnZ
- 523A0OJLnIys7NBGqiJjgQaEWUz44wHVneEeCXW2b8NICr4cx63nTa4JUk76UqWY0r+A
- Vc/D4eIXQEX5mnQaHiYtRLLMslrrxvWoP4twK0Lj5hYgY4qHQtcFJ2RLAfgEAi11O2XE
- 0XWsaCghhYHjigQmtBZn1aX4Cmo5q/MQsb1MlVxEifFR9YHvua0xbTlzrM7981PgJt/5
- klYleCUD7ABiL8EOtxEyC0C1I4KWRHGkdXQrHqnCvc89fEFy+rbfIpEdKYY4tAwTHts/ xQ== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3m39k2jqe5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Nov 2022 08:56:59 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 2AS6YXTP000599;
-        Mon, 28 Nov 2022 08:56:58 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3m3984k3c5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Nov 2022 08:56:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZpdmI/lMd2ucrIxbgsVLytcf/BzeCfmyQZjmZTwoENO7zaNnojBcRY3KbJgBZZjcHinovAJh0aFoUv8FoRUtHJ1xpSsspXGZ/N4Oc4UtPnNQomiunk6GkMIP6Ig0xMIS3I0Le4MGjlsCPPPOXwJYhPL1HHjltRQ+qXoShlVSbyF0y9m5ZPhAAW4fqvBeuwCA+57ElUqXOikONe4NP4UEVn8ip1Ra5ZN/ZLjgnk8QCSLzqJ88WDfjF0uN9r52Cc+ek9Yh4YAjpeTqpsNsCkmHE0c6/opvICGLBbnh3O7pnmM95cF/kSzNR+ZJj6kcS7p/26Ae132/i0EaXgo/PjL++A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NuIGP3wwjLeHNeuV8EIHMbe/am0h6GpN1HouiwQfs8M=;
- b=l/jmCCKlRMU/JRGRe2Dj2k+UMmWlCblj6AbqYL8Tqz5zqLEuwv1L4DuKhRwWR7iN6dPvHb2aegUJzrfBGjySAX4cwRgCbGvZSgLrfmCfX2VF6pN1wx6kdr3SrmgojTivDlDB0sbCbmksBRy3CIKMMN+1JEMP2lRXO7lmz0xm/dWNptrjxR8M8OrOZ9qtFVj5Gvb/3Bv2ki9ZFPhQx8+0XrlwSNSIEMSOtE/Uy4rNg79g2dL6bie35Jtp66Id/mxpWb/z20qwdmFfjagjgR2CPtI8rS5qpdIZzqudsnNp5r1qJKaeV8Vje7OtY5sSXF3sUvET1CJs3M2bDyvR/NQV3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NuIGP3wwjLeHNeuV8EIHMbe/am0h6GpN1HouiwQfs8M=;
- b=KEImNTqRCm3ZcZL445txKlVYwL5F1R2Jus3ZsEMXRwm/IqAsqIO6QqXosWhItOB1hBTVUhnJGusH3o2LyNaevHR3E2mwVbp5WvC9aF4bV7Jiyu9cL2hAmHY+TwS8a7BSko2osKT9nHppI1H1bYvC+0XLCupNBV/Lt5uqIfBCtOg=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by PH7PR10MB6334.namprd10.prod.outlook.com (2603:10b6:510:1b1::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.23; Mon, 28 Nov
- 2022 08:56:57 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::797d:8a0a:fc5c:7e65]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::797d:8a0a:fc5c:7e65%8]) with mapi id 15.20.5857.019; Mon, 28 Nov 2022
- 08:56:56 +0000
-Message-ID: <e4815c7b-9552-4748-ece7-181777c9a409@oracle.com>
-Date:   Mon, 28 Nov 2022 14:26:47 +0530
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0)
- Gecko/20100101 Thunderbird/95.0
-Subject: Re: [PATCH v3 05/29] btrfs-progs: move btrfs_err_str into
- common/utils.h
-To:     linux-btrfs@vger.kernel.org
-References: <cover.1669242804.git.josef@toxicpanda.com>
- <06076dba53813bbcb59b3dd9c070a3eeb249551c.1669242804.git.josef@toxicpanda.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <06076dba53813bbcb59b3dd9c070a3eeb249551c.1669242804.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN2PR01CA0235.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:eb::13) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        Mon, 28 Nov 2022 04:50:51 -0500
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C4119023
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 01:50:49 -0800 (PST)
+Received: by mail-il1-f197.google.com with SMTP id s4-20020a056e02216400b003021b648144so8495766ilv.19
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Nov 2022 01:50:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kRrF59NcMBwZCwWNay/Mk38e4kI0Bs68NiHJ09COGdA=;
+        b=x44EVsUhWXy41FJ/I34XZ84G8xkJFMVu4/IbKyRGNsjitkPT0lmrH3h0Zg55pRjuOQ
+         t913U8i/yRqSSrtSh0FaJ7skgzn24BqYPbOo3ANfaj4166pmVMTwKOofOL3qLK3NNluG
+         g0hEKeK8Iahg8g9wNx5kp8QF0u3qkokRZcIbwyeTBKtOL+1uhZvikFE1in7xes7BmkNq
+         6AfHqXzF+u/dlOpSwXK1FQ5ezH+v+8OKL3e6pajOkD9JRBkNMSEHwhCiz4WYOSGsuzGK
+         YfEF87wTkhmYuuDcZ3CkrtnVmFCmzr8B7sU5sdni5q1T6F3oKMPjul9KRcDwnajZ4BgY
+         7FDQ==
+X-Gm-Message-State: ANoB5pln+f6gqS+a8A367x87D1OFEx8qJUqmcSqdDNjMShclCvVAaePJ
+        Ii7Bi/h3vy66Q/BnEY6ee1tocNaPPdVEGS3anp82/z1v6H5Y
+X-Google-Smtp-Source: AA0mqf7ud3UOo+/WaQQ+1ddhBTElmiVenXRvko3ubQLIhH0PCLFyGXcF8f4yzBEu5v4rPxbtnHPHWx+Xn+pp+R+5Qw4Bx4vWRbzp
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB6334:EE_
-X-MS-Office365-Filtering-Correlation-Id: 17a5890b-b4cc-4abf-26ce-08dad11e8013
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kXvQREps+cZjKwh5OwJ+i6ltGtd6x4A3Dvur1XWYNIftZLA4EreNi/oIaVn6uvluKlVAMOfUy6WdWTo71tBeSLU161rYG2ec8uS/gS/cAsYqTDCbwhC0QTKLAUgk2KE4t6xAAywa20WEDWXv0g18lTQOx0QQNygw4MtCctNx26HcGp9fcf1wVppSTBzIEv3s+703oSF4Tue8Z9VLVyKvhTuL2UT5NgN0wKL1RTp8dQyYF+bSI3G6qObYma65Jc2XLyKzwVQ6TnHNGYqbkeHbu08HpEqLq0XGhKbdc9ykONBC3F/hK+HhrdEJAes9kyv2DOMWExgqEzX0YGtFnl127ACmSQ4OTaM5y5PB9/ore1Fe9xGYgFOqNtz/sMYfH2oPhAZCanTmRSlCosTnavo6H/7jsnUo0ciJS+qu9GL0bZeeWQAipRy71iqriyagLlpadKvITAY73q+weoBFDGAUdF9EPUYompNggtu8sevtyMkUgOMvuGhDbiqyOWH0E6i2gf4P605t1RnBYFeOjxASixzEtDcRXKrokIaJnu+IAiqyuUyBrddErJtpqU7sFNrWOXND+OtTCh078ArrQC8sRDZKsglP79El0whW7eSlDApqvn5NzcGDvoq4RiXR0bD2WRxLOyGjs1D3UB3KlYe6NF5n1P+gEv2yM7F8JlhLoTFoad+nsZAN9NIbnFD9BTmq6NGBySvScBXLZPtkB8J1EaIlQV1t4Ib/DNGrcTVIb7o=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(39860400002)(136003)(396003)(366004)(376002)(346002)(451199015)(6666004)(31686004)(53546011)(6512007)(2906002)(6506007)(6486002)(38100700002)(86362001)(5660300002)(31696002)(44832011)(558084003)(6916009)(316002)(478600001)(66556008)(66946007)(8676002)(66476007)(8936002)(2616005)(186003)(41300700001)(36756003)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UUxBNE5PRDBabmR0VzlHYXJVenYwZndRQnI1d1BOYXdGSitMUHV3c21Zdk1J?=
- =?utf-8?B?UFY2UGFQRnd4UXhqeXRhWENwVnNiakRxTC9sVmNCbDhacGZlNTRVRG9tbmRp?=
- =?utf-8?B?ZytnOFRFWTRzM0VKbThFZy83RXQyR0pZUFhRRklzMFJQZFZaKzFyekZpSW9i?=
- =?utf-8?B?UUVuTGpqZFQ2WGMvZFEyRU11cEVFM0dsWmNlQUN6YU5hU1ZxTm9VbnpXTVpw?=
- =?utf-8?B?WC9jNVdLU05pZTRWRGYySFRZTGplaTk1QWh0M1hGRE4xSFNUV3lPa0JXZG0r?=
- =?utf-8?B?eG5rZ0N0ZzdFK2lVaWpqVlVBcm0wRjh3WVVzWU5yOW1IUS9Hdmo2S0JYc1Zs?=
- =?utf-8?B?dDJuS2FscjBwUDYvNFhNRU42ME5jSVg2bk9MRkVNZjRUdzV1QmcwK3Q4SEhj?=
- =?utf-8?B?RGtYd2htUFdxZnlzNjVFbVc1MWFnOHZXWDByZzdoazBwejRwcko3NU1XazRy?=
- =?utf-8?B?ZXdwWkJvdVdaK040RkdkQXJ5NjNHeHFHdS8xSzI0ZmdSSGU3QmlsYjh3b0Ro?=
- =?utf-8?B?QTZ6blBGa0syejhITFFxd0NXNDd0Y0EzUk5UTHNNRDUzL2FuZkpaNTZiQytQ?=
- =?utf-8?B?OUtuQkhVNldxYkV0NUJqWGRTTE55bXFjZUJaTG0ycmN0WDFlOTM5NEhXRFFY?=
- =?utf-8?B?VE1PWEZXNWhyZGY4UlErYjFmcFpkcVFDeisxLzFzRkRsZGllMkhTK0Nvcitp?=
- =?utf-8?B?RTQrYVRvQk5JMStsMHAwdXJJSXB5ajBhM0JTOWtKM0hhZDZHQXBnVXRWR09z?=
- =?utf-8?B?TWpFaWhWdmZPMkVhWHNMdzVEVGpFOGYrTXloTmtvMVNuZ0RKdzQ1ZXVZWnBZ?=
- =?utf-8?B?MUxtemh1WmFRdWFVbW9nVkhQcjBPeGVVUHA0ZHZpWGdCakQwSlF2d1Y3SGlM?=
- =?utf-8?B?YUZwOEtiL3lKMXQ2c0NkZE04OVUvSTRLOTQ2MTlnQ2NCa0ZuTUhGc2IyaDFr?=
- =?utf-8?B?NUgreHR1aitvYUh4bkZCK1ZPV3BJb25RWFU0RjM5WTUxblpkUWdvZlB4UWRG?=
- =?utf-8?B?ak9vVWRQcGZ0Z1BoVU1saVIyQXdBeERoUVlTZUlSb3Vyb0tObTA2SkxBYmxI?=
- =?utf-8?B?aXh5UThJdmw0TUoveXhibjBWd2dLdElVTEhpODQveHM0TnRVVkYrV1ZzeUNu?=
- =?utf-8?B?L1R3aHBySGpFZzRBcllxV013dmhKOWNCWk1Pb21YSnlrWWY0blp0QUJrSDJS?=
- =?utf-8?B?U2IyMUlqeXdPNUg5azB5RWd6aTlyZ2dLeXluak5ubTY4ck1mWUZ2SytyZU45?=
- =?utf-8?B?WFV4NXlZWCtJaktMblhrV3FrR3BvS09BMCtueERNK0dmVVFBZHNBMmwwU2pz?=
- =?utf-8?B?TWRQK0JqLzNaQldTejB1RmJ0eGNuNTRseDN1OElYMDBYOEFxc3BRc0REUk1k?=
- =?utf-8?B?WFc4TURxQkJLMW9GNzRSNDZvTEN0WDNtbHNFOFpiYVgwclM3VzlRbm5ZL3Zq?=
- =?utf-8?B?YnJZdFRGYzFoRjhBdjJnRFo0cUg3dUNFR25rS3MxY1hna0RsdEVtV0VQalhi?=
- =?utf-8?B?MzkwaGN2Y0NuaERvQUVnOWtCbm0vOHJNaEw5bngzNEZNWk5PQXlwMHFIaTl3?=
- =?utf-8?B?ZUQ0cnl2d0djUUNvWWZIbjhaRGNPSUpJK3lFa3NVU1laSFFQdGxENisrVUNn?=
- =?utf-8?B?RDJUQ0M2ako1bk1rQU1xTzE0VUJqK2puUFNpc3Urd1M3WGMzYXFnMUgrbmla?=
- =?utf-8?B?TE1Hb3VsZHFyZVBMcC8rek5IbnBPdjZRc2U1cnMyTlVKaWwrZWthdkV5OW1O?=
- =?utf-8?B?MkxTcDUxRUZHWTEwb0xoV3JHN2VsT1AxcVJJZW13VWQyNnJxTi9xTDJaZndp?=
- =?utf-8?B?MVdyVVY5b1EyUHJ3dVNDQU53QWluWGZKb21GZGdaWHFxR0hVdFlaUDRSZHAr?=
- =?utf-8?B?ck8yUU5iTEgzUEN2bERIblAxM1hQTXl4blBqcXcvMlJSd2ozVHJXNU0rUU1B?=
- =?utf-8?B?NXBlWDhWYU9SdnhDcWE3VkVFTkJNOXo2RDdSc2FPcEpqWGZWeFdiM2VWMmk4?=
- =?utf-8?B?aFpzZlF0NFFmVHliZ25wcTZ6OTdmam4rZWhBckJsWmFWdU55MUxrdTFIckxJ?=
- =?utf-8?B?Vm1rdGl3NVFRdUJld21vRXNNSUcxbGxnNUNTaENKSkFEV2dEN2VSM0J6S2kr?=
- =?utf-8?B?cC9KS1lrVXJDcXJmcTdWS2hkUDJvZkhNQ2lmUk1tZi9PaUtHazhhSms1dWtL?=
- =?utf-8?Q?Muxal4SslYJvT+E+L75wuBGBuS7Hmv8OhoPuVR+4JYJW?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: dyPT2lGuJhfN8bLercSUq4G0JGaiyy+4+sgQYNLN8UfKFKY7MKRAR+zVGqkb8dxGChbunmTIG95K/hOKjIHmi2W5FJb7BndHM5GMbus8BKw+sDxQeWxHCvgwV02bbNmqTWQ/1vsxNfxsICWD99DxmXDHgkh1pQ/1GhSK3qWv3JMDNLHs+kJdXqEpdj/0b+r4JPi7uaYEJ/xpU+3LiUqHq/qqzeE26lNhkkvtDihtj+4IX7oTDh1VZvol5Hfv6sir3wxUmiFjLh/5slzQ20QpeuZqSFcjriby4w4sSQJxz68Q5LHtHUsPGp5tjdnL7DuSEJpQ0TuvOaAZXlFMj9VkoEdE8PqZUuBvRljkTA40yrQv0AncAjjjcgTdRkJF/v6ci4/FHIU8guV/4j6nH5ep8/YwuQFo8lcLZdfuI0oqGztA8IrykU6xuKlAwyZx8NjlMxNqKbSwVkRIwzRTqRp8RGLTqmJ5PLmkeYNFRR6CyyNeNzdcAZmLPcwIE6irSXP3TreqTZ0dT/ZMU9BA3QXj/je+3wikBLnhK8qbbSkE+sN8HLXzx/cU5Lo0AXask2R1TO5HAHPyHc7HdKRxe/58t7Fg9MIM8fDtGmD0Brsqn+xNf2YyI8e66sTlqeCvs+jt0xvgpCmr9n1gi4DFyWF7B40l4CUqXu7gs89f5lFe1O3sqvUC5trJoLEeHLE+nVp0jxtoUlUjYWkDDRaMnMWBwBt89ORXnJh4T1bMTPZAGCPpKOTtkad9EOWUvpp5Iea4nU8CJQVy3ipTlnCCdRd43DxD049nAbw0kSEZ+M8hnz8HVcX8Y8c6Qnn7i0gqXkOw
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17a5890b-b4cc-4abf-26ce-08dad11e8013
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2022 08:56:56.9319
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DRpiBEtPhlueqqZz6VN8oEftr3mPI/U5y9b+famk+N9GCVOY+28pqXdtd141gOXP3BYpvds+Lxj6OOawPag/1g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6334
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-28_07,2022-11-25_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- phishscore=0 mlxscore=0 bulkscore=0 spamscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211280068
-X-Proofpoint-GUID: y0UeEuk4IF_Rlpq7Tx-ogEQ2VWzA53hY
-X-Proofpoint-ORIG-GUID: y0UeEuk4IF_Rlpq7Tx-ogEQ2VWzA53hY
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:1189:b0:302:fa94:c735 with SMTP id
+ y9-20020a056e02118900b00302fa94c735mr6617014ili.57.1669629049094; Mon, 28 Nov
+ 2022 01:50:49 -0800 (PST)
+Date:   Mon, 28 Nov 2022 01:50:49 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000060cb5005ee84ce27@google.com>
+Subject: [syzbot] general protection fault in btrfs_ioctl_send
+From:   syzbot <syzbot+c423003741c992ccf56b@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, fdmanana@suse.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/24/22 04:07, Josef Bacik wrote:
-> This doesn't really belong with the ioctl definitions, and when we sync
-> the ioctl definitions with the kernel this helper will go away, so
-> adjust this now.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Hello,
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+syzbot found the following issue on:
+
+HEAD commit:    9e46a7996732 Add linux-next specific files for 20221125
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1518a973880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=11e19c740a0b2926
+dashboard link: https://syzkaller.appspot.com/bug?extid=c423003741c992ccf56b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1024ec05880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12bc0973880000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/758d818cf966/disk-9e46a799.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f7c8696b40a5/vmlinux-9e46a799.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/810f9750b87f/bzImage-9e46a799.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/9b34ff4df466/mount_0.gz
+
+The issue was bisected to:
+
+commit d14cd51f13589142902687cfacd09e373251ac6e
+Author: Filipe Manana <fdmanana@suse.com>
+Date:   Tue Nov 1 16:15:50 2022 +0000
+
+    btrfs: send: cache leaf to roots mapping during backref walking
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17d92353880000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14392353880000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10392353880000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c423003741c992ccf56b@syzkaller.appspotmail.com
+Fixes: d14cd51f1358 ("btrfs: send: cache leaf to roots mapping during backref walking")
+
+BTRFS info (device loop0): enabling ssd optimizations
+BTRFS info (device loop0): auto enabling async discard
+BTRFS info (device loop0): checking UUID tree
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 5294 Comm: syz-executor236 Not tainted 6.1.0-rc6-next-20221125-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:empty_backref_cache fs/btrfs/send.c:1396 [inline]
+RIP: 0010:btrfs_ioctl_send+0x13ab/0x65a0 fs/btrfs/send.c:8365
+Code: 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 49 1c 00 00 4d 8b ae c0 01 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 34 1c 00 00 4c 39 ed 49 8b 5d 00 49 bc 00 00 00
+RSP: 0018:ffffc90003bbf8c8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff88807735f140 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff8380b588 RDI: ffff88807735f000
+RBP: ffff88807735f1c0 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffed100ee6be28
+R13: 0000000000000000 R14: ffff88807735f000 R15: 0000000000000000
+FS:  00005555556b3300(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff4af8bff8 CR3: 000000007dbc9000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ _btrfs_ioctl_send+0x231/0x2e0 fs/btrfs/ioctl.c:4343
+ btrfs_ioctl+0x4058/0x5870 fs/btrfs/ioctl.c:4634
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x197/0x210 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f5d8166ab09
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff55cc13f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5d8166ab09
+RDX: 0000000020000040 RSI: 0000000040489426 RDI: 0000000000000003
+RBP: 00007f5d8162a3d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f5d8162a460
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:empty_backref_cache fs/btrfs/send.c:1396 [inline]
+RIP: 0010:btrfs_ioctl_send+0x13ab/0x65a0 fs/btrfs/send.c:8365
+Code: 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 49 1c 00 00 4d 8b ae c0 01 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 34 1c 00 00 4c 39 ed 49 8b 5d 00 49 bc 00 00 00
+RSP: 0018:ffffc90003bbf8c8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff88807735f140 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff8380b588 RDI: ffff88807735f000
+RBP: ffff88807735f1c0 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffed100ee6be28
+R13: 0000000000000000 R14: ffff88807735f000 R15: 0000000000000000
+FS:  00005555556b3300(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff4af8bff8 CR3: 000000007dbc9000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 4 bytes skipped:
+   0:	48 c1 ea 03          	shr    $0x3,%rdx
+   4:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   8:	0f 85 49 1c 00 00    	jne    0x1c57
+   e:	4d 8b ae c0 01 00 00 	mov    0x1c0(%r14),%r13
+  15:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1c:	fc ff df
+  1f:	4c 89 ea             	mov    %r13,%rdx
+  22:	48 c1 ea 03          	shr    $0x3,%rdx
+* 26:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2a:	0f 85 34 1c 00 00    	jne    0x1c64
+  30:	4c 39 ed             	cmp    %r13,%rbp
+  33:	49 8b 5d 00          	mov    0x0(%r13),%rbx
+  37:	49                   	rex.WB
+  38:	bc                   	.byte 0xbc
+  39:	00 00                	add    %al,(%rax)
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
