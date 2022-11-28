@@ -2,37 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5B163A101
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 06:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 157B363A1FB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Nov 2022 08:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbiK1Fyz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Nov 2022 00:54:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
+        id S229695AbiK1HeY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Nov 2022 02:34:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbiK1Fyy (ORCPT
+        with ESMTP id S229509AbiK1HeX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Nov 2022 00:54:54 -0500
-Received: from out20-38.mail.aliyun.com (out20-38.mail.aliyun.com [115.124.20.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1658B1085
-        for <linux-btrfs@vger.kernel.org>; Sun, 27 Nov 2022 21:54:51 -0800 (PST)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.322749-0.00115659-0.676094;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047209;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.QIYP8Qq_1669614888;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.QIYP8Qq_1669614888)
-          by smtp.aliyun-inc.com;
-          Mon, 28 Nov 2022 13:54:49 +0800
-Date:   Mon, 28 Nov 2022 13:54:49 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     fdmanana@kernel.org
-Subject: Re: [PATCH 1/3] btrfs: do not modify log tree while holding a leaf from fs tree locked
-Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <616a85703a25abbcc107b4e83d961d356d1c5463.1669025204.git.fdmanana@suse.com>
-References: <cover.1669025204.git.fdmanana@suse.com> <616a85703a25abbcc107b4e83d961d356d1c5463.1669025204.git.fdmanana@suse.com>
-Message-Id: <20221128135448.49F8.409509F4@e16-tech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+        Mon, 28 Nov 2022 02:34:23 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E717E0CD
+        for <linux-btrfs@vger.kernel.org>; Sun, 27 Nov 2022 23:34:21 -0800 (PST)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AS6aRwP015735;
+        Mon, 28 Nov 2022 07:34:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : cc : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=68pi337LBBxCm92y3o63ifIbqcLtQ8282kl1dpNdHzs=;
+ b=sGNjTq9VMYEdnHJspoGqqUSYxL9TeIqnlpWlJAmx/DkFIQdK5vZ6UEHSbIK5ypD6yEVC
+ NIPGdgnIvsALK7EY7q39OR2WCCNOYAWOFtxxuF6u97DkYz+K82+Zab9/jReqi8NYx+UK
+ 3AvwNfg1FwOa/mhZwk3U7v1r3FAw907VC6PUMOflQHcJYeeb81Lyvd/HSfH5cKw5oDhk
+ 5F6Z7yTVZwMdxlGL77T9iZRiu4VvhlqNgabhAMcmCLefce+ZwVD/0BdSmmG5RCkucnQ6
+ WZu4sBgPkE1zL8iUkpSOraAJbQw3zWyZrPyzlO5URu6OtaZazNIfN3ah9oK4ji2k+Xxc vQ== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3m397fahr7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Nov 2022 07:34:18 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 2AS6ZveU005712;
+        Mon, 28 Nov 2022 07:34:17 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2043.outbound.protection.outlook.com [104.47.51.43])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3m3984qthm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Nov 2022 07:34:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BPasoi3JlrCktcnBWoWcHEn/T4Gpcnd/dcMVpIEpHHMpDAZHqJDJnui7c7MxEIOzGl8BKJ6PFUpTxV5h1C/rnkj3XOa87h/fNLNanVbg8lu+roEVHXWZ4OJaUaut9rmvtLvIJH+MzBczgNAVShC7U2XkOQgIA15zS9A4K8M9GvC956nRW3ST0DxEYhTRSj9nMWG+1ASp2cVTCxgYhbNTcNXbRXM6eC+Y9JhWUHsPkh1skwwrOBNneWmc5ui/iOZY1r6Nk36s+4Khf4BamwA7sd1sN2el+gv1pr7JqgqheO34xTKXEsERsXIO11flimvLCYcrzdxagqMBNDhwsRgOcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=68pi337LBBxCm92y3o63ifIbqcLtQ8282kl1dpNdHzs=;
+ b=UFptfQCc1nFWnWkKb7Gd7PZX2KrvrqW+GMw4QJWYxPJ1ieGoOx4nii6iNb3a5y/0K058BH9yM6IPZKvrFQSEVC5zpw4jnVGFy6e9i9x2ozlrkZAUvLhCC6t/UiTWQ+o7wEnrMFkleZqz2JpeoGXc8w/C3/HSyNcDtKqcSEmQbBKuae8OPzElakQnTFVTf2PIswVIYB3qRV/rCp96G6062uETbJ2hbYDlOPw/vRijaWAzQzTGHxeJ2Bjpy1iPRxj0L57uF7rhZCqrNefVC3Lbise2KCSGHt7hBVNQXWw9s3Swai+Q8B1N1BJF5fP9NCadunsZ17KDaMS9BRTFeD5mAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=68pi337LBBxCm92y3o63ifIbqcLtQ8282kl1dpNdHzs=;
+ b=JMxcPPudtPEWOCmOi0mUa4K+Q/LoFDBUPAXlWmxLYYLZbz0tHuV8zfUx4EpBgfkLAXFadmqxeZ6c4fTwqnVPZAR/+dXdzljd3AFyOC/jsBKmu8OceNO4kJ8UW/4GDVqJ7E9YidoggA+VBD0Wtu9wZpMUi9rFZji8KUbvLnxDuYg=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by DM4PR10MB6254.namprd10.prod.outlook.com (2603:10b6:8:8f::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5857.22; Mon, 28 Nov 2022 07:34:15 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::797d:8a0a:fc5c:7e65]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::797d:8a0a:fc5c:7e65%8]) with mapi id 15.20.5857.019; Mon, 28 Nov 2022
+ 07:34:15 +0000
+Message-ID: <9bd99a08-5821-09e8-af7a-efe0433ea997@oracle.com>
+Date:   Mon, 28 Nov 2022 13:04:06 +0530
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0)
+ Gecko/20100101 Thunderbird/95.0
+Subject: Re: [PATCH v3 03/29] btrfs-progs: properly test for
+ send_stream_version
+To:     linux-btrfs@vger.kernel.org
+References: <cover.1669242804.git.josef@toxicpanda.com>
+ <e7ca4d3f79485396cc1e2d7e8d635983a1c2e2a9.1669242804.git.josef@toxicpanda.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Cc:     kernel-team@fb.com, Josef Bacik <josef@toxicpanda.com>
+In-Reply-To: <e7ca4d3f79485396cc1e2d7e8d635983a1c2e2a9.1669242804.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.81.04 [en]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+X-ClientProxiedBy: PN2PR01CA0196.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:e9::8) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DM4PR10MB6254:EE_
+X-MS-Office365-Filtering-Correlation-Id: 722d2bed-9124-44f7-42e5-08dad112f37a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ntMCvUIisGdkhMFp/4W1/F2irNUIRRv2UBAC0p0u8r+t54c/EAZ0+k4tbD9yJa2ACrx2i8Dvx801jcuqXOTf7iNl6PYhjV35bFeDrziFx4VpSw/M3W39jTkcO4AoMpsZvxPFDPDePKtW82HvJS0RFfQcz6Se8JGD2bdbI9lgk9TJjMYdyWv543ZftrvdogwncQCT8XqYjcGXDcg/LGlqbx/I76Cms1GwbuqxL7ucAikO6iYTUSxy1s6gqcbSa4UrLvjYRYC3ulX7JzBkJN3/FlJMVhbMgiRnDqR8ZW15XD01JTaCbQlia6ZhJAkpqiotv/EUeu88BwvbX1Tg6GfNLIlVFfimaUojvHMFR2FfDAQ1oqji18cmWc16wJwucwSbXymmyqiFRykdXEHTp1Eh1V9LgYcIxs0UkM4Y3fzRjKqU0BCSiybjyHlrFC12Rp+54AuIIcZq4E4jSv71xIMtRmBXtYV8gYIBgKgYu/fz9UQjMgSWFF4sDSPz99Uchmfc7ZgWh4U6NmhVCsr0eiPhrJ8QxW+OhlyTSyJ8GHESmAsG+W4qcoe0kbFTdD9jmEpkMxencOlh0r92WR81RyBNNVTglCTgX99shbrp/gFyAebfM5WxERR6CXjkSyRLaMs8gDFF+Uic1QeEyUSBZ0xlDdr3N79utk9f967hGuWp/tTGZysa5vIPsaBMM1GQNYogw7XAyXohqwAxQIsMg3b5bo7KIH2UfILWE2hDW8NJoBw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(376002)(346002)(396003)(136003)(39860400002)(366004)(451199015)(2616005)(31686004)(2906002)(83380400001)(478600001)(38100700002)(6486002)(66476007)(41300700001)(66946007)(66556008)(8676002)(36756003)(6512007)(6666004)(6506007)(186003)(5660300002)(53546011)(8936002)(4326008)(31696002)(86362001)(6916009)(44832011)(316002)(4744005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YW42TGdYVGhqd1FoNENPdDhoeHFYTC8xSS9oSG9kODFJMzdjUU1jOTVMSi9Y?=
+ =?utf-8?B?U3RtVWZLcU4vbXJsbnlEaC9LQTZBa2d3RzJPUnQ4aldpckdKSkVFWFVENzNw?=
+ =?utf-8?B?dENBc1p0M1FMRXpaZk15ZzhKQlNyV0lBbVFtNjk1RDFCclNNcDQyYUR5TFUw?=
+ =?utf-8?B?dWl0b1U3Rms1Tnp2enVUcEdud2hld2crSGRxUmEyK2hlSEMyYTVtL3JzbzJQ?=
+ =?utf-8?B?Q254bDA2eGlLZVRPdTNWNjVlRC9JNVVSMUgvVVY1RGVxNXdGdGVOTnpFL3Ra?=
+ =?utf-8?B?Y01ocXRZSktBMDlHMHpxMVQ1QWZjSHZLTXZZVTFVRDRNYy9BMjNPdHkvamY2?=
+ =?utf-8?B?WG90V3FrQ1hUVW8zUUtpYnV0Q2ZJK2pIUmd1RnRzMlB2OHQvVGVtL3QzVWNW?=
+ =?utf-8?B?R0ZFazdxTThidERZYldBNnFhODBSaEFaTDAya3dNR0szNkpOZk55RmdhREli?=
+ =?utf-8?B?c0lZMEtjeXNzS1RjRTlnL3Zva1ZTZ0dxMk93ZTBhWVFSNFlpQ2k0MFBSMXlx?=
+ =?utf-8?B?NEFZUWNDZkNudnV0ckMvdnQ3N21RR3pCSlcrNDlCTVJpcWdkclp5eVZEWGhS?=
+ =?utf-8?B?bzBnZENwV1RGbk4xemRPSFBabVBYRUpaSGM3ZzFuVFp3SDlqOUNqSC9mRlAz?=
+ =?utf-8?B?ZmVZL3hvdTZEV2pua1AyeDRDUHdXa2tIOElnY3hoaktrUm4xQ1ZKNWtSYnJu?=
+ =?utf-8?B?djdCN0lGY25WdWdWOEdvZUtNREhBTjJQZE9FV2hxREtkZGlkOFNMRHB0ZkJI?=
+ =?utf-8?B?RnlMREFXYURQb0tRRlNldmpvU1djQ01RSVRIM1dqRE5oTkRoVkJzSXVyL2Rq?=
+ =?utf-8?B?bTRYNiswQmFzcGc0T3p1UEZQWTJ5VndRWGc3d3hJb3AvY3JaRlUwWnNtaVJ0?=
+ =?utf-8?B?dTY2UFFPZVhKTE9Wd25WNGZGVXp2eWlVZ0N6RlYxMjlNbERvVlI4RTN6cC9a?=
+ =?utf-8?B?SnQ1T0FqdFVwU0hEWDFKenhpZy82NDFoV0xyalZJYnlFU3R0NVQ4akpIUXZa?=
+ =?utf-8?B?YlJzMnV3RllPdUp3OEUxWmxUa2Z2cHNaS2JCQmZlbm9HNGhVajhEMFM0Tzcx?=
+ =?utf-8?B?anBWd0ZCeFBCYlhRZC9wdDZsSitGUzJpcnkxVlZSSnM0TC9lS2VGajhsSWV4?=
+ =?utf-8?B?KzN0UGtrRUczV2lHTVRMS0JUdXo2ekNVVndmUzdmaFo2SlVEdGZ3bTVSMm5v?=
+ =?utf-8?B?ME5YY0FDYmpaTm4xSXpkSWI0dGhWdUkxRWd3aTBpTStlQ2pEZU5tYWtjQUl5?=
+ =?utf-8?B?T2ZPRGNBOWx4bTBsZDJLaS83VU1WbG1xU1YybWc4UDNiRHdZNkpFVW9iZTll?=
+ =?utf-8?B?c3BzanQyNCtxOHRQejRGN0NTdllmdjFoZ1htNnVDYUhFZEpCanpVV05Pc0JV?=
+ =?utf-8?B?RnhJNUNjeTRPbk9hS3JMay9VK1RORU1UQkhpQjRLcFkvaGxYRUh4eFVWVnV3?=
+ =?utf-8?B?Y3BCOVk4SGFqams1ZDJxcWdpeVdHQko1S1RoMng5cG4yK0pWVmk5SU5KR3E2?=
+ =?utf-8?B?ZC9xcm8ySFRFMFBmQnpSMVJvTWxVUjF4NDZKV0wxdUw2Sjc4N3RJSUIyelZZ?=
+ =?utf-8?B?YUdzNld3Rlp0VUJYRk9PVnYyckRveTVMUUNvUmQ3L2F2dlFESHNZMTFHNlJ1?=
+ =?utf-8?B?Kzd3RnBkUWRSMVJMUEpNdzA3Q1o5cUc5NHRCTnEvcmE0bHdZQWI5NjJlS3RG?=
+ =?utf-8?B?SEMwbm1sQTBqYjBLV214MFI4enVYRE9KU2RIVFNIV2ZmNmRIbWcwNXNGRVAx?=
+ =?utf-8?B?bzFvcXRhU2Q3eVRBNjVLdmRSL1dZU3QvVXNrZVlVOFBhSWNORjlKUDRCQ3J0?=
+ =?utf-8?B?bk1LQXBjcUdFbzJTdHhlaHFZeVI3c1JwOCs0WUhlMzdrQXdiQUoxd3h6akFq?=
+ =?utf-8?B?N2ZiZE5wOVNrR09TSTkrL3FLbFVBdlJERlZxOGNYWW1Bbytpb2lsbThVYWt3?=
+ =?utf-8?B?eWRmUWNyRXhhZlNoY1BNaHAwRnVDWjNTUDk3MFpvMEE2YWFwaGQydktmeXRt?=
+ =?utf-8?B?ZWdsbHI0Vks4UXNyOHM0Q0E5WmliWmc5NXFOTm1oVUY4TFB2dzAzcHgrMU1D?=
+ =?utf-8?B?RWw0Ti81WnBhMU9wNlBhdlhOYUdDSS9BWktTbmo1RUE0a0ZkWm4zb3BpSERx?=
+ =?utf-8?B?YzBSdmpuaXRjMXlVUEdwNm9vN01LSGtzazcvUnEwdE1QcERtK2IrTVBrTStP?=
+ =?utf-8?B?OURMR3lFU0wwaTFPeTh1SitMcXBjWEllVklNUXVYRUtNdnQ3SnVreko1R0Vo?=
+ =?utf-8?B?VEVJSkFzUFc5REFwWi81WlpFQmh3PT0=?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: ri+9euFVW6EGjqtNpSwY9a/qHaLtO+eJ+60/eTadg38yC3PFbitO3e4R5CAkd2+xiDhIVbBY78PAsF/Gsz3gbzcMExe4fBa5VhbeHE7FZvS8pJdCg71seaKlQeant7FXHi/Dzrh1JmHC++9tSlexNY39e0v/OWKFhSYioRkbiPBaHcF8kXNAU9ZfvCTRDcIGNNvPxKgSRNUCU/NtjW26DLVroz7DlHZjEC3t6iwGnDuhmvXirtyRwCRlN6dIET+bWHqIxQZwa8Ier6efoICtY1bKjhKIIHyqfHC/x5imOY2HqzN+Wj8Gw6XyPNZOsD0/i6By6oYr9Ihiqv2d9Y0unt2LUY4wilLSAnls6B01ZwFcYUR1U0OI64iqW3zYZKgPjdgIz9qG658/T3MxMe/rb802GXcJEB0vEZc+aCsyD28gU7Fl7ucjndo2GX6gMQoF68lh7XQgP+KhxSEOuty8wrrpg+6YBm7NUeLuJcGQ6cHmfxThkeaj2jR1RoEutwbp9/ydZOFsRQALSk8fhSZPrqbMHXMM2hGNFPBzU5yU2MIN2lhJBRn+zI8Bbx9Go9IexpKIgGqT5gRhXk9ux+5e1oRo7YAdVbuvpu+OT98BvoIu5W3fk+kAIYNvdSwBcuGo84otvfVbqcOO0C8XEq1L3oQL+ojV4HVv2ZBK9LLntSHJ3LUBr1+zSMBvUYZnhN1AlOMivH9ecJgYFgFJsVKouRcwtk7OnldowY6l0/QckBD0BenDh4yelp2/5DdOkS1a02/1HA11n3QsU20JCltIiKceEbr70Lfzi0TzH6cCjZogsp9EVflzcWOktQs4lojS
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 722d2bed-9124-44f7-42e5-08dad112f37a
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2022 07:34:15.5212
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bp0Qqok4jJ/rlVCKj0LL/V5i3xBPvu+hdVouzXi3gHL3t6alqIQvwe6qtGecXByP9doxZiiCZpdv1R01d5+Xig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6254
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-28_06,2022-11-25_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 phishscore=0
+ mlxscore=0 spamscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
+ definitions=main-2211280059
+X-Proofpoint-ORIG-GUID: WfHM7xI1MR05dT_xyLo8y5xbZom0mvL7
+X-Proofpoint-GUID: WfHM7xI1MR05dT_xyLo8y5xbZom0mvL7
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,307 +158,17 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-
-> From: Filipe Manana <fdmanana@suse.com>
+On 11/24/22 04:07, Josef Bacik wrote:
+> We want to notrun if this test fails, not if it succeeds.  Additionally
+> we want -s, as -q will still print an error if it gets ENOENT from the
+> file we're trying to grep.
 > 
-> When logging an inode in full mode, or when logging xattrs or when logging
-> the dir index items of a directory, we are modifying the log tree while
-> holding a read lock on a leaf from the fs/subvolume tree. This can lead to
-> a deadlock in rare circumstances, but it is a real possibility, and it was
-> recently reported by syzbot with the following trace from lockdep:
-
-This patch has beed merged into linux upstream.
-
-And this patch can not be applied to 5.15.y without some backport.
-do we need a backport of this patch for 5.15.y?
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2022/11/28
-
->    WARNING: possible circular locking dependency detected
->    6.1.0-rc5-next-20221116-syzkaller #0 Not tainted
->    ------------------------------------------------------
->    syz-executor.1/16154 is trying to acquire lock:
->    ffff88807e3084a0 (&delayed_node->mutex){+.+.}-{3:3}, at: __btrfs_release_delayed_node.part.0+0xa1/0xf30 fs/btrfs/delayed-inode.c:256
-> 
->    but task is already holding lock:
->    ffff88807df33078 (btrfs-log-00){++++}-{3:3}, at: __btrfs_tree_lock+0x32/0x3d0 fs/btrfs/locking.c:197
-> 
->    which lock already depends on the new lock.
-> 
->    the existing dependency chain (in reverse order) is:
-> 
->    -> #2 (btrfs-log-00){++++}-{3:3}:
->           down_read_nested+0x9e/0x450 kernel/locking/rwsem.c:1634
->           __btrfs_tree_read_lock+0x32/0x350 fs/btrfs/locking.c:135
->           btrfs_tree_read_lock fs/btrfs/locking.c:141 [inline]
->           btrfs_read_lock_root_node+0x82/0x3a0 fs/btrfs/locking.c:280
->           btrfs_search_slot_get_root fs/btrfs/ctree.c:1678 [inline]
->           btrfs_search_slot+0x3ca/0x2c70 fs/btrfs/ctree.c:1998
->           btrfs_lookup_csum+0x116/0x3f0 fs/btrfs/file-item.c:209
->           btrfs_csum_file_blocks+0x40e/0x1370 fs/btrfs/file-item.c:1021
->           log_csums.isra.0+0x244/0x2d0 fs/btrfs/tree-log.c:4258
->           copy_items.isra.0+0xbfb/0xed0 fs/btrfs/tree-log.c:4403
->           copy_inode_items_to_log+0x13d6/0x1d90 fs/btrfs/tree-log.c:5873
->           btrfs_log_inode+0xb19/0x4680 fs/btrfs/tree-log.c:6495
->           btrfs_log_inode_parent+0x890/0x2a20 fs/btrfs/tree-log.c:6982
->           btrfs_log_dentry_safe+0x59/0x80 fs/btrfs/tree-log.c:7083
->           btrfs_sync_file+0xa41/0x13c0 fs/btrfs/file.c:1921
->           vfs_fsync_range+0x13e/0x230 fs/sync.c:188
->           generic_write_sync include/linux/fs.h:2856 [inline]
->           iomap_dio_complete+0x73a/0x920 fs/iomap/direct-io.c:128
->           btrfs_direct_write fs/btrfs/file.c:1536 [inline]
->           btrfs_do_write_iter+0xba2/0x1470 fs/btrfs/file.c:1668
->           call_write_iter include/linux/fs.h:2160 [inline]
->           do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:735
->           do_iter_write+0x182/0x700 fs/read_write.c:861
->           vfs_iter_write+0x74/0xa0 fs/read_write.c:902
->           iter_file_splice_write+0x745/0xc90 fs/splice.c:686
->           do_splice_from fs/splice.c:764 [inline]
->           direct_splice_actor+0x114/0x180 fs/splice.c:931
->           splice_direct_to_actor+0x335/0x8a0 fs/splice.c:886
->           do_splice_direct+0x1ab/0x280 fs/splice.c:974
->           do_sendfile+0xb19/0x1270 fs/read_write.c:1255
->           __do_sys_sendfile64 fs/read_write.c:1323 [inline]
->           __se_sys_sendfile64 fs/read_write.c:1309 [inline]
->           __x64_sys_sendfile64+0x259/0x2c0 fs/read_write.c:1309
->           do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->           do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->           entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
->    -> #1 (btrfs-tree-00){++++}-{3:3}:
->           __lock_release kernel/locking/lockdep.c:5382 [inline]
->           lock_release+0x371/0x810 kernel/locking/lockdep.c:5688
->           up_write+0x2a/0x520 kernel/locking/rwsem.c:1614
->           btrfs_tree_unlock_rw fs/btrfs/locking.h:189 [inline]
->           btrfs_unlock_up_safe+0x1e3/0x290 fs/btrfs/locking.c:238
->           search_leaf fs/btrfs/ctree.c:1832 [inline]
->           btrfs_search_slot+0x265e/0x2c70 fs/btrfs/ctree.c:2074
->           btrfs_insert_empty_items+0xbd/0x1c0 fs/btrfs/ctree.c:4133
->           btrfs_insert_delayed_item+0x826/0xfa0 fs/btrfs/delayed-inode.c:746
->           btrfs_insert_delayed_items fs/btrfs/delayed-inode.c:824 [inline]
->           __btrfs_commit_inode_delayed_items fs/btrfs/delayed-inode.c:1111 [inline]
->           __btrfs_run_delayed_items+0x280/0x590 fs/btrfs/delayed-inode.c:1153
->           flush_space+0x147/0xe90 fs/btrfs/space-info.c:728
->           btrfs_async_reclaim_metadata_space+0x541/0xc10 fs/btrfs/space-info.c:1086
->           process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
->           worker_thread+0x669/0x1090 kernel/workqueue.c:2436
->           kthread+0x2e8/0x3a0 kernel/kthread.c:376
->           ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
-> 
->    -> #0 (&delayed_node->mutex){+.+.}-{3:3}:
->           check_prev_add kernel/locking/lockdep.c:3097 [inline]
->           check_prevs_add kernel/locking/lockdep.c:3216 [inline]
->           validate_chain kernel/locking/lockdep.c:3831 [inline]
->           __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5055
->           lock_acquire kernel/locking/lockdep.c:5668 [inline]
->           lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
->           __mutex_lock_common kernel/locking/mutex.c:603 [inline]
->           __mutex_lock+0x12f/0x1360 kernel/locking/mutex.c:747
->           __btrfs_release_delayed_node.part.0+0xa1/0xf30 fs/btrfs/delayed-inode.c:256
->           __btrfs_release_delayed_node fs/btrfs/delayed-inode.c:251 [inline]
->           btrfs_release_delayed_node fs/btrfs/delayed-inode.c:281 [inline]
->           btrfs_remove_delayed_node+0x52/0x60 fs/btrfs/delayed-inode.c:1285
->           btrfs_evict_inode+0x511/0xf30 fs/btrfs/inode.c:5554
->           evict+0x2ed/0x6b0 fs/inode.c:664
->           dispose_list+0x117/0x1e0 fs/inode.c:697
->           prune_icache_sb+0xeb/0x150 fs/inode.c:896
->           super_cache_scan+0x391/0x590 fs/super.c:106
->           do_shrink_slab+0x464/0xce0 mm/vmscan.c:843
->           shrink_slab_memcg mm/vmscan.c:912 [inline]
->           shrink_slab+0x388/0x660 mm/vmscan.c:991
->           shrink_node_memcgs mm/vmscan.c:6088 [inline]
->           shrink_node+0x93d/0x1f30 mm/vmscan.c:6117
->           shrink_zones mm/vmscan.c:6355 [inline]
->           do_try_to_free_pages+0x3b4/0x17a0 mm/vmscan.c:6417
->           try_to_free_mem_cgroup_pages+0x3a4/0xa70 mm/vmscan.c:6732
->           reclaim_high.constprop.0+0x182/0x230 mm/memcontrol.c:2393
->           mem_cgroup_handle_over_high+0x190/0x520 mm/memcontrol.c:2578
->           try_charge_memcg+0xe0c/0x12f0 mm/memcontrol.c:2816
->           try_charge mm/memcontrol.c:2827 [inline]
->           charge_memcg+0x90/0x3b0 mm/memcontrol.c:6889
->           __mem_cgroup_charge+0x2b/0x90 mm/memcontrol.c:6910
->           mem_cgroup_charge include/linux/memcontrol.h:667 [inline]
->           __filemap_add_folio+0x615/0xf80 mm/filemap.c:852
->           filemap_add_folio+0xaf/0x1e0 mm/filemap.c:934
->           __filemap_get_folio+0x389/0xd80 mm/filemap.c:1976
->           pagecache_get_page+0x2e/0x280 mm/folio-compat.c:104
->           find_or_create_page include/linux/pagemap.h:612 [inline]
->           alloc_extent_buffer+0x2b9/0x1580 fs/btrfs/extent_io.c:4588
->           btrfs_init_new_buffer fs/btrfs/extent-tree.c:4869 [inline]
->           btrfs_alloc_tree_block+0x2e1/0x1320 fs/btrfs/extent-tree.c:4988
->           __btrfs_cow_block+0x3b2/0x1420 fs/btrfs/ctree.c:440
->           btrfs_cow_block+0x2fa/0x950 fs/btrfs/ctree.c:595
->           btrfs_search_slot+0x11b0/0x2c70 fs/btrfs/ctree.c:2038
->           btrfs_update_root+0xdb/0x630 fs/btrfs/root-tree.c:137
->           update_log_root fs/btrfs/tree-log.c:2841 [inline]
->           btrfs_sync_log+0xbfb/0x2870 fs/btrfs/tree-log.c:3064
->           btrfs_sync_file+0xdb9/0x13c0 fs/btrfs/file.c:1947
->           vfs_fsync_range+0x13e/0x230 fs/sync.c:188
->           generic_write_sync include/linux/fs.h:2856 [inline]
->           iomap_dio_complete+0x73a/0x920 fs/iomap/direct-io.c:128
->           btrfs_direct_write fs/btrfs/file.c:1536 [inline]
->           btrfs_do_write_iter+0xba2/0x1470 fs/btrfs/file.c:1668
->           call_write_iter include/linux/fs.h:2160 [inline]
->           do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:735
->           do_iter_write+0x182/0x700 fs/read_write.c:861
->           vfs_iter_write+0x74/0xa0 fs/read_write.c:902
->           iter_file_splice_write+0x745/0xc90 fs/splice.c:686
->           do_splice_from fs/splice.c:764 [inline]
->           direct_splice_actor+0x114/0x180 fs/splice.c:931
->           splice_direct_to_actor+0x335/0x8a0 fs/splice.c:886
->           do_splice_direct+0x1ab/0x280 fs/splice.c:974
->           do_sendfile+0xb19/0x1270 fs/read_write.c:1255
->           __do_sys_sendfile64 fs/read_write.c:1323 [inline]
->           __se_sys_sendfile64 fs/read_write.c:1309 [inline]
->           __x64_sys_sendfile64+0x259/0x2c0 fs/read_write.c:1309
->           do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->           do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->           entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
->    other info that might help us debug this:
-> 
->    Chain exists of:
->      &delayed_node->mutex --> btrfs-tree-00 --> btrfs-log-00
-> 
->    Possible unsafe locking scenario:
-> 
->           CPU0                    CPU1
->           ----                    ----
->      lock(btrfs-log-00);
->                                   lock(btrfs-tree-00);
->                                   lock(btrfs-log-00);
->      lock(&delayed_node->mutex);
-> 
-> Holding a read lock on a leaf from a fs/subvolume tree creates a nasty
-> lock dependency when we are COWing extent buffers for the log tree and we
-> have two tasks modifying the log tree, with each one in one of the
-> following 2 scenarios:
-> 
-> 1) Modifying the log tree triggers an extent buffer allocation while
->    holding a write lock on a parent extent buffer from the log tree.
->    Allocating the pages for an extent buffer, or the extent buffer
->    struct, can trigger inode eviction and finally the inode eviction
->    will trigger a release/remove of a delayed node, which requires
->    taking the delayed node's mutex;
-> 
-> 2) Allocating a metadata extent for a log tree can trigger the async
->    reclaim thread and make us wait for it to release enough space and
->    unblock our reservation ticket. The reclaim thread can start flushing
->    delayed items, and that in turn results in the need to lock delayed
->    node mutexes and in the need to write lock extent buffers of a
->    subvolume tree - all this while holding a write lock on the parent
->    extent buffer in the log tree.
-> 
-> So one task in scenario 1) running in parallel with another task in
-> scenario 2) could lead to a deadlock, one wanting to lock a delayed node
-> mutex while having a read lock on a leaf from the subvolume, while the
-> other is holding the delayed node's mutex and wants to write lock the same
-> subvolume leaf for flushing delayed items.
-> 
-> Fix this by cloning the leaf of the fs/subvolume tree, release/unlock the
-> fs/subvolume leaf and use the clone leaf instead.
-> 
-> Reported-by: syzbot+9b7c21f486f5e7f8d029@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/linux-btrfs/000000000000ccc93c05edc4d8cf@google.com/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  fs/btrfs/tree-log.c | 59 ++++++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 55 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 8fcfaf015a70..f7b1bb9c63e4 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -3675,15 +3675,29 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
->  				  u64 *last_old_dentry_offset)
->  {
->  	struct btrfs_root *log = inode->root->log_root;
-> -	struct extent_buffer *src = path->nodes[0];
-> -	const int nritems = btrfs_header_nritems(src);
-> +	struct extent_buffer *src;
-> +	const int nritems = btrfs_header_nritems(path->nodes[0]);
->  	const u64 ino = btrfs_ino(inode);
->  	bool last_found = false;
->  	int batch_start = 0;
->  	int batch_size = 0;
->  	int i;
->  
-> -	for (i = path->slots[0]; i < nritems; i++) {
-> +	/*
-> +	 * We need to clone the leaf, release the read lock on it, and use the
-> +	 * clone before modifying the log tree. See the comment at copy_items()
-> +	 * about why we need to do this.
-> +	 */
-> +	src = btrfs_clone_extent_buffer(path->nodes[0]);
-> +	if (!src)
-> +		return -ENOMEM;
-> +
-> +	i = path->slots[0];
-> +	btrfs_release_path(path);
-> +	path->nodes[0] = src;
-> +	path->slots[0] = i;
-> +
-> +	for (; i < nritems; i++) {
->  		struct btrfs_dir_item *di;
->  		struct btrfs_key key;
->  		int ret;
-> @@ -4284,7 +4298,7 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
->  {
->  	struct btrfs_root *log = inode->root->log_root;
->  	struct btrfs_file_extent_item *extent;
-> -	struct extent_buffer *src = src_path->nodes[0];
-> +	struct extent_buffer *src;
->  	int ret = 0;
->  	struct btrfs_key *ins_keys;
->  	u32 *ins_sizes;
-> @@ -4295,6 +4309,43 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
->  	const bool skip_csum = (inode->flags & BTRFS_INODE_NODATASUM);
->  	const u64 i_size = i_size_read(&inode->vfs_inode);
->  
-> +	/*
-> +	 * To keep lockdep happy and avoid deadlocks, clone the source leaf and
-> +	 * use the clone. This is because otherwise we would be changing the log
-> +	 * tree, to insert items from the subvolume tree or insert csum items,
-> +	 * while holding a read lock on a leaf from the subvolume tree, which
-> +	 * creates a nasty lock dependency when COWing log tree nodes/leaves:
-> +	 *
-> +	 * 1) Modifying the log tree triggers an extent buffer allocation while
-> +	 *    holding a write lock on a parent extent buffer from the log tree.
-> +	 *    Allocating the pages for an extent buffer, or the extent buffer
-> +	 *    struct, can trigger inode eviction and finally the inode eviction
-> +	 *    will trigger a release/remove of a delayed node, which requires
-> +	 *    taking the delayed node's mutex;
-> +	 *
-> +	 * 2) Allocating a metadata extent for a log tree can trigger the async
-> +	 *    reclaim thread and make us wait for it to release enough space and
-> +	 *    unblock our reservation ticket. The reclaim thread can start
-> +	 *    flushing delayed items, and that in turn results in the need to
-> +	 *    lock delayed node mutexes and in the need to write lock extent
-> +	 *    buffers of a subvolume tree - all this while holding a write lock
-> +	 *    on the parent extent buffer in the log tree.
-> +	 *
-> +	 * So one task in scenario 1) running in parallel with another task in
-> +	 * scenario 2) could lead to a deadlock, one wanting to lock a delayed
-> +	 * node mutex while having a read lock on a leaf from the subvolume,
-> +	 * while the other is holding the delayed node's mutex and wants to
-> +	 * write lock the same subvolume leaf for flushing delayed items.
-> +	 */
-> +	src = btrfs_clone_extent_buffer(src_path->nodes[0]);
-> +	if (!src)
-> +		return -ENOMEM;
-> +
-> +	i = src_path->slots[0];
-> +	btrfs_release_path(src_path);
-> +	src_path->nodes[0] = src;
-> +	src_path->slots[0] = i;
-> +
->  	ins_data = kmalloc(nr * sizeof(struct btrfs_key) +
->  			   nr * sizeof(u32), GFP_NOFS);
->  	if (!ins_data)
-> -- 
-> 2.35.1
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 
+Patch:
+     btrfs-progs: tests: update stream version checks in misc/058
+                                                should be 053 ^^^
+Fixed the check for the older version.
+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
