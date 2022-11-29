@@ -2,52 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B12C63BB65
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Nov 2022 09:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B152763BBE4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Nov 2022 09:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbiK2IVp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Nov 2022 03:21:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34736 "EHLO
+        id S230476AbiK2Inn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Nov 2022 03:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbiK2IVm (ORCPT
+        with ESMTP id S231152AbiK2Ink (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Nov 2022 03:21:42 -0500
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50B957B40
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Nov 2022 00:21:41 -0800 (PST)
-Received: by mail-il1-f197.google.com with SMTP id w9-20020a056e021c8900b0030247910269so11212953ill.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Nov 2022 00:21:41 -0800 (PST)
+        Tue, 29 Nov 2022 03:43:40 -0500
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E0424978
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Nov 2022 00:43:39 -0800 (PST)
+Received: by mail-io1-f69.google.com with SMTP id c20-20020a5d9754000000b006dbd4e6a5abso8074397ioo.17
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Nov 2022 00:43:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=MpQYMLpt/bycVlWC6U8JGOQTt/3IYzJ8U4wO7awntLY=;
-        b=bqEZoUyJ2q39HKUhKloDBp82L6keesDJC0ohgneSmnSsg/85suoQ2BSY63LLsmrOK+
-         2XJFl80mcAWaBauP9tT3ftoIVmzQojuFLP+6fmVJi9nwQJGVHLGBvNBskxB4yLhOSp+P
-         1yk1yr9/Brg+Epx4wss7jPddC7EhujWoTntu9m70RYq2BAw3ispLGGnBnqAoTq/ilkr9
-         eB2nxhNVROnyveI2Px7R7DWkG3tedWNKSmRqQ5Q7Tfjleq0GKR1OXDSyFcKtD6EfEWOx
-         91JoS/wnHiq2DF9A4bBwoNwTQ664/30JmbhkhND2XASxeau8g8VIQTxvA9da1+QLRNdp
-         Ukpg==
-X-Gm-Message-State: ANoB5pm4ve3Y+TrKlBDVdIfsp0ljHoJl+VDRCqNiBSiuQ+KxEw+TaZ5T
-        eb/ieYHngOuBvrt7Q7EspJ+kKp+bA1k7vzasWY0B/7A0ghUj
-X-Google-Smtp-Source: AA0mqf7WLmXhj9IqbhUs6n8OcuccA/0NgC495qCxcagg8ZLcYU0WaYL1mRbrkgoU0K/APVJHXa01Bj8Os0xBuPxHa64xB2fw6S2J
+        bh=eROaMJHXtlAeIf9+9B26Zu+8Ip7dRb8FLbrEw0ysiHM=;
+        b=j0JpktI3YVnMw7PQs9tLb7FRbV8t492MIh2LgoR+vWuZ2Bj/+3cm4MkmnDfqsHp9QA
+         KFa25drD8SVDxEfwqS/8bbdxrAwXbFfBqQmOc7657PWSwJMVczqzffB7pIjIV/ablPgp
+         +1eB19v8cbZr4arRPHWALjqga1MPd6MbYIiQSAVyagijRMx/HN0Al41GLw8cIIU7bRvH
+         F9eJm82IwTwHwy/p/JUDNs3zflLMwP/po1Llnh4ij86ikpZzvBrD8CewDtrkHgOZarKv
+         +TeXAKxzRN8K4WdYqGvH31jLxOg3gnCJ1kKyxUMbq7nUi0GKe360b/k9AP/6ytkdxLjT
+         P85Q==
+X-Gm-Message-State: ANoB5pnMl++x7WjHFLByml1V1Wg/dYGWDRwU6vi7ocQmURuIMDMhfv6E
+        052hFRaQBQB/DHD9Up27rJ04Z2Am94rNEWx1CRM1yWkjxqoG
+X-Google-Smtp-Source: AA0mqf5tw8EWQb8FXAqvp/obFtElLcB7emtzch+skwIA7xGcuSwuZs+WaOW7LPOpMzyLMx6UYtXvqKtjhgM6i1zT6fK0CgFDTe2N
 MIME-Version: 1.0
-X-Received: by 2002:a92:db4b:0:b0:302:5575:9e46 with SMTP id
- w11-20020a92db4b000000b0030255759e46mr24667075ilq.41.1669710101191; Tue, 29
- Nov 2022 00:21:41 -0800 (PST)
-Date:   Tue, 29 Nov 2022 00:21:41 -0800
+X-Received: by 2002:a05:6e02:1409:b0:300:f124:867e with SMTP id
+ n9-20020a056e02140900b00300f124867emr14899857ilo.44.1669711418539; Tue, 29
+ Nov 2022 00:43:38 -0800 (PST)
+Date:   Tue, 29 Nov 2022 00:43:38 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000075a52e05ee97ad74@google.com>
-Subject: [syzbot] WARNING: kmalloc bug in btrfs_ioctl_send
-From:   syzbot <syzbot+4376a9a073770c173269@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000fac82605ee97fb72@google.com>
+Subject: [syzbot] WARNING in btrfs_free_reserved_data_space_noquota
+From:   syzbot <syzbot+adec8406ad17413d4c06@syzkaller.appspotmail.com>
+To:     christophe.leroy@csgroup.eu, clm@fb.com, dsterba@suse.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
+        npiggin@gmail.com, shuah@kernel.org,
+        syzkaller-bugs@googlegroups.com, ye.xingchen@zte.com.cn
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -58,73 +62,87 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    6d464646530f Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=176a733d880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=54b747d981acc7b7
-dashboard link: https://syzkaller.appspot.com/bug?extid=4376a9a073770c173269
+HEAD commit:    b7b275e60bcd Linux 6.1-rc7
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=158a7b73880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2325e409a9a893e1
+dashboard link: https://syzkaller.appspot.com/bug?extid=adec8406ad17413d4c06
 compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=134c3d03880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13237ca1880000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=169ccb75880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17bf7153880000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d75f5f77b3a3/disk-6d464646.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9382f86e4d95/vmlinux-6d464646.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/cf2b5f0d51dd/Image-6d464646.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/aa0da055eccb/mount_0.gz
+disk image: https://storage.googleapis.com/syzbot-assets/525233126d34/disk-b7b275e6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e8299bf41400/vmlinux-b7b275e6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/eebf691dbf6f/bzImage-b7b275e6.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/5423c2d2ad62/mount_0.gz
+
+The issue was bisected to:
+
+commit c814bf958926ff45a9c1e899bd001006ab6cfbae
+Author: ye xingchen <ye.xingchen@zte.com.cn>
+Date:   Tue Aug 16 10:51:06 2022 +0000
+
+    powerpc/selftests: Use timersub() for gettimeofday()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=118c3d03880000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=138c3d03880000
+console output: https://syzkaller.appspot.com/x/log.txt?x=158c3d03880000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4376a9a073770c173269@syzkaller.appspotmail.com
+Reported-by: syzbot+adec8406ad17413d4c06@syzkaller.appspotmail.com
+Fixes: c814bf958926 ("powerpc/selftests: Use timersub() for gettimeofday()")
 
-BTRFS info (device loop0): using free space tree
-BTRFS info (device loop0): enabling ssd optimizations
-BTRFS info (device loop0): checking UUID tree
+RDX: 0000000000000001 RSI: 0000000020000280 RDI: 0000000000000005
+RBP: 00007ffd32e91c70 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000008000000 R11: 0000000000000246 R12: 0000000000000006
+R13: 00007ffd32e91cb0 R14: 00007ffd32e91c90 R15: 0000000000000006
+ </TASK>
 ------------[ cut here ]------------
-WARNING: CPU: 1 PID: 3072 at mm/util.c:596 kvmalloc_node+0x19c/0x1a4
+WARNING: CPU: 1 PID: 3764 at fs/btrfs/space-info.h:122 btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:154 [inline]
+WARNING: CPU: 1 PID: 3764 at fs/btrfs/space-info.h:122 btrfs_free_reserved_data_space_noquota+0x219/0x2b0 fs/btrfs/delalloc-space.c:179
 Modules linked in:
-CPU: 1 PID: 3072 Comm: syz-executor189 Not tainted 6.1.0-rc6-syzkaller-32662-g6d464646530f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/30/2022
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : kvmalloc_node+0x19c/0x1a4
-lr : kvmalloc_node+0x198/0x1a4 mm/util.c:596
-sp : ffff800012f13c40
-x29: ffff800012f13c50 x28: ffff0000cbb01000 x27: 0000000000000000
-x26: 0000000000000000 x25: ffff0000c97a8a10 x24: ffff0000c6fa6400
-x23: 0000000000000000 x22: ffff8000091f72d8 x21: 000caf0ca5eccda0
-x20: 00000000ffffffff x19: 0000000000000dc0 x18: 0000000000000010
-x17: ffff80000c0f0b68 x16: ffff80000dbe6158 x15: ffff0000c43a1a40
-x14: 0000000000000000 x13: 00000000ffffffff x12: ffff0000c43a1a40
-x11: ff808000084361e8 x10: 0000000000000000 x9 : ffff8000084361e8
-x8 : ffff0000c43a1a40 x7 : ffff800008578874 x6 : 0000000000000000
-x5 : 00000000ffffffff x4 : 0000000000012dc0 x3 : 0010000000000000
-x2 : 000caf0ca5eccda0 x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- kvmalloc_node+0x19c/0x1a4
- kvmalloc include/linux/slab.h:706 [inline]
- kvmalloc_array include/linux/slab.h:724 [inline]
- kvcalloc include/linux/slab.h:729 [inline]
- btrfs_ioctl_send+0x64c/0xed0 fs/btrfs/send.c:7915
- _btrfs_ioctl_send+0x188/0x218 fs/btrfs/ioctl.c:5233
- btrfs_ioctl+0x5c0/0xa64
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __arm64_sys_ioctl+0xd0/0x140 fs/ioctl.c:856
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:52 [inline]
- el0_svc_common+0x138/0x220 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x48/0x164 arch/arm64/kernel/syscall.c:206
- el0_svc+0x58/0x150 arch/arm64/kernel/entry-common.c:637
- el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:584
-irq event stamp: 82706
-hardirqs last  enabled at (82705): [<ffff80000844b028>] mod_lruvec_page_state include/linux/vmstat.h:563 [inline]
-hardirqs last  enabled at (82705): [<ffff80000844b028>] __kmalloc_large_node+0x108/0x188 mm/slab_common.c:1099
-hardirqs last disabled at (82706): [<ffff80000c07d8b4>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:405
-softirqs last  enabled at (82616): [<ffff80000801c38c>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (82614): [<ffff80000801c358>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
+CPU: 1 PID: 3764 Comm: syz-executor759 Not tainted 6.1.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:btrfs_space_info_update_bytes_may_use fs/btrfs/space-info.h:122 [inline]
+RIP: 0010:btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:154 [inline]
+RIP: 0010:btrfs_free_reserved_data_space_noquota+0x219/0x2b0 fs/btrfs/delalloc-space.c:179
+Code: 2f 00 74 08 4c 89 ef e8 b5 98 32 fe 49 8b 5d 00 48 89 df 4c 8b 74 24 08 4c 89 f6 e8 21 81 de fd 4c 39 f3 73 16 e8 d7 7e de fd <0f> 0b 31 db 4c 8b 34 24 41 80 3c 2f 00 75 8c eb 92 e8 c1 7e de fd
+RSP: 0018:ffffc9000443f410 EFLAGS: 00010293
+RAX: ffffffff83ac1919 RBX: 00000000005cb000 RCX: ffff888027989d40
+RDX: 0000000000000000 RSI: 0000000000800000 RDI: 00000000005cb000
+RBP: dffffc0000000000 R08: ffffffff83ac190f R09: fffffbfff1cebe0e
+R10: fffffbfff1cebe0e R11: 1ffffffff1cebe0d R12: ffff8880774f3800
+R13: ffff8880774f3860 R14: 0000000000800000 R15: 1ffff1100ee9e70c
+FS:  0000555555aaa300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0d98f20140 CR3: 0000000025ccf000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_free_reserved_data_space+0x9d/0xd0 fs/btrfs/delalloc-space.c:199
+ btrfs_dio_iomap_begin+0x8f7/0x1070 fs/btrfs/inode.c:7762
+ iomap_iter+0x606/0x8a0 fs/iomap/iter.c:74
+ __iomap_dio_rw+0xd91/0x20d0 fs/iomap/direct-io.c:601
+ btrfs_dio_write+0x9c/0xe0 fs/btrfs/inode.c:8094
+ btrfs_direct_write fs/btrfs/file.c:1835 [inline]
+ btrfs_do_write_iter+0x871/0x1260 fs/btrfs/file.c:1980
+ do_iter_write+0x6c2/0xc20 fs/read_write.c:861
+ vfs_writev fs/read_write.c:934 [inline]
+ do_pwritev+0x200/0x350 fs/read_write.c:1031
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0d98ea8ea9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd32e91c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f0d98ea8ea9
+RDX: 0000000000000001 RSI: 0000000020000280 RDI: 0000000000000005
+RBP: 00007ffd32e91c70 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000008000000 R11: 0000000000000246 R12: 0000000000000006
+R13: 00007ffd32e91cb0 R14: 00007ffd32e91c90 R15: 0000000000000006
+ </TASK>
 
 
 ---
@@ -134,5 +152,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
