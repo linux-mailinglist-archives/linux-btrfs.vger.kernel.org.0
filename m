@@ -2,243 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 595EB63EB9F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Dec 2022 09:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 505F363F055
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Dec 2022 13:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbiLAIx0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Dec 2022 03:53:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
+        id S231372AbiLAMUw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Dec 2022 07:20:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbiLAIxZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Dec 2022 03:53:25 -0500
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2080.outbound.protection.outlook.com [40.107.247.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC7137205
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Dec 2022 00:53:23 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hwJQq4mb52IcHpQMTO9rB/nfsSjamJH8hGbgPbHOdf7q69VckrRsrZt6yizpyGLPvSNW02hbOO7gh+8/E7nX2vSq9eBkWkQlLxDRuIk3ODlM75h76S6t7I+tAGCdKMMxfh01uS3/y71HlrT8vHDyZDsA1RoIZuLSiHdFBU4DC7mf2LxI4QNeRUd+EcyJmgwqvTTXYFAkcE9Gp3+rMUM86PLTaPHD7egGrgjC4gNvz3aRwIIwR2WIOdNHQ/GsH4jWi/8p+CvoYfhdt/zNpO1lC+d4BLQQFBQVXEsjlyTEt26VzRkqbQU84oC0Rv0U4y3JTOJ1O55j28wuHrCIMtnptg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X+zldI7Y35W+mtNH6eIgA/sCiSbn9lw47Dp//OlF18g=;
- b=dRqq6b0EmTc6tBjzkgxK4g+rNm8hE7cYIK6xSO51BMVKlcj84TJkJXNPdrHgEx+OkjDfUdWWxW6urC/L9Vh592/ZgIe4+aJK4wslYW65gHF+B8WNDgFGYDFGxBUJj3H2yb95Q/5r2AOuApQFaQioaZdnk6heV0TWhhO2LJ9+XftOHxzFSA8TBzk4A7gwpbmFTXYPRoyEieQ5tBLtFbd28TUMgC1Tmw7ePLRplMh3/tdEm9TlZUCTUJmjgfw8DJXjmNlQ1FZWHJzSHh4zJtxCthUX1Ye7ynCI8j7FjXhKOWPnipWaWpKbNkzrxIxmrYZbKURKJNfCnUt3AvGvFsmgNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X+zldI7Y35W+mtNH6eIgA/sCiSbn9lw47Dp//OlF18g=;
- b=a/sZHbj225SiFFvAY5L6lm4zGYTENwAMMWU6gfVae78ponisfiMdj4qFbKBEGvXhXP8PuLb830uzzR759eass6ZLE+rfnwwRF0Jr/Ig1lhVfSNijNA7NdNEB33Nw8bubBZV8DJ5sB1j3Q5pmUNESVyqYG7JpwjTf+QAYXRboQo+enu69S/DMzKd45umIqw+ioQaLNh5O/ftTQGrjilkb3moZNLMbrMtGOqjXof1Ne4krVVvn8eDDPlF8IDGZsyKHICe1TB93lxvKiahjkZKJP1vO9qklvmkyOnGUeIDJYBTKabCMgXdoeFFHWooVc8I4/VHvFwfpHlHVCRY3tlWosw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by DB9PR04MB9427.eurprd04.prod.outlook.com (2603:10a6:10:369::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5857.23; Thu, 1 Dec
- 2022 08:53:19 +0000
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::b69e:7eea:21cc:54ab]) by AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::b69e:7eea:21cc:54ab%9]) with mapi id 15.20.5857.023; Thu, 1 Dec 2022
- 08:53:19 +0000
-Message-ID: <70178c80-0428-f902-5b96-6253b6678b8d@suse.com>
-Date:   Thu, 1 Dec 2022 16:53:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: btrfs-transacti hanging (was: Re[6]: block group x has wrong
- amount of free space)
-To:     Hendrik Friedel <hendrik@friedels.name>,
-        Paul Jones <paul@pauljones.id.au>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <em9da2c7f3-31bb-426b-89a3-51fd1dea8968@7b52163e.com>
- <ff2940de-babf-d83c-b9d0-1fe8d18909a9@gmx.com>
- <emca736322-38d8-49ca-9c93-083a5bbe946f@7b52163e.com>
- <bcb7a3f2-fa48-1846-e983-2e1ed771275e@gmx.com>
- <em62944e8a-0e4b-4028-ae00-383aac0608ab@7b52163e.com>
- <d7cc9778-9e97-f749-e110-d93a7045e341@gmx.com>
- <em7ed36627-a727-470e-872c-a2af32cdb18d@7b52163e.com>
- <em8aefb52c-4cdc-4cfb-ad52-1c807d8f7756@7b52163e.com>
- <emcca5c139-84cb-403b-af68-e288e31878e3@7b52163e.com>
- <c91c89b4-58e6-526a-bfb8-fb332e792cc3@gmx.com>
- <em6eb00339-18ce-4f15-8b9d-da8058301e72@7b52163e.com>
- <5fcf68ec-836a-3517-289d-bb77527468f7@gmx.com>
- <ema0c172ea-7620-4949-8f89-1504aaf516ca@7b52163e.com>
- <SYCPR01MB4685F00E2D2EB81E014D33159E099@SYCPR01MB4685.ausprd01.prod.outlook.com>
- <em53860311-b978-4908-abfd-24b5acca9c5a@7b52163e.com>
- <SYCPR01MB468562139D0709239BB2CCC39E0A9@SYCPR01MB4685.ausprd01.prod.outlook.com>
- <emf26a8e4d-f646-490c-8ef3-84f1989da042@7b52163e.com>
-Content-Language: en-US
-From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <emf26a8e4d-f646-490c-8ef3-84f1989da042@7b52163e.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR03CA0244.namprd03.prod.outlook.com
- (2603:10b6:a03:3a0::9) To AS8PR04MB8465.eurprd04.prod.outlook.com
- (2603:10a6:20b:348::19)
+        with ESMTP id S231260AbiLAMUs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Dec 2022 07:20:48 -0500
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AF3AC18D
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Dec 2022 04:20:44 -0800 (PST)
+Received: by mail-il1-f197.google.com with SMTP id d19-20020a056e020c1300b00300b5a12c44so1766048ile.15
+        for <linux-btrfs@vger.kernel.org>; Thu, 01 Dec 2022 04:20:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wMT1KljzfUd/pV0qhTXXgm88SnIIs2YbbL99g3bYbhg=;
+        b=oYGZhlSqeD4vi4jWbOZYHwSzXLrJklcoWH1o0N+DVA/FhDLuRDLH+GKqwe4huY0pZ8
+         mQbuhNHyPpCoJHgSXUwvsA0msuM5Xs0CcG+4WJ6SrrwkxijIP2toPismWp8EsMpIrNol
+         1WLaX/5VfHous2RmmBTbeyrz8cHtoPwsYDD5LQqq4k5kro9DMmGB35cOkMHo8CUC3xut
+         WsSv27uyYxNXWByHpojyCd3RdHqSVyeieG4aZzyimn/Wye4h7Zl6wZ9NimwBJednJ1Ep
+         AKVhbKMjXRhvK5ra+u/hX8s4ftUP/fM1ECJDyo6adRo3U91j3uRXs8lKVkF2sdpDEx11
+         8NdQ==
+X-Gm-Message-State: ANoB5pn/9oJ/k6OhlM4e9sWRGrCrvpk3C6+3bEoUBYHnF2oN7sakGMz5
+        1wPnQ02gyxvrrF6nAZ05ir0b0ujmneuEraHyPViWeZGOI0x2
+X-Google-Smtp-Source: AA0mqf46vKUcLWoQ78pEiRV1qjCJa+7ueoHfG2lW86B9dVYjaaM3J76BJY6Bn6TzkFcBhYwSV3n2HpoJl1QwVdy9iEjIvcxG4jth
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DB9PR04MB9427:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9803aa4c-8711-4c2c-fb28-08dad3797d44
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jRj0Er6WX2fSR/Q5Nyf0G5vgDKT44zxzcTLJisBo55nMXbL2Fn8jCvcAtB+Aur98bhYulTHnoK9uU8APzLjpSAWJvlt1xRBUyQBrMUxminvmxJC4oJkJgQQonggBTEMxZ67Y2tWYd+ugUR1np4FX9GTbS/W/fzeLQVvQmAQBR/XZellvFneg7ZRGNwkhI9oyloniQzCOWYIEjJGvhLxMRqd/YY7B6Epgx0ry6JzOuyEZds+kLWh57vaoPtb/rFv1hdtytNvz/6Cx2i1wXXj7jLAlajhpUBjkOWzh3O+YpOp51Elt5SZAfZJsJySfrnOOvaSuvYZO31UtQ4y+fE5biPPmFpE5q93K2NEST1US7qdApvv/qHnkTJro8xgoJ2/r6dQNXdbHoRRIDLtgN9w8BB2pMeSQgGL6ZHwOY0l5TpcvhfIpCfe5X5OcasssmiQH7rj+iszzeZYPbGT4my1FbgXQlbKqTz4r2QvDML2F371tGjtPEoeg++p2dSCiR2iZhy/r6Zg1A2dxiGFG6bT25EPL+zZTPVUvXM59BtqtUQLNV5OarRcNv7/175eFsnYyLfBNmchVLEY7+ZbH5apNeuBFkb6U/FRU1m9eKnJVIOJZaN6kU8P48A/VpE4KjxkNJkxW3t73JYoXazfa02kfiM0t7PneQECzB0vXESV64xDA1YQueSap6EZMOFGC3mOi91ScCD+QKKBZz/xEngNp3rMVEv3S9ky38faWPWicr6mrdanANbipL8vM73sQrfOoXFXUEwWx/bQ0VZAh1x30f9RP6uV8sVBh7+VtOudoiR8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(396003)(39860400002)(366004)(346002)(376002)(451199015)(86362001)(66574015)(83380400001)(31696002)(66556008)(41300700001)(5660300002)(45954011)(478600001)(8936002)(53546011)(6512007)(6666004)(186003)(8676002)(6506007)(966005)(6486002)(19627235002)(316002)(110136005)(36756003)(38100700002)(66946007)(2906002)(66476007)(2616005)(31686004)(5930299009)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dzMxeFp6ZjV6LzVxSTBkUUFJMnV0M2hqcG5GWWg2TVhqRGh0NjNQUkdOZW9F?=
- =?utf-8?B?YXdWVXRnY3RyaUw2SGRORXg5SHVxcVFRald1Mk9SaDhXUXFWWGtHWmttS05B?=
- =?utf-8?B?Ui9CK2RKc0paZWM4WlNOTktheDExRDhVRFhUWXhiekcrSkdTd0ZUUzdJNmFn?=
- =?utf-8?B?eFE0QmwrcEpZbW44L1hiVHpYVGNsL0VNNnZxcGFMM0ZTclpuWnlNeE9Tcy81?=
- =?utf-8?B?anhHcHlmZWtpT1Fzb1V0NGVQWHRDeENZRXNrY1lNcUcvRE0yMkNFZTJuOW1C?=
- =?utf-8?B?RTlYNG1TM1hvWk5GdUxQNllnWUNiWTJoeWtjSjBqV0Z1NHZ1d3lYVURmUXFN?=
- =?utf-8?B?U1NCeklWMlBONllET2RPOTF2aDAzeXRJSkp0Y0VtdEF0Zy9DcVRzTkRuS0NX?=
- =?utf-8?B?OSs1UUJWa3JqUG81TVpUeXlxMlZ4MWFBejZaYzMycklCajk5UG1yV3lSR3Ni?=
- =?utf-8?B?eWRSKzBxcDhuLysvV0NPVFBnbjR0YVNTVVNKSi9Sd2VVNDJEQVJYQ2QvM0NT?=
- =?utf-8?B?NFZYcXJFZytaV2hlNVNrbVQwMXhGQ0E1TWVpNFFMWlEweWlQTEpqVjhsd2NZ?=
- =?utf-8?B?dGFGYlh5R2tlWVVwN2Q5bHdUcDRBUkNiblZETDk4QXpYSE9RVmZjd3RnSHcw?=
- =?utf-8?B?My8xL3lGRUs5blBINVcrandzUTZ6MEVzTTE4dFMxbDJ3d21YUkFjOUgvQVF2?=
- =?utf-8?B?SnJVd21UL0JBazJpVjhheFVWd2xnOW5qMnQ1YXc3L2RtbWxPSDFnN3o3QWI1?=
- =?utf-8?B?MERVZVdDTnA4bEg0WExkK3ROa2toOXR3NURIQVVsYXdVNTV6VEo0VEtTQThT?=
- =?utf-8?B?S2pjVTdqdTRCTHZtRm1sWk9lcUZ2RTlSbys1VmZLbzJrUU5rVndNVno1eTdF?=
- =?utf-8?B?blRRZFZjVlRBQnRoK1dDZzBzb0xXMFdrbCs0eEx6WVo3QnVIby9pYU5mQ2ZE?=
- =?utf-8?B?Tk1KcnJpMFBJRXBZQXB5UkdDaU9WNVM5RW03cnlqRHdYazU5a0RrdnpaMXdm?=
- =?utf-8?B?NUU3aUhZT2FGTDA5OWxJS1BLU3Ria0xRZ2NwcGtydnBob3l4SHdkTENEb1ZD?=
- =?utf-8?B?UVh0SmF2UUdZU2J6K1JvUEczOEF1VUM5bXlXNVE1eWNoSUVxV3NEOWMzTkZ6?=
- =?utf-8?B?US9Ha0xtV2VocFBQWXRydXFUazR0TGpYV25Hbldyd3JPajQ4RFpkRjdUQzZa?=
- =?utf-8?B?Tkcxb3BmUGFwRVJkTnk5QUxYNUNIMk5PeFo2cmJGd1RxNmphRzd4MEo3bHVw?=
- =?utf-8?B?bzlIQjhQWVpCZWxWczM4ZTYwb0k2SDk2cDlEam5rb2RvRTltRzlLQjZBSHZT?=
- =?utf-8?B?Zk03b2pyKy9seWYvTmIwVDZrU0dkOGpOSC9STU1GbXVnczlIVDBFbVY1WXhh?=
- =?utf-8?B?MWhnODRTT05SNDVpM3B3eHJxaFJ5NDdndG9LYnI3RTJnRjZLTzZjSmNJNFJY?=
- =?utf-8?B?T3RlM25ZYktKRC9ybk9BdFliQWtjMG1LMUV2QWpTaTl2VWViZXd4WjhBK2Uw?=
- =?utf-8?B?N3ZqaUxsb0g2SUgyYi9LRjdZMFJBeGx3NjJrQzdTSjc3T1lFNUJPaFNaODlC?=
- =?utf-8?B?U3p5NEE4QXFjM25hYk80cU5XV1p0b1BmbUp4bFFiZjFNeWJyUkIza2R4bC9C?=
- =?utf-8?B?MGhmWDJaWHpmNjJ5N1ZpN3BTZkpKNEwxMGorR3NJNnlaN2htWDFaQWtoVVow?=
- =?utf-8?B?SXQwNTJMNWNtOXpEWmVXdm9jWGRveFF3amdtRkRKTU5vRnZSbjl4bXFmTThE?=
- =?utf-8?B?VDZQaE5zcjZUN0hyemZJVjBUbElMTlJXeFVOOUJLczU4dlhFTTRjU2QrN1R6?=
- =?utf-8?B?THNzNTVGMENLZmlMZ2lnSFpZdU0zMGlLTC9TMHZzdStPREE2MWhkbXhRTmVL?=
- =?utf-8?B?ZE83Zm9xM1I5Q1pHQW5aMlBTUnlFSWRqLzBTaWdNOGEyRi9LQXd5MU5GMlZx?=
- =?utf-8?B?V1lQci95TldHZUpERHFIVUZnQ21DSTN5aEthQllaeEZ1bHM2YUNlandpcmsw?=
- =?utf-8?B?YVM5bTU4azBLRmIxTjBjZ1kyTGhITkVZZStSalNBVWRnRXl4Tk50UWtSZXRr?=
- =?utf-8?B?c3VKTG5XM25xejBGVndxaWZBWHVvTlZGMDlOMVFiOFZZY1NTYkpGVWxreXYr?=
- =?utf-8?B?REZMQ29BcWhUZFBQVzhTdDY2SnJFa0lYNG5CMGVrenl4Y1lrekkvanlVcXoy?=
- =?utf-8?Q?JJ4uqOXFRHLSecRkpDLCmJc=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9803aa4c-8711-4c2c-fb28-08dad3797d44
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2022 08:53:19.3000
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UR4+C/TYKy48D7gLxg6Ea/YVgi0ThD4aFBFm/YWjUGuAed2/G5+VHgvwhqi1I/eM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9427
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,BITCOIN_SPAM_02,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        PDS_BTC_ID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a5d:980d:0:b0:6a0:ee21:53fb with SMTP id
+ a13-20020a5d980d000000b006a0ee2153fbmr22229567iol.190.1669897244240; Thu, 01
+ Dec 2022 04:20:44 -0800 (PST)
+Date:   Thu, 01 Dec 2022 04:20:44 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000e082305eec34072@google.com>
+Subject: [syzbot] kernel BUG in set_state_bits
+From:   syzbot <syzbot+b9d2e54d2301324657ed@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    04aa64375f48 drm/i915: fix TLB invalidation for Gen12 vide..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10eaf7fd880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cc4b2e0a8e8a8366
+dashboard link: https://syzkaller.appspot.com/bug?extid=b9d2e54d2301324657ed
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/eb15d8caa706/disk-04aa6437.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/34b02819c252/vmlinux-04aa6437.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/fce6b0f68514/bzImage-04aa6437.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b9d2e54d2301324657ed@syzkaller.appspotmail.com
+
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd13eafe168 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+RAX: ffffffffffffffda RBX: 00007fd13dfabf80 RCX: 00007fd13de8c0d9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
+RBP: 00007fd13eafe1d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000280404 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007fff8d69463f R14: 00007fd13eafe300 R15: 0000000000022000
+ </TASK>
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/extent-io-tree.c:381!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 21793 Comm: syz-executor.2 Not tainted 6.1.0-rc7-syzkaller-00102-g04aa64375f48 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:set_state_bits.isra.0+0x17b/0x1c0 fs/btrfs/extent-io-tree.c:381
+Code: 38 d0 7c 04 84 d2 75 31 44 8b 73 7c e8 fe df fb fd 44 89 e0 44 09 f0 89 43 7c 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 e5 df fb fd <0f> 0b 4c 89 ef e8 7b b2 48 fe e9 e6 fe ff ff 4c 89 ef e8 6e b2 48
+RSP: 0018:ffffc9000bb77a90 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: ffff88801917c240 RCX: ffffc900043b3000
+RDX: 0000000000040000 RSI: ffffffff8384393b RDI: 0000000000000005
+RBP: 00000000fffffff4 R08: 0000000000000005 R09: 0000000000000000
+R10: 00000000fffffff4 R11: 0000000000000000 R12: 0000000000001000
+R13: ffff88801917c2bc R14: 0000000000280fff R15: 0000000000000000
+FS:  00007fd13eafe700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b30a31000 CR3: 000000007c091000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ __set_extent_bit+0x79d/0x1430 fs/btrfs/extent-io-tree.c:1019
+ set_record_extent_bits+0x5e/0x70 fs/btrfs/extent-io-tree.c:1601
+ qgroup_reserve_data+0x239/0xbc0 fs/btrfs/qgroup.c:3739
+ btrfs_qgroup_reserve_data+0x2f/0xd0 fs/btrfs/qgroup.c:3782
+ btrfs_fallocate+0x7fd/0x27c0 fs/btrfs/file.c:3451
+ vfs_fallocate+0x48b/0xe00 fs/open.c:323
+ ksys_fallocate fs/open.c:346 [inline]
+ __do_sys_fallocate fs/open.c:354 [inline]
+ __se_sys_fallocate fs/open.c:352 [inline]
+ __x64_sys_fallocate+0xd3/0x140 fs/open.c:352
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fd13de8c0d9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd13eafe168 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+RAX: ffffffffffffffda RBX: 00007fd13dfabf80 RCX: 00007fd13de8c0d9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
+RBP: 00007fd13eafe1d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000280404 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007fff8d69463f R14: 00007fd13eafe300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:set_state_bits.isra.0+0x17b/0x1c0 fs/btrfs/extent-io-tree.c:381
+Code: 38 d0 7c 04 84 d2 75 31 44 8b 73 7c e8 fe df fb fd 44 89 e0 44 09 f0 89 43 7c 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 e5 df fb fd <0f> 0b 4c 89 ef e8 7b b2 48 fe e9 e6 fe ff ff 4c 89 ef e8 6e b2 48
+RSP: 0018:ffffc9000bb77a90 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: ffff88801917c240 RCX: ffffc900043b3000
+RDX: 0000000000040000 RSI: ffffffff8384393b RDI: 0000000000000005
+RBP: 00000000fffffff4 R08: 0000000000000005 R09: 0000000000000000
+R10: 00000000fffffff4 R11: 0000000000000000 R12: 0000000000001000
+R13: ffff88801917c2bc R14: 0000000000280fff R15: 0000000000000000
+FS:  00007fd13eafe700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b30a31000 CR3: 000000007c091000 CR4: 0000000000350ef0
+----------------
+Code disassembly (best guess):
+   0:	28 00                	sub    %al,(%rax)
+   2:	00 00                	add    %al,(%rax)
+   4:	75 05                	jne    0xb
+   6:	48 83 c4 28          	add    $0x28,%rsp
+   a:	c3                   	retq
+   b:	e8 f1 19 00 00       	callq  0x1a01
+  10:	90                   	nop
+  11:	48 89 f8             	mov    %rdi,%rax
+  14:	48 89 f7             	mov    %rsi,%rdi
+  17:	48 89 d6             	mov    %rdx,%rsi
+  1a:	48 89 ca             	mov    %rcx,%rdx
+  1d:	4d 89 c2             	mov    %r8,%r10
+  20:	4d 89 c8             	mov    %r9,%r8
+  23:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
+  28:	0f 05                	syscall
+* 2a:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax <-- trapping instruction
+  30:	73 01                	jae    0x33
+  32:	c3                   	retq
+  33:	48 c7 c1 b8 ff ff ff 	mov    $0xffffffffffffffb8,%rcx
+  3a:	f7 d8                	neg    %eax
+  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
+  3f:	48                   	rex.W
 
 
-On 2022/12/1 14:52, Hendrik Friedel wrote:
-> Hello Paul, hello Qu,
-> 
->>> >This indicates you have a physical problem with your disk - I would try
->>> swapping the cables. Try and fix this before you do anything else.
->>> >
->>> Yes, I think so, too and I will work on this.
->>> What I do not understand:
->>> Why does BTRFS not cope with this without filesystem errors? I mean: 
->>> I have
->>> two drives. BTRFS should mark this one bad and continue with the other.
->>>
->>> Is this expected behaviour?
->>
->> It looked like only the free space cache was corrupted, and that can 
->> be rebuilt without losing any data. I believe there were a few 
->> problems with the v1 cache that would cause that occasionally. I've 
->> personally had no problems with the v2 cache when I accidently unplug 
->> the wrong drive or bump cables.
-> I have now set the SATA Link Power Management to max_performance. This 
-> has fixed the stated
->        homeserver kernel: ata3: SError: { PHYRdyChg CommWake LinkSeq }
-> errors, except for during boot, where this error still occurs.
-> (replacing cables did not help).
-> 
-> I would think, that this error occuring during boot once is acceptable, 
-> especially as this is a server and does not boot often.
-> However, even though the last boot was ~24h before and the system was 
-> behaving normally since, I have had a very slow system yesterday 
-> evening. Load was >7. Clients accessing by Smb were hanging.
-> I have had this issue intermittendly for some week or two now. You can 
-> see the load vs time on three graphs here:
-> https://drive.google.com/drive/folders/1MvLaRsgn7tFu55UMVTZfUT1PwXeDTXLo?usp=share_link
-> 
-> When having this high load, I see that btrfs-transacti is 
-> blocked/waiting when running
-> ps -eo s,user,cmd | grep ^[RD]
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-If btrfs-transaction is taking up a log of CPU (btw, scrub and read 
-won't cause new transaction at all, thus your read perf is not 
-affected), it can be that qgroup is enabled AND there is some large 
-snapshot being dropped.
-
-The only situation qgroup can hang for a while is when there is a large 
-snapshot get dropped.
-This behavior should be addressed in the next kernel release (although 
-need extra tool to modify a new sysfs interface).
-
-If that's the case, you can disable qgroup (which removes the ability to 
-know exactly how much space one subvolume uses) as a workaround.
-
-Thanks,
-Qu
-
-> 
-> I have checked the filesystems (btrfs check) without errors. Also a 
-> scrub was fine.
-> 
-> Scrub started:    Mon Nov 28 23:49:33 2022
-> Status:           finished
-> Duration:         21:16:17
-> Total to scrub:   20.10TiB
-> Rate:             270.53MiB/s
-> 
-> You can see, that the Rate is rather high; so at least the read 
-> performance of the drive is fine.
-> 
-> I tested the read-performance:
-> dd if=/dev/zero of=/srv/dev-disk-by-label-DataPool1/test.d bs=100M count=50
-> 50+0 Datensätze ein
-> 50+0 Datensätze aus
-> 5242880000 Bytes (5,2 GB, 4,9 GiB) kopiert, 43,5399 s, 120 MB/s
-> 
-> This also seems ok.
-> 
-> during that, these processes are blocked:
->        1 R root     ps -eo s,user,cmd
->        1 R root     [kworker/2:0-mm_percpu_wq]
->        1 D root     [kworker/u8:8+btrfs-endio-write]
->        1 D root     [kworker/u8:7+blkcg_punt_bio]
->        1 D root     [kworker/u8:5+blkcg_punt_bio]
->        1 D root     [kworker/u8:2+btrfs-endio-write]
->        1 D root     [kworker/u8:1+btrfs-endio-write]
->        1 D root     [kworker/u8:11+btrfs-endio-write]
->        1 D root     [kworker/u8:10+btrfs-endio-write]
->        1 D root     [kworker/u8:0+btrfs-endio-write]
-> 
-> But I suppose this is normal.
-> Smart values also seem nominal/good (I can post them, if you suspect a 
-> drive issue here).
-> 
-> So, what could be the reason for these "hangs"?
-> 
-> Best regards,
-> Hendrik
-> 
->>
-> 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
