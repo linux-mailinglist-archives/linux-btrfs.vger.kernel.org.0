@@ -2,157 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9656A63F885
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Dec 2022 20:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3091F63F8D6
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Dec 2022 21:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbiLATmt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Dec 2022 14:42:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40972 "EHLO
+        id S229713AbiLAUOd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Dec 2022 15:14:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbiLATmk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Dec 2022 14:42:40 -0500
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8FB13F9F
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Dec 2022 11:42:39 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id A8E293200786;
-        Thu,  1 Dec 2022 14:42:38 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute2.internal (MEProxy); Thu, 01 Dec 2022 14:42:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8henrie.com; h=
-        cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1669923758; x=1670010158; bh=0x2lEM/rQa
-        08A7K7c+V8DEtdNY4DQyYob5fv5icysew=; b=ZHS54cyTtkaPs49Y5ziCVkENIB
-        xDl39L0/cE2gjy3n2ApskLFKgT4+d0pLxFqoLWTUbg6bRwuoSoy+me+2piabjfMi
-        WO9DdFOfVorqm0WZmXE1s4f9hpew1YJX1VVkzkz0wF2tyiPJ0wksIJTfFEo8yRRq
-        qxDLhh1AWbZUcaF4lLeQY7wVHIQ3OBUrN40tUQ/Iu/PX4wr0B6bWGf4ZVCnhT1ny
-        a2xSyNFMijcqwo00rzu9G7Hnwd0OOe8xuEF5TRZFvLmpDf1JIgl6AmeRqu5QgpQg
-        aZyHRRNyRMnCf6uTMg9MbmZjuzOJft7a9nui5EigBTDl5Y6lLfL8kglrszsg==
+        with ESMTP id S229553AbiLAUOb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Dec 2022 15:14:31 -0500
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F20BEC6E
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Dec 2022 12:14:30 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id B26565C0183;
+        Thu,  1 Dec 2022 15:14:27 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 01 Dec 2022 15:14:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1669925667; x=
+        1670012067; bh=lqIquc1DYhQzvjY7CfljQ912iHt4pPtb5sJ2dY8PI4A=; b=K
+        RvPRo0oj5C8smzwoHHe7LFrr0la6JJS9oby8eyMklGt4ZTk98X/s1U87CCAU6KQa
+        7cbkaNNU6ia/9Fxra2yW+HWpw/YQpGxdkHVvRErZAqu7Q90mncfCcIhS1oH/yPdM
+        KeEZn4qag1gcOg3yd+EjqRGYqF/bOukn/qGGPYs5XfLCMIJMChePQR1PDipi1UAF
+        0eIpCF494t6YmXB5Qnk4lCg8AIKWaN+9IKCXUa034upis4EWiMpKFY5JFYeklo2I
+        bwGJjjUBHuXFQmsFBToB9PJczoYTJEBzaGFDkF4PrSziB4kwWakvd9RAn3yR7JhX
+        VbxlyimEaqTx5r9LUUOZA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1669923758; x=1670010158; bh=0x2lEM/rQa08A7K7c+V8DEtdNY4D
-        QyYob5fv5icysew=; b=Dd8Q+GbezBrJ6xPo8IHuZZZCuyAnQaVEtvYI+9ugxu96
-        /OyX+no0G+0bA10woQ80hhWeeQIxazh1ii1KbIpy799/y9+kWmH/XxpX49f54LXl
-        uqMiWsd9aBE2LwnkBsTMwiB7OXvs35VaBEPgUYJFmUjOnR4dVSK8yHdkMUPJIoJN
-        ie4OLd8CRbJn9FOYrJ2yeJsmxFn4IwHdO7o834tRj2++th/fEituI8zzzkkhL/Gk
-        cV+Z/gjKYEhK4UUfKEY8k/3qpzFE/SOfWKQoq06a7yqtCm8+0jhu9qzFfNYZOv1i
-        pVMrpJYlGait97MZidweUE9GHZCMxOpHNEpZz/dAHA==
-X-ME-Sender: <xms:rgOJY-k7DCCOkPzUKVSpGGHBoBe-NyTcJpM1YzMR2x3Fg_QgtovIfw>
-    <xme:rgOJY130yjNVc0TFeIvVdjyBfRaVLwkizjLJilwUT1mRgSN1Blw-csw-l3YGeyw09
-    S868eY5RfnzsSe1ACc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrtdehgdduvdelucetufdoteggodetrfdotf
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:date:feedback-id:feedback-id:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; t=1669925667; x=1670012067; bh=l
+        qIquc1DYhQzvjY7CfljQ912iHt4pPtb5sJ2dY8PI4A=; b=ENR3t6QMm9kU1iT+r
+        ooy2eznNobBFtrWZLIL0sM1Gf0ODIVQVD4IunyCeLkvgr5jzTepGrUJ7ukSi7lHa
+        LPZQSHmOcQyUW+/Ocd+miQ2wdCZ6pQgOhCoDpI2u+u60ZC3NUOUfIQZn+M86LFVx
+        gS691IC56oeLf3ma8p6ed1IpIMvfehItOgS0u0ggP+fuXJWge+UT3w3yBhnu2CB4
+        CLwxwRYRzI1mMO1ZT2kldwyKhn2RANBfLiRB7KRLCbLHkC7YGYvismxdgdRPSa6h
+        69+dCge27QmdKq66gsPV6oyUtbwdXHGYAzw4ogG2uo7fmk8GorTY3KmQh4oGq+JK
+        ZlDRw==
+X-ME-Sender: <xms:IwuJY6sQMBiQh1hxiiaoubEQkm5UE18liM2_J0awKGN9DFIGum6tcw>
+    <xme:IwuJY_fWCmsYxwvE9jSp1Roy1mudQnv8mukb3u74kUb1beQVewwRO0e393MORmuTi
+    S8TZBKNlhpXAJUi8Q>
+X-ME-Received: <xmr:IwuJY1zJ06V8jtSq0GlB0W8VAIOi9xl4wz4UhnROGQ6hLV6e7vS8SqiY8Rp3K_OWYQeBGD7Rms_6QWxKbpXrABjM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrtdehgddufeehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtsehttd
-    ertderredtnecuhfhrohhmpedfpfgrthhhrghnucfjvghnrhhivgdfuceonhgrthgvsehn
-    kehhvghnrhhivgdrtghomheqnecuggftrfgrthhtvghrnhepffeivefhfeeileejgeeuhf
-    fhgeeihedtkeevvdevjefhkeetfeeftedtlefhveeinecuffhomhgrihhnpehsmhgrrhht
-    mhhonhhtohholhhsrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepnhgrthgvsehnkehhvghnrhhivgdrtghomh
-X-ME-Proxy: <xmx:rgOJY8rxEUgDOJnREs4GgJHD131g7r5c5_1u_RcRa9-AxoGRuUL2QA>
-    <xmx:rgOJYynb-iWNnVmlDdnpW5w8lUTJ68F3_qQs3o_kzFGVwrvPkpzTbw>
-    <xmx:rgOJY83qxWBL2QRZJ34-SUV-kXya7EPEw1vPhHBEiZNX6E3RtTfqnw>
-    <xmx:rgOJY9h1JD_eU60qVn-fyHiWEPYMrgl-rqsbg00jjQGJ6EQg48zwQA>
-Feedback-ID: iffd94604:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 09514B60089; Thu,  1 Dec 2022 14:42:38 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1115-g8b801eadce-fm-20221102.001-g8b801ead
-Mime-Version: 1.0
-Message-Id: <c2d3f00f-5c0b-4dcc-bfcf-2a6e596c6bdf@app.fastmail.com>
-In-Reply-To: <69614c04-38e3-4b8a-8285-706c1bbc4618@app.fastmail.com>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefuvfhfhffkffgfgggjtgfgsehtje
+    ertddtfeejnecuhfhrohhmpeftvghmihcuifgruhhvihhnuceorhgvmhhisehgvghorhhg
+    ihgrnhhithdrtghomheqnecuggftrfgrthhtvghrnhephffgfeeutddtudfhudejkeejud
+    evledtudeufffhhfeukeejkeekiedtfffhffeinecuvehluhhsthgvrhfuihiivgeptden
+    ucfrrghrrghmpehmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomh
+X-ME-Proxy: <xmx:IwuJY1PQyI-zjj0FSTL_izBJBsc9HiTWMlThtJ-Qwc6Nj0WrGyUS9A>
+    <xmx:IwuJY68Jc-aIgdq2bt0N1aw2AJaFPQuGZY-DlcEUPKhPxv61XOuz5g>
+    <xmx:IwuJY9X16Kk1WuXJ63HWThxDs8-1xekpt2jwqXqzELKh9LZTf4LAfQ>
+    <xmx:IwuJYwlznAZPgodMAKR6kd6pDSP8EhpTHQuMgdguTXlbVcLJQWhQAQ>
+Feedback-ID: i10c840cd:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 1 Dec 2022 15:14:27 -0500 (EST)
+Subject: Re: BTRFS RAID1 root corrupt and read-only
+To:     kreijack@inwind.it, Nathan Henrie <nate@n8henrie.com>,
+        linux-btrfs@vger.kernel.org
 References: <debfa7c5-646c-4333-a277-62e98a78a47e@app.fastmail.com>
  <15a497f7-f4f0-6b17-0f90-58b5420aaaaf@libero.it>
- <69614c04-38e3-4b8a-8285-706c1bbc4618@app.fastmail.com>
-Date:   Thu, 01 Dec 2022 12:42:17 -0700
-From:   "Nathan Henrie" <nate@n8henrie.com>
-To:     kreijack@inwind.it, linux-btrfs@vger.kernel.org
-Subject: Re: BTRFS RAID1 root corrupt and read-only
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Remi Gauvin <remi@georgianit.com>
+Message-ID: <fd9ea145-38cb-eb6a-0154-832ed612633d@georgianit.com>
+Date:   Thu, 1 Dec 2022 15:14:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <15a497f7-f4f0-6b17-0f90-58b5420aaaaf@libero.it>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hmm, perhaps. The devices were `/dev/nvme[0-2]` (at the time of that log all 3 were showing up but one has now dropped off). The two that are visible are not listing any SMART errors, so I hadn't suspected a problem, but that does look suspicious.
+On 2022-12-01 1:52 p.m., Goffredo Baroncelli wrote:
 
-```
-[root@nixos:/tmp]# smartctl -l error /dev/nvme0
-smartctl 7.2 2020-12-30 r5155 [x86_64-linux-5.15.79] (local build)
-Copyright (C) 2002-20, Bruce Allen, Christian Franke, www.smartmontools.org
-=== START OF SMART DATA SECTION ===
-Error Information (NVMe Log 0x01, 16 of 256 entries)
-No Errors Logged
+>> [99537.333018] BTRFS info (device nvme0n1p1): bdev /dev/nvme0n1p1
+>> errs: wr 0, rd 0, flush 0, corrupt 12, gen 0
+>> [99537.333023] BTRFS info (device nvme0n1p1): bdev /dev/nvme1n1p1
+>> errs: wr 0, rd 0, flush 0, corrupt 12, gen 0
+> 
+> 
+> 
+> I am not sure how is related; but from the above excerpt of dmesg, I see
+> that both nvme0 and nvme1 have errors (== corruption). If this is true,
+> raid1 is not enough to protect against these.
+> 
+> 
 
-[root@nixos:/tmp]# smartctl -l error /dev/nvme1
-smartctl 7.2 2020-12-30 r5155 [x86_64-linux-5.15.79] (local build)
-Copyright (C) 2002-20, Bruce Allen, Christian Franke, www.smartmontools.org
-=== START OF SMART DATA SECTION ===
-Error Information (NVMe Log 0x01, 16 of 256 entries)
-No Errors Logged
+What sticks out to me is that they both end up with the same reported
+number of corrupted errors,,, that would lead me to think that the
+corruption is not happening on the storage device but in memory while in
+flight.).
 
-[root@nixos:/tmp]# smartctl -l error /dev/nvme2
-smartctl 7.2 2020-12-30 r5155 [x86_64-linux-5.15.79] (local build)
-Copyright (C) 2002-20, Bruce Allen, Christian Franke, www.smartmontools.org
-Smartctl open device: /dev/nvme2 failed: No such device
-```
+I would start with a burn in memory test,, though more experienced
+members of this list can probably identify bitflip error in the CRC from
+the btrfs check output
 
-Nate
-
-On Thu, Dec 1, 2022, at 12:29 PM, Nathan Henrie wrote:
-> Hmm, perhaps. The devices were `/dev/nvme[0-2]` (at the time of that log all 3 were showing up but one has now dropped off). The two that are visible are not listing any SMART errors, so I hadn't suspected a problem, but that does look suspicious.
-> 
-> ```
-> [root@nixos:/tmp]# smartctl -l error /dev/nvme0
-> smartctl 7.2 2020-12-30 r5155 [x86_64-linux-5.15.79] (local build)
-> Copyright (C) 2002-20, Bruce Allen, Christian Franke, www.smartmontools.org
-> === START OF SMART DATA SECTION ===
-> Error Information (NVMe Log 0x01, 16 of 256 entries)
-> No Errors Logged
-> 
-> [root@nixos:/tmp]# smartctl -l error /dev/nvme1
-> smartctl 7.2 2020-12-30 r5155 [x86_64-linux-5.15.79] (local build)
-> Copyright (C) 2002-20, Bruce Allen, Christian Franke, www.smartmontools.org
-> === START OF SMART DATA SECTION ===
-> Error Information (NVMe Log 0x01, 16 of 256 entries)
-> No Errors Logged
-> 
-> [root@nixos:/tmp]# smartctl -l error /dev/nvme2
-> smartctl 7.2 2020-12-30 r5155 [x86_64-linux-5.15.79] (local build)
-> Copyright (C) 2002-20, Bruce Allen, Christian Franke, www.smartmontools.org
-> Smartctl open device: /dev/nvme2 failed: No such device
-> 
-> ```
-> 
-> Nate
-> 
-> On Thu, Dec 1, 2022, at 11:52 AM, Goffredo Baroncelli wrote:
->> On 01/12/2022 19.27, Nathan Henrie wrote:
->> > Hello all,
->> > 
->> > I've been happily running a BTRFS RAID1 root across 3 x 1TB NVME drives on my Arch Linux machine for a few years with minimal (mostly quota-related) issues.
->> > 
->> > I ran balance a few days ago that failed, and then my root went read-only. I found some smartd errors in one drive, so I 
->> 
->> [...]
->> > [99537.333018] BTRFS info (device nvme0n1p1): bdev /dev/nvme0n1p1 errs: wr 0, rd 0, flush 0, corrupt 12, gen 0
->> > [99537.333023] BTRFS info (device nvme0n1p1): bdev /dev/nvme1n1p1 errs: wr 0, rd 0, flush 0, corrupt 12, gen 0
->> 
->> 
->> 
->> I am not sure how is related; but from the above excerpt of dmesg, I see that both nvme0 and nvme1 have errors (== corruption). If this is true, raid1 is not enough to protect against these.
->> 
->> 
->> -- 
->> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
->> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
->> 
->> 
-> 
