@@ -2,153 +2,316 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E446419F8
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Dec 2022 00:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C766422E5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Dec 2022 07:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbiLCXJi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 3 Dec 2022 18:09:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
+        id S231362AbiLEGHy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Dec 2022 01:07:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbiLCXJh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Dec 2022 18:09:37 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B941A3AB
-        for <linux-btrfs@vger.kernel.org>; Sat,  3 Dec 2022 15:09:35 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N79yG-1ovvFP3VEq-017YsL; Sun, 04
- Dec 2022 00:09:32 +0100
-Message-ID: <f908653b-7092-fe64-00ce-12b14e3d8157@gmx.com>
-Date:   Sun, 4 Dec 2022 07:09:28 +0800
+        with ESMTP id S231175AbiLEGHx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Dec 2022 01:07:53 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B166637A
+        for <linux-btrfs@vger.kernel.org>; Sun,  4 Dec 2022 22:07:51 -0800 (PST)
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 246E21FE2A
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Dec 2022 06:07:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1670220470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=CzKJbrfTn4hkRxALs/wxac4x8jTMSNtVqXVVuSMeVgQ=;
+        b=GEijP0vGZ5zddESONFcqCGIn+ZyIWE5P/EzgxIKkM6PEkwNIv9PQ10B1D3buXdy+lRVXBS
+        SNUWsoVyvrC+Qi/MUUgAuZJF1Q9OLMQ7rmcEmZJdvJFtG1cUFKtYr22JlVVDn7WU6M0xKG
+        qQcJztTcxmlytj5rCxh2ljMO6lIURmA=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 571D41348F
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Dec 2022 06:07:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 2F+VBrWKjWOcfgAAGKfGzw
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Dec 2022 06:07:49 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: check: enhance the error output for backref mimsatch
+Date:   Mon,  5 Dec 2022 14:07:30 +0800
+Message-Id: <1ecdbc90c7cc26f7f5b7a0af7683cf81717b6200.1670220414.git.wqu@suse.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH PoC v2 01/10] btrfs: introduce BTRFS_IOC_SCRUB_FS family
- of ioctls
-To:     li zhang <zhanglikernel@gmail.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1664353497.git.wqu@suse.com>
- <36c909e90fa85813afa206e7f0e0a10177c841b3.1664353497.git.wqu@suse.com>
- <CAAa-AGnd4qRbQ-MRNsTMNKJLP7j+NZrMOV2KRDaKDhUtrrnowQ@mail.gmail.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAAa-AGnd4qRbQ-MRNsTMNKJLP7j+NZrMOV2KRDaKDhUtrrnowQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:eK3mYVCRfCt66AL/7BMxSgKCwZDAKkpLgzyNDpl367X1EY4eTdZ
- 7/nUmUQ735CN5ILqszuR0Rblxzyn5d+vvTRWHmC/p251maZC4+z2VU3VtqEhsw4fLg2HkCs
- yOoaeG8Wi9h/noO31Wqv9vALAn+RoUZi2q06vBAFiM4RQ7twwJTHZDPtrs7O/pvnmbDwTdL
- ftk1iZMQv6yoMph0lcflA==
-UI-OutboundReport: notjunk:1;M01:P0:XpMICbbcMjk=;Nzor3CWV4ex8jD4okN6fCMBDxxY
- K5cGeLm1gKS0XIZzPRcc7uh/w3nzxFdRd+Yc9QXvnTgFYlSBVmDYKoEJ9y7i8LVuuOcBAmxOQ
- 5mV4dgI/LklF5OQq+w/VoQv+85Xcmf6SCz7TzO0DDs4UZL3KFP1jSjDbzQEBo6Q/oUlGhwt+m
- 4tanMrahEVged1TisyIiJGP2FBIBPxkTktfJyFqTZ8gH0AJj0ooWgBGt0b/uIYcIb73qikZ04
- 2WQuYt+LOUN8TY6fsKrOmsCD4oVbEo2pohzNcvoD8TvtBV9uhnhjSpA+hN9iKSDd/JFoybsdi
- TDxGby8YLokgWQVc32cvfn6fHlI2Cpt8S0rKWz5tLGgqE56lqU2dUpSY5/WHpCwr8g90Id/ja
- RugF0n6e4lsNHYtmIye6o0BQNX9MwNAQDKohRk53oEqTJLPGQ5MWM+XrKX5knT/MqWu3Gg13h
- N3yxoOpTXGJGsUOnBbI7RDsyKXyD2ZdoKf/K7mUK2ODdkeIOYho6vNq1L4DA/3DXvWzGhv+ur
- 8NQJ7iR6Qt5BDzXPzxBGyQibaWO0DI6FWIZLVLXxKz6iDLVdUEL8Ris1uogiNbHhzn7o+x+Hn
- 9plfTlgUlLkRN9TZ3wZ0F1+J00loUzv8+dLDKtWqDucQyqV0mgHfYOscUNgGR03pMMHOb3LqU
- /bLNDxf++hEjSBQ7aHIBOUQlaOt6AtvnZtX3RmYffMjICuQsRLk8ltjlRdTXhKOPhhFrRy5i7
- dr2sicz87KkLe52dCOp1Z+x/hWkhJ/RbQj7OCWUlS1V8IRsIpCHhI+lEFXU4kTl7Q5N8Mw0a+
- zmBa3lWWmF3COEoY9GRIp2mRdiT8Cu/L4zYYE5o+mFvry3VDVUybookm2yt+wcIInyClJBqcC
- OhWgo7LsKi+TWjOYWMRBnQ/pZXBePSZINfMNo344geVx510O8BcnXhh/MwomCbcamRhUGrHjX
- yC1wvM+VOf2bvT3YnkKX5+d/x3A=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[PROBLEM]
+Btrfs check original mode output is not that reader friendly already, it
+even includes pointer output:
 
+  backref 15353727729664 parent 1140559929556992 not referenced back 0xc9133d70
+  tree backref 15353727729664 parent 14660022714368 not found in extent tree
+  incorrect global backref count on 15353727729664 found 3 wanted 2
+  backpointer mismatch on [15353727729664 16384]
 
-On 2022/12/3 23:10, li zhang wrote:
-> Qu Wenruo <wqu@suse.com> 于2022年9月28日周三 16:40写道：
-[...]
->> +       __u64 parity_io_fail;
->> +       __u64 parity_mismatch;
->> +
->> +       /* Padding to 256 bytes, and for later expansion. */
->> +       __u64 __unused[15];
->> +};
-> It looks like this btrfs_scrub_fs_progress is missing
-> a member for unverified errors like the old btrfs_scrub_progress used to
-> indicate that an error came up but went away during a recheck.
+In above case, the "0xc9133d70" is completely useless, as it's a pointer
+for the tree_backref structure.
 
-That member is no longer required as we don't do sector by sector read 
-at all.
+And the term "backref" is quite abused in above case.
 
-Thus there will be no such case that initial read failed but sector by 
-sector read succeeded.
+[ENHANCEMENT]
+To enhance the situation, let's use some output format from lowmem mode
+instead.
 
-> But
-> this is a poc patch,
-> just wondering if this recheck feature will be added to the official patch.
-> 
-> Also, just curious, what kind of situation would cause the first read
-> of a block that appears
-> to be corrupted, but the second read everything is fine. Could bad
-> sectors on the hard drive cause this?
+Now above example will be changed to:
 
-I don't know, it can be hardware dependent.
-Some hard disks have internal checksum, thus if one sector is corrupted, 
-it may mark the full read which covers that sector error.
+  tree extent[15353727729664, 16384] parent 1140559929556992 has no tree block found
+  tree extent[15353727729664, 16384] parent 14660022714368 has no backref item in extent tree
+  incorrect global backref count on 15353727729664 found 3 wanted 2
+  backpointer mismatch on [15353727729664 16384]
 
-Thanks,
-Qu
+And some example for data backrefs:
 
-> 
->> +static_assert(sizeof(struct btrfs_scrub_fs_progress) == 256);
->> +
->> +/*
->> + * Readonly scrub fs will not try any repair (thus *_repaired member
->> + * in scrub_fs_progress should always be 0).
->> + */
->> +#define BTRFS_SCRUB_FS_FLAG_READONLY   (1ULL << 0)
->> +
->> +/*
->> + * All supported flags.
->> + *
->> + * From the very beginning, scrub_fs ioctl would reject any unsupported
->> + * flags, making later expansion much simper.
->> + */
->> +#define BTRFS_SCRUB_FS_FLAG_SUPP       (BTRFS_SCRUB_FS_FLAG_READONLY)
->> +
->> +struct btrfs_ioctl_scrub_fs_args {
->> +       /* Input, logical bytenr to start the scrub */
->> +       __u64 start;
->> +
->> +       /* Input, the logical bytenr end (inclusive) */
->> +       __u64 end;
->> +
->> +       __u64 flags;
->> +       __u64 reserved[8];
->> +       struct btrfs_scrub_fs_progress progress; /* out */
->> +
->> +       /* pad to 1K */
->> +       __u8 unused[1024 - 24 - 64 - sizeof(struct btrfs_scrub_fs_progress)];
->> +};
->> +
->>   #define BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_ALWAYS   0
->>   #define BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_AVOID    1
->>   struct btrfs_ioctl_dev_replace_start_params {
->> @@ -1143,5 +1312,10 @@ enum btrfs_err_code {
->>                                      struct btrfs_ioctl_encoded_io_args)
->>   #define BTRFS_IOC_ENCODED_WRITE _IOW(BTRFS_IOCTL_MAGIC, 64, \
->>                                       struct btrfs_ioctl_encoded_io_args)
->> +#define BTRFS_IOC_SCRUB_FS     _IOWR(BTRFS_IOCTL_MAGIC, 65, \
->> +                                     struct btrfs_ioctl_scrub_fs_args)
->> +#define BTRFS_IOC_SCRUB_FS_CANCEL _IO(BTRFS_IOCTL_MAGIC, 66)
->> +#define BTRFS_IOC_SCRUB_FS_PROGRESS _IOWR(BTRFS_IOCTL_MAGIC, 67, \
->> +                                      struct btrfs_ioctl_scrub_fs_args)
->>
->>   #endif /* _UAPI_LINUX_BTRFS_H */
->> --
->> 2.37.3
->>
-> 
-> 
-> Best Regards
-> Li
+  data extent[12845056, 1048576] bytenr mimsmatch, extent item bytenr 12845056 file item bytenr 0
+  data extent[12845056, 1048576] referencer count mismatch (root 5 owner 257 offset 0) wanted 1 have 0
+
+  data extent[14233600, 12288] referencer count mismatch (parent 42139648) wanted 0 have 1
+  data extent[14233600, 12288] referencer count mismatch (root 5 owner 307 offset 0) wanted 0 have 1
+  data extent[14233600, 12288] referencer count mismatch (parent 30507008) wanted 0 have 1
+
+Furthermore, the original function print_tree_backref_error() is a mess
+already, here we clean it up by exacting all the error output into a
+dedicated helper, print_backref_error(), so the function itself only
+need to find out errors.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ check/main.c | 163 ++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 109 insertions(+), 54 deletions(-)
+
+diff --git a/check/main.c b/check/main.c
+index 0483a119b8bc..f1c056bc966c 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -3991,10 +3991,115 @@ static int do_check_fs_roots(struct cache_tree *root_cache)
+ 	return ret;
+ }
+ 
++/*
++ * Define the minimal size for a buffer to describe the data backref.
++ * It needs to support something like:
++ *   root <U64_MAX> owner <U64_MAX> offset <U64_MAX>
++ * Or
++ *   parent <U64_MAX>
++ *
++ * Obviously the first pattern needs longer buffer size.
++ * The minimal size (including the tailing NUL) would be:
++ *  5 + 20 + 7 + 20 + 8 + 20 = 80.
++ *
++ * Just round it to 128 to provide extra wiggle room.
++ */
++#define DATA_EXTENT_DESC_BUF_LEN (128)
++static void describe_data_extent_backref(char *buf,
++					 struct data_backref *dback)
++{
++	if (dback->node.full_backref)
++		sprintf(buf, "parent %llu", dback->parent);
++	else
++		sprintf(buf, "root %llu owner %llu offset %llu",
++			dback->root, dback->owner, dback->offset);
++}
++
++static void print_data_backref_error(struct extent_record *rec,
++				     struct data_backref *dback)
++{
++	struct extent_backref *back = &dback->node;
++	char desc[DATA_EXTENT_DESC_BUF_LEN] = { 0 };
++	u32 found_refs;
++	u32 expected_refs;
++
++	if (!back->found_extent_tree) {
++		/*
++		 * No backref item in extent tree.
++		 * Thus expected refs should be 0.
++		 */
++		expected_refs = 0;
++		found_refs = dback->found_ref;
++	} else {
++		expected_refs = dback->num_refs;
++		found_refs = dback->found_ref;
++	}
++
++	/* Extent item bytenr mismatch with found file extent item. */
++	if (dback->disk_bytenr != rec->start)
++		fprintf(stderr,
++"data extent[%llu, %llu] bytenr mimsmatch, extent item bytenr %llu file item bytenr %llu\n",
++			rec->start, rec->max_size, rec->start,
++			dback->disk_bytenr);
++
++	/* Extent item size mismatch with found file item. */
++	if (dback->bytes != rec->nr)
++		fprintf(stderr,
++"data extent[%llu, %llu] size mimsmatch, extent item size %llu file item size %llu\n",
++			rec->start, rec->max_size, rec->nr, dback->bytes);
++
++	if (expected_refs != found_refs) {
++		describe_data_extent_backref(desc, dback);
++		fprintf(stderr,
++"data extent[%llu, %llu] referencer count mismatch (%s) wanted %u have %u\n",
++			rec->start, rec->max_size, desc, expected_refs,
++			found_refs);
++	}
++}
++
++static void print_tree_backref_error(struct extent_record *rec,
++				     struct tree_backref *tback)
++{
++	struct extent_backref *back = &tback->node;
++
++	/*
++	 * For tree blocks, we only handle two cases here:
++	 * - No backref item in extent tree
++	 * - No tree block found (but with backref item)
++	 *
++	 * The refs count check is done by the global backref check at
++	 * all_backpointers_checked().
++	 */
++	if (!back->found_extent_tree) {
++		fprintf(stderr,
++"tree extent[%llu, %llu] %s %llu has no backref item in extent tree\n",
++			rec->start, rec->max_size,
++			back->full_backref ? "parent" : "root",
++			back->full_backref ? tback->parent : tback->root);
++		return;
++	}
++	if (!back->found_ref) {
++		fprintf(stderr,
++"tree extent[%llu, %llu] %s %llu has no tree block found\n",
++			rec->start, rec->max_size,
++			back->full_backref ? "parent" : "root",
++			back->full_backref ? tback->parent : tback->root);
++		return;
++	}
++}
++
++static void print_backref_error(struct extent_record *rec,
++				struct extent_backref *back)
++{
++	if (back->is_data)
++		print_data_backref_error(rec, to_data_backref(back));
++	else
++		print_tree_backref_error(rec, to_tree_backref(back));
++}
++
+ static int all_backpointers_checked(struct extent_record *rec, int print_errs)
+ {
+ 	struct extent_backref *back, *tmp;
+-	struct tree_backref *tback;
+ 	struct data_backref *dback;
+ 	u64 found = 0;
+ 	int err = 0;
+@@ -4005,42 +4110,11 @@ static int all_backpointers_checked(struct extent_record *rec, int print_errs)
+ 			err = 1;
+ 			if (!print_errs)
+ 				goto out;
+-			if (back->is_data) {
+-				dback = to_data_backref(back);
+-				fprintf(stderr,
+-"data backref %llu %s %llu owner %llu offset %llu num_refs %lu not found in extent tree\n",
+-					(unsigned long long)rec->start,
+-					back->full_backref ?
+-					"parent" : "root",
+-					back->full_backref ?
+-					(unsigned long long)dback->parent :
+-					(unsigned long long)dback->root,
+-					(unsigned long long)dback->owner,
+-					(unsigned long long)dback->offset,
+-					(unsigned long)dback->num_refs);
+-			} else {
+-				tback = to_tree_backref(back);
+-				fprintf(stderr,
+-"tree backref %llu %s %llu not found in extent tree\n",
+-					(unsigned long long)rec->start,
+-					back->full_backref ? "parent" : "root",
+-					back->full_backref ?
+-					(unsigned long long)tback->parent :
+-					(unsigned long long)tback->root);
+-			}
+ 		}
+-		if (!back->is_data && !back->found_ref) {
++		if (!back->found_ref) {
+ 			err = 1;
+ 			if (!print_errs)
+ 				goto out;
+-			tback = to_tree_backref(back);
+-			fprintf(stderr,
+-				"backref %llu %s %llu not referenced back %p\n",
+-				(unsigned long long)rec->start,
+-				back->full_backref ? "parent" : "root",
+-				back->full_backref ?
+-				(unsigned long long)tback->parent :
+-				(unsigned long long)tback->root, back);
+ 		}
+ 		if (back->is_data) {
+ 			dback = to_data_backref(back);
+@@ -4048,38 +4122,17 @@ static int all_backpointers_checked(struct extent_record *rec, int print_errs)
+ 				err = 1;
+ 				if (!print_errs)
+ 					goto out;
+-				fprintf(stderr,
+-"incorrect local backref count on %llu %s %llu owner %llu offset %llu found %u wanted %u back %p\n",
+-					(unsigned long long)rec->start,
+-					back->full_backref ?
+-					"parent" : "root",
+-					back->full_backref ?
+-					(unsigned long long)dback->parent :
+-					(unsigned long long)dback->root,
+-					(unsigned long long)dback->owner,
+-					(unsigned long long)dback->offset,
+-					dback->found_ref, dback->num_refs,
+-					back);
+ 			}
+ 			if (dback->disk_bytenr != rec->start) {
+ 				err = 1;
+ 				if (!print_errs)
+ 					goto out;
+-				fprintf(stderr,
+-"backref disk bytenr does not match extent record, bytenr=%llu, ref bytenr=%llu\n",
+-					(unsigned long long)rec->start,
+-					(unsigned long long)dback->disk_bytenr);
+ 			}
+ 
+ 			if (dback->bytes != rec->nr) {
+ 				err = 1;
+ 				if (!print_errs)
+ 					goto out;
+-				fprintf(stderr,
+-"backref bytes do not match extent backref, bytenr=%llu, ref bytes=%llu, backref bytes=%llu\n",
+-					(unsigned long long)rec->start,
+-					(unsigned long long)rec->nr,
+-					(unsigned long long)dback->bytes);
+ 			}
+ 		}
+ 		if (!back->is_data) {
+@@ -4088,6 +4141,8 @@ static int all_backpointers_checked(struct extent_record *rec, int print_errs)
+ 			dback = to_data_backref(back);
+ 			found += dback->found_ref;
+ 		}
++		if (err)
++			print_backref_error(rec, back);
+ 	}
+ 	if (found != rec->refs) {
+ 		err = 1;
+-- 
+2.38.1
+
