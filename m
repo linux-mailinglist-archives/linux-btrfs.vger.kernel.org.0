@@ -2,288 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFD4642E53
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Dec 2022 18:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C08EF642EAF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Dec 2022 18:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbiLERHO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Dec 2022 12:07:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
+        id S231838AbiLER1d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Dec 2022 12:27:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbiLERHM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Dec 2022 12:07:12 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D25167CD;
-        Mon,  5 Dec 2022 09:07:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1670260031; x=1701796031;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=vvR/NEhNegklDAJADBM+PimCCqdG/cVpS9hvSwcjzi8=;
-  b=FCW71pXcEn4bDz6rxXCdjFs7NDv6zwqT1r2C+Hbl6fTRE3mS1hTJ+zGP
-   iE174hz75P0KqGSw8Spd2iSrGSGxP3Vpz3p+doJnyR3EtYqbUUJUup6BN
-   6O7DpAwspSbhqKEdjplV2yXVoZ3nP4EuX814rDBVkH0eqcoTkFplbDxaf
-   LnBw1NY5VDekl9akbAcq49221GL0cljv6636EBupBysj0wPkiS0rxafPT
-   IDc8+WRVvXXSqY7/iBKBJGr0DnxNvp3YHObiSwsKHM7g2zFVC7mle2iWF
-   kYX7O39IhgHxtAFAogOf8exFma6xnPrl1VLHVwTMJ6QZrzMe32cosCjnV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10552"; a="299832388"
-X-IronPort-AV: E=Sophos;i="5.96,220,1665471600"; 
-   d="scan'208";a="299832388"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2022 09:06:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10552"; a="714470671"
-X-IronPort-AV: E=Sophos;i="5.96,220,1665471600"; 
-   d="scan'208";a="714470671"
-Received: from lkp-server01.sh.intel.com (HELO b3c45e08cbc1) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Dec 2022 09:05:59 -0800
-Received: from kbuild by b3c45e08cbc1 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1p2Euk-0000Ez-37;
-        Mon, 05 Dec 2022 17:05:58 +0000
-Date:   Tue, 06 Dec 2022 01:05:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     nouveau@lists.freedesktop.org, loongarch@lists.linux.dev,
-        linuxppc-dev@lists.ozlabs.org, linux-omap@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kvm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD REGRESSION
- ee9bda616d36d2dc864aa294c2656fad88c9efa0
-Message-ID: <638e24c5.oS0rVB5y1Y/NpbHH%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S232132AbiLER12 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Dec 2022 12:27:28 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C90E1D67F
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Dec 2022 09:27:27 -0800 (PST)
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CAAF01FE11;
+        Mon,  5 Dec 2022 17:27:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1670261245;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yKSv+E3A7Ocxzaur3XXtaqgtB5YW8F4YeCJxcmd+7x4=;
+        b=xESJ/AbI6n8EzPXqK2530acj/9wa3HA0wBMJuxqMYw5+ngFacFr/Zdw3gbuzENwwX3HIOi
+        Q/YMWQH5nhWQWjsBsFjdRpTKFpxRqom5Lq3BrDn8fjGcf/Uf8wB2eHJt3deMaSIwunRTwD
+        p5JQcdVnVzil1gbP9Fh2OZTUFiUxtxo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1670261245;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yKSv+E3A7Ocxzaur3XXtaqgtB5YW8F4YeCJxcmd+7x4=;
+        b=GARWdjiD5ZOG2BX7/GsLiWfzI9/uKyrREbOAdQqBbJQMBCMRs/O3PdExYVbD+ykXdG5ZDY
+        BardauhjssHBtBDA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AD8D41348F;
+        Mon,  5 Dec 2022 17:27:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id ofCQKf0pjmPycQAAGKfGzw
+        (envelope-from <dsterba@suse.cz>); Mon, 05 Dec 2022 17:27:25 +0000
+Date:   Mon, 5 Dec 2022 18:26:47 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [syzbot] WARNING: kmalloc bug in btrfs_ioctl_send
+Message-ID: <20221205172647.GB5824@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <00000000000075a52e05ee97ad74@google.com>
+ <20221129155631.GU5824@twin.jikos.cz>
+ <20221202231502.8623.409509F4@e16-tech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Disposition: inline
+In-Reply-To: <20221202231502.8623.409509F4@e16-tech.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: ee9bda616d36d2dc864aa294c2656fad88c9efa0  Add linux-next specific files for 20221205
+On Fri, Dec 02, 2022 at 11:15:03PM +0800, Wang Yugui wrote:
+> > > 
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+4376a9a073770c173269@syzkaller.appspotmail.com
+> > > 
+> > > BTRFS info (device loop0): using free space tree
+> > > BTRFS info (device loop0): enabling ssd optimizations
+> > > BTRFS info (device loop0): checking UUID tree
+> > > ------------[ cut here ]------------
+> > > WARNING: CPU: 1 PID: 3072 at mm/util.c:596 kvmalloc_node+0x19c/0x1a4
+> > 
+> >  594         /* Don't even allow crazy sizes */
+> >  595         if (unlikely(size > INT_MAX)) {
+> >  596                 WARN_ON_ONCE(!(flags & __GFP_NOWARN));
+> >  597                 return NULL;
+> >  598         }
+> > 
+> > > Modules linked in:
+> > > CPU: 1 PID: 3072 Comm: syz-executor189 Not tainted 6.1.0-rc6-syzkaller-32662-g6d464646530f #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/30/2022
+> > > pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > > pc : kvmalloc_node+0x19c/0x1a4
+> > > lr : kvmalloc_node+0x198/0x1a4 mm/util.c:596
+> > > sp : ffff800012f13c40
+> > > x29: ffff800012f13c50 x28: ffff0000cbb01000 x27: 0000000000000000
+> > > x26: 0000000000000000 x25: ffff0000c97a8a10 x24: ffff0000c6fa6400
+> > > x23: 0000000000000000 x22: ffff8000091f72d8 x21: 000caf0ca5eccda0
+> > > x20: 00000000ffffffff x19: 0000000000000dc0 x18: 0000000000000010
+> > > x17: ffff80000c0f0b68 x16: ffff80000dbe6158 x15: ffff0000c43a1a40
+> > > x14: 0000000000000000 x13: 00000000ffffffff x12: ffff0000c43a1a40
+> > > x11: ff808000084361e8 x10: 0000000000000000 x9 : ffff8000084361e8
+> > > x8 : ffff0000c43a1a40 x7 : ffff800008578874 x6 : 0000000000000000
+> > > x5 : 00000000ffffffff x4 : 0000000000012dc0 x3 : 0010000000000000
+> > > x2 : 000caf0ca5eccda0 x1 : 0000000000000000 x0 : 0000000000000000
+> > > Call trace:
+> > >  kvmalloc_node+0x19c/0x1a4
+> > >  kvmalloc include/linux/slab.h:706 [inline]
+> > >  kvmalloc_array include/linux/slab.h:724 [inline]
+> > >  kvcalloc include/linux/slab.h:729 [inline]
+> > >  btrfs_ioctl_send+0x64c/0xed0 fs/btrfs/send.c:7915
+> > 
+> > 7915         sctx->clone_roots = kvcalloc(sizeof(*sctx->clone_roots),
+> > 7916                                      arg->clone_sources_count + 1,
+> > 7917                                      GFP_KERNEL)
+> > 
+> > So we get some insane amount of clone_sources_count
+> 
+>   7844          if (arg->clone_sources_count >
+>   7845              ULONG_MAX / sizeof(struct clone_root) - 1) {
+>   7846                  ret = -EINVAL;
+>   7847                  goto out;
+>   7848          }
+> 
+> here we can change 'ULONG_MAX' to 'INT_MAX' or
+> just 'arg->clone_sources_count > SEND_MAX_EXTENT_REFS' ?
 
-Error/Warning reports:
+SEND_MAX_EXTENT_REFS is for something else, the extent sharing but the
+allocation is about potential share sources. So there could be say 2000
+subvolumes but each extent could be shared at most by say 500.
 
-https://lore.kernel.org/oe-kbuild-all/202211242120.MzZVGULn-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202211301840.y7rROb13-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202212011005.7X5XAsmG-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202212032205.IeHBbyyp-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202212051759.cEv6fyHy-lkp@intel.com
+The limit for clone_roots should be based on the maximum memory we
+consider sane. The size of struct clone_root is 32 bytes on release
+build, so with SEND_MAX_EXTENT_REFS which is 1024 this would be 32KiB,
+which is not much and an artificial limit.
 
-Error/Warning: (recently discovered and may have been fixed)
-
-arch/powerpc/kernel/kvm_emul.o: warning: objtool: kvm_template_end(): can't find starting instruction
-arch/powerpc/kernel/optprobes_head.o: warning: objtool: optprobe_template_end(): can't find starting instruction
-drivers/gpu/drm/amd/amdgpu/../display/dc/irq/dcn201/irq_service_dcn201.c:40:20: warning: no previous prototype for 'to_dal_irq_source_dcn201' [-Wmissing-prototypes]
-drivers/gpu/drm/amd/amdgpu/amdgpu_ring_mux.c:353:5: warning: no previous prototype for 'amdgpu_mcbp_scan' [-Wmissing-prototypes]
-drivers/gpu/drm/amd/amdgpu/amdgpu_ring_mux.c:373:5: warning: no previous prototype for 'amdgpu_mcbp_trigger_preempt' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/engine/fifo/gf100.c:451:1: warning: no previous prototype for 'gf100_fifo_nonstall_block' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/engine/fifo/gf100.c:451:1: warning: no previous prototype for function 'gf100_fifo_nonstall_block' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/engine/fifo/runl.c:34:1: warning: no previous prototype for 'nvkm_engn_cgrp_get' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/engine/fifo/runl.c:34:1: warning: no previous prototype for function 'nvkm_engn_cgrp_get' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/engine/gr/tu102.c:210:1: warning: no previous prototype for 'tu102_gr_load' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/engine/gr/tu102.c:210:1: warning: no previous prototype for function 'tu102_gr_load' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/nvfw/acr.c:49:1: warning: no previous prototype for 'wpr_generic_header_dump' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/nvfw/acr.c:49:1: warning: no previous prototype for function 'wpr_generic_header_dump' [-Wmissing-prototypes]
-drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c:221:21: warning: variable 'loc' set but not used [-Wunused-but-set-variable]
-drivers/irqchip/irq-loongarch-cpu.c:96:12: warning: no previous prototype for 'loongarch_cpu_irq_of_init' [-Wmissing-prototypes]
-drivers/regulator/tps65219-regulator.c:310:60: warning: parameter 'dev' set but not used [-Wunused-but-set-parameter]
-drivers/regulator/tps65219-regulator.c:370:26: sparse:    int
-drivers/regulator/tps65219-regulator.c:370:26: sparse:    struct regulator_dev *[assigned] rdev
-drivers/regulator/tps65219-regulator.c:370:26: warning: ordered comparison of pointer with integer zero [-Wextra]
-fs/btrfs/btrfs.o: warning: objtool: __btrfs_map_block+0x1c67: unreachable instruction
-pahole: .tmp_vmlinux.btf: No such file or directory
-
-Unverified Error/Warning (likely false positive, please contact us if interested):
-
-arch/x86/kvm/vmx/hyperv.c:108:9: sparse: sparse: cast truncates bits from constant value (1a001a becomes 1a)
-arch/x86/kvm/vmx/hyperv.c:110:9: sparse: sparse: cast truncates bits from constant value (1a009a becomes 9a)
-arch/x86/kvm/vmx/hyperv.c:112:9: sparse: sparse: cast truncates bits from constant value (1a011a becomes 11a)
-arch/x86/kvm/vmx/hyperv.c:114:9: sparse: sparse: cast truncates bits from constant value (1a069a becomes 69a)
-arch/x86/kvm/vmx/hyperv.c:116:9: sparse: sparse: cast truncates bits from constant value (1b019b becomes 19b)
-arch/x86/kvm/vmx/hyperv.c:118:9: sparse: sparse: cast truncates bits from constant value (1b021b becomes 21b)
-arch/x86/kvm/vmx/hyperv.c:120:9: sparse: sparse: cast truncates bits from constant value (1b029b becomes 29b)
-arch/x86/kvm/vmx/hyperv.c:122:9: sparse: sparse: cast truncates bits from constant value (1b031b becomes 31b)
-arch/x86/kvm/vmx/hyperv.c:124:9: sparse: sparse: cast truncates bits from constant value (1b039b becomes 39b)
-arch/x86/kvm/vmx/hyperv.c:126:9: sparse: sparse: cast truncates bits from constant value (1b051b becomes 51b)
-arch/x86/kvm/vmx/hyperv.c:130:9: sparse: sparse: cast truncates bits from constant value (a048a becomes 48a)
-arch/x86/kvm/vmx/hyperv.c:132:9: sparse: sparse: cast truncates bits from constant value (80b08 becomes b08)
-arch/x86/kvm/vmx/hyperv.c:134:9: sparse: sparse: cast truncates bits from constant value (80b88 becomes b88)
-arch/x86/kvm/vmx/hyperv.c:136:9: sparse: sparse: cast truncates bits from constant value (80c88 becomes c88)
-arch/x86/kvm/vmx/hyperv.c:22:9: sparse: sparse: cast truncates bits from constant value (1a079a becomes 79a)
-arch/x86/kvm/vmx/hyperv.c:24:9: sparse: sparse: cast truncates bits from constant value (1a071a becomes 71a)
-arch/x86/kvm/vmx/hyperv.c:253:9: sparse: sparse: cast truncates bits from constant value (120a92 becomes a92)
-arch/x86/kvm/vmx/hyperv.c:26:9: sparse: sparse: cast truncates bits from constant value (1a081a becomes 81a)
-arch/x86/kvm/vmx/hyperv.c:28:9: sparse: sparse: cast truncates bits from constant value (b000b becomes b)
-arch/x86/kvm/vmx/hyperv.c:30:9: sparse: sparse: cast truncates bits from constant value (b008b becomes 8b)
-arch/x86/kvm/vmx/hyperv.c:32:9: sparse: sparse: cast truncates bits from constant value (b010b becomes 10b)
-arch/x86/kvm/vmx/hyperv.c:34:9: sparse: sparse: cast truncates bits from constant value (1b001b becomes 1b)
-arch/x86/kvm/vmx/hyperv.c:36:9: sparse: sparse: cast truncates bits from constant value (1b009b becomes 9b)
-arch/x86/kvm/vmx/hyperv.c:38:9: sparse: sparse: cast truncates bits from constant value (1b011b becomes 11b)
-arch/x86/kvm/vmx/hyperv.c:40:9: sparse: sparse: cast truncates bits from constant value (1b041b becomes 41b)
-arch/x86/kvm/vmx/hyperv.c:42:9: sparse: sparse: cast truncates bits from constant value (1b049b becomes 49b)
-arch/x86/kvm/vmx/hyperv.c:44:9: sparse: sparse: cast truncates bits from constant value (1b059b becomes 59b)
-arch/x86/kvm/vmx/hyperv.c:46:9: sparse: sparse: cast truncates bits from constant value (80008 becomes 8)
-arch/x86/kvm/vmx/hyperv.c:52:9: sparse: sparse: cast truncates bits from constant value (1a019a becomes 19a)
-arch/x86/kvm/vmx/hyperv.c:54:9: sparse: sparse: cast truncates bits from constant value (1a021a becomes 21a)
-arch/x86/kvm/vmx/hyperv.c:56:9: sparse: sparse: cast truncates bits from constant value (1a029a becomes 29a)
-arch/x86/kvm/vmx/hyperv.c:58:9: sparse: sparse: cast truncates bits from constant value (1a031a becomes 31a)
-arch/x86/kvm/vmx/hyperv.c:60:9: sparse: sparse: cast truncates bits from constant value (1a039a becomes 39a)
-arch/x86/kvm/vmx/hyperv.c:62:9: sparse: sparse: cast truncates bits from constant value (1a041a becomes 41a)
-arch/x86/kvm/vmx/hyperv.c:64:9: sparse: sparse: cast truncates bits from constant value (1a049a becomes 49a)
-arch/x86/kvm/vmx/hyperv.c:66:9: sparse: sparse: cast truncates bits from constant value (1a051a becomes 51a)
-arch/x86/kvm/vmx/hyperv.c:68:9: sparse: sparse: cast truncates bits from constant value (1a059a becomes 59a)
-arch/x86/kvm/vmx/hyperv.c:70:9: sparse: sparse: cast truncates bits from constant value (1a061a becomes 61a)
-arch/x86/kvm/vmx/hyperv.c:76:9: sparse: sparse: cast truncates bits from constant value (a000a becomes a)
-arch/x86/kvm/vmx/hyperv.c:78:9: sparse: sparse: cast truncates bits from constant value (a008a becomes 8a)
-arch/x86/kvm/vmx/hyperv.c:80:9: sparse: sparse: cast truncates bits from constant value (a010a becomes 10a)
-arch/x86/kvm/vmx/hyperv.c:82:9: sparse: sparse: cast truncates bits from constant value (a018a becomes 18a)
-arch/x86/kvm/vmx/hyperv.c:84:9: sparse: sparse: cast truncates bits from constant value (a020a becomes 20a)
-arch/x86/kvm/vmx/hyperv.c:86:9: sparse: sparse: cast truncates bits from constant value (a028a becomes 28a)
-arch/x86/kvm/vmx/hyperv.c:88:9: sparse: sparse: cast truncates bits from constant value (a030a becomes 30a)
-arch/x86/kvm/vmx/hyperv.c:90:9: sparse: sparse: cast truncates bits from constant value (a038a becomes 38a)
-arch/x86/kvm/vmx/hyperv.c:92:9: sparse: sparse: cast truncates bits from constant value (a040a becomes 40a)
-arch/x86/kvm/vmx/hyperv.c:94:9: sparse: sparse: cast truncates bits from constant value (1a089a becomes 89a)
-arch/x86/kvm/vmx/hyperv.c:96:9: sparse: sparse: cast truncates bits from constant value (1a091a becomes 91a)
-arch/x86/kvm/vmx/hyperv.c:98:9: sparse: sparse: cast truncates bits from constant value (1a099a becomes 99a)
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
-|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
-|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
-|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
-|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
-|-- alpha-randconfig-r032-20221205
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_scan
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ring_mux.c:warning:no-previous-prototype-for-amdgpu_mcbp_trigger_preempt
-|-- alpha-randconfig-s032-20221205
-|   |-- drivers-regulator-tps65219-regulator.c:sparse:int
-|   |-- drivers-regulator-tps65219-regulator.c:sparse:sparse:incompatible-types-for-operation-(-):
-|   `-- drivers-regulator-tps65219-regulator.c:sparse:struct-regulator_dev-assigned-rdev
-|-- arc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
-|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
-|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
-|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
-|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
-|-- arc-randconfig-r024-20221204
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
-|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
-|-- arm-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
-|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
-|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
-|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
-|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
-|-- arm-defconfig
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-nvkm_engn_cgrp_get
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-tu102_gr_load
-|   |-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-wpr_generic_header_dump
-|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-acr-lsfw.c:warning:variable-loc-set-but-not-used
-|-- arm64-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dcn201-irq_service_dcn201.c:warning:no-previous-prototype-for-to_dal_irq_source_dcn201
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-gf100_fifo_nonstall_block
-clang_recent_errors
-|-- arm-randconfig-r046-20221205
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-gf100.c:warning:no-previous-prototype-for-function-gf100_fifo_nonstall_block
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-fifo-runl.c:warning:no-previous-prototype-for-function-nvkm_engn_cgrp_get
-|   |-- drivers-gpu-drm-nouveau-nvkm-engine-gr-tu102.c:warning:no-previous-prototype-for-function-tu102_gr_load
-|   `-- drivers-gpu-drm-nouveau-nvkm-nvfw-acr.c:warning:no-previous-prototype-for-function-wpr_generic_header_dump
-`-- s390-randconfig-r036-20221205
-    `-- pahole:.tmp_vmlinux.btf:No-such-file-or-directory
-
-elapsed time: 721m
-
-configs tested: 59
-configs skipped: 3
-
-gcc tested configs:
-arc                                 defconfig
-s390                             allmodconfig
-alpha                               defconfig
-i386                                defconfig
-s390                                defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-s390                             allyesconfig
-arm                                 defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                          rhel-8.3-func
-x86_64                              defconfig
-x86_64                               rhel-8.3
-powerpc                           allnoconfig
-x86_64                           allyesconfig
-x86_64                           rhel-8.3-kvm
-arc                              allyesconfig
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-arm64                            allyesconfig
-i386                 randconfig-a014-20221205
-i386                 randconfig-a013-20221205
-alpha                            allyesconfig
-sh                               allmodconfig
-arm                              allyesconfig
-i386                 randconfig-a012-20221205
-i386                 randconfig-a015-20221205
-mips                             allyesconfig
-m68k                             allyesconfig
-i386                 randconfig-a011-20221205
-i386                 randconfig-a016-20221205
-m68k                             allmodconfig
-powerpc                          allmodconfig
-i386                             allyesconfig
-arc                  randconfig-r043-20221205
-x86_64               randconfig-a011-20221205
-x86_64               randconfig-a014-20221205
-x86_64               randconfig-a013-20221205
-ia64                             allmodconfig
-x86_64               randconfig-a015-20221205
-s390                 randconfig-r044-20221205
-x86_64               randconfig-a012-20221205
-riscv                randconfig-r042-20221205
-x86_64               randconfig-a016-20221205
-
-clang tested configs:
-x86_64               randconfig-a003-20221205
-x86_64               randconfig-a001-20221205
-x86_64               randconfig-a002-20221205
-x86_64               randconfig-a004-20221205
-i386                 randconfig-a001-20221205
-x86_64               randconfig-a006-20221205
-x86_64               randconfig-a005-20221205
-i386                 randconfig-a002-20221205
-i386                 randconfig-a004-20221205
-i386                 randconfig-a003-20221205
-i386                 randconfig-a006-20221205
-i386                 randconfig-a005-20221205
-hexagon              randconfig-r045-20221205
-arm                  randconfig-r046-20221205
-hexagon              randconfig-r041-20221205
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+As the allocation uses virtual memory fallback we can go to
+megabytes-range, possibly adding the __GFP_NOWARN. So my suggestion is
+to do 4MiB as the overall memory limit and derive the
+clone_sources_count limit accordingly, which is 131072.
