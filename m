@@ -2,316 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C766422E5
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Dec 2022 07:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA31642440
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Dec 2022 09:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbiLEGHy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Dec 2022 01:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43522 "EHLO
+        id S232020AbiLEIN6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Dec 2022 03:13:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231175AbiLEGHx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Dec 2022 01:07:53 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B166637A
-        for <linux-btrfs@vger.kernel.org>; Sun,  4 Dec 2022 22:07:51 -0800 (PST)
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 246E21FE2A
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Dec 2022 06:07:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1670220470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=CzKJbrfTn4hkRxALs/wxac4x8jTMSNtVqXVVuSMeVgQ=;
-        b=GEijP0vGZ5zddESONFcqCGIn+ZyIWE5P/EzgxIKkM6PEkwNIv9PQ10B1D3buXdy+lRVXBS
-        SNUWsoVyvrC+Qi/MUUgAuZJF1Q9OLMQ7rmcEmZJdvJFtG1cUFKtYr22JlVVDn7WU6M0xKG
-        qQcJztTcxmlytj5rCxh2ljMO6lIURmA=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 571D41348F
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Dec 2022 06:07:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 2F+VBrWKjWOcfgAAGKfGzw
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Dec 2022 06:07:49 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: check: enhance the error output for backref mimsatch
-Date:   Mon,  5 Dec 2022 14:07:30 +0800
-Message-Id: <1ecdbc90c7cc26f7f5b7a0af7683cf81717b6200.1670220414.git.wqu@suse.com>
-X-Mailer: git-send-email 2.38.1
+        with ESMTP id S231959AbiLEINx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Dec 2022 03:13:53 -0500
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A592415A1B
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Dec 2022 00:13:47 -0800 (PST)
+Received: by mail-il1-f197.google.com with SMTP id y12-20020a056e021bec00b00302a7d5bc83so11594351ilv.16
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Dec 2022 00:13:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kf+gTnL9MXeVWtkJkGE+GjCA76PcAbRRoiShrRPE/Eo=;
+        b=vXoCAWknJYNzmMKuGZgIIdn6dX74Dvl3SNmGJ14X4HBXQ2htZlKUA/Ygnqu5IzPaUD
+         C5/NTON/u2epLJ7dNVwWeFLvDHjRnoAy6MSnSvijeuMvlcz94pmMQ0wtbbXFjOH3W9uT
+         jDq0+q7h/fA2kiFuVNomjCGGJG23Nd0wcDwSpCOC1L5IZz59A/lBnSiKrTPL62MomWHT
+         tQUeedhdzMLXHSm8Ulqx5sDF9xdIDtopU1FHDiohSnxze1J1wnviOvYZf3Vs4MM3C7wS
+         9mEBTCTkjss/Mt49WDT5dLf0n+QjBvJRXgiPQrbXUun/q3O/zHKldHnZX+x65iVEonKn
+         tMmQ==
+X-Gm-Message-State: ANoB5plW8SpTQKQmQVw9sV/24JY//ROlnW+bgcTEiiD4kC0/IAAoBhym
+        y7ozXMwNee8lq+balrDPPkV3gAgACskTyZMoZCYZbavmGs2I
+X-Google-Smtp-Source: AA0mqf7dBcdTNVWOtZD+6FseLn++Cv1SkNbhk9bu5pM9s8EX1PRp73/mgf3keOw4ctx1+EUtrxs1GGgys/qI7YywO8IQ7nE98fd5
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a92:6a11:0:b0:300:ece2:e3b8 with SMTP id
+ f17-20020a926a11000000b00300ece2e3b8mr28880177ilc.255.1670228026933; Mon, 05
+ Dec 2022 00:13:46 -0800 (PST)
+Date:   Mon, 05 Dec 2022 00:13:46 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003d4a1a05ef104401@google.com>
+Subject: [syzbot] WARNING in lookup_inline_extent_backref
+From:   syzbot <syzbot+d6f9ff86c1d804ba2bc6@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[PROBLEM]
-Btrfs check original mode output is not that reader friendly already, it
-even includes pointer output:
+Hello,
 
-  backref 15353727729664 parent 1140559929556992 not referenced back 0xc9133d70
-  tree backref 15353727729664 parent 14660022714368 not found in extent tree
-  incorrect global backref count on 15353727729664 found 3 wanted 2
-  backpointer mismatch on [15353727729664 16384]
+syzbot found the following issue on:
 
-In above case, the "0xc9133d70" is completely useless, as it's a pointer
-for the tree_backref structure.
+HEAD commit:    a4412fdd49dc error-injection: Add prompt for function erro..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1469bdbd880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2325e409a9a893e1
+dashboard link: https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d89247880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16b1ca83880000
 
-And the term "backref" is quite abused in above case.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3bbe66b25958/disk-a4412fdd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6851483ca667/vmlinux-a4412fdd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2d5b23cb4616/bzImage-a4412fdd.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/1f178223dd56/mount_0.gz
 
-[ENHANCEMENT]
-To enhance the situation, let's use some output format from lowmem mode
-instead.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d6f9ff86c1d804ba2bc6@syzkaller.appspotmail.com
 
-Now above example will be changed to:
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6559 at fs/btrfs/extent-tree.c:865 lookup_inline_extent_backref+0x8c1/0x13f0
+Modules linked in:
+CPU: 0 PID: 6559 Comm: syz-executor311 Not tainted 6.1.0-rc7-syzkaller-00123-ga4412fdd49dc #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:lookup_inline_extent_backref+0x8c1/0x13f0 fs/btrfs/extent-tree.c:865
+Code: 98 00 00 00 0f 87 42 0b 00 00 e8 5a 9c 07 fe 4c 8b 6c 24 28 eb 3d 83 7d 28 00 4c 8b 6c 24 28 0f 84 b0 04 00 00 e8 3f 9c 07 fe <0f> 0b 41 bc fb ff ff ff e9 f3 05 00 00 e8 2d 9c 07 fe e9 ca 05 00
+RSP: 0018:ffffc90006296e40 EFLAGS: 00010293
+RAX: ffffffff8382fbb1 RBX: 0000000000000000 RCX: ffff88801eab1d40
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc90006296ff0 R08: ffffffff8382f700 R09: ffffed100faf1008
+R10: ffffed100faf1008 R11: 1ffff1100faf1007 R12: dffffc0000000000
+R13: ffff888075edcd10 R14: ffffc90006296f60 R15: ffff88807d788000
+FS:  00007fdb617d5700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055912e028900 CR3: 000000001954b000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ insert_inline_extent_backref+0xcc/0x260 fs/btrfs/extent-tree.c:1152
+ __btrfs_inc_extent_ref+0x108/0x5e0 fs/btrfs/extent-tree.c:1455
+ btrfs_run_delayed_refs_for_head+0xf00/0x1df0 fs/btrfs/extent-tree.c:1943
+ __btrfs_run_delayed_refs+0x25f/0x490 fs/btrfs/extent-tree.c:2008
+ btrfs_run_delayed_refs+0x312/0x490 fs/btrfs/extent-tree.c:2139
+ qgroup_account_snapshot+0xce/0x340 fs/btrfs/transaction.c:1538
+ create_pending_snapshot+0xf35/0x2560 fs/btrfs/transaction.c:1800
+ create_pending_snapshots+0x1a8/0x1e0 fs/btrfs/transaction.c:1868
+ btrfs_commit_transaction+0x13f0/0x3760 fs/btrfs/transaction.c:2323
+ create_snapshot+0x4aa/0x7e0 fs/btrfs/ioctl.c:833
+ btrfs_mksubvol+0x62e/0x760 fs/btrfs/ioctl.c:983
+ btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1029
+ __btrfs_ioctl_snap_create+0x339/0x450 fs/btrfs/ioctl.c:2184
+ btrfs_ioctl_snap_create+0x134/0x190 fs/btrfs/ioctl.c:2211
+ btrfs_ioctl+0x15c/0xc10
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fdb6184aa69
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 71 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fdb617d52f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fdb618d57f0 RCX: 00007fdb6184aa69
+RDX: 00000000200000c0 RSI: 0000000050009401 RDI: 0000000000000004
+RBP: 00007fdb618a226c R08: 00007fdb617d5700 R09: 0000000000000000
+R10: 00007fdb617d5700 R11: 0000000000000246 R12: 8000000000000000
+R13: 00007fdb618a1270 R14: 0000000100000000 R15: 00007fdb618d57f8
+ </TASK>
 
-  tree extent[15353727729664, 16384] parent 1140559929556992 has no tree block found
-  tree extent[15353727729664, 16384] parent 14660022714368 has no backref item in extent tree
-  incorrect global backref count on 15353727729664 found 3 wanted 2
-  backpointer mismatch on [15353727729664 16384]
 
-And some example for data backrefs:
-
-  data extent[12845056, 1048576] bytenr mimsmatch, extent item bytenr 12845056 file item bytenr 0
-  data extent[12845056, 1048576] referencer count mismatch (root 5 owner 257 offset 0) wanted 1 have 0
-
-  data extent[14233600, 12288] referencer count mismatch (parent 42139648) wanted 0 have 1
-  data extent[14233600, 12288] referencer count mismatch (root 5 owner 307 offset 0) wanted 0 have 1
-  data extent[14233600, 12288] referencer count mismatch (parent 30507008) wanted 0 have 1
-
-Furthermore, the original function print_tree_backref_error() is a mess
-already, here we clean it up by exacting all the error output into a
-dedicated helper, print_backref_error(), so the function itself only
-need to find out errors.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/main.c | 163 ++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 109 insertions(+), 54 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/check/main.c b/check/main.c
-index 0483a119b8bc..f1c056bc966c 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -3991,10 +3991,115 @@ static int do_check_fs_roots(struct cache_tree *root_cache)
- 	return ret;
- }
- 
-+/*
-+ * Define the minimal size for a buffer to describe the data backref.
-+ * It needs to support something like:
-+ *   root <U64_MAX> owner <U64_MAX> offset <U64_MAX>
-+ * Or
-+ *   parent <U64_MAX>
-+ *
-+ * Obviously the first pattern needs longer buffer size.
-+ * The minimal size (including the tailing NUL) would be:
-+ *  5 + 20 + 7 + 20 + 8 + 20 = 80.
-+ *
-+ * Just round it to 128 to provide extra wiggle room.
-+ */
-+#define DATA_EXTENT_DESC_BUF_LEN (128)
-+static void describe_data_extent_backref(char *buf,
-+					 struct data_backref *dback)
-+{
-+	if (dback->node.full_backref)
-+		sprintf(buf, "parent %llu", dback->parent);
-+	else
-+		sprintf(buf, "root %llu owner %llu offset %llu",
-+			dback->root, dback->owner, dback->offset);
-+}
-+
-+static void print_data_backref_error(struct extent_record *rec,
-+				     struct data_backref *dback)
-+{
-+	struct extent_backref *back = &dback->node;
-+	char desc[DATA_EXTENT_DESC_BUF_LEN] = { 0 };
-+	u32 found_refs;
-+	u32 expected_refs;
-+
-+	if (!back->found_extent_tree) {
-+		/*
-+		 * No backref item in extent tree.
-+		 * Thus expected refs should be 0.
-+		 */
-+		expected_refs = 0;
-+		found_refs = dback->found_ref;
-+	} else {
-+		expected_refs = dback->num_refs;
-+		found_refs = dback->found_ref;
-+	}
-+
-+	/* Extent item bytenr mismatch with found file extent item. */
-+	if (dback->disk_bytenr != rec->start)
-+		fprintf(stderr,
-+"data extent[%llu, %llu] bytenr mimsmatch, extent item bytenr %llu file item bytenr %llu\n",
-+			rec->start, rec->max_size, rec->start,
-+			dback->disk_bytenr);
-+
-+	/* Extent item size mismatch with found file item. */
-+	if (dback->bytes != rec->nr)
-+		fprintf(stderr,
-+"data extent[%llu, %llu] size mimsmatch, extent item size %llu file item size %llu\n",
-+			rec->start, rec->max_size, rec->nr, dback->bytes);
-+
-+	if (expected_refs != found_refs) {
-+		describe_data_extent_backref(desc, dback);
-+		fprintf(stderr,
-+"data extent[%llu, %llu] referencer count mismatch (%s) wanted %u have %u\n",
-+			rec->start, rec->max_size, desc, expected_refs,
-+			found_refs);
-+	}
-+}
-+
-+static void print_tree_backref_error(struct extent_record *rec,
-+				     struct tree_backref *tback)
-+{
-+	struct extent_backref *back = &tback->node;
-+
-+	/*
-+	 * For tree blocks, we only handle two cases here:
-+	 * - No backref item in extent tree
-+	 * - No tree block found (but with backref item)
-+	 *
-+	 * The refs count check is done by the global backref check at
-+	 * all_backpointers_checked().
-+	 */
-+	if (!back->found_extent_tree) {
-+		fprintf(stderr,
-+"tree extent[%llu, %llu] %s %llu has no backref item in extent tree\n",
-+			rec->start, rec->max_size,
-+			back->full_backref ? "parent" : "root",
-+			back->full_backref ? tback->parent : tback->root);
-+		return;
-+	}
-+	if (!back->found_ref) {
-+		fprintf(stderr,
-+"tree extent[%llu, %llu] %s %llu has no tree block found\n",
-+			rec->start, rec->max_size,
-+			back->full_backref ? "parent" : "root",
-+			back->full_backref ? tback->parent : tback->root);
-+		return;
-+	}
-+}
-+
-+static void print_backref_error(struct extent_record *rec,
-+				struct extent_backref *back)
-+{
-+	if (back->is_data)
-+		print_data_backref_error(rec, to_data_backref(back));
-+	else
-+		print_tree_backref_error(rec, to_tree_backref(back));
-+}
-+
- static int all_backpointers_checked(struct extent_record *rec, int print_errs)
- {
- 	struct extent_backref *back, *tmp;
--	struct tree_backref *tback;
- 	struct data_backref *dback;
- 	u64 found = 0;
- 	int err = 0;
-@@ -4005,42 +4110,11 @@ static int all_backpointers_checked(struct extent_record *rec, int print_errs)
- 			err = 1;
- 			if (!print_errs)
- 				goto out;
--			if (back->is_data) {
--				dback = to_data_backref(back);
--				fprintf(stderr,
--"data backref %llu %s %llu owner %llu offset %llu num_refs %lu not found in extent tree\n",
--					(unsigned long long)rec->start,
--					back->full_backref ?
--					"parent" : "root",
--					back->full_backref ?
--					(unsigned long long)dback->parent :
--					(unsigned long long)dback->root,
--					(unsigned long long)dback->owner,
--					(unsigned long long)dback->offset,
--					(unsigned long)dback->num_refs);
--			} else {
--				tback = to_tree_backref(back);
--				fprintf(stderr,
--"tree backref %llu %s %llu not found in extent tree\n",
--					(unsigned long long)rec->start,
--					back->full_backref ? "parent" : "root",
--					back->full_backref ?
--					(unsigned long long)tback->parent :
--					(unsigned long long)tback->root);
--			}
- 		}
--		if (!back->is_data && !back->found_ref) {
-+		if (!back->found_ref) {
- 			err = 1;
- 			if (!print_errs)
- 				goto out;
--			tback = to_tree_backref(back);
--			fprintf(stderr,
--				"backref %llu %s %llu not referenced back %p\n",
--				(unsigned long long)rec->start,
--				back->full_backref ? "parent" : "root",
--				back->full_backref ?
--				(unsigned long long)tback->parent :
--				(unsigned long long)tback->root, back);
- 		}
- 		if (back->is_data) {
- 			dback = to_data_backref(back);
-@@ -4048,38 +4122,17 @@ static int all_backpointers_checked(struct extent_record *rec, int print_errs)
- 				err = 1;
- 				if (!print_errs)
- 					goto out;
--				fprintf(stderr,
--"incorrect local backref count on %llu %s %llu owner %llu offset %llu found %u wanted %u back %p\n",
--					(unsigned long long)rec->start,
--					back->full_backref ?
--					"parent" : "root",
--					back->full_backref ?
--					(unsigned long long)dback->parent :
--					(unsigned long long)dback->root,
--					(unsigned long long)dback->owner,
--					(unsigned long long)dback->offset,
--					dback->found_ref, dback->num_refs,
--					back);
- 			}
- 			if (dback->disk_bytenr != rec->start) {
- 				err = 1;
- 				if (!print_errs)
- 					goto out;
--				fprintf(stderr,
--"backref disk bytenr does not match extent record, bytenr=%llu, ref bytenr=%llu\n",
--					(unsigned long long)rec->start,
--					(unsigned long long)dback->disk_bytenr);
- 			}
- 
- 			if (dback->bytes != rec->nr) {
- 				err = 1;
- 				if (!print_errs)
- 					goto out;
--				fprintf(stderr,
--"backref bytes do not match extent backref, bytenr=%llu, ref bytes=%llu, backref bytes=%llu\n",
--					(unsigned long long)rec->start,
--					(unsigned long long)rec->nr,
--					(unsigned long long)dback->bytes);
- 			}
- 		}
- 		if (!back->is_data) {
-@@ -4088,6 +4141,8 @@ static int all_backpointers_checked(struct extent_record *rec, int print_errs)
- 			dback = to_data_backref(back);
- 			found += dback->found_ref;
- 		}
-+		if (err)
-+			print_backref_error(rec, back);
- 	}
- 	if (found != rec->refs) {
- 		err = 1;
--- 
-2.38.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
