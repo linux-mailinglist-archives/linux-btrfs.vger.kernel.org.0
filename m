@@ -2,130 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 395C664431F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Dec 2022 13:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 927D76444A4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Dec 2022 14:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231990AbiLFM3D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Dec 2022 07:29:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
+        id S234295AbiLFNeY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Dec 2022 08:34:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiLFM3C (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Dec 2022 07:29:02 -0500
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06FBB80
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Dec 2022 04:28:57 -0800 (PST)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id E45E3240104
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Dec 2022 13:28:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-        t=1670329735; bh=JgyUBn6zaKw3g4D389vsbR/0zyMnnnmPqbzkvf4QVGo=;
-        h=Date:From:To:Subject:From;
-        b=o9ZYVRLeBAehWMLitHUKDNk/xavJwpsV0ZgP1YzejipSmTnEb8Mu6D2zk1FC91IIc
-         IlUIEByTGD3BBpsCzg5FCFgAc8zu0mnF4acAqw2s/0v7QwX6hfgm+SfDXJMs6sPDs7
-         RG+K1wIkBHDkk35SpbWdRmZYpARUGuWze6VtSxR+xYMs4O+y+f7HWkHU+dqnZYDVTi
-         HEz5021bdQ2GEDIr87kWuo8BJeJgiwn6JLu+gPU5HbDa+rAw0TjBDuPW+twhFhtwXI
-         /Z05EuweTJTDThD432hB+uUCW+LZ6q1KoFFD+VuK2yMZptQSTQWIfQm6I6zREBam/s
-         2QzA7mYTyKEmQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4NRKTf6WPGz6tnq
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Dec 2022 13:28:54 +0100 (CET)
+        with ESMTP id S234265AbiLFNeV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Dec 2022 08:34:21 -0500
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8127E252AF
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Dec 2022 05:34:16 -0800 (PST)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-3704852322fso151659507b3.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 06 Dec 2022 05:34:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
+        b=plIPv+lnMIRiOFIe1dV+2tGtFokN2PX8I8Vl98aLxQc9p4eid896+qqRiD3cj5lfhx
+         z1hiGYil0vHTQsGiaUgsnmnfx7Jsn5jop25MSUm4B/gJqMPAdiI+jqYGT4X+agKLBheY
+         M4kLaJ4VYCDPrPdHz+VgEOo7V/8+VLiplXwZ5AxhmuB3ZAIj06bRIm6vVBa+cxsfUC69
+         p7oJjaq1f7uQyzM8lwAnIzamm5TXtetx0xVW4yZv8ZN22bVtgp/BSdTYcvwessuJv/HS
+         +NRVIrLiepTygJiUKe8fSjaB2LODMLrNxWaYxbpkKlISbamBewTovVPI3Q2nv//3DE4C
+         AORg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
+        b=id8HICFw2D8S+wWpejVipL71thaZ0Y+0JcWcnab7YnNp9ZD2PwCkMy7hSFL22GqWGW
+         +iQRRNq1R5CFcVff6a/WXmpIPymtNtVC+Xe0ZWOJihSwat86EEhkY0RQINtY33PKHVZQ
+         BfberbOU2yEiSlj9xcICJJ0kLaCfjTy5pbCHvO6YH+A/Gw+gN10F4ueDh+MsD2UF3y0w
+         PJF9MVuJ2vAfK2jZ6Oq0rL4p4xKkJ/NCl8FLuCdvs9rVasPSiiotZq6+zg8kiijdxLBO
+         pkWDRKS/FP8J8lwPLNZkaxeLQEzAG9/+CjHRmlWCMkQzJGPCMB+LqOfKj3iR+Z0ldQCm
+         SznA==
+X-Gm-Message-State: ANoB5pm9mmY59xLQ/dcI8CusXBMlS1IyAu/Z2Wm1QKeylh/z3dMlit5D
+        oEFdRDJ85O1375/bldDIeRgmaUM+dU51PlSyjB8=
+X-Google-Smtp-Source: AA0mqf5LIFZdFA8gXtM15wCQVGRPhLW0DnkI1aVHz2d7yBbqXPecX+J2gwBesGTmYMSfngKxp/YLH/vq5s11h8+sSxc=
+X-Received: by 2002:a81:5243:0:b0:3d2:2098:c5fb with SMTP id
+ g64-20020a815243000000b003d22098c5fbmr31224498ywb.121.1670333655770; Tue, 06
+ Dec 2022 05:34:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 06 Dec 2022 12:28:54 +0000
-From:   Thomas Michael Engelke <thomas.engelke@posteo.de>
-To:     linux-btrfs@vger.kernel.org
-Subject: No boot or access of single NVME SSD with BTRFS possible
-Organization: Wehlmann Marketing GmbH
-Message-ID: <a17f42cd16d3948e5d581507a7c508e0@posteo.de>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a05:7010:a205:b0:314:d2a3:70a with HTTP; Tue, 6 Dec 2022
+ 05:34:15 -0800 (PST)
+Reply-To: mr.abraham022@gmail.com
+From:   "Mr.Abraham" <mrkojofofone01@gmail.com>
+Date:   Tue, 6 Dec 2022 13:34:15 +0000
+Message-ID: <CACJtp8tgBjrWD7ywREfL1yUK0-utTuArETnYq7P42dWiPJKSBA@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This morning I booted my system up, and I found this message:
-
-Starting systemd-udevd, version 252.2-3-arch
-mount: /new_root: mount(2) system call failed: File exists.
-dmesg(1) may have more information after failed mount system call
-You are now dropped into an emergency shell
-sh: can't access tty: job control turned off
-
-I have regular snapshots, but booting into any of them results in the 
-same message. I therefor booted a live USB and tried to access the BTRFS 
-volume, but no luck:
-
-[liveuser@eos-2021.12.17 ~]$ time sudo mount -t btrfs /dev/nvme0n1p2 
-/mnt
-mount: /mnt: mount(2) system call failed: File exists.
-
-real	0m1.415s
-user	0m0.006s
-sys	0m0.179s
-[liveuser@eos-2021.12.17 ~]$
-
-Note the hang time, I'm not sure it is relevant.
-
-/mnt is not mounted at the moment:
-
-[liveuser@eos-2021.12.17 ~]$ sudo umount /mnt
-umount: /mnt: not mounted.
-[liveuser@eos-2021.12.17 ~]$ sudo mount -t btrfs /dev/nvme0n1p2 /mnt -o 
-subvol=@
-mount: /mnt: mount(2) system call failed: File exists.
-[liveuser@eos-2021.12.17 ~]$
-
-A check reports everything in order:
-
-[liveuser@eos-2021.12.17 ~]$ sudo btrfs check --check-data-csum -p 
-/dev/nvme0n1p2
-Opening filesystem to check...
-Checking filesystem on /dev/nvme0n1p2
-UUID: 21b3cc23-6e76-45bf-acd2-d99dc24cc0d8
-[1/7] checking root items                      (0:00:02 elapsed, 2083036 
-items checked)
-[2/7] checking extents                         (0:00:13 elapsed, 244780 
-items checked)
-[3/7] checking free space cache                (0:00:00 elapsed, 1148 
-items checked)
-[4/7] checking fs roots                        (0:00:29 elapsed, 147302 
-items checked)
-[5/7] checking csums against data              (0:10:28 elapsed, 712198 
-items checked)
-[6/7] checking root refs                       (0:00:00 elapsed, 30 
-items checked)
-[7/7] checking quota groups                    (0:00:24 elapsed, 1843328 
-items checked)
-found 1174419738624 bytes used, no error found
-total csum bytes: 1141823932
-total tree bytes: 4009918464
-total fs tree bytes: 2423521280
-total extent tree bytes: 225329152
-btree space waste bytes: 732619798
-file data blocks allocated: 2454781140992
-  referenced 1403791265792
-[liveuser@eos-2021.12.17 ~]$
-
-I have not done any writes to the device, I wanted to wait with that 
-until I have a clearer picture of what is wrong.
-
-Required information for the live USB boot:
-
-uname -a: Linux EndeavourOS 5.15.8-arch1-1 #1 SMP PREEMPT Tue, 14 Dec 
-2021 12:28:02 +0000 x86_64 GNU/Linux
-btrfs --version: btrfs-progs v5.15.1
-sudo btrfs fi show:
-
-Label: none  uuid: 21b3cc23-6e76-45bf-acd2-d99dc24cc0d8
-	Total devices 1 FS bytes used 1.07TiB
-	devid    1 size 1.83TiB used 1.12TiB path /dev/nvme0n1p2
-
-Link to the dmesg parts I though were relevant (from the live USB): 
-https://forum.endeavouros.com/t/btrfs-file-system-unmountable-no-boot-and-access-possible/34586?u=dromundkaas
-
+My Greeting, Did you receive the letter i sent to you. Please answer me.
+Regard, Mr.Abraham
