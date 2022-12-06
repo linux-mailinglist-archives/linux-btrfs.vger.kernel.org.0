@@ -2,45 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E38CA643F2C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Dec 2022 09:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA28643FDB
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Dec 2022 10:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbiLFI6y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Dec 2022 03:58:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50396 "EHLO
+        id S234568AbiLFJaU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Dec 2022 04:30:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234447AbiLFI6v (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Dec 2022 03:58:51 -0500
-Received: from synology.com (mail.synology.com [211.23.38.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F17C1D653
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Dec 2022 00:58:46 -0800 (PST)
-Subject: Re: [PATCH 0/3] btrfs: fix unexpected -ENOMEM with
- percpu_counter_init when create snapshot
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1670317123; bh=3fisOFofb2AGPAmamrcRHRDl5J4dMvvt8ioXNt2uL74=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=MJmuXrRV0HkSts3a8tDmgTDBGrNfIoDkgljWqINNNwHi+FP/CqdhRTGf5APBryftz
-         YkvHYtlcsPTb/ugnSGH8hGnrSQiI2Mxa1RDV5wu/D3Z3ljgk9F0jnRAZK/Zf20ybaz
-         eDLkoX7F8FduBQp4wzMVRVJ6P4BT+xdhd5YJs1TQ=
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20221205095122.17011-1-robbieko@synology.com>
- <CAL3q7H5V9zC_a7cUGuUuWyAh8POqbBMtmTP608mrE8vy_jqvqw@mail.gmail.com>
-From:   robbieko <robbieko@synology.com>
-Message-ID: <eb6563b8-10b3-9418-4777-812ddda45b23@synology.com>
-Date:   Tue, 6 Dec 2022 16:58:20 +0800
+        with ESMTP id S231144AbiLFJaS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Dec 2022 04:30:18 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A461CFF9
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Dec 2022 01:30:16 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MGhuU-1pFBaj1Tus-00Dq5B; Tue, 06
+ Dec 2022 10:30:04 +0100
+Message-ID: <36b85b39-bd88-d374-cd55-a7eea62a1686@gmx.com>
+Date:   Tue, 6 Dec 2022 17:29:59 +0800
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H5V9zC_a7cUGuUuWyAh8POqbBMtmTP608mrE8vy_jqvqw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1670314744.git.wqu@suse.com>
+ <Y48ADI5Qa2Wt+/JR@infradead.org>
 Content-Language: en-US
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PoC PATCH 00/11] btrfs: scrub: rework to get rid of the complex
+ bio formshaping
+In-Reply-To: <Y48ADI5Qa2Wt+/JR@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:ZvFTN24/0XHjD9wJ/RNGiQRNR5KBa6uuQmAi8dqOSCI6bTg6duS
+ Lm41iYPg9x2ZA8HhQ+EIxRMAlGBLsIOJ+YxtrDiHTx9aEh48yEq0oHyW+cXew/03WMHjhu+
+ 7JfQZCcX7upkL1nx2yNQ/SIKRFuy54b9jjHi0MODpvPNY2akByllYkM3qiRjGsd/3zv38FC
+ TXUXV8V41StKq5imAJs4g==
+UI-OutboundReport: notjunk:1;M01:P0:Y+NoniqST6w=;ki8cEDzlKK/WR+L/QdHatjYO5ND
+ B6ENpuSRUkZuGjxdea7eHwjeHgC1GI9+hmh/bE6XDPekTmYlbyaXJWav78RQJpxczHew5w+in
+ eaZKnPGmbxSaPrxFllL8aHfuk1asgcTNL3HR3byK3GRlB5H4Y87nJBir1EpUAPhr8o3VK4Zpa
+ UvZ+Anzo4PYx8n/Q86eBYCPNdXJxlaGA/oKWSwoLZTh9JWPzdCWxRqA3NAvn4TbIrynLvjmqV
+ iddJgFgxQl0ZERAF4W+YUP64CACSqao3UA5px/CWUnkKGcLjkVkJeLuH6FGUt4VckxX8E3dDf
+ qRqHeYIII02vTszAl1DPufVQg65Q7ybnkP06Oqz4OgtoUkCZjL7HksRp6fpSSOGb8d4L8EukJ
+ Soxl8QbFa8iP/RXKWI7TGAaXq9n1LiMRW/+Zo7cqLaTNDKtwHvuYOqZwGAkQ1rzO0lchYFWT5
+ 5zz/8Q1E6gm5O+LPzai7VStiq/rkqSapZbYixttphQ5L/vc+I82qNwGBjZVRl9E786/XVyEtB
+ 1+ri3qjVGgng2gKL4YEAEtyWsiKJm367aTr4JSQ6UY5UhUFvr+s/QL9lBsfiGuDr9kQXfPrw0
+ qdLYhGAcZjGWYp+ioz0TMnWMctlerxLUUrMQ2J0HfRfuGdA8FAyaMQsotd5hZnDbZ3yRDII8U
+ 8GE/HuEHAcplX8vSpMJQSgfllMQ/CQfUdSdHwcn1BuVsxHEgopnRqc85XkV2JNGKmhoslrzqn
+ SIqrsgytPJzK183iJmO62ZdmzqoB3En4aQ3zjNki0+GNMCBTaoxr54Sg5ZuMBM6yDIDKqM/2q
+ TSr6lcXY/C+fOB8qPqc2ZPaGFYdnM1ABSkFApNgPva3N+1/XYMEacmCXGVdsI78cuKYVkUXOB
+ KvgwCvk9oxt/Ba0KI+cnpR6AeEcHQNCa5dq4PNznZA1qRnefZNtS3pLuLWg4zGADIVO7VZ4yV
+ jqczadHhzvTspWMdZFiUhMQNwUY=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -48,101 +62,60 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-Filipe Manana 於 2022/12/5 下午7:15 寫道:
-> On Mon, Dec 5, 2022 at 10:55 AM robbieko <robbieko@synology.com> wrote:
->> From: Robbie Ko <robbieko@synology.com>
+
+On 2022/12/6 16:40, Christoph Hellwig wrote:
+> On Tue, Dec 06, 2022 at 04:23:27PM +0800, Qu Wenruo wrote:
+>> TL;DR
+>> The current scrub code is way too complex for future expansion.
 >>
->> [Issue]
->> When creating subvolume/snapshot, the transaction may be abort due to -ENOMEM
->>
->>    WARNING: CPU: 1 PID: 411 at fs/btrfs/transaction.c:1937 create_pending_snapshot+0xe30/0xe70 [btrfs]()
->>    CPU: 1 PID: 411 Comm: btrfs Tainted: P O 4.4.180+ #42661
-> 4.4.180...
->
-> How often does that happen on a supported kernel? The oldest supported
-> kernel is 4.9 at the moment.
+>> Current scrub code has a complex system to manage its in-flight bios.
+> 
+>  From my own ventures into that code I have to agree.
+> 
+>> This behavior is designed to improve scrub performance, but has a lot of
+>> disadvantage too:
+> 
+> Just curious:  any idea how it was supposed to improve performance?
+> Because the code does not actually look particularly optimized in terms
+> of I/O patterns.
 
-The occurrence of this issue is extremely low, and it cannot be 
-reproduced stably.
-We have millions of machines out there, and this issue happened 3 times 
-in the last two years.
+I'm not 100% sure, but my educated guess is, it's just merging bios.
 
+- Merge physically adjacent read/writes into one scrub_bio
+   This will mostly help RAID0/RAID10/RAID5 scrubbing.
+   As although logically each stripe is only 64K, this allows scrub
+   to assemble all read/writes into a larger bio instead always split
+   them at stripe boundary.
 
->
->>    Call Trace:
->>      create_pending_snapshot+0xe30/0xe70 [btrfs]
->>      create_pending_snapshots+0x89/0xb0 [btrfs]
->>      btrfs_commit_transaction+0x469/0xc60 [btrfs]
->>      btrfs_mksubvol+0x5bd/0x690 [btrfs]
->>      btrfs_mksnapshot+0x102/0x170 [btrfs]
->>      btrfs_ioctl_snap_create_transid+0x1ad/0x1c0 [btrfs]
->>      btrfs_ioctl_snap_create_v2+0x102/0x160 [btrfs]
->>      btrfs_ioctl+0x2111/0x3130 [btrfs]
->>      do_vfs_ioctl+0x7ea/0xa80
->>      SyS_ioctl+0xa1/0xb0
->>      entry_SYSCALL_64_fastpath+0x1e/0x8e
->>    ---[ end trace 910c8f86780ca385 ]---
->>    BTRFS: error (device dm-2) in create_pending_snapshot:1937: errno=-12 Out of memory
->>
->> [Cause]
->> During creating a subvolume/snapshot, it is necessary to allocate memory for Initializing fs root.
->> Therefore, it can only use GFP_NOFS to allocate memory to avoid deadlock issues.
->> However, atomic allocation is required when processing percpu_counter_init
->> without GFP_KERNEL due to the unique structure of percpu_counter.
->> In this situation, allocating memory for initializing fs root may cause
->> unexpected -ENOMEM when free memory is low and causes btrfs transaction to abort.
-> This sounds familiar, and we had a regression in mm that made
-> percepu_counter_init fail very often with -ENOMEM.
-> See:
->
-> https://lore.kernel.org/linux-mm/CAL3q7H5RNBjCi708GH7jnczAOe0BLnacT9C+OBgA-Dx9jhB6SQ@mail.gmail.com/
->
-> The kernel fix was this:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0760fa3d8f7fceeea508b98899f1c826e10ffe78
->
-> I'm assuming that you are probably running a Synology kernel based on
-> 4.4 with a lot of backported patches, is that correct?
-> Maybe you have the patchset that introduced the regression in that
-> kernel, but that later fix is not in there.
->
-> Thanks.
+   However the effectiveness should not be that huge, as the scrub_bio
+   size is only slightly increased from 64K to 128K.
 
-Yes, We do backport many patches, but we don't backport "mm: 
-memcg/percpu: account percpu memory to memory cgroups",
-So we think the issue has nothing to do with "percpu: make 
-pcpu_nr_empty_pop_pages per chunk type".
+I'd argue that if the extents are all interleaved, then my 
+always-read-64K behavior would be better.
 
-This issue is just a corner case, when percpu_counter_init is executed 
-with GFP_NOFS, there is a chance to fail.
-So we feel that the snapshot_lock should be preallocated.
+> 
+>> Furthermore, all work will done in a submit-and-wait fashion, reducing
+>> the delayed calls/jumps to minimal.
+> 
+> I think even with this overall scheme we could do a bit of async
+> state machine if needed.
 
-Thanks.
+Yes, the infrastructure is already here.
 
+In raid56, we need to scrub the data stripes first.
+In that case, scrub2_stripe_group is introduced, and use workqueue for 
+each stripe to scrub.
 
->
->> [Fix]
->> We allocate memory at the beginning of creating a subvolume/snapshot.
->> This way, we can ensure the memory is enough when initializing fs root.
->> Even -ENOMEM happens at the beginning of creating a subvolume/snapshot,
->> the transaction won’t abort since it hasn’t started yet.
->>
->> Robbie Ko (3):
->>    btrfs: refactor anon_dev with new_fs_root_args for create
->>      subvolume/snapshot
->>    btrfs: change snapshot_lock to dynamic pointer
->>    btrfs: add snapshot_lock to new_fs_root_args
->>
->>   fs/btrfs/ctree.h       |   2 +-
->>   fs/btrfs/disk-io.c     | 107 ++++++++++++++++++++++++++++++-----------
->>   fs/btrfs/disk-io.h     |  12 ++++-
->>   fs/btrfs/file.c        |   8 +--
->>   fs/btrfs/inode.c       |  12 ++---
->>   fs/btrfs/ioctl.c       |  38 +++++++--------
->>   fs/btrfs/transaction.c |   2 +-
->>   fs/btrfs/transaction.h |   5 +-
->>   8 files changed, 123 insertions(+), 63 deletions(-)
->>
->> --
->> 2.17.1
->>
+So if later we determine the current read-64K-then-next behavior is not 
+fast enough, we can use scrub2_stripe_group to run several stripes at once.
+
+>  But then again scrube is not the main
+> I/O fast path, so in doubt we can just throw more threads at the
+> problem if that becomes too complicated.
+
+Exactly.
+
+I'd do some benchmark later to show the difference.
+
+Thanks,
+Qu
