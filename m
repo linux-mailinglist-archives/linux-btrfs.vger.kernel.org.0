@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 571EC646417
+	by mail.lfdr.de (Postfix) with ESMTP id A2913646418
 	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Dec 2022 23:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbiLGW22 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Dec 2022 17:28:28 -0500
+        id S229696AbiLGW23 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Dec 2022 17:28:29 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbiLGW21 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Dec 2022 17:28:27 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BFC81D8E
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Dec 2022 14:28:26 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id x28so16251930qtv.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Dec 2022 14:28:26 -0800 (PST)
+        with ESMTP id S229720AbiLGW22 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Dec 2022 17:28:28 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1C681D87
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Dec 2022 14:28:27 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id s14so13672433qvo.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Dec 2022 14:28:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Qm071SMDR2NnJ115/TnXgUIANBPM1dlkDB4AQkH670Y=;
-        b=2bHM8FM+8otp7seyJOb0vqEuqYQwbZ8TTRACz3T0u98hGtryiWJcv1IDSM3hgLD6Fh
-         39iaTl/K6K4Sd+pZ7AjNaPWw8P0tK4QaWHxghXSPMKNgojttcf0pviZHI+zf7n5Dz2xf
-         Q8wx/WUGOKpIgmxJzRyOiyBmIlY81asWqRHmczXuIN5hqK/gElPaj524BU7vLFBQa1hS
-         vWRxJGuEecl5xG2ggditdrR/iUuLOiOevDapztBCPhvxN8xBdlVNo+kAeY1dRj/l63nJ
-         soKBsEb4aYKqnawdqcHaEllKP/1uLCywD3gR/u897dBb6JAi312noh+BYwYtl8bmHxi9
-         7UXA==
+        bh=zJjFPZ3bVjCi1soL/NYCpPC55azD6NczF2opwl7HCRI=;
+        b=K/Vex0L6GHrv7qSMqXK1BoHzNkmE+ZWNUb686Yp++Ff+H+B324t9Aj4mJAb2x6Y50r
+         A4PRanlTrOcpyV3HzzsCsCLsP7xcytdfSspKu56Q4TgZUt1k6uyeScpXkqJAZE32hwob
+         eOVO9FtqoVzhDoiiCaP1j8F8qqpl+TRAPNAP0prgaGE5G+aOfZ+/UA/In+6jNoijwWN8
+         02xNiokeKuhyAAahi2Ew+sP/SVKKhUrreb4z8ekqNqg3X05MLNN16BTszNO97uPETBox
+         EyRxWM7FS9jTQR4+LpDcXReBTpsthMIk/e5E1oO9WkFRzntm20abRKbX8uvZEpnICcNH
+         L5Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Qm071SMDR2NnJ115/TnXgUIANBPM1dlkDB4AQkH670Y=;
-        b=JLX5XpNbJd9YKrIauepfStsdPATSrAzqeT46a1XqY4jrlaw5JQteRqGN80cLULKxEJ
-         YBsS/GUDDEouOTCp6PzAYCawkkkqvQmPzz+Q4qc8HJ3bhrT6vKSiGFRsRSLYrb6x0qmt
-         REgBGxWeDAnJKx2ZYX8y8eQ+SGxodiDocufMSHq/8TYIjMpL/jyWkeqZtLYWcuTDLMLy
-         Ldv0FQ9ClQwVUrYdW+2bTSPtzp1zmlkBPRPO6d58cvIqqkzjFWgDU394kKMEtPWRn0tg
-         h70GBtZAHqEaYqFqPVzUmWA8PA+zuCS0PGajsYxFEHGdxMmYduHswzMx87BFQS4gjBqB
-         bLcA==
-X-Gm-Message-State: ANoB5pkqrzOrBA5kSoJ33wRtmzpZ3AusYCO1lJp7jPN291uJTJBDzcIk
-        HbDgEG3zAdad/WEuLXxo7UCG2WIutqFpGk0X
-X-Google-Smtp-Source: AA0mqf7y0HTwDvBQEEDRIWvRvSOnibUo3bNjQFhPjZjvHNO0PqTd7D7k9uWkQcNRjqXYvERJ/zWjvg==
-X-Received: by 2002:ac8:1098:0:b0:3a5:3819:51da with SMTP id a24-20020ac81098000000b003a5381951damr1405673qtj.38.1670452104798;
-        Wed, 07 Dec 2022 14:28:24 -0800 (PST)
+        bh=zJjFPZ3bVjCi1soL/NYCpPC55azD6NczF2opwl7HCRI=;
+        b=lNiyPtrj/ukH8p1LdA2BvfUCNzqWCZGjNVmq+AEPS41GjgogBhCLfYdG0LgRL0gv59
+         R1X27anNEff+9j+Gg4wqLSHvuaqPZI/zeNZ31aObOKyFuxlGcHm9CvXfriJBDbbneyqT
+         +NP+/X3Wkj7jxVRvO0bWh1gIknvuKpy00OYnAxG+ff4mbkZZAA4bEVHSMnQTiAai9rkj
+         epnkokar+kGL0QQ0W14jEVPtpnxJnSS+OiE53BXA0Zg/L/5ScS+cZKX8eZYZEXhxpGaK
+         cXrhGR8upu7i+Cg2h0pehMR8BXSjHktcINls09WBc9e4/+y20YCTCKCuBmlDvDf0OvMs
+         ZNkw==
+X-Gm-Message-State: ANoB5pnLxXnkl+356PvV3up1A25aQmtXW2UTHFgzRKRBiPfY37aPiviU
+        e3JHYCPy/VwKCKiLqIehet7ufgUnTN663VOw
+X-Google-Smtp-Source: AA0mqf51lcxBgwwfgkHuVfND8lsznY3KbcBdXYf2YAVMcW1z4GelOEE2oCuZUY+XZhdD1DotntsVmQ==
+X-Received: by 2002:a05:6214:e6c:b0:4c7:7257:68a2 with SMTP id jz12-20020a0562140e6c00b004c7725768a2mr2013758qvb.15.1670452106392;
+        Wed, 07 Dec 2022 14:28:26 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id j13-20020a05620a288d00b006fbbdc6c68fsm18467144qkp.68.2022.12.07.14.28.24
+        by smtp.gmail.com with ESMTPSA id x10-20020a05620a258a00b006bb82221013sm18033073qko.0.2022.12.07.14.28.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Dec 2022 14:28:24 -0800 (PST)
+        Wed, 07 Dec 2022 14:28:25 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 7/8] btrfs: combine btrfs_clear_buffer_dirty and clear_extent_buffer_dirty
-Date:   Wed,  7 Dec 2022 17:28:10 -0500
-Message-Id: <10d22123b5e1cdbbefab86e0667d81951f537f77.1670451918.git.josef@toxicpanda.com>
+Subject: [PATCH 8/8] btrfs: remove btrfs_wait_tree_block_writeback
+Date:   Wed,  7 Dec 2022 17:28:11 -0500
+Message-Id: <455b500ef31fc9cc86b181a51bb840086dcc1ade.1670451918.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1670451918.git.josef@toxicpanda.com>
 References: <cover.1670451918.git.josef@toxicpanda.com>
@@ -68,89 +68,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_clear_buffer_dirty just does the test_clear_bit() and then calls
-clear_extent_buffer_dirty and does the dirty metadata accounting.
-Combine this into clear_extent_buffer_dirty and make the result
-btrfs_clear_buffer_dirty.
+This is used in the tree-log code and is a holdover from previous
+iterations of extent buffer writeback.  We can simply use
+wait_on_extent_buffer_writeback here, and remove
+btrfs_wait_tree_block_writeback completely.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c   | 13 -------------
- fs/btrfs/extent_io.c | 11 ++++++++++-
- fs/btrfs/extent_io.h |  2 +-
- 3 files changed, 11 insertions(+), 15 deletions(-)
+ fs/btrfs/tree-log.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b8f1ac54d10c..8edbf73d8707 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -965,19 +965,6 @@ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
- 
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 15695f505f05..15f8130d812c 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -278,12 +278,6 @@ void btrfs_end_log_trans(struct btrfs_root *root)
+ 	}
  }
  
--void btrfs_clear_buffer_dirty(struct extent_buffer *buf)
+-static void btrfs_wait_tree_block_writeback(struct extent_buffer *buf)
 -{
--	struct btrfs_fs_info *fs_info = buf->fs_info;
--	btrfs_assert_tree_write_locked(buf);
--
--	if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &buf->bflags)) {
--		percpu_counter_add_batch(&fs_info->dirty_metadata_bytes,
--					 -buf->len,
--					 fs_info->dirty_metadata_batch);
--		clear_extent_buffer_dirty(buf);
--	}
+-	filemap_fdatawait_range(buf->pages[0]->mapping,
+-			        buf->start, buf->start + buf->len - 1);
 -}
 -
- static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
- 			 u64 objectid)
- {
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 7cd4065acc82..c242aabfa863 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4813,12 +4813,21 @@ static void clear_subpage_extent_buffer_dirty(const struct extent_buffer *eb)
- 	WARN_ON(atomic_read(&eb->refs) == 0);
- }
+ /*
+  * the walk control struct is used to pass state down the chain when
+  * processing the log tree.  The stage field tells us which part
+@@ -2637,7 +2631,7 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
  
--void clear_extent_buffer_dirty(const struct extent_buffer *eb)
-+void btrfs_clear_buffer_dirty(struct extent_buffer *eb)
- {
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
- 	int i;
- 	int num_pages;
- 	struct page *page;
+ 				btrfs_tree_lock(next);
+ 				btrfs_clear_buffer_dirty(next);
+-				btrfs_wait_tree_block_writeback(next);
++				wait_on_extent_buffer_writeback(next);
+ 				btrfs_tree_unlock(next);
  
-+	btrfs_assert_tree_write_locked(eb);
-+
-+	if (!test_and_clear_bit(EXTENT_BUFFER_DIRTY, &eb->bflags))
-+		return;
-+
-+	percpu_counter_add_batch(&fs_info->dirty_metadata_bytes, -eb->len,
-+				 fs_info->dirty_metadata_batch);
-+
- 	if (eb->fs_info->nodesize < PAGE_SIZE)
- 		return clear_subpage_extent_buffer_dirty(eb);
+ 				if (trans) {
+@@ -2706,7 +2700,7 @@ static noinline int walk_up_log_tree(struct btrfs_trans_handle *trans,
  
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index a024655d4237..41fc887d6cfe 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -261,7 +261,6 @@ void extent_buffer_bitmap_set(const struct extent_buffer *eb, unsigned long star
- void extent_buffer_bitmap_clear(const struct extent_buffer *eb,
- 				unsigned long start, unsigned long pos,
- 				unsigned long len);
--void clear_extent_buffer_dirty(const struct extent_buffer *eb);
- bool set_extent_buffer_dirty(struct extent_buffer *eb);
- void set_extent_buffer_uptodate(struct extent_buffer *eb);
- void clear_extent_buffer_uptodate(struct extent_buffer *eb);
-@@ -273,6 +272,7 @@ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
- 				  u32 bits_to_clear, unsigned long page_ops);
- int extent_invalidate_folio(struct extent_io_tree *tree,
- 			    struct folio *folio, size_t offset);
-+void btrfs_clear_buffer_dirty(struct extent_buffer *buf);
+ 				btrfs_tree_lock(next);
+ 				btrfs_clear_buffer_dirty(next);
+-				btrfs_wait_tree_block_writeback(next);
++				wait_on_extent_buffer_writeback(next);
+ 				btrfs_tree_unlock(next);
  
- int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array);
+ 				if (trans) {
+@@ -2787,7 +2781,7 @@ static int walk_log_tree(struct btrfs_trans_handle *trans,
  
+ 			btrfs_tree_lock(next);
+ 			btrfs_clear_buffer_dirty(next);
+-			btrfs_wait_tree_block_writeback(next);
++			wait_on_extent_buffer_writeback(next);
+ 			btrfs_tree_unlock(next);
+ 
+ 			if (trans) {
 -- 
 2.26.3
 
