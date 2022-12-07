@@ -2,190 +2,265 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 073EB645C64
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Dec 2022 15:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE187645D7B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Dec 2022 16:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbiLGOXO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Dec 2022 09:23:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
+        id S229656AbiLGPSY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Dec 2022 10:18:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbiLGOWg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Dec 2022 09:22:36 -0500
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF61102B
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Dec 2022 06:22:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1670422955; x=1701958955;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=NnbP1GzXNU55fc78KgmESPEZwYVpMmeoR2cb74KFQxY=;
-  b=Tqye0ykKx36QVzsoVYR49xghv9/QNaIF7ppHNpscNYSK/ePVpBbUXhmK
-   8sYRgMZhIcKj07rWBU+4gExWnOi4673WdzZ1yxqv1kjoF+nl47xNF7V03
-   9uu5hsBhAJLjXteCWfdXj5dxskew6OT/CGRBzpZCsUC+tDAO77lMGNY46
-   qpV1cpVxPh3zey2z5AyyVvVEe4+oQxcwAGST+Y2n+oCnVwBKL6IUxnNbl
-   a1KHmn83il2fW/Mvp8GQo6t7A3jQw5Yn3f4di89guJ4rBXO6iQqOi4H02
-   XEJeFN9QOdTByuH3te9ziwCJTLbI28VKTDTNT3LGAiBqPVA1kL3Uk1P6P
-   A==;
-X-IronPort-AV: E=Sophos;i="5.96,225,1665417600"; 
-   d="scan'208";a="218099493"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Dec 2022 22:22:35 +0800
-IronPort-SDR: dvZXy3L1Hgrk1gmpkikHvxf4n5IQ1rtoiDJ4TmA3NjOueKDC6s3itn0cQF9qVParJxxyvNhe7K
- sDD38owrPYuZK3rcJc91hrrHfwXwAHki0t1BCrWdkAqjcwRA9UmbtrzMXW2MzcGJgJsAL29wWd
- iXkQ15VC+eoLxIHxSLbvXtFf79/XYLqBu9UGrJmS+up/p4lp389bBGvw80bz8ChrjRGaGsUs9D
- Ums9scHKkNMPyFJdImpZJP30IDiojJr1eaBbEuafrkydbAU8ks0eEFDh5XJvl77qST7Tjh07Eq
- SMw=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Dec 2022 05:35:21 -0800
-IronPort-SDR: pK8asGROlvTSB74KtFRhfnZo0BCsjU8NAN9yON54stO9+wgFGMBfWaJHKFjZGPKIysHAZCJFtf
- EF8pfCSEq9TqPza9+uebCPJOk7jO+L4ahvv/QPCGfEBpLdUCwwNZZaEJeYvJEMuKc6f7tJeYDh
- q6mUApa8bnfoYslJQaWVUvGHypLW4TZoB6TlEqcGSuKpZepdQcoCnOLiBCQwygSoT8jNkCFxSS
- OOYRSBnyf6eht32HYji8X3y6B0NIc3VCZcQ9qSmvHu3jckRxORe99Iku2jhqBhKcTmDyOV45CF
- YQ4=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip01.wdc.com with ESMTP; 07 Dec 2022 06:22:34 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: [PATCH v4 9/9] btrfs: add tracepoints for ordered stripes
-Date:   Wed,  7 Dec 2022 06:22:18 -0800
-Message-Id: <0cdec0f61fd93fd6c6d7a0721d9c0bdf9b88bfae.1670422590.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <cover.1670422590.git.johannes.thumshirn@wdc.com>
-References: <cover.1670422590.git.johannes.thumshirn@wdc.com>
+        with ESMTP id S229660AbiLGPST (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Dec 2022 10:18:19 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BE35BD6E
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Dec 2022 07:18:07 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id v8so10163992qkg.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Dec 2022 07:18:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sor5ChdYEWEeXEFpQFhM+5GnGDwBJ3TG/oYGgLsvE7A=;
+        b=wEiVirMog1r9q4K//mdy2kERp3EgDYZtlHy7YgRbd0ZekI///CE06tDOZXVXxIZIpi
+         Cgdgvw+dZ1ZModbDoTMhg0XTjk3OfxTl1yyscLmYgcO0VPeC8u5Wc4yyHj2HHxgT/B8I
+         KlwJmeqj6eRYLG01LsL9NZ/rw6clBF8GoGanwTcBb2tWa3d2DF0OFoL4DcCmFZDvATBt
+         7RtOqXorjVkI8hIJT/iMIHZq9e7j0qtMvKVlBFQltc3f/8NHpbwDAovzXhaSaCLZe0/v
+         mKgMyAHBCPbFtsJi3VisxPjKc8xQaz3g6E9+d4EPozz2iCDJEoVogr4k3Qt3E4cyNvCZ
+         yn6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sor5ChdYEWEeXEFpQFhM+5GnGDwBJ3TG/oYGgLsvE7A=;
+        b=KxEaeg7gXAvV1ymoRcRWoQd4SHO2r7QqVZRMVcBdCgaBlzKNEAgTlNhm+Tfo/0MpHV
+         H/NRQ3tB4b2TsO/ulTm6CLfdUcQ/E7OoGshXptLWC3WoMjJ0x3MoJ4+BCSS6bMRu/Nkb
+         9D9VIuhWYwlQY3/6WCgn2jDPd9rIqN6elu0V/5uoRb452w6f7bb6kk3OTlIm8hpEn7ZG
+         Ab3N1R3fVoeEFDX1yLmcK5JfY3Rz7wPLeaUR9TL6/3C4HFVfcq/Ik4CXMHka3/igS5xX
+         8TEfFVjoVWP78lt/B670Q7fE2hmwt46QX+/NonVjf9YJUnOh5qImAar07ofbQsL7b/oP
+         EM3w==
+X-Gm-Message-State: ANoB5plcEb5QZgeWWYsgGwacKyTKEMjGxsVQ+8cdNCJsJv/vbZMh6x1y
+        CoSjCKLmqSi4Ub9vPm7bWLaiihGLblDrvyPI
+X-Google-Smtp-Source: AA0mqf4eISjJCnzt7NyRYGSbtG8f6rTn4w3kv3hkB6ek9flrsvH8k0GsJq8BiqNGRFn8CuYReUaJQQ==
+X-Received: by 2002:a37:6047:0:b0:6ea:6c07:6e57 with SMTP id u68-20020a376047000000b006ea6c076e57mr71739176qkb.254.1670426286332;
+        Wed, 07 Dec 2022 07:18:06 -0800 (PST)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id o6-20020ac85546000000b003a69225c2cdsm12036255qtr.56.2022.12.07.07.18.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Dec 2022 07:18:05 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: move btrfs_abort_transaction to transaction.c
+Date:   Wed,  7 Dec 2022 10:18:04 -0500
+Message-Id: <edc2981f978e80b1cd1e4196dcf4a109831a6354.1670426276.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add tracepoints to check the lifetime of btrfs_ordered_stripe entries.
+While trying to sync messages.[ch] I ended up with this dependency on
+messages.h in the rest of the progs codebase because it's where
+btrfs_transaction_abort() was now held.  We want to keep messages.[ch]
+limited to the kernel code, and the btrfs_transaction_abort() code
+better fits in the transaction code and not in messages.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/raid-stripe-tree.c  |  3 +++
- fs/btrfs/super.c             |  1 +
- include/trace/events/btrfs.h | 50 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 54 insertions(+)
+ fs/btrfs/messages.c    | 30 ------------------------------
+ fs/btrfs/messages.h    | 32 --------------------------------
+ fs/btrfs/transaction.c | 30 ++++++++++++++++++++++++++++++
+ fs/btrfs/transaction.h | 31 +++++++++++++++++++++++++++++++
+ 4 files changed, 61 insertions(+), 62 deletions(-)
 
-diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-index ed13b30001e0..b5ef3daec295 100644
---- a/fs/btrfs/raid-stripe-tree.c
-+++ b/fs/btrfs/raid-stripe-tree.c
-@@ -106,6 +106,7 @@ int btrfs_add_ordered_stripe(struct btrfs_io_context *bioc)
- 		return -EINVAL;
- 	}
+diff --git a/fs/btrfs/messages.c b/fs/btrfs/messages.c
+index 5ad375463a90..4b63ba82a5ab 100644
+--- a/fs/btrfs/messages.c
++++ b/fs/btrfs/messages.c
+@@ -292,36 +292,6 @@ void __cold btrfs_err_32bit_limit(struct btrfs_fs_info *fs_info)
+ }
+ #endif
  
-+	trace_btrfs_ordered_stripe_add(fs_info, stripe);
- 	return 0;
+-/*
+- * We only mark the transaction aborted and then set the file system read-only.
+- * This will prevent new transactions from starting or trying to join this
+- * one.
+- *
+- * This means that error recovery at the call site is limited to freeing
+- * any local memory allocations and passing the error code up without
+- * further cleanup. The transaction should complete as it normally would
+- * in the call path but will return -EIO.
+- *
+- * We'll complete the cleanup in btrfs_end_transaction and
+- * btrfs_commit_transaction.
+- */
+-__cold
+-void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
+-			       const char *function,
+-			       unsigned int line, int errno, bool first_hit)
+-{
+-	struct btrfs_fs_info *fs_info = trans->fs_info;
+-
+-	WRITE_ONCE(trans->aborted, errno);
+-	WRITE_ONCE(trans->transaction->aborted, errno);
+-	if (first_hit && errno == -ENOSPC)
+-		btrfs_dump_space_info_for_trans_abort(fs_info);
+-	/* Wake up anybody who may be waiting on this transaction */
+-	wake_up(&fs_info->transaction_wait);
+-	wake_up(&fs_info->transaction_blocked_wait);
+-	__btrfs_handle_fs_error(fs_info, function, line, errno, NULL);
+-}
+-
+ /*
+  * We want the transaction abort to print stack trace only for errors where the
+  * cause could be a bug, eg. due to ENOSPC, and not for common errors that are
+diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
+index 295aa874b226..699e4032d37f 100644
+--- a/fs/btrfs/messages.h
++++ b/fs/btrfs/messages.h
+@@ -6,7 +6,6 @@
+ #include <linux/types.h>
+ 
+ struct btrfs_fs_info;
+-struct btrfs_trans_handle;
+ 
+ static inline __printf(2, 3) __cold
+ void btrfs_no_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
+@@ -178,39 +177,8 @@ void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function
+ 
+ const char * __attribute_const__ btrfs_decode_error(int errno);
+ 
+-__cold
+-void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
+-			       const char *function,
+-			       unsigned int line, int errno, bool first_hit);
+-
+ bool __cold abort_should_print_stack(int errno);
+ 
+-/*
+- * Call btrfs_abort_transaction as early as possible when an error condition is
+- * detected, that way the exact stack trace is reported for some errors.
+- */
+-#define btrfs_abort_transaction(trans, errno)		\
+-do {								\
+-	bool first = false;					\
+-	/* Report first abort since mount */			\
+-	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
+-			&((trans)->fs_info->fs_state))) {	\
+-		first = true;					\
+-		if (WARN(abort_should_print_stack(errno), 	\
+-			KERN_DEBUG				\
+-			"BTRFS: Transaction aborted (error %d)\n",	\
+-			(errno))) {					\
+-			/* Stack trace printed. */			\
+-		} else {						\
+-			btrfs_debug((trans)->fs_info,			\
+-				    "Transaction aborted (error %d)", \
+-				  (errno));			\
+-		}						\
+-	}							\
+-	__btrfs_abort_transaction((trans), __func__,		\
+-				  __LINE__, (errno), first);	\
+-} while (0)
+-
+ #define btrfs_handle_fs_error(fs_info, errno, fmt, args...)		\
+ 	__btrfs_handle_fs_error((fs_info), __func__, __LINE__,		\
+ 				(errno), fmt, ##args)
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index b8c52e89688c..050928a18a3b 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2604,6 +2604,36 @@ int btrfs_clean_one_deleted_snapshot(struct btrfs_fs_info *fs_info)
+ 	return (ret < 0) ? 0 : 1;
  }
  
-@@ -121,6 +122,7 @@ struct btrfs_ordered_stripe *btrfs_lookup_ordered_stripe(struct btrfs_fs_info *f
- 	if (node) {
- 		stripe = rb_entry(node, struct btrfs_ordered_stripe, rb_node);
- 		refcount_inc(&stripe->ref);
-+		trace_btrfs_ordered_stripe_lookup(fs_info, stripe);
- 	}
- 	read_unlock(&fs_info->stripe_update_lock);
- 
-@@ -131,6 +133,7 @@ void btrfs_put_ordered_stripe(struct btrfs_fs_info *fs_info,
- 				 struct btrfs_ordered_stripe *stripe)
++/*
++ * We only mark the transaction aborted and then set the file system read-only.
++ * This will prevent new transactions from starting or trying to join this
++ * one.
++ *
++ * This means that error recovery at the call site is limited to freeing
++ * any local memory allocations and passing the error code up without
++ * further cleanup. The transaction should complete as it normally would
++ * in the call path but will return -EIO.
++ *
++ * We'll complete the cleanup in btrfs_end_transaction and
++ * btrfs_commit_transaction.
++ */
++__cold
++void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
++			       const char *function,
++			       unsigned int line, int errno, bool first_hit)
++{
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++
++	WRITE_ONCE(trans->aborted, errno);
++	WRITE_ONCE(trans->transaction->aborted, errno);
++	if (first_hit && errno == -ENOSPC)
++		btrfs_dump_space_info_for_trans_abort(fs_info);
++	/* Wake up anybody who may be waiting on this transaction */
++	wake_up(&fs_info->transaction_wait);
++	wake_up(&fs_info->transaction_blocked_wait);
++	__btrfs_handle_fs_error(fs_info, function, line, errno, NULL);
++}
++
+ int __init btrfs_transaction_init(void)
  {
- 	write_lock(&fs_info->stripe_update_lock);
-+	trace_btrfs_ordered_stripe_put(fs_info, stripe);
- 	if (refcount_dec_and_test(&stripe->ref)) {
- 		struct rb_node *node = &stripe->rb_node;
+ 	btrfs_trans_handle_cachep = kmem_cache_create("btrfs_trans_handle",
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 97f6c39f59c8..8d62d41804ae 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -202,6 +202,32 @@ static inline void btrfs_clear_skip_qgroup(struct btrfs_trans_handle *trans)
+ 	delayed_refs->qgroup_to_skip = 0;
+ }
  
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 93f52ee85f6f..532852105668 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -58,6 +58,7 @@
- #include "scrub.h"
- #include "verity.h"
- #include "super.h"
-+#include "raid-stripe-tree.h"
- #define CREATE_TRACE_POINTS
- #include <trace/events/btrfs.h>
++/*
++ * Call btrfs_abort_transaction as early as possible when an error condition is
++ * detected, that way the exact stack trace is reported for some errors.
++ */
++#define btrfs_abort_transaction(trans, errno)		\
++do {								\
++	bool first = false;					\
++	/* Report first abort since mount */			\
++	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
++			&((trans)->fs_info->fs_state))) {	\
++		first = true;					\
++		if (WARN(abort_should_print_stack(errno),	\
++			KERN_DEBUG				\
++			"BTRFS: Transaction aborted (error %d)\n",	\
++			(errno))) {					\
++			/* Stack trace printed. */			\
++		} else {						\
++			btrfs_debug((trans)->fs_info,			\
++				    "Transaction aborted (error %d)", \
++				  (errno));			\
++		}						\
++	}							\
++	__btrfs_abort_transaction((trans), __func__,		\
++				  __LINE__, (errno), first);	\
++} while (0)
++
+ int btrfs_end_transaction(struct btrfs_trans_handle *trans);
+ struct btrfs_trans_handle *btrfs_start_transaction(struct btrfs_root *root,
+ 						   unsigned int num_items);
+@@ -236,6 +262,11 @@ void btrfs_put_transaction(struct btrfs_transaction *transaction);
+ void btrfs_add_dropped_root(struct btrfs_trans_handle *trans,
+ 			    struct btrfs_root *root);
+ void btrfs_trans_release_chunk_metadata(struct btrfs_trans_handle *trans);
++__cold
++void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
++			       const char *function,
++			       unsigned int line, int errno, bool first_hit);
++
  
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 0bce0b4ff2fa..93b0fbc69413 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -32,6 +32,7 @@ struct prelim_ref;
- struct btrfs_space_info;
- struct btrfs_raid_bio;
- struct raid56_bio_trace_info;
-+struct btrfs_ordered_stripe;
- 
- #define show_ref_type(type)						\
- 	__print_symbolic(type,						\
-@@ -2411,6 +2412,55 @@ DEFINE_EVENT(btrfs_raid56_bio, raid56_scrub_read_recover,
- 	TP_ARGS(rbio, bio, trace_info)
- );
- 
-+DECLARE_EVENT_CLASS(btrfs__ordered_stripe,
-+
-+	TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		 const struct btrfs_ordered_stripe *stripe),
-+
-+	TP_ARGS(fs_info, stripe),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	logical		)
-+		__field(	u64,	num_bytes	)
-+		__field(	int,	num_stripes	)
-+		__field(	int,	ref		)
-+	),
-+
-+	TP_fast_assign_btrfs(fs_info,
-+		__entry->logical	= stripe->logical;
-+		__entry->num_bytes	= stripe->num_bytes;
-+		__entry->num_stripes	= stripe->num_stripes;
-+		__entry->ref		= refcount_read(&stripe->ref);
-+	),
-+
-+	TP_printk_btrfs("logical=%llu, num_bytes=%llu, num_stripes=%d, ref=%d",
-+			__entry->logical, __entry->num_bytes,
-+			__entry->num_stripes, __entry->ref)
-+);
-+
-+DEFINE_EVENT(btrfs__ordered_stripe, btrfs_ordered_stripe_add,
-+
-+	     TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		      const struct btrfs_ordered_stripe *stripe),
-+
-+	     TP_ARGS(fs_info, stripe)
-+);
-+
-+DEFINE_EVENT(btrfs__ordered_stripe, btrfs_ordered_stripe_lookup,
-+
-+	     TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		      const struct btrfs_ordered_stripe *stripe),
-+
-+	     TP_ARGS(fs_info, stripe)
-+);
-+
-+DEFINE_EVENT(btrfs__ordered_stripe, btrfs_ordered_stripe_put,
-+
-+	     TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		      const struct btrfs_ordered_stripe *stripe),
-+
-+	     TP_ARGS(fs_info, stripe)
-+);
- #endif /* _TRACE_BTRFS_H */
- 
- /* This part must be outside protection */
+ int __init btrfs_transaction_init(void);
+ void __cold btrfs_transaction_exit(void);
 -- 
-2.38.1
+2.26.3
 
