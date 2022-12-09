@@ -2,214 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCF0647FF8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Dec 2022 10:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82F1648007
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Dec 2022 10:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbiLIJOk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Dec 2022 04:14:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
+        id S229988AbiLIJTq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Dec 2022 04:19:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbiLIJOj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Dec 2022 04:14:39 -0500
-Received: from sender4-pp-o90.zoho.com (sender4-pp-o90.zoho.com [136.143.188.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9979FB1DA
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Dec 2022 01:14:38 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1670577273; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=JHBwxqM83/58j77MHUDdbIJEAo8wAxXhGRCIZ6WbeMiEPhFvMQhmloiOi7xtoKCkkR5v8KVYUoBm21MGcXSSAFxl2RAYVf75Nj1C8L6xm37H6k1oUcvKrQ0UV/fTIPW/lUPuSPDTzGL9s1gMuN5Y0+Am6+wFGPbGte7kTW4u8js=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1670577273; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=BZxGM33kFfnCyxft4yF9YicUAS5tz5Ne/QN/h5u4o20=; 
-        b=gTaK5g+h8pPhr5QYy9auRo4xm6QCLjzqy/F5Q31ICV5ip+Amk1jG2VinLNzjlTIbp8BLnSDKdzP7rxV7KrXgLCkWo8h8/1rw1kER2rSo8bbR+hrVdYwkkJjRMW4K71EjYzIxZnC33l9kkYUzvm7xhwQFsjxzHJvj/w4870c8FJc=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=zoho.com;
-        spf=pass  smtp.mailfrom=hmsjwzb@zoho.com;
-        dmarc=pass header.from=<hmsjwzb@zoho.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1670577273;
-        s=zm2022; d=zoho.com; i=hmsjwzb@zoho.com;
-        h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=BZxGM33kFfnCyxft4yF9YicUAS5tz5Ne/QN/h5u4o20=;
-        b=bsMSAq9DKsFWj0OX5vW77MEnXejmFsEEzw138QWoY4uZXMMrwthryWJZotQIlVJk
-        nYXr+7GIKaZfq8csfEBB4y/IM5VlXBzYldxmFJXDWfRTDCVI8fL1lse6IzK31TGntLI
-        SmFIYlik4sEfcqG4z4/F9LokT7QoUx8dKdNByFR4=
-Received: from [192.168.0.103] (58.247.201.213 [58.247.201.213]) by mx.zohomail.com
-        with SMTPS id 1670577271599723.0380548076341; Fri, 9 Dec 2022 01:14:31 -0800 (PST)
-Message-ID: <304711fc-2204-177c-b2f0-161bed5178a1@zoho.com>
-Date:   Fri, 9 Dec 2022 04:14:28 -0500
+        with ESMTP id S229807AbiLIJTn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Dec 2022 04:19:43 -0500
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C91562E97
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Dec 2022 01:19:42 -0800 (PST)
+Received: by mail-io1-f70.google.com with SMTP id l22-20020a05660227d600b006dfa191ca8aso1807927ios.20
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Dec 2022 01:19:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=seze8zafSimQFws6rjLDlyArlrppdJnhF3uf7L6dJwk=;
+        b=yBgR5H2YAvDtdlPBZBxHo6X6XjhiZ3bq9czKoqMyvizR0103tBInWScyu4gQkuxh7J
+         h0h0RFy+RJVWAz0uJxyj7Lh4zN+bW6nqtdlsz4iJNMvl0mn+LTIVVBbf3LKc1KHvialf
+         qM7Xh6M2ZhzvFXVkk9iGXnU8a/qzd/yaH4KjH3jOygJpsmIMgnQlUMnhP7VMpFHsG1bB
+         O5z5vyer1tqstCpuWbdtJuSAIVi+9ZCBhKDnHt4DDF3FW/1L2xJXlHBGVmsWR8fnnc2e
+         0sv9ADR3v3VNI+Aenj9Kxrv+Ukc+Uw1La5z3cWwW7sRKpCqdhtSDC4ekQ/dUsegNFvy/
+         BJog==
+X-Gm-Message-State: ANoB5pkj1ylQdws9/tj0TOA3aTfT8hGehRfop2SBg8aWuUofa5+BuVzO
+        f+v6fy0Y/asH9L3V4e4UNyc1HrpTxmI207msWsvSnXCEv77m
+X-Google-Smtp-Source: AA0mqf4/RoUJzMxY7mVXgahQtv4ZtxKoB0Lt9q2yZ+oQ7vVNICa1Lc6ZF3HdZOd8bXbihlasiKbZwHwCNudzbe6K1cJ7IzhkU8fA
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH v2] btrfs-progs: chunk tree search solution for btrfs249
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org, anand.jain@oracle.com
-References: <20220815024341.4677-1-hmsjwzb@zoho.com>
- <f8043322-7a70-80ac-4a19-3945df839d9b@gmx.com>
-Content-Language: en-US
-From:   hmsjwzb <hmsjwzb@zoho.com>
-In-Reply-To: <f8043322-7a70-80ac-4a19-3945df839d9b@gmx.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a92:cccd:0:b0:302:58d0:2510 with SMTP id
+ u13-20020a92cccd000000b0030258d02510mr37704310ilq.27.1670577581429; Fri, 09
+ Dec 2022 01:19:41 -0800 (PST)
+Date:   Fri, 09 Dec 2022 01:19:41 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004f995905ef61a764@google.com>
+Subject: [syzbot] KMSAN: uninit-value in longest_match
+From:   syzbot <syzbot+14d9e7602ebdf7ec0a60@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, glider@google.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
+Hello,
 
-Thanks for the notification.
-I have updated the commit message.
+syzbot found the following issue on:
 
-Thanks,
-Flint
+HEAD commit:    30d2727189c5 kmsan: fix memcpy tests
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=117d38f5880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a2144983ada8b4f3
+dashboard link: https://syzkaller.appspot.com/bug?extid=14d9e7602ebdf7ec0a60
+compiler:       clang version 15.0.0 (https://github.com/llvm/llvm-project.git 610139d2d9ce6746b3c617fb3e2f7886272d26ff), GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: i386
 
-On 12/9/22 01:24, Qu Wenruo wrote:
-> 
-> 
-> On 2022/8/15 10:43, Flint.Wang wrote:
->> Hi Qu,
->>
->> Thanks for your comment. I fix the issue you suggest.
->> It is much clean now.
->>
->> Btrfs249 failed due to btrfs_ioctl_fs_info() return RW devices for fi_args->num_devices.
->> This patch search chunk tree to find rw devices.
->>
->> v2 change:
->> 1. code style fix.
->> 2. noseed_dev => rw_devs, noseed_fsid => fsid.
->> 3. remove redundant structure devid_uuid.
->> 4. reuse the dev_info structure.
->> 5. remove redundant uuid argument.
->>
->> Signed-off-by: Flint.Wang <hmsjwzb@zoho.com>
-> 
-> Any update on this patch? IIRC btrfs/249 still fails without this patch.
-> 
-> Although Anand Jain has a similar patchset, but his solution requires a new kernel sysfs, which can still cause compatibility problems.
-> 
-> Thus your patch is still the better one, but your commit message still needs some update.
-> 
-> Thanks,
-> Qu
->> ---
->>   cmds/filesystem-usage.c | 83 ++++++++++++++++++++++++++++++++---------
->>   1 file changed, 66 insertions(+), 17 deletions(-)
->>
->> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
->> index 01729e18..71f0e14c 100644
->> --- a/cmds/filesystem-usage.c
->> +++ b/cmds/filesystem-usage.c
->> @@ -25,6 +25,7 @@
->>   #include <getopt.h>
->>   #include <fcntl.h>
->>   #include <linux/limits.h>
->> +#include <uuid/uuid.h>
->>     #include "common/utils.h"
->>   #include "kerncompat.h"
->> @@ -689,6 +690,62 @@ out:
->>       return ret;
->>   }
->>   +static int load_devid(int fd, struct device_info *info,
->> +                int ndev, u8 *fsid)
->> +{
->> +    struct btrfs_ioctl_search_args_v2 *args2;
->> +    struct btrfs_ioctl_search_key *sk;
->> +    struct btrfs_ioctl_search_header *sh;
->> +    struct btrfs_dev_item *dev_item;
->> +    int args2_size = 1024;
->> +    char args2_buf[args2_size];
->> +    int ret = 0;
->> +    int i = 0;
->> +    int num = 0;
->> +    int rw_devs = 0;
->> +    int idx = 0;
->> +
->> +    args2 = (struct btrfs_ioctl_search_args_v2 *) args2_buf;
->> +    sk = &(args2->key);
->> +
->> +    sk->tree_id = BTRFS_CHUNK_TREE_OBJECTID;
->> +    sk->min_objectid = BTRFS_DEV_ITEMS_OBJECTID;
->> +    sk->max_objectid = BTRFS_DEV_ITEMS_OBJECTID;
->> +    sk->min_type = BTRFS_DEV_ITEM_KEY;
->> +    sk->max_type = BTRFS_DEV_ITEM_KEY;
->> +    sk->min_offset = 0;
->> +    sk->max_offset = (u64)-1;
->> +    sk->min_transid = 0;
->> +    sk->max_transid = (u64)-1;
->> +    sk->nr_items = -1;
->> +    args2->buf_size = args2_size - sizeof(struct btrfs_ioctl_search_args_v2);
->> +    ret = ioctl(fd, BTRFS_IOC_TREE_SEARCH_V2, args2);
->> +    if (ret != 0)
->> +           return -1;
->> +
->> +    sh = (struct btrfs_ioctl_search_header *) args2->buf;
->> +    num = sk->nr_items;
->> +
->> +    dev_item = (struct btrfs_dev_item *) (sh + 1);
->> +    for (i = 0; i < num; i++) {
->> +        if (!uuid_compare(dev_item->fsid, fsid)) {
->> +            rw_devs += 1;
->> +            info[idx++].devid = dev_item->devid;
->> +        }
->> +        if (idx > ndev) {
->> +            error("unexpected number of devices: %d >= %d", idx, ndev);
->> +            return -1;
->> +        }
->> +        sh = (struct btrfs_ioctl_search_header *) dev_item + 1;
->> +        dev_item = (struct btrfs_dev_item *) sh + 1;
->> +    }
->> +
->> +    if (ndev != rw_devs)
->> +        error("unexpected number of devices: %d != %d", ndev, rw_devs);
->> +
->> +    return 0;
->> +}
->> +
->>   /*
->>    *  This function loads the device_info structure and put them in an array
->>    */
->> @@ -718,19 +775,17 @@ static int load_device_info(int fd, struct device_info **device_info_ptr,
->>           return 1;
->>       }
->>   -    for (i = 0, ndevs = 0 ; i <= fi_args.max_id ; i++) {
->> -        if (ndevs >= fi_args.num_devices) {
->> -            error("unexpected number of devices: %d >= %llu", ndevs,
->> -                (unsigned long long)fi_args.num_devices);
->> -            error(
->> -        "if seed device is used, try running this command as root");
->> -            goto out;
->> -        }
->> +    ret = load_devid(fd, info, fi_args.num_devices, fi_args.fsid);
->> +    if (ret == -1)
->> +        goto out;
->> +
->> +    for (i = 0, ndevs = 0 ; i < fi_args.num_devices ; i++) {
->>           memset(&dev_info, 0, sizeof(dev_info));
->> -        ret = get_device_info(fd, i, &dev_info);
->> +        ret = get_device_info(fd, info[i].devid, &dev_info);
->>   -        if (ret == -ENODEV)
->> -            continue;
->> +        if (ret == -ENODEV) {
->> +            error("device not found\n");
->> +        }
->>           if (ret) {
->>               error("cannot get info about device devid=%d", i);
->>               goto out;
->> @@ -759,12 +814,6 @@ static int load_device_info(int fd, struct device_info **device_info_ptr,
->>           ++ndevs;
->>       }
->>   -    if (ndevs != fi_args.num_devices) {
->> -        error("unexpected number of devices: %d != %llu", ndevs,
->> -                (unsigned long long)fi_args.num_devices);
->> -        goto out;
->> -    }
->> -
->>       qsort(info, fi_args.num_devices,
->>           sizeof(struct device_info), cmp_device_info);
->>   
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1e8c2d419c2e/disk-30d27271.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9e8a728a72a9/vmlinux-30d27271.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/89f71c80c707/bzImage-30d27271.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+14d9e7602ebdf7ec0a60@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in longest_match+0xc88/0x1220 lib/zlib_deflate/deflate.c:668
+ longest_match+0xc88/0x1220 lib/zlib_deflate/deflate.c:668
+ deflate_fast+0x1838/0x2280 lib/zlib_deflate/deflate.c:954
+ zlib_deflate+0x1783/0x22b0 lib/zlib_deflate/deflate.c:410
+ zlib_compress_pages+0xd34/0x1f90 fs/btrfs/zlib.c:178
+ compression_compress_pages fs/btrfs/compression.c:77 [inline]
+ btrfs_compress_pages+0x325/0x440 fs/btrfs/compression.c:1208
+ compress_file_range+0x11ac/0x3510 fs/btrfs/inode.c:730
+ async_cow_start+0x33/0xd0 fs/btrfs/inode.c:1458
+ btrfs_work_helper+0x55a/0x990 fs/btrfs/async-thread.c:280
+ process_one_work+0xb27/0x13e0 kernel/workqueue.c:2289
+ worker_thread+0x1076/0x1d60 kernel/workqueue.c:2436
+ kthread+0x31b/0x430 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+
+Uninit was created at:
+ __kmalloc_large_node+0x2f7/0x3a0 mm/slab_common.c:1106
+ __do_kmalloc_node mm/slab_common.c:943 [inline]
+ __kmalloc_node+0x1d2/0x3c0 mm/slab_common.c:962
+ kmalloc_node include/linux/slab.h:579 [inline]
+ kvmalloc_node+0xbc/0x2d0 mm/util.c:581
+ kvmalloc include/linux/slab.h:706 [inline]
+ zlib_alloc_workspace+0x111/0x5e0 fs/btrfs/zlib.c:66
+ alloc_workspace+0x329/0x5a0 fs/btrfs/compression.c:939
+ btrfs_init_workspace_manager+0x11f/0x4d0 fs/btrfs/compression.c:982
+ btrfs_init_compress+0x1f/0x30 fs/btrfs/compression.c:1249
+ init_btrfs_fs+0x94/0x5f2 fs/btrfs/super.c:2736
+ do_one_initcall+0x221/0x860 init/main.c:1303
+ do_initcall_level+0x146/0x322 init/main.c:1376
+ do_initcalls+0x11a/0x201 init/main.c:1392
+ do_basic_setup+0x22/0x24 init/main.c:1411
+ kernel_init_freeable+0x308/0x4d0 init/main.c:1631
+ kernel_init+0x2b/0x7d0 init/main.c:1519
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+
+CPU: 0 PID: 3530 Comm: kworker/u4:7 Not tainted 6.1.0-rc8-syzkaller-64144-g30d2727189c5 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+Workqueue: btrfs-delalloc btrfs_work_helper
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
