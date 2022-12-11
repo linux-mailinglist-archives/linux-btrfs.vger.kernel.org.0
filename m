@@ -2,79 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A66BD6490BA
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Dec 2022 21:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B8D64925F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Dec 2022 05:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbiLJUya (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 10 Dec 2022 15:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
+        id S229775AbiLKE5A convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 10 Dec 2022 23:57:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbiLJUyU (ORCPT
+        with ESMTP id S229475AbiLKE45 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 10 Dec 2022 15:54:20 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0F617073
-        for <linux-btrfs@vger.kernel.org>; Sat, 10 Dec 2022 12:54:19 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id u5so8187624pjy.5
-        for <linux-btrfs@vger.kernel.org>; Sat, 10 Dec 2022 12:54:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:reply-to:subject:mime-version:from:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qxHhqqWxNnPCfNEXEE618/X/E0tQxQbTzz2F2uokgZg=;
-        b=WtePhy3vSqe4RejPWdOxztFyAFOpFsO9V0lxnOVRPHa2tv6QnsVX3FBgAciymcg/Lq
-         xnInhC0Z/12oBjTyw5ttDBHzqGgQ58tRbPPzMkL40X2p33qPZRazi8sWF79Z8sIzHhK9
-         CBFNUlAhAG/0ekd+pjHF5nNxXaFv+dqXVY8a971yTH/CXMlZ+D8WUsrAySo8/NZtyWl+
-         obpzhNQva7LrcIKBSlGxgx/FrKVt/hUu+Vnm/OgH/+UVA69UqcWzNgs5/2yUCEwJbmNj
-         +SoEtf1PQBZGCSQSzskLDyiwOllnjCRRwEwLh2B/BhpNGbE2ypGjox/sA/wwFAOnOKCt
-         fMcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:reply-to:subject:mime-version:from:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qxHhqqWxNnPCfNEXEE618/X/E0tQxQbTzz2F2uokgZg=;
-        b=5DlDhrqWsf+rIiwrUMiudOshvjlUuoJNP3uNWI2EfNKkKGu4SuhI+x6P0KH/HEDSRA
-         CCLOlZQnOzOwcIT7VQWKz098VsQBTfwuMsI4CXIG08dl4OqkNsHs3UUl8Ha5iXUlc+rS
-         mwPHrWO9jNgr5fqkU6MbMq0jAlGm9CH7hnbr2Na9tC6XLg5tn2Dd//C+xhf8XYpz0Qx5
-         V2kIxpvemTgBYZLHmc8GGmvme60rLmgW24Pu9vNu8niZzn3hY6OGrX2gG5hx53yXjxXQ
-         Vr33sTU4NPeGSzvWNMvEFv4XmCv8GNUAkxxcva7x/frEWnGJEJ5JqW+WsBuUXnf8OfQP
-         sc6Q==
-X-Gm-Message-State: ANoB5plWjGSKlWDMtrA9V3QVEaK6QocTgZbw/oh9ty3KoVkzw28nTcXl
-        5WdKvFOYWxpBswDLZVkGptHaLkODSseBbVnV
-X-Google-Smtp-Source: AA0mqf4dPbDLLh2Wsex5KHMyDok1zOFzt65jbuzeJkd0AGfQAiaT+CoRLhRNNdyTbmZNjCDWXyvohw==
-X-Received: by 2002:a17:90b:2710:b0:20d:bd62:9788 with SMTP id px16-20020a17090b271000b0020dbd629788mr11054773pjb.5.1670705659352;
-        Sat, 10 Dec 2022 12:54:19 -0800 (PST)
-Received: from [127.0.1.1] ([202.184.51.63])
-        by smtp.gmail.com with ESMTPSA id z9-20020a17090a7b8900b001fd6066284dsm2864132pjc.6.2022.12.10.12.54.18
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Dec 2022 12:54:19 -0800 (PST)
-Message-ID: <6394f1fb.170a0220.c72d1.5882@mx.google.com>
-Date:   Sat, 10 Dec 2022 12:54:19 -0800 (PST)
-From:   Maria Chevchenko <17jackson5ive@gmail.com>
-X-Google-Original-From: Maria Chevchenko <mariachevchenko417@outlook.com>
-Content-Type: multipart/alternative; boundary="===============1218406076771224045=="
+        Sat, 10 Dec 2022 23:56:57 -0500
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 82C3A12D21
+        for <linux-btrfs@vger.kernel.org>; Sat, 10 Dec 2022 20:56:55 -0800 (PST)
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id D01076668EB; Sat, 10 Dec 2022 23:56:53 -0500 (EST)
+Date:   Sat, 10 Dec 2022 23:56:53 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     benibr@domainmess.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Feature Request: Subvolume Expiration
+Message-ID: <Y5VjFfo3aZqyWH5I@hungrycats.org>
+References: <a3c94f14eb13667ff5dba3cb9455b875@domainmess.org>
 MIME-Version: 1.0
-Subject: Compliment Of The Day,
-Reply-To: Maria Chevchenko <mariachevchenko417@outlook.com>
-To:     linux-btrfs@vger.kernel.org
-X-Spam-Status: No, score=1.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <a3c94f14eb13667ff5dba3cb9455b875@domainmess.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---===============1218406076771224045==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On Mon, Dec 05, 2022 at 01:28:42PM +0000, benibr@domainmess.org wrote:
+> Hi everyone,
+> 
+> I'd like to propose "subvolume expiration dates" as a new feature for btrfs.
+> 
+> I want to use btrfs for archiving and backup solutions for which snapshots are very convenient.
+> However, the rotation and cleanup of snapshots is always based on some scripting and often
+> reimplemented for each usecase.
+> I know at least some proprietary storage solutions which allow to set a expiration date on
+> snapshots so I wonder if it would be possible to add a similar functionality to btrfs.
+> The advantage would be that one doesn't have to encode the expiry information in the subvolume name
+> or parse it from an extended file attribute but it would be an (optional) attribute of the
+> subvolume itself.
 
-Please, i need your help; I have important business/project information that i wish to share with you. And, I want you to handle the investment. 
-  Please, reply back for more information about this.
-  Thank you.
---===============1218406076771224045==--
+I can understand not wanting to encode it in the filename, but this
+is exactly the sort of use case that extended attributes are for:
+attaching new bits of information to btrfs objects that are useful
+for userspace tools but not useful for the kernel.
+
+> Therefore it would be easy to implement a subcommand in btrfs-progs which checks for expired
+> subvolumes and deletes them (eg. `btrfs subvolume prune` or similar).
+> This would make btrfs a very easy to use solution for archiving data for a specific timespan as
+> well as for backup snapshot rotations.
+> 
+> As I understand it I'd say the expiration date could be implemented in the `root_item` struct by
+> squeezing in a additional `btrfs_timespec` into the `reserved` space.
+
+These fields (and there will always be more fields for these kinds of
+use cases) can be stored in xattrs on the subvol root dir.  Nothing in
+the kernel needs to know anything about them.  Userspace can parse the
+expiration date xattr, compare to the current date, and issue subvol
+delete commands for subvols where one is less than the other.
+
+The gotcha is that it's not easy to store xattrs on subvol roots.
+They can be read-only, and making them read-write so you can set an
+xattr (e.g. change the expiration date) breaks btrfs incremental sends.
+
+You can avoid the read-only problems by setting an expiration date xattr
+on the origin subvol before making a snapshot.  You'd have to find some
+way to remove the risk that the origin subvol ends up with an expiration
+date that another tool notices before you can remove the expiration date
+from the origin subvol.  Also the xattrs will be transmitted by btrfs
+send, rsync -X, and possibly other tools, and it's not always the case
+that the received subvol should have the same attribute values as the
+origin subvol.  This isn't ideal--you wouldn't want your short-lived
+origin subvols to move to an archive server and be promptly deleted for
+being too old.
+
+So we'd need some way to store xattrs for a subvol, but somehow avoid
+to storing them in the subvol itself.  It looks like the root tree is
+ideally set up for that--just add XATTR items to the tree alongside the
+existing root_items, and add some way for userspace to get and set them.
+They would be outside of the subvol, so they are not affected by subvol
+read-only state, and not copied or snapshotted with the subvol contents,
+but still uniquely associated with one instance of the subvol on one
+filesystem, and still follow the subvol around if it is renamed.
+
+Without a sane place to store xattrs and without modifying the kernel, it
+makes the most sense to simply store expiration times in a tool-specific
+external database, and let that tool manage the whole lifecycle of the
+subvols it knows about.  That way there's no possibility of cross-tool
+confusion, and no need to implement new kernel-space interfaces to access
+xattrs in a previously unused part of the filesystem.  This approach
+basically reduces to "install a subvol management tool to solve this
+problem in an appropriate way for your use case" and likely contributes
+to why there are so many fine subvol management tools available today.
+
+> But since I'm not really familiar with btrfs code I wanted to ask for more opinions before I spend
+> time on a proof-of-concept.
+> 
+> So is this feature interesting, absurd, nice to have or completely impossible?
+> Any feedback welcome :-)
+> 
+> Regards,
+> Beni
