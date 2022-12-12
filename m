@@ -2,132 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA946499A2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Dec 2022 08:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0C86499A6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Dec 2022 08:40:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbiLLHiA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Dec 2022 02:38:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
+        id S231289AbiLLHkM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Dec 2022 02:40:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbiLLHh5 (ORCPT
+        with ESMTP id S230105AbiLLHkL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Dec 2022 02:37:57 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB46B634F
-        for <linux-btrfs@vger.kernel.org>; Sun, 11 Dec 2022 23:37:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=6Hw97FMPWKL8rzjA62fiZ1qEb2PWDJS525Y51FrAy4I=; b=4tbHZl4/a4en4HudXxDDM8RW6w
-        9YcDmOgKXn88f7oqU8XDkDdjf5uRO2doyhSonx31a46o6EbIyO51+ujVIBmWpk+CUomz+Dtv2MzYS
-        NM/4a8ro0o4qg9JkdgTGmDFeJbA8BrIVl8HSAg4PUra7zjFH/qkK5j3I+JhTCPKp2vfeALVbmJVzE
-        ThmgK5iGg73SX1W4mHgNlXmzW1p2GmjqZCZR7WKSZCXpdzA8fc1z3UeRS0AufK1GneLwZekXJum/t
-        M+5IQqNKAnP7DXPO2MqWaXcIO3RchQ59MxEbX/axAPNulwHtOGXN5VuKCWdjpiOC6axm0rBJoTWYl
-        11fRGfag==;
-Received: from [2001:4bb8:192:2f53:34e0:118:ce10:200c] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1p4dNp-009WZZ-1R; Mon, 12 Dec 2022 07:37:53 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 7/7] btrfs: remove the bdev argument to btrfs_rmap_block
-Date:   Mon, 12 Dec 2022 08:37:24 +0100
-Message-Id: <20221212073724.12637-8-hch@lst.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221212073724.12637-1-hch@lst.de>
-References: <20221212073724.12637-1-hch@lst.de>
+        Mon, 12 Dec 2022 02:40:11 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5C795A6
+        for <linux-btrfs@vger.kernel.org>; Sun, 11 Dec 2022 23:40:09 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MgvvJ-1oSFnL0vuf-00hR1O; Mon, 12
+ Dec 2022 08:40:02 +0100
+Message-ID: <0d509df3-4f20-7a10-ee3d-8c7474af87a8@gmx.com>
+Date:   Mon, 12 Dec 2022 15:39:57 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH 3/3] btrfs: call rbio_orig_end_io from rmw_rbio
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20221212070611.5209-1-hch@lst.de>
+ <20221212070611.5209-4-hch@lst.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20221212070611.5209-4-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:ty7RTsaTKuP48eE4lzvxkVp1t6s3toUaF8CRdm+NTbRjmuXELKK
+ I732cQz0rahZ0BPYWPb+VfsGH2OyYSLcpCbaGTTwq6Yk1OooUj7TLURn4PpVZpKjZhUqg6Y
+ rD8GnA8/YCAhvFgyXHcroKEgPuLvBo9/JLKDsp3Tb4bYAERNk/hx9VVWalM1CdM8qEnWD3m
+ Pw/nO7Nq5kmGUQ3rdP7lA==
+UI-OutboundReport: notjunk:1;M01:P0:TtHWP2bHABI=;5LDSydaEN+989Vd/afFHVjY2DDX
+ 3+P3CGGhqLlf5HDPvvnTucwTxJvd6GifJyFuCw4LS9JvaaZ/FRpnKWnNLLdc7RhaQY/uL90EO
+ yp3cEMmdMDh+AvEAO+x4KHEhDJ+mBZbB1jIUM4trinWI+5yu1wZGdI+FMwl6XgP8kBZwL/M55
+ OQWvcJdIWfLMxtgrkd4lxlgnnaN+h9v02wPE3e8y8qSD10EHumWipIlOUUPOXfetvw0B9+XAK
+ MfAu6I+OgcUZd6iNGl89K+LxFF4FZV1AMsoZI4uYki0VlmtsTuKyyiFgQyqoF49odKu3ERcYU
+ K7AsWWWFI0a0thdLV9k32JfHBLuWMFrVvBc6e0AmU8p9WDl2ZvSSS/CKJVgnzTBPqKTPpf1eN
+ CfpYyFqqtWl4ZWY/re1TuTonNhSIT+JWc7VVqWdoIjXgHenvt46EhfeZ3yRFE5AvapA2KzFYb
+ uHSOz3zKHkGpb2T9qAfqh7hY9SXQKuQxAq3MctmWHvqoy+xP43wv2/1WR4RtT0z6nO5Fwd1X7
+ xiHeOjKv7v86gsdtSthF0zcnxSNejQfBieVo3ty5+DM3VKiPr9O/fXV6tAh/qMGgij+jEZoyt
+ 2ROzuvZg4e3uUX11g06sXZX2UHBq+KHUO5qqVjsDF5SRgFCBGEKPSiEtnSxfjnEAjgE9USABs
+ Tgk32OecHg0Za5GlkSErevnQ6o6s8B1gmGDolkAyLoxzoZcp2JpjP/29clJCJV1ochyM5Uvcp
+ sH92TZwkZxTOXrgOZdPuk927V43hpRdDTV6RnO/5IIEJIOZ8Vdat+KaNf4Sc/kEmB4n9NlGoS
+ c2BpHhd1JIQraS/uLIam8uL+FFjwJPKSSoIWUVtFYtRg/FPTMyy++V7ccC/RCLsMPFBprlyIT
+ fZxaCIem+4yB+GBF94jnCfBP4CbbBXOSpWZ68lDsn+cLatYrJ2XuhrjNcF9cCJYNiYsk740nz
+ Z6UGwVq+LKDQxba5/fVDZrKOaSs=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The only user in the zoned remap code is gone now, so remove the argument.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/btrfs/block-group.c            | 9 ++-------
- fs/btrfs/block-group.h            | 3 +--
- fs/btrfs/tests/extent-map-tests.c | 2 +-
- 3 files changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 708d843daa72de..72688a4f38af99 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1816,7 +1816,6 @@ static void set_avail_alloc_bits(struct btrfs_fs_info *fs_info, u64 flags)
-  *
-  * @fs_info:       the filesystem
-  * @chunk_start:   logical address of block group
-- * @bdev:	   physical device to resolve, can be NULL to indicate any device
-  * @physical:	   physical address to map to logical addresses
-  * @logical:	   return array of logical addresses which map to @physical
-  * @naddrs:	   length of @logical
-@@ -1827,8 +1826,7 @@ static void set_avail_alloc_bits(struct btrfs_fs_info *fs_info, u64 flags)
-  * block copies.
-  */
- int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
--		     struct block_device *bdev, u64 physical, u64 **logical,
--		     int *naddrs, int *stripe_len)
-+		     u64 physical, u64 **logical, int *naddrs, int *stripe_len)
- {
- 	struct extent_map *em;
- 	struct map_lookup *map;
-@@ -1868,9 +1866,6 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
- 			      data_stripe_length))
- 			continue;
- 
--		if (bdev && map->stripes[i].dev->bdev != bdev)
--			continue;
--
- 		stripe_nr = physical - map->stripes[i].physical;
- 		stripe_nr = div64_u64_rem(stripe_nr, map->stripe_len, &offset);
- 
-@@ -1927,7 +1922,7 @@ static int exclude_super_stripes(struct btrfs_block_group *cache)
- 
- 	for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
- 		bytenr = btrfs_sb_offset(i);
--		ret = btrfs_rmap_block(fs_info, cache->start, NULL,
-+		ret = btrfs_rmap_block(fs_info, cache->start,
- 				       bytenr, &logical, &nr, &stripe_len);
- 		if (ret)
- 			return ret;
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index a02ea76fd6cffe..0462f9b5cedf95 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -315,8 +315,7 @@ u64 btrfs_get_alloc_profile(struct btrfs_fs_info *fs_info, u64 orig_flags);
- void btrfs_put_block_group_cache(struct btrfs_fs_info *info);
- int btrfs_free_block_groups(struct btrfs_fs_info *info);
- int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
--		       struct block_device *bdev, u64 physical, u64 **logical,
--		       int *naddrs, int *stripe_len);
-+		     u64 physical, u64 **logical, int *naddrs, int *stripe_len);
- 
- static inline u64 btrfs_data_alloc_profile(struct btrfs_fs_info *fs_info)
- {
-diff --git a/fs/btrfs/tests/extent-map-tests.c b/fs/btrfs/tests/extent-map-tests.c
-index c5b3a631bf4fb4..f2f2e11dac4c02 100644
---- a/fs/btrfs/tests/extent-map-tests.c
-+++ b/fs/btrfs/tests/extent-map-tests.c
-@@ -509,7 +509,7 @@ static int test_rmap_block(struct btrfs_fs_info *fs_info,
- 		goto out_free;
- 	}
- 
--	ret = btrfs_rmap_block(fs_info, em->start, NULL, btrfs_sb_offset(1),
-+	ret = btrfs_rmap_block(fs_info, em->start, btrfs_sb_offset(1),
- 			       &logical, &out_ndaddrs, &out_stripe_len);
- 	if (ret || (out_ndaddrs == 0 && test->expected_mapped_addr)) {
- 		test_err("didn't rmap anything but expected %d",
--- 
-2.35.1
+On 2022/12/12 15:06, Christoph Hellwig wrote:
+> Both callers of rmv_rbio call rbio_orig_end_io right after it, so
+> move the call into the shared function.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
+This changed the schema, as all work functions, rmw_rbio(), 
+recover_rbio(), scrub_rbio() all follows the same return error, and let 
+the caller to call rbio_orig_end_io().
+
+I'm not against the change, but it's better to change all *_rbio() 
+functions to follow the same behavior instead.
+
+Thanks,
+Qu
+
+> ---
+>   fs/btrfs/raid56.c | 30 ++++++++++--------------------
+>   1 file changed, 10 insertions(+), 20 deletions(-)
+> 
+> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+> index 5035e2b20a5e02..14d71076a222f9 100644
+> --- a/fs/btrfs/raid56.c
+> +++ b/fs/btrfs/raid56.c
+> @@ -2275,7 +2275,7 @@ static bool need_read_stripe_sectors(struct btrfs_raid_bio *rbio)
+>   	return false;
+>   }
+>   
+> -static int rmw_rbio(struct btrfs_raid_bio *rbio)
+> +static void rmw_rbio(struct btrfs_raid_bio *rbio)
+>   {
+>   	struct bio_list bio_list;
+>   	int sectornr;
+> @@ -2287,7 +2287,7 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
+>   	 */
+>   	ret = alloc_rbio_parity_pages(rbio);
+>   	if (ret < 0)
+> -		return ret;
+> +		goto out;
+>   
+>   	/*
+>   	 * Either full stripe write, or we have every data sector already
+> @@ -2300,13 +2300,13 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
+>   		 */
+>   		ret = alloc_rbio_data_pages(rbio);
+>   		if (ret < 0)
+> -			return ret;
+> +			goto out;
+>   
+>   		index_rbio_pages(rbio);
+>   
+>   		ret = rmw_read_wait_recover(rbio);
+>   		if (ret < 0)
+> -			return ret;
+> +			goto out;
+>   	}
+>   
+>   	/*
+> @@ -2339,7 +2339,7 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
+>   	bio_list_init(&bio_list);
+>   	ret = rmw_assemble_write_bios(rbio, &bio_list);
+>   	if (ret < 0)
+> -		return ret;
+> +		goto out;
+>   
+>   	/* We should have at least one bio assembled. */
+>   	ASSERT(bio_list_size(&bio_list));
+> @@ -2356,32 +2356,22 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
+>   			break;
+>   		}
+>   	}
+> -	return ret;
+> +out:
+> +	rbio_orig_end_io(rbio, errno_to_blk_status(ret));
+>   }
+>   
+>   static void rmw_rbio_work(struct work_struct *work)
+>   {
+>   	struct btrfs_raid_bio *rbio;
+> -	int ret;
+>   
+>   	rbio = container_of(work, struct btrfs_raid_bio, work);
+> -
+> -	ret = lock_stripe_add(rbio);
+> -	if (ret == 0) {
+> -		ret = rmw_rbio(rbio);
+> -		rbio_orig_end_io(rbio, errno_to_blk_status(ret));
+> -	}
+> +	if (lock_stripe_add(rbio) == 0)
+> +		rmw_rbio(rbio);
+>   }
+>   
+>   static void rmw_rbio_work_locked(struct work_struct *work)
+>   {
+> -	struct btrfs_raid_bio *rbio;
+> -	int ret;
+> -
+> -	rbio = container_of(work, struct btrfs_raid_bio, work);
+> -
+> -	ret = rmw_rbio(rbio);
+> -	rbio_orig_end_io(rbio, errno_to_blk_status(ret));
+> +	rmw_rbio(container_of(work, struct btrfs_raid_bio, work));
+>   }
+>   
+>   /*
