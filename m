@@ -2,187 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B828364A58A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Dec 2022 18:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C28664A780
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Dec 2022 19:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbiLLRHX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Dec 2022 12:07:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59542 "EHLO
+        id S233405AbiLLSsH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Dec 2022 13:48:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbiLLRHU (ORCPT
+        with ESMTP id S233015AbiLLSqc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Dec 2022 12:07:20 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8FBE2711
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Dec 2022 09:07:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 92B2CB80DC8
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Dec 2022 17:07:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43294C433D2
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Dec 2022 17:07:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670864835;
-        bh=Dm387btxpZaHWQPaiXzTznKd86jrWzJWHtTgBvMflx8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UDAInhOR4u4IyoYOtZQNhv/2yaQ5YhjVgMugi5xyswfY9czEESyTPVxaHwmWM68A/
-         dMJUVQyQu2seRcS+353GMiPpdrc1u+vyw3hKUdY1+VET8ZxM+9y2Ww0gzk5yXG4LQW
-         +5C0YxabAXnk2iE0MZ7Cji1ZCdlpVsMSv85dkP6ocvljj2yDHcUtF74QEiqC5zsSv6
-         kG/IGkwZUY23YcFONtqlgr6Vg1hFAsphqnUnfAxvy0rlhNKljimKRDIzmTPR05yAV2
-         srYt5zzcXNZE/btZAZoj4gzSXRMJi8FslVtxY4CFOpkkNppC1CnQXzmq0pURSBPVVj
-         eSlwujuBbdcdQ==
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1443a16b71cso9117696fac.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Dec 2022 09:07:15 -0800 (PST)
-X-Gm-Message-State: ANoB5pnoMDztGNiszwxgsnr2l2gnxz62y5bGhQD3C6bpt55eH4TnVKxg
-        5mR9zx2zNCWW74ToMqqrjvabQ+wIWi25MntcZm0=
-X-Google-Smtp-Source: AA0mqf7rAR3+lleBUnJxL7xkkLssuj5MV30dmZxsRM9T8CJf03Y6MG7s/UmRV0Uo1N/F0qLxxlBn2KfohqvsaITjKow=
-X-Received: by 2002:a05:6870:668a:b0:145:3a7:99c with SMTP id
- ge10-20020a056870668a00b0014503a7099cmr1161996oab.92.1670864834348; Mon, 12
- Dec 2022 09:07:14 -0800 (PST)
+        Mon, 12 Dec 2022 13:46:32 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937C46372
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Dec 2022 10:46:23 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id x11so4393461qtv.13
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Dec 2022 10:46:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bbkdJaLOP/vMBqN0DWbeXqbCoBKj/NLdfM5o1UZoPtg=;
+        b=BiflXrMvkQL86DwDsuvp6zeu20P/QSTZLdhXa0elHIV0T/SgbjFyJwd6jvnjoc+f88
+         41OV0DeplENg78lX4yl9EdygKEKISQ3t6ZyaGuN+6sNg+M9nXKZsRrRw/7x9eMgHOEqr
+         fscuXjvYupahus/kO2WGkZtW5EAaFAD2+yxyOYZ624vIgFYw6UZZFcxVqX22QIi34AU1
+         /fpStE00hMo0mxyXrXq1Bru6OBSweQ+rKUt66IltQb85gCfaod0CbdDFSZLMueN+uL2v
+         Wcol1WibOeTSE+o+ofOg67Gjf99MJGhFJbqpoO1Uoad11Tht0XVZZApO5oRxve2JL4+w
+         X7zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bbkdJaLOP/vMBqN0DWbeXqbCoBKj/NLdfM5o1UZoPtg=;
+        b=N6xDIZmql0Rmp12VZrs8CQNgALCAfgJvhTvOlF97+VRxc6IQp10/QZ3OxMc59IKr9d
+         mpn0gWmqeLS6CFsM5huqEsXx09PMvhgYFCBvnUcqw8OrHhk3bt1DbvP8bVh1NNwlKaBM
+         KmtATF6MlzXhIrMxC6/ia5UCWK1rhueilTxbdnOzeL80t8cVwgQqI8xIiBqNbNEX/cor
+         LNK0tmKviwQKMKax+COXMwnFSg8LauFGcyLMYQmjmMuecvwmZZhI1uYV8ctbK+z70Re7
+         UwGpA0a1dE4lB+zZeUamcZ12vRoSmD+0aOI5PfTH/hminGAq5WTfVanxVK+Fz0puTGsT
+         5BQA==
+X-Gm-Message-State: ANoB5pmPUB2k6KaPgj8AbWenizxCBRPHaOu1j3ZrmtsS7WXqc3zKXMaj
+        E7gOVH1j2lPVOoAfRW9sH+HjKg==
+X-Google-Smtp-Source: AA0mqf5lCcZ3o+7m0AnrGOzD69vhiTmFeYO42EEJpCHJDRdGBUIxLCGMJx4ZMqEDyrKPzYFZZSMrqA==
+X-Received: by 2002:ac8:5c83:0:b0:3a6:c4eb:2e52 with SMTP id r3-20020ac85c83000000b003a6c4eb2e52mr29409230qta.43.1670870782424;
+        Mon, 12 Dec 2022 10:46:22 -0800 (PST)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id i12-20020ac813cc000000b003a50248b89esm6155964qtj.26.2022.12.12.10.46.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Dec 2022 10:46:21 -0800 (PST)
+Date:   Mon, 12 Dec 2022 13:46:19 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: consolidate btrfs checksumming, repair and bio splitting v2
+Message-ID: <Y5d2+3hCpEwT7QG2@localhost.localdomain>
+References: <20221120124734.18634-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20221205095122.17011-1-robbieko@synology.com> <20221205095122.17011-4-robbieko@synology.com>
-In-Reply-To: <20221205095122.17011-4-robbieko@synology.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 12 Dec 2022 17:06:38 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5aMnihK3rDWweFgzDYsDjigDxR8xitCG2vVjYQu55MEA@mail.gmail.com>
-Message-ID: <CAL3q7H5aMnihK3rDWweFgzDYsDjigDxR8xitCG2vVjYQu55MEA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btrfs: add snapshot_lock to new_fs_root_args
-To:     robbieko <robbieko@synology.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221120124734.18634-1-hch@lst.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 5, 2022 at 10:36 AM robbieko <robbieko@synology.com> wrote:
->
-> From: Robbie Ko <robbieko@synology.com>
->
-> Add snapshot_lock into new_fs_root_args to prevent
-> percpu_counter_init enter unexpected -ENOMEM when
-> calling btrfs_init_fs_root.
+On Sun, Nov 20, 2022 at 01:47:15PM +0100, Christoph Hellwig wrote:
+> Hi all,
+> 
+> this series moves a large amount of duplicate code below btrfs_submit_bio
+> into what I call the 'storage' layer.  Instead of duplicating code to
+> checksum, check checksums and repair and split bios in all the caller
+> of btrfs_submit_bio (buffered I/O, direct I/O, compressed I/O, encoded
+> I/O), the work is done one in a central place, often more optiomal and
+> without slight changes in behavior.  Once that is done the upper layers
+> also don't need to split the bios for extent boundaries, as the storage
+> layer can do that itself, including splitting the bios for the zone
+> append limits for zoned I/O.
+> 
+> The split work is inspired by an earlier series from Qu, from which it
+> also reuses a few patches.
+> 
+> The rebasing against the latest misc-next was a bit painful due to the
+> various large cleanups, but very little logic changed, so I've kept the
+> review tags for now, but I'd appreciated another careful round of eyes.
+> 
+> A git tree is also available:
+> 
+>     git://git.infradead.org/users/hch/misc.git btrfs-bio-split
+> 
+> Gitweb:
+> 
+>     http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/btrfs-bio-split
+> 
 
-You could be more detailed here and mention that all this is to
-prevent transaction aborts in case percpu_counter_init() fails to
-allocate memory.
+You can add
 
-Interpreting literally what you wrote, it gives the idea that after
-this patch the memory allocation can never fail, which isn't true.
-The goal is just to allocate the snapshot lock before holding a
-transaction handle, so that we can use GFP_KERNEL, which reduces the
-chances of memory allocation failing and, above all, avoid aborting a
-transaction and turn the fs to RO mode.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
->
-> Signed-off-by: Robbie Ko <robbieko@synology.com>
-> ---
->  fs/btrfs/disk-io.c | 44 +++++++++++++++++++++++++++++++-------------
->  fs/btrfs/disk-io.h |  2 ++
->  2 files changed, 33 insertions(+), 13 deletions(-)
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 5760c2b1a100..5704c8f5873c 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1437,6 +1437,16 @@ struct btrfs_new_fs_root_args *btrfs_new_fs_root_args_prepare(gfp_t gfp_mask)
->         if (err)
->                 goto error;
->
-> +       args->snapshot_lock = kzalloc(sizeof(*args->snapshot_lock), gfp_mask);
-> +       if (!args->snapshot_lock) {
-> +               err = -ENOMEM;
-> +               goto error;
-> +       }
-> +       ASSERT((gfp_mask & GFP_KERNEL) == GFP_KERNEL);
+to the patches that don't already have my reviewed-by tag.  Thanks,
 
-As commented for patch 1/3, we could get away with the argument and
-directly use GFP_KERNEL above, and let lockdep warn us (which makes
-fstests fail).
-
-> +       err = btrfs_drew_lock_init(args->snapshot_lock);
-> +       if (err)
-> +               goto error;
-> +
->         return args;
->
->  error:
-> @@ -1448,6 +1458,9 @@ void btrfs_new_fs_root_args_destroy(struct btrfs_new_fs_root_args *args)
->  {
->         if (!args)
->                 return;
-> +       if (args->snapshot_lock)
-> +               btrfs_drew_lock_destroy(args->snapshot_lock);
-> +       kfree(args->snapshot_lock);
-
-You could combine the kfree of the lock inside the if statement,
-making it more clear imo.
-
->         if (args->anon_dev)
->                 free_anon_bdev(args->anon_dev);
->         kfree(args);
-> @@ -1464,20 +1477,25 @@ static int btrfs_init_fs_root(struct btrfs_root *root,
->         int ret;
->         unsigned int nofs_flag;
->
-> -       root->snapshot_lock = kzalloc(sizeof(*root->snapshot_lock), GFP_NOFS);
-> -       if (!root->snapshot_lock) {
-> -               ret = -ENOMEM;
-> -               goto fail;
-> +       if (new_fs_root_args && new_fs_root_args->snapshot_lock) {
-> +               root->snapshot_lock = new_fs_root_args->snapshot_lock;
-> +               new_fs_root_args->snapshot_lock = NULL;
-> +       } else {
-> +               root->snapshot_lock = kzalloc(sizeof(*root->snapshot_lock), GFP_NOFS);
-> +               if (!root->snapshot_lock) {
-> +                       ret = -ENOMEM;
-> +                       goto fail;
-> +               }
-> +               /*
-> +                * We might be called under a transaction (e.g. indirect backref
-> +                * resolution) which could deadlock if it triggers memory reclaim
-
-While here, we could end the sentence with punctuation (.).
-
-Thanks.
-
-> +                */
-> +               nofs_flag = memalloc_nofs_save();
-> +               ret = btrfs_drew_lock_init(root->snapshot_lock);
-> +               memalloc_nofs_restore(nofs_flag);
-> +               if (ret)
-> +                       goto fail;
->         }
-> -       /*
-> -        * We might be called under a transaction (e.g. indirect backref
-> -        * resolution) which could deadlock if it triggers memory reclaim
-> -        */
-> -       nofs_flag = memalloc_nofs_save();
-> -       ret = btrfs_drew_lock_init(root->snapshot_lock);
-> -       memalloc_nofs_restore(nofs_flag);
-> -       if (ret)
-> -               goto fail;
->
->         if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID &&
->             !btrfs_is_data_reloc_root(root)) {
-> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-> index a7c91bfb0c16..0e84927859ce 100644
-> --- a/fs/btrfs/disk-io.h
-> +++ b/fs/btrfs/disk-io.h
-> @@ -28,6 +28,8 @@ static inline u64 btrfs_sb_offset(int mirror)
->  struct btrfs_new_fs_root_args {
->         /* Preallocated anonymous block device number */
->         dev_t anon_dev;
-> +       /* Preallocated snapshot lock */
-> +       struct btrfs_drew_lock *snapshot_lock;
->  };
->
->  struct btrfs_device;
-> --
-> 2.17.1
->
+Josef
