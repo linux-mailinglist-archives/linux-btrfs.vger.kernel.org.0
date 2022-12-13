@@ -2,67 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5FE64BD1F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Dec 2022 20:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C37CE64BD37
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Dec 2022 20:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236624AbiLMTUb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Dec 2022 14:20:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33976 "EHLO
+        id S236729AbiLMTYg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Dec 2022 14:24:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236820AbiLMTUL (ORCPT
+        with ESMTP id S235717AbiLMTYf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Dec 2022 14:20:11 -0500
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC0B26113
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Dec 2022 11:20:10 -0800 (PST)
-Received: by mail-vk1-xa35.google.com with SMTP id g137so2050176vke.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Dec 2022 11:20:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WZl91/FN6D1YNLkUSrntWBBtWFgTnIy36XY+nqJj6E8=;
-        b=ZAZRFWhP2bPo1KGNhwPF+hYc4qTwg3BojQQsyByOEuqUblQnr83u+zfWClcPNP7rYY
-         lhJ5daaqKhqAkaLGMiPXHir2q1pe8tS1F0z3edskRMOs0eHvZEuFXPxyKCzheC8AzctO
-         9vedZJw7RtMtbFyvXnFRvmCf4hiSTA1m3J68d/hZRI0UT90cXL4xWlfljai4d6e8pCgD
-         V/jWUWcI/ZO7VJPzxDMu5t16YV9OjII/CVuOzodvUc2S5W74HFiY1YPwLgR2T3h6Tc0l
-         Fck93h99n5FsxCYhuXMvuzb8/2DV0Xv9MQQr/UpY4k0w7mYikGyR2SqYgf/5+vgBq0/5
-         wheQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WZl91/FN6D1YNLkUSrntWBBtWFgTnIy36XY+nqJj6E8=;
-        b=sXRgq0MWGec2wfyxDm9tQ8lsntEA8gSZdJU0JV5clyqibl4oNc2I2mRrKsrEa7AWzC
-         kvJdTGE2jxfCDpDY9Nmf3TkavQO5Rw5NHGMXLXTuwFP/ZrrgEaJHskeluceiVy2gvyez
-         sSSi1/zEiSaw9Zm/o9XbWc71GfV3COZBdSGNMPE+a5+Md2aLM7SRS3eq6LbiMODlrlHX
-         nWsiNYcAZinsEZN6NDsf/J85KQbFq8CHUMMpzoNXz1gNsoikUbk/eAQ+0v1TI7CYkJZE
-         cL3ie9yWqBaKV6YKYtvrdXg1+oOEr+g+1jbB/ran0j3HbG7suM2pXv9LUdeICRmRsKRk
-         vl4A==
-X-Gm-Message-State: ANoB5pmjrhj1sDeLSl0EYuYw1pz9Ts+A/gKxIa1Ax7Nk8I9nZ5VaFJvq
-        WxphS1VK/YcSSiwyek5K9FVgeyUe3nAGIAoV/d4=
-X-Google-Smtp-Source: AA0mqf6YD5zFC5qYcIzI/lhPEJfgk0HwWj3hJyPMmG3N7t/TRdyj50kX8p9CHGd8ptF2yLRzBBZY5Q==
-X-Received: by 2002:ac5:c197:0:b0:3bd:a20e:ae2b with SMTP id z23-20020ac5c197000000b003bda20eae2bmr12967436vkb.2.1670959209261;
-        Tue, 13 Dec 2022 11:20:09 -0800 (PST)
-Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id h7-20020a05620a284700b006f9c2be0b4bsm8139623qkp.135.2022.12.13.11.20.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Dec 2022 11:20:08 -0800 (PST)
-Date:   Tue, 13 Dec 2022 14:20:07 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 16/16] btrfs: btree_writepages lock extents before pages
-Message-ID: <Y5jQZybuqR85oZLZ@localhost.localdomain>
-References: <cover.1668530684.git.rgoldwyn@suse.com>
- <994c7a74720e3c8589263095704dc7f87cfdb3e7.1668530684.git.rgoldwyn@suse.com>
+        Tue, 13 Dec 2022 14:24:35 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A278D8A;
+        Tue, 13 Dec 2022 11:24:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 899B5CE1409;
+        Tue, 13 Dec 2022 19:24:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93B92C433EF;
+        Tue, 13 Dec 2022 19:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670959470;
+        bh=JoyGbc+CLt4wv3FeRw2pIl17kK3ZvDF0ImnJxpQ5c/Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BNjAa4sn7uBdZzM2UUtrfuKyvZ2TkkcjQx+mps27l+EIBJRt/A+XXPDL6U2fWkHeQ
+         ehwrbL2J5i9mH2N/Q0K9k8HJ3iKhCow1syUMQqidpUw70i4P22F+Xe9pqI6H6rTzSH
+         sVGoZ2IAjmAOFBJdlO3uvhITk21DnSyFXRxQTQ+xDpn2K3Lo6Fm8fLOtBlrj3TfQn7
+         Z7vb8hFzixNi89ghpVTypl/OBNZ3O3q/KElOb2cmkJgOl0JEN351XZzM8WpbGlAQrz
+         ADNVwXg6qJc4NFfHh5F9zpuMRCJui49m56yS2ynnKaEM9OQ5Dckho9+HyEiRhSLCM0
+         OX5eYOYsCD/Ag==
+Date:   Tue, 13 Dec 2022 11:24:28 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Separate mailing list (and git and patchwork) for fsverity?
+Message-ID: <Y5jRbLEJh3S46Jer@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <994c7a74720e3c8589263095704dc7f87cfdb3e7.1668530684.git.rgoldwyn@suse.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,40 +53,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 12:00:34PM -0600, Goldwyn Rodrigues wrote:
-> Lock extents before pages while performing btree_writepages().
-> 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> ---
->  fs/btrfs/disk-io.c | 24 +++++++++++++++++++++++-
->  1 file changed, 23 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 8ac9612f8f27..b7e7c4c9d404 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -858,8 +858,25 @@ static int btree_migrate_folio(struct address_space *mapping,
->  static int btree_writepages(struct address_space *mapping,
->  			    struct writeback_control *wbc)
->  {
-> +	u64 start, end;
-> +	struct btrfs_inode *inode = BTRFS_I(mapping->host);
-> +        struct extent_state *cached = NULL;
->  	struct btrfs_fs_info *fs_info;
->  	int ret;
-> +	u64 isize = round_up(i_size_read(&inode->vfs_inode), PAGE_SIZE) - 1;
-> +
-> +	if (wbc->range_cyclic) {
-> +		start = mapping->writeback_index << PAGE_SHIFT;
-> +		end = isize;
-> +	} else {
-> +		start = round_down(wbc->range_start, PAGE_SIZE);
-> +		end = round_up(wbc->range_end, PAGE_SIZE) - 1;
-> +		end = min(isize, end);
-> +	}
+Currently, fsverity development is reusing the same mailing list, git repo
+(though a different branch), and patchwork project as fscrypt --- mainly just
+because I was a little lazy and didn't bother to ask for new ones:
 
-Same comment here as the extent_writepages case, we need to handle the
-possibility of ->writeback_index changing between now and
-btree_write_cache_pages.  Thanks,
+FSCRYPT: FILE SYSTEM LEVEL ENCRYPTION SUPPORT
+[...]
+L:      linux-fscrypt@vger.kernel.org
+Q:      https://patchwork.kernel.org/project/linux-fscrypt/list/
+T:      git git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
+[...]
 
-Josef
+FSVERITY: READ-ONLY FILE-BASED AUTHENTICITY PROTECTION
+[...]
+L:      linux-fscrypt@vger.kernel.org
+Q:      https://patchwork.kernel.org/project/linux-fscrypt/list/
+T:      git git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git fsverity
+[...]
+
+I think this is causing some confusion.  It also makes it so that people can't
+subscribe to the list for just one or the other.
+
+What would people say about having a separate mailing list, git repo, and
+patchwork project for fsverity?  So the fsverity entry would look like:
+
+FSVERITY: READ-ONLY FILE-BASED AUTHENTICITY PROTECTION
+[...]
+L:      linux-fsverity@vger.kernel.org
+Q:      https://patchwork.kernel.org/project/linux-fsverity/list/
+T:      git git://git.kernel.org/pub/scm/fs/fsverity/fsverity.git
+[...]
+
+For the branches in the git repo, I'm thinking of using 'for-next' and
+'for-current'.  (I'd also update the fscrypt ones to match; currently they are
+'master' and 'for-stable'.)
+
+If people are okay with these changes, I'll send off the needed requests to
+helpdesk and linux-next to make these changes, and send Linus a pull request to
+update MAINTAINERS.  (And update fsverity-utils to point to the new list.)
+
+- Eric
