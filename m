@@ -2,65 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C9164BCF7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Dec 2022 20:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D612864BCF9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Dec 2022 20:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236614AbiLMTOr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Dec 2022 14:14:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        id S236790AbiLMTPO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Dec 2022 14:15:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236725AbiLMTOY (ORCPT
+        with ESMTP id S236791AbiLMTOv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Dec 2022 14:14:24 -0500
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DAE26494
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Dec 2022 11:13:23 -0800 (PST)
-Received: by mail-vk1-xa36.google.com with SMTP id o136so2065219vka.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Dec 2022 11:13:23 -0800 (PST)
+        Tue, 13 Dec 2022 14:14:51 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1301111164
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Dec 2022 11:14:48 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id fu10so748120qtb.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Dec 2022 11:14:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ziABknadcM28RgPsu/jeZUSNH1wPLyhxbYlC//u8mo=;
-        b=cCySR++TRoobJyiz38q5Ie/QA8RKYrBBfcEr+qjcl+oSVejTUMnTGYjOmZEW7kU9VA
-         dg9IIjKPzAq/NATuvlz7qf13F3bsZb0cEEt359vu41o6rKWgDqnX2WP/B8n6e+xD49Vp
-         0TXDPQbSiv2sKUxxeroiI9+hCYjE+HMe/+IehShp9r2PZTsjsPJgMomvhU5U74Er+AVG
-         r20Isv5OidcKkwx4qdKsKvBMerVLEzRruz+po5kwaBXWxu+fiUxVlzkIA3yUOfH5rNAa
-         wEnZ7P6Vv7H57bKrjmHjloJ/SGqcRMdgV2JO+VjK/OxvcQ4U3tUymIUhaAEEBaRPGXkc
-         Mxww==
+        bh=1/iWzXZTQW7/y032mPfe00QYzD8XqUkvrJVhV2rlje0=;
+        b=xjg75ODmxAcEC7VE3UZZRwDA7vzCjXwLaLw+jSgoyOn5koeWcgrv+1gC40HWRMhGdl
+         sc5H10TF2dAlvvJmuQrnMXgbHteX/J8qylOHKUyhWXVqEm6MLfNum6xKLbe/dfvaWFVl
+         5lhSbLu6n9jipaaTL2OcuXbngtSuZ1o/FSO0G1cDEQyHtLOLQ7Nqlm4oUSizzPRGQNWK
+         j8ycHdkQrCKIlTrqMgw7b+r7sz0Xjb95YlbXF7KL3hy5Fq6zTA/1OI46xBXgUn29pDtA
+         stgRiW94FuoM7PNNoYQ025zRagkro34Gu4dDz22UD9U/6c3mBvHp037e8wRxbJWK81Lr
+         7oBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2ziABknadcM28RgPsu/jeZUSNH1wPLyhxbYlC//u8mo=;
-        b=npo6JhUmePCEWPVTApISm1rB8CeSkX4R28x6s6sKVtWpwOx8nez+UEsOm+eh0slhkL
-         id6f9zI2i7JHHuj9qlzb2yE55KXgcoSeJT6b30RmJ8/lpHPdafjlw0HUUCDe2PsN+Bo9
-         RCSc2oxkeCuJX1VkOWLpUIdhqT/cGfYLUmiV78EGUu2df5/vm5g9tdmLFTmA9HnPtwXs
-         Y8KHxYMeYIBUmd6pJwOSzf6Ujb4PNihPMFjEyx3YCdjkd1Q/BPPKHmh0uShZCiidcKzC
-         Iar84YiuuolhOK4obu1/FKleTtfvSYfeuXW6Q5WB1iY7RBRT7cm9bzJZWfHvDDNqSCU9
-         QpBw==
-X-Gm-Message-State: ANoB5pmNFKpo97+eDfcpmzEzr8IFxeW0fbxB1d57REwm/rYSocnvVVAT
-        bz7FuTr+2xkCvI56dN9+UYkPoA==
-X-Google-Smtp-Source: AA0mqf5NXD047W4PdhuPJYw/pESZb3AuVBvFPHnJZ5g5TRXFHn30YI3Rq4+4AVjwVKQaIKfsnC764A==
-X-Received: by 2002:a05:6122:50a:b0:3bb:fce4:64d4 with SMTP id x10-20020a056122050a00b003bbfce464d4mr15054888vko.11.1670958802153;
-        Tue, 13 Dec 2022 11:13:22 -0800 (PST)
+        bh=1/iWzXZTQW7/y032mPfe00QYzD8XqUkvrJVhV2rlje0=;
+        b=c1uoD71rodIIG61zv8Tm1QFVa0kxnKNFaAnE4IeFXbDELn/O31tk4Xsiqj280QaSlk
+         5HZQisvz2xFF2pTGx3vs2+Y1654I26hnpLnRWr2viYqGRljym96XQJlohOfZpu9+TGWq
+         ZtR4aH0OY9XhvigNvw11lOo3R+xdn0Ck6cWWRuT9CQkwNY+9H6s1UYeBzhFVVBLBQQLo
+         D9/s5cDW8XSfVYYymqFQOwAsO0g6TbtGXe9iXtimniB3BYNGVDWtx1eOWEQa4UqWXPOt
+         2vDdn0xegoSDPXoUkO9+AcMd+OMWGKMIgisTaVpv6NuNXBNSRFIViLwpcLbmBPTXHuFE
+         in+w==
+X-Gm-Message-State: ANoB5pmYR0VlHYVK6EJEOLPMtsCc1JZ0SL0m+SrXLngVHbwMReHCAyTH
+        NI3cFPvC6oddGAgTF7FPnrdpxw==
+X-Google-Smtp-Source: AA0mqf44RJTP4cDyWezrgGheehbyr0wzyRo2NNFozPlmTs7msiIiE8vyXbxAIRXF6ydOZXc76Dolpg==
+X-Received: by 2002:a05:622a:8c:b0:3a6:1d1d:cb4a with SMTP id o12-20020a05622a008c00b003a61d1dcb4amr38397912qtw.55.1670958887007;
+        Tue, 13 Dec 2022 11:14:47 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id bm18-20020a05620a199200b006ff8c632259sm6038523qkb.42.2022.12.13.11.13.21
+        by smtp.gmail.com with ESMTPSA id h22-20020ac87156000000b003a81eef14efsm356034qtp.45.2022.12.13.11.14.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Dec 2022 11:13:21 -0800 (PST)
-Date:   Tue, 13 Dec 2022 14:13:20 -0500
+        Tue, 13 Dec 2022 11:14:46 -0800 (PST)
+Date:   Tue, 13 Dec 2022 14:14:45 -0500
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
 Cc:     linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 13/16] btrfs: writepage fixup lock rearrangement
-Message-ID: <Y5jO0CTyGq5pw3MB@localhost.localdomain>
+Subject: Re: [PATCH 14/16] btrfs: lock extent before pages for encoded read
+ ioctls
+Message-ID: <Y5jPJTuIVB3+39G7@localhost.localdomain>
 References: <cover.1668530684.git.rgoldwyn@suse.com>
- <996e43b8178ba3e5f9db220cc9e5d437c3794f06.1668530684.git.rgoldwyn@suse.com>
+ <7d0e6ad948ebd8ce5b5858b720a9e2403221d677.1668530684.git.rgoldwyn@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <996e43b8178ba3e5f9db220cc9e5d437c3794f06.1668530684.git.rgoldwyn@suse.com>
+In-Reply-To: <7d0e6ad948ebd8ce5b5858b720a9e2403221d677.1668530684.git.rgoldwyn@suse.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -70,9 +71,8 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 12:00:31PM -0600, Goldwyn Rodrigues wrote:
-> Perform extent lock before pages while performing
-> writepage_fixup_worker.
+On Tue, Nov 15, 2022 at 12:00:32PM -0600, Goldwyn Rodrigues wrote:
+> Lock extent before pages while performing read ioctls.
 > 
 > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
