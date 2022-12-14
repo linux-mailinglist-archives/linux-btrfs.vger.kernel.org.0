@@ -2,95 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 585CD64CE8F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Dec 2022 18:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B80E64CEF9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Dec 2022 18:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239209AbiLNRBw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Dec 2022 12:01:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
+        id S229619AbiLNRt6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Dec 2022 12:49:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239207AbiLNRBv (ORCPT
+        with ESMTP id S229561AbiLNRt4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Dec 2022 12:01:51 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EC625285
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Dec 2022 09:01:50 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id c7so2949414qtw.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Dec 2022 09:01:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GYvItGFJqOegD+hPJVF+rnBaOe478OAlktW60GT1thQ=;
-        b=Fj8gufc32+gau9B4yjpIVT3zb8/ngGL1id2apqgoLYwIvRbKBTzeg0F2kSZyFg5bnb
-         22QF4rnA5Rf38+r5M9nbeMieLf5I2MwJarIf5mDZaVvAbGtAeyIxRW3T2+rxKS+9/Vyv
-         hSPRPy2/UDTRkScsDDMlGmNv2pebtrMauhMJ4kucUfNRgAmEUqOqJHxya6i9c2+eWUaf
-         xtsBIanzIHTcIEtp7pTjqnNN48R0xaGXYaRBgeta2CB93fLWr+x0ulk/8cZ1yPS2SrQo
-         MwQ9VLXtkd4qM8N3V69txFPFIDBlWQoQOYi+TRxzvU0HLM0v9N7YD90Ep+mEKfPgGwz8
-         z7ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GYvItGFJqOegD+hPJVF+rnBaOe478OAlktW60GT1thQ=;
-        b=knrYiv1Bb/IuS69ifHA5acIMqgK9BZEaE1mJyf0poijX1cHrcoZ1/MU/J5y5h/SV9p
-         RwWSttkbBpSisHUYFiHI/KJtyzfCwC3+IuFiYYuDUk1aEO9fTEK77rH+G+SmY9Pzn64X
-         Jm7mN45Kl1k4hupF5FnlrZyS8G0iUupbcJYMyIu4vs9BlCO2WwltDAawmj878sIRvhdj
-         f+tQ0tvl70IEmGZYXiDhSe7pHz8/80Jr7bZtW0OvnUcvpF3daWUyJguly2iLoAulz3md
-         xUgVFqh3lFJuOGfiS9FiC437yFxeNgMUXcCGmKczpkgqfaWszlB3E6224AUq1oMq5OJ0
-         cyiA==
-X-Gm-Message-State: ANoB5plCNkSlL5E/r1jD5Gtbk0ubpS6ge9sRUAGSWITpWAuMh4HBmktA
-        5//GFeM3aXZeLwnJchUpLAdb4Q==
-X-Google-Smtp-Source: AA0mqf7PEMpTu2ttbi/jD59EncTehY1amqVI+yebdl/I+DOM8yWCf0yqKo2BAISV7oRiwSnf5CFwRw==
-X-Received: by 2002:ac8:1345:0:b0:3a7:ef31:a07b with SMTP id f5-20020ac81345000000b003a7ef31a07bmr32802228qtj.11.1671037309569;
-        Wed, 14 Dec 2022 09:01:49 -0800 (PST)
-Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id x8-20020ac84d48000000b00398a7c860c2sm1974526qtv.4.2022.12.14.09.01.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Dec 2022 09:01:48 -0800 (PST)
-Date:   Wed, 14 Dec 2022 12:01:46 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/7] btrfs; rename the disk_bytenr in strut
- btrfs_ordered_extent
-Message-ID: <Y5oBek81Aepf84bZ@localhost.localdomain>
-References: <20221212073724.12637-1-hch@lst.de>
- <20221212073724.12637-3-hch@lst.de>
- <Y5d5vuENR9vIltLs@localhost.localdomain>
- <20221213140849.GB24075@lst.de>
+        Wed, 14 Dec 2022 12:49:56 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5BC267
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Dec 2022 09:49:55 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 25E392015C;
+        Wed, 14 Dec 2022 17:49:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1671040194;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hSZ5koF+TmWlxMtJUvlzpqRw4S1eseUwf10V3lOsKi0=;
+        b=3adeKyCLmXoHSbd7SSYyRl/6bfHKyinuUxQIs6mx7cisYC7ehXAMGnP/Dd7goSSqq2qY46
+        qvRAK4vpz3RfAEEezgrTQOmD74hBELMs5tlBVoTec9ye1l1BkJMIPzrr0Q6aP5rWPzA0K8
+        uXT0HYs++oEsXs9ZsYWINmPt6k5Yof0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1671040194;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hSZ5koF+TmWlxMtJUvlzpqRw4S1eseUwf10V3lOsKi0=;
+        b=27XVrg9dlFQJ0GmwEUhV0K6qebtl0elWkUYDD+beAZulaa4eF4TkzU0lCw5PhD9kPuLler
+        uMhESYF+KVykIRCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EC300138F6;
+        Wed, 14 Dec 2022 17:49:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id SWq8OMEMmmNDFwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 14 Dec 2022 17:49:53 +0000
+Date:   Wed, 14 Dec 2022 18:49:11 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 0/8] extent buffer dirty cleanups
+Message-ID: <20221214174911.GE10499@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1670451918.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221213140849.GB24075@lst.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <cover.1670451918.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 13, 2022 at 03:08:49PM +0100, Christoph Hellwig wrote:
-> On Mon, Dec 12, 2022 at 01:58:06PM -0500, Josef Bacik wrote:
-> >         /*                                                                                                                            
-> >          * These fields directly correspond to the same fields in                                                                     
-> >          * btrfs_file_extent_item.
-> >          */
-> > 
-> > which with this change is no longer true.  Please update the comment
-> > appropriately, other than that the change is reasonable to me, you can add
+On Wed, Dec 07, 2022 at 05:28:03PM -0500, Josef Bacik wrote:
+> Hello,
 > 
-> Ok.  Or should we skip this patch and stick to the on-disk naming
-> even if it is a bit confusing?
+> While sync'ing ctree.c to btrfs-progs I noticed we have some oddities when it
+> comes to how we deal with the extent buffer being dirty.  We have
+> btrfs_clean_tree_block, which is sort of meant to be run against extent buffers
+> we've modified in this transaction.  However we have some other places where
+> we've open coded the same work without the generation check.  This makes it kind
+> of confusing, and is inconsistent with how we deal with the
+> fs_info->dirty_metadata_bytes.
+> 
+> So clean this stuff up so we have one helper we use for setting the extent
+> buffer dirty (btrfs_mark_buffer_dirty) and one for clearing dirty
+> (btrfs_clear_buffer_dirty).  This makes everything more consistent and clean
+> across the board.  I've additionally cleaned up a random writeback thing we had
+> in tree-log that I noticed while doing these cleanups.  Thanks,
+> 
+> Josef
+> 
+> Josef Bacik (8):
+>   btrfs: always lock the block before calling btrfs_clean_tree_block
+>   btrfs: do not check header generation in btrfs_clean_tree_block
+>   btrfs: do not set the header generation before btrfs_clean_tree_block
+>   btrfs: replace clearing extent buffer dirty bit with btrfs_clean_block
+>   btrfs: do not increment dirty_metadata_bytes in set_btree_ioerr
+>   btrfs: rename btrfs_clean_tree_block => btrfs_clear_buffer_dirty
+>   btrfs: combine btrfs_clear_buffer_dirty and clear_extent_buffer_dirty
+>   btrfs: remove btrfs_wait_tree_block_writeback
 
-My preference is to leave it, but generally for these things I defer to
-outsiders, just because I'm used to it doesn't mean it's right.  In this case
-because it maps to the on-disk naming I'd rather leave it unless you feel
-strongly.  Thanks,
-
-Josef
+Added to misc-next, thanks.
