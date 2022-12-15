@@ -2,213 +2,186 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EB764D30C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Dec 2022 00:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABECB64D4E0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Dec 2022 02:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbiLNXMF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Dec 2022 18:12:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
+        id S229511AbiLOBFP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Dec 2022 20:05:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbiLNXME (ORCPT
+        with ESMTP id S229451AbiLOBFN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Dec 2022 18:12:04 -0500
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6B711146;
-        Wed, 14 Dec 2022 15:12:03 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 99FA85C00AE;
-        Wed, 14 Dec 2022 18:12:02 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 14 Dec 2022 18:12:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:date:date:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm2; t=1671059522; x=1671145922; bh=T5TU2SL0cANYwCK6LeRCq/78V
-        vHjLRsCGVLKsRGPLYw=; b=PPPuLFCI2Mu05LYd3qgcLc2D51c8Yu4A9jglRX9xv
-        0zWTFe7YC0DV8dejtHnim0jFhAo8tObASY0KGEwyiM+RSqYRIqgQgfVLVccskyK9
-        6H2LO91elO7NgjrS/HkEms/mVQjta1W1qMnWL6qpmoBSx9LB1BTPE/iisz4ZzQIj
-        h7jO8948+GjbPteAaIMGbopRu7FRoFNl88hFQcZMAgMa/iz6t8UfLfgKnJ4MMTxC
-        jB2k3ccnpYIZIxRFNsKO3EE/GDFy+fwkqdip+h79/j+hURlvxSeU2QLu5cubOzYI
-        6/VBIlRv1H06B0Wvcov3FIGcOQJtgJIP9MPOq59f8RnLQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:message-id
-        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1671059522; x=1671145922; bh=T5TU2SL0cANYwCK6LeRCq/78VvHjLRsCGVL
-        KsRGPLYw=; b=ol0W8y9kY4MMfxz3tOP6dJrpVQADc4w1V2gYuORy6h8LXUYh/Rr
-        uccdNkAupbmKfAAQNJ/kwySmhs2BTlfj9h2ys+/bh9HP+qDy+qYTc1RqOq6r5vmI
-        19apPWwnkq6cr///5f9L3RSahorE7hiXfXvxT17exb2EppggeOHqG8/9npjw0xqM
-        PEUKEz/fDHRtntICBpuGxekKK2AibUvuh/5WwVxTKSm/3ur5PRVW6pZJ5tntbKG3
-        8G39+YFJnJBreN8y5VXdq2/XTpQ2990vVzNwZj43KYKC66tKR9Fhgzwwbkbavo4f
-        3wh9xfrvWbiWVR2gGIA9sDlow2Do9dD3nXg==
-X-ME-Sender: <xms:QliaY3909qg0IT7M3PeLJB4Qgc5OAzMbrVyndCX4yoJ39AF6lgZAbQ>
-    <xme:QliaYzvQoyyeb-r6XeKLZdln1YLu3bs_F-UIyQ8MCyCkVLfOltupW0yVHoL9URtWC
-    HS1YuVUDfsaKc-_J58>
-X-ME-Received: <xmr:QliaY1ADmUYur89V_AeDYCt_13vzcrt7qQ7J79usZxZkZ6GcGqHQRfWj>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeeggddtgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheq
-    necuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekuddute
-    efkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
-    lhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:QliaYze1wzrs2g1tO1zEicNS3EcfXFEGK1GsAlsMZUGMGO5xpa8VVg>
-    <xmx:QliaY8NWG9cE-HDB7wgsHVxk5Eu6AUWLJUDrzDLd_IEaHrXI3g0DXg>
-    <xmx:QliaY1m_Qb189kHS-48b6PXOEIOV57-zSZSzTWt5bwqVlSjoqbjX1g>
-    <xmx:QliaY22QEZZccVOemWykS56v04BkM6UYqhZN_3oqNc5NH2BXOnsXVw>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 14 Dec 2022 18:12:02 -0500 (EST)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH] btrfs: new test for logical inode resolution panic
-Date:   Wed, 14 Dec 2022 15:12:01 -0800
-Message-Id: <98d2055515cd765b0835a7f751a21cbb72c03621.1671059406.git.boris@bur.io>
-X-Mailer: git-send-email 2.38.1
+        Wed, 14 Dec 2022 20:05:13 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB3443845
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Dec 2022 17:05:11 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOzSu-1pHeJV1pq0-00POPy; Thu, 15
+ Dec 2022 02:05:02 +0100
+Message-ID: <46d2d0fb-0065-c61c-8429-453a4cbc833c@gmx.com>
+Date:   Thu, 15 Dec 2022 09:04:57 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] btrfs: fix logical_ino ioctl panic
+Content-Language: en-US
+To:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <80f01f297721481fd0d4cbf03fd2550e25b578fb.1671058852.git.boris@bur.io>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <80f01f297721481fd0d4cbf03fd2550e25b578fb.1671058852.git.boris@bur.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:3e235+lS9wQGX4yA4l2iBAbFF/Gv3d2/kExN/faCgGpw+gbl/FS
+ XREysenrnTxCLDq3+X8B4KU3uwdAoIjRJfSr1yToYfERiln+mPZq/i7WtgrdaFG+cQkLO1Y
+ VIAuBVDpmpWHCzsN/Uvzz6WRhWi90IU/ZISU85MvfDge+EeGGLjXuHFIaC5GAHyrdHloax0
+ ZRiqpJuas8GDdzQOxHvOw==
+UI-OutboundReport: notjunk:1;M01:P0:Et1Q5Tv3xeI=;JbfelGGfMka0y/rPCgS+PWMxuDo
+ hVNCwl249l2Ik56s/3DGJBourA9Ta4APvuazLgJASDjn9EECBHHKDRaSEpA1t+0J2XO8cjwID
+ kUzQNcZsrh9vFabEo09j4EtDBKo0In+Az8f98Pgm1ax+QVxe2QeuY6D1XGC37kH281F42DuRi
+ 6vwUimI0iO+iVR0tdZCzZo6F4ZMJ8M8bF9CsXVYN2wEqwUgt7s2UismH5pULK0lNDVCycD4b1
+ xjwUn/c59X8LUaZ00HSP6L7ckB5e8ZX5UOCNN6pUmgLVC7z9ahXb/VIGqXbGiy3HcOtnAVO8z
+ 7cOxmbYu+ctVpEW3OlqKn7kQzrIJp5u7tuqYj9isirhVxRrbkVw3fAMjn7ZSiy1kZdsIQ+syO
+ Yr6IJ3Mi65VBb4Nz7+noa8neScD28AVXkPm8K0WpJ0/WNF4/PRJeICn6LOQcgmfnvP9psirDV
+ YfpYieEPQqfpLLamBu5AFttHu4mroY+jKPGPM6Ffwu0PsxoAADu7itHmB1R7YoOFuzzgxXU2n
+ X9n+ESBWaI0zXvFWkDPCOpzWRDRJEqpwYSq/F3Dq+JGIQD05CdEuA3c1W7vbeNbUi29p5fl12
+ cRS4LS3yVKImg+zok41YmZTPodXpCub3TCglI8qTX0RPiHNbzG7aiGONcUwUK2Buc/XFGJzue
+ AAShQaTQvabzJDkH3njY1isUOpTDbmqa9dXtuG3l8tGPuki/R1wBGRfuZPyrA0ya6gbqCvQL3
+ SXdmUIQn9X+Dh8b0Dyp+lA6nnm6KThsSA0eH8uardTVm5KqHYYcfyvb+mnc/kdiXnzVaWtaLE
+ 5Y6SmTi9bGE8cP254ufHXO2nDUg0KNQxU1qBIafVXlIkUVC1hl0mKfnRDcWAT5W9sYkSYfqZ7
+ jXlAsb/UBl+/yCeRjCwq1HELzRnu8fDUEr+33x499qQNQghARf/rJv6PlZg/PS2qbjZd0Asoz
+ zWJ3nt4e2um0UvLhqwnujhGHTog=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we create a file that has an inline extent followed by a prealloc
-extent, then attempt to use the logical to inode ioctl on the prealloc
-extent, but in the overwritten range, backref resolution will process
-the inline extent. Depending on the leaf eb layout, this can panic.
-Add a new test for this condition. In the long run, we can add spew when
-we read out-of-bounds fields of inline extent items and simplify this
-test to look for dmesg warnings rather than trying to force a fairly
-fragile panic (dependent on non-standardized details of leaf layout).
 
-The test causes a kernel panic unless:
-btrfs: fix logical_ino ioctl panic
-is applied to the kernel.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- tests/btrfs/279     | 95 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/279.out |  2 +
- 2 files changed, 97 insertions(+)
- create mode 100755 tests/btrfs/279
- create mode 100644 tests/btrfs/279.out
+On 2022/12/15 07:05, Boris Burkov wrote:
+> If a file consists of an inline extent followed by a regular or prealloc
+> extent, then a legitimate attempt to resolve a logical address in the
+> non-inline region will result in add_all_parents reading the invalid
+> offset field of the inline extent. If the inline extent item is placed
+> in the leaf eb s.t. it is the first item, attempting to access the
+> offset field will not only be meaningless, it will go past the end of
+> the eb and cause this panic:
+> 
+> [   17.626048] BTRFS warning (device dm-2): bad eb member end: ptr
+> 0x3fd4 start 30834688 member offset 16377 size 8
+> [   17.631693] general protection fault, probably for non-canonical
+> address 0x5088000000000: 0000 [#1] SMP PTI
+> [   17.635041] CPU: 2 PID: 1267 Comm: btrfs Not tainted
+> 5.12.0-07246-g75175d5adc74-dirty #199
+> [   17.637969] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [   17.641995] RIP: 0010:btrfs_get_64+0xe7/0x110
+> [   17.643544] Code: 78 bf 08 00 00 00 48 b8 00 00 00 00 80 88 ff ff 4a
+> 8d 34 04 48 c1 fa 06 48 c1 e2 0c 48 01 c2 29 cf 74 14 31 c0 89 c1 83 c0
+> 01 <44> 0f b6 04 0a 39 f8 44 88 04 0e 72 ee 48 8b 04 24 e9 7a ff ff ff
+> [   17.649890] RSP: 0018:ffffc90001f73a08 EFLAGS: 00010202
+> [   17.651652] RAX: 0000000000000001 RBX: ffff88810c42d000 RCX:
+> 0000000000000000
+> [   17.653921] RDX: 0005088000000000 RSI: ffffc90001f73a0f RDI:
+> 0000000000000001
+> [   17.656174] RBP: 0000000000000ff9 R08: 0000000000000007 R09:
+> c0000000fffeffff
+> [   17.658441] R10: ffffc90001f73790 R11: ffffc90001f73788 R12:
+> ffff888106afe918
+> [   17.661070] R13: 0000000000003fd4 R14: 0000000000003f6f R15:
+> cdcdcdcdcdcdcdcd
+> [   17.663617] FS:  00007f64e7627d80(0000) GS:ffff888237c80000(0000)
+> knlGS:0000000000000000
+> [   17.666525] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   17.668664] CR2: 000055d4a39152e8 CR3: 000000010c596002 CR4:
+> 0000000000770ee0
+> [   17.671253] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000
+> [   17.673634] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+> 0000000000000400
+> [   17.676034] PKRU: 55555554
+> [   17.677004] Call Trace:
+> [   17.677877]  add_all_parents+0x276/0x480
+> [   17.679325]  find_parent_nodes+0xfae/0x1590
+> [   17.680771]  btrfs_find_all_leafs+0x5e/0xa0
+> [   17.682217]  iterate_extent_inodes+0xce/0x260
+> [   17.683809]  ? btrfs_inode_flags_to_xflags+0x50/0x50
+> [   17.685597]  ? iterate_inodes_from_logical+0xa1/0xd0
+> [   17.687404]  iterate_inodes_from_logical+0xa1/0xd0
+> [   17.689121]  ? btrfs_inode_flags_to_xflags+0x50/0x50
+> [   17.691010]  btrfs_ioctl_logical_to_ino+0x131/0x190
+> [   17.692946]  btrfs_ioctl+0x104a/0x2f60
+> [   17.694384]  ? selinux_file_ioctl+0x182/0x220
+> [   17.695995]  ? __x64_sys_ioctl+0x84/0xc0
+> [   17.697394]  __x64_sys_ioctl+0x84/0xc0
+> [   17.698697]  do_syscall_64+0x33/0x40
+> [   17.700017]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   17.701753] RIP: 0033:0x7f64e72761b7
+> [   17.703011] Code: 3c 1c 48 f7 d8 49 39 c4 72 b9 e8 24 ff ff ff 85 c0
+> 78 be 4c 89 e0 5b 5d 41 5c c3 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f
+> 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 89 9c 0c 00 f7 d8 64 89 01 48
+> [   17.709355] RSP: 002b:00007ffefb067f58 EFLAGS: 00000246 ORIG_RAX:
+> 0000000000000010
+> [   17.712088] RAX: ffffffffffffffda RBX: 0000000000000003 RCX:
+> 00007f64e72761b7
+> [   17.714667] RDX: 00007ffefb067fb0 RSI: 00000000c0389424 RDI:
+> 0000000000000003
+> [   17.717386] RBP: 00007ffefb06d188 R08: 000055d4a390d2b0 R09:
+> 00007f64e7340a60
+> [   17.719938] R10: 0000000000000231 R11: 0000000000000246 R12:
+> 0000000000000001
+> [   17.722383] R13: 0000000000000000 R14: 00000000c0389424 R15:
+> 000055d4a38fd2a0
+> [   17.724839] Modules linked in:
+> [   17.726094] ---[ end trace e97f925b39774256 ]---
+> 
+> Fix the bug by detecting the inline extent item in add_all_parents and
+> skipping to the next extent item.
+> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
-diff --git a/tests/btrfs/279 b/tests/btrfs/279
-new file mode 100755
-index 00000000..ef77f84b
---- /dev/null
-+++ b/tests/btrfs/279
-@@ -0,0 +1,95 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2022 Meta Platforms, Inc.  All Rights Reserved.
-+#
-+# FS QA Test 279
-+#
-+# Given a file with extents:
-+# [0 : 4096) (inline)
-+# [4096 : N] (prealloc)
-+# if a user uses the ioctl BTRFS_IOC_LOGICAL_INO[_V2] asking for the file of the
-+# non-inline extent, it results in reading the offset field of the inline
-+# extent, which is meaningless (it is full of user data..). If we are
-+# particularly lucky, it can be past the end of the extent buffer, resulting in
-+# a crash.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/dmlogwrites
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_scratch
-+_require_xfs_io_command "falloc"
-+_require_xfs_io_command "fsync"
-+_require_xfs_io_command "pwrite"
-+
-+dump_tree() {
-+	$BTRFS_UTIL_PROG inspect-internal dump-tree $SCRATCH_DEV
-+}
-+
-+get_extent_data() {
-+	local ino=$1
-+	dump_tree $SCRATCH_DEV | grep -A4 "($ino EXTENT_DATA "
-+}
-+
-+get_prealloc_offset() {
-+	local ino=$1
-+	get_extent_data $ino | grep "disk byte" | awk '{print $5}'
-+}
-+
-+# This test needs to create conditions s.t. the special inode's inline extent
-+# is the first item in a leaf. Therefore, fix a leaf size and add 
-+# items that are otherwise not necessary to reproduce the inline-prealloc
-+# condition to get to such a state.
-+#
-+# Roughly, the idea for getting the right item fill is to:
-+# 1. create an extra file with a variable sized inline extent item
-+# 2. create our evil file that will cause the panic
-+# 3. create a whole bunch of files to create a bunch of dir/index items
-+# 4. size the variable extent item s.t. the evil extent item is item 0 in the
-+#    next leaf
-+#
-+# We do it in this somewhat convoluted way because the dir and index items all
-+# come before any inode, inode_ref, or extent_data items. So we can predictably
-+# create a bunch of them, then sneak in a funny sized extent to round out the
-+# difference.
-+
-+_scratch_mkfs "--nodesize 16k" >/dev/null
-+_scratch_mount
-+
-+f=$SCRATCH_MNT/f
-+
-+# the variable extra "leaf padding" file
-+$XFS_IO_PROG -fc "pwrite -q 0 700" $f.pad
-+
-+# the evil file with an inline extent followed by a prealloc extent
-+# created by falloc with keep-size, then two non-truncating writes to the front
-+touch $f.evil
-+$XFS_IO_PROG -fc "falloc -k 0 1m" $f.evil
-+$XFS_IO_PROG -fc fsync $f.evil
-+ino=$(stat -c '%i' $f.evil)
-+logical=$(get_prealloc_offset $ino)
-+$XFS_IO_PROG -fc "pwrite -q 0 23" $f.evil
-+$XFS_IO_PROG -fc fsync $f.evil
-+$XFS_IO_PROG -fc "pwrite -q 0 23" $f.evil
-+$XFS_IO_PROG -fc fsync $f.evil
-+sync
-+
-+# a bunch of inodes to stuff dir items in front of the extent items
-+for i in $(seq 122); do
-+	$XFS_IO_PROG -fc "pwrite -q 0 8192" $f.$i
-+done
-+sync
-+
-+btrfs inspect-internal logical-resolve $logical $SCRATCH_MNT | _filter_scratch
-+_scratch_unmount
-+
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/btrfs/279.out b/tests/btrfs/279.out
-new file mode 100644
-index 00000000..c5906093
---- /dev/null
-+++ b/tests/btrfs/279.out
-@@ -0,0 +1,2 @@
-+QA output created by 279
-+Silence is golden
--- 
-2.38.1
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
+Indeed a solid fix.
+
+> ---
+>   fs/btrfs/backref.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> index 21c92c74bf71..46851511b661 100644
+> --- a/fs/btrfs/backref.c
+> +++ b/fs/btrfs/backref.c
+> @@ -484,6 +484,7 @@ static int add_all_parents(struct btrfs_backref_walk_ctx *ctx,
+>   	u64 wanted_disk_byte = ref->wanted_disk_byte;
+>   	u64 count = 0;
+>   	u64 data_offset;
+> +	u8 type;
+>   
+>   	if (level != 0) {
+>   		eb = path->nodes[level];
+> @@ -538,6 +539,9 @@ static int add_all_parents(struct btrfs_backref_walk_ctx *ctx,
+>   			continue;
+>   		}
+>   		fi = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
+> +		type = btrfs_file_extent_type(eb, fi);
+> +		if (type == BTRFS_FILE_EXTENT_INLINE)
+> +			goto next;
+
+Initially I thought we can not just skip to the next one, but 
+considering we're called from iterate_inodes_from_logical(), and there 
+will be no logical bytenr for any inlined extent at all, this is 
+completely correct.
+
+Maybe add a line of comment to explain the fact would be a little better?
+
+Thanks,
+Qu
+
+>   		disk_byte = btrfs_file_extent_disk_bytenr(eb, fi);
+>   		data_offset = btrfs_file_extent_offset(eb, fi);
+>   
