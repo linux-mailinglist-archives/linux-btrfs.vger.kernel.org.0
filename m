@@ -2,62 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9563064DDD8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Dec 2022 16:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DECC064DED6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Dec 2022 17:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbiLOPcn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Dec 2022 10:32:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
+        id S230200AbiLOQmH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Dec 2022 11:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbiLOPcm (ORCPT
+        with ESMTP id S229616AbiLOQmE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Dec 2022 10:32:42 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3E827B22;
-        Thu, 15 Dec 2022 07:32:41 -0800 (PST)
+        Thu, 15 Dec 2022 11:42:04 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE7432BB3;
+        Thu, 15 Dec 2022 08:42:03 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 259F75BEB1;
-        Thu, 15 Dec 2022 15:32:40 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0D954222B4;
+        Thu, 15 Dec 2022 16:42:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1671118360; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1671122522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=D4W44t3UjZK0uOHiinw56j5KBmLIjjc+Nk0//prNb8k=;
-        b=xvXKAYDcmJNvq6qfHHkEY1KubH7YCHcTMrvvfY0Fwi0wXB4v+4YRFA6uYY6pPmeMIOU5/Q
-        4SOaKSwkoaF0qwX5WzFPhYQZpICc5SQH/n1mDVeglYOLfNv6J8i89acFHIZ69Y8TvM3hFz
-        BjfJnhO0Vv5auDNv+rgZQaUEXBWcGjA=
+        bh=E9bpcAOTjeaFvcz21E3nw7xuynTNMqtS98FSUTZZgWE=;
+        b=a/aGlAx+u4cOo4HxN6J26nKFugnzpWthfpKhrLTTrfWilc4FUeB3Yh9/kjGyuXi0eF4ZTs
+        EuQKf4LuJRK8NS0fOkpJ9cZqIiuEoEgRbIeR7BBA1WJR4S/jgjoxmto92FCdWTn5Z1OseD
+        kgUmvcI5WI2fO+Wr5rMBfRDiGVmAtlY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1671118360;
+        s=susede2_ed25519; t=1671122522;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=D4W44t3UjZK0uOHiinw56j5KBmLIjjc+Nk0//prNb8k=;
-        b=r3gcd4wB5jQ8x0ady+Hyjw2RCBGEAnqHeXZeWbSZU3lFB7+I5o3NgYw9QhMQDaWUkZQE+f
-        lrN4j1VO3VHc8HDQ==
+        bh=E9bpcAOTjeaFvcz21E3nw7xuynTNMqtS98FSUTZZgWE=;
+        b=dcAHSBfwvPm5IjxUaNOsKnbXbIGBfHO/M+9TQq/1qnWdh/CA6X/UkZr0rpX2kTBIwSgxd3
+        gFvDwHIRNui4MZDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F140E13434;
-        Thu, 15 Dec 2022 15:32:39 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3019138E5;
+        Thu, 15 Dec 2022 16:42:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id nDtoORc+m2PwBAAAMHmgww
-        (envelope-from <ddiss@suse.de>); Thu, 15 Dec 2022 15:32:39 +0000
-Date:   Thu, 15 Dec 2022 16:33:30 +0100
+        id 27zyNVlOm2PlJQAAMHmgww
+        (envelope-from <ddiss@suse.de>); Thu, 15 Dec 2022 16:42:01 +0000
+Date:   Thu, 15 Dec 2022 17:42:52 +0100
 From:   David Disseldorp <ddiss@suse.de>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: new test for logical inode resolution panic
-Message-ID: <20221215163330.7ad6ae27@echidna.fritz.box>
-In-Reply-To: <98d2055515cd765b0835a7f751a21cbb72c03621.1671059406.git.boris@bur.io>
-References: <98d2055515cd765b0835a7f751a21cbb72c03621.1671059406.git.boris@bur.io>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: Re: [RFC PATCH] fstests: add basic json output support
+Message-ID: <20221215174252.031fcbba@echidna.fritz.box>
+In-Reply-To: <20221215114113.38815-1-wqu@suse.com>
+References: <20221215114113.38815-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -70,152 +69,78 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Boris,
+Hi Qu,
 
-Thanks for providing this reproducer...
+On Thu, 15 Dec 2022 19:41:13 +0800, Qu Wenruo wrote:
 
-On Wed, 14 Dec 2022 15:12:01 -0800, Boris Burkov wrote:
+> Although the current result files "check.log" and "check.time" is enough
+> for human to read, it's not that easy to parse.
 
-> If we create a file that has an inline extent followed by a prealloc
-> extent, then attempt to use the logical to inode ioctl on the prealloc
-> extent, but in the overwritten range, backref resolution will process
-> the inline extent. Depending on the leaf eb layout, this can panic.
-> Add a new test for this condition. In the long run, we can add spew when
-> we read out-of-bounds fields of inline extent items and simplify this
-> test to look for dmesg warnings rather than trying to force a fairly
-> fragile panic (dependent on non-standardized details of leaf layout).
+Have you looked at the existing junit XML based report types, available
+via "check -R xunit ..."? junit is standardized, parsable and supported
+by tools such as:
+- https://docs.gitlab.com/ee/ci/testing/unit_test_reports.html
+- https://github.com/weiwei/junitparser
+- https://ddiss.github.io/online-junit-parser/
+- https://plugins.jenkins.io/junit/
+
+> Thus this patch will introduce a json output to "$RESULT_BASE/check.json".
 > 
-> The test causes a kernel panic unless:
-> btrfs: fix logical_ino ioctl panic
-> is applied to the kernel.
-
-This could be included as a test hint via _fixed_by_kernel_commit(), but
-given that failure is a panic, it probably doesn't matter...
-
-> Signed-off-by: Boris Burkov <boris@bur.io>
+> The example output would look like this:
+> 
+>   {
+>       "section": "(none)",
+>       "fstype": "btrfs",
+>       "start_time": 1671103264,
+>       "arch": "x86_64",
+>       "kernel": "6.1.0-rc8-custom+",
+>       "results": [
+>           {
+>               "testcase": "btrfs/001",
+>               "status": "pass",
+>               "start_time": 1671103264,
+>               "end_time": 1671103266
+>           },
+>           {
+>               "testcase": "btrfs/006",
+>               "status": "pass",
+>               "start_time": 1671103266,
+>               "end_time": 1671103268
+>           },
+>           {
+>               "testcase": "btrfs/007",
+>               "status": "pass",
+>               "start_time": 1671103268,
+>               "end_time": 1671103271
+>           }
+>       ]
+>   }
+> 
+> Which should make later parsing much easier.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  tests/btrfs/279     | 95 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/279.out |  2 +
-
-Looks like a rebase is needed - btrfs/279 is already taken.
-
->  2 files changed, 97 insertions(+)
->  create mode 100755 tests/btrfs/279
->  create mode 100644 tests/btrfs/279.out
+> Reason for RFC:
 > 
-> diff --git a/tests/btrfs/279 b/tests/btrfs/279
-> new file mode 100755
-> index 00000000..ef77f84b
-> --- /dev/null
-> +++ b/tests/btrfs/279
-> @@ -0,0 +1,95 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2022 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 279
-> +#
-> +# Given a file with extents:
-> +# [0 : 4096) (inline)
-> +# [4096 : N] (prealloc)
-> +# if a user uses the ioctl BTRFS_IOC_LOGICAL_INO[_V2] asking for the file of the
-> +# non-inline extent, it results in reading the offset field of the inline
-> +# extent, which is meaningless (it is full of user data..). If we are
-> +# particularly lucky, it can be past the end of the extent buffer, resulting in
-> +# a crash.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick
-> +
-> +# Import common functions.
-> +. ./common/filter
-> +. ./common/dmlogwrites
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +_require_scratch
-> +_require_xfs_io_command "falloc"
-> +_require_xfs_io_command "fsync"
-> +_require_xfs_io_command "pwrite"
-> +
-> +dump_tree() {
-> +	$BTRFS_UTIL_PROG inspect-internal dump-tree $SCRATCH_DEV
-> +}
-> +
-> +get_extent_data() {
-> +	local ino=$1
-> +	dump_tree $SCRATCH_DEV | grep -A4 "($ino EXTENT_DATA "
-> +}
-> +
-> +get_prealloc_offset() {
-> +	local ino=$1
-> +	get_extent_data $ino | grep "disk byte" | awk '{print $5}'
-> +}
-> +
-> +# This test needs to create conditions s.t. the special inode's inline extent
-> +# is the first item in a leaf. Therefore, fix a leaf size and add 
-> +# items that are otherwise not necessary to reproduce the inline-prealloc
-> +# condition to get to such a state.
-> +#
-> +# Roughly, the idea for getting the right item fill is to:
-> +# 1. create an extra file with a variable sized inline extent item
-> +# 2. create our evil file that will cause the panic
-> +# 3. create a whole bunch of files to create a bunch of dir/index items
-> +# 4. size the variable extent item s.t. the evil extent item is item 0 in the
-> +#    next leaf
-> +#
-> +# We do it in this somewhat convoluted way because the dir and index items all
-> +# come before any inode, inode_ref, or extent_data items. So we can predictably
-> +# create a bunch of them, then sneak in a funny sized extent to round out the
-> +# difference.
-> +
-> +_scratch_mkfs "--nodesize 16k" >/dev/null
-> +_scratch_mount
-> +
-> +f=$SCRATCH_MNT/f
-> +
-> +# the variable extra "leaf padding" file
-> +$XFS_IO_PROG -fc "pwrite -q 0 700" $f.pad
-> +
-> +# the evil file with an inline extent followed by a prealloc extent
-> +# created by falloc with keep-size, then two non-truncating writes to the front
-> +touch $f.evil
-> +$XFS_IO_PROG -fc "falloc -k 0 1m" $f.evil
-> +$XFS_IO_PROG -fc fsync $f.evil
-> +ino=$(stat -c '%i' $f.evil)
-> +logical=$(get_prealloc_offset $ino)
-> +$XFS_IO_PROG -fc "pwrite -q 0 23" $f.evil
-> +$XFS_IO_PROG -fc fsync $f.evil
-> +$XFS_IO_PROG -fc "pwrite -q 0 23" $f.evil
-> +$XFS_IO_PROG -fc fsync $f.evil
-> +sync
-> +
-> +# a bunch of inodes to stuff dir items in front of the extent items
-> +for i in $(seq 122); do
+> - Not crash safe
+>   If one test case caused a crash, the "check.json" file will be an
+>   invalid one, missing the closing "] }" string.
+> 
+> - Is json really a good choice?
+>   It may be much easier to convert to a web page, but we will still
+>   need to parse and handle the result using another languages anyway,
+>   like to determine a regression.
 
-nit: a c-style bash loop would avoid the extra seq process
+I'm not opposed to adding an extra json report type, but I really think
+it should be plumbed into the existing common/report API.
 
-> +	$XFS_IO_PROG -fc "pwrite -q 0 8192" $f.$i
-> +done
-> +sync
-> +
-> +btrfs inspect-internal logical-resolve $logical $SCRATCH_MNT | _filter_scratch
-> +_scratch_unmount
-> +
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/279.out b/tests/btrfs/279.out
-> new file mode 100644
-> index 00000000..c5906093
-> --- /dev/null
-> +++ b/tests/btrfs/279.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 279
-> +Silence is golden
+>   Another alternative is .csv, and it can be much easier to handle.
+>   (pure "echo >> $output", no need to handle the comma rule).
+>   But for .csv, we may waste a lot of columes for things like "arch",
+>   "kernel", "section".
 
-With the rebase to avoid tests/btrfs/279 collision, this looks good:
+My preference for any new output formats, especially if they're intended
+for parsing, is that they're based on an existing standard/tool. E.g.
+https://testanything.org .
 
-Reviewed-by: David Disseldorp <ddiss@suse.de>
+Cheers, David
