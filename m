@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7014E64F239
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Dec 2022 21:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DE064F23A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Dec 2022 21:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbiLPUQG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Dec 2022 15:16:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
+        id S231555AbiLPUQH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Dec 2022 15:16:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbiLPUQE (ORCPT
+        with ESMTP id S231657AbiLPUQF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Dec 2022 15:16:04 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5935D36C51
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 12:16:03 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id a16so3577292qtw.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 12:16:03 -0800 (PST)
+        Fri, 16 Dec 2022 15:16:05 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FC126A99
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 12:16:04 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id j16so3614411qtv.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 12:16:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=sxrdrp2AQBozx+ibU551s3/U4/ft7JusEwx9n/BiA4U=;
-        b=bXMfWyDkRf2AHX/gWGBwFZfir3IuAoOR0Nrv4pYMIWs8OrCWM8PRQHqFd/ADaJIoah
-         0mRvj6+dGi+2Gdjhj1LzLoyJaIx9NeXeuFawtAOsC5hKVzF2DnjQD0GoulqoQj79BL4P
-         cfRmdoDER22R2jJ97Ey9E9a5C+a7MhuCWfAdbHF+ZcPl1CRDih151doz5uKsqEt4ovl9
-         3V0PfVyieaQAA76Ku6xHye52KG+PkkE1hV0gIWtIJrPx8qOMhCZhE1Buf6x5/6tGdSu6
-         Zl2Aluf4DDpRI8azmmT3lXqda6RuZZ0/2zHMyzbOqUkim5mBx3F8DKBgFzS/oS4qT3n2
-         Z8Hw==
+        bh=9GkiNo3NR9t33fSWOy/HJNs3H68iO1PgIyTU5GI5al0=;
+        b=Lgx+NQTAJYzKMgV61dcgWlKQgOMRC+9v2Bnbelhh7YlG8H9WHy5gBEILMAopKEBFzu
+         tcRJzRfwMwwVMF185ZhvCxDhWFHEVqjrHvDI7Px4QjPYpHog/HpNxc7NjvUcpapwvy2h
+         12I+B5cPiGKAYhfMZlj+dLtVoP4W3aYaUGXmYehhm2vProa9NtckIBDbkOBxlZVtuk8f
+         g3BJWgusPNooDp83d+kTRF4tGywJCm04e6D7qwEmFJ0vs0fRN22RAt2/rDs5skLCC5H9
+         GWZdQz++WpanU7uQIPYzTGIpobp6mDEwEJxJPxTu3UCcXXdf6Ge+UdnGqJPLAMmfcdmJ
+         +oHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sxrdrp2AQBozx+ibU551s3/U4/ft7JusEwx9n/BiA4U=;
-        b=KbUs6OptzhtvuZGyi6umQNQIG4u45Fy6p8/qvW1wSWz3r8yIMaSnAqAv2TnrxRIhsC
-         1auoYa/3QPqfmYuj9HJ5vovCb7G/vAfzS4naDlb9DvQaPcPFMWjEgKwM1LotE1BFSpBF
-         cb9pjPE0hax/YOPml65W/4000NG1rZhRmuJnox6cIp9knq8oUYRU1NPCeJbjt5kKE6tj
-         flOXnxj6okOsJar9HVAxWEpxV2j4rD0IancSyoxqQ3m+OFk2hQlZgcS1rSLFgvmE0gQi
-         hr1Dk1CqwklRPU4zhBrlT6P6bHl7ZvWyb3UOqvT2UHV+y4bPS3ZjN2DMKDY5bGEzsOfs
-         yGcQ==
-X-Gm-Message-State: ANoB5pnB4Xr+0JI456k8abrxiCeNopuQS9Uns6ActpGWUKc66IN6pUxZ
-        oDI7Pym82JQ3/oWhGwr+zzVG8sh7M+Ix4lz9nSQ=
-X-Google-Smtp-Source: AA0mqf4F2vJQ0VlVEvcxLq2SWtSRhjM28Vy6SngULgARQTsjIErWKyOh1f9d7bJdz8RHBYGddUmvCg==
-X-Received: by 2002:a05:622a:489b:b0:3a6:4e2f:eae7 with SMTP id fc27-20020a05622a489b00b003a64e2feae7mr47904233qtb.10.1671221762147;
-        Fri, 16 Dec 2022 12:16:02 -0800 (PST)
+        bh=9GkiNo3NR9t33fSWOy/HJNs3H68iO1PgIyTU5GI5al0=;
+        b=eC7OrYAD3dllGwaOtOiQDCQCKNxZOIatKE+sGTKGYNjH+k0VT+XzoUOjRf6zBdK9n+
+         EpePj1dbfKAv5sa1WlA4q1dIaTVACgSakY5WPIp6VjMdtsMZiQkR5wQKnE8bqicStRaY
+         u6Pbn4JZiD6hcvXg6Cabz3gWGePAERizNlf3S2UPpBrNve3PVnz7oFaNziFMooyQNuzp
+         ll/bAkKEDgBKF3pxbshK1ZSiaKrtfpzqey6FP7x66GQPtO51PGAuGXWPGwzmA1ohrc+8
+         nUv1N4VrxvjzcVH8XCsGLmgNxgEE7pBgZJRcnLM7JUOPCpD+z8UNBl9rIuS7rAs3Givm
+         3Hzg==
+X-Gm-Message-State: AFqh2korrBz9isOhSwF6WYXxXPw1QyuBVCzufgKSVDoY4UPuM4Wu5VR+
+        cvO/r9iXG/BrHAms8Y5+K+tWt8pdk5HJnVUhZr4=
+X-Google-Smtp-Source: AMrXdXuh9W4z56o1VejOBA7FKJwDRjUgUSJeZ+ZigkrJC3rhs4+A+gT2rqcL5QExqo5lVFdNSjhryQ==
+X-Received: by 2002:ac8:45da:0:b0:3a9:7cb5:3669 with SMTP id e26-20020ac845da000000b003a97cb53669mr219284qto.32.1671221763500;
+        Fri, 16 Dec 2022 12:16:03 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id h17-20020ac85151000000b0039cba52974fsm1771066qtn.94.2022.12.16.12.16.01
+        by smtp.gmail.com with ESMTPSA id bq17-20020a05622a1c1100b00397e97baa96sm1888138qtb.0.2022.12.16.12.16.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Dec 2022 12:16:01 -0800 (PST)
+        Fri, 16 Dec 2022 12:16:03 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/8] btrfs: fix uninit warning in run_one_async_start
-Date:   Fri, 16 Dec 2022 15:15:51 -0500
-Message-Id: <5501d33f6ac5af3f371c8734793baeddcde75b4d.1671221596.git.josef@toxicpanda.com>
+Subject: [PATCH 2/8] btrfs: fix uninit warning in btrfs_cleanup_ordered_extents
+Date:   Fri, 16 Dec 2022 15:15:52 -0500
+Message-Id: <8224d05027554e265bb92bd4a7862950e6c7d224.1671221596.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1671221596.git.josef@toxicpanda.com>
 References: <cover.1671221596.git.josef@toxicpanda.com>
@@ -69,28 +69,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With -Wmaybe-uninitialized complains about ret being possibly
-uninitialized, which isn't possible, however we can init the value to
-get rid of the warning.
+We can conditionally pass in a locked page, and then we'll use that page
+range to skip marking errors as that will happen in another layer.
+However this causes the compiler to complain because it doesn't
+understand we only use these values when we have the page.  Make the
+compiler stop complaining by setting these values to 0.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c | 2 +-
+ fs/btrfs/inode.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 0888d484df80..c25b444027d6 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -693,7 +693,7 @@ int btrfs_validate_metadata_buffer(struct btrfs_bio *bbio,
- static void run_one_async_start(struct btrfs_work *work)
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 905ea19df125..dfceaf79d5d4 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -228,7 +228,7 @@ static inline void btrfs_cleanup_ordered_extents(struct btrfs_inode *inode,
  {
- 	struct async_submit_bio *async;
--	blk_status_t ret;
-+	blk_status_t ret = BLK_STS_OK;
+ 	unsigned long index = offset >> PAGE_SHIFT;
+ 	unsigned long end_index = (offset + bytes - 1) >> PAGE_SHIFT;
+-	u64 page_start, page_end;
++	u64 page_start = 0, page_end = 0;
+ 	struct page *page;
  
- 	async = container_of(work, struct  async_submit_bio, work);
- 	switch (async->submit_cmd) {
+ 	if (locked_page) {
 -- 
 2.26.3
 
