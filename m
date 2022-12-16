@@ -2,94 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E4564F240
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Dec 2022 21:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C1564F2CB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Dec 2022 21:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbiLPUQT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Dec 2022 15:16:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58646 "EHLO
+        id S231678AbiLPUz0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Dec 2022 15:55:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbiLPUQQ (ORCPT
+        with ESMTP id S229742AbiLPUzW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Dec 2022 15:16:16 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CC9659B5
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 12:16:13 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id jr11so3594135qtb.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 12:16:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zuaPXloxLhAftLUFO5H+ZxRIJ1ioDiYP8OOa8CufXVw=;
-        b=Vdk+ROI9+zPolLsEFnqa7XX3bgap2URPsCrjGUItbQBOJm62nhHG3Oq8omfa840USy
-         ZbGlvV+TpW3MNu8tShwlKrCEJvo4itbS4eEDqMZkMWk1XTxLqbRu98l+YAHR3lHEJIhc
-         3w4leEEW8Gwx1Ebh89iHD/W4eTDl9JVyP8OLCjND9DWS6w6ndvYVIu5+YHli6zcBHg72
-         QfMTsAxYrIpCfhp9mTIIxZqViijRaQ4g6kfMta6Q0b6aLu7vnbKA+BCJrbwrzwH2BZHF
-         LuOuDuMU8YEybwy8SM8TLVyYWmkcXBq1y3MbVaSHfNEPrgtMyOfOwr8c9OfV7tZOudB5
-         EFxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zuaPXloxLhAftLUFO5H+ZxRIJ1ioDiYP8OOa8CufXVw=;
-        b=TaoRrsBbEhDMqQNRHDEoz1GJIc9RRyjNy+zmjX7YZqAKyRSPNHImLSkkFD9KlYuB/1
-         n+I7x2pihj1X9qEQbu8d+JzEWy3Fs7mD8CresVohbhdAIlUGYYKYtIwwEku/7AsGxk15
-         PQDVA47tQ2xy2rgHXeJCTumzYDSZskSnKRhmhxwpGDpCFJ9cgBoi5a7UbPdoYTq1bZ9P
-         3Xl52n12aAalcR5MVNsgNV4/2wnD8eQKJc00UcWBgqIGnesJpmrr+mR2VqnY6djYahN+
-         iHH5RXOYtM/9uTCOC85D0ztAgZ9r5PGpQ/qwIXcoXAjKiD+Px71+DDZymDPiHtWdqb5i
-         j72g==
-X-Gm-Message-State: AFqh2koeExB2ScVhdZZka0Y0ggTo8yPJ1C2GncT8ZfSG4Cv6MxbOPxPa
-        8DNaTV/hPRCyXYRIeC4fwd2T9+5oqbV0pQVN+cY=
-X-Google-Smtp-Source: AMrXdXtvHk7X41DyI557Rl/38pEJFEi54YOJNG5qoIKT8SbmgBC6zyhTedhb2lR4cgDVf6XpUZFrOA==
-X-Received: by 2002:ac8:6683:0:b0:3a9:6b73:fb91 with SMTP id d3-20020ac86683000000b003a96b73fb91mr8862154qtp.64.1671221772111;
-        Fri, 16 Dec 2022 12:16:12 -0800 (PST)
-Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id fu25-20020a05622a5d9900b003a57eb7f212sm1849891qtb.10.2022.12.16.12.16.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Dec 2022 12:16:11 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 8/8] btrfs: turn on -Wmaybe-uninitialized
-Date:   Fri, 16 Dec 2022 15:15:58 -0500
-Message-Id: <1d9deaa274c13665eca60dee0ccbc4b56b506d06.1671221596.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1671221596.git.josef@toxicpanda.com>
-References: <cover.1671221596.git.josef@toxicpanda.com>
+        Fri, 16 Dec 2022 15:55:22 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A8F57B6B;
+        Fri, 16 Dec 2022 12:55:21 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B1D562203;
+        Fri, 16 Dec 2022 20:55:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72201C433F0;
+        Fri, 16 Dec 2022 20:55:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671224120;
+        bh=Xwcytn+LoirjjEGfFRYRfniLWhHW1mgnIB+bcrZQfrA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M08Tp1Nd4FaewBLlMg7sBZRj6HV+oopMEURtYwNlMRbz4VjYPGQ/qCd+W7pemHb9x
+         0vUAuy1Cm5dVMIp7PhWEbp3itnRVeJ8KeYxDynKo1QWtmJpOOpqen99iyVERF4PyCy
+         oJBXgXdmZPg3XQxLDaOp/X/scQDEVUl2ugeJiVkCVxSWEW1BvHV2yI/r6mFjbA+fG/
+         plymEurGnXR0A74q+mivvOnbm7dVuUbtTHVGlbx8uzOuB2diLWpC1T6gWiLeor9b2i
+         ytVWVHlC5efZgfm3nV1xYO9dH6BFQe8jnpcK75vuWSIFj9v42UjwXXru4GKqdoIA9h
+         xkNZ64Qu9aIsQ==
+Date:   Fri, 16 Dec 2022 12:55:18 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Luca Boccassi <bluca@debian.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Jes Sorensen <jsorensen@meta.com>,
+        Victor Hsieh <victorhsieh@google.com>
+Subject: Re: [PATCH] fsverity: mark builtin signatures as deprecated
+Message-ID: <Y5zbNtaadNGPGHQb@sol.localdomain>
+References: <20221208033548.122704-1-ebiggers@kernel.org>
+ <eea9b4dc9314da2de39b4181a4dac59fda8b0754.camel@debian.org>
+ <Y5JPRW+9dt28JpZ7@sol.localdomain>
+ <00c7b6b0e2533b2bf007311c2ede64cb92a130db.camel@debian.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00c7b6b0e2533b2bf007311c2ede64cb92a130db.camel@debian.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We had a recent bug that would have been caught by a newer compiler with
--Wmaybe-uninitialized and would have saved us a month of failing tests
-that I didn't have time to investigate.
+On Thu, Dec 08, 2022 at 09:37:29PM +0000, Luca Boccassi wrote:
+> 
+> The second question is easy: because the kernel is the right place for
+> our use case to do this verification and enforcement, exactly like dm-
+> verity does.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+Well, dm-verity's in-kernel signature verification support is a fairly new
+feature.  Most users of dm-verity don't use it, and will not be using it.
 
-diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-index 555c962fdad6..eca995abccdf 100644
---- a/fs/btrfs/Makefile
-+++ b/fs/btrfs/Makefile
-@@ -7,6 +7,7 @@ subdir-ccflags-y += -Wmissing-format-attribute
- subdir-ccflags-y += -Wmissing-prototypes
- subdir-ccflags-y += -Wold-style-definition
- subdir-ccflags-y += -Wmissing-include-dirs
-+subdir-ccflags-y += -Wmaybe-uninitialized
- condflags := \
- 	$(call cc-option, -Wunused-but-set-variable)		\
- 	$(call cc-option, -Wunused-const-variable)		\
--- 
-2.26.3
+> Userspace is largely untrusted, or much lower trust anyway.
 
+Yes, which means the kernel is highly trusted.  Which is why parsing complex
+binary formats, X.509 and PKCS#7, in C code in the kernel is not a great idea...
+
+- Eric
