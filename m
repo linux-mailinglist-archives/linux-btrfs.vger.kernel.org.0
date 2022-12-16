@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DE064F23A
+	by mail.lfdr.de (Postfix) with ESMTP id CA1B464F23B
 	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Dec 2022 21:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbiLPUQH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Dec 2022 15:16:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
+        id S231847AbiLPUQJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Dec 2022 15:16:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbiLPUQF (ORCPT
+        with ESMTP id S231953AbiLPUQH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Dec 2022 15:16:05 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FC126A99
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 12:16:04 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id j16so3614411qtv.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 12:16:04 -0800 (PST)
+        Fri, 16 Dec 2022 15:16:07 -0500
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F4461D51
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 12:16:06 -0800 (PST)
+Received: by mail-vs1-xe2d.google.com with SMTP id k185so3394989vsc.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 12:16:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9GkiNo3NR9t33fSWOy/HJNs3H68iO1PgIyTU5GI5al0=;
-        b=Lgx+NQTAJYzKMgV61dcgWlKQgOMRC+9v2Bnbelhh7YlG8H9WHy5gBEILMAopKEBFzu
-         tcRJzRfwMwwVMF185ZhvCxDhWFHEVqjrHvDI7Px4QjPYpHog/HpNxc7NjvUcpapwvy2h
-         12I+B5cPiGKAYhfMZlj+dLtVoP4W3aYaUGXmYehhm2vProa9NtckIBDbkOBxlZVtuk8f
-         g3BJWgusPNooDp83d+kTRF4tGywJCm04e6D7qwEmFJ0vs0fRN22RAt2/rDs5skLCC5H9
-         GWZdQz++WpanU7uQIPYzTGIpobp6mDEwEJxJPxTu3UCcXXdf6Ge+UdnGqJPLAMmfcdmJ
-         +oHQ==
+        bh=xP87KjVFI1Zbqnjyi633dm3UZW8/Rhgu6zHUNNN3rlc=;
+        b=YIFQjvZ8gxIOmsxaEG93zu4QRveahYuRZKSlxuhZ0lC+JuaWGRzdXVRTnP2CPBtnDK
+         tC5m5Rh2Pozl2t2wMP2e1bmO+r3Y1J/H5+HqTnBuj+va4CTctiA//aVi4ZaJex9Lq8DK
+         bvpCz/gJow3eOc19LQOE7rKWFtTLUFR1xR61jGzAWcAS33NKCe5cLHOhwb1UlJQBACsr
+         MJ9AMGuAKKwI9dXZgo1vSfdpVstcYW9JV51K9A40PULjACO8iZ8h+hkP9VNqzWLW4mur
+         S7qW8om5A6kHlixbhkdEOYmg3V9HCBPWsOgWMsOnj3HEnTOq3r6yT9r6lzE6hTOnv33j
+         DlSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9GkiNo3NR9t33fSWOy/HJNs3H68iO1PgIyTU5GI5al0=;
-        b=eC7OrYAD3dllGwaOtOiQDCQCKNxZOIatKE+sGTKGYNjH+k0VT+XzoUOjRf6zBdK9n+
-         EpePj1dbfKAv5sa1WlA4q1dIaTVACgSakY5WPIp6VjMdtsMZiQkR5wQKnE8bqicStRaY
-         u6Pbn4JZiD6hcvXg6Cabz3gWGePAERizNlf3S2UPpBrNve3PVnz7oFaNziFMooyQNuzp
-         ll/bAkKEDgBKF3pxbshK1ZSiaKrtfpzqey6FP7x66GQPtO51PGAuGXWPGwzmA1ohrc+8
-         nUv1N4VrxvjzcVH8XCsGLmgNxgEE7pBgZJRcnLM7JUOPCpD+z8UNBl9rIuS7rAs3Givm
-         3Hzg==
-X-Gm-Message-State: AFqh2korrBz9isOhSwF6WYXxXPw1QyuBVCzufgKSVDoY4UPuM4Wu5VR+
-        cvO/r9iXG/BrHAms8Y5+K+tWt8pdk5HJnVUhZr4=
-X-Google-Smtp-Source: AMrXdXuh9W4z56o1VejOBA7FKJwDRjUgUSJeZ+ZigkrJC3rhs4+A+gT2rqcL5QExqo5lVFdNSjhryQ==
-X-Received: by 2002:ac8:45da:0:b0:3a9:7cb5:3669 with SMTP id e26-20020ac845da000000b003a97cb53669mr219284qto.32.1671221763500;
-        Fri, 16 Dec 2022 12:16:03 -0800 (PST)
+        bh=xP87KjVFI1Zbqnjyi633dm3UZW8/Rhgu6zHUNNN3rlc=;
+        b=FHs0PrqZHCydpNAYDRMNKc8e1pM3DtQ0WXqOdXHlh+wtGGwZHy8ylL5wmr8LToeusb
+         gcxO3TUvVaseyD7wy2LHpb6MJTqobW9vH2nh6VZkXAmY9J3joG+bJ8ErtgUtwulXMGCm
+         CmSj02PUg2CdmxyqxD8bgNUOYmAZt+i8H+kb/VSx1CVDivZMHwDUAoS7gN/00omwFuiS
+         lsOTXEkbsgr36bi+cASKUpC64vke+rRJTuGqyqnFmAIcGCtNb4ZFaO1Jmm9wP3Kiftis
+         +mZAKZszbs5DbJvpGpoK9jvMTO1TIkloriaKUI5/2/sq5pWnjz1YoPu4C/pMxBsBwo3M
+         mBXQ==
+X-Gm-Message-State: ANoB5pmWG/Zjr5IQ2S0PQw/ZT/zVYioDNgLBOyTKC9X3excoj6MDNT5q
+        iMxNlN3ATowpSkHewKXa7urbk5mpGaBe/p+ZJQE=
+X-Google-Smtp-Source: AA0mqf5sVZzpwOI/OrWl6jfoC7CJycymivCYIcl7+cDjueSpWkNFk2JqnZEQZDzQB0Yd6Fssyi7wWA==
+X-Received: by 2002:a67:ffcb:0:b0:3b1:48fc:e033 with SMTP id w11-20020a67ffcb000000b003b148fce033mr22907423vsq.2.1671221764858;
+        Fri, 16 Dec 2022 12:16:04 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id bq17-20020a05622a1c1100b00397e97baa96sm1888138qtb.0.2022.12.16.12.16.02
+        by smtp.gmail.com with ESMTPSA id dt20-20020a05620a479400b006fbf88667bcsm2105656qkb.77.2022.12.16.12.16.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Dec 2022 12:16:03 -0800 (PST)
+        Fri, 16 Dec 2022 12:16:04 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/8] btrfs: fix uninit warning in btrfs_cleanup_ordered_extents
-Date:   Fri, 16 Dec 2022 15:15:52 -0500
-Message-Id: <8224d05027554e265bb92bd4a7862950e6c7d224.1671221596.git.josef@toxicpanda.com>
+Subject: [PATCH 3/8] btrfs: fix uninit warning from get_inode_gen usage
+Date:   Fri, 16 Dec 2022 15:15:53 -0500
+Message-Id: <aa2e624f5626b37a267ea123baf7db2d76be41ee.1671221596.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1671221596.git.josef@toxicpanda.com>
 References: <cover.1671221596.git.josef@toxicpanda.com>
@@ -69,30 +69,39 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We can conditionally pass in a locked page, and then we'll use that page
-range to skip marking errors as that will happen in another layer.
-However this causes the compiler to complain because it doesn't
-understand we only use these values when we have the page.  Make the
-compiler stop complaining by setting these values to 0.
+Anybody that calls get_inode_gen() can have an uninitialized gen if
+there's an error.  This isn't a big deal because all the users just exit
+if they get an error, however it makes -Wmaybe-uninitialized complain,
+so fix this up to always init the passed in gen, this quiets all of the
+uninitialized warnings in send.c.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/send.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 905ea19df125..dfceaf79d5d4 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -228,7 +228,7 @@ static inline void btrfs_cleanup_ordered_extents(struct btrfs_inode *inode,
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 67f7c698ade3..25a235179edb 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -955,14 +955,12 @@ static int get_inode_info(struct btrfs_root *root, u64 ino,
+ static int get_inode_gen(struct btrfs_root *root, u64 ino, u64 *gen)
  {
- 	unsigned long index = offset >> PAGE_SHIFT;
- 	unsigned long end_index = (offset + bytes - 1) >> PAGE_SHIFT;
--	u64 page_start, page_end;
-+	u64 page_start = 0, page_end = 0;
- 	struct page *page;
+ 	int ret;
+-	struct btrfs_inode_info info;
++	struct btrfs_inode_info info = {};
  
- 	if (locked_page) {
+-	if (!gen)
+-		return -EPERM;
++	ASSERT(gen);
+ 
+ 	ret = get_inode_info(root, ino, &info);
+-	if (!ret)
+-		*gen = info.gen;
++	*gen = info.gen;
+ 	return ret;
+ }
+ 
 -- 
 2.26.3
 
