@@ -2,150 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C748264E4BF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Dec 2022 00:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4FD64E4F4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Dec 2022 01:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbiLOXjo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Dec 2022 18:39:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
+        id S229809AbiLPAGl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Dec 2022 19:06:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbiLOXjn (ORCPT
+        with ESMTP id S229667AbiLPAGk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Dec 2022 18:39:43 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941E833C38;
-        Thu, 15 Dec 2022 15:39:41 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJVDM-1pLRNB2W3U-00JqBI; Fri, 16
- Dec 2022 00:39:38 +0100
-Message-ID: <233175d4-b201-50b0-5356-b003d5bd3f93@gmx.com>
-Date:   Fri, 16 Dec 2022 07:39:34 +0800
+        Thu, 15 Dec 2022 19:06:40 -0500
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719355E0BD
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Dec 2022 16:06:37 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id DCBF75C0185;
+        Thu, 15 Dec 2022 19:06:36 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 15 Dec 2022 19:06:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm2; t=1671149196; x=1671235596; bh=naxmT6q+rWaUV3NIHp//FB5XU
+        Jy50xAyvdn5m5wzNyo=; b=I2AcwHzs7KXybdrqtra2NbaDPZP9R6quQreI4MVIC
+        QK15ArnQQqF0mX2bv5SUE2dx3ymDb/qO/xT/oseSmu/V4KGQYLTCtSPw+1sZj1zA
+        whWo8sHBBFlnOQgaKBTKRa5I+ifwnPGnKGuWJ+a6vsraQesar/OG25sLKrTtlGzr
+        VZ4HugLlyki1pYfk1TApWh3mxBaeeaLbCccRlXRxcfpqIVaBLd0rFJ+IJYEv8O3k
+        Kl1xAWNQmZe5qPCGfFG0sUq/ixwgizFUVWg5XHL272VMa52OGDbRHf+F1Us8ZqqS
+        0MPBqugpzcMVMQRborjQAUTgwZUcYM+RI2FpdpxcxxHCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1671149196; x=1671235596; bh=naxmT6q+rWaUV3NIHp//FB5XUJy50xAyvdn
+        5m5wzNyo=; b=S690H971Rq7KJsw6Lx4xsRLx7yoCD1JUvKuNHvEMcBaWb/ASbXy
+        uZustBBClltZEzK19GWjZjZssLbAbHIqQBkYMjlgO3uZ5ejQiFVATuedORbCfhMQ
+        tGu+t6A8zbFF7TN0j+2jZOFaAAKo0932WxLjVAXYpsX2MhsQT1T1jt/q2b6nr5IB
+        UQQ0KERc7wje/H/JBAcJSGg4/iSu2jk8ZJcKF8KEb3CSe0N5v6UZTHsbsrGsyIQ2
+        yBS9wr5SR8DfIJm20f+BOIQqkN6j+Ry8bkqfK7DXbNZy/3ZbKVCMXm4eAc3fXLYx
+        OSPm4My75uxZFDcj9UnZebDXc9mC/wcIdUg==
+X-ME-Sender: <xms:jLabYzgnircW2MxfT_YGt9oDNWnZi5-pbfJk4OQ8CO33yTxYb2id_w>
+    <xme:jLabYwAfpUSGkUIoz_NUX9XwNXBh0-h45v36i1nxWo-jt_JV1hzvMywRG-W9jOKu1
+    FZr7Fo2MvxiS1LqyvE>
+X-ME-Received: <xmr:jLabYzGLiB8ENRcnBr7oWS7YCEO_dkI0bO1WhaSBAuAJfjZUptTRZkBL>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeeigdduhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheq
+    necuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekuddute
+    efkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:jLabYwS2QC6fzirvfgVSSgL2vCWYuPEusKlHUH03ImGEygjEnD8V7Q>
+    <xmx:jLabYwzcCFUD_86mT1J4XlREDLmbUGqHCmEZvGncozh-WQ-GzRlpxw>
+    <xmx:jLabY24Vb-65_GnOPqlf_C2qnVIAY0dq5U2HU56hlkTuthPosiThng>
+    <xmx:jLabY2Z9b5QeZBqbhFavTRL5V7J7MOt4k-98pUsovWtGvvLWXTzXVQ>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 15 Dec 2022 19:06:36 -0500 (EST)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v4 0/5] btrfs: data block group size classes
+Date:   Thu, 15 Dec 2022 16:06:30 -0800
+Message-Id: <cover.1671149056.git.boris@bur.io>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [RFC PATCH] fstests: add basic json output support
-To:     David Disseldorp <ddiss@suse.de>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-References: <20221215114113.38815-1-wqu@suse.com>
- <20221215174252.031fcbba@echidna.fritz.box>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20221215174252.031fcbba@echidna.fritz.box>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:lo5Q1j73M1gG3l60JS9kKf7cmnhoOPVxjWQ6g14XLdWuonnqlGl
- sSiWmd77uqs6GcvNwkNle2G9GhpbOIpC4fUKGHBXq9YUpXAVrL8yyw3Winu8dvirjqoSsqa
- 9zKC639Gg8F9I/ioWjK2XJOnWP/2g39dVlJ43CnE5YltNgKCl6o6xAiq1pePywT/kEpP0Pm
- yA+d6AbkK6U81q1vt5bDg==
-UI-OutboundReport: notjunk:1;M01:P0:2oV9T2jv320=;JS5oP5c28SFRAdNZ7PpUyRO5yIf
- oc2Jn2NT8f8dX1g6qpAwARSXJLnouH+Al/8/amNa6DAOWUNT8mFreEIepI9mtmCxyLzFQIf+k
- 8MpfzSk7MA73C5YoN2Wz0iXG2fBZnKx3yCVfibillFk+9ny+InjMpi1Rs8RrEyQDxbZw1SrAE
- LN2+4dY+hiPUvHxV0mOmd6xQTZvOkDWNctUmzZro+y8JuHNdLsuBMeoWf5kYycm7jwgsZOmhI
- 2bnWj2Y19Uji62wjjTMLTHzU+XYsSt8R/kUAsh88BXF6BbNtRw4IfrYLrFFpqy4tBXokpf/c5
- ticEvvOeEstLZUX28u4g0q8h//Ee1BLHJvjLHPFSw/PEtOmcTCSRLM+wtot4h9bTyoHWeFDQR
- dH845BYAw8Lp99k2eypWGD7Svm/hHimeTsQ0nI8TJjv/RYus6vABWo8PRkJCd2Dtc/TSTmqpZ
- acZJpM2HxwJzdvhq5bh+h5lf1Q74h/Xph3JetbdRzjaXzdmNIwWaVQaDdemwhKYXNbd0A5cKe
- xtMgIPokDL6ncIsQbXoEDQujczZP6oihQKs30c9nedgIsaYJQOG6kJ4QshWP27PuAi5n7i8BJ
- zjDGbM0K+3A653Iq2SD7CSqPvlls47S/Np6n6tj7loMLnr1XRifRSs+s7RSYtZRSEK1Cc6MPC
- VRW4XyfdogMGq1TJWCwDW8ukOfvRFtwX8K0ODjvGX/5lTGY+87uT25k4zySzm9G5mQ9D68arx
- 80vUcKzFJJVGJ8f9AjPmV5qXkrr+lDkh8F86rrLn6/E2Gu3sBogDdpmFs190OyIutR4+NTFQP
- kIvvH52JcxW/1LbZrjPz/gl3acm+1+ifdLc8DT3+F/vXxFgV35JG8FXjwramgKSFR5rfr6yY0
- tbl5QfyOAzsLvKaYlUgblKWJWIluNEHi83ZUUrHo/oBDuEZXVpkF7izIMcpZfut6z5hpe+Dpt
- xz2M6E51VoOcy9RfVAk9l8Waoqs=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This patch set introduces the notion of size classes to the block group
+allocator for data block groups. This is specifically useful because the
+first fit allocator tends to perform poorly when large extents free up
+in older block groups and small writes suddenly shift there. Generally,
+it should lead to slightly more predictable allocator behavior as the
+gaps left by frees will be used by allocations of a similar size.
+
+Details about the changes and performance testing are in the individual
+commit messages.
+
+The last two patches constitute the business of the change. One adds the
+size classes and the other handles the fact that we don't want to
+persist the size class, so we don't know it when we first load a block
+group.
+
+The final patch is a tweak to skip zoned fs-es which is particularly
+meaningful for ZNS.
+---
+v4:
+- add patch to skip zoned fs
+v3:
+- fix double newline in extent-tree.h
+- fix ctree.h include in extent-tree.h refactor
+v2:
+- removed 1G falloc extents patch
+- rebased tracepoints patches onto significant header file refactor
 
 
-On 2022/12/16 00:42, David Disseldorp wrote:
-> Hi Qu,
-> 
-> On Thu, 15 Dec 2022 19:41:13 +0800, Qu Wenruo wrote:
-> 
->> Although the current result files "check.log" and "check.time" is enough
->> for human to read, it's not that easy to parse.
-> 
-> Have you looked at the existing junit XML based report types, available
-> via "check -R xunit ..."? junit is standardized, parsable and supported
-> by tools such as:
-> - https://docs.gitlab.com/ee/ci/testing/unit_test_reports.html
-> - https://github.com/weiwei/junitparser
-> - https://ddiss.github.io/online-junit-parser/
-> - https://plugins.jenkins.io/junit/
+Boris Burkov (5):
+  btrfs: use ffe_ctl in btrfs allocator tracepoints
+  btrfs: add more ffe tracepoints
+  btrfs: introduce size class to block group allocator
+  btrfs: load block group size class when caching
+  btrfs: dont use size classes for zoned file systems
 
-Oh, that's way better, the existing reporting facility is really what I 
-need.
+ fs/btrfs/block-group.c       | 243 ++++++++++++++++++++++++++++++++---
+ fs/btrfs/block-group.h       |  16 ++-
+ fs/btrfs/extent-tree.c       | 167 +++++++-----------------
+ fs/btrfs/extent-tree.h       |  81 ++++++++++++
+ fs/btrfs/super.c             |   1 +
+ fs/btrfs/zoned.c             |   2 +
+ include/trace/events/btrfs.h | 128 ++++++++++++++----
+ 7 files changed, 479 insertions(+), 159 deletions(-)
 
-> 
->> Thus this patch will introduce a json output to "$RESULT_BASE/check.json".
->>
->> The example output would look like this:
->>
->>    {
->>        "section": "(none)",
->>        "fstype": "btrfs",
->>        "start_time": 1671103264,
->>        "arch": "x86_64",
->>        "kernel": "6.1.0-rc8-custom+",
->>        "results": [
->>            {
->>                "testcase": "btrfs/001",
->>                "status": "pass",
->>                "start_time": 1671103264,
->>                "end_time": 1671103266
->>            },
->>            {
->>                "testcase": "btrfs/006",
->>                "status": "pass",
->>                "start_time": 1671103266,
->>                "end_time": 1671103268
->>            },
->>            {
->>                "testcase": "btrfs/007",
->>                "status": "pass",
->>                "start_time": 1671103268,
->>                "end_time": 1671103271
->>            }
->>        ]
->>    }
->>
->> Which should make later parsing much easier.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> Reason for RFC:
->>
->> - Not crash safe
->>    If one test case caused a crash, the "check.json" file will be an
->>    invalid one, missing the closing "] }" string.
->>
->> - Is json really a good choice?
->>    It may be much easier to convert to a web page, but we will still
->>    need to parse and handle the result using another languages anyway,
->>    like to determine a regression.
-> 
-> I'm not opposed to adding an extra json report type, but I really think
-> it should be plumbed into the existing common/report API.
-> 
->>    Another alternative is .csv, and it can be much easier to handle.
->>    (pure "echo >> $output", no need to handle the comma rule).
->>    But for .csv, we may waste a lot of columes for things like "arch",
->>    "kernel", "section".
-> 
-> My preference for any new output formats, especially if they're intended
-> for parsing, is that they're based on an existing standard/tool. E.g.
-> https://testanything.org .
+-- 
+2.38.1
 
-That's a much better unified protocol, I'll definitely look into it.
-
-Thanks for all the feedbacks!
-Qu
-
-> 
-> Cheers, David
