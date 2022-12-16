@@ -2,56 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB8664F556
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Dec 2022 00:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3189264F560
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Dec 2022 00:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbiLPXvX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Dec 2022 18:51:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
+        id S229962AbiLPX4H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Dec 2022 18:56:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbiLPXvW (ORCPT
+        with ESMTP id S229548AbiLPX4G (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Dec 2022 18:51:22 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B882BD6
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 15:51:19 -0800 (PST)
+        Fri, 16 Dec 2022 18:56:06 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714E3240BD
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 15:56:04 -0800 (PST)
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N8XPt-1ot78i47Ob-014XX7; Sat, 17
- Dec 2022 00:51:14 +0100
-Message-ID: <4b75ddb6-b53f-810f-3b59-347a91fa96f2@gmx.com>
-Date:   Sat, 17 Dec 2022 07:51:10 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0oBx-1ojAuB29eH-00wnNZ; Sat, 17
+ Dec 2022 00:55:59 +0100
+Message-ID: <6e0313f1-fb8d-808a-3489-9bee83990bea@gmx.com>
+Date:   Sat, 17 Dec 2022 07:55:55 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
-Subject: Re: [PATCH] btrfs: fix uninitialized return value in raid56 scrub
- code
+Subject: Re: [PATCH 0/8] Fixup uninitialized warnings and enable extra checks
+Content-Language: en-US
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-References: <df5b246d7aa5c8eb382b1e06c7bcf7a7f2fd9d59.1671209272.git.josef@toxicpanda.com>
-Content-Language: en-US
+References: <cover.1671221596.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <df5b246d7aa5c8eb382b1e06c7bcf7a7f2fd9d59.1671209272.git.josef@toxicpanda.com>
+In-Reply-To: <cover.1671221596.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:ZjywNe210X2f/KOWic6L/oVSjbY9YcxN/AKUo75m9omqYHxre9n
- NSQiMxm84syYD3TgYOLFoTAu6CmvYLj9Yxh75eXaRUp1B6XdefZCrAXVf85Di4F1BysdHNO
- cBWMOJYi+3l/w3yj0r52MfkRw2yOOPrtuv5N8yR8YgjFzIGvaUkvv1lDsHHzIK7NRmZ1L/z
- AMW5xCfDC6hr/S3fUigLQ==
-UI-OutboundReport: notjunk:1;M01:P0:G/eFITpNytY=;UWTZpylwaCcOZMYeP1qWiGilqf7
- bdeddV6ayH9gpYXV3jxCg56HYLOOWQS4Ik0kyhRMl8q+C1+skpVMf4+hEIoIm4Y3Clcmqrc6O
- mrio2q9sfk8Iid6wBfWpuZVf+2R7XmkooLC8ZWy1JIrmNN8ZnnwA/O4rd5AJY5gB03XyS7tY8
- 05fVFsdJgsaU2ZP3KM0TPj2THe1o0AIaXftuKOZP//T7az/Csg2kbaoOnSwmuTDDV/456CrwP
- hMJhAEwLgLJgOLsGv6BiRzSC+YDA4a1lQao41++4lIB1sABcQ0ZsqWZEOrUeuH3u6Ai2ORtgU
- bnmIZDHqEpHt3rstWwIPXCcOk2j5Ou7D2Ig8rY0/x9UBUbEL8kMUFX6t5bYqUfqhNrfoNyrUo
- J39ZqaCSlyiKI9KT/TYzW9ZidSJ5EkUY8bWrz/j7LUaEcMrnhKiuLDEj+zg4U9Wuk35RWhHJ4
- kGXLnTEU91AtVRo+JRQBkMwv3OCoiTLT82xR7ssCCSm06aIv2ml7QlMHqosdUfbOdQAmIG24d
- Z9VQwLxhenlvCIVSzB1JwvzbFjDWBtFOMtF5nagnCke6gLoEAZK0dFKwYCn5AE0KgDjkBkcpT
- XPBT7/cDI8n4+2k0TmQ+xXi4Kw/6Np+spva37sQavNxHHiUPKaKYNQhKWD0IQ/nR+BZJEASjA
- mX+7Aa+F34iGT4pF85IeXlKypWmhhhXg0netrndTLp4YecBN/WvgWKcPu/RAxEwYmHDVLLjwJ
- 9OP5cApTehwMYsPas7G3M0Wu7Z7yR5zTHc3MU4+GMeP+dAma8ioGIdvESNC37GQCDLxFtPTlm
- ecJ3Yct78L61VhZEvBLSXZIML32T2cDerv/ADTR8H/CO2rVJSWx5eNrzmsrCkK9IgNMPG4N/3
- jQX60ZtEywtJYCyd3TUSUFR6A8jDi91Xfq45/BmVWtdr02KcSbsAwKtDkIy74okFgkw+OhQn/
- j1R1KhVrQJnEziF87EWAEllvoWE=
+X-Provags-ID: V03:K1:DnfDCsiy2PNuG+feCf+7+7knzvevRAnRACYZma0vflKlqunRcXY
+ Q9eGtz0eQDslZinE8PDF/R490EJfFZtutNqFy6st0GK3HiUWJHWlv87tnDa8jAC7KM2KFGa
+ LbXxrsjOOfp3W9msb8VFR5+e98EuE3XjnunNAGcPdluiy6Dl9CKa8ylv4NAGc20V/3zuvjI
+ vaGWA2oQKTL4VxbtUVmbA==
+UI-OutboundReport: notjunk:1;M01:P0:vKf39LrZP0k=;naKqkdBxeikk0wThfkPnFrt6i1i
+ fizJdXO4D5U/bV1lNQHPe6t6y8rlFH2YTXkQv99R3vdKgopMtYjIRW6Kj2jWiT+H4YhWG3j4+
+ OMb4WpddTqGSdowduRbqJy32u2KySBSC4EMJYT9iiDuyzKkGzfo+UieOYrPrYwBkglK0joSzy
+ omYQTlXFj0zsz5rCGY+sB7qdStGsnV23LrVc0sAZC3GDe9oXnKU3IvlQoK4Wde5rryWmLlcA/
+ qP4nD+MNsVWzHWBMtI8uDIVWpJQo34cb0UGJczFihkd5Y53eZsF+rlIOBwBhflqjdVPlBrrqv
+ z5Z/CwFOt0ki/1ke0jVOBncCl6iBGhZuH10DdNPSpj5WmXZL068Rc5c41NewYf4cvfiDdaxDi
+ zC/AZlRe56PtlmenuaQaQ72c+s1JktlS93X9ROZkxX8ak3yjQPtYn00DAMsOIVXJks8ZY/NFS
+ yP0g9ogCLptA5pLbnhBXptUWlsL6wpTPRs7qrWZeCSItRI5Mhqlq3Z+/vpydDvxPnSNaW50JT
+ hYhJfKjqbariXC+Mpu2TFmzdPugs9Hn73jccmXRymGkGM8DouQkO+g9b8ew8C04Z/tBM11UQC
+ VKc+3C+BEzSe8IYUpGMkRU/j8lIInDPeoqWdwn3aOdakFbTic86l16VASk/qWZ2eB/S0CpdMm
+ w4mq6cbr2DwgBPLQWj3EszoCvCOy4Wpx5vahl+KeguMx2vJLmI8oQ9cpg7WEnvvIETcKhGJ9d
+ KeJq6u3+ZKT0KSwvK9i4gsLqwqhfHruNtIgFpfq+w/UlBcxe/jk2f88cjLBsb77V4jXoM7usA
+ ogY4bbycqQ024aUdspR4aZA126s0fu56CxWvKMoJCOTbAh24TYQTcQWZWunVGJrtt5ptsp8Vy
+ 3tVfj0S2MafaZszc8ASh3D0JkSnbSp52Ya/OcWIi0cj8ZT2UOPuJHCmen3L530Gf3cAfVhO0c
+ YyTlRbv95XsEAkffwWl7bONGSz8=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,48 +62,53 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2022/12/17 00:48, Josef Bacik wrote:
-> Fixes: 75b470332965 ("btrfs: raid56: migrate recovery and scrub recovery
-> path to use error_bitmap") introduced an uninitialized return variable.
-> I'm not entirely sure why this wasn't caught by the compiler, but I
-> can't get any combination of compiler flags to catch it for us.  We have
-> been failing the raid56 scrub tests since this patch was merged, however
-> I assumed it was a progs related thing that I was missing and didn't
-> look into it until recently.  Initialize this value to 0 so we don't
-> errantly report scrub errors for raid56.
+On 2022/12/17 04:15, Josef Bacik wrote:
+> Hello,
 > 
-> Fixes: 75b470332965 ("btrfs: raid56: migrate recovery and scrub recovery path to use error_bitmap")
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> We had been failing the raid56 related scrub tests on our overnight tests since
+> November.  Initially I asked Qu to look into these as I didn't have time to dig
+> in, and he was unable to reproduce.  I assumed it was some oddity in my setup,
+> so I ignored it.  However recently I got a report that I regressed some of these
+> tests with an unrelated change.  When debugging it I found it was because of an
+> uninitialized return value, which would have been caught by more modern gcc's
+> with -Wmaybe-uninitialized.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Any clue which patch is fixing the raid0/raid1 scrub failures?
 
-All my bad.
+As locally, I found my aarch64/x86_64 VMs are all reporting scrub errors 
+for all profiles, including RAID0/RAID1.
+(The failure happens after patch "btrfs: do not check header generation 
+in btrfs_clean_tree_block").
 
-Didn't notice that if there is no found errors, then @ret is never 
-initialized.
-
-I'm surprised my configs (for both aarch64 and x86_64) are not hitting 
-the problem for a long time.
-
-Maybe something config or toolchain setup is setting all stack values to 
-zero here?
+I didn't notice any of the patches touching the scrub path, or is there 
+some hidden paths involved?
 
 Thanks,
 Qu
-> ---
->   fs/btrfs/raid56.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+
 > 
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index 2d90a6b5eb00..6a2cf754912d 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -2646,7 +2646,7 @@ static int recover_scrub_rbio(struct btrfs_raid_bio *rbio)
->   	void **pointers = NULL;
->   	void **unmap_array = NULL;
->   	int sector_nr;
-> -	int ret;
-> +	int ret = 0;
->   
->   	/*
->   	 * @pointers array stores the pointer for each sector.
+> In order to avoid these sort of problems in the future lets fix up all the false
+> positivies that this warning brings, and then enable the option for btrfs so we
+> can avoid this style of failure in the future.  Thanks,
+> 
+> Josef
+> 
+> Josef Bacik (8):
+>    btrfs: fix uninit warning in run_one_async_start
+>    btrfs: fix uninit warning in btrfs_cleanup_ordered_extents
+>    btrfs: fix uninit warning from get_inode_gen usage
+>    btrfs: fix uninit warning in btrfs_update_block_group
+>    btrfs: fix uninit warning in __set_extent_bit and convert_extent_bit
+>    btrfs: extract out zone cache usage into it's own helper
+>    btrfs: fix uninit warning in btrfs_sb_log_location
+>    btrfs: turn on -Wmaybe-uninitialized
+> 
+>   fs/btrfs/Makefile         |  1 +
+>   fs/btrfs/block-group.c    |  2 +-
+>   fs/btrfs/disk-io.c        |  2 +-
+>   fs/btrfs/extent-io-tree.c |  8 ++---
+>   fs/btrfs/inode.c          |  2 +-
+>   fs/btrfs/send.c           |  8 ++---
+>   fs/btrfs/zoned.c          | 75 ++++++++++++++++++++++++---------------
+>   7 files changed, 57 insertions(+), 41 deletions(-)
+> 
