@@ -2,106 +2,191 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4547764F6F0
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Dec 2022 03:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0AD64F6F5
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Dec 2022 03:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbiLQCGT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Dec 2022 21:06:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
+        id S230148AbiLQCKh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Dec 2022 21:10:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbiLQCGR (ORCPT
+        with ESMTP id S229488AbiLQCKf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Dec 2022 21:06:17 -0500
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE69410073;
-        Fri, 16 Dec 2022 18:06:16 -0800 (PST)
-Received: by mail-qt1-f175.google.com with SMTP id g7so4227046qts.1;
-        Fri, 16 Dec 2022 18:06:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZKc6CEuQzPI93BCDJ+XZTxYCZmLQ7juv1HMMaSYki58=;
-        b=DVfYOLBn8HZAISjW1goeKXgobVNs0oC6WDP9AT4P/+dbdMrLK0payuarSgePDlSg+4
-         8HScN1+I74ha7xavA1IKQKvgxKKpIGYg+D6nRXAJCQ/S0mrzxxbRtEVVndsB5cWe4JC3
-         oxKzuw2YBNn7sh+Z2zUDPoIeuDkmwlUmelq7cWstr1MrpD2WDFMd0w07eZx6sVWYNmeg
-         oDwJQmx1OXnzrBrmV5AfTjIurNrKexJc2LtufPcGeuLE73UcAW/J31xrRVfj8PbRYSm9
-         JYbAbonP5mON2aLxzyhLfdQJXPpkS/hzjEUrYOf+5510JVQ0R3ghgSLkl2o1jk1knu+m
-         CFYQ==
-X-Gm-Message-State: ANoB5pmbbhe0hRpqsr2K5+p81eacFMxUdGlAla5/770fyBCEk1lO0m8V
-        tC25wSEpwJQ9PWPdT3WMNnOq0KUD477jkw==
-X-Google-Smtp-Source: AA0mqf4rXy848Ygy5vtZRG6Ebev54YNctwJPnNvrFcHN8DVf3xCvxM4gu5VtZyW8WyPAfXMtFzOOfQ==
-X-Received: by 2002:ac8:7ef2:0:b0:3a8:20e:2bb with SMTP id r18-20020ac87ef2000000b003a8020e02bbmr41297785qtc.6.1671242775900;
-        Fri, 16 Dec 2022 18:06:15 -0800 (PST)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id h5-20020ac87145000000b003a69225c2cdsm2284945qtp.56.2022.12.16.18.06.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Dec 2022 18:06:15 -0800 (PST)
-Received: by mail-yb1-f181.google.com with SMTP id d128so4244927ybf.10;
-        Fri, 16 Dec 2022 18:06:15 -0800 (PST)
-X-Received: by 2002:a25:bac8:0:b0:6d8:186:aac8 with SMTP id
- a8-20020a25bac8000000b006d80186aac8mr88282764ybk.23.1671242775020; Fri, 16
- Dec 2022 18:06:15 -0800 (PST)
+        Fri, 16 Dec 2022 21:10:35 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779B720183
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 18:10:33 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MPGRp-1pG4uU2oJB-00PfQY; Sat, 17
+ Dec 2022 03:10:28 +0100
+Message-ID: <6f22220e-f660-92d2-5241-fb9a353090ac@gmx.com>
+Date:   Sat, 17 Dec 2022 10:10:24 +0800
 MIME-Version: 1.0
-References: <20221208033523.122642-1-ebiggers@kernel.org> <CAMw=ZnQUmeOWQkMM9Kn5iYaT4dyDQ3j1K=dUgk9jFNcHPxxHrg@mail.gmail.com>
- <Y5zd6ucBc20CV7Le@sol.localdomain>
-In-Reply-To: <Y5zd6ucBc20CV7Le@sol.localdomain>
-From:   Luca Boccassi <bluca@debian.org>
-Date:   Sat, 17 Dec 2022 02:06:04 +0000
-X-Gmail-Original-Message-ID: <CAMw=ZnS5mXpQYtGHEK7-Q-VEojhooXiQVsGPT3e8NCW8uxnWyA@mail.gmail.com>
-Message-ID: <CAMw=ZnS5mXpQYtGHEK7-Q-VEojhooXiQVsGPT3e8NCW8uxnWyA@mail.gmail.com>
-Subject: Re: [PATCH] fsverity: don't check builtin signatures when require_signatures=0
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-btrfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1670451918.git.josef@toxicpanda.com>
+ <ef73c4c67028f9e7d770dca236367f1ea0b56b55.1670451918.git.josef@toxicpanda.com>
+ <0507a942-2a82-f086-2be5-a9ac64e4c1d3@gmx.com>
+Subject: Re: [PATCH 2/8] btrfs: do not check header generation in
+ btrfs_clean_tree_block
+In-Reply-To: <0507a942-2a82-f086-2be5-a9ac64e4c1d3@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:l58ebM2c+8dFt3pvBKPQBE+VJCf2N/PiPO9WNj3y1Y7m62NxDtX
+ SulcSsiGc67IjqhOh6RfB1/+UKH3EZXW3WeDLryWpsRAX/B3nmrSlMBNa57kJVmylzNU/Og
+ cDdVyV2xaCWdPioSXWEiUhDIVoxKG+NWm0ryPf93iOUn243ANzwkJBKt3yvrRvflDjp5f9u
+ xQ8U6OlomkmSdgpwABieg==
+UI-OutboundReport: notjunk:1;M01:P0:maB8ZGzTeL8=;RuoOuIt0rtI6X2W4lS/lC8Cob24
+ xKdn9DjZpqa7AfNmJLNssuwdBSOBu1NNlIepSNYSh8CDcvrXkX8XT3vv8Qp58gYXwKbYAVaWi
+ 772j4mOdn2ahSHNVEcZ6RLn2rG2O+J2yMTSXZBneAqFDH4Wop6CXOJEBYIWvAb+plCzBWggqO
+ u5IliKu0BW/uvlpVvSBxh8r3u+Lr8762bkZx8RMFGKN7rNeLD0TBAmuVOgwWqmZghapxE7MUE
+ cBDimx5lUQ4m50GGWeO/YUvG+ocrdu4gEZ8aTaHUdrVZ09dnjvZ3SEO7fvx8p+qfzMEijhkP2
+ CfjtiBOmycAUYFCpHPRfqMITTd6xOlps6OaAS50/VS9Mc9zcSdGi1L5BsvBhpnjXzJ8JkNu3w
+ DX0p77KwEUMQWG4PqggiqXVYc0SPS/rYJJMpEdSJ411pnmYxedZwpmjPEFgZMRFnbYCKVUdaF
+ w0YCgkBovcpryN2vWZtx3EtY794ROkh4zgqJ9d2oY2REzd1M47zE2XJ+CJQd43vh1eaTL2ZPY
+ qPwSDB9HQcH8uDurlkUXeYvkZujvLenEUSVKcO16m9pM7IpXZ85kZNXx1GgxGHvwhs8Kb1kf5
+ b3hqhGhCc8ASMKATUp9c6O3YcGN/ASKRGTYANySbDKqOx00NWlsVwWmgAhJKp6cWD9PPe3umH
+ wuKnNiZO+ufANW9JEw8faUsm1p8koXpqdeaMLoOgKP8xhTMMZSqvqCFZmpDD85PnnoV8UHi/W
+ S14AzGuxcK6yFhdp3cT4L/+4h5M51c91Nrr6cdB3yDCAco4C1pIrL44EwOUfdrJJ3JftJHdsM
+ Dt524/m4SVT6p0EGViTl/m2kUwTsC/Jf4bhQeMTp/6QtcIijlgJ7Rx4LFPQSsEcytPGICUfc8
+ X+8z5+93G8s0n/u8QqJICm2P6VX5/J0DQ5rp47YjyncBKOKQ+ofnUsVBm/zgLDfiojWcVlzZV
+ eos4fTEmBxyigACmrnB3XLjLLNw=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 16 Dec 2022 at 21:06, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Thu, Dec 08, 2022 at 08:42:56PM +0000, Luca Boccassi wrote:
-> > On Thu, 8 Dec 2022 at 03:35, Eric Biggers <ebiggers@kernel.org> wrote:
-> > >
-> > > From: Eric Biggers <ebiggers@google.com>
-> > >
-> > > An issue that arises when migrating from builtin signatures to userspace
-> > > signatures is that existing files that have builtin signatures cannot be
-> > > opened unless either CONFIG_FS_VERITY_BUILTIN_SIGNATURES is disabled or
-> > > the signing certificate is left in the .fs-verity keyring.
-> > >
-> > > Since builtin signatures provide no security benefit when
-> > > fs.verity.require_signatures=0 anyway, let's just skip the signature
-> > > verification in this case.
-> > >
-> > > Fixes: 432434c9f8e1 ("fs-verity: support builtin file signatures")
-> > > Cc: <stable@vger.kernel.org> # v5.4+
-> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > > ---
-> > >  fs/verity/signature.c | 18 ++++++++++++++++--
-> > >  1 file changed, 16 insertions(+), 2 deletions(-)
-> >
-> > Acked-by: Luca Boccassi <bluca@debian.org>
->
-> So if I can't apply
-> https://lore.kernel.org/linux-fscrypt/20221208033548.122704-1-ebiggers@kernel.org
-> ("fsverity: mark builtin signatures as deprecated") due to IPE, wouldn't I not
-> be able to apply this patch either?  Surely IPE isn't depending on
-> fs.verity.require_signatures=1, given that it enforces the policy itself?
 
-I'm not sure what you mean? Skipping verification when this syscfg is
-disabled makes sense to me, as you noted it doesn't serve any purpose
-in that case.
 
-Kind regards,
-Luca Boccassi
+On 2022/12/16 13:32, Qu Wenruo wrote:
+> 
+> 
+> On 2022/12/8 06:28, Josef Bacik wrote:
+>> This check is from an era where we didn't have a per-extent buffer dirty
+>> flag, we just messed with the page bits.  All the places we call this
+>> function are when we have a transaction open, so just skip this check
+>> and rely on the dirty flag.
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> This patch is failing a lot of test cases, mostly scrub related 
+> (btrfs/072, btrfs/074).
+> 
+> Now we will report all kinds of errors during scrub.
+> Which seems weird, as scrub doesn't use the regular extent buffer 
+> helpers at all...
+> 
+> Maybe it's related to the generation we got during the extent tree search?
+> As all the failures points to generation mismatch during scrub.
+
+I got some extra digging, and it turns out that, if we unconditionally 
+clear the EXTENT_BUFFER_DIRTY flags, we can miss some tree blocks 
+writeback for commit root.
+
+Here is some trace for one extent buffer:
+
+     btrfs_init_new_buffer: eb 7110656 set generation 13
+     btrfs_clean_tree_block: eb 7110656 gen 13 dirty 0 running trans 13
+     __btrfs_cow_block: eb 7110656 set generation 13
+
+Above 3 lines are where the eb 7110656 got created as a cowed tree block.
+
+     update_ref_for_cow: root 1 buf 6930432 gen 12 cow 7110656 gen 13
+
+The eb 7110656 is cowed from 6930432, and that's created at transid 13.
+
+     update_ref_for_cow: root 1 buf 7110656 gen 13 cow 7192576 gen 14
+
+But that eb 7110656 got CoWed again in transaction 14. Which means, eb 
+7110656 is no longer referred in transid 14, but is still referred in 
+transid 13.
+
+     btrfs_clean_tree_block: eb 7110656 gen 13 dirty 1 running trans 14
+
+Here inside update_ref_for_cow(), we clear the dirty flag for eb 7110656.
+
+This has a consequence that, the tree block 7110656 will not be written 
+back, even it's still referred in transid 13.
+
+This is where the problem is, previously we will continue writing back 
+eb 7110656, as its transid is not the running transid, meaning some 
+commit root still needs it.
+
+Especially note that, I have added trace output for any tree block write 
+back (in btree_csum_one_bio()).
+But there is no such trace, meaning the tree block is never properly 
+written back.
+
+This also exposed another problem, if we didn't properly writeback tree 
+blocks in commit root, we break COW, thus no proper transactional 
+protection for our metadata.
+
+     scrub_simple_mirror: tree 7110656 mirror 1 wanted generation 13
+                          running trans 14
+     scrub_checksum_tree_block: tree generation mismatch, tree 7110656
+                                mirror 1 running trans 14, has 15 want 13
+     scrub_checksum_tree_block: tree generation mismatch, tree 7110656
+                                mirror 0 running trans 14, has 15 want 13
+
+The above lines just shows the scrub failure for it.
+As the tree block is not properly written back, we just read out some 
+garbage.
+
+And unfortunately our scrub code only checks bytenr, then generation, 
+not even checking the fsid, thus we got the generation mismatch error.
+
+     ...
+     btree_csum_one_bio: eb 7110656 gen 26
+
+There is an example to prove that, I have added tree block writeback 
+trace event.
+
+Thus I'd prefer to have at least a comment explaining why we can not 
+just clean the dirty bit for a dirty eb which is not dirtied during the 
+current running transaction.
+
+Thanks,
+Qu
+
+
+> 
+> Thanks,
+> Qu
+> 
+>> ---
+>>   fs/btrfs/disk-io.c | 15 ++++++---------
+>>   1 file changed, 6 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index d0ed52cab304..267163e546a5 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -968,16 +968,13 @@ struct extent_buffer *read_tree_block(struct 
+>> btrfs_fs_info *fs_info, u64 bytenr,
+>>   void btrfs_clean_tree_block(struct extent_buffer *buf)
+>>   {
+>>       struct btrfs_fs_info *fs_info = buf->fs_info;
+>> -    if (btrfs_header_generation(buf) ==
+>> -        fs_info->running_transaction->transid) {
+>> -        btrfs_assert_tree_write_locked(buf);
+>> +    btrfs_assert_tree_write_locked(buf);
+>> -        if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &buf->bflags)) {
+>> -            percpu_counter_add_batch(&fs_info->dirty_metadata_bytes,
+>> -                         -buf->len,
+>> -                         fs_info->dirty_metadata_batch);
+>> -            clear_extent_buffer_dirty(buf);
+>> -        }
+>> +    if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &buf->bflags)) {
+>> +        percpu_counter_add_batch(&fs_info->dirty_metadata_bytes,
+>> +                     -buf->len,
+>> +                     fs_info->dirty_metadata_batch);
+>> +        clear_extent_buffer_dirty(buf);
+>>       }
+>>   }
