@@ -2,94 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B49964F61A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Dec 2022 01:24:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5490E64F6EA
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Dec 2022 03:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbiLQAYF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Dec 2022 19:24:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
+        id S229979AbiLQCEV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Dec 2022 21:04:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230452AbiLQAXd (ORCPT
+        with ESMTP id S229480AbiLQCET (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Dec 2022 19:23:33 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D3482DC4
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 16:18:24 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N9dsb-1os1ap13av-015dAS; Sat, 17
- Dec 2022 01:18:19 +0100
-Message-ID: <dc3edf3b-a287-69d0-d6d3-4b6704dda30a@gmx.com>
-Date:   Sat, 17 Dec 2022 08:18:15 +0800
+        Fri, 16 Dec 2022 21:04:19 -0500
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DF376154;
+        Fri, 16 Dec 2022 18:04:15 -0800 (PST)
+Received: by mail-qv1-f43.google.com with SMTP id mn15so2771528qvb.13;
+        Fri, 16 Dec 2022 18:04:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tcPbsVl3cOtu0VxF4tk4pBw4lW90yLxGMNm2VAvKhL8=;
+        b=J6uz71edS7BwoLIaz6cEpiN40nTGoWaJ7x7TsY++DPTN30+i33IWcEKpC9PLgjqrut
+         Dy4gxn02n9wxG+WNZK9ZPFU7wIg3MGOMbcdzWbOZPN3TTLGv77VbYeHYsz763o2B22py
+         fV9yed1swbEItfNMHhIj+chkrJRSO+A9tNtr7Bv6zZ1tJIirXkoZYSK3tkscJB+QKdn3
+         DJPXN7R5V6mWP1PKhHmbsOHChNNwdraGgEu6x4UZ6usilhbqfU2CFb2Ytvr/Q2fOTtGP
+         kL8R+BgHoz9o1FRaH9NuPWfGB3A+J3Xv6MwRC0rxEre29JI6ZvKP0VYgXLxBvlQschK1
+         dY0g==
+X-Gm-Message-State: ANoB5pluRdz9WwMbSRCXxSSxclXjVfNSC4g2/IA7ipo8UxdvzGhKlf5d
+        FLPuKx3+jah1IIzJJxmF2z6s/Jut4De4Wg==
+X-Google-Smtp-Source: AA0mqf5aAXsvv8vJun6600GLa/coLhNBpiTcukP+zw0WKaJvoU4j5Zi0NnFK1StacY60Pl86dVHVFg==
+X-Received: by 2002:a0c:fde3:0:b0:4bc:176f:a516 with SMTP id m3-20020a0cfde3000000b004bc176fa516mr40541992qvu.8.1671242654789;
+        Fri, 16 Dec 2022 18:04:14 -0800 (PST)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id w22-20020a05620a0e9600b006fab416015csm2617330qkm.25.2022.12.16.18.04.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Dec 2022 18:04:14 -0800 (PST)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-3bf4ade3364so57135927b3.3;
+        Fri, 16 Dec 2022 18:04:13 -0800 (PST)
+X-Received: by 2002:a81:ff06:0:b0:3ab:6ff4:a598 with SMTP id
+ k6-20020a81ff06000000b003ab6ff4a598mr7952254ywn.425.1671242653731; Fri, 16
+ Dec 2022 18:04:13 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH 8/8] btrfs: turn on -Wmaybe-uninitialized
-Content-Language: en-US
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1671221596.git.josef@toxicpanda.com>
- <1d9deaa274c13665eca60dee0ccbc4b56b506d06.1671221596.git.josef@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <1d9deaa274c13665eca60dee0ccbc4b56b506d06.1671221596.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:HwPDaiSAKVzDs4jZcRei1BrT+h/apds7uXQNHrWZA4OtSNKGEwz
- t/qlMdGACrbD7LyPxCI5+AAcHpW5SBIqZRC+YqTkHOVF0Q2Odx9fJpwjoO6VUA6bilqkxfK
- TLfyeYPuD7ND+nFv3UPCSrjSIXhJAcTl9oBPoJV1rElIpva9Hu7tbjA3heVtuEVGD1Wq58T
- DmMuI9W2A3r7arGvqoG7Q==
-UI-OutboundReport: notjunk:1;M01:P0:nj2s9ASTNNw=;r9o+CWVLbqHP5V8z42KpZOeUk3S
- R1zQ34GtDGbW68ezBgBwy5XbLNTcepjLLsGUDfcN78qfbSLW1BcGaR/LTFc3elpYEk8XfyJWV
- P01t1IW5zzbWGYwD31pGBWBYMjx5e20BsQNlffPLHOcgd401Lo5vdfkdT2fAl343BrODdrJL1
- qP0RZ7Ixk18D2fgL6RQkiZivC2Ibq3oDjx6giL3vhhVM8czTFZK7Sa7EQYpPDHID5/+RfZjAY
- fpPGerZ5A8Cem4+o31uWznxpeWFjdHnvId/RWlVQ4L9DCQO1EWgnVCK1tsW31yR5oxH6/lk+X
- pzkOke4CYiHphdMhpGjZuYjmzC89aYx6SiM4wkWfiqa99WHlyAmAWT90Exbo3B9TL2Q0i/sJr
- U1xtHNLrfPjT46Sl+6HPDlqZU7SYFOmFUEspI1bxHiF3hWB0luvPoQcXpMbgqG92FoYncWLwN
- s/JMUZkVHb7FQuLPBQky2M5CnY5SYxBwCgl2MTxXFjSRe0JzpTO5lgZMbk5mrJZfYWsTibhJI
- L6vlx67qlYuzcwwlfBUjKfCqMozGa7y0pxI+BpgeZlhJBmCypLYpVgpM9ApYHZoD2a2+btW0v
- CttMYPxL1p362P7315nQqtb+jg6fZ3LOnkf4k9J8NmdR6pvhlcib5VppkYP6Vazoc7vo8XqQM
- NFXdAuCIexeU5ZoB6jpgVKW3i3Wufsbc/37N8CKBjTL/3rX2+vsoLYoasFm1PGs7mAuWeEPpM
- p00vMeDN/9CMfWviqdL7QGoeGs3NYbPLRTKdVyWNenfBqhevv07EddxWMbCJ6qXsbbCDq7V/c
- pqRrGksTlGs4JtOapxB3g/1Y/+9zo5RNd4Jnf9VGWcEtZiGIgQ6TaTZFGQCt1rojgF23Kb0e/
- xIgcryoeDnSmQLQRTWL635OdUTJLRIeFt5BXeyo1LETn4IpdS45Kx+3G9iVtzWMMEyKPf58UD
- 0DW5kCoR8NOETqxbhPoe4hGop4E=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221208033548.122704-1-ebiggers@kernel.org> <eea9b4dc9314da2de39b4181a4dac59fda8b0754.camel@debian.org>
+ <Y5JPRW+9dt28JpZ7@sol.localdomain> <00c7b6b0e2533b2bf007311c2ede64cb92a130db.camel@debian.org>
+ <Y5zbNtaadNGPGHQb@sol.localdomain>
+In-Reply-To: <Y5zbNtaadNGPGHQb@sol.localdomain>
+From:   Luca Boccassi <bluca@debian.org>
+Date:   Sat, 17 Dec 2022 02:04:02 +0000
+X-Gmail-Original-Message-ID: <CAMw=ZnQNJjKVAf9xafashv8diab2Xg92M1+wNT3A37RMBVwR2Q@mail.gmail.com>
+Message-ID: <CAMw=ZnQNJjKVAf9xafashv8diab2Xg92M1+wNT3A37RMBVwR2Q@mail.gmail.com>
+Subject: Re: [PATCH] fsverity: mark builtin signatures as deprecated
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Jes Sorensen <jsorensen@meta.com>,
+        Victor Hsieh <victorhsieh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, 16 Dec 2022 at 20:55, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Thu, Dec 08, 2022 at 09:37:29PM +0000, Luca Boccassi wrote:
+> >
+> > The second question is easy: because the kernel is the right place for
+> > our use case to do this verification and enforcement, exactly like dm-
+> > verity does.
+>
+> Well, dm-verity's in-kernel signature verification support is a fairly new
+> feature.  Most users of dm-verity don't use it, and will not be using it.
 
+I'm not sure what you mean by "most users" - systemd has support for
+dm-verity signatures all over the place, libcryptsetup/veritysetup
+supports them, and even libmount has native first-class mount options
+for them.
 
-On 2022/12/17 04:15, Josef Bacik wrote:
-> We had a recent bug that would have been caught by a newer compiler with
-> -Wmaybe-uninitialized and would have saved us a month of failing tests
-> that I didn't have time to investigate.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > Userspace is largely untrusted, or much lower trust anyway.
+>
+> Yes, which means the kernel is highly trusted.  Which is why parsing complex
+> binary formats, X.509 and PKCS#7, in C code in the kernel is not a great idea...
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Maybe, but it's there and it's used for multiple purposes and
+userspace relies on it. If you want to add a new alternative and
+optional formats I don't think it would be a problem, I certainly
+wouldn't mind.
 
-Tested with gcc 12.2.0, no new warnings.
-
-Thanks,
-Qu
-
-> ---
->   fs/btrfs/Makefile | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-> index 555c962fdad6..eca995abccdf 100644
-> --- a/fs/btrfs/Makefile
-> +++ b/fs/btrfs/Makefile
-> @@ -7,6 +7,7 @@ subdir-ccflags-y += -Wmissing-format-attribute
->   subdir-ccflags-y += -Wmissing-prototypes
->   subdir-ccflags-y += -Wold-style-definition
->   subdir-ccflags-y += -Wmissing-include-dirs
-> +subdir-ccflags-y += -Wmaybe-uninitialized
->   condflags := \
->   	$(call cc-option, -Wunused-but-set-variable)		\
->   	$(call cc-option, -Wunused-const-variable)		\
+Kind regards,
+Luca Boccassi
