@@ -2,191 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0AD64F6F5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Dec 2022 03:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3268B64F70B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Dec 2022 03:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbiLQCKh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Dec 2022 21:10:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
+        id S229705AbiLQCev (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Dec 2022 21:34:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbiLQCKf (ORCPT
+        with ESMTP id S229488AbiLQCeu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Dec 2022 21:10:35 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779B720183
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 18:10:33 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MPGRp-1pG4uU2oJB-00PfQY; Sat, 17
- Dec 2022 03:10:28 +0100
-Message-ID: <6f22220e-f660-92d2-5241-fb9a353090ac@gmx.com>
-Date:   Sat, 17 Dec 2022 10:10:24 +0800
+        Fri, 16 Dec 2022 21:34:50 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2757369A92
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Dec 2022 18:34:49 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C369B5FEFC
+        for <linux-btrfs@vger.kernel.org>; Sat, 17 Dec 2022 02:34:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1671244487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=BpYjpVZbde/UxdtVKr7KuaVly/5dtMi2x/k8MacgXUw=;
+        b=mLp04T5Zs4AyboeFLLp87bV+2JvYXh8JIVU8P6tUd1SBf/PwrGRrbfzBgOrImjwwMxE6u8
+        q5+4bv0c6l2gfGolIoq1cf2K5sgSbSKGRlWSGeOmzRw70SVEtrzdSiDyOqKrTp87c34vX0
+        nZNNkdYMkZYp3zMMtMTQTjFVJVLNyWQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E92113499
+        for <linux-btrfs@vger.kernel.org>; Sat, 17 Dec 2022 02:34:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id rUzUMMYqnWP1FAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Sat, 17 Dec 2022 02:34:46 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: scrub: improve its tree block error reporting
+Date:   Sat, 17 Dec 2022 10:34:29 +0800
+Message-Id: <0ba09faab92972fb164215f3614678678cc0fa16.1671244467.git.wqu@suse.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1670451918.git.josef@toxicpanda.com>
- <ef73c4c67028f9e7d770dca236367f1ea0b56b55.1670451918.git.josef@toxicpanda.com>
- <0507a942-2a82-f086-2be5-a9ac64e4c1d3@gmx.com>
-Subject: Re: [PATCH 2/8] btrfs: do not check header generation in
- btrfs_clean_tree_block
-In-Reply-To: <0507a942-2a82-f086-2be5-a9ac64e4c1d3@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:l58ebM2c+8dFt3pvBKPQBE+VJCf2N/PiPO9WNj3y1Y7m62NxDtX
- SulcSsiGc67IjqhOh6RfB1/+UKH3EZXW3WeDLryWpsRAX/B3nmrSlMBNa57kJVmylzNU/Og
- cDdVyV2xaCWdPioSXWEiUhDIVoxKG+NWm0ryPf93iOUn243ANzwkJBKt3yvrRvflDjp5f9u
- xQ8U6OlomkmSdgpwABieg==
-UI-OutboundReport: notjunk:1;M01:P0:maB8ZGzTeL8=;RuoOuIt0rtI6X2W4lS/lC8Cob24
- xKdn9DjZpqa7AfNmJLNssuwdBSOBu1NNlIepSNYSh8CDcvrXkX8XT3vv8Qp58gYXwKbYAVaWi
- 772j4mOdn2ahSHNVEcZ6RLn2rG2O+J2yMTSXZBneAqFDH4Wop6CXOJEBYIWvAb+plCzBWggqO
- u5IliKu0BW/uvlpVvSBxh8r3u+Lr8762bkZx8RMFGKN7rNeLD0TBAmuVOgwWqmZghapxE7MUE
- cBDimx5lUQ4m50GGWeO/YUvG+ocrdu4gEZ8aTaHUdrVZ09dnjvZ3SEO7fvx8p+qfzMEijhkP2
- CfjtiBOmycAUYFCpHPRfqMITTd6xOlps6OaAS50/VS9Mc9zcSdGi1L5BsvBhpnjXzJ8JkNu3w
- DX0p77KwEUMQWG4PqggiqXVYc0SPS/rYJJMpEdSJ411pnmYxedZwpmjPEFgZMRFnbYCKVUdaF
- w0YCgkBovcpryN2vWZtx3EtY794ROkh4zgqJ9d2oY2REzd1M47zE2XJ+CJQd43vh1eaTL2ZPY
- qPwSDB9HQcH8uDurlkUXeYvkZujvLenEUSVKcO16m9pM7IpXZ85kZNXx1GgxGHvwhs8Kb1kf5
- b3hqhGhCc8ASMKATUp9c6O3YcGN/ASKRGTYANySbDKqOx00NWlsVwWmgAhJKp6cWD9PPe3umH
- wuKnNiZO+ufANW9JEw8faUsm1p8koXpqdeaMLoOgKP8xhTMMZSqvqCFZmpDD85PnnoV8UHi/W
- S14AzGuxcK6yFhdp3cT4L/+4h5M51c91Nrr6cdB3yDCAco4C1pIrL44EwOUfdrJJ3JftJHdsM
- Dt524/m4SVT6p0EGViTl/m2kUwTsC/Jf4bhQeMTp/6QtcIijlgJ7Rx4LFPQSsEcytPGICUfc8
- X+8z5+93G8s0n/u8QqJICm2P6VX5/J0DQ5rp47YjyncBKOKQ+ofnUsVBm/zgLDfiojWcVlzZV
- eos4fTEmBxyigACmrnB3XLjLLNw=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+When debugging a scrub related metadata error, it turns out that our
+metadata error reporting is not ideal.
 
+The only 3 error messages are:
 
-On 2022/12/16 13:32, Qu Wenruo wrote:
-> 
-> 
-> On 2022/12/8 06:28, Josef Bacik wrote:
->> This check is from an era where we didn't have a per-extent buffer dirty
->> flag, we just messed with the page bits.  All the places we call this
->> function are when we have a transaction open, so just skip this check
->> and rely on the dirty flag.
->>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> 
-> This patch is failing a lot of test cases, mostly scrub related 
-> (btrfs/072, btrfs/074).
-> 
-> Now we will report all kinds of errors during scrub.
-> Which seems weird, as scrub doesn't use the regular extent buffer 
-> helpers at all...
-> 
-> Maybe it's related to the generation we got during the extent tree search?
-> As all the failures points to generation mismatch during scrub.
+- BTRFS error (device dm-2): bdev /dev/mapper/test-scratch1 errs: wr 0, rd 0, flush 0, corrupt 0, gen 1
+  Showing we have metadata generation mismatch errors.
 
-I got some extra digging, and it turns out that, if we unconditionally 
-clear the EXTENT_BUFFER_DIRTY flags, we can miss some tree blocks 
-writeback for commit root.
+- BTRFS error (device dm-2): unable to fixup (regular) error at logical 7110656 on dev /dev/mapper/test-scratch1
+  Showing which tree blocks are corrupted.
 
-Here is some trace for one extent buffer:
+- BTRFS warning (device dm-2): checksum/header error at logical 24772608 on dev /dev/mapper/test-scratch2, physical 3801088: metadata node (level 1) in tree 5
+  Showing which physical range the corrupted metadata is at.
 
-     btrfs_init_new_buffer: eb 7110656 set generation 13
-     btrfs_clean_tree_block: eb 7110656 gen 13 dirty 0 running trans 13
-     __btrfs_cow_block: eb 7110656 set generation 13
+We have to combine the above 3 to know we have a corrupted metadata with
+generation mismatch.
 
-Above 3 lines are where the eb 7110656 got created as a cowed tree block.
+And this is already the better case, if we have other problems, like
+fsid mismatch, we can not even know the cause.
 
-     update_ref_for_cow: root 1 buf 6930432 gen 12 cow 7110656 gen 13
+[CAUSE]
+The problem is caused by the fact that, scrub_checksum_tree_block()
+never outputs any error message.
 
-The eb 7110656 is cowed from 6930432, and that's created at transid 13.
+It just return two bits for scrub: sblock->header_error, and
+sblock->generation_error.
 
-     update_ref_for_cow: root 1 buf 7110656 gen 13 cow 7192576 gen 14
+And later we report error in scrub_print_warning(), but unfortunately we
+only have two bits, there is not really much thing we can done to print
+any detailed errors.
 
-But that eb 7110656 got CoWed again in transaction 14. Which means, eb 
-7110656 is no longer referred in transid 14, but is still referred in 
-transid 13.
+[FIX]
+This patch will do the following to enhance the error reporting of
+metadata scrub:
 
-     btrfs_clean_tree_block: eb 7110656 gen 13 dirty 1 running trans 14
+- Add extra warning (ratelimited) for every error we hit
+  This can help us to distinguish the different types of errors.
+  Some errors can help us to know what's going wrong immediately,
+  like bytenr mismatch.
 
-Here inside update_ref_for_cow(), we clear the dirty flag for eb 7110656.
+- Re-order the checks
+  Currently we check bytenr first, then immediately geneartion.
+  This can lead to false generation mismatch reports, while the fsid
+  mismatches.
 
-This has a consequence that, the tree block 7110656 will not be written 
-back, even it's still referred in transid 13.
+Here is the newer output for the bug I'm debugging (we forgot to
+writeback tree blocks for commit roots):
 
-This is where the problem is, previously we will continue writing back 
-eb 7110656, as its transid is not the running transid, meaning some 
-commit root still needs it.
+ BTRFS warning (device dm-2): tree block 24117248 mirror 1 has bad fsid, has b77cd862-f150-4c71-90ec-7baf0544d83f want 17df6abf-23cd-445f-b350-5b3e40bfd2fc
+ BTRFS warning (device dm-2): tree block 24117248 mirror 0 has bad fsid, has b77cd862-f150-4c71-90ec-7baf0544d83f want 17df6abf-23cd-445f-b350-5b3e40bfd2fc
 
-Especially note that, I have added trace output for any tree block write 
-back (in btree_csum_one_bio()).
-But there is no such trace, meaning the tree block is never properly 
-written back.
+Now we can immediately know it's some tree blocks didn't even get written
+back, other than the original confusing generation mismatch.
 
-This also exposed another problem, if we didn't properly writeback tree 
-blocks in commit root, we break COW, thus no proper transactional 
-protection for our metadata.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/scrub.c | 48 ++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 40 insertions(+), 8 deletions(-)
 
-     scrub_simple_mirror: tree 7110656 mirror 1 wanted generation 13
-                          running trans 14
-     scrub_checksum_tree_block: tree generation mismatch, tree 7110656
-                                mirror 1 running trans 14, has 15 want 13
-     scrub_checksum_tree_block: tree generation mismatch, tree 7110656
-                                mirror 0 running trans 14, has 15 want 13
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 52b346795f66..e0004e59b38b 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -2053,20 +2053,34 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+ 	 * a) don't have an extent buffer and
+ 	 * b) the page is already kmapped
+ 	 */
+-	if (sblock->logical != btrfs_stack_header_bytenr(h))
++	if (sblock->logical != btrfs_stack_header_bytenr(h)) {
+ 		sblock->header_error = 1;
+-
+-	if (sector->generation != btrfs_stack_header_generation(h)) {
+-		sblock->header_error = 1;
+-		sblock->generation_error = 1;
++		btrfs_warn_rl(fs_info,
++		"tree block %llu mirror %u has bad bytenr, has %llu want %llu",
++			      sblock->logical, sblock->mirror_num,
++			      btrfs_stack_header_bytenr(h),
++			      sblock->logical);
++		goto out;
+ 	}
+ 
+-	if (!scrub_check_fsid(h->fsid, sector))
++	if (!scrub_check_fsid(h->fsid, sector)) {
+ 		sblock->header_error = 1;
++		btrfs_warn_rl(fs_info,
++		"tree block %llu mirror %u has bad fsid, has %pU want %pU",
++			      sblock->logical, sblock->mirror_num,
++			      h->fsid, sblock->dev->fs_devices->fsid);
++		goto out;
++	}
+ 
+ 	if (memcmp(h->chunk_tree_uuid, fs_info->chunk_tree_uuid,
+-		   BTRFS_UUID_SIZE))
++		   BTRFS_UUID_SIZE)) {
+ 		sblock->header_error = 1;
++		btrfs_warn_rl(fs_info,
++		"tree block %llu mirror %u has bad chunk tree uuid, has %pU want %pU",
++			      sblock->logical, sblock->mirror_num,
++			      h->chunk_tree_uuid, fs_info->chunk_tree_uuid);
++		goto out;
++	}
+ 
+ 	shash->tfm = fs_info->csum_shash;
+ 	crypto_shash_init(shash);
+@@ -2079,9 +2093,27 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+ 	}
+ 
+ 	crypto_shash_final(shash, calculated_csum);
+-	if (memcmp(calculated_csum, on_disk_csum, sctx->fs_info->csum_size))
++	if (memcmp(calculated_csum, on_disk_csum, sctx->fs_info->csum_size)) {
+ 		sblock->checksum_error = 1;
++		btrfs_warn_rl(fs_info,
++		"tree block %llu mirror %u has bad csum, has " CSUM_FMT " want " CSUM_FMT,
++			      sblock->logical, sblock->mirror_num,
++			      CSUM_FMT_VALUE(fs_info->csum_size, on_disk_csum),
++			      CSUM_FMT_VALUE(fs_info->csum_size, calculated_csum));
++		goto out;
++	}
+ 
++	if (sector->generation != btrfs_stack_header_generation(h)) {
++		sblock->header_error = 1;
++		sblock->generation_error = 1;
++		btrfs_warn_rl(fs_info,
++		"tree block %llu mirror %u has bad geneartion, has %llu want %llu",
++			      sblock->logical, sblock->mirror_num,
++			      btrfs_stack_header_generation(h),
++			      sector->generation);
++	}
++
++out:
+ 	return sblock->header_error || sblock->checksum_error;
+ }
+ 
+-- 
+2.39.0
 
-The above lines just shows the scrub failure for it.
-As the tree block is not properly written back, we just read out some 
-garbage.
-
-And unfortunately our scrub code only checks bytenr, then generation, 
-not even checking the fsid, thus we got the generation mismatch error.
-
-     ...
-     btree_csum_one_bio: eb 7110656 gen 26
-
-There is an example to prove that, I have added tree block writeback 
-trace event.
-
-Thus I'd prefer to have at least a comment explaining why we can not 
-just clean the dirty bit for a dirty eb which is not dirtied during the 
-current running transaction.
-
-Thanks,
-Qu
-
-
-> 
-> Thanks,
-> Qu
-> 
->> ---
->>   fs/btrfs/disk-io.c | 15 ++++++---------
->>   1 file changed, 6 insertions(+), 9 deletions(-)
->>
->> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->> index d0ed52cab304..267163e546a5 100644
->> --- a/fs/btrfs/disk-io.c
->> +++ b/fs/btrfs/disk-io.c
->> @@ -968,16 +968,13 @@ struct extent_buffer *read_tree_block(struct 
->> btrfs_fs_info *fs_info, u64 bytenr,
->>   void btrfs_clean_tree_block(struct extent_buffer *buf)
->>   {
->>       struct btrfs_fs_info *fs_info = buf->fs_info;
->> -    if (btrfs_header_generation(buf) ==
->> -        fs_info->running_transaction->transid) {
->> -        btrfs_assert_tree_write_locked(buf);
->> +    btrfs_assert_tree_write_locked(buf);
->> -        if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &buf->bflags)) {
->> -            percpu_counter_add_batch(&fs_info->dirty_metadata_bytes,
->> -                         -buf->len,
->> -                         fs_info->dirty_metadata_batch);
->> -            clear_extent_buffer_dirty(buf);
->> -        }
->> +    if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &buf->bflags)) {
->> +        percpu_counter_add_batch(&fs_info->dirty_metadata_bytes,
->> +                     -buf->len,
->> +                     fs_info->dirty_metadata_batch);
->> +        clear_extent_buffer_dirty(buf);
->>       }
->>   }
