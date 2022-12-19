@@ -2,151 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 846D7650785
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Dec 2022 07:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 305CC6507E7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Dec 2022 07:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbiLSGXO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Dec 2022 01:23:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
+        id S231313AbiLSGyM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Dec 2022 01:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbiLSGXM (ORCPT
+        with ESMTP id S231301AbiLSGyL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Dec 2022 01:23:12 -0500
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5F32AE8
-        for <linux-btrfs@vger.kernel.org>; Sun, 18 Dec 2022 22:23:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1671430991; x=1702966991;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=y8oaxRi1o/wbcFtyLkbpLrtaHmdrgReu9Lw4P4PRGzk=;
-  b=rIbh21qsyPEPhJ7QXIrIlfN7Una9g4xWSUyrZYCUEQ2EaDDy4lKnzPTA
-   nBGScTSEuvmR6pER6QrJrarIFkFzCIyet4dmk2CGo0F0vw8Yi1UiZfxfv
-   7gd7O5zt40l6+9woDkJYnHA0pLcLl0F/i5xD4FFd92tC33KOavoM4qjde
-   JD/Ff2Nd9nwS4+G2AckSQZmoPyU8PI9z2FXJ87OXPyH+7zdmQjvf+Qk37
-   fES2HqK7L+zTs5XxmMWipE1seSbwnzaFlhWZNBm5ktMoU8+AS8Ew7qYHo
-   rYNhdBfAsa7NU4X87vVMZGI1zispTf9tlJlfEpZC99i2cp4PfD0wU8CH6
-   g==;
-X-IronPort-AV: E=Sophos;i="5.96,255,1665417600"; 
-   d="scan'208";a="323334395"
-Received: from mail-mw2nam04lp2170.outbound.protection.outlook.com (HELO NAM04-MW2-obe.outbound.protection.outlook.com) ([104.47.73.170])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Dec 2022 14:23:09 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OOUcxjNA6hImspCrsuFt7PAy+uucMKfqUiujm3Saj/KUZ6ECr13USjaUQ8KJC0FPxBB77Gu7aGw6zcti1+E96C3kfTh74T7f2RT050BGv0YoHnbBY2SUjRluJ5eK9w9x/AAUqzZm4Te5RSsh5iBTrCWZegGfIYfcXuFDkgmV6jm4sKyQplVqCQnhGZE5qfPI/BVZCyACKD2ZcDYULi/cYthlNvHswBZgv82lI3qtMUKYvL6Y/e0m1BHux5iBtL5bE7SSCGSOYpxchw1jWfCHNYJvsvbNKgtQQokp6CFXCQ2tnnWEFXD377V/ZclbhCDj0wh4hrdwbAL2bXrr/TI9kQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nQQ8QdIZpovYQ+Pt23SYX9DKSXwr0tS5z61Dcqderwk=;
- b=dfV/oeNHCZ7DCvRJhqWheJyZlEucmNvlEBM/eVnMiDt4/orxphf2BqJOTnwC3IknQrJhAez/XDcJ9j2iiodjvUA8IrbenAMOyhLNgjlANIs0QNgYWvlkiNVeq2YQPLiazTeN1u91WvP0mOjhnN2d1tTaU5TwmhdQC9ewVba1QWL71+6KIhosc3T8k+b/DCTVzeywICZuYfpp8aisx6i4pcyND3c0qY0NXZtQ82MOXkYNJqnLiR0xA2Z82vivV4/XWM+9i27vdBM/R4A6tGpfsyi3W1D4M57OUO0/tahltaP3q86FGsKkd02ZIrhUy5dqM9iv9XbwBYywUBj72NlwSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nQQ8QdIZpovYQ+Pt23SYX9DKSXwr0tS5z61Dcqderwk=;
- b=i2yobB1GPMcQ87naxtOADwW6zqgsXBXpJrfW9sq6hOlGlfP01+ACoM459C9GsFBi+6lBxgCUWI0nIErbF+lbgOKyF+GKU177LKjozs4ie8kiZJNFTujgat+kWTyQACjsmH0s8Dm8Jdfe0bitml5gJ+LcU57I/61bwrDs89bXuuA=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by BN8PR04MB5537.namprd04.prod.outlook.com (2603:10b6:408:5c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.16; Mon, 19 Dec
- 2022 06:23:05 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::c080:1687:4429:ed73]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::c080:1687:4429:ed73%9]) with mapi id 15.20.5924.019; Mon, 19 Dec 2022
- 06:23:05 +0000
-From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: Re: [PATCH 7/8] btrfs: fix uninit warning in btrfs_sb_log_location
-Thread-Topic: [PATCH 7/8] btrfs: fix uninit warning in btrfs_sb_log_location
-Thread-Index: AQHZEYt89wD1GjEDLkO7fdy83Eq+va50wZuA
-Date:   Mon, 19 Dec 2022 06:23:05 +0000
-Message-ID: <20221219062303.k6jhz5v63bbervab@naota-xeon>
-References: <cover.1671221596.git.josef@toxicpanda.com>
- <81030329cd7526ec374fa4e76ac6bc4b0ed56e25.1671221596.git.josef@toxicpanda.com>
-In-Reply-To: <81030329cd7526ec374fa4e76ac6bc4b0ed56e25.1671221596.git.josef@toxicpanda.com>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|BN8PR04MB5537:EE_
-x-ms-office365-filtering-correlation-id: 32851339-05ea-4add-6315-08dae1897d48
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mBQ2/Obm0UIFV89nB9ulPlmc7ZDxN0vTNSW5Wr3FhG+u3pbCJvxgYjo7iE3JcYBmw/J/VEYHXb+waDI11PtoryZ9pP9X/lYlKYanWDgr1/yqxgUx6t+63lDNiH11dV2LdfqBn/MJcNVNHkvBfxDwB9xeacGC98dkg35UsVVvA0gasWEGhJNXx0vlS0EVZlFm7/px3I2hkffXjq9LQMSIkQk5+dKSne4P+GJuuCHqH7M6Eh9GAvQ3jgkzx3tvcZ9Ue8Wdhv+dSKJsbXbQp3f3FXOf/+llgELtp2e0NFv8Kssipfxj0tKjkBPML7kHXGxK7LPXjV+MEg9/LKQU3qEzw9w9/YiG1V6GCLmUJyMdG9KAvDIHIYn0/iHtrAb7S7Xq7jxpwM5nxgpaCV6XQF9gNmV92A6ys7nBzV+VujPUrWRtJ+O31vmGpg0yHDGQ2jPs7vvXGIA5bf70twLk1E1Mjc/U9jYWbXdllFTrgDlsYM4TT66mcs62jCy1+c3ePetCsFqbF3DjI2iP0Ps0m5ea9e8iVr9kMiQ5orCyV+z4y2b1v+rfK0PwoD0aUWpVdnTF0LUmloMgPGRSD+ec3oQ59Ehek05EpaL6ksjm2zgFaxVIHLB0YNv5T/pel9lB0T5vDrtEJgH9XjZ23+ahviMIa3MdbZI10R3Np+35Cl4nte6AI5z5ocKUzvDDCyS97ldodjyPqrqZQQ6F/1diBg81KA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(7916004)(39860400002)(376002)(136003)(346002)(396003)(366004)(451199015)(6486002)(478600001)(71200400001)(6506007)(66946007)(66556008)(66476007)(66446008)(64756008)(76116006)(186003)(91956017)(26005)(6512007)(9686003)(86362001)(316002)(54906003)(6916009)(38070700005)(1076003)(82960400001)(38100700002)(122000001)(8676002)(4326008)(41300700001)(4744005)(8936002)(33716001)(2906002)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?PSC3wTPY7D81OeW2magV2JDT0vfiHr19blo0zUNLt/N6hEG32vdjBQgo30pN?=
- =?us-ascii?Q?7cRz98mIPjG7b38NSZ5bEJbo8s+tn1OlUSzDlN5CMSnq4WSET4xF5lL+FEiU?=
- =?us-ascii?Q?nAdtdpstKlVvOZyQ/zQhBcfaVWN7ZUSdQ64o2aCkfU+tzte0dWRJfnBWPIQ4?=
- =?us-ascii?Q?MaZS62H+qtOQZ3Gvcx34nm3LgQhKkjGGaAlmS3hAmMWTPLc92yV9xPGBeJyH?=
- =?us-ascii?Q?l0M40yCzKGew98PFBtIiYAq7hsrrU36XDjFEwmNEKKl4rSykwaRa8Yq2fKFf?=
- =?us-ascii?Q?aQlTm1rw3HGjW5wttgLuQ4rTCHSSLkOUEUUTZlUqvYKcFCtlC8Bb8sX7M9JI?=
- =?us-ascii?Q?XHFLDJCI1IIuSmHnDny1N7ucyTrEcuQKooqPgKlI2dpgHP2b4i1P0ZOAVOd7?=
- =?us-ascii?Q?sDzhJjsDWBef2Q+XUJUNXZhVnQu06TLwESotr291d2gzYU7np3smC8CXbd6Q?=
- =?us-ascii?Q?F2ldDgfX3i2RQwx52Lo6LNXIakP3U+p1yTj7rxAoqyBDJNagbdvNd+JmmXYL?=
- =?us-ascii?Q?B9Bw+yvwJq2LYko7xoCjmxxZjve4fdfqA8OeMi3G5E1o1jg/aX0Wsi0phuD/?=
- =?us-ascii?Q?U6jEfu9HlRMV2PwwVlf6/Y/sNUG0aYfJo9D+dwfzde2aFRpNznupUsAB3e09?=
- =?us-ascii?Q?Kjde0Xz2vAVeri9IQx1m0EI3NTq0iELykFnVMqVd1k3JjSRsjKm18cq0Kj66?=
- =?us-ascii?Q?hu3Bl4ULzIPTXRgHyF8f7J65zqsKD/OUP6CsvVIt5yAjdE3fsvkfyhnmXg3F?=
- =?us-ascii?Q?6tp7F/3KgDiKZ91kVSA0xZFzZNVOoeyuUGfAY9rgHJnbXJmCPUzyRXdk9owS?=
- =?us-ascii?Q?5uL4tGckmw1QH9XW94wny55rR4KGoGcZTfqYoXlSy/REs33KexbrIShKXyw6?=
- =?us-ascii?Q?mK9uHoTFTp1s6jssoS8RIXj+8rV5R0vg0mucjSsMTa0sjNBFYjaOmXyxBP6I?=
- =?us-ascii?Q?99nGItfQnEJBFrT/OgqMybNoVjsuSOLz9NuVvRfsZUfLYe594xkYnTeaou87?=
- =?us-ascii?Q?0I07toQl/PGovacjbYtaBlBenRdib9vmL/g4Wcfz75iAbylNBq9yZCIMMuz1?=
- =?us-ascii?Q?uqtMF3GPaxqV5Pud7vd1i//P5qk/etCeJO8aq+DQU8lWGaIXgOPiJSSdD9Gp?=
- =?us-ascii?Q?vg95PIIf+Bon76aNf1yAoL3HwxAkAqDLfZf92U8lQy4lE9j4aGrfiMb/7oBA?=
- =?us-ascii?Q?Bw/eb5RGvu6USfrjBcVR2p+QwA+oFFgjcInRWIudYLtFNlcRNL/CZBa06DtT?=
- =?us-ascii?Q?YGpNw3Ry8oDMbvNTRBpdhlBrIjzqU5N9ljMcyDKJeBoDjD9a/VAnooCWR2oR?=
- =?us-ascii?Q?pBdGEeOLdflMVchFdmeUUSkAG4pj71f5mMsNqz1jYAmWChCHbd6ATD0uclwv?=
- =?us-ascii?Q?mRVk0HuQaPk010RQVNjyEQ8vr5vps5HTpM1UcrSInUGRTJRQaaZjIK9gpFL5?=
- =?us-ascii?Q?yoILPVR8JR/W97wdrAzeV8ELE/7roHF+1xRLI4SOpysmD3AYpjxD0pcR/VH0?=
- =?us-ascii?Q?tcr3rTBs/rUWypZCI0xOOxe9RuavGApA7p1fIRW1EsgntmMTa0/UJjG+71wy?=
- =?us-ascii?Q?q0H80YSxysFF9JO81nh98/fzM1jrkgSg0KQ+nMO262Rt6Y3feDZefJ3RdHWc?=
- =?us-ascii?Q?6w=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <696D181F97F28C468B29DA82408E09D6@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Mon, 19 Dec 2022 01:54:11 -0500
+Received: from synology.com (mail.synology.com [211.23.38.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1845FE0
+        for <linux-btrfs@vger.kernel.org>; Sun, 18 Dec 2022 22:54:09 -0800 (PST)
+Subject: Re: [PATCH v2 0/3] btrfs: fix unexpected -ENOMEM with
+ percpu_counter_init when create snapshot
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1671432847; bh=UEGEgSOWdJreKcypPHVSCVRWc5C3FNv0wPe6KlwTDLo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=If8mfvygQoJd4bmrgiMVRgUOJP0W0wk8b+8XPgBYGr5bxAijIhBE3oXLtOHwqeN12
+         wAFihN4LlDTjwUbYpXFWeKRTy0lZfq7lqAm2gBxtGz5KF6ODuPSmI8BmKDmokregsa
+         A37SfMfSc8Z/0v6+w5sJaYhZS3epod+1Jsvd7ZQg=
+To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20221214021125.28289-1-robbieko@synology.com>
+ <Y5oA3qBk+qMSyAR/@localhost.localdomain>
+ <20221214180718.GF10499@twin.jikos.cz>
+From:   robbieko <robbieko@synology.com>
+Message-ID: <f1971de4-5355-6f57-46df-0a6cefb9ee95@synology.com>
+Date:   Mon, 19 Dec 2022 14:54:06 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32851339-05ea-4add-6315-08dae1897d48
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Dec 2022 06:23:05.4699
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tHbddZg1tOLe8REFSm9IvLe5JdwwNu/M/e050/NiKUN0/V2N1QYtoPb3G9/Myp1D6gv9QIL3rfS2L63jG0tFNQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR04MB5537
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221214180718.GF10499@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 16, 2022 at 03:15:57PM -0500, Josef Bacik wrote:
-> We only have 3 possible mirrors, and we have ASSERT()'s to make sure
-> we're not passing in an invalid super mirror into this function, so
-> technically this value isn't uninitialized.  However
-> -Wmaybe-uninitialized will complain, so set it to U64_MAX so if we don't
-> have ASSERT()'s turned on it'll error out later on when it see's the
-> zone is beyond our maximum zones.
->=20
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Looks good.
+David Sterba 於 2022/12/15 上午2:07 寫道:
+> On Wed, Dec 14, 2022 at 11:59:10AM -0500, Josef Bacik wrote:
+>> On Wed, Dec 14, 2022 at 10:11:22AM +0800, robbieko wrote:
+>>> From: Robbie Ko <robbieko@synology.com>
+>>>
+>>> [Issue]
+>>> When creating subvolume/snapshot, the transaction may be abort due to -ENOMEM
+>>>
+>>>    WARNING: CPU: 1 PID: 411 at fs/btrfs/transaction.c:1937 create_pending_snapshot+0xe30/0xe70 [btrfs]()
+>>>    CPU: 1 PID: 411 Comm: btrfs Tainted: P O 4.4.180+ #42661
+>>>    Call Trace:
+>>>      create_pending_snapshot+0xe30/0xe70 [btrfs]
+>>>      create_pending_snapshots+0x89/0xb0 [btrfs]
+>>>      btrfs_commit_transaction+0x469/0xc60 [btrfs]
+>>>      btrfs_mksubvol+0x5bd/0x690 [btrfs]
+>>>      btrfs_mksnapshot+0x102/0x170 [btrfs]
+>>>      btrfs_ioctl_snap_create_transid+0x1ad/0x1c0 [btrfs]
+>>>      btrfs_ioctl_snap_create_v2+0x102/0x160 [btrfs]
+>>>      btrfs_ioctl+0x2111/0x3130 [btrfs]
+>>>      do_vfs_ioctl+0x7ea/0xa80
+>>>      SyS_ioctl+0xa1/0xb0
+>>>      entry_SYSCALL_64_fastpath+0x1e/0x8e
+>>>    ---[ end trace 910c8f86780ca385 ]---
+>>>    BTRFS: error (device dm-2) in create_pending_snapshot:1937: errno=-12 Out of memory
+>>>
+>>> [Cause]
+>>> During creating a subvolume/snapshot, it is necessary to allocate memory for Initializing fs root.
+>>> Therefore, it can only use GFP_NOFS to allocate memory to avoid deadlock issues.
+>>> However, atomic allocation is required when processing percpu_counter_init
+>>> without GFP_KERNEL due to the unique structure of percpu_counter.
+>>> In this situation, allocating memory for initializing fs root may cause
+>>> unexpected -ENOMEM when free memory is low and causes btrfs transaction to abort.
+>>>
+>>> [Fix]
+>>> We allocate memory at the beginning of creating a subvolume/snapshot.
+>>> This way, we can ensure the memory is enough when initializing fs root.
+>>> Even -ENOMEM happens at the beginning of creating a subvolume/snapshot,
+>>> the transaction won’t abort since it hasn’t started yet.
+>> Honestly I'd rather just make the btrfs_drew_lock use an atomic_t for the
+>> writers counter as well.  This is only taken in truncate an nocow writes, and in
+>> nocow writes there are a looooot of slower things that have to be done that
+>> we're not winning a lot with the percpu counter.  Is there any reason not to
+>> just do that and leave all this code alone?  Thanks,
+> The percpu counter for writers is there since the original commit
+> 8257b2dc3c1a1057 "Btrfs: introduce btrfs_{start, end}_nocow_write() for
+> each subvolume". The reason could be to avoid hammering the same
+> cacheline from all the readers but then the writers do that anyway.
+> This happens in context related to IO or there's some waiting anyway, so
+> yeah using atomic for writers should be ok as well.
 
-Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>=
+Sorry for the late reply, I've been busy recently.
+This modification will not affect the original btrfs_drew_lock behavior,
+and the framework can also provide future scenarios where memory
+needs to be allocated in init_fs_root.
+
+Thanks.
+
+Robbie Ko
+
