@@ -2,55 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F15DE651FC2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Dec 2022 12:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AF7651FFB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Dec 2022 12:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbiLTLeA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Dec 2022 06:34:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48794 "EHLO
+        id S230121AbiLTL5j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Dec 2022 06:57:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbiLTLeA (ORCPT
+        with ESMTP id S229540AbiLTL5h (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Dec 2022 06:34:00 -0500
+        Tue, 20 Dec 2022 06:57:37 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60C2B04;
-        Tue, 20 Dec 2022 03:33:58 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0EF10FFE
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 03:57:37 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6183361343;
-        Tue, 20 Dec 2022 11:33:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A74C433D2;
-        Tue, 20 Dec 2022 11:33:57 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B12F26135D
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 11:57:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 201F9C433EF
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 11:57:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671536037;
-        bh=e4J0RZISPwzBTiddfHwQ1muQ8GQSYRAmQckxRmWT/A0=;
+        s=k20201202; t=1671537456;
+        bh=OZopsgfSj381NhLnyw5I1Yy0V/FMr6yBHwjh4ttwQqA=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WRhqkEOHiUjhN5ounvlKJQmjuSblQX9hFVGMsJf3eS8huUkFqVgzmR70WHZwJoQN/
-         n0r92JLlDBuIiEvnSG3biUo3k6ftXdk3Q+ZmsxV9DJBCuyNaqb2W3rO18M1xbTIPfb
-         WcJW7hp1AR6gHEjoph10cIDLsGX16Jm67UTuz6CyZzfiSeTDBcFAZVxOJGiQD/Vgwg
-         jrx69jNaCOENis1ubmP53oRDXfOl64K03cib+lDhKU5XCiyY02DizLM+SmVVwtBzDV
-         bgmWAEBKqwHdKCjTbO16bLXiy99eBPm71n/y+vjt8ZChm3Cy1KlVccvlqRSD4vm0b3
-         SFCMsTo0LgeOg==
-Received: by mail-ot1-f50.google.com with SMTP id l8-20020a056830054800b006705fd35eceso6960879otb.12;
-        Tue, 20 Dec 2022 03:33:57 -0800 (PST)
-X-Gm-Message-State: ANoB5pkIQgUe7+cJv7ycJRDlfqevOYFo2/VsCGVtUQGMH1aEGIw3x8C0
-        go0EfnUrH1p7E3ea04EuvFMWLVglwqI0R2k4NqY=
-X-Google-Smtp-Source: AA0mqf7yDXzS495hE58O9b6GSZSRBlwpC348mrcv+tYcOVMG8nhGO/PuOBZOmbEv6lA+YI9prZm88pAluB4mXK0sFxg=
-X-Received: by 2002:a9d:6858:0:b0:670:9502:cc87 with SMTP id
- c24-20020a9d6858000000b006709502cc87mr2340271oto.363.1671536036882; Tue, 20
- Dec 2022 03:33:56 -0800 (PST)
+        b=kSpueUkY/Zz+ukfbB6Gua63UVFzmliJBgm4+Vjl4I1zw4Wwu2dJVmgWD6L+Ja14xf
+         Z81s8spUmpIOSOqkyqVCOgl2YVy7c9VZVJfFH2fQqw7ZknRur7kJVTHBuDbJnak/2R
+         OjDOEGcFJoko0iw6/kfeWOfmzHycET702RIYVic0NclLGdVAp8MTuBk8lJ6HcvIGDw
+         bVOIUNnqo+b5vBHf5s6mz9EKoHRxGa8bSEWFGmPs/c55MFm5dtup0jjsYIOBmhfmbl
+         4m7PZvLYVck9Z/WgeB0kh/HFkKkDucV5JJdXnz/wPNqXjueczFolZa9PjiBxKN10he
+         hirK4ZntSI3+A==
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-142b72a728fso15090037fac.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 03:57:36 -0800 (PST)
+X-Gm-Message-State: AFqh2kpQh2B7G+UC9H9i3Ni7enRAokMgPVxfFJGjM8J568JVTnKWdllY
+        /+vgv9i22Ek0kbjxr10yUVK0qXNLK0wpPAoB79Q=
+X-Google-Smtp-Source: AMrXdXuaFqNI/4w7KHdoNZSe2sTgTpLoCIIz3gO+68eJphlnzlh85J6nPyrW0zpEDw4M6U6FZkYeAUq0ridLopFxsTE=
+X-Received: by 2002:a05:6871:4496:b0:14c:667e:4620 with SMTP id
+ ne22-20020a056871449600b0014c667e4620mr16729oab.92.1671537455237; Tue, 20 Dec
+ 2022 03:57:35 -0800 (PST)
 MIME-Version: 1.0
-References: <4d2045a13be9bb2931c4755aa4b558c60f698f78.1671481303.git.boris@bur.io>
-In-Reply-To: <4d2045a13be9bb2931c4755aa4b558c60f698f78.1671481303.git.boris@bur.io>
+References: <CAN4oSBewVqdWU8O4jBqneexYKZGHLSDEhFCwKj+mL5+OjcWeYg@mail.gmail.com>
+ <e4491c53-1869-9a85-f656-f2e35acd8b65@suse.com>
+In-Reply-To: <e4491c53-1869-9a85-f656-f2e35acd8b65@suse.com>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 20 Dec 2022 11:33:20 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4zyxnXDE8_ez3jKJs-ap1U5MGq67TD5-eM=Kj_=MB9Dg@mail.gmail.com>
-Message-ID: <CAL3q7H4zyxnXDE8_ez3jKJs-ap1U5MGq67TD5-eM=Kj_=MB9Dg@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: new test for logical inode resolution panic
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fstests@vger.kernel.org
+Date:   Tue, 20 Dec 2022 11:56:59 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5uWor=cWiVAvDtkQNa_OrDFe7eq89_RZroTD4Mn8r0wA@mail.gmail.com>
+Message-ID: <CAL3q7H5uWor=cWiVAvDtkQNa_OrDFe7eq89_RZroTD4Mn8r0wA@mail.gmail.com>
+Subject: Re: Doing anything with the external disk except mounting causes
+ whole system lockup
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Cerem Cem ASLAN <ceremcem@ceremcem.net>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -61,158 +63,96 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 19, 2022 at 8:28 PM Boris Burkov <boris@bur.io> wrote:
+On Tue, Dec 20, 2022 at 11:52 AM Qu Wenruo <wqu@suse.com> wrote:
 >
-> If we create a file that has an inline extent followed by a prealloc
-> extent, then attempt to use the logical to inode ioctl on the prealloc
-> extent, but in the overwritten range, backref resolution will process
-> the inline extent. Depending on the leaf eb layout, this can panic.
-> Add a new test for this condition. In the long run, we can add spew when
-> we read out-of-bounds fields of inline extent items and simplify this
-> test to look for dmesg warnings rather than trying to force a fairly
-> fragile panic (dependent on non-standardized details of leaf layout).
 >
-> The test causes a kernel panic unless:
-> btrfs: fix logical_ino ioctl panic
-> is applied to the kernel.
 >
-> Signed-off-by: Boris Burkov <boris@bur.io>
+> On 2022/12/20 01:32, Cerem Cem ASLAN wrote:
+> > I've been using my scripts for mounting partitions, unmounting, btrfs
+> > send|receive etc. while I'm dealing with my external/backup hard
+> > disks.
+> >
+> > Recently I had trouble so I reformatted my external spinning disk and
+> > transferred all snapshots to it (~800GB).
+> >
+> > At the end of transfer, there was an error (I might have modified the
+> > bash script that is currently running) so after finishing the `btrbk
+> > ...` command, my script gave an error (that's normal), so I restarted
+> > it. From this moment on, I could mount my partitions but I never did a
+> > btrfs send|receive or scrub or unmount again because the system was
+> > simply getting locked up.
+> >
+> > I run `dmesg -w` command on another terminal but I didn't save it
+> > (because the system was locked), so I took a photo of it:
+> > https://imgur.com/LJfgjbY
+>
+> RCU stall, then it can be anything, I doubt if it's really btrfs causing
+> the problem.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Nop, it's a btrfs problem.
+This was caused by a bad backport to 6.0.3, which is what Cerem is
+running according to the screenshot.
 
-Looks good, thanks.
+This has been reported before, for example at:
 
-> ---
-> Changes for V2:
-> - move to btrfs/299
-> - change to 64k extent buffers
-> - improve comments
-> - cut down on unneeded fsyncs
-> - various cleanups to requires/includes
+https://lore.kernel.org/linux-btrfs/2291416ef48d98059f9fdc5d865b0ff040148237.camel@scientia.org/
+https://lore.kernel.org/linux-btrfs/1c531dd5de7477c8b6ec15d4aebb8e42ae460925.camel@scientia.org/
+
+This was eventually fixed in 6.0.5:
+
+https://cdn.kernel.org/pub/linux/kernel/v6.x/ChangeLog-6.0.5
+
+by commit:
+
+commit 217fd7557896d990c3dd8beea83a6feeb504f235
+Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Wed Oct 26 12:24:13 2022 +0200
+
+    Revert "btrfs: call __btrfs_remove_free_space_cache_locked on
+cache load failure"
+
+    This reverts commit 3ea7c50339859394dd667184b5b16eee1ebb53bc which is
+    commit 8a1ae2781dee9fc21ca82db682d37bea4bd074ad upstream.
+
+    It causes many reported btrfs issues, so revert it for now.
+
+    Cc: Josef Bacik <josef@toxicpanda.com>
+    Cc: David Sterba <dsterba@suse.com>
+    Cc: Sasha Levin <sashal@kernel.org>
+    Reported-by: Tobias Powalowski <tobias.powalowski@googlemail.com>
+    Link: https://lore.kernel.org/r/CAHfPjO8G1Tq2iJDhPry-dPj1vQZRh4NYuRmhHByHgu7_2rQkrQ@mail.gmail.com
+    Reported-by: Ernst Herzberg <earny@net4u.de>
+    Link: https://lore.kernel.org/r/8196dd88-4e11-78a7-8f96-20cf3e886e68@net4u.de
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+So just upgrade the kernel in your distro, the latest 6.0 stable
+release is 6.0.14, so anything between 6.0.5 and that should be fine.
+
+
 >
->  tests/btrfs/299     | 103 ++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/299.out |   2 +
->  2 files changed, 105 insertions(+)
->  create mode 100755 tests/btrfs/299
->  create mode 100644 tests/btrfs/299.out
+> In fact, I hit similar problems before, very randomly, sometimes when
+> playing some steam games, sometimes just random crash/lockup.
 >
-> diff --git a/tests/btrfs/299 b/tests/btrfs/299
-> new file mode 100755
-> index 00000000..42a08317
-> --- /dev/null
-> +++ b/tests/btrfs/299
-> @@ -0,0 +1,103 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2022 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 299
-> +#
-> +# Given a file with extents:
-> +# [0 : 4096) (inline)
-> +# [4096 : N] (prealloc)
-> +# if a user uses the ioctl BTRFS_IOC_LOGICAL_INO[_V2] asking for the file of the
-> +# non-inline extent, it results in reading the offset field of the inline
-> +# extent, which is meaningless (it is full of user data..). If we are
-> +# particularly lucky, it can be past the end of the extent buffer, resulting in
-> +# a crash. This test creates that circumstance and asserts that logical inode
-> +# resolution is still successful.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick preallocrw
-> +
-> +# real QA test starts here
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +_require_scratch
-> +_require_xfs_io_command "falloc" "-k"
-> +_require_btrfs_command inspect-internal dump-tree
-> +_require_btrfs_command inspect-internal logical-resolve
-> +_fixed_by_kernel_commit xxxxxxxx "btrfs: fix logical_ino ioctl panic"
-> +
-> +dump_tree() {
-> +       $BTRFS_UTIL_PROG inspect-internal dump-tree $SCRATCH_DEV
-> +}
-> +
-> +get_extent_data() {
-> +       local ino=$1
-> +       dump_tree $SCRATCH_DEV | grep -A4 "($ino EXTENT_DATA "
-> +}
-> +
-> +get_prealloc_offset() {
-> +       local ino=$1
-> +       get_extent_data $ino | grep "disk byte" | $AWK_PROG '{print $5}'
-> +}
-> +
-> +# This test needs to create conditions s.t. the special inode's inline extent
-> +# is the first item in a leaf. Therefore, fix a leaf size and add
-> +# items that are otherwise not necessary to reproduce the inline-prealloc
-> +# condition to get to such a state.
-> +#
-> +# Roughly, the idea for getting the right item fill is to:
-> +# 1. create extra inline items to cause leaf splitting.
-> +# 2. put the target item in the middle so it is likely to catch the split
-> +# 3. add an extra variable inline item to tweak any final adjustments
-> +#
-> +# It took a bit of trial and error to hit working counts of inline items, since
-> +# it also had to account for dir and index items all going to the front.
-> +
-> +# use a 64k nodesize so that an fs with 64k pages and no subpage sector size
-> +# support will correctly reproduce the problem.
-> +_scratch_mkfs "--nodesize 64k" >> $seqres.full || _fail "mkfs failed"
-> +_scratch_mount
-> +
-> +f=$SCRATCH_MNT/f
-> +# write extra files before the evil file to use up the leaf and
-> +# help trick leaf balancing
-> +for i in {1..41}; do
-> +       $XFS_IO_PROG -fc "pwrite -q 0 1024" $f.inl.$i
-> +done
-> +
-> +# write a variable inline file to help pad the preceeding leaf
-> +$XFS_IO_PROG -fc "pwrite -q 0 1" $f.inl-var.$i
-> +
-> +# falloc the evil file whose inline extent will start a leaf
-> +$XFS_IO_PROG -fc "falloc -k 0 1m" $f.evil
-> +$XFS_IO_PROG -fc fsync $f.evil
-> +
-> +# write extra files after the evil file to use up the leaf and
-> +# help trick leaf balancing
-> +for i in {1..42}; do
-> +       $XFS_IO_PROG -fc "pwrite -q 0 1024" $f.inl.2.$i
-> +done
-> +
-> +# grab the prealloc offset from dump tree while it's still the only
-> +# extent data item for the inode
-> +ino=$(stat -c '%i' $f.evil)
-> +logical=$(get_prealloc_offset $ino)
-> +
-> +# do the "small write; fsync; small write" pattern which reproduces the desired
-> +# item pattern of an inline extent followed by a preallocated extent. The 23
-> +# size is somewhat arbitrary, but ensures that the offset field is past the eb
-> +# when we are item 0 (borrowed from the actual crash this reproduces).
-> +$XFS_IO_PROG -fc "pwrite -q 0 23" $f.evil
-> +$XFS_IO_PROG -fc fsync $f.evil
-> +$XFS_IO_PROG -fc "pwrite -q 0 23" $f.evil
-> +
-> +# ensure we have all the extent_data items for when we do logical to inode
-> +# resolution
-> +sync
-> +
-> +# trigger the backref walk which accesses the bad inline extent
-> +btrfs inspect-internal logical-resolve $logical $SCRATCH_MNT
-> +
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/299.out b/tests/btrfs/299.out
-> new file mode 100644
-> index 00000000..0fcc0304
-> --- /dev/null
-> +++ b/tests/btrfs/299.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 299
-> +Silence is golden
-> --
-> 2.38.1
+> At least if you can setup a netconsole, we can have better view of the
+> whole situation.
 >
+> In my case, netconsole also sometimes points to RCU, sometimes some
+> random generic protection error.
+>
+> I tried replacing my RAM, no help. Finally I brought a new mobo and CPU
+> (switched from 5900X + B450I to 13700K + B660I) and no crash anymore.
+>
+> Thus if you're hitting RCU stalls, I'd strongly recommend to test the
+> same fs on other systems.
+>
+> Thanks,
+> Qu
+> >
+> > I haven't lost any data and I still have another backup disk, so no
+> > worries. I'm just keeping the disk just in case you may require some
+> > more information this week.
+> >
+> > * Linux erik3 6.0.0-0.deb11.2-amd64 #1 SMP PREEMPT_DYNAMIC Debian
+> > 6.0.3-1~bpo11+1 (2022-10-29) x86_64 GNU/Linux
+> > * btrfs-progs v5.10.1
+> > * mount options I'm using: rw,noatime
