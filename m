@@ -2,65 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F486526DD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Dec 2022 20:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F106B6526E5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Dec 2022 20:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233991AbiLTTRd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Dec 2022 14:17:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
+        id S233239AbiLTTZs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Dec 2022 14:25:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbiLTTRb (ORCPT
+        with ESMTP id S229945AbiLTTZp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Dec 2022 14:17:31 -0500
+        Tue, 20 Dec 2022 14:25:45 -0500
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D5FE1A
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 11:17:30 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884A1B19
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 11:25:43 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 22B456029A;
-        Tue, 20 Dec 2022 19:17:29 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 42A41768DC;
+        Tue, 20 Dec 2022 19:25:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1671563849;
+        t=1671564342;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=XHrlbZbAHx6HgiASBDYpw/iDxLRufFQU7asxqAEWK3M=;
-        b=pn/XCSg76MsSHQppOLN/VMlHqKubJTEHSHwthyRvXCV9S13zi81VmXpA526UMgn5fRzk+V
-        hxnDHEkUxOjMtIy8S0a63q3aQc8GzapASJ9A8HK9GGOz68Yx3T+O4MFUG6GxIv1u3QGY/S
-        G1ZxEf3ff2YNBefh4GcK8/94Icnz+Q0=
+        bh=Gbp5Ss6+9wktso8ymIaca4JHriYKLZSlezsQd29zyOQ=;
+        b=tMNFjWHsRuLOIwuQHd4eWtpVAQgnfLvFPbrUs5B5TcXCuvHdGW2QquJkPjg5EamdFrG/+0
+        rnZzkAsrzquFYamNuP9fo7rR9CIwfwQ+5QkD3P4+h+JiJqjgywF9FTJz7yChgf0O5NEvee
+        oYSTJgeR74rGhOyAoiqI4D2bAL/YSSI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1671563849;
+        s=susede2_ed25519; t=1671564342;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=XHrlbZbAHx6HgiASBDYpw/iDxLRufFQU7asxqAEWK3M=;
-        b=hNTtSe7DRqrRwoFUZKSeHLR1UbHQodx0A23AXzv5Hsz5MlXbQ7Onr+fCleQ3uor+HKfIRQ
-        /ziCgl4wsS0hZ+Bg==
+        bh=Gbp5Ss6+9wktso8ymIaca4JHriYKLZSlezsQd29zyOQ=;
+        b=Jbl5DGo6Re+5vk9EMMy5eO85orxg8I3uULYfHyM3eK3gfNpTOuhdkOad8dPsBac99fWqg8
+        fRx82K0KXLO6WOAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 064B413254;
-        Tue, 20 Dec 2022 19:17:29 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12ACB13254;
+        Tue, 20 Dec 2022 19:25:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id GAe1AEkKomPmOQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 20 Dec 2022 19:17:29 +0000
-Date:   Tue, 20 Dec 2022 20:16:43 +0100
+        id sMumAzYMomPdPAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 20 Dec 2022 19:25:42 +0000
+Date:   Tue, 20 Dec 2022 20:24:56 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 3/8] btrfs: fix uninit warning from get_inode_gen usage
-Message-ID: <20221220191643.GQ10499@twin.jikos.cz>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH 6/8] btrfs: extract out zone cache usage into it's own
+ helper
+Message-ID: <20221220192456.GR10499@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1671221596.git.josef@toxicpanda.com>
- <aa2e624f5626b37a267ea123baf7db2d76be41ee.1671221596.git.josef@toxicpanda.com>
+ <af6c527cbd8bdc782e50bd33996ee83acc3a16fb.1671221596.git.josef@toxicpanda.com>
+ <20221219070514.tgfqoiethziuwfdq@naota-xeon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aa2e624f5626b37a267ea123baf7db2d76be41ee.1671221596.git.josef@toxicpanda.com>
+In-Reply-To: <20221219070514.tgfqoiethziuwfdq@naota-xeon>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -71,27 +75,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 16, 2022 at 03:15:53PM -0500, Josef Bacik wrote:
-> Anybody that calls get_inode_gen() can have an uninitialized gen if
-> there's an error.  This isn't a big deal because all the users just exit
-> if they get an error, however it makes -Wmaybe-uninitialized complain,
-> so fix this up to always init the passed in gen, this quiets all of the
-> uninitialized warnings in send.c.
+On Mon, Dec 19, 2022 at 07:05:15AM +0000, Naohiro Aota wrote:
+> On Fri, Dec 16, 2022 at 03:15:56PM -0500, Josef Bacik wrote:
+> > There's a special case for loading the device zone info if we have the
+> > zone cache which is a fair bit of code.  Extract this out into it's own
+> > helper to clean up the code a little bit, and as a side effect it fixes
+> > an uninitialized error we get with -Wmaybe-uninitialized where it
+> > thought zno may have been uninitialized.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/send.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
+> I'm going to rewrite the code around here with the following WIP branch, to
+> improve the zone caching.
 > 
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index 67f7c698ade3..25a235179edb 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -955,14 +955,12 @@ static int get_inode_info(struct btrfs_root *root, u64 ino,
->  static int get_inode_gen(struct btrfs_root *root, u64 ino, u64 *gen)
->  {
->  	int ret;
-> -	struct btrfs_inode_info info;
-> +	struct btrfs_inode_info info = {};
+> https://github.com/naota/linux/commits/feature/zone-cache
+> 
+> Specifically, this commit removes the for-loop and the "if (i ==
+> *nr_zones)" block you moved in this patch. So, the resulting code will be
+> small enough to keep it there.
+> 
+> https://github.com/naota/linux/commit/8d592ac744111bb2f51595a1608beecadb2c5d03
+> 
+> Could you wait for a while for me to clean-up and send the series? I'll
+> also check the series with -Wmaybe-uninitialized.
 
-The { 0 } initializer should be used.
+I'd like to have the warnigs fixes first but if there is a shorter fix
+that would not move the code then it can go in now and you wouldn't have
+to redo your changes.
