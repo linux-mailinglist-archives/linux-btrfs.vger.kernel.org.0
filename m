@@ -2,157 +2,209 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AF7651FFB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Dec 2022 12:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8083F65221F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Dec 2022 15:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbiLTL5j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Dec 2022 06:57:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56082 "EHLO
+        id S233365AbiLTOMp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Dec 2022 09:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbiLTL5h (ORCPT
+        with ESMTP id S229551AbiLTOMo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Dec 2022 06:57:37 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0EF10FFE
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 03:57:37 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B12F26135D
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 11:57:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 201F9C433EF
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 11:57:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671537456;
-        bh=OZopsgfSj381NhLnyw5I1Yy0V/FMr6yBHwjh4ttwQqA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kSpueUkY/Zz+ukfbB6Gua63UVFzmliJBgm4+Vjl4I1zw4Wwu2dJVmgWD6L+Ja14xf
-         Z81s8spUmpIOSOqkyqVCOgl2YVy7c9VZVJfFH2fQqw7ZknRur7kJVTHBuDbJnak/2R
-         OjDOEGcFJoko0iw6/kfeWOfmzHycET702RIYVic0NclLGdVAp8MTuBk8lJ6HcvIGDw
-         bVOIUNnqo+b5vBHf5s6mz9EKoHRxGa8bSEWFGmPs/c55MFm5dtup0jjsYIOBmhfmbl
-         4m7PZvLYVck9Z/WgeB0kh/HFkKkDucV5JJdXnz/wPNqXjueczFolZa9PjiBxKN10he
-         hirK4ZntSI3+A==
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-142b72a728fso15090037fac.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 03:57:36 -0800 (PST)
-X-Gm-Message-State: AFqh2kpQh2B7G+UC9H9i3Ni7enRAokMgPVxfFJGjM8J568JVTnKWdllY
-        /+vgv9i22Ek0kbjxr10yUVK0qXNLK0wpPAoB79Q=
-X-Google-Smtp-Source: AMrXdXuaFqNI/4w7KHdoNZSe2sTgTpLoCIIz3gO+68eJphlnzlh85J6nPyrW0zpEDw4M6U6FZkYeAUq0ridLopFxsTE=
-X-Received: by 2002:a05:6871:4496:b0:14c:667e:4620 with SMTP id
- ne22-20020a056871449600b0014c667e4620mr16729oab.92.1671537455237; Tue, 20 Dec
- 2022 03:57:35 -0800 (PST)
+        Tue, 20 Dec 2022 09:12:44 -0500
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2058.outbound.protection.outlook.com [40.107.21.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5347328
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 06:12:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Etemr9nxdG0lfQ9WWDQWb2of0mSOKllTnyLC/Yo/aRlmTZCcea0qaIUIUFGh3P9eSaRAh194+TRXSi+9r8aScGItFwZzY7/rFD0f9CdDdkfDqRZ9fA7gN5GAlQF5qcxyLTfYxTxmahyYIsE2BbpGnf6DrwVTSVYuPM2GBMGBzWWGepDOKfKP9OWYWWcmJ02Ig0b+mxtMw1N0aZ5jJOVO4ADxt1jCeNR9DrHkXjCWkk2M6tI3npsqjWWp5V6F9m317OA1gu7zpCWyz1WGlYcZYmPE7s4ecFBoLEpm7Pp2P0JQrqJQA8Cmqltp/FfC4BVbfegsQaz3PBZJ5Or7Zp6YKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4AC+pR6Jx9QA49Uvlk4DAdEzfztQpghsJrxvXeKMMl0=;
+ b=kaw+qEifaUtzjRLnxfHL4b73DJqLw1erIddQSC40DMSYQJ8tQddQ9iOci2cazQ1gPHbIbWp8XpZNHSRD61eRDwI0UmLR22vav7C32lLSykDIDi4RWFBhSTlbFDmb+3dCrUo6UOPhCqEX/IuKYO0pz7wgPMRi/PJZxBdAbv+kBwKXNXxmHVtUFN24g/aRniyWhstTur8pR8+Z0EjngiPdZ3JnJfw1sODdHPxnuVNSwGHwDIdaRjT6Ct0gSpmUaiClQ5ffd4noyb5W+t3lingw4Cttx7svtW9rfcmjc4ezSb9BNeFWzJCafLJMkJdPxYpNXL6QIr/+NYXKDgw66KAkzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4AC+pR6Jx9QA49Uvlk4DAdEzfztQpghsJrxvXeKMMl0=;
+ b=FLO4jSzhC+xcytsNIMCsC+IQcqZj5afBJBDkd3MAYWrGjiFZftK8WquHzPvfzezNfIk/6MhysPsX3OOElNGfD18etGhKm8O7Rve9VtpZXs/MLBTzmtnnKO5XqYQliS/757+0JjYU3rfmKkFykByYaqDiVCKbW7f2S/Gelvmok3ZibHseetmddIcIA6qaPr3bLesdWdLoGUAjTvA7nYt1+Th2qUUqlapRJMnAbdKgMwhnghXxje4UxI6eVrAlm5tam/rXJP3QLrvPdYhu3o5hJKNYBJgvF7fEqvVUHcXEKUSF9qMq4Pl8KRL8CFKTG6SKNGJgXwtMM0eDEvGP0xeQPQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB7104.eurprd04.prod.outlook.com (2603:10a6:800:126::9)
+ by PAXPR04MB9520.eurprd04.prod.outlook.com (2603:10a6:102:22f::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.16; Tue, 20 Dec
+ 2022 14:12:36 +0000
+Received: from VI1PR04MB7104.eurprd04.prod.outlook.com
+ ([fe80::8d51:14ac:adfd:2d9b]) by VI1PR04MB7104.eurprd04.prod.outlook.com
+ ([fe80::8d51:14ac:adfd:2d9b%4]) with mapi id 15.20.5924.016; Tue, 20 Dec 2022
+ 14:12:36 +0000
+Message-ID: <148b838a-897a-90d6-7e6b-564238d58eb0@suse.com>
+Date:   Tue, 20 Dec 2022 15:12:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Content-Language: en-US
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+From:   Oliver Neukum <oneukum@suse.com>
+Subject: recurring corruption with latest kernels
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+X-ClientProxiedBy: FR3P281CA0117.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a3::8) To VI1PR04MB7104.eurprd04.prod.outlook.com
+ (2603:10a6:800:126::9)
 MIME-Version: 1.0
-References: <CAN4oSBewVqdWU8O4jBqneexYKZGHLSDEhFCwKj+mL5+OjcWeYg@mail.gmail.com>
- <e4491c53-1869-9a85-f656-f2e35acd8b65@suse.com>
-In-Reply-To: <e4491c53-1869-9a85-f656-f2e35acd8b65@suse.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 20 Dec 2022 11:56:59 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5uWor=cWiVAvDtkQNa_OrDFe7eq89_RZroTD4Mn8r0wA@mail.gmail.com>
-Message-ID: <CAL3q7H5uWor=cWiVAvDtkQNa_OrDFe7eq89_RZroTD4Mn8r0wA@mail.gmail.com>
-Subject: Re: Doing anything with the external disk except mounting causes
- whole system lockup
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Cerem Cem ASLAN <ceremcem@ceremcem.net>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB7104:EE_|PAXPR04MB9520:EE_
+X-MS-Office365-Filtering-Correlation-Id: 62cd7c1d-28f3-472c-fec9-08dae2943eb6
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LDMW6fOJxgkg2D1CezC7hdxsuikk9hQ2fbqnqXZ53gg6ENCa33D5py9tYSR7UqAaSS0wY5uN/3yEeUFBSZEXmriYfQ/Ddsp9Qey0BdQXKa6FLil0A+zK3iG3rLqcr0629g6QpRURpELS37k7LTS7bJgUNzVLrmZpFm8L2Y5Spe6wvRKD1IKIClt7Mcsn/qkMymTZsIDdag/DT839CIzhRVj0mynWRagW5tjs0qhZuxmx2XgXYg/8uwSzUQKPE/fhtVBieP50s49HzB+hWl0FrS1yPvv5B3tzsFIzVYwyG+RmWQ4lC0WkiSjFEaURKNqRe0wwR98yZIGRgAPqPNE3IfjB4bTpfyr8VoUD/czJJn7yJ+seYrxJWMWsY0tF/vfPFOGBn37H6+ZTjQwvxHXuzDIMOSUsh9cSP77PURhAvPPnyzfgS6Z1Yja5/deDF9oOMnejGZo5a2qmETEMb/4SqJEycIHXcBq8gNCIQ5iudHSBvNl1AJsr+FDqg+KUriVxUc4v9rg2++NHBjnTp/Y7PUL6lPfOB5/NVOjQCBO3ZCK+jcfJqzHuaaefdI6suCZMgusxietRjRN2Lv5E8fMydgEjHVUWCOnimJTtnXCmK9dhRpjNADGSVefczZL27NKUOIc9kJOcjBPZYutKKYXxYnT5Iy5ZNgMQYDZDaEAR5b9SmDELfLZEkIbayl45ICIgBpwanQdaO21okmICtq2ILSV3mQlxgOE2cusIETWLd7o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB7104.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(396003)(346002)(136003)(376002)(39860400002)(451199015)(36756003)(86362001)(31696002)(45080400002)(478600001)(316002)(6486002)(110136005)(8676002)(5660300002)(8936002)(2906002)(66556008)(66476007)(66946007)(41300700001)(6512007)(186003)(38100700002)(2616005)(83380400001)(6506007)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YXNaU1RUOWY3NDh2TDl6OFQzZ0x1cm5VZVlkSzRCMGc5OFpnNGg3VmpReGs5?=
+ =?utf-8?B?YTBEMVArcWhyRVJtRCtCd21rcGd0YzJiamRnbWtiZFdJb2o4RmJGVDZsSlVW?=
+ =?utf-8?B?aGVmSUR2QmJsdFVCYlc5S2VNeWVmR29ZYW90RG1QN2pCaFFLYjF5eGg2dno1?=
+ =?utf-8?B?RVhwY001NlhCa0d4OENzUnFUSld6Y2RDdFZIVmpJeEtBUXMvNmxRVjlPVHM3?=
+ =?utf-8?B?aElXR3FCV1hkR2loa0R1K1ZEZ2wwK2R6dmZpT3IyREsveXIrcW5XbCtXVFVH?=
+ =?utf-8?B?bEZuRlk0N0E5R2IyMWd3dnNJcUMzNUVIOFIvSzFPZWl6S0dvam11Y1M4c3dh?=
+ =?utf-8?B?Q0Z1Q2tFY25MaTgvUW1uTkJaQ3dIN2JQQ0szZWl6QWQwOXhqVXFrd1VXYmVY?=
+ =?utf-8?B?QXFyeHBOL1hZZGF5S281elpWdGJBcUlwTTdUUTNHLzRpN0pndFd6YlRhWkVx?=
+ =?utf-8?B?TVI3bVMwRDg4SWJMVFFRVjZvS2NRRXAwT3NDYmdLaXdWZFUzZ3ByVWxZcDc2?=
+ =?utf-8?B?em5peWMyd25pem42TmVEa0p4VHlnQlk4NEdLZ0R6TEZJNEVvVFVvWXk3TUF6?=
+ =?utf-8?B?MCtVNWExY3lFb1haNngrZzRFMlAvMG1SYWxwQ09uRHF3cDNob2pyeFArOEkw?=
+ =?utf-8?B?U1c3Y1NIcEh4VzFuZGxoVy9IcXgzMFJCZGIrVXk0eHhoeVhXczBwNGdtbnFr?=
+ =?utf-8?B?blQ5WFluenVRVUZmdGFNWjhla3NvV2FsY2V6Y241eHNLekphaHpUUmZvWUdK?=
+ =?utf-8?B?WFNCZUFuR01xYWtJZ2pxMDlJRVRJdnE2OWNhajNaekl4UklkcGFudDE0eXkw?=
+ =?utf-8?B?d1NLbnRzbVk0MTZONmJyWlJ6c2taZjdOakwvbjZHS01FLzdmSnp2QWN4VGN5?=
+ =?utf-8?B?UmdaRWFYVVgwTE9NZVFhMkJ3WjdkanRIUlVkRDM0RVhjOTl3OTdBMlZXc2hW?=
+ =?utf-8?B?MXZ2QTJMMjZTVDhKa0xmQmRwL2hTWldPODQ1SUZ6RE9sWHRVKzlsYUN5M2Zq?=
+ =?utf-8?B?UWpKSERXLzF3VEtnM0pycTFXamsybCtiU3lrK2FTckNldk1kYXVTN0tRR3I4?=
+ =?utf-8?B?Q1dSTjFVR3JXQXZVdzFCNVA1cEptcVNUbUFzTVBjbmFQVURkYTgvRDZxSjR4?=
+ =?utf-8?B?VW1zaWZvaFhxYVZYbEhrWFdsMjB2RTRCSFZpcWpVb2tXL2c0Vm41bFNHVURK?=
+ =?utf-8?B?NW1GcVRuamkwbUFQWHdVUEw1aUpLSklrRjFFRFdDVDVybWFaUk5yZnZzcW1v?=
+ =?utf-8?B?K3pzZ2ZhMnlPUElGZ0lrdnFMMnNSVUpWUUpDdlpEcUdObUtnMWVIa2FTNVVp?=
+ =?utf-8?B?RCtJalBQQ0x1SGZ1bVI1WFpWVmcybFZwTGcvY2VndUIwdVJSN2hxVFRDNlM0?=
+ =?utf-8?B?NXE0QlV5UHhYRUVOV21lWVN3RVk5THJFUjZkaXFObm4yc0JxdkhmWlNnREYx?=
+ =?utf-8?B?VnJaa3BMS0ZSd0pTbGk3S3FQQWRkeUh5L2hWSUlpRmhpMDdHNnE4ejZaVDlD?=
+ =?utf-8?B?T1FwUnQvMmxzaXpUTDE3aGZ6QVdwWDZYazVMSjlheHM1eXFjWmdnb2dMU3Vh?=
+ =?utf-8?B?dHRzSTZWOGpwSFVoZnhONVRCLzRsOWtQTkFXV0M5L3hVREswbGhjWGpDbERV?=
+ =?utf-8?B?MG9BK2xNM0c2T05CVUI0ak1tWDhQY3pMMWk5WDlMWUR0YUFVYjNFb1RUTjFy?=
+ =?utf-8?B?NWhQdjJ6alVwK1FkODFFLzMxSHprVUZsS1ZOQ2s0T3pFUWcxcHRnWjlmZ3ZO?=
+ =?utf-8?B?QzRkWmV6d2lRU0R2czdpdno5eU9YbUdnb2U4c3k3RVd5blNvYzFJSkhlQ2xP?=
+ =?utf-8?B?a0pHYTFIR1JoQ2p4czF1YWJTQmlGbG80QzhBa2FJK2t5b2NnTGZvMDZlbEFq?=
+ =?utf-8?B?ZXd0MUtmckJXZHFWSVV5elVidi95RmdDZDRiK3R0NzVOdVF3azROREUveGlV?=
+ =?utf-8?B?RndINisyaEN0NUlsbyt0b25icGdST3phZzdTakhOcGZBS2JqeVllVU81VG05?=
+ =?utf-8?B?bmNvWHB5WkxJZWx2NXdWZmpWWXB4MGcyMTJsckdBaGwvQUtjV1dhRGZHQ2U5?=
+ =?utf-8?B?cVhnUzNKZ2hZUnFVQmNwcCtueGQxVWloMU40Y0RFcms2V3owSW5ZdkN0Vm85?=
+ =?utf-8?B?WWJsclhZSzlCeTlNWVZsa0RNRi91WE8yRDhEZnRWUFNZdVpNZzRtd1lhZ0tR?=
+ =?utf-8?Q?Z7swP3+6bLWgP+6JPfjaFKKsFwDsx25tEfdkQp7UWWiE?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62cd7c1d-28f3-472c-fec9-08dae2943eb6
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB7104.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2022 14:12:36.3282
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1xNXS6OPloEOhSklcMbueOdKrA05hJ/xcz0/EFaSRxT27uf5DHEWj/D191wP/JQ3lHmGoqzTqYu065TnUfPdLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9520
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 20, 2022 at 11:52 AM Qu Wenruo <wqu@suse.com> wrote:
->
->
->
-> On 2022/12/20 01:32, Cerem Cem ASLAN wrote:
-> > I've been using my scripts for mounting partitions, unmounting, btrfs
-> > send|receive etc. while I'm dealing with my external/backup hard
-> > disks.
-> >
-> > Recently I had trouble so I reformatted my external spinning disk and
-> > transferred all snapshots to it (~800GB).
-> >
-> > At the end of transfer, there was an error (I might have modified the
-> > bash script that is currently running) so after finishing the `btrbk
-> > ...` command, my script gave an error (that's normal), so I restarted
-> > it. From this moment on, I could mount my partitions but I never did a
-> > btrfs send|receive or scrub or unmount again because the system was
-> > simply getting locked up.
-> >
-> > I run `dmesg -w` command on another terminal but I didn't save it
-> > (because the system was locked), so I took a photo of it:
-> > https://imgur.com/LJfgjbY
->
-> RCU stall, then it can be anything, I doubt if it's really btrfs causing
-> the problem.
-
-Nop, it's a btrfs problem.
-This was caused by a bad backport to 6.0.3, which is what Cerem is
-running according to the screenshot.
-
-This has been reported before, for example at:
-
-https://lore.kernel.org/linux-btrfs/2291416ef48d98059f9fdc5d865b0ff040148237.camel@scientia.org/
-https://lore.kernel.org/linux-btrfs/1c531dd5de7477c8b6ec15d4aebb8e42ae460925.camel@scientia.org/
-
-This was eventually fixed in 6.0.5:
-
-https://cdn.kernel.org/pub/linux/kernel/v6.x/ChangeLog-6.0.5
-
-by commit:
-
-commit 217fd7557896d990c3dd8beea83a6feeb504f235
-Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Wed Oct 26 12:24:13 2022 +0200
-
-    Revert "btrfs: call __btrfs_remove_free_space_cache_locked on
-cache load failure"
-
-    This reverts commit 3ea7c50339859394dd667184b5b16eee1ebb53bc which is
-    commit 8a1ae2781dee9fc21ca82db682d37bea4bd074ad upstream.
-
-    It causes many reported btrfs issues, so revert it for now.
-
-    Cc: Josef Bacik <josef@toxicpanda.com>
-    Cc: David Sterba <dsterba@suse.com>
-    Cc: Sasha Levin <sashal@kernel.org>
-    Reported-by: Tobias Powalowski <tobias.powalowski@googlemail.com>
-    Link: https://lore.kernel.org/r/CAHfPjO8G1Tq2iJDhPry-dPj1vQZRh4NYuRmhHByHgu7_2rQkrQ@mail.gmail.com
-    Reported-by: Ernst Herzberg <earny@net4u.de>
-    Link: https://lore.kernel.org/r/8196dd88-4e11-78a7-8f96-20cf3e886e68@net4u.de
-    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-So just upgrade the kernel in your distro, the latest 6.0 stable
-release is 6.0.14, so anything between 6.0.5 and that should be fine.
-
-
->
-> In fact, I hit similar problems before, very randomly, sometimes when
-> playing some steam games, sometimes just random crash/lockup.
->
-> At least if you can setup a netconsole, we can have better view of the
-> whole situation.
->
-> In my case, netconsole also sometimes points to RCU, sometimes some
-> random generic protection error.
->
-> I tried replacing my RAM, no help. Finally I brought a new mobo and CPU
-> (switched from 5900X + B450I to 13700K + B660I) and no crash anymore.
->
-> Thus if you're hitting RCU stalls, I'd strongly recommend to test the
-> same fs on other systems.
->
-> Thanks,
-> Qu
-> >
-> > I haven't lost any data and I still have another backup disk, so no
-> > worries. I'm just keeping the disk just in case you may require some
-> > more information this week.
-> >
-> > * Linux erik3 6.0.0-0.deb11.2-amd64 #1 SMP PREEMPT_DYNAMIC Debian
-> > 6.0.3-1~bpo11+1 (2022-10-29) x86_64 GNU/Linux
-> > * btrfs-progs v5.10.1
-> > * mount options I'm using: rw,noatime
+SGksDQoNCmV2ZXJ5IGZldyBob3VycyBJIGFtIGdldHRpbmcgc29tZSBjb3JydXB0aW9uIGluIGJ0
+cmZzLg0KSSBnb3QgdGhpcyB0cmFjZToNCg0KWyA4NTA2LjQ3NTc2OV0gLS0tLS0tLS0tLS0tWyBj
+dXQgaGVyZSBdLS0tLS0tLS0tLS0tDQpbIDg1MDYuNDc1NzczXSBXQVJOSU5HOiBDUFU6IDIgUElE
+OiAzODggYXQgZnMvYnRyZnMvdHJhbnNhY3Rpb24uYzoxNDUgYnRyZnNfcHV0X3RyYW5zYWN0aW9u
+KzB4MTEyLzB4MTQwIFtidHJmc10NClsgODUwNi40NzU4MzFdIE1vZHVsZXMgbGlua2VkIGluOiB0
+dW4oRSkgY2NtKEUpIHJmY29tbShFKSBjbWFjKEUpIGFsZ2lmX2hhc2goRSkgYWxnaWZfc2tjaXBo
+ZXIoRSkgYWZfYWxnKEUpIGFmX3BhY2tldChFKSBuZnRfZmliX2luZXQoRSkgbmZ0X2ZpYl9pcHY0
+KEUpIG5mdF9maWJfaXB2NihFKSBuZnRfZmliKEUpIHNyX21vZChFKSBjZHJvbShFKSBuZnRfcmVq
+ZWN0X2luZXQoRSkgbmZ0X3JlamVjdChFKSBuZnRfY3QoRSkgbmZ0X2NoYWluX25hdChFKSBzbmRf
+dXNiX2F1ZGlvKEUpIHNuZF91c2JtaWRpX2xpYihFKSBzbmRfcmF3bWlkaShFKSBzbmRfc2VxX2Rl
+dmljZShFKSBuZl90YWJsZXMoRSkgZWJ0YWJsZV9uYXQoRSkgZWJ0YWJsZV9icm91dGUoRSkgaXA2
+dGFibGVfbmF0KEUpIGlwNnRhYmxlX21hbmdsZShFKSBpcDZ0YWJsZV9yYXcoRSkgaXA2dGFibGVf
+c2VjdXJpdHkoRSkgaXB0YWJsZV9uYXQoRSkgbmZfbmF0KEUpIG5mX2Nvbm50cmFjayhFKSBuZl9k
+ZWZyYWdfaXB2NihFKSBuZl9kZWZyYWdfaXB2NChFKSBpcHRhYmxlX21hbmdsZShFKSBpcHRhYmxl
+X3JhdyhFKSBibmVwKEUpIGlwdGFibGVfc2VjdXJpdHkoRSkgY2RjX2V0aGVyKEUpIHVzYm5ldChF
+KSBpcF9zZXQoRSkgbmZuZXRsaW5rKEUpIGJ0dXNiKEUpIGJ0cnRsKEUpIGJ0YmNtKEUpIGVidGFi
+bGVfZmlsdGVyKEUpIGJ0aW50ZWwoRSkgYnRtdGsoRSkgZWJ0YWJsZXMoRSkgYmx1ZXRvb3RoKEUp
+IGlwNnRhYmxlX2ZpbHRlcihFKSBpcDZfdGFibGVzKEUpIHV2Y3ZpZGVvKEUpIHZpZGVvYnVmMl92
+bWFsbG9jKEUpIHZpZGVvYnVmMl9tZW1vcHMoRSkgdmlkZW9idWYyX3Y0bDIoRSkgaXB0YWJsZV9m
+aWx0ZXIoRSkgdmlkZW9kZXYoRSkgaXBfdGFibGVzKEUpIGVjZGhfZ2VuZXJpYyhFKSByODE1MihF
+KSB2aWRlb2J1ZjJfY29tbW9uKEUpIHhfdGFibGVzKEUpIHVhcyhFKSBlY2MoRSkgdXNiX3N0b3Jh
+Z2UoRSkgY2RjX2FjbShFKSBtYyhFKSBtaWkoRSkgYnBmaWx0ZXIoRSkgY3JjMTYoRSkNClsgODUw
+Ni40NzU4ODBdICBhbWRncHUoRSkgZG1pX3N5c2ZzKEUpIGludGVsX3JhcGxfbXNyKEUpIGludGVs
+X3JhcGxfY29tbW9uKEUpIHNuZF9jdGxfbGVkKEUpIGlvbW11X3YyKEUpIGRybV9idWRkeShFKSBz
+bmRfaGRhX2NvZGVjX3JlYWx0ZWsoRSkgZ3B1X3NjaGVkKEUpIHNuZF9oZGFfY29kZWNfZ2VuZXJp
+YyhFKSBpMmNfYWxnb19iaXQoRSkgc25kX2hkYV9jb2RlY19oZG1pKEUpIGl3bG12bShFKSBkcm1f
+ZGlzcGxheV9oZWxwZXIoRSkgc25kX2hkYV9pbnRlbChFKSBzbmRfaW50ZWxfZHNwY2ZnKEUpIGRy
+bV90dG1faGVscGVyKEUpIHNuZF9pbnRlbF9zZHdfYWNwaShFKSB0dG0oRSkgc25kX2hkYV9jb2Rl
+YyhFKSBlZGFjX21jZV9hbWQoRSkgY2VjKEUpIHNuZF9ybl9wY2lfYWNwM3goRSkgcmNfY29yZShF
+KSBzbmRfYWNwX2NvbmZpZyhFKSBrdm1fYW1kKEUpIHNuZF9oZGFfY29yZShFKSBzbmRfc29jX2Fj
+cGkoRSkgbWFjODAyMTEoRSkgc25kX3BjaV9hY3AzeChFKSBzbmRfaHdkZXAoRSkgbGliYXJjNChF
+KSBkcm1fa21zX2hlbHBlcihFKSBrdm0oRSkgc25kX3BjbShFKSBzeXNjb3B5YXJlYShFKSBzeXNm
+aWxscmVjdChFKSBpcnFieXBhc3MoRSkgY2NwKEUpIHN5c2ltZ2JsdChFKSBzbmRfdGltZXIoRSkg
+Y3JjMzJfcGNsbXVsKEUpIG5sc19pc284ODU5XzEoRSkgbmxzX2NwNDM3KEUpIGdoYXNoX2NsbXVs
+bmlfaW50ZWwoRSkgc2hhNTEyX3Nzc2UzKEUpIHZmYXQoRSkgaXdsd2lmaShFKSBhZXNuaV9pbnRl
+bChFKSBjcnlwdG9fc2ltZChFKSBmYXQoRSkgeGZzKEUpIGNyeXB0ZChFKSByODE2OShFKSBjZmc4
+MDIxMShFKSBpcG1pX2RldmludGYoRSkgdGhpbmtwYWRfYWNwaShFKSByZWFsdGVrKEUpIG1kaW9f
+ZGV2cmVzKEUpIGxlZHRyaWdfYXVkaW8oRSkgcGNzcGtyKEUpIHVjc2lfYWNwaShFKSBwbGF0Zm9y
+bV9wcm9maWxlKEUpIHR5cGVjX3Vjc2koRSkgam95ZGV2KEUpIGVmaV9wc3RvcmUoRSkgd21pX2Jt
+b2YoRSkgdHlwZWMoRSkgazEwdGVtcChFKQ0KWyA4NTA2LjQ3NTkyOV0gIGkyY19waWl4NChFKSBy
+ZmtpbGwoRSkgbGlicGh5KEUpIGlwbWlfbXNnaGFuZGxlcihFKSByb2xlcyhFKSBzbmQoRSkgYWMo
+RSkgc291bmRjb3JlKEUpIGkyY19zY21pKEUpIGJ1dHRvbihFKSBhY3BpX2NwdWZyZXEoRSkgZHJt
+KEUpIGZ1c2UoRSkgY29uZmlnZnMoRSkgaGlkX2dlbmVyaWMoRSkgdXNiaGlkKEUpIGJ0cmZzKEUp
+IGJsYWtlMmJfZ2VuZXJpYyhFKSB4b3IoRSkgcmFpZDZfcHEoRSkgbGliY3JjMzJjKEUpIHJ0c3hf
+cGNpX3NkbW1jKEUpIG1tY19jb3JlKEUpIG52bWUoRSkgbnZtZV9jb3JlKEUpIHQxMF9waShFKSB4
+aGNpX3BjaShFKSBlaGNpX3BjaShFKSB4aGNpX2hjZChFKSBydHN4X3BjaShFKSBlaGNpX2hjZChF
+KSBjcmM2NF9yb2Nrc29mdChFKSBjcmMzMmNfaW50ZWwoRSkgc2VyaW9fcmF3KEUpIG1mZF9jb3Jl
+KEUpIHVzYmNvcmUoRSkgY3JjNjQoRSkgYmF0dGVyeShFKSB2aWRlbyhFKSB3bWkoRSkgYmFja2xp
+Z2h0KEUpIHNnKEUpIGRtX211bHRpcGF0aChFKSBkbV9tb2QoRSkgc2NzaV9kaF9yZGFjKEUpIHNj
+c2lfZGhfZW1jKEUpIHNjc2lfZGhfYWx1YShFKSBzY3NpX21vZChFKSBzY3NpX2NvbW1vbihFKSBt
+c3IoRSkgZWZpdmFyZnMoRSkNClsgODUwNi40NzU5NjddIENQVTogMiBQSUQ6IDM4OCBDb21tOiBi
+dHJmcy10cmFuc2FjdGkgVGFpbnRlZDogRyAgICAgICAgICAgIEUgICAgICA2LjEuMC01OS40MC1k
+ZWZhdWx0KyAjMzM2DQpbIDg1MDYuNDc1OTcwXSBIYXJkd2FyZSBuYW1lOiBMRU5PVk8gMjBOSlMw
+S1EwNy8yME5KUzBLUTA3LCBCSU9TIFIxMkVUNTVXKDEuMjUgKSAwNy8wNi8yMDIwDQpbIDg1MDYu
+NDc1OTcxXSBSSVA6IDAwMTA6YnRyZnNfcHV0X3RyYW5zYWN0aW9uKzB4MTEyLzB4MTQwIFtidHJm
+c10NClsgODUwNi40NzYwMTVdIENvZGU6IGU5IDQzIDUyIGVkIGNiIDBmIDBiIDViIDVkIDQxIDVj
+IGJlIDAzIDAwIDAwIDAwIDQ4IDg5IGQ3IGU5IGEwIGE3IDE5IGNjIDBmIDBiIGU5IDBkIGZmIGZm
+IGZmIDBmIDBiIGViIGQ2IDBmIDBiIGU5IDQ3IGZmIGZmIGZmIDwwZj4gMGIgZTkgNTAgZmYgZmYg
+ZmYgNDggOGIgYmYgYTAgMDEgMDAgMDAgNDggYzcgYzYgZTMgNTIgOGYgYzAgZTgNClsgODUwNi40
+NzYwMThdIFJTUDogMDAxODpmZmZmYWY1NzgxMTNmZTMwIEVGTEFHUzogMDAwMTAyODINClsgODUw
+Ni40NzYwMjBdIFJBWDogZmZmZjhmZTNmODdjMDA4MCBSQlg6IGZmZmY4ZmUyZjZhM2MyMDAgUkNY
+OiAwMDAwMDAwMDAwMDAwMDAxDQpbIDg1MDYuNDc2MDIyXSBSRFg6IGZmZmY4ZmUyZjZhM2MyMjgg
+UlNJOiAwMDAwMDAwMDAwMDAwMjQ2IFJESTogZmZmZjhmZTJmNmEzYzIwMA0KWyA4NTA2LjQ3NjAy
+M10gUkJQOiBmZmZmOGZlNDk1YzBhNDI4IFIwODogMDAwMDAwMDAwMDAwMDAwMCBSMDk6IGZmZmZh
+ZjU3ODExM2ZkNzANClsgODUwNi40NzYwMjVdIFIxMDogZmZmZmFmNTc4MTEzZmQwMCBSMTE6IGZm
+ZmZmZmZmZmZmZmMwMDAgUjEyOiBmZmZmYWY1NzgxMTNmZTcwDQpbIDg1MDYuNDc2MDI2XSBSMTM6
+IGZmZmY4ZmU0OTVjMGEwMDAgUjE0OiBmZmZmOGZlNDk1YzBhNDUwIFIxNTogZmZmZjhmZTJmNmEz
+YzIyOA0KWyA4NTA2LjQ3NjAyN10gRlM6ICAwMDAwMDAwMDAwMDAwMDAwKDAwMDApIEdTOmZmZmY4
+ZmU1MzBhODAwMDAoMDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KWyA4NTA2LjQ3NjAyOV0g
+Q1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KWyA4NTA2
+LjQ3NjAzMF0gQ1IyOiAwMDAwN2ZiNmIzMTFiMDAwIENSMzogMDAwMDAwMDEwY2IzMDAwMCBDUjQ6
+IDAwMDAwMDAwMDAzNTA2ZTANClsgODUwNi40NzYwMzJdIENhbGwgVHJhY2U6DQpbIDg1MDYuNDc2
+MDM1XSAgPFRBU0s+DQpbIDg1MDYuNDc2MDM4XSAgYnRyZnNfY2xlYW51cF90cmFuc2FjdGlvbisw
+eGQ2LzB4NTcwIFtidHJmc10NClsgODUwNi40NzYwODJdICA/IF9yYXdfc3Bpbl91bmxvY2tfaXJx
+cmVzdG9yZSsweDIzLzB4NDANClsgODUwNi40NzYwODhdICA/IHRyeV90b193YWtlX3VwKzB4OTMv
+MHg1ODANClsgODUwNi40NzYwOTRdICB0cmFuc2FjdGlvbl9rdGhyZWFkKzB4MTVlLzB4MWIwIFti
+dHJmc10NClsgODUwNi40NzYxMzZdICA/IF9fcGZ4X3RyYW5zYWN0aW9uX2t0aHJlYWQrMHgxMC8w
+eDEwIFtidHJmc10NClsgODUwNi40NzYxNzddICBrdGhyZWFkKzB4ZTgvMHgxMTANClsgODUwNi40
+NzYxODFdICA/IF9fcGZ4X2t0aHJlYWQrMHgxMC8weDEwDQpbIDg1MDYuNDc2MTgzXSAgcmV0X2Zy
+b21fZm9yaysweDJjLzB4NTANClsgODUwNi40NzYxODldICA8L1RBU0s+DQpbIDg1MDYuNDc2MTg5
+XSAtLS1bIGVuZCB0cmFjZSAwMDAwMDAwMDAwMDAwMDAwIF0tLS0NCg0KVGhpcyBpcyB2Ni4xKyAo
+eDg2XzY0KSBydW5uaW5nIG9uIE5WTUUuIEkgZGlkIG5vdCBkbyBhbnl0aGluZyBpbiBwYXJ0aWN1
+bGFyIHdoZW4gdGhpcyBoYXBwZW5lZC4NCkkgY2Fubm90IGFjdGl2ZWx5IHJlcHJvZHVjZSBpdCwg
+YnV0IGl0IGhhcHBlbnMgb2Z0ZW4uDQoNClVwb24gY2hlY2sgSSBhbSBnZXR0aW5nIGFuIGVycm9y
+IGluIHBhc3MgNy4NCg0KCVJlZ2FyZHMNCgkJT2xpdmVyDQo=
