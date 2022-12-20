@@ -2,75 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 925376526C2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Dec 2022 20:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F486526DD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Dec 2022 20:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233955AbiLTTIG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Dec 2022 14:08:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
+        id S233991AbiLTTRd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Dec 2022 14:17:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233909AbiLTTIE (ORCPT
+        with ESMTP id S229791AbiLTTRb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Dec 2022 14:08:04 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C193EE2E
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 11:08:03 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id co23so12729396wrb.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 11:08:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/rL+TycpMQLfB5P4Zn9xgGfUWg8yPCNTwrE46ZNldMM=;
-        b=A+aO5+uSh0O7dpkxd56ACzLt18XNTvXLc6UxjycHhF6o82VqMhnPqmKQeMB/w60n7w
-         mxjcO3FEOPq4+/cU9SGkalCcCqnO6zBQww+25D+3fQCOKm1+CvvRi+/yJpm40njecEtO
-         mjyW07AEIt1wH/1UJonfD+StjDAoeVFlkLhlJenCqtRU8CT7UYLG1mkaM5BrFrt532uQ
-         aCu4/Yrsr2COotCV7+QZQif/q7ygGs8LBd8lYlYOlDEgNBnCnu+7svr3ofi/t9iaEGy8
-         dvBs8XRbH9aq5YRbnk7+zq1A+sWHS/Z7ESHX1b9+TDAa64m8bu7A9qaQ0P8daoeM8mzQ
-         lzwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/rL+TycpMQLfB5P4Zn9xgGfUWg8yPCNTwrE46ZNldMM=;
-        b=cu05LMuP/SYWIsilEt5AbLG8Uk3pAVqpXn2jhXPWboAU74z1c2qz1BeMAK8yClEH42
-         TKilw1Btj2PLRW/gc9mhSiqzli8DIhIyk8hUk65pvD5+FwkyBvMgYcde/G8JVyobKkLz
-         ha9hTLnx0yLKEaptUvBDrJj0Ajx2RU049JEWmXNWAqtC/RPFT6hOaZkA5rqxPkhEtrK2
-         0ispL5wHG00w3eJAMPYY15BNLC+8Sk7pYrCKzAqtGv7Wt0+/JpMRJiHd/XKRXFmAw94t
-         9qrRWxIKrIoLL9jXg9n53WTQTLosQjR4qaB/4668a+RUQcWRKzJEAnD4qlxR/YHEW6Es
-         KmXw==
-X-Gm-Message-State: ANoB5pkKCysOu4LgGg1VvNrA3DbNFDpZrxJyOBVzJDFiHjSs1rDOtXAH
-        dCiL5hCUyjRvM88vbzfWRxybF2fem1YK7pHfIsQ=
-X-Google-Smtp-Source: AA0mqf6QEditEKCwq3gTGUksuPgxN/lvtVZLybeXeQQt64QqV8iwAoTl2DGu9MVLCMhGQPAJo3C+a0PULOX0qJhWk2k=
-X-Received: by 2002:a05:6000:787:b0:24e:ca7b:abcf with SMTP id
- bu7-20020a056000078700b0024eca7babcfmr1239070wrb.638.1671563281525; Tue, 20
- Dec 2022 11:08:01 -0800 (PST)
+        Tue, 20 Dec 2022 14:17:31 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D5FE1A
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Dec 2022 11:17:30 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 22B456029A;
+        Tue, 20 Dec 2022 19:17:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1671563849;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XHrlbZbAHx6HgiASBDYpw/iDxLRufFQU7asxqAEWK3M=;
+        b=pn/XCSg76MsSHQppOLN/VMlHqKubJTEHSHwthyRvXCV9S13zi81VmXpA526UMgn5fRzk+V
+        hxnDHEkUxOjMtIy8S0a63q3aQc8GzapASJ9A8HK9GGOz68Yx3T+O4MFUG6GxIv1u3QGY/S
+        G1ZxEf3ff2YNBefh4GcK8/94Icnz+Q0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1671563849;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XHrlbZbAHx6HgiASBDYpw/iDxLRufFQU7asxqAEWK3M=;
+        b=hNTtSe7DRqrRwoFUZKSeHLR1UbHQodx0A23AXzv5Hsz5MlXbQ7Onr+fCleQ3uor+HKfIRQ
+        /ziCgl4wsS0hZ+Bg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 064B413254;
+        Tue, 20 Dec 2022 19:17:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GAe1AEkKomPmOQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 20 Dec 2022 19:17:29 +0000
+Date:   Tue, 20 Dec 2022 20:16:43 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 3/8] btrfs: fix uninit warning from get_inode_gen usage
+Message-ID: <20221220191643.GQ10499@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1671221596.git.josef@toxicpanda.com>
+ <aa2e624f5626b37a267ea123baf7db2d76be41ee.1671221596.git.josef@toxicpanda.com>
 MIME-Version: 1.0
-Received: by 2002:adf:e30c:0:0:0:0:0 with HTTP; Tue, 20 Dec 2022 11:08:00
- -0800 (PST)
-Reply-To: ava014708@gmail.com
-From:   Dr Ava Smith <avavaava9090@gmail.com>
-Date:   Tue, 20 Dec 2022 11:08:00 -0800
-Message-ID: <CAL0WiVU14P1OW5PckPZ5S0aMXF_tU=Z3RUFa1JQh=T3q=-ELoQ@mail.gmail.com>
-Subject: Hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa2e624f5626b37a267ea123baf7db2d76be41ee.1671221596.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-Hello Dear,
-how are you today?hope you are fine
-My name is Dr Ava Smith ,Am an English and French nationalities.
-I will give you pictures and more details about me as soon as i hear from you
-Thanks
-Ava
+On Fri, Dec 16, 2022 at 03:15:53PM -0500, Josef Bacik wrote:
+> Anybody that calls get_inode_gen() can have an uninitialized gen if
+> there's an error.  This isn't a big deal because all the users just exit
+> if they get an error, however it makes -Wmaybe-uninitialized complain,
+> so fix this up to always init the passed in gen, this quiets all of the
+> uninitialized warnings in send.c.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/send.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 67f7c698ade3..25a235179edb 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -955,14 +955,12 @@ static int get_inode_info(struct btrfs_root *root, u64 ino,
+>  static int get_inode_gen(struct btrfs_root *root, u64 ino, u64 *gen)
+>  {
+>  	int ret;
+> -	struct btrfs_inode_info info;
+> +	struct btrfs_inode_info info = {};
+
+The { 0 } initializer should be used.
