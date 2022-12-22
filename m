@@ -2,79 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FC9654560
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Dec 2022 17:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF696547A0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Dec 2022 22:02:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbiLVQvw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Dec 2022 11:51:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
+        id S235178AbiLVVCp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Dec 2022 16:02:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbiLVQvu (ORCPT
+        with ESMTP id S229659AbiLVVCo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Dec 2022 11:51:50 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A74B7F1
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Dec 2022 08:51:47 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2BMGpOt9009971
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Dec 2022 11:51:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1671727886; bh=8VQE476fItcQEyvNi8YKNC8SHTVYFOvKq/RWJ11ZYc4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Y1HUp4TlkjWs/IvOpsjLbqbpZe+niMvbTyQFgq18Rn7JlP6ObL6lD9ZL5Xnb/S0ue
-         7iHqTFmahQYKRygUKPKZDG8lqTJ8ZzzJIfFiovx5n6ShIphokTD5AF1yJhNOU8A8O2
-         hyU19A5xaWaML2UA+BXAGFCY3f51984ew9C5fSNV8mrd9gB2NefJn6U/o338pQKl16
-         bWZ/t/Sf4bjjkjzOCuuRpEy4IFbCPX2c+X/kAQAFZW9JzTBbaQhIiLnUcUTH6208gg
-         7unZOMQnyuw8bTiHMGjyn04+lWpvvkSCvQzOVH/QpmmM3Q4olO1oAhAP6SHieRES+t
-         JdB6A/aagyooQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id C831615C39F2; Thu, 22 Dec 2022 11:51:23 -0500 (EST)
-Date:   Thu, 22 Dec 2022 11:51:23 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: Separate mailing list (and git and patchwork) for fsverity?
-Message-ID: <Y6SLC9DG1s/4NhPL@mit.edu>
-References: <Y5jRbLEJh3S46Jer@sol.localdomain>
- <Y6ObULdVm2UN5kw1@sol.localdomain>
+        Thu, 22 Dec 2022 16:02:44 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADACC13E90
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Dec 2022 13:02:41 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0F55124E2E
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Dec 2022 21:02:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1671742960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=tt0L73BCMp/WrbnyrqkOPoAXNi5S4ICXDatirYGxod4=;
+        b=XvV1/IWj73ec+j/6pRWIniGNbvlmryLm2gFbprToaWyI8gRg/IYVcle7RUdfEj3EJKkBns
+        57g668Qh9sQFEm9FHYoGjSKd5KPb/AkUT3oaihuGQIipcW8E8Ys8JqmVYtYN6sHNE5baJR
+        qspUY5HJIOj3XaUhXSlHLn3u+CqII60=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 07C042C141
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Dec 2022 21:02:40 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BEFC2DA859; Thu, 22 Dec 2022 21:57:16 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Btrfs progs release 6.1
+Date:   Thu, 22 Dec 2022 21:57:16 +0100
+Message-Id: <20221222205716.4916-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y6ObULdVm2UN5kw1@sol.localdomain>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,SUSPICIOUS_RECIPS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 21, 2022 at 03:48:32PM -0800, Eric Biggers wrote:
-> > What would people say about having a separate mailing list, git repo, and
-> > patchwork project for fsverity?  So the fsverity entry would look like:
-> > 
-> > FSVERITY: READ-ONLY FILE-BASED AUTHENTICITY PROTECTION
-> > [...]
-> > L:      linux-fsverity@vger.kernel.org
-> > Q:      https://patchwork.kernel.org/project/linux-fsverity/list/
-> > T:      git git://git.kernel.org/pub/scm/fs/fsverity/fsverity.git
-> > [...]
+Hi,
 
-This makes sense to me.  I wonder if we should use the new
-https://lists.linux.dev mailing list hosting service with a mailing
-list name fsverity@lsts.linux.dev?
+btrfs-progs version 6.1 have been released.
 
-The thinking was that we would eventually migrate lists from vger to
-the new list infrastructure, so it might make sense to just use it for
-a new list.  All mailing lists lists.linux.dev are archived on
-lore.kernel.org, so other than the e-mail address and using something
-a bit more modern than Majordomo for list management, it's mostly the
-same.
+There are new commands that are in the experimental mode until the interface
+stabilizes, which means that it's a good time to give feedback or point out
+deficiencies. There's no ETA set to remove the experimental status, I think and
+hope that the feedback loop could work better if there's something tangible and
+ready to test. The code is not the hard part unlike the interfaces and
+formatting, this starts at the use case and user input is the important part.
 
-						- Ted
+The json output is also kind of experimental but there are tools that want it
+now and can give feedback before there's some common format for all commands.
+
+Relevant issues
+
+* reflink group and commands: https://github.com/kdave/btrfs-progs/issues/396
+* inspect list-chunks: https://github.com/kdave/btrfs-progs/issues/559
+* all current experimental features: https://github.com/kdave/btrfs-progs/issues?q=is%3Aissue+is%3Aopen+label%3Aexperimental
+
+Changelog:
+
+   * filesystem df: add json output
+   * qgroup show: add json output
+   * new command: 'inspect-internal map-swapfile' to check swapfile and its
+     swapfile_offset value used for hibernation
+   * corrupt-block: fix parsing of option --root argument
+   * experimental (interfaces not finalized):
+      * new command 'inspect-internal list-chunks'
+      * new group reflink, command clone
+   * other:
+      * synchronize some files with kernel versions
+      * docs updates
+      * build: use gnu11
+
+Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+
+Shortlog:
+
+David Sterba (21):
+      btrfs-progs: inspect: new subcommand to list chunks
+      btrfs-progs: string-table: cleanup and enhance formatting capabilities
+      btrfs-progs: string-table: check bounds before writing to a cell
+      btrfs-progs: string-table: add ranged API for printing and clearing
+      btrfs-progs: tests: add string-table test framework
+      btrfs-progs: inspect: new command map-swapfile
+      btrfs-progs: fi df: implement json output
+      btrfs-progs: docs: swapfile and hibernation
+      btrfs-progs: fi mkswapfile: update help text
+      btrfs-progs: add new group reflink and command
+      btrfs-progs: docs: fix typos
+      btrfs-progs: docs: add 6.1 development statistics
+      btrfs-progs: docs: updates, clarifications
+      btrfs-progs: qgroup show: add json output
+      btrfs-progs: add json formatter for escaped string
+      btrfs-progs: use escaped json format for paths
+      btrfs-progs: device stats: fix json formatter type for devid
+      btrfs-progs: docs: typo fixups and formatting updates
+      btrfs-progs: docs: add some kernel 6.1 release notes
+      btrfs-progs: update CHANGES for 6.1
+      Btrfs progs v6.1
+
+Josef Bacik (21):
+      btrfs-progs: build: turn on more compiler warnings and use -Wall
+      btrfs-progs: fix make clean to clean convert properly
+      btrfs-progs: build: use -std=gnu11
+      btrfs-progs: ioctl: move btrfs_err_str into common/utils.h
+      btrfs-progs: rename qgroup items to match the kernel naming scheme
+      btrfs-progs: make btrfs_qgroup_level helper match the kernel
+      btrfs-progs: ioctl: move dev-replace NO_RESULT definition into replace.c
+      btrfs-progs: image: rename BLOCK_* to IMAGE_BLOCK_* for metadump
+      btrfs-progs: rename btrfs_item_end to btrfs_item_data_end
+      btrfs-progs: copy ioctl.h into libbtrfs
+      btrfs-progs: stop using btrfs_root_item_v0
+      btrfs-progs: make the find extent buffer helpers take fs_info
+      btrfs-progs: move dirty eb tracking to it's own io_tree
+      btrfs-progs: do not pass io_tree into verify_parent_transid
+      btrfs-progs: move extent cache code directly into btrfs_fs_info
+      btrfs-progs: delete state_private code
+      btrfs-progs: rename extent buffer flags to EXTENT_BUFFER_*
+      btrfs-progs: sync compression.h from the kernel
+      btrfs-progs: replace btrfs_leaf_data with btrfs_item_nr_offset
+      btrfs-progs: don't use btrfs_header_csum helper
+      btrfs-progs: make write_extent_buffer take a const eb
+
+Qu Wenruo (1):
+      btrfs-progs: corrupt-block: fix the mismatch in --root and -r options
+
