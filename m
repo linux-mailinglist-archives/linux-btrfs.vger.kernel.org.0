@@ -2,208 +2,471 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE396539F7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Dec 2022 00:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302A3653A16
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Dec 2022 01:24:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbiLUX7k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Dec 2022 18:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
+        id S231703AbiLVAYs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Dec 2022 19:24:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbiLUX7i (ORCPT
+        with ESMTP id S229777AbiLVAYr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Dec 2022 18:59:38 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638A2E0D0
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Dec 2022 15:59:37 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A3DEF5FCAA;
-        Wed, 21 Dec 2022 23:59:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1671667175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=IQfzz8DGpEsIg1Y401AvIAOx9rE9v9Fy1ZdWB+9QG78=;
-        b=WLLxo8Vvpk7DIqBkfp1wtP5KRM2PwoDnFQNg4+AprAUEI1bvDm+3RpXXpBX7JxzSBURj7S
-        Jv56S1lm5v8RkvIRdN+1hFjVzvwNDMklIlG5JABkjt5kz3Be4RkyFj2R1/KGcMDgAh+jlR
-        tcmWvFhhvvss/gbG2NyfIw3JO8CMaco=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C57791330B;
-        Wed, 21 Dec 2022 23:59:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UTeUI+ado2PvdwAAMHmgww
-        (envelope-from <wqu@suse.com>); Wed, 21 Dec 2022 23:59:34 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Chung-Chiang Cheng <shepjeng@gmail.com>
-Subject: [PATCH v3] btrfs: fix compat_ro checks against remount
-Date:   Thu, 22 Dec 2022 07:59:17 +0800
-Message-Id: <e343fbf122d17f6d74e3630b197f7b344bbdaff1.1671667128.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.0
+        Wed, 21 Dec 2022 19:24:47 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744E42034C
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Dec 2022 16:24:45 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id k7-20020a056830168700b0067832816190so232656otr.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Dec 2022 16:24:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=d2+BAHYia8bnRpOMapKaqwON7KCp+W9VkOCqMt3Vz7Q=;
+        b=gJj4KiWmNmXVA/wZLF1wPj5O3r/b6vFRldWe0BMIxjE6oCf/CcdJu60Hcmb2TeSRXw
+         QAhPBQYbSA6FgBlEnh+ISk2gMA+LEHsdb7ZSaqdnhvtIkcI0Ra1+VRMe6RFzrANTMr6H
+         M2CPfvlmb4d5I19DjQKSSiTUfYeX0mflXWK9wcYCY04NjkRRgs9QNJrq/gZyWiAb2IlK
+         TUfchibXZ2gkZaJJfeLcriCS/RP3GHaHyY0KD/6qnLfPTv+ue79S9/XksQOe14zmo2Hg
+         tQ/twSbKsUZmcCvvKbIq29sizz6T/pYzMb3kQlgOSqXQxDAP1Xx1Xo9BdZIe+7zZ8NF3
+         nhIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d2+BAHYia8bnRpOMapKaqwON7KCp+W9VkOCqMt3Vz7Q=;
+        b=wCOwKmP7HNDBJgLWxf3c/lDsCPA5YBeJRHmMQmuFO/eR+D3u3HS2+iJILuJn15/c8f
+         tHHdanlS6wSVaHckVbmHk+Iega86jU7fq6ugVsfzVqMOM4QDqygugjyedSL+m9RbPJbW
+         CQJHq39Klf9q/IHXlgkx6O3RPrnaQ/4ofSwrQpoYm0j0NdfZcezdnqvbFjSkI/lpfyZa
+         9H13jJ/ukGbL/dYB4C2cA3l5u1YwcrOMoxdYCdeliv2TausCconFBLQV6hE6SD1URl6i
+         GeBvdttHmiB8nQVN+AMN7fRqOhlpsUfdr1+kJPSv8SnsIyp8d8XDxHpBKnWoOQhvMkBG
+         TS6Q==
+X-Gm-Message-State: AFqh2kpHOAcWLK8Dpdgfb7xeNWPH2NRxoi9LYLD5LDj6ltXP1ZTRHthh
+        ESJHMU9YcTX0NIpCtf3f3u03LQLIjuj4tQ3x9FpEmfNuYdYok06sEls=
+X-Google-Smtp-Source: AMrXdXsoce4/+jZBOq+o3efu80CIti8sPeEMQF0TiiI/FxW2bvTDPm/nB+xCTt+t/5r/YTykD+arDaRaMHCFRmysUIM=
+X-Received: by 2002:a9d:6a48:0:b0:672:90e6:8ba9 with SMTP id
+ h8-20020a9d6a48000000b0067290e68ba9mr281087otn.236.1671668684515; Wed, 21 Dec
+ 2022 16:24:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CACyAFTK61Ncek=WwYwvWKvN6_fECnALTzFcwqQHZKSDP3u_D0g@mail.gmail.com>
+ <57310cd8-16b8-9918-42f5-efda114a944d@gmx.com> <CACyAFTLY4_xtgJjCXKK6JTcjAhXpWYhnnALndTLehT3=NQ8+AA@mail.gmail.com>
+ <e15df0f8-72da-2c73-e3af-062c05001f95@gmx.com> <CACyAFTJxWDV0NpRrMTtrB9XQqZj+kyi=jejRd63zVAWCoqSSow@mail.gmail.com>
+ <29d53614-a19b-5bbf-cb54-aa8ce68a1770@gmx.com>
+In-Reply-To: <29d53614-a19b-5bbf-cb54-aa8ce68a1770@gmx.com>
+From:   Colin Stark <stark.colin@gmail.com>
+Date:   Thu, 22 Dec 2022 01:24:07 +0100
+Message-ID: <CACyAFTKVw85FfftvaJioX=MFfCZnvtpynb+0b-zAMcaS+rZnQA@mail.gmail.com>
+Subject: Re: BTRFS volume unmountable: open_ctree failed
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-Even with commit 81d5d61454c3 ("btrfs: enhance unsupported compat RO
-flags handling"), btrfs can still mount a fs with unsupported compat_ro
-flags read-only, then remount it RW:
+Unfortunately, the result is very similar:
 
-  # btrfs ins dump-super /dev/loop0 | grep compat_ro_flags -A 3
-  compat_ro_flags		0x403
-			( FREE_SPACE_TREE |
-			  FREE_SPACE_TREE_VALID |
-			  unknown flag: 0x400 )
+root@server:~/btrfs-progs# ./btrfs check -r 316903884406784
+--chunk-root 365555539050496 /dev/sdb
+Opening filesystem to check...
+No mapping for 365555539050496-365555539066880
+Couldn't map the block 365555539050496
+Couldn't map the block 365555539050496
+bad tree block 365555539050496, bytenr mismatch, want=365555539050496, have=0
+ERROR: cannot read chunk root
+ERROR: cannot open file system
 
-  # mount /dev/loop0 /mnt/btrfs
-  mount: /mnt/btrfs: wrong fs type, bad option, bad superblock on /dev/loop0, missing codepage or helper program, or other error.
-         dmesg(1) may have more information after failed mount system call.
-  ^^^ RW mount failed as expected ^^^
+Thanks for your continued help,
+Colin
 
-  # dmesg -t | tail -n5
-  loop0: detected capacity change from 0 to 1048576
-  BTRFS: device fsid cb5b82f5-0fdd-4d81-9b4b-78533c324afa devid 1 transid 7 /dev/loop0 scanned by mount (1146)
-  BTRFS info (device loop0): using crc32c (crc32c-intel) checksum algorithm
-  BTRFS info (device loop0): using free space tree
-  BTRFS error (device loop0): cannot mount read-write because of unknown compat_ro features (0x403)
-  BTRFS error (device loop0): open_ctree failed
-
-  # mount /dev/loop0 -o ro /mnt/btrfs
-  # mount -o remount,rw /mnt/btrfs
-  ^^^ RW remount succeeded unexpectedly ^^^
-
-[CAUSE]
-Currently we use btrfs_check_features() to check compat_ro flags against
-our current mount flags.
-
-That function get reused between open_ctree() and btrfs_remount().
-
-But for btrfs_remount(), the super block we passed in still has the old
-mount flags, thus btrfs_check_features() still believes we're mounting
-read-only.
-
-[FIX]
-Replace the existing @sb argument with @is_rw_mount.
-
-As originally we only use @sb to determine if the mount is RW.
-
-Now it's callers' responsibility to determine if the mount is RW, and
-since there are only two callers, the check is pretty simple:
-
-- caller in open_ctree()
-  Just pass !sb_rdonly().
-
-- caller in btrfs_remount()
-  Pass !(*flags & SB_RDONLY), as our check should be against the new
-  flags.
-
-Now we can correctly reject the RW remount:
-
-  # mount /dev/loop0 -o ro /mnt/btrfs
-  # mount -o remount,rw /mnt/btrfs
-  mount: /mnt/btrfs: mount point not mounted or bad option.
-         dmesg(1) may have more information after failed mount system call.
-  # dmesg -t | tail -n 1
-  BTRFS error (device loop0: state M): cannot mount read-write because of unknown compat_ro features (0x403)
-
-Reported-by: Chung-Chiang Cheng <shepjeng@gmail.com>
-Fixes: 81d5d61454c3 ("btrfs: enhance unsupported compat RO flags handling")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Add a comment on why @rw_mount is calculated this way
-  This will cover RW->RW and RW->RO remount cases, but since the
-  fs is already RW, we should not has any unsupported compat_ro flags
-  anyway.
-
-v3:
-- Use @is_rw_mount to replace @sb argument completely
-  This should make the code easier to read and reduce the argument list.
----
- fs/btrfs/disk-io.c | 8 +++++---
- fs/btrfs/disk-io.h | 2 +-
- fs/btrfs/super.c   | 2 +-
- 3 files changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 0888d484df80..8aa7d79a341a 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3381,6 +3381,8 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
- /*
-  * Do various sanity and dependency checks of different features.
-  *
-+ * @is_rw_mount:	If the mount is read-write.
-+ *
-  * This is the place for less strict checks (like for subpage or artificial
-  * feature dependencies).
-  *
-@@ -3391,7 +3393,7 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
-  * (space cache related) can modify on-disk format like free space tree and
-  * screw up certain feature dependencies.
-  */
--int btrfs_check_features(struct btrfs_fs_info *fs_info, struct super_block *sb)
-+int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount)
- {
- 	struct btrfs_super_block *disk_super = fs_info->super_copy;
- 	u64 incompat = btrfs_super_incompat_flags(disk_super);
-@@ -3430,7 +3432,7 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, struct super_block *sb)
- 	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE)
- 		incompat |= BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
- 
--	if (compat_ro_unsupp && !sb_rdonly(sb)) {
-+	if (compat_ro_unsupp && is_rw_mount) {
- 		btrfs_err(fs_info,
- 	"cannot mount read-write because of unknown compat_ro features (0x%llx)",
- 		       compat_ro);
-@@ -3633,7 +3635,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		goto fail_alloc;
- 	}
- 
--	ret = btrfs_check_features(fs_info, sb);
-+	ret = btrfs_check_features(fs_info, !sb_rdonly(sb));
- 	if (ret < 0) {
- 		err = ret;
- 		goto fail_alloc;
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index 363935cfc084..f2f295eb6103 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -50,7 +50,7 @@ int __cold open_ctree(struct super_block *sb,
- void __cold close_ctree(struct btrfs_fs_info *fs_info);
- int btrfs_validate_super(struct btrfs_fs_info *fs_info,
- 			 struct btrfs_super_block *sb, int mirror_num);
--int btrfs_check_features(struct btrfs_fs_info *fs_info, struct super_block *sb);
-+int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount);
- int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirrors);
- struct btrfs_super_block *btrfs_read_dev_super(struct block_device *bdev);
- struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index d5de18d6517e..433ce221dc5c 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1705,7 +1705,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 	if (ret)
- 		goto restore;
- 
--	ret = btrfs_check_features(fs_info, sb);
-+	ret = btrfs_check_features(fs_info, !(*flags & SB_RDONLY));
- 	if (ret < 0)
- 		goto restore;
- 
--- 
-2.39.0
-
+On Thu, Dec 22, 2022 at 12:30 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> On 2022/12/21 20:57, Colin Stark wrote:
+> > dump-super output is attached.
+> >
+> > I also realize I never provided btrfs fi show output:
+> > Label: 'data'  uuid: 2296d823-e45e-4f54-a053-0baa1531e73c
+> >          Total devices 10 FS bytes used 54.87TiB
+> >          devid    1 size 7.28TiB used 7.28TiB path /dev/sdb
+> >          devid    2 size 7.28TiB used 7.28TiB path /dev/sdc
+> >          devid    3 size 16.37TiB used 8.00TiB path /dev/sdd
+> >          devid    5 size 7.28TiB used 7.28TiB path /dev/sdi
+> >          devid    6 size 16.37TiB used 8.00TiB path /dev/sdf
+> >          devid    7 size 16.37TiB used 8.00TiB path /dev/sde
+> >          devid    8 size 7.28TiB used 7.28TiB path /dev/sda
+> >          devid    9 size 7.28TiB used 7.28TiB path /dev/sdh
+> >          devid   10 size 5.46TiB used 5.46TiB path /dev/sdk
+> >          devid   11 size 5.46TiB used 5.46TiB path /dev/sdj
+>
+> The dump-super output looks very weird.
+>
+> Firstly, the system chunks are too small.
+>
+> Normally our max chunk size for RAID1C4 should be 32M, but in your case,
+> they are only in hundreds of KiBs.
+>
+> I'm not sure if this is correct, as we only have system chunk array, no
+> chunk tree to be sure.
+>
+> Secondly, your chunk tree is just modified in the latest commit
+> (1328013), thus you may have a chance to recover using the older tree
+> root and older chunk root.
+>
+> You can verify it by the following command:
+>
+>   # btrfs check -r 316903884406784 --chunk-root 365555539050496 <device>
+>
+> If it no longer error out very quick, then you may have the chance to
+> recover most of your data.
+>
+> Of course, please attach the full output of above command.
+>
+> Thanks,
+> Qu
+> >
+> > On Wed, Dec 21, 2022 at 1:53 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> >>
+> >>
+> >>
+> >> On 2022/12/21 20:36, Colin Stark wrote:
+> >>> Unfortunately no luck here.  The command crashes after running for
+> >>> about 30 minutes.
+> >>>
+> >>> I tried to get a backtrace for the issue, but I think something is
+> >>> missing from my setup.  Please advise if you'd like me to try again to
+> >>> get a full backtrace.  I also found this open issue from 2018 that
+> >>> appears to be similar, though no progress appears to have been made:
+> >>> https://github.com/kdave/btrfs-progs/issues/130
+> >>>
+> >>> That aside, do I have any options left for trying to salvage this volume?
+> >>
+> >> OK, that BUG_ON() is mostly related to RAID6 (which its number of copies
+> >> can be the number of stripes, thus exceeding the MAX_MIRRORS).
+> >>
+> >> But I doubt even if it works, chunk-recovery may not be the best
+> >> solution for your case.
+> >> (Which looks like a missing system chunk item).
+> >>
+> >> Mind to provide the following output?
+> >>
+> >>    # btrfs ins dump-super -f <device>
+> >>
+> >> You only need to run it on any of the array.
+> >>
+> >> Thanks,
+> >> Qu
+> >>
+> >>>
+> >>> Thanks for your help.
+> >>>
+> >>> Output:
+> >>> root@server:~/btrfs-progs# LD_LIBRARY_PATH=. gdb ./btrfs # rescue
+> >>> chunk-recover -v /dev/sdb
+> >>> GNU gdb (Ubuntu 12.1-3ubuntu2) 12.1
+> >>> Copyright (C) 2022 Free Software Foundation, Inc.
+> >>> License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+> >>> This is free software: you are free to change and redistribute it.
+> >>> There is NO WARRANTY, to the extent permitted by law.
+> >>> Type "show copying" and "show warranty" for details.
+> >>> This GDB was configured as "x86_64-linux-gnu".
+> >>> Type "show configuration" for configuration details.
+> >>> For bug reporting instructions, please see:
+> >>> <https://www.gnu.org/software/gdb/bugs/>.
+> >>> Find the GDB manual and other documentation resources online at:
+> >>>       <http://www.gnu.org/software/gdb/documentation/>.
+> >>>
+> >>> For help, type "help".
+> >>> Type "apropos word" to search for commands related to "word"...
+> >>> Reading symbols from ./btrfs...
+> >>> (gdb) run rescue chunk-recover -v /dev/sdb
+> >>> Starting program: /root/btrfs-progs/btrfs rescue chunk-recover -v /dev/sdb
+> >>> [Thread debugging using libthread_db enabled]
+> >>> Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+> >>> All Devices:
+> >>>           Device: id = 9, name = /dev/sdh
+> >>>           Device: id = 11, name = /dev/sdj
+> >>>           Device: id = 8, name = /dev/sda
+> >>>           Device: id = 2, name = /dev/sdc
+> >>>           Device: id = 7, name = /dev/sde
+> >>>           Device: id = 5, name = /dev/sdi
+> >>>           Device: id = 10, name = /dev/sdk
+> >>>           Device: id = 3, name = /dev/sdd
+> >>>           Device: id = 6, name = /dev/sdf
+> >>>           Device: id = 1, name = /dev/sdb
+> >>>
+> >>> [New Thread 0x7ffff7c516c0 (LWP 17845)]
+> >>> [New Thread 0x7ffff74506c0 (LWP 17846)]
+> >>> [New Thread 0x7ffff6c4f6c0 (LWP 17847)]
+> >>> [New Thread 0x7ffff644e6c0 (LWP 17848)]
+> >>> [New Thread 0x7ffff5c4d6c0 (LWP 17849)]
+> >>> [New Thread 0x7ffff544c6c0 (LWP 17850)]
+> >>> [New Thread 0x7ffff4c4b6c0 (LWP 17851)]
+> >>> [New Thread 0x7fffdbfff6c0 (LWP 17852)]
+> >>> [New Thread 0x7fffd3fff6c0 (LWP 17853)]
+> >>> [New Thread 0x7fffdb7fe6c0 (LWP 17854)]
+> >>> Scanning: 61882368 in dev0, 60243968 in dev1, 189743104 in dev2,
+> >>> 210714624 in dev3, 233652224 in dev4, 63459328 in dev5, 62996480 in
+> >>> dev6, 225656832 in dev7,Scanning: 120668160 in dev0, 119750656 in
+> >>> dev1, 381763584 in dev2, 424230912 in dev3, 465911808 in dev4,
+> >>> 122241024 in dev5, 122372096 in dev6, 457916416 in dScanning:
+> >>> 179650560 in dev0, 179388416 in dev1, 573784064 in dev2, 636993536 in
+> >>> dev3, 699875328 in dev4, 181223424 in dev5, 181747712 in dev6,
+> >>> 691879936 in dScanning: 239681536 in dev0, 240205824 in dev1,
+> >>> 765673472 in dev2, 850477056 in dev3, 938033152 in dev4, 241254400 in
+> >>> dev5, 242565120 in dev6, 929906688 in dScanning: 298926080 in dev0,
+> >>> 299974656 in dev1, 957693952 in dev2, 1066352640 in dev3, 1171996672
+> >>> in dev4, 300498944 in dev5, 302333952 in dev6, 1164001280 iScanning:
+> >>> 358432768 in dev0, 360136704 in dev1, 1149583360 in dev2, 1284718592
+> >>> in dev3, 1407184896 in dev4, 360005632 in dev5, 362496000 in dev6,
+> >>> 1399275520 Scanning: 417808384 in dev0, 420167680 in dev1, 1341341696
+> >>> in dev2, 1503084544 in dev3, 1642545152 in dev4, 419381248 in dev5,
+> >>> 422526976 in dev6, 1634549760 Scanning: 477052928 in dev0, 480067584
+> >>> in dev1, 1533362176 in dev2, 1721581568 in dev3, 1877164032 in dev4,
+> >>> 478625792 in dev5, 482689024 in dev6, 1869430784 Scanning: 540360704
+> >>> in dev0, 544161792 in dev1, 1720954880 in dev2, 1936539648 in dev3,
+> >>> 2127773696 in dev4, 541933568 in dev5, 546783232 in dev6, 2119962624
+> >>> Scanning: 601833472 in dev0, 606158848 in dev1, 1913077760 in dev2,
+> >>> 2152284160 in dev3, 2369732608 in dev4, 603144192 in dev5, 608649216
+> >>> in dev6, 2361999360 Scanning: 660553728 in dev0, 668942336 in dev1,
+> >>> 2103001088 in dev2, 2365538304 in dev3, 2603827200 in dev4, 658980864
+> >>> in dev5, 671039488 in dev6, 2596093952 Scanning: 720453632 in dev0,
+> >>> 729366528 in dev1, 2294759424 in dev2, 2581020672 in dev3, 2840412160
+> >>> in dev4, 718618624 in dev5, 731332608 in dev6, 2832809984 Scanning:
+> >>> 781139968 in dev0, 790839296 in dev1, 2485731328 in dev2, 2793226240
+> >>> in dev3, 3080011776 in dev4, 778911744 in dev5, 792674304 in dev6,
+> >>> 3072663552 Scanning: 841957376 in dev0, 852443136 in dev1, 2677620736
+> >>> in dev2, 2998222848 in dev3, 3321446400 in dev4, 839860224 in dev5,
+> >>> 854409216 in dev6, 3314106368 Scanning: 901111808 in dev0, 914309120
+> >>> in dev1, 2869116928 in dev2, 3212021760 in dev3, 3562618880 in dev4,
+> >>> 882102272 in dev5, 916275200 in dev6, 3555540992 Scanning: 960577536
+> >>> in dev0, 975912960 in dev1, 3061137408 in dev2, 3426304000 in dev3,
+> >>> 3800121344 in dev4, 931741696 in dev5, 978272256 in dev6, 3793174528
+> >>> Scanning: 1020739584 in dev0, 1036730368 in dev1, 3253157888 in dev2,
+> >>> 3640606720 in dev3, 4039196672 in dev4, 989675520 in dev5, 1039220736
+> >>> in dev6, 40321187Scanning: 1080246272 in dev0, 1097023488 in dev1,
+> >>> 3445178368 in dev2, 3862511616 in dev3, 4274864128 in dev4, 1049051136
+> >>> in dev5, 1099251712 in dev6, 4268048Scanning: 1142636544 in dev0,
+> >>> 1160200192 in dev1, 3636936704 in dev2, 4082581504 in dev3, 4522102784
+> >>> in dev4, 1110654976 in dev5, 1162432512 in dev6, 4515512Scanning:
+> >>> 1204371456 in dev0, 1223245824 in dev1, 3828957184 in dev2, 4304617472
+> >>> in dev3, 4767301632 in dev4, 1171210240 in dev5, 1225342976 in dev6,
+> >>> 4742135Scanning: 1270824960 in dev0, 1285111808 in dev1, 4020977664 in
+> >>> dev2, 4520361984 in dev3, 5010178048 in dev4, 1226653696 in dev5,
+> >>> 1287340032 in dev6, 4965351Scanning: 1333739520 in dev0, 1349337088 in
+> >>> dev1, 4212998144 in dev2, 4724572160 in dev3, 5260525568 in dev4,
+> >>> 1285898240 in dev5, 1351565312 in dev6, 5176901Scanning: 1394425856 in
+> >>> dev0, 1410809856 in dev1, 4404887552 in dev2, 4930093056 in dev3,
+> >>> 5501173760 in dev4, 1346715648 in dev5, 1412907008 in dev6,
+> >>> 5417811Scanning: 1454981120 in dev0, 1472806912 in dev1, 4596908032 in
+> >>> dev2, 5131419648 in dev3, 5743656960 in dev4, 1400848384 in dev5,
+> >>> 1475166208 in dev6, 5660426Scanning: 1513832448 in dev0, 1534017536 in
+> >>> dev1, 4788928512 in dev2, 5336141824 in dev3, 5982208000 in dev4,
+> >>> 1451835392 in dev5, 1536376832 in dev6, 5899108Scanning: 1573076992 in
+> >>> dev0, 1594310656 in dev1, 4980948992 in dev2, 5555306496 in dev3,
+> >>> 6215778304 in dev4, 1510948864 in dev5, 1596538880 in dev6,
+> >>> 6132809Scanning: 1632845824 in dev0, 1655259136 in dev1, 5172707328 in
+> >>> dev2, 5772787712 in dev3, 6453149696 in dev4, 1556561920 in dev5,
+> >>> 1656963072 in dev6, 6370181Scanning: 1692483584 in dev0, 1716207616 in
+> >>> dev1, 5364727808 in dev2, 5992431616 in dev3, 6691438592 in dev4,
+> >>> 1615413248 in dev5, 1717780480 in dev6, 6608470Scanning: 1754218496 in
+> >>> dev0, 1779253248 in dev1, 5556748288 in dev2, 6206078976 in dev3,
+> >>> 6937591808 in dev4, 1673478144 in dev5, 1780826112 in dev6,
+> >>> 6854885Scanning: 1816739840 in dev0, 1841905664 in dev1, 5748375552 in
+> >>> dev2, 6416449536 in dev3, 7183745024 in dev4, 1735081984 in dev5,
+> >>> 1843871744 in dev6, 7100776Scanning: 1877164032 in dev0, Scanning:
+> >>> 73366286336 in dev0, 74653970432 in dev1, 221169643520 in dev2,
+> >>> 254365478912 in dev3, 290406514688 in dev4, 69599920128 in dev5,
+> >>> 74645659648 in dev6, 287038144512 in dev7, 290337579008 in dev8,
+> >>> 250395525120 in dev9cmds/rescue-chunk-recover.c:128:
+> >>> process_extent_buffer: BUG_ON `exist->nmirrors >= BTRFS_MAX_MIRRORS`
+> >>> triggered, value 1
+> >>> Scanning: 73438507008 in dev0, 74729336832 in dev1, 221191864320 in
+> >>> dev2, 254573060096 in dev3, 290685366272 in dev4, 69651824640 in dev5,
+> >>> 74721157120 in dev6, 287322771456 in dev7, 290621480960 in dev8,
+> >>> 250598162432 in dev9/root/btrfs-progs/btrfs(+0x8d401)[0x5555555e1401]
+> >>> /root/btrfs-progs/btrfs(+0x8eb63)[0x5555555e2b63]
+> >>> /lib/x86_64-linux-gnu/libc.so.6(+0x90402)[0x7ffff7ce4402]
+> >>> /lib/x86_64-linux-gnu/libc.so.6(+0x11f590)[0x7ffff7d73590]
+> >>> Scanning: 73513611264 in dev0, 74807717888 in dev1, 221191864320 in
+> >>> dev2, 254781857792 in dev3, 290964881408 in dev4, 69718147072 in dev5,
+> >>> 74795343872 in dev6, 287621267456 in dev7, 290919407616 in dev8,
+> >>> 250810761216 in dev9             Thread 4 "btrfs" received signal
+> >>> SIGABRT, Aborted.
+> >>> [Switching to Thread 0x7ffff6c4f6c0 (LWP 17847)]
+> >>> __pthread_kill_implementation (no_tid=0, signo=6, threadid=<optimized
+> >>> out>) at ./nptl/pthread_kill.c:44
+> >>> 44      ./nptl/pthread_kill.c: No such file or directory.
+> >>>
+> >>> On Wed, Dec 21, 2022 at 2:34 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2022/12/21 01:35, Colin Stark wrote:
+> >>>>> Hi all,
+> >>>>>
+> >>>>> After upgrading my server from Ubuntu 22.04 to 22.10 (kernel 5.15 to
+> >>>>> 5.19), I am no longer able to mount my BTRFS volume.  I tried booting
+> >>>>> from an Ubuntu 22.04 live USB but the results are the same - something
+> >>>>> seems to have damaged the volume during the upgrade, although it could
+> >>>>> just be coincidental.
+> >>>>>
+> >>>>> This seems to be quite a serious error as btrfs check barely even
+> >>>>> runs.  The volume is RAID6 spread across 10 devices.  AFAIK, all of
+> >>>>> the drives are in good working condition.
+> >>>>>
+> >>>>> I'm hoping someone here is able to assist with repairing the filesystem.
+> >>>>>
+> >>>>> dmesg shows the following errors:
+> >>>>> [  279.889337] BTRFS info (device sdb): using free space tree
+> >>>>> [  279.889341] BTRFS info (device sdb): has skinny extents
+> >>>>> [  279.896776] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452218368 length 4096
+> >>>>> [  279.897009] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452201984 length 4096
+> >>>>> [  279.897037] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452185600 length 4096
+> >>>>> [  279.897072] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452251136 length 4096
+> >>>>> [  279.897097] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452316672 length 4096
+> >>>>> [  279.897113] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452349440 length 4096
+> >>>>> [  279.897128] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452300288 length 4096
+> >>>>> [  279.897144] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452267520 length 4096
+> >>>>> [  279.897159] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452283904 length 4096
+> >>>>> [  279.897175] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452365824 length 4096
+> >>>>> [  279.897190] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452333056 length 4096
+> >>>>> [  279.897207] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452431360 length 4096
+> >>>>> [  279.897224] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365555539099648 length 4096
+> >>>>> [  279.897239] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452447744 length 4096
+> >>>>> [  279.897254] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452382208 length 4096
+> >>>>> [  279.897415] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452152832 length 4096
+> >>>>> [  279.897719] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452234752 length 4096
+> >>>>> [  279.897938] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452398592 length 4096
+> >>>>> [  279.897957] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452169216 length 4096
+> >>>>> [  279.897973] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452414976 length 4096
+> >>>>> [  279.897988] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452464128 length 4096
+> >>>>> [  279.898004] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452496896 length 4096
+> >>>>> [  279.898020] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452480512 length 4096
+> >>>>> [  279.898035] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452513280 length 4096
+> >>>>> [  279.898050] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452546048 length 4096
+> >>>>> [  279.898065] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452562432 length 4096
+> >>>>> [  279.898081] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452578816 length 4096
+> >>>>> [  279.898096] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452595200 length 4096
+> >>>>> [  279.898112] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452611584 length 4096
+> >>>>> [  279.898127] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452529664 length 4096
+> >>>>> [  279.898144] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452627968 length 4096
+> >>>>> [  279.898159] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452644352 length 4096
+> >>>>> [  279.898175] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452660736 length 4096
+> >>>>> [  279.898192] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452677120 length 4096
+> >>>>> [  279.898208] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452693504 length 4096
+> >>>>> [  279.898223] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452709888 length 4096
+> >>>>> [  279.898239] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452726272 length 4096
+> >>>>> [  279.898257] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452759040 length 4096
+> >>>>> [  279.898273] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452742656 length 4096
+> >>>>> [  279.898296] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452775424 length 4096
+> >>>>> [  279.898322] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452857344 length 4096
+> >>>>> [  279.898339] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452890112 length 4096
+> >>>>> [  279.898354] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452824576 length 4096
+> >>>>> [  279.898370] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452808192 length 4096
+> >>>>> [  279.898385] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452922880 length 4096
+> >>>>> [  279.898400] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452840960 length 4096
+> >>>>> [  279.898432] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452906496 length 4096
+> >>>>> [  279.898449] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452791808 length 4096
+> >>>>> [  279.898481] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452873728 length 4096
+> >>>>> [  279.898515] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365555539132416 length 4096
+> >>>>> [  279.898532] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365555539197952 length 4096
+> >>>>> [  279.898548] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365555539181568 length 4096
+> >>>>> [  279.906703] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452218368 length 4096
+> >>>>> [  279.906722] BTRFS critical (device sdb): unable to find logical
+> >>>>> 365541452218368 length 16384
+> >>>>> [  279.906737] BTRFS error (device sdb): failed to read chunk tree: -22
+> >>>>> [  279.938495] BTRFS error (device sdb): open_ctree failed
+> >>>>>
+> >>>>> btrfs check output:
+> >>>>> root@server:~# btrfs check /dev/sdb
+> >>>>> Opening filesystem to check...
+> >>>>> No mapping for 365541452218368-365541452234752
+> >>>>> Couldn't map the block 365541452218368
+> >>>>> Couldn't map the block 365541452218368
+> >>>>> bad tree block 365541452218368, bytenr mismatch, want=365541452218368, have=0
+> >>>>> Couldn't read chunk tree
+> >>>>> ERROR: cannot open file system
+> >>>>
+> >>>> This means your system chunk array in your super block is not containing
+> >>>> the correct system chunk mapping.
+> >>>>
+> >>>> Thus btrfs is unable to read chunk tree at bootstrap.
+> >>>>
+> >>>> Since you have nothing to lose, you may want to try "btrfs rescue
+> >>>> chunk-recover".
+> >>>>
+> >>>> Thanks,
+> >>>> Qu
+> >>>>
+> >>>>>
+> >>>>>
+> >>>>>
+> >>>>> uname -a: Linux server 5.19.0-26-generic #27-Ubuntu SMP
+> >>>>> PREEMPT_DYNAMIC Wed Nov 23 20:44:15 UTC 2022 x86_64 x86_64 x86_64
+> >>>>> GNU/Linux
+> >>>>>
+> >>>>> btrfs --version: btrfs-progs v5.19
+> >>>>>
+> >>>>> Full dmesg log is attached (gzipped).
+> >>>>>
+> >>>>> Thanks for your help!
