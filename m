@@ -2,107 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 093B36540DA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Dec 2022 13:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FC9654560
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Dec 2022 17:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235549AbiLVMOe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Dec 2022 07:14:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
+        id S230243AbiLVQvw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Dec 2022 11:51:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235389AbiLVMOK (ORCPT
+        with ESMTP id S229526AbiLVQvu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Dec 2022 07:14:10 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78AC3056D;
-        Thu, 22 Dec 2022 04:08:56 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MuDXp-1osAVX1Z1B-00ualw; Thu, 22
- Dec 2022 13:08:55 +0100
-Message-ID: <701ca299-2595-c310-7c8a-2d58c65b2d4d@gmx.com>
-Date:   Thu, 22 Dec 2022 20:08:51 +0800
+        Thu, 22 Dec 2022 11:51:50 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A74B7F1
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Dec 2022 08:51:47 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 2BMGpOt9009971
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Dec 2022 11:51:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1671727886; bh=8VQE476fItcQEyvNi8YKNC8SHTVYFOvKq/RWJ11ZYc4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Y1HUp4TlkjWs/IvOpsjLbqbpZe+niMvbTyQFgq18Rn7JlP6ObL6lD9ZL5Xnb/S0ue
+         7iHqTFmahQYKRygUKPKZDG8lqTJ8ZzzJIfFiovx5n6ShIphokTD5AF1yJhNOU8A8O2
+         hyU19A5xaWaML2UA+BXAGFCY3f51984ew9C5fSNV8mrd9gB2NefJn6U/o338pQKl16
+         bWZ/t/Sf4bjjkjzOCuuRpEy4IFbCPX2c+X/kAQAFZW9JzTBbaQhIiLnUcUTH6208gg
+         7unZOMQnyuw8bTiHMGjyn04+lWpvvkSCvQzOVH/QpmmM3Q4olO1oAhAP6SHieRES+t
+         JdB6A/aagyooQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id C831615C39F2; Thu, 22 Dec 2022 11:51:23 -0500 (EST)
+Date:   Thu, 22 Dec 2022 11:51:23 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: Separate mailing list (and git and patchwork) for fsverity?
+Message-ID: <Y6SLC9DG1s/4NhPL@mit.edu>
+References: <Y5jRbLEJh3S46Jer@sol.localdomain>
+ <Y6ObULdVm2UN5kw1@sol.localdomain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Content-Language: en-US
-To:     fstests <fstests@vger.kernel.org>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Which dashboard do most fs developers use for the fstests results?
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:89FNElQoUiEOtRrEPgG9kY2U1yo+TRzUaAHd3VfnNjlKuRfy5Xd
- Z2jvQW5hz+NF6cgz2/9D0e7qxj2FPTLZWToYkzsZvR1sAI+8SmTZPLctpG2lZI8aMT3B72B
- jKkGofe0V/1ipznRx+w2sp358QeZwU7v80xOry6RHKrHA+Vf87pwW8KA6OTHYBoUXHXJN7m
- eONK75BsIA0Kzy4qJ6MRg==
-UI-OutboundReport: notjunk:1;M01:P0:2oxTcMEkT0Q=;dEfcCuYFS+RL/omHFD/ZmaKEM86
- mQXI27lF7Z9GhgbBSydqzRttoE9/ZVQbcOnbd2zUU3HjmgjjK+aeRmPx+7kV9Rpx1XJa9D+ic
- fmC6Lk1+oQydC8EPPthstNYgUpvZMkUksj92L7rxSROj18j2f6L1EGoS3md6K0Z7Tflpehlkd
- uVnpOMzCMQqtqBV9KxlUnVY+qNff04UdbzowZ7DV9If57lZ86stIuKX8k0yQ/e1Y6jz3vg/8a
- Wvbh3At6DipE2tl3rMQAhxjOoTm7lNsRG7aOyrytOsybPrIWbmPkWE/5SPGsqTgK6pHu3P9+h
- wBOLiGcuN1UhYoF2NdPijlu52SqCHa0zTD0AQixx0Ek602BqpLY2HtpF20M5BJ4Z5WCdhQOS4
- Wp9Uz9pGqH4jkzdm46M82qHryV1pG92VSTiVIOgapBxo3AQCbTZW6EPeCECKbvZgV9JoggW+6
- M/d2BfrcQh7ana3vQszCMXIZkK2PetZB74iQFkJPve1CHk9GPPw8b1UvKgXxQWdTQ713+FTy9
- D08ElVmb0mMJ95rJ4PVlHeJEC+8UNkvKmjtFXLIMRujVq06BGg/CVLMIzn8Fjs5GL6i2AhQZ7
- aJHwYvssy+3yXkjXhXs49fWyoeRGzeM4kKVoabp5QNb12d22tno7sMFmTYF8IihUsjLMd9Nc5
- FLceSc4K89SCeHzCt5STlPPivOvaz8s7Xa0rYcC0MeXC6GHMvyQEugiEzp89aqRDs3lvp1kIO
- 33Q/xwf1B9KcmNzLUi2+8V5A62agC+Mjpq+o0+feymz88Eo+eAs05HAS5aYNHyXjLhShbj9/a
- QBPoBC9uv+s8HWRtEhFNEbTFbSWkOF777ynPCPg2DHf4uwV8laXIrrGYHmld8CTBAm7GzFp87
- p5s4zC3KLsOMdjlaCl/EyBfPq5RWt+pDNVS/uXNC8GYYxMRpSVGnWnGN8ZjUgJBB3dWvg7Tiy
- uDgGAysBOnJyL2/MBdTtVLpkivQ=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_PDS_OTHER_BAD_TLD,WEIRD_PORT autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y6ObULdVm2UN5kw1@sol.localdomain>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,SUSPICIOUS_RECIPS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Wed, Dec 21, 2022 at 03:48:32PM -0800, Eric Biggers wrote:
+> > What would people say about having a separate mailing list, git repo, and
+> > patchwork project for fsverity?  So the fsverity entry would look like:
+> > 
+> > FSVERITY: READ-ONLY FILE-BASED AUTHENTICITY PROTECTION
+> > [...]
+> > L:      linux-fsverity@vger.kernel.org
+> > Q:      https://patchwork.kernel.org/project/linux-fsverity/list/
+> > T:      git git://git.kernel.org/pub/scm/fs/fsverity/fsverity.git
+> > [...]
 
-Recently I'm setting up my dashboard for my fstests results.
-My initial inspiration comes from Josef's static pages:
+This makes sense to me.  I wonder if we should use the new
+https://lists.linux.dev mailing list hosting service with a mailing
+list name fsverity@lsts.linux.dev?
 
-   http://toxicpanda.com/
+The thinking was that we would eventually migrate lists from vger to
+the new list infrastructure, so it might make sense to just use it for
+a new list.  All mailing lists lists.linux.dev are archived on
+lore.kernel.org, so other than the e-mail address and using something
+a bit more modern than Majordomo for list management, it's mostly the
+same.
 
-Generated by the following project:
-
-   https://github.com/josefbacik/fstest-results
-
-
-Then I build a similar script (using junit reporting from fstests 
-instead), not much results yet, but all tests will be done on aarch64 VMs:
-
-   https://h.anonymoususers.xyz:8443/results/
-
-Generated by my poorly crafted project:
-
-   https://github.com/adam900710/fstests_result_webui
-
-
-And I'm pretty sure other developers have their own dashboards.
-Darrick mentioned he has his own dashboard, and Theodore mentioned he 
-hit several btrfs test failures.
-
-I'm wondering if it's possible to share the dashboards for each other?
-
-Shared dashboards have the following advantage:
-
-- Let guys from other fses to have more reports
-   Ted's reports is very valuable for our btrfs guys.
-   If we have the access the dashboard to grab the needed info,
-   we're definitely going to improve our runs.
-
-- Learn better ways to build the dashboard
-   I learned a lot from Josef's script, and also learned a lot from
-   the fstests junit report.
-
-   But I'm also wondering if there is some better ways.
-   One possible solution I'm still exploring is InflexDB + Grafana.
-
-   If you guys can share such dashboards, we would have better chances
-   to learn from each other.
-
-Thanks,
-Qu
+						- Ted
