@@ -2,57 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9CA655EF0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Dec 2022 02:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48BB655F73
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Dec 2022 04:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbiLZBBJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 25 Dec 2022 20:01:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
+        id S230189AbiLZD36 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 25 Dec 2022 22:29:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbiLZBBF (ORCPT
+        with ESMTP id S229543AbiLZD35 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 25 Dec 2022 20:01:05 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93355E3B
-        for <linux-btrfs@vger.kernel.org>; Sun, 25 Dec 2022 17:01:01 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 43A364D956
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Dec 2022 01:01:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1672016460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NR8PaKmXppvUna2fl5wkN/U5aaQ6t7ByPoSjWN7hIas=;
-        b=kD0wo/gp2oW9hXa0R9luswYaurQVlrU0NyhygIFzqrU0nctEO2PIPb5fnfLRDej+MGbL4w
-        a6a0SSBsf2l6EzZ+8k+uWvY00Jxk9OcDtH0BDcrPx62Vn9saLYPwjujvvVIolaEi1k3KX1
-        mZ8s+NIJU+M+pqQr+8Zz1rElmIaE7jM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A1228138F2
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Dec 2022 01:00:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6PSSHEvyqGNFaQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Dec 2022 01:00:59 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: always report error for run_one_delayed_ref()
-Date:   Mon, 26 Dec 2022 09:00:40 +0800
-Message-Id: <e8249a59dd7a59869dfaa4fbcb76424f458e21c7.1672016104.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <cover.1672016104.git.wqu@suse.com>
-References: <cover.1672016104.git.wqu@suse.com>
+        Sun, 25 Dec 2022 22:29:57 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B2810C8;
+        Sun, 25 Dec 2022 19:29:55 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4zAy-1okaNP2G72-010w8E; Mon, 26
+ Dec 2022 04:29:52 +0100
+Message-ID: <18b5fa1e-7d1e-4560-c98b-d7ac5fc87c3a@gmx.com>
+Date:   Mon, 26 Dec 2022 11:29:42 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Content-Language: en-US
+To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc:     wqu@suse.com, dsterba@suse.com,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
+References: <CABXGCsNzVxo4iq-tJSGm_kO1UggHXgq6CdcHDL=z5FL4njYXSQ@mail.gmail.com>
+ <f68699c3-ec5e-d8e8-f101-6e9a7020ac81@gmx.com>
+ <CABXGCsNrm3ddn3p_ECSRe+yQeoF3KojTFvy-CpXNzi9ADkbnvQ@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [6.2][regression] after commit
+ 947a629988f191807d2d22ba63ae18259bb645c5 btrfs volume periodical forced
+ switch to readonly after a lot of disk writes
+In-Reply-To: <CABXGCsNrm3ddn3p_ECSRe+yQeoF3KojTFvy-CpXNzi9ADkbnvQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:p49EQwLfBRKIoszgUiDWzj9I1BjOfZjB0ULLMKrdmMDqj9vCDft
+ pT00BABZaOgzKMQYXXnQVA6ltLDhwERtgvdO8wv5daCWMpjqMfZB/1n40Z/vl9o+1OPNi4S
+ e/KJduirGWS+4gGjAXIctpCdjtldz0RIKA0ZbpO6sch6/0xIwxl/6D3myGfJvWzs39IiO/5
+ ZOEPykLa/fopnUZYW+Apw==
+UI-OutboundReport: notjunk:1;M01:P0:Ab7F1arDRVo=;gozgqYkcXGWBQiB5ACyLYes9xbv
+ J2bjNENAl8eVGpLcoYm3pVtfAKOFN7rynqrgR/3GsrKiuQYuDOKLx3ccQUfVDpilraKCcC8bi
+ lO6J5L5/X5BlPZ6IdWtktywe6hplv0lFspxHlCMYH+/ACTJZ5lUsjJ0vQe/3gJ1p4bwFZtbO2
+ UPb85u1fxVMgH5A+rmTxQX+TgyQDlkENlKfTZ8UhshJK4aelSCMeyTnspBp6bHis4NLSj74qi
+ CmRFTl/dbm/OhCXEhMO8+MBspc15mTelJp3qIB3gobrRJbreNWE53mBtBWlq5AycROzqp0YXQ
+ hfhYEubYsPJ/7DuTj+yWQd1XAy5BSfj9meY9u13AanvZC3j3ADc2HAOjNr9u+Tpv//0QBEb7u
+ LxL6ckrmR6QYikVAiX/6S02F0aRm4IzhcZUqFn3e8oF8P46bo9Ra9yQuKde7zFhu499UWBqqX
+ ySi8LZCVrAkqpEAvYqahaPuIx1yM1IbibznhrO+6VLfQatDvqm1r5cPxNA4DEIv4J3NYKZ8xF
+ Be88Aex5axq2vL7gNSVNVzXkq+e1V+NZ5i8pSKtoP5VprG+sTt3zOHSqllMy0lHuE9UJwpUAj
+ RpEZ9eUOdXroavrz7HRZkhk/YZjO9jBtEySksdfhi3UNOsCExzse1cY5iOb9UiXuZ26Uh1LAH
+ QpxUO0PoBCe5fS+IUv6OfYwrOHOm5P+lxrBgFY/HkX6t5/N2twoIvAmOkFKjlvY6Pe1oVGZKe
+ aXJXjVr5orYyopQlfZiFb8iTYQ82cvJH85ZoSYPxKX1OBKqUXXEzRtIJd2YbvqjeMfOfqCPf3
+ UgBHkc9CUhZYPPtNtzj8ymUeo7XALe3+OUmB2qppEZM1skYVWFIZFxxUTFcqCIqPPxI3h60HX
+ OltG5VNVK6fSbZIKcB3TWGdxYZQJzc+lhX+JlHAflG4YjPw/UKNguoBYaISZF5VMEsVvv3mRG
+ LMTqIjVf4kIxLPVoh9fn0yUOzkU=
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,72 +66,53 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently we have a btrfs_debug() for run_one_delayed_ref() failure, but
-if end users hit such problem, there will be no chance that
-btrfs_debug() is enabled.
 
-This can lead to very little useful info for debug.
 
-This patch will:
+On 2022/12/26 10:47, Mikhail Gavrilov wrote:
+> On Mon, Dec 26, 2022 at 5:15 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>>
+>> Thanks a lot for the full kernel log.
+>>
+>> It indeed shows something is wrong in the run_one_delayed_ref().
+>> But surprisingly, if there is something wrong, I'd expect more output
+>> from btrfs, as normally if one tree block failed to pass whatever the
+>> checks, it should cause an error message at least.
+>>
+>> Since you can reproduce the bug (although I don't think this is easy to
+>> reproduce), mind to apply the extra debug patch and then try to reproduce?
+> 
+> Of course I am still able to reproduce.
+> The number of messages foreshadowing readonly has become somewhat more:
+> [ 2295.155437] BTRFS error (device nvme0n1p3): level check failed on
+> logical 4957418700800 mirror 1 wanted 0 found 1
 
-- Add extra info for error reporting
-  Including:
-  * logical bytenr
-  * num_bytes
-  * type
-  * action
-  * ref_mod
+OK, indeed a level mismatch.
 
-- Replace the btrfs_debug() with btrfs_err()
+ From the remaining lines, it shows we're failing at 
+do_free_extent_accounting(), which failed at the btrfs_del_csums().
 
-- Move the error reporting into run_one_delayed_ref()
-  This is to avoid use-after-free, the @node can be freed in the caller.
+And inside btrfs_del_csums(), what we do are all regular btree 
+operations, thus the tree level check should work without problem.
 
-This error should only be triggered at most once.
+Thus it seems to be a corrupted csum tree.
 
-As if run_one_delayed_ref() failed, we trigger the error message, then
-causing the call chain to error out:
+> [ 2295.155831] BTRFS error (device nvme0n1p3: state A): Transaction
+> aborted (error -5)
+> [ 2295.155946] BTRFS: error (device nvme0n1p3: state A) in
+> do_free_extent_accounting:2849: errno=-5 IO failure
+> [ 2295.155978] BTRFS info (device nvme0n1p3: state EA): forced readonly
+> [ 2295.155985] BTRFS error (device nvme0n1p3: state EA):
+> run_one_delayed_ref returned -5
+> [ 2295.156051] BTRFS: error (device nvme0n1p3: state EA) in
+> btrfs_run_delayed_refs:2153: errno=-5 IO failure
+> 
+> Of course full logs are also attached.
+> 
+>> Another thing is, mind to run "btrfs check --readonly" on the fs?
+> Result of check attached too.
+> 
+Could you please run "btrfs check --readonly" from a liveCD?
+There are tons of possible false alerts if ran on a RW mounted fs.
 
-btrfs_run_delayed_refs()
-`- btrfs_run_delayed_refs()
-   `- btrfs_run_delayed_refs_for_head()
-      `- run_one_delayed_ref()
-
-And we will abort the current transaction in btrfs_run_delayed_refs().
-If we have to run delayed refs for the abort transaction,
-run_one_delayed_ref() will just cleanup the refs and do nothing, thus no
-new error messages would be output.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent-tree.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index eaa1fb2850d7..d1a4e51f8fbc 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1713,6 +1713,11 @@ static int run_one_delayed_ref(struct btrfs_trans_handle *trans,
- 		BUG();
- 	if (ret && insert_reserved)
- 		btrfs_pin_extent(trans, node->bytenr, node->num_bytes, 1);
-+	if (ret < 0)
-+		btrfs_err(trans->fs_info,
-+"failed to run delayed ref for logical %llu num_bytes %llu type %u action %u ref_mod %d: %d",
-+			  node->bytenr, node->num_bytes, node->type,
-+			  node->action, node->ref_mod, ret);
- 	return ret;
- }
- 
-@@ -1954,8 +1959,6 @@ static int btrfs_run_delayed_refs_for_head(struct btrfs_trans_handle *trans,
- 		if (ret) {
- 			unselect_delayed_ref_head(delayed_refs, locked_ref);
- 			btrfs_put_delayed_ref(ref);
--			btrfs_debug(fs_info, "run_one_delayed_ref returned %d",
--				    ret);
- 			return ret;
- 		}
- 
--- 
-2.39.0
-
+Thanks,
+Qu
