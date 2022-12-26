@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B991656146
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Dec 2022 09:47:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D1C656271
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Dec 2022 13:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbiLZIrd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Dec 2022 03:47:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
+        id S231965AbiLZML6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Dec 2022 07:11:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231593AbiLZIrb (ORCPT
+        with ESMTP id S232072AbiLZMLu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Dec 2022 03:47:31 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64C5103;
-        Mon, 26 Dec 2022 00:47:29 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1ML9yc-1pRnzT1FT8-00IDmA; Mon, 26
- Dec 2022 09:47:26 +0100
-Content-Type: multipart/mixed; boundary="------------ayHqvGI0q04d6op00JQAIbv0"
-Message-ID: <0036622d-53f7-eaba-f720-6dd9bdca28ad@gmx.com>
-Date:   Mon, 26 Dec 2022 16:47:16 +0800
+        Mon, 26 Dec 2022 07:11:50 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C706351;
+        Mon, 26 Dec 2022 04:11:46 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MfHAH-1ocvLR0fjH-00gqja; Mon, 26
+ Dec 2022 13:11:42 +0100
+Message-ID: <41734bdb-2df0-6596-01b6-76a7dfd05d64@gmx.com>
+Date:   Mon, 26 Dec 2022 20:11:38 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
@@ -34,159 +33,138 @@ References: <CABXGCsNzVxo4iq-tJSGm_kO1UggHXgq6CdcHDL=z5FL4njYXSQ@mail.gmail.com>
  <CABXGCsNrm3ddn3p_ECSRe+yQeoF3KojTFvy-CpXNzi9ADkbnvQ@mail.gmail.com>
  <18b5fa1e-7d1e-4560-c98b-d7ac5fc87c3a@gmx.com>
  <CABXGCsM5y6m=pLX7tyE-RB1yuHEgZh3fxDu5ESfTRxEnW+djZA@mail.gmail.com>
+ <0036622d-53f7-eaba-f720-6dd9bdca28ad@gmx.com>
+ <CABXGCsMMYmCT_Hz=wfKWDy4OQJ2KyBO3rNAFC1YCAthziWm+Lg@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Subject: Re: [6.2][regression] after commit
  947a629988f191807d2d22ba63ae18259bb645c5 btrfs volume periodical forced
  switch to readonly after a lot of disk writes
-In-Reply-To: <CABXGCsM5y6m=pLX7tyE-RB1yuHEgZh3fxDu5ESfTRxEnW+djZA@mail.gmail.com>
-X-Provags-ID: V03:K1:c/o9oxf5gRtPg6nNIODqSNwpQ+WmR5bFK9QrH3IoQgpaCVRNoNY
- fWByYbEuhHTDqsYKdlMnaCqMpFb2TwvouFPnuc4ig3Xm5jr+Y4U3auFGjmniZKTjdTeWGa+
- caHwEMOqQGLqswKUqCGX5qL6wtfJy83SN0Paam+09cS3F6ZiBBbCmgbH6SGN4TSswiRtUwi
- SbMCGxAFWqQw3/kRO3FLQ==
-UI-OutboundReport: notjunk:1;M01:P0:w188Ug7Ygos=;nNRh2DrG+NfxJBjYvJ1Aatq8wuj
- +CHWE9YJYA4HIy2tRy5vmZp0f/l42Uev50eZjHpqetbZcSR2h9Z7k5wkB/gDnetLlrW8dc/mx
- FpqusZS8tvhmQSLqNxceMw7StsP1KZ3RtK8JErmty2nPTRNLOWLiMcS/5oo/tMSWicG/XfO1t
- PNekl1HouNXVrZwjDU2Xl3I7Y31dve9mqiuOu0CK3wbQL6ZbbCOCwMXx+3Udj+KwERHaYQ0wm
- vBqu4TZLmM/zeF+N+b7l9KmmY6rZUxHI3wQ/+zYW6QtS5vmgPJpV6N1l1mLyvhHRw7Oxgw5r8
- ESHolmxJoZWyvjL8tpIXZNsb7wgWY6AvXmLu0Ayr4Ot+6+VOYAEb9juF5wW/tGmu0QdcitQtP
- r+KxSHUQemCF7y/7Ljd3MznqAx1Lb9IKWrtUAOtLM/CbdQQn06LxxC8qE3FBLeG0tjqIuZSL8
- 6K3gsLhDUjaVYhii60eP2AnaamhETbzXJue855Y7c4JKaO1pY8VUQcvq17HpdOJJrekPIc1WS
- rXvtakBrO7M9rvbmaFKQzmDO9BIZ2aXoaBwuoAYpn8u45j8FNBGk2AMCES0UlTiuAzkLq8AWl
- zliIaD83IxddF5M2F+1ITlvlroSjIcWHlQmoaFhAwqs5geGBj7u341OpcHlJFGa2zh1w6kES2
- pUjWg9F9GTTKDgidI+Vuxwrk8yJbp9Xkh8NesU6KAWMokzfhK0yArOKq8isR5mBLDNJNK8y/w
- bOZkEXh5ZmAy8yzxd/8+MtrGCtFiyUA/MQW6CvGB1iHGmd0ysQQa/Al3O9TjpmuufPF1irHgX
- nllBEK8vuoaNiF8KHKFOyqeOxwkpcwCT/WLNFBtgFdBDT0YKFtZkJAs/5ZAHkOMOHS6NQRof9
- 7EPWlBvc1t9UfxFVRlXbqmEBp6jULjXhH6TCbeR1aLgKyH8qltCxz4ov2zOAp1A7mYP33FA05
- bs5AwH+FGdicy52YlBv6xUbGMkc=
+In-Reply-To: <CABXGCsMMYmCT_Hz=wfKWDy4OQJ2KyBO3rNAFC1YCAthziWm+Lg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:H8Y2J5mMYnNmCyL0kdu3j94VTYaP+t0kzRq0t4j1g3qmuQlMBoc
+ d/U0hyz7ZZSqX1L/kzc51nqnZmtVqVTNGr7aJnt/yseboxP3b7XEIfJyl++ziinwwSdnmvy
+ o2EN43OxZ9PdJOnHHXAglj7tjknRc3BLZMAdY8x/cFnUHCkDbz8X/gZq4T55KAZmLAqH5VZ
+ bDZm3bFg3uKeJ7kQsNaWA==
+UI-OutboundReport: notjunk:1;M01:P0:ucXafyvfV0k=;ZOPMiB1lKPrZSkU1hNDwlHFKJIQ
+ rc8BS8TbDu+X+Rfzo2uXMk+rvURtadtdja28Cafl/LfPS+WetVQ38Ur4zVzsRrIR3+z9uaN5B
+ lL+aUxg/s0HsyY687N0mJzv/C8FgMAo4PlLTY7m9kB40PGiJkiFGVG17msak/6YoeD3Y/w08p
+ aO1evmUeqiaC8MhSCHjYEM8ampwDKNXAQ7/8EuPmz2qAG+Qd5w6lNucZ6l0dDSmGUvLwmGjyS
+ 8mYPSbk8q5SvMk+mCp2eHz41IN6aCZkf6Ji2VhlPY9Qq758oeHw8VnaT3UyHw9bO+WxcAgp1/
+ E30ub7H8v3fzgFgrJ4FSxBvICLnZbqEtop3+x631zZLd0WO68qjhdd4svtlF8puDSwXAKba/r
+ PfJWt1WNuTJOg4uuTnDPP9Nvbv3ereMW0v0qqZuGwvx/tXu/dtfJhlVsP82D5IxPm7HnFH0/2
+ deoHqKTl5P208In8owA5/8Qdmw5OteQaGtGXkSmFP7PJ9MNjb43DvebfZG+BRAhJgXF6060zW
+ 93Abm8SMvTEPjLKsAZdaO3n6Lj+JjvnUGeV7wVRt1WkSfti54I8NM4prdypYjpZ4FxsItMsHz
+ o02mnBqtUzCkEnWt104/eKc9HY3Q6SM5KBUMMxLL/EiBe674Q7f23x3cNgjRXA6NM7hZtWskF
+ xzHy/UsNvEqEHZUaoC8n9gxr2BoODTBmnBvOtdmok8cmD5hzsY0LBd3+SFLt1s6rHDP3cV9ho
+ +nT1tyl6huzmOJsA6Lianl5sr+AOrmc4I0AaD124PuEL47/IhIOuOyxa5lHgIN3Se/9eUPI6c
+ R+cTKHSRdVDmdSmKWbwyOmGKgIuD9EUVyuXJMphyHJZ4gaO70ATcW3WeUzWLzT9a92kA7tk6J
+ 24kMF5zFpUrehWNR8Si2Dujwbpp35w4pPWAZYkeB2FZ64AGdGSiqvVV06n7K1tUrKQW0o7HuI
+ 8gbo5d0l6CBTlUpQpPwrDiGWZUA=
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------ayHqvGI0q04d6op00JQAIbv0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
 
-
-On 2022/12/26 16:15, Mikhail Gavrilov wrote:
-> On Mon, Dec 26, 2022 at 8:29 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+On 2022/12/26 19:14, Mikhail Gavrilov wrote:
+> On Mon, Dec 26, 2022 at 1:47 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
 >>
 >>
->> OK, indeed a level mismatch.
+>> With the check output, it's indeed a runtime error.
+>> (At least no corruption to your fs)
 >>
->>   From the remaining lines, it shows we're failing at
->> do_free_extent_accounting(), which failed at the btrfs_del_csums().
+>> And it can be some call paths not properly initializing the level to check.
 >>
->> And inside btrfs_del_csums(), what we do are all regular btree
->> operations, thus the tree level check should work without problem.
+>> Here is the new debug patch.
+>> It should be applied without any previous debug patch.
 >>
->> Thus it seems to be a corrupted csum tree.
 > 
-> Do I need to debug anything else to understand the cause of the error?
-> Thanks.
+> yeah, gotcha trace
+> 
+> [ 2561.764141] BTRFS error (device nvme1n1p3): level verify failed on
+> logical 45170688 mirror 1 wanted 0 found 1
+> [ 2561.764220] BTRFS error (device nvme1n1p3): read time tree block
+> corruption detected on logical 45170688 mirror 1
+> [ 2561.764224] BTRFS error (device nvme1n1p3): check owner_root=0
+> transid=0 first_key=(0 0 0) has_first_key=0 level=0
 
-With the check output, it's indeed a runtime error.
-(At least no corruption to your fs)
+Damn it, some check structure is completely uninitialized.
 
-And it can be some call paths not properly initializing the level to check.
+> [ 2561.764242] BTRFS error (device nvme1n1p3): read failed, check
+> owner_root=259 transid=650936 has_first_key=1 first_key=(2221294 1 0)
+> level=1
 
-Here is the new debug patch.
-It should be applied without any previous debug patch.
+While at the caller, the structure is properly passed in.
 
-Thanks,
+So there is something wrong between the endio function and the check.
+
+I have created the v2 version patch to debug, please apply without any 
+previous debug patch.
+
+Meanwhile this really looks like a race, thus I'm not 100% sure if my 
+debug patch would reduce the possibility to reproduce.
+
+Your bisect should be the determining evidence, for the worst case we 
+can revert the offending patch.
+
+Thank you very much for all of the testing, it really helps a lot.
 Qu
 
-
+> [ 2561.764342] CPU: 8 PID: 727 Comm: systemd-udevd Tainted: G        W
+>     L     6.2.0-rc1-1b929c02afd37871d5afb9d498426f83432e71c2-btrfs-debug2+
+> #3
+> [ 2561.764348] Hardware name: ASUSTeK COMPUTER INC. ROG Strix
+> G513QY_G513QY/G513QY, BIOS G513QY.320 09/07/2022
+> [ 2561.764352] Call Trace:
+> [ 2561.764355]  <TASK>
+> [ 2561.764360]  dump_stack_lvl+0x5b/0x77
+> [ 2561.764369]  read_extent_buffer_pages.cold+0x5a/0x9d
+> [ 2561.764382]  ? __pfx_end_bio_extent_readpage+0x10/0x10
+> [ 2561.764390]  ? folio_unlock+0x1d/0x50
+> [ 2561.764400]  btrfs_read_extent_buffer+0x98/0x150
+> [ 2561.764410]  read_tree_block+0x43/0xa0
+> [ 2561.764417]  read_block_for_search+0x218/0x320
+> [ 2561.764432]  btrfs_search_slot+0x351/0xd30
+> [ 2561.764450]  btrfs_lookup_xattr+0x7b/0xe0
+> [ 2561.764460]  btrfs_getxattr+0x55/0x110
+> [ 2561.764470]  __vfs_getxattr+0x7e/0xb0
+> [ 2561.764480]  get_vfs_caps_from_disk+0x7a/0x220
+> [ 2561.764492]  audit_copy_inode+0x95/0xd0
+> [ 2561.764501]  filename_lookup+0x16b/0x1c0
+> [ 2561.764525]  ? _raw_spin_unlock+0x29/0x50
+> [ 2561.764534]  vfs_statx+0x8e/0x150
+> [ 2561.764545]  vfs_fstatat+0x51/0x70
+> [ 2561.764553]  __do_sys_newfstatat+0x2e/0x50
+> [ 2561.764571]  do_syscall_64+0x5b/0x80
+> [ 2561.764576]  ? do_syscall_64+0x67/0x80
+> [ 2561.764585]  ? up_read+0x17/0x20
+> [ 2561.764593]  ? lock_is_held_type+0xe8/0x140
+> [ 2561.764601]  ? asm_exc_page_fault+0x22/0x30
+> [ 2561.764607]  ? lockdep_hardirqs_on+0x7d/0x100
+> [ 2561.764613]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> [ 2561.764618] RIP: 0033:0x7f7b1b91e05e
+> [ 2561.764639] Code: 48 89 f2 b9 00 01 00 00 48 89 fe bf 9c ff ff ff
+> e9 07 00 00 00 0f 1f 80 00 00 00 00 f3 0f 1e fa 41 89 ca b8 06 01 00
+> 00 0f 05 <3d> 00 f0 ff ff 77 0b 31 c0 c3 0f 1f 84 00 00 00 00 00 48 8b
+> 15 71
+> [ 2561.764643] RSP: 002b:00007fffdc4062c8 EFLAGS: 00000246 ORIG_RAX:
+> 0000000000000106
+> [ 2561.764649] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f7b1b91e05e
+> [ 2561.764653] RDX: 00007fffdc406320 RSI: 000055efe7d04bc0 RDI: 00000000ffffff9c
+> [ 2561.764656] RBP: 000055efe7e79668 R08: 00000000000000f0 R09: 000055efe7ea85b0
+> [ 2561.764659] R10: 0000000000000000 R11: 0000000000000246 R12: 00007fffdc4064b0
+> [ 2561.764663] R13: 00007fffdc406320 R14: 00007fffdc4064a8 R15: 00007fffdc406308
+> [ 2561.764680]  </TASK>
+> [ 2561.764684] BTRFS error (device nvme1n1p3): read failed, check
+> owner_root=259 transid=650936 has_first_key=1 first_key=(2221294 1 0)
+> level=1
 > 
->> Could you please run "btrfs check --readonly" from a liveCD?
->> There are tons of possible false alerts if ran on a RW mounted fs.
->>
+> Of course full logs are also attached.
+> Thanks.
 > 
-> # btrfs check --readonly /dev/nvme0n1p3
-> Opening filesystem to check...
-> Checking filesystem on /dev/nvme0n1p3
-> UUID: 40e0b5d2-df54-46e0-b6f4-2f868296271d
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space tree
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 6828416307200 bytes used, no error found
-> total csum bytes: 6651838248
-> total tree bytes: 16378380288
-> total fs tree bytes: 7483179008
-> total extent tree bytes: 1228210176
-> btree space waste bytes: 2413299694
-> file data blocks allocated: 6899999100928
->   referenced 7488299450368
-> [root@localhost-live ~]#
-> 
-> With liveCD looks like all OK (no errors found).
-> 
---------------ayHqvGI0q04d6op00JQAIbv0
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-btrfs-add-extra-debug-for-level-mismatch.patch"
-Content-Disposition: attachment;
- filename="0001-btrfs-add-extra-debug-for-level-mismatch.patch"
-Content-Transfer-Encoding: base64
-
-RnJvbSBjOTkzMmQ0MDU5NGRhNjA2NTEyNWI3NmI1NWJkOWNlYTFmYWJjODEyIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpNZXNzYWdlLUlkOiA8Yzk5MzJkNDA1OTRkYTYwNjUxMjViNzZi
-NTViZDljZWExZmFiYzgxMi4xNjcyMDQ0MzkyLmdpdC53cXVAc3VzZS5jb20+CkZyb206IFF1
-IFdlbnJ1byA8d3F1QHN1c2UuY29tPgpEYXRlOiBNb24sIDI2IERlYyAyMDIyIDE2OjQ0OjA4
-ICswODAwClN1YmplY3Q6IFtQQVRDSF0gYnRyZnM6IGFkZCBleHRyYSBkZWJ1ZyBmb3IgbGV2
-ZWwgbWlzbWF0Y2gKCkN1cnJlbnRseSBJIGFzc3VtZSB0aGVyZSBpcyBzb21lIHJhY2Ugb3Ig
-dW5pbml0aWFsaXplZCB2YWx1ZSBmb3IKY2hlY2s6OmxldmVsLgoKVGhlIGV4dHJhIG91dHB1
-dCBhcmUgZm9yIHR3byBsb2NhdGlvbnM6CgotIHZhbGlkYXRlX2V4dGVudF9idWZmZXIoKQog
-IE91dHB1dCB0aGUgZXJyb3IgbWVzc2FnZSBmb3IgcmVhZCBlcnJvciBhbmQgdGhlIG1lbWJl
-cnMgb2YgY2hlY2suCgotIHJlYWRfZXh0ZW50X2J1ZmZlcl9wYWdlcygpCiAgVGhpcyB3aWxs
-IGR1bXAgdGhlIHN0YWNrIGZvciB1cyB0byBjYXRjaCB0aGUgb2ZmZW5kZXIuCgpTaWduZWQt
-b2ZmLWJ5OiBRdSBXZW5ydW8gPHdxdUBzdXNlLmNvbT4KLS0tCiBmcy9idHJmcy9kaXNrLWlv
-LmMgICB8IDE1ICsrKysrKysrKysrKystLQogZnMvYnRyZnMvZXh0ZW50X2lvLmMgfCAxMiAr
-KysrKysrKysrKy0KIDIgZmlsZXMgY2hhbmdlZCwgMjQgaW5zZXJ0aW9ucygrKSwgMyBkZWxl
-dGlvbnMoLSkKCmRpZmYgLS1naXQgYS9mcy9idHJmcy9kaXNrLWlvLmMgYi9mcy9idHJmcy9k
-aXNrLWlvLmMKaW5kZXggZjhiNTk1NWYwMDNmLi42MmU2YWQ5MDliMTkgMTAwNjQ0Ci0tLSBh
-L2ZzL2J0cmZzL2Rpc2staW8uYworKysgYi9mcy9idHJmcy9kaXNrLWlvLmMKQEAgLTUzMCw2
-ICs1MzAsMTAgQEAgc3RhdGljIGludCB2YWxpZGF0ZV9leHRlbnRfYnVmZmVyKHN0cnVjdCBl
-eHRlbnRfYnVmZmVyICplYiwKIAl9CiAKIAlpZiAoZm91bmRfbGV2ZWwgIT0gY2hlY2stPmxl
-dmVsKSB7CisJCWJ0cmZzX2VycihlYi0+ZnNfaW5mbywKKyJsZXZlbCB2ZXJpZnkgZmFpbGVk
-IG9uIGxvZ2ljYWwgJWxsdSBtaXJyb3IgJXUgd2FudGVkICV1IGZvdW5kICV1IiwKKwkJCSAg
-ZWItPnN0YXJ0LCBlYi0+cmVhZF9taXJyb3IsIGNoZWNrLT5sZXZlbCwKKwkJCSAgZm91bmRf
-bGV2ZWwpOwogCQlyZXQgPSAtRUlPOwogCQlnb3RvIG91dDsKIAl9CkBAIC01ODEsMTMgKzU4
-NSwyMCBAQCBzdGF0aWMgaW50IHZhbGlkYXRlX2V4dGVudF9idWZmZXIoc3RydWN0IGV4dGVu
-dF9idWZmZXIgKmViLAogCWlmIChmb3VuZF9sZXZlbCA+IDAgJiYgYnRyZnNfY2hlY2tfbm9k
-ZShlYikpCiAJCXJldCA9IC1FSU87CiAKK291dDoKIAlpZiAoIXJldCkKIAkJc2V0X2V4dGVu
-dF9idWZmZXJfdXB0b2RhdGUoZWIpOwotCWVsc2UKKwllbHNlIHsKIAkJYnRyZnNfZXJyKGZz
-X2luZm8sCiAJCSJyZWFkIHRpbWUgdHJlZSBibG9jayBjb3JydXB0aW9uIGRldGVjdGVkIG9u
-IGxvZ2ljYWwgJWxsdSBtaXJyb3IgJXUiLAogCQkJICBlYi0+c3RhcnQsIGViLT5yZWFkX21p
-cnJvcik7Ci1vdXQ6CisJCWJ0cmZzX2VycihlYi0+ZnNfaW5mbywKKyJjaGVjayBvd25lcl9y
-b290PSVsbHUgdHJhbnNpZD0lbGx1IGZpcnN0X2tleT0oJWxsdSAldSAlbGx1KSBoYXNfZmly
-c3Rfa2V5PSVkIGxldmVsPSV1IiwKKwkJCSAgY2hlY2stPm93bmVyX3Jvb3QsCisJCQkgIGNo
-ZWNrLT50cmFuc2lkLCBjaGVjay0+Zmlyc3Rfa2V5Lm9iamVjdGlkLAorCQkJICBjaGVjay0+
-Zmlyc3Rfa2V5LnR5cGUsIGNoZWNrLT5maXJzdF9rZXkub2Zmc2V0LAorCQkJICBjaGVjay0+
-aGFzX2ZpcnN0X2tleSwgY2hlY2stPmxldmVsKTsKKwl9CiAJcmV0dXJuIHJldDsKIH0KIApk
-aWZmIC0tZ2l0IGEvZnMvYnRyZnMvZXh0ZW50X2lvLmMgYi9mcy9idHJmcy9leHRlbnRfaW8u
-YwppbmRleCA4M2RkM2FhNTk2NjMuLjVmMjY3MzQ1ZWY5NCAxMDA2NDQKLS0tIGEvZnMvYnRy
-ZnMvZXh0ZW50X2lvLmMKKysrIGIvZnMvYnRyZnMvZXh0ZW50X2lvLmMKQEAgLTUwMDUsOCAr
-NTAwNSwxOCBAQCBpbnQgcmVhZF9leHRlbnRfYnVmZmVyX3BhZ2VzKHN0cnVjdCBleHRlbnRf
-YnVmZmVyICplYiwgaW50IHdhaXQsIGludCBtaXJyb3JfbnVtLAogCWZvciAoaSA9IDA7IGkg
-PCBudW1fcGFnZXM7IGkrKykgewogCQlwYWdlID0gZWItPnBhZ2VzW2ldOwogCQl3YWl0X29u
-X3BhZ2VfbG9ja2VkKHBhZ2UpOwotCQlpZiAoIVBhZ2VVcHRvZGF0ZShwYWdlKSkKKwkJaWYg
-KCFQYWdlVXB0b2RhdGUocGFnZSkpIHsKIAkJCXJldCA9IC1FSU87CisJCQlidHJmc19lcnIo
-ZWItPmZzX2luZm8sCisicmVhZCBmYWlsZWQsIGNoZWNrIG93bmVyX3Jvb3Q9JWxsdSB0cmFu
-c2lkPSVsbHUgaGFzX2ZpcnN0X2tleT0lZCBmaXJzdF9rZXk9KCVsbHUgJXUgJWxsdSkgbGV2
-ZWw9JXUiLAorCQkJCSAgY2hlY2stPm93bmVyX3Jvb3QsIGNoZWNrLT50cmFuc2lkLAorCQkJ
-CSAgY2hlY2stPmhhc19maXJzdF9rZXksCisJCQkJICBjaGVjay0+Zmlyc3Rfa2V5Lm9iamVj
-dGlkLAorCQkJCSAgY2hlY2stPmZpcnN0X2tleS50eXBlLAorCQkJCSAgY2hlY2stPmZpcnN0
-X2tleS5vZmZzZXQsCisJCQkJICBjaGVjay0+bGV2ZWwpOworCQkJZHVtcF9zdGFjaygpOwor
-CQl9CiAJfQogCiAJcmV0dXJuIHJldDsKLS0gCjIuMzkuMAoK
-
---------------ayHqvGI0q04d6op00JQAIbv0--
