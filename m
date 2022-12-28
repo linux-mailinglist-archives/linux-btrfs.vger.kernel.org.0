@@ -2,30 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 338786587DC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Dec 2022 00:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906596587E2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Dec 2022 00:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbiL1XYx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Dec 2022 18:24:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
+        id S231243AbiL1Xbb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Dec 2022 18:31:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbiL1XYv (ORCPT
+        with ESMTP id S230388AbiL1Xba (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Dec 2022 18:24:51 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B9113EB6;
-        Wed, 28 Dec 2022 15:24:49 -0800 (PST)
+        Wed, 28 Dec 2022 18:31:30 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189BC120A0;
+        Wed, 28 Dec 2022 15:31:27 -0800 (PST)
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mf07E-1oe57U0EDy-00gZL7; Thu, 29
- Dec 2022 00:24:46 +0100
-Message-ID: <dc63f5ac-44f4-f5eb-f1b0-c14291595e3d@gmx.com>
-Date:   Thu, 29 Dec 2022 07:24:41 +0800
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MGz1V-1p77Oq2UeR-00E8eV; Thu, 29
+ Dec 2022 00:31:24 +0100
+Message-ID: <de8fb932-2934-7ad2-112a-a9a2e63b532d@gmx.com>
+Date:   Thu, 29 Dec 2022 07:31:19 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
 Subject: Re: [6.2][regression] after commit
  947a629988f191807d2d22ba63ae18259bb645c5 btrfs volume periodical forced
  switch to readonly after a lot of disk writes
+Content-Language: en-US
 To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
 Cc:     Qu Wenruo <wqu@suse.com>, dsterba@suse.com,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
@@ -46,33 +47,32 @@ References: <CABXGCsNzVxo4iq-tJSGm_kO1UggHXgq6CdcHDL=z5FL4njYXSQ@mail.gmail.com>
  <CABXGCsOq56Qjq+-Bnfbe7ZvhfjSs204cbc8VFG7b+J2Ncss0ng@mail.gmail.com>
  <fd0a0bfe-5c67-fd95-b17c-78a14c63bea6@gmx.com>
  <CABXGCsMev+96zixic3=5cLgzMfZKcJE-zOLPrc3-vTrrDZQDig@mail.gmail.com>
-Content-Language: en-US
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 In-Reply-To: <CABXGCsMev+96zixic3=5cLgzMfZKcJE-zOLPrc3-vTrrDZQDig@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:neldxSVHzqdPSmKu6I1rcpno0/Lyc+fY5XZktk+GLuJwddrwBdl
- EPpXYYNKAljyWiDF+aOEh1yCgNzTJY0C9pfqyoZUsHLyOQDccPKwp4KkU053wlOFZKJh63X
- ueXinrxF6ANCkZwiPWzUB5ChxFnvC+SVE61/Pu1wqRO4mz13VvKde7CDUVeND6ELpZZ7wza
- 9/uFIY5ZwSr7PdCvim/+w==
-UI-OutboundReport: notjunk:1;M01:P0:/YnS67cQOek=;zny1oo62VvrEBz+71vMnFVcTcbp
- GjcqMqUVwMZQDDcYPW5mcDQQdQgZOI4jTqIjot78sjPI+pqBHpTI/cCV7HgpwBdh9pPj+Lpvy
- 6hKp0Lk1NFTv9ZACe4Jw9Y2yK3YdtB4fILUXqA6gPb2YZ4xxrfUhEXmWKCwzvy1euvIuzB7pD
- YRUKgBCkznL1CP0AodEgra5h9APnYkyFBRj8Q6bMlA18aC+/MApnsaptd/WNBR4zu90npYvlj
- UYMKtNlem4azhRVcfSZijtmjjX97nmdEF1/x2ygrVku8KU3NK9ASnnc3yrJfgDamVK8S+NCuj
- zcL1MlElLtLotorP3OhdYKryQtAvCEEWK+25dCZWe3MKGEdgJY0Vjgxvvx4PLoAH40u54RJiW
- HMqeHb7fOOjPwjklmO6oeXhFMDM+VO4TLJJU86rSyhON2vH/bj0bNS4BeRyJsJ3BYZa1zqgTV
- WvnCRKhLf8LjJUcCDyM5DmJBTrKRlFroVNZv9KKN75gVzDKgXknTn/N+ARk3DrXslgkP36lgo
- WsJuQL0g0zKFD47cAbJdroNbS6i628+2HywJnBj6WbFkOXT080QOZ1YvrIl5ATQ5e0MpELxI9
- Ruk1v9HbSzRAsIeO9aHpMM24C6VpE/4sC9Asl7e71spAkvcKhfXTFP3Z16BC+lCbEUIO66Lhh
- uSVg8JUBE0ZanKEqPMEIttVEba9cU9Xm/j4ysgMX5wO0UFWepv8BxpJ0O146QlccSkNtIHKWy
- OGgXctDp1l3xDj+Y0eZQAIgpe/E8Wf+PT6VzhjB9RvJi3tjpjUXOOfDU4G0aJUmwIg7pN9+Wz
- FNB7/YRz1aADGLL9t482a/RBjZIlDSJSqh1Y2m3GF8+fpPmBh8kL/zTht4w6R6GA2owy26fha
- cpJzzWB3ysv6fmMP6fppVRHtfcWllam4Fz85nxXWTDtypT8yJzr/xJTCaoSUYLkEOqyuNbJhL
- doYyPT+V0VTfc0BkydAVY6Hc6HA=
+X-Provags-ID: V03:K1:75GTRrNIXSkNZvdMHGc/sIewK3l57YwPMpp1qaLWwtaRMYu9aHk
+ chI0zS2yp0eRqcNOrhhnkx+Qu8NBL37GuM+K6rjNNmHiTBl6eHPP8V5mWX3sqhp7kRCq8Lx
+ OsaGOOPVkABej8dlH87/NIWJCHMaL7e5Va69YbbMlEmMT3IGwCkvB+MrsOOZAEPKZLLp3EF
+ 7h9vGIC4r8ev7GJh00G+A==
+UI-OutboundReport: notjunk:1;M01:P0:wXZ0lqy6jEo=;tKVnIQHnC4qsVsXWTsWSBqG0LdH
+ XQtSQpQZ8KpwBPu7owXD65VTLViw+uHUEh3L5dUmLUiRkAvIxI1KHRrvyaJlTatnQrtaErUZv
+ DFYthMfHxrQwFkds/xakvRFqEdDFIkVYb6rQ3bb+DP64YixIxoqMTulS1zMJvq7jBV+vbdt62
+ 8z2KmY5UHroubRF+CV/okes+mGToGKSppz058GbQR5nR1nrhN+4Gmuueg5sFYd3IcP9ZlAplm
+ /bD85mkuGI6aHVoLgsFyLuJMfqPlxKVLNsEI6sIOOCz2MwDv5R+mCb69XrsOPCxKscOqPe7tW
+ S5J1brIvwKf2L2tHrQphClQvgXFD0XXnXhC5J3sTQBjyRtk5vRUh4n905HebNKHdbhpnP/3qe
+ mvl2RcnObEPNm8KlGXRO+K5rvIQwKFWYeg/Mjf54o2jg9KLBZlDxflURYxcix47MqVd/Xm+b3
+ bWkRsavxyLyyfT4r6LpMZdbnFMgHIihG2k06Rr975iSqv8fpC0tR5W01UiyOTa48HSelFAKeO
+ eFQ9q3Rx7E08wxDTtokrugB7Y3jSxLmiBLUUYSwCgpX5Sfg9d5vlmfpbDoyQo92w59813koRe
+ RFNRXV4BJqaw+UVluEfm31OLJIPHMQOB08yW3Gdq65jdnAXAHNqLuZT+3qCVs8EqriixLYphd
+ hKBrbkjb7m6BrSOFnEGS4tWpbmBAkAfMGoBzMyRT93kQsUj++yEoN2Wea/ah9pIox4wrUfnjl
+ j40meOmy2sxUACRuXg6E/Gp5cwqFzTOyOTIhktPx7lXXFl5Tg+GDUYz6Vzg1p98O3iGT6Msy2
+ +QSckSwjVKhY2oVjupWo7jb8EVugEONObDFL+hgIIft0+7aTFgoc8dUZHFCCn/U7SLO9edOjV
+ VoCS8RjKAwlhBswTxDVT3jUBun/XgESuu1yiPRcaqN6X8ndjNoMkZjGN8WDKAknk78737tVIE
+ uyolg1luxUU/9aNkP/AuQhya4CM=
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -107,21 +107,6 @@ On 2022/12/28 22:12, Mikhail Gavrilov wrote:
 > hints of errors.
 > For me, this is a sign that the problem has been fixed.
 > Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-
-Just one last thing to confirm, mind to provide the following dump?
-
-  # btrfs ins dump-tree -t chunk <device>
-
-If the fix works, it means you have some tree block crossing stripe 
-boundary, which is not the ideal situation.
-
-But on the other hand, you have provided "btrfs check" output, which 
-shows no such sign.
-I'm not sure if it's a bug in newer check.
-
-Thanks for your comprehensive testing and detailed report!
-Qu
-
 > 
 > ❯ dmesg | grep -i btrfs
 > [    0.000000] Linux version
@@ -190,6 +175,16 @@ Qu
 > something else with this computer. Yes, at least watching videos on
 > youtube. Is there anything that can be done here or is there nothing
 > that we can do?
+
+Are you using qgroup? If so it may be worthy trying disabling qgroup.
+
+But for newer kernel, qgroup hang should only happen when dropping large 
+snapshot, I don't know if podman pull would cause older snapshots to be 
+deleted...
+
+Thanks,
+Qu
+
 > [46944.301588] INFO: task btrfs-transacti:1184 blocked for more than
 > 122 seconds.
 > [46944.301825]       Tainted: G        W    L    -------  ---
