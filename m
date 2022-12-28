@@ -2,60 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1E96570F8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Dec 2022 00:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D9A65718B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Dec 2022 02:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbiL0XVA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Dec 2022 18:21:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
+        id S231221AbiL1BI0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Dec 2022 20:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbiL0XU6 (ORCPT
+        with ESMTP id S231167AbiL1BIZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Dec 2022 18:20:58 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A73DEB3
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Dec 2022 15:20:55 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MyKHc-1ow33T3FFM-00yivb; Wed, 28
- Dec 2022 00:20:48 +0100
-Message-ID: <5ce6e59d-6c79-4d15-aa8a-990a299cd20c@gmx.com>
-Date:   Wed, 28 Dec 2022 07:20:43 +0800
+        Tue, 27 Dec 2022 20:08:25 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1BDE01D;
+        Tue, 27 Dec 2022 17:08:23 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MvsJ5-1oswAX0SxD-00suDE; Wed, 28
+ Dec 2022 02:08:18 +0100
+Content-Type: multipart/mixed; boundary="------------E0ZTG6MmySH5MYeAs54wYqcq"
+Message-ID: <fd0a0bfe-5c67-fd95-b17c-78a14c63bea6@gmx.com>
+Date:   Wed, 28 Dec 2022 09:08:14 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
-Subject: Re: recurring corruption with latest kernels
-To:     Oliver Neukum <oneukum@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <148b838a-897a-90d6-7e6b-564238d58eb0@suse.com>
- <ddc034c6-655d-c3f1-8d69-544b743b7ac9@gmx.com>
- <3dbe35f1-0815-73d9-f53e-86aacabf13e8@suse.com>
- <4531be20-470e-9984-6535-fd822c6c157e@gmx.com>
- <f6987484-b084-c6f8-31b4-dd2e3f3eb9d5@suse.com>
 Content-Language: en-US
+To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        Qu Wenruo <wqu@suse.com>
+Cc:     dsterba@suse.com, Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
+References: <CABXGCsNzVxo4iq-tJSGm_kO1UggHXgq6CdcHDL=z5FL4njYXSQ@mail.gmail.com>
+ <CABXGCsNrm3ddn3p_ECSRe+yQeoF3KojTFvy-CpXNzi9ADkbnvQ@mail.gmail.com>
+ <18b5fa1e-7d1e-4560-c98b-d7ac5fc87c3a@gmx.com>
+ <CABXGCsM5y6m=pLX7tyE-RB1yuHEgZh3fxDu5ESfTRxEnW+djZA@mail.gmail.com>
+ <0036622d-53f7-eaba-f720-6dd9bdca28ad@gmx.com>
+ <CABXGCsMMYmCT_Hz=wfKWDy4OQJ2KyBO3rNAFC1YCAthziWm+Lg@mail.gmail.com>
+ <41734bdb-2df0-6596-01b6-76a7dfd05d64@gmx.com>
+ <CABXGCsM6GOzr+wL9BEk7mD5xLNgsKE5KUBADD8r783V6-FwXdg@mail.gmail.com>
+ <e9f4d768-d91b-b5cc-dbe6-041a81833cf3@gmx.com>
+ <CABXGCsPK6ZZ4=5qathvjqSJNde6MYhA0uvh6zAMznT9Yj3xk2g@mail.gmail.com>
+ <24cd64b2-4536-372c-91af-b425d2f6efd4@gmx.com>
+ <CABXGCsOG1GR1QqQSULHRcqJyfo5zY1bkZA+Mkb2m3C=rV_2z2w@mail.gmail.com>
+ <ff262ad5-2ae3-329a-ba88-19721850131d@gmx.com>
+ <CABXGCsOgy0N_TLEadgacMBQLuU5xBe-hmoRvv4h=q-M5PcPvEg@mail.gmail.com>
+ <7d2edc1d-922b-763c-3122-0a6f81c3454e@suse.com>
+ <CABXGCsOq56Qjq+-Bnfbe7ZvhfjSs204cbc8VFG7b+J2Ncss0ng@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <f6987484-b084-c6f8-31b4-dd2e3f3eb9d5@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:poeOR7Dt9QKRh/9O8ZgeDd8QvAT6/AWAbiW/LiZ6jm85mLMShsF
- e/Uhel70GXEYxJsk1kqnPe9mS+Y2XOFTDjicKl6VoN36s44nz5AoNbz7ZkrdA7LdiFATiEr
- fKxeg1yHAkyQ2ULI6q85H+RgpsBSmMFMDf+NLtRkc+sqBIF8FYDuX+eyE6/sK/Dm+Ozo21l
- Mu9RWNL82EtbcsaI5HmYg==
-UI-OutboundReport: notjunk:1;M01:P0:ZswOGk1kTOg=;VXnJr/EDRYZGZKomcogcr2bWOFn
- t2zY8Nmeu9SCvPkUD8gocwB9B2SJkKtvZcgJyMuMuJLtz1pDUEMgggLLx68fJdtbnQSUXkmc/
- Ntj74uMVkSkL2kl3j4dLh+4/j8ECHB0hoFBdkkbv8LAy5SJOAbLbgEm8yBO0gWaaE3FARmnMn
- FB+HjSWBFlGFUoJfcs9DQg457B6lEm823zocUZT0bl0gljhcCSb3P58myXQ404ZjJXKPAnttA
- VVxYxPs8OyjvTFTcagl3myK+jNvQ6PFxd76Cndtbk91sPyD0EBhVqfkk+NxImCZKCtK1xK0N2
- 3x3ZmR7lXl/+mFLC/9dqCeRMDWvIAQV8ZeS7m7BEfYBRJhvOL6XNRJjKAXbOFxOlWbfhcIrxA
- /gxm+2R16jt/3Ir0u/hMemopfeEE4PEz20y5egbwON9N5r6qx2ZyyEQ5uUwo3rDdMn6lex4vG
- Ufq+RZm5VHtPOerVIqPRCC8HjjBBXTx6uOmtPIzv2J+DqEJKY2jDdZaM1DUZvaqrxEKNbXMKu
- 5BsW3s5EIpXpFy3Fy3sMj1RJWUSK3fGzJLZE/EnKCETSwZiIevFQ4LUcgOGiI6rYIFO3vQtZw
- TsjpP5yuyBhYVTMFA+W35OLn+SMkDn+hoWXE2ZFyEqKPT4p27ndmKkwYs3qHpSDG9/ps2wIL9
- KxEdEnb47vxR61sks6UGJ5AzMn5emZXXcjQn5vExJmriHuMloWsW+pxfxoIjGvWUvr1X+Eg6f
- DrkfotJSddE77pnyq+q6Lx0vu8pBrwXd+ZtZQ0zMnRf5ZNwYD1vs5zs+MT60Voo/TTxEZnRhZ
- a1FRnwowITQD27nFb8AW8PA3KBUO/55v18JxdRb+bybr3pCk8gDfE/6gYazyxYa1dChzhfgTq
- 2SBkyL3utggsYQc5v6fMqM7zfjH8Jf8vPnctNhuYfCuK5wrLToYK699N4c9YdvMlz1QZCITzr
- w+Lrs7A606WB9TGCNadKQgbEhF4=
+Subject: Re: [6.2][regression] after commit
+ 947a629988f191807d2d22ba63ae18259bb645c5 btrfs volume periodical forced
+ switch to readonly after a lot of disk writes
+In-Reply-To: <CABXGCsOq56Qjq+-Bnfbe7ZvhfjSs204cbc8VFG7b+J2Ncss0ng@mail.gmail.com>
+X-Provags-ID: V03:K1:EiaBB33Rs1ym9a6AinJLo6BrFr9tBKDFZJeUPW8Rhl14DqHAuZk
+ QZVnk35zSa4Wjt0TQxMqw7BJrNBUxZlis2DE8uR7IUJfXq6MUA10X31ETJaw+26IO1yrN9e
+ ceE8e7k/6Oy4Nfa2U/EpZER/0Lg+X/+OTsv9y62kRgmLDYx8Ve5s4YrsVEdgCGFMYIvb+nr
+ X948XO2lKHDhfIjI+KIcQ==
+UI-OutboundReport: notjunk:1;M01:P0:yvsApHdnx5M=;9T9wogz4gd6P/km7leBoKXqcGDw
+ JtfCKceClc0kIQQYn9BlIluFacL5MZ2IuYwdxFDkNv9+E/LME7/ReFZShwPwmOGEnnMIfAsPu
+ dmmUlbc2e5nO7hdjygYWH5kXRyPGryL7MbpPk7msr7bUpKT4XBVOHGZCKk2/5l/zPyZD+wDGW
+ zB+d2lGZnsCwP2RAp/6gku+3iTm1iTT0txCDf96HraDZQzyWcyjKPucGAfXUrdhZC5MYwuf/f
+ cUiY3uiyOV3LZ02IaIxRXqyPA4qDQ6/HuzGNmPpZ1KtEjYoyQFXeN9pwE0qCVCm8R6aY9Sfmg
+ p9rEVtP4zFZLWsIu0RyvrsYs3jH7WfYvJ5h98/UV0pi7P3urkozQr2sNygPWWj2huBMa3pC18
+ zY4103yQ2pcxUAz5pEsRMeLouFK9SIm48oNuYqAE7eueImg0uNwSWxJryTOLydoUqOKbJMjMn
+ CTO07x8sFPcZDl+KeG7QxdRtKg6S72lOApwplemhRUsbL26cCdk9VVpSM0/2KBEorU+hxwryq
+ a4xtl61E1MP7G5Ii1j4QtDk+axFK9z0SBOct1c4wGLa991ZIzkN2eQJKCfDmCPbH02YoLZpyq
+ z6fO73P37MqgeZnso3Dst5XRjgoDb8oXLwrnDK4TtJEQQhnzr6YZg+eWJx/NV5Wzo+VDBRHTi
+ n/iZqp4MLVXuDmQiCVL6G/zjBjp7OEf/6smmKI2uQ9d+bsllq5iYZWvwiLD7dMEBadsew9DVO
+ 2WtckJ/Bf8GdcmnMCZ9ndmv2+aO8oZXhPIg/nVg4T528X1uJC5MCIn+1i2MZQ4tlOSCr+Oalt
+ u7hpIhvYCdu+awuASlV2D0JqDhbBZvKEBQNH3GnRsUWTj+sic+vqR8fGOvYBYUBrIsOyYHAc2
+ UarF4xFIGKZku46Pa5+dz6RUnVP4Myp4GBrzyU6cDy9WQcMZsEG3YqYR4ANlKuCaE1sM2jOf3
+ UU4eLExPQHJMax/6l8Q6/C2ZqFM=
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,431 +78,169 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is a multi-part message in MIME format.
+--------------E0ZTG6MmySH5MYeAs54wYqcq
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-On 2022/12/27 23:47, Oliver Neukum wrote:
-> 
-> 
-> On 22.12.22 00:48, Qu Wenruo wrote:
->>
->>
->> On 2022/12/21 23:00, Oliver Neukum wrote:
-> 
->> And when the problem happens, what else did you see in your workload?
-> 
-> Nothing. I have found no way of triggering this but by just waiting.
->>
->> The system hangs or the fs falls to read-only?
-> 
-> It goes to read-only.
-> 
->> If possible, a uptodate btrfs-progs build and check output would be 
->> more helpful. (You can use tumbleweed ISO as liveCD and run btrfs 
->> check on the fs).
-> 
-> Latest failure with new tools:
-> 
-> Opening filesystem to check...
-> Checking filesystem on /dev/nvme0n1p2
-> UUID: 6b557439-a722-46c6-b9fa-e3395a5f4d40
-> Rescan hasn't been initialzied, a difference in qgroup accounting is 
-> expected
-> Counts for qgroup id: 0/257 are different
-> our:        referenced 27139301376 referenced compressed 27139301376
-> disk:        referenced 27137921024 referenced compressed 27137921024
-> diff:        referenced 1380352 referenced compressed 1380352
-> our:        exclusive 27139301376 exclusive compressed 27139301376
-> disk:        exclusive 27137921024 exclusive compressed 27137921024
-> diff:        exclusive 1380352 exclusive compressed 1380352
-> Counts for qgroup id: 0/259 are different
-> our:        referenced 1564332032 referenced compressed 1564332032
-> disk:        referenced 1536905216 referenced compressed 1536905216
-> diff:        referenced 27426816 referenced compressed 27426816
-> our:        exclusive 1564332032 exclusive compressed 1564332032
-> disk:        exclusive 1536905216 exclusive compressed 1536905216
-> diff:        exclusive 27426816 exclusive compressed 27426816
-> Counts for qgroup id: 0/265 are different
-> our:        referenced 155648 referenced compressed 155648
-> disk:        referenced 122880 referenced compressed 122880
-> diff:        referenced 32768 referenced compressed 32768
-> our:        exclusive 155648 exclusive compressed 155648
-> disk:        exclusive 122880 exclusive compressed 122880
-> diff:        exclusive 32768 exclusive compressed 32768
-> Counts for qgroup id: 0/266 are different
-> our:        referenced 125206056960 referenced compressed 125206056960
-> disk:        referenced 125205323776 referenced compressed 125205323776
-> diff:        referenced 733184 referenced compressed 733184
-> our:        exclusive 234156032 exclusive compressed 234156032
-> disk:        exclusive 16384 exclusive compressed 16384
-> diff:        exclusive 234139648 exclusive compressed 234139648
-> Counts for qgroup id: 0/1832 are different
-> our:        referenced 125205323776 referenced compressed 125205323776
-> disk:        referenced 125205323776 referenced compressed 125205323776
-> our:        exclusive 9371648 exclusive compressed 9371648
-> disk:        exclusive 16384 exclusive compressed 16384
-> diff:        exclusive 9355264 exclusive compressed 9355264
-> Counts for qgroup id: 0/1833 are different
-> our:        referenced 125209817088 referenced compressed 125209817088
-> disk:        referenced 125205323776 referenced compressed 125205323776
-> diff:        referenced 4493312 referenced compressed 4493312
-> our:        exclusive 7954432 exclusive compressed 7954432
-> disk:        exclusive 16384 exclusive compressed 16384
-> diff:        exclusive 7938048 exclusive compressed 7938048
-> Counts for qgroup id: 1/0 are different
-> our:        referenced 125677809664 referenced compressed 125677809664
-> disk:        referenced 125564411904 referenced compressed 125564411904
-> diff:        referenced 113397760 referenced compressed 113397760
-> our:        exclusive 705908736 exclusive compressed 705908736
-> disk:        exclusive 397996032 exclusive compressed 397996032
-> diff:        exclusive 307912704 exclusive compressed 307912704
-> found 154905903104 bytes used, no error found
-> total csum bytes: 124005924
-> total tree bytes: 884539392
-> total fs tree bytes: 677527552
-> total extent tree bytes: 55820288
-> btree space waste bytes: 150882496
-> file data blocks allocated: 187945013248
->   referenced 175985745920
-> 
-> 
->> And the interesting part in dmesg is not much:
->>
->>    BTRFS warning (device nvme0n1p2): block group 389723193344 has 
->> wrong amount of free space
->>    BTRFS warning (device nvme0n1p2): failed to load free space cache 
->> for block group 389723193344, rebuilding it now
->>
->> This shows that the space cache is not correct, and it needs rebuild.
-> 
-> [89838.714476] Bluetooth: hci0: Found Intel DDC parameters: 
-> intel/ibt-18-16-1.ddc
-> [89838.722396] Bluetooth: hci0: Applying Intel DDC parameters completed
-> [89838.726428] Bluetooth: hci0: Firmware revision 0.1 build 86 week 46 2021
-> [89838.753061] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89838.754038] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89838.777282] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89838.844847] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89838.915502] Bluetooth: MGMT ver 1.22
-> [89839.106923] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89839.107102] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89839.119831] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89839.122112] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89839.141460] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89839.702819] r8169 0000:04:00.0 eth1: Link is Up - 100Mbps/Full - flow 
-> control rx/tx
-> [89839.702836] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
-> [89842.931652] wlan0: authenticate with cc:ce:1e:f4:37:95
-> [89842.931690] wlan0: 80 MHz not supported, disabling VHT
-> [89842.936987] wlan0: send auth to cc:ce:1e:f4:37:95 (try 1/3)
-> [89843.084376] wlan0: send auth to cc:ce:1e:f4:37:95 (try 2/3)
-> [89843.201803] wlan0: send auth to cc:ce:1e:f4:37:95 (try 3/3)
-> [89843.244013] wlan0: authenticated
-> [89843.248371] wlan0: associate with cc:ce:1e:f4:37:95 (try 1/3)
-> [89843.267094] wlan0: RX AssocResp from cc:ce:1e:f4:37:95 (capab=0x1431 
-> status=0 aid=3)
-> [89843.269826] wlan0: associated
-> [89843.290208] wlan0: Limiting TX power to 20 (20 - 0) dBm as advertised 
-> by cc:ce:1e:f4:37:95
-> [89843.456661] IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-> [89917.808164] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89917.809186] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89917.834402] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89917.834573] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89929.522089] r8169 0000:04:00.0 eth1: Link is Down
-> [89930.271562] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89930.702286] PM: suspend entry (deep)
-> [89930.706132] Filesystems sync: 0.003 seconds
-> [89930.777022] Freezing user space processes
-> [89930.780125] Freezing user space processes completed (elapsed 0.003 
-> seconds)
-> [89930.780132] OOM killer disabled.
-> [89930.780134] Freezing remaining freezable tasks
-> [89930.817977] Freezing remaining freezable tasks completed (elapsed 
-> 0.037 seconds)
-> [89930.818003] printk: Suspending console(s) (use no_console_suspend to 
-> debug)
-> [89930.819058] wlan0: deauthenticating from cc:ce:1e:f4:37:95 by local 
-> choice (Reason: 3=DEAUTH_LEAVING)
-> [89931.361406] ACPI: EC: interrupt blocked
-> [89931.426248] ACPI: PM: Preparing to enter system sleep state S3
-> [89931.432877] ACPI: EC: event blocked
-> [89931.432878] ACPI: EC: EC stopped
-> [89931.432879] ACPI: PM: Saving platform NVS memory
-> [89931.433101] Disabling non-boot CPUs ...
-> [89931.435662] smpboot: CPU 1 is now offline
-> [89931.437709] smpboot: CPU 2 is now offline
-> [89931.439661] smpboot: CPU 3 is now offline
-> [89931.441634] smpboot: CPU 4 is now offline
-> [89931.443507] smpboot: CPU 5 is now offline
-> [89931.445478] smpboot: CPU 6 is now offline
-> [89931.447217] smpboot: CPU 7 is now offline
-> [89931.447972] ACPI: PM: Low-level resume complete
-> [89931.448002] ACPI: EC: EC started
-> [89931.448002] ACPI: PM: Restoring platform NVS memory
-> [89931.492881] AMD-Vi: Virtual APIC enabled
-> [89931.522906] AMD-Vi: Virtual APIC enabled
-> [89931.523491] Enabling non-boot CPUs ...
-> [89931.523549] x86: Booting SMP configuration:
-> [89931.523550] smpboot: Booting Node 0 Processor 1 APIC 0x1
-> [89931.526137] ACPI: \_PR_.C001: Found 2 idle states
-> [89931.526506] CPU1 is up
-> [89931.526556] smpboot: Booting Node 0 Processor 2 APIC 0x2
-> [89931.529127] ACPI: \_PR_.C002: Found 2 idle states
-> [89931.529467] CPU2 is up
-> [89931.529495] smpboot: Booting Node 0 Processor 3 APIC 0x3
-> [89931.532103] ACPI: \_PR_.C003: Found 2 idle states
-> [89931.532536] CPU3 is up
-> [89931.532558] smpboot: Booting Node 0 Processor 4 APIC 0x4
-> [89931.535202] ACPI: \_PR_.C004: Found 2 idle states
-> [89931.535702] CPU4 is up
-> [89931.535722] smpboot: Booting Node 0 Processor 5 APIC 0x5
-> [89931.538296] ACPI: \_PR_.C005: Found 2 idle states
-> [89931.538995] CPU5 is up
-> [89931.539015] smpboot: Booting Node 0 Processor 6 APIC 0x6
-> [89931.541573] ACPI: \_PR_.C006: Found 2 idle states
-> [89931.542264] CPU6 is up
-> [89931.542287] smpboot: Booting Node 0 Processor 7 APIC 0x7
-> [89931.544866] ACPI: \_PR_.C007: Found 2 idle states
-> [89931.545690] CPU7 is up
-> [89931.547516] ACPI: PM: Waking up from system sleep state S3
-> [89932.084201] ACPI: EC: interrupt unblocked
-> [89932.154631] ACPI: EC: event unblocked
-> [89932.154926] usb usb1: root hub lost power or was reset
-> [89932.156560] [drm] PCIE GART of 1024M enabled.
-> [89932.156563] [drm] PTB located at 0x000000F400A00000
-> [89932.156581] [drm] PSP is resuming...
-> [89932.176450] [drm] reserve 0x400000 from 0xf401c00000 for PSP TMR
-> [89932.276813] amdgpu 0000:06:00.0: amdgpu: RAS: optional ras ta ucode 
-> is not available
-> [89932.290965] amdgpu 0000:06:00.0: amdgpu: RAP: optional rap ta ucode 
-> is not available
-> [89932.290967] amdgpu 0000:06:00.0: amdgpu: SECUREDISPLAY: securedisplay 
-> ta ucode is not available
-> [89932.291045] amdgpu: restore the fine grain parameters
-> [89932.443349] nvme nvme0: 16/0/0 default/read/poll queues
-> [89932.444140] usb 4-2: reset high-speed USB device number 3 using xhci_hcd
-> [89932.603191] usb 2-1.3.3.1: reset full-speed USB device number 7 using 
-> xhci_hcd
-> [89932.719101] usb 4-1: reset full-speed USB device number 2 using xhci_hcd
-> [89932.966687] [drm] kiq ring mec 2 pipe 1 q 0
-> [89932.977509] [drm] VCN decode and encode initialized 
-> successfully(under SPG Mode).
-> [89932.977524] amdgpu 0000:06:00.0: amdgpu: ring gfx uses VM inv eng 0 
-> on hub 0
-> [89932.977527] amdgpu 0000:06:00.0: amdgpu: ring gfx_low uses VM inv eng 
-> 1 on hub 0
-> [89932.977528] amdgpu 0000:06:00.0: amdgpu: ring gfx_high uses VM inv 
-> eng 4 on hub 0
-> [89932.977530] amdgpu 0000:06:00.0: amdgpu: ring comp_1.0.0 uses VM inv 
-> eng 5 on hub 0
-> [89932.977531] amdgpu 0000:06:00.0: amdgpu: ring comp_1.1.0 uses VM inv 
-> eng 6 on hub 0
-> [89932.977532] amdgpu 0000:06:00.0: amdgpu: ring comp_1.2.0 uses VM inv 
-> eng 7 on hub 0
-> [89932.977533] amdgpu 0000:06:00.0: amdgpu: ring comp_1.3.0 uses VM inv 
-> eng 8 on hub 0
-> [89932.977535] amdgpu 0000:06:00.0: amdgpu: ring comp_1.0.1 uses VM inv 
-> eng 9 on hub 0
-> [89932.977536] amdgpu 0000:06:00.0: amdgpu: ring comp_1.1.1 uses VM inv 
-> eng 10 on hub 0
-> [89932.977537] amdgpu 0000:06:00.0: amdgpu: ring comp_1.2.1 uses VM inv 
-> eng 11 on hub 0
-> [89932.977539] amdgpu 0000:06:00.0: amdgpu: ring comp_1.3.1 uses VM inv 
-> eng 12 on hub 0
-> [89932.977540] amdgpu 0000:06:00.0: amdgpu: ring kiq_2.1.0 uses VM inv 
-> eng 13 on hub 0
-> [89932.977541] amdgpu 0000:06:00.0: amdgpu: ring sdma0 uses VM inv eng 0 
-> on hub 1
-> [89932.977542] amdgpu 0000:06:00.0: amdgpu: ring vcn_dec uses VM inv eng 
-> 1 on hub 1
-> [89932.977544] amdgpu 0000:06:00.0: amdgpu: ring vcn_enc0 uses VM inv 
-> eng 4 on hub 1
-> [89932.977545] amdgpu 0000:06:00.0: amdgpu: ring vcn_enc1 uses VM inv 
-> eng 5 on hub 1
-> [89932.977546] amdgpu 0000:06:00.0: amdgpu: ring jpeg_dec uses VM inv 
-> eng 6 on hub 1
-> [89932.988418] usb 4-2.1: reset high-speed USB device number 4 using 
-> xhci_hcd
-> [89933.023143] psmouse serio1: synaptics: queried max coordinates: x 
-> [..5678], y [..4694]
-> [89933.067096] psmouse serio1: synaptics: queried min coordinates: x 
-> [1266..], y [1162..]
-> [89933.180142] usb 4-2.4: reset full-speed USB device number 6 using 
-> xhci_hcd
-> [89933.372144] usb 4-2.2: reset full-speed USB device number 5 using 
-> xhci_hcd
-> [89933.509036] [drm] Fence fallback timer expired on ring gfx
-> [89933.518076] OOM killer enabled.
-> [89933.518079] Restarting tasks ...
-> [89933.518323] pci_bus 0000:01: Allocating resources
-> [89933.518432] pci_bus 0000:02: Allocating resources
-> [89933.518448] pci_bus 0000:03: Allocating resources
-> [89933.518479] pci_bus 0000:04: Allocating resources
-> [89933.518494] pci_bus 0000:05: Allocating resources
-> [89933.519424] pci_bus 0000:06: Allocating resources
-> [89933.521662] Bluetooth: hci0: Bootloader revision 0.1 build 42 week 52 
-> 2015
-> [89933.523366] done.
-> [89933.523464] random: crng reseeded on system resumption
-> [89933.524084] Bluetooth: hci0: Device revision is 2
-> [89933.524095] Bluetooth: hci0: Secure boot is enabled
-> [89933.524097] Bluetooth: hci0: OTP lock is enabled
-> [89933.524099] Bluetooth: hci0: API lock is enabled
-> [89933.524101] Bluetooth: hci0: Debug lock is disabled
-> [89933.524102] Bluetooth: hci0: Minimum firmware build 1 week 10 2014
-> [89933.524113] Bluetooth: hci0: Found device firmware: 
-> intel/ibt-18-16-1.sfi
-> [89933.524209] Bluetooth: hci0: Boot Address: 0x40800
-> [89933.524211] Bluetooth: hci0: Firmware Version: 86-46.21
-> [89933.669795] PM: suspend exit
-> [89934.097061] Generic FE-GE Realtek PHY r8169-0-300:00: attached PHY 
-> driver (mii_bus:phy_addr=r8169-0-300:00, irq=MAC)
-> [89934.222008] r8169 0000:03:00.0 eth0: Link is Down
-> [89934.257066] Generic FE-GE Realtek PHY r8169-0-400:00: attached PHY 
-> driver (mii_bus:phy_addr=r8169-0-400:00, irq=MAC)
-> [89934.388247] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89934.388539] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89934.441399] r8169 0000:04:00.0 eth1: Link is Down
-> [89934.849697] Bluetooth: hci0: Waiting for firmware download to complete
-> [89934.850009] Bluetooth: hci0: Firmware loaded in 1294820 usecs
-> [89934.850048] Bluetooth: hci0: Waiting for device to boot
-> [89934.867019] Bluetooth: hci0: Malformed MSFT vendor event: 0x02, 
-> length requested 9 length available 6
-> [89934.867026] Bluetooth: hci0: Device booted in 16610 usecs
-> [89934.867030] Buggy packet:00 02 01 02 ff 01
-> [89934.867034] CPU: 1 PID: 24918 Comm: kworker/u33:3 Tainted: G        
-> W   E      6.1.0-59.40-default+ #336
-> [89934.867036] Bluetooth: hci0: Found Intel DDC parameters: 
-> intel/ibt-18-16-1.ddc
-> [89934.867038] Hardware name: LENOVO 20NJS0KQ07/20NJS0KQ07, BIOS 
-> R12ET55W(1.25 ) 07/06/2020
-> [89934.867041] Workqueue: hci0 hci_rx_work [bluetooth]
-> [89934.867111] Call Trace:
-> [89934.867117]  <TASK>
-> [89934.867121]  dump_stack_lvl+0x44/0x5c
-> [89934.867130]  msft_skb_pull+0x97/0xa0 [bluetooth]
-> [89934.867184]  msft_vendor_evt+0x115/0x2f0 [bluetooth]
-> [89934.867229]  hci_event_packet+0x2d1/0x560 [bluetooth]
-> [89934.867279]  ? __pfx_msft_vendor_evt+0x10/0x10 [bluetooth]
-> [89934.867327]  hci_rx_work+0x29f/0x580 [bluetooth]
-> [89934.867365]  ? __schedule+0x323/0x9c0
-> [89934.867372]  process_one_work+0x226/0x440
-> [89934.867379]  worker_thread+0x2a/0x3b0
-> [89934.867382]  ? __pfx_worker_thread+0x10/0x10
-> [89934.867385]  kthread+0xe8/0x110
-> [89934.867390]  ? __pfx_kthread+0x10/0x10
-> [89934.867395]  ret_from_fork+0x2c/0x50
-> [89934.867403]  </TASK>
-> [89934.875009] Bluetooth: hci0: Applying Intel DDC parameters completed
-> [89934.879015] Bluetooth: hci0: Firmware revision 0.1 build 86 week 46 2021
-> [89935.068088] Bluetooth: MGMT ver 1.22
-> [89935.744075] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89935.744681] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89935.762082] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89935.823974] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89936.029941] r8169 0000:04:00.0 eth1: Link is Up - 100Mbps/Full - flow 
-> control rx/tx
-> [89936.029962] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
-> [89936.852715] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89936.852873] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89936.858246] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89936.862563] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [89939.497404] wlan0: authenticate with cc:ce:1e:f4:37:95
-> [89939.497447] wlan0: 80 MHz not supported, disabling VHT
-> [89939.504565] wlan0: send auth to cc:ce:1e:f4:37:95 (try 1/3)
-> [89939.548507] wlan0: authenticated
-> [89939.549089] wlan0: associate with cc:ce:1e:f4:37:95 (try 1/3)
-> [89939.653040] wlan0: associate with cc:ce:1e:f4:37:95 (try 2/3)
-> [89939.757064] wlan0: associate with cc:ce:1e:f4:37:95 (try 3/3)
-> [89939.790528] wlan0: RX AssocResp from cc:ce:1e:f4:37:95 (capab=0x1431 
-> status=0 aid=3)
-> [89939.793220] wlan0: associated
-> [89939.804558] wlan0: Limiting TX power to 20 (20 - 0) dBm as advertised 
-> by cc:ce:1e:f4:37:95
-> [89940.917316] IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-> [90774.020890] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90774.021846] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90774.022345] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90774.107284] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90774.107438] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90774.107580] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90774.142624] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90774.142768] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90774.142898] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90774.168431] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90779.089137] validate_extent_buffer: 302 callbacks suppressed
-> [90779.089142] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90779.089363] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90779.089538] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90779.101242] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90779.101424] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90779.101572] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90779.111754] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90779.111931] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90779.112093] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> [90779.135026] BTRFS error (device nvme0n1p2: state EA): parent transid 
-> verify failed on logical 146997903360 mirror 1 wanted 771073 found 770869
-> 
->>
->> This may indicate a problem, as we rely on space cache to do a lot of 
->> COW work, if that's the case, I'd recommend to at least clear all the 
->> space cache by:
->>
->>    # btrfs check --clear-space-cache v1 /dev/nvme0n1p2
-> 
-> In addition to --repair or instead of?
 
---clear-space-cache is an independent option, no need to --repair.
+On 2022/12/27 21:11, Mikhail Gavrilov wrote:
+> On Tue, Dec 27, 2022 at 4:03 PM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> I have a similar laptop (G14), only GPU is different (RTX3060), and I
+>> failed to reproduce this so far...
+>>
+>> My gcc is only a small version behind (12.2.0).
+>>
+>> Thus none of the hardware seems suspicious at all...
+>>
+>> Anyway I have attached my last struggle for the weird problem.
+>> For now, I have no idea why this can even happen...
+> 
+> The new Kernel log is attached.
+> This time, the main difference was that the file system did not
+> immediately switch to readonly.
+> The Steam client stopped a couple of times with a write error, but
+> after pressing the resume button, it resumed downloading. For the
+> third or fourth time refused to download.
+> 
+I'm a total idiot.
 
-The only problem reported is qgroup, which you can easily repair by 
-using "btrfs qgroup rescan".
+ From the very first dmesg with calltrack, it already shows the 
+submit_one_bio() is called from submit_extent_page(), which means cases 
+cross stripe boundary, and has no parent_check populated at all.
+
+And since you're using RAID0 on two NVMEs, it matches the symptom, while 
+most tests done here are using single device (DUP and SINGLE), thus no 
+stripe boundary cases at all.
+(In fact it should still be possible to trigger on SINGLE, but way too 
+hard to trigger)
+
+With proper root cause found, this version should mostly handle the 
+regression correctly.
+
+This version should mostly be the formal one I'd later send to the 
+mailing list.
+
+I can not thank you more for all the testing you have provided, it not 
+only pinned down the bug, but also proves I'm a total idiot...
 
 Thanks,
-QU
+Qu
+--------------E0ZTG6MmySH5MYeAs54wYqcq
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-btrfs-fix-the-false-alert-on-bad-tree-level.patch"
+Content-Disposition: attachment;
+ filename="0001-btrfs-fix-the-false-alert-on-bad-tree-level.patch"
+Content-Transfer-Encoding: base64
 
-> 
->      Regards
->          Oliver
+RnJvbSBjYzA1ZDIyYzA0NTA3NDQwYzY0NDM4NGQzYjY4ZGVmNjU2NTNiMGRlIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpNZXNzYWdlLUlkOiA8Y2MwNWQyMmMwNDUwNzQ0MGM2NDQzODRk
+M2I2OGRlZjY1NjUzYjBkZS4xNjcyMTg5NTY4LmdpdC53cXVAc3VzZS5jb20+CkZyb206IFF1
+IFdlbnJ1byA8d3F1QHN1c2UuY29tPgpEYXRlOiBXZWQsIDI4IERlYyAyMDIyIDA4OjQ0OjE4
+ICswODAwClN1YmplY3Q6IFtQQVRDSF0gYnRyZnM6IGZpeCB0aGUgZmFsc2UgYWxlcnQgb24g
+YmFkIHRyZWUgbGV2ZWwKCltCVUddClRoZXJlIGlzIGEgYnVnIHJlcG9ydCB0aGF0IG9uIGEg
+UkFJRDAgbnZtZSBidHJmcyBzeXN0ZW0sIHVuZGVyIGhlYXZ5CndyaXRlIGxvYWQgdGhlIGZz
+IGNhbiBmbGlwIFJPIHJhbmRvbWx5LgoKV2l0aCBleHRyYSBkZWJ1ZywgaXQgc2hvd3Mgc29t
+ZSB0cmVlIGJsb2NrcyBmYWlsZWQgdG8gcGFzcyBpdHMgbGV2ZWwKY2hlY2tzLCBhbmQgaWYg
+dGhhdCBoYXBwZW5zIGF0IGNyaXRpY2FsIHBhdGggb2YgYSB0cmFuc2FjdGlvbiwgd2UgYWJv
+cnQKdGhlIHRyYW5zYWNhdGlvbjoKCiBCVFJGUyBlcnJvciAoZGV2aWNlIG52bWUwbjFwMyk6
+IGxldmVsIHZlcmlmeSBmYWlsZWQgb24gbG9naWNhbCA1NDQ2MTIxMjA5ODU2IG1pcnJvciAx
+IHdhbnRlZCAwIGZvdW5kIDEKIEJUUkZTIGVycm9yIChkZXZpY2UgbnZtZTBuMXAzOiBzdGF0
+ZSBBKTogVHJhbnNhY3Rpb24gYWJvcnRlZCAoZXJyb3IgLTUpCiBCVFJGUzogZXJyb3IgKGRl
+dmljZSBudm1lMG4xcDM6IHN0YXRlIEEpIGluIGJ0cmZzX2ZpbmlzaF9vcmRlcmVkX2lvOjMz
+NDM6IGVycm5vPS01IElPIGZhaWx1cmUKIEJUUkZTIGluZm8gKGRldmljZSBudm1lMG4xcDM6
+IHN0YXRlIEVBKTogZm9yY2VkIHJlYWRvbmx5CgpbQ0FVU0VdClRoZSByZXBvcnRlciBoYXMg
+YWxyZWFkeSBiaXNlY3RlZCB0byBjb21taXQgOTQ3YTYyOTk4OGYxICgiYnRyZnM6IG1vdmUK
+dHJlZSBibG9jayBwYXJlbnRuZXNzIGNoZWNrIGludG8gdmFsaWRhdGVfZXh0ZW50X2J1ZmZl
+cigpIikuCgpBbmQgd2l0aCBleHRyYSBkZWJ1ZywgaXQgc2hvd3Mgd2UgY2FuIGhhdmUgYnRy
+ZnNfdHJlZV9wYXJlbnRfY2hlY2sKZmlsbGVkIHdpdGggYWxsIHplcm8gaW4gdGhlIGZvbGxv
+d2luZyBjYWxsIHRyYWNlOgoKICA8VEFTSz4KICBzdWJtaXRfb25lX2JpbysweGQ0LzB4ZTAK
+ICBzdWJtaXRfZXh0ZW50X3BhZ2UrMHgxNDIvMHg1NTAKICByZWFkX2V4dGVudF9idWZmZXJf
+cGFnZXMrMHg1ODQvMHg5YzAKICA/IF9fcGZ4X2VuZF9iaW9fZXh0ZW50X3JlYWRwYWdlKzB4
+MTAvMHgxMAogID8gZm9saW9fdW5sb2NrKzB4MWQvMHg1MAogIGJ0cmZzX3JlYWRfZXh0ZW50
+X2J1ZmZlcisweDk4LzB4MTUwCiAgcmVhZF90cmVlX2Jsb2NrKzB4NDMvMHhhMAogIHJlYWRf
+YmxvY2tfZm9yX3NlYXJjaCsweDI2Ni8weDM3MAogIGJ0cmZzX3NlYXJjaF9zbG90KzB4MzUx
+LzB4ZDMwCiAgPyBsb2NrX2lzX2hlbGRfdHlwZSsweGU4LzB4MTQwCiAgYnRyZnNfbG9va3Vw
+X2NzdW0rMHg2My8weDE1MAogIGJ0cmZzX2NzdW1fZmlsZV9ibG9ja3MrMHgxOTcvMHg2YzAK
+ICA/IHNjaGVkX2Nsb2NrX2NwdSsweDlmLzB4YzAKICA/IGxvY2tfcmVsZWFzZSsweDE0Yi8w
+eDQ0MAogID8gX3Jhd19yZWFkX3VubG9jaysweDI5LzB4NTAKICBidHJmc19maW5pc2hfb3Jk
+ZXJlZF9pbysweDQ0MS8weDg2MAogIGJ0cmZzX3dvcmtfaGVscGVyKzB4ZmUvMHg0MDAKICA/
+IGxvY2tfaXNfaGVsZF90eXBlKzB4ZTgvMHgxNDAKICBwcm9jZXNzX29uZV93b3JrKzB4Mjk0
+LzB4NWIwCiAgd29ya2VyX3RocmVhZCsweDRmLzB4M2EwCiAgPyBfX3BmeF93b3JrZXJfdGhy
+ZWFkKzB4MTAvMHgxMAogIGt0aHJlYWQrMHhmNS8weDEyMAogID8gX19wZnhfa3RocmVhZCsw
+eDEwLzB4MTAKICByZXRfZnJvbV9mb3JrKzB4MmMvMHg1MAogIDwvVEFTSz4KCkN1cnJlbnRs
+eSB3ZSBvbmx5IGNvcHkgdGhlIGJ0cmZzX3RyZWVfcGFyZW50X2NoZWNrIHN0cnVjdHVyZSBp
+bnRvIGJiaW8KYXQgcmVhZF9leHRlbnRfYnVmZmVyX3BhZ2VzKCkgYWZ0ZXIgd2UgaGF2ZSBh
+c3NlbWJsZWQgdGhlIGJiaW8uCgpCdXQgYXMgc2hvd24gaW4gdGhlIGFib3ZlIGNhbGwgdHJh
+Y2UsIHN1Ym1pdF9leHRlbnRfcGFnZSgpIGl0c2VsZiBjYW4KYWxyZWFkeSBzdWJtaXQgdGhl
+IGJiaW8sIGxlYXZpbmcgdGhlIGJiaW8tPnBhcmVudF9jaGVjayB1bmluaXRpYWxpemVkLAph
+bmQgY2F1c2UgdGhlIGZhbHNlIGFsZXJ0LgoKW0ZJWF0KSW5zdGVhZCBvZiBjb3B5aW5nIEBj
+aGVjayBpbnRvIGJiaW8gYWZ0ZXIgYmJpbyBpcyBhc3NlbWJsZWQsIHdlIHBhc3MKQGNoZWNr
+IGluIGJ0cmZzX2Jpb19jdHJsOjpwYXJlbnRfY2hlY2ssIGFuZCBjb3B5IHRoZSBjb250ZW50
+IG9mCnBhcmVudF9jaGVjayBpbiBzdWJtaXRfb25lX2JpbygpIGZvciBtZXRhZGF0YSByZWFk
+LgoKQnkgdGhpcywgd2Ugc2hvdWxkIGJlIGFibGUgdG8gcGFzcyB0aGUgbmVlZGVkIGluZm8g
+Zm9yIG1ldGFkYXRhIGVuZGlvCnZlcmlmaWNhdGlvbiwgYW5kIGZpeCB0aGUgZmFsc2UgYWxl
+cnQuCgpSZXBvcnRlZC1ieTogTWlraGFpbCBHYXZyaWxvdiA8bWlraGFpbC52LmdhdnJpbG92
+QGdtYWlsLmNvbT4KTGluazogTWlraGFpbCBHYXZyaWxvdiA8bWlraGFpbC52LmdhdnJpbG92
+QGdtYWlsLmNvbT4KRml4ZXM6IDk0N2E2Mjk5ODhmMSAoImJ0cmZzOiBtb3ZlIHRyZWUgYmxv
+Y2sgcGFyZW50bmVzcyBjaGVjayBpbnRvIHZhbGlkYXRlX2V4dGVudF9idWZmZXIoKSIpClNp
+Z25lZC1vZmYtYnk6IFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPgotLS0KIGZzL2J0cmZzL2V4
+dGVudF9pby5jIHwgMzEgKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLQogMSBmaWxl
+IGNoYW5nZWQsIDI2IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0
+IGEvZnMvYnRyZnMvZXh0ZW50X2lvLmMgYi9mcy9idHJmcy9leHRlbnRfaW8uYwppbmRleCA4
+M2RkM2FhNTk2NjMuLmIxMTMzMjQ4MmQ1NyAxMDA2NDQKLS0tIGEvZnMvYnRyZnMvZXh0ZW50
+X2lvLmMKKysrIGIvZnMvYnRyZnMvZXh0ZW50X2lvLmMKQEAgLTEwMyw2ICsxMDMsMTYgQEAg
+c3RydWN0IGJ0cmZzX2Jpb19jdHJsIHsKIAl1MzIgbGVuX3RvX29lX2JvdW5kYXJ5OwogCWJ0
+cmZzX2Jpb19lbmRfaW9fdCBlbmRfaW9fZnVuYzsKIAorCS8qCisJICogVGhpcyBpcyBmb3Ig
+bWV0YWRhdGEgcmVhZCwgdG8gcHJvdmlkZSB0aGUgZXh0cmEgbmVlZGVkCisJICogdmVyaWZp
+Y2F0aW9uIGluZm8uCisJICogVGhpcyBoYXMgdG8gYmUgcHJvdmlkZWQgZm9yIHN1Ym1pdF9v
+bmVfYmlvKCksIGFzIHN1Ym1pdF9vbmVfYmlvKCkKKwkgKiBjYW4gc3VibWl0IGEgYmlvIGlm
+IGl0IGVuZHMgYXQgc3RyaXBlIGJvdW5kYXJ5LgorCSAqIElmIG5vIHN1Y2ggcGFyZW50X2No
+ZWNrIHByb3ZpZGVkLCB0aGUgbWV0YWRhdGEgY2FuIGhpdCBmYWxzZSBhbGVydAorCSAqIGF0
+IGVuZGlvIHRpbWUuCisJICovCisJc3RydWN0IGJ0cmZzX3RyZWVfcGFyZW50X2NoZWNrICpw
+YXJlbnRfY2hlY2s7CisKIAkvKgogCSAqIFRlbGwgd3JpdGVwYWdlIG5vdCB0byBsb2NrIHRo
+ZSBzdGF0ZSBiaXRzIGZvciB0aGlzIHJhbmdlLCBpdCBzdGlsbAogCSAqIGRvZXMgdGhlIHVu
+bG9ja2luZy4KQEAgLTEzMywxMyArMTQzLDI0IEBAIHN0YXRpYyB2b2lkIHN1Ym1pdF9vbmVf
+YmlvKHN0cnVjdCBidHJmc19iaW9fY3RybCAqYmlvX2N0cmwpCiAKIAlidHJmc19iaW8oYmlv
+KS0+ZmlsZV9vZmZzZXQgPSBwYWdlX29mZnNldChidi0+YnZfcGFnZSkgKyBidi0+YnZfb2Zm
+c2V0OwogCi0JaWYgKCFpc19kYXRhX2lub2RlKCZpbm9kZS0+dmZzX2lub2RlKSkKKwlpZiAo
+IWlzX2RhdGFfaW5vZGUoJmlub2RlLT52ZnNfaW5vZGUpKSB7CisJCWlmIChidHJmc19vcChi
+aW8pICE9IEJUUkZTX01BUF9XUklURSkgeworCQkJLyoKKwkJCSAqIEZvciBtZXRhZGF0YSBy
+ZWFkLCB3ZSBzaG91bGQgaGF2ZSB0aGUgcGFyZW50X2NoZWNrLAorCQkJICogYW5kIGNvcHkg
+aXQgdG8gYmJpbyBmb3IgbWV0YWRhdGEgdmVyaWZpY2F0aW9uLgorCQkJICovCisJCQlBU1NF
+UlQoYmlvX2N0cmwtPnBhcmVudF9jaGVjayk7CisJCQltZW1jcHkoJmJ0cmZzX2JpbyhiaW8p
+LT5wYXJlbnRfY2hlY2ssCisJCQkgICAgICAgYmlvX2N0cmwtPnBhcmVudF9jaGVjaywKKwkJ
+CSAgICAgICBzaXplb2Yoc3RydWN0IGJ0cmZzX3RyZWVfcGFyZW50X2NoZWNrKSk7CisJCX0K
+IAkJYnRyZnNfc3VibWl0X21ldGFkYXRhX2Jpbyhpbm9kZSwgYmlvLCBtaXJyb3JfbnVtKTsK
+LQllbHNlIGlmIChidHJmc19vcChiaW8pID09IEJUUkZTX01BUF9XUklURSkKKwl9IGVsc2Ug
+aWYgKGJ0cmZzX29wKGJpbykgPT0gQlRSRlNfTUFQX1dSSVRFKSB7CiAJCWJ0cmZzX3N1Ym1p
+dF9kYXRhX3dyaXRlX2Jpbyhpbm9kZSwgYmlvLCBtaXJyb3JfbnVtKTsKLQllbHNlCisJfSBl
+bHNlIHsKIAkJYnRyZnNfc3VibWl0X2RhdGFfcmVhZF9iaW8oaW5vZGUsIGJpbywgbWlycm9y
+X251bSwKIAkJCQkJICAgYmlvX2N0cmwtPmNvbXByZXNzX3R5cGUpOworCX0KIAogCS8qIFRo
+ZSBiaW8gaXMgb3duZWQgYnkgdGhlIGVuZF9pbyBoYW5kbGVyIG5vdyAqLwogCWJpb19jdHJs
+LT5iaW8gPSBOVUxMOwpAQCAtNDgyOSw2ICs0ODUwLDcgQEAgc3RhdGljIGludCByZWFkX2V4
+dGVudF9idWZmZXJfc3VicGFnZShzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqZWIsIGludCB3YWl0
+LAogCXN0cnVjdCBleHRlbnRfc3RhdGUgKmNhY2hlZF9zdGF0ZSA9IE5VTEw7CiAJc3RydWN0
+IGJ0cmZzX2Jpb19jdHJsIGJpb19jdHJsID0gewogCQkubWlycm9yX251bSA9IG1pcnJvcl9u
+dW0sCisJCS5wYXJlbnRfY2hlY2sgPSBjaGVjaywKIAl9OwogCWludCByZXQgPSAwOwogCkBA
+IC00ODc4LDcgKzQ5MDAsNiBAQCBzdGF0aWMgaW50IHJlYWRfZXh0ZW50X2J1ZmZlcl9zdWJw
+YWdlKHN0cnVjdCBleHRlbnRfYnVmZmVyICplYiwgaW50IHdhaXQsCiAJCSAqLwogCQlhdG9t
+aWNfZGVjKCZlYi0+aW9fcGFnZXMpOwogCX0KLQltZW1jcHkoJmJ0cmZzX2JpbyhiaW9fY3Ry
+bC5iaW8pLT5wYXJlbnRfY2hlY2ssIGNoZWNrLCBzaXplb2YoKmNoZWNrKSk7CiAJc3VibWl0
+X29uZV9iaW8oJmJpb19jdHJsKTsKIAlpZiAocmV0IHx8IHdhaXQgIT0gV0FJVF9DT01QTEVU
+RSkgewogCQlmcmVlX2V4dGVudF9zdGF0ZShjYWNoZWRfc3RhdGUpOwpAQCAtNDkwNSw2ICs0
+OTI2LDcgQEAgaW50IHJlYWRfZXh0ZW50X2J1ZmZlcl9wYWdlcyhzdHJ1Y3QgZXh0ZW50X2J1
+ZmZlciAqZWIsIGludCB3YWl0LCBpbnQgbWlycm9yX251bSwKIAl1bnNpZ25lZCBsb25nIG51
+bV9yZWFkcyA9IDA7CiAJc3RydWN0IGJ0cmZzX2Jpb19jdHJsIGJpb19jdHJsID0gewogCQku
+bWlycm9yX251bSA9IG1pcnJvcl9udW0sCisJCS5wYXJlbnRfY2hlY2sgPSBjaGVjaywKIAl9
+OwogCiAJaWYgKHRlc3RfYml0KEVYVEVOVF9CVUZGRVJfVVBUT0RBVEUsICZlYi0+YmZsYWdz
+KSkKQEAgLTQ5OTYsNyArNTAxOCw2IEBAIGludCByZWFkX2V4dGVudF9idWZmZXJfcGFnZXMo
+c3RydWN0IGV4dGVudF9idWZmZXIgKmViLCBpbnQgd2FpdCwgaW50IG1pcnJvcl9udW0sCiAJ
+CX0KIAl9CiAKLQltZW1jcHkoJmJ0cmZzX2JpbyhiaW9fY3RybC5iaW8pLT5wYXJlbnRfY2hl
+Y2ssIGNoZWNrLCBzaXplb2YoKmNoZWNrKSk7CiAJc3VibWl0X29uZV9iaW8oJmJpb19jdHJs
+KTsKIAogCWlmIChyZXQgfHwgd2FpdCAhPSBXQUlUX0NPTVBMRVRFKQotLSAKMi4zOS4wCgo=
+
+
+--------------E0ZTG6MmySH5MYeAs54wYqcq--
