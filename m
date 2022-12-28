@@ -2,66 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E33D65764B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Dec 2022 13:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B6A65764C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Dec 2022 13:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbiL1MF3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 28 Dec 2022 07:05:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
+        id S230260AbiL1MGP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 28 Dec 2022 07:06:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232891AbiL1MFY (ORCPT
+        with ESMTP id S229668AbiL1MGO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Dec 2022 07:05:24 -0500
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3487CEB
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Dec 2022 04:05:23 -0800 (PST)
-Received: by mail-pl1-f178.google.com with SMTP id g16so6212905plq.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Dec 2022 04:05:23 -0800 (PST)
+        Wed, 28 Dec 2022 07:06:14 -0500
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC15C3A
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Dec 2022 04:06:12 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id 17so15935312pll.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Dec 2022 04:06:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5y0OHT7ESV5TEzPB7U6j3ppz3zUbCEDRbHaNKA9cFUU=;
-        b=O15ETtLKIkVX0iGj1hPuBSVw+bv49CGf44oA5a+miiQBf+5o/pZlRavXHlN+HUUa9t
-         DT70jRe6himey6NBRLPfx96EmNJOcGbIAlDxWmxblHfsblEdu4S/3gcXHtUASwQ2yc53
-         8kjaRW4kU2DmLP7wM+OOpoirLy3ws1Uwkc132DPE6DvBfresvtIbrYuiiX5lCpW2Eurf
-         MGNURG6rmALzeYQB5jBLxuI9eF5Q+0czltxs80F/GL/qxKFuJMT87DOeNkyFpmsSkKUB
-         G1WKxz0Y6aRJLR1OKLxCpa5/2Xc5Rvzd5nzjVC2/hWOWUnUz2vbfSpCz8SH+88pArFd6
-         m+pQ==
-X-Gm-Message-State: AFqh2kr3NVW0xDfq/b6584liQ2hR+hKkRkrUO+ixjUITEiVnjTknxVo1
-        Zi6uk99+7+RefRv0XsR8kIGTLAc7B5Y=
-X-Google-Smtp-Source: AMrXdXtOiV+cgdRLtjq2De4E9Ap0vdaFnDX3LaS2c9WpElpgZAnz7zZf5nY25TEv9QNVmDUfEMtplw==
-X-Received: by 2002:a17:903:40c8:b0:189:ab82:53f5 with SMTP id t8-20020a17090340c800b00189ab8253f5mr20116959pld.40.1672229122880;
-        Wed, 28 Dec 2022 04:05:22 -0800 (PST)
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com. [209.85.210.182])
-        by smtp.gmail.com with ESMTPSA id x5-20020a170902ec8500b0017854cee6ebsm10925099plg.72.2022.12.28.04.05.21
+        bh=7VbLV1/4fIGgZNtOEh+DCWdRsqvSZLOe7d5SqIjCMpQ=;
+        b=X0vRMLmk3UEl1gzn+sVfQYkMTsyBR5fo/finYSU3enftQuErM3I2VxhX2VoQAYXyef
+         PoW/wcMegJ1eMayIbKJuBrdJHrNbPHN42aDyzex5/ZaZnSNiA2bUQpLrKvFmX0vNhN0E
+         X/RIpcCYDN81OiuOojzR3RT2mRukXkVXb69Bn6baqRDK+GusGfKTk5h32E+ofURezZWz
+         oaONrorBrD/RM33ASj8a/ZWbNnIHcCvWBAbpRD9xKuDngHUfz+D8cG5zz0Em9tOzSoS4
+         Bz9XfSalpFNpoAc/0F56lyOSulOGqwLtelQIo+RDsUGMNmdkPfl1deXK3EdXxy6Dswk2
+         gwFg==
+X-Gm-Message-State: AFqh2kptxENLEwG08m48cDAfPCc0cKzvxZxfTc3kQSc74u2cVBeuJxaR
+        fMmYNvxDEO/1Cv4jDVyka0Tzum+zzRI=
+X-Google-Smtp-Source: AMrXdXtJrfNyG165T1ez7kCnGHk8MxjFfQof3HgGlTRGxIdTZR3fJn/LlPUs5zWFBmHhR0FwJa/E9w==
+X-Received: by 2002:a17:903:114:b0:192:9ab2:fd1d with SMTP id y20-20020a170903011400b001929ab2fd1dmr43936plc.3.1672229171881;
+        Wed, 28 Dec 2022 04:06:11 -0800 (PST)
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com. [209.85.210.173])
+        by smtp.gmail.com with ESMTPSA id ij7-20020a170902ab4700b00189743ed3b6sm10987658plb.64.2022.12.28.04.06.11
         for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Dec 2022 04:05:21 -0800 (PST)
-Received: by mail-pf1-f182.google.com with SMTP id x26so4357498pfq.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Dec 2022 04:05:21 -0800 (PST)
-X-Received: by 2002:a63:5f57:0:b0:461:4039:88d1 with SMTP id
- t84-20020a635f57000000b00461403988d1mr1779478pgb.568.1672229121417; Wed, 28
- Dec 2022 04:05:21 -0800 (PST)
+        Wed, 28 Dec 2022 04:06:11 -0800 (PST)
+Received: by mail-pf1-f173.google.com with SMTP id k19so2892877pfg.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Dec 2022 04:06:11 -0800 (PST)
+X-Received: by 2002:a63:1164:0:b0:480:ae27:c7ae with SMTP id
+ 36-20020a631164000000b00480ae27c7aemr1293919pgr.24.1672229170763; Wed, 28 Dec
+ 2022 04:06:10 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1672120480.git.wqu@suse.com> <fd138f8678808717635a145832c1b13320ce6cd2.1672120480.git.wqu@suse.com>
-In-Reply-To: <fd138f8678808717635a145832c1b13320ce6cd2.1672120480.git.wqu@suse.com>
+References: <cover.1672120480.git.wqu@suse.com> <6b439939b69d08debf357e7b9d7a5b3ef8ae6b4b.1672120480.git.wqu@suse.com>
+In-Reply-To: <6b439939b69d08debf357e7b9d7a5b3ef8ae6b4b.1672120480.git.wqu@suse.com>
 From:   Neal Gompa <neal@gompa.dev>
-Date:   Wed, 28 Dec 2022 07:04:45 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je8MQ39PmDB7rueJa5MeDuZtiX4BMDfDNgP0G5z37EHcXA@mail.gmail.com>
-Message-ID: <CAEg-Je8MQ39PmDB7rueJa5MeDuZtiX4BMDfDNgP0G5z37EHcXA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] btrfs-progs: fix the wrong timestamp and UUID check
- for root items
+Date:   Wed, 28 Dec 2022 07:05:34 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je-V88GQRkgZDMJL6xbmfrWgYk14N9yMhERdf6iFLoAZUg@mail.gmail.com>
+Message-ID: <CAEg-Je-V88GQRkgZDMJL6xbmfrWgYk14N9yMhERdf6iFLoAZUg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] btrfs-progs: misc-tests: add a test case to make sure
+ uuid is correctly reported
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -70,75 +69,59 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On Tue, Dec 27, 2022 at 1:10 AM Qu Wenruo <wqu@suse.com> wrote:
 >
-> [BUG]
-> Since commit d729048be6ef ("btrfs-progs: stop using
-> btrfs_root_item_v0"), "btrfs subvolume list" not longer correctly report
-> UUID nor timestamp, while older (btrfs-progs v6.0.2) still works
-> correct:
+> The new test case will execute "btrfs subvolume list -u" on the newly
+> create btrfs.
 >
->  v6.0.2:
->  # btrfs subv list -u  /mnt/btrfs/
->  ID 256 gen 12 top level 5 uuid ed4af580-d512-2644-b392-2a71aaeeb99e path subv1
->  ID 257 gen 13 top level 5 uuid a22ccba7-0a0a-a94f-af4b-5116ab58bb61 path subv2
+> Since the v0 root item is already deprecated for a long time, newly
+> created btrfs should be already using the new root item, thus "btrfs
+> subvolume list -u" should always report the correct uuid.
 >
->  v6.1:
->  # ./btrfs subv list -u /mnt/btrfs/
->  ID 256 gen 12 top level 5 uuid -                                    path subv1
->  ID 257 gen 13 top level 5 uuid -                                    path subv2
+> The test case relies on external program "uuidparse" which should be
+> provided by util-linux.
 >
-> [CAUSE]
-> Commit d729048be6ef ("btrfs-progs: stop using btrfs_root_item_v0")
-> removed old btrfs_root_item_v0, but incorrectly changed the check for
-> v0 root item.
->
-> Now we will treat v0 root items as latest root items, causing possible
-> out-of-bound access. while treat current root items as older v0 root
-> items, ignoring the UUID nor timestamp.
->
-> [FIX]
-> Fix the bug by using correct checks, and add extra comments on the
-> branches.
->
-> Issue: #562
-> Fixes: d729048be6ef ("btrfs-progs: stop using btrfs_root_item_v0")
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  cmds/subvolume-list.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
+>  .../056-subvolume-list-uuid/test.sh           | 28 +++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+>  create mode 100755 tests/misc-tests/056-subvolume-list-uuid/test.sh
 >
-> diff --git a/cmds/subvolume-list.c b/cmds/subvolume-list.c
-> index 6d5ef509ae67..7cdb0402b8e5 100644
-> --- a/cmds/subvolume-list.c
-> +++ b/cmds/subvolume-list.c
-> @@ -870,14 +870,21 @@ static int list_subvol_search(int fd, struct rb_root *root_lookup)
->                                 ri = (struct btrfs_root_item *)(args.buf + off);
->                                 gen = btrfs_root_generation(ri);
->                                 flags = btrfs_root_flags(ri);
-> -                               if(sh.len <
-> -                                  sizeof(struct btrfs_root_item)) {
-> +                               if(sh.len >= sizeof(struct btrfs_root_item)) {
-> +                                       /*
-> +                                        * The new full btrfs_root_item with
-> +                                        * timestamp and UUID.
-> +                                        */
->                                         otime = btrfs_stack_timespec_sec(&ri->otime);
->                                         ogen = btrfs_root_otransid(ri);
->                                         memcpy(uuid, ri->uuid, BTRFS_UUID_SIZE);
->                                         memcpy(puuid, ri->parent_uuid, BTRFS_UUID_SIZE);
->                                         memcpy(ruuid, ri->received_uuid, BTRFS_UUID_SIZE);
->                                 } else {
-> +                                       /*
-> +                                        * The old v0 root item, which doesn't
-> +                                        * has timestamp nor UUID.
-> +                                        */
->                                         otime = 0;
->                                         ogen = 0;
->                                         memset(uuid, 0, BTRFS_UUID_SIZE);
+> diff --git a/tests/misc-tests/056-subvolume-list-uuid/test.sh b/tests/misc-tests/056-subvolume-list-uuid/test.sh
+> new file mode 100755
+> index 000000000000..45f4f956c25f
+> --- /dev/null
+> +++ b/tests/misc-tests/056-subvolume-list-uuid/test.sh
+> @@ -0,0 +1,28 @@
+> +#!/bin/bash
+> +#
+> +# Make sure "btrfs subvolume list -u" shows uuid correctly
+> +
+> +source "$TEST_TOP/common"
+> +
+> +check_prereq mkfs.btrfs
+> +check_prereq btrfs
+> +check_global_prereq uuidparse
+> +
+> +setup_root_helper
+> +prepare_test_dev
+> +
+> +tmp=$(_mktemp_dir list_uuid)
+> +
+> +run_check_mkfs_test_dev
+> +run_check_mount_test_dev
+> +run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "$TEST_MNT/subv1"
+> +run_check_stdout $SUDO_HELPER "$TOP/btrfs" subvolume list -u "$TEST_MNT" |\
+> +       cut -d\  -f9 > "$tmp/output"
+> +
+> +result=$(cat "$tmp/output" | uuidparse -o TYPE -n)
+> +rm -rf -- "$tmp"
+> +
+> +if [ "$result" == "invalid" ]; then
+> +       _fail "subvolume list failed to report uuid"
+> +fi
+> +run_check_umount_test_dev
 > --
 > 2.39.0
 >
-
-Resolves: rhbz#2156710
 
 Reviewed-by: Neal Gompa <neal@gompa.dev>
 
