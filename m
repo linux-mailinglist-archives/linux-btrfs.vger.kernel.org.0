@@ -2,57 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F23E65764A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Dec 2022 13:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E33D65764B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Dec 2022 13:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbiL1MEY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 28 Dec 2022 07:04:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
+        id S230150AbiL1MF3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 28 Dec 2022 07:05:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233201AbiL1MEL (ORCPT
+        with ESMTP id S232891AbiL1MFY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Dec 2022 07:04:11 -0500
+        Wed, 28 Dec 2022 07:05:24 -0500
 Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94376316;
-        Wed, 28 Dec 2022 04:04:09 -0800 (PST)
-Received: by mail-pl1-f178.google.com with SMTP id b2so15870958pld.7;
-        Wed, 28 Dec 2022 04:04:09 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3487CEB
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Dec 2022 04:05:23 -0800 (PST)
+Received: by mail-pl1-f178.google.com with SMTP id g16so6212905plq.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Dec 2022 04:05:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/GURb7QwTI14TrIXmcpjD6p9u8NUJhyZyca3K1LeZs0=;
-        b=FQSkrbxKf+T1wU19yp8rjvqrN+TUl/tqfYH+k/IZQtpuaKS1+qe3HLQ/nl+UGB0Z9c
-         CZqI3aluB/mge8D0zX+PGyO6XOpnmox/TJTamsmkngc+ghGELkrMkRTij7s4bEOa79E5
-         9xdltr/xkyECVpFKvwq8P3rA3zoyBaC+y4qm5fPPsionuYKVLnfDp1I83K/CjHpSYp+J
-         SEW3qwfdibNuzCC+1mZyd2UlGbX27QO2RCEWm5DEIpvle612oQ1ZtE6wgmYEAWRq+OgU
-         kXpOjWyYNV2uT3bqSBdEpEld9xtNd7rqOrr9/a23P5GKLQwh3XYkop+DsO8/wgwyFLmg
-         OcmA==
-X-Gm-Message-State: AFqh2kr5dmaWt917k+WMoTd1/o5pX6MKGN5puZHKrmzBlfET14114nv7
-        XL1NYPYbD2bl3Ld+uixQRnnX76LSVno=
-X-Google-Smtp-Source: AMrXdXswDGVtEFLH7qQYLTcwrNlD+QS0JuUY6BvhmRbTnclsisB6dmLqLlMyDqvGykuFzVFGG0v/Xw==
-X-Received: by 2002:a17:90a:6f65:b0:219:11f3:cab6 with SMTP id d92-20020a17090a6f6500b0021911f3cab6mr27837778pjk.34.1672229048878;
-        Wed, 28 Dec 2022 04:04:08 -0800 (PST)
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com. [209.85.214.180])
-        by smtp.gmail.com with ESMTPSA id x15-20020a17090abc8f00b002192db1f8e8sm9580504pjr.23.2022.12.28.04.04.08
+        bh=5y0OHT7ESV5TEzPB7U6j3ppz3zUbCEDRbHaNKA9cFUU=;
+        b=O15ETtLKIkVX0iGj1hPuBSVw+bv49CGf44oA5a+miiQBf+5o/pZlRavXHlN+HUUa9t
+         DT70jRe6himey6NBRLPfx96EmNJOcGbIAlDxWmxblHfsblEdu4S/3gcXHtUASwQ2yc53
+         8kjaRW4kU2DmLP7wM+OOpoirLy3ws1Uwkc132DPE6DvBfresvtIbrYuiiX5lCpW2Eurf
+         MGNURG6rmALzeYQB5jBLxuI9eF5Q+0czltxs80F/GL/qxKFuJMT87DOeNkyFpmsSkKUB
+         G1WKxz0Y6aRJLR1OKLxCpa5/2Xc5Rvzd5nzjVC2/hWOWUnUz2vbfSpCz8SH+88pArFd6
+         m+pQ==
+X-Gm-Message-State: AFqh2kr3NVW0xDfq/b6584liQ2hR+hKkRkrUO+ixjUITEiVnjTknxVo1
+        Zi6uk99+7+RefRv0XsR8kIGTLAc7B5Y=
+X-Google-Smtp-Source: AMrXdXtOiV+cgdRLtjq2De4E9Ap0vdaFnDX3LaS2c9WpElpgZAnz7zZf5nY25TEv9QNVmDUfEMtplw==
+X-Received: by 2002:a17:903:40c8:b0:189:ab82:53f5 with SMTP id t8-20020a17090340c800b00189ab8253f5mr20116959pld.40.1672229122880;
+        Wed, 28 Dec 2022 04:05:22 -0800 (PST)
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com. [209.85.210.182])
+        by smtp.gmail.com with ESMTPSA id x5-20020a170902ec8500b0017854cee6ebsm10925099plg.72.2022.12.28.04.05.21
+        for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Dec 2022 04:04:08 -0800 (PST)
-Received: by mail-pl1-f180.google.com with SMTP id jn22so15841889plb.13;
-        Wed, 28 Dec 2022 04:04:08 -0800 (PST)
-X-Received: by 2002:a17:90a:d081:b0:225:efc0:2e2f with SMTP id
- k1-20020a17090ad08100b00225efc02e2fmr1033859pju.151.1672229048180; Wed, 28
- Dec 2022 04:04:08 -0800 (PST)
+        Wed, 28 Dec 2022 04:05:21 -0800 (PST)
+Received: by mail-pf1-f182.google.com with SMTP id x26so4357498pfq.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Dec 2022 04:05:21 -0800 (PST)
+X-Received: by 2002:a63:5f57:0:b0:461:4039:88d1 with SMTP id
+ t84-20020a635f57000000b00461403988d1mr1779478pgb.568.1672229121417; Wed, 28
+ Dec 2022 04:05:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20221223025642.33496-1-wqu@suse.com>
-In-Reply-To: <20221223025642.33496-1-wqu@suse.com>
+References: <cover.1672120480.git.wqu@suse.com> <fd138f8678808717635a145832c1b13320ce6cd2.1672120480.git.wqu@suse.com>
+In-Reply-To: <fd138f8678808717635a145832c1b13320ce6cd2.1672120480.git.wqu@suse.com>
 From:   Neal Gompa <neal@gompa.dev>
-Date:   Wed, 28 Dec 2022 07:03:31 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je-EhDPVr1oxmRY_ESs8LG7gighE6RrOdjrxg7qBysOYig@mail.gmail.com>
-Message-ID: <CAEg-Je-EhDPVr1oxmRY_ESs8LG7gighE6RrOdjrxg7qBysOYig@mail.gmail.com>
-Subject: Re: [PATCH] btrfs/154: migrate to python3
+Date:   Wed, 28 Dec 2022 07:04:45 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je8MQ39PmDB7rueJa5MeDuZtiX4BMDfDNgP0G5z37EHcXA@mail.gmail.com>
+Message-ID: <CAEg-Je8MQ39PmDB7rueJa5MeDuZtiX4BMDfDNgP0G5z37EHcXA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] btrfs-progs: fix the wrong timestamp and UUID check
+ for root items
 To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -66,130 +68,77 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 22, 2022 at 10:03 PM Qu Wenruo <wqu@suse.com> wrote:
+On Tue, Dec 27, 2022 at 1:10 AM Qu Wenruo <wqu@suse.com> wrote:
 >
-> Test case btrfs/154 is still using python2 script, which is already EOL.
-> Some rolling distros like Archlinux is no longer providing python2
-> package anymore.
+> [BUG]
+> Since commit d729048be6ef ("btrfs-progs: stop using
+> btrfs_root_item_v0"), "btrfs subvolume list" not longer correctly report
+> UUID nor timestamp, while older (btrfs-progs v6.0.2) still works
+> correct:
 >
-> This means btrfs/154 will be harder and harder to run.
+>  v6.0.2:
+>  # btrfs subv list -u  /mnt/btrfs/
+>  ID 256 gen 12 top level 5 uuid ed4af580-d512-2644-b392-2a71aaeeb99e path subv1
+>  ID 257 gen 13 top level 5 uuid a22ccba7-0a0a-a94f-af4b-5116ab58bb61 path subv2
 >
-> To fix the problem, migreate the python script to python3, this involves
-> the following changes:
+>  v6.1:
+>  # ./btrfs subv list -u /mnt/btrfs/
+>  ID 256 gen 12 top level 5 uuid -                                    path subv1
+>  ID 257 gen 13 top level 5 uuid -                                    path subv2
 >
-> - Change common/config to use python3
-> - Strong type conversion between string and bytes
->   This means, anything involved in the forged bytes has to be bytes.
+> [CAUSE]
+> Commit d729048be6ef ("btrfs-progs: stop using btrfs_root_item_v0")
+> removed old btrfs_root_item_v0, but incorrectly changed the check for
+> v0 root item.
 >
->   And there is no safe way to convert forged bytes into string, unlike
->   python2.
->   I guess that's why the author went python2 in the first place.
+> Now we will treat v0 root items as latest root items, causing possible
+> out-of-bound access. while treat current root items as older v0 root
+> items, ignoring the UUID nor timestamp.
 >
->   Thankfully os.rename() still accepts forged bytes.
+> [FIX]
+> Fix the bug by using correct checks, and add extra comments on the
+> branches.
 >
-> - Use bytes specific checks for invalid chars.
->
-> The updated script can still cause the needed conflicts, can be verified
-> through "btrfs ins dump-tree" command.
->
+> Issue: #562
+> Fixes: d729048be6ef ("btrfs-progs: stop using btrfs_root_item_v0")
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  common/config                   |  2 +-
->  src/btrfs_crc32c_forged_name.py | 22 ++++++++++++++++------
->  tests/btrfs/154                 |  4 ++--
->  3 files changed, 19 insertions(+), 9 deletions(-)
+>  cmds/subvolume-list.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
 >
-> diff --git a/common/config b/common/config
-> index b2802e5e..e2aba5a9 100644
-> --- a/common/config
-> +++ b/common/config
-> @@ -212,7 +212,7 @@ export NFS4_SETFACL_PROG="$(type -P nfs4_setfacl)"
->  export NFS4_GETFACL_PROG="$(type -P nfs4_getfacl)"
->  export UBIUPDATEVOL_PROG="$(type -P ubiupdatevol)"
->  export THIN_CHECK_PROG="$(type -P thin_check)"
-> -export PYTHON2_PROG="$(type -P python2)"
-> +export PYTHON3_PROG="$(type -P python3)"
->  export SQLITE3_PROG="$(type -P sqlite3)"
->  export TIMEOUT_PROG="$(type -P timeout)"
->  export SETCAP_PROG="$(type -P setcap)"
-> diff --git a/src/btrfs_crc32c_forged_name.py b/src/btrfs_crc32c_forged_name.py
-> index 6c08fcb7..d29bbb70 100755
-> --- a/src/btrfs_crc32c_forged_name.py
-> +++ b/src/btrfs_crc32c_forged_name.py
-> @@ -59,9 +59,10 @@ class CRC32(object):
->      # deduce the 4 bytes we need to insert
->      for c in struct.pack('<L',fwd_crc)[::-1]:
->        bkd_crc = ((bkd_crc << 8) & 0xffffffff) ^ self.reverse[bkd_crc >> 24]
-> -      bkd_crc ^= ord(c)
-> +      bkd_crc ^= c
->
-> -    res = s[:pos] + struct.pack('<L', bkd_crc) + s[pos:]
-> +    res = bytes(s[:pos], 'ascii') + struct.pack('<L', bkd_crc) + \
-> +          bytes(s[pos:], 'ascii')
->      return res
->
->    def parse_args(self):
-> @@ -72,6 +73,12 @@ class CRC32(object):
->                          help="number of forged names to create")
->      return parser.parse_args()
->
-> +def has_invalid_chars(result: bytes):
-> +    for i in result:
-> +        if i == 0 or i == int.from_bytes(b'/', byteorder="little"):
-> +            return True
-> +    return False
-> +
->  if __name__=='__main__':
->
->    crc = CRC32()
-> @@ -80,12 +87,15 @@ if __name__=='__main__':
->    args = crc.parse_args()
->    dirpath=args.dir
->    while count < args.count :
-> -    origname = os.urandom (89).encode ("hex")[:-1].strip ("\x00")
-> +    origname = os.urandom (89).hex()[:-1].strip ("\x00")
->      forgename = crc.forge(wanted_crc, origname, 4)
-> -    if ("/" not in forgename) and ("\x00" not in forgename):
-> +    if not has_invalid_chars(forgename):
->        srcpath=dirpath + '/' + str(count)
-> -      dstpath=dirpath + '/' + forgename
-> -      file (srcpath, 'a').close()
-> +      # We have to convert all strings to bytes to concatenate the forged
-> +      # name (bytes).
-> +      # Thankfully os.rename() can accept bytes directly.
-> +      dstpath=bytes(dirpath, "ascii") + bytes('/', "ascii") + forgename
-> +      open(srcpath, mode="a").close()
->        os.rename(srcpath, dstpath)
->        os.system('btrfs fi sync %s' % (dirpath))
->        count+=1;
-> diff --git a/tests/btrfs/154 b/tests/btrfs/154
-> index 240c504c..6be2d5f6 100755
-> --- a/tests/btrfs/154
-> +++ b/tests/btrfs/154
-> @@ -21,7 +21,7 @@ _begin_fstest auto quick
->
->  _supported_fs btrfs
->  _require_scratch
-> -_require_command $PYTHON2_PROG python2
-> +_require_command $PYTHON3_PROG python3
->
->  # Currently in btrfs the node/leaf size can not be smaller than the page
->  # size (but it can be greater than the page size). So use the largest
-> @@ -42,7 +42,7 @@ _scratch_mount
->  #    ...
->  #
->
-> -$PYTHON2_PROG $here/src/btrfs_crc32c_forged_name.py -d $SCRATCH_MNT -c 310
-> +$PYTHON3_PROG $here/src/btrfs_crc32c_forged_name.py -d $SCRATCH_MNT -c 310
->  echo "Silence is golden"
->
->  # success, all done
+> diff --git a/cmds/subvolume-list.c b/cmds/subvolume-list.c
+> index 6d5ef509ae67..7cdb0402b8e5 100644
+> --- a/cmds/subvolume-list.c
+> +++ b/cmds/subvolume-list.c
+> @@ -870,14 +870,21 @@ static int list_subvol_search(int fd, struct rb_root *root_lookup)
+>                                 ri = (struct btrfs_root_item *)(args.buf + off);
+>                                 gen = btrfs_root_generation(ri);
+>                                 flags = btrfs_root_flags(ri);
+> -                               if(sh.len <
+> -                                  sizeof(struct btrfs_root_item)) {
+> +                               if(sh.len >= sizeof(struct btrfs_root_item)) {
+> +                                       /*
+> +                                        * The new full btrfs_root_item with
+> +                                        * timestamp and UUID.
+> +                                        */
+>                                         otime = btrfs_stack_timespec_sec(&ri->otime);
+>                                         ogen = btrfs_root_otransid(ri);
+>                                         memcpy(uuid, ri->uuid, BTRFS_UUID_SIZE);
+>                                         memcpy(puuid, ri->parent_uuid, BTRFS_UUID_SIZE);
+>                                         memcpy(ruuid, ri->received_uuid, BTRFS_UUID_SIZE);
+>                                 } else {
+> +                                       /*
+> +                                        * The old v0 root item, which doesn't
+> +                                        * has timestamp nor UUID.
+> +                                        */
+>                                         otime = 0;
+>                                         ogen = 0;
+>                                         memset(uuid, 0, BTRFS_UUID_SIZE);
 > --
 > 2.39.0
 >
 
-This test makes my eyes bleed, but that's not a reason to say no to
-this patch...
+Resolves: rhbz#2156710
 
 Reviewed-by: Neal Gompa <neal@gompa.dev>
 
