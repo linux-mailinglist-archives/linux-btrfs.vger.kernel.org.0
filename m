@@ -2,126 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C41E65890E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Dec 2022 04:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83428658C66
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Dec 2022 12:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbiL2DGI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Dec 2022 22:06:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
+        id S233108AbiL2Ltu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Dec 2022 06:49:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbiL2DGG (ORCPT
+        with ESMTP id S232081AbiL2Lts (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Dec 2022 22:06:06 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B183C63E9;
-        Wed, 28 Dec 2022 19:06:02 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MtfJd-1oqJsT3ZM7-00v3n0; Thu, 29
- Dec 2022 04:05:55 +0100
-Message-ID: <9d56a546-ea4f-83cb-4efb-093af270544b@gmx.com>
-Date:   Thu, 29 Dec 2022 11:05:51 +0800
+        Thu, 29 Dec 2022 06:49:48 -0500
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA51CFAE2
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Dec 2022 03:49:47 -0800 (PST)
+Received: by mail-io1-f71.google.com with SMTP id o22-20020a6b5a16000000b006e2d564944aso5752889iob.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Dec 2022 03:49:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GxXQnBivBvS5Io4jtX9fYGxpNHPwBgCya+UQD8rvg/Q=;
+        b=A3uNLQIJMfKiJHRjo11YKCDEWUBjOeckjDCrUI0SSZDyJzG/lpRjhWMAdpjrIhL/4q
+         ZtMvZSLkOLxMiY9CbmLTHopWm6+LtKRU/kt7fU4RnnCoJ11W6HdJSI/q/Bajw6Sy89rf
+         zPmr6leQO087CD552Wp6zYmAly4kKKim7l2vO0lUPi3jVfmGuoio7O7aSydqmmjcssDe
+         B169MnBNedqlfPiWcQPy8bLyBBxJw29XiVOtFt7CJIlTnxZbBYDRAYiGMEUFOGHhhbwi
+         uDT52EvvCe7PXgXvGL46QzeQKuLRwjjKzQdBrT0v7PyKZTglJ3kGWzj9tMMV3yV8K8Fg
+         NxJw==
+X-Gm-Message-State: AFqh2kqV2gPKLvaizUevSFw9Z7QNajZ6mY+iS5fdgK3a7rbGLmzR1/l3
+        MOseaD8fcQPWUXOR91pdhG7rYPIOh8vAVNU+yddWeKFjQ0bc
+X-Google-Smtp-Source: AMrXdXt6rrsKj8NEyX9WQjWSdYEsl7eIAv/WasV2qWDBByJoup7eNvKeEaZ/WZzis89vAQWxSK5KOG53ILMBvCKGfn1mQPzLpXh+
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Content-Language: en-US
-To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Cc:     Qu Wenruo <wqu@suse.com>, dsterba@suse.com,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
-References: <CABXGCsNzVxo4iq-tJSGm_kO1UggHXgq6CdcHDL=z5FL4njYXSQ@mail.gmail.com>
- <CABXGCsMMYmCT_Hz=wfKWDy4OQJ2KyBO3rNAFC1YCAthziWm+Lg@mail.gmail.com>
- <41734bdb-2df0-6596-01b6-76a7dfd05d64@gmx.com>
- <CABXGCsM6GOzr+wL9BEk7mD5xLNgsKE5KUBADD8r783V6-FwXdg@mail.gmail.com>
- <e9f4d768-d91b-b5cc-dbe6-041a81833cf3@gmx.com>
- <CABXGCsPK6ZZ4=5qathvjqSJNde6MYhA0uvh6zAMznT9Yj3xk2g@mail.gmail.com>
- <24cd64b2-4536-372c-91af-b425d2f6efd4@gmx.com>
- <CABXGCsOG1GR1QqQSULHRcqJyfo5zY1bkZA+Mkb2m3C=rV_2z2w@mail.gmail.com>
- <ff262ad5-2ae3-329a-ba88-19721850131d@gmx.com>
- <CABXGCsOgy0N_TLEadgacMBQLuU5xBe-hmoRvv4h=q-M5PcPvEg@mail.gmail.com>
- <7d2edc1d-922b-763c-3122-0a6f81c3454e@suse.com>
- <CABXGCsOq56Qjq+-Bnfbe7ZvhfjSs204cbc8VFG7b+J2Ncss0ng@mail.gmail.com>
- <fd0a0bfe-5c67-fd95-b17c-78a14c63bea6@gmx.com>
- <CABXGCsMev+96zixic3=5cLgzMfZKcJE-zOLPrc3-vTrrDZQDig@mail.gmail.com>
- <de8fb932-2934-7ad2-112a-a9a2e63b532d@gmx.com>
- <CABXGCsMN-wviuURYkGXxr_d3BKtW3vyYhQ3Kpd7ZVo-Yr4gBvQ@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [6.2][regression] after commit
- 947a629988f191807d2d22ba63ae18259bb645c5 btrfs volume periodical forced
- switch to readonly after a lot of disk writes
-In-Reply-To: <CABXGCsMN-wviuURYkGXxr_d3BKtW3vyYhQ3Kpd7ZVo-Yr4gBvQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:C48139QmNLwssfAzBbQOj1vGYGq7X0X5q4ZfCR8qbV8N6cEgVmO
- W6iO93jPmsNMIktPTPQxYcYByTdwbh4nw84ReaDWIdr0945+xqiEZ8e6XBlRv70sAZDRkaM
- sfsH32/0mdrqqqddz8zHNBpv/LqYQp5Q2mBZHfFKB/mI150SI/QmJJZHqa0VNOmMFWr84qY
- 6SAm1DQs0GgQqonS9ShLg==
-UI-OutboundReport: notjunk:1;M01:P0:+y0CddqR3Lg=;wpvM+eqjVe2cokghf//YUuwhdQ7
- UsXUL4dAv7pR+XRWlPWZc5KBv6Buq12sTRA0LiXvvAKQ3WAKAOjFEPQy9MVnx5whKJi34/PZ3
- qY/9D5blBXJJPGmbnLxkW7buDHNl5kf8Ee0jIVh5BP/g4ILtWjF3+euQkKxlFN99m5KY9no3V
- 53jaEmqJhYB3ao8DPfYIc66eBqyIUyz/Cg+LTGelDqrMh+68hMMsEqnfg0yQllc1+rKcDyZ2B
- e5wk/LyMGOTdduTTN+nFniAc8q/ke0+Y9j27vndBTIVTO0qtw/loFjtHAFY75Fl54NcUl2R6u
- UiWb7sQwkYBl7kqQQL1bluBRfBi1+SDcbshimUNme6k9hTOLdk5RsgOKiaSpYYZs6osQqorvy
- N9fc/HdMqcj/9wiLt4wHoZ0kZC2LEDQQbHh6oi/UBuQrN4oifyjFUfAK9zX5IhasvgHS1ZXCI
- uG/9odCXnJkT1ylzOTJtKRRqrx+aSpe5kAz3PPjqOE5cWDOA7V19NE+71/StS8RP3KBPfPO3+
- sZsUGoNmB8rUAanYU9WeGiTnB/cvTpeRqpSYDOrkGMZhietnzdNaCLfHz7Z9hm2zaUqVxFnSy
- u/6vgz9VxVDgIv7KBG70OgBmtA3ihMeYEivM4AqXiHrpKL7ESiYQBQT7a7ND3oTEk/2ufKxli
- JaFyqtVgzSXafD0l5hfYfIzSqA/7CpzgE6m+4x5M70jOnz7fw/IPBWoMVvMjAPNpGbr6WZRc7
- hmmzSG8xDUev4D3BTIQLhkNA5pyHJaKy6YL0iDSdkERO8uix915H53mmRSDndvJ9ySERUVD6H
- C+HpA05IWyLbUBA7vpls1XlX2Bh4zTvssM+LJ6AU4EFnjlhWiFXzijCmCPeDM8YBxTzNY6OdT
- PT7FnrHzHk2YYk8DtZ/kH93g+srZkIOcZurdH+ldkLbgqPHw9b+6R+elSv9BqOORdq74S/C4M
- lqaL1tGdi/FeqxUDUy6eVrH3+pw=
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6638:1a1:b0:38a:7f45:a5ff with SMTP id
+ b1-20020a05663801a100b0038a7f45a5ffmr2322457jaq.9.1672314587167; Thu, 29 Dec
+ 2022 03:49:47 -0800 (PST)
+Date:   Thu, 29 Dec 2022 03:49:47 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ebc50f05f0f614ee@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_finish_ordered_io
+From:   syzbot <syzbot+b3a2926f65a93a3cf55b@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    72a85e2b0a1e Merge tag 'spi-fix-v6.2-rc1' of git://git.ker..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=136100a8480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4e2d7bfa2d6d5a76
+dashboard link: https://syzkaller.appspot.com/bug?extid=b3a2926f65a93a3cf55b
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=114b2aac480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1765ae54480000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/510d16df06c8/disk-72a85e2b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/50ef5477a1d4/vmlinux-72a85e2b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f2acd6f1189a/bzImage-72a85e2b.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/989578dc9fd1/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b3a2926f65a93a3cf55b@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -28)
+WARNING: CPU: 1 PID: 56 at fs/btrfs/inode.c:3343 btrfs_finish_ordered_io+0x1ac9/0x1cb0 fs/btrfs/inode.c:3343
+Modules linked in:
+CPU: 1 PID: 56 Comm: kworker/u4:4 Not tainted 6.1.0-syzkaller-14594-g72a85e2b0a1e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+Workqueue: btrfs-endio-write btrfs_work_helper
+RIP: 0010:btrfs_finish_ordered_io+0x1ac9/0x1cb0 fs/btrfs/inode.c:3343
+Code: 8b 44 89 ee 31 c0 e8 26 e8 c5 fd 0f 0b b0 01 e9 4b ff ff ff e8 58 f8 fe fd 48 c7 c7 c0 9f 39 8b 44 89 ee 31 c0 e8 07 e8 c5 fd <0f> 0b e9 a6 fe ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 11 ed ff
+RSP: 0018:ffffc900015779e0 EFLAGS: 00010246
+RAX: 203bb8e87d482d00 RBX: 0000000000000024 RCX: ffff888017d91d40
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffffc90001577bc0 R08: ffffffff816f2c9d R09: fffff520002aeef5
+R10: fffff520002aeef5 R11: 1ffff920002aeef4 R12: 0000000000000000
+R13: 00000000ffffffe4 R14: dffffc0000000000 R15: ffff88807292d540
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffef9d1dda0 CR3: 00000000290a7000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_work_helper+0x312/0x850 fs/btrfs/async-thread.c:280
+ process_one_work+0x877/0xdb0 kernel/workqueue.c:2289
+ worker_thread+0xb14/0x1330 kernel/workqueue.c:2436
+ kthread+0x266/0x300 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
 
 
-On 2022/12/29 08:08, Mikhail Gavrilov wrote:
-> On Thu, Dec 29, 2022 at 4:31 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>
->> Are you using qgroup? If so it may be worthy trying disabling qgroup.
-> 
-> I do not use quota.
-> And looks like my distro does not use quita by default.
-> ❯ btrfs qgroup show -f /
-> ERROR: can't list qgroups: quotas not enabled
-> 
->> But for newer kernel, qgroup hang should only happen when dropping large
->> snapshot, I don't know if podman pull would cause older snapshots to be
->> deleted...
-> 
-> It is not a regression, it also happened on older kernels.
-> But it is really annoying when the browser process waits when "podman
-> pull" writes changes to disk.
-> In fact, I have been waiting for 5 years for caching of slow HDDs by
-> using the cache on the SSD, but apparently I can’t wait.
-> And I started slowly buying expensive large SSDs to replace the big
-> HDD. I still can’t find time to connect D5 P5316 30.72 Tb to the
-> primary workstation.
-> I want to make a video review of it. I understand this is an expensive
-> solution and not suitable for everyone, unlike an affordable SDD
-> cache.
-> 
-This is really sad to hear that.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-For now, I only have several guesses on how this could happen.
-
-- Extra seeks between metadata and data chunks
-   You can try with mixed block groups, but this needs mkfs time tuning.
-
-- Extra inlined extents causing too much metadata overhead
-   You can disable inline extents using max_inline=0 as mount options.
-   But that only affects newly created files, not the existing ones.
-
-Otherwise, using bcache may be a solution.
-
-For now I'm not aware of any HDD specific tests, other than zoned 
-devices, thus the performance problem can be really hard to debug.
-
-Thanks,
-Qu
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
