@@ -2,116 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83428658C66
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Dec 2022 12:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A46658DCD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Dec 2022 15:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbiL2Ltu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Dec 2022 06:49:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50462 "EHLO
+        id S233158AbiL2ONJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Dec 2022 09:13:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232081AbiL2Lts (ORCPT
+        with ESMTP id S233187AbiL2ONG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Dec 2022 06:49:48 -0500
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA51CFAE2
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Dec 2022 03:49:47 -0800 (PST)
-Received: by mail-io1-f71.google.com with SMTP id o22-20020a6b5a16000000b006e2d564944aso5752889iob.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Dec 2022 03:49:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GxXQnBivBvS5Io4jtX9fYGxpNHPwBgCya+UQD8rvg/Q=;
-        b=A3uNLQIJMfKiJHRjo11YKCDEWUBjOeckjDCrUI0SSZDyJzG/lpRjhWMAdpjrIhL/4q
-         ZtMvZSLkOLxMiY9CbmLTHopWm6+LtKRU/kt7fU4RnnCoJ11W6HdJSI/q/Bajw6Sy89rf
-         zPmr6leQO087CD552Wp6zYmAly4kKKim7l2vO0lUPi3jVfmGuoio7O7aSydqmmjcssDe
-         B169MnBNedqlfPiWcQPy8bLyBBxJw29XiVOtFt7CJIlTnxZbBYDRAYiGMEUFOGHhhbwi
-         uDT52EvvCe7PXgXvGL46QzeQKuLRwjjKzQdBrT0v7PyKZTglJ3kGWzj9tMMV3yV8K8Fg
-         NxJw==
-X-Gm-Message-State: AFqh2kqV2gPKLvaizUevSFw9Z7QNajZ6mY+iS5fdgK3a7rbGLmzR1/l3
-        MOseaD8fcQPWUXOR91pdhG7rYPIOh8vAVNU+yddWeKFjQ0bc
-X-Google-Smtp-Source: AMrXdXt6rrsKj8NEyX9WQjWSdYEsl7eIAv/WasV2qWDBByJoup7eNvKeEaZ/WZzis89vAQWxSK5KOG53ILMBvCKGfn1mQPzLpXh+
+        Thu, 29 Dec 2022 09:13:06 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48822120B7
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Dec 2022 06:13:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1672323169; bh=iOlCrjowxOng8+T4vc136WvW2MjLPYQiAA4lmZvXtXs=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:Cc:From:In-Reply-To;
+        b=kEewMGVrVxwG0dstvWCgZZ8+aMWZ6pNvcZEiNlvDvEMMXDsOIo4yRb4HBG5ItSNAg
+         oqTg7uKdU6wlKEXEOGZ3vIqb4ts2ljSb/Jcsy2KMny9oa/ZDyHdvavoO+NPzT/gjmg
+         LoFvCdta5IEWle5hFVvyj9wfwmxiffPTWeG5R8Ab9EVZv48QeZf5s/d8FxONftX1PI
+         DLZvDQPans0SlcONcokfAv4rGgJHwiLm7J5vbLsQGRF5dig55KaeqhjJ3ZIgexttHO
+         xpQ9eCEbvJvbZglHnXIQGZmRMok08NOy06gBu7Wxax2hMcHzPuxqpBGZz9lnqYYcEq
+         AKE145jJDN8AQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.123.94] ([88.152.145.137]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M3lYB-1pBAtm2UEt-000pTG; Thu, 29
+ Dec 2022 15:12:49 +0100
+Message-ID: <bc82fc52-18b8-1205-5509-6fcd24529bea@gmx.de>
+Date:   Thu, 29 Dec 2022 15:12:48 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1a1:b0:38a:7f45:a5ff with SMTP id
- b1-20020a05663801a100b0038a7f45a5ffmr2322457jaq.9.1672314587167; Thu, 29 Dec
- 2022 03:49:47 -0800 (PST)
-Date:   Thu, 29 Dec 2022 03:49:47 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ebc50f05f0f614ee@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_finish_ordered_io
-From:   syzbot <syzbot+b3a2926f65a93a3cf55b@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: Possible bug in BTRFS w/ Duplication
+Content-Language: en-US
+To:     Sam Winchenbach <swichenbach@tethers.com>,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
+References: <62218a2a5a274ada96f97f7ac4e151ef@tethers.com>
+Cc:     "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+In-Reply-To: <62218a2a5a274ada96f97f7ac4e151ef@tethers.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:lz6uGE391w15XGWCreUTVDou9awc8Cl7UV87b6xz23WOj2fT9MX
+ P24x9qLbKjt0EEhNdYKm6xIGHu/bY+osIlKhBfzK+vCFhe86KsCsvp5F+mumtIGRDv64hNd
+ 9Bci+IzFCjLeqo5qrmZjVNHPbAgn4NbJT9b3U4jous4ouHsEiga+L3PplcnAO7BU9Pn4Qn2
+ aCgHeyOMx0jzSxP2gTWxw==
+UI-OutboundReport: notjunk:1;M01:P0:b5w3DY/r82w=;iMk9z7XdBYaYkp9uX05sTfevoo7
+ RdEBYnxwWH3CXOjvOtkLjFrk8I3lV4o2KjTabfONReroCAoBKVQWTL3Yk+NNAdV7fTg9YtoP9
+ 3VcB4YHmLrEMBetKpL3BIA6rVp7FDAq4HOUCOxPCIvn5A20wHSThyX1j1HkdH1wv9r2oiRTf6
+ ydFAOid8I9IoOPRLrq0U4A6DPnaJk0GeevpMZg3nwKgUy5ylEgiZaD+JO3zwHa5DDH3qILM8F
+ 55KP8tRJAI6lqDGIPuJc+EnPqvsQRtvfjpnmXS4T8fRbQtoIPyFPlsj7Fayk1+BHCA7R6e451
+ WtPIRKllvJ9LAxtQAwzbh7ibaTaLv3AzZZhPbiCP2uVa5PFeUFlRJDJXJfBEt2QFkE67P+zug
+ zN+D7tToSE8v1dYA3zd9V/bLWmoAAOCNvIxL9iRgwEODhTDAoejh7SMVin90ER5aYaSVoaqzv
+ tz4bZ/5p8DTmO0UCyY7OOTlh647Uu0J/HUj+ugbl+sLjILmDa8iaMCOCbcDYs618hCNpiNMIb
+ mB2+ZbVDa7LpUUt9eVU7EztXxiINwXwXpvDfpO8qVT8LRx2WePAG5MyNPLNOUX6zwRbVv/zLY
+ QuM/U8ySnGVr0SBplLjGDcwd1jBJ2T9RorEsXomVX19xInWYgJPHHjBkdnEGBLze3z52ID19V
+ GwLEseG5pC+cnfDp/Z2nwip6YzSfrtphj8IahbSGcCsVWd5EYEO2K7CA+p54wqMJqFJfNz2I5
+ 5ZVNB4DnZRHXZ+7Dj2Yv8+yVu6V19HMUiyMYTzvFdy5bqbdUo18nNoeiuL/xX7Uasu/18ql8u
+ qHhgNtw4LLCqDMfezDIE10T1AIFvXuexdXUkMrLQejROIXoYYx44b+PAHj4sNA+ZuYYyud3I1
+ WdSrt7j020Ipj8pwZnp3bo/U3fPno/3+Nn0CO7xKaAiUnQfLmiDwQT2nXx3iZohw/LdjXG79X
+ 6pkmQ/+zP8HOKSs8KsWCBDJiYxI=
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On 12/28/22 21:51, Sam Winchenbach wrote:
+> Hello,
+>
+> Hello, I have hit the following situation when trying to load files from=
+ a BTRFS partition with duplication enabled.
+>
+> In the first example I read a 16KiB file - __btrfs_map_block() changes t=
+he length to something larger than the file being read. This works fine, a=
+s length is later clamped to the file size.
+>
+> In the second example, __btrfs_map_block() changes the length parameter =
+to something smaller than the file (the size of a stripe).  This seems to =
+break this check here:
+>
+>      read =3D len;
+>      num_copies =3D btrfs_num_copies(fs_info, logical, len);
+>      for (i =3D 1; i <=3D num_copies; i++) {
+>          ret =3D read_extent_data(fs_info, dest, logical, &read, i);
+>          if (ret < 0 || read !=3D len) {
+>              continue;
+>          }
+>          finished =3D true;
+>          break;
+>      }
+>
+> The problem being that read is always less than len.
+>
+> I am not sure if __btrfs_map_block is changing "len" to the incorrect va=
+lue, or if there is some logic in "read_extent_data" that isn't correct. A=
+ny pointers on how this code is supposed to work would be greatly apprecia=
+ted.
+> Thanks.
 
-syzbot found the following issue on:
+Thanks for reporting the issue
 
-HEAD commit:    72a85e2b0a1e Merge tag 'spi-fix-v6.2-rc1' of git://git.ker..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=136100a8480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4e2d7bfa2d6d5a76
-dashboard link: https://syzkaller.appspot.com/bug?extid=b3a2926f65a93a3cf55b
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=114b2aac480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1765ae54480000
+$ scripts/get_maintainer.pl -f fs/btrfs/volumes.c
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/510d16df06c8/disk-72a85e2b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/50ef5477a1d4/vmlinux-72a85e2b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f2acd6f1189a/bzImage-72a85e2b.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/989578dc9fd1/mount_0.gz
+suggests to include
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b3a2926f65a93a3cf55b@syzkaller.appspotmail.com
+"Marek Beh=C3=BAn" <kabel@kernel.org> (maintainer:BTRFS)
+Qu Wenruo <wqu@suse.com> (reviewer:BTRFS)
+linux-btrfs@vger.kernel.org
 
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -28)
-WARNING: CPU: 1 PID: 56 at fs/btrfs/inode.c:3343 btrfs_finish_ordered_io+0x1ac9/0x1cb0 fs/btrfs/inode.c:3343
-Modules linked in:
-CPU: 1 PID: 56 Comm: kworker/u4:4 Not tainted 6.1.0-syzkaller-14594-g72a85e2b0a1e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-Workqueue: btrfs-endio-write btrfs_work_helper
-RIP: 0010:btrfs_finish_ordered_io+0x1ac9/0x1cb0 fs/btrfs/inode.c:3343
-Code: 8b 44 89 ee 31 c0 e8 26 e8 c5 fd 0f 0b b0 01 e9 4b ff ff ff e8 58 f8 fe fd 48 c7 c7 c0 9f 39 8b 44 89 ee 31 c0 e8 07 e8 c5 fd <0f> 0b e9 a6 fe ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 11 ed ff
-RSP: 0018:ffffc900015779e0 EFLAGS: 00010246
-RAX: 203bb8e87d482d00 RBX: 0000000000000024 RCX: ffff888017d91d40
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: ffffc90001577bc0 R08: ffffffff816f2c9d R09: fffff520002aeef5
-R10: fffff520002aeef5 R11: 1ffff920002aeef4 R12: 0000000000000000
-R13: 00000000ffffffe4 R14: dffffc0000000000 R15: ffff88807292d540
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffef9d1dda0 CR3: 00000000290a7000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_work_helper+0x312/0x850 fs/btrfs/async-thread.c:280
- process_one_work+0x877/0xdb0 kernel/workqueue.c:2289
- worker_thread+0xb14/0x1330 kernel/workqueue.c:2436
- kthread+0x266/0x300 kernel/kthread.c:376
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
+to the communication.
 
+Best regards
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Heinrich
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+>
+> =3D=3D=3D EXAMPLE 2 =3D=3D=3D
+> Zynq> load mmc 1:0 0 16K
+> [btrfs_file_read,fs/btrfs/inode.c:710] =3D=3D=3D read the aligned part =
+=3D=3D=3D
+> [btrfs_read_extent_reg,fs/btrfs/inode.c:458] before read_extent_data (re=
+t =3D 0, read =3D 16384, len =3D 16384)
+> [read_extent_data,fs/btrfs/disk-io.c:547] before __btrfs_map_block (len =
+=3D 16384)
+> [read_extent_data,fs/btrfs/disk-io.c:550] after __btrfs_map_block (len =
+=3D 28672)
+> [read_extent_data,fs/btrfs/disk-io.c:565] before __btrfs_devread (len =
+=3D 16384)
+> [read_extent_data,fs/btrfs/disk-io.c:568] after __btrfs_devread (len =3D=
+ 16384)
+> [btrfs_read_extent_reg,fs/btrfs/inode.c:460] after read_extent_data (ret=
+ =3D 0, read =3D 16384, len =3D 16384)
+> cur: 0, extent_num_bytes: 16384, aligned_end: 16384
+> 16384 bytes read in 100 ms (159.2 KiB/s)
+>
+> =3D=3D=3D EXAMPLE 2 =3D=3D=3D
+> Zynq> load mmc 1:0 0 32K
+> [btrfs_file_read,fs/btrfs/inode.c:710] =3D=3D=3D read the aligned part =
+=3D=3D=3D
+> [btrfs_read_extent_reg,fs/btrfs/inode.c:458] before read_extent_data (re=
+t =3D 0, read =3D 32768, len =3D 32768)
+> [read_extent_data,fs/btrfs/disk-io.c:547] before __btrfs_map_block (len =
+=3D 32768)
+> [read_extent_data,fs/btrfs/disk-io.c:550] after __btrfs_map_block (len =
+=3D 12288)
+> [read_extent_data,fs/btrfs/disk-io.c:565] before __btrfs_devread (len =
+=3D 12288)
+> [read_extent_data,fs/btrfs/disk-io.c:568] after __btrfs_devread (len =3D=
+ 12288)
+> [btrfs_read_extent_reg,fs/btrfs/inode.c:460] after read_extent_data (ret=
+ =3D 0, read =3D 12288, len =3D 32768)
+> [btrfs_read_extent_reg,fs/btrfs/inode.c:458] before read_extent_data (re=
+t =3D 0, read =3D 12288, len =3D 32768)
+> [read_extent_data,fs/btrfs/disk-io.c:547] before __btrfs_map_block (len =
+=3D 12288)
+> [read_extent_data,fs/btrfs/disk-io.c:550] after __btrfs_map_block (len =
+=3D 12288)
+> [read_extent_data,fs/btrfs/disk-io.c:565] before __btrfs_devread (len =
+=3D 12288)
+> [read_extent_data,fs/btrfs/disk-io.c:568] after __btrfs_devread (len =3D=
+ 12288)
+> [btrfs_read_extent_reg,fs/btrfs/inode.c:460] after read_extent_data (ret=
+ =3D 0, read =3D 12288, len =3D 32768)
+> file: fs/btrfs/inode.c, line: 468
+> cur: 0, extent_num_bytes: 32768, aligned_end: 32768
+> -----> btrfs_read_extent_reg: -5, line: 758
+> BTRFS: An error occurred while reading file 32K
+> Failed to load '32K'
+>
+>
+>
+>
+>
+> Sam Winchenbach
+> Embedded Software Engineer III
+> Tethers Unlimited, Inc. | Connect Your Universe | www.tethers.com
+> swinchenbach@tethers.com | C: 207-974-6934
+> 11711 North Creek Pkwy # D113, Bothell, WA 98011-8808, USA
+
