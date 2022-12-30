@@ -2,195 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2240F6593F5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Dec 2022 02:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58798659A1B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Dec 2022 16:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbiL3BHa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Dec 2022 20:07:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
+        id S235264AbiL3PnR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Dec 2022 10:43:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbiL3BH1 (ORCPT
+        with ESMTP id S234955AbiL3PnO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Dec 2022 20:07:27 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E02E1705B
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Dec 2022 17:07:26 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E0BF021CA1;
-        Fri, 30 Dec 2022 01:07:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1672362443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ZWS87d0M09bdjfcRME35rmJAiVRsRZ4p7321F0KqWV8=;
-        b=nAWQm7fo0o1XoCjkr7h3JKA+SGB2gn3YlsGcSH9urYpXKHYXm2oQamHNo4EnxI5LN6cQL/
-        F5pqBYSFcRM1tg65ZpZXmsKiucZyP4WS88Jg4qzka35DS9bXP+pI2D1XsYI+FkCWM1Iwv4
-        COBlIZnRNqqxH1vHrabS245dNNiBjuU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE10E1344E;
-        Fri, 30 Dec 2022 01:07:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 49IVL8o5rmOVHgAAMHmgww
-        (envelope-from <wqu@suse.com>); Fri, 30 Dec 2022 01:07:22 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     u-boot@lists.denx.de
-Cc:     linux-btrfs@vger.kernel.org,
-        Sam Winchenbach <swichenbach@tethers.com>
-Subject: [PATCH] fs/btrfs: handle data extents, which crosss stripe boundaries, correctly
-Date:   Fri, 30 Dec 2022 09:07:05 +0800
-Message-Id: <57ad584676de5b72ae422a22dc36922285405291.1672362424.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.0
+        Fri, 30 Dec 2022 10:43:14 -0500
+X-Greylist: delayed 902 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 30 Dec 2022 07:43:12 PST
+Received: from mail.tethers.com (mail.tethers.com [50.205.100.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2BD1B9C2
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Dec 2022 07:43:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; d=tethers.com; s=s2; c=simple/simple;
+        t=1672414089; h=from:subject:to:date:message-id;
+        bh=vns686vaCMT81lglRbjYFbeyw95hziFgV9f33TC4ezQ=;
+        b=mpgIfMbfDg5myzhKT4L8GPGmo0FhFFbc6fR6ua100b5jy2baHsPic3+wtXCUtbA/YM1bsdQaDea
+        je2bp/EzpCIrwJN1hZ1cBDZ2fUhNl91p9fJlyrtkQNHS9AAOai4E6tQXl40ZrnrxVu5iPqEAI5Q9E
+        rp79UJ/thi40TYU+WrinhA9LHYUFdaZL9r06s5Y654oBOSGXZxeJxcwjXPlg6qRDJ+xNRTT1wfDwK
+        OLGUUlvmzqSM8AEQ8btO/hIZ8pon4OOmg0RydQYr2X/ro6Q9soQ8vw7u+JtL9FgQfZXlmanE+M33V
+        UGIxnaKT856Tyz5IPbBeLlCJ3Rke4SpJc6zg==
+Received: from Exchange2019.secure.tethers.com (172.23.48.153) by
+ exchange2019.secure.tethers.com (172.23.48.153) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.20; Fri, 30 Dec 2022 07:28:09 -0800
+Received: from Exchange2019.secure.tethers.com ([fe80::ffb3:a1ad:8f70:8ff3])
+ by EXCHANGE2019.secure.tethers.com ([fe80::ffb3:a1ad:8f70:8ff3%14]) with mapi
+ id 15.02.1118.020; Fri, 30 Dec 2022 07:28:09 -0800
+From:   Sam Winchenbach <swichenbach@tethers.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        =?utf-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
+CC:     "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+        Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: RE: Possible bug in BTRFS w/ Duplication
+Thread-Topic: Possible bug in BTRFS w/ Duplication
+Thread-Index: Adka+vuz/Z7NK3MJQMCy/azwMbd3OAA17N0AABSI1QAAD5epIA==
+Date:   Fri, 30 Dec 2022 15:28:09 +0000
+Message-ID: <642db528742c47d79ee0314db67a1bed@tethers.com>
+References: <62218a2a5a274ada96f97f7ac4e151ef@tethers.com>
+ <bc82fc52-18b8-1205-5509-6fcd24529bea@gmx.de>
+ <58f08b77-f8cc-c2f8-a1ec-135ce48fbd8e@gmx.com>
+In-Reply-To: <58f08b77-f8cc-c2f8-a1ec-135ce48fbd8e@gmx.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [72.224.69.22]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-Since btrfs supports single device RAID0 at mkfs time after btrfs-progs
-v5.14, if we create a single device raid0 btrfs, and created a file
-crossing stripe boundary:
-
-  # mkfs.btrfs -m dup -d raid0 test.img
-  # mount test.img mnt
-  # xfs_io -f -c "pwrite 0 128K" mnt/file
-  # umount mnt
-
-Since btrfs is using 64K as stripe length, above 128K data write is
-definitely going to cross at least one stripe boundary.
-
-Then u-boot would fail to read above 128K file:
-
- => host bind 0 /home/adam/test.img
- => ls host 0
- <   >     131072  Fri Dec 30 00:18:25 2022  file
- => load host 0 0 file
- BTRFS: An error occurred while reading file file
- Failed to load 'file'
-
-[CAUSE]
-Unlike tree blocks read, data extent reads doesn't consider cases in which
-one data extent can cross stripe boundary.
-
-In read_data_extent(), we just call btrfs_map_block() once and read the
-first mapped range.
-
-And if the first mapped range is smaller than the desired range, it
-would return error.
-
-But since even single device btrfs can utilize RAID0 profiles, the first
-mapped range can only be at most 64K for RAID0 profiles, and cause false
-error.
-
-[FIX]
-Just like read_whole_eb(), we should call btrfs_map_block() in a loop
-until we read all data.
-
-Since we're here, also add extra error messages for the following cases:
-
-- btrfs_map_block() failure
-  We already have the error message for it.
-
-- Missing device
-  This should not happen, as we only support single device for now.
-
-- __btrfs_devread() failure
-
-With this bug fixed, btrfs driver of u-boot can properly read the above
-128K file, and have the correct content:
-
- => host bind 0 /home/adam/test.img
- => ls host 0
- <   >     131072  Fri Dec 30 00:18:25 2022  file
- => load host 0 0 file
- 131072 bytes read in 0 ms
- => md5sum 0 0x20000
- md5 for 00000000 ... 0001ffff ==> d48858312a922db7eb86377f638dbc9f
- ^^^ Above md5sum also matches.
-
-Reported-by: Sam Winchenbach <swichenbach@tethers.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c | 49 +++++++++++++++++++++++++---------------------
- 1 file changed, 27 insertions(+), 22 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 3f0d9f1c113b..7eaa7e949604 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -541,34 +541,39 @@ struct extent_buffer* read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
- int read_extent_data(struct btrfs_fs_info *fs_info, char *data, u64 logical,
- 		     u64 *len, int mirror)
- {
--	u64 offset = 0;
-+	u64 orig_len = *len;
-+	u64 cur = logical;
- 	struct btrfs_multi_bio *multi = NULL;
- 	struct btrfs_device *device;
- 	int ret = 0;
--	u64 max_len = *len;
- 
--	ret = btrfs_map_block(fs_info, READ, logical, len, &multi, mirror,
--			      NULL);
--	if (ret) {
--		fprintf(stderr, "Couldn't map the block %llu\n",
--				logical + offset);
--		goto err;
--	}
--	device = multi->stripes[0].dev;
-+	while (cur < logical + orig_len) {
-+		u64 cur_len = logical + orig_len - cur;
- 
--	if (*len > max_len)
--		*len = max_len;
--	if (!device->desc || !device->part) {
--		ret = -EIO;
--		goto err;
--	}
--
--	ret = __btrfs_devread(device->desc, device->part, data, *len,
--			      multi->stripes[0].physical);
--	if (ret != *len)
--		ret = -EIO;
--	else
-+		ret = btrfs_map_block(fs_info, READ, cur, &cur_len, &multi,
-+				      mirror, NULL);
-+		if (ret) {
-+			error("Couldn't map the block %llu", cur);
-+			goto err;
-+		}
-+		device = multi->stripes[0].dev;
-+		if (!device->desc || !device->part) {
-+			error("devid %llu is missing", device->devid);
-+			ret = -EIO;
-+			goto err;
-+		}
-+		ret = __btrfs_devread(device->desc, device->part,
-+				data + (cur - logical), cur_len,
-+				multi->stripes[0].physical);
-+		if (ret != cur_len) {
-+			error("read failed on devid %llu physical %llu",
-+			      device->devid, multi->stripes[0].physical);
-+			ret = -EIO;
-+			goto err;
-+		}
-+		cur += cur_len;
- 		ret = 0;
-+	}
- err:
- 	kfree(multi);
- 	return ret;
--- 
-2.39.0
-
+SSBiZWxpZXZlIHlvdSBmaXhlZCB0aGUgaXNzdWUgd2l0aCB0aGUgcGF0Y2ggeW91IHByZXNlbnRl
+ZC4gSSB3YXMgaW4gdGhlIHByb2Nlc3Mgb2YgdGVzdGluZyBhIHNpbWlsYXIgZml4IGZvciByZWxl
+YXNlIGFuZCBpdCBzb2x2ZWQgdGhlIGlzc3VlIEkgZW5jb3VudGVyZWQuDQoNClRoYW5rcywNClNh
+bSBXaW5jaGVuYmFjaA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogVS1Cb290
+IDx1LWJvb3QtYm91bmNlc0BsaXN0cy5kZW54LmRlPiBPbiBCZWhhbGYgT2YgUXUgV2VucnVvDQpT
+ZW50OiBUaHVyc2RheSwgRGVjZW1iZXIgMjksIDIwMjIgNzowMSBQTQ0KVG86IEhlaW5yaWNoIFNj
+aHVjaGFyZHQgPHh5cHJvbi5nbHBrQGdteC5kZT47IFNhbSBXaW5jaGVuYmFjaCA8c3dpY2hlbmJh
+Y2hAdGV0aGVycy5jb20+OyBNYXJlayBCZWjDum4gPGthYmVsQGtlcm5lbC5vcmc+DQpDYzogdS1i
+b290QGxpc3RzLmRlbnguZGU7IFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPjsgbGludXgtYnRyZnNA
+dmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBSZTogUG9zc2libGUgYnVnIGluIEJUUkZTIHcvIER1
+cGxpY2F0aW9uDQoNCg0KDQpPbiAyMDIyLzEyLzI5IDIyOjEyLCBIZWlucmljaCBTY2h1Y2hhcmR0
+IHdyb3RlOg0KPiBPbiAxMi8yOC8yMiAyMTo1MSwgU2FtIFdpbmNoZW5iYWNoIHdyb3RlOg0KPj4g
+SGVsbG8sDQo+Pg0KPj4gSGVsbG8sIEkgaGF2ZSBoaXQgdGhlIGZvbGxvd2luZyBzaXR1YXRpb24g
+d2hlbiB0cnlpbmcgdG8gbG9hZCBmaWxlcyANCj4+IGZyb20gYSBCVFJGUyBwYXJ0aXRpb24gd2l0
+aCBkdXBsaWNhdGlvbiBlbmFibGVkLg0KDQpZb3UgbWVhbiBtdWx0aS1kZXZpY2U/DQoNCkZvciBE
+VVAvUkFJRDEgZHVwbGljYXRpb24sIHRoZXkgZG9uJ3QgaGF2ZSBzdHJpcGUgbGltaXRhdGlvbiBh
+dCBhbGwuDQoNClRodXMgSSBiZWxpZXZlIHlvdSdyZSB0YWxraW5nIGFib3V0IFJBSUQwICh3aGlj
+aCBkb2Vzbid0IGhhdmUgYW55IGR1cGxpY2F0aW9uL2V4dHJhIG1pcnJvcnMpIG9yIFJBSUQxMCBv
+ciBSQUlENS82Pw0KDQpCdXQgZm9yIG5vdywgd2UgZG9uJ3Qgc3VwcG9ydCBtdWx0aS1kZXZpY2Ug
+aW4gVS1ib290IHlldCwgdGh1cyBJJ20gbm90IHN1cmUgd2hhdCBzaXR1YXRpb24geW91J3JlIHRh
+bGtpbmcgYWJvdXQuDQoNCk1pbmQgdG8gcnVuIHRoZSBmb2xsb3dpbmcgY29tbWFuZD8NCg0KICAj
+IGJ0cmZzIGZpIHVzYWdlIDxtbnQgb2YgdGhlIGJ0cmZzPg0KDQo+Pg0KPj4gSW4gdGhlIGZpcnN0
+IGV4YW1wbGUgSSByZWFkIGEgMTZLaUIgZmlsZSAtIF9fYnRyZnNfbWFwX2Jsb2NrKCkgDQo+PiBj
+aGFuZ2VzIHRoZSBsZW5ndGggdG8gc29tZXRoaW5nIGxhcmdlciB0aGFuIHRoZSBmaWxlIGJlaW5n
+IHJlYWQuIFRoaXMgDQo+PiB3b3JrcyBmaW5lLCBhcyBsZW5ndGggaXMgbGF0ZXIgY2xhbXBlZCB0
+byB0aGUgZmlsZSBzaXplLg0KPj4NCj4+IEluIHRoZSBzZWNvbmQgZXhhbXBsZSwgX19idHJmc19t
+YXBfYmxvY2soKSBjaGFuZ2VzIHRoZSBsZW5ndGggDQo+PiBwYXJhbWV0ZXIgdG8gc29tZXRoaW5n
+IHNtYWxsZXIgdGhhbiB0aGUgZmlsZSAodGhlIHNpemUgb2YgYSBzdHJpcGUpLg0KPj4gVGhpcyBz
+ZWVtcyB0byBicmVhayB0aGlzIGNoZWNrIGhlcmU6DQo+Pg0KPj4gwqDCoMKgwqAgcmVhZCA9IGxl
+bjsNCj4+IMKgwqDCoMKgIG51bV9jb3BpZXMgPSBidHJmc19udW1fY29waWVzKGZzX2luZm8sIGxv
+Z2ljYWwsIGxlbik7DQo+PiDCoMKgwqDCoCBmb3IgKGkgPSAxOyBpIDw9IG51bV9jb3BpZXM7IGkr
+Kykgew0KPj4gwqDCoMKgwqDCoMKgwqDCoCByZXQgPSByZWFkX2V4dGVudF9kYXRhKGZzX2luZm8s
+IGRlc3QsIGxvZ2ljYWwsICZyZWFkLCBpKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqAgaWYgKHJldCA8
+IDAgfHwgcmVhZCAhPSBsZW4pIHsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb250aW51
+ZTsNCj4+IMKgwqDCoMKgwqDCoMKgwqAgfQ0KPj4gwqDCoMKgwqDCoMKgwqDCoCBmaW5pc2hlZCA9
+IHRydWU7DQo+PiDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOw0KPj4gwqDCoMKgwqAgfQ0KPj4NCj4+
+IFRoZSBwcm9ibGVtIGJlaW5nIHRoYXQgcmVhZCBpcyBhbHdheXMgbGVzcyB0aGFuIGxlbi4NCj4+
+DQo+PiBJIGFtIG5vdCBzdXJlIGlmIF9fYnRyZnNfbWFwX2Jsb2NrIGlzIGNoYW5naW5nICJsZW4i
+IHRvIHRoZSBpbmNvcnJlY3QgDQo+PiB2YWx1ZSwgb3IgaWYgdGhlcmUgaXMgc29tZSBsb2dpYyBp
+biAicmVhZF9leHRlbnRfZGF0YSIgdGhhdCBpc24ndCANCj4+IGNvcnJlY3QuIEFueSBwb2ludGVy
+cyBvbiBob3cgdGhpcyBjb2RlIGlzIHN1cHBvc2VkIHRvIHdvcmsgd291bGQgYmUgDQo+PiBncmVh
+dGx5IGFwcHJlY2lhdGVkLg0KPj4gVGhhbmtzLg0KPiANCj4gVGhhbmtzIGZvciByZXBvcnRpbmcg
+dGhlIGlzc3VlDQo+IA0KPiAkIHNjcmlwdHMvZ2V0X21haW50YWluZXIucGwgLWYgZnMvYnRyZnMv
+dm9sdW1lcy5jDQo+IA0KPiBzdWdnZXN0cyB0byBpbmNsdWRlDQo+IA0KPiAiTWFyZWsgQmVow7pu
+IiA8a2FiZWxAa2VybmVsLm9yZz4gKG1haW50YWluZXI6QlRSRlMpIFF1IFdlbnJ1byANCj4gPHdx
+dUBzdXNlLmNvbT4gKHJldmlld2VyOkJUUkZTKSBsaW51eC1idHJmc0B2Z2VyLmtlcm5lbC5vcmcN
+Cj4gDQo+IHRvIHRoZSBjb21tdW5pY2F0aW9uLg0KPiANCj4gQmVzdCByZWdhcmRzDQo+IA0KPiBI
+ZWlucmljaA0KPiANCj4+DQo+PiA9PT0gRVhBTVBMRSAyID09PQ0KPj4gWnlucT4gbG9hZCBtbWMg
+MTowIDAgMTZLDQo+PiBbYnRyZnNfZmlsZV9yZWFkLGZzL2J0cmZzL2lub2RlLmM6NzEwXSA9PT0g
+cmVhZCB0aGUgYWxpZ25lZCBwYXJ0ID09PSANCj4+IFtidHJmc19yZWFkX2V4dGVudF9yZWcsZnMv
+YnRyZnMvaW5vZGUuYzo0NThdIGJlZm9yZSByZWFkX2V4dGVudF9kYXRhIA0KPj4gKHJldCA9IDAs
+IHJlYWQgPSAxNjM4NCwgbGVuID0gMTYzODQpIA0KPj4gW3JlYWRfZXh0ZW50X2RhdGEsZnMvYnRy
+ZnMvZGlzay1pby5jOjU0N10gYmVmb3JlIF9fYnRyZnNfbWFwX2Jsb2NrIA0KPj4gKGxlbiA9IDE2
+Mzg0KSBbcmVhZF9leHRlbnRfZGF0YSxmcy9idHJmcy9kaXNrLWlvLmM6NTUwXSBhZnRlciANCj4+
+IF9fYnRyZnNfbWFwX2Jsb2NrIChsZW4gPSAyODY3MikgDQo+PiBbcmVhZF9leHRlbnRfZGF0YSxm
+cy9idHJmcy9kaXNrLWlvLmM6NTY1XSBiZWZvcmUgX19idHJmc19kZXZyZWFkIChsZW4gDQo+PiA9
+IDE2Mzg0KSBbcmVhZF9leHRlbnRfZGF0YSxmcy9idHJmcy9kaXNrLWlvLmM6NTY4XSBhZnRlciAN
+Cj4+IF9fYnRyZnNfZGV2cmVhZCAobGVuID0NCj4+IDE2Mzg0KQ0KPj4gW2J0cmZzX3JlYWRfZXh0
+ZW50X3JlZyxmcy9idHJmcy9pbm9kZS5jOjQ2MF0gYWZ0ZXIgcmVhZF9leHRlbnRfZGF0YSANCj4+
+IChyZXQgPSAwLCByZWFkID0gMTYzODQsIGxlbiA9IDE2Mzg0KQ0KPj4gY3VyOiAwLCBleHRlbnRf
+bnVtX2J5dGVzOiAxNjM4NCwgYWxpZ25lZF9lbmQ6IDE2Mzg0DQo+PiAxNjM4NCBieXRlcyByZWFk
+IGluIDEwMCBtcyAoMTU5LjIgS2lCL3MpDQo+Pg0KPj4gPT09IEVYQU1QTEUgMiA9PT0NCj4+IFp5
+bnE+IGxvYWQgbW1jIDE6MCAwIDMySw0KPj4gW2J0cmZzX2ZpbGVfcmVhZCxmcy9idHJmcy9pbm9k
+ZS5jOjcxMF0gPT09IHJlYWQgdGhlIGFsaWduZWQgcGFydCA9PT0gDQo+PiBbYnRyZnNfcmVhZF9l
+eHRlbnRfcmVnLGZzL2J0cmZzL2lub2RlLmM6NDU4XSBiZWZvcmUgcmVhZF9leHRlbnRfZGF0YSAN
+Cj4+IChyZXQgPSAwLCByZWFkID0gMzI3NjgsIGxlbiA9IDMyNzY4KSANCj4+IFtyZWFkX2V4dGVu
+dF9kYXRhLGZzL2J0cmZzL2Rpc2staW8uYzo1NDddIGJlZm9yZSBfX2J0cmZzX21hcF9ibG9jayAN
+Cj4+IChsZW4gPSAzMjc2OCkgW3JlYWRfZXh0ZW50X2RhdGEsZnMvYnRyZnMvZGlzay1pby5jOjU1
+MF0gYWZ0ZXIgDQo+PiBfX2J0cmZzX21hcF9ibG9jayAobGVuID0gMTIyODgpIA0KPj4gW3JlYWRf
+ZXh0ZW50X2RhdGEsZnMvYnRyZnMvZGlzay1pby5jOjU2NV0gYmVmb3JlIF9fYnRyZnNfZGV2cmVh
+ZCAobGVuIA0KPj4gPSAxMjI4OCkgW3JlYWRfZXh0ZW50X2RhdGEsZnMvYnRyZnMvZGlzay1pby5j
+OjU2OF0gYWZ0ZXIgDQo+PiBfX2J0cmZzX2RldnJlYWQgKGxlbiA9DQo+PiAxMjI4OCkNCg0KU28g
+dGhlIGZpcnN0IDMgc2VjdG9ycyBhcmUgYmVmb3JlIHRoZSBzdHJpcGUgYm91bmRhcnkgYW5kIHdl
+IHJlYWQgaXQgY29ycmVjdGx5Lg0KDQo+PiBbYnRyZnNfcmVhZF9leHRlbnRfcmVnLGZzL2J0cmZz
+L2lub2RlLmM6NDYwXSBhZnRlciByZWFkX2V4dGVudF9kYXRhIA0KPj4gKHJldCA9IDAsIHJlYWQg
+PSAxMjI4OCwgbGVuID0gMzI3NjgpIA0KPj4gW2J0cmZzX3JlYWRfZXh0ZW50X3JlZyxmcy9idHJm
+cy9pbm9kZS5jOjQ1OF0gYmVmb3JlIHJlYWRfZXh0ZW50X2RhdGEgDQo+PiAocmV0ID0gMCwgcmVh
+ZCA9IDEyMjg4LCBsZW4gPSAzMjc2OCkgDQo+PiBbcmVhZF9leHRlbnRfZGF0YSxmcy9idHJmcy9k
+aXNrLWlvLmM6NTQ3XSBiZWZvcmUgX19idHJmc19tYXBfYmxvY2sgDQo+PiAobGVuID0gMTIyODgp
+IFtyZWFkX2V4dGVudF9kYXRhLGZzL2J0cmZzL2Rpc2staW8uYzo1NTBdIGFmdGVyIA0KPj4gX19i
+dHJmc19tYXBfYmxvY2sgKGxlbiA9IDEyMjg4KQ0KDQpJIGJlbGlldmUgdGhpcyBpcyB0aGUgcHJv
+YmxlbS4NCg0KSWYgd2UncmUgcmVhZGluZyB0aGUgZnVsbCAzMkssIGFuZCB0aGUgZmlyc3QgMTJL
+IGlzIGluIHRoZSBmaXJzdCBzdHJpcGUsIHdlIHNob3VsZCB0aGVuIHRyeSB0byBtYXAgdGhlIHJl
+bWFpbmluZyAyMEssIG5vdCB0aGUgMTJLIGFnYWluLg0KDQpJJ2xsIGxvb2sgaW50byB0aGUgc2l0
+dWF0aW9uLg0KQnV0IGlmIHlvdSBjYW4gcHJvdmlkZSB0aGUgaW1hZ2Ugb3IgdGhlIGR1bXAsIGl0
+IGNhbiBncmVhdGx5IGhlbHAgdGhlIGRlYnVnZ2luZy4NCg0KVGhhbmtzLA0KUXUNCg0KPj4gW3Jl
+YWRfZXh0ZW50X2RhdGEsZnMvYnRyZnMvZGlzay1pby5jOjU2NV0gYmVmb3JlIF9fYnRyZnNfZGV2
+cmVhZCAobGVuIA0KPj4gPSAxMjI4OCkgW3JlYWRfZXh0ZW50X2RhdGEsZnMvYnRyZnMvZGlzay1p
+by5jOjU2OF0gYWZ0ZXIgDQo+PiBfX2J0cmZzX2RldnJlYWQgKGxlbiA9DQo+PiAxMjI4OCkNCj4+
+IFtidHJmc19yZWFkX2V4dGVudF9yZWcsZnMvYnRyZnMvaW5vZGUuYzo0NjBdIGFmdGVyIHJlYWRf
+ZXh0ZW50X2RhdGEgDQo+PiAocmV0ID0gMCwgcmVhZCA9IDEyMjg4LCBsZW4gPSAzMjc2OCkNCj4+
+IGZpbGU6IGZzL2J0cmZzL2lub2RlLmMsIGxpbmU6IDQ2OA0KPj4gY3VyOiAwLCBleHRlbnRfbnVt
+X2J5dGVzOiAzMjc2OCwgYWxpZ25lZF9lbmQ6IDMyNzY4DQo+PiAtLS0tLT4gYnRyZnNfcmVhZF9l
+eHRlbnRfcmVnOiAtNSwgbGluZTogNzU4DQo+PiBCVFJGUzogQW4gZXJyb3Igb2NjdXJyZWQgd2hp
+bGUgcmVhZGluZyBmaWxlIDMySyBGYWlsZWQgdG8gbG9hZCAnMzJLJw0KPj4NCj4+DQo+Pg0KPj4N
+Cj4+DQo+PiBTYW0gV2luY2hlbmJhY2gNCj4+IEVtYmVkZGVkIFNvZnR3YXJlIEVuZ2luZWVyIElJ
+SQ0KPj4gVGV0aGVycyBVbmxpbWl0ZWQsIEluYy4gfCBDb25uZWN0IFlvdXIgVW5pdmVyc2UgfCB3
+d3cudGV0aGVycy5jb20NCj4+IHN3aW5jaGVuYmFjaEB0ZXRoZXJzLmNvbSB8IEM6IDIwNy05NzQt
+NjkzNA0KPj4gMTE3MTEgTm9ydGggQ3JlZWsgUGt3eSAjIEQxMTMsIEJvdGhlbGwsIFdBIDk4MDEx
+LTg4MDgsIFVTQQ0KPiANCg==
