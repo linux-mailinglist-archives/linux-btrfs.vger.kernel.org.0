@@ -2,211 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F0865936A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Dec 2022 01:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2240F6593F5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Dec 2022 02:07:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234072AbiL3ABM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Dec 2022 19:01:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51944 "EHLO
+        id S229820AbiL3BHa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Dec 2022 20:07:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbiL3ABK (ORCPT
+        with ESMTP id S229534AbiL3BH1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Dec 2022 19:01:10 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0194B1740C
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Dec 2022 16:01:08 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MUGe1-1pJbPs2FoR-00RGIE; Fri, 30
- Dec 2022 01:00:52 +0100
-Message-ID: <58f08b77-f8cc-c2f8-a1ec-135ce48fbd8e@gmx.com>
-Date:   Fri, 30 Dec 2022 08:00:46 +0800
+        Thu, 29 Dec 2022 20:07:27 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E02E1705B
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Dec 2022 17:07:26 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E0BF021CA1;
+        Fri, 30 Dec 2022 01:07:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1672362443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ZWS87d0M09bdjfcRME35rmJAiVRsRZ4p7321F0KqWV8=;
+        b=nAWQm7fo0o1XoCjkr7h3JKA+SGB2gn3YlsGcSH9urYpXKHYXm2oQamHNo4EnxI5LN6cQL/
+        F5pqBYSFcRM1tg65ZpZXmsKiucZyP4WS88Jg4qzka35DS9bXP+pI2D1XsYI+FkCWM1Iwv4
+        COBlIZnRNqqxH1vHrabS245dNNiBjuU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE10E1344E;
+        Fri, 30 Dec 2022 01:07:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 49IVL8o5rmOVHgAAMHmgww
+        (envelope-from <wqu@suse.com>); Fri, 30 Dec 2022 01:07:22 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     u-boot@lists.denx.de
+Cc:     linux-btrfs@vger.kernel.org,
+        Sam Winchenbach <swichenbach@tethers.com>
+Subject: [PATCH] fs/btrfs: handle data extents, which crosss stripe boundaries, correctly
+Date:   Fri, 30 Dec 2022 09:07:05 +0800
+Message-Id: <57ad584676de5b72ae422a22dc36922285405291.1672362424.git.wqu@suse.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Sam Winchenbach <swichenbach@tethers.com>,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-Cc:     "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <62218a2a5a274ada96f97f7ac4e151ef@tethers.com>
- <bc82fc52-18b8-1205-5509-6fcd24529bea@gmx.de>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Possible bug in BTRFS w/ Duplication
-In-Reply-To: <bc82fc52-18b8-1205-5509-6fcd24529bea@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:wWg055236Xpz54bqDH2ddSUfGYJsgXFKc9+R3Nj4iAYV5KqP8Tm
- tXwEeIrUjl101Zdiy7ppcQTQdvRbYl2Vyi3891R79QQsdpk4TdvQJm4/DMkt4lpfczcaK4E
- z7YaDdSyf+N7XWuw1WuAPZ1cS21nS8vECTQQ4I2V2Bwk7Rgd9PxEpnhp0NmvRhr4HbvXln4
- wFJAxjdeoYoTJgTuEZ3WA==
-UI-OutboundReport: notjunk:1;M01:P0:zzPFJ2h/kuo=;1bD927/emtHEnmLMNjS/h+saXIc
- oRmfRTqSbkj2B1wa682rnr4GCjPhqMukBA7UiyqUZfLDUVVrzLe/I1cnO6X9YEjMnFSUSuYWo
- p7KMj+tVOt9lDj66ukNhpdqC9QTF7GxJbiPPhwuB4tn7YDB4TYkjj1KF4pKEb7ozdIeCG7Qf4
- /6HS+0mUyUnSAJ7l1hj9kuVFq1N9WVtTCnsyilBVhhDRkCwneH4hmiaVjR4Jl54409SSUjJX7
- OCwBV6x7TUrXUjDPhRP4erWqY8Vm/QOtgF3tX84n5Jbw11lPAFKAmouWqXhNirABZ1H+eu8PA
- Ds4o1Xs4ss08NPDqrg6oLIkVtzPZxp0gAaqsovUHXJpATMDJ1NUzLoi9NG4uG/h2HZjfcbqJL
- PDDLdQAOGWqkuSbPEzx+CkZLGLcCQ1wdwuypKrtfLP1gfj0RcbQwod2p63mpH1CQBgxoiRJ53
- ffNrtF6kjgrkfhJ8JI5kZs+eHlGOxhC7gDUAYUUUnp9VWg8FKu56VN17MPFjPeW6pGw4WjcMA
- tAz1dzaTVqUj2rB4pDwiQq2MpwZUQEtPmBluhg49TYadytv+CUTaw7IIJcroTgEkMXHPxUfZd
- ws51hGchcgnZNQ7QJh/fPF/XnUvCYTXfsQ6nBCTfbbzsBfyEqDz6qxpDwebGV7X9eH2vApQwG
- XyQbAsKZI9rlKiSL/I7xrf+agomEZmxxWT5SRLdhAUu82Dx9UJJP+sEa8/Zv+Z8ITXCQ9Zah4
- Ft/LD9JSoakzx+UMxwQewK5/JbxWLiCDfAMlQQXyR0hOcTnz8ZjmwG6RDT1fv2qwOhynWCTx6
- xzbYB8cq0/hUFBSLgI8Tc8Bbk4KsKc/G0w5S0LEWcIdbgER81q3RV03bTpR9HO+lca88O/cce
- Oubx51kr/6Uc8ClPd7NrUh8WtbdSf4W81ztglRnWNbLRR3uWxdMi/RaWH6rmXrWhY8RFSFBnb
- fEgC4KkFhLuTNl8UUdNIoxAUIpA=
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+Since btrfs supports single device RAID0 at mkfs time after btrfs-progs
+v5.14, if we create a single device raid0 btrfs, and created a file
+crossing stripe boundary:
 
+  # mkfs.btrfs -m dup -d raid0 test.img
+  # mount test.img mnt
+  # xfs_io -f -c "pwrite 0 128K" mnt/file
+  # umount mnt
 
-On 2022/12/29 22:12, Heinrich Schuchardt wrote:
-> On 12/28/22 21:51, Sam Winchenbach wrote:
->> Hello,
->>
->> Hello, I have hit the following situation when trying to load files 
->> from a BTRFS partition with duplication enabled.
+Since btrfs is using 64K as stripe length, above 128K data write is
+definitely going to cross at least one stripe boundary.
 
-You mean multi-device?
+Then u-boot would fail to read above 128K file:
 
-For DUP/RAID1 duplication, they don't have stripe limitation at all.
+ => host bind 0 /home/adam/test.img
+ => ls host 0
+ <   >     131072  Fri Dec 30 00:18:25 2022  file
+ => load host 0 0 file
+ BTRFS: An error occurred while reading file file
+ Failed to load 'file'
 
-Thus I believe you're talking about RAID0 (which doesn't have any 
-duplication/extra mirrors) or RAID10 or RAID5/6?
+[CAUSE]
+Unlike tree blocks read, data extent reads doesn't consider cases in which
+one data extent can cross stripe boundary.
 
-But for now, we don't support multi-device in U-boot yet, thus I'm not 
-sure what situation you're talking about.
+In read_data_extent(), we just call btrfs_map_block() once and read the
+first mapped range.
 
-Mind to run the following command?
+And if the first mapped range is smaller than the desired range, it
+would return error.
 
-  # btrfs fi usage <mnt of the btrfs>
+But since even single device btrfs can utilize RAID0 profiles, the first
+mapped range can only be at most 64K for RAID0 profiles, and cause false
+error.
 
->>
->> In the first example I read a 16KiB file - __btrfs_map_block() changes 
->> the length to something larger than the file being read. This works 
->> fine, as length is later clamped to the file size.
->>
->> In the second example, __btrfs_map_block() changes the length 
->> parameter to something smaller than the file (the size of a stripe).  
->> This seems to break this check here:
->>
->>      read = len;
->>      num_copies = btrfs_num_copies(fs_info, logical, len);
->>      for (i = 1; i <= num_copies; i++) {
->>          ret = read_extent_data(fs_info, dest, logical, &read, i);
->>          if (ret < 0 || read != len) {
->>              continue;
->>          }
->>          finished = true;
->>          break;
->>      }
->>
->> The problem being that read is always less than len.
->>
->> I am not sure if __btrfs_map_block is changing "len" to the incorrect 
->> value, or if there is some logic in "read_extent_data" that isn't 
->> correct. Any pointers on how this code is supposed to work would be 
->> greatly appreciated.
->> Thanks.
-> 
-> Thanks for reporting the issue
-> 
-> $ scripts/get_maintainer.pl -f fs/btrfs/volumes.c
-> 
-> suggests to include
-> 
-> "Marek Behún" <kabel@kernel.org> (maintainer:BTRFS)
-> Qu Wenruo <wqu@suse.com> (reviewer:BTRFS)
-> linux-btrfs@vger.kernel.org
-> 
-> to the communication.
-> 
-> Best regards
-> 
-> Heinrich
-> 
->>
->> === EXAMPLE 2 ===
->> Zynq> load mmc 1:0 0 16K
->> [btrfs_file_read,fs/btrfs/inode.c:710] === read the aligned part ===
->> [btrfs_read_extent_reg,fs/btrfs/inode.c:458] before read_extent_data 
->> (ret = 0, read = 16384, len = 16384)
->> [read_extent_data,fs/btrfs/disk-io.c:547] before __btrfs_map_block 
->> (len = 16384)
->> [read_extent_data,fs/btrfs/disk-io.c:550] after __btrfs_map_block (len 
->> = 28672)
->> [read_extent_data,fs/btrfs/disk-io.c:565] before __btrfs_devread (len 
->> = 16384)
->> [read_extent_data,fs/btrfs/disk-io.c:568] after __btrfs_devread (len = 
->> 16384)
->> [btrfs_read_extent_reg,fs/btrfs/inode.c:460] after read_extent_data 
->> (ret = 0, read = 16384, len = 16384)
->> cur: 0, extent_num_bytes: 16384, aligned_end: 16384
->> 16384 bytes read in 100 ms (159.2 KiB/s)
->>
->> === EXAMPLE 2 ===
->> Zynq> load mmc 1:0 0 32K
->> [btrfs_file_read,fs/btrfs/inode.c:710] === read the aligned part ===
->> [btrfs_read_extent_reg,fs/btrfs/inode.c:458] before read_extent_data 
->> (ret = 0, read = 32768, len = 32768)
->> [read_extent_data,fs/btrfs/disk-io.c:547] before __btrfs_map_block 
->> (len = 32768)
->> [read_extent_data,fs/btrfs/disk-io.c:550] after __btrfs_map_block (len 
->> = 12288)
->> [read_extent_data,fs/btrfs/disk-io.c:565] before __btrfs_devread (len 
->> = 12288)
->> [read_extent_data,fs/btrfs/disk-io.c:568] after __btrfs_devread (len = 
->> 12288)
+[FIX]
+Just like read_whole_eb(), we should call btrfs_map_block() in a loop
+until we read all data.
 
-So the first 3 sectors are before the stripe boundary and we read it 
-correctly.
+Since we're here, also add extra error messages for the following cases:
 
->> [btrfs_read_extent_reg,fs/btrfs/inode.c:460] after read_extent_data 
->> (ret = 0, read = 12288, len = 32768)
->> [btrfs_read_extent_reg,fs/btrfs/inode.c:458] before read_extent_data 
->> (ret = 0, read = 12288, len = 32768)
->> [read_extent_data,fs/btrfs/disk-io.c:547] before __btrfs_map_block 
->> (len = 12288)
->> [read_extent_data,fs/btrfs/disk-io.c:550] after __btrfs_map_block (len 
->> = 12288)
+- btrfs_map_block() failure
+  We already have the error message for it.
 
-I believe this is the problem.
+- Missing device
+  This should not happen, as we only support single device for now.
 
-If we're reading the full 32K, and the first 12K is in the first stripe, 
-we should then try to map the remaining 20K, not the 12K again.
+- __btrfs_devread() failure
 
-I'll look into the situation.
-But if you can provide the image or the dump, it can greatly help the 
-debugging.
+With this bug fixed, btrfs driver of u-boot can properly read the above
+128K file, and have the correct content:
 
-Thanks,
-Qu
+ => host bind 0 /home/adam/test.img
+ => ls host 0
+ <   >     131072  Fri Dec 30 00:18:25 2022  file
+ => load host 0 0 file
+ 131072 bytes read in 0 ms
+ => md5sum 0 0x20000
+ md5 for 00000000 ... 0001ffff ==> d48858312a922db7eb86377f638dbc9f
+ ^^^ Above md5sum also matches.
 
->> [read_extent_data,fs/btrfs/disk-io.c:565] before __btrfs_devread (len 
->> = 12288)
->> [read_extent_data,fs/btrfs/disk-io.c:568] after __btrfs_devread (len = 
->> 12288)
->> [btrfs_read_extent_reg,fs/btrfs/inode.c:460] after read_extent_data 
->> (ret = 0, read = 12288, len = 32768)
->> file: fs/btrfs/inode.c, line: 468
->> cur: 0, extent_num_bytes: 32768, aligned_end: 32768
->> -----> btrfs_read_extent_reg: -5, line: 758
->> BTRFS: An error occurred while reading file 32K
->> Failed to load '32K'
->>
->>
->>
->>
->>
->> Sam Winchenbach
->> Embedded Software Engineer III
->> Tethers Unlimited, Inc. | Connect Your Universe | www.tethers.com
->> swinchenbach@tethers.com | C: 207-974-6934
->> 11711 North Creek Pkwy # D113, Bothell, WA 98011-8808, USA
-> 
+Reported-by: Sam Winchenbach <swichenbach@tethers.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/disk-io.c | 49 +++++++++++++++++++++++++---------------------
+ 1 file changed, 27 insertions(+), 22 deletions(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 3f0d9f1c113b..7eaa7e949604 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -541,34 +541,39 @@ struct extent_buffer* read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ int read_extent_data(struct btrfs_fs_info *fs_info, char *data, u64 logical,
+ 		     u64 *len, int mirror)
+ {
+-	u64 offset = 0;
++	u64 orig_len = *len;
++	u64 cur = logical;
+ 	struct btrfs_multi_bio *multi = NULL;
+ 	struct btrfs_device *device;
+ 	int ret = 0;
+-	u64 max_len = *len;
+ 
+-	ret = btrfs_map_block(fs_info, READ, logical, len, &multi, mirror,
+-			      NULL);
+-	if (ret) {
+-		fprintf(stderr, "Couldn't map the block %llu\n",
+-				logical + offset);
+-		goto err;
+-	}
+-	device = multi->stripes[0].dev;
++	while (cur < logical + orig_len) {
++		u64 cur_len = logical + orig_len - cur;
+ 
+-	if (*len > max_len)
+-		*len = max_len;
+-	if (!device->desc || !device->part) {
+-		ret = -EIO;
+-		goto err;
+-	}
+-
+-	ret = __btrfs_devread(device->desc, device->part, data, *len,
+-			      multi->stripes[0].physical);
+-	if (ret != *len)
+-		ret = -EIO;
+-	else
++		ret = btrfs_map_block(fs_info, READ, cur, &cur_len, &multi,
++				      mirror, NULL);
++		if (ret) {
++			error("Couldn't map the block %llu", cur);
++			goto err;
++		}
++		device = multi->stripes[0].dev;
++		if (!device->desc || !device->part) {
++			error("devid %llu is missing", device->devid);
++			ret = -EIO;
++			goto err;
++		}
++		ret = __btrfs_devread(device->desc, device->part,
++				data + (cur - logical), cur_len,
++				multi->stripes[0].physical);
++		if (ret != cur_len) {
++			error("read failed on devid %llu physical %llu",
++			      device->devid, multi->stripes[0].physical);
++			ret = -EIO;
++			goto err;
++		}
++		cur += cur_len;
+ 		ret = 0;
++	}
+ err:
+ 	kfree(multi);
+ 	return ret;
+-- 
+2.39.0
+
