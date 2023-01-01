@@ -2,160 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3419D65A881
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Jan 2023 02:02:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E1165A8E1
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Jan 2023 06:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232148AbjAABCn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 31 Dec 2022 20:02:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
+        id S229463AbjAAFEH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Jan 2023 00:04:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjAABCm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 31 Dec 2022 20:02:42 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DA45FF6
-        for <linux-btrfs@vger.kernel.org>; Sat, 31 Dec 2022 17:02:41 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 67FDF22422;
-        Sun,  1 Jan 2023 01:02:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1672534959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UoMwAQsFfopfEs2ts1m2LoCUnPc+kYlbRAQdcgSNG+g=;
-        b=LZ9c/y/i/E/tTvsJPpMMex9QhQP0Ayj6osUqExs2IY8fZKBvs162RwrAmdV144UafhpBiC
-        uHUa/yO/Tmjo+oiUezwHRJC3z0apQZiR7kNY81t1PIK30+GOz8vZAjgG4lYq739a0EOLSm
-        /454nalSYgOx9N/Pnd5w1LV79HbM7Rg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8966513357;
-        Sun,  1 Jan 2023 01:02:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ceH6FK7bsGPWCwAAMHmgww
-        (envelope-from <wqu@suse.com>); Sun, 01 Jan 2023 01:02:38 +0000
-From:   Qu Wenruo <wqu@suse.com>
+        with ESMTP id S229437AbjAAFEF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Jan 2023 00:04:05 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3942BDD
+        for <linux-btrfs@vger.kernel.org>; Sat, 31 Dec 2022 21:03:59 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id hd14-20020a17090b458e00b0021909875bccso23374020pjb.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 31 Dec 2022 21:03:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kota.moe; s=google;
+        h=in-reply-to:references:subject:cc:to:from:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=g4NBLuza6ZevZYU9BZXyTmfjCyX5kPTFi4spLceuyLI=;
+        b=Xg1AfSmPiZ2YH0AC15mgF3HmUiXsJTH4o0XGJH3ZRbLfk9u2knCPfPaQXjToGfi8Zf
+         +sDY/AVr3mz5BkGZSf+x4opHTzgpdvkPapHgyXUh9hSs0AR9iUqL0Bk4vLC0gUizdv0w
+         JQ1Jnx+yCaa/TmWistiRYujX1TEQRKSRwexYQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:references:subject:cc:to:from:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g4NBLuza6ZevZYU9BZXyTmfjCyX5kPTFi4spLceuyLI=;
+        b=PebvwA74dSfzXrWq/mUind5JxDFbonZ7tHlZQ48XBOTy0BNCkcp9Bwgmutux6wmq2O
+         Buq6h+UXiNsATQU5WJnc0CtgD+Vcjac86TZf0Fri5d735xiyDO5ZKeuXvA+LJsxgQE8M
+         HuI3EyaJiww3PwaizhJStXpVqMod0EnLJsdJxArtor3qgHx6tWCgSG/4oCl8AnlUAnrG
+         EZoHTByv2Umc+dx4fqMstHlbNS9cMYEcK0c1WxbMTQ3ABf/bXYHzIvktfIAQ6hO3efch
+         79qEDzUE0eQTOlaWfdffHd1up0zrRg8LD0gwu1w9Y3haV6hfrpxtAndPHS53RLujqUcQ
+         dUZQ==
+X-Gm-Message-State: AFqh2kr+BLTBf8sQqoNzJAYXIZbJ2v4cTjh3nQ0lJmcBDBwWlwf10O6K
+        HfMo53WFAuD0wkcbFGA5M65wowKEpbM02r9n
+X-Google-Smtp-Source: AMrXdXt0EnMCkXaOWK0FukgqgkNIDlv29OBgiismGoYCt0WvdvywgB6UhAJCzYN5/h3580XSv9gg4A==
+X-Received: by 2002:a17:90b:23c6:b0:225:c362:7362 with SMTP id md6-20020a17090b23c600b00225c3627362mr32018126pjb.8.1672549437903;
+        Sat, 31 Dec 2022 21:03:57 -0800 (PST)
+Received: from home.kota.moe ([2404:bf40:8181:20:4206:cfeb:365e:302e])
+        by smtp.gmail.com with ESMTPSA id 30-20020a17090a09a100b00225f49bd4b6sm10050636pjo.36.2022.12.31.21.03.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Dec 2022 21:03:57 -0800 (PST)
+Message-ID: <63b1143d.170a0220.9d74e.f651@mx.google.com>
+Date:   Sat, 31 Dec 2022 21:03:57 -0800 (PST)
+From:   =?UTF-8?B?4oCN5bCP5aSq?= <nospam@kota.moe>
 To:     linux-btrfs@vger.kernel.org
-Cc:     =?UTF-8?q?=E5=B0=8F=E5=A4=AA?= <nospam@kota.moe>
-Subject: [PATCH] btrfs: don't trigger BUG_ON() when repair happens with dev-replace
-Date:   Sun,  1 Jan 2023 09:02:21 +0800
-Message-Id: <e6bd27828dfa486ff27e39db13b662e06d71ec74.1672534935.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Buggy behaviour after replacing failed disk in RAID1
+References: <CACsxjPaFgBMRkeEgbHcGwM7czSrjtakX9hSKXQq7RL2wJZYYCA@mail.gmail.com>
+ <CACsxjPYyJGQZ+yvjzxA1Nn2LuqkYqTCcUH43S=+wXhyf8S00Ag@mail.gmail.com>
+ <d13c2454-b642-2db7-371e-b669fdf24279@gmx.com>
+In-Reply-To: <d13c2454-b642-2db7-371e-b669fdf24279@gmx.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a bug report that a BUG_ON() in btrfs_repair_io_failure()
-(originally repair_io_failure() in v6.0 kernel) got triggered when
-replacing a unreliable disk:
+> Weirdly, the dmesg is not showing devid 1 missing, in fact, it still
+> shows the devices is there, just tons of IO errors (ata4, sd 3:0:0:0)
 
- BTRFS warning (device sda1): csum failed root 257 ino 2397453 off 39624704 csum 0xb0d18c75 expected csum 0x4dae9c5e mirror 3
- kernel BUG at fs/btrfs/extent_io.c:2380!
- invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
- CPU: 9 PID: 3614331 Comm: kworker/u257:2 Tainted: G           OE      6.0.0-5-amd64 #1  Debian 6.0.10-2
- Hardware name: Micro-Star International Co., Ltd. MS-7C60/TRX40 PRO WIFI (MS-7C60), BIOS 2.70 07/01/2021
- Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
- RIP: 0010:repair_io_failure+0x24a/0x260 [btrfs]
- Call Trace:
-  <TASK>
-  clean_io_failure+0x14d/0x180 [btrfs]
-  end_bio_extent_readpage+0x412/0x6e0 [btrfs]
-  ? __switch_to+0x106/0x420
-  process_one_work+0x1c7/0x380
-  worker_thread+0x4d/0x380
-  ? rescuer_thread+0x3a0/0x3a0
-  kthread+0xe9/0x110
-  ? kthread_complete_and_exit+0x20/0x20
-  ret_from_fork+0x22/0x30
-  </TASK>
+> If you initially removed the hard disk completely, btrfs then can handle
+> it well.
+> (Sure, this is a bug in btrfs and we should be able to fix it).
 
-[CAUSE]
+I did completely remove the drive. In fact, I used the very same SATA port for
+the replacement drive. See my dmesg lines:
 
-Before the BUG_ON(), we got some read errors from the replace target
-first, note the mirror number (3, which is beyond RAID1 duplication,
-thus it's read from the replace target device).
+> [1744757.386462] ata4: SATA link down (SStatus 0 SControl 300)
+> [1744762.810285] ata4: SATA link down (SStatus 0 SControl 300)
+> [1744768.190059] ata4: SATA link down (SStatus 0 SControl 300)
+> [1744768.190072] ata4.00: disable device
+> [1744768.190097] ata4.00: detaching (SCSI 3:0:0:0)
+> [1744768.295895] sd 3:0:0:0: [sda] Stopping disk
+> [1744768.295913] sd 3:0:0:0: [sda] Start/Stop Unit failed: Result: hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK
+> ...
+> [1745523.320657] ata4: found unknown device (class 0)
+> [1745527.965324] ata4: softreset failed (1st FIS failed)
+> [1745533.288241] ata4: found unknown device (class 0)
+> [1745533.452246] ata4: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
+> [1745533.453025] ata4.00: ATA-9: MB2000ECWCR, HPG4, max UDMA/133
+> [1745533.453306] ata4.00: 3907029168 sectors, multi 0: LBA48 NCQ (depth 32), AA
+> [1745533.454136] ata4.00: configured for UDMA/133
+> [1745533.464339] scsi 3:0:0:0: Direct-Access     ATA      MB2000ECWCR      HPG4 PQ: 0 ANSI: 5
+> [1745533.464556] sd 3:0:0:0: Attached scsi generic sg3 type 0
+> [1745533.464652] sd 3:0:0:0: [sdd] 3907029168 512-byte logical blocks: (2.00 TB/1.82 TiB)
+> [1745533.464667] sd 3:0:0:0: [sdd] Write Protect is off
+> [1745533.464671] sd 3:0:0:0: [sdd] Mode Sense: 00 3a 00 00
+> [1745533.464684] sd 3:0:0:0: [sdd] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+> [1745533.464700] sd 3:0:0:0: [sdd] Preferred minimum I/O size 512 bytes
+> [1745533.492586] sd 3:0:0:0: [sdd] Attached SCSI disk
 
-Then at the BUG_ON() location, we are trying to writeback the repaired
-sectors back the failed device.
-
-The check looks like this:
-
-		ret = btrfs_map_block(fs_info, BTRFS_MAP_WRITE, logical,
-				      &map_length, &bioc, mirror_num);
-		if (ret)
-			goto out_counter_dec;
-		BUG_ON(mirror_num != bioc->mirror_num);
-
-But inside btrfs_map_block(), we can modify bioc->mirror_num especially
-for dev-replace:
-
-	if (dev_replace_is_ongoing && mirror_num == map->num_stripes + 1 &&
-	    !need_full_stripe(op) && dev_replace->tgtdev != NULL) {
-		ret = get_extra_mirror_from_replace(fs_info, logical, *length,
-						    dev_replace->srcdev->devid,
-						    &mirror_num,
-					    &physical_to_patch_in_first_stripe);
-		patch_the_first_stripe_for_dev_replace = 1;
-	}
-
-Thus if we're repairing the replace target device, we're going to
-triggere that BUG_ON().
-
-But in reality, the read failure from the replace target device may be that,
-our replace haven't reach the range we're reading, thus we're reading
-garbage, but with replace running, the range would be properly filled
-later.
-
-Thus in that case, we don't need to do anything but let the replace
-routine to handle it.
-
-[FIX]
-Instead of a BUG_ON(), just skip the repair if we're repairing the
-device replace target device.
-
-Reported-by: 小太 <nospam@kota.moe>
-Link: https://lore.kernel.org/linux-btrfs/CACsxjPYyJGQZ+yvjzxA1Nn2LuqkYqTCcUH43S=+wXhyf8S00Ag@mail.gmail.com/
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/bio.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index b8fb7ef6b520..444e20b15e26 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -329,7 +329,16 @@ int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
- 				      &map_length, &bioc, mirror_num);
- 		if (ret)
- 			goto out_counter_dec;
--		BUG_ON(mirror_num != bioc->mirror_num);
-+		/*
-+		 * This happens when dev-replace is also happening, and
-+		 * the mirror_num indicates the dev-replace target.
-+		 *
-+		 * In this case, we don't need to do anything, as the read
-+		 * error just means the replace progress hasn't reached our
-+		 * read range, and later replace routine would handle it well.
-+		 */
-+		if (mirror_num != bioc->mirror_num)
-+			goto out_counter_dec;
- 	}
- 
- 	sector = bioc->stripes[bioc->mirror_num - 1].physical >> 9;
--- 
-2.39.0
-
+I also verified that the device file /dev/sda was also gone at the time (despite
+"btrfs fi show" thinking it still exists).
+Maybe there's some other bug where the kernel still thinks the drive exists, even
+though it was disconnected?
