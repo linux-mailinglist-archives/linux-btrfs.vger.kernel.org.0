@@ -2,112 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE3E65A97D
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Jan 2023 10:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E29465AC81
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jan 2023 00:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbjAAJ14 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Jan 2023 04:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
+        id S229545AbjAAXb7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Jan 2023 18:31:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjAAJ1z (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Jan 2023 04:27:55 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB932645
-        for <linux-btrfs@vger.kernel.org>; Sun,  1 Jan 2023 01:27:51 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1McpNy-1odOtM3RTe-00Zte1; Sun, 01
- Jan 2023 10:27:47 +0100
-Message-ID: <bea8afad-b3dc-82e5-f5ed-d3ef73391ff4@gmx.com>
-Date:   Sun, 1 Jan 2023 17:27:41 +0800
+        with ESMTP id S229447AbjAAXb6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Jan 2023 18:31:58 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBA125E5
+        for <linux-btrfs@vger.kernel.org>; Sun,  1 Jan 2023 15:31:53 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id fc4so63239780ejc.12
+        for <linux-btrfs@vger.kernel.org>; Sun, 01 Jan 2023 15:31:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kota.moe; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DzpQZ5r2Zk7lOErRi0WaobATZhXsQ+7L2DO0jTEqYrg=;
+        b=cQkol9vSVTx9+scS7BPs5bnZOnT5GHfkP6SKZtr/WmqujvxUlt1Y66e6rN3AOYrU60
+         sL0KOpZWOqu6ecpQvqU5RkJ2R8QMY3Yn1Tc2dY/A+bxCmNikjaKcgVxg+e6q/zZ6HUUn
+         hmviIJmgQTHjm1EzWKNwodI0hNmj9SpLJ7LXE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DzpQZ5r2Zk7lOErRi0WaobATZhXsQ+7L2DO0jTEqYrg=;
+        b=R5DbjX0xY9wVy9q1s+p/Joxbcx2GmPgjNJ1knfDMVZT68pJhnjD1kmfyM2L3g9T1MQ
+         jkwcjBvkzIUGkFu92V2jqoKkTC74kSwHNLkTuhSCAOo21Nc4MAOAe3DmWB08wRKS7D4u
+         LWRAcnRetJAPLiQu8vy6JbYsJuxaj3L6+CRJpHx0vYMI9SjosqaiM5W307ktQpQOVCmk
+         w3fBeTnCGkrGGVIZZtbzl6WKY1otLYeb1Z2f3dCTb1gL10BoyxKWAFI3rsaHGjpFVc+Z
+         UuRShmBKtbsVRRUSVR12JguLy0yqO72a2apyI/q6DlQeF7Y0akft/1+v04NG7RDlCmnA
+         nthg==
+X-Gm-Message-State: AFqh2kpISvjuTD4TQBvgOfDtbFLmuD4fZC4pkfykDF9/QrlgtIr17BGI
+        /k7bTdeL2+xZyyn3IoETAOFxMUJCfv7V70Hz9R+Wtczw5B+tUg==
+X-Google-Smtp-Source: AMrXdXuaWUpoHNYdf/CAQlmbNZ1Xv1Y0wFuZrUtqN1WWPji4r+ttHMNATWchJ2m/FcI9F6KAriEqw8OQv/ObQ7sHTvY=
+X-Received: by 2002:a17:906:d795:b0:7c1:4665:9684 with SMTP id
+ pj21-20020a170906d79500b007c146659684mr4703298ejb.23.1672615912024; Sun, 01
+ Jan 2023 15:31:52 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: Buggy behaviour after replacing failed disk in RAID1
-Content-Language: en-US
-To:     =?UTF-8?B?5bCP5aSq?= <nospam@kota.moe>, linux-btrfs@vger.kernel.org
 References: <CACsxjPaFgBMRkeEgbHcGwM7czSrjtakX9hSKXQq7RL2wJZYYCA@mail.gmail.com>
  <CACsxjPYyJGQZ+yvjzxA1Nn2LuqkYqTCcUH43S=+wXhyf8S00Ag@mail.gmail.com>
- <d13c2454-b642-2db7-371e-b669fdf24279@gmx.com>
- <63b1143d.170a0220.9d74e.f651@mx.google.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <63b1143d.170a0220.9d74e.f651@mx.google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:aOo6DKcRoRsJSjzyzK2O8ovWpiUrqUznAAqbhgG33VOISOzZTCJ
- Tu0rK4H52y09Pgew3Hh8SehqTbEu2wjFwwUy67jNyM4DMakq9McwK/W3861AiDTHr2NuTfl
- pO8vEMCgNh+5+GjzP4CgYXVr1mblLTxfvVjc+fYzk+X6gCsVkfT8dZuW30EzPGiwPwgfVIe
- wJalDH3TAdnGPATbcmLNg==
-UI-OutboundReport: notjunk:1;M01:P0:Jx2OPyu7Bps=;UyPeo19roBbDa1+OLz34semwaMF
- 5RKnmUcY0uADKBWQrM8OOM6z0sp5MkElScjhp1UZGTH0mU8Bu3XwbRNQiS4RhYWtgKJobHqkb
- 1QlAAYsfX2iOmE7ZvO0eNitUfI2nOhPlkebFbA+sKqHE6wSUGc8AlToI8Radh3VOSsqKtkd39
- XcMf7I05mmm+MNxYUwGCzVGOhyjmwW7aBopu9cBKaIAtCVnNO2HGd6A6ud1Ro6miXVxkd1Nvc
- 3FONa0tQw8dF7Hr7aBQfJnZMLxIsyYlVr+8+fQ2sC+SZfKRZV+gmHHP6dVqMGYGLQLhRqa05v
- G6ATsIZu3ugEfU48M1Wa0KJ4BMuAfxnnRkHJXSgtKHl40aZr7oXB31KCMN7g93RuK/54b2NWd
- /lsa+oC/5abShcfq/pnXbsXEcyC62ntFKbYDXqddD6vrOvplty+jOYqzk68gZExVY20kiEDs+
- pz8WrrBIrdVIq6ms2HymVdwnU5XP9r3oe9X3ZXB0CVb14ktv155Y9Gih2GqqO5qbs4t9Z3JK2
- 96lhc0RXraVXPJ24h7E+NCuXatQfDnGkWEDcrNV06fDq++diWPMLZWg2jb7fMwSaAA7OCyT+/
- sY1kojtMq8n3OW9s6Lyj0VhQIjrkG4I2swntY/h6FMQO6HgL9eNiz1rAfIj4Oxb9ku3Rw5G3F
- XWNI4H1rwucWw7KRKO9zp/TX9sB9/B8o4viSw0oj4aS7v0tLUMM2+AVNINxKrlGdJQ7pG25O5
- mcj3bAHa04AWzvNFGNONKaDxAXlWLihpSuNdsgOnG3uBTA4yd/YTHmiMhkZ1MvIS5k5/cB5Kb
- otqzC9b/t7iMzGZFy6GJEwdI7qSBU19I4lV0AUbDCr1IeX/Oyhpa7Vy9CgZayZ0+5X44M/iS6
- QGG5fYyh7mCKGB83Z63bxaeoO+4o3729hjCOYUsNqWDUYCdyqBmg4wdGg/qanFl+U0uAcos7t
- M2Cim0zjW84CGFCGfwZdvIY9MFs=
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+ <d13c2454-b642-2db7-371e-b669fdf24279@gmx.com> <63b1143d.170a0220.9d74e.f651@mx.google.com>
+ <bea8afad-b3dc-82e5-f5ed-d3ef73391ff4@gmx.com>
+In-Reply-To: <bea8afad-b3dc-82e5-f5ed-d3ef73391ff4@gmx.com>
+From:   =?UTF-8?B?4oCN5bCP5aSq?= <nospam@kota.moe>
+Date:   Mon, 2 Jan 2023 10:31:15 +1100
+Message-ID: <CACsxjPbo7DYJCHs1rg3agtX=G9hgGBvs3iTMgNX=JUGFmGkg-w@mail.gmail.com>
+Subject: Re: Buggy behaviour after replacing failed disk in RAID1
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+For posterity, I will record what happened after I restarted my system
+in case anyone else encounters my problem.
 
+On Sun, 1 Jan 2023 at 11:38, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> Since btrfs module crashed, you have to reset the system.
+>
+> And if you're going to reset the system, please remove the offending
+> disk (sda) completely.
+>
+> Then at next bootup, the fs can not be mounted without "-o degraded".
+>
+> And at next mount, btrfs may or may not resume the replace.
+> If btrfs didn't resume the replace, it means the previous replace finished.
+> If btrfs did resume the replace, let it finish first.
+>
+> Then run a scrub to fix any corrupted sectors which didn't properly get
+> repaired during replace.
 
-On 2023/1/1 13:03, 小太 wrote:
->> Weirdly, the dmesg is not showing devid 1 missing, in fact, it still
->> shows the devices is there, just tons of IO errors (ata4, sd 3:0:0:0)
-> 
->> If you initially removed the hard disk completely, btrfs then can handle
->> it well.
->> (Sure, this is a bug in btrfs and we should be able to fix it).
-> 
-> I did completely remove the drive. In fact, I used the very same SATA port for
-> the replacement drive. See my dmesg lines:
-> 
->> [1744757.386462] ata4: SATA link down (SStatus 0 SControl 300)
->> [1744762.810285] ata4: SATA link down (SStatus 0 SControl 300)
->> [1744768.190059] ata4: SATA link down (SStatus 0 SControl 300)
->> [1744768.190072] ata4.00: disable device
->> [1744768.190097] ata4.00: detaching (SCSI 3:0:0:0)
->> [1744768.295895] sd 3:0:0:0: [sda] Stopping disk
->> [1744768.295913] sd 3:0:0:0: [sda] Start/Stop Unit failed: Result: hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK
->> ...
->> [1745523.320657] ata4: found unknown device (class 0)
->> [1745527.965324] ata4: softreset failed (1st FIS failed)
->> [1745533.288241] ata4: found unknown device (class 0)
->> [1745533.452246] ata4: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
->> [1745533.453025] ata4.00: ATA-9: MB2000ECWCR, HPG4, max UDMA/133
->> [1745533.453306] ata4.00: 3907029168 sectors, multi 0: LBA48 NCQ (depth 32), AA
->> [1745533.454136] ata4.00: configured for UDMA/133
->> [1745533.464339] scsi 3:0:0:0: Direct-Access     ATA      MB2000ECWCR      HPG4 PQ: 0 ANSI: 5
->> [1745533.464556] sd 3:0:0:0: Attached scsi generic sg3 type 0
->> [1745533.464652] sd 3:0:0:0: [sdd] 3907029168 512-byte logical blocks: (2.00 TB/1.82 TiB)
->> [1745533.464667] sd 3:0:0:0: [sdd] Write Protect is off
->> [1745533.464671] sd 3:0:0:0: [sdd] Mode Sense: 00 3a 00 00
->> [1745533.464684] sd 3:0:0:0: [sdd] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
->> [1745533.464700] sd 3:0:0:0: [sdd] Preferred minimum I/O size 512 bytes
->> [1745533.492586] sd 3:0:0:0: [sdd] Attached SCSI disk
-> 
-> I also verified that the device file /dev/sda was also gone at the time (despite
-> "btrfs fi show" thinking it still exists).
+I restarted my system today (which ended up requiring the magic sysrq
+sequence to get around the processes stuck in uninterruptible sleep).
+Indeed afterwards the file system needed to be mounted with -o
+degraded, but it finished the replace immediately afterwards:
 
-OK, I guess there is really no way to let btrfs to release that faulty 
-device until it got replaced.
+> kota@home:~$ sudo btrfs fi show
+> Label: none  uuid: b7e4da98-b885-4e70-b0a4-510fb77fa744
+>     Total devices 3 FS bytes used 1.47TiB
+>     devid    0 size 1.36TiB used 925.03GiB path /dev/sdb1
+>     devid    2 size 1.82TiB used 956.03GiB path /dev/sda1
+>     devid    3 size 1.82TiB used 1.35TiB path /dev/sdc1
+> kota@home:~$ sudo mount /media/Data -o degraded
+> kota@home:~$ sudo dmesg
+> ...
+> [  261.442582] BTRFS info (device sdb1): using crc32c (crc32c-intel) checksum algorithm
+> [  261.442590] BTRFS info (device sdb1): allowing degraded mounts
+> [  261.442592] BTRFS info (device sdb1): disk space caching is enabled
+> [  261.442917] BTRFS warning (device sdb1): devid 1 uuid 1f6d045d-ff05-43ee-99b6-0517b0240656 is missing
+> [  261.460749] BTRFS warning (device sdb1): devid 1 uuid 1f6d045d-ff05-43ee-99b6-0517b0240656 is missing
+> [  261.729290] BTRFS info (device sdb1): bdev (efault) errs: wr 4147, rd 220094697, flush 0, corrupt 0, gen 0
+> [  261.729294] BTRFS info (device sdb1): bdev /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 521, gen 0
+> [  268.369240] BTRFS info (device sdb1): continuing dev_replace from <missing disk> (devid 1) to target /dev/sdb1 @93%
+> [  269.123140] BTRFS info (device sdb1): dev_replace from <missing disk> (devid 1) to /dev/sdb1 finished
+> kota@home:~$ sudo btrfs fi show
+> Label: none  uuid: b7e4da98-b885-4e70-b0a4-510fb77fa744
+>     Total devices 3 FS bytes used 1.47TiB
+>     devid    1 size 1.36TiB used 925.03GiB path /dev/sdb1
+>     devid    2 size 1.82TiB used 956.03GiB path /dev/sda1
+>     devid    3 size 1.82TiB used 1.35TiB path /dev/sdc1
 
-And since the root cause is not the hanging sda, but a bug in btrfs 
-repair code (patch already sent), it's unrelated to the bug.
+Performing the scrub afterwards showed there were no errors, despite
+"btrfs device stats" claiming there were corruptions
 
-Thanks,
-Qu
-> Maybe there's some other bug where the kernel still thinks the drive exists, even
-> though it was disconnected?
+> kota@home:~$ sudo btrfs device stats /media/Data/
+> [/dev/sdb1].write_io_errs    0
+> [/dev/sdb1].read_io_errs     0
+> [/dev/sdb1].flush_io_errs    0
+> [/dev/sdb1].corruption_errs  521
+> [/dev/sdb1].generation_errs  0
+> [/dev/sda1].write_io_errs    0
+> [/dev/sda1].read_io_errs     0
+> [/dev/sda1].flush_io_errs    0
+> [/dev/sda1].corruption_errs  0
+> [/dev/sda1].generation_errs  0
+> [/dev/sdc1].write_io_errs    0
+> [/dev/sdc1].read_io_errs     0
+> [/dev/sdc1].flush_io_errs    0
+> [/dev/sdc1].corruption_errs  0
+> [/dev/sdc1].generation_errs  0
+> kota@home:~$ sudo btrfs scrub start /media/Data
+> scrub started on /media/Data, fsid b7e4da98-b885-4e70-b0a4-510fb77fa744 (pid=5993)
+> kota@home:~$ sudo btrfs scrub status /media/Data
+> UUID:             b7e4da98-b885-4e70-b0a4-510fb77fa744
+> Scrub started:    Sun Jan  1 22:00:57 2023
+> Status:           finished
+> Duration:         3:13:29
+> Total to scrub:   2.94TiB
+> Rate:             265.23MiB/s
+> Error summary:    no errors found
+> kota@home:~$ sudo dmesg
+> ...
+> [  320.159758] BTRFS info (device sdb1): scrub: started on devid 1
+> [  320.180088] BTRFS info (device sdb1): scrub: started on devid 2
+> [  320.180491] BTRFS info (device sdb1): scrub: started on devid 3
+> [11864.015290] BTRFS info (device sdb1): scrub: finished on devid 1 with status: 0
+> [11920.924076] BTRFS info (device sdb1): scrub: finished on devid 2 with status: 0
+> [11928.142109] BTRFS info (device sdb1): scrub: finished on devid 3 with status: 0
