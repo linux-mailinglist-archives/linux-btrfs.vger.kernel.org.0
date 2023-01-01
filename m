@@ -2,102 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E1165A8E1
+	by mail.lfdr.de (Postfix) with ESMTP id A273365A8E3
 	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Jan 2023 06:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbjAAFEH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Jan 2023 00:04:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
+        id S229532AbjAAFGe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Jan 2023 00:06:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjAAFEF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Jan 2023 00:04:05 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3942BDD
-        for <linux-btrfs@vger.kernel.org>; Sat, 31 Dec 2022 21:03:59 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id hd14-20020a17090b458e00b0021909875bccso23374020pjb.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 31 Dec 2022 21:03:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kota.moe; s=google;
-        h=in-reply-to:references:subject:cc:to:from:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=g4NBLuza6ZevZYU9BZXyTmfjCyX5kPTFi4spLceuyLI=;
-        b=Xg1AfSmPiZ2YH0AC15mgF3HmUiXsJTH4o0XGJH3ZRbLfk9u2knCPfPaQXjToGfi8Zf
-         +sDY/AVr3mz5BkGZSf+x4opHTzgpdvkPapHgyXUh9hSs0AR9iUqL0Bk4vLC0gUizdv0w
-         JQ1Jnx+yCaa/TmWistiRYujX1TEQRKSRwexYQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:references:subject:cc:to:from:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g4NBLuza6ZevZYU9BZXyTmfjCyX5kPTFi4spLceuyLI=;
-        b=PebvwA74dSfzXrWq/mUind5JxDFbonZ7tHlZQ48XBOTy0BNCkcp9Bwgmutux6wmq2O
-         Buq6h+UXiNsATQU5WJnc0CtgD+Vcjac86TZf0Fri5d735xiyDO5ZKeuXvA+LJsxgQE8M
-         HuI3EyaJiww3PwaizhJStXpVqMod0EnLJsdJxArtor3qgHx6tWCgSG/4oCl8AnlUAnrG
-         EZoHTByv2Umc+dx4fqMstHlbNS9cMYEcK0c1WxbMTQ3ABf/bXYHzIvktfIAQ6hO3efch
-         79qEDzUE0eQTOlaWfdffHd1up0zrRg8LD0gwu1w9Y3haV6hfrpxtAndPHS53RLujqUcQ
-         dUZQ==
-X-Gm-Message-State: AFqh2kr+BLTBf8sQqoNzJAYXIZbJ2v4cTjh3nQ0lJmcBDBwWlwf10O6K
-        HfMo53WFAuD0wkcbFGA5M65wowKEpbM02r9n
-X-Google-Smtp-Source: AMrXdXt0EnMCkXaOWK0FukgqgkNIDlv29OBgiismGoYCt0WvdvywgB6UhAJCzYN5/h3580XSv9gg4A==
-X-Received: by 2002:a17:90b:23c6:b0:225:c362:7362 with SMTP id md6-20020a17090b23c600b00225c3627362mr32018126pjb.8.1672549437903;
-        Sat, 31 Dec 2022 21:03:57 -0800 (PST)
-Received: from home.kota.moe ([2404:bf40:8181:20:4206:cfeb:365e:302e])
-        by smtp.gmail.com with ESMTPSA id 30-20020a17090a09a100b00225f49bd4b6sm10050636pjo.36.2022.12.31.21.03.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Dec 2022 21:03:57 -0800 (PST)
-Message-ID: <63b1143d.170a0220.9d74e.f651@mx.google.com>
-Date:   Sat, 31 Dec 2022 21:03:57 -0800 (PST)
-From:   =?UTF-8?B?4oCN5bCP5aSq?= <nospam@kota.moe>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Buggy behaviour after replacing failed disk in RAID1
-References: <CACsxjPaFgBMRkeEgbHcGwM7czSrjtakX9hSKXQq7RL2wJZYYCA@mail.gmail.com>
- <CACsxjPYyJGQZ+yvjzxA1Nn2LuqkYqTCcUH43S=+wXhyf8S00Ag@mail.gmail.com>
- <d13c2454-b642-2db7-371e-b669fdf24279@gmx.com>
-In-Reply-To: <d13c2454-b642-2db7-371e-b669fdf24279@gmx.com>
+        with ESMTP id S229437AbjAAFGc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Jan 2023 00:06:32 -0500
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4254F3E
+        for <linux-btrfs@vger.kernel.org>; Sat, 31 Dec 2022 21:06:30 -0800 (PST)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.fidei.email (Postfix) with ESMTPSA id 0EAA1825A0;
+        Sun,  1 Jan 2023 00:06:28 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1672549589; bh=7Z0n+lFZJ0cQ7ScJPY/gXwd/cu6vONFHiuY46IxiCoA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ve7ufvq+vx8kNLpPUHV76N3CMSYABmdBf4ts7dfqjR4aCEX9PzMfE8CLJUiqB9cov
+         mPa8n76IbESQ5OXjpADTAekIsfd3A6VVvRvauCb4C/zAp64wmIxWuR0mKwxYQudzVI
+         zwijm4xB/7cMRAGa9swyMNNVkFc0HUZW3IMWsEcA1kbSa3BW8KhWQDHA3NjvqYqL6y
+         Fnw+Ds7Jfc1hwZcsQqdGDvhTjPTrj1nftSCvBAoiPHp42zLzPVQ4kNP2rBepI2zFr4
+         bwyH9nBKYEAq058hDBBemW9TGojyJlGU/D3R/m5HRVxbgfYG/B1OgjJixh1ywsLY56
+         MWOgZAMm+5mSg==
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To:     linux-fscrypt@vger.kernel.org, ebiggers@kernel.org,
+        paulcrowley@google.com, linux-btrfs@vger.kernel.org,
+        kernel-team@meta.com
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH 00/17] fscrypt: add per-extent encryption keys
+Date:   Sun,  1 Jan 2023 00:06:04 -0500
+Message-Id: <cover.1672547582.git.sweettea-kernel@dorminy.me>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> Weirdly, the dmesg is not showing devid 1 missing, in fact, it still
-> shows the devices is there, just tons of IO errors (ata4, sd 3:0:0:0)
+Last month, after a discussion of using fscrypt in btrfs, several
+potential areas for expansion of fscrypt functionality were identified:
+specifically, per-extent keys, authenticated encryption, and 'rekeying'
+a directory tree [1]. These additions will permit btrfs to have better
+cryptographic characteristics than previous attempts at expanding btrfs
+to use fscrypt.
 
-> If you initially removed the hard disk completely, btrfs then can handle
-> it well.
-> (Sure, this is a bug in btrfs and we should be able to fix it).
+This attempts to implement the first of these, per-extent keys (in
+analogy to the current per-inode keys) in fscrypt. For a filesystem
+using per-extent keys, the idea is that each regular file inode is
+linked to its parent directory's fscrypt_info, while each extent in
+the filesystem -- opaque to fscrypt -- stores a fscrypt_info providing
+the key for the data in that extent. For non-regular files, the inode
+has its own fscrypt_info as in current ("inode-based") fscrypt.  
 
-I did completely remove the drive. In fact, I used the very same SATA port for
-the replacement drive. See my dmesg lines:
+IV generation methods using logical block numbers use the logical block
+number within the extent, and for IV generation methods using inode
+numbers, such filesystems may optionally implement a method providing an
+equivalent on a per-extent basis. 
 
-> [1744757.386462] ata4: SATA link down (SStatus 0 SControl 300)
-> [1744762.810285] ata4: SATA link down (SStatus 0 SControl 300)
-> [1744768.190059] ata4: SATA link down (SStatus 0 SControl 300)
-> [1744768.190072] ata4.00: disable device
-> [1744768.190097] ata4.00: detaching (SCSI 3:0:0:0)
-> [1744768.295895] sd 3:0:0:0: [sda] Stopping disk
-> [1744768.295913] sd 3:0:0:0: [sda] Start/Stop Unit failed: Result: hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK
-> ...
-> [1745523.320657] ata4: found unknown device (class 0)
-> [1745527.965324] ata4: softreset failed (1st FIS failed)
-> [1745533.288241] ata4: found unknown device (class 0)
-> [1745533.452246] ata4: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
-> [1745533.453025] ata4.00: ATA-9: MB2000ECWCR, HPG4, max UDMA/133
-> [1745533.453306] ata4.00: 3907029168 sectors, multi 0: LBA48 NCQ (depth 32), AA
-> [1745533.454136] ata4.00: configured for UDMA/133
-> [1745533.464339] scsi 3:0:0:0: Direct-Access     ATA      MB2000ECWCR      HPG4 PQ: 0 ANSI: 5
-> [1745533.464556] sd 3:0:0:0: Attached scsi generic sg3 type 0
-> [1745533.464652] sd 3:0:0:0: [sdd] 3907029168 512-byte logical blocks: (2.00 TB/1.82 TiB)
-> [1745533.464667] sd 3:0:0:0: [sdd] Write Protect is off
-> [1745533.464671] sd 3:0:0:0: [sdd] Mode Sense: 00 3a 00 00
-> [1745533.464684] sd 3:0:0:0: [sdd] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
-> [1745533.464700] sd 3:0:0:0: [sdd] Preferred minimum I/O size 512 bytes
-> [1745533.492586] sd 3:0:0:0: [sdd] Attached SCSI disk
+Known limitations: change 12 ("fscrypt: notify per-extent infos if
+master key vanishes") does not sufficiently argue that there cannot be a
+race between freeing a master key and using it for some pending extent IO.
+Change 16 ("fscrypt: disable inline encryption for extent-based
+encryption") merely disables inline encryption, when it should implement
+generating appropriate inline encryption info for extent infos.
 
-I also verified that the device file /dev/sda was also gone at the time (despite
-"btrfs fi show" thinking it still exists).
-Maybe there's some other bug where the kernel still thinks the drive exists, even
-though it was disconnected?
+This has not been thoroughly tested against a btrfs implementation of
+the interfaces -- I've thrown out everything here and tried something
+new several times, and while I think this interface is a decent one, I
+would like to get input on it in parallel with finishing the btrfs side
+of this part, and the other elements of the design mentioned in [1]
+
+[1] https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
+
+*** BLURB HERE ***
+
+Sweet Tea Dorminy (17):
+  fscrypt: factor accessing inode->i_crypt_info
+  fscrypt: separate getting info for a specific block
+  fscrypt: adjust effective lblks based on extents
+  fscrypt: factor out fscrypt_set_inode_info()
+  fscrypt: use parent dir's info for extent-based encryption.
+  fscrypt: add a super_block pointer to fscrypt_info
+  fscrypt: update comments about inodes to include extents
+  fscrypt: rename mk->mk_decrypted_inodes*
+  fscrypt: make fscrypt_setup_encryption_info generic for extents
+  fscrypt: let fscrypt_infos be owned by an extent
+  fscrypt: update all the *per_file_* function names
+  fscrypt: notify per-extent infos if master key vanishes
+  fscrypt: use an optional ino equivalent for per-extent infos
+  fscrypt: add creation/usage/freeing of per-extent infos
+  fscrypt: allow load/save of extent contexts
+  fscrypt: disable inline encryption for extent-based encryption
+  fscrypt: update documentation to mention per-extent keys.
+
+ Documentation/filesystems/fscrypt.rst |  38 +++-
+ fs/crypto/crypto.c                    |  17 +-
+ fs/crypto/fname.c                     |   9 +-
+ fs/crypto/fscrypt_private.h           | 174 +++++++++++++----
+ fs/crypto/hooks.c                     |   2 +-
+ fs/crypto/inline_crypt.c              |  42 ++--
+ fs/crypto/keyring.c                   |  67 ++++---
+ fs/crypto/keysetup.c                  | 263 ++++++++++++++++++++------
+ fs/crypto/keysetup_v1.c               |  24 +--
+ fs/crypto/policy.c                    |  28 ++-
+ include/linux/fscrypt.h               |  76 ++++++++
+ 11 files changed, 580 insertions(+), 160 deletions(-)
+
+
+base-commit: b7af0635c87ff78d6bd523298ab7471f9ffd3ce5
+-- 
+2.38.1
+
