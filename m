@@ -2,116 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB9B65BFAE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jan 2023 13:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE49065C0F4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jan 2023 14:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237425AbjACMMO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Jan 2023 07:12:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
+        id S237736AbjACNhS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Jan 2023 08:37:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237343AbjACMMN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Jan 2023 07:12:13 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306B61005
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Jan 2023 04:12:12 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E0DF166FE2;
-        Tue,  3 Jan 2023 12:12:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1672747930;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hJ45+G9M6cL/4rEkiZ9Qu2hiLVm/mKCXjnEXPAlld7I=;
-        b=NU8NL33Vqb///wYdVZ9zZRRz5h6m6zmKMTaxKFzSLWQX5zxzO0TjF4vBE0odws35+N9VCv
-        WUEwenZf1zkA5Vzlzw82DKvodSEKCujcXvJArhEM1vf9+jweG+9J/zUygIRrBjdhP8qB5N
-        54hRO+3WVRSKdyEwYTkQA2053+9aXWg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1672747930;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hJ45+G9M6cL/4rEkiZ9Qu2hiLVm/mKCXjnEXPAlld7I=;
-        b=0O4JImoz/7mU+PYN1G8DdKxj3XAqcT/YIdaw+gaPM0z7fDwtCSEG3OwB5Rb4cWLMV2aF5r
-        pbvQ0kAMC/ZJCmDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A6A0A1392B;
-        Tue,  3 Jan 2023 12:12:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id eUekJ5obtGOxfAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 03 Jan 2023 12:12:10 +0000
-Date:   Tue, 3 Jan 2023 13:06:40 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Neal Gompa <ngompa@fedoraproject.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
-Subject: Re: btrfs-progs 6.1 broke the build for multiple applications
-Message-ID: <20230103120640.GO11562@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <CAEg-Je8L7jieKdoWoZBuBZ6RdXwvwrx04AB0fOZF1fr5Pb-o1g@mail.gmail.com>
- <20230103113941.GN11562@twin.jikos.cz>
- <22447f37-50fa-3914-a817-e95b66797944@gmx.com>
+        with ESMTP id S237564AbjACNhD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Jan 2023 08:37:03 -0500
+Received: from mail.tethers.com (mail.tethers.com [50.205.100.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C157010072
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 Jan 2023 05:37:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; d=tethers.com; s=s2; c=simple/simple;
+        t=1672753019; h=from:subject:to:date:message-id;
+        bh=ChdALx+FTao+2gEK6XnS9OOUKGdyVbCYEbSe2q2I5EE=;
+        b=MQvzdjveiZjUtAdM90+DAVU/C88QXxCZAsqMBicuQqvxl8Nu6khkvgBuNfj5u86BtzqzsiUA86M
+        1M1tkNrqE0WUE7QyewkP4Tbol+9oFXKKXJeU/ZVODf31tnhj6zwjo9Uh1xC+MIJ1771qzRrB0PUR2
+        PtOh4qvi9n+zLywOSGL99vkNi0iwyw7QRiXFrsAFRRX/7ENje7+ORAkGXVJfUxDIV8X8y4jzjlqGn
+        YxJgogB8ZcdjBOcJORg73/xSWZ1Ke1CEwN1IfItPeMIT3/HmORC7NzXeU2bUtRQS3Pi9AZm7nYSg5
+        mzz4aMRMP1bvZX8vAj2OvsiJxBhJskGRvmoA==
+Received: from Exchange2019.secure.tethers.com (172.23.48.153) by
+ exchange2019.secure.tethers.com (172.23.48.153) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.20; Tue, 3 Jan 2023 05:36:59 -0800
+Received: from Exchange2019.secure.tethers.com ([fe80::ffb3:a1ad:8f70:8ff3])
+ by EXCHANGE2019.secure.tethers.com ([fe80::ffb3:a1ad:8f70:8ff3%14]) with mapi
+ id 15.02.1118.020; Tue, 3 Jan 2023 05:36:58 -0800
+From:   Sam Winchenbach <swichenbach@tethers.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        =?utf-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
+CC:     "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+        Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: RE: Possible bug in BTRFS w/ Duplication
+Thread-Topic: Possible bug in BTRFS w/ Duplication
+Thread-Index: Adka+vuz/Z7NK3MJQMCy/azwMbd3OAA17N0AABSI1QAAD5epIAAjCAiAAKH+2tA=
+Date:   Tue, 3 Jan 2023 13:36:58 +0000
+Message-ID: <55b0ea5b3ad74d79a6ab67ffe99f4d73@tethers.com>
+References: <62218a2a5a274ada96f97f7ac4e151ef@tethers.com>
+ <bc82fc52-18b8-1205-5509-6fcd24529bea@gmx.de>
+ <58f08b77-f8cc-c2f8-a1ec-135ce48fbd8e@gmx.com>
+ <642db528742c47d79ee0314db67a1bed@tethers.com>
+ <9aefd92a-2198-fe96-078e-0b9ccc84c630@gmx.com>
+In-Reply-To: <9aefd92a-2198-fe96-078e-0b9ccc84c630@gmx.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [72.224.69.22]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <22447f37-50fa-3914-a817-e95b66797944@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 03, 2023 at 08:02:27PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2023/1/3 19:39, David Sterba wrote:
-> > On Mon, Jan 02, 2023 at 07:11:57PM -0500, Neal Gompa wrote:
-> >> Hey all,
-> >>
-> >> It looks like btrfs-progs v6.1 broke the build for multiple
-> >> applications in Fedora.
-> >>
-> >> Notably, it broke:
-> >>
-> >> * btrfs-assistant
-> >> * buildah
-> >> * cri-o
-> >> * podman
-> >> * skopeo
-> >> * containerd
-> >> * moby/docker
-> >> * snapper
-> >> * source-to-image
-> >>
-> >> The bug report is here: https://bugzilla.redhat.com/2157606
-> >>
-> >> It looks like this change broke everything:
-> >> https://github.com/kdave/btrfs-progs/commit/03451430de7cd2fad18b0f01745545758bc975a5
-> > 
-> > On no that's bad, I'm going to do a bugfix release today.
-> 
-> I'm a little confused, why would those projects relying on the ioctl.h 
-> from progs?
-
-Because they're probably using the legacy libbtrfs and headers from
-/usr/bin/btrfs/*.h, it'll take time before all could be switched to
-libbtrfsutil.
-
-> Shouldn't those things got exported through kernel uapi?
-
-The kernel UAPI reflects what the installed and possibly running kernel
-API is providing, interfaces that can be used at run time. But the build
-can be against any newer version even with functionality not implemented
-by the kernel. Think LTS stable releases vs updated btrfs-progs.
+VGhhdCBpcyBjb3JyZWN0LiBUaGlzIGJ1ZyBpcyBwcmVzZW50IG9uIGEgc2luZ2xlIGRldmljZSB3
+aXRoIGR1cGxpY2F0aW9uIGVuYWJsZWQuIA0KDQpIZXJlLCBpbiBfX2J0cmZzX21hcF9ibG9jayB0
+aGUgcmVhZCBsZW5ndGggY2FuIGJlIHJlZHVjZWQgdG8gdGhlIHN0cmlwZSBsZW5ndGggd2hlbiBk
+dXBsaWNhdGlvbiBpcyBlbmFibGVkLg0KDQoJaWYgKG1hcC0+dHlwZSAmIChCVFJGU19CTE9DS19H
+Uk9VUF9SQUlEMCB8IEJUUkZTX0JMT0NLX0dST1VQX1JBSUQxIHwNCgkJCSBCVFJGU19CTE9DS19H
+Uk9VUF9SQUlEMUMzIHwgQlRSRlNfQkxPQ0tfR1JPVVBfUkFJRDFDNCB8DQoJCQkgQlRSRlNfQkxP
+Q0tfR1JPVVBfUkFJRDUgfCBCVFJGU19CTE9DS19HUk9VUF9SQUlENiB8DQoJCQkgQlRSRlNfQkxP
+Q0tfR1JPVVBfUkFJRDEwIHwNCgkJCSBCVFJGU19CTE9DS19HUk9VUF9EVVApKSB7DQoJCS8qIHdl
+IGxpbWl0IHRoZSBsZW5ndGggb2YgZWFjaCBiaW8gdG8gd2hhdCBmaXRzIGluIGEgc3RyaXBlICov
+DQoJCSpsZW5ndGggPSBtaW5fdCh1NjQsIGNlLT5zaXplIC0gb2Zmc2V0LA0KCQkJICAgICAgbWFw
+LT5zdHJpcGVfbGVuIC0gc3RyaXBlX29mZnNldCk7DQoJfSBlbHNlIHsNCgkJKmxlbmd0aCA9IGNl
+LT5zaXplIC0gb2Zmc2V0Ow0KCX0NCg0KcmVhZF9leHRlbnRfZGF0YSBmYWlscyB0byByZWFkIHRo
+ZSBjb21wbGV0ZSBsZW5ndGguIEkgaW1wbGVtZW50ZWQgYSBwYXRjaCBzaW1pbGFyIHRvIHlvdXJz
+IGFuZCBpdCB3b3JrZWQgcGVyZmVjdGx5LiAgSSBhbSBhIGxpdHRsZSBzYWQgeW91IGJlYXQgbWUg
+dG8gc3VibWl0dGluZyBpdC4NCg0KDQpUaGFua3MsDQpTYW0gV2luY2hlbmJhY2gNCg0KLS0tLS1P
+cmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214
+LmNvbT4gDQpTZW50OiBGcmlkYXksIERlY2VtYmVyIDMwLCAyMDIyIDc6MTAgUE0NClRvOiBTYW0g
+V2luY2hlbmJhY2ggPHN3aWNoZW5iYWNoQHRldGhlcnMuY29tPjsgSGVpbnJpY2ggU2NodWNoYXJk
+dCA8eHlwcm9uLmdscGtAZ214LmRlPjsgTWFyZWsgQmVow7puIDxrYWJlbEBrZXJuZWwub3JnPg0K
+Q2M6IHUtYm9vdEBsaXN0cy5kZW54LmRlOyBRdSBXZW5ydW8gPHdxdUBzdXNlLmNvbT47IGxpbnV4
+LWJ0cmZzQHZnZXIua2VybmVsLm9yZw0KU3ViamVjdDogUmU6IFBvc3NpYmxlIGJ1ZyBpbiBCVFJG
+UyB3LyBEdXBsaWNhdGlvbg0KDQoNCg0KT24gMjAyMi8xMi8zMCAyMzoyOCwgU2FtIFdpbmNoZW5i
+YWNoIHdyb3RlOg0KPiBJIGJlbGlldmUgeW91IGZpeGVkIHRoZSBpc3N1ZSB3aXRoIHRoZSBwYXRj
+aCB5b3UgcHJlc2VudGVkLiBJIHdhcyBpbiB0aGUgcHJvY2VzcyBvZiB0ZXN0aW5nIGEgc2ltaWxh
+ciBmaXggZm9yIHJlbGVhc2UgYW5kIGl0IHNvbHZlZCB0aGUgaXNzdWUgSSBlbmNvdW50ZXJlZC4N
+Cg0KQnV0IEkgc3RpbGwgd2FudCB0byBtYWtlIHN1cmUgdGhhdCBvbmx5IFJBSUQwIG9uIHNpbmds
+ZSBkZXZpY2UgY2FuIGNhdXNlIHRoZSBwcm9ibGVtLg0KDQpGb3IgbXVsdGktZGV2aWNlIFJBSUQw
+L1JBSUQxMC9SQUlENS82LCB3ZSBkb24ndCBzdXBwb3J0IHRoZW0gdW50aWwgd2UgY2FuIHNjYW4g
+YWxsIGRldmljZXMgaW4gVS1ib290Li4uDQoNClRoYW5rcywNClF1DQo+IA0KPiBUaGFua3MsDQo+
+IFNhbSBXaW5jaGVuYmFjaA0KPiANCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJv
+bTogVS1Cb290IDx1LWJvb3QtYm91bmNlc0BsaXN0cy5kZW54LmRlPiBPbiBCZWhhbGYgT2YgUXUg
+V2VucnVvDQo+IFNlbnQ6IFRodXJzZGF5LCBEZWNlbWJlciAyOSwgMjAyMiA3OjAxIFBNDQo+IFRv
+OiBIZWlucmljaCBTY2h1Y2hhcmR0IDx4eXByb24uZ2xwa0BnbXguZGU+OyBTYW0gV2luY2hlbmJh
+Y2ggDQo+IDxzd2ljaGVuYmFjaEB0ZXRoZXJzLmNvbT47IE1hcmVrIEJlaMO6biA8a2FiZWxAa2Vy
+bmVsLm9yZz4NCj4gQ2M6IHUtYm9vdEBsaXN0cy5kZW54LmRlOyBRdSBXZW5ydW8gPHdxdUBzdXNl
+LmNvbT47IA0KPiBsaW51eC1idHJmc0B2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFBv
+c3NpYmxlIGJ1ZyBpbiBCVFJGUyB3LyBEdXBsaWNhdGlvbg0KPiANCj4gDQo+IA0KPiBPbiAyMDIy
+LzEyLzI5IDIyOjEyLCBIZWlucmljaCBTY2h1Y2hhcmR0IHdyb3RlOg0KPj4gT24gMTIvMjgvMjIg
+MjE6NTEsIFNhbSBXaW5jaGVuYmFjaCB3cm90ZToNCj4+PiBIZWxsbywNCj4+Pg0KPj4+IEhlbGxv
+LCBJIGhhdmUgaGl0IHRoZSBmb2xsb3dpbmcgc2l0dWF0aW9uIHdoZW4gdHJ5aW5nIHRvIGxvYWQg
+ZmlsZXMgDQo+Pj4gZnJvbSBhIEJUUkZTIHBhcnRpdGlvbiB3aXRoIGR1cGxpY2F0aW9uIGVuYWJs
+ZWQuDQo+IA0KPiBZb3UgbWVhbiBtdWx0aS1kZXZpY2U/DQo+IA0KPiBGb3IgRFVQL1JBSUQxIGR1
+cGxpY2F0aW9uLCB0aGV5IGRvbid0IGhhdmUgc3RyaXBlIGxpbWl0YXRpb24gYXQgYWxsLg0KPiAN
+Cj4gVGh1cyBJIGJlbGlldmUgeW91J3JlIHRhbGtpbmcgYWJvdXQgUkFJRDAgKHdoaWNoIGRvZXNu
+J3QgaGF2ZSBhbnkgZHVwbGljYXRpb24vZXh0cmEgbWlycm9ycykgb3IgUkFJRDEwIG9yIFJBSUQ1
+LzY/DQo+IA0KPiBCdXQgZm9yIG5vdywgd2UgZG9uJ3Qgc3VwcG9ydCBtdWx0aS1kZXZpY2UgaW4g
+VS1ib290IHlldCwgdGh1cyBJJ20gbm90IHN1cmUgd2hhdCBzaXR1YXRpb24geW91J3JlIHRhbGtp
+bmcgYWJvdXQuDQo+IA0KPiBNaW5kIHRvIHJ1biB0aGUgZm9sbG93aW5nIGNvbW1hbmQ/DQo+IA0K
+PiAgICAjIGJ0cmZzIGZpIHVzYWdlIDxtbnQgb2YgdGhlIGJ0cmZzPg0KPiANCj4+Pg0KPj4+IElu
+IHRoZSBmaXJzdCBleGFtcGxlIEkgcmVhZCBhIDE2S2lCIGZpbGUgLSBfX2J0cmZzX21hcF9ibG9j
+aygpIA0KPj4+IGNoYW5nZXMgdGhlIGxlbmd0aCB0byBzb21ldGhpbmcgbGFyZ2VyIHRoYW4gdGhl
+IGZpbGUgYmVpbmcgcmVhZC4gDQo+Pj4gVGhpcyB3b3JrcyBmaW5lLCBhcyBsZW5ndGggaXMgbGF0
+ZXIgY2xhbXBlZCB0byB0aGUgZmlsZSBzaXplLg0KPj4+DQo+Pj4gSW4gdGhlIHNlY29uZCBleGFt
+cGxlLCBfX2J0cmZzX21hcF9ibG9jaygpIGNoYW5nZXMgdGhlIGxlbmd0aCANCj4+PiBwYXJhbWV0
+ZXIgdG8gc29tZXRoaW5nIHNtYWxsZXIgdGhhbiB0aGUgZmlsZSAodGhlIHNpemUgb2YgYSBzdHJp
+cGUpLg0KPj4+IFRoaXMgc2VlbXMgdG8gYnJlYWsgdGhpcyBjaGVjayBoZXJlOg0KPj4+DQo+Pj4g
+IMKgwqDCoMKgIHJlYWQgPSBsZW47DQo+Pj4gIMKgwqDCoMKgIG51bV9jb3BpZXMgPSBidHJmc19u
+dW1fY29waWVzKGZzX2luZm8sIGxvZ2ljYWwsIGxlbik7DQo+Pj4gIMKgwqDCoMKgIGZvciAoaSA9
+IDE7IGkgPD0gbnVtX2NvcGllczsgaSsrKSB7DQo+Pj4gIMKgwqDCoMKgwqDCoMKgwqAgcmV0ID0g
+cmVhZF9leHRlbnRfZGF0YShmc19pbmZvLCBkZXN0LCBsb2dpY2FsLCAmcmVhZCwgaSk7DQo+Pj4g
+IMKgwqDCoMKgwqDCoMKgwqAgaWYgKHJldCA8IDAgfHwgcmVhZCAhPSBsZW4pIHsNCj4+PiAgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbnRpbnVlOw0KPj4+ICDCoMKgwqDCoMKgwqDCoMKgIH0N
+Cj4+PiAgwqDCoMKgwqDCoMKgwqDCoCBmaW5pc2hlZCA9IHRydWU7DQo+Pj4gIMKgwqDCoMKgwqDC
+oMKgwqAgYnJlYWs7DQo+Pj4gIMKgwqDCoMKgIH0NCj4+Pg0KPj4+IFRoZSBwcm9ibGVtIGJlaW5n
+IHRoYXQgcmVhZCBpcyBhbHdheXMgbGVzcyB0aGFuIGxlbi4NCj4+Pg0KPj4+IEkgYW0gbm90IHN1
+cmUgaWYgX19idHJmc19tYXBfYmxvY2sgaXMgY2hhbmdpbmcgImxlbiIgdG8gdGhlIA0KPj4+IGlu
+Y29ycmVjdCB2YWx1ZSwgb3IgaWYgdGhlcmUgaXMgc29tZSBsb2dpYyBpbiAicmVhZF9leHRlbnRf
+ZGF0YSIgDQo+Pj4gdGhhdCBpc24ndCBjb3JyZWN0LiBBbnkgcG9pbnRlcnMgb24gaG93IHRoaXMg
+Y29kZSBpcyBzdXBwb3NlZCB0byANCj4+PiB3b3JrIHdvdWxkIGJlIGdyZWF0bHkgYXBwcmVjaWF0
+ZWQuDQo+Pj4gVGhhbmtzLg0KPj4NCj4+IFRoYW5rcyBmb3IgcmVwb3J0aW5nIHRoZSBpc3N1ZQ0K
+Pj4NCj4+ICQgc2NyaXB0cy9nZXRfbWFpbnRhaW5lci5wbCAtZiBmcy9idHJmcy92b2x1bWVzLmMN
+Cj4+DQo+PiBzdWdnZXN0cyB0byBpbmNsdWRlDQo+Pg0KPj4gIk1hcmVrIEJlaMO6biIgPGthYmVs
+QGtlcm5lbC5vcmc+IChtYWludGFpbmVyOkJUUkZTKSBRdSBXZW5ydW8gDQo+PiA8d3F1QHN1c2Uu
+Y29tPiAocmV2aWV3ZXI6QlRSRlMpIGxpbnV4LWJ0cmZzQHZnZXIua2VybmVsLm9yZw0KPj4NCj4+
+IHRvIHRoZSBjb21tdW5pY2F0aW9uLg0KPj4NCj4+IEJlc3QgcmVnYXJkcw0KPj4NCj4+IEhlaW5y
+aWNoDQo+Pg0KPj4+DQo+Pj4gPT09IEVYQU1QTEUgMiA9PT0NCj4+PiBaeW5xPiBsb2FkIG1tYyAx
+OjAgMCAxNksNCj4+PiBbYnRyZnNfZmlsZV9yZWFkLGZzL2J0cmZzL2lub2RlLmM6NzEwXSA9PT0g
+cmVhZCB0aGUgYWxpZ25lZCBwYXJ0ID09PSANCj4+PiBbYnRyZnNfcmVhZF9leHRlbnRfcmVnLGZz
+L2J0cmZzL2lub2RlLmM6NDU4XSBiZWZvcmUgcmVhZF9leHRlbnRfZGF0YSANCj4+PiAocmV0ID0g
+MCwgcmVhZCA9IDE2Mzg0LCBsZW4gPSAxNjM4NCkgDQo+Pj4gW3JlYWRfZXh0ZW50X2RhdGEsZnMv
+YnRyZnMvZGlzay1pby5jOjU0N10gYmVmb3JlIF9fYnRyZnNfbWFwX2Jsb2NrIA0KPj4+IChsZW4g
+PSAxNjM4NCkgW3JlYWRfZXh0ZW50X2RhdGEsZnMvYnRyZnMvZGlzay1pby5jOjU1MF0gYWZ0ZXIg
+DQo+Pj4gX19idHJmc19tYXBfYmxvY2sgKGxlbiA9IDI4NjcyKSANCj4+PiBbcmVhZF9leHRlbnRf
+ZGF0YSxmcy9idHJmcy9kaXNrLWlvLmM6NTY1XSBiZWZvcmUgX19idHJmc19kZXZyZWFkIA0KPj4+
+IChsZW4gPSAxNjM4NCkgW3JlYWRfZXh0ZW50X2RhdGEsZnMvYnRyZnMvZGlzay1pby5jOjU2OF0g
+YWZ0ZXIgDQo+Pj4gX19idHJmc19kZXZyZWFkIChsZW4gPQ0KPj4+IDE2Mzg0KQ0KPj4+IFtidHJm
+c19yZWFkX2V4dGVudF9yZWcsZnMvYnRyZnMvaW5vZGUuYzo0NjBdIGFmdGVyIHJlYWRfZXh0ZW50
+X2RhdGEgDQo+Pj4gKHJldCA9IDAsIHJlYWQgPSAxNjM4NCwgbGVuID0gMTYzODQpDQo+Pj4gY3Vy
+OiAwLCBleHRlbnRfbnVtX2J5dGVzOiAxNjM4NCwgYWxpZ25lZF9lbmQ6IDE2Mzg0DQo+Pj4gMTYz
+ODQgYnl0ZXMgcmVhZCBpbiAxMDAgbXMgKDE1OS4yIEtpQi9zKQ0KPj4+DQo+Pj4gPT09IEVYQU1Q
+TEUgMiA9PT0NCj4+PiBaeW5xPiBsb2FkIG1tYyAxOjAgMCAzMksNCj4+PiBbYnRyZnNfZmlsZV9y
+ZWFkLGZzL2J0cmZzL2lub2RlLmM6NzEwXSA9PT0gcmVhZCB0aGUgYWxpZ25lZCBwYXJ0ID09PSAN
+Cj4+PiBbYnRyZnNfcmVhZF9leHRlbnRfcmVnLGZzL2J0cmZzL2lub2RlLmM6NDU4XSBiZWZvcmUg
+cmVhZF9leHRlbnRfZGF0YSANCj4+PiAocmV0ID0gMCwgcmVhZCA9IDMyNzY4LCBsZW4gPSAzMjc2
+OCkgDQo+Pj4gW3JlYWRfZXh0ZW50X2RhdGEsZnMvYnRyZnMvZGlzay1pby5jOjU0N10gYmVmb3Jl
+IF9fYnRyZnNfbWFwX2Jsb2NrIA0KPj4+IChsZW4gPSAzMjc2OCkgW3JlYWRfZXh0ZW50X2RhdGEs
+ZnMvYnRyZnMvZGlzay1pby5jOjU1MF0gYWZ0ZXIgDQo+Pj4gX19idHJmc19tYXBfYmxvY2sgKGxl
+biA9IDEyMjg4KSANCj4+PiBbcmVhZF9leHRlbnRfZGF0YSxmcy9idHJmcy9kaXNrLWlvLmM6NTY1
+XSBiZWZvcmUgX19idHJmc19kZXZyZWFkIA0KPj4+IChsZW4gPSAxMjI4OCkgW3JlYWRfZXh0ZW50
+X2RhdGEsZnMvYnRyZnMvZGlzay1pby5jOjU2OF0gYWZ0ZXIgDQo+Pj4gX19idHJmc19kZXZyZWFk
+IChsZW4gPQ0KPj4+IDEyMjg4KQ0KPiANCj4gU28gdGhlIGZpcnN0IDMgc2VjdG9ycyBhcmUgYmVm
+b3JlIHRoZSBzdHJpcGUgYm91bmRhcnkgYW5kIHdlIHJlYWQgaXQgY29ycmVjdGx5Lg0KPiANCj4+
+PiBbYnRyZnNfcmVhZF9leHRlbnRfcmVnLGZzL2J0cmZzL2lub2RlLmM6NDYwXSBhZnRlciByZWFk
+X2V4dGVudF9kYXRhIA0KPj4+IChyZXQgPSAwLCByZWFkID0gMTIyODgsIGxlbiA9IDMyNzY4KSAN
+Cj4+PiBbYnRyZnNfcmVhZF9leHRlbnRfcmVnLGZzL2J0cmZzL2lub2RlLmM6NDU4XSBiZWZvcmUg
+cmVhZF9leHRlbnRfZGF0YSANCj4+PiAocmV0ID0gMCwgcmVhZCA9IDEyMjg4LCBsZW4gPSAzMjc2
+OCkgDQo+Pj4gW3JlYWRfZXh0ZW50X2RhdGEsZnMvYnRyZnMvZGlzay1pby5jOjU0N10gYmVmb3Jl
+IF9fYnRyZnNfbWFwX2Jsb2NrIA0KPj4+IChsZW4gPSAxMjI4OCkgW3JlYWRfZXh0ZW50X2RhdGEs
+ZnMvYnRyZnMvZGlzay1pby5jOjU1MF0gYWZ0ZXIgDQo+Pj4gX19idHJmc19tYXBfYmxvY2sgKGxl
+biA9IDEyMjg4KQ0KPiANCj4gSSBiZWxpZXZlIHRoaXMgaXMgdGhlIHByb2JsZW0uDQo+IA0KPiBJ
+ZiB3ZSdyZSByZWFkaW5nIHRoZSBmdWxsIDMySywgYW5kIHRoZSBmaXJzdCAxMksgaXMgaW4gdGhl
+IGZpcnN0IHN0cmlwZSwgd2Ugc2hvdWxkIHRoZW4gdHJ5IHRvIG1hcCB0aGUgcmVtYWluaW5nIDIw
+Sywgbm90IHRoZSAxMksgYWdhaW4uDQo+IA0KPiBJJ2xsIGxvb2sgaW50byB0aGUgc2l0dWF0aW9u
+Lg0KPiBCdXQgaWYgeW91IGNhbiBwcm92aWRlIHRoZSBpbWFnZSBvciB0aGUgZHVtcCwgaXQgY2Fu
+IGdyZWF0bHkgaGVscCB0aGUgZGVidWdnaW5nLg0KPiANCj4gVGhhbmtzLA0KPiBRdQ0KPiANCj4+
+PiBbcmVhZF9leHRlbnRfZGF0YSxmcy9idHJmcy9kaXNrLWlvLmM6NTY1XSBiZWZvcmUgX19idHJm
+c19kZXZyZWFkIA0KPj4+IChsZW4gPSAxMjI4OCkgW3JlYWRfZXh0ZW50X2RhdGEsZnMvYnRyZnMv
+ZGlzay1pby5jOjU2OF0gYWZ0ZXIgDQo+Pj4gX19idHJmc19kZXZyZWFkIChsZW4gPQ0KPj4+IDEy
+Mjg4KQ0KPj4+IFtidHJmc19yZWFkX2V4dGVudF9yZWcsZnMvYnRyZnMvaW5vZGUuYzo0NjBdIGFm
+dGVyIHJlYWRfZXh0ZW50X2RhdGEgDQo+Pj4gKHJldCA9IDAsIHJlYWQgPSAxMjI4OCwgbGVuID0g
+MzI3NjgpDQo+Pj4gZmlsZTogZnMvYnRyZnMvaW5vZGUuYywgbGluZTogNDY4DQo+Pj4gY3VyOiAw
+LCBleHRlbnRfbnVtX2J5dGVzOiAzMjc2OCwgYWxpZ25lZF9lbmQ6IDMyNzY4DQo+Pj4gLS0tLS0+
+IGJ0cmZzX3JlYWRfZXh0ZW50X3JlZzogLTUsIGxpbmU6IDc1OA0KPj4+IEJUUkZTOiBBbiBlcnJv
+ciBvY2N1cnJlZCB3aGlsZSByZWFkaW5nIGZpbGUgMzJLIEZhaWxlZCB0byBsb2FkICczMksnDQo+
+Pj4NCj4+Pg0KPj4+DQo+Pj4NCj4+Pg0KPj4+IFNhbSBXaW5jaGVuYmFjaA0KPj4+IEVtYmVkZGVk
+IFNvZnR3YXJlIEVuZ2luZWVyIElJSQ0KPj4+IFRldGhlcnMgVW5saW1pdGVkLCBJbmMuIHwgQ29u
+bmVjdCBZb3VyIFVuaXZlcnNlIHwgd3d3LnRldGhlcnMuY29tIA0KPj4+IHN3aW5jaGVuYmFjaEB0
+ZXRoZXJzLmNvbSB8IEM6IDIwNy05NzQtNjkzNA0KPj4+IDExNzExIE5vcnRoIENyZWVrIFBrd3kg
+IyBEMTEzLCBCb3RoZWxsLCBXQSA5ODAxMS04ODA4LCBVU0ENCj4+DQo=
