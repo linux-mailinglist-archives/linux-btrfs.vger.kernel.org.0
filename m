@@ -2,60 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F036865BC85
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jan 2023 09:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEFB65BC8C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jan 2023 09:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237077AbjACIza (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Jan 2023 03:55:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        id S237111AbjACI5V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Jan 2023 03:57:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjACIz3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Jan 2023 03:55:29 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEB46392
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Jan 2023 00:55:27 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MfpOT-1oapLj3L5d-00gF8P; Tue, 03
- Jan 2023 09:55:19 +0100
-Message-ID: <85b489b6-565b-ddd3-f527-3f63054d7ee3@gmx.com>
-Date:   Tue, 3 Jan 2023 16:55:12 +0800
+        with ESMTP id S236957AbjACI5O (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Jan 2023 03:57:14 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5503A2C6
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 Jan 2023 00:57:11 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M5wLZ-1p9c9o3wx1-007Vzx; Tue, 03
+ Jan 2023 09:57:00 +0100
+Message-ID: <076b7842-bdc9-4b8c-16d4-128ff0304e49@gmx.com>
+Date:   Tue, 3 Jan 2023 16:56:55 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
 Subject: Re: [PATCH] btrfs: don't trigger BUG_ON() when repair happens with
  dev-replace
 Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+To:     Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz
+Cc:     Wang Yugui <wangyugui@e16-tech.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-Cc:     =?UTF-8?B?5bCP5aSq?= <nospam@kota.moe>
 References: <e6bd27828dfa486ff27e39db13b662e06d71ec74.1672534935.git.wqu@suse.com>
- <4a708562-b91f-636b-f8ae-388ab2c14859@oracle.com>
+ <20230102112600.8869.409509F4@e16-tech.com>
+ <8fcf8963-7077-21dd-2b87-976014533c7c@gmx.com>
+ <20230102145424.GD11562@twin.jikos.cz>
+ <b0b2222e-137b-48b3-030b-2b2468e09eb5@oracle.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <4a708562-b91f-636b-f8ae-388ab2c14859@oracle.com>
+In-Reply-To: <b0b2222e-137b-48b3-030b-2b2468e09eb5@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:dJpETn2Yrivbsop4Iclx8BGCnsinB9eiz+ubFkaftm+oJ1zPtbT
- K+HIio5VAY5Eto3TrBy6uuGIhA9nE6pYF/UWUS7W1IvyoLNHVdycVkhZnAxW/w1Eye8Uf/m
- EpStrPOZLPHjrY2IdCVRV4eoLa2sTsH2bXlaiYM4NW8piu0PdY1zVC8jDPQiI83x9a85L1h
- DO65Ph2ttvW2bDjVU8jUg==
-UI-OutboundReport: notjunk:1;M01:P0:MmwCVksIebE=;O9aPeG9dkTYYLMDStVNlRoZzYTL
- YMa9Fnl+D9G0l9JByAh2O7g/evTdCFGZjCYr/6ssTDFDhW5fk98HrhV09ICfCdhlQhmUci5BR
- 0mN4sW+DQZ9Qf86intNZQyaz+jpEOpvmWLawXsGBcWe+DuiDK0nu5IG+ljj3Qx4LXh6MP8ghU
- D0ccARWyQrWApZliCLBY37SQQhH0CLLY7lZJGYczjW6n4gqh1JD/melQGSlpcxwMuDDeq9FZW
- 6AxtriwpWxRjnXail3cFp6twWiH1/UWg3+xn5UB9ZqPJsp+b6D8uNekWNz4rT3ML5ZMcGYLbu
- jCrhseheSFoqV22djYo2QvmG9H/sL02lNyiIajNY/RcMNALvQqwskb57eQPzXTa/XvZvXgp7x
- lghVKjgvpLFLY8jFHXY+0JEPbNm2WzlNrk+4ZmOhsA6CcF8HwsR3leSZo9pG8EvikUO7ymXwS
- bbbiS7ahBiTMeyJQrGQ7eBa3jXk0dOvGXKJdEtbOfGVKBJXpcPPAF6SN+W2SvwOX6FeExePY7
- 6TIKHo5N2aDs/7zn6JjfGN6yYhnH/LwqGPzv1yfW5ZoxGe8wpfHPLBbP8UbXZaEg+cPPV9mD6
- 5R40wiGavbDEHtlTyVaYPF/WNZQBYgFSgO4ocJtWmXRPPVPDg3xWAMXGJUV+hjqo08CF4bdhZ
- rnx31n35bIl/F+uSMvjqLFIPkGOtsOeNUAWfprZ5VUYrrzb6pQ3tyLbufO6W1lMYq0ca8PkGs
- F0SLPDuve/aG+rfix7OfFuWqChrfrwaTHBRPSqJ1H6D/WVQRxN/v/nF3X8kqh0EmW1FekFmkr
- 7OlTYsj/Dj5v8De6HnN++1S9unA8YfYOq3eJhLKXG513Ny4IlBatR6RgFuXXHJ+gNYQnz0YaL
- 38TXDgLivMiZE/cOc0dbUVHXdWAS3cMdwcBMZgIBFMMursqcmv+iWEIFyKA0Va0qZe1DjFcvB
- kNoXSIbg3k6gsIrZr3wGlW8r8jU=
+X-Provags-ID: V03:K1:3wnVi70gWPObj/pSiBVkd88Sn0zaZQPg1vim8IyrUJFT19Jg/S8
+ cFIfaLXT2xwgc+P8cyP2w7G6AtnzUPoWFzbLK+J2SfDTXstTRu5CIVWn/IEa/OdLkUF4602
+ H/hKJHgfJWF9U071Yvbhnn+nH7B7lYKIv2IrZI6Ll6kuFEVZNUp/tETcqF99LUkk4ldhmrt
+ 1X5mLzmZxE8CWmTnVvHXw==
+UI-OutboundReport: notjunk:1;M01:P0:fkcdka3HFT0=;J26S2uZfbsEVin/UDWADOWNyy6K
+ DdFOADD9w2DI8K1FUxMYW0qG5sMn4mJXawp4uDc8SePjm6wOc5VG53UBtUQtUMYL3GQPBVbyg
+ uU+BOy6/2qiGB7DTa8QVCClv8LuD9AYnJuJS8MBnLQqw/tA3nmQgrVvlDw6Mh+cGufRvc4gwv
+ /k5WfYEczttBGs8b3SDyf67P/vNhE9IQBk+jvoH5byYrkBX9Lw+z5C1SirSywZoC7mo7XXEXw
+ qC066SdY+0C1ZtgR9oKflh41EknguHLKay4SANVqBSqGl+7KJ1+SMQ2iFy3JiCnndZg7Ognip
+ ifRow+/Xqe9F8gBMchIPPn8tqg7EZ2ureiQUVN3O67mV5zPIuj3brsi3+sTfvCcRx5EmbuhmD
+ jxPSfrg7n16D8kVKiDdarJiyyv+z1f9RMYqb366M8fak9DsndBX4fsyCJx+eHG736lfpgO1jx
+ dnyq5sGlMCOdVk19b3kDcn1IH96C4ypVV78UWdepAuMgE2YT54oVg0c3bYO40Sxe9zCqpPT2l
+ pawomLBA1VpLtLJoM1FsB+/Y7HdHJa7Fs3mSQs04HaoyoX49XyK3FhiqH+M5Xj6ZY47em1OrE
+ odyytMJJSx8zLU2pOA+bu/hJdlb7GKBCesZ8vgRLPgD7nz8RhFgiaJLCNCKfvPmnjNTBxB9+n
+ SjMY3eg3G7oUiX3qEOT092L4IuLm/Cw60DcuvHD3c5wZ4wtD8azi/lPxVLhVUW164ibUJ5aL4
+ nulRW4m1fVSjzNuJr3Eg7H0EAhVd/ArnKPg5725R7bi1WpAFfpkPrXP18LRynyYzKs1OP5PAd
+ 7mmgmefaJ0GtL94doH9NjcLUMflCKp1TIiiZ/QFZTwvPZC9bvVdssIF7+uoLu3k6C2eFchgBp
+ Byf8LlMi7yh2GeeoKRUXRZwRq/kTTHFNNiKR3bQFnUi+3G0+pD9GQt3BYPrQJoq1V7u8qtjnN
+ RBGMa/RNYMiFXM4Y8GQF1kM35I0=
 X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,149 +67,96 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/1/3 16:29, Anand Jain wrote:
-> On 1/1/23 09:02, Qu Wenruo wrote:
->> [BUG]
->> There is a bug report that a BUG_ON() in btrfs_repair_io_failure()
->> (originally repair_io_failure() in v6.0 kernel) got triggered when
->> replacing a unreliable disk:
+On 2023/1/3 16:24, Anand Jain wrote:
+> On 1/2/23 22:54, David Sterba wrote:
+>> On Mon, Jan 02, 2023 at 12:08:01PM +0800, Qu Wenruo wrote:
+>>> On 2023/1/2 11:26, Wang Yugui wrote:
+>>>>> [BUG]
+>>>>> There is a bug report that a BUG_ON() in btrfs_repair_io_failure()
+>>>>> (originally repair_io_failure() in v6.0 kernel) got triggered when
+>>>>> replacing a unreliable disk:
+>>>>
+>>>> It seems a good test case that we could add to fstests.
+>>>>
+>>>> Is there any reproducer already?
+>>>> corrence of scrub and dev-replace ? still fail to reproduce it here.
+>>>
+>>> It's not that simple, and you need to understand the workflow before
+>>> crafting a script.
+>>>
+>>> It needs several things to happen at the same time:
+>>>
+>>> - The corruption happens at the last mirror.
+>>>     This can be done manually, but I doubt if it's reliable for a test
+>>>     case.
+>>>
+>>>     As the new data chunks can easily switch their devices:
+>>>
+>>>         item 4 key (FIRST_CHUNK_TREE CHUNK_ITEM 298844160) itemoff 15751
+>>> itemsize 112
+>>>         length 1073741824 owner 2 stripe_len 65536 type DATA|RAID1
+>>>         io_align 65536 io_width 65536 sector_size 4096
+>>>         num_stripes 2 sub_stripes 1
+>>>             stripe 0 devid 1 offset 298844160
+>>>             dev_uuid b31e1749-24d3-41f0-89fb-5d07630938c7
+>>>             stripe 1 devid 2 offset 277872640
+>>>             dev_uuid 29c2b4a0-4417-4a3c-b312-c0ac226d35cf
+>>>     item 5 key (FIRST_CHUNK_TREE CHUNK_ITEM 1372585984) itemoff 15639
+>>> itemsize 112
+>>>         length 1073741824 owner 2 stripe_len 65536 type DATA|RAID1
+>>>         io_align 65536 io_width 65536 sector_size 4096
+>>>         num_stripes 2 sub_stripes 1
+>>>             stripe 0 devid 2 offset 1351614464
+>>>             dev_uuid 29c2b4a0-4417-4a3c-b312-c0ac226d35cf
+>>>             stripe 1 devid 1 offset 1372585984
+>>>             dev_uuid b31e1749-24d3-41f0-89fb-5d07630938c7
+>>>
+>>>
+>>> - The corrupted device still needs to be recognized
+>>>
+>>> - Dev-replace must be running, and has not yet reach the corrupted
+>>>     mirror
+>>>
+>>> - A read on that corrupted mirror happened
+>>>
+>>> The last two conditions are already very hard to trigger.
+>>>
+>>>>
+>>>> local reproducer:
+>>>> dev1=/dev/sdb2
+>>>> dev2=/dev/sdb3
+>>>> dev3=/dev/sdb4
+>>>>
+>>>> mkfs.btrfs -f -m raid1 -d raid1 $dev1 $dev2
+>>>> mount $dev1 /mnt/scratch/
+>>>> dd if=/dev/urandom bs=1M count=2K of=/mnt/scratch/r.txt
+>>>
+>>> This would create extra data stripes, but it won't ensure that devid 1
+>>> is going to mirror 2.
+>>>
+>>> It may or may not depending on the chunk layout, and I'd say it's a
+>>> little random.
 >>
->>   BTRFS warning (device sda1): csum failed root 257 ino 2397453 off 
->> 39624704 csum 0xb0d18c75 expected csum 0x4dae9c5e mirror 3
->>   kernel BUG at fs/btrfs/extent_io.c:2380!
->>   invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
->>   CPU: 9 PID: 3614331 Comm: kworker/u257:2 Tainted: G           
->> OE      6.0.0-5-amd64 #1  Debian 6.0.10-2
->>   Hardware name: Micro-Star International Co., Ltd. MS-7C60/TRX40 PRO 
->> WIFI (MS-7C60), BIOS 2.70 07/01/2021
->>   Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
->>   RIP: 0010:repair_io_failure+0x24a/0x260 [btrfs]
->>   Call Trace:
->>    <TASK>
->>    clean_io_failure+0x14d/0x180 [btrfs]
->>    end_bio_extent_readpage+0x412/0x6e0 [btrfs]
->>    ? __switch_to+0x106/0x420
->>    process_one_work+0x1c7/0x380
->>    worker_thread+0x4d/0x380
->>    ? rescuer_thread+0x3a0/0x3a0
->>    kthread+0xe9/0x110
->>    ? kthread_complete_and_exit+0x20/0x20
->>    ret_from_fork+0x22/0x30
->>    </TASK>
->>
+>> Right it's hard to reproduce and not possible to be done reliably but
+>> could we do a series of the case with different timeouts or sleeps
+>> in between? This could catch some cases, we have various testing setups
+>> so I think it would pop up eventually. Once a problem like this is hit
+>> it's not hard to find the reason and fix.
 > 
 > 
->> [CAUSE]
->>
->> Before the BUG_ON(), we got some read errors from the replace target
->> first, note the mirror number (3, which is beyond RAID1 duplication,
->> thus it's read from the replace target device).
->>
->> Then at the BUG_ON() location, we are trying to writeback the repaired
->> sectors back the failed device.
-> 
-> s/failed device/replace target
-> 
-> makes it consistnt with the para before.
-> 
-> 
->>
->> The check looks like this:
->>
->>         ret = btrfs_map_block(fs_info, BTRFS_MAP_WRITE, logical,
->>                       &map_length, &bioc, mirror_num);
->>         if (ret)
->>             goto out_counter_dec;
->>         BUG_ON(mirror_num != bioc->mirror_num);
->>
->> But inside btrfs_map_block(), we can modify bioc->mirror_num especially
->> for dev-replace:
->>
->>     if (dev_replace_is_ongoing && mirror_num == map->num_stripes + 1 &&
->>         !need_full_stripe(op) && dev_replace->tgtdev != NULL) {
->>         ret = get_extra_mirror_from_replace(fs_info, logical, *length,
->>                             dev_replace->srcdev->devid,
->>                             &mirror_num,
->>                         &physical_to_patch_in_first_stripe);
->>         patch_the_first_stripe_for_dev_replace = 1;
->>     }
->>
->> Thus if we're repairing the replace target device, we're going to
->> triggere that BUG_ON().
->>
-> 
-> 
->> But in reality, the read failure from the replace target device may be 
->> that,
->> our replace haven't reach the range we're reading, thus we're reading
->> garbage, but with replace running, the range would be properly filled
->> later.
-> 
-> Although we write good data later, I am not sure if it is acceptable to 
-> read from the unfinished replace target (devid 0) in the first place. Do 
-> you have any ideas?
+> I faced a similar problem. I used the read policy type 'devid' that can 
+> read from the specified device. I also sent a patch to allocate the 
+> chunks in orders other than free space, such as 'devid'. These two 
+> patches should be in the ML and may help with this issue.
 
-This is a optimistic "optimization" to enlarge our chance to get the 
-good data.
-
-It can only happen for a very limited case, that we just replaced some 
-data of the source device, then the device itself gone dead or had some 
-problems.
-
-If we don't allow reading from the target device, then any read on that 
-range would fail, even if we have the good copy on the target device.
-
-I'm not that confident about the chance. Yes it can help for replacing 
-unreliable disks.
-
-But if that unreliable disk is our only copy, then we're in a much 
-bigger problem.
-
-So if you want completely remote the ability to read from replace target 
-device, I'm mostly fine with that.
+I'm aware read mirror can remove the randomness of choosing the mirror, 
+but this case relies too many things to happen at specified timing, thus 
+unfortunately it may not help that much.
 
 Thanks,
 Qu
-
 > 
-> Thanks,
-> Anand
+> Thanks, Anand
 > 
->> Thus in that case, we don't need to do anything but let the replace
->> routine to handle it.
->>
->> [FIX]
->> Instead of a BUG_ON(), just skip the repair if we're repairing the
->> device replace target device.
->>
->> Reported-by: 小太 <nospam@kota.moe>
->> Link: 
->> https://lore.kernel.org/linux-btrfs/CACsxjPYyJGQZ+yvjzxA1Nn2LuqkYqTCcUH43S=+wXhyf8S00Ag@mail.gmail.com/
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/bio.c | 11 ++++++++++-
->>   1 file changed, 10 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
->> index b8fb7ef6b520..444e20b15e26 100644
->> --- a/fs/btrfs/bio.c
->> +++ b/fs/btrfs/bio.c
->> @@ -329,7 +329,16 @@ int btrfs_repair_io_failure(struct btrfs_fs_info 
->> *fs_info, u64 ino, u64 start,
->>                         &map_length, &bioc, mirror_num);
->>           if (ret)
->>               goto out_counter_dec;
->> -        BUG_ON(mirror_num != bioc->mirror_num);
->> +        /*
->> +         * This happens when dev-replace is also happening, and
->> +         * the mirror_num indicates the dev-replace target.
->> +         *
->> +         * In this case, we don't need to do anything, as the read
->> +         * error just means the replace progress hasn't reached our
->> +         * read range, and later replace routine would handle it well.
->> +         */
->> +        if (mirror_num != bioc->mirror_num)
->> +            goto out_counter_dec;
->>       }
->>       sector = bioc->stripes[bioc->mirror_num - 1].physical >> 9;
+> 
 > 
