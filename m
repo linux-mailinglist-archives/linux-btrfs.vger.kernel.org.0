@@ -2,94 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 020D365B8C6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jan 2023 02:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F3F65B972
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jan 2023 03:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235952AbjACBXc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Jan 2023 20:23:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
+        id S236578AbjACCm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Jan 2023 21:42:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbjACBXa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Jan 2023 20:23:30 -0500
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3E921A1;
-        Mon,  2 Jan 2023 17:23:28 -0800 (PST)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 187C482636;
-        Mon,  2 Jan 2023 20:23:27 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1672709008; bh=KVxPR6pQvc0IPDNN2mlXrJzsVBC1nnN4xFfIEhenVN8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=JhDZHIDTjruRn1pe3pcy2UhI8mFouMl5YgGY1rrgCFvi7I2uU0mt2cbWTUfnKecAn
-         Sx9bTnKYjmRFkkLKTq9igPEVCXnHlm9654bFfU+A9iIkVyE7HVUW2AuiFA2k9rHF5F
-         ZYl7nt938+HG0QDHwhwiwPW8KTMuCVK/JVCRW6l5xg9MKieCakzAU8hR0eahfftgt3
-         hulj3lMpzlXAN9ozh1jfnVUOSFGKNfYGrfnw2/Lg3WgGGkfBVV00TaXVnPZfd4mL9/
-         NCrgNU3jItcMRjR/EvFHwwbHxztjvyc8AcDRyoPgdGY63FJv/2QGC7SVwTz85/3gyC
-         KtKYZ+UT44gqw==
-Message-ID: <5433bb39-3d59-8b96-0be3-a32953ef79af@dorminy.me>
-Date:   Mon, 2 Jan 2023 20:23:26 -0500
+        with ESMTP id S231410AbjACCm5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Jan 2023 21:42:57 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBFB10F2;
+        Mon,  2 Jan 2023 18:42:57 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id n65-20020a17090a2cc700b0021bc5ef7a14so29792110pjd.0;
+        Mon, 02 Jan 2023 18:42:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8fkzQhp1crKGSgSx8k6HIdZaU8pHi19M3YgxX2aKMxI=;
+        b=DHIvJaCQ6maLM8lILPL4VWUiTAZi93wbNMKHYiEwkekbNhqv9N9TKGNuzqOVEobp5p
+         Cn5e2RMnJBhgB0TJZfsNVjopF5E2XzjvbKbQ12nhcEatgOzQecR2Q9AdM4q6g3GlelZ0
+         m17m/unDTqoWrq7+x637ovTcnzzqzawh/egzIyytfCt3Vr9nNmLfZa4PyGBREVU/rwJ8
+         J/UhUacOZp1rdUOvWv8/41wJ5b/hCOhq+XolhnkXwrUXCVgSpYCau7Hy2KUGYd/3K4+g
+         O1PcqPmSXas50/b8Bbf/xtNBX1cSj+dYv0iMeqK1ucnd6Z16S6+FtBsQyYnAQb2klRDY
+         xcjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8fkzQhp1crKGSgSx8k6HIdZaU8pHi19M3YgxX2aKMxI=;
+        b=jd9ekfHJlVcC6xhRBeNZi5B9EzU9ytxs3rW4EHI5drYLuC4p7gn6/6lyKjRR0U6fey
+         OM94K23Oy+YbLZlIiJx7uhO9gyW2pMxMjpcE9P4GiEYoQy73WLaujqmyoxLSsAAOm5BF
+         9q9CiFvVMxI/+2+4gRe6WaGuvhijxNFnjCnQYRSKiOt0Lumd39azu6SDvyhBr6ZpR/Gl
+         X8Ad4caMqmqbfa3+JG6qHvMXJWxqsZZtb4uvX6EondG3yKReS3wYA7Htpt9rzmuDbbTb
+         +tgi4Hwk51oSo4IF8dD8he3gXDL1x87npE0rhh9TGZ9a7Pxq5yvW+ATGEUIhQCALE3vh
+         h2gA==
+X-Gm-Message-State: AFqh2ko2T4jL7c9V+NwkXtNtj+1+P+YgBR5ntcM7plPrbaqDR1QaaPoK
+        tBmFPSaR2pTkAknKzO7UyJU=
+X-Google-Smtp-Source: AMrXdXsfFOGY10WSLhxjnxlmb7z/kOCWm37mZqCGCRQnyzppVr3ya1ZIuUw/y/fJh4ZT271hSWTm5g==
+X-Received: by 2002:a17:902:a402:b0:191:7d3:7fe4 with SMTP id p2-20020a170902a40200b0019107d37fe4mr39660058plq.59.1672713776713;
+        Mon, 02 Jan 2023 18:42:56 -0800 (PST)
+Received: from localhost.localdomain ([43.132.141.4])
+        by smtp.gmail.com with ESMTPSA id b8-20020a1709027e0800b001895d871c95sm20923561plm.70.2023.01.02.18.42.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Jan 2023 18:42:56 -0800 (PST)
+From:   zys.zljxml@gmail.com
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yushan Zhou <katrinzhou@tencent.com>
+Subject: [PATCH v2] brtfs: use PAGE_ALIGNED macro
+Date:   Tue,  3 Jan 2023 10:36:26 +0800
+Message-Id: <20230103023626.3072656-1-zys.zljxml@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20230102150357.GF11562@twin.jikos.cz>
+References: <20230102150357.GF11562@twin.jikos.cz>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH 15/17] fscrypt: allow load/save of extent contexts
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, paulcrowley@google.com,
-        linux-btrfs@vger.kernel.org, kernel-team@meta.com
-References: <cover.1672547582.git.sweettea-kernel@dorminy.me>
- <fd5c7a78de125737abe447370fe37f9fe90155d6.1672547582.git.sweettea-kernel@dorminy.me>
- <Y7NQ1CvPyJiGRe00@sol.localdomain>
- <686e2eb9-b218-6b23-472c-b6035bd2186b@dorminy.me>
- <Y7NgCKPnVybgBaq/@sol.localdomain>
- <66385ee9-3e11-f5a6-259d-ae504ab6dfaa@dorminy.me>
- <Y7N7KCCqYZPwjOGX@sol.localdomain>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <Y7N7KCCqYZPwjOGX@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Yushan Zhou <katrinzhou@tencent.com>
 
+The header file linux/mm.h provides the PAGE_ALIGNED macro to
+test whether an address is aligned to PAGE_SIZE. Use it instead
+of IS_ALIGNED.
 
-On 1/2/23 19:47, Eric Biggers wrote:
-> On Mon, Jan 02, 2023 at 07:33:15PM -0500, Sweet Tea Dorminy wrote:
->>
->>>
->>> Anyway, crypto_alloc_skcipher() takes a lock (crypto_alg_sem) under which memory
->>> is allocated with GFP_KERNEL.  So neither preloading kernel modules nor
->>> memalloc_nofs_save() helps for it; it's still not GFP_NOFS-safe.
->>
->> I'm still confused. My understanding is that memalloc_nofs_save() means all
->> allocations on that thread until memalloc_nofs_restore() is called
->> effectively gets GFP_NOFS appended to the allocation flags. So since
->> crypto_alloc_skcipher()'s allocation appears to be on the same thread as
->> we'd be calling memalloc_nofs_save/restore(), it would presumably get
->> allocated as though it had flags GFP_KERNEL | GFP_NOFS, even though the call
->> is kzalloc(..., GFP_KERNEL, ...).
->>
->> I don't understand how the lock would make a difference. Can you elaborate?
->>
->> Sorry for my confusion...
-> 
-> Other tasks (using the crypto API for another purpose, perhaps totally unrelated
-> to fs/crypto/) can take crypto_alg_sem without taking the same precaution.  So,
-> when your task that is running in fs-reclaim context and has used
-> memalloc_nofs_save() tries to take the same lock, it might be that the lock is
-> already held by another thread that is waiting for fs-reclaim to complete in
-> order to satisfy a GFP_KERNEL allocation.
-> 
-> That's a deadlock.
-> 
-> Locks are only GFP_NOFS-safe when everyone agrees to use them that way.
-> 
-> - Eric
+Signed-off-by: Yushan Zhou <katrinzhou@tencent.com>
+---
+ fs/btrfs/compression.c | 2 +-
+ fs/btrfs/defrag.c      | 2 +-
+ fs/btrfs/lzo.c         | 2 +-
+ fs/btrfs/relocation.c  | 2 +-
+ fs/btrfs/send.c        | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-Ah that is definitely what I was missing, I've never had to think about 
-that interaction. Thank you for explaining!
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 5122ca79f7ea..4a5aeb8dd479 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -1609,7 +1609,7 @@ static void heuristic_collect_sample(struct inode *inode, u64 start, u64 end,
+ 	index_end = end >> PAGE_SHIFT;
+ 
+ 	/* Don't miss unaligned end */
+-	if (!IS_ALIGNED(end, PAGE_SIZE))
++	if (!PAGE_ALIGNED(end))
+ 		index_end++;
+ 
+ 	curr_sample_pos = 0;
+diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+index 0a3c261b69c9..130de66839c1 100644
+--- a/fs/btrfs/defrag.c
++++ b/fs/btrfs/defrag.c
+@@ -997,7 +997,7 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+ }
+ 
+ #define CLUSTER_SIZE	(SZ_256K)
+-static_assert(IS_ALIGNED(CLUSTER_SIZE, PAGE_SIZE));
++static_assert(PAGE_ALIGNED(CLUSTER_SIZE));
+ 
+ /*
+  * Defrag one contiguous target range.
+diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
+index d5e78cbc8fbc..71f6d8302d50 100644
+--- a/fs/btrfs/lzo.c
++++ b/fs/btrfs/lzo.c
+@@ -280,7 +280,7 @@ int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 		}
+ 
+ 		/* Check if we have reached page boundary */
+-		if (IS_ALIGNED(cur_in, PAGE_SIZE)) {
++		if (PAGE_ALIGNED(cur_in)) {
+ 			put_page(page_in);
+ 			page_in = NULL;
+ 		}
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 31ec4a7658ce..ef13a9d4e370 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -2825,7 +2825,7 @@ static noinline_for_stack int prealloc_file_extent_cluster(
+ 	 *
+ 	 * Here we have to manually invalidate the range (i_size, PAGE_END + 1).
+ 	 */
+-	if (!IS_ALIGNED(i_size, PAGE_SIZE)) {
++	if (!PAGE_ALIGNED(i_size)) {
+ 		struct address_space *mapping = inode->vfs_inode.i_mapping;
+ 		struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 		const u32 sectorsize = fs_info->sectorsize;
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index e65e6b6600a7..bab0ba3e6542 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -5759,7 +5759,7 @@ static int send_extent_data(struct send_ctx *sctx, struct btrfs_path *path,
+ 		sent += size;
+ 	}
+ 
+-	if (sctx->clean_page_cache && IS_ALIGNED(end, PAGE_SIZE)) {
++	if (sctx->clean_page_cache && PAGE_ALIGNED(end)) {
+ 		/*
+ 		 * Always operate only on ranges that are a multiple of the page
+ 		 * size. This is not only to prevent zeroing parts of a page in
+-- 
+2.27.0
+
