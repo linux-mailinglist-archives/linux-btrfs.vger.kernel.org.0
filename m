@@ -2,88 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC5165B858
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jan 2023 01:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2FA65B863
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jan 2023 01:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbjACAMl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Jan 2023 19:12:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
+        id S230413AbjACAdU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Jan 2023 19:33:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjACAMk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Jan 2023 19:12:40 -0500
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAF221B8
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 Jan 2023 16:12:37 -0800 (PST)
-Received: by mail-ej1-f48.google.com with SMTP id u19so69789843ejm.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Jan 2023 16:12:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=t57XbP7Edv3xglGPYZVWWIsegWtCnTEiFLvCTavWSY8=;
-        b=Bec7Jr/d3Ziq2j+Cn+8koxt+m2zesHPRFyXW7Z+6lwtaveEx5JK3/pL/eVg2s+2RmJ
-         kcbCPMUy8aUNX1+ZLqaQ4LrbSEtq+wSgr/HXQ0gbK9ky7vXFtvV2pNR5Xfjh2eiBZoMe
-         41TfFIvL0w0Wvl+73v3iJZ2lpNzCbdzL1hdgdeKnMQZWsv84mJx1FHoNTpzr72vyGS4f
-         y34qmzEwhZgpOr9VxXUEk6tDi1qZ0w4AdT/yhGZ5t1ywf9SbnykzfgPzIoxo0+ErhSHQ
-         quZhyd3NC135Veyce0bZqmchefa8cV98W47GIgtQ/rhKskHWvwy+92Vhe2BS8hT+ieeF
-         QKXA==
-X-Gm-Message-State: AFqh2kp/htdzv6zOsVbW7LIt8cAZwo9hMHExaGCHlnvD6fSB4n+gSmMB
-        yyAk2YY49zGNH+QmJ3MzA42hAwodVWNBxg==
-X-Google-Smtp-Source: AMrXdXuQiKjoxxUGaHo0Czuc+vekt+sw4XPXExK40fVtn34/kFCudai96tZoEC5mvyD2pTZM0q+d/w==
-X-Received: by 2002:a17:907:b9d5:b0:81e:8dd4:51c3 with SMTP id xa21-20020a170907b9d500b0081e8dd451c3mr36165120ejc.76.1672704755291;
-        Mon, 02 Jan 2023 16:12:35 -0800 (PST)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id r17-20020a17090609d100b007bd0bb6423csm13392183eje.199.2023.01.02.16.12.34
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Jan 2023 16:12:34 -0800 (PST)
-Received: by mail-ed1-f54.google.com with SMTP id b88so34489180edf.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Jan 2023 16:12:34 -0800 (PST)
-X-Received: by 2002:a05:6402:5025:b0:46b:d84f:81d5 with SMTP id
- p37-20020a056402502500b0046bd84f81d5mr5053567eda.427.1672704753955; Mon, 02
- Jan 2023 16:12:33 -0800 (PST)
+        with ESMTP id S229668AbjACAdT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Jan 2023 19:33:19 -0500
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89740F76;
+        Mon,  2 Jan 2023 16:33:17 -0800 (PST)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        by box.fidei.email (Postfix) with ESMTPSA id D7F7C82554;
+        Mon,  2 Jan 2023 19:33:16 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1672705997; bh=2Ape2jvMCzZ7NKwT6eDyn94Rvn4XohpK+z1OwuN/YPs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=DqP2BYNIdGW4PI4VyRy2w4iLjSe4eliTtVVxNljJ5BypHfEFX3Zi5uuYjOCj7TuTo
+         Kz1i52XPSw5qBAJ7oVOPv9IWqXUkOgYsaeTGAYArfQfVYvVNmX7879FztbkFr6n5RF
+         JrvC2kBfI38nVdkk9Tsy5QVFIfCBeX6ZZw2soxgdazcWDoZTQE/tTMRgEKX3yaDFji
+         ZKE/zUhEywk6soUdFTwjqWKzVj1+vedtTEg34dTq5GYWevukGAvnKkpoTK13s9PW7e
+         AhhaoM4iJLYVIeZa2M7Oi3MkHzShK4kIX8K47dPKjvxe02VKNaSKBQgQ7H9rFCdI8b
+         V2rD/QgdvsLnQ==
+Message-ID: <66385ee9-3e11-f5a6-259d-ae504ab6dfaa@dorminy.me>
+Date:   Mon, 2 Jan 2023 19:33:15 -0500
 MIME-Version: 1.0
-From:   Neal Gompa <ngompa@fedoraproject.org>
-Date:   Mon, 2 Jan 2023 19:11:57 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je8L7jieKdoWoZBuBZ6RdXwvwrx04AB0fOZF1fr5Pb-o1g@mail.gmail.com>
-Message-ID: <CAEg-Je8L7jieKdoWoZBuBZ6RdXwvwrx04AB0fOZF1fr5Pb-o1g@mail.gmail.com>
-Subject: btrfs-progs 6.1 broke the build for multiple applications
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     David Sterba <dsterba@suse.cz>, Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <wqu@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [RFC PATCH 15/17] fscrypt: allow load/save of extent contexts
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, paulcrowley@google.com,
+        linux-btrfs@vger.kernel.org, kernel-team@meta.com
+References: <cover.1672547582.git.sweettea-kernel@dorminy.me>
+ <fd5c7a78de125737abe447370fe37f9fe90155d6.1672547582.git.sweettea-kernel@dorminy.me>
+ <Y7NQ1CvPyJiGRe00@sol.localdomain>
+ <686e2eb9-b218-6b23-472c-b6035bd2186b@dorminy.me>
+ <Y7NgCKPnVybgBaq/@sol.localdomain>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <Y7NgCKPnVybgBaq/@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey all,
 
-It looks like btrfs-progs v6.1 broke the build for multiple
-applications in Fedora.
+> 
+> Anyway, crypto_alloc_skcipher() takes a lock (crypto_alg_sem) under which memory
+> is allocated with GFP_KERNEL.  So neither preloading kernel modules nor
+> memalloc_nofs_save() helps for it; it's still not GFP_NOFS-safe.
 
-Notably, it broke:
+I'm still confused. My understanding is that memalloc_nofs_save() means 
+all allocations on that thread until memalloc_nofs_restore() is called 
+effectively gets GFP_NOFS appended to the allocation flags. So since 
+crypto_alloc_skcipher()'s allocation appears to be on the same thread as 
+we'd be calling memalloc_nofs_save/restore(), it would presumably get 
+allocated as though it had flags GFP_KERNEL | GFP_NOFS, even though the 
+call is kzalloc(..., GFP_KERNEL, ...).
 
-* btrfs-assistant
-* buildah
-* cri-o
-* podman
-* skopeo
-* containerd
-* moby/docker
-* snapper
-* source-to-image
+I don't understand how the lock would make a difference. Can you elaborate?
 
-The bug report is here: https://bugzilla.redhat.com/2157606
+Sorry for my confusion...
 
-It looks like this change broke everything:
-https://github.com/kdave/btrfs-progs/commit/03451430de7cd2fad18b0f01745545758bc975a5
-
-
--- 
-Neal Gompa (FAS: ngompa)
+Sweet Tea
