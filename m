@@ -2,183 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6832465CE2F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jan 2023 09:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8A965D12C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jan 2023 12:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbjADIVp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Jan 2023 03:21:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56064 "EHLO
+        id S239160AbjADLDe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Jan 2023 06:03:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjADIVo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Jan 2023 03:21:44 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BEE1789C;
-        Wed,  4 Jan 2023 00:21:42 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9CCD075EBC;
-        Wed,  4 Jan 2023 08:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1672820501; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=hf/LkE/eE8c/67vUaqWw0iGLJLW3GxSjPDpBh6psW14=;
-        b=LYuBfbholqFCTfeH29SA7ir7YEvP/Sx4OOE9YGYh9b2Wgl+TBO9otA4j010JPMWQNmj/YK
-        jyw9A29WO/z1dZEody6ye/HXQIyM+959Vy6MaHu5LbHZgNPhXkeenpll9jAlo5Ohlk7RpI
-        TYZQ1/EUy2vCK3BN8FjspWQhC3md37Y=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 560FF1342C;
-        Wed,  4 Jan 2023 08:21:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id A8kWCRQ3tWPaFgAAMHmgww
-        (envelope-from <wqu@suse.com>); Wed, 04 Jan 2023 08:21:40 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: [PATCH] btrfs: add a test case to verify scrub speed throttle works
-Date:   Wed,  4 Jan 2023 16:21:23 +0800
-Message-Id: <20230104082123.56800-1-wqu@suse.com>
-X-Mailer: git-send-email 2.39.0
+        with ESMTP id S239163AbjADLDP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Jan 2023 06:03:15 -0500
+X-Greylist: delayed 2322 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 04 Jan 2023 03:03:14 PST
+Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD1013CC6
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Jan 2023 03:03:12 -0800 (PST)
+Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
+        (envelope-from <hrm@savella.carfax.org.uk>)
+        id 1pD0vh-00014J-Vv; Wed, 04 Jan 2023 10:23:29 +0000
+Date:   Wed, 4 Jan 2023 10:23:29 +0000
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     "Kengo.M" <kengo@kyoto-arc.or.jp>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Number of parity disks
+Message-ID: <20230104102329.GJ25447@savella.carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        "Kengo.M" <kengo@kyoto-arc.or.jp>, linux-btrfs@vger.kernel.org
+References: <p0600100fdfda6d2d6124@kyoto-arc.or.jp>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <p0600100fdfda6d2d6124@kyoto-arc.or.jp>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        PDS_RDNS_DYNAMIC_FP,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We introduced scrub speed throttle in commit eb3b50536642 ("btrfs: scrub:
-per-device bandwidth control"),  but it is not that well documented
-(e.g. what's the unit of the sysfs interface), nor tested by any test
-case.
+On Wed, Jan 04, 2023 at 08:40:10AM +0900, Kengo.M wrote:
+> Hi Folks
+> 
+> I use btrfs conveniently.
+> 
+> Let me ask a very very basic question.
+> 
+> One parity disk can be used in RAID 5 and 2 parity disks can be used in RAID 6.
+> ZFS RAIDZ-3 (raidz3) can use 3 parity disks.
+> 
+> Is it difficult to increase the number of parity disks to 4, 5 or more.
+> If so, is the reason for this because of the time it takes to generate the
+> parity bits?
 
-This patch will add a test case for this functionality.
+   Someone pasted, some years ago, a patch that added parity
+calculations up to 6. It is relatively difficult to find appropriate
+orthogonal functions, but the computation of the parity values once
+you know those functions isn't hugely expensive.
 
-The test case itself is pretty straightforward:
+   I don't think the patch added actual n-way parity functionality to
+btrfs or MD-RAID, though.
 
-- Fill the fs with 2G file as scrub workload
-- Set scrub speed limit to 50MiB/s
-- Scrub and compare the reported rate against above 50MiB/s throttle
+   Given the longevity (and severity) of some of the btrfs parity RAID
+bugs, I think it's probably not a priority to layer more code onto an
+already wobbly part of btrfs. That may change in the future, now that
+parity RAID is seeing some major fixes landing, but I wouldn't hold
+your breath for it.
 
-However the test case has an assumption that the underlying disk must be
-faster than our 50MiB/s, which should be pretty common in
-baremetal/exclusive VMs.
-But for cloud environment it's not ensured 100%, thus the test case is
-not included in auto group to avoid false alerts.
+   Hugo.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/btrfs/282     | 83 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/282.out |  3 ++
- 2 files changed, 86 insertions(+)
- create mode 100755 tests/btrfs/282
- create mode 100644 tests/btrfs/282.out
-
-diff --git a/tests/btrfs/282 b/tests/btrfs/282
-new file mode 100755
-index 00000000..9a6677ec
---- /dev/null
-+++ b/tests/btrfs/282
-@@ -0,0 +1,83 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 282
-+#
-+# Make sure scrub speed limitation works as expected.
-+#
-+. ./common/preamble
-+_begin_fstest scrub
-+
-+# Override the default cleanup function.
-+# _cleanup()
-+# {
-+# 	cd /
-+# 	rm -r -f $tmp.*
-+# }
-+
-+. ./common/filter
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_wants_kernel_commit eb3b50536642 \
-+	"btrfs: scrub: per-device bandwidth control"
-+
-+# We want at least 5G for the scratch device.
-+_require_scratch_size $(( 5 * 1024 * 1024))
-+
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount
-+
-+uuid=$(findmnt -n -o UUID $SCRATCH_MNT)
-+
-+devinfo_dir="/sys/fs/btrfs/${uuid}/devinfo/1"
-+
-+# Check if we have the sysfs interface first.
-+if [ ! -f "${devinfo_dir}/scrub_speed_max" ]; then
-+	_notrun "No sysfs interface for scrub speed throttle"
-+fi
-+
-+# Create a 2G file for later scrub workload.
-+# The 2G size is chosen to fit even DUP on a 5G disk.
-+$XFS_IO_PROG -f -c "pwrite -i /dev/urandom 0 2G" $SCRATCH_MNT/file | _filter_xfs_io
-+
-+# Writeback above data, as scrub only verify the committed data.
-+sync
-+
-+throttle_mb=50
-+# Those are floor and ceiling for us to compare the result, give it a
-+# generous +- 10% tolerance.
-+throttle_mb_ceiling=55
-+throttle_mb_floor=45
-+
-+# Set the speed limit to 50MiB/s, which should be slower than almost all
-+# modern HDD.
-+# This would take around 40 sec to scrub above data for SINGLE, double for DUP.
-+# With extra time spent on writing the data.
-+echo $(($throttle_mb * 1024 * 1024)) > "${devinfo_dir}/scrub_speed_max"
-+
-+$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT > $tmp.scrub_result
-+cat $tmp.scrub_result >> $seqres.full
-+
-+# The output looks like this:
-+# Scrub done for 42d25bc2-e8b7-432e-9850-f3314aefffc6
-+# Scrub started:    Wed Jan  4 13:12:00 2023
-+# Status:           finished
-+# Duration:         0:00:30
-+# Total to scrub:   7.52GiB
-+# Rate:             205.22MiB/s
-+# Error summary:    no errors found
-+#
-+# What we care is that Rate line, and only the int part.
-+speed=$(grep "Rate:" $tmp.scrub_result | $AWK_PROG '{print $2}' | cut -f1 -d.)
-+
-+if [ "$speed" -gt "$throttle_mb_ceiling" -o "$speed" -lt "$throttle_mb_floor" ]; then
-+	echo "scrub speed $speed is not properly throttled"
-+fi
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/282.out b/tests/btrfs/282.out
-new file mode 100644
-index 00000000..8d53e7eb
---- /dev/null
-+++ b/tests/btrfs/282.out
-@@ -0,0 +1,3 @@
-+QA output created by 282
-+wrote 2147483648/2147483648 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
 -- 
-2.39.0
-
+Hugo Mills             | This: Rock. You throw rock.
+hugo@... carfax.org.uk |
+http://carfax.org.uk/  |
+PGP: E2AB1DE4          |                          Graeme Swann on fast bowlers
