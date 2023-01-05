@@ -2,273 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD58265EA6E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jan 2023 13:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D992665F043
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jan 2023 16:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbjAEMJF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Jan 2023 07:09:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
+        id S233371AbjAEPlX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Jan 2023 10:41:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231797AbjAEMJE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Jan 2023 07:09:04 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217822193
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 Jan 2023 04:09:01 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvK4Z-1ow0ao0snB-00rEWa; Thu, 05
- Jan 2023 13:08:59 +0100
-Message-ID: <50ecc4dc-fbf1-8fca-5484-27de33a2ed85@gmx.com>
-Date:   Thu, 5 Jan 2023 20:08:56 +0800
+        with ESMTP id S232062AbjAEPlV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Jan 2023 10:41:21 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450034FD53;
+        Thu,  5 Jan 2023 07:41:21 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D54E561B03;
+        Thu,  5 Jan 2023 15:41:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E89AC433D2;
+        Thu,  5 Jan 2023 15:41:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672933280;
+        bh=HMw6d5DaD8oLSna6K7FKbXLZjsmjbQLLfWBhAkYmJ7w=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=PSWLh1x7NJlEJ3DCbCtV2eCYcuROG9GFlmEot0Ks5VwkcNKzADaNxZWEJhmBhYSVB
+         cAOipZlX0wIE7QrhhAkK4q+qaUCEDFvWlIQsmsr7cQn2yPx3QXAznwsPelP566/Gwc
+         OG0z20SOv1fHl+aj1ICbfjpFmhvZJAuDlB9WG3hHN+6gkiGh3/SDVEDKltPr7Kiqnx
+         iKvZZWMIbCCr7hB6BlL5gLD2hcwey9EKTL6jsWB7QfluMwPz3zDs393vIP9lRpUxxD
+         Z58DZ8yk/wUb3HUSEU8mfzGWk4TERdnUx7iqPf/ECds0DaYcfW/CkYJWT4c/Roxn+r
+         3AvECw0nbpAuw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CEDB15C029A; Thu,  5 Jan 2023 07:41:19 -0800 (PST)
+Date:   Thu, 5 Jan 2023 07:41:19 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH rcu 18/27] fs/btrfs: Remove "select SRCU"
+Message-ID: <20230105154119.GT4028633@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
+ <20230105003813.1770367-18-paulmck@kernel.org>
+ <ba9a15cd-5d95-d766-19a7-17e0925bc63c@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: File system can't mount
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     Robert LeBlanc <robert@leblancnet.us>, linux-btrfs@vger.kernel.org
-References: <CAANLjFobOKhui5j1VsRkNSTF9SjRADtBennjoZE1jEPnU=iVaw@mail.gmail.com>
- <CAANLjFraYrdzZLv0ZcW=1sfnKSnbbb08qEpVHiAQHZQ181epjg@mail.gmail.com>
- <4f134378-4298-bc28-c17a-8415ffdc19e9@gmx.com>
-In-Reply-To: <4f134378-4298-bc28-c17a-8415ffdc19e9@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:oYLZJlmawe9QEeUuIzg5+2eo97L0paZ2BJDsH63DUtS8HjOkpJN
- iqaJ7acYgkNp/ulvn4d6Qz6eJ+5bgHxkKDTXMlJmqn60J7vy6VLd1r2N/POXwGgaTPQVPfB
- nqUCnms5iQk3r7fHg+7GHaToVL+r8GpdnZBYDLMDmx4JxtGtHuLGhCAq630HAe675vVeyGR
- jBK6uPsmm1w71FBtE48sQ==
-UI-OutboundReport: notjunk:1;M01:P0:OGODvnfEUPU=;TzaVVyv8RwqxjvhPLtdFLHc6qHD
- /p2VVhqPFRccisys5042RU3Aejlbo/EwooEyRHJGKKC0wxZh9L3UtoF3s0Ek729l5pMSDf6H4
- AE9iJlrORV727tDoTTrwZSnsYJhqzSYSiRtLF22LICEzG+M0VfgycL9tf3KtR8MhCWNnU4z+i
- vNfwytmjBfuyAoaZZEgZrjdr5RiW2BKVxt9+5evqZrr9xobhW39xp+pTrhF1sy1BxmXPs961L
- Ab7NBbHlXngmm6zpvo+8CSz3yK7k4zCRYU/GB2sKqRV7p1wDDOtpPSrCI/AWPWph3wdohtM+D
- d62tuGOu63SmjN20HRHaWaK11j6WJqfgE5RgQoy+k3I+wi5FxCxd87sEp/cO4ktjPSpgH/BRY
- eaMXR1pvA8G0Xf5ebOV4BDTb63wlbCChrIAfC291V37re86qQ2MhjrIzhopUfZbeehuw+cLMZ
- R+4uebDCzlPf71BFXRmvCl2UEQEipgIPCZfsKKKh/oTj54ys3EycCVBl7xGwpcsPZJrgLfgPU
- BibdxiEyUfspCqC6DvA+mwD2ceyqLfdyjx0G4O7A4Fx/FRcA8WUXrTtEeayIgwYG2ux1cIVId
- 85ACYO9yvNrOoO9McoOCZNnjcVmssSDqKmHPuQSuEMmth11H/pdQ2ZJzQbdRQjoWIA/hqT3SV
- rkQJJoNqMuwus9ezgE5/XPje/OVF9JrxC755k9P+QdmsDUH2eFJN2e9fM66ECMvLuZ65XE8kx
- l1OrJYlqEGgXm+f6XJk1BGoiFYcASiYIW5LN/LOvUsAIEPJUoTVBLb2Oc5eFf08s62f1cXjq/
- PsAnjEbAm5LqyZ6IG3vvgIzDrk0M529gsXLPxNhHnGxA9JlEwkpGyF7Olw2KV1Ie/iB7cIbPq
- BTAso2MeMteKy8YCasBiVz5QaSOz6mMs1wujZx/+0yLwLijKSimz2q9jVL11jwNPrzzCjdVxE
- EuZ0/rqueUHDJAgfD8CEprMteE8=
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ba9a15cd-5d95-d766-19a7-17e0925bc63c@suse.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Jan 05, 2023 at 05:06:09PM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2023/1/5 08:38, Paul E. McKenney wrote:
+> > Now that the SRCU Kconfig option is unconditionally selected, there is
+> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> > Kconfig statements.
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Chris Mason <clm@fb.com>
+> > Cc: Josef Bacik <josef@toxicpanda.com>
+> > Cc: David Sterba <dsterba@suse.com>
+> > Cc: <linux-btrfs@vger.kernel.org>
+> 
+> In fact, since commit c75e839414d3 ("btrfs: kill the subvol_srcu"), we can
+> completely remove any SRCU related configs and even includes.
 
+$ git grep srcu fs/btrfs/
+fs/btrfs/disk-io.h: *   fs_info->subvol_srcu
 
-On 2023/1/5 14:44, Qu Wenruo wrote:
-> 
-> 
-> On 2023/1/5 13:24, Robert LeBlanc wrote:
->> On Wed, Jan 4, 2023 at 10:11 PM Robert LeBlanc <robert@leblancnet.us> 
->> wrote:
->>>
->>> I may have run into a new bug (I can't find anything in my Google
->>> search other than a patch that exposes the issue). I had to recreate
->>> my BTRFS file system about a year ago when I hit a bug in an earlier
->>> kernel. I was able to pull a good snapshot from my backups (and mount
->>> the old filesystem in read-only to get my media subvolume) and it had
->>> been running great for at least a year. My file system went offline
->>> today and just would not mount. I downloaded the latest btrfs-progs
->>> from git to see if it could handle it better, but no luck. This is a
->>> RAID-1 with 4 drives and the metadata is also RAID-1, but it looks
->>> like both copies of the metadata are corrupted the same way which is
->>> really odd and the drives show no errors. I tried taking the first
->>> drive that it complained about offline and tried to mount with `-o
->>> degraded` but it couldn't bring up the filesystem. It would be nice to
->>> try and recover this as I have a subvolume with my media server that
->>> isn't backed up because of the size, but the critical stuff is backed
->>> up.
->>>
->>> Here is the `btrfs check` output:
->>> ```
->>> #:~/code/btrfs-progs$ sudo ./btrfs check /dev/mapper/1EV13X7B
->>> Opening filesystem to check...
->>> Checking filesystem on /dev/mapper/1EV13X7B
->>> UUID: 7b01dd5a-cfa3-4918-a714-03ca7682fbdc
->>> [1/7] checking root items
->>> [2/7] checking extents
->>> WARNING: tree block [12462950961152, 12462950977536) is not nodesize
->>> aligned, may cause problem for 64K page system
->>> ERROR: add_tree_backref failed (extent items tree block): File exists
->>> ERROR: add_tree_backref failed (non-leaf block): File exists
->>> tree backref 12462950957056 root 7 not found in extent tree
->>> incorrect global backref count on 12462950957056 found 1 wanted 0
->>> backpointer mismatch on [12462950957056 1]
+I know that situation.  ;-)
 
-And there are two extent items involved in the case.
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-The number 12462950961152 is the incorrect backref, while extent 
-12462950957056 is the correct extent item which misses the backref item.
+Thank you!  I will update on my next rebase.
 
-I'm afraid that, there could be a memory bitflip:
+							Thanx, Paul
 
-12462950957056 = 0xb55c1c3c000
-12462950961152 = 0xb55c1c3d000
-
-The difference is one bit flipped in the larger one.
-
-Thus I strongly recommended to do a memtest before trying anything else.
-
-Thanks,
-Qu
->>> extent item 12462950961152 has multiple extent items
->>> ref mismatch on [12462950961152 16384] extent item 1, found 2
->>> backref 12462950961152 root 7 not referenced back 0x56292931ae60
->>> incorrect global backref count on 12462950961152 found 1 wanted 2
->>> backpointer mismatch on [12462950961152 16384]
->>> owner ref check failed [12462950961152 16384]
->>> bad metadata [12462950961152, 12462950977536) crossing stripe boundary
->>> data backref 12493662797824 root 13278 owner 193642 offset 0 num_refs
->>> 0 not found in extent tree
->>> incorrect local backref count on 12493662797824 root 13278 owner
->>> 193642 offset 0 found 1 wanted 0 back 0x562920287070
->>> incorrect local backref count on 12493662797824 root 17592186057694
->>> owner 193642 offset 0 found 0 wanted 1 back 0x562929472ba0
->>> backref disk bytenr does not match extent record,
->>> bytenr=12493662797824, ref bytenr=0
->>> backpointer mismatch on [12493662797824 24576]
->>> ERROR: errors found in extent allocation tree or chunk allocation
->>> [3/7] checking free space cache
->>> there is no free space entry for 12462950957056-12462950961152
->>> cache appears valid but isn't 12461878018048
->>> [4/7] checking fs roots
->>> [5/7] checking only csums items (without verifying data)
->>> [6/7] checking root refs
->>> [7/7] checking quota groups skipped (not enabled on this FS)
->>> found 13920420491265 bytes used, error(s) found
->>> total csum bytes: 13555483180
->>> total tree bytes: 17152835584
->>> total fs tree bytes: 1858191360
->>> total extent tree bytes: 563019776
->>> btree space waste bytes: 1424108973
->>> file data blocks allocated: 28183758581760
->>> referenced 19476700778496
->>>
->>> #:~/code/btrfs-progs$ git rev-parse HEAD
->>> 1169f4ee63d900b25d9828a539cee4f59f8e9ad7
->>> ```
->>>
->>> dmesg output:
->>> ```
->>> [Wed Jan  4 19:52:39 2023] BTRFS info (device dm-5): using crc32c
->>> (crc32c-intel) checksum algorithm
->>> [Wed Jan  4 19:52:39 2023] BTRFS info (device dm-5): allowing 
->>> degraded mounts
->>> [Wed Jan  4 19:52:39 2023] BTRFS info (device dm-5): disk space
->>> caching is enabled
->>> [Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
->>> /dev/mapper/8HJK8KGH errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
->>> [Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
->>> /dev/mapper/8HHW90DY errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
->>> [Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
->>> /dev/mapper/1EV13X7B errs: wr 0, rd 0, flush 0, corrupt 18, gen 2
->>> [Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
->>> /dev/mapper/K1KLMBZN errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
->>> [Wed Jan  4 19:52:41 2023] BTRFS critical (device dm-5): corrupt leaf:
->>> block=45382409060352 slot=31 extent bytenr=12462950973440 len=16384
->>> previous extent [12462950961152 169 0] overlaps current extent
->>> [12462950973440 169 0]
->>> [Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): read time tree
->>> block corruption detected on logical 45382409060352 mirror 2
->>> [Wed Jan  4 19:52:41 2023] BTRFS critical (device dm-5): corrupt leaf:
->>> block=45382409060352 slot=31 extent bytenr=12462950973440 len=16384
->>> previous extent [12462950961152 169 0] overlaps current extent
->>> [12462950973440 169 0]
-> 
-> Sometimes I have to say, tree-checker is more to-the-point than 
-> btrfs-check.
-> 
-> It's very plain that one metadata backref item overlaps with the 
-> previous one.
-> 
-> Which can be very problematic (the content of tree block overlapping is 
-> not a good thing at all).
-> 
->>> [Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): read time tree
->>> block corruption detected on logical 45382409060352 mirror 1
->>> [Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): failed to read
->>> block groups: -5
->>> [Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): open_ctree failed
->>> ```
->>>
->>> Linux leblanc 6.0.0-6-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.0.12-1
->>> (2022-12-09) x86_64 GNU/Linux
->>>
->>> #~/code/btrfs-progs$ sudo ./btrfs filesystem show /dev/mapper/1EV13X7B
->>> Label: 'storage2'  uuid: 7b01dd5a-cfa3-4918-a714-03ca7682fbdc
->>>         Total devices 4 FS bytes used 12.66TiB
->>>         devid    3 size 10.91TiB used 9.10TiB path /dev/mapper/8HJK8KGH
->>>         devid    4 size 10.91TiB used 9.10TiB path /dev/mapper/8HHW90DY
->>>         devid    5 size 5.46TiB used 3.65TiB path /dev/mapper/1EV13X7B
->>>         devid    6 size 5.46TiB used 3.65TiB path /dev/mapper/K1KLMBZN
->>>
->>> Let me know what would be useful, I've been using BTRFS since the
->>> early days and want to help it get better.
->>
->> As a test I booted back into the previous kernel and was able to mount
->> the file system "just fine". My guess is that the patch I found
->> uncovered a ticking time bomb.
-> 
-> That's mostly right, newer kernel has way more sanity checks to prevent 
-> any obvious bad data sneaking in.
-> 
-> Thus that's why older kernel just ignore it and continue mounting.
-> 
->> Is there a way to fix it?
-> 
-> For the repair, it may be a little dangerous.
-> 
-> Thus before doing any repair, it's recommended to backup critical data 
-> first.
-> But considering how large the array is, I totally understand it can be 
-> hard...
-> 
-> Firstly, you can go "btrfs check --repair", since your fs only has 
-> several extent tree problems, it can be repaired.
-> But please use the latest btrfs-progs.
-> 
 > Thanks,
 > Qu
->>
->> Linux leblanc 5.18.0-4-amd64 #1 SMP PREEMPT_DYNAMIC Debian 5.18.16-1
->> (2022-08-10) x86_64 GNU/Linux
->>
->> [Wed Jan  4 22:18:14 2023] BTRFS info (device dm-4): flagging fs with
->> big metadata feature
->> [Wed Jan  4 22:18:14 2023] BTRFS info (device dm-4): disk space
->> caching is enabled
->> [Wed Jan  4 22:18:14 2023] BTRFS info (device dm-4): has skinny extents
->> [Wed Jan  4 22:18:15 2023] BTRFS info (device dm-4): bdev
->> /dev/mapper/8HJK8KGH errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
->> [Wed Jan  4 22:18:15 2023] BTRFS info (device dm-4): bdev
->> /dev/mapper/8HHW90DY errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
->> [Wed Jan  4 22:18:15 2023] BTRFS info (device dm-4): bdev
->> /dev/mapper/1EV13X7B errs: wr 0, rd 0, flush 0, corrupt 18, gen 2
->> [Wed Jan  4 22:18:15 2023] BTRFS info (device dm-4): bdev
->> /dev/mapper/K1KLMBZN errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
->> [Wed Jan  4 22:19:35 2023] BTRFS info (device dm-4: state M): disk
->> space caching is enabled
->>
->> # btrfs filesystem show /mnt/storage
->> Label: 'storage2'  uuid: 7b01dd5a-cfa3-4918-a714-03ca7682fbdc
->>         Total devices 4 FS bytes used 12.66TiB
->>         devid    3 size 10.91TiB used 9.10TiB path /dev/mapper/8HJK8KGH
->>         devid    4 size 10.91TiB used 9.10TiB path /dev/mapper/8HHW90DY
->>         devid    5 size 5.46TiB used 3.65TiB path /dev/mapper/1EV13X7B
->>         devid    6 size 5.46TiB used 3.65TiB path /dev/mapper/K1KLMBZN
->>
->> I'm going to kick off a scrub as I never got notification from my cron
->> job that runs on the first that it completed.
->>
->> Thank you,
->> Robert LeBlanc
->> ----------------
->> Robert LeBlanc
->> PGP Fingerprint 79A2 9CA4 6CC4 45DD A904  C70E E654 3BB2 FA62 B9F1
+> 
+> > ---
+> >   fs/btrfs/Kconfig | 1 -
+> >   1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> > index 183e5c4aed348..37b6bab90c835 100644
+> > --- a/fs/btrfs/Kconfig
+> > +++ b/fs/btrfs/Kconfig
+> > @@ -17,7 +17,6 @@ config BTRFS_FS
+> >   	select FS_IOMAP
+> >   	select RAID6_PQ
+> >   	select XOR_BLOCKS
+> > -	select SRCU
+> >   	depends on PAGE_SIZE_LESS_THAN_256KB
+> >   	help
