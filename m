@@ -2,137 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C56965E264
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jan 2023 02:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B835665E52E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jan 2023 06:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbjAEBQC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Jan 2023 20:16:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        id S229519AbjAEFi7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Jan 2023 00:38:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjAEBPq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Jan 2023 20:15:46 -0500
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A1030578
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Jan 2023 17:15:44 -0800 (PST)
-Received: by mail-il1-f200.google.com with SMTP id r6-20020a92cd86000000b00304b2d1c2d7so22055945ilb.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Jan 2023 17:15:44 -0800 (PST)
+        with ESMTP id S229750AbjAEFia (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Jan 2023 00:38:30 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21C61CB14
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Jan 2023 21:38:27 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id y18-20020a0568301d9200b0067082cd4679so22018856oti.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Jan 2023 21:38:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=leblancnet-us.20210112.gappssmtp.com; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=eAw0jmLhNBXdgAg1RgQiWyOpDukDynIWgOlkk/D8ViI=;
+        b=PX6J3p2qGCVCI2Ni3EVasTL8JtnwwEpUrfLrT7nGvHyyM/SmpkbOCj3BDNHqG3n0h5
+         7C9pJO+Jj4XktPCcS4U9JmngSUH5KGQsfjLDCDW9JRM0JPolL+HMB5DyTfCLJQD0+UoB
+         zkeXGkGVwFCnaIkTzY1CqMnVh0zoGcdxcO+mvnyUeviMG31ARSqaqqEYO2dCZj8USl7B
+         SZUdRn2gZbturmti62FvPQ+Pv5g7xJ6aexali9vMQItAHqpSTu8+YAK5Qv69tFSsibX+
+         2vAR5Ywdr6lcEakZtx1+XhooQDNSy/h8k6hN7hoIiAFuEbyF2oJFa/jrYW6QO2XyC09X
+         pLSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g4XwA2WIOMhHxfPunRfxDwfkdvR24Gn3rMnr/1ezfYk=;
-        b=sWAB2YvEQRIhXHWCpX6EXCSAZNWb5VQKoGlcHoLUm+2tcF9l4hSbAe1eeJvSXejIh9
-         fYAPLGgNdYDdsR5cmHO+X1f60tUFexLDaZnSvEmH4s6PZ2fWkx4aJgKfQDIuMghgrGF0
-         D4+UOkbywU3RZBiRcHn8Vx7K2TAql+afr5Z8qYoXPiTCA1HENaXwBA+vxDeiQNKxcPZA
-         k7DvMp02J8sP9D54Ck8uF75rd/4jtk3IY8t/zVAGIHlQg2zF5zi+2nGPHx+txbWtiAHD
-         BuxpDLFFDn2tc1WD+lxmzKRh/hgWx2+PjdX082Z6gw1qn1kTAlZtavl62Uic4W5gpHu6
-         qKyw==
-X-Gm-Message-State: AFqh2kpC0UNRLSgLRzWZz449pSLo8tKWArJKn/gS1nUVCDQCNrmeoItQ
-        CANgKectMG8K+4xLaa06xKALcm+XbQu2MP9gJtfaGBGnancc
-X-Google-Smtp-Source: AMrXdXt1O0jsfhplciVZiLxUAY18ZG46Dpsl/NyiTpPavbg7IT/AlXwqYIpS0cyAxOktV7GGDkVAWBiKcz/7gBm0F9KO/hTjEd6f
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eAw0jmLhNBXdgAg1RgQiWyOpDukDynIWgOlkk/D8ViI=;
+        b=L11q9jgG9Y4h5+dULZQ7sqyrPx6jlNApENf7XADnBAS/zKQ7cEkU+ZNAvE3PKGR/H2
+         1n6HsPGKJfxgaGNxwuQt0iraiOGV+b/eTGHNuoLZVPYZTmphAWPT77/xiZD2NfVMkX0+
+         hLmSg4UGiW3V/gHNOb+QDoa7KMGqTbj3SgbBbBYHEoncxaQHjK0xdxvICmWJYNRXE5EH
+         0+eKbPTP+uAWBCW5vJ7e8X9A+U9S7lSbsWLVdVmw3fcrShdT5yA8p9EmKbE4yQwDl001
+         kAVjum1101RoHSdqmtjyOipo9EjmfZ4oFsYNMkVuOaBIQ5d9pR5itCQYykZHEBzoo53L
+         O86A==
+X-Gm-Message-State: AFqh2koYgHMd6dO3rUb4cvPD0JUWJUnAuelIW47ePz/AzuuzkgGpn7jQ
+        ZKSCy0ve+O9mKMR1HGgn8/MQmL9kYEdcDVPltjXWQZSKRodmhoY2uaVAqQ==
+X-Google-Smtp-Source: AMrXdXuY6+TlXMHaBqSdjhDgpxwFHgUXA8DVeMqCDYpNag0Ya2csVpwDQcqz3/ouLLCgJiLTGNt02jLfhnZIMZ9yjN8=
+X-Received: by 2002:a81:74d5:0:b0:474:f816:fcdb with SMTP id
+ p204-20020a8174d5000000b00474f816fcdbmr4377459ywc.265.1672895522841; Wed, 04
+ Jan 2023 21:12:02 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:a59a:0:b0:38a:b88c:7caa with SMTP id
- b26-20020a02a59a000000b0038ab88c7caamr4563338jam.10.1672881343829; Wed, 04
- Jan 2023 17:15:43 -0800 (PST)
-Date:   Wed, 04 Jan 2023 17:15:43 -0800
-In-Reply-To: <000000000000e5454b05f065a803@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000401c5105f17a0ac1@google.com>
-Subject: Re: [syzbot] [btrfs?] general protection fault in start_transaction
-From:   syzbot <syzbot+96977faa68092ad382c4@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+From:   Robert LeBlanc <robert@leblancnet.us>
+Date:   Wed, 4 Jan 2023 22:11:51 -0700
+Message-ID: <CAANLjFobOKhui5j1VsRkNSTF9SjRADtBennjoZE1jEPnU=iVaw@mail.gmail.com>
+Subject: File system can't mount
+To:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+I may have run into a new bug (I can't find anything in my Google
+search other than a patch that exposes the issue). I had to recreate
+my BTRFS file system about a year ago when I hit a bug in an earlier
+kernel. I was able to pull a good snapshot from my backups (and mount
+the old filesystem in read-only to get my media subvolume) and it had
+been running great for at least a year. My file system went offline
+today and just would not mount. I downloaded the latest btrfs-progs
+from git to see if it could handle it better, but no luck. This is a
+RAID-1 with 4 drives and the metadata is also RAID-1, but it looks
+like both copies of the metadata are corrupted the same way which is
+really odd and the drives show no errors. I tried taking the first
+drive that it complained about offline and tried to mount with `-o
+degraded` but it couldn't bring up the filesystem. It would be nice to
+try and recover this as I have a subvolume with my media server that
+isn't backed up because of the size, but the critical stuff is backed
+up.
 
-HEAD commit:    69b41ac87e4a Merge tag 'for-6.2-rc2-tag' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=143721cc480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9babfdc3dd4772d0
-dashboard link: https://syzkaller.appspot.com/bug?extid=96977faa68092ad382c4
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1382a02a480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c7f2c2480000
+Here is the `btrfs check` output:
+```
+#:~/code/btrfs-progs$ sudo ./btrfs check /dev/mapper/1EV13X7B
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/1EV13X7B
+UUID: 7b01dd5a-cfa3-4918-a714-03ca7682fbdc
+[1/7] checking root items
+[2/7] checking extents
+WARNING: tree block [12462950961152, 12462950977536) is not nodesize
+aligned, may cause problem for 64K page system
+ERROR: add_tree_backref failed (extent items tree block): File exists
+ERROR: add_tree_backref failed (non-leaf block): File exists
+tree backref 12462950957056 root 7 not found in extent tree
+incorrect global backref count on 12462950957056 found 1 wanted 0
+backpointer mismatch on [12462950957056 1]
+extent item 12462950961152 has multiple extent items
+ref mismatch on [12462950961152 16384] extent item 1, found 2
+backref 12462950961152 root 7 not referenced back 0x56292931ae60
+incorrect global backref count on 12462950961152 found 1 wanted 2
+backpointer mismatch on [12462950961152 16384]
+owner ref check failed [12462950961152 16384]
+bad metadata [12462950961152, 12462950977536) crossing stripe boundary
+data backref 12493662797824 root 13278 owner 193642 offset 0 num_refs
+0 not found in extent tree
+incorrect local backref count on 12493662797824 root 13278 owner
+193642 offset 0 found 1 wanted 0 back 0x562920287070
+incorrect local backref count on 12493662797824 root 17592186057694
+owner 193642 offset 0 found 0 wanted 1 back 0x562929472ba0
+backref disk bytenr does not match extent record,
+bytenr=12493662797824, ref bytenr=0
+backpointer mismatch on [12493662797824 24576]
+ERROR: errors found in extent allocation tree or chunk allocation
+[3/7] checking free space cache
+there is no free space entry for 12462950957056-12462950961152
+cache appears valid but isn't 12461878018048
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 13920420491265 bytes used, error(s) found
+total csum bytes: 13555483180
+total tree bytes: 17152835584
+total fs tree bytes: 1858191360
+total extent tree bytes: 563019776
+btree space waste bytes: 1424108973
+file data blocks allocated: 28183758581760
+referenced 19476700778496
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d3aac1573b20/disk-69b41ac8.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/31f5a860f3b3/vmlinux-69b41ac8.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d4a7091814ba/bzImage-69b41ac8.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/48b08567f044/mount_0.gz
+#:~/code/btrfs-progs$ git rev-parse HEAD
+1169f4ee63d900b25d9828a539cee4f59f8e9ad7
+```
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+96977faa68092ad382c4@syzkaller.appspotmail.com
+dmesg output:
+```
+[Wed Jan  4 19:52:39 2023] BTRFS info (device dm-5): using crc32c
+(crc32c-intel) checksum algorithm
+[Wed Jan  4 19:52:39 2023] BTRFS info (device dm-5): allowing degraded mounts
+[Wed Jan  4 19:52:39 2023] BTRFS info (device dm-5): disk space
+caching is enabled
+[Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
+/dev/mapper/8HJK8KGH errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
+[Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
+/dev/mapper/8HHW90DY errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
+[Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
+/dev/mapper/1EV13X7B errs: wr 0, rd 0, flush 0, corrupt 18, gen 2
+[Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
+/dev/mapper/K1KLMBZN errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
+[Wed Jan  4 19:52:41 2023] BTRFS critical (device dm-5): corrupt leaf:
+block=45382409060352 slot=31 extent bytenr=12462950973440 len=16384
+previous extent [12462950961152 169 0] overlaps current extent
+[12462950973440 169 0]
+[Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): read time tree
+block corruption detected on logical 45382409060352 mirror 2
+[Wed Jan  4 19:52:41 2023] BTRFS critical (device dm-5): corrupt leaf:
+block=45382409060352 slot=31 extent bytenr=12462950973440 len=16384
+previous extent [12462950961152 169 0] overlaps current extent
+[12462950973440 169 0]
+[Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): read time tree
+block corruption detected on logical 45382409060352 mirror 1
+[Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): failed to read
+block groups: -5
+[Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): open_ctree failed
+```
 
-BTRFS info (device loop3): qgroup scan completed (inconsistency flag cleared)
-general protection fault, probably for non-canonical address 0xdffffc0000000041: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000208-0x000000000000020f]
-CPU: 0 PID: 33 Comm: kworker/u4:2 Not tainted 6.2.0-rc2-syzkaller-00010-g69b41ac87e4a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-Workqueue: btrfs-qgroup-rescan btrfs_work_helper
-RIP: 0010:start_transaction+0x48/0x10f0 fs/btrfs/transaction.c:564
-Code: 48 89 fb 48 bd 00 00 00 00 00 fc ff df e8 b0 72 00 fe 48 89 5c 24 38 48 81 c3 08 02 00 00 48 89 d8 48 c1 e8 03 48 89 44 24 70 <80> 3c 28 00 74 08 48 89 df e8 7a 1c 56 fe 48 89 5c 24 60 48 8b 03
-RSP: 0018:ffffc90000aa7ab0 EFLAGS: 00010206
+Linux leblanc 6.0.0-6-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.0.12-1
+(2022-12-09) x86_64 GNU/Linux
 
-RAX: 0000000000000041 RBX: 0000000000000208 RCX: ffff888012a98000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: dffffc0000000000 R08: 0000000000000001 R09: fffff52000154f5d
-R10: fffff52000154f5d R11: 1ffff92000154f5c R12: 0000000000000000
-R13: 0000000000000001 R14: 0000000000000001 R15: 0000000000000003
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fc4b7306e68 CR3: 000000007c876000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_qgroup_rescan_worker+0x3bb/0x6a0 fs/btrfs/qgroup.c:3403
- btrfs_work_helper+0x312/0x850 fs/btrfs/async-thread.c:280
- process_one_work+0x877/0xdb0 kernel/workqueue.c:2289
- worker_thread+0xb14/0x1330 kernel/workqueue.c:2436
- kthread+0x266/0x300 kernel/kthread.c:376
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:start_transaction+0x48/0x10f0 fs/btrfs/transaction.c:564
-Code: 48 89 fb 48 bd 00 00 00 00 00 fc ff df e8 b0 72 00 fe 48 89 5c 24 38 48 81 c3 08 02 00 00 48 89 d8 48 c1 e8 03 48 89 44 24 70 <80> 3c 28 00 74 08 48 89 df e8 7a 1c 56 fe 48 89 5c 24 60 48 8b 03
-RSP: 0018:ffffc90000aa7ab0 EFLAGS: 00010206
-RAX: 0000000000000041 RBX: 0000000000000208 RCX: ffff888012a98000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: dffffc0000000000 R08: 0000000000000001 R09: fffff52000154f5d
-R10: fffff52000154f5d R11: 1ffff92000154f5c R12: 0000000000000000
-R13: 0000000000000001 R14: 0000000000000001 R15: 0000000000000003
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffdbdc81068 CR3: 000000007e8b3000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+#~/code/btrfs-progs$ sudo ./btrfs filesystem show /dev/mapper/1EV13X7B
+Label: 'storage2'  uuid: 7b01dd5a-cfa3-4918-a714-03ca7682fbdc
+       Total devices 4 FS bytes used 12.66TiB
+       devid    3 size 10.91TiB used 9.10TiB path /dev/mapper/8HJK8KGH
+       devid    4 size 10.91TiB used 9.10TiB path /dev/mapper/8HHW90DY
+       devid    5 size 5.46TiB used 3.65TiB path /dev/mapper/1EV13X7B
+       devid    6 size 5.46TiB used 3.65TiB path /dev/mapper/K1KLMBZN
+
+Let me know what would be useful, I've been using BTRFS since the
+early days and want to help it get better.
+
+Thank you,
+Robert LeBlanc
+
 ----------------
-Code disassembly (best guess):
-   0:	48 89 fb             	mov    %rdi,%rbx
-   3:	48 bd 00 00 00 00 00 	movabs $0xdffffc0000000000,%rbp
-   a:	fc ff df
-   d:	e8 b0 72 00 fe       	callq  0xfe0072c2
-  12:	48 89 5c 24 38       	mov    %rbx,0x38(%rsp)
-  17:	48 81 c3 08 02 00 00 	add    $0x208,%rbx
-  1e:	48 89 d8             	mov    %rbx,%rax
-  21:	48 c1 e8 03          	shr    $0x3,%rax
-  25:	48 89 44 24 70       	mov    %rax,0x70(%rsp)
-* 2a:	80 3c 28 00          	cmpb   $0x0,(%rax,%rbp,1) <-- trapping instruction
-  2e:	74 08                	je     0x38
-  30:	48 89 df             	mov    %rbx,%rdi
-  33:	e8 7a 1c 56 fe       	callq  0xfe561cb2
-  38:	48 89 5c 24 60       	mov    %rbx,0x60(%rsp)
-  3d:	48 8b 03             	mov    (%rbx),%rax
-
+Robert LeBlanc
+PGP Fingerprint 79A2 9CA4 6CC4 45DD A904  C70E E654 3BB2 FA62 B9F1
