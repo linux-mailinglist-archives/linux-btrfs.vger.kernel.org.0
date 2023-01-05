@@ -2,56 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D54A65E5B0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jan 2023 07:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F1865E5EE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jan 2023 08:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229569AbjAEGoY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Jan 2023 01:44:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
+        id S229839AbjAEHSl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Jan 2023 02:18:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjAEGoX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Jan 2023 01:44:23 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0AE4BD75
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Jan 2023 22:44:21 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKbkC-1pVxpm34t2-00Kz0W; Thu, 05
- Jan 2023 07:44:19 +0100
-Message-ID: <4f134378-4298-bc28-c17a-8415ffdc19e9@gmx.com>
-Date:   Thu, 5 Jan 2023 14:44:16 +0800
+        with ESMTP id S229680AbjAEHSk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Jan 2023 02:18:40 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45E02003;
+        Wed,  4 Jan 2023 23:18:38 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6098D6B4CC;
+        Thu,  5 Jan 2023 07:18:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1672903117; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=vDaeroessdr9azGpDl4avENGziEkQvuyVBjk1ecc3dE=;
+        b=aRYm7OxdCBm+xVEqrPlh2gnIsbjw4URPpuljwytYxWj7iUR6qTbWR1kMlusDRx0Eczwib1
+        L3yFm6yPnq04uRPx0UxIqb8LX63ETgXIXMSjjgL7fhy/DrON10nwKefx+CairicoLZGzIb
+        d4nVJIQYw9t2cdCDvExUocbLhhhDGT0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8A11313273;
+        Thu,  5 Jan 2023 07:18:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id En+YFcx5tmN2ewAAMHmgww
+        (envelope-from <wqu@suse.com>); Thu, 05 Jan 2023 07:18:36 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] btrfs: add a test case to verify scrub speed throttle works
+Date:   Thu,  5 Jan 2023 15:18:19 +0800
+Message-Id: <20230105071819.44226-1-wqu@suse.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Content-Language: en-US
-To:     Robert LeBlanc <robert@leblancnet.us>, linux-btrfs@vger.kernel.org
-References: <CAANLjFobOKhui5j1VsRkNSTF9SjRADtBennjoZE1jEPnU=iVaw@mail.gmail.com>
- <CAANLjFraYrdzZLv0ZcW=1sfnKSnbbb08qEpVHiAQHZQ181epjg@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: File system can't mount
-In-Reply-To: <CAANLjFraYrdzZLv0ZcW=1sfnKSnbbb08qEpVHiAQHZQ181epjg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:exgq/xOMS2lCZywyQMsUxb06elhTidlICnbdCH27ALd0+BkDh3B
- Dq0ak0QQw3CoD+ZeiZkvJNv2GVfXU0kCj+S4zLy6/uQBNWdYharAdx8x+bJ4HL+AKhVZtf7
- L0b/akRXNNFadlNtWIkFPvZIaiV7xIEbed8MqRifHgLejxDUgoDyycuaEYDMArvpuX+tf8y
- 8VgQvvHJgZd9ooU5eAY3A==
-UI-OutboundReport: notjunk:1;M01:P0:XYM7HZExfww=;a/GfSGDmPO47OzGi8zyy6U1re1t
- JaR8w27ECbq1eOgC8qWo7WJnvk53Tc66/iXntceQfw7CcPpYzvtZMWfbB/GI3nKCZZunI1akd
- 8q1duO/hWQZu539FXy1iAYwZHwSKao347PmoXu24N9t0M2B7J94a1I843MD5L5ug4JAsFK7w/
- F+uwgRpDpzzc+SElg4EJGvpv6khTtVfwpTWsdW8bZi5srfAFHHCk8lbBWRmM1lmyQESl3mvYs
- vvOWkqE+5no7Ih8qRQEb8FSHz9WwwkbvH5PFZgoWfqyTuZGLRAqwLHiXj++Wl9yLRoDtZ9Fa4
- 8wyUTSljxswVu6z+0WIPRXbnfrtmA01cWaplXbLTAOnt/bD0VMMcGG27hHR7xrQDEUfbnRqqY
- H+JMTRy6vKFrn3P95gnvApu38GU3e7QirLJ8aCDIulzS2DxpY/p8P+8gfDlCxW0S3fqzyZq3P
- mX700w0imV9mzKJkpJTThkpxfsQYD1myRj22+K5t62FKQHu0PneH+9T+ofXAQFCKEU0WCTmrR
- FgSkkKiQbsKEIJR322Lqsgbg6Mu5IP26YsO8F/mviQidG8p2SDjphVxf+1QS17bHVMg/ia8+A
- ipZzJQH19WnTWIK5a9ywkegbbWYB2iQIyUGAEDQfi6WIUYT1lCITVAC6gwhiEwG4O0LvVesjL
- 7tll1byoYEzRN6UL/Uy1JXE5urxqI1bC+gulB1IrxtuY+FZv0JNlgl78SbgPBQPB3eyQcj6/h
- KyeTAf5nZtS+s6HAwKFlo8Z///zaJwe++ByIThLq+Fc6Dje5eYo+xjVdQEWNeMhD8PmbALVh7
- MU0h0EyuyrejrPw1ewgK1tSqkeoqKQCZ5z9K6CTaVKhV9rRXia6eKeU+pPrmlXaIEL08Lxjfb
- EUMl4n5ysSawsz7RCbBCb5LXu66ltNRDwTAWoskGsgG+b9azvXEnUTwGFLt8YeGDaLM/i8xxx
- YHzio0F2tppLirdyxxg850243Os=
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,192 +54,150 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+We introduced scrub speed throttle in commit eb3b50536642 ("btrfs: scrub:
+per-device bandwidth control"),  but it is not that well documented
+(e.g. what's the unit of the sysfs interface), nor tested by any test
+case.
 
+This patch will add a test case for this functionality.
 
-On 2023/1/5 13:24, Robert LeBlanc wrote:
-> On Wed, Jan 4, 2023 at 10:11 PM Robert LeBlanc <robert@leblancnet.us> wrote:
->>
->> I may have run into a new bug (I can't find anything in my Google
->> search other than a patch that exposes the issue). I had to recreate
->> my BTRFS file system about a year ago when I hit a bug in an earlier
->> kernel. I was able to pull a good snapshot from my backups (and mount
->> the old filesystem in read-only to get my media subvolume) and it had
->> been running great for at least a year. My file system went offline
->> today and just would not mount. I downloaded the latest btrfs-progs
->> from git to see if it could handle it better, but no luck. This is a
->> RAID-1 with 4 drives and the metadata is also RAID-1, but it looks
->> like both copies of the metadata are corrupted the same way which is
->> really odd and the drives show no errors. I tried taking the first
->> drive that it complained about offline and tried to mount with `-o
->> degraded` but it couldn't bring up the filesystem. It would be nice to
->> try and recover this as I have a subvolume with my media server that
->> isn't backed up because of the size, but the critical stuff is backed
->> up.
->>
->> Here is the `btrfs check` output:
->> ```
->> #:~/code/btrfs-progs$ sudo ./btrfs check /dev/mapper/1EV13X7B
->> Opening filesystem to check...
->> Checking filesystem on /dev/mapper/1EV13X7B
->> UUID: 7b01dd5a-cfa3-4918-a714-03ca7682fbdc
->> [1/7] checking root items
->> [2/7] checking extents
->> WARNING: tree block [12462950961152, 12462950977536) is not nodesize
->> aligned, may cause problem for 64K page system
->> ERROR: add_tree_backref failed (extent items tree block): File exists
->> ERROR: add_tree_backref failed (non-leaf block): File exists
->> tree backref 12462950957056 root 7 not found in extent tree
->> incorrect global backref count on 12462950957056 found 1 wanted 0
->> backpointer mismatch on [12462950957056 1]
->> extent item 12462950961152 has multiple extent items
->> ref mismatch on [12462950961152 16384] extent item 1, found 2
->> backref 12462950961152 root 7 not referenced back 0x56292931ae60
->> incorrect global backref count on 12462950961152 found 1 wanted 2
->> backpointer mismatch on [12462950961152 16384]
->> owner ref check failed [12462950961152 16384]
->> bad metadata [12462950961152, 12462950977536) crossing stripe boundary
->> data backref 12493662797824 root 13278 owner 193642 offset 0 num_refs
->> 0 not found in extent tree
->> incorrect local backref count on 12493662797824 root 13278 owner
->> 193642 offset 0 found 1 wanted 0 back 0x562920287070
->> incorrect local backref count on 12493662797824 root 17592186057694
->> owner 193642 offset 0 found 0 wanted 1 back 0x562929472ba0
->> backref disk bytenr does not match extent record,
->> bytenr=12493662797824, ref bytenr=0
->> backpointer mismatch on [12493662797824 24576]
->> ERROR: errors found in extent allocation tree or chunk allocation
->> [3/7] checking free space cache
->> there is no free space entry for 12462950957056-12462950961152
->> cache appears valid but isn't 12461878018048
->> [4/7] checking fs roots
->> [5/7] checking only csums items (without verifying data)
->> [6/7] checking root refs
->> [7/7] checking quota groups skipped (not enabled on this FS)
->> found 13920420491265 bytes used, error(s) found
->> total csum bytes: 13555483180
->> total tree bytes: 17152835584
->> total fs tree bytes: 1858191360
->> total extent tree bytes: 563019776
->> btree space waste bytes: 1424108973
->> file data blocks allocated: 28183758581760
->> referenced 19476700778496
->>
->> #:~/code/btrfs-progs$ git rev-parse HEAD
->> 1169f4ee63d900b25d9828a539cee4f59f8e9ad7
->> ```
->>
->> dmesg output:
->> ```
->> [Wed Jan  4 19:52:39 2023] BTRFS info (device dm-5): using crc32c
->> (crc32c-intel) checksum algorithm
->> [Wed Jan  4 19:52:39 2023] BTRFS info (device dm-5): allowing degraded mounts
->> [Wed Jan  4 19:52:39 2023] BTRFS info (device dm-5): disk space
->> caching is enabled
->> [Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
->> /dev/mapper/8HJK8KGH errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
->> [Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
->> /dev/mapper/8HHW90DY errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
->> [Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
->> /dev/mapper/1EV13X7B errs: wr 0, rd 0, flush 0, corrupt 18, gen 2
->> [Wed Jan  4 19:52:41 2023] BTRFS info (device dm-5): bdev
->> /dev/mapper/K1KLMBZN errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
->> [Wed Jan  4 19:52:41 2023] BTRFS critical (device dm-5): corrupt leaf:
->> block=45382409060352 slot=31 extent bytenr=12462950973440 len=16384
->> previous extent [12462950961152 169 0] overlaps current extent
->> [12462950973440 169 0]
->> [Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): read time tree
->> block corruption detected on logical 45382409060352 mirror 2
->> [Wed Jan  4 19:52:41 2023] BTRFS critical (device dm-5): corrupt leaf:
->> block=45382409060352 slot=31 extent bytenr=12462950973440 len=16384
->> previous extent [12462950961152 169 0] overlaps current extent
->> [12462950973440 169 0]
+The test case itself is pretty straightforward:
 
-Sometimes I have to say, tree-checker is more to-the-point than btrfs-check.
+- Fill the fs with 2G file as scrub workload
+- Scrub without any throttle to grab the initial speed
+- Set the throttle to half of the initial speed
+- Scrub again and check the speed against the throttle
 
-It's very plain that one metadata backref item overlaps with the 
-previous one.
+The test case has an assumption that we can exclusively use all the
+performance of the underlying disk.
+But for cloud environment it's not ensured 100%, thus the test case is
+not included in auto group to avoid false alerts.
 
-Which can be very problematic (the content of tree block overlapping is 
-not a good thing at all).
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Instead of a hardcoded speed, run scrub to grab the performance and
+  set the throttle to half of the original speed
+  This reduced the test runtime from 60s to 30s on a SATA SSD.
 
->> [Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): read time tree
->> block corruption detected on logical 45382409060352 mirror 1
->> [Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): failed to read
->> block groups: -5
->> [Wed Jan  4 19:52:41 2023] BTRFS error (device dm-5): open_ctree failed
->> ```
->>
->> Linux leblanc 6.0.0-6-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.0.12-1
->> (2022-12-09) x86_64 GNU/Linux
->>
->> #~/code/btrfs-progs$ sudo ./btrfs filesystem show /dev/mapper/1EV13X7B
->> Label: 'storage2'  uuid: 7b01dd5a-cfa3-4918-a714-03ca7682fbdc
->>         Total devices 4 FS bytes used 12.66TiB
->>         devid    3 size 10.91TiB used 9.10TiB path /dev/mapper/8HJK8KGH
->>         devid    4 size 10.91TiB used 9.10TiB path /dev/mapper/8HHW90DY
->>         devid    5 size 5.46TiB used 3.65TiB path /dev/mapper/1EV13X7B
->>         devid    6 size 5.46TiB used 3.65TiB path /dev/mapper/K1KLMBZN
->>
->> Let me know what would be useful, I've been using BTRFS since the
->> early days and want to help it get better.
-> 
-> As a test I booted back into the previous kernel and was able to mount
-> the file system "just fine". My guess is that the patch I found
-> uncovered a ticking time bomb.
+- Use "btrfs scrub status" to grab raw scrub speed
+  The output of "btrfs scrub start -B" can not be switched to raw mode,
+  which makes later parsing harder.
+---
+ tests/btrfs/282     | 92 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/282.out |  3 ++
+ 2 files changed, 95 insertions(+)
+ create mode 100755 tests/btrfs/282
+ create mode 100644 tests/btrfs/282.out
 
-That's mostly right, newer kernel has way more sanity checks to prevent 
-any obvious bad data sneaking in.
+diff --git a/tests/btrfs/282 b/tests/btrfs/282
+new file mode 100755
+index 00000000..78b56528
+--- /dev/null
++++ b/tests/btrfs/282
+@@ -0,0 +1,92 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 282
++#
++# Make sure scrub speed limitation works as expected.
++#
++. ./common/preamble
++_begin_fstest scrub
++
++# Override the default cleanup function.
++# _cleanup()
++# {
++# 	cd /
++# 	rm -r -f $tmp.*
++# }
++
++. ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_wants_kernel_commit eb3b50536642 \
++	"btrfs: scrub: per-device bandwidth control"
++
++# We want at least 5G for the scratch device.
++_require_scratch_size $(( 5 * 1024 * 1024))
++
++_scratch_mkfs >> $seqres.full 2>&1
++_scratch_mount
++
++uuid=$(findmnt -n -o UUID $SCRATCH_MNT)
++
++devinfo_dir="/sys/fs/btrfs/${uuid}/devinfo/1"
++
++# Check if we have the sysfs interface first.
++if [ ! -f "${devinfo_dir}/scrub_speed_max" ]; then
++	_notrun "No sysfs interface for scrub speed throttle"
++fi
++
++# Create a 2G file for later scrub workload.
++# The 2G size is chosen to fit even DUP on a 5G disk.
++$XFS_IO_PROG -f -c "pwrite -i /dev/urandom 0 2G" $SCRATCH_MNT/file | _filter_xfs_io
++
++# Writeback above data, as scrub only verify the committed data.
++sync
++
++# The first scrub, mostly to grab the speed of the scrub.
++$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >> $seqres.full
++
++# We grab the rate from "scrub status" which supports raw bytes reporting
++#
++# The output looks like this:
++# UUID:             62eaabc5-93e8-445f-b8a7-6f027934aea7
++# Scrub started:    Thu Jan  5 14:59:12 2023
++# Status:           finished
++# Duration:         0:00:02
++# Total to scrub:   1076166656
++# Rate:             538083328/s
++# Error summary:    no errors found
++#
++# What we care is that Rate line.
++init_speed=$($BTRFS_UTIL_PROG scrub status --raw $SCRATCH_MNT | grep "Rate:" |\
++	     $AWK_PROG '{print $2}' | cut -f1 -d\/)
++
++# This can happen for older progs
++if [ -z "$init_speed" ]; then
++	_notrun "btrfs-progs doesn't support scrub rate reporting"
++fi
++
++# Cycle mount to drop any possible cache.
++_scratch_cycle_mount
++
++target_speed=$(( $init_speed / 2 ))
++echo "$target_speed" > "${devinfo_dir}/scrub_speed_max"
++
++# The second scrub, to check the throttled speed.
++$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >> $seqres.full
++speed=$($BTRFS_UTIL_PROG scrub status --raw $SCRATCH_MNT | grep "Rate:" |\
++	     $AWK_PROG '{print $2}' | cut -f1 -d\/)
++
++# We gave a +- 10% tolerance for the throttle
++if [ "$speed" -gt "$(( $target_speed * 11 / 10 ))" -o \
++     "$speed" -lt "$(( $target_speed * 9 / 10))" ]; then
++	echo "scrub speed $speed Bytes/s is not properly throttled, target is $target_speed Bytes/s"
++fi
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/282.out b/tests/btrfs/282.out
+new file mode 100644
+index 00000000..8d53e7eb
+--- /dev/null
++++ b/tests/btrfs/282.out
+@@ -0,0 +1,3 @@
++QA output created by 282
++wrote 2147483648/2147483648 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-- 
+2.39.0
 
-Thus that's why older kernel just ignore it and continue mounting.
-
-> Is there a way to fix it?
-
-For the repair, it may be a little dangerous.
-
-Thus before doing any repair, it's recommended to backup critical data 
-first.
-But considering how large the array is, I totally understand it can be 
-hard...
-
-Firstly, you can go "btrfs check --repair", since your fs only has 
-several extent tree problems, it can be repaired.
-But please use the latest btrfs-progs.
-
-Thanks,
-Qu
-> 
-> Linux leblanc 5.18.0-4-amd64 #1 SMP PREEMPT_DYNAMIC Debian 5.18.16-1
-> (2022-08-10) x86_64 GNU/Linux
-> 
-> [Wed Jan  4 22:18:14 2023] BTRFS info (device dm-4): flagging fs with
-> big metadata feature
-> [Wed Jan  4 22:18:14 2023] BTRFS info (device dm-4): disk space
-> caching is enabled
-> [Wed Jan  4 22:18:14 2023] BTRFS info (device dm-4): has skinny extents
-> [Wed Jan  4 22:18:15 2023] BTRFS info (device dm-4): bdev
-> /dev/mapper/8HJK8KGH errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
-> [Wed Jan  4 22:18:15 2023] BTRFS info (device dm-4): bdev
-> /dev/mapper/8HHW90DY errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
-> [Wed Jan  4 22:18:15 2023] BTRFS info (device dm-4): bdev
-> /dev/mapper/1EV13X7B errs: wr 0, rd 0, flush 0, corrupt 18, gen 2
-> [Wed Jan  4 22:18:15 2023] BTRFS info (device dm-4): bdev
-> /dev/mapper/K1KLMBZN errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
-> [Wed Jan  4 22:19:35 2023] BTRFS info (device dm-4: state M): disk
-> space caching is enabled
-> 
-> # btrfs filesystem show /mnt/storage
-> Label: 'storage2'  uuid: 7b01dd5a-cfa3-4918-a714-03ca7682fbdc
->         Total devices 4 FS bytes used 12.66TiB
->         devid    3 size 10.91TiB used 9.10TiB path /dev/mapper/8HJK8KGH
->         devid    4 size 10.91TiB used 9.10TiB path /dev/mapper/8HHW90DY
->         devid    5 size 5.46TiB used 3.65TiB path /dev/mapper/1EV13X7B
->         devid    6 size 5.46TiB used 3.65TiB path /dev/mapper/K1KLMBZN
-> 
-> I'm going to kick off a scrub as I never got notification from my cron
-> job that runs on the first that it completed.
-> 
-> Thank you,
-> Robert LeBlanc
-> ----------------
-> Robert LeBlanc
-> PGP Fingerprint 79A2 9CA4 6CC4 45DD A904  C70E E654 3BB2 FA62 B9F1
