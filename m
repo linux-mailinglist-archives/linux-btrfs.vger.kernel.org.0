@@ -2,131 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A991365FBE3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jan 2023 08:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E9965FC40
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jan 2023 08:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbjAFHZ3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Jan 2023 02:25:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50740 "EHLO
+        id S231810AbjAFHrK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Jan 2023 02:47:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjAFHZ2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Jan 2023 02:25:28 -0500
-Received: from out20-39.mail.aliyun.com (out20-39.mail.aliyun.com [115.124.20.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1836C6D534
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 Jan 2023 23:25:24 -0800 (PST)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04439172|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0149511-0.000266994-0.984782;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.Qlols-s_1672989916;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Qlols-s_1672989916)
-          by smtp.aliyun-inc.com;
-          Fri, 06 Jan 2023 15:25:22 +0800
-Date:   Fri, 06 Jan 2023 15:25:23 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: unexpected ENOSPC(space_info METADATA has -105644032 free)
-Message-Id: <20230106152516.8451.409509F4@e16-tech.com>
+        with ESMTP id S231831AbjAFHrI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Jan 2023 02:47:08 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EE213D2E
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Jan 2023 23:47:06 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6ll8-1p9qcT0zD4-008N1Z; Fri, 06
+ Jan 2023 08:47:03 +0100
+Message-ID: <3a220ba2-67a6-c3b8-6b07-cf70c1c80fc2@gmx.com>
+Date:   Fri, 6 Jan 2023 15:47:00 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Content-Language: en-US
+To:     Robert LeBlanc <robert@leblancnet.us>
+Cc:     Antonio Muci <a.mux@inwind.it>, linux-btrfs@vger.kernel.org
+References: <CAANLjFobOKhui5j1VsRkNSTF9SjRADtBennjoZE1jEPnU=iVaw@mail.gmail.com>
+ <CAANLjFraYrdzZLv0ZcW=1sfnKSnbbb08qEpVHiAQHZQ181epjg@mail.gmail.com>
+ <4f134378-4298-bc28-c17a-8415ffdc19e9@gmx.com>
+ <50ecc4dc-fbf1-8fca-5484-27de33a2ed85@gmx.com>
+ <0de3f1eb-4131-774b-74bc-ab2cfdd022de@inwind.it>
+ <b09e0dfc-a911-5eea-8a35-f829ab618b2d@gmx.com>
+ <CAANLjFroTEUcOLjfRs-4FWdSf_rgnSHpP8TkU8fo--SYrfjKCg@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: File system can't mount
+In-Reply-To: <CAANLjFroTEUcOLjfRs-4FWdSf_rgnSHpP8TkU8fo--SYrfjKCg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.81.04 [en]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Provags-ID: V03:K1:W2rxcpys0LfL7zAc/OGncj7YFFrvgVv9Y6irnHyXnfU5gd5RQwU
+ ChSDRDrMXzRcv8kVZ8Mu+gZv8s6Yw6/bKtCpUe8v4J/HvZCMJfqvnFUly1JMafwZBnqg2zj
+ AOGw8U+waNJ87/TXzDbvjDjRRHaIgz/E7e3qNKm7OyVEd1AxLKH3C26+jj9BO5GqWf8c8SJ
+ 1LQ8hDxeKSFUp+UhJS1xg==
+UI-OutboundReport: notjunk:1;M01:P0:L2BSfZvQ+Ps=;44BI7pVlZX4NSMbpo1OzTDoRszu
+ 1Ugoi1C/ADZCTgcGKspUUCG+rK6AdYpJV1EDvBfOE1dR2bW8ugO0RuA/0Z3BRS/kBxrWt3EoD
+ gMh4DDN+ETF/23Oif+G7C4UbbetVNHWF7YA6RRkuvFD7YEl1ooB/lpunEuXSLPcSpoTD3qoYB
+ RJjGVSJeF+0PecMUKM73n6M4HKHtGpOm8gnR+2hanWtEjiidQzof00ttNWchogD8jfwOTbfXs
+ fllGmyQYvRtSeepnBY22A2QJGt6STpqk3qOjfTEapn+k8DFzRi+1zbzkTxHHXAA/sa1CkSLvX
+ wLYfb90N68/Qn7UT+dpoOZGijRC7aiU/KLPk/UT7YBwalE2rSQMhn1/VkHU2wTSpMwot2UYTi
+ HiDsfX6DYBDB7z5jxavaMzattH02WT3zv3dCSaQy7p8RgNaHzi0mUovb4J2VdlJr95zAqndrQ
+ aKhAAp7lHHFMiYEl8Q0qzEGS0CnX2V7LdDLskjK2NQexfwwzDaOAgvRQz7QY0S4cCxnQbyw/N
+ IR6NlLetA15pJ0NM55xOVfh9yrdYs2myV3ayDHLjn2q1lUeXjeZyI/3Qpov7ahAAZkmE8aaYU
+ A/KO4JUI2OdtjXwasaGpKUKsTHHoF12RK6TfnYbpEs+6sHENPSq9K8QtjWeLxVqJdGsx41rbO
+ ScB3h3JeFbo8Ybwf3ZwMlWsYNu2w0VWWGPgLGUy6YxySpsajBkuAXJAycCwJJJIE7wIntM2TA
+ GtOrBp3PXmSv4w8xP7GenH/GOB6rtIV7MUhXTVGGF7Z6QfIXe0DBySa8vVWaKW5XRh39ycdQy
+ GLbV2FJIXbw2QHyyWFotHjZhtwhJREjtMB43PD5YiIQumHxJ2o4Q9ojo6ydS+NY4Se7tkyWr2
+ /E73T2FR/SdgZno/pbctAbKomvBjJHwYeGwgOW+w0Jhff4ru4aVEZtBSDolwfH7OGdAHRS9R1
+ WixhRMDIFpUf0RTMqxnrZ6fibs0=
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-
-unexpected ENOSPC(space_info METADATA has -105644032 free) happen.
-
-Test case: 
-1, run fstests generic/006 over nfs, and btrfs as nfsd back-end file
-system
-2, kernel 6.1.4-rc1, with btrfs code 6.2-rc2+
-3, output of 'df -h'
-/dev/nvme0n1p1          btrfs   20G  543M   19G   3% /mnt/test
-/dev/nvme0n1p2          btrfs  100G  4.0M   98G   1% /mnt/scratch
-
-test machine: ECC memory, and no ECC error.
-
-dmesg output:
-[ 3068.891594] run fstests generic/006 at 2023-01-06 15:08:56
-[ 3070.740195] ------------[ cut here ]------------
-[ 3070.744856] BTRFS: Transaction aborted (error -28)
-[ 3070.749720] WARNING: CPU: 4 PID: 623014 at fs/btrfs/extent-tree.c:3077 __btrfs_free_extent.isra.49.cold.70+0xa27/0xa80 [btrfs]
-[ 3070.761272] Modules linked in: overlay loop rpcsec_gss_krb5 nfsv4 dns_resolver nfs fscache netfs rpcrdma rdma_cm iw_cm ib_cm nfsd auth_rpcgss nfs_acl lockd grace rfkill ib_core sunrpc dm_multipath intel_rapl_msr intel_rapl_common snd_hda_codec_realtek sb_edac snd_hda_codec_generic snd_hda_codec_hdmi ledtrig_audio snd_hda_intel x86_pkg_temp_thermal snd_intel_dspcfg intel_powerclamp snd_intel_sdw_acpi snd_hda_codec coretemp nouveau snd_hda_core snd_hwdep kvm_intel snd_seq btrfs snd_seq_device mxm_wmi video mei_wdt kvm dcdbas blake2b_generic drm_display_helper snd_pcm xor iTCO_wdt cec raid6_pq irqbypass drm_ttm_helper iTCO_vendor_support dell_smm_hwmon zstd_compress mei_me snd_timer rapl intel_cstate dm_mod i2c_i801 snd ttm ses pcspkr intel_uncore lpc_ich enclosure mei i2c_smbus soundcore fuse xfs sd_mod sg nvme crct10dif_pclmul ahci crc32_pclmul libahci nvme_core crc32c_intel e1000e ata_generic ghash_clmulni_intel smartpqi libata nvme_common scsi_transport_sas t10_pi wmi i2c_dev
-[ 3070.848445] CPU: 4 PID: 623014 Comm: nfsd Tainted: G        W          6.1.4-0.7.el7.x86_64 #1
-[ 3070.857113] Hardware name: Dell Inc. Precision T3610/09M8Y8, BIOS A19 09/11/2019
-[ 3070.864569] RIP: 0010:__btrfs_free_extent.isra.49.cold.70+0xa27/0xa80 [btrfs]
-[ 3070.871816] Code: fa 48 c7 c6 58 6f 0b c1 48 8b 78 50 e8 ea 36 01 00 c6 44 24 27 01 e9 a1 fe ff ff 44 89 fe 48 c7 c7 28 6f 0b c1 e8 c1 6b 8b d2 <0f> 0b e9 49 fe ff ff 48 8b 44 24 08 44 89 fa 48 c7 c6 58 6f 0b c1
-[ 3070.890707] RSP: 0018:ffffbb7d080df900 EFLAGS: 00010286
-[ 3070.895978] RAX: 0000000000000000 RBX: ffffa0cac5aa30e0 RCX: 0000000000000000
-[ 3070.903160] RDX: ffffa0d20fa2c300 RSI: ffffa0d20fa1f860 RDI: ffffa0d20fa1f860
-[ 3070.910353] RBP: 00000000002b4000 R08: 0000000000000000 R09: c0000000fffdffff
-[ 3070.917545] R10: 0000000000000001 R11: ffffbb7d080df798 R12: 0000000000000000
-[ 3070.924788] R13: 0000000000000003 R14: 0000000000000003 R15: 00000000ffffffe4
-[ 3070.931970] FS:  0000000000000000(0000) GS:ffffa0d20fa00000(0000) knlGS:0000000000000000
-[ 3070.940110] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 3070.945905] CR2: 00007fdf74b3f090 CR3: 000000029ac10003 CR4: 00000000001706e0
-[ 3070.953087] Call Trace:
-[ 3070.955550]  <TASK>
-[ 3070.957676]  ? free_unref_page+0x11c/0x160
-[ 3070.961816]  ? call_rcu+0xca/0x5b0
-[ 3070.965243]  btrfs_run_delayed_refs_for_head+0x41c/0x980 [btrfs]
-[ 3070.971351]  ? btrfs_log_inode+0x486/0x1500 [btrfs]
-[ 3070.976307]  ? btrfs_tree_mod_log_lowest_seq+0x44/0x50 [btrfs]
-[ 3070.982238]  ? btrfs_merge_delayed_refs+0x31b/0x370 [btrfs]
-[ 3070.987908]  __btrfs_run_delayed_refs+0x9c/0x600 [btrfs]
-[ 3070.993306]  ? mutex_lock+0x1f/0x40
-[ 3070.996865]  ? btrfs_log_inode_parent+0x367/0xcb0 [btrfs]
-[ 3071.002351]  btrfs_run_delayed_refs+0x80/0x1a0 [btrfs]
-[ 3071.007568]  btrfs_commit_transaction+0x71/0xba0 [btrfs]
-[ 3071.012963]  ? dput.part.32+0xd6/0x2f0
-[ 3071.016743]  btrfs_sync_file+0x52b/0x560 [btrfs]
-[ 3071.021448]  nfsd_file_free+0xbf/0x210 [nfsd]
-[ 3071.025870]  __nfs4_file_put_access.part.92+0x53/0x80 [nfsd]
-[ 3071.031597]  nfs4_file_put_access+0x40/0x70 [nfsd]
-[ 3071.036457]  release_all_access+0x6c/0x80 [nfsd]
-[ 3071.041142]  nfs4_free_ol_stateid+0x22/0x60 [nfsd]
-[ 3071.046003]  nfs4_put_stid+0x55/0xa0 [nfsd]
-[ 3071.050255]  nfsd4_close+0x18e/0x3b0 [nfsd]
-[ 3071.054505]  ? nfsd4_encode_getattr+0x28/0x30 [nfsd]
-[ 3071.059539]  ? nfsd4_encode_operation+0xaa/0x280 [nfsd]
-[ 3071.064835]  nfsd4_proc_compound+0x3a4/0x750 [nfsd]
-[ 3071.069819]  nfsd_dispatch+0x15b/0x290 [nfsd]
-[ 3071.074242]  svc_process_common+0x316/0x5d0 [sunrpc]
-[ 3071.079282]  ? nfsd_svc+0x350/0x350 [nfsd]
-[ 3071.083438]  ? nfsd_shutdown_threads+0x90/0x90 [nfsd]
-[ 3071.088554]  svc_process+0xad/0x100 [sunrpc]
-[ 3071.092897]  nfsd+0xd5/0x190 [nfsd]
-[ 3071.096435]  kthread+0xe3/0x110
-[ 3071.099611]  ? kthread_complete_and_exit+0x20/0x20
-[ 3071.104445]  ret_from_fork+0x1f/0x30
-[ 3071.108062]  </TASK>
-[ 3071.110262] ---[ end trace 0000000000000000 ]---
-[ 3071.114924] BTRFS info (device nvme0n1p1: state A): dumping space info:
-[ 3071.121582] BTRFS info (device nvme0n1p1: state A): space_info DATA has 3730055168 free, is not full
-[ 3071.130786] BTRFS info (device nvme0n1p1: state A): space_info total=4294967296, used=561876992, pinned=0, reserved=3035136, may_use=0, readonly=0 zone_unusable=0
-[ 3071.145452] BTRFS info (device nvme0n1p1: state A): space_info METADATA has -105644032 free, is full
-[ 3071.154643] BTRFS info (device nvme0n1p1: state A): space_info total=1073741824, used=3522560, pinned=1062944768, reserved=7208960, may_use=105644032, readonly=65536 zone_unusable=0
-[ 3071.170927] BTRFS info (device nvme0n1p1: state A): space_info SYSTEM has 4161536 free, is not full
-[ 3071.180033] BTRFS info (device nvme0n1p1: state A): space_info total=4194304, used=16384, pinned=0, reserved=16384, may_use=0, readonly=0 zone_unusable=0
-[ 3071.193870] BTRFS info (device nvme0n1p1: state A): global_block_rsv: size 3670016 reserved 3670016
-[ 3071.202975] BTRFS info (device nvme0n1p1: state A): trans_block_rsv: size 1310720 reserved 1310720
-[ 3071.211991] BTRFS info (device nvme0n1p1: state A): chunk_block_rsv: size 0 reserved 0
-[ 3071.220002] BTRFS info (device nvme0n1p1: state A): delayed_block_rsv: size 0 reserved 0
-[ 3071.228143] BTRFS info (device nvme0n1p1: state A): delayed_refs_rsv: size 100663296 reserved 100663296
-[ 3071.237599] BTRFS: error (device nvme0n1p1: state A) in __btrfs_free_extent:3077: errno=-28 No space left
-[ 3071.247241] BTRFS info (device nvme0n1p1: state EA): forced readonly
-[ 3071.253648] BTRFS error (device nvme0n1p1: state EA): failed to run delayed ref for logical 2834432 num_bytes 16384 type 176 action 2 ref_mod 1: -28
-[ 3071.267058] BTRFS: error (device nvme0n1p1: state EA) in btrfs_run_delayed_refs:2151: errno=-28 No space left
-[ 3071.277093] BTRFS warning (device nvme0n1p1: state EA): Skipping commit of aborted transaction.
-[ 3071.285893] BTRFS: error (device nvme0n1p1: state EA) in cleanup_transaction:1984: errno=-28 No space left
 
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2023/01/06
+On 2023/1/6 14:17, Robert LeBlanc wrote:
+> On Thu, Jan 5, 2023 at 5:20 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>> There are several hidden assumptions.
+>>
+>> - For recently created/balanced btrfs, there should be no tree blocks
+>>     crossing stripe/64K page boundary
+>>     Thus a single backref crossing the boundary is not some common thing.
+>>
+>>     We should either get tons of such metadata, or none.
+>>
+>> - Dmesg itself only contains the obviously bad info
+>>     In your case, it's "btrfs check" result showing the details.
+>>     As kernel rejects the mount directly, without giving any chance
+>>     to look into the situation.
+>>
+>> - One backref is missing, one backref should not exist
+>>     This is already a hint to let us link those two backrefs.
+>>
+>>     And if we compare the hex of the two backrefs, we got one
+>>     bitflipped.
+>>
+>>     Furthermore this does not only matches the symptom, but also possible
+>>     to happen.
+>>     The metadata itself is fine, but when adding the backref, bitflip
+>>     happened in the key of the backref, resulting a missing backref for
+>>     the correct metadata, while a backref doesn't has any metadata for it.
+>>
+>> Thus I believe it's a memory bitflip.
+>>
+>> Thanks,
+>> Qu
+> 
+> Qu,
+> 
+> Your assumptions are spot on. One of the two memory dims is either bit
+> flipping or stuck on 0/1. After running memtest86+, I can verify that
+> some memory addresses create spoiled data. I'm currently running off
+> the good DIMM as I get some new RAM ordered and recovering from
+> backups (apparently my backups stopped in September of last year) and
+> then trying to pull off the newer data that I need from the bad file
+> systems.
+
+Well, I'd say that filesystem should still be over 99% fine.
+Even the memory hardware is faulty, it shouldn't cause huge damages for 
+the filesystem.
+
+> It's really odd that I never saw csum errors in dmesg and it
+> only appears that metadata got corrupted.
+
+That's because if the corruption happens for data, you won't be able to 
+see any csum mismatch.
+
+Because the corruption happens in memory, we calculate the csum using 
+the bad data, thus no csum mismatch would happen.
+
+You can only be sure by comparing with the backup.
+
+> It looks like some of my
+> more critical subvolumes I could either do a `btrfs send/receive` or
+> do an `rsync` of them from my NVMe btrfs. I hope the HDD will have
+> similar luck and since there weren't a lot of writes to my large
+> volume, I'm hoping that it escaped corruption.
+
+In fact, that bitflip seems to be the only corruption (that matters).
+Thus you can go "btrfs check --repair", and still use the fs
+(if after repair, the fs can pass btrfs check).
+
+> 
+> Thinking out loud here, with BTRFS being so good at detecting bit rot
+> on disk, could that be expanded to in-memory data structures kind of
+> like RAID with checksums?
+
+In fact, if you're using newer kernel from day 1, then such corruption 
+can be prevented directly.
+
+Newer kernel (v5.15+?) would reject any write that has obviously bad 
+metadata.
+
+Thus in your case, it would result a RO mount, but no such corruption.
+(But of course, if the memory bitflip happens for data, there is no way 
+to catch it)
+
+Thanks,
+Qu
+
+> But I guess the argument could be made to
+> use server grade hardware with ECC if you want that level of
+> protection.
 
 
+> 
+> Thank you,
+> Robert LeBlanc
+> 
+> ----------------
+> Robert LeBlanc
+> PGP Fingerprint 79A2 9CA4 6CC4 45DD A904  C70E E654 3BB2 FA62 B9F1
