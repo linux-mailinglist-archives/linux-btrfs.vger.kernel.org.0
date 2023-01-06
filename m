@@ -2,110 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DF665FE42
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jan 2023 10:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B76DB65FF62
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jan 2023 12:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232437AbjAFJqq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Jan 2023 04:46:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39014 "EHLO
+        id S232967AbjAFLN2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Jan 2023 06:13:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232090AbjAFJqQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Jan 2023 04:46:16 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC0A69B15
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Jan 2023 01:44:47 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id jo4so2335441ejb.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Jan 2023 01:44:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xlVDLzJGanbto4J5WaQuahd4zx7ayW+h2jsNvaLoGX4=;
-        b=LrmHRdr1Wt7PGtlF6VHxLO6aD5MuDP9YwOwtZvJcaX/CKj7S+83D4YnFQCwLCyvoKc
-         Bw0a0zlEJzUHjqeXZbmxrsgJZ7AHbVnQU3FvJ279rhrLvmUfqwF12diK3NFVCFV2bPG5
-         cTorqrH9VK8RPW+IHLf1Jy95gPAL4g0NbBfMjqp26in9/8pQzcQeKpb2VXAZz/2PiZZo
-         TXw9PKPdyWOd94pY5Z2ezaNd02j+27SXYncyNZzUhlSsEhvEY2szaW9cB1mPNWZ+AC2G
-         34XuOHmaEWgR6OcL3oom5NMtT577XyWyOPbfd9i5NDVATLN3ZcxbSTHQSFB9s4QqIX36
-         Z35g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xlVDLzJGanbto4J5WaQuahd4zx7ayW+h2jsNvaLoGX4=;
-        b=1Nm38lmXu4lzAwnN+tg99bD0oT7DJpM2/CMO1HxDU7Ez0l2LPxNy/PIiCwzHr4OBm1
-         cfoPhIQpzXjYb1aABMostdfAC4QrziNQ3fLbvdAn7zyg3Iug+8v2CR39t7torRQBkQ1M
-         uDb0CGn101Gy9YZe3u6QZFrUtFpu1xNaIux2YqmDlUB+y1YnYX1RTqx+tw4rcds+O2oH
-         ItmM4wf/A5MlagC56UwvcY26UUklklXbEJRTy8V8QP99FEVHx3d/jeWKnymC9PMsM5Pk
-         GASm/nmavNBTwnYy1g0UnQVjT/sbiankSmiC/SqhbbL/9g4UXI4jPx5MkRGFwzhJAyeA
-         IDPQ==
-X-Gm-Message-State: AFqh2kqtI3cSn/q+nxJUZQ2J/AEAO8Wusu96pP2ccMVvcxkxJQrEjrUF
-        j1r5YrBrhuh3MIWgU8i/uHoXGDZUdWYbvwGEIwU=
-X-Google-Smtp-Source: AMrXdXvm64IXEFXC6ttbUewbZlNz7Ng+4MCJ2TOkQljDXfpS0Gj9MyTWI5MvawwfpQWz68GaFxh2nRi4gm4OebY6wXc=
-X-Received: by 2002:a17:907:a803:b0:7c1:702a:ebbc with SMTP id
- vo3-20020a170907a80300b007c1702aebbcmr5782792ejc.288.1672998286272; Fri, 06
- Jan 2023 01:44:46 -0800 (PST)
+        with ESMTP id S232856AbjAFLNY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Jan 2023 06:13:24 -0500
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E710171498
+        for <linux-btrfs@vger.kernel.org>; Fri,  6 Jan 2023 03:13:23 -0800 (PST)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 199442407CF
+        for <linux-btrfs@vger.kernel.org>; Fri,  6 Jan 2023 12:13:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1673003602; bh=J9P94BxtItXW6o/Iny554YNCicCoXKIp+co+M1D+aso=;
+        h=Date:Subject:To:Cc:From:From;
+        b=SExmUx/kJyWwtQ7cfipgJX639V6OBVc8pIMzkej3rGsmZXUR5TUNonBg/8Wv5xp1E
+         p4e8jkQSaJPUWI5biDwpkQ/Z5NUeIENvyPyLeiUUskW3D9fqZsUfK6meLAfzel/Abs
+         2NGlIW8Xp9Zi8wyt31oq+S7Ri2KUio9rWt2wr7bzjyd9r9sggPLBZmVLuzyG3d+6/C
+         LS9w74O5ncU49H9NWiu/7Y7bCSj0tnAYY5XbYHDnkqkIT9EAqSre0bK0Cn6+vzyUUd
+         MtJcOhKFrO0SsKWAilqaGqJOJzPOPLHjbj4I7pgaAzF+wgZw7bMJHnL6i+OModXdTy
+         Uq24h6VY1b4aQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4NpLL92y9bz6tmH;
+        Fri,  6 Jan 2023 12:13:21 +0100 (CET)
+Message-ID: <d2f2cc90-a84a-1054-7be9-1bf4fc77c42c@posteo.de>
+Date:   Fri,  6 Jan 2023 11:13:21 +0000
 MIME-Version: 1.0
-Sender: davisalicia887@gmail.com
-Received: by 2002:a17:906:d0d5:b0:7c1:31f2:344a with HTTP; Fri, 6 Jan 2023
- 01:44:45 -0800 (PST)
-From:   Aisha Al-Qaddafi <aisha.gdaffi24@gmail.com>
-Date:   Thu, 5 Jan 2023 21:44:45 -1200
-X-Google-Sender-Auth: nBxBFNDqxtxLY48jximc0OP39gs
-Message-ID: <CAOG5YLRiMjjSCSW5B_gyqhiY-fk+tRAVm7Twf9yN-PWTO9sroA@mail.gmail.com>
-Subject: Good Day My beloved,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.9 required=5.0 tests=BAYES_99,BAYES_999,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_HUNDRED,
-        MILLION_USD,MONEY_FRAUD_5,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:644 listed in]
-        [list.dnswl.org]
-        *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
-        *      [score: 1.0000]
-        *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
-        *      [score: 1.0000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [davisalicia887[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [davisalicia887[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  1.5 MILLION_USD BODY: Talks about millions of dollars
-        *  0.0 MILLION_HUNDRED BODY: Million "One to Nine" Hundred
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  1.7 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.0 MONEY_FRAUD_5 Lots of money and many fraud phrases
-X-Spam-Level: ******
+Subject: Re: btrfs send and receive showing errors
+Content-Language: de-DE
+To:     Andrei Borzenkov <arvidjaar@gmail.com>,
+        Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org
+References: <b732e1e7-7b3a-cfa7-1345-d39feaa6a7a8@posteo.de>
+ <CAL3q7H72Z7v038psf9rPSjfWn96WDbxpbRx_73HAPvzzV4SB8g@mail.gmail.com>
+ <0ee56d23-9a3d-08ea-a303-e995c99d3f43@posteo.de>
+ <CAL3q7H4+A1mW5+hrVj-OZT8bGnaOQWCzwWJESquS0-aEu7teKg@mail.gmail.com>
+ <58eef5ef-b066-b2cd-e465-6bab43c1c748@posteo.de>
+ <82ee24b6-fa58-b03e-7765-b157556a2b37@gmail.com>
+ <cba9edbc-bde4-00e4-0f73-5063f5aef11d@posteo.de>
+ <76b72107-71c0-bbe7-c20e-2b26dba24abe@gmail.com>
+ <13c659bb-9238-4e06-6e3f-27f9c52774e3@posteo.de>
+ <63e8183f-dffb-3ac9-e791-f59e85d2f093@posteo.de>
+ <1539bde6-0b5d-6d15-848b-75493a6ebe06@gmail.com>
+ <0fd1ae43-6605-cee0-4859-53b9226eb865@gmail.com>
+From:   =?UTF-8?Q?Randy_N=c3=bcrnberger?= <ranuberger@posteo.de>
+In-Reply-To: <0fd1ae43-6605-cee0-4859-53b9226eb865@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Assalamu alaikum, I came across your e-mail contact prior to a private
-search while in need of your assistance. I am Aisha Al-Qaddafi, the
-only biological Daughter of Former President of Libya Col. Muammar
-Al-Qaddafi. Am a single Mother and a Widow with three Children. I have
-investment funds worth Twenty Seven Million Five Hundred Thousand
-United State Dollar ($27.500.000.00 ) and i need a trusted investment
-Manager/Partner because of my current refugee status, however, I am
-interested in you for investment project assistance in your country,
-maybe from there we can build business relationship in the nearest
-future. I am willing to negotiate an investment/business profit
-sharing ratio with you based on the future investment earning profits.
-If you are willing to handle this project on my behalf kindly reply
-urgently to enable me to provide you more information about the
-investment funds.
+On Thu, Jan 5, 2023 at 19:04, Andrei Borzenkov wrote:
+> On 05.01.2023 20:48, Andrei Borzenkov wrote:
+>> On 05.01.2023 19:47, Randy Nürnberger wrote:
+>>> On Thu, Jan 5, 2023 at 17:35, Randy Nürnberger wrote:
+>>>> On Thu, Jan 5, 2023 at 17:01, Andrei Borzenkov wrote:
+>>>>> On 05.01.2023 18:55, Randy Nürnberger wrote:
+>>>>>>
+>>>>>> I’ve attached the output of ‘btrfs subvolume list’ for the source 
+>>>>>> and
+>>>>>> the target filesystem.
+>>>>>>
+>>>>>
+>>>>> You have a lot of source subvolumes with the same received_uuid and
+>>>>> you have at least two destination subvolumes with the same
+>>>>> received_uuid. This is wrong, received_uuid is supposed to be unique
+>>>>> identification which explains your errors (incorrect subvolume is
+>>>>> selected).
+>>>>
+>>>> I guess many of my source subvolumes have the same received_uuid,
+>>>> because I created new snapshots from a snapshot that was previously
+>>>> received and the received_uuid just did get copied.
+>>>>
+>>>> I just did a small experiment on another system, created a snapshot
+>>>> from a snapshot that previously was received and could confirm that
+>>>> the received_uuid does indeed get copied. Is this a problem?
+>>>
+>>
+>> No, it is not a problem by itself. Subvolumes used for send/receive are
+>> supposed to be a remain read-only, so any clone of any subvolume should
+>> have identical content and you can use any of the clones with the same
+>> received_uuid. But as soon as you made subvolume read-write, you got
+>> multiple subvolumes with different content and the same receive_uuid.
+>> "Doctor, it hurts when I stab myself in the eye".
+>>
+>> Never, NEVER, ever, change  subvolume involved in send/receive to
+>> read-write to use it; clone it (create writable snapshot) and use clone.
+
+I mistakenly thought that creating a new writable snapshot and making a 
+read-only snapshot writable were the same operation.
+
+Thinking about it, I understand the difference and why it is there.
+
+>>
+>>> Ha! This seems to be the problem! I’m able to write a small script that
+>>> reproduces the bug! Give me a couple minutes.
+>>>
+>>> If this is a bug in the kernel,
+>>
+>> It is not so much a bug as the consequence of unfortunate design.
+>>
+>>> may I write the patch? :D Would be my
+>>> first one :)
+>>
+>> The problem is known for years (just search this list) and there are
+>> patches to clear received_uuid on ro -> rw transition but they are still
+>> not applied. Personally I would just prohibit such transition 
+>> completely.
+>
+> Correction - it was decided to implement in btrfs utils, not in 
+> kernel, so "btrfs property" will by default refuse to make read-write 
+> subvolume with received_uuid. This is implemented in 5.14.2.
+
+With this knowledge I managed to repare and successfully copy my filesystem.
+
+I have learned a lot. Thank you both for helping me and for your time.
