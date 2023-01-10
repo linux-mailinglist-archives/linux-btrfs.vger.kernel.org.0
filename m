@@ -2,174 +2,257 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CC46643C8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jan 2023 15:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0957664443
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jan 2023 16:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238786AbjAJO53 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Jan 2023 09:57:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
+        id S233462AbjAJPOi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Jan 2023 10:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238761AbjAJO47 (ORCPT
+        with ESMTP id S239237AbjAJPOB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Jan 2023 09:56:59 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A905458D16
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Jan 2023 06:56:57 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 10 Jan 2023 10:14:01 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E99BDC
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Jan 2023 07:13:55 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1A606B816AA
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Jan 2023 14:56:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ACAEC433D2
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Jan 2023 14:56:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673362611;
-        bh=vJalnNcCHxj47rpKQ8jOMYxy7T8XQYHqvl7ea3k3Ebk=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=aoCFaBNkK2ApYJMb00Ksc5He64Uas2vk+Rx4m9pqKh7aAdB55qgi+jDC4ZI3fyACc
-         zLZn+kUApXq2bXHaQd83WnEVJLCBSSefkXYGw/tGwMEbLa9ra4hA45uU+1SO2Z3u/p
-         mfPP30vWnAOHph5k5+jJ3iniDgbLNy/nAlGFhPZI0yOBql0Uv+mM9cMyZ6AVTHLHr6
-         wxgsYz2uiiKcl/U7ejx8uaCrVY8V4pLirHJjKwzrWV/q48E2Fne0Hu2dltknFbil3X
-         eVllnCRfdR4uMAptZkVNQFm2y2uTH9WUAWKQrmrfRgWmqLE6wUeIve9n4FDPx+UPXI
-         zRKL6IrAaN9hA==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 8/8] btrfs: use a single variable to track return value for log_dir_items()
-Date:   Tue, 10 Jan 2023 14:56:41 +0000
-Message-Id: <237ac621b36388b5e35aad20adc90b1da9f41970.1673361215.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1673361215.git.fdmanana@suse.com>
-References: <cover.1673361215.git.fdmanana@suse.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 808AB3F2A3;
+        Tue, 10 Jan 2023 15:13:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1673363633;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tsIADWYaoYedHPBsujZDkfYyy3UnN3lxl3NiI7N6zRI=;
+        b=jAhZnxP+ygAqJNvRQRDwbHHNb4jM36FVxgb9YI4CxbrfLXWHQzhHSE73NCTgnC/oRHhRZz
+        tnTApyLartBP+wuMKEp80lg/sxa5C9g6vmyUAFAAGNA81TCKc4pk4i4c9Yd/hKsgk/hVrR
+        r8AC6jfIhgHwF0AQxlIcDQFcZsUx6i0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1673363633;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tsIADWYaoYedHPBsujZDkfYyy3UnN3lxl3NiI7N6zRI=;
+        b=bvk6o6XuVIXfb2nQc+JLopFDsQ/10sR5LhmNSAy5hqwq2DOd7e0YsSSgyfnJC9NyD/floh
+        InnLnEXlv69qDdBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 15F6B13338;
+        Tue, 10 Jan 2023 15:13:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ILyBBLGAvWOreAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 10 Jan 2023 15:13:53 +0000
+Date:   Tue, 10 Jan 2023 16:08:18 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     robbieko <robbieko@synology.com>
+Cc:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] btrfs: fix unexpected -ENOMEM with
+ percpu_counter_init when create snapshot
+Message-ID: <20230110150818.GD11562@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20221214021125.28289-1-robbieko@synology.com>
+ <Y5oA3qBk+qMSyAR/@localhost.localdomain>
+ <20221214180718.GF10499@twin.jikos.cz>
+ <f1971de4-5355-6f57-46df-0a6cefb9ee95@synology.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <f1971de4-5355-6f57-46df-0a6cefb9ee95@synology.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Mon, Dec 19, 2022 at 02:54:06PM +0800, robbieko wrote:
+> 
+> David Sterba 於 2022/12/15 上午2:07 寫道:
+> > On Wed, Dec 14, 2022 at 11:59:10AM -0500, Josef Bacik wrote:
+> >> On Wed, Dec 14, 2022 at 10:11:22AM +0800, robbieko wrote:
+> >>> From: Robbie Ko <robbieko@synology.com>
+> >>>
+> >>> [Issue]
+> >>> When creating subvolume/snapshot, the transaction may be abort due to -ENOMEM
+> >>>
+> >>>    WARNING: CPU: 1 PID: 411 at fs/btrfs/transaction.c:1937 create_pending_snapshot+0xe30/0xe70 [btrfs]()
+> >>>    CPU: 1 PID: 411 Comm: btrfs Tainted: P O 4.4.180+ #42661
+> >>>    Call Trace:
+> >>>      create_pending_snapshot+0xe30/0xe70 [btrfs]
+> >>>      create_pending_snapshots+0x89/0xb0 [btrfs]
+> >>>      btrfs_commit_transaction+0x469/0xc60 [btrfs]
+> >>>      btrfs_mksubvol+0x5bd/0x690 [btrfs]
+> >>>      btrfs_mksnapshot+0x102/0x170 [btrfs]
+> >>>      btrfs_ioctl_snap_create_transid+0x1ad/0x1c0 [btrfs]
+> >>>      btrfs_ioctl_snap_create_v2+0x102/0x160 [btrfs]
+> >>>      btrfs_ioctl+0x2111/0x3130 [btrfs]
+> >>>      do_vfs_ioctl+0x7ea/0xa80
+> >>>      SyS_ioctl+0xa1/0xb0
+> >>>      entry_SYSCALL_64_fastpath+0x1e/0x8e
+> >>>    ---[ end trace 910c8f86780ca385 ]---
+> >>>    BTRFS: error (device dm-2) in create_pending_snapshot:1937: errno=-12 Out of memory
+> >>>
+> >>> [Cause]
+> >>> During creating a subvolume/snapshot, it is necessary to allocate memory for Initializing fs root.
+> >>> Therefore, it can only use GFP_NOFS to allocate memory to avoid deadlock issues.
+> >>> However, atomic allocation is required when processing percpu_counter_init
+> >>> without GFP_KERNEL due to the unique structure of percpu_counter.
+> >>> In this situation, allocating memory for initializing fs root may cause
+> >>> unexpected -ENOMEM when free memory is low and causes btrfs transaction to abort.
+> >>>
+> >>> [Fix]
+> >>> We allocate memory at the beginning of creating a subvolume/snapshot.
+> >>> This way, we can ensure the memory is enough when initializing fs root.
+> >>> Even -ENOMEM happens at the beginning of creating a subvolume/snapshot,
+> >>> the transaction won’t abort since it hasn’t started yet.
+> >> Honestly I'd rather just make the btrfs_drew_lock use an atomic_t for the
+> >> writers counter as well.  This is only taken in truncate an nocow writes, and in
+> >> nocow writes there are a looooot of slower things that have to be done that
+> >> we're not winning a lot with the percpu counter.  Is there any reason not to
+> >> just do that and leave all this code alone?  Thanks,
+> > The percpu counter for writers is there since the original commit
+> > 8257b2dc3c1a1057 "Btrfs: introduce btrfs_{start, end}_nocow_write() for
+> > each subvolume". The reason could be to avoid hammering the same
+> > cacheline from all the readers but then the writers do that anyway.
+> > This happens in context related to IO or there's some waiting anyway, so
+> > yeah using atomic for writers should be ok as well.
+> 
+> Sorry for the late reply, I've been busy recently.
+> This modification will not affect the original btrfs_drew_lock behavior,
+> and the framework can also provide future scenarios where memory
+> needs to be allocated in init_fs_root.
 
-We currently use 'ret' and 'err' to track the return value for
-log_dir_items(), which is confusing and likely the cause for previous
-bugs where log_dir_items() did not return an error when it should, fixed
-in previous patches.
+With the conversion to atomic_t the preallocation can remain unchanged
+as there would be only the anon bdev preallocated, then there's not much
+reason to have the infrastructure.
 
-So change this and use only a single variable, 'ret', to track the return
-value. This is simpler and makes it similar to most of the existing code.
+I'm now testing the patch below, it's relatively short an can be
+backported if needed but it can potentially make the performance worse
+in some cases.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 37 ++++++++++++++++++-------------------
- 1 file changed, 18 insertions(+), 19 deletions(-)
-
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 94fc8b08254c..997ba92481cb 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3793,7 +3793,6 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 	struct btrfs_key min_key;
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_root *log = root->log_root;
--	int err = 0;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index a7d5a3967ba0..7acedc6c2a56 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1523,15 +1523,7 @@ static int btrfs_init_fs_root(struct btrfs_root *root, dev_t anon_dev)
  	int ret;
- 	u64 last_old_dentry_offset = min_offset - 1;
- 	u64 last_offset = (u64)-1;
-@@ -3834,8 +3833,8 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 					      path->slots[0]);
- 			if (tmp.type == BTRFS_DIR_INDEX_KEY)
- 				last_old_dentry_offset = tmp.offset;
--		} else if (ret < 0) {
--			err = ret;
-+		} else if (ret > 0) {
-+			ret = 0;
- 		}
+ 	unsigned int nofs_flag;
  
- 		goto done;
-@@ -3858,7 +3857,6 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 		if (tmp.type == BTRFS_DIR_INDEX_KEY)
- 			last_old_dentry_offset = tmp.offset;
- 	} else if (ret < 0) {
--		err = ret;
- 		goto done;
- 	}
+-	/*
+-	 * We might be called under a transaction (e.g. indirect backref
+-	 * resolution) which could deadlock if it triggers memory reclaim
+-	 */
+-	nofs_flag = memalloc_nofs_save();
+-	ret = btrfs_drew_lock_init(&root->snapshot_lock);
+-	memalloc_nofs_restore(nofs_flag);
+-	if (ret)
+-		goto fail;
++	 btrfs_drew_lock_init(&root->snapshot_lock);
  
-@@ -3880,12 +3878,15 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 	 */
- search:
- 	ret = btrfs_search_slot(NULL, root, &min_key, path, 0, 0);
--	if (ret > 0)
-+	if (ret > 0) {
- 		ret = btrfs_next_item(root, path);
-+		if (ret > 0) {
-+			/* There are no more keys in the inode's root. */
-+			ret = 0;
-+			goto done;
-+		}
-+	}
- 	if (ret < 0)
--		err = ret;
--	/* If ret is 1, there are no more keys in the inode's root. */
--	if (ret != 0)
- 		goto done;
+ 	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID &&
+ 	    !btrfs_is_data_reloc_root(root)) {
+@@ -2242,7 +2234,6 @@ void btrfs_put_root(struct btrfs_root *root)
+ 		WARN_ON(test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state));
+ 		if (root->anon_dev)
+ 			free_anon_bdev(root->anon_dev);
+-		btrfs_drew_lock_destroy(&root->snapshot_lock);
+ 		free_root_extent_buffers(root);
+ #ifdef CONFIG_BTRFS_DEBUG
+ 		spin_lock(&root->fs_info->fs_roots_radix_lock);
+diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+index 870528d87526..3a496b0d3d2b 100644
+--- a/fs/btrfs/locking.c
++++ b/fs/btrfs/locking.c
+@@ -325,24 +325,12 @@ struct extent_buffer *btrfs_try_read_lock_root_node(struct btrfs_root *root)
+  * acquire the lock.
+  */
  
- 	/*
-@@ -3896,8 +3897,8 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 		ret = process_dir_items_leaf(trans, inode, path, dst_path, ctx,
- 					     &last_old_dentry_offset);
- 		if (ret != 0) {
--			if (ret < 0)
--				err = ret;
-+			if (ret > 0)
-+				ret = 0;
- 			goto done;
- 		}
- 		path->slots[0] = btrfs_header_nritems(path->nodes[0]);
-@@ -3908,10 +3909,10 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 		 */
- 		ret = btrfs_next_leaf(root, path);
- 		if (ret) {
--			if (ret == 1)
-+			if (ret == 1) {
- 				last_offset = (u64)-1;
--			else
--				err = ret;
-+				ret = 0;
-+			}
- 			goto done;
- 		}
- 		btrfs_item_key_to_cpu(path->nodes[0], &min_key, path->slots[0]);
-@@ -3942,7 +3943,7 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 	btrfs_release_path(path);
- 	btrfs_release_path(dst_path);
- 
--	if (err == 0) {
-+	if (ret == 0) {
- 		*last_offset_ret = last_offset;
- 		/*
- 		 * In case the leaf was changed in the current transaction but
-@@ -3953,15 +3954,13 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 		 * a range, last_old_dentry_offset is == to last_offset.
- 		 */
- 		ASSERT(last_old_dentry_offset <= last_offset);
--		if (last_old_dentry_offset < last_offset) {
-+		if (last_old_dentry_offset < last_offset)
- 			ret = insert_dir_log_key(trans, log, path, ino,
- 						 last_old_dentry_offset + 1,
- 						 last_offset);
--			if (ret)
--				err = ret;
--		}
- 	}
--	return err;
-+
-+	return ret;
+-int btrfs_drew_lock_init(struct btrfs_drew_lock *lock)
++void btrfs_drew_lock_init(struct btrfs_drew_lock *lock)
+ {
+-	int ret;
+-
+-	ret = percpu_counter_init(&lock->writers, 0, GFP_KERNEL);
+-	if (ret)
+-		return ret;
+-
+ 	atomic_set(&lock->readers, 0);
++	atomic_set(&lock->writers, 0);
+ 	init_waitqueue_head(&lock->pending_readers);
+ 	init_waitqueue_head(&lock->pending_writers);
+-
+-	return 0;
+-}
+-
+-void btrfs_drew_lock_destroy(struct btrfs_drew_lock *lock)
+-{
+-	percpu_counter_destroy(&lock->writers);
  }
  
- /*
--- 
-2.35.1
-
+ /* Return true if acquisition is successful, false otherwise */
+@@ -351,10 +339,10 @@ bool btrfs_drew_try_write_lock(struct btrfs_drew_lock *lock)
+ 	if (atomic_read(&lock->readers))
+ 		return false;
+ 
+-	percpu_counter_inc(&lock->writers);
++	atomic_inc(&lock->writers);
+ 
+ 	/* Ensure writers count is updated before we check for pending readers */
+-	smp_mb();
++	smp_mb__after_atomic();
+ 	if (atomic_read(&lock->readers)) {
+ 		btrfs_drew_write_unlock(lock);
+ 		return false;
+@@ -374,7 +362,7 @@ void btrfs_drew_write_lock(struct btrfs_drew_lock *lock)
+ 
+ void btrfs_drew_write_unlock(struct btrfs_drew_lock *lock)
+ {
+-	percpu_counter_dec(&lock->writers);
++	atomic_dec(&lock->writers);
+ 	cond_wake_up(&lock->pending_readers);
+ }
+ 
+@@ -390,8 +378,7 @@ void btrfs_drew_read_lock(struct btrfs_drew_lock *lock)
+ 	 */
+ 	smp_mb__after_atomic();
+ 
+-	wait_event(lock->pending_readers,
+-		   percpu_counter_sum(&lock->writers) == 0);
++	wait_event(lock->pending_readers, atomic_read(&lock->writers) == 0);
+ }
+ 
+ void btrfs_drew_read_unlock(struct btrfs_drew_lock *lock)
+diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
+index 11c2269b4b6f..edb9b4a0dba1 100644
+--- a/fs/btrfs/locking.h
++++ b/fs/btrfs/locking.h
+@@ -195,13 +195,12 @@ static inline void btrfs_tree_unlock_rw(struct extent_buffer *eb, int rw)
+ 
+ struct btrfs_drew_lock {
+ 	atomic_t readers;
+-	struct percpu_counter writers;
++	atomic_t writers;
+ 	wait_queue_head_t pending_writers;
+ 	wait_queue_head_t pending_readers;
+ };
+ 
+-int btrfs_drew_lock_init(struct btrfs_drew_lock *lock);
+-void btrfs_drew_lock_destroy(struct btrfs_drew_lock *lock);
++void btrfs_drew_lock_init(struct btrfs_drew_lock *lock);
+ void btrfs_drew_write_lock(struct btrfs_drew_lock *lock);
+ bool btrfs_drew_try_write_lock(struct btrfs_drew_lock *lock);
+ void btrfs_drew_write_unlock(struct btrfs_drew_lock *lock);
