@@ -2,93 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF03E66342B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Jan 2023 23:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6477466376C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jan 2023 03:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbjAIWlA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Jan 2023 17:41:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
+        id S229700AbjAJCiE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Jan 2023 21:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237984AbjAIWko (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Jan 2023 17:40:44 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAA21CB17
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 Jan 2023 14:40:39 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229560AbjAJCiD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Jan 2023 21:38:03 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424F7B7F0;
+        Mon,  9 Jan 2023 18:38:02 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 02CC03EF63;
-        Mon,  9 Jan 2023 22:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1673304038;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7O0K93Rf9mPB48D0qlFU1qkEmnjvuq6FFTWOdGPnw30=;
-        b=kp4DjPjQFbTxqDTFDNiru8EIJcKLqv3Nv5HUxf1VeRlsE45M6gbpomMG68moKKJQjxzSEV
-        cbvD9/6Xd4vZ+/yraoVwnlXmifsAPtVXINJYTbJ9dvhpBHZZcOUGdZsz7X+HPEOU4tAqdY
-        5fQmKAV5ziSTNQsdFWbtjPVOfCrPpgY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1673304038;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7O0K93Rf9mPB48D0qlFU1qkEmnjvuq6FFTWOdGPnw30=;
-        b=z5WPZMZMTov03Jd/kweXHKjQjx3LkLJ2O82h42FsF3wxI0wfHzlpNVHKvtt+TT+kPj0UrH
-        6LCGQZxbeQ0FnIAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CA5D513583;
-        Mon,  9 Jan 2023 22:40:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 3SZgMOWXvGM/IAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 09 Jan 2023 22:40:37 +0000
-Date:   Mon, 9 Jan 2023 23:35:03 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     waxhead <waxhead@dirtcellar.net>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: Btrfs progs release 6.1
-Message-ID: <20230109223503.GY11562@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20221222205716.4916-1-dsterba@suse.com>
- <00ac11fa-b6c9-6234-50db-3af1c2ae826c@dirtcellar.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00ac11fa-b6c9-6234-50db-3af1c2ae826c@dirtcellar.net>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CFEE8614BB;
+        Tue, 10 Jan 2023 02:38:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A862CC433EF;
+        Tue, 10 Jan 2023 02:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1673318281;
+        bh=Y64MR4JK48Pzp25aGh8zQ5wqMuidq5kQnWPvb8e5i9I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cEgGQa5zyUoGHgJLglyternN0KDprFlgUCd6BKIvxiD2upcGonWYYLG4H/yh6Ywbg
+         mhfo1DGbQOmqUd8qvuzP76ikYLMkESZ1gih+2voSna2iJrFiRvv6jIDGac5HZ6dRo/
+         9yjcHwGTRnn5HHiw2V0ZuL50gw2Z3KriC6g3L4ro=
+Date:   Mon, 9 Jan 2023 18:37:59 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Andrey Albershteyn <aalbersh@redhat.com>
+Subject: Re: [PATCH v2 10/11] fs/buffer.c: support fsverity in
+ block_read_full_folio()
+Message-Id: <20230109183759.c1e469f5f2181e9988f10131@linux-foundation.org>
+In-Reply-To: <20221223203638.41293-11-ebiggers@kernel.org>
+References: <20221223203638.41293-1-ebiggers@kernel.org>
+        <20221223203638.41293-11-ebiggers@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Dec 24, 2022 at 11:20:20AM +0100, waxhead wrote:
-> I have nagged about this before, but here goes again.
-> Can we as users get some kind of deduplicaiton support for btrfs-progs?
-> 
-> As a conservative Debian user I tend to stick with what is in the 
-> package repos, and I also believe that most people will feel more 
-> comfortable with a "official" implementation rather than some random 
-> program for this kind of stuff.
-> 
-> something as "simple" as "btrfs filesystem deduplicate -R /mnt" would be 
-> wonderful.
+On Fri, 23 Dec 2022 12:36:37 -0800 Eric Biggers <ebiggers@kernel.org> wrote:
 
-Yes, this is planned, it would be convenient to quickly deduplicate a
-few files or let it work on a directory. This would probably copy what
-duperemove does and most likely also steal the implementation as it's in
-C.
+> After each filesystem block (as represented by a buffer_head) has been
+> read from disk by block_read_full_folio(), verify it if needed.  The
+> verification is done on the fsverity_read_workqueue.  Also allow reads
+> of verity metadata past i_size, as required by ext4.
 
-I'm not sure if btrfs command should provide exactly the same set of
-features and options and duplicate the project, I think dupremove is not
-currently maintained. I don't want to reimplement everything from
-scratch so some level of sharing will make things easier, either direct
-copy or as git submodule. It'll start as an experimental command.
+Sigh.  Do we reeeeealy need to mess with buffer.c in this fashion?  Did
+any other subsystems feel a need to do this?
+
+> This is needed to support fsverity on ext4 filesystems where the
+> filesystem block size is less than the page size.
+
+Does any real person actually do this?
