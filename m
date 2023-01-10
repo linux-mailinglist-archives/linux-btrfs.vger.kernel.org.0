@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D048663BA7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jan 2023 09:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A98CD663F35
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jan 2023 12:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237132AbjAJItF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Jan 2023 03:49:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35530 "EHLO
+        id S232250AbjAJLXt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Jan 2023 06:23:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238058AbjAJInA (ORCPT
+        with ESMTP id S230246AbjAJLXb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Jan 2023 03:43:00 -0500
-Received: from out20-1.mail.aliyun.com (out20-1.mail.aliyun.com [115.124.20.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81DB4D481;
-        Tue, 10 Jan 2023 00:42:38 -0800 (PST)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.05019253|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.108887-0.000464039-0.890649;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047211;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.QpBQLz6_1673340153;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.QpBQLz6_1673340153)
+        Tue, 10 Jan 2023 06:23:31 -0500
+Received: from out20-51.mail.aliyun.com (out20-51.mail.aliyun.com [115.124.20.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5129F44C50;
+        Tue, 10 Jan 2023 03:23:26 -0800 (PST)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08125543|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0648409-0.00114849-0.934011;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.QpJ7-NX_1673349800;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.QpJ7-NX_1673349800)
           by smtp.aliyun-inc.com;
-          Tue, 10 Jan 2023 16:42:34 +0800
-Date:   Tue, 10 Jan 2023 16:42:35 +0800
+          Tue, 10 Jan 2023 19:23:21 +0800
+Date:   Tue, 10 Jan 2023 19:23:22 +0800
 From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: please rebase the patch queue-6.1(btrfs: fix an error handling path in btrfs_defrag_leaves)
-Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-In-Reply-To: <Y70aTKUaBOLah8EQ@kroah.com>
-References: <20230110123813.7DCC.409509F4@e16-tech.com> <Y70aTKUaBOLah8EQ@kroah.com>
-Message-Id: <20230110164234.14C5.409509F4@e16-tech.com>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH] btrfs/012: check if ext4 is available
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Zorro Lang <zlang@redhat.com>
+In-Reply-To: <20230110082924.1687152-1-johannes.thumshirn@wdc.com>
+References: <20230110082924.1687152-1-johannes.thumshirn@wdc.com>
+Message-Id: <20230110192321.34D5.409509F4@e16-tech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
@@ -42,53 +43,32 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Hi,
 
-> On Tue, Jan 10, 2023 at 12:38:14PM +0800, Wang Yugui wrote:
-> > Hi, Sasha Levin
-> > 
-> > please rebase the patch queue-6.1(btrfs: fix an error handling path in btrfs_defrag_leaves)
-> > just like queue-6.0, and then drop its 8 depency patches.
-> > 
-> > the 2 of 8 depency patches are file rename, so it will make later depency patch become
-> > difficult?
-> > #btrfs-move-btrfs_get_block_group-helper-out-of-disk-.patch
-> > #btrfs-move-flush-related-definitions-to-space-info.h.patch
-> > #btrfs-move-btrfs_print_data_csum_error-into-inode.c.patch
-> > #btrfs-move-fs-wide-helpers-out-of-ctree.h.patch
-> > #btrfs-move-assert-helpers-out-of-ctree.h.patch
-> > #btrfs-move-the-printk-helpers-out-of-ctree.h.patch
-> > #**btrfs-rename-struct-funcs.c-to-accessors.c.patch
-> > #**btrfs-rename-tree-defrag.c-to-defrag.c.patch
-> > 
-> > and the patch(btrfs: fix an error handling path in btrfs_defrag_leaves) is small,
-> > so a rebase will be a good choice.
+> btrfs/012 is requiring ext4 support to test the conversion, but the test
+> case is only checking if mkfs.ext4 is available, not if the filesystem
+> driver is actually available on the test host.
 > 
-> I do not understand, sorry, we can not rebase anything, that's not how
-> our patch queue works.
+> Check if the driver is available as well, before trying to run the test.
 > 
-> So what exactly do you want to see changed?  What patches dropped?  And
-> what added?
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  tests/btrfs/012 | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/tests/btrfs/012 b/tests/btrfs/012
+> index 60461a342545..86fbbb7ac189 100755
+> --- a/tests/btrfs/012
+> +++ b/tests/btrfs/012
+> @@ -32,6 +32,8 @@ _require_command "$E2FSCK_PROG" e2fsck
+>  _require_non_zoned_device "${SCRATCH_DEV}"
+>  _require_loop
+>  
+> +grep -q ext4 /proc/filesystems || _notrun "no ext4 support"
 
-What I suggest:
+when ext4 is module, and is not used, 'ext4' will not be in /proc/filesystems.
 
-1)replace queue-6.1/btrfs-fix-an-error-handling-path-in-btrfs_defrag_lea.patch
-        with queue-6.0/btrfs-fix-an-error-handling-path-in-btrfs_defrag_lea.patch
-
-2) drop pathes in queue-6.1/
-btrfs-move-btrfs_get_block_group-helper-out-of-disk-.patch
-btrfs-move-flush-related-definitions-to-space-info.h.patch
-btrfs-move-btrfs_print_data_csum_error-into-inode.c.patch
-btrfs-move-fs-wide-helpers-out-of-ctree.h.patch
-btrfs-move-assert-helpers-out-of-ctree.h.patch
-btrfs-move-the-printk-helpers-out-of-ctree.h.patch
-btrfs-rename-struct-funcs.c-to-accessors.c.patch
-btrfs-rename-tree-defrag.c-to-defrag.c.patch
+so we need a right way to check ext4 support.
 
 Best Regards
 Wang Yugui (wangyugui@e16-tech.com)
 2023/01/10
-
-> thanks,
-> 
-> greg k-h
-
 
