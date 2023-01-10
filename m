@@ -2,53 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED69A6637B9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jan 2023 04:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F167866383E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jan 2023 05:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235313AbjAJDLA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Jan 2023 22:11:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
+        id S229576AbjAJEif (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Jan 2023 23:38:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230058AbjAJDK6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Jan 2023 22:10:58 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB8CAE6F;
-        Mon,  9 Jan 2023 19:10:57 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C4A4614BA;
-        Tue, 10 Jan 2023 03:10:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13C58C433EF;
-        Tue, 10 Jan 2023 03:10:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673320256;
-        bh=5NobUZe3e86WKsQ4ysdFkOmOmqcIBSN1keo/Nf7bv98=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ACfctoYBs5wi1feupJMe9VvOxeQIJMM5nrQwNmiCsToT47F8O1JSPDC53r7j98Hie
-         ygskpNxEW8BTQT+iX61Eqd+KkTTpJ5sYjWcAimwT/+8yyQKIYG7srPe2mg1QuCJDXn
-         qvssUtahGRb7IhvQCwFNdGgUs3nxR0Am1B7byOwQNUjMrPi1SO0eeW+rzMyRTEfnYp
-         /ahZRGjcKFJJ09ckTVh4PPkcRe5gyBh3W1ZfAR2G8+FkYLgHtrDIE/Q5bOXRwt9dde
-         DsKg9ToAo9oaTON9UdkOjX0B4UAgtK8OJ/xei+3gzSEIGadBLHsihDA+iYgEuhvId2
-         Qox8Csj6RpLlA==
-Date:   Mon, 9 Jan 2023 19:10:54 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Andrey Albershteyn <aalbersh@redhat.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v2 00/11] fsverity: support for non-4K pages
-Message-ID: <Y7zXPoEQkmQs/Whw@sol.localdomain>
-References: <20221223203638.41293-1-ebiggers@kernel.org>
- <Y7xRIZfla92yzK9N@sol.localdomain>
- <20230109193446.mpmbodoctaddovpv@aalbersh.remote.csb>
+        with ESMTP id S229607AbjAJEib (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Jan 2023 23:38:31 -0500
+Received: from out20-37.mail.aliyun.com (out20-37.mail.aliyun.com [115.124.20.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709853F455;
+        Mon,  9 Jan 2023 20:38:28 -0800 (PST)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09634232|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.0343581-0.000111956-0.96553;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.QozhIRn_1673325493;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.QozhIRn_1673325493)
+          by smtp.aliyun-inc.com;
+          Tue, 10 Jan 2023 12:38:13 +0800
+Date:   Tue, 10 Jan 2023 12:38:14 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Subject: please rebase the patch queue-6.1(btrfs: fix an error handling path in btrfs_defrag_leaves)
+Message-Id: <20230110123813.7DCC.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230109193446.mpmbodoctaddovpv@aalbersh.remote.csb>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS autolearn=ham
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.81.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,30 +36,27 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 09, 2023 at 08:34:46PM +0100, Andrey Albershteyn wrote:
-> On Mon, Jan 09, 2023 at 09:38:41AM -0800, Eric Biggers wrote:
-> > On Fri, Dec 23, 2022 at 12:36:27PM -0800, Eric Biggers wrote:
-> > > [This patchset applies to mainline + some fsverity cleanups I sent out
-> > >  recently.  You can get everything from tag "fsverity-non4k-v2" of
-> > >  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git ]
-> > 
-> > I've applied this patchset for 6.3, but I'd still greatly appreciate reviews and
-> > acks, especially on the last 4 patches, which touch files outside fs/verity/.
-> > 
-> > (I applied it to
-> > https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git/log/?h=fsverity for now,
-> > but there might be a new git repo soon, as is being discussed elsewhere.)
-> > 
-> > - Eric
-> > 
-> 
-> The fs/verity patches look good to me, I've checked them but forgot
-> to send RVB :( Haven't tested them yet though
-> 
-> Reviewed-by: Andrey Albershteyn <aalbersh@redhat.com>
-> 
+Hi, Sasha Levin
 
-Thanks Andrey!  I added your Reviewed-by to patches 1-7 only, since you said
-"the fs/verity patches".  Let me know if I can add it to patches 8-11 too.
+please rebase the patch queue-6.1(btrfs: fix an error handling path in btrfs_defrag_leaves)
+just like queue-6.0, and then drop its 8 depency patches.
 
-- Eric
+the 2 of 8 depency patches are file rename, so it will make later depency patch become
+difficult?
+#btrfs-move-btrfs_get_block_group-helper-out-of-disk-.patch
+#btrfs-move-flush-related-definitions-to-space-info.h.patch
+#btrfs-move-btrfs_print_data_csum_error-into-inode.c.patch
+#btrfs-move-fs-wide-helpers-out-of-ctree.h.patch
+#btrfs-move-assert-helpers-out-of-ctree.h.patch
+#btrfs-move-the-printk-helpers-out-of-ctree.h.patch
+#**btrfs-rename-struct-funcs.c-to-accessors.c.patch
+#**btrfs-rename-tree-defrag.c-to-defrag.c.patch
+
+and the patch(btrfs: fix an error handling path in btrfs_defrag_leaves) is small,
+so a rebase will be a good choice.
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2023/01/10
+
+
