@@ -2,59 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 006AA6654CC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 07:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B976654DB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 07:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbjAKGs7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Jan 2023 01:48:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52512 "EHLO
+        id S231971AbjAKGuG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Jan 2023 01:50:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232010AbjAKGs5 (ORCPT
+        with ESMTP id S235950AbjAKGtq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Jan 2023 01:48:57 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B950FD13
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Jan 2023 22:48:55 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MRmfi-1pLVBN0O8Q-00TGzq; Wed, 11
- Jan 2023 07:48:47 +0100
-Message-ID: <46641c05-bfc6-018c-c153-4a8e62f59a2c@gmx.com>
-Date:   Wed, 11 Jan 2023 14:48:42 +0800
+        Wed, 11 Jan 2023 01:49:46 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB42101D0
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Jan 2023 22:49:45 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MlNp7-1oUdX50JxN-00lkkn; Wed, 11
+ Jan 2023 07:49:38 +0100
+Message-ID: <7a34bed7-acf7-3ce2-1adb-28e0526ea847@gmx.com>
+Date:   Wed, 11 Jan 2023 14:49:34 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
-Subject: Re: [PATCH 07/10] btrfs: submit the read bios from
- scrub_assemble_read_bios
+Subject: Re: [PATCH 08/10] btrfs: call rbio_orig_end_io from rmw_rbio
 Content-Language: en-US
 To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20230111062335.1023353-1-hch@lst.de>
- <20230111062335.1023353-8-hch@lst.de>
+ <20230111062335.1023353-9-hch@lst.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230111062335.1023353-8-hch@lst.de>
+In-Reply-To: <20230111062335.1023353-9-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:lBmKrcXjGcjnhavNn7rA1C6ApAQZ9nNj8IL/tkhp41vUJN/p2dE
- HObVAQzS5f6OHhIsWf2g/tz14b80k35XQBGuLbLGOlNFPU/4XFVSoF/ht7ecMSnDrU1sNA2
- IdlL3/qjx8rB8hJl2WvUhT9jN9bmjkNodsLhWKHjk0cGFOPxkf4PA++bHDSRKrOKcqL65XA
- OpAS6g9VcqY1wMXGJOtSg==
-UI-OutboundReport: notjunk:1;M01:P0:0VaGkFdLWP4=;0xF3s1eVxZskkxxxkm8oxSHlIrx
- COxddDwO5qsmI/zpg2DP+C7RxbWL51ykcL00u3BmvZvA1pv3T5h1ictRs34a0yX33z+LjncX2
- yP3qL71LOiD5Lrt0pc11xEOc7AaVNGJVNQQWv3aj2Ib71vxge0TfKyeASdYJCh96Rjj32w9Tw
- dtLfTIHe088aIjDRQFUwPnkH2T/EETVjVX/ba6+h2k52nhdqx4LiRiulZ+tEuwg7yUvmnJZOB
- o30jEBhQmFTSQm44KnYrBBqP++KhWflqSmC6+CbjfIUflc3hx+TFStfCFYFoXUxX8hQy/aaJ2
- s/8/hPt2Nquiipq61LROgOPrHmAUeQ3+n4s9B1DIwmGFQpOBEFjWvL2HXl7LjjYjKWVbs2sfa
- coYATVrchgO5qiolnrL1mJsrhyMXhAvHhC74gSjtfIACglZ8qN3ly9lXc3Q3ZLzFpjYZLrtnO
- IJBTeKq2+4zyUns1hA80c1G9qgcUO615B9hmTqSPFPoFE9dsFDw6GdvnNWF8Iu417EXQ08m3B
- UK0AX0ImaDiaPhLafPlo4C24Y65khl55xrn28SnKXFVvF+kJbQ9+4LydGgD7pjghFuD1uPan+
- UOtCH1jMW4uSFx6vSfK2GUvWyNprNYR8XR7Rrl30HLexpDB1ghENme2z2+6xh0sXSl8JHHXeB
- 8rpaq/usYndNTG3IbMtqmDuu8lqwF5hUGG5YL2tNb1VYb7C5lV+c5nnhtkyv5w7j23ng94kER
- IuGkWVm+XpA4RJCMDZYWHc1+cMjg+NDNdhpjNgoHFYifkuJ0DyPoOMbLADe6H7uZSQMRVIMT/
- sELwMOjm6qf592sGTM8l5SnTQmF+ZlxFAtkwbJOp05aya43sWUNIhJWi23TdDMOuCVrLYKkWm
- UVuv3+0PRN3mjbu2VDLRQNgoQ0muvxLuk+/MZgmta1letbTnmqGID9HpKnoinZyKp41imYwZ7
- 3U0Ctp428uJ/I8yYrRZ0MX667Ik=
+X-Provags-ID: V03:K1:eG36A8tgzdpjPIqnZOclVGgcx407I8BW5RJVtl+5mZ0FBqMDHZD
+ TGy+HlWQnEewwn6QIlh4VbVZODIsEc8tAlfO+VEDHGhfrzNn/0EFr4OaYvE9bFTJ6tWGhkp
+ PJg3bEWQ1OVLzUTkEb6SeJVXVzNYuJVsMWL+AjtVhJm6ViOvufOx0UlYDHIvuhMrfEdlG6Y
+ etCeux95gjykIa9kC+vYw==
+UI-OutboundReport: notjunk:1;M01:P0:cE6BwbLPW30=;Yapw1+dPVI/wk57MRulsMI0t6SS
+ 3QKd5AzVBWyjKnsYZ3e1zy4+wB32qUh6BSTCljWEO8P0F5sxZ3Kt/MlZF9Cr9Wj350loqWMSi
+ fIEMKaYrJXUKOc+8Kq4oF7Yu1dfeCakrGTT9x2c4ydFLKZByrae70+VPpr3C8tOpu7KuCGvJK
+ sontoBWDqpj9s08mm4XgWYfwetGZAD3ZknMHrdS9QHcwom//9QLI9kuilRzqgWyaWB791G7ml
+ L2j/LaPnLd6qpL3bH0VabeOxSGytOZJHDbIYlfYFVD5BwEV6co/onNbpfz1Vsq218oZgHRERF
+ EqVRuJIFlgDr8RG6UK7Ct0knPN/sDCUJfQd6PXywWUEHcxBDIZeYhUTiJhigyBDALwG+++rUi
+ wZe6kGaEoBUcw8kGfJYl5Cu9bmWNPBBIZNGxMX8Ra7AS8h8AQlZs6N09bs6EINUadoEx6asc5
+ 0U6KAtOtA8y3/L2cl4hKDuCyfcpOy3ybDoilROgtlIimKvUnO1Epbbgxhz/txpZgSHZQaFu9u
+ vHnvVFWMoFLnATcGLsX749X2lB8EJVT7gnefk2BD/9Obh8WOd1/6nHON48G6kxbouyDLvU/4d
+ eV8tk07w5XzLYsXs4zQ4XhZgS39bbbODDZlv7MrnqcaBzFrrEW3iPxaQTbe588jBPcn/wOPPc
+ aD/yVCwvB/y/KeoQ8/qzQOFOODhA2GYF1V/9QUBn5ze+w8oqkeILa2T6/TwocmOlWfYICSoB6
+ TBuoR2X+Vbzbj6jKjDzC0sna+Pry1LqloIe/MGw0Tf9QWXvRDHVLSyQI4Sy0Amph+YtZ5tN8V
+ 3yD+MICVnhF4ZOaIl2AJTs35Osojg/9vQ88D0gbm8eji4LxavFdzFEP2cEN4gcfOwsXrEwvBH
+ Qn+v+wPt6Jxz8mOxco3i6pn3jZugvGFqbUcgOnBuCAtQr9dtKLIT2GfA0rFVn6sUrZWa3K3mf
+ as7x74kAJYkQS/CzsEiOtORXido=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -67,112 +66,101 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2023/1/11 14:23, Christoph Hellwig wrote:
-> Instead of filling in a bio_list and submitting the bios in the only
-> caller, do that in scrub_assemble_read_bios.  This removes the
-> need to pass the bio_list, and also makes it clear that the extra
-> bio_list cleanup in the caller is entirely pointless.  Rename the
-> function to scrub_read_bios to make it clear that the bios are not
-> only assembled.
+> Both callers of rmv_rbio call rbio_orig_end_io right after it, so
+> move the call into the shared function.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Originally the idea of passing bio_list around is reuse the function to 
-submit and wait.
-
-But your cleanup has shown it can be smaller and simpler even without 
-reusing the same submit and wait function.
-
 Thanks,
 Qu
 > ---
->   fs/btrfs/raid56.c | 36 +++++++++++++-----------------------
->   1 file changed, 13 insertions(+), 23 deletions(-)
+>   fs/btrfs/raid56.c | 30 ++++++++++--------------------
+>   1 file changed, 10 insertions(+), 20 deletions(-)
 > 
 > diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index 88404a6b0b98e7..374c3873169b3f 100644
+> index 374c3873169b3f..a9947477daf26d 100644
 > --- a/fs/btrfs/raid56.c
 > +++ b/fs/btrfs/raid56.c
-> @@ -2668,14 +2668,12 @@ static int recover_scrub_rbio(struct btrfs_raid_bio *rbio)
->   	return ret;
+> @@ -2229,7 +2229,7 @@ static bool need_read_stripe_sectors(struct btrfs_raid_bio *rbio)
+>   	return false;
 >   }
 >   
-> -static int scrub_assemble_read_bios(struct btrfs_raid_bio *rbio,
-> -				    struct bio_list *bio_list)
-> +static int scrub_assemble_read_bios(struct btrfs_raid_bio *rbio)
+> -static int rmw_rbio(struct btrfs_raid_bio *rbio)
+> +static void rmw_rbio(struct btrfs_raid_bio *rbio)
 >   {
-> +	struct bio_list bio_list = BIO_EMPTY_LIST;
->   	int total_sector_nr;
->   	int ret = 0;
->   
-> -	ASSERT(bio_list_size(bio_list) == 0);
-> -
->   	/* Build a list of bios to read all the missing parts. */
->   	for (total_sector_nr = 0; total_sector_nr < rbio->nr_sectors;
->   	     total_sector_nr++) {
-> @@ -2704,42 +2702,38 @@ static int scrub_assemble_read_bios(struct btrfs_raid_bio *rbio,
->   		if (sector->uptodate)
->   			continue;
->   
-> -		ret = rbio_add_io_sector(rbio, bio_list, sector, stripe,
-> +		ret = rbio_add_io_sector(rbio, &bio_list, sector, stripe,
->   					 sectornr, REQ_OP_READ);
-> -		if (ret)
-> -			goto error;
-> +		if (ret) {
-> +			bio_list_put(&bio_list);
-> +			return ret;
-> +		}
->   	}
-> +
-> +	submit_read_wait_bio_list(rbio, &bio_list);
->   	return 0;
-> -error:
-> -	bio_list_put(bio_list);
-> -	return ret;
->   }
->   
->   static int scrub_rbio(struct btrfs_raid_bio *rbio)
->   {
->   	bool need_check = false;
-> -	struct bio_list bio_list;
->   	int sector_nr;
->   	int ret;
->   
-> -	bio_list_init(&bio_list);
-> -
->   	ret = alloc_rbio_essential_pages(rbio);
->   	if (ret)
-> -		goto cleanup;
-> +		return ret;
->   
->   	bitmap_clear(rbio->error_bitmap, 0, rbio->nr_sectors);
->   
-> -	ret = scrub_assemble_read_bios(rbio, &bio_list);
-> +	ret = scrub_assemble_read_bios(rbio);
+>   	struct bio_list bio_list;
+>   	int sectornr;
+> @@ -2241,7 +2241,7 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
+>   	 */
+>   	ret = alloc_rbio_parity_pages(rbio);
 >   	if (ret < 0)
-> -		goto cleanup;
-> -
-> -	submit_read_wait_bio_list(rbio, &bio_list);
-> +		return ret;
->   
->   	/* We may have some failures, recover the failed sectors first. */
->   	ret = recover_scrub_rbio(rbio);
->   	if (ret < 0)
-> -		goto cleanup;
-> +		return ret;
+> -		return ret;
+> +		goto out;
 >   
 >   	/*
->   	 * We have every sector properly prepared. Can finish the scrub
-> @@ -2757,10 +2751,6 @@ static int scrub_rbio(struct btrfs_raid_bio *rbio)
+>   	 * Either full stripe write, or we have every data sector already
+> @@ -2254,13 +2254,13 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
+>   		 */
+>   		ret = alloc_rbio_data_pages(rbio);
+>   		if (ret < 0)
+> -			return ret;
+> +			goto out;
+>   
+>   		index_rbio_pages(rbio);
+>   
+>   		ret = rmw_read_wait_recover(rbio);
+>   		if (ret < 0)
+> -			return ret;
+> +			goto out;
+>   	}
+>   
+>   	/*
+> @@ -2293,7 +2293,7 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
+>   	bio_list_init(&bio_list);
+>   	ret = rmw_assemble_write_bios(rbio, &bio_list);
+>   	if (ret < 0)
+> -		return ret;
+> +		goto out;
+>   
+>   	/* We should have at least one bio assembled. */
+>   	ASSERT(bio_list_size(&bio_list));
+> @@ -2310,32 +2310,22 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
+>   			break;
 >   		}
 >   	}
->   	return ret;
-> -
-> -cleanup:
-> -	bio_list_put(&bio_list);
 > -	return ret;
+> +out:
+> +	rbio_orig_end_io(rbio, errno_to_blk_status(ret));
 >   }
 >   
->   static void scrub_rbio_work_locked(struct work_struct *work)
+>   static void rmw_rbio_work(struct work_struct *work)
+>   {
+>   	struct btrfs_raid_bio *rbio;
+> -	int ret;
+>   
+>   	rbio = container_of(work, struct btrfs_raid_bio, work);
+> -
+> -	ret = lock_stripe_add(rbio);
+> -	if (ret == 0) {
+> -		ret = rmw_rbio(rbio);
+> -		rbio_orig_end_io(rbio, errno_to_blk_status(ret));
+> -	}
+> +	if (lock_stripe_add(rbio) == 0)
+> +		rmw_rbio(rbio);
+>   }
+>   
+>   static void rmw_rbio_work_locked(struct work_struct *work)
+>   {
+> -	struct btrfs_raid_bio *rbio;
+> -	int ret;
+> -
+> -	rbio = container_of(work, struct btrfs_raid_bio, work);
+> -
+> -	ret = rmw_rbio(rbio);
+> -	rbio_orig_end_io(rbio, errno_to_blk_status(ret));
+> +	rmw_rbio(container_of(work, struct btrfs_raid_bio, work));
+>   }
+>   
+>   /*
