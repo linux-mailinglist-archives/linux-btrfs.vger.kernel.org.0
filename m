@@ -2,58 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1489C6654DE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 07:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9D56654FD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 08:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235666AbjAKGvJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Jan 2023 01:51:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
+        id S229699AbjAKHGA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Jan 2023 02:06:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235676AbjAKGut (ORCPT
+        with ESMTP id S231695AbjAKHFy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Jan 2023 01:50:49 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E41FD2E
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Jan 2023 22:50:47 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mv31c-1oxy5o41ei-00r0P1; Wed, 11
- Jan 2023 07:50:41 +0100
-Message-ID: <0df9ef38-8c98-3c1a-6398-3f548b26af05@gmx.com>
-Date:   Wed, 11 Jan 2023 14:50:36 +0800
+        Wed, 11 Jan 2023 02:05:54 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069D4BB8
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Jan 2023 23:05:52 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3DNt-1pCSm63uDV-003cnP; Wed, 11
+ Jan 2023 08:05:48 +0100
+Message-ID: <98540b70-c7b8-5340-7a4d-ee6f43f6babf@gmx.com>
+Date:   Wed, 11 Jan 2023 15:05:45 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
-Subject: Re: [PATCH 10/10] btrfs: call rbio_orig_end_io from scrub_rbio
+Subject: Re: [PATCH] btrfs: keep sysfs features in tandem with runtime
+ features change
 Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20230111062335.1023353-1-hch@lst.de>
- <20230111062335.1023353-11-hch@lst.de>
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <ef0efdacd9bd53a55a02c6419b9ff0d51edf5408.1673412612.git.anand.jain@oracle.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230111062335.1023353-11-hch@lst.de>
+In-Reply-To: <ef0efdacd9bd53a55a02c6419b9ff0d51edf5408.1673412612.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:R1PMZcp3vQuddqE7KRFWGRGcH28Du0aK4BMxR17WTB7P8v7sb5E
- uQUZ5NwhDY3DtvPI5Vdi3tkLzcbIiAvFZUSzotWNfuTEbHSgpV5OtRyyBnZI1ONEmBeyMPC
- DmR4/gavJaKC5SZZn5z4M2YI90bmWLjJgJn5JuUw7hNBbHdcuaGpJsFTfzXrtXGGJePHdyy
- jizamLOwT0l00yagB7dxw==
-UI-OutboundReport: notjunk:1;M01:P0:xxg3ztOQS90=;v3Tqb+zL9KxOxmvTcIP5Df5E5nv
- i+8ttdS+1M7s1ochlHtHiHWXIBpao9rbV0kJK9PSbFIZ+i+/bHrz+3tQNmfEMKwRfd+9BJ68g
- P/cbEw5Xgj7CEYMX7O/WLxGci5DcnPTzFJLxMhXOw5p5kSeNiYswfVZHgdNcbrAqHXFHY9PcO
- g7eqVvetMxCDlOLUWkasvXcbRdXzlz2cM7ip733WMMWl0go0+nAw16Wz/HaHd1iVomP+Rf1PU
- CPP4i4Z2WRtZoI4kARj1OahQmEPhYNWtD/YV2O+EuP+X0kZL7E+qK67pNB8y6z/QfJgIPwd9J
- 7pQvd1j8KY955iiIxE4I+2OBihax/zUhFpz66tHbZNvQ4uCvFF+IhCculPftQXviUHSkiiy3+
- 6bsf7dAwiaJTZ60Gyw0bdRueo5l34xO/Lb3GxsPd9/oGE+fwEwWsGk3xZAQJMOLloX4zxah/P
- 6UOP54z4DFsY8s2SUdQs4JBisvUViUkX7kt+0VVXYvrrknxlsfGohXflbkH4LLgEy+QNmzg3e
- pbXoodaKcDZbvTNJnP9coCvnNvG4AjWEo2sr+dZAGC+4sDY2pWY/IPZcFIajkxz3Rmn0h7Msd
- rsGs5z7Y0TqiTgQGs2auaX4YcbcHt4xNCdAe4DyRPOW70qw20BjFb11ZncsVIbPyAB8bLB7+T
- 8+Jppw6uE6lj5hWQAu1SJWhvHbT0apkM5L9lZQqU+nlRIHpM36cO77iwxgzhN/a24iJG3k80i
- 5obPKA0eywEVxxqTY3V08o+ar5LayRzVxgfZXxFtlW5U1mCJ6pDuWYw9JgSNxCm6gKu3nosNB
- AWhig0vJi9dW9NnikYUUWmEy0w4hOpHff7UpGmJFbA76VfYi1ak6RYTjR8+0Pvreb7Ww+M5wL
- At0AJDcufKVdwfbDTpPY1GUgL1yMPj5JXSUSxByT0U9/aUcnKh/VSPzcg/mUnCCo811/QgPOn
- YqXUAF2+dAnyeS62pEGknDmDa6E=
+X-Provags-ID: V03:K1:a7OCplEnjEo0Ggh781azchhE2c20Q/uvekoX2R+/XQxZp2UojI8
+ rhFusd595ZPcGUALtaNZW5f2iQqwBmkpXLxfkF6YR+D5SnCf/ZBMnmW9sNP8JC9SOQ9cj7C
+ 2YkJQqs1R4GGJDqzbW3ylabH1TM0Y3mOLVICt6pGhT3b9q2chAsVyc44bSgaVQ5wEfL6MRX
+ z3EGpQjMWphlhjkQZTG0w==
+UI-OutboundReport: notjunk:1;M01:P0:Q+9xen9sj/g=;UHhiaSedEFKIdJuBtevpK7EjSd9
+ t6np1uhRlMTFyXWo7bSca1nBf4vViC1e/sfWxcvxn6s84hcpiFsaaFRE+io3/9in5W0tJuyj+
+ 6fwXFKHOcn7OcXHGgfsynWdrEHMZidfOEu0rITjRO17Tj5d/eycfnN6Y6ISmqqreXxu1vnKcU
+ hW3sufLImvc5FS5xe3oBvon8kjAZQK9VYeWaUyCenitzD1mUbmbCD24RYMBswWEeTXVga4N2G
+ KEipBQ/rfG8d0XMLekAXpLoihL0qPM96WMTk1hfSZjfpXwSY3nBRCg/N0XIkg0Imnqo1Zpw3y
+ a+FtOGZAXKYF89ZiIQsvijiL3w5w0kvX4jJW0anbsLvnlDgppzibuI+j7kTdp6CJl19rUN/vG
+ Gaj5/5zIwroXJ1vAsv6ncaNeyJeRT46o5Iemtszhbe/sRm14gfK7A+upqgfd3215Sov/GLl/t
+ DaFBc0+e1Lkup889tEDjzJl8gAY9CwTEqg8ENmwi8mj3r/HxGd7U8KZ2D1pg7/Li2GaduEHgm
+ erSZ4BxtGMPWMhMoQBUuccH6rEhqJbPdt3lYI2ZRCnmJr5RYIyTTQH6xrPmwsgUt7b0G+FlGx
+ 5KStvacG+p0XU76geEXrgrGzIitXac/tVZwzDEDZm9Nig6rwx11fhYVAxT0lXqUTFjkNY/btJ
+ cHTiWg3XtdMGRYcL8gB8avP20B3tGqpPW8yMRf2L3iENbxKScAjbzZoDvzNQENqcmNOXTR9n4
+ mtO6g/NCWjAYlr1uGsBxHs+e9KP5G3ETOo+f1GXqb9EgTl/VDhhrMRy5WG+HGnOjV4OOBepL+
+ KiG2NnUaT6UjZUTefGQTqXPuHOF4H8eSBp/5subRgWPOhu+v7nrOH8poRiU/I81c2o1ae5FF1
+ OmpSmBL/aIwGiRvJN2SOYORhOk5NYW7cuhSrjOm4ncHI4GBaZ4ax7dVc/I0lPm1emtpHUBhzz
+ puzdA+0NqYNC+tIIduqvxWlQVjw=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,73 +62,124 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/1/11 14:23, Christoph Hellwig wrote:
-> The only caller of scrub_rbio calls rbio_orig_end_io right after it,
-> move it into scrub_rbio to match the other work item helpers.
+On 2023/1/11 13:40, Anand Jain wrote:
+> When we change runtime features, the sysfs under
+> 	/sys/fs/btrfs/<uuid>/features
+> render stale.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> For example: (before)
+> 
+>   $ btrfs filesystem df /btrfs
+>   Data, single: total=8.00MiB, used=0.00B
+>   System, DUP: total=8.00MiB, used=16.00KiB
+>   Metadata, DUP: total=51.19MiB, used=128.00KiB
+>   global reserve, single: total=3.50MiB, used=0.00B
+> 
+>   $ ls /sys/fs/btrfs/d5ccbf34-bb40-4b4c-af62-8c6c8226f1b7/features/
+>   extended_iref free_space_tree no_holes skinny_metadata
+> 
+> Use balance to convert from single/dup to RAID5 profile.
+> 
+>   $ btrfs balance start -f -dconvert=raid5 -mconvert=raid5 /btrfs
+> 
+> Still, sysfs is unaware of raid5.
+> 
+>   $ ls /sys/fs/btrfs/d5ccbf34-bb40-4b4c-af62-8c6c8226f1b7/features/
+>   extended_iref free_space_tree no_holes skinny_metadata
+> 
+> Which doesn't match superblock
+> 
+>   $ btrfs in dump-super /dev/loop0
+> 
+>   incompat_flags 0x3e1
+>   ( MIXED_BACKREF |
+>   BIG_METADATA |
+>   EXTENDED_IREF |
+>   RAID56 |
+>   SKINNY_METADATA |
+>   NO_HOLES )
+> 
+> Require mount-recycle as a workaround.
+> 
+> Fix this by laying out all attributes on the sysfs at mount time. However,
+> return 0 or 1 when read, for used or unused, respectively.
+> 
+> For example: (after)
+> 
+>   $ ls /sys/fs/btrfs/d5ccbf34-bb40-4b4c-af62-8c6c8226f1b7/features/
+>   block_group_tree compress_zstd extended_iref free_space_tree mixed_groups raid1c34 skinny_metadata zoned
+> compress_lzo default_subvol extent_tree_v2 metadata_uuid no_holes raid56 verity
+> 
+>   $ cat /sys/fs/btrfs/d5ccbf34-bb40-4b4c-af62-8c6c8226f1b7/features/raid56
+>   0
+> 
+>   $ btrfs balance start -f -dconvert=raid5 -mconvert=raid5 /btrfs
+> 
+>   $ cat /sys/fs/btrfs/d5ccbf34-bb40-4b4c-af62-8c6c8226f1b7/features/raid56
+>   1
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Oh, I found this very confusing.
+
+Previously features/ directory just shows what we have (either in kernel 
+support or the specified fs), which is very straightforward.
+
+Changing it to 0/1 is way less easy to understand, and can be considered 
+as big behavior change.
+
+Is it really no way to change the fs' features?
 
 Thanks,
 Qu
-> ---
->   fs/btrfs/raid56.c | 18 +++++++-----------
->   1 file changed, 7 insertions(+), 11 deletions(-)
 > 
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index c007992bf4426c..d8dd25a8155a52 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -2695,7 +2695,7 @@ static int scrub_assemble_read_bios(struct btrfs_raid_bio *rbio)
->   	return 0;
+> A fstests test case will follow.
+> 
+> The source code changes involve removing the visible function pointer for
+> the btrfs_feature_attr_group, as it is an optional feature. And the
+> store/show part for the same is already implemented.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>   fs/btrfs/sysfs.c | 23 -----------------------
+>   1 file changed, 23 deletions(-)
+> 
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 45615ce36498..fa3354f8213f 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -256,28 +256,6 @@ static ssize_t btrfs_feature_attr_store(struct kobject *kobj,
+>   	return count;
 >   }
 >   
-> -static int scrub_rbio(struct btrfs_raid_bio *rbio)
-> +static void scrub_rbio(struct btrfs_raid_bio *rbio)
->   {
->   	bool need_check = false;
->   	int sector_nr;
-> @@ -2703,18 +2703,18 @@ static int scrub_rbio(struct btrfs_raid_bio *rbio)
->   
->   	ret = alloc_rbio_essential_pages(rbio);
->   	if (ret)
-> -		return ret;
-> +		goto out;
->   
->   	bitmap_clear(rbio->error_bitmap, 0, rbio->nr_sectors);
->   
->   	ret = scrub_assemble_read_bios(rbio);
->   	if (ret < 0)
-> -		return ret;
-> +		goto out;
->   
->   	/* We may have some failures, recover the failed sectors first. */
->   	ret = recover_scrub_rbio(rbio);
->   	if (ret < 0)
-> -		return ret;
-> +		goto out;
->   
->   	/*
->   	 * We have every sector properly prepared. Can finish the scrub
-> @@ -2731,17 +2731,13 @@ static int scrub_rbio(struct btrfs_raid_bio *rbio)
->   			break;
->   		}
->   	}
-> -	return ret;
-> +out:
-> +	rbio_orig_end_io(rbio, errno_to_blk_status(ret));
->   }
->   
->   static void scrub_rbio_work_locked(struct work_struct *work)
->   {
-> -	struct btrfs_raid_bio *rbio;
-> -	int ret;
+> -static umode_t btrfs_feature_visible(struct kobject *kobj,
+> -				     struct attribute *attr, int unused)
+> -{
+> -	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
+> -	umode_t mode = attr->mode;
 > -
-> -	rbio = container_of(work, struct btrfs_raid_bio, work);
-> -	ret = scrub_rbio(rbio);
-> -	rbio_orig_end_io(rbio, errno_to_blk_status(ret));
-> +	scrub_rbio(container_of(work, struct btrfs_raid_bio, work));
->   }
+> -	if (fs_info) {
+> -		struct btrfs_feature_attr *fa;
+> -		u64 features;
+> -
+> -		fa = attr_to_btrfs_feature_attr(attr);
+> -		features = get_features(fs_info, fa->feature_set);
+> -
+> -		if (can_modify_feature(fa))
+> -			mode |= S_IWUSR;
+> -		else if (!(features & fa->feature_bit))
+> -			mode = 0;
+> -	}
+> -
+> -	return mode;
+> -}
+> -
+>   BTRFS_FEAT_ATTR_INCOMPAT(default_subvol, DEFAULT_SUBVOL);
+>   BTRFS_FEAT_ATTR_INCOMPAT(mixed_groups, MIXED_GROUPS);
+>   BTRFS_FEAT_ATTR_INCOMPAT(compress_lzo, COMPRESS_LZO);
+> @@ -335,7 +313,6 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
 >   
->   void raid56_parity_submit_scrub_rbio(struct btrfs_raid_bio *rbio)
+>   static const struct attribute_group btrfs_feature_attr_group = {
+>   	.name = "features",
+> -	.is_visible = btrfs_feature_visible,
+>   	.attrs = btrfs_supported_feature_attrs,
+>   };
+>   
