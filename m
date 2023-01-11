@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B7D66547A
+	by mail.lfdr.de (Postfix) with ESMTP id E67A566547C
 	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 07:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbjAKGYP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Jan 2023 01:24:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
+        id S231659AbjAKGYR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Jan 2023 01:24:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjAKGYG (ORCPT
+        with ESMTP id S231952AbjAKGYJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Jan 2023 01:24:06 -0500
+        Wed, 11 Jan 2023 01:24:09 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B59101DC
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Jan 2023 22:23:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1863310FDD
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Jan 2023 22:24:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=ur7fhPspL7yd82y+ZMwL7tHRdo7NtUrr5JHyOou6OMw=; b=dpUySYRzrF9s+Ffh2F8gecfF1z
-        hgoMvrVPJr16PCZDv5Q7NWlQkkYU3z7PX7ewhr+Y0ltC8ktO1YNQSrje2Cj7uE5shb8+O/NrKyNvp
-        3kYPrn4S/YKTw2w/cmY6nhoVLFWNfqjsCArL2cJtcRDWrMrZXgJ9XJFkTUom/cv4kzCqoNe+BpwVA
-        Rb3iH9Vs+nbMUs+T8yiYNt4mjVv0EVwPC/y3EgLSKwPIRTSsC8wz8JcQFB6iS0ZnqEQJADFV6XhXd
-        QlMfITwmLQUr1TNEF29jp3a//7lY8YebQIjBteMrPJmjWLZH6sXN4NfFUkCI7auyRkcg75JKsLqyu
-        SVGfBdqw==;
+        bh=vPP54o7lUFawDjAaztmYyfY8VPwCHTjntJEnkfzwFQk=; b=GHi43m+8MM17lbJRCaPBSZUpYR
+        BQaVJTnVrf+rplT+J9lh+PFvGal36VTuoJcOtPRe5InciTxswT1TIBiU+JjOWfheK2jpkw8Syr6SA
+        B76pdKCgB+MZmvllnuOYDUuptik1Zapgl5i57cMpl9iLjJowhRvjUhZZoHrUheSzv/QbEddxMQOvL
+        jJU91De5xfzclyvx9bMRj9N4Jh8FYnjUeCC/ov4OP6qG83VvDRn3B9CY3w/+aL1IV/QIBIr20HTxZ
+        hT9wwZoBoJBDW0F5CuapfgA/7mrkn7tFeAvYQSsQIdbdeoImPTq2y/pRCP4uduju6Kp/ApioC4jKh
+        JW3pjB2g==;
 Received: from [2001:4bb8:181:656b:8732:62ba:c286:a05b] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pFUWj-009rCN-GF; Wed, 11 Jan 2023 06:23:57 +0000
+        id 1pFUWm-009rCi-09; Wed, 11 Jan 2023 06:24:00 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 08/10] btrfs: call rbio_orig_end_io from rmw_rbio
-Date:   Wed, 11 Jan 2023 07:23:32 +0100
-Message-Id: <20230111062335.1023353-9-hch@lst.de>
+Subject: [PATCH 09/10] btrfs: call rbio_orig_end_io from recover_rbio
+Date:   Wed, 11 Jan 2023 07:23:33 +0100
+Message-Id: <20230111062335.1023353-10-hch@lst.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230111062335.1023353-1-hch@lst.de>
 References: <20230111062335.1023353-1-hch@lst.de>
@@ -51,71 +51,53 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Both callers of rmv_rbio call rbio_orig_end_io right after it, so
+Both callers of recover_rbio call rbio_orig_end_io right after it, so
 move the call into the shared function.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/raid56.c | 30 ++++++++++--------------------
- 1 file changed, 10 insertions(+), 20 deletions(-)
+ fs/btrfs/raid56.c | 27 +++++++++------------------
+ 1 file changed, 9 insertions(+), 18 deletions(-)
 
 diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 374c3873169b3f..a9947477daf26d 100644
+index a9947477daf26d..c007992bf4426c 100644
 --- a/fs/btrfs/raid56.c
 +++ b/fs/btrfs/raid56.c
-@@ -2229,7 +2229,7 @@ static bool need_read_stripe_sectors(struct btrfs_raid_bio *rbio)
- 	return false;
+@@ -1907,7 +1907,7 @@ static int recover_sectors(struct btrfs_raid_bio *rbio)
+ 	return ret;
  }
  
--static int rmw_rbio(struct btrfs_raid_bio *rbio)
-+static void rmw_rbio(struct btrfs_raid_bio *rbio)
+-static int recover_rbio(struct btrfs_raid_bio *rbio)
++static void recover_rbio(struct btrfs_raid_bio *rbio)
  {
- 	struct bio_list bio_list;
- 	int sectornr;
-@@ -2241,7 +2241,7 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
- 	 */
- 	ret = alloc_rbio_parity_pages(rbio);
+ 	struct bio_list bio_list = BIO_EMPTY_LIST;
+ 	int total_sector_nr;
+@@ -1922,7 +1922,7 @@ static int recover_rbio(struct btrfs_raid_bio *rbio)
+ 	/* For recovery, we need to read all sectors including P/Q. */
+ 	ret = alloc_rbio_pages(rbio);
  	if (ret < 0)
 -		return ret;
 +		goto out;
  
- 	/*
- 	 * Either full stripe write, or we have every data sector already
-@@ -2254,13 +2254,13 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
- 		 */
- 		ret = alloc_rbio_data_pages(rbio);
- 		if (ret < 0)
+ 	index_rbio_pages(rbio);
+ 
+@@ -1960,37 +1960,28 @@ static int recover_rbio(struct btrfs_raid_bio *rbio)
+ 					 sectornr, REQ_OP_READ);
+ 		if (ret < 0) {
+ 			bio_list_put(&bio_list);
 -			return ret;
 +			goto out;
- 
- 		index_rbio_pages(rbio);
- 
- 		ret = rmw_read_wait_recover(rbio);
- 		if (ret < 0)
--			return ret;
-+			goto out;
- 	}
- 
- 	/*
-@@ -2293,7 +2293,7 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
- 	bio_list_init(&bio_list);
- 	ret = rmw_assemble_write_bios(rbio, &bio_list);
- 	if (ret < 0)
--		return ret;
-+		goto out;
- 
- 	/* We should have at least one bio assembled. */
- 	ASSERT(bio_list_size(&bio_list));
-@@ -2310,32 +2310,22 @@ static int rmw_rbio(struct btrfs_raid_bio *rbio)
- 			break;
  		}
  	}
--	return ret;
+ 
+ 	submit_read_wait_bio_list(rbio, &bio_list);
+-	return recover_sectors(rbio);
++	ret = recover_sectors(rbio);
 +out:
 +	rbio_orig_end_io(rbio, errno_to_blk_status(ret));
  }
  
- static void rmw_rbio_work(struct work_struct *work)
+ static void recover_rbio_work(struct work_struct *work)
  {
  	struct btrfs_raid_bio *rbio;
 -	int ret;
@@ -124,26 +106,26 @@ index 374c3873169b3f..a9947477daf26d 100644
 -
 -	ret = lock_stripe_add(rbio);
 -	if (ret == 0) {
--		ret = rmw_rbio(rbio);
+-		ret = recover_rbio(rbio);
 -		rbio_orig_end_io(rbio, errno_to_blk_status(ret));
 -	}
-+	if (lock_stripe_add(rbio) == 0)
-+		rmw_rbio(rbio);
++	if (!lock_stripe_add(rbio))
++		recover_rbio(rbio);
  }
  
- static void rmw_rbio_work_locked(struct work_struct *work)
+ static void recover_rbio_work_locked(struct work_struct *work)
  {
 -	struct btrfs_raid_bio *rbio;
 -	int ret;
 -
 -	rbio = container_of(work, struct btrfs_raid_bio, work);
 -
--	ret = rmw_rbio(rbio);
+-	ret = recover_rbio(rbio);
 -	rbio_orig_end_io(rbio, errno_to_blk_status(ret));
-+	rmw_rbio(container_of(work, struct btrfs_raid_bio, work));
++	recover_rbio(container_of(work, struct btrfs_raid_bio, work));
  }
  
- /*
+ static void set_rbio_raid6_extra_error(struct btrfs_raid_bio *rbio, int mirror_num)
 -- 
 2.35.1
 
