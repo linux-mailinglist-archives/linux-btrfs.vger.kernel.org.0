@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C62665A5F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 12:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFE7665A66
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 12:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238493AbjAKLjb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Jan 2023 06:39:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
+        id S238196AbjAKLj2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Jan 2023 06:39:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238228AbjAKLjE (ORCPT
+        with ESMTP id S238193AbjAKLjD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Jan 2023 06:39:04 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871CB65B7
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 03:36:31 -0800 (PST)
+        Wed, 11 Jan 2023 06:39:03 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B1F3884
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 03:36:30 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 38850B81BAE
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 64B9561B8E
         for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D4C5C433D2
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5366EC433F1
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673436988;
-        bh=IZn6Ia3g/yg2V15zZbqJ5NKqtnKzpAhV4fNWgDDJTp0=;
+        s=k20201202; t=1673436989;
+        bh=YmKLNs8Sf/Umkr43m/ieZAWQg3jFPSTPhM7eHLzFT6I=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=aa6lnvZErdCQd9aLBzY1T0j1N/gVhvn3uI4XJLTDIoX4jA69t8MM0rOlhm/s0dtHv
-         e1KiiDal0UvLERziZ0zpVZbeuO0K8yjqao7Rdf4fI8ouEMOdOZTfntZOUC3QrNuhwT
-         N5AVXsTkNbBpH6m9cXlLuMhSEXCiPpvs7/hikuFJ/psm1OUbea9IML8f/duTESebux
-         EA05hLkQ1ehJpy1HonoEOlg+Cbu+LOUdzrQNAWR5lQijWh3/kRegLe3NqvKKQmjr5L
-         sgZ+tuwj45uBYcH7t8QBdTcY77sn5Sduk3lZlrfiWAScfbzWP1rN855v4mBkY2Zrpb
-         XcWyw/GJFJFvA==
+        b=JaSLUFXOtgb+SdDE4BMtUoUb/f/1CZSSUH35xN+trGj3ziK9Ko5+JLXyoIQNZG7Wo
+         SZtmRP8OoT82EZNsKk+2kQHE5z7jLpFgYjrrdvam4O7SAW/NOAHL+z3wPzLd5H63eK
+         NlXfJ6kWPG4E3UPEgzvGQw6t8r5xD4cS9S5ukCp60uqaKkdx4/iAEO1nHT7deHD6e6
+         DCAuPfj3R5rNDV5CxnbbzkGci9ev8mCO0Fk+lyjnXQzxUSLkZqSRHEfbjuc79B45I0
+         IDV29ZvHkxK0w4lfO8/huCruMW0Evvv5kk7s8x/0Pl/REWlHmse9L+iG1Rq8ywB7jI
+         fFP0z4LibxiNQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 06/19] btrfs: send: avoid duplicated orphan dir allocation and initialization
-Date:   Wed, 11 Jan 2023 11:36:07 +0000
-Message-Id: <ecf486ee5db9b0acdfd57959500ae5b735dd1089.1673436276.git.fdmanana@suse.com>
+Subject: [PATCH 07/19] btrfs: send: avoid unnecessary orphan dir rbtree search at can_rmdir()
+Date:   Wed, 11 Jan 2023 11:36:08 +0000
+Message-Id: <08ad72730636a2f40abba7f0be31e0a40c6049c6.1673436276.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1673436276.git.fdmanana@suse.com>
 References: <cover.1673436276.git.fdmanana@suse.com>
@@ -53,11 +53,17 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At can_rmdir() we are allocating and initializing an orphan dir object
-twice. This can be deduplicated outside of the loop that iterates over
-the dir index keys. So deduplicate that code, even because other patch
-in the series will need to add more initializion code and another one
-will add one more condition.
+At can_rmdir() we start by searching the orphan dirs rbtree for an orphan
+dir object for the target directory. Later when iterating over the dir
+index keys, if we find that any dir entry points to inode for which there
+is a pending dir move or the inode was not yet processed, we exit because
+we can't remove the directory yet. However we end up always calling
+add_orphan_dir_info(), which will iterate again the rbtree and if there is
+already an orphan dir object (created by the first call to can_rmdir()),
+it returns the existing object. This is unnecessary work because in case
+there is already an existing orphan dir object, we got a reference to it
+at the start of can_rmdir(). So skip the call to add_orphan_dir_info()
+if we already have a reference for an orphan dir object.
 
 This patch is part of a larger patchset and the changelog of the last
 patch in the series contains a sample performance test and results.
@@ -85,61 +91,32 @@ The patches that comprise the patchset are the following:
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 27 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 15 deletions(-)
+ fs/btrfs/send.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 32dd88ed629a..f7d533c364b1 100644
+index f7d533c364b1..bc57fa8a6bde 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -3253,13 +3253,6 @@ static int can_rmdir(struct send_ctx *sctx, u64 dir, u64 dir_gen)
+@@ -3278,11 +3278,14 @@ static int can_rmdir(struct send_ctx *sctx, u64 dir, u64 dir_gen)
+ 	if (ret)
+ 		return ret;
  
- 		dm = get_waiting_dir_move(sctx, loc.objectid);
- 		if (dm) {
--			odi = add_orphan_dir_info(sctx, dir, dir_gen);
--			if (IS_ERR(odi)) {
--				ret = PTR_ERR(odi);
--				goto out;
--			}
--			odi->gen = dir_gen;
--			odi->last_dir_index_offset = found_key.offset;
- 			dm->rmdir_ino = dir;
- 			dm->rmdir_gen = dir_gen;
- 			ret = 0;
-@@ -3267,13 +3260,6 @@ static int can_rmdir(struct send_ctx *sctx, u64 dir, u64 dir_gen)
- 		}
+-	odi = add_orphan_dir_info(sctx, dir, dir_gen);
+-	if (IS_ERR(odi))
+-		return PTR_ERR(odi);
++	if (!odi) {
++		odi = add_orphan_dir_info(sctx, dir, dir_gen);
++		if (IS_ERR(odi))
++			return PTR_ERR(odi);
++
++		odi->gen = dir_gen;
++	}
  
- 		if (loc.objectid > sctx->cur_ino) {
--			odi = add_orphan_dir_info(sctx, dir, dir_gen);
--			if (IS_ERR(odi)) {
--				ret = PTR_ERR(odi);
--				goto out;
--			}
--			odi->gen = dir_gen;
--			odi->last_dir_index_offset = found_key.offset;
- 			ret = 0;
- 			goto out;
- 		}
-@@ -3288,7 +3274,18 @@ static int can_rmdir(struct send_ctx *sctx, u64 dir, u64 dir_gen)
+-	odi->gen = dir_gen;
+ 	odi->last_dir_index_offset = found_key.offset;
  
- out:
- 	btrfs_free_path(path);
--	return ret;
-+
-+	if (ret)
-+		return ret;
-+
-+	odi = add_orphan_dir_info(sctx, dir, dir_gen);
-+	if (IS_ERR(odi))
-+		return PTR_ERR(odi);
-+
-+	odi->gen = dir_gen;
-+	odi->last_dir_index_offset = found_key.offset;
-+
-+	return 0;
- }
- 
- static int is_waiting_for_move(struct send_ctx *sctx, u64 ino)
+ 	return 0;
 -- 
 2.35.1
 
