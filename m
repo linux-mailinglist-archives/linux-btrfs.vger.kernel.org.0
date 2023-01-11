@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA15665A5A
+	by mail.lfdr.de (Postfix) with ESMTP id 8B056665A59
 	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 12:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236083AbjAKLjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Jan 2023 06:39:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
+        id S235452AbjAKLjV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Jan 2023 06:39:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237682AbjAKLjB (ORCPT
+        with ESMTP id S238068AbjAKLjC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Jan 2023 06:39:01 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766AFA465
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 03:36:25 -0800 (PST)
+        Wed, 11 Jan 2023 06:39:02 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41D12BD3
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 03:36:27 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D12361C06
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFFE3C433D2
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:23 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9E620B81B8D
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D58DBC433F1
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673436984;
-        bh=Xyzp+CKxgPWNP8tmtSZ7a9/ddn1gFU0DIwb1Qp8I6pM=;
+        s=k20201202; t=1673436985;
+        bh=bz2hjETIMiO1Y/a5EWyqQkJemp8px3E+gwWGVekGXa4=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=ZhqQKjH8DOS23JS5+Yd2+Ntsdl6Kp9DJ0SyUGgvOrmY7ZThkqbydrf2rjbiKZRl8Z
-         ViNX/WSFolxlDPY2ErfSUqtY02YEF7dBilUQiN0aqzKJl+fTKJYmyJnVMILF0WA/9l
-         a2gpjV2WNuJ2Bin3bVH/ioCyVyr/PRS1TPmNzWpEIqVwZFLHHoqsE0y+xZCP2jtUFb
-         wFvOLFYTwpRgs+RUIyDKsnxsioywtMKmbsqfrb4pe8W2MMXhvSq7/OCDTV9Lg31xyL
-         zKBIbObFrBOdoCKjWLZdA2Kdzs8Ad1936po0ta9j23WIrCmrlgZXYfZUBJwYhDBd/7
-         tZdY0I9qYwucw==
+        b=NbfqwwmjH6n9W7gqrHeqN+ZHHFU2X/OJvgAqJJorBKXQ1/csWj7vRzPXfEclll4ks
+         v3PRhow5rceaUIRXYiCkFM5Xr//5korjBE6vl/KXV34ytF7FD1hVL8lR8CpisMBi9z
+         bVcA2V6GIruJsOl0DXpwvQQ6s4UtnBLKacOcvSpxALnRlNYUsBEypue1234krqp7Vn
+         JQv9qoe9MIufJ/Lbno3lzkUAyjmx4ru4tw+GjJcC2ReY62g3o/MRPMup0iXcdcqypq
+         uRDbpTiqMV1N2cp8lwSH9XGAjkoOmT/XW4LGw65PlrQx6PNUmob/u3h/gJnfp1VSs1
+         u7NKQpFkV4t5g==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 01/19] btrfs: send: directly return from did_overwrite_ref() and simplify it
-Date:   Wed, 11 Jan 2023 11:36:02 +0000
-Message-Id: <06477426bff54ecc38f75e3a6845731bd9d4abba.1673436276.git.fdmanana@suse.com>
+Subject: [PATCH 02/19] btrfs: send: avoid unnecessary generation search at did_overwrite_ref()
+Date:   Wed, 11 Jan 2023 11:36:03 +0000
+Message-Id: <22bedd046623def51d4bfcf1bd313da15f2e27ba.1673436276.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1673436276.git.fdmanana@suse.com>
 References: <cover.1673436276.git.fdmanana@suse.com>
@@ -53,13 +53,12 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-There are no resources to release before did_overwrite_ref() returns, so
-we don't really need the 'out' label and jumping to it when conditions are
-met - we can directly return and get rid of the label and jumps. Also we
-can deal with -ENOENT and other errors in a single if-else logic, as it's
-more straightforward.
-
-This helps the next patch in the series to be more simple as well.
+At did_overwrite_ref() we always call get_inode_gen() to find out the
+generation of the inode 'ow_inode'. However we don't always need to use
+that generation, and in fact it's very common to not use it, so we end
+up doing a b+tree search on the send root, allocating a path, etc, for
+nothing. So improve on this by getting the generation only if we need
+to use it.
 
 This patch is part of a larger patchset and the changelog of the last
 patch in the series contains a sample performance test and results.
@@ -87,93 +86,76 @@ The patches that comprise the patchset are the following:
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 43 ++++++++++++++++++-------------------------
- 1 file changed, 18 insertions(+), 25 deletions(-)
+ fs/btrfs/send.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index b90ad6f7219c..59106eb8b114 100644
+index 59106eb8b114..23060eec30de 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -2192,48 +2192,44 @@ static int did_overwrite_ref(struct send_ctx *sctx,
- 			    u64 ino, u64 ino_gen,
+@@ -2193,8 +2193,8 @@ static int did_overwrite_ref(struct send_ctx *sctx,
  			    const char *name, int name_len)
  {
--	int ret = 0;
-+	int ret;
- 	u64 gen;
+ 	int ret;
+-	u64 gen;
  	u64 ow_inode;
++	u64 ow_gen = 0;
  
  	if (!sctx->parent_root)
--		goto out;
-+		return 0;
- 
- 	ret = is_inode_existent(sctx, dir, dir_gen);
- 	if (ret <= 0)
--		goto out;
-+		return ret;
+ 		return 0;
+@@ -2204,6 +2204,8 @@ static int did_overwrite_ref(struct send_ctx *sctx,
+ 		return ret;
  
  	if (dir != BTRFS_FIRST_FREE_OBJECTID) {
- 		ret = get_inode_gen(sctx->send_root, dir, &gen);
--		if (ret < 0 && ret != -ENOENT)
--			goto out;
--		if (ret) {
--			ret = 0;
--			goto out;
--		}
-+		if (ret == -ENOENT)
-+			return 0;
-+		else if (ret < 0)
-+			return ret;
++		u64 gen;
 +
- 		if (gen != dir_gen)
--			goto out;
+ 		ret = get_inode_gen(sctx->send_root, dir, &gen);
+ 		if (ret == -ENOENT)
+ 			return 0;
+@@ -2224,12 +2226,15 @@ static int did_overwrite_ref(struct send_ctx *sctx,
+ 		return ret;
+ 	}
+ 
+-	ret = get_inode_gen(sctx->send_root, ow_inode, &gen);
+-	if (ret < 0)
+-		return ret;
++	if (ow_inode == ino) {
++		ret = get_inode_gen(sctx->send_root, ow_inode, &ow_gen);
++		if (ret < 0)
++			return ret;
+ 
+-	if (ow_inode == ino && gen == ino_gen)
+-		return 0;
++		/* It's the same inode, so no overwrite happened. */
++		if (ow_gen == ino_gen)
 +			return 0;
- 	}
- 
- 	/* check if the ref was overwritten by another ref */
- 	ret = lookup_dir_item_inode(sctx->send_root, dir, name, name_len,
- 				    &ow_inode);
--	if (ret < 0 && ret != -ENOENT)
--		goto out;
--	if (ret) {
-+	if (ret == -ENOENT) {
- 		/* was never and will never be overwritten */
--		ret = 0;
--		goto out;
-+		return 0;
-+	} else if (ret < 0) {
-+		return ret;
- 	}
- 
- 	ret = get_inode_gen(sctx->send_root, ow_inode, &gen);
- 	if (ret < 0)
--		goto out;
-+		return ret;
- 
--	if (ow_inode == ino && gen == ino_gen) {
--		ret = 0;
--		goto out;
--	}
-+	if (ow_inode == ino && gen == ino_gen)
-+		return 0;
++	}
  
  	/*
  	 * We know that it is or will be overwritten. Check this now.
-@@ -2244,12 +2240,9 @@ static int did_overwrite_ref(struct send_ctx *sctx,
- 	if ((ow_inode < sctx->send_progress) ||
- 	    (ino != sctx->cur_ino && ow_inode == sctx->cur_ino &&
- 	     gen == sctx->cur_inode_gen))
--		ret = 1;
--	else
--		ret = 0;
-+		return 1;
+@@ -2237,11 +2242,19 @@ static int did_overwrite_ref(struct send_ctx *sctx,
+ 	 * inode 'ino' to be orphanized, therefore check if ow_inode matches
+ 	 * the current inode being processed.
+ 	 */
+-	if ((ow_inode < sctx->send_progress) ||
+-	    (ino != sctx->cur_ino && ow_inode == sctx->cur_ino &&
+-	     gen == sctx->cur_inode_gen))
++	if (ow_inode < sctx->send_progress)
+ 		return 1;
  
--out:
--	return ret;
-+	return 0;
++	if (ino != sctx->cur_ino && ow_inode == sctx->cur_ino) {
++		if (ow_gen == 0) {
++			ret = get_inode_gen(sctx->send_root, ow_inode, &ow_gen);
++			if (ret < 0)
++				return ret;
++		}
++		if (ow_gen == sctx->cur_inode_gen)
++			return 1;
++	}
++
+ 	return 0;
  }
  
- /*
 -- 
 2.35.1
 
