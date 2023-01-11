@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C9B665A67
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 12:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9197A665A6A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 12:39:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238228AbjAKLjc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Jan 2023 06:39:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
+        id S231598AbjAKLjd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Jan 2023 06:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236455AbjAKLjE (ORCPT
+        with ESMTP id S238134AbjAKLjF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Jan 2023 06:39:04 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C4BB7FF
+        Wed, 11 Jan 2023 06:39:05 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84A5BE26
         for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 03:36:33 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DDAAFB81B8D
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F2C1C433D2
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 15F2061C4B
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04E6BC433F0
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673436991;
-        bh=d/4tneVXKHXgIx1Vi1b7OwN5+doGiLmXydrL8Jv8BL4=;
+        s=k20201202; t=1673436992;
+        bh=pMXbqdmklh4DA+hN5wPA1CB9cVGFnwZX4nlpjxQmsMs=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=uYsDRm6EzD48cgIKmPdzsVlTBrpPUklnOLbINDaXDYA+ZnjWiYzxOgoJqUpVvWy9V
-         pzb6CX+cA4RldHPzUkFtXOj/c7hwRdZ4uevEhH8AzxfmKU2dygYg1eepEVZ0DpfzZa
-         dF28VgZmv9+BmmHCAITcb39SFJydqxd0dDXS1Pv5/dZAigceJpJOKoCkTGCxkpWQyf
-         /w2gdy+OpszTiqBgdTS3PXmCegneaSUdpL5jUsOJ/eLq9qpdwAnm8GsjB47MrTQPz5
-         lsL1tHx7c7jb1qvN5iQ/zNaOx1LSzC15IjFzEYJLAbkGVIPNYkLET0J4JuyGM7hunR
-         xgLTwEcwthgqg==
+        b=t3OVieC3uKmYMk6Doy9MCgyPUrRY4E4NmaDPlqlh2vR2wgafCTUZwF3jnLuVR5ALk
+         L6bRr7S8Wi3/EwloeY2zZmcrKrd5/rAkaIhjZHNVgRcRFLqVzTGWKNuDp3xW09FxHl
+         My8BkCrSs2C2DF4sBeSh1Dpb9dT5NRmHYTlnbViTKbUVih9biNfoul2MUlgV2hBaO/
+         2rsWxnb8rKvna5sX9ISuowpvxqGV3jpCUfx/OTR90JVIAh4bfvE7oLV6IHMRtThvp4
+         7vANwbK70MmkvcH+dHj5jdjFIbwyIQ6NKck6/295nh3E4oCAPfLU2YKARr+4a2ZMxN
+         3oAppCacyRSvw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 09/19] btrfs: send: iterate waiting dir move rbtree only once when processing refs
-Date:   Wed, 11 Jan 2023 11:36:10 +0000
-Message-Id: <5486d61909a314d37d64512fc8a9acb8f4e2025a.1673436276.git.fdmanana@suse.com>
+Subject: [PATCH 10/19] btrfs: send: use MT_FLAGS_LOCK_EXTERN for the backref cache maple tree
+Date:   Wed, 11 Jan 2023 11:36:11 +0000
+Message-Id: <013ed0f5ae2bfb6a340ba7fa2642a81ec327b724.1673436276.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1673436276.git.fdmanana@suse.com>
 References: <cover.1673436276.git.fdmanana@suse.com>
@@ -53,11 +53,9 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When processing the new references for an inode, we unnecessarily iterate
-twice the waiting dir moves rbtree, once with is_waiting_for_move() and
-if we found an entry in the rbtree, we iterate it again with a call to
-get_waiting_dir_move(). This is pointless, we can make this simpler and
-more efficient by calling only get_waiting_dir_move(), so just do that.
+As send is single threaded and there's no concurrency, we don't need to
+protect the accesses to the backref cache's mapple tree, so initialize the
+maple tree with the flag MT_FLAGS_LOCK_EXTERN.
 
 This patch is part of a larger patchset and the changelog of the last
 patch in the series contains a sample performance test and results.
@@ -85,28 +83,22 @@ The patches that comprise the patchset are the following:
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ fs/btrfs/send.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index cd4aa0eae66c..20fcf1c0832a 100644
+index 20fcf1c0832a..5ac3cff7bd68 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -4335,12 +4335,9 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
- 				 * the source path when performing its rename
- 				 * operation.
- 				 */
--				if (is_waiting_for_move(sctx, ow_inode)) {
--					wdm = get_waiting_dir_move(sctx,
--								   ow_inode);
--					ASSERT(wdm);
-+				wdm = get_waiting_dir_move(sctx, ow_inode);
-+				if (wdm)
- 					wdm->orphanized = true;
--				}
+@@ -8140,7 +8140,7 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 	INIT_LIST_HEAD(&sctx->name_cache_list);
  
- 				/*
- 				 * Make sure we clear our orphanized inode's
+ 	INIT_LIST_HEAD(&sctx->backref_cache.lru_list);
+-	mt_init(&sctx->backref_cache.entries);
++	mt_init_flags(&sctx->backref_cache.entries, MT_FLAGS_LOCK_EXTERN);
+ 
+ 	sctx->flags = arg->flags;
+ 
 -- 
 2.35.1
 
