@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E059665A64
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 12:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F903665A6F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 12:39:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbjAKLjl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Jan 2023 06:39:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
+        id S234048AbjAKLjn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Jan 2023 06:39:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbjAKLjK (ORCPT
+        with ESMTP id S238312AbjAKLjK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 11 Jan 2023 06:39:10 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A428FD8
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 03:36:42 -0800 (PST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7357FDF7C
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 03:36:43 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E080AB81BB6
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BD07C433D2
+        by ams.source.kernel.org (Postfix) with ESMTPS id CC42EB81AD3
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12216C433F0
         for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 11:36:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673436999;
-        bh=1fX028zxFCx5/VXZF94TGwUkwBcK5Mkvrq51Ihk4WeM=;
+        s=k20201202; t=1673437000;
+        bh=m+hZcsGEn31EVG6bDh9ikmFHCQV7nmQL3FotuOQu/d4=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=W+IiJMDpustMHilj/1L4E+GOLTYJPEr0t7ZCMgtpU0cOKCqrEhvYoUGQHTlktDI/U
-         25rlzAgiU9/0euCdxv5nsTGhFPPIrTZkKWE5hXkJ7b2mkfhpNx2o0+oQ5VCMgBnkni
-         tDa5Hr2Toa1R13mW/6ibSIg/aWF8nLOHGPDTtk8VCKLc3+2C6mRUiti5tFPgtrXvZy
-         hxg7Tr/pVgwrpWnVMSdG11gVdHXwaAsDZo/iYUdXhgH8i/BBw0Gx8ChqJbnAIvJ6fy
-         h+ur0R/Fmhy1t2bRa+Sq5IpEuaacrP/YT9nWRLC7OqVUdFLJXgDy7IETjbsSYx5Mnw
-         SQpEJt/IhG8xQ==
+        b=tSE3V5+LBOP1iZkKmJxNF/i2/R0PvvIjxRfBBpjxYHJ/L7Xt/gvhaPEfhEvmNKQPp
+         NrppSG6gBv+K5l7M5QohuiHNcICiQt5TH1Mmh5D9GQXvVMgaIgpB15rhznNpGHBGr5
+         D/uBmFqjNCdphBIf2djJyCG4Rz0UywVVaWVAZ4zItZAtKhPSUUEpsPSaguMhtR3fyB
+         IyBYyG7wULkFteuDzMIdGXUp38eS286FQ60sduLs3k9fW0IPlPmnERedHjkDmP5oat
+         fz8M4MwA3D7lEWqZvPYBuiInQNe1LSIMayd4Ufyf2ASCLJUe63G2DsrCZDyanbXOyI
+         MlGjCqSzQvznQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 18/19] btrfs: send: update size of roots array for backref cache entries
-Date:   Wed, 11 Jan 2023 11:36:19 +0000
-Message-Id: <cdb915da279873161aecf299b9a1ecd102a5d246.1673436276.git.fdmanana@suse.com>
+Subject: [PATCH 19/19] btrfs: send: cache utimes operations for directories if possible
+Date:   Wed, 11 Jan 2023 11:36:20 +0000
+Message-Id: <be659f113edeaac8ba86086eb726cfc566af039d.1673436276.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1673436276.git.fdmanana@suse.com>
 References: <cover.1673436276.git.fdmanana@suse.com>
@@ -53,25 +53,29 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Currently we limit the size of the roots array, for backref cache entries,
-to 12 elements. This is because that number is enough for most cases and
-to make the backref cache entry size to be exactly 128 bytes, so that
-memory is allocated from the kmalloc-128 slab and no space is wasted.
+Whenever we add or remove an entry to a directory, we issue an utimes
+command for the directory. If we add 1000 entries to a directory (create
+1000 files under it or move 1000 files to it), then we issue the same
+utimes command 1000 times, which increases the send stream size, results
+in more pipe IO, one search in the send b+tree, allocating one path for
+the search, etc, as well as making the receiver do a system call for each
+duplicated utimes command.
 
-However recent changes in the series refactored the backref cache to be
-more generic and allow it to be reused for other purposes, which resulted
-in increasing the size of the embedded structure btrfs_lru_cache_entry in
-order to allow for supporting inode numbers as keys on 32 bits system and
-allow multiple generations per key. This resulted in increasing the size
-of struct backref_cache_entry from 128 bytes to 152 bytes. Since the cache
-entries are allocated with kmalloc(), it means we end up using the slab
-kmalloc-192, so we end up wasting 40 bytes of memory. So bump the size of
-the roots array from 12 elements to 17 elements, so we end up using 192
-bytes for each backref cache entry.
+We also issue an utimes command when we create a new directory, but later
+we might add entries to it corresponding to inodes with an higher inode
+number, so it's pointless to issue the utimes command before we create
+the last inode under the directory.
 
-This patch is part of a larger patchset and the changelog of the last
-patch in the series contains a sample performance test and results.
-The patches that comprise the patchset are the following:
+So use a lru cache to track directories for which we must send a utimes
+command. When we need to remove an entry from the cache, we issue the
+utimes command for the respective directory. When finishing the send
+operation, we go over each cache element and issue the respective utimes
+command. Finally the caching is entirely optional, just a performance
+optimization, meaning that if we fail to cache (due to memory allocation
+failure), we issue the utimes command right away, that is, we fallback
+to the previous, unoptimized, behaviour.
+
+This patch belongs to a patchset comprised of the following patches:
 
   btrfs: send: directly return from did_overwrite_ref() and simplify it
   btrfs: send: avoid unnecessary generation search at did_overwrite_ref()
@@ -93,43 +97,254 @@ The patches that comprise the patchset are the following:
   btrfs: send: update size of roots array for backref cache entries
   btrfs: send: cache utimes operations for directories if possible
 
+The following test was run before and after applying the whole patchset,
+and on a non-debug kernel (Debian's default kernel config):
+
+   #!/bin/bash
+
+   MNT=/mnt/sdi
+   DEV=/dev/sdi
+
+   mkfs.btrfs -f $DEV > /dev/null
+   mount $DEV $MNT
+
+   mkdir $MNT/A
+   for ((i = 1; i <= 20000; i++)); do
+       echo -n > $MNT/A/file_$i
+   done
+
+   btrfs subvolume snapshot -r $MNT $MNT/snap1
+
+   mkdir $MNT/B
+   for ((i = 20000; i <= 40000; i++)); do
+       echo -n > $MNT/B/file_$i
+   done
+
+   mv $MNT/A/file_* $MNT/B/
+
+   btrfs subvolume snapshot -r $MNT $MNT/snap2
+
+   start=$(date +%s%N)
+   btrfs send -p $MNT/snap1 $MNT/snap2 > /dev/null
+   end=$(date +%s%N)
+
+   dur=$(( (end - start) / 1000000 ))
+   echo "Incremental send took $dur milliseconds"
+
+   umount $MNT
+
+Before the whole patchset: 18408 milliseconds
+After the whole patchset:   1942 milliseconds  (9.5x speedup)
+
+Using 60000 files instead of 40000:
+
+Before the whole patchset: 39764 milliseconds
+After the whole patchset:   3076 milliseconds  (12.9x speedup)
+
+Using 20000 files instead of 40000:
+
+Before the whole patchset:  5072 milliseconds
+After the whole patchset:    916 milliseconds  (5.5x speedup)
+
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ fs/btrfs/lru_cache.h | 15 ++++++++
+ fs/btrfs/send.c      | 81 +++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 91 insertions(+), 5 deletions(-)
 
+diff --git a/fs/btrfs/lru_cache.h b/fs/btrfs/lru_cache.h
+index 57e5bdc57e6d..9f3101cc89d5 100644
+--- a/fs/btrfs/lru_cache.h
++++ b/fs/btrfs/lru_cache.h
+@@ -47,11 +47,26 @@ struct btrfs_lru_cache {
+ 	unsigned int max_size;
+ };
+ 
++#define btrfs_lru_cache_for_each_entry_safe(cache, entry, tmp) \
++	list_for_each_entry_safe_reverse((entry), (tmp), &(cache)->lru_list, lru_list)
++
+ static inline unsigned int btrfs_lru_cache_size(const struct btrfs_lru_cache *cache)
+ {
+ 	return cache->size;
+ }
+ 
++static inline bool btrfs_lru_cache_is_full(const struct btrfs_lru_cache *cache)
++{
++	return cache->size >= cache->max_size;
++}
++
++static inline struct btrfs_lru_cache_entry *btrfs_lru_cache_lru_entry(
++					      struct btrfs_lru_cache *cache)
++{
++	return list_first_entry_or_null(&cache->lru_list,
++					struct btrfs_lru_cache_entry, lru_list);
++}
++
+ void btrfs_lru_cache_init(struct btrfs_lru_cache *cache, unsigned int max_size);
+ struct btrfs_lru_cache_entry *btrfs_lru_cache_lookup(struct btrfs_lru_cache *cache,
+ 						     u64 key, u64 gen);
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 7d327d977fa0..ae2d462f647e 100644
+index ae2d462f647e..a271b39c1445 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -84,19 +84,20 @@ struct clone_root {
- #define SEND_MAX_NAME_CACHE_SIZE 256
- 
- /*
-- * Limit the root_ids array of struct backref_cache_entry to 12 elements.
-- * This makes the size of a cache entry to be exactly 128 bytes on x86_64.
-+ * Limit the root_ids array of struct backref_cache_entry to 17 elements.
-+ * This makes the size of a cache entry to be exactly 192 bytes on x86_64, which
-+ * can be satisfied from the kmalloc-192 slab, without wasting any space.
-  * The most common case is to have a single root for cloning, which corresponds
-- * to the send root. Having the user specify more than 11 clone roots is not
-+ * to the send root. Having the user specify more than 16 clone roots is not
-  * common, and in such rare cases we simply don't use caching if the number of
-- * cloning roots that lead down to a leaf is more than 12.
-+ * cloning roots that lead down to a leaf is more than 17.
+@@ -125,6 +125,14 @@ static_assert(offsetof(struct backref_cache_entry, entry) == 0);
   */
--#define SEND_MAX_BACKREF_CACHE_ROOTS 12
-+#define SEND_MAX_BACKREF_CACHE_ROOTS 17
+ #define SEND_MAX_DIR_CREATED_CACHE_SIZE 64
  
++/*
++ * Max number of entries in the cache that stores directories that were already
++ * created. The cache uses raw struct btrfs_lru_cache_entry entries, so it uses
++ * at most 4096 bytes - sizeof(struct btrfs_lru_cache_entry) is 48 bytes, but
++ * the kmalloc-64 slab is used, so we get 4096 bytes (64 bytes * 64).
++ */
++#define SEND_MAX_DIR_UTIMES_CACHE_SIZE 64
++
+ struct send_ctx {
+ 	struct file *send_filp;
+ 	loff_t send_off;
+@@ -296,6 +304,7 @@ struct send_ctx {
+ 	u64 backref_cache_last_reloc_trans;
+ 
+ 	struct btrfs_lru_cache dir_created_cache;
++	struct btrfs_lru_cache dir_utimes_cache;
+ };
+ 
+ struct pending_dir_move {
+@@ -2747,6 +2756,46 @@ static int send_utimes(struct send_ctx *sctx, u64 ino, u64 gen)
+ 	return ret;
+ }
+ 
++static int cache_dir_utimes(struct send_ctx *sctx, u64 dir, u64 gen)
++{
++	struct btrfs_lru_cache_entry *entry;
++	int ret;
++
++	entry = btrfs_lru_cache_lookup(&sctx->dir_utimes_cache, dir, gen);
++	if (entry != NULL)
++		return 0;
++
++	if (btrfs_lru_cache_is_full(&sctx->dir_utimes_cache)) {
++		struct btrfs_lru_cache_entry *lru;
++
++		lru = btrfs_lru_cache_lru_entry(&sctx->dir_utimes_cache);
++		ASSERT(lru != NULL);
++
++		ret = send_utimes(sctx, lru->key, lru->gen);
++		if (ret)
++			return ret;
++
++		btrfs_lru_cache_remove(&sctx->dir_utimes_cache, lru);
++	}
++
++	/* Caching is optional, don't fail if we can't allocate memory. */
++	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
++	if (!entry)
++		return send_utimes(sctx, dir, gen);
++
++	entry->key = dir;
++	entry->gen = gen;
++
++	ret = btrfs_lru_cache_store(&sctx->dir_utimes_cache, entry, GFP_KERNEL);
++	ASSERT(ret != -EEXIST);
++	if (ret) {
++		kfree(entry);
++		return send_utimes(sctx, dir, gen);
++	}
++
++	return 0;
++}
++
  /*
-  * Max number of entries in the cache.
-- * With SEND_MAX_BACKREF_CACHE_ROOTS as 12, the size in bytes, excluding
-- * maple tree's internal nodes, is 16K.
-+ * With SEND_MAX_BACKREF_CACHE_ROOTS as 17, the size in bytes, excluding
-+ * maple tree's internal nodes, is 24K.
-  */
- #define SEND_MAX_BACKREF_CACHE_SIZE 128
+  * Sends a BTRFS_SEND_C_MKXXX or SYMLINK command to user space. We don't have
+  * a valid path yet because we did not process the refs yet. So, the inode
+@@ -3540,7 +3589,7 @@ static int apply_dir_move(struct send_ctx *sctx, struct pending_dir_move *pm)
+ 	}
  
+ finish:
+-	ret = send_utimes(sctx, pm->ino, pm->gen);
++	ret = cache_dir_utimes(sctx, pm->ino, pm->gen);
+ 	if (ret < 0)
+ 		goto out;
+ 
+@@ -3560,7 +3609,7 @@ static int apply_dir_move(struct send_ctx *sctx, struct pending_dir_move *pm)
+ 		if (ret < 0)
+ 			goto out;
+ 
+-		ret = send_utimes(sctx, cur->dir, cur->dir_gen);
++		ret = cache_dir_utimes(sctx, cur->dir, cur->dir_gen);
+ 		if (ret < 0)
+ 			goto out;
+ 	}
+@@ -4507,8 +4556,7 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
+ 
+ 		if (ret == inode_state_did_create ||
+ 		    ret == inode_state_no_change) {
+-			/* TODO delayed utimes */
+-			ret = send_utimes(sctx, cur->dir, cur->dir_gen);
++			ret = cache_dir_utimes(sctx, cur->dir, cur->dir_gen);
+ 			if (ret < 0)
+ 				goto out;
+ 		} else if (ret == inode_state_did_delete &&
+@@ -6690,7 +6738,18 @@ static int finish_inode_if_needed(struct send_ctx *sctx, int at_end)
+ 		 * it's moved/renamed, therefore we don't need to do it here.
+ 		 */
+ 		sctx->send_progress = sctx->cur_ino + 1;
+-		ret = send_utimes(sctx, sctx->cur_ino, sctx->cur_inode_gen);
++
++		/*
++		 * If the current inode is a non-empty directory, delay issuing
++		 * the utimes command for it, as it's very likely we have inodes
++		 * with an higher number inside it. We want to issue the utimes
++		 * command only after adding all dentries to it.
++		 */
++		if (S_ISDIR(sctx->cur_inode_mode) && sctx->cur_inode_size > 0)
++			ret = cache_dir_utimes(sctx, sctx->cur_ino, sctx->cur_inode_gen);
++		else
++			ret = send_utimes(sctx, sctx->cur_ino, sctx->cur_inode_gen);
++
+ 		if (ret < 0)
+ 			goto out;
+ 	}
+@@ -7980,6 +8039,8 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 	int clone_sources_to_rollback = 0;
+ 	size_t alloc_size;
+ 	int sort_clone_roots = 0;
++	struct btrfs_lru_cache_entry *entry;
++	struct btrfs_lru_cache_entry *tmp;
+ 
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
+@@ -8035,6 +8096,8 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 	btrfs_lru_cache_init(&sctx->backref_cache, SEND_MAX_BACKREF_CACHE_SIZE);
+ 	btrfs_lru_cache_init(&sctx->dir_created_cache,
+ 			     SEND_MAX_DIR_CREATED_CACHE_SIZE);
++	btrfs_lru_cache_init(&sctx->dir_utimes_cache,
++			     SEND_MAX_DIR_UTIMES_CACHE_SIZE);
+ 
+ 	sctx->pending_dir_moves = RB_ROOT;
+ 	sctx->waiting_dir_moves = RB_ROOT;
+@@ -8215,6 +8278,13 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 	if (ret < 0)
+ 		goto out;
+ 
++	btrfs_lru_cache_for_each_entry_safe(&sctx->dir_utimes_cache, entry, tmp) {
++		ret = send_utimes(sctx, entry->key, entry->gen);
++		if (ret < 0)
++			goto out;
++		btrfs_lru_cache_remove(&sctx->dir_utimes_cache, entry);
++	}
++
+ 	if (!(sctx->flags & BTRFS_SEND_FLAG_OMIT_END_CMD)) {
+ 		ret = begin_cmd(sctx, BTRFS_SEND_C_END);
+ 		if (ret < 0)
+@@ -8299,6 +8369,7 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 		btrfs_lru_cache_clear(&sctx->name_cache);
+ 		btrfs_lru_cache_clear(&sctx->backref_cache);
+ 		btrfs_lru_cache_clear(&sctx->dir_created_cache);
++		btrfs_lru_cache_clear(&sctx->dir_utimes_cache);
+ 
+ 		kfree(sctx);
+ 	}
 -- 
 2.35.1
 
