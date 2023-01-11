@@ -2,69 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 024D26665F0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jan 2023 23:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123B0666725
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jan 2023 00:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235605AbjAKWDX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Jan 2023 17:03:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55602 "EHLO
+        id S235947AbjAKX2N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Jan 2023 18:28:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235875AbjAKWDU (ORCPT
+        with ESMTP id S236011AbjAKX2G (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Jan 2023 17:03:20 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E2C42E26
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jan 2023 14:03:18 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 792C734B87;
-        Wed, 11 Jan 2023 22:03:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1673474597;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a78aNZqpxVL7HW5kE8L+JOebl//AUD4r2mHXzDmmNEo=;
-        b=aTosmGJ8wG9rFOerFdGEWAeYOP6oNe6Autbw9LIV6mxC9G7NSM9r8200MJxQuNxUDLqV1t
-        K/2yvpU55J+skM1LA2OnW9Px/cYUa0/sNiezpiiZVWN2qYWS/DRB2W+OHX8Y2qAnXjmOOC
-        uRFevV3OyZnBrLtN/RkH75l+TS+Lo94=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1673474597;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a78aNZqpxVL7HW5kE8L+JOebl//AUD4r2mHXzDmmNEo=;
-        b=r1AkXkniIn38Paev6Rse1udYi4ymFPr7hkFz/ypSor4jR+geSZ9q88zc/B5Cwg2DGiVRfL
-        0tXhSxbxjlafZfDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D58213591;
-        Wed, 11 Jan 2023 22:03:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EC4HEiUyv2MjcQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 11 Jan 2023 22:03:17 +0000
-Date:   Wed, 11 Jan 2023 22:57:42 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove the wait argument to
- btrfs_start_ordered_extent
-Message-ID: <20230111215742.GL11562@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20221212071243.7418-1-hch@lst.de>
+        Wed, 11 Jan 2023 18:28:06 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2785F3D1EE;
+        Wed, 11 Jan 2023 15:28:02 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1ML9uU-1pWjOQ0Uuw-00IFpU; Thu, 12
+ Jan 2023 00:27:40 +0100
+Message-ID: <685f8fbc-5e61-d230-767f-e69784111b88@gmx.com>
+Date:   Thu, 12 Jan 2023 07:27:32 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221212071243.7418-1-hch@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v3] btrfs: use PAGE_{ALIGN, ALIGNED, ALIGN_DOWN} macro
+To:     dsterba@suse.cz
+Cc:     zys.zljxml@gmail.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yushan Zhou <katrinzhou@tencent.com>
+References: <20230103051137.4085572-1-zys.zljxml@gmail.com>
+ <87d14908-dc9d-7ce4-c594-b28a9991efbb@gmx.com>
+ <20230111184037.GI11562@twin.jikos.cz>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230111184037.GI11562@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:Kp2RjR85hmW9Kyf/GsKYhJahGsItLZBQroP/Pwr2bc+teQHwD3C
+ FxkyGDE++ijqWPUf688K35uDVxaPIQx+Key5H90OlELU26Gz/IZYe5P/Xdi/DMlCzbFlWUy
+ hUze0XzR/zbk/W4JCrWbkg2XSTOjtBdPqWaHWmefMAflY5xSL+RFeHxLheWtAqiAcOh8G7S
+ Fyj8Y6d2WGWwRfpeMtx8g==
+UI-OutboundReport: notjunk:1;M01:P0:phg6aEFCvJE=;leuH3HfgEhbbPK8kOGUsBxN/v7s
+ SvPHwR+T1QEgwYl+Sjq2tAc4Deadg2BW0BZYaFESzyTStqfTdeUhvLkrbJoRCw8YUVjT25VZd
+ GtiJjlHiGEy7QMP6opCZZkGlVA1ABDF7AUlDAIqmia8hPSrnNzEX8RKRJSu4Uga57+gK4euGy
+ EKNpfUqZBkdE9wE0xFOzuCf8uBfPtkhWfn3KnIWNRG0yENBgzNQ3aMutdUFOptvmVm1blL7Lf
+ 8LApiz3bpN+SluppGcEaT4kZrHtOiPoR/wl18eDas5bl13CoPAOFt0ZlcwYx5cdMqIswczvBW
+ tsOrKy5ZPaD0/Jzr/IiDnEhXi9G1AdPO2vP7fyLfEQxZ2kbv8XJ5gJmvfdFTJqzOXlUSAyhNN
+ udzR6FWamddrhIXWQjBY9bayXe2zTmSSMPFGBN9zBytpDdBIqZCiF0kXA8Z/Z7ADotgoYP3D4
+ FIRANAwHwXUiOrrgxUtNDETmNaoB8jiHCCU0cKGDZWg8UyZaxssy4hE0z/Rt1XEfSPhfA/53V
+ FqTbXwmvdOvCIt+5UpnVrl145nc/7O5d4UJ4WjcVGs93XOcbzj80Fz9/CgEvCsAHm76jl2jDN
+ GT3NBX47VMd916rkrgawvlLiCdzbTsWzVmR8CcEG3hdjIiq+ES4UKsVPnNrAswt2qe58sJOdo
+ uBLjGklBYVyimQZAYn5eix90q1AoMBMzfTEuITtjYKlqU++YGpsVshBXfVubmVbgTqu1b/eRh
+ /OWdeEidCIRwjhnqXFxxbw0epcZj7Fp5lmLxpLyqSgRZdOOTRx+s4PCMJhuWhPbGjNXIsNe9Z
+ Ai5YXTv8Gw79ABvIL85+e0kIRplOZOH3QICXREwWt9o2S85RgOfZZtg33pgYdIPB4wQJhZz0g
+ sFXwvqLLTp0UnAoXWZ0I2Wis2p02NeVFFFwj7TuT9FV2PWvfpJFmsOlgCVkMaHYSxxULBQlpo
+ 4WMTcT9awOX9Ph5SL1fMCxa7/Bk=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,9 +64,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 12, 2022 at 08:12:43AM +0100, Christoph Hellwig wrote:
-> Given that wait is always set to 1, so remove the argument.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Added to misc-next, thanks.
+
+On 2023/1/12 02:40, David Sterba wrote:
+> On Tue, Jan 03, 2023 at 01:47:43PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2023/1/3 13:11, zys.zljxml@gmail.com wrote:
+>>> From: Yushan Zhou <katrinzhou@tencent.com>
+>>>
+>>> The header file linux/mm.h provides PAGE_ALIGN, PAGE_ALIGNED,
+>>> PAGE_ALIGN_DOWN macros. Use these macros to make code more
+>>> concise.
+>>
+>> Is there anything benefit from the change?
+>>
+>> In fact, PAGE_ALIGN()/PAGE_ALIGNED() is just using the same
+>> ALIGN()/IS_ALIGNED() macro.
+>>
+>> Thus I don't think your change is of any usefulness, not to mention it's
+>> going to introduce confusion and extra effort.
+>>
+>> I'm completely fine with regular ALIGN()/IS_ALIGNED() usage with PAGE_SIZE.
+> 
+> We already have PAGE_ALIGN in some places and I think it's a bit better
+> than the ALIGN/IS_ALIGN as it's clear that it's for a page.
+
+I'd argue that PAGE_ALIGN() is good for MM code, which btrfs has some.
+
+But overall, btrfs is more about sector alignment, and if we need to mix 
+them, regular ALIGN() would be more flex.
+
+Thanks,
+Qu
