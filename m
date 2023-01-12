@@ -2,169 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED46F66708D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jan 2023 12:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 039E56673AA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jan 2023 14:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbjALLJM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Jan 2023 06:09:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S232577AbjALNyN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Jan 2023 08:54:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjALLIO (ORCPT
+        with ESMTP id S231443AbjALNyJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Jan 2023 06:08:14 -0500
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6EFDF2B
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jan 2023 03:00:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1673521236; x=1705057236;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=Hcw/FZgW2cmzqh4JXtrpitHXzUP0QYUalHrbTjvRzWk=;
-  b=Xf0wQ++ai3WYJcpCGvr4qSWuq5CdyGwlpLGqvNRdP8KGH1GH37FEVosJ
-   smHLNIzHivYNIKz8AjMLft1vw0DNqJTT/3h+WnXaAa+cDN+ZR3y0rP8op
-   Aw6L4L0nuO6v+JwSrom7KPFJL9UJubxkl8DEOKnTjlSdWk+kW/OflPxr0
-   YkimgpbAfRNGAZRhcA1/szfV1+tlm9qjoqlxEdtRkTsGRxLWSi/068zG9
-   OjmBzcbCInO/xDsmnecFCHwbnaw3rWeeg4pWpQ24tkE/gU9TjP7WciTHD
-   H2mELwGSS2eZVvDHak/JDKcTs7xxCgOWWGHbGE2/az/8EU9nAt98V2O4S
-   w==;
-X-IronPort-AV: E=Sophos;i="5.96,319,1665417600"; 
-   d="scan'208";a="324917590"
-Received: from mail-mw2nam10lp2108.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.108])
-  by ob1.hgst.iphmx.com with ESMTP; 12 Jan 2023 19:00:35 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N7rnWRqHf69SgoZP1Yl8Fsz07zwY4ezgMywG0ZCOXUwasmPKTfvtHuKs0fS5QGKktMW+xRmJNV8tkwd0gp7gJazaXaVqIQXayc97ObpqdU8lk0adp1/UCamqwX6ZjZMyaqmK5ZMMVwTAH0pVr70Ni4b6KiVFkWRnI1c3Tg2jRkKsd2WET6bYK4TgDWwvvKBbJ2PHEEyFEeGkVgNpMAIHy0OHqtbycdRWMd/++atZhucHlETBR+w4o2QPGnLCb3YN1IQ1DGvb7CLp2ZhqrjJ9k23kpARR46h0myVtcOr7XP+g+eo5xVQJd/o2l/W4L8vh5Sa9/ZvBe39w/6+zAToXcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hcw/FZgW2cmzqh4JXtrpitHXzUP0QYUalHrbTjvRzWk=;
- b=aC9OrSZuYaJdlWExWdYcDUj35frbL0Ia5id3k4NzhQD7UgP7Gw2lOy5Drl/ZAoj2YLgwWt7LdnpknHsMNW02Nb3taBM6TP9dthx4DG6ODlItlcm/gPF9STsuvoCGVuEgq2MZjDhAsdqCfokUp9jO/S8+ttnTzrKmUJVpfxwKVUdz07RjCGCSLfROPxUiJkSDfnd4DnDZSUqZg5K8AmWb8iDCsjOXvy5N03rYqn762/erGW/qgQAcSswwzTZGe5lHK0NDW56LIaFw6kSnFxXNXNdAGbT8bKRHa0gtg3HsRfKWJ5YjdWlpCxAFhh4rj0hmks0gbXyAlsNsaIMYegal6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hcw/FZgW2cmzqh4JXtrpitHXzUP0QYUalHrbTjvRzWk=;
- b=UUMMDdHdnlZLGAeNarNfQJ2l3tJR8OUas5UaN4idYadFbFTWcveYAtiSPHy8kIVXlaIQbaRmTSi6othJMCuBTcqReaDaKH5B7BHvVEGNrqpEHDN1dZzJn+Zx6hxlDHZyu7W6uGLZGZzOF/e8TxhWO7oejK2WsksGRc+4RPUUG7I=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by BYAPR04MB4056.namprd04.prod.outlook.com (2603:10b6:a02:b4::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.18; Thu, 12 Jan
- 2023 11:00:31 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::d4bd:b4ef:5bff:2329]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::d4bd:b4ef:5bff:2329%4]) with mapi id 15.20.6002.013; Thu, 12 Jan 2023
- 11:00:31 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 04/10] btrfs: add a bio_list_put helper
-Thread-Topic: [PATCH 04/10] btrfs: add a bio_list_put helper
-Thread-Index: AQHZJYVeee9y/7S2L0q0pNlCtxRYcK6ZEBoAgAFfWQCAAC+ugA==
-Date:   Thu, 12 Jan 2023 11:00:31 +0000
-Message-ID: <ff05f06a-e7d2-73f4-a7a2-c599ab1c07e3@wdc.com>
-References: <20230111062335.1023353-1-hch@lst.de>
- <20230111062335.1023353-5-hch@lst.de>
- <2e946375-bfdb-7361-842d-c0b40e206298@wdc.com>
- <20230112080952.GA12947@lst.de>
-In-Reply-To: <20230112080952.GA12947@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.1
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|BYAPR04MB4056:EE_
-x-ms-office365-filtering-correlation-id: e7414b6e-19ce-4e6e-bce6-08daf48c3902
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RVKUjxdOFAua4C08H+8GVltUChLTLK4wXyaEv90+BJMLJrXH2+619JOOHChbLO/CoOXzQ1i2OQyzBFkHzUBvpQwnR68eNMMFXLCG9IHKbCTjmal49nOXr18+0pUNFpXz/ZOo6zfcEN1+Uy/iie7Vkcht2wSApZcaziHW6qpnGNVfK/en0Hm4CboyRg4YeN0HSLgV1czim6/mSj9UzpgE0Zqa8jeV2QUMq8PKfoJk1XgVo2jT3p1zhhO2CtFNlgCpqsCmiMhx/Ygwbrjwy/z55lkstfVrrpcW5t8SscZKeBVJ9oaeH+Yoew9Vr00cPt4/sK0SnQtyGfJwUOC8tef5gXEcD2/B0+XFB6uDmErFLj9+4KrPlMEoY3R/8sutTaEJZZkhSu/PeAgnbxx/NrHwvCGifMASFOqnQD3tbD5g9TxZetu1pO/ly3rCkCXCSbCadh8ayGmr1Dzb9lgpaWFpNXdD3ywspmM+gftU4gytMbOVck3BqwkceaEKc8sinapp5atjFZWq7in0Ttvfnt+VMQT0psLFeosqkvF56s+uF/SnHW3s4xkHnm7Osu3dwAWq1nFMhP5d4QucRap1UjY50hvdqp17UIgMzol5mrls1DYV2BmsGFy4ybDiNZrmOGHJstcEBtYPnb/cdGV+hJW/1B9E/zb4mKMQnoChLshvvuUg8Y352CvmqEZC4OvD8cD/aSaFeS4jgOGDKpO+VmGGALgMEWb0zT9ThwgZ6KcqweowDT3aw/DWHsbvHlS+0hwMQnko/Rn+jQaRHsUw1xW9fg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(39860400002)(396003)(346002)(136003)(376002)(451199015)(53546011)(31686004)(2906002)(71200400001)(6506007)(6486002)(478600001)(6512007)(186003)(8676002)(83380400001)(2616005)(66446008)(66946007)(76116006)(36756003)(64756008)(54906003)(316002)(66556008)(66476007)(6916009)(4326008)(41300700001)(4744005)(82960400001)(122000001)(38100700002)(38070700005)(91956017)(86362001)(31696002)(8936002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YlB0NkxTZnRsdFZVMERjY3FJM0pyOGtXSU9IMkZxWU1Ta0lpV2lMTlUzYTI1?=
- =?utf-8?B?QkhBZ0Y2NFd6ODd3MXVMNlFUaDBoRXVCeHFHenJGUzV2Y2Zxd1MrUDZFZU5s?=
- =?utf-8?B?TU5nOUtFRlBNTU9QUjJRamh2V05hZm45Zmh2aXpOeEVteVovMXV4c21NVHhY?=
- =?utf-8?B?VlN3dStUbnZXVDhsWXdPT3FYNnk3eDhERUtGSUkxRU1MSjRjZW9Sa1hJeW0v?=
- =?utf-8?B?czB5N0hCRXBQKzdOYmhQLzBKS0dSUW5wQitZOEVub3pSYnQ0TG1IU2t1VWdm?=
- =?utf-8?B?dGd3OUF2eW9HM0hEb3h2M2FHN3dUNk1ieHcwZW9tUEtMTFBteUY4T2sxdm1n?=
- =?utf-8?B?amUxajNSTDN2Q1J0K2NsSngwVGl3MzJXWExZcFA4cncyWGxlL1J5WDlBdW1L?=
- =?utf-8?B?Q3JDUDBxQjdMZ25FbkIrZmprSUxKODlqUG43UFoyZEhJcGRxZE4wY3VITHVx?=
- =?utf-8?B?VUNwa1VzMGw2RjRuRnpZTGxNWE9qcndxbWZZYWhSWWI2aHlycm5CUGplT1hy?=
- =?utf-8?B?andGTEVyYVBQL0xRd3B3bHRraXpoVkJsMFFvcmlzL0tKNzAxZEN5QmNDVkk4?=
- =?utf-8?B?THdLWGdvYzQ4M2hoTUJRUmh6cExkT3d2eW1aY2pmYTRZOHJMOFcweVgvVC9B?=
- =?utf-8?B?dVBIR3hCN3FBcFVjMTBsOVZnL0Z3Qk1XQ2E2bzEydnFZODNPd21RM011UWVx?=
- =?utf-8?B?OFdPNVBnbFlIZ1V1Mk04OGlOYldUVkd2SDU2eTY0WGRXYjFDdm0rK2c3UWox?=
- =?utf-8?B?N0J0SzRpUkNwV0RWUU1adElJWjdQalVlNWxLNURmWnRMdWxGTVlCUnB1NURi?=
- =?utf-8?B?NXJyc1ZZcWJLSEp0aFlYc2NaRkNhaEZzaURERjFiMXJNSUQ5bXlxZmVKdlk0?=
- =?utf-8?B?UHh2OExzWUlwc0lhSThhKzkyVkxUeFF2NnhnQlhDTGJIem5pZSsyQ21VY0V3?=
- =?utf-8?B?TldtMVdRMjFuK3I1U256VVNsUVNmdWh3d1kwaHl6RWRrNG9CZkJweEpjQWg2?=
- =?utf-8?B?eEN4eERUdkEvS2E5dnVrbHNLeU13ZjM3bjFhcnB2L2FrTmZHM0FYNXYxTExL?=
- =?utf-8?B?WmpHdGh3clBvQ2JmWGZBelZCUVV5Vi9JcVdUUXJNNkdjZmJqcWxPWjdoTVc5?=
- =?utf-8?B?SS91MFkwbGtzdmtvZHNYOFV2MWNIckVjd1h2dHp3d1AvMU9BMm9aazN5bGdM?=
- =?utf-8?B?eEZKd01lVHFIMjh6aXNXa0d4bkRqUXRORHdxb0FtSWVDOSswUU5jUVVKWldO?=
- =?utf-8?B?ZlhHVHJiYUUzK29rank1MkxidkVQZDZSb3dLYk1wK0ZRcnZGdS9UaWdHZ0Np?=
- =?utf-8?B?cGxOaEV2KytEYjVHeFhFZTRzaU5Hc1B3eksrL0w5QmNadHRJRTlmN2UvTUsx?=
- =?utf-8?B?dHNiRTVLWXZ5ay9VOFU0b2ZPYmozaXIvUXdvZ3FKMEtxRkhBbnhEb2czRGZV?=
- =?utf-8?B?d0pNNkdnNWRENnJKS3N6eVAxa2MxZFVBTzNtSExtQkpTT1lSbE1OMzI3OWlt?=
- =?utf-8?B?dUduU3Q3YnFrYUw4d2J0M3FFMnIrWVRLUDNCZEJpbTZ2NHcwYzBHOHJzTlU2?=
- =?utf-8?B?elVzQUMxSGswVGo1WkpnUllqNk1MTFpycGdFOHhXSW53ZzQ1MjNNd2dWM0RS?=
- =?utf-8?B?dkdVelVMNWRtdzNzVVVaL2h1YWtrV2JoK1laQm5JNkdVdEg3TW1hcDdsVVVi?=
- =?utf-8?B?eGc0T2JUTjVkdmpZV2NXL0dBUGZBOUhORkR0c0dHd0VxbG1lVTFWRXZaY0VH?=
- =?utf-8?B?R1lpT2NXa1dSWjdTbmhSSDdVUkh1Qk4xZGNsZFIwdVRtR2R0c1VLbjVzWTZM?=
- =?utf-8?B?a0M1WmpHVHBvM1AvNW5VVHZTbU9Xa1BoZFJOMHBWM2JLN0QxdEFEdUVObGF2?=
- =?utf-8?B?bzZ5RHRiTWpxUjN0ejZzbHU1ZGVubktNL1NtTEh0SFdVbWJTdERtV2pydnNv?=
- =?utf-8?B?L0VoMHowSVFnRlhlanQ1SlVYSks4Nk52bHZucGh2d3BRaWE4K2RSSG1NQ0tO?=
- =?utf-8?B?QWxUNEMzSU95d3FSRmVoemFyTjBuN1NnMXlXNVZTcjc3NUxaNk5WYUsyVloy?=
- =?utf-8?B?YUphTHp2R2doQzRvSlNiNlFFK2l4MUVpSEJhTE94ZVlQZnhxK0thN3V1T2My?=
- =?utf-8?B?VkxoR08xUzArdU81US9BQ2xOT1VjMk1OMFNWVXBoMlZ5NzVvZGFIMGNkRzV4?=
- =?utf-8?B?OTc2WlA2VG52QWNxL1NhYWVwV3Q4MTdya3dOQXlVaEFyVUNMaC9FNXpPRUNz?=
- =?utf-8?Q?058BDl0gzcH0hiXLD1xMHb1kv+E5yTcM0GtgceeGPM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <43E60B4DB8EB1F4CBEBF43F5601E6AB4@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 12 Jan 2023 08:54:09 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C836E1169;
+        Thu, 12 Jan 2023 05:54:07 -0800 (PST)
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1pFy1s-0001To-HW; Thu, 12 Jan 2023 14:54:04 +0100
+Message-ID: <7f25442f-b121-2a3a-5a3d-22bcaae83cd4@leemhuis.info>
+Date:   Thu, 12 Jan 2023 14:54:03 +0100
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: +u52aMFli/0ikyjZX46WqK7mnh5f9vR3LZWAnAwP0P83BEXFZCYVZcRlpiTNw1+3aVEzJCTjRvXhcKEjE4X1+Xx1Ws4u++onAzuv+ONMywkA5ebve0i7qkCuwjl99wc72uz+Q9I+s8ozZSLV33iw4VPgtwFhZ456FnQqJssiYisC5zjO5xfM350QTDl/bxFjILLB4ikuhSSNWvALBHfWxKrzVcHMpoxp1jjD1rZBgkMu+ci2fmrZv4jKyVoOX9k2IkUGeezCFYKIeGN07ZPPtSg8SA7UOG5mhj3EV3aj52FN6VAcT/zu03xnHetROsUNxdJHSHGyC1Qm0jf3jXQOMHKxcu+XGV3t7wWW7T6mkGsf9lWbrQ17W0n0mlk4e/eEVlLNiKaGAlTNNW94H/Eme86u9wPyJ1EZ7QjHd1nwH6e1HDeBnB8S+Oi2kRHYFjlBBGR+eDSj7asg/8QiCOqbIcpunO+xDuCUfGpdRWhWBKLBZiyjHtPQAZpV6/84mb/Dxe9ZSzx/Z+r/iCK/eRTDWzDoMxboO1PPUl96AHX7ByzTnQ63WhovbSWb1nya6JsB5RdQtreKN+VE8RlK3HeJs1uGrqOCyA9SSi8TNh7GuyAQm0yvqFoM5QWRbuELS5rWjpA+JPAVmOeS0rFc2t20hKeHYuimMf4UU2EGvoOIN3Liue/9Wj5jPc0X9VLB6/osC8dGHHQvsYmR5hIWLUOewVMhLI/Ed41QifAMNx2SMEM8pDKutfXkX6LE/8+/8S+tiHsE5/bh19BNfyH+MXPYLRH9S8efZ0sFO//r7D7LJlYxcm9xNv++8vSKBX7BUNmKRzvCdCrzxw2hHdm/W8aqEz/0u9EAiSJ83bKReq61loEnZaoWTwaBBS6DwptHglLO
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7414b6e-19ce-4e6e-bce6-08daf48c3902
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2023 11:00:31.4801
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YDr/fcYCRiBhnmh+bbtw5wAXEL5cYe18SF7ATSl8X2yhjpi6twmf0YCRySYBsxzuUuJbNHGOFMREXOnAXZkzjSsNiq2E5Npqah8Z5kRCjrc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4056
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Content-Language: en-US, de-DE
+From:   "Linux kernel regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Matthias Schoepfer <matthias.schoepfer@googlemail.com>,
+        Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: =?UTF-8?Q?=5bregression=5d_Bug=c2=a0216908_-_General_Protection_Fau?=
+ =?UTF-8?Q?lt_in_btrfs=5ffile=5fllseek?=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1673531647;cce516f8;
+X-HE-SMSGID: 1pFy1s-0001To-HW
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gMTIuMDEuMjMgMDk6MTAsIENocmlzdG9waCBIZWxsd2lnIHdyb3RlOg0KPiBPbiBXZWQsIEph
-biAxMSwgMjAyMyBhdCAxMToxMjoyMUFNICswMDAwLCBKb2hhbm5lcyBUaHVtc2hpcm4gd3JvdGU6
-DQo+PiBPbiAxMS4wMS4yMyAwNzoyNCwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6DQo+Pj4gK3N0
-YXRpYyBpbmxpbmUgdm9pZCBiaW9fbGlzdF9wdXQoc3RydWN0IGJpb19saXN0ICpiaW9fbGlzdCkN
-Cj4+PiArew0KPj4+ICsJc3RydWN0IGJpbyAqYmlvOw0KPj4+ICsNCj4+PiArCXdoaWxlICgoYmlv
-ID0gYmlvX2xpc3RfcG9wKGJpb19saXN0KSkpDQo+Pj4gKwkJYmlvX3B1dChiaW8pOw0KPj4+ICt9
-DQo+Pj4gKw0KPj4NCj4+IFNob3VsZG4ndCB0aGF0IGJlIGxpZnRlZCBpbnRvIGJpby5oPyBBdCBs
-ZWFzdCANCj4+IGRyaXZlcnMvdGFyZ2V0L3RhcmdldF9jb3JlX2libG9jay5jIHdvdWxkIGJlbmVm
-aXQgZnJvbSBpdCBhcyB3ZWxsLg0KPiANCj4gVGhhdCBpcyBpbiBmYWN0IHRoZSBvbmx5IG90aGVy
-IHR3byBjYWxsZXJzLCBvdXQgb2Ygd2hpY2ggb25lIGlzIGJvZ3VzDQo+IGFzIHdlIGRvbid0IGV2
-ZW4gbmVlZCB0aGUgbGlzdCB0aGVyZSAoV3JpdGUgU2FtZSBqdXN0IGhhcyBhIHNpbmdsZQ0KPiBi
-bG9jayBwYXlsb2FkKS4gIFNvIGZvciBub3cgSSdkIHByZWZlciB0byBub3QgbW92ZSBpdCB0byBj
-b21tb24NCj4gY29kZS4NCj4gDQoNCk9LIHRoZW4gbGV0J3Mgbm90IGdvIGRvd24gdGhhdCByYWJi
-aXQgaG9sZS4NCg==
+Hi, this is your Linux kernel regression tracker.
+
+I noticed a regression report in bugzilla.kernel.org. As many (most?)
+kernel developer don't keep an eye on it, I decided to forward it by
+mail. Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=216908 :
+
+>  Matthias Schoepfer 2023-01-10 13:58:06 UTC
+> 
+> When creating a large file (i.e. mkfs.ext4 within yocto embedded linux task, which means, 8+GB file), mkfs.ext4 will report a segfault and I get a general protection fault, the system becomes more or less unstable after this. 
+> 
+> I can reproduce this 100%, when I do the same with 6.0.6 kernel, it works fine. 
+> 
+> Here is the Kernel dump:
+> Jan 10 14:12:38 michelle kernel: BTRFS warning (device nvme0n1p5): bad eb member end: ptr 0x3fea start 2704543268864 member offset 16383 size 8
+> Jan 10 14:12:38 michelle kernel: general protection fault, probably for non-canonical address 0x85d8740000000: 0000 [#1] PREEMPT SMP
+> Jan 10 14:12:38 michelle kernel: CPU: 21 PID: 2143606 Comm: mkfs.ext4.real Tainted: P           O    T  6.1.4-gentoo #2
+> Jan 10 14:12:38 michelle kernel: Hardware name: Micro-Star International Co., Ltd. MS-7C37/X570-A PRO (MS-7C37), BIOS H.70 01/09/2020
+> Jan 10 14:12:38 michelle kernel: RIP: 0010:btrfs_get_64+0xe7/0x100
+> Jan 10 14:12:38 michelle kernel: Code: 40 08 48 2b 15 b2 3a 15 01 48 8d 0c 04 48 c1 fa 06 48 c1 e2 0c 48 03 15 af 3a 15 01 81 eb f8 0f 00 00 74 12 31 c0 89 c6 ff c0 <0f> b6 3c 32 40 88 3c 3>
+> Jan 10 14:12:38 michelle kernel: RSP: 0018:ffffb2d4ca4c3dd0 EFLAGS: 00010202
+> Jan 10 14:12:38 michelle kernel: RAX: 0000000000000001 RBX: 0000000000000007 RCX: ffffb2d4ca4c3dd9
+> Jan 10 14:12:38 michelle kernel: RDX: 00085d8740000000 RSI: 0000000000000000 RDI: 000000000000000a
+> Jan 10 14:12:38 michelle kernel: RBP: ffff96fbbfd9c600 R08: 0000000000000001 R09: 00000000ffffdfff
+> Jan 10 14:12:38 michelle kernel: R10: ffffffff94a3a700 R11: ffffffff94aea700 R12: 0000000000000003
+> Jan 10 14:12:38 michelle kernel: R13: ffff96fbbfd9c600 R14: 0000000000000003 R15: 0000000000003fea
+> Jan 10 14:12:38 michelle kernel: FS:  00007f6ac90e5780(0000) GS:ffff97071ed40000(0000) knlGS:0000000000000000
+> Jan 10 14:12:38 michelle kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> Jan 10 14:12:38 michelle kernel: CR2: 0000557c6f245760 CR3: 000000019a64a000 CR4: 0000000000350ee0
+> Jan 10 14:12:38 michelle kernel: Call Trace:
+> Jan 10 14:12:38 michelle kernel:  <TASK>
+> Jan 10 14:12:38 michelle kernel:  btrfs_file_llseek+0x269/0x670
+> Jan 10 14:12:38 michelle kernel:  ksys_lseek+0x61/0xa0
+> Jan 10 14:12:38 michelle kernel:  do_syscall_64+0x56/0x80
+> Jan 10 14:12:38 michelle kernel:  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+> Jan 10 14:12:38 michelle kernel: RIP: 0033:0x7f6ac91e4d3b
+> Jan 10 14:12:38 michelle kernel: Code: ff ff c3 0f 1f 40 00 48 8b 15 e1 90 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb ba 0f 1f 00 f3 0f 1e fa b8 08 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 0>
+> Jan 10 14:12:38 michelle kernel: RSP: 002b:00007fff68e04038 EFLAGS: 00000297 ORIG_RAX: 0000000000000008
+> Jan 10 14:12:38 michelle kernel: RAX: ffffffffffffffda RBX: 000056367d4ffea0 RCX: 00007f6ac91e4d3b
+> Jan 10 14:12:38 michelle kernel: RDX: 0000000000000003 RSI: 0000000000000000 RDI: 0000000000000004
+> Jan 10 14:12:38 michelle kernel: RBP: 0000000000000004 R08: 00007f6ac92bef90 R09: 000056367d4f6160
+> Jan 10 14:12:38 michelle kernel: R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000000
+> Jan 10 14:12:38 michelle kernel: R13: 000056367d4c0eb0 R14: 000056367d50d620 R15: 000056367d4ebab0
+> Jan 10 14:12:38 michelle kernel:  </TASK>
+> Jan 10 14:12:38 michelle kernel: Modules linked in: xt_CHECKSUM xt_MASQUERADE nvidia_drm(PO) nvidia_modeset(PO) ip6table_nat iptable_nat bpfilter nvidia(PO) uvcvideo videobuf2_vmalloc video>
+> Jan 10 14:12:38 michelle kernel: ---[ end trace 0000000000000000 ]---
+> Jan 10 14:12:38 michelle kernel: RIP: 0010:btrfs_get_64+0xe7/0x100
+> Jan 10 14:12:38 michelle kernel: Code: 40 08 48 2b 15 b2 3a 15 01 48 8d 0c 04 48 c1 fa 06 48 c1 e2 0c 48 03 15 af 3a 15 01 81 eb f8 0f 00 00 74 12 31 c0 89 c6 ff c0 <0f> b6 3c 32 40 88 3c 3>
+> Jan 10 14:12:38 michelle kernel: RSP: 0018:ffffb2d4ca4c3dd0 EFLAGS: 00010202
+> Jan 10 14:12:38 michelle kernel: RAX: 0000000000000001 RBX: 0000000000000007 RCX: ffffb2d4ca4c3dd9
+> Jan 10 14:12:38 michelle kernel: RDX: 00085d8740000000 RSI: 0000000000000000 RDI: 000000000000000a
+> Jan 10 14:12:38 michelle kernel: RBP: ffff96fbbfd9c600 R08: 0000000000000001 R09: 00000000ffffdfff
+> Jan 10 14:12:38 michelle kernel: R10: ffffffff94a3a700 R11: ffffffff94aea700 R12: 0000000000000003
+> Jan 10 14:12:38 michelle kernel: R13: ffff96fbbfd9c600 R14: 0000000000000003 R15: 0000000000003fea
+> Jan 10 14:12:38 michelle kernel: FS:  00007f6ac90e5780(0000) GS:ffff97071ed40000(0000) knlGS:0000000000000000
+> Jan 10 14:12:38 michelle kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> Jan 10 14:12:38 michelle kernel: CR2: 0000557c6f245760 CR3: 000000019a64a000 CR4: 0000000000350ee0
+
+See the ticket for more details.
+
+I first assumed (see the ticket) it might be the same problem that was
+fixed by "btrfs: fix resolving backrefs for inline extent followed by
+prealloc"
+(https://lore.kernel.org/all/20230104160512.620453792@linuxfoundation.org/
+) -- but that is already in 6.1.4, so I better keep my nose out of it
+and let the experts look into this.
+
+
+[TLDR for the rest of this mail: I'm adding this report to the list of
+tracked Linux kernel regressions; the text you find below is based on a
+few templates paragraphs you might have encountered already in similar
+form.]
+
+BTW, let me use this mail to also add the report to the list of tracked
+regressions to ensure it's doesn't fall through the cracks:
+
+#regzbot introduced: v6.0..v6.1.4
+https://bugzilla.kernel.org/show_bug.cgi?id=216908
+#regzbot title: btrfs: General Protection Fault in btrfs_file_llseek
+#regzbot ignore-activity
+
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
+
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (e.g. the buzgzilla ticket and maybe this mail as well, if
+this thread sees some discussion). See page linked in footer for details.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
