@@ -2,130 +2,179 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9856679BC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jan 2023 16:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E30667AED
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jan 2023 17:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240608AbjALPpN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Jan 2023 10:45:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
+        id S236701AbjALQeA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Jan 2023 11:34:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240408AbjALPol (ORCPT
+        with ESMTP id S239941AbjALQde (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Jan 2023 10:44:41 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADBC5D6B7
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jan 2023 07:35:08 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Thu, 12 Jan 2023 11:33:34 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE7E44C46
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jan 2023 08:31:12 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 72C88402A5;
-        Thu, 12 Jan 2023 15:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1673537706;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GbgUuUDHl202OK5HFlczqmhS8JRfeqzOV/7SZCtpmb0=;
-        b=R7mOvOWnhcefT6lnGz1qRMaPwh62QsYLhFKjJ43jAcesC0WMhXxR4yEGkl67YkQdSOVx8t
-        WxsQKUBIVLTPTeWyvUVuQXTZzzREoX5dY1pQqcBjeQS2igc3hnYIYB1HPg/LkQP/DRbp1Q
-        LmaiXnVkVWbqw8fO7JVxIEgkQeoC3rw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1673537706;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GbgUuUDHl202OK5HFlczqmhS8JRfeqzOV/7SZCtpmb0=;
-        b=qAR1IcW48N8atvw7rFHAc3yK+Z+s5BY9tKoLJ6ip1lIhzp3U3AsWsm7a7fvducblluZMoC
-        3+3WydpV8ApU8xDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 50E0613776;
-        Thu, 12 Jan 2023 15:35:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0DnMEqoowGPwKQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 12 Jan 2023 15:35:06 +0000
-Date:   Thu, 12 Jan 2023 16:29:31 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: scrub: improve its tree block error reporting
-Message-ID: <20230112152930.GO11562@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <0ba09faab92972fb164215f3614678678cc0fa16.1671244467.git.wqu@suse.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2514D6208A
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jan 2023 16:31:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1831BC433EF
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jan 2023 16:31:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673541071;
+        bh=DpjMjyWB1jR4l9GgOflKdwnhVVhr93CSZ/C33Bj80eg=;
+        h=From:To:Subject:Date:From;
+        b=bn0tYWC4E4SrdMzuPUlcphwLkcfXUDktiz82ugejmjYu340Y5epLx0lmRTe8iNBEm
+         750OG1PsOns++g4+7npCn7d8yazGt+i0N1CEXxFZ/nPx+twpDTSZOsvjM5oiJh7BHE
+         /tOpbKZpjPCJhd970Ae6hQA+atj9Dm4iT22vn9hrpLmsiG0ifHgRsO+gifE8gRYZl8
+         KkXitUQ1B6hL0Es5L/t3tIKVJ8PtV5jdTQ1a2njaDfrRH0duj7HEcbjHs4A7qkWlA5
+         XQQZ2RdKPh9y8jcJiuRWqO3VBBatBz4RhtrJVR08TWxqVLkQJ+vy5WO/GpoX2oIzy5
+         I6So7NN0KbEtA==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix race between quota rescan and disable leading to NULL pointer deref
+Date:   Thu, 12 Jan 2023 16:31:08 +0000
+Message-Id: <ce2f76dc44aff2e00051eaf174f3da65b896c2ef.1673540838.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0ba09faab92972fb164215f3614678678cc0fa16.1671244467.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Dec 17, 2022 at 10:34:29AM +0800, Qu Wenruo wrote:
-> [BUG]
-> When debugging a scrub related metadata error, it turns out that our
-> metadata error reporting is not ideal.
-> 
-> The only 3 error messages are:
-> 
-> - BTRFS error (device dm-2): bdev /dev/mapper/test-scratch1 errs: wr 0, rd 0, flush 0, corrupt 0, gen 1
->   Showing we have metadata generation mismatch errors.
-> 
-> - BTRFS error (device dm-2): unable to fixup (regular) error at logical 7110656 on dev /dev/mapper/test-scratch1
->   Showing which tree blocks are corrupted.
-> 
-> - BTRFS warning (device dm-2): checksum/header error at logical 24772608 on dev /dev/mapper/test-scratch2, physical 3801088: metadata node (level 1) in tree 5
->   Showing which physical range the corrupted metadata is at.
-> 
-> We have to combine the above 3 to know we have a corrupted metadata with
-> generation mismatch.
-> 
-> And this is already the better case, if we have other problems, like
-> fsid mismatch, we can not even know the cause.
-> 
-> [CAUSE]
-> The problem is caused by the fact that, scrub_checksum_tree_block()
-> never outputs any error message.
-> 
-> It just return two bits for scrub: sblock->header_error, and
-> sblock->generation_error.
-> 
-> And later we report error in scrub_print_warning(), but unfortunately we
-> only have two bits, there is not really much thing we can done to print
-> any detailed errors.
-> 
-> [FIX]
-> This patch will do the following to enhance the error reporting of
-> metadata scrub:
-> 
-> - Add extra warning (ratelimited) for every error we hit
->   This can help us to distinguish the different types of errors.
->   Some errors can help us to know what's going wrong immediately,
->   like bytenr mismatch.
-> 
-> - Re-order the checks
->   Currently we check bytenr first, then immediately geneartion.
->   This can lead to false generation mismatch reports, while the fsid
->   mismatches.
-> 
-> Here is the newer output for the bug I'm debugging (we forgot to
-> writeback tree blocks for commit roots):
-> 
->  BTRFS warning (device dm-2): tree block 24117248 mirror 1 has bad fsid, has b77cd862-f150-4c71-90ec-7baf0544d83f want 17df6abf-23cd-445f-b350-5b3e40bfd2fc
->  BTRFS warning (device dm-2): tree block 24117248 mirror 0 has bad fsid, has b77cd862-f150-4c71-90ec-7baf0544d83f want 17df6abf-23cd-445f-b350-5b3e40bfd2fc
-> 
-> Now we can immediately know it's some tree blocks didn't even get written
-> back, other than the original confusing generation mismatch.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-Added to misc-next, thanks.
+If we have one task trying to start the quota rescan worker while another
+one is trying to disable quotas, we can end up hitting a race that results
+in the quota rescan worker doing a NULL pointer dereference. The steps for
+this are the following:
+
+1) Quotas are enabled;
+
+2) Task A calls the quota rescan ioctl and enters btrfs_qgroup_rescan().
+   It calls qgroup_rescan_init() which returns 0 (success) and then joins a
+   transaction and commits it;
+
+3) Task B calls the quota disable ioctl and enters btrfs_quota_disable().
+   It clears the bit BTRFS_FS_QUOTA_ENABLED from fs_info->flags and calls
+   btrfs_qgroup_wait_for_completion(), which returns immediately since the
+   rescan worker is not yet running.
+   Then it starts a transaction and locks fs_info->qgroup_ioctl_lock;
+
+4) Task A queues the rescan worker, by calling btrfs_queue_work();
+
+5) The rescan worker starts, and calls rescan_should_stop() at the start
+   of its while loop, which results in 0 iterations of the loop, since
+   the flag BTRFS_FS_QUOTA_ENABLED was cleared from fs_info->flags by
+   task B at step 3);
+
+6) Task B sets fs_info->quota_root to NULL;
+
+7) The rescan worker tries to start a transaction and uses
+   fs_info->quota_root as the root argument for btrfs_start_transaction().
+   This results in a NULL pointer dereference down the call chain of
+   btrfs_start_transaction(). The stack trace is something like the one
+   reported in Link tag below:
+
+   general protection fault, probably for non-canonical address 0xdffffc0000000041: 0000 [#1] PREEMPT SMP KASAN
+   KASAN: null-ptr-deref in range [0x0000000000000208-0x000000000000020f]
+   CPU: 1 PID: 34 Comm: kworker/u4:2 Not tainted 6.1.0-syzkaller-13872-gb6bb9676f216 #0
+   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+   Workqueue: btrfs-qgroup-rescan btrfs_work_helper
+   RIP: 0010:start_transaction+0x48/0x10f0 fs/btrfs/transaction.c:564
+   Code: 48 89 fb 48 (...)
+   RSP: 0018:ffffc90000ab7ab0 EFLAGS: 00010206
+   RAX: 0000000000000041 RBX: 0000000000000208 RCX: ffff88801779ba80
+   RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+   RBP: dffffc0000000000 R08: 0000000000000001 R09: fffff52000156f5d
+   R10: fffff52000156f5d R11: 1ffff92000156f5c R12: 0000000000000000
+   R13: 0000000000000001 R14: 0000000000000001 R15: 0000000000000003
+   FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+   CR2: 00007f2bea75b718 CR3: 000000001d0cc000 CR4: 00000000003506e0
+   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+   Call Trace:
+    <TASK>
+    btrfs_qgroup_rescan_worker+0x3bb/0x6a0 fs/btrfs/qgroup.c:3402
+    btrfs_work_helper+0x312/0x850 fs/btrfs/async-thread.c:280
+    process_one_work+0x877/0xdb0 kernel/workqueue.c:2289
+    worker_thread+0xb14/0x1330 kernel/workqueue.c:2436
+    kthread+0x266/0x300 kernel/kthread.c:376
+    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+    </TASK>
+   Modules linked in:
+   ---[ end trace 0000000000000000 ]---
+
+So fix this by having the rescan worker function not attempt to start a
+transaction if it didn't do any rescan work.
+
+Reported-by: syzbot+96977faa68092ad382c4@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-btrfs/000000000000e5454b05f065a803@google.com/
+Fixes: e804861bd4e6 ("btrfs: fix deadlock between quota disable and qgroup rescan worker")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/qgroup.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index d275bf24b250..e459cba02ec0 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3357,6 +3357,7 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
+ 	int err = -ENOMEM;
+ 	int ret = 0;
+ 	bool stopped = false;
++	bool did_leaf_rescans = false;
+ 
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+@@ -3377,6 +3378,7 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
+ 		}
+ 
+ 		err = qgroup_rescan_leaf(trans, path);
++		did_leaf_rescans = true;
+ 
+ 		if (err > 0)
+ 			btrfs_commit_transaction(trans);
+@@ -3397,16 +3399,21 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
+ 	mutex_unlock(&fs_info->qgroup_rescan_lock);
+ 
+ 	/*
+-	 * only update status, since the previous part has already updated the
+-	 * qgroup info.
++	 * Only update status, since the previous part has already updated the
++	 * qgroup info, and only if we did any actual work. This also prevents
++	 * race with a concurrent quota disable, which has already set
++	 * fs_info->quota_root to NULL and cleared BTRFS_FS_QUOTA_ENABLED at
++	 * btrfs_quota_disable().
+ 	 */
+-	trans = btrfs_start_transaction(fs_info->quota_root, 1);
+-	if (IS_ERR(trans)) {
+-		err = PTR_ERR(trans);
+-		trans = NULL;
+-		btrfs_err(fs_info,
+-			  "fail to start transaction for status update: %d",
+-			  err);
++	if (did_leaf_rescans) {
++		trans = btrfs_start_transaction(fs_info->quota_root, 1);
++		if (IS_ERR(trans)) {
++			err = PTR_ERR(trans);
++			trans = NULL;
++			btrfs_err(fs_info,
++				  "fail to start transaction for status update: %d",
++				  err);
++		}
+ 	}
+ 
+ 	mutex_lock(&fs_info->qgroup_rescan_lock);
+-- 
+2.35.1
+
