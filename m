@@ -2,44 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E7C6675EA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jan 2023 15:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21055667737
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jan 2023 15:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234912AbjALO1J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Jan 2023 09:27:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47896 "EHLO
+        id S239706AbjALOkx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Jan 2023 09:40:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234001AbjALO01 (ORCPT
+        with ESMTP id S238507AbjALOkS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Jan 2023 09:26:27 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126745C926
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jan 2023 06:17:25 -0800 (PST)
+        Thu, 12 Jan 2023 09:40:18 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325586219E;
+        Thu, 12 Jan 2023 06:29:57 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A196661F4A
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jan 2023 14:17:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EB17C433D2
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jan 2023 14:17:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B158B61FCB;
+        Thu, 12 Jan 2023 14:29:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2657FC433F0;
+        Thu, 12 Jan 2023 14:29:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673533044;
-        bh=wKyo39owBGCh3hDWcpPZQqzgAM0WI+NG7SMEJPXUM9M=;
-        h=From:To:Subject:Date:From;
-        b=ASxWjpYe8gO4sar7/tXIjQDg3PgnYaImBVQaYNKmdUMMnrQ3CFWVg/zwq0S8Dwn+5
-         2nRc5q0RHHeUUsHNb5p8Or0XkW5x//+q1j6aOh+r1iE1uQUN06VgqG4ABIi6p3nPy3
-         v+MU/wUNOR1X25djRSDwohHV/3INtcs93ytXwiN9cJQpA6rN1zfoKYsjO0kVj4OKkt
-         q5g9e61GRHmvDckD9HMqRTi9E3WfF970y95KGBKUJol7JK3G5qEKn9R5Nlj8c9PAox
-         Ptg1C9zee4nSBvGskLbDt3bJ01JFdYRA0n3NiCwguntkVgsuGpD8PbN729Yfn158Zm
-         ZOywdvtkvUOoQ==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix invalid leaf access due to inline extent during lseek
-Date:   Thu, 12 Jan 2023 14:17:20 +0000
-Message-Id: <860221a4cf1642689ed17404c12b920d1acf1019.1673532966.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        s=k20201202; t=1673533796;
+        bh=JZRrvN/jvv2tf46l8snNx1waBKFLB2GgX+Ugtds07Uo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=H8zFkN0nxR0LAlC0m4Bpcf1pyRjdsqkrjoW5AFHvcjPjp/2hlbBcUvEjtJfr77l6X
+         brLTwE7TVBiAe5PGwCI5kWBt4c4WsJ2gI6kaEy+4IDqo60BUuOL+xmK9rcMTi5GNHO
+         /o4GSVZQ8lVm8CrZDBHHbBn5U96zsk9RmyZ+iccJjkFlUOqkY+9ELjj9OW/Xhju1n0
+         aSjLMhYTkKjpK2/jNnQv/49GVgAiv3u1RIyQ0esQVFHAE4Dr4tLxIbJ/eVN2+7ys09
+         KFUO8bvRbyhLI71vR2OuJtGvjWyQbpCxQPI2f3eQ3yoaTKQ+kHSkuxeDMhFkEvv7E7
+         leWErimj2Yu9A==
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-15ed38a9b04so375336fac.8;
+        Thu, 12 Jan 2023 06:29:56 -0800 (PST)
+X-Gm-Message-State: AFqh2kp0FbkfIbI59p4kpypVGk+eyGxqDWmvUEeelEuMfIz2U1iDlcKk
+        yYcE4/UUwGOfM5CeJ3G//bFwQrbHttvimGD0fQk=
+X-Google-Smtp-Source: AMrXdXsTjQrtvlU+ITja5ZdOicFU0LN6CRxYrwtF7sj1Q+FOTxnhk68fkVaJqeJQtnXsh0s6Lowl9MwGrm4HV2qhZeM=
+X-Received: by 2002:a05:6871:22c2:b0:15b:945f:9102 with SMTP id
+ se2-20020a05687122c200b0015b945f9102mr909950oab.92.1673533795209; Thu, 12 Jan
+ 2023 06:29:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <7f25442f-b121-2a3a-5a3d-22bcaae83cd4@leemhuis.info>
+In-Reply-To: <7f25442f-b121-2a3a-5a3d-22bcaae83cd4@leemhuis.info>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Thu, 12 Jan 2023 14:29:19 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5XUr2=kLEV192yU6cZakX_diS5+WRLq7LHkGPUOAZZZw@mail.gmail.com>
+Message-ID: <CAL3q7H5XUr2=kLEV192yU6cZakX_diS5+WRLq7LHkGPUOAZZZw@mail.gmail.com>
+Subject: Re: [regression] Bug 216908 - General Protection Fault in btrfs_file_llseek
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Matthias Schoepfer <matthias.schoepfer@googlemail.com>,
+        Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -49,65 +65,110 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, Jan 12, 2023 at 2:05 PM Linux kernel regression tracking
+(Thorsten Leemhuis) <regressions@leemhuis.info> wrote:
+>
+> Hi, this is your Linux kernel regression tracker.
+>
+> I noticed a regression report in bugzilla.kernel.org. As many (most?)
+> kernel developer don't keep an eye on it, I decided to forward it by
+> mail. Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=216908 :
+>
+> >  Matthias Schoepfer 2023-01-10 13:58:06 UTC
+> >
+> > When creating a large file (i.e. mkfs.ext4 within yocto embedded linux task, which means, 8+GB file), mkfs.ext4 will report a segfault and I get a general protection fault, the system becomes more or less unstable after this.
+> >
+> > I can reproduce this 100%, when I do the same with 6.0.6 kernel, it works fine.
+> >
+> > Here is the Kernel dump:
+> > Jan 10 14:12:38 michelle kernel: BTRFS warning (device nvme0n1p5): bad eb member end: ptr 0x3fea start 2704543268864 member offset 16383 size 8
+> > Jan 10 14:12:38 michelle kernel: general protection fault, probably for non-canonical address 0x85d8740000000: 0000 [#1] PREEMPT SMP
+> > Jan 10 14:12:38 michelle kernel: CPU: 21 PID: 2143606 Comm: mkfs.ext4.real Tainted: P           O    T  6.1.4-gentoo #2
+> > Jan 10 14:12:38 michelle kernel: Hardware name: Micro-Star International Co., Ltd. MS-7C37/X570-A PRO (MS-7C37), BIOS H.70 01/09/2020
+> > Jan 10 14:12:38 michelle kernel: RIP: 0010:btrfs_get_64+0xe7/0x100
+> > Jan 10 14:12:38 michelle kernel: Code: 40 08 48 2b 15 b2 3a 15 01 48 8d 0c 04 48 c1 fa 06 48 c1 e2 0c 48 03 15 af 3a 15 01 81 eb f8 0f 00 00 74 12 31 c0 89 c6 ff c0 <0f> b6 3c 32 40 88 3c 3>
+> > Jan 10 14:12:38 michelle kernel: RSP: 0018:ffffb2d4ca4c3dd0 EFLAGS: 00010202
+> > Jan 10 14:12:38 michelle kernel: RAX: 0000000000000001 RBX: 0000000000000007 RCX: ffffb2d4ca4c3dd9
+> > Jan 10 14:12:38 michelle kernel: RDX: 00085d8740000000 RSI: 0000000000000000 RDI: 000000000000000a
+> > Jan 10 14:12:38 michelle kernel: RBP: ffff96fbbfd9c600 R08: 0000000000000001 R09: 00000000ffffdfff
+> > Jan 10 14:12:38 michelle kernel: R10: ffffffff94a3a700 R11: ffffffff94aea700 R12: 0000000000000003
+> > Jan 10 14:12:38 michelle kernel: R13: ffff96fbbfd9c600 R14: 0000000000000003 R15: 0000000000003fea
+> > Jan 10 14:12:38 michelle kernel: FS:  00007f6ac90e5780(0000) GS:ffff97071ed40000(0000) knlGS:0000000000000000
+> > Jan 10 14:12:38 michelle kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > Jan 10 14:12:38 michelle kernel: CR2: 0000557c6f245760 CR3: 000000019a64a000 CR4: 0000000000350ee0
+> > Jan 10 14:12:38 michelle kernel: Call Trace:
+> > Jan 10 14:12:38 michelle kernel:  <TASK>
+> > Jan 10 14:12:38 michelle kernel:  btrfs_file_llseek+0x269/0x670
+> > Jan 10 14:12:38 michelle kernel:  ksys_lseek+0x61/0xa0
+> > Jan 10 14:12:38 michelle kernel:  do_syscall_64+0x56/0x80
+> > Jan 10 14:12:38 michelle kernel:  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+> > Jan 10 14:12:38 michelle kernel: RIP: 0033:0x7f6ac91e4d3b
+> > Jan 10 14:12:38 michelle kernel: Code: ff ff c3 0f 1f 40 00 48 8b 15 e1 90 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb ba 0f 1f 00 f3 0f 1e fa b8 08 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 0>
+> > Jan 10 14:12:38 michelle kernel: RSP: 002b:00007fff68e04038 EFLAGS: 00000297 ORIG_RAX: 0000000000000008
+> > Jan 10 14:12:38 michelle kernel: RAX: ffffffffffffffda RBX: 000056367d4ffea0 RCX: 00007f6ac91e4d3b
+> > Jan 10 14:12:38 michelle kernel: RDX: 0000000000000003 RSI: 0000000000000000 RDI: 0000000000000004
+> > Jan 10 14:12:38 michelle kernel: RBP: 0000000000000004 R08: 00007f6ac92bef90 R09: 000056367d4f6160
+> > Jan 10 14:12:38 michelle kernel: R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000000
+> > Jan 10 14:12:38 michelle kernel: R13: 000056367d4c0eb0 R14: 000056367d50d620 R15: 000056367d4ebab0
+> > Jan 10 14:12:38 michelle kernel:  </TASK>
+> > Jan 10 14:12:38 michelle kernel: Modules linked in: xt_CHECKSUM xt_MASQUERADE nvidia_drm(PO) nvidia_modeset(PO) ip6table_nat iptable_nat bpfilter nvidia(PO) uvcvideo videobuf2_vmalloc video>
+> > Jan 10 14:12:38 michelle kernel: ---[ end trace 0000000000000000 ]---
+> > Jan 10 14:12:38 michelle kernel: RIP: 0010:btrfs_get_64+0xe7/0x100
+> > Jan 10 14:12:38 michelle kernel: Code: 40 08 48 2b 15 b2 3a 15 01 48 8d 0c 04 48 c1 fa 06 48 c1 e2 0c 48 03 15 af 3a 15 01 81 eb f8 0f 00 00 74 12 31 c0 89 c6 ff c0 <0f> b6 3c 32 40 88 3c 3>
+> > Jan 10 14:12:38 michelle kernel: RSP: 0018:ffffb2d4ca4c3dd0 EFLAGS: 00010202
+> > Jan 10 14:12:38 michelle kernel: RAX: 0000000000000001 RBX: 0000000000000007 RCX: ffffb2d4ca4c3dd9
+> > Jan 10 14:12:38 michelle kernel: RDX: 00085d8740000000 RSI: 0000000000000000 RDI: 000000000000000a
+> > Jan 10 14:12:38 michelle kernel: RBP: ffff96fbbfd9c600 R08: 0000000000000001 R09: 00000000ffffdfff
+> > Jan 10 14:12:38 michelle kernel: R10: ffffffff94a3a700 R11: ffffffff94aea700 R12: 0000000000000003
+> > Jan 10 14:12:38 michelle kernel: R13: ffff96fbbfd9c600 R14: 0000000000000003 R15: 0000000000003fea
+> > Jan 10 14:12:38 michelle kernel: FS:  00007f6ac90e5780(0000) GS:ffff97071ed40000(0000) knlGS:0000000000000000
+> > Jan 10 14:12:38 michelle kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > Jan 10 14:12:38 michelle kernel: CR2: 0000557c6f245760 CR3: 000000019a64a000 CR4: 0000000000350ee0
+>
+> See the ticket for more details.
+>
+> I first assumed (see the ticket) it might be the same problem that was
+> fixed by "btrfs: fix resolving backrefs for inline extent followed by
+> prealloc"
+> (https://lore.kernel.org/all/20230104160512.620453792@linuxfoundation.org/
+> ) -- but that is already in 6.1.4, so I better keep my nose out of it
+> and let the experts look into this.
+>
+>
+> [TLDR for the rest of this mail: I'm adding this report to the list of
+> tracked Linux kernel regressions; the text you find below is based on a
+> few templates paragraphs you might have encountered already in similar
+> form.]
+>
+> BTW, let me use this mail to also add the report to the list of tracked
+> regressions to ensure it's doesn't fall through the cracks:
+>
+> #regzbot introduced: v6.0..v6.1.4
+> https://bugzilla.kernel.org/show_bug.cgi?id=216908
+> #regzbot title: btrfs: General Protection Fault in btrfs_file_llseek
+> #regzbot ignore-activity
+>
+> This isn't a regression? This issue or a fix for it are already
+> discussed somewhere else? It was fixed already? You want to clarify when
+> the regression started to happen? Or point out I got the title or
+> something else totally wrong? Then just reply and tell me -- ideally
+> while also telling regzbot about it, as explained by the page listed in
+> the footer of this mail.
+>
+> Developers: When fixing the issue, remember to add 'Link:' tags pointing
+> to the report (e.g. the buzgzilla ticket and maybe this mail as well, if
+> this thread sees some discussion). See page linked in footer for details.
 
-During lseek, for SEEK_DATA and SEEK_HOLE modes, we access the disk_bytenr
-of anextent without checking its type. However inline extents have their
-data starting the offset of the disk_bytenr field, so accessing that field
-when we have an inline extent can result in either of the following:
+Right, it's a different issue.
 
-1) Interpret the inline extent's data as a disk_bytenr value;
+I just sent the fix to the btrfs list:
 
-2) In case the inline data is less than 8 bytes, we access part of some
-   other item in the leaf, or unused space in the leaf;
+https://lore.kernel.org/linux-btrfs/860221a4cf1642689ed17404c12b920d1acf1019.1673532966.git.fdmanana@suse.com/
 
-3) In case the inline data is less than 8 bytes and the extent item is
-   the first item in the leaf, we can access beyond the leaf's limit.
-
-So fix this by not accessing the disk_bytenr field if we have an inline
-extent.
-
-Fixes: b6e833567ea1 ("btrfs: make hole and data seeking a lot more efficient")
-Reported-by: Matthias Schoepfer <matthias.schoepfer@googlemail.com>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=216908
-Link: https://lore.kernel.org/linux-btrfs/7f25442f-b121-2a3a-5a3d-22bcaae83cd4@leemhuis.info/
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/file.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 834bbcb91102..af046d22300e 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3541,6 +3541,7 @@ static loff_t find_desired_extent(struct file *file, loff_t offset, int whence)
- 		struct extent_buffer *leaf = path->nodes[0];
- 		struct btrfs_file_extent_item *extent;
- 		u64 extent_end;
-+		u8 type;
- 
- 		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
- 			ret = btrfs_next_leaf(root, path);
-@@ -3596,10 +3597,16 @@ static loff_t find_desired_extent(struct file *file, loff_t offset, int whence)
- 
- 		extent = btrfs_item_ptr(leaf, path->slots[0],
- 					struct btrfs_file_extent_item);
-+		type = btrfs_file_extent_type(leaf, extent);
- 
--		if (btrfs_file_extent_disk_bytenr(leaf, extent) == 0 ||
--		    btrfs_file_extent_type(leaf, extent) ==
--		    BTRFS_FILE_EXTENT_PREALLOC) {
-+		/*
-+		 * Can't access the extent's disk_bytenr field if this is an
-+		 * inline extent, since at that offset, it's where the extent
-+		 * data starts.
-+		 */
-+		if (type == BTRFS_FILE_EXTENT_PREALLOC ||
-+		    (type == BTRFS_FILE_EXTENT_REG &&
-+		     btrfs_file_extent_disk_bytenr(leaf, extent) == 0)) {
- 			/*
- 			 * Explicit hole or prealloc extent, search for delalloc.
- 			 * A prealloc extent is treated like a hole.
--- 
-2.35.1
-
+Thanks.
+>
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
