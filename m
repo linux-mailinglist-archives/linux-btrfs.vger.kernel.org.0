@@ -2,131 +2,318 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4730D6693A7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jan 2023 11:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA2466948F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jan 2023 11:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240712AbjAMKGs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Jan 2023 05:06:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
+        id S235371AbjAMKqZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Jan 2023 05:46:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239755AbjAMKGo (ORCPT
+        with ESMTP id S241114AbjAMKpz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Jan 2023 05:06:44 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE2B1BEA8
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Jan 2023 02:06:42 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMGNC-1p0OGQ3pu2-00JMEQ; Fri, 13
- Jan 2023 11:06:37 +0100
-Message-ID: <92b702ba-8323-7acd-6e41-a307387325d9@gmx.com>
-Date:   Fri, 13 Jan 2023 18:06:33 +0800
+        Fri, 13 Jan 2023 05:45:55 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20C45B17E
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Jan 2023 02:43:45 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 65B276AA1B
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Jan 2023 10:43:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1673606624; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=4gU3pdtH+IGXjf90IKXJjhAW2MLWlJa0PEF+97zuPYo=;
+        b=n+YACSjQzy+emCxh1PWtnSvB8Z1S9kjPjsr2GNZAgN0r42udls7VLQS+KWGvVj96y8t3fB
+        0SVRPllWHh/YexCvuocZJbLaM4U9opWo+Wm6RODbcGqrqT2Q9rWS25acAbcPcoI/6sSJ1b
+        2C5nHDRZHUO+SzuuijjHehFq0FsztCo=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BAA5413913
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Jan 2023 10:43:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id MpobId81wWM2HgAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Jan 2023 10:43:43 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v4] btrfs: update fs features sysfs directory asynchronously
+Date:   Fri, 13 Jan 2023 18:43:26 +0800
+Message-Id: <68670fad66f9e112a19c6f0252cb3bf68979aa2f.1673606471.git.wqu@suse.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v3] btrfs: update fs features sysfs directory
- asynchronously
-Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <86ceb095fdfec9fe86dfb8efdd354a298fb685ff.1673583926.git.wqu@suse.com>
- <60287dfa-10bc-0e29-c152-5facaf548065@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <60287dfa-10bc-0e29-c152-5facaf548065@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:fmjIn+jkgO7V06SZG7eqEgerb6iL1Od7RaY/R0MK9Jl92Tufcc0
- fywqQC0Kw5GmYdIEVTywNWGTf5IrK/q4Nl0ETG8DZkko/4x0gsOYCtxvDzrZBlwwFLbQBcs
- 4kdxSl2+ZAWavYg4/41jPX+T7fhNIPec2vroBrKJrJSo3hmxjpUkCjxZmhFzK4DjV5pK+qe
- Gt/9ycSlT8p4GkI46tzQQ==
-UI-OutboundReport: notjunk:1;M01:P0:1e2FH9MXcVc=;nUJaZIhtvQ/JgnyhRBGfHZ6iUCz
- 0oWyLzTwPq6qW+kpQEl8K7I45Mi4z+CgVv5TEd9oscZXihW8TfLcHKWPPANKaD1/yz7b2UQC8
- U/CTlLDSbBx2jXOV5jl//M5RBSmM/Kx/1MewfKg1vQ9mK3FhpSz+dcEdcUZKUHqwKe3zie25V
- 0tU+w6o4sd4nBXKAeiaJZkMR86mAZnPXJkuHzBBAz33R3uPKu6yep6dwkndmHXs8Da2xzSbcs
- 4ScVHe+B9MWF+h9ztm5hkkqbUve9VmMKDFSB2/k0hKIQkKK7wPDqVuvo0Gtm/m+EynovWSZJ1
- IwOW5VFBoquet2mbfzzwpVUdmZAvdpjwfoqcXZSQeyz9qBctj8thKzX8DWRzHWsTj1Q/2dcex
- gJfUiCUfrkVvVfAh9FQSaHeBO4NEKVdffZRClhbUdfr8brUPwzgM5Lpiw0Cg6gUsulDSUVsGk
- jPfo7gHDtACSX3yUmuNUuDBoqVw1BLXWve/UZimDiahKscGz/sr84PC2ONT8qsHX7wcpK45rB
- cQiLKOyxGPgqZe3TPw6jvNsWVqOcPpzIRnWtZDiik5vBaZOUt3I5AWaldSgauV7s9cDs0mPD6
- yN7YfFZ4eaiMQLsy0JA1PDQbjUC/KPLnqY5Ltbgb/BHGUYX2am5QIwFfajwAO84ZVmFFz7mCC
- aj3voPScOaSGpts0cNwyQ5Uc7OJg8PhMdJDjFmolE1dH4OEnYe4wC1SCLhkx2Op2RIaHlijb9
- nF5Kef7yixd3MKTrEL/tj4sshjqgQO7WHkmO3hHe/KvvD5DpV1GCNAT4POLUMbNWqRcTjJNvq
- U0GeHsAMUibgcqxrJEy5YPjwNKVV3z5uxKH8/ykOGiDrUWzSvqJUmzESePBgELed1QqVYIcv1
- 4v0kDTlRBA62S+Pe8WAPemgpRXS0Y7Vmyi9OMktw0EEB0BRLcEFDPxopDVbCoBS3lS+70yjET
- me6KTxjfjFe7nhmeNIpCmgo6jvk=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+From the introduction of per-fs feature sysfs interface
+(/sys/fs/btrfs/<UUID>/features/), the content of that directory is never
+updated.
 
+Thus for the following case, that directory will not show the new
+features like RAID56:
 
-On 2023/1/13 17:24, Anand Jain wrote:
-[...]
->>           spin_lock(&fs_info->super_lock);
->>           features = btrfs_super_incompat_flags(disk_super);
->>           if (!(features & flag)) {
->> @@ -25,17 +27,20 @@ void __btrfs_set_fs_incompat(struct btrfs_fs_info 
->> *fs_info, u64 flag,
->>           }
->>           spin_unlock(&fs_info->super_lock);
->>       }
->> +    return changed;
->>   }
-> 
-> 
->   Why not something like below
-> 
->   if there is something changed
->   ::
->      set_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags)
-> 
->   and return void.
+ # mkfs.btrfs -f $dev1 $dev2 $dev3
+ # mount $dev1 $mnt
+ # btrfs balance start -f -mconvert=raid5 $mnt
+ # ls /sys/fs/btrfs/$uuid/features/
+ extended_iref  free_space_tree  no_holes  skinny_metadata
 
-That indeed sounds better.
-> 
-> 
-> 
-[...]
->> +    if (test_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags) &&
->> +        fs_info->cleaner_kthread)
->> +        wake_up_process(fs_info->cleaner_kthread);
->> +
-> 
-> Why not just wake cleaner_kthred at the end of super writes if 
-> successful? Would it be too delayed?
+While after unmount and mount, we got the correct features:
 
-Because at UNBLOCKED state, it's no difference, no matter if it's at 
-super writeback or just like this timing.
+ # umount $mnt
+ # mount $dev1 $mnt
+ # ls /sys/fs/btrfs/$uuid/features/
+ extended_iref  free_space_tree  no_holes  raid56 skinny_metadata
 
-In fact, doing it earlier is better, as it makes us to have higher 
-chance to get the update reflected before btrfs_commit_transaction() to 
-return.
+[CAUSE]
+Because we never really try to update the content of per-fs features/
+directory.
 
-> 
-> And
-> 
-> How does it behave in simultaneous or consecutive feature change 
-> requests? Would it be consistent?
+We had an attempt to update the features directory dynamically in commit
+14e46e04958d ("btrfs: synchronize incompat feature bits with sysfs
+files"), but unfortunately it get reverted in commit e410e34fad91
+("Revert "btrfs: synchronize incompat feature bits with sysfs files"").
 
-The change only happens at cleaner thread (which is either woken at the 
-interval, or woken up by the commit transaction).
+The exported by never utilized function, btrfs_sysfs_feature_update() is
+the leftover of such attempt.
 
-And the update itself is checking all features, thus even if there is 
-concurrency, either we updated multiple changes at once, or the change 
-missed the current transaction and went to the next one.
+The problem in the original patch is, in the context of
+btrfs_create_chunk(), we can not afford to update the sysfs group.
 
-> 
-> 
-> 
->>       ret = btrfs_write_and_wait_transaction(trans);
->>       if (ret) {
->>           btrfs_handle_fs_error(fs_info, ret,
->>
-> 
-> -Anand
-> 
-> 
+As even if we go sysfs_update_group(), new files will need extra memory
+allocation, and we have no way to specify the sysfs update to go
+GFP_NOFS.
+
+[FIX]
+This patch will address the old problem by doing asynchronous sysfs
+update in cleaner thread.
+
+This involves the following changes:
+
+- Allow __btrfs_(set|clear)_fs_(incompat|compat_ro) functions to return
+  bool
+  This allows us to know if we changed the feature.
+
+- Make btrfs_(set|clear)_fs_(incompat|compat_ro) functions to set
+  BTRFS_FS_FEATURE_CHANGED flag when needed
+
+- Update btrfs_sysfs_feature_update() to use sysfs_update_group()
+  And drop unnecessary arguments.
+
+- Call btrfs_sysfs_feature_update() in cleaner_kthread
+  If we have the BTRFS_FS_FEATURE_CHANGED flag set.
+
+- Wake up cleaner_kthread in btrfs_commit_transaction if we have
+  BTRFS_FS_FEATURE_CHANGED flag
+
+By this, all the previously dangerous call sites like
+btrfs_create_chunk() can just call the new
+btrfs_async_update_feature_change() and call it a day.
+
+The real work happens at cleaner_kthread, thus we pay the cost of
+delaying the update to sysfs directory, but the delayed time should be
+small enough that end user can not distinguish.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Fix an unused variable in btrfs_parse_options()
+  Add the missing btrfs_async_update_feature_change() call.
+
+v3:
+- Make btrfs_(set|clear)_fs_(incompat|compat_ro) functions to set
+  BTRFS_FS_FEATURE_CHANGED flag
+  So we don't need to check the return value and manually set the flag.
+
+- Wake up the cleaner in btrfs_commit_transaction()
+  This can make the sysfs update as fast as happening in
+  btrfs_commit_transaction(), but still doesn't slow down
+  btrfs_commit_transaction().
+
+  This also means we don't need to wake up the cleaner manually.
+
+v4:
+- Move set_bit(BTRFS_FS_FEATURE_CHANGED) into
+  __btrfs_(set|clear)_fs_(incompat|compat_ro) helpers
+
+- Remove unnecessary changes to btrfs_(set|clear)_fs_(incompat|compat_ro)
+  helpers
+  Since we no longer needsto check the return value, they can stay void.
+  This greately reduced the patch size.
+
+- Update the error message for btrfs_sysfs_feature_update()
+  Now we output the full per-fs feature path.
+
+- Fix the commit message
+  BTRFS_FS_FEATURE_CHANGING -> BTRFS_FS_FEATURE_CHANGED, only in commit
+  message.
+---
+ fs/btrfs/disk-io.c     |  3 +++
+ fs/btrfs/fs.c          |  4 ++++
+ fs/btrfs/fs.h          |  6 ++++++
+ fs/btrfs/sysfs.c       | 29 ++++++++---------------------
+ fs/btrfs/sysfs.h       |  3 +--
+ fs/btrfs/transaction.c |  5 +++++
+ 6 files changed, 27 insertions(+), 23 deletions(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 7586a8e9b718..a6f89ac1c086 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1914,6 +1914,9 @@ static int cleaner_kthread(void *arg)
+ 			goto sleep;
+ 		}
+ 
++		if (test_and_clear_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags))
++			btrfs_sysfs_feature_update(fs_info);
++
+ 		btrfs_run_delayed_iputs(fs_info);
+ 
+ 		again = btrfs_clean_one_deleted_snapshot(fs_info);
+diff --git a/fs/btrfs/fs.c b/fs/btrfs/fs.c
+index 5553e1f8afe8..31c1648bc0b4 100644
+--- a/fs/btrfs/fs.c
++++ b/fs/btrfs/fs.c
+@@ -24,6 +24,7 @@ void __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
+ 				name, flag);
+ 		}
+ 		spin_unlock(&fs_info->super_lock);
++		set_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags);
+ 	}
+ }
+ 
+@@ -46,6 +47,7 @@ void __btrfs_clear_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
+ 				name, flag);
+ 		}
+ 		spin_unlock(&fs_info->super_lock);
++		set_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags);
+ 	}
+ }
+ 
+@@ -68,6 +70,7 @@ void __btrfs_set_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
+ 				name, flag);
+ 		}
+ 		spin_unlock(&fs_info->super_lock);
++		set_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags);
+ 	}
+ }
+ 
+@@ -90,5 +93,6 @@ void __btrfs_clear_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
+ 				name, flag);
+ 		}
+ 		spin_unlock(&fs_info->super_lock);
++		set_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags);
+ 	}
+ }
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 37b86acfcbcf..69ce270c5ff9 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -130,6 +130,12 @@ enum {
+ 	BTRFS_FS_32BIT_ERROR,
+ 	BTRFS_FS_32BIT_WARN,
+ #endif
++
++	/*
++	 * Indicate if we have some features changed, this is mostly for
++	 * cleaner thread to update the sysfs interface.
++	 */
++	BTRFS_FS_FEATURE_CHANGED,
+ };
+ 
+ /*
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 45615ce36498..b9f5d1052c0c 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -2272,36 +2272,23 @@ void btrfs_sysfs_del_one_qgroup(struct btrfs_fs_info *fs_info,
+  * Change per-fs features in /sys/fs/btrfs/UUID/features to match current
+  * values in superblock. Call after any changes to incompat/compat_ro flags
+  */
+-void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
+-		u64 bit, enum btrfs_feature_set set)
++void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info)
+ {
+-	struct btrfs_fs_devices *fs_devs;
+ 	struct kobject *fsid_kobj;
+-	u64 __maybe_unused features;
+-	int __maybe_unused ret;
++	int ret;
+ 
+ 	if (!fs_info)
+ 		return;
+ 
+-	/*
+-	 * See 14e46e04958df74 and e410e34fad913dd, feature bit updates are not
+-	 * safe when called from some contexts (eg. balance)
+-	 */
+-	features = get_features(fs_info, set);
+-	ASSERT(bit & supported_feature_masks[set]);
+-
+-	fs_devs = fs_info->fs_devices;
+-	fsid_kobj = &fs_devs->fsid_kobj;
+-
++	fsid_kobj = &fs_info->fs_devices->fsid_kobj;
+ 	if (!fsid_kobj->state_initialized)
+ 		return;
+ 
+-	/*
+-	 * FIXME: this is too heavy to update just one value, ideally we'd like
+-	 * to use sysfs_update_group but some refactoring is needed first.
+-	 */
+-	sysfs_remove_group(fsid_kobj, &btrfs_feature_attr_group);
+-	ret = sysfs_create_group(fsid_kobj, &btrfs_feature_attr_group);
++	ret = sysfs_update_group(fsid_kobj, &btrfs_feature_attr_group);
++	if (ret < 0)
++		btrfs_err(fs_info,
++			  "failed to update /sys/fs/btrfs/%pU/features: %d",
++			  fs_info->fs_devices->fsid, ret);
+ }
+ 
+ int __init btrfs_init_sysfs(void)
+diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
+index bacef43f7267..86c7eef12873 100644
+--- a/fs/btrfs/sysfs.h
++++ b/fs/btrfs/sysfs.h
+@@ -19,8 +19,7 @@ void btrfs_sysfs_remove_device(struct btrfs_device *device);
+ int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs);
+ void btrfs_sysfs_remove_fsid(struct btrfs_fs_devices *fs_devs);
+ void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices);
+-void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
+-		u64 bit, enum btrfs_feature_set set);
++void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info);
+ void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action);
+ 
+ int __init btrfs_init_sysfs(void);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 528efe559866..18329ebcb1cb 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2464,6 +2464,11 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	wake_up(&fs_info->transaction_wait);
+ 	btrfs_trans_state_lockdep_release(fs_info, BTRFS_LOCKDEP_TRANS_UNBLOCKED);
+ 
++	/* If we have features changed, wake up the cleaner to update sysfs. */
++	if (test_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags) &&
++	    fs_info->cleaner_kthread)
++		wake_up_process(fs_info->cleaner_kthread);
++
+ 	ret = btrfs_write_and_wait_transaction(trans);
+ 	if (ret) {
+ 		btrfs_handle_fs_error(fs_info, ret,
+-- 
+2.39.0
+
