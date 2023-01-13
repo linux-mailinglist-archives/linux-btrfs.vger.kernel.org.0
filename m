@@ -2,641 +2,225 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0A9668966
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jan 2023 03:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0356689DD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jan 2023 04:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbjAMCJh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Jan 2023 21:09:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
+        id S240329AbjAMDDs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Jan 2023 22:03:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232830AbjAMCJg (ORCPT
+        with ESMTP id S240644AbjAMDDe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Jan 2023 21:09:36 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB8B1DF0A
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jan 2023 18:09:33 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1McH5Q-1ok6Xr00Ee-00ceZ8; Fri, 13
- Jan 2023 03:09:27 +0100
-Message-ID: <8226116a-31ba-9533-dd13-1f09009a541e@gmx.com>
-Date:   Fri, 13 Jan 2023 10:09:24 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+        Thu, 12 Jan 2023 22:03:34 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B84625DF;
+        Thu, 12 Jan 2023 19:03:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jja084DOvHz/ysl6drtblRoGPkerac58FjSfr5QRwAVlwwuNY7Xncux5MZZJ55R/Ta9O+KqcHTwHev6Esd1fBn3uFF+okKLkBUK69kL42NI4vxfPMyJm/BT9Xne/l+hGfeiZnM92dMimAGluE7s5Y4G2ZFnPz/zs0r22DS1WWe3mI3rNc0MclDLWEsU5q4ryNZQSmHu+YnIi65CDJzHYml8fMM19GdurQFgbvQ77TU2KZFts7CaK4gHUpZxo+jySN5vXywAxpx6WT6h04qCxF6Kjo8c5ovsmGJOD8hC0iHvyA8d8DVdg688eNxFBKi5E8NwbDxpaEF93NeCBSdi/Kw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8vTBhXyIif/stiznOMHNZceBPP7AhXrVUJXFpMBI7nY=;
+ b=nfRhn1h8szrl94IYJ3gNSWNQhcQXifiKHWzdfUpVYr8oBBR5XETVQH/dCJipGP3SeZXIVlpiJWD3HUFv5swVMUh3KV5vCA+/rxc2Z9c5X8qYjsYg1fYP1YfZeQvJJuK/e/LcybG3ZR7uQw7BOPtNm7/bsIZP4/Tmp6+8gWfNHkdzs5KbA1J1w7qHUABuMSdrBosBz2lPkfdISOgIHrL228sDpQKXJ2Yjzr2EaGei91pcbV+TiUeZcl2M6KnTCe3hYFh2GsX0F6zLlHW9QM6/gfJkIRw1C71nnnUN174HAzDaRN1Dyd2aK+dPKXSV5YEpmo2Nd1hbtooh4JiOhRqEJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
+ dkim=pass header.d=talpey.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=talpey.com;
+Received: from SN6PR01MB4445.prod.exchangelabs.com (2603:10b6:805:e2::33) by
+ MN0PR01MB7658.prod.exchangelabs.com (2603:10b6:208:379::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5986.18; Fri, 13 Jan 2023 03:03:28 +0000
+Received: from SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::d8d6:449f:967:ccb5]) by SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::d8d6:449f:967:ccb5%7]) with mapi id 15.20.5986.018; Fri, 13 Jan 2023
+ 03:03:28 +0000
+Message-ID: <c2b5b3b4-d5d0-bf35-d659-b2328689073a@talpey.com>
+Date:   Thu, 12 Jan 2023 22:03:27 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.1
+Subject: Re: [PATCH v5 09/23] cifs: Convert wdata_alloc_and_fillpages() to use
+ filemap_get_folios_tag()
+To:     Vishal Moola <vishal.moola@gmail.com>,
+        linux-fsdevel@vger.kernel.org, pc@cjr.nz
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, linux-mm@kvack.org
+References: <20230104211448.4804-1-vishal.moola@gmail.com>
+ <20230104211448.4804-10-vishal.moola@gmail.com>
+ <CAOzc2pw9WCgHyA2epbz5=HEWN4bFzD4C7zL2452J_egv7iSLrw@mail.gmail.com>
 Content-Language: en-US
-To:     Boris Burkov <boris@bur.io>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <710733d9fd83b0cc9c7bcf254771add98801b51a.1673513097.git.wqu@suse.com>
- <Y8CsAV+xNYg4z8AK@zen> <b85681e7-da57-b5e1-7ef0-5152499724bd@gmx.com>
- <Y8CxVm+nZ1IRhtiT@zen>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v2] btrfs: update fs features sysfs directory
- asynchronously
-In-Reply-To: <Y8CxVm+nZ1IRhtiT@zen>
+From:   Tom Talpey <tom@talpey.com>
+In-Reply-To: <CAOzc2pw9WCgHyA2epbz5=HEWN4bFzD4C7zL2452J_egv7iSLrw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:seF4kIG+l8OuTndp59tvM2GrL7WXF7j20eGRketHtpOgbGRUOGF
- srwx3LEzjn7PRu/Qru8klxn7Z8RjZ9CegBUPEiibLKCbUiduvQ0n90pBniDz9mQ8e/I+UND
- 6WN7RfTEh9aQtFSbD2ZiM3ZP6jtL7jubTDxve+k04d6KCXRxEuzcEY5YmBDDfBvEKOdtIbf
- qpwBJxVMIAWrDM19a2Xpg==
-UI-OutboundReport: notjunk:1;M01:P0:kGZqtLboQS8=;kTnAOfvRxgUXQOH1Ykv8q76qKFX
- xJwy9Og3k7kt1XftaCFmC3nC8fHrfi7/o4HaESa/Tbcu2SOlD9dTFS4300hcs6Cu9GPPNJGL8
- 3cSjPjpfIYQlI5QsBo9jvIYI0HtMQQ6Hdln85IaUJgeLKlpUSkjPF8xRkbmR4t/uJE2WjzYCQ
- i1AKLlTzR4tGxRu05kdCJwoDQCfOqqDRj2fMr5mODjvksEDT3RB0o0A/v8jYxrjQ+LmC74wiC
- sGjLtVf8gEYwQ1XSQAoOkX4nYFr+YzvkVW93V8VaFq4gXw7s8BT6FABCjGSx5zmPBs+KyU4kn
- on96um+8Wd7f056oqHD7pGbl031ZTsKZ6i7f2ROBUtTZulOr0P7uAJpERPwmp4BYm+IsL9o1T
- ybTvrnSs8wg2eyCjauDBmDFewV1qz4meZ6ua9y134DNojh+eg2JfyKrwRUuYj0FiV4+Vzuzte
- WW8/Uoo4qd8o3iTj4sCj7jfD22AtL8Jx/AjpcvgemHPd4kwO8vfjkXxc4R2EfgSuWx4jPF+5b
- sdb0rwZuSNH2CEED5Ywbi79w1wX0VTRDaltt0iLcM3x3EWf6cTG2uQKeBF1K1VWbWCrWCkfuM
- QNBQzioviQVj+8J+S+3jCiQvw37t9IMixUack8Dvr2e7NXHC02mAqQU0TAFumihJKWFmY3hFu
- Ri90GygWtWmS3XU3RYoYXISv51DXcR0gziuJJTKfC2n2M8PKWqnL7vlptnRvDHDwqYeJWPkXl
- SoUwJzI22N1/s+z9bmtZzA+GqJvxStgZ99ZS425dTYAnydOX+tH/ef0vEpZC9WE2G57aDH2gK
- com2jEKr3RvQ+PeDPZ5LxQ69K7lt2p2ZTc/eWxKfSU2D0K2RIYed/KDOCdnIGxYNh9TRH300l
- CoCwr65QmUg1CrWvOcMolpCNpGpd+XvBrR9vqrVDvO6AWRNTe5x1eUtsOvvpCaeztUC2VPwER
- UJDmidDnDe23GBN4NLxafl7jv98=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: BL0PR02CA0054.namprd02.prod.outlook.com
+ (2603:10b6:207:3d::31) To SN6PR01MB4445.prod.exchangelabs.com
+ (2603:10b6:805:e2::33)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR01MB4445:EE_|MN0PR01MB7658:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6099c8fe-fcff-41dc-95df-08daf512bea2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ogdor07xuDclJYNPGsRbT/sz7DkjlBIprcyyJ5VDb/QP0ZSqEspkIsHjDr4O8uU89V2ODuYmhU/2S6+E/i4Be1KVoFyrrWobvpnuv2OBwE6qVoYJ64NxpC+rTQYqfIRGMR6xopiiAnahLSQdaE6pUnRBX4s6AYauPdOFzOkxhgHRoMUH/kLt5p0JFThAjFDRFA/FmI5d6RXRcyhwDB6gWCsBIIBAaSJ4d/yOP4b/DiSGzP5WUIMbAbI8qq+46oFGwfb2a7Vm89dNVkS3thQH/NGP/48HAtGgoYyRIHMUCcSq0fyPpcz7lYInM7Q1Jj9sJYMfPHUddCAU8LH6Gq1RjBkmqL8UwY0WLvW9KuwxcQoffX9x2X1EntdTCgmxOvAWik2xu8DQPM8j9qSicQxazWile3NeB9jB/sksQKGSnZ/gEUJTLgM7+svaFiV3/HvVmkd2wwzi+LUyMamL/g8NTRLKTjMEu7z8MnHtF80a/8EXO1YgWGlwHM+2Y5CUHsSk3PRHv3AxPorc/E638x5n9eLn63OfiRuLujKsV3J8VN3P2utiW1L0AlfBVHfM6wobEcj1iFjrl0S7LlRwQgUz7tIsR0vr89AirxRLIc7n0GH27q4ABpPW4P/CULFUiGKu3vdvWNJZwZqsJ6DBJNqjLH2Y6qSwlm8hHoHtqSNeJGBDNyvP6cj864OsxKPB/k1qukyWWuQsuzXKasMvdRcNMOeD6p2qMD6QMT+7Tzvm3C8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230022)(376002)(346002)(39830400003)(136003)(366004)(396003)(451199015)(41300700001)(66556008)(4326008)(66476007)(2616005)(316002)(36756003)(66946007)(8676002)(86362001)(31696002)(38350700002)(38100700002)(5660300002)(8936002)(83380400001)(7416002)(6506007)(53546011)(31686004)(6486002)(2906002)(52116002)(26005)(478600001)(186003)(6512007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SzhCR3BscWI1QVRCc2thUzNHVmR2ckI4VTNGQnpoc2cwbTZKZUVCUS8zTGpD?=
+ =?utf-8?B?ZG5vV2VoR0FlWWQ1dFhrN1RDakhVZ0dwaWJqY3NKNE9LSkZueDk2OTJSbnlW?=
+ =?utf-8?B?UXQxYXlydnJOQnk5TU8wUzZBS0tMbEhzL0xOZWdOaEt2Y2l3d2Jwa3JqdXk5?=
+ =?utf-8?B?a3lMeFFkYlNyclp4QUZ5YW9MMVFKNUs5bnRJdFlWamUvTFZ3YmxHZGdEUTdY?=
+ =?utf-8?B?U3hBUEs5MDlhM1BDb2NKZWQwS2kyTHYyVTN1Tk9YMGtsVkZQbTBHbVhZdlR4?=
+ =?utf-8?B?Wlp1amVGQk9CTklCa3lPMDdwelBGMjU3K2dRUjRxR1hQVkhDQ2VIeCtaUy9H?=
+ =?utf-8?B?c1FhWFhYU28rU2gxRWFYSWN0K2VMOURxZWZYbmxnYnFReXlsVHN6UVMzNUgw?=
+ =?utf-8?B?ckdHeXBrM3hoeDVxdnh2L3Y4NEdMbVNXMTN0dVJwaEtHR1FMUUJYTnQ3TnRC?=
+ =?utf-8?B?ZGpudG1IdWFJRUdzVlRWR09UY0pGQjNvcFpUUjNoTFdxYTZWQ2ZNZmJVazlP?=
+ =?utf-8?B?WU1sZGFJa3hpNHdKVi91d2pLb1ZEVE9qdERBNDBxL3lLTDZXNzV5aVlvR0lj?=
+ =?utf-8?B?UkwwZjhhbUZGS1d1UkJaUVJZdlMvOEd4V0tOMEdmWDNBaTlSeVBibW1Yc3FU?=
+ =?utf-8?B?aVp0blVqSWx3UnBIQTNBVEtIZm15QXRSWlpTMW1UMTBKczB6M29xVzVRKzFq?=
+ =?utf-8?B?aDYzcXk1bE1PMis0SDhxZDlSdjIxVlFRTzYrSXdEKzM1WkhsN1IxNUxFUnkw?=
+ =?utf-8?B?bzJ3aTUzMGVGcW12aGVlQ0VlSnFkMVhTOUZwb3JFY1pwUUJyY0VudlF1WERy?=
+ =?utf-8?B?bjFoRnRTNHhleGVXMmJISldNQ2g1WkV0Q0pjZ3lnSEV2RnhObW1lYVZFQWFn?=
+ =?utf-8?B?ZEZSaFJoQ0JSeFdNeVZyamhLNjNUNkVBaDJ1Z1Y5ZUdyOXJWOXF1VkxzOEQ0?=
+ =?utf-8?B?S2k0T25jOEEzS2t1RUFNRCs4bHNWRGUyVk1mcE9SQmllc3hZL3lIWlhWQ1Bt?=
+ =?utf-8?B?K0VQanVjSytmT2JTRFVINDVKdkUrdTE2UmIwUW4rSXRka3ZEQm1mNUxBK1Rm?=
+ =?utf-8?B?Q1E0Wm1jRVJVOEYrdXdaOEYvK0N4T3p6NWVaSythNmRGQmhjSkllekJMUVZE?=
+ =?utf-8?B?RWZFdlhWRHdBak5UMTliZFBvbVNQdzB3c2ZqZ2ZDcmkvbzNaWUE5S05PS0h3?=
+ =?utf-8?B?WHFqK1lRZ1NVSHJlU0hmTGs4NjVqcm0xYWVIRjhkV1ZabytyeUFKN0dNOGVa?=
+ =?utf-8?B?dE1XODNhUXFPZmFQSTBGbzZmNXFaZitkd0lIdS9QSXZ0ejZaN2xJdURCN3Ji?=
+ =?utf-8?B?ZmtiOHFLaksyREVMdzVlNGpzZENvRDVuSTNPSVBoSE4vRHNMV3MxQVgzSVM5?=
+ =?utf-8?B?RnFESG9LT1BhcFRCRVZMMVJCamQ1V29oaDdVQzNvRzR2eVRyNk85aTVSdDli?=
+ =?utf-8?B?MU0xelREamI3WXBOTzNCUUthbTlpTWZuSUpCdzNLdDRWRGtZMm1WeVBuRksy?=
+ =?utf-8?B?MzQyYWtjZmdJSTBTanJQTjYzVHlxb3dHOUN5UjJpK2pvM0VWQzNXVUJaYkU4?=
+ =?utf-8?B?N0p0S2R0QXFSd1gxZU9ESlBSOTMrNEpsdmFjZTNZWWNZT3h0Wk9DQVhLekRn?=
+ =?utf-8?B?VmptY3k0ZlpwWjcxcWpzUVF1dytXbkRyM2xuNlRkS2dBbkFHd0tCRkFwNjJ1?=
+ =?utf-8?B?OW13bjBIdW5TSTcwOWtrd1BLNkVsanNSTkM2UktQZTR6cStrOEJkOWQzdGdr?=
+ =?utf-8?B?d3l6ay9yM0o4TG9kRDdGa01ralpOREF6RXM3NWt1ejFhdHZxQzNCUzVoZXRm?=
+ =?utf-8?B?RTZaekQ2MDlrN0h1bXptZWFvOS9EaGNJcEptNjNMRFVITEdxZ1lEb1ExQ2Zw?=
+ =?utf-8?B?eVpVbUxscHFFeFJ4LzFtaTdnWEw5aGpNRHM0SWNVcGxOb0RucHlMSjJ2anAw?=
+ =?utf-8?B?K0gveGUrV3BWZ2xtS0NlbVNFaHUvMDJ3RmhqK3cxekJsNEFqVEtwVjFFVHoy?=
+ =?utf-8?B?STNJb2crSHpBK3pUUUhka1R5YW9odlJvdUhSdnludUw1L1d3REJ3VzFHMldZ?=
+ =?utf-8?B?YjNwYzFoc0tKWUNBYWZLazVYbWtFUXFwK3NMaDdIaTErT04vZXlnQjNUbTJE?=
+ =?utf-8?Q?VC8wdv4CgwH55vreVT4b906hn?=
+X-OriginatorOrg: talpey.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6099c8fe-fcff-41dc-95df-08daf512bea2
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR01MB4445.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2023 03:03:28.6482
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LNK8TCcsfiAm8iJpU/mL5rmUpyOxGTchhz9GynVpwsSRFaDDa6D2It6URxWjAJxZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR01MB7658
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This code would be a lot more readable if it had fewer goto's.
+The goto out's are ok but the again and add_more are easily
+eliminated.
+
+Two possibilities...
+
+On 1/12/2023 12:19 PM, Vishal Moola wrote:
+> On Wed, Jan 4, 2023 at 1:15 PM Vishal Moola (Oracle)
+> <vishal.moola@gmail.com> wrote:
+>>
+>> This is in preparation for the removal of find_get_pages_range_tag(). Now also
+>> supports the use of large folios.
+>>
+>> Since tofind might be larger than the max number of folios in a
+>> folio_batch (15), we loop through filling in wdata->pages pulling more
+>> batches until we either reach tofind pages or run out of folios.
+>>
+>> This function may not return all pages in the last found folio before
+>> tofind pages are reached.
+>>
+>> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+>> ---
+>>   fs/cifs/file.c | 32 +++++++++++++++++++++++++++++---
+>>   1 file changed, 29 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+>> index 22dfc1f8b4f1..8cdd2f67af24 100644
+>> --- a/fs/cifs/file.c
+>> +++ b/fs/cifs/file.c
+>> @@ -2527,14 +2527,40 @@ wdata_alloc_and_fillpages(pgoff_t tofind, struct address_space *mapping,
+>>                            unsigned int *found_pages)
+>>   {
+>>          struct cifs_writedata *wdata;
+>> -
+>> +       struct folio_batch fbatch;
+>> +       unsigned int i, idx, p, nr;
+>>          wdata = cifs_writedata_alloc((unsigned int)tofind,
+>>                                       cifs_writev_complete);
+>>          if (!wdata)
+>>                  return NULL;
+>>
+>> -       *found_pages = find_get_pages_range_tag(mapping, index, end,
+>> -                               PAGECACHE_TAG_DIRTY, tofind, wdata->pages);
+>> +       folio_batch_init(&fbatch);
+>> +       *found_pages = 0;
+>> +
 
 
-On 2023/1/13 09:18, Boris Burkov wrote:
-> On Fri, Jan 13, 2023 at 09:03:37AM +0800, Qu Wenruo wrote:
+This is really just the top of a while loop:
+
+   while (nr = filemap_get_folios_tag(...)) {
+
+>> +again:
+>> +       nr = filemap_get_folios_tag(mapping, index, end,
+>> +                               PAGECACHE_TAG_DIRTY, &fbatch);
+>> +       if (!nr)
+>> +               goto out; /* No dirty pages left in the range */
+>> +
+>> +       for (i = 0; i < nr; i++) {
+>> +               struct folio *folio = fbatch.folios[i];
+>> +
+>> +               idx = 0;
+>> +               p = folio_nr_pages(folio);
+
+And this is a "do {"
+
+>> +add_more:
+>> +               wdata->pages[*found_pages] = folio_page(folio, idx);
+>> +               folio_get(folio);
+>> +               if (++*found_pages == tofind) {
+>> +                       folio_batch_release(&fbatch);
+>> +                       goto out;
+>> +               }
+>> +               if (++idx < p)
+>> +                       goto add_more;
+
+To here "} while (++idx < p);"
+
+>> +       }
+>> +       folio_batch_release(&fbatch);
+>> +       goto again;
+
+End while "}"
+
+>> +out:
+>>          return wdata;
+>>   }
 >>
+>> --
+>> 2.38.1
 >>
->> On 2023/1/13 08:55, Boris Burkov wrote:
->>> On Thu, Jan 12, 2023 at 04:48:18PM +0800, Qu Wenruo wrote:
->>>> [BUG]
->>>>   From the introduce of mounted fs feature sysfs interface
->>>> (/sys/fs/btrfs/<UUID>/features/), the content of that directory is never
->>>> updated.
->>>>
->>>> Thus for the following case, that directory will not show the new
->>>> features like RAID56:
->>>>
->>>>    # mkfs.btrfs -f $dev1 $dev2 $dev3
->>>>    # mount $dev1 $mnt
->>>>    # btrfs balance start -f -mconvert=raid5 $mnt
->>>>    # ls /sys/fs/btrfs/$uuid/features/
->>>>    extended_iref  free_space_tree  no_holes  skinny_metadata
->>>>
->>>> While after unmount and mount, we got the correct features:
->>>>
->>>>    # umount $mnt
->>>>    # mount $dev1 $mnt
->>>>    # ls /sys/fs/btrfs/$uuid/features/
->>>>    extended_iref  free_space_tree  no_holes  raid56 skinny_metadata
->>>
->>> Reproduced and confirmed the fix works.
->>>
->>>>
->>>> [CAUSE]
->>>> Because we never really try to update the content of per-fs features/
->>>> directory.
->>>>
->>>> We had an attempt to update the features directory dynamically in commit
->>>> 14e46e04958d ("btrfs: synchronize incompat feature bits with sysfs
->>>> files"), but unfortunately it get reverted in commit e410e34fad91
->>>> ("Revert "btrfs: synchronize incompat feature bits with sysfs files"").
->>>>
->>>> The exported by never utilized function, btrfs_sysfs_feature_update() is
->>>> the leftover of such attempt.
->>>>
->>>> The problem in the original patch is, in the context of
->>>> btrfs_create_chunk(), we can not afford to update the sysfs group.
->>>>
->>>> As even if we go sysfs_update_group(), new files will need extra memory
->>>> allocation, and we have no way to specify the sysfs update to go
->>>> GFP_NOFS.
->>>>
->>>> [FIX]
->>>> This patch will address the old problem by doing asynchronous sysfs
->>>> update in cleaner thread.
->>>>
->>>> This involves the following changes:
->>>>
->>>> - Allow btrfs_(set|clear)_fs_(incompat|compat_ro) functions to return
->>>>     bool
->>>>     This allows us to know if we changed the feature.
->>>>
->>>> - Introduce a new function btrfs_async_update_feature_change() for
->>>>     callsites which change the fs feature
->>>>     The function itself just set BTRFS_FS_FEATURE_CHANGING flag, and
->>>>     wake up the cleaner kthread.
->>>
->>> Rather than detect the return value at every callsite of set|clear
->>> functions, why not incorporate triggering the async update into the
->>> set|clear functions themselves? Assuming that isn't wrong, it also
->>> future proofs it against someone forgetting to trigger the async update
->>> for some future compat/incompat update.
->>
->> The only concern is, if we trigger such update every time we change a flag,
->> we may wake up the cleaner unnecessarily.
->>
->> Thus the initial idea is to let the set|clear call sites to just set the
->> bit, and only wake up the cleaner after all involved set|clear is finished.
->> (Like what we did in btrfs_parse_options()).
->>
->> We can integrate the set_bit() call into the set|clear helpers, but I'm
->> still not sure if we should wake up the caller everytime.
->>
->> Any ideas?
 > 
-> I see, that's a good point. All of the compat bit changes are in the
-> context of a transaction, right?
+> Could someone review this cifs patch, please? This is one of the
+> 2 remaining patches that need to be looked at in the series.
 
-Unfortunately no.
+It's otherwise ok.
 
-The callsites in props.c is directly setting the flags without a 
-transaction handler hold.
-
-> Can you make btrfs_commit_transaction
-> check the fs_info for the bit, and if it's set, kick the cleaner thread?
+Tom.
 > 
-> I think Anand suggested something similar on V1, but as far as I can
-> tell, you only discussed the option of doing the update inline in the
-> cleaner thread, not waking up the cleaner from the transaction.
-
-OK, I got the idea. And although props is an exception, the idea of 
-kicking cleaner from commit transaction is still feasible AFAIK.
-
-Thanks,
-Qu
-
-> 
-> If the idea works, it has the dual benefits of making life easier for
-> btrfs developers and prevents the sysfs update from beating the
-> feature's transaction actually committing.
-> 
->>>
->>> If there are callsites where we don't want to trigger an update, it may
->>> be helpful to create a new wrapper with an evocative name to
->>> differentiate between the two cases?
->>
->> In fact, with the async cleaner doing the update, all call sites can trigger
->> such update.
-> 
-> Cool, thanks for confirming that.
-> 
->>
->> Thanks,
->> Qu
->>>
->>> I quite like this patch, otherwise. It's great to keep sysfs synced up
->>> and accurate.
->>>
->>> Thanks,
->>> Boris
->>>
->>>>
->>>> - Update btrfs_sysfs_feature_update() to use sysfs_update_group()
->>>>     And drop unnecessary arguments.
->>>>
->>>> - Call btrfs_sysfs_feature_update() in cleaner_kthread
->>>>     If we have the BTRFS_FS_FEATURE_CHANGING flag set.
->>>>
->>>> By this, all the previously dangerous call sites like
->>>> btrfs_create_chunk() can just call the new
->>>> btrfs_async_update_feature_change() and call it a day.
->>>>
->>>> The real work happens at cleaner_kthread, thus we pay the cost of
->>>> delaying the update to sysfs directory.
->>>> But considering sysfs features is not a time-critical feature, and even
->>>> with delayed operation, above balance has updated the features directory
->>>> just after the balance finished.
->>>>
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>> Changelog:
->>>> v2:
->>>> - Fix an unused variable in btrfs_parse_options()
->>>>     Add the missing btrfs_async_update_feature_change() call.
->>>> ---
->>>>    fs/btrfs/block-group.c     |  9 +++++++--
->>>>    fs/btrfs/defrag.c          | 10 ++++++++--
->>>>    fs/btrfs/disk-io.c         |  3 +++
->>>>    fs/btrfs/free-space-tree.c |  2 ++
->>>>    fs/btrfs/fs.c              | 28 ++++++++++++++++++++--------
->>>>    fs/btrfs/fs.h              | 32 +++++++++++++++++++++++++++-----
->>>>    fs/btrfs/ioctl.c           |  3 ++-
->>>>    fs/btrfs/props.c           |  7 +++++--
->>>>    fs/btrfs/super.c           |  9 +++++++--
->>>>    fs/btrfs/sysfs.c           | 26 ++++++--------------------
->>>>    fs/btrfs/sysfs.h           |  3 +--
->>>>    fs/btrfs/verity.c          |  3 ++-
->>>>    fs/btrfs/volumes.c         |  6 ++++--
->>>>    13 files changed, 94 insertions(+), 47 deletions(-)
->>>>
->>>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->>>> index e90800388a41..32f56e14f53a 100644
->>>> --- a/fs/btrfs/block-group.c
->>>> +++ b/fs/btrfs/block-group.c
->>>> @@ -828,6 +828,7 @@ static void clear_incompat_bg_bits(struct btrfs_fs_info *fs_info, u64 flags)
->>>>    	    (flags & BTRFS_BLOCK_GROUP_RAID1C4)) {
->>>>    		struct list_head *head = &fs_info->space_info;
->>>>    		struct btrfs_space_info *sinfo;
->>>> +		bool feature_changed = false;
->>>>    		list_for_each_entry_rcu(sinfo, head, list) {
->>>>    			down_read(&sinfo->groups_sem);
->>>> @@ -842,9 +843,13 @@ static void clear_incompat_bg_bits(struct btrfs_fs_info *fs_info, u64 flags)
->>>>    			up_read(&sinfo->groups_sem);
->>>>    		}
->>>>    		if (!found_raid56)
->>>> -			btrfs_clear_fs_incompat(fs_info, RAID56);
->>>> +			feature_changed |= btrfs_clear_fs_incompat(fs_info,
->>>> +								   RAID56);
->>>>    		if (!found_raid1c34)
->>>> -			btrfs_clear_fs_incompat(fs_info, RAID1C34);
->>>> +			feature_changed |= btrfs_clear_fs_incompat(fs_info,
->>>> +								   RAID1C34);
->>>> +		if (feature_changed)
->>>> +			btrfs_async_update_feature_change(fs_info);
->>>>    	}
->>>>    }
->>>> diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
->>>> index 8065341d831a..00dd3dd5b256 100644
->>>> --- a/fs/btrfs/defrag.c
->>>> +++ b/fs/btrfs/defrag.c
->>>> @@ -1336,6 +1336,8 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
->>>>    	 */
->>>>    	range->start = cur;
->>>>    	if (sectors_defragged) {
->>>> +		bool feature_changed = false;
->>>> +
->>>>    		/*
->>>>    		 * We have defragged some sectors, for compression case they
->>>>    		 * need to be written back immediately.
->>>> @@ -1347,9 +1349,13 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
->>>>    				filemap_flush(inode->i_mapping);
->>>>    		}
->>>>    		if (range->compress_type == BTRFS_COMPRESS_LZO)
->>>> -			btrfs_set_fs_incompat(fs_info, COMPRESS_LZO);
->>>> +			feature_changed |= btrfs_set_fs_incompat(fs_info,
->>>> +								 COMPRESS_LZO);
->>>>    		else if (range->compress_type == BTRFS_COMPRESS_ZSTD)
->>>> -			btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
->>>> +			feature_changed |= btrfs_set_fs_incompat(fs_info,
->>>> +								 COMPRESS_ZSTD);
->>>> +		if (feature_changed)
->>>> +			btrfs_async_update_feature_change(fs_info);
->>>>    		ret = sectors_defragged;
->>>>    	}
->>>>    	if (do_compress) {
->>>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->>>> index 7586a8e9b718..a6f89ac1c086 100644
->>>> --- a/fs/btrfs/disk-io.c
->>>> +++ b/fs/btrfs/disk-io.c
->>>> @@ -1914,6 +1914,9 @@ static int cleaner_kthread(void *arg)
->>>>    			goto sleep;
->>>>    		}
->>>> +		if (test_and_clear_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags))
-> 
->>>> +			btrfs_sysfs_feature_update(fs_info);
->>>> +
->>>>    		btrfs_run_delayed_iputs(fs_info);
->>>>    		again = btrfs_clean_one_deleted_snapshot(fs_info);
->>>> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
->>>> index c667e878ef1a..1a001de86923 100644
->>>> --- a/fs/btrfs/free-space-tree.c
->>>> +++ b/fs/btrfs/free-space-tree.c
->>>> @@ -1195,6 +1195,7 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
->>>>    	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE);
->>>>    	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID);
->>>> +	btrfs_async_update_feature_change(fs_info);
->>>>    	clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
->>>>    	ret = btrfs_commit_transaction(trans);
->>>> @@ -1270,6 +1271,7 @@ int btrfs_clear_free_space_tree(struct btrfs_fs_info *fs_info)
->>>>    	btrfs_clear_fs_compat_ro(fs_info, FREE_SPACE_TREE);
->>>>    	btrfs_clear_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID);
->>>> +	btrfs_async_update_feature_change(fs_info);
->>>>    	ret = clear_free_space_tree(trans, free_space_root);
->>>>    	if (ret)
->>>> diff --git a/fs/btrfs/fs.c b/fs/btrfs/fs.c
->>>> index 5553e1f8afe8..a02e6b6cb97c 100644
->>>> --- a/fs/btrfs/fs.c
->>>> +++ b/fs/btrfs/fs.c
->>>> @@ -5,15 +5,17 @@
->>>>    #include "fs.h"
->>>>    #include "accessors.h"
->>>> -void __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->>>> +bool __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    			     const char *name)
->>>>    {
->>>>    	struct btrfs_super_block *disk_super;
->>>> +	bool changed;
->>>>    	u64 features;
->>>>    	disk_super = fs_info->super_copy;
->>>>    	features = btrfs_super_incompat_flags(disk_super);
->>>> -	if (!(features & flag)) {
->>>> +	changed = !(features & flag);
->>>> +	if (changed) {
->>>>    		spin_lock(&fs_info->super_lock);
->>>>    		features = btrfs_super_incompat_flags(disk_super);
->>>>    		if (!(features & flag)) {
->>>> @@ -25,17 +27,20 @@ void __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    		}
->>>>    		spin_unlock(&fs_info->super_lock);
->>>>    	}
->>>> +	return changed;
->>>>    }
->>>> -void __btrfs_clear_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->>>> +bool __btrfs_clear_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    			       const char *name)
->>>>    {
->>>>    	struct btrfs_super_block *disk_super;
->>>> +	bool changed;
->>>>    	u64 features;
->>>>    	disk_super = fs_info->super_copy;
->>>>    	features = btrfs_super_incompat_flags(disk_super);
->>>> -	if (features & flag) {
->>>> +	changed = features & flag;
->>>> +	if (changed) {
->>>>    		spin_lock(&fs_info->super_lock);
->>>>    		features = btrfs_super_incompat_flags(disk_super);
->>>>    		if (features & flag) {
->>>> @@ -47,17 +52,20 @@ void __btrfs_clear_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    		}
->>>>    		spin_unlock(&fs_info->super_lock);
->>>>    	}
->>>> +	return changed;
->>>>    }
->>>> -void __btrfs_set_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->>>> +bool __btrfs_set_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    			      const char *name)
->>>>    {
->>>>    	struct btrfs_super_block *disk_super;
->>>> +	bool changed;
->>>>    	u64 features;
->>>>    	disk_super = fs_info->super_copy;
->>>>    	features = btrfs_super_compat_ro_flags(disk_super);
->>>> -	if (!(features & flag)) {
->>>> +	changed = !(features & flag);
->>>> +	if (changed) {
->>>>    		spin_lock(&fs_info->super_lock);
->>>>    		features = btrfs_super_compat_ro_flags(disk_super);
->>>>    		if (!(features & flag)) {
->>>> @@ -69,17 +77,20 @@ void __btrfs_set_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    		}
->>>>    		spin_unlock(&fs_info->super_lock);
->>>>    	}
->>>> +	return changed;
->>>>    }
->>>> -void __btrfs_clear_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->>>> +bool __btrfs_clear_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    				const char *name)
->>>>    {
->>>>    	struct btrfs_super_block *disk_super;
->>>> +	bool changed;
->>>>    	u64 features;
->>>>    	disk_super = fs_info->super_copy;
->>>>    	features = btrfs_super_compat_ro_flags(disk_super);
->>>> -	if (features & flag) {
->>>> +	changed = features & flag;
->>>> +	if (changed) {
->>>>    		spin_lock(&fs_info->super_lock);
->>>>    		features = btrfs_super_compat_ro_flags(disk_super);
->>>>    		if (features & flag) {
->>>> @@ -91,4 +102,5 @@ void __btrfs_clear_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    		}
->>>>    		spin_unlock(&fs_info->super_lock);
->>>>    	}
->>>> +	return changed;
->>>>    }
->>>> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
->>>> index 37b86acfcbcf..b6f2201a1571 100644
->>>> --- a/fs/btrfs/fs.h
->>>> +++ b/fs/btrfs/fs.h
->>>> @@ -130,6 +130,12 @@ enum {
->>>>    	BTRFS_FS_32BIT_ERROR,
->>>>    	BTRFS_FS_32BIT_WARN,
->>>>    #endif
->>>> +
->>>> +	/*
->>>> +	 * Indicate if we have some features changed, this is mostly for
->>>> +	 * cleaner thread to update the sysfs interface.
->>>> +	 */
->>>> +	BTRFS_FS_FEATURE_CHANGED,
->>>>    };
->>>>    /*
->>>> @@ -868,14 +874,18 @@ void btrfs_exclop_finish(struct btrfs_fs_info *fs_info);
->>>>    void btrfs_exclop_balance(struct btrfs_fs_info *fs_info,
->>>>    			  enum btrfs_exclusive_operation op);
->>>> -/* Compatibility and incompatibility defines */
->>>> -void __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->>>> +/*
->>>> + * Compatibility and incompatibility defines.
->>>> + *
->>>> + * Return value is whether the operation changed the specified feature.
->>>> + */
->>>> +bool __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    			     const char *name);
->>>> -void __btrfs_clear_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->>>> +bool __btrfs_clear_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    			       const char *name);
->>>> -void __btrfs_set_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->>>> +bool __btrfs_set_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    			      const char *name);
->>>> -void __btrfs_clear_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->>>> +bool __btrfs_clear_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->>>>    				const char *name);
->>>>    #define __btrfs_fs_incompat(fs_info, flags)				\
->>>> @@ -952,6 +962,18 @@ static inline void btrfs_wake_unfinished_drop(struct btrfs_fs_info *fs_info)
->>>>    	clear_and_wake_up_bit(BTRFS_FS_UNFINISHED_DROPS, &fs_info->flags);
->>>>    }
->>>> +/*
->>>> + * Called when btrfs has feature changed.
->>>> + *
->>>> + * The real work is delayed into cleaner.
->>>> + */
->>>> +static inline void btrfs_async_update_feature_change(struct btrfs_fs_info *fs_info)
->>>> +{
->>>> +	set_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags);
->>>> +	if (fs_info->cleaner_kthread)
->>>> +		wake_up_process(fs_info->cleaner_kthread);
->>>> +}
->>>> +
->>>>    #define BTRFS_FS_ERROR(fs_info)	(unlikely(test_bit(BTRFS_FS_STATE_ERROR, \
->>>>    						   &(fs_info)->fs_state)))
->>>>    #define BTRFS_FS_LOG_CLEANUP_ERROR(fs_info)				\
->>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->>>> index 7e348bd2ccde..f11443578acd 100644
->>>> --- a/fs/btrfs/ioctl.c
->>>> +++ b/fs/btrfs/ioctl.c
->>>> @@ -2942,7 +2942,8 @@ static long btrfs_ioctl_default_subvol(struct file *file, void __user *argp)
->>>>    	btrfs_mark_buffer_dirty(path->nodes[0]);
->>>>    	btrfs_release_path(path);
->>>> -	btrfs_set_fs_incompat(fs_info, DEFAULT_SUBVOL);
->>>> +	if (btrfs_set_fs_incompat(fs_info, DEFAULT_SUBVOL))
->>>> +		btrfs_async_update_feature_change(fs_info);
->>>>    	btrfs_end_transaction(trans);
->>>>    out_free:
->>>>    	btrfs_put_root(new_root);
->>>> diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
->>>> index 0755af0e53e3..114d567043d7 100644
->>>> --- a/fs/btrfs/props.c
->>>> +++ b/fs/btrfs/props.c
->>>> @@ -302,6 +302,7 @@ static int prop_compression_apply(struct inode *inode, const char *value,
->>>>    				  size_t len)
->>>>    {
->>>>    	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->>>> +	bool feature_changed = false;
->>>>    	int type;
->>>>    	/* Reset to defaults */
->>>> @@ -324,12 +325,12 @@ static int prop_compression_apply(struct inode *inode, const char *value,
->>>>    	if (!strncmp("lzo", value, 3)) {
->>>>    		type = BTRFS_COMPRESS_LZO;
->>>> -		btrfs_set_fs_incompat(fs_info, COMPRESS_LZO);
->>>> +		feature_changed |= btrfs_set_fs_incompat(fs_info, COMPRESS_LZO);
->>>>    	} else if (!strncmp("zlib", value, 4)) {
->>>>    		type = BTRFS_COMPRESS_ZLIB;
->>>>    	} else if (!strncmp("zstd", value, 4)) {
->>>>    		type = BTRFS_COMPRESS_ZSTD;
->>>> -		btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
->>>> +		feature_changed |= btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
->>>>    	} else {
->>>>    		return -EINVAL;
->>>>    	}
->>>> @@ -337,6 +338,8 @@ static int prop_compression_apply(struct inode *inode, const char *value,
->>>>    	BTRFS_I(inode)->flags &= ~BTRFS_INODE_NOCOMPRESS;
->>>>    	BTRFS_I(inode)->flags |= BTRFS_INODE_COMPRESS;
->>>>    	BTRFS_I(inode)->prop_compress = type;
->>>> +	if (feature_changed)
->>>> +		btrfs_async_update_feature_change(fs_info);
->>>>    	return 0;
->>>>    }
->>>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
->>>> index 433ce221dc5c..c1992aa46d80 100644
->>>> --- a/fs/btrfs/super.c
->>>> +++ b/fs/btrfs/super.c
->>>> @@ -316,6 +316,7 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->>>>    	bool saved_compress_force;
->>>>    	int no_compress = 0;
->>>>    	const bool remounting = test_bit(BTRFS_FS_STATE_REMOUNTING, &info->fs_state);
->>>> +	bool feature_changed = false;
->>>>    	if (btrfs_fs_compat_ro(info, FREE_SPACE_TREE))
->>>>    		btrfs_set_opt(info->mount_opt, FREE_SPACE_TREE);
->>>> @@ -431,7 +432,8 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->>>>    				btrfs_set_opt(info->mount_opt, COMPRESS);
->>>>    				btrfs_clear_opt(info->mount_opt, NODATACOW);
->>>>    				btrfs_clear_opt(info->mount_opt, NODATASUM);
->>>> -				btrfs_set_fs_incompat(info, COMPRESS_LZO);
->>>> +				feature_changed |=
->>>> +					btrfs_set_fs_incompat(info, COMPRESS_LZO);
->>>>    				no_compress = 0;
->>>>    			} else if (strncmp(args[0].from, "zstd", 4) == 0) {
->>>>    				compress_type = "zstd";
->>>> @@ -443,7 +445,8 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->>>>    				btrfs_set_opt(info->mount_opt, COMPRESS);
->>>>    				btrfs_clear_opt(info->mount_opt, NODATACOW);
->>>>    				btrfs_clear_opt(info->mount_opt, NODATASUM);
->>>> -				btrfs_set_fs_incompat(info, COMPRESS_ZSTD);
->>>> +				feature_changed |=
->>>> +					btrfs_set_fs_incompat(info, COMPRESS_ZSTD);
->>>>    				no_compress = 0;
->>>>    			} else if (strncmp(args[0].from, "no", 2) == 0) {
->>>>    				compress_type = "no";
->>>> @@ -827,6 +830,8 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->>>>    		ret = -EINVAL;
->>>>    	}
->>>> +	if (!ret && feature_changed)
->>>> +		btrfs_async_update_feature_change(info);
->>>>    	if (!ret)
->>>>    		ret = btrfs_check_mountopts_zoned(info);
->>>>    	if (!ret && !remounting) {
->>>> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
->>>> index 45615ce36498..f86c107ea2e4 100644
->>>> --- a/fs/btrfs/sysfs.c
->>>> +++ b/fs/btrfs/sysfs.c
->>>> @@ -2272,36 +2272,22 @@ void btrfs_sysfs_del_one_qgroup(struct btrfs_fs_info *fs_info,
->>>>     * Change per-fs features in /sys/fs/btrfs/UUID/features to match current
->>>>     * values in superblock. Call after any changes to incompat/compat_ro flags
->>>>     */
->>>> -void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
->>>> -		u64 bit, enum btrfs_feature_set set)
->>>> +void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info)
->>>>    {
->>>> -	struct btrfs_fs_devices *fs_devs;
->>>>    	struct kobject *fsid_kobj;
->>>> -	u64 __maybe_unused features;
->>>> -	int __maybe_unused ret;
->>>> +	int ret;
->>>>    	if (!fs_info)
->>>>    		return;
->>>> -	/*
->>>> -	 * See 14e46e04958df74 and e410e34fad913dd, feature bit updates are not
->>>> -	 * safe when called from some contexts (eg. balance)
->>>> -	 */
->>>> -	features = get_features(fs_info, set);
->>>> -	ASSERT(bit & supported_feature_masks[set]);
->>>> -
->>>> -	fs_devs = fs_info->fs_devices;
->>>> -	fsid_kobj = &fs_devs->fsid_kobj;
->>>> +	fsid_kobj = &fs_info->fs_devices->fsid_kobj;
->>>>    	if (!fsid_kobj->state_initialized)
->>>>    		return;
->>>> -	/*
->>>> -	 * FIXME: this is too heavy to update just one value, ideally we'd like
->>>> -	 * to use sysfs_update_group but some refactoring is needed first.
->>>> -	 */
->>>> -	sysfs_remove_group(fsid_kobj, &btrfs_feature_attr_group);
->>>> -	ret = sysfs_create_group(fsid_kobj, &btrfs_feature_attr_group);
->>>> +	ret = sysfs_update_group(fsid_kobj, &btrfs_feature_attr_group);
->>>> +	if (ret < 0)
->>>> +		btrfs_err(fs_info, "failed to update features: %d", ret);
->>>>    }
->>>>    int __init btrfs_init_sysfs(void)
->>>> diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
->>>> index bacef43f7267..86c7eef12873 100644
->>>> --- a/fs/btrfs/sysfs.h
->>>> +++ b/fs/btrfs/sysfs.h
->>>> @@ -19,8 +19,7 @@ void btrfs_sysfs_remove_device(struct btrfs_device *device);
->>>>    int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs);
->>>>    void btrfs_sysfs_remove_fsid(struct btrfs_fs_devices *fs_devs);
->>>>    void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices);
->>>> -void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
->>>> -		u64 bit, enum btrfs_feature_set set);
->>>> +void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info);
->>>>    void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action);
->>>>    int __init btrfs_init_sysfs(void);
->>>> diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
->>>> index bf9eb693a6a7..998884b57216 100644
->>>> --- a/fs/btrfs/verity.c
->>>> +++ b/fs/btrfs/verity.c
->>>> @@ -561,7 +561,8 @@ static int finish_verity(struct btrfs_inode *inode, const void *desc,
->>>>    	if (ret)
->>>>    		goto end_trans;
->>>>    	clear_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &inode->runtime_flags);
->>>> -	btrfs_set_fs_compat_ro(root->fs_info, VERITY);
->>>> +	if (btrfs_set_fs_compat_ro(root->fs_info, VERITY))
->>>> +		btrfs_async_update_feature_change(root->fs_info);
->>>>    end_trans:
->>>>    	btrfs_end_transaction(trans);
->>>>    out:
->>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>> index bcfef75b97da..2ae77516ca3f 100644
->>>> --- a/fs/btrfs/volumes.c
->>>> +++ b/fs/btrfs/volumes.c
->>>> @@ -5031,7 +5031,8 @@ static void check_raid56_incompat_flag(struct btrfs_fs_info *info, u64 type)
->>>>    	if (!(type & BTRFS_BLOCK_GROUP_RAID56_MASK))
->>>>    		return;
->>>> -	btrfs_set_fs_incompat(info, RAID56);
->>>> +	if (btrfs_set_fs_incompat(info, RAID56))
->>>> +		btrfs_async_update_feature_change(info);
->>>>    }
->>>>    static void check_raid1c34_incompat_flag(struct btrfs_fs_info *info, u64 type)
->>>> @@ -5039,7 +5040,8 @@ static void check_raid1c34_incompat_flag(struct btrfs_fs_info *info, u64 type)
->>>>    	if (!(type & (BTRFS_BLOCK_GROUP_RAID1C3 | BTRFS_BLOCK_GROUP_RAID1C4)))
->>>>    		return;
->>>> -	btrfs_set_fs_incompat(info, RAID1C34);
->>>> +	if (btrfs_set_fs_incompat(info, RAID1C34))
->>>> +		btrfs_async_update_feature_change(info);
->>>>    }
->>>>    /*
->>>> -- 
->>>> 2.39.0
->>>>
