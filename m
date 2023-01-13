@@ -2,121 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 188AC6694EE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jan 2023 11:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAC96694FC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jan 2023 12:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbjAMK7Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Jan 2023 05:59:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
+        id S241335AbjAMLGi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Jan 2023 06:06:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241478AbjAMK6Y (ORCPT
+        with ESMTP id S230345AbjAMLFp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Jan 2023 05:58:24 -0500
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2043.outbound.protection.outlook.com [40.107.14.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D8D7D1F8
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Jan 2023 02:54:15 -0800 (PST)
+        Fri, 13 Jan 2023 06:05:45 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADDC7827E
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Jan 2023 02:56:27 -0800 (PST)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30D9kgUl028473;
+        Fri, 13 Jan 2023 10:55:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=uWukjo1R9JNLlD+lmVlnNPagusKTauHgTQV/FqiGfmQ=;
+ b=tsFpsJNQQgJ9y0iPEI/GcZmBRAwhP12toain+031SKEzcHKLA6ZSm6EZt+QmXJCwzBen
+ aMVKC27lDbD3fzYpiBPnNrpLlLgl815cjUYgH9gPA+S7WrmdV7UMkGLswHc/SqS9Q6TG
+ q5JPkqlIwYrNJBOAcVEwYeBCiMNS5EmVzTf+wOhHYMhyvPqNnNg/zk3Uh8QWviS6PAfL
+ SDZN1yjWEIxOVVEF/EWRrVi/+cglC6q2GIRqFqiA+c1Qj4+kG5sNmvLag90PJpcr1aB4
+ CBxNXiOqueOEeiSthIbC6AD816zUSLQyFVRhs8oesYPDYxw2uJEGfPfwA7uJ76edLj6f 0Q== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3my0scmgf6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Jan 2023 10:55:53 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 30DAW1Xr000836;
+        Fri, 13 Jan 2023 10:55:52 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2176.outbound.protection.outlook.com [104.47.57.176])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3n1k4dg2a6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Jan 2023 10:55:52 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fR3iZkeSfYvWi7qqvZJBGhTgYulagTc6LLuo+BaMUGZsZpkuf9sVyfNIZXQ9JW1fpb9AwrrRhozGKaBUayWWzK+TfNaCIHHkRhvwDRe/6N4Vba0Jotv7PDoFDrjf9qFNMUhovtLX+752pBgauEHF8Z5mSL3ScWV6hBs6UBkSrbf5TzvfE1YF2pJoicIMZqRneJtuo5wXsWSF0LQXW/MvjzoPPn5FdqNJxK8Tgs23mzeY17qmbR9m7GsxbwDFTiRf6UqQKMU4sIxewClichQ50Uhz2/avcndHw9OXqnB7LxtGZSah2+e5nmSC8oVrlFbj8RgUz807UM7wCM7rRCo2MQ==
+ b=Zf1d9wp2/GUrLTZoR3ORlQWo3klJhiFX9B8GZit+H8SPlv1wZ/atiUrlRkQhj9yzYfr7Ezain+ainBYrGFLt/enaKzttA6tMY8aEVPw+R5to/iagn22rvfVoveSFfOkatpkMZM1x3Um1VaqQ8O3EhEI2l2rq+jOwzokUMSmLaKBtoWTROZZ0meowCxL2wW/1mplrNloSzMGldxaAOpDaXsoHwrD2gkxQHOt1jXsxoiSg6TrUVG9OCoYA41VeLrmFy6a1e0zbhot+V5DEcEer81gVtYuwP8giyi7Eu25I7Fhtm9E15UHd6OJR5FehCJsYQsARhgbWLdRN6kNc7TWVmg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=f7kLcSWRP2y09bP/s8tYO/Ks2gykKAQxh+A0oxvXFHw=;
- b=g41QLidgCV8IrXs8fyq/F/ec+H0z1ByskU3Q/1QMsIUiK07xVpYkcJb5tOd/L1sjccxHGaR5YOBqQn83SvGsoIj7i+OVpjRHOCsJfhbXovzg/3Ukmug7B6dyzFxuEmL+98qMvztfFtMmnW5YHcOehE9SdywlYQ/539VYwBGLPDrZmp+vDFnbRmFsg7c4eZutsZcH2gN2SdL3VNC8eTkZh0mkzkMaVJRARYw+UQ1Vi7X9pCCcf87H0nlXVjhXavbt9QlfSNszHJltDZ1Cs4CrTY/rCsS6joKIH2zEzb3+04tUXkjV1uPP7Wuzrhe0f0wXUiHKZCuNrt0Nag85BHWptw==
+ bh=uWukjo1R9JNLlD+lmVlnNPagusKTauHgTQV/FqiGfmQ=;
+ b=UbLnezprgPwqfZApxhe8MgpHPVkQWSxnt7UllhpaYVuH3Dh7z+e6TG5NV2t6TuG7HMEYtLz+MtFndSTWkBwB0w7W8JmRCcXoBkrDgn7hHcs0QgAjgyP0PvWQcpIm+y7ULG3BFWE1XVCQzjP6HK66ZKgWKx9ubeTTgyTaWyKR7mGod6aYbgxeklW9gXFiSZy592aS8f5SN5cB3ZvgruQ1NVN4EJk8tDdGq0+Tp2Jzx+bnsl7wFHsY5Kb93PyeIVFrJa0NU8E/h14AkWCcRUHCT7tQtIlTUgICXTaO25PHPpL0uUtwXORwNZHPw+6B84kaJPsIcO6ibnVhfvkEQ+rM8A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f7kLcSWRP2y09bP/s8tYO/Ks2gykKAQxh+A0oxvXFHw=;
- b=HlwLjZCmrX8jFq8yPgLO2vcQcgGYCftHTDy3fig4TPVwNx9VQMsaB5ELJvWUZnk8/kq27lh1ZdYJujl3Eoou9qYey3QA0v3uO0/fnJYzHVpJBbSidHqxydplgvhoc9Drejq7KzLLLS26iwSwfpzFiUN6m4UGPUlTvma6ZWAXd7wCrZngssC5GTzu3TYxo4K3aKah0RAURhM9yyOvp4Kr8WTWINWvTZCyM0fXFLxsdQ21QN60cAz25nD1PbfytwIRKJ3Bf47dEei6Yl8styYcKO5jpNm4s5jUEHh9x/YZ+lim3HaYpRMPTJH/3O5h87BPEKGimxZdM2x4pZlGCkgFfQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by DB9PR04MB8073.eurprd04.prod.outlook.com (2603:10a6:10:24d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.19; Fri, 13 Jan
- 2023 10:54:13 +0000
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::5c50:6906:e9a4:5b9f]) by AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::5c50:6906:e9a4:5b9f%8]) with mapi id 15.20.6002.013; Fri, 13 Jan 2023
- 10:54:13 +0000
-Message-ID: <f042f0e7-0c5f-29ba-133c-5688f5ab0c04@suse.com>
-Date:   Fri, 13 Jan 2023 18:54:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v4] btrfs: update fs features sysfs directory
+ bh=uWukjo1R9JNLlD+lmVlnNPagusKTauHgTQV/FqiGfmQ=;
+ b=PhOCqTwl+mIS7QmnkBkxjNMTVAKNERQ7ArTaJMPN/OycDo0wj88Zh/RckyvpLBhLHR9aIvwMUzVhSZKXcS82/6X4mTz74MiJyqZQwqn/qIFHTVNWEiyisfMj2WlhGPI3ylROz4AYV9bgRgSs5jaNwYi1zpnAZ9nwaChP8A8QQpA=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by DS7PR10MB5904.namprd10.prod.outlook.com (2603:10b6:8:84::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6002.12; Fri, 13 Jan 2023 10:55:50 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::560e:9c52:a6bd:4036]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::560e:9c52:a6bd:4036%7]) with mapi id 15.20.6002.009; Fri, 13 Jan 2023
+ 10:55:50 +0000
+Message-ID: <14e7c804-bd76-fbab-ba1c-2366e0f4cb81@oracle.com>
+Date:   Fri, 13 Jan 2023 18:55:41 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0)
+ Gecko/20100101 Thunderbird/95.0
+Subject: Re: [PATCH v3] btrfs: update fs features sysfs directory
  asynchronously
-Content-Language: en-US
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-References: <68670fad66f9e112a19c6f0252cb3bf68979aa2f.1673606471.git.wqu@suse.com>
-In-Reply-To: <68670fad66f9e112a19c6f0252cb3bf68979aa2f.1673606471.git.wqu@suse.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <86ceb095fdfec9fe86dfb8efdd354a298fb685ff.1673583926.git.wqu@suse.com>
+ <60287dfa-10bc-0e29-c152-5facaf548065@oracle.com>
+ <92b702ba-8323-7acd-6e41-a307387325d9@gmx.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <92b702ba-8323-7acd-6e41-a307387325d9@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR05CA0004.namprd05.prod.outlook.com
- (2603:10b6:a03:254::9) To AS8PR04MB8465.eurprd04.prod.outlook.com
- (2603:10a6:20b:348::19)
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR04CA0168.apcprd04.prod.outlook.com (2603:1096:4::30)
+ To PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DB9PR04MB8073:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9634f461-e294-430f-26b1-08daf55481a5
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DS7PR10MB5904:EE_
+X-MS-Office365-Filtering-Correlation-Id: c7440f67-adb7-47ea-b913-08daf554bb6f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0xqT08ZH9Q//VxiNARB9eHfnQNvndaXrqDq6bgi5uVSqndfctX9DNHstW5tmE8U7WwxvdwBiogOP/29F8E9PqFGI5D0B5Le1Bg8WQinFOi16WJycoQxtRqq9ecuun4YsZEp5hTMMVKTMcAOQ1/yWt9PSDwNGx7vJbJyXdiXoab7Rf7sdLaw5xPdYa+s2pK10TOVrfLKNFB/6OJr8+BMGpK4+whVyrnm7Qu5kO+Ngb54RZImdVXPIh71KRSrRij3jYQCTUtu10uTt6CuaKtAyUga/c9IOEUW3NGD18FiL6Nezqd7BqtJ1/2koUtsKEI46+ciRnDLx574dyTBXjDq2W8qBNbMgvd3w9warXxIn41ZHoXHUGjA4JOCywskegQbYjnAOu6v9sr9947ZZaD9WB+v18CL1GUc6i6y2lrgxl/5Q+aXxoDuz9p+Ris8ay793hUf0sIDSjQOM/Wz7Xaf002y33sNeqrFbp7QBKEyO1qJ1b7HMQHHGX0oyiUfgQ+GC6sgsxpS5W3IMq0ap4BjyZWdLLInpeiPWPP9YvLRcWZ07KstrjVlU49AUcHiIqUG1IkuiDwj+sqPtBQ5oxWDYjDghiF9gKpuXD6j01FDj5mr5awkrKG28VQRWjWkOMFgWKtFjBYF3BvbvYcfCMs4HfmUZ5FkfHvDP/EAZiBNAaHW6jMZ+d+25EpuPjt0DCvM8QwPxNiyqz1BL8gAm3j4xQ58Gc/rvwpkP1a+03blFrKY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(396003)(366004)(136003)(376002)(39860400002)(346002)(451199015)(5660300002)(316002)(36756003)(15650500001)(2906002)(2616005)(38100700002)(83380400001)(6486002)(31696002)(86362001)(53546011)(6506007)(186003)(6512007)(478600001)(66476007)(66946007)(66556008)(6666004)(31686004)(8936002)(66899015)(6916009)(8676002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Ui48/qJMcpaBdXV6qf19ilf6hoGYsN/dAfAI6PMrwwcouMiKdnm2LI2nSY+lk3w0Qd6i5YU+vLUobT6q188fF3XZ+FjMKGGOqLkSv7sWTa/7/LHMxdObrYgZCiKsmQBDM23+yHySUKME6Eiaij2VSdfsTMRx/YkWYUKhqqmaexIC3np3nLqzc/mMDSMwxbUhCC1cIm4b4OOOJ33/P/4JKYLKpTImp/auJPm9vQ8ZTxXF/dDJReDgeYJdq52uUPfKYYBAGKId/nCCyyPHqsBhVP3tz1XciQlMvUwAdxziC9kU03MnN5yHc/gPGocazXXOQvq4jZoS7QdalsugpStwpiPnaSj87VY7+z7o5Y1BKC92Fo4qyWkjHKxJtgGlczCPRYR+k+TXn87NrvF5jEu7Z+efFpKHpwWaH5K3aTHbcudoDKiXShRLATqWcVeEvL6/YF/cVMFl7K958GSjS0RqrdSkybek+vWfpi9IraraLm4h+KtK4aFgl4DUtAfyPWrZukWGQuSQD/3FIP6BdkjYAz5u87d3m/+oGzUvpo6ssvIB8g4Uj3FpeGjX83rjN/UyMmJ7x5ECvt6J89vltniR7OpZlExn1M02qQBOfGrj0zbbiUehKqrV+R6Ik24uYBcyeUfW0Ae4ZGhdrAs0VCy1Af2/OhTRZ5YZrH0u7nQwIJAMeTAqOLTj6z/vuHYF2PFQgj1eiyIHY7ob8o9amAJdTC/gC1sqElQXUfWBDT+Qhsw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(39860400002)(366004)(396003)(346002)(376002)(136003)(451199015)(83380400001)(31696002)(38100700002)(86362001)(2906002)(44832011)(15650500001)(41300700001)(5660300002)(8936002)(6666004)(53546011)(6506007)(478600001)(2616005)(6512007)(186003)(26005)(6486002)(316002)(8676002)(66476007)(66946007)(66556008)(110136005)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bC9FNWVQZnVTclBTSDlzWEgvRXFaREk5M3JXTzdSL2xtdytTblRCVXd4RnF5?=
- =?utf-8?B?OXJTd3M3ZUI4RVl4SXljeTl0SThkYWhNbFR6Zk5iQjV2cXFWQVpZZk5HK1lP?=
- =?utf-8?B?cHY2elRKUW1tbWNmNkJLZ2JyR0E5VHdFV2NabVBmdmhGd3BtMnY3eVlqem1N?=
- =?utf-8?B?TElReUtMQzZQdU5jQkhJVHNocWg0RkVzMHRTVE5ZMWxYY0pBL0FHeEM4VjIx?=
- =?utf-8?B?bzhNamVpeDd6V3lTYVdwUUlOa0FJcHBBeGtHNXVCOGR0Z0MzUUcwRFBIYkVk?=
- =?utf-8?B?UnR2dnRNTEVmb2tlaFVaaDVuZ0pqR1Yzc1VUSWkvUU00VlpYby9TR0N6MDV1?=
- =?utf-8?B?SEtHcTRXQ0Y3WFhTN0tIekNGMTVCeVp2UlRlNVdtaVIvLzF3WlhRdWd5UzA0?=
- =?utf-8?B?TW5ORDBYNTE3Rjd2OW9XTDdRZ2RhRVJYaFRNYTBWTUFiZCtWemh0d2Z5dk9k?=
- =?utf-8?B?R3QraWRubWJ6Z0JJZDNnQmkyK1hCYU02V0IzVC9HUWNSRm8zV3E1ekpEM1l4?=
- =?utf-8?B?bEpvNEZaKzNhck53TFUwSU16QWpMOVR6OTN3UWsxS281NC9PaUxOdmdJaUM1?=
- =?utf-8?B?VXpRQVlwSXpDMUNsVTg4R01Cc0x4YVFCQWJkeElZa2h5QlVwRFJvRi9BSzdS?=
- =?utf-8?B?ZDYrY0NWM1R5K3p2czBNdXIvMStsM3ZsTmxsajM2RytCVWtEQVBTOHNEVnNB?=
- =?utf-8?B?bXQrMlFhZU1EYzR1bUlRSXZvQ0owU1RTWHhOMVVEcjN2emZOcUN3YWR5U2dm?=
- =?utf-8?B?TjRYcHA1c2k0OTlFdGQwVys0dzBVYW1JM3pId0lRU0VkVzAvVjMrS2lMQkR4?=
- =?utf-8?B?R2FnK0piR0cwOGhkYUd1V2N1V1I3Vlg3K0wxMlpWOWVaODYvek5mQnMyRis4?=
- =?utf-8?B?bnRpeTJ4cERjTkpvc2RPZnRqMTBkSC92UGRQdlY5RGxZenErOGpPaTIzYnRx?=
- =?utf-8?B?WWg5eFJvYnZYSjF0eXByQTBJbS9EVlQ0VTIxZ1Mrc1NOQkZ0L1ZtdzlXS1Fs?=
- =?utf-8?B?TE5wUWFheDA0QTc1UHBkRnFkaDdPbDhXNVV6NFhhTEhZRGFHVDAwTTRYNHhO?=
- =?utf-8?B?a3dUWDU3bk1YcktRa2ZjclV4ZDRtZWhHblp1NXduK0JaaW9iWjhUamdlSGNk?=
- =?utf-8?B?a1dGZWxQck1kSElJVjVXSW1qVkF4dnp6ajVjNjBUdDlqODNuYk55eGxZSEQ2?=
- =?utf-8?B?UDdUdmYzc0tLU0NBNjdqTDJJVlVFNHpaVGFSejZFY1YrSVgxTXpoaUlkbm40?=
- =?utf-8?B?cTEvTlBJZC9zWVJ3YXRMZ053WXVjRW1MWllMNTdhL2x0OC9iWExHYWlDQnZD?=
- =?utf-8?B?UWVadEVjbXFLTWhJSUl3R1Uyd1dHeTFNb2JLdGdyaVJTbnZFYjNxL0tQcDVF?=
- =?utf-8?B?a1pvbmlaUmlkZlBoT3hRRlFya0MyME1lbHpNS0hxSnNCUGJtcDdqcjB5VGRq?=
- =?utf-8?B?bm1IVkpJNDhqV1JmcnlBM28wTEUwUVBXeUl0YmxIOENYQ3ZIU1AwUDJBaDVI?=
- =?utf-8?B?MzMveHVFWWJXUTZ0VzZsREFpVDU4Ti9vSUMrQmk1RTJSa0lUQTFpMitHWXg4?=
- =?utf-8?B?bkNPTXI1eVhjZTFUUlpuYzluNEs3SVhkZnZFR1N0Ty9OOEQxbmtHaHZMK0gx?=
- =?utf-8?B?OUtxcWdhSWZTZXRqdW1kZkJqRFVCRkQzSVI1eWRzQ3hkcHBUa1ZnSW5FQ0Jj?=
- =?utf-8?B?cVVKbStjblVwSGtjekFDTEZKS215MGx0ZUtzRUVBbjVOUE9tRnREWnY5cXp0?=
- =?utf-8?B?bDlwMEZqQURjTWtuL2tTdWVtbHZZcWNRTUNoYnBiaHRHejBmNFEzN3RNTWFC?=
- =?utf-8?B?WEdzS1h1S0lOTDIwTzRORGpUejhZU0JlTWduNFpyMDBMRjQ2d0FYQVZvSU9h?=
- =?utf-8?B?a1dXTWZWUVk4OFdkUkg2V2g3dTIweDhPSVJTdlUwNTI3WWk1TDQxSmRFVVR1?=
- =?utf-8?B?OWZDTlBXZTlWeWI2NHRGaTQvM3hRVTFtQlNhbkZRaGlDdmxLazlVdS9NNkQx?=
- =?utf-8?B?bmRNdkhUektSVE5hY3ZvMXB5VkNLbG9NSmgrSWh3bzh0bzZ4S2RVaVBRM3hx?=
- =?utf-8?B?aTdpTXQ2Q2k5L0dKMzRudWNSNWRyVTBSMVIrNTRIOWtuOHpiRUtIV1IraTdo?=
- =?utf-8?B?VGZldmlrUnlkbjFFY05XT1RDQ0t5bFVaczdZemd4a1JNdzBjdm5WSU9iMDg4?=
- =?utf-8?Q?u+AUCVthx7rm6LeJER+sqCQ=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9634f461-e294-430f-26b1-08daf55481a5
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dkFjUUozcFhXdGpTeDFhbW1EMWJHeWpsMGpLTmZ6UDZmOEVTSzQ5bmNQZWNk?=
+ =?utf-8?B?bTBxRGxQNVh3VG9WaVBtV0hKMjBjQ0xuMW1vQ0l6T2Q3QllYRG1mVVdJUGYv?=
+ =?utf-8?B?OCtiM0c4MVVjQ29CZm01L0laUDB3blRtcElBUjZNaFZJY21wWUhFTHFZQy93?=
+ =?utf-8?B?azMzWVMxZTNkdUZ5MWR4allvVVFtRE9mbW1VODFuUHByMnVaM3JsVFdZcmMw?=
+ =?utf-8?B?eGVLcGZ1MVlCZGgwOXJsK2JxM1IvelhKUmV5VkJWbnJORlFDY2R2VkRkRmwy?=
+ =?utf-8?B?TWUyU2xYYWtRbGpIOGdvYmU1U09Wcjd5bVd6SzNRNldWamUxR3RFejNreEFP?=
+ =?utf-8?B?dEhYTnc3cXVFMGo1b2Q1a1ZUK1FXQXlVTlZTeFppNDh6bGZwTjQranlhSG96?=
+ =?utf-8?B?OHAyR252TE4vY0RUWXlQYTV4SERPME9BdG9ubzNjZXNTYVJ3Sk9mS3Q2cVRH?=
+ =?utf-8?B?dHB4NEVybWIyYzBZZHE1SzN4VWJPVDZlQ2M0VUM4cTFxRjl2OTJUVVQzTnIw?=
+ =?utf-8?B?NW5icGV4N0pCWHdxb1JNKzRETk10WjlRR3FWMHBvb2dBbVFkYytpNHRwc1Fu?=
+ =?utf-8?B?VVgrVnZNY2Y0em04NkRrdDFSZVNyWkowYTRzc3EwVmRpa3U1b2p6bGpMWnZx?=
+ =?utf-8?B?ZnQzWHpTdzQvaElLMmFBZHpJMXkyaTdTRm0xclc5NXZwZWovYWFRa0JBR3M2?=
+ =?utf-8?B?TXNLMjRLamNyNkFtVWpCa2JCaUFjbjd5T3k5c0dsUkVwc1hySWliNHlWejkz?=
+ =?utf-8?B?WlBja0oxRUxnSDlHRyt3MHlEUEVWKzNEbWFDandrVUdFNE1MSUVHbG5BZnZT?=
+ =?utf-8?B?Uzd5TmVuRTNMbzEwQUR2VnlNMEhmN2tVNkZnT2ZsMXI3cUlKTWI4NnVTQ1RT?=
+ =?utf-8?B?QjVMVytUbGlxQkNPWHRRa3FXNFFBTzNmMU9ETnpydm5malJPTElQUDJYNjhB?=
+ =?utf-8?B?SFJNcjBiTWxDZHdRa1lLUEVudnJMeHA2RkIxZnpPNTJhbkNZcTVjRW9DR0xP?=
+ =?utf-8?B?U0lSV0JlY05Ib2MrN0tZZlZqN1cyYUd1NWRFY2JhdmhtNXFnQ2lMRFczcjNk?=
+ =?utf-8?B?Q3FvS2szQm13aW04aHFuNXJaMjBFaVhWWTd6OGRLRCtqdUJwczNBaTQ2eGgy?=
+ =?utf-8?B?QmpEalpLVnAyVm9hN0pBL3FTU283TklKNEk0VTd0QXVuT2FGNGV2cThyeHpL?=
+ =?utf-8?B?WWVvRXBFaE5kRFVUTlVOcGhTVFpkVERaZ1BrdTlMM05CemxmdjJLSCs0VXdR?=
+ =?utf-8?B?bml6YmY5WjRwVVdtZnRFR2NkRHJNZUlNNHV0emlVQno1bVNDMDA1SW53eFpZ?=
+ =?utf-8?B?LzFoWkphSlVmQzJuQ0tTQTZVUFFqTjUybndKQmg2cjNwWS9NQTFBMW5pWCt2?=
+ =?utf-8?B?d2JkcHphRU14TC95ZlFTbFFRRFN1TGxhUS93UW1mam92V0JXajVpdmdBbElv?=
+ =?utf-8?B?QW9MdDhma2JDNkdvWUpWcXFiNVBCaE9XdHNsV0pZL2w3WU16T08vbSs0dkVY?=
+ =?utf-8?B?K0dHcWJ1NGFYbFdKT0VqbGlydUdZRVdrNUJJVzFuNnlKTEc5THBQWFdKTlF4?=
+ =?utf-8?B?Ynd4djNKa1k5alUva0lzR2E0aExPaVpkcTFIZGtyWUgrbWVzbUI1aUo2Q3A0?=
+ =?utf-8?B?aWJveFNYNEFEb1dWS0hCTHU3QUR3NlIxNjh3N0JnZGdOZXBxOGZHdUpEV3Nm?=
+ =?utf-8?B?enlyWkJweXV3VXI4WWNuU0ZxcS9xVXZRa1BUbjlPT0xZcXc1TElUbTFrWTUy?=
+ =?utf-8?B?ZlVPRlJ3SEhFSGR2UTRPS0VmbFN4M3dWbi9uL3FrdWhiUlk4bFNEUG5KRy95?=
+ =?utf-8?B?UU1jYU1QbHJOVkRkaFF4WkF0OHM0TW1qdENyL1VtaGtEZzVvQzNrUmJOaWMr?=
+ =?utf-8?B?V1ZHY2IrQnFGOTZmcjFpK2YzZHlkbmVVZnVSdXlWaFJ1R2tyUk0xanE5dG1Q?=
+ =?utf-8?B?NzN0UWVPanB0VisyaEphbWxCM0RJc3RwckQrVU8ya0ZaQWJuZjNkc2ZjSjJi?=
+ =?utf-8?B?Y2QrQ2RoZGRhZVpQUTdDMkl2OGNqQkVUMzFNR1MvOGM3ZzhaZXJ6K00zQU1s?=
+ =?utf-8?B?NXRoUW9DSEM1d0FDaGlpNm1JWXozMFhuY2hOcUhjOGJTT3A1bHBwb0dkRmV3?=
+ =?utf-8?Q?Pb8cZP8WjDNn4Gg85v3KBX4CT?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: TDqjNb004m31d5ZyNqQ6Ww9d4BDxFgk+GQHK8XVk+Sd7WmXmxepot/RUFaUTEq8OAuTCXF8rO/UB3FFvVjpZoH/pWjZTOjfaU6FFhKtM9++86L+CZ7zFMAJ2T+T5GerY1wuAc5PWO2it4VKa4tNdzc9+Dohu1YRCvIQu2N0hDLGbCTCyh6sIG6wC2j5gXO2Nn+OTrMWP9fLw8L0KBXhJDcUaHbXklI35s3gPyiASX0aHyfY8RBQOSmYoGdk7kk+1MOeBO1XJWLb+Lf0k6RoDBdcynmi9GdHCeTeA0AMEhG79W49jdveMW7lRIKrf7KZwyR3+vFyaDLR9OjEH3f9BUE6bU+yz3yXNh8B8+rrbccpMpgKs33+Oyyg+Y15DZUAe/IWEnKdsFtiY0CmbtKaq+pSc+Jg4IwzQnrFReOtgQsUKT9/47vB7rbPZqqz+o0i1+lLRFZGFjzbFIn5ZrUF6wzLfR3Voe8wXf3ey9VACC6q8qCI+MVmSxWs7bQ6KaijxE7M7ocCbtha6ihPYJgTquAiitwwIOd7WZw4GtZjIMq3bgHMrsZuQ3hucRtH8/0L52oM8IB22+yjVtIFVNNmnmnXS/+LPc97tioqplnvqfEO0+tiCRd1tO1eHzB3UHPEXetQIp3VtBPKBhCJgVP2LNaa3XEJPNhqslZOG34tKVvCfw1ic8DiBqku53W38Q58AIBYTjrfvoCvjP7kpoBYxGH0Ihzw+/ok7DVlbA9bPCyJ4loK2n7TMiSu0qxHS3EBWSvFdc1tIzHuBkHDyqwU5KQ/qZHkip24LTsroTVX2/DnbLdiHvYG8axn58QXUxIQM
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7440f67-adb7-47ea-b913-08daf554bb6f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2023 10:54:13.0944
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2023 10:55:49.9877
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4CrFPMrnD47P3GtdM5E7XO7ATB3TtXxpANzM0Mq3wXnbJCd/+gw5UR7b+2mHBl9F
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8073
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-MS-Exchange-CrossTenant-UserPrincipalName: l+U/IzNHLCkvO//jVeVhnkh5pRB8gG5vudSBbbL7t2ANs62pvM5LoUu0Tei+tp+P1603Kq+QheEGY/Dv1BD3bw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5904
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.923,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-13_04,2023-01-13_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2301130075
+X-Proofpoint-GUID: Ot4d5Vw7sY71KbAixsz1xIBtCW8wr-eo
+X-Proofpoint-ORIG-GUID: Ot4d5Vw7sY71KbAixsz1xIBtCW8wr-eo
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,270 +157,80 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 1/13/23 18:06, Qu Wenruo wrote:
+> 
+> 
+> On 2023/1/13 17:24, Anand Jain wrote:
+> [...]
+>>>           spin_lock(&fs_info->super_lock);
+>>>           features = btrfs_super_incompat_flags(disk_super);
+>>>           if (!(features & flag)) {
+>>> @@ -25,17 +27,20 @@ void __btrfs_set_fs_incompat(struct btrfs_fs_info 
+>>> *fs_info, u64 flag,
+>>>           }
+>>>           spin_unlock(&fs_info->super_lock);
+>>>       }
+>>> +    return changed;
+>>>   }
+>>
+>>
+>>   Why not something like below
+>>
+>>   if there is something changed
+>>   ::
+>>      set_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags)
+>>
+>>   and return void.
+> 
+> That indeed sounds better.
+>>
+>>
+>>
+> [...]
+>>> +    if (test_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags) &&
+>>> +        fs_info->cleaner_kthread)
+>>> +        wake_up_process(fs_info->cleaner_kthread);
+>>> +
+>>
+>> Why not just wake cleaner_kthred at the end of super writes if 
+>> successful? Would it be too delayed?
+> 
+> Because at UNBLOCKED state, it's no difference, no matter if it's at 
+> super writeback or just like this timing.
+> 
+> In fact, doing it earlier is better, as it makes us to have higher 
+> chance to get the update reflected before btrfs_commit_transaction() to 
+> return.
+> 
+
+  Hmm. Ok.
+>> And
+>>
+>> How does it behave in simultaneous or consecutive feature change 
+>> requests? Would it be consistent?
+> 
+> The change only happens at cleaner thread (which is either woken at the 
+> interval, or woken up by the commit transaction).
+> 
+> And the update itself is checking all features, thus even if there is 
+> concurrency, either we updated multiple changes at once, or the change 
+> missed the current transaction and went to the next one.
+
+  OK. Thanks for checking.
+
+-Anand
 
 
-On 2023/1/13 18:43, Qu Wenruo wrote:
-> [BUG]
->  From the introduction of per-fs feature sysfs interface
-> (/sys/fs/btrfs/<UUID>/features/), the content of that directory is never
-> updated.
 > 
-> Thus for the following case, that directory will not show the new
-> features like RAID56:
-> 
->   # mkfs.btrfs -f $dev1 $dev2 $dev3
->   # mount $dev1 $mnt
->   # btrfs balance start -f -mconvert=raid5 $mnt
->   # ls /sys/fs/btrfs/$uuid/features/
->   extended_iref  free_space_tree  no_holes  skinny_metadata
-> 
-> While after unmount and mount, we got the correct features:
-> 
->   # umount $mnt
->   # mount $dev1 $mnt
->   # ls /sys/fs/btrfs/$uuid/features/
->   extended_iref  free_space_tree  no_holes  raid56 skinny_metadata
-> 
-> [CAUSE]
-> Because we never really try to update the content of per-fs features/
-> directory.
-> 
-> We had an attempt to update the features directory dynamically in commit
-> 14e46e04958d ("btrfs: synchronize incompat feature bits with sysfs
-> files"), but unfortunately it get reverted in commit e410e34fad91
-> ("Revert "btrfs: synchronize incompat feature bits with sysfs files"").
-> 
-> The exported by never utilized function, btrfs_sysfs_feature_update() is
-> the leftover of such attempt.
-> 
-> The problem in the original patch is, in the context of
-> btrfs_create_chunk(), we can not afford to update the sysfs group.
-> 
-> As even if we go sysfs_update_group(), new files will need extra memory
-> allocation, and we have no way to specify the sysfs update to go
-> GFP_NOFS.
-> 
-> [FIX]
-> This patch will address the old problem by doing asynchronous sysfs
-> update in cleaner thread.
-> 
-> This involves the following changes:
-> 
-> - Allow __btrfs_(set|clear)_fs_(incompat|compat_ro) functions to return
->    bool
->    This allows us to know if we changed the feature.
+>>
+>>
+>>
+>>>       ret = btrfs_write_and_wait_transaction(trans);
+>>>       if (ret) {
+>>>           btrfs_handle_fs_error(fs_info, ret,
+>>>
+>>
+>> -Anand
+>>
+>>
 
-Damn it, please remove above 3 lines when merging (if no more next 
-version), it's no longer the case.
-
-Thanks,
-Qu
-> 
-> - Make btrfs_(set|clear)_fs_(incompat|compat_ro) functions to set
->    BTRFS_FS_FEATURE_CHANGED flag when needed
-> 
-> - Update btrfs_sysfs_feature_update() to use sysfs_update_group()
->    And drop unnecessary arguments.
-> 
-> - Call btrfs_sysfs_feature_update() in cleaner_kthread
->    If we have the BTRFS_FS_FEATURE_CHANGED flag set.
-> 
-> - Wake up cleaner_kthread in btrfs_commit_transaction if we have
->    BTRFS_FS_FEATURE_CHANGED flag
-> 
-> By this, all the previously dangerous call sites like
-> btrfs_create_chunk() can just call the new
-> btrfs_async_update_feature_change() and call it a day.
-> 
-> The real work happens at cleaner_kthread, thus we pay the cost of
-> delaying the update to sysfs directory, but the delayed time should be
-> small enough that end user can not distinguish.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog:
-> v2:
-> - Fix an unused variable in btrfs_parse_options()
->    Add the missing btrfs_async_update_feature_change() call.
-> 
-> v3:
-> - Make btrfs_(set|clear)_fs_(incompat|compat_ro) functions to set
->    BTRFS_FS_FEATURE_CHANGED flag
->    So we don't need to check the return value and manually set the flag.
-> 
-> - Wake up the cleaner in btrfs_commit_transaction()
->    This can make the sysfs update as fast as happening in
->    btrfs_commit_transaction(), but still doesn't slow down
->    btrfs_commit_transaction().
-> 
->    This also means we don't need to wake up the cleaner manually.
-> 
-> v4:
-> - Move set_bit(BTRFS_FS_FEATURE_CHANGED) into
->    __btrfs_(set|clear)_fs_(incompat|compat_ro) helpers
-> 
-> - Remove unnecessary changes to btrfs_(set|clear)_fs_(incompat|compat_ro)
->    helpers
->    Since we no longer needsto check the return value, they can stay void.
->    This greately reduced the patch size.
-> 
-> - Update the error message for btrfs_sysfs_feature_update()
->    Now we output the full per-fs feature path.
-> 
-> - Fix the commit message
->    BTRFS_FS_FEATURE_CHANGING -> BTRFS_FS_FEATURE_CHANGED, only in commit
->    message.
-> ---
->   fs/btrfs/disk-io.c     |  3 +++
->   fs/btrfs/fs.c          |  4 ++++
->   fs/btrfs/fs.h          |  6 ++++++
->   fs/btrfs/sysfs.c       | 29 ++++++++---------------------
->   fs/btrfs/sysfs.h       |  3 +--
->   fs/btrfs/transaction.c |  5 +++++
->   6 files changed, 27 insertions(+), 23 deletions(-)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 7586a8e9b718..a6f89ac1c086 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1914,6 +1914,9 @@ static int cleaner_kthread(void *arg)
->   			goto sleep;
->   		}
->   
-> +		if (test_and_clear_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags))
-> +			btrfs_sysfs_feature_update(fs_info);
-> +
->   		btrfs_run_delayed_iputs(fs_info);
->   
->   		again = btrfs_clean_one_deleted_snapshot(fs_info);
-> diff --git a/fs/btrfs/fs.c b/fs/btrfs/fs.c
-> index 5553e1f8afe8..31c1648bc0b4 100644
-> --- a/fs/btrfs/fs.c
-> +++ b/fs/btrfs/fs.c
-> @@ -24,6 +24,7 @@ void __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->   				name, flag);
->   		}
->   		spin_unlock(&fs_info->super_lock);
-> +		set_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags);
->   	}
->   }
->   
-> @@ -46,6 +47,7 @@ void __btrfs_clear_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
->   				name, flag);
->   		}
->   		spin_unlock(&fs_info->super_lock);
-> +		set_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags);
->   	}
->   }
->   
-> @@ -68,6 +70,7 @@ void __btrfs_set_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->   				name, flag);
->   		}
->   		spin_unlock(&fs_info->super_lock);
-> +		set_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags);
->   	}
->   }
->   
-> @@ -90,5 +93,6 @@ void __btrfs_clear_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
->   				name, flag);
->   		}
->   		spin_unlock(&fs_info->super_lock);
-> +		set_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags);
->   	}
->   }
-> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> index 37b86acfcbcf..69ce270c5ff9 100644
-> --- a/fs/btrfs/fs.h
-> +++ b/fs/btrfs/fs.h
-> @@ -130,6 +130,12 @@ enum {
->   	BTRFS_FS_32BIT_ERROR,
->   	BTRFS_FS_32BIT_WARN,
->   #endif
-> +
-> +	/*
-> +	 * Indicate if we have some features changed, this is mostly for
-> +	 * cleaner thread to update the sysfs interface.
-> +	 */
-> +	BTRFS_FS_FEATURE_CHANGED,
->   };
->   
->   /*
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 45615ce36498..b9f5d1052c0c 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -2272,36 +2272,23 @@ void btrfs_sysfs_del_one_qgroup(struct btrfs_fs_info *fs_info,
->    * Change per-fs features in /sys/fs/btrfs/UUID/features to match current
->    * values in superblock. Call after any changes to incompat/compat_ro flags
->    */
-> -void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
-> -		u64 bit, enum btrfs_feature_set set)
-> +void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info)
->   {
-> -	struct btrfs_fs_devices *fs_devs;
->   	struct kobject *fsid_kobj;
-> -	u64 __maybe_unused features;
-> -	int __maybe_unused ret;
-> +	int ret;
->   
->   	if (!fs_info)
->   		return;
->   
-> -	/*
-> -	 * See 14e46e04958df74 and e410e34fad913dd, feature bit updates are not
-> -	 * safe when called from some contexts (eg. balance)
-> -	 */
-> -	features = get_features(fs_info, set);
-> -	ASSERT(bit & supported_feature_masks[set]);
-> -
-> -	fs_devs = fs_info->fs_devices;
-> -	fsid_kobj = &fs_devs->fsid_kobj;
-> -
-> +	fsid_kobj = &fs_info->fs_devices->fsid_kobj;
->   	if (!fsid_kobj->state_initialized)
->   		return;
->   
-> -	/*
-> -	 * FIXME: this is too heavy to update just one value, ideally we'd like
-> -	 * to use sysfs_update_group but some refactoring is needed first.
-> -	 */
-> -	sysfs_remove_group(fsid_kobj, &btrfs_feature_attr_group);
-> -	ret = sysfs_create_group(fsid_kobj, &btrfs_feature_attr_group);
-> +	ret = sysfs_update_group(fsid_kobj, &btrfs_feature_attr_group);
-> +	if (ret < 0)
-> +		btrfs_err(fs_info,
-> +			  "failed to update /sys/fs/btrfs/%pU/features: %d",
-> +			  fs_info->fs_devices->fsid, ret);
->   }
->   
->   int __init btrfs_init_sysfs(void)
-> diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
-> index bacef43f7267..86c7eef12873 100644
-> --- a/fs/btrfs/sysfs.h
-> +++ b/fs/btrfs/sysfs.h
-> @@ -19,8 +19,7 @@ void btrfs_sysfs_remove_device(struct btrfs_device *device);
->   int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs);
->   void btrfs_sysfs_remove_fsid(struct btrfs_fs_devices *fs_devs);
->   void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices);
-> -void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
-> -		u64 bit, enum btrfs_feature_set set);
-> +void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info);
->   void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action);
->   
->   int __init btrfs_init_sysfs(void);
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index 528efe559866..18329ebcb1cb 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -2464,6 +2464,11 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->   	wake_up(&fs_info->transaction_wait);
->   	btrfs_trans_state_lockdep_release(fs_info, BTRFS_LOCKDEP_TRANS_UNBLOCKED);
->   
-> +	/* If we have features changed, wake up the cleaner to update sysfs. */
-> +	if (test_bit(BTRFS_FS_FEATURE_CHANGED, &fs_info->flags) &&
-> +	    fs_info->cleaner_kthread)
-> +		wake_up_process(fs_info->cleaner_kthread);
-> +
->   	ret = btrfs_write_and_wait_transaction(trans);
->   	if (ret) {
->   		btrfs_handle_fs_error(fs_info, ret,
