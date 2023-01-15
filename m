@@ -2,96 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3016A66B3DC
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Jan 2023 21:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A90466B4CC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 00:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbjAOUeI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Jan 2023 15:34:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
+        id S231604AbjAOXiI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 15 Jan 2023 18:38:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbjAOUeG (ORCPT
+        with ESMTP id S231496AbjAOXiH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Jan 2023 15:34:06 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A61712F1E;
-        Sun, 15 Jan 2023 12:34:06 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id kt14so4860346ejc.3;
-        Sun, 15 Jan 2023 12:34:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9bCfG5cMr9fRbFQ0xiXbNmLirkViibitjy1tc8WBHeA=;
-        b=BnO7bwuSV3y/IjVwtwAdnsKpQ/x7G03pVbyeAELWwoqckz7SjWOnC2Nwe1xL8Gto0r
-         wUVym3Ct1SSfbXX2W6g3s2yYuY2IIWZ+tqV99L9Tv/Q9FcTr4I/V81Mnq5n873uATPhG
-         i0lU4ERA7B0TcTCknSw8uGNeu46lxHDM5Bd4Rncq1WuwANAa3Vc7kL3KHi0MzzJVlwa7
-         b3bftZBpv+q/knbl63odCaw7jpN6eAEaVk+tYrPWKhbhhKHHptLNKHO8U8MbRM7P8lzE
-         6kN4LPJqKVv8mjNGWj49wepdnIcU7VoVn5FNhMwuf7gQnvByDiKw/C7vFolI1ywPbvMj
-         KfsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9bCfG5cMr9fRbFQ0xiXbNmLirkViibitjy1tc8WBHeA=;
-        b=oJ0C9ZF7XtQ6zjOGd4nml2vGitiyN+DQyUwCD5N1GXNB0VO4Xih4MezZU0tgUY7MPV
-         vcchLuRCkIGIU74NjOVGj68FTvPRXauxd/dro53Cq21dlZPCEBYmXUXU/gEYy1grV7g3
-         Qwwal9gnwQEplign0f7ekAdPc5J+U8pjaxa+WJwpYUfjvB2Q7qhV5KjNCYA9qzJB1qAG
-         G4O9EPzQerlRz5trR4TXVLXsT4tMG3Y9bf/wqq89aI+ncy3aNz9a1RlTrEPSctz7TH6n
-         E+fUB55H9f5Ty06V4PvQwAnKCL0cXlZY7bo9pjjWsa6rxlsFSuCPmu9hE6pGleGHeTWD
-         nhUA==
-X-Gm-Message-State: AFqh2kqoKkmitJ/hKTOrghtmVpHkbamUzzaOCcMDjgpudQoMV3lMh7G2
-        DlRjIuag1EMIdoHi6+W3GvU=
-X-Google-Smtp-Source: AMrXdXt61pqQXUODG2P1NXp0W6RnkXA2i8+lkwbTlo795NsH0tyrrlmh0d7OD4J944rEKNIdHVpDnw==
-X-Received: by 2002:a17:906:bc1:b0:7fd:eb9e:6fd5 with SMTP id y1-20020a1709060bc100b007fdeb9e6fd5mr73533461ejg.45.1673814844410;
-        Sun, 15 Jan 2023 12:34:04 -0800 (PST)
-Received: from Tanmay.. (ip5f5ad407.dynamic.kabel-deutschland.de. [95.90.212.7])
-        by smtp.gmail.com with ESMTPSA id kw16-20020a170907771000b0084d43e23436sm9082067ejc.38.2023.01.15.12.34.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Jan 2023 12:34:03 -0800 (PST)
-From:   Tanmay Bhushan <007047221b@gmail.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Sun, 15 Jan 2023 18:38:07 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE381C141;
+        Sun, 15 Jan 2023 15:38:03 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mxm3Q-1oWO8z3y06-00zEmx; Mon, 16
+ Jan 2023 00:37:56 +0100
+Message-ID: <e103b9fb-9d73-efb5-2f70-9537e943fad0@gmx.com>
+Date:   Mon, 16 Jan 2023 07:37:50 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH] btrfs: raid56: Fix stripes if vertical errors are found
+To:     Tanmay Bhushan <007047221b@gmail.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Tanmay Bhushan <007047221b@gmail.com>
-Subject: [PATCH] btrfs: raid56: Fix stripes if vertical errors are found
-Date:   Sun, 15 Jan 2023 21:32:15 +0100
-Message-Id: <20230115203215.8115-1-007047221b@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_STARTS_WITH_NUMS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230115203215.8115-1-007047221b@gmail.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230115203215.8115-1-007047221b@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:rnL2+T8lcD94bMbnw1He82Fs5xatHjKG2j5yrQ7YD/75luGXITT
+ d1PZGbHibcBUA+LwFBQE2P1dGzdK7llPWQ9qqr1gFKk4wq2ct8VhrDMv05Whee9aU5i0UBV
+ SGQCZHb44HqrlwcScoImW9UyMvtK8k/8V+rsdO0rK8zYcAY2VDlX+QlkWHmcx5jA2GB+zBV
+ 18tIWT0HD+gt0tky4+k8w==
+UI-OutboundReport: notjunk:1;M01:P0:vl+AYKuQLNo=;yBhaS1EWToj6qNpU0Qt5u9pfC0u
+ 3FUEgFbG1PO5c45EGYc399Mz0Z6aT/vvnM79RaOE0dW/jnjnJKtdH+v8lMzNaUK6YDzHoYekF
+ 99t7gWJ/WYR4m7XaW5QFNSP6gYoT6sJWcRnZgk6x7oKqTCaNi55kf9idqmKIZ0lUX6I4blAmP
+ i2oflay4NefRG7i1SL63bLbe8sivavGpGoHvCxKeGggI5LqX729AfZlHQ5ltO07UNrEXK5m94
+ WcHqwO61iciyhmbATfWow7v5OidIBXOe+WzDeujzDakmyqwD02lNgJW+J3gEEIO+MjsYZr/AH
+ ibkiP4hKp1jWOsH5khmqkbsVAtrbQFqc7phAJTfdkdo+LJIKobOChkAMNmgBqBu+cXDrcGTFg
+ Q3EUiL+18grnCKErKY4aVJiQahBFGfumBoAcz1iNnUo3VT6tY5f1Oljd0TenmOUAZDutRTo70
+ Du3oPS2gGI66W3G7NXnwZRNPZgIpsTaB81oQH8l0MUEmskXf5lOmyPYRLnZPcN0kN/IhEOMqw
+ vFXfscLzg3nl+DoTDAbTeueuIH5p+HW96HGSW23UVhvcXNHSYR/62JSfLg+a6VQT4gBn6jw8o
+ cNW6a5YFtwlW5SpJWdl3RZcpoSqdc72Q/Mu4xoQPF3/Re0+DN8TEpfy8N7ZH5tywZuV6CKEWF
+ wGvz/BJNYOk9xGij4CBHQww5Fnlcn+YVLPxYsR7n2lRrQ4bbv1j/UJX6Aexv1w+DF87TLS4zy
+ KbEHEWyWM92TBRw+p1vgQ18Avz1FC3gcXE2YL9KxOMQfI8ifw/XIXVzpDNBYDFclG+bj32I1L
+ US2n+akDpAHbllEqltnhICpzW0WfS/5WWRxP4hUzV7/1mtOqpkY6kC5JUNcZ9iO044yWtsNZZ
+ EBAus/UCay89G7QWKj7Syyh85QBhtJIiTYzPk5CqP+MQmlWY5VUnL/KNH/p+k9ruXbMgER46X
+ qEjTv6Y6Kz6guhhQPFBK+tbE4Vk=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We take two stripe numbers if vertical errors are found.
-In case it is just a pstripe it does not matter but in
-case of raid 6 it matters a both stripes need to be fixed.
 
-Signed-off-by: Tanmay Bhushan <007047221b@gmail.com>
----
- fs/btrfs/raid56.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 6a2cf754912d..f35898a78b16 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -1886,7 +1886,7 @@ static int recover_vertical(struct btrfs_raid_bio *rbio, int sector_nr,
- 		sector->uptodate = 1;
- 	}
- 	if (failb >= 0) {
--		ret = verify_one_sector(rbio, faila, sector_nr);
-+		ret = verify_one_sector(rbio, failb, sector_nr);
- 		if (ret < 0)
- 			goto cleanup;
- 
--- 
-2.34.1
+On 2023/1/16 04:32, Tanmay Bhushan wrote:
+> We take two stripe numbers if vertical errors are found.
+> In case it is just a pstripe it does not matter but in
+> case of raid 6 it matters a both stripes need to be fixed.
+> 
+> Signed-off-by: Tanmay Bhushan <007047221b@gmail.com>
 
+Oh, my bad, typical copy-and-paste error.
+
+Should go in to the next rc.
+
+Fixes: 7a3150723061 ("btrfs: raid56: do data csum verification during 
+RMW cycle")
+
+Thanks,
+Qu
+> ---
+>   fs/btrfs/raid56.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+> index 6a2cf754912d..f35898a78b16 100644
+> --- a/fs/btrfs/raid56.c
+> +++ b/fs/btrfs/raid56.c
+> @@ -1886,7 +1886,7 @@ static int recover_vertical(struct btrfs_raid_bio *rbio, int sector_nr,
+>   		sector->uptodate = 1;
+>   	}
+>   	if (failb >= 0) {
+> -		ret = verify_one_sector(rbio, faila, sector_nr);
+> +		ret = verify_one_sector(rbio, failb, sector_nr);
+>   		if (ret < 0)
+>   			goto cleanup;
+>   
