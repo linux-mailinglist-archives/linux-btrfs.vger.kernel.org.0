@@ -2,276 +2,314 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D6866AFD3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Jan 2023 09:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D6D66B065
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Jan 2023 11:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbjAOIAq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Jan 2023 03:00:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
+        id S229752AbjAOKfx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 15 Jan 2023 05:35:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbjAOIAe (ORCPT
+        with ESMTP id S230050AbjAOKfw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Jan 2023 03:00:34 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86608B479
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 00:00:28 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id q23-20020a17090a065700b002290913a521so8824968pje.5
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 00:00:28 -0800 (PST)
+        Sun, 15 Jan 2023 05:35:52 -0500
+Received: from AUS01-ME3-obe.outbound.protection.outlook.com (mail-me3aus01on2040.outbound.protection.outlook.com [40.107.108.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3B1CDEC
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 02:35:48 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LRcdwA0cFkBNaF1aP9WY5+Hp9HxTYwYji+zmwnshze1BDUTYcvxj5fakRE3bEiGVcC/gTlkCpzybiYXwUh4xa6gH5Ri47QOvfLgV+BtPViCZ30AiQWf6kKKzYUfEtWsdbjdWAVLZrPcWtr/oBsP+Mrw7QoePHwZwZDtJSvlkQp115ypSPnr9P8OW6heGTz7LnbjEqKJNRNBJ1fKy2WUllWq2UGwId3vYaHMV8AfFfcfBvLO6N6RtUf3a5qwL+jscuR/RFvN2p9jREip8gE4gO4LUswwwcapFUuCxphjWk+MjfCQJEXOAte3xBVniukWisKvWEUPZ56Ujf6Z4NxLwCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sc2NZDryNACEqqPsiQuO4V+PAUCrMprzLlF4tcWK0G8=;
+ b=HA4ZE2TDMtjaI+5O52giohReXbnaJzHdx28vKvdUKXKsULmLsMG5b4IySaMoHe0lwTJYkq25WpaTr5+iKzAzK+SGBjP3QdlnA2wF2PU4wyWAYjfBdy4T2dsJG4v+DtYLmpgVD+E6yPohOF0ocu+6HRqQpk7QkGQXx8HsY8k4AIbAIDCq506pfSzUFjFkl3BzRQJAnJWSJLESDrKvKZ6nqSm6mAbcJA5yemcnG0iCW25BcF/qde6HReV28JUyNNHvfdgXq0Mp09MVR/lScxjmDidXHzRr3D6PBMWBnU4jhQVyo/7I2D+fDuZJTHJOmE2+Qe4tUc+RsJWxLlPNeKC9bA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
+ header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:subject:from:content-language:to
-         :user-agent:mime-version:date:message-id:sender:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OZdkF7mjnvovvWTufTeICTRyhy5f9jExt2BzmFxd6A8=;
-        b=J0AgtF4+wnHGi//jD5rbQBiJ6glFcR4SpI82/mrUp6691DAEmLV7i3UHJFByPOOdKc
-         CS9oYkSap9cl+O7F2LLEU31YQvlUMCNe5WoHtYuz6h9ivtygbvz08+FOnGz9BKsKgUql
-         rS0tWThAhZglX9bE3tQUZ5O/XI5MVJcZ2faelvP0/abw3D0j/1kZj1jtnCf8wA+JTxhB
-         De7JO++/P7R85LJrTcykhs9VyfvLBLgxcUXPXx7lIsctkVbjC5FekizKyWOBml4yjypX
-         WbFx9VgzCHuTz+r1LlAIxniXIPSs1AXx1A5KAikEPWzmHZ84gH6OJz2YSCbr2gfX11a1
-         Cv+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:subject:from:content-language:to
-         :user-agent:mime-version:date:message-id:sender:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OZdkF7mjnvovvWTufTeICTRyhy5f9jExt2BzmFxd6A8=;
-        b=R2PEgyw0Wcm41tVIKah/vdMha0r7kKnUQiM1HhtySyFxrG8ejVRNFlNnanMsqijMx1
-         oqE75k9nJMWED/fiDgo5puIeWSjG1G2aqFN55ZyyDaNVSFvsemMnMRxSyteLAWNQcV9M
-         XSF8v60Bz19Vs3Ndwkweau0h/oK+N97Vam17QoVXc24J8rZEtbrVagNnspfE1NiWb3y8
-         kDtkdJKDzidvo8I5dyRGpcOIxusdxblBHCrozb8g9Vm6Oz5zS2J/F3fK6G46bfRSCVmO
-         ziVwBxJsOjKmzZRKR6k+b5/T6CtN1MSoG25F3VZNvcAqA/6J9juMokzqw92yuk0ANyPY
-         nnhQ==
-X-Gm-Message-State: AFqh2kpyaXsp807fQbICkCV/+AjWBRe96o8/ckZIIhTWCkitWp9VwC4W
-        5q36EWaEcJD961pEP9QWEUh8ycegw5R/xg==
-X-Google-Smtp-Source: AMrXdXtATfvV0pnlY8ue98VWYREAAHPzlct/Bbzj+lcLl4hHKmgoHRsz8yQDkDDMVCI9vWG/B8zgrA==
-X-Received: by 2002:a05:6a20:b061:b0:af:d295:e2ee with SMTP id dx33-20020a056a20b06100b000afd295e2eemr81118266pzb.37.1673769625996;
-        Sun, 15 Jan 2023 00:00:25 -0800 (PST)
-Received: from ?IPV6:2601:647:5580:5760:c157:f2a3:3eb8:fb59? ([2601:647:5580:5760:c157:f2a3:3eb8:fb59])
-        by smtp.gmail.com with ESMTPSA id g38-20020a635666000000b004768b74f208sm13855997pgm.4.2023.01.15.00.00.23
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Jan 2023 00:00:24 -0800 (PST)
-Sender: Ilya Bobir <ilya.bobir@gmail.com>
-Message-ID: <d01644ab-8e08-758c-df62-42ee6c539ab4@gmail.com>
-Date:   Sun, 15 Jan 2023 00:00:22 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101
- Thunderbird/109.0
-To:     linux-btrfs@vger.kernel.org
-Content-Language: en-US
-From:   Illia Bobyr <illia.bobyr@gmail.com>
-Subject: initramfs: bcache + btrfs: boot failure: race between btrfs and
+ d=oakvillepondscapes.onmicrosoft.com;
+ s=selector2-oakvillepondscapes-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sc2NZDryNACEqqPsiQuO4V+PAUCrMprzLlF4tcWK0G8=;
+ b=iaCgiOxVGHmgx/QPyr2h/A40eyaXS+WueSMfAvPXYOsW9HhipX2Nj7SINEkX243WkH1b8VVUgMm1/33P0jQbL7FFRINNanDfZqpz4Gb02gk0uzV5tjBSTr5UQxJBPEx8e4oyEVi5HS3VbdvVffLMWH4CzYtf94zLIN1mZi5sgu0=
+Received: from SYCPR01MB4685.ausprd01.prod.outlook.com (2603:10c6:10:4a::22)
+ by SYBPR01MB6731.ausprd01.prod.outlook.com (2603:10c6:10:12e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.12; Sun, 15 Jan
+ 2023 10:35:44 +0000
+Received: from SYCPR01MB4685.ausprd01.prod.outlook.com
+ ([fe80::349c:1835:91de:d539]) by SYCPR01MB4685.ausprd01.prod.outlook.com
+ ([fe80::349c:1835:91de:d539%5]) with mapi id 15.20.6002.011; Sun, 15 Jan 2023
+ 10:35:44 +0000
+From:   Paul Jones <paul@pauljones.id.au>
+To:     Illia Bobyr <illia.bobyr@gmail.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: RE: initramfs: bcache + btrfs: boot failure: race between btrfs and
  bcache
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Thread-Topic: initramfs: bcache + btrfs: boot failure: race between btrfs and
+ bcache
+Thread-Index: AQHZKLd/NsFfB3bkD0OiF8nFc6jV966fSEbQ
+Date:   Sun, 15 Jan 2023 10:35:44 +0000
+Message-ID: <SYCPR01MB468558C5F51711CB797FDEF99EC09@SYCPR01MB4685.ausprd01.prod.outlook.com>
+References: <d01644ab-8e08-758c-df62-42ee6c539ab4@gmail.com>
+In-Reply-To: <d01644ab-8e08-758c-df62-42ee6c539ab4@gmail.com>
+Accept-Language: en-AU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=pauljones.id.au;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SYCPR01MB4685:EE_|SYBPR01MB6731:EE_
+x-ms-office365-filtering-correlation-id: 3ce02fbd-b458-47ae-e46b-08daf6e441ea
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cEWi7L0SEJEW+2G8tGJUwaPgG2kKFtLiVyDYnxgWYO4BMlvA6Hz4bhazJrw0RjoQdS4cxIixNFeWJYe45OjumhE2kbIB/dNfn8v48xtOR7h4VvIM9l2Mq3dkWuSQI7yKD4+t0qOh1xD08huB4y8V+J1Sb8A/ztog1g1PHPU/0Xsls2DFW9G98Osp6GJNKzf2/pxDy8Ns2RN2Gxhua29lDgLmjIXocCX1hpsaFCAgyy7jQZc81O7+rELG4og5VxBABqLcbf1I/0MwBqMsdRECOFjNRYp/x6stwhVXJ1C6lVWJDX+YqR8WINq4FNQq8WrepGAAGSqlEAtAg6gfMeyq4T6RCcFAWDEoBs2hlnkahGZQjoQlwa614D20fSdv7nAtbp3sXmTUIV8GBZiaIPS4IsjGU1jgWo+M4XmszpuJb6yHziz+7xtjv+3LmETeXpwsA9hXiMuBwbMc9rwFhMKaPJfwBKfEf+QHaWp6HjWiUeR1LtlmB2tbTVC8WDs3FR9xzY8zf/zAFFYyMusdaGX/YfEc9EIbwkwCneubjPengXGDmbj4BahDJ1bIn+ILqdOT3WfnnPZvguyAzHv9vmx89CKvpl00wjWag/vNgC0D/ZD6zyUQ9TpTquu4dwhpwLDYDpgxibvF7AUZFFSW3Qf+tTkLg3dKxlrlIb4ByahlO0ftEvq4g5e32eIsfSSp3D3z
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SYCPR01MB4685.ausprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(396003)(376002)(366004)(136003)(39830400003)(451199015)(33656002)(186003)(478600001)(316002)(7696005)(71200400001)(5660300002)(26005)(9686003)(38070700005)(8676002)(110136005)(66946007)(66476007)(66556008)(76116006)(64756008)(66446008)(83380400001)(8936002)(66574015)(52536014)(55016003)(41300700001)(86362001)(38100700002)(122000001)(53546011)(6506007)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cThUaFMwT0hmOEJHeGhqTnMyUms3VHJHTUg0QVdIc0N1QTdVYmg0R3dFM3Iv?=
+ =?utf-8?B?TEd2Q0hwbDN5Z2N5QUxxMzR1MzZ6dkdhZUc5UlhlMk9lYVFEZlNNQVhCK2hR?=
+ =?utf-8?B?YmVvdktEUWRjR2RLejI5ZXRUalR6cGtUNFJuNlg2VXJjdThoeEtzRHlQbkZm?=
+ =?utf-8?B?TkF2VGo2TENPZjJ5YmJRV0pGQm8reVA2aDRlSDI3Ui9FbGljZC9DNWtaK2Z3?=
+ =?utf-8?B?TVh2ZmN1ODRKemtENjJrUmlGM1pXekxuMHdXZmF2ZGVHcTBHdTdqVXhoS1Jo?=
+ =?utf-8?B?ZmVmaVZEMTIveGpBTTVIMDIyaFVtajN1bThwamIzS1puM3hMRWRXNjllVzF0?=
+ =?utf-8?B?RmpRaFBncHhxMGx2SjRRK3FlMW42aGJqYnMvTWhJa0lUUmpxVDcrazg1NGt4?=
+ =?utf-8?B?YkhRZ1ZVd0x6TlFjNXpHeHVQTy90TmpxamMwdXd0SXcwTmJEOEk2S3owRVRj?=
+ =?utf-8?B?K3ZMYjl5WlFqVlhhbHV3WG9kZVRtUWIxZE85VFZjZTNEajBmdmdhaUtRZ0ky?=
+ =?utf-8?B?NDBZTG9lTHorckNLdzRGb3FpaHgxV2VXTVJzcHRsOStQaSswVW0rbWVXcmVI?=
+ =?utf-8?B?SjFGQTQ5dEVTUzVLY1l4UzU1dnRqRTA5SGF0dUxQc04yczBveHdMYzlBRytN?=
+ =?utf-8?B?bTNNMjBwYlNrdU9mckZXK1lyaE1mcFVWN21YYmJpdmI1NCs3MFZqNG0ySndv?=
+ =?utf-8?B?SEF1SEpSYmV3SkE2RjhNUENhM054U3ptR0dhUjRIWjNwTUhXaXFLQng2OTAz?=
+ =?utf-8?B?YkN4Z3ZOT2ZGdjJhU2JWZmh4S2pTT3QyZENxMWRiL09ZMFlGdS96RmEyTy90?=
+ =?utf-8?B?NmExOExyK3hwcnFoQVFKbVo2d2N4dk9XR0w0TnVPem5yTm1jdmwyK2ltQk91?=
+ =?utf-8?B?VUJvZ3BaQkprQkZkSnVPVDQzNVl6WjdVL3ZTMTA5MGwwdVRSWVUyL1RvNmJz?=
+ =?utf-8?B?TWQ2ZE1jd2x5a01yMTRLU2JrcHZCK0JSV0hDRnpoS3daTCs1UEl5eUZQcGZq?=
+ =?utf-8?B?OXFUQ0x0Q2E4dnRpVk5XVHdFMkdzc0VhVmpma1hxVXk5SllCbVRsSWRWZ3BV?=
+ =?utf-8?B?MkdIdGxiajlqU3hxNFY0R3ozWmdpdG5RSVk2M2ovTkY5WVJpbExFZXo4dDkz?=
+ =?utf-8?B?aEtNSUFKbUN0cTc5cDdzazRtUmhvNFRIbjMxSitWUXFCbzArY3AyRGNCQk51?=
+ =?utf-8?B?ZmdzUXdONUJ2VXBiTXY1Q0NiYXdYcnJHWTRDYjI5U0VPV0ZRMzJaOHE2aFIw?=
+ =?utf-8?B?Q1FpeFI3cThQUGJqS085dHJoejRPdWczdDJyY3hrUUVZVTlNVVNpSWdscnll?=
+ =?utf-8?B?ZDBnbzRrVVZ6SHdLQVgyNXpvaXo2M1ZiRmRoRXVBditXUGk2TjFqV2tIWFcv?=
+ =?utf-8?B?VTZkOXV2YTZTYWhCcFNDV3l6TFBiRUszVUFDR09BSTliZTAvSnBEb2tkT0pT?=
+ =?utf-8?B?bWNYZGlMMlp5di9Zd2puQk1SK24wUVN3dTZ5N2ZBZ3FZTHJVVk9hN1Q3ZkJu?=
+ =?utf-8?B?YnN3dUhuWFl0dEs0b3hnL3Njc0lyR1BxUmtzZHNCRWQwZkhGNyt5L2lDTUlE?=
+ =?utf-8?B?cHdtRVREN1FuNkNlRXVLVGFNTzdsNFJwQXp4NDJRb1hZNlNjUGJFNnN5Mmln?=
+ =?utf-8?B?NmlsaUNDOUF4TG1Hc1dqVm45NFgyUE1jTTM2djNRenVGdGg4eUxxSm1kZlJF?=
+ =?utf-8?B?bS8xRDRvdURudlVoQmVNMEVpMFJqb2lrNTEvVXZHbXNUUTViN1Fpb1BWNk1Q?=
+ =?utf-8?B?eml6Q3VwbmhNODJhQ1JVcVlCeEdVTjNEakFLd0xNVlB3cEZrVThlSlJ4TXYz?=
+ =?utf-8?B?RzlKVThKcG9kOEJ3U1NtMzFKUlloOHpNWnV6SHBkOXkyN2RYaXRXQW9DNXpB?=
+ =?utf-8?B?YUU1Yk1RNXdONXcrdUhCWU1kZkYybUNYYmcwc2pmZHdNNEdDckMvdzMrTVVE?=
+ =?utf-8?B?enVtaHIzQUdRVFMvU3dlMGhJa0FzY3U5S2JvNXZHbTVrbDY2THM2NGUzZll5?=
+ =?utf-8?B?MTBlWnE4OTltemFSWUlHQnJiejdnTHVFMGFoTVpMVkNNUFA1U1l6bTFUWUNL?=
+ =?utf-8?B?bmNEUXA5R1BmdXJBVkZXbG1rSWN4aGZPWWNWL0xkczNGM2ozdC9TZ1JUb2Qz?=
+ =?utf-8?Q?o3lkR5P6xiYqJET54jaCplj0u?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: pauljones.id.au
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SYCPR01MB4685.ausprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ce02fbd-b458-47ae-e46b-08daf6e441ea
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2023 10:35:44.4610
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sF9IOOzODs+9vDTU2iVbTptsA6kGwaiC9+GuaRxnL51ciAAeOXRZN+4PkGCOz9P8+YXcA0Ei64W0A+V/wvHvYQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYBPR01MB6731
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-I'm running Ubuntu 22.10 with bcache and btrfs.
-
-I've been experience an issued during initramfs boot process for about 2 
-years now.
-At first it was intermittent, probably starting around 20.04, and I 
-though it was a hardware issue.
-But after a few upgrades it became a consistent behavior, causing my 
-system to always fail to boot.
-
-My initramfs boot screenshot is below.
-
-It seems that btrfs is checking for the presence of a filesystem before 
-bcache was able to find and load the necessary devices.
-In order to boot the system, I boot with "break=premount" flag.
-That interrupts initramfs scripts just before the root filesystem is 
-mounted.
-As you can see below, in a few seconds, bcache attaches corresponding 
-devices (3 in my case).
-Now I just need to press ^D to exit the shell and continue the boot process.
-Root filesystem mounting succeeded and the the boot process continues.
-
-Maybe someone familiar with the initramfs boot process can suggest 
-something that would help me restore proper automatic boot?
-I've searched for similar issues, but could not find anything useful.
-Most error I was able to find were related to absence of proper drivers, 
-causing initramfs not to see btrfs or bcache devices at all.
-But in my case, it is a race condition.
-
-I was not able to find code that is responsible for ordering these devices.
-Should there be any?
-Or am I required to specify which devices need to be found for the 
-system to boot successfully, somewhere?
-I was able to find code that uses currently mounted filesystems and 
-baking those in the initramfs scripts.
-
-Any help greatly appreciated.
-
-Thank you,
-Illia Bobyr
-
-
-[    5.438837] ata5.00: configured for UDMA/133
-[    5.439010] scsi 4:0:0:0: Direct-Access ATA ST16000NM001G-2K SNO3 PQ: 
-0 ANSI: S
-[    5.439442] sd 4:0:0:0: Attached scsi generic sg3 type 0
-[    5.439484] sd 4:0:0:0: [sdd] 31251759104 512-byte logical blocks: 
-(16.0 TB/14.6TiB)
-[    5.439487] sd 4:0:0:0: [sdd] 4096-byte physical blocks
-[    5.439526] sd 4:0:0:0: [sdd] Write Protect is off
-[    5.439629] sd 4:0:0:0: [sdd] Write cache: disabled, read cache: 
-enabled, does't suppor DPO or FUA
-[    5.581018] usb 3-2: New USB device found, idVendor=0bc2, 
-idProduct=ab44, bcdDevice=48.85
-[    5.581022] usb 3-2: New USB device strings: Mfr=1, Product=2, 
-SerialNumber=3
-[    5.581024] usb 3-2: Product: Backup+ Hub
-[    5.581026] usb 3-2: Manufacturer: Seagate
-[    5.581027] usb 3-2: SerialNumber: 00AA0000AAAA
-[    5.583278] hub 3-2:1.0: USB hub found
-[    5.583574] hub 3-2:1.0: 3 ports detected
-[    5.590359] nouveau 0000:01:00.0: DRM: allocated 3840x2160 fb: 
-0xa0000, bo 00000000652c9a1e
-[    5.590511] fbcon: nouveaudrmfb (fb0) is primary device
-[    5.596417] sd 1:0:0:0: [sdb] Attached SCSI disk
-[    5.656148]  sdd: sdd1
-[    5.680487] sd 4:0:0:0: [sdd] Attached SCSI disk
-[    5.681250] e1000e 0000:04:00.0 enp4s0f0: renamed from etho
-[    5.686826] usbcore: registered new interface driver usbhid
-[    5.686827] usbhid: USB HID core driver
-[    5.688520] hid-generic 0003:1D50:6122.0001: hiddevO,hidraw0: USB HID 
-v1.10 Device [Ultimate Gadget Laboratories Ultimate Hacking Keyboard] on 
-usb-0000:00:14.0-2/input0
-[    S.688619] input: Ultimate Gadget Laboratories Ultimate Hacking 
-Keyboard as 
-/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2:1.1/0003:1D50:6122.0002/input/input3
-[    5.708502] usb 4-2: new SuperSpeed USB device number 2 using xhci_hcd
-[    5.736000] usb 4-2: New USB device found, idVendor=0bc2, 
-idProduct=db45, bcdDevice=48.85
-[    5.736003] usb 4-2: New USB device strings: Mfr=1, Product=2, 
-SerialNumber=3
-[    5.736005] usb 4-2: Product: Backup+ Hub
-[    5.736007] usb 4-2: Manufacturer: Seagate
-[    5.736008] usb 4-2: SerialNumber: 00AA0000AAAA
-[    5.738538] hub 4-2:1.0: USB hub found
-[    5.739265] hub 4-2:1.0: 3 ports detected
-[    5.752268] hid-generic 0003:1D50:6122.0002: input,hidraw1: USB HID 
-v1.10 Keyboard [Ultimate Gadget Laboratories Ultimate Hacking Keyboard] 
-on usb-0000:00:14.0-2/input1
-[    5.752464] input: Ultimate Gadget Laboratories Ultimate Hacking 
-Keyboard as 
-/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2:1.1/0003:1D50:6122.0003/input/input4
-[    S.816257] hid-generic 0003:1D50:6122.0003: input,hidraw2: USB HID 
-v1.10 Device [Ultimate Gadget Laboratories Ultimate Hacking Keyboard] on 
-usb-0000:00:14.0-2/input2
-[    5.816330] input: Ultimate Gadget Laboratories Ultimate Hacking 
-Keyboard as 
-/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2:1.1/0003:1D50:6122.0004/input/input5
-[    $.876425] hid-generic 0003:1D50:6122.0004: input,hidraw3: USB HID 
-v1.10 Device [Ultimate Gadget Laboratories Ultimate Hacking Keyboard] on 
-usb-0000:00:14.0-2/input3
-[    5.877023] input: Ultimate Gadget Laboratories Ultimate Hacking 
-Keyboard as 
-/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2:1.1/0003:1D50:6122.0005/input/input6
-[    5.877227] hid-generic 0003:1D50:6122.0005: input,hidraw4: USB HID 
-v1.10 Mouse [Ultimate Gadget Laboratories Ultimate Hacking Keyboard] on 
-usb-0000:00:14.0-2/input4
-[    5.983801] Console: switching to colour frame buffer device 240x67
-[    6.032426] usb 4-2.1: new SuperSpeed USB device number 3 using xhci_hcd
-[    6.067094] usb 4-2.1: New USB device found, idVendor=0bc2, 
-idProduct=ab38, bedDevice= 1.00
-[    6.067097] usb 4-2.1: New USB device strings: Mfr=2, Product=3, 
-SerialNumber=1
-[    6.067098] usb 4-2.1: Product: Backup+ Hub BK
-[    6.067099] usb 4-2.1: Manufacturer: Seagate
-[    6.067100] usb 4-2.1: SerialNumber: AAAA0AAA
-[    6.074066] usbcore: registered new interface driver usb-storage
-[    6.081321] scsi host6: uas
-[    6.081418] usbcore: registered new interface driver uas
-[    6.082053] scsi 6:0:0:0: Direct-Access Seagate Backup+ Hub BK D781 
-PQ: 0 ANSI: 6
-[    6.083739] sd 6:0:0:0: Attached scsi generic sg4 type 0
-[    6.084665] sd 6:0:0:0: [sde] 15628053167 512-byte logical blocks: 
-(8.00 TB/7.28 TiB)
-[    6.084666] sd 6:0:0:0: [sde] 4096-byte physical blocks
-[    6.084806] sd 6:0:0:0: [sde] Write Protect is off
-[    6.084958] sd 6:0:0:0: [sde] Write cache: enabled, read cache: 
-enabled, doesn't support DPO or FUA
-[    6.086614] sd 6:0:0:0: [sde] Optimal transfer size 33553920 bytes 
-not a multiple of physical block size (4096 bytes)
-[    6.095134]  sde: sde1
-[    6.095967] sd 6:0:0:0: [sde] Attached SCSI disk
-[    6.323915] nouveau 0000:01:00.0: [drm] fb0: nouveaudrmfb frame 
-buffer device
-[    6.344815] [drm] Initialized nouveau 1.3.1 20120801 for 0000:01:00.0 
-on minor 0
-[    6.345394] nouveau 0000:01:00.0: DRM: Disabling PCI power management 
-to avoid bug
-Begin: Loading essential drivers ... [    6.484104] raid6: avx2x4   
-gen() 38907 MB/s
-[    6.552128] raid6: avx2x4   xor() 16553 MB/s
-[    6.620104] raid6: avx2x2   gen() 41005 MB/s
-[    6.688104] raid6: avx2x2   xor() 24071 MB/s
-[    6.756105] raid6: avx2x1   gen() 27571 MB/s
-[    6.824126] raid6: avx2x1   xor() 17551 MB/s
-[    6.892112] raid6: sse2x4   gen() 16487 MB/s
-[    6.960104] raid6: sse2x4   xor()  9959 MB/s
-[    7.028105] raid6: sse2x2   gen() 16806 MB/s
-[    7.096104] raid6: sse2x2   xor() 10134 MB/s
-[    7.164127] raid6: sse2x1   gen() 14178 MB/s
-[    7.232128] raid6: sse2xi   xor()  7022 MB/s
-[    7.232135] raid6: using algorithm avx2x2 gen() 41005 MB/s
-[    7.232138] raid6: .... xor() 24071 MB/s, rmw enabled
-[    7.232142] raid6: using avx2x2 recovery algorithm
-[    7.232983] xor: automatically using best checksumming function avx
-[    7.233710] async_tx: api initialized (async)
-done.
-
-Spawning shell within the initramfs
-
-BusyBox v1.30.1 (Ubuntu 1:1.30.1-7ubuntu3) built-in shell (ash)
-Enter 'help' for a list of built-in commands.
-
-(initramfs) [   10.442821] bcache: bch_journal_replay() journal replay 
-done, 9936 keys in 102 entries, seq 10412438
-[   10.442968] bcache: register_cache() registered cache device sdc4
-[   10.443229] beache: register_bdev() registered backing device sdb1
-[   10.742434] beache: bch_cached_dev_attach() Caching sdb1 as bcache0 
-on set 79ae7b91-0a8f-4375-a27e-be73fcOfccde
-[   10.742913] beache: register_bdev() registered backing device sdd1
-[   10.820078] beache: bch_cached_dev_attach() Caching sdd1 as beache1 
-on set 79ae7b91-0a8f-4375-a27e-be73fcOfccde
-[   10.820275] beache: register_bdev() registered backing device sda1
-[   11.259044] beache: bch_cached_dev_attach() Caching sda1 as beache2 
-on set 79ae7b91-0a8f-4375-a27e-be73fcOfccde
-<<< Here I press ^D >>>
-Begin: Running /scripts/init-premount ... done.
-Begin: Mounting root file system ... Begin: Running /scripts/local-top 
-... done.
-Begin: Running /scripts/local-premount ... [   35.729513] Btrfs loaded, 
-crce32c=crc32c-intel, zoned=yes, fsverity=yes
-Scanning for Btrfs filesystems
-[   35.833033] BTRFS: device label backup devid 1 transid 17455 
-/dev/sde1 scanned by btrfs (448)
-[   35.833164] BTRFS: device label root devid 2 transid 389266 
-/dev/bcache1 scanned by btrfs (448)
-[   35.833295] BTRFS: device label root devid 1 transid 389266 
-/dev/bcacheO scanned by btrfs (448)
-[   35.833684] BTRFS: device label root devid 3 transid 389266 
-/dev/bcache2 scanned by btrfs (448)
-Scanning for Btrfs filesystems
-done.
-Begin: Will now check root file system ... fsck from util-linux 2.37.2
-[/usr/sbin/fsck.btrfs (1) -- /dev/bcache2] fsck.btrfs -a /dev/bcache2
-done.
-[   35.867756] BTRFS info (device bcacheO): flagging fs with big 
-metadata feature
-[   35.867776] BTRFS info (device bcacheO): disk space caching is enabled
-[   35.867785] BTRFS info (device beached): has skinny extents
-
+TG9vayBpbnRvIHRoZSByb290d2FpdCBhbmQgcm9vdGRlbGF5IGtlcm5lbCBvcHRpb25zLiBJIHNv
+bHZlZCBhIHNpbWlsYXIgaXNzdWUgb24gYW4gZW1iZWRkZWQgc3lzdGVtIGJvb3RpbmcgZnJvbSBh
+IHNsb3cgZmxhc2ggZGV2aWNlLg0KDQoNClBhdWwuDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdl
+LS0tLS0NCj4gRnJvbTogSWx5YSBCb2JpciA8aWx5YS5ib2JpckBnbWFpbC5jb20+IE9uIEJlaGFs
+ZiBPZiBJbGxpYSBCb2J5cg0KPiBTZW50OiBTdW5kYXksIDE1IEphbnVhcnkgMjAyMyA3OjAwIFBN
+DQo+IFRvOiBsaW51eC1idHJmc0B2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogaW5pdHJhbWZz
+OiBiY2FjaGUgKyBidHJmczogYm9vdCBmYWlsdXJlOiByYWNlIGJldHdlZW4gYnRyZnMgYW5kDQo+
+IGJjYWNoZQ0KPiANCj4gSGVsbG8sDQo+IA0KPiBJJ20gcnVubmluZyBVYnVudHUgMjIuMTAgd2l0
+aCBiY2FjaGUgYW5kIGJ0cmZzLg0KPiANCj4gSSd2ZSBiZWVuIGV4cGVyaWVuY2UgYW4gaXNzdWVk
+IGR1cmluZyBpbml0cmFtZnMgYm9vdCBwcm9jZXNzIGZvciBhYm91dCAyDQo+IHllYXJzIG5vdy4N
+Cj4gQXQgZmlyc3QgaXQgd2FzIGludGVybWl0dGVudCwgcHJvYmFibHkgc3RhcnRpbmcgYXJvdW5k
+IDIwLjA0LCBhbmQgSSB0aG91Z2ggaXQNCj4gd2FzIGEgaGFyZHdhcmUgaXNzdWUuDQo+IEJ1dCBh
+ZnRlciBhIGZldyB1cGdyYWRlcyBpdCBiZWNhbWUgYSBjb25zaXN0ZW50IGJlaGF2aW9yLCBjYXVz
+aW5nIG15IHN5c3RlbQ0KPiB0byBhbHdheXMgZmFpbCB0byBib290Lg0KPiANCj4gTXkgaW5pdHJh
+bWZzIGJvb3Qgc2NyZWVuc2hvdCBpcyBiZWxvdy4NCj4gDQo+IEl0IHNlZW1zIHRoYXQgYnRyZnMg
+aXMgY2hlY2tpbmcgZm9yIHRoZSBwcmVzZW5jZSBvZiBhIGZpbGVzeXN0ZW0gYmVmb3JlIGJjYWNo
+ZQ0KPiB3YXMgYWJsZSB0byBmaW5kIGFuZCBsb2FkIHRoZSBuZWNlc3NhcnkgZGV2aWNlcy4NCj4g
+SW4gb3JkZXIgdG8gYm9vdCB0aGUgc3lzdGVtLCBJIGJvb3Qgd2l0aCAiYnJlYWs9cHJlbW91bnQi
+IGZsYWcuDQo+IFRoYXQgaW50ZXJydXB0cyBpbml0cmFtZnMgc2NyaXB0cyBqdXN0IGJlZm9yZSB0
+aGUgcm9vdCBmaWxlc3lzdGVtIGlzIG1vdW50ZWQuDQo+IEFzIHlvdSBjYW4gc2VlIGJlbG93LCBp
+biBhIGZldyBzZWNvbmRzLCBiY2FjaGUgYXR0YWNoZXMgY29ycmVzcG9uZGluZw0KPiBkZXZpY2Vz
+ICgzIGluIG15IGNhc2UpLg0KPiBOb3cgSSBqdXN0IG5lZWQgdG8gcHJlc3MgXkQgdG8gZXhpdCB0
+aGUgc2hlbGwgYW5kIGNvbnRpbnVlIHRoZSBib290IHByb2Nlc3MuDQo+IFJvb3QgZmlsZXN5c3Rl
+bSBtb3VudGluZyBzdWNjZWVkZWQgYW5kIHRoZSB0aGUgYm9vdCBwcm9jZXNzIGNvbnRpbnVlcy4N
+Cj4gDQo+IE1heWJlIHNvbWVvbmUgZmFtaWxpYXIgd2l0aCB0aGUgaW5pdHJhbWZzIGJvb3QgcHJv
+Y2VzcyBjYW4gc3VnZ2VzdA0KPiBzb21ldGhpbmcgdGhhdCB3b3VsZCBoZWxwIG1lIHJlc3RvcmUg
+cHJvcGVyIGF1dG9tYXRpYyBib290Pw0KPiBJJ3ZlIHNlYXJjaGVkIGZvciBzaW1pbGFyIGlzc3Vl
+cywgYnV0IGNvdWxkIG5vdCBmaW5kIGFueXRoaW5nIHVzZWZ1bC4NCj4gTW9zdCBlcnJvciBJIHdh
+cyBhYmxlIHRvIGZpbmQgd2VyZSByZWxhdGVkIHRvIGFic2VuY2Ugb2YgcHJvcGVyIGRyaXZlcnMs
+DQo+IGNhdXNpbmcgaW5pdHJhbWZzIG5vdCB0byBzZWUgYnRyZnMgb3IgYmNhY2hlIGRldmljZXMg
+YXQgYWxsLg0KPiBCdXQgaW4gbXkgY2FzZSwgaXQgaXMgYSByYWNlIGNvbmRpdGlvbi4NCj4gDQo+
+IEkgd2FzIG5vdCBhYmxlIHRvIGZpbmQgY29kZSB0aGF0IGlzIHJlc3BvbnNpYmxlIGZvciBvcmRl
+cmluZyB0aGVzZSBkZXZpY2VzLg0KPiBTaG91bGQgdGhlcmUgYmUgYW55Pw0KPiBPciBhbSBJIHJl
+cXVpcmVkIHRvIHNwZWNpZnkgd2hpY2ggZGV2aWNlcyBuZWVkIHRvIGJlIGZvdW5kIGZvciB0aGUg
+c3lzdGVtIHRvDQo+IGJvb3Qgc3VjY2Vzc2Z1bGx5LCBzb21ld2hlcmU/DQo+IEkgd2FzIGFibGUg
+dG8gZmluZCBjb2RlIHRoYXQgdXNlcyBjdXJyZW50bHkgbW91bnRlZCBmaWxlc3lzdGVtcyBhbmQg
+YmFraW5nDQo+IHRob3NlIGluIHRoZSBpbml0cmFtZnMgc2NyaXB0cy4NCj4gDQo+IEFueSBoZWxw
+IGdyZWF0bHkgYXBwcmVjaWF0ZWQuDQo+IA0KPiBUaGFuayB5b3UsDQo+IElsbGlhIEJvYnlyDQo+
+IA0KPiANCj4gW8KgwqDCoCA1LjQzODgzN10gYXRhNS4wMDogY29uZmlndXJlZCBmb3IgVURNQS8x
+MzMgW8KgwqDCoCA1LjQzOTAxMF0gc2NzaSA0OjA6MDowOg0KPiBEaXJlY3QtQWNjZXNzIEFUQSBT
+VDE2MDAwTk0wMDFHLTJLIFNOTzMgUFE6DQo+IDAgQU5TSTogUw0KPiBbwqDCoMKgIDUuNDM5NDQy
+XSBzZCA0OjA6MDowOiBBdHRhY2hlZCBzY3NpIGdlbmVyaWMgc2czIHR5cGUgMCBbwqDCoMKgIDUu
+NDM5NDg0XSBzZA0KPiA0OjA6MDowOiBbc2RkXSAzMTI1MTc1OTEwNCA1MTItYnl0ZSBsb2dpY2Fs
+IGJsb2NrczoNCj4gKDE2LjAgVEIvMTQuNlRpQikNCj4gW8KgwqDCoCA1LjQzOTQ4N10gc2QgNDow
+OjA6MDogW3NkZF0gNDA5Ni1ieXRlIHBoeXNpY2FsIGJsb2NrcyBbwqDCoMKgIDUuNDM5NTI2XSBz
+ZA0KPiA0OjA6MDowOiBbc2RkXSBXcml0ZSBQcm90ZWN0IGlzIG9mZiBbwqDCoMKgIDUuNDM5NjI5
+XSBzZCA0OjA6MDowOiBbc2RkXSBXcml0ZSBjYWNoZToNCj4gZGlzYWJsZWQsIHJlYWQgY2FjaGU6
+DQo+IGVuYWJsZWQsIGRvZXMndCBzdXBwb3IgRFBPIG9yIEZVQQ0KPiBbwqDCoMKgIDUuNTgxMDE4
+XSB1c2IgMy0yOiBOZXcgVVNCIGRldmljZSBmb3VuZCwgaWRWZW5kb3I9MGJjMiwNCj4gaWRQcm9k
+dWN0PWFiNDQsIGJjZERldmljZT00OC44NSBbwqDCoMKgIDUuNTgxMDIyXSB1c2IgMy0yOiBOZXcg
+VVNCIGRldmljZQ0KPiBzdHJpbmdzOiBNZnI9MSwgUHJvZHVjdD0yLA0KPiBTZXJpYWxOdW1iZXI9
+Mw0KPiBbwqDCoMKgIDUuNTgxMDI0XSB1c2IgMy0yOiBQcm9kdWN0OiBCYWNrdXArIEh1YiBbwqDC
+oMKgIDUuNTgxMDI2XSB1c2IgMy0yOg0KPiBNYW51ZmFjdHVyZXI6IFNlYWdhdGUgW8KgwqDCoCA1
+LjU4MTAyN10gdXNiIDMtMjogU2VyaWFsTnVtYmVyOiAwMEFBMDAwMEFBQUENCj4gW8KgwqDCoCA1
+LjU4MzI3OF0gaHViIDMtMjoxLjA6IFVTQiBodWIgZm91bmQgW8KgwqDCoCA1LjU4MzU3NF0gaHVi
+IDMtMjoxLjA6IDMgcG9ydHMNCj4gZGV0ZWN0ZWQgW8KgwqDCoCA1LjU5MDM1OV0gbm91dmVhdSAw
+MDAwOjAxOjAwLjA6IERSTTogYWxsb2NhdGVkIDM4NDB4MjE2MCBmYjoNCj4gMHhhMDAwMCwgYm8g
+MDAwMDAwMDA2NTJjOWExZQ0KPiBbwqDCoMKgIDUuNTkwNTExXSBmYmNvbjogbm91dmVhdWRybWZi
+IChmYjApIGlzIHByaW1hcnkgZGV2aWNlIFvCoMKgwqAgNS41OTY0MTddIHNkDQo+IDE6MDowOjA6
+IFtzZGJdIEF0dGFjaGVkIFNDU0kgZGlzayBbwqDCoMKgIDUuNjU2MTQ4XcKgIHNkZDogc2RkMSBb
+wqDCoMKgIDUuNjgwNDg3XSBzZA0KPiA0OjA6MDowOiBbc2RkXSBBdHRhY2hlZCBTQ1NJIGRpc2sg
+W8KgwqDCoCA1LjY4MTI1MF0gZTEwMDBlIDAwMDA6MDQ6MDAuMCBlbnA0czBmMDoNCj4gcmVuYW1l
+ZCBmcm9tIGV0aG8gW8KgwqDCoCA1LjY4NjgyNl0gdXNiY29yZTogcmVnaXN0ZXJlZCBuZXcgaW50
+ZXJmYWNlIGRyaXZlcg0KPiB1c2JoaWQgW8KgwqDCoCA1LjY4NjgyN10gdXNiaGlkOiBVU0IgSElE
+IGNvcmUgZHJpdmVyIFvCoMKgwqAgNS42ODg1MjBdIGhpZC1nZW5lcmljDQo+IDAwMDM6MUQ1MDo2
+MTIyLjAwMDE6IGhpZGRldk8saGlkcmF3MDogVVNCIEhJRA0KPiB2MS4xMCBEZXZpY2UgW1VsdGlt
+YXRlIEdhZGdldCBMYWJvcmF0b3JpZXMgVWx0aW1hdGUgSGFja2luZyBLZXlib2FyZF0gb24NCj4g
+dXNiLTAwMDA6MDA6MTQuMC0yL2lucHV0MA0KPiBbwqDCoMKgIFMuNjg4NjE5XSBpbnB1dDogVWx0
+aW1hdGUgR2FkZ2V0IExhYm9yYXRvcmllcyBVbHRpbWF0ZSBIYWNraW5nIEtleWJvYXJkDQo+IGFz
+DQo+IC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxNC4wL3VzYjEvMS0yLzEtDQo+IDI6MS4x
+LzAwMDM6MUQ1MDo2MTIyLjAwMDIvaW5wdXQvaW5wdXQzDQo+IFvCoMKgwqAgNS43MDg1MDJdIHVz
+YiA0LTI6IG5ldyBTdXBlclNwZWVkIFVTQiBkZXZpY2UgbnVtYmVyIDIgdXNpbmcgeGhjaV9oY2QN
+Cj4gW8KgwqDCoCA1LjczNjAwMF0gdXNiIDQtMjogTmV3IFVTQiBkZXZpY2UgZm91bmQsIGlkVmVu
+ZG9yPTBiYzIsDQo+IGlkUHJvZHVjdD1kYjQ1LCBiY2REZXZpY2U9NDguODUgW8KgwqDCoCA1Ljcz
+NjAwM10gdXNiIDQtMjogTmV3IFVTQiBkZXZpY2UNCj4gc3RyaW5nczogTWZyPTEsIFByb2R1Y3Q9
+MiwNCj4gU2VyaWFsTnVtYmVyPTMNCj4gW8KgwqDCoCA1LjczNjAwNV0gdXNiIDQtMjogUHJvZHVj
+dDogQmFja3VwKyBIdWIgW8KgwqDCoCA1LjczNjAwN10gdXNiIDQtMjoNCj4gTWFudWZhY3R1cmVy
+OiBTZWFnYXRlIFvCoMKgwqAgNS43MzYwMDhdIHVzYiA0LTI6IFNlcmlhbE51bWJlcjogMDBBQTAw
+MDBBQUFBDQo+IFvCoMKgwqAgNS43Mzg1MzhdIGh1YiA0LTI6MS4wOiBVU0IgaHViIGZvdW5kIFvC
+oMKgwqAgNS43MzkyNjVdIGh1YiA0LTI6MS4wOiAzIHBvcnRzDQo+IGRldGVjdGVkIFvCoMKgwqAg
+NS43NTIyNjhdIGhpZC1nZW5lcmljIDAwMDM6MUQ1MDo2MTIyLjAwMDI6IGlucHV0LGhpZHJhdzE6
+IFVTQg0KPiBISUQNCj4gdjEuMTAgS2V5Ym9hcmQgW1VsdGltYXRlIEdhZGdldCBMYWJvcmF0b3Jp
+ZXMgVWx0aW1hdGUgSGFja2luZyBLZXlib2FyZF0NCj4gb24gdXNiLTAwMDA6MDA6MTQuMC0yL2lu
+cHV0MSBbwqDCoMKgIDUuNzUyNDY0XSBpbnB1dDogVWx0aW1hdGUgR2FkZ2V0DQo+IExhYm9yYXRv
+cmllcyBVbHRpbWF0ZSBIYWNraW5nIEtleWJvYXJkIGFzDQo+IC9kZXZpY2VzL3BjaTAwMDA6MDAv
+MDAwMDowMDoxNC4wL3VzYjEvMS0yLzEtDQo+IDI6MS4xLzAwMDM6MUQ1MDo2MTIyLjAwMDMvaW5w
+dXQvaW5wdXQ0DQo+IFvCoMKgwqAgUy44MTYyNTddIGhpZC1nZW5lcmljIDAwMDM6MUQ1MDo2MTIy
+LjAwMDM6IGlucHV0LGhpZHJhdzI6IFVTQiBISUQNCj4gdjEuMTAgRGV2aWNlIFtVbHRpbWF0ZSBH
+YWRnZXQgTGFib3JhdG9yaWVzIFVsdGltYXRlIEhhY2tpbmcgS2V5Ym9hcmRdIG9uDQo+IHVzYi0w
+MDAwOjAwOjE0LjAtMi9pbnB1dDINCj4gW8KgwqDCoCA1LjgxNjMzMF0gaW5wdXQ6IFVsdGltYXRl
+IEdhZGdldCBMYWJvcmF0b3JpZXMgVWx0aW1hdGUgSGFja2luZyBLZXlib2FyZA0KPiBhcw0KPiAv
+ZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MTQuMC91c2IxLzEtMi8xLQ0KPiAyOjEuMS8wMDAz
+OjFENTA6NjEyMi4wMDA0L2lucHV0L2lucHV0NQ0KPiBbwqDCoMKgICQuODc2NDI1XSBoaWQtZ2Vu
+ZXJpYyAwMDAzOjFENTA6NjEyMi4wMDA0OiBpbnB1dCxoaWRyYXczOiBVU0IgSElEDQo+IHYxLjEw
+IERldmljZSBbVWx0aW1hdGUgR2FkZ2V0IExhYm9yYXRvcmllcyBVbHRpbWF0ZSBIYWNraW5nIEtl
+eWJvYXJkXSBvbg0KPiB1c2ItMDAwMDowMDoxNC4wLTIvaW5wdXQzDQo+IFvCoMKgwqAgNS44Nzcw
+MjNdIGlucHV0OiBVbHRpbWF0ZSBHYWRnZXQgTGFib3JhdG9yaWVzIFVsdGltYXRlIEhhY2tpbmcg
+S2V5Ym9hcmQNCj4gYXMNCj4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjE0LjAvdXNiMS8x
+LTIvMS0NCj4gMjoxLjEvMDAwMzoxRDUwOjYxMjIuMDAwNS9pbnB1dC9pbnB1dDYNCj4gW8KgwqDC
+oCA1Ljg3NzIyN10gaGlkLWdlbmVyaWMgMDAwMzoxRDUwOjYxMjIuMDAwNTogaW5wdXQsaGlkcmF3
+NDogVVNCIEhJRA0KPiB2MS4xMCBNb3VzZSBbVWx0aW1hdGUgR2FkZ2V0IExhYm9yYXRvcmllcyBV
+bHRpbWF0ZSBIYWNraW5nIEtleWJvYXJkXSBvbg0KPiB1c2ItMDAwMDowMDoxNC4wLTIvaW5wdXQ0
+DQo+IFvCoMKgwqAgNS45ODM4MDFdIENvbnNvbGU6IHN3aXRjaGluZyB0byBjb2xvdXIgZnJhbWUg
+YnVmZmVyIGRldmljZSAyNDB4NjcNCj4gW8KgwqDCoCA2LjAzMjQyNl0gdXNiIDQtMi4xOiBuZXcg
+U3VwZXJTcGVlZCBVU0IgZGV2aWNlIG51bWJlciAzIHVzaW5nIHhoY2lfaGNkDQo+IFvCoMKgwqAg
+Ni4wNjcwOTRdIHVzYiA0LTIuMTogTmV3IFVTQiBkZXZpY2UgZm91bmQsIGlkVmVuZG9yPTBiYzIs
+DQo+IGlkUHJvZHVjdD1hYjM4LCBiZWREZXZpY2U9IDEuMDAgW8KgwqDCoCA2LjA2NzA5N10gdXNi
+IDQtMi4xOiBOZXcgVVNCIGRldmljZQ0KPiBzdHJpbmdzOiBNZnI9MiwgUHJvZHVjdD0zLA0KPiBT
+ZXJpYWxOdW1iZXI9MQ0KPiBbwqDCoMKgIDYuMDY3MDk4XSB1c2IgNC0yLjE6IFByb2R1Y3Q6IEJh
+Y2t1cCsgSHViIEJLIFvCoMKgwqAgNi4wNjcwOTldIHVzYiA0LTIuMToNCj4gTWFudWZhY3R1cmVy
+OiBTZWFnYXRlIFvCoMKgwqAgNi4wNjcxMDBdIHVzYiA0LTIuMTogU2VyaWFsTnVtYmVyOiBBQUFB
+MEFBQQ0KPiBbwqDCoMKgIDYuMDc0MDY2XSB1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBpbnRlcmZh
+Y2UgZHJpdmVyIHVzYi1zdG9yYWdlDQo+IFvCoMKgwqAgNi4wODEzMjFdIHNjc2kgaG9zdDY6IHVh
+cyBbwqDCoMKgIDYuMDgxNDE4XSB1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBpbnRlcmZhY2UNCj4g
+ZHJpdmVyIHVhcyBbwqDCoMKgIDYuMDgyMDUzXSBzY3NpIDY6MDowOjA6IERpcmVjdC1BY2Nlc3Mg
+U2VhZ2F0ZSBCYWNrdXArIEh1YiBCSw0KPiBENzgxDQo+IFBROiAwIEFOU0k6IDYNCj4gW8KgwqDC
+oCA2LjA4MzczOV0gc2QgNjowOjA6MDogQXR0YWNoZWQgc2NzaSBnZW5lcmljIHNnNCB0eXBlIDAg
+W8KgwqDCoCA2LjA4NDY2NV0gc2QNCj4gNjowOjA6MDogW3NkZV0gMTU2MjgwNTMxNjcgNTEyLWJ5
+dGUgbG9naWNhbCBibG9ja3M6DQo+ICg4LjAwIFRCLzcuMjggVGlCKQ0KPiBbwqDCoMKgIDYuMDg0
+NjY2XSBzZCA2OjA6MDowOiBbc2RlXSA0MDk2LWJ5dGUgcGh5c2ljYWwgYmxvY2tzIFvCoMKgwqAg
+Ni4wODQ4MDZdIHNkDQo+IDY6MDowOjA6IFtzZGVdIFdyaXRlIFByb3RlY3QgaXMgb2ZmIFvCoMKg
+wqAgNi4wODQ5NThdIHNkIDY6MDowOjA6IFtzZGVdIFdyaXRlIGNhY2hlOg0KPiBlbmFibGVkLCBy
+ZWFkIGNhY2hlOg0KPiBlbmFibGVkLCBkb2Vzbid0IHN1cHBvcnQgRFBPIG9yIEZVQQ0KPiBbwqDC
+oMKgIDYuMDg2NjE0XSBzZCA2OjA6MDowOiBbc2RlXSBPcHRpbWFsIHRyYW5zZmVyIHNpemUgMzM1
+NTM5MjAgYnl0ZXMgbm90IGENCj4gbXVsdGlwbGUgb2YgcGh5c2ljYWwgYmxvY2sgc2l6ZSAoNDA5
+NiBieXRlcykgW8KgwqDCoCA2LjA5NTEzNF3CoCBzZGU6IHNkZTENCj4gW8KgwqDCoCA2LjA5NTk2
+N10gc2QgNjowOjA6MDogW3NkZV0gQXR0YWNoZWQgU0NTSSBkaXNrIFvCoMKgwqAgNi4zMjM5MTVd
+IG5vdXZlYXUNCj4gMDAwMDowMTowMC4wOiBbZHJtXSBmYjA6IG5vdXZlYXVkcm1mYiBmcmFtZSBi
+dWZmZXIgZGV2aWNlIFvCoMKgwqAgNi4zNDQ4MTVdDQo+IFtkcm1dIEluaXRpYWxpemVkIG5vdXZl
+YXUgMS4zLjEgMjAxMjA4MDEgZm9yIDAwMDA6MDE6MDAuMCBvbiBtaW5vciAwDQo+IFvCoMKgwqAg
+Ni4zNDUzOTRdIG5vdXZlYXUgMDAwMDowMTowMC4wOiBEUk06IERpc2FibGluZyBQQ0kgcG93ZXIg
+bWFuYWdlbWVudA0KPiB0byBhdm9pZCBidWcNCj4gQmVnaW46IExvYWRpbmcgZXNzZW50aWFsIGRy
+aXZlcnMgLi4uIFvCoMKgwqAgNi40ODQxMDRdIHJhaWQ2OiBhdngyeDQNCj4gZ2VuKCkgMzg5MDcg
+TUIvcw0KPiBbwqDCoMKgIDYuNTUyMTI4XSByYWlkNjogYXZ4Mng0wqDCoCB4b3IoKSAxNjU1MyBN
+Qi9zIFvCoMKgwqAgNi42MjAxMDRdIHJhaWQ2Og0KPiBhdngyeDLCoMKgIGdlbigpIDQxMDA1IE1C
+L3MgW8KgwqDCoCA2LjY4ODEwNF0gcmFpZDY6IGF2eDJ4MsKgwqAgeG9yKCkgMjQwNzEgTUIvcw0K
+PiBbwqDCoMKgIDYuNzU2MTA1XSByYWlkNjogYXZ4MngxwqDCoCBnZW4oKSAyNzU3MSBNQi9zIFvC
+oMKgwqAgNi44MjQxMjZdIHJhaWQ2Og0KPiBhdngyeDHCoMKgIHhvcigpIDE3NTUxIE1CL3MgW8Kg
+wqDCoCA2Ljg5MjExMl0gcmFpZDY6IHNzZTJ4NMKgwqAgZ2VuKCkgMTY0ODcgTUIvcw0KPiBbwqDC
+oMKgIDYuOTYwMTA0XSByYWlkNjogc3NlMng0wqDCoCB4b3IoKcKgIDk5NTkgTUIvcyBbwqDCoMKg
+IDcuMDI4MTA1XSByYWlkNjogc3NlMngywqDCoCBnZW4oKQ0KPiAxNjgwNiBNQi9zIFvCoMKgwqAg
+Ny4wOTYxMDRdIHJhaWQ2OiBzc2UyeDLCoMKgIHhvcigpIDEwMTM0IE1CL3MgW8KgwqDCoCA3LjE2
+NDEyN10gcmFpZDY6DQo+IHNzZTJ4McKgwqAgZ2VuKCkgMTQxNzggTUIvcyBbwqDCoMKgIDcuMjMy
+MTI4XSByYWlkNjogc3NlMnhpwqDCoCB4b3IoKcKgIDcwMjIgTUIvcw0KPiBbwqDCoMKgIDcuMjMy
+MTM1XSByYWlkNjogdXNpbmcgYWxnb3JpdGhtIGF2eDJ4MiBnZW4oKSA0MTAwNSBNQi9zIFvCoMKg
+wqAgNy4yMzIxMzhdDQo+IHJhaWQ2OiAuLi4uIHhvcigpIDI0MDcxIE1CL3MsIHJtdyBlbmFibGVk
+IFvCoMKgwqAgNy4yMzIxNDJdIHJhaWQ2OiB1c2luZyBhdngyeDINCj4gcmVjb3ZlcnkgYWxnb3Jp
+dGhtIFvCoMKgwqAgNy4yMzI5ODNdIHhvcjogYXV0b21hdGljYWxseSB1c2luZyBiZXN0IGNoZWNr
+c3VtbWluZw0KPiBmdW5jdGlvbiBhdnggW8KgwqDCoCA3LjIzMzcxMF0gYXN5bmNfdHg6IGFwaSBp
+bml0aWFsaXplZCAoYXN5bmMpIGRvbmUuDQo+IA0KPiBTcGF3bmluZyBzaGVsbCB3aXRoaW4gdGhl
+IGluaXRyYW1mcw0KPiANCj4gQnVzeUJveCB2MS4zMC4xIChVYnVudHUgMToxLjMwLjEtN3VidW50
+dTMpIGJ1aWx0LWluIHNoZWxsIChhc2gpIEVudGVyICdoZWxwJw0KPiBmb3IgYSBsaXN0IG9mIGJ1
+aWx0LWluIGNvbW1hbmRzLg0KPiANCj4gKGluaXRyYW1mcykgW8KgwqAgMTAuNDQyODIxXSBiY2Fj
+aGU6IGJjaF9qb3VybmFsX3JlcGxheSgpIGpvdXJuYWwgcmVwbGF5IGRvbmUsDQo+IDk5MzYga2V5
+cyBpbiAxMDIgZW50cmllcywgc2VxIDEwNDEyNDM4IFvCoMKgIDEwLjQ0Mjk2OF0gYmNhY2hlOiBy
+ZWdpc3Rlcl9jYWNoZSgpDQo+IHJlZ2lzdGVyZWQgY2FjaGUgZGV2aWNlIHNkYzQgW8KgwqAgMTAu
+NDQzMjI5XSBiZWFjaGU6IHJlZ2lzdGVyX2JkZXYoKQ0KPiByZWdpc3RlcmVkIGJhY2tpbmcgZGV2
+aWNlIHNkYjEgW8KgwqAgMTAuNzQyNDM0XSBiZWFjaGU6DQo+IGJjaF9jYWNoZWRfZGV2X2F0dGFj
+aCgpIENhY2hpbmcgc2RiMSBhcyBiY2FjaGUwIG9uIHNldCA3OWFlN2I5MS0wYThmLQ0KPiA0Mzc1
+LWEyN2UtYmU3M2ZjT2ZjY2RlDQo+IFvCoMKgIDEwLjc0MjkxM10gYmVhY2hlOiByZWdpc3Rlcl9i
+ZGV2KCkgcmVnaXN0ZXJlZCBiYWNraW5nIGRldmljZSBzZGQxDQo+IFvCoMKgIDEwLjgyMDA3OF0g
+YmVhY2hlOiBiY2hfY2FjaGVkX2Rldl9hdHRhY2goKSBDYWNoaW5nIHNkZDEgYXMgYmVhY2hlMSBv
+bg0KPiBzZXQgNzlhZTdiOTEtMGE4Zi00Mzc1LWEyN2UtYmU3M2ZjT2ZjY2RlDQo+IFvCoMKgIDEw
+LjgyMDI3NV0gYmVhY2hlOiByZWdpc3Rlcl9iZGV2KCkgcmVnaXN0ZXJlZCBiYWNraW5nIGRldmlj
+ZSBzZGExDQo+IFvCoMKgIDExLjI1OTA0NF0gYmVhY2hlOiBiY2hfY2FjaGVkX2Rldl9hdHRhY2go
+KSBDYWNoaW5nIHNkYTEgYXMgYmVhY2hlMiBvbg0KPiBzZXQgNzlhZTdiOTEtMGE4Zi00Mzc1LWEy
+N2UtYmU3M2ZjT2ZjY2RlDQo+IDw8PCBIZXJlIEkgcHJlc3MgXkQgPj4+DQo+IEJlZ2luOiBSdW5u
+aW5nIC9zY3JpcHRzL2luaXQtcHJlbW91bnQgLi4uIGRvbmUuDQo+IEJlZ2luOiBNb3VudGluZyBy
+b290IGZpbGUgc3lzdGVtIC4uLiBCZWdpbjogUnVubmluZyAvc2NyaXB0cy9sb2NhbC10b3AgLi4u
+IGRvbmUuDQo+IEJlZ2luOiBSdW5uaW5nIC9zY3JpcHRzL2xvY2FsLXByZW1vdW50IC4uLiBbwqDC
+oCAzNS43Mjk1MTNdIEJ0cmZzIGxvYWRlZCwNCj4gY3JjZTMyYz1jcmMzMmMtaW50ZWwsIHpvbmVk
+PXllcywgZnN2ZXJpdHk9eWVzIFNjYW5uaW5nIGZvciBCdHJmcyBmaWxlc3lzdGVtcw0KPiBbwqDC
+oCAzNS44MzMwMzNdIEJUUkZTOiBkZXZpY2UgbGFiZWwgYmFja3VwIGRldmlkIDEgdHJhbnNpZCAx
+NzQ1NQ0KPiAvZGV2L3NkZTEgc2Nhbm5lZCBieSBidHJmcyAoNDQ4KQ0KPiBbwqDCoCAzNS44MzMx
+NjRdIEJUUkZTOiBkZXZpY2UgbGFiZWwgcm9vdCBkZXZpZCAyIHRyYW5zaWQgMzg5MjY2DQo+IC9k
+ZXYvYmNhY2hlMSBzY2FubmVkIGJ5IGJ0cmZzICg0NDgpDQo+IFvCoMKgIDM1LjgzMzI5NV0gQlRS
+RlM6IGRldmljZSBsYWJlbCByb290IGRldmlkIDEgdHJhbnNpZCAzODkyNjYgL2Rldi9iY2FjaGVP
+DQo+IHNjYW5uZWQgYnkgYnRyZnMgKDQ0OCkgW8KgwqAgMzUuODMzNjg0XSBCVFJGUzogZGV2aWNl
+IGxhYmVsIHJvb3QgZGV2aWQgMyB0cmFuc2lkDQo+IDM4OTI2Ng0KPiAvZGV2L2JjYWNoZTIgc2Nh
+bm5lZCBieSBidHJmcyAoNDQ4KQ0KPiBTY2FubmluZyBmb3IgQnRyZnMgZmlsZXN5c3RlbXMNCj4g
+ZG9uZS4NCj4gQmVnaW46IFdpbGwgbm93IGNoZWNrIHJvb3QgZmlsZSBzeXN0ZW0gLi4uIGZzY2sg
+ZnJvbSB1dGlsLWxpbnV4IDIuMzcuMg0KPiBbL3Vzci9zYmluL2ZzY2suYnRyZnMgKDEpIC0tIC9k
+ZXYvYmNhY2hlMl0gZnNjay5idHJmcyAtYSAvZGV2L2JjYWNoZTIgZG9uZS4NCj4gW8KgwqAgMzUu
+ODY3NzU2XSBCVFJGUyBpbmZvIChkZXZpY2UgYmNhY2hlTyk6IGZsYWdnaW5nIGZzIHdpdGggYmln
+IG1ldGFkYXRhDQo+IGZlYXR1cmUgW8KgwqAgMzUuODY3Nzc2XSBCVFJGUyBpbmZvIChkZXZpY2Ug
+YmNhY2hlTyk6IGRpc2sgc3BhY2UgY2FjaGluZyBpcw0KPiBlbmFibGVkIFvCoMKgIDM1Ljg2Nzc4
+NV0gQlRSRlMgaW5mbyAoZGV2aWNlIGJlYWNoZWQpOiBoYXMgc2tpbm55IGV4dGVudHMNCg0K
