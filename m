@@ -2,832 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEE166B7C2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 08:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9539D66B823
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 08:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbjAPHE6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Jan 2023 02:04:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38096 "EHLO
+        id S231781AbjAPHYO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Jan 2023 02:24:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231617AbjAPHEy (ORCPT
+        with ESMTP id S231713AbjAPHYL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Jan 2023 02:04:54 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCC7B45D
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 23:04:52 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5838B67470
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1673852691; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KBKkWUV9fK4PC9PqEq9DLg61DBdbrFw/03+9FSIlPVQ=;
-        b=sQ1v5ZtIk8Jk1od5v3wqWVTe4NLtz2XykCIb4vcEvj9hpvo1Bb9iDN5nrUqpWVJ0D3V7tc
-        H5CqDhuCseCkcY8Gbij5zwc4YxPTBz8QldzXOs1ypQRA96GJGZ0r2egzz/Kl4se/GXEVot
-        +5F20MMH1N7szzEx6ECi8fyNh9IfQ+c=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 853E8138FA
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id kGSXFBL3xGMfZwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:50 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 11/11] btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe infrastructure
-Date:   Mon, 16 Jan 2023 15:04:22 +0800
-Message-Id: <c90ed1f4d40808fe48610341966c1b38fa9d3e72.1673851704.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <cover.1673851704.git.wqu@suse.com>
-References: <cover.1673851704.git.wqu@suse.com>
+        Mon, 16 Jan 2023 02:24:11 -0500
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9F993D8
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 23:24:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1673853848; x=1705389848;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+  b=gU3w8Y4zlAqjM0C/MJDAAHgqE1NXGBy8g3qcBhRn8gYbgcb/CV5EN6MH
+   0D3u3Q1qnGkIzYTFZONpzslBzbeDsMA2OrqtpoqSI9v6FSu0hLydsjEkL
+   UNhUbHPfMfCQCayLpPRi12udSOtjHJ4CWgz84RrvNeR0dUuYpZTyPBRoL
+   ZhpFi+wIHC8blUqRujNifKPqFYXCFPZehbekbmjQX1ROawDhWeKbE8ZLY
+   d6FWBHS+JDNQJfMrk9aCJxghn8XACoNWjfouw15UmntTx8f4ydwhUAjj8
+   AhAL5iw4sl2AvropMpjXHARk7ST+8R0ltcm6j9pLqWGqPBTUaiXlf6Ffj
+   g==;
+X-IronPort-AV: E=Sophos;i="5.97,220,1669046400"; 
+   d="scan'208";a="220988268"
+Received: from mail-mw2nam04lp2174.outbound.protection.outlook.com (HELO NAM04-MW2-obe.outbound.protection.outlook.com) ([104.47.73.174])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Jan 2023 15:24:07 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=khDT3O2QNywOehSJKfDnr8jxFDj+la8XvbhL+O6SK0ipev3YK/yrROCur1JXvNRA0Vj5W4nHZrWjWBTp9VGTwF81jyppuqKAYo64AcWci3Jp6o35dIp8+U2EbPTvmPFcjGoN0zNzUh+k6mB/Zg/emFMt+W+5YY7xbxfdSuyc4HZkQZEvScDcQmkk1cNq7hpckaHR5KnSSxjunlkFMQ0bNklZeDJeYsKfTlq1A+xoAbkIcIfZqr9UtQCiOkpfVnOigTMSV3LPlztbtxFCgpSVE4hqJytNacJ5ONg5xtJfUd8Zfd6/svxuBob8HG3LROpFX9z6DcIj/2oNeFMnNar/pQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=e+0eejYm1voeNHnJlSzTkplZQkyr8LiLFMA7aoqk8EXKh63WwdM8/5aRtdXjys6+mHggIBWgfKu4K54Oq+FibpzWgUMDYMIxqv6apwAB/YRHMUrF4ow6Vmf3aR7sprnw/s+aC6LZ2y9e90Tga7/hEwPMrLPuw15rgMvMQCaLy9zf8Vb6M765rgOJ16UHuo3i71A+FLZbVOt57OwC1HE0eRzl0jxnk6gWcfk2fA3LIltyleTa6j3JudWFDCEchY7VjrU30HnWKroks/Tesf5XJ7c7Ohcjys33SHa1u1CgfG4qPLLuBtyysivHj32uIzXyY6YnA/bKdKG4WXopkz3feg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=pfEDRJoVyJHYpfQhk0j9pagNey9hrJc/3jRSMmCb6unG08jg60uUa9Pk/7j/89nvxyJgvv88pge2NuPjl14Yx/pOUZ7NcI2k98ehRvZUMCDTq29UAcsOnlK+T/R+2lDTS+C+sJgN41AADqXW7pso7/V0K/aO8lzBwvtL9QpWlR8=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by DM8PR04MB8007.namprd04.prod.outlook.com (2603:10b6:5:314::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.22; Mon, 16 Jan
+ 2023 07:24:06 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::d4bd:b4ef:5bff:2329]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::d4bd:b4ef:5bff:2329%4]) with mapi id 15.20.6002.013; Mon, 16 Jan 2023
+ 07:24:06 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs-progs: mkfs: check blkid version
+Thread-Topic: [PATCH] btrfs-progs: mkfs: check blkid version
+Thread-Index: AQHZKVfndnCeWxQVpUC9HSdv6R3XEK6gpFeA
+Date:   Mon, 16 Jan 2023 07:24:06 +0000
+Message-ID: <b3e35d2c-92c0-c69d-68c5-781252ff794a@wdc.com>
+References: <20230116030853.3606361-1-naohiro.aota@wdc.com>
+In-Reply-To: <20230116030853.3606361-1-naohiro.aota@wdc.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|DM8PR04MB8007:EE_
+x-ms-office365-filtering-correlation-id: d2ece0d2-6794-4836-fa1d-08daf792a6ce
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qAiT9ikvwRsB/T1kFVAJp/bLwva5PIgOn1QBK5PkDJzzu1U+1Ca3L/9FpIwewKpQ9jemb09OG3Ow/hD26nR2cDI9j8vX2Rc1tJB82hiO3kGCatllOsTXSFax0MOnApnRGTJDOwKRkLi0G6L+vbUJLSiag8GjJXGjcQ2e55/IplvNsaOQzhRKUySMw8YQUiVHWBa0vfOmypUvYJfIuy9XmpHeGpKgySbseCdB/eegYWVQiM8crsrZTP/ItAJUXGuRHYYzaSymlc+3xmyuXoi1Ho8d0146CttHKwHKHZluI29Btsq4e04o8km3II4Y6AizTQFs2LJ/owjVZZAedD+oKASfl9z9HHIpyN+FYuiStTRn6QCYgp5uFglFhcRPzk43ob5BK8g000cmIpxTJCRixURfaKE7rBMYE6Jq0sLy+2pSjBguM5eTQeo/kQVe3vPdZWu7PJN/RTtxemqwVSLDyxoFf2JtWTALQpXzplMBy2huESN5NYDSf57XePhl3sQ2TsvrL+9ymLS4lrHefdIWOCsdW5lTV9nr9IMUzBep3M3ahPlOKQTcOqMhy2SgOt/nJHMrelt9c5ehW4RHsSKPvwa5Pijc8nbZihWElcqVwo5qoPmjEL6DoEbv0/q7JVk04+3MRM98lxtDTzMpXg7ta6GfM3BQiyUsVk+WdNWOFY5fiDEgVj8xCDHce8pACsLe29rutq/5L7xPsve3UfPIP0GSCw1XrDZIf5+lH4X0a+sx+NxAu+aHkkptOf0qceu5o4zbhdb6MyDTTWVL8YSt1w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(396003)(346002)(376002)(366004)(39860400002)(451199015)(2906002)(19618925003)(31686004)(91956017)(64756008)(8676002)(66446008)(66946007)(66556008)(5660300002)(41300700001)(36756003)(66476007)(558084003)(110136005)(8936002)(316002)(6512007)(71200400001)(6506007)(186003)(31696002)(478600001)(4270600006)(76116006)(6486002)(122000001)(38100700002)(38070700005)(2616005)(86362001)(82960400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VHk4Q2xIc1cwZDFONnBUL2ZXSFNtbzU2Z0hJVnRZYjFDcjlpaG5RZ1gyVlRm?=
+ =?utf-8?B?aGhtS25QTXNXL2JEM1J5VmZmaU81Q2ZqOFdubTN6bUQxMnQ2SDNpbWNmaUNE?=
+ =?utf-8?B?S0ZRQnR0RDNQZG45Q1JMWFJjbjVnQkhobC9PNVU0eVdjSHFFNy90TXdMeEhr?=
+ =?utf-8?B?aVBudGZTUEVBa2RmNzI1TWx0OUt0VW45cG9kYmJnUUpucitjMXZ3clpFdHB1?=
+ =?utf-8?B?K3R3NmhYY0wxR0JaK2tSTXE5Ulo4SUVOa3VFWHJnTnpOUWVtTUVhdFp2NStx?=
+ =?utf-8?B?Wi9IRmZQRTVKVW5icFloQ3kzSnRzbEtkZENEa0ZLeVJpQWFVVnhscEpBdTdi?=
+ =?utf-8?B?eWJFV1RsY3NlTllqVFN6MCthUnFrTERnOHA3bVU5MUttcFBHcXJ4clg0ZkFL?=
+ =?utf-8?B?NDRNWE5jRmxiMzN1Q1ZuVTc3ODNxWmRLTzJrWUJGdFdrY09XNFJHNWc3YXV5?=
+ =?utf-8?B?am9ucFJzcEVNeDBmTW53L0pOUkhBd2ZTMlRSeGY4YXVRL2Y0cWxXRHZuVWxY?=
+ =?utf-8?B?ZVNiZFc3VWNJWnpTQWtFZENQbnZ0WHVxZjVBVS80Sy9UQSttSC96WWNZUWhw?=
+ =?utf-8?B?MWQrTS92UmF0WWRhZ2dyeWNTVW9Kb1lkUUgwTnRqYjhmNGgxVk9FcTBmaGdH?=
+ =?utf-8?B?ZGJWYmhGR3ROWkdTQS9Laks4SW1UMkp1aE1ONlh2a2RvZDlKa3BnaU5uUDhW?=
+ =?utf-8?B?Mm9DT0JxREkwY212NmFVek1KWURoZVg3N3BJWUhyNnJyOXFhdVE0T3dGaWEz?=
+ =?utf-8?B?ZzJXV3QrOURKMmlmSGM0ZUlxUzhTZy9mSUdIQ01QaVBhV2gvTUhRYmEzWExN?=
+ =?utf-8?B?aEFUL0x4TldUbXVrYUZjVXZqaHVTaDFXaWg4aFpDeTUxM2s4YVExbnUvTFZq?=
+ =?utf-8?B?SkVGdFFrbGRmbnZ3QjlUUitzaDE0RFFRWGpRRjNaWW43bTB4Q0V6WXZXdElJ?=
+ =?utf-8?B?TnJ1Z2dNSXR6OUtzTWRueGE2anAvaDBzVnJHa0hzUGlnNFYzTGlVMEVRWmxv?=
+ =?utf-8?B?cHp2bW8vaXU3c1puYUtJTU5vOTh0N21WdGZxNFFZY1UvSnRNTXJMUllRMVNX?=
+ =?utf-8?B?bmh5YmUrb1p3RGVVY0VseVcyWGFMa0c1eVptSTh4TTJVbzhCdE41eDJBNzc2?=
+ =?utf-8?B?a1IvVFFGV08yT1F1N1l5T09kbXllZURhU1ZmdHdROXkwNVNkTGdmcVhrWlM0?=
+ =?utf-8?B?elJrcFZDdlo2aGMxSHdSbmVnVUdDb1dGa2swK3l6T29BbkNQK0pnZ1hRM2Z4?=
+ =?utf-8?B?RHBpaTd5SlR0aVhwRDlTaHJkczZPbFEwUnJkeW5MVUN6c0YwK211cXEzNkli?=
+ =?utf-8?B?TGViVmZiK2IvUlJNMEwvY2h6MUdsc2wvc3RTck15S1JvaEVPbXJkK3dYYjVI?=
+ =?utf-8?B?N2ZHcFRueUN6cU5TVU43SzlLUnQxTmYwTTlqSGQ5RmR6RW85RTF4cFJJK1lo?=
+ =?utf-8?B?bEFVc0JLeEM3ZjFtdHBuc0NBamJPNnQ2eGkrN29DNjVpR0VTL05KeU41SDlG?=
+ =?utf-8?B?cmUvdmNrc1BuY3dPa2cxcW1hUGFGUWdIdndzU3RucDJFZ3FKMjlmYWo4bkdM?=
+ =?utf-8?B?NXM4V3gweHNXQ3JBVk1lRTh0bWhheWQ2aDJtbERjcTdlKzVmTkI3a0ZpYTBE?=
+ =?utf-8?B?c0ZZbmx6TUFLNVFxMFdYS0dPL3MwNlJWZi9MVjhQY1hyZU84UHh2Sjc2dkxx?=
+ =?utf-8?B?N3VidkpJekdmL1V0Q2l6di80Vk1rakhHWXlER3RqcHhnSGEzOUFOU2lDazFF?=
+ =?utf-8?B?SStmOWpLQmF2L0NRSkd1dFA2T0NkYVZRWGY3MjcvUVpUNU96eURKdXVzdEIy?=
+ =?utf-8?B?S3EyQWhWNlllNXRpa3JTVFY2dThSNElxZ2RnZEZxVWtzdzdaTFgrdHhIR3pN?=
+ =?utf-8?B?OHhpWDc4VHhBVnVKK0ZqS1JDMktKRUlnc0JkWkd4TUhLZTNzSnNOeFdLU2Vj?=
+ =?utf-8?B?Q3RaRExBT2lLdk9qM1F4VzBhVVVZUkFqWWtCQVp4cmJBdWYyYTBOejE5ZnRa?=
+ =?utf-8?B?Y3JkSVdndS9yVkhDWnp5L0xhekJvREZEOFRaTFhaWC9QVGQ0NkdNUkpVMXZC?=
+ =?utf-8?B?WEdCM2F6MUJqaWwwS3RGVUdXQTFZdmd5NjFOeUhOend1WUhzMmRhaGROT3Fm?=
+ =?utf-8?B?Nmtkc2paWlRxK05MakprelhLdUFxVGdSY2Z1ekJNUWlWRW9BZVVxNm5rL0hJ?=
+ =?utf-8?B?ZzhkOTlocFVyMlptdytwd3QyTTBpcUN3OGFWVFNwVjZrUHNZN3RseHU4bWkz?=
+ =?utf-8?Q?rSvtygxfpiGwfUzUB2CfLCV5Wcyorkvi7Wxs2Wz2Cc=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BFE9D00562B0A6408D59CB176178692C@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: Q5Xa8TT7uMALRMVUCjxt6/OrEs49KiNV/uQvjrpqyJJbHPQMZVKmxfNavw+vz56QyxOaWU5K/BOeQ2IyUEDvnFPCfIdUQzqhjkAahVc5gMHlrlPE//doQJ3KZkAGJyy5oGkDulyuaQHdF7Alw9noNJ17/bi106mIL3LoZ4iY9+fkRm5+UaeALchnNUny0WB8ZzIbNFFfyh7f7770zYCPUbzjEi7G5xnrBtcAGolYH2akM1RPQ+o4IuSaIEwrhQgZxLie09JN607WnrfASEOHXerTKUySj7ca+GcRzstOQ+cdlDXFXrIiLCfypJiBJzp9SnrP3So2QaqgEDTCQKE+rF2pbIH10+hSCuVUn3dlqvmWOeRdc4NTsPymjQQA/U/0lY0isYm1U+Jrr3OYW8sWxDQ7TvKETNyqmEIy+0gzGbAfuDjyKbS615jOIsV2BgmPEr/uFPhujD3VX3DoNSfObOpEVYw7jjQiRWfqKwbbLgP9JM8ZiAiC3LOWDZ72uuoGZfLR+ExcGGq5qyJpEpOK50SVBkMAcxjGOdQEHoLSOJkkVdIQ8rnbNT/Bzt8qcirElUr47139j1ZvT6vUVZNlsA/H8v5LP8LPV+fQgT930oky//T5gd0+uk+eQzRTxAHms/1kW3tMpJ6y7We7c3DZupgT3CT1kPQpCQDJRV/ZEREVtgcYU9PRAp81FkdCjAGM0Ye+8y8T23DBhOYZ1LFfmH1e1Po5A+RV0vobzdlgtnddqBCur2r4W81ygmGM6K/EszWJRhMBT4iiDJpG7unfxg==
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2ece0d2-6794-4836-fa1d-08daf792a6ce
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2023 07:24:06.1589
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cvpJEBhavu7nB6rzIEt122CqjCl+GYam6liDThEAlhQ+UwGTQpreVDu/vO5/yNcoeNIPJDCZXDr5lxFQtwXAfGl1Mmz679rem3IEB39ojmU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR04MB8007
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Switch scrub_simple_mirror() to the new scrub_stripe infrastructure.
-
-Since scrub_simple_mirror() is the core part of scrub (only RAID56
-P/Q stripes doesn't utilize it), we can get rid of a big hunk of code,
-mostly scrub_extent() and scrub_sectors().
-
-There is a functionality change:
-
-- Scrub speed throttle now only affects read on the scrubbing device
-  Writes (for repair and replace), and reads from other mirrors won't
-  be limited by the limits.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/scrub.c | 523 +++++++++++------------------------------------
- fs/btrfs/scrub.h |  18 --
- 2 files changed, 121 insertions(+), 420 deletions(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index d587ca1fb8e7..6ff3f0d74683 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -619,18 +619,9 @@ static void scrub_sector_get(struct scrub_sector *sector);
- static void scrub_sector_put(struct scrub_sector *sector);
- static void scrub_parity_get(struct scrub_parity *sparity);
- static void scrub_parity_put(struct scrub_parity *sparity);
--static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
--			 u64 physical, struct btrfs_device *dev, u64 flags,
--			 u64 gen, int mirror_num, u8 *csum,
--			 u64 physical_for_dev_replace);
- static void scrub_bio_end_io(struct bio *bio);
- static void scrub_bio_end_io_worker(struct work_struct *work);
- static void scrub_block_complete(struct scrub_block *sblock);
--static void scrub_find_good_copy(struct btrfs_fs_info *fs_info,
--				 u64 extent_logical, u32 extent_len,
--				 u64 *extent_physical,
--				 struct btrfs_device **extent_dev,
--				 int *extent_mirror_num);
- static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
- 				      struct scrub_sector *sector);
- static void scrub_wr_submit(struct scrub_ctx *sctx);
-@@ -2536,10 +2527,10 @@ static void scrub_write_endio(struct bio *bio)
-  *
-  * Thus here we submit bio directly to @device.
-  */
--void scrub_write_wait_sectors(struct scrub_ctx *sctx,
--			      struct scrub_stripe *stripe,
--			      struct btrfs_device *dev, u64 physical,
--			      unsigned long *write_bitmap)
-+static void scrub_write_wait_sectors(struct scrub_ctx *sctx,
-+				     struct scrub_stripe *stripe,
-+				     struct btrfs_device *dev, u64 physical,
-+				     unsigned long *write_bitmap)
- {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
- 	struct bio *bio = NULL;
-@@ -2597,7 +2588,7 @@ void scrub_write_wait_sectors(struct scrub_ctx *sctx,
- 	wait_scrub_stripe(stripe);
- }
- 
--int scrub_repair_one_stripe(struct scrub_stripe *stripe)
-+static int scrub_repair_one_stripe(struct scrub_stripe *stripe)
- {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
- 	struct scrub_stripe **repair_stripes;
-@@ -2678,8 +2669,8 @@ int scrub_repair_one_stripe(struct scrub_stripe *stripe)
- 	return ret;
- }
- 
--void scrub_report_stripe_errors(struct scrub_ctx *sctx,
--				struct scrub_stripe *stripe)
-+static void scrub_report_stripe_errors(struct scrub_ctx *sctx,
-+				       struct scrub_stripe *stripe)
- {
- 	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
- 				      DEFAULT_RATELIMIT_BURST);
-@@ -2968,22 +2959,16 @@ static void scrub_sector_put(struct scrub_sector *sector)
- 		kfree(sector);
- }
- 
--/*
-- * Throttling of IO submission, bandwidth-limit based, the timeslice is 1
-- * second.  Limit can be set via /sys/fs/UUID/devinfo/devid/scrub_speed_max.
-- */
--static void scrub_throttle(struct scrub_ctx *sctx)
-+static void scrub_throttle_dev_io(struct scrub_ctx *sctx,
-+				  struct btrfs_device *device,
-+				  unsigned int bio_size)
- {
- 	const int time_slice = 1000;
--	struct scrub_bio *sbio;
--	struct btrfs_device *device;
- 	s64 delta;
- 	ktime_t now;
- 	u32 div;
- 	u64 bwlimit;
- 
--	sbio = sctx->bios[sctx->curr];
--	device = sbio->dev;
- 	bwlimit = READ_ONCE(device->scrub_speed_max);
- 	if (bwlimit == 0)
- 		return;
-@@ -3005,7 +2990,7 @@ static void scrub_throttle(struct scrub_ctx *sctx)
- 	/* Still in the time to send? */
- 	if (ktime_before(now, sctx->throttle_deadline)) {
- 		/* If current bio is within the limit, send it */
--		sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
-+		sctx->throttle_sent += bio_size;
- 		if (sctx->throttle_sent <= div_u64(bwlimit, div))
- 			return;
- 
-@@ -3027,6 +3012,17 @@ static void scrub_throttle(struct scrub_ctx *sctx)
- 	sctx->throttle_deadline = 0;
- }
- 
-+/*
-+ * Throttling of IO submission, bandwidth-limit based, the timeslice is 1
-+ * second.  Limit can be set via /sys/fs/UUID/devinfo/devid/scrub_speed_max.
-+ */
-+static void scrub_throttle(struct scrub_ctx *sctx)
-+{
-+	struct scrub_bio *sbio = sctx->bios[sctx->curr];
-+
-+	scrub_throttle_dev_io(sctx, sbio->dev, sbio->bio->bi_iter.bi_size);
-+}
-+
- static void scrub_submit(struct scrub_ctx *sctx)
- {
- 	struct scrub_bio *sbio;
-@@ -3111,202 +3107,6 @@ static int scrub_add_sector_to_rd_bio(struct scrub_ctx *sctx,
- 	return 0;
- }
- 
--static void scrub_missing_raid56_end_io(struct bio *bio)
--{
--	struct scrub_block *sblock = bio->bi_private;
--	struct btrfs_fs_info *fs_info = sblock->sctx->fs_info;
--
--	btrfs_bio_counter_dec(fs_info);
--	if (bio->bi_status)
--		sblock->no_io_error_seen = 0;
--
--	bio_put(bio);
--
--	queue_work(fs_info->scrub_workers, &sblock->work);
--}
--
--static void scrub_missing_raid56_worker(struct work_struct *work)
--{
--	struct scrub_block *sblock = container_of(work, struct scrub_block, work);
--	struct scrub_ctx *sctx = sblock->sctx;
--	struct btrfs_fs_info *fs_info = sctx->fs_info;
--	u64 logical;
--	struct btrfs_device *dev;
--
--	logical = sblock->logical;
--	dev = sblock->dev;
--
--	if (sblock->no_io_error_seen)
--		scrub_recheck_block_checksum(sblock);
--
--	if (!sblock->no_io_error_seen) {
--		spin_lock(&sctx->stat_lock);
--		sctx->stat.read_errors++;
--		spin_unlock(&sctx->stat_lock);
--		btrfs_err_rl_in_rcu(fs_info,
--			"IO error rebuilding logical %llu for dev %s",
--			logical, btrfs_dev_name(dev));
--	} else if (sblock->header_error || sblock->checksum_error) {
--		spin_lock(&sctx->stat_lock);
--		sctx->stat.uncorrectable_errors++;
--		spin_unlock(&sctx->stat_lock);
--		btrfs_err_rl_in_rcu(fs_info,
--			"failed to rebuild valid logical %llu for dev %s",
--			logical, btrfs_dev_name(dev));
--	} else {
--		scrub_write_block_to_dev_replace(sblock);
--	}
--
--	if (sctx->is_dev_replace && sctx->flush_all_writes) {
--		mutex_lock(&sctx->wr_lock);
--		scrub_wr_submit(sctx);
--		mutex_unlock(&sctx->wr_lock);
--	}
--
--	scrub_block_put(sblock);
--	scrub_pending_bio_dec(sctx);
--}
--
--static void scrub_missing_raid56_pages(struct scrub_block *sblock)
--{
--	struct scrub_ctx *sctx = sblock->sctx;
--	struct btrfs_fs_info *fs_info = sctx->fs_info;
--	u64 length = sblock->sector_count << fs_info->sectorsize_bits;
--	u64 logical = sblock->logical;
--	struct btrfs_io_context *bioc = NULL;
--	struct bio *bio;
--	struct btrfs_raid_bio *rbio;
--	int ret;
--	int i;
--
--	btrfs_bio_counter_inc_blocked(fs_info);
--	ret = btrfs_map_sblock(fs_info, BTRFS_MAP_GET_READ_MIRRORS, logical,
--			       &length, &bioc);
--	if (ret || !bioc || !bioc->raid_map)
--		goto bioc_out;
--
--	if (WARN_ON(!sctx->is_dev_replace ||
--		    !(bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK))) {
--		/*
--		 * We shouldn't be scrubbing a missing device. Even for dev
--		 * replace, we should only get here for RAID 5/6. We either
--		 * managed to mount something with no mirrors remaining or
--		 * there's a bug in scrub_find_good_copy()/btrfs_map_block().
--		 */
--		goto bioc_out;
--	}
--
--	bio = bio_alloc(NULL, BIO_MAX_VECS, REQ_OP_READ, GFP_NOFS);
--	bio->bi_iter.bi_sector = logical >> 9;
--	bio->bi_private = sblock;
--	bio->bi_end_io = scrub_missing_raid56_end_io;
--
--	rbio = raid56_alloc_missing_rbio(bio, bioc);
--	if (!rbio)
--		goto rbio_out;
--
--	for (i = 0; i < sblock->sector_count; i++) {
--		struct scrub_sector *sector = sblock->sectors[i];
--
--		raid56_add_scrub_pages(rbio, scrub_sector_get_page(sector),
--				       scrub_sector_get_page_offset(sector),
--				       sector->offset + sector->sblock->logical);
--	}
--
--	INIT_WORK(&sblock->work, scrub_missing_raid56_worker);
--	scrub_block_get(sblock);
--	scrub_pending_bio_inc(sctx);
--	raid56_submit_missing_rbio(rbio);
--	btrfs_put_bioc(bioc);
--	return;
--
--rbio_out:
--	bio_put(bio);
--bioc_out:
--	btrfs_bio_counter_dec(fs_info);
--	btrfs_put_bioc(bioc);
--	spin_lock(&sctx->stat_lock);
--	sctx->stat.malloc_errors++;
--	spin_unlock(&sctx->stat_lock);
--}
--
--static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
--		       u64 physical, struct btrfs_device *dev, u64 flags,
--		       u64 gen, int mirror_num, u8 *csum,
--		       u64 physical_for_dev_replace)
--{
--	struct scrub_block *sblock;
--	const u32 sectorsize = sctx->fs_info->sectorsize;
--	int index;
--
--	sblock = alloc_scrub_block(sctx, dev, logical, physical,
--				   physical_for_dev_replace, mirror_num);
--	if (!sblock) {
--		spin_lock(&sctx->stat_lock);
--		sctx->stat.malloc_errors++;
--		spin_unlock(&sctx->stat_lock);
--		return -ENOMEM;
--	}
--
--	for (index = 0; len > 0; index++) {
--		struct scrub_sector *sector;
--		/*
--		 * Here we will allocate one page for one sector to scrub.
--		 * This is fine if PAGE_SIZE == sectorsize, but will cost
--		 * more memory for PAGE_SIZE > sectorsize case.
--		 */
--		u32 l = min(sectorsize, len);
--
--		sector = alloc_scrub_sector(sblock, logical);
--		if (!sector) {
--			spin_lock(&sctx->stat_lock);
--			sctx->stat.malloc_errors++;
--			spin_unlock(&sctx->stat_lock);
--			scrub_block_put(sblock);
--			return -ENOMEM;
--		}
--		sector->flags = flags;
--		sector->generation = gen;
--		if (csum) {
--			sector->have_csum = 1;
--			memcpy(sector->csum, csum, sctx->fs_info->csum_size);
--		} else {
--			sector->have_csum = 0;
--		}
--		len -= l;
--		logical += l;
--		physical += l;
--		physical_for_dev_replace += l;
--	}
--
--	WARN_ON(sblock->sector_count == 0);
--	if (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state)) {
--		/*
--		 * This case should only be hit for RAID 5/6 device replace. See
--		 * the comment in scrub_missing_raid56_pages() for details.
--		 */
--		scrub_missing_raid56_pages(sblock);
--	} else {
--		for (index = 0; index < sblock->sector_count; index++) {
--			struct scrub_sector *sector = sblock->sectors[index];
--			int ret;
--
--			ret = scrub_add_sector_to_rd_bio(sctx, sector);
--			if (ret) {
--				scrub_block_put(sblock);
--				return ret;
--			}
--		}
--
--		if (flags & BTRFS_EXTENT_FLAG_SUPER)
--			scrub_submit(sctx);
--	}
--
--	/* last one frees, either here or in bio completion for last page */
--	scrub_block_put(sblock);
--	return 0;
--}
--
- static void scrub_bio_end_io(struct bio *bio)
- {
- 	struct scrub_bio *sbio = bio->bi_private;
-@@ -3491,77 +3291,6 @@ static int scrub_find_csum(struct scrub_ctx *sctx, u64 logical, u8 *csum)
- 	return 1;
- }
- 
--/* scrub extent tries to collect up to 64 kB for each bio */
--static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
--			u64 logical, u32 len,
--			u64 physical, struct btrfs_device *dev, u64 flags,
--			u64 gen, int mirror_num)
--{
--	struct btrfs_device *src_dev = dev;
--	u64 src_physical = physical;
--	int src_mirror = mirror_num;
--	int ret;
--	u8 csum[BTRFS_CSUM_SIZE];
--	u32 blocksize;
--
--	if (flags & BTRFS_EXTENT_FLAG_DATA) {
--		if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
--			blocksize = map->stripe_len;
--		else
--			blocksize = sctx->fs_info->sectorsize;
--		spin_lock(&sctx->stat_lock);
--		sctx->stat.data_extents_scrubbed++;
--		sctx->stat.data_bytes_scrubbed += len;
--		spin_unlock(&sctx->stat_lock);
--	} else if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
--		if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
--			blocksize = map->stripe_len;
--		else
--			blocksize = sctx->fs_info->nodesize;
--		spin_lock(&sctx->stat_lock);
--		sctx->stat.tree_extents_scrubbed++;
--		sctx->stat.tree_bytes_scrubbed += len;
--		spin_unlock(&sctx->stat_lock);
--	} else {
--		blocksize = sctx->fs_info->sectorsize;
--		WARN_ON(1);
--	}
--
--	/*
--	 * For dev-replace case, we can have @dev being a missing device.
--	 * Regular scrub will avoid its execution on missing device at all,
--	 * as that would trigger tons of read error.
--	 *
--	 * Reading from missing device will cause read error counts to
--	 * increase unnecessarily.
--	 * So here we change the read source to a good mirror.
--	 */
--	if (sctx->is_dev_replace && !dev->bdev)
--		scrub_find_good_copy(sctx->fs_info, logical, len, &src_physical,
--				     &src_dev, &src_mirror);
--	while (len) {
--		u32 l = min(len, blocksize);
--		int have_csum = 0;
--
--		if (flags & BTRFS_EXTENT_FLAG_DATA) {
--			/* push csums to sbio */
--			have_csum = scrub_find_csum(sctx, logical, csum);
--			if (have_csum == 0)
--				++sctx->stat.no_csum;
--		}
--		ret = scrub_sectors(sctx, logical, l, src_physical, src_dev,
--				    flags, gen, src_mirror,
--				    have_csum ? csum : NULL, physical);
--		if (ret)
--			return ret;
--		len -= l;
--		logical += l;
--		physical += l;
--		src_physical += l;
--	}
--	return 0;
--}
--
- static int scrub_sectors_for_parity(struct scrub_parity *sparity,
- 				  u64 logical, u32 len,
- 				  u64 physical, struct btrfs_device *dev,
-@@ -4145,20 +3874,6 @@ static noinline_for_stack int scrub_raid56_parity(struct scrub_ctx *sctx,
- 	return ret < 0 ? ret : 0;
- }
- 
--static void sync_replace_for_zoned(struct scrub_ctx *sctx)
--{
--	if (!btrfs_is_zoned(sctx->fs_info))
--		return;
--
--	sctx->flush_all_writes = true;
--	scrub_submit(sctx);
--	mutex_lock(&sctx->wr_lock);
--	scrub_wr_submit(sctx);
--	mutex_unlock(&sctx->wr_lock);
--
--	wait_event(sctx->list_wait, atomic_read(&sctx->bios_in_flight) == 0);
--}
--
- static int sync_write_pointer_for_zoned(struct scrub_ctx *sctx, u64 logical,
- 					u64 physical, u64 physical_end)
- {
-@@ -4216,11 +3931,11 @@ static void fill_one_extent_info(struct btrfs_fs_info *fs_info,
-  * Return >0 if there is no such stripe in the specified range.
-  * Return <0 for error.
-  */
--int scrub_find_fill_first_stripe(struct btrfs_root *extent_root,
--				 struct btrfs_root *csum_root,
--				 struct btrfs_block_group *bg,
--				 u64 logical_start, u64 logical_len,
--				 struct scrub_stripe *stripe)
-+static int scrub_find_fill_first_stripe(struct btrfs_root *extent_root,
-+					struct btrfs_root *csum_root,
-+					struct btrfs_block_group *bg,
-+					u64 logical_start, u64 logical_len,
-+					struct scrub_stripe *stripe)
- {
- 	struct btrfs_fs_info *fs_info = extent_root->fs_info;
- 	const u64 logical_end = logical_start + logical_len;
-@@ -4326,6 +4041,67 @@ int scrub_find_fill_first_stripe(struct btrfs_root *extent_root,
- 	return ret;
- }
- 
-+/* Reset the bitmaps and sectors info for next stripe. */
-+static void scrub_reset_stripe(struct scrub_stripe *stripe)
-+{
-+	int i;
-+
-+	stripe->extent_sector_bitmap = 0;
-+	stripe->init_error_bitmap = 0;
-+	stripe->current_error_bitmap = 0;
-+
-+	stripe->io_error_bitmap = 0;
-+	stripe->csum_error_bitmap = 0;
-+	stripe->meta_error_bitmap = 0;
-+	stripe->write_error_bitmap = 0;
-+
-+	stripe->nr_meta_extents = 0;
-+	stripe->nr_data_extents = 0;
-+
-+	for (i = 0; i < stripe->nr_sectors; i++) {
-+		stripe->sectors[i].is_metadata = false;
-+		stripe->sectors[i].csum = NULL;
-+		stripe->sectors[i].generation = 0;
-+	}
-+}
-+
-+static void scrub_write_repaired_sectors(struct scrub_ctx *sctx,
-+					 struct scrub_stripe *stripe)
-+{
-+	unsigned long write_bitmap;
-+
-+	if (sctx->readonly)
-+		return;
-+
-+	/*
-+	 * Repaired sectors are in @init_error_bitmap, but not in
-+	 * @current_error_bitmap.
-+	 */
-+	bitmap_andnot(&write_bitmap, &stripe->init_error_bitmap,
-+		      &stripe->current_error_bitmap, stripe->nr_sectors);
-+	scrub_write_wait_sectors(sctx, stripe, stripe->dev, stripe->physical,
-+				 &write_bitmap);
-+}
-+
-+static void scrub_write_replace_sectors(struct scrub_ctx *sctx,
-+					struct scrub_stripe *stripe)
-+{
-+	unsigned long write_bitmap;
-+
-+	if (sctx->readonly)
-+		return;
-+
-+	/*
-+	 * Rplace sectors are in @extent_sector_bitmap, but not in
-+	 * @current_error_bitmap.
-+	 *
-+	 * If we have unrepaired sectors, we have no choice but to skip them.
-+	 */
-+	bitmap_andnot(&write_bitmap, &stripe->extent_sector_bitmap,
-+		      &stripe->current_error_bitmap, stripe->nr_sectors);
-+	scrub_write_wait_sectors(sctx, stripe, sctx->wr_tgtdev, stripe->physical,
-+				 &write_bitmap);
-+}
- 
- /*
-  * Scrub one range which can only has simple mirror based profile.
-@@ -4336,6 +4112,7 @@ int scrub_find_fill_first_stripe(struct btrfs_root *extent_root,
-  * and @logical_length parameter.
-  */
- static int scrub_simple_mirror(struct scrub_ctx *sctx,
-+			       struct scrub_stripe *stripe,
- 			       struct btrfs_block_group *bg,
- 			       struct map_lookup *map,
- 			       u64 logical_start, u64 logical_length,
-@@ -4346,25 +4123,17 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
- 	struct btrfs_root *csum_root = btrfs_csum_root(fs_info, bg->start);
- 	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, bg->start);
- 	const u64 logical_end = logical_start + logical_length;
--	/* An artificial limit, inherit from old scrub behavior */
--	const u32 max_length = SZ_64K;
--	struct btrfs_path path = { 0 };
- 	u64 cur_logical = logical_start;
- 	int ret;
- 
- 	/* The range must be inside the bg */
- 	ASSERT(logical_start >= bg->start && logical_end <= bg->start + bg->length);
- 
--	path.search_commit_root = 1;
--	path.skip_locking = 1;
-+	stripe->mirror_num = mirror_num;
-+	stripe->dev = device;
-+
- 	/* Go through each extent items inside the logical range */
- 	while (cur_logical < logical_end) {
--		u64 extent_start;
--		u64 extent_len;
--		u64 extent_flags;
--		u64 extent_gen;
--		u64 scrub_len;
--
- 		/* Canceled? */
- 		if (atomic_read(&fs_info->scrub_cancel_req) ||
- 		    atomic_read(&sctx->cancel_req)) {
-@@ -4393,8 +4162,9 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
- 		}
- 		spin_unlock(&bg->lock);
- 
--		ret = find_first_extent_item(extent_root, &path, cur_logical,
--					     logical_end - cur_logical);
-+		scrub_reset_stripe(stripe);
-+		ret = scrub_find_fill_first_stripe(extent_root, csum_root, bg,
-+				cur_logical, logical_end - cur_logical, stripe);
- 		if (ret > 0) {
- 			/* No more extent, just update the accounting */
- 			sctx->stat.last_physical = physical + logical_length;
-@@ -4403,56 +4173,20 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
- 		}
- 		if (ret < 0)
- 			break;
--		get_extent_info(&path, &extent_start, &extent_len,
--				&extent_flags, &extent_gen);
--		/* Skip hole range which doesn't have any extent */
--		cur_logical = max(extent_start, cur_logical);
--
--		/*
--		 * Scrub len has three limits:
--		 * - Extent size limit
--		 * - Scrub range limit
--		 *   This is especially imporatant for RAID0/RAID10 to reuse
--		 *   this function
--		 * - Max scrub size limit
--		 */
--		scrub_len = min(min(extent_start + extent_len,
--				    logical_end), cur_logical + max_length) -
--			    cur_logical;
--
--		if (extent_flags & BTRFS_EXTENT_FLAG_DATA) {
--			ret = btrfs_lookup_csums_list(csum_root, cur_logical,
--					cur_logical + scrub_len - 1,
--					&sctx->csum_list, 1, false);
--			if (ret)
--				break;
--		}
--		if ((extent_flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) &&
--		    does_range_cross_boundary(extent_start, extent_len,
--					      logical_start, logical_length)) {
--			btrfs_err(fs_info,
--"scrub: tree block %llu spanning boundaries, ignored. boundary=[%llu, %llu)",
--				  extent_start, logical_start, logical_end);
--			spin_lock(&sctx->stat_lock);
--			sctx->stat.uncorrectable_errors++;
--			spin_unlock(&sctx->stat_lock);
--			cur_logical += scrub_len;
--			continue;
--		}
--		ret = scrub_extent(sctx, map, cur_logical, scrub_len,
--				   cur_logical - logical_start + physical,
--				   device, extent_flags, extent_gen,
--				   mirror_num);
--		scrub_free_csums(sctx);
--		if (ret)
--			break;
-+		stripe->physical = physical + stripe->logical - logical_start;
-+		scrub_throttle_dev_io(sctx, device, BTRFS_STRIPE_LEN);
-+		scrub_submit_read_one_stripe(stripe);
-+		wait_scrub_stripe(stripe);
-+		scrub_repair_one_stripe(stripe);
-+		scrub_write_repaired_sectors(sctx, stripe);
-+		scrub_report_stripe_errors(sctx, stripe);
- 		if (sctx->is_dev_replace)
--			sync_replace_for_zoned(sctx);
--		cur_logical += scrub_len;
-+			scrub_write_replace_sectors(sctx, stripe);
-+
-+		cur_logical = stripe->logical + BTRFS_STRIPE_LEN;
- 		/* Don't hold CPU for too long time */
- 		cond_resched();
- 	}
--	btrfs_release_path(&path);
- 	return ret;
- }
- 
-@@ -4493,6 +4227,7 @@ static int simple_stripe_mirror_num(struct map_lookup *map, int stripe_index)
- }
- 
- static int scrub_simple_stripe(struct scrub_ctx *sctx,
-+			       struct scrub_stripe *stripe,
- 			       struct btrfs_block_group *bg,
- 			       struct map_lookup *map,
- 			       struct btrfs_device *device,
-@@ -4512,7 +4247,7 @@ static int scrub_simple_stripe(struct scrub_ctx *sctx,
- 		 * just RAID1, so we can reuse scrub_simple_mirror() to scrub
- 		 * this stripe.
- 		 */
--		ret = scrub_simple_mirror(sctx, bg, map, cur_logical,
-+		ret = scrub_simple_mirror(sctx, stripe, bg, map, cur_logical,
- 					  map->stripe_len, device, cur_physical,
- 					  mirror_num);
- 		if (ret)
-@@ -4532,6 +4267,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 					   int stripe_index)
- {
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
-+	struct scrub_stripe *stripe;
- 	struct blk_plug plug;
- 	struct map_lookup *map = em->map_lookup;
- 	const u64 profile = map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK;
-@@ -4550,10 +4286,15 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 	u64 stripe_end;
- 	int stop_loop = 0;
- 
-+	stripe = alloc_scrub_stripe(fs_info, bg);
-+	if (!stripe)
-+		return -ENOMEM;
-+
- 	wait_event(sctx->list_wait,
- 		   atomic_read(&sctx->bios_in_flight) == 0);
- 	scrub_blocked_if_needed(fs_info);
- 
-+
- 	/*
- 	 * collect all data csums for the stripe to avoid seeking during
- 	 * the scrub. This might currently (crc32) end up to be about 1MB
-@@ -4585,14 +4326,16 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 		 * Only @physical and @mirror_num needs to calculated using
- 		 * @stripe_index.
- 		 */
--		ret = scrub_simple_mirror(sctx, bg, map, bg->start, bg->length,
--				scrub_dev, map->stripes[stripe_index].physical,
-+		ret = scrub_simple_mirror(sctx, stripe, bg, map, bg->start,
-+				bg->length, scrub_dev,
-+				map->stripes[stripe_index].physical,
- 				stripe_index + 1);
- 		offset = 0;
- 		goto out;
- 	}
- 	if (profile & (BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID10)) {
--		ret = scrub_simple_stripe(sctx, bg, map, scrub_dev, stripe_index);
-+		ret = scrub_simple_stripe(sctx, stripe, bg, map, scrub_dev,
-+					  stripe_index);
- 		offset = map->stripe_len * (stripe_index / map->sub_stripes);
- 		goto out;
- 	}
-@@ -4638,8 +4381,8 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 		 * We can reuse scrub_simple_mirror() here, as the repair part
- 		 * is still based on @mirror_num.
- 		 */
--		ret = scrub_simple_mirror(sctx, bg, map, logical, map->stripe_len,
--					  scrub_dev, physical, 1);
-+		ret = scrub_simple_mirror(sctx, stripe, bg, map, logical,
-+					  map->stripe_len, scrub_dev, physical, 1);
- 		if (ret < 0)
- 			goto out;
- next:
-@@ -4674,6 +4417,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 		if (ret2)
- 			ret = ret2;
- 	}
-+	free_scrub_stripe(stripe);
- 
- 	return ret < 0 ? ret : 0;
- }
-@@ -5479,28 +5223,3 @@ int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
- 
- 	return dev ? (sctx ? 0 : -ENOTCONN) : -ENODEV;
- }
--
--static void scrub_find_good_copy(struct btrfs_fs_info *fs_info,
--				 u64 extent_logical, u32 extent_len,
--				 u64 *extent_physical,
--				 struct btrfs_device **extent_dev,
--				 int *extent_mirror_num)
--{
--	u64 mapped_length;
--	struct btrfs_io_context *bioc = NULL;
--	int ret;
--
--	mapped_length = extent_len;
--	ret = btrfs_map_block(fs_info, BTRFS_MAP_READ, extent_logical,
--			      &mapped_length, &bioc, 0);
--	if (ret || !bioc || mapped_length < extent_len ||
--	    !bioc->stripes[0].dev->bdev) {
--		btrfs_put_bioc(bioc);
--		return;
--	}
--
--	*extent_physical = bioc->stripes[0].physical;
--	*extent_mirror_num = bioc->mirror_num;
--	*extent_dev = bioc->stripes[0].dev;
--	btrfs_put_bioc(bioc);
--}
-diff --git a/fs/btrfs/scrub.h b/fs/btrfs/scrub.h
-index fc294a250945..7639103ebf9d 100644
---- a/fs/btrfs/scrub.h
-+++ b/fs/btrfs/scrub.h
-@@ -13,22 +13,4 @@ int btrfs_scrub_cancel_dev(struct btrfs_device *dev);
- int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
- 			 struct btrfs_scrub_progress *progress);
- 
--/*
-- * The following functions are temporary exports to avoid warning on unused
-- * static functions.
-- */
--struct scrub_stripe;
--int scrub_find_fill_first_stripe(struct btrfs_root *extent_root,
--				 struct btrfs_root *csum_root,
--				 struct btrfs_block_group *bg,
--				 u64 logical_start, u64 logical_len,
--				 struct scrub_stripe *stripe);
--int scrub_repair_one_stripe(struct scrub_stripe *stripe);
--void scrub_write_wait_sectors(struct scrub_ctx *sctx,
--			      struct scrub_stripe *stripe,
--			      struct btrfs_device *dev, u64 physical,
--			      unsigned long *write_bitmap);
--void scrub_report_stripe_errors(struct scrub_ctx *sctx,
--				struct scrub_stripe *stripe);
--
- #endif
--- 
-2.39.0
-
+TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
+dW1zaGlybkB3ZGMuY29tPg0K
