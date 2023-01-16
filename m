@@ -2,152 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D63566BDD0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 13:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA2C66C222
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 15:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbjAPM33 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Jan 2023 07:29:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
+        id S232260AbjAPOYs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 16 Jan 2023 09:24:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjAPM31 (ORCPT
+        with ESMTP id S232550AbjAPOXP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Jan 2023 07:29:27 -0500
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74561CF63
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 04:29:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1673872164; x=1705408164;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=ADcA3a/P3hyUCRvGtXbE4bRKHoAltFYtNO3ZIOOXZnM=;
-  b=pkZ780QSd8OCt9l194q9jdunc76m106gGM9UvUWXrBc3Bd7WmYCXtodS
-   zJxD4QwKQvHfnBwcNlfOuyXz6/dUImqeAqi1jhIor1vARDxnCLetrz8VT
-   rNEpFMhl7chBJcWACLiQVTXVSW9UbHaM0ZMeyWWYylE96YrNVHHgSHAQS
-   pXXQ6+qOrQRjfR9+V0tNGkKaZV/maMi6+vKaY46gFxZRQvUX6sFHlwk47
-   erPSXKGXBXQWK9/oujtjLGol/6wdsBCHU9KbY1cS/uGw4EbuNxljG6TLQ
-   CFcyo9V0dZNKe8NGYHXY7MR78XOiuAghr2l0H9lBVYgWGsWnp0gQfmOVl
-   g==;
-X-IronPort-AV: E=Sophos;i="5.97,220,1669046400"; 
-   d="scan'208";a="219255749"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Jan 2023 20:29:24 +0800
-IronPort-SDR: hLzHe7i8YkD2xhhxtXYMIjSBAeu518M207ip94ACEFxuVIbqfcs4MDDqmZJ4F48wox5UQneFg9
- VY3lcd0DHg1gQmh8daZa2xTsm+YqOFGA88oQjUsDR3MNuFbsZUGWuRaQaV7bQxU2NHhUhVQE6V
- 1jBSSpklkOXGO9tTPhN8STabo84mOnhrjT/vtq6prkQ7k+DKjOqjiCB0FkEUgARxhhDhEml3lx
- HhHD4DZ7y2DN/xJ6LwjV1Pc3Hb+9xwbYoQGk3M3mVFB1x0chgbkVVYHWL/Y+/iWaMNMGd5B5dO
- I0o=
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jan 2023 03:47:06 -0800
-IronPort-SDR: 3PFXUMYVvBfdzzw24mnXShyqHeAn3WEcGeBFiBfr/D5Hbd0m2LUUJlBUa9oP3AzjLjUWDk2Xqu
- kop0/hHIwOB+g9+oHlgNAyQXqtfvf/xkCDHFk41MHXKcolzGHHgeGBw7oWNAgJpntrUn8y83a+
- legvPXrAuHB5o7t8RsvMh54i482/xkH4FG7FOc4tFcuI4Mg2kJRGrdb5Mj9tI7I8SGBTqTHODU
- UOnEQZ/YhKhU2l61WV6hHBH2vSJmcSLZMop5JQie9qqaPxzkdirrkkS5VjhinZW7KMTqEVBaaO
- P70=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jan 2023 04:29:24 -0800
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4NwWYJ02XJz1RvTp
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 04:29:23 -0800 (PST)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1673872163; x=1676464164; bh=ADcA3a/P3hyUCRvGtXbE4bRKHoAltFYtNO3
-        ZIOOXZnM=; b=VQOrKZqjGGfZglr+8Y26BtenGwIZFVuQCQovhncF5OkxInqG4qe
-        I/kWfTgB7Ld6aoXTJ7/zzKpa1EvmvN3w7JLOk9lI+oJ8m2BDBc+KCwyrD/JjXFiG
-        Ay67VjAAYjFAw9AcnGgVnd+CcDBScUMxCbIQXpmHGEUr83Vzb42Fu1Qyv0vJgDCL
-        dQ5M5iO8dENJ+IwFqINWj5WbZheISnSXsA8fBjt1RLtu7I3DxdRHCI/gHfk1TbkG
-        tCwgiJ1xITQOlCSnIOnc0ZUz96JdQaPYOyjqzAbL9frTDm+gKzyrE/HHAjV9ub2M
-        gb8FeZQkVEHIZuWU9t2Hi8Lxf2olrrDFxVQ==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id BbVx_75YrGVn for <linux-btrfs@vger.kernel.org>;
-        Mon, 16 Jan 2023 04:29:23 -0800 (PST)
-Received: from [10.225.163.30] (unknown [10.225.163.30])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4NwWYH1pCRz1RvLy;
-        Mon, 16 Jan 2023 04:29:23 -0800 (PST)
-Message-ID: <f133d036-1601-1d26-19ac-680ee3e8f015@opensource.wdc.com>
-Date:   Mon, 16 Jan 2023 21:29:21 +0900
+        Mon, 16 Jan 2023 09:23:15 -0500
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B3A39BA7
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 06:08:05 -0800 (PST)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 35CB2820CB4
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 14:07:57 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 24ADD821492
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 14:07:56 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1673878076; a=rsa-sha256;
+        cv=none;
+        b=lPqA+2IzC2Zj7dmFjgea/lIWXdKGBQKo9I+Azw+f8+tvVnVlc3ET/5zQfjNsF+PdsCt7dD
+        xW/v6kD/buA8o5oucdr/CzWKD9oQtR89jUN2AD3CTBE4rw/Ghk/NTsrxEyryO3u38N82Wu
+        L1ZMcsrtEppa5IPXEKKdnrc/pXuIGxDREeUvzYo1edQTMwToBj427EYHmrkgXoddAUktG9
+        DjGpNmaikzs9xmf5v/FagcdEaEAuWzfPEG5EjnUpGAdWN69HVhWtnMQ6ap/Q/llNZD94rF
+        Q1MsfvhMuz5rJCReOfdvVCd+IqFW9QyHDqM5UxpAxy9o9RQYmmEEqbjoxnFQkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1673878076;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p2RqiExJoaWyoNKgscMU5hMMXxvw5O3jMDknyInZnG4=;
+        b=1hNdE5reqG1YwIa7xKt6kHABzbzWE5vm5QvyBa78ojyZDM/EuPPxo4OWPekCzeVG20TZDN
+        /ZUiZRVQqMWgzuRjF/m7KnHLm/kIoesjhaw8gbGFhXAQZcmPwmP/w3mE69byfHq75BoWnD
+        FnuLLd92WfI2r/MrPXkIa1oFt9QmyHn/wzABiZSiTC+X4Be0g00fTOmS8TnRSrOzQ5+YM9
+        osqKUoBmI7S1fW6f1buSreL75pCc60ZWXOsXarBVssvpaY0GlqFoYZ3jYutS7wLEUbUhBh
+        c2bNfd+xD/PSLwRQCHUKgz2puBKhltG6UaWWNceQTa2i4qYcvfpDnRd8ymNtnw==
+ARC-Authentication-Results: i=1;
+        rspamd-6f569fcb69-8qq87;
+        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Cold-Bottle: 01d60afa2c100a00_1673878076850_862700060
+X-MC-Loop-Signature: 1673878076850:1233690367
+X-MC-Ingress-Time: 1673878076850
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.97.74.30 (trex/6.7.1);
+        Mon, 16 Jan 2023 14:07:56 +0000
+Received: from p5b071e4a.dip0.t-ipconnect.de ([91.7.30.74]:48772 helo=heisenberg.fritz.box)
+        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <calestyo@scientia.org>)
+        id 1pHQ9O-0006dT-Q5
+        for linux-btrfs@vger.kernel.org;
+        Mon, 16 Jan 2023 14:07:54 +0000
+Message-ID: <afabf6cea649902733684575037e718f151a2ce1.camel@scientia.org>
+Subject: [PATCH] btrfs-progs: docs: improve space cache documentation
+From:   Christoph Anton Mitterer <calestyo@scientia.org>
+To:     linux-btrfs@vger.kernel.org
+Date:   Mon, 16 Jan 2023 15:07:49 +0100
+In-Reply-To: <bddd724d-649b-aa3b-9a97-f415fe7b6afd@gmx.com>
+References: <2269684.ElGaqSPkdT@lichtvoll.de>
+         <bddd724d-649b-aa3b-9a97-f415fe7b6afd@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.3-1 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] btrfs-progs: mkfs: check blkid version
-Content-Language: en-US
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
-References: <20230116030853.3606361-1-naohiro.aota@wdc.com>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <20230116030853.3606361-1-naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AuthUser: calestyo@scientia.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/16/23 12:08, Naohiro Aota wrote:
-> Prior to libblkid-2.38, it fails to detect zoned mode's superblock location
+- "Wipe" in storage terms is often understood as some kind of secure deletion.
+  Use "remove" instead in order to indicate that the space cache is fully
+  removed (and not just cleared and then e.g. automatically rebuild).
 
-Prior to version 2.38, libblkid fails to...
+- The --clear-space-cache option for btrfs check actually clears the whole space
+  cache, just as documented.
+  Thus move any documentation about the clear_cache mount option not doing so
+  for v1 to that.
+  Instead, refer to the mount option.
 
-> and cause "blkid" to fail to detect btrfs properly. This patch suggets to
+- Also note that when clear_cache is used with v1, the free space cache for
+  block groups that are modified gets always cleared, but rebuilt only if
+  nospace_cache is not used.
 
-resulting in blkid failing to detect btrfs on zoned block devices. This
-patch suggest to the user to upgrade libblkid if it detects a version
-lower then 2.38.
+Signed-off-by: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
+---
+ Documentation/btrfs-check.rst      | 12 ++----------
+ Documentation/ch-mount-options.rst | 18 +++++++++++++++---
+ 2 files changed, 17 insertions(+), 13 deletions(-)
 
-Would be better :)
-
-> upgrade libblkid if it detects <libblkid-2.38.
-> 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  mkfs/main.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/mkfs/main.c b/mkfs/main.c
-> index df091b16760c..e0cb6a8c2bff 100644
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -28,6 +28,7 @@
->  #include <string.h>
->  #include <pthread.h>
->  #include <uuid/uuid.h>
-> +#include <blkid/blkid.h>
->  #include "kernel-lib/list.h"
->  #include "kernel-lib/list_sort.h"
->  #include "kernel-lib/rbtree.h"
-> @@ -1346,6 +1347,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->  		exit(1);
->  	}
->  	if (opt_zoned) {
-> +		const int blkid_version =  blkid_get_library_version(NULL, NULL);
-> +
->  		if (source_dir_set) {
->  			error("the option -r and zoned mode are incompatible");
->  			exit(1);
-> @@ -1360,6 +1363,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->  			error("cannot enable RAID5/6 in zoned mode");
->  			exit(1);
->  		}
-> +
-> +		if (blkid_version < 2380)
-> +			warning("libblkid < 2.38 does not support zoned mode's superblock location, update recommended");
->  	}
->  
->  	if (btrfs_check_nodesize(nodesize, sectorsize, &features))
-
+diff --git a/Documentation/btrfs-check.rst b/Documentation/btrfs-check.rst
+index bca0e7f8..1bd35fe2 100644
+--- a/Documentation/btrfs-check.rst
++++ b/Documentation/btrfs-check.rst
+@@ -79,17 +79,9 @@ SAFE OR ADVISORY OPTIONS
+         superblock is damaged.
+ 
+ --clear-space-cache v1|v2
+-        completely wipe all free space cache of given type
++        completely remove the free space cache of the given version
+ 
+-        For free space cache *v1*, the *clear_cache* kernel mount option only rebuilds
+-        the free space cache for block groups that are modified while the filesystem is
+-        mounted with that option. Thus, using this option with *v1* makes it possible
+-        to actually clear the entire free space cache.
+-
+-        For free space cache *v2*, the *clear_cache* kernel mount option destroys
+-        the entire free space cache. This option, with *v2* provides an alternative
+-        method of clearing the free space cache that doesn't require mounting the
+-        filesystem.
++        See also the *clear_cache* mount option.
+ 
+ --clear-ino-cache
+         remove leftover items pertaining to the deprecated inode map feature
+diff --git a/Documentation/ch-mount-options.rst b/Documentation/ch-mount-options.rst
+index 3536a5bb..c9b64f19 100644
+--- a/Documentation/ch-mount-options.rst
++++ b/Documentation/ch-mount-options.rst
+@@ -86,8 +86,19 @@ check_int, check_int_data, check_int_print_mask=<value>
+         for more information.
+ 
+ clear_cache
+-        Force clearing and rebuilding of the disk space cache if something
+-        has gone wrong. See also: *space_cache*.
++        Force clearing and rebuilding of the free space cache if something
++        has gone wrong.
++
++        For free space cache *v1*, this only clears (and, unless *nospace_cache* is
++        used, rebuilds) the free space cache for block groups that are modified while
++        the filesystem is mounted with that option. To actually clear an entire free
++        space cache *v1*, see ``btrfs check --clear-space-cache v1``.
++
++        For free space cache *v2*, this clears the entire free space cache.
++        To do so without requiring to mounting the filesystem, see
++         ``btrfs check --clear-space-cache v2``.
++
++        See also: *space_cache*.
+ 
+ commit=<seconds>
+         (since: 3.12, default: 30)
+@@ -348,7 +359,8 @@ space_cache, space_cache=<version>, nospace_cache
+         implementation, which adds a new b-tree called the free space tree, addresses
+         this issue. Once enabled, the *v2* space cache will always be used and cannot
+         be disabled unless it is cleared. Use *clear_cache,space_cache=v1* or
+-        *clear_cache,nospace_cache* to do so. If *v2* is enabled, kernels without *v2*
++        *clear_cache,nospace_cache* to do so. If *v2* is enabled, and *v1* space
++        cache will be cleared (at the first mount) and kernels without *v2*
+         support will only be able to mount the filesystem in read-only mode.
+ 
+         The :doc:`btrfs-check(8)<btrfs-check>` and `:doc:`mkfs.btrfs(8)<mkfs.btrfs>` commands have full *v2* free space
 -- 
-Damien Le Moal
-Western Digital Research
+2.39.0
 
