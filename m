@@ -2,117 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6AB66BC0D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 11:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D63566BDD0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 13:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbjAPKn6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Jan 2023 05:43:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
+        id S229927AbjAPM33 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Jan 2023 07:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbjAPKnD (ORCPT
+        with ESMTP id S229699AbjAPM31 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Jan 2023 05:43:03 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0471E9EA
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 02:41:21 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTiPl-1p9QIK0Pnh-00U6UJ; Mon, 16
- Jan 2023 11:41:18 +0100
-Message-ID: <bddd724d-649b-aa3b-9a97-f415fe7b6afd@gmx.com>
-Date:   Mon, 16 Jan 2023 18:41:07 +0800
+        Mon, 16 Jan 2023 07:29:27 -0500
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74561CF63
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 04:29:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1673872164; x=1705408164;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=ADcA3a/P3hyUCRvGtXbE4bRKHoAltFYtNO3ZIOOXZnM=;
+  b=pkZ780QSd8OCt9l194q9jdunc76m106gGM9UvUWXrBc3Bd7WmYCXtodS
+   zJxD4QwKQvHfnBwcNlfOuyXz6/dUImqeAqi1jhIor1vARDxnCLetrz8VT
+   rNEpFMhl7chBJcWACLiQVTXVSW9UbHaM0ZMeyWWYylE96YrNVHHgSHAQS
+   pXXQ6+qOrQRjfR9+V0tNGkKaZV/maMi6+vKaY46gFxZRQvUX6sFHlwk47
+   erPSXKGXBXQWK9/oujtjLGol/6wdsBCHU9KbY1cS/uGw4EbuNxljG6TLQ
+   CFcyo9V0dZNKe8NGYHXY7MR78XOiuAghr2l0H9lBVYgWGsWnp0gQfmOVl
+   g==;
+X-IronPort-AV: E=Sophos;i="5.97,220,1669046400"; 
+   d="scan'208";a="219255749"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Jan 2023 20:29:24 +0800
+IronPort-SDR: hLzHe7i8YkD2xhhxtXYMIjSBAeu518M207ip94ACEFxuVIbqfcs4MDDqmZJ4F48wox5UQneFg9
+ VY3lcd0DHg1gQmh8daZa2xTsm+YqOFGA88oQjUsDR3MNuFbsZUGWuRaQaV7bQxU2NHhUhVQE6V
+ 1jBSSpklkOXGO9tTPhN8STabo84mOnhrjT/vtq6prkQ7k+DKjOqjiCB0FkEUgARxhhDhEml3lx
+ HhHD4DZ7y2DN/xJ6LwjV1Pc3Hb+9xwbYoQGk3M3mVFB1x0chgbkVVYHWL/Y+/iWaMNMGd5B5dO
+ I0o=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jan 2023 03:47:06 -0800
+IronPort-SDR: 3PFXUMYVvBfdzzw24mnXShyqHeAn3WEcGeBFiBfr/D5Hbd0m2LUUJlBUa9oP3AzjLjUWDk2Xqu
+ kop0/hHIwOB+g9+oHlgNAyQXqtfvf/xkCDHFk41MHXKcolzGHHgeGBw7oWNAgJpntrUn8y83a+
+ legvPXrAuHB5o7t8RsvMh54i482/xkH4FG7FOc4tFcuI4Mg2kJRGrdb5Mj9tI7I8SGBTqTHODU
+ UOnEQZ/YhKhU2l61WV6hHBH2vSJmcSLZMop5JQie9qqaPxzkdirrkkS5VjhinZW7KMTqEVBaaO
+ P70=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jan 2023 04:29:24 -0800
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4NwWYJ02XJz1RvTp
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 04:29:23 -0800 (PST)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:content-type
+        :in-reply-to:organization:from:references:to:content-language
+        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
+        1673872163; x=1676464164; bh=ADcA3a/P3hyUCRvGtXbE4bRKHoAltFYtNO3
+        ZIOOXZnM=; b=VQOrKZqjGGfZglr+8Y26BtenGwIZFVuQCQovhncF5OkxInqG4qe
+        I/kWfTgB7Ld6aoXTJ7/zzKpa1EvmvN3w7JLOk9lI+oJ8m2BDBc+KCwyrD/JjXFiG
+        Ay67VjAAYjFAw9AcnGgVnd+CcDBScUMxCbIQXpmHGEUr83Vzb42Fu1Qyv0vJgDCL
+        dQ5M5iO8dENJ+IwFqINWj5WbZheISnSXsA8fBjt1RLtu7I3DxdRHCI/gHfk1TbkG
+        tCwgiJ1xITQOlCSnIOnc0ZUz96JdQaPYOyjqzAbL9frTDm+gKzyrE/HHAjV9ub2M
+        gb8FeZQkVEHIZuWU9t2Hi8Lxf2olrrDFxVQ==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id BbVx_75YrGVn for <linux-btrfs@vger.kernel.org>;
+        Mon, 16 Jan 2023 04:29:23 -0800 (PST)
+Received: from [10.225.163.30] (unknown [10.225.163.30])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4NwWYH1pCRz1RvLy;
+        Mon, 16 Jan 2023 04:29:23 -0800 (PST)
+Message-ID: <f133d036-1601-1d26-19ac-680ee3e8f015@opensource.wdc.com>
+Date:   Mon, 16 Jan 2023 21:29:21 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: Correct way to clear a free space cache file invalid error
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] btrfs-progs: mkfs: check blkid version
 Content-Language: en-US
-To:     Martin Steigerwald <martin@lichtvoll.de>,
-        linux-btrfs@vger.kernel.org
-References: <2269684.ElGaqSPkdT@lichtvoll.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <2269684.ElGaqSPkdT@lichtvoll.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+References: <20230116030853.3606361-1-naohiro.aota@wdc.com>
+From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital Research
+In-Reply-To: <20230116030853.3606361-1-naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:dqt2Z1aEO4+F1sIpvat2zhnWGQHZ4IEok9Qr9ZkUuy2ODZD7yYt
- 9vS44IF7vTUvTrVFSKHJcrEUGUNN2tbAtNrK8XHr84Ky1HUC3aiYRp1RjVj8/M7/Ja30CY/
- 529HMfGNYVmGsi3LczV+peem8AtoT97ZiYjtX9ExdZ3ez7K4L4ONGSqBzbZFDdd2LrfR9ru
- Vcdzpka1hJKMKQxhwXfLg==
-UI-OutboundReport: notjunk:1;M01:P0:LuJL/nf5uaM=;9fGzpw8pfEOrdGpAoSpotP+u9ZW
- rJP5U9xyBKy+KMO7DhZEEMQlP8X3Is74MHBIcNfTFzozxYmEShA/Ir+WVkJ/nzCbVxl8EF/O0
- qMjFF0njSswVbfH+PmJYVKxVPW/8F171xHJCV9HkJAN6CTtk/DscxOgb9xKXrMJgp9vsK2xcu
- aGwEVtcbgL29IihwXPe62cRPAUaMw4JXnMonsrvb7zEHowa5J8rZFtQ7MzxWUdIJNLUcN7Hya
- 8EwQ9x5UV1LmqaBGVSPCodPYnm2XVTnjPDPQ1nIBK06YiySFK/iBqg00l5XjmldSoijfOZL1q
- KYRca7T0W7PaGWMCaO/ocxLoZYlC4+Kknk/3FxyChp+IPJ+Wd+uYQxdl7xpcCpYF7dGeMUIdE
- sJe/+JqjWJEQ3oVaA9ZmjFP4TeVV8h+GoJNd0kv0TQlzQeaXfV8MqJG1iUQQZnQ+MC2YIn/CB
- OMALdpSFi2CBivpYj4u1C3gYctqti6jEKU1aufqSQQqwlvUKspHQdER0LpynygLy6t5qbKren
- RwnrrN4ajLDRMWYWbu2A8n2IBfIV2MfkzzTbrYK4/UCzb9ArZpNmo+AoqExOP1QFNt/cU0rAB
- JmA6f3dKSJ3BbB0tekGqyYrXfG0govvfSPXjPLlHYrh03iLnLPX/D5cSrxU+XqDjduT2qbUyc
- RVtkD2gR0O8HCdw6v7Q/243S+QcHsw9ikGEV1xBK3/ClfbmJgLZ2bV9EqoUEWfNgA4Z/GhAVX
- Zj43wwXjYQeB92YLp9yOYWUEnvq5BQjMH+DFPOxPNtQmMFJHT8w2Y8MKhHY431rkweYHnYgff
- YrHBGnEL0UWKeN55IvtcGlIEPrlvxpRztVxDsDukvOkfJes2cnNb3HpbM/x5L7GaxufbpWIF/
- k7FVVg8m2oG8P+g32aURajmYJ3G4MsuBbbM321jR1eCOkvAkw61ewAMio6XHDINKwfwlQbHR1
- XFY6yjWwY7wFcC0Vp/L7ntV8O14=
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 1/16/23 12:08, Naohiro Aota wrote:
+> Prior to libblkid-2.38, it fails to detect zoned mode's superblock location
 
+Prior to version 2.38, libblkid fails to...
 
-On 2023/1/16 18:22, Martin Steigerwald wrote:
-> Sorry for incomplete subject, reposting.
-> 
-> Hi!
-> 
-> Kernel 6.1, btrfs-progs 6.1.2. Filesystem on NVME SSD, via LVM and dm-
-> crypt.
-> 
-> I would like
-> 
-> [   18.657903] BTRFS info (device dm-1): the free space cache file
-> (23912775680) is invalid, skip it
-> [   18.697033] BTRFS info (device dm-1): the free space cache file
-> (25254952960) is invalid, skip it
-> 
-> to be gone.
-> 
-> So I tried
-> 
-> mount -o remount,clear_cache,space_cache=v1 /
-> 
-> as well as
-> 
-> mount -o remount,clear_cache /
-> mount -o remount,space_cache=v1 /
-> 
-> to no avail.
-> 
-> Before that I had space cache v2 on the filesystem as with most of my
-> other BTRFS filesystems. But since it really should not be necessary for
-> a 50 GiB filesystem for the Linux system (not user data), I thought I
-> play it safe this time. At least from what I learned from btrfs manpage.
-> 
-> In a page on BTRFS wiki it is stated that one should run "btrfs check"
-> on the filesystem.
-> 
-> So what is the correct way to clear that error?
+> and cause "blkid" to fail to detect btrfs properly. This patch suggets to
 
-"btrfs check --clear-space-cache v1 <device>".
+resulting in blkid failing to detect btrfs on zoned block devices. This
+patch suggest to the user to upgrade libblkid if it detects a version
+lower then 2.38.
 
-Of course you need to unmount the fs in the first place.
+Would be better :)
 
-The clear_cache mount option only clears the old cache of touched bgs.
-If the bg is not touched during the runtime, it won't be modified.
-
-Or, you can go v2 cache, which would drop the v1 cache at the first mount.
-
-Thanks,
-Qu
+> upgrade libblkid if it detects <libblkid-2.38.
 > 
-> I did not perceive any malfunctioning due to the error in dmesg. The
-> filesystem scrubs without errors.
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>  mkfs/main.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> Best,
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index df091b16760c..e0cb6a8c2bff 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -28,6 +28,7 @@
+>  #include <string.h>
+>  #include <pthread.h>
+>  #include <uuid/uuid.h>
+> +#include <blkid/blkid.h>
+>  #include "kernel-lib/list.h"
+>  #include "kernel-lib/list_sort.h"
+>  #include "kernel-lib/rbtree.h"
+> @@ -1346,6 +1347,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>  		exit(1);
+>  	}
+>  	if (opt_zoned) {
+> +		const int blkid_version =  blkid_get_library_version(NULL, NULL);
+> +
+>  		if (source_dir_set) {
+>  			error("the option -r and zoned mode are incompatible");
+>  			exit(1);
+> @@ -1360,6 +1363,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>  			error("cannot enable RAID5/6 in zoned mode");
+>  			exit(1);
+>  		}
+> +
+> +		if (blkid_version < 2380)
+> +			warning("libblkid < 2.38 does not support zoned mode's superblock location, update recommended");
+>  	}
+>  
+>  	if (btrfs_check_nodesize(nodesize, sectorsize, &features))
+
+-- 
+Damien Le Moal
+Western Digital Research
+
