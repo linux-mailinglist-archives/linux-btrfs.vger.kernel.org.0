@@ -2,47 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E6966C32E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 16:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3117766C3E4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 16:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233026AbjAPPBh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Jan 2023 10:01:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
+        id S231601AbjAPPbI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 16 Jan 2023 10:31:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232838AbjAPPAl (ORCPT
+        with ESMTP id S231480AbjAPPar (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Jan 2023 10:00:41 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3CC62332B;
-        Mon, 16 Jan 2023 06:51:19 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2B31F37642;
-        Mon, 16 Jan 2023 14:51:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1673880678; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=1yNIiC+DlOYTUjgeCCgqwn2x0yECAXqm0gh7u//B+3g=;
-        b=BtSTYuumDX11ifUEjXqrhSIMxTTgNL28469+794F8tPYZFQ1lyYJvjGKgoqcroaoiGFnzE
-        koEKXLDF4dyHeNIkykjN25yVZYXQZiWRI9DrEVtjSc6VuRVU6ngG+ZTMzeS1C9n2a6aqSh
-        +0NOhHxwyLmhDQf/6LaM1eTxQ9Vw9Tc=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 2064A2C186;
-        Mon, 16 Jan 2023 14:51:18 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C8EC9DA7E1; Mon, 16 Jan 2023 15:45:41 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.2-rc5
-Date:   Mon, 16 Jan 2023 15:45:40 +0100
-Message-Id: <cover.1673876631.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.37.3
+        Mon, 16 Jan 2023 10:30:47 -0500
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F71B1CF4E
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:24:53 -0800 (PST)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 270449215C4
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 15:24:52 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 0D2EB920FA7
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 15:24:50 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1673882691; a=rsa-sha256;
+        cv=none;
+        b=xqKLUGzlOLKkFbj+JrktHfqJuGOoBx6ekpR0t9aq2ial13wGLI1XrQlWrCKn71z86K+JWX
+        amlp7E1slQkbn3Ny90FoK/MA7t+273IbPYiJnDKEQ4kebStMzTPFUUwVVqupzSYpKehoRi
+        0dIjx7Yrj87g6hovQ5sdApNVrqOwaRwd9iKwwR7SbrrsIjVUQ6s8zJZ7Ybu7FEA+ndxjC8
+        JmOxtHJApiXI6um4gCqq/abqZQATWivoV4758uFOAc80ORDkgYWUNpDNPMLuuqHIuphg3V
+        dOjwXYrnatbDKZsIA2WkCcMOr0g6+zFS0n4gnxqWis9HE3OifmtnnEehcyLl3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1673882691;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X3rLyMDCmMbcGSil1Ir5ZuT9EnBXwqiJYrqSIZqgMZo=;
+        b=1P8Ear8ovqSLucTM/dzEXapcFR4qtdv4odVR2bUMaYEFnt9qpziuiCPUPBaZnW7HLCnKQx
+        023AtZKB0sJYHzIixzzE+zMxyhc6xOIe0A5ey3kEz7O4JpR+bpmeCBGvDponlJKRbTlUZD
+        ghaysglPEFiGVuLFIsXaWkEPatM3IFMvZIYDo8WLE81GVpno1b9mPU7Zk4SiBy0L5Yb4lM
+        nMg7yeNq4zUfr3YvO5DCkxZ/FMJjuq5IPjMCgXrgbcPGOB3JZjddK++af4CdjBlufp/V0p
+        wWlGla6LMDG7MCQqd23qXc/5KXFKfp5p7CWz7Mz+6gZfr+6UBOeHQ2ixzK5IIQ==
+ARC-Authentication-Results: i=1;
+        rspamd-6f569fcb69-7hzm9;
+        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Suffer-Bored: 144f55435e5572c8_1673882691598_2522074815
+X-MC-Loop-Signature: 1673882691598:3070083846
+X-MC-Ingress-Time: 1673882691598
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.99.229.59 (trex/6.7.1);
+        Mon, 16 Jan 2023 15:24:51 +0000
+Received: from p5b071e4a.dip0.t-ipconnect.de ([91.7.30.74]:51052 helo=heisenberg.fritz.box)
+        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <calestyo@scientia.org>)
+        id 1pHRLp-000595-A3
+        for linux-btrfs@vger.kernel.org;
+        Mon, 16 Jan 2023 15:24:49 +0000
+Message-ID: <c7bf7a6053211c1ac84ab00441e7505df25cbbe6.camel@scientia.org>
+Subject: Re: [PATCH] btrfs-progs: docs: improve space cache documentation
+From:   Christoph Anton Mitterer <calestyo@scientia.org>
+To:     linux-btrfs@vger.kernel.org
+Date:   Mon, 16 Jan 2023 16:24:43 +0100
+In-Reply-To: <afabf6cea649902733684575037e718f151a2ce1.camel@scientia.org>
+References: <2269684.ElGaqSPkdT@lichtvoll.de>
+         <bddd724d-649b-aa3b-9a97-f415fe7b6afd@gmx.com>
+         <afabf6cea649902733684575037e718f151a2ce1.camel@scientia.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.3-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AuthUser: calestyo@scientia.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,62 +89,32 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Hey Qu, Dave.
 
-another batch of fixes, dealing with fallouts from 6.1 reported by users.
+Since the space cache clearing options remain a source for confusion,
+I'd have written the above patch (there's also a draft PR) which tries
+to improve the documentation a bit.
 
-One or two extra -rcs would be appreciated, this pull request is for rc5
-which is my usual target for big changes code freeze but there are still
-such branches in the queue.
 
-Please pull, thanks.
+What remains open (which why the patch/PR is just a draft) is:
 
-- tree-log fixes
-  - fix directory logging due to race with concurrent index key deletion
-  - fix missing error handling when logging directory items
-  - handle case of conflicting inodes being added to the log
-  - remove transaction aborts for not so serious errors
+a) Does --clear-space-cache v1|v2 really remove (or just clear) any
+   space cache from the fs? Or is there even a difference?
+ 
+   Especially, when I ran --clear-space-cache v1|v2 and then mount the
+   fs (without neither nospace_cache nor space_cache[=*])...
+   will it automatically get a new space cache, if so, which?
 
-- fix qgroup accounting warning when rescan can be started at time with
-  temporarily disable accounting
+b) Is my assumption correct, that with v1, clear_cache itself really
+   only clears the space cache for written blocks but not automatically
+   rebuilds it.
+   I.e. when clear_cache,nospace_cache would be used, its just cleared
+   but not rebuild.
 
-- print more specific errors to system log when device scan ioctl fails
+c) What about clear_cache and v2? Is it only clearing? Or is it,
+   unless nospace_cache is used, right after clearing completely
+   rebuilt?
 
-- disable space overcommit for ZNS devices, causing heavy performance
-  drop
 
-----------------------------------------------------------------
-The following changes since commit 2ba48b20049b5a76f34a85f853c9496d1b10533a:
-
-  btrfs: fix compat_ro checks against remount (2023-01-03 16:22:13 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.2-rc4-tag
-
-for you to fetch changes up to 09e44868f1e03c7825ca4283256abedc95e249a3:
-
-  btrfs: do not abort transaction on failure to update log root (2023-01-12 15:43:31 +0100)
-
-----------------------------------------------------------------
-Filipe Manana (5):
-      btrfs: fix missing error handling when logging directory items
-      btrfs: add missing setup of log for full commit at add_conflicting_inode()
-      btrfs: do not abort transaction on failure to write log tree when syncing log
-      btrfs: do not abort transaction on failure to update log root
-
-Naohiro Aota (1):
-      btrfs: zoned: enable metadata over-commit for non-ZNS setup
-
-Qu Wenruo (2):
-      btrfs: add extra error messages to cover non-ENOMEM errors from device_add_list()
-      btrfs: qgroup: do not warn on record without old_roots populated
-
- fs/btrfs/disk-io.c    |  9 ++++++++-
- fs/btrfs/fs.h         |  6 ++++++
- fs/btrfs/qgroup.c     | 14 ++++++++++++--
- fs/btrfs/space-info.c |  3 ++-
- fs/btrfs/tree-log.c   | 47 +++++++++++++++++++++++++++++++----------------
- fs/btrfs/volumes.c    | 11 ++++++++++-
- fs/btrfs/zoned.c      |  2 ++
- 7 files changed, 71 insertions(+), 21 deletions(-)
+Cheers,
+Chris.
