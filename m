@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8927066B7BB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 08:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3293766B7BD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 08:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbjAPHEt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Jan 2023 02:04:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
+        id S231925AbjAPHEu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Jan 2023 02:04:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231898AbjAPHEq (ORCPT
+        with ESMTP id S231890AbjAPHEr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Jan 2023 02:04:46 -0500
+        Mon, 16 Jan 2023 02:04:47 -0500
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507CFB46D
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 23:04:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588E58A5B
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 23:04:46 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 133F267470
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:44 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 177AE67472
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1673852684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1673852685; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cS/EkCo+/mGhjRjMHn0zExt306dlyScNxfhsIoNOIFo=;
-        b=cvU305UbXFK58uwS/nYLXfJMYFjcrkcdi5cby97g686m3ExOXV82hCW2aLglsp8ZjZK/c2
-        SvahMql3hDOVrwVB3sjeLJzE1ygiG22XUx0ux/BWZNOwl6bxjyrIULu0CGKWb7VmmIHf1M
-        uVi3sMra0SVoGcjI+6aVPdojK8grYyY=
+        bh=9TM9JueAqAj8s5qEWCBshf0WRJFVuS/IItqSiM4tZfI=;
+        b=TmrbKjftYN/nSUaoiYfYrfUyxVM5KPxBA7gYz1YNks+i8hMKI1P5UKVgmIqTP7zJtemebL
+        U7gYd4iyUHVEkrf88UgAusHCZF36vC7trUYq7MZ6zqNEITnfxKLju6qZnXfa7cX8RUCuh1
+        4Regw3mg+IVOfuXSNLWeccB5R5lIGgc=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E2F2138FA
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:43 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71A3B138FA
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id aCjUDgv3xGMfZwAAMHmgww
+        id 2Ea4Dwz3xGMfZwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:43 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:44 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 04/11] btrfs: scrub: introduce the structure for new BTRFS_STRIPE_LEN based interface
-Date:   Mon, 16 Jan 2023 15:04:15 +0800
-Message-Id: <fbada655046400fae50e16887930809cfc5fd75c.1673851704.git.wqu@suse.com>
+Subject: [PATCH 05/11] btrfs: scrub: introduce a helper to find and fill the sector info for a scrub_stripe
+Date:   Mon, 16 Jan 2023 15:04:16 +0800
+Message-Id: <94a1bc567eaab99b34adfce8e4d0f248c5260435.1673851704.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <cover.1673851704.git.wqu@suse.com>
 References: <cover.1673851704.git.wqu@suse.com>
@@ -60,212 +60,247 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch introduces the following structures:
+The new helper will search the extent tree to find the first extent of a
+logical range, then fill the sectors array by two loops:
 
-- scrub_sector_verification
-  Contains all the needed info to verify one sector (data or metadata).
+- Loop 1 to fill common bits and metadata generation
 
-- scrub_stripe
-  Contains all needed members (mostly bitmap based) to scrub one stripe
-  (with a length of BTRFS_STRIPE_LEN).
+- Loop 2 to fill csum data (only for data bgs)
+  This loop will use the new btrfs_lookup_csums_bitmap() to fill
+  the full csum buffer, and set scrub_sector_verification::csum.
 
-The basic idea is, we keep the existing per-device scrub behavior, but
-get rid of the bio form shaping by always read the full BTRFS_STRIPE_LEN
-range.
+With all the needed info fulfilled by this function, later we only need
+to submit and verify the stripe.
 
-This means we will read some sectors which is not scrub target, but
-that's fine. At write back time we still only submit repaired sectors.
-
-With every read submitted in BTRFS_STRIPE_LEN, there should not be much
-need for a complex bio form shaping mechanism.
+Here we temporarily export the helper to avoid wanring on unused static
+function.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 147 +++++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/scrub.h |   8 +++
- 2 files changed, 155 insertions(+)
+ fs/btrfs/file-item.c |   9 ++-
+ fs/btrfs/file-item.h |   3 +-
+ fs/btrfs/raid56.c    |   2 +-
+ fs/btrfs/scrub.c     | 134 +++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/scrub.h     |   6 ++
+ 5 files changed, 151 insertions(+), 3 deletions(-)
 
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 5de73466b2ca..70c906ffd1ad 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -671,7 +671,8 @@ int btrfs_lookup_csums_list(struct btrfs_root *root, u64 start, u64 end,
+  * in is large enough to contain all csums.
+  */
+ int btrfs_lookup_csums_bitmap(struct btrfs_root *root, u64 start, u64 end,
+-			      u8 *csum_buf, unsigned long *csum_bitmap)
++			      u8 *csum_buf, unsigned long *csum_bitmap,
++			      bool search_commit)
+ {
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct btrfs_key key;
+@@ -688,6 +689,12 @@ int btrfs_lookup_csums_bitmap(struct btrfs_root *root, u64 start, u64 end,
+ 	if (!path)
+ 		return -ENOMEM;
+ 
++	if (search_commit) {
++		path->skip_locking = 1;
++		path->reada = READA_FORWARD;
++		path->search_commit_root = 1;
++	}
++
+ 	key.objectid = BTRFS_EXTENT_CSUM_OBJECTID;
+ 	key.type = BTRFS_EXTENT_CSUM_KEY;
+ 	key.offset = start;
+diff --git a/fs/btrfs/file-item.h b/fs/btrfs/file-item.h
+index 031225668434..64f4e5ca394a 100644
+--- a/fs/btrfs/file-item.h
++++ b/fs/btrfs/file-item.h
+@@ -55,7 +55,8 @@ int btrfs_lookup_csums_list(struct btrfs_root *root, u64 start, u64 end,
+ 			    struct list_head *list, int search_commit,
+ 			    bool nowait);
+ int btrfs_lookup_csums_bitmap(struct btrfs_root *root, u64 start, u64 end,
+-			      u8 *csum_buf, unsigned long *csum_bitmap);
++			      u8 *csum_buf, unsigned long *csum_bitmap,
++			      bool search_commit);
+ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
+ 				     const struct btrfs_path *path,
+ 				     struct btrfs_file_extent_item *fi,
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index 6a2cf754912d..65ed4f326fb9 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -2171,7 +2171,7 @@ static void fill_data_csums(struct btrfs_raid_bio *rbio)
+ 	}
+ 
+ 	ret = btrfs_lookup_csums_bitmap(csum_root, start, start + len - 1,
+-					rbio->csum_buf, rbio->csum_bitmap);
++					rbio->csum_buf, rbio->csum_bitmap, false);
+ 	if (ret < 0)
+ 		goto error;
+ 	if (bitmap_empty(rbio->csum_bitmap, len >> fs_info->sectorsize_bits))
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index e554a9904d2a..3beb11153dbf 100644
+index 3beb11153dbf..ca58a2e61b4c 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -70,6 +70,91 @@ struct scrub_ctx;
-  */
- #define BTRFS_MAX_MIRRORS (4 + 1)
- 
-+/* Represent one sector and its needed info to verify the content. */
-+struct scrub_sector_verification {
-+	bool is_metadata;
-+
-+	union {
-+		/*
-+		 * Csum pointer for data csum verification.
-+		 * Should point to a sector csum inside scrub_stripe::csums.
-+		 *
-+		 * NULL if this data sector has no csum.
-+		 */
-+		u8 *csum;
-+
-+		/*
-+		 * Extra info for metadata verification.
-+		 * All sectors inside a tree block shares the same
-+		 * geneartion.
-+		 */
-+		u64 generation;
-+	};
-+};
-+
-+/*
-+ * Represent one continuous range with a length of BTRFS_STRIPE_LEN.
-+ */
-+struct scrub_stripe {
-+	struct btrfs_block_group *bg;
-+
-+	struct page *pages[BTRFS_STRIPE_LEN / PAGE_SIZE];
-+	struct scrub_sector_verification *sectors;
-+
-+	struct btrfs_device *dev;
-+
-+	u64 logical;
-+	u64 physical;
-+
-+	u16 mirror_num;
-+
-+	/* Should be BTRFS_STRIPE_LEN / sectorsize. */
-+	u16 nr_sectors;
-+
-+	atomic_t pending_io;
-+	wait_queue_head_t io_wait;
-+
-+	/* Indicates which sectors are covered by extent items. */
-+	unsigned long extent_sector_bitmap;
-+
-+	/*
-+	 * Records the errors found after the initial read.
-+	 * This will be used for repair, as any sector with error needs repair
-+	 * (if found a good copy).
-+	 */
-+	unsigned long init_error_bitmap;
-+
-+	/*
-+	 * After reading another copy and verification, sectors can be repaired
-+	 * will be cleared.
-+	 */
-+	unsigned long current_error_bitmap;
-+
-+	/*
-+	 * The following error_bitmap are all for the initial read operation.
-+	 * After the initial read, we should not touch those error bitmaps, as
-+	 * they will later be used to do error reporting.
-+	 *
-+	 * Indicates IO errors during read.
-+	 */
-+	unsigned long io_error_bitmap;
-+
-+	/* For both metadata and data. */
-+	unsigned long csum_error_bitmap;
-+
-+	/*
-+	 * Indicates metadata specific errors.
-+	 * (basic sanity checks to transid errors)
-+	 */
-+	unsigned long meta_error_bitmap;
-+
-+	/*
-+	 * Checksum for the whole stripe if this stripe is inside a data block
-+	 * group.
-+	 */
-+	u8 *csums;
-+};
-+
- struct scrub_recover {
- 	refcount_t		refs;
- 	struct btrfs_io_context	*bioc;
-@@ -266,6 +351,68 @@ static void detach_scrub_page_private(struct page *page)
- #endif
+@@ -3548,6 +3548,140 @@ static int sync_write_pointer_for_zoned(struct scrub_ctx *sctx, u64 logical,
+ 	return ret;
  }
  
-+static void free_scrub_stripe(struct scrub_stripe *stripe)
++static void fill_one_extent_info(struct btrfs_fs_info *fs_info,
++				 struct scrub_stripe *stripe,
++				 u64 extent_start, u64 extent_len,
++				 u64 extent_flags, u64 extent_gen)
 +{
-+	int i;
++	u64 cur_logical;
 +
-+	if (!stripe)
-+		return;
++	for (cur_logical = max(stripe->logical, extent_start);
++	     cur_logical < min(stripe->logical + BTRFS_STRIPE_LEN,
++			       extent_start + extent_len);
++	     cur_logical += fs_info->sectorsize) {
++		const int nr_sector = (cur_logical - stripe->logical) >>
++				      fs_info->sectorsize_bits;
++		struct scrub_sector_verification *sector =
++			&stripe->sectors[nr_sector];
 +
-+	for (i = 0; i < BTRFS_STRIPE_LEN >> PAGE_SHIFT; i++) {
-+		if (stripe->pages[i])
-+			__free_page(stripe->pages[i]);
++		set_bit(nr_sector, &stripe->extent_sector_bitmap);
++		if (extent_flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
++			sector->is_metadata = true;
++			sector->generation = extent_gen;
++		}
 +	}
-+	kfree(stripe->sectors);
-+	kfree(stripe->csums);
-+	kfree(stripe);
 +}
 +
-+struct scrub_stripe *alloc_scrub_stripe(struct btrfs_fs_info *fs_info,
-+					struct btrfs_block_group *bg)
++/*
++ * Locate one stripe which has at least one extent in its range.
++ *
++ * Return 0 if found such stripe, and store its info into @stripe.
++ * Return >0 if there is no such stripe in the specified range.
++ * Return <0 for error.
++ */
++int scrub_find_fill_first_stripe(struct btrfs_root *extent_root,
++				 struct btrfs_root *csum_root,
++				 struct btrfs_block_group *bg,
++				 u64 logical_start, u64 logical_len,
++				 struct scrub_stripe *stripe)
 +{
-+	struct scrub_stripe *stripe;
++	struct btrfs_fs_info *fs_info = extent_root->fs_info;
++	const u64 logical_end = logical_start + logical_len;
++	struct btrfs_path path = { 0 };
++	u64 cur_logical = logical_start;
++	u64 stripe_end;
++	u64 extent_start;
++	u64 extent_len;
++	u64 extent_flags;
++	u64 extent_gen;
 +	int ret;
 +
-+	stripe = kzalloc(sizeof(*stripe), GFP_KERNEL);
-+	if (!stripe)
-+		return NULL;
++	memset(stripe->sectors, 0, sizeof(struct scrub_sector_verification) *
++				   stripe->nr_sectors);
++	bitmap_zero(&stripe->init_error_bitmap, stripe->nr_sectors);
++	bitmap_zero(&stripe->current_error_bitmap, stripe->nr_sectors);
 +
-+	stripe->nr_sectors = BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits;
-+	stripe->bg = bg;
++	/* The range must be inside the bg */
++	ASSERT(logical_start >= bg->start && logical_end <= bg->start + bg->length);
 +
-+	init_waitqueue_head(&stripe->io_wait);
-+	atomic_set(&stripe->pending_io, 0);
++	path.search_commit_root = 1;
++	path.skip_locking = 1;
 +
++	ret = find_first_extent_item(extent_root, &path, logical_start,
++				     logical_len);
++	/* Either error or not found. */
++	if (ret)
++		goto out;
++	get_extent_info(&path, &extent_start, &extent_len,
++			&extent_flags, &extent_gen);
++	cur_logical = max(extent_start, cur_logical);
 +
-+	ret = btrfs_alloc_page_array(BTRFS_STRIPE_LEN >> PAGE_SHIFT,
-+				     stripe->pages);
-+	if (ret < 0)
-+		goto cleanup;
++	/*
++	 * Round down to stripe boundary.
++	 *
++	 * The extra calculation against bg->start is to handle block groups
++	 * whose logical bytenr is not BTRFS_STRIPE_LEN aligned.
++	 */
++	stripe->logical = round_down(cur_logical - bg->start, BTRFS_STRIPE_LEN) +
++			  bg->start;
++	stripe_end = stripe->logical + BTRFS_STRIPE_LEN - 1;
 +
-+	stripe->sectors = kcalloc(stripe->nr_sectors,
-+				  sizeof(struct scrub_sector_verification),
-+				  GFP_KERNEL);
-+	if (!stripe->sectors)
-+		goto cleanup;
++	/* Fill the first extent info into stripe->sectors[] array. */
++	fill_one_extent_info(fs_info, stripe, extent_start, extent_len,
++			     extent_flags, extent_gen);
++	cur_logical = extent_start + extent_len;
 +
-+	if (bg->flags & BTRFS_BLOCK_GROUP_DATA) {
-+		stripe->csums = kzalloc(
-+			(BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits) *
-+			fs_info->csum_size, GFP_KERNEL);
-+		if (!stripe->csums)
-+			goto cleanup;
++	/* Fill the extent info for the remaining sectors. */
++	while (cur_logical <= stripe_end) {
++		ret = find_first_extent_item(extent_root, &path, cur_logical,
++					     stripe_end - cur_logical + 1);
++		if (ret < 0)
++			goto out;
++		if (ret > 0) {
++			ret = 0;
++			break;
++		}
++		get_extent_info(&path, &extent_start, &extent_len,
++				&extent_flags, &extent_gen);
++		fill_one_extent_info(fs_info, stripe, extent_start, extent_len,
++				     extent_flags, extent_gen);
++		cur_logical = extent_start + extent_len;
 +	}
-+	return stripe;
-+cleanup:
-+	free_scrub_stripe(stripe);
-+	return NULL;
++
++	/* Now fill the data csum. */
++	if (bg->flags & BTRFS_BLOCK_GROUP_DATA) {
++		int sector_nr;
++		unsigned long csum_bitmap = 0;
++
++		/* Csum space should have already been allocated. */
++		ASSERT(stripe->csums);
++
++		/*
++		 * Our csum bitmap should be large enough, as BTRFS_STRIPE_LEN
++		 * should contain at most 16 sectors.
++		 */
++		ASSERT(BITS_PER_LONG >=
++		       BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits);
++
++		ret = btrfs_lookup_csums_bitmap(csum_root, stripe->logical,
++						stripe_end, stripe->csums,
++						&csum_bitmap, true);
++		if (ret < 0)
++			goto out;
++		if (ret > 0)
++			ret = 0;
++
++		for_each_set_bit(sector_nr, &csum_bitmap, stripe->nr_sectors) {
++			stripe->sectors[sector_nr].csum = stripe->csums +
++				sector_nr * fs_info->csum_size;
++		}
++	}
++out:
++	btrfs_release_path(&path);
++	return ret;
 +}
 +
-+void wait_scrub_stripe(struct scrub_stripe *stripe)
-+{
-+	wait_event(stripe->io_wait, atomic_read(&stripe->pending_io) == 0);
-+}
 +
- static struct scrub_block *alloc_scrub_block(struct scrub_ctx *sctx,
- 					     struct btrfs_device *dev,
- 					     u64 logical, u64 physical,
+ /*
+  * Scrub one range which can only has simple mirror based profile.
+  * (Including all range in SINGLE/DUP/RAID1/RAID1C*, and each stripe in
 diff --git a/fs/btrfs/scrub.h b/fs/btrfs/scrub.h
-index 7639103ebf9d..a035375083f0 100644
+index a035375083f0..ce402ad84c17 100644
 --- a/fs/btrfs/scrub.h
 +++ b/fs/btrfs/scrub.h
-@@ -13,4 +13,12 @@ int btrfs_scrub_cancel_dev(struct btrfs_device *dev);
- int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
- 			 struct btrfs_scrub_progress *progress);
+@@ -17,8 +17,14 @@ int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
+  * The following functions are temporary exports to avoid warning on unused
+  * static functions.
+  */
++struct scrub_stripe;
+ struct scrub_stripe *alloc_scrub_stripe(struct btrfs_fs_info *fs_info,
+ 					struct btrfs_block_group *bg);
+ void wait_scrub_stripe(struct scrub_stripe *stripe);
++int scrub_find_fill_first_stripe(struct btrfs_root *extent_root,
++				 struct btrfs_root *csum_root,
++				 struct btrfs_block_group *bg,
++				 u64 logical_start, u64 logical_len,
++				 struct scrub_stripe *stripe);
  
-+/*
-+ * The following functions are temporary exports to avoid warning on unused
-+ * static functions.
-+ */
-+struct scrub_stripe *alloc_scrub_stripe(struct btrfs_fs_info *fs_info,
-+					struct btrfs_block_group *bg);
-+void wait_scrub_stripe(struct scrub_stripe *stripe);
-+
  #endif
 -- 
 2.39.0
