@@ -2,98 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A90466B4CC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 00:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5910466B5DA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 04:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbjAOXiI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Jan 2023 18:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60704 "EHLO
+        id S231720AbjAPDJA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 15 Jan 2023 22:09:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbjAOXiH (ORCPT
+        with ESMTP id S231185AbjAPDI7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Jan 2023 18:38:07 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE381C141;
-        Sun, 15 Jan 2023 15:38:03 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mxm3Q-1oWO8z3y06-00zEmx; Mon, 16
- Jan 2023 00:37:56 +0100
-Message-ID: <e103b9fb-9d73-efb5-2f70-9537e943fad0@gmx.com>
-Date:   Mon, 16 Jan 2023 07:37:50 +0800
+        Sun, 15 Jan 2023 22:08:59 -0500
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DFB34485
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 19:08:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1673838538; x=1705374538;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BldiiUdCZl/EnQ4f6uidcKsmRnYf5WZuim53wnmUVKk=;
+  b=XMSYr4pXgf8ddNdHESqUATCRb2Slhyj5ZRV8imZOQ+3Jyv4pGwTNxOIF
+   QP4hoZ1k2H5P4CIRAPVWjXPs4UE8PFFnKXw4ZWZImeV37YiQnPftOXSb+
+   TK3QqGRxdmkvr7Lj+oy+9J5LPw9AgIGmLTk9hRIpjOaT7YAhBpZU8a+nD
+   TGWZld3TM1JFkCfZrsjNSJ8DAj8/Lbs/hNSj+ewkvyDTV24DHw8UgbhqI
+   j7zAbwcZh9QbZ1KTI0UkpYcRbZNCUsuRulFtvU6yRrW2pc8lf0f4yrdPo
+   RrvPHy1P5FGBUz20icbR2Lmtb9UZ5SV7tDngxHXZsw/kcAfGonE4dK2Oz
+   g==;
+X-IronPort-AV: E=Sophos;i="5.97,219,1669046400"; 
+   d="scan'208";a="220723916"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Jan 2023 11:08:58 +0800
+IronPort-SDR: 0CCyZbmSmpnTA2xDZin4bFvNL/j4DY0+Vn+D43UcwDhjp1KHPP8hXyh0APcHpFFXsP7O/3EMu3
+ IbnOaqK6+/JjNqC8GE47sumc1HLbRR1fqK8L/fyu3+TSByie81l0nDBlD1Y1LVBR8M7s+bjucU
+ UO4Mytc5HqpiTMM8sE5lWUMUP3seHkpccbK/xl08mDRpdCtoKYOVikAr8ZHRWqsugBtCB/Bvjf
+ xPijNeqjzWt3QrPSfrhzaay9TAo1ZX6cBgzjDhqIDcJ4+yiTgL3LQtXaVZ7I50YDFql5SqCTl4
+ BEM=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Jan 2023 18:26:41 -0800
+IronPort-SDR: tiKi0SxJA277v/OkjNc1eUj50HoNfhRHY1HZPA6QVKpcOgGje4dZJZ4qjPONyqLHS3WHl8CYN6
+ x0mj87e+/vmFpv7XoxT0Wc51N2XoCfmWNV4am6Ye8cWUdWsiUl/gWzhwsmnfW+5VLeg5awGiGF
+ pAE/YUzwrv48BOpmzg+RhPEZNrpjoM8u/tA0ufjMU5v77eSI1TEedSuQ1MQZXxqsBQ8p8/QHzw
+ rsut1YdejHah04824bERCYIJFhpnO5eiruPIvU/wErr/VK7A7YQKIHN30W6IpWbF21g+b5D8xA
+ ryQ=
+WDCIronportException: Internal
+Received: from thd002594.ad.shared (HELO naota-xeon.wdc.com) ([10.225.54.84])
+  by uls-op-cesaip02.wdc.com with ESMTP; 15 Jan 2023 19:08:58 -0800
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs-progs: mkfs: check blkid version
+Date:   Mon, 16 Jan 2023 12:08:53 +0900
+Message-Id: <20230116030853.3606361-1-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH] btrfs: raid56: Fix stripes if vertical errors are found
-To:     Tanmay Bhushan <007047221b@gmail.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230115203215.8115-1-007047221b@gmail.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230115203215.8115-1-007047221b@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:rnL2+T8lcD94bMbnw1He82Fs5xatHjKG2j5yrQ7YD/75luGXITT
- d1PZGbHibcBUA+LwFBQE2P1dGzdK7llPWQ9qqr1gFKk4wq2ct8VhrDMv05Whee9aU5i0UBV
- SGQCZHb44HqrlwcScoImW9UyMvtK8k/8V+rsdO0rK8zYcAY2VDlX+QlkWHmcx5jA2GB+zBV
- 18tIWT0HD+gt0tky4+k8w==
-UI-OutboundReport: notjunk:1;M01:P0:vl+AYKuQLNo=;yBhaS1EWToj6qNpU0Qt5u9pfC0u
- 3FUEgFbG1PO5c45EGYc399Mz0Z6aT/vvnM79RaOE0dW/jnjnJKtdH+v8lMzNaUK6YDzHoYekF
- 99t7gWJ/WYR4m7XaW5QFNSP6gYoT6sJWcRnZgk6x7oKqTCaNi55kf9idqmKIZ0lUX6I4blAmP
- i2oflay4NefRG7i1SL63bLbe8sivavGpGoHvCxKeGggI5LqX729AfZlHQ5ltO07UNrEXK5m94
- WcHqwO61iciyhmbATfWow7v5OidIBXOe+WzDeujzDakmyqwD02lNgJW+J3gEEIO+MjsYZr/AH
- ibkiP4hKp1jWOsH5khmqkbsVAtrbQFqc7phAJTfdkdo+LJIKobOChkAMNmgBqBu+cXDrcGTFg
- Q3EUiL+18grnCKErKY4aVJiQahBFGfumBoAcz1iNnUo3VT6tY5f1Oljd0TenmOUAZDutRTo70
- Du3oPS2gGI66W3G7NXnwZRNPZgIpsTaB81oQH8l0MUEmskXf5lOmyPYRLnZPcN0kN/IhEOMqw
- vFXfscLzg3nl+DoTDAbTeueuIH5p+HW96HGSW23UVhvcXNHSYR/62JSfLg+a6VQT4gBn6jw8o
- cNW6a5YFtwlW5SpJWdl3RZcpoSqdc72Q/Mu4xoQPF3/Re0+DN8TEpfy8N7ZH5tywZuV6CKEWF
- wGvz/BJNYOk9xGij4CBHQww5Fnlcn+YVLPxYsR7n2lRrQ4bbv1j/UJX6Aexv1w+DF87TLS4zy
- KbEHEWyWM92TBRw+p1vgQ18Avz1FC3gcXE2YL9KxOMQfI8ifw/XIXVzpDNBYDFclG+bj32I1L
- US2n+akDpAHbllEqltnhICpzW0WfS/5WWRxP4hUzV7/1mtOqpkY6kC5JUNcZ9iO044yWtsNZZ
- EBAus/UCay89G7QWKj7Syyh85QBhtJIiTYzPk5CqP+MQmlWY5VUnL/KNH/p+k9ruXbMgER46X
- qEjTv6Y6Kz6guhhQPFBK+tbE4Vk=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Prior to libblkid-2.38, it fails to detect zoned mode's superblock location
+and cause "blkid" to fail to detect btrfs properly. This patch suggets to
+upgrade libblkid if it detects <libblkid-2.38.
 
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ mkfs/main.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-On 2023/1/16 04:32, Tanmay Bhushan wrote:
-> We take two stripe numbers if vertical errors are found.
-> In case it is just a pstripe it does not matter but in
-> case of raid 6 it matters a both stripes need to be fixed.
-> 
-> Signed-off-by: Tanmay Bhushan <007047221b@gmail.com>
+diff --git a/mkfs/main.c b/mkfs/main.c
+index df091b16760c..e0cb6a8c2bff 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -28,6 +28,7 @@
+ #include <string.h>
+ #include <pthread.h>
+ #include <uuid/uuid.h>
++#include <blkid/blkid.h>
+ #include "kernel-lib/list.h"
+ #include "kernel-lib/list_sort.h"
+ #include "kernel-lib/rbtree.h"
+@@ -1346,6 +1347,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 		exit(1);
+ 	}
+ 	if (opt_zoned) {
++		const int blkid_version =  blkid_get_library_version(NULL, NULL);
++
+ 		if (source_dir_set) {
+ 			error("the option -r and zoned mode are incompatible");
+ 			exit(1);
+@@ -1360,6 +1363,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 			error("cannot enable RAID5/6 in zoned mode");
+ 			exit(1);
+ 		}
++
++		if (blkid_version < 2380)
++			warning("libblkid < 2.38 does not support zoned mode's superblock location, update recommended");
+ 	}
+ 
+ 	if (btrfs_check_nodesize(nodesize, sectorsize, &features))
+-- 
+2.39.0
 
-Oh, my bad, typical copy-and-paste error.
-
-Should go in to the next rc.
-
-Fixes: 7a3150723061 ("btrfs: raid56: do data csum verification during 
-RMW cycle")
-
-Thanks,
-Qu
-> ---
->   fs/btrfs/raid56.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index 6a2cf754912d..f35898a78b16 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -1886,7 +1886,7 @@ static int recover_vertical(struct btrfs_raid_bio *rbio, int sector_nr,
->   		sector->uptodate = 1;
->   	}
->   	if (failb >= 0) {
-> -		ret = verify_one_sector(rbio, faila, sector_nr);
-> +		ret = verify_one_sector(rbio, failb, sector_nr);
->   		if (ret < 0)
->   			goto cleanup;
->   
