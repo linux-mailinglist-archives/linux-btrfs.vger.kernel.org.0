@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE16E66B7BC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 08:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E48B66B7BE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 08:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbjAPHEv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Jan 2023 02:04:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37994 "EHLO
+        id S231782AbjAPHEx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Jan 2023 02:04:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbjAPHEs (ORCPT
+        with ESMTP id S231920AbjAPHEt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Jan 2023 02:04:48 -0500
+        Mon, 16 Jan 2023 02:04:49 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59695B479
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 23:04:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9F98A5B
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 23:04:48 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1ABC234F25
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:46 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1DD1334F2B
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1673852686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1673852687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=o2N7M979RzBZoVVqxnRmzNkuq47mW6R8m9ucB/z5RS4=;
-        b=R+p0xNPc8DU/Y7Mgu/N3mvE/DBUJsWc7xp/u3zsdqAvGfL1FePITdYP/z9iF4Jr0cBH9rN
-        6+0Qv15OPmIAdc2uSsIgxKVSmXoZp2hsWFoFHdS0tlyIB4gJAftA6WxooFaW4hzEBf7xJB
-        CLKRwLg6LYWyxvCQ3bElLQNSbb5AhHk=
+        bh=6NsugeZV+TGFduXrPEdFye4MxifUA995zVwXyDi5+Yw=;
+        b=N9X622uirx6eo95ZYbLOgybE9pcgPWvz6fq/wdKoeJ0dmgHlRFpyGf7iRb9LQG7M4/ZDlI
+        1YcPsKD/QA2OdAB/R8TtUCJbjZa7UASYIbn148AT+Y6iLRRjcjDopPvUMD9sA8qLbVkORN
+        m39dGuembxMeDdmcpPfdqOLwBegA6EA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 75F9E138FA
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:45 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 79594138FA
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id gDzEEA33xGMfZwAAMHmgww
+        id SFtuEQ73xGMfZwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:45 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:46 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 06/11] btrfs: scrub: introduce a helper to verify one metadata
-Date:   Mon, 16 Jan 2023 15:04:17 +0800
-Message-Id: <5d3874daa01edd168470a4c4e09d9ec2cd4954c0.1673851704.git.wqu@suse.com>
+Subject: [PATCH 07/11] btrfs: scrub: introduce a helper to verify one scrub_stripe
+Date:   Mon, 16 Jan 2023 15:04:18 +0800
+Message-Id: <d3997ba6e84800e087d116a34039d0fce131f538.1673851704.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <cover.1673851704.git.wqu@suse.com>
 References: <cover.1673851704.git.wqu@suse.com>
@@ -60,140 +60,130 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The new helper, scrub_verify_one_metadata(), is almost the same as
-scrub_checksum_tree_block().
+The new helper, scrub_verify_stripe() is not much different than
+the old scrub way.
 
-The difference is in how we grab the pages.
+The difference is mostly in how we grab pages and their offsets.
+
+Currently the helper will only verify and update the error bitmaps, we
+don't yet output any error message for data verification, as that can only
+be done after either we repaired the stripe or exhausted all the mirrors.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 103 +++++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/scrub.h |   1 +
- 2 files changed, 104 insertions(+)
+ fs/btrfs/scrub.c | 81 +++++++++++++++++++++++++++++++++++++++++++++++-
+ fs/btrfs/scrub.h |  2 +-
+ 2 files changed, 81 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index ca58a2e61b4c..ced98216f69e 100644
+index ced98216f69e..656b5395adf5 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -2166,6 +2166,109 @@ static int scrub_checksum_data(struct scrub_block *sblock)
- 	return sblock->checksum_error;
+@@ -2183,7 +2183,7 @@ static unsigned int scrub_stripe_get_page_offset(struct scrub_stripe *stripe,
+ 	return offset_in_page(sector_nr << fs_info->sectorsize_bits);
  }
  
-+static struct page *scrub_stripe_get_page(struct scrub_stripe *stripe,
-+					  int sector_nr)
+-void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
++static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
+ {
+ 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
+ 	const unsigned int sectors_per_tree = fs_info->nodesize >>
+@@ -2269,6 +2269,85 @@ void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
+ 	}
+ }
+ 
++static void scrub_verify_one_sector(struct scrub_stripe *stripe,
++				    int sector_nr)
 +{
 +	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
-+	int page_index = sector_nr << fs_info->sectorsize_bits >> PAGE_SHIFT;
++	struct scrub_sector_verification *sector = &stripe->sectors[sector_nr];
++	const unsigned int sectors_per_tree = fs_info->nodesize >>
++					      fs_info->sectorsize_bits;
++	struct page *page = scrub_stripe_get_page(stripe, sector_nr);
++	unsigned int pgoff = scrub_stripe_get_page_offset(stripe, sector_nr);
 +
-+	return stripe->pages[page_index];
++	ASSERT(sector_nr >= 0 && sector_nr < stripe->nr_sectors);
++
++	/* Sector not utilized, skip it. */
++	if (!test_bit(sector_nr, &stripe->extent_sector_bitmap))
++		return;
++
++	/* IO error, no need to check. */
++	if (test_bit(sector_nr, &stripe->io_error_bitmap))
++		return;
++
++	/* Metadata, verify the full tree block. */
++	if (sector->is_metadata) {
++		/*
++		 * Check if the tree block crosses the stripe boudary.
++		 * If crossed the boundary, we can not verify it but only
++		 * gives a warning.
++		 *
++		 * This can only happen in very old fs where chunks are not
++		 * ensured to be stripe aligned.
++		 */
++		if (unlikely(sector_nr + sectors_per_tree > stripe->nr_sectors)) {
++			btrfs_warn_rl(fs_info,
++			"tree block at %llu crosses stripe boundary %llu",
++				      stripe->logical +
++				      (sector_nr << fs_info->sectorsize_bits),
++				      stripe->logical);
++			return;
++		}
++		scrub_verify_one_metadata(stripe, sector_nr);
++		return;
++	}
++
++	/* Data is much easier, we just verify the data csum (if we have). */
++	if (sector->csum) {
++		int ret;
++		u8 csum_buf[BTRFS_CSUM_SIZE];
++
++		ret = btrfs_check_sector_csum(fs_info, page, pgoff, csum_buf,
++					      sector->csum);
++		if (ret < 0)
++			set_bit(sector_nr, &stripe->csum_error_bitmap);
++	}
 +}
 +
-+static unsigned int scrub_stripe_get_page_offset(struct scrub_stripe *stripe,
-+						 int sector_nr)
-+{
-+	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
-+
-+	return offset_in_page(sector_nr << fs_info->sectorsize_bits);
-+}
-+
-+void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
++void scrub_verify_one_stripe(struct scrub_stripe *stripe)
 +{
 +	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
 +	const unsigned int sectors_per_tree = fs_info->nodesize >>
 +					      fs_info->sectorsize_bits;
-+	const u64 logical = stripe->logical + (sector_nr << fs_info->sectorsize_bits);
-+	const struct page *first_page = scrub_stripe_get_page(stripe, sector_nr);
-+	const unsigned int first_off = scrub_stripe_get_page_offset(stripe, sector_nr);
-+	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
-+	u8 on_disk_csum[BTRFS_CSUM_SIZE];
-+	u8 calculated_csum[BTRFS_CSUM_SIZE];
-+	struct btrfs_header *h;
-+	int i;
++	int sector_nr;
 +
++	for_each_set_bit(sector_nr, &stripe->extent_sector_bitmap,
++			 stripe->nr_sectors) {
++		scrub_verify_one_sector(stripe, sector_nr);
++		if (stripe->sectors[sector_nr].is_metadata)
++			sector_nr += sectors_per_tree - 1;
++	}
 +	/*
-+	 * Here we don't have a good way to attach the pages (and subpages)
-+	 * to a dummy extent buffer, thus we have to directly grab the members
-+	 * from pages.
++	 * All error bitmap updated. OR all errors into the
++	 * initial_error_bitmap for later repair runs.
 +	 */
-+	h = (struct btrfs_header *)(page_address(first_page) + first_off);
-+	memcpy(on_disk_csum, h->csum, fs_info->csum_size);
-+
-+	if (logical != btrfs_stack_header_bytenr(h)) {
-+		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
-+			   sectors_per_tree);
-+		btrfs_warn_rl(fs_info,
-+		"tree block %llu mirror %u has bad bytenr, has %llu want %llu",
-+			      logical, stripe->mirror_num,
-+			      btrfs_stack_header_bytenr(h), logical);
-+		return;
-+	}
-+	if (memcmp(h->fsid, fs_info->fs_devices->fsid, BTRFS_FSID_SIZE)) {
-+		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
-+			   sectors_per_tree);
-+		btrfs_warn_rl(fs_info,
-+		"tree block %llu mirror %u has bad fsid, has %pU want %pU",
-+			      logical, stripe->mirror_num,
-+			      h->fsid, fs_info->fs_devices->fsid);
-+		return;
-+	}
-+	if (memcmp(h->chunk_tree_uuid, fs_info->chunk_tree_uuid,
-+		   BTRFS_UUID_SIZE)) {
-+		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
-+			   sectors_per_tree);
-+		btrfs_warn_rl(fs_info,
-+		"tree block %llu mirror %u has bad chunk tree uuid, has %pU want %pU",
-+			      logical, stripe->mirror_num,
-+			      h->chunk_tree_uuid, fs_info->chunk_tree_uuid);
-+		return;
-+	}
-+
-+	/* Now check tree block csum. */
-+	shash->tfm = fs_info->csum_shash;
-+	crypto_shash_init(shash);
-+	crypto_shash_update(shash, page_address(first_page) + first_off +
-+			    BTRFS_CSUM_SIZE, fs_info->sectorsize - BTRFS_CSUM_SIZE);
-+
-+	for (i = sector_nr + 1; i < sector_nr + sectors_per_tree; i++) {
-+		struct page *page = scrub_stripe_get_page(stripe, i);
-+		unsigned int page_off = scrub_stripe_get_page_offset(stripe, i);
-+
-+		crypto_shash_update(shash, page_address(page) + page_off,
-+				    fs_info->sectorsize);
-+	}
-+	crypto_shash_final(shash, calculated_csum);
-+	if (memcmp(calculated_csum, on_disk_csum, fs_info->csum_size)) {
-+		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
-+			   sectors_per_tree);
-+		btrfs_warn_rl(fs_info,
-+		"tree block %llu mirror %u has bad csum, has " CSUM_FMT " want " CSUM_FMT,
-+			      logical, stripe->mirror_num,
-+			      CSUM_FMT_VALUE(fs_info->csum_size, on_disk_csum),
-+			      CSUM_FMT_VALUE(fs_info->csum_size, calculated_csum));
-+		return;
-+	}
-+	if (stripe->sectors[sector_nr].generation != btrfs_stack_header_generation(h)) {
-+		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
-+			   sectors_per_tree);
-+		btrfs_warn_rl(fs_info,
-+		"tree block %llu mirror %u has bad geneartion, has %llu want %llu",
-+			      logical, stripe->mirror_num,
-+			      btrfs_stack_header_generation(h),
-+			      stripe->sectors[sector_nr].generation);
-+	}
++	bitmap_or(&stripe->init_error_bitmap, &stripe->io_error_bitmap,
++		  &stripe->csum_error_bitmap, stripe->nr_sectors);
++	bitmap_or(&stripe->init_error_bitmap, &stripe->init_error_bitmap,
++		  &stripe->meta_error_bitmap, stripe->nr_sectors);
++	bitmap_copy(&stripe->current_error_bitmap, &stripe->init_error_bitmap,
++		    stripe->nr_sectors);
 +}
 +
  static int scrub_checksum_tree_block(struct scrub_block *sblock)
  {
  	struct scrub_ctx *sctx = sblock->sctx;
 diff --git a/fs/btrfs/scrub.h b/fs/btrfs/scrub.h
-index ce402ad84c17..d9f869fd4d7c 100644
+index d9f869fd4d7c..73fa6744a6a7 100644
 --- a/fs/btrfs/scrub.h
 +++ b/fs/btrfs/scrub.h
-@@ -26,5 +26,6 @@ int scrub_find_fill_first_stripe(struct btrfs_root *extent_root,
+@@ -26,6 +26,6 @@ int scrub_find_fill_first_stripe(struct btrfs_root *extent_root,
  				 struct btrfs_block_group *bg,
  				 u64 logical_start, u64 logical_len,
  				 struct scrub_stripe *stripe);
-+void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr);
+-void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr);
++void scrub_verify_one_stripe(struct scrub_stripe *stripe);
  
  #endif
 -- 
