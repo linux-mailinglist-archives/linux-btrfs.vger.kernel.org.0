@@ -2,99 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAFC66B6F9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 06:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D730366B7B7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Jan 2023 08:04:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231760AbjAPFuD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Jan 2023 00:50:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
+        id S231906AbjAPHEn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Jan 2023 02:04:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbjAPFt7 (ORCPT
+        with ESMTP id S231890AbjAPHEm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Jan 2023 00:49:59 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C2C9006
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 21:49:57 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mw9UK-1oPBix12ma-00s7uj for
- <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 06:49:56 +0100
-Message-ID: <91f22f9d-26e6-e649-7323-26352b2ffb62@gmx.com>
-Date:   Mon, 16 Jan 2023 13:49:53 +0800
+        Mon, 16 Jan 2023 02:04:42 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A9B7EEB
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jan 2023 23:04:41 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 07B3E67470
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1673852680; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=cDDotkJQDpIjWHRueH3H9sSRvepzLJkKm0V5o3jS7Vg=;
+        b=AUYppykMYt9wx78X3GcA5dfxQpeoVNNVos+IrqYIOs/xARwrT55dSmT5JPq3DrUtqQqsat
+        /YxjXDXNi0bs88iWRaac4wG9wcfn8L4s4RjszuNkjry/dsu45BtpzmUvzBDE2WWCBl2KU8
+        mp06C0fxqLX65BKZJNJnnLi/pAlrV7o=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6456A138FA
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0oVXDAf3xGMfZwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Jan 2023 07:04:39 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/11] btrfs: scrub: use a more reader friendly code to implement scrub_simple_mirror()
+Date:   Mon, 16 Jan 2023 15:04:11 +0800
+Message-Id: <cover.1673851704.git.wqu@suse.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Content-Language: en-US
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Deadlock scenario for __btrfs_map_lock(), and remove the extra mirror
- (from target device) in the future.
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:1rBMTRcJ/ZOBhmlQ6yUUecORiAEBC/M4NWNoJU/Kmud6Kfrp1oG
- Rn/zXXkpoBrZtz9mI0JPznEGcY+KlTuVG8G8igPI3270GYRbmo3ZBqZMxujPW/578O9bRj9
- qi3idDTNg1hYV4ZuDnriwEYF7nYJIrB1GHIizUNhs3Fa3cf4YKG+PUX6UiaDX7PvoPqnSh6
- QzEXxfZKew0ZcpyWohF9g==
-UI-OutboundReport: notjunk:1;M01:P0:1HQDBOJqywA=;TxgxjuKsInTwx2tsjRIaVdcJWJI
- CS1Yb4uwWK/S+LTyNF91pAQ0/DUECLm2MfD6xN8kJq9PX7K1qZGXNBB15Uxw7xzYMG8Xv3wVg
- iiEtvCURWHNBbXzHoUExF5dyx9D3B+vu+oWC5GG41PxEKpXoQczDoBbihvbRmC9z9GNozDne7
- v/oECDdcERcelgtK9c4eSzatk0dfUjWsRgMoz4YzJnKaGuwoyQ78hM9lgWOAu4M3tT7EW3cKX
- 0TUKCU9HQkHPl7ndNlw51pCNTrlhJHqJpqpZcPXLZlslMMkPEZEjxTlhVc1u3tI8GzcLers8C
- AwxUsAB4cz7RKmXQ/ubMRN6P8YXPFWIqOkJpXWQhJLWaJYJ0wypDKPFqPBAiN32iMHEWJNB6s
- fXVZx7t/OM98pSULZmy0mZTlW0m89PBhahjetJYVVy1PHv0+bezR8xNtoxpZJx8IBuEgiaLb/
- 37e/2Q9FAY42KEGdtTNOQVlTx2GjqllBJ4OlCwEbMwlQa7wYz59lBZBzhKfux3s9W0NKzymTK
- 0I5RSNPXcihPuVMT88wktL0QgUQpkDDped4lrY8mhS1LXKuJOC8NZJqz3yoBnXJkNQq/Nk+XH
- W1zIYcCm+g1kKqMuCyhDGu0ACcugqOlsVv+x6NdXkIa1OIXkULsPIFmkgTWWhID0LpYDFA7z+
- 6djxgLD595RJ+/yMH2yKvPIc9WoERbpdI9v1XCLkbp1sUZM+KjyXFx6EYIYUZbNzXg256+RDq
- sWqhLxMbVtbmfVKF/7fMuMUAErThQ6skLH4WzDSbubNU+DrThgSb2KCyW7wGPGwpMsz1YONDv
- 7x0zUD43LheHccO7cdYCJm9a9MbPyY+M1XrwVOt6fNsWIfHp3Fd1OHR9nB9GuQM6gio1ySSLP
- D/apLxiKsHZ6lNOf8/4W62d/4pxeq6obO1DT0vaIBMu6dcjGT6QSuwWx/gYo7glA5cBX/fX9g
- 0Q8Mr1yApNmZ/C5Lj40PDtb5eHY=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+This is the formal version of the previous PoC patchset "btrfs: scrub:
+rework to get rid of the complex bio formshaping"
 
-During my scrub rework (read path using btrfs_submit_bio()), I hit a 
-deadlock situation which can happen in replace.
+The idea is pretty straight-forward for scrub:
 
-Although this situation can only happen when calling btrfs_map_block() 
-during replace, currently we didn't do that inside scrub, so it's not 
-possible to hit yet.
+- Fetch the extent info and csum for the whole BTRFS_STRIPE_LEN range
 
-But it should be possible if we trigger read-repair during replace.
+- Read the full BTRFS_STRIPE_LEN range
 
-This happens in the following sequence:
+- Verify the contents using the extent info and csum at endio time
 
-1. We found the error in the sector
+- Wait for above BTRFS_STRIPE_LEN range read to finish.
 
-2. We need to read from the next mirror
+- If we have failed sectors, read extra mirrors to repair them.
 
-3. We can use the extra mirror from replace target device
+- If we have failed sectors, writeback the repaired ones.
 
-4. We call btrfs_map_block() for the extra mirror
-    The the following call chain happens:
+- If we're doing dev-replace, writeback all good sectors to the target
+  device.
 
-    __btrfs_map_block(mirror_num = 2)
-    |- down_read(&dev_replace->rwsem);
-    `- get_extra_mirror_from_replace()
-       `- __btrfs_map_block()
-          `- down_read(&dev_replace->rwsem);
+Although the workflow is still mostly the same as the old scrub
+infrastructure, the implementation goes submit-and-wait method.
 
-I can understand removing the ability of using replace device as a 
-target may be too large a change.
+Thus it provides a very straight-forward code basis:
 
-But we should at least not call __btrfs_map_block() inside 
-__btrfs_map_block()...
+		scrub_reset_stripe(stripe);
+		ret = scrub_find_fill_first_stripe(extent_root, csum_root, bg,
+				cur_logical, logical_end - cur_logical, stripe);
+		stripe->physical = physical + stripe->logical - logical_start;
+		scrub_throttle_dev_io(sctx, device, BTRFS_STRIPE_LEN);
+		scrub_submit_read_one_stripe(stripe);
+		wait_scrub_stripe(stripe);
+		scrub_repair_one_stripe(stripe);
+		scrub_write_repaired_sectors(sctx, stripe);
+		scrub_report_stripe_errors(sctx, stripe);
+		if (sctx->is_dev_replace)
+			scrub_write_replace_sectors(sctx, stripe);
+		cur_logical = stripe->logical + BTRFS_STRIPE_LEN;
 
+Thus it covers all the core logic in one function.
 
-In the long run, I'd say using replace target device as an extra mirror 
-is not that beneficial, and can be removed for cleaner code.
+By contrast the old code goes various workqueue, endio function jumps,
+and extra bio formshaping.
 
-Thanks,
-Qu
+Currently the patchset only covers profiles other than RAID56 parity
+stripes.
+Thus old infrastructure is still kept for RAID56 parity scrub usage.
+
+But still the patchset is already large enough for review.
+
+The current patchset can already pass all scrub and replace tests.
+
+[BENCHMARK]
+
+However there is a cost.
+Since our block size is limited to 64K, it's much smaller block size
+compared to the original one.
+
+Thus for the worst case scenario (all data are continuous, and the
+profiles is RAID0 for extra splits), the scrub performance got a 20%
+drop:
+
+Old:
+ 
+ Duration:         0:00:19
+ Total to scrub:   10.52GiB
+ Rate:             449.50MiB/s
+
+New:
+
+ Duration:         0:00:24
+ Total to scrub:   10.52GiB
+ Rate:             355.86MiB/s
+
+The benchmark is using an SATA SSD directly attached to the VM.
+
+[NEED FEEDBACK]
+
+Is 20% drop perf acceptable?
+
+I have seen some customers asking for ways to slow down scrub,
+but not to speed it up.
+Thus I'm not sure if a native performance drop is a curse or a bless.
+
+Any if needed, I can enlarge the block size by submitting multiple
+stripes instead.
+But in that case, we will need some extra code to do multiple stripe
+scrub.
+
+Qu Wenruo (11):
+  btrfs: remove unused @path inside scrub_stripe()
+  btrfs: remove @root and @csum_root arguments from
+    scrub_simple_mirror()
+  btrfs: scrub: use dedicated super block verification function to scrub
+    one super block
+  btrfs: scrub: introduce the structure for new BTRFS_STRIPE_LEN based
+    interface
+  btrfs: scrub: introduce a helper to find and fill the sector info for
+    a scrub_stripe
+  btrfs: scrub: introduce a helper to verify one metadata
+  btrfs: scrub: introduce a helper to verify one scrub_stripe
+  btrfs: scrub: introduce the repair functionality for scrub_stripe
+  btrfs: scrub: introduce a writeback helper for scrub_stripe
+  btrfs: scrub: introduce error reporting functionality for scrub_stripe
+  btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe
+    infrastructure
+
+ fs/btrfs/file-item.c |    9 +-
+ fs/btrfs/file-item.h |    3 +-
+ fs/btrfs/raid56.c    |    2 +-
+ fs/btrfs/scrub.c     | 1521 ++++++++++++++++++++++++++++++------------
+ fs/btrfs/volumes.c   |   10 +-
+ fs/btrfs/volumes.h   |    2 +
+ 6 files changed, 1111 insertions(+), 436 deletions(-)
+
+-- 
+2.39.0
+
