@@ -2,115 +2,226 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D94A66E227
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jan 2023 16:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D1666E38B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jan 2023 17:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232809AbjAQP3F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Jan 2023 10:29:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
+        id S232544AbjAQQ1c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Jan 2023 11:27:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234036AbjAQP2j (ORCPT
+        with ESMTP id S231278AbjAQQ12 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Jan 2023 10:28:39 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9382212B
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Jan 2023 07:28:38 -0800 (PST)
+        Tue, 17 Jan 2023 11:27:28 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3353FF32
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Jan 2023 08:27:18 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6ACD9387F9;
-        Tue, 17 Jan 2023 15:28:37 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 15F783895B;
+        Tue, 17 Jan 2023 16:26:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1673969317;
+        t=1673972764;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Jny8456ACj//FLLL7NFhq70h9Yo37GEnc4A+xcV/GRU=;
-        b=AMAbElCsMVTp5Aby950ySSRcU00qGDxcWeu0mD5Q+3UmNA+H0/aXgS6bySKhyEoYUmN3Hi
-        oRzydLcKT46IfRi8+7ECWkLozskh96Nr7CbRi50gKlBtpsox/0fa9O7tEFDt2PvSWhj5w6
-        eD30vTo2NFYyiC4I9dJCkqzcuV5dn8w=
+        bh=aOXQT7wuSha7tbs1gi/X6QNCe98QcFDbwWFhtp5+N9o=;
+        b=judBzSJ6b36sQRgPCGyKWoOAyYJ+rmFdtZkzYfW4YqG71efzGPRjofiCDYgVWF04H9Lfpn
+        Db6R45+wN6p3/d0xBgmTZ4n/H8lTXSn7YEo9/NPg5FuJWhu6wKNdVTLgWYEvTv4hcQeacZ
+        b6bof3CImP/Okh6ICvEXfHnJJ5LpdtA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1673969317;
+        s=susede2_ed25519; t=1673972764;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Jny8456ACj//FLLL7NFhq70h9Yo37GEnc4A+xcV/GRU=;
-        b=6xOdJ+ZGr/1pbHZza5oQn3PyqO31hOPFAFizAMMj+ubHrV7xH2/aPxrDs9Rr543NsIfCp/
-        2EvAgpHBU58xv9Aw==
+        bh=aOXQT7wuSha7tbs1gi/X6QNCe98QcFDbwWFhtp5+N9o=;
+        b=xySnGIKYaua+hHOiM1lhbxYtsv1JV8CBjhrV/Pb3uUaTg/RhWq13wevwuGuk/BYbbYhCOE
+        jfYnvhvNTKCyfAAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40F211390C;
-        Tue, 17 Jan 2023 15:28:37 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E548513357;
+        Tue, 17 Jan 2023 16:26:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id hG3ZDqW+xmPTTAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 17 Jan 2023 15:28:37 +0000
-Date:   Tue, 17 Jan 2023 16:22:59 +0100
+        id C7sCNxvMxmPHbAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 17 Jan 2023 16:26:03 +0000
+Date:   Tue, 17 Jan 2023 17:20:25 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: check: enhance the error output for backref
- mimsatch
-Message-ID: <20230117152259.GA11562@twin.jikos.cz>
+Subject: Re: [PATCH v5] btrfs: update fs features sysfs directory
+ asynchronously
+Message-ID: <20230117162025.GB11562@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <1ecdbc90c7cc26f7f5b7a0af7683cf81717b6200.1670220414.git.wqu@suse.com>
+References: <c750a14702a842dcd359b05ee79700ae0d0f550f.1673608117.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1ecdbc90c7cc26f7f5b7a0af7683cf81717b6200.1670220414.git.wqu@suse.com>
+In-Reply-To: <c750a14702a842dcd359b05ee79700ae0d0f550f.1673608117.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 05, 2022 at 02:07:30PM +0800, Qu Wenruo wrote:
-> [PROBLEM]
-> Btrfs check original mode output is not that reader friendly already, it
-> even includes pointer output:
+On Fri, Jan 13, 2023 at 07:11:39PM +0800, Qu Wenruo wrote:
+> [BUG]
+> >From the introduction of per-fs feature sysfs interface
+> (/sys/fs/btrfs/<UUID>/features/), the content of that directory is never
+> updated.
 > 
->   backref 15353727729664 parent 1140559929556992 not referenced back 0xc9133d70
->   tree backref 15353727729664 parent 14660022714368 not found in extent tree
->   incorrect global backref count on 15353727729664 found 3 wanted 2
->   backpointer mismatch on [15353727729664 16384]
+> Thus for the following case, that directory will not show the new
+> features like RAID56:
 > 
-> In above case, the "0xc9133d70" is completely useless, as it's a pointer
-> for the tree_backref structure.
+>  # mkfs.btrfs -f $dev1 $dev2 $dev3
+>  # mount $dev1 $mnt
+>  # btrfs balance start -f -mconvert=raid5 $mnt
+>  # ls /sys/fs/btrfs/$uuid/features/
+>  extended_iref  free_space_tree  no_holes  skinny_metadata
 > 
-> And the term "backref" is quite abused in above case.
+> While after unmount and mount, we got the correct features:
 > 
-> [ENHANCEMENT]
-> To enhance the situation, let's use some output format from lowmem mode
-> instead.
+>  # umount $mnt
+>  # mount $dev1 $mnt
+>  # ls /sys/fs/btrfs/$uuid/features/
+>  extended_iref  free_space_tree  no_holes  raid56 skinny_metadata
 > 
-> Now above example will be changed to:
+> [CAUSE]
+> Because we never really try to update the content of per-fs features/
+> directory.
 > 
->   tree extent[15353727729664, 16384] parent 1140559929556992 has no tree block found
->   tree extent[15353727729664, 16384] parent 14660022714368 has no backref item in extent tree
->   incorrect global backref count on 15353727729664 found 3 wanted 2
->   backpointer mismatch on [15353727729664 16384]
+> We had an attempt to update the features directory dynamically in commit
+> 14e46e04958d ("btrfs: synchronize incompat feature bits with sysfs
+> files"), but unfortunately it get reverted in commit e410e34fad91
+> ("Revert "btrfs: synchronize incompat feature bits with sysfs files"").
 > 
-> And some example for data backrefs:
+> The exported by never utilized function, btrfs_sysfs_feature_update() is
+> the leftover of such attempt.
 > 
->   data extent[12845056, 1048576] bytenr mimsmatch, extent item bytenr 12845056 file item bytenr 0
->   data extent[12845056, 1048576] referencer count mismatch (root 5 owner 257 offset 0) wanted 1 have 0
+> The problem in the original patch is, in the context of
+> btrfs_create_chunk(), we can not afford to update the sysfs group.
 > 
->   data extent[14233600, 12288] referencer count mismatch (parent 42139648) wanted 0 have 1
->   data extent[14233600, 12288] referencer count mismatch (root 5 owner 307 offset 0) wanted 0 have 1
->   data extent[14233600, 12288] referencer count mismatch (parent 30507008) wanted 0 have 1
-> 
-> Furthermore, the original function print_tree_backref_error() is a mess
-> already, here we clean it up by exacting all the error output into a
-> dedicated helper, print_backref_error(), so the function itself only
-> need to find out errors.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> As even if we go sysfs_update_group(), new files will need extra memory
+> allocation, and we have no way to specify the sysfs update to go
+> GFP_NOFS.
 
-Added to devel, thanks.
+We do have a way now, the memalloc_nofs_save/_restore interface that was
+not available back then.
+
+> [FIX]
+> This patch will address the old problem by doing asynchronous sysfs
+> update in cleaner thread.
+> 
+> This involves the following changes:
+> 
+> - Make __btrfs_(set|clear)_fs_(incompat|compat_ro) helpers to set
+>   BTRFS_FS_FEATURE_CHANGED flag when needed
+> 
+> - Update btrfs_sysfs_feature_update() to use sysfs_update_group()
+>   And drop unnecessary arguments.
+> 
+> - Call btrfs_sysfs_feature_update() in cleaner_kthread
+>   If we have the BTRFS_FS_FEATURE_CHANGED flag set.
+> 
+> - Wake up cleaner_kthread in btrfs_commit_transaction if we have
+>   BTRFS_FS_FEATURE_CHANGED flag
+> 
+> By this, all the previously dangerous call sites like
+> btrfs_create_chunk() need no new changes, as above helpers would
+> have already set the BTRFS_FS_FEATURE_CHANGED flag.
+> 
+> The real work happens at cleaner_kthread, thus we pay the cost of
+> delaying the update to sysfs directory, but the delayed time should be
+> small enough that end user can not distinguish.
+
+Cleaner is not a bad first choice, though it can get busy with a lot of
+work with cleanings subvolumes and defrag, so the actual change in sysfs
+cannot be predicted. The transaction kthread can also try to check for
+the presence of the BTRFS_FS_FEATURE_CHANGED bit and do the change
+there.
+
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -130,6 +130,12 @@ enum {
+>  	BTRFS_FS_32BIT_ERROR,
+>  	BTRFS_FS_32BIT_WARN,
+>  #endif
+> +
+> +	/*
+> +	 * Indicate if we have some features changed, this is mostly for
+> +	 * cleaner thread to update the sysfs interface.
+> +	 */
+> +	BTRFS_FS_FEATURE_CHANGED,
+
+Please keep the BTRFS_FS_32BIT_ last so they don't mix up with the other
+bits. Updated.
+
+>  };
+>  
+>  /*
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 45615ce36498..b9f5d1052c0c 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -2272,36 +2272,23 @@ void btrfs_sysfs_del_one_qgroup(struct btrfs_fs_info *fs_info,
+>   * Change per-fs features in /sys/fs/btrfs/UUID/features to match current
+>   * values in superblock. Call after any changes to incompat/compat_ro flags
+>   */
+> -void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
+> -		u64 bit, enum btrfs_feature_set set)
+> +void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info)
+>  {
+> -	struct btrfs_fs_devices *fs_devs;
+>  	struct kobject *fsid_kobj;
+> -	u64 __maybe_unused features;
+> -	int __maybe_unused ret;
+> +	int ret;
+>  
+>  	if (!fs_info)
+>  		return;
+>  
+> -	/*
+> -	 * See 14e46e04958df74 and e410e34fad913dd, feature bit updates are not
+> -	 * safe when called from some contexts (eg. balance)
+> -	 */
+> -	features = get_features(fs_info, set);
+> -	ASSERT(bit & supported_feature_masks[set]);
+> -
+> -	fs_devs = fs_info->fs_devices;
+> -	fsid_kobj = &fs_devs->fsid_kobj;
+> -
+> +	fsid_kobj = &fs_info->fs_devices->fsid_kobj;
+>  	if (!fsid_kobj->state_initialized)
+>  		return;
+>  
+> -	/*
+> -	 * FIXME: this is too heavy to update just one value, ideally we'd like
+> -	 * to use sysfs_update_group but some refactoring is needed first.
+> -	 */
+> -	sysfs_remove_group(fsid_kobj, &btrfs_feature_attr_group);
+> -	ret = sysfs_create_group(fsid_kobj, &btrfs_feature_attr_group);
+> +	ret = sysfs_update_group(fsid_kobj, &btrfs_feature_attr_group);
+> +	if (ret < 0)
+> +		btrfs_err(fs_info,
+> +			  "failed to update /sys/fs/btrfs/%pU/features: %d",
+> +			  fs_info->fs_devices->fsid, ret);
+
+Is the error level necessary? It's not a serious problem, I'd rather
+make it a warning.
+
+Otherwise OK, the stale status wrt features is finally fixed, thanks. I
+checked the fix I'd worked on. It built on top of the (now removed)
+pending operations, your approach is similar and just moves the unsafe
+part to the cleaner.
+
+A stable backport would be good too, but I see that this patch fails
+even on 6.1 due to the moved code in 6.2.
