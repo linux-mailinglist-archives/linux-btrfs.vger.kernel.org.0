@@ -2,107 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6071366E3E5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jan 2023 17:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A6666E7BA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jan 2023 21:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbjAQQny (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Jan 2023 11:43:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
+        id S233764AbjAQUg1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Jan 2023 15:36:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233653AbjAQQne (ORCPT
+        with ESMTP id S235340AbjAQUdf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Jan 2023 11:43:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BE740BDF
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Jan 2023 08:42:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673973759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z1XYXuuLEP6Cp3MDBQnimJhyZi1pptC2mWI6feDk5oo=;
-        b=ILJMZnsPJFVUo9lWMisjC1UoFsKj77oRM4AfRFhzAwQtB9ay2sVI1XnGEwtxBn4HI9xamy
-        8fs2C4X0e24lgyjZ7xDs4Pqwo05DlZmIsIrEHuwx44NTHuPS1kGxn0EB/kcgrtbDOPBoab
-        AS9h5yM6SUnoo+WX/rBXHYIwPLefPyk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-516-NQbUAJSXOkeF4aLyKdnAug-1; Tue, 17 Jan 2023 11:42:38 -0500
-X-MC-Unique: NQbUAJSXOkeF4aLyKdnAug-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 17 Jan 2023 15:33:35 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FA64FC1A;
+        Tue, 17 Jan 2023 11:18:02 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 87C13101BE23;
-        Tue, 17 Jan 2023 16:42:37 +0000 (UTC)
-Received: from ws.net.home (ovpn-194-37.brq.redhat.com [10.40.194.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6505F40C6EC4;
-        Tue, 17 Jan 2023 16:42:36 +0000 (UTC)
-Date:   Tue, 17 Jan 2023 17:42:34 +0100
-From:   Karel Zak <kzak@redhat.com>
-To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "util-linux@vger.kernel.org" <util-linux@vger.kernel.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: Re: btrfs mount failure with context option and latest mount command
-Message-ID: <20230117164234.znsa4oeoovcdpntu@ws.net.home>
-References: <20230116101556.neld5ddm6brssy4n@shindev>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E2C5938B62;
+        Tue, 17 Jan 2023 19:18:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1673983080;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7NUMZE7OKBCtzp5cu21KyTnqs4N7aNDQxkPbTsK45gk=;
+        b=RNkO3byPOwONDpc06rH6GgFnDF4z6VgyUp72K53NZmy20fJjvAqn0i1m3V+Nnot2ibSZJZ
+        9X2Z5zr7eMh86SAUyzC6ogz8kZm9uHxVPCb19MwgQtyTJP20jsLPVo0Zi4ZYvg01FNGsiP
+        ZqnHY9bXiN75Jl/mvyfEQ3+PVTmjMYw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1673983080;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7NUMZE7OKBCtzp5cu21KyTnqs4N7aNDQxkPbTsK45gk=;
+        b=T0BII8y6Ua8UVFdPsGu7hf8EHaVI8KLoUtZAAUManxN6ugIoMUb8Benz2IRyEbabXMD+JW
+        v1zZKRoT1gZlVhBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93B621390C;
+        Tue, 17 Jan 2023 19:18:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eff8Imj0xmN2QQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 17 Jan 2023 19:18:00 +0000
+Date:   Tue, 17 Jan 2023 20:12:22 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 02/19] btrfs: handle checksum validation and repair at
+ the storage layer
+Message-ID: <20230117191222.GC11562@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230112090532.1212225-1-hch@lst.de>
+ <20230112090532.1212225-3-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230116101556.neld5ddm6brssy4n@shindev>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230112090532.1212225-3-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 16, 2023 at 10:15:58AM +0000, Shinichiro Kawasaki wrote:
-> I observe mount command with -o context option fails for btrfs, using mount
-> command built from the latest util-linux master branch code (git hash
-> dbf77f7a1).
+On Thu, Jan 12, 2023 at 10:05:14AM +0100, Christoph Hellwig wrote:
+> Currently btrfs handles checksum validation and repair in the end I/O
+> handler for the btrfs_bio.  This leads to a lot of duplicate code
+> plus issues with variying semantics or bugs, e.g.
 > 
-> $ sudo mount -o context="system_u:object_r:root_t:s0" /dev/nullb1 /mnt
-> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/nullb1, missing codepage or helper program, or other error.
->        dmesg(1) may have more information after failed mount system call.
+>  - the until recently broken repair for compressed extents
+>  - the fact that encoded reads validate the checksums but do not kick
+>    of read repair
+>  - the inconsistent checking of the BTRFS_FS_STATE_NO_CSUMS flag
 > 
-> Kernel reports an SELinux error message:
+> This commit revamps the checksum validation and repair code to instead
+> work below the btrfs_submit_bio interfaces.  For this to work we need
+> to make sure an inode is available, so that is added as a parameter
+> to btrfs_bio_alloc.  With that btrfs_submit_bio can preload
+> btrfs_bio.csum from the csum tree without help from the upper layers,
+> and the low-level I/O completion can iterate over the bio and verify
+> the checksums.
 > 
-> [565959.593054][T12131] SELinux: mount invalid.  Same superblock, different security settings for (dev nullb1, type btrfs)
+> In case of a checksum failure (or a plain old I/O error), the repair
+> is now kicked off before the upper level ->end_io handler is invoked.
+> Tracking of the repair status is massively simplified by just keeping
+> a small failed_bio structure per bio with failed sectors and otherwise
+> using the information in the repair bio.  The per-inode I/O failure
+> tree can be entirely removed.
 > 
-> Is this a known issue?
-
-Not for me.
-
-> Details:
+> The saved bvec_iter in the btrfs_bio is now competely managed by
+> btrfs_submit_bio and must not be accessed by the callers.
 > 
-> - Mount succeeds without the -o context option.
-> - Ext4 succeeds to mount with the option.
-> - Mount succeeds rolling back util-linux code to older git hash 8241fb005,
->   which was committed on January 3rd. After this commit, a number of commits
->   were merged to util-linux to use fsconfig syscall for mount in place of
->   mount syscall.
-> 
-> Then the new fsconfig syscall looks the trigger of the failure. I took a look in
-> the code of mount path and saw that btrfs is not modified to use struct
-> fs_context for the fsconfig syscall. The -o context option is parsed and kept in
-> security field of fs_context, but it is not passed to btrfs_mount.
+> There is one significant behavior change here:  If repair fails or
+> is impossible to start with, the whole bio will be failed to the
+> upper layer.  This is the behavior that all I/O submitters execept
+> for buffered I/O already emulated in their end_io handler.  For
+> buffered I/O this now means that a large readahead request can
+> fail due to a single bad sector, but as readahead errors are igored
+> the following readpage if the sector is actually accessed will
+> still be able to read.  This also matches the I/O failure handling
+> in other file systems.
 
-It's a serious issue if btrfs is not ready for the new kernel fsconfig
-interface. I guess libmount cannot do anything else in this case
-(well, we can switch back to classic mount(2), but it sounds as a
-wrong solution).
+I've tried several times to convince myself that this patch could be
+merged as-is despite it's going against principles and standards I apply
+to other patches.
 
-    Karel
+The patch size itself is an instant red flag for a change that tries to
+turn upside down some fundamental functionality like checksumming time.
 
--- 
- Karel Zak  <kzak@redhat.com>
- http://karelzak.blogspot.com
+The changelog sounds like a good cover letter for a series, overall
+description but lacks more details.
 
+The patch got 2 reviews, but this is a developer review, the code does
+what's advertised and the reviewers were hopefully able to understand
+it. While I do such review too, I also do a pass that applies criteria
+like long term maintainability, potential risk of introducing hidden
+bugs and the cost of resolving them later at a much higher cost.
+
+From your reply to v2 you do have some idea what can be split
+(direct/buffered/ compressed IO) but don't see the value doing it.
+
+How to split further:
+
+- preparatory changes that only extend some interface (function,
+  structure) and can take NULL or unused values before the actual switch
+  happens, the logic of that is described separately
+
+- code that does not need to be deleted in that same patch can be moved
+  to a separate one, like with some other patches in the series
+
+- the core change builds on the previous patches and describes how
+  it's used, new logic, etc
+
+- if the new repair io logic can live in parallel with the old
+  io_failure_tree then remove the old logic separately, temporarily
+  leaving unused structures eg. io_failure_tree
+
+- use of mempool must be mentioned in the changelog with explanation
+  that it's the safe usage pattern and why it cannot lead to lockups
+
+I would feel bad about myself if I really have to close both my eyes,
+turn around and do 'git apply' just to move forward with this patchset,
+because your and Johannes' work depends on that. This would only
+backfire.
+
+So _please_ try to split the patch where the core logic that cannot be
+split further is in a patch that is minimal in its size and does not
+carry distracting changes.
