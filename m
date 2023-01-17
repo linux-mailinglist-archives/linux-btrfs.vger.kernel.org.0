@@ -2,73 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A6666E7BA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jan 2023 21:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BF566E7E6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jan 2023 21:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233764AbjAQUg1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Jan 2023 15:36:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
+        id S232375AbjAQUnV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Jan 2023 15:43:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235340AbjAQUdf (ORCPT
+        with ESMTP id S232762AbjAQUlL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Jan 2023 15:33:35 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FA64FC1A;
-        Tue, 17 Jan 2023 11:18:02 -0800 (PST)
+        Tue, 17 Jan 2023 15:41:11 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C6247EC7
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Jan 2023 11:23:25 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E2C5938B62;
-        Tue, 17 Jan 2023 19:18:00 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E09D61FFAF;
+        Tue, 17 Jan 2023 19:23:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1673983080;
+        t=1673983388;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7NUMZE7OKBCtzp5cu21KyTnqs4N7aNDQxkPbTsK45gk=;
-        b=RNkO3byPOwONDpc06rH6GgFnDF4z6VgyUp72K53NZmy20fJjvAqn0i1m3V+Nnot2ibSZJZ
-        9X2Z5zr7eMh86SAUyzC6ogz8kZm9uHxVPCb19MwgQtyTJP20jsLPVo0Zi4ZYvg01FNGsiP
-        ZqnHY9bXiN75Jl/mvyfEQ3+PVTmjMYw=
+        bh=Xf1IA1V7FqB2D0a4ZIsqXzvUsjVz5OazIpbkcIM7fus=;
+        b=piBdRpXHN9dm+7kSsRMlvRnB4ZGTUPYYZ6xDD7SEt9T9H9N2WjMKxw7U4pjqAX9BoBDyLz
+        pgIcrItv4R5KjsqqRie+ddOwHiloxyaOOYs/2HNL0qk1i3MIhfsO/MHjPp1JxrngY3REdP
+        NrVuh2IgsucUnj8/07BjjMW0z691QuI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1673983080;
+        s=susede2_ed25519; t=1673983388;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7NUMZE7OKBCtzp5cu21KyTnqs4N7aNDQxkPbTsK45gk=;
-        b=T0BII8y6Ua8UVFdPsGu7hf8EHaVI8KLoUtZAAUManxN6ugIoMUb8Benz2IRyEbabXMD+JW
-        v1zZKRoT1gZlVhBg==
+        bh=Xf1IA1V7FqB2D0a4ZIsqXzvUsjVz5OazIpbkcIM7fus=;
+        b=qghoZ9ZWELfHj0j6i/6IoNKZZniWjlIWRfGsWkQl5xvEYyK0aVrDE7KPxX9LjI0IxGfcHo
+        T912MxTMBrlZUFAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93B621390C;
-        Tue, 17 Jan 2023 19:18:00 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BBE8D1390C;
+        Tue, 17 Jan 2023 19:23:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id eff8Imj0xmN2QQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 17 Jan 2023 19:18:00 +0000
-Date:   Tue, 17 Jan 2023 20:12:22 +0100
+        id p9wQLZz1xmOUQwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 17 Jan 2023 19:23:08 +0000
+Date:   Tue, 17 Jan 2023 20:17:30 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 02/19] btrfs: handle checksum validation and repair at
- the storage layer
-Message-ID: <20230117191222.GC11562@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: keep sysfs features in tandem with runtime
+ features change
+Message-ID: <20230117191730.GD11562@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20230112090532.1212225-1-hch@lst.de>
- <20230112090532.1212225-3-hch@lst.de>
+References: <ef0efdacd9bd53a55a02c6419b9ff0d51edf5408.1673412612.git.anand.jain@oracle.com>
+ <98540b70-c7b8-5340-7a4d-ee6f43f6babf@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230112090532.1212225-3-hch@lst.de>
+In-Reply-To: <98540b70-c7b8-5340-7a4d-ee6f43f6babf@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -79,87 +72,71 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 12, 2023 at 10:05:14AM +0100, Christoph Hellwig wrote:
-> Currently btrfs handles checksum validation and repair in the end I/O
-> handler for the btrfs_bio.  This leads to a lot of duplicate code
-> plus issues with variying semantics or bugs, e.g.
+On Wed, Jan 11, 2023 at 03:05:45PM +0800, Qu Wenruo wrote:
+> On 2023/1/11 13:40, Anand Jain wrote:
+> > When we change runtime features, the sysfs under
+> > 	/sys/fs/btrfs/<uuid>/features
+> > render stale.
+> > 
+> > For example: (before)
+> > 
+> >   $ btrfs filesystem df /btrfs
+> >   Data, single: total=8.00MiB, used=0.00B
+> >   System, DUP: total=8.00MiB, used=16.00KiB
+> >   Metadata, DUP: total=51.19MiB, used=128.00KiB
+> >   global reserve, single: total=3.50MiB, used=0.00B
+> > 
+> >   $ ls /sys/fs/btrfs/d5ccbf34-bb40-4b4c-af62-8c6c8226f1b7/features/
+> >   extended_iref free_space_tree no_holes skinny_metadata
+> > 
+> > Use balance to convert from single/dup to RAID5 profile.
+> > 
+> >   $ btrfs balance start -f -dconvert=raid5 -mconvert=raid5 /btrfs
+> > 
+> > Still, sysfs is unaware of raid5.
+> > 
+> >   $ ls /sys/fs/btrfs/d5ccbf34-bb40-4b4c-af62-8c6c8226f1b7/features/
+> >   extended_iref free_space_tree no_holes skinny_metadata
+> > 
+> > Which doesn't match superblock
+> > 
+> >   $ btrfs in dump-super /dev/loop0
+> > 
+> >   incompat_flags 0x3e1
+> >   ( MIXED_BACKREF |
+> >   BIG_METADATA |
+> >   EXTENDED_IREF |
+> >   RAID56 |
+> >   SKINNY_METADATA |
+> >   NO_HOLES )
+> > 
+> > Require mount-recycle as a workaround.
+> > 
+> > Fix this by laying out all attributes on the sysfs at mount time. However,
+> > return 0 or 1 when read, for used or unused, respectively.
+> > 
+> > For example: (after)
+> > 
+> >   $ ls /sys/fs/btrfs/d5ccbf34-bb40-4b4c-af62-8c6c8226f1b7/features/
+> >   block_group_tree compress_zstd extended_iref free_space_tree mixed_groups raid1c34 skinny_metadata zoned
+> > compress_lzo default_subvol extent_tree_v2 metadata_uuid no_holes raid56 verity
+> > 
+> >   $ cat /sys/fs/btrfs/d5ccbf34-bb40-4b4c-af62-8c6c8226f1b7/features/raid56
+> >   0
+> > 
+> >   $ btrfs balance start -f -dconvert=raid5 -mconvert=raid5 /btrfs
+> > 
+> >   $ cat /sys/fs/btrfs/d5ccbf34-bb40-4b4c-af62-8c6c8226f1b7/features/raid56
+> >   1
 > 
->  - the until recently broken repair for compressed extents
->  - the fact that encoded reads validate the checksums but do not kick
->    of read repair
->  - the inconsistent checking of the BTRFS_FS_STATE_NO_CSUMS flag
+> Oh, I found this very confusing.
 > 
-> This commit revamps the checksum validation and repair code to instead
-> work below the btrfs_submit_bio interfaces.  For this to work we need
-> to make sure an inode is available, so that is added as a parameter
-> to btrfs_bio_alloc.  With that btrfs_submit_bio can preload
-> btrfs_bio.csum from the csum tree without help from the upper layers,
-> and the low-level I/O completion can iterate over the bio and verify
-> the checksums.
+> Previously features/ directory just shows what we have (either in kernel 
+> support or the specified fs), which is very straightforward.
 > 
-> In case of a checksum failure (or a plain old I/O error), the repair
-> is now kicked off before the upper level ->end_io handler is invoked.
-> Tracking of the repair status is massively simplified by just keeping
-> a small failed_bio structure per bio with failed sectors and otherwise
-> using the information in the repair bio.  The per-inode I/O failure
-> tree can be entirely removed.
-> 
-> The saved bvec_iter in the btrfs_bio is now competely managed by
-> btrfs_submit_bio and must not be accessed by the callers.
-> 
-> There is one significant behavior change here:  If repair fails or
-> is impossible to start with, the whole bio will be failed to the
-> upper layer.  This is the behavior that all I/O submitters execept
-> for buffered I/O already emulated in their end_io handler.  For
-> buffered I/O this now means that a large readahead request can
-> fail due to a single bad sector, but as readahead errors are igored
-> the following readpage if the sector is actually accessed will
-> still be able to read.  This also matches the I/O failure handling
-> in other file systems.
+> Changing it to 0/1 is way less easy to understand, and can be considered 
+> as big behavior change.
 
-I've tried several times to convince myself that this patch could be
-merged as-is despite it's going against principles and standards I apply
-to other patches.
-
-The patch size itself is an instant red flag for a change that tries to
-turn upside down some fundamental functionality like checksumming time.
-
-The changelog sounds like a good cover letter for a series, overall
-description but lacks more details.
-
-The patch got 2 reviews, but this is a developer review, the code does
-what's advertised and the reviewers were hopefully able to understand
-it. While I do such review too, I also do a pass that applies criteria
-like long term maintainability, potential risk of introducing hidden
-bugs and the cost of resolving them later at a much higher cost.
-
-From your reply to v2 you do have some idea what can be split
-(direct/buffered/ compressed IO) but don't see the value doing it.
-
-How to split further:
-
-- preparatory changes that only extend some interface (function,
-  structure) and can take NULL or unused values before the actual switch
-  happens, the logic of that is described separately
-
-- code that does not need to be deleted in that same patch can be moved
-  to a separate one, like with some other patches in the series
-
-- the core change builds on the previous patches and describes how
-  it's used, new logic, etc
-
-- if the new repair io logic can live in parallel with the old
-  io_failure_tree then remove the old logic separately, temporarily
-  leaving unused structures eg. io_failure_tree
-
-- use of mempool must be mentioned in the changelog with explanation
-  that it's the safe usage pattern and why it cannot lead to lockups
-
-I would feel bad about myself if I really have to close both my eyes,
-turn around and do 'git apply' just to move forward with this patchset,
-because your and Johannes' work depends on that. This would only
-backfire.
-
-So _please_ try to split the patch where the core logic that cannot be
-split further is in a patch that is minimal in its size and does not
-carry distracting changes.
+Yes, the sysfs files are considered an ABI though we can do changes that
+are not backward compatible. The semantics of the features file is that
+if it exists then it's also in the filesystem and tests depend on that.
