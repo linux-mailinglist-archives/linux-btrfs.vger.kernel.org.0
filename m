@@ -2,193 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E643966DC3B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jan 2023 12:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE88466DD37
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jan 2023 13:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236690AbjAQLWj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Jan 2023 06:22:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
+        id S236782AbjAQMKZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Jan 2023 07:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236771AbjAQLWH (ORCPT
+        with ESMTP id S236352AbjAQMKY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Jan 2023 06:22:07 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5631BADC
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Jan 2023 03:21:46 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A5E98612BC
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Jan 2023 11:21:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97CE0C433EF
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Jan 2023 11:21:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673954505;
-        bh=P9AsgOWFdqrsTKj5TuSOTkuWaq2FcblB2GuBhvbG3gU=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=WXNAfz5cNABRNzSCGcjAxgX3wc25wjwh+/Eh58ucQ5/L0rBo4WWmKygQlZDbQbImW
-         tHGiNqUIanv0ByQH3e8MwN1TQ+shNFySQk9rf5Uf76HuuZLoURrCfHKB4KL3SKMBHY
-         wpyn3y/GN8UpnFz54r0wxD3kQCayD4gkX6dk9cPaP9jkWHIaDMeKprFns0nTZ5YSoK
-         NNJckwAXEe1LNljerZhI2b14upCNFNMTT2KaC3vzJ8PcWx6Ywvj7uv0/R2ZPcjjqXn
-         9imh4rWuN5iIkw+PxqhOF9sLdEzw8+cWyRjgzNV1JnlRw65gyQAz5CU+qJJGfMh1im
-         V//8yox+5PVsg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: skip backref walking during fiemap if we know the leaf is shared
-Date:   Tue, 17 Jan 2023 11:21:39 +0000
-Message-Id: <50ea5c760791ff8cff1399a5c83de3a98013bf39.1673954069.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1673954069.git.fdmanana@suse.com>
-References: <cover.1673954069.git.fdmanana@suse.com>
+        Tue, 17 Jan 2023 07:10:24 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B2632E62
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Jan 2023 04:10:23 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id h184so5369223iof.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Jan 2023 04:10:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=u1FS23f9lMOyJIiIZuP0A4Qiyf73vPOUb05pwu8u1Yk=;
+        b=SexUCdmJ0t7uBwEs+JFHvkuqn7dCgaX7ayo4wlyexi5FUds08nsa5BciZCnYPrmjXl
+         IQm/BlLFyrBeN73I0xwsU0tQ4rvjxpu74N6c4WASKibYnksfE6RP93uiceNUK6YuAzZe
+         BPBfO/Y57FT7AkUZj2b1e2ayRZOP49wfUdkTODtXCOT/ejXemgRThJ0GWSbVjhbMrP+t
+         k58MF9Zws15gyIHczCsJ7OC4p8cKFBGE0Uk123fDnESy+Y3jsv5/1IhgJyY3s/VnI72q
+         jhf107GR+rO9BCF2vL/I1xQyqOo1cegbOiALgh7LDFg+RK6689yKHrEKTWzUIMCTZ9Ca
+         xeSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u1FS23f9lMOyJIiIZuP0A4Qiyf73vPOUb05pwu8u1Yk=;
+        b=JyIoqVAhFRdY6JBCel8ZR1MoLHFhj4JKINbDJggW7z7WAeHbOL7J8Vuo5V+ILxMkHc
+         VUL4HEbLs2D8AlOlGvHD02d4Kh0ux6wLbm3+lKox6NEo5MXF/IrUsZ06J2r4hcfAEnLW
+         ATpVqXomZNGR6dz5fyJqaNbbEswqvEAhNbdouu7znXcfSRdMD0VSlV2qlyqlNq1J4udC
+         +yn2CJ1QTmhgPudXQBSIvSkcktlqAp7Lzc0Xh/mAESeEVbQpEEVZ7S3ALtyy0E7kzheD
+         1RsFOBKjhCZu6kahufGGyMFQq13za2z5j2m4NK4bWf2eKncN7hepma5HBa1Jz6qF31aD
+         J1tw==
+X-Gm-Message-State: AFqh2krxpy2vzvlqaWRnCSsWuJU+FTcmDqf69rR9JLsOjN2/7c4vzXTA
+        R3NpckXnJBLvfA7wKqf6IvqwOUvEM7HhB5mIMp0=
+X-Google-Smtp-Source: AMrXdXvNfFK2PCgOLql/7x2hmL+nyRrTVRRmms3+tTSbNi0CkS3vYHY3XbDi2MOsulRT1AS7/Wrn1YnDJ7VPhoXNXZg=
+X-Received: by 2002:a5d:8f99:0:b0:6db:6628:d30b with SMTP id
+ l25-20020a5d8f99000000b006db6628d30bmr161452iol.178.1673957423171; Tue, 17
+ Jan 2023 04:10:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Sender: abubakarbell20001@gmail.com
+Received: by 2002:a05:6638:38a5:b0:38a:bd02:2926 with HTTP; Tue, 17 Jan 2023
+ 04:10:22 -0800 (PST)
+From:   ABUBAKAR BELLO <belloabubaka94@gmail.com>
+Date:   Tue, 17 Jan 2023 04:10:22 -0800
+X-Google-Sender-Auth: QE5HQc-ekBLwAsPlNPE1ov4J2tA
+Message-ID: <CA+ZCu9t=nkUw6MuSJzig67qyjMgbvB==xzL5xvCK6m9vy+d6hg@mail.gmail.com>
+Subject: URGENT REPLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=7.8 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,LOTS_OF_MONEY,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,UNDISC_MONEY,
+        URG_BIZ autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:d29 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5008]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [abubakarbell20001[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [belloabubaka94[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.6 URG_BIZ Contains urgent matter
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
+        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+--=20
+Hello,
 
-During fiemap, when checking if a data extent is shared we are doing the
-backref walking even if we already know the leaf is shared, which is a
-waste of time since if the leaf shared then the data extent is also
-shared. So skip the backref walking when we know we are in a shared leaf.
+I am a relative of a politically exposed person (PEP) that is in
+financial regulation. Due to my present health condition, I'd decided
+to write through this email for the security reason.
 
-The following test was measures the gains for a case where all leaves
-are shared due to a snapshot:
+Therefore, kindly treat this as top secret for the security reason.
+I'd after fasting and prayer choose to write not you particularly but
+I believing in probability of you being a confidant chosen by chance;
+luck to help and share in this noble cause.
 
-   $ cat test.sh
-   #!/bin/bash
+I need your assistant to conduct secret transfers of family's funds
+worth =E2=82=AC90.5 millions Euros. It was deposited in bank clandestinely.
 
-   DEV=/dev/sdj
-   MNT=/mnt/sdj
+I am in grave condition and I expect my death any moment now and I
+want to donate the fund to less privilege and you will be rewarded
+with reasonable percentage of the fund if you can assist.
 
-   umount $DEV &> /dev/null
-   mkfs.btrfs -f $DEV
-   # Use compression to quickly create files with a lot of extents
-   # (each with a size of 128K).
-   mount -o compress=lzo $DEV $MNT
+Please contact me back for more details,
 
-   # 40G gives 327680 extents, each with a size of 128K.
-   xfs_io -f -c "pwrite -S 0xab -b 1M 0 40G" $MNT/foobar
-
-   # Add some more files to increase the size of the fs and extent
-   # trees (in the real world there's a lot of files and extents
-   # from other files).
-   xfs_io -f -c "pwrite -S 0xcd -b 1M 0 20G" $MNT/file1
-   xfs_io -f -c "pwrite -S 0xef -b 1M 0 20G" $MNT/file2
-   xfs_io -f -c "pwrite -S 0x73 -b 1M 0 20G" $MNT/file3
-
-   # Create a snapshot so all the extents become indirectly shared
-   # through subtrees, with a generation less than or equals to the
-   # generation used to create the snapshot.
-   btrfs subvolume snapshot -r $MNT $MNT/snap1
-
-   # Unmount and mount again to clear cached metadata.
-   umount $MNT
-   mount -o compress=lzo $DEV $MNT
-
-   start=$(date +%s%N)
-   # The filefrag tool  uses the fiemap ioctl.
-   filefrag $MNT/foobar
-   end=$(date +%s%N)
-   dur=$(( (end - start) / 1000000 ))
-   echo "fiemap took $dur milliseconds (metadata not cached)"
-   echo
-
-   start=$(date +%s%N)
-   filefrag $MNT/foobar
-   end=$(date +%s%N)
-   dur=$(( (end - start) / 1000000 ))
-   echo "fiemap took $dur milliseconds (metadata cached)"
-
-   umount $MNT
-
-The results were the following on a non-debug kernel (Debian's default
-kernel config).
-
-Before this patch:
-
-   (...)
-   /mnt/sdi/foobar: 327680 extents found
-   fiemap took 1821 milliseconds (metadata not cached)
-
-   /mnt/sdi/foobar: 327680 extents found
-   fiemap took 399 milliseconds (metadata cached)
-
-After this patch:
-
-   (...)
-   /mnt/sdi/foobar: 327680 extents found
-   fiemap took 591 milliseconds (metadata not cached)
-
-   /mnt/sdi/foobar: 327680 extents found
-   fiemap took 123 milliseconds (metadata cached)
-
-That's a speedup of 3.1x and 3.2x.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/backref.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index f846fec08c86..90e40d5ceccd 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -1872,6 +1872,8 @@ int btrfs_is_data_extent_shared(struct btrfs_inode *inode, u64 bytenr,
- 		.have_delayed_delete_refs = false,
- 	};
- 	int level;
-+	bool leaf_cached;
-+	bool leaf_is_shared;
- 
- 	for (int i = 0; i < BTRFS_BACKREF_CTX_PREV_EXTENTS_SIZE; i++) {
- 		if (ctx->prev_extents_cache[i].bytenr == bytenr)
-@@ -1893,6 +1895,23 @@ int btrfs_is_data_extent_shared(struct btrfs_inode *inode, u64 bytenr,
- 		walk_ctx.time_seq = elem.seq;
- 	}
- 
-+	ctx->use_path_cache = true;
-+
-+	/*
-+	 * We may have previously determined that the current leaf is shared.
-+	 * If it is, then we have a data extent that is shared due to a shared
-+	 * subtree (caused by snapshotting) and we don't need to check for data
-+	 * backrefs. If the leaf is not shared, then we must do backref walking
-+	 * to determine if the data extent is shared through reflinks.
-+	 */
-+	leaf_cached = lookup_backref_shared_cache(ctx, root,
-+						  ctx->curr_leaf_bytenr, 0,
-+						  &leaf_is_shared);
-+	if (leaf_cached && leaf_is_shared) {
-+		ret = 1;
-+		goto out_trans;
-+	}
-+
- 	walk_ctx.ignore_extent_item_pos = true;
- 	walk_ctx.trans = trans;
- 	walk_ctx.fs_info = fs_info;
-@@ -1901,7 +1920,6 @@ int btrfs_is_data_extent_shared(struct btrfs_inode *inode, u64 bytenr,
- 	/* -1 means we are in the bytenr of the data extent. */
- 	level = -1;
- 	ULIST_ITER_INIT(&uiter);
--	ctx->use_path_cache = true;
- 	while (1) {
- 		bool is_shared;
- 		bool cached;
-@@ -1972,6 +1990,7 @@ int btrfs_is_data_extent_shared(struct btrfs_inode *inode, u64 bytenr,
- 		ctx->prev_extents_cache_slot = slot;
- 	}
- 
-+out_trans:
- 	if (trans) {
- 		btrfs_put_tree_mod_seq(fs_info, &elem);
- 		btrfs_end_transaction(trans);
--- 
-2.35.1
-
+Yours truly,
+Bello Abubakar
