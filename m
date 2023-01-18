@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDB56715ED
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jan 2023 09:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1636715EF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jan 2023 09:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbjARIPr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Jan 2023 03:15:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38094 "EHLO
+        id S229714AbjARIQK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Jan 2023 03:16:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbjARIOo (ORCPT
+        with ESMTP id S229947AbjARIOp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Jan 2023 03:14:44 -0500
+        Wed, 18 Jan 2023 03:14:45 -0500
 Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166A5613CD
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Jan 2023 23:45:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C2E4617C
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Jan 2023 23:45:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1674027914; x=1705563914;
+  t=1674027921; x=1705563921;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=YrTatM5eucJi7UvlGSM81EVt6REo1JwZ+ahE2ONq6fY=;
-  b=pV8WZvqqF9RjWJr5vzjwdglc7z6Zur7lzeeXYNwL2KdzNeuOAUeZAT41
-   gx0qFBMrf+bhMVIYLI7wiglRbzC+hNnQN6KZMS62V4hve9lghY/7QndcP
-   R65AWv/gPD+P6O2FRmclqmmOrsq9WI20Zlfhm3wm7BfL3zypA5ByIAi1g
-   FOHje3w5QLbuj5hFff9R+lOrmMGp1R6svj0TEKhwG2gC+oo4uLyz/NFvP
-   Qb2kZPdvPGructrYtnE+qwR74PYJYVzcJNGcM3qo8X83w1FYdM0u/Y57U
-   zw6WNtHSAoTASKppQaoSfo6AQsOeyGQPqLFzUjwPNkDBPgGTTwG3g2pri
-   Q==;
+  bh=2ZcczTb9SvDtk/IvTr++eIdtO+FHPYiC6lDOjk6G/j4=;
+  b=cWJ1hoHWc1uvGhO0B6bAjqxzNxOSIMTDLKWiLNFyvb+TYr86aRnFo3eK
+   Z1c9mdj0ghsJ84Nbqupd7KFrg6Yg0zYxZ57LOvABoFkp13rBoDxULI17l
+   a8mLpxUmkSKDkpCIxUyS4hd7RWjeahINNWltftoloXXy3f7alC9kpJgE+
+   kwYAyKGsDonW4Yj5wthcZK2ynWLnIiON6hnXP8vSLU3hHB4gKnCeFCe1K
+   zyhhidrhFbAsTTnLXhEgs4bDMFpFO35OrffkB/viiGiU9UFyoyab347fT
+   H+RUSQAxiUGzqdhTc0UfBnUzqcllqmbnek914Takhai8pyCSU1m3ZBDlJ
+   g==;
 X-IronPort-AV: E=Sophos;i="5.97,224,1669046400"; 
-   d="scan'208";a="333108005"
+   d="scan'208";a="333108006"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
   by ob1.hgst.iphmx.com with ESMTP; 18 Jan 2023 15:45:13 +0800
-IronPort-SDR: /q81jTI/s3bimlhLD467V8YzzqV+a/CsOw/ZV81DCbjy5OpCw2kVjk1vUodRuSkHPzZxSjJRUq
- 1n8EpFiZSR3bEV42opGlCIJ08tRPclVt/1ckTzTZKp84UKVzIg+H4zQJ51Gfgr2fR9HMCgSk3A
- hMG4kx10cvUdCy4mppQAJCZ9ZtrXi4UglDTedx9EkcAtiz+7Jsgex2SJqezGAMGtiQP18Nwaf3
- N4hdBuboPRrb0BNGMYSYjeg3liWGPmgNmLehzdHSA93RhWwnNAowE5ZuOtO6AokRhdx7eBW1pR
- F0c=
+IronPort-SDR: dnujUgabXZmwNSghG1FP++S/AvTRi88n4UqdGA/j3q9iUJyapTZY0sBiU3LlCZpKsjiPU7KaUl
+ jqvSFYDZPgC5viz8FgO1VBZ9XBR6qUEGBqaX1P+Ty0j/SrpVl7i36C97lRhsPT9dLQ3yqxdLSp
+ q4+YOmMrT0yYTVRlcruvL1mqYXykcAsN8r4OOKEw1xKzx4TRgzPzqNbsAjOqQzjcl0vfbW5Q4P
+ clfxQm1zawPsbn7r6bBRgppZEtNgToB7IZ9tqZxLo2LVPnSRHlxUZy1q7jsu1W9OwLGnk2RtBP
+ QUk=
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 17 Jan 2023 23:02:53 -0800
-IronPort-SDR: ZIBjqOiWL9A1DNWZTwgk7mP2T9KWFOPgmW++ewewLbwV6FSHsTdHnfxC5Nx/nZeBpQJGyadgB3
- d4b9kdGyhXQg7/Ks5BaR/3OFTcUk2FupsUiy/QEagaLRLIFKVKX87sEUUIBYMTwU/UqJ3hg3IZ
- +uBwGXDSwO9OQtzBV2nkwY7kaVeT06Jdtz3KZxi2zyr618LrrhVMvAoxEvkyPgtOB05Fu/AaFO
- zSBJ4zKUapjn8bsVgbDdcV9T6XhXz0u+lX/RQzVuW31pn7SjHJAMmS+ZGxki6iXCZSYlpNcWlL
- rr0=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 17 Jan 2023 23:02:54 -0800
+IronPort-SDR: CeO9XqmE1mAa0WD0Mfc2m3MLkoCxJVGKw3OQcOM+h4W4lXu+alNgCtcB36Z+Xsju0Ay6qk4fbC
+ WFeZncvw6ZCuOoPe6J9xW6GbV5JvJ64QfUPR4iY7pT5ztOSS6kSKm7z43KO7XWGG2QsJB8jC5U
+ DWRY7nsdSIB0/x+Ru/6Gky2Ely4vXho+lkc5tHi7MQBSzFjmlccEexxGwkhtRmjwEIRR8MA56T
+ UOmmlVHIfUZ+veKJn0CFWz2n7R9qz1DbrsjwW7/iMChphcVn+DgC9IqNmVdKjV/b7LalhkeOJh
+ nXc=
 WDCIronportException: Internal
 Received: from f9rd9y2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.55.16])
-  by uls-op-cesaip02.wdc.com with ESMTP; 17 Jan 2023 23:45:13 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 17 Jan 2023 23:45:14 -0800
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 1/3] btrfs-progs: docs: add per-space_info bg_reclaim_threshold entry
-Date:   Wed, 18 Jan 2023 16:44:56 +0900
-Message-Id: <20230118074458.2985005-2-naohiro.aota@wdc.com>
+Subject: [PATCH 2/3] btrfs-progs: docs: fix nodesize typo
+Date:   Wed, 18 Jan 2023 16:44:57 +0900
+Message-Id: <20230118074458.2985005-3-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230118074458.2985005-1-naohiro.aota@wdc.com>
 References: <20230118074458.2985005-1-naohiro.aota@wdc.com>
@@ -67,53 +67,26 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are two "bg_reclaim_threshold" under the sysfs directory. One is at
-/sys/fs/btrfs/<UUID>/ and sets the threshold to start the auto reclaim
-thread. The other one is
-at/sys/fs/btrfs/<UUID>/allocations/{data,metadata,system} and sets the
-threshold to reclaim a block group.
-
-These two options have the same name but they are calculated against
-different metrics. The former is a percentage of allocated (for a device
-extent) space on total device space, and the latter is a percentage of
-reclaimable space on a block group's zone capacity.
-
-Add description for per-space_info bg_reclaim_threshold to distinguish
-these two same name configurations.
+Fix the typo.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- Documentation/ch-sysfs.rst | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ Documentation/ch-sysfs.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Documentation/ch-sysfs.rst b/Documentation/ch-sysfs.rst
-index 96fdaa34bff3..37fb49f945c7 100644
+index 37fb49f945c7..569879aadf27 100644
 --- a/Documentation/ch-sysfs.rst
 +++ b/Documentation/ch-sysfs.rst
-@@ -29,7 +29,7 @@ Files in `/sys/fs/btrfs/<UUID>/` directory are:
- bg_reclaim_threshold
-         (RW, since: 5.19)
+@@ -75,7 +75,7 @@ metadata_uuid
+         Shows the metadata uuid of the mounted filesystem.
+         Check `metadata_uuid` feature for more details.
  
--        Used space percentage to start auto block group claim.
-+        Used space percentage of total device space to start auto block group claim.
-         Mostly for zoned devices.
+-nodeisze
++nodesize
+         (RO, since: 3.14)
  
- checksum
-@@ -117,6 +117,14 @@ global_rsv_size
-         Space info accounting for the 3 chunk types.
-         Mostly for debug purposes.
- 
-+Files in `/sys/fs/btrfs/<UUID>/allocations/{data,metadata,system}` directory are:
-+
-+bg_reclaim_threshold
-+        (RW, since: 5.19)
-+
-+        Reclaimable space percentage of block group's size (excluding permanently unusable space) to reclaim the block group.
-+        Used for zoned devices.
-+
- Files in `/sys/fs/btrfs/<UUID>/devinfo/<DEVID>` directory are:
- 
- error_stats:
+         Show the nodesize of the mounted filesystem.
 -- 
 2.39.1
 
