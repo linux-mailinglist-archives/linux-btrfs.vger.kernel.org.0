@@ -2,100 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F93671778
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jan 2023 10:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9679D671950
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jan 2023 11:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbjARJYb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Jan 2023 04:24:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
+        id S229888AbjARKls (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Jan 2023 05:41:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbjARJVP (ORCPT
+        with ESMTP id S229783AbjARKjP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Jan 2023 04:21:15 -0500
-Received: from mail.bostmarktrun.com (mail.bostmarktrun.com [135.125.238.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6BC5D91B
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Jan 2023 00:45:59 -0800 (PST)
-Received: by mail.bostmarktrun.com (Postfix, from userid 1002)
-        id 7FB9FA27A4; Wed, 18 Jan 2023 08:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bostmarktrun.com;
-        s=mail; t=1674031558;
-        bh=gfWmJwOZk+B/IN1TMPg7emKhIvoExrJdUiyEL8yd2Jk=;
-        h=Date:From:To:Subject:From;
-        b=uQuQye7211Irw0Ucl9sjYeUuI0hKU+kMx/4gXTJzlxZKLxpYl1qmG4TV63EPX/dS6
-         yLMGPimf//9Bel4bbG4vHrOp9x/OobI4yes/zks7V0514aTZEGsnw1KPUpJyVr9Q3n
-         eiMmGL7HAT+cx65W+zMaYYY6xpbubmeGyWKF22btXHcb5NNZjT6+esm8BXgfy6cGZh
-         UsOVZiKm6N1Qpiz9U6YhlRX94+xKuONox0mIInKtW0AP4ITIDzq3GWWDXcrUfJ8+rr
-         ZBnV51oKRgo9ZstCryuipq1aRjAetpXq5NzqKCUn2JfghM3lEOZQetmsdFxedt12Uj
-         0cnZNqB7YCfqA==
-Received: by mail.bostmarktrun.com for <linux-btrfs@vger.kernel.org>; Wed, 18 Jan 2023 08:45:33 GMT
-Message-ID: <20230118074500-0.1.4p.wrbg.0.nhnxflvl91@bostmarktrun.com>
-Date:   Wed, 18 Jan 2023 08:45:33 GMT
-From:   "Corey Webb" <corey.webb@bostmarktrun.com>
-To:     <linux-btrfs@vger.kernel.org>
-Subject: Custom Software Development
-X-Mailer: mail.bostmarktrun.com
+        Wed, 18 Jan 2023 05:39:15 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9E04F85E;
+        Wed, 18 Jan 2023 01:43:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=mTpJ9cNrsuABtrc2CMMVqtRMFrq4GM5CqdliOGUWCwM=; b=m3S30bmc8TCiQ6vdoZu9c2phhY
+        jM9LuKvom42BtXPuSImJllOB2g9FN6hYD3qkqZzyuriVI70Mz/jgWDpHcwKbwDNzpQw1KBh7ThcLj
+        ercQ1HWbJ/Bs2RcC0SWVvbF3jHm0/wUfFvGp+wiapfTbhRhTXVEFkPLdSSypVawGU6DUcHfm1teNX
+        8RlCOYBwmcNQJfoh73rqnAYQ4VwJoLKjXYbmSQkz+jD8yonpmOPVBWTmYBGHOTTx/e23O9DlQZXsM
+        2zlutqfaqjVAJv6W7SYjHZrRQb3IEMt+I5xXXzGNS2FfhzqsVt4Q3cYttsw70MipKO+Ro+4OY9gvh
+        UJAYvjpQ==;
+Received: from 213-147-167-250.nat.highway.webapn.at ([213.147.167.250] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pI4yk-0009uq-Jk; Wed, 18 Jan 2023 09:43:35 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>
+Cc:     linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nilfs@vger.kernel.org
+Subject: return an ERR_PTR from __filemap_get_folio
+Date:   Wed, 18 Jan 2023 10:43:20 +0100
+Message-Id: <20230118094329.9553-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: bostmarktrun.com]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [135.125.238.46 listed in zen.spamhaus.org]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: bostmarktrun.com]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-X-Spam-Level: ******
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,=20
+Hi all,
 
-I would like to reach the person responsible for the implementation of yo=
-ur company's goals, vision and mission or the decision-maker in the devel=
-opment of your technology strategy.
+__filemap_get_folio and its wrappers can return NULL for three different
+conditions, which in some cases requires the caller to reverse engineer
+the decision making.  This is fixed by returning an ERR_PTR instead of
+NULL and thus transporting the reason for the failure.  But to make
+that work we first need to ensure that no xa_value special case is
+returned and thus return the FGP_ENTRY flag.  It turns out that flag
+is barely used and can usually be deal with in a better way.
 
-I represent provider of lucrative IT solutions that remove the barriers t=
-o process development resulting from limited access to appropriate IT res=
-ources.
+Note that the shmem patches in here are non-trivial and need some
+careful review and testing.
 
-We guarantee you access to the knowledge and experience of outstanding 3,=
-000 software developers from Poland and 500 professional consultants and =
-senior developers in the United States and other Western countries. =20
-
-We respond to a variety of needs, ranging from expanding your project tea=
-m with specialists with specific skills to supporting project managers, e=
-xperienced innovation teams to creating a Minimum Viable Project (MVP).
-
-The comprehensiveness of our services guarantees you dynamic software dev=
-elopment including creation, testing and implementation systems that are =
-the backbone of effective management of the entire organization.
-
-A partnership that lasts for years is the best proof that our clients mee=
-t their unique requirements within a specific timeframe, introduce new op=
-portunities and grow their business while we solve their problems.
-
-Are you available for a brief call? I will be looking forward to hearing =
-from you.
-
-
-Best regards
-Corey Webb
+Diffstat
+ fs/afs/dir.c             |   10 +++----
+ fs/afs/dir_edit.c        |    2 -
+ fs/afs/write.c           |    4 +-
+ fs/btrfs/disk-io.c       |    2 -
+ fs/btrfs/extent_io.c     |    2 +
+ fs/ext4/inode.c          |    2 -
+ fs/ext4/move_extent.c    |    8 ++---
+ fs/gfs2/lops.c           |    2 +
+ fs/hugetlbfs/inode.c     |    2 -
+ fs/iomap/buffered-io.c   |    6 ++--
+ fs/netfs/buffered_read.c |    4 +-
+ fs/nilfs2/page.c         |    6 ++--
+ include/linux/pagemap.h  |    4 +-
+ include/linux/shmem_fs.h |    1 
+ mm/filemap.c             |   27 ++++++++-----------
+ mm/folio-compat.c        |    4 +-
+ mm/huge_memory.c         |    5 +--
+ mm/memcontrol.c          |    2 -
+ mm/mincore.c             |    2 -
+ mm/shmem.c               |   64 +++++++++++++++++++----------------------------
+ mm/swap_state.c          |   17 ++++++------
+ mm/swapfile.c            |    4 +-
+ mm/truncate.c            |   15 +++++------
+ 23 files changed, 93 insertions(+), 102 deletions(-)
