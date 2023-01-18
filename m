@@ -2,82 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BCA672916
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jan 2023 21:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 419FC672A9A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jan 2023 22:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjARUMq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Jan 2023 15:12:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56926 "EHLO
+        id S230162AbjARVfS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Jan 2023 16:35:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjARUMo (ORCPT
+        with ESMTP id S230156AbjARVfR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Jan 2023 15:12:44 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326AA4CE70
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Jan 2023 12:12:41 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CCCC633FC7;
-        Wed, 18 Jan 2023 20:12:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1674072759;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PPo1VXwSZWTnp1c09MHnUh+FR64zxWamwIElhcwGQT4=;
-        b=E60SPWQ3j7aJ6PCPv8fx3fUJzgxARbXbi5r58bo4Fi7aClWqAyYmcug06H0qQGq8YtoLw9
-        OYPjD5n6pNgLy8pZWqk+xfqxO9eFpe1nEhtVt2bfXwooEc6ofJHnTF8SdO15j3ud/cyNeH
-        zVvXCItlc6qhLV/4T6x99MbBgB4uSEA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1674072759;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PPo1VXwSZWTnp1c09MHnUh+FR64zxWamwIElhcwGQT4=;
-        b=PYmZzSfvU4aGXQMHCPkqXyRpHHeYecYK4fLX/rFO3XDqLph43O060LaJu54kfq9qS+WwXF
-        Hq85PbZfiLQJiPBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B16F6138FE;
-        Wed, 18 Jan 2023 20:12:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9WU9KrdSyGMEFwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 18 Jan 2023 20:12:39 +0000
-Date:   Wed, 18 Jan 2023 21:07:01 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs-progs: docs: add entries to sysfs documentation
-Message-ID: <20230118200701.GF11562@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230118074458.2985005-1-naohiro.aota@wdc.com>
+        Wed, 18 Jan 2023 16:35:17 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F368611EA
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Jan 2023 13:35:16 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id n2so108343qvo.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Jan 2023 13:35:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WFQ+oxRa/iIpUyO/Bpx78nE7emcpH/SQ9k0cki7noDw=;
+        b=AMB3WEVF4CuGdpNZmRE4OxxGoVBatnviV6iC0kwVaFdMwZiTSq97zrzWgMJAnyYilO
+         b5m//mxAtemZ75EadzpMd/IZOWTFJ5OBcqVXBpcYGgr58mVj1JIilLbQKPhAeGMX8MkS
+         Xc0VDMKnaktQG4OhcrpQsKJuhlSv9Okt2McghA7i5Cb+z4L4C/fL1KEB7QYEdUF9fPaP
+         Ik7XOrrtDiwNSHguwx7r3PBvhCUQU+MEx8NWOp3XvIizAUyVi9e6y+JmCyJjkxDKqrVq
+         Dwcp6TEe6aOQ2sD46l1L76SGZ06p/8Bf9hZ4/gQ7x4MhvbY75zQEX0HViEChMKinsBUv
+         DsDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WFQ+oxRa/iIpUyO/Bpx78nE7emcpH/SQ9k0cki7noDw=;
+        b=1VQXAHn2mLBm9NmiSt5BizM9LyvO9QmElpOgds2pThD16gJPdaGsKbsz1i5gbk6JPL
+         NevCBPiejGJ1XutmJF1XMLD3jgLW6xNrTjDMnBsOJiVJMsC7ds8VAFxoLA/dLrsIbqr9
+         W02ZqiqPkdpq59qbgwS/UuHiRswzqlETCXKU6AoojLJqWGIa9dmPpOKbpf9dt87DZPpJ
+         9xAXBHQhMwnUsdroiIbdFEM8IryDvT8AtYSOSFfiTeJU7qjVLvYCmBXUbT8EDT9tRIYo
+         CCHt1KGFkLHSDSArfDjx3PKUxLZB8QP7+CaQt8ea5zoLGPo5jqXrRxPGI1CJLKcoJWqs
+         bbIA==
+X-Gm-Message-State: AFqh2kqPNREmi5yIPNpJyuK8G2K4evfHgPgu70vIRaY6yQ5CUUjyjU50
+        2+O+rHWGqikIviNdyHti0B45f0uh7ckmLCQmEKE=
+X-Google-Smtp-Source: AMrXdXt7qXJh5rVJ3N/kuPjocpbIP8D7F5BTA2hAwxp6RAWZb7wXQZYJOFfeSzkh6J1nXabl2mOLiw==
+X-Received: by 2002:a05:6214:8c7:b0:532:2efb:fed1 with SMTP id da7-20020a05621408c700b005322efbfed1mr11211289qvb.46.1674077715096;
+        Wed, 18 Jan 2023 13:35:15 -0800 (PST)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id bi26-20020a05620a319a00b00706a1551408sm3562676qkb.4.2023.01.18.13.35.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Jan 2023 13:35:14 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     stable@vger.kernel.org
+Subject: [PATCH] btrfs: limit device extents to the device size
+Date:   Wed, 18 Jan 2023 16:35:13 -0500
+Message-Id: <158f8775fb0256a09ab4badb752e2202aa118e1d.1674077707.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230118074458.2985005-1-naohiro.aota@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 04:44:55PM +0900, Naohiro Aota wrote:
-> This series adds a description for per-space_info bg_reclaim_threshold
-> and chunk_size. It also fixes a subtle typo.
-> 
-> Naohiro Aota (3):
->   btrfs-progs: docs: add per-space_info bg_reclaim_threshold entry
->   btrfs-progs: docs: fix nodesize typo
->   btrfs-progs: docs: add chunk_size description
+There was a recent regression in btrfs/177 that started happening with
+the size class patches.  This however isn't a regression introduced by
+those patches, but rather the bug was uncovered by a change in behavior
+in these patches.  The patches triggered more chunk allocations in the
+^free-space-tree case, which uncovered a race with device shrink.
 
-Added to devel, thanks. For the bg_reclaim I've added that it can be
-used for regular devices too.
+The problem is we will set the device total size to the new size, and
+use this to find a hole for a device extent.  However during shrink we
+may have device extents allocated past this range, so we could
+potentially find a hole in a range past our new shrink size.  We don't
+actually limit our found extent to the device size anywhere, we assume
+that we will not find a hole past our device size.  This isn't true with
+shrink as we're relocating block groups and thus creating holes past the
+device size.
+
+Fix this by making sure we do not search past the new device size, and
+if we wander into any device extents that start after our device size
+simply break from the loop and use whatever hole we've already found.
+
+cc: stable@vger.kernel.org
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/volumes.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 675598c3cb35..707dd0456cea 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1600,7 +1600,7 @@ static int find_free_dev_extent_start(struct btrfs_device *device,
+ 	if (ret < 0)
+ 		goto out;
+ 
+-	while (1) {
++	while (search_start < search_end) {
+ 		l = path->nodes[0];
+ 		slot = path->slots[0];
+ 		if (slot >= btrfs_header_nritems(l)) {
+@@ -1623,6 +1623,9 @@ static int find_free_dev_extent_start(struct btrfs_device *device,
+ 		if (key.type != BTRFS_DEV_EXTENT_KEY)
+ 			goto next;
+ 
++		if (key.offset > search_end)
++			break;
++
+ 		if (key.offset > search_start) {
+ 			hole_size = key.offset - search_start;
+ 			dev_extent_hole_check(device, &search_start, &hole_size,
+@@ -1683,6 +1686,7 @@ static int find_free_dev_extent_start(struct btrfs_device *device,
+ 	else
+ 		ret = 0;
+ 
++	ASSERT(max_hole_start + max_hole_size <= search_end);
+ out:
+ 	btrfs_free_path(path);
+ 	*start = max_hole_start;
+-- 
+2.26.3
+
