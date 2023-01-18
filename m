@@ -2,579 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F05671936
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jan 2023 11:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BB9671A82
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jan 2023 12:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbjARKlA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Jan 2023 05:41:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
+        id S229791AbjARLZ3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Jan 2023 06:25:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjARKkL (ORCPT
+        with ESMTP id S230314AbjARLZE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Jan 2023 05:40:11 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75644C4EAA;
-        Wed, 18 Jan 2023 01:44:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=J1bJRn8dMRq79u1+uHawGew6oUOcQ5MnfgpdoCFCIVE=; b=TQTt/SAbg4Elgy7FQ74N+cMV0y
-        8A+E+kNYML31DWmWs4Vll09VogMb8nddkG06zsPFdV8usGFtyocAqnXN57cmrApq8eZZjnL4n+ifZ
-        WTSXrwV4tlafd1chRE92COzvQG7fg1aSkHlPqml0E6wNASis14pGRrZ4ApGcYImCTW6fX1CTWzUv2
-        bu3Rale/X80o1JAwkRlkaLUYwMlLzC4QSa5D1tLsDmBgZbAfJpqFOeq/9AzBGbfOUTNRSkmZdrP4t
-        O3Z3gS4V0zEibcUY0AsGOZXdCIYf7ruz2tu+uNRuzijI7EEK8vCpT2jpVCQcGCF3fi9K3tobLD2K6
-        xqM08S8g==;
-Received: from 213-147-167-250.nat.highway.webapn.at ([213.147.167.250] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pI4zR-000AD8-W6; Wed, 18 Jan 2023 09:44:18 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>
-Cc:     linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nilfs@vger.kernel.org
-Subject: [PATCH 9/9] mm: return an ERR_PTR from __filemap_get_folio
-Date:   Wed, 18 Jan 2023 10:43:29 +0100
-Message-Id: <20230118094329.9553-10-hch@lst.de>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230118094329.9553-1-hch@lst.de>
-References: <20230118094329.9553-1-hch@lst.de>
+        Wed, 18 Jan 2023 06:25:04 -0500
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2328C93E
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Jan 2023 02:43:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1674038603; x=1705574603;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=8Pt2DQ4+g1cUpysUkNp3YyR/gXx1ec824cEV/J9CbOA=;
+  b=E5MUS013THoUEyiLVkPOFeljsqPOBSMKj6glnqICyKcT3PwBo7EPzR3j
+   2oevBwb/IR+IGRtkvIjqzgE49m+bgbUzwTxABs8KcQjz5ElawwFmtfv6T
+   cyu3Aji1k7Cc69Rfkae+l8t2ZqwJF03JxhBvfCU1lsqMJvJm5HavO+pOR
+   2l4+Ji20NrN3anuUpmq04ErlU+g3qoFlzHS4TpR/qt9rEMu66IAFifzs9
+   WrTiOstd3SperMzaS/Zjnvtn+QjgK1beUQ/4wQcX5LT0JemM7f0QA0c+R
+   1kypWwdOz53MbocmOB/RpKNeJh97Kc0sPoxm2y3oLKhqL0XUNA2sl/d9w
+   A==;
+X-IronPort-AV: E=Sophos;i="5.97,226,1669046400"; 
+   d="scan'208";a="333120869"
+Received: from mail-bn8nam12lp2170.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.170])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Jan 2023 18:43:20 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S41FXE18+pOuTlF5JLR9Bu1UtkB3hqA3L78jiLpLFOwe/+K/CESLPMkvt0MSIwvjSZIGJxK/H34UB5MtwdIkQhglBcPoJpNpQkiXTQr7P1xzv4SWpv4tKKlKCEwGDdLqoLE4MDTh68nyeSzOKNzLJy/m62IyOP0lhD7Sk4TzskCHfa7RSVFSS+DFrkYVIBuKCzLX3PfC0vyCkT/kXFwMwSTx6c5M0Tp967Ve19A24ub02MZj8r51G5F+K8CSzHcIq0GbeRpditartYW1bRV8q15pUiwrpI19S2tks4ryR38iNyOPThkFVmoF0XJ4vwezfZbd6T929DhQUd+lnAK5Lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8Pt2DQ4+g1cUpysUkNp3YyR/gXx1ec824cEV/J9CbOA=;
+ b=GSpLVuwJTRnumNlmavqunCJ1AU7fHU7gD1Ksq0wnKRcedEwEttqScDeB39Q4bnEL6waO7LnsE9WYR2lMBZqYnQ5ioWFrJ4yykMs3OmRsUZklZ8F+Oshaq6JUMcpGk0I3ccRcpxz5Uf6Clg5FkARj0GO/gIN/QPbP+WI4zVA3aT1A/ju9tCJ5YQ9rYVlWHP5abLtxSGu5BEGOlPYCdmQmsa3jfPjGKso2NtqskJvXG2vOdAytBu+nNROoaBPRg1oZui3A0d8jnv6FHILeMoKv27p0bLXGIEPyrJlgniZW/U+SrhxqRffrY18IzxMiMCPahPV5pdIXRuLuTi0uGF4BDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8Pt2DQ4+g1cUpysUkNp3YyR/gXx1ec824cEV/J9CbOA=;
+ b=DBBrWyO1841WMIPcf/kd8B66g45JzIEDCok3YjKquf72Jj+aBOs5+WYMvjZlGAhbY4BjAgoa7YHZjAThFl8cyOmVBdriGSojExVVK5GciTnCMHpKpilpgL5msQR6e7CfG199wezt5fNINQrUtlR76Dr3MEqp/X4Hf4o+Ho/l81U=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by BN7PR04MB4225.namprd04.prod.outlook.com (2603:10b6:406:fa::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.24; Wed, 18 Jan
+ 2023 10:43:18 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::d4bd:b4ef:5bff:2329]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::d4bd:b4ef:5bff:2329%4]) with mapi id 15.20.6002.013; Wed, 18 Jan 2023
+ 10:43:18 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/3] btrfs-progs: docs: add per-space_info
+ bg_reclaim_threshold entry
+Thread-Topic: [PATCH 1/3] btrfs-progs: docs: add per-space_info
+ bg_reclaim_threshold entry
+Thread-Index: AQHZKxUaf0Xsm9/oO0qrkASm2j9JHq6j/S6A
+Date:   Wed, 18 Jan 2023 10:43:18 +0000
+Message-ID: <c14c458e-2a59-f7ed-01ea-d654497d4dc0@wdc.com>
+References: <20230118074458.2985005-1-naohiro.aota@wdc.com>
+ <20230118074458.2985005-2-naohiro.aota@wdc.com>
+In-Reply-To: <20230118074458.2985005-2-naohiro.aota@wdc.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|BN7PR04MB4225:EE_
+x-ms-office365-filtering-correlation-id: 633c26e9-892e-46df-8af2-08daf940cfac
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NY+KMixyzQLpy0BJp1HCogSaGLRdZAkDCc1DnzNeKGpr1J29PJSF46xYRJrklD/YAknuJ/cM2AZ+ZCDwR+jMhxr/qgnago8tCsMfODr6ZY37rLNufsGDnevoUenLyTOijUJe20K2Y1LU1HmlNCRtveCm7AamEv8RGJpAp3J0oC91jVHLpdlE2/dIHWoWiwi8vEKRX+leACKuPqODA1/9np2KSug+jTcN2gosEwOp3jJMynTOyvQ22crewbZOpyxHzOG43dKAbJ4mEgYV5QwCYwj1qef1CjD+88iE+VJNj1JBiMsL1ht+7+yXb0TKS7aA03vXWYoJAtQBzq41PnCJr1vWtibWJFr5cD61aAt/MRAVk5S20CTneY1WkkX8om4fxoP1uP/GEc9p0KvELFR9HuZ/bBBKuW4UWyjo/M09dmUSZz2Z9nvscpH6JUKH8XHt9CPVss0RqcjTui1xfjX9Zs2CWNB3CRBdq6xoqcAQ4DsKhVnYATfssSLtQnEUdbjlZ7GliPbLaelnjdqrGFpNXUFsfthMr5Zf/8725f9O8McDgvCTCMGyrlBHq2OoLSogjK+AZeF8C1CzFG5R7T1r+Zk5yLGPfYhfRnoIiaeGyql/v1v9xVCTN/sjtxPVBUeZplLODaFVFdyWAcXhIHkLw4iwZ0rec3IxFyr/8H3/OPNJUqi1HQHjcDbnxuD/wZ+iQGfumkfUfG9fDXWOqfmDrYaxdWVd95eZw3F3iymMhcpzMZ2ietqQ+edvDwtveqDyL5HrlardjvlfQP9TSd1PYw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(396003)(366004)(376002)(136003)(451199015)(8936002)(5660300002)(91956017)(41300700001)(76116006)(8676002)(64756008)(66446008)(66476007)(66556008)(66946007)(36756003)(2906002)(4744005)(478600001)(71200400001)(6486002)(86362001)(82960400001)(2616005)(6512007)(53546011)(186003)(6506007)(38070700005)(31696002)(110136005)(316002)(122000001)(38100700002)(83380400001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?azRqMllXOTJBaGgyektVcndlY0hlNUJXVUFyVnlndWFHZU5vQlBNek5ETWpM?=
+ =?utf-8?B?czRDeDNoSkx2UGZ0QnMvZFNPcWloMXN1dXZPT0RlZnlBODhWYWJBR1NQdGZt?=
+ =?utf-8?B?ZDFpbWxnRTlydWZjRm52TUxiNVF0NTIzOEF5cm8xU0pESmdwLzdoUjl6SjR2?=
+ =?utf-8?B?NStETWs0dnh3ZUxCeWN3bjZVVk9rWGJQa3ZwSVhWU0hHSjkrQVhoTnpFc0RZ?=
+ =?utf-8?B?ZUR3aTE2SjVoMElOcWViVWJIOWs0Y3lORnhRdVo5bHB4d0RZa0lnUlowZGpC?=
+ =?utf-8?B?Zy9TV3F0U1I5T24waEFyWS8zVjZiSEJBVXBiSDhTb2RpOTlmVU43aHZvMkUz?=
+ =?utf-8?B?cGl3aDJGSFczczE2KytjajllUXlXNlFta0FGM0FaTjRkL1ZGU3Nsa1R0UGVo?=
+ =?utf-8?B?NGdsbCtLcDhJZHhxMkhYcFRudmdXdGFqeU9hZGNPWlljSjhIN2RzUjdGU2hQ?=
+ =?utf-8?B?aEhBM09CWXhKbUJScXdEN0RUZDdOYkkrWEN4TlZTSFZHRWhXam1GZ0VUS1Ir?=
+ =?utf-8?B?OHZmdWhLb0NRbEtNemtwUEI2MXpqcmdDaHVGbmJDdGViaDZQeDY2b1V3ejdG?=
+ =?utf-8?B?R0pLZVIxVHJzWlRsNHF3Rkt4UjdiclVDOUNjaGhhR3IrUytCZTltNGZMeFIr?=
+ =?utf-8?B?cVAzc3FtbU1od1g2YXk0b1FvbURIdXpjQlJGblNQcXJ0dHlFQWszOU1kVEUy?=
+ =?utf-8?B?V1pGUWdaZTRoWmIyTkhnWjZvOCtORGpab2NhYWNCOXRPZWxvOGpJZ1lubk00?=
+ =?utf-8?B?VmpyUFlvNG14YVhFdExNNGg0SXhQSmNnMWttLzBVUXlqY0VsR3hsck1SZ2hu?=
+ =?utf-8?B?L2tlY3VkbmxmNTQ2MDRvU1k0WGFVWmhyMTN0cHNnQjlKbVNxZ2hwWnJnNFJ2?=
+ =?utf-8?B?eXBwdGxMSWJTMjV0dGt6eDUvQXlBK2w0MnU1MThnRmhEaGQ4cUw1d05LdVYy?=
+ =?utf-8?B?TVkxZFdvUkdoSmhXcVJYNWMvVTZ4VVk1NlVOV1JycFR0Zm9xY25GYVB5MHFr?=
+ =?utf-8?B?Z0loK3plUnFYTVp3ZnNzb0ZqVXd5bVlVazU0OHZORmFQc0FWWjlidjdVVWF3?=
+ =?utf-8?B?Z0JlZ1VBaE9PYTFGN2pRcXA5QndiRGgzbU9NWEloaklpZzdReXFVaW55NVBK?=
+ =?utf-8?B?Y2tqQzdnVzBjUnkwVExoNGVkWklrV3E5SnRxUkZpM3k0dy9EcmtxbGNUajU5?=
+ =?utf-8?B?V0EvNzFGa01LcUFkTE1VRmp5L08yV3JGUE1DeE9tRzI2TXNTaHRMS0lJdG8y?=
+ =?utf-8?B?ZnRqc1RKQmlGOFgzdWhNMFlYRHkxK1plZGg5dU9mblA1UXJIWk94cU1rWmFQ?=
+ =?utf-8?B?NFNFUEl6T1pub1NESjVMWERETVQrRy9jOHJlYUJUSmdxYUJzckdjcEg2ZFZ6?=
+ =?utf-8?B?bC9Scm1NRVhMOVdKeVRFYUpRLzQ2ZHdkTTFDeEhsYldZOXY0d25hajd0NjZk?=
+ =?utf-8?B?T0x2M1BpekpvWTk3K2xyVkw3MVZkcis3ZmxxNnZzYjljSnQyNjY1c2lQUEJF?=
+ =?utf-8?B?ZG80NkR5MEdvb1BKajRRODJzQVVBSXFNcDgvYmhTd0hpQ3JkNkNDaVhML0hF?=
+ =?utf-8?B?Si9KbUdIb1NsbXZxcXJHUFl2bCs5WmNMMmlybHpSeEhCMTdRU0pVVU5yM0h2?=
+ =?utf-8?B?bEtFYVdTdkUva2pjWDJPY3ppNzJxV1lRNmRwUWU4cGJsSzZHbUEwQVA0MXox?=
+ =?utf-8?B?clNuT3dMOXpDQm5xWCtFZzZhMVdyUzZUU3k3TUpLK3FTeWtValNGY2NiTUZp?=
+ =?utf-8?B?ZFV6aDlLUHVIMWlHOUF6RVF4NkUzRVhkZjRqZnRVVEtjOWtOY2V0azcxaGJB?=
+ =?utf-8?B?TUdRWXpmdVM5WERmUE54OStDeUR6b2xCM2MwM2R3TW9PUGdZcHU5QVpMM1BU?=
+ =?utf-8?B?d2J1aE1IUnBHV1p6S29FaVR3bGd0WDN0dW9HenBhT25pVDFYTWx4Q0NMWEtK?=
+ =?utf-8?B?ZnVDVDhFa0h4YVBtVGVJT1RJRUtvY2lJY01vdmdJUm5sVmhpczdqc3JqdkhT?=
+ =?utf-8?B?bU50ZzR1OWhkTDR4NGViNGYrR1ZJNkE0eWFmeEFmbUR6VnR5NUQ4TlZ2amVE?=
+ =?utf-8?B?bDhYdTJ1eGRLVm0rNnNpQitQYUhVek1TS3hxQ0psWnZOYzJubU1RTXR0MWpl?=
+ =?utf-8?B?QUpKaXYrQU9FZkYwQncyMTVHR0xhVWhVVEg4NFNhNHNabUtTSlAyclFMb0k1?=
+ =?utf-8?B?YWJzeklkaTREVUJ4Vk54ZXFsUjlxeDdzZk1wc01aSHBDS2RkaUJuOVpGTlBl?=
+ =?utf-8?Q?frwWQE//5QltQvfhIJMnJvMHr8CmxrMul8n5t+rkhY=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3DDE790260991B4A934A8AF9ED307FBE@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 3BhXwA5m6Y6RoYOAfuEI1N68sRpACpXIETB5TG6961euStwZRKmrtRkCXvraP6F2V5ZI3XBtjye9jh7jV02wkiexKsq1BZ3KuI9NvFwl88tRcqxh13MbZQPI3Khr+3AN7nrdigIWifCLQ/ecOyilSt3LQLnv3p338SHV3z7PdQvTBYnsqZB8z07VuZNBsi1RJV8GU1nzn3fYA+LdSEYWHYwUn5i64Vq14pR7eImEOWVV3ibLQVebizTwHOH3LBksWr3ifj245PrngQOo3ofkZjl7Mm7ig5cEWua3Zm75W7EpJxVQcauLYfXC6FjnWQ5W9sNOn7VHhv6sjjmvblt/7WxshHNOMy1p8mPpDCDwKlSyngPlt51kq8lzQ/1CoLVA8GENpmmyG515BGKjSkSmjlQdCywGgdyySB1yc3UGHHJCvy7qMOWrhcVRSapTqsRxN6Np5hikaTZcFPZcx+lpRXg7RbVsybqbji9NOIQy5zd4j7yf94F6qI6cM3nNqwfUTGeVuamH1WDwBHYMj5EcgFT2Ie/jzWg4gwx8QW/JZD/jVgheHq0SjNCqPM1mDc6jMQ4VMy6Tk7vEBkFuQXAdGOg5l8TBflYXwjwM6e00NE4f5w2BYFeQfN/jHRF1Whvwq7E0F4X3fb0xpZT6jJaruNdtLUwQn6lSVzi4uQh1JM6g5DzTep/IK4KazfBvFZyAKnZDHrdJSLEmxj2eicxGLCT7wEcBjel6dduVtGLxF/RwxpThPIjgUQukoQah3zcqQhV2KUoq4GlOdCbtzusWeWv3zI8upsAMGJDrtOguj5c=
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 633c26e9-892e-46df-8af2-08daf940cfac
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jan 2023 10:43:18.3292
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: v5A7HcJNdXR64x7KafX4TYg+AHQzgxyTqZFlucqHKC8y0QK7N+XkOgpta13gmv/Ek8XDjhbPikUdeci2eGeimkWJagtus7PNgiOwqQxvxLo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR04MB4225
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Instead of returning NULL for all errors, distinguish between:
-
- - no entry found and not asked to allocated (-ENOENT)
- - failed to allocate memory (-ENOMEM)
- - would block (-EAGAIN)
-
-so that callers don't have to guess the error based on the passed
-in flags.
-
-Also pass through the error through the direct callers:
-filemap_get_folio, filemap_lock_folio filemap_grab_folio
-and filemap_get_incore_folio.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/afs/dir.c             | 10 +++++-----
- fs/afs/dir_edit.c        |  2 +-
- fs/afs/write.c           |  4 ++--
- fs/btrfs/disk-io.c       |  2 +-
- fs/btrfs/extent_io.c     |  2 +-
- fs/ext4/inode.c          |  2 +-
- fs/ext4/move_extent.c    |  8 ++++----
- fs/gfs2/lops.c           |  2 +-
- fs/hugetlbfs/inode.c     |  2 +-
- fs/iomap/buffered-io.c   |  6 +++---
- fs/netfs/buffered_read.c |  4 ++--
- fs/nilfs2/page.c         |  6 +++---
- mm/filemap.c             | 14 ++++++++------
- mm/folio-compat.c        |  2 +-
- mm/huge_memory.c         |  2 +-
- mm/memcontrol.c          |  2 +-
- mm/mincore.c             |  2 +-
- mm/shmem.c               |  4 ++--
- mm/swap_state.c          | 15 ++++++++-------
- mm/swapfile.c            |  4 ++--
- mm/truncate.c            | 15 ++++++++-------
- 21 files changed, 57 insertions(+), 53 deletions(-)
-
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index b7c1f8c84b38aa..41d0b4203870be 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -319,16 +319,16 @@ static struct afs_read *afs_read_dir(struct afs_vnode *dvnode, struct key *key)
- 		struct folio *folio;
- 
- 		folio = filemap_get_folio(mapping, i);
--		if (!folio) {
-+		if (IS_ERR(folio)) {
- 			if (test_and_clear_bit(AFS_VNODE_DIR_VALID, &dvnode->flags))
- 				afs_stat_v(dvnode, n_inval);
--
--			ret = -ENOMEM;
- 			folio = __filemap_get_folio(mapping,
- 						    i, FGP_LOCK | FGP_CREAT,
- 						    mapping->gfp_mask);
--			if (!folio)
-+			if (IS_ERR(folio)) {
-+				ret = PTR_ERR(folio);
- 				goto error;
-+			}
- 			folio_attach_private(folio, (void *)1);
- 			folio_unlock(folio);
- 		}
-@@ -524,7 +524,7 @@ static int afs_dir_iterate(struct inode *dir, struct dir_context *ctx,
- 		 */
- 		folio = __filemap_get_folio(dir->i_mapping, ctx->pos / PAGE_SIZE,
- 					    FGP_ACCESSED, 0);
--		if (!folio) {
-+		if (IS_ERR(folio)) {
- 			ret = afs_bad(dvnode, afs_file_error_dir_missing_page);
- 			break;
- 		}
-diff --git a/fs/afs/dir_edit.c b/fs/afs/dir_edit.c
-index 0ab7752d1b758e..f0eddccbdd9541 100644
---- a/fs/afs/dir_edit.c
-+++ b/fs/afs/dir_edit.c
-@@ -115,7 +115,7 @@ static struct folio *afs_dir_get_folio(struct afs_vnode *vnode, pgoff_t index)
- 	folio = __filemap_get_folio(mapping, index,
- 				    FGP_LOCK | FGP_ACCESSED | FGP_CREAT,
- 				    mapping->gfp_mask);
--	if (!folio)
-+	if (IS_ERR(folio))
- 		clear_bit(AFS_VNODE_DIR_VALID, &vnode->flags);
- 	else if (folio && !folio_test_private(folio))
- 		folio_attach_private(folio, (void *)1);
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 2d3b08b7406ca7..cf1eb0d122c275 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -232,7 +232,7 @@ static void afs_kill_pages(struct address_space *mapping,
- 		_debug("kill %lx (to %lx)", index, last);
- 
- 		folio = filemap_get_folio(mapping, index);
--		if (!folio) {
-+		if (IS_ERR(folio)) {
- 			next = index + 1;
- 			continue;
- 		}
-@@ -270,7 +270,7 @@ static void afs_redirty_pages(struct writeback_control *wbc,
- 		_debug("redirty %llx @%llx", len, start);
- 
- 		folio = filemap_get_folio(mapping, index);
--		if (!folio) {
-+		if (IS_ERR(folio)) {
- 			next = index + 1;
- 			continue;
- 		}
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 7d5da43a89ee7f..f1035e0bcf8c6a 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4034,7 +4034,7 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 
- 		folio = filemap_get_folio(device->bdev->bd_inode->i_mapping,
- 				     bytenr >> PAGE_SHIFT);
--		if (!folio) {
-+		if (IS_ERR(folio)) {
- 			errors++;
- 			if (i == 0)
- 				primary_failed = true;
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index a54d2cf74ba020..faaab9fae66d66 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -230,7 +230,7 @@ void extent_range_redirty_for_io(struct inode *inode, u64 start, u64 end)
- 
- 	while (index <= end_index) {
- 		folio = filemap_get_folio(mapping, index);
--		if (!folio)
-+		if (IS_ERR(folio))
- 			continue;
- 		filemap_dirty_folio(mapping, folio);
- 		folio_account_redirty(folio);
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index fb6cd994e59afa..ee8f82c7acf9ff 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5391,7 +5391,7 @@ static void ext4_wait_for_tail_page_commit(struct inode *inode)
- 	while (1) {
- 		struct folio *folio = filemap_lock_folio(inode->i_mapping,
- 				      inode->i_size >> PAGE_SHIFT);
--		if (!folio)
-+		if (IS_ERR(folio))
- 			return;
- 		ret = __ext4_journalled_invalidate_folio(folio, offset,
- 						folio_size(folio) - offset);
-diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-index 2de9829aed63bf..7bf6d069199cbb 100644
---- a/fs/ext4/move_extent.c
-+++ b/fs/ext4/move_extent.c
-@@ -141,18 +141,18 @@ mext_folio_double_lock(struct inode *inode1, struct inode *inode2,
- 	flags = memalloc_nofs_save();
- 	folio[0] = __filemap_get_folio(mapping[0], index1, fgp_flags,
- 			mapping_gfp_mask(mapping[0]));
--	if (!folio[0]) {
-+	if (IS_ERR(folio[0])) {
- 		memalloc_nofs_restore(flags);
--		return -ENOMEM;
-+		return PTR_ERR(folio[0]);
- 	}
- 
- 	folio[1] = __filemap_get_folio(mapping[1], index2, fgp_flags,
- 			mapping_gfp_mask(mapping[1]));
- 	memalloc_nofs_restore(flags);
--	if (!folio[1]) {
-+	if (IS_ERR(folio[1])) {
- 		folio_unlock(folio[0]);
- 		folio_put(folio[0]);
--		return -ENOMEM;
-+		return PTR_ERR(folio[1]);
- 	}
- 	/*
- 	 * __filemap_get_folio() may not wait on folio's writeback if
-diff --git a/fs/gfs2/lops.c b/fs/gfs2/lops.c
-index 51d4b610127cdb..9e8a00cee8afc1 100644
---- a/fs/gfs2/lops.c
-+++ b/fs/gfs2/lops.c
-@@ -472,7 +472,7 @@ static void gfs2_jhead_process_page(struct gfs2_jdesc *jd, unsigned long index,
- 	struct folio *folio;
- 
- 	folio = filemap_get_folio(jd->jd_inode->i_mapping, index);
--	if (!folio)
-+	if (IS_ERR(folio))
- 		return;
- 
- 	folio_wait_locked(folio);
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 48f1a8ad22431e..19dac1fbcd3705 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -697,7 +697,7 @@ static void hugetlbfs_zero_partial_page(struct hstate *h,
- 	struct folio *folio;
- 
- 	folio = filemap_lock_folio(mapping, idx);
--	if (!folio)
-+	if (IS_ERR(folio))
- 		return;
- 
- 	start = start & ~huge_page_mask(h);
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 356193e44cf07f..ab5a5a5a3e0283 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -614,8 +614,8 @@ static int iomap_write_begin(struct iomap_iter *iter, loff_t pos,
- 
- 	folio = __filemap_get_folio(iter->inode->i_mapping, pos >> PAGE_SHIFT,
- 			fgp, mapping_gfp_mask(iter->inode->i_mapping));
--	if (!folio) {
--		status = (iter->flags & IOMAP_NOWAIT) ? -EAGAIN : -ENOMEM;
-+	if (IS_ERR(folio)) {
-+		status = PTR_ERR(folio);
- 		goto out_no_page;
- 	}
- 
-@@ -882,7 +882,7 @@ static int iomap_write_delalloc_scan(struct inode *inode,
- 		/* grab locked page */
- 		folio = filemap_lock_folio(inode->i_mapping,
- 				start_byte >> PAGE_SHIFT);
--		if (!folio) {
-+		if (IS_ERR(folio)) {
- 			start_byte = ALIGN_DOWN(start_byte, PAGE_SIZE) +
- 					PAGE_SIZE;
- 			continue;
-diff --git a/fs/netfs/buffered_read.c b/fs/netfs/buffered_read.c
-index 7679a68e819307..209726a9cfdb9c 100644
---- a/fs/netfs/buffered_read.c
-+++ b/fs/netfs/buffered_read.c
-@@ -350,8 +350,8 @@ int netfs_write_begin(struct netfs_inode *ctx,
- retry:
- 	folio = __filemap_get_folio(mapping, index, fgp_flags,
- 				    mapping_gfp_mask(mapping));
--	if (!folio)
--		return -ENOMEM;
-+	if (IS_ERR(folio))
-+		return PTR_ERR(folio);
- 
- 	if (ctx->ops->check_write_begin) {
- 		/* Allow the netfs (eg. ceph) to flush conflicts. */
-diff --git a/fs/nilfs2/page.c b/fs/nilfs2/page.c
-index 41ccd43cd9797f..5cf30827f244c4 100644
---- a/fs/nilfs2/page.c
-+++ b/fs/nilfs2/page.c
-@@ -259,10 +259,10 @@ int nilfs_copy_dirty_pages(struct address_space *dmap,
- 			NILFS_PAGE_BUG(&folio->page, "inconsistent dirty state");
- 
- 		dfolio = filemap_grab_folio(dmap, folio->index);
--		if (unlikely(!dfolio)) {
-+		if (unlikely(IS_ERR(dfolio))) {
- 			/* No empty page is added to the page cache */
--			err = -ENOMEM;
- 			folio_unlock(folio);
-+			err = PTR_ERR(dfolio);
- 			break;
- 		}
- 		if (unlikely(!folio_buffers(folio)))
-@@ -311,7 +311,7 @@ void nilfs_copy_back_pages(struct address_space *dmap,
- 
- 		folio_lock(folio);
- 		dfolio = filemap_lock_folio(dmap, index);
--		if (dfolio) {
-+		if (!IS_ERR(dfolio)) {
- 			/* overwrite existing folio in the destination cache */
- 			WARN_ON(folio_test_dirty(dfolio));
- 			nilfs_copy_page(&dfolio->page, &folio->page, 0);
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 35baadd130795c..4037a132f7adcc 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1905,7 +1905,7 @@ void *filemap_get_entry(struct address_space *mapping, pgoff_t index)
-  *
-  * If there is a page cache page, it is returned with an increased refcount.
-  *
-- * Return: The found folio or %NULL otherwise.
-+ * Return: The found folio or an ERR_PTR() otherwise.
-  */
- struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
- 		int fgp_flags, gfp_t gfp)
-@@ -1923,7 +1923,7 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
- 		if (fgp_flags & FGP_NOWAIT) {
- 			if (!folio_trylock(folio)) {
- 				folio_put(folio);
--				return NULL;
-+				return ERR_PTR(-EAGAIN);
- 			}
- 		} else {
- 			folio_lock(folio);
-@@ -1962,7 +1962,7 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
- 
- 		folio = filemap_alloc_folio(gfp, 0);
- 		if (!folio)
--			return NULL;
-+			return ERR_PTR(-ENOMEM);
- 
- 		if (WARN_ON_ONCE(!(fgp_flags & (FGP_LOCK | FGP_FOR_MMAP))))
- 			fgp_flags |= FGP_LOCK;
-@@ -1987,6 +1987,8 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
- 			folio_unlock(folio);
- 	}
- 
-+	if (!folio)
-+		return ERR_PTR(-ENOENT);
- 	return folio;
- }
- EXPORT_SYMBOL(__filemap_get_folio);
-@@ -3126,7 +3128,7 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
- 	 * Do we have something in the page cache already?
- 	 */
- 	folio = filemap_get_folio(mapping, index);
--	if (likely(folio)) {
-+	if (likely(!IS_ERR(folio))) {
- 		/*
- 		 * We found the page, so try async readahead before waiting for
- 		 * the lock.
-@@ -3155,7 +3157,7 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
- 		folio = __filemap_get_folio(mapping, index,
- 					  FGP_CREAT|FGP_FOR_MMAP,
- 					  vmf->gfp_mask);
--		if (!folio) {
-+		if (IS_ERR(folio)) {
- 			if (fpin)
- 				goto out_retry;
- 			filemap_invalidate_unlock_shared(mapping);
-@@ -3506,7 +3508,7 @@ static struct folio *do_read_cache_folio(struct address_space *mapping,
- 		filler = mapping->a_ops->read_folio;
- repeat:
- 	folio = filemap_get_folio(mapping, index);
--	if (!folio) {
-+	if (IS_ERR(folio)) {
- 		folio = filemap_alloc_folio(gfp, 0);
- 		if (!folio)
- 			return ERR_PTR(-ENOMEM);
-diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-index f3841b4977b68e..4cd173336d8589 100644
---- a/mm/folio-compat.c
-+++ b/mm/folio-compat.c
-@@ -97,7 +97,7 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 	struct folio *folio;
- 
- 	folio = __filemap_get_folio(mapping, index, fgp_flags, gfp);
--	if (!folio)
-+	if (IS_ERR(folio))
- 		return NULL;
- 	return folio_file_page(folio, index);
- }
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index a2830019aaa017..b0c9170632e37c 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -3103,7 +3103,7 @@ static int split_huge_pages_in_file(const char *file_path, pgoff_t off_start,
- 		struct folio *folio = filemap_get_folio(mapping, index);
- 
- 		nr_pages = 1;
--		if (!folio)
-+		if (IS_ERR(folio))
- 			continue;
- 
- 		if (!folio_test_large(folio))
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 893427aded0191..8bcea91099d218 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5693,7 +5693,7 @@ static struct page *mc_handle_file_pte(struct vm_area_struct *vma,
- 	/* shmem/tmpfs may report page out on swap: account for that too. */
- 	index = linear_page_index(vma, addr);
- 	folio = filemap_get_incore_folio(vma->vm_file->f_mapping, index);
--	if (!folio)
-+	if (IS_ERR(folio))
- 		return NULL;
- 	return folio_file_page(folio, index);
- }
-diff --git a/mm/mincore.c b/mm/mincore.c
-index a085a2aeabd8e6..386c1aed1a8aef 100644
---- a/mm/mincore.c
-+++ b/mm/mincore.c
-@@ -61,7 +61,7 @@ static unsigned char mincore_page(struct address_space *mapping, pgoff_t index)
- 	 * tmpfs's .fault). So swapped out tmpfs mappings are tested here.
- 	 */
- 	folio = filemap_get_incore_folio(mapping, index);
--	if (folio) {
-+	if (!IS_ERR(folio)) {
- 		present = folio_test_uptodate(folio);
- 		folio_put(folio);
- 	}
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 769107f376562f..676318f95f7b40 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -603,7 +603,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
- 
- 		index = (inode->i_size & HPAGE_PMD_MASK) >> PAGE_SHIFT;
- 		folio = filemap_get_folio(inode->i_mapping, index);
--		if (!folio)
-+		if (IS_ERR(folio))
- 			goto drop;
- 
- 		/* No huge page at the end of the file: nothing to split */
-@@ -3187,7 +3187,7 @@ static const char *shmem_get_link(struct dentry *dentry,
- 
- 	if (!dentry) {
- 		folio = filemap_get_folio(inode->i_mapping, 0);
--		if (!folio)
-+		if (IS_ERR(folio))
- 			return ERR_PTR(-ECHILD);
- 		if (PageHWPoison(folio_page(folio, 0)) ||
- 		    !folio_test_uptodate(folio)) {
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index c39ea34bc4fc10..e853d3eecf55bb 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -330,7 +330,7 @@ struct folio *swap_cache_get_folio(swp_entry_t entry,
- 	struct folio *folio;
- 
- 	folio = filemap_get_folio(swap_address_space(entry), swp_offset(entry));
--	if (folio) {
-+	if (!IS_ERR(folio)) {
- 		bool vma_ra = swap_use_vma_readahead();
- 		bool readahead;
- 
-@@ -360,6 +360,8 @@ struct folio *swap_cache_get_folio(swp_entry_t entry,
- 			if (!vma || !vma_ra)
- 				atomic_inc(&swapin_readahead_hits);
- 		}
-+	} else {
-+		folio = NULL;
- 	}
- 
- 	return folio;
-@@ -383,22 +385,21 @@ struct folio *filemap_get_incore_folio(struct address_space *mapping,
- 	struct folio *folio = filemap_get_entry(mapping, index);
- 
- 	if (!xa_is_value(folio))
--		goto out;
-+		return folio;
- 	if (!shmem_mapping(mapping))
--		return NULL;
-+		return ERR_PTR(-ENOENT);
- 
- 	swp = radix_to_swp_entry(folio);
- 	/* There might be swapin error entries in shmem mapping. */
- 	if (non_swap_entry(swp))
--		return NULL;
-+		return ERR_PTR(-ENOENT);
- 	/* Prevent swapoff from happening to us */
- 	si = get_swap_device(swp);
- 	if (!si)
--		return NULL;
-+		return ERR_PTR(-ENOENT);
- 	index = swp_offset(swp);
- 	folio = filemap_get_folio(swap_address_space(swp), index);
- 	put_swap_device(si);
--out:
- 	return folio;
- }
- 
-@@ -425,7 +426,7 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
- 		folio = filemap_get_folio(swap_address_space(entry),
- 						swp_offset(entry));
- 		put_swap_device(si);
--		if (folio)
-+		if (!IS_ERR(folio))
- 			return folio_file_page(folio, swp_offset(entry));
- 
- 		/*
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index a5729273480e07..a128b61b6b8c91 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -136,7 +136,7 @@ static int __try_to_reclaim_swap(struct swap_info_struct *si,
- 	int ret = 0;
- 
- 	folio = filemap_get_folio(swap_address_space(entry), offset);
--	if (!folio)
-+	if (IS_ERR(folio))
- 		return 0;
- 	/*
- 	 * When this function is called from scan_swap_map_slots() and it's
-@@ -2096,7 +2096,7 @@ static int try_to_unuse(unsigned int type)
- 
- 		entry = swp_entry(type, i);
- 		folio = filemap_get_folio(swap_address_space(entry), i);
--		if (!folio)
-+		if (IS_ERR(folio))
- 			continue;
- 
- 		/*
-diff --git a/mm/truncate.c b/mm/truncate.c
-index 7b4ea4c4a46b20..86de31ed4d3238 100644
---- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -375,7 +375,7 @@ void truncate_inode_pages_range(struct address_space *mapping,
- 
- 	same_folio = (lstart >> PAGE_SHIFT) == (lend >> PAGE_SHIFT);
- 	folio = __filemap_get_folio(mapping, lstart >> PAGE_SHIFT, FGP_LOCK, 0);
--	if (folio) {
-+	if (!IS_ERR(folio)) {
- 		same_folio = lend < folio_pos(folio) + folio_size(folio);
- 		if (!truncate_inode_partial_folio(folio, lstart, lend)) {
- 			start = folio->index + folio_nr_pages(folio);
-@@ -387,14 +387,15 @@ void truncate_inode_pages_range(struct address_space *mapping,
- 		folio = NULL;
- 	}
- 
--	if (!same_folio)
-+	if (!same_folio) {
- 		folio = __filemap_get_folio(mapping, lend >> PAGE_SHIFT,
- 						FGP_LOCK, 0);
--	if (folio) {
--		if (!truncate_inode_partial_folio(folio, lstart, lend))
--			end = folio->index;
--		folio_unlock(folio);
--		folio_put(folio);
-+		if (!IS_ERR(folio)) {
-+			if (!truncate_inode_partial_folio(folio, lstart, lend))
-+				end = folio->index;
-+			folio_unlock(folio);
-+			folio_put(folio);
-+		}
- 	}
- 
- 	index = start;
--- 
-2.39.0
-
+T24gMTguMDEuMjMgMDk6MTYsIE5hb2hpcm8gQW90YSB3cm90ZToNCj4gK0ZpbGVzIGluIGAvc3lz
+L2ZzL2J0cmZzLzxVVUlEPi9hbGxvY2F0aW9ucy97ZGF0YSxtZXRhZGF0YSxzeXN0ZW19YCBkaXJl
+Y3RvcnkgYXJlOg0KPiArDQo+ICtiZ19yZWNsYWltX3RocmVzaG9sZA0KPiArICAgICAgICAoUlcs
+IHNpbmNlOiA1LjE5KQ0KPiArDQo+ICsgICAgICAgIFJlY2xhaW1hYmxlIHNwYWNlIHBlcmNlbnRh
+Z2Ugb2YgYmxvY2sgZ3JvdXAncyBzaXplIChleGNsdWRpbmcgcGVybWFuZW50bHkgdW51c2FibGUg
+c3BhY2UpIHRvIHJlY2xhaW0gdGhlIGJsb2NrIGdyb3VwLg0KPiArICAgICAgICBVc2VkIGZvciB6
+b25lZCBkZXZpY2VzLg0KDQpJJ2QgZGlzY2FyZCB0aGUgbGFzdCBzZW50ZW5jZSwgYXMgdGhlIGJn
+X3JlY2xhaW1fdGhyZXNob2xkIGlzIA0KdXNlZCBvbiBub24tem9uZWQgZGV2aWNlcyBhcyB3ZWxs
+Lg0KDQo+ICsNCj4gIEZpbGVzIGluIGAvc3lzL2ZzL2J0cmZzLzxVVUlEPi9kZXZpbmZvLzxERVZJ
+RD5gIGRpcmVjdG9yeSBhcmU6DQoNCg==
