@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E47E6742FB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jan 2023 20:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A86366742FD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jan 2023 20:40:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbjASTjr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Jan 2023 14:39:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
+        id S230497AbjASTju (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Jan 2023 14:39:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjASTjo (ORCPT
+        with ESMTP id S230477AbjASTjp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Jan 2023 14:39:44 -0500
+        Thu, 19 Jan 2023 14:39:45 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4A1A5FD
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Jan 2023 11:39:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9C8A5F6
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Jan 2023 11:39:44 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E407D61D1B
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C789E61D23
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Jan 2023 19:39:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCC3BC433D2
         for <linux-btrfs@vger.kernel.org>; Thu, 19 Jan 2023 19:39:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC41BC433F0
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Jan 2023 19:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674157182;
-        bh=3JVlcVMDynD013hZOe1M/K44O4llr6B7BUBJgoSzHXg=;
+        s=k20201202; t=1674157183;
+        bh=RN1Gicf4pu/HnXjVjlEdkVEpsQNDVzDuFtgt3WDWocw=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Wzb/JtAbo+CF7AXMnAPx6Txw3DU6ZtKBX37blCaleH9zN3+0+z+K7WnGfggxV42QZ
-         gJ3qq0nN5xoSsAdgUAKjyeV5+lyxQI36Mu0jRaQZT1FZtbUxSiMbV3fwfW4Rc18n6b
-         Ug3IUlLUs5iFdsOTJynZ2VohEFkRy+NFhYDBLZLWp3t5mVRYVFl3cQTD0X4/Bd+SLO
-         p7V/Mu6dbFaoEOsbqaCLpsZyGWyHQyLVkx+rsio33f7mbXCy10eWEoqvH2bEMn4y/S
-         K8NoD137afTcBmKoaiGGY7VvRtwvKx2XuKnse6QjOZrsjHjeDPjr8eCMGFiu5qOXnL
-         LQz/VF7JmJVvQ==
+        b=eXFva80h0uNGAFBuF3yCCvp2wkXs2lK2BfJ28D2yHfBoAh3VXhuhuoh3h78pH2Dyt
+         8uyBCV7xY7VaxPSvavIs3FKrIvvyr9E//CG/scHHEJMSkKXUpeSPPhmvwf0wbWXElI
+         haYdwtco/GAzh5fCeRwGdEScdgr8To3W7OcRWFIMxdsw2DB1u5M3uZM1qlRuyDk+Wi
+         8hWxqAFusYLmmgmLZf1xGRVenMAwUXupuR9ksxHiDlCg/WHLGxGpbXDiJvolvbzqwx
+         kntzZIPtWFzZcCXS+xE9ck/NtHvJTVMQvHXjHrKi5VtdBnoY1UG4/jbgr23E+m037V
+         XKIYoVndlF7mw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 09/18] btrfs: send: iterate waiting dir move rbtree only once when processing refs
-Date:   Thu, 19 Jan 2023 19:39:21 +0000
-Message-Id: <f4d99ec2e8089cb2015f9da2e37f85c70d886868.1674157020.git.fdmanana@suse.com>
+Subject: [PATCH v2 10/18] btrfs: send: initialize all the red black trees earlier
+Date:   Thu, 19 Jan 2023 19:39:22 +0000
+Message-Id: <368a25b99e38f6fe0923d66bfc6a939a91d41da9.1674157020.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1674157020.git.fdmanana@suse.com>
 References: <cover.1674157020.git.fdmanana@suse.com>
@@ -53,11 +53,21 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When processing the new references for an inode, we unnecessarily iterate
-twice the waiting dir moves rbtree, once with is_waiting_for_move() and
-if we found an entry in the rbtree, we iterate it again with a call to
-get_waiting_dir_move(). This is pointless, we can make this simpler and
-more efficient by calling only get_waiting_dir_move(), so just do that.
+After we allocate the send context object and before we initialize all
+the red black trees, we can jump to the 'out' label if some errors happen,
+and then under the 'out' label we use RB_EMPTY_ROOT() against some of the
+those trees, which we have not yet initialized. This happens to work out
+ok because the send context object was initialized to zeroes with kzalloc
+and the RB_ROOT initializer just happens to have the following definition:
+
+    #define RB_ROOT (struct rb_root) { NULL, }
+
+But it's really neither clean nor a good practice as RB_ROOT is supposed
+to be opaque and in case it changes or we change those red black trees to
+some other data structure, it leaves us in a precarious situation.
+
+So initialize all the red black trees immediately after allocating the
+send context and before any jump into the 'out' label.
 
 This patch is part of a larger patchset and the changelog of the last
 patch in the series contains a sample performance test and results.
@@ -84,28 +94,39 @@ The patches that comprise the patchset are the following:
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ fs/btrfs/send.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index cd4aa0eae66c..20fcf1c0832a 100644
+index 20fcf1c0832a..38319d0354d4 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -4335,12 +4335,9 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
- 				 * the source path when performing its rename
- 				 * operation.
- 				 */
--				if (is_waiting_for_move(sctx, ow_inode)) {
--					wdm = get_waiting_dir_move(sctx,
--								   ow_inode);
--					ASSERT(wdm);
-+				wdm = get_waiting_dir_move(sctx, ow_inode);
-+				if (wdm)
- 					wdm->orphanized = true;
--				}
+@@ -8142,6 +8142,12 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 	INIT_LIST_HEAD(&sctx->backref_cache.lru_list);
+ 	mt_init(&sctx->backref_cache.entries);
  
- 				/*
- 				 * Make sure we clear our orphanized inode's
++	sctx->pending_dir_moves = RB_ROOT;
++	sctx->waiting_dir_moves = RB_ROOT;
++	sctx->orphan_dirs = RB_ROOT;
++	sctx->rbtree_new_refs = RB_ROOT;
++	sctx->rbtree_deleted_refs = RB_ROOT;
++
+ 	sctx->flags = arg->flags;
+ 
+ 	if (arg->flags & BTRFS_SEND_FLAG_VERSION) {
+@@ -8207,12 +8213,6 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 		goto out;
+ 	}
+ 
+-	sctx->pending_dir_moves = RB_ROOT;
+-	sctx->waiting_dir_moves = RB_ROOT;
+-	sctx->orphan_dirs = RB_ROOT;
+-	sctx->rbtree_new_refs = RB_ROOT;
+-	sctx->rbtree_deleted_refs = RB_ROOT;
+-
+ 	sctx->clone_roots = kvcalloc(sizeof(*sctx->clone_roots),
+ 				     arg->clone_sources_count + 1,
+ 				     GFP_KERNEL);
 -- 
 2.35.1
 
