@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9CC6742F1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jan 2023 20:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D43BB674306
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jan 2023 20:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbjASTg7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Jan 2023 14:36:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
+        id S230352AbjASTmG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Jan 2023 14:42:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjASTg5 (ORCPT
+        with ESMTP id S230322AbjASTmC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Jan 2023 14:36:57 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C204DCEC;
-        Thu, 19 Jan 2023 11:36:56 -0800 (PST)
+        Thu, 19 Jan 2023 14:42:02 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1622C9373F
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Jan 2023 11:42:00 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6737321EAF;
-        Thu, 19 Jan 2023 19:36:55 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B80ED5D232;
+        Thu, 19 Jan 2023 19:41:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1674157015;
+        t=1674157318;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ngsB5POdlD2n+2OU/cXyQK2GoaQO8aRzLLvD27r7gVM=;
-        b=Lixb62zQnVjf4Te8cS5PxZ2UB8o7V+UeaLSf5UxWsQYDSIxSsxni7Mk/vONTK2T9zd6qU+
-        jszCpCw6LEbhSgV/ns39hroEqT78DmZceIYKh+tgtEBaTtJl/F8skMr5ElD9/Lh4YAHNsY
-        Zo81hHCpyZaMqjwgA+Wb3UpNh8q8K0o=
+        bh=oIh1zmCdVFs0DEtRrIYUjJKZkkDfsBKk1Vqdt+ENKCM=;
+        b=r9m7ZfQePX9Lb/BPiDpVnHMWL0ZL5nZ7DVIccCDofoB30qusouJmFOpzuNJWd/KZC8R6BY
+        t4+njEW847aEr1DCX4CgdAlR2RcoaoJsBUkWyRMySUsGRKZeLvKas616Q32U5IGie4XAP7
+        t5KWMCGS/mGxcPBe+SnauudiSCdWT/4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1674157015;
+        s=susede2_ed25519; t=1674157318;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ngsB5POdlD2n+2OU/cXyQK2GoaQO8aRzLLvD27r7gVM=;
-        b=A5OCohhlohUlrUAdRGlIVTTpy8uA8icKjCHGUXF0oUETdGs0QbbKviqjdnFXCv6ogX95Pf
-        nuHVw2G4vcbZp7DQ==
+        bh=oIh1zmCdVFs0DEtRrIYUjJKZkkDfsBKk1Vqdt+ENKCM=;
+        b=ioiGZlK5kjtKzNg2WRrz2AVCdDfvDqyFKz1PxaYi1F6x96tpx1s/UFyiiqf1QHTq1yK2Fl
+        5iEGUrX9fJ8IrGAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4734F134F5;
-        Thu, 19 Jan 2023 19:36:55 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 942BB134F5;
+        Thu, 19 Jan 2023 19:41:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id smSYENebyWMtQwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 19 Jan 2023 19:36:55 +0000
-Date:   Thu, 19 Jan 2023 20:31:16 +0100
+        id 8z+fIgadyWPBRQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 19 Jan 2023 19:41:58 +0000
+Date:   Thu, 19 Jan 2023 20:36:19 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: limit device extents to the device size
-Message-ID: <20230119193115.GK11562@twin.jikos.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] btrfs: some speedup with fiemap when leaves are
+ shared
+Message-ID: <20230119193619.GL11562@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <158f8775fb0256a09ab4badb752e2202aa118e1d.1674077707.git.josef@toxicpanda.com>
+References: <cover.1673954069.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <158f8775fb0256a09ab4badb752e2202aa118e1d.1674077707.git.josef@toxicpanda.com>
+In-Reply-To: <cover.1673954069.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -71,27 +71,15 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 04:35:13PM -0500, Josef Bacik wrote:
-> There was a recent regression in btrfs/177 that started happening with
-> the size class patches.  This however isn't a regression introduced by
-> those patches, but rather the bug was uncovered by a change in behavior
-> in these patches.  The patches triggered more chunk allocations in the
-> ^free-space-tree case, which uncovered a race with device shrink.
+On Tue, Jan 17, 2023 at 11:21:37AM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> The problem is we will set the device total size to the new size, and
-> use this to find a hole for a device extent.  However during shrink we
-> may have device extents allocated past this range, so we could
-> potentially find a hole in a range past our new shrink size.  We don't
-> actually limit our found extent to the device size anywhere, we assume
-> that we will not find a hole past our device size.  This isn't true with
-> shrink as we're relocating block groups and thus creating holes past the
-> device size.
+> Add a couple assertions for the fiemap code that checks if extents are
+> shared and speedup the extent sharedness check when we already know the
+> current leaf is shared. More details on the changelogs.
 > 
-> Fix this by making sure we do not search past the new device size, and
-> if we wander into any device extents that start after our device size
-> simply break from the loop and use whatever hole we've already found.
-> 
-> cc: stable@vger.kernel.org
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Filipe Manana (2):
+>   btrfs: assert commit root semaphore is held when accessing backref cache
+>   btrfs: skip backref walking during fiemap if we know the leaf is shared
 
 Added to misc-next, thanks.
