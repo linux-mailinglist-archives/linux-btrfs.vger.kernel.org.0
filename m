@@ -2,98 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF83067316E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jan 2023 06:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C246731A1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jan 2023 07:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbjASF5W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Jan 2023 00:57:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42046 "EHLO
+        id S230113AbjASGOK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Jan 2023 01:14:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbjASF5U (ORCPT
+        with ESMTP id S229789AbjASGN3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Jan 2023 00:57:20 -0500
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0558010B;
-        Wed, 18 Jan 2023 21:57:18 -0800 (PST)
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4NyBjS4srnz4xVnD;
-        Thu, 19 Jan 2023 13:57:16 +0800 (CST)
-Received: from xaxapp02.zte.com.cn ([10.88.97.241])
-        by mse-fl1.zte.com.cn with SMTP id 30J5vBpv048128;
-        Thu, 19 Jan 2023 13:57:11 +0800 (+08)
-        (envelope-from ye.xingchen@zte.com.cn)
-Received: from mapi (xaxapp01[null])
-        by mapi (Zmail) with MAPI id mid31;
-        Thu, 19 Jan 2023 13:57:13 +0800 (CST)
-Date:   Thu, 19 Jan 2023 13:57:13 +0800 (CST)
-X-Zmail-TransId: 2af963c8dbb9ffffffffd31ce984
-X-Mailer: Zmail v1.0
-Message-ID: <202301191357131455025@zte.com.cn>
-Mime-Version: 1.0
-From:   <ye.xingchen@zte.com.cn>
-To:     <clm@fb.com>
-Cc:     <josef@toxicpanda.com>, <dsterba@suse.com>,
-        <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?B?W1BBVENIXSBidHJmczogc2NydWI6IFJlbW92ZSBjb21waWxhdGlvbiBlcnJvcnMgd2hlbsKgLVdlcnJvcj1tYXliZS11bmluaXRpYWxpemVk?=
-Content-Type: text/plain;
-        charset="UTF-8"
-X-MAIL: mse-fl1.zte.com.cn 30J5vBpv048128
-X-Fangmail-Gw-Spam-Type: 0
-X-FangMail-Miltered: at cgslv5.04-192.168.250.138.novalocal with ID 63C8DBBC.000 by FangMail milter!
-X-FangMail-Envelope: 1674107836/4NyBjS4srnz4xVnD/63C8DBBC.000/10.5.228.132/[10.5.228.132]/mse-fl1.zte.com.cn/<ye.xingchen@zte.com.cn>
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 63C8DBBC.000/4NyBjS4srnz4xVnD
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        T_SPF_PERMERROR,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 19 Jan 2023 01:13:29 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6287A66CDA;
+        Wed, 18 Jan 2023 22:13:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Xdy392OgNUxqb5TQg+GwRmeIQ1dBw7Q064Z/xIIHoEQ=; b=4KYOTnXgxy+iDt6rI0dK9ZOezo
+        dj4jDRdPFcqgoHwptzOburbslhnRCZ4caKXUIIkjb+4f534D9uANxdh6JP7vRvq9SH38L07fcU1xa
+        5NBbmW2fGaYYBzMxusRQ21jveHSBUmNTQRKAgGO32JNEJxCIf7q15QWDu1Bjal13VGzWvCPC8/1ZR
+        xXSX7VhSq8t2Mrup/IlWlhtcqW0eHmqUgnVe6Pr4ye/mSrGCXKBf9CYtaCIG46YxQjGYTODlseoRI
+        yPpAYH3zbJ7tihgPhWVqFxrANrLoDJ5LmFL5CEDqGIYu/s49qCV43TErawg/y/ci+CUIHMJEuA1MI
+        xw+FGtpg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pIOAs-003imG-Et; Thu, 19 Jan 2023 06:13:22 +0000
+Date:   Wed, 18 Jan 2023 22:13:22 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Karel Zak <kzak@redhat.com>
+Cc:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "util-linux@vger.kernel.org" <util-linux@vger.kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: btrfs mount failure with context option and latest mount command
+Message-ID: <Y8jfgsNbcKTLdnmQ@infradead.org>
+References: <20230116101556.neld5ddm6brssy4n@shindev>
+ <20230117164234.znsa4oeoovcdpntu@ws.net.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230117164234.znsa4oeoovcdpntu@ws.net.home>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: ye xingchen <ye.xingchen@zte.com.cn>
+On Tue, Jan 17, 2023 at 05:42:34PM +0100, Karel Zak wrote:
+> It's a serious issue if btrfs is not ready for the new kernel fsconfig
+> interface. I guess libmount cannot do anything else in this case
+> (well, we can switch back to classic mount(2), but it sounds as a
+> wrong solution).
 
-fs/btrfs/scrub.c: In function
-'scrub_raid56_data_stripe_for_parity.isa.0':
-fs/btrfs/scrub.c:3297:9 error: 'ret' may be used uninitialized in this
-function [-Werror=maybe-uninitialized]
-
-fs/btrfs/scrub.c: In function
-'scrub_simple_mirror':
-fs/btrfs/scrub.c:3530:9 error: 'ret' may be used uninitialized in this
-function [-Werror=maybe-uninitialized]
-
-Initialize 'ret' to aviod compilation errors.
-
-Signed-off-by: ye xingchen <ye.xingchen@zte.com.cn>
----
- fs/btrfs/scrub.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index a5d026041be4..d0ddf930cb79 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3198,7 +3198,7 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
- 	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, logical);
- 	struct btrfs_root *csum_root = btrfs_csum_root(fs_info, logical);
- 	u64 cur_logical = logical;
--	int ret;
-+	int ret = 0;
-
- 	ASSERT(map->type & BTRFS_BLOCK_GROUP_RAID56_MASK);
-
-@@ -3424,7 +3424,7 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
- 	const u32 max_length = SZ_64K;
- 	struct btrfs_path path = { 0 };
- 	u64 cur_logical = logical_start;
--	int ret;
-+	int ret = 0;
-
- 	/* The range must be inside the bg */
- 	ASSERT(logical_start >= bg->start && logical_end <= bg->start + bg->length);
--- 
-2.25.1
+Unfortunately a lot of file systems haven't been converted to the
+fsconfig code yet, it's another case of adding new infrastructure to
+the kernel then not following up on the conversion, and all too common
+patter unfortunately :(  btrfs might be the only major disk file system,
+but there's lot of others.
