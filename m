@@ -2,78 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3246761BD
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Jan 2023 00:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4653967627C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Jan 2023 01:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbjATXrC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Jan 2023 18:47:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
+        id S229667AbjAUAg1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Jan 2023 19:36:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjATXrB (ORCPT
+        with ESMTP id S229597AbjAUAg0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Jan 2023 18:47:01 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F8012855
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Jan 2023 15:46:59 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MUowb-1p9yW91rRB-00Qi2C; Sat, 21
- Jan 2023 00:46:41 +0100
-Message-ID: <603985ab-068d-a951-7428-445d2b5fbfed@gmx.com>
-Date:   Sat, 21 Jan 2023 07:46:35 +0800
+        Fri, 20 Jan 2023 19:36:26 -0500
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F44459D4
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Jan 2023 16:36:25 -0800 (PST)
+Received: by mail-io1-f72.google.com with SMTP id k1-20020a6b3c01000000b006f744aee560so3782279iob.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Jan 2023 16:36:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OgX3OLdyl63a85Teu2ThGDnS3O9jXoEr2Eos41v+st8=;
+        b=sp1T3+txRMGPhKA9gjZBHSG7afp59ayiMLbpskBInWUvZF11uzv45y9MPcVQcciLXd
+         a6TEHrLVgu4GAeDGe1xPOVwFVxT2wjCyH929m0qGP2fo8lPpgBL0WZNMgzNw7lLM3pGA
+         qVbilztXB2XLjAU02B9VDbhm5aPsWShnCbsqfmrD7jWY2kjtIwLu1Zcvad3IlI8mdUu+
+         gyLJtEk446cI5aA+kDPvWH5XBv3S+Eo6fRrpCccdadrctUwndozBS1Ih5G80nHapocxN
+         feSErmxMXpD1i2uaYfS/g45OCfO8ii1COoePyDIn6jeq1h/YS5ogUf6Sq9mpcpo4V0Op
+         nJ4w==
+X-Gm-Message-State: AFqh2kpbhAgKJYsIMnMu2BnTi7kRHYhBg91Vxblf6wSplrIvnpNwl0tG
+        1Tm6Ld0QmyaUlLXOQYJ2QxbKZXUndOrctGBkv5qHpP5GMaCy
+X-Google-Smtp-Source: AMrXdXutvEXiengHA3DvVHKzijsZxSuGZwfw0rku6p+wlNUDnMgyL92bIuD6EeDsBmkNphjVMLrdRTrXXCoNF4iL+cUOmbY7n8P/
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH] btrfs: raid56: protect error_bitmap update with spinlock
-To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <e21c9c44b8a88d381744e83dfd3b1505cc35e4e4.1674204981.git.wqu@suse.com>
- <Y8qdtwcR5q5zxaA/@infradead.org>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <Y8qdtwcR5q5zxaA/@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:PjTwA9eKYPmasB+NgvZZIYAS2zajnlvHYmgcV3k0yjOsfVY5SMW
- CKs6im42QVKdAl1Uoor+AtPeIx38T5cjfRYscvqazyeY8yV3R48eM9fzbPj99aA6OJy6eOv
- ByExeh4W03MBqjBDNSwsfZE0Pcs30qY9H5qforF7sZFN/rQ+t4Y2v1sKrsTki19aUSbNH6Y
- FT/eMHhi9r+ITAZOSR4sA==
-UI-OutboundReport: notjunk:1;M01:P0:CMQPPk7RjgU=;mtfVs+Nc5Wnpg4LYS1pm+/uoy6+
- EpxDAdWz14ZrnPeBoOCuWfpPBmR0KLr3MylvYHBewTCiklsQk3dRDV8zI9xO47y73swvpp0YM
- dhTTyKPE3IcYGd0kaRlVqWy5rI5kTED1nL2scWzFgUcCFSF5IviUkmpQUKYATYcRENpJnyDGS
- puxgaJpgLFLfF+nOdMk/uTsNCNVPC6UuD33uiFWMA5DrEiJSmscFIDlrHPr9MuaEEl11Y3L8H
- tD15RrkWZUcU4NqSNEAYW5cdTQ47XqDxIj4mokqncVp38IHhv+pTlyoHbzZvO5jJs0WeEYs2T
- BwNjjNxwa9rbbcMcHXvpaFIhEJMOlqvFarzG7XWF7lQ1eTOkGw5ivYgSUd6rTczAcVkhmhoED
- JkLw9fmVSC3ykJHJupN7rCk8MqilNFbBS5HSG5f6twYcJQ5rxfOkq6nn1v0T3mTs7fMu69V9O
- L/kZRyJ0EX0GODLTF4dn/g9MX3fLahO7xAha/PkRi4U7rjOcffshTAdyvjt+Z5FmT+Zpauxh/
- 7UaMxWxZ5hmwmBve5LJ/hD7bBTZcGkCJLMsx3TfltNwqLZ2otssvmKes7ph6jwbzXkJn2QmAM
- ckEnxvCzMrm9i0y37I2hNsy9XvV9FXaJy1KSn1nYiGFdHLWhzPJ7zWhOYsc4kSoKBDPtJWGgi
- k1GcN3kKBQz8isYWC7HR6FDu951nqf78WVs5MkZMscQDlj3mRf8iExw53b9JwHOaVFt37wwkI
- I+T6ntD6VOqrp7Kmj2W02Rv+lsk/bULqv5Ge3Pn0bzICaTmUQHEIfmcBYz8ZtJU4bo6Nmq3et
- b28Nyg8+KBjCsBavNMMLI/4chjpehAmJOkmMLoux2GvSYjQ83TMq1osBs2FU8hXVUT2cVWa7D
- EzDpdVFey7lpB0YPDojND/D4uUvl14OacsOAR0eDrUpUWob7HmTvOmGMUxO5S+AWQ91VxQ+HD
- 3WqumXeSUhrzavQYei3FyV6+XA8=
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a5d:928d:0:b0:6ed:9ed6:6bab with SMTP id
+ s13-20020a5d928d000000b006ed9ed66babmr1096038iom.54.1674261384909; Fri, 20
+ Jan 2023 16:36:24 -0800 (PST)
+Date:   Fri, 20 Jan 2023 16:36:24 -0800
+In-Reply-To: <00000000000080bb5c05ebe34a4d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001bde1e05f2bb5be8@google.com>
+Subject: Re: [syzbot] WARNING in cow_file_range_inline
+From:   syzbot <syzbot+858534c396b0cdd291d2@syzkaller.appspotmail.com>
+To:     Johannes.Thumshirn@wdc.com, clm@fb.com, dsterba@suse.com,
+        dsterba@suse.cz, josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, osandov@fb.com,
+        sweettea-kernel@dorminy.me, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+syzbot suspects this issue was fixed by commit:
 
+commit 8bb808c6ad91ec3d332f072ce8f8aa4b16e307e0
+Author: David Sterba <dsterba@suse.com>
+Date:   Thu Nov 3 13:39:01 2022 +0000
 
-On 2023/1/20 21:57, Christoph Hellwig wrote:
-> So the reads of the bitmap only happen after all bios have completed
-> and the reader side really doesn't need the lock.  Having it only
-> one side looks odd, and on really weakly ordered architecture might
-> lack all the barriers.  Should the reads of the bitmap also take
-> the lock for completeness, or can we get away with a big fat comment?
-> 
-> In a way that alsmost asks for just using a set_bit loop in the
-> completion handlers as that makes the ordering pretty obvious.
+    btrfs: don't print stack trace when transaction is aborted due to ENOMEM
 
-You're right, set_bit() loop looks more common.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15521666480000
+start commit:   337a0a0b63f1 Merge tag 'net-6.1-rc3-1' of git://git.kernel..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1d3548a4365ba17d
+dashboard link: https://syzkaller.appspot.com/bug?extid=858534c396b0cdd291d2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e5a422880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16387a16880000
 
-Thanks,
-Qu
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: btrfs: don't print stack trace when transaction is aborted due to ENOMEM
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
