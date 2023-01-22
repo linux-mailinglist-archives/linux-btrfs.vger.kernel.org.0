@@ -2,136 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE812677223
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Jan 2023 20:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C001E677252
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Jan 2023 21:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbjAVTx2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 Jan 2023 14:53:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
+        id S230007AbjAVU1m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 Jan 2023 15:27:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbjAVTx1 (ORCPT
+        with ESMTP id S229954AbjAVU1l (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Jan 2023 14:53:27 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543B5FF08
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Jan 2023 11:53:26 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id j9so8261220qtv.4
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Jan 2023 11:53:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ctP10EJhYVqp3z/JqewEFMYB9962mKik31Egc7xVVsA=;
-        b=Rn/RqTN+UfGRkoXXBJUiiQ0VPKaSTWcruxokqyC3rqO3RTSKRu12ykm5/VACEyhGeQ
-         Xbhj2TFtlMqT9DRUSG4gNVRZTVjMDWKNJKY8d25BsHzHwRMsHzyxhlqyniFNxQAbRw/r
-         fk7r/Nws+N4WsOGCYZEgqS28EzgadmC0yFBaw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ctP10EJhYVqp3z/JqewEFMYB9962mKik31Egc7xVVsA=;
-        b=JdOcJ6ytiEpOKEq3UHtQ/MxEli370ZmtUQI8U/5OGODNlGesRTYJN+/7GoQqX6t6oX
-         gSj/t9QbVBkOYm4MxUg4twiBjvBX6h0lXRnRXfDCEiecQCi6OEV2vNw5Y8Ffr9VhCA+t
-         UsW10AZOiZ3nmZnIs3TWngKkr6xz+mGN0NilOLtrqpOK5BwEiVLWwVRBqIKhu+16d/mf
-         YBIPOyBZp9B7Nwl/OSlqpijecVjFz5KKJ7SHNyzjUtWR4lXry4KRSi6sR5+dteP7CGjG
-         kxY3ZaRHtqz9cfpggO6JszgNOCTMq6Dx8pHIB2jkZ57WuxSnP+1oldQoc8t0UvBPd8tb
-         I2Xw==
-X-Gm-Message-State: AFqh2kqR+uSaa3/hML9u/G0bb3UE0n4EPQ7X1kqLkj2QgnID2ZRrHQPe
-        MVASTrLbojFfsOkbDBg6tvORj7b2ADue3F+V
-X-Google-Smtp-Source: AMrXdXu+VkPWjmpSh5OpRK4M4lnxF3a7jkuNZgH1w3xR9qV3dG5ekXqcAUO920jXSMtHZMbq6cM9MQ==
-X-Received: by 2002:ac8:6bd2:0:b0:3b2:2195:e2a2 with SMTP id b18-20020ac86bd2000000b003b22195e2a2mr31906601qtt.45.1674417205032;
-        Sun, 22 Jan 2023 11:53:25 -0800 (PST)
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com. [209.85.222.171])
-        by smtp.gmail.com with ESMTPSA id bs25-20020ac86f19000000b0035d432f5ba3sm9883441qtb.17.2023.01.22.11.53.24
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Jan 2023 11:53:24 -0800 (PST)
-Received: by mail-qk1-f171.google.com with SMTP id t9so4290766qkm.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Jan 2023 11:53:24 -0800 (PST)
-X-Received: by 2002:a05:620a:99d:b0:705:efa8:524c with SMTP id
- x29-20020a05620a099d00b00705efa8524cmr1088535qkx.594.1674417203910; Sun, 22
- Jan 2023 11:53:23 -0800 (PST)
+        Sun, 22 Jan 2023 15:27:41 -0500
+Received: from libero.it (smtp-31-wd.italiaonline.it [213.209.13.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27821714B
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Jan 2023 12:27:37 -0800 (PST)
+Received: from [192.168.1.27] ([84.220.128.202])
+        by smtp-31.iol.local with ESMTPA
+        id Jgw9p4hwKE9FhJgwAp4F4B; Sun, 22 Jan 2023 21:27:34 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1674419254; bh=gAFCKBppvhokbHuEGyuj26AXWvhsj1EhPShO64KROlA=;
+        h=From;
+        b=QN71LKicieSSo//ZB8KAvQLT57QItUhFx01A6QUrHgpkUOQKQ6j7rQqQsTnCACH3s
+         Ctg1GnWnbc7YhK/E4ym2anMEJbfv8dz6JBRcs9pMKQU8TNmw1JWfxpr9BR4zaZubMP
+         a7QjRqAb8+GHcSJJVXMJIXtZf4m+7orDmRvJtdus2YcfRytNgs5ci44Y5WeYP9AAbW
+         oFfgIVTWFRC40PiDenez4aO8GAfYTicdkW8ZgVBAVg4sXLbtqbDPbDZGbs9aNjpgVN
+         JkNU7zBbKajL9QDw399tzrdcopK+3khpxP1gtRrf5uc57uyr0t5GSXS1O3/i8BYwrY
+         O1P6j00KLV+Yw==
+X-CNFS-Analysis: v=2.4 cv=VMQb3fDX c=1 sm=1 tr=0 ts=63cd9c36 cx=a_exe
+ a=7XXxH8DXEs6J8bMFqK0LmA==:117 a=7XXxH8DXEs6J8bMFqK0LmA==:17
+ a=IkcTkHD0fZMA:10 a=OLL_FvSJAAAA:8 a=vUf-GdnMp9FBiyLyoV0A:9 a=QEXdDO2ut3YA:10
+ a=sBB5x-0A3AUA:10 a=2C5uJnGsQ9oA:10 a=oIrB72frpwYPwTMnlWqB:22
+Message-ID: <c08cea1d-1ae3-c0d1-c164-6453ad73f0c0@libero.it>
+Date:   Sun, 22 Jan 2023 21:27:33 +0100
 MIME-Version: 1.0
-References: <00000000000075a52e05ee97ad74@google.com> <0000000000006e58cb05f2d86236@google.com>
-In-Reply-To: <0000000000006e58cb05f2d86236@google.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 22 Jan 2023 11:53:08 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whJ0Rya9++f5B=6euHxRGRKOYNZARxN7bZb61RmOHGnFA@mail.gmail.com>
-Message-ID: <CAHk-=whJ0Rya9++f5B=6euHxRGRKOYNZARxN7bZb61RmOHGnFA@mail.gmail.com>
-Subject: Re: [syzbot] [btrfs?] WARNING: kmalloc bug in btrfs_ioctl_send
-To:     syzbot <syzbot+4376a9a073770c173269@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com,
-        dsterba@suse.cz, josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com, w@1wt.eu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Reply-To: kreijack@inwind.it
+Subject: Re: Will Btrfs have an official command to "uncow" existing files?
+Content-Language: en-US
+To:     Cerem Cem ASLAN <ceremcem@ceremcem.net>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAN4oSBcsfBPWUc9pwhSrRu5omkP7m8ZUqhFbF-w_DwQJ3Q_aSQ@mail.gmail.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <CAN4oSBcsfBPWUc9pwhSrRu5omkP7m8ZUqhFbF-w_DwQJ3Q_aSQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfFYkVYec7P+45rMBbYin+gC4Zh1z4+CMfyrqkx7eXEOeY/1EmSJfIHfGiJlNh+sjE8fRKeJsnZIwXASXdEJDFgVY82dO+SLiC9nMho+IIe3hDAbf32dV
+ jmoEWkeKrbIbp75DnQil35RIEEEXTW6/l9VE51so5WLObZC2rfITPDBg4xhHohBJgEJzq3Tnm6w+VD8X/SEMktInEM/JArBLPojCqa/0LJCCfU2V+QVWlb8J
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jan 22, 2023 at 3:14 AM syzbot
-<syzbot+4376a9a073770c173269@syzkaller.appspotmail.com> wrote:
->
-> syzbot has bisected this issue to:
->
-> commit 7661809d493b426e979f39ab512e3adf41fbcc69
-> Author: Linus Torvalds <torvalds@linux-foundation.org>
-> Date:   Wed Jul 14 16:45:49 2021 +0000
->
->     mm: don't allow oversized kvmalloc() calls
+On 22/01/2023 12.41, Cerem Cem ASLAN wrote:
+> Original post is here: https://www.spinics.net/lists/linux-btrfs/msg58055.html
+> 
+> The problem with the "chattr +C ..., move back and forth" approach is
+> that the VM folder is about 300GB and I have ~100GB of free space,
+> plus, 
 
-Heh. I assume this is the
+This can be solvable: it should be possible to make a tool that for
+each unit of copy (eg each 1 GB) does:
+- copy the data from the COW file to the NOCOW file
+- remove the data copied from the NOCOW file (using fallocate+FALLOC_FL_PUNCH_HOLE)
 
-        sctx->clone_roots = kvcalloc(sizeof(*sctx->clone_roots),
-                                     arg->clone_sources_count + 1,
-                                     GFP_KERNEL);
+So you can avoid to have two FULL copy of the same file (in pseudo code:
 
-in btrfs_ioctl_send(), where the 'clone_sources_count' thing is
-basically just an argument to the btrfs ioctl, and user space can set
-it to anything it damn well likes.
+block_size = 1024*1024*1024;
+while (pos < file_len) {
+	l = min(block_size, file_len - pos);
+	len_copied = copy(srcfd, dstfd, pos, l);
+	fallocate(srcfd, FALLOC_FL_PUNCH_HOLE|FALLOC_FL_KEEP_SIZE, pos, l);
 
-So that warning is very much correct, and the problem is that the code
-doesn't do any  realsanity checking at all on the ioctl arguments, and
-basically allows the code to exhaust all memory.
+	pos += l;
+}
 
-Ok, there's a sanity check in the form of an overflow check:
 
-        /*
-         * Check that we don't overflow at later allocations, we request
-         * clone_sources_count + 1 items, and compare to unsigned long inside
-         * access_ok.
-         */
-        if (arg->clone_sources_count >
-            ULONG_MAX / sizeof(struct clone_root) - 1) {
-                ret = -EINVAL;
-                goto out;
-        }
+end pseudo code)
 
-but ULONG_MAX is a *lot* of memory that the btrfs code is happy to try
-to allocate.
+I don't know if there is an algorithm that prevent the data loss in case of
+an interruption of the copy. May be that it exists... We need a file where
+we could log the status.
 
-This ioctl does seem to be protected by a
+> I have multiple copies which will require that 300GB to
+> re-transfer after deleting all previous snapshots (because there is no
+> enough free space on those backup hard disks).
+  
+This is a more stronger requirement; but unfortunately if you copy the data you
+will end to have two copy of the data which before was shared between the snapshots.
 
-        if (!capable(CAP_SYS_ADMIN))
-                return -EPERM;
 
-so at least it wasn't some kind of "random user can use up all memory".
+> So, we really need to set the NoCow attribute for the existing files.
+> 
+> Should we currently use a separate partition for VMs and mount it with
+> nodatacow option to avoid that issue?
 
-I suspect the simplest way to make syzbot happy is to change the
+Not really, it is enough to do a chmod -C on the directory where
+the VM images are stored.
 
-        if (arg->clone_sources_count >
-            ULONG_MAX / sizeof(struct clone_root) - 1) {
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
-test to use INT_MAX instead of ULONG_MAX, which will then match the
-vmalloc sanity check and avoid the warning.
-
-But maybe an even smaller value might be more domain-appropriate here?
-
-             Linus
