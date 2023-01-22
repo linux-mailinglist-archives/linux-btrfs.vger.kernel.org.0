@@ -2,81 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DA3676C3D
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Jan 2023 12:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4DEF676C65
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Jan 2023 12:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbjAVLOZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 Jan 2023 06:14:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
+        id S229991AbjAVLlf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 Jan 2023 06:41:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbjAVLOY (ORCPT
+        with ESMTP id S229480AbjAVLle (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Jan 2023 06:14:24 -0500
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31481C31E
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Jan 2023 03:14:22 -0800 (PST)
-Received: by mail-il1-f199.google.com with SMTP id 9-20020a056e0220c900b0030f1b0dfa9dso6628057ilq.4
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Jan 2023 03:14:22 -0800 (PST)
+        Sun, 22 Jan 2023 06:41:34 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30C51E5E1
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Jan 2023 03:41:33 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id jl3so8985947plb.8
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Jan 2023 03:41:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ceremcem-net.20210112.gappssmtp.com; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=U5i9sBk4tIoVpUfSJ0Ct9+aRampCHNSNf8XqmCksxME=;
+        b=Bz9HeMKJVSDYT61MwndOw5kBo+slOfeHA0Nbti/88WoHvCk6soOkkRAwySngha15oU
+         hIRsFKhXCw/jNhKI0uk34ay8UjA2O9AbG2g6ip8P5SsMVt3j0Zo8XizrGkHG5LgOPZKK
+         FPu7F4NZTP3PEOdVhE4/38B+A08szFatlWSlwWrKgE19j3BMo+GVsezIoioS/LkH+De6
+         9pn0zAOH88r0HzOIVdbB+gT5OPFpWD20SQ2d6PglBbYsjmYMISBptFW0ZHkJNITjVJUe
+         jBMRnuDtG2vlW4kfRcjy/G5ujtpBO++kbgNKoJLpOopqi+CMWQJ3DbPaQ+L0f6q8GY5c
+         A/ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=knvEjaz7f71VMDphq93Ttomb3XiR1RLVfVR0GiG+5yc=;
-        b=oHkMgD+fdA9mj26Kd2NSic4GetpQzfXD+3YpE2bVppLOT4U1k6MohlUSJmch2lxcKo
-         4hAk8ApAHCh3tGGUJYX0cMWw/7HT23wPKlCf/AOWbsUUzzB4zWxjXYWDrvyebBeql1e5
-         R62y5lmm4knmjGQBizAbR+DPNVh6qpwzjuMI9dTZqlvEV52vEpQRJEn81YbNQDhXVuy5
-         NL1IRPN8Q3XkF86DEhhsPiTJCWpinjaS5YduLsx0O3BUFrQmlHUUQCBmSs6KESKclsYP
-         U+A5ZF7781kx6HQbuPhNKXu2nYzgndVUq8eF/HFm1Qb1klUKKcp0Q/0Tq55rk4YwYqdP
-         dISg==
-X-Gm-Message-State: AFqh2kqTCUPnfrMbmdgvVxC0eVTaN3G/VZ3fpKrgVJ2cUqD0DSwK9gqT
-        B1gybiIG0ugjZ78GxqRAN1Dp8au8ZsUZSo562wB3OHz4SedI
-X-Google-Smtp-Source: AMrXdXt6XfxN8kz3zBped8n8r4ixtXs+B2FAnQI2vA4E/ji1IGwbPrta94N1OpQJqC7Z8lQSds9Wh2G+0Tw+vpHVK9m46qL2Pr21
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=U5i9sBk4tIoVpUfSJ0Ct9+aRampCHNSNf8XqmCksxME=;
+        b=DAz/wCKcQ+yaScsW0g1y+Y0uQqNxObpSeDdgQ/1z6Ujnh4wXu/sZTaKhdh/HQPC7ir
+         3M7oELEAuUEXIseY9Fp4o+RXpu8+jAyPMjwiUn2+QzHZsJ3vVmmFlZX7d2aZ6V4aoLag
+         /58ayCkLoLh8ScvFhgFK+SXm8EvbDQQMcituxXIKxKW42b2qx4sqxaMYbbguV3Wsiqmo
+         jCKYoK8jq5KQUm+pcRul4+3nH0+7pyxZoIwXSrmNTUAqotcOVjJPIvkSaWIhXF7/sV3X
+         jpHFqNW7Bhxin8Bw37nBHOJvaU380Uwq1T3E1v1h1bkXEfodZvAIzRW5gLosFTWnBqcQ
+         9Oog==
+X-Gm-Message-State: AFqh2krkrtD1NVK67mFd3mHOC5/RQvIK2y7o6h7zbzlCZllpJpa0VSXc
+        nq+3Rx7kgTo4D1OmYM1xvqI6H1Ayua2acsWzQDHiBtlyL0D0KrxqXHg=
+X-Google-Smtp-Source: AMrXdXuZE0aVFQY7bXMP3ZLpfMs8+FbZNTx9Nx1rR3ct2DtEnzzNFI70Qh4ortSKpINNkEP8GQ1J+DGOGrs9ny8qA0g=
+X-Received: by 2002:a17:902:b217:b0:191:10b0:5fa5 with SMTP id
+ t23-20020a170902b21700b0019110b05fa5mr1821940plr.34.1674387693076; Sun, 22
+ Jan 2023 03:41:33 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1090:b0:30d:7fd4:a6dd with SMTP id
- r16-20020a056e02109000b0030d7fd4a6ddmr2610074ilj.20.1674386061807; Sun, 22
- Jan 2023 03:14:21 -0800 (PST)
-Date:   Sun, 22 Jan 2023 03:14:21 -0800
-In-Reply-To: <00000000000075a52e05ee97ad74@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006e58cb05f2d86236@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING: kmalloc bug in btrfs_ioctl_send
-From:   syzbot <syzbot+4376a9a073770c173269@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, clm@fb.com, dsterba@suse.com,
-        dsterba@suse.cz, josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-        w@1wt.eu
+From:   Cerem Cem ASLAN <ceremcem@ceremcem.net>
+Date:   Sun, 22 Jan 2023 14:41:22 +0300
+Message-ID: <CAN4oSBcsfBPWUc9pwhSrRu5omkP7m8ZUqhFbF-w_DwQJ3Q_aSQ@mail.gmail.com>
+Subject: Will Btrfs have an official command to "uncow" existing files?
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has bisected this issue to:
+Original post is here: https://www.spinics.net/lists/linux-btrfs/msg58055.html
 
-commit 7661809d493b426e979f39ab512e3adf41fbcc69
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jul 14 16:45:49 2021 +0000
+The problem with the "chattr +C ..., move back and forth" approach is
+that the VM folder is about 300GB and I have ~100GB of free space,
+plus, I have multiple copies which will require that 300GB to
+re-transfer after deleting all previous snapshots (because there is no
+enough free space on those backup hard disks).
 
-    mm: don't allow oversized kvmalloc() calls
+So, we really need to set the NoCow attribute for the existing files.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f2c851480000
-start commit:   f9ff5644bcc0 Merge tag 'hsi-for-6.2' of git://git.kernel.o..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=100ac851480000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f2c851480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=827916bd156c2ec6
-dashboard link: https://syzkaller.appspot.com/bug?extid=4376a9a073770c173269
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1775aed7880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11cbcbd0480000
-
-Reported-by: syzbot+4376a9a073770c173269@syzkaller.appspotmail.com
-Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Should we currently use a separate partition for VMs and mount it with
+nodatacow option to avoid that issue?
