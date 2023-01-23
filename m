@@ -2,67 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39922677929
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Jan 2023 11:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C51A1677957
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Jan 2023 11:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbjAWK3e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Jan 2023 05:29:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53016 "EHLO
+        id S231300AbjAWKjv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Jan 2023 05:39:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjAWK3d (ORCPT
+        with ESMTP id S231803AbjAWKju (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Jan 2023 05:29:33 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0B9126E8;
-        Mon, 23 Jan 2023 02:29:30 -0800 (PST)
+        Mon, 23 Jan 2023 05:39:50 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CF3EB51
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Jan 2023 02:39:46 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 52E1DB80CC9;
-        Mon, 23 Jan 2023 10:29:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E310AC4339B;
-        Mon, 23 Jan 2023 10:29:27 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7416860E74
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Jan 2023 10:39:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D87BFC433D2
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Jan 2023 10:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674469767;
-        bh=eLy3ZwUNPCOfUmFDyyoeaPNZfS/dPaAwiiyAf1av1M4=;
+        s=k20201202; t=1674470385;
+        bh=ss8Iyk+kvUCezF7OofxqNwIYNlYbSAAS66L6js4Yz+U=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=A92Z87fJEPf9AlE/Kc1aPx+PSykDd2vk40N38D3nzR+Avb2v9kbKWXeF5ttxY3fzC
-         P2y4Sl2XxBwCH+DVfBamzovQgjtfx8wRb3K63Bk10MMOtAB9CQbmyFZlb9GubBxPbe
-         8CGm9b0ApFwjBnaulOM9NO7Jrdxy2TUdH5PHbbuvTQmZrvl0DPZCRl9LvdqMcLqjM6
-         EI5nq9P23+pGteuTiSw8RKVQtgaU2Wnw5z470IBQyCYTN133df0FDLWfMY2eoLNm9r
-         kz3jviNUcB3CPXI12/T82hqpDGw8yYSI925s28wbVJ5mGftJx1Ft4W5DSvVsV57A1T
-         rTSoA64a8fOWw==
-Received: by mail-oi1-f171.google.com with SMTP id p133so9925307oig.8;
-        Mon, 23 Jan 2023 02:29:27 -0800 (PST)
-X-Gm-Message-State: AFqh2koXErwoGwdtAb7oFA25ztdtMU2d6R/sIsmFHZkUmwGVwiQyxsXC
-        7JDT8y/0Gz+XICQAwscEBgY202DTV3nmRo4rlxk=
-X-Google-Smtp-Source: AMrXdXvP0j7Re9LRugRpRcyvxeXtXcihpFYJpjrlRsp1tqVMUTbWox/vLzyCnD7uAb7FlG5YF03r2jg5jtymUhe2zrg=
+        b=LIhFu4OdUgygazr2ZWSbcN6UMwwMvubHUAamnA8FKfWHd6ubBwaEBLPoG+urstUgL
+         zz3shllTGp3Uk+Khj8bcNy49FC1YSr/vPyW8oIkvf3kylJWKgYaAWzSitHs5e9QHjg
+         hqYr9PopPhAzO5DX7YHDkJU5rknnhYzAQrIfSo4igQjDZD4kW1ykx0voQ+sqv81FCx
+         2MjYXYhPuQpZ1qfy18Ysar5EVlq/79leJBupH3+VxAUJMbVrlUbONkVwgYijneSjn4
+         t31tslQ+5+c6v+hArbJNwr5iff1guDK1Oduv8irlibST2HI+Trv3AYSVUPdVr7w0Jz
+         aO8ciO1DeL5EA==
+Received: by mail-oi1-f182.google.com with SMTP id r132so9933728oif.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Jan 2023 02:39:45 -0800 (PST)
+X-Gm-Message-State: AFqh2kp7+UB0+pdZRFwvbf0bRgyqKCOAE11R0Yvj2BqYDjUmyjnRXgkV
+        Je1HsE5PHXIYisnO8Mir3rlpLFg7CfAMr8pxkEA=
+X-Google-Smtp-Source: AMrXdXsIhN5Oy/vx6ajjRvid4sAjdH5rf8oFUs5c6L8BmnTYJSqhsLdxu/+w8C/KkiCsbFJbOAI02+iOpHoF8FpOXuM=
 X-Received: by 2002:a05:6808:1b28:b0:35e:ac60:2452 with SMTP id
- bx40-20020a0568081b2800b0035eac602452mr1064579oib.92.1674469766854; Mon, 23
- Jan 2023 02:29:26 -0800 (PST)
+ bx40-20020a0568081b2800b0035eac602452mr1065902oib.92.1674470384676; Mon, 23
+ Jan 2023 02:39:44 -0800 (PST)
 MIME-Version: 1.0
-References: <ae169fc6-f504-28f0-a098-6fa6a4dfb612@leemhuis.info>
- <20230102154050.GJ11562@twin.jikos.cz> <ac2f141b-b03a-6054-8250-d27a5b568027@gmx.com>
- <03ad09d2-0c0e-ed82-509a-9758fbc81f64@prnet.org> <CAL3q7H75DScFAnUGHFn9x=ZmnCbd_u3+KsLU6qKOGPeVogOQwg@mail.gmail.com>
- <544a0942-d505-148e-9b65-f5b366a3a0e3@prnet.org> <CAL3q7H7b+hrro9weiE2fLFMwvUm0PBjKPqetpQyGHUFqQd8s=w@mail.gmail.com>
- <ec38dc9b-6e54-7166-402a-fe92c38170d0@prnet.org> <CAL3q7H7anKa6ova5MYx4ZDsz6gwaq-K0OSRZuNEo-hNft7pZHQ@mail.gmail.com>
- <3b5c7161-1a48-619b-b6b3-1868b7695c97@prnet.org> <CAL3q7H7pEYNpzZYgNRxXwMz6ftCK53u46CQjPAh8nTO4ixgYwg@mail.gmail.com>
- <CAL3q7H5bdpH621LRO+mr98r_MBhNFLU3q1NQ8erOjZFkFAzf-A@mail.gmail.com>
- <d4f0758b-d11c-aee8-43df-885233a14a80@prnet.org> <ed7d2424-fb13-eccf-11ea-ac08c618f5aa@prnet.org>
-In-Reply-To: <ed7d2424-fb13-eccf-11ea-ac08c618f5aa@prnet.org>
+References: <Y8voyTXdnPDz8xwY@mail.gmail.com>
+In-Reply-To: <Y8voyTXdnPDz8xwY@mail.gmail.com>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 23 Jan 2023 10:28:50 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4zfz-9Mb=kScsQ_a1G9NX4ayPZStnSvNNYsbhpoY0wmg@mail.gmail.com>
-Message-ID: <CAL3q7H4zfz-9Mb=kScsQ_a1G9NX4ayPZStnSvNNYsbhpoY0wmg@mail.gmail.com>
-Subject: Re: [regression] Bug 216851 - btrfs write time corrupting for log tree
-To:     David Arendt <admin@prnet.org>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Date:   Mon, 23 Jan 2023 10:39:08 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5vjCrVEPVm0qySoXndBsnNDDT6H5VYMLORFxsZegXNpA@mail.gmail.com>
+Message-ID: <CAL3q7H5vjCrVEPVm0qySoXndBsnNDDT6H5VYMLORFxsZegXNpA@mail.gmail.com>
+Subject: Re: btrfs corruption, extent buffer leak
+To:     Maxim Mikityanskiy <maxtram95@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -73,270 +62,366 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jan 22, 2023 at 3:53 PM David Arendt <admin@prnet.org> wrote:
+On Sat, Jan 21, 2023 at 1:59 PM Maxim Mikityanskiy <maxtram95@gmail.com> wrote:
 >
-> On 1/10/23 22:12, David Arendt wrote:
-> Hi,
+> Hello,
 >
-> In 6.2-rc3 + your patches, the problem did not appear within 2 weeks. I
-> skipped rc4 and today I upgraded to 6.2-rc5 which should have to patches
-> included (or not ?). About one hour later, the filesystem turned again
-> read-only with the following kernel log entries:
+> I would like to report an apparent bug in btrfs that happened to me
+> today and ask for help. The report is unlikely to be very helpful,
+> though, because I can't provide an image of the broken filesystem, and I
+> will probably not be able to store it for experiments, as it's 2 TB big.
+> But this is certainly something to pay attention to, as btrfs is
+> concidered stable.
+>
+> My setup is btrfs in LUKS on an SSD, kernel 6.1.3-arch1-1. Out of a
+> sudden, I wasn't able to write a file (-EROFS). I looked in the dmesg
+> and saw the following:
+>
+> [996188.059638] BTRFS critical (device dm-0): corrupt leaf: root=18446744073709551610 block=931164291072 slot=143, bad key order, prev (12490699 96 4368) current (12490699 96 4337)
+> [996188.059648] BTRFS info (device dm-0): leaf 931164291072 gen 200102 total ptrs 213 free space 4379 owner 18446744073709551610
+> [996188.059650]         item 0 key (21184 1 0) itemoff 16123 itemsize 160
+> [996188.059653]                 inode generation 1575 size 1605632 mode 100644
+> [996188.059654]         item 1 key (21184 108 0) itemoff 16070 itemsize 53
+> [996188.059656]                 extent data disk bytenr 1326812942336 nr 4096
+> [996188.059657]                 extent data offset 0 nr 4096 ram 4096
+> [996188.059658]         item 2 key (1841324 1 0) itemoff 15910 itemsize 160
+> [996188.059659]                 inode generation 31479 size 655360 mode 100644
+> [996188.059660]         item 3 key (1841324 108 0) itemoff 15857 itemsize 53
+> [996188.059661]                 extent data disk bytenr 1319827484672 nr 4096
+> [996188.059662]                 extent data offset 0 nr 4096 ram 4096
+> [996188.059663]         item 4 key (6929778 1 0) itemoff 15697 itemsize 160
+> [996188.059664]                 inode generation 165217 size 88 mode 40755
+> [996188.059665]         item 5 key (6929778 12 6929776) itemoff 15682 itemsize 15
+> [996188.059667]         item 6 key (6929778 72 3) itemoff 15674 itemsize 8
+> [996188.059668]         item 7 key (6929778 72 6) itemoff 15666 itemsize 8
+> [996188.059669]         item 8 key (6929778 72 8) itemoff 15658 itemsize 8
+> [996188.059670]         item 9 key (6929778 96 88) itemoff 15611 itemsize 47
+> [996188.059671]         item 10 key (12490699 1 0) itemoff 15451 itemsize 160
+> [996188.059672]                 inode generation 183534 size 4808 mode 40755
+> [996188.059673]         item 11 key (12490699 12 12487122) itemoff 15433 itemsize 18
+> [996188.059675]         item 12 key (12490699 72 2) itemoff 15425 itemsize 8
+> [996188.059676]         item 13 key (12490699 72 4) itemoff 15417 itemsize 8
+> [996188.059677]         item 14 key (12490699 72 7) itemoff 15409 itemsize 8
+> [996188.059678]         item 15 key (12490699 72 12) itemoff 15401 itemsize 8
+> [996188.059679]         item 16 key (12490699 72 20) itemoff 15393 itemsize 8
+> [996188.059680]         item 17 key (12490699 72 24) itemoff 15385 itemsize 8
+> [996188.059681]         item 18 key (12490699 72 28) itemoff 15377 itemsize 8
+> [996188.059682]         item 19 key (12490699 72 32) itemoff 15369 itemsize 8
+> [996188.059683]         item 20 key (12490699 72 34) itemoff 15361 itemsize 8
+> [996188.059684]         item 21 key (12490699 72 37) itemoff 15353 itemsize 8
+> [996188.059685]         item 22 key (12490699 72 46) itemoff 15345 itemsize 8
+> [996188.059686]         item 23 key (12490699 72 48) itemoff 15337 itemsize 8
+> [996188.059687]         item 24 key (12490699 72 50) itemoff 15329 itemsize 8
+> [996188.059688]         item 25 key (12490699 72 52) itemoff 15321 itemsize 8
+> [996188.059689]         item 26 key (12490699 72 59) itemoff 15313 itemsize 8
+> [996188.059690]         item 27 key (12490699 72 62) itemoff 15305 itemsize 8
+> [996188.059691]         item 28 key (12490699 72 77) itemoff 15297 itemsize 8
+> [996188.059692]         item 29 key (12490699 72 80) itemoff 15289 itemsize 8
+> [996188.059693]         item 30 key (12490699 72 83) itemoff 15281 itemsize 8
+> [996188.059694]         item 31 key (12490699 72 87) itemoff 15273 itemsize 8
+> [996188.059695]         item 32 key (12490699 72 91) itemoff 15265 itemsize 8
+> [996188.059696]         item 33 key (12490699 72 93) itemoff 15257 itemsize 8
+> [996188.059697]         item 34 key (12490699 72 97) itemoff 15249 itemsize 8
+> [996188.059699]         item 35 key (12490699 72 105) itemoff 15241 itemsize 8
+> [996188.059700]         item 36 key (12490699 72 115) itemoff 15233 itemsize 8
+> [996188.059701]         item 37 key (12490699 72 133) itemoff 15225 itemsize 8
+> [996188.059702]         item 38 key (12490699 72 230) itemoff 15217 itemsize 8
+> [996188.059703]         item 39 key (12490699 72 291) itemoff 15209 itemsize 8
+> [996188.059704]         item 40 key (12490699 72 354) itemoff 15201 itemsize 8
+> [996188.059705]         item 41 key (12490699 72 432) itemoff 15193 itemsize 8
+> [996188.059706]         item 42 key (12490699 72 510) itemoff 15185 itemsize 8
+> [996188.059707]         item 43 key (12490699 72 561) itemoff 15177 itemsize 8
+> [996188.059708]         item 44 key (12490699 72 620) itemoff 15169 itemsize 8
+> [996188.059709]         item 45 key (12490699 72 671) itemoff 15161 itemsize 8
+> [996188.059710]         item 46 key (12490699 72 706) itemoff 15153 itemsize 8
+> [996188.059711]         item 47 key (12490699 72 794) itemoff 15145 itemsize 8
+> [996188.059712]         item 48 key (12490699 72 842) itemoff 15137 itemsize 8
+> [996188.059713]         item 49 key (12490699 72 913) itemoff 15129 itemsize 8
+> [996188.059714]         item 50 key (12490699 72 986) itemoff 15121 itemsize 8
+> [996188.059715]         item 51 key (12490699 72 1043) itemoff 15113 itemsize 8
+> [996188.059717]         item 52 key (12490699 72 1093) itemoff 15105 itemsize 8
+> [996188.059718]         item 53 key (12490699 72 1156) itemoff 15097 itemsize 8
+> [996188.059719]         item 54 key (12490699 72 1221) itemoff 15089 itemsize 8
+> [996188.059720]         item 55 key (12490699 72 1313) itemoff 15081 itemsize 8
+> [996188.059721]         item 56 key (12490699 72 1368) itemoff 15073 itemsize 8
+> [996188.059722]         item 57 key (12490699 72 1464) itemoff 15065 itemsize 8
+> [996188.059723]         item 58 key (12490699 72 1531) itemoff 15057 itemsize 8
+> [996188.059724]         item 59 key (12490699 72 1575) itemoff 15049 itemsize 8
+> [996188.059725]         item 60 key (12490699 72 1680) itemoff 15041 itemsize 8
+> [996188.059726]         item 61 key (12490699 72 1732) itemoff 15033 itemsize 8
+> [996188.059727]         item 62 key (12490699 72 1781) itemoff 15025 itemsize 8
+> [996188.059728]         item 63 key (12490699 72 1858) itemoff 15017 itemsize 8
+> [996188.059729]         item 64 key (12490699 72 1938) itemoff 15009 itemsize 8
+> [996188.059730]         item 65 key (12490699 72 1999) itemoff 15001 itemsize 8
+> [996188.059731]         item 66 key (12490699 72 2054) itemoff 14993 itemsize 8
+> [996188.059732]         item 67 key (12490699 72 2126) itemoff 14985 itemsize 8
+> [996188.059733]         item 68 key (12490699 72 2211) itemoff 14977 itemsize 8
+> [996188.059734]         item 69 key (12490699 72 2264) itemoff 14969 itemsize 8
+> [996188.059735]         item 70 key (12490699 72 2329) itemoff 14961 itemsize 8
+> [996188.059736]         item 71 key (12490699 72 2460) itemoff 14953 itemsize 8
+> [996188.059737]         item 72 key (12490699 72 2521) itemoff 14945 itemsize 8
+> [996188.059738]         item 73 key (12490699 72 2590) itemoff 14937 itemsize 8
+> [996188.059739]         item 74 key (12490699 72 2665) itemoff 14929 itemsize 8
+> [996188.059740]         item 75 key (12490699 72 2728) itemoff 14921 itemsize 8
+> [996188.059742]         item 76 key (12490699 72 2797) itemoff 14913 itemsize 8
+> [996188.059743]         item 77 key (12490699 72 2959) itemoff 14905 itemsize 8
+> [996188.059744]         item 78 key (12490699 72 3022) itemoff 14897 itemsize 8
+> [996188.059745]         item 79 key (12490699 72 3075) itemoff 14889 itemsize 8
+> [996188.059746]         item 80 key (12490699 72 3136) itemoff 14881 itemsize 8
+> [996188.059747]         item 81 key (12490699 72 3195) itemoff 14873 itemsize 8
+> [996188.059748]         item 82 key (12490699 72 3270) itemoff 14865 itemsize 8
+> [996188.059749]         item 83 key (12490699 72 3348) itemoff 14857 itemsize 8
+> [996188.059750]         item 84 key (12490699 72 3426) itemoff 14849 itemsize 8
+> [996188.059751]         item 85 key (12490699 72 3491) itemoff 14841 itemsize 8
+> [996188.059752]         item 86 key (12490699 72 3549) itemoff 14833 itemsize 8
+> [996188.059753]         item 87 key (12490699 72 3589) itemoff 14825 itemsize 8
+> [996188.059754]         item 88 key (12490699 72 3620) itemoff 14817 itemsize 8
+> [996188.059755]         item 89 key (12490699 72 3643) itemoff 14809 itemsize 8
+> [996188.059756]         item 90 key (12490699 72 3702) itemoff 14801 itemsize 8
+> [996188.059757]         item 91 key (12490699 72 3750) itemoff 14793 itemsize 8
+> [996188.059758]         item 92 key (12490699 72 3782) itemoff 14785 itemsize 8
+> [996188.059759]         item 93 key (12490699 72 3833) itemoff 14777 itemsize 8
+> [996188.059760]         item 94 key (12490699 72 3887) itemoff 14769 itemsize 8
+> [996188.059761]         item 95 key (12490699 72 4006) itemoff 14761 itemsize 8
+> [996188.059762]         item 96 key (12490699 72 4069) itemoff 14753 itemsize 8
+> [996188.059763]         item 97 key (12490699 72 4120) itemoff 14745 itemsize 8
+> [996188.059764]         item 98 key (12490699 72 4192) itemoff 14737 itemsize 8
+> [996188.059765]         item 99 key (12490699 72 4193) itemoff 14729 itemsize 8
+> [996188.059766]         item 100 key (12490699 72 4226) itemoff 14721 itemsize 8
+> [996188.059768]         item 101 key (12490699 72 4258) itemoff 14713 itemsize 8
+> [996188.059769]         item 102 key (12490699 72 4259) itemoff 14705 itemsize 8
+> [996188.059770]         item 103 key (12490699 72 4264) itemoff 14697 itemsize 8
+> [996188.059771]         item 104 key (12490699 72 4273) itemoff 14689 itemsize 8
+> [996188.059772]         item 105 key (12490699 72 4274) itemoff 14681 itemsize 8
+> [996188.059773]         item 106 key (12490699 72 4294) itemoff 14673 itemsize 8
+> [996188.059774]         item 107 key (12490699 72 4295) itemoff 14665 itemsize 8
+> [996188.059775]         item 108 key (12490699 72 4297) itemoff 14657 itemsize 8
+> [996188.059776]         item 109 key (12490699 72 4298) itemoff 14649 itemsize 8
+> [996188.059777]         item 110 key (12490699 72 4300) itemoff 14641 itemsize 8
+> [996188.059778]         item 111 key (12490699 72 4302) itemoff 14633 itemsize 8
+> [996188.059779]         item 112 key (12490699 72 4303) itemoff 14625 itemsize 8
+> [996188.059780]         item 113 key (12490699 72 4306) itemoff 14617 itemsize 8
+> [996188.059781]         item 114 key (12490699 72 4308) itemoff 14609 itemsize 8
+> [996188.059782]         item 115 key (12490699 72 4309) itemoff 14601 itemsize 8
+> [996188.059784]         item 116 key (12490699 72 4313) itemoff 14593 itemsize 8
+> [996188.059785]         item 117 key (12490699 72 4314) itemoff 14585 itemsize 8
+> [996188.059786]         item 118 key (12490699 72 4319) itemoff 14577 itemsize 8
+> [996188.059787]         item 119 key (12490699 72 4320) itemoff 14569 itemsize 8
+> [996188.059788]         item 120 key (12490699 72 4324) itemoff 14561 itemsize 8
+> [996188.059789]         item 121 key (12490699 72 4325) itemoff 14553 itemsize 8
+> [996188.059790]         item 122 key (12490699 72 4326) itemoff 14545 itemsize 8
+> [996188.059791]         item 123 key (12490699 72 4355) itemoff 14537 itemsize 8
+> [996188.059792]         item 124 key (12490699 72 4359) itemoff 14529 itemsize 8
+> [996188.059793]         item 125 key (12490699 72 4363) itemoff 14521 itemsize 8
+> [996188.059794]         item 126 key (12490699 72 4367) itemoff 14513 itemsize 8
+> [996188.059795]         item 127 key (12490699 72 4372) itemoff 14505 itemsize 8
+> [996188.059796]         item 128 key (12490699 72 4374) itemoff 14497 itemsize 8
+> [996188.059797]         item 129 key (12490699 96 4337) itemoff 14439 itemsize 58
+> [996188.059798]         item 130 key (12490699 96 4344) itemoff 14388 itemsize 51
+> [996188.059799]         item 131 key (12490699 96 4346) itemoff 14345 itemsize 43
+> [996188.059800]         item 132 key (12490699 96 4350) itemoff 14289 itemsize 56
+> [996188.059801]         item 133 key (12490699 96 4351) itemoff 14255 itemsize 34
+> [996188.059803]         item 134 key (12490699 96 4352) itemoff 14206 itemsize 49
+> [996188.059804]         item 135 key (12490699 96 4354) itemoff 14156 itemsize 50
+> [996188.059805]         item 136 key (12490699 96 4357) itemoff 14108 itemsize 48
+> [996188.059806]         item 137 key (12490699 96 4358) itemoff 14055 itemsize 53
+> [996188.059807]         item 138 key (12490699 96 4360) itemoff 14002 itemsize 53
+> [996188.059808]         item 139 key (12490699 96 4361) itemoff 13955 itemsize 47
+> [996188.059809]         item 140 key (12490699 96 4362) itemoff 13906 itemsize 49
+> [996188.059810]         item 141 key (12490699 96 4365) itemoff 13858 itemsize 48
+> [996188.059811]         item 142 key (12490699 96 4368) itemoff 13820 itemsize 38
+> [996188.059812]         item 143 key (12490699 96 4337) itemoff 13762 itemsize 58
+> [996188.059813]         item 144 key (12490699 96 4344) itemoff 13711 itemsize 51
+> [996188.059814]         item 145 key (12490699 96 4346) itemoff 13668 itemsize 43
+> [996188.059815]         item 146 key (12490699 96 4350) itemoff 13612 itemsize 56
+> [996188.059816]         item 147 key (12490699 96 4351) itemoff 13578 itemsize 34
+> [996188.059817]         item 148 key (12490699 96 4352) itemoff 13529 itemsize 49
+> [996188.059818]         item 149 key (12490699 96 4354) itemoff 13479 itemsize 50
+> [996188.059819]         item 150 key (12490699 96 4357) itemoff 13431 itemsize 48
+> [996188.059820]         item 151 key (12490699 96 4358) itemoff 13378 itemsize 53
+> [996188.059821]         item 152 key (12490699 96 4360) itemoff 13325 itemsize 53
+> [996188.059822]         item 153 key (12490699 96 4361) itemoff 13278 itemsize 47
+> [996188.059823]         item 154 key (12490699 96 4362) itemoff 13229 itemsize 49
+> [996188.059824]         item 155 key (12490699 96 4365) itemoff 13181 itemsize 48
+> [996188.059826]         item 156 key (12490699 96 4368) itemoff 13143 itemsize 38
+> [996188.059827]         item 157 key (12490699 96 4373) itemoff 13092 itemsize 51
+> [996188.059828]         item 158 key (12490699 96 4375) itemoff 13039 itemsize 53
+> [996188.059829]         item 159 key (12490699 96 4376) itemoff 12983 itemsize 56
+> [996188.059830]         item 160 key (12491146 1 0) itemoff 12823 itemsize 160
+> [996188.059831]                 inode generation 183551 size 98304 mode 100644
+> [996188.059832]         item 161 key (12491146 108 0) itemoff 12770 itemsize 53
+> [996188.059833]                 extent data disk bytenr 1395927384064 nr 65536
+> [996188.059834]                 extent data offset 0 nr 65536 ram 65536
+> [996188.059835]         item 162 key (12491150 1 0) itemoff 12610 itemsize 160
+> [996188.059836]                 inode generation 183551 size 5120 mode 100644
+> [996188.059837]         item 163 key (12491150 108 0) itemoff 12557 itemsize 53
+> [996188.059838]                 extent data disk bytenr 1305164775424 nr 8192
+> [996188.059839]                 extent data offset 0 nr 8192 ram 8192
+> [996188.059840]         item 164 key (12491165 1 0) itemoff 12397 itemsize 160
+> [996188.059841]                 inode generation 183551 size 886 mode 40755
+> [996188.059842]         item 165 key (12491165 12 12491163) itemoff 12384 itemsize 13
+> [996188.059843]         item 166 key (12491165 72 3) itemoff 12376 itemsize 8
+> [996188.059844]         item 167 key (12491165 72 8) itemoff 12368 itemsize 8
+> [996188.059845]         item 168 key (12491165 72 13) itemoff 12360 itemsize 8
+> [996188.059846]         item 169 key (12491165 72 15) itemoff 12352 itemsize 8
+> [996188.059847]         item 170 key (12491165 72 19) itemoff 12344 itemsize 8
+> [996188.059848]         item 171 key (12491165 72 22) itemoff 12336 itemsize 8
+> [996188.059849]         item 172 key (12491165 72 26) itemoff 12328 itemsize 8
+> [996188.059850]         item 173 key (12491165 72 29) itemoff 12320 itemsize 8
+> [996188.059851]         item 174 key (12491165 72 33) itemoff 12312 itemsize 8
+> [996188.059852]         item 175 key (12491165 72 37) itemoff 12304 itemsize 8
+> [996188.059853]         item 176 key (12491165 72 41) itemoff 12296 itemsize 8
+> [996188.059854]         item 177 key (12491203 1 0) itemoff 12136 itemsize 160
+> [996188.059855]                 inode generation 183551 size 49152 mode 100644
+> [996188.059856]         item 178 key (12491203 108 20480) itemoff 12083 itemsize 53
+> [996188.059857]                 extent data disk bytenr 4461441024 nr 4096
+> [996188.059858]                 extent data offset 0 nr 4096 ram 4096
+> [996188.059859]         item 179 key (12491215 1 0) itemoff 11923 itemsize 160
+> [996188.059860]                 inode generation 183551 size 5242880 mode 100644
+> [996188.059861]         item 180 key (12491215 108 32768) itemoff 11870 itemsize 53
+> [996188.059862]                 extent data disk bytenr 153478160384 nr 32768
+> [996188.059863]                 extent data offset 0 nr 32768 ram 32768
+> [996188.059864]         item 181 key (12491215 108 196608) itemoff 11817 itemsize 53
+> [996188.059865]                 extent data disk bytenr 1375927263232 nr 131072
+> [996188.059866]                 extent data offset 0 nr 131072 ram 131072
+> [996188.059867]         item 182 key (12491215 108 393216) itemoff 11764 itemsize 53
+> [996188.059868]                 extent data disk bytenr 1396576878592 nr 98304
+> [996188.059869]                 extent data offset 0 nr 98304 ram 98304
+> [996188.059870]         item 183 key (12491215 108 1146880) itemoff 11711 itemsize 53
+> [996188.059871]                 extent data disk bytenr 1317877542912 nr 32768
+> [996188.059871]                 extent data offset 0 nr 32768 ram 32768
+> [996188.059872]         item 184 key (12491215 108 1703936) itemoff 11658 itemsize 53
+> [996188.059873]                 extent data disk bytenr 1375330340864 nr 65536
+> [996188.059874]                 extent data offset 0 nr 65536 ram 65536
+> [996188.059875]         item 185 key (12491215 108 1802240) itemoff 11605 itemsize 53
+> [996188.059876]                 extent data disk bytenr 1008546021376 nr 32768
+> [996188.059876]                 extent data offset 0 nr 32768 ram 32768
+> [996188.059877]         item 186 key (12491217 1 0) itemoff 11445 itemsize 160
+> [996188.059878]                 inode generation 183551 size 5242880 mode 100644
+> [996188.059879]         item 187 key (12491217 108 131072) itemoff 11392 itemsize 53
+> [996188.059880]                 extent data disk bytenr 1318221713408 nr 98304
+> [996188.059881]                 extent data offset 0 nr 98304 ram 98304
+> [996188.059882]         item 188 key (12491217 108 262144) itemoff 11339 itemsize 53
+> [996188.059883]                 extent data disk bytenr 1322141986816 nr 65536
+> [996188.059883]                 extent data offset 0 nr 65536 ram 65536
+> [996188.059884]         item 189 key (12491269 1 0) itemoff 11179 itemsize 160
+> [996188.059885]                 inode generation 183551 size 65536 mode 100644
+> [996188.059886]         item 190 key (12491269 108 0) itemoff 11126 itemsize 53
+> [996188.059887]                 extent data disk bytenr 1317122703360 nr 32768
+> [996188.059888]                 extent data offset 0 nr 32768 ram 32768
+> [996188.059888]         item 191 key (12491304 1 0) itemoff 10966 itemsize 160
+> [996188.059889]                 inode generation 183552 size 96 mode 40755
+> [996188.059890]         item 192 key (12491304 12 12491302) itemoff 10954 itemsize 12
+> [996188.059891]         item 193 key (12491304 72 3) itemoff 10946 itemsize 8
+> [996188.059893]         item 194 key (12491304 72 9) itemoff 10938 itemsize 8
+> [996188.059894]         item 195 key (12491305 1 0) itemoff 10778 itemsize 160
+> [996188.059895]                 inode generation 183552 size 26624 mode 100644
+> [996188.059895]         item 196 key (12491305 108 0) itemoff 10725 itemsize 53
+> [996188.059897]                 extent data disk bytenr 1316572549120 nr 16384
+> [996188.059897]                 extent data offset 0 nr 16384 ram 16384
+> [996188.059898]         item 197 key (12491305 108 24576) itemoff 10672 itemsize 53
+> [996188.059899]                 extent data disk bytenr 1316572164096 nr 4096
+> [996188.059900]                 extent data offset 0 nr 4096 ram 4096
+> [996188.059901]         item 198 key (12491330 1 0) itemoff 10512 itemsize 160
+> [996188.059902]                 inode generation 183552 size 138 mode 40755
+> [996188.059902]         item 199 key (12491330 12 12491302) itemoff 10499 itemsize 13
+> [996188.059904]         item 200 key (12491330 72 3) itemoff 10491 itemsize 8
+> [996188.059905]         item 201 key (12491330 72 7) itemoff 10483 itemsize 8
+> [996188.059906]         item 202 key (12491330 96 83) itemoff 10427 itemsize 56
+> [996188.059907]         item 203 key (12491331 1 0) itemoff 10267 itemsize 160
+> [996188.059908]                 inode generation 183552 size 57344 mode 100644
+> [996188.059909]         item 204 key (12491331 12 12491330) itemoff 10235 itemsize 32
+> [996188.059910]         item 205 key (12491331 108 0) itemoff 10182 itemsize 53
+> [996188.059911]                 extent data disk bytenr 1303199375360 nr 4096
+> [996188.059912]                 extent data offset 0 nr 4096 ram 4096
+> [996188.059912]         item 206 key (12491331 108 4096) itemoff 10129 itemsize 53
+> [996188.059914]                 extent data disk bytenr 1303199367168 nr 8192
+> [996188.059914]                 extent data offset 4096 nr 4096 ram 8192
+> [996188.059915]         item 207 key (12491331 108 8192) itemoff 10076 itemsize 53
+> [996188.059916]                 extent data disk bytenr 3049730048 nr 8192
+> [996188.059917]                 extent data offset 0 nr 8192 ram 8192
+> [996188.059918]         item 208 key (12491331 108 16384) itemoff 10023 itemsize 53
+> [996188.059919]                 extent data disk bytenr 3082838016 nr 45056
+> [996188.059920]                 extent data offset 16384 nr 4096 ram 45056
+> [996188.059921]         item 209 key (12491331 108 20480) itemoff 9970 itemsize 53
+> [996188.059922]                 extent data disk bytenr 12110196736 nr 4096
+> [996188.059923]                 extent data offset 0 nr 4096 ram 4096
+> [996188.059923]         item 210 key (12491331 108 24576) itemoff 9917 itemsize 53
+> [996188.059924]                 extent data disk bytenr 3082838016 nr 45056
+> [996188.059925]                 extent data offset 24576 nr 20480 ram 45056
+> [996188.059926]         item 211 key (12491331 108 45056) itemoff 9864 itemsize 53
+> [996188.059927]                 extent data disk bytenr 1375926812672 nr 16384
+> [996188.059928]                 extent data offset 0 nr 12288 ram 16384
+> [996188.059929]         item 212 key (12491336 1 0) itemoff 9704 itemsize 160
+> [996188.059930]                 inode generation 183552 size 88 mode 40755
+> [996188.059931] BTRFS error (device dm-0): block=931164291072 write time tree block corruption detected
+> [996188.096296] BTRFS: error (device dm-0: state AL) in free_log_tree:3284: errno=-5 IO failure
+> [996188.096303] BTRFS info (device dm-0: state EAL): forced readonly
+> [996188.102707] BTRFS warning (device dm-0: state EAL): Skipping commit of aborted transaction.
+> [996188.102712] BTRFS: error (device dm-0: state EAL) in cleanup_transaction:1958: errno=-5 IO failure
+>
 
-Ok, so 6.2-rc5 has the first 5 patches of the patchset.
-If the whole patchset fixed the problem for 2 weeks, then I think
-there's only one thing left to test, which is to add patch 6 on top of
-6.2-rc5:
+This is the same as reported here:
 
-https://lore.kernel.org/linux-btrfs/ff77f41924e197d99e62ef323f03467c87ef43a0.1673361215.git.fdmanana@suse.com/
+https://lore.kernel.org/linux-btrfs/ae169fc6-f504-28f0-a098-6fa6a4dfb612@leemhuis.info/
 
-Are you able to try that?
+> Other than that, I couldn't list files in a directory two levels higher
+> than the file that I attempted to create.
 
-Thanks.
-
+You couldn't list files while the fs was in RO state, or after
+rebooting? Or both?
+What happened exactly when attempting to list files? What error did you get?
 
 >
-> [ 7611.406077] BTRFS critical (device sda2): corrupt leaf:
-> root=18446744073709551610 block=75971280896 slot=71, bad key order, prev
-> (484119 96 1358553) current (484119 96 1358532)
-> [ 7611.406087] BTRFS info (device sda2): leaf 75971280896 gen 5130699
-> total ptrs 105 free space 10909 owner 18446744073709551610
-> [ 7611.406090]     item 0 key (484119 1 0) itemoff 16123 itemsize 160
-> [ 7611.406091]         inode generation 45 size 2198 mode 40700
-> [ 7611.406093]     item 1 key (484119 12 484118) itemoff 16097 itemsize 26
-> [ 7611.406094]     item 2 key (484119 72 15) itemoff 16089 itemsize 8
-> [ 7611.406095]     item 3 key (484119 72 20) itemoff 16081 itemsize 8
-> [ 7611.406097]     item 4 key (484119 72 25) itemoff 16073 itemsize 8
-> [ 7611.406098]     item 5 key (484119 72 30) itemoff 16065 itemsize 8
-> [ 7611.406099]     item 6 key (484119 72 32630) itemoff 16057 itemsize 8
-> [ 7611.406100]     item 7 key (484119 72 40332) itemoff 16049 itemsize 8
-> [ 7611.406101]     item 8 key (484119 72 40335) itemoff 16041 itemsize 8
-> [ 7611.406102]     item 9 key (484119 72 93630) itemoff 16033 itemsize 8
-> [ 7611.406104]     item 10 key (484119 72 101741) itemoff 16025 itemsize 8
-> [ 7611.406105]     item 11 key (484119 72 131485) itemoff 16017 itemsize 8
-> [ 7611.406106]     item 12 key (484119 72 183799) itemoff 16009 itemsize 8
-> [ 7611.406108]     item 13 key (484119 72 183801) itemoff 16001 itemsize 8
-> [ 7611.406109]     item 14 key (484119 72 203038) itemoff 15993 itemsize 8
-> [ 7611.406110]     item 15 key (484119 72 254997) itemoff 15985 itemsize 8
-> [ 7611.406111]     item 16 key (484119 72 255172) itemoff 15977 itemsize 8
-> [ 7611.406112]     item 17 key (484119 72 255208) itemoff 15969 itemsize 8
-> [ 7611.406113]     item 18 key (484119 72 256848) itemoff 15961 itemsize 8
-> [ 7611.406115]     item 19 key (484119 72 264839) itemoff 15953 itemsize 8
-> [ 7611.406116]     item 20 key (484119 72 266090) itemoff 15945 itemsize 8
-> [ 7611.406117]     item 21 key (484119 72 266976) itemoff 15937 itemsize 8
-> [ 7611.406118]     item 22 key (484119 72 267056) itemoff 15929 itemsize 8
-> [ 7611.406120]     item 23 key (484119 72 302340) itemoff 15921 itemsize 8
-> [ 7611.406121]     item 24 key (484119 72 513980) itemoff 15913 itemsize 8
-> [ 7611.406122]     item 25 key (484119 72 848319) itemoff 15905 itemsize 8
-> [ 7611.406123]     item 26 key (484119 72 848845) itemoff 15897 itemsize 8
-> [ 7611.406124]     item 27 key (484119 72 938962) itemoff 15889 itemsize 8
-> [ 7611.406125]     item 28 key (484119 72 1001565) itemoff 15881 itemsize 8
-> [ 7611.406127]     item 29 key (484119 72 1268172) itemoff 15873 itemsize 8
-> [ 7611.406128]     item 30 key (484119 72 1298657) itemoff 15865 itemsize 8
-> [ 7611.406129]     item 31 key (484119 72 1299762) itemoff 15857 itemsize 8
-> [ 7611.406130]     item 32 key (484119 72 1336351) itemoff 15849 itemsize 8
-> [ 7611.406131]     item 33 key (484119 72 1356235) itemoff 15841 itemsize 8
-> [ 7611.406133]     item 34 key (484119 72 1356237) itemoff 15833 itemsize 8
-> [ 7611.406134]     item 35 key (484119 72 1357416) itemoff 15825 itemsize 8
-> [ 7611.406135]     item 36 key (484119 72 1357797) itemoff 15817 itemsize 8
-> [ 7611.406137]     item 37 key (484119 72 1358273) itemoff 15809 itemsize 8
-> [ 7611.406138]     item 38 key (484119 72 1358275) itemoff 15801 itemsize 8
-> [ 7611.406139]     item 39 key (484119 72 1358278) itemoff 15793 itemsize 8
-> [ 7611.406141]     item 40 key (484119 72 1358448) itemoff 15785 itemsize 8
-> [ 7611.406142]     item 41 key (484119 72 1358449) itemoff 15777 itemsize 8
-> [ 7611.406143]     item 42 key (484119 72 1358452) itemoff 15769 itemsize 8
-> [ 7611.406144]     item 43 key (484119 72 1358453) itemoff 15761 itemsize 8
-> [ 7611.406145]     item 44 key (484119 72 1358456) itemoff 15753 itemsize 8
-> [ 7611.406147]     item 45 key (484119 72 1358457) itemoff 15745 itemsize 8
-> [ 7611.406148]     item 46 key (484119 72 1358460) itemoff 15737 itemsize 8
-> [ 7611.406149]     item 47 key (484119 72 1358461) itemoff 15729 itemsize 8
-> [ 7611.406150]     item 48 key (484119 72 1358463) itemoff 15721 itemsize 8
-> [ 7611.406151]     item 49 key (484119 72 1358469) itemoff 15713 itemsize 8
-> [ 7611.406153]     item 50 key (484119 72 1358485) itemoff 15705 itemsize 8
-> [ 7611.406154]     item 51 key (484119 72 1358486) itemoff 15697 itemsize 8
-> [ 7611.406155]     item 52 key (484119 72 1358499) itemoff 15689 itemsize 8
-> [ 7611.406156]     item 53 key (484119 72 1358502) itemoff 15681 itemsize 8
-> [ 7611.406157]     item 54 key (484119 72 1358513) itemoff 15673 itemsize 8
-> [ 7611.406159]     item 55 key (484119 72 1358514) itemoff 15665 itemsize 8
-> [ 7611.406160]     item 56 key (484119 72 1358515) itemoff 15657 itemsize 8
-> [ 7611.406161]     item 57 key (484119 72 1358516) itemoff 15649 itemsize 8
-> [ 7611.406162]     item 58 key (484119 72 1358543) itemoff 15641 itemsize 8
-> [ 7611.406164]     item 59 key (484119 72 1358546) itemoff 15633 itemsize 8
-> [ 7611.406165]     item 60 key (484119 72 1358548) itemoff 15625 itemsize 8
-> [ 7611.406166]     item 61 key (484119 72 1358552) itemoff 15617 itemsize 8
-> [ 7611.406167]     item 62 key (484119 96 1358532) itemoff 15566 itemsize 51
-> [ 7611.406168]     item 63 key (484119 96 1358534) itemoff 15508 itemsize 58
-> [ 7611.406170]     item 64 key (484119 96 1358536) itemoff 15465 itemsize 43
-> [ 7611.406171]     item 65 key (484119 96 1358541) itemoff 15431 itemsize 34
-> [ 7611.406172]     item 66 key (484119 96 1358545) itemoff 15383 itemsize 48
-> [ 7611.406173]     item 67 key (484119 96 1358549) itemoff 15330 itemsize 53
-> [ 7611.406174]     item 68 key (484119 96 1358550) itemoff 15283 itemsize 47
-> [ 7611.406175]     item 69 key (484119 96 1358551) itemoff 15234 itemsize 49
-> [ 7611.406177]     item 70 key (484119 96 1358553) itemoff 15196 itemsize 38
-> [ 7611.406178]     item 71 key (484119 96 1358532) itemoff 15145 itemsize 51
-> [ 7611.406179]     item 72 key (484119 96 1358534) itemoff 15087 itemsize 58
-> [ 7611.406180]     item 73 key (484119 96 1358536) itemoff 15044 itemsize 43
-> [ 7611.406181]     item 74 key (484119 96 1358541) itemoff 15010 itemsize 34
-> [ 7611.406182]     item 75 key (484119 96 1358545) itemoff 14962 itemsize 48
-> [ 7611.406184]     item 76 key (484119 96 1358549) itemoff 14909 itemsize 53
-> [ 7611.406185]     item 77 key (484119 96 1358550) itemoff 14862 itemsize 47
-> [ 7611.406186]     item 78 key (484119 96 1358551) itemoff 14813 itemsize 49
-> [ 7611.406187]     item 79 key (484119 96 1358553) itemoff 14775 itemsize 38
-> [ 7611.406188]     item 80 key (484128 1 0) itemoff 14615 itemsize 160
-> [ 7611.406189]         inode generation 45 size 98304 mode 100644
-> [ 7611.406190]     item 81 key (484128 108 0) itemoff 14562 itemsize 53
-> [ 7611.406192]         extent data disk bytenr 10745529716736 nr 65536
-> [ 7611.406193]         extent data offset 0 nr 65536 ram 65536
-> [ 7611.406194]     item 82 key (484129 1 0) itemoff 14402 itemsize 160
-> [ 7611.406195]         inode generation 45 size 26214400 mode 100644
-> [ 7611.406196]     item 83 key (484129 108 98304) itemoff 14349 itemsize 53
-> [ 7611.406197]         extent data disk bytenr 10744232108032 nr 65536
-> [ 7611.406198]         extent data offset 0 nr 65536 ram 65536
-> [ 7611.406198]     item 84 key (484129 108 589824) itemoff 14296 itemsize 53
-> [ 7611.406200]         extent data disk bytenr 10745529593856 nr 32768
-> [ 7611.406200]         extent data offset 0 nr 32768 ram 32768
-> [ 7611.406201]     item 85 key (484129 108 4685824) itemoff 14243
-> itemsize 53
-> [ 7611.406203]         extent data disk bytenr 10744231481344 nr 32768
-> [ 7611.406203]         extent data offset 0 nr 32768 ram 32768
-> [ 7611.406204]     item 86 key (484129 108 11468800) itemoff 14190
-> itemsize 53
-> [ 7611.406205]         extent data disk bytenr 10745067331584 nr 32768
-> [ 7611.406206]         extent data offset 0 nr 32768 ram 32768
-> [ 7611.406207]     item 87 key (484129 108 13139968) itemoff 14137
-> itemsize 53
-> [ 7611.406208]         extent data disk bytenr 10745022545920 nr 32768
-> [ 7611.406209]         extent data offset 0 nr 32768 ram 32768
-> [ 7611.406210]     item 88 key (484129 108 13795328) itemoff 14084
-> itemsize 53
-> [ 7611.406211]         extent data disk bytenr 10744891514880 nr 32768
-> [ 7611.406212]         extent data offset 0 nr 32768 ram 32768
-> [ 7611.406213]     item 89 key (484129 108 20185088) itemoff 14031
-> itemsize 53
-> [ 7611.406214]         extent data disk bytenr 10745022578688 nr 32768
-> [ 7611.406215]         extent data offset 0 nr 32768 ram 32768
-> [ 7611.406216]     item 90 key (484129 108 22347776) itemoff 13978
-> itemsize 53
-> [ 7611.406217]         extent data disk bytenr 10744205844480 nr 32768
-> [ 7611.406218]         extent data offset 0 nr 32768 ram 32768
-> [ 7611.406218]     item 91 key (484129 108 23429120) itemoff 13925
-> itemsize 53
-> [ 7611.406220]         extent data disk bytenr 10745067364352 nr 32768
-> [ 7611.406220]         extent data offset 0 nr 32768 ram 32768
-> [ 7611.406221]     item 92 key (484129 108 24870912) itemoff 13872
-> itemsize 53
-> [ 7611.406222]         extent data disk bytenr 10745022611456 nr 32768
-> [ 7611.406223]         extent data offset 0 nr 32768 ram 32768
-> [ 7611.406224]     item 93 key (484129 108 25001984) itemoff 13819
-> itemsize 53
-> [ 7611.406225]         extent data disk bytenr 10745022709760 nr 32768
-> [ 7611.406226]         extent data offset 0 nr 32768 ram 32768
-> [ 7611.406227]     item 94 key (484129 108 25165824) itemoff 13766
-> itemsize 53
-> [ 7611.406228]         extent data disk bytenr 10745022742528 nr 32768
-> [ 7611.406229]         extent data offset 0 nr 32768 ram 32768
-> [ 7611.406230]     item 95 key (484147 1 0) itemoff 13606 itemsize 160
-> [ 7611.406231]         inode generation 45 size 886 mode 40755
-> [ 7611.406232]     item 96 key (484147 72 4) itemoff 13598 itemsize 8
-> [ 7611.406233]     item 97 key (484147 72 27) itemoff 13590 itemsize 8
-> [ 7611.406234]     item 98 key (484147 72 35) itemoff 13582 itemsize 8
-> [ 7611.406235]     item 99 key (484147 72 40) itemoff 13574 itemsize 8
-> [ 7611.406236]     item 100 key (484147 72 45) itemoff 13566 itemsize 8
-> [ 7611.406238]     item 101 key (484147 72 52) itemoff 13558 itemsize 8
-> [ 7611.406239]     item 102 key (484147 72 61) itemoff 13550 itemsize 8
-> [ 7611.406240]     item 103 key (484147 72 65) itemoff 13542 itemsize 8
-> [ 7611.406241]     item 104 key (484147 72 88) itemoff 13534 itemsize 8
-> [ 7611.406242] BTRFS error (device sda2): block=75971280896 write time
-> tree block corruption detected
-> [ 7611.406255] ------------[ cut here ]------------
-> [ 7611.406256] WARNING: CPU: 5 PID: 32347 at fs/btrfs/disk-io.c:376
-> csum_one_extent_buffer+0x136/0x140
-> [ 7611.406261] Modules linked in: zfs(PO) zunicode(PO) zzstd(O) zlua(O)
-> zavl(PO) icp(PO) zcommon(PO) znvpair(PO) spl(O)
-> [ 7611.406270] CPU: 5 PID: 32347 Comm: mozStorage #2 Tainted: P
-> W  O       6.2.0-rc5 #1
-> [ 7611.406272] Hardware name: ASUS All Series/H87M-PRO, BIOS 2102 10/28/2014
-> [ 7611.406273] RIP: 0010:csum_one_extent_buffer+0x136/0x140
-> [ 7611.406275] Code: 48 c1 e2 29 48 03 53 70 48 c1 fa 06 81 e1 ff 0f 00
-> 00 48 c1 e2 0c 48 01 ca b9 11 ff ff 01 48 c1 e1 27 48 83 7c 0a 58 fa 75
-> 98 <0f> 0b eb 94 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90
-> [ 7611.406277] RSP: 0018:ffffc9000d803850 EFLAGS: 00010246
-> [ 7611.406279] RAX: 00000000ffffff8b RBX: ffff888411886200 RCX:
-> ffff888000000000
-> [ 7611.406280] RDX: 0000000479022000 RSI: 0000000000000001 RDI:
-> ffff8887fdd5b280
-> [ 7611.406282] RBP: ffff888102fa3000 R08: 00000000ffffdfff R09:
-> 00000000ffffdfff
-> [ 7611.406283] R10: ffffffff82854220 R11: ffffffff82854220 R12:
-> ffff888102fa3000
-> [ 7611.406284] R13: 0000000000001000 R14: ffffea0011e40880 R15:
-> ffff888102fa3000
-> [ 7611.406285] FS:  00007f43d72986c0(0000) GS:ffff8887fdd40000(0000)
-> knlGS:0000000000000000
-> [ 7611.406287] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 7611.406288] CR2: 00007f246eb9e000 CR3: 000000040de5e005 CR4:
-> 00000000001706e0
-> [ 7611.406289] Call Trace:
-> [ 7611.406291]  <TASK>
-> [ 7611.406293]  btree_csum_one_bio+0x220/0x2a0
-> [ 7611.406295]  btrfs_submit_metadata_bio+0x84/0xc0
-> [ 7611.406297]  submit_one_bio+0xbd/0x110
-> [ 7611.406300]  btree_write_cache_pages+0x721/0x790
-> [ 7611.406303]  ? __pfx_end_bio_extent_buffer_writepage+0x10/0x10
-> [ 7611.406306]  ? btrfs_search_slot+0x8a5/0xc70
-> [ 7611.406309]  do_writepages+0x99/0x180
-> [ 7611.406313]  ? btrfs_read_extent_buffer+0x8a/0x130
-> [ 7611.406314]  ? merge_state.part.0+0x41/0xf0
-> [ 7611.406317]  filemap_fdatawrite_wbc+0x5a/0x80
-> [ 7611.406321]  __filemap_fdatawrite_range+0x45/0x50
-> [ 7611.406323]  btrfs_write_marked_extents+0x52/0x120
-> [ 7611.406326]  btrfs_sync_log+0x1ce/0x9a0
-> [ 7611.406329]  ? btrfs_unlock_up_safe+0x69/0xc0
-> [ 7611.406332]  ? btrfs_search_forward+0x260/0x340
-> [ 7611.406334]  ? log_new_dir_dentries.isra.0+0x36c/0x390
-> [ 7611.406335]  ? __pfx_autoremove_wake_function+0x10/0x10
-> [ 7611.406339]  ? log_new_dir_dentries.isra.0+0x36c/0x390
-> [ 7611.406340]  ? btrfs_log_inode_parent+0x3e0/0xdf0
-> [ 7611.406342]  ? pagevec_lookup_range_tag+0x1f/0x30
-> [ 7611.406345]  ? __filemap_fdatawait_range+0x46/0xe0
-> [ 7611.406347]  ? perf_event_exec+0xe0/0x310
-> [ 7611.406350]  ? wait_current_trans+0x15/0xe0
-> [ 7611.406353]  ? kmem_cache_alloc+0x226/0x380
-> [ 7611.406357]  ? join_transaction+0x1b/0x3f0
-> [ 7611.406359]  ? dput+0xaf/0x2d0
-> [ 7611.406361]  btrfs_sync_file+0x31f/0x4e0
-> [ 7611.406364]  __x64_sys_fsync+0x32/0x60
-> [ 7611.406367]  do_syscall_64+0x42/0x90
-> [ 7611.406371]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> [ 7611.406375] RIP: 0033:0x7f440320651a
-> [ 7611.406377] Code: 48 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48
-> 83 ec 18 89 7c 24 0c e8 13 71 f8 ff 8b 7c 24 0c 89 c2 b8 4a 00 00 00 0f
-> 05 <48> 3d 00 f0 ff ff 77 36 89 d7 89 44 24 0c e8 73 71 f8 ff 8b 44 24
-> [ 7611.406378] RSP: 002b:00007f43d7297170 EFLAGS: 00000293 ORIG_RAX:
-> 000000000000004a
-> [ 7611.406381] RAX: ffffffffffffffda RBX: 00007f43ee222be8 RCX:
-> 00007f440320651a
-> [ 7611.406382] RDX: 0000000000000000 RSI: 0000000000000000 RDI:
-> 0000000000000090
-> [ 7611.406383] RBP: 0000000000000000 R08: 0000000000000000 R09:
-> 00007f440255e000
-> [ 7611.406384] R10: 0000000000000000 R11: 0000000000000293 R12:
-> 00007f43d63ed038
-> [ 7611.406385] R13: 0000000000000000 R14: 0000000000000002 R15:
-> 0000000000000000
-> [ 7611.406387]  </TASK>
-> [ 7611.406387] ---[ end trace 0000000000000000 ]---
-> [ 7611.459735] BTRFS error (device sda2: state AL): Transaction aborted
-> (error -5)
-> [ 7611.459742] BTRFS: error (device sda2: state AL) in
-> free_log_tree:3248: errno=-5 IO failure
-> [ 7611.459744] BTRFS info (device sda2: state EAL): forced readonly
-> [ 7611.463492] BTRFS warning (device sda2: state EAL): Skipping commit
-> of aborted transaction.
-> [ 7611.463498] BTRFS: error (device sda2: state EAL) in
-> cleanup_transaction:1984: errno=-5 IO failure
+> After rebooting from a live USB, I ran btrfs scrub (no errors found) and
+> btrfs check (some errors found):
 >
-> Thanks in advance,
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/root
+> UUID: ********-****-****-****-************
+> [1/7] checking root items
+> [2/7] checking extents
+> [3/7] checking free space tree
+> [4/7] checking fs roots
+> [5/7] checking only csums items (without verifying data)
+> [6/7] checking root refs
+> [7/7] checking quota groups
+> ERROR: failed to add qgroup relation, member=258 parent=71776119061217538: No such file or directory
+> ERROR: loading qgroups from disk: -2
+> ERROR: failed to check quota groups
+
+This is a different issue, it's the first time I see it, nothing
+related to the previous one. I'm adding Qu to CC since he knows
+qgroups much better than I do, and so he may have an idea.
+
+> found 1211137126400 bytes used, error(s) found
+> total csum bytes: 1170686968
+> total tree bytes: 10738614272
+> total fs tree bytes: 8738439168
+> total extent tree bytes: 557547520
+> btree space waste bytes: 1726206798
+> file data blocks allocated: 1533753126912
+>  referenced 1324118478848
+> extent buffer leak: start 931127214080 len 16384
+> extent buffer leak: start 103570046976 len 16384
 >
-> David Arendt
+> The quota error and especially the extent buffer leak error don't look
+> good to me. However, the filesystem seem to mount properly, and so far I
+> didn't find any lost files (still looking). I don't know whether the
+> amount of free space is shown correctly.
 >
+> What should be my steps to fix these errors? I didn't try btrfs check
+> --repair yet, because of numerous warnings not to use it.
+>
+> Also, what is the approximate amount of the data lost due to this extent
+> buffer leak? Is 16384 the number of sectors or the number of bytes?
+
+Why do you think there's data loss? The extent buffer leak is just a
+btrfs-progs thing, it means the code failed to release allocated
+memory - but once 'btrfs check' exits, the memory is released. This is
+likely happening due to the qgroups error, some error path is not
+freeing the memory.
+
+>
+> Thanks,
+> Max
