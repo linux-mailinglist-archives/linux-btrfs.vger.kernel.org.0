@@ -2,85 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4939F67A33A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jan 2023 20:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BE767A36E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jan 2023 20:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbjAXTjd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Jan 2023 14:39:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
+        id S233471AbjAXTzh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Jan 2023 14:55:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234894AbjAXTjP (ORCPT
+        with ESMTP id S230345AbjAXTzg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Jan 2023 14:39:15 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9532F51414
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Jan 2023 11:38:42 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id BFCB61FDBF;
-        Tue, 24 Jan 2023 19:38:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1674589083; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=851P831goZMl7EHZErfsRK4vs/k5kGzUIlHPo0ZGQNY=;
-        b=MwFc3hEESbLvW0Q5olng2YicQ2ZGnbpxiVwR163pK4dwRGKQJftgujECNUCzYEL7apxbMG
-        CXNecj5VtmChwsgY8vstYDd6qSkV8n4dRaW7FCkZpR+YWpNIPl4nSGu2LYvme4D+/HsHJz
-        EU1zDrkGELrw3TUqRMj3EcSIMHLo2m4=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id A741F2C141;
-        Tue, 24 Jan 2023 19:38:03 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 18CF6DA7E1; Tue, 24 Jan 2023 20:32:23 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>,
-        syzbot+4376a9a073770c173269@syzkaller.appspotmail.com
-Subject: [PATCH] btrfs: send: limit number of clones and allocated memory size
-Date:   Tue, 24 Jan 2023 20:32:10 +0100
-Message-Id: <20230124193210.14636-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.37.3
+        Tue, 24 Jan 2023 14:55:36 -0500
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06992E0DC;
+        Tue, 24 Jan 2023 11:55:35 -0800 (PST)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E55006732D; Tue, 24 Jan 2023 20:55:31 +0100 (CET)
+Date:   Tue, 24 Jan 2023 20:55:31 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 04/34] btrfs: remove the direct I/O read checksum
+ lookup optimization
+Message-ID: <20230124195531.GA16743@lst.de>
+References: <20230121065031.1139353-1-hch@lst.de> <20230121065031.1139353-5-hch@lst.de> <1f02fc92-18e8-3c68-8a31-36b4e4a07efd@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f02fc92-18e8-3c68-8a31-36b4e4a07efd@oracle.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The arg->clone_sources_count is u64 and can trigger a warning when a
-huge value is passed from user space and a huge array is allocated.
-Limit the allocated memory to 8MiB (can be increased if needed), which
-in turn limits the number of clone sources to 8M / sizeof(struct
-clone_root) = 8M / 40 = 209715.  Real world number of clones is from
-tens to hundreds, so this is future proof.
+On Tue, Jan 24, 2023 at 10:55:25PM +0800, Anand Jain wrote:
+>
+> I was curious about the commit message.
+> I ran fio to test the performance before and after the change.
+> The results were similar.
+>
+> fio --group_reporting=1 --directory /mnt/test --name dioread --direct=1 
+> --size=1g --rw=read  --runtime=60 --iodepth=1024 --nrfiles=16 --numjobs=16
+>
+> before this patch
+> READ: bw=8208KiB/s (8405kB/s), 8208KiB/s-8208KiB/s (8405kB/s-8405kB/s), 
+> io=481MiB (504MB), run=60017-60017msec
+>
+> after this patch
+> READ: bw=8353KiB/s (8554kB/s), 8353KiB/s-8353KiB/s (8554kB/s-8554kB/s), 
+> io=490MiB (513MB), run=60013-60013msec
 
-Reported-by: syzbot+4376a9a073770c173269@syzkaller.appspotmail.com
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/send.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+That's 4k reads.  The will benefit from the inline csum array in the
+btrfs_bio, but won't benefit from the existing batching, so this is
+kind of expected.
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 42aec556d83e..c3146ce84156 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -8070,10 +8070,10 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
- 	/*
- 	 * Check that we don't overflow at later allocations, we request
- 	 * clone_sources_count + 1 items, and compare to unsigned long inside
--	 * access_ok.
-+	 * access_ok. Also set an upper limit for allocation size so this can't
-+	 * easily exhaust memory. Max number of clone sources is about 200K.
- 	 */
--	if (arg->clone_sources_count >
--	    ULONG_MAX / sizeof(struct clone_root) - 1) {
-+	if (arg->clone_sources_count > SZ_8M / sizeof(struct clone_root)) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
--- 
-2.37.3
-
+The good news is that the final series will still use the inline
+csum array for small reads, while also only doing a single csum tree
+lookup for larger reads, so you'll get the best of both worlds.
