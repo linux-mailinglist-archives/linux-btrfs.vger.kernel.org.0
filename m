@@ -2,125 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1615067A2F5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jan 2023 20:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4939F67A33A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jan 2023 20:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbjAXTbr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Jan 2023 14:31:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34400 "EHLO
+        id S234890AbjAXTjd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Jan 2023 14:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233161AbjAXTbV (ORCPT
+        with ESMTP id S234894AbjAXTjP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Jan 2023 14:31:21 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E374FCF8;
-        Tue, 24 Jan 2023 11:30:49 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2E4F4B816BF;
-        Tue, 24 Jan 2023 19:30:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00593C433A0;
-        Tue, 24 Jan 2023 19:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674588646;
-        bh=hGCv1KZZe3GeYILHnAYauWOgUNQlZo/l7V3HpJWTqjo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iO9erBwVo9YQ5VD3CeEEIYGF4jgJVgoNTKa0Cst/fW0YKY2hXQyVceYdu1Kumc0xA
-         6eufYARO8WsmmwiZOJ19PO+P7Y6+4Uz1KOnUAFmIYFbF50NFfQsc4+3yPSLdaROGB4
-         DTF/EJxHTNmrqgo+BLEQHYrTVrLQ0sqMc88HU2HCtnHJ39x0zCSAHCmA3jB/rt6a3M
-         1XxWWaE+R0Cqs3uDxXoqgtHSQ0FemJMbNtmn8+e/wkDbTrlAt0ZNtv1ua9euyXeP8y
-         ynNcZEK5WdVwEU3QSr9u27ZPH81ELpEvaI21jt+a1HwLSpS0Ye4af/whs/Vhpc6Nx2
-         xR31eDqczLJMg==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
-        david@fromorbit.com, trondmy@hammerspace.com, neilb@suse.de,
-        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
-        chuck.lever@oracle.com, lczerner@redhat.com, jack@suse.cz,
-        bfields@fieldses.org, brauner@kernel.org, fweimer@redhat.com
-Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: [PATCH v8 RESEND 8/8] nfsd: remove fetch_iversion export operation
-Date:   Tue, 24 Jan 2023 14:30:25 -0500
-Message-Id: <20230124193025.185781-9-jlayton@kernel.org>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230124193025.185781-1-jlayton@kernel.org>
-References: <20230124193025.185781-1-jlayton@kernel.org>
+        Tue, 24 Jan 2023 14:39:15 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9532F51414
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Jan 2023 11:38:42 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id BFCB61FDBF;
+        Tue, 24 Jan 2023 19:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1674589083; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=851P831goZMl7EHZErfsRK4vs/k5kGzUIlHPo0ZGQNY=;
+        b=MwFc3hEESbLvW0Q5olng2YicQ2ZGnbpxiVwR163pK4dwRGKQJftgujECNUCzYEL7apxbMG
+        CXNecj5VtmChwsgY8vstYDd6qSkV8n4dRaW7FCkZpR+YWpNIPl4nSGu2LYvme4D+/HsHJz
+        EU1zDrkGELrw3TUqRMj3EcSIMHLo2m4=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id A741F2C141;
+        Tue, 24 Jan 2023 19:38:03 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 18CF6DA7E1; Tue, 24 Jan 2023 20:32:23 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>,
+        syzbot+4376a9a073770c173269@syzkaller.appspotmail.com
+Subject: [PATCH] btrfs: send: limit number of clones and allocated memory size
+Date:   Tue, 24 Jan 2023 20:32:10 +0100
+Message-Id: <20230124193210.14636-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that the i_version counter is reported in struct kstat, there is no
-need for this export operation.
+The arg->clone_sources_count is u64 and can trigger a warning when a
+huge value is passed from user space and a huge array is allocated.
+Limit the allocated memory to 8MiB (can be increased if needed), which
+in turn limits the number of clone sources to 8M / sizeof(struct
+clone_root) = 8M / 40 = 209715.  Real world number of clones is from
+tens to hundreds, so this is future proof.
 
-Acked-by: Chuck Lever <chuck.lever@oracle.com>
-Reviewed-by: NeilBrown <neilb@suse.de>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Reported-by: syzbot+4376a9a073770c173269@syzkaller.appspotmail.com
+Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/nfs/export.c          | 7 -------
- fs/nfsd/nfsfh.c          | 3 ---
- include/linux/exportfs.h | 1 -
- 3 files changed, 11 deletions(-)
+ fs/btrfs/send.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/nfs/export.c b/fs/nfs/export.c
-index 01596f2d0a1e..1a9d5aa51dfb 100644
---- a/fs/nfs/export.c
-+++ b/fs/nfs/export.c
-@@ -145,17 +145,10 @@ nfs_get_parent(struct dentry *dentry)
- 	return parent;
- }
- 
--static u64 nfs_fetch_iversion(struct inode *inode)
--{
--	nfs_revalidate_inode(inode, NFS_INO_INVALID_CHANGE);
--	return inode_peek_iversion_raw(inode);
--}
--
- const struct export_operations nfs_export_ops = {
- 	.encode_fh = nfs_encode_fh,
- 	.fh_to_dentry = nfs_fh_to_dentry,
- 	.get_parent = nfs_get_parent,
--	.fetch_iversion = nfs_fetch_iversion,
- 	.flags = EXPORT_OP_NOWCC|EXPORT_OP_NOSUBTREECHK|
- 		EXPORT_OP_CLOSE_BEFORE_UNLINK|EXPORT_OP_REMOTE_FS|
- 		EXPORT_OP_NOATOMIC_ATTR,
-diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
-index 3a01c8601712..76ea268dc420 100644
---- a/fs/nfsd/nfsfh.c
-+++ b/fs/nfsd/nfsfh.c
-@@ -778,11 +778,8 @@ u64 nfsd4_change_attribute(struct kstat *stat, struct inode *inode)
- {
- 	u64 chattr;
- 
--	if (inode->i_sb->s_export_op->fetch_iversion)
--		return inode->i_sb->s_export_op->fetch_iversion(inode);
- 	if (stat->result_mask & STATX_CHANGE_COOKIE) {
- 		chattr = stat->change_cookie;
--
- 		if (S_ISREG(inode->i_mode) &&
- 		    !(stat->attributes & STATX_ATTR_CHANGE_MONOTONIC)) {
- 			chattr += (u64)stat->ctime.tv_sec << 30;
-diff --git a/include/linux/exportfs.h b/include/linux/exportfs.h
-index fe848901fcc3..9f4d4bcbf251 100644
---- a/include/linux/exportfs.h
-+++ b/include/linux/exportfs.h
-@@ -213,7 +213,6 @@ struct export_operations {
- 			  bool write, u32 *device_generation);
- 	int (*commit_blocks)(struct inode *inode, struct iomap *iomaps,
- 			     int nr_iomaps, struct iattr *iattr);
--	u64 (*fetch_iversion)(struct inode *);
- #define	EXPORT_OP_NOWCC			(0x1) /* don't collect v3 wcc data */
- #define	EXPORT_OP_NOSUBTREECHK		(0x2) /* no subtree checking */
- #define	EXPORT_OP_CLOSE_BEFORE_UNLINK	(0x4) /* close files before unlink */
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 42aec556d83e..c3146ce84156 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -8070,10 +8070,10 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+ 	/*
+ 	 * Check that we don't overflow at later allocations, we request
+ 	 * clone_sources_count + 1 items, and compare to unsigned long inside
+-	 * access_ok.
++	 * access_ok. Also set an upper limit for allocation size so this can't
++	 * easily exhaust memory. Max number of clone sources is about 200K.
+ 	 */
+-	if (arg->clone_sources_count >
+-	    ULONG_MAX / sizeof(struct clone_root) - 1) {
++	if (arg->clone_sources_count > SZ_8M / sizeof(struct clone_root)) {
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
 -- 
-2.39.1
+2.37.3
 
