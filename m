@@ -2,70 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B8F67B1C8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Jan 2023 12:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF4867B271
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Jan 2023 13:14:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235767AbjAYLmS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Jan 2023 06:42:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
+        id S235269AbjAYMOt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Jan 2023 07:14:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235751AbjAYLmP (ORCPT
+        with ESMTP id S235466AbjAYMOq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Jan 2023 06:42:15 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02861E076
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Jan 2023 03:42:10 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id p22so9695433qkm.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Jan 2023 03:42:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/3Y/wTKWhzzOkdiRbXgW8Jx5JGSOv3u+BLUkT/iXFSE=;
-        b=OPJtsM5OQRpGkH9OjxMuZb+XsgJ6KJrgCa+cGy40qRGx0fhdg9Wesfqs64ihrzDTDx
-         Grlw8+heD3dziKRWyyPRQVLK0Aq7M7dLaMUBRRVBo/ytsDUa7H00t2G8ymHhnJya/vHS
-         kIo6iVdlo+/horeLwHoquuk7tnsZtfUA5c14aIfT2nu57Q+s4fbPfKuGszH0x6UAcY7/
-         SS99vHv+vWIJk/XiaDS1BKwTSGakNj+8ug31ojXsD5GOT8xVdEgssf+YY3itcw9aqsD4
-         SwPbaybEdSDux+AJ1KNPeFYc4WOIXJ4bPsVqpX78m/YSvxtwxj2ccVVAuLmVnF8MocN5
-         bdOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/3Y/wTKWhzzOkdiRbXgW8Jx5JGSOv3u+BLUkT/iXFSE=;
-        b=yabN07W18hGVosbDU1/sbrPVQlGeF737nhRr5W/SJeznnl3qB+lHyhjYDcE5GlgPEF
-         l0cmNY5nak0+C8iMVsPX3ZkWFSpU54Z0R1RlCANe5Pcn5X2+qXrMap+tbnrPes/Lzoj9
-         rnJGWb/PAY5ErrZeGEMh4JZbYnI02OKUfHwTI4WAxPkk/D5y4TCkbtG0if0MNsiDEtyQ
-         dUr0W7xdsDzImiAfqKo1ZAMgvXEnID6f7LKLPZkFn0uzjCiOYQoF2GjdVRzbUaVKXCq6
-         hJm+d5TQKFaAtURYD2/EL/bR1EUf52JGffMMHHw3y9hvCS3lKGmWTGTwYJY/7/bJRMvb
-         w4EA==
-X-Gm-Message-State: AFqh2krfv5chasT/TTe/yfRFAmWdmQoqUN6UAjF9RsrarF6VKCv3D4/+
-        U38v1mzf39xyF3ReLeF0pcLzjAwfcPIKGtvZMg0VEPNEUdk=
-X-Google-Smtp-Source: AMrXdXudpBPFt0O39qXYHwCg9wbEwIR+thsWVGp1DTS7IZCnRJEIwBO3al3GBcKT+t7+VCf4tmN//2GXAW9+ajboXQ0=
-X-Received: by 2002:a05:620a:268d:b0:706:c1a8:89ed with SMTP id
- c13-20020a05620a268d00b00706c1a889edmr1755763qkp.768.1674646583428; Wed, 25
- Jan 2023 03:36:23 -0800 (PST)
+        Wed, 25 Jan 2023 07:14:46 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A916515549;
+        Wed, 25 Jan 2023 04:14:45 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 654C921DCE;
+        Wed, 25 Jan 2023 12:14:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1674648884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=a+YXLCcQEI5OgN4MH9YdlDfRG/WQvBKfRRJJLm3yQ/E=;
+        b=otHRHXXt+Oqpzl9RbXvMVoJN1oj0N4YmPo6cw69Ixh+CrRkGKhrvOIogekT+ONMJtJ0C6D
+        bFUA9d6MPHsUhGDpMBJYeb/S4BrZbRcuGRtnLJ9eZ1NcjuoD8D54vJxKG0RaGrkDPZgD2v
+        9mp51t68NF4eTFlU8gc1UT+aoNqsg8M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1674648884;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=a+YXLCcQEI5OgN4MH9YdlDfRG/WQvBKfRRJJLm3yQ/E=;
+        b=UwxvXe8/SXryi+cb1Rnht6w/pa4ou4zJ6awr/LWADDGLKsiLIg+NArhXUPy333AjcezxKA
+        lN1YeNXF6yIu/WCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 316FC1358F;
+        Wed, 25 Jan 2023 12:14:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id LXuJCjQd0WNiewAAMHmgww
+        (envelope-from <ddiss@suse.de>); Wed, 25 Jan 2023 12:14:44 +0000
+Date:   Wed, 25 Jan 2023 13:15:54 +0100
+From:   David Disseldorp <ddiss@suse.de>
+To:     fdmanana@kernel.org
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs/299: update kernel commit hash and subject
+Message-ID: <20230125131554.1fef6a07@echidna.fritz.box>
+In-Reply-To: <3ccaa4e5f43538891d312ba7e9e4b38d61434d35.1674644818.git.fdmanana@suse.com>
+References: <3ccaa4e5f43538891d312ba7e9e4b38d61434d35.1674644818.git.fdmanana@suse.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6214:aac:b0:533:386a:85c5 with HTTP; Wed, 25 Jan 2023
- 03:36:22 -0800 (PST)
-Reply-To: mr.abraham022@gmail.com
-From:   Mr Abraham <mr.abraham2021@gmail.com>
-Date:   Wed, 25 Jan 2023 12:36:22 +0100
-Message-ID: <CAJ2UK+aG6RrwvU8i8Di33sAdm5xZe1iVowmd1_oza9Lo_spU5Q@mail.gmail.com>
-Subject: Hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-My Greeting, Did you receive the letter i sent to you. Please answer me.
-Regard, Mr.Abraham.
+On Wed, 25 Jan 2023 11:07:39 +0000, fdmanana@kernel.org wrote:
+
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Test case btrfs/299 refers to a kernel patch with a subject of:
+> 
+>    "btrfs: fix logical_ino ioctl panic"
+> 
+> However when the patch was merged, the subject was renamed to:
+> 
+>    "btrfs: fix resolving backrefs for inline extent followed by prealloc"
+> 
+> So update the test with the correct subject and also add the commit's
+> hash from Linus' tree.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
+Reviewed-by: David Disseldorp <ddiss@suse.de>
