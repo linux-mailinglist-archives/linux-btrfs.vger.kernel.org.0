@@ -2,69 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB3367BFFD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Jan 2023 23:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021C467C019
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Jan 2023 23:43:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234999AbjAYWhq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Jan 2023 17:37:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
+        id S235509AbjAYWnN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Jan 2023 17:43:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjAYWhp (ORCPT
+        with ESMTP id S231225AbjAYWnM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Jan 2023 17:37:45 -0500
+        Wed, 25 Jan 2023 17:43:12 -0500
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3715A826
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Jan 2023 14:37:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9915193F4;
+        Wed, 25 Jan 2023 14:43:11 -0800 (PST)
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2149D5C052B;
-        Wed, 25 Jan 2023 17:37:43 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 25 Jan 2023 17:37:43 -0500
+        by mailout.nyi.internal (Postfix) with ESMTP id 1138D5C053F;
+        Wed, 25 Jan 2023 17:43:11 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 25 Jan 2023 17:43:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:date:date:from:from:in-reply-to
         :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm3; t=1674686263; x=1674772663; bh=Ebtx3BBy5eScQHlZf0gRMI3Gf
-        HIhQlOzuWGpAlpFiKY=; b=i8sJeK1ID4oZcMlrXA6VIfIyj6gj+06BRNqHjJvZd
-        xOUdNGcQOhRnHuDza16iOlsDBecEXmCq6ETCqxHW2qm02VlYPFqKMm885iqv6ZvD
-        aW3RhQmbgHmTWyNf0wWeUinmuq2DeMkUcPxh2XidKmHkPIoDKbwb24ubPobJQRpf
-        w60gNNdJZnUQRlnBgyA7hiDZFg5Wbti7qjjZDAaeubzoUEzsY0gwiWBznU5Bu3VY
-        LQF+61cveH0x7YOgwOgZzn01xn8p4otcImRSFEubaenH8F5eB7rdr6tKaZChndHB
-        4qniO79mnFJCqYZACu30pLDT/1/v0Ux4Wv8K4CC/DyL1Q==
+         s=fm3; t=1674686591; x=1674772991; bh=0IO/GIMPFXig6kNvOxbki0PKM
+        EmBoJp/ITuVT3/Rjqw=; b=RI4roIqU8gcYdQVNnW54LQ91QDfqAJzADVcclQRXg
+        lW8PariOxBFl7QklUuNDm//D/XOx0bg12bkCdndjnK9VNAaYE5No3NdPYrYFtO8i
+        0uC7sBHJubVX8D1heucA62vRbsoqU9ZEEVEYg4n1Sb/RWq/ASFpxgXfdpn7PvbuC
+        SR7gabnp5iETRPmNHS3dtBJ28xiwJOYJmB6IfI2A0TqNkwGi5IPehg7hvImCZMUo
+        g+6+3ExdGRl43ASGlBmaFIuou/mp6IBzQXHa2x6gpH2ddRVg/2cAds843KNRR/ZS
+        BqAA+DviFlpNhQ+K2P0JCk1bc3op6YakcLk3QZbypVlkA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:message-id
         :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
         :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1674686263; x=1674772663; bh=Ebtx3BBy5eScQHlZf0gRMI3GfHIhQlOzuWG
-        pAlpFiKY=; b=C2qH2U8QaDKpun/l1zJNIoq8++v0EHNX0qyTZB+1MauIs3nBJZZ
-        x53bKvXy4JWUmbab4JqKkGlwkTLP0gqB7UG9zaTpi1mHV6qk0QOuVuK7MxbTkzO1
-        7sxr0FIb12Ktl5/pYgI2L88DqwkcNUrff2fiPqNY0zhDzconwvdmO7fkBLi1wpXf
-        M8AT9qT3LK+qDHXAz3mY3pwxqIb/lNjKtuG8T3z7SNGYdbewbWwAj/cynBhh3c7+
-        8MLm3BiQ9EweICePNTRoC1XqVJiaUwt0sOgtFk6hPbxUlkd7ytMt7AoS+fQRezlz
-        QjoB4qXMSlz5qQdq4Gd3p/YGBlm2LP56vWg==
-X-ME-Sender: <xms:Nq_RY_9f-88tCBEzF-teod5Aoz4mudAkKu4lM454j7yQ5JU6u9s7JQ>
-    <xme:Nq_RY7sVUU_gOfntKIr49aFXiLWuFXi9Q40fdcDCddrJyspXF-kE9AGW0SxuRdg-g
-    pEMH6LW8-OMbENT-qA>
-X-ME-Received: <xmr:Nq_RY9Ca0Mgj-k7_3CRTOtihGThQo7Ru-UuNCF2pFMU2_2O5YvUM5_bd>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddvvddgudeihecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
-    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:N6_RY7c2jEgKWMr_uBbwMoWNLWZX5BlHc_CfMlp2FRQ8smHtv68YPw>
-    <xmx:N6_RY0N60zuSrpE1f6J2UeX2goiSqcwNzCudMnfsVPVK3jIolGNXXw>
-    <xmx:N6_RY9ncjcmcZI7CU8_i2_N3LUv3gEWq3Oe6RkZkzEuP_6H8dLqEzw>
-    <xmx:N6_RY-VBaCtrpjiWGVgaE945onLvuPtsLptFKr5--nq65ke45iiMjQ>
+        1674686591; x=1674772991; bh=0IO/GIMPFXig6kNvOxbki0PKMEmBoJp/ITu
+        VT3/Rjqw=; b=mSHHl4eOntPo3sUvg1jYgYXAqctOziqwBMjLDC3s5i+9kRP8+kH
+        tT58hlFFrfQ/nKgB2Lodun+tzRTyeHaDVqOt3T145uU5joCvcZ4/EL16GRJXVXUq
+        YdnoHdzZ1f4jykACCxU7gynIXtsTyKb/NShyBLEYXMDHrR9LgmuKYmNJXfIKOVBi
+        Yj2By70QhEcXWe2cNkJiHc2c7JbDnh9bDBf06XjGzNcgWcNHsa6bOP0k86zpXEbL
+        wt0ivMyQI46T0SkN+vf8J4/0PCI5kWYMj6x7LsoyXeUco/c6242YwyGsjq8vMsJX
+        AKPa/20vGkhX+zhjapMFtBAyKgwuzklbbYw==
+X-ME-Sender: <xms:frDRYwc03_jJjlonTNzSD0lJ1l89WiDDEds-gVAIxFob4njH558VIA>
+    <xme:frDRYyONMdCGdd4z_8o_SMaO8bUlvKcVISOkXi7-Tmyh3oyBF7JUEnwUxwiYKsC1v
+    Ex17wLSweGAo6p3oUs>
+X-ME-Received: <xmr:frDRYxjiipcGY6udcoNugvttaWCpIxTv01g92ceYzAuC9C9hG5N0MgfQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddvfecutefuodetggdotefrodftvfcurf
+    hrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertddtne
+    cuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecu
+    ggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekudduteefke
+    fffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:frDRY19AR9C1UCFFg6xfCm1CAkdkSSwZnMwH5Zqdek22nHm79Pq5og>
+    <xmx:frDRY8uGA6hydFAr9_3RZap_0TBwXmKEqoPkulXXhJyG6CE55DRBxg>
+    <xmx:frDRY8FipYKAHFNPmCd-LIHgve_aeje6AaLHDXzruNbT0tfZ6b-R-Q>
+    <xmx:f7DRY5VYPIRlBtlr35x9NuqHMfuTFkUxnpcqM4q_uvDyt_C36olO8Q>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Jan 2023 17:37:42 -0500 (EST)
+ 25 Jan 2023 17:43:10 -0500 (EST)
 From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2] btrfs: fix size class loading logic
-Date:   Wed, 25 Jan 2023 14:37:41 -0800
-Message-Id: <1c4c25be5fa66e14ae772f134045f64cf1fb74a6.1674686119.git.boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        fstests@vger.kernel.org
+Subject: [PATCH v2] btrfs: test block group size class loading logic
+Date:   Wed, 25 Jan 2023 14:43:09 -0800
+Message-Id: <4ea6df6e4f96b6e6101a16a1c94fc967d54558c7.1674686506.git.boris@bur.io>
 X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -78,170 +79,88 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an incremental patch fixing bugs in:
-btrfs: load block group size class when caching
+Add a new test which checks that size classes in freshly loaded block
+groups after a cycle mount match size classes before going down
 
-The commit message should be:
-btrfs: load block group size class when caching
-
-Since the size class is an artifact of an arbitrary anti fragmentation
-strategy, it doesn't really make sense to persist it. Furthermore, most
-of the size class logic assumes fresh block groups. That is of course
-not a reasonable assumption -- we will be upgrading kernels with
-existing filesystems whose block groups are not classified.
-
-To work around those issues, implement logic to compute the size class
-of the block groups as we cache them in. To perfectly assess the state
-of a block group, we would have to read the entire extent tree (since
-the free space cache mashes together contiguous extent items) which
-would be prohibitively expensive for larger file systems with more
-extents.
-
-We can do it relatively cheaply by implementing a simple heuristic of
-sampling a handful of extents and picking the smallest one we see. In
-the happy case where the block group was classified, we will only see
-extents of the correct size. In the unhappy case, we will hopefully find
-one of the smaller extents, but there is no perfect answer anyway.
-Autorelocation will eventually churn up the block group if there is
-significant freeing anyway.
-
-There was no regression in mount performance at end state of the fsperf
-test suite, and the delay until the block group is marked cached is
-minimized by the constant number of extent samples.
+Depends on the kernel patch:
+btrfs: add size class stats to sysfs
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
-v2: just commit message stuff to make it a nicer incremental fixup
-patch. Also, drop the sysfs patch since it isn't a fixup.
+v2: drop the fixed_by_kernel_commit since the fix is not out past the
+btrfs development tree, so the fix is getting rolled in to the original
+broken commit. Modified the commit message to note the dependency on the
+new sysfs counters.
 
- fs/btrfs/block-group.c | 56 ++++++++++++++++++++++++++++--------------
- 1 file changed, 37 insertions(+), 19 deletions(-)
+ tests/btrfs/283     | 49 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/283.out |  2 ++
+ 2 files changed, 51 insertions(+)
+ create mode 100755 tests/btrfs/283
+ create mode 100644 tests/btrfs/283.out
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 73e1270b3904..45ccb25c5b1f 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -555,7 +555,8 @@ u64 add_new_free_space(struct btrfs_block_group *block_group, u64 start, u64 end
-  * Returns: 0 on success, 1 if the search didn't yield a useful item, negative
-  * error code on error.
-  */
--static int sample_block_group_extent_item(struct btrfs_block_group *block_group,
-+static int sample_block_group_extent_item(struct btrfs_caching_control *caching_ctl,
-+					  struct btrfs_block_group *block_group,
- 					  int index, int max_index,
- 					  struct btrfs_key *key)
- {
-@@ -563,17 +564,19 @@ static int sample_block_group_extent_item(struct btrfs_block_group *block_group,
- 	struct btrfs_root *extent_root;
- 	int ret = 0;
- 	u64 search_offset;
-+	u64 search_end = block_group->start + block_group->length;
- 	struct btrfs_path *path;
- 
- 	ASSERT(index >= 0);
- 	ASSERT(index <= max_index);
- 	ASSERT(max_index > 0);
-+	lockdep_assert_held(&caching_ctl->mutex);
-+	lockdep_assert_held_read(&fs_info->commit_root_sem);
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
- 		return -ENOMEM;
- 
--	down_read(&fs_info->commit_root_sem);
- 	extent_root = btrfs_extent_root(fs_info, max_t(u64, block_group->start,
- 						       BTRFS_SUPER_INFO_OFFSET));
- 
-@@ -586,21 +589,36 @@ static int sample_block_group_extent_item(struct btrfs_block_group *block_group,
- 	key->type = BTRFS_EXTENT_ITEM_KEY;
- 	key->offset = 0;
- 
--	ret = btrfs_search_slot(NULL, extent_root, key, path, 0, 0);
--	if (ret != 0)
--		goto out;
--	if (key->objectid < block_group->start ||
--	    key->objectid > block_group->start + block_group->length) {
--		ret = 1;
--		goto out;
--	}
--	if (key->type != BTRFS_EXTENT_ITEM_KEY) {
--		ret = 1;
--		goto out;
-+	while (1) {
-+		ret = btrfs_search_forward(extent_root, key, path, 0);
-+		if (ret != 0)
-+			goto out;
-+		/* Success; sampled an extent item in the block group */
-+		if (key->type == BTRFS_EXTENT_ITEM_KEY &&
-+		    key->objectid >= block_group->start &&
-+		    key->objectid + key->offset <= search_end)
-+			goto out;
+diff --git a/tests/btrfs/283 b/tests/btrfs/283
+new file mode 100755
+index 00000000..b3614786
+--- /dev/null
++++ b/tests/btrfs/283
+@@ -0,0 +1,49 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
++#
++# FS QA Test 283
++#
++# Test that mounting a btrfs filesystem properly loads block group size classes.
++#
++. ./common/preamble
++_begin_fstest auto quick mount
 +
-+		/* We can't possibly find a valid extent item anymore */
-+		if (key->objectid >= search_end) {
-+			ret = 1;
-+			break;
-+		}
-+		if (key->type < BTRFS_EXTENT_ITEM_KEY)
-+			key->type = BTRFS_EXTENT_ITEM_KEY;
-+		else
-+			key->objectid++;
-+		btrfs_release_path(path);
-+		up_read(&fs_info->commit_root_sem);
-+		mutex_unlock(&caching_ctl->mutex);
-+		cond_resched();
-+		mutex_lock(&caching_ctl->mutex);
-+		down_read(&fs_info->commit_root_sem);
- 	}
- out:
-+	lockdep_assert_held(&caching_ctl->mutex);
-+	lockdep_assert_held_read(&fs_info->commit_root_sem);
- 	btrfs_free_path(path);
--	up_read(&fs_info->commit_root_sem);
- 	return ret;
- }
- 
-@@ -638,7 +656,8 @@ static int sample_block_group_extent_item(struct btrfs_block_group *block_group,
-  *
-  * Returns: 0 on success, negative error code on error.
-  */
--static int load_block_group_size_class(struct btrfs_block_group *block_group)
-+static int load_block_group_size_class(struct btrfs_caching_control *caching_ctl,
-+				       struct btrfs_block_group *block_group)
- {
- 	struct btrfs_key key;
- 	int i;
-@@ -646,11 +665,11 @@ static int load_block_group_size_class(struct btrfs_block_group *block_group)
- 	enum btrfs_block_group_size_class size_class = BTRFS_BG_SZ_NONE;
- 	int ret;
- 
--	if (btrfs_block_group_should_use_size_class(block_group))
-+	if (!btrfs_block_group_should_use_size_class(block_group))
- 		return 0;
- 
- 	for (i = 0; i < 5; ++i) {
--		ret = sample_block_group_extent_item(block_group, i, 5, &key);
-+		ret = sample_block_group_extent_item(caching_ctl, block_group, i, 5, &key);
- 		if (ret < 0)
- 			goto out;
- 		if (ret > 0)
-@@ -812,6 +831,7 @@ static noinline void caching_thread(struct btrfs_work *work)
- 	mutex_lock(&caching_ctl->mutex);
- 	down_read(&fs_info->commit_root_sem);
- 
-+	load_block_group_size_class(caching_ctl, block_group);
- 	if (btrfs_test_opt(fs_info, SPACE_CACHE)) {
- 		ret = load_free_space_cache(block_group);
- 		if (ret == 1) {
-@@ -867,8 +887,6 @@ static noinline void caching_thread(struct btrfs_work *work)
- 
- 	wake_up(&caching_ctl->wait);
- 
--	load_block_group_size_class(block_group);
--
- 	btrfs_put_caching_control(caching_ctl);
- 	btrfs_put_block_group(block_group);
- }
++sysfs_size_classes() {
++	local uuid="$(findmnt -n -o UUID "$SCRATCH_MNT")"
++	cat "/sys/fs/btrfs/$uuid/allocation/data/size_classes"
++}
++
++_supported_fs btrfs
++_require_scratch
++_require_btrfs_fs_sysfs
++
++f="$SCRATCH_MNT/f"
++small=$((16 * 1024))
++medium=$((1024 * 1024))
++large=$((16 * 1024 * 1024))
++
++_scratch_mkfs >/dev/null
++_scratch_mount
++# Write files with extents in each size class
++$XFS_IO_PROG -fc "pwrite -q 0 $small" $f.small
++$XFS_IO_PROG -fc "pwrite -q 0 $medium" $f.medium
++$XFS_IO_PROG -fc "pwrite -q 0 $large" $f.large
++# Sync to force the extent allocation
++sync
++pre=$(sysfs_size_classes)
++
++# cycle mount to drop the block group cache
++_scratch_cycle_mount
++
++# Another write causes us to actually load the block groups
++$XFS_IO_PROG -fc "pwrite -q 0 $large" $f.large.2
++sync
++
++post=$(sysfs_size_classes)
++diff <(echo $pre) <(echo $post)
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/283.out b/tests/btrfs/283.out
+new file mode 100644
+index 00000000..efb2c583
+--- /dev/null
++++ b/tests/btrfs/283.out
+@@ -0,0 +1,2 @@
++QA output created by 283
++Silence is golden
 -- 
-2.38.1
+2.39.1
 
