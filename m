@@ -2,91 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CBF67AFE7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Jan 2023 11:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 369AD67AFEF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Jan 2023 11:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235663AbjAYKnw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Jan 2023 05:43:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
+        id S235500AbjAYKpG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Jan 2023 05:45:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235651AbjAYKnl (ORCPT
+        with ESMTP id S235657AbjAYKpB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Jan 2023 05:43:41 -0500
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079952DE6A
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Jan 2023 02:43:40 -0800 (PST)
-Received: by mail-io1-f69.google.com with SMTP id t3-20020a6bc303000000b006f7844c6298so10582581iof.23
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Jan 2023 02:43:39 -0800 (PST)
+        Wed, 25 Jan 2023 05:45:01 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC0656EC5
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Jan 2023 02:44:58 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id tz11so46540164ejc.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Jan 2023 02:44:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HPtM+j9w46aYKSVSUjdSXjgjXx+cBO1wsd6eef8rVNU=;
+        b=JacZ+NA0eLMiA0dB+LUpuMJqEZvj8VGJsp9hK+JeEjmCkFhg3t4hJ9xZpy2Ovu7wtF
+         GiOHZ8RFKV/tcBsx+Vf3TfI1fUmb+1paaSUJNHTieh9nQDDJGn818LFUvMwApj2kmF1F
+         FdD5in+LXukKo1gzZofkYHLJDhavjh/zBwgPKapf4SJmTCyS6hKck3cKRkywsAF1ETZD
+         WplJOuEOpa9auBdtBRTbAP21QW2uBMK/jIPpGjI+/Y5Os6QZXZkrGZAa48DniYVGluwa
+         pVZWflPnfDhqO6veJXnuRjnElirisVqlPvwXVLnj8LJoJ4qqcMn1934c3NilMR1ux0an
+         3PJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PGBXxtvKnwYbmNiNn2X/TAlTxHlmyhsYye8+V98SOS0=;
-        b=BxfgERIBBpOODafn3TNtBt8txuedIrL50dEspo20LVdShMBrvxpD5YOc0ZbzOZefYe
-         OB4mjV7Cr/SGzx8ds0ePhykkmDKrsRhG7NB2ygjuwpTaRVxdvZ4nZv4V+GPOAdsFo6Ce
-         G3moetodj/xMeggAw0yIz9B6+SjyoZPJZe+jQHo0YyqfIpsbH2fun//0cJML6gOtSBH4
-         5Nqi8XkeUr5Ge5MgIYtr7N5vZp9QZJZ1DhXek9i5UOoMp14kdC81ZIbToa+P/al66St9
-         VmdfINuHfcdRAvKniA98shxJxT5LXBMJDrkL/fEtfst9+GmVIKlyhTr4JSXFYcoYN9hs
-         cKHA==
-X-Gm-Message-State: AFqh2kr3T7PrwWCnxoObzmqKV5ef51QLenKRxASck0oFaazk2oPTkVfB
-        ZDdcP29eVYtn5R7LELPaSU6ROJW3rA87823Ri86qvTE5Hb++
-X-Google-Smtp-Source: AMrXdXu0Xt9mkoAmqfb+AAu0/0TNAK9UJLJpWcaRBzn8YQn3SO66TfinmhnepornIPRbVTg04b/geaHwJ9cMXOOT9GyKvc9BGoH7
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HPtM+j9w46aYKSVSUjdSXjgjXx+cBO1wsd6eef8rVNU=;
+        b=7NjBgG5f0PmnodrwIYL06HXTG5RqZycu1sQehYX0UxsDDmShMars2xVwp01nzg80o3
+         U9l5KxIHPI8tUv2e5SHV7dt6M3/H8AfNCiDyFlLy5z2b0WH/LS7nwqk/Ir5LzS+s9b5H
+         BbyubFN0vhIjYmc7zNaqSG0ZuNJiwpt8YFmhdBPe9RqIoABOyQGh0ZSPbpu1iU8033pB
+         Kpv0oOGRyHDGnUxJnlLsO24iMPIqnWofRw9Ki+0H43U78jvXad9qJtJK02kEtWIdEJlT
+         eS+wh8iF5gFxylVHm/lJGIEHxY668fpt4yZmK+6sS/0DuHsaY5AyHVIkMYI3hfEhlnii
+         Xs7w==
+X-Gm-Message-State: AFqh2koVGJyKjpWIIphrvDsayP5QRPTYEieA8n82cnsubIVys1XnoiEw
+        EBYSp6qgbMZiHcYg04atcn98ueWS/lnAOHa4UEf/BHWa
+X-Google-Smtp-Source: AMrXdXtPrVMLRSE3fVT2KUXpVZ3o0kiTET4K4xC53xsn456azGBslBtUS/8njtvD8vAR1HSaF4LhcsQO5FfDwIogfzQ=
+X-Received: by 2002:a17:906:12c2:b0:877:77fa:4266 with SMTP id
+ l2-20020a17090612c200b0087777fa4266mr3319881ejb.395.1674643496780; Wed, 25
+ Jan 2023 02:44:56 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:60e:0:b0:30e:eb8e:6c13 with SMTP id
- x14-20020a92060e000000b0030eeb8e6c13mr4262555ilg.27.1674643419338; Wed, 25
- Jan 2023 02:43:39 -0800 (PST)
-Date:   Wed, 25 Jan 2023 02:43:39 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000229e6205f3144e05@google.com>
-Subject: [syzbot] [btrfs?] VFS: Busy inodes after unmount (use-after-free)
-From:   syzbot <syzbot+0af00f6a2cba2058b5db@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <87a6271kbg.fsf@fsf.org>
+In-Reply-To: <87a6271kbg.fsf@fsf.org>
+From:   Patrik Lundquist <patrik.lundquist@gmail.com>
+Date:   Wed, 25 Jan 2023 11:44:45 +0100
+Message-ID: <CAA7pwKOXSNpS0o9DhFCgPH1JV-wiLptZ77MiS1Wqam5O3-yfFg@mail.gmail.com>
+Subject: Re: balance stuck in loop on linux 6.1.7
+To:     Ian Kelling <iank@fsf.org>
+Cc:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Wed, 25 Jan 2023 at 02:48, Ian Kelling <iank@fsf.org> wrote:
+>
+> If I restart the balance, it will take about 2.8 days to get back to the
+> stuck 11% point. The balance is still running, but I'm going to cancel
+> it morning unless I hear from the list that there is some use to letting
+> it run since it is wearing out the mechanical drives.
 
-syzbot found the following issue on:
-
-HEAD commit:    edb2f0dc90f2 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1484d22e480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1c301efa2b11613
-dashboard link: https://syzkaller.appspot.com/bug?extid=0af00f6a2cba2058b5db
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15e20341480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154fa4f1480000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ca1677dc6969/disk-edb2f0dc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/22527595a2dd/vmlinux-edb2f0dc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/45308e5f6962/Image-edb2f0dc.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/6105a892b6d5/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0af00f6a2cba2058b5db@syzkaller.appspotmail.com
-
-VFS: Busy inodes after unmount of loop0. Self-destruct in 5 seconds.  Have a nice day...
-VFS: Busy inodes after unmount of loop0. Self-destruct in 5 seconds.  Have a nice day...
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+You can pause it instead of cancelling it.
