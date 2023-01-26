@@ -2,65 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C3C67D867
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jan 2023 23:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C02BB67D8B0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jan 2023 23:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbjAZWcN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Jan 2023 17:32:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
+        id S232767AbjAZWnI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Jan 2023 17:43:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjAZWcL (ORCPT
+        with ESMTP id S231772AbjAZWnH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Jan 2023 17:32:11 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42A962260
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Jan 2023 14:32:01 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id j9so2634774qtv.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Jan 2023 14:32:01 -0800 (PST)
+        Thu, 26 Jan 2023 17:43:07 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9A045F6B;
+        Thu, 26 Jan 2023 14:43:04 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id k2so2579550qvd.12;
+        Thu, 26 Jan 2023 14:43:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GqhiLH8xbCati0h5mD44WfdY+eBKZJjYIyoqr/wRT30=;
-        b=e9QdIV+psmA4uPcD3QqP+iSu9mmXpumb7E3xCJ9QbdLRf7A6sYBFXuUPzagPepgLjS
-         5ctuuhf38dIjJ/VVlZvxX2/RyZ7RaTcq1AM7WPVrlCARRQekyePnqwfL7xVKb7QIr/k7
-         YrB6L0lkb77nDUAxSD36+yDnlMB8SuNC5T2hS2aQURzW+UzrzrdUucEqms8jS7rKWQGp
-         z4Ml7P7bPpeRja19F2ETLU5AzgOQ6nQV5i1pTTYhTJNxnuyLNgM0USZ+y+8QHSRje+Hb
-         FmrpAFDn8Gt/34K4dGG/i6mHhIYYYBT94H2tIfhE1As9dEnJhcB/Kr/9uZi2mzGyyM+O
-         inIg==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mQTH5iCah1FP2x9WKr5XrRV0wZBo+AefYkRVKX7uGhg=;
+        b=B3xswdfEcfO/qyMhYpZB3KsgnA7LApXU3UffOfCL8MaKK7LcmlIbnOdyyAutsttOZl
+         9XIiElrB948y+mVlkap8paUXw0Oxy6HP5KcoFsPHCcao2T4mxGNBCCoNLw1NoQpqGKOa
+         bM5vKKA4yxx4ns6mBovlBX6ysJWrf0JvpHD5kAEWrMLCmhmoueoPevWTE/SuelXPKDjB
+         jfxhCcECDPp7a7xj/rQR9CAsFEylf7j+REU0indcK1IOQynUvbUXNVyWCePjIFwOpWqr
+         /w1wZsEAChR/1KZ2Ap39jsiiYGrBeCOP6+fvHMZchQUjIBVYlZLBA+JS8HJaO2G+MZB9
+         wtxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GqhiLH8xbCati0h5mD44WfdY+eBKZJjYIyoqr/wRT30=;
-        b=QA4HRGf4sGWCl94c3KTABpxsDg/7Rw0N9wB4iNp8fPwBE47rIC8Ojqk69IrkbdrING
-         vsJ2bAN8X74KOIn6QyHsOotPrfR/GtOziAehWaJ7KRYWh8BwxSLvjoA7RDGzJ3R/jMRB
-         1oN+nCMyUYAGXNwLrKTpw5wKDjPtoXssHcU9Hwn64SfjpAXpSXURq9gYIvg96OlE6p51
-         z10/JpbM3CwxrRZuXW4ngaCdgpQAvTZ6bku+0XQu6cnEbdN0hVNaeRYOTPGD8B6pNTle
-         J1hfBz3Ak1yAiof3jZprC5zVsDZ1XXKCE6m0uS/pZKFAvUmHxh0SINyIvnNXwb7+otrG
-         8V6w==
-X-Gm-Message-State: AFqh2kp0ZxNfGAo1oUwuFmmJGgaEEn1pezDodMtZ3mEwDWupIyf0n48Z
-        4ZrMB1SQgO0Tas+NWlRBUx2NuMo6rY//bCrRDC0=
-X-Google-Smtp-Source: AMrXdXvCROUxwYmpN7wVV5DJzOBEt3/vcZZSPuW/7rdWMqjViXzQvOwHB7xI//myGpVQlMvu4gDqNQ==
-X-Received: by 2002:ac8:5b90:0:b0:3a8:30c9:ba8f with SMTP id a16-20020ac85b90000000b003a830c9ba8fmr74880617qta.28.1674772320357;
-        Thu, 26 Jan 2023 14:32:00 -0800 (PST)
-Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id n3-20020a05620a294300b00704df12317esm1777111qkp.24.2023.01.26.14.31.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Jan 2023 14:31:59 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Anand Jain <anand.jain@oracle.com>,
-        Daan De Meyer <daandemeyer@fb.com>
-Subject: [PATCH v3] btrfs: allow single disk devices to mount with older generations
-Date:   Thu, 26 Jan 2023 17:31:58 -0500
-Message-Id: <1bf56a77b8b57cc3b993fda00752e79830685ffc.1674772170.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mQTH5iCah1FP2x9WKr5XrRV0wZBo+AefYkRVKX7uGhg=;
+        b=y3WefQZNP0YvfHRhoTvcN0tZ3S7aC+jVYhLGNu4Vx0wXuetsjjIpJ8CRYlDfcE9TQD
+         ara9teFOZguUVebaMu9iLY9NRr2eDA3vjxzhoE518SprkqDv4CHjKifpFXe7WG8tuSeG
+         7pzQiVEFd6NGv0zeZK75LI/MFQSK6w4laAjwPCfYL4/X+p64021n7zaEBdpeNfSkljXn
+         F8ZOgnNsXvzPFIkXeaHQtQ0ZvkMg9cfw7YNrQUPplyDgTS+Krt1l0HFChsiu1CpSfiuX
+         maN4mKawBVsAdgS6NTxuu9O61R7MjEnbNJpvNTpqlbRykUO8e5ABr5ypkqBGaRzfhXFy
+         3IbQ==
+X-Gm-Message-State: AO0yUKULKavljxVSQlDz0JDFx5eiVY/wzATQ+5O3nRNluG1WcOPO3CEW
+        u/FN6ToIejlM9bFCgZkQh3D/es09JZjy/39tdYQ=
+X-Google-Smtp-Source: AK7set/GP31tlQzIKhQe2uNsROk0VfM6oJ5yONHSQEvGrN3cwpCTVJnp1Jbol4KbNXyYIqaJ4f/8n4AtcRVW31Bpixg=
+X-Received: by 2002:ad4:4b68:0:b0:537:6e55:eeb7 with SMTP id
+ m8-20020ad44b68000000b005376e55eeb7mr613764qvx.66.1674772983589; Thu, 26 Jan
+ 2023 14:43:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <CABXGCsN+BcaGO0+0bJszDPvA=5JF_bOPfXC=OLzMzsXY2M8hyQ@mail.gmail.com>
+ <20220726164250.GE13489@twin.jikos.cz> <CABXGCsN1rzCoYiB-vN5grzsMdvgm1qv2jnWn0enXq5R-wke8Eg@mail.gmail.com>
+ <20230125171517.GV11562@twin.jikos.cz> <CABXGCsOD7jVGYkFFG-nM9BgNq_7c16yU08EBfaUc6+iNsX338g@mail.gmail.com>
+ <Y9K6m5USnON/19GT@boqun-archlinux>
+In-Reply-To: <Y9K6m5USnON/19GT@boqun-archlinux>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Fri, 27 Jan 2023 03:42:52 +0500
+Message-ID: <CABXGCsMD6nAPpF34c6oMK47kHUQqADQPUCWrxyY7WFiKi1qPNg@mail.gmail.com>
+Subject: Re: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     dsterba@suse.cz, Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        Chris Murphy <lists@colorremedies.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,59 +77,101 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have this check to make sure we don't accidentally add older devices
-that may have disappeared and re-appeared with an older generation from
-being added to an fs_devices.  This makes sense, we don't want stale
-disks in our file system.  However for single disks this doesn't really
-make sense.  I've seen this in testing, but I was provided a reproducer
-from a project that builds btrfs images on loopback devices.  The
-loopback device gets cached with the new generation, and then if it is
-re-used to generate a new file system we'll fail to mount it because the
-new fs is "older" than what we have in cache.
+On Thu, Jan 26, 2023 at 10:39 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+>
+> [Cc lock folks]
+>
+> On Thu, Jan 26, 2023 at 02:47:42PM +0500, Mikhail Gavrilov wrote:
+> > On Wed, Jan 25, 2023 at 10:21 PM David Sterba <dsterba@suse.cz> wrote:
+> > >
+> > > On Wed, Jan 25, 2023 at 01:27:48AM +0500, Mikhail Gavrilov wrote:
+> > > > On Tue, Jul 26, 2022 at 9:47 PM David Sterba <dsterba@suse.cz> wrot=
+e:
+> > > > >
+> > > > > On Tue, Jul 26, 2022 at 05:32:54PM +0500, Mikhail Gavrilov wrote:
+> > > > > > Hi guys.
+> > > > > > Always with intensive writing on a btrfs volume, the message "B=
+UG:
+> > > > > > MAX_LOCKDEP_CHAIN_HLOCKS too low!" appears in the kernel logs.
+> > > > >
+> > > > > Increase the config value of LOCKDEP_CHAINS_BITS, default is 16, =
+18
+> > > > > tends to work.
+> > > >
+> > > > Hi,
+> > > > Today I was able to get the message "BUG: MAX_LOCKDEP_CHAIN_HLOCKS =
+too
+> > > > low!" again even with LOCKDEP_CHAINS_BITS=3D18 and kernel 6.2-rc5.
+> > > >
+> > > > =E2=9D=AF cat /boot/config-`uname -r` | grep LOCKDEP_CHAINS_BITS
+> > > > CONFIG_LOCKDEP_CHAINS_BITS=3D18
+> > > >
+> > > > [88685.088099] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+> > > > [88685.088124] turning off the locking correctness validator.
+> > > > [88685.088133] Please attach the output of /proc/lock_stat to the b=
+ug report
+> > > > [88685.088142] CPU: 14 PID: 1749746 Comm: mv Tainted: G        W   =
+ L
+> > > >   -------  ---  6.2.0-0.rc5.20230123git2475bf0250de.38.fc38.x86_64 =
+#1
+> > > > [88685.088154] Hardware name: System manufacturer System Product
+> > > > Name/ROG STRIX X570-I GAMING, BIOS 4408 10/28/2022
+> > > >
+> > > > What's next? Increase this value to 19?
+> > >
+> > > Yes, though increasing the value is a workaround so you may see the
+> > > warning again.
+> >
+> > Is there any sense in this WARNING if we would ignore it and every
+> > time increase the threshold value?
+>
+> Lockdep uses static allocated array to track lock holdings chains to
+> avoid dynmaic memory allocation in its own code. So if you see the
+> warning it means your test has more combination of lock holdings than
+> the array can record. In other words, you reach the resource limitation,
+> and in that sense it makes sense to just ignore it and increase the
+> value: you want to give lockdep enough resource to work, right?
 
-Fix this by simply ignoring this check if we're a single disk file
-system, as we're not going to cause problems for the fs by allowing the
-disk to be mounted with an older generation than what is in our cache.
+It is needed for correct working btrfs. David, am I right?
 
-I've also added a error message for this case, as it was kind of
-annoying to find originally.
+>
+> > May Be set 99 right away? Or remove such a check condition?
+>
+> That requires having 2^99 * 5 * sizeof(u16) memory for lock holding
+> chains array..
+>
+> However, a few other options we can try in lockdep are:
+>
+> *       warn but not turn off the lockdep: the lock holding chain is
+>         only a cache for what lock holding combination lockdep has ever
+>         see, we also record the dependency in the graph. Without the
+>         lock holding chain, lockdep can still work but just slower.
+>
+> *       allow dynmaic memory allocation in lockdep: I think this might
+>         be OK since we have lockdep_recursion to avoid lockdep code ->
+>         mm code -> lockdep code -> mm code ... deadlock. But maybe I'm
+>         missing something. And even we allow it, the use of memory
+>         doesn't change, you will still need that amout of memory to
+>         track lock holding chains.
+>
+> I'm not sure whether these options are better than just increasing the
+> number, maybe to unblock your ASAP, you can try make it 30 and make sure
+> you have large enough memory to test.
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Reported-by: Daan De Meyer <daandemeyer@fb.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-v2->v3:
-- Dropped the printk as we now have a printk here to indicate that something
-  went wrong.
-- Validated that it still fixes btrfs/219.  That test validates a few corner
-  cases that I could think of at the time, and looking at it again I've covered
-  everything that comes to mind.
+About just to increase the LOCKDEP_CHAINS_BITS by 1. Where should this
+be done? In vanilla kernel on kernel.org? In a specific distribution?
+or the user must rebuild the kernel himself? Maybe increase
+LOCKDEP_CHAINS_BITS by 1 is most reliable solution, but it difficult
+to distribute to end users because the meaning of using packaged
+distributions is lost (user should change LOCKDEP_CHAINS_BITS in
+config and rebuild the kernel by yourself).
 
- fs/btrfs/volumes.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+It would be great if the chosen value would simply work always
+everywhere. 30? ok! But as I understand, btrfs does not have any
+guarantees for this. David, am I right?
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 707dd0456cea..b17b4a66a8d4 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -766,6 +766,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
- 		BTRFS_FEATURE_INCOMPAT_METADATA_UUID);
- 	bool fsid_change_in_progress = (btrfs_super_flags(disk_super) &
- 					BTRFS_SUPER_FLAG_CHANGING_FSID_V2);
-+	bool multi_disk = btrfs_super_num_devices(disk_super) > 1;
- 
- 	error = lookup_bdev(path, &path_devt);
- 	if (error) {
-@@ -902,7 +903,8 @@ static noinline struct btrfs_device *device_list_add(const char *path,
- 		 * tracking a problem where systems fail mount by subvolume id
- 		 * when we reject replacement on a mounted FS.
- 		 */
--		if (!fs_devices->opened && found_transid < device->generation) {
-+		if (multi_disk && !fs_devices->opened &&
-+		    found_transid < device->generation) {
- 			/*
- 			 * That is if the FS is _not_ mounted and if you
- 			 * are here, that means there is more than one
--- 
-2.26.3
+Anyway, thank you for keeping the conversation going.
 
+--=20
+Best Regards,
+Mike Gavrilov.
