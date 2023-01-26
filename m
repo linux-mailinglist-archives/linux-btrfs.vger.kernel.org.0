@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0B167D37C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jan 2023 18:48:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA7567D383
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jan 2023 18:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbjAZRsX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Jan 2023 12:48:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48542 "EHLO
+        id S231535AbjAZRuW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Jan 2023 12:50:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjAZRsW (ORCPT
+        with ESMTP id S229567AbjAZRuV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Jan 2023 12:48:22 -0500
+        Thu, 26 Jan 2023 12:50:21 -0500
 Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C7C3432F;
-        Thu, 26 Jan 2023 09:48:20 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 02ABC32003AC;
-        Thu, 26 Jan 2023 12:48:19 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C42227BC;
+        Thu, 26 Jan 2023 09:50:20 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 59DE6320090D;
+        Thu, 26 Jan 2023 12:50:18 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 26 Jan 2023 12:48:20 -0500
+  by compute5.internal (MEProxy); Thu, 26 Jan 2023 12:50:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:date:date:from:from:in-reply-to
         :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm3; t=1674755299; x=1674841699; bh=cXYZ31DxtVUOGiMTUDq0Rm8EC
-        HRPH9azLGvWl5jhHaU=; b=nvuw9zP0wr5CJtwsC1oOpHaiU/E/o8YASyms9AUX7
-        jfkSRC+d5cARUaCuep3kPWxG2QvMzMPw569X7CvSr3euI8/TrW8sd9P1ojRxl8rr
-        LN8OGQkTXQNbNB9bcyurKanyqDtbdZyXRIBmkxrH+PcsPLtPhHHYGnmisOwbP0kw
-        +X5cpm4PyY2QTppMkRY4Jba3W632fyrtrXdiQDA09oNK1XI///GdvxlXu4OHd/oG
-        fQKilSgEeaF7dmdn8J+NAqRGHlsPYLlm109kyqLSCW6W/915n7Kd2mHMlPNaAKXf
-        MpGZjR2PMW7zn6GbD/OJ5s5dVhvV/bfOEloUBm5zzPgxQ==
+         s=fm3; t=1674755417; x=1674841817; bh=zpXIwT2i+vaFAUVer68GMKd5M
+        7OY3c+QZzlWdlPqYHc=; b=E67G15aZtjo9auJRJ6fqmNOgv7+m2CeFEgl3+ilJF
+        JuDK1G+UfGmJO5WDuftcWpNoLHrultGYICe8O+rQtNzM21AxNNmm/IZNGc/pNXIi
+        OLhjJgK9x3NS0Hn+X5KX9jLiGLW1A1uz2br/WMta6KSOJ0G5/heCbdZ1BG8VgrCP
+        7yosQIh8JnLzwHeiMZNJ8Z0bPkRzwH5uHOXKQe4pVmpfMySazq2EOuFpFG6IO3hp
+        yj2MGDF4bVGgGag6B6EWiOF1kUnd+PamKQ9qm/9ZgpyJElqZc9ys82cfsmnoczRE
+        TIIBRyAcahuTBEUuY4pmhx/J+psncmP03Iyfi1N1+kLGw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:message-id
         :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
         :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1674755299; x=1674841699; bh=cXYZ31DxtVUOGiMTUDq0Rm8ECHRPH9azLGv
-        Wl5jhHaU=; b=Vm82XOP0FYD8X9i4o4wBT4xIX5HtbCq9yCEZhtmYCbqqiq1D0L4
-        EWA87V9s1UYwiljYvhPvKNvupmYFyYrskXR9hRu1K36iT2omFoMLkGivO/lbygyb
-        qZM+Ex51n3XBv6spqHYNOZj7xTI5aYvuk1Gu/gJskm7KXYBN2trnsSp/pVHKFTKf
-        Zfv6swt81IttR+dg4PJ8e4TIcqQH8OqBo+sjgJgppM1/Uq7QPw5eQTalWmaRR2A4
-        OICuBup1x51CSUZrVKkDCOEYzysj6I9ENPTC6lONSNqLLPRBk5UfGyKWyAltXOUH
-        EfPr13VMNaQrpDHIGcAO/GZYKEGpbSwZNzA==
-X-ME-Sender: <xms:47zSY48YyfzDwPa197gU_G3YSgjp2BBe5d0VKWnoqQZCP9CGgsN4lQ>
-    <xme:47zSYwsLejuJ1nEdgXe34eOM0MAfZGirJru02KWLC4pSCNIP6TZE3bGK-ylPWXH_K
-    wldLDVm6zAQTPgc5zI>
-X-ME-Received: <xmr:47zSY-DtZqjMNZ6_PWDZ9Mg4YixTCGQ3t8BuS4hPe-y_35ThLWSYWzIb>
+        1674755417; x=1674841817; bh=zpXIwT2i+vaFAUVer68GMKd5M7OY3c+QZzl
+        WdlPqYHc=; b=eaO9J2X//CvFO+fR6tp/5t996B+U8SW/DKnnXJZ+asqGH0NcYlq
+        ZVpECybEYxTUFLnbrLnZdjyMwUMQsBtbRX19Ny6cXv9CLHVkuCFZKb15XDOOJfof
+        9tXpRa0jskVoauJOVZYDzCOWg7TVaqwpF3/9ItrQm9lCPmFC51fwG31CDJbMTgiz
+        rRWJptY0a8NRW9HuU6m8qMIVKLYeuOR3qZVBStzGNB/2bsMJV33DPBe+u5IeLx0J
+        kilG+H4Bh4OydxriXStkYsD7JUAjakMDQhSTqMLe5mzS4qrcDtfIu7MunG7sCM9f
+        orqmD+uPNnkHCW8vGmpfublj47scFysCI2Q==
+X-ME-Sender: <xms:Wb3SY4k6WNOQuY2m3flutV6LPcaL-hoK0B_i_atJnNkILmRygbQT5g>
+    <xme:Wb3SY30eak0KcJivB5EkBNnv6285c2-xPqN2j0GblACNNTl6Z_WxJhKfykf03ruRT
+    Mz1o_jZZHXrzhNUFMA>
+X-ME-Received: <xmr:Wb3SY2qhL8Z2KMZpPub0n35TCgmtT0G2SAbKwnq5QZEbLWEEITHxK85m>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddvgedguddthecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
@@ -53,19 +53,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddvgedguddthecutefuodetgg
     oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
     duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
     rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:47zSY4f07fwwXdbBXXQ-PHygJsOOqKQeSTGRgXxtF67DivGIGv6BYQ>
-    <xmx:47zSY9MrujWu0cQ14mv0-I7Nci6n8shUiVqrbO0SIhe2GLUJUkPzPw>
-    <xmx:47zSYynXDgV5nUrE5hgZ0UJmY2PgPDmvLV3H0zz69rVEp73siPKqHw>
-    <xmx:47zSY71pZrE8t3wp87FISS0hj4H-o51NxUdzVwAniR5a8-k1_2yoeA>
+X-ME-Proxy: <xmx:Wb3SY0li6CuFsoXs_oe6H0v1X9FzMZ3R5HMgVOc_exYXSAcpYLI3EQ>
+    <xmx:Wb3SY20zz58MboaxZyEJ9cnynTT8qGaCgjdPyHQZA7D4lP-zEWpTow>
+    <xmx:Wb3SY7tvz6LsQaVy_vumEFpYdcnybLRQu35W6_FoIa1XnqRsh8D0pg>
+    <xmx:Wb3SY78N5KSG8eg8FdGW8YkONBoBiogmbpzOgc5YPQpoJALxxK5BIA>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 26 Jan 2023 12:48:19 -0500 (EST)
+ 26 Jan 2023 12:50:17 -0500 (EST)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         fstests@vger.kernel.org
-Subject: [PATCH v3] btrfs: test block group size class loading logic
-Date:   Thu, 26 Jan 2023 09:48:17 -0800
-Message-Id: <16b9a9042169c25a10dd1867cedd14849d00dca5.1674755053.git.boris@bur.io>
+Subject: [PATCH v4] btrfs: test block group size class loading logic
+Date:   Thu, 26 Jan 2023 09:50:16 -0800
+Message-Id: <fa66499531a46105f295af0f29d9fc253f361d78.1674755349.git.boris@bur.io>
 X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -88,6 +88,10 @@ btrfs: add size class stats to sysfs
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
 Changelog:
+v4:
+Fix dump typo in _fixed_by_kernel_commit (left out leading underscore
+copy+pasting). Re-tested happy and sad case...
+
 v3:
 Re-add fixed_by_kernel_commit, but for the stats patch which is
 required, but not a fix in the strictest sense.
@@ -98,6 +102,7 @@ development tree, so the fix is getting rolled in to the original broken
 commit. Modified the commit message to note the dependency on the new
 sysfs counters.
 
+
  tests/btrfs/283     | 50 +++++++++++++++++++++++++++++++++++++++++++++
  tests/btrfs/283.out |  2 ++
  2 files changed, 52 insertions(+)
@@ -106,7 +111,7 @@ sysfs counters.
 
 diff --git a/tests/btrfs/283 b/tests/btrfs/283
 new file mode 100755
-index 00000000..d250a389
+index 00000000..2176c8e4
 --- /dev/null
 +++ b/tests/btrfs/283
 @@ -0,0 +1,50 @@
@@ -120,7 +125,7 @@ index 00000000..d250a389
 +#
 +. ./common/preamble
 +_begin_fstest auto quick mount
-+fixed_by_kernel_commit xxxxxxxx "btrfs: add size class stats to sysfs".
++_fixed_by_kernel_commit xxxxxxxx "btrfs: add size class stats to sysfs".
 +
 +sysfs_size_classes() {
 +	local uuid="$(findmnt -n -o UUID "$SCRATCH_MNT")"
