@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EAB67D71E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jan 2023 22:01:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C484767D71C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jan 2023 22:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbjAZVBO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Jan 2023 16:01:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34280 "EHLO
+        id S231754AbjAZVBU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Jan 2023 16:01:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbjAZVBN (ORCPT
+        with ESMTP id S232176AbjAZVBQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Jan 2023 16:01:13 -0500
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E471CF50
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Jan 2023 13:01:06 -0800 (PST)
-Received: by mail-vs1-xe29.google.com with SMTP id h19so1502716vsv.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Jan 2023 13:01:06 -0800 (PST)
+        Thu, 26 Jan 2023 16:01:16 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63AF3669D
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Jan 2023 13:01:07 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id m12so2395660qvt.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Jan 2023 13:01:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GjVusJAN+I02YWCK7n1qvVRKflEz3wYbD533NUmx614=;
-        b=fLDjLvpM9TR8AjM7jfxMfMfQm7rSHTo2EJizd/g2YHqkPlx3u7Xer3j001+I4Dxv3S
-         AzT2EYNeHFKXDB8LjNcT7LJcWLx1kGg//d6k9ynQNvAuP3SuQS6fKWPh7gUJb7mBGtwg
-         EXjMWr4Mm71zShNNg/ftnUkQ3gwPfv1rMGDMEuUD9sM5MJVQ3k7U6vzktYek7mpSKQQS
-         5LvGWtv7tNY6KQaumDlbeR2BGpC/y0XCYhlZYn3Cuv0fyeW6mVWulWxEqYMwyPoBsCdS
-         besIKTY4CxlQppfwqvIzmBCZlB8tX0a0lbAGZbLCy2BLQHXqMch3qfNyBkAOv+x0kCkl
-         gnBQ==
+        bh=ZkZEpr2L5P1ocWqg9oO0bXldfdgVY0am7oJTJOgUCP4=;
+        b=GbtLuqu6eAXPCRaLo1/NQb8HDYR/cbyd46ittlH9WFRafyRnWL/4tgVgfXI87ouX7C
+         0IxpHV4LfMqXY67FIcbcJLTn5y0r9T5v6BgO0itL/NIGdWYvnq6aePu17wtwURtsW8a/
+         WsyFSOK0i2a92EApT8IFltG4r3ABcVnE6wuC0/5F9GLS22QHnqaa7GGjthuP/Q66SBen
+         pTdKTDtpKoaH/vU56RlZ/GJQjdqwPFxiQpoeilQAyai9lg0JU+3IjiTArBb798exPDGE
+         KE7a8k1Mv7sKBiMVsp7U+pwdcxaAPZMXISEGKIWR+fnj4ON3XK+cZaCTnDawi/qqGDLi
+         Yabg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GjVusJAN+I02YWCK7n1qvVRKflEz3wYbD533NUmx614=;
-        b=AGWnWvgyj+3pb9I1l4GwPyDb5aTv8JHC9vNxvFtlUoQKr0XPpsVquoSjfjD6gqahqu
-         JCQQ8P67Lb+q/1sJwTfbZp0fHAEvWSIO7I4bPgYiL5YFBjpZnXaIGBKmvZXhdgfeYvpb
-         dttlsTfp10SHDhnDf027HjWUr1BD9P5HA9ECMIlTTJMmA0+t/8RpqNUWEngikKKjqZ8A
-         bz53XBdQUTTv9yiSh4F4XUuCOhdg3UdJiVzQHkldC3iq6iAhEeRpGgQn0ChLs2asriGl
-         igOd8ZuKtu3ZfzhcZ1J6ESsOIzU4bAs/grmuitoZUoXOOyACjvGRfEE0oN1IrdRnPeGk
-         RORQ==
-X-Gm-Message-State: AFqh2kq9ZTRKpw9yAyB9gM3qbwupAecdLRzKi4QK/yKfdl+Es0L0qpG8
-        2xsYeABXvXRsfF0u8x+bEHqmUul8RfMwbBDKhuo=
-X-Google-Smtp-Source: AMrXdXv4Z5TMbynTplNC/MpCVUOXjUJRe3a4JxgZZZOtUtjvomWEzaLAu/k9ftELOgVMKSdgt90HXQ==
-X-Received: by 2002:a67:f692:0:b0:3c4:997b:667b with SMTP id n18-20020a67f692000000b003c4997b667bmr21476887vso.6.1674766865092;
-        Thu, 26 Jan 2023 13:01:05 -0800 (PST)
+        bh=ZkZEpr2L5P1ocWqg9oO0bXldfdgVY0am7oJTJOgUCP4=;
+        b=nP252qHKGF3u01XyzZWrS1GVA7AgEQBRZSCBzJHeHX5lW0YwHjq1o3cn9i+sW2XQz6
+         ZFbwp5HLsc3gUj1r0oMKnznVqPvulDajwMD6yGVXugu+6PkKeLsObsBVMEWpY5E7zcjE
+         2BOhnXfPQxQCMhB5Bwqcq5ibCESZ+ES/Dmxk03tc63FSxhXqSuGqePMUbmjIkfSzUS+Z
+         X2EgZyQil5QFSoof4Qn34AHChSog71r6mXmWGDhGeeLQZHOLF173waIVFeu57rMLcVXw
+         DDNn4dBTCUlWFK1YZBCD832t6XCZMCOf8y5bpiZ2oXiGFwdfRTtq5awGEZugk6zuGSto
+         za5Q==
+X-Gm-Message-State: AO0yUKWuXYxwW4myrMAsPtJC0nZvOEomjOUF0gJdw5GUyzA3XASdvpnx
+        xYjaVFQFJ17cp43M+S3HfTkEiQ0pL/Peh591AvA=
+X-Google-Smtp-Source: AK7set/Nc6Zhp8GA9zRmGNuoxW+W6xFMMQfO3xMsa69TmxYwfTmFCvC9WaQfMh2P2w96XmZGbUL9WA==
+X-Received: by 2002:a05:6214:924:b0:4c7:3c7c:4d1e with SMTP id dk4-20020a056214092400b004c73c7c4d1emr4587185qvb.15.1674766866603;
+        Thu, 26 Jan 2023 13:01:06 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id h22-20020a05620a285600b006faaf6dc55asm1603256qkp.22.2023.01.26.13.01.04
+        by smtp.gmail.com with ESMTPSA id b4-20020a378004000000b0070736988c10sm1552242qkd.110.2023.01.26.13.01.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Jan 2023 13:01:04 -0800 (PST)
+        Thu, 26 Jan 2023 13:01:06 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 2/7] btrfs: add trans argument to btrfs_clean_tree_block
-Date:   Thu, 26 Jan 2023 16:00:55 -0500
-Message-Id: <a7ba4fdb9a8f3d5b1a51138de7f5a39a632f0469.1674766637.git.josef@toxicpanda.com>
+Subject: [PATCH v3 3/7] btrfs: replace clearing extent buffer dirty bit with btrfs_clean_block
+Date:   Thu, 26 Jan 2023 16:00:56 -0500
+Message-Id: <0e818f6eca3cf65a4eb9ce844d8c93d40054e8e1.1674766637.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1674766637.git.josef@toxicpanda.com>
 References: <cover.1674766637.git.josef@toxicpanda.com>
@@ -69,270 +69,142 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We check the header generation in the extent buffer against the current
-running transaction id to see if it's safe to clear DIRTY on this
-buffer.  Generally speaking if we're clearing the buffer dirty we're
-holding the transaction open, but in the case of cleaning up an aborted
-transaction we don't, so we have extra checks in that path to check the
-transid.  To allow for a future cleanup go ahead and pass in the trans
-handle so we don't have to rely on ->running_transaction being set.
+Now that we're passing in the trans into btrfs_clean_tree_block, we can
+easily roll in the handling of the !trans case and replace all
+occurrences of
+
+if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &eb->bflags))
+	clear_extent_buffer_dirty(eb);
+
+with
+
+btrfs_tree_lock(eb);
+btrfs_clean_tree_block(eb);
+btrfs_tree_unlock(eb);
+
+We need the lock because if we are actually dirty we need to make sure
+we aren't racing with anything that's starting writeout currently.  This
+also makes sure that we're accounting fs_info->dirty_metadata_bytes
+appropriately.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.c           | 31 ++++++++++++++++---------------
- fs/btrfs/disk-io.c         |  6 +++---
- fs/btrfs/disk-io.h         |  3 ++-
- fs/btrfs/extent-tree.c     |  4 ++--
- fs/btrfs/free-space-tree.c |  2 +-
- fs/btrfs/ioctl.c           |  2 +-
- fs/btrfs/qgroup.c          |  2 +-
- fs/btrfs/tree-log.c        |  6 +++---
- 8 files changed, 29 insertions(+), 27 deletions(-)
+ fs/btrfs/disk-io.c  | 11 ++++++-----
+ fs/btrfs/tree-log.c | 34 +++++++++++++++-------------------
+ 2 files changed, 21 insertions(+), 24 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 5476d90a76ce..a4acc0e953c4 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -459,7 +459,7 @@ static noinline int update_ref_for_cow(struct btrfs_trans_handle *trans,
- 			if (ret)
- 				return ret;
- 		}
--		btrfs_clean_tree_block(buf);
-+		btrfs_clean_tree_block(trans, buf);
- 		*last_ref = 1;
- 	}
- 	return 0;
-@@ -1026,7 +1026,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
- 
- 		path->locks[level] = 0;
- 		path->nodes[level] = NULL;
--		btrfs_clean_tree_block(mid);
-+		btrfs_clean_tree_block(trans, mid);
- 		btrfs_tree_unlock(mid);
- 		/* once for the path */
- 		free_extent_buffer(mid);
-@@ -1087,7 +1087,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
- 		if (wret < 0 && wret != -ENOSPC)
- 			ret = wret;
- 		if (btrfs_header_nritems(right) == 0) {
--			btrfs_clean_tree_block(right);
-+			btrfs_clean_tree_block(trans, right);
- 			btrfs_tree_unlock(right);
- 			del_ptr(root, path, level + 1, pslot + 1);
- 			root_sub_used(root, right->len);
-@@ -1133,7 +1133,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
- 		BUG_ON(wret == 1);
- 	}
- 	if (btrfs_header_nritems(mid) == 0) {
--		btrfs_clean_tree_block(mid);
-+		btrfs_clean_tree_block(trans, mid);
- 		btrfs_tree_unlock(mid);
- 		del_ptr(root, path, level + 1, pslot);
- 		root_sub_used(root, mid->len);
-@@ -3008,7 +3008,8 @@ noinline int btrfs_leaf_free_space(struct extent_buffer *leaf)
-  * min slot controls the lowest index we're willing to push to the
-  * right.  We'll push up to and including min_slot, but no lower
-  */
--static noinline int __push_leaf_right(struct btrfs_path *path,
-+static noinline int __push_leaf_right(struct btrfs_trans_handle *trans,
-+				      struct btrfs_path *path,
- 				      int data_size, int empty,
- 				      struct extent_buffer *right,
- 				      int free_space, u32 left_nritems,
-@@ -3106,7 +3107,7 @@ static noinline int __push_leaf_right(struct btrfs_path *path,
- 	if (left_nritems)
- 		btrfs_mark_buffer_dirty(left);
- 	else
--		btrfs_clean_tree_block(left);
-+		btrfs_clean_tree_block(trans, left);
- 
- 	btrfs_mark_buffer_dirty(right);
- 
-@@ -3118,7 +3119,7 @@ static noinline int __push_leaf_right(struct btrfs_path *path,
- 	if (path->slots[0] >= left_nritems) {
- 		path->slots[0] -= left_nritems;
- 		if (btrfs_header_nritems(path->nodes[0]) == 0)
--			btrfs_clean_tree_block(path->nodes[0]);
-+			btrfs_clean_tree_block(trans, path->nodes[0]);
- 		btrfs_tree_unlock(path->nodes[0]);
- 		free_extent_buffer(path->nodes[0]);
- 		path->nodes[0] = right;
-@@ -3210,8 +3211,8 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
- 		return 0;
- 	}
- 
--	return __push_leaf_right(path, min_data_size, empty,
--				right, free_space, left_nritems, min_slot);
-+	return __push_leaf_right(trans, path, min_data_size, empty, right,
-+				 free_space, left_nritems, min_slot);
- out_unlock:
- 	btrfs_tree_unlock(right);
- 	free_extent_buffer(right);
-@@ -3226,7 +3227,8 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
-  * item at 'max_slot' won't be touched.  Use (u32)-1 to make us do all the
-  * items
-  */
--static noinline int __push_leaf_left(struct btrfs_path *path, int data_size,
-+static noinline int __push_leaf_left(struct btrfs_trans_handle *trans,
-+				     struct btrfs_path *path, int data_size,
- 				     int empty, struct extent_buffer *left,
- 				     int free_space, u32 right_nritems,
- 				     u32 max_slot)
-@@ -3330,7 +3332,7 @@ static noinline int __push_leaf_left(struct btrfs_path *path, int data_size,
- 	if (right_nritems)
- 		btrfs_mark_buffer_dirty(right);
- 	else
--		btrfs_clean_tree_block(right);
-+		btrfs_clean_tree_block(trans, right);
- 
- 	btrfs_item_key(right, &disk_key, 0);
- 	fixup_low_keys(path, &disk_key, 1);
-@@ -3416,9 +3418,8 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
- 		ret = -EUCLEAN;
- 		goto out;
- 	}
--	return __push_leaf_left(path, min_data_size,
--			       empty, left, free_space, right_nritems,
--			       max_slot);
-+	return __push_leaf_left(trans, path, min_data_size, empty, left,
-+				free_space, right_nritems, max_slot);
- out:
- 	btrfs_tree_unlock(left);
- 	free_extent_buffer(left);
-@@ -4367,7 +4368,7 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		if (leaf == root->node) {
- 			btrfs_set_header_level(leaf, 0);
- 		} else {
--			btrfs_clean_tree_block(leaf);
-+			btrfs_clean_tree_block(trans, leaf);
- 			btrfs_del_leaf(trans, root, path, leaf);
- 		}
- 	} else {
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index d0ed52cab304..5942005d50fe 100644
+index 5942005d50fe..5bcb77662b1d 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -965,11 +965,11 @@ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
- 
- }
- 
--void btrfs_clean_tree_block(struct extent_buffer *buf)
-+void btrfs_clean_tree_block(struct btrfs_trans_handle *trans,
-+			    struct extent_buffer *buf)
+@@ -969,7 +969,7 @@ void btrfs_clean_tree_block(struct btrfs_trans_handle *trans,
+ 			    struct extent_buffer *buf)
  {
  	struct btrfs_fs_info *fs_info = buf->fs_info;
--	if (btrfs_header_generation(buf) ==
--	    fs_info->running_transaction->transid) {
-+	if (btrfs_header_generation(buf) == trans->transid) {
+-	if (btrfs_header_generation(buf) == trans->transid) {
++	if (!trans || btrfs_header_generation(buf) == trans->transid) {
  		btrfs_assert_tree_write_locked(buf);
  
  		if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &buf->bflags)) {
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index f2c507fd0e04..9ccb44adc5c3 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -39,7 +39,8 @@ struct extent_buffer *btrfs_find_create_tree_block(
- 						struct btrfs_fs_info *fs_info,
- 						u64 bytenr, u64 owner_root,
- 						int level);
--void btrfs_clean_tree_block(struct extent_buffer *buf);
-+void btrfs_clean_tree_block(struct btrfs_trans_handle *trans,
-+			    struct extent_buffer *buf);
- void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info);
- int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info);
- int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index c85af644e353..241a92a25b52 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -4908,7 +4908,7 @@ btrfs_init_new_buffer(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 	btrfs_set_buffer_lockdep_class(lockdep_owner, buf, level);
+@@ -5077,11 +5077,12 @@ static int btrfs_destroy_marked_extents(struct btrfs_fs_info *fs_info,
+ 			start += fs_info->nodesize;
+ 			if (!eb)
+ 				continue;
+-			wait_on_extent_buffer_writeback(eb);
  
- 	__btrfs_tree_lock(buf, nest);
--	btrfs_clean_tree_block(buf);
-+	btrfs_clean_tree_block(trans, buf);
- 	clear_bit(EXTENT_BUFFER_STALE, &buf->bflags);
- 	clear_bit(EXTENT_BUFFER_NO_CHECK, &buf->bflags);
- 
-@@ -5538,7 +5538,7 @@ static noinline int walk_up_proc(struct btrfs_trans_handle *trans,
- 			btrfs_tree_lock(eb);
- 			path->locks[level] = BTRFS_WRITE_LOCK;
+-			if (test_and_clear_bit(EXTENT_BUFFER_DIRTY,
+-					       &eb->bflags))
+-				clear_extent_buffer_dirty(eb);
++			btrfs_tree_lock(eb);
++			wait_on_extent_buffer_writeback(eb);
++			btrfs_clean_tree_block(NULL, eb);
++			btrfs_tree_unlock(eb);
++
+ 			free_extent_buffer_stale(eb);
  		}
--		btrfs_clean_tree_block(eb);
-+		btrfs_clean_tree_block(trans, eb);
  	}
- 
- 	if (eb == root->node) {
-diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index c667e878ef1a..ab206af5b2f5 100644
---- a/fs/btrfs/free-space-tree.c
-+++ b/fs/btrfs/free-space-tree.c
-@@ -1283,7 +1283,7 @@ int btrfs_clear_free_space_tree(struct btrfs_fs_info *fs_info)
- 	list_del(&free_space_root->dirty_list);
- 
- 	btrfs_tree_lock(free_space_root->node);
--	btrfs_clean_tree_block(free_space_root->node);
-+	btrfs_clean_tree_block(trans, free_space_root->node);
- 	btrfs_tree_unlock(free_space_root->node);
- 	btrfs_free_tree_block(trans, btrfs_root_id(free_space_root),
- 			      free_space_root->node, 0, 1);
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index a64a71d882dc..82afb1aef744 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -707,7 +707,7 @@ static noinline int create_subvol(struct user_namespace *mnt_userns,
- 		 * exists).
- 		 */
- 		btrfs_tree_lock(leaf);
--		btrfs_clean_tree_block(leaf);
-+		btrfs_clean_tree_block(trans, leaf);
- 		btrfs_tree_unlock(leaf);
- 		btrfs_free_tree_block(trans, objectid, leaf, 0, 1);
- 		free_extent_buffer(leaf);
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 35856ea28e32..6aadf620eb14 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -1303,7 +1303,7 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
- 	list_del(&quota_root->dirty_list);
- 
- 	btrfs_tree_lock(quota_root->node);
--	btrfs_clean_tree_block(quota_root->node);
-+	btrfs_clean_tree_block(trans, quota_root->node);
- 	btrfs_tree_unlock(quota_root->node);
- 	btrfs_free_tree_block(trans, btrfs_root_id(quota_root),
- 			      quota_root->node, 0, 1);
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 8fcfaf015a70..d0c40a4af48d 100644
+index d0c40a4af48d..f543af4328b6 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -2637,7 +2637,7 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
+@@ -2635,11 +2635,12 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
+ 					return ret;
+ 				}
  
- 				if (trans) {
- 					btrfs_tree_lock(next);
--					btrfs_clean_tree_block(next);
-+					btrfs_clean_tree_block(trans, next);
- 					btrfs_wait_tree_block_writeback(next);
- 					btrfs_tree_unlock(next);
- 					ret = btrfs_pin_reserved_extent(trans,
-@@ -2707,7 +2707,7 @@ static noinline int walk_up_log_tree(struct btrfs_trans_handle *trans,
- 
- 				if (trans) {
- 					btrfs_tree_lock(next);
--					btrfs_clean_tree_block(next);
-+					btrfs_clean_tree_block(trans, next);
- 					btrfs_wait_tree_block_writeback(next);
- 					btrfs_tree_unlock(next);
- 					ret = btrfs_pin_reserved_extent(trans,
-@@ -2790,7 +2790,7 @@ static int walk_log_tree(struct btrfs_trans_handle *trans,
- 
- 			if (trans) {
- 				btrfs_tree_lock(next);
--				btrfs_clean_tree_block(next);
++				btrfs_tree_lock(next);
 +				btrfs_clean_tree_block(trans, next);
- 				btrfs_wait_tree_block_writeback(next);
- 				btrfs_tree_unlock(next);
++				btrfs_wait_tree_block_writeback(next);
++				btrfs_tree_unlock(next);
++
+ 				if (trans) {
+-					btrfs_tree_lock(next);
+-					btrfs_clean_tree_block(trans, next);
+-					btrfs_wait_tree_block_writeback(next);
+-					btrfs_tree_unlock(next);
+ 					ret = btrfs_pin_reserved_extent(trans,
+ 							bytenr, blocksize);
+ 					if (ret) {
+@@ -2649,8 +2650,6 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
+ 					btrfs_redirty_list_add(
+ 						trans->transaction, next);
+ 				} else {
+-					if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &next->bflags))
+-						clear_extent_buffer_dirty(next);
+ 					unaccount_log_buffer(fs_info, bytenr);
+ 				}
+ 			}
+@@ -2705,11 +2704,12 @@ static noinline int walk_up_log_tree(struct btrfs_trans_handle *trans,
+ 
+ 				next = path->nodes[*level];
+ 
++				btrfs_tree_lock(next);
++				btrfs_clean_tree_block(trans, next);
++				btrfs_wait_tree_block_writeback(next);
++				btrfs_tree_unlock(next);
++
+ 				if (trans) {
+-					btrfs_tree_lock(next);
+-					btrfs_clean_tree_block(trans, next);
+-					btrfs_wait_tree_block_writeback(next);
+-					btrfs_tree_unlock(next);
+ 					ret = btrfs_pin_reserved_extent(trans,
+ 						     path->nodes[*level]->start,
+ 						     path->nodes[*level]->len);
+@@ -2718,9 +2718,6 @@ static noinline int walk_up_log_tree(struct btrfs_trans_handle *trans,
+ 					btrfs_redirty_list_add(trans->transaction,
+ 							       next);
+ 				} else {
+-					if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &next->bflags))
+-						clear_extent_buffer_dirty(next);
+-
+ 					unaccount_log_buffer(fs_info,
+ 						path->nodes[*level]->start);
+ 				}
+@@ -2788,19 +2785,18 @@ static int walk_log_tree(struct btrfs_trans_handle *trans,
+ 
+ 			next = path->nodes[orig_level];
+ 
++			btrfs_tree_lock(next);
++			btrfs_clean_tree_block(trans, next);
++			btrfs_wait_tree_block_writeback(next);
++			btrfs_tree_unlock(next);
++
+ 			if (trans) {
+-				btrfs_tree_lock(next);
+-				btrfs_clean_tree_block(trans, next);
+-				btrfs_wait_tree_block_writeback(next);
+-				btrfs_tree_unlock(next);
  				ret = btrfs_pin_reserved_extent(trans,
+ 						next->start, next->len);
+ 				if (ret)
+ 					goto out;
+ 				btrfs_redirty_list_add(trans->transaction, next);
+ 			} else {
+-				if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &next->bflags))
+-					clear_extent_buffer_dirty(next);
+ 				unaccount_log_buffer(fs_info, next->start);
+ 			}
+ 		}
 -- 
 2.26.3
 
