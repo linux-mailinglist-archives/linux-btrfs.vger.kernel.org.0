@@ -2,114 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0643D67C7BA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jan 2023 10:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F32667C93A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jan 2023 11:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236713AbjAZJr5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Jan 2023 04:47:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
+        id S236884AbjAZKyW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Jan 2023 05:54:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236606AbjAZJr4 (ORCPT
+        with ESMTP id S236764AbjAZKyV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Jan 2023 04:47:56 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2238A193D7;
-        Thu, 26 Jan 2023 01:47:54 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id x18so1108031qvl.1;
-        Thu, 26 Jan 2023 01:47:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=APkxpFjkHy9aUzQmvgrxYSWiu1YJOzPgwdV41ID/2nc=;
-        b=E0PfS+UOvVynwJtCJQd7jtZepFE3khRvSPHq/PQzlDOd61DH7tWxn0G0Vl5Si625sZ
-         yGrDX5K8Spn5kVlJa+cG1hV6JPMya80xC6ShPbpueZs2kJ4ADc32wsvgfJVLAHW5m9AD
-         mZl9Vl4mo0xvQ1RtuRDmMA9cSzgsTLWvqGjRA9Ij18ReftpgDGwTOBAUU2bV3A4yow77
-         R3OEeHAHMZXzxqJlIpzpxouf7ihnkRcnyMIeKYWesM3eRbVBzunH3GChNXh0m18sjs2g
-         VevL3lRm4L1udFUphpmx9M/4Rg7ZWZsaACiJDLxr7Mc12Ki4Tci6BO2v03hD3dPR15G4
-         SZiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=APkxpFjkHy9aUzQmvgrxYSWiu1YJOzPgwdV41ID/2nc=;
-        b=BZUCInfzsEouSk9VtD+BDwA/jkFGgQ6oTYhxC/gzfqjwJ3lSfkqAbUCkPzi79/+Sz5
-         IU6WxR9DH7LuhDUsv1RenwPjbj4svitMQeug1SIZqLR5qC5iUjQtksq3ToHbhVAaYod7
-         w7zA9uj2S2pb5JY3ccFgnPWfoUlPfVJ1QuQa/WOLxk4i9frEPJmE2jWxm250u90HT12E
-         BHxz7k342xoYcrP1QHBBjDX2SCIyduBoSaoxh7NSvb0irqhJxN7WVg2C/fXiMB1MP8Fw
-         tqRKF1Pplz553gw5wJieKC09sVADAXUEUF3yGyDtO24/KWIwVkx172FSfouj7UihDZWb
-         9ymQ==
-X-Gm-Message-State: AO0yUKXC7fEKvf9MCt9MSeKiGZumNBy1uDhN0HNOhJr+sJBaW1YtKCvo
-        7fSJMt2PlPb5g5uAmaS5EHNAYzeq9muvtf5aenY=
-X-Google-Smtp-Source: AK7set+ZD+LhIVr9zWlp16hzcgj7kOxYisxdQ9lCVNvaTAswU0fpPLO7g0kjdlKvqZeR16vrit71QUsUbFQ8+IVS1Lw=
-X-Received: by 2002:a05:6214:e6d:b0:537:7a25:2111 with SMTP id
- jz13-20020a0562140e6d00b005377a252111mr229158qvb.32.1674726473045; Thu, 26
- Jan 2023 01:47:53 -0800 (PST)
-MIME-Version: 1.0
-References: <CABXGCsN+BcaGO0+0bJszDPvA=5JF_bOPfXC=OLzMzsXY2M8hyQ@mail.gmail.com>
- <20220726164250.GE13489@twin.jikos.cz> <CABXGCsN1rzCoYiB-vN5grzsMdvgm1qv2jnWn0enXq5R-wke8Eg@mail.gmail.com>
- <20230125171517.GV11562@twin.jikos.cz>
-In-Reply-To: <20230125171517.GV11562@twin.jikos.cz>
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Thu, 26 Jan 2023 14:47:42 +0500
-Message-ID: <CABXGCsOD7jVGYkFFG-nM9BgNq_7c16yU08EBfaUc6+iNsX338g@mail.gmail.com>
-Subject: Re: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-To:     dsterba@suse.cz, boqun.feng@gmail.com
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        Chris Murphy <lists@colorremedies.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 26 Jan 2023 05:54:21 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837E35D92A;
+        Thu, 26 Jan 2023 02:54:20 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 11DA161796;
+        Thu, 26 Jan 2023 10:54:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CDCAC433D2;
+        Thu, 26 Jan 2023 10:54:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674730459;
+        bh=dwy0Zrz7JiK4sHx1mULpCKxHI9VXysUBBdDC3Dp9Wik=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=PeokaWZAIAV/kmnDdgg270+335Q2ZF3Qo98/lwZXwU74YYW42eIu8MJNo7dWSntuj
+         RXi41cQHRA5sM9rQvvR0gypNwP2ZXXm9AAPvdRzmTWPzCC97wvWvqTn7ljT8WsbPfG
+         4bWrnGTghannhjWjnWKgWvCcfkhYCLIANTgnDmJJW+/VKfxvAV4gxTMg0UoXQZsXyD
+         dVkULu6CgoJ6gkbRWQqEDAN9kQLAI9BA6AZZc+kE6Nh8iYIsr/WIhrCqGj25u5/f/H
+         DLumQzUn+cwHz754j7bYQrPsTMUfwyJnOkYS5HGFqSMlJJCnHJFcQl6cjiphs2c1nN
+         9nDgNqwBNwGvg==
+Message-ID: <3c5cf7c7f9e206a3d7c4253de52015dda97ef41e.camel@kernel.org>
+Subject: Re: [PATCH v8 RESEND 2/8] fs: clarify when the i_version counter
+ must be updated
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, djwong@kernel.org,
+        david@fromorbit.com, trondmy@hammerspace.com, neilb@suse.de,
+        viro@zeniv.linux.org.uk, zohar@linux.ibm.com, xiubli@redhat.com,
+        chuck.lever@oracle.com, lczerner@redhat.com, bfields@fieldses.org,
+        brauner@kernel.org, fweimer@redhat.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Colin Walters <walters@verbum.org>
+Date:   Thu, 26 Jan 2023 05:54:16 -0500
+In-Reply-To: <20230125160625.zenzybjgie224jf6@quack3>
+References: <20230124193025.185781-1-jlayton@kernel.org>
+         <20230124193025.185781-3-jlayton@kernel.org>
+         <20230125160625.zenzybjgie224jf6@quack3>
+Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 25, 2023 at 10:21 PM David Sterba <dsterba@suse.cz> wrote:
->
-> On Wed, Jan 25, 2023 at 01:27:48AM +0500, Mikhail Gavrilov wrote:
-> > On Tue, Jul 26, 2022 at 9:47 PM David Sterba <dsterba@suse.cz> wrote:
-> > >
-> > > On Tue, Jul 26, 2022 at 05:32:54PM +0500, Mikhail Gavrilov wrote:
-> > > > Hi guys.
-> > > > Always with intensive writing on a btrfs volume, the message "BUG:
-> > > > MAX_LOCKDEP_CHAIN_HLOCKS too low!" appears in the kernel logs.
-> > >
-> > > Increase the config value of LOCKDEP_CHAINS_BITS, default is 16, 18
-> > > tends to work.
-> >
-> > Hi,
-> > Today I was able to get the message "BUG: MAX_LOCKDEP_CHAIN_HLOCKS too
-> > low!" again even with LOCKDEP_CHAINS_BITS=3D18 and kernel 6.2-rc5.
-> >
-> > =E2=9D=AF cat /boot/config-`uname -r` | grep LOCKDEP_CHAINS_BITS
-> > CONFIG_LOCKDEP_CHAINS_BITS=3D18
-> >
-> > [88685.088099] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-> > [88685.088124] turning off the locking correctness validator.
-> > [88685.088133] Please attach the output of /proc/lock_stat to the bug r=
-eport
-> > [88685.088142] CPU: 14 PID: 1749746 Comm: mv Tainted: G        W    L
-> >   -------  ---  6.2.0-0.rc5.20230123git2475bf0250de.38.fc38.x86_64 #1
-> > [88685.088154] Hardware name: System manufacturer System Product
-> > Name/ROG STRIX X570-I GAMING, BIOS 4408 10/28/2022
-> >
-> > What's next? Increase this value to 19?
->
-> Yes, though increasing the value is a workaround so you may see the
-> warning again.
+On Wed, 2023-01-25 at 17:06 +0100, Jan Kara wrote:
+> On Tue 24-01-23 14:30:19, Jeff Layton wrote:
+> > The i_version field in the kernel has had different semantics over
+> > the decades, but NFSv4 has certain expectations. Update the comments
+> > in iversion.h to describe when the i_version must change.
+> >=20
+> > Cc: Colin Walters <walters@verbum.org>
+> > Cc: NeilBrown <neilb@suse.de>
+> > Cc: Trond Myklebust <trondmy@hammerspace.com>
+> > Cc: Dave Chinner <david@fromorbit.com>
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>=20
+> Looks good to me. But one note below:
+>=20
+> > diff --git a/include/linux/iversion.h b/include/linux/iversion.h
+> > index 6755d8b4f20b..fced8115a5f4 100644
+> > --- a/include/linux/iversion.h
+> > +++ b/include/linux/iversion.h
+> > @@ -9,8 +9,25 @@
+> >   * ---------------------------
+> >   * The change attribute (i_version) is mandated by NFSv4 and is mostly=
+ for
+> >   * knfsd, but is also used for other purposes (e.g. IMA). The i_versio=
+n must
+> > - * appear different to observers if there was a change to the inode's =
+data or
+> > - * metadata since it was last queried.
+> > + * appear larger to observers if there was an explicit change to the i=
+node's
+> > + * data or metadata since it was last queried.
+> > + *
+> > + * An explicit change is one that would ordinarily result in a change =
+to the
+> > + * inode status change time (aka ctime). i_version must appear to chan=
+ge, even
+> > + * if the ctime does not (since the whole point is to avoid missing up=
+dates due
+> > + * to timestamp granularity). If POSIX or other relevant spec mandates=
+ that the
+> > + * ctime must change due to an operation, then the i_version counter m=
+ust be
+> > + * incremented as well.
+> > + *
+> > + * Making the i_version update completely atomic with the operation it=
+self would
+> > + * be prohibitively expensive. Traditionally the kernel has updated th=
+e times on
+> > + * directories after an operation that changes its contents. For regul=
+ar files,
+> > + * the ctime is usually updated before the data is copied into the cac=
+he for a
+> > + * write. This means that there is a window of time when an observer c=
+an
+> > + * associate a new timestamp with old file contents. Since the purpose=
+ of the
+> > + * i_version is to allow for better cache coherency, the i_version mus=
+t always
+> > + * be updated after the results of the operation are visible. Updating=
+ it before
+> > + * and after a change is also permitted.
+>=20
+> This sounds good but it is not the case for any of the current filesystem=
+s, is
+> it? Perhaps the documentation should mention this so that people are not
+> confused?
+>=20
+> 								Honza
 
-Is there any sense in this WARNING if we would ignore it and every
-time increase the threshold value?
-May Be set 99 right away? Or remove such a check condition?
+Correct. Currently, all filesystems change the times and version before
+a write instead of after. I'm hoping that situation will change soon
+though, as I've been working on a patchset to fix this for tmpfs, ext4
+and btrfs.
 
+If you still want to see something for this though, what would you
+suggest for verbiage?
+
+Thanks,
 --=20
-Best Regards,
-Mike Gavrilov.
+Jeff Layton <jlayton@kernel.org>
