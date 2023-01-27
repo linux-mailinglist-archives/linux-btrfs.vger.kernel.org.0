@@ -2,145 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D20067E6C8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jan 2023 14:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E9667E6DF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jan 2023 14:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbjA0Nch (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Jan 2023 08:32:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
+        id S231910AbjA0Nhx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Jan 2023 08:37:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234715AbjA0Nce (ORCPT
+        with ESMTP id S234812AbjA0Nhv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Jan 2023 08:32:34 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1E88243E
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 Jan 2023 05:32:30 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 55D5221F0E;
-        Fri, 27 Jan 2023 13:32:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1674826349;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dF62+hL4WCxRjxoQCSfF/J/jkTbINOUWeS2V7L3mpD4=;
-        b=BbucDDK5qRTz/YOBHpxrI41OKtLcuf7wefUeS0I0+7aFewgjWrVC3aqbgWhFf7KzxCaYON
-        bu3u6s+jCxTduBbnEv7t906IO9LbcY2vE0/Sfealm3vL5ouG68rhASlkgyQP59OXMcxN7c
-        HNCnpFBzaxTf8JQi/dH3LQQTlqK3q1g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1674826349;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dF62+hL4WCxRjxoQCSfF/J/jkTbINOUWeS2V7L3mpD4=;
-        b=DrTORnS26zPR2ybKcyRfe9WZCOs9LhVqBxFvlKQxnQ+TaL8UsQp71oAxrOIfEzqpAz0O52
-        Ap8II6bC9tv5kjDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2EB51138E3;
-        Fri, 27 Jan 2023 13:32:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1B+OCm3S02NkJQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 27 Jan 2023 13:32:29 +0000
-Date:   Fri, 27 Jan 2023 14:26:46 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2] btrfs: fix size class loading logic
-Message-ID: <20230127132646.GB11562@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <1c4c25be5fa66e14ae772f134045f64cf1fb74a6.1674686119.git.boris@bur.io>
+        Fri, 27 Jan 2023 08:37:51 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D180DBC2
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Jan 2023 05:37:49 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 25EEC20194;
+        Fri, 27 Jan 2023 13:37:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1674826668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=KyeZZ7qxXXGi5HmXa7A0+h4wV1MkUgPydfDfZU7uFrM=;
+        b=jUibTk7ZM7BHPiOLQoctOVscVLRUK4EbgxCdb2v39q0xbdGQcVHY4eJYuDfcGwoFszF4ke
+        PvoNOne4f4ArYLzq0mgNIAnWak/7BKXEAbTzMi+dsmHTen1Y2T1PfnBbFjnTF/adKuFaZk
+        GXEfMLfbabi5iPvTAVzFkdP+HGhpM8I=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 1B9E72C141;
+        Fri, 27 Jan 2023 13:37:48 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 0E478DA7CF; Fri, 27 Jan 2023 14:32:05 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: restore assertion failure to the code line where it happens
+Date:   Fri, 27 Jan 2023 14:32:02 +0100
+Message-Id: <20230127133202.16220-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c4c25be5fa66e14ae772f134045f64cf1fb74a6.1674686119.git.boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 25, 2023 at 02:37:41PM -0800, Boris Burkov wrote:
-> This is an incremental patch fixing bugs in:
-> btrfs: load block group size class when caching
+In commit 083bd7e54e8e ("btrfs: move the printk and assert helpers to
+messages.c") btrfs_assertfail got un-inlined. This means that assertion
+failures would all report as messages.c:259 as below, so make it inline
+again.
 
-Folded to the patch, thanks.
+  [403.246730] assertion failed: refcount_read(&block_group->refs) == 1, in fs/btrfs/block-group.c:4259
+  [403.247935] ------------[ cut here ]------------
+  [403.248405] kernel BUG at fs/btrfs/messages.c:259!
+  [403.248879] invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+  [403.249363] CPU: 2 PID: 23202 Comm: umount Not tainted 6.2.0-rc4-default+ #67
+  [403.249986] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552-rebuilt.opensuse.org 04/01/2014
+  [403.250931] RIP: 0010:btrfs_assertfail+0x19/0x1b [btrfs]
+  ...
+  [403.259517] Call Trace:
+  [403.259840]  <TASK>
+  [403.260134]  btrfs_free_block_groups.cold+0x52/0xae [btrfs]
+  [403.260824]  close_ctree+0x6c2/0x761 [btrfs]
+  [403.261395]  ? __wait_for_common+0x2b8/0x360
+  [403.261899]  ? btrfs_cleanup_one_transaction.cold+0x7a/0x7a [btrfs]
+  [403.262632]  ? mark_held_locks+0x6b/0x90
+  [403.263084]  ? lockdep_hardirqs_on_prepare+0x13d/0x200
+  [403.263628]  ? __call_rcu_common.constprop.0+0x1ea/0x3d0
+  [403.264213]  ? trace_hardirqs_on+0x2d/0x110
+  [403.264699]  ? __call_rcu_common.constprop.0+0x1ea/0x3d0
+  [403.265279]  generic_shutdown_super+0xb0/0x1c0
+  [403.265794]  kill_anon_super+0x1e/0x40
+  [403.266241]  btrfs_kill_super+0x25/0x30 [btrfs]
+  [403.266836]  deactivate_locked_super+0x4c/0xc0
 
-> The commit message should be:
-> btrfs: load block group size class when caching
-> 
-> Since the size class is an artifact of an arbitrary anti fragmentation
-> strategy, it doesn't really make sense to persist it. Furthermore, most
-> of the size class logic assumes fresh block groups. That is of course
-> not a reasonable assumption -- we will be upgrading kernels with
-> existing filesystems whose block groups are not classified.
-> 
-> To work around those issues, implement logic to compute the size class
-> of the block groups as we cache them in. To perfectly assess the state
-> of a block group, we would have to read the entire extent tree (since
-> the free space cache mashes together contiguous extent items) which
-> would be prohibitively expensive for larger file systems with more
-> extents.
-> 
-> We can do it relatively cheaply by implementing a simple heuristic of
-> sampling a handful of extents and picking the smallest one we see. In
-> the happy case where the block group was classified, we will only see
-> extents of the correct size. In the unhappy case, we will hopefully find
-> one of the smaller extents, but there is no perfect answer anyway.
-> Autorelocation will eventually churn up the block group if there is
-> significant freeing anyway.
-> 
-> There was no regression in mount performance at end state of the fsperf
-> test suite, and the delay until the block group is marked cached is
-> minimized by the constant number of extent samples.
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
-> v2: just commit message stuff to make it a nicer incremental fixup
-> patch. Also, drop the sysfs patch since it isn't a fixup.
-> 
->  fs/btrfs/block-group.c | 56 ++++++++++++++++++++++++++++--------------
->  1 file changed, 37 insertions(+), 19 deletions(-)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 73e1270b3904..45ccb25c5b1f 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -638,7 +656,8 @@ static int sample_block_group_extent_item(struct btrfs_block_group *block_group,
->   *
->   * Returns: 0 on success, negative error code on error.
->   */
-> -static int load_block_group_size_class(struct btrfs_block_group *block_group)
-> +static int load_block_group_size_class(struct btrfs_caching_control *caching_ctl,
-> +				       struct btrfs_block_group *block_group)
->  {
->  	struct btrfs_key key;
->  	int i;
-> @@ -646,11 +665,11 @@ static int load_block_group_size_class(struct btrfs_block_group *block_group)
->  	enum btrfs_block_group_size_class size_class = BTRFS_BG_SZ_NONE;
->  	int ret;
->  
-> -	if (btrfs_block_group_should_use_size_class(block_group))
-> +	if (!btrfs_block_group_should_use_size_class(block_group))
+Fixes: 083bd7e54e8e ("btrfs: move the printk and assert helpers to messages.c")
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/messages.c | 8 --------
+ fs/btrfs/messages.h | 9 ++++++++-
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
-Though this change was in the "btrfs: don't use size classes for zoned
-file systems".
+diff --git a/fs/btrfs/messages.c b/fs/btrfs/messages.c
+index fde5aaa6e7c9..23fc11af498a 100644
+--- a/fs/btrfs/messages.c
++++ b/fs/btrfs/messages.c
+@@ -252,14 +252,6 @@ void __cold _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt,
+ }
+ #endif
+ 
+-#ifdef CONFIG_BTRFS_ASSERT
+-void __cold btrfs_assertfail(const char *expr, const char *file, int line)
+-{
+-	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
+-	BUG();
+-}
+-#endif
+-
+ void __cold btrfs_print_v0_err(struct btrfs_fs_info *fs_info)
+ {
+ 	btrfs_err(fs_info,
+diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
+index 8c516ee58ff9..9e8e7741ab76 100644
+--- a/fs/btrfs/messages.h
++++ b/fs/btrfs/messages.h
+@@ -4,6 +4,8 @@
+ #define BTRFS_MESSAGES_H
+ 
+ #include <linux/types.h>
++#include <linux/printk.h>
++#include <linux/bug.h>
+ 
+ struct btrfs_fs_info;
+ 
+@@ -160,7 +162,12 @@ do {								\
+ } while (0)
+ 
+ #ifdef CONFIG_BTRFS_ASSERT
+-void __cold btrfs_assertfail(const char *expr, const char *file, int line);
++static inline void __cold __noreturn btrfs_assertfail(const char *expr,
++						      const char *file, int line)
++{
++	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
++	BUG();
++}
+ 
+ #define ASSERT(expr)						\
+ 	(likely(expr) ? (void)0 : btrfs_assertfail(#expr, __FILE__, __LINE__))
+-- 
+2.37.3
 
->  		return 0;
->  
->  	for (i = 0; i < 5; ++i) {
-> -		ret = sample_block_group_extent_item(block_group, i, 5, &key);
-> +		ret = sample_block_group_extent_item(caching_ctl, block_group, i, 5, &key);
->  		if (ret < 0)
->  			goto out;
->  		if (ret > 0)
