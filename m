@@ -2,186 +2,177 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E7767E501
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jan 2023 13:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B54F67E6B5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jan 2023 14:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbjA0MVC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Jan 2023 07:21:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
+        id S234790AbjA0N3f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Jan 2023 08:29:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234337AbjA0MU1 (ORCPT
+        with ESMTP id S234367AbjA0N3e (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Jan 2023 07:20:27 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A9B8626A;
-        Fri, 27 Jan 2023 04:17:19 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 27 Jan 2023 08:29:34 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0A2757A9
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Jan 2023 05:29:30 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 62DAC61B76;
-        Fri, 27 Jan 2023 12:17:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C35ACC433EF;
-        Fri, 27 Jan 2023 12:17:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674821837;
-        bh=SDXjR/Uz9gvxlij58B8eJYGYu04rFY4AInu4uPqjaWI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Exq7pQz+TmUFdIAJx14HjCSo6jHmq7oNcALA5XTs8j0RKzlVnvc7vPHFVqjU5i+eu
-         J4mBHNpfWWkLivcr5zBsBPQJq96xrlUhs9jCdF57G3iqRluPsgqiJ2+dK1UvG0lWLX
-         zsa7mzEL9DZkX0A0NJ0Z3BGLCDInlWr9lo9Fig5cB+Uum+cH0tlKJBu+8DT20zbO8U
-         3lcA+tX65O6ikFP6eDSM2nNA00fLLgf3b8W+vaw9joT8G4KEc7t9p+FIl7PgQjRiz5
-         HIFPxP8gMno4zH7fyNwryVuPWSpsbvKATWPWtLwlxGqURvCQEQkDrrbOvhPsK0iZUD
-         faGW5RkYkpDZg==
-Received: by mail-oi1-f176.google.com with SMTP id r132so4042539oif.10;
-        Fri, 27 Jan 2023 04:17:17 -0800 (PST)
-X-Gm-Message-State: AFqh2kqHIi351GhpRLX4gZOJy6ng7/CifEe+E+V9Tz84kcqAh418Nh81
-        nwjF8IKuH+IDz6EUOu1MRltAmSNXMrxSpufoLPA=
-X-Google-Smtp-Source: AMrXdXs/bPR9r+Z1RYg7l0x8F8A81lKc2qxA8sjhf4e8jMipoz6D+TqGm0vy2bvaUmrbUTzeqcubADNkA1K3gzPvMdc=
-X-Received: by 2002:a05:6808:1b28:b0:35e:ac60:2452 with SMTP id
- bx40-20020a0568081b2800b0035eac602452mr1857650oib.92.1674821836829; Fri, 27
- Jan 2023 04:17:16 -0800 (PST)
-MIME-Version: 1.0
-References: <fa66499531a46105f295af0f29d9fc253f361d78.1674755349.git.boris@bur.io>
-In-Reply-To: <fa66499531a46105f295af0f29d9fc253f361d78.1674755349.git.boris@bur.io>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 27 Jan 2023 12:16:40 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4Uc2=nZxCRkzMSd9DOH8DpsT1Lmac0mfXNDyS+7Vio7w@mail.gmail.com>
-Message-ID: <CAL3q7H4Uc2=nZxCRkzMSd9DOH8DpsT1Lmac0mfXNDyS+7Vio7w@mail.gmail.com>
-Subject: Re: [PATCH v4] btrfs: test block group size class loading logic
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 39F8321EF7;
+        Fri, 27 Jan 2023 13:29:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1674826169;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=16xSFMUdGNt7z3HOjoCJirfbGuQLNJAffgKwX6DrB8I=;
+        b=0pCRyDvviix9IbIN1VppL+Cz5HN5khU5k9cOROB7KOL5v1Jj5Pk1jcIO0qPiDte7kxrBT4
+        wcv2m6cBdEu7ClJj0T4oL1/j8oDMnD2uu4X2RoGntH8ZzdXmbHYZeMGuUaMKJyy8aqrWB0
+        VQXJ4AwXy2dkO3aJXTixnGGnITY8PH0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1674826169;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=16xSFMUdGNt7z3HOjoCJirfbGuQLNJAffgKwX6DrB8I=;
+        b=2YfjHCokYxi6Ie95i3SCIkC0DQKGwBzSyqZxcRUwSzLXVbhthvioSrWWuW0KAMgiNddR93
+        N+vIpUPB/KU3deCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D9F51336F;
+        Fri, 27 Jan 2023 13:29:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ElRnArnR02OoIwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 27 Jan 2023 13:29:29 +0000
+Date:   Fri, 27 Jan 2023 14:23:45 +0100
+From:   David Sterba <dsterba@suse.cz>
 To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 2/2] btrfs: add size class stats to sysfs
+Message-ID: <20230127132345.GA11562@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1674679476.git.boris@bur.io>
+ <3e95d7d8a42fa8969f415fc03ad999de3d29a196.1674679476.git.boris@bur.io>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e95d7d8a42fa8969f415fc03ad999de3d29a196.1674679476.git.boris@bur.io>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 26, 2023 at 6:02 PM Boris Burkov <boris@bur.io> wrote:
->
-> Add a new test which checks that size classes in freshly loaded block
-> groups after a cycle mount match size classes before going down
->
-> Depends on the kernel patch:
-> btrfs: add size class stats to sysfs
->
+On Wed, Jan 25, 2023 at 12:50:33PM -0800, Boris Burkov wrote:
+> Make it possible to see the distribution of size classes for block
+> groups. Helpful for testing and debugging the allocator w.r.t. to size
+> classes.
+
+Please note the sysfs file path.
+
 > Signed-off-by: Boris Burkov <boris@bur.io>
 > ---
-> Changelog:
-> v4:
-> Fix dump typo in _fixed_by_kernel_commit (left out leading underscore
-> copy+pasting). Re-tested happy and sad case...
->
-> v3:
-> Re-add fixed_by_kernel_commit, but for the stats patch which is
-> required, but not a fix in the strictest sense.
->
-> v2:
-> Drop the fixed_by_kernel_commit since the fix is not out past the btrfs
-> development tree, so the fix is getting rolled in to the original broken
-> commit. Modified the commit message to note the dependency on the new
-> sysfs counters.
->
->
->  tests/btrfs/283     | 50 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/283.out |  2 ++
->  2 files changed, 52 insertions(+)
->  create mode 100755 tests/btrfs/283
->  create mode 100644 tests/btrfs/283.out
->
-> diff --git a/tests/btrfs/283 b/tests/btrfs/283
-> new file mode 100755
-> index 00000000..2176c8e4
-> --- /dev/null
-> +++ b/tests/btrfs/283
-> @@ -0,0 +1,50 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 283
-> +#
-> +# Test that mounting a btrfs filesystem properly loads block group size classes.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick mount
+>  fs/btrfs/sysfs.c | 39 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+> 
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 108aa3876186..e1ae4d2323d6 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/spinlock.h>
+>  #include <linux/completion.h>
+>  #include <linux/bug.h>
+> +#include <linux/list.h>
+>  #include <crypto/hash.h>
+>  #include "messages.h"
+>  #include "ctree.h"
+> @@ -778,6 +779,42 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
+>  	return len;
+>  }
+>  
+> +static ssize_t btrfs_size_classes_show(struct kobject *kobj,
+> +				       struct kobj_attribute *a, char *buf)
+> +{
+> +	struct btrfs_space_info *sinfo = to_space_info(kobj);
+> +	struct btrfs_block_group *bg;
+> +	int none = 0;
+> +	int small = 0;
+> +	int medium = 0;
+> +	int large = 0;
 
-Why the mount group? We aren't testing mount options.
-It's a bit odd to me.
+For simple counters please use unsigned types.
 
-> +_fixed_by_kernel_commit xxxxxxxx "btrfs: add size class stats to sysfs".
-
-Should be _wants_kernel_commit here, because it's a new feature and
-not a bug fix.
-
+> +	int i;
 > +
-> +sysfs_size_classes() {
-> +       local uuid="$(findmnt -n -o UUID "$SCRATCH_MNT")"
-> +       cat "/sys/fs/btrfs/$uuid/allocation/data/size_classes"
+> +	down_read(&sinfo->groups_sem);
+
+This is a big lock and reading the sysfs repeatedly could block space
+reservations. I think RCU works for the block group list and the
+size_class is a simple read so the synchronization can be lightweight.
+
+> +	for (i = 0; i < BTRFS_NR_RAID_TYPES; ++i) {
+
+	for (int = 0; ...)
+
+> +		list_for_each_entry(bg, &sinfo->block_groups[i], list) {
+> +			if (!btrfs_block_group_should_use_size_class(bg))
+> +				continue;
+> +			switch (bg->size_class) {
+> +			case BTRFS_BG_SZ_NONE:
+> +				none++;
+> +				break;
+> +			case BTRFS_BG_SZ_SMALL:
+> +				small++;
+> +				break;
+> +			case BTRFS_BG_SZ_MEDIUM:
+> +				medium++;
+> +				break;
+> +			case BTRFS_BG_SZ_LARGE:
+> +				large++;
+> +				break;
+> +			}
+> +		}
+> +	}
+> +	up_read(&sinfo->groups_sem);
+> +	return sysfs_emit(buf, "%d %d %d %d\n", none, small, medium, large);
+
+This is lacks the types in the output, so this should be like
+
+	"none %u\n"
+	"small %u\n"
+	...
+
+For stats we can group the values in one file.
+
 > +}
 > +
-> +_supported_fs btrfs
-> +_require_scratch
-> +_require_btrfs_fs_sysfs
-
-This alone is not enough.
-
-What if we are running in a kernel with btrfs' sysfs support but
-without the size classes?
-I.e. the allocation/data/size_classes path does not exist.
-
-Then the test fails with:
-
-cat: /sys/fs/btrfs/95da1e36-8411-468a-abeb-71652dc2092b/allocation/data/size_classes:
-No such file or directory
-
-Instead the test just be skipped, i.e. calling:  _notrun "allocation
-size classes not supported"
-
-Thanks.
-
-> +
-> +f="$SCRATCH_MNT/f"
-> +small=$((16 * 1024))
-> +medium=$((1024 * 1024))
-> +large=$((16 * 1024 * 1024))
-> +
-> +_scratch_mkfs >/dev/null
-> +_scratch_mount
-> +# Write files with extents in each size class
-> +$XFS_IO_PROG -fc "pwrite -q 0 $small" $f.small
-> +$XFS_IO_PROG -fc "pwrite -q 0 $medium" $f.medium
-> +$XFS_IO_PROG -fc "pwrite -q 0 $large" $f.large
-> +# Sync to force the extent allocation
-> +sync
-> +pre=$(sysfs_size_classes)
-> +
-> +# cycle mount to drop the block group cache
-> +_scratch_cycle_mount
-> +
-> +# Another write causes us to actually load the block groups
-> +$XFS_IO_PROG -fc "pwrite -q 0 $large" $f.large.2
-> +sync
-> +
-> +post=$(sysfs_size_classes)
-> +diff <(echo $pre) <(echo $post)
-> +
-> +echo "Silence is golden"
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/283.out b/tests/btrfs/283.out
-> new file mode 100644
-> index 00000000..efb2c583
-> --- /dev/null
-> +++ b/tests/btrfs/283.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 283
-> +Silence is golden
-> --
-> 2.39.1
->
+>  #ifdef CONFIG_BTRFS_DEBUG
+>  /*
+>   * Request chunk allocation with current chunk size.
+> @@ -835,6 +872,7 @@ SPACE_INFO_ATTR(bytes_zone_unusable);
+>  SPACE_INFO_ATTR(disk_used);
+>  SPACE_INFO_ATTR(disk_total);
+>  BTRFS_ATTR_RW(space_info, chunk_size, btrfs_chunk_size_show, btrfs_chunk_size_store);
+> +BTRFS_ATTR(space_info, size_classes, btrfs_size_classes_show);
+>  
+>  static ssize_t btrfs_sinfo_bg_reclaim_threshold_show(struct kobject *kobj,
+>  						     struct kobj_attribute *a,
+> @@ -887,6 +925,7 @@ static struct attribute *space_info_attrs[] = {
+>  	BTRFS_ATTR_PTR(space_info, disk_total),
+>  	BTRFS_ATTR_PTR(space_info, bg_reclaim_threshold),
+>  	BTRFS_ATTR_PTR(space_info, chunk_size),
+> +	BTRFS_ATTR_PTR(space_info, size_classes),
+>  #ifdef CONFIG_BTRFS_DEBUG
+>  	BTRFS_ATTR_PTR(space_info, force_chunk_alloc),
+>  #endif
+> -- 
+> 2.38.1
