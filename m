@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 492A567F000
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jan 2023 21:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D1867F08F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jan 2023 22:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbjA0U4W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Jan 2023 15:56:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57206 "EHLO
+        id S231586AbjA0Vn1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Jan 2023 16:43:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbjA0U4T (ORCPT
+        with ESMTP id S229469AbjA0Vn0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Jan 2023 15:56:19 -0500
+        Fri, 27 Jan 2023 16:43:26 -0500
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A1618A82
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 Jan 2023 12:56:18 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id C66955C008E;
-        Fri, 27 Jan 2023 15:56:17 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2836559B7F
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Jan 2023 13:43:25 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 0312F5C0342;
+        Fri, 27 Jan 2023 16:43:22 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Fri, 27 Jan 2023 15:56:17 -0500
+  by compute1.internal (MEProxy); Fri, 27 Jan 2023 16:43:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
         :content-type:date:date:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1674852977; x=1674939377; bh=q2aEmyY/D6
-        jmoqjF6Alh9uAD5vBV2QQ0Q7ft2bXiZKc=; b=dTW/klxAIwo5ovz5+X6VRUFCBh
-        2Vb2YtsR7sNDopw7cjfBq/t/RzFW7t7RBjyBmcdhZTRUZ4O4Jq7IAd193BtYi5GM
-        J2vg9HragU5pftMoKIIvVsbYt7mM4f9DSxIu3rU0trmSEdq2DgBznrDUWDYHA7D3
-        oKpwWcTCOpZhUIQFi5t2WYgTsvKLLZAY2iXloVHLWiZNgJU0uKWwGtBCMliu7qV+
-        g5guxxVxvc2Zx7WDp2M63x5G4tx+xAknBKnQsE/9aiJs/0ynuFBsJvOTBzb1WR1K
-        /V2wF4/83FB9DRU94xSc8frcpCDXInrgz+BWvfexGuaOHqW1n77IMMpnlsYg==
+        :subject:to:to; s=fm3; t=1674855801; x=1674942201; bh=wZj7VTm32e
+        PCsVxHCz6mVV7ht2wxtAE6KdTSYtB08jQ=; b=HvcvoUjV8mIDZ1IMiPl97FjFw2
+        HIVzviaDhpylvAsQ9OPcPI/U/e1I+nfWLWzklpjF4l9tZYwWj11wZtIO6+uUftOe
+        KtSMGza7tulCRPqs5h+p1LhIqCvxxZiw0n696EsOElPnL7k+oBGBj76Mu0ZscWTy
+        r6HjLgFg1/g2vVWeUUcVD2q+NzbqNdipdB5M/M3aXYHKeqwBlmQyqI1i324s9W7b
+        tytQw0rc+RRaHEJHPgz9Ai8gaCaJRo1jCrDHS+MtPc0kCmV/qlmdNz0+YSsGfAlD
+        WfPkUSBgUlQVk+16G6YMKEQPR6UAqbn/Nr0It3S0lDI5RxbKPECRC98CzrBA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
         :feedback-id:from:from:in-reply-to:in-reply-to:message-id
         :mime-version:references:reply-to:sender:subject:subject:to:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1674852977; x=1674939377; bh=q2aEmyY/D6jmoqjF6Alh9uAD5vBV
-        2QQ0Q7ft2bXiZKc=; b=r72C0UH7AqSi08lhu+0BdTdELc5SdbNCN5Fb3nsbi1Zk
-        cgQV3n2Y/aL7Z1iHEEz/xdXc4tKPv5o/Rp6PLJ5aoQIGprm/RUISzto7gLSNu+y+
-        khgyDjDpfeqQjiLSgvK7n2BPRi4IMHR0UbneBd6WjMD0QA+kIwWwCQUyaSo6SqiU
-        IUwrOkNvFpDUQPqby8UHwFpONCKtpz2Og3kZdHEd5vbhhy8l/g/U40OJcs3FYt1r
-        ontvng7Ffv0S/kyIRLc5ionXccxNJPfDrapZJjpG1zuAZFBKt8dipvEBPiMgCtX2
-        wdtS8D/rqwaxzRQpC+4jECUcAl6Z2+2cospE73nkLQ==
-X-ME-Sender: <xms:cTrUYwR8WZuj4toG9nEaIxEX8ZpPdwM1mneSKw1GQE3AnPtFqSqZFA>
-    <xme:cTrUY9yBK57py6uCUxtKYT-YPqF48YAdD0NePJ58c9szYq8ay3uxOhrDnW1xJXKC6
-    STCyBKal9SmhWqOVkY>
-X-ME-Received: <xmr:cTrUY91KYuWpq-cqzGK3wSVuiRrZtQBU9XQXsAbbU8-m-DAgGj19i9Ef>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddviedgudegvdcutefuodetggdotefrod
+        fm3; t=1674855801; x=1674942201; bh=wZj7VTm32ePCsVxHCz6mVV7ht2wx
+        tAE6KdTSYtB08jQ=; b=Y8HkCWhT5vjdi/H5MkvCu3IyIWnyxTGYeMX+g541Voit
+        mA2Yl+CReXNROB+oaa2TOo5TjTJOWRBNECldDqTwJxuBjNWa/OUxhvevmWHTIlL3
+        HfINNsermM0rzbV+hF1x+fEkksJJwjiqqPW4CQV/TL/Weeb7h7xXrw/ws9eiPRTt
+        2aiGvHmCdFR7IEe2aVxUXX7CuvlVmBc51FTHWlKUJJ4wlrKyIHIUhtRJGWQQwDr5
+        LKpCwCHn8wEZRRRCyXM9ryEjPGWhzcbJhKzgb0eBCfEaHE9OY9EdgcAp891XQh+G
+        /zUku+lefxjC6UZBdmRr8FrFlpyn6t3nJuGgNRX7zw==
+X-ME-Sender: <xms:eUXUY1rXw25YoMwhosFa5GshnQxPQPiQ69FsvzbdjWwNDIUVmyAgDQ>
+    <xme:eUXUY3qpy_fn3wgcibHtRHF7WHdGQg2i_HxpnFh9ZeDPenBt_-VKEGFwce8iteVWx
+    K2N2OMm4owP8djZGPc>
+X-ME-Received: <xmr:eUXUYyMd03tpsOe6g0zsUT2Ml0ABnJLk6hyLZ-7_gMBPf5caZbL9291q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddviedgudehvdcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
     enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
@@ -54,25 +54,26 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddviedgudegvdcutefuodetgg
     epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
     vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
     essghurhdrihho
-X-ME-Proxy: <xmx:cTrUY0Dau-i87v9KoYGl6VxUCWZ0IQBOhdf5AiaRBpbtJr1Bz643tA>
-    <xmx:cTrUY5gxVc3FCZ3huIjVhbsLuVJ8k19K6Da6KPlQfT6DEEI3_JOtlg>
-    <xmx:cTrUYwpK2wCrBdkyF3tsq7Yo63owiB-odg5imIKunMkjGW41D-uYog>
-    <xmx:cTrUY5IGadtNblzj7WarFYpvjUOYNpRzel94y5vjIz-N1Ll_TqCosg>
+X-ME-Proxy: <xmx:eUXUYw5GOOBjIHYbMjq3NbCtKcmdLyBnmYfsZt4Ic_tQZEEqfRBd1g>
+    <xmx:eUXUY04sEvy59jRM6ZyrM8fH2nVNtgBB6oMIoHJ4vgQasCkiSQhmYw>
+    <xmx:eUXUY4iNWaTStpa4mcEtVAkAWqAbGnEFukNvcZJT7RSQu6m0OG852A>
+    <xmx:eUXUYyTFIMijmiuUKsZzsLFBa1V_ND11vQn4j-7TuK9E4C1VBD_C-w>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 27 Jan 2023 15:56:17 -0500 (EST)
-Date:   Fri, 27 Jan 2023 12:56:15 -0800
+ 27 Jan 2023 16:43:21 -0500 (EST)
+Date:   Fri, 27 Jan 2023 13:43:19 -0800
 From:   Boris Burkov <boris@bur.io>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: scrub: avoid unnecessary extent tree search for
- simple stripes
-Message-ID: <Y9Q6bxJ5g9oF3REv@zen>
-References: <e8b3a59de5f43c185427a8d87c303ba3e8ff6ff1.1673244671.git.wqu@suse.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 2/2] btrfs: add size class stats to sysfs
+Message-ID: <Y9RFd5e/zusf5MCm@zen>
+References: <cover.1674679476.git.boris@bur.io>
+ <3e95d7d8a42fa8969f415fc03ad999de3d29a196.1674679476.git.boris@bur.io>
+ <20230127132345.GA11562@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e8b3a59de5f43c185427a8d87c303ba3e8ff6ff1.1673244671.git.wqu@suse.com>
+In-Reply-To: <20230127132345.GA11562@twin.jikos.cz>
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
@@ -83,260 +84,126 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 09, 2023 at 02:11:15PM +0800, Qu Wenruo wrote:
-> [BUG]
-> When scrubing an empty fs with RAID0, we will call scrub_simple_mirror()
-> again and again on ranges which has no extent at all.
+On Fri, Jan 27, 2023 at 02:23:45PM +0100, David Sterba wrote:
+> On Wed, Jan 25, 2023 at 12:50:33PM -0800, Boris Burkov wrote:
+> > Make it possible to see the distribution of size classes for block
+> > groups. Helpful for testing and debugging the allocator w.r.t. to size
+> > classes.
 > 
-> This is especially obvious if we have both RAID0 and SINGLE.
+> Please note the sysfs file path.
 > 
->  # mkfs.btrfs -f -m single -d raid0 $dev
->  # mount $dev $mnt
->  # xfs_io -f -c "pwrite 0 4k" $mnt/file
->  # sync
->  # btrfs scrub start -B $mnt
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >  fs/btrfs/sysfs.c | 39 +++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 39 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> > index 108aa3876186..e1ae4d2323d6 100644
+> > --- a/fs/btrfs/sysfs.c
+> > +++ b/fs/btrfs/sysfs.c
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/spinlock.h>
+> >  #include <linux/completion.h>
+> >  #include <linux/bug.h>
+> > +#include <linux/list.h>
+> >  #include <crypto/hash.h>
+> >  #include "messages.h"
+> >  #include "ctree.h"
+> > @@ -778,6 +779,42 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
+> >  	return len;
+> >  }
+> >  
+> > +static ssize_t btrfs_size_classes_show(struct kobject *kobj,
+> > +				       struct kobj_attribute *a, char *buf)
+> > +{
+> > +	struct btrfs_space_info *sinfo = to_space_info(kobj);
+> > +	struct btrfs_block_group *bg;
+> > +	int none = 0;
+> > +	int small = 0;
+> > +	int medium = 0;
+> > +	int large = 0;
 > 
-> With extra call trace on scrub_simple_mirror(), we got the following
-> trace:
+> For simple counters please use unsigned types.
 > 
->   256.028473: scrub_simple_mirror: logical=1048576 len=4194304 bg=1048576 bg_len=4194304
->   256.028930: scrub_simple_mirror: logical=5242880 len=8388608 bg=5242880 bg_len=8388608
->   256.029891: scrub_simple_mirror: logical=22020096 len=65536 bg=22020096 bg_len=1073741824
->   256.029892: scrub_simple_mirror: logical=22085632 len=65536 bg=22020096 bg_len=1073741824
->   256.029893: scrub_simple_mirror: logical=22151168 len=65536 bg=22020096 bg_len=1073741824
->   ... 16K lines skipped ...
->   256.048777: scrub_simple_mirror: logical=1095630848 len=65536 bg=22020096 bg_len=1073741824
->   256.048778: scrub_simple_mirror: logical=1095696384 len=65536 bg=22020096 bg_len=1073741824
+> > +	int i;
+> > +
+> > +	down_read(&sinfo->groups_sem);
 > 
-> The first two lines shows we just call scrub_simple_mirror() for the
-> metadata and system chunks once.
-> 
-> But later 16K lines are all scrub_simple_mirror() for the almost empty
-> RAID0 data block group.
-> 
-> Most of the calls would exit very quickly since there is no extent in
-> that data chunk.
-> 
-> [CAUSE]
-> For RAID0/RAID10 we go scrub_simple_stripe() to handle the scrub for the
-> block group. And since inside each stripe it's just plain SINGLE/RAID1,
-> thus we reuse scrub_simple_mirror().
-> 
-> But there is a pitfall, that inside scrub_simple_mirror() we will do at
-> least one extent tree search to find the extent in the range.
-> 
-> Just like above case, we can have a huge gap which has no extent in them
-> at all.
-> In that case, we will do extent tree search again and again, even we
-> already know there is no more extent in the block group.
-> 
-> [FIX]
-> To fix the super inefficient extent tree search, we introduce
-> @found_next parameter for the following functions:
-> 
-> - find_first_extent_item()
-> - scrub_simple_mirror()
-> 
-> If the function find_first_extent_item() returns 1 and @found_next
-> pointer is provided, it will store the bytenr of the bytenr of the next
-> extent (if at the end of the extent tree, U64_MAX is used).
-> 
-> So for scrub_simple_stripe(), after scrubing the current stripe and
-> increased the logical bytenr, we check if our next range reaches
-> @found_next.
-> 
-> If not, increase our @cur_logical by our increment until we reached
-> @found_next.
-> 
-> By this, even for an almost empty RAID0 block group, we just execute
-> "cur_logical += logical_increment;" 16K times, not doing tree search 16K
-> times.
-> 
-> With the optimization, the same trace looks like this now:
-> 
->   1283.376212: scrub_simple_mirror: logical=1048576 len=4194304 bg=1048576 bg_len=4194304
->   1283.376754: scrub_simple_mirror: logical=5242880 len=8388608 bg=5242880 bg_len=8388608
->   1283.377623: scrub_simple_mirror: logical=22020096 len=65536 bg=22020096 bg_len=1073741824
->   1283.377625: scrub_simple_mirror: logical=67108864 len=65536 bg=22020096 bg_len=1073741824
->   1283.377627: scrub_simple_mirror: logical=67174400 len=65536 bg=22020096 bg_len=1073741824
-> 
-> Note the scrub at logical 67108864, that's because the 4K write only
-> lands there, not at the beginning of the data chunk (due to super block
-> reserved space split the 1G chunk into two parts).
-> 
-> And the time duration of the chunk 22020096 is much shorter
-> (18887us vs 4us).
+> This is a big lock and reading the sysfs repeatedly could block space
+> reservations. I think RCU works for the block group list and the
+> size_class is a simple read so the synchronization can be lightweight.
 
-Nice! The optimization makes sense, and LGTM.
+I believe space reservations only hold the read lock. The write lock is
+needed only to remove or add block groups, so this shouldn't slow down
+reservations. Also, FWIW, raid_bytes_show() uses the same
+locking/iteration pattern.
 
-> 
-> Unfortunately this optimization only works for RAID0/RAID10 with big
-> holes in the block group.
-> 
-> For real world cases it's much harder to find huge gaps (although we can
-> still skip several stripes).
-> And even for the huge gap cases, the optimization itself is hardly
-> observable (less than 1 second even for an almost empty 10G block group).
-> 
-> And also unfortunately for RAID5 data stripes, we can not go the similar
-> optimization for RAID0/RAID10 due to the extra rotation.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/scrub.c | 46 +++++++++++++++++++++++++++++++++++++---------
->  1 file changed, 37 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 52b346795f66..c60cd4fd9355 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -3066,7 +3066,8 @@ static int compare_extent_item_range(struct btrfs_path *path,
->   */
->  static int find_first_extent_item(struct btrfs_root *extent_root,
->  				  struct btrfs_path *path,
-> -				  u64 search_start, u64 search_len)
-> +				  u64 search_start, u64 search_len,
-> +				  u64 *found_next)
+I am not sure how to definitely safely concurrently iterate the block
+groups without taking the lock. Are you suggesting I should just drop
+the locking, and it won't crash but might be inaccurate? Or is there
+some other RCU trick I am missing? I don't believe we use any RCU
+specific methods when deleting from the list.
 
-I think at the very least, it would be nice to document the found_next
-parameter in the function documentation.
-
-Going one step further, I think the semantics could probably be
-streamlined as well. I'm thinking something along the lines of always
-using the path parameter to return the extent, and then the caller can
-decide whether to grab the "found_next" from that before releasing the
-path.
-
-I don't see much harm in always filling in the "next" return, even if
-RAID5 wants to ignore it.
+Sending a v3 with the rest of your review changes.
 
 Thanks,
 Boris
 
->  {
->  	struct btrfs_fs_info *fs_info = extent_root->fs_info;
->  	struct btrfs_key key;
-> @@ -3102,8 +3103,11 @@ static int find_first_extent_item(struct btrfs_root *extent_root,
->  search_forward:
->  	while (true) {
->  		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-> -		if (key.objectid >= search_start + search_len)
-> +		if (key.objectid >= search_start + search_len) {
-> +			if (found_next)
-> +				*found_next = key.objectid;
->  			break;
-> +		}
->  		if (key.type != BTRFS_METADATA_ITEM_KEY &&
->  		    key.type != BTRFS_EXTENT_ITEM_KEY)
->  			goto next;
-> @@ -3111,8 +3115,11 @@ static int find_first_extent_item(struct btrfs_root *extent_root,
->  		ret = compare_extent_item_range(path, search_start, search_len);
->  		if (ret == 0)
->  			return ret;
-> -		if (ret > 0)
-> +		if (ret > 0) {
-> +			if (found_next)
-> +				*found_next = key.objectid;
->  			break;
-> +		}
->  next:
->  		path->slots[0]++;
->  		if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
-> @@ -3120,6 +3127,13 @@ static int find_first_extent_item(struct btrfs_root *extent_root,
->  			if (ret) {
->  				/* Either no more item or fatal error */
->  				btrfs_release_path(path);
-> +
-> +				/*
-> +				 * No more extent tree items, set *found_next
-> +				 * directly to U64_MAX.
-> +				 */
-> +				if (ret > 0 && found_next)
-> +					*found_next = U64_MAX;
->  				return ret;
->  			}
->  		}
-> @@ -3186,7 +3200,8 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
->  		u64 extent_mirror_num;
->  
->  		ret = find_first_extent_item(extent_root, path, cur_logical,
-> -					     logical + map->stripe_len - cur_logical);
-> +					     logical + map->stripe_len - cur_logical,
-> +					     NULL);
->  		/* No more extent item in this data stripe */
->  		if (ret > 0) {
->  			ret = 0;
-> @@ -3385,7 +3400,8 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
->  			       struct map_lookup *map,
->  			       u64 logical_start, u64 logical_length,
->  			       struct btrfs_device *device,
-> -			       u64 physical, int mirror_num)
-> +			       u64 physical, int mirror_num,
-> +			       u64 *found_next)
->  {
->  	struct btrfs_fs_info *fs_info = sctx->fs_info;
->  	const u64 logical_end = logical_start + logical_length;
-> @@ -3437,7 +3453,8 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
->  		spin_unlock(&bg->lock);
->  
->  		ret = find_first_extent_item(extent_root, &path, cur_logical,
-> -					     logical_end - cur_logical);
-> +					     logical_end - cur_logical,
-> +					     found_next);
->  		if (ret > 0) {
->  			/* No more extent, just update the accounting */
->  			sctx->stat.last_physical = physical + logical_length;
-> @@ -3552,6 +3569,7 @@ static int scrub_simple_stripe(struct scrub_ctx *sctx,
->  	int ret = 0;
->  
->  	while (cur_logical < bg->start + bg->length) {
-> +		u64 found_next = 0;
->  		/*
->  		 * Inside each stripe, RAID0 is just SINGLE, and RAID10 is
->  		 * just RAID1, so we can reuse scrub_simple_mirror() to scrub
-> @@ -3559,13 +3577,23 @@ static int scrub_simple_stripe(struct scrub_ctx *sctx,
->  		 */
->  		ret = scrub_simple_mirror(sctx, extent_root, csum_root, bg, map,
->  					  cur_logical, map->stripe_len, device,
-> -					  cur_physical, mirror_num);
-> +					  cur_physical, mirror_num, &found_next);
->  		if (ret)
->  			return ret;
->  		/* Skip to next stripe which belongs to the target device */
->  		cur_logical += logical_increment;
->  		/* For physical offset, we just go to next stripe */
->  		cur_physical += map->stripe_len;
-> +
-> +		/*
-> +		 * If the next extent is still beyond our current range, we
-> +		 * can skip them until the @found_next.
-> +		 */
-> +		while (cur_logical + map->stripe_len < found_next &&
-> +		       cur_logical < bg->start + bg->length) {
-> +			cur_logical += logical_increment;
-> +			cur_physical += map->stripe_len;
-> +		}
->  	}
->  	return ret;
->  }
-> @@ -3652,7 +3680,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
->  		ret = scrub_simple_mirror(sctx, root, csum_root, bg, map,
->  				bg->start, bg->length, scrub_dev,
->  				map->stripes[stripe_index].physical,
-> -				stripe_index + 1);
-> +				stripe_index + 1, NULL);
->  		offset = 0;
->  		goto out;
->  	}
-> @@ -3706,7 +3734,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
->  		 */
->  		ret = scrub_simple_mirror(sctx, root, csum_root, bg, map,
->  					  logical, map->stripe_len,
-> -					  scrub_dev, physical, 1);
-> +					  scrub_dev, physical, 1, NULL);
->  		if (ret < 0)
->  			goto out;
->  next:
-> -- 
-> 2.39.0
 > 
+> > +	for (i = 0; i < BTRFS_NR_RAID_TYPES; ++i) {
+> 
+> 	for (int = 0; ...)
+> 
+> > +		list_for_each_entry(bg, &sinfo->block_groups[i], list) {
+> > +			if (!btrfs_block_group_should_use_size_class(bg))
+> > +				continue;
+> > +			switch (bg->size_class) {
+> > +			case BTRFS_BG_SZ_NONE:
+> > +				none++;
+> > +				break;
+> > +			case BTRFS_BG_SZ_SMALL:
+> > +				small++;
+> > +				break;
+> > +			case BTRFS_BG_SZ_MEDIUM:
+> > +				medium++;
+> > +				break;
+> > +			case BTRFS_BG_SZ_LARGE:
+> > +				large++;
+> > +				break;
+> > +			}
+> > +		}
+> > +	}
+> > +	up_read(&sinfo->groups_sem);
+> > +	return sysfs_emit(buf, "%d %d %d %d\n", none, small, medium, large);
+> 
+> This is lacks the types in the output, so this should be like
+> 
+> 	"none %u\n"
+> 	"small %u\n"
+> 	...
+> 
+> For stats we can group the values in one file.
+> 
+> > +}
+> > +
+> >  #ifdef CONFIG_BTRFS_DEBUG
+> >  /*
+> >   * Request chunk allocation with current chunk size.
+> > @@ -835,6 +872,7 @@ SPACE_INFO_ATTR(bytes_zone_unusable);
+> >  SPACE_INFO_ATTR(disk_used);
+> >  SPACE_INFO_ATTR(disk_total);
+> >  BTRFS_ATTR_RW(space_info, chunk_size, btrfs_chunk_size_show, btrfs_chunk_size_store);
+> > +BTRFS_ATTR(space_info, size_classes, btrfs_size_classes_show);
+> >  
+> >  static ssize_t btrfs_sinfo_bg_reclaim_threshold_show(struct kobject *kobj,
+> >  						     struct kobj_attribute *a,
+> > @@ -887,6 +925,7 @@ static struct attribute *space_info_attrs[] = {
+> >  	BTRFS_ATTR_PTR(space_info, disk_total),
+> >  	BTRFS_ATTR_PTR(space_info, bg_reclaim_threshold),
+> >  	BTRFS_ATTR_PTR(space_info, chunk_size),
+> > +	BTRFS_ATTR_PTR(space_info, size_classes),
+> >  #ifdef CONFIG_BTRFS_DEBUG
+> >  	BTRFS_ATTR_PTR(space_info, force_chunk_alloc),
+> >  #endif
+> > -- 
+> > 2.38.1
