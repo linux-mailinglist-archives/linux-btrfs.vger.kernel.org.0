@@ -2,49 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE8F67F63C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Jan 2023 09:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A15C967F63D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Jan 2023 09:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbjA1IXi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 28 Jan 2023 03:23:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        id S233790AbjA1IXj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 28 Jan 2023 03:23:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbjA1IXh (ORCPT
+        with ESMTP id S233855AbjA1IXi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 28 Jan 2023 03:23:37 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CD21D905
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 Jan 2023 00:23:35 -0800 (PST)
+        Sat, 28 Jan 2023 03:23:38 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA263E63E
+        for <linux-btrfs@vger.kernel.org>; Sat, 28 Jan 2023 00:23:36 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6EBDA1FEF8
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 Jan 2023 08:23:34 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 85EF12227D
+        for <linux-btrfs@vger.kernel.org>; Sat, 28 Jan 2023 08:23:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1674894214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=6sTIz7PhnPnGoyJAThxnULmV/eNrgxxMoUwMR0bwnbY=;
-        b=pCi5GGUfsEaf7aN4721ncK6WexAXZeTNyhdTIea4Qd6czIE4MqQ4NwumlNg4Si3kEQbpvz
-        kwDWgFBk4WcJeYLRDwXBdna5apCdRK0+8wTOXsGBCZ6v+8FWyjBxNapuWykV8/1TyxIlSw
-        RpXK6hH4q5MNR2U/5NAHGJrDI46r1pE=
+        t=1674894215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+eAHnDrpmXN/ysGyz4BQYN6bNZxeclejYXsDe4AFA14=;
+        b=YSSWc9PwzHdJZNzde+3wQUOasjHEBdiCT+hAF7I3HpjJvST0zfnW6h287aMAqZZwaU9RoB
+        ALCt3CPbOD0lLuVtMfbt3FJxYT39d9kCcVxFhqA3QI/jm0w4/QMaYRldekWrU995tTSLFQ
+        omBw35LxwfKKTGBGC9LWrRt7iyJAPhA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C0865139BD
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 Jan 2023 08:23:33 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D0121139BD
+        for <linux-btrfs@vger.kernel.org>; Sat, 28 Jan 2023 08:23:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id HR19IoXb1GPqGwAAMHmgww
+        id 6O1sJobb1GPqGwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 Jan 2023 08:23:33 +0000
+        for <linux-btrfs@vger.kernel.org>; Sat, 28 Jan 2023 08:23:34 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/3] btrfs: reduce the memory usage for replace in btrfs_io_context.
-Date:   Sat, 28 Jan 2023 16:23:13 +0800
-Message-Id: <cover.1674893735.git.wqu@suse.com>
+Subject: [PATCH 1/3] btrfs: simplify the @bioc argument for handle_ops_on_dev_replace()
+Date:   Sat, 28 Jan 2023 16:23:14 +0800
+Message-Id: <92276451bbeed279f8c04bc9ce684f42a25cfc92.1674893735.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <cover.1674893735.git.wqu@suse.com>
+References: <cover.1674893735.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -56,83 +60,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In btrfs_io_context, we have two members dedicated for dev-replace:
+There is no memory re-allocation for handle_ops_on_dev_replace(), thus
+we don't need to pass a struct btrfs_io_context ** pointer.
 
-- num_tgtdevs
-  This is straight-forward, just the number of extra stripes for replace
-  usage.
+Just a regular struct btrfs_io_contex * pointer is enough.
 
-- tgtdev_map[]
-  This is a little complex, it represents the mapping between the
-  original stripes and dev-replace stripes.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/volumes.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-  This is mostly for RAID56, as only in RAID56 the stripes contain
-  different contents, thus it's important to know the mapping.
-
-  It goes like this:
-
-    num_stripes = 4 (3 + 1 for replace)
-    stripes[0]:		dev = devid 1, physical = X
-    stripes[1]:		dev = devid 2, physical = Y
-    stripes[2]:		dev = devid 3, physical = Z
-    stripes[3]:		dev = devid 0, physical = Y
-
-    num_tgtdevs = 1
-    tgtdev_map[0] = 0	<- Means stripes[0] is not involved in replace.
-    tgtdev_map[1] = 3	<- Means stripes[1] is involved in replace,
-			   and it's duplicated to stripes[3].
-    tgtdev_map[2] = 0	<- Means stripes[2] is not involved in replace.
-
-  Thus most space is wasted, and the more devices in the array, the more
-  space wasted.
-
-
-For the current tgtdev_map[] design, it's wasting quite some space.
-E.g. in the above case, we only need on slot to record the source stripe
-number, and the other two slots are just a waste of space.
-
-The existing tgtdev_map[] will make more sense if we support multiple
-running dev-replaces, but that's not the case.
-
-So this patch would mostly change it to a new, and more space efficient
-way, by going something like this for the same example:
-
-  replace_nr_stripes = 1
-  tgtdev_map[0] = 1	<- Means stripes[1] is involved in replace.
-  tgtdev_map[1] = -1	<- Means the second slot is not used.
-		 	   (Only DUP can use this slot, but they
-			    don't really care)
-
-Furthermore we reduce the width of nr_stripes related member to u16, the
-same as on-disk format width.
-
-This not only saved some space for btrfs_io_context structure, but also
-allows the following cleanups:
-
-- Streamline handle_ops_on_dev_replace()
-  We go a common path for both WRITE and GET_READ_MIRRORS, and only
-  for DUP and GET_READ_MIRRORS, we shrink the bioc to keep the same
-  old behavior.
-
-- Remove some unnecessary variables
-
-Although the series still increases the number of lines, the net
-increase mostly comes from comments, in fact around 70 lines of comments
-are added around the replace related members.
-
-
-Qu Wenruo (3):
-  btrfs: simplify the @bioc argument for handle_ops_on_dev_replace()
-  btrfs: small improvement for btrfs_io_context structure
-  btrfs: use a more space efficient way to represent the source of
-    duplicated stripes
-
- fs/btrfs/raid56.c  |  44 +++++++++--
- fs/btrfs/scrub.c   |   4 +-
- fs/btrfs/volumes.c | 187 +++++++++++++++++++++------------------------
- fs/btrfs/volumes.h |  52 +++++++++++--
- 4 files changed, 174 insertions(+), 113 deletions(-)
-
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 883e5d2a23b6..66d44167f7b1 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6168,12 +6168,11 @@ static bool is_block_group_to_copy(struct btrfs_fs_info *fs_info, u64 logical)
+ }
+ 
+ static void handle_ops_on_dev_replace(enum btrfs_map_op op,
+-				      struct btrfs_io_context **bioc_ret,
++				      struct btrfs_io_context *bioc,
+ 				      struct btrfs_dev_replace *dev_replace,
+ 				      u64 logical,
+ 				      int *num_stripes_ret, int *max_errors_ret)
+ {
+-	struct btrfs_io_context *bioc = *bioc_ret;
+ 	u64 srcdev_devid = dev_replace->srcdev->devid;
+ 	int tgtdev_indexes = 0;
+ 	int num_stripes = *num_stripes_ret;
+@@ -6262,7 +6261,6 @@ static void handle_ops_on_dev_replace(enum btrfs_map_op op,
+ 	*num_stripes_ret = num_stripes;
+ 	*max_errors_ret = max_errors;
+ 	bioc->num_tgtdevs = tgtdev_indexes;
+-	*bioc_ret = bioc;
+ }
+ 
+ static bool need_full_stripe(enum btrfs_map_op op)
+@@ -6604,7 +6602,7 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 
+ 	if (dev_replace_is_ongoing && dev_replace->tgtdev != NULL &&
+ 	    need_full_stripe(op)) {
+-		handle_ops_on_dev_replace(op, &bioc, dev_replace, logical,
++		handle_ops_on_dev_replace(op, bioc, dev_replace, logical,
+ 					  &num_stripes, &max_errors);
+ 	}
+ 
 -- 
 2.39.1
 
