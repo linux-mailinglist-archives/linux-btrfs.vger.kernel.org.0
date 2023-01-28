@@ -2,394 +2,331 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B97D067F2CC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Jan 2023 01:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 750B867F5B9
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Jan 2023 08:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbjA1AL6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Jan 2023 19:11:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60800 "EHLO
+        id S229999AbjA1Hio (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 28 Jan 2023 02:38:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjA1AL5 (ORCPT
+        with ESMTP id S229530AbjA1Hin (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Jan 2023 19:11:57 -0500
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2042.outbound.protection.outlook.com [40.107.22.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DBEC4
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 Jan 2023 16:11:55 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ay9DPn3wWSWDvY4KEBVugeBMirrqUZQhwxeYPWee5756R3Ys83vVl93p5Ax8aHslauvOzE1x1U/qoe76PdnE/jgtrVbt/bSY9PUzGhyMKCC8k1oK1Lt2rNprEWlHVTzPOu0oT+zE/uiCiv9K2JGj6wr0qZ/aCJnpaiUy0j3/QANY3MF9ge6DqCTAeCi27DTlr5pGAbi8E1OEJrw7pO8H4mw1VENjU4VkkHe2KXGjegL9uL5Vp4MrH7FBv7uTNRqB5InEpu8gzSJhOan1X8t+S0Qszy8o+EXbaJXz5oVBN3UeO8Y2CD0uP78n93e+Ggzzxm2nh1HBnN8ixbg4x4s0vA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g4LtI79pJp3YwEuZZrLxM0z3NTt+gvbxBjISeG3QsQw=;
- b=MBLMOEDuIrhUIl4UUfS6zeLUar9VP6GNsGAAPcg6zQ2fPzLV1nYO0pCZVg+qULuXEa7ibgxHM2wAqr4BgaiZeDIdyNjQyWI1EjSdLneKmyQwxb+1sdSUeWuSta1cTllk85GFXrWh3yuW4gj+Rj/wvkzGAgBYJO7PyIKSStc8f9AV91RFx1zw0HK0H3cWiQSDmz5VWVnThZIU4N2xB3Z3snTMGK5+FMjmXONEHjtFWbjIqDhXt28HWZxgegR3Ca5RYS7g91Z4ntgPII+Uf1zAywf899S9H/vKnTeep8/QWxYtUhNKXsh1gCqsw+UiSUJWSUj6G/lRk0lJmDiKKjL2OQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g4LtI79pJp3YwEuZZrLxM0z3NTt+gvbxBjISeG3QsQw=;
- b=RYbWGpe+X3pKrz4HUlz4Utjg0WHOFXSbH+HodoZ9U2kFiWBzuw9VDAwP2FuokYqXJBQ3vpgE3pEy8MB9IHtHkl/TV1b67AHnqP50y8IbZlMN9FyH+0hB2JxHofxwCc2mMS3lewMBKfP853/60gUMT7xEPZ3SS3gdnd/KAz0QLxlcIOVlJB0i7utefqilBmBUlkx9KrkSqxil8IMeChDIB8pG9Ksgh6g+8ehYtAQWz7nR3GgWovilnw6g4Lyp2XUKw58uh7U2hAKjuOBA4OkfH/7NXtCt8/Fbf6bw7s83Yjx+NwxaLfnrd6+ZlRt1FWt5TfTtMpgoxEL8zQxaCImTXA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by PA4PR04MB7855.eurprd04.prod.outlook.com (2603:10a6:102:ca::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.23; Sat, 28 Jan
- 2023 00:11:52 +0000
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::5c50:6906:e9a4:5b9f]) by AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::5c50:6906:e9a4:5b9f%7]) with mapi id 15.20.6043.023; Sat, 28 Jan 2023
- 00:11:52 +0000
-Message-ID: <b8050433-de29-3e5e-88f7-12c3a82fc013@suse.com>
-Date:   Sat, 28 Jan 2023 08:11:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH] btrfs: scrub: avoid unnecessary extent tree search for
- simple stripes
-Content-Language: en-US
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org
-References: <e8b3a59de5f43c185427a8d87c303ba3e8ff6ff1.1673244671.git.wqu@suse.com>
- <Y9Q6bxJ5g9oF3REv@zen>
-From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <Y9Q6bxJ5g9oF3REv@zen>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR13CA0031.namprd13.prod.outlook.com
- (2603:10b6:a03:180::44) To AS8PR04MB8465.eurprd04.prod.outlook.com
- (2603:10a6:20b:348::19)
+        Sat, 28 Jan 2023 02:38:43 -0500
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14C97909A
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Jan 2023 23:38:39 -0800 (PST)
+Received: by mail-io1-f69.google.com with SMTP id z19-20020a056602205300b0070756e30008so3983088iod.15
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Jan 2023 23:38:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j0Shyn0HF1v6mjE1PQxVh5XUoyrBSj6GdgT+eC9WSAM=;
+        b=rXD1LKc7v3KZum2/QG+3D5gOLIiFhZkM5WA3TbS8ZFdrw6UoV6qo11csomMWg5pGrw
+         U5HG1m+PYsofRaAfwALGjFWlHRVsBlo/Kq79+R/0FSCPVpTpiUkj7zTQUMaFkOH298Ox
+         BrUOCKolmSY35gNeyY/ZhC9qB87K4MT8Yg+ZY8FLqyzZGY/0GNterrvJKRrWOY2AK8qJ
+         OcXjXy7ujUnR4Z/IzmQwSohpPLnngxoGwl0jUGDhkvJhijbz3AxjXU96AD3eOr/5gDcU
+         70jCOsrcJ0IGR6EgQ/Y1ZlfUPnSP+dMuK4Je2qyijfIYSNY7WTITEp4RCrMbhJ1fYKz5
+         VBOQ==
+X-Gm-Message-State: AO0yUKU1TB+F38etlMTmcAPdNGK8G7AqZvkRWGYtZ7+YdQGrK2HccgHk
+        CJ0F5fq4XvNy9XO2DSGmrkAf+/JLV5ex80EJWafGu35g0mD4
+X-Google-Smtp-Source: AK7set/ZtPD7Mxh8jSoT01S5gxdtthVIOG2mZHXHdn0UTln9o4QboeVEdnBSDLjnnSnIcF2KSC8YyrJUJbX36pnWJgznIuHP18/4
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|PA4PR04MB7855:EE_
-X-MS-Office365-Filtering-Correlation-Id: 13d21b4e-62e9-41c6-ca0f-08db00c4419c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: c3a2XCe1VsiccrlL0d60C80cPTb55/ks491OPmYl0+NEPfR+PVfLbTflsifzTC/TYgrmOkhfHoja5OdgyZ2slAnu8zY4an6wAlCbGtPWuOnURQGjLW/wpROxEuos3R/kk2NCAqzLtDcXInaWKyxBOllNahlTxW/YN0AaFCy4yEqsVV6juFS09ReqGSJeZ5ZbWQNJV6RccUuIKI8k/TYg3EX/AiRRMO0pZsEY9JiCIA6GPkVcJGz0JAztb949P9C3nSEw5Bt08m99Yk+fHHpN/ynFrpYB+Tegb7Pv+bZVshl1kxbqfQg/ERNmJkakLIdrNiODdSw0QYNKqhHhoehaviuLKXlItS1cmdTseszfVte/stkZWY2h+eWJw05okCJ3w9duHF4c9zSBYxjlxsI8Y7KahoxuOx47CudEDhS+JRCag5sPxspJG31CzWiRXSLH229XpAimQX6b+avak1dGIPIz8gqrlAAlwTTfDoIvh/5a7D+4M4qTz4SryhmAwtnt3ZcGL2OG7Y5XihJwrSvAXRMQtu3nDdLmXqklNq+5mPlf2Zbr5QsV+clDXBwmCS2YpgSOQeJTzzt7gFZ9lGm8jO25OeNiCHIbXiiBXSuJFR2K5TAM/QyYBP/IK48sphKxaMIPy1KVUwRwwgodOe7NwrefNI9gCA1H+fm6vBNO87n52gggwBNY1xq1iovBXDOvHy8Fz5tsEDsg3qBNgh681MVI3Lh+fkVxq8pMQ0oYrCU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(39860400002)(396003)(366004)(346002)(376002)(136003)(451199018)(2906002)(8936002)(41300700001)(5660300002)(6486002)(83380400001)(478600001)(2616005)(6512007)(6666004)(186003)(8676002)(6506007)(31686004)(53546011)(4326008)(86362001)(38100700002)(66556008)(6916009)(66946007)(66476007)(316002)(36756003)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RzgraWVtUmQ5MlJTUmROREpJVXZzclVLYVVWWGpiczFqNTQrUXV5RFh5eWVD?=
- =?utf-8?B?ejRQWDNCL3NxVWhxQVQ4cHdUV2N3amI2c1VrcE05bFNYNGhYVEZMcEdnb1Zx?=
- =?utf-8?B?LzFsdWkzSkR5S2xsNmVUTjZHanVmNElCeGFZcmQybE5TOUxTWmsySjljSFZr?=
- =?utf-8?B?RHZ0Ky9QUnhNaytLb0N2cEJhVDlDUmIwZkRYbERWTjFhS0JCMlpCYTZTNkdM?=
- =?utf-8?B?SnJYY0RwSTBORU02WUIvSE5sbVVBSWdNSVZGUGFUektGSEJHeVdYVCt4WVJp?=
- =?utf-8?B?TVpNWi9RNDExeVVkUE9zbTg4aUx1b3c2a0N3aVI4Wkh5Q3N5bEtHNDMrL0hE?=
- =?utf-8?B?SWNkVWh4d3dhMUxhQTdNM1BhT1p4TE1KUldwU1c4di94QStaT2hkV1lZK1J2?=
- =?utf-8?B?dzk2SGJQK05FcDRzd041RWQ5OEorUllsUG0yQStrMFpVMTMyc0tEY0ZKYUYv?=
- =?utf-8?B?NHk3RFp3OEpkdUg2cllxYkIvU1VaWjlkcW9CdTVUdFMveVByNWtVN2V5dkdI?=
- =?utf-8?B?Rm5seitDUFpsY25wRWllc3BqMUg0THIrcVVyRW83aWlFcUZEeTVKNG9GbWFW?=
- =?utf-8?B?aElmU0xuYXlvVkNGUmVQb3dqWHB0OEwwYVQzbGlzZlJBNTkzczlONUl4a0tD?=
- =?utf-8?B?NSt2V2dMMUZYNjhaR0N1WjJ5R3JHSlgwdm9EOW56clM2SDVIRDNDcW9JeVFD?=
- =?utf-8?B?R1BXT0Q5cVVHakthc1Vnd1JxR082RDlqb2g5WlZISVVpeHBNQ1BqeW1jZnNx?=
- =?utf-8?B?bk9EbmYxNTZpY2FQYWtDa1BvaG9OcG9Ed2g1V1lXZHdmay9tK2p6UGpNbDdQ?=
- =?utf-8?B?NHBydW5EUHFJanlUUExjVjlNMmU2dGJidkhQZHREa0NuN0F0RFY3Y3BkWm1O?=
- =?utf-8?B?dko4Mi9JUjVEV3pibXR1STVWL0UzaVV6WHB3QzdBOS9xSXFWUFhHUC9XRHM1?=
- =?utf-8?B?TEtTbU1HZmtZWVdNRlArQTlQckgzT3hKSGNCdnI5VnIvNktMUWRxQXRIZERG?=
- =?utf-8?B?RXlQTmkwMWVzdXhuL1pwSGVXOUtRdm1vM0RXZTZoQXgydnRpMjNWdS8wT01P?=
- =?utf-8?B?ZnRoOGFzczhhS1JEbUE1QVVlcTZRajF3eW1TZDd5QWZuQ0dJQm5XK3daL3kv?=
- =?utf-8?B?Y3ZxdThKNFdNTjBGZDNlcHgzSjBqOEkrcVZSUy9rVEptWXNlcVpZK213azZP?=
- =?utf-8?B?WDBTNEhzY0NlMDVCeUd6WERWWlZiWlh1SGJPZFV1dnNwWWlrVGpkVzFTUTgr?=
- =?utf-8?B?d21GcHVMN3JWd0lXdENmUkozZnVsOXVudjR4YnRLUU8vREdZbDROTnpxOTdo?=
- =?utf-8?B?aGtxVE1ScGFSaWQwOXVHYlBmNkpnNFEvbFVQemdDQStrV0ozNUV0MmUwaU40?=
- =?utf-8?B?NEtCbit2NzBuZTQvQjdIU0xPQnYzRFVWWTg5UmdpRmdWWEpVSzJXb0YvWTVr?=
- =?utf-8?B?RlRaSUwxS1hzdmdDUUduaG5tNVl0cm9qUEpSZ2RIREZRWVMzTjhpWXNWZVVD?=
- =?utf-8?B?Y1V0cklrdkxuTlFYa3c5VjJvRGxVM2xodHgyWDBFK2p5cm5mS0VzOGtDTVRr?=
- =?utf-8?B?aExJajg3VHRTMXBYeE5YTDFWT3EyaGNvN1NIM2t0QXJsQ2FsNk9UdTBPVGNi?=
- =?utf-8?B?VklTZlBOelhhQWgzSWdIZVdYRTlMQXhvZTk5b0xhdEVJQzdYWDQ4dGxWTjVy?=
- =?utf-8?B?SFpnR2JnWWN6L3RadkxyMjNTdHRQVnFGcG92WHpWYzVVdlRPdDgxSUt6TElK?=
- =?utf-8?B?WXhlY3FxMWthWnVoQk1oR0FyRFFmYnBHNGc0SmtMVTVhUTNCWkg3VnFJZGVu?=
- =?utf-8?B?ZVZDcUl2RnpwbVFiV1VZZ243RVBCbVAzTmVSV2p3NW9oeXllQ2FxRTN5MTRs?=
- =?utf-8?B?ZTU5V1pza2o0djRGYWdmaitHVHlhU2dDSTVFN0xEL1QvUWlhUnVrekJXZS80?=
- =?utf-8?B?SFZTOUZmd3BQaHRzeG9yV3BWcXVVWGo2Yk1idXptd25IaVczZk9aVVZUZ3Z4?=
- =?utf-8?B?dlkzUzkwSkQyUmp1QUpHbnYxSGhYeUwrdENEV1Bjb04xME5rRU90ajRYYnNl?=
- =?utf-8?B?bzY2ZFhkVTd0YVBBNlVBbEgxUUpzRm93M2JHTzN6VjBqUU96SlZxTEdhSUhj?=
- =?utf-8?B?WGthaVM1TWJiMitmZzN2amZtclEzSVQ0enQ1eTNtR3J0ZUxEWU4xeTVHYndu?=
- =?utf-8?Q?ZxORxp2bn71ozuz9XjnC9Bg=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13d21b4e-62e9-41c6-ca0f-08db00c4419c
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2023 00:11:51.9004
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uiNAVEN8K4GHDcVm5NzrJoR/8tF2c3X+BKOY7Yqxi1jHqXWkW3nYeHuhqif7Nj1W
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7855
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a02:cb03:0:b0:3a9:62f2:c2f2 with SMTP id
+ j3-20020a02cb03000000b003a962f2c2f2mr1200654jap.171.1674891519147; Fri, 27
+ Jan 2023 23:38:39 -0800 (PST)
+Date:   Fri, 27 Jan 2023 23:38:39 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000946cf05f34e12c2@google.com>
+Subject: [syzbot] [btrfs?] INFO: task hung in lock_extent
+From:   syzbot <syzbot+eaa05fbc7563874b7ad2@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    7bf70dbb1882 Merge tag 'vfio-v6.2-rc6' of https://github.c..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15c2d266480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c8d5c2ee6c2bd4b8
+dashboard link: https://syzkaller.appspot.com/bug?extid=eaa05fbc7563874b7ad2
+compiler:       Debian clang version 13.0.1-6~deb11u1, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17be7405480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1393d205480000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/53c61cb06735/disk-7bf70dbb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/32c395c7005f/vmlinux-7bf70dbb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/66787160c113/bzImage-7bf70dbb.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/1f3639eee817/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+eaa05fbc7563874b7ad2@syzkaller.appspotmail.com
+
+INFO: task kworker/u4:3:51 blocked for more than 143 seconds.
+      Not tainted 6.2.0-rc5-syzkaller-00020-g7bf70dbb1882 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u4:3    state:D stack:19096 pid:51    ppid:2      flags:0x00004000
+Workqueue: btrfs-endio-write btrfs_work_helper
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5293 [inline]
+ __schedule+0x995/0xe20 kernel/sched/core.c:6606
+ schedule+0xcb/0x190 kernel/sched/core.c:6682
+ wait_on_state fs/btrfs/extent-io-tree.c:707 [inline]
+ wait_extent_bit+0x577/0x6f0 fs/btrfs/extent-io-tree.c:751
+ lock_extent+0x1c2/0x280 fs/btrfs/extent-io-tree.c:1742
+ btrfs_finish_ordered_io+0x588/0x1cb0 fs/btrfs/inode.c:3300
+ btrfs_work_helper+0x312/0x850 fs/btrfs/async-thread.c:280
+ process_one_work+0x877/0xdb0 kernel/workqueue.c:2289
+ worker_thread+0xb14/0x1330 kernel/workqueue.c:2436
+ kthread+0x266/0x300 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+INFO: task kworker/u4:0:5183 blocked for more than 143 seconds.
+      Not tainted 6.2.0-rc5-syzkaller-00020-g7bf70dbb1882 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u4:0    state:D stack:20280 pid:5183  ppid:2      flags:0x00004000
+Workqueue: writeback wb_workfn (flush-btrfs-125)
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5293 [inline]
+ __schedule+0x995/0xe20 kernel/sched/core.c:6606
+ schedule+0xcb/0x190 kernel/sched/core.c:6682
+ io_schedule+0x83/0x100 kernel/sched/core.c:8868
+ folio_wait_bit_common+0x83a/0x12a0 mm/filemap.c:1297
+ extent_write_cache_pages+0x6c8/0x1220 fs/btrfs/extent_io.c:3071
+ extent_writepages+0x219/0x540 fs/btrfs/extent_io.c:3211
+ do_writepages+0x3c3/0x680 mm/page-writeback.c:2581
+ __writeback_single_inode+0xd1/0x670 fs/fs-writeback.c:1598
+ writeback_sb_inodes+0x812/0x1050 fs/fs-writeback.c:1889
+ __writeback_inodes_wb+0x11d/0x260 fs/fs-writeback.c:1960
+ wb_writeback+0x440/0x7b0 fs/fs-writeback.c:2065
+ wb_check_old_data_flush fs/fs-writeback.c:2165 [inline]
+ wb_do_writeback fs/fs-writeback.c:2218 [inline]
+ wb_workfn+0xa78/0xef0 fs/fs-writeback.c:2246
+ process_one_work+0x877/0xdb0 kernel/workqueue.c:2289
+ worker_thread+0xb14/0x1330 kernel/workqueue.c:2436
+ kthread+0x266/0x300 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+INFO: task syz-executor424:8401 blocked for more than 144 seconds.
+      Not tainted 6.2.0-rc5-syzkaller-00020-g7bf70dbb1882 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor424 state:D stack:20008 pid:8401  ppid:5146   flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5293 [inline]
+ __schedule+0x995/0xe20 kernel/sched/core.c:6606
+ schedule+0xcb/0x190 kernel/sched/core.c:6682
+ wait_on_state fs/btrfs/extent-io-tree.c:707 [inline]
+ wait_extent_bit+0x577/0x6f0 fs/btrfs/extent-io-tree.c:751
+ lock_extent+0x1c2/0x280 fs/btrfs/extent-io-tree.c:1742
+ btrfs_page_mkwrite+0x533/0xc80 fs/btrfs/inode.c:8537
+ do_page_mkwrite+0x19e/0x5e0 mm/memory.c:2947
+ wp_page_shared+0x15e/0x380 mm/memory.c:3295
+ handle_pte_fault mm/memory.c:4949 [inline]
+ __handle_mm_fault mm/memory.c:5073 [inline]
+ handle_mm_fault+0x1b79/0x26b0 mm/memory.c:5219
+ do_user_addr_fault+0x69b/0xcb0 arch/x86/mm/fault.c:1428
+ handle_page_fault arch/x86/mm/fault.c:1519 [inline]
+ exc_page_fault+0x7a/0x110 arch/x86/mm/fault.c:1575
+ asm_exc_page_fault+0x22/0x30 arch/x86/include/asm/idtentry.h:570
+RIP: 0010:copy_user_short_string+0xd/0x40 arch/x86/lib/copy_user_64.S:233
+Code: 74 0a 89 d1 f3 a4 89 c8 0f 01 ca c3 89 d0 0f 01 ca c3 01 ca eb e7 0f 1f 80 00 00 00 00 89 d1 83 e2 07 c1 e9 03 74 12 4c 8b 06 <4c> 89 07 48 8d 76 08 48 8d 7f 08 ff c9 75 ee 21 d2 74 10 89 d1 8a
+RSP: 0018:ffffc90005047330 EFLAGS: 00050202
+RAX: ffffffff843e7d01 RBX: 00007fffffffefc8 RCX: 0000000000000007
+RDX: 0000000000000000 RSI: ffffc900050473e0 RDI: 0000000020000120
+RBP: ffffc90005047490 R08: 0000000000000000 R09: fffff52000a08e83
+R10: fffff52000a08e83 R11: 1ffff92000a08e7c R12: 0000000000000038
+R13: ffffc900050473e0 R14: 0000000020000120 R15: ffffc900050473e0
+ copy_user_generic arch/x86/include/asm/uaccess_64.h:37 [inline]
+ raw_copy_to_user arch/x86/include/asm/uaccess_64.h:58 [inline]
+ _copy_to_user+0xe9/0x130 lib/usercopy.c:34
+ copy_to_user include/linux/uaccess.h:169 [inline]
+ fiemap_fill_next_extent+0x22e/0x410 fs/ioctl.c:144
+ emit_fiemap_extent+0x22d/0x3c0 fs/btrfs/extent_io.c:3458
+ fiemap_process_hole+0x393/0xad0 fs/btrfs/extent_io.c:3669
+ extent_fiemap+0xe27/0x2100 fs/btrfs/extent_io.c:3922
+ btrfs_fiemap+0x172/0x1e0 fs/btrfs/inode.c:8209
+ ioctl_fiemap fs/ioctl.c:219 [inline]
+ do_vfs_ioctl+0x185b/0x2980 fs/ioctl.c:810
+ __do_sys_ioctl fs/ioctl.c:868 [inline]
+ __se_sys_ioctl+0x83/0x170 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fb85e7ac049
+RSP: 002b:00007fb85e7572f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fb85e8367a0 RCX: 00007fb85e7ac049
+RDX: 0000000020000100 RSI: 00000000c020660b RDI: 0000000000000005
+RBP: 00007fb85e8031d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 61635f65646f6e69
+R13: 65646f7475616f6e R14: 7261637369646f6e R15: 00007fb85e8367a8
+ </TASK>
+INFO: task syz-executor424:8448 blocked for more than 145 seconds.
+      Not tainted 6.2.0-rc5-syzkaller-00020-g7bf70dbb1882 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor424 state:D stack:21640 pid:8448  ppid:5146   flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5293 [inline]
+ __schedule+0x995/0xe20 kernel/sched/core.c:6606
+ schedule+0xcb/0x190 kernel/sched/core.c:6682
+ wait_on_state fs/btrfs/extent-io-tree.c:707 [inline]
+ wait_extent_bit+0x577/0x6f0 fs/btrfs/extent-io-tree.c:751
+ lock_extent+0x1c2/0x280 fs/btrfs/extent-io-tree.c:1742
+ find_lock_delalloc_range+0x4e6/0x9c0 fs/btrfs/extent_io.c:488
+ writepage_delalloc+0x1ef/0x540 fs/btrfs/extent_io.c:1863
+ __extent_writepage+0x736/0x14e0 fs/btrfs/extent_io.c:2174
+ extent_write_cache_pages+0x983/0x1220 fs/btrfs/extent_io.c:3091
+ extent_writepages+0x219/0x540 fs/btrfs/extent_io.c:3211
+ do_writepages+0x3c3/0x680 mm/page-writeback.c:2581
+ filemap_fdatawrite_wbc+0x11e/0x170 mm/filemap.c:388
+ __filemap_fdatawrite_range mm/filemap.c:421 [inline]
+ filemap_fdatawrite_range+0x175/0x200 mm/filemap.c:439
+ btrfs_fdatawrite_range fs/btrfs/file.c:3857 [inline]
+ start_ordered_ops fs/btrfs/file.c:1737 [inline]
+ btrfs_sync_file+0x383/0x1190 fs/btrfs/file.c:1813
+ generic_write_sync include/linux/fs.h:2885 [inline]
+ btrfs_do_write_iter+0xcd3/0x1280 fs/btrfs/file.c:1684
+ call_write_iter include/linux/fs.h:2189 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x7dc/0xc50 fs/read_write.c:584
+ ksys_write+0x177/0x2a0 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fb85e7ac049
+RSP: 002b:00007fb8573362f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fb85e8367b0 RCX: 00007fb85e7ac049
+RDX: 0000000000000128 RSI: 0000000020004400 RDI: 0000000000000006
+RBP: 00007fb85e8031d0 R08: 00007fb857336700 R09: 0000000000000000
+R10: 00007fb857336700 R11: 0000000000000246 R12: 61635f65646f6e69
+R13: 65646f7475616f6e R14: 7261637369646f6e R15: 00007fb85e8367b8
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by rcu_tasks_kthre/12:
+ #0: ffffffff8d327010 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x30/0xd00 kernel/rcu/tasks.h:507
+1 lock held by rcu_tasks_trace/13:
+ #0: ffffffff8d327810 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x30/0xd00 kernel/rcu/tasks.h:507
+1 lock held by khungtaskd/28:
+ #0: ffffffff8d326e40 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30
+3 locks held by kworker/u4:3/51:
+ #0: ffff888020884938 ((wq_completion)btrfs-endio-write){+.+.}-{0:0}, at: process_one_work+0x7f2/0xdb0
+ #1: ffffc90000bc7d00 ((work_completion)(&work->normal_work)){+.+.}-{0:0}, at: process_one_work+0x831/0xdb0 kernel/workqueue.c:2264
+ #2: ffff88801ea66430 (btrfs_ordered_extent){++++}-{0:0}, at: btrfs_finish_ordered_io+0x313/0x1cb0 fs/btrfs/inode.c:3254
+1 lock held by udevd/4431:
+2 locks held by getty/4744:
+ #0: ffff888027aac098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x21/0x70 drivers/tty/tty_ldisc.c:244
+ #1: ffffc900015902f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x53b/0x1650 drivers/tty/n_tty.c:2177
+3 locks held by kworker/u4:0/5183:
+ #0: ffff888017a5d138 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x7f2/0xdb0
+ #1: ffffc9000453fd00 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x831/0xdb0 kernel/workqueue.c:2264
+ #2: ffff88807ae5a0e0 (&type->s_umount_key#42){++++}-{3:3}, at: trylock_super+0x1b/0xf0 fs/super.c:415
+3 locks held by syz-executor424/8401:
+ #0: ffff88807aae3e98 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:136 [inline]
+ #0: ffff88807aae3e98 (&mm->mmap_lock){++++}-{3:3}, at: do_user_addr_fault+0x2e2/0xcb0 arch/x86/mm/fault.c:1369
+ #1: ffff88807ae5a558 (sb_pagefaults){.+.+}-{0:0}, at: do_page_mkwrite+0x19e/0x5e0 mm/memory.c:2947
+ #2: ffff888072f80468 (&ei->i_mmap_lock){++++}-{3:3}, at: btrfs_page_mkwrite+0x417/0xc80 fs/btrfs/inode.c:8526
+2 locks held by syz-executor424/8448:
+ #0: ffff8880291325e8 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x242/0x2e0 fs/file.c:1046
+ #1: ffff88807ae5a460 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x287/0xc50 fs/read_write.c:580
+2 locks held by syz-executor424/10675:
+2 locks held by syz-executor424/10679:
+2 locks held by syz-executor424/10676:
+3 locks held by syz-executor424/10680:
+2 locks held by syz-executor424/10681:
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 28 Comm: khungtaskd Not tainted 6.2.0-rc5-syzkaller-00020-g7bf70dbb1882 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/12/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1b1/0x290 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x46f/0x4f0 lib/nmi_backtrace.c:111
+ nmi_trigger_cpumask_backtrace+0x1ba/0x420 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:148 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:220 [inline]
+ watchdog+0xcd5/0xd20 kernel/hung_task.c:377
+ kthread+0x266/0x300 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 10679 Comm: syz-executor424 Not tainted 6.2.0-rc5-syzkaller-00020-g7bf70dbb1882 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/12/2023
+RIP: 0010:__set_page_owner_handle+0x38/0x3d0
+Code: 89 4c 24 0c 41 89 d7 89 74 24 08 49 89 fd 49 bc 00 00 00 00 00 fc ff df e8 35 c9 a0 ff bf 20 00 00 00 44 89 fe e8 a8 cc a0 ff <b8> 01 00 00 00 44 89 f9 d3 e0 44 89 f9 48 89 4c 24 18 31 db 85 c0
+RSP: 0018:ffffc9000aedf2e8 EFLAGS: 00000293
+RAX: ffffffff81eb111b RBX: 0000000000140cca RCX: 0000000000000000
+RDX: ffff8880292a8000 RSI: 0000000000000000 RDI: 0000000000000020
+RBP: ffff8880153069c0 R08: ffffffff81eb1128 R09: fffffbfff20fca31
+R10: fffffbfff20fca31 R11: 1ffffffff20fca30 R12: dffffc0000000000
+R13: ffff8880153069c0 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007fb85e757700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb857336000 CR3: 000000001cb76000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __set_page_owner+0x43/0x60 mm/page_owner.c:195
+ prep_new_page mm/page_alloc.c:2531 [inline]
+ get_page_from_freelist+0x742/0x7c0 mm/page_alloc.c:4283
+ __alloc_pages+0x259/0x560 mm/page_alloc.c:5549
+ __folio_alloc+0xf/0x30 mm/page_alloc.c:5581
+ vma_alloc_folio+0x660/0xb60 mm/mempolicy.c:2247
+ shmem_alloc_folio mm/shmem.c:1569 [inline]
+ shmem_alloc_and_acct_folio+0x594/0xd70 mm/shmem.c:1593
+ shmem_get_folio_gfp+0x1751/0x3a30 mm/shmem.c:1920
+ shmem_get_folio mm/shmem.c:2051 [inline]
+ shmem_write_begin+0x133/0x480 mm/shmem.c:2543
+ generic_perform_write+0x2e4/0x5e0 mm/filemap.c:3772
+ __generic_file_write_iter+0x176/0x400 mm/filemap.c:3900
+ generic_file_write_iter+0xab/0x310 mm/filemap.c:3932
+ call_write_iter include/linux/fs.h:2189 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x7dc/0xc50 fs/read_write.c:584
+ ksys_write+0x177/0x2a0 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fb85e7682cf
+Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 99 fd ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 cc fd ff ff 48
+RSP: 002b:00007fb85e757140 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fb85e7682cf
+RDX: 0000000001000000 RSI: 00007fb856337000 RDI: 0000000000000003
+RBP: 00007fb856337000 R08: 0000000000000000 R09: 00000000000050e9
+R10: 0000000001000000 R11: 0000000000000293 R12: 00007fb85e7576b8
+R13: 00007fb85e757180 R14: 00007fb85e7571c0 R15: 00007fb85e8367a8
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.146 msecs
 
 
-On 2023/1/28 04:56, Boris Burkov wrote:
-> On Mon, Jan 09, 2023 at 02:11:15PM +0800, Qu Wenruo wrote:
->> [BUG]
->> When scrubing an empty fs with RAID0, we will call scrub_simple_mirror()
->> again and again on ranges which has no extent at all.
->>
->> This is especially obvious if we have both RAID0 and SINGLE.
->>
->>   # mkfs.btrfs -f -m single -d raid0 $dev
->>   # mount $dev $mnt
->>   # xfs_io -f -c "pwrite 0 4k" $mnt/file
->>   # sync
->>   # btrfs scrub start -B $mnt
->>
->> With extra call trace on scrub_simple_mirror(), we got the following
->> trace:
->>
->>    256.028473: scrub_simple_mirror: logical=1048576 len=4194304 bg=1048576 bg_len=4194304
->>    256.028930: scrub_simple_mirror: logical=5242880 len=8388608 bg=5242880 bg_len=8388608
->>    256.029891: scrub_simple_mirror: logical=22020096 len=65536 bg=22020096 bg_len=1073741824
->>    256.029892: scrub_simple_mirror: logical=22085632 len=65536 bg=22020096 bg_len=1073741824
->>    256.029893: scrub_simple_mirror: logical=22151168 len=65536 bg=22020096 bg_len=1073741824
->>    ... 16K lines skipped ...
->>    256.048777: scrub_simple_mirror: logical=1095630848 len=65536 bg=22020096 bg_len=1073741824
->>    256.048778: scrub_simple_mirror: logical=1095696384 len=65536 bg=22020096 bg_len=1073741824
->>
->> The first two lines shows we just call scrub_simple_mirror() for the
->> metadata and system chunks once.
->>
->> But later 16K lines are all scrub_simple_mirror() for the almost empty
->> RAID0 data block group.
->>
->> Most of the calls would exit very quickly since there is no extent in
->> that data chunk.
->>
->> [CAUSE]
->> For RAID0/RAID10 we go scrub_simple_stripe() to handle the scrub for the
->> block group. And since inside each stripe it's just plain SINGLE/RAID1,
->> thus we reuse scrub_simple_mirror().
->>
->> But there is a pitfall, that inside scrub_simple_mirror() we will do at
->> least one extent tree search to find the extent in the range.
->>
->> Just like above case, we can have a huge gap which has no extent in them
->> at all.
->> In that case, we will do extent tree search again and again, even we
->> already know there is no more extent in the block group.
->>
->> [FIX]
->> To fix the super inefficient extent tree search, we introduce
->> @found_next parameter for the following functions:
->>
->> - find_first_extent_item()
->> - scrub_simple_mirror()
->>
->> If the function find_first_extent_item() returns 1 and @found_next
->> pointer is provided, it will store the bytenr of the bytenr of the next
->> extent (if at the end of the extent tree, U64_MAX is used).
->>
->> So for scrub_simple_stripe(), after scrubing the current stripe and
->> increased the logical bytenr, we check if our next range reaches
->> @found_next.
->>
->> If not, increase our @cur_logical by our increment until we reached
->> @found_next.
->>
->> By this, even for an almost empty RAID0 block group, we just execute
->> "cur_logical += logical_increment;" 16K times, not doing tree search 16K
->> times.
->>
->> With the optimization, the same trace looks like this now:
->>
->>    1283.376212: scrub_simple_mirror: logical=1048576 len=4194304 bg=1048576 bg_len=4194304
->>    1283.376754: scrub_simple_mirror: logical=5242880 len=8388608 bg=5242880 bg_len=8388608
->>    1283.377623: scrub_simple_mirror: logical=22020096 len=65536 bg=22020096 bg_len=1073741824
->>    1283.377625: scrub_simple_mirror: logical=67108864 len=65536 bg=22020096 bg_len=1073741824
->>    1283.377627: scrub_simple_mirror: logical=67174400 len=65536 bg=22020096 bg_len=1073741824
->>
->> Note the scrub at logical 67108864, that's because the 4K write only
->> lands there, not at the beginning of the data chunk (due to super block
->> reserved space split the 1G chunk into two parts).
->>
->> And the time duration of the chunk 22020096 is much shorter
->> (18887us vs 4us).
-> 
-> Nice! The optimization makes sense, and LGTM.
-> 
->>
->> Unfortunately this optimization only works for RAID0/RAID10 with big
->> holes in the block group.
->>
->> For real world cases it's much harder to find huge gaps (although we can
->> still skip several stripes).
->> And even for the huge gap cases, the optimization itself is hardly
->> observable (less than 1 second even for an almost empty 10G block group).
->>
->> And also unfortunately for RAID5 data stripes, we can not go the similar
->> optimization for RAID0/RAID10 due to the extra rotation.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/scrub.c | 46 +++++++++++++++++++++++++++++++++++++---------
->>   1 file changed, 37 insertions(+), 9 deletions(-)
->>
->> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
->> index 52b346795f66..c60cd4fd9355 100644
->> --- a/fs/btrfs/scrub.c
->> +++ b/fs/btrfs/scrub.c
->> @@ -3066,7 +3066,8 @@ static int compare_extent_item_range(struct btrfs_path *path,
->>    */
->>   static int find_first_extent_item(struct btrfs_root *extent_root,
->>   				  struct btrfs_path *path,
->> -				  u64 search_start, u64 search_len)
->> +				  u64 search_start, u64 search_len,
->> +				  u64 *found_next)
-> 
-> I think at the very least, it would be nice to document the found_next
-> parameter in the function documentation.
-> 
-> Going one step further, I think the semantics could probably be
-> streamlined as well. I'm thinking something along the lines of always
-> using the path parameter to return the extent, and then the caller can
-> decide whether to grab the "found_next" from that before releasing the
-> path.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-That sounds pretty reasonable.
-
-Let me explore this idea more, one less argument is always a good thing.
-
-Thanks,
-Qu
-> 
-> I don't see much harm in always filling in the "next" return, even if
-> RAID5 wants to ignore it.
-> 
-> Thanks,
-> Boris
-> 
->>   {
->>   	struct btrfs_fs_info *fs_info = extent_root->fs_info;
->>   	struct btrfs_key key;
->> @@ -3102,8 +3103,11 @@ static int find_first_extent_item(struct btrfs_root *extent_root,
->>   search_forward:
->>   	while (true) {
->>   		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
->> -		if (key.objectid >= search_start + search_len)
->> +		if (key.objectid >= search_start + search_len) {
->> +			if (found_next)
->> +				*found_next = key.objectid;
->>   			break;
->> +		}
->>   		if (key.type != BTRFS_METADATA_ITEM_KEY &&
->>   		    key.type != BTRFS_EXTENT_ITEM_KEY)
->>   			goto next;
->> @@ -3111,8 +3115,11 @@ static int find_first_extent_item(struct btrfs_root *extent_root,
->>   		ret = compare_extent_item_range(path, search_start, search_len);
->>   		if (ret == 0)
->>   			return ret;
->> -		if (ret > 0)
->> +		if (ret > 0) {
->> +			if (found_next)
->> +				*found_next = key.objectid;
->>   			break;
->> +		}
->>   next:
->>   		path->slots[0]++;
->>   		if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
->> @@ -3120,6 +3127,13 @@ static int find_first_extent_item(struct btrfs_root *extent_root,
->>   			if (ret) {
->>   				/* Either no more item or fatal error */
->>   				btrfs_release_path(path);
->> +
->> +				/*
->> +				 * No more extent tree items, set *found_next
->> +				 * directly to U64_MAX.
->> +				 */
->> +				if (ret > 0 && found_next)
->> +					*found_next = U64_MAX;
->>   				return ret;
->>   			}
->>   		}
->> @@ -3186,7 +3200,8 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
->>   		u64 extent_mirror_num;
->>   
->>   		ret = find_first_extent_item(extent_root, path, cur_logical,
->> -					     logical + map->stripe_len - cur_logical);
->> +					     logical + map->stripe_len - cur_logical,
->> +					     NULL);
->>   		/* No more extent item in this data stripe */
->>   		if (ret > 0) {
->>   			ret = 0;
->> @@ -3385,7 +3400,8 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
->>   			       struct map_lookup *map,
->>   			       u64 logical_start, u64 logical_length,
->>   			       struct btrfs_device *device,
->> -			       u64 physical, int mirror_num)
->> +			       u64 physical, int mirror_num,
->> +			       u64 *found_next)
->>   {
->>   	struct btrfs_fs_info *fs_info = sctx->fs_info;
->>   	const u64 logical_end = logical_start + logical_length;
->> @@ -3437,7 +3453,8 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
->>   		spin_unlock(&bg->lock);
->>   
->>   		ret = find_first_extent_item(extent_root, &path, cur_logical,
->> -					     logical_end - cur_logical);
->> +					     logical_end - cur_logical,
->> +					     found_next);
->>   		if (ret > 0) {
->>   			/* No more extent, just update the accounting */
->>   			sctx->stat.last_physical = physical + logical_length;
->> @@ -3552,6 +3569,7 @@ static int scrub_simple_stripe(struct scrub_ctx *sctx,
->>   	int ret = 0;
->>   
->>   	while (cur_logical < bg->start + bg->length) {
->> +		u64 found_next = 0;
->>   		/*
->>   		 * Inside each stripe, RAID0 is just SINGLE, and RAID10 is
->>   		 * just RAID1, so we can reuse scrub_simple_mirror() to scrub
->> @@ -3559,13 +3577,23 @@ static int scrub_simple_stripe(struct scrub_ctx *sctx,
->>   		 */
->>   		ret = scrub_simple_mirror(sctx, extent_root, csum_root, bg, map,
->>   					  cur_logical, map->stripe_len, device,
->> -					  cur_physical, mirror_num);
->> +					  cur_physical, mirror_num, &found_next);
->>   		if (ret)
->>   			return ret;
->>   		/* Skip to next stripe which belongs to the target device */
->>   		cur_logical += logical_increment;
->>   		/* For physical offset, we just go to next stripe */
->>   		cur_physical += map->stripe_len;
->> +
->> +		/*
->> +		 * If the next extent is still beyond our current range, we
->> +		 * can skip them until the @found_next.
->> +		 */
->> +		while (cur_logical + map->stripe_len < found_next &&
->> +		       cur_logical < bg->start + bg->length) {
->> +			cur_logical += logical_increment;
->> +			cur_physical += map->stripe_len;
->> +		}
->>   	}
->>   	return ret;
->>   }
->> @@ -3652,7 +3680,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
->>   		ret = scrub_simple_mirror(sctx, root, csum_root, bg, map,
->>   				bg->start, bg->length, scrub_dev,
->>   				map->stripes[stripe_index].physical,
->> -				stripe_index + 1);
->> +				stripe_index + 1, NULL);
->>   		offset = 0;
->>   		goto out;
->>   	}
->> @@ -3706,7 +3734,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
->>   		 */
->>   		ret = scrub_simple_mirror(sctx, root, csum_root, bg, map,
->>   					  logical, map->stripe_len,
->> -					  scrub_dev, physical, 1);
->> +					  scrub_dev, physical, 1, NULL);
->>   		if (ret < 0)
->>   			goto out;
->>   next:
->> -- 
->> 2.39.0
->>
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
