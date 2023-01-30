@@ -2,79 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9718C67FFE1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Jan 2023 16:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A862680349
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jan 2023 01:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233590AbjA2P0V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 29 Jan 2023 10:26:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
+        id S229835AbjA3AXP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 29 Jan 2023 19:23:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbjA2P0U (ORCPT
+        with ESMTP id S229476AbjA3AXO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 29 Jan 2023 10:26:20 -0500
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE42193F0
-        for <linux-btrfs@vger.kernel.org>; Sun, 29 Jan 2023 07:26:18 -0800 (PST)
-Received: by mail-io1-f71.google.com with SMTP id c8-20020a05660221c800b007164907d311so2021757ioc.11
-        for <linux-btrfs@vger.kernel.org>; Sun, 29 Jan 2023 07:26:18 -0800 (PST)
+        Sun, 29 Jan 2023 19:23:14 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C093B1DBBD
+        for <linux-btrfs@vger.kernel.org>; Sun, 29 Jan 2023 16:23:13 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id w11so3025672qtc.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 29 Jan 2023 16:23:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vR/aSgrJHdEUHH393ovuG+gdb9mEVG9SSuRJGcP6Heo=;
+        b=f7z1VEWfscIz93hQw2ARicELTJgcMMU7+Kwe141HJmBKOEMFF1/dpn9Ew1Fn6TVToK
+         0gGABaHC+rywJW6jSoOCtgwWA30ngg7SwFwX7xMvHMfROb4E7cceG4xZRaMwoHmjd9tU
+         ij3FcVj1pUM1O8d5gehPiGT/f8vFpjpe6TcJa/brU+m64do2Hq9k/tZ/s89EU8VZMsA/
+         RUWeDX+fqBnoRovp+mj143WPRds2YGfVlt3ECVasxUUY7IyLfTaAkOd/V5SRDKB55lKx
+         7BBbSRiaOxgc29LyW8dPjNJS4uVm4y/Y9OC+s18uDbsuuKgk3KbLRhPRFzlkgyE75r5y
+         29Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        h=to:subject:message-id:date:from:reply-to:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8cF9L9jLWY8TFRKz3jdp0+sMF5n63XrGkYgD+r/LrUM=;
-        b=P9LMaKcTsr5QuBNNr8XepBSpEwVbhD/gbs0f0mRo1KweA4x/NZoWR3k/j2lhQiSv82
-         pCXSAuyK+7L6qIeebVbZm+YcYeygYMwjOn4cJ8qIGVzFhuZyuUZGb4AcsZYmGj97O/q+
-         lLfx0EtEbcKbWTMbDLufk+qCrKqRzcKlQGF/r7z+yqvn1oOCRedmgJXG61KbUNF/P6pm
-         hYTPa4Fn/bnMsauITV/YcCTJ1alUv4F9kjkQYz1fIXdXR10wVM2HSFE0iHJk+lZiQsuN
-         5gXI5cQ+o3xMxs/IRGCMaifPTPCqQR4pCT3IqVwQ1ea6m6cXjZ0rUftIKL8EIZgStVHw
-         FuJw==
-X-Gm-Message-State: AO0yUKUKmxQkAzbw2fhrhLep3v9EvAHKm/qDmyumRDZK7wvSOQ6582ii
-        nw+5a4i49f9nD1Lps14dFMdY+xvZYyk/jA9eqIONVXtVK77Q
-X-Google-Smtp-Source: AK7set+J97wR6pyTkJQzNgrvEAzGQv2Coaf5oP9nuxQEXIut8CfO8ZG6G1elUbRDOv3uUOL8oT6D2A3Lpa4yxBs0atsxKTWirtU4
+        bh=vR/aSgrJHdEUHH393ovuG+gdb9mEVG9SSuRJGcP6Heo=;
+        b=xTej2JQAVTYdNfFG7nnffRJE4a+YTSB5LdNGF55iKdvAq6ggACu+AEthTi9LE9fAPQ
+         T8W3ceVZjKo8SvWrovVH06KHkyhlKYTwXl1L+BP2cWPSnTx3q/DSicAtPOz2ROrfLgt0
+         6nUYSQPHcGto41+oIAupQkZ+WZ8iXFkIPdd6ydVIcqCLMOJoT4soOjnqssaSkx1LRqkg
+         QkCtE2EFnRmt7qw8jPdzqIakg5NAfaX9gB1ZR4cUrevnwLADPHxGODGtPy+DY2EZt6oy
+         fCyty1S5IXhf9wLiAE/bnCCo/BpUjTPfR2Tz5YFzkW3ntHJBbPPtUWdkK8nRy48/IWHv
+         JAbA==
+X-Gm-Message-State: AO0yUKWFkJaFMurUnizKdq1i5dxaNRCI5ey0ZeraZNWjGgIK5iPfy1uW
+        4tT/4mSRyuwxTcR/TTO+xnXDTLFKAkXYTDEU6PE=
+X-Google-Smtp-Source: AK7set/3Qa8861bs2lHMbL2P+yElUmGrAXowynwecrmPd5NUz90nAPeEQLUSo7R0OUxBTjX8fgTZfD0PmmhhIYYRR0o=
+X-Received: by 2002:ac8:5f90:0:b0:3b7:fd8a:fe28 with SMTP id
+ j16-20020ac85f90000000b003b7fd8afe28mr1054219qta.344.1675038192779; Sun, 29
+ Jan 2023 16:23:12 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:8e4d:0:b0:310:c52c:81ff with SMTP id
- k13-20020a928e4d000000b00310c52c81ffmr1143173ilh.50.1675005977489; Sun, 29
- Jan 2023 07:26:17 -0800 (PST)
-Date:   Sun, 29 Jan 2023 07:26:17 -0800
-In-Reply-To: <0000000000008f0ed405ed71ef58@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000048f87b05f368b832@google.com>
-Subject: Re: [syzbot] possible deadlock in btrfs_dirty_inode
-From:   syzbot <syzbot+37edf86c9b60581e523f@syzkaller.appspotmail.com>
-To:     anand.jain@oracle.com, clm@fb.com, dsterba@suse.com,
-        hdanton@sina.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Received: by 2002:a0c:e941:0:b0:537:79dd:f11d with HTTP; Sun, 29 Jan 2023
+ 16:23:12 -0800 (PST)
+Reply-To: te463602@gmail.com
+From:   "Dr. Rooney Harry" <osane706@gmail.com>
+Date:   Sun, 29 Jan 2023 16:23:12 -0800
+Message-ID: <CAC7OyrpA_mGgoMY2aMKcFCE9X2ZhaUBYAKTo2ajYSVn7SuMVDQ@mail.gmail.com>
+Subject: Very Urgent,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+-- 
+Hello,
+I tried e-mailing you more than twice but my email bounced back
+failure, Note this, soonest you receive this email revert to me before
+I deliver the message it's importunate, pressing, crucial. Await your
+response.
 
-commit b740d806166979488e798e41743aaec051f2443f
-Author: Josef Bacik <josef@toxicpanda.com>
-Date:   Mon Nov 7 16:44:51 2022 +0000
-
-    btrfs: free btrfs_path before copying root refs to userspace
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10cf123e480000
-start commit:   77c51ba552a1 Merge tag 'scsi-fixes' of git://git.kernel.or..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6f9416d398342c83
-dashboard link: https://syzkaller.appspot.com/bug?extid=37edf86c9b60581e523f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148fcd31880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=167bfb31880000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: btrfs: free btrfs_path before copying root refs to userspace
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Best regards
+Dr. Rooney Harry
