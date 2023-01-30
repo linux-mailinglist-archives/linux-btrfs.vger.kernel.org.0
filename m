@@ -2,113 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E3468080C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jan 2023 10:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E40EA6807C2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jan 2023 09:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235900AbjA3JAx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Jan 2023 04:00:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
+        id S236085AbjA3Is2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Jan 2023 03:48:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235820AbjA3JAw (ORCPT
+        with ESMTP id S236093AbjA3Is0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Jan 2023 04:00:52 -0500
-X-Greylist: delayed 1812 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 30 Jan 2023 01:00:48 PST
-Received: from sender3-pp-o97.zoho.com (sender3-pp-o97.zoho.com [136.143.184.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE02A2CFE6
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Jan 2023 01:00:48 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1675066454; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=cD13T5FR8kLmh8cJb7dzfJh9ozBxODXhsbL6xCiPvZxXAKhZ795gJZ63KSf+otDVgIoVpz5zHhA64aPK8q0CiK9aUd2VkeCHhVcpyZxh0/f0iEHdGDIRR90vSCDzJc+HIa9Q0PbvhgfXmBXcVWj2QZgjyxUak1gYomK9xiiDaHQ=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1675066454; h=Content-Type:Content-Transfer-Encoding:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=JLLq1LoE8xkwrIj1nsXyjF7DDhUAzVU3jqzhiBVrVbE=; 
-        b=bozFh/adv8lnmV6/3RzOMAULHsE7xaopi6VJRxKvK03PoQqk6AdPaOp9xX5JZ5C11ZLc+TtRQtSL26Tam/8QJYCziZ7e4PlUoB6kapbjfiNJlmwfZdKe4lLil/G8cs8JaiJI5HWV314Rc1zQOK9F5DXRzXinxnuHxcQGTgPbzIQ=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=zoho.com;
-        spf=pass  smtp.mailfrom=hmsjwzb@zoho.com;
-        dmarc=pass header.from=<hmsjwzb@zoho.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1675066454;
-        s=zm2022; d=zoho.com; i=hmsjwzb@zoho.com;
-        h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
-        bh=JLLq1LoE8xkwrIj1nsXyjF7DDhUAzVU3jqzhiBVrVbE=;
-        b=StVWwy+GZyReWX8aitF20hCrRyYP9bOjONyLws2ZBAI4CaGp815S2GHaeguKrPgl
-        jHk3MvG5yljHybEzcuw085EeAQNU0RIH3giUll1X/CVj1G56wevH6rZzaEBInvigPL1
-        SkgkPWURscJYsSGpyG4geAxeKrKQxsXWEJJ/JouQ=
-Received: from [192.168.0.103] (58.247.201.202 [58.247.201.202]) by mx.zohomail.com
-        with SMTPS id 1675066453588279.7780564701459; Mon, 30 Jan 2023 00:14:13 -0800 (PST)
-Message-ID: <75af8bba-6a0c-9cfd-f2e7-7b71ef51ab77@zoho.com>
-Date:   Mon, 30 Jan 2023 03:14:10 -0500
+        Mon, 30 Jan 2023 03:48:26 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42794F4
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Jan 2023 00:48:00 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id v17so11997508lfd.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Jan 2023 00:48:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8TjYrkDsK6yPh84aPbosRJZw6roXrwTWLBrSTolIxuA=;
+        b=EOPi1f4PhNW8zMtICF44BKx0E45GpHOXt3JJtGhNl7RHwQaB777/tjHXv340DArSLW
+         UOJ7aMsLn9ChCVVwbB4TipfuHXGETdPfw9J0qlGi09p795ccHwVFPUze0Q8hH0eRGbqa
+         6IBTs0IGSyOE1s3izidQ6TnRNZpN4VO+YZKAfZzkcIveglXU19dQEnuOtDoYcfT2pnqW
+         1C8UpPPYjT8SoDmaRrP/Yq9p8yLS5+HIkkhIRxAZ/xH3H8Qykc6fXhQgGa0cZMZZBSc9
+         9HOCzwIaIfJxrNnFPnDbp6vdzKjpkxXpFB4u5tjB8HrAaewj79OxNT9fiQJgdE+AyFpn
+         I1xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8TjYrkDsK6yPh84aPbosRJZw6roXrwTWLBrSTolIxuA=;
+        b=2sRqZjXyLXc/7ndUi+i1LH1zY/Z8Nip9iDaX8tYWHZGUEVRdLSwKdQfyA4y2awYsSO
+         jylrU22sC/AbdXoAdNyECHO7IRgi+H2XUjjXNq0MC1yBQ5Z33mgNxkHKF+KTihZKWoVP
+         xHE95MBuWFP6Cq1PidHHireyuTTqjTm79ebtMcU4o8cU7q5QfqrVEqMbLLlrVmOozsud
+         1N39O5ekRhdHYbBPRHgnzxUs3fMv9DyJ+lddfuD1a9IcFz7djztKQ7FUp/krRVOyFMyG
+         LsT12e/nrcZ8w036j0GoXwwch/absdRK8zi8RushMtDGI7EoWPaJzWVGn5/iX9w+I3MT
+         3TFg==
+X-Gm-Message-State: AFqh2kpey0BHVFi741AicOEKK97QBKJ0LPV3y7yr4DQyns2YyNTBRgHs
+        2d7az4kdMQL3/WbJYONiE+NfinuS7Ak7L5n1TlhxnQ==
+X-Google-Smtp-Source: AMrXdXt7y5vMXZIG9DYJ+X2Yi72vbKoqU45iffpH2rKNAKrqtwPz8QtByBV3oMBVvAdRSJhA4f+cSzfB/zrvXXCz3F0=
+X-Received: by 2002:a05:6512:250b:b0:4d4:fcdb:6376 with SMTP id
+ be11-20020a056512250b00b004d4fcdb6376mr6074442lfb.218.1675068478212; Mon, 30
+ Jan 2023 00:47:58 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH 0/5] btrfs-progs: minor fixes for clang warnings
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1674797823.git.wqu@suse.com>
- <e16dd0dc-da4f-e49c-2257-9180b636f59d@suse.com>
-Content-Language: en-US
-From:   hmsjwzb <hmsjwzb@zoho.com>
-In-Reply-To: <e16dd0dc-da4f-e49c-2257-9180b636f59d@suse.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <00000000000076699c05ed7c54a2@google.com> <00000000000091f75805f3627ddd@google.com>
+In-Reply-To: <00000000000091f75805f3627ddd@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 30 Jan 2023 09:47:45 +0100
+Message-ID: <CACT4Y+bUreYncw=xFEf_qvrKJ8GKgzstv8BF8LBWTD=XOj_vXw@mail.gmail.com>
+Subject: Re: [syzbot] possible deadlock in btrfs_commit_transaction
+To:     syzbot <syzbot+52d708a0bca2efc4c9df@syzkaller.appspotmail.com>
+Cc:     anand.jain@oracle.com, clm@fb.com, dsterba@suse.com,
+        hdanton@sina.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
+On Sun, 29 Jan 2023 at 09:00, syzbot
+<syzbot+52d708a0bca2efc4c9df@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit b740d806166979488e798e41743aaec051f2443f
+> Author: Josef Bacik <josef@toxicpanda.com>
+> Date:   Mon Nov 7 16:44:51 2022 +0000
+>
+>     btrfs: free btrfs_path before copying root refs to userspace
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e58bae480000
+> start commit:   08ad43d554ba Merge tag 'net-6.1-rc7' of git://git.kernel.o..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8d01b6e3197974dd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=52d708a0bca2efc4c9df
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=114d3e03880000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1320ea4b880000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: btrfs: free btrfs_path before copying root refs to userspace
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-	I think maybe clang has some optimization which GCC doesn't.
+Looks reasonable:
 
-Thanks
-
-On 1/30/23 02:28, Qu Wenruo wrote:
-> 
-> 
-> On 2023/1/27 13:41, Qu Wenruo wrote:
->> Recently I'm migrating my default compiler from GCC to clang, mostly to
->> get short comiling time (especially important on my aarch64 machines).
-> 
-> Just to mention, although the cleanup itself still makes sense, it doesn't make any sense to migrate to clang, at least on my aarch64 machines.
-> 
-> GCC takes only 22min for my trimmed kernel config, while the same config takes clang 32min...
-> 
-> Thanks,
-> Qu
-> 
->>
->> Thus I hit those (mostly false alerts) warnings in btrfs-progs, and come
->> up with this patchset.
->>
->> Unfortunately there is still libbtrfsutils causing warnings in
->> setuptools, as it's still using the default flags from gcc no matter
->> what.
->>
->> Qu Wenruo (5):
->>    btrfs-progs: remove an unnecessary branch to silent the clang warning
->>    btrfs-progs: fix a false alert on an uninitialized variable when
->>      BUG_ON() is involved.
->>    btrfs-progs: fix fallthrough cases with proper attributes
->>    btrfs-progs: move a union with variable sized type to the end
->>    btrfs-progs: fix set but not used variables
->>
->>   cmds/reflink.c              |  2 +-
->>   cmds/scrub.c                | 12 +++---
->>   common/format-output.c      |  2 +-
->>   common/parse-utils.c        | 12 +++---
->>   common/units.c              |  6 +--
->>   crypto/xxhash.c             | 73 +++++++++++++++++++------------------
->>   image/main.c                | 15 +++-----
->>   kerncompat.h                |  8 ++++
->>   kernel-shared/ctree.c       | 18 +++++----
->>   kernel-shared/extent-tree.c |  4 +-
->>   kernel-shared/print-tree.c  |  2 +-
->>   kernel-shared/volumes.c     |  3 +-
->>   kernel-shared/zoned.c       |  6 +--
->>   mkfs/main.c                 |  4 --
->>   14 files changed, 84 insertions(+), 83 deletions(-)
->>
+#syz fix: btrfs: free btrfs_path before copying root refs to userspace
