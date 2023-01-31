@@ -2,138 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB6E6825AE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Jan 2023 08:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8C8682B2E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Jan 2023 12:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbjAaHmk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Jan 2023 02:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
+        id S230305AbjAaLL7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Jan 2023 06:11:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230033AbjAaHmj (ORCPT
+        with ESMTP id S229577AbjAaLL6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Jan 2023 02:42:39 -0500
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B5D3644E
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Jan 2023 23:42:38 -0800 (PST)
-Received: by mail-il1-f199.google.com with SMTP id l13-20020a056e0212ed00b00304c6338d79so8972100iln.21
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Jan 2023 23:42:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PVfNvDlkq4HR7zoEKB0jRLzb51uhtItCyuNvAQUoqX8=;
-        b=6sST6qDs1xfrCJ7n1e0r3h6NBnoefrtBlp7J7g5DhAUCtkaSUeM0PGQZTCcLKVIYv/
-         jNENRS2SKuUlwGBwxXJxEDX1Nypwfi59ztE35aK67SA2TRor8Cnd4x48mQSIHKM5XChq
-         rzUO8M3gP3TXOfoAxmYPehaHS0Uz49ZSz9hH/OFh8wVgggEJr916hFeq73XEvJuqhR+e
-         JW29g+TWRh+9NwKdy6Xecyv8tRe1eghKzm5rxlwrVy/S5TIauzBtzM3LKFz/AGi8dRDf
-         nERKTXJt45WcwFQBoYTN03EDY8sThBDnNmytyuP7idUzVQYmoOcwPNM7LeyB/hei64aN
-         tY2A==
-X-Gm-Message-State: AO0yUKUdxUATU7GOPIbfsUynhq9wURkM0ozMNbK4kYiywnHW5U0wMLSj
-        Ybi65ck/gIJJJoQCi836aKsV7EfxsyykkWUV31Cu0xwhxAGo
-X-Google-Smtp-Source: AK7set8CSQgqSumF3SCcecZYPTMn+Nes/Api5On3OTNgPL3x4D5Ex8wkT5SkjrliajHZh6mybkA1dAV7ceL1yR4UZirO/mJfyokA
+        Tue, 31 Jan 2023 06:11:58 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D35768A
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Jan 2023 03:11:56 -0800 (PST)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30V7wwMA024134;
+        Tue, 31 Jan 2023 11:11:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=3xb27HL7CtPMHR53PrC4eGZtN24CTcrNxAVRm3iU+wY=;
+ b=zFx4zZQZ/QCh/304O0W0oaCd/0Fa1z/KH3hMLtA50XpSa7QDPqnTd2EL3+LuwvhGlKwI
+ e6I5rcf6LXa20BBG+U7QrQ+FLdcCTJnThui0UoC76kTq0/wS3lC4WoJkNwNl9B4vURYG
+ DSBpK0rBf2ggnO36xU9kpuxNlU/1TDfwtBf+DAhY2FwIlXxPNhKb3eVnXhjMP6UK48Wf
+ YPkpAW09SbrO5aiCaYgQRdSnW4dQDlF5onKacuqkdcpQs7fxgYZ8RiJ6kpTYNpzggQ8I
+ QmywTxpcfZ8Erlh8TQoTAUD4lstDEdY5whI7YVxbJGWx5j5+y40UKi+0PX3B+puLMxmO Pg== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ncvrjw867-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 31 Jan 2023 11:11:54 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 30V9hvPi027778;
+        Tue, 31 Jan 2023 11:11:53 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3nct5cta15-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 31 Jan 2023 11:11:53 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HJtUuV9O0lQZKl9XJ2XUSRmYaOKVzaNhpu79J/s/dE0/0X8nWQSC5TWzz6TgTLhnctJPMujq+V6HqYasxHEKs6q/QWx/wEeMVR/OyqVNf9p5LvicRpnHV+3+TG9380su/1vEvlG4b+WGe+aCZmzsaDCdpncdv/MIGeuu9kYzsA8t8iANbHtMqd8Abg6sK8Cr0Gn0eKWypnQAzAqK3EqfjG/cplGpu/3wck6DATWgHghTw7he2mhu4hTURzpHxKUOsETOa/bzIycwoL1GoVnTkjGrdMJlx5HB4alTZf2TBW+0MwvjobmfyJ9K6ptRKJbXSwL+ksxYRdyIvAJDE+Y9/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3xb27HL7CtPMHR53PrC4eGZtN24CTcrNxAVRm3iU+wY=;
+ b=jhXSDMOXharPkJ1JU+g4M6NyK60sS+Lrqqr+BSz4SPP3ZIcxD843fpkgnEtrYOp1WnSO2izCg1MyDJa7qMxRbG+ANzohM5yUKPvb0JEhu0IRQNf7r+dt7nH5lH1KYw4F6r/L7v0+xVTrWVyM2ONok+9YSeXfHelrgkNrXx8sfxhKNaFo+4kNX8uLRPwXEJBM+QuZTy174z35G93W1HSHliN0PHbIoEA0tBShnqyWWYfjZp39yEAYmvSqU0xYJZ6HJLjeyl4kTg2mPXJuBG2G7Fvb90vZXu+bFMQJ5AVrWs0vWSF+njr7/bkIQPySAW+pkpZYgyc6e+yEe2h2j1jfnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3xb27HL7CtPMHR53PrC4eGZtN24CTcrNxAVRm3iU+wY=;
+ b=Le3gIuAJzEqPxBeASNpB5Sk4jNwPGjSQ1xk5J/2mfeND+tWW+Xc4r5jt+F62zLwYHE57Pvvp4K57FW45lhX4HJqygKOWowf5qf3WYXtrLXg+yI/G/YiiU8JYKDCRCb6whQ6nJgCZWT9BbW+F27aM931YQG3AIZb1BnZyfiYwpF8=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by CO6PR10MB5792.namprd10.prod.outlook.com (2603:10b6:303:14d::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.19; Tue, 31 Jan
+ 2023 11:11:51 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::560e:9c52:a6bd:4036]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::560e:9c52:a6bd:4036%9]) with mapi id 15.20.6064.021; Tue, 31 Jan 2023
+ 11:11:51 +0000
+Message-ID: <4fd172e0-bfe5-681d-8e81-bc5955922456@oracle.com>
+Date:   Tue, 31 Jan 2023 19:11:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0)
+ Gecko/20100101 Thunderbird/95.0
+Subject: Re: [PATCH] btrfs: restore assertion failure to the code line where
+ it happens
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20230127133202.16220-1-dsterba@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20230127133202.16220-1-dsterba@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2P153CA0030.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:190::15) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-X-Received: by 2002:a92:c981:0:b0:310:99f5:df36 with SMTP id
- y1-20020a92c981000000b0031099f5df36mr3834696iln.65.1675150957720; Mon, 30 Jan
- 2023 23:42:37 -0800 (PST)
-Date:   Mon, 30 Jan 2023 23:42:37 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c7bf4e05f38a79eb@google.com>
-Subject: [syzbot] [btrfs?] WARNING in csum_one_extent_buffer
-From:   syzbot <syzbot+12ccac7f251e18746c4c@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CO6PR10MB5792:EE_
+X-MS-Office365-Filtering-Correlation-Id: cf08d4c6-e8cc-4918-48b2-08db037bf3f5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Op7RA+4ej9E6IeZXR4ZN7YtekwbMkDP08oL/rCwlkyxSEg4uTaMhZOLzWaoEkORvTii0JXMBvmYEUCHtFCpTYf0RW7YavokE9WPyVA19O//KKM/vj7FPUPoAzNIPPDUzg19ujTOSRcOugprjdop+PbzYmm+y+kjYutnyeuCXRVoJyf+l3OFxlr1EMGRMM6dG7LGCW8CvlgYPcy1Le9IDrMT1Hv7BK/zHTBo18DOhb3UcEowJ4GTVHc0sX+pAUKYD1Z/ZIjvwaCAmFgLzV3QKyS9FnK2qN7pPewkc8ufhIWE2lmjRooMQnYQ8pDuHJn9gP9X8dUNyD7aF0AdCSPn9OysH4ZE99UvIkBhPRmzQBeJoHQUwSgPHHc7gajnHuuSuhstzNfPB8SoUspc5zcGFXhUtNErEC3KCZuzb5pmSONQU5PkcyOyQoI5vOjMUIx3U6EbIGAkBQkC3p9yV1Bho+bPcwV4A1ynNlToQ44elwFb/lKiOwHN5N8M+ez8IgsrvWE8gCp7Ltizt+MOLszdZgecgUcDXpgR/zSwMmV13SsY6iB3w8LE71uOuSJu2VC6B5zj6twL1zulSsyAG6icnigNEBS/pgnYn20plk+A4iBLlCrGTofs9h0ii5+RAqMnRxkuwiwu2paMXivzP80GINTjLZyUc6XrTrZwTFT3qvDovyDj9FBwfOggVDhIa0+n+6/8IrKrn6rY4BdV69BiqdeMOiUoLqr/Zo5NiADjIids=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(396003)(39860400002)(366004)(136003)(376002)(346002)(451199018)(5660300002)(31696002)(36756003)(44832011)(2906002)(38100700002)(86362001)(31686004)(2616005)(478600001)(6512007)(186003)(53546011)(6506007)(83380400001)(26005)(6486002)(316002)(66476007)(6666004)(66946007)(8676002)(66556008)(8936002)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SVkrbTBZaEVjcDJlbDMvTlRRVEtJSWZJZ05vUGY0eDhCTzFMc0F3bDZSaHdn?=
+ =?utf-8?B?WE1BS2dEOE1yWUFBd28vbW1uVGdXZTNPTFJRS1k2bSs2QlZlbmJocm9QNUNG?=
+ =?utf-8?B?SHBNcW1BQ1JGY3U0dG5ZRFhzVGxRZGdKYjBvYkh5QWdTdUV0cTUwNzFSSjh6?=
+ =?utf-8?B?TkljSE9wOGdkUnhNczhBMmI2TGZzSjN5dk1VK0dmV09EdXg4blZBa1lyVG1S?=
+ =?utf-8?B?bDRwQWFiQ2lFUEczMWV6T2c2V3dXRFVaaHlOcFRBNnpIVkFONWRUbDdycVg3?=
+ =?utf-8?B?QUpnOEVjbER4S3VrTU85bTRQNlk2RUhib2N1d0lWWlRjaFdGSjhJa1lMUmFh?=
+ =?utf-8?B?YWZRbHR1Qm85N252U2RSMmlJZVhIS1BCOWlCSEVBOUZ2WWpZeFllSDFQZVhD?=
+ =?utf-8?B?M1pzWkNvM3huWkV5SDc5WVp5THpYeHJPYnF3bksvNTdXTDIvWHlRU21FNXdP?=
+ =?utf-8?B?eUJOUldkbFNZZmo1d29mOFJqNU4wdlNpZ01lUEVITGlUTzZYUXRFL0t3RkV4?=
+ =?utf-8?B?R2hrYWJtRFppMjhIcWJ6MUw4aUVZWHNJelZjemVrNCt1VkxOcEUzNndRanEw?=
+ =?utf-8?B?aWgrcC9xMXllTjJlY05jV01WZXpjbXIzbXBCQVBWeFRtcjRKOXhOa2JsQktE?=
+ =?utf-8?B?SERDR2dXTzJGNW80OEV1N2F1djJnT2p6WitrdGQzMmI0T2N6SGticWthbkxh?=
+ =?utf-8?B?SVAvZWN1RzlmRW1CNTVkVXlreVFPMTlnOHJXM0NxUE5ueFg4RkFnWWlSUWF0?=
+ =?utf-8?B?NDZoUE5ITFJlaFo5SStibUNtUnhDNjBmL3RKMHE4bDRvZncxbVROUjNjTmVa?=
+ =?utf-8?B?eEx5ZU9tWERKTXNFMUFVYlJWRFNlcVgyOG1EdjN6V2UyR0pNdS83bnFzVUkv?=
+ =?utf-8?B?ZXo1Tm1kMWxFKzZzTkpmMGhRZWQwaTd5U2JmZFZxdHIwemlRaFplYWRSS3FH?=
+ =?utf-8?B?d2ExM2hhdnNyNllmU2ZjNTBiZ0JSeTM0US8yOWcydFhwSkJtdExBRkRNbEs5?=
+ =?utf-8?B?amJuQm5sQnVRck9iOWltSlpiQUZJQWdJK1VQMHVOdEtyU1VzTHpKWkc1czI0?=
+ =?utf-8?B?NkZkV3YzNkxnZFdKUGkxaVd0SW9ZbUYvVkNUbjRpdVoybHI1L0prNkVyUjVY?=
+ =?utf-8?B?dnk0cXM0clUwWkdERHNNMHI0eTRFcWJ0T1lrU041MUdRUHFVOXFQS1ByZTI1?=
+ =?utf-8?B?Q1loZnFQUjRScXh3am1aME5IWjQ4WG5GNkJqdnR5cXkxUWxkaEVvQm5kbHQ0?=
+ =?utf-8?B?NUNlWnE3d2VudER5ZGhZcGVxUEJxUFhxWWJpT0REa0puZDUzTTFPd3NDYXVZ?=
+ =?utf-8?B?L014eDltZnVVNGZIYTA4ankwakNsRlFpR0FBMFhRU2hxckE0cDUveHI5WDMz?=
+ =?utf-8?B?K21hZWFVMUxXdGltK21xZ0hYTWxnSnZzeTdFSDB3Q056UUNhdnJ2M1lVNyt3?=
+ =?utf-8?B?dFo5bExIeE51ZzNVT05SNUwyUXQzeGlPN29wa2lVcEZ5bzRJb3U5Yy9nYnY4?=
+ =?utf-8?B?UFcyR1NuaE0xQ3Mrb2hqYk9sNUQ1TnlqT2NNU1IxenhlQ0ExemUrTlAvUjAy?=
+ =?utf-8?B?QXFCbktrUTV4bEdEZDdrU3N6UlVtWnpLWnFtMlVicUc0TU9NN1h1MTJMaUZy?=
+ =?utf-8?B?bDNvMjFITEh1a3drZjR2bmRXd0JKQ3V6NXdIWmZBemxXMHVtS3dHWlN4bU1Q?=
+ =?utf-8?B?WllLZEZpT24rYTZXdThhOFltZFZSMkZnRThGOXR3MElsRmhJV0xUREpPWWJD?=
+ =?utf-8?B?K0ZWL3FDV1dtTkZTcUo1clVoTk1lWGRSVHNCZ0NsU25sVUZHTjZsNFJpdW1G?=
+ =?utf-8?B?Y2RoaC9FTkFybHo1Szd6SFl5bU9tTmZWKzc0MTVOemhuWThGNVZvRzQ4OHJP?=
+ =?utf-8?B?Q0hvemk3WHR2K2lNaVl5N0xrUVArUzZHOUdKUHNoc0Q1VWhjcVhNUGFuZk8y?=
+ =?utf-8?B?MzdITVBKUDYvNVBTR2VYRFowVmw1djBndnV2NThidWc3MHE5MjduKy80MG9a?=
+ =?utf-8?B?YUxiczZ1ais1eXFxTWJud0xnZ1A1ODZ1Z3Z5cklpZTNSZGVFdEIyZlJGN1Nq?=
+ =?utf-8?B?cmFMN1V3M244b1JjNVlrbTJpVUtrTS9tQXFCRXNOdUJtYXM1MWd1Ykdyc2li?=
+ =?utf-8?Q?HqBZ0OxEW9iL+DHgR9+w0V30Y?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 09y2Zd3yBqFz+ykeDbEQjMJjN2HdSGnHjukwRr0abzjJabnaCuW6Ana2QWn0f+FRmrv+G5T7htWqPZ5OYZo/f3bwO9S+vaEEfKrmpgIR7mAkIYoyO2xRHdHiG2HUM0dWfFYeV6Y8EILMvhF98V0hQ7NhSnGVoTjQm5V+V5lR4WgGiwM8oEFLOd1Vg5y0Po6EzQqS8HfSQeq1zxQ0Sxd91mda/p5jj2/fDizd8TQjRE9yVV3yQ+3Ctkvee6AgDy8fC9yZMJvgfjyuTvmsaFlQnElrZu599N8lWfunk7fGgq0iniFZ955SCveZcdLzhuWukU3P+gEmRCFxJKtu2QH7DEDbJ0QTJ9YzxNk3vDm2MtYycYfHOH/6Jh7YK0f92VTJvaFrItGXrELmOE27W1PJogs3fSjKjPdXj8ZXfxIY0WdK9ZFGSSam9eCs24cjuPINRG+E7PsN/51V9IOPsW5a9srfOZ4VgbojsFQHXZbAmaXn1IUvitlbJFijeC4aJ1BMr4SdXIPGRRISZBO1FfwJesMvjEgBBV8FOa5gb0zGSBxXh7nO9++dK/6fu3v5MT7kz98wIN0XPpMUmzY41ZXv57fGUmVmfn+k5HAgILolqygHIefadnUrTCeG7KALH/4hBi2uLe3rodn5xTMg2ulZuxp33H3JFrlCQdRaqp8Nn5QGZDQiGwmHusd6wD1H1PIs0ic8jqNtjA8fGqqTLK7TRe5jVQzei7pPueWdI+HZJPXf6yYU/AW22LE1DIUQm6ToQso7lEa4HrfmzvFPsWWvWulz56Umtzu5SZLWa1rmlFo=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf08d4c6-e8cc-4918-48b2-08db037bf3f5
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2023 11:11:51.4980
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lEB4eOHGhjk8AirCDhECMpqWOgGhVWyNmAORn2uxPmq078PExrElS71y8Z6kCHGzem/6CH8DlCIs4y9TDSvT2A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5792
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-31_06,2023-01-31_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 suspectscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2301310098
+X-Proofpoint-GUID: PHg4f8eVNvQFyzqekUyE-WPPxOzGCbbq
+X-Proofpoint-ORIG-GUID: PHg4f8eVNvQFyzqekUyE-WPPxOzGCbbq
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    7c46948a6e9c Merge tag 'fs.fuse.acl.v6.2-rc6' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=114b21e1480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c8d5c2ee6c2bd4b8
-dashboard link: https://syzkaller.appspot.com/bug?extid=12ccac7f251e18746c4c
-compiler:       Debian clang version 13.0.1-6~deb11u1, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/cc51645b6401/disk-7c46948a.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/be036b5604a3/vmlinux-7c46948a.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/274f5abf2c8f/bzImage-7c46948a.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+12ccac7f251e18746c4c@syzkaller.appspotmail.com
-
-		inode generation 0 size 0 mode 100755
-	item 13 key (261 12 256) itemoff 3250 itemsize 15
-BTRFS error (device loop2): block=5361664 write time tree block corruption detected
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 18620 at fs/btrfs/disk-io.c:377 csum_one_extent_buffer+0x416/0x4e0
-Modules linked in:
-CPU: 1 PID: 18620 Comm: syz-executor.2 Not tainted 6.2.0-rc5-syzkaller-00047-g7c46948a6e9c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/12/2023
-RIP: 0010:csum_one_extent_buffer+0x416/0x4e0 fs/btrfs/disk-io.c:376
-Code: ef 48 c7 c6 e0 58 39 8b 48 8b 54 24 38 4c 89 f9 49 89 d8 31 c0 e8 3a a8 24 07 41 bd 8b ff ff ff e9 e2 fe ff ff e8 5a 94 00 fe <0f> 0b e9 89 fe ff ff 89 d9 80 e1 07 38 c1 0f 8c 3b fd ff ff 48 89
-RSP: 0018:ffffc90016616da0 EFLAGS: 00010287
-RAX: ffffffff838b4716 RBX: fffffffffffffffa RCX: 0000000000040000
-RDX: ffffc90005a61000 RSI: 0000000000035286 RDI: 0000000000035287
-RBP: ffffc90016616e90 R08: ffffffff838b46b3 R09: fffff52002cc2d39
-R10: fffff52002cc2d39 R11: 1ffff92002cc2d38 R12: dffffc0000000000
-R13: 00000000ffffff8b R14: ffff8880759f005f R15: ffff8880759f0058
-FS:  00007fb9113fe700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb909fdd718 CR3: 0000000075763000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btree_csum_one_bio+0x46a/0x6b0 fs/btrfs/disk-io.c:809
- btrfs_submit_metadata_bio+0x1a5/0x590 fs/btrfs/disk-io.c:860
- submit_one_bio+0x2f7/0x490 fs/btrfs/extent_io.c:156
- submit_write_bio fs/btrfs/extent_io.c:184 [inline]
- btree_write_cache_pages+0x18e3/0x1b90 fs/btrfs/extent_io.c:2966
- do_writepages+0x3c3/0x680 mm/page-writeback.c:2581
- filemap_fdatawrite_wbc+0x11e/0x170 mm/filemap.c:388
- __filemap_fdatawrite_range mm/filemap.c:421 [inline]
- filemap_fdatawrite_range+0x175/0x200 mm/filemap.c:439
- btrfs_write_marked_extents+0x2b0/0x4d0 fs/btrfs/transaction.c:1091
- btrfs_sync_log+0x8e8/0x29d0 fs/btrfs/tree-log.c:2969
- btrfs_sync_file+0xe3f/0x1190 fs/btrfs/file.c:1953
- vfs_fsync_range fs/sync.c:188 [inline]
- vfs_fsync fs/sync.c:202 [inline]
- do_fsync fs/sync.c:212 [inline]
- __do_sys_fdatasync fs/sync.c:225 [inline]
- __se_sys_fdatasync fs/sync.c:223 [inline]
- __x64_sys_fdatasync+0xb1/0x100 fs/sync.c:223
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fb91288c0c9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb9113fe168 EFLAGS: 00000246 ORIG_RAX: 000000000000004b
-RAX: ffffffffffffffda RBX: 00007fb9129abf80 RCX: 00007fb91288c0c9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000008
-RBP: 00007fb9128e7ae9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffe9fa30b4f R14: 00007fb9113fe300 R15: 0000000000022000
- </TASK>
+On 1/27/23 21:32, David Sterba wrote:
+> In commit 083bd7e54e8e ("btrfs: move the printk and assert helpers to
+> messages.c") btrfs_assertfail got un-inlined. This means that assertion
+> failures would all report as messages.c:259 as below, so make it inline
+> again.
+> 
+>    [403.246730] assertion failed: refcount_read(&block_group->refs) == 1, in fs/btrfs/block-group.c:4259
+>    [403.247935] ------------[ cut here ]------------
+>    [403.248405] kernel BUG at fs/btrfs/messages.c:259!
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Hmm. We have the line number shown from the assert as block-group.c:4259 
+here.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+messages.c:259 is from the BUG() called by btrfs_assertfail().
+
+Commit 083bd7e54e8e didn't introduce it. Here is some random example of 
+calling the ASSERT() from 2015.
+
+------------------------
+commit 67c5e7d464bc466471b05e027abe8a6b29687ebd
+<snap>
+     [181631.208236] BTRFS: assertion failed: 0, file: 
+fs/btrfs/volumes.c, line: 2622
+     [181631.220591] ------------[ cut here ]------------
+     [181631.222959] kernel BUG at fs/btrfs/ctree.h:4062!
+------------------------
+
+
+
+>   #ifdef CONFIG_BTRFS_ASSERT
+> -void __cold btrfs_assertfail(const char *expr, const char *file, int line);
+
+> +static inline void __cold __noreturn btrfs_assertfail(const char *expr,
+
+Further, this won't make all the calls to btrfs_assertfail() as inline 
+unless __always_inline is used.
+
+Thanks, Anand
