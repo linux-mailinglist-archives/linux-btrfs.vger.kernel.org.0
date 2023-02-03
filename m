@@ -2,70 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D208A688A7C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Feb 2023 00:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23823688BAC
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Feb 2023 01:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbjBBXJF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Feb 2023 18:09:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36212 "EHLO
+        id S232037AbjBCAVi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Feb 2023 19:21:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbjBBXJE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Feb 2023 18:09:04 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823737E072
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Feb 2023 15:09:02 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id k13so3544190plg.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Feb 2023 15:09:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VqUjNnlLe9QrrnNqYH4vz9I08V1g+NAtbBxDawrBf84=;
-        b=tiXwB/YFL3/UVZmPjd1ZEHaio2kX0wKkQg/TK4XDyG5MggLDGQDJfWKEahDjvcVnDG
-         6olYuokRsSvkdJTx6NLxKE1iynQEBqIsubNzoIAZ81PLPSyV8X6yyr5yf3t+HAgsR9TU
-         AkeudAKrJPQJfqwzuJGdQqCsR3q6FfySNI5pTmzmZFWjadchc/wgnWagVWIb7KKRU9yP
-         amAQDGUyxDWKtYtYMMneMgVNvubuRf7HPQiN6fejbHo63bkHRKG9WFiiWUaHTiqv9lMF
-         In7o7qTQiJGykaRwM0RWpUxVPpcJTQ8wFN83IMVfu7hdpzyHzadr6ilm+dGarBCmTPsQ
-         Mh/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VqUjNnlLe9QrrnNqYH4vz9I08V1g+NAtbBxDawrBf84=;
-        b=H2i8fN4VCsTbPVrTgoDdCOU+Gb6ZJanbAnbFK8N//GspzgtT8Wi7D9cP5duQRmjz6i
-         /K84H5XQ0YGOcDDF+Y/iSGLyg3WfEqHcTbECXk4KVq38r37pVr6IoTxmW+uqhK5ztYvz
-         0y2ADzQhDJZTvYDwUx7RQIEej2UVDORdTfr+L3GstC0k0KRgzVVRDWun6H11dAenMSG/
-         L5qFs0OpEKr/9zVZC9YKX7dPynSRY6uMU46UrWNVINjl1WraeFkPQLhL/Rpe5706Xyfc
-         7x+gId3F4gfCQxPyczuRBVYQqqeh1a86+l3cUogT4X9Qtby5Ghu7QwqWpco9NDK6qdmg
-         R7bg==
-X-Gm-Message-State: AO0yUKWVThAwbbD1j2a7ZweTMm5Mqhy4KSABDoYrlzkFSS1eEtZM6I+A
-        uQVzqgsDwaFE5GLflEjc7jMgOQ==
-X-Google-Smtp-Source: AK7set945rckBnElMZ3rf+zcsuttJnQ5VSAsDV2YHSLk1UFGwfYjX3yosnFoI7MQkt1MREnq7QE/VA==
-X-Received: by 2002:a05:6a21:1586:b0:bd:b061:9527 with SMTP id nr6-20020a056a21158600b000bdb0619527mr7590449pzb.4.1675379341884;
-        Thu, 02 Feb 2023 15:09:01 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id o6-20020a637306000000b004d346876d37sm300348pgc.45.2023.02.02.15.09.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Feb 2023 15:09:01 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <DCEDB8BB-8D10-4E17-9C27-AE48718CB82F@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_8DFD1D9F-16F3-4D17-914C-8298AD90A8D5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 0/5] Fix a minor POSIX conformance problem
-Date:   Thu, 2 Feb 2023 16:08:49 -0700
-In-Reply-To: <20230202204428.3267832-1-willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Hugh Dickins <hughd@google.com>,
-        linux-kernel@vger.kernel.org, fstests@vger.kernel.org
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-References: <20230202204428.3267832-1-willy@infradead.org>
-X-Mailer: Apple Mail (2.3273)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229974AbjBCAVh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Feb 2023 19:21:37 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D46F751
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Feb 2023 16:21:35 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MtOKc-1oUGrW0wrG-00usKM; Fri, 03
+ Feb 2023 01:21:28 +0100
+Message-ID: <82bbadba-e57a-912a-fca8-73fd65bca2f4@gmx.com>
+Date:   Fri, 3 Feb 2023 08:21:25 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.0
+Subject: Re: [PATCH] btrfs-progs: receive: fix a corruption when decompressing
+ zstd extents
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+Cc:     Filipe Manana <fdmanana@suse.com>
+References: <556529ebcca0b5404ef0ce284d5ecccd2e2ae660.1675353238.git.fdmanana@suse.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <556529ebcca0b5404ef0ce284d5ecccd2e2ae660.1675353238.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:WSZY0vRT/vgaI1txqQ3hyCtlG0yPfit7NnDXj0CbM/PdXcmHwrl
+ bN4NTC1kRu05PC9tzufXHR9r3yT/fMxsBKyIMnwCCDg/PyvJrs/jhCGI9GIuq/eQKD9nCZl
+ Ug4hQzntTY2LP4aU/JmFqtCKweApl4ty4zYB10Scs4aqEbtY6H6YaVpWUtpsY0PD3AK4cqu
+ Nq4O21o+GVw01Zek73xqw==
+UI-OutboundReport: notjunk:1;M01:P0:TfgvCjkY8nk=;TTH8+8Rx0bvC0bJl4a34yYqONZe
+ 5ixN/j+rANWZuFZTs5EmFZ9XNUe+6Atw7QLcbyGBr3hpc19mrEArfWNbCa8MgD92YGHqG3rwP
+ WHvtAWKeee8ilTdp9pT7VUkQTV+DXB4ih3+cR+hkBVEgyfw+cFo+Vl4dEkciTnsHGF8Q5TOCy
+ G/7Frh7MwEiL3ILPhwJwjcqt1bQXNI9Yivl8uJICxf/nD+p0zm9T2vyl+akHaZnX4DsBi2aVP
+ xBY4mwIbBKTygAim7KFdqn6lFzqf0msy5nLdaWvywQw9BdtZvcI4MqF9w4GrhsP59DwGFbzdb
+ fvJYL4w1ebhwR1ho9AIqym7l6g+T6n4gFsJZJlRz4bD+qQzjtxmh+2XOREh9g6FptGDcQp71v
+ 0pjD1ghfiWcHOpT7ingoxTAXDXRIzyepnAPKnAdZUyMzHj3Xs4vyrfmPAwd38zYh8trH+vOQ9
+ RlxTjohgL6fzcP6PmVNEhRz67Au+EFfJCSfGu/UDa+Sg1PPe7ERWNH/FzEWFUUtrdiaDSfORw
+ 8AhYPR87BZrwQY+exeLJHONI/ECWtktrzZzhv4BgrgDeqUhJJ9yCtUOHwRUM6ViWub3I97ZGX
+ 3TenoZ7EjRHIuzCn8zXUG5YceGDUxtKsHE5xr5/3LexVgPEUcAYCkbWQj88Oei8TgKr/B0ZrF
+ /lPqCgcWnyhaQm+54KoDc5/6J/jW9aSenHsiGE8IjfmiHbFsKcPVbilxH3srabDAaZt8hDKoy
+ N3d77ZO44eX7uhvvxoQw8pijlPvJBafGEF2dAzAbflr8AajHMuKgd4rBvv5OFjAXZyDbEMv1J
+ FUf9REwfxSOVuPW7+KdVOI+LSlOAGOc5QSawGnaC55uw4hOb2xLA5oc1L2ifQR8VvtZUuLC4X
+ kYEJfpRoInfMhHWHhSiW9CiO46OOgfCE0bb6Tr09LTdcOsQ4pkxKGl4Kn6FHG7D0x3bSxrYHg
+ 1TXEQENZtuTamRn7/ceQRkh5Nyo=
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_PDS_OTHER_BAD_TLD autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -73,90 +62,140 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
---Apple-Mail=_8DFD1D9F-16F3-4D17-914C-8298AD90A8D5
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
 
-On Feb 2, 2023, at 1:44 PM, Matthew Wilcox (Oracle) =
-<willy@infradead.org> wrote:
->=20
-> POSIX requires that on ftruncate() expansion, the new bytes must read
-> as zeroes.  If someone's mmap()ed the file and stored past EOF, for
-> most filesystems the bytes in that page will be not-zero.  It's a
-> pretty minor violation; someone could race you and write to the file
-> between the ftruncate() call and you reading from it, but it's a bit
-> of a QOI violation.
+On 2023/2/2 23:59, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Before decompressing, we zero out the content of the entire output buffer,
+> so that we don't get any garbage after the last byte of data. We do this
+> for all compression algorithms. However zstd, at least with libzstd 1.5.2
+> on Debian (version 1.5.2+dfsg-1), the decompression routine can end up
+> touching the content of the output buffer beyond the last valid byte of
+> decompressed data, resulting in a corruption.
 
-Is it possible to have mmap return SIGBUS for the writes beyond EOF?
-On the one hand, that might indicate incorrect behavior of the =
-application,
-and on the other hand, it seems possible that the application doesn't
-know it is writing beyond EOF and expects that data to be read back OK?
+I'm wondering if this is a bug in the zstd implementation, or it's a 
+documented behavior?
 
-What happens if it is writing beyond EOF, but the block hasn't even been
-allocated because PAGE_SIZE > blocksize?
+As to me, the behavior of touching things beyond the decompressed size 
+is very anti-instinct.
 
-IMHO, this seems better to stop the root of the problem (mmap() allowing
-bad writes), rather than trying to fix it after the fact.
+Thus if it's the former case, we need to report this to zstd guys.
 
-Cheers, Andreas
+Otherwise this looks good to me.
 
-> I've tested xfs (passes before & after), ext4 and tmpfs (both fail
-> before, pass after).  Testing from other FS developers appreciated.
-> fstest to follow; not sure how to persuade git-send-email to work on
-> multiple repositories
->=20
-> Matthew Wilcox (Oracle) (5):
->  truncate: Zero bytes after 'oldsize' if we're expanding the file
->  ext4: Zero bytes after 'oldsize' if we're expanding the file
->  tmpfs: Zero bytes after 'oldsize' if we're expanding the file
->  afs: Zero bytes after 'oldsize' if we're expanding the file
->  btrfs: Zero bytes after 'oldsize' if we're expanding the file
->=20
-> fs/afs/inode.c   | 2 ++
-> fs/btrfs/inode.c | 1 +
-> fs/ext4/inode.c  | 1 +
-> mm/shmem.c       | 2 ++
-> mm/truncate.c    | 7 +++++--
-> 5 files changed, 11 insertions(+), 2 deletions(-)
->=20
-> --
-> 2.35.1
->=20
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_8DFD1D9F-16F3-4D17-914C-8298AD90A8D5
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmPcQoIACgkQcqXauRfM
-H+CNdBAAhriBgXO1g+TzG5HbJSljgcpvSaRMy+yNpMbCc6Fp/C3J3xQPJReOJDee
-5YOaqYEwU2ap/xwIjl+OtXpEy/zq8qwO9LCofufBtMH4akhS26i8lfWoXzeo8MzH
-+ibRkNMk7vamH8PT46gwMLNldqk5pt7Dxwu/XarWsDg98JxZVQvvmPJIcXtgsETA
-GLFrhm+SudzQVCeBGJS0I4ZU4eDNpJxiExlCpkR04wgHE3GvvQT2ehVjcQXasqwg
-z2u9r0VwflncAmvkgIpylxOXmSX44jwpnahJwk3dAP/DmdYRf3kQVooglndm5sAF
-aAj6kT/mVNKdg+GJSIHjnTJjCM7BFkyFxi06xKVWjSpfYvgA5PoY8egV20kHpA3i
-wRbxnoS3u5fxEx1KHj3HVnn7vhBnRsSC3AnZjLlTvtuqp7xKNMt5S5JnADLGZ6Ud
-wNrl27/8LceOvSG7E/9yOmzLUvbrzZoWSRRYIymwF/6H5g0Ki4voGImZ0l+Yn4OW
-sbgwcyJ1pq5Py4PgKY+iBPK61Gtk+sTOsfC3I2KWUy+7mAfQ23pfGMjY3EUNB5eC
-EXuEnYw1ePIXt2MSN9yPJLz5r882eLrdbkp0nD1jx85OJFFgJvlcZ0rmPyGpBrT7
-ZPq3/kKDUTwYJXO4cW+EuNV1rcTu2YttzPLBWzECgMhmXpdz0vI=
-=TgpS
------END PGP SIGNATURE-----
-
---Apple-Mail=_8DFD1D9F-16F3-4D17-914C-8298AD90A8D5--
+Thanks,
+Qu
+> 
+> Example reproducer:
+> 
+>     $ cat test.sh
+>     #!/bin/bash
+> 
+>     DEV=/dev/sdj
+>     MNT=/mnt/sdj
+> 
+>     rm -f /tmp/send.stream
+> 
+>     umount $DEV &> /dev/null
+>     mkfs.btrfs -f $DEV &> /dev/null || echo "MKFS failed!"
+>     mount -o compress=zstd $DEV $MNT
+> 
+>     # File foo is not sector size aligned, 127K.
+>     xfs_io -f -c "pwrite -S 0xab 0 3" \
+>               -c "pwrite -S 0xcd 3 130042" \
+>               -c "pwrite -S 0xef 130045 3" $MNT/foo
+> 
+>     # Now do an fallocate that increases the size of foo from 127K to 128K.
+>     xfs_io -c "falloc 0 128K " $MNT/foo
+> 
+>     btrfs subvolume snapshot -r $MNT $MNT/snap
+> 
+>     btrfs send --compressed-data -f /tmp/send.stream $MNT/snap
+> 
+>     echo -e "\nFile data in the original filesystem:\n"
+>     od -A d -t x1 $MNT/snap/foo
+> 
+>     umount $MNT
+>     mkfs.btrfs -f $DEV &> /dev/null || echo "MKFS failed!"
+>     mount $DEV $MNT
+> 
+>     btrfs receive --force-decompress -f /tmp/send.stream $MNT
+> 
+>     echo -e "\nFile data in the new filesystem:\n"
+>     od -A d -t x1 $MNT/snap/foo
+> 
+>     umount $MNT
+> 
+> Running the reproducer gives:
+> 
+>     $ ./test.sh
+>     (...)
+>     File data in the original filesystem:
+> 
+>     0000000 ab ab ab cd cd cd cd cd cd cd cd cd cd cd cd cd
+>     0000016 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
+>     *
+>     0130032 cd cd cd cd cd cd cd cd cd cd cd cd cd ef ef ef
+>     0130048 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     *
+>     0131072
+>     At subvol snap
+> 
+>     File data in the new filesystem:
+> 
+>     0000000 ab ab ab cd cd cd cd cd cd cd cd cd cd cd cd cd
+>     0000016 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
+>     *
+>     0130032 cd cd cd cd cd cd cd cd cd cd cd cd cd ef ef ef
+>     0130048 cd cd cd cd 00 00 00 00 00 00 00 00 00 00 00 00
+>     0130064 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     *
+>     0131072
+> 
+> The are 4 bytes with a value of 0xcd instead of 0x00, at file offset
+> 127K (130048).
+> 
+> Fix this by explicitly zeroing out the part of the output buffer that was
+> not used after decompressing with zstd.
+> 
+> The decompression of compressed extents, sent when using the send v2
+> stream, happens in the following cases:
+> 
+> 1) By explicitly passing --force-decompress to the receive command, as in
+>     the reproducer above;
+> 
+> 2) Calling the BTRFS_IOC_ENCODED_WRITE ioctl failed with -ENOTTY, meaning
+>     the kernel on the receiving side is old and does not implement that
+>     ioctl;
+> 
+> 3) Calling the BTRFS_IOC_ENCODED_WRITE ioctl failed with -ENOSPC;
+> 
+> 4) Calling the BTRFS_IOC_ENCODED_WRITE ioctl failed with -EINVAL.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>   cmds/receive.c | 9 +++++++++
+>   1 file changed, 9 insertions(+)
+> 
+> diff --git a/cmds/receive.c b/cmds/receive.c
+> index a016fe4e..1d623ae3 100644
+> --- a/cmds/receive.c
+> +++ b/cmds/receive.c
+> @@ -1080,6 +1080,15 @@ static int decompress_zstd(struct btrfs_receive *rctx, const char *encoded_buf,
+>   			return -EIO;
+>   		}
+>   	}
+> +
+> +	/*
+> +	 * Zero out the unused part of the output buffer.
+> +	 * At least with zstd 1.5.2, the decompression can leave some garbage
+> +	 * at/beyond the offset out_buf.pos.
+> +	 */
+> +	if (out_buf.pos < out_buf.size)
+> +		memset(unencoded_buf + out_buf.pos, 0, out_buf.size - out_buf.pos);
+> +
+>   	return 0;
+>   }
+>   #endif
