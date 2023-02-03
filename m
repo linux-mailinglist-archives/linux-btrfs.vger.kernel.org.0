@@ -2,220 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5820F689F5A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Feb 2023 17:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CDA689F7F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Feb 2023 17:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjBCQfR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Feb 2023 11:35:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
+        id S233171AbjBCQmU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 3 Feb 2023 11:42:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbjBCQfQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Feb 2023 11:35:16 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25ECE10D4;
-        Fri,  3 Feb 2023 08:35:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B66E861F6F;
-        Fri,  3 Feb 2023 16:35:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1656EC433D2;
-        Fri,  3 Feb 2023 16:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675442114;
-        bh=LAFGFgePgf3ook4iBuOc/zox8M9eHm7XWKurXaYi9tU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=roStwUNZB17qeESPC5wt3x03laInHjWwbx3Ss06y3w9LYsMErvt627S9H7FpxMb1m
-         Og+GQc4Hpj5HsAu8K4dXX0QoT+twn1yLxlSE6JLBp+LjSpNqETOFOCz/KUcqkkQu97
-         2IIYFkvcWCfmrPXr+dppMqQUN7rSSUDrzje8gJz9RqamD68la3WroR4sjygBsewLvj
-         sXxDhRD0pcMI1Lp6yacKN1H0Jq8ak1v01dQ78Ov4xC3Z7W6BAqFbq+DwgO6x7BiP0R
-         mYKw1rfnsJ76aTMAA2yWAI4ZhazhlVOj5D4s+GY4aIaJKi81C2punu2APFLsVghkBa
-         sf7gha6q7Wi6Q==
-Date:   Fri, 3 Feb 2023 08:35:13 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Hugh Dickins <hughd@google.com>,
-        linux-kernel@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH 6/5] generic: test ftruncate zeroes bytes after EOF
-Message-ID: <Y903wcB2kAWwyR+2@magnolia>
-References: <20230202204428.3267832-1-willy@infradead.org>
- <20230202204428.3267832-7-willy@infradead.org>
+        with ESMTP id S233074AbjBCQmR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Feb 2023 11:42:17 -0500
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140B71E5C8
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Feb 2023 08:42:10 -0800 (PST)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 149AE8210D9
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Feb 2023 16:42:10 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 132A1820C73
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Feb 2023 16:42:08 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1675442529; a=rsa-sha256;
+        cv=none;
+        b=j7ZFLYen3Ty8QHxx995rgjRir3hCH/FWY4YGst3l6Np3fFAdx0ft+dPqAok9RG6IPiEGzr
+        PuVeKjFxO7+Ltppfi1bYhuvB/hxCsxImm2L8vpziZKzMYR4xEOo/cI8dqxPUC6bNmFpfRI
+        cMbRunLqdbma6EbjKfK0cUme2qAOIjXl+o2ilS5/S+SOOhgI+cFmCAm5E5K6i+lbFwIRwl
+        bd0iLUM/3UXH8KDDegYu2E04xa6JNalkvUh9foyq2aTr8cKCPOpcjRSlMbeFouZV1SLw0D
+        3paB/I+RZmbMiHKKYwC0x/A8z9CMdKkIllLp1XOI9syvM2SA24XcQyU0RW712w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1675442529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0A18oe/prORsVDQpA85SRyMKpWM+EwkqQfyS9PnHmWY=;
+        b=JKWkBqkTHO5e7htjtO2etVSm6kFYjldK6IWetkhsVWX/BeLqLDT+ms5pzWzpapqdtzGkfT
+        s4r70mj7SPudYX3VHEiW3Dzy6OJ/McL4xoNg9oAsvJuz6U+hp4sgbxdNreUynVpY0SgfUt
+        dr0yFAPaOHy0H/KUiDEhJjgV9S0aZe9UwlTW2u8npzSqDOoBF+3Q33kjKe2m+ObGdqZ8hn
+        fh/hNhjVOstc6HJViA9kWbV/uvH2VPmXX1n5eN8X2raNvuJiHed0bz3fzQFDw7YF5UcApD
+        /W8+4ZT/5FoDH0vzadfxc8h3lVkLO6etyF41XBewn9yvkHVqiHgC6TNPhmYQjg==
+ARC-Authentication-Results: i=1;
+        rspamd-5fb8f68d88-m8d78;
+        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Belong-Eyes: 66c99ae8782f7fcd_1675442529558_206761308
+X-MC-Loop-Signature: 1675442529558:1527224075
+X-MC-Ingress-Time: 1675442529557
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.99.229.28 (trex/6.7.1);
+        Fri, 03 Feb 2023 16:42:09 +0000
+Received: from p5b071f3f.dip0.t-ipconnect.de ([91.7.31.63]:57610 helo=heisenberg.fritz.box)
+        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <calestyo@scientia.org>)
+        id 1pNz8Y-0000UH-AL
+        for linux-btrfs@vger.kernel.org;
+        Fri, 03 Feb 2023 16:42:07 +0000
+Message-ID: <10fd619ccbe568df4344b6b1d93f061bc493d396.camel@scientia.org>
+Subject: back&forth send/receiving?
+From:   Christoph Anton Mitterer <calestyo@scientia.org>
+To:     linux-btrfs@vger.kernel.org
+Date:   Fri, 03 Feb 2023 17:42:02 +0100
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230202204428.3267832-7-willy@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AuthUser: calestyo@scientia.org
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        HAS_X_OUTGOING_SPAM_STAT,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 08:44:28PM +0000, Matthew Wilcox (Oracle) wrote:
-> https://pubs.opengroup.org/onlinepubs/9699919799/functions/ftruncate.html
-> specifies that "If the file size is increased, the extended area shall
-> appear as if it were zero-filled."  Many filesystems do not currently
-> do this for the portion of the page after EOF.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  .gitignore            |  1 +
->  src/Makefile          |  2 +-
->  src/truncate-zero.c   | 50 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/707     | 31 +++++++++++++++++++++++++++
->  tests/generic/707.out |  2 ++
->  5 files changed, 85 insertions(+), 1 deletion(-)
->  create mode 100644 src/truncate-zero.c
->  create mode 100755 tests/generic/707
->  create mode 100644 tests/generic/707.out
-> 
-> diff --git a/.gitignore b/.gitignore
-> index a6f433f1..6aa5bca9 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -169,6 +169,7 @@ tags
->  /src/test-nextquota
->  /src/testx
->  /src/trunc
-> +/src/truncate-zero
->  /src/truncfile
->  /src/unwritten_mmap
->  /src/unwritten_sync
-> diff --git a/src/Makefile b/src/Makefile
-> index afdf6b30..83ca11ac 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -19,7 +19,7 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
->  	t_ofd_locks t_mmap_collision mmap-write-concurrent \
->  	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
->  	t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale \
-> -	t_mmap_cow_memory_failure fake-dump-rootino
-> +	t_mmap_cow_memory_failure fake-dump-rootino truncate-zero
->  
->  LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
->  	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-> diff --git a/src/truncate-zero.c b/src/truncate-zero.c
-> new file mode 100644
-> index 00000000..67f53912
-> --- /dev/null
-> +++ b/src/truncate-zero.c
-> @@ -0,0 +1,50 @@
+Hey.
 
-Needs to have a SPDX header and the customary Oracle copyright.
+I've had asked[0] this a while ago already and back then the conclusion
+seems to have been that it wasn't (yet) possible but could in principle
+be done.
 
-> +#include <fcntl.h>
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include <sys/mman.h>
-> +#include <unistd.h>
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	char *buf;
-> +	int i, fd;
-> +
-> +	if (argc != 2) {
-> +		fprintf(stderr, "Usage: %s <file>\n", argv[0]);
-> +		return 1;
-> +	}
-> +
-> +	fd = open(argv[1], O_RDWR | O_CREAT, 0644);
-> +	if (fd < 0) {
-> +		perror(argv[1]);
-> +		return 1;
-> +	}
-> +
-> +	if (ftruncate(fd, 1) < 0) {
-> +		perror("ftruncate");
-> +		return 1;
-> +	}
-> +
-> +	buf = mmap(NULL, 1024, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-> +	if (buf == MAP_FAILED) {
-> +		perror("mmap");
-> +		return 1;
-> +	}
-> +
-> +	memset(buf, 'a', 10);
-> +
-> +	if (ftruncate(fd, 5) < 0) {
-> +		perror("ftruncate");
-> +		return 1;
-> +	}
-> +
-> +	if (memcmp(buf, "a\0\0\0\0", 5) == 0)
-> +		return 0;
-> +
-> +	fprintf(stderr, "Truncation did not zero new bytes:\n");
-> +	for (i = 0; i < 5; i++)
-> +		fprintf(stderr, "%#x ", buf[i]);
-> +	fputc('\n', stderr);
-> +
-> +	return 2;
-> +}
-> diff --git a/tests/generic/707 b/tests/generic/707
-> new file mode 100755
-> index 00000000..ddc82a9a
-> --- /dev/null
-> +++ b/tests/generic/707
-> @@ -0,0 +1,31 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2023 Matthew Wilcox for Oracle.  All Rights Reserved.
-> +#
-> +# FS QA Test 707
-> +#
-> +# Test whether we obey this part of POSIX-2017 ftruncate:
-> +# "If the file size is increased, the extended area shall appear as if
-> +# it were zero-filled"
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick posix
-> +
-> +_supported_fs generic
-> +_require_test
-> +_require_test_program "truncate-zero"
-> +
-> +test_file=$TEST_DIR/test.$seq
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $test_file
-> +}
-> +
-> +$here/src/truncate-zero $test_file > $seqres.full 2>&1 ||
-> +	_fail "truncate zero failed!"
+The idea was that one main usage of btrfs' send/receive is probably
+making incremental backups.
 
-Omit the _fail here because any extra stdout/stderr output that is not
-in the .out file suffices to record the test as failed.
+So one might have a setup, where a master is send/received to multiple
+copies of that like in:
 
-_fail is only useful if you need to exit the shell script immediately.
+master-+-> copy1
+       |-> copy2
+       \-> copy3
 
-> +
-> +echo "Silence is golden"
+with those all being different storage mediums.
 
-It's customary (though not required) to put "silence is golden" before
-"but my eyes still see"^W^W^W^W^Wthe test starts running programs.
+At some point, master's HDD may e.g. break or at least reach an age
+where one wants to replace it with a new one.
+So either one would make e.g. copy1 the new master, or buy new HDD for
+that, while keeping all the other copyN.
 
-Other than those minor things, this looks reasonable to me.
+Problem is now, how to best continue with the above schema?
 
---D
+Either one just uses dd and copy over the old master to the new one
+(keeping the very same btrfs).
+This of course doesn't work if the old master really broke. And even if
+it didn't it may be impractical (consider e.g. a 20 TB HDD which is
+only half filled - why copying 10TB of empty space).
 
-> +status=0
-> +exit
-> diff --git a/tests/generic/707.out b/tests/generic/707.out
-> new file mode 100644
-> index 00000000..8e57a1d8
-> --- /dev/null
-> +++ b/tests/generic/707.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 707
-> +Silence is golden
-> -- 
-> 2.35.1
-> 
+
+What one would IMO want is, that send/receive also works like that:
+a) copy1/new-master-+-> copy2
+                    |-> copy3
+                    \-> copy4 (new)
+
+b) once:
+   copy1 ---> new-master
+
+   following that: 
+   new-master-+-> copy1
+              |-> copy2
+              \-> copy3
+
+
+Did anything change with respect to v2 send/receive? Or would it be
+possible to get such feature sooner or later? :-)
+
+
+Thanks,
+Chris.
+
+
+
+[0] https://lore.kernel.org/linux-btrfs/157ed91bb66820d1fef89eb05d00e65c25607938.camel@scientia.net/
