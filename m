@@ -2,163 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53450688FD4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Feb 2023 07:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8393F689149
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Feb 2023 08:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbjBCGqy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Feb 2023 01:46:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40226 "EHLO
+        id S232406AbjBCHy5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Feb 2023 02:54:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232690AbjBCGq0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Feb 2023 01:46:26 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on0602.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::602])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D6D92EF7
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Feb 2023 22:44:31 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QoLJsO5C+YgSpYzJTAhR0hfgl0kDV8JPB9xLbq1OFF6r9Krfw7Cec6T/1+mU3vSAi8FC9/PMEM3NKD+RYli0YxVLJeilJagTSqEuGhKuU6BI/RFLfHK3ZNiLq36HkxfNdSHqo/kZVLKGqJhRK9NaRyAomhrWmNQsWFrvLw2yPYSHsrmlE3AC07nx3LAFmpnKVWEWp3x/h0wc8VJ8Bn4f9hoJIj31V/CjOjltwlsbtDTPN7qPnUFRu1HCQ+YiRDVu1G0zj8BNWSee5GL8jpCK/z/HjMEdCvpDfnjCJIPI0Y5xpq/0iLWf1y15oCq43ioUYzBRrfJh0zQTHo+pzkpe5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rnePwCDItWVQ9s6nf/J4NuDCck1FlnfQbge31DXXvF0=;
- b=HoFkha3XqfaH18GK/aUSOk5u79XFlat4np7dTTvpQ9ZGDNOVSrwxsNdMGcbyCl9q8yDvjpho8utPkzz39QbXk6D3Wh33byvmUgiYmUAd8Iv4QH7GmSYVL1zWxUbenTx2whUAXwDS/8pNio7NKjPCfq1Rd2pq8Mv62Ssj4z5L05u1VOSYCR8PLnIxxcixUQb6q/S/gMWy49Uh5cXDeZqnqHx37G9iYjp8Ri3P+LxjLcWpePZ68EIyrVC9mc29cIgeKjZcuArwgdKK4KUWhyC3D2/HdAt5njo3ejVXfyacpWvpytU5+7VLljiC25O9u7goTsF5BcAOggHlqOSUN3fRTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rnePwCDItWVQ9s6nf/J4NuDCck1FlnfQbge31DXXvF0=;
- b=ZYbyo/zQYGL1keCfdIfBeCF1SLv0gy0OFJ72GZ6Vj9avE9mRCT/p6t1Vhnpcj/Su4sUndEXPvMTn8piUoYWdfTgYVsWlmMptnWYGu2kZepf3woJliWRK0aw2RCNc5II6kuQsg+DiiPygVkk6LmoXFsWwSTm7y2I1+qw06ucyxgfmZNymDzVITrjFqxGtP6E6jKQXcO39jEiwaaMb2zHl99zCWXnCAGjDJJ9tIaiM58RCVKz7A2dxUlxp9uRJ34f+DZmEJUZ+X/RAVdqdAD7sMjq+AGcy3DlsKjwxy1yY6fAP3aPIq+hpLkBOfb7hn6+OPNmyGD3lU5bFbVtI+e5LUg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by VI1PR04MB7117.eurprd04.prod.outlook.com (2603:10a6:800:12f::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.25; Fri, 3 Feb
- 2023 06:44:26 +0000
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::5c50:6906:e9a4:5b9f]) by AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::5c50:6906:e9a4:5b9f%9]) with mapi id 15.20.6064.028; Fri, 3 Feb 2023
- 06:44:26 +0000
-Message-ID: <a8891be4-a39c-8e77-2954-26c66e0d95d8@suse.com>
-Date:   Fri, 3 Feb 2023 14:44:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH 2/3] btrfs: small improvement for btrfs_io_context
- structure
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <cover.1674893735.git.wqu@suse.com>
- <a02fc8daecc6973fc928501c4bc2554062ff43e7.1674893735.git.wqu@suse.com>
- <5195283e-7e3d-6de1-75f4-d7f635bfc0ab@oracle.com>
- <61d2d841-778b-ca13-cc41-ca115b5ed287@suse.com>
- <Y9yneQhuePjT/92P@infradead.org>
-From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <Y9yneQhuePjT/92P@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR08CA0007.namprd08.prod.outlook.com
- (2603:10b6:a03:100::20) To AS8PR04MB8465.eurprd04.prod.outlook.com
- (2603:10a6:20b:348::19)
+        with ESMTP id S232195AbjBCHy4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Feb 2023 02:54:56 -0500
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F6B921AA
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Feb 2023 23:54:49 -0800 (PST)
+Received: by mail-io1-f70.google.com with SMTP id b10-20020a5ea70a000000b0071a96a509a7so2621887iod.22
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Feb 2023 23:54:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+8aDjRlQxT1MIkGir9GvF3ZnKerBquo8VWrStaKk8LM=;
+        b=lN0QjdO3jITs/A4l346PSIX2xgQPk53B+qs0Nov0PfO+ZxQUCj6bYIx+gblTzUiWi1
+         FNc/A3cz7MrVAycPhmFf5ZAjMDm7oytOzaa14sG0yZ3pWrrU4nNxoWZyKCrkUiP0Gjme
+         k8CqzZwtBJfu4uWS5T/+HESMvfmwgbgSsphWhwE5P0rPiYXzyUQlTyGIQ3AF0BxTn5Cl
+         SzC59+xbkQr8bYqSVxArxtTtN9WS0thWWjcwKrn4ug9TKZzdREOCp2r0fW/Qg64kZVsa
+         ol7nVwURR55fWPSAJckba4zi/ASMmTxulC5elIe6HJ6ijhwK3pmYO5np0E2Ab4z0G3Lt
+         xEUA==
+X-Gm-Message-State: AO0yUKXwli6F2FGVCFZ3OwlRut7L1EC2grQ3GpQjS46jbUjfkTt73uOM
+        gi3xRBluCdQaI7dI9EkQjvRyfJZQwcjD/BhppKlaHvtM5eEa
+X-Google-Smtp-Source: AK7set8zibySAFa0C58vwdioi3oc9GBTkm7K7tqdDy4bQbKWriDF/5cSAs32f/8aD+Bu2w/WRnXbD9f+ZxLVJdN2PwW7zGMw5gXH
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|VI1PR04MB7117:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8a662445-c0d9-4f98-7d02-08db05b2177a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gYdbTu/q3+u429MuxjBxDkjHDAJOkg5IhMhiFLTpFFrg67DRPzCHUAauvxs7cNMuX7yYCyUpokrZDSNCsxn/HSE3FTAnDHEnW/5lfwYLEDLNxbv9U6JBOYw5owfl3EAiP2X11GDbL/HEGBEQMlxajiO4qOOCyblthjbDcuy3prA/tm2EXLWBnfuJSM94kEDJBV0YC3r1Alkp2HawlwCQ9Tl0GqGhvTo7xXhWp4bCa6zqM7UjWqhA4KYvNtOL6Zx0/zoV1S0amah1YRzClL+cdQP6CZPB0vcNflquf8Ry8vL1FXMFQnqoDpxYyh0rTC/44WB5XUSdxRfxkbQquoH/T3almbm4wGZvmTfGvLQeDLKwTlL2TIhZU6c+XSS3fe81r+x19j1STw1F7p1Q4ereUWyW6tL6RPDrkcjz1krXYH5jaEyxUw1llogFyWhMoFrJ9sTi8CdMM4LO/zNPNml3SgFo8/fdjiMrVvuCtnT2twKGX5ipyOjZKqnv7gHSt7G4rpNW2kDbp9wVKK089e6WvPwbz+EdgA4tUqg1ILCzQCunoLYj4oirJL1mxXEBA9owYshXDysB1Ke1gVBOAJ8nveSpFuw2Faz7nrjQ/KpMffD391hzrgZBxf+sqWZrIU8FtgL10SCw7hbYf0rMHHM4ihLtrT0tj+GAL0MUHG8nDaw2ntamE/UYP4S857yQycvc+w4lqj+yHrNWbXzsUKs4vrvV5F6VQ1/2J+MzsYB5JIY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(39850400004)(346002)(136003)(366004)(376002)(396003)(451199018)(2616005)(31686004)(6512007)(186003)(6666004)(6506007)(4326008)(53546011)(5660300002)(83380400001)(8936002)(6486002)(478600001)(41300700001)(2906002)(38100700002)(316002)(86362001)(66556008)(8676002)(6916009)(36756003)(66946007)(66476007)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SytlNU5hamdDYUtmZXd3ZUt5NzB1aU84eHM4RE9VaXlmeWtERmdXeFRxb0tP?=
- =?utf-8?B?YnVxZ2pxbElacEljb21UbWswSko5Zlo4TlF4R3lIMWQyR0d2cjFHamZKa0ha?=
- =?utf-8?B?L1VDUnpiZ1BUV0orblp1Wk9ySXpOdStoVUNkSWpidDZxakpSdHdDUFBKL1BS?=
- =?utf-8?B?ZU1SS1lvbFBWeTJ6UHpZalhhSjRwa281ckt3cWZBUSs0cWNMeUxvVVhZL3Fp?=
- =?utf-8?B?MjFoeWhiOHMvWGc2WEpET0xMejc1TndrSDhjMEVablVFQ2UrdVNNRW41L2Q4?=
- =?utf-8?B?YThjMFNpM0FmYXBudkc2N3hXVXBub0E2VitZWXNTUWdiUGRMdGJVdmw0YjNL?=
- =?utf-8?B?RFEwbERjWWp4Yk9NUFVic0hRQkh5citiN0wwcEhBZlpkTk9VSG12TVhkdWov?=
- =?utf-8?B?eDhVeHNLQkRoWmoxcmFWQzV3dStnRlhBTC9aMVRCZzJUMWFTR0ZOSFRvOHFn?=
- =?utf-8?B?dkU4bGIxdFVrZlh3SFgrTGhwMDVqVTBJQzg5cjBVd0RIRlkyc1lVY2N6NEtN?=
- =?utf-8?B?TGhjWThKMzFwMmtwQnVlRG1NcE5Ta3UybkN1dTMzOEo5NDVmN1o4Uld0QUtX?=
- =?utf-8?B?REtWazhVTGRQS2w5eHEvR3U5ZFByZkVVang1VHVPSjlFTzBaUG5INzhTUU0r?=
- =?utf-8?B?NDlXdkN4cUNqNHY2ODF5bkIvbThUcGpOTkE4M3krNzArV2E3SnpXRDUxbExz?=
- =?utf-8?B?R3R3RmFzL3ZpbytkcUJWSlpOckpZUXVnSDU3Y2xTdE9kYUh5S0tOYWlpNHBO?=
- =?utf-8?B?WlB0T0J2S05zNzlsdmpnRFNqeDVuVFlnYzN6aSs2eVZ0eFl3UlY4bkpHUWNa?=
- =?utf-8?B?UW9YcUtDSTBERFdmc1dId2xnUC9PeWUvcmswQitBeUYyTC9PNmpiQWhVRm5w?=
- =?utf-8?B?SkZLVDU0eFpOMTJPOTBQSHhMbHduRVRUM1N4eG1RWXN0emVEdVdIY3JQVXNU?=
- =?utf-8?B?dTRDcFBCZks0T3k3MGdBN2ZvdmswK0R4NkMzb3FxSXF2bnBQS1VRZkFxUitN?=
- =?utf-8?B?SkhpcldYU0FOaUkyU2pqNVJpVmNwdkgycFkwK2xRNGVVZzNVMmVuT0x4T1Fl?=
- =?utf-8?B?Tnh0S3JUUEtkZEdBeU53T3d4MmNZcW5RQXAySXlmMGlKZHRRaXhZZVhYOVFU?=
- =?utf-8?B?cDdlMTNIWUJINUgvU3haUzMxZTRUTENyZ0VqWUhSYzdjWTJtKzNGMjhjcmMw?=
- =?utf-8?B?bThkUzFNUU1YRTBnUkFmYzBRTDFHZllvODM3VkJ4Nyszc1dpejJ1c2FKVzVK?=
- =?utf-8?B?cFlCRE9Lc0QzOFhsUldNK1J4N01TZ3RKOWtpNExZMGo0UThwTmp5Ymlyemky?=
- =?utf-8?B?Z1AxdFFXb3VGL0VzSXVlZ0ZUOTJuaTFlVm1zZjQxTEJkNmphSXMvNUJXR0dh?=
- =?utf-8?B?cXd5NmMxbmw0c2pONXJzRUNQYVQ2N2tNRjFVbXdFUEdjVUs3MHBuc3ZKbU95?=
- =?utf-8?B?ZU5ldTdIMjFvSmFCVFYxVlhLOVZub2Y5UUxlMGdDaHc3RmxJcDRTMmtHMkVH?=
- =?utf-8?B?dGYzTDk0SWo3c0JhU0tUNWJ4eHhzKzAxMzNxdGx2K1BNcWQzYlF6U3c2WVpB?=
- =?utf-8?B?c3g4SGxibjFFaFd2bitSOXhISzMwdlB4ZXozVFFqUDU1MjJ6TmJaRk8yRFgv?=
- =?utf-8?B?L1BCRk5xc3haQVIyUHBEclJNREoxU3dNektOdGRoRU5ReXlVeEowem90TXBK?=
- =?utf-8?B?OXpJMnMyanhqcGdHV1FMV1lZRjNDbFRSUUJMTW5zSE9rVHJEaGpldUdFeW91?=
- =?utf-8?B?ZEpFYTVIMjh0ZHJZMzkwNWpyY0VPSTRxd2ZMN21FZFhlb1c2RkYyMUNleWp6?=
- =?utf-8?B?Z3cwMUNISGFyWEpwSWkvQVRoR3lFUWlaT2hxMDhtOTJMVjN4d09VNlZ3WHZJ?=
- =?utf-8?B?Rm9VZldSMmo5cTU3QS9KNWlWZllPQlBudnBnQ0NhZGViUSsrMnorV00zOENw?=
- =?utf-8?B?U21laHZiNzlBcmlmRm9kcytkeXpEMVRYa2RRSWJtZlhnbjh5S2s1eXh0WGRV?=
- =?utf-8?B?RkxxdDd2WVhqSXkrcDlUN1NzMzBPOGV4aXdsNUtadDNKTWl6amhmQjAybjNN?=
- =?utf-8?B?Q1p4TW05Y2MvNE0xRGRPYzBubUxBSFNGUHVYTG9rMndHVTFtYnV3d0pIWURO?=
- =?utf-8?B?Y3NaMXNGU3FJV012eThNTU90amVKeVh3ZWdjVjFHT0JxRmpReTY3R21XVEJ0?=
- =?utf-8?Q?wDQ6kj9DnKK05iqbPHjozO0=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a662445-c0d9-4f98-7d02-08db05b2177a
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2023 06:44:26.1465
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KYkCapMngQ29Dwm8urBgmM61h/ZVdx9t7uPyihrAUwjLLzOhtUUyrMioLvzPpfh+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7117
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6638:2788:b0:3b2:ea58:1f5a with SMTP id
+ dl8-20020a056638278800b003b2ea581f5amr2203393jab.114.1675410888600; Thu, 02
+ Feb 2023 23:54:48 -0800 (PST)
+Date:   Thu, 02 Feb 2023 23:54:48 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000de34bd05f3c6fe19@google.com>
+Subject: [syzbot] [ntfs3?] [btrfs?] BUG: unable to handle kernel paging
+ request in clear_user_rep_good
+From:   syzbot <syzbot+401145a9a237779feb26@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com, clm@fb.com,
+        djwong@kernel.org, dsterba@suse.com, hch@infradead.org,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    ab072681eabe Merge tag 'irq_urgent_for_v6.2_rc6' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15933749480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=23330449ad10b66f
+dashboard link: https://syzkaller.appspot.com/bug?extid=401145a9a237779feb26
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b3ba9e480000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/a43bbc272cf3/disk-ab072681.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/fec05f5bcfa7/vmlinux-ab072681.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/00b9b0dd9801/bzImage-ab072681.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/f7ef8856a9ce/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/79f8035a08dd/mount_4.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+401145a9a237779feb26@syzkaller.appspotmail.com
+
+BUG: unable to handle page fault for address: 0000000020081000
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 1c9cc067 P4D 1c9cc067 PUD 280e9067 PMD 2a76b067 PTE 0
+Oops: 0002 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 5441 Comm: syz-executor.1 Not tainted 6.2.0-rc5-syzkaller-00221-gab072681eabe #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/12/2023
+RIP: 0010:clear_user_rep_good+0x1c/0x30 arch/x86/lib/clear_page_64.S:147
+Code: 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 48 83 f9 40 72 a6 89 ca 48 c1 e9 03 74 03 f3 48 ab 83 e2 07 74 04 89 d1 <f3> aa 31 c0 c3 48 c1 e1 03 83 e2 07 48 01 d1 eb f1 0f 1f 00 f3 0f
+RSP: 0018:ffffc900056f76d8 EFLAGS: 00050202
+RAX: 0000000000000000 RBX: 0000000000081002 RCX: 0000000000000002
+RDX: 0000000000000002 RSI: ffffffff84098c49 RDI: 0000000020081000
+RBP: 0000000000081002 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000094001 R12: ffffc900056f7d70
+R13: 0000000020000000 R14: 000000007ffff000 R15: 0000000000000000
+FS:  00007fc1837f1700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020081000 CR3: 000000002b26e000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ __clear_user arch/x86/include/asm/uaccess_64.h:103 [inline]
+ clear_user arch/x86/include/asm/uaccess_64.h:124 [inline]
+ iov_iter_zero+0x709/0x1290 lib/iov_iter.c:800
+ iomap_dio_hole_iter fs/iomap/direct-io.c:389 [inline]
+ iomap_dio_iter fs/iomap/direct-io.c:440 [inline]
+ __iomap_dio_rw+0xe3d/0x1cd0 fs/iomap/direct-io.c:601
+ iomap_dio_rw+0x40/0xa0 fs/iomap/direct-io.c:689
+ ext4_dio_read_iter fs/ext4/file.c:94 [inline]
+ ext4_file_read_iter+0x4be/0x690 fs/ext4/file.c:145
+ call_read_iter include/linux/fs.h:2183 [inline]
+ do_iter_readv_writev+0x2e0/0x3b0 fs/read_write.c:733
+ do_iter_read+0x2f2/0x750 fs/read_write.c:796
+ vfs_readv+0xe5/0x150 fs/read_write.c:916
+ do_preadv+0x1b6/0x270 fs/read_write.c:1008
+ __do_sys_preadv2 fs/read_write.c:1070 [inline]
+ __se_sys_preadv2 fs/read_write.c:1061 [inline]
+ __x64_sys_preadv2+0xef/0x150 fs/read_write.c:1061
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fc182a8c0c9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc1837f1168 EFLAGS: 00000246 ORIG_RAX: 0000000000000147
+RAX: ffffffffffffffda RBX: 00007fc182babf80 RCX: 00007fc182a8c0c9
+RDX: 0000000000000001 RSI: 0000000020000100 RDI: 0000000000000003
+RBP: 00007fc182ae7ae9 R08: 0000000000000000 R09: 0000000000000000
+R10: 000000000007fffe R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffefd64d1ef R14: 00007fc1837f1300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+CR2: 0000000020081000
+---[ end trace 0000000000000000 ]---
+RIP: 0010:clear_user_rep_good+0x1c/0x30 arch/x86/lib/clear_page_64.S:147
+Code: 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 48 83 f9 40 72 a6 89 ca 48 c1 e9 03 74 03 f3 48 ab 83 e2 07 74 04 89 d1 <f3> aa 31 c0 c3 48 c1 e1 03 83 e2 07 48 01 d1 eb f1 0f 1f 00 f3 0f
+RSP: 0018:ffffc900056f76d8 EFLAGS: 00050202
+RAX: 0000000000000000 RBX: 0000000000081002 RCX: 0000000000000002
+RDX: 0000000000000002 RSI: ffffffff84098c49 RDI: 0000000020081000
+RBP: 0000000000081002 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000094001 R12: ffffc900056f7d70
+R13: 0000000020000000 R14: 000000007ffff000 R15: 0000000000000000
+FS:  00007fc1837f1700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8294a2a000 CR3: 000000002b26e000 CR4: 0000000000350ef0
+----------------
+Code disassembly (best guess):
+   0:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
+   7:	00 00 00 00
+   b:	0f 1f 00             	nopl   (%rax)
+   e:	f3 0f 1e fa          	endbr64
+  12:	48 83 f9 40          	cmp    $0x40,%rcx
+  16:	72 a6                	jb     0xffffffbe
+  18:	89 ca                	mov    %ecx,%edx
+  1a:	48 c1 e9 03          	shr    $0x3,%rcx
+  1e:	74 03                	je     0x23
+  20:	f3 48 ab             	rep stos %rax,%es:(%rdi)
+  23:	83 e2 07             	and    $0x7,%edx
+  26:	74 04                	je     0x2c
+  28:	89 d1                	mov    %edx,%ecx
+* 2a:	f3 aa                	rep stos %al,%es:(%rdi) <-- trapping instruction
+  2c:	31 c0                	xor    %eax,%eax
+  2e:	c3                   	retq
+  2f:	48 c1 e1 03          	shl    $0x3,%rcx
+  33:	83 e2 07             	and    $0x7,%edx
+  36:	48 01 d1             	add    %rdx,%rcx
+  39:	eb f1                	jmp    0x2c
+  3b:	0f 1f 00             	nopl   (%rax)
+  3e:	f3                   	repz
+  3f:	0f                   	.byte 0xf
 
 
-On 2023/2/3 14:19, Christoph Hellwig wrote:
-> On Thu, Feb 02, 2023 at 02:47:13PM +0800, Qu Wenruo wrote:
->> Because the tgtdev_map would soon get completely removed in the next patch.
->>
->> Just to mention, I don't like the current way to allocate memory at all.
->>
->> If there is more feedback, I can convert the allocation to the same way as
->> alloc_rbio() of raid56.c, AKA, use dedicated kcalloc() calls for those
->> arrays.
-> 
-> The real elephant in the room is that the io_context needs to use a
-> mempool anyway to be deadlock safe.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-In fact, that makes more sense to migrate to the raid56 method.
-
-We go mempool for the io_context structure itself, then still do regular 
-memory allocation for the stripes (and the raid56 map).
-
-Furthermore we can skip the raid56_map if we don't need, especially 
-currently we're wasting memory for non-raid56 profiles.
-
-And with my current work to make that tgtdev_map static (currently two 
-u16, but next version it would be just one u16), for non-raid56 cases we 
-will just do one mempool alloc (io_context) + one regular alloc (stripes).
-
-Which I guess won't be that bad compared to the existing one.
-
-Thanks,
-Qu
->  Which means we'll need to size
-> for the worst case (per file system?) here.  Fortunately the read
-> fast path now doesn't use the io_context at all which helps with
-> the different sizing optimizations.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
