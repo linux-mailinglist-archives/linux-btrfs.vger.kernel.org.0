@@ -2,200 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23823688BAC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Feb 2023 01:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0170688C30
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Feb 2023 01:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbjBCAVi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Feb 2023 19:21:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52126 "EHLO
+        id S231744AbjBCA6y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Feb 2023 19:58:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjBCAVh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Feb 2023 19:21:37 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D46F751
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Feb 2023 16:21:35 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MtOKc-1oUGrW0wrG-00usKM; Fri, 03
- Feb 2023 01:21:28 +0100
-Message-ID: <82bbadba-e57a-912a-fca8-73fd65bca2f4@gmx.com>
-Date:   Fri, 3 Feb 2023 08:21:25 +0800
+        with ESMTP id S230021AbjBCA6w (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Feb 2023 19:58:52 -0500
+Received: from w1.tutanota.de (w1.tutanota.de [81.3.6.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E1A69B3C
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Feb 2023 16:58:50 -0800 (PST)
+Received: from tutadb.w10.tutanota.de (unknown [192.168.1.10])
+        by w1.tutanota.de (Postfix) with ESMTP id 71FD3FBF98A
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Feb 2023 00:58:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1675385929;
+        s=s1; d=tutanota.com;
+        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Date:Date:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:Sender;
+        bh=tkjaf2/lnaETU8r9GRFQ9B5RfTCWgomedbBJc+TXph0=;
+        b=wKS2TEOrgxc/Uup9cOeEeN8+A3wIt1T24n6dEQ9No0hy6rdDPnWhzb/bRREh8Pqa
+        QwcDXGTK22l9TKyM6r/kasJEnHtZ1OISVrnIUEMXPoykASLhrUyAgFNs4W8O4A+Lb+e
+        Y3M1PhTq2mBRdh4VG1T+jYQFkqLLLXMxcy+xZuJS4grKy58oDF9cSaiBg3jhcy+zRrb
+        lB3R/V6drYC5DkNiPUWd+zbIoB6vD7AZj5geh0apotehXhrGhfHCAcwEgmp7AMcJzUM
+        UTjX3y9qNbFL3U5cOuhN5w+APaEJ7Y6eNZVoc4q98Oiyqcb38VAcuvJMFB9jo/worY4
+        W85RyyKP6Q==
+Date:   Fri, 3 Feb 2023 01:58:49 +0100 (CET)
+From:   liuwf@tutanota.com
+To:     Linux Btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <NNJm6i---3-9@tutanota.com>
+Subject: [RFC PATCH 1/1] btrfs:Try to reduce the operating frequency of free
+ space cache trees when allocating unclustered
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH] btrfs-progs: receive: fix a corruption when decompressing
- zstd extents
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>
-References: <556529ebcca0b5404ef0ce284d5ecccd2e2ae660.1675353238.git.fdmanana@suse.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <556529ebcca0b5404ef0ce284d5ecccd2e2ae660.1675353238.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:WSZY0vRT/vgaI1txqQ3hyCtlG0yPfit7NnDXj0CbM/PdXcmHwrl
- bN4NTC1kRu05PC9tzufXHR9r3yT/fMxsBKyIMnwCCDg/PyvJrs/jhCGI9GIuq/eQKD9nCZl
- Ug4hQzntTY2LP4aU/JmFqtCKweApl4ty4zYB10Scs4aqEbtY6H6YaVpWUtpsY0PD3AK4cqu
- Nq4O21o+GVw01Zek73xqw==
-UI-OutboundReport: notjunk:1;M01:P0:TfgvCjkY8nk=;TTH8+8Rx0bvC0bJl4a34yYqONZe
- 5ixN/j+rANWZuFZTs5EmFZ9XNUe+6Atw7QLcbyGBr3hpc19mrEArfWNbCa8MgD92YGHqG3rwP
- WHvtAWKeee8ilTdp9pT7VUkQTV+DXB4ih3+cR+hkBVEgyfw+cFo+Vl4dEkciTnsHGF8Q5TOCy
- G/7Frh7MwEiL3ILPhwJwjcqt1bQXNI9Yivl8uJICxf/nD+p0zm9T2vyl+akHaZnX4DsBi2aVP
- xBY4mwIbBKTygAim7KFdqn6lFzqf0msy5nLdaWvywQw9BdtZvcI4MqF9w4GrhsP59DwGFbzdb
- fvJYL4w1ebhwR1ho9AIqym7l6g+T6n4gFsJZJlRz4bD+qQzjtxmh+2XOREh9g6FptGDcQp71v
- 0pjD1ghfiWcHOpT7ingoxTAXDXRIzyepnAPKnAdZUyMzHj3Xs4vyrfmPAwd38zYh8trH+vOQ9
- RlxTjohgL6fzcP6PmVNEhRz67Au+EFfJCSfGu/UDa+Sg1PPe7ERWNH/FzEWFUUtrdiaDSfORw
- 8AhYPR87BZrwQY+exeLJHONI/ECWtktrzZzhv4BgrgDeqUhJJ9yCtUOHwRUM6ViWub3I97ZGX
- 3TenoZ7EjRHIuzCn8zXUG5YceGDUxtKsHE5xr5/3LexVgPEUcAYCkbWQj88Oei8TgKr/B0ZrF
- /lPqCgcWnyhaQm+54KoDc5/6J/jW9aSenHsiGE8IjfmiHbFsKcPVbilxH3srabDAaZt8hDKoy
- N3d77ZO44eX7uhvvxoQw8pijlPvJBafGEF2dAzAbflr8AajHMuKgd4rBvv5OFjAXZyDbEMv1J
- FUf9REwfxSOVuPW7+KdVOI+LSlOAGOc5QSawGnaC55uw4hOb2xLA5oc1L2ifQR8VvtZUuLC4X
- kYEJfpRoInfMhHWHhSiW9CiO46OOgfCE0bb6Tr09LTdcOsQ4pkxKGl4Kn6FHG7D0x3bSxrYHg
- 1TXEQENZtuTamRn7/ceQRkh5Nyo=
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_PDS_OTHER_BAD_TLD autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+As far as I understand, each time when we allocate a free space in uncluste=
+red
+way (on a heavy-fragmented disk or maybe other cases), a struct btrfs_free_=
+space
+entry will be removed from two free space cache trees, then the entry's off=
+set
+and size are altered, after done we insert the entry into the two trees aga=
+in.
+These operatings are densy computing, this patch try to reduce tree operati=
+ng
+frequency based on two logic (fix me):
+
+1 There is only one case that need to remove and reinsert an entry from/int=
+o
+the tree when allocating is made from the offset-indexed tree:
+
+An entry is overlapping with a bitmap AND that entry's start is ahead of
+the bitmap's start. When the entry shrinked it's start position walks
+towards higher address and may overcome the bitmap's start, in this case
+the entry need removed and reinserted from/into the tree to get a right
+order.
+(Exhanging the two nodes may be better, but it seems more troublesome?)
+
+A bitmap may be overlapped with many entries, but they are not be able to
+change their start position to overcome the bitmap EXCEPT the one above
+mentioned
+
+All other conditions are not supposed to change the relative position of tw=
+o
+neighbour entries.
 
 
-On 2023/2/2 23:59, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Before decompressing, we zero out the content of the entire output buffer,
-> so that we don't get any garbage after the last byte of data. We do this
-> for all compression algorithms. However zstd, at least with libzstd 1.5.2
-> on Debian (version 1.5.2+dfsg-1), the decompression routine can end up
-> touching the content of the output buffer beyond the last valid byte of
-> decompressed data, resulting in a corruption.
+2 As for allocating from the bytes-indexed tree.
+Because we always begin to pick the entry that has the biggest size
+(rb_first_cached()) to tear free space from it, it has the most potentialit=
+y
+for the biggest to keep it's top weight, imaging a Mibs-sized entry cutted =
+away
+several KBs, that may or may not changd it's size below the second entry, t=
+he
+later case may be the one with more probability.
 
-I'm wondering if this is a bug in the zstd implementation, or it's a 
-documented behavior?
+This patch try to check an entry's offset and size when changed, and compar=
+e
+the result with the next entry's, In theory,=C2=A0 1/3 ~ 1/2 of operatings =
+probably
+could be saved.
 
-As to me, the behavior of touching things beyond the decompressed size 
-is very anti-instinct.
+This patch has been passed through xfstests. Any comments are appreciated.
 
-Thus if it's the former case, we need to report this to zstd guys.
+Signed-off-by: Liu Weifeng 4019c26b5c0d5f6b <Liuwf@tutanota.com>
+---
 
-Otherwise this looks good to me.
+fs/btrfs/free-space-cache.c | 51 ++++++++++++++++++++++++++++++++++---
+1 file changed, 47 insertions(+), 4 deletions(-)
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index f4023651dd68..1713f36a01cd 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -39,6 +39,8 @@ static int link_free_space(struct btrfs_free_space_ctl *c=
+tl,
+=C2=A0=C2=A0 struct btrfs_free_space *info);
+static void unlink_free_space(struct btrfs_free_space_ctl *ctl,
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_free_space *info, bool update_s=
+tat);
++static void relink_free_space_entry(struct btrfs_free_space_ctl *ctl,
++=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_free_space *space_info);
+static int search_bitmap(struct btrfs_free_space_ctl *ctl,
+struct btrfs_free_space *bitmap_info, u64 *offset,
+u64 *bytes, bool for_alloc);
+@@ -1840,6 +1842,47 @@ static int link_free_space(struct btrfs_free_space_c=
+tl *ctl,
+return ret;
+}
 
-Thanks,
-Qu
-> 
-> Example reproducer:
-> 
->     $ cat test.sh
->     #!/bin/bash
-> 
->     DEV=/dev/sdj
->     MNT=/mnt/sdj
-> 
->     rm -f /tmp/send.stream
-> 
->     umount $DEV &> /dev/null
->     mkfs.btrfs -f $DEV &> /dev/null || echo "MKFS failed!"
->     mount -o compress=zstd $DEV $MNT
-> 
->     # File foo is not sector size aligned, 127K.
->     xfs_io -f -c "pwrite -S 0xab 0 3" \
->               -c "pwrite -S 0xcd 3 130042" \
->               -c "pwrite -S 0xef 130045 3" $MNT/foo
-> 
->     # Now do an fallocate that increases the size of foo from 127K to 128K.
->     xfs_io -c "falloc 0 128K " $MNT/foo
-> 
->     btrfs subvolume snapshot -r $MNT $MNT/snap
-> 
->     btrfs send --compressed-data -f /tmp/send.stream $MNT/snap
-> 
->     echo -e "\nFile data in the original filesystem:\n"
->     od -A d -t x1 $MNT/snap/foo
-> 
->     umount $MNT
->     mkfs.btrfs -f $DEV &> /dev/null || echo "MKFS failed!"
->     mount $DEV $MNT
-> 
->     btrfs receive --force-decompress -f /tmp/send.stream $MNT
-> 
->     echo -e "\nFile data in the new filesystem:\n"
->     od -A d -t x1 $MNT/snap/foo
-> 
->     umount $MNT
-> 
-> Running the reproducer gives:
-> 
->     $ ./test.sh
->     (...)
->     File data in the original filesystem:
-> 
->     0000000 ab ab ab cd cd cd cd cd cd cd cd cd cd cd cd cd
->     0000016 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
->     *
->     0130032 cd cd cd cd cd cd cd cd cd cd cd cd cd ef ef ef
->     0130048 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->     *
->     0131072
->     At subvol snap
-> 
->     File data in the new filesystem:
-> 
->     0000000 ab ab ab cd cd cd cd cd cd cd cd cd cd cd cd cd
->     0000016 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
->     *
->     0130032 cd cd cd cd cd cd cd cd cd cd cd cd cd ef ef ef
->     0130048 cd cd cd cd 00 00 00 00 00 00 00 00 00 00 00 00
->     0130064 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->     *
->     0131072
-> 
-> The are 4 bytes with a value of 0xcd instead of 0x00, at file offset
-> 127K (130048).
-> 
-> Fix this by explicitly zeroing out the part of the output buffer that was
-> not used after decompressing with zstd.
-> 
-> The decompression of compressed extents, sent when using the send v2
-> stream, happens in the following cases:
-> 
-> 1) By explicitly passing --force-decompress to the receive command, as in
->     the reproducer above;
-> 
-> 2) Calling the BTRFS_IOC_ENCODED_WRITE ioctl failed with -ENOTTY, meaning
->     the kernel on the receiving side is old and does not implement that
->     ioctl;
-> 
-> 3) Calling the BTRFS_IOC_ENCODED_WRITE ioctl failed with -ENOSPC;
-> 
-> 4) Calling the BTRFS_IOC_ENCODED_WRITE ioctl failed with -EINVAL.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   cmds/receive.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
-> 
-> diff --git a/cmds/receive.c b/cmds/receive.c
-> index a016fe4e..1d623ae3 100644
-> --- a/cmds/receive.c
-> +++ b/cmds/receive.c
-> @@ -1080,6 +1080,15 @@ static int decompress_zstd(struct btrfs_receive *rctx, const char *encoded_buf,
->   			return -EIO;
->   		}
->   	}
-> +
-> +	/*
-> +	 * Zero out the unused part of the output buffer.
-> +	 * At least with zstd 1.5.2, the decompression can leave some garbage
-> +	 * at/beyond the offset out_buf.pos.
-> +	 */
-> +	if (out_buf.pos < out_buf.size)
-> +		memset(unencoded_buf + out_buf.pos, 0, out_buf.size - out_buf.pos);
-> +
->   	return 0;
->   }
->   #endif
++static void relink_free_space_entry(struct btrfs_free_space_ctl *ctl,
++=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_free_space *info)
++{
++ struct rb_node *next_node =3D NULL;
++ struct btrfs_free_space *next_info_offset =3D NULL;
++ struct btrfs_free_space *next_info_bytes =3D NULL;
++
++ next_node =3D rb_next(&info->offset_index);
++ if (next_node)
++ next_info_offset =3D rb_entry(next_node, struct btrfs_free_space,
++=C2=A0=C2=A0=C2=A0=C2=A0 offset_index);
++ next_node =3D rb_next(&info->bytes_index);
++ if (next_node)
++ next_info_bytes =3D rb_entry(next_node, struct btrfs_free_space,
++=C2=A0=C2=A0=C2=A0 bytes_index);
++ ASSERT(info->bytes || info->bitmap);
++
++ if (next_info_offset && next_info_bytes &&
++=C2=A0=C2=A0=C2=A0=C2=A0 unlikely(info->offset > next_info_offset->offset)=
+ &&
++=C2=A0=C2=A0=C2=A0=C2=A0 (info->bytes < next_info_bytes->bytes)) {
++ rb_erase(&info->offset_index, &ctl->free_space_offset);
++ tree_insert_offset(&ctl->free_space_offset, info->offset,
++=C2=A0=C2=A0=C2=A0 &info->offset_index, (info->bitmap !=3D NULL));
++
++ rb_erase_cached(&info->bytes_index, &ctl->free_space_bytes);
++ rb_add_cached(&info->bytes_index, &ctl->free_space_bytes,
++=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 entry_less);
++
++ } else if (next_info_offset &&
++=C2=A0=C2=A0=C2=A0 unlikely(info->offset > next_info_offset->offset)) {
++ rb_erase(&info->offset_index, &ctl->free_space_offset);
++ tree_insert_offset(&ctl->free_space_offset, info->offset,
++=C2=A0=C2=A0=C2=A0 &info->offset_index, (info->bitmap !=3D NULL));
++
++ } else if (next_info_bytes && info->bytes < next_info_bytes->bytes) {
++ rb_erase_cached(&info->bytes_index, &ctl->free_space_bytes);
++ rb_add_cached(&info->bytes_index, &ctl->free_space_bytes,
++=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 entry_less);
++ }
++}
++
+static void relink_bitmap_entry(struct btrfs_free_space_ctl *ctl,
+struct btrfs_free_space *info)
+{
+@@ -3093,7 +3136,6 @@ u64 btrfs_find_space_for_alloc(struct btrfs_block_gro=
+up *block_group,
+if (!entry->bytes)
+free_bitmap(ctl, entry);
+} else {
+- unlink_free_space(ctl, entry, true);
+align_gap_len =3D offset - entry->offset;
+align_gap =3D entry->offset;
+align_gap_trim_state =3D entry->trim_state;
+@@ -3105,10 +3147,11 @@ u64 btrfs_find_space_for_alloc(struct btrfs_block_g=
+roup *block_group,
+WARN_ON(entry->bytes < bytes + align_gap_len);
+
+entry->bytes -=3D bytes + align_gap_len;
+- if (!entry->bytes)
++ if (!entry->bytes) {
++ unlink_free_space(ctl, entry, true);
+kmem_cache_free(btrfs_free_space_cachep, entry);
+- else
+- link_free_space(ctl, entry);
++ } else
++ relink_free_space_entry(ctl, entry);
+}
+out:
+btrfs_discard_update_discardable(block_group);
+--
+2.30.2
