@@ -2,394 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CAAE68AEE7
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Feb 2023 09:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D2F68AFAA
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Feb 2023 13:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbjBEIyI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Feb 2023 03:54:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        id S229557AbjBEMKd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Feb 2023 07:10:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjBEIyG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Feb 2023 03:54:06 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6FD1A948
-        for <linux-btrfs@vger.kernel.org>; Sun,  5 Feb 2023 00:54:03 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8180338B16
-        for <linux-btrfs@vger.kernel.org>; Sun,  5 Feb 2023 08:54:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1675587242; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6vbLk9sbDeggSUoN7WzlMzdYz8EJJp2TL/1vrl+/17Q=;
-        b=Wq4s83i0PhHzIJPehmFeeK+hXyRzfBV0ydUO72nEo/2yX/AnUlx4zEFQ8GE6EtFAZK1q19
-        8vxuvNJxEDMnWt4LQIkq2/mNQmvkyE+E2sM3eNa5hnfSu6Yv4JNrRDZaRXNexNUwl5kv4F
-        2U7gwNjsZU1dAIJ/7LqxWbuiih400ek=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E91C3138E7
-        for <linux-btrfs@vger.kernel.org>; Sun,  5 Feb 2023 08:54:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AGFELalu32NWNQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sun, 05 Feb 2023 08:54:01 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: reduce div64 calls by limiting the number of stripes of a chunk to u32
-Date:   Sun,  5 Feb 2023 16:53:42 +0800
-Message-Id: <275da997c70615256bed3cff8e74ab2b3fecbafc.1675586554.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <cover.1675586554.git.wqu@suse.com>
-References: <cover.1675586554.git.wqu@suse.com>
+        with ESMTP id S229539AbjBEMKb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Feb 2023 07:10:31 -0500
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E591A4BE
+        for <linux-btrfs@vger.kernel.org>; Sun,  5 Feb 2023 04:10:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1675599020; x=1707135020;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1augIqkmIIjSdtx/hGs9NophVK2AmgaV1cJbrPAMgGQ=;
+  b=d7Zt+yC0M+GWG1F1HxbsqUo7XB70huaCHiydHfPTI1Kzo2Be9OQ2BI/C
+   ruOBDo8u3ceP0juCkTbqqhWcgYuN+tEenEi2x1eZxL+Q43urFnIkSGfbt
+   RIpvBGmvGBzyjK+I68/J1LAFJI6p17kGIuI7KtDpvrny78OsxNfjsBSaK
+   /T1HRBlElPT2A9gUqJC/lv++qiib1AUy8X8EgP4DIosqlKy5cumSYMyDo
+   PxiGXAphWW3817bauG7GKPnhVctIOggvV6FiVWTrJGsS3suggD24O/vVh
+   audt/5s1M+KqijlA7Ci8N3mGqMLRAwAzlTuvS89vbDb+6RBzImuNuWQ5v
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10611"; a="331173737"
+X-IronPort-AV: E=Sophos;i="5.97,275,1669104000"; 
+   d="scan'208";a="331173737"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2023 04:10:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10611"; a="840103580"
+X-IronPort-AV: E=Sophos;i="5.97,275,1669104000"; 
+   d="scan'208";a="840103580"
+Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 05 Feb 2023 04:10:19 -0800
+Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pOdqc-0001zA-11;
+        Sun, 05 Feb 2023 12:10:18 +0000
+Date:   Sun, 5 Feb 2023 20:09:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 2/2] btrfs: reduce div64 calls by limiting the number of
+ stripes of a chunk to u32
+Message-ID: <202302051950.KouT9cVY-lkp@intel.com>
+References: <275da997c70615256bed3cff8e74ab2b3fecbafc.1675586554.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <275da997c70615256bed3cff8e74ab2b3fecbafc.1675586554.git.wqu@suse.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are quite some div64 calls inside btrfs_map_block() and its
-variants.
+Hi Qu,
 
-One of such calls are for @stripe_nr, where @stripe_nr is the number of
-stripes before our logical bytenr inside a chunk.
+Thank you for the patch! Yet something to improve:
 
-However we can eliminate such div64 calls by just reducing the width of
-@stripe_nr from 64 to 32.
+[auto build test ERROR on v6.2-rc6]
+[also build test ERROR on linus/master]
+[cannot apply to kdave/for-next next-20230203]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-This can be done because our chunk size limit is already 10G, with fixed
-stripe length 64K.
-Thus a U32 is definitely enough to contain the number of stripes.
+url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-remove-map_lookup-stripe_len/20230205-165612
+patch link:    https://lore.kernel.org/r/275da997c70615256bed3cff8e74ab2b3fecbafc.1675586554.git.wqu%40suse.com
+patch subject: [PATCH 2/2] btrfs: reduce div64 calls by limiting the number of stripes of a chunk to u32
+config: i386-randconfig-a003 (https://download.01.org/0day-ci/archive/20230205/202302051950.KouT9cVY-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/dc356ab4c1f118e55634c17c1e086bfc0536198d
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Qu-Wenruo/btrfs-remove-map_lookup-stripe_len/20230205-165612
+        git checkout dc356ab4c1f118e55634c17c1e086bfc0536198d
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 olddefconfig
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
 
-With such width reduction, we can get rid of slower div64, and extra
-warning for certain 32bit arch.
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
 
-This patch would do:
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
-- Reduce the width of various stripe_nr variables
+>> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
 
-- Add a new tree-checker chunk validation on chunk length
-  Make sure no chunk can reach 256G, which can also act as a bitflip
-  checker.
-
-- Replace unnecessary div64 calls with regular modulo and division
-  32bit division and modulo are much faster than 64bit operations, and
-  we are finally free of the div64 fear at least in those involved
-  functions.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/block-group.c  | 14 ++++----
- fs/btrfs/tree-checker.c | 14 ++++++++
- fs/btrfs/volumes.c      | 79 ++++++++++++++++++++++-------------------
- fs/btrfs/volumes.h      |  2 +-
- 4 files changed, 65 insertions(+), 44 deletions(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 1c74af23f54c..4d7c62e5a4d8 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2020,20 +2020,20 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
- 		if (bdev && map->stripes[i].dev->bdev != bdev)
- 			continue;
- 
--		stripe_nr = physical - map->stripes[i].physical;
--		stripe_nr = div64_u64_rem(stripe_nr, BTRFS_STRIPE_LEN, &offset);
-+		stripe_nr = (physical - map->stripes[i].physical) >>
-+			     BTRFS_STRIPE_LEN_SHIFT;
-+		offset = (physical - map->stripes[i].physical) &
-+			 ((1 << BTRFS_STRIPE_LEN_SHIFT) - 1);
- 
- 		if (map->type & (BTRFS_BLOCK_GROUP_RAID0 |
--				 BTRFS_BLOCK_GROUP_RAID10)) {
--			stripe_nr = stripe_nr * map->num_stripes + i;
--			stripe_nr = div_u64(stripe_nr, map->sub_stripes);
--		}
-+				 BTRFS_BLOCK_GROUP_RAID10))
-+			stripe_nr = (stripe_nr * map->num_stripes + i) /
-+				     map->sub_stripes;
- 		/*
- 		 * The remaining case would be for RAID56, multiply by
- 		 * nr_data_stripes().  Alternatively, just use rmap_len below
- 		 * instead of map->stripe_len
- 		 */
--
- 		bytenr = chunk_start + stripe_nr * io_stripe_size + offset;
- 
- 		/* Ensure we don't add duplicate addresses */
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index baad1ed7e111..7968fc89f278 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -849,6 +849,20 @@ int btrfs_check_chunk_valid(struct extent_buffer *leaf,
- 			  stripe_len);
- 		return -EUCLEAN;
- 	}
-+	/*
-+	 * We artificially limit the chunk size, so that the number of stripes
-+	 * inside a chunk can be fit into a U32.
-+	 * The current limit (256G) would be way too large for real world usage
-+	 * anyway, and it's already way larger than our existing limit (10G).
-+	 *
-+	 * Thus it should be a good way to catch obvious bitflip.
-+	 */
-+	if (unlikely(((u64)U32_MAX << BTRFS_STRIPE_LEN_SHIFT) <= length)) {
-+		chunk_err(leaf, chunk, logical,
-+			  "chunk length too large: have %llu limit %llu",
-+			  length, (u64)U32_MAX << BTRFS_STRIPE_LEN_SHIFT);
-+		return -EUCLEAN;
-+	}
- 	if (unlikely(type & ~(BTRFS_BLOCK_GROUP_TYPE_MASK |
- 			      BTRFS_BLOCK_GROUP_PROFILE_MASK))) {
- 		chunk_err(leaf, chunk, logical,
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 4c91cc6471c3..ce073083b0dc 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5940,15 +5940,15 @@ struct btrfs_discard_stripe *btrfs_map_discard(struct btrfs_fs_info *fs_info,
- 	struct btrfs_discard_stripe *stripes;
- 	u64 length = *length_ret;
- 	u64 offset;
--	u64 stripe_nr;
--	u64 stripe_nr_end;
-+	u32 stripe_nr;
-+	u32 stripe_nr_end;
-+	u32 stripe_cnt;
- 	u64 stripe_end_offset;
--	u64 stripe_cnt;
- 	u64 stripe_offset;
- 	u32 stripe_index;
- 	u32 factor = 0;
- 	u32 sub_stripes = 0;
--	u64 stripes_per_dev = 0;
-+	u32 stripes_per_dev = 0;
- 	u32 remaining_stripes = 0;
- 	u32 last_stripe = 0;
- 	int ret;
-@@ -5974,13 +5974,13 @@ struct btrfs_discard_stripe *btrfs_map_discard(struct btrfs_fs_info *fs_info,
- 	 * stripe_nr counts the total number of stripes we have to stride
- 	 * to get to this block
- 	 */
--	stripe_nr = div64_u64(offset, BTRFS_STRIPE_LEN);
-+	stripe_nr = offset >> BTRFS_STRIPE_LEN_SHIFT;
- 
- 	/* stripe_offset is the offset of this block in its stripe */
- 	stripe_offset = offset - (stripe_nr << BTRFS_STRIPE_LEN_SHIFT);
- 
--	stripe_nr_end = round_up(offset + length, BTRFS_STRIPE_LEN);
--	stripe_nr_end = div64_u64(stripe_nr_end, BTRFS_STRIPE_LEN);
-+	stripe_nr_end = round_up(offset + length, BTRFS_STRIPE_LEN) >>
-+			BTRFS_STRIPE_LEN_SHIFT;
- 	stripe_cnt = stripe_nr_end - stripe_nr;
- 	stripe_end_offset = (stripe_nr_end << BTRFS_STRIPE_LEN_SHIFT) -
- 			    (offset + length);
-@@ -6001,18 +6001,18 @@ struct btrfs_discard_stripe *btrfs_map_discard(struct btrfs_fs_info *fs_info,
- 		factor = map->num_stripes / sub_stripes;
- 		*num_stripes = min_t(u64, map->num_stripes,
- 				    sub_stripes * stripe_cnt);
--		stripe_nr = div_u64_rem(stripe_nr, factor, &stripe_index);
-+		stripe_index = stripe_nr % factor;
-+		stripe_nr /= factor;
- 		stripe_index *= sub_stripes;
- 		stripes_per_dev = div_u64_rem(stripe_cnt, factor,
- 					      &remaining_stripes);
--		div_u64_rem(stripe_nr_end - 1, factor, &last_stripe);
--		last_stripe *= sub_stripes;
-+		last_stripe = (stripe_nr_end - 1) % factor * sub_stripes;
- 	} else if (map->type & (BTRFS_BLOCK_GROUP_RAID1_MASK |
- 				BTRFS_BLOCK_GROUP_DUP)) {
- 		*num_stripes = map->num_stripes;
- 	} else {
--		stripe_nr = div_u64_rem(stripe_nr, map->num_stripes,
--					&stripe_index);
-+		stripe_index = stripe_nr % map->num_stripes;
-+		stripe_nr /= map->num_stripes;
- 	}
- 
- 	stripes = kcalloc(*num_stripes, sizeof(*stripes), GFP_NOFS);
-@@ -6286,11 +6286,10 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *em,
- 			  struct btrfs_io_geometry *io_geom)
- {
- 	struct map_lookup *map;
--	const u32 stripe_len = BTRFS_STRIPE_LEN;
- 	u64 len;
- 	u64 offset;
- 	u64 stripe_offset;
--	u64 stripe_nr;
-+	u32 stripe_nr;
- 	u64 raid56_full_stripe_start = (u64)-1;
- 	int data_stripes;
- 
-@@ -6303,20 +6302,22 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *em,
- 	 * Stripe_nr is where this block falls in
- 	 * stripe_offset is the offset of this block in its stripe.
- 	 */
--	stripe_nr = div64_u64_rem(offset, stripe_len, &stripe_offset);
-+	stripe_offset = offset & ((1 << BTRFS_STRIPE_LEN_SHIFT) - 1);
-+	stripe_nr = offset >> BTRFS_STRIPE_LEN_SHIFT;
- 	ASSERT(stripe_offset < U32_MAX);
- 
- 	data_stripes = nr_data_stripes(map);
- 
- 	/* Only stripe based profiles needs to check against stripe length. */
- 	if (map->type & BTRFS_BLOCK_GROUP_STRIPE_MASK) {
--		u64 max_len = stripe_len - stripe_offset;
-+		u64 max_len = BTRFS_STRIPE_LEN - stripe_offset;
- 
- 		/*
- 		 * In case of raid56, we need to know the stripe aligned start
- 		 */
- 		if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
--			unsigned long full_stripe_len = stripe_len * data_stripes;
-+			unsigned long full_stripe_len = data_stripes <<
-+							BTRFS_STRIPE_LEN_SHIFT;
- 			raid56_full_stripe_start = offset;
- 
- 			/*
-@@ -6333,7 +6334,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *em,
- 			 * reads, just allow a single stripe (on a single disk).
- 			 */
- 			if (op == BTRFS_MAP_WRITE) {
--				max_len = stripe_len * data_stripes -
-+				max_len = (data_stripes << BTRFS_STRIPE_LEN_SHIFT) -
- 					  (offset - raid56_full_stripe_start);
- 			}
- 		}
-@@ -6344,7 +6345,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *em,
- 
- 	io_geom->len = len;
- 	io_geom->offset = offset;
--	io_geom->stripe_len = stripe_len;
-+	io_geom->stripe_len = BTRFS_STRIPE_LEN;
- 	io_geom->stripe_nr = stripe_nr;
- 	io_geom->stripe_offset = stripe_offset;
- 	io_geom->raid56_stripe_offset = raid56_full_stripe_start;
-@@ -6353,7 +6354,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *em,
- }
- 
- static void set_io_stripe(struct btrfs_io_stripe *dst, const struct map_lookup *map,
--		          u32 stripe_index, u64 stripe_offset, u64 stripe_nr)
-+			  u32 stripe_index, u64 stripe_offset, u32 stripe_nr)
- {
- 	dst->dev = map->stripes[stripe_index].dev;
- 	dst->physical = map->stripes[stripe_index].physical +
-@@ -6369,8 +6370,8 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	struct extent_map *em;
- 	struct map_lookup *map;
- 	u64 stripe_offset;
--	u64 stripe_nr;
- 	u64 stripe_len;
-+	u32 stripe_nr;
- 	u32 stripe_index;
- 	int data_stripes;
- 	int i;
-@@ -6433,8 +6434,8 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	num_stripes = 1;
- 	stripe_index = 0;
- 	if (map->type & BTRFS_BLOCK_GROUP_RAID0) {
--		stripe_nr = div_u64_rem(stripe_nr, map->num_stripes,
--				&stripe_index);
-+		stripe_index = stripe_nr % map->num_stripes;
-+		stripe_nr /= map->num_stripes;
- 		if (!need_full_stripe(op))
- 			mirror_num = 1;
- 	} else if (map->type & BTRFS_BLOCK_GROUP_RAID1_MASK) {
-@@ -6460,8 +6461,8 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	} else if (map->type & BTRFS_BLOCK_GROUP_RAID10) {
- 		u32 factor = map->num_stripes / map->sub_stripes;
- 
--		stripe_nr = div_u64_rem(stripe_nr, factor, &stripe_index);
--		stripe_index *= map->sub_stripes;
-+		stripe_index = stripe_nr % factor * map->sub_stripes;
-+		stripe_nr /= factor;
- 
- 		if (need_full_stripe(op))
- 			num_stripes = map->sub_stripes;
-@@ -6477,9 +6478,16 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 
- 	} else if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
- 		if (need_raid_map && (need_full_stripe(op) || mirror_num > 1)) {
--			/* push stripe_nr back to the start of the full stripe */
--			stripe_nr = div64_u64(raid56_full_stripe_start,
--					stripe_len * data_stripes);
-+			/*
-+			 * Push stripe_nr back to the start of the full stripe
-+			 * For those cases needing a full stripe, @stripe_nr
-+			 * is the full stripe number.
-+			 *
-+			 * Original we go raid56_full_stripe_start / full_stripe_len,
-+			 * but that can be expensive.
-+			 * Here we just divide @stripe_nr with @data_stripes.
-+			 */
-+			stripe_nr /= data_stripes;
- 
- 			/* RAID[56] write or recovery. Return all stripes */
- 			num_stripes = map->num_stripes;
-@@ -6497,25 +6505,24 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 			 * Mirror #2 is RAID5 parity block.
- 			 * Mirror #3 is RAID6 Q block.
- 			 */
--			stripe_nr = div_u64_rem(stripe_nr,
--					data_stripes, &stripe_index);
-+			stripe_index = stripe_nr % data_stripes;
-+			stripe_nr /= data_stripes;
- 			if (mirror_num > 1)
- 				stripe_index = data_stripes + mirror_num - 2;
- 
- 			/* We distribute the parity blocks across stripes */
--			div_u64_rem(stripe_nr + stripe_index, map->num_stripes,
--					&stripe_index);
-+			stripe_index = (stripe_nr + stripe_index) % map->num_stripes;
- 			if (!need_full_stripe(op) && mirror_num <= 1)
- 				mirror_num = 1;
- 		}
- 	} else {
- 		/*
--		 * after this, stripe_nr is the number of stripes on this
-+		 * After this, stripe_nr is the number of stripes on this
- 		 * device we have to walk to find the data, and stripe_index is
- 		 * the number of our device in the stripe array
- 		 */
--		stripe_nr = div_u64_rem(stripe_nr, map->num_stripes,
--				&stripe_index);
-+		stripe_index = stripe_nr % map->num_stripes;
-+		stripe_nr /= map->num_stripes;
- 		mirror_num = stripe_index + 1;
- 	}
- 	if (stripe_index >= map->num_stripes) {
-@@ -6577,7 +6584,7 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		unsigned rot;
- 
- 		/* Work out the disk rotation on this stripe-set */
--		div_u64_rem(stripe_nr, num_stripes, &rot);
-+		rot = stripe_nr % num_stripes;
- 
- 		/* Fill in the logical address of each stripe */
- 		tmp = stripe_nr * data_stripes;
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 7d0d9f25864c..96dda0f4c564 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -67,7 +67,7 @@ struct btrfs_io_geometry {
- 	/* offset of address in stripe */
- 	u32 stripe_offset;
- 	/* number of stripe where address falls */
--	u64 stripe_nr;
-+	u32 stripe_nr;
- 	/* offset of raid56 stripe into the chunk */
- 	u64 raid56_stripe_offset;
- };
 -- 
-2.39.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
