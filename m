@@ -2,102 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6C668C612
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Feb 2023 19:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D3168C71B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Feb 2023 20:56:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbjBFSqf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Feb 2023 13:46:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
+        id S230027AbjBFT4B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Feb 2023 14:56:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjBFSqe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Feb 2023 13:46:34 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A18270E
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Feb 2023 10:46:34 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C38103F7A1;
-        Mon,  6 Feb 2023 18:46:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1675709192;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6CmuLdQv5qvD7Bqho96c00uPJKdpRdLwtg73zssY3pc=;
-        b=HyuCQNCYlAAgeO6uyDYqvMXOvgzCDG086CqhhIJiTqwG5tXGPAKVaGY9yG3g0v4pZVSW1T
-        vpzHTRlLjX+QBu5auLzDtYaOvhRnGggrI9oUHYPUtzoq68w8LFgXwGoypxb9W1C5HAn3fC
-        ehN0m/e219BaAzGuqpLOd7kUOOKdNAA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1675709192;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6CmuLdQv5qvD7Bqho96c00uPJKdpRdLwtg73zssY3pc=;
-        b=6Gh/6CjcdmFFxSiD8EPA9zfKRxSKZdDIuhGU0xzloCtE/In3EFdsZKnXj7O3g9sxqldY+J
-        SfxCnef5cz+uGKAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94B1E138E7;
-        Mon,  6 Feb 2023 18:46:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0P5aIwhL4WO9TwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 06 Feb 2023 18:46:32 +0000
-Date:   Mon, 6 Feb 2023 19:40:44 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 6/8] btrfs: simplify update of last_dir_index_offset when
- logging a directory
-Message-ID: <20230206184044.GD28288@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1673361215.git.fdmanana@suse.com>
- <ff77f41924e197d99e62ef323f03467c87ef43a0.1673361215.git.fdmanana@suse.com>
- <CAL3q7H6rUwk4XiEim6qwLZDLs2qtnZzuLWbDLUDJU361=7xRJA@mail.gmail.com>
+        with ESMTP id S229517AbjBFT4A (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Feb 2023 14:56:00 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D3E2820C;
+        Mon,  6 Feb 2023 11:55:59 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D607220D16;
+        Mon,  6 Feb 2023 19:55:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1675713357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=WoGUoqh11J03jqDXORRp3VVpc0HyYHs8ixizU+1AjIg=;
+        b=M42hB5zumOWl9cpsqx5uBkCjJFjng2WobTLQ1DLTFwWwEW2zYPioj4Xu7h5HVbMkGv0PkH
+        C0tbgCFl8MnN6smX05aLc7OwsbmglfaEmDoTqSVWmIbLTledx+DpR35A8GtJNtWpebxGPb
+        9p4DCs6UNSrK51JU/vITTJTRh9IdEko=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id C1F242C141;
+        Mon,  6 Feb 2023 19:55:57 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B736ADA701; Mon,  6 Feb 2023 20:50:10 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for v6.2-rc8
+Date:   Mon,  6 Feb 2023 20:50:09 +0100
+Message-Id: <cover.1675710734.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H6rUwk4XiEim6qwLZDLs2qtnZzuLWbDLUDJU361=7xRJA@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 31, 2023 at 05:42:12PM +0000, Filipe Manana wrote:
-> On Tue, Jan 10, 2023 at 3:20 PM <fdmanana@kernel.org> wrote:
-> >
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > When logging a directory, we always set the inode's last_dir_index_offset
-> > to the offset of the last dir index item we found. This is using an extra
-> > field in the log context structure, and it makes more sense to update it
-> > only after we insert dir index items, and we could directly update the
-> > inode's last_dir_index_offset field instead.
-> >
-> > So make this simpler by updating the inode's last_dir_index_offset only
-> > when we actually insert dir index keys in the log tree, and getting rid
-> > of the last_dir_item_offset field in the log context structure.
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> 
-> Reported-by: David Arendt <admin@prnet.org>
-> Link: https://lore.kernel.org/linux-btrfs/ae169fc6-f504-28f0-a098-6fa6a4dfb612@leemhuis.info/
-> Reported-by: Maxim Mikityanskiy <maxtram95@gmail.com>
-> Link: https://lore.kernel.org/linux-btrfs/Y8voyTXdnPDz8xwY@mail.gmail.com/
-> Reported-by: Hunter Wardlaw <wardlawhunter@gmail.com>
-> Link: https://bugzilla.suse.com/show_bug.cgi?id=1207231
-> CC: stable@vger.kernel.org # 6.1+
-> 
-> David, can you please add the following tags to the patch?
-> It happens to fix an issue those users reported, all on 6.1 only.
+Hi,
 
-Updated and added to pull request queue, thanks.
+a few more short fixes. Please pull, thanks.
+
+- explicitly initialize zlib work memory to fix a KCSAN warning
+
+- limit number of send clones by maximum memory allocated
+
+- limit device size extent in case it device shrink races with chunk
+  allocation
+
+- raid56 fixes
+  - fix copy&paste error in RAID6 stripe recovery
+  - make error bitmap update atomic
+
+----------------------------------------------------------------
+The following changes since commit b7adbf9ada3513d2092362c8eac5cddc5b651f5c:
+
+  btrfs: fix race between quota rescan and disable leading to NULL pointer deref (2023-01-16 19:46:54 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.2-rc7-tag
+
+for you to fetch changes up to a9ad4d87aa263de36895402b66115a3a4b88bf1c:
+
+  btrfs: raid56: make error_bitmap update atomic (2023-01-27 14:57:10 +0100)
+
+----------------------------------------------------------------
+Alexander Potapenko (1):
+      btrfs: zlib: zero-initialize zlib workspace
+
+David Sterba (1):
+      btrfs: send: limit number of clones and allocated memory size
+
+Josef Bacik (1):
+      btrfs: limit device extents to the device size
+
+Qu Wenruo (1):
+      btrfs: raid56: make error_bitmap update atomic
+
+Tanmay Bhushan (1):
+      btrfs: raid56: fix stripes if vertical errors are found
+
+ fs/btrfs/raid56.c  | 14 +++++++++++---
+ fs/btrfs/send.c    |  6 +++---
+ fs/btrfs/volumes.c |  6 +++++-
+ fs/btrfs/zlib.c    |  2 +-
+ 4 files changed, 20 insertions(+), 8 deletions(-)
