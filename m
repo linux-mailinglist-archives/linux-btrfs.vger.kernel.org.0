@@ -2,89 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5FB68B5F0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Feb 2023 07:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B5A68B5FC
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Feb 2023 08:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbjBFG70 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Feb 2023 01:59:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55034 "EHLO
+        id S229630AbjBFHC3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Feb 2023 02:02:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbjBFG7Z (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Feb 2023 01:59:25 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788A618F
-        for <linux-btrfs@vger.kernel.org>; Sun,  5 Feb 2023 22:59:17 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MD9XF-1pGMkA0aEj-0099rT; Mon, 06
- Feb 2023 07:59:04 +0100
-Message-ID: <46998577-18fd-1854-8509-b1a4e330995b@gmx.com>
-Date:   Mon, 6 Feb 2023 14:58:55 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
+        with ESMTP id S229510AbjBFHC2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Feb 2023 02:02:28 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370B13A98
+        for <linux-btrfs@vger.kernel.org>; Sun,  5 Feb 2023 23:02:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xf1tktrP/zHwnIblytLs+bpH4YH4nc0pI3xzL+ctR7A=; b=xKmGO5ZJu1PWCuwC6FDNkiIl9Q
+        DSlijx2fYorxHP1MNQkdGD+5fhypy45JbRJEGtFDW35mUrwYeVGiY50fPa8D5IPOryiT3oIKb+vJ9
+        oTe45pOCMGb+04isdb8GZRYJfFhnLXDX2aPAIT2l41LO2oRCQ6RHVuuhHguGejEyJ0iquR7UnvN/v
+        /ZwOV0ea9YnXwp1ap3lMEkQgQGOaElel5JsHhG54I2kAs87RDzG51WPmtbmZU9I8iw7+4zfLlH7du
+        FJxjDAYYscVEfvAhP0zklnpi5AS6VIKmtOGhUEo00lPYdOex7DPG/nZKFkx99LxN0pMQ1L3MrZe6x
+        gUWhgtbQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pOvWE-007WEt-2D; Mon, 06 Feb 2023 07:02:26 +0000
+Date:   Sun, 5 Feb 2023 23:02:26 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] btrfs: reduce div64 calls for __btrfs_map_block()
+ and its variants
+Message-ID: <Y+CmAqw7JTYwvbTR@infradead.org>
 References: <cover.1675586554.git.wqu@suse.com>
  <Y+CgXXV4wRh/PuGA@infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 0/2] btrfs: reduce div64 calls for __btrfs_map_block() and
- its variants
-In-Reply-To: <Y+CgXXV4wRh/PuGA@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:EdX5ovDZaVwJ0UuMdeXVX7zznWQ7+Ql8IIDvBlhRSHPpyGrw4Uk
- WRDRaj21Kmrij3ohO67lZ91C3xVhXlqz+VnQIjb27Kmh0iqI3i0a6wb1xpMkPuXe9dED0yq
- qiYJG9aluyg2CHr9dKT0sSb7Dzgs7IESYjkD+y4IQ4GYG4osmntASUWb8T0+ymMK8hUWMRq
- trvZ6ANEic0Tt2OljNsCA==
-UI-OutboundReport: notjunk:1;M01:P0:SMK7hswF5aQ=;o6uWAHt1andH//cwBuu39PLSQkl
- AU4PzUQCE/Ew3WS0HqXnojaqfgor1aZ6rHrdFk8ziUJ6HJpwlRgrryhJPWpP+MZGAi7vqtbYb
- Ch4vO73Zw6brSHohnLxQsOB2VN3ZNC7uUG6xkLw1dOtu6hrrvbzRC4m9AUfwy9wVpupM3rLf4
- dtLevCAWeaD2BuYZZeNds5i3o4Ie9Zi1qWXni+xdMw+346SfzjcziYtO6Ke9JSLk/PAtiHoEG
- LWdovTfA+dc4RBVPN3aiwUuiltl0T8Z1lm2PxkXRK1i5f9eRsXDqbEf0hD+VoHFsO2WiREPJ/
- 5jqkG1JBrxan37P23Xa8OsK/0Hh68dQP+/wQQeWuG/fGxnhKx46sYOxfx06VtTe+UoyEau1Ya
- 592oJ4Yf98MmkR051ZVNdxGq5VvIf1GV88sjmUBtejBRMvKY+dQpBkCNAnlgz2iJ5VNJJcdJ+
- i5sl+IWsTod0sjtYZExzeoFTrK7OZi7tXnberswAEv2hudyxJAFn6Wsypk1AjATfbGKytARe8
- lOk9MS+YWOnCPrZq1RoL6oBeiFwqOUaUNMAdsJGmpDqiglAq086S0/IHirHX+k0zeBomSDGfD
- mWxCR02NAjId/UQM/v8WgoM45k0uLdIUIG4BjL6XT4Yui1ko59zZEade3PEO7niFFen/T/RiQ
- 49YQMF6HebVHi6cooog0dyae2S2ClPbf2O9LuvEnlSJJS7KznEbPfkNgUbf1y/mvsIwKpIovy
- 04b7XD+4kIDvwJfh4tgkDhSNVEKHC05FWka1fVELiZOp+bKQ3YUhSvzgt69iPHBUiNPK7fkDi
- WL9jl99jOYr7faP2g62b8qyQdh8yFKz49jBkBaC5AnYAQEwNp8oYdijdg8eJQgLS9BGODV/44
- 9YFDkxUnlPA6xZV1apLmjboWCPq6vqHcEPXEZ9Vr6e2BDlZDf4uxbrdZUKOPeRZkzfBjur5Xr
- RfstUAoC3cWcbZnpVFqN6ZZ8xIY=
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+ <46998577-18fd-1854-8509-b1a4e330995b@gmx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <46998577-18fd-1854-8509-b1a4e330995b@gmx.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/2/6 14:38, Christoph Hellwig wrote:
-> On Sun, Feb 05, 2023 at 04:53:40PM +0800, Qu Wenruo wrote:
->> Div64 is much slower than 32 bit division, and only get improved in
->> the most recent CPUs, that's why we have dedicated div64* helpers.
+On Mon, Feb 06, 2023 at 02:58:55PM +0800, Qu Wenruo wrote:
+> Right, I focused too much on the perf part, but sometimes the perf part may
+> sound more scary:
 > 
-> I think that's a little too simple.  All 64-bit CPUs can do 64-bit
-> divisions of course.  32-bit CPUs usually can't do it inside a single
-> instruction, and the helpers exist to avoid the libgcc calls.
-
-Right, I focused too much on the perf part, but sometimes the perf part 
-may sound more scary:
-
-   For example, DIVQ on Skylake has latency of 42-95 cycles [1] (and
-   reciprocal throughput of 24-90), for 64-bits inputs.
-
-I'm not sure what's the best way to benchmark such thing.
-Maybe just do such division with random numbers and run it at module 
-load time to verify the perf?
-
-Thanks,
-Qu
-
+>   For example, DIVQ on Skylake has latency of 42-95 cycles [1] (and
+>   reciprocal throughput of 24-90), for 64-bits inputs.
 > 
-> That should not stand against an cleanups and optimizations of course.
-> 
+> I'm not sure what's the best way to benchmark such thing.
+> Maybe just do such division with random numbers and run it at module load
+> time to verify the perf?
+
+Honestly, getting rid of the ugly divisions calls is probably
+reason enough as the series looks like a nice cleanup.  I just had
+to nipick on the sentence.
