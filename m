@@ -2,57 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FE568DE54
+	by mail.lfdr.de (Postfix) with ESMTP id C454D68DE55
 	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Feb 2023 17:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbjBGQ5d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Feb 2023 11:57:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
+        id S232039AbjBGQ5e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Feb 2023 11:57:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbjBGQ5a (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Feb 2023 11:57:30 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2163BD8F
-        for <linux-btrfs@vger.kernel.org>; Tue,  7 Feb 2023 08:57:29 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id c2so17436521qtw.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 07 Feb 2023 08:57:28 -0800 (PST)
+        with ESMTP id S232018AbjBGQ5c (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Feb 2023 11:57:32 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B293B667
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Feb 2023 08:57:30 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id d7so4415947qvz.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 07 Feb 2023 08:57:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/eqUPeDubSHqAKYlG4a6Zd2I0FSGhm2iJyMdziRqqSw=;
-        b=BLcJHuZh2FrlXIMLzLMTWIMr9oOiBk0QlLWQzTqLSFW9I+BhyG4IY71CbHLdvS8ACH
-         eutJyz7fqMtz+sMTuo7yZtSzVD73hos05/XiFhJW1B9p0C5sAbUmsS1t3mtVwILi3UaK
-         FjQ8Di/6QBVZrmLKANeMjQpX70hlDt48Tikxo7m+/bJHCc8+XBMoYPB1BU1twVY8+0P1
-         eEZ2Gtfz9H8+A3o4rxyrIbN5+7QdJ8+ptSEzTYrB01I9jpuZ/G6VDJFb1+h0tUjJHiE7
-         EaYY5Q65dXPSy9s18HDwlylnVEYpP2Smehns+8UT2lJvKKrEw76v1i9HAgkYt9L/fa7l
-         HOag==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v63YSZhIQDpIEPGHplK+l0eE5SS7UivVhunGpiRXEXY=;
+        b=Czp9nkP5X/3PkK/sUAF/UZegXG6Mmryw33orB9D1dTl9/8l2HXIeAWikiNKxBCjSVF
+         qg3ywE+fPT1K745FCw8kVurrK3MlX862lBkz+TOR0qA17VT4SDwmc9bfYMn2A1ex+Xkv
+         0WZkRmtDxb9nBqb28o+BXCSoS4IKGj8eM68pByLisR+RmGPZ1dd7IFT4gDTJqxAcL5fX
+         6kXnn1vfNtX8MG3WMzKw3Sv32r5DuwRddJuS5IDqAGusAfXjKQ3hFbt6ZomCggfXsMQC
+         uPrw4Ch38sKIW41wvEUpJXzROgvlioGtMs0rbxPVvge7spD5u7Ksycv5ta1afeY1D/FI
+         8rew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/eqUPeDubSHqAKYlG4a6Zd2I0FSGhm2iJyMdziRqqSw=;
-        b=mYv9y7k7MjOGOAbhO82zy7Ew97K7AT++ywZ6wZotyOtiwcN1gUY8eo82lCF+h5PS/I
-         4+w+aOnNv5OCqzQyXXQvijRt21/yBvwG/yJrpdFnRlaocZQlGH71QVCSGYPJBBs34G2o
-         9M6Ibl+dvP+pU8vCRvTEBmB+XsDEWFUKdk/NchxHPFTQlG2nJHAcdD/39ifvYLioofSU
-         Ab94Ru8p9B8T+8zp5NiEjUbUh5hiEvPtnWswlPW1V7COPxD1FbwbTuaMshJ8vxd2DIPH
-         r5xEGOTTEmNcEZVwWp1PGCGf8LnJZVbQZCxxDWplCfjgpO4VzZHWqSk5c64vhV+BRFND
-         TwjA==
-X-Gm-Message-State: AO0yUKV0udNJfT0HI8X3sbVmZQaqMMncEht8Drwc4LoRX46l2uOLpmpF
-        tHGGQLLbDoeByfQVFYNKcZp0MqezSh8Kjdte9AA=
-X-Google-Smtp-Source: AK7set/BM+6le1WxUauSidnJ4AYoBkEoB2AcCI7Q0nVZXlQzIVDNsEND/el6ACm6ymGFUtkV4ngI4g==
-X-Received: by 2002:a05:622a:134a:b0:3b8:4e37:50ea with SMTP id w10-20020a05622a134a00b003b84e3750eamr7146708qtk.58.1675789047705;
-        Tue, 07 Feb 2023 08:57:27 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v63YSZhIQDpIEPGHplK+l0eE5SS7UivVhunGpiRXEXY=;
+        b=WyrGCkVlDa68xszW+B6/hVCVEiuWnq5FRnTsOs8qqOUm8UjhnVrVJKt/0Oc/ryYpIo
+         YoBAiET/NqHHEjYZBb/fl5dsbTVDhyusCYqTA6d1rgVlsCowLFCEQA8c9KMV5bvy09h/
+         z3yc85KRUAFHqFRcXavjCR3hWiwyDf7Fzq32oDwp9B5nBK5cdSjlDVy7u+V1/vGBdyeg
+         mpDZe6HSjiEDywUFIuHM8Ro1vAsCYO6mQQR3Q+UW2JDIRo72VSzCLWvUrE0aiv7Ickhp
+         wIcALnCN78fhQbLT/Pkug8eYamhg/0MTRF/Zg0CF9RHF4zgPnplXusixQ49FUvH8rq/Y
+         EyJQ==
+X-Gm-Message-State: AO0yUKWMxEpMUl8oJ4gkJCeOeiUmxtWNQbtgEDs4RkXnC4CrWg2/0U1O
+        fBvww6nV76FhPJvM2yCPuAyYTO8vfSCtHU2W/oo=
+X-Google-Smtp-Source: AK7set84uodc52li5f7V7J1XpV6zu4xReubDCh29vWDYwrKqd0MWMVMv9xZ3l4zDIt6X+NySvW303Q==
+X-Received: by 2002:a05:6214:ace:b0:539:d8ce:57d5 with SMTP id g14-20020a0562140ace00b00539d8ce57d5mr7168168qvi.9.1675789049096;
+        Tue, 07 Feb 2023 08:57:29 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id pe4-20020a05620a850400b0071ada51ab48sm9813517qkn.37.2023.02.07.08.57.26
+        by smtp.gmail.com with ESMTPSA id b19-20020a05620a271300b0071a291f0a4asm9923224qkp.27.2023.02.07.08.57.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Feb 2023 08:57:27 -0800 (PST)
+        Tue, 07 Feb 2023 08:57:28 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 0/7] Error handling fixes
-Date:   Tue,  7 Feb 2023 11:57:18 -0500
-Message-Id: <cover.1675787102.git.josef@toxicpanda.com>
+Subject: [PATCH 1/7] btrfs: use btrfs_handle_fs_error in btrfs_fill_super
+Date:   Tue,  7 Feb 2023 11:57:19 -0500
+Message-Id: <74dfb92d8d80f082f64ddb0e3b3e073f0ae24e9d.1675787102.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1675787102.git.josef@toxicpanda.com>
+References: <cover.1675787102.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -64,48 +68,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+While trying to track down a lost EIO problem I hit the following
+assertion while doing my error injection testing
 
-For a short period of time our btrfs backport had 947a629988f1 ("btrfs: move
-tree block parentness check into validate_extent_buffer()") without the
-associated fix, which resulted in a lot of hilarity.
+BTRFS warning (device nvme1n1): transaction 1609 (with 180224 dirty metadata bytes) is not committed
+assertion failed: !found, in fs/btrfs/disk-io.c:4456
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/messages.h:169!
+invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+CPU: 0 PID: 1445 Comm: mount Tainted: G        W          6.2.0-rc5+ #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.1-2.fc37 04/01/2014
+RIP: 0010:btrfs_assertfail.constprop.0+0x18/0x1a
+RSP: 0018:ffffb95fc3b0bc68 EFLAGS: 00010286
+RAX: 0000000000000034 RBX: ffff9941c2ac2000 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffffb6741f7d RDI: 00000000ffffffff
+RBP: ffff9941c2ac2428 R08: 0000000000000000 R09: ffffb95fc3b0bb38
+R10: 0000000000000003 R11: ffffffffb71438a8 R12: ffff9941c2ac2428
+R13: ffff9941c2ac2450 R14: ffff9941c2ac2450 R15: 000000000002c000
+FS:  00007fcea2d07800(0000) GS:ffff9941fbc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f00cc7c83a8 CR3: 000000010c686000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ close_ctree+0x426/0x48f
+ btrfs_mount_root.cold+0x7e/0xee
+ ? legacy_parse_param+0x2b/0x220
+ legacy_get_tree+0x2b/0x50
+ vfs_get_tree+0x29/0xc0
+ vfs_kern_mount.part.0+0x73/0xb0
+ btrfs_mount+0x11d/0x3d0
+ ? legacy_parse_param+0x2b/0x220
+ legacy_get_tree+0x2b/0x50
+ vfs_get_tree+0x29/0xc0
+ path_mount+0x438/0xa40
+ __x64_sys_mount+0xe9/0x130
+ do_syscall_64+0x3e/0x90
+ entry_SYSCALL_64_after_hwframe+0x72/0xdc
 
-One of the things that popped was a WARN_ON(ret == 1) in __btrfs_free_extent
-where we didn't find the bytenr we were looking for.  This was troubling, as it
-appeared that we were losing the EIO and returning 1 from btrfs_search_slot.
+This is because the error injection did an EIO for the root inode lookup
+and we simply jumped to closing the ctree.  However because we didn't
+mark the file system as having an error we skipped all of the broken
+transaction cleanup stuff, and thus triggered this ASSERT().  Fix this
+by calling btrfs_handle_fs_error() in this case so we have the error set
+on the file system.
 
-I rigged up my error injection stress test with
-btrfs_check_leaf/btrfs_check_node with balance (as this was the path that we saw
-the error).  This of course uncovered a few other unrelated things, but
-eventually I reproduced what we saw in production.  Thankfully it was not that
-we were eating the -EIO and returning 1 instead, however the actual problem is
-worse.  We do not handle the errors properly in snapshot delete (which also gets
-used by reloation), and then we do not abort the transaction when we hit errors
-in this path, which leads to the file system being corrupted and eventually
-triggers the above WARN_ON().
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-With these fixes in place my stress testing was running overnight without
-tripping over any other leaks, corruptions, or panics.  Previously I wasn't able
-to run for longer than a couple of minutes without falling over.  Thanks,
-
-Josef
-
-Josef Bacik (7):
-  btrfs: use btrfs_handle_fs_error in btrfs_fill_super
-  btrfs: replace BUG_ON(level == 0) with ASSERT(level)
-  btrfs: handle errors from btrfs_read_node_slot in split
-  btrfs: iput on orphan cleanup failure
-  btrfs: drop root refs properly when orphan cleanup fails
-  btrfs: handle errors in walk_down_tree properly
-  btrfs: abort the transaction if we get an error during snapshot drop
-
- fs/btrfs/ctree.c       | 55 +++++++++++++++++++++---------------------
- fs/btrfs/disk-io.c     |  4 +--
- fs/btrfs/extent-tree.c | 10 +++++---
- fs/btrfs/inode.c       |  5 +++-
- fs/btrfs/super.c       |  1 +
- 5 files changed, 40 insertions(+), 35 deletions(-)
-
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 581845bc206a..d8885966e801 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1158,6 +1158,7 @@ static int btrfs_fill_super(struct super_block *sb,
+ 	inode = btrfs_iget(sb, BTRFS_FIRST_FREE_OBJECTID, fs_info->fs_root);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
++		btrfs_handle_fs_error(fs_info, err, NULL);
+ 		goto fail_close;
+ 	}
+ 
 -- 
 2.26.3
 
