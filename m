@@ -2,112 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BE068DE5A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Feb 2023 17:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1BC68DEE7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Feb 2023 18:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbjBGQ5l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Feb 2023 11:57:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
+        id S231449AbjBGR3x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Feb 2023 12:29:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232096AbjBGQ5j (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Feb 2023 11:57:39 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0514F3BDB5
-        for <linux-btrfs@vger.kernel.org>; Tue,  7 Feb 2023 08:57:38 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id h24so17408958qta.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 07 Feb 2023 08:57:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=l2YbcoN8YV/XQsKA7gpTxKVkd9miB4Uv7B6yf7bvslg=;
-        b=BWce36AqfV65NuV3ORa7O4yxM2zJmxjUY2Xas8zlVpDWYeiqa8e2GVm66Xl+qdHY62
-         wp10j9+9PPn1UKa9xxyncijqOd8Zyg6ERMtO90Q69NLsbCzGzZyfH1eaXnFQ10SdRRYH
-         F5yVFoCgYQ0RIxxoefjiXL3LqbmoHBoVRx2+IWSTuEgtLuLetJMkxas7gKkhB9Gqogyp
-         QRFSJd/VnPf2EodRRAbO7ScmRofu3Q9f53cFQNvowgL5Yn4dq3UQ8mhhgiPL6PTzzauq
-         CIuZcXy7Q1vE/VC5re7WWbrmc8ARyvxqR8je3Oq2s6QtdALpZv6zy8eJiBE+vtQ/78+f
-         UfpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l2YbcoN8YV/XQsKA7gpTxKVkd9miB4Uv7B6yf7bvslg=;
-        b=LKMZ8P9/Gy/UJHnFsa47kfXmSLdp/c4wG/wU0bcNq8Vkl8U+S6aC4BDig+N0its4u3
-         weDal0eLhg2XoE4qyP23phPQTaj/0VN1DF7wK5So96JmCQ59H1TPgN2JpE63UotaMBmw
-         TyGdCnCZGw5HE+Cu794oiGf0LYDrvPP0msLajoEy4Aa4QWKfnAFEJ95pryM//gGWuFPu
-         7yk36iYM1QGosMHyPgvISRoEzjzcItprmKjPlukyVR+B8f6xnRqLO9levWwP+KwiYe5I
-         vt6PcGUZ9/jBJAOLUx+nZavynD2J/Gzty4MyoOBtNEP2Fvcz8cKSaviGp3rz6o21no5o
-         z1vA==
-X-Gm-Message-State: AO0yUKUH1I8URbxzWL7BwEmRxLy0O4rOtX+PviH7lyy8f4r4oOv5Yd1/
-        H7QZbfAobSaVseyPIq2Pt4xyQEGIIdE8heTF6dQ=
-X-Google-Smtp-Source: AK7set/XXMEDVPR3RYJ2qKo2o12tacUjyfFwFHLq6QxZslP0V3+2Zk0NSzXTH5Obc0Mc18Kt67gO2g==
-X-Received: by 2002:a05:622a:1653:b0:3b8:2a6c:d1e3 with SMTP id y19-20020a05622a165300b003b82a6cd1e3mr5871647qtj.21.1675789057664;
-        Tue, 07 Feb 2023 08:57:37 -0800 (PST)
-Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id j24-20020a37ef18000000b0072396cb73cdsm9735874qkk.13.2023.02.07.08.57.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Feb 2023 08:57:37 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 7/7] btrfs: abort the transaction if we get an error during snapshot drop
-Date:   Tue,  7 Feb 2023 11:57:25 -0500
-Message-Id: <d49225b2cecf18d557ec347361373a2dbc2f81c4.1675787102.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1675787102.git.josef@toxicpanda.com>
-References: <cover.1675787102.git.josef@toxicpanda.com>
+        with ESMTP id S231222AbjBGR3w (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Feb 2023 12:29:52 -0500
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AF17EC2
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Feb 2023 09:29:50 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8A5365C020A;
+        Tue,  7 Feb 2023 12:29:47 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 07 Feb 2023 12:29:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1675790987; x=1675877387; bh=uxyFSm8+Cj
+        zTm2BGmryf1a/Nh1mDdUpMZauduD0RpQ0=; b=HLBhivqAkXHr7SveuvXgkHj22R
+        mYScOTzFqDqq5UjTM+/5AW8P3Yd5ZOQQry1yGunqbg2kQnKanvt/pXZHBxfUBbPM
+        rsqVli/DuayVlu2jUH1cPYSJD/BsHwJ44PAjnYCV+SlS4Nvf72ZfJjt8i7vQ0Plt
+        sdIuHMmve+YjIyEhDx4v8zqdbw+v2udeDcssG3l0FiNNsxdAKA+K8BUmkcGqXZBa
+        dW4PHZlMTkE07otTn9GkhD0Yh/iQRgRkHTQDwzbuO3hA6HgFRLnrnpn74z+Bokef
+        aqY7A7lgINpzh89MpC/Wo7mXc4Mz9IbXuLa9TXgjOfapFWOseNGvVIVgiMEQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1675790987; x=1675877387; bh=uxyFSm8+CjzTm2BGmryf1a/Nh1mD
+        dUpMZauduD0RpQ0=; b=QXTOrnPutHyuJ+XJycxK/E8gX4lmMNPzPhYHEiidxO+V
+        9hGmRrLFp/1o1FD0j+Q2t4usVBKtvAMXJ1pCdSmcJT55IP0Ox8WDp0yJOUN9O94/
+        iJsghs5ONiWuPbRq400ABY4yvIBR1WQ/skcqbWcECIJAo1aQhjn02NfT4gN9THkP
+        YUI+sN9Ws34ds4wRa5Xtl2ak+Cjsv+bFVeVgLBx+SztzIIzKskNPIzWTwIl62uMr
+        Iie5TagHlvsj/pIB+K+aOwKPE4sgvVC64SF4X7VAGKXQyUu6e7JImLxOlGm37YTr
+        D5UBq3vUIbJxa2dKPQH5O1sWSmT2FyQMVWv6ZKMySA==
+X-ME-Sender: <xms:i4riY0r1UzgLWaP0hAeqJLdQHoJICyE0Ty9qCaFdfF-CPNkwS4jsoQ>
+    <xme:i4riY6oITv7_h4VhSZXIXvdaDHGaHzCAO7NMUXLjQopxhOvbKdAhCFC9bHaOoSY26
+    EUBzuCfD_aAa9eeSqU>
+X-ME-Received: <xmr:i4riY5PEGsMZ82rb1U-W2nrqLuvNO-Ze5FfZv_BcC9p_TPbBB9IfQLAl>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudegkedgleekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:i4riY74waRXwBrEBky3eYReL0Eewqzfx9O__pZSKnHpNMSORHZOqpw>
+    <xmx:i4riYz45AI-ANVAgmyru-pl4BiRhw4QX6toYRwZxKTQNsrmKx-Me3Q>
+    <xmx:i4riY7ivlCCLWaCVQxJgfKeJiXfnIbZmytWkj1E-f2aNwZ6ARaYB4A>
+    <xmx:i4riY9RVokD5TGgNAwlpKpuv-0zf_Nbu0HM0XpDkJwaIWCWRkoOcNA>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 7 Feb 2023 12:29:46 -0500 (EST)
+Date:   Tue, 7 Feb 2023 09:29:45 -0800
+From:   Boris Burkov <boris@bur.io>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2] btrfs: add size class stats to sysfs
+Message-ID: <Y+KKiTzAulpdDgc/@zen>
+References: <5c4fcf99c1486e6c2c2c45f11ade73d40f153021.1674856476.git.boris@bur.io>
+ <20230207155101.GH28288@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230207155101.GH28288@twin.jikos.cz>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We were seeing weird errors when we were testing our btrfs backports
-before we had the incorrect level check fix.  These errors appeared to
-be improper error handling, but error injection testing uncovered that
-the errors were a result of corruption that occurred from improper error
-handling during snapshot delete.
+On Tue, Feb 07, 2023 at 04:51:01PM +0100, David Sterba wrote:
+> On Fri, Jan 27, 2023 at 01:56:50PM -0800, Boris Burkov wrote:
+> > Make it possible to see the distribution of size classes for block
+> > groups. Helpful for testing and debugging the allocator w.r.t. to size
+> > classes.
+> > 
+> > The new stats can be found at the path:
+> > /sys/fs/btrfs/<uid>/allocation/<bg-type>/size_class
+> > but they will only be non-zero for bg-type = data.
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> > Changelog:
+> > v2:
+> > - add sysfs path to commit message
+> > - unsigned counter types
+> > - labeled stat-per-line output format
+> > 
+> >  fs/btrfs/sysfs.c | 37 +++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 37 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> > index 108aa3876186..639f3842f99d 100644
+> > --- a/fs/btrfs/sysfs.c
+> > +++ b/fs/btrfs/sysfs.c
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/spinlock.h>
+> >  #include <linux/completion.h>
+> >  #include <linux/bug.h>
+> > +#include <linux/list.h>
+> >  #include <crypto/hash.h>
+> >  #include "messages.h"
+> >  #include "ctree.h"
+> > @@ -778,6 +779,40 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
+> >  	return len;
+> >  }
+> >  
+> > +static ssize_t btrfs_size_classes_show(struct kobject *kobj,
+> > +				       struct kobj_attribute *a, char *buf)
+> > +{
+> > +	struct btrfs_space_info *sinfo = to_space_info(kobj);
+> > +	struct btrfs_block_group *bg;
+> > +	u32 none = 0;
+> > +	u32 small = 0;
+> > +	u32 medium = 0;
+> > +	u32 large = 0;
+> > +
+> > +	for (int i = 0; i < BTRFS_NR_RAID_TYPES; ++i) {
+> > +		list_for_each_entry(bg, &sinfo->block_groups[i], list) {
+> 
+> Some locking is needed, you can eventually lock only iteration of one
+> sinfo and not the whole for cycle. Otherwise looks good.
 
-With snapshot delete if we encounter any errors during walk_down or
-walk_up we'll simply return an error, we won't abort the transaction.
-This is problematic because we will be dropping references for nodes and
-leaves along the way, and if we fail in the middle we will leave the
-file system corrupt because we don't know where we left off in the drop.
+That sounds like a good way to go to me, as well. Thanks for the review.
 
-Fix this by making sure we abort if we hit any errors during the walk
-down or walk up operations, as we have no idea what operations could
-have been left half done at this point.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/extent-tree.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 30720ea94a82..6b6c59e6805c 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -5708,12 +5708,14 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
- 
- 		ret = walk_down_tree(trans, root, path, wc);
- 		if (ret < 0) {
-+			btrfs_abort_transaction(trans, ret);
- 			err = ret;
- 			break;
- 		}
- 
- 		ret = walk_up_tree(trans, root, path, wc, BTRFS_MAX_LEVEL);
- 		if (ret < 0) {
-+			btrfs_abort_transaction(trans, ret);
- 			err = ret;
- 			break;
- 		}
--- 
-2.26.3
-
+> 
+> > +			if (!btrfs_block_group_should_use_size_class(bg))
+> > +				continue;
+> > +			switch (bg->size_class) {
+> > +			case BTRFS_BG_SZ_NONE:
+> > +				none++;
+> > +				break;
+> > +			case BTRFS_BG_SZ_SMALL:
+> > +				small++;
+> > +				break;
+> > +			case BTRFS_BG_SZ_MEDIUM:
+> > +				medium++;
+> > +				break;
+> > +			case BTRFS_BG_SZ_LARGE:
+> > +				large++;
+> > +				break;
+> > +			}
+> > +		}
+> > +	}
+> > +	return sysfs_emit(buf, "none %u\nsmall %u\nmedium %u\nlarge %u\n",
+> > +			  none, small, medium, large);
+> > +}
+> > +
+> >  #ifdef CONFIG_BTRFS_DEBUG
+> >  /*
+> >   * Request chunk allocation with current chunk size.
+> > @@ -835,6 +870,7 @@ SPACE_INFO_ATTR(bytes_zone_unusable);
+> >  SPACE_INFO_ATTR(disk_used);
+> >  SPACE_INFO_ATTR(disk_total);
+> >  BTRFS_ATTR_RW(space_info, chunk_size, btrfs_chunk_size_show, btrfs_chunk_size_store);
+> > +BTRFS_ATTR(space_info, size_classes, btrfs_size_classes_show);
+> >  
+> >  static ssize_t btrfs_sinfo_bg_reclaim_threshold_show(struct kobject *kobj,
+> >  						     struct kobj_attribute *a,
+> > @@ -887,6 +923,7 @@ static struct attribute *space_info_attrs[] = {
+> >  	BTRFS_ATTR_PTR(space_info, disk_total),
+> >  	BTRFS_ATTR_PTR(space_info, bg_reclaim_threshold),
+> >  	BTRFS_ATTR_PTR(space_info, chunk_size),
+> > +	BTRFS_ATTR_PTR(space_info, size_classes),
+> >  #ifdef CONFIG_BTRFS_DEBUG
+> >  	BTRFS_ATTR_PTR(space_info, force_chunk_alloc),
+> >  #endif
+> > -- 
+> > 2.38.1
