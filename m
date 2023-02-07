@@ -2,61 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4596F68CC84
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Feb 2023 03:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5223B68CE24
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Feb 2023 05:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjBGCUB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Feb 2023 21:20:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
+        id S230094AbjBGE0o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Feb 2023 23:26:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjBGCUA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Feb 2023 21:20:00 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5192E0DF
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Feb 2023 18:19:58 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M9FjR-1pUyLh1dtn-006SCL; Tue, 07
- Feb 2023 03:19:51 +0100
-Message-ID: <a4c209fa-96f3-7f6d-0fd9-ea69a13a254e@gmx.com>
-Date:   Tue, 7 Feb 2023 10:19:46 +0800
+        with ESMTP id S229823AbjBGE0i (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Feb 2023 23:26:38 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A816F15560
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Feb 2023 20:26:36 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0D5E733FAE
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Feb 2023 04:26:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1675743995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=3Strn/07KxaH2WoXELSwQ9Fi6i2Clwg5WXuMrRnU5PA=;
+        b=XEiGMbbGANOQyELw9BmnoGjnLnjURskE28ubZltLzIQ0ulf8ksU0YJymaVfNVFhI5J+Hi6
+        NHPNkfQHko66N2CACHYK2wz7R/p5xOnL/4/C3DW1W6dj3dkC0BAvUS7nTEW1Q9h9SCqvMD
+        1hk3S+xIzEImaqfXH3AFF2JBxBjBiYk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B2F213A8C
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Feb 2023 04:26:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xW4JBPrS4WPeGgAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 07 Feb 2023 04:26:34 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/4] btrfs: reduce the memory usage for btrfs_io_context, and reduce its variable sized members
+Date:   Tue,  7 Feb 2023 12:26:11 +0800
+Message-Id: <cover.1675743217.git.wqu@suse.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1674893735.git.wqu@suse.com>
- <a02fc8daecc6973fc928501c4bc2554062ff43e7.1674893735.git.wqu@suse.com>
- <5195283e-7e3d-6de1-75f4-d7f635bfc0ab@oracle.com>
- <61d2d841-778b-ca13-cc41-ca115b5ed287@suse.com>
- <aec522de-683f-b673-408f-8380b206309e@oracle.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 2/3] btrfs: small improvement for btrfs_io_context
- structure
-In-Reply-To: <aec522de-683f-b673-408f-8380b206309e@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:ASvRC6j9WdluIKmwmpnLy1os1vgR2gu2X80M2L/HyWk/dBjahEH
- NbXm6Zv7FxtlDmZeotu7Z0nkCl3jucxt0YZkpCNYGgKsqBHdJK2HFh8IZLCF3yVVq1V3FAa
- eHml8RUPGL4W7QeO+MPzNwWHVCRg+JQAzjGv4gxS/58kM5YqX8rf8xq/GPODXGTnt4XVeKY
- Sfz72KHajrKlvHLzZcesA==
-UI-OutboundReport: notjunk:1;M01:P0:DQrmJeoeVLc=;FMq+Jon97Thg91dIMOKzSSs7IZr
- tDjX2OkiSn0Y+41i98eaXYFAfXG4BqABCjlmOI/SZ7hzVx5UZHM+K1b8FEAkUyncvvYw/YODr
- 7N739B4lBDfR81W5XKjFWIAWOp+GRlkTEkJ8hnsD2UI13oFx1Yb+mo7jmawhaoLV8IIr73pSo
- +SasGjUDHO5tCrYodTbDu/24W+R6Zlegc0hxjcwbWP4PqUeNujM/P6SkjazNfQaYftRNj8XNc
- O3CpYWIpMomH05LVcLfPZhUKwxABsIhDKm0QmlsK4pnhr128s7Dds5/JQobZEPdT+lLzuRuc7
- ZibO3Gt38Yi9PRO4pQ/OBeeBrcnWqmjo4J4FwJDEzlcbifsZh4d9b0of766a0iBp3vPCLkaAT
- ET87x2Ju05Y0xhBoqA9wk+IQFFd5t5YmqDRAfSW5K+YjtD3L1J52TmOnUirSb/moQMuVWn/vg
- 2FLwx7thknk4vJU7ka84BiNQttc1PWA4GhEDCfBmmbEeLJucDn6Tb/K+u7iBzkdWTnB2hJNsz
- ZbpwRrr5BAlTOTt5Nwqlgl2CSXqk0iijrydTngUdmJVjBcxzp+yy9Ftdc3hwUsv9FcBpCeK6U
- c6hHjjspILTfzg6Y6MrFLvMIdUX1VKCWQVIpbfuTEnHjtC9OysDLLb8QYS8sZEMrdgUeoSmBj
- MEoM9JNHCU7JpYiaGMM7q7mQfVwmsDv9qo4JaryHH9hxsAwjWBVTOHLph36lVdfVSTLADHX8x
- 7tUQvPLnKhFakP/Nj3QYdaQFmxtY+RWOO2A/T4u6i7pGydpNWpB5yURkKf0mYKLoytM9hKvK7
- dAdfDFzejLLHnc/TzH3JAQdg7Wwzio1g6OD2h2fZx3Okb5eZFFlAK/zztNbb+K4r50/ipukrL
- 4Mgzvxz3TdKEeT8PCYVARaAcRW2vPm2rfV3Qidsj+VcC57oMJSFEoB4Wq1oZel09d3sNOlaWX
- xH2yMLjGyMMW0/vh0eX666Il4pQ=
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,100 +55,116 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Changelog:
+v2:
+- Address the comments on various grammar errors
+
+- Further reduce the memory used for replace
+  Now instead of two s16, it's just one s16 now.
+
+- Replace raid_map with a single u64
+  This not only reduce the memory usage, but also makes btrfs_io_context
+  to only have one variable sized member (stripes), simplify the
+  allocation function
+
+  This also removes the need to bubble sort the stripes.
 
 
-On 2023/2/2 17:12, Anand Jain wrote:
-> 
-> 
-> On 2/2/23 14:47, Qu Wenruo wrote:
->>
->>
->> On 2023/2/2 14:28, Anand Jain wrote:
->>>
->>>
->>>> +    bioc = kzalloc(
->>>>            /* The size of btrfs_io_context */
->>>>           sizeof(struct btrfs_io_context) +
->>>>           /* Plus the variable array for the stripes */
->>>>           sizeof(struct btrfs_io_stripe) * (total_stripes) +
->>>>           /* Plus the variable array for the tgt dev */
->>>> -        sizeof(int) * (real_stripes) +
->>>> +        sizeof(u16) * (real_stripes) +
->>>>           /*
->>>>            * Plus the raid_map, which includes both the tgt dev
->>>>            * and the stripes.
->>>
->>> Why not order the various sizeof() in the same manner as in the 
->>> struct btrfs_io_context?
->>
->> Because the tgtdev_map would soon get completely removed in the next 
->> patch.
->>
-> 
-> Ah. Ok.
-> 
->> Just to mention, I don't like the current way to allocate memory at all.
->>
->> If there is more feedback, I can convert the allocation to the same 
->> way as alloc_rbio() of raid56.c, AKA, use dedicated kcalloc() calls 
->> for those arrays.
-> 
-> The alloc_rbio() method allocates each component independently, leading
-> to frequent memory allocation and freeing, which could impact 
-> performance in an IO context.
+In btrfs_io_context, we have two members dedicated to replace, and one
+extra array for raid56
 
-That method is fine if we only have one variable length array (stripes).
+- num_tgtdevs
+  This is straight-forward, just the number of extra stripes for replace
+  usage.
 
-But it won't be a problem anymore, the 3/3 would make the dev-replace to 
-only take one s16 to record the replace source.
+- tgtdev_map[]
+  This is a little complex, it represents the mapping between the
+  original stripes and dev-replace stripes.
 
-Then I have a new patch to this series, which converts *raid_map into a 
-single u64.
+  This is mostly for RAID56, as only in RAID56 the stripes contain
+  different contents, thus it's important to know the mapping.
 
-By all those work, btrfs_io_context structure would only have one 
-variable length array (stripes), then the existing method would be 
-acceptable.
+  It goes like this:
 
-The final result would make btrfs_io_context look like this: (comments 
-skipped, as the comments would be larger than the structure itself)
+    num_stripes = 4 (3 + 1 for replace)
+    stripes[0]:		dev = devid 1, physical = X
+    stripes[1]:		dev = devid 2, physical = Y
+    stripes[2]:		dev = devid 3, physical = Z
+    stripes[3]:		dev = devid 0, physical = Y
 
-struct btrfs_io_context {
-         refcount_t refs;
-         struct btrfs_fs_info *fs_info;
-         u64 map_type; /* get from map_lookup->type */
-         struct bio *orig_bio;
-         atomic_t error;
-         u16 max_errors;
-         u16 num_stripes;
-         u16 mirror_num;
+    num_tgtdevs = 1
+    tgtdev_map[0] = 0	<- Means stripes[0] is not involved in replace.
+    tgtdev_map[1] = 3	<- Means stripes[1] is involved in replace,
+			   and it's duplicated to stripes[3].
+    tgtdev_map[2] = 0	<- Means stripes[2] is not involved in replace.
 
-         u16 replace_nr_stripes;
-         s16 replace_stripe_src;
+  Thus most space is wasted, and the more devices in the array, the more
+  space wasted.
 
-         u64 full_stripe_logical;
-         struct btrfs_io_stripe stripes[];
-};
+- raid_map[]
+  A sorted array where the first one is always the logical bytenr of
+  the full stripe
 
-> 
-> It may be goodidea to conduct a small experiment to assess any
-> performance penalties. If none are detected, then it should be ok.
+  But the truth is, since it's always sorted, we don't need it at all.
+  We can use a single u64 to indicate the full stripe start.
 
-If HCH or someone else is going to make btrfs_io_context mempool based, 
-then I guess we have to go the other way, mempool for btrfs_io_context, 
-but still manually allocate the stripes.
+  Currently we're reusing the array mostly to re-order our stripes for
+  RAID56, which is not ideal, because we can get it down right just in
+  one go.
 
-Anyway the updated series would benefit everyone (at least I hope so).
+All these tgdev_map[] and raid_map[] designs are  wasting quite some
+space, and making alloc_btrfs_io_context() to do very complex and
+dangerous pointer juggling.
 
-Thanks,
-Qu
+This patch will replace those members by:
 
-> 
-> Thx,
-> 
-> 
->>
->> Thanks,
->> Qu
->>
->>>
->>> Thx.
+- num_tgtdevs -> replace_nr_stripes
+  Just a rename
+
+- tgtdev_map[] -> replace_stripe_src
+  It's changed to a single s16 to indicate where the source stripe is.
+  This single s16 is enough for RAID56. For DUP, they don't care the
+  source as all stripes share the same content.
+
+- raid_map[] -> full_stripe_logical
+  We remove the sort_parity_stripes(), and get the stripes selection
+  done correctly in RAID56 routines.
+
+  So we only need to record the logical bytenr of the full stripe start.
+  Existing call sites checking the type of stripe can compare with
+  their data stripes number to do the same work.
+
+This not only saved some space for btrfs_io_context structure, but also
+allows the following cleanups:
+
+- Streamline handle_ops_on_dev_replace()
+  We go a common path for both WRITE and GET_READ_MIRRORS, and only
+  for DUP and GET_READ_MIRRORS, we shrink the bioc to keep the same
+  old behavior.
+
+- Remove some unnecessary variables
+
+- Remove variable sized members
+  Now there is only one variable sized member, stripes.
+
+Although the series still increases the number of lines, the net
+increase mostly comes from comments, in fact around 100 lines of comments
+are added around the replace related members.
+
+Qu Wenruo (4):
+  btrfs: simplify the @bioc argument for handle_ops_on_dev_replace()
+  btrfs: small improvement for btrfs_io_context structure
+  btrfs: use a more space efficient way to represent the source of
+    duplicated stripes
+  btrfs: replace btrfs_io_context::raid_map[] with a fixed u64 value
+
+ fs/btrfs/raid56.c            |  71 ++++++----
+ fs/btrfs/scrub.c             |  30 ++--
+ fs/btrfs/volumes.c           | 267 ++++++++++++++++-------------------
+ fs/btrfs/volumes.h           |  73 ++++++++--
+ include/trace/events/btrfs.h |   2 +-
+ 5 files changed, 246 insertions(+), 197 deletions(-)
+
+-- 
+2.39.1
+
