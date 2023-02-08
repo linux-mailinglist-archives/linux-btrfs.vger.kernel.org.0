@@ -2,57 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C233B68F0E9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 15:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECBF68F1E8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 16:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbjBHOeI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Feb 2023 09:34:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48074 "EHLO
+        id S230396AbjBHPXS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Feb 2023 10:23:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbjBHOeD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 09:34:03 -0500
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345A81D91F
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 06:34:02 -0800 (PST)
-Received: by mail-oo1-xc2a.google.com with SMTP id y81-20020a4a4554000000b0051a7cd153ddso957438ooa.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Feb 2023 06:34:02 -0800 (PST)
+        with ESMTP id S229895AbjBHPXR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 10:23:17 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110CE460A6
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 07:23:16 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id qw12so52075398ejc.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Feb 2023 07:23:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ISmrNvL/NJV9YBEcOBUIrlDQoxhRg6SvGetQbseQjmw=;
-        b=kA7ad/h0XxK1McTTGPba9T/ch0NZ++mp9r7866pJpWYC6ql5+SDiZlHEqku/H2luxJ
-         I81buyQcDQZ7hytpAblPmy3EaEDSCCta/7w52fvlYPTBdKqIIoUn96uhXVeHrVMDsQty
-         +MAan4t4GqPw2isAA64KDum/4wyyYmAQBGXUkvABvPJAz5TPgm1k7qjVTzE9YljYbXdA
-         eQa7ZSA3flU1XIOyQ/4S5AwWANsp/uajFl/fTj5u7m1w0EwACv9JyjYHztafduA/vC4x
-         6/RpV2NhXTj6n1ThlpeMV44n2Dfe0d4v92ihT5+PJ8wHYY7EQa8+Bt63hlm81cCO8wgu
-         Rnuw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bmvqp0Xlc8h8V1QdpDAXAuUo85aw7JqvRi/7aFjIyyI=;
+        b=RXJj8lixrIcXrgdJOcBcrW0fX8CkZ8zwmnyN/Am6IXdWnC3wmeekmbPOqWJSqtQ8mb
+         lwl2r++3d+qcOEL1j5PPM5nhQgPjsO8XPS13Q57rEXO7tfdT20nBJtRgjjjcuE1zjGPf
+         /ZZ2LlLdVOkWGq+qovREA8uSa+aM7yoSUR4+vtrCX3EbEALgK/uhlEkaQkTywDH7WKc1
+         I90Pup2t7xVtmFK2/ERJc7fr/FTsZl46JB2MI5LR7qNT448fGU0Pq6gwafiviP1q0JXF
+         /B1cn6ZH5UhUE8qYL4s1hiYTmMXlvmvNSCchyDNy1mXxN6Cr9tAHqpa2YMo93NRmb9h6
+         8clA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ISmrNvL/NJV9YBEcOBUIrlDQoxhRg6SvGetQbseQjmw=;
-        b=bMzspG4Shm3kK5QOYU02XsPJbi7ZE7KjLnVwctICE0dfp8MMg7+T7Ghvn9cweXU/YV
-         1AWyh9eFAc7lr8e9FeCHgC5e+Ig7n3JeuG9iScmey3YNwb191SYGnDDti1GbQfjag/Uo
-         G1lOatr562olxW5n9ZTQfVfSLyU0t5YA8QeLRVP6PjX7euK+QcTorMyYGa0SMKvAy87H
-         yEP631sc41KsmHMbF3KD8LFf9T/BgSDyDbqsQSzQGQRiBK/UctmJ4Iqt4jXPKJ6kmnQf
-         AK6iyE7KeKW5VFqfTAwfID3VVzzk1kbZ8udOqN9/MoBmQHpwfldnXiIwgEYfc9C6OyDc
-         NuwA==
-X-Gm-Message-State: AO0yUKX1gemQbcm6lhGTH25U+5wyZHDtci2Yxl4PJJ+ubblQIz/vebko
-        DdvZ2ybNPbdYAwK2lHg7ZFAhDjrM3KNpb7KKFtWCbsCm3UE=
-X-Google-Smtp-Source: AK7set8mSF695x6YLdZkobuuDSb1wjPsV9C3sHVapbdZDqMQZBmPq5Mds/Huzf74Fx98F9ALOFrwCTEiLIknVygDPA8=
-X-Received: by 2002:a4a:929d:0:b0:51a:934a:6f6c with SMTP id
- i29-20020a4a929d000000b0051a934a6f6cmr317427ooh.18.1675866841238; Wed, 08 Feb
- 2023 06:34:01 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Bmvqp0Xlc8h8V1QdpDAXAuUo85aw7JqvRi/7aFjIyyI=;
+        b=UG6mwzrgviH1j5Hqnm/e65W7BdicHXkpDcp9JgzkazKiGc8LfqjTYBRkZB8vrwsNMz
+         AZt0TzSm++vmShPXDZ20zqxO7h5I7h/KGjJ5lBNDB0/SrTgaCNrCXqfnSBplkfI6nIZm
+         0w4XUAWY1Y0a5UX7snFZjF3hiPJY3QUYHZHGZe2xWnRZ/+ZxEMxggcrTpeO+RInSFlA6
+         3DDmyeI3WUC6XsM+RlP/FP5Naj5v+4k4423Bj0hoVwwBYzLnttN69PSc3Te68SiP9rQ9
+         GOiywzkG0PMsv1kD6mAfPfUSq5ICC9eoodrbPIYf65bk7FEOtOQAQhOC5QX0YgKs9koL
+         BPjA==
+X-Gm-Message-State: AO0yUKXZeXROfY22cJh6IPSebMM508xnF/mKUbrG2p2FpyNPyLYi9A/e
+        k0YFoyY/BOa0DGC9DqON+q64M+dg4LjblNOytwOevFM6liA=
+X-Google-Smtp-Source: AK7set/NKje/ZBpyY24hugunZodi+rvkCI7u2xYnUeMY0mnaSA+tkq8sTWFM9Ivmu/wUAG5/LXZDkO0VvP1p9Lg5yyg=
+X-Received: by 2002:a17:906:f6cb:b0:87b:d26f:eb49 with SMTP id
+ jo11-20020a170906f6cb00b0087bd26feb49mr1815987ejb.176.1675869794334; Wed, 08
+ Feb 2023 07:23:14 -0800 (PST)
 MIME-Version: 1.0
-From:   Paul Boughner <paulboughner@gmail.com>
-Date:   Wed, 8 Feb 2023 09:33:50 -0500
-Message-ID: <CAKH6Scdg_BXDo9MR9O-RosM-VbR2Uz7Or=d_5-x3FSMSu75ziw@mail.gmail.com>
-Subject: =?UTF-8?Q?Leap_Guest_OS_in_Vbox_parent_transid_verify_failed?=
-        =?UTF-8?Q?=E2=80=A6=2E613771_wanted_613774?=
-To:     linux-btrfs@vger.kernel.org
+References: <CAKH6Scdg_BXDo9MR9O-RosM-VbR2Uz7Or=d_5-x3FSMSu75ziw@mail.gmail.com>
+In-Reply-To: <CAKH6Scdg_BXDo9MR9O-RosM-VbR2Uz7Or=d_5-x3FSMSu75ziw@mail.gmail.com>
+From:   Patrik Lundquist <patrik.lundquist@gmail.com>
+Date:   Wed, 8 Feb 2023 16:23:02 +0100
+Message-ID: <CAA7pwKPtkGH3HbJBWj7KA==Vwm+k8V4Q8j-Askxn9C7ZkSWbwQ@mail.gmail.com>
+Subject: =?UTF-8?Q?Re=3A_Leap_Guest_OS_in_Vbox_parent_transid_verify_fail?=
+        =?UTF-8?Q?ed=E2=80=A6=2E613771_wanted_613774?=
+To:     Paul Boughner <paulboughner@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_05,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -62,11 +66,14 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is in a VM so I am not sure how to get the log out and everything
-is in images.
+On Wed, 8 Feb 2023 at 16:03, Paul Boughner <paulboughner@gmail.com> wrote:
+>
+> This is in a VM so I am not sure how to get the log out and everything
+> is in images.
+>
+>  I did a dumb thing and hibernated my Win10 host with the Leap guest
+> still running then woke it up, then hibernated again, repeatedly 3x.
 
- I did a dumb thing and hibernated my Win10 host with the Leap guest
-still running then woke it up, then hibernated again, repeatedly 3x.
+Loopback mount the disk image and run btrfs check?
 
-
-thanks for any help in this
+https://superuser.com/questions/158908/how-to-mount-a-virtualbox-vdi-disk-on-linux
