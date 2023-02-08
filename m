@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE53D68ED69
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 11:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DDB68ED6C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 11:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbjBHK6L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S230211AbjBHK6L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 8 Feb 2023 05:58:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjBHK6G (ORCPT
+        with ESMTP id S230167AbjBHK6G (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 05:58:06 -0500
 Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD931350E
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 02:58:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E22715CA6
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 02:58:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1675853884; x=1707389884;
+  t=1675853885; x=1707389885;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=oh3KNTXYN5CoEVcuSykxoAqYMbfvM/Ya1AGBLL/lGNE=;
-  b=eyFQVgz3/gBQqYIJqHUh/wTWphye+rnYqVn8KhNPfwi87IalcPF/QtT3
-   i3EmmY0KBdXdS6DaUywgleqBhjWOdkmp0NG1iRBiXHFtXzOgHggjkNNGS
-   aq3dgw9lF1r7RZ+DprYTBzvGefRRqapWCed6YfU+jJCbNR2bKN6iumacM
-   dH1LpTp6ClWDRe4dq0K0CGrv5zbDo1SBuY3IeyWMeo8Mkpsc7U6hWmn5T
-   7xbqIQpecc6JOf+HKd+S5GXCUW+Ot+o1lGZ9ezv3y4LA6QmGXGnvJt3JE
-   LTHA+98AwUEl5gwL3o/bLf+u+8xHKP5M7MCSvJbc7y8cu70x3ZP0jEkWs
+  bh=HoksUmEZ3eyxw4qrFGWYGpsHqq/p34pWEDYoQk8BqRU=;
+  b=Rv41EJcAhOet/9UejZUlhxaOyxAWgtAXwaApQbvs+Y/EafttgWkS9Q5s
+   4dAh/IikiFz0vimTLkxFxjVUj2t8lPFjVYyYu4i3R/3leNQwQmxHJsqE9
+   VO32WAjlv9jBZ68OeVBK9fhhfyFsofNwvhaSSeB+YwKE/rKd8eNly9a6K
+   PYxj5mC6bJteekTi/yNVjZ1JfZghEcrWvIT/IY4R6F66TdHVmvOH5NOyZ
+   HVU2sH1uQg3RKSyobM57FkXEdsEFwy2b58EuXwGRS7NYfWtYm+X1MJ6Q+
+   m9W6cLDAVeraaeq0c7VopeA/ECHaJiLG3odB6iYm8ju71KCJJCfVsqf3r
    Q==;
 X-IronPort-AV: E=Sophos;i="5.97,280,1669046400"; 
-   d="scan'208";a="221115649"
+   d="scan'208";a="221115651"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
   by ob1.hgst.iphmx.com with ESMTP; 08 Feb 2023 18:58:04 +0800
-IronPort-SDR: t2u/Ll4yiTp6szkrMji2SNZXqd86l7rGf5wzKevrzjXzksDCYiPKHc6jMY9Z47IeFGB88RbEXx
- ShGo4M3fUvJuAQOZEzTRpQlEago1jsh3uGMK9F3A074PUk1DC0aXcI4f3DApvl/bkta6kCiPWu
- WMqDC8uCbXK66dh3slB6DAuO27UlBqrJJwWDZjfwEh4xGA/QFRem7id0P9nO0me+cKzcTgS6Az
- HKxtCaqqq8m3TnQ+9XrW5JWt1g2AjjlmHk9WHiZLLgq2dGDxBIy8hd29O7YlAgXSOEotFX2iE4
- szs=
+IronPort-SDR: SWfL8jaqcHeZlRFN/iU8S/T9bpWQE9u08tX5+kNx1WJ32Emy4b9Spq6RgTi/0gOB5z411kvjLz
+ 0Y0GMArud/wqGkmQjQjy8SOtqqoMBfO8LPyxEJKMKGG0gPa1/TslcScUKcpCa3S8wNd63doxja
+ GuQFxZYf/T+ASGHid81nFEtHAUXLUJQe9dkCBl+SoQkGgmCMKNZgVBQv4EhDD+dHnKu16eVK6U
+ tGbXPAitIj3KI9q0fTJbkvdy8FcUth7NkqeVgv6alXE99QKwQ8iZKrO3HtVoih5kVByh14oWMO
+ FdA=
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Feb 2023 02:15:19 -0800
-IronPort-SDR: XLgaSVOg5XvCTxAKltyWRm4Biuvl3thLsBhMEzOUhy/3WOssA/SeTV0uFhhY5Ampi2yhDSb3wn
- r2oxk+or5x3EQaQj7k3uzpSqfLjqkUpxX4S55gica30EkzSPbZln9ChHQFR9aDS1jLaJm7OxsU
- QRbCkkmdOlmWf+zcl+PsDFRuZBFQrh1Az1Gq8BF/7CjGG+Lp7bjaZ6t0nmjxNPepDcPtEGoEcB
- Vs/HFXz5x1NjSQR4DOSHvan0djdU9kNOs+AhTlRtubUD8BhBOIYQWxNe5nzemC8skcnpCaZUVr
- 268=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Feb 2023 02:15:20 -0800
+IronPort-SDR: dhPxIrbEdKWdJm9/pPFogxkHR3KlnStyFExDborFFwQfxf1iXYpGNKdhoMuXj+ARrX00kGy7sU
+ i839BwTwb3l+anwiV6T2W2P+/EJGcQgMeWMR1fTKEjSn+V9sGV9HmS5QuA0gZCUcIrYKOG/Vfx
+ 2dTPawVjifXVhaEoKDPQRKQj7iY5dAWLs3ijSFzmTWurMJkFknwKoZkWmyCoMM9Tr70vVVPc6E
+ SC5dxRI2oAX0QRMBToRlgpTR7FI4FQo2b24KSebC0cWFve6k4xySKoGcJ50wtndzoqwHXSBIX7
+ 6yo=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip02.wdc.com with ESMTP; 08 Feb 2023 02:58:04 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 08 Feb 2023 02:58:05 -0800
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v5 12/13] btrfs: consult raid-stripe-tree when scrubbing
-Date:   Wed,  8 Feb 2023 02:57:49 -0800
-Message-Id: <ed868bb9e41d77fab138d2cf7b18728358526b82.1675853489.git.johannes.thumshirn@wdc.com>
+Subject: [PATCH v5 13/13] btrfs: add raid-stripe-tree to features enabled with debug
+Date:   Wed,  8 Feb 2023 02:57:50 -0800
+Message-Id: <fcc0db899a9dbbac3c862b2f91afe9de82b164ac.1675853489.git.johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <cover.1675853489.git.johannes.thumshirn@wdc.com>
 References: <cover.1675853489.git.johannes.thumshirn@wdc.com>
@@ -66,73 +66,29 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When scrubbing a filesystem which uses the raid-stripe-tree for logical to
-physical address translation, consult the RST to perform the address
-translation instead of relying on fixed block group offsets.
+Until the RAID stripe tree code is well enough tested and feature
+complete, "hide" it behind CONFIG_BTRFS_DEBUG so only people who
+want to use it are actually using it.
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/scrub.c | 33 +++++++++++++++++++++++++++++++--
- 1 file changed, 31 insertions(+), 2 deletions(-)
+ fs/btrfs/fs.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index a5d026041be4..d456dda8c5b0 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -24,6 +24,7 @@
- #include "accessors.h"
- #include "file-item.h"
- #include "scrub.h"
-+#include "raid-stripe-tree.h"
- 
- /*
-  * This is only the first step towards a full-features scrub. It reads all
-@@ -2719,6 +2720,21 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
- 	int ret;
- 	u8 csum[BTRFS_CSUM_SIZE];
- 	u32 blocksize;
-+	struct btrfs_io_stripe stripe;
-+	const bool stripe_update =
-+		btrfs_need_stripe_tree_update(sctx->fs_info, map->type);
-+
-+	if (stripe_update) {
-+		stripe.dev = src_dev;
-+		ret = btrfs_get_raid_extent_offset(sctx->fs_info, logical,
-+						   (u64 *)&len,
-+						   map->type, mirror_num,
-+						   &stripe);
-+		if (ret)
-+			return ret;
-+
-+		src_physical = stripe.physical;
-+	}
- 
- 	if (flags & BTRFS_EXTENT_FLAG_DATA) {
- 		if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
-@@ -2772,8 +2788,21 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
- 			return ret;
- 		len -= l;
- 		logical += l;
--		physical += l;
--		src_physical += l;
-+		if (stripe_update && len) {
-+
-+			ret = btrfs_get_raid_extent_offset(sctx->fs_info,
-+							   logical, (u64 *)&len,
-+							   map->type, mirror_num,
-+							   &stripe);
-+			if (ret)
-+				return ret;
-+
-+			src_physical = stripe.physical;
-+			physical = stripe.physical;
-+		} else {
-+			physical += l;
-+			src_physical += l;
-+		}
- 	}
- 	return 0;
- }
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index bee7ed0304cd..c0d6dd89e3b0 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -214,7 +214,8 @@ enum {
+ 	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
+ 	 BTRFS_FEATURE_INCOMPAT_RAID1C34	|	\
+ 	 BTRFS_FEATURE_INCOMPAT_ZONED		|	\
+-	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2)
++	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2	|	\
++	 BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE)
+ #else
+ #define BTRFS_FEATURE_INCOMPAT_SUPP			\
+ 	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
 -- 
 2.39.0
 
