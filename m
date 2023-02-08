@@ -2,190 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A46A68F607
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 18:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 889A468F6DC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 19:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbjBHRsJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Feb 2023 12:48:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52382 "EHLO
+        id S231586AbjBHS0k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Feb 2023 13:26:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbjBHRrv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 12:47:51 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDE92E834
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 09:47:00 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EE266B81F18
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 17:46:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3419DC433EF
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 17:46:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675878414;
-        bh=SwCmCGGyPTIB2eBEWOxWW6IDjZNBWoudDUiFAL3+GRo=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=CumQof+uxZBXnNUZjVbuTcaDyvjs2nEDpeBe1EwCkHJ7l2vSwCpAfGS5iUgweQpF5
-         x/bA7WoB/OyGyatCBZDfIZnG8hLUiUjeqfwazwY8RQTICEbghqJX0BMdJqeMKDaP0v
-         PEwOtS0gSH1E5k/Vhq+QpYUpqetL2vKCutdUvihqECWnWthk6LZQCmKR2R8CnAdmRR
-         hMO4XcpXhxHqf9eVwVgZc43O+exsgeE74RAhTtBldVJbzYpcKvjiPPcGgOSKhNExqh
-         yMNYI7Q2NoJd0Ty6RVjgsqIKhnmdNfNYYpwaq2W3+slIACJ3EDw0CZyZNtQ9sY7ZRP
-         6eZlwZ7y56VoQ==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: do unsigned integer division in the extent buffer binary search loop
-Date:   Wed,  8 Feb 2023 17:46:49 +0000
-Message-Id: <ba00af7d2e579d5b8feba8a2f8bd02e986a1cd35.1675877903.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1675877903.git.fdmanana@suse.com>
+        with ESMTP id S229460AbjBHS0j (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 13:26:39 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C16270F
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 10:26:37 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id cw4so686687qvb.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Feb 2023 10:26:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/B2r76dVxVoMuBLDSYWf+FTha5PdwHyx60SntDv6IhQ=;
+        b=xn72+3gdY87iun1iFpc0TmqsR3PfJ1sLowBBOxhDwBx4EG+zyVolFncARZvQruDYHP
+         UAiq9cA3QmdQf0pSFUpVJIXLnM8tW0GvqIP9PZK9c/YU85wpmo0HT/o91dX4/D9RKUQv
+         a4PT9Nybj5BG9WKh3MMmOXb+Sb/lYxoxknxbqHuy8mwu/sVHT3zeodd89YbtlIq1maLL
+         JnFicqnqVQEst/W8FDKNRhnnlENkaMp9biyg09KsXr3AV65ntLuLBoGojuSUpq8P+l5X
+         duJASqNch7dXzopkloxZG18VNhvaGSUx3WNND3Q4Yzu/hwTimdkcloivsBuj/znC3FMd
+         A6LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/B2r76dVxVoMuBLDSYWf+FTha5PdwHyx60SntDv6IhQ=;
+        b=rF1fs6XyL1zoQY2opPxH7/5CsI+Nh9kZP+RNu5o1NjSOAn74VqyZ4ioIS90LptVcCL
+         zP+uXpgszqZJLIKaNAHg4rdZ67dfllm+9l7sw656dDezmOiPSLDRXymWjHofVBAALQkZ
+         nD7GiYr+FEHaO9RNdgZGrQBycaDLoqHoDEuaqChkoaTU2X0XBGVWDCwtJjSgs49ctAiq
+         fHMay+tEAjC5w4vy3sqNsHEDzjjaIjNqZxGZpLfrJk2F3H8+l4SYltRb2laE9ZYkisjb
+         nTxaJDRmMdxL6+qETqLwHYfnFmjmYhrnUeNlA3PQ2YUfWCCqGKX+PsuiybLt8vISIncr
+         Bf2w==
+X-Gm-Message-State: AO0yUKUHcBychSa4uRyWrbVbMNRupJNcsDsKTS71CvlYp8C4ZIiqpj5/
+        q78eSzSweu7pa4478qRid1c/J/7WOwkd6EMPo8Q=
+X-Google-Smtp-Source: AK7set8f5LigK+GKsiwOwPF9zWi0b6ussaV9sAhWKw3dYAsn5vLXRFmvrQz1xYuGzK7/F+P16S6WOQ==
+X-Received: by 2002:a05:6214:2b08:b0:56c:1574:6538 with SMTP id jx8-20020a0562142b0800b0056c15746538mr6481945qvb.42.1675880796610;
+        Wed, 08 Feb 2023 10:26:36 -0800 (PST)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id d2-20020a05620a204200b0071f0d0aaef7sm12046900qka.80.2023.02.08.10.26.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Feb 2023 10:26:35 -0800 (PST)
+Date:   Wed, 8 Feb 2023 13:26:34 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] btrfs: some minor tweaks to the extent buffer binary
+ search
+Message-ID: <Y+PpWt8qOpS3k+Wf@localhost.localdomain>
 References: <cover.1675877903.git.fdmanana@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1675877903.git.fdmanana@suse.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Feb 08, 2023 at 05:46:47PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Add a couple minor tweaks to the binary search function. These were
+> originally part of a larger patchset I'm working on, but since these
+> are trivial and independent from the test, I'm sending them out
+> separately. More details on the change logs.
+> 
+> Filipe Manana (2):
+>   btrfs: eliminate extra call when doing binary search on extent buffer
+>   btrfs: do unsigned integer division in the extent buffer binary search loop
+> 
+>  fs/btrfs/ctree.c | 31 +++++++++++++------------------
+>  fs/btrfs/ctree.h | 15 +++++++++++++++
+>  2 files changed, 28 insertions(+), 18 deletions(-)
+> 
 
-In the search loop of the binary search function, we are doing a division
-by 2 of the sum of the high and low slots. Because the slots are integers,
-the generated assembly code for it is the following on x86_64:
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-   0x00000000000141f1 <+145>:	mov    %eax,%ebx
-   0x00000000000141f3 <+147>:	shr    $0x1f,%ebx
-   0x00000000000141f6 <+150>:	add    %eax,%ebx
-   0x00000000000141f8 <+152>:	sar    %ebx
+Thanks,
 
-It's a few more instructions than a simple right shift, because signed
-integer division needs to round towards zero. However we know that slots
-can never be negative (btrfs_header_nritems() returns an u32), so we
-can instead use unsigned types for the low and high slots and therefore
-use unsigned integer division, which results in a single instruction on
-x86_64:
-
-   0x00000000000141f0 <+144>:	shr    %ebx
-
-So use unsigned types for the slots and therefore unsigned division.
-
-This is part of a small patchset comprised of the following two patches:
-
-  btrfs: eliminate extra call when doing binary search on extent buffer
-  btrfs: do unsigned integer division in the extent buffer binary search loop
-
-The following fs_mark test was run on a non-debug kernel (Debian's default
-kernel config) before and after applying the patchset:
-
-  $ cat test.sh
-  #!/bin/bash
-
-  DEV=/dev/sdi
-  MNT=/mnt/sdi
-  MOUNT_OPTIONS="-o ssd"
-  MKFS_OPTIONS="-O no-holes -R free-space-tree"
-  FILES=100000
-  THREADS=$(nproc --all)
-  FILE_SIZE=0
-
-  umount $DEV &> /dev/null
-  mkfs.btrfs -f $MKFS_OPTIONS $DEV
-  mount $MOUNT_OPTIONS $DEV $MNT
-
-  OPTS="-S 0 -L 6 -n $FILES -s $FILE_SIZE -t $THREADS -k"
-  for ((i = 1; i <= $THREADS; i++)); do
-      OPTS="$OPTS -d $MNT/d$i"
-  done
-
-  fs_mark $OPTS
-
-  umount $MNT
-
-Results before applying patchset:
-
-  FSUse%        Count         Size    Files/sec     App Overhead
-       2      1200000            0     174472.0         11549868
-       4      2400000            0     253503.0         11694618
-       4      3600000            0     257833.1         11611508
-       6      4800000            0     247089.5         11665983
-       6      6000000            0     211296.1         12121244
-      10      7200000            0     187330.6         12548565
-
-Results after applying patchset:
-
-  FSUse%        Count         Size    Files/sec     App Overhead
-       2      1200000            0     207556.0         11393252
-       4      2400000            0     266751.1         11347909
-       4      3600000            0     274397.5         11270058
-       6      4800000            0     259608.4         11442250
-       6      6000000            0     238895.8         11635921
-       8      7200000            0     211942.2         11873825
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.c | 17 +++++++++++------
- fs/btrfs/ctree.h |  2 +-
- 2 files changed, 12 insertions(+), 7 deletions(-)
-
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 34c76b217b52..93df9c1b6c9a 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -853,8 +853,8 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
- /*
-  * Search for a key in the given extent_buffer.
-  *
-- * The lower boundary for the search is specified by the slot number @low. Use a
-- * value of 0 to search over the whole extent buffer.
-+ * The lower boundary for the search is specified by the slot number @first_slot.
-+ * Use a value of 0 to search over the whole extent buffer.
-  *
-  * The slot in the extent buffer is returned via @slot. If the key exists in the
-  * extent buffer, then @slot will point to the slot where the key is, otherwise
-@@ -863,18 +863,23 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
-  * Slot may point to the total number of items (i.e. one position beyond the last
-  * key) if the key is bigger than the last key in the extent buffer.
-  */
--int btrfs_generic_bin_search(struct extent_buffer *eb, int low,
-+int btrfs_generic_bin_search(struct extent_buffer *eb, int first_slot,
- 			     const struct btrfs_key *key, int *slot)
- {
- 	unsigned long p;
- 	int item_size;
--	int high = btrfs_header_nritems(eb);
-+	/*
-+	 * Use unsigned types for the low and high slots, so that we get a more
-+	 * efficient division in the search loop below.
-+	 */
-+	u32 low = first_slot;
-+	u32 high = btrfs_header_nritems(eb);
- 	int ret;
- 	const int key_size = sizeof(struct btrfs_disk_key);
- 
--	if (low > high) {
-+	if (unlikely(low > high)) {
- 		btrfs_err(eb->fs_info,
--		 "%s: low (%d) > high (%d) eb %llu owner %llu level %d",
-+		 "%s: low (%u) > high (%u) eb %llu owner %llu level %d",
- 			  __func__, low, high, eb->start,
- 			  btrfs_header_owner(eb), btrfs_header_level(eb));
- 		return -EINVAL;
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 322f2171275d..97897107fab5 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -508,7 +508,7 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range);
- int __init btrfs_ctree_init(void);
- void __cold btrfs_ctree_exit(void);
- 
--int btrfs_generic_bin_search(struct extent_buffer *eb, int low,
-+int btrfs_generic_bin_search(struct extent_buffer *eb, int first_slot,
- 			     const struct btrfs_key *key, int *slot);
- 
- /*
--- 
-2.35.1
-
+Josef
