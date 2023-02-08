@@ -2,83 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DA468F8C6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 21:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CDD68F8CF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 21:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbjBHUXp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Feb 2023 15:23:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44042 "EHLO
+        id S230434AbjBHU2z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Feb 2023 15:28:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjBHUXo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 15:23:44 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E868C7ECB
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 12:23:43 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id w3so22348655qts.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Feb 2023 12:23:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kd9+9qh1r+MX0ZH+pCxOW0FEill55t+9dSSgMuN0vJ0=;
-        b=Th0NSlf9nFxTcq1+eSuf/o0Kop6afC6p8kyPwkKZKlMI5tYDul/Mg9iurvW1MH5H0J
-         9ErbKZQnp1IlkwqIaQgNKhSCrR783cDTtZbSE1Xnks52ER/2+2uGo6Y0AmiXodtJm6uE
-         Iy5vZIMKQuJsdNfj41efoX98NK0mqwuAabajE4Y6ytUSVAttxoso0zOLrrgwxorLd5sK
-         97ZdZ6Qr36Xl5ItjyanajIC5tYNbOwttL3pw8EralNxvKr+PvEPKjD9uIe9Rj5WX3eLC
-         2HWFGQcg2oUII/9PY4yIh9FFjVfxesRBDulklBQIWJ5LWuj4XIK0a9TGniWwQRqfUzYA
-         6wDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Kd9+9qh1r+MX0ZH+pCxOW0FEill55t+9dSSgMuN0vJ0=;
-        b=GfhqjVtPLJTu3U3n0fFR957XyVeQ3ullxrHf0tvMxykuWyMMx+3IB5luQ5OCYgvAVA
-         mJVuHrYU8tohgVKNt/UsiNo1ClyYxLSWvHsAV0eTJ2/T4uBCHooJl5vk1iQFYUfMu1fY
-         hnPhdr3piap4HRnGtiJVncTcxnZsDpZkoqOJRBP6gvdl5Dowd+cnuR+P/g+dVq6G+Z4X
-         FDOnB2GmvICe96eDqrKObX5SwbRntOA90ib73greDJeA/4N4gMmAQ6DYLZ5PhXSmq+UG
-         ts5JAX0Ppq4vC5Fs/fBxZyleeMcUOcvXa0FKs/w3JzJNlJtOGM2tQSwmDZPf4R091fyQ
-         r2jQ==
-X-Gm-Message-State: AO0yUKURxxS3zQZCRhZ080fmSI6swRfbwXf/EKEY7hQQLOk0t+x7BxbG
-        nfnw954WR8Dm0p+5Rm49U5H6K9EeBCDw+gLUgNE=
-X-Google-Smtp-Source: AK7set92dBAYg3vOumgzvzOWcnWKNk1P4FHFH9qyVOMIThmTQg8ZQDPkacjDXyzGfyizXKY6G15Ugg==
-X-Received: by 2002:ac8:5b51:0:b0:3ae:2272:e43c with SMTP id n17-20020ac85b51000000b003ae2272e43cmr14308928qtw.29.1675887822848;
-        Wed, 08 Feb 2023 12:23:42 -0800 (PST)
-Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id a25-20020aed2799000000b003b8484fdfccsm12150549qtd.42.2023.02.08.12.23.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Feb 2023 12:23:42 -0800 (PST)
-Date:   Wed, 8 Feb 2023 15:23:41 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v5 13/13] btrfs: add raid-stripe-tree to features enabled
- with debug
-Message-ID: <Y+QEzfxvoa9MN9Wj@localhost.localdomain>
-References: <cover.1675853489.git.johannes.thumshirn@wdc.com>
- <fcc0db899a9dbbac3c862b2f91afe9de82b164ac.1675853489.git.johannes.thumshirn@wdc.com>
+        with ESMTP id S229479AbjBHU2y (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 15:28:54 -0500
+Received: from sp13.canonet.ne.jp (sp13.canonet.ne.jp [210.134.168.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EE0B81E9DD;
+        Wed,  8 Feb 2023 12:28:52 -0800 (PST)
+Received: from csp13.canonet.ne.jp (unknown [172.21.160.133])
+        by sp13.canonet.ne.jp (Postfix) with ESMTP id BBB871E058A;
+        Thu,  9 Feb 2023 05:28:51 +0900 (JST)
+Received: from echeck13.canonet.ne.jp ([172.21.160.123])
+        by csp3 with ESMTP
+        id Pr3jpA4GixJr5Pr3jpoD6Q; Thu, 09 Feb 2023 05:28:51 +0900
+X-CNT-CMCheck-Reason: "undefined", "v=2.4 cv=S49nfKgP c=1 sm=1 tr=0
+ ts=63e40603 cx=g_jp:t_eml p=mma4DOr-2TkA:10 p=FYAhlTQRCH2TXxF9pwWT:22
+ a=c8wCX2VJ6RehaN9m5YqYzw==:117 a=yr9NA9NbXb0B05yJHQEWeQ==:17
+ a=PlGk70OYzacA:10 a=8nJEP1OIZ-IA:10 a=m04uMKEZRckA:10 a=Mrz3sjv-sVQA:10
+ a=x7bEGLp0ZPQA:10 a=YtQNzjfyrWE1PQnbW48A:9 a=wPNLvfGTeEIA:10"
+X-CNT-CMCheck-Score: 100.00
+Received: from echeck13.canonet.ne.jp (localhost [127.0.0.1])
+        by esets.canonet.ne.jp (Postfix) with ESMTP id 77C6B1C0246;
+        Thu,  9 Feb 2023 05:28:51 +0900 (JST)
+X-Virus-Scanner: This message was checked by ESET Mail Security
+        for Linux/BSD. For more information on ESET Mail Security,
+        please, visit our website: http://www.eset.com/.
+Received: from smtp13.canonet.ne.jp (unknown [172.21.160.103])
+        by echeck13.canonet.ne.jp (Postfix) with ESMTP id 49FCA1C024D;
+        Thu,  9 Feb 2023 05:28:51 +0900 (JST)
+Received: from nakazatokoumuten.co.jp (webmail.canonet.ne.jp [210.134.169.250])
+        by smtp13.canonet.ne.jp (Postfix) with ESMTPA id E08CB15F962;
+        Thu,  9 Feb 2023 05:28:50 +0900 (JST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fcc0db899a9dbbac3c862b2f91afe9de82b164ac.1675853489.git.johannes.thumshirn@wdc.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <20230208202850.00007EE5.0209@nakazatokoumuten.co.jp>
+Date:   Thu, 09 Feb 2023 05:28:50 +0900
+From:   "Attoh Mensah" <web@nakazatokoumuten.co.jp>
+To:     <andrew.ejiro01@gmail.com>
+Reply-To: <barrattohmensahlawfirm@gmail.com>
+Subject: =?ISO-8859-1?B?T2zhIFNhdWRh5/Vlcw==?= meu amigo
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: base64
+X-Priority: 3
+ORGANIZATION: Attoh Mensah
+X-MAILER: Active! mail
+X-EsetResult: clean, %VIRUSNAME%
+X-ESET-AS: R=OK;S=0;OP=CALC;TIME=1675888131;VERSION=7944;MC=515598722;TRN=0;CRV=0;IPC=210.134.169.250;SP=4;SIPS=1;PI=5;F=0
+X-I-ESET-AS: RN=0;RNP=
+X-ESET-Antispam: OK
+X-Spam-Status: Yes, score=7.5 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,HK_SCAM,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,UNRESOLVED_TEMPLATE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [210.134.168.90 listed in bl.score.senderscore.com]
+        * -0.0 RCVD_IN_MSPIKE_H2 RBL: Average reputation (+2)
+        *      [210.134.168.90 listed in wl.mailspike.net]
+        *  1.3 UNRESOLVED_TEMPLATE Headers contain an unresolved template
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  2.0 HK_SCAM No description available.
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 08, 2023 at 02:57:50AM -0800, Johannes Thumshirn wrote:
-> Until the RAID stripe tree code is well enough tested and feature
-> complete, "hide" it behind CONFIG_BTRFS_DEBUG so only people who
-> want to use it are actually using it.
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+T2zhIFNhdWRh5/VlcyBNZXUgQW1pZ28NCg0KRXUgc291IG8gYWR2b2dhZG8gcGVzc29hbCBTeWx2
+YWluIEtvZmZpIEF0dG9oIE1lbnNhaCBBZHZvZ2FkbyBwZXNzb2FsIGRlIA0KdW0gaW52ZXN0aWRv
+ciBkbyBCcmFzaWwgYXF1aSBubyBUb2dvLCBObyBkaWEgMzEgZGUgamFuZWlybyBkZSAyMDEzLCAN
+CmR1cmFudGUgYSBjcmlzZSBkYSBM7WJpYSBtZXUgY2xpZW50ZSBlIHRvZGEgYSBzdWEgZmFt7Wxp
+YSBkb2lzIG1lbmlub3MgDQpjb20gdW1hIG1lbmluYSBlIGVzcG9zYSBmb2kgYXNzYXNzaW5hZG8g
+cG9yIHJlYmVsZGVzIGRvIGztZGVyIGRhIG9wb3Np5+MNCm8gcG9ycXVlIGVsZSBvIHBhdHJvY2lu
+YSBwb2xpdGljYW1lbnRlLiANCg0KQXR1YWxtZW50ZSwgbyBCYW5jbyBvbmRlIG8gZmFsZWNpZG8g
+KG1ldSBjbGllbnRlKSB0aW5oYSB1bSBkZXDzc2l0byANCmF2YWxpYWRvIGVtIFVTJC4gNy4yIE1p
+bGj1ZXMgbWUgZW1pdGlyYW0gdW0gYXZpc28gcGFyYSBmb3JuZWNlciBvIE5leHQgDQpvZiBLaW4g
+YW8gbWV1IGNsaWVudGUgcGFyYSByZWNlYmVyIHNldSBiZW5lZu1jaW8gb3UgdGVyIGEgY29udGEg
+DQpjb25maXNjYWRhLCBlbnTjbyBlbnRyZWkgZW0gY29udGF0byBjb20gdm9j6iBwYXJhIG1lIGFq
+dWRhciBhIHJlcGF0cmlhciANCmVzc2UgYmVuZWbtY2lvIGRlaXhhZG8gcGFyYSB0cuFzIHBlbG8g
+bWV1IGNsaWVudGUgYW50ZXMgcXVlIGVsZXMgc2VqYW0gDQpjb25maXNjYWRvcyBwZWxvIEJhbmNv
+LiANCg0KR2FyYW50byBxdWUgaXNzbyBzZXLhIGV4ZWN1dGFkbyBzb2IgdW0gYWNvcmRvIGxlZ+10
+aW1vIHF1ZSBvIHByb3RlZ2Vy4SANCmRlIHF1YWxxdWVyIHZpb2xh5+NvIGRhIGxlaS4NCnZvY+og
+ZSBldSBwb2RlbW9zIGNvbXBhcnRpbGjhLWxvOyA1MCUgcGFyYSBtaW0sIDUwJSBwYXJhIHZvY+ou
+DQoNClBvciBmYXZvciwgdm9sdGUgc2Ugdm9j6iBlc3RpdmVyIGludGVyZXNzYWRvLiANCg0KQXRl
+bmNpb3NhbWVudGUNCkJhcnIuIFN5bHZhaW4gS29mZmkgQXR0b2ggTWVuc2FoIChFc3EuKQ0K
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
-
-Josef
