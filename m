@@ -2,97 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CDD68F8CF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 21:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B70168F8E6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 21:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbjBHU2z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Feb 2023 15:28:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
+        id S231317AbjBHUhB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Feb 2023 15:37:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjBHU2y (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 15:28:54 -0500
-Received: from sp13.canonet.ne.jp (sp13.canonet.ne.jp [210.134.168.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EE0B81E9DD;
-        Wed,  8 Feb 2023 12:28:52 -0800 (PST)
-Received: from csp13.canonet.ne.jp (unknown [172.21.160.133])
-        by sp13.canonet.ne.jp (Postfix) with ESMTP id BBB871E058A;
-        Thu,  9 Feb 2023 05:28:51 +0900 (JST)
-Received: from echeck13.canonet.ne.jp ([172.21.160.123])
-        by csp3 with ESMTP
-        id Pr3jpA4GixJr5Pr3jpoD6Q; Thu, 09 Feb 2023 05:28:51 +0900
-X-CNT-CMCheck-Reason: "undefined", "v=2.4 cv=S49nfKgP c=1 sm=1 tr=0
- ts=63e40603 cx=g_jp:t_eml p=mma4DOr-2TkA:10 p=FYAhlTQRCH2TXxF9pwWT:22
- a=c8wCX2VJ6RehaN9m5YqYzw==:117 a=yr9NA9NbXb0B05yJHQEWeQ==:17
- a=PlGk70OYzacA:10 a=8nJEP1OIZ-IA:10 a=m04uMKEZRckA:10 a=Mrz3sjv-sVQA:10
- a=x7bEGLp0ZPQA:10 a=YtQNzjfyrWE1PQnbW48A:9 a=wPNLvfGTeEIA:10"
-X-CNT-CMCheck-Score: 100.00
-Received: from echeck13.canonet.ne.jp (localhost [127.0.0.1])
-        by esets.canonet.ne.jp (Postfix) with ESMTP id 77C6B1C0246;
-        Thu,  9 Feb 2023 05:28:51 +0900 (JST)
-X-Virus-Scanner: This message was checked by ESET Mail Security
-        for Linux/BSD. For more information on ESET Mail Security,
-        please, visit our website: http://www.eset.com/.
-Received: from smtp13.canonet.ne.jp (unknown [172.21.160.103])
-        by echeck13.canonet.ne.jp (Postfix) with ESMTP id 49FCA1C024D;
-        Thu,  9 Feb 2023 05:28:51 +0900 (JST)
-Received: from nakazatokoumuten.co.jp (webmail.canonet.ne.jp [210.134.169.250])
-        by smtp13.canonet.ne.jp (Postfix) with ESMTPA id E08CB15F962;
-        Thu,  9 Feb 2023 05:28:50 +0900 (JST)
+        with ESMTP id S229902AbjBHUhA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 15:37:00 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8422976F
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 12:36:58 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6FB9934611;
+        Wed,  8 Feb 2023 20:36:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1675888617;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oP0oc8NbQ+04tzPXUNB18oY78JMcDCnDpnnWg695oSM=;
+        b=Edh2kUq/EKHGRl58wywgyeScg09jWh6wE2HT8vpZOPYi20PyzDqW/PaoZgel4qnmWHgU8s
+        y8VB7ZRX7cEjA2/t9wW0ZGX5o5JlSgw4HRFQCGgLvvYnZZ7K/mjxr5ryvYAprjTzayEz2H
+        Q014kjnNV07CrzhRXffIvJU5HIK0TTc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1675888617;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oP0oc8NbQ+04tzPXUNB18oY78JMcDCnDpnnWg695oSM=;
+        b=Mz4uvtdTg2dRLYLQLxljJeoDW+XdYjNHZoXJ6TQMzmrLwX16vgdP4sDNx6Mv5UbT0Zbah0
+        p/5RoQmxMsA9DRBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D3951358A;
+        Wed,  8 Feb 2023 20:36:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id jnyxEekH5GPsMgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 08 Feb 2023 20:36:57 +0000
+Date:   Wed, 8 Feb 2023 21:31:08 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: lock the inode in shared mode before starting
+ fiemap
+Message-ID: <20230208203108.GL28288@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <5c6c1cefa7df5fbe9c4dc2fe517f521760a2f4be.1674492773.git.fdmanana@suse.com>
+ <20230207154021.GG28288@twin.jikos.cz>
+ <CAL3q7H52v9xo856Tp5g61a2ah=7FPvaOPeQ_cR18cB63f6tWHQ@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <20230208202850.00007EE5.0209@nakazatokoumuten.co.jp>
-Date:   Thu, 09 Feb 2023 05:28:50 +0900
-From:   "Attoh Mensah" <web@nakazatokoumuten.co.jp>
-To:     <andrew.ejiro01@gmail.com>
-Reply-To: <barrattohmensahlawfirm@gmail.com>
-Subject: =?ISO-8859-1?B?T2zhIFNhdWRh5/Vlcw==?= meu amigo
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: base64
-X-Priority: 3
-ORGANIZATION: Attoh Mensah
-X-MAILER: Active! mail
-X-EsetResult: clean, %VIRUSNAME%
-X-ESET-AS: R=OK;S=0;OP=CALC;TIME=1675888131;VERSION=7944;MC=515598722;TRN=0;CRV=0;IPC=210.134.169.250;SP=4;SIPS=1;PI=5;F=0
-X-I-ESET-AS: RN=0;RNP=
-X-ESET-Antispam: OK
-X-Spam-Status: Yes, score=7.5 required=5.0 tests=BAYES_50,
-        FREEMAIL_FORGED_REPLYTO,HK_SCAM,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,UNRESOLVED_TEMPLATE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [210.134.168.90 listed in bl.score.senderscore.com]
-        * -0.0 RCVD_IN_MSPIKE_H2 RBL: Average reputation (+2)
-        *      [210.134.168.90 listed in wl.mailspike.net]
-        *  1.3 UNRESOLVED_TEMPLATE Headers contain an unresolved template
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  2.0 HK_SCAM No description available.
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-X-Spam-Level: *******
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H52v9xo856Tp5g61a2ah=7FPvaOPeQ_cR18cB63f6tWHQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T2zhIFNhdWRh5/VlcyBNZXUgQW1pZ28NCg0KRXUgc291IG8gYWR2b2dhZG8gcGVzc29hbCBTeWx2
-YWluIEtvZmZpIEF0dG9oIE1lbnNhaCBBZHZvZ2FkbyBwZXNzb2FsIGRlIA0KdW0gaW52ZXN0aWRv
-ciBkbyBCcmFzaWwgYXF1aSBubyBUb2dvLCBObyBkaWEgMzEgZGUgamFuZWlybyBkZSAyMDEzLCAN
-CmR1cmFudGUgYSBjcmlzZSBkYSBM7WJpYSBtZXUgY2xpZW50ZSBlIHRvZGEgYSBzdWEgZmFt7Wxp
-YSBkb2lzIG1lbmlub3MgDQpjb20gdW1hIG1lbmluYSBlIGVzcG9zYSBmb2kgYXNzYXNzaW5hZG8g
-cG9yIHJlYmVsZGVzIGRvIGztZGVyIGRhIG9wb3Np5+MNCm8gcG9ycXVlIGVsZSBvIHBhdHJvY2lu
-YSBwb2xpdGljYW1lbnRlLiANCg0KQXR1YWxtZW50ZSwgbyBCYW5jbyBvbmRlIG8gZmFsZWNpZG8g
-KG1ldSBjbGllbnRlKSB0aW5oYSB1bSBkZXDzc2l0byANCmF2YWxpYWRvIGVtIFVTJC4gNy4yIE1p
-bGj1ZXMgbWUgZW1pdGlyYW0gdW0gYXZpc28gcGFyYSBmb3JuZWNlciBvIE5leHQgDQpvZiBLaW4g
-YW8gbWV1IGNsaWVudGUgcGFyYSByZWNlYmVyIHNldSBiZW5lZu1jaW8gb3UgdGVyIGEgY29udGEg
-DQpjb25maXNjYWRhLCBlbnTjbyBlbnRyZWkgZW0gY29udGF0byBjb20gdm9j6iBwYXJhIG1lIGFq
-dWRhciBhIHJlcGF0cmlhciANCmVzc2UgYmVuZWbtY2lvIGRlaXhhZG8gcGFyYSB0cuFzIHBlbG8g
-bWV1IGNsaWVudGUgYW50ZXMgcXVlIGVsZXMgc2VqYW0gDQpjb25maXNjYWRvcyBwZWxvIEJhbmNv
-LiANCg0KR2FyYW50byBxdWUgaXNzbyBzZXLhIGV4ZWN1dGFkbyBzb2IgdW0gYWNvcmRvIGxlZ+10
-aW1vIHF1ZSBvIHByb3RlZ2Vy4SANCmRlIHF1YWxxdWVyIHZpb2xh5+NvIGRhIGxlaS4NCnZvY+og
-ZSBldSBwb2RlbW9zIGNvbXBhcnRpbGjhLWxvOyA1MCUgcGFyYSBtaW0sIDUwJSBwYXJhIHZvY+ou
-DQoNClBvciBmYXZvciwgdm9sdGUgc2Ugdm9j6iBlc3RpdmVyIGludGVyZXNzYWRvLiANCg0KQXRl
-bmNpb3NhbWVudGUNCkJhcnIuIFN5bHZhaW4gS29mZmkgQXR0b2ggTWVuc2FoIChFc3EuKQ0K
+On Tue, Feb 07, 2023 at 04:15:00PM +0000, Filipe Manana wrote:
+> On Tue, Feb 7, 2023 at 3:46 PM David Sterba <dsterba@suse.cz> wrote:
+> >
+> > On Mon, Jan 23, 2023 at 04:54:46PM +0000, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > > Fix this by taking the inode's lock (VFS lock) in shared mode when
+> > > entering fiemap. This effectively serializes fiemap with fsync (except the
+> > > most expensive part of fsync, the log sync), preventing this deadlock.
+> >
+> > Could this be a problem, when a continuous fiemap would block fsync on a
+> > file? Fsync is more important and I'd give it priority when the inode
+> > lock is contended, fiemap is only informative and best effort. The
+> > deadlock needs to be fixed of course but some mechanism should be in
+> > place to favor other lock holders than fiemap. Quick idea is to relock
+> > after each say 100 extents.
+> 
+> Typically fiemap is called with a small buffer for extent entries. cp
+> and filefrag for example use a small buffer.
+> So they repeatedly call fiemap with such a small buffer (not more than
+> a 100 or 200 entries).
 
+I see, so the buffer size can limit that naturally.
+
+> Do you think it's that common to have fiemap and fsync attempts in parallel?
+> 
+> I don't think it's a problem, not only it shouldn't be common, but if
+> it happens it's for a very short time. Even for a very long fiemap
+> buffer.
+
+Yeah it's not supposed to be common, I was thinking about the corner
+case. The worst case is when several parallel fiemaps are running that
+don't relinquish the inode lock and another thread writes+fsyncs the
+file and stalls. Imagine use case like a monitoring tool for VM images
+that watches used space due to thin provisioning and eg. qemu that uses
+the image file. The fix is to do fiemap in small chunks as said above.
