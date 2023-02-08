@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E64168F8BA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 21:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD34068F8BD
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 21:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbjBHUT1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Feb 2023 15:19:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
+        id S231479AbjBHUUP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Feb 2023 15:20:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231302AbjBHUTX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 15:19:23 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B022E0E6
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 12:19:19 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id d13so12250238qvj.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Feb 2023 12:19:19 -0800 (PST)
+        with ESMTP id S231782AbjBHUUM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 15:20:12 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A667B360BE
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 12:20:09 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id d8so2143870qvs.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Feb 2023 12:20:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eIrLIVJXGILwq3HQtGglcK2qZ8dA/MOkpQQqlx9FlWw=;
-        b=xBnJV9GRkxMCYn7X0NvQvNDN01/M/rMTenn5dyph9WP/3ge9e5u1SYVEgazN0S0FeK
-         mJ9y0L479oHlgetRGm5fvWdTJihyW7kvUd8A67pX75zwv6veC95PVhi/ScVCE02888UB
-         wAKNzCWRhmDeg7O2FMz5VQnyTvWAkTFnGeTf8ie6WbkXUPVpaAi2fq3eYACnNjFA8M6D
-         GRZVgb4XJQ5xV9Va+cFMlUgUISN1L/4nAyIZ+ZdGAYxFYY1fbrnl5BU14tic8/G+nZG5
-         e8wyiU0+dy5kyEKS0oDlhTR805RyZMlwF05gZc8+bRE7T8y0Q9PRz2MGbYbS7HONk8H9
-         L0lQ==
+        bh=ynCzGaoWlKyAxAdW+KNB1jH1mAyyRcM7NPQM2rShq9A=;
+        b=6kir8ghvDJTycI/+0zJRdkDeqms4EUrKti7BCGj5ikr/YcXzVnOrA6tszE9k/6dXtW
+         6gvmrkS+msMajbZT7Fq7tYVlBqDcvx4oGNT6oIhLlRfYlzFLNXVPVqiEtRaDv9g2KAxI
+         JcS2gU2MgAnU9iLy6kIq6nl64wRRjJVbxT7okpbePz0pMn8SIBeFR39SrXG/p1MYl1F5
+         NLBdLGRYM/+UF+XuZZ7yqMJ3oPz7uoE3DIrukwx7t3sSPzBGGm3N4DHXXLRUDveboXSD
+         WFihiyuU76Ztfoti8PQse9QM0g6f2brCWMd20oB1KI2Hi5Q3cMGxPY+pUMzHOqUPD9Gx
+         atcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eIrLIVJXGILwq3HQtGglcK2qZ8dA/MOkpQQqlx9FlWw=;
-        b=0w+NXOBCL6tq/Qj1QHBFwd/5amGk21BRHOm33/6bR9yS+G0u6fcvnzOf6xaa6Geosk
-         1lfMdVm+8mbQpQIN3XDPCxAvbCMSXa4usLzzp3SbD7Wsvxvb+mo73ZMpKri8/sESsMsj
-         eYWfmpJt7HC+owRcP49A/Ye/aIYsYPzhTpbm43PFq57O9iibeG0GkjeJL76RZkwN29K1
-         vGZYPf23GRNlNtv5Ikj8z+sVplJ0eP+syNCzkypQrnULCHA90oLW1AVy1wbKlYlobE/T
-         FJcTewT17QNXnOGoqFoUpu71xoMxxbpDIuVvuNO7MZRDQl8wrjuyCerE1YR5AlAvWdfQ
-         ZREw==
-X-Gm-Message-State: AO0yUKUiinw4gmxyWnZgzjts+u0I2oAhbggAVhrpICYBGe3t4TqNsqV0
-        0BDgSpxenAGKwXdhHHtjw3qT+0RPl0oVN2DTT60=
-X-Google-Smtp-Source: AK7set+sGNL+IWuNdML7yv1yLjw0b7s5fN9/Uu0GK160Fh7XdbmL7DfsNWxigmFv92hHOwWJiVMXzw==
-X-Received: by 2002:a05:6214:2505:b0:56b:fb30:49c6 with SMTP id gf5-20020a056214250500b0056bfb3049c6mr16773725qvb.50.1675887558737;
-        Wed, 08 Feb 2023 12:19:18 -0800 (PST)
+        bh=ynCzGaoWlKyAxAdW+KNB1jH1mAyyRcM7NPQM2rShq9A=;
+        b=dN0l+n/BGAVn7CyMUPmAHq9DQXPpNKFD8IKva6bRVEfFVxoU9cenfhvBSBIEMkIotS
+         b/St/lWCx/BBrAQELg60MdtbMbjSOmeJw46LKnBD85SK9yC43VEbFvD8w6eBevDofToE
+         NdzuFw9Bf2XpWidaw7kSG5StOxnphakxFbF3YUqpT2jQDzABg534gRU14AWh3gT33mb5
+         nKfWu70kXZ7aNs2FVEGVsBVyklUbR+lL5JVzBP9bELVLyc5mWkb0vjueJnjj/RaloBP1
+         NTUz3E2AOcdetqsnVtxdSlC94nR7RXoRvBtxjsk+JqaE6P2mZimuiEfS+jGvI/h4/JBj
+         NsBw==
+X-Gm-Message-State: AO0yUKW2iS6DHprSNAsMTReECfenP5Ti10xiucyHbJO21cVKOv6SkKC6
+        gLKD8t7Gz+2q0XL5MApw1cBtc0bQNQ3r54QLGpQ=
+X-Google-Smtp-Source: AK7set8APn1113xG4HaowsYeLmv6br7U1byDg9I1p+oXEDrL5PQIdcZdHtIGZryS/NNIx+adqKw0Sw==
+X-Received: by 2002:a05:6214:1c0a:b0:56b:eed2:e6a with SMTP id u10-20020a0562141c0a00b0056beed20e6amr14787529qvc.36.1675887608852;
+        Wed, 08 Feb 2023 12:20:08 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id u20-20020ae9c014000000b00720750365b9sm12114361qkk.129.2023.02.08.12.19.18
+        by smtp.gmail.com with ESMTPSA id ea7-20020a05620a488700b007290be5557bsm12352353qkb.38.2023.02.08.12.20.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Feb 2023 12:19:18 -0800 (PST)
-Date:   Wed, 8 Feb 2023 15:19:17 -0500
+        Wed, 08 Feb 2023 12:20:08 -0800 (PST)
+Date:   Wed, 8 Feb 2023 15:20:07 -0500
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v5 09/13] btrfs: check for leaks of ordered stripes on
- umount
-Message-ID: <Y+QDxe01CVr+Aj2I@localhost.localdomain>
+Subject: Re: [PATCH v5 11/13] btrfs: announce presence of raid-stripe-tree in
+ sysfs
+Message-ID: <Y+QD9+s9fYmgX1+/@localhost.localdomain>
 References: <cover.1675853489.git.johannes.thumshirn@wdc.com>
- <e39ca8369d7907b3f5714fac93dfaf342a9c2e82.1675853489.git.johannes.thumshirn@wdc.com>
+ <ef669592a878eb975e4bee1d869d17446e10c111.1675853489.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e39ca8369d7907b3f5714fac93dfaf342a9c2e82.1675853489.git.johannes.thumshirn@wdc.com>
+In-Reply-To: <ef669592a878eb975e4bee1d869d17446e10c111.1675853489.git.johannes.thumshirn@wdc.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -70,12 +70,9 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 08, 2023 at 02:57:46AM -0800, Johannes Thumshirn wrote:
-> Check if we're leaking any ordered stripes when unmounting a filesystem
-> with an stripe tree.
-> 
-> This check is gated behind CONFIG_BTRFS_DEBUG to not affect any production
-> type systems.
+On Wed, Feb 08, 2023 at 02:57:48AM -0800, Johannes Thumshirn wrote:
+> If a filesystem with a raid-stripe-tree is mounted, show the RST feature
+> in sysfs.
 > 
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
