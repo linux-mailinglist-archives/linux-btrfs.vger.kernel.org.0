@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3014468F606
+	by mail.lfdr.de (Postfix) with ESMTP id 8A46A68F607
 	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 18:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbjBHRsJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S230312AbjBHRsJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 8 Feb 2023 12:48:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbjBHRrv (ORCPT
+        with ESMTP id S231828AbjBHRrv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 12:47:51 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83D42E0D1
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 09:46:59 -0800 (PST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDE92E834
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 09:47:00 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 609C46177E
+        by ams.source.kernel.org (Postfix) with ESMTPS id EE266B81F18
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 17:46:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3419DC433EF
         for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 17:46:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 515FFC4339B
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 17:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675878413;
-        bh=SrpgjZ5eSQNc3vXR70UsW8QhVddQeHyTQe7rLHRi70k=;
+        s=k20201202; t=1675878414;
+        bh=SwCmCGGyPTIB2eBEWOxWW6IDjZNBWoudDUiFAL3+GRo=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=REzN+LkkI3Lmb8p94E8AjKIyaSKNIOPh2RNbLl0u0Y6MTiUOYmegU3Qj5QGaMlj6P
-         JCupMba6/Bj4zHzL1zeUyxLSINXpmHKrIjf1lEuuGEffOb0zwzOnZxoRHMPSA1/aSD
-         7FkrJRxhZgvVoho3I5UnXgRzh4Gk8ztkDtWf3H33eNJ5yDpsDyNJPWGLwEfH8gEbkJ
-         3WQUU5lmVZuI+B8hns81SIwrAv2iKQu2HhBA+5vH/a1pnC8hAF2o52TEG+vl8yjV/n
-         Eqti/6/c8K2ramsUMEUJyKzTgxgxGSd1Ljne1Dtn3mXGWdHi/niBwcE4uaAus9ynO8
-         DM6qyBE8Yd4qw==
+        b=CumQof+uxZBXnNUZjVbuTcaDyvjs2nEDpeBe1EwCkHJ7l2vSwCpAfGS5iUgweQpF5
+         x/bA7WoB/OyGyatCBZDfIZnG8hLUiUjeqfwazwY8RQTICEbghqJX0BMdJqeMKDaP0v
+         PEwOtS0gSH1E5k/Vhq+QpYUpqetL2vKCutdUvihqECWnWthk6LZQCmKR2R8CnAdmRR
+         hMO4XcpXhxHqf9eVwVgZc43O+exsgeE74RAhTtBldVJbzYpcKvjiPPcGgOSKhNExqh
+         yMNYI7Q2NoJd0Ty6RVjgsqIKhnmdNfNYYpwaq2W3+slIACJ3EDw0CZyZNtQ9sY7ZRP
+         6eZlwZ7y56VoQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: eliminate extra call when doing binary search on extent buffer
-Date:   Wed,  8 Feb 2023 17:46:48 +0000
-Message-Id: <0b8ddfc0c2e415f31b3fcf1ae531b78abdafc494.1675877903.git.fdmanana@suse.com>
+Subject: [PATCH 2/2] btrfs: do unsigned integer division in the extent buffer binary search loop
+Date:   Wed,  8 Feb 2023 17:46:49 +0000
+Message-Id: <ba00af7d2e579d5b8feba8a2f8bd02e986a1cd35.1675877903.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1675877903.git.fdmanana@suse.com>
 References: <cover.1675877903.git.fdmanana@suse.com>
@@ -52,87 +52,140 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The function btrfs_bin_search() is just a wrapper around the function
-generic_bin_search(), which passes the same arguments plus a default
-low slot with a value of 0. This adds an unnecessary extra function
-call, since btrfs_bin_search() is not static. So improve on this by
-making btrfs_bin_search() an inline function that calls
-generic_bin_search(), renaming the later to btrfs_generic_bin_search()
-and exporting it.
+In the search loop of the binary search function, we are doing a division
+by 2 of the sum of the high and low slots. Because the slots are integers,
+the generated assembly code for it is the following on x86_64:
+
+   0x00000000000141f1 <+145>:	mov    %eax,%ebx
+   0x00000000000141f3 <+147>:	shr    $0x1f,%ebx
+   0x00000000000141f6 <+150>:	add    %eax,%ebx
+   0x00000000000141f8 <+152>:	sar    %ebx
+
+It's a few more instructions than a simple right shift, because signed
+integer division needs to round towards zero. However we know that slots
+can never be negative (btrfs_header_nritems() returns an u32), so we
+can instead use unsigned types for the low and high slots and therefore
+use unsigned integer division, which results in a single instruction on
+x86_64:
+
+   0x00000000000141f0 <+144>:	shr    %ebx
+
+So use unsigned types for the slots and therefore unsigned division.
+
+This is part of a small patchset comprised of the following two patches:
+
+  btrfs: eliminate extra call when doing binary search on extent buffer
+  btrfs: do unsigned integer division in the extent buffer binary search loop
+
+The following fs_mark test was run on a non-debug kernel (Debian's default
+kernel config) before and after applying the patchset:
+
+  $ cat test.sh
+  #!/bin/bash
+
+  DEV=/dev/sdi
+  MNT=/mnt/sdi
+  MOUNT_OPTIONS="-o ssd"
+  MKFS_OPTIONS="-O no-holes -R free-space-tree"
+  FILES=100000
+  THREADS=$(nproc --all)
+  FILE_SIZE=0
+
+  umount $DEV &> /dev/null
+  mkfs.btrfs -f $MKFS_OPTIONS $DEV
+  mount $MOUNT_OPTIONS $DEV $MNT
+
+  OPTS="-S 0 -L 6 -n $FILES -s $FILE_SIZE -t $THREADS -k"
+  for ((i = 1; i <= $THREADS; i++)); do
+      OPTS="$OPTS -d $MNT/d$i"
+  done
+
+  fs_mark $OPTS
+
+  umount $MNT
+
+Results before applying patchset:
+
+  FSUse%        Count         Size    Files/sec     App Overhead
+       2      1200000            0     174472.0         11549868
+       4      2400000            0     253503.0         11694618
+       4      3600000            0     257833.1         11611508
+       6      4800000            0     247089.5         11665983
+       6      6000000            0     211296.1         12121244
+      10      7200000            0     187330.6         12548565
+
+Results after applying patchset:
+
+  FSUse%        Count         Size    Files/sec     App Overhead
+       2      1200000            0     207556.0         11393252
+       4      2400000            0     266751.1         11347909
+       4      3600000            0     274397.5         11270058
+       6      4800000            0     259608.4         11442250
+       6      6000000            0     238895.8         11635921
+       8      7200000            0     211942.2         11873825
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 16 +++-------------
- fs/btrfs/ctree.h | 15 +++++++++++++++
- 2 files changed, 18 insertions(+), 13 deletions(-)
+ fs/btrfs/ctree.c | 17 +++++++++++------
+ fs/btrfs/ctree.h |  2 +-
+ 2 files changed, 12 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 4754c9101a4c..34c76b217b52 100644
+index 34c76b217b52..93df9c1b6c9a 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -863,8 +863,8 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
+@@ -853,8 +853,8 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
+ /*
+  * Search for a key in the given extent_buffer.
+  *
+- * The lower boundary for the search is specified by the slot number @low. Use a
+- * value of 0 to search over the whole extent buffer.
++ * The lower boundary for the search is specified by the slot number @first_slot.
++ * Use a value of 0 to search over the whole extent buffer.
+  *
+  * The slot in the extent buffer is returned via @slot. If the key exists in the
+  * extent buffer, then @slot will point to the slot where the key is, otherwise
+@@ -863,18 +863,23 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
   * Slot may point to the total number of items (i.e. one position beyond the last
   * key) if the key is bigger than the last key in the extent buffer.
   */
--static noinline int generic_bin_search(struct extent_buffer *eb, int low,
--				       const struct btrfs_key *key, int *slot)
-+int btrfs_generic_bin_search(struct extent_buffer *eb, int low,
-+			     const struct btrfs_key *key, int *slot)
+-int btrfs_generic_bin_search(struct extent_buffer *eb, int low,
++int btrfs_generic_bin_search(struct extent_buffer *eb, int first_slot,
+ 			     const struct btrfs_key *key, int *slot)
  {
  	unsigned long p;
  	int item_size;
-@@ -925,16 +925,6 @@ static noinline int generic_bin_search(struct extent_buffer *eb, int low,
- 	return 1;
- }
+-	int high = btrfs_header_nritems(eb);
++	/*
++	 * Use unsigned types for the low and high slots, so that we get a more
++	 * efficient division in the search loop below.
++	 */
++	u32 low = first_slot;
++	u32 high = btrfs_header_nritems(eb);
+ 	int ret;
+ 	const int key_size = sizeof(struct btrfs_disk_key);
  
--/*
-- * Simple binary search on an extent buffer. Works for both leaves and nodes, and
-- * always searches over the whole range of keys (slot 0 to slot 'nritems - 1').
-- */
--int btrfs_bin_search(struct extent_buffer *eb, const struct btrfs_key *key,
--		     int *slot)
--{
--	return generic_bin_search(eb, 0, key, slot);
--}
--
- static void root_add_used(struct btrfs_root *root, u32 size)
- {
- 	spin_lock(&root->accounting_lock);
-@@ -1869,7 +1859,7 @@ static inline int search_for_key_slot(struct extent_buffer *eb,
- 		return 0;
- 	}
- 
--	return generic_bin_search(eb, search_low_slot, key, slot);
-+	return btrfs_generic_bin_search(eb, search_low_slot, key, slot);
- }
- 
- static int search_leaf(struct btrfs_trans_handle *trans,
+-	if (low > high) {
++	if (unlikely(low > high)) {
+ 		btrfs_err(eb->fs_info,
+-		 "%s: low (%d) > high (%d) eb %llu owner %llu level %d",
++		 "%s: low (%u) > high (%u) eb %llu owner %llu level %d",
+ 			  __func__, low, high, eb->start,
+ 			  btrfs_header_owner(eb), btrfs_header_level(eb));
+ 		return -EINVAL;
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 6965703a81b6..322f2171275d 100644
+index 322f2171275d..97897107fab5 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -507,6 +507,21 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range);
- /* ctree.c */
+@@ -508,7 +508,7 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range);
  int __init btrfs_ctree_init(void);
  void __cold btrfs_ctree_exit(void);
-+
-+int btrfs_generic_bin_search(struct extent_buffer *eb, int low,
-+			     const struct btrfs_key *key, int *slot);
-+
-+/*
-+ * Simple binary search on an extent buffer. Works for both leaves and nodes, and
-+ * always searches over the whole range of keys (slot 0 to slot 'nritems - 1').
-+ */
-+static inline int btrfs_bin_search(struct extent_buffer *eb,
-+				   const struct btrfs_key *key,
-+				   int *slot)
-+{
-+	return btrfs_generic_bin_search(eb, 0, key, slot);
-+}
-+
- int btrfs_bin_search(struct extent_buffer *eb, const struct btrfs_key *key,
- 		     int *slot);
- int __pure btrfs_comp_cpu_keys(const struct btrfs_key *k1, const struct btrfs_key *k2);
+ 
+-int btrfs_generic_bin_search(struct extent_buffer *eb, int low,
++int btrfs_generic_bin_search(struct extent_buffer *eb, int first_slot,
+ 			     const struct btrfs_key *key, int *slot);
+ 
+ /*
 -- 
 2.35.1
 
