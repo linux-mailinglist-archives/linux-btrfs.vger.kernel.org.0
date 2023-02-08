@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1183968F842
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 20:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D6268F862
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Feb 2023 20:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbjBHTrO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Feb 2023 14:47:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51558 "EHLO
+        id S230010AbjBHTwY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Feb 2023 14:52:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjBHTrN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 14:47:13 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC23A1C7CA
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 11:47:10 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id v17so22213256qto.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Feb 2023 11:47:10 -0800 (PST)
+        with ESMTP id S229618AbjBHTwW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 14:52:22 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCA6302BC
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 11:52:20 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id i1so8517874qvo.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Feb 2023 11:52:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GunoAHx4RN6cY6J3gvQBpReSkl00ITHhHf00OwZr+U8=;
-        b=JBnNDKvKiGMtHSOHcqx/CYWi8FFObYvF65q9jvAsPcC6lSW7OTPmnL/RNTcRZMHa+s
-         wYg65wYfAPr2a4Efq0/uXgc1Ce0F404NvCWKaq86EzDc6f2Z2nTM0qF/+2dFk+a20dA8
-         YM9lmuqQBnTypP1U3iPt66AK37LIMheb2kpdIZZvnyuecSygmNYVicb7r4FFPGL4iJpL
-         I7x6ajof/dn7/1m/5wwox3Jd4DdZJPYoWSodbe3IWPYj7hwlm+WAubJM6ZlL7KfMCTh9
-         6UOgq2l1eos252tAqQT5XSCUGpQqVM++w5vHmAUokSTsC+ZujrXVTpNNJ4bCdJwrkFUb
-         Qcbw==
+        bh=/a9FOmojTmuST8GVlsFV/fgZMH++3sInLnyon2H9Kus=;
+        b=BpAYV3CKOYYamIQ6u7ZUcaLw8SkBs0M1oFB7EBEue6ZeU91HVFVzA8KRIKlgHQ1tBe
+         /T7YelRh+tK6xi5QnNCkQTjofRL2qNxJXzy0tBJbwF/ncsVJR7aUakrcqMTy5I4QVr8Y
+         690vQZd1U0STqFOo3G26vTSOiFwecsYxi9/zHUq0dp306HX/5uSDeAi3h7okzeTb5+dv
+         Lz5N/gYjZpHz0qO3yh8ZGakUnM33cjy9SxsyJQRh1kBfZBTMdIu+uDo+lTOlWpqWOM87
+         9jc/0g1sO+vZAvwVpmOFI/fMU5Kmf7jeOsD1eP5khAsS+4L1XecsjHe6UI3tB9SjEmbv
+         LUww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GunoAHx4RN6cY6J3gvQBpReSkl00ITHhHf00OwZr+U8=;
-        b=cv6UxhwATb9LgmxJmsxIAT1WeSUfAG3vUiKl8yNd2dh3YvuDrYT3XdmvsaAgWXnUDU
-         YMYO1hotGZOGdvxKvGjqvJzIIvQOM7l9En9ZkXbGcMeFhT1uYWgzi6YBFyxd/g9DQ7Hk
-         k7Am9iACquRdef1G6I88ukHbUsBz2Y2UJk99EjQVky81YMHP4bp/zF2sxRB6k6sisiXq
-         DZZd32bsNLHdNVP8W2AD0+XOLAwEsV/UeeeXiuqIvz2Vp3bJGnRVDrq2YQSWhHzlzWtX
-         WbmakXYoIUsD94JG+lcob1N3MOuxC2f2m5TIvU34AW+O67uPyD3Za7r7m5WHJp01IUvN
-         lhPw==
-X-Gm-Message-State: AO0yUKXZnFF7Dy1ti2vMbUOxksUkgBvgyOaSY6ttiSX1U3OhhUZ8JlM7
-        ExX5AgCCdOOEXB/AgZkZdor2w9JaFQm8Dc6EO0c=
-X-Google-Smtp-Source: AK7set+bsOfsVZ1IJ07YPXwlrXrBcIAOxLic8J88rZeGZTiEhRsA9K1qWKxsfTdveY8fc3j3Aj9GDg==
-X-Received: by 2002:a05:622a:11c3:b0:3ab:d932:6c4e with SMTP id n3-20020a05622a11c300b003abd9326c4emr15607567qtk.18.1675885629601;
-        Wed, 08 Feb 2023 11:47:09 -0800 (PST)
+        bh=/a9FOmojTmuST8GVlsFV/fgZMH++3sInLnyon2H9Kus=;
+        b=fucFKRX4qCCjdc8tkXwlabRV+RWhfVDXBykSgCHa+qHXf5nHD4qmCKOhsB+8lBLc4v
+         tnqn2xiq4OotZR9Q6RFpT9DcG3SdcwrAUOKGn4vjm/J2ZWF3SVyUGgqGWTmLQ3t/buKE
+         gGmttW2Cb4IG9tlQfIWOonksaaVWsQjk1TBmyGlLpc5E1LPXyjdyaeQwktgi7wfNe5AB
+         bCm9PdPsJ/2t4NZqCGZycfkjtR+3b38UivxtP+8pXanWETX2yS/d0ANqz2ikwvQPF8Fk
+         Ml7fb2Q7DZgHS/b/0M8o7OcsTBRN1sGMOqWfgljwJtbbRYTGOghp40ib7iM2Xpn6i7gZ
+         BRcw==
+X-Gm-Message-State: AO0yUKV0wV7XEi5hurA7JIUlvm/CdtkAhA3SB43jcArL2dE88oM14ASD
+        +2sYZFcLp8SPWUK2jP35KbTS9ELdclj67fGYDko=
+X-Google-Smtp-Source: AK7set+ZVZHb3E3+yXBdSq/m7Q0lLzcMDIA9a9VEnkTy7dsj3l7M273TkYkGIIk+uTxZTMjNXUM4Qw==
+X-Received: by 2002:a05:6214:c2b:b0:56c:21d3:3f9c with SMTP id a11-20020a0562140c2b00b0056c21d33f9cmr2904825qvd.47.1675885939642;
+        Wed, 08 Feb 2023 11:52:19 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id b13-20020ac801cd000000b003a6a19ee4f0sm12043767qtg.33.2023.02.08.11.47.08
+        by smtp.gmail.com with ESMTPSA id bk19-20020a05620a1a1300b006f9f3c0c63csm12529307qkb.32.2023.02.08.11.52.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Feb 2023 11:47:08 -0800 (PST)
-Date:   Wed, 8 Feb 2023 14:47:07 -0500
+        Wed, 08 Feb 2023 11:52:19 -0800 (PST)
+Date:   Wed, 8 Feb 2023 14:52:17 -0500
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH v5 04/13] btrfs: add support for inserting raid stripe
  extents
-Message-ID: <Y+P8O0/sWBKWUPSW@localhost.localdomain>
+Message-ID: <Y+P9cWKy+RasYUML@localhost.localdomain>
 References: <cover.1675853489.git.johannes.thumshirn@wdc.com>
  <96f86c817184925f3d1e625d735058373d90e757.1675853489.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
@@ -537,9 +537,6 @@ On Wed, Feb 08, 2023 at 02:57:41AM -0800, Johannes Thumshirn wrote:
 > +		struct btrfs_ordered_stripe *old =
 > +			rb_entry(node, struct btrfs_ordered_stripe, rb_node);
 > +
-
-This is unsafe because we're not holding the lock anymore.
-
 > +		btrfs_debug(fs_info, "logical: %llu, length: %llu already exists",
 > +			  logical, length);
 > +		ASSERT(logical == old->logical);
@@ -547,21 +544,54 @@ This is unsafe because we're not holding the lock anymore.
 > +		rb_replace_node(node, &stripe->rb_node,
 > +				&fs_info->stripe_update_tree);
 > +		write_unlock(&fs_info->stripe_update_lock);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +struct btrfs_ordered_stripe *btrfs_lookup_ordered_stripe(struct btrfs_fs_info *fs_info,
+> +							 u64 logical)
+> +{
+> +	struct rb_root *root = &fs_info->stripe_update_tree;
+> +	struct btrfs_ordered_stripe *stripe = NULL;
+> +	struct rb_node *node;
+> +
+> +	read_lock(&fs_info->stripe_update_lock);
+> +	node = rb_find(&logical, root, ordered_stripe_cmp);
+> +	if (node) {
+> +		stripe = rb_entry(node, struct btrfs_ordered_stripe, rb_node);
+> +		refcount_inc(&stripe->ref);
+> +	}
+> +	read_unlock(&fs_info->stripe_update_lock);
+> +
+> +	return stripe;
+> +}
+> +
+> +void btrfs_put_ordered_stripe(struct btrfs_fs_info *fs_info,
+> +				 struct btrfs_ordered_stripe *stripe)
+> +{
+> +	write_lock(&fs_info->stripe_update_lock);
+> +	if (refcount_dec_and_test(&stripe->ref)) {
 
-I don't love this, it feels like we can lookup and find the existing guy in
-another thread, and then do this replace thing and fuck something up.  I'd
-rather we keep all of this in the lock, so
+Can we re-work this to not take the write_lock() unconditionally?  For the
+lookup do something like
 
-write_lock();
-node = rb_find_add();
+node = rb_find();
 if (node) {
-	old = rb_entry();
-	replace
+	stripe = rb_entry();
+	if (!refcount_inc_not_zero(stripe))
+		stripe = NULL;
 }
-write_unlock();
 
-This may be theoretical and not really a problem in real life, but I'd rather
-not have to squint at this part and be convinced it's the problem when it really
-isn't.  Thanks,
+and then we can do 
+
+if (refcount_dec_and_test()) {
+	write_lock();
+	rb_erase();
+	RB_CLEAR_NODE(node);
+	write_unlock();
+}
+
+Thanks,
 
 Josef
