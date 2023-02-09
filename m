@@ -2,56 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A2C68FC13
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Feb 2023 01:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD34868FF82
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Feb 2023 05:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbjBIAmq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Feb 2023 19:42:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
+        id S229849AbjBIEsO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Feb 2023 23:48:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjBIAmp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 19:42:45 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B0815557
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 16:42:43 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N6sn7-1oWmW10kcJ-018Ik7; Thu, 09
- Feb 2023 01:42:39 +0100
-Message-ID: <c2c63ed0-d987-1165-d1ff-e8a3020fbac7@gmx.com>
-Date:   Thu, 9 Feb 2023 08:42:33 +0800
+        with ESMTP id S230122AbjBIEsA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Feb 2023 23:48:00 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ECE448F
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Feb 2023 20:47:21 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1C3595BE94
+        for <linux-btrfs@vger.kernel.org>; Thu,  9 Feb 2023 04:47:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1675918039; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=t+9eSBYsVzASRz+af3Xoua8X3NDeLfy0koGByC0NAh0=;
+        b=hsCQ2gB9xpPzC11i7ObnyoYMnc7AVosYXJCrmI+fyqTzCipa6124KZLOo4hUhbDZUHVl7c
+        tdwdd9Dok9Vcba/KqO29JFIvnNx6wJSwRfQw0hZe9djh1tPE48XnpS64L9ShsnVMhNCOjE
+        KlDgHvSg2FxcsJ/lNpKvIokPuL2GQ6Y=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7477D1339E
+        for <linux-btrfs@vger.kernel.org>; Thu,  9 Feb 2023 04:47:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id hDj6D9Z65GNfSQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 09 Feb 2023 04:47:18 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC] btrfs: do not use the replace target device as an extra mirror
+Date:   Thu,  9 Feb 2023 12:47:01 +0800
+Message-Id: <2902738be4657ec16e5b5dd38eac1fb53aa5cc44.1675918006.git.wqu@suse.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH v5 00/13] btrfs: introduce RAID stripe tree
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1675853489.git.johannes.thumshirn@wdc.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <cover.1675853489.git.johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:08TNyREiZHZEj9DZ8Rl5PMKA2XU9PsS+K/gCBPTOCMIaE/zmaCt
- oe1e8tJQlw2/hvm94HJdkX/wB54EtViRaRweAFoTaR/0Y7wR4HNMDn1XJX6F714pyU4DQpY
- 1iPO2i3FOI/1gKEBularKF4lQtxenBo65Xk5jhqbOyPzrWUwMj9GIh0XbTSWPx7tT6wFklZ
- Rdb0q30ud4A044UdsjbzA==
-UI-OutboundReport: notjunk:1;M01:P0:XXZRf4bBimw=;eOEueJp+cRDxEhZkxdvLOh2S864
- peBDCZUH+duI0jvX53gHJKbl9kZJ8RM/AEq97HjXhHFPmnW9mi7UqHrjeFPxS7K7+5tjqOWaG
- gfgAUjDkJAcaWBRWtUyf95Io9gSw1uyOx6Qso/5R9rJfwm1tKO4l2VE/yg1yaKoyce2z+wXj9
- s0Qk58snLfii4HP6pAr/2PbrXuDjcd2NXyhv47W91P96IxuJ5mLfYBLCO5rDWSFwyrOQAt06O
- yxwewqSCO5D9FDAMNlNOxVmkuC+XKOsNK7aSviwEEFr6nJ6c8Tq6BM9+jarwJuDreI5brNkeX
- 4D6J3wK8Iokz1G0az0HoNjPZojfAiEZmdj8JvJW6X2GCJtlWUEpSMhQsVUEgGwaqHH1hFsOkz
- 9wD1NXo/Fc8QhEEVp8nMXkkbC0C2coqx0D+2XkGI4OVVmaYRFxxy/3JzqN9F5Yqn+18+PRIy3
- tiXOU/j54LUQdx3u0CjfrgcgTrMqJyv9g1Xlqh8VZ/DwE7iw4wa9+ILV5PqnVt4dPTw3x15dc
- yXpcvGEXJL/QJ/kF+diSksWYBF8wuDL8DK4EtrqjFMw8kkIkNCL7lUW7Ye5TmdcXk8JcvN55N
- +2yrEk9bDlGQAM6v2WW4U7bHtPqINdXQ3otEHl3ReSAH+OvuCMXYpn24r2+oGVHH3jhhET2Om
- e7a/XUR7Jq7lpiXMJiRwTzfARgJ+xeUPlsufNi57DHPjGv8/iLvlv85F6HTzIiCbTsoO2IOzn
- zM/+I/BuNKs5yK+Y1ImY+szVpWQd8ml/JP65gmrsZZG84oCJU/hwwNkYnWk5pCdK2BDSYuRcW
- 5/sx9O3Sm8rgie45NoZMnLP/Y+7HlJ2LrWTITdzaoQHh0VU2RrirED0oSeFB1KMOiYCtWNWq/
- FlKYdk9gossQXrAjMoJrizoheclvvEEKSUY3RS+VdIOPem8m1toHgDmtC7hN9/cJXoO5PayBz
- KZNUGPr/rHPl4Od4NllSa5mS7/U=
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,150 +55,224 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Since the ancient time of btrfs, if a dev-replace is running, we can use
+that replace target as an extra mirror for read.
 
+But there are some extra problems with that:
 
-On 2023/2/8 18:57, Johannes Thumshirn wrote:
-> Updates of the raid-stripe-tree are done at delayed-ref time to safe on
-> bandwidth while for reading we do the stripe-tree lookup on bio mapping time,
-> i.e. when the logical to physical translation happens for regular btrfs RAID
-> as well.
-> 
-> The stripe tree is keyed by an extent's disk_bytenr and disk_num_bytes and
-> it's contents are the respective physical device id and position.
-> 
-> For an example 1M write (split into 126K segments due to zone-append)
-> rapido2:/home/johannes/src/fstests# xfs_io -fdc "pwrite -b 1M 0 1M" -c fsync /mnt/test/test
-> wrote 1048576/1048576 bytes at offset 0
-> 1 MiB, 1 ops; 0.0065 sec (151.538 MiB/sec and 151.5381 ops/sec)
-> 
-> The tree will look as follows:
-> 
-> rapido2:/home/johannes/src/fstests# btrfs inspect-internal dump-tree -t raid_stripe /dev/nullb0
-> btrfs-progs v5.16.1
-> raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0)
-> leaf 805847040 items 9 free space 15770 generation 9 owner RAID_STRIPE_TREE
-> leaf 805847040 flags 0x1(WRITTEN) backref revision 1
-> checksum stored 1b22e13800000000000000000000000000000000000000000000000000000000
-> checksum calced 1b22e13800000000000000000000000000000000000000000000000000000000
-> fs uuid e4f523d1-89a1-41f9-ab75-6ba3c42a28fb
-> chunk uuid 6f2d8aaa-d348-4bf2-9b5e-141a37ba4c77
->          item 0 key (939524096 RAID_STRIPE_KEY 126976) itemoff 16251 itemsize 32
->                          stripe 0 devid 1 offset 939524096
->                          stripe 1 devid 2 offset 536870912
+- No reliable checks on if that target device is even involved
+  For profiles like RAID0/RAID10, it's very possible that the replace
+  is happening on one device which is not involved in the stripe.
 
-Considering we already have the length as the key offset, can we merge 
-continuous entries?
+  E.g. a 4-disks RAID0, involving disk A~D, and disk A is being replaced.
+  In that case, if our read lands at disk B, there is no extra mirror to
+  start with.
 
-I'm pretty sure if we go this path, the rst tree itself can be too 
-large, and it's better we consider this before it's too problematic.
+- No indicator on whether the target device even contains correct data
+  Since dev-replace is running, the target device is progressively
+  filled with data from the source device.
 
-Thanks,
-Qu
+  Thus if our read is beyond the currently replaced range, we may just
+  read out some garbage.
+  This can be extremely dangerous if the range doesn't have data
+  checksum, then we may silently trust the garbage.
 
->          item 1 key (939651072 RAID_STRIPE_KEY 126976) itemoff 16219 itemsize 32
->                          stripe 0 devid 1 offset 939651072
->                          stripe 1 devid 2 offset 536997888
->          item 2 key (939778048 RAID_STRIPE_KEY 126976) itemoff 16187 itemsize 32
->                          stripe 0 devid 1 offset 939778048
->                          stripe 1 devid 2 offset 537124864
->          item 3 key (939905024 RAID_STRIPE_KEY 126976) itemoff 16155 itemsize 32
->                          stripe 0 devid 1 offset 939905024
->                          stripe 1 devid 2 offset 537251840
->          item 4 key (940032000 RAID_STRIPE_KEY 126976) itemoff 16123 itemsize 32
->                          stripe 0 devid 1 offset 940032000
->                          stripe 1 devid 2 offset 537378816
->          item 5 key (940158976 RAID_STRIPE_KEY 126976) itemoff 16091 itemsize 32
->                          stripe 0 devid 1 offset 940158976
->                          stripe 1 devid 2 offset 537505792
->          item 6 key (940285952 RAID_STRIPE_KEY 126976) itemoff 16059 itemsize 32
->                          stripe 0 devid 1 offset 940285952
->                          stripe 1 devid 2 offset 537632768
->          item 7 key (940412928 RAID_STRIPE_KEY 126976) itemoff 16027 itemsize 32
->                          stripe 0 devid 1 offset 940412928
->                          stripe 1 devid 2 offset 537759744
->          item 8 key (940539904 RAID_STRIPE_KEY 32768) itemoff 15995 itemsize 32
->                          stripe 0 devid 1 offset 940539904
->                          stripe 1 devid 2 offset 537886720
-> total bytes 26843545600
-> bytes used 1245184
-> uuid e4f523d1-89a1-41f9-ab75-6ba3c42a28fb
-> 
-> A design document can be found here:
-> https://docs.google.com/document/d/1Iui_jMidCd4MVBNSSLXRfO7p5KmvnoQL/edit?usp=sharing&ouid=103609947580185458266&rtpof=true&sd=true
-> 
-> 
-> Changes to v4:
-> - Added patch to check for RST feature in sysfs
-> - Added RST lookups for scrubbing
-> - Fixed the error handling bug Josef pointed out
-> - Only check if we need to write out a RST once per delayed_ref head
-> - Added support for zoned data DUP with RST
-> 
-> Changes to v3:
-> - Rebased onto 20221120124734.18634-1-hch@lst.de
-> - Incorporated Josef's review
-> - Merged related patches
-> 
-> v3 of the patchset can be found here:
-> https://lore/kernel.org/linux-btrfs/cover.1666007330.git.johannes.thumshirn@wdc.com
-> 
-> Changes to v2:
-> - Bug fixes
-> - Rebased onto 20220901074216.1849941-1-hch@lst.de
-> - Added tracepoints
-> - Added leak checker
-> - Added RAID0 and RAID10
-> 
-> v2 of the patchset can be found here:
-> https://lore.kernel.org/linux-btrfs/cover.1656513330.git.johannes.thumshirn@wdc.com
-> 
-> Changes to v1:
-> - Write the stripe-tree at delayed-ref time (Qu)
-> - Add a different write path for preallocation
-> 
-> v1 of the patchset can be found here:
-> https://lore.kernel.org/linux-btrfs/cover.1652711187.git.johannes.thumshirn@wdc.com/
-> 
-> Johannes Thumshirn (13):
->    btrfs: re-add trans parameter to insert_delayed_ref
->    btrfs: add raid stripe tree definitions
->    btrfs: read raid-stripe-tree from disk
->    btrfs: add support for inserting raid stripe extents
->    btrfs: delete stripe extent on extent deletion
->    btrfs: lookup physical address from stripe extent
->    btrfs: add raid stripe tree pretty printer
->    btrfs: zoned: allow zoned RAID
->    btrfs: check for leaks of ordered stripes on umount
->    btrfs: add tracepoints for ordered stripes
->    btrfs: announce presence of raid-stripe-tree in sysfs
->    btrfs: consult raid-stripe-tree when scrubbing
->    btrfs: add raid-stripe-tree to features enabled with debug
-> 
->   fs/btrfs/Makefile               |   2 +-
->   fs/btrfs/accessors.h            |  29 +++
->   fs/btrfs/bio.c                  |  29 +++
->   fs/btrfs/bio.h                  |   2 +
->   fs/btrfs/block-rsv.c            |   1 +
->   fs/btrfs/delayed-ref.c          |  13 +-
->   fs/btrfs/delayed-ref.h          |   2 +
->   fs/btrfs/disk-io.c              |  30 ++-
->   fs/btrfs/disk-io.h              |   5 +
->   fs/btrfs/extent-tree.c          |  68 ++++++
->   fs/btrfs/fs.h                   |   8 +-
->   fs/btrfs/inode.c                |  15 +-
->   fs/btrfs/print-tree.c           |  21 ++
->   fs/btrfs/raid-stripe-tree.c     | 415 ++++++++++++++++++++++++++++++++
->   fs/btrfs/raid-stripe-tree.h     |  87 +++++++
->   fs/btrfs/scrub.c                |  33 ++-
->   fs/btrfs/super.c                |   1 +
->   fs/btrfs/sysfs.c                |   3 +
->   fs/btrfs/volumes.c              |  39 ++-
->   fs/btrfs/volumes.h              |  12 +-
->   fs/btrfs/zoned.c                |  49 +++-
->   include/trace/events/btrfs.h    |  50 ++++
->   include/uapi/linux/btrfs.h      |   1 +
->   include/uapi/linux/btrfs_tree.h |  20 +-
->   24 files changed, 905 insertions(+), 30 deletions(-)
->   create mode 100644 fs/btrfs/raid-stripe-tree.c
->   create mode 100644 fs/btrfs/raid-stripe-tree.h
-> 
+Thus this RFC patch would just remove this feature.
+
+Yes, I know this would reduce the chance we recover some data, if we're
+replacing a failing disk.
+But in that case, if we're really relying on the failing disk, but not
+some extra mirrors, I'd say we have a much bigger problem.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/volumes.c | 124 +++------------------------------------------
+ 1 file changed, 7 insertions(+), 117 deletions(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 3a2a256fa9cd..385fc89b6702 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5754,12 +5754,6 @@ int btrfs_num_copies(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
+ 		ret = map->num_stripes;
+ 	free_extent_map(em);
+ 
+-	down_read(&fs_info->dev_replace.rwsem);
+-	if (btrfs_dev_replace_is_ongoing(&fs_info->dev_replace) &&
+-	    fs_info->dev_replace.tgtdev)
+-		ret++;
+-	up_read(&fs_info->dev_replace.rwsem);
+-
+ 	return ret;
+ }
+ 
+@@ -6046,83 +6040,6 @@ struct btrfs_discard_stripe *btrfs_map_discard(struct btrfs_fs_info *fs_info,
+ 	return ERR_PTR(ret);
+ }
+ 
+-/*
+- * In dev-replace case, for repair case (that's the only case where the mirror
+- * is selected explicitly when calling btrfs_map_block), blocks left of the
+- * left cursor can also be read from the target drive.
+- *
+- * For REQ_GET_READ_MIRRORS, the target drive is added as the last one to the
+- * array of stripes.
+- * For READ, it also needs to be supported using the same mirror number.
+- *
+- * If the requested block is not left of the left cursor, EIO is returned. This
+- * can happen because btrfs_num_copies() returns one more in the dev-replace
+- * case.
+- */
+-static int get_extra_mirror_from_replace(struct btrfs_fs_info *fs_info,
+-					 u64 logical, u64 length,
+-					 u64 srcdev_devid, int *mirror_num,
+-					 u64 *physical)
+-{
+-	struct btrfs_io_context *bioc = NULL;
+-	int num_stripes;
+-	int index_srcdev = 0;
+-	int found = 0;
+-	u64 physical_of_found = 0;
+-	int i;
+-	int ret = 0;
+-
+-	ret = __btrfs_map_block(fs_info, BTRFS_MAP_GET_READ_MIRRORS,
+-				logical, &length, &bioc, NULL, NULL, 0);
+-	if (ret) {
+-		ASSERT(bioc == NULL);
+-		return ret;
+-	}
+-
+-	num_stripes = bioc->num_stripes;
+-	if (*mirror_num > num_stripes) {
+-		/*
+-		 * BTRFS_MAP_GET_READ_MIRRORS does not contain this mirror,
+-		 * that means that the requested area is not left of the left
+-		 * cursor
+-		 */
+-		btrfs_put_bioc(bioc);
+-		return -EIO;
+-	}
+-
+-	/*
+-	 * process the rest of the function using the mirror_num of the source
+-	 * drive. Therefore look it up first.  At the end, patch the device
+-	 * pointer to the one of the target drive.
+-	 */
+-	for (i = 0; i < num_stripes; i++) {
+-		if (bioc->stripes[i].dev->devid != srcdev_devid)
+-			continue;
+-
+-		/*
+-		 * In case of DUP, in order to keep it simple, only add the
+-		 * mirror with the lowest physical address
+-		 */
+-		if (found &&
+-		    physical_of_found <= bioc->stripes[i].physical)
+-			continue;
+-
+-		index_srcdev = i;
+-		found = 1;
+-		physical_of_found = bioc->stripes[i].physical;
+-	}
+-
+-	btrfs_put_bioc(bioc);
+-
+-	ASSERT(found);
+-	if (!found)
+-		return -EIO;
+-
+-	*mirror_num = index_srcdev + 1;
+-	*physical = physical_of_found;
+-	return ret;
+-}
+-
+ static bool is_block_group_to_copy(struct btrfs_fs_info *fs_info, u64 logical)
+ {
+ 	struct btrfs_block_group *cache;
+@@ -6335,14 +6252,13 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	int i;
+ 	int ret = 0;
+ 	int mirror_num = (mirror_num_ret ? *mirror_num_ret : 0);
++	int num_copies;
+ 	int num_stripes;
+ 	int max_errors = 0;
+ 	struct btrfs_io_context *bioc = NULL;
+ 	struct btrfs_dev_replace *dev_replace = &fs_info->dev_replace;
+ 	int dev_replace_is_ongoing = 0;
+-	int patch_the_first_stripe_for_dev_replace = 0;
+ 	u16 num_alloc_stripes;
+-	u64 physical_to_patch_in_first_stripe = 0;
+ 	u64 raid56_full_stripe_start = (u64)-1;
+ 	struct btrfs_io_geometry geom;
+ 
+@@ -6365,6 +6281,8 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	raid56_full_stripe_start = geom.raid56_stripe_offset;
+ 	data_stripes = nr_data_stripes(map);
+ 
++	num_copies = btrfs_num_copies(fs_info, logical, geom.len);
++
+ 	down_read(&dev_replace->rwsem);
+ 	dev_replace_is_ongoing = btrfs_dev_replace_is_ongoing(dev_replace);
+ 	/*
+@@ -6374,19 +6292,8 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	if (!dev_replace_is_ongoing)
+ 		up_read(&dev_replace->rwsem);
+ 
+-	if (dev_replace_is_ongoing && mirror_num == map->num_stripes + 1 &&
+-	    !need_full_stripe(op) && dev_replace->tgtdev != NULL) {
+-		ret = get_extra_mirror_from_replace(fs_info, logical, *length,
+-						    dev_replace->srcdev->devid,
+-						    &mirror_num,
+-					    &physical_to_patch_in_first_stripe);
+-		if (ret)
+-			goto out;
+-		else
+-			patch_the_first_stripe_for_dev_replace = 1;
+-	} else if (mirror_num > map->num_stripes) {
++	if (mirror_num > num_copies)
+ 		mirror_num = 0;
+-	}
+ 
+ 	num_stripes = 1;
+ 	stripe_index = 0;
+@@ -6511,15 +6418,9 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	    !((map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) && mirror_num > 1) &&
+ 	    (!need_full_stripe(op) || !dev_replace_is_ongoing ||
+ 	     !dev_replace->tgtdev)) {
+-		if (patch_the_first_stripe_for_dev_replace) {
+-			smap->dev = dev_replace->tgtdev;
+-			smap->physical = physical_to_patch_in_first_stripe;
+-			*mirror_num_ret = map->num_stripes + 1;
+-		} else {
+-			set_io_stripe(smap, map, stripe_index, stripe_offset,
+-				      stripe_nr);
+-			*mirror_num_ret = mirror_num;
+-		}
++		set_io_stripe(smap, map, stripe_index, stripe_offset,
++			      stripe_nr);
++		*mirror_num_ret = mirror_num;
+ 		*bioc_ret = NULL;
+ 		ret = 0;
+ 		goto out;
+@@ -6584,17 +6485,6 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	bioc->max_errors = max_errors;
+ 	bioc->mirror_num = mirror_num;
+ 
+-	/*
+-	 * this is the case that REQ_READ && dev_replace_is_ongoing &&
+-	 * mirror_num == num_stripes + 1 && dev_replace target drive is
+-	 * available as a mirror
+-	 */
+-	if (patch_the_first_stripe_for_dev_replace && num_stripes > 0) {
+-		WARN_ON(num_stripes > 1);
+-		bioc->stripes[0].dev = dev_replace->tgtdev;
+-		bioc->stripes[0].physical = physical_to_patch_in_first_stripe;
+-		bioc->mirror_num = map->num_stripes + 1;
+-	}
+ out:
+ 	if (dev_replace_is_ongoing) {
+ 		lockdep_assert_held(&dev_replace->rwsem);
+-- 
+2.39.1
+
