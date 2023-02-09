@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 313F968FFB2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Feb 2023 06:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E11E68FFB4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Feb 2023 06:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbjBIFOB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Feb 2023 00:14:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
+        id S229811AbjBIFOF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Feb 2023 00:14:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjBIFOB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Feb 2023 00:14:01 -0500
+        with ESMTP id S229924AbjBIFOD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Feb 2023 00:14:03 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F90A2CFED;
-        Wed,  8 Feb 2023 21:14:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1C22CC63;
+        Wed,  8 Feb 2023 21:14:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=fVlSN6+7XzcqQYwHFV+ZZgX4ty7cfkStK/EbmpHYMRs=; b=QLxcMqGEbD7vrkz9f3Uw0zJd+W
-        h8OEoIZ3I8rnQvp3/cJM56JxREwT+zGaDt/QUpHQOL+X89O4J1fVKaJBkrXabNu+/B7T+UAdRfyg4
-        KxHHE24WUaz/ix8///mZ80OcTpfGkD2mNk5nEUgb/2bIlh7xaQL+qQX/dt6ZxibJeB4bja6JzumYu
-        LUn0fmiROQnxY5tj23sIbQqx45S7kIVYiuMy8dwVE9vqAXbJkfkwPkchwOnDAL2YrL9CUQeTYWAjn
-        wuydyhuuKdf2XsHglo2Pi5l4n2UfTPGgOtX4Gmw1hsLpGHZ9GzyvRYjK8UZDHjQ29F4vxyC8Jf6mL
-        vnmIN4iQ==;
+        bh=tA+XtNRH/WNZjjh5eePbq3UsXVjhS3jfXV4NZNpMdeY=; b=KCWStTtIj27TC3HC2nknuyw8BB
+        +uNIcNxZo1hwKcVJ9OR068uhDPGSV8sicFaqZWessIjmpc3hj3nSrUDt/ecgN8+ym778WJAFz4TTQ
+        C8q5fcH1WWpUi6za77MDcTeNcgnJ51sUTvNu8mbJPBDyxSq9k/Ysl09HezlHJazJVnSzRy8svKJhw
+        IxRfyWGZf+W1X8DD+tg7nEsOgCDc1sO5WakXQq6qQHt6HYX+mOMWV7eUb2Jpuo6lInbsr+RRt1Y98
+        kCqGS5mj/34bAvlPWNCnWyJIG4j9CfTaw290vKTepF3jQgdryQ/xj/kJJHpQ7V2Mz3wIH85QGSPXO
+        7BvMQmHw==;
 Received: from [2001:4bb8:182:9f5b:acdc:d3c1:a8cd:f858] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pPzFv-000Bsr-OE; Thu, 09 Feb 2023 05:14:00 +0000
+        id 1pPzFy-000Btb-Az; Thu, 09 Feb 2023 05:14:02 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: [PATCH 1/7] btrfs: add 198 and 219 to the auto group
-Date:   Thu,  9 Feb 2023 06:13:49 +0100
-Message-Id: <20230209051355.358942-2-hch@lst.de>
+Subject: [PATCH 2/7] btrfs: add 125 to the auto and quick groups
+Date:   Thu,  9 Feb 2023 06:13:50 +0100
+Message-Id: <20230209051355.358942-3-hch@lst.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230209051355.358942-1-hch@lst.de>
 References: <20230209051355.358942-1-hch@lst.de>
@@ -49,40 +49,24 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The quick group should be a strict subset of the auto group, so add these
-two tests that are in the quick group to the auto group as well.
-
-Note: btrfs/219 fails for me in current mainline.
+btrfs/125 runs in 5 seconds on my VM setup, and found a regression in a
+recent series.  Add it to the auto and quick groups.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- tests/btrfs/198 | 2 +-
- tests/btrfs/219 | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ tests/btrfs/125 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tests/btrfs/198 b/tests/btrfs/198
-index 1edc8330..2b68754a 100755
---- a/tests/btrfs/198
-+++ b/tests/btrfs/198
-@@ -9,7 +9,7 @@
- #    btrfs: remove identified alien device in open_fs_devices
+diff --git a/tests/btrfs/125 b/tests/btrfs/125
+index b58f2aa2..1b6e5d78 100755
+--- a/tests/btrfs/125
++++ b/tests/btrfs/125
+@@ -22,7 +22,7 @@
+ # Verify if all three checkpoints match
  #
  . ./common/preamble
--_begin_fstest quick volume
-+_begin_fstest auto quick volume
- 
- # Import common functions.
- . ./common/filter
-diff --git a/tests/btrfs/219 b/tests/btrfs/219
-index d69e6ac9..528175b8 100755
---- a/tests/btrfs/219
-+++ b/tests/btrfs/219
-@@ -15,7 +15,7 @@
- #
- 
- . ./common/preamble
--_begin_fstest quick volume
-+_begin_fstest auto quick volume
+-_begin_fstest replace volume balance
++_begin_fstest replace volume balance auto quick
  
  # Override the default cleanup function.
  _cleanup()
