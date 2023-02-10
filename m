@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F15691958
+	by mail.lfdr.de (Postfix) with ESMTP id 6B042691959
 	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Feb 2023 08:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbjBJHs7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Feb 2023 02:48:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
+        id S231468AbjBJHtE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Feb 2023 02:49:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbjBJHs6 (ORCPT
+        with ESMTP id S231443AbjBJHtD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Feb 2023 02:48:58 -0500
+        Fri, 10 Feb 2023 02:49:03 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2B35BA7B
-        for <linux-btrfs@vger.kernel.org>; Thu,  9 Feb 2023 23:48:57 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E7D7B38A
+        for <linux-btrfs@vger.kernel.org>; Thu,  9 Feb 2023 23:49:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=y8N2jRs3RPqEzw393uTbY4Y4hMvqRnzvBhY+SmiNkUs=; b=1Z9VkW1GJqKmzMy+8SGRVSI48R
-        Lcuvdhdv1BTofBYCuvrMlc+1/vFIBl9r2wYxwro4dPFt2hNbrj3TF5GGY3cT9TfLo8kuUQnwlS7BO
-        O+Hr8trTq0EjxNXz7UFpgMg+TfLU2t2idbcxE0StCCmZBUmgYEuXI+Q+ifokTbqRB0T9sjUcN5HLX
-        Dt2wYCrNum8S8IP0M6deUY2GXEeognevqdIM6uEb7mUOU05aOwzPitDCQSeX/pAJcBtU8o1XnOCtG
-        FaU5Xip82myGjxVs0X6wihse6JmFXXYL1WffL5ijcTyzJSk5AInzcwiHL+QdoL6zSgADLopYG0ZcA
-        t1OmAqQA==;
+        bh=Jnsc2VcTLYldBntU8k8QK3ymDCaSz+wcSgoG6uCrTBw=; b=ONa+QLny3x/8lyhgVHW+qD2DPg
+        d6Jrmxsl8y33RLzeGC70VJN42kA4Pd2yjNy1prq87kjhYbNcmsymt+VQOnyZiOeQ7F+XbAcWUopVh
+        7WL4mG6AQVzqXzCp+OwFWlJgMmSKmB0/VXwZdGHcedFuuVZDnktZyBsnDCPs1FMEwbRN4TolXKBiO
+        SaEW0J3Zf/a/7HZmIJiovhxzB/YN5kigQ2//lzzeCnm61aXTjId8qTj2Xfy8KtXhNUrAZgs6VDiCc
+        hGSI8vEtmsQBb7UcEVZe5kgjNRKiIoxqD8XIj9KlAwqXLFc+d+h3D2jPDrkXGqPGlEKAvLw2Sa5KC
+        tPkZqEMg==;
 Received: from 213-147-164-133.nat.highway.webapn.at ([213.147.164.133] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pQO9O-004ff1-72; Fri, 10 Feb 2023 07:48:55 +0000
+        id 1pQO9T-004ffg-Au; Fri, 10 Feb 2023 07:49:00 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/8] btrfs: cleanup em handling in btrfs_submit_compressed_read
-Date:   Fri, 10 Feb 2023 08:48:35 +0100
-Message-Id: <20230210074841.628201-3-hch@lst.de>
+Subject: [PATCH 3/8] btrfs: use the bbio file offset in btrfs_submit_compressed_read
+Date:   Fri, 10 Feb 2023 08:48:36 +0100
+Message-Id: <20230210074841.628201-4-hch@lst.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230210074841.628201-1-hch@lst.de>
 References: <20230210074841.628201-1-hch@lst.de>
@@ -51,34 +51,38 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-em can't be non-NULL after the free_extent_map label.  Also remove
-the now pointless clearing of em to NULL after freeing it.
+struct btrfs_bio now has a file_offset field set up by all submitters.
+Use that in btrfs_submit_compressed_read instead of recalculating the
+value.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/compression.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/btrfs/compression.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index cd0cfa8fdb8c15..6fd9c6efe387bd 100644
+index 6fd9c6efe387bd..f7b6c0baae809a 100644
 --- a/fs/btrfs/compression.c
 +++ b/fs/btrfs/compression.c
-@@ -572,7 +572,6 @@ void btrfs_submit_compressed_read(struct bio *bio, int mirror_num)
- 	cb->orig_bio = bio;
+@@ -533,7 +533,7 @@ void btrfs_submit_compressed_read(struct bio *bio, int mirror_num)
+ 	struct bio *comp_bio;
+ 	const u64 disk_bytenr = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+ 	u64 cur_disk_byte = disk_bytenr;
+-	u64 file_offset;
++	u64 file_offset = btrfs_bio(bio)->file_offset;
+ 	u64 em_len;
+ 	u64 em_start;
+ 	struct extent_map *em;
+@@ -542,9 +542,6 @@ void btrfs_submit_compressed_read(struct bio *bio, int mirror_num)
+ 	blk_status_t ret;
+ 	int ret2;
  
- 	free_extent_map(em);
--	em = NULL;
- 
- 	cb->nr_pages = DIV_ROUND_UP(compressed_len, PAGE_SIZE);
- 	cb->compressed_pages = kcalloc(cb->nr_pages, sizeof(struct page *), GFP_NOFS);
-@@ -629,7 +628,6 @@ void btrfs_submit_compressed_read(struct bio *bio, int mirror_num)
- 	kfree(cb->compressed_pages);
- out_free_bio:
- 	bio_put(comp_bio);
--	free_extent_map(em);
- out:
- 	btrfs_bio_end_io(btrfs_bio(bio), ret);
- }
+-	file_offset = bio_first_bvec_all(bio)->bv_offset +
+-		      page_offset(bio_first_page_all(bio));
+-
+ 	/* we need the actual starting offset of this extent in the file */
+ 	read_lock(&em_tree->lock);
+ 	em = lookup_extent_mapping(em_tree, file_offset, fs_info->sectorsize);
 -- 
 2.39.1
 
