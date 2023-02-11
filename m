@@ -2,134 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8352D6930C6
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Feb 2023 12:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADFD69313B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Feb 2023 14:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjBKL7V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Feb 2023 06:59:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
+        id S229508AbjBKNZJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 11 Feb 2023 08:25:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbjBKL6v (ORCPT
+        with ESMTP id S229473AbjBKNZJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Feb 2023 06:58:51 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C1732CC7
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Feb 2023 03:58:34 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Sat, 11 Feb 2023 08:25:09 -0500
+Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B2922A07
+        for <linux-btrfs@vger.kernel.org>; Sat, 11 Feb 2023 05:25:07 -0800 (PST)
+Received: from 127.0.0.1 (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BEE335D425
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Feb 2023 11:53:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1676116405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=luw8uBzuGKU7A/TVL9JJXVWk7xN1W+gSBhwvVvOx6pI=;
-        b=hKO9n9oKFu6vDDkYhoNZ5K+8IkIeGq4m8g7Vtt9cmnEXxJTzvOreUmXqn/rjN9zPF84A2H
-        ny2kwBaiNFN0A2XokGcJxY65BJQQb6NWx7QwGjU0/AGrnLf8PKR/84rGty0rVirKghMjbg
-        kQilu+5KLdKKaK8loGEii79XdIKVJ2M=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 137EA13A10
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Feb 2023 11:53:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1AD1MrSB52N5VwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Feb 2023 11:53:24 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: ioctl: allow dev info ioctl to return fsid of a device
-Date:   Sat, 11 Feb 2023 19:53:05 +0800
-Message-Id: <c3e2ff2f10b0da711a619745495bb8e8c80c1ad0.1676116309.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.1
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 4338E5EE389;
+        Sat, 11 Feb 2023 14:25:06 +0100 (CET)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     waxhead@dirtcellar.net
+Subject: Re: Never balance metadata?
+Date:   Sat, 11 Feb 2023 14:25:05 +0100
+Message-ID: <2622818.BddDVKsqQX@lichtvoll.de>
+In-Reply-To: <c7c1eda1-d0a9-c924-2900-9158c34fc016@gmail.com>
+References: <ad4de975-3d5f-4dbb-45a5-795626c53c61@dirtcellar.net>
+ <1755726.VLH7GnMWUR@lichtvoll.de>
+ <c7c1eda1-d0a9-c924-2900-9158c34fc016@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently user space utilize dev info ioctl to grab the info of a
-certain devid, this includes its device uuid.
+Andrei Borzenkov - 11.02.23, 12:42:49 CET:
+> Balancing creates larger free space pool which allows large writes
+> which is faster and requires less metadata. If every second 4K block
+> in each chunk is free, you have exactly 50% free space like if half
+> of chunks are free. But in the former case each write will be split
+> into 4K pieces, each 4K becomes separate extent and needs additional
+> metadata. Whether you will actually observe impact depends heavily on
+> your workload.
 
-But the return info is not enough to determine if a device is a seed.
+Okay so it can save metadata size. And on a full BTRFS filesystem with no 
+unallocated space it can reduce fragmentation of new writes. I get that 
+much.
 
-This patch will add a new member, fsid, into btrfs_ioctl_dev_info_args,
-and populate the member with fsid value.
+But what if I have for example
 
-This should not cause any compatibility problem, following the following
-combination:
+% btrfs filesystem usage -T /home
+Overall:
+    Device size:                 400.00GiB
+    Device allocated:            300.02GiB
+    Device unallocated:           99.98GiB
+[…]
+    Free (estimated):            113.60GiB      (min: 113.60GiB)
+    Free (statfs, df):           113.60GiB
+[…]
 
-- Old user space, old kernel
-- Old user space, new kernel
-  User space tool won't even check the new member.
+(metadata usage is 3.52GiB of 5.01 GiB)
 
-- New user space, old kernel
-  The kernel won't touch the new member, and user space tool should
-  zero out its argument, thus the new member is all zero.
+on a filesystem that is heavily written to and
 
-  User space tool can then know the kernel doesn't support this fsid
-  reporting, and falls back to whatever they can.
+% btrfs filesystem usage -T /some/dir
+Overall:
+    Device size:                   1.20TiB
+    Device allocated:              1.19TiB
+    Device unallocated:            8.78GiB
+[…]
+    Free (estimated):             44.77GiB      (min: 44.77GiB)
+    Free (statfs, df):            44.77GiB
+[…]
 
-- New user space, new kernel
-  Go as planned.
+(metadata usage is 2.88GiB of 4.01 GiB)
 
-  Would found the fsid member is no longer zero, and trust its value.
+on a filesystem that is used mostly for the purpose of placing larger 
+files there to archive them? Both are using single profiles. 
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-v2:
-- Fix the wrong padding number
-  I doubt why we stick with u64, not u8 for padding, which is way less
-  bug-prone.
----
- fs/btrfs/ioctl.c           |  1 +
- include/uapi/linux/btrfs.h | 13 ++++++++++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+Why would I balance those? They are stored on the same 2TB NVMe SSD in 
+this laptop and I did not yet see any performance related issues with 
+them so far.
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 7e348bd2ccde..d10272efd2a8 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2859,6 +2859,7 @@ static long btrfs_ioctl_dev_info(struct btrfs_fs_info *fs_info,
- 	di_args->bytes_used = btrfs_device_get_bytes_used(dev);
- 	di_args->total_bytes = btrfs_device_get_total_bytes(dev);
- 	memcpy(di_args->uuid, dev->uuid, sizeof(di_args->uuid));
-+	memcpy(di_args->fsid, dev->fs_devices->fsid, BTRFS_UUID_SIZE);
- 	if (dev->name)
- 		strscpy(di_args->path, btrfs_dev_name(dev), sizeof(di_args->path));
- 	else
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index b4f0f9531119..cbb22dbdd108 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -245,7 +245,18 @@ struct btrfs_ioctl_dev_info_args {
- 	__u8 uuid[BTRFS_UUID_SIZE];		/* in/out */
- 	__u64 bytes_used;			/* out */
- 	__u64 total_bytes;			/* out */
--	__u64 unused[379];			/* pad to 4k */
-+	/*
-+	 * Optional, out.
-+	 *
-+	 * Showing the fsid of the device, allowing user space
-+	 * to check if this device is a seed one.
-+	 *
-+	 * Introduced in v6.4, thus user space still needs to
-+	 * check if kernel changed this value.
-+	 * Older kernel will not touch the values here.
-+	 */
-+	__u8 fsid[BTRFS_UUID_SIZE];
-+	__u64 unused[377];			/* pad to 4k */
- 	__u8 path[BTRFS_DEVICE_PATH_NAME_MAX];	/* out */
- };
- 
+What I went with is this: If it is heavily written to leave enough space 
+free to begin with. And if its just for storing larger files without 
+receiving any regular writes by applications then I can fill it a bit 
+more. Just similar to what I would do with XFS filesystem for example as 
+well. Having "/home" on a 95% full XFS filesystem would not be a good 
+idea either – mind you I had something like that with a BTRFS filesystem 
+before and before kernel 4.5 or 4.6 actually sometimes the kernel came 
+to a halt while with BTRFS searching for free space. These some times 
+were related to no unallocated space free and then I balanced until next 
+time it happened, but since kernel 4.5 or 4.6 this issue was gone for 
+good. And before that as long as unallocated space was free it was 
+working fine.
+
+So if I plan like that, I still do not get why I would balance my 
+filesystems regularly. And if I do not plan like that and let /home usage 
+grow to 95% or even more… I am not sure how much "relief" balancing 
+would really give to the filesystem. Is it more than the amount of work 
+done during the regular balances?
+
+Well probably that is the "depends heavily on your workload" thing you 
+wrote about :)
+
+Thanks,
 -- 
-2.39.1
+Martin
+
 
