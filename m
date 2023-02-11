@@ -2,190 +2,276 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DED69231A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Feb 2023 17:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB78692C68
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Feb 2023 02:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbjBJQRK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Feb 2023 11:17:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        id S229823AbjBKBFW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Feb 2023 20:05:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232695AbjBJQRI (ORCPT
+        with ESMTP id S229787AbjBKBFV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Feb 2023 11:17:08 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE62E05D
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Feb 2023 08:17:04 -0800 (PST)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31AFMT2r007466
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Feb 2023 16:17:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references : content-transfer-encoding :
- content-type : mime-version; s=corp-2022-7-12;
- bh=w2qHXhReUOqRW8wBVH4zizUAmMVTM1LfkxlatWebWCY=;
- b=vaGoRQO8kpGZ0c6EpNkrOaxzDLP4J3O9fuUU9m9ZFcv0p6CtDHsZYnSGI9CV7qGH/b7i
- RhS3EjztKhSlzpBLP8Vt6Y5jlYrVWSNIFNUBuvpx8vRTq76Ak1RL1hTg50zvfVH+W6HP
- OVYMwjJAVMycbfB5ZgArvu2026taH2ifLzXKXt2lN2kjdmkViOIAMEJQKbu/jxzVO5Do
- Yaqu/TUFloGHnBeJXL9a4Q6tXLlJ3DJaDEcDngGyvfG8BN3f8AXc7qyPkJ/iLhZWs8J2
- k5d2gAO9I7vU2GWeWnc9CxU/V8XTRqAyswBtbsG1/Dni0aOqQ9Qwt7IW8oIsDx+omj9Q sA== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3nhdsdwk0s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Feb 2023 16:17:03 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 31AFJbYr002978
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Feb 2023 16:17:02 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3nhdtaxkf0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Feb 2023 16:17:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YdSUOO7kRgIzC4egxsR7JUhRZCuIEPxa9XElhRe9UbuAbQkCa2ccdEZzIyaJavFzlcSvCVZiajfOVuAFwUCtpe4Q+61u2k/jymljBLC0iNwbNg1wsWfRWbdoLfHCbaRCbzVqDYuZ30B+xCwVQeck1ccWpJlZOf940B+QLbIUjt7VbMTDDZxpIUd6/H4AQ6ji88c+GDfg64MQJgQchS1jKoQDAICKjDbZmw4w7M6vsy9DIhMB4bJCKDzLAfleX5FpexRroQtnyfmFmkjKvGt5uYUpY5iVMIoor4+hmbSzf9U02sQI69usscriv9rbvpt2RcMkIv6//oLHyXHcjR4r5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=w2qHXhReUOqRW8wBVH4zizUAmMVTM1LfkxlatWebWCY=;
- b=S4LoPsPDjj5nS9a7cg9iUHFkdALA6ySn1wKgl5218YkkDLOtWeLnjuHn8kAoUZA/1iqSyJ2TQJ8iatkJa5w06VxVjz21PrRblmOC8mvHthrJmVLuxUAFc2K3lvdDZzPsVZ19+hI/r//KVHgOURfCet2JdmK2n2b2qWBQp6jKm6fet0qVhm84GZslKDqjfQZ4AK6G9D2mMbvnnclAV0wVujpoOT06IvmfqmbhpTE4wIBtCy0FsRMwt+mPWLmWzW3Cw0Yoqd7jOJQMoPVv5L2SA4FQ1RFmVXSfeEFuYAMpDrsS+1tzO69AiKFjVvNUXm6/ZvuXzYgY3xKNVA7dkkvBHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w2qHXhReUOqRW8wBVH4zizUAmMVTM1LfkxlatWebWCY=;
- b=jf9JlXcrJFaV29rUDRTXZMfWHaSxvqRcoGSOjAQmdAkA/Syibk+HzgVFw/vpaIenn7uuKJK6b9k+ymYNqsBlBHDkc+RcGbkVQ7OMg3Qov1WFRz+aLSFDgarx5BLsE+EFcxHniydX+XDnF9crcrmlvKoYXnsGDDgmj9jDG5XIIag=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by DS0PR10MB6030.namprd10.prod.outlook.com (2603:10b6:8:ce::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6111.6; Fri, 10 Feb 2023 16:17:00 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::560e:9c52:a6bd:4036]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::560e:9c52:a6bd:4036%9]) with mapi id 15.20.6086.011; Fri, 10 Feb 2023
- 16:17:00 +0000
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: optimize search_file_offset_in_bio return value to bool
-Date:   Sat, 11 Feb 2023 00:15:55 +0800
-Message-Id: <5ed6a5476b2be3d9b459db87f8e7d24bfadfe02f.1676041962.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <cover.1676041962.git.anand.jain@oracle.com>
-References: <cover.1676041962.git.anand.jain@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI1PR02CA0005.apcprd02.prod.outlook.com
- (2603:1096:4:1f7::13) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        Fri, 10 Feb 2023 20:05:21 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF59C75F52
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Feb 2023 17:05:19 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MjS54-1ok7iE47yc-00kxWo; Sat, 11
+ Feb 2023 02:05:13 +0100
+Message-ID: <be2ba57f-500c-ec77-b845-7b14311ca242@gmx.com>
+Date:   Sat, 11 Feb 2023 09:05:09 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DS0PR10MB6030:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2c53600b-9a5d-4878-498b-08db0b823d23
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FhNnZZpv4pW4zG1Dyk1RuPm1AAOvi8L5NHfqgPiAghwZom1IsPsm+v7QJV1EKYh6GLzB5PnaPFBhx1ojOKP19+POd7q+UhgDNjz753iJ75LlEBVvGHYNoYFTqP8C5rfPc8TWnaqoSjjdqjxBehUMrEfHH640I99LxcZ2o9ipzSGMLRl1PHUHPU6qouUMMY/PYOTYN7jcEhAAAggPXDE2MiZmnSAuqqzJ4r+67uiD1w2WBBRP3PU1ih8gTuQdLZoR7oVZNY8K59ZxoJ0JCrK97U6odOgFRd6RPGgFsS5yskcECgBpcC+1Vis8on+OozMNVI3ohhUYAIzNgCFt12UKV1BCfuPECbT/RW+9lIJowcqMpISKl80tBJuRtQ8SwsUShfvqNEZVHXFs/I5N4Zap4YP2cb1PILjBaW27nfke49THjf5ZpMVMAoImaMvPzQbTYIra/kZzzxT0MNj6fHq2bQcmJ2S33P8BGxrt4wqPe6LqmHwayFzqQwWXJipRCzqVrdvRCZEWRSWX4VKVT6248EURODk7on5+Fz5cAFYICEzA0PMd/ichFddhJQRn6rG0PGzjjj+ZOe+hiEuss1gAKBNaULyl3B951lcaeNT7yoMQtyv/J5iyomu6A+QCUxlJ7WtiwCQimuBmBWDutwPF7g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(376002)(136003)(396003)(346002)(39860400002)(366004)(451199018)(478600001)(316002)(6486002)(6512007)(26005)(186003)(5660300002)(8936002)(6506007)(44832011)(2616005)(2906002)(83380400001)(38100700002)(6666004)(36756003)(8676002)(66946007)(66556008)(6916009)(66476007)(41300700001)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2dZGTX0sBk4Lb03c6Ya/f0CC/EEAwxmLtQ+oEDjdIpWHxZsM/2zgo16w1IUN?=
- =?us-ascii?Q?Mpt+hPzFP9pwn2ftVNxoJBgx8i4hZOW9TlxeD3C2FSNt0+gCF1MUXh0m6XlD?=
- =?us-ascii?Q?GASSaX0rpteIAmw7BwZxYxp/c1axGscYMsxZotCxXOZlCjbqJ99VRAV9aAMf?=
- =?us-ascii?Q?3czncY1FBZkvkd7kTh/R/CCSSZn5YrIFJhZwHI78VmuzAtvrYB25xN+03cva?=
- =?us-ascii?Q?kEK9Sg0Kk0xcyTNefNIagZLLSxSUyQ/WU9XV6R5c+Twta5mPLQo1/GYEUvwt?=
- =?us-ascii?Q?4kswctDbi15sqrUIra6LvEZ+1nhE0Fa2awHGg1dAO/AbGROoPARKFn0Pe/3q?=
- =?us-ascii?Q?DlG1+KxvtqL0LkcFE8HHM+IgPbJajuwGODfa2U00XgEIhbUkgJJHCHocn6Lq?=
- =?us-ascii?Q?b6DqX1B4GlCFM3J67btVE7H3sLEdDaStTTu1AAauDZTh2WVubbSTU1sgup4n?=
- =?us-ascii?Q?GJWCjHGAEQhfpdmkQ2fwtxdSbOj90Xld9h2+F7BiMFlJeKJGrS8T5qlI30Xn?=
- =?us-ascii?Q?bE+shcn8Jh7moiqR8c9avr4yS0lhIQibEjohUjBKMGpZlK4cN1VtPlIK0bKb?=
- =?us-ascii?Q?Qq6SHmt+xDtdoXmiJTPbsq2U19hbKprPdLtPFuIMYY1YK3UVS9bwkMmVlxK4?=
- =?us-ascii?Q?VhjhUJuci8I0OUyfurr2foeYjfeajECvwwymbb9EDKOhKIyGe/jtn0p4OEOK?=
- =?us-ascii?Q?HyINEs0NaJY2XFWA+s7491BtZFnq1vmqwGB6OYNDYc3Z94Jt4ELokx9tv8Wb?=
- =?us-ascii?Q?3YRwPpgKJNWs8LPqLVnghNSH6IgAaodxAQJbuwVOW1IZNg8fxRP1Thu3ldzl?=
- =?us-ascii?Q?BZ+uxPxQoVqnT0c7y3ppsf3XLpmvdP7/liCUFX2K5jh//N+R5wE+KXGmX9Zi?=
- =?us-ascii?Q?YD1SV9tmEL3ae4X+VRP2MsTF8O/fuKXKKFdzrjWSRmPbnDqw2SRXbK79eK1n?=
- =?us-ascii?Q?lIIOIBR4HhvPJZLp/qT1pXJCyhd3QwAlyCk7d46RmU18M3aK6Tkz0VMoGCjQ?=
- =?us-ascii?Q?ykcOZ5F7FFyCGOvsY6L5cObRYe57yCqlmDlN5aCH6N3tY9vyDZ0IS5q5e46R?=
- =?us-ascii?Q?InKUHddo/O7a+MVPGipN8eo5QyIuCAnRoQVNpGlH96Ql3zEUbxv7vXrJOcwd?=
- =?us-ascii?Q?+TSws45pQuXVJGklkduk92N2/ttLYwM4uyiL8KNbcjQWPjvr3d9J7e0p0Ta8?=
- =?us-ascii?Q?9gTvGT7ZnnLYPLovWJJm/1R5E7ys+HJr8G7hkMBe//YJpx44SiAvtl7FvqtH?=
- =?us-ascii?Q?413PURDpaxjdSPJWY/vrb3vW1Pgej3Vo0Xn+3xgS29LGDXblckeyYL19WUUO?=
- =?us-ascii?Q?gRKxWziVCXgIiunseyYG2P8AMAOS84Nwm6HL2XYDgdiMfZyQhVtfISlUS6rf?=
- =?us-ascii?Q?sQ5f9UfL9O1Rc155NgelOw1b3i53x0nSrNlbXwpvZLeZymqdUSwq8rjmKhks?=
- =?us-ascii?Q?1MTgXCS5GNQJHDUdEwNeoVWz0k/s/jdZCXxWAhW13om5ti6qB0cKIWmDQiRB?=
- =?us-ascii?Q?1FWEXr4cV1ig0WRH2Fu43ycockYyOPnV7g0UiD4F8cYzEbitbtmnxJ7cD7Pi?=
- =?us-ascii?Q?h3gFmNcTV5Yq/LhJOjANqKoJoKNfJn8PgSX7lbqfjJDB+i23x2FpQMBQ47bu?=
- =?us-ascii?Q?Kg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: G7rbdEASxRcNLH+X82OjmC/a2U/By+cquDbFRrbUZSYtOtnrgWQgknKGi4rUKMHNfQKkYxwsm9fCpj9mW5LF+PdzFdRAGzHuL3vUNdvzsk1pVwcq2Z2eCHSU0W9NJJ7TMhuG5YnhflZFqqY2ApM4Pj6bnRCd1E5s74cDwsC1wD2DmtpzGukax8aT+MqRGOTxQX9nwf1q2nPtVjGpIqTYdBLAmxE+Kd7RuT8MIpklCsKivwl3PCB92zDWz4pWBRi/RkCJxfzhkcewWVJU2lTX138ZosuIEPUv1q+PuN/oxXT98OsyFWHeuXOXdV+FJ0gvmgj0xc2PQxOaImkIeRPXAxf5vJ3UfTm94gML0286RTNw5/qwBr/qbIHRLHipKdPEJb6ckf9sQT9fYP8valcH4EuyUc91whTcuyrZE9H6VaFcslXQDRXdqUsRXhOArdv+mVpWja7WrhX/sbyIhuC/33rrfuv3vPuPUeBfqzAM8uDOQG+2YyYaei1IdlRcN/1Kyp92GnjbAibBFMREA27E6SvYpG/gWPPMzwYbOLAl4iaVDLW0mzZwefBRrvFdGzrqGbNhtfyhyUX+xwYblPuNiQZKOc419MIWuUk4GBTcxduxFGUKQmKXDpjKMLM9wAyQvfURT0jFSK40aZaqbUuE0fjBK1H15P11M/fSPlOj/uHW4afnsFf4YcgLIBU7IEfNGUVnzld7rMgldw7nJDru5m/2LPUI0abqyF2S25uo9X+th2FmuwMA78v30PvNuvKqInpqEnOrjFq+Z3qZ+5QsuQ==
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c53600b-9a5d-4878-498b-08db0b823d23
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2023 16:17:00.5714
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6uWH/uqVRAYK3STrRXt8PPO6Sfw7XtpZ+E8wCuh1z2rh2vIm+AyAi1GYp2OnGILodriC+jCIrerwTAkywrwZ9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6030
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-10_11,2023-02-09_03,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- mlxlogscore=999 adultscore=0 phishscore=0 mlxscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302100136
-X-Proofpoint-ORIG-GUID: XQA-2k0T0KvYsD47ODY4Q_NgKKqHYTjn
-X-Proofpoint-GUID: XQA-2k0T0KvYsD47ODY4Q_NgKKqHYTjn
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.0
+To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <29a0e54c8461e3c25e63d5b7b3e48fa6f4254d3f.1676007519.git.wqu@suse.com>
+ <770d3b15-d521-794e-b78d-ba8ad67b4e0c@oracle.com>
+ <9cb47d00-b17f-bd3b-be60-29f3f95b3065@oracle.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH] btrfs-progs: filesystem-usage: handle missing seed device
+ properly
+In-Reply-To: <9cb47d00-b17f-bd3b-be60-29f3f95b3065@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:ZzBHFhVG+/ZVqin1xJbvfypV3gd+2nW/w79yiO3CUuyhO1dpwxN
+ YM+w3Z35q2k6qWbb3zGQhe4d3sKZeVocHShTbd78LU5Oo0KUiF03Au0G8Ge4aMVNVur5Q62
+ BBEA4rX1eb/ZKDU7N14WODQcrP8rPuI7jmgyUy5pzHH14m03pUDxoK88zNKaqLXdkGyuT4m
+ wJhHhuF+wKJY16XCmEJeg==
+UI-OutboundReport: notjunk:1;M01:P0:whTQ5lrH1cw=;hzOoUPfzBymVJGkQcX+nyJRCkrN
+ 8+9OiDQBXLraoHS4889/DxN+B3eFPu9Ryf887ZM70lTHtwC7B/hz7uRqO5fNzXB9FffFFYjGS
+ WeehE/zB8GslIzvEqR/3cIVWbGBCjGHQxIPhq1S4GEvz0XjInJYvezmRvDAfZn4Hs32truf5F
+ qVtT4b7QfyF1oEN8cqBELJnYGEx0NdYBk5eyJsAw/3n3HmH1Fy8RJjnuzb2YgwzvTbLql1tj0
+ SQhUN2MRGVTAl6sHa6jH1T/xXBL4x1rg8/Jcs3RqvP43hTQ3R4cBtyN4T8Zgg1ufLfH/NBTYv
+ t26OimEVQhvW2Y3/a2Rn5pmZYmJ4/wXQ5kQOYtecgC/EmC9QVQFse2y6c8t62BDFliTDRhT7F
+ HvRppqbmJgErKoxqE20hXPSv+wbG3uoK04kX8lvLFBhWHGFrqXuONbsLgpytHPD7Ey/og2aD7
+ lnzLKW/B6MnwYgSdtDfaLpeZYC4rJL3goSXNWVt2NjiEDSVU98Bd+COR1TGdBQ8R3/NIXXM6N
+ DAiyE19sLpB8L16nSCOoBDEpIMI0XLhKSMHqsxAejUEEIsfwESm8RkO54UpXnNqoV43nqdFyI
+ eQ/y99rHkLEa4bmMBApBXdyFe+fhxqvFxIdVZAbrTx/2H1qbPypwuZS1ekyXb8K15WOxhtZbq
+ E2gbpRrqE+3pUUhNXpUYxqXbq1RNaIklzUga8rb+qWghvwi4Si/Ahy7O0Ga7aBTrA4O/L1pfL
+ rh1Tx3gLK7H6yT9G045bI/SdkxTBRStjQc2J35hrAQQCD3lfHoZxW7FntwmTn0A8tdxCp8A3b
+ xiK+5788vKHO9hZpPno5WL5trIHvyAPA9KtQSe+6Mw0vaZQtAOmKPqXEQpivR0AkpdoOc55m3
+ eXeiV1u9APRdvWWu5h5AddyANNRxrABsamwnyjwHEpl1W41viCww1agCOeSjEhG+YrP614F0y
+ BCi/IgBKxSFaTUiyYl+OyqU1aqo=
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Function search_file_offset_in_bio() finds the file offset in the
-%file_offset_ret, and we use the return value to indicate if it is
-successful, so use bool.
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/file-item.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 89e9415b8f06..a879210735aa 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -345,8 +345,8 @@ static int search_csum_tree(struct btrfs_fs_info *fs_info,
-  *
-  * @inode is used to determine if the bvec page really belongs to @inode.
-  *
-- * Return 0 if we can't find the file offset
-- * Return >0 if we find the file offset and restore it to @file_offset_ret
-+ * Return true if we can't find the file offset
-+ * Return false if we find the file offset and restore it to @file_offset_ret
-  */
- static int search_file_offset_in_bio(struct bio *bio, struct inode *inode,
- 				     u64 disk_bytenr, u64 *file_offset_ret)
-@@ -354,7 +354,7 @@ static int search_file_offset_in_bio(struct bio *bio, struct inode *inode,
- 	struct bvec_iter iter;
- 	struct bio_vec bvec;
- 	u64 cur = bio->bi_iter.bi_sector << SECTOR_SHIFT;
--	int ret = 0;
-+	bool ret = false;
- 
- 	bio_for_each_segment(bvec, bio, iter) {
- 		struct page *page = bvec.bv_page;
-@@ -368,7 +368,7 @@ static int search_file_offset_in_bio(struct bio *bio, struct inode *inode,
- 		ASSERT(in_range(disk_bytenr, cur, bvec.bv_len));
- 		if (page->mapping && page->mapping->host &&
- 		    page->mapping->host == inode) {
--			ret = 1;
-+			ret = true;
- 			*file_offset_ret = page_offset(page) + bvec.bv_offset +
- 					   disk_bytenr - cur;
- 			break;
--- 
-2.31.1
+On 2023/2/11 00:07, Anand Jain wrote:
+> 
+> OR
+> 
+> We could use both methods to accommodate older kernels; switch to disk 
+> reading if newer sysfs interface is unavailable.
 
+I believe the tree-search is always needed as a fallback.
+
+Thus the patch itself should always be needed.
+
+For the sysfs part, the commit message has explained it in details, we 
+need a proper way to get if a device is seed, from the IOC_DEV_INFO ioctl.
+
+Thus indeed as you commented, if we can add an fsid field to 
+btrfs_ioctl_dev_info_args, it can indeed solve the problem.
+
+Thanks,
+Qu
+> 
+> Thanks, Anand
+> 
+> On 11/02/2023 00:01, Anand Jain wrote:
+>>
+>>
+>>
+>>
+>> An alternative solution is to utilize a kernel interface to obtain the 
+>> fsid [1]. Previous experiences have shown that attempting to directly 
+>> read a mounted device's disk is not a reliable method and can result 
+>> in various problems. As a result, it is advisable to use a kernel 
+>> interface to read the fsid.
+>>
+>> [PATCH 2/2] btrfs-progs: read fsid from the sysfs in device_is_seed
+>> On 10/02/2023 13:39, Qu Wenruo wrote:
+>>> [BUG]
+>>> Test case btrfs/249 always fails since its introduction, the failure
+>>> comes from "btrfs filesystem usage" subcommand, and the error output
+>>> looks like this:
+>>>
+>>>    QA output created by 249
+>>>    ERROR: unexpected number of devices: 1 >= 1
+>>>    ERROR: if seed device is used, try running this command as root
+>>>    FAILED: btrfs filesystem usage, ret 1. Check btrfs.ko and 
+>>> btrfs-progs version.
+>>>    (see /home/adam/xfstests/results//btrfs/249.full for details)
+>>>
+>>> [CAUSE]
+>>> In function load_device_info(), we only allocate enough space for all
+>>> *RW* devices, expecting we can rule out all seed devices.
+>>>
+>>> And in that function, we check if a device is a seed by checking its
+>>> super block fsid.
+>>>
+>>> So if a seed device is missing (it can be an seed device without any
+>>> chunks on it, or a degraded RAID1 as seed), then we can not read the
+>>> super block.
+>>>
+>>> In that case, we just assume it's not a seed device, and causing too
+>>> many devices than our expectation and cause the above failure.
+>>>
+>>> [FIX]
+>>> Instead of unconditionally assume a missing device is not a seed, we add
+>>> a new safe net, is_seed_device_tree_search(), to search chunk tree and
+>>> determine if that device is a seed or not.
+>>>
+>>> And if we found the device is still a seed, then just skip it as usual.
+>>>
+>>> Now the test case btrfs/249 passes as expected:
+>>>
+>>>    btrfs/249        2s
+>>>    Ran: btrfs/249
+>>>    Passed all 1 tests
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>> This version is different from the original fix from Anand by:
+>>>
+>>> - No need for kernel patching
+>>>    Thus no compatible problems
+>>>
+>>> And also different from the fix from Flint:
+>>>
+>>> - No need to search chunk tree unconditionally
+>>>    Tree search itself is a privileged operation while "filesystem usage"
+>>>    subcommand is not.
+>>>
+>>>    Now we only needs root privilege if we hit a missing seed device,
+>>>    which is super rare.
+>>>
+>>>    And we can still fallback to assume the device is not seed.
+>>>
+>>> - Better commit message
+>>> ---
+>>>   cmds/filesystem-usage.c | 72 +++++++++++++++++++++++++++++++++++++++--
+>>>   1 file changed, 70 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+>>> index 5810324f245e..214cad2fa75b 100644
+>>> --- a/cmds/filesystem-usage.c
+>>> +++ b/cmds/filesystem-usage.c
+>>> @@ -700,6 +700,56 @@ out:
+>>>       return ret;
+>>>   }
+>>> +/*
+>>> + * Return 0 if this devid is not a seed device.
+>>> + * Return 1 if this devid is a seed device.
+>>> + * Return <0 if error (IO error or EPERM).
+>>> + *
+>>> + * Since this is done by tree search, it needs root privilege, and
+>>> + * should not be triggered unless we hit a missing device and can not
+>>> + * determine if it's a seed one.
+>>> + */
+>>> +static int is_seed_device_tree_search(int fd, u64 devid, u8 *fsid)
+>>> +{
+>>> +    struct btrfs_ioctl_search_args args = {0};
+>>> +    struct btrfs_ioctl_search_key *sk = &args.key;
+>>> +    struct btrfs_ioctl_search_header *sh;
+>>> +    struct btrfs_dev_item *dev;
+>>> +    unsigned long off = 0;
+>>> +    int ret;
+>>> +    int err;
+>>> +
+>>> +    sk->tree_id = BTRFS_CHUNK_TREE_OBJECTID;
+>>> +    sk->min_objectid = BTRFS_DEV_ITEMS_OBJECTID;
+>>> +    sk->max_objectid = BTRFS_DEV_ITEMS_OBJECTID;
+>>> +    sk->min_type = BTRFS_DEV_ITEM_KEY;
+>>> +    sk->max_type = BTRFS_DEV_ITEM_KEY;
+>>> +    sk->min_offset = devid;
+>>> +    sk->max_offset = devid;
+>>> +    sk->max_transid = (u64)-1;
+>>> +    sk->nr_items = 1;
+>>> +
+>>> +    ret = ioctl(fd, BTRFS_IOC_TREE_SEARCH, &args);
+>>> +    err = errno;
+>>> +    if (err == EPERM)
+>>> +        return -err;
+>>> +    if (ret < 0) {
+>>> +        error("cannot lookup chunk tree info: %m");
+>>> +        return ret;
+>>> +    }
+>>> +    /* No dev item found. */
+>>> +    if (sk->nr_items == 0)
+>>> +        return -ENOENT;
+>>> +
+>>> +    sh = (struct btrfs_ioctl_search_header *)(args.buf + off);
+>>> +    off += sizeof(*sh);
+>>> +
+>>> +    dev = (struct btrfs_dev_item *)(args.buf + off);
+>>> +    if (memcmp(dev->fsid, fsid, BTRFS_UUID_SIZE) == 0)
+>>> +        return 0;
+>>> +    return 1;
+>>> +}
+>>> +
+>>>   /*
+>>>    *  This function loads the device_info structure and put them in 
+>>> an array
+>>>    */
+>>> @@ -708,7 +758,6 @@ static int load_device_info(int fd, struct 
+>>> device_info **devinfo_ret,
+>>>   {
+>>>       int ret, i, ndevs;
+>>>       struct btrfs_ioctl_fs_info_args fi_args;
+>>> -    struct btrfs_ioctl_dev_info_args dev_info;
+>>>       struct device_info *info;
+>>>       u8 fsid[BTRFS_UUID_SIZE];
+>>> @@ -730,6 +779,8 @@ static int load_device_info(int fd, struct 
+>>> device_info **devinfo_ret,
+>>>       }
+>>>       for (i = 0, ndevs = 0 ; i <= fi_args.max_id ; i++) {
+>>> +        struct btrfs_ioctl_dev_info_args dev_info = {0};
+>>> +
+>>>           if (ndevs >= fi_args.num_devices) {
+>>>               error("unexpected number of devices: %d >= %llu", ndevs,
+>>>                   fi_args.num_devices);
+>>> @@ -737,7 +788,6 @@ static int load_device_info(int fd, struct 
+>>> device_info **devinfo_ret,
+>>>           "if seed device is used, try running this command as root");
+>>>               goto out;
+>>>           }
+>>> -        memset(&dev_info, 0, sizeof(dev_info));
+>>>           ret = get_device_info(fd, i, &dev_info);
+>>>           if (ret == -ENODEV)
+>>> @@ -747,6 +797,24 @@ static int load_device_info(int fd, struct 
+>>> device_info **devinfo_ret,
+>>>               goto out;
+>>>           }
+>>> +        /*
+>>> +         * A missing device, we can not determing if it's a seed
+>>> +         * device by reading its super block.
+>>> +         * Thus we have to go tree-search to make sure if it's a seed
+>>> +         * device.
+>>> +         */
+>>> +        if (!dev_info.path[0]) {
+>>> +            ret = is_seed_device_tree_search(fd, i, fi_args.fsid);
+>>> +            if (ret < 0) {
+>>> +                errno = -ret;
+>>> +                warning(
+>>> +        "unable to determine if devid %u is seed: %m, assuming not", 
+>>> i);
+>>> +            }
+>>> +            /* Skip the missing seed device. */
+>>> +            if (ret > 0)
+>>> +                continue;
+>>> +        }
+>>> +
+>>>           /*
+>>>            * Skip seed device by checking device's fsid (requires root).
+>>>            * And we will skip only if dev_to_fsid is successful and dev
+>>
