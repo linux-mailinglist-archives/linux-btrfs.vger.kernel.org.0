@@ -2,121 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ADFD69313B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Feb 2023 14:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAB96932D1
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Feb 2023 18:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjBKNZJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 11 Feb 2023 08:25:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
+        id S229550AbjBKRTN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Feb 2023 12:19:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjBKNZJ (ORCPT
+        with ESMTP id S229483AbjBKRTM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Feb 2023 08:25:09 -0500
-Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B2922A07
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Feb 2023 05:25:07 -0800 (PST)
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 4338E5EE389;
-        Sat, 11 Feb 2023 14:25:06 +0100 (CET)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Andrei Borzenkov <arvidjaar@gmail.com>
-Cc:     waxhead@dirtcellar.net
-Subject: Re: Never balance metadata?
-Date:   Sat, 11 Feb 2023 14:25:05 +0100
-Message-ID: <2622818.BddDVKsqQX@lichtvoll.de>
-In-Reply-To: <c7c1eda1-d0a9-c924-2900-9158c34fc016@gmail.com>
-References: <ad4de975-3d5f-4dbb-45a5-795626c53c61@dirtcellar.net>
- <1755726.VLH7GnMWUR@lichtvoll.de>
- <c7c1eda1-d0a9-c924-2900-9158c34fc016@gmail.com>
+        Sat, 11 Feb 2023 12:19:12 -0500
+Received: from pio-pvt-msa1.bahnhof.se (pio-pvt-msa1.bahnhof.se [79.136.2.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5A8272A
+        for <linux-btrfs@vger.kernel.org>; Sat, 11 Feb 2023 09:18:56 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTP id EAF893F833;
+        Sat, 11 Feb 2023 18:18:53 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Score: -1.989
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+Received: from pio-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id VzpYAMR4knaf; Sat, 11 Feb 2023 18:18:53 +0100 (CET)
+Received: by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id E4E2C3F683;
+        Sat, 11 Feb 2023 18:18:52 +0100 (CET)
+Received: from 90-224-97-87-no521.tbcn.telia.com ([90.224.97.87]:41268 helo=[192.168.1.18])
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1pQtWV-000H7G-Li; Sat, 11 Feb 2023 18:18:52 +0100
+Message-ID: <f95ded14-ee9a-6e54-dd79-fe3811560513@tnonline.net>
+Date:   Sat, 11 Feb 2023 18:18:50 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: Never balance metadata?
+To:     waxhead@dirtcellar.net, linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <ad4de975-3d5f-4dbb-45a5-795626c53c61@dirtcellar.net>
+Content-Language: sv-SE, en-GB
+From:   Forza <forza@tnonline.net>
+In-Reply-To: <ad4de975-3d5f-4dbb-45a5-795626c53c61@dirtcellar.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Andrei Borzenkov - 11.02.23, 12:42:49 CET:
-> Balancing creates larger free space pool which allows large writes
-> which is faster and requires less metadata. If every second 4K block
-> in each chunk is free, you have exactly 50% free space like if half
-> of chunks are free. But in the former case each write will be split
-> into 4K pieces, each 4K becomes separate extent and needs additional
-> metadata. Whether you will actually observe impact depends heavily on
-> your workload.
-
-Okay so it can save metadata size. And on a full BTRFS filesystem with no 
-unallocated space it can reduce fragmentation of new writes. I get that 
-much.
-
-But what if I have for example
-
-% btrfs filesystem usage -T /home
-Overall:
-    Device size:                 400.00GiB
-    Device allocated:            300.02GiB
-    Device unallocated:           99.98GiB
-[…]
-    Free (estimated):            113.60GiB      (min: 113.60GiB)
-    Free (statfs, df):           113.60GiB
-[…]
-
-(metadata usage is 3.52GiB of 5.01 GiB)
-
-on a filesystem that is heavily written to and
-
-% btrfs filesystem usage -T /some/dir
-Overall:
-    Device size:                   1.20TiB
-    Device allocated:              1.19TiB
-    Device unallocated:            8.78GiB
-[…]
-    Free (estimated):             44.77GiB      (min: 44.77GiB)
-    Free (statfs, df):            44.77GiB
-[…]
-
-(metadata usage is 2.88GiB of 4.01 GiB)
-
-on a filesystem that is used mostly for the purpose of placing larger 
-files there to archive them? Both are using single profiles. 
-
-Why would I balance those? They are stored on the same 2TB NVMe SSD in 
-this laptop and I did not yet see any performance related issues with 
-them so far.
-
-What I went with is this: If it is heavily written to leave enough space 
-free to begin with. And if its just for storing larger files without 
-receiving any regular writes by applications then I can fill it a bit 
-more. Just similar to what I would do with XFS filesystem for example as 
-well. Having "/home" on a 95% full XFS filesystem would not be a good 
-idea either – mind you I had something like that with a BTRFS filesystem 
-before and before kernel 4.5 or 4.6 actually sometimes the kernel came 
-to a halt while with BTRFS searching for free space. These some times 
-were related to no unallocated space free and then I balanced until next 
-time it happened, but since kernel 4.5 or 4.6 this issue was gone for 
-good. And before that as long as unallocated space was free it was 
-working fine.
-
-So if I plan like that, I still do not get why I would balance my 
-filesystems regularly. And if I do not plan like that and let /home usage 
-grow to 95% or even more… I am not sure how much "relief" balancing 
-would really give to the filesystem. Is it more than the amount of work 
-done during the regular balances?
-
-Well probably that is the "depends heavily on your workload" thing you 
-wrote about :)
-
-Thanks,
--- 
-Martin
 
 
+On 2023-02-11 02:36, waxhead wrote:
+> I have read several places, including on this mailing list that metadata 
+> is not supposed to be balanced unless converting between profiles.
+> 
+> Interestingly enough there is nothing mentioned about this in the docs...
+> https://btrfs.readthedocs.io/en/latest/btrfs-balance.html
+> 
+> Should one still NOT balance metadata? If so - please update the docs 
+> with a explanation to why one should not do that.
+
+There is no direct issue with balancing metadata chunks.
+
+The recommendation to not balance metadata is because it can contribute 
+to a ENOSPC (no free space left) error. This happens when Btrfs needs to 
+allocate another metadata chunk, but there is no unallocated space 
+available.
+
+Because metadata usually only is a small percentage of the filesystem, 
+it makes sense to simply leave it unless you need to convert between 
+profiles or add/remove devices.
+
+Btrfs uses a two-stage allocator. The first stage allocates large 
+regions of space known as chunks for specific types of data, then the 
+second stage allocates blocks like a regular (old-fashioned) filesystem 
+within these larger regions.
+
+There are three different types of block groups/chunks that Btrfs uses:
+DATA: Stores normal user file data.
+METADATA: Stores internal metadata. Small files can also stored inline.
+SYSTEM: Stores mapping between physical devices and the logical space 
+representing the filesystem.
+UNALLOCATED: Any unallocated space. Can be used to allocate any of the 
+three data types.
+
+Balancing means compacting chunks to make them fully utilised by moving 
+data from other chunks and release the empty chunks back as unallocated 
+space. This has the effect of defragmenting the free space which 
+improves sequential write speeds, especially on spinning HDDs.
+
+The problem with balancing metadata (that leads to the recommendation to 
+not balance metadata) is that when metadata chunks are full, Btrfs needs 
+to allocate new metadata chunks to write additional metadata in. Many 
+disk operations, including removing files and snapshots requires 
+additional metadata. If this happens when there is not enough 
+unallocated space to allocate another metadata chunk the filesystem with 
+fail with ENOSPC. By letting metadata chunks be underutilised, this risk 
+is lower, especially on very full filesystems.
+
+- Forza
