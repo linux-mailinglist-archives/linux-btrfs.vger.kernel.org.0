@@ -2,132 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD46693B67
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Feb 2023 01:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C307F693DC1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Feb 2023 06:10:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjBMAiY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 12 Feb 2023 19:38:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58580 "EHLO
+        id S229644AbjBMFK6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Feb 2023 00:10:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjBMAiW (ORCPT
+        with ESMTP id S229436AbjBMFK5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 12 Feb 2023 19:38:22 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD72EF93
-        for <linux-btrfs@vger.kernel.org>; Sun, 12 Feb 2023 16:38:21 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D070960349;
-        Mon, 13 Feb 2023 00:38:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1676248698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=C79jz99avRcSlXPmSF3kamAo/vUn1bml6rx2HUsJQ9c=;
-        b=r9uRhH3ynJUU/I9flB8oTSWpm9BbdwDv5e2Z3aal+JAq5IS95tyEE0B1xZnKgLSgP3i9Kb
-        qisR64niuBRJyEHiwjNck3/XhzLmnOSyzLY653OfgaK1Bx+qg0JIaX0jsoo67aNPXOUKW7
-        CnBjmOMm7fHj6HOyELLamdfQ9qzVv7k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C25E513310;
-        Mon, 13 Feb 2023 00:38:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id RNZMI3mG6WNEBwAAMHmgww
-        (envelope-from <wqu@suse.com>); Mon, 13 Feb 2023 00:38:17 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     u-boot@lists.denx.de
-Cc:     linux-btrfs@vger.kernel.org, Andreas Schwab <schwab@linux-m68k.org>
-Subject: [PATCH] fs: btrfs: limit the mapped length to the original length
-Date:   Mon, 13 Feb 2023 08:37:59 +0800
-Message-Id: <99e2c01bb0366af9aec7522f7109c74b09c5509d.1676248644.git.wqu@suse.com>
+        Mon, 13 Feb 2023 00:10:57 -0500
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8450AD525;
+        Sun, 12 Feb 2023 21:10:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1676265056; x=1707801056;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=sfMbRQgYhuaUUurCh5gYtFI6ckde5TQLtj2tdTJFaOM=;
+  b=pHGEMn7lhKURtzC3yx/KjgFZ/x09KgQrBS232KOlu6qWNlZEWfrWq5cN
+   zYVyFlAtg9ZgxZkheqN1UUoFAeOrqPw1cLURopprotkWhRe+wM9ZMuspJ
+   sy003871/2WrkgIfG9Z5/ozFT1ongSQSMo1Ux+XjnLUU/6iNtej/fDOIV
+   CrugWTSClSNfZdr33aTleYuEd0Oz18OAj6eyHh/v6RH6bl6jrEUZky+vN
+   KRpN8TgJB5QljCbaxrXjzvCYbvxEGo1v+p6eOeUiNZekPEu7BeC8DxJyU
+   /sJahZr/a/adsCyawhuaT9bQkPsMVhgQSNBtxwTYycLPMSn/Z3IJmp+aZ
+   A==;
+X-IronPort-AV: E=Sophos;i="5.97,293,1669046400"; 
+   d="scan'208";a="327447297"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Feb 2023 13:10:55 +0800
+IronPort-SDR: GHOSHN0cH1NeRlxiIz3imwKk3Ce/SZL5DZ5aSHeHqVslskf0wHvKXdrYMEyjB3Y1QO6gCEKl2K
+ ukVUYrLMumaOrIF1k56/XdsPZ537KMyDm4GHhYkBGAGyAa/v7k8AplpJdOz6+6S1/tVuUOTpD+
+ r9rv19K9uhXQSuGrm31sqGox8p9njWrhQBBPWMTQ/d4iBc+Zpu4ZumznyxE5L7WC0oB6q0FvDh
+ s94havVsOCye7Tk4EhV9ERAlc5O+iGJLwkiGBQpDHuwTxIaoNrhH5GwuOLjJyqF3sKOJ1iuUFi
+ z1A=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Feb 2023 20:22:20 -0800
+IronPort-SDR: s7+Rr0pjZJWW63cP0Txn+qM2yd/n3CzTVikXkzrLHsgZNGt2arxODfQcNqIAy1PdNz01uJbw8r
+ EpF2FRLqkczbLRMt/zRVJBHW6eS/tCZr59+/ZSKPgHo3/G4qvqJT/UDxKIi7R/G5DfAAzLHvQR
+ OraF/wQy33RCFrnf1xdte+oPYiOUIMdpQ9v6XJpeBYCaHniEsHMRHcf4V/KayXCNqFTSGT+ntl
+ Qdkn2fG15/3yLm3kk+L/cuwVmZk8UZ0el4e6DKLv2U4+8UIAXrHiQy47MabsLFeOon8/miuyDC
+ Jrg=
+WDCIronportException: Internal
+Received: from 5cg217420j.ad.shared (HELO naota-xeon.wdc.com) ([10.225.48.77])
+  by uls-op-cesaip01.wdc.com with ESMTP; 12 Feb 2023 21:10:55 -0800
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>, stable@vger.kernel.org
+Subject: [PATCH] btrfs: fix unnecessary increment of read error stat on write error
+Date:   Mon, 13 Feb 2023 14:10:38 +0900
+Message-Id: <29145a990313cb8759b8131b07f29694cc183ab3.1676265001.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a bug report that btrfs driver caused hang during file read:
+Current btrfs_log_dev_io_error() increases the read error count even if the
+erroneous IO is a WRITE request. This is because it forget to use "else
+if", and all the error WRITE requests counts as READ error as there is (of
+course) no REQ_RAHEAD bit set.
 
-  This breaks btrfs on the HiFive Unmatched.
-
-  => pci enum
-  PCIE-0: Link up (Gen1-x8, Bus0)
-  => nvme scan
-  => load nvme 0:2 0x8c000000 /boot/dtb/sifive/hifive-unmatched-a00.dtb
-  [hangs]
-
-[CAUSE]
-The reporter provided some debug output:
-
-  read_extent_data: cur=615817216, orig_len=16384, cur_len=16384
-  read_extent_data: btrfs_map_block: cur_len=479944704; ret=0
-  read_extent_data: ret=0
-  read_extent_data: cur=615833600, orig_len=4096, cur_len=4096
-  read_extent_data: btrfs_map_block: cur_len=479928320; ret=0
-
-Note the second and the last line, the @cur_len is 450+MiB, which is
-almost a chunk size.
-
-And inside __btrfs_map_block(), we limits the returned value to stripe
-length, but that's depending on the chunk type:
-
-	if (map->type & (BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID1 |
-			 BTRFS_BLOCK_GROUP_RAID1C3 | BTRFS_BLOCK_GROUP_RAID1C4 |
-			 BTRFS_BLOCK_GROUP_RAID5 | BTRFS_BLOCK_GROUP_RAID6 |
-			 BTRFS_BLOCK_GROUP_RAID10 |
-			 BTRFS_BLOCK_GROUP_DUP)) {
-		/* we limit the length of each bio to what fits in a stripe */
-		*length = min_t(u64, ce->size - offset,
-			      map->stripe_len - stripe_offset);
-	} else {
-		*length = ce->size - offset;
-	}
-
-This means, if the chunk is SINGLE profile, then we don't limit the
-returned length at all, and even for other profiles, we can still return
-a length much larger than the requested one.
-
-[FIX]
-Properly clamp the returned length, preventing it from returning a much
-larger range than expected.
-
-Reported-by: Andreas Schwab <schwab@linux-m68k.org>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Fixes: c3a62baf21ad ("btrfs: use chained bios when cloning")
+CC: stable@vger.kernel.org # 6.1
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/volumes.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/bio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 4aaaeab663f5..7d4095d9ca88 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -956,6 +956,7 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 	struct btrfs_mapping_tree *map_tree = &fs_info->mapping_tree;
- 	struct cache_extent *ce;
- 	struct map_lookup *map;
-+	u64 orig_len = *length;
- 	u64 offset;
- 	u64 stripe_offset;
- 	u64 *raid_map = NULL;
-@@ -1047,6 +1048,7 @@ again:
- 	} else {
- 		*length = ce->size - offset;
- 	}
-+	*length = min_t(u64, *length, orig_len);
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index d8b90f95b157..726592868e9c 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -287,7 +287,7 @@ static void btrfs_log_dev_io_error(struct bio *bio, struct btrfs_device *dev)
  
- 	if (!multi_ret)
- 		goto out;
+ 	if (btrfs_op(bio) == BTRFS_MAP_WRITE)
+ 		btrfs_dev_stat_inc_and_print(dev, BTRFS_DEV_STAT_WRITE_ERRS);
+-	if (!(bio->bi_opf & REQ_RAHEAD))
++	else if (!(bio->bi_opf & REQ_RAHEAD))
+ 		btrfs_dev_stat_inc_and_print(dev, BTRFS_DEV_STAT_READ_ERRS);
+ 	if (bio->bi_opf & REQ_PREFLUSH)
+ 		btrfs_dev_stat_inc_and_print(dev, BTRFS_DEV_STAT_FLUSH_ERRS);
 -- 
 2.39.1
 
