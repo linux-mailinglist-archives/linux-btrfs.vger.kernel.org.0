@@ -2,58 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F8D693DDD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Feb 2023 06:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCD3693DEC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Feb 2023 06:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbjBMF07 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Feb 2023 00:26:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39712 "EHLO
+        id S229536AbjBMFrr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Feb 2023 00:47:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjBMF05 (ORCPT
+        with ESMTP id S229476AbjBMFrq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Feb 2023 00:26:57 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CDFEB5A
-        for <linux-btrfs@vger.kernel.org>; Sun, 12 Feb 2023 21:26:56 -0800 (PST)
+        Mon, 13 Feb 2023 00:47:46 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39621E04D
+        for <linux-btrfs@vger.kernel.org>; Sun, 12 Feb 2023 21:47:44 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EE4D420259
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Feb 2023 05:26:54 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E6670205FF
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Feb 2023 05:47:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1676266014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N+r/+A68Cfv+qXNTXjRsGoSIfNB7/kWDiJFEqb5rtiw=;
-        b=VqIH+vW8niXurdhZ/RzB8Zyh2nBvZbvsp+cO0nhoa/1o3fu5jh3ld5SjfpKEjHsp21m8F3
-        z0b6OI+qHf0UymKXonGCbqd4B7bBkxRbysVzo2k/9F1SfJZB+RTjTh7BSpV/GWg9lpiedc
-        kU1giencBPJLTWK3C1VpDTSA4/Sacw0=
+        t=1676267262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=gKw4L0350f+SpG6vUFkFOOy0DzFtD6/3ky2ygeUEX5Q=;
+        b=OVKyCNSMZAOC9jKj7w+3qRr3zfx9lNNoJGUv1ebkH3MbMAVH0XlBvpUvGnMMsiZ24iEwsI
+        eCBQFS+MZQskdw4prjZYIVd/a9LJpp9uhuxAswsPRCjqN9l3yidx4rVfnbZuU0PinhSsmA
+        nVMl7LfR4K5bYdfegxV6xVbYJqiOVmA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 414EE13A1F
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Feb 2023 05:26:54 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 33CDC13A1F
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Feb 2023 05:47:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id APgeAh7K6WOAbQAAMHmgww
+        id izgTOv3O6WPWdAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Feb 2023 05:26:54 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Feb 2023 05:47:41 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs-progs: tests: cli: fix 017 test case failure
-Date:   Mon, 13 Feb 2023 13:26:33 +0800
-Message-Id: <25e9de59bdc39f714661d8f5e7b321f6cfeff658.1676265837.git.wqu@suse.com>
+Subject: [PATCH] btrfs-progs: tests: misc: fix failure on misc/034
+Date:   Mon, 13 Feb 2023 13:47:24 +0800
+Message-Id: <20230213054724.35714-1-wqu@suse.com>
 X-Mailer: git-send-email 2.39.1
-In-Reply-To: <cover.1676265837.git.wqu@suse.com>
-References: <cover.1676265837.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,45 +57,56 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 [BUG]
-Test case cli/017 fails with the following errors:
+Test case misc/034 can fail like this:
 
-    [TEST]   cli-tests.sh
-    [TEST/cli]   017-fi-show-missing
-  didn't find exact missing device
-  test failed for case 017-fi-show-missing
+  ====== RUN CHECK mount /dev/loop16 /home/adam/btrfs-progs/tests/mnt
+  mount: /home/adam/btrfs-progs/tests/mnt: wrong fs type, bad option, bad superblock on /dev/loop16, missing codepage or helper program, or other error.
+         dmesg(1) may have more information after failed mount system call.
+  failed: mount /dev/loop16 /home/adam/btrfs-progs/tests/mnt
+
+And the dmesg looks like this:
+
+  loop16: detected capacity change from 0 to 1024000
+  loop17: detected capacity change from 0 to 1024000
+  BTRFS: device fsid 593e23af-a7e6-4360-b16a-229f415de697 devid 1 transid 6 /dev/loop16 scanned by mount (79348)
+  BTRFS info (device loop16): using crc32c (crc32c-intel) checksum algorithm
+  BTRFS info (device loop16): found metadata UUID change in progress flag, clearing
+  BTRFS info (device loop16): disk space caching is enabled
+  BTRFS error (device loop16): devid 2 uuid cde07de6-db7e-4b34-909e-d3db6e7c0b06 is missing
+  BTRFS error (device loop16): failed to read the system array: -2
+  BTRFS error (device loop16): open_ctree failed
 
 [CAUSE]
-After kernel commit cb3e217bdb39 ("btrfs: use btrfs_dev_name() helper to
-handle missing devices better"), all dev info ioctl call on missing
-device would only return "<missing disk>" for its path.
+From the dmesg, it shows that although both loopback devices are
+properly registered, only one is properly scanned by mount.
 
-Thus "btrfs filesystem show" would never report detailed device path for
-missing disks.
+Thus the other device is missing, and without "-o degraded" the
+filesystem failed to be mounted.
 
 [FIX]
-Instead of relying on the device path, change the check to rely on devid
-instead.
-
-Now cli/017 can properly pass.
+Before we mount the filesystem, also scan them in their passed in order
+to properly assemble the device list for mount.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- tests/cli-tests/017-fi-show-missing/test.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tests/misc-tests/034-metadata-uuid/test.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tests/cli-tests/017-fi-show-missing/test.sh b/tests/cli-tests/017-fi-show-missing/test.sh
-index 25e4c60a70e0..67757e20a898 100755
---- a/tests/cli-tests/017-fi-show-missing/test.sh
-+++ b/tests/cli-tests/017-fi-show-missing/test.sh
-@@ -23,7 +23,7 @@ run_check $SUDO_HELPER mv "$dev2" /dev/loop-non-existent
- run_check $SUDO_HELPER mount -o degraded $dev1 $TEST_MNT
+diff --git a/tests/misc-tests/034-metadata-uuid/test.sh b/tests/misc-tests/034-metadata-uuid/test.sh
+index b7cb546b..b62cdc10 100755
+--- a/tests/misc-tests/034-metadata-uuid/test.sh
++++ b/tests/misc-tests/034-metadata-uuid/test.sh
+@@ -191,6 +191,10 @@ failure_recovery() {
  
- if ! run_check_stdout $SUDO_HELPER "$TOP/btrfs" filesystem show "$TEST_MNT" | \
--	grep -q "$dev2 MISSING"; then
-+	grep -q -e "devid[[:space:]]\+2.*MISSING"; then
+ 	run_check $SUDO_HELPER udevadm settle
  
- 	_fail "didn't find exact missing device"
- fi
++	# Scan to make sure btrfs detects both devices before trying to mount
++	run_check $SUDO_HELPER "$TOP/btrfs" device scan $loop1
++	run_check $SUDO_HELPER "$TOP/btrfs" device scan $loop2
++
+ 	# Mount and unmount, on trans commit all disks should be consistent
+ 	run_check $SUDO_HELPER mount "$loop1" "$TEST_MNT"
+ 	run_check $SUDO_HELPER umount "$TEST_MNT"
 -- 
-2.39.1
+2.39.0
 
