@@ -2,128 +2,190 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2D2696283
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Feb 2023 12:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7718C6966EA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Feb 2023 15:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbjBNLfZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Feb 2023 06:35:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
+        id S232664AbjBNOc1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Feb 2023 09:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjBNLfY (ORCPT
+        with ESMTP id S232461AbjBNOc0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Feb 2023 06:35:24 -0500
-Received: from out28-69.mail.aliyun.com (out28-69.mail.aliyun.com [115.124.28.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B7A22A35
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Feb 2023 03:35:21 -0800 (PST)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04446501|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.011069-0.000208504-0.988723;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.RLw1o0J_1676374518;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.RLw1o0J_1676374518)
-          by smtp.aliyun-inc.com;
-          Tue, 14 Feb 2023 19:35:19 +0800
-Date:   Tue, 14 Feb 2023 19:35:18 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: a problem of 'clear_cache,space_cache=v2' when block-group-tree is enabled
-Message-Id: <20230214193518.E569.409509F4@e16-tech.com>
+        Tue, 14 Feb 2023 09:32:26 -0500
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B7CA8
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Feb 2023 06:32:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1676385144; x=1707921144;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=Ttd6yKgnpFuDplowHpV6CCg3s1UwQlIMRIvslY9ME7U=;
+  b=NkxCpHok6O5+aVsw1iOsV5rle4E8iP6OWrI6WlDMnPvh3X53s10TA+d/
+   CkNw31OgqF1tqMu1LdKaXfswkeXo2pgnGcANjUAJRLj+E5PicxSf+pB4m
+   GGSCbZQZYgzSre6p2NrCcOlYqCHJ9UPAZGEdThx3V2v36PFd8Jjxzrp6f
+   JA3MzdIFoEm/zrVeUjBDZJ1qtLGS7DhsQEfJ/0j20C8gygrSDNZdQYvu9
+   FHdg6nLXBczDR8lr79YKTonS3cp8QxO+avlO1UCuwQ/ndRss32Kl3mDqY
+   sly3yvw4My/nNqKExVtrV3eJVidoWkr6oAghD/QlgHdr07kI1NYMaXoY7
+   g==;
+X-IronPort-AV: E=Sophos;i="5.97,296,1669046400"; 
+   d="scan'208";a="228249119"
+Received: from mail-dm6nam11lp2176.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.176])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Feb 2023 22:32:23 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oIaEDvvcZIMoDjOaD2OJgZ/RPY/rWGJP8RpeWWOuhvpCm8Ij3PCrhEESXBt3JdLI7E0R6bUrWWeddrz+q4CTAtC/E1x9WeupSQztnOLVmtICXOoS0pjuf83o6I8RPq34FE2MtkI9xx8gIcL4P5FJGrdlxWGLxHRWGJFUnmsBh5Seox6i7JYWRiTXMQTB1QIdABm/sObUgGykjFz31RWwTyRvg0YDVfvzIRIpfMPCWibPNri+CfM0UzMPG6HSCBP645N5vWwvLBvE5KfHi3si1kSXUqs/8EEfWTg29QB4bYcsGHULaIy3XPxJ1zVmn4dUJWDJTCdFw6d5mODY/vGJ8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ttd6yKgnpFuDplowHpV6CCg3s1UwQlIMRIvslY9ME7U=;
+ b=AYPTrMy1u8qF+puDAbMSHwmhkK5Hn6ZEmvYJ9kFVfK8kyROa+ymDihD2NIjL0jucHn8Ll3VQlyVURFLWZU7crbRx1AA0/BHfAb1LlVOX9UyX9scDIEr23oJDbYvOqYdJewcttWbvrVRKSNkooX/zvW7CJqIBhXZbLgngkjDhLoti0I6pSmoJg7TmYvu8vj66ZcMv5ygLFmiWhHKwCCl4uTSd2aAsq1+dy8nYjTidbc4IZG+rQg/NIwrPd7ukK/EO/x4X6qvaIiO5fN1ZNqx9gWjXgKiEoKKTja2TMCC/ESaSN2L+BW5ytfMXRW0gidsNdqWNThj5q4QqGwm+8CVnmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ttd6yKgnpFuDplowHpV6CCg3s1UwQlIMRIvslY9ME7U=;
+ b=Ns+sgoqCSquC1qRnRGZFuvx9G5ChQXGC/H7IHK3dnHO3GpmVYPSQEaMizlkPOE5xwkTJm52B8gOg+2xkO71aicRO5aUVgX5UqmfpiDgPr95nOBOYlZSMxwISP8RSh65aR7QRtr98S9vDU1icO9QPRb+V6ixejrjuCgXj/y95M74=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by BL0PR04MB5122.namprd04.prod.outlook.com (2603:10b6:208:55::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.24; Tue, 14 Feb
+ 2023 14:32:21 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::8ed8:3450:1525:c60a]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::8ed8:3450:1525:c60a%6]) with mapi id 15.20.6086.024; Tue, 14 Feb 2023
+ 14:32:21 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Forza <forza@tnonline.net>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Automatic block group reclaim not working as expected?
+Thread-Topic: Automatic block group reclaim not working as expected?
+Thread-Index: AQHZPG2akAEfAE1cFkyLx/ChHDx+hq7Ga+4AgABNQwCAACr1gIABF4gAgABQOYCABcrbAIAAcqwA
+Date:   Tue, 14 Feb 2023 14:32:21 +0000
+Message-ID: <60d348db-822b-c337-4c4d-edb06094302b@wdc.com>
+References: <e99483.c11a58d.1863591ca52@tnonline.net>
+ <b508239a-dd7a-98d9-d286-7e4add096e13@wdc.com>
+ <2563c87.c11a58e.18636bcdf0b@tnonline.net>
+ <31bf44b.fe8fe284.1863749a10f@tnonline.net>
+ <f6e2f95e-0892-f82b-43fa-34ef32f19320@wdc.com>
+ <b19674f0-0743-4e34-df85-ba6c458af01c@tnonline.net>
+ <73b49250-8aaf-bbb7-92c6-73e0ad3d707b@tnonline.net>
+In-Reply-To: <73b49250-8aaf-bbb7-92c6-73e0ad3d707b@tnonline.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|BL0PR04MB5122:EE_
+x-ms-office365-filtering-correlation-id: bbe72e71-d8ac-4bd0-738f-08db0e98484a
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 19pXxMZpdSfb1j8FSbTYzA/XpWcsayPSy/TlYBMY4+6TibRpseZgUtqDUUP+69PabmlaqVINW+btLbmawfU4Cz0FOSpB7VUeIFSQ1LXTsx9RQsWV9rG3IXaxxk4URMGQcH03q8nWidwR6QTlqtGlEgLHCqkhXUqdHA2b7mwbL6DJUqMEbUGGH/Fszl3uwBlCwveY81zhKCvUNDU2vVmmaENqcDDsb3MeN/N56gFaZJoJZRSCqy92wY9u0c38zALlicEfHeTvZS4VMZz4EhezssTn2k+3tvxm6NO77JlEJlzzU0YJP4oEO2jqq9F5b4dgWsfVwfhFaGW4u0kxRAgE0I/EPukzv63wtOMG4DtYLocScrN+yVds5fX9ig4EcePgsxbnvljJwo9AvbZuOlUjEpS5fqS4E0A72bvn6bSeG/ymOe3aRjVI5fw+P+6uUCFrtVysdr7ogCg9kn3w5k9Zkzt88+YW/TE8KkMXRN/7paNLBZULmBx2g7lrx9rP2wfALgNAnavppQdP384SiM4ZCM2zS/6ntrUmWFucV+hQNbUaVQqltfHI5Q/LU2d9MekqeMGKEjEushbT1PhnDjd1+rQFj8e7EKDpCA2FdOVXr9mTuAkAhtpAzuCpuk594e3vltetDNgKlgsa6AFQ66xa/4x2hgUD7usTSMxMKrFvD5aNAyYUMtr7oLbn0BX9bL00tWlzK1+8ysjiQ3Dbb8Fb1C4A/zu2mNja/MUrJwkO7DcdQx5R9f5HfEUrhRCOhIB6X6mWd1PfucHBR6fzaEcVVg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(136003)(346002)(366004)(39860400002)(396003)(376002)(451199018)(6486002)(478600001)(36756003)(71200400001)(66946007)(76116006)(91956017)(83380400001)(2616005)(8676002)(8936002)(64756008)(41300700001)(66476007)(2906002)(66556008)(38070700005)(110136005)(66446008)(316002)(26005)(31696002)(6512007)(6506007)(86362001)(53546011)(186003)(5660300002)(122000001)(38100700002)(82960400001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a0QyNjFEVGtQQjl2Y2NMNmdMY3ZrL3VjRXczdG5VQ0RRUC9uWGZNOUxKQU1T?=
+ =?utf-8?B?dFJqNi9XVTlVQjBMclFGWnZ2QU9tOG9QR2JzbnE0QlFEY05Ld1pCYnhZbW8y?=
+ =?utf-8?B?YUdmcjlkS3JqclE4Ukx2Y0YxeHpES3RGWm9xN0YzSlpCSUluYVcrTUVlYnZi?=
+ =?utf-8?B?bTNnMHRLdi9wNXBOVDZ2T3d6V2QybGNTL2pFQ0VrTmxnMHV0a0xYOGdzYlMv?=
+ =?utf-8?B?SitRMHZmd3h5Mm1qYVdGRUVxSzNyOGNzOWhxdjRlVUpTOThOZjhiMzlmSXdE?=
+ =?utf-8?B?SUdXT0xOakluakoxdTNBb09XOUdUaGdCMGZCOFNqei9JMWNUR1YwaTg2NkVl?=
+ =?utf-8?B?ZVY4MGRJUzZ3VG5XLzNaOWFmbEtYRllITlVqbTVqSy9sWFJNb3NpUXIvYUVN?=
+ =?utf-8?B?TG1WR2J5VzlWTEdHQVI0QnVkRDdmbGRlM0ZCVGxadEhIUzlQOVRCN3IzdlRJ?=
+ =?utf-8?B?ZmV5UmVYZjloY2tmZUR6anhEM0gzNC9XRlVSL2V6Smp0M1RrVW0yRGRiMkZz?=
+ =?utf-8?B?UXN0RWZWd1dXdG1HcDl1c0J6Rm5IOGRaT21tMWtUc3FqaUVhbTh1RmRjeWFG?=
+ =?utf-8?B?L0krT0RpRmNQeUU5T291cHhJcWx3KzVaNndmUmhaS0pYa3R0NFN5OWFwKzZ4?=
+ =?utf-8?B?Ymt5VGYzd0h0dFZPenlNa3QvbVUxclpYSTFXRVNpNm5UK2ZTY29jWCtFQzFQ?=
+ =?utf-8?B?Yzl6cmd2RkxIdjZWNGkyREFWZXdxcjFpTHVSZE1TLzV0aEx6bDVXVVN4Vndr?=
+ =?utf-8?B?SkVuSWdld05KdGtMTkpoYzczazlIZytJQWg0YS9qS0NXTlhlazRtSFJGeVFm?=
+ =?utf-8?B?bFErNDR0eWVaNzJFbW9hSFBKZHZacWZ2V3g4SzNXYTEwS0dYZGtiVmoyc0ZD?=
+ =?utf-8?B?MVFFd2VabEFYQThNSWJydCtQbGZtZ1h6MzFtdW9aaXdicS81Y1N0cThlZzh0?=
+ =?utf-8?B?MlB3RTFLazFYZW9ON0JFZHpubUNxcm5OVlczMkw5Ykl3OHJEZnRyVzFHTlhJ?=
+ =?utf-8?B?RnRLZUtHSHo2LzVzK0J1T2IvKzVKb3lqV3NoL0NRSG4yQS9WVXJmQTlBQS9R?=
+ =?utf-8?B?N1BEdGpNRnJWKy9PODdVRDVjcElDVVNPT3h2TEdqWUNXYzNGU0JDMmgzemY1?=
+ =?utf-8?B?ak1MNlZpNHY2bCtIbVd1ZVhIQXBtTGIrSmdkNE5pYVM2ZElnUktMcWl6N3NI?=
+ =?utf-8?B?bmdFQk16NHVUN0g4WEdxSDNaQTZqd2NKSzJCRGpLRzdxNFBnWmY0QkRONG5O?=
+ =?utf-8?B?QXo2dEhRSWZZY1Iyc1RIZkt3L2c0a3k5WVl0Q251b1hNaUV0SzlncEU2eVFa?=
+ =?utf-8?B?OWIvd3draEhvRThVVW1EQnNxRTVpZnVUTWNMTkhCN2VWeHBRYU1PRjAvcVND?=
+ =?utf-8?B?TEVkU0hNMkhlaW8zUWw0OU5KUmZQNXJWcGdOSVdIQVZ2dFBLcDdwVTNqMnAw?=
+ =?utf-8?B?UGZYWnAxbmpnNFRTRWRncGw0L0tlMkIvcmdtdHVaMkowTFNZWVpFc0FqWEp0?=
+ =?utf-8?B?NjNuUkg1aWxETjBKNWNzdExyQW1qaGpKc0ZmV2lRWmJLUUplSmFQanpYSzZB?=
+ =?utf-8?B?NCtNbzNnQ2lEYjRJUWFneGp2VnB2TytMd29ZTDJoM1hpYkZqMkJPOW1lN3d2?=
+ =?utf-8?B?elRoRFgyRGMwQ2c5YlJPMGZjZW1yZXdNbTk0L3M4NUVhYVFvV3V5WGdvZk5R?=
+ =?utf-8?B?ZFN1dTNwWGpZcE5tRGl1ZU1tdjNUOUdBUVJPdUdZaDN5ODJoa3BTVDRhTGM5?=
+ =?utf-8?B?QzljaWpXRnFzelZveGJZclpaVXVDbkw2NG95VVBrUXlXNGlUMUFQVzdGN1Yy?=
+ =?utf-8?B?Q3VYMXJ0VEZuK1FNWklxRkloc1J5S1JzaEROaXBsaUwxNUFFdHk4eXZsakZ2?=
+ =?utf-8?B?SFFGTWEyRjY2TWdOZzQ5alJyeDd0anJDZ0VkSXhQaVFRS3lXT3NiRHY4VGdp?=
+ =?utf-8?B?dFIycjN6SmhxMzFidURCYTJLM29jNm56L21jeHA1NE5lVFRtM0tMTzdQS04z?=
+ =?utf-8?B?OXk2SzJoRGEvd243L2syNGk4dEg1V0w2bCtocHRKRk8rb0tUbUVIcllYeGJo?=
+ =?utf-8?B?YUlOM1pVSHVTMHdpajFQeEFRQlE4RjFsVmw3eHhpL2Zja1hpUlcydmh6WGlr?=
+ =?utf-8?B?Wm5EWXQ0R1cxRkJBd0lhNndCbHJnQlJ1Q2s3VUZDemkra1FQUTVBbUhseW9L?=
+ =?utf-8?B?T3c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3712D87FFD39774B8A140A11A1A2AE8B@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.81.04 [en]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 9mLqSfmPNGmAh9V06LWW3K8zk8vOoH4UzyQyupOY3lYF0JfZsL/5J31vpL8K8LpFdl8NGNUM0rzJrs0vCo8ndV3abCZYJ8+Q5ABf1zb+jc+PQYwnDGwYX4vogAPWyQPw5YuS5mpdkIZD2PMjDE+TBJmTnT6APpr4YxfJ1hWPIWo5ibnxrk8AZNOpsaBLfRoWu2BeKv0t25ESKYLAocDROV8EOyfcZYT9CHNxyXQzM4hXAQXidDXPP85fpZOljaf72ZU+Sx2tQrOSuBDxBm8ewinv/pEuEHTVOPd7OAxoKkL1kjAAatJRwQQFUf8dueLlGo0jf6GZ0MH0sbJrOIMN6edMiePwKGnnKnT7qZl5z2TQFcbBOrfQOfe8tCugfaYA//0DpgbmQvQIzfrEF+5U69CAdgzOtJ58PtZQjlcTcYRVOrbd0uCZMK3Dfg11LsLOYdz1RNWuYRImGavLlASa2O2FVM/4ZOIbJSF0CVRLWKYNqJ0hLGLIIjzfdmlz1Aax/gyr+cfd4hHMWjLwDzBmPW1PEjGA/aF35mTAejuhcHyNmMtooxWwzSlw5f/8To24/eukCrAspmocLbWvYVCio4JGfqR7hVWwXqP4be01WCPSzKEf1rX2J1cDACUcj+nXMqsgXCFBGKwuHpx/KyEurYIpIJPsSxil8W1lrlphqRoICkYl8C+McWHhEBcz6HmHq3bzvUc+EUu8XDPGZCSPkOQuLk3Po7aLIlBSG4d3zEu/Q4XezA6J+i50VWctdzbO1PXXZNAh3QcXXfVK9BMnkWE9xBWgEGTMN/647s4a3+9wqDR07ma5gTD99kf4MFuW
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbe72e71-d8ac-4bd0-738f-08db0e98484a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Feb 2023 14:32:21.3088
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CQB5uTcCEzVp817QJRto3K/bVOpj8DkfhvakBQVSADWLCJgVQ43RG6UwlTHUh4FhmF/sWKAv36yGNoh0oU6H3jGZijCG+XJfKXxouxJzRTY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR04MB5122
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-
-a problem of 'clear_cache,space_cache=v2' when block-group-tree is enabled.
-
-reproducer:
-# mkfs.btrfs -R quota,block-group-tree /dev/nvme0n1p1 -f
-# mount /dev/nvme0n1p1  /mnt/test/  #OK
-# umount /mnt/test
-# dmesg -C
-# mount -o clear_cache,space_cache=v2 /dev/nvme0n1p1 /mnt/test/  #failed
-
-'mount -o clear_cache,space_cache=v2' failed with the dmesg output.
-
-Should we check block-group-tree feature status before 'clearing free space tree'?
-
-[  661.709894] BTRFS: device fsid f89d03fb-860c-4822-acc0-b18b7dbabd98 devid 1 transid 11 /dev/nvme0n1p1 scanned by mount (2113)
-[  661.721643] BTRFS info (device nvme0n1p1): using crc32c (crc32c-intel) checksum algorithm
-[  661.729981] BTRFS info (device nvme0n1p1): force clearing of disk cache
-[  661.736726] BTRFS info (device nvme0n1p1): using free space tree
-[  661.750885] BTRFS info (device nvme0n1p1): enabling ssd optimizations
-[  661.757672] BTRFS info (device nvme0n1p1): clearing free space tree
-[  661.764076] BTRFS info (device nvme0n1p1): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
-[  661.773288] BTRFS info (device nvme0n1p1): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
-[  661.783397] BTRFS error (device nvme0n1p1): block-group-tree feature requires fres-space-tree and no-holes
-[  661.793128] BTRFS error (device nvme0n1p1): super block corruption detected before writing it to disk
-[  661.802418] BTRFS: error (device nvme0n1p1) in write_all_supers:4454: errno=-117 Filesystem corrupted (unexpected superblock corruption detected)
-[  661.815482] BTRFS warning (device nvme0n1p1: state E): Skipping commit of aborted transaction.
-[  661.824170] ------------[ cut here ]------------
-[  661.828906] BTRFS: Transaction aborted (error -117)
-[  661.833942] WARNING: CPU: 2 PID: 2113 at fs/btrfs/transaction.c:1984 btrfs_commit_transaction.cold.41+0xd4/0x330 [btrfs]
-[  661.844908] Modules linked in: rpcsec_gss_krb5 nfsv4 dns_resolver nfs lockd grace fscache netfs rfkill ib_core dm_multipath intel_rapl_msr intel_rapl_common sb_edac x86_pkg_temp_thermal intel_powerclamp coretemp nouveau snd_hda_codec_realtek snd_hda_codec_generic snd_hda_codec_hdmi kvm_intel ledtrig_audio btrfs snd_hda_intel snd_intel_dspcfg snd_intel_sdw_acpi snd_hda_codec mxm_wmi video kvm snd_hda_core snd_hwdep mei_wdt snd_seq drm_display_helper snd_seq_device blake2b_generic xor irqbypass cec snd_pcm raid6_pq dcdbas mei_me iTCO_wdt iTCO_vendor_support rapl drm_ttm_helper dell_smm_hwmon zstd_compress intel_cstate snd_timer i2c_i801 dm_mod pcspkr i2c_smbus snd intel_uncore soundcore ttm mei lpc_ich ses enclosure auth_rpcgss fuse sunrpc xfs sd_mod sg nvme ahci crct10dif_pclmul crc32_pclmul crc32c_intel nvme_core libahci ata_generic ghash_clmulni_intel nvme_common libata e1000e smartpqi scsi_transport_sas t10_pi wmi i2c_dev
-[  661.928933] CPU: 2 PID: 2113 Comm: mount Tainted: G        W          6.1.12-0.1.el7.x86_64 #1
-[  661.937644] Hardware name: Dell Inc. Precision T3610/09M8Y8, BIOS A19 09/11/2019
-[  661.945152] RIP: 0010:btrfs_commit_transaction.cold.41+0xd4/0x330 [btrfs]
-[  661.952107] Code: f0 48 0f ba ad 20 0a 00 00 03 72 60 44 89 ff e8 fc a7 ff ff 41 89 c5 84 c0 74 56 44 89 fe 48 c7 c7 98 d2 e5 c0 e8 f5 fd b0 d8 <0f> 0b 44 89 f9 45 0f b6 c5 ba c0 07 00 00 4c 89 e7 48 c7 c6 f0 b8
-[  661.971525] RSP: 0018:ffffaf8c0358fa80 EFLAGS: 00010282
-[  661.976895] RAX: 0000000000000000 RBX: ffff8e67b5272600 RCX: 0000000000000000
-[  661.984150] RDX: ffff8e6ecf92c300 RSI: ffff8e6ecf91f860 RDI: ffff8e6ecf91f860
-[  661.991405] RBP: ffff8e678ade9000 R08: 0000000000000000 R09: c0000000fffdffff
-[  661.998684] R10: 0000000000000001 R11: ffffaf8c0358f918 R12: ffff8e67abfa09c0
-[  662.005962] R13: 0000000000000001 R14: ffff8e67abfa0900 R15: 00000000ffffff8b
-[  662.013224] FS:  00007efec3c4f540(0000) GS:ffff8e6ecf900000(0000) knlGS:0000000000000000
-[  662.021446] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  662.027342] CR2: 000055bbc7de5398 CR3: 000000011e45c005 CR4: 00000000001706e0
-[  662.034622] Call Trace:
-[  662.037273]  <TASK>
-[  662.039568]  ? release_extent_buffer+0x4c/0xb0 [btrfs]
-[  662.044945]  btrfs_clear_free_space_tree+0x234/0x250 [btrfs]
-[  662.050829]  btrfs_start_pre_rw_mount.cold.83+0x7e/0xfd [btrfs]
-[  662.056974]  open_ctree+0x12eb/0x1548 [btrfs]
-[  662.061577]  btrfs_mount_root.cold.76+0x13/0x136 [btrfs]
-[  662.067123]  ? legacy_parse_param+0x26/0x220
-[  662.071584]  ? vfs_parse_fs_string+0x5b/0xb0
-[  662.076060]  legacy_get_tree+0x24/0x50
-[  662.079987]  vfs_get_tree+0x22/0xc0
-[  662.083660]  fc_mount+0xe/0x40
-[  662.086936]  vfs_kern_mount.part.44+0x5c/0x90
-[  662.091461]  btrfs_mount+0x128/0x3c0 [btrfs]
-[  662.095936]  ? vfs_parse_fs_param_source+0xa0/0xa0
-[  662.100875]  ? legacy_parse_param+0x26/0x220
-[  662.105302]  legacy_get_tree+0x24/0x50
-[  662.109211]  vfs_get_tree+0x22/0xc0
-[  662.112858]  path_mount+0x696/0x9b0
-[  662.116507]  do_mount+0x79/0x90
-[  662.119813]  __x64_sys_mount+0xd0/0xf0
-[  662.123709]  do_syscall_64+0x58/0x80
-[  662.127460]  ? syscall_exit_to_user_mode+0x12/0x30
-[  662.132392]  ? do_syscall_64+0x67/0x80
-[  662.136285]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  662.141466] RIP: 0033:0x7efec3a3f7be
-[  662.145189] Code: 48 8b 0d 65 a6 1b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 32 a6 1b 00 f7 d8 64 89 01 48
-[  662.164638] RSP: 002b:00007ffd2892e258 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-[  662.172343] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007efec3a3f7be
-[  662.179589] RDX: 000055bbc7ddbc20 RSI: 000055bbc7dd74a0 RDI: 000055bbc7dd5670
-[  662.186862] RBP: 000055bbc7dd53b0 R08: 000055bbc7dd5610 R09: 0000000000000000
-[  662.194127] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-[  662.201397] R13: 000055bbc7ddbc20 R14: 000055bbc7dd5670 R15: 000055bbc7dd53b0
-[  662.208672]  </TASK>
-[  662.211063] ---[ end trace 0000000000000000 ]---
-[  662.215836] BTRFS: error (device nvme0n1p1: state EA) in cleanup_transaction:1984: errno=-117 Filesystem corrupted
-[  662.226329] BTRFS warning (device nvme0n1p1: state EA): failed to clear free space tree: -117
-[  662.235036] BTRFS error (device nvme0n1p1: state EA): commit super ret -30
-[  662.242615] BTRFS error (device nvme0n1p1: state EA): open_ctree failed
-
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2023/02/14
-
-
+T24gMTQuMDIuMjMgMDg6NDIsIEZvcnphIHdyb3RlOg0KW3NuaXBdDQoNCj4gSWhhdmUgc2V0IGJn
+X3JlY2xhaW1fdGhyZXNob2xkIHRvIDc1IGFuZCBtYW5hZ2VkIHRvIGNhdGNoIG9uZSAgOikNCj4g
+DQo+IA0KPiBkbWVzZzoNCj4gLS0tLS0tLS0tLQ0KPiBbNDU0MTIuOTAwMTc3XSBCVFJGUyBpbmZv
+IChkZXZpY2Ugc2RpMSk6IHJlY2xhaW1pbmcgY2h1bmsgNTAxNjk4MjgyNzgyNzIgDQo+IHdpdGgg
+MjkzJSB1c2VkIDAlIHVudXNhYmxlDQo+IFs0NTQxMi45MDAyMTRdIEJUUkZTIGluZm8gKGRldmlj
+ZSBzZGkxKTogcmVsb2NhdGluZyBibG9jayBncm91cCANCj4gNTAxNjk4MjgyNzgyNzIgZmxhZ3Mg
+ZGF0YXxyYWlkMTANCg0KW3NuaXBdDQoNCj4gdHJhY2luZzoNCj4gLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQ0KPiANCj4gIyB0cmFjZXI6IG5vcA0KPiAjDQo+ICMgZW50cmllcy1pbi1idWZmZXIvZW50
+cmllcy13cml0dGVuOiAxMi8xMiAgICNQOjYNCj4gIw0KPiAjICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBfLS0tLS09PiBpcnFzLW9mZi9CSC1kaXNhYmxlZA0KPiAjICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIC8gXy0tLS09PiBuZWVkLXJlc2NoZWQNCj4gIyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHwgLyBfLS0tPT4gaGFyZGlycS9zb2Z0aXJxDQo+ICMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8fCAvIF8tLT0+IHByZWVtcHQtZGVwdGgNCj4gIyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHx8fCAvIF8tPT4gbWlncmF0ZS1kaXNhYmxlDQo+ICMg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8fHx8IC8gICAgIGRlbGF5DQo+ICMgICAgICAg
+ICAgIFRBU0stUElEICAgICBDUFUjICB8fHx8fCAgVElNRVNUQU1QICBGVU5DVElPTg0KPiAjICAg
+ICAgICAgICAgICB8IHwgICAgICAgICB8ICAgfHx8fHwgICAgIHwgICAgICAgICB8DQo+ICAgICBr
+d29ya2VyL3UxMjo2LTMxNzQwICAgWzAwM10gLi4uLi4gNDU0MTIuOTgxNjM0OiANCj4gYnRyZnNf
+cmVjbGFpbV9ibG9ja19ncm91cDogNzc0NWUyZjctNWM2Ny00YjE4LTg0NGItOGU5MzM5OWY3YjBi
+OiBiZyANCj4gYnl0ZW5yPTUwMTY5ODI4Mjc4MjcyIGxlbj01MzY4NzA5MTIwIHVzZWQ9MzE0OTE2
+ODY0MCBmbGFncz02NShEQVRBfFJBSUQxMCkNCg0KSnVzdCBsb29raW5nIGF0IHRoaXMgb25lIHVz
+ZWQvbGVuKjEwMCBzaG91bGQgYmUgfjU4LCBub3QgMjkzLg0KDQpXaWxkIGd1ZXNzIGNhbiB5b3Ug
+dHJ5IHRoaXMgcGF0Y2ggKGNvbXBpbGUgdGVzdGVkIG9ubHkpOg0KZGlmZiAtLWdpdCBhL2ZzL2J0
+cmZzL2Jsb2NrLWdyb3VwLmMgYi9mcy9idHJmcy9ibG9jay1ncm91cC5jDQppbmRleCA1YjEwNDAx
+ZDgwM2IuLmExNzcxMjQyOWZjMyAxMDA2NDQNCi0tLSBhL2ZzL2J0cmZzL2Jsb2NrLWdyb3VwLmMN
+CisrKyBiL2ZzL2J0cmZzL2Jsb2NrLWdyb3VwLmMNCkBAIC0xODM2LDcgKzE4MzYsNyBAQCB2b2lk
+IGJ0cmZzX3JlY2xhaW1fYmdzX3dvcmsoc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQ0KIA0KICAg
+ICAgICAgICAgICAgIGJ0cmZzX2luZm8oZnNfaW5mbywNCiAgICAgICAgICAgICAgICAgICAgICAg
+ICJyZWNsYWltaW5nIGNodW5rICVsbHUgd2l0aCAlbGx1JSUgdXNlZCAlbGx1JSUgdW51c2FibGUi
+LA0KLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBiZy0+c3RhcnQsIGRpdl91NjQoYmct
+PnVzZWQgKiAxMDAsIGJnLT5sZW5ndGgpLA0KKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBiZy0+c3RhcnQsIGRpdjY0X3U2NChiZy0+dXNlZCAqIDEwMCwgYmctPmxlbmd0aCksDQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRpdjY0X3U2NCh6b25lX3VudXNhYmxlICogMTAw
+LCBiZy0+bGVuZ3RoKSk7DQogICAgICAgICAgICAgICAgdHJhY2VfYnRyZnNfcmVjbGFpbV9ibG9j
+a19ncm91cChiZyk7DQogICAgICAgICAgICAgICAgcmV0ID0gYnRyZnNfcmVsb2NhdGVfY2h1bmso
+ZnNfaW5mbywgYmctPnN0YXJ0KTsNCg0K
