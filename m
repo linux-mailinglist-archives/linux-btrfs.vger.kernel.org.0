@@ -2,86 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2272669528C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Feb 2023 22:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A28B695547
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Feb 2023 01:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbjBMVBY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Feb 2023 16:01:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51174 "EHLO
+        id S230266AbjBNAOo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Feb 2023 19:14:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbjBMVBX (ORCPT
+        with ESMTP id S229629AbjBNAOl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Feb 2023 16:01:23 -0500
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E0665A1
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Feb 2023 13:01:19 -0800 (PST)
-Received: from frontend03.mail.m-online.net (unknown [192.168.6.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4PFxb21PDPz1s94m;
-        Mon, 13 Feb 2023 22:01:18 +0100 (CET)
-Received: from localhost (dynscan3.mnet-online.de [192.168.6.84])
-        by mail.m-online.net (Postfix) with ESMTP id 4PFxb20Y12z1qqlR;
-        Mon, 13 Feb 2023 22:01:18 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan3.mail.m-online.net [192.168.6.84]) (amavisd-new, port 10024)
-        with ESMTP id 8MnN-JW_uRqB; Mon, 13 Feb 2023 22:01:17 +0100 (CET)
-X-Auth-Info: Occ07ParaKeaalaL/0UlRBo/JiOBU0OoPEdk9cRLiUKJzsTxiuhaHEi1oM4TfXrU
-Received: from igel.home (aftr-82-135-86-52.dynamic.mnet-online.de [82.135.86.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Mon, 13 Feb 2023 19:14:41 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF9C18AB6;
+        Mon, 13 Feb 2023 16:14:28 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Mon, 13 Feb 2023 22:01:17 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id 220BC2C1B31; Mon, 13 Feb 2023 22:01:17 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     u-boot@lists.denx.de, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] fs: btrfs: limit the mapped length to the original length
-References: <99e2c01bb0366af9aec7522f7109c74b09c5509d.1676248644.git.wqu@suse.com>
-X-Yow:  I'm GLAD I remembered to XEROX all my UNDERSHIRTS!!
-Date:   Mon, 13 Feb 2023 22:01:17 +0100
-In-Reply-To: <99e2c01bb0366af9aec7522f7109c74b09c5509d.1676248644.git.wqu@suse.com>
-        (Qu Wenruo's message of "Mon, 13 Feb 2023 08:37:59 +0800")
-Message-ID: <87pmadjn4y.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 78B94CE0B97;
+        Tue, 14 Feb 2023 00:14:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 551A7C433D2;
+        Tue, 14 Feb 2023 00:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1676333664;
+        bh=YALIEKwDWeTS5hkjQM1YsNTXDG41DravRixOrdPsrZU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aZw2RRzWn+O1Z5oeIlFWqKh2uLq2OKCjfmo2wAA3qpDnxpdyG34A37APcsyu1QjEX
+         n+hVbRUpIgCYhfRmjxINoWcIrAYeRqaToH4bSLJoDWClXlQVlhGayUU3Fq678NezBB
+         2FTLAZpFFlpM4bWjdmENGrYCjcuOzrBN7R0+ZkyjFoML9DxtcQN/uW/A3BJi6x20e8
+         /M6O9kxhwt7tX/X8F/eR5V+snKzOZgl7t3ASwgH4eQ5kirosoVy+Y1LZe+pXpxkMU4
+         dmzmJN/+xauJB6OxrRcKSjpat9sTX99g7ojKuvd0Zg6owO17vIdDvwRqmjMRHntJq4
+         MTahIZ3aYj4XA==
+Date:   Mon, 13 Feb 2023 17:14:22 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Longlong Xia <xialonglong1@huawei.com>
+Cc:     gregkh@linuxfoundation.org, chenwandun@huawei.com,
+        linux-kernel@vger.kernel.org, rafael@kernel.org,
+        sunnanyong@huawei.com, wangkefeng.wang@huawei.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH -next v2 1/3] driver core: add error handling for
+ devtmpfs_create_node()
+Message-ID: <Y+rSXg14z1Myd8Px@dev-arch.thelio-3990X>
+References: <20230210095444.4067307-1-xialonglong1@huawei.com>
+ <20230210095444.4067307-2-xialonglong1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230210095444.4067307-2-xialonglong1@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Feb 13 2023, Qu Wenruo wrote:
+Hi Longlong,
 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 4aaaeab663f5..7d4095d9ca88 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -956,6 +956,7 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
->  	struct btrfs_mapping_tree *map_tree = &fs_info->mapping_tree;
->  	struct cache_extent *ce;
->  	struct map_lookup *map;
-> +	u64 orig_len = *length;
->  	u64 offset;
->  	u64 stripe_offset;
->  	u64 *raid_map = NULL;
-> @@ -1047,6 +1048,7 @@ again:
->  	} else {
->  		*length = ce->size - offset;
->  	}
-> +	*length = min_t(u64, *length, orig_len);
+On Fri, Feb 10, 2023 at 09:54:42AM +0000, Longlong Xia wrote:
+> In some cases, devtmpfs_create_node() can return error value.
+> So, make use of it.
+> 
+> Signed-off-by: Longlong Xia <xialonglong1@huawei.com>
+> ---
+>  drivers/base/core.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 7dab705f2937..aaa3088e5456 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -3405,7 +3405,9 @@ int device_add(struct device *dev)
+>  		if (error)
+>  			goto SysEntryError;
 >  
->  	if (!multi_ret)
->  		goto out;
+> -		devtmpfs_create_node(dev);
+> +		error = devtmpfs_create_node(dev);
+> +		if (error)
+> +			goto DevtmpfsError;
+>  	}
+>  
+>  	/* Notify clients of device addition.  This call must come
+> @@ -3461,6 +3463,8 @@ int device_add(struct device *dev)
+>  done:
+>  	put_device(dev);
+>  	return error;
+> + DevtmpfsError:
+> +	device_remove_sys_dev_entry(dev);
+>   SysEntryError:
+>  	if (MAJOR(dev->devt))
+>  		device_remove_file(dev, &dev_attr_dev);
+> -- 
+> 2.25.1
+> 
 
-I can confirm that this fixes the issue.
+After this change in -next as commit 31b4b6730fd4 ("driver core: add
+error handling for devtmpfs_create_node()"), my test machines failed to
+boot after the rootfs could not be mounted. I added some logging to see
+which device was failing, which triggers a few times with the exact same
+message:
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+  device: 'btrfs-control': devtmpfs_create_node() failed, err = -17
+
+with -17 being -EEXIST. I am not sure why this device is getting
+registered more than once, it appears to occur during module insertion
+though, as I am able to get to systemd starting within the initrd.
+
+Should this particular return value be downgraded to a warning so that
+the device still loads or should the driver be fixed? I have cc'd the
+btrfs mailing list, in case they have any input.
+
+Cheers,
+Nathan
