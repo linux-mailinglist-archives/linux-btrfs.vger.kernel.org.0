@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58765696033
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Feb 2023 11:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBA469607E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Feb 2023 11:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbjBNKFA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Feb 2023 05:05:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40520 "EHLO
+        id S229936AbjBNKQf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Feb 2023 05:16:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbjBNKEe (ORCPT
+        with ESMTP id S229609AbjBNKQe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Feb 2023 05:04:34 -0500
-X-Greylist: delayed 303 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Feb 2023 02:04:12 PST
-Received: from mout-y-111.mailbox.org (mout-y-111.mailbox.org [IPv6:2001:67c:2050:103:465::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90ED1115
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Feb 2023 02:04:12 -0800 (PST)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+        Tue, 14 Feb 2023 05:16:34 -0500
+X-Greylist: delayed 1045 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Feb 2023 02:16:33 PST
+Received: from mout-y-111.mailbox.org (mout-y-111.mailbox.org [91.198.250.236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6910312060
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Feb 2023 02:16:33 -0800 (PST)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mout-y-111.mailbox.org (Postfix) with ESMTPS id 4PGGrS2QCHz9sQv
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Feb 2023 10:59:04 +0100 (CET)
+        by mout-y-111.mailbox.org (Postfix) with ESMTPS id 4PGHDY5Ctjz9sQp
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Feb 2023 11:16:29 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1676368744;
+        t=1676369789;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=eZDGRYtMu9jcAGiiX7qg+/9dnUux3aKSEvpx5nGOwHc=;
-        b=ZdX5JebaF7FrushyWRVVvB8YKk2TOUH7nY1TFdEBGp3AOGLK3Rsl5Kl0Iy/jQd14ljMs1R
-        jUN9bhDROFePMT92cgpx9n1ZegcdkdXraT/k/DARGyZbadtN14PwYRMTq3bhy9u02ucK0K
-        Exq+WLucy8FVwz6Rk0MRI8qFmbDfFwZRCR5qtULpbuMIbltHj/HgqrcQZfnB8lf55g9D9y
-        qR2VgfVHf+OYzZqru9rI/kqAK30qpvgve2+wJOStaZCPY5DUUl8pa7UtxNzlgSwbUZT8G3
-        6+Vb62Pn44QJUtdiLRHsk9G8Cy09VbVErhfJ76M0EB/rZBy2hRNjpI0pGoz6Ig==
-Message-ID: <8b852586a08d736d906fea8bbfc0f2d3dc25e867.camel@mailbox.org>
+        bh=QsLiUl28cuLLoH1ki6cUoOu+HDQ+NLyQh6n/PKzVFrM=;
+        b=l6IiRouV0VQuJBr57MwOpIqucIciZ1CnR9+NLpZm6lnedyJWQGWxMYjkCC2IrbvNWamQ2B
+        WTc4GAMK+196VBRngJNsyyKAr8V5+V+pSFiJ6IXijAJAyRWpSjKWg6xOS/ow/HfzYbpuBA
+        epRr9kqYrCusSYombqBPKt3O/wFg6mTuLtxXDu2ZcrDNWOxTpB6xnUlTDZah18Q+zAAzG1
+        f6mHK9BD8+HZ58o5d0piV3VLH5ebt/iIvEzCr0BSG0O79EcyLfktfOMAtp+JUmf9EX77Ih
+        EO5zw6JU40QoNA8FHqtspS1pPnWmLJzZtMu/nFJo4flREvetubrb7oUdG8PtdQ==
+Message-ID: <35d36015e46a940019b2a2de2adf977e95b02d5e.camel@mailbox.org>
 Subject: [RFC PATCH 1/1 v2] Reduce frequencies of entry-relink on free space
  trees
 From:   Liu Weifeng <liuwf@mailbox.org>
 To:     linux-btrfs@vger.kernel.org
-Date:   Tue, 14 Feb 2023 04:57:43 -0500
+Date:   Tue, 14 Feb 2023 05:16:23 -0500
 Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MBO-RS-ID: 94f8480455bb6dda573
-X-MBO-RS-META: qby1gxces9iu3wh1wt8yyewea9i5m3bz
+X-MBO-RS-META: 7szp6z3uky7ihfxt6c699zaz5ciyjg1g
+X-MBO-RS-ID: 1a6e77aed543994b9f9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -58,16 +58,16 @@ Date: Tue, 14 Feb 2023 15:50:28 -0500
 Subject: [RFC PATCH 1/1 v2] Reduce frequencies of entry-relink on free space 
 trees.
 
-This patch try to get some perf improvement on tree operating when alloc free
-space in uncluster way, because most of node remove/insert operatings on the
-offset-indexed tree are bypassed. 
+This patch try to get some perf improvement of tree operating when alloc free 
+space in uncluster way, because most of node remove/insert operatings on the 
+offset-indexed tree are bypassed. 
 
-The detecting codes of this version(v2) have much less time cost than v1, 
+The detecting codes of this version(v2) have much less time cost than v1, 
 eventhough v1 has less cost than standard source(6.2-rc6).
 
-This patch is based on the logic - there is only ONE case that needs to remove
-and re-insert an entry on the offset-indexed tree when free space alloc is done
-from the tree:
+This patch is based on the logic - there is only ONE case that needs to
+remove and re-insert an entry on the offset-indexed tree when free space alloc
+is done from the tree:
 
 	An entry is striding the start of a bitmap. When the entry shrinked it's
 	start position walks towards higher address and may exceed the bitmap's
@@ -86,8 +86,8 @@ from the tree:
 
 The standard code always remove and re-insert an entry on the offset-indexed
 tree when the entry's offset changed. This patch will bypass most of those
-operatings so that tree perf may be improved obviously when we are in the 
-difficulty conditions, such as heavy-fragmented free space.
+operatings so that performance may be improved obviously when we are in the 
+difficulty conditions (such as heavy-fragmented).
 
 As for allocating from the bytes-indexed tree - most of cases need remove and
 re-insert an entry when the it's size changed, but there is one thing that may 
@@ -281,5 +281,6 @@ index a855e0483e03..2a165df394d6 100644
  static inline bool btrfs_free_space_trimmed(struct btrfs_free_space *info)
 -- 
 2.30.2
+
 
 
