@@ -2,69 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA1E69853C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Feb 2023 21:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751FE698529
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Feb 2023 21:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbjBOUIH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Feb 2023 15:08:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35836 "EHLO
+        id S229712AbjBOUFV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Feb 2023 15:05:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjBOUIE (ORCPT
+        with ESMTP id S229644AbjBOUFT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Feb 2023 15:08:04 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD1E3A86A
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Feb 2023 12:08:03 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7C5C51F8C2;
-        Wed, 15 Feb 2023 20:08:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1676491682;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sdr+Y2AFCMLOFIyx1LtZpfFXcKSOdIXhBcLB11YeFMA=;
-        b=uTg23Np/HfFZlQ8jl8Tl2oCkPjfDm8bHvnL3b+rD+ZX9d1B+HleJUUiqgyrgMkQo5OPSgZ
-        FCsbTTiyXcamTNVg80+wGOD980i1cxczXCPRUBptRwBodJ25NDqqjql/+CqGgE0j4yhynB
-        ztvc8oPajANifGtf8Ifwfv/714P7EZ8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1676491682;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sdr+Y2AFCMLOFIyx1LtZpfFXcKSOdIXhBcLB11YeFMA=;
-        b=FY4NHa2eLYPxDViFMEvpRN6ny+G73K156ak6YZss9BJBtlL2+Muomk1VkQoXdJTscU+j57
-        IHUoI2KdFMGUQ1AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5A9F5134BA;
-        Wed, 15 Feb 2023 20:08:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wRFVFKI77WNyFwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 15 Feb 2023 20:08:02 +0000
-Date:   Wed, 15 Feb 2023 21:02:09 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] btrfs: small improvement for btrfs_io_context
- structure
-Message-ID: <20230215200209.GV28288@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1675743217.git.wqu@suse.com>
- <63c3c509ec42d83e8038b33e2f21e036c591fe0b.1675743217.git.wqu@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63c3c509ec42d83e8038b33e2f21e036c591fe0b.1675743217.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        Wed, 15 Feb 2023 15:05:19 -0500
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585F93A842
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Feb 2023 12:05:18 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 10725320099F
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Feb 2023 15:05:15 -0500 (EST)
+Received: from imap50 ([10.202.2.100])
+  by compute5.internal (MEProxy); Wed, 15 Feb 2023 15:05:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        colorremedies.com; h=cc:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1676491515; x=1676577915; bh=9l05+nkhrK
+        lB487+AFvmOhH0qytQmW7qdNMCD8uryDg=; b=44ZvENefXD6GGluhXpAmRTFU2J
+        xUEwa0NqoGFfCjCz6o5jk2fXr8zqp8pDikxGQeZYNEl5ZtIs+xRdy+/p3mBJoT29
+        y4vQM49v+PqRZSlO8D9CvrzNGZh9EJHiLh+Ir5kAYjtsqHjoGu1nCnCxZNJ9PojE
+        Z3y15zy0PaupJYTTz83+H4EnOZAiisnMB0cNLiXbQ9mmA5yNIbhQCsVLQLTt0zyt
+        Al8sXzeJVmj6Uo2dJSQP/uXAwR3Zio+JcH31cpe6X0kSVIkVC5+0Sk5cTocY7MVJ
+        uIsqr0g5c4/W45xIz7zTxzCsb0azs1xOwOh9ZAYXdCZb/rmFGfxlsvT7jbOQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:message-id:mime-version
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1676491515; x=
+        1676577915; bh=9l05+nkhrKlB487+AFvmOhH0qytQmW7qdNMCD8uryDg=; b=k
+        2B4vxFURocdbRhy1m7kF90R0iObKHRFP5GwMd73B7kjue0gl10f7FrjTbMbI1/Tq
+        AzFx5WJJaljJsJ2iPtxVrcwyfYPHSlzT533EvUUpjFmnriy6J9UcfNC9xgC9ALYO
+        UfWS5BlKHWl6i4PTb06ZeYLOcfpPUVZfxZ8vKWFvNQ/UMDCwGa37yNaT4yWx5Gsa
+        qfGk3rw0uT7H7B2oUEL1I+YXElb8MvCEDB3QNc7DvX8xqVQPIPR2v1Faz3lzssis
+        ZXK8F+b71mZM1Zd9gqcI5HnraZBVOGv8qzTA4IaJmSEU0xekQQ0f63Oj9o5sOprn
+        0fADK3F0PnSe7lZSxhIpw==
+X-ME-Sender: <xms:-zrtYx8pFP7o9ptp_FU4cbBB4mw-ZnsRrf1_cs8zDZ3NFudRqevF5A>
+    <xme:-zrtY1t4EV5l6NkT6byiuTHz4LXwmeN42J2MOXFsCCDW77uWhY4LHv5cubjhcMq2E
+    mcMqezIKc_fQrMm55A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeihedguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfffhffvufgtsehttdertderredtnecuhfhrohhmpedfvehhrhhi
+    shcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqe
+    enucggtffrrghtthgvrhhnpeeffeeltdejheefudetjedvleffvdevieegueegffdvffev
+    ffevkeeivdfhkeeikeenucffohhmrghinheprhgvughhrghtrdgtohhmnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhishhtshestgholhho
+    rhhrvghmvgguihgvshdrtghomh
+X-ME-Proxy: <xmx:-zrtY_BY1pR0C7q2tt9MeaUTCuFW3-L5ef7NngG91S_AdBBjLBt_1g>
+    <xmx:-zrtY1fqTlVRENO_rs6dL1y67DjvwaznkFFZmldG8B2N4Q0MuJCtCw>
+    <xmx:-zrtY2O1m-_A5Eage1WjiyrYnLb1j0dh4ozn3A3xYFOyOv_Vs32QmA>
+    <xmx:-zrtY8b47gTrRW0-tevWO88Sh15sO-KZcCZ-bU2vEWBCe4Qqi_Uesg>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 126DD170011F; Wed, 15 Feb 2023 15:05:14 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-156-g081acc5ed5-fm-20230206.001-g081acc5e
+Mime-Version: 1.0
+Message-Id: <aa1fb69e-b613-47aa-a99e-a0a2c9ed273f@app.fastmail.com>
+Date:   Wed, 15 Feb 2023 15:04:54 -0500
+From:   "Chris Murphy" <lists@colorremedies.com>
+To:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Subject: LMDB mdb_copy produces a corrupt database on btrfs, but not on ext4
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,27 +79,12 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 07, 2023 at 12:26:13PM +0800, Qu Wenruo wrote:
-> That structure is our ultimate objective for all __btrfs_map_block()
-> related functions.
-> 
-> We have some hard to understand members, like tgtdev_map, but without
-> any comments.
-> 
-> This patch will improve the situation by:
-> 
-> - Add extra comments for num_stripes, mirror_num, num_tgtdevs and
->   tgtdev_map[]
->   Especially for the last two members, add a dedicated (thus very long)
->   comments for them, with example to explain it.
-> 
-> - Shrink those int members to u16.
->   In fact our on-disk format is only using u16 for num_stripes, thus
->   no need to go int at all.
+Downstream bug report, reproducer test file, and gdb session transcript
+https://bugzilla.redhat.com/show_bug.cgi?id=2169947
 
-Note that u16 is maybe good for space saving in structures but otherwise
-it's a type that's a bit clumsy for CPU to handle. Int for passing it
-around does not require masking or other sorts of conversions when
-there's arithmetic done. This can be cleaned up later with close
-inspection of the effects, so far we have u16 for fs_info::csum_type or
-some item lengths.
+I speculated that maybe it's similar to the issue we have with VM's when O_DIRECT is used, but it seems that's not the case here.
+
+
+
+--
+Chris Murphy
