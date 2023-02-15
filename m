@@ -2,113 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BADE697DF6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Feb 2023 15:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19362697E4A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Feb 2023 15:24:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbjBOOFK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Feb 2023 09:05:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46436 "EHLO
+        id S229587AbjBOOYz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Feb 2023 09:24:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjBOOEz (ORCPT
+        with ESMTP id S229509AbjBOOYy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Feb 2023 09:04:55 -0500
-X-Greylist: delayed 177 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 15 Feb 2023 06:04:54 PST
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CBD34C3D
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Feb 2023 06:04:54 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1676469533; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=OywmAq8XCxaEmaYHZ1jxBdyjm8hf31K3w7oFwW7IzunaBamUUh8u4YUskUIKNVst+o
-    W1orBDsU4Qyd2hTViR0ozwI1t6rKi7a+2Yk2r13I2/xqRWTgBao5ekLzYFeicNev/kej
-    RYteQTq0ICigLB5bFSoy1k9KoC1Nh0kojfKsjtbwN2AEyUsz+196DWLvXtMWk1qQ4a+y
-    VBqoopAxc+w7ESpQl8QpOl/harENZCKhxuxOuUBKZxnyoJdvbJRo0bM8Rz6QRPgeV4Ei
-    ie3U/0ccWcDhN9RGmfsEd1qkvCG6iCB8lryuJNVu25izGygOIVcL6XDoEnQPz/sySunn
-    9MiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1676469533;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=VrvrRZgsYJKPwXt5vvHnPBvbqOz3NG+qjb0NA2iMeWM=;
-    b=ET5v+ARCAWVL+qkEnxhi1wRyqSbv/YXXg1YVmCyXLCQFfIJtzTiKM3easNwTW/v5Mi
-    kqzYAGh+oTe2j5fOtUW6zfK+CyNyR9UE3genze5qKKFFs0+uHI067puiQFcmDb17nyVn
-    CiTZk5J3FrV39V3VzpZciezwyR9Qs7BQws0EwDkwgPPq1wORXBdwqZcc49KtRuind7rE
-    +1Ncz0/uTrZ4yPqRMowJe5PgP4Cvv+5BNNad3tAyg9EbDtsKfMF6YZlVFcUo9wuclgIK
-    wlhUDE0md1/59PMqs7kLzzXJ4S/b/i8rh4yc7qfYr9YBPczheiCKYjEt4Nha4DBy58BG
-    JAqw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1676469533;
-    s=strato-dkim-0002; d=giantdisaster.de;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=VrvrRZgsYJKPwXt5vvHnPBvbqOz3NG+qjb0NA2iMeWM=;
-    b=gjT8Oz77+YGNNoLZsWRp+79gpIgju6mPKASmPSEvawXJkr1wwK6fWdvB4VIFRcdLBL
-    FM0IQRIDwOQh1YxEyS8zJ+/SnGxL+KMlZy4ywSLb2ITy3i1fxcMWt7rSpDk23taC2xVe
-    3QIfMgji1tKZmcNITeYDDvhgZ4K2Ctj/xaXYUp+s/v8UvG96JdX7KyksmZoiEgIzPTyA
-    d5mqtkUCuzoz/PGvl2ExG9QhnxCrQuYLSbBzva9ctxCQMKiIqVW3QIYTJWZqalwPBSzH
-    i3vS9vAVcX7O1T6I5LTC/lNYeI7O4wZfxQIX+FXadpnSy9OUzCEnM6OZ58w1QMpJROSB
-    Bk0g==
-X-RZG-AUTH: ":P24BfVKtdewSqNxKJHA7pzS3qMJDcjZcfhyLxL2YKij8O05xyuukTyyZQWU4Hq02P4TcpQpuN2yc"
-Received: from [10.208.10.37]
-    by smtp.strato.de (RZmta 49.3.0 AUTH)
-    with ESMTPSA id 0266b0z1FDwqhNf
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 15 Feb 2023 14:58:52 +0100 (CET)
-Message-ID: <7f78db15-7f82-5349-a4da-6fa58365e3e0@giantdisaster.de>
-Date:   Wed, 15 Feb 2023 14:58:52 +0100
+        Wed, 15 Feb 2023 09:24:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 375D62385A
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Feb 2023 06:24:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676471048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jSIKkot8QTaKRSc9LAyx2lDHIDveDMhL+xYOW2MFkz0=;
+        b=NTAUhaKU2yN7VYs/VcgIokD6EHxvoZrC782nU0INuuJdwrbbza3qDG4ZiNVKoVInpiZiNU
+        8ypSOq703K++wEqqK9mJ6iPTpq0mDTn/So5a/n9Ag8xYob3TJNL9R5pNj0ie+gD8gh/42A
+        mfT9X1NPY9fFDJ8XE0MRCRKcg6UCd/A=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-455-8gMxtjHmOPSrwseIen658g-1; Wed, 15 Feb 2023 09:24:07 -0500
+X-MC-Unique: 8gMxtjHmOPSrwseIen658g-1
+Received: by mail-pf1-f199.google.com with SMTP id c11-20020a62e80b000000b005a8ba9365c1so4857366pfi.18
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Feb 2023 06:24:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jSIKkot8QTaKRSc9LAyx2lDHIDveDMhL+xYOW2MFkz0=;
+        b=Cu8iFm0nbK4dKRkYyJVl/0KIsV5Dx93NBodkBGI6hsAPhs6+jIv3Jb93gSNZdlnWhu
+         x4tYWncO1rWAJ3QVE1n6X3SnePPBlCZI7/S7JQJramocinQLnsLbSibQqyJlG3Vtzupg
+         X1t6nh63TfjJHZwo8F8vgAY5Y6sJNVBR0P8ZNMCf9qiLI1FBox6cNwz7fBxDA0T01EdQ
+         PynF+4zsZuvRDZ8Ql8xcBW51JoxZwRcYsEi0eTd+auUexcdzZ38r2k+/HoO0uSaijlk+
+         Pxuv1nSCICfCpdkhia7MtC9YBBFnoRGDr/OIBQqJ7DBRZENSqqqgnVOUZSrYH9gOt08X
+         V9ow==
+X-Gm-Message-State: AO0yUKWj1TjC6hkTaljUp5K4/zS9lJfiCHMxnsEVDQDaYTvqbOsaNkyn
+        uCx2120g+gcqeuez016zfd93aucglB1a8TtXx1Mrgx6zcbi8kJ/gnXD5J8oRNZoIyXIuygFoQgR
+        /AELXqEZ0JIxLT3Hs/E9H0Aw=
+X-Received: by 2002:a17:902:c641:b0:19a:743e:b152 with SMTP id s1-20020a170902c64100b0019a743eb152mr1941825pls.63.1676471045906;
+        Wed, 15 Feb 2023 06:24:05 -0800 (PST)
+X-Google-Smtp-Source: AK7set/zjEDh12onm8Psu6/eQfyVHBWcD1SbgI/9RCVRufOgmdQtw4dt55uGvlDPFX7fiKn3Lq+6BA==
+X-Received: by 2002:a17:902:c641:b0:19a:743e:b152 with SMTP id s1-20020a170902c64100b0019a743eb152mr1941809pls.63.1676471045563;
+        Wed, 15 Feb 2023 06:24:05 -0800 (PST)
+Received: from zlang-mailbox ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id jf21-20020a170903269500b0019a7bb18f98sm9332476plb.48.2023.02.15.06.24.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Feb 2023 06:24:05 -0800 (PST)
+Date:   Wed, 15 Feb 2023 22:24:01 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3] fstests: btrfs/185, 198 and 219 add
+ _fixed_by_kernel_commit
+Message-ID: <20230215142401.3lkbmkpxvkhads7t@zlang-mailbox>
+References: <cover.1676034764.git.anand.jain@oracle.com>
+ <b0375c439b0f4d4da5de569d19bcb53bc2a0c66a.1676446803.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.2
-Subject: Re: [PATCH RFC] btrfs: do not use the replace target device as an
- extra mirror
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <2902738be4657ec16e5b5dd38eac1fb53aa5cc44.1675918006.git.wqu@suse.com>
- <Y+sy5xHfz6S16/oc@infradead.org>
- <e7a2cb06-d6b1-f40b-477a-dca130a4a5d2@gmx.com>
- <Y+x+GjgREMyYe5pP@infradead.org>
- <d2f73a10-7ec8-0b42-1a4e-eb86b0740741@gmx.com>
- <Y+yCncfD0EyfsxTe@infradead.org>
-From:   Stefan Behrens <sbehrens@giantdisaster.de>
-In-Reply-To: <Y+yCncfD0EyfsxTe@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b0375c439b0f4d4da5de569d19bcb53bc2a0c66a.1676446803.git.anand.jain@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/15/2023 7:58 AM, Christoph Hellwig wrote:
-> On Wed, Feb 15, 2023 at 02:56:39PM +0800, Qu Wenruo wrote:
->> Meanwhile replace hasn't yet reached that bytenr, thus we're reading garbage
->> from target device.
->> And since NODATASUM, we trust the garbage, thus corrupting the data.
+On Wed, Feb 15, 2023 at 03:51:22PM +0800, Anand Jain wrote:
+> Recently, these test cases were added to the auto group. To ensure we have
+> some clues if they fail in older kernels, add "_fixed_by_kernel_commit"
+> for the fix and update the test summary.
 > 
-> Yes, for a read from the target device to be useful, the progress
-> needs to be tracked, and the read only needs to happen on data
-> that actually was written.
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
 
-The device replace code maintains (or used to maintain) a concept of a 
-cursor.
+Looks good to me,
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-There's a small area on the target device which is currently written to. 
-Left of this area is valid and already written data, which can also be 
-read in case it's needed to fix read errors or to avoid access to an 
-almost damaged hard drive which tries to reread every bad block 2048 
-times (which is 17 seconds at 7200rpm and something you want to avoid). 
-Right of the area is data that must not be read because it is garbage 
-and uninitialized contents of the new disk.
+> v3: Combine these patches together.
+> 	fstests: btrfs/198, add _fixed_by_kernel_commit
+> 	fstests: btrfs/219, add _fixed_by_kernel_commit
+> 	fstests: btrfs/185, add _fixed_by_kernel_commit
+>     
+> v2: btrfs/219: _fixed_by_kernel_commit: Substitute the placeholder with
+>     the commit id.
+> 
+>  tests/btrfs/185 | 2 ++
+>  tests/btrfs/198 | 6 +++---
+>  tests/btrfs/219 | 9 ++++-----
+>  3 files changed, 9 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tests/btrfs/185 b/tests/btrfs/185
+> index efb10ac72b79..ba0200617e69 100755
+> --- a/tests/btrfs/185
+> +++ b/tests/btrfs/185
+> @@ -27,6 +27,8 @@ _cleanup()
+>  _supported_fs btrfs
+>  _require_scratch_dev_pool 2
+>  _scratch_dev_pool_get 2
+> +_fixed_by_kernel_commit a9261d4125c9 \
+> +	"btrfs: harden agaist duplicate fsid on scanned devices"
+>  
+>  device_1=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $1}')
+>  device_2=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $2}')
+> diff --git a/tests/btrfs/198 b/tests/btrfs/198
+> index 2b68754ade52..7d23ffcee3c5 100755
+> --- a/tests/btrfs/198
+> +++ b/tests/btrfs/198
+> @@ -4,9 +4,7 @@
+>  #
+>  # FS QA Test 198
+>  #
+> -# Test stale and alien non-btrfs device in the fs devices list.
+> -#  Bug fixed in:
+> -#    btrfs: remove identified alien device in open_fs_devices
+> +# Test outdated and foreign non-btrfs devices in the device listing.
+>  #
+>  . ./common/preamble
+>  _begin_fstest auto quick volume
+> @@ -22,6 +20,8 @@ _require_scratch
+>  _require_scratch_dev_pool 4
+>  # Zoned btrfs only supports SINGLE profile
+>  _require_non_zoned_device ${SCRATCH_DEV}
+> +_fixed_by_kernel_commit 96c2e067ed3e3e \
+> +	"btrfs: skip devices without magic signature when mounting"
+>  
+>  workout()
+>  {
+> diff --git a/tests/btrfs/219 b/tests/btrfs/219
+> index d69e6ac918ae..b747ce34fcc4 100755
+> --- a/tests/btrfs/219
+> +++ b/tests/btrfs/219
+> @@ -6,11 +6,8 @@
+>  #
+>  # Test a variety of stale device usecases.  We cache the device and generation
+>  # to make sure we do not allow stale devices, which can end up with some wonky
+> -# behavior for loop back devices.  This was changed with
+> -#
+> -#   btrfs: allow single disk devices to mount with older generations
+> -#
+> -# But I've added a few other test cases so it's clear what we expect to happen
+> +# behavior for loop back devices.
+> +# And, added a few other test cases so it's clear what we expect to happen
+>  # currently.
+>  #
+>  
+> @@ -42,6 +39,8 @@ _supported_fs btrfs
+>  _require_test
+>  _require_loop
+>  _require_btrfs_forget_or_module_loadable
+> +_fixed_by_kernel_commit 5f58d783fd78 \
+> +	"btrfs: free device in btrfs_close_devices for a single device filesystem"
+>  
+>  loop_mnt=$TEST_DIR/$seq.mnt
+>  loop_mnt1=$TEST_DIR/$seq.mnt1
+> -- 
+> 2.38.1
+> 
 
-There are several comments about this concept in volumes.c. And scrub.c 
-is the place that keeps the left and right cursor up to date which 
-define the area that is already written, currently written to and not 
-yet written.
