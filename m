@@ -2,73 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB076988B7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Feb 2023 00:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E404E6988BA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Feb 2023 00:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbjBOXUi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Feb 2023 18:20:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
+        id S229576AbjBOXVm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Feb 2023 18:21:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjBOXUh (ORCPT
+        with ESMTP id S229504AbjBOXVm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Feb 2023 18:20:37 -0500
+        Wed, 15 Feb 2023 18:21:42 -0500
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0652B42BE2;
-        Wed, 15 Feb 2023 15:20:35 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id B05B93200942;
-        Wed, 15 Feb 2023 18:20:34 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 15 Feb 2023 18:20:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:date:date:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm1; t=1676503234; x=1676589634; bh=nfcbJYLRBqiMTw9PoxE1v4oit
-        a3cF2XD3anoamKYM50=; b=fMAl59r6ZZIYUGQUO6aDzO0shAdFs0WY2OvxRDBir
-        V1mRkjF6zg5p1hP9o4LMJx39n4hUiKIp5Epr2VTjkb/9oYeJMEXRdM3nP3ibVHLs
-        k2MUp2EByTIU/GuFUp1iZTdw3IFonCxMC3/Y0E08zHID9jm/ADUYXeMp8icAQAml
-        dZsU6dRb+q2UZaldYH4ZbihVvN+N87H9kyv7MH+5pJfQaLAeg3UFHeQHYWKf6asK
-        5xxqJlJhqeOjYgRSTvPECRkTLiuGZBNXL/CooVBtKznG3oU5VfpsbLsCuawBx+27
-        i8wd561M6zjbJRrPNLzBm6ap2lMnTsuRN7+Gc0XxcnsnA==
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E9742BE2
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Feb 2023 15:21:41 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 73B743200786;
+        Wed, 15 Feb 2023 18:21:40 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 15 Feb 2023 18:21:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1676503300; x=1676589700; bh=KFo94/K1qr
+        3fmN5GMflPQO5kLDWOGNZrtYUsceX5gDM=; b=WJNogv/CoSAaPuc+ijHhrS/Leh
+        Im54bJr929vwtdPnjjrIaOLOsfGqCmtSHTtwNzpLgFzV7DbX64PLVzPpoXQJTy2g
+        XfeMGmkRk4TW6H0S39Pzex89ISeTqLoyyTcpD/BvI3XEXBCtTNx17Eh/0aCT31MU
+        pDuWVI5rtEuKwYkII69vJazU/WI1pwNaA6RDZUwy+nzYm418pLyx8gtiFQLtiwH6
+        nuJyuXLnebn1M5GF8hDQXpV8nut6SpVoEShQbTbiTb3fFozVe2BwXAFXqRa1UJAH
+        cwmiO9+hFIXdkze4th2AFJvBzNvR32SJdSuLm7MrJ1TLePT2LWZ2Ysjxcs0g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:message-id
-        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1676503234; x=1676589634; bh=nfcbJYLRBqiMTw9PoxE1v4oita3cF2XD3an
-        oamKYM50=; b=jBl6+OabyK7tT8Liy3pEtsKi4yEdI/j8W38E3vQs4Sq0BAr4mNs
-        3fLTSZEZbwipzdF2WxkqCz52exSO7FBmB4F7QkSC8uVQdAP1vLIC7rshIBuoGLrE
-        3RrsJe1hOSvzExvVC7rWIVEnSEjZNxJw40zAM6w0KwUc3tWc3fD3H00uTDdMboJU
-        wpa4B9KxzfNLxj4RSZ4yvkaewjr/NKeRnbeVRNrNCn4GedOmjeMWta+aopm3EPgw
-        hO/T/sNgANE0w5utU8ZYbBKBpIHJZUwyFkQ/9EbN4TiuujjqC/iYqc9/lfHtGv97
-        vrKJZE4p5dR8WJhlr9ixoc4AnSSHpqhGovA==
-X-ME-Sender: <xms:wmjtYyUuEwnRLuCBE0cniq_tHB_MdYwufHEi35S5Otsoi9nvNqViag>
-    <xme:wmjtY-n_sQC7SVhX3-wemHwOV75lArpEclnT83Hc54VGID_C04NKohtmU7GEV8cAq
-    9MsZMTy1i7bPrYpWW0>
-X-ME-Received: <xmr:wmjtY2ak4ScFAYqMrpXbxi1pe3U0ggfEfjCsrsYJShFTFK5Al1p6JfZY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeiiedgtdelucetufdoteggodetrfdotf
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; t=1676503300; x=1676589700; bh=KFo94/K1qr3fmN5GMflPQO5kLDWO
+        GNZrtYUsceX5gDM=; b=id1dUQWf3FLH+NcrEoymMPY9MJOmwEVi2ilkKJLio2PD
+        dZTrgalxgWfniTCrqPjNPb8R63/sMYWLiiNCYtxqLQK8dq8eSaUKJHKDZxJcdZom
+        qBOeyulp7Uu1zpy93NJ7oZ1jy4mhUkRsxGbHPffpGSxduQcwuXUrEtXTrsmy9YdE
+        cjyBQ1AbzaW5S41MuW1yzv6Qs8BSihwwFeoWV/v9469VoiI8BQLMYCk2vfrdavmy
+        l+YQWmMcmlA92cb6zsCJpEIsuSeaMlneXSGb7XAHcascoSUEcAe1cTFMEdRFVojf
+        leocWZWfCoBEPDkXbsuDUX5VDARTeh+ub4eUFE9HWw==
+X-ME-Sender: <xms:A2ntYwKKz6NaRmLb02Hr2DRbTEISpBpxG272rICh4lCAlby2s6BGXQ>
+    <xme:A2ntYwKrKXO_iRFtnv1Jr_jVnDh7IvJPsnep9nryL3TlaAgMrQyfoubxewd-ydh1T
+    HnlUFQMwHxZbi7hZ7w>
+X-ME-Received: <xmr:A2ntYwv0mdEKlCmQAtuKAn7heE_8WkRfhGvWkbUPjhBPXUNZfDB5mS7C>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeiiedgtdekucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
-    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:wmjtY5UPsvsOmsYWkRDyDkCq8nQ--E8zAzje_aWMOZBJAy4pqdbTUg>
-    <xmx:wmjtY8lEcPQxENYw_slZV1gWnrTMxC70SPjam7HgHo7d2qFAY_N4HQ>
-    <xmx:wmjtY-d7zCklmZzAmJzr4t9WaJURaBqrZzptl-xClu9ZZL1yxKicsg>
-    <xmx:wmjtY4uYgfAxB3kaPyidnOHJ-AWLGdRMHoFDfb2spC5eR25cLMCWLw>
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ehieegjeehffeuhffhleffueegjeefledtveduvdekgfehfffgtedvudekleffffenucff
+    ohhmrghinheprhgvughhrghtrdgtohhmpdhprghsthgvsghinhdrtghomhenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhr
+    rdhioh
+X-ME-Proxy: <xmx:A2ntY9Y21lj1NxJg4ps7DtvzJCaYeg950nEWBSlW-R-k_876HYd3cw>
+    <xmx:A2ntY3ZhBaY9QMscdFRD7r7796snXa4YC75O9bLbmd9SS06B2KAWfQ>
+    <xmx:A2ntY5AfiTMPvdV9scNIRL56jZPn3IrZph2TVBlZBInE3e1DiXXIvg>
+    <xmx:BGntY4BnT-ZbX_t0iq_7tFaqO9eGy9Ye5Yucb9Od2CHZLyfmfHPUyg>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 15 Feb 2023 18:20:33 -0500 (EST)
+ 15 Feb 2023 18:21:39 -0500 (EST)
+Date:   Wed, 15 Feb 2023 15:21:38 -0800
 From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fstests@vger.kernel.org
-Subject: [PATCH v6] btrfs: test block group size class loading logic
-Date:   Wed, 15 Feb 2023 15:20:32 -0800
-Message-Id: <160e7557f66a6a34fd052d6834909aa02a702956.1676503163.git.boris@bur.io>
-X-Mailer: git-send-email 2.38.1
+To:     Chris Murphy <chris@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: LMDB mdb_copy produces a corrupt database on btrfs, but not on
+ ext4
+Message-ID: <Y+1pAoetotjEuef7@zen>
+References: <aa1fb69e-b613-47aa-a99e-a0a2c9ed273f@app.fastmail.com>
+ <124a916c-786b-42ec-bc9d-db97bb081881@app.fastmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <124a916c-786b-42ec-bc9d-db97bb081881@app.fastmail.com>
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -78,106 +84,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add a new test which checks that size classes in freshly loaded block
-groups after a cycle mount match size classes before going down
+On Wed, Feb 15, 2023 at 03:16:39PM -0500, Chris Murphy wrote:
+> 
+> 
+> On Wed, Feb 15, 2023, at 3:04 PM, Chris Murphy wrote:
+> > Downstream bug report, reproducer test file, and gdb session transcript
+> > https://bugzilla.redhat.com/show_bug.cgi?id=2169947
+> >
+> > I speculated that maybe it's similar to the issue we have with VM's 
+> > when O_DIRECT is used, but it seems that's not the case here.
+> 
+> I can reproduce the mismatching checksums whether the test files are datacow or nodatacow (using chattr +C). There are no kernel messages during the tests.
+> 
+> kernel 6.2rc7 in my case; and in the bug report kernel series 6.1, 6.0, and 5.17 reproduce the problem.
+> 
 
-Depends on the kernel patch:
-btrfs: add size class stats to sysfs
+I was also able to reproduce on the current misc-next. However, when I
+hacked the kernel to always fall back from DIO to buffered IO, it no
+longer reproduced. So that's one hint..
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
-Changelog:
-v6:
-Actually include changes for v5 in the commit.
-v5:
-Instead of using _fixed_by_kernel_commit, use require_fs_sysfs to handle
-the needed sysfs file. The test is skipped on kernels without the file
-and runs correctly on new ones.
-v4:
-Fix dumb typo in _fixed_by_kernel_commit (left out leading underscore
-copy+pasting). Re-tested happy and sad case...
+The next observation comes from comparing the happy vs unhappy file
+extents on disk:
+happy: https://pastebin.com/k4EPFKhc
+unhappy: https://pastebin.com/hNSBR0yv
 
-v3:
-Re-add fixed_by_kernel_commit, but for the stats patch which is
-required, but not a fix in the strictest sense.
+The broken DIO case is missing file extents between bytes 8192 and 65536
+which corresponds to the observed zeros.
 
-v2:
-Drop the fixed_by_kernel_commit since the fix is not out past the btrfs
-development tree, so the fix is getting rolled in to the original broken
-commit. Modified the commit message to note the dependency on the new
-sysfs counters.
+Next, at Josef's suggestion, I looked at the IOMAP_DIO_PARTIAL and
+instrumented that codepath. I observed a single successful write to 8192
+bytes, then a second write which first does a partial write from 8192 to
+65536 and then faults in the rest of the iov_iter and finishes the
+write.
 
+I'm now trying to figure out how these partial writes might lead us to
+not create all the EXTENT_DATA items for the file extents.
 
- tests/btrfs/283     | 50 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/283.out |  2 ++
- 2 files changed, 52 insertions(+)
- create mode 100755 tests/btrfs/283
- create mode 100644 tests/btrfs/283.out
+Boris
 
-diff --git a/tests/btrfs/283 b/tests/btrfs/283
-new file mode 100755
-index 00000000..2c26b41e
---- /dev/null
-+++ b/tests/btrfs/283
-@@ -0,0 +1,50 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
-+#
-+# FS QA Test 283
-+#
-+# Test that mounting a btrfs filesystem properly loads block group size classes.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick mount
-+
-+sysfs_size_classes() {
-+	local uuid="$(findmnt -n -o UUID "$SCRATCH_MNT")"
-+	cat "/sys/fs/btrfs/$uuid/allocation/data/size_classes"
-+}
-+
-+_supported_fs btrfs
-+_require_scratch
-+_require_btrfs_fs_sysfs
-+_require_fs_sysfs allocation/data/size_classes
-+
-+f="$SCRATCH_MNT/f"
-+small=$((16 * 1024))
-+medium=$((1024 * 1024))
-+large=$((16 * 1024 * 1024))
-+
-+_scratch_mkfs >/dev/null
-+_scratch_mount
-+# Write files with extents in each size class
-+$XFS_IO_PROG -fc "pwrite -q 0 $small" $f.small
-+$XFS_IO_PROG -fc "pwrite -q 0 $medium" $f.medium
-+$XFS_IO_PROG -fc "pwrite -q 0 $large" $f.large
-+# Sync to force the extent allocation
-+sync
-+pre=$(sysfs_size_classes)
-+
-+# cycle mount to drop the block group cache
-+_scratch_cycle_mount
-+
-+# Another write causes us to actually load the block groups
-+$XFS_IO_PROG -fc "pwrite -q 0 $large" $f.large.2
-+sync
-+
-+post=$(sysfs_size_classes)
-+diff <(echo $pre) <(echo $post)
-+
-+echo "Silence is golden"
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/283.out b/tests/btrfs/283.out
-new file mode 100644
-index 00000000..efb2c583
---- /dev/null
-+++ b/tests/btrfs/283.out
-@@ -0,0 +1,2 @@
-+QA output created by 283
-+Silence is golden
--- 
-2.39.1
-
+> 
+> -- 
+> Chris Murphy
