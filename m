@@ -2,96 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 268D3697E76
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Feb 2023 15:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DA2697FD5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Feb 2023 16:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbjBOOeO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Feb 2023 09:34:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
+        id S229558AbjBOPuP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Feb 2023 10:50:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbjBOOeI (ORCPT
+        with ESMTP id S229553AbjBOPuO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Feb 2023 09:34:08 -0500
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F3F392AF
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Feb 2023 06:34:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1676471647; x=1708007647;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=/oYWgvLRe6h3xVTHAWcQzQ9KLDOuCczBrh6j4HxEJ7o=;
-  b=Wf11cIr8oVgpVI7AZRNHXRiBtQVBnNenk3r9tW7MRhdSk6KgYhBb9tc9
-   l/OVVatYoy0FbNrevYjAfVxILef9BsYvLNrxijKB17ydgonva0ltcMR7m
-   QpWWYsk7O0VlldtGFwxaXqadqsurcx3H2CStMZqeT0p9TWF4rUrDYV6+t
-   AjIY3k0uNxWLeRYMbfSzjHU4KMBCvIJ6NmUzMxK8p0WlCNayzsIvkcMvt
-   HXBJOaBUmARqQgU9gvkiAflQxcemtksN81fBVDPEj+aBoLyvYItKpG/Fk
-   gtsHvNsyvSQNq8W7Hb4v0JNNoWLJFy7lvufVfgakSrgVr7oSPrHa2RcsJ
-   w==;
-X-IronPort-AV: E=Sophos;i="5.97,299,1669046400"; 
-   d="scan'208";a="223394079"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Feb 2023 22:33:50 +0800
-IronPort-SDR: VB1M/d3r/5Muaor1CJdseIu7/o9a8Bmgy67Pm+jB6YkzVtjmzFzCaD0yYyWd7HvnjnaBl7gL6r
- okwq0dV0W0T3Ng6i4HcuhKVZ2KTFk76tTeQ3zAqbITKykezJIkHNzdts4+KPRa1yPz4p014EoF
- i3EutVJvYjzYUuWVxbDkQHvE910MAROF1UXw5Ayrdb2SGweBKtN4XAyes6zzLDhTELAIghM2Q8
- OxBlFVbMwt53srXAPfTihkuFiJQm32AWSoMDmp/zdem4zLN6Ce1BQ9k0QzwwauJMdD7SYVtzak
- mVs=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Feb 2023 05:45:11 -0800
-IronPort-SDR: iLX7NFfIoE2/a3o57p+FVXhGd+FgY0/KpjAlBtVsBYraWJVIkCRQ6st5RtCjv8is49V1Rq6GwU
- N0gJ+9LQVy3FryOmeNCsPmqnaRK00g/SSVv3E0OHP1h0fqxxBhmA1op2J/1Y+oGXw3RWID6fx6
- Ig4syq7Aozs6VvtS1766rvkc5b36FVuhBIbwDg0rSQwxheYMiHK5XPdIN+UcUZw7ENoyxlaok6
- AP+eyTbfuydvUcnobuE4RLBYYpGTkoI+eI3VSrO0QAoMjnzWUMNaKESF2vVEPJAt3kE8kOYpL0
- juk=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip01.wdc.com with ESMTP; 15 Feb 2023 06:33:50 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v6 13/13] btrfs: add raid-stripe-tree to features enabled with debug
-Date:   Wed, 15 Feb 2023 06:33:34 -0800
-Message-Id: <d07d3f53a0df091a2c30278cf66da6ba1002b818.1676470614.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <cover.1676470614.git.johannes.thumshirn@wdc.com>
-References: <cover.1676470614.git.johannes.thumshirn@wdc.com>
+        Wed, 15 Feb 2023 10:50:14 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5D834F66
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Feb 2023 07:50:13 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id m20-20020a05600c3b1400b003e1e754657aso1919543wms.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Feb 2023 07:50:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:to:from:subject:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=kCRA2NpLCz0WhUePmGtb/JGCqYsCH1FbYCTAn8xR4Wc=;
+        b=TxEKG8suHwe0TZ8P+ckdqXfwjeM4CvhfezoHW0UBCdskhwbLIvEl7AMMaTRRmx1AcK
+         wtw/Dv6uyULsY2mph1lk9vCZHkev9AamNg8eH+xlyoCH2MmLARQmgoDNwZS1Mlv6cl/s
+         t7Od4Rp53A/yy2QTzAo0xK6iQw6FZ5lvWa6x+taTw15c/HmYsDl8fqG2K26ovRdlzA/E
+         Quy/+CgFwTuN26IQseFxFvHAXvLo+p2EEdgNcxTKF9/VtgaHHzhpuW7+Lk2Kv8eRqrhv
+         Ch+Cu47y8dJBElhMwNWEvK7V8dnvczuShruFAdbvxQoPE9cZFqd8zkoAluNwtmF0fj7f
+         YPvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:to:from:subject:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kCRA2NpLCz0WhUePmGtb/JGCqYsCH1FbYCTAn8xR4Wc=;
+        b=Vwv0sMPl0LZgEXe+rLmJTYUWEg4xAAFIPDHJ1MZSCsh6J7Xwa/KD8GND5L74mfTdtJ
+         v8N+XRy0zoIhyjAG+HWCPtTz3QQ+gr44m5uAXuYQuPDil6o0hXxpWWUyo2h0VZMcSWL/
+         52kwmucmtZP/d7//YExHkW9VNW/VJZT2Bo3u5Hf092Tu1No2kPMoWLgoVGw0mEakumgP
+         wxexajtaDSBZ7cfW4+79/0RhoI8A8CgON5o4QRB1Y//xMjeGp0jMhhnWjkizBVLonAZX
+         F5yVScbsYHtU3lGkGBI0P+6HTL0S2GRQELZB15BiIx6p0B/KQMd9MCZmuvP8ZEOjIHLP
+         kKxg==
+X-Gm-Message-State: AO0yUKVzL3EouGimnxIuYXtBOzDZHN0O5/AunKK1gL3Xi9+pvXcbuDbk
+        NyaDAaKjOhnpfHdz2BXu280sU7IfJaw=
+X-Google-Smtp-Source: AK7set//HmflOYgvMs1gp7xdvxKeLFTUE79Gm+dnwxHydbb1nyD3WFvotaFjvr3mvGiFTO1TNlY2Vw==
+X-Received: by 2002:a05:600c:4aaf:b0:3e2:59d:432c with SMTP id b47-20020a05600c4aaf00b003e2059d432cmr1400241wmp.17.1676476211986;
+        Wed, 15 Feb 2023 07:50:11 -0800 (PST)
+Received: from [127.0.0.1] (178.115.51.107.wireless.dyn.drei.com. [178.115.51.107])
+        by smtp.gmail.com with ESMTPSA id u15-20020a05600c19cf00b003dc53217e07sm2676179wmq.16.2023.02.15.07.50.10
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Feb 2023 07:50:11 -0800 (PST)
+Message-ID: <3adc6fb633bde8533b77ce1cbb0eda97@swift.generated>
+Date:   Wed, 15 Feb 2023 16:50:05 +0100
+Subject: Domain it-archiv.de
+From:   Rudolf Schaefer <rudischaeferzk4@gmail.com>
+To:     "" <linux-btrfs@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Until the RAID stripe tree code is well enough tested and feature
-complete, "hide" it behind CONFIG_BTRFS_DEBUG so only people who
-want to use it are actually using it.
+Sehr geehrte Damen und Herren!
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/fs.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index d0d80540b32b..dd151538d2b1 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -214,7 +214,8 @@ enum {
- 	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
- 	 BTRFS_FEATURE_INCOMPAT_RAID1C34	|	\
- 	 BTRFS_FEATURE_INCOMPAT_ZONED		|	\
--	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2)
-+	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2	|	\
-+	 BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE)
- #else
- #define BTRFS_FEATURE_INCOMPAT_SUPP			\
- 	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
--- 
-2.39.0
+Ich besitze derzeit die Domain it-ar=
+chiv.de ,w=C3=A4ren Sie eventuell an diesem Namen interessiert?
 
+Ich fr=
+eue mich auf Ihre R=C3=BCckmeldung
+
+Es gr=C3=BC=C3=9Ft
+
+Rudolf Scha=
+efer
+
+-----------------------------------------------------
