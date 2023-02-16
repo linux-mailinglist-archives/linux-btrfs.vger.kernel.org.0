@@ -2,58 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A036993D0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Feb 2023 13:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 151BD6993F6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Feb 2023 13:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229462AbjBPMCx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Feb 2023 07:02:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
+        id S229868AbjBPMMV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Feb 2023 07:12:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230493AbjBPMCb (ORCPT
+        with ESMTP id S229571AbjBPMMU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Feb 2023 07:02:31 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CA459B6B
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 04:02:09 -0800 (PST)
+        Thu, 16 Feb 2023 07:12:20 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E127355E5A;
+        Thu, 16 Feb 2023 04:12:18 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3CA2661FB0
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 12:02:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B80BC4339E
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 12:02:08 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 90211B8272A;
+        Thu, 16 Feb 2023 12:12:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DFABC4339B;
+        Thu, 16 Feb 2023 12:12:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676548928;
-        bh=mZ5LHbxjnP+KW2cQLvcbOFn3o2Kqj0xwws8MBk9/r+0=;
+        s=k20201202; t=1676549536;
+        bh=nw3pJCjnIROuGxw+k9KwhkO81lcnyQJc4+iT2eJC/sw=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KWe/tIhQlQ3uWSfE2lNdb15yj6JyU1sOhhPN6YYZtPxmrt7FicL/D+8ey/mBUsewk
-         AS0n3TuPSrYvVabSsGbPXEvzBq0EIXNka3r99w+tmb58DUEc7u7Ed9m0GtMx7W0HpC
-         K211IWx2JaeEZQEMnJ/0tbh7iyAihxAs4cxeYVGgDb9e2KT1UbMlNsj4uBrYEhay/F
-         XvVtnQUSNL1QV8Y9oeq6Hsw9qpHMMznNKVcf94eB/nF9h+GXEO0ydPDKH21HQBwArR
-         aPSd9mAVwesn1601W3jZEELzXSKleKYxLoTpHTXfx+8mDiTtRMXV3OICNcFjDzvdLn
-         H+JXUWEA/EQew==
-Received: by mail-oi1-f176.google.com with SMTP id r28so1429541oiw.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 04:02:08 -0800 (PST)
-X-Gm-Message-State: AO0yUKW1IhmMptkDF0JiWpzo09h+Dwo99/oaUflrXhFckRof8o+Q2vTL
-        fZnNN/pzV9ftE5lKflwb0jCcPEk8rd+U1QgIxj4=
-X-Google-Smtp-Source: AK7set/fBzOWTERcP017srmEI1KbYM/WNj16sxK0eaRlNreA7L0wf3LkCfuLcl1EpbRX3yTzNlcpqwmqNbyFD9fdQUw=
-X-Received: by 2002:a05:6808:2394:b0:37d:5e52:6844 with SMTP id
- bp20-20020a056808239400b0037d5e526844mr153476oib.98.1676548927733; Thu, 16
- Feb 2023 04:02:07 -0800 (PST)
+        b=uGgTiQse+9hqkSlJeANUh4g3stusNcFiI778416rBmgXkIrCkXVQiVucbloTYmoYN
+         4vPPn1oL9MXVRehkKjGI+3xBq0ZjXZHwLlNoEkV8i+8Q5NlBqa6ulgl4VRzS0Ee6f3
+         jBzFyFkwffgDzU5GRETr1T8GS8+CcaRw0ig26+7fENhoy1GS3YTLcfpV1+djeZWttJ
+         toJCzSkbX6zcHabvM5zS5VpAUzwPyt6mIhkPqGV+OxVTcJe7oF8E9Kg+B50Dhq57eU
+         4V/UGoJYcVhHTvoOIAtFA53Cw6PGyUvO6AgzWRRjhozvJtm5foU7haN/OnEk9L4GM6
+         VWTN5csZ4kPEA==
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-16e2c22c3baso2268964fac.8;
+        Thu, 16 Feb 2023 04:12:16 -0800 (PST)
+X-Gm-Message-State: AO0yUKUuUrASx/MYVUxgl6pMl6Bx0oQ7gaRXnkuPv4b/ej4oBSseLWyZ
+        lGMfFF7tFISN+KAeblxfNxg5hgFQkJaATQ4b/d0=
+X-Google-Smtp-Source: AK7set/9s6I5FIll7EHrTgxvmWyK5RJsMg/7LFPk5Inw8O/IY9GlLrfnaaso/KGxPQzgUYFAphmEIcCg272qOxXz+jc=
+X-Received: by 2002:a05:6870:d248:b0:16e:11dc:2513 with SMTP id
+ h8-20020a056870d24800b0016e11dc2513mr174759oac.98.1676549535358; Thu, 16 Feb
+ 2023 04:12:15 -0800 (PST)
 MIME-Version: 1.0
-References: <aa1fb69e-b613-47aa-a99e-a0a2c9ed273f@app.fastmail.com>
- <124a916c-786b-42ec-bc9d-db97bb081881@app.fastmail.com> <Y+1pAoetotjEuef7@zen>
- <dabed1bf-da8b-6ef4-77c4-e2c28cf9106f@gmx.com>
-In-Reply-To: <dabed1bf-da8b-6ef4-77c4-e2c28cf9106f@gmx.com>
+References: <160e7557f66a6a34fd052d6834909aa02a702956.1676503163.git.boris@bur.io>
+In-Reply-To: <160e7557f66a6a34fd052d6834909aa02a702956.1676503163.git.boris@bur.io>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 16 Feb 2023 12:01:31 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4nHvNtH84ZwkZm0kGSALNfFZNYc7=WuQ=FBcrGuYd7Dg@mail.gmail.com>
-Message-ID: <CAL3q7H4nHvNtH84ZwkZm0kGSALNfFZNYc7=WuQ=FBcrGuYd7Dg@mail.gmail.com>
-Subject: Re: LMDB mdb_copy produces a corrupt database on btrfs, but not on ext4
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Boris Burkov <boris@bur.io>,
-        Chris Murphy <chris@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Thu, 16 Feb 2023 12:11:39 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H42GK2xu9ZSAKiDUG8ZRJzgudk-3DHE9f95Sqwc0iPKyQ@mail.gmail.com>
+Message-ID: <CAL3q7H42GK2xu9ZSAKiDUG8ZRJzgudk-3DHE9f95Sqwc0iPKyQ@mail.gmail.com>
+Subject: Re: [PATCH v6] btrfs: test block group size class loading logic
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        fstests@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -64,75 +61,115 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 16, 2023 at 10:23 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+On Wed, Feb 15, 2023 at 11:37 PM Boris Burkov <boris@bur.io> wrote:
+>
+> Add a new test which checks that size classes in freshly loaded block
+> groups after a cycle mount match size classes before going down
+>
+> Depends on the kernel patch:
+> btrfs: add size class stats to sysfs
+>
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+> Changelog:
+> v6:
+> Actually include changes for v5 in the commit.
+> v5:
+> Instead of using _fixed_by_kernel_commit, use require_fs_sysfs to handle
+> the needed sysfs file. The test is skipped on kernels without the file
+> and runs correctly on new ones.
+> v4:
+> Fix dumb typo in _fixed_by_kernel_commit (left out leading underscore
+> copy+pasting). Re-tested happy and sad case...
+>
+> v3:
+> Re-add fixed_by_kernel_commit, but for the stats patch which is
+> required, but not a fix in the strictest sense.
+>
+> v2:
+> Drop the fixed_by_kernel_commit since the fix is not out past the btrfs
+> development tree, so the fix is getting rolled in to the original broken
+> commit. Modified the commit message to note the dependency on the new
+> sysfs counters.
 >
 >
+>  tests/btrfs/283     | 50 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/283.out |  2 ++
+>  2 files changed, 52 insertions(+)
+>  create mode 100755 tests/btrfs/283
+>  create mode 100644 tests/btrfs/283.out
 >
-> On 2023/2/16 07:21, Boris Burkov wrote:
-> > On Wed, Feb 15, 2023 at 03:16:39PM -0500, Chris Murphy wrote:
-> >>
-> >>
-> >> On Wed, Feb 15, 2023, at 3:04 PM, Chris Murphy wrote:
-> >>> Downstream bug report, reproducer test file, and gdb session transcript
-> >>> https://bugzilla.redhat.com/show_bug.cgi?id=2169947
-> >>>
-> >>> I speculated that maybe it's similar to the issue we have with VM's
-> >>> when O_DIRECT is used, but it seems that's not the case here.
-> >>
-> >> I can reproduce the mismatching checksums whether the test files are datacow or nodatacow (using chattr +C). There are no kernel messages during the tests.
-> >>
-> >> kernel 6.2rc7 in my case; and in the bug report kernel series 6.1, 6.0, and 5.17 reproduce the problem.
-> >>
-> >
-> > I was also able to reproduce on the current misc-next. However, when I
-> > hacked the kernel to always fall back from DIO to buffered IO, it no
-> > longer reproduced. So that's one hint..
-> >
-> > The next observation comes from comparing the happy vs unhappy file
-> > extents on disk:
-> > happy: https://pastebin.com/k4EPFKhc
-> > unhappy: https://pastebin.com/hNSBR0yv
-> >
-> > The broken DIO case is missing file extents between bytes 8192 and 65536
-> > which corresponds to the observed zeros.
-> >
-> > Next, at Josef's suggestion, I looked at the IOMAP_DIO_PARTIAL and
-> > instrumented that codepath. I observed a single successful write to 8192
-> > bytes, then a second write which first does a partial write from 8192 to
-> > 65536 and then faults in the rest of the iov_iter and finishes the
-> > write.
->
-> A little off-topic, as I'm not familiar with Direct IO at all.
->
-> That fault (I guess means page fault?) means the Direct IO source
-> (memory of the user space program) can not be accessible right now?
-> (being swapped?)
->
-> If that's the case, any idea why we can not wait for the page fault to
-> fill the user space memory?
+> diff --git a/tests/btrfs/283 b/tests/btrfs/283
+> new file mode 100755
+> index 00000000..2c26b41e
+> --- /dev/null
+> +++ b/tests/btrfs/283
+> @@ -0,0 +1,50 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
+> +#
+> +# FS QA Test 283
+> +#
+> +# Test that mounting a btrfs filesystem properly loads block group size classes.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick mount
 
-Sure, you can call fault_in_iov_iter_readable() for the whole iov_iter
-before starting the actual direct IO,
-and that will work and not result in any problems most of the time.
+I'm still curious why the 'mount' group, and I've asked for that before.
 
-However:
+We aren't testing a new mount option, so it feels weird for me.
 
-1) After that and before starting the write, all pages or some pages
-may have been evicted from memory due to memory pressure for e.g.;
+Otherwise, it looks fine now. Thanks.
 
-2) If the iov_iter refers to a very large buffer, it's inefficient to
-fault in all pages.
-
-> I guess it's some deadlock but is not for sure.
+> +
+> +sysfs_size_classes() {
+> +       local uuid="$(findmnt -n -o UUID "$SCRATCH_MNT")"
+> +       cat "/sys/fs/btrfs/$uuid/allocation/data/size_classes"
+> +}
+> +
+> +_supported_fs btrfs
+> +_require_scratch
+> +_require_btrfs_fs_sysfs
+> +_require_fs_sysfs allocation/data/size_classes
+> +
+> +f="$SCRATCH_MNT/f"
+> +small=$((16 * 1024))
+> +medium=$((1024 * 1024))
+> +large=$((16 * 1024 * 1024))
+> +
+> +_scratch_mkfs >/dev/null
+> +_scratch_mount
+> +# Write files with extents in each size class
+> +$XFS_IO_PROG -fc "pwrite -q 0 $small" $f.small
+> +$XFS_IO_PROG -fc "pwrite -q 0 $medium" $f.medium
+> +$XFS_IO_PROG -fc "pwrite -q 0 $large" $f.large
+> +# Sync to force the extent allocation
+> +sync
+> +pre=$(sysfs_size_classes)
+> +
+> +# cycle mount to drop the block group cache
+> +_scratch_cycle_mount
+> +
+> +# Another write causes us to actually load the block groups
+> +$XFS_IO_PROG -fc "pwrite -q 0 $large" $f.large.2
+> +sync
+> +
+> +post=$(sysfs_size_classes)
+> +diff <(echo $pre) <(echo $post)
+> +
+> +echo "Silence is golden"
+> +# success, all done
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/283.out b/tests/btrfs/283.out
+> new file mode 100644
+> index 00000000..efb2c583
+> --- /dev/null
+> +++ b/tests/btrfs/283.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 283
+> +Silence is golden
+> --
+> 2.39.1
 >
-> Thanks,
-> Qu
-> >
-> > I'm now trying to figure out how these partial writes might lead us to
-> > not create all the EXTENT_DATA items for the file extents.
-> >
-> > Boris
-> >
-> >>
-> >> --
-> >> Chris Murphy
