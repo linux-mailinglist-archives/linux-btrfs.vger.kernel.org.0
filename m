@@ -2,88 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFBD699F12
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Feb 2023 22:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A379699FD0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Feb 2023 23:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjBPVnn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Feb 2023 16:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
+        id S230031AbjBPWjo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Feb 2023 17:39:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjBPVnm (ORCPT
+        with ESMTP id S229956AbjBPWjn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Feb 2023 16:43:42 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8903B3CF
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 13:43:41 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 29C2B60C1D
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 21:43:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70ECBC4339B
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 21:43:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676583820;
-        bh=AA4P/7oNAVd0RUSU1kHy2/whsk5xZNt/lbx+zYu4YWQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=S1oVk4XYh3N2BlEcsd7DL5ZUohVC8mB8hkDRf8N4gOOUVCZbIXPO340cTb5pc8qMB
-         LEi/XStlNDYFdtLos87Pzy2PlMX1renj/wvu8N9MyPeY+GYsUS79eFab6OFDjJme37
-         s8H0La3BA/16vg1cGWr15cALbXe1ybyB2Y7m9DzH5gP3vjAp7/KbmDdzIjt4kOkeb9
-         aTKj1DLTrqT8IhwFRptQrJ+B/RlnxGS98OBRdnQTiMUJc/n2qhRRy/bCsCcjToGtd4
-         OzJRx9f5hqBkpdYA9BuAsSRuxQJJCQN7FFwaAnG8lJcJEETDj/gT7aMLbSTcFcoaVI
-         MwtUAgeIpc+IQ==
-Received: by mail-oi1-f169.google.com with SMTP id w11so3078372oiv.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 13:43:40 -0800 (PST)
-X-Gm-Message-State: AO0yUKVpvWwO1X7t+SkXt0NlOsefu+moTHMBwg7/+mDXAEyZGPWC6iyS
-        uxnVjGWlJ3RDTI/QpihE3YCxCqWChoz/g8l2u30=
-X-Google-Smtp-Source: AK7set/NALiiQzRsSsEmVjeld9ObAJb6/D3R+1105NAYTHuyX318KDSYxfLDtEXcm/qNsLU2ehbOEuXSmH+hXCQfKm4=
-X-Received: by 2002:a05:6808:2394:b0:37d:5e52:6844 with SMTP id
- bp20-20020a056808239400b0037d5e526844mr290407oib.98.1676583819616; Thu, 16
- Feb 2023 13:43:39 -0800 (PST)
+        Thu, 16 Feb 2023 17:39:43 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4EA48E1B
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 14:39:42 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id e1so2184310pgg.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 14:39:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112; t=1676587182;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pi9noMYVGr57MR9lsBdKAfrR3AzH/XjRZ8qVHHkboUA=;
+        b=ilRc6bGW2j1NFXeJp6gWho2MZHvncBJzu3o1KNvsLnf408IY0rj98GTY1h6WayouH6
+         zAgn2nxBPGOD2xowZi/VXN3bUbI20JqRaTzKfy3y5c4iKIQWhO8IeGyTJE8L6oUnFIFW
+         9oAczAmKp1mk2OUmoC5dC+TF5MgmgKvbZNUFgn0o86KlPUcr2CunouQy8UkELwGt8eIb
+         S6rYMtbeDDSBbKR45nmx6nU/1u7nUeBwDQlpzNVciIAcYpLadY4lENO8qdNUXE3rH6Vu
+         206IgDTGJpznNkkoHas4BePgbrCGqmjfFWSt05RgNQMB02JOPpvg8YmuD/BWABva/Brz
+         tp6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1676587182;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pi9noMYVGr57MR9lsBdKAfrR3AzH/XjRZ8qVHHkboUA=;
+        b=AfPhIbFYjgiiq6xHeXtoiXQ5F1J/HtsRET4mNGnrUURbJiU54Yh5XMHFHjiDGmlaxp
+         tv5HqDH03GJ7LFwfKUfpRgKDRG/RVSofGI+bKvZrBnIR+WuDE2iUq0jXon2pC8prKjLn
+         rc0Lj0Mipg9swUuoMCx4573IBQdwlPDmX863dflkY46RKdIrIkW74vU2723moASed13M
+         34Gv1IZd8NL811E1OqseJYo/jxeeRTOEM+nCX+ySr53wsmomMlSN0WSIdaNvwgs5Q71z
+         bJSPbzG3hDQ9Ds83ztHFP/8yCvz6FIUbGg6Y7C5V86NFvuJh3qfw6ewwJnXVjj8Gsqaf
+         rsfw==
+X-Gm-Message-State: AO0yUKWU/2c0pR3fiQwsVDw28SQHgpt0NImjJvfsvOBKcJpKLQJC2IIp
+        m7ORux0qUBESI2ax9X2oNliw7hGAOw8m38TZyb0tWQ==
+X-Google-Smtp-Source: AK7set9kKa9eBzDeIKikiiDIWuCL4AJkcboiiV1ZwSCTRe6TdvP3fkDrAkB5UJ/Dp6ALZBtj1NnGPoiFrl7lYrtlORM=
+X-Received: by 2002:a62:cd0a:0:b0:5a9:c837:5ad5 with SMTP id
+ o10-20020a62cd0a000000b005a9c8375ad5mr207866pfg.14.1676587181637; Thu, 16 Feb
+ 2023 14:39:41 -0800 (PST)
 MIME-Version: 1.0
-References: <aa1fb69e-b613-47aa-a99e-a0a2c9ed273f@app.fastmail.com>
- <124a916c-786b-42ec-bc9d-db97bb081881@app.fastmail.com> <Y+1pAoetotjEuef7@zen>
- <Y+16BVPQiwf8e1J3@zen> <CAL3q7H7n3BG_6B_riK9U=uCO5JKZwefU9DPtmcRZ0W=T+7K0Nw@mail.gmail.com>
- <Y+5kjpZJJxU+vz1X@zen> <CAL3q7H4CmQOG6wYBg8Ha0xUJ+QWKEfF8YixJ-DwnJy=fXs9e=Q@mail.gmail.com>
- <Y+56sPyNHZRVQdnj@infradead.org>
-In-Reply-To: <Y+56sPyNHZRVQdnj@infradead.org>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 16 Feb 2023 21:43:03 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7gWmJhJ-xMcDifQ2hK=wMWJTmQ0tQWd8KRsaQM6fwiDg@mail.gmail.com>
-Message-ID: <CAL3q7H7gWmJhJ-xMcDifQ2hK=wMWJTmQ0tQWd8KRsaQM6fwiDg@mail.gmail.com>
-Subject: Re: LMDB mdb_copy produces a corrupt database on btrfs, but not on ext4
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Boris Burkov <boris@bur.io>,
-        Chris Murphy <chris@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <0ca02b1f-ab00-9fa6-aecc-c2c46d624e49@leemhuis.info> <e0998928-0f4e-f2a9-2e77-3e4bab459688@leemhuis.info>
+In-Reply-To: <e0998928-0f4e-f2a9-2e77-3e4bab459688@leemhuis.info>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Thu, 16 Feb 2023 17:39:30 -0500
+Message-ID: <CAEzrpqc6tweHqKKPZYyVuOXH1Wd+hmrTPfcrpa-5-btU_Z24Fg@mail.gmail.com>
+Subject: Re: [Regression] Bug 216961 - Severe IO scheduling starvation issues
+ with btrfs
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Wyatt Childers <kernel.dbwta@haxing.ninja>, pmacedo@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 16, 2023 at 6:49 PM Christoph Hellwig <hch@infradead.org> wrote:
+On Thu, Feb 16, 2023 at 12:43 PM Thorsten Leemhuis
+<regressions@leemhuis.info> wrote:
 >
-> On Thu, Feb 16, 2023 at 06:00:08PM +0000, Filipe Manana wrote:
-> > Ok, so the problem is btrfs_dio_iomap_end() detects the submitted
-> > amount is less than expected, so it marks the ordered extents as not
-> > up to date, setting the BTRFS_ORDERED_IOERR bit on it.
-> > That results in having an unexpected hole for the range [8192, 65535],
-> > and no error returned to btrfs_direct_write().
-> >
-> > My initial thought was to truncate the ordered extent at
-> > btrfs_dio_iomap_end(), similar to what we do at
-> > btrfs_invalidate_folio().
-> > I think that should work, however we would end up with a bookend
-> > extent (but so does your proposed fix), but I don't see an easy way to
-> > get around that.
+> Hi btrfs maintainers and developers.
 >
-> Wouldn't a better way to handle this be to cache the ordered_extent in
-> the btrfs_dio_data, and just reuse it on the next iteration if present
-> and covering the range?
+> I might be missing something, but it looks like the report was ignored.
+> Is there a reason for that?
+>
 
-That may work too, yes.
+Mostly just being blind.  I've responded to the BZ, I'll investigate
+through the BZ.  Thanks,
+
+Josef
