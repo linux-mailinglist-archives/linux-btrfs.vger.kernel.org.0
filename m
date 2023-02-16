@@ -2,86 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0897C699AFB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Feb 2023 18:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B21699B72
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Feb 2023 18:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjBPRPC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Feb 2023 12:15:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
+        id S229748AbjBPRnp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Feb 2023 12:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjBPRPB (ORCPT
+        with ESMTP id S229785AbjBPRnn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Feb 2023 12:15:01 -0500
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AE64AFD2
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 09:14:59 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id B03B93200991;
-        Thu, 16 Feb 2023 12:14:56 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 16 Feb 2023 12:14:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1676567696; x=1676654096; bh=/aLrAwrbNo
-        uEgbyH1KMtj3Hr3XWW2DHPektCbYZ5O5E=; b=CRw0oslJAcgfESKwwinRmkN0KB
-        J/abT6qPaYHHT4tQzWvmwbtZU11TFnEslSS0mLoYDTmxU8bybslFDo/5Fo448Z6d
-        qh3omG87Ch6R01Fb7S09DaGgTfHAbZR5lSyhBPk9h9Z55GnG+PgYTK1ztXBwN4Cz
-        N8aYh9HPd4HCEzrgx1I9hTPzg3EizEjTnA5EMBGbAlbYWs9ODOm8kNFiEj15oXoa
-        KP98Ms7HWROx7QYXcvchbHixEoGXRhoCXGD8pVlNGgQKzCFRGnLO2Ob2NdCS+Dki
-        j4NUgdfsfYT6fj88bUAr7Z4sUvG8N+M3lYnKjgWvwas7fsHeYZT9uCK+M+HQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1676567696; x=1676654096; bh=/aLrAwrbNouEgbyH1KMtj3Hr3XWW
-        2DHPektCbYZ5O5E=; b=U7IDYzwBB9OI90JwZchNEP5Ql+fQUOHcxqTzG4O7Pqpb
-        cVJxG8yNt+P78YcKfA7Q0wQZ+0eYrHZlo8tf5GBqlDH1vF6xhU7axryGgxLgojIs
-        a0L3mKGRX+ylqYlFoghtimozs7LfisxpxHTsVwKkttKWvYEBKNWj3uVfB7O6v/zo
-        Aq2KEE3pVeUvkZdthuabdI/J69Wnm0S6DOq2NbSdsEMizgZ0GfRCxN1TACfOBwn8
-        iOJnZZy6ZADeryFAMB1JW21f7cRRBlQC3Z4E0W+w9tn+5p4OQ2yB9ues/QHRutZt
-        /IrwnQu1PC4CKEQqQ++VUFje1S8fXPEWv26Fa+epag==
-X-ME-Sender: <xms:kGTuY9eqeepTVhPsXJl0kjE4quY-1EtO1vcB9licWOGOadJV634f3g>
-    <xme:kGTuY7MDdV2yrPww93uZ64oCY-5YFUCmQHhiuOo1Urm3mOIyMuUshJQksvFrHo0Cp
-    XSJxm6Gz9Ok3M2pl_s>
-X-ME-Received: <xmr:kGTuY2i9iYawp2VsJ2gaCP3QXhZ0OKWLRfMlqSkRTdt2cg034DOZqFJ9>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeijedgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ehieegjeehffeuhffhleffueegjeefledtveduvdekgfehfffgtedvudekleffffenucff
-    ohhmrghinheprhgvughhrghtrdgtohhmpdhprghsthgvsghinhdrtghomhenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhr
-    rdhioh
-X-ME-Proxy: <xmx:kGTuY2-BlBknjmzn9t-0E_Nwxed2joKDhbCOI2Y-1zio0D7mNqa96w>
-    <xmx:kGTuY5uaHCG1Sm_rDSk6h0HRAvQWNnXXOhpN0osnLjFJMLLxdjjl3w>
-    <xmx:kGTuY1Gy3z347TWanhnBAmUzZCFMCseWU9eI5b2LMvygVJdTTFC--g>
-    <xmx:kGTuY6Wr6knVdoIoTgktQhEHpO4bI-1DW2X6iGnXseMPCGXBz6zdiQ>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 16 Feb 2023 12:14:55 -0500 (EST)
-Date:   Thu, 16 Feb 2023 09:14:54 -0800
-From:   Boris Burkov <boris@bur.io>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Chris Murphy <chris@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: LMDB mdb_copy produces a corrupt database on btrfs, but not on
- ext4
-Message-ID: <Y+5kjpZJJxU+vz1X@zen>
-References: <aa1fb69e-b613-47aa-a99e-a0a2c9ed273f@app.fastmail.com>
- <124a916c-786b-42ec-bc9d-db97bb081881@app.fastmail.com>
- <Y+1pAoetotjEuef7@zen>
- <Y+16BVPQiwf8e1J3@zen>
- <CAL3q7H7n3BG_6B_riK9U=uCO5JKZwefU9DPtmcRZ0W=T+7K0Nw@mail.gmail.com>
+        Thu, 16 Feb 2023 12:43:43 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7854D623;
+        Thu, 16 Feb 2023 09:43:39 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1pSiID-0006eO-HB; Thu, 16 Feb 2023 18:43:37 +0100
+Message-ID: <e0998928-0f4e-f2a9-2e77-3e4bab459688@leemhuis.info>
+Date:   Thu, 16 Feb 2023 18:43:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H7n3BG_6B_riK9U=uCO5JKZwefU9DPtmcRZ0W=T+7K0Nw@mail.gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: [Regression] Bug 216961 - Severe IO scheduling starvation issues
+ with btrfs
+Content-Language: en-US, de-DE
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Wyatt Childers <kernel.dbwta@haxing.ninja>, pmacedo@gmail.com
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+References: <0ca02b1f-ab00-9fa6-aecc-c2c46d624e49@leemhuis.info>
+In-Reply-To: <0ca02b1f-ab00-9fa6-aecc-c2c46d624e49@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1676569419;494f3f7c;
+X-HE-SMSGID: 1pSiID-0006eO-HB
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,152 +49,300 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 16, 2023 at 11:57:37AM +0000, Filipe Manana wrote:
-> On Thu, Feb 16, 2023 at 12:42 AM Boris Burkov <boris@bur.io> wrote:
-> >
-> > On Wed, Feb 15, 2023 at 03:21:38PM -0800, Boris Burkov wrote:
-> > > On Wed, Feb 15, 2023 at 03:16:39PM -0500, Chris Murphy wrote:
-> > > >
-> > > >
-> > > > On Wed, Feb 15, 2023, at 3:04 PM, Chris Murphy wrote:
-> > > > > Downstream bug report, reproducer test file, and gdb session transcript
-> > > > > https://bugzilla.redhat.com/show_bug.cgi?id=2169947
-> > > > >
-> > > > > I speculated that maybe it's similar to the issue we have with VM's
-> > > > > when O_DIRECT is used, but it seems that's not the case here.
-> > > >
-> > > > I can reproduce the mismatching checksums whether the test files are datacow or nodatacow (using chattr +C). There are no kernel messages during the tests.
-> > > >
-> > > > kernel 6.2rc7 in my case; and in the bug report kernel series 6.1, 6.0, and 5.17 reproduce the problem.
-> > > >
-> > >
-> > > I was also able to reproduce on the current misc-next. However, when I
-> > > hacked the kernel to always fall back from DIO to buffered IO, it no
-> > > longer reproduced. So that's one hint..
-> > >
-> > > The next observation comes from comparing the happy vs unhappy file
-> > > extents on disk:
-> > > happy: https://pastebin.com/k4EPFKhc
-> > > unhappy: https://pastebin.com/hNSBR0yv
-> > >
-> > > The broken DIO case is missing file extents between bytes 8192 and 65536
-> > > which corresponds to the observed zeros.
-> > >
-> > > Next, at Josef's suggestion, I looked at the IOMAP_DIO_PARTIAL and
-> > > instrumented that codepath. I observed a single successful write to 8192
-> > > bytes, then a second write which first does a partial write from 8192 to
-> > > 65536 and then faults in the rest of the iov_iter and finishes the
-> > > write.
-> > >
-> > > I'm now trying to figure out how these partial writes might lead us to
-> > > not create all the EXTENT_DATA items for the file extents.
-> >
-> > I believe the issue is indeed caused by faults reading the mapped region
-> > during direct io. Roughly what is happening is:
-> >
-> > - we start the dio write (offset 8192 len 1826816)
-> > - __iomap_dio_rw calls iomap_iter which calls btrfs_dio_iomap_begin which
-> >   creates an ordered extent for the full write.
-> > - iomap_dio_iter hits a page fault in bio_iov_iter_get_pages after 57344
-> >   bytes and breaks out early, but submits the partial bio.
-> > - the partial bio completes and calls the various endio callbacks,
-> >   resulting in a call to btrfs_mark_ordered_io_finished.
-> > - btrfs_mark_ordered_io_finished looks up the ordered extent and finds
-> >   the full ordered extent, but the write that finished is partial, so
-> >   the check for entry->bytes_left fails, and we don't call
-> >   finish_ordered_fn and thus don't create a file extent item for this
-> >   endio.
-> > - the IOMAP_DIO_PARTIAL logic results in us retrying starting from 65536
-> >   (8192 + 57344) but we fully exit and re-enter __iomap_dio_rw, which
-> >   creates a new ordered extent for off 65536 len 1769472 and that
-> >   ordered extent proceeds as above but successfully, and we get the
-> >   second file extent.
-> 
-> So one thing doesn't add up here.
-> 
-> The first write attempt creates the ordered extent for the range
-> [8192, 1835008],
-> we then submit a bio only for the range [8192, 65535], due to the page
-> fault at 64K.
-> 
-> That means that the ordered extent can not be completed, as you said
-> before, as ->bytes_left will be > 0 even after the submitted bio
-> completes.
-> 
-> However, the second time we enter btrfs_dio_iomap_begin(), for the
-> range [65536, 1835008], when we call lock_extent_direct(), we should
-> find the previous ordered extent, for range [8192, 1835008], which
-> intersects this second range - and that should make us wait for the
-> previous
-> ordered extent until it completes by calling
-> btrfs_start_ordered_extent() at lock_extent_direct(). This is clearly
-> not happening, as it would cause
-> a deadlock/hang.
-> 
-> So something is missing in your analysis, and that's important to
-> figure out the best solution to the problem.
-> 
-> Thanks.
-> 
+Hi btrfs maintainers and developers.
 
-Good point. I was confused about the extra ordered extents floating
-around as well. I believe I do have an explanation now. I think the
-following annotated callchain should explain it decently, but the tl;dr
-is that iomap_iter calls btrfs_dio_iomap_end which marks the ordered
-extent finished and clears the extent bits, but hits an error so it does
-not do much other endio work. (the error comes from
-mark_ordered_io_finished getting called without uptodate set)
+I might be missing something, but it looks like the report was ignored.
+Is there a reason for that?
 
-btrfs_direct_write
-  __iomap_dio_rw
-    iomap_iter
-      btrfs_dio_iomap_begin # creates the oe 8192 1835008
-    iomap_dio_iter # submits the partial bio 8192 57344 (CB1)
-      btrfs_dio_iomap_end
-        btrfs_mark_ordered_io_finished 65536 1769472
-        # ^ finds and munges the oe, decides bytes_left is 0 and queues
-        # the full finish work (CB2)
-    # partial write return
-  __iomap_dio_rw # btrfs_direct_write tries again
-    iomap_dio_iter
-      btrfs_dio_iomap_begin # makes the next OE
-    iomap_dio_iter # submits the remaining write 65536 1769472 (CB3)
+FWIW, meanwhile another user showed up in the report that apparently is
+affected by the same issue:
 
-btrfs_dio_end_io 8192 57344 (CB1)
-# finds the full oe and bails, as discussed above
+>  pmacedo 2023-02-07 12:47:31 UTC
+> 
+> This matches my experience on Debian with kernel from their unstable
+> repository (6.1.4-1). I've rolled back to the current stable kernel
+> from Bullseye (5.10.0-20-amd64, which according to the changelog is
+> based on 5.10.158-2) about a week ago after finding this bug and the
+> long IO stalls have disappeared.
+> 
+> Looks like Debian had 6.0 in backports, so I'll give it a try and
+> report back.
+> 
+> [reply] [−] Comment 5 pmacedo 2023-02-07 19:22:55 UTC
+> 
+> From my testing, this seems to be between 5.19 and 6.0 - on 6.0 I've
+> seen mkdir take up to 40 seconds, while on 5.19 it doesn't seem to
+> ever go above half a second.
+> 
+> My setup is raid 6 for data, raid1c3 for metadata; in my case the
+> stalls seem to happen more frequently after a large number of
+> deletions and btrfs-transaction will appear to be very busy according
+> to iotop, with everything else just stalling.
 
-btrfs_finish_ordered_io 65536 1769472 (CB2)
-# sees BTRFS_ORDERED_IOERR exits and clears the extent
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
-btrfs_dio_end_io 65536 1769472 (CB3)
-# succeeds on the new oe for that range and queues full finish work
-# which writes an extent
+#regzbot poke
 
-In my opinion, the part of this that feels like it is not behaving
-properly is the interaction between the iomap_iter logic of
-__iomap_dio_rw and the implementation of btrfs_dio_iomap_begin/end.
-Something about the begin/end calls the generic loop is doing is getting
-us to believe that large extent was "finished" but with an error set. If
-that is an appropriate way to handle the partial write, then maybe the
-splitting I proposed earlier works as a fix. Otherwise we may need to
-handle this case more explicitly in iomap_iter/btrfs_dio_iomap_end.
-
+On 26.01.23 12:17, Linux kernel regression tracking (Thorsten Leemhuis)
+wrote:
+> Hi, this is your Linux kernel regression tracker.
+> 
+> I noticed a regression report in bugzilla.kernel.org. As many (most?)
+> kernel developer don't keep an eye on it, I decided to forward it by
+> mail. Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=216961 :
+> 
+>>  Wyatt Childers 2023-01-23 17:44:13 UTC
+>>
+>> There seems to be an issue with btrfs in Kernel 6 (first seen in at least 6.0.12-300.fc37.x86_64, possibly earlier) and still observed in 6.1 (6.1.5-200.fc37.x86_64).
+>>
+>> This has manifested in prolonged user space hangs. I first noticed this in internal tooling for my employer where simple IO operations like a trivial cp commands that typically take under 100ms (when run with many other concurrent IO operations of a similar ilk) are observing "scheduling starvation" being stalled in a disk sleep state for nearly a minute.
+>>
+>> This also seems to be manifesting in hangs to Kwin that correlate with btrfs usage and things as routine and trivial (even on high performance systems) as system updates https://bugs.kde.org/show_bug.cgi?id=463353
+>>
+>> I would also not be surprised if this behavior is responsible for things like this reddit thread: https://www.reddit.com/r/btrfs/comments/102or0t/btrfs_on_luks_whole_system_freezing_under_high_io/
+>>
+>> [reply] [−] Comment 1 Wyatt Childers 2023-01-23 17:57:47 UTC
+>>
+>> As additional context, here are some sample kernel traces (echo w > /proc/sysrq-trigger):
+>>
+>> Dec 16 14:10:02 localhost kernel: sysrq: Show Blocked State
+>> Dec 16 14:10:02 localhost kernel: task:kworker/u64:6   state:D stack:    0 pid:2673507 ppid:     2 flags:0x00004000
+>> Dec 16 14:10:02 localhost kernel: Workqueue: btrfs-worker btrfs_work_helper
+>> Dec 16 14:10:02 localhost kernel: Call Trace:
+>> Dec 16 14:10:02 localhost kernel:  <TASK>
+>> Dec 16 14:10:02 localhost kernel:  __schedule+0x332/0x12c0
+>> Dec 16 14:10:02 localhost kernel:  ? __sbitmap_get_word+0x37/0x80
+>> Dec 16 14:10:02 localhost kernel:  schedule+0x5d/0xe0
+>> Dec 16 14:10:02 localhost kernel:  io_schedule+0x42/0x70
+>> Dec 16 14:10:02 localhost kernel:  blk_mq_get_tag+0x10c/0x290
+>> Dec 16 14:10:02 localhost kernel:  ? dequeue_task_stop+0x70/0x70
+>> Dec 16 14:10:02 localhost kernel:  __blk_mq_alloc_requests+0x183/0x2b0
+>> Dec 16 14:10:02 localhost kernel:  blk_mq_submit_bio+0x2b7/0x5b0
+>> Dec 16 14:10:02 localhost kernel:  __submit_bio+0xf5/0x180
+>> Dec 16 14:10:02 localhost kernel:  submit_bio_noacct_nocheck+0x20d/0x2a0
+>> Dec 16 14:10:02 localhost kernel:  btrfs_submit_bio+0x17a/0x3d0
+>> Dec 16 14:10:02 localhost kernel:  btrfs_work_helper+0x14b/0x380
+>> Dec 16 14:10:02 localhost kernel:  process_one_work+0x1c7/0x380
+>> Dec 16 14:10:02 localhost kernel:  worker_thread+0x4d/0x380
+>> Dec 16 14:10:02 localhost kernel:  ? _raw_spin_lock_irqsave+0x23/0x50
+>> Dec 16 14:10:02 localhost kernel:  ? rescuer_thread+0x380/0x380
+>> Dec 16 14:10:02 localhost kernel:  kthread+0xe9/0x110
+>> Dec 16 14:10:02 localhost kernel:  ? kthread_complete_and_exit+0x20/0x20
+>> Dec 16 14:10:02 localhost kernel:  ret_from_fork+0x22/0x30
+>> Dec 16 14:10:02 localhost kernel:  </TASK>
+>> Dec 16 14:10:02 localhost kernel: task:cp              state:D stack:    0 pid:2422766 ppid:2410777 flags:0x00000002
+>> Dec 16 14:10:02 localhost kernel: Call Trace:
+>> Dec 16 14:10:02 localhost kernel:  <TASK>
+>> Dec 16 14:10:02 localhost kernel:  __schedule+0x332/0x12c0
+>> Dec 16 14:10:02 localhost kernel:  ? btrfs_delayed_update_inode+0x102/0x1f0
+>> Dec 16 14:10:02 localhost kernel:  schedule+0x5d/0xe0
+>> Dec 16 14:10:02 localhost kernel:  io_schedule+0x42/0x70
+>> Dec 16 14:10:02 localhost kernel:  folio_wait_bit_common+0x12d/0x3a0
+>> Dec 16 14:10:02 localhost kernel:  ? filemap_alloc_folio+0xc0/0xc0
+>> Dec 16 14:10:02 localhost kernel:  folio_wait_writeback+0x28/0x80
+>> Dec 16 14:10:02 localhost kernel:  __filemap_fdatawait_range+0x7f/0x100
+>> Dec 16 14:10:02 localhost kernel:  filemap_fdatawait_range+0xe/0x20
+>> Dec 16 14:10:02 localhost kernel:  btrfs_wait_ordered_range+0x7a/0x120
+>> Dec 16 14:10:02 localhost kernel:  btrfs_remap_file_range+0x139/0x550
+>> Dec 16 14:10:02 localhost kernel:  do_clone_file_range+0xe9/0x230
+>> Dec 16 14:10:02 localhost kernel:  vfs_clone_file_range+0x4d/0x140
+>> Dec 16 14:10:02 localhost kernel:  ovl_copyfile+0x15d/0x180 [overlay]
+>> Dec 16 14:10:02 localhost kernel:  ovl_remap_file_range+0x6e/0xa0 [overlay]
+>> Dec 16 14:10:02 localhost kernel:  do_clone_file_range+0xe9/0x230
+>> Dec 16 14:10:02 localhost kernel:  vfs_clone_file_range+0x4d/0x140
+>> Dec 16 14:10:02 localhost kernel:  ioctl_file_clone+0x49/0xb0
+>> Dec 16 14:10:02 localhost kernel:  do_vfs_ioctl+0x77/0x950
+>> Dec 16 14:10:02 localhost kernel:  ? security_file_ioctl+0x3c/0x60
+>> Dec 16 14:10:02 localhost kernel:  __x64_sys_ioctl+0x6e/0xd0
+>> Dec 16 14:10:02 localhost kernel:  do_syscall_64+0x5b/0x80
+>> Dec 16 14:10:02 localhost kernel:  ? syscall_exit_to_user_mode+0x17/0x40
+>> Dec 16 14:10:02 localhost kernel:  ? do_syscall_64+0x67/0x80
+>> Dec 16 14:10:02 localhost kernel:  ? syscall_exit_to_user_mode+0x17/0x40
+>> Dec 16 14:10:02 localhost kernel:  ? do_syscall_64+0x67/0x80
+>> Dec 16 14:10:02 localhost kernel:  ? do_user_addr_fault+0x1ef/0x690
+>> Dec 16 14:10:02 localhost kernel:  ? do_syscall_64+0x67/0x80
+>> Dec 16 14:10:02 localhost kernel:  ? exc_page_fault+0x70/0x170
+>> Dec 16 14:10:02 localhost kernel:  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>> Dec 16 14:10:02 localhost kernel: RIP: 0033:0x7f07d2d7dbaf
+>> Dec 16 14:10:02 localhost kernel: RSP: 002b:00007ffc4ba5bf40 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>> Dec 16 14:10:02 localhost kernel: RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f07d2d7dbaf
+>> Dec 16 14:10:02 localhost kernel: RDX: 0000000000000003 RSI: 0000000040049409 RDI: 0000000000000004
+>> Dec 16 14:10:02 localhost kernel: RBP: 00007ffc4ba5d8cc R08: 0000000000000001 R09: 00000000000001a4
+>> Dec 16 14:10:02 localhost kernel: R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc4ba5c3e0
+>> Dec 16 14:10:02 localhost kernel: R13: 0000000000000001 R14: 0000000000000014 R15: 00007ffc4ba5c7b0
+>> Dec 16 14:10:02 localhost kernel:  </TASK>
+>> Dec 16 14:10:02 localhost kernel: task:cp              state:D stack:    0 pid:2422815 ppid:2419287 flags:0x00000002
+>> Dec 16 14:10:02 localhost kernel: Call Trace:
+>> Dec 16 14:10:02 localhost kernel:  <TASK>
+>> Dec 16 14:10:02 localhost kernel:  __schedule+0x332/0x12c0
+>> Dec 16 14:10:02 localhost kernel:  ? btrfs_dirty_inode+0x91/0xe0
+>> Dec 16 14:10:02 localhost kernel:  schedule+0x5d/0xe0
+>> Dec 16 14:10:02 localhost kernel:  io_schedule+0x42/0x70
+>> Dec 16 14:10:02 localhost kernel:  folio_wait_bit_common+0x12d/0x3a0
+>> Dec 16 14:10:02 localhost kernel:  ? filemap_alloc_folio+0xc0/0xc0
+>> Dec 16 14:10:02 localhost kernel:  folio_wait_writeback+0x28/0x80
+>> Dec 16 14:10:02 localhost kernel:  __filemap_fdatawait_range+0x7f/0x100
+>> Dec 16 14:10:02 localhost kernel:  filemap_fdatawait_range+0xe/0x20
+>> Dec 16 14:10:02 localhost kernel:  btrfs_wait_ordered_range+0x7a/0x120
+>> Dec 16 14:10:02 localhost kernel:  btrfs_remap_file_range+0x139/0x550
+>> Dec 16 14:10:02 localhost kernel:  do_clone_file_range+0xe9/0x230
+>> Dec 16 14:10:02 localhost kernel:  vfs_clone_file_range+0x4d/0x140
+>> Dec 16 14:10:02 localhost kernel:  ovl_copyfile+0x15d/0x180 [overlay]
+>> Dec 16 14:10:02 localhost kernel:  ovl_remap_file_range+0x6e/0xa0 [overlay]
+>> Dec 16 14:10:02 localhost kernel:  do_clone_file_range+0xe9/0x230
+>> Dec 16 14:10:02 localhost kernel:  vfs_clone_file_range+0x4d/0x140
+>> Dec 16 14:10:02 localhost kernel:  ioctl_file_clone+0x49/0xb0
+>> Dec 16 14:10:02 localhost kernel:  do_vfs_ioctl+0x77/0x950
+>> Dec 16 14:10:02 localhost kernel:  __x64_sys_ioctl+0x6e/0xd0
+>> Dec 16 14:10:02 localhost kernel:  do_syscall_64+0x5b/0x80
+>> Dec 16 14:10:02 localhost kernel:  ? exc_page_fault+0x70/0x170
+>> Dec 16 14:10:02 localhost kernel:  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>> Dec 16 14:10:02 localhost kernel: RIP: 0033:0x7f1e8dc22baf
+>> Dec 16 14:10:02 localhost kernel: RSP: 002b:00007ffd65479d50 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>> Dec 16 14:10:02 localhost kernel: RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f1e8dc22baf
+>> Dec 16 14:10:02 localhost kernel: RDX: 0000000000000003 RSI: 0000000040049409 RDI: 0000000000000004
+>> Dec 16 14:10:02 localhost kernel: RBP: 00007ffd6547b8cc R08: 0000000000000001 R09: 00000000000001a4
+>> Dec 16 14:10:02 localhost kernel: R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd6547a1f0
+>> Dec 16 14:10:02 localhost kernel: R13: 0000000000000001 R14: 0000000000000014 R15: 00007ffd6547a5c0
+>> Dec 16 14:10:02 localhost kernel:  </TASK>
+>> Dec 16 14:10:02 localhost kernel: task:cp              state:D stack:    0 pid:2422818 ppid:2421995 flags:0x00000002
+>> Dec 16 14:10:02 localhost kernel: Call Trace:
+>> Dec 16 14:10:02 localhost kernel:  <TASK>
+>> Dec 16 14:10:02 localhost kernel:  __schedule+0x332/0x12c0
+>> Dec 16 14:10:02 localhost kernel:  schedule+0x5d/0xe0
+>> Dec 16 14:10:02 localhost kernel:  io_schedule+0x42/0x70
+>> Dec 16 14:10:02 localhost kernel:  folio_wait_bit_common+0x12d/0x3a0
+>> Dec 16 14:10:02 localhost kernel:  ? filemap_alloc_folio+0xc0/0xc0
+>> Dec 16 14:10:02 localhost kernel:  folio_wait_writeback+0x28/0x80
+>> Dec 16 14:10:02 localhost kernel:  __filemap_fdatawait_range+0x7f/0x100
+>> Dec 16 14:10:02 localhost kernel:  filemap_fdatawait_range+0xe/0x20
+>> Dec 16 14:10:02 localhost kernel:  btrfs_wait_ordered_range+0x7a/0x120
+>> Dec 16 14:10:02 localhost kernel:  btrfs_remap_file_range+0x139/0x550
+>> Dec 16 14:10:02 localhost kernel:  do_clone_file_range+0xe9/0x230
+>> Dec 16 14:10:02 localhost kernel:  vfs_clone_file_range+0x4d/0x140
+>> Dec 16 14:10:02 localhost kernel:  ovl_copyfile+0x15d/0x180 [overlay]
+>> Dec 16 14:10:02 localhost kernel:  ovl_remap_file_range+0x6e/0xa0 [overlay]
+>> Dec 16 14:10:02 localhost kernel:  do_clone_file_range+0xe9/0x230
+>> Dec 16 14:10:02 localhost kernel:  vfs_clone_file_range+0x4d/0x140
+>> Dec 16 14:10:02 localhost kernel:  ioctl_file_clone+0x49/0xb0
+>> Dec 16 14:10:02 localhost kernel:  do_vfs_ioctl+0x77/0x950
+>> Dec 16 14:10:02 localhost kernel:  __x64_sys_ioctl+0x6e/0xd0
+>> Dec 16 14:10:02 localhost kernel:  do_syscall_64+0x5b/0x80
+>> Dec 16 14:10:02 localhost kernel:  ? syscall_exit_to_user_mode+0x17/0x40
+>> Dec 16 14:10:02 localhost kernel:  ? do_syscall_64+0x67/0x80
+>> Dec 16 14:10:02 localhost kernel:  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>> Dec 16 14:10:02 localhost kernel: RIP: 0033:0x7ffa2a678baf
+>> Dec 16 14:10:02 localhost kernel: RSP: 002b:00007ffe77c03de0 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>> Dec 16 14:10:02 localhost kernel: RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007ffa2a678baf
+>> Dec 16 14:10:02 localhost kernel: RDX: 0000000000000003 RSI: 0000000040049409 RDI: 0000000000000004
+>> Dec 16 14:10:02 localhost kernel: RBP: 00007ffe77c058cc R08: 0000000000000001 R09: 00000000000001a4
+>> Dec 16 14:10:02 localhost kernel: R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe77c04280
+>> Dec 16 14:10:02 localhost kernel: R13: 0000000000000001 R14: 0000000000000014 R15: 00007ffe77c04650
+>> Dec 16 14:10:02 localhost kernel:  </TASK>
+>> Dec 16 14:10:02 localhost kernel: task:cp              state:D stack:    0 pid:2422821 ppid:2420167 flags:0x00000002
+>> Dec 16 14:10:02 localhost kernel: Call Trace:
+>> Dec 16 14:10:02 localhost kernel:  <TASK>
+>> Dec 16 14:10:02 localhost kernel:  __schedule+0x332/0x12c0
+>> Dec 16 14:10:02 localhost kernel:  ? _raw_spin_unlock_irqrestore+0x23/0x40
+>> Dec 16 14:10:02 localhost kernel:  schedule+0x5d/0xe0
+>> Dec 16 14:10:02 localhost kernel:  io_schedule+0x42/0x70
+>> Dec 16 14:10:02 localhost kernel:  folio_wait_bit_common+0x12d/0x3a0
+>> Dec 16 14:10:02 localhost kernel:  ? filemap_alloc_folio+0xc0/0xc0
+>> Dec 16 14:10:02 localhost kernel:  folio_wait_writeback+0x28/0x80
+>> Dec 16 14:10:02 localhost kernel:  __filemap_fdatawait_range+0x7f/0x100
+>> Dec 16 14:10:02 localhost kernel:  filemap_fdatawait_range+0xe/0x20
+>> Dec 16 14:10:02 localhost kernel:  btrfs_wait_ordered_range+0x7a/0x120
+>> Dec 16 14:10:02 localhost kernel:  btrfs_remap_file_range+0x139/0x550
+>> Dec 16 14:10:02 localhost kernel:  do_clone_file_range+0xe9/0x230
+>> Dec 16 14:10:02 localhost kernel:  vfs_clone_file_range+0x4d/0x140
+>> Dec 16 14:10:02 localhost kernel:  ovl_copyfile+0x15d/0x180 [overlay]
+>> Dec 16 14:10:02 localhost kernel:  ovl_remap_file_range+0x6e/0xa0 [overlay]
+>> Dec 16 14:10:02 localhost kernel:  do_clone_file_range+0xe9/0x230
+>> Dec 16 14:10:02 localhost kernel:  vfs_clone_file_range+0x4d/0x140
+>> Dec 16 14:10:02 localhost kernel:  ioctl_file_clone+0x49/0xb0
+>> Dec 16 14:10:02 localhost kernel:  do_vfs_ioctl+0x77/0x950
+>> Dec 16 14:10:02 localhost kernel:  ? security_file_ioctl+0x3c/0x60
+>> Dec 16 14:10:02 localhost kernel:  __x64_sys_ioctl+0x6e/0xd0
+>> Dec 16 14:10:02 localhost kernel:  do_syscall_64+0x5b/0x80
+>> Dec 16 14:10:02 localhost kernel:  ? do_syscall_64+0x67/0x80
+>> Dec 16 14:10:02 localhost kernel:  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>> Dec 16 14:10:02 localhost kernel: RIP: 0033:0x7fafe34febaf
+>> Dec 16 14:10:02 localhost kernel: RSP: 002b:00007fff79bee930 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>> Dec 16 14:10:02 localhost kernel: RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fafe34febaf
+>> Dec 16 14:10:02 localhost kernel: RDX: 0000000000000003 RSI: 0000000040049409 RDI: 0000000000000004
+>> Dec 16 14:10:02 localhost kernel: RBP: 00007fff79bef8f6 R08: 0000000000000001 R09: 00000000000001a4
+>> Dec 16 14:10:02 localhost kernel: R10: 0000000000000004 R11: 0000000000000246 R12: 00007fff79beedd0
+>> Dec 16 14:10:02 localhost kernel: R13: 0000000000000001 R14: 0000000000000002 R15: 00007fff79bef1a0
+>> Dec 16 14:10:02 localhost kernel:  </TASK>
+>> Dec 16 14:10:02 localhost kernel: task:cp              state:D stack:    0 pid:2422911 ppid:2401445 flags:0x00000002
+>> Dec 16 14:10:02 localhost kernel: Call Trace:
+>> Dec 16 14:10:02 localhost kernel:  <TASK>
+>> Dec 16 14:10:02 localhost kernel:  __schedule+0x332/0x12c0
+>> Dec 16 14:10:02 localhost kernel:  ? __btrfs_end_transaction+0xf8/0x240
+>> Dec 16 14:10:02 localhost kernel:  schedule+0x5d/0xe0
+>> Dec 16 14:10:02 localhost kernel:  io_schedule+0x42/0x70
+>> Dec 16 14:10:02 localhost kernel:  folio_wait_bit_common+0x12d/0x3a0
+>> Dec 16 14:10:02 localhost kernel:  ? filemap_alloc_folio+0xc0/0xc0
+>> Dec 16 14:10:02 localhost kernel:  folio_wait_writeback+0x28/0x80
+>> Dec 16 14:10:02 localhost kernel:  __filemap_fdatawait_range+0x7f/0x100
+>> Dec 16 14:10:02 localhost kernel:  filemap_fdatawait_range+0xe/0x20
+>> Dec 16 14:10:02 localhost kernel:  btrfs_wait_ordered_range+0x7a/0x120
+>> Dec 16 14:10:02 localhost kernel:  btrfs_remap_file_range+0x139/0x550
+>> Dec 16 14:10:02 localhost kernel:  do_clone_file_range+0xe9/0x230
+>> Dec 16 14:10:02 localhost kernel:  vfs_clone_file_range+0x4d/0x140
+>> Dec 16 14:10:02 localhost kernel:  ovl_copyfile+0x15d/0x180 [overlay]
+>> Dec 16 14:10:02 localhost kernel:  ovl_remap_file_range+0x6e/0xa0 [overlay]
+>> Dec 16 14:10:02 localhost kernel:  do_clone_file_range+0xe9/0x230
+>> Dec 16 14:10:02 localhost kernel:  vfs_clone_file_range+0x4d/0x140
+>> Dec 16 14:10:02 localhost kernel:  ioctl_file_clone+0x49/0xb0
+>> Dec 16 14:10:02 localhost kernel:  do_vfs_ioctl+0x77/0x950
+>> Dec 16 14:10:02 localhost kernel:  __x64_sys_ioctl+0x6e/0xd0
+>> Dec 16 14:10:02 localhost kernel:  do_syscall_64+0x5b/0x80
+>> Dec 16 14:10:02 localhost kernel:  ? exc_page_fault+0x70/0x170
+>> Dec 16 14:10:02 localhost kernel:  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>> Dec 16 14:10:02 localhost kernel: RIP: 0033:0x7ff280aeebaf
+>> Dec 16 14:10:02 localhost kernel: RSP: 002b:00007ffdbfa595c0 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>> Dec 16 14:10:02 localhost kernel: RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007ff280aeebaf
+>> Dec 16 14:10:02 localhost kernel: RDX: 0000000000000003 RSI: 0000000040049409 RDI: 0000000000000004
+>> Dec 16 14:10:02 localhost kernel: RBP: 00007ffdbfa5a8cc R08: 0000000000000001 R09: 00000000000001a4
+>> Dec 16 14:10:02 localhost kernel: R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffdbfa59a60
+>> Dec 16 14:10:02 localhost kernel: R13: 0000000000000001 R14: 0000000000000014 R15: 00007ffdbfa59e30
+>> Dec 16 14:10:02 localhost kernel:  </TASK>
+> See the ticket for more details.
 > 
 > 
+> [TLDR for the rest of this mail: I'm adding this report to the list of
+> tracked Linux kernel regressions; the text you find below is based on a
+> few templates paragraphs you might have encountered already in similar
+> form.]
 > 
-> >
-> > I'm not yet sure how to fix this, but have a couple ideas/questions:
-> > 1. Is there anyway we can split off a partial ordered extent and finish
-> > it when we get the partial write done?
-> > 2. Can we detect that there is an unfinished ordered extent that
-> > overlaps with our new one on the second write of the partial write
-> > logic?
-> >
-> > I'll play around and see if I can hack together a fix..
-> >
-> > >
-> > > Boris
-> > >
-> > > >
-> > > > --
-> > > > Chris Murphy
+> BTW, let me use this mail to also add the report to the list of tracked
+> regressions to ensure it's doesn't fall through the cracks (I for now
+> assume it was introduced between v5.19..v6.0, even if I don't know for
+> sure ):
+> 
+> #regzbot introduced: v5.19..v6.0
+> https://bugzilla.kernel.org/show_bug.cgi?id=216961
+> #regzbot title: btrfs: severe IO scheduling starvation issues with btrfs
+> #regzbot ignore-activity
+> 
+> This isn't a regression? This issue or a fix for it are already
+> discussed somewhere else? It was fixed already? You want to clarify when
+> the regression started to happen? Or point out I got the title or
+> something else totally wrong? Then just reply and tell me -- ideally
+> while also telling regzbot about it, as explained by the page listed in
+> the footer of this mail.
+> 
+> Developers: When fixing the issue, remember to add 'Link:' tags pointing
+> to the report (e.g. the buzgzilla ticket and maybe this mail as well, if
+> this thread sees some discussion). See page linked in footer for details.
+> 
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
