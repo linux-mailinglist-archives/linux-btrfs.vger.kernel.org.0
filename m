@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AB969A52E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Feb 2023 06:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 852EB69A52F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Feb 2023 06:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229539AbjBQFhn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Feb 2023 00:37:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
+        id S229508AbjBQFhp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Feb 2023 00:37:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjBQFhm (ORCPT
+        with ESMTP id S229461AbjBQFho (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Feb 2023 00:37:42 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE27C5BD90
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 21:37:28 -0800 (PST)
+        Fri, 17 Feb 2023 00:37:44 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC165BDA0
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 21:37:30 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6EEF420096;
-        Fri, 17 Feb 2023 05:37:27 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ADBBC20079;
+        Fri, 17 Feb 2023 05:37:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1676612247; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1676612248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=agBbaIn7MmTwKvV1SVrDSgInzC5iHOOmcRL8bO0WY0E=;
-        b=WYI93JGbirXD1Szq7ZUmdQKZ3wZGkgeA/t4YAcvlDfTQC7TmtDqRYwbjbVAPglVNg6+0Hy
-        H0mvBDDPlXQoXAZUdR6tSz7nbVDh6TWkj4Rk+IkJXQVfK1QpYg0RCkfsCPA45BIDyIkO+n
-        t5+o1WHnGavtEmrxZgi1izaCxNBAKEg=
+        bh=mX9qvX0epn44w2NTZaGq+AKiA2hNSppIveXyb+xKPG0=;
+        b=XV1vc5U1cYxahejDBb9Tu7WRK8tA2WXrVO9YkXLjgF2XqpeLx/Cl+3U6YdktkVsYYkI+XZ
+        aFQa/TcvNuycC7O1GMU2KQWd0gpq8Ckh2oarXHSnoP24nfTNaLv9LAX1EdbpwCSq0iCKig
+        HOAN2fpybd62EIeiXGChbLyxdSSKYNM=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9212F1323E;
-        Fri, 17 Feb 2023 05:37:26 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CFE1A1323E;
+        Fri, 17 Feb 2023 05:37:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id KI9eF5YS72PTSQAAMHmgww
-        (envelope-from <wqu@suse.com>); Fri, 17 Feb 2023 05:37:26 +0000
+        id AOVYJpcS72PTSQAAMHmgww
+        (envelope-from <wqu@suse.com>); Fri, 17 Feb 2023 05:37:27 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 4/6] btrfs: reduce type width of btrfs_io_contexts
-Date:   Fri, 17 Feb 2023 13:37:01 +0800
-Message-Id: <2d8b241029979a83135e5e8c212b3547e822a37e.1676611535.git.wqu@suse.com>
+Subject: [PATCH 5/6] btrfs: use a more space efficient way to represent the source of duplicated stripes
+Date:   Fri, 17 Feb 2023 13:37:02 +0800
+Message-Id: <6ec2752ca0e56ba30e49813b222898bb96e24247.1676611535.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <cover.1676611535.git.wqu@suse.com>
 References: <cover.1676611535.git.wqu@suse.com>
@@ -60,141 +60,470 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-That structure is our ultimate object for all __btrfs_map_block()
-related functions.  We have some hard to understand members, like
-tgtdev_map, but without any comments.
+For btrfs dev-replace, we have to duplicate writes to the source
+device into the target device.
 
-This patch will improve the situation:
+For non-RAID56, all writes into the same mapped ranges are sharing the
+same content, thus they don't really need to bother anything.
+(E.g. in btrfs_submit_bio() for non-RAID56 range we just submit the
+ same write to all involved devices).
 
-- Add extra comments for num_stripes, mirror_num, num_tgtdevs and
-  tgtdev_map[]
-  Especially for the last two members, add a dedicated (thus very long)
-  comments for them, with example to explain it.
+But for RAID56, all stripes contain different content, thus we must
+have a clear mapping of which stripe is duplicated from which original
+stripe.
 
-- Shrink those int members to u16.
-  In fact our on-disk format is only using u16 for num_stripes, thus
-  no need to use int at all.
+Currently we use a complex way using tgtdev_map[] array, e.g:
+
+ num_tgtdevs = 1
+ tgtdev_map[0] = 0    <- Means stripes[0] is not involved in replace.
+ tgtdev_map[1] = 3    <- Means stripes[1] is involved in replace,
+			 and it's duplicated to stripes[3].
+ tgtdev_map[2] = 0    <- Means stripes[2] is not involved in replace.
+
+But this is wasting some space, and ignored one important thing for
+dev-replace, there is at most ONE running replace.
+
+Thus we can change it to a fixed array to represent the mapping:
+
+ replace_nr_stripes = 1
+ replace_stripe_src = 1    <- Means stripes[1] is involved in replace.
+			      thus the extra stripe is a copy of
+			      stripes[1]
+
+By this we can save some space for bioc on RAID56 chunks with many
+devices.
+And we get rid of one variable sized array from bioc.
+
+Thus the patch involves the following changes:
+
+- Replace @num_tgtdevs and @tgtdev_map[] with @replace_nr_stripes
+  and @replace_stripe_src.
+
+  @num_tgtdevs is just renamed to @replace_nr_stripes.
+  While the mapping is completely changed.
+
+- Add extra ASSERT()s for RAID56 code
+
+- Only add two more extra stripes for dev-replace cases.
+  As we have a upper limit on how many dev-replace stripes we can have.
+
+- Unify the behavior of handle_ops_on_dev_replace()
+  Previously handle_ops_on_dev_replace() go two different paths for
+  WRITE and GET_READ_MIRRORS.
+  Now unify them by always go WRITE path first (with at most 2 replace
+  stripes), then if we're doing GET_READ_MIRRORS and we have 2 extra
+  stripes, just drop one stripe.
+
+- Remove the @real_stripes argument from alloc_btrfs_io_context()
+  As we don't need the old variable length array any more.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/volumes.c | 16 ++++++++------
- fs/btrfs/volumes.h | 54 +++++++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 58 insertions(+), 12 deletions(-)
+ fs/btrfs/raid56.c  |  37 +++++++---
+ fs/btrfs/scrub.c   |   4 +-
+ fs/btrfs/volumes.c | 167 ++++++++++++++++++++-------------------------
+ fs/btrfs/volumes.h |  26 +++----
+ 4 files changed, 119 insertions(+), 115 deletions(-)
 
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index 642828c1b299..e495ac147822 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -912,7 +912,7 @@ static struct sector_ptr *sector_in_rbio(struct btrfs_raid_bio *rbio,
+ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
+ 					 struct btrfs_io_context *bioc)
+ {
+-	const unsigned int real_stripes = bioc->num_stripes - bioc->num_tgtdevs;
++	const unsigned int real_stripes = bioc->num_stripes - bioc->replace_nr_stripes;
+ 	const unsigned int stripe_npages = BTRFS_STRIPE_LEN >> PAGE_SHIFT;
+ 	const unsigned int num_pages = stripe_npages * real_stripes;
+ 	const unsigned int stripe_nsectors =
+@@ -1282,10 +1282,16 @@ static int rmw_assemble_write_bios(struct btrfs_raid_bio *rbio,
+ 			goto error;
+ 	}
+ 
+-	if (likely(!rbio->bioc->num_tgtdevs))
++	if (likely(!rbio->bioc->replace_nr_stripes))
+ 		return 0;
+ 
+-	/* Make a copy for the replace target device. */
++	/*
++	 * Make a copy for the replace target device.
++	 *
++	 * Thus the source stripe number (in replace_stripe_src) should be valid.
++	 */
++	ASSERT(rbio->bioc->replace_stripe_src >= 0);
++
+ 	for (total_sector_nr = 0; total_sector_nr < rbio->nr_sectors;
+ 	     total_sector_nr++) {
+ 		struct sector_ptr *sector;
+@@ -1293,7 +1299,12 @@ static int rmw_assemble_write_bios(struct btrfs_raid_bio *rbio,
+ 		stripe = total_sector_nr / rbio->stripe_nsectors;
+ 		sectornr = total_sector_nr % rbio->stripe_nsectors;
+ 
+-		if (!rbio->bioc->tgtdev_map[stripe]) {
++		/*
++		 * For RAID56, there is only one device that can be replaced,
++		 * and replace_stripe_src[0] indicates the stripe number we
++		 * need to copy from.
++		 */
++		if (stripe != rbio->bioc->replace_stripe_src) {
+ 			/*
+ 			 * We can skip the whole stripe completely, note
+ 			 * total_sector_nr will be increased by one anyway.
+@@ -1316,7 +1327,7 @@ static int rmw_assemble_write_bios(struct btrfs_raid_bio *rbio,
+ 		}
+ 
+ 		ret = rbio_add_io_sector(rbio, bio_list, sector,
+-					 rbio->bioc->tgtdev_map[stripe],
++					 rbio->real_stripes,
+ 					 sectornr, REQ_OP_WRITE);
+ 		if (ret)
+ 			goto error;
+@@ -2442,7 +2453,12 @@ static int finish_parity_scrub(struct btrfs_raid_bio *rbio, int need_check)
+ 	else
+ 		BUG();
+ 
+-	if (bioc->num_tgtdevs && bioc->tgtdev_map[rbio->scrubp]) {
++	/*
++	 * Replace is running and our P/Q stripe is being replaced, then we
++	 * need to duplicate the final write to replace target.
++	 */
++	if (bioc->replace_nr_stripes &&
++	    bioc->replace_stripe_src == rbio->scrubp) {
+ 		is_replace = 1;
+ 		bitmap_copy(pbitmap, &rbio->dbitmap, rbio->stripe_nsectors);
+ 	}
+@@ -2544,13 +2560,18 @@ static int finish_parity_scrub(struct btrfs_raid_bio *rbio, int need_check)
+ 	if (!is_replace)
+ 		goto submit_write;
+ 
++	/*
++	 * Replace is running and our parity stripe needs to be duplicated to
++	 * the target device.  Check we have a valid source stripe number.
++	 */
++	ASSERT(rbio->bioc->replace_stripe_src >= 0);
+ 	for_each_set_bit(sectornr, pbitmap, rbio->stripe_nsectors) {
+ 		struct sector_ptr *sector;
+ 
+ 		sector = rbio_stripe_sector(rbio, rbio->scrubp, sectornr);
+ 		ret = rbio_add_io_sector(rbio, &bio_list, sector,
+-				       bioc->tgtdev_map[rbio->scrubp],
+-				       sectornr, REQ_OP_WRITE);
++					 rbio->real_stripes,
++					 sectornr, REQ_OP_WRITE);
+ 		if (ret)
+ 			goto cleanup;
+ 	}
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 3b4e621e822f..83de9fecc7b6 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -1230,7 +1230,7 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+ 			sblock_other = sblocks_for_recheck[mirror_index];
+ 		} else {
+ 			struct scrub_recover *r = sblock_bad->sectors[0]->recover;
+-			int max_allowed = r->bioc->num_stripes - r->bioc->num_tgtdevs;
++			int max_allowed = r->bioc->num_stripes - r->bioc->replace_nr_stripes;
+ 
+ 			if (mirror_index >= max_allowed)
+ 				break;
+@@ -1540,7 +1540,7 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+ 						      bioc->map_type,
+ 						      bioc->raid_map,
+ 						      bioc->num_stripes -
+-						      bioc->num_tgtdevs,
++						      bioc->replace_nr_stripes,
+ 						      mirror_index,
+ 						      &stripe_index,
+ 						      &stripe_offset);
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 4408b1b0d4d1..f3b6d977ae5c 100644
+index f3b6d977ae5c..31a25281c7d8 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -5898,16 +5898,18 @@ static void sort_parity_stripes(struct btrfs_io_context *bioc, int num_stripes)
+@@ -5898,8 +5898,7 @@ static void sort_parity_stripes(struct btrfs_io_context *bioc, int num_stripes)
  }
  
  static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_info,
--						       int total_stripes,
--						       int real_stripes)
-+						       u16 total_stripes,
-+						       u16 real_stripes)
+-						       u16 total_stripes,
+-						       u16 real_stripes)
++						       u16 total_stripes)
  {
--	struct btrfs_io_context *bioc = kzalloc(
-+	struct btrfs_io_context *bioc;
-+
-+	bioc = kzalloc(
- 		 /* The size of btrfs_io_context */
+ 	struct btrfs_io_context *bioc;
+ 
+@@ -5908,8 +5907,6 @@ static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_
  		sizeof(struct btrfs_io_context) +
  		/* Plus the variable array for the stripes */
  		sizeof(struct btrfs_io_stripe) * (total_stripes) +
- 		/* Plus the variable array for the tgt dev */
--		sizeof(int) * (real_stripes) +
-+		sizeof(u16) * (real_stripes) +
+-		/* Plus the variable array for the tgt dev */
+-		sizeof(u16) * (real_stripes) +
  		/*
  		 * Plus the raid_map, which includes both the tgt dev
  		 * and the stripes.
-@@ -5921,7 +5923,7 @@ static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_
+@@ -5923,8 +5920,8 @@ static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_
  	refcount_set(&bioc->refs, 1);
  
  	bioc->fs_info = fs_info;
--	bioc->tgtdev_map = (int *)(bioc->stripes + total_stripes);
-+	bioc->tgtdev_map = (u16 *)(bioc->stripes + total_stripes);
- 	bioc->raid_map = (u64 *)(bioc->tgtdev_map + real_stripes);
+-	bioc->tgtdev_map = (u16 *)(bioc->stripes + total_stripes);
+-	bioc->raid_map = (u64 *)(bioc->tgtdev_map + real_stripes);
++	bioc->raid_map = (u64 *)(bioc->stripes + total_stripes);
++	bioc->replace_stripe_src = -1;
  
  	return bioc;
-@@ -6354,12 +6356,12 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	int mirror_num = (mirror_num_ret ? *mirror_num_ret : 0);
- 	int num_stripes;
- 	int max_errors = 0;
+ }
+@@ -6188,93 +6185,75 @@ static void handle_ops_on_dev_replace(enum btrfs_map_op op,
+ 				      int *num_stripes_ret, int *max_errors_ret)
+ {
+ 	u64 srcdev_devid = dev_replace->srcdev->devid;
 -	int tgtdev_indexes = 0;
- 	struct btrfs_io_context *bioc = NULL;
- 	struct btrfs_dev_replace *dev_replace = &fs_info->dev_replace;
++	/*
++	 * At this stage, num_stripes is still the real number of stripes,
++	 * excluding the duplicated stripes.
++	 */
+ 	int num_stripes = *num_stripes_ret;
++	int nr_extra_stripes = 0;
+ 	int max_errors = *max_errors_ret;
+ 	int i;
+ 
+-	if (op == BTRFS_MAP_WRITE) {
+-		int index_where_to_add;
++	/*
++	 * A block group which has "to_copy" set will eventually be copied by
++	 * the dev-replace process. We can avoid cloning IO here.
++	 */
++	if (is_block_group_to_copy(dev_replace->srcdev->fs_info, logical))
++		return;
++
++	/*
++	 * Duplicate the write operations while the dev-replace procedure is
++	 * running. Since the copying of the old disk to the new disk takes
++	 * place at run time while the filesystem is mounted writable, the
++	 * regular write operations to the old disk have to be duplicated to go
++	 * to the new disk as well.
++	 *
++	 * Note that device->missing is handled by the caller, and that the
++	 * write to the old disk is already set up in the stripes array.
++	 */
++	for (i = 0; i < num_stripes; i++) {
++		struct btrfs_io_stripe *old = &bioc->stripes[i];
++		struct btrfs_io_stripe *new = &bioc->stripes[num_stripes + nr_extra_stripes];
++
++		if (old->dev->devid != srcdev_devid)
++			continue;
++
++		new->physical = old->physical;
++		new->dev = dev_replace->tgtdev;
++		if (bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK)
++			bioc->replace_stripe_src = i;
++		nr_extra_stripes++;
++	}
++
++	/* We can only have at most 2 extra nr_stripes (for DUP). */
++	ASSERT(nr_extra_stripes <= 2);
++	/*
++	 * For GET_READ_MIRRORS, we can only return at most 1 extra stripe for
++	 * replace.
++	 * If we have 2 extra stripes, only choose the one with smaller physical.
++	 */
++	if (op == BTRFS_MAP_GET_READ_MIRRORS && nr_extra_stripes == 2) {
++		struct btrfs_io_stripe *first = &bioc->stripes[num_stripes];
++		struct btrfs_io_stripe *second = &bioc->stripes[num_stripes + 1];
++
++		/* Only DUP can have two extra stripes. */
++		ASSERT(bioc->map_type & BTRFS_BLOCK_GROUP_DUP);
+ 
+ 		/*
+-		 * A block group which have "to_copy" set will eventually
+-		 * copied by dev-replace process. We can avoid cloning IO here.
++		 * Swap the last stripe stripes and just reduce
++		 * @nr_extra_stripes.  The extra stripe would still be there,
++		 * but won't be accessed.
+ 		 */
+-		if (is_block_group_to_copy(dev_replace->srcdev->fs_info, logical))
+-			return;
+-
+-		/*
+-		 * duplicate the write operations while the dev replace
+-		 * procedure is running. Since the copying of the old disk to
+-		 * the new disk takes place at run time while the filesystem is
+-		 * mounted writable, the regular write operations to the old
+-		 * disk have to be duplicated to go to the new disk as well.
+-		 *
+-		 * Note that device->missing is handled by the caller, and that
+-		 * the write to the old disk is already set up in the stripes
+-		 * array.
+-		 */
+-		index_where_to_add = num_stripes;
+-		for (i = 0; i < num_stripes; i++) {
+-			if (bioc->stripes[i].dev->devid == srcdev_devid) {
+-				/* write to new disk, too */
+-				struct btrfs_io_stripe *new =
+-					bioc->stripes + index_where_to_add;
+-				struct btrfs_io_stripe *old =
+-					bioc->stripes + i;
+-
+-				new->physical = old->physical;
+-				new->dev = dev_replace->tgtdev;
+-				bioc->tgtdev_map[i] = index_where_to_add;
+-				index_where_to_add++;
+-				max_errors++;
+-				tgtdev_indexes++;
+-			}
+-		}
+-		num_stripes = index_where_to_add;
+-	} else if (op == BTRFS_MAP_GET_READ_MIRRORS) {
+-		int index_srcdev = 0;
+-		int found = 0;
+-		u64 physical_of_found = 0;
+-
+-		/*
+-		 * During the dev-replace procedure, the target drive can also
+-		 * be used to read data in case it is needed to repair a corrupt
+-		 * block elsewhere. This is possible if the requested area is
+-		 * left of the left cursor. In this area, the target drive is a
+-		 * full copy of the source drive.
+-		 */
+-		for (i = 0; i < num_stripes; i++) {
+-			if (bioc->stripes[i].dev->devid == srcdev_devid) {
+-				/*
+-				 * In case of DUP, in order to keep it simple,
+-				 * only add the mirror with the lowest physical
+-				 * address
+-				 */
+-				if (found &&
+-				    physical_of_found <= bioc->stripes[i].physical)
+-					continue;
+-				index_srcdev = i;
+-				found = 1;
+-				physical_of_found = bioc->stripes[i].physical;
+-			}
+-		}
+-		if (found) {
+-			struct btrfs_io_stripe *tgtdev_stripe =
+-				bioc->stripes + num_stripes;
+-
+-			tgtdev_stripe->physical = physical_of_found;
+-			tgtdev_stripe->dev = dev_replace->tgtdev;
+-			bioc->tgtdev_map[index_srcdev] = num_stripes;
+-
+-			tgtdev_indexes++;
+-			num_stripes++;
++		if (first->physical > second->physical) {
++			swap(second->physical, first->physical);
++			swap(second->dev, first->dev);
++			nr_extra_stripes--;
+ 		}
+ 	}
+ 
+-	*num_stripes_ret = num_stripes;
+-	*max_errors_ret = max_errors;
+-	bioc->num_tgtdevs = tgtdev_indexes;
++	*num_stripes_ret = num_stripes + nr_extra_stripes;
++	*max_errors_ret = max_errors + nr_extra_stripes;
++	bioc->replace_nr_stripes = nr_extra_stripes;
+ }
+ 
+ static bool need_full_stripe(enum btrfs_map_op op)
+@@ -6361,7 +6340,6 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
  	int dev_replace_is_ongoing = 0;
--	int num_alloc_stripes;
  	int patch_the_first_stripe_for_dev_replace = 0;
-+	u16 num_alloc_stripes;
-+	u16 tgtdev_indexes = 0;
+ 	u16 num_alloc_stripes;
+-	u16 tgtdev_indexes = 0;
  	u64 physical_to_patch_in_first_stripe = 0;
  	u64 raid56_full_stripe_start = (u64)-1;
  	u64 max_len;
+@@ -6506,13 +6484,16 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	}
+ 
+ 	num_alloc_stripes = num_stripes;
+-	if (dev_replace_is_ongoing && dev_replace->tgtdev != NULL) {
+-		if (op == BTRFS_MAP_WRITE)
+-			num_alloc_stripes <<= 1;
+-		if (op == BTRFS_MAP_GET_READ_MIRRORS)
+-			num_alloc_stripes++;
+-		tgtdev_indexes = num_stripes;
+-	}
++	if (dev_replace_is_ongoing && dev_replace->tgtdev != NULL &&
++	    op != BTRFS_MAP_READ)
++		/*
++		 * For replace case, we need to add extra stripes for extra
++		 * duplicated stripes.
++		 *
++		 * For both WRITE and GET_READ_MIRRORS, we may have at most
++		 * 2 more stripes (DUP types, otherwise 1).
++		 */
++		num_alloc_stripes += 2;
+ 
+ 	/*
+ 	 * If this I/O maps to a single device, try to return the device and
+@@ -6537,11 +6518,12 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		goto out;
+ 	}
+ 
+-	bioc = alloc_btrfs_io_context(fs_info, num_alloc_stripes, tgtdev_indexes);
++	bioc = alloc_btrfs_io_context(fs_info, num_alloc_stripes);
+ 	if (!bioc) {
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
++	bioc->map_type = map->type;
+ 
+ 	for (i = 0; i < num_stripes; i++) {
+ 		set_io_stripe(&bioc->stripes[i], map, stripe_index, stripe_offset,
+@@ -6582,7 +6564,6 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	}
+ 
+ 	*bioc_ret = bioc;
+-	bioc->map_type = map->type;
+ 	bioc->num_stripes = num_stripes;
+ 	bioc->max_errors = max_errors;
+ 	bioc->mirror_num = mirror_num;
 diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index dad4a5d39822..34fe3a895301 100644
+index 34fe3a895301..1da65538c7e2 100644
 --- a/fs/btrfs/volumes.h
 +++ b/fs/btrfs/volumes.h
-@@ -407,11 +407,55 @@ struct btrfs_io_context {
- 	u64 map_type; /* get from map_lookup->type */
- 	struct bio *orig_bio;
- 	atomic_t error;
--	int max_errors;
--	int num_stripes;
--	int mirror_num;
--	int num_tgtdevs;
--	int *tgtdev_map;
-+	u16 max_errors;
-+
-+	/*
-+	 * The total number of stripes, including the extra duplicated
-+	 * stripe for replace.
-+	 */
-+	u16 num_stripes;
-+
-+	/*
-+	 * The mirror_num of this bioc.
+@@ -426,14 +426,13 @@ struct btrfs_io_context {
+ 	/*
+ 	 * The following two members are for dev-replace case only.
+ 	 *
+-	 * @num_tgtdevs:	Number of duplicated stripes which need to be
++	 * @replace_nr_stripes:	Number of duplicated stripes which need to be
+ 	 *			written to replace target.
+ 	 *			Should be <= 2 (2 for DUP, otherwise <= 1).
+-	 * @tgtdev_map:		The array indicates where the duplicated stripes
+-	 *			are from. The size is the number of original
+-	 *			stripes (num_stripes - num_tgtdevs).
++	 * @replace_stripe_src:	The array indicates where the duplicated stripes
++	 *			are from.
+ 	 *
+-	 * The @tgtdev_map[] array is mostly for RAID56 cases.
++	 * The @replace_stripe_src[] array is mostly for RAID56 cases.
+ 	 * As non-RAID56 stripes share the same contents of the mapped range,
+ 	 * thus no need to bother where the duplicated ones are from.
+ 	 *
+@@ -448,14 +447,17 @@ struct btrfs_io_context {
+ 	 *   stripes[2]:	dev = devid 3, physical = Z
+ 	 *   stripes[3]:	dev = devid 0, physical = Y
+ 	 *
+-	 * num_tgtdevs = 1
+-	 * tgtdev_map[0] = 0	<- Means stripes[0] is not involved in replace.
+-	 * tgtdev_map[1] = 3	<- Means stripes[1] is involved in replace,
+-	 *			   and it's duplicated to stripes[3].
+-	 * tgtdev_map[2] = 0	<- Means stripes[2] is not involved in replace.
++	 * replace_nr_stripes = 1
++	 * replace_stripe_src = 1	<- Means stripes[1] is involved in replace.
++	 *				   The duplicated stripe index would be
++	 *				   (@num_stripes - 1).
 +	 *
-+	 * This is for reads which use 0 as mirror_num, thus we should return a
-+	 * valid mirror_num (>0) for the reader.
-+	 */
-+	u16 mirror_num;
-+
-+	/*
-+	 * The following two members are for dev-replace case only.
-+	 *
-+	 * @num_tgtdevs:	Number of duplicated stripes which need to be
-+	 *			written to replace target.
-+	 *			Should be <= 2 (2 for DUP, otherwise <= 1).
-+	 * @tgtdev_map:		The array indicates where the duplicated stripes
-+	 *			are from. The size is the number of original
-+	 *			stripes (num_stripes - num_tgtdevs).
-+	 *
-+	 * The @tgtdev_map[] array is mostly for RAID56 cases.
-+	 * As non-RAID56 stripes share the same contents of the mapped range,
-+	 * thus no need to bother where the duplicated ones are from.
-+	 *
-+	 * But for RAID56 case, all stripes contain different contents, thus
-+	 * we need a way to know the mapping.
-+	 *
-+	 * There is an example for the two members, using a RAID5 write:
-+	 *
-+	 *   num_stripes:	4 (3 + 1 duplicated write)
-+	 *   stripes[0]:	dev = devid 1, physical = X
-+	 *   stripes[1]:	dev = devid 2, physical = Y
-+	 *   stripes[2]:	dev = devid 3, physical = Z
-+	 *   stripes[3]:	dev = devid 0, physical = Y
-+	 *
-+	 * num_tgtdevs = 1
-+	 * tgtdev_map[0] = 0	<- Means stripes[0] is not involved in replace.
-+	 * tgtdev_map[1] = 3	<- Means stripes[1] is involved in replace,
-+	 *			   and it's duplicated to stripes[3].
-+	 * tgtdev_map[2] = 0	<- Means stripes[2] is not involved in replace.
-+	 */
-+	u16 num_tgtdevs;
-+	u16 *tgtdev_map;
++	 * Note, that we can still have cases replace_nr_stripes = 2 for DUP.
++	 * In that case, all stripes share the same content, thus we don't
++	 * need to bother @replace_stripe_src value at all.
+ 	 */
+-	u16 num_tgtdevs;
+-	u16 *tgtdev_map;
++	u16 replace_nr_stripes;
++	s16 replace_stripe_src;
  	/*
  	 * logical block numbers for the start of each stripe
  	 * The last one or two are p/q.  These are sorted,
