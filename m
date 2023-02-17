@@ -2,254 +2,303 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4086B69A5B9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Feb 2023 07:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2AB69A5E3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Feb 2023 08:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbjBQGtM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Feb 2023 01:49:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50366 "EHLO
+        id S229650AbjBQHEZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Feb 2023 02:04:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjBQGtL (ORCPT
+        with ESMTP id S229475AbjBQHEY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Feb 2023 01:49:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602D549891
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 22:48:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1676616502;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OJEVjshpjfF2MtkM8NQnJjTWsKM2ja1ZIl8pezomRb8=;
-        b=P78URnAJzWnjNSCzl84qw7O9BzPnQ4lxbTSrC9JF3Tk49SBjSROsqsSIW3Fy/0wJgz4SL3
-        IDKm7wy6KKL3qcz6JANki6zk9cHvzZwWNcfKgdlxFjNi6kzbYdk6GiE6O9OkWoX/Qv3g0i
-        4Qdgi6vKP3TunXBnG1yf2n3MankTMFI=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-208-bK5S1OY-NF2-OKyP_rrmjQ-1; Fri, 17 Feb 2023 01:48:21 -0500
-X-MC-Unique: bK5S1OY-NF2-OKyP_rrmjQ-1
-Received: by mail-pf1-f197.google.com with SMTP id u31-20020a056a00099f00b005a8de178393so2558145pfg.23
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 22:48:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OJEVjshpjfF2MtkM8NQnJjTWsKM2ja1ZIl8pezomRb8=;
-        b=V7A235U+dd8+QtSQje7fMJ/xHt3EsmKP9Zf8jYg3B/EC58hN4PqN4dco+xHu+D8j3b
-         0t7+HnVTnZ+l3WztVnHFPJHex1jMjbZeBgtWjMKh9lzOU08piYvqBHzxHmZK1xH/0n3r
-         uUl4LmZ6DGaaQdgzHlfDPwDcFnIT5ej9Zzs6Faza4s/RYB/YaJaE3s57zC923ckuNTXA
-         0rKbwMwkm8Fed0N+0sS5E5qgYbcqy1guGZG7ttrKsP94rP2dID+DNrh8uWIDHjWBIGrn
-         57EA2qdzM2CEtdhVvR3BJVHWT5B4vMS9f8p0Q/7YRTEJB/Zcbm0EZ7o7Fq0ow30Ztg8z
-         Harw==
-X-Gm-Message-State: AO0yUKWu/SfA9j7DdoLLClOKUgDJOjpQohAKqMEqTiWazmQ7iH8KiE5P
-        +HQrPn8UKR8E8sWmmFryC/OK5fngIQ3DrlaHybgCV7EIOFcWwcWGOI1Uot9M9rA8oPDiDXa2Vu1
-        Q0zYM4qISPX38VEinVWm8QJ648dR8frRP2A==
-X-Received: by 2002:a17:902:ebd0:b0:19a:aa9c:c651 with SMTP id p16-20020a170902ebd000b0019aaa9cc651mr137068plg.62.1676616499725;
-        Thu, 16 Feb 2023 22:48:19 -0800 (PST)
-X-Google-Smtp-Source: AK7set9DPpyaaEGpymrRsYCAzr4lVDKcTUWJhLNKvKOMTdjtI8enCDPH5daLU29SlJt6QvR70jo7Lg==
-X-Received: by 2002:a17:902:ebd0:b0:19a:aa9c:c651 with SMTP id p16-20020a170902ebd000b0019aaa9cc651mr137053plg.62.1676616499221;
-        Thu, 16 Feb 2023 22:48:19 -0800 (PST)
-Received: from zlang-mailbox ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id h2-20020a170902f7c200b0019608291564sm2370857plw.134.2023.02.16.22.48.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Feb 2023 22:48:18 -0800 (PST)
-Date:   Fri, 17 Feb 2023 14:48:14 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fstests@vger.kernel.org
-Subject: Re: [PATCH v6] btrfs: test block group size class loading logic
-Message-ID: <20230217064814.ykhfcmhss3iojfkc@zlang-mailbox>
-References: <160e7557f66a6a34fd052d6834909aa02a702956.1676503163.git.boris@bur.io>
- <CAL3q7H42GK2xu9ZSAKiDUG8ZRJzgudk-3DHE9f95Sqwc0iPKyQ@mail.gmail.com>
- <20230216144952.wcr7r3hdesu2x2le@zlang-mailbox>
- <Y+5PKtUX/8gyNX/w@zen>
+        Fri, 17 Feb 2023 02:04:24 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AF4115
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Feb 2023 23:04:22 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2015A20D80
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Feb 2023 07:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1676617461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=uW1cuodaQ3jwche1cHy/p7NZCQbxnJoDHkdQl3jC5Eg=;
+        b=aLqKEvOSCoXQO0TundSYRof28UYOEsetscqPWk1dUy+5vasVVg9pfHwhQCat4AXdnCn/sC
+        Y4wXq2kvCt+cpfgMLu/GmNvMUHziUXZJxjZ2RHX+mRJYlI4L7/gt3UHopw/jiQ/dVGFdaa
+        A18Z2q5uUR6/D42G8COOV1ELevCTnuE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7879C138E3
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Feb 2023 07:04:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eloLEfQm72N1YQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Feb 2023 07:04:20 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: make dev-replace properly follow its read policy
+Date:   Fri, 17 Feb 2023 15:04:03 +0800
+Message-Id: <bedcd1c5bebd452ac43eb4fd385890582622a758.1676617361.git.wqu@suse.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y+5PKtUX/8gyNX/w@zen>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 16, 2023 at 07:43:38AM -0800, Boris Burkov wrote:
-> On Thu, Feb 16, 2023 at 10:49:52PM +0800, Zorro Lang wrote:
-> > On Thu, Feb 16, 2023 at 12:11:39PM +0000, Filipe Manana wrote:
-> > > On Wed, Feb 15, 2023 at 11:37 PM Boris Burkov <boris@bur.io> wrote:
-> > > >
-> > > > Add a new test which checks that size classes in freshly loaded block
-> > > > groups after a cycle mount match size classes before going down
-> > > >
-> > > > Depends on the kernel patch:
-> > > > btrfs: add size class stats to sysfs
-> > > >
-> > > > Signed-off-by: Boris Burkov <boris@bur.io>
-> > > > ---
-> > > > Changelog:
-> > > > v6:
-> > > > Actually include changes for v5 in the commit.
-> > > > v5:
-> > > > Instead of using _fixed_by_kernel_commit, use require_fs_sysfs to handle
-> > > > the needed sysfs file. The test is skipped on kernels without the file
-> > > > and runs correctly on new ones.
-> > > > v4:
-> > > > Fix dumb typo in _fixed_by_kernel_commit (left out leading underscore
-> > > > copy+pasting). Re-tested happy and sad case...
-> > > >
-> > > > v3:
-> > > > Re-add fixed_by_kernel_commit, but for the stats patch which is
-> > > > required, but not a fix in the strictest sense.
-> > > >
-> > > > v2:
-> > > > Drop the fixed_by_kernel_commit since the fix is not out past the btrfs
-> > > > development tree, so the fix is getting rolled in to the original broken
-> > > > commit. Modified the commit message to note the dependency on the new
-> > > > sysfs counters.
-> > > >
-> > > >
-> > > >  tests/btrfs/283     | 50 +++++++++++++++++++++++++++++++++++++++++++++
-> > > >  tests/btrfs/283.out |  2 ++
-> > > >  2 files changed, 52 insertions(+)
-> > > >  create mode 100755 tests/btrfs/283
-> > > >  create mode 100644 tests/btrfs/283.out
-> > > >
-> > > > diff --git a/tests/btrfs/283 b/tests/btrfs/283
-> > > > new file mode 100755
-> > > > index 00000000..2c26b41e
-> > > > --- /dev/null
-> > > > +++ b/tests/btrfs/283
-> > > > @@ -0,0 +1,50 @@
-> > > > +#! /bin/bash
-> > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > +# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
-> > > > +#
-> > > > +# FS QA Test 283
-> > > > +#
-> > > > +# Test that mounting a btrfs filesystem properly loads block group size classes.
-> > > > +#
-> > > > +. ./common/preamble
-> > > > +_begin_fstest auto quick mount
-> > > 
-> > > I'm still curious why the 'mount' group, and I've asked for that before.
-> > > 
-> > > We aren't testing a new mount option, so it feels weird for me.
-> > 
-> > Agree, the "mount" group looks not make sense.
-> 
-> My mistake, sorry for overlooking this. My reasoning is that it tests
-> the behavior on a fresh mount rather than while the fs is live, but it
-> is not specific to mounting logic. Happy to remove it.
-> 
-> > 
-> > The btrfs/283 has been taken in v2023.02.05. So please make a rebase.
-> 
-> Done. Is there any way we can try to script this process for the future
-> with placeholders or something? It's kind of a drag to deal with
-> in general. I'm happy to send some proposal if it's something you'd be
-> interested in taking.
+[BUG]
+Although dev replace ioctl has a way to specify the policy on whether we
+should read from the source device, it's not properly followed.
 
-The ./new command will choose a proper number for a new case, but that number
-might be taken after several weeks passed. One way is: the contributor can use
-./tools/mvtest to take a new number on his local develop branch, then rebase on
-the upstream for-next branch, then send it again.
+ # mkfs.btrfs -f -d raid1 -m raid1 $dev1 $dev2
+ # mount $dev1 $mnt
+ # xfs_io -f -c "pwrite 0 32M" $mnt/file
+ # sync
+ # btrfs replace start -r -f 1 $dev3 $mnt
 
-It's easy for the new case developer, but a little hard for me to merge a
-taken number. I have to create a temporary branch, then remove that (already)
-taken case clearly, then merge the new patch, then change its number, then git
-cherrypick it to official branch. If the patch is big and complex, I might need
-to deal with more conflict (that's risk).
+And one extra trace is added to scrub_submit(), showing the detail about
+the bio:
 
-There's another way you can try when you create a new case, you can take a
-bigger enough number (e.g. 999, 900) for your new case. Darrick always would
-like to do that, when he send lots of new cases to me. After I merge that
-patch, I'll use ./tools/mvtest to give it a proper number.
+           btrfs-1115669 [005] .....  5437.027093: scrub_submit.part.0: devid=1 logical=22036480 phy=22036480 len=16384
+           btrfs-1115669 [005] .....  5437.027372: scrub_submit.part.0: devid=1 logical=30457856 phy=30457856 len=32768
+           btrfs-1115669 [005] .....  5437.027440: scrub_submit.part.0: devid=1 logical=30507008 phy=30507008 len=49152
+           btrfs-1115669 [005] .....  5437.027487: scrub_submit.part.0: devid=1 logical=30605312 phy=30605312 len=32768
+           btrfs-1115669 [005] .....  5437.027556: scrub_submit.part.0: devid=1 logical=30703616 phy=30703616 len=65536
+           btrfs-1115669 [005] .....  5437.028186: scrub_submit.part.0: devid=1 logical=298844160 phy=298844160 len=131072
+           ...
+           btrfs-1115669 [005] .....  5437.076243: scrub_submit.part.0: devid=1 logical=322961408 phy=322961408 len=131072
+           btrfs-1115669 [005] .....  5437.076248: scrub_submit.part.0: devid=1 logical=323092480 phy=323092480 len=131072
 
-If you have any better idea, feel free to send your patch.
+One can see that all the read are submitted to devid 1, even we have
+specified "-r" option to avoid read from the source device.
 
-Thanks,
-Zorro
+[CAUSE]
+The dev-replace read policy is only set but not followed by scrub code
+at all.
 
-> 
-> > 
-> > The "fixed_by_kernel_commit xxxx" part has been added and removed several times,
-> > does this case need it or not? Or maybe you want a _wants_kernel_commit (just
-> > ask for sure) ?
-> 
-> Thanks for checking. I personally don't think it needs it. The commit it
-> wants/needs is the commit that adds the sysfs file. I think that is
-> adequately skipped and documented by the _require_fs_sysfs that Filipe
-> suggested. If someone is really interested in this behavior, it is not
-> too hard to find the kernel commit from the sysfs file.
-> 
-> > 
-> > Others look good to me.
-> > 
-> > Thanks,
-> > Zorro
-> > 
-> > > 
-> > > Otherwise, it looks fine now. Thanks.
-> > > 
-> > > > +
-> > > > +sysfs_size_classes() {
-> > > > +       local uuid="$(findmnt -n -o UUID "$SCRATCH_MNT")"
-> > > > +       cat "/sys/fs/btrfs/$uuid/allocation/data/size_classes"
-> > > > +}
-> > > > +
-> > > > +_supported_fs btrfs
-> > > > +_require_scratch
-> > > > +_require_btrfs_fs_sysfs
-> > > > +_require_fs_sysfs allocation/data/size_classes
-> > > > +
-> > > > +f="$SCRATCH_MNT/f"
-> > > > +small=$((16 * 1024))
-> > > > +medium=$((1024 * 1024))
-> > > > +large=$((16 * 1024 * 1024))
-> > > > +
-> > > > +_scratch_mkfs >/dev/null
-> > > > +_scratch_mount
-> > > > +# Write files with extents in each size class
-> > > > +$XFS_IO_PROG -fc "pwrite -q 0 $small" $f.small
-> > > > +$XFS_IO_PROG -fc "pwrite -q 0 $medium" $f.medium
-> > > > +$XFS_IO_PROG -fc "pwrite -q 0 $large" $f.large
-> > > > +# Sync to force the extent allocation
-> > > > +sync
-> > > > +pre=$(sysfs_size_classes)
-> > > > +
-> > > > +# cycle mount to drop the block group cache
-> > > > +_scratch_cycle_mount
-> > > > +
-> > > > +# Another write causes us to actually load the block groups
-> > > > +$XFS_IO_PROG -fc "pwrite -q 0 $large" $f.large.2
-> > > > +sync
-> > > > +
-> > > > +post=$(sysfs_size_classes)
-> > > > +diff <(echo $pre) <(echo $post)
-> > > > +
-> > > > +echo "Silence is golden"
-> > > > +# success, all done
-> > > > +status=0
-> > > > +exit
-> > > > diff --git a/tests/btrfs/283.out b/tests/btrfs/283.out
-> > > > new file mode 100644
-> > > > index 00000000..efb2c583
-> > > > --- /dev/null
-> > > > +++ b/tests/btrfs/283.out
-> > > > @@ -0,0 +1,2 @@
-> > > > +QA output created by 283
-> > > > +Silence is golden
-> > > > --
-> > > > 2.39.1
-> > > >
-> > > 
-> > 
-> 
+In fact, only common read path is properly following the read policy,
+but scrub itself has its own read path, thus not following the policy.
+
+[FIX]
+Here we enhance scrub_find_good_copy() to also follow the read policy.
+
+The idea is pretty simple, in the first loop, we avoid the following
+devices:
+
+- Missing devices
+  This is the existing condition
+
+- The source device if the replace wants to avoid it.
+
+And if above loop found no candidate (e.g. replace a single device),
+then we discard the 2nd condition, and try again.
+
+Since we're here, also enhance the function scrub_find_good_copy() by:
+
+- Remove the forward declaration
+
+- Makes it return int
+  To indicates errors, e.g. no good mirror found.
+
+- Add extra error messages
+
+Now with the same trace, "btrfs replace start -r" works as expected:
+
+           btrfs-1121013 [000] .....  5991.905971: scrub_submit.part.0: devid=2 logical=22036480 phy=1064960 len=16384
+           btrfs-1121013 [000] .....  5991.906276: scrub_submit.part.0: devid=2 logical=30457856 phy=9486336 len=32768
+           btrfs-1121013 [000] .....  5991.906365: scrub_submit.part.0: devid=2 logical=30507008 phy=9535488 len=49152
+           btrfs-1121013 [000] .....  5991.906423: scrub_submit.part.0: devid=2 logical=30605312 phy=9633792 len=32768
+           btrfs-1121013 [000] .....  5991.906504: scrub_submit.part.0: devid=2 logical=30703616 phy=9732096 len=65536
+           btrfs-1121013 [000] .....  5991.907314: scrub_submit.part.0: devid=2 logical=298844160 phy=277872640 len=131072
+           btrfs-1121013 [000] .....  5991.907575: scrub_submit.part.0: devid=2 logical=298975232 phy=278003712 len=131072
+           btrfs-1121013 [000] .....  5991.907822: scrub_submit.part.0: devid=2 logical=299106304 phy=278134784 len=131072
+           ...
+           btrfs-1121013 [000] .....  5991.947417: scrub_submit.part.0: devid=2 logical=318504960 phy=297533440 len=131072
+           btrfs-1121013 [000] .....  5991.947664: scrub_submit.part.0: devid=2 logical=318636032 phy=297664512 len=131072
+           btrfs-1121013 [000] .....  5991.947920: scrub_submit.part.0: devid=2 logical=318767104 phy=297795584 len=131072
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/scrub.c | 131 +++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 97 insertions(+), 34 deletions(-)
+
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index ee3fe6c291fe..f9f86893f6bb 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -423,11 +423,6 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
+ static void scrub_bio_end_io(struct bio *bio);
+ static void scrub_bio_end_io_worker(struct work_struct *work);
+ static void scrub_block_complete(struct scrub_block *sblock);
+-static void scrub_find_good_copy(struct btrfs_fs_info *fs_info,
+-				 u64 extent_logical, u32 extent_len,
+-				 u64 *extent_physical,
+-				 struct btrfs_device **extent_dev,
+-				 int *extent_mirror_num);
+ static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
+ 				      struct scrub_sector *sector);
+ static void scrub_wr_submit(struct scrub_ctx *sctx);
+@@ -2709,6 +2704,93 @@ static int scrub_find_csum(struct scrub_ctx *sctx, u64 logical, u8 *csum)
+ 	return 1;
+ }
+ 
++static bool should_use_device(struct btrfs_fs_info *fs_info,
++			      struct btrfs_device *dev,
++			      bool follow_replace_policy)
++{
++	struct btrfs_device *replace_srcdev = fs_info->dev_replace.srcdev;
++	struct btrfs_device *replace_tgtdev = fs_info->dev_replace.tgtdev;
++
++	if (!dev->bdev)
++		return false;
++
++	/*
++	 * We're doing scrub/replace, if it's pure scrub, no tgtdev should be
++	 * here.
++	 * If it's replace, we're going to write data to tgtdev, thus the current
++	 * data of the tgtdev is all garbage, thus we can not use it at all.
++	 */
++	if (dev == replace_tgtdev)
++		return false;
++
++	/* No need to follow replace read policy, any existing device is fine. */
++	if (!follow_replace_policy)
++		return true;
++
++	/* Need to follow the policy. */
++	if (fs_info->dev_replace.cont_reading_from_srcdev_mode ==
++	    BTRFS_DEV_REPLACE_ITEM_CONT_READING_FROM_SRCDEV_MODE_AVOID)
++		return dev != replace_srcdev;
++	return true;
++}
++static int scrub_find_good_copy(struct btrfs_fs_info *fs_info,
++				u64 extent_logical, u32 extent_len,
++				u64 *extent_physical,
++				struct btrfs_device **extent_dev,
++				int *extent_mirror_num)
++{
++	u64 mapped_length;
++	struct btrfs_io_context *bioc = NULL;
++	int ret;
++	int i;
++
++	mapped_length = extent_len;
++	ret = btrfs_map_block(fs_info, BTRFS_MAP_GET_READ_MIRRORS,
++			      extent_logical, &mapped_length, &bioc, 0);
++	if (ret || !bioc || mapped_length < extent_len) {
++		btrfs_put_bioc(bioc);
++		btrfs_err_rl(fs_info, "btrfs_map_block() failed for logical %llu: %d",
++				extent_logical, ret);
++		return -EIO;
++	}
++
++	/*
++	 * First loop to exclude all missing devices and the source
++	 * device if needed.
++	 * And we don't want to use target device as mirror either,
++	 * as we're doing the replace, the target device range
++	 * contains nothing.
++	 */
++	for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
++		struct btrfs_io_stripe *stripe = &bioc->stripes[i];
++
++		if (!should_use_device(fs_info, stripe->dev, true))
++			continue;
++		goto found;
++	}
++	/*
++	 * We didn't find any alternative mirrors, we have to break our
++	 * read policy, or we can not read at all.
++	 */
++	for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
++		struct btrfs_io_stripe *stripe = &bioc->stripes[i];
++
++		if (!should_use_device(fs_info, stripe->dev, false))
++			continue;
++		goto found;
++	}
++
++	btrfs_err_rl(fs_info, "failed to find any live mirror for logical %llu",
++			extent_logical);
++	return -EIO;
++
++found:
++	*extent_physical = bioc->stripes[i].physical;
++	*extent_mirror_num = i + 1;
++	*extent_dev = bioc->stripes[i].dev;
++	btrfs_put_bioc(bioc);
++	return 0;
++}
+ /* scrub extent tries to collect up to 64 kB for each bio */
+ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+ 			u64 logical, u32 len,
+@@ -2746,7 +2828,8 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+ 	}
+ 
+ 	/*
+-	 * For dev-replace case, we can have @dev being a missing device.
++	 * For dev-replace case, we can have @dev being a missing device, or
++	 * we want to avoid read from the source device if possible.
+ 	 * Regular scrub will avoid its execution on missing device at all,
+ 	 * as that would trigger tons of read error.
+ 	 *
+@@ -2754,9 +2837,14 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+ 	 * increase unnecessarily.
+ 	 * So here we change the read source to a good mirror.
+ 	 */
+-	if (sctx->is_dev_replace && !dev->bdev)
+-		scrub_find_good_copy(sctx->fs_info, logical, len, &src_physical,
+-				     &src_dev, &src_mirror);
++	if (sctx->is_dev_replace &&
++	    (!dev->bdev || sctx->fs_info->dev_replace.cont_reading_from_srcdev_mode ==
++	     BTRFS_DEV_REPLACE_ITEM_CONT_READING_FROM_SRCDEV_MODE_AVOID)) {
++		ret = scrub_find_good_copy(sctx->fs_info, logical, len,
++					   &src_physical, &src_dev, &src_mirror);
++		if (ret < 0)
++			return ret;
++	}
+ 	while (len) {
+ 		u32 l = min(len, blocksize);
+ 		int have_csum = 0;
+@@ -4544,28 +4632,3 @@ int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
+ 
+ 	return dev ? (sctx ? 0 : -ENOTCONN) : -ENODEV;
+ }
+-
+-static void scrub_find_good_copy(struct btrfs_fs_info *fs_info,
+-				 u64 extent_logical, u32 extent_len,
+-				 u64 *extent_physical,
+-				 struct btrfs_device **extent_dev,
+-				 int *extent_mirror_num)
+-{
+-	u64 mapped_length;
+-	struct btrfs_io_context *bioc = NULL;
+-	int ret;
+-
+-	mapped_length = extent_len;
+-	ret = btrfs_map_block(fs_info, BTRFS_MAP_READ, extent_logical,
+-			      &mapped_length, &bioc, 0);
+-	if (ret || !bioc || mapped_length < extent_len ||
+-	    !bioc->stripes[0].dev->bdev) {
+-		btrfs_put_bioc(bioc);
+-		return;
+-	}
+-
+-	*extent_physical = bioc->stripes[0].physical;
+-	*extent_mirror_num = bioc->mirror_num;
+-	*extent_dev = bioc->stripes[0].dev;
+-	btrfs_put_bioc(bioc);
+-}
+-- 
+2.39.1
 
