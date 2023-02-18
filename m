@@ -2,122 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7713C69B68F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Feb 2023 01:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E83369B6FF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Feb 2023 01:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbjBRAFN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Feb 2023 19:05:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59678 "EHLO
+        id S229915AbjBRAmg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 17 Feb 2023 19:42:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjBRAFM (ORCPT
+        with ESMTP id S229599AbjBRAmf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Feb 2023 19:05:12 -0500
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2040.outbound.protection.outlook.com [40.107.22.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EC647432
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Feb 2023 16:05:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ihq6KsAFH+S1dUfXrZ/ga1ep3idl60fqvZh8KW3SWXlSbwyYpuzKKdD6RvOtNaP5QYmgaaLXcBUFkhUY65AIm+SKLsI5E54K3r7lLPUj5e/eVngmn+8C6B5KTE9gxQEEeaBqB3ejenB1ydvFtg2KEaoUeA3ECzMy5dUIS1E+Q1U3npO0TLsBCc6jo4le7g6dP5dGSoYfBkteZW9+n5n/UZeQOsRPygTtRIoi0vbHZhERHShMkPK9ucUzg2ZHe1pyZ3Ti/3y9Gjru1lS+/lRIST3ShiCqAMJZAKheDzKI+H5HexRTp/0NQxKjR88hmh0CGFCAWXkdoxjHQ0MUwX1lmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jxEiLS5UOMJYr2SAVukmv9tPuaa2PKntBNZUuEZnkWQ=;
- b=SWKwvhs4PjMSj7oMfTQCNpMJSqUioWOks6GTIjwWPsoSUcUKhJcjC9sYgwYUngwgwFgp7tQ+p0+jFmx9CiA0o18AuyATamAE0SjIuK5cKczhSELi+zYmntsjGzDwkzkCIBsp9fnq+boKl56l/T9Nc0FZDZYZeW77tHvx+TGm0xjkZQSw0NRr2yzrRTcyP+9AO146E1OuxxKoBfdQ9EyWCGm5tF4rAz9PRltfPw3ZElVanXcU7hpy0aNooGk+bd8EIdn6VcSEm4iqGo/C9AdQXd2PGJ7zNzXBLSfP20gjrsyysJJ8EOoDIcB4YhmNGwMFqzadt+JAB/wx++knGHBu1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jxEiLS5UOMJYr2SAVukmv9tPuaa2PKntBNZUuEZnkWQ=;
- b=zClh8HnKO4IuejOlK+9rOH/Q+b4vPgZQq/JfHH/HJadB9yRjJo0pFf49bjbdBi+Gfrgbs5lhMVlZFZ4zg7hBfGuO4r2wj/xqZDE3JkEy8DrNVEkFh5Jwox+D0VvrFh7zmoKPTRqlNUzSOkmlFW6ho3D6vJINWW9O44+DXss+TDRnZeISngEiNAbew9ok4WxnUPp9ri44r4ETYYzlPb2esjVpTxNxmRh8ljM5vMvp3ighrQ+uwcb5RMAxAmXxKTx1hM6njgAJgPZhLkLGTo9VUgkS7FXhD7n3cWn7PB7SGVrGwFTu9GHSzYBWL9pSMT+ZN3gO2QLR0QVuADtjOSz3RA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by DBAPR04MB7431.eurprd04.prod.outlook.com (2603:10a6:10:1a1::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.17; Sat, 18 Feb
- 2023 00:05:06 +0000
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::7bca:4b0c:401e:e1bb]) by AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::7bca:4b0c:401e:e1bb%3]) with mapi id 15.20.6111.018; Sat, 18 Feb 2023
- 00:05:06 +0000
-Message-ID: <9b45f60f-c849-e072-64ef-298937e6a8a3@suse.com>
-Date:   Sat, 18 Feb 2023 08:04:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: Return of btrfs_del_item
-Content-Language: en-US
-To:     Kang Chen <void0red@gmail.com>, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.cz
-References: <CANE+tVrwoRxcOqK5vJCzEJonD9Z=80mdXUqvE3RoOcrVgRhrBw@mail.gmail.com>
-From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <CANE+tVrwoRxcOqK5vJCzEJonD9Z=80mdXUqvE3RoOcrVgRhrBw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR06CA0070.namprd06.prod.outlook.com
- (2603:10b6:a03:14b::47) To AS8PR04MB8465.eurprd04.prod.outlook.com
- (2603:10a6:20b:348::19)
+        Fri, 17 Feb 2023 19:42:35 -0500
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4A283F7
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Feb 2023 16:41:58 -0800 (PST)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 3DE4320126A;
+        Sat, 18 Feb 2023 00:29:32 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 384FC2012C7;
+        Sat, 18 Feb 2023 00:29:31 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1676680171; a=rsa-sha256;
+        cv=none;
+        b=mNDFRUThfpl4Xp9dlpiO9YeOiqrQaPPZKg95fZpjk+rhkzROxVwDYDExio9gBC6fAOvzfR
+        HkG+OztoSpoRvunCV8MP1Gz0ZnVcRjAtqyw4PUOhZlsnWG3webX9kXh+YNvUr5EjyObBb8
+        vXX+43ylaGaycc7T+YpAOuAKyp9+6aRN3JKpIaNPrKYlRvRdGbP/4Tc4AnSrYaxxs7oTu/
+        7aF9WVCP6pFNqte5Oikpe8+EcT5ovb7FZ7HlvVjU6zy5tmn+uF9tvUnpR87atcnHDX2ZAS
+        +q4SJ8/WmKd/Y6UJ0zuDRTfFEkkyGji1wdnMhEF6aqZLTqZe/SUe1tAi+qglFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1676680171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xLM8VOWP1AzSePQerox+yVpY4hrmQHIp8NkdC17njLs=;
+        b=TtYmjLD98h7lT7CY80AYfb8hU0ZXtMesAniLl81ULBAB927ygANC3hlNfwdTgZsj0eiGFh
+        QpOuyjiUjdL2vDOcC+dIea2t4TViOraT+R3OItyfsCYEZl9Kq5L9Lw0XK2RlIQwygOWW33
+        qtD9oo+70esu+kG714ZV2OuQjOt84WIR2XZIaoqH9xbElmD8QPFfyUqGmEaNpj3DdJJHMz
+        242BKnPfsAc4YIaRwa7HbxNpCD4sxy7sqkYVY4RjLuOpc8jrR3iJ9alvMH3WsmzC4UJN7x
+        YpqsN8v4GKuCJDxTx35gi2N8hbsQUT0WH3T4KR94Up9bI3ubT3JCFoRe15h/Yg==
+ARC-Authentication-Results: i=1;
+        rspamd-9788b98bc-hzrxs;
+        auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Cure-Relation: 6c1a493879b24cef_1676680171871_2320105499
+X-MC-Loop-Signature: 1676680171871:3064075238
+X-MC-Ingress-Time: 1676680171871
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.123.200.110 (trex/6.7.1);
+        Sat, 18 Feb 2023 00:29:31 +0000
+Received: from p5b071f3f.dip0.t-ipconnect.de ([91.7.31.63]:34178 helo=heisenberg.fritz.box)
+        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <calestyo@scientia.org>)
+        id 1pTB6U-0007uZ-SC;
+        Sat, 18 Feb 2023 00:29:29 +0000
+Message-ID: <b492bb2878c839b2ea9cb8a9c94124062e29f42d.camel@scientia.org>
+Subject: Re: back&forth send/receiving?
+From:   Christoph Anton Mitterer <calestyo@scientia.org>
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Date:   Sat, 18 Feb 2023 01:29:24 +0100
+In-Reply-To: <c0e00d00-20ff-642f-bbfd-ecbd17669502@gmail.com>
+References: <10fd619ccbe568df4344b6b1d93f061bc493d396.camel@scientia.org>
+         <9a49ccb8-9728-029f-be0e-75ccb8e211d0@gmail.com>
+         <3c77c6306ece13559de514940074ac70b4fc882a.camel@scientia.org>
+         <a134a22a-80f2-91a5-f0a1-21145c487118@gmail.com>
+         <bcb9bfe78715e98ea758df3723daa8f9afb2f20a.camel@scientia.org>
+         <CAA91j0XNV68cuVmue7tuQDMZv7NirwWiJp1ntb1B9fKoSMKt-g@mail.gmail.com>
+         <d02fb95aecf51439c7784c990784f73a11412e4b.camel@scientia.org>
+         <c0e00d00-20ff-642f-bbfd-ecbd17669502@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4-1 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DBAPR04MB7431:EE_
-X-MS-Office365-Filtering-Correlation-Id: 14567125-45ec-4fd5-294f-08db1143ca51
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hwH4a1cixIbxMLBhGYvR0MWK/TFmtoepT6Oq2V0zqrPzqW3wwY5jVcqtHgS6IPf9YK7aLbLmSiVdnX+TiJeoGuKFoX3mnS8V3PwccrYXb/Zifxdv/2b7X+tBTSUTmLID8C1qOh06ZfQeGoB5rn8FJbJCeUpWNxKbKevYe6hzhniarzkO4eSHe8gU5zhS4qDsIymE9wv8wcz5jDQsqT68u8sAQ3AOJIJn+A7Dgp/9XIxH15Q6aigZ39iwcCVNJNfl0OcXnzk9MQhBE/r7EGHwWMbToPz1fLrmyjKjh+ZplArYYq5JM8V8nS49AGxMeYEQQhsJBfiy5W4+FP7wQsaraBo6+oEs7DzM8keVjK7/j06ov94kQy+sgJcc/4Lof7rX7lTO/T1ngaXaVclUiMHjY/E/3MYuX6+1Ve1XuPE9Ym6hQxbS8YRgKbgUUcaDAAGe7nuTuzPbAcB42FguEhsjEGXCYZ3O/tBpAX1gMfp1Vc2kRf/4vWyN/Qon9HR+f+2QpuzN8IKf1cO2wKE3NSizRDb4Au77GY7qfGfEpNa4xhjiMKYfheZm0wcszIO+8GawbDXkxjl3657ocWrG5ixU6+oc5Gogwrjs7LZhUKFB2i4Ozs/vlwiGlEpZWI/LSQIJivj6aHXM4fJ74kucUdPcMFQ1inkRY361bKQY+RhJwL2jHTfKS2vJRSFIrb86cT0n7gXTOpTKmH+oOwVO+sV48dy46vxLANO8f7zl33l6U30=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(376002)(396003)(39850400004)(366004)(346002)(136003)(451199018)(6506007)(8676002)(4326008)(66476007)(66556008)(66946007)(316002)(7116003)(8936002)(5660300002)(6636002)(41300700001)(6666004)(2616005)(53546011)(186003)(478600001)(6512007)(6486002)(966005)(36756003)(86362001)(31696002)(2906002)(4744005)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YTZiQy9NRDVneEZBbjlTVlVlTlMxR3RGKzlXRGJsem5jSVhFQWUxK1lJdldR?=
- =?utf-8?B?eEhDdkxwL0dPS0QzTUNhTGtNeGNRYkFvWlpLTktBZGY2T1RVaWgxTHphNXBS?=
- =?utf-8?B?OHI5VEFMMHVmeHZtZm9ZOHRQL2dsTnRXYlFIeUJvb1Q5QzBabk82Y2JBYkJ1?=
- =?utf-8?B?ZzlTSVY0b2JYTmtWdk1Fanc3YmptQm13RzRWZ21yOHBZUzE3Z2RDNGdqZm9y?=
- =?utf-8?B?VzJTdzY3dU54ajJLOG9WN1FuVzU4TlpmSzdGTzFrSW04WkwwVDFqNkVwdlJX?=
- =?utf-8?B?MHhFaDZlTjNPMkxJNXFHUVJ6clJJT0dOK25zSUQwRGhLbnJnRW1xV3FQV21E?=
- =?utf-8?B?cTZ1S0UybEVWZXNkMHdkVGJUQXd6RzRYWTZ1ZDVQcnh5ampqSDZ5d2FFQURJ?=
- =?utf-8?B?Tm9ZNEZsQ1NCdmFsZ3RsUHppdVVQb2t4YUg3N1ZSL3BDQVRRU2Y1RlNRYWRQ?=
- =?utf-8?B?MW1Kb091dU56S3lxMWVEVnlTdFY4a0RCc0xBSmdWejFXOGtpQWliRTNoa3Nx?=
- =?utf-8?B?blBhMmk4WDBZZFRST1FHRSt4V216d1Y5Y1ZSdGtRM1NmRU1vbXl6bDFodytI?=
- =?utf-8?B?Tnh5d1AzenlOSXBRMTZ4NnliZGZYY3g3RktHK1c5QXZBdWlBdUFKcWEzbGU2?=
- =?utf-8?B?bDN1NXBTV2gxanlMK1hxQ1hSRlh1RmhCVlFRU1lmOWJkcDVvWjZ1NXhXbW1Y?=
- =?utf-8?B?NG82V0lxV3NpNldSRVhxZ2NlcnFYd0lVOW9nVFNNOWxNLzJGK1pWWncxclh0?=
- =?utf-8?B?N2ZBUEdVeXd4RmdkQS84MFpTZktXMjFMcGRCVHVPVWxuRm8zNlVrYS9lTXV0?=
- =?utf-8?B?b2pwRmNySjNha1BCeHhYREVoUmNwY0hsajZDa3dUOWVJa0pXYzVES2EweTNT?=
- =?utf-8?B?Mk9jdjdGNFdnSE1Pa2tXYjZaeXdKZnVpQmdrS2JjUEtMUXFZSEwwQllmbWNy?=
- =?utf-8?B?ZDJGSit5V2I2aHU5Q2tTa1paYWY1dzRES0F5UVY4UjRrUy9PUkJ1V1RjUWFB?=
- =?utf-8?B?QndzeWtIYUxwSDNRQ2MrV2psNGQzV0oxaWpoaFVaVm1oZjhiRWpFbzAwSm03?=
- =?utf-8?B?eUpLazVXV0JuekIwQmo3dHowSWlzbEVaK1lUMkhjTEcwbWlMWmVOdWpSbi9x?=
- =?utf-8?B?eEozbmh0dTJZbXV5YzBrTnlDMmcrK2VOWS9pRFdyNnRlNnZWUDVrS00xaGVu?=
- =?utf-8?B?ckUxbS91ZUFCTFhWaWpYaE1MY2wyMlVuMXBaQnJrSjlwNnJpUkk4eURwcGZL?=
- =?utf-8?B?WXFQRzVFRGpxem55SFR1SVdmRVRpZXhqNklJcEF5am1sSmVSZVhEWHZSN09r?=
- =?utf-8?B?ajVQYkQxM003TStFeXNhUDBOc1FvRVNHZ05mMWoybTdGUTMzcVMraTdTU2g4?=
- =?utf-8?B?UTg3VjV2SWJ0aDRXWW1RL283d3BueDZNQ3FBVEN4S1VTTzY5K0FyNnp0akpB?=
- =?utf-8?B?R1d3TllJQUJKcmFKeFBYSmRNc1pLTnRuQzdyTnprcmlDMUVhc0gzOExxV1lX?=
- =?utf-8?B?bnNHMko2SU1SdG5NSWJuZDlKMVhCVXFXMFZZdWw4eHMzYVFrQ2ZlL0lvNkQ3?=
- =?utf-8?B?c1JNL1U2T2VGVDZTTW9XWU1UVXlrSVEwM3pQS0FLYVArbEJzcFR3SkVoZi9P?=
- =?utf-8?B?cmRVZXhsSFJNOGZzRXJ6b3BySmgwMHdySG9vVm9NMlk3UXdramlnMHBhQ3o0?=
- =?utf-8?B?b1A5ekJlSTVaeUZUYUdMNHp3Qzk4L0dVMmdFRXo0SHQ0UDZiVm5hcXBXaXFS?=
- =?utf-8?B?ZXRuRjJZd1VxSXVsT0U0eElybkxsUzkvdTNkT1p4YlJPWGZ0RXZsanVLbE1E?=
- =?utf-8?B?c1NDNVY4QU9XeHVqazBvZ01WeWdjUjFjc20vWEUxTGUvWlFDY2lDT1pkWVRB?=
- =?utf-8?B?Y2JkV2dRN1N0L0pBQ1Q5cm5OSTEwZk5xTUgyTEdtU0JjTGZGc0RBL2xHWm9M?=
- =?utf-8?B?Tmh0UXdFMUJ1VUQzSEZ6cGVCZlQyaXU4YndpRWtCQmprbUVqZXJmNVFaRmVZ?=
- =?utf-8?B?cE01Nmd4RXhkdUhZYzduOW9jYXBXem1sb2VTMkFneDc0d2tLTUp0QmtDTjBr?=
- =?utf-8?B?MkVFcTFBVUZFZ3Z5SkdSMGorald5d0pVTGMxTEJrWE9qaU5ERUtIUnN4UHZQ?=
- =?utf-8?B?R3N0MUhVbmk0bVo5aWRKeHpzeDFiSDJCL1hXanFzQTQrODZlaFlPUFMzWlZE?=
- =?utf-8?Q?8/nD6WGctH6SAaq/fbpGERw=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14567125-45ec-4fd5-294f-08db1143ca51
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2023 00:05:06.1604
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zEnN5lu8/Y+Xumt/VvgwSZnBRnkI6Sw25cAc0QaZ0m1YphKXUv/9I1DOnqx/MZm4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7431
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AuthUser: calestyo@scientia.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,21 +94,62 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, 2023-02-17 at 20:25 +0300, Andrei Borzenkov wrote:
+> So copy1 and copy2 are identical. This is not what you said earlier
+> (at 
+> least, it is not how what you said earlier sounded).
+
+Well that are based on the same master, but their most recent snapshot
+from that *may* be a different one.
+
+E.g.:
+
+master could have:
+data  (with the following snapshots of that)
+data_2022-10-01
+data_2022-11-01
+data_2022-12-01
+data_2023-01-01
+data_2023-02-01
+
+copy1 could have:
+data_2022-10-01
+data_2022-12-01
+data_2023-01-01
+
+copy2 could have
+
+data_2022-10-01
+data_2022-12-01
+data_2023-02-01
 
 
-On 2023/2/17 19:47, Kang Chen wrote:
-> I found that the return value of `btrfs_del_item` is handled
-> elsewhere, is it needed here?
-> Maybe we should save the return value to `ret` and abort the transaction later.
+
+> So are all copyN identical or not?
+
+Well, except for perhaps the most recent snapshot.
+
+The reason is in my case simply that I keep the copyN HDDs never at the
+same place.... so there may be some time where on is not up to date.
+And sometimes I may even skip a snapshot when I up date one of the
+copyN HDDs, instead taking an already newer one.
+
+
+> > But I always keep on (old) master the snapshot that are most recent
+> > on
+> > each of copyN, so that I can continue from there, when I do the
+> > next
+> > round of snapshot.
+> > 
 > 
-> https://elixir.bootlin.com/linux/v6.0.1/source/fs/btrfs/delayed-inode.c#L1075
+> It does not matter what you keep on old master because old master is 
+> gone. What matter is what you keep on each copyN.
 
-It looks like a missing error handling.
+That was meant for the time hen old master is still there any I make
+the regular snapshots.
+Of course I'll do the same on new master, too. Simply to be able to
+incrementally send|receive to the copyN.
 
-Even if the slot is already read out, we may still need to re-balance 
-the tree, thus it can cause error in that btrfs_del_item() call.
 
-Feel free to add error handling to the call site.
-
-Thanks,
-Qu
+Cheers,
+Chri.
