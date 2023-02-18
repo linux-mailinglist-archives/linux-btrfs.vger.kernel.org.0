@@ -2,55 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 857EE69B97C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Feb 2023 11:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F27F69B9D6
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Feb 2023 12:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbjBRKqW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 Feb 2023 05:46:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
+        id S229530AbjBRLl1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 18 Feb 2023 06:41:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjBRKqU (ORCPT
+        with ESMTP id S229441AbjBRLlZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 Feb 2023 05:46:20 -0500
-Received: from libero.it (smtp-31-wd.italiaonline.it [213.209.13.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7EE1E9CC
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Feb 2023 02:46:17 -0800 (PST)
-Received: from [192.168.1.27] ([84.220.128.202])
-        by smtp-31.iol.local with ESMTPA
-        id TKjOpN37LcS9XTKjOpVkLP; Sat, 18 Feb 2023 11:46:15 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1676717175; bh=3QKmyzJDyzQofsDDBwoMmomMQuT+Njt0MNIXFUeP6gI=;
-        h=From;
-        b=JMlZA7cEB1wa15WHyUNZpg/2Ufmxp6iVl6FHIv3P/5u4bQn6MoyEKpHThf8Hggtq2
-         6V9MMGIyR6NrXEOaFx681ByG0sXMSXoVFRwp0Stuh2b0hFaBxxQg6a/B7LsPg1bqq0
-         mkOziQLG5v0BX4aDSKqhuYyS63aA8X+SspbaLbhJq30LzAqMSDYoy3hBtpiay3KCgE
-         D4OJRJyY0uz+EC27HZZpuASinvpNQ1+h/jEAVNN9Mp7PE0NKjSb7ApfkXh7oQGu+Ug
-         nVSKi5rnmpMejPCr9U6dQCcxLaV7QexWDZabRaoaJj9voS2SbRr0fBp8ZZyc3mX/08
-         tvNup+cGpuNLA==
-X-CNFS-Analysis: v=2.4 cv=Vfgxfnl9 c=1 sm=1 tr=0 ts=63f0ac77 cx=a_exe
- a=7XXxH8DXEs6J8bMFqK0LmA==:117 a=7XXxH8DXEs6J8bMFqK0LmA==:17
- a=IkcTkHD0fZMA:10 a=OmvV-GpHZSrWfQvEMi0A:9 a=QEXdDO2ut3YA:10
-Message-ID: <04ddea4e-4823-00dc-c32c-700d9f7e1fef@libero.it>
-Date:   Sat, 18 Feb 2023 11:46:14 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.2
-Reply-To: kreijack@inwind.it
-Subject: Re: Why is converting from RAID1 to single in Btrfs an I/O-intensive
- operation?
-Content-Language: en-US
+        Sat, 18 Feb 2023 06:41:25 -0500
+Received: from ciao.gmane.io (ciao.gmane.io [116.202.254.214])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B766E1557E
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Feb 2023 03:41:24 -0800 (PST)
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane-mx.org>)
+        id 1pTLak-0001cZ-FC
+        for linux-btrfs@vger.kernel.org; Sat, 18 Feb 2023 12:41:22 +0100
+X-Injected-Via-Gmane: http://gmane.org/
+Mail-Followup-To: linux-btrfs@vger.kernel.org
 To:     linux-btrfs@vger.kernel.org
+From:   Torsten Bronger <bronger@physik.rwth-aachen.de>
+Subject: Re: Why is converting from RAID1 to single in Btrfs an I/O-intensive operation?
+Date:   Sat, 18 Feb 2023 12:32:34 +0100
+Organization: Phoenix Foundation
+Message-ID: <87edqni4z1.fsf@physik.rwth-aachen.de>
 References: <87wn4fiec8.fsf@physik.rwth-aachen.de>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <87wn4fiec8.fsf@physik.rwth-aachen.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        <752fc1e0-74d3-3a80-916f-de5df9ff4e1f@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfKgzkoE0DXO8YTn/vgEiBJ6jyAUdDX0QTayGUtYt1TsPeoPfSwW+sPq7eLDsKpa0uT/tQuYiJsLXOg8jHw/uAmPC0aguSIlZQMwXaD0lSuFOuCWhVzuy
- Lr9H0m8mDIF1A6WgexYks33jHElpIEgeaT4C9haWu3S4hZgf+CrUbtCm5E1r9XkOO339PEyM/whUt2rl7ek63XxoN1rwhiMPzG8=
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=no
+User-Agent: Gnus/5.13 (Gnus v5.13)
+Cancel-Lock: sha1:3+jc37Ub+x14UVXHDRP2U1pHC+Y=
+X-PGP-Fingerprint: C5C8 D6E2 79D2 EFE9 8C0F  6D77 D5E3 CEFC 9F51 6B77
+X-Home-Page: http://www.wikipedia.org/wiki/User:Bronger
+X-Face: +wpw"|jN2Fde|7<r"A\7[g0RGE#"N'WgB|46ohZy$RfV+Y!oH=FKMC>_<EQ_IdY;pJcjJrx
+ {m$r$vTG>lKBa0\7!_6<ouwhB1|a+k#?z597ims{Y+POGr7Z{,b]wj]6Z"PqUHzA2\|m(:>suIE_m!
+ x)'S9ytBu8tkt'k779jbzQ4o|p+@H_DCrIdnKG]E*w
+X-Binford: 6100 (more power)
+X-Accept-Language: de, en
+Mail-Copies-To: never
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,38 +51,28 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 18/02/2023 09.10, Torsten Bronger wrote:
-> Hallöchen!
-> 
-> I want to replace a device in a RAID1 and converted it temporarily
-> to “single”:
+Hallöchen!
 
-I suggest you to evaluate
-- remove a disk when the FS is offline
-- mount the FS in 'degraded' mode
-- attach a new disk
+Andrei Borzenkov writes:
 
-This would minimize the cost of the reshaping. But wait for some other
-feedback because I am not sure how robust is working in a 'degraded'
-mode for "I/O-intensive operation".
+> On 18.02.2023 11:10, Torsten Bronger wrote:
+>
+>> I want to replace a device in a RAID1 and converted it
+>> temporarily to “single”: [...]  This takes very long. I don’t see
+>> why, [...]
+>
+> Converting between RAID profiles copies data from chunks with the
+> old profile to the chunks with the new profile. Old chunk is not
+> modified in place, they are removed after all data is moved to the
+> new chunk.
 
-BR
+Thank you!  I see the reason now (while it is unfortunate
+nevertheless that this means that the bulk data has to be moved as
+well).
 
-
-> btrfs balance start -f -mconvert=single,soft -dconvert=single,soft /
-> 
-> This takes very long. I don’t see why, and wonder whether this is
-> the right approach in the first place. After all, no (significant)
-> amount of data should be needed to be transferred in the process,
-> should it?
-> 
-> A side question: Is -sconvert also necessary?
-> 
-> Regards,
-> Torsten.
-> 
+Regards,
+Torsten.
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+Torsten Bronger
 
