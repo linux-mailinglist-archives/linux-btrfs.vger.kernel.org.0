@@ -2,97 +2,322 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D86E69D123
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Feb 2023 17:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 545B169D40F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Feb 2023 20:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbjBTQMS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Feb 2023 11:12:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
+        id S232445AbjBTT0M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Feb 2023 14:26:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjBTQMS (ORCPT
+        with ESMTP id S232269AbjBTT0L (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Feb 2023 11:12:18 -0500
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D743B464
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Feb 2023 08:12:17 -0800 (PST)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-536aa45367eso28913077b3.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Feb 2023 08:12:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=etDsOsklTFhdv20/ihPgdxxbpxkX/HMYSlW+AO+gqjs=;
-        b=XIdlLW/Y3FKpBmW+MFh3PHZIVL4yzPdjvRL9q2jc+yShLVyzDRmAOkn90kRulptK7R
-         Q/LMd6BRMP5wS8Gb2PMwRlXVTct2KTv78c+ZhhRnNdX7BIEU7n7ff1XZkBN/asygJ9MM
-         oIQ5o5zHAuZDT3JTGm3xEfF48A5/l4lm13pM4BGh4YnixHVCs50ghm68Nw0ZEa6hEl96
-         pOL/FkRyPQX/b+WLIle67ZK/gYPrQKMAdnijBSH5338W/GZSFFeRMfBK2ji82FzHigtZ
-         hVHjeG5mA4bgjcdSueWC31CveOW1iYm3FKJMSif4vTW2sZWDwNADKg3FnZcJMXpu1Q4z
-         PM6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=etDsOsklTFhdv20/ihPgdxxbpxkX/HMYSlW+AO+gqjs=;
-        b=YyhoXYlgIfGWlYStzqhFFzRK9029Nln8lU9jlnNaH+FPHRQdfFQowWn7xI/j8XWOux
-         1qIQY/H+PVN8H/I2Wzc7CkldfL3dUmsXndQKRqcELYZz1/M1w2L659zE49iyQ5+23zqD
-         McVoaz9HoGX9DuEWfux8n0/NFCWo7b9M0pD9SKbEV/r5xfORLpGreRJ8KAUTZ87MJueu
-         aaDMU7h20byYcR4dXH915Kjgj+0V9TuLrk66mBeTlng5WQvMz2WTXrnJ4z1wKgARe2/f
-         jp8AsKUib1glKOVUDAL5YbQiRmySJXFi0zC8MwnzavMkysLijcrsmHIeqn+dgUDaDHXn
-         0K2g==
-X-Gm-Message-State: AO0yUKWbwY6QaccZE8asjM3YGAVkBWQYu2IezQS2diVd+O6S+2T2i6ia
-        mI0e5ECOg48XxlCoT1QtTpTMLihW14wfejnVDkM=
-X-Google-Smtp-Source: AK7set+Fwzn4lgWOyJ8bkJc3qySoYxX2UG1kpU63Obp77hehW17hLM7ag1h3lhX20281Re7HPtYwCqCTR7aWdEj67kc=
-X-Received: by 2002:a0d:e7c1:0:b0:52e:ffc1:9e11 with SMTP id
- q184-20020a0de7c1000000b0052effc19e11mr2020316ywe.468.1676909536593; Mon, 20
- Feb 2023 08:12:16 -0800 (PST)
+        Mon, 20 Feb 2023 14:26:11 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DCD13D5B;
+        Mon, 20 Feb 2023 11:26:07 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id DCA5E33893;
+        Mon, 20 Feb 2023 19:26:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1676921165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=X/yYnG44gTdXUcqMRIxo+cfObb3PPFOBWdM2v5Ayie0=;
+        b=Z7D98O05rcCIgeoO38xdXt/CcAjfZN9OQ3mEvpf/lBI70+809yEckZIGN18TRdNyN748SC
+        8qhPbv+v243j5rXJxZVnhb2+rst+4chpj+vEkJD5lb2sDl8cYkMPsP9AmaJC+st5XTYvAw
+        QbuQ5HZM8qr41BrEt5xvEI3baTcYSfQ=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id CC77B2C141;
+        Mon, 20 Feb 2023 19:26:05 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A0930DA7F3; Mon, 20 Feb 2023 20:20:11 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs updates for 6.3
+Date:   Mon, 20 Feb 2023 20:20:08 +0100
+Message-Id: <cover.1676908729.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Received: by 2002:a05:7000:6796:b0:47c:d87d:437c with HTTP; Mon, 20 Feb 2023
- 08:12:16 -0800 (PST)
-Reply-To: fiona.hill.2023@outlook.com
-From:   Fiona Hill <lorijrobinson589@gmail.com>
-Date:   Mon, 20 Feb 2023 08:12:16 -0800
-Message-ID: <CAKXTXJzgv9Fpkjdereby7g2dLM6TbrgDLpOAscMa+LuRXvEvbw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:1135 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5016]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [fiona.hill.2023[at]outlook.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [lorijrobinson589[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [lorijrobinson589[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  3.0 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-Hello did you see my message i send to you?
+Hi,
+
+there's a usual mix of performance improvements and new features. The
+core change is reworking how checksums are processed, with followup
+cleanups and simplifications. There are two minor changes in block layer
+and iomap code.
+
+Please pull, thanks.
+
+Features:
+
+- block group allocation class heuristics
+  - pack files by size (up to 128k, up to 8M, more) to avoid
+    fragmentation in block groups, assuming that file size and life time
+    is correlated, in particular this may help during balance
+  - with tracepoints and extensible in the future
+
+Performance:
+
+- send: cache directory utimes and only emit the command when necessary
+  - speedup up to 10x
+  - smaller final stream produced (no redundant utimes commands issued),
+  - compatibility not affected
+
+- fiemap: skip backref checks for shared leaves
+  - speedup 3x on sample filesystem with all leaves shared (e.g. on
+    snapshots)
+
+- micro optimized b-tree key lookup, speedup in metadata operations
+  (sample benchmark: fs_mark +10% of files/sec)
+
+Core changes:
+
+- change where checksumming is done in the io path
+  - checksum and read repair does verification at lower layer
+  - cascaded cleanups and simplifications
+
+- raid56 refactoring and cleanups
+
+Fixes:
+
+- sysfs: make sure that a run-time change of a feature is correctly
+  tracked by the feature files
+
+- scrub: better reporting of tree block errors
+
+Other:
+
+- locally enable -Wmaybe-uninitialized after fixing all warnings
+
+- misc cleanups, spelling fixes
+
+Other code:
+
+- block: export bio_split_rw
+
+- iomap: remove IOMAP_F_ZONE_APPEND
+
+----------------------------------------------------------------
+The following changes since commit ceaa837f96adb69c0df0397937cd74991d5d821a:
+
+  Linux 6.2-rc8 (2023-02-12 14:10:17 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.3-tag
+
+for you to fetch changes up to 964a54e5e1a0d70cd80bd5a0885a1938463625b1:
+
+  btrfs: make kobj_type structures constant (2023-02-15 19:38:55 +0100)
+
+----------------------------------------------------------------
+Boris Burkov (6):
+      btrfs: pass find_free_extent_ctl to allocator tracepoints
+      btrfs: add more find_free_extent tracepoints
+      btrfs: introduce size class to block group allocator
+      btrfs: load block group size class when caching
+      btrfs: don't use size classes for zoned file systems
+      btrfs: hold block group refcount during async discard
+
+Christoph Hellwig (48):
+      btrfs: remove the wait argument to btrfs_start_ordered_extent
+      block: export bio_split_rw
+      btrfs: better document struct btrfs_bio
+      btrfs: add a btrfs_inode pointer to struct btrfs_bio
+      btrfs: remove the direct I/O read checksum lookup optimization
+      btrfs: simplify parameters of btrfs_lookup_bio_sums
+      btrfs: refactor error handling in btrfs_submit_bio
+      btrfs: save the bio iter for checksum validation in common code
+      btrfs: pre-load data checksum for reads in btrfs_submit_bio
+      btrfs: add a btrfs_data_csum_ok helper
+      btrfs: handle checksum validation and repair at the storage layer
+      btrfs: open code btrfs_bio_free_csum
+      btrfs: remove btrfs_bio_for_each_sector
+      btrfs: remove now unused checksumming helpers
+      btrfs: remove struct btrfs_bio::device field
+      btrfs: remove the io_failure_record infrastructure
+      btrfs: rename btrfs_bio::iter field
+      btrfs: remove struct btrfs_bio::is_metadata flag
+      btrfs: open code the submit_bio_start helpers
+      btrfs: simplify the btrfs_csum_one_bio calling convention
+      btrfs: handle checksum generation in the storage layer
+      btrfs: handle recording of zoned writes in the storage layer
+      btrfs: support cloned bios in btree_csum_one_bio
+      btrfs: allow btrfs_submit_bio to split bios
+      btrfs: pass the iomap bio to btrfs_submit_bio
+      btrfs: remove struct btrfs_io_geometry
+      btrfs: open code submit_encoded_read_bio
+      btrfs: remove the fs_info argument to btrfs_submit_bio
+      btrfs: remove now spurious bio submission helpers
+      btrfs: calculate file system wide queue limit for zoned mode
+      btrfs: split zone append bios in btrfs_submit_bio
+      iomap: remove IOMAP_F_ZONE_APPEND
+      btrfs: raid56: simplify error handling and code flow in raid56_parity_write
+      btrfs: raid56: simplify code flow in rmw_rbio
+      btrfs: raid56: wait for I/O completion in submit_read_bios
+      btrfs: raid56: add a bio_list_put helper
+      btrfs: raid56: fold recover_assemble_read_bios into recover_rbio
+      btrfs: raid56: fold rmw_read_wait_recover into rmw_read_bios
+      btrfs: raid56: submit the read bios from scrub_assemble_read_bios
+      btrfs: raid56: handle endio in rmw_rbio
+      btrfs: raid56: handle endio in recover_rbio
+      btrfs: raid56: handle endio in scrub_rbio
+      btrfs: use file_offset to limit bios size in calc_bio_boundaries
+      btrfs: set bbio->file_offset in alloc_new_bio
+      btrfs: pass a btrfs_bio to btrfs_use_append
+      btrfs: never return true for reads in btrfs_use_zone_append
+      btrfs: don't rely on unchanging ->bi_bdev for zone append remaps
+      btrfs: remove the bdev argument to btrfs_rmap_block
+
+Colin Ian King (1):
+      btrfs: fix spelling mistakes found using codespell
+
+Filipe Manana (24):
+      btrfs: use a negative value for BTRFS_LOG_FORCE_COMMIT
+      btrfs: use a single variable to track return value for log_dir_items()
+      btrfs: send: directly return from did_overwrite_ref() and simplify it
+      btrfs: send: avoid unnecessary generation search at did_overwrite_ref()
+      btrfs: send: directly return from will_overwrite_ref() and simplify it
+      btrfs: send: avoid extra b+tree searches when checking reference overrides
+      btrfs: send: remove send_progress argument from can_rmdir()
+      btrfs: send: avoid duplicated orphan dir allocation and initialization
+      btrfs: send: avoid unnecessary orphan dir rbtree search at can_rmdir()
+      btrfs: send: reduce searches on parent root when checking if dir can be removed
+      btrfs: send: iterate waiting dir move rbtree only once when processing refs
+      btrfs: send: initialize all the red black trees earlier
+      btrfs: send: genericize the backref cache to allow it to be reused
+      btrfs: adapt lru cache to allow for 64 bits keys on 32 bits systems
+      btrfs: send: cache information about created directories
+      btrfs: allow a generation number to be associated with lru cache entries
+      btrfs: add an api to delete a specific entry from the lru cache
+      btrfs: send: use the lru cache to implement the name cache
+      btrfs: send: update size of roots array for backref cache entries
+      btrfs: send: cache utimes operations for directories if possible
+      btrfs: assert commit root semaphore is held when accessing backref cache
+      btrfs: skip backref walking during fiemap if we know the leaf is shared
+      btrfs: eliminate extra call when doing binary search on extent buffer
+      btrfs: do unsigned integer division in the extent buffer binary search loop
+
+Johannes Thumshirn (4):
+      btrfs: drop unused trans parameter of drop_delayed_ref
+      btrfs: remove trans parameter of merge_ref
+      btrfs: drop trans parameter of insert_delayed_ref
+      btrfs: directly pass in fs_info to btrfs_merge_delayed_refs
+
+Josef Bacik (15):
+      btrfs: move btrfs_abort_transaction to transaction.c
+      btrfs: fix uninitialized variable warning in btrfs_cleanup_ordered_extents
+      btrfs: fix uninitialized variable warning in get_inode_gen
+      btrfs: fix uninitialized variable warning in btrfs_update_block_group
+      btrfs: fix uninitialized variable warnings in __set_extent_bit and convert_extent_bit
+      btrfs: fix uninitialized variable warning in btrfs_sb_log_location
+      btrfs: fix uninitialized variable warning in run_one_async_start
+      btrfs: turn on -Wmaybe-uninitialized
+      btrfs: always lock the block before calling btrfs_clean_tree_block
+      btrfs: add trans argument to btrfs_clean_tree_block
+      btrfs: replace clearing extent buffer dirty bit with btrfs_clean_block
+      btrfs: do not increment dirty_metadata_bytes in set_btree_ioerr
+      btrfs: rename btrfs_clean_tree_block to btrfs_clear_buffer_dirty
+      btrfs: combine btrfs_clear_buffer_dirty and clear_extent_buffer_dirty
+      btrfs: replace btrfs_wait_tree_block_writeback by wait_on_extent_buffer_writeback
+
+Naohiro Aota (1):
+      btrfs: zoned: fix uninitialized variable warning in btrfs_get_dev_zones
+
+Peng Hao (1):
+      btrfs: go to matching label when cleaning em in btrfs_submit_direct
+
+Qu Wenruo (6):
+      btrfs: scrub: improve tree block error reporting
+      btrfs: sysfs: update fs features directory asynchronously
+      btrfs: raid56: reduce overhead to calculate the bio length
+      btrfs: remove stripe boundary calculation for buffered I/O
+      btrfs: remove stripe boundary calculation for compressed I/O
+      btrfs: remove stripe boundary calculation for encoded I/O
+
+Thomas Weißschuh (1):
+      btrfs: make kobj_type structures constant
+
+Yushan Zhou (1):
+      btrfs: use PAGE_{ALIGN, ALIGNED, ALIGN_DOWN} macro
+
+ye xingchen (1):
+      btrfs: remove duplicate include header in extent-tree.c
+
+ block/blk-merge.c                 |   3 +-
+ fs/btrfs/Makefile                 |   6 +-
+ fs/btrfs/backref.c                |  33 +-
+ fs/btrfs/bio.c                    | 557 +++++++++++++++++++++++++++----
+ fs/btrfs/bio.h                    |  67 +---
+ fs/btrfs/block-group.c            | 273 +++++++++++++--
+ fs/btrfs/block-group.h            |  24 +-
+ fs/btrfs/btrfs_inode.h            |  22 +-
+ fs/btrfs/compression.c            | 276 +++------------
+ fs/btrfs/compression.h            |   3 -
+ fs/btrfs/ctree.c                  |  62 ++--
+ fs/btrfs/ctree.h                  |  15 +
+ fs/btrfs/defrag.c                 |   4 +-
+ fs/btrfs/delayed-ref.c            |  24 +-
+ fs/btrfs/delayed-ref.h            |   2 +-
+ fs/btrfs/discard.c                |  41 ++-
+ fs/btrfs/disk-io.c                | 225 ++-----------
+ fs/btrfs/disk-io.h                |  14 +-
+ fs/btrfs/extent-io-tree.c         |  10 +-
+ fs/btrfs/extent-io-tree.h         |   1 -
+ fs/btrfs/extent-tree.c            | 181 +++-------
+ fs/btrfs/extent-tree.h            |  81 +++++
+ fs/btrfs/extent_io.c              | 582 ++++----------------------------
+ fs/btrfs/extent_io.h              |  36 +-
+ fs/btrfs/file-item.c              |  72 ++--
+ fs/btrfs/file-item.h              |   8 +-
+ fs/btrfs/file.c                   |   2 +-
+ fs/btrfs/free-space-tree.c        |   2 +-
+ fs/btrfs/fs.c                     |   4 +
+ fs/btrfs/fs.h                     |  11 +-
+ fs/btrfs/inode.c                  | 641 +++++------------------------------
+ fs/btrfs/ioctl.c                  |   2 +-
+ fs/btrfs/lru_cache.c              | 166 +++++++++
+ fs/btrfs/lru_cache.h              |  80 +++++
+ fs/btrfs/lzo.c                    |   2 +-
+ fs/btrfs/messages.c               |  30 --
+ fs/btrfs/messages.h               |  34 --
+ fs/btrfs/ordered-data.c           |  25 +-
+ fs/btrfs/ordered-data.h           |   3 +-
+ fs/btrfs/qgroup.c                 |   2 +-
+ fs/btrfs/raid56.c                 | 334 +++++++------------
+ fs/btrfs/raid56.h                 |   4 +-
+ fs/btrfs/relocation.c             |   2 +-
+ fs/btrfs/scrub.c                  |  51 ++-
+ fs/btrfs/send.c                   | 684 ++++++++++++++++++++------------------
+ fs/btrfs/super.c                  |   3 +-
+ fs/btrfs/sysfs.c                  |  41 +--
+ fs/btrfs/sysfs.h                  |   3 +-
+ fs/btrfs/tests/extent-map-tests.c |   2 +-
+ fs/btrfs/transaction.c            |  34 ++
+ fs/btrfs/transaction.h            |  31 ++
+ fs/btrfs/tree-log.c               |  87 ++---
+ fs/btrfs/tree-log.h               |   9 +-
+ fs/btrfs/volumes.c                | 116 ++-----
+ fs/btrfs/volumes.h                |  18 -
+ fs/btrfs/zoned.c                  | 146 ++++----
+ fs/btrfs/zoned.h                  |  20 +-
+ fs/iomap/direct-io.c              |  10 +-
+ include/linux/bio.h               |   4 +
+ include/linux/iomap.h             |   3 +-
+ include/trace/events/btrfs.h      | 127 +++++--
+ 61 files changed, 2457 insertions(+), 2898 deletions(-)
+ create mode 100644 fs/btrfs/lru_cache.c
+ create mode 100644 fs/btrfs/lru_cache.h
