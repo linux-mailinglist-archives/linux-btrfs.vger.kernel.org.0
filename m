@@ -2,160 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9A869CA84
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Feb 2023 13:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AB669CA91
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Feb 2023 13:15:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbjBTMMO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Feb 2023 07:12:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59400 "EHLO
+        id S231511AbjBTMPE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Feb 2023 07:15:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjBTMMN (ORCPT
+        with ESMTP id S230245AbjBTMPD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Feb 2023 07:12:13 -0500
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4144E1A645
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Feb 2023 04:12:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1676895131; x=1708431131;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=NVExSWAErXc3tb3hFepV9ORPScG4TVo2gbI+QFxQY+Q=;
-  b=mellzv7QT9WuxG/qctyDB8u5NZWK3WNMu9SooC5TVxhl/Mkke/XwiYI6
-   a6RoEjU4OIrhuIiMM+Ce4jgWF54Q8hS0cYrm/TGRq8UeOnbueVsluwqa9
-   at0E8p7e+ySlWsiN1BWkYuQDu+y7YiDwu+3xLTxlXx7Fqyt1iZBmi5EQP
-   FKp1fFYEkurU69AYHsC8+m3zFj+XBpeVIAcLy1CK1bbxExoQGkZTK6FfF
-   WtpvDIgLavgNXGk7tftaYNdRUsN6VuCcAkOWyxSzEX4Crgkq1Nc6bF4nW
-   xCSZo85J+eIc5Pd1EyOobFGNfYIBa8lZkO45+7ZC2/Pl1+tAJylGonHBY
-   A==;
-X-IronPort-AV: E=Sophos;i="5.97,312,1669046400"; 
-   d="scan'208";a="335699481"
-Received: from mail-bn8nam11lp2168.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.168])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Feb 2023 20:12:10 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kUqQFCawCJA+BIB4XJMs+Ck0HoIEKKzc3XMWxB76iiS8DPXAuw5QEDr9I7R6vIK02AOFxctOvhRKoVjR8TzsU5zKUsCKRtjWxtXJROrZus5WiA7gzpvWchFLlFQLOqwCNJQ8/0M2EiTyE2frDb93Fe54ROKXP3P4OXXwfREdu6cuBfpQTOHvi225dsqczZBfZvDAaWGxfSLAW1ZeKuQ4+2tOk1zUnoARdE/5TST8VfMcEOcbZM188nkkpORB95dzNMySXO6fZgjmUgDMAkg2nusOJlYixZcM1QA6zx1S8vCk5RxpvlPOw8QUMTXzwA9+MQiPmWzwB/Ed0q0LTDnCaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NVExSWAErXc3tb3hFepV9ORPScG4TVo2gbI+QFxQY+Q=;
- b=jrHDLVbuQtFIvPfsecyeH2EH/M7PXWzCuYDK/Mm8jLJHHYhIKcgbc9LEwUsqebgDsVgPZ+LlXCtSz0xfoPUdbEOlb6mdI5DEOLtbE7totDPMpTKjCUFQe40Gzt+Vtq1+0KuicfT0j/hBTMEptUJyKeasY5R8Y5o2z82VeDKPgEAw2rGjh+Vs0wz286Jt6bnNhU22l6rJvEowNvVDclx8U7MdYC6T5z0KiJ/7jIJpObk1Hgy+v5voRogbdOYKuGy2qt7u2Zd+Gz2wH4mfxQ5lsFgxnxO5bskuGSvtcARAplM5e7WjuyhjVFu9Mcy9zmPwKLys+gwXTDEIhdndwCkyUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NVExSWAErXc3tb3hFepV9ORPScG4TVo2gbI+QFxQY+Q=;
- b=AZtspx1upzTjstlzKY2C9zoGlwjBKJuIk25GeqAfWh/IH5jgDprdmBPa9P3bZ//sxaRumAPOtP9N9oFIaXXgxYlFTjKgd6Ry6pbgt9kzMFO2QRXMch5YayMou8EoNZLLsfN/Y8WdWGzwWLA/10bs2EjgVKACLurr8CNXAYk5MLE=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by MN2PR04MB6224.namprd04.prod.outlook.com (2603:10b6:208:dd::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.18; Mon, 20 Feb
- 2023 12:12:02 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::8ed8:3450:1525:c60a]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::8ed8:3450:1525:c60a%7]) with mapi id 15.20.6111.020; Mon, 20 Feb 2023
- 12:12:02 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 09/12] btrfs: remove the submit_extent_page return value
-Thread-Topic: [PATCH 09/12] btrfs: remove the submit_extent_page return value
-Thread-Index: AQHZQiS0/XWsFwmhVEazly26NeIfH67XxMmA
-Date:   Mon, 20 Feb 2023 12:12:02 +0000
-Message-ID: <94ee49b2-bb06-d394-9476-4d0cd6b696a2@wdc.com>
-References: <20230216163437.2370948-1-hch@lst.de>
- <20230216163437.2370948-10-hch@lst.de>
-In-Reply-To: <20230216163437.2370948-10-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.7.2
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|MN2PR04MB6224:EE_
-x-ms-office365-filtering-correlation-id: 7d37bf41-bbfa-4cb9-b6a1-08db133bac7e
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KtutWSf5k86a/G92/7ADbQeDRcREJ+M91GpJHOUabeE47ldyhbNsvtO2JSabhP3WF+txzb3JqQ6UhEcnCOO4zJfVPXkggEvEBinj4C6VxR48jN6Dd3M1+pm5CcU0q5UhntSP7BqM/sAVsBgEGzBg0iPtjwepn7JjBGdloJmiZoC3080xBP2FNR0CI+C5HfQfVXmIbwuGurf47OfALyskStIJLmCfGtfoIHSs13SLgDEDkRr4ANEFir4H2R+WOwNsrp5D+K6kRsQCZdeh/6o5qogymFDUr0w0Q4srE4HB9ck+7lt+jXR/7RiiO9KGzDaf+p/jQPNYdLaPfixNdjNnV97kdtI3KBHGan6FekHENbkJZKdJgeg933lu3fANc4JfGpmLAN+JjWTM6oxqQmkpu8EQ+b8JqUSP056/f3RBSzJuzmaCk76JycZ9awEKxDusUrd83JQNl5pTmqEAfj3gp93TPdu5JXInHAgjmeB6MqqwgqxMzO8VPJNEpOqX/Ah0BBlh+LNXCXdheAI2THIvxP2B8r13hZ51RsU4+8zZc3UYu6MhJN15ATswKVb3OvYO6fjYrZsSmmerTWtSxYz2n81npBrFGXvUbr3SkkorDv1DFdtFKX9vU4OHxt8vSC+IuWi4rgkoo5klTdnOvdlGC/74e+JTWMgalKyCi/PpAyxUqUfOjnhgJst/wfxNMUFwjaldjOryEAYAGcPDkj43ax3quqlkLAsNcfW5TcpDb/6dzetF42h3camOEpwKLDDvAQqb4roxkKVQEz1XNGWECA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(396003)(366004)(39860400002)(346002)(136003)(451199018)(31686004)(31696002)(86362001)(8676002)(36756003)(8936002)(4326008)(41300700001)(2906002)(64756008)(66556008)(66446008)(66476007)(4744005)(5660300002)(66946007)(76116006)(122000001)(38100700002)(82960400001)(71200400001)(6486002)(478600001)(316002)(38070700005)(91956017)(110136005)(6512007)(53546011)(26005)(2616005)(6506007)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?azR1S3JyREJUbjY3UmsyelQ4RUh5NmFFdUdZSlFlMWpuZ21DbmpxaEdsUEZm?=
- =?utf-8?B?cDBlbXBRcmFqZ3IyRCt5V1g0Uzl3TEJBKzU4ZGpjbFBiT1greFpxWllXM1VS?=
- =?utf-8?B?Z2U0UFNwVVg3RHI2STNZZVdhU25sczgrRzNLZXBuSzRnczcwSUp3S3dtM0hw?=
- =?utf-8?B?aVNuVmNtTkh2TXpGMFVVVlBMRG1XV250STFpNFBDVkoyaUhJU0NmYlh5YWwv?=
- =?utf-8?B?RVV1TGdTeno1M2RkdFhOclJTU2VpMStrUjlhVit1cVo4RWtTdzlZdFl3aVNl?=
- =?utf-8?B?d0xzc3Q1NS9vRXlZK3VmbkFRZERMMVN2VndQRjA0TjV2bDRCVFdicDZYeFNM?=
- =?utf-8?B?RXQrZmtuL010alF5bEVvVUxySkJmL2ltZ0dFRDRNYyt1VGQxRWwrOFU2OExG?=
- =?utf-8?B?MGF0akRRL09BR1dIejVqcTZnNWk0OWt5QlY4RE9RNm1FeklXbkl2S0N2NS9V?=
- =?utf-8?B?bGpSa3FTeDVsV005OE9DRFR2YmdwNEZNYkMxaXZHL2lNS3ZYQUxqNW9OU0p1?=
- =?utf-8?B?Sk0ySmVqSGJDOEkySFRMNDd5ZkZEV0s3MUJzK01GNkFoZWt4QlBGRTFOMW9U?=
- =?utf-8?B?R0FoeUxUeDVTMk56Wi9aZzIyZUNlbTRZc0pjMStVUXJuTmljOGV4UUpUTFhn?=
- =?utf-8?B?b3dZdEtFblVRNGZBRk9mUm1yOGZ3SzUya3pQSmZsQlQrOXpYdHFkM0hNQ1hq?=
- =?utf-8?B?b2xRZWpwa3dFMUN0dVY0bTdLcFhuekNLRjFzSERmNEZ3YlBGTTQvL2ZqMUt0?=
- =?utf-8?B?ZHNVTFVpUEVJWmRPb0JkTCtMNC9TVnJtcWwwbVVrZE9XWWdoWk5mcGVNUURn?=
- =?utf-8?B?RTV1UVFUb0RMeUdlY3QvMnhWajFncHUzRXBEOXV4YmFHdHRVZlYzT2FJT1p3?=
- =?utf-8?B?Yk5EbGR4cGlhakllcXI3OTlBSTkvSWx4eGM1ZFUxSDJMSUJFcTJ1MXpaVHRy?=
- =?utf-8?B?RGZxWStLeEY2SGpXbkVONDJvR2pNRmYvKzRDcERrV2JYVkk0bnYrNEVCaHlw?=
- =?utf-8?B?aUhBVUxUekJiYWVURTdXVVFEZmtNNWsxMzVDdmgwcmU3OCtZODAxUzdjYTBM?=
- =?utf-8?B?MHhSdFYrWUkrRDRCSk5RY0J3OUg4dkRPalpzZjg4Z29tbmUwakZoTFlZZDFO?=
- =?utf-8?B?c1BKTXdZTUYyeXd3QVJTQWZpcHU1c0E5YUdNdWdjdXJHdDVRam9IRUt5cHpS?=
- =?utf-8?B?bkFuVW9ZazBGR2NFM0lnMTd5MlVoNmVzV1h4UDk2eHRHemtZNXNtNmJRT3Mw?=
- =?utf-8?B?ZFkvaGsreWp3MlYxbnIyS3dRRk1aa0NDS05FVzJRSzFiVHF0SHp1WndGa1FD?=
- =?utf-8?B?a1NkaU5seExLWjdjS1MraTJWUzQycUt6WVViQm96ME41YUZJM0VHQlltUVUr?=
- =?utf-8?B?cHB5TVhCT1pFOElQTnlHdVYzakdPalVUUmYybkozNzNaRHdzd0VPZXBWOC9G?=
- =?utf-8?B?dFMvRGZDdVNjS0E2dStmQkc0NkExSXUwUkxuc1VhaWNBRm5rTWd1Ty9VMmx0?=
- =?utf-8?B?WXpDOTk4Y0crSjQ4NzltTU1rVHVRUWU1TTBSY2tYQVNxMnBVQmFkZURaQ3Ba?=
- =?utf-8?B?V1d2K0drS1hJeDBBN0toRFI3Y2prS0lYRjBEaGdVeW01bmtKYlJza0dubjBS?=
- =?utf-8?B?MkloYWIxdkRxYjRqUkxrZm5mYytwSXk2MkRUV1lqTzE1VXc2SFNNK0RORzFw?=
- =?utf-8?B?SERjRDRENHkxRHYvRllBbWpNUGQveVNCaXozK0lMVzNkWkp5ejFadW9UUUZz?=
- =?utf-8?B?amlydGRVcmFMWXl0MDJaMlZDN1ZnTjJuUUFuc25vZTBuNUVmWFlQM2NIcGZq?=
- =?utf-8?B?bUZBMkE5TGxYRjdxcHBJUGJtK3QyWFBwdjRmeFI0Zk1vQmJUWDFkbklCS0Na?=
- =?utf-8?B?OVpNcFN1dThERi9VdENrSlpDbW9iZWZBZ29BdmRQRlB2MzRLNlR0SUJjdXg2?=
- =?utf-8?B?V08zOHlQQ0VoY09GODJLT1FLMVkwZVhiWFlyVlhhYi9rek8wbDVZQ0trbW5Q?=
- =?utf-8?B?c28zSUtvWVBLRVkzcDJzTS9ISWZqL1NSeGtMUEg0WUN6ckxVT0pXSDZ2WE5r?=
- =?utf-8?B?SnFpY1JVOGZ4UVJ0dXkraXZXbitBU3FRN0I3OSszS2RnbnRJQlhKRVpWcjNk?=
- =?utf-8?B?WTMzVWsySVE3SWxTdElDREdBNmtxdmFuZFRBVlY3OGJTdWFKVHVoTlJGQTBD?=
- =?utf-8?B?cXc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F1A29E5AC2A5E140B19966C45FE87CED@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 20 Feb 2023 07:15:03 -0500
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC0D1A67E;
+        Mon, 20 Feb 2023 04:15:02 -0800 (PST)
+Received: by mail-qt1-f177.google.com with SMTP id x1so1247634qtw.3;
+        Mon, 20 Feb 2023 04:15:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i1MSO2w1kMSKm/Y9n62XXqY52kNnO7PPqBPx0Lzak2c=;
+        b=nHwOUCLXZvjPZfTIcJGfhLVjuNZu3NAMy3g/C+gG44nv/xIURrAW51hBnYWJe5CLgL
+         ypHymGRbiBhYBOUbfL06eE2RDber2yc9mR3WEO/xvKxMr8Q6a6G1rn3p6WRRd/Matl1D
+         ANyt3xaR9pP1nDSwlqIUhCY3bRsD/wMj1UaVC6F+4KNM6dTGSqi6xZXwIeyFDvRQtr3E
+         d1mHziGBLtru8rUcA2yHzXE31H/Eo/XNVNzGnsQxF1CoNS1Z6d5ErXk+x1uc4uZdoNDz
+         TDez/qn+fTVh43V7EZYmhiPKgb/xxy0kVpZ5ixJGqVEPNMUHUiDfts8pmBv5nZR1qzIJ
+         mfBw==
+X-Gm-Message-State: AO0yUKVSsHppYN3tdUhIDqxaNbHeZzqL0Bl9heWW9MB0NZAKR/KLU5HT
+        FbSuWxc0fvmkrIjDnpv7aEDuIDSv8scrmw==
+X-Google-Smtp-Source: AK7set9xK0kSmh7m0c+2eWRaCYtzSK2Qqjl6Z5w+NViYKqBBen2EnTD9yHbWKNYCk3RJgY2/Ro2dHA==
+X-Received: by 2002:ac8:5f12:0:b0:3b9:c889:ec24 with SMTP id x18-20020ac85f12000000b003b9c889ec24mr15377681qta.12.1676895300819;
+        Mon, 20 Feb 2023 04:15:00 -0800 (PST)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id l28-20020ac8459c000000b003b9bf862c04sm8885465qtn.55.2023.02.20.04.15.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Feb 2023 04:15:00 -0800 (PST)
+Received: by mail-yb1-f179.google.com with SMTP id o145so1783994ybg.8;
+        Mon, 20 Feb 2023 04:15:00 -0800 (PST)
+X-Received: by 2002:a05:6902:2d0:b0:920:2b79:84b4 with SMTP id
+ w16-20020a05690202d000b009202b7984b4mr702298ybh.386.1676895300117; Mon, 20
+ Feb 2023 04:15:00 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: q7zogEnmA65FlpeSTurby9G0wFNcpXDfoNMIzzelH1yVNuzgGm9hCVASxAuxxk8EBaddaJvIGA6JPPdnuLjy5TqxCB05rbUth39vR50ketn4ENC+p44LmolaeyIFRSN+ogkgAPoWyHY3236DO9YZS4qxMTDK1YbJSNXeImQGyU9FqctYvn6XdyEG6zxOC9GEo5yAMZviQILXdGmn92S754T+DIVyMkbzup+OkxL2tN8r90Z7G2W8+4iIcFZMyWBSWyqXeK0cxdlUgZ0Yzc/nj0fvPmBgyJzotLiztWv5FOBghaFY7usk+Fw1dj5P2p4Nj00VpwsQz5rn8wQxPmHdArO2wkCSxOp+AGpp2acuweNnDMdeXE1XnzNP1qbs7APP3i48Vaa0SzjeYoQPpMu7+21QHhnHeQT255I0dVE8jUcU7nz+6G201zesYlFD3mSEbVDhDs4TYieQmbkMNVACNJnE/myeLtDW//TFd6sZj8TE5DWqfaYdCDCLzQu77tGlGH3XsV9uFt/qT1TnSTOWzWis1t+/ZftWZw91WXYQ4+/zx1W+9Nu7yIdeEEEdGoshgf1Dg9t9ur5zLMJWUFP2jYdKgyFWAh8XOCodX5M993MQG3Ww2rUoHlUMI6j4SwKuxgGVpeKQPUhdW+jDWAI17B3dMdEviAyoHGJhugkI1e7kessYvxK1UFjXBfWb/+qG1Ye01lUpnZW0q3HFGjNdDfPvuF+Tw4qerwAUge5fkb360XSUBcXpCgofsGu9627rU+lXkuWHDiZnGepsX5ysyMxv7hXrhqTAoOJhp4/50VO21kHqeH8BM6fuEo+qkrKxFFgcTsB1EuHQ4EpC/ARudZ1+d+SqWRS34ZUNsfE9xVxX6nUGtnsyVG5ZdM02ZZyh
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d37bf41-bbfa-4cb9-b6a1-08db133bac7e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2023 12:12:02.0883
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: F9pO7JO8Ozt0mk+gHCgwAr/PkYclDnZ/+ASsIpnNVavV9ySbmOINTNo6MOKFutj3cvlWDmgJqbXOO/fDqC81ztk9HMUaMEAegiJeOD9IfwI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6224
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1675743217.git.wqu@suse.com> <f82eed6746d19cf3bea15631a120648eadf20852.1675743217.git.wqu@suse.com>
+ <e3c9bab1-41e-7fe0-1833-1c81ced89a20@linux-m68k.org> <e567a113-1cbd-134b-6db0-82433eca6685@gmx.com>
+In-Reply-To: <e567a113-1cbd-134b-6db0-82433eca6685@gmx.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Feb 2023 13:14:48 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVwXB4YsCFEpLoTm8pxyjMty6tAT7joNj2EME4ynY8keQ@mail.gmail.com>
+Message-ID: <CAMuHMdVwXB4YsCFEpLoTm8pxyjMty6tAT7joNj2EME4ynY8keQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] btrfs: replace btrfs_io_context::raid_map[] with a
+ fixed u64 value
+To:     quwenruo.btrfs@gmx.com
+Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-next@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gMTYuMDIuMjMgMTc6MzUsIENocmlzdG9waCBIZWxsd2lnIHdyb3RlOg0KPiBzdWJtaXRfZXh0
-ZW50X3BhZ2UgYWx3YXlzIHJldHVybnMgMC4gIENoYW5nZSBpdCB0byBhIHZvaWQgcmV0dXJuIHR5
-cGUNCj4gYW5kIGFsbCB0aGUgdW5yZWFjaGFibGUgZXJyb3IgaGFuZGxpbmcgY29kZSBpbiB0aGUg
-Y2FsbGVycy4NCg0KZm9yIHRoZSByZWNvcmQ6DQpkNWU0Mzc3ZDUwNTEgKCJidHJmczogc3BsaXQg
-em9uZSBhcHBlbmQgYmlvcyBpbiBidHJmc19zdWJtaXRfYmlvIikNCnJlbW92ZWQgdGhlIGxhc3Qg
-bm9uIDAgcmV0dXJuIG9mIHN1Ym1pdF9leHRlbnRfcGFnZSgpIHdoZW4gYWxsb2NfbmV3X2Jpbygp
-DQp0dXJuZWQgaW50byBhIHZvaWQgZnVuY3Rpb24uDQoNCg0KUmV2aWV3ZWQtYnk6IEpvaGFubmVz
-IFRodW1zaGlybiA8am9oYW5uZXMudGh1bXNoaXJuQHdkYy5jb20+DQo=
+Hi Qu,
+
+On Mon, Feb 20, 2023 at 12:50 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> On 2023/2/20 16:53, Geert Uytterhoeven wrote:
+> > On Tue, 7 Feb 2023, Qu Wenruo wrote:
+> >> In btrfs_io_context structure, we have a pointer raid_map, which is to
+> >> indicate the logical bytenr for each stripe.
+> >>
+> >> But considering we always call sort_parity_stripes(), the result
+> >> raid_map[] is always sorted, thus raid_map[0] is always the logical
+> >> bytenr of the full stripe.
+> >>
+> >> So why we waste the space and time (for sorting) for raid_map[]?
+> >>
+> >> This patch will replace btrfs_io_context::raid_map with a single u64
+> >> number, full_stripe_start, by:
+> >>
+> >> - Replace btrfs_io_context::raid_map with full_stripe_start
+> >>
+> >> - Replace call sites using raid_map[0] to use full_stripe_start
+> >>
+> >> - Replace call sites using raid_map[i] to compare with nr_data_stripes.
+> >>
+> >> The benefits are:
+> >>
+> >> - Less memory wasted on raid_map
+> >>  It's sizeof(u64) * num_stripes vs size(u64).
+> >>  It's always a save for at least one u64, and the benefit grows larger
+> >>  with num_stripes.
+> >>
+> >> - No more weird alloc_btrfs_io_context() behavior
+> >>  As there is only one fixed size + one variable length array.
+> >>
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >
+> > Thanks for your patch, which is now commit 4a8c6e8a6dc8ae4c ("btrfs:
+> > replace btrfs_io_context::raid_map with a fixed u64 value") in
+> > next-20230220.
+> >
+> > noreply@ellerman.id.au reported several build failures when
+> > building for 32-bit platforms:
+> >
+> >      ERROR: modpost: "__umoddi3" [fs/btrfs/btrfs.ko] undefined!
+> >
+> >> --- a/fs/btrfs/volumes.c
+> >> +++ b/fs/btrfs/volumes.c
+> >> @@ -6556,35 +6532,44 @@ int __btrfs_map_block(struct btrfs_fs_info
+> >> *fs_info, enum btrfs_map_op op,
+> >>     }
+> >>     bioc->map_type = map->type;
+> >>
+> >> -    for (i = 0; i < num_stripes; i++) {
+> >> -        set_io_stripe(&bioc->stripes[i], map, stripe_index,
+> >> stripe_offset,
+> >> -                  stripe_nr);
+> >> -        stripe_index++;
+> >> -    }
+> >> -
+> >> -    /* Build raid_map */
+> >> +    /*
+> >> +     * For RAID56 full map, we need to make sure the stripes[] follows
+> >> +     * the rule that data stripes are all ordered, then followed with P
+> >> +     * and Q (if we have).
+> >> +     *
+> >> +     * It's still mostly the same as other profiles, just with extra
+> >> +     * rotataion.
+> >> +     */
+> >>     if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK && need_raid_map &&
+> >>         (need_full_stripe(op) || mirror_num > 1)) {
+> >> -        u64 tmp;
+> >> -        unsigned rot;
+> >> -
+> >> -        /* Work out the disk rotation on this stripe-set */
+> >> -        rot = stripe_nr % num_stripes;
+> >> -
+> >> -        /* Fill in the logical address of each stripe */
+> >> -        tmp = stripe_nr * data_stripes;
+> >> -        for (i = 0; i < data_stripes; i++)
+> >> -            bioc->raid_map[(i + rot) % num_stripes] =
+> >> -                em->start + ((tmp + i) << BTRFS_STRIPE_LEN_SHIFT);
+> >> -
+> >> -        bioc->raid_map[(i + rot) % map->num_stripes] = RAID5_P_STRIPE;
+> >> -        if (map->type & BTRFS_BLOCK_GROUP_RAID6)
+> >> -            bioc->raid_map[(i + rot + 1) % num_stripes] =
+> >> -                RAID6_Q_STRIPE;
+> >> -
+> >> -        sort_parity_stripes(bioc, num_stripes);
+> >> +        /*
+> >> +         * For RAID56 @stripe_nr is already the number of full stripes
+> >> +         * before us, which is also the rotation value (needs to modulo
+> >> +         * with num_stripes).
+> >> +         *
+> >> +         * In this case, we just add @stripe_nr with @i, then do the
+> >> +         * modulo, to reduce one modulo call.
+> >> +         */
+> >> +        bioc->full_stripe_logical = em->start +
+> >> +            ((stripe_nr * data_stripes) << BTRFS_STRIPE_LEN_SHIFT);
+> >> +        for (i = 0; i < num_stripes; i++) {
+> >> +            set_io_stripe(&bioc->stripes[i], map,
+> >> +                      (i + stripe_nr) % num_stripes,
+> >
+> > As stripe_nr is u64, this is a 64-by-32 modulo operation, which
+> > should be implemented using a helper from include/linux/math64.h
+> > instead.
+>
+> This is an older version, in the latest version, the @stripe_nr variable
+> is also u32, and I tried compiling the latest branch with i686, it
+> doesn't cause any u64 division problems anymore.
+>
+> You can find the latest branch in either github or from the mailling list:
+>
+> https://github.com/adam900710/linux/tree/map_block_refactor
+>
+> https://lore.kernel.org/linux-btrfs/cover.1676611535.git.wqu@suse.com/
+
+So the older version was "v2", and the latest version had no
+version indicator, nor changelog, thus assuming v1?
+No surprise people end up applying the wrong version...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
