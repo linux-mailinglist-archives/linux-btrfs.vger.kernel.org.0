@@ -2,102 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCE769D5A1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Feb 2023 22:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6A569D58F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Feb 2023 22:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232739AbjBTVO6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Feb 2023 16:14:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
+        id S233009AbjBTVL7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Feb 2023 16:11:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232867AbjBTVO5 (ORCPT
+        with ESMTP id S232562AbjBTVL6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Feb 2023 16:14:57 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F35113D4D
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Feb 2023 13:14:55 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Mon, 20 Feb 2023 16:11:58 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B001CAE3;
+        Mon, 20 Feb 2023 13:11:45 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4B81020BCC;
-        Mon, 20 Feb 2023 21:14:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1676927694;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XWtI2eKXc+Xaw7oKfrl7Q2+93z0LXHlxVs270EJSSmU=;
-        b=hURsleUw2rzabaUux19YPAJpYAg/bsJJADp24wJVcvnlilIw7FKde8JtJhEkrFUXAbFXbw
-        OvcwuotUJry/6yzmHlgZq5L75yvw6cyDBjTkgGv+CDoH7qkcEU2+CPsGdXt1T63v6Lstkf
-        JuKtWh+r37cMJmEoABudK4xIfCr7qHI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1676927694;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XWtI2eKXc+Xaw7oKfrl7Q2+93z0LXHlxVs270EJSSmU=;
-        b=nZhFQbtdbN5V5wn+q5p70I1k9W8QD8JTTg1dD+p3ITztXr0RIuluCy4ndvZ/qvoSt36ECv
-        dWdugvc/6JoHlgAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DFCCD134BA;
-        Mon, 20 Feb 2023 21:14:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id woGkNc3i82PJcAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 20 Feb 2023 21:14:53 +0000
-Date:   Mon, 20 Feb 2023 22:08:58 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/6] btrfs: cleanup and small refactors around
- __btrfs_map_block()
-Message-ID: <20230220210858.GL10580@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1676611535.git.wqu@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1676611535.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2776AB80DD3;
+        Mon, 20 Feb 2023 21:11:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D040CC4339B;
+        Mon, 20 Feb 2023 21:11:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1676927502;
+        bh=6g4NDisHRG4qmLpa8BDv5tH4TBrlHaYvx8l5KIe7WXw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=sdoTBEeNBYdtVmrVdNW//ChctssgK3NklmOKxnCz0WQyVtRiMbNshiNUHLRikVrtK
+         0LldUTSs15SzOMN8Ysxw3oPzk+RurcCGYQI9GlMEcrutCkEL0Zi6f7RFvShUcCElAd
+         lyrHaN73u9XSfWSTvXtWcRPeyRnfSXwGzOvvaFcciZh3W4gO4cUvCihHDYCsvJzrgH
+         c54e21B4a8tM4g+HPZGk3O3mTuM1EAwzOiD2yCMqhY9H3A5EPImcnwL5Q4+3ohORZE
+         TxstAJ+wnZDN2OMeBVZqTtwcmOjSPFMDxA61gfnawhf5gNfYL0FEtjboqdMBCVbaWS
+         ASCNuC0W/itdA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B98B8E68D20;
+        Mon, 20 Feb 2023 21:11:42 +0000 (UTC)
+Subject: Re: [GIT PULL] fsverity updates for 6.3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <Y/KLHT3zaA0QFhVJ@sol.localdomain>
+References: <Y/KLHT3zaA0QFhVJ@sol.localdomain>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <Y/KLHT3zaA0QFhVJ@sol.localdomain>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fsverity/linux.git tags/fsverity-for-linus
+X-PR-Tracked-Commit-Id: 51e4e3153ebc32d3280d5d17418ae6f1a44f1ec1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6639c3ce7fd217c22b26aa9f2a3cb69dc19221f8
+Message-Id: <167692750275.16986.16446454723187739663.pr-tracker-bot@kernel.org>
+Date:   Mon, 20 Feb 2023 21:11:42 +0000
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        fsverity@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 17, 2023 at 01:36:57PM +0800, Qu Wenruo wrote:
-> This series is based on the current misc-next branch, and can be fetched
-> from github:
-> 
->   https://github.com/adam900710/linux/tree/map_block_refactor
-> 
-> 
-> This is the rebased and merged version of two patchset:
-> 
->   btrfs: reduce div64 calls for __btrfs_map_block() and its variants
->   btrfs: reduce the memory usage for btrfs_io_context, and reduce its variable sized members
-> 
-> Originally the 2nd patchset has some dependency on the first one, but
-> the first one is causing some conflicts with newer cleanups, thus only
-> the 2nd patchset get merged into for-next.
-> 
-> This updated version would resolve the conflicts, and use the modified
-> version from for-next.
-> 
-> Qu Wenruo (6):
->   btrfs: remove map_lookup->stripe_len
->   btrfs: reduce div64 calls by limiting the number of stripes of a chunk
->     to u32
->   btrfs: simplify the bioc argument for handle_ops_on_dev_replace()
->   btrfs: reduce type width of btrfs_io_contexts
->   btrfs: use a more space efficient way to represent the source of
->     duplicated stripes
->   btrfs: replace btrfs_io_context::raid_map with a fixed u64 value
+The pull request you sent on Sun, 19 Feb 2023 12:48:29 -0800:
 
-Added to misc-next with some fixups, thanks.
+> https://git.kernel.org/pub/scm/fs/fsverity/linux.git tags/fsverity-for-linus
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6639c3ce7fd217c22b26aa9f2a3cb69dc19221f8
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
