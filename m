@@ -2,66 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F5469D4E8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Feb 2023 21:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9324A69D4F7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Feb 2023 21:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232713AbjBTUXI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Feb 2023 15:23:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41994 "EHLO
+        id S232900AbjBTUYk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Feb 2023 15:24:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232732AbjBTUXF (ORCPT
+        with ESMTP id S232889AbjBTUYg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Feb 2023 15:23:05 -0500
+        Mon, 20 Feb 2023 15:24:36 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467EC222C8
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Feb 2023 12:22:32 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307C21CAD0
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Feb 2023 12:24:15 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D8C92339C7;
-        Mon, 20 Feb 2023 20:22:00 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EAEF2339C7;
+        Mon, 20 Feb 2023 20:23:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1676924520;
+        t=1676924590;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=f3nVi2qK/OVCIdG//56TIte+IYawYGgjcWwLuvcnxKw=;
-        b=O5Uowz1yx1pkErPnKWqHBlljFiV4NSR7c+Yz+JYZMNJpD5ZxOCBAHPEPa7rASq3JqfV6c9
-        plZutR1Yx8GSrc+C+pBH7EziYdP2LKnv2nSMHRPiMaz1wSUds2f1u4JPfBndrR8fKV7RT/
-        OHDB6WVdKrwrTDBYcl/mYITy3pfFeSY=
+        bh=qjn9615gwzme9J4VShC6Ke4B0AZDaBpuPVB5mDyAdkI=;
+        b=O9aanbaL5d79KQKfvwM1AtAiOibligYQvdpqvO9mvP9iiInPDJm4UWl7XOTqvpj9ouuCDG
+        NDJx5P4X9v5fM6Ha0V5gRMYQKnrZ4huq/GjZOB4vw+e1m8k5IjtmWgrl/h/kQe7HqIakTu
+        U4KPfAxLvtxlDpj30RH4FRy225nZNYA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1676924520;
+        s=susede2_ed25519; t=1676924590;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=f3nVi2qK/OVCIdG//56TIte+IYawYGgjcWwLuvcnxKw=;
-        b=kKq6yqh1dLhtOxIfmZec0I2flWEYifhI5AtNytXV0cit2AjrCRMZgZLaodB0aH5Gd4vqhb
-        JbmJrZjYY/IJlMCA==
+        bh=qjn9615gwzme9J4VShC6Ke4B0AZDaBpuPVB5mDyAdkI=;
+        b=gm/34kM1H1jmvybORSxnn8kP/DggLoXf487fUqCPrin/MOyHBgetWByHv2fZB7Z8lI1A81
+        vqOTSBB0NrQJ68Bw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AAF6B139DB;
-        Mon, 20 Feb 2023 20:22:00 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D0A79139DB;
+        Mon, 20 Feb 2023 20:23:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id v8t9KGjW82OQWwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 20 Feb 2023 20:22:00 +0000
-Date:   Mon, 20 Feb 2023 21:16:05 +0100
+        id MoQXMq7W82MPXAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 20 Feb 2023 20:23:10 +0000
+Date:   Mon, 20 Feb 2023 21:17:15 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs: optimize search_file_offset_in_bio return
- value to bool
-Message-ID: <20230220201605.GH10580@twin.jikos.cz>
+Subject: Re: [PATCH 0/2] fix and optimize btrfs_lookup_bio_sums()
+Message-ID: <20230220201715.GI10580@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1676041962.git.anand.jain@oracle.com>
- <5ed6a5476b2be3d9b459db87f8e7d24bfadfe02f.1676041962.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5ed6a5476b2be3d9b459db87f8e7d24bfadfe02f.1676041962.git.anand.jain@oracle.com>
+In-Reply-To: <cover.1676041962.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -72,52 +70,17 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Feb 11, 2023 at 12:15:55AM +0800, Anand Jain wrote:
-> Function search_file_offset_in_bio() finds the file offset in the
-> %file_offset_ret, and we use the return value to indicate if it is
-> successful, so use bool.
+On Sat, Feb 11, 2023 at 12:15:53AM +0800, Anand Jain wrote:
+> The function btrfs_lookup_bio_sums() has %ret declaration two times
+>  blk_status_t ret = BLK_STS_OK;
+> and also in an if statement block.
+>  int ret;
 > 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  fs/btrfs/file-item.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> Patch 1/2 addresses this issue, while patch 2/2 optimizes the return
+> value of search_file_offset_in_bio().
 > 
-> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> index 89e9415b8f06..a879210735aa 100644
-> --- a/fs/btrfs/file-item.c
-> +++ b/fs/btrfs/file-item.c
-> @@ -345,8 +345,8 @@ static int search_csum_tree(struct btrfs_fs_info *fs_info,
->   *
->   * @inode is used to determine if the bvec page really belongs to @inode.
->   *
-> - * Return 0 if we can't find the file offset
-> - * Return >0 if we find the file offset and restore it to @file_offset_ret
-> + * Return true if we can't find the file offset
-> + * Return false if we find the file offset and restore it to @file_offset_ret
+> Anand Jain (2):
+>   btrfs: avoid reusing variable names in nested blocks
+>   btrfs: optimize search_file_offset_in_bio return value to bool
 
-The comment seems to not match the code, true is returned when the
-offset is found, previously >0. Fixed.
-
->   */
->  static int search_file_offset_in_bio(struct bio *bio, struct inode *inode,
->  				     u64 disk_bytenr, u64 *file_offset_ret)
-> @@ -354,7 +354,7 @@ static int search_file_offset_in_bio(struct bio *bio, struct inode *inode,
->  	struct bvec_iter iter;
->  	struct bio_vec bvec;
->  	u64 cur = bio->bi_iter.bi_sector << SECTOR_SHIFT;
-> -	int ret = 0;
-> +	bool ret = false;
->  
->  	bio_for_each_segment(bvec, bio, iter) {
->  		struct page *page = bvec.bv_page;
-> @@ -368,7 +368,7 @@ static int search_file_offset_in_bio(struct bio *bio, struct inode *inode,
->  		ASSERT(in_range(disk_bytenr, cur, bvec.bv_len));
->  		if (page->mapping && page->mapping->host &&
->  		    page->mapping->host == inode) {
-> -			ret = 1;
-> +			ret = true;
->  			*file_offset_ret = page_offset(page) + bvec.bv_offset +
->  					   disk_bytenr - cur;
->  			break;
-> -- 
-> 2.31.1
+Added to misc-next with some fixups, thanks.
