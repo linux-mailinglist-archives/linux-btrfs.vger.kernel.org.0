@@ -2,91 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FD469D57D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Feb 2023 22:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE5A69D588
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Feb 2023 22:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbjBTVCe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Feb 2023 16:02:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
+        id S232501AbjBTVLK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Feb 2023 16:11:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231625AbjBTVCc (ORCPT
+        with ESMTP id S232447AbjBTVLI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Feb 2023 16:02:32 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFDEBDF2
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Feb 2023 13:02:31 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id x10so8545887edd.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Feb 2023 13:02:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yq0GbJhWH2XoIlOBzlQE0R2LW2CkRve3Ilke3wYFGeQ=;
-        b=Li68PqxzhjhOwhldPjcHROyWLqQAm3hq3lbrw7b0xf+QbCwLi5WsIz6XuXUOTcxKXm
-         VfRR66ok62a1DTRs2oMqWLuiT34AxKM4aM9RHcF/QYSWV0eJ33PRPDsmHhe+xKdq3H/F
-         beKAxjmDsNmfN5C3J3Eg31CBGQ8Q1bjF1w8nE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yq0GbJhWH2XoIlOBzlQE0R2LW2CkRve3Ilke3wYFGeQ=;
-        b=lkOAWfEZxc2UzzRyBVIPjHIHJgOvbSidGYyTtQtgEe9nNTgAVReh2fE4fCs2wbmodV
-         7gEuVALTofl2XmM3Do1GYOuOrXZPVjV9P14tXgtzls7mDx368DET4c8l7W1kSzsIF6E6
-         6BvaPMxMY5YsHPQ/AvGY4R9Vx7tDn2hXirLTRgGKawa9MorpipUWx3BTQWHxRPKCZzFP
-         hKQdzoPANJO3b78mtqEMEwOjwMzZPHDhV6bekMgh9+Mn/uIcumLB4SlbNTujCxaJf0pp
-         qEkHS0oG3JxksJDuP7diWFh8ZwAC+QBYkexJMpLzUkPcUT9EVf2ucz8lkCzfvDNFHFnB
-         yPYw==
-X-Gm-Message-State: AO0yUKWeNs8ySbaMizh6Agyabxp+cUW+xZz9q7Ga2MZxVl5x1NSVTtzF
-        uU3g6iwq1ZBeOyl7+MaXPKI9zDZzYOyNSXZK0Ds=
-X-Google-Smtp-Source: AK7set/DZ+SaNt1Z1k35a16KZL09NSCadnPgM0KanOlUbwfFAi5wnsXIoE0ne2wXhjj+v6OqdCsvWQ==
-X-Received: by 2002:aa7:c551:0:b0:4ac:b69a:2f0b with SMTP id s17-20020aa7c551000000b004acb69a2f0bmr3235059edr.33.1676926949323;
-        Mon, 20 Feb 2023 13:02:29 -0800 (PST)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id b2-20020a50b402000000b004aef4f32edesm687022edh.88.2023.02.20.13.02.28
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Feb 2023 13:02:28 -0800 (PST)
-Received: by mail-ed1-f44.google.com with SMTP id g1so9111545edz.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Feb 2023 13:02:28 -0800 (PST)
-X-Received: by 2002:a17:906:bce7:b0:8b1:28f6:8ab3 with SMTP id
- op7-20020a170906bce700b008b128f68ab3mr4917257ejb.15.1676926946147; Mon, 20
- Feb 2023 13:02:26 -0800 (PST)
+        Mon, 20 Feb 2023 16:11:08 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5B31CAC8
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Feb 2023 13:11:02 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C25A420BBF;
+        Mon, 20 Feb 2023 21:11:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1676927460;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=erbvAZalrXrmdqdoO/HtInpfKpJhgcTMQUmg6yq2D/8=;
+        b=iJbV6sJmu26ZP4c85vEa1xcFL7KJhcmZmqDEl45CAb5F3a+8CQ//easO/nFknxzImcd0qw
+        dbKrQEPE2MMcuuZ4VnRO/u3JhNfgVaUfT85aQJ67jxw7hBhDxBOUlVUio9lYltgmrt27d6
+        qcHdJbAe2J0kVVaD3V5HD5F2dnIh/Cs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1676927460;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=erbvAZalrXrmdqdoO/HtInpfKpJhgcTMQUmg6yq2D/8=;
+        b=YD8hcxTURFsMhRZrtl4fyQR1+2P4vR7T+fioTOM0O61QtDLcHBuZ1jIa5BN2eIYudo5nkk
+        8wRbXe6X9X8XjJDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9AEAC134BA;
+        Mon, 20 Feb 2023 21:11:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IkvYJOTh82NTbwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 20 Feb 2023 21:11:00 +0000
+Date:   Mon, 20 Feb 2023 22:05:05 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/6] btrfs: reduce div64 calls by limiting the number of
+ stripes of a chunk to u32
+Message-ID: <20230220210505.GK10580@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1676611535.git.wqu@suse.com>
+ <b478ecdd00a6f4d897e6b74cac6a01cd63a37356.1676611535.git.wqu@suse.com>
 MIME-Version: 1.0
-References: <cover.1676908729.git.dsterba@suse.com>
-In-Reply-To: <cover.1676908729.git.dsterba@suse.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 20 Feb 2023 13:02:09 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh6-qpZ=yzseD_CQn8Gc+nGDLrufFxSFvVO2qK6+8fGUw@mail.gmail.com>
-Message-ID: <CAHk-=wh6-qpZ=yzseD_CQn8Gc+nGDLrufFxSFvVO2qK6+8fGUw@mail.gmail.com>
-Subject: Re: [GIT PULL] Btrfs updates for 6.3
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b478ecdd00a6f4d897e6b74cac6a01cd63a37356.1676611535.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 20, 2023 at 11:26 AM David Sterba <dsterba@suse.com> wrote:
->
-> Other:
->
-> - locally enable -Wmaybe-uninitialized after fixing all warnings
+On Fri, Feb 17, 2023 at 01:36:59PM +0800, Qu Wenruo wrote:
+> -	u64 stripe_nr;
+> -	u64 stripe_nr_end;
+> +	u32 stripe_nr;
+> +	u32 stripe_nr_end;
+> +	u32 stripe_cnt;
+>  	u64 stripe_end_offset;
+> -	u64 stripe_cnt;
+>  	u64 stripe_offset;
+>  	u32 stripe_index;
+>  	u32 factor = 0;
+>  	u32 sub_stripes = 0;
+> -	u64 stripes_per_dev = 0;
+> +	u32 stripes_per_dev = 0;
+>  	u32 remaining_stripes = 0;
+>  	u32 last_stripe = 0;
+>  	int ret;
+> @@ -6015,18 +6015,19 @@ struct btrfs_discard_stripe *btrfs_map_discard(struct btrfs_fs_info *fs_info,
+>  		factor = map->num_stripes / sub_stripes;
+>  		*num_stripes = min_t(u64, map->num_stripes,
+>  				    sub_stripes * stripe_cnt);
+> -		stripe_nr = div_u64_rem(stripe_nr, factor, &stripe_index);
+> +		stripe_index = stripe_nr % factor;
+> +		stripe_nr /= factor;
+>  		stripe_index *= sub_stripes;
+> -		stripes_per_dev = div_u64_rem(stripe_cnt, factor,
+> -					      &remaining_stripes);
+> -		div_u64_rem(stripe_nr_end - 1, factor, &last_stripe);
+> -		last_stripe *= sub_stripes;
+> +
+> +		remaining_stripes = stripe_cnt % factor;
+> +		stripes_per_dev = stripe_cnt / factor;
+> +		last_stripe = (stripe_nr_end - 1) % factor * sub_stripes;
 
-I've pulled this, but I strongly suspect this change will get reverted.
+Please add ( ) where the operator precedence is not obvious, there are
+default C rules for that but for clarity I've added
 
-I bet neither you nor linux-next is testing even _remotely_ a big
-chunk of the different compiler versions that are out there, and the
-reason flags like '-Wmaybe-uninitialized' get undone is because some
-random compiler version on some random config and target archiecture
-gives completely nonsensical warnings for odd reasons.
+		last_stripe = ((stripe_nr_end - 1) % factor) * sub_stripes;
 
-But hey, maybe the btrfs code is special.
-
-              Linus
+* / and % are of same priority but it's not common to see
+them in one expression.
