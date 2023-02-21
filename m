@@ -2,67 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C6F69EB29
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 00:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCD269EB41
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 00:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbjBUXXG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Feb 2023 18:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S230009AbjBUX2v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Feb 2023 18:28:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbjBUXXE (ORCPT
+        with ESMTP id S229688AbjBUX2u (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Feb 2023 18:23:04 -0500
+        Tue, 21 Feb 2023 18:28:50 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE631B556
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 15:23:03 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADD71C7E3
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 15:28:49 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 626AE3520B;
-        Tue, 21 Feb 2023 23:23:02 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4A47335230;
+        Tue, 21 Feb 2023 23:28:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1677021782;
+        t=1677022128;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2qrwuXNBDKupupjg56bQiWKrnG6YVxe/htGnCOj3mK0=;
-        b=GBSeGMhzyFGDVN2d2hDzkwVNppkPjeuiK1e120CTQrx3yuAmQ3FxO30RXAx+QmloFoipzz
-        bNAPE6KcdEK+OJp6nHn3yUAeSqrAQ2d2FB8GUKKs8XvewPYv9kEPTWS9UBbDWiJY9iO8P6
-        zSCsRmVy6C3SrDGi++y65zwD7NSefrg=
+        bh=5dlbPG52PyA3Hc+6wOmYfu4jUSGN0Q/SFzJ+XF4MO2c=;
+        b=mUYk3aoMEdjzhamX08dYtz1fibZTDnOPu7LDBPfYOY9BW1BtCUk0C7xL3ciHD7zGfVpS+P
+        klf+HJXGytFNDRXlLwZ+uSAI3Nhi3ZWsB811pxVS57gHec6OH5CiJn5kspLdQf/46WtpwX
+        9v2jNHhtfgLjyRgCadKbfGVbx9KARzA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1677021782;
+        s=susede2_ed25519; t=1677022128;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2qrwuXNBDKupupjg56bQiWKrnG6YVxe/htGnCOj3mK0=;
-        b=kRG8YIxtCribHXZMdkg79p+efw3Q6fzu1S6x5bZ5ZBoE4eoZ2N8NMMOnaGZj9ijYC+tI/e
-        lo2ZzgRyxqbjSfCQ==
+        bh=5dlbPG52PyA3Hc+6wOmYfu4jUSGN0Q/SFzJ+XF4MO2c=;
+        b=jH1QTlTDVQbTWs7S9jxSeqhwsAHoCazQ9mrj3+AGjtr7h7Ux9YlKv7hjxa7+x3zo7seo5N
+        Gsbs/Q1T5d5QBPBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 375D213223;
-        Tue, 21 Feb 2023 23:23:02 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1C1CC13223;
+        Tue, 21 Feb 2023 23:28:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id H6ORDFZS9WOLWgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 21 Feb 2023 23:23:02 +0000
-Date:   Wed, 22 Feb 2023 00:17:06 +0100
+        id hF/tBLBT9WPPXAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 21 Feb 2023 23:28:48 +0000
+Date:   Wed, 22 Feb 2023 00:22:52 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, wqu@suse.com,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH 2/2] btrfs-progs: read fsid from the sysfs in
- device_is_seed
-Message-ID: <20230221231706.GQ10580@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] btrfs-progs: fixes for the cli test group
+Message-ID: <20230221232252.GR10580@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1676124188.git.anand.jain@oracle.com>
- <7523436ccbf95d7fde690f41095637ce9d9fc1b4.1676124188.git.anand.jain@oracle.com>
+References: <cover.1676265837.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7523436ccbf95d7fde690f41095637ce9d9fc1b4.1676124188.git.anand.jain@oracle.com>
+In-Reply-To: <cover.1676265837.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -73,71 +70,22 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 13, 2023 at 05:37:42PM +0800, Anand Jain wrote:
-> The kernel commit a26d60dedf9a ("btrfs: sysfs: add devinfo/fsid to
-> retrieve actual fsid from the device" introduced a sysfs interface
-> to access the device's fsid from the kernel. This is a more
-> reliable method to obtain the fsid compared to reading the
-> superblock, and it even works if the device is not present.
-> Additionally, this sysfs interface can be read by non-root users.
+On Mon, Feb 13, 2023 at 01:26:31PM +0800, Qu Wenruo wrote:
+> For the current devel branch, there are two failures for the cli test group:
 > 
-> Therefore, it is recommended to utilize this new sysfs interface to
-> retrieve the fsid.
+> - cli/009
+>   This is caused by a very recent (only in devel branch) refactor for
+>   btrfstune, which removes the ability to customize the return value.
 > 
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  cmds/filesystem-usage.c | 38 ++++++++++++++++++++++++++++++--------
->  1 file changed, 30 insertions(+), 8 deletions(-)
+>   Fix it by adding a new @ret argument for usage() helper.
 > 
-> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
-> index bef9a1129a63..e7fa18dc82dc 100644
-> --- a/cmds/filesystem-usage.c
-> +++ b/cmds/filesystem-usage.c
-> @@ -39,6 +39,7 @@
->  #include "common/help.h"
->  #include "common/device-utils.h"
->  #include "common/messages.h"
-> +#include "common/path-utils.h"
->  #include "cmds/filesystem-usage.h"
->  #include "cmds/commands.h"
->  
-> @@ -701,14 +702,33 @@ out:
->  	return ret;
->  }
->  
-> -static int device_is_seed(const char *dev_path, u8 *mnt_fsid)
-> +static int device_is_seed(int fd, const char *dev_path, u64 devid, u8 *mnt_fsid)
->  {
-> +	char fsidparse[BTRFS_UUID_UNPARSED_SIZE];
-> +	char fsid_path[PATH_MAX];
-> +	char devid_str[20];
->  	uuid_t fsid;
-> -	int ret;
-> +	int ret = -1;
-> +	int sysfs_fd;
-> +
-> +	snprintf(devid_str, 20, "%llu", devid);
-> +	/* devinfo/<devid>/fsid */
-> +	path_cat3_out(fsid_path, "devinfo", devid_str, "fsid");
+> - cli/017
+>   This exists for a while, and it's caused by a recent kernel change.
+> 
+>   Fix the test case to handle it better.
+> 
+> Qu Wenruo (2):
+>   btrfs-progs: make usage() call to properly return an exit value
+>   btrfs-progs: tests: cli: fix 017 test case failure
 
-This could potentially fail so the return value needs to be checked.
-
-> +
-> +	/* /sys/fs/btrfs/<fsid>/devinfo/<devid>/fsid */
-> +	sysfs_fd = sysfs_open_fsid_file(fd, fsid_path);
-> +	if (sysfs_fd >= 0) {
-> +		sysfs_read_file(sysfs_fd, fsidparse, BTRFS_UUID_UNPARSED_SIZE);
-> +		fsidparse[BTRFS_UUID_UNPARSED_SIZE - 1] = 0;
-> +		ret = uuid_parse(fsidparse, fsid);
-> +		close(sysfs_fd);
-> +	}
->  
-> -	ret = dev_to_fsid(dev_path, fsid);
-> -	if (ret)
-> -		return ret;
-> +	if (ret) {
-> +		ret = dev_to_fsid(dev_path, fsid);
-> +		if (ret)
-> +			return ret;
-> +	}
+Added to devel, thanks.
