@@ -2,104 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1048B69DBBF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Feb 2023 09:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D35BF69DDDC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Feb 2023 11:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbjBUIRk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Feb 2023 03:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33310 "EHLO
+        id S233284AbjBUK2Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Feb 2023 05:28:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbjBUIRi (ORCPT
+        with ESMTP id S232813AbjBUK2P (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Feb 2023 03:17:38 -0500
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D0620062
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 00:17:36 -0800 (PST)
-Received: by mail-vk1-xa2e.google.com with SMTP id n140so2532853vkf.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 00:17:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1676967455;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EbkGYuipzj4eszkfeMPyhLXMXgTlWC99qfSAvj3EJ4E=;
-        b=HteVRIi9KBGcncf84Zy6bziMITbeU1dBpZ+eip8g3lt2ZTAlDAA2lBzP8W9wUnjzfi
-         fMBggOgGKGj84Gowy88qs/PEk/xWoPekQKqMZZ7mg6F++fIVS5TNWFKwKmDLk0hWneaj
-         8ozgj2ZbJJ+wAiQnHzRID2m4ifV4i9E3h/8Gd7D0B37/u0nPKG9dyf/i9VFXnISmc8nH
-         ZnM2PpuIqUZVeYVyogACxIy7fVBURnm6hUuF49baZUlQ/C6X/EoMas+7o+k44CAb10oY
-         ZhWqqh9lYzFfFhfSEB0Kf5qoHLC9qkIa+NM3UdACq6rOlHJQDadrOBYYIHrzBSLKwSTI
-         MFvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1676967455;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EbkGYuipzj4eszkfeMPyhLXMXgTlWC99qfSAvj3EJ4E=;
-        b=v2g4vvi5/imfSnxdRx7FbiVJejQeDhZMdF2LyFLs9XCX7xnnRy2Y1kxZu//0aTeBGc
-         NdwcJnE3N0fv4WpJ9pzbzCy59CGD5NDi3lyr1E+HXRTJti2CVmUr1YyXsz98qEBF+Wso
-         SGHh7v50tjR1tD8Osi74WT0Y1k0ktss8M20vG2sy24J0dMcSVl/R6aqJQ5azEUYtSjN7
-         pLTqcX6jAs7+JyXLWhA8DdN8ke/0V/eFf6Y5I4E/Y8YcVjNvG2x4Iz1g1KJ2jJxmSFVo
-         JBwybaUvJPjyqALNpWagUQesKw4farCbBsi2FYT4BnYplV5u2P7PseMU1l59UPAPwBzS
-         YYOA==
-X-Gm-Message-State: AO0yUKUX4ng5d+dgy5gprtMx8nGdbdxPHvVDl2MEQ3NOWt2IOOSSSLvH
-        mzxtdXCdgu/16/VTCBk+GeGnFlgawgNym1uVUEyAhA==
-X-Google-Smtp-Source: AK7set93akSk3v6i5Uo8IhjBXShhMZBPmho8GivnCfQv3pCtiGouS4Q/+4c8rTilRYQJkm1Lh2HJvtEaqYpvZmX5hS0=
-X-Received: by 2002:a1f:2305:0:b0:40e:eec8:6523 with SMTP id
- j5-20020a1f2305000000b0040eeec86523mr321309vkj.43.1676967455155; Tue, 21 Feb
- 2023 00:17:35 -0800 (PST)
+        Tue, 21 Feb 2023 05:28:15 -0500
+Received: from out28-62.mail.aliyun.com (out28-62.mail.aliyun.com [115.124.28.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E719766
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 02:28:13 -0800 (PST)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04445626|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0242546-0.00499532-0.97075;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.RSfe4JR_1676975289;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.RSfe4JR_1676975289)
+          by smtp.aliyun-inc.com;
+          Tue, 21 Feb 2023 18:28:10 +0800
+Date:   Tue, 21 Feb 2023 18:28:11 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     dsterba@suse.cz
+Subject: Re: [PATCH] btrfs: restore assertion failure to the code line where it happens
+Cc:     Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+In-Reply-To: <20230206181116.GB28288@twin.jikos.cz>
+References: <4fd172e0-bfe5-681d-8e81-bc5955922456@oracle.com> <20230206181116.GB28288@twin.jikos.cz>
+Message-Id: <20230221182810.B3E4.409509F4@e16-tech.com>
 MIME-Version: 1.0
-References: <CA+G9fYsQZrpiLRN1=zW-VRGZ57smV5OW5ZAF4rbLPFA05F5zYg@mail.gmail.com>
-In-Reply-To: <CA+G9fYsQZrpiLRN1=zW-VRGZ57smV5OW5ZAF4rbLPFA05F5zYg@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 21 Feb 2023 13:47:24 +0530
-Message-ID: <CA+G9fYuijdvK5ikvchj5_XxfimNeTzzWv1DL05458W3C7C0TvQ@mail.gmail.com>
-Subject: Re: next: 32-bit: ERROR: modpost: "__aeabi_uldivmod"
- [fs/btrfs/btrfs.ko] undefined!
-To:     open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.81.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, 20 Feb 2023 at 16:14, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> [Please ignore this email if it is already reported]
->
-> Following build error noticed on 32bit arm and i386 with kselftest merge
-> configs with gcc-10/12 on today's Linux next-20230220 tag.
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> Build regression:
->   - gcc-10-lkftconfig-kselftest
->   - gcc-12-lkftconfig-kselftest
->
-> Build error:
-> ERROR: modpost: "__aeabi_uldivmod" [fs/btrfs/btrfs.ko] undefined!
-> make[2]: *** [scripts/Makefile.modpost:136: Module.symvers] Error 1
-> make[2]: Target '__modpost' not remade because of errors.
-> make[1]: *** [Makefile:1980: modpost] Error 2
+Hi,
 
-Anders ran the bisect and found the first bad commit,
+> On Tue, Jan 31, 2023 at 07:11:43PM +0800, Anand Jain wrote:
+> > On 1/27/23 21:32, David Sterba wrote:
+> > > In commit 083bd7e54e8e ("btrfs: move the printk and assert helpers to
+> > > messages.c") btrfs_assertfail got un-inlined. This means that assertion
+> > > failures would all report as messages.c:259 as below, so make it inline
+> > > again.
+> > > 
+> > >    [403.246730] assertion failed: refcount_read(&block_group->refs) == 1, in fs/btrfs/block-group.c:4259
+> > >    [403.247935] ------------[ cut here ]------------
+> > >    [403.248405] kernel BUG at fs/btrfs/messages.c:259!
+> > 
+> > 
+> > Hmm. We have the line number shown from the assert as block-group.c:4259 
+> > here.
+> > 
+> > messages.c:259 is from the BUG() called by btrfs_assertfail().
+> > 
+> > Commit 083bd7e54e8e didn't introduce it. Here is some random example of 
+> > calling the ASSERT() from 2015.
+> 
+> Right, after double checking the code only got moved, not uninlined.
+> 
+> > ------------------------
+> > commit 67c5e7d464bc466471b05e027abe8a6b29687ebd
+> > <snap>
+> >      [181631.208236] BTRFS: assertion failed: 0, file: 
+> > fs/btrfs/volumes.c, line: 2622
+> >      [181631.220591] ------------[ cut here ]------------
+> >      [181631.222959] kernel BUG at fs/btrfs/ctree.h:4062!
+> > ------------------------
+> > 
+> > 
+> > >   #ifdef CONFIG_BTRFS_ASSERT
+> > > -void __cold btrfs_assertfail(const char *expr, const char *file, int line);
+> > 
+> > > +static inline void __cold __noreturn btrfs_assertfail(const char *expr,
+> > 
+> > Further, this won't make all the calls to btrfs_assertfail() as inline 
+> > unless __always_inline is used.
+> 
+> The always_inline has a bit stronger semantics and it would be safer to
+> use it here though the function is short enough to be considered for
+> inlining.
+> 
+> If the inlining or not is useful would need to be measured, inlining
+> grows the function code vs just a function call. I'll may be do that but
+> for now the code can stay as is.
 
-# first bad commit:
-  [4a8c6e8a6dc8ae4ce2adb1f807b61b6d99088293]
-  btrfs: replace btrfs_io_context::raid_map with a fixed u64 value
+This patch is yet not in misc-next?
 
-The reported build issues still noticed on today's Linux next-20230221.
+By the way , '__cold' is meanless for inline?
 
-Related threads are found in lore,
-https://lore.kernel.org/lkml/CAMuHMdVwXB4YsCFEpLoTm8pxyjMty6tAT7joNj2EME4ynY8keQ@mail.gmail.com/
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2023/02/21
 
-- Naresh
+
+
