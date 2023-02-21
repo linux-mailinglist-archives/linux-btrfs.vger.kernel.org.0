@@ -2,113 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A99269EA4E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Feb 2023 23:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A738069EB28
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 00:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbjBUWkI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Feb 2023 17:40:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
+        id S229911AbjBUXWe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Feb 2023 18:22:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbjBUWkH (ORCPT
+        with ESMTP id S229865AbjBUXWd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Feb 2023 17:40:07 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A2034004
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 14:39:44 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id bj35so1046223qkb.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 14:39:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=student.uny.ac.id; s=google;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=twdHZET46/F5vizXZVz+VqY+7tyjVRdIagVq9V6tRJk=;
-        b=cVKJtoxl0acMJJIwk2hPq/3OBRAVc3EM9BTjXkgsWpgp3u8vCPV+mvlUgevijcZKdW
-         yKj8d3Y4qZ/9Eg4qdy1/0Sjmdyk4QHndg3BF3zGn01jkeCIG/n84qxJOD+5RCglv7RTg
-         zgbWh0R5Qoo5t2ONfaAYyTgxRyLLvUHoBz9kA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=twdHZET46/F5vizXZVz+VqY+7tyjVRdIagVq9V6tRJk=;
-        b=gDIwHSG5ilrU234ZRb3YH2pYlpiRqyNhEqRx1rKtHxXX2FrZs2ZzZgkLPaKk6i/g7u
-         X+8UstH7pgdGBPfIkalrsj1IJOhhaIYxDZw3mf2oPykuuF+g2KnIcMyT7apuh6U8sJXZ
-         evhtP1/ftPnuCABu0dcAvZr7Wd0OuTOkwu6m/xJmCQnFeBtFcc6tg+m9rTvlRltExF2O
-         zITAxwpmmUA3U5cK6AObleguUKf/P7lUdTRPtt3tzuGDU9A2zhqe80W1WeyL4zEPmygE
-         HLRoBIuYvHjVMddTXD0xzVMK4xJ4hLGKFL6KjUr44n7/tLg0L5k2jxCmLJwcUg7UQbCh
-         ebIA==
-X-Gm-Message-State: AO0yUKWOj+Bz0K2PhT/fqconI8MscXfH2aPqesZ/HAAuJ+Qezk7ZzmFk
-        9S1n1t/F+dYqcltSe1BA8K+wj59KUMYIVrS0vNe2vSILMEgg0L40ZLv5Dp+njgFq2zdrUZ1Y3r/
-        YUKJe3GCpFyaNhCMuB43vXnnpwPCBTpMxK3L145iQL2KMtQ==
-X-Google-Smtp-Source: AK7set9PVR2O2g1LA2BTqu0GQ4mejJLHgcyO/A2UM74GZNzISHf07Zjuehx61mmaKFvYJflBCdhC2Mef2eDCGiE0d3s=
-X-Received: by 2002:a37:c407:0:b0:71f:b89c:5acc with SMTP id
- d7-20020a37c407000000b0071fb89c5accmr797707qki.13.1677019183596; Tue, 21 Feb
- 2023 14:39:43 -0800 (PST)
+        Tue, 21 Feb 2023 18:22:33 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED4929E1E
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 15:22:28 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9C5C95CDDA;
+        Tue, 21 Feb 2023 23:22:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1677021747;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PLcuqvlD+ICDjRALeG9mvmzqmeAZxHsHK9UWTSbdjxc=;
+        b=FMwPLwH73BDxsRM1BFQMY379rRw4EP9C6LPgsSU8dDPPjZNXoqoQIzWClBuwijYCnVWg8u
+        VzxHw6tvhwxgZOZVAs4nPixkjuPO47x20bXnZgnyFqqRogQjiVDnxXg520mnsi56019ct0
+        KuwMB7ZQvF1K3Jc2/XTaNe3/dQ0fi74=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1677021747;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PLcuqvlD+ICDjRALeG9mvmzqmeAZxHsHK9UWTSbdjxc=;
+        b=VvXwEKBFow58gOePocMkRy0/TQchk7gCYeWf2GQ5PafF1HCnnQGuxNahyRqRnzH+XqWH+h
+        CzwIXXmcsMIANWAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6324D13223;
+        Tue, 21 Feb 2023 23:22:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Q6pHFzNS9WNYWgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 21 Feb 2023 23:22:27 +0000
+Date:   Wed, 22 Feb 2023 00:16:31 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, wqu@suse.com,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH 1/2] btrfs-progs: prepare helper device_is_seed
+Message-ID: <20230221231631.GP10580@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1676124188.git.anand.jain@oracle.com>
+ <1eb9319975967eb52107c9355d712f9eb9d96cf7.1676124188.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6214:3d03:b0:571:1c44:3b16 with HTTP; Tue, 21 Feb 2023
- 14:39:43 -0800 (PST)
-Reply-To: fdx.s@yahoo.com
-From:   CommonWealth Of Nation Donation 
-        <fadilahutami.2018@student.uny.ac.id>
-Date:   Tue, 21 Feb 2023 23:39:43 +0100
-Message-ID: <CAMHH5kh2fSea_DnxFXF520qiR7hbQih-aLXeS_FAaRA+aiNE6g@mail.gmail.com>
-Subject: Your Bank Draft Of $800,000
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=7.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_REPLYTO,LOTS_OF_MONEY,
-        MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNDISC_MONEY,XFER_LOTSA_MONEY autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:72d listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-        *  0.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  1.0 XFER_LOTSA_MONEY Transfer a lot of money
-        *  3.3 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1eb9319975967eb52107c9355d712f9eb9d96cf7.1676124188.git.anand.jain@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The Commonwealth of Nations wishes to inform you that the
-A sum of $ 800,000.00 USD has been donated to you.This is a donation
-relief for Covid-19. Please contact for Claims
+On Mon, Feb 13, 2023 at 05:37:41PM +0800, Anand Jain wrote:
+> load_device_info() checks if the device is a seed device by reading
+> superblock::fsid and comparing it with the mount fsid, and it fails
+> to work if the device is missing (a RAID1 seed fs). Move this part
+> of the code into a new helper function device_is_seed() in
+> preparation to make device_is_seed() work with the new sysfs
+> devinfo/<devid>/fsid interface.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  cmds/filesystem-usage.c | 21 ++++++++++++++++++---
+>  1 file changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+> index 5810324f245e..bef9a1129a63 100644
+> --- a/cmds/filesystem-usage.c
+> +++ b/cmds/filesystem-usage.c
+> @@ -27,6 +27,7 @@
+>  #include <fcntl.h>
+>  #include <dirent.h>
+>  #include <limits.h>
+> +#include <uuid/uuid.h>
+>  #include "kernel-lib/sizes.h"
+>  #include "kernel-shared/ctree.h"
+>  #include "kernel-shared/disk-io.h"
+> @@ -700,6 +701,21 @@ out:
+>  	return ret;
+>  }
+>  
+> +static int device_is_seed(const char *dev_path, u8 *mnt_fsid)
+> +{
+> +	uuid_t fsid;
 
+I've switched this to a u8[BTFFS_UUID_SIZE] buffer, as it was in the
+other funcion.
 
-Regards
-Kerry Russell
+> +	int ret;
+> +
+> +	ret = dev_to_fsid(dev_path, fsid);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (memcmp(mnt_fsid, fsid, BTRFS_FSID_SIZE))
 
---=20
+IMO strcmp and memcmp should use the == 0 or != 0 explicitly so it's
+closer to the meaning.
 
-
-
--------------------------------------------Untuk mendukung =E2=80=9CGerakan=
- UNY=20
-Hijau=E2=80=9D, disarankan tidak mencetak email ini dan lampirannya.
-(To support=20
-the =E2=80=9CGreen UNY movement=E2=80=9D, it is recommended not to print th=
-e contents of=20
-this email and its attachments)
-Universitas Negeri Yogyakarta
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=20
-www.uny.ac.id <http://www.uny.ac.id>
--------------------------------------------
-
+> +		return 0;
+> +
+> +	return -1;
+> +}
+> +
+>  /*
+>   *  This function loads the device_info structure and put them in an array
+>   */
+> @@ -710,7 +726,6 @@ static int load_device_info(int fd, struct device_info **devinfo_ret,
+>  	struct btrfs_ioctl_fs_info_args fi_args;
+>  	struct btrfs_ioctl_dev_info_args dev_info;
+>  	struct device_info *info;
+> -	u8 fsid[BTRFS_UUID_SIZE];
+>  
+>  	*devcount_ret = 0;
+>  	*devinfo_ret = NULL;
+> @@ -754,8 +769,8 @@ static int load_device_info(int fd, struct device_info **devinfo_ret,
+>  		 * Ignore any other error including -EACCES, which is seen when
+>  		 * a non-root process calls dev_to_fsid(path)->open(path).
+>  		 */
+> -		ret = dev_to_fsid((const char *)dev_info.path, fsid);
+> -		if (!ret && memcmp(fi_args.fsid, fsid, BTRFS_FSID_SIZE) != 0)
+> +		ret = device_is_seed((const char *)dev_info.path, fi_args.fsid);
+> +		if (!ret)
+>  			continue;
+>  
+>  		info[ndevs].devid = dev_info.devid;
+> -- 
+> 2.39.1
